@@ -4,6 +4,10 @@
 
 This is the official Kheelona website, built with Next.js 16 and Chakra UI v3. Kheelona creates AI-powered educational toys (Lumi) that help children learn through play.
 
+**Live URL:** https://kheelona-website-react.vercel.app/
+
+**Deployment:** Vercel
+
 ## Tech Stack
 
 - **Framework**: Next.js 16 (App Router)
@@ -43,26 +47,93 @@ src/
 └── hooks/              # Custom React hooks (future use)
 ```
 
-## Brand Guidelines
+## Design System
 
-### Colors
+### Brand Color Hierarchy
+
+**Primary Brand Colors** (in order of usage frequency):
 
 | Color | Hex | Usage |
 |-------|-----|-------|
-| Tangerine | `#EF762F` | Primary brand color, CTAs, highlights |
-| Sky Blue | `#50B2D5` | Secondary color, Lumi branding |
-| Muted Orange | `#F1A23B` | Accent, warnings, Old Way section |
-| Black | `#000000` | Text |
-| White | `#FFFFFF` | Backgrounds, text on dark |
+| Tangerine | `#EF762F` | Primary brand color, CTAs, highlights, headings |
+| Sky Blue | `#50B2D5` | Secondary color, Lumi branding, emphasis |
+| Muted Tan Orange | `#F1A23B` | Accent, subtle harmony, containers |
+
+**Secondary/Neutral Colors**:
+
+| Color | Hex | Usage |
+|-------|-----|-------|
+| Pure Black | `#000000` | Text, strokes |
+| Pure White | `#FFFFFF` | Backgrounds, text on colored backgrounds |
+
+### Color Pairing Rules
+
+| Pairing | When to Use |
+|---------|-------------|
+| Tangerine + Sky Blue | Maximum vibrancy and contrast to emphasize content (primary pairing for children's toys) |
+| Tangerine + Muted Tan Orange | Blended, subtle visual harmony to guide user's eye (e.g., CTAs in containers) |
+| Sky Blue + Muted Tan Orange | Substitute pairing only when ideal pairs clash in terms of contrast or visibility |
+
+**Important:** Maximum 2-3 colors in the same canvas/section.
 
 ### Typography
 
-- **Headings**: `Luckiest Guy` (playful, bold)
-- **Body Text**: `Jua` (friendly, readable)
+| Element | Font | Usage |
+|---------|------|-------|
+| Main Headings | `Luckiest Guy` (Regular) | Hero titles, section headings, short headings |
+| Body Text | `Jua` (Regular) | Body content, secondary text, subheadings |
 
-### Tone
+**Typography Guidelines:**
+- Use bright colored headings with thick neutral stroke (black/white) to make content pop while staying readable
+- Leave negative space - fonts are already rounded and crowded, so space helps readability
+- For lots of body content, use neutral colors (black/white) over muted color backgrounds
 
-Vibrant, Playful, Whimsical, Bold
+### Brand Taglines
+
+- "Smartest playmates for brightest minds"
+- "Magical Pets for Little Explorers"
+
+### Tone of Voice
+
+| Attribute | Description |
+|-----------|-------------|
+| **Playful** | Speak with enthusiastic spark of fun, curiosity and humor (invite adventure) |
+| **Imaginative** | Use storytelling and vivid imagery, introduce characters and possibilities |
+| **Warm** | Talk like a caring friend of the same age group - help them feel seen and loved |
+| **Joyful** | Keep the mood light and happy |
+| **Empowering** | Use uplifting and confident language to boost confidence and character building |
+| **Trustworthy** | Communicate with clarity and honesty - show parents they can rely on the toys |
+
+### Tone of Visuals
+
+- **Vibrant** - Vivid colors
+- **Playful** - Quirky fonts
+- **Whimsical** - Magical feeling
+- **Bold** - Thick fonts, thick strokes
+
+### Communication Do's & Don'ts
+
+**DO:**
+- Use lighthearted, imaginative, encouraging words and adventurous tones
+- Speak gently, empathically, hopeful and with confidence in the child
+- Use regular affirmations and words of encouragement
+
+**DON'T:**
+- Force baby-ish words or over-coddle - don't seem overdramatic
+- Be overly factual, harsh, dry, robotic, or emotionless
+- Invalidate emotions - instead acknowledge and say "I know it's hard, but we can figure it out together"
+
+### Visual Design Do's & Don'ts
+
+**DO:**
+- Use bright colored headings with thick neutral stroke (black/white) for pop + readability
+- Leave negative space for content to breathe and be absorbed
+- Use neutral colors for text-heavy sections over muted backgrounds
+
+**DON'T:**
+- Overuse bright colors in wrong context/background - avoid overcrowded look
+- Mix too many colors - maximum 2-3 colors per canvas/section
+- Imbalance Luckiest Guy and Jua fonts - use proper proportion as per design guidelines
 
 ## Commands
 
@@ -142,10 +213,9 @@ NEXT_PUBLIC_API_URL=your-api-url
 
 ## Deployment
 
-The site can be deployed to:
-- Vercel (recommended for Next.js)
-- Netlify
-- Any Node.js hosting platform
+**Currently deployed on Vercel**
 
-Build command: `npm run build`
-Output directory: `.next`
+- **Live URL:** https://kheelona-website-react.vercel.app/
+- **Build command:** `npm run build`
+- **Output directory:** `.next`
+- **Framework preset:** Next.js

@@ -49,8 +49,8 @@ const config = defineConfig({
         },
       },
       fonts: {
-        heading: { value: `'Luckiest Guy', cursive` },
-        body: { value: `'Jua', sans-serif` },
+        heading: { value: `var(--font-luckiest-guy), 'Luckiest Guy', cursive` },
+        body: { value: `var(--font-jua), 'Jua', sans-serif` },
       },
       fontSizes: {
         "2xs": { value: "0.625rem" },
@@ -101,6 +101,36 @@ const config = defineConfig({
         // Border colors
         "border.default": { value: "{colors.gray.200}" },
         "border.accent": { value: "{colors.tangerine.500}" },
+        // Tangerine color palette semantic tokens
+        tangerine: {
+          solid: { value: "{colors.tangerine.500}" },
+          contrast: { value: "#FFFFFF" },
+          fg: { value: "{colors.tangerine.700}" },
+          muted: { value: "{colors.tangerine.100}" },
+          subtle: { value: "{colors.tangerine.50}" },
+          emphasized: { value: "{colors.tangerine.300}" },
+          focusRing: { value: "{colors.tangerine.500}" },
+        },
+        // Sky Blue color palette semantic tokens
+        skyBlue: {
+          solid: { value: "{colors.skyBlue.400}" },
+          contrast: { value: "#FFFFFF" },
+          fg: { value: "{colors.skyBlue.700}" },
+          muted: { value: "{colors.skyBlue.100}" },
+          subtle: { value: "{colors.skyBlue.50}" },
+          emphasized: { value: "{colors.skyBlue.300}" },
+          focusRing: { value: "{colors.skyBlue.400}" },
+        },
+        // Muted Orange color palette semantic tokens
+        mutedOrange: {
+          solid: { value: "{colors.mutedOrange.400}" },
+          contrast: { value: "#FFFFFF" },
+          fg: { value: "{colors.mutedOrange.700}" },
+          muted: { value: "{colors.mutedOrange.100}" },
+          subtle: { value: "{colors.mutedOrange.50}" },
+          emphasized: { value: "{colors.mutedOrange.300}" },
+          focusRing: { value: "{colors.mutedOrange.400}" },
+        },
       },
     },
     textStyles: {
@@ -318,15 +348,19 @@ const config = defineConfig({
   },
   globalCss: {
     "html, body": {
-      fontFamily: "body",
+      fontFamily: "var(--font-jua), 'Jua', sans-serif",
       color: "text.primary",
       bg: "bg.primary",
       lineHeight: 1.6,
     },
     "h1, h2, h3, h4, h5, h6": {
-      fontFamily: "heading",
+      fontFamily: "var(--font-luckiest-guy), 'Luckiest Guy', cursive",
       fontWeight: "normal",
       lineHeight: 1.2,
+    },
+    // Ensure Chakra Heading component uses the heading font
+    ".chakra-heading": {
+      fontFamily: "var(--font-luckiest-guy), 'Luckiest Guy', cursive !important",
     },
   },
 });

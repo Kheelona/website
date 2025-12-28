@@ -141,7 +141,7 @@ export function WaitlistSection() {
               <Box
                 bg="white"
                 border="2px solid"
-                borderColor="green.400"
+                borderColor="skyBlue.400"
                 borderRadius="2xl"
                 p={8}
                 textAlign="center"
@@ -155,7 +155,7 @@ export function WaitlistSection() {
                   as="h3"
                   fontSize="2xl"
                   fontFamily="heading"
-                  color="green.500"
+                  color="skyBlue.500"
                   mb={2}
                 >
                   You're on the list!

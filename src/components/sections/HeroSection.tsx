@@ -8,12 +8,11 @@ import {
   VStack,
   HStack,
   Flex,
-  Badge,
+  Tag,
   Image,
   Button,
 } from "@chakra-ui/react";
 import Link from "next/link";
-import { LinkButton } from "@/components/ui/LinkButton";
 
 const features = [
   { text: "AI Powered", icon: "🤖" },
@@ -95,7 +94,7 @@ export function HeroSection() {
               textShadow="2px 2px 4px rgba(0,0,0,0.3)"
             >
               Can your toy{" "}
-              <Text as="span" color="yellow.200">
+              <Text as="span" color="mutedOrange.400">
                 talk
               </Text>{" "}
               ?
@@ -132,32 +131,48 @@ export function HeroSection() {
               Hii.. Friend - The Most Intelligent Toy for your Kid
             </Text>
 
-            {/* Feature Pills */}
+            {/* Feature Pills - Using Chakra UI Tag */}
             <HStack flexWrap="wrap" gap={3} justify={{ base: "center", lg: "flex-start" }}>
               {features.map((feature) => (
-                <Badge
+                <Tag.Root
                   key={feature.text}
+                  size="lg"
+                  variant="solid"
                   bg="white"
                   color="gray.800"
+                  borderRadius="full"
+                  boxShadow="md"
                   px={4}
                   py={2}
-                  borderRadius="full"
-                  fontSize={{ base: "sm", md: "md" }}
-                  fontFamily="body"
-                  boxShadow="md"
-                  display="flex"
-                  alignItems="center"
-                  gap={2}
                 >
-                  <Text as="span">{feature.icon}</Text> {feature.text}
-                </Badge>
+                  <Tag.StartElement>{feature.icon}</Tag.StartElement>
+                  <Tag.Label fontFamily="body" fontSize={{ base: "sm", md: "md" }}>
+                    {feature.text}
+                  </Tag.Label>
+                </Tag.Root>
               ))}
             </HStack>
 
-            {/* CTA Button */}
-            <LinkButton href="/product" size="lg" boxShadow="0 4px 14px rgba(239, 118, 47, 0.4)">
-              Pre-Order now
-            </LinkButton>
+            {/* CTA Button - Using Chakra UI Button */}
+            <Button
+              asChild
+              size="lg"
+              bg="tangerine.500"
+              color="white"
+              borderRadius="full"
+              fontFamily="body"
+              px={{ base: 6, md: 8 }}
+              py={{ base: 3, md: 4 }}
+              boxShadow="0 4px 14px rgba(239, 118, 47, 0.4)"
+              _hover={{
+                bg: "tangerine.600",
+                transform: "translateY(-3px)",
+                boxShadow: "lg",
+              }}
+              transition="all 0.3s"
+            >
+              <Link href="/product">Pre-Order now</Link>
+            </Button>
           </VStack>
 
           {/* Right - Product Image */}
@@ -180,40 +195,44 @@ export function HeroSection() {
               }}
               transition="transform 0.5s ease"
             />
-            {/* Decorative elements */}
-            <Box
+            {/* Decorative badges - Using Chakra UI Tag */}
+            <Tag.Root
               position="absolute"
               top={{ base: "-10px", md: "-15px" }}
               right={{ base: "-10px", md: "-15px" }}
+              size="md"
+              variant="solid"
               bg="tangerine.500"
               color="white"
-              px={{ base: 3, md: 4 }}
-              py={{ base: 1, md: 2 }}
               borderRadius="full"
-              fontFamily="body"
-              fontSize={{ base: "xs", md: "sm" }}
               boxShadow="lg"
               transform="rotate(15deg)"
               className="pulse-animation"
+              px={{ base: 3, md: 4 }}
+              py={{ base: 1, md: 2 }}
             >
-              3 Colors!
-            </Box>
-            <Box
+              <Tag.Label fontFamily="body" fontSize={{ base: "xs", md: "sm" }}>
+                3 Colors!
+              </Tag.Label>
+            </Tag.Root>
+            <Tag.Root
               position="absolute"
               bottom={{ base: "-10px", md: "-15px" }}
               left={{ base: "-10px", md: "-15px" }}
+              size="md"
+              variant="solid"
               bg="skyBlue.400"
               color="white"
-              px={{ base: 3, md: 4 }}
-              py={{ base: 1, md: 2 }}
               borderRadius="full"
-              fontFamily="body"
-              fontSize={{ base: "xs", md: "sm" }}
               boxShadow="lg"
               transform="rotate(-10deg)"
+              px={{ base: 3, md: 4 }}
+              py={{ base: 1, md: 2 }}
             >
-              AI Powered!
-            </Box>
+              <Tag.Label fontFamily="body" fontSize={{ base: "xs", md: "sm" }}>
+                AI Powered!
+              </Tag.Label>
+            </Tag.Root>
           </Box>
         </Flex>
 

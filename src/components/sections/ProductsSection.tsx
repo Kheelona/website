@@ -9,7 +9,7 @@ import {
   Image,
   VStack,
   HStack,
-  Badge,
+  Tag,
   Grid,
   Flex,
 } from "@chakra-ui/react";
@@ -137,21 +137,23 @@ export function ProductsSection() {
               justifyContent="center"
               gap={6}
             >
-              <Badge
+              <Tag.Root
                 position="absolute"
                 top={6}
                 left={6}
+                size="md"
+                variant="solid"
                 bg="tangerine.500"
                 color="white"
+                borderRadius="full"
+                boxShadow="md"
                 px={4}
                 py={2}
-                borderRadius="full"
-                fontFamily="body"
-                fontSize="sm"
-                boxShadow="md"
               >
-                {productInfo.badge}
-              </Badge>
+                <Tag.Label fontFamily="body" fontSize="sm">
+                  {productInfo.badge}
+                </Tag.Label>
+              </Tag.Root>
 
               {/* Main Product Image */}
               <Box position="relative" w="full" display="flex" justifyContent="center">
@@ -229,22 +231,24 @@ export function ProductsSection() {
                 {productInfo.description}
               </Text>
 
-              {/* Features */}
+              {/* Features - Using Chakra UI Tag */}
               <HStack gap={2} flexWrap="wrap">
                 {productInfo.features.map((feature) => (
-                  <Badge
+                  <Tag.Root
                     key={feature}
+                    size="sm"
+                    variant="subtle"
                     bg="gray.100"
                     color="gray.600"
+                    borderRadius="full"
+                    boxShadow="sm"
                     px={3}
                     py={1}
-                    borderRadius="full"
-                    fontFamily="body"
-                    fontSize="xs"
-                    boxShadow="sm"
                   >
-                    {feature}
-                  </Badge>
+                    <Tag.Label fontFamily="body" fontSize="xs">
+                      {feature}
+                    </Tag.Label>
+                  </Tag.Root>
                 ))}
               </HStack>
 
@@ -270,7 +274,7 @@ export function ProductsSection() {
                 <Text
                   fontSize="xs"
                   fontFamily="body"
-                  color="green.500"
+                  color="skyBlue.500"
                   mt={1}
                 >
                   Save ₹3,000 with early bird discount!

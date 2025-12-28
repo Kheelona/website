@@ -11,7 +11,7 @@ import {
   Flex,
   Float,
   Card,
-  Badge,
+  Tag,
   HStack,
   Grid,
   Icon,
@@ -160,16 +160,17 @@ export function ComparisonTableSection() {
                       >
                         <VStack gap={1}>
                           <HStack gap={2} justify="center">
-                            <Badge
-                              bg="green.100"
-                              color="green.600"
+                            <Tag.Root
+                              size="sm"
+                              variant="subtle"
+                              bg="skyBlue.100"
+                              color="skyBlue.700"
+                              borderRadius="full"
                               px={2}
                               py={1}
-                              borderRadius="full"
-                              fontSize="xs"
                             >
-                              Best
-                            </Badge>
+                              <Tag.Label fontSize="xs">Best</Tag.Label>
+                            </Tag.Root>
                             <Text>Lumi</Text>
                           </HStack>
                           <Text
@@ -212,16 +213,17 @@ export function ComparisonTableSection() {
                       >
                         <VStack gap={1}>
                           <HStack gap={2} justify="center">
-                            <Badge
+                            <Tag.Root
+                              size="sm"
+                              variant="subtle"
                               bg="red.100"
                               color="red.600"
+                              borderRadius="full"
                               px={2}
                               py={1}
-                              borderRadius="full"
-                              fontSize="xs"
                             >
-                              Avoid
-                            </Badge>
+                              <Tag.Label fontSize="xs">Avoid</Tag.Label>
+                            </Tag.Root>
                             <Text>Screens</Text>
                           </HStack>
                           <Text
@@ -256,14 +258,14 @@ export function ComparisonTableSection() {
                           fontFamily="body"
                           fontSize={{ base: "sm", md: "md" }}
                           color="gray.700"
-                          bg="green.50"
+                          bg="skyBlue.50"
                           textAlign="center"
                           py={5}
                           px={4}
                         >
                           <Flex align="center" justify="center" gap={3}>
                             <Box
-                              bg="green.500"
+                              bg="skyBlue.400"
                               color="white"
                               borderRadius="full"
                               p={1}
@@ -361,13 +363,13 @@ export function ComparisonTableSection() {
                     {/* Lumi */}
                     <Box
                       p={4}
-                      bg="green.50"
+                      bg="skyBlue.50"
                       borderBottomWidth="1px"
                       borderColor="gray.100"
                     >
                       <HStack gap={2} mb={2}>
                         <Box
-                          bg="green.500"
+                          bg="skyBlue.400"
                           color="white"
                           borderRadius="full"
                           p={1}
