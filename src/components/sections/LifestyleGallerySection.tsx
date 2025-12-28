@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  Box,
-  Container,
-  Heading,
-  Text,
-  VStack,
-  Grid,
-  Image,
-} from "@chakra-ui/react";
+import { Box, Container, Heading, Text, VStack, Grid, Image } from "@chakra-ui/react";
 
 const galleryImages = [
   {
@@ -86,11 +78,7 @@ export function LifestyleGallerySection() {
             >
               Gallery
             </Text>
-            <Heading
-              as="h2"
-              fontSize={{ base: "3xl", md: "4xl", lg: "5xl" }}
-              fontFamily="heading"
-            >
+            <Heading as="h2" fontSize={{ base: "3xl", md: "4xl", lg: "5xl" }} fontFamily="heading">
               <Text as="span" color="gray.800">
                 Meet The
               </Text>{" "}
@@ -104,7 +92,8 @@ export function LifestyleGallerySection() {
               color="gray.500"
               maxW="600px"
             >
-              Adorable, cuddly, and smart - see Lumi in action with our beautiful lifestyle collection
+              Adorable, cuddly, and smart - see Lumi in action with our beautiful lifestyle
+              collection
             </Text>
           </VStack>
 
@@ -135,13 +124,7 @@ export function LifestyleGallerySection() {
                 }}
                 transition="all 0.3s ease"
               >
-                <Image
-                  src={image.src}
-                  alt={image.alt}
-                  w="full"
-                  h="full"
-                  objectFit="cover"
-                />
+                <Image src={image.src} alt={image.alt} w="full" h="full" objectFit="cover" />
                 {/* Subtle overlay on hover */}
                 <Box
                   position="absolute"
@@ -173,7 +156,9 @@ export function LifestyleGallerySection() {
               textAlign="center"
             >
               Three Colors.{" "}
-              <Text as="span" color="tangerine.500">Endless Adventures.</Text>{" "}
+              <Text as="span" color="tangerine.500">
+                Endless Adventures.
+              </Text>{" "}
               One Best Friend.
             </Text>
           </Box>

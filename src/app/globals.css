@@ -2,12 +2,12 @@
 
 :root {
   /* Kheelona Brand Colors */
-  --tangerine: #EF762F;
-  --sky-blue: #50B2D5;
-  --muted-orange: #F1A23B;
+  --tangerine: #ef762f;
+  --sky-blue: #50b2d5;
+  --muted-orange: #f1a23b;
   --pure-black: #000000;
-  --pure-white: #FFFFFF;
-  --light-bg: #E8F4F8;
+  --pure-white: #ffffff;
+  --light-bg: #e8f4f8;
 
   /* Fonts */
   --font-heading: var(--font-luckiest-guy), cursive;
@@ -46,7 +46,12 @@ body {
   overflow-x: hidden;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-heading);
   font-weight: normal;
   line-height: 1.2;
@@ -84,8 +89,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .text-stroke-white {
-  -webkit-text-stroke: 2px #FFFFFF;
-  text-stroke: 2px #FFFFFF;
+  -webkit-text-stroke: 2px #ffffff;
+  text-stroke: 2px #ffffff;
   paint-order: stroke fill;
 }
 
@@ -97,13 +102,23 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ===== Animations ===== */
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 @keyframes pulse {
-  0%, 100% { transform: rotate(15deg) scale(1); }
-  50% { transform: rotate(15deg) scale(1.05); }
+  0%,
+  100% {
+    transform: rotate(15deg) scale(1);
+  }
+  50% {
+    transform: rotate(15deg) scale(1.05);
+  }
 }
 
 @keyframes fadeInUp {
@@ -118,13 +133,22 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 @keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
 }
 
 /* Floating animation for decorative elements */
@@ -151,7 +175,9 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Interactive hover effects */
 .hover-lift {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .hover-lift:hover {

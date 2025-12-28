@@ -79,7 +79,9 @@ const config = defineConfig({
       },
       shadows: {
         card: { value: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)" },
-        cardHover: { value: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" },
+        cardHover: {
+          value: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+        },
         button: { value: "0 4px 14px rgba(239, 118, 47, 0.4)" },
       },
     },
@@ -217,7 +219,8 @@ const config = defineConfig({
       },
       "gradient.heroOverlay": {
         value: {
-          background: "linear-gradient(135deg, rgba(80, 178, 213, 0.85) 0%, rgba(42, 125, 158, 0.9) 100%)",
+          background:
+            "linear-gradient(135deg, rgba(80, 178, 213, 0.85) 0%, rgba(42, 125, 158, 0.9) 100%)",
         },
       },
       "gradient.lumiWay": {

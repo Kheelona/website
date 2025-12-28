@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  Box,
-  Container,
-  Heading,
-  Text,
-  VStack,
-  Grid,
-  Image,
-} from "@chakra-ui/react";
+import { Box, Container, Heading, Text, VStack, Grid, Image } from "@chakra-ui/react";
 import { LinkButton } from "@/components/ui/LinkButton";
 
 const features = [
@@ -65,11 +57,7 @@ export function FeaturesGridSection() {
             >
               The Features
             </Text>
-            <Heading
-              as="h2"
-              fontSize={{ base: "2xl", md: "4xl", lg: "5xl" }}
-              fontFamily="heading"
-            >
+            <Heading as="h2" fontSize={{ base: "2xl", md: "4xl", lg: "5xl" }} fontFamily="heading">
               <Text as="span" color="gray.800">
                 What Lumi can do for
               </Text>{" "}
@@ -140,14 +128,7 @@ export function FeaturesGridSection() {
                   />
 
                   {/* Feature Name */}
-                  <Box
-                    position="absolute"
-                    bottom={0}
-                    left={0}
-                    right={0}
-                    p={4}
-                    textAlign="center"
-                  >
+                  <Box position="absolute" bottom={0} left={0} right={0} p={4} textAlign="center">
                     <Text
                       fontFamily="heading"
                       fontSize={{ base: "md", md: "lg", lg: "xl" }}

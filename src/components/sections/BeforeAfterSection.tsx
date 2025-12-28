@@ -76,11 +76,7 @@ export function BeforeAfterSection() {
             >
               Lumi vs Others
             </Text>
-            <Heading
-              as="h2"
-              fontSize={{ base: "2xl", md: "4xl", lg: "5xl" }}
-              fontFamily="heading"
-            >
+            <Heading as="h2" fontSize={{ base: "2xl", md: "4xl", lg: "5xl" }} fontFamily="heading">
               <Text as="span" color="gray.800">
                 Why settle for less?
               </Text>{" "}
@@ -88,11 +84,7 @@ export function BeforeAfterSection() {
                 Upgrade to Lumi
               </Text>
             </Heading>
-            <Text
-              fontSize={{ base: "md", md: "lg" }}
-              fontFamily="body"
-              color="gray.500"
-            >
+            <Text fontSize={{ base: "md", md: "lg" }} fontFamily="body" color="gray.500">
               Drag the slider to compare
             </Text>
           </VStack>
@@ -157,12 +149,7 @@ export function BeforeAfterSection() {
 
                     <List.Root gap={4}>
                       {lumiWayBenefits.map((benefit, index) => (
-                        <List.Item
-                          key={index}
-                          display="flex"
-                          alignItems="flex-start"
-                          gap={3}
-                        >
+                        <List.Item key={index} display="flex" alignItems="flex-start" gap={3}>
                           <Box
                             as="span"
                             bg="white"
@@ -180,11 +167,7 @@ export function BeforeAfterSection() {
                           >
                             ✓
                           </Box>
-                          <Text
-                            fontFamily="body"
-                            color="white"
-                            fontSize={{ base: "sm", md: "md" }}
-                          >
+                          <Text fontFamily="body" color="white" fontSize={{ base: "sm", md: "md" }}>
                             {benefit}
                           </Text>
                         </List.Item>
@@ -213,12 +196,7 @@ export function BeforeAfterSection() {
                   <HStack gap={1} color="gray.500">
                     <MoveHorizontal size={20} />
                   </HStack>
-                  <Text
-                    fontSize="xs"
-                    fontFamily="body"
-                    color="gray.500"
-                    textAlign="center"
-                  >
+                  <Text fontSize="xs" fontFamily="body" color="gray.500" textAlign="center">
                     Drag
                   </Text>
                 </VStack>
@@ -267,12 +245,7 @@ export function BeforeAfterSection() {
 
                     <List.Root gap={4}>
                       {oldWayDrawbacks.map((drawback, index) => (
-                        <List.Item
-                          key={index}
-                          display="flex"
-                          alignItems="flex-start"
-                          gap={3}
-                        >
+                        <List.Item key={index} display="flex" alignItems="flex-start" gap={3}>
                           <Box
                             as="span"
                             bg="white"
@@ -290,11 +263,7 @@ export function BeforeAfterSection() {
                           >
                             ✗
                           </Box>
-                          <Text
-                            fontFamily="body"
-                            color="white"
-                            fontSize={{ base: "sm", md: "md" }}
-                          >
+                          <Text fontFamily="body" color="white" fontSize={{ base: "sm", md: "md" }}>
                             {drawback}
                           </Text>
                         </List.Item>
@@ -338,24 +307,14 @@ export function BeforeAfterSection() {
                   >
                     The Smart Choice
                   </Text>
-                  <Heading
-                    as="h3"
-                    fontSize="2xl"
-                    fontFamily="heading"
-                    color="white"
-                  >
+                  <Heading as="h3" fontSize="2xl" fontFamily="heading" color="white">
                     Lumi Way
                   </Heading>
                 </VStack>
 
                 <List.Root gap={4}>
                   {lumiWayBenefits.map((benefit, index) => (
-                    <List.Item
-                      key={index}
-                      display="flex"
-                      alignItems="flex-start"
-                      gap={3}
-                    >
+                    <List.Item key={index} display="flex" alignItems="flex-start" gap={3}>
                       <Box
                         as="span"
                         bg="white"
@@ -421,24 +380,14 @@ export function BeforeAfterSection() {
                   >
                     The Old Approach
                   </Text>
-                  <Heading
-                    as="h3"
-                    fontSize="2xl"
-                    fontFamily="heading"
-                    color="white"
-                  >
+                  <Heading as="h3" fontSize="2xl" fontFamily="heading" color="white">
                     Old Way
                   </Heading>
                 </VStack>
 
                 <List.Root gap={4}>
                   {oldWayDrawbacks.map((drawback, index) => (
-                    <List.Item
-                      key={index}
-                      display="flex"
-                      alignItems="flex-start"
-                      gap={3}
-                    >
+                    <List.Item key={index} display="flex" alignItems="flex-start" gap={3}>
                       <Box
                         as="span"
                         bg="white"

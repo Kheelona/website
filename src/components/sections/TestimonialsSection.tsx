@@ -1,17 +1,8 @@
 "use client";
 
-import {
-  Box,
-  Container,
-  Heading,
-  Text,
-  VStack,
-  HStack,
-  IconButton,
-  Flex,
-} from "@chakra-ui/react";
+import { Box, Container, Heading, Text, VStack, HStack, IconButton, Flex } from "@chakra-ui/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 
 const testimonials = [
   {
@@ -40,24 +31,50 @@ const testimonials = [
 export function TestimonialsSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const nextTestimonial = () => {
+  const nextTestimonial = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % testimonials.length);
-  };
+  }, []);
 
-  const prevTestimonial = () => {
-    setCurrentIndex(
-      (prev) => (prev - 1 + testimonials.length) % testimonials.length
-    );
-  };
+  const prevTestimonial = useCallback(() => {
+    setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+  }, []);
+
+  // Keyboard navigation
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") {
+        prevTestimonial();
+      } else if (e.key === "ArrowRight") {
+        nextTestimonial();
+      }
+    },
+    [nextTestimonial, prevTestimonial]
+  );
+
+  useEffect(() => {
+    const section = document.getElementById("testimonials-section");
+    if (section) {
+      section.addEventListener("keydown", handleKeyDown);
+      return () => section.removeEventListener("keydown", handleKeyDown);
+    }
+  }, [handleKeyDown]);
 
   return (
     <Box
       as="section"
+      id="testimonials-section"
+      tabIndex={0}
       py={{ base: 16, md: 24 }}
       px={{ base: 4, md: 6 }}
       layerStyle="gradient.testimonials"
       position="relative"
       overflow="hidden"
+      outline="none"
+      _focusVisible={{
+        outline: "2px solid",
+        outlineColor: "skyBlue.400",
+        outlineOffset: "-2px",
+      }}
     >
       {/* Decorative quote marks */}
       <Text
@@ -69,8 +86,9 @@ export function TestimonialsSection() {
         fontFamily="serif"
         lineHeight="1"
         userSelect="none"
+        aria-hidden="true"
       >
-        "
+        &ldquo;
       </Text>
       <Text
         position="absolute"
@@ -82,8 +100,9 @@ export function TestimonialsSection() {
         lineHeight="1"
         transform="rotate(180deg)"
         userSelect="none"
+        aria-hidden="true"
       >
-        "
+        &rdquo;
       </Text>
 
       {/* Decorative circles */}
@@ -95,6 +114,7 @@ export function TestimonialsSection() {
         h={{ base: "60px", md: "100px" }}
         borderRadius="full"
         bg="rgba(80, 178, 213, 0.06)"
+        aria-hidden="true"
       />
       <Box
         position="absolute"
@@ -104,6 +124,7 @@ export function TestimonialsSection() {
         h={{ base: "40px", md: "80px" }}
         borderRadius="full"
         bg="rgba(239, 118, 47, 0.06)"
+        aria-hidden="true"
       />
 
       <Container maxW="1400px" mx="auto" px={{ base: 4, md: 8 }}>
@@ -119,11 +140,7 @@ export function TestimonialsSection() {
             >
               Testimonials
             </Text>
-            <Heading
-              as="h2"
-              fontSize={{ base: "2xl", md: "4xl", lg: "5xl" }}
-              fontFamily="heading"
-            >
+            <Heading as="h2" fontSize={{ base: "2xl", md: "4xl", lg: "5xl" }} fontFamily="heading">
               <Text as="span" color="gray.800">
                 What
               </Text>{" "}
@@ -133,7 +150,7 @@ export function TestimonialsSection() {
             </Heading>
           </VStack>
 
-          {/* Testimonial Card */}
+          {/* Testimonial Card with aria-live for screen readers */}
           <Box
             bg="white"
             borderRadius="3xl"
@@ -141,6 +158,8 @@ export function TestimonialsSection() {
             w="full"
             position="relative"
             boxShadow="xl"
+            aria-live="polite"
+            aria-atomic="true"
           >
             {/* Quote Badge */}
             <Box
@@ -156,17 +175,21 @@ export function TestimonialsSection() {
               alignItems="center"
               justifyContent="center"
               boxShadow="lg"
+              aria-hidden="true"
             >
               <Text fontSize={{ base: "2xl", md: "3xl" }} color="white" fontWeight="bold">
-                "
+                &ldquo;
               </Text>
             </Box>
 
             <VStack gap={6} pt={4}>
               {/* Stars */}
-              <HStack gap={1}>
+              <HStack
+                gap={1}
+                aria-label={`Rating: ${testimonials[currentIndex].rating} out of 5 stars`}
+              >
                 {[...Array(testimonials[currentIndex].rating)].map((_, i) => (
-                  <Text key={i} fontSize="xl" color="mutedOrange.400">
+                  <Text key={i} fontSize="xl" color="mutedOrange.400" aria-hidden="true">
                     ★
                   </Text>
                 ))}
@@ -182,7 +205,7 @@ export function TestimonialsSection() {
                 px={{ base: 0, md: 6 }}
                 fontStyle="italic"
               >
-                "{testimonials[currentIndex].quote}"
+                {testimonials[currentIndex].quote}
               </Text>
 
               {/* Author */}
@@ -194,20 +217,20 @@ export function TestimonialsSection() {
                 >
                   {testimonials[currentIndex].author}
                 </Text>
-                <Text
-                  fontFamily="body"
-                  fontSize={{ base: "sm", md: "md" }}
-                  color="gray.500"
-                >
+                <Text fontFamily="body" fontSize={{ base: "sm", md: "md" }} color="gray.500">
                   {testimonials[currentIndex].location}
                 </Text>
               </VStack>
 
               {/* Dots indicator */}
-              <HStack gap={2} mt={2}>
-                {testimonials.map((_, index) => (
+              <HStack gap={2} mt={2} role="tablist" aria-label="Testimonial navigation">
+                {testimonials.map((testimonial, index) => (
                   <Box
                     key={index}
+                    as="button"
+                    role="tab"
+                    aria-selected={index === currentIndex}
+                    aria-label={`Go to testimonial ${index + 1} by ${testimonial.author}`}
                     w={index === currentIndex ? "28px" : "10px"}
                     h="10px"
                     borderRadius="full"
@@ -218,6 +241,11 @@ export function TestimonialsSection() {
                     _hover={{
                       bg: index === currentIndex ? "skyBlue.400" : "gray.300",
                     }}
+                    _focus={{
+                      outline: "2px solid",
+                      outlineColor: "skyBlue.400",
+                      outlineOffset: "2px",
+                    }}
                   />
                 ))}
               </HStack>
@@ -225,7 +253,7 @@ export function TestimonialsSection() {
           </Box>
 
           {/* Navigation */}
-          <Flex gap={4}>
+          <Flex gap={4} role="group" aria-label="Testimonial controls">
             <IconButton
               aria-label="Previous testimonial"
               onClick={prevTestimonial}
@@ -239,6 +267,11 @@ export function TestimonialsSection() {
                 bg: "skyBlue.400",
                 color: "white",
                 transform: "scale(1.1)",
+              }}
+              _focus={{
+                outline: "2px solid",
+                outlineColor: "skyBlue.400",
+                outlineOffset: "2px",
               }}
               transition="all 0.3s"
             >
@@ -258,11 +291,28 @@ export function TestimonialsSection() {
                 color: "white",
                 transform: "scale(1.1)",
               }}
+              _focus={{
+                outline: "2px solid",
+                outlineColor: "skyBlue.400",
+                outlineOffset: "2px",
+              }}
               transition="all 0.3s"
             >
               <ChevronRight size={24} />
             </IconButton>
           </Flex>
+
+          {/* Screen reader announcement */}
+          <Box
+            position="absolute"
+            left="-9999px"
+            width="1px"
+            height="1px"
+            overflow="hidden"
+            aria-live="polite"
+          >
+            Showing testimonial {currentIndex + 1} of {testimonials.length}
+          </Box>
         </VStack>
       </Container>
     </Box>

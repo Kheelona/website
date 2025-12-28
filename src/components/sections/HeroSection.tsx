@@ -35,15 +35,7 @@ export function HeroSection() {
       layerStyle="gradient.hero"
     >
       {/* Background Video (optional enhancement) */}
-      <Box
-        position="absolute"
-        top={0}
-        left={0}
-        right={0}
-        bottom={0}
-        zIndex={0}
-        overflow="hidden"
-      >
+      <Box position="absolute" top={0} left={0} right={0} bottom={0} zIndex={0} overflow="hidden">
         <video
           autoPlay
           muted
@@ -248,11 +240,7 @@ export function HeroSection() {
           gap={2}
           className="bounce-arrow"
         >
-          <Text
-            fontFamily="body"
-            fontSize="sm"
-            color="whiteAlpha.800"
-          >
+          <Text fontFamily="body" fontSize="sm" color="whiteAlpha.800">
             Scroll to explore
           </Text>
           <Box

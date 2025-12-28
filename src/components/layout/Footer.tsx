@@ -65,23 +65,13 @@ export function Footer() {
                 filter="brightness(0) invert(1)"
               />
             </Link>
-            <Text
-              fontFamily="body"
-              color="gray.400"
-              fontSize="sm"
-              maxW="300px"
-            >
-              Kheelona creates AI-powered educational toys that help children
-              learn, grow, and develop essential skills through play.
+            <Text fontFamily="body" color="gray.400" fontSize="sm" maxW="300px">
+              Kheelona creates AI-powered educational toys that help children learn, grow, and
+              develop essential skills through play.
             </Text>
             <HStack gap={4}>
               {socialLinks.map((social) => (
-                <Link
-                  key={social.name}
-                  href={social.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <Link key={social.name} href={social.url} target="_blank" rel="noopener noreferrer">
                   <Box
                     bg="whiteAlpha.100"
                     p={2}
@@ -98,11 +88,7 @@ export function Footer() {
 
           {/* Quick Links */}
           <VStack align="flex-start" gap={4}>
-            <Text
-              fontFamily="heading"
-              fontSize="xl"
-              color="tangerine.500"
-            >
+            <Text fontFamily="heading" fontSize="xl" color="tangerine.500">
               Quick Links
             </Text>
             <VStack align="flex-start" gap={2}>
@@ -124,11 +110,7 @@ export function Footer() {
 
           {/* Legal */}
           <VStack align="flex-start" gap={4}>
-            <Text
-              fontFamily="heading"
-              fontSize="xl"
-              color="tangerine.500"
-            >
+            <Text fontFamily="heading" fontSize="xl" color="tangerine.500">
               Legal
             </Text>
             <VStack align="flex-start" gap={2}>
@@ -150,11 +132,7 @@ export function Footer() {
 
           {/* Newsletter */}
           <VStack align="flex-start" gap={4}>
-            <Text
-              fontFamily="heading"
-              fontSize="xl"
-              color="tangerine.500"
-            >
+            <Text fontFamily="heading" fontSize="xl" color="tangerine.500">
               Subscribe to Our Newsletter
             </Text>
             <VStack w="full" gap={3}>
@@ -189,11 +167,7 @@ export function Footer() {
                 Contact Us: +91 9896597969
               </Text>
               <HStack>
-                <Text
-                  fontFamily="body"
-                  color="gray.400"
-                  fontSize="sm"
-                >
+                <Text fontFamily="body" color="gray.400" fontSize="sm">
                   Mail ID:{" "}
                 </Text>
                 <Link href="mailto:connect@kheelona.com">

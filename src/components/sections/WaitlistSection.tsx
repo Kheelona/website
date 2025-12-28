@@ -11,8 +11,12 @@ import {
   HStack,
   Flex,
   Image,
+  Field,
 } from "@chakra-ui/react";
 import { useState } from "react";
+import { validateWaitlistForm, type WaitlistFormData } from "@/lib/validation";
+
+type FormErrors = Partial<Record<keyof WaitlistFormData, string>>;
 
 export function WaitlistSection() {
   const [formData, setFormData] = useState({
@@ -20,11 +24,22 @@ export function WaitlistSection() {
     phone: "",
     email: "",
   });
+  const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validate form
+    const validation = validateWaitlistForm(formData);
+    if (!validation.success && validation.errors) {
+      setErrors(validation.errors);
+      return;
+    }
+
+    // Clear errors and submit
+    setErrors({});
     setIsSubmitting(true);
 
     // Simulate form submission
@@ -32,6 +47,31 @@ export function WaitlistSection() {
 
     setIsSubmitting(false);
     setIsSubmitted(true);
+  };
+
+  const handleInputChange =
+    (field: keyof WaitlistFormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      setFormData({ ...formData, [field]: e.target.value });
+      // Clear error when user starts typing
+      if (errors[field]) {
+        setErrors({ ...errors, [field]: undefined });
+      }
+    };
+
+  const inputStyles = {
+    size: "lg" as const,
+    bg: "gray.50",
+    borderRadius: "xl",
+    fontFamily: "body",
+    border: "2px solid",
+    borderColor: "gray.100",
+    _focus: {
+      borderColor: "skyBlue.400",
+      bg: "white",
+    },
+    _hover: {
+      borderColor: "gray.200",
+    },
   };
 
   return (
@@ -53,6 +93,7 @@ export function WaitlistSection() {
         h={{ base: "80px", md: "150px" }}
         borderRadius="full"
         bg="rgba(239, 118, 47, 0.06)"
+        aria-hidden="true"
       />
       <Box
         position="absolute"
@@ -62,20 +103,13 @@ export function WaitlistSection() {
         h={{ base: "60px", md: "120px" }}
         borderRadius="full"
         bg="rgba(80, 178, 213, 0.06)"
+        aria-hidden="true"
       />
 
       <Container maxW="1400px" mx="auto" px={{ base: 4, md: 8 }}>
-        <Flex
-          direction={{ base: "column", lg: "row" }}
-          align="center"
-          gap={{ base: 10, lg: 12 }}
-        >
+        <Flex direction={{ base: "column", lg: "row" }} align="center" gap={{ base: 10, lg: 12 }}>
           {/* Image - Desktop only */}
-          <Box
-            flex={1}
-            display={{ base: "none", lg: "block" }}
-            position="relative"
-          >
+          <Box flex={1} display={{ base: "none", lg: "block" }} position="relative">
             <Box
               position="absolute"
               top="50%"
@@ -85,6 +119,7 @@ export function WaitlistSection() {
               h="350px"
               borderRadius="full"
               bg="radial-gradient(circle, rgba(80, 178, 213, 0.1) 0%, transparent 70%)"
+              aria-hidden="true"
             />
             <Image
               src="/images/lifestyle/all-colors-group-3.jpg"
@@ -105,7 +140,12 @@ export function WaitlistSection() {
           {/* Form Area */}
           <VStack gap={8} flex={1} w="full">
             {/* Section Header */}
-            <VStack gap={4} textAlign={{ base: "center", lg: "left" }} align={{ base: "center", lg: "flex-start" }} w="full">
+            <VStack
+              gap={4}
+              textAlign={{ base: "center", lg: "left" }}
+              align={{ base: "center", lg: "flex-start" }}
+              w="full"
+            >
               <Text
                 fontSize={{ base: "md", md: "lg" }}
                 fontFamily="body"
@@ -127,11 +167,7 @@ export function WaitlistSection() {
                   First to Know
                 </Text>
               </Heading>
-              <Text
-                fontSize={{ base: "md", md: "lg" }}
-                fontFamily="body"
-                color="gray.500"
-              >
+              <Text fontSize={{ base: "md", md: "lg" }} fontFamily="body" color="gray.500">
                 Get notified when we start selling!
               </Text>
             </VStack>
@@ -147,21 +183,17 @@ export function WaitlistSection() {
                 textAlign="center"
                 boxShadow="lg"
                 w="full"
+                role="status"
+                aria-live="polite"
               >
-                <Text fontSize="5xl" mb={4}>
+                <Text fontSize="5xl" mb={4} aria-hidden="true">
                   🎉
                 </Text>
-                <Heading
-                  as="h3"
-                  fontSize="2xl"
-                  fontFamily="heading"
-                  color="skyBlue.500"
-                  mb={2}
-                >
-                  You're on the list!
+                <Heading as="h3" fontSize="2xl" fontFamily="heading" color="skyBlue.500" mb={2}>
+                  You&apos;re on the list!
                 </Heading>
                 <Text fontFamily="body" color="gray.600">
-                  We'll notify you when Lumi is available for purchase!
+                  We&apos;ll notify you when Lumi is available for purchase!
                 </Text>
               </Box>
             ) : (
@@ -176,49 +208,37 @@ export function WaitlistSection() {
               >
                 <VStack gap={5}>
                   {/* First Name */}
-                  <Box w="full">
-                    <Text
-                      fontFamily="body"
-                      mb={2}
-                      color="gray.600"
-                      fontSize="sm"
-                    >
+                  <Field.Root w="full" invalid={!!errors.firstName} required>
+                    <Field.Label fontFamily="body" color="gray.600" fontSize="sm">
                       First name
-                    </Text>
+                      <Field.RequiredIndicator />
+                    </Field.Label>
                     <Input
+                      id="firstName"
                       type="text"
                       value={formData.firstName}
-                      onChange={(e) =>
-                        setFormData({ ...formData, firstName: e.target.value })
-                      }
+                      onChange={handleInputChange("firstName")}
                       placeholder="Enter your first name"
-                      size="lg"
-                      bg="gray.50"
-                      borderRadius="xl"
-                      fontFamily="body"
-                      border="2px solid"
-                      borderColor="gray.100"
-                      _focus={{
-                        borderColor: "skyBlue.400",
-                        bg: "white",
-                      }}
-                      _hover={{
-                        borderColor: "gray.200",
-                      }}
-                      required
+                      aria-describedby={errors.firstName ? "firstName-error" : undefined}
+                      {...inputStyles}
                     />
-                  </Box>
+                    {errors.firstName && (
+                      <Field.ErrorText id="firstName-error">{errors.firstName}</Field.ErrorText>
+                    )}
+                  </Field.Root>
 
                   {/* Phone */}
-                  <Box w="full">
-                    <Text
-                      fontFamily="body"
-                      mb={2}
-                      color="gray.600"
-                      fontSize="sm"
-                    >
+                  <Field.Root w="full" invalid={!!errors.phone}>
+                    <Field.Label fontFamily="body" color="gray.600" fontSize="sm">
                       Phone
-                    </Text>
+                      <Field.RequiredIndicator
+                        fallback={
+                          <Text as="span" color="gray.400" fontSize="xs" ml={1}>
+                            (optional)
+                          </Text>
+                        }
+                      />
+                    </Field.Label>
                     <HStack>
                       <Box
                         bg="gray.50"
@@ -229,66 +249,44 @@ export function WaitlistSection() {
                         borderColor="gray.100"
                         fontFamily="body"
                         color="gray.600"
+                        aria-label="Country code"
                       >
                         +91
                       </Box>
                       <Input
+                        id="phone"
                         type="tel"
                         value={formData.phone}
-                        onChange={(e) =>
-                          setFormData({ ...formData, phone: e.target.value })
-                        }
+                        onChange={handleInputChange("phone")}
                         placeholder="Enter your phone number"
-                        size="lg"
-                        bg="gray.50"
-                        borderRadius="xl"
-                        fontFamily="body"
-                        border="2px solid"
-                        borderColor="gray.100"
-                        _focus={{
-                          borderColor: "skyBlue.400",
-                          bg: "white",
-                        }}
-                        _hover={{
-                          borderColor: "gray.200",
-                        }}
+                        aria-describedby={errors.phone ? "phone-error" : undefined}
+                        {...inputStyles}
                       />
                     </HStack>
-                  </Box>
+                    {errors.phone && (
+                      <Field.ErrorText id="phone-error">{errors.phone}</Field.ErrorText>
+                    )}
+                  </Field.Root>
 
                   {/* Email */}
-                  <Box w="full">
-                    <Text
-                      fontFamily="body"
-                      mb={2}
-                      color="gray.600"
-                      fontSize="sm"
-                    >
+                  <Field.Root w="full" invalid={!!errors.email} required>
+                    <Field.Label fontFamily="body" color="gray.600" fontSize="sm">
                       Email
-                    </Text>
+                      <Field.RequiredIndicator />
+                    </Field.Label>
                     <Input
+                      id="email"
                       type="email"
                       value={formData.email}
-                      onChange={(e) =>
-                        setFormData({ ...formData, email: e.target.value })
-                      }
+                      onChange={handleInputChange("email")}
                       placeholder="Enter your email"
-                      size="lg"
-                      bg="gray.50"
-                      borderRadius="xl"
-                      fontFamily="body"
-                      border="2px solid"
-                      borderColor="gray.100"
-                      _focus={{
-                        borderColor: "skyBlue.400",
-                        bg: "white",
-                      }}
-                      _hover={{
-                        borderColor: "gray.200",
-                      }}
-                      required
+                      aria-describedby={errors.email ? "email-error" : undefined}
+                      {...inputStyles}
                     />
-                  </Box>
+                    {errors.email && (
+                      <Field.ErrorText id="email-error">{errors.email}</Field.ErrorText>
+                    )}
+                  </Field.Root>
 
                   {/* Submit Button */}
                   <Button
@@ -313,12 +311,7 @@ export function WaitlistSection() {
                     Join Waitlist
                   </Button>
 
-                  <Text
-                    fontSize="xs"
-                    fontFamily="body"
-                    color="gray.400"
-                    textAlign="center"
-                  >
+                  <Text fontSize="xs" fontFamily="body" color="gray.400" textAlign="center">
                     We respect your privacy. No spam, ever.
                   </Text>
                 </VStack>

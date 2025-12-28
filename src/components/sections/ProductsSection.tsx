@@ -1,18 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Box,
-  Container,
-  Heading,
-  Text,
-  Image,
-  VStack,
-  HStack,
-  Tag,
-  Grid,
-  Flex,
-} from "@chakra-ui/react";
+import { Box, Container, Heading, Text, Image, VStack, HStack, Tag, Flex } from "@chakra-ui/react";
 import { LinkButton } from "@/components/ui/LinkButton";
 
 const colorVariants = [
@@ -70,6 +59,7 @@ export function ProductsSection() {
         h={{ base: "150px", md: "250px" }}
         borderRadius="full"
         bg="rgba(80, 178, 213, 0.05)"
+        aria-hidden="true"
       />
       <Box
         position="absolute"
@@ -79,6 +69,7 @@ export function ProductsSection() {
         h={{ base: "100px", md: "180px" }}
         borderRadius="full"
         bg="rgba(239, 118, 47, 0.05)"
+        aria-hidden="true"
       />
 
       <Container maxW="1400px" mx="auto" px={{ base: 4, md: 8 }}>
@@ -94,11 +85,7 @@ export function ProductsSection() {
             >
               Shop Now
             </Text>
-            <Heading
-              as="h2"
-              fontSize={{ base: "3xl", md: "4xl", lg: "5xl" }}
-              fontFamily="heading"
-            >
+            <Heading as="h2" fontSize={{ base: "3xl", md: "4xl", lg: "5xl" }} fontFamily="heading">
               <Text as="span" color="gray.800">
                 Choose Your
               </Text>{" "}
@@ -112,7 +99,8 @@ export function ProductsSection() {
               color="gray.500"
               maxW="500px"
             >
-              Meet Lumi - Available in 3 adorable colors! Pick your child&apos;s perfect AI companion.
+              Meet Lumi - Available in 3 adorable colors! Pick your child&apos;s perfect AI
+              companion.
             </Text>
           </VStack>
 
@@ -170,6 +158,7 @@ export function ProductsSection() {
               {/* Color Selector */}
               <VStack gap={3}>
                 <Text
+                  id="color-selector-label"
                   fontSize="sm"
                   fontFamily="body"
                   color="gray.500"
@@ -178,23 +167,35 @@ export function ProductsSection() {
                 >
                   Choose Color
                 </Text>
-                <HStack gap={4}>
+                <HStack gap={4} role="radiogroup" aria-labelledby="color-selector-label">
                   {colorVariants.map((variant) => (
                     <Box
                       key={variant.id}
                       as="button"
+                      role="radio"
+                      aria-checked={selectedColor.id === variant.id}
+                      aria-label={`Select ${variant.name}`}
                       w={{ base: "40px", md: "50px" }}
                       h={{ base: "40px", md: "50px" }}
                       borderRadius="full"
                       bg={variant.color}
                       border="3px solid"
-                      borderColor={selectedColor.id === variant.id ? "tangerine.500" : "transparent"}
-                      boxShadow={selectedColor.id === variant.id ? "0 0 0 3px rgba(239, 118, 47, 0.3)" : "md"}
+                      borderColor={
+                        selectedColor.id === variant.id ? "tangerine.500" : "transparent"
+                      }
+                      boxShadow={
+                        selectedColor.id === variant.id ? "0 0 0 3px rgba(239, 118, 47, 0.3)" : "md"
+                      }
                       cursor="pointer"
                       transition="all 0.2s"
                       _hover={{
                         transform: "scale(1.1)",
                         boxShadow: "lg",
+                      }}
+                      _focus={{
+                        outline: "2px solid",
+                        outlineColor: "skyBlue.400",
+                        outlineOffset: "2px",
                       }}
                       onClick={() => setSelectedColor(variant)}
                       title={variant.name}
@@ -223,11 +224,7 @@ export function ProductsSection() {
                 {selectedColor.name}
               </Heading>
 
-              <Text
-                fontSize={{ base: "md", md: "lg" }}
-                fontFamily="body"
-                color="gray.600"
-              >
+              <Text fontSize={{ base: "md", md: "lg" }} fontFamily="body" color="gray.600">
                 {productInfo.description}
               </Text>
 
@@ -271,12 +268,7 @@ export function ProductsSection() {
                     ₹{productInfo.salePrice}
                   </Text>
                 </HStack>
-                <Text
-                  fontSize="xs"
-                  fontFamily="body"
-                  color="skyBlue.500"
-                  mt={1}
-                >
+                <Text fontSize="xs" fontFamily="body" color="skyBlue.500" mt={1}>
                   Save ₹3,000 with early bird discount!
                 </Text>
               </Box>

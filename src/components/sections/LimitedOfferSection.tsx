@@ -46,7 +46,8 @@ export function LimitedOfferSection() {
       };
     };
 
-    // Set initial time
+    // Set initial time - this is intentional for timer initialization
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setTimeLeft(calculateTimeLeft());
 
     const timer = setInterval(() => {
@@ -149,7 +150,12 @@ export function LimitedOfferSection() {
               Limited Time Offer
             </Heading>
 
-            <Flex align="baseline" gap={3} flexWrap="wrap" justify={{ base: "center", lg: "flex-start" }}>
+            <Flex
+              align="baseline"
+              gap={3}
+              flexWrap="wrap"
+              justify={{ base: "center", lg: "flex-start" }}
+            >
               <Text
                 fontSize={{ base: "5xl", md: "7xl", lg: "8xl" }}
                 fontFamily="heading"
@@ -177,10 +183,17 @@ export function LimitedOfferSection() {
             </Text>
 
             {/* Live Countdown Timer */}
-            <HStack gap={{ base: 2, md: 4 }} flexWrap="wrap" justify={{ base: "center", lg: "flex-start" }}>
+            <HStack
+              gap={{ base: 2, md: 4 }}
+              flexWrap="wrap"
+              justify={{ base: "center", lg: "flex-start" }}
+            >
               {[
                 { value: timeLeft ? String(timeLeft.days).padStart(2, "0") : "--", label: "Days" },
-                { value: timeLeft ? String(timeLeft.hours).padStart(2, "0") : "--", label: "Hours" },
+                {
+                  value: timeLeft ? String(timeLeft.hours).padStart(2, "0") : "--",
+                  label: "Hours",
+                },
                 { value: timeLeft ? String(timeLeft.mins).padStart(2, "0") : "--", label: "Mins" },
                 { value: timeLeft ? String(timeLeft.secs).padStart(2, "0") : "--", label: "Secs" },
               ].map((item, index) => (
@@ -205,12 +218,7 @@ export function LimitedOfferSection() {
                         {item.value}
                       </Text>
                     </Box>
-                    <Text
-                      fontSize="xs"
-                      fontFamily="body"
-                      color="gray.500"
-                      mt={1}
-                    >
+                    <Text fontSize="xs" fontFamily="body" color="gray.500" mt={1}>
                       {item.label}
                     </Text>
                   </VStack>
@@ -248,12 +256,7 @@ export function LimitedOfferSection() {
           </VStack>
 
           {/* Product Image */}
-          <Box
-            flex={1}
-            display="flex"
-            justifyContent="center"
-            position="relative"
-          >
+          <Box flex={1} display="flex" justifyContent="center" position="relative">
             {/* Background glow */}
             <Box
               position="absolute"
@@ -293,19 +296,10 @@ export function LimitedOfferSection() {
               transform="rotate(12deg)"
               zIndex={2}
             >
-              <Text
-                fontSize="sm"
-                fontFamily="body"
-                color="gray.400"
-                textDecoration="line-through"
-              >
+              <Text fontSize="sm" fontFamily="body" color="gray.400" textDecoration="line-through">
                 ₹5,999
               </Text>
-              <Text
-                fontSize={{ base: "lg", md: "xl" }}
-                fontFamily="heading"
-                color="tangerine.500"
-              >
+              <Text fontSize={{ base: "lg", md: "xl" }} fontFamily="heading" color="tangerine.500">
                 ₹2,999
               </Text>
             </Box>
@@ -323,10 +317,7 @@ export function LimitedOfferSection() {
               boxShadow="md"
               zIndex={2}
             >
-              <Text
-                fontSize={{ base: "xs", md: "sm" }}
-                fontFamily="body"
-              >
+              <Text fontSize={{ base: "xs", md: "sm" }} fontFamily="body">
                 Limited Stock!
               </Text>
             </Box>

@@ -14,7 +14,7 @@ import { WaitlistSection } from "@/components/sections/WaitlistSection";
 
 export default function HomePage() {
   return (
-    <Box as="main" minH="100vh" overflowX="hidden">
+    <Box as="main" id="main-content" minH="100vh" overflowX="hidden" tabIndex={-1}>
       <Header />
       <HeroSection />
       <LimitedOfferSection />

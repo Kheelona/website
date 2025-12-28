@@ -1,15 +1,6 @@
 "use client";
 
-import {
-  Box,
-  Container,
-  Heading,
-  Text,
-  VStack,
-  Grid,
-  Flex,
-  Image,
-} from "@chakra-ui/react";
+import { Box, Container, Heading, Text, VStack, Grid, Flex, Image } from "@chakra-ui/react";
 import { LinkButton } from "@/components/ui/LinkButton";
 
 const benchmarks = [
@@ -86,10 +77,7 @@ export function BenchmarksSection() {
             gap={8}
             flex={1}
           >
-            <VStack
-              align={{ base: "center", lg: "flex-start" }}
-              gap={4}
-            >
+            <VStack align={{ base: "center", lg: "flex-start" }} gap={4}>
               <Text
                 fontSize={{ base: "md", md: "lg" }}
                 fontFamily="body"
@@ -121,11 +109,7 @@ export function BenchmarksSection() {
             </VStack>
 
             {/* Benchmark Items */}
-            <Grid
-              templateColumns={{ base: "1fr", sm: "repeat(3, 1fr)" }}
-              gap={4}
-              w="full"
-            >
+            <Grid templateColumns={{ base: "1fr", sm: "repeat(3, 1fr)" }} gap={4} w="full">
               {benchmarks.map((item, index) => (
                 <Box
                   key={index}
@@ -142,14 +126,7 @@ export function BenchmarksSection() {
                   overflow="hidden"
                 >
                   {/* Accent bar */}
-                  <Box
-                    position="absolute"
-                    top={0}
-                    left={0}
-                    right={0}
-                    h="4px"
-                    bg={item.color}
-                  />
+                  <Box position="absolute" top={0} left={0} right={0} h="4px" bg={item.color} />
 
                   <VStack gap={3}>
                     <Box
@@ -171,11 +148,7 @@ export function BenchmarksSection() {
                     >
                       {item.title}
                     </Heading>
-                    <Text
-                      fontFamily="body"
-                      color="gray.600"
-                      fontSize={{ base: "sm", md: "md" }}
-                    >
+                    <Text fontFamily="body" color="gray.600" fontSize={{ base: "sm", md: "md" }}>
                       {item.description}
                     </Text>
                   </VStack>

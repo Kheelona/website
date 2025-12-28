@@ -14,7 +14,6 @@ import {
   Tag,
   HStack,
   Grid,
-  Icon,
 } from "@chakra-ui/react";
 import { Check, X, Minus } from "lucide-react";
 import { LinkButton } from "@/components/ui/LinkButton";
@@ -83,11 +82,7 @@ export function ComparisonTableSection() {
           {/* Section Header with Float for Product Image */}
           <Box position="relative" w="full">
             <VStack gap={4} textAlign="center" w="full">
-              <Text
-                textStyle="section.label"
-              >
-                Comparison
-              </Text>
+              <Text textStyle="section.label">Comparison</Text>
               <Heading
                 as="h2"
                 fontSize={{ base: "2xl", md: "4xl", lg: "5xl" }}
@@ -100,11 +95,8 @@ export function ComparisonTableSection() {
                   vs Others
                 </Text>
               </Heading>
-              <Text
-                textStyle="section.description"
-                maxW="500px"
-              >
-                Here's why Lumi is the future of Educational Toys.
+              <Text textStyle="section.description" maxW="500px">
+                Here&apos;s why Lumi is the future of Educational Toys.
               </Text>
             </VStack>
 
@@ -126,16 +118,8 @@ export function ComparisonTableSection() {
           </Box>
 
           {/* Desktop: Comparison Table */}
-          <Box
-            w="full"
-            display={{ base: "none", md: "block" }}
-          >
-            <Card.Root
-              bg="white"
-              borderRadius="2xl"
-              boxShadow="xl"
-              overflow="hidden"
-            >
+          <Box w="full" display={{ base: "none", md: "block" }}>
+            <Card.Root bg="white" borderRadius="2xl" boxShadow="xl" overflow="hidden">
               <Card.Body p={0}>
                 <Table.Root size="lg" variant="outline">
                   <Table.Header>
@@ -334,11 +318,7 @@ export function ComparisonTableSection() {
           </Box>
 
           {/* Mobile: Card-based comparison */}
-          <VStack
-            display={{ base: "flex", md: "none" }}
-            gap={4}
-            w="full"
-          >
+          <VStack display={{ base: "flex", md: "none" }} gap={4} w="full">
             {comparisonData.map((row, index) => (
               <Card.Root
                 key={index}
@@ -349,38 +329,19 @@ export function ComparisonTableSection() {
                 overflow="hidden"
               >
                 <Card.Header bg="tangerine.50" py={3} px={4}>
-                  <Text
-                    fontFamily="body"
-                    fontWeight="bold"
-                    color="tangerine.500"
-                    fontSize="md"
-                  >
+                  <Text fontFamily="body" fontWeight="bold" color="tangerine.500" fontSize="md">
                     {row.category}
                   </Text>
                 </Card.Header>
                 <Card.Body p={0}>
                   <Grid templateColumns="1fr" gap={0}>
                     {/* Lumi */}
-                    <Box
-                      p={4}
-                      bg="skyBlue.50"
-                      borderBottomWidth="1px"
-                      borderColor="gray.100"
-                    >
+                    <Box p={4} bg="skyBlue.50" borderBottomWidth="1px" borderColor="gray.100">
                       <HStack gap={2} mb={2}>
-                        <Box
-                          bg="skyBlue.400"
-                          color="white"
-                          borderRadius="full"
-                          p={1}
-                        >
+                        <Box bg="skyBlue.400" color="white" borderRadius="full" p={1}>
                           <Check size={12} />
                         </Box>
-                        <Text
-                          fontFamily="heading"
-                          fontSize="sm"
-                          color="skyBlue.400"
-                        >
+                        <Text fontFamily="heading" fontSize="sm" color="skyBlue.400">
                           Lumi
                         </Text>
                       </HStack>
@@ -390,25 +351,12 @@ export function ComparisonTableSection() {
                     </Box>
 
                     {/* Soft Toys */}
-                    <Box
-                      p={4}
-                      borderBottomWidth="1px"
-                      borderColor="gray.100"
-                    >
+                    <Box p={4} borderBottomWidth="1px" borderColor="gray.100">
                       <HStack gap={2} mb={2}>
-                        <Box
-                          bg="gray.300"
-                          color="white"
-                          borderRadius="full"
-                          p={1}
-                        >
+                        <Box bg="gray.300" color="white" borderRadius="full" p={1}>
                           <Minus size={12} />
                         </Box>
-                        <Text
-                          fontFamily="heading"
-                          fontSize="sm"
-                          color="gray.500"
-                        >
+                        <Text fontFamily="heading" fontSize="sm" color="gray.500">
                           Soft Toys
                         </Text>
                       </HStack>
@@ -420,19 +368,10 @@ export function ComparisonTableSection() {
                     {/* Screens */}
                     <Box p={4} bg="red.50">
                       <HStack gap={2} mb={2}>
-                        <Box
-                          bg="red.500"
-                          color="white"
-                          borderRadius="full"
-                          p={1}
-                        >
+                        <Box bg="red.500" color="white" borderRadius="full" p={1}>
                           <X size={12} />
                         </Box>
-                        <Text
-                          fontFamily="heading"
-                          fontSize="sm"
-                          color="red.400"
-                        >
+                        <Text fontFamily="heading" fontSize="sm" color="red.400">
                           Screens
                         </Text>
                       </HStack>

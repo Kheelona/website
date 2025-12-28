@@ -14,11 +14,7 @@ export function FeaturePillsSection() {
   return (
     <Box as="section" py={6} bg="brand.light">
       <Container maxW="1400px">
-        <Flex
-          wrap="wrap"
-          justify="center"
-          gap={{ base: 3, md: 4 }}
-        >
+        <Flex wrap="wrap" justify="center" gap={{ base: 3, md: 4 }}>
           {featurePills.map((feature, index) => (
             <HStack
               key={index}

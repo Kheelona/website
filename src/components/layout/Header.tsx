@@ -40,6 +40,42 @@ export function Header() {
       boxShadow="sm"
       py={3}
     >
+      {/* Skip Navigation Link */}
+      <Link
+        href="#main-content"
+        style={{
+          position: "absolute",
+          left: "-9999px",
+          top: "auto",
+          width: "1px",
+          height: "1px",
+          overflow: "hidden",
+          zIndex: 1001,
+        }}
+        className="skip-link"
+      >
+        Skip to main content
+      </Link>
+      <style>{`
+        .skip-link:focus {
+          position: fixed !important;
+          top: 8px !important;
+          left: 8px !important;
+          width: auto !important;
+          height: auto !important;
+          overflow: visible !important;
+          background: #EF762F;
+          color: white;
+          padding: 8px 16px;
+          border-radius: 6px;
+          font-family: var(--font-jua);
+          font-size: 14px;
+          font-weight: bold;
+          box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+          z-index: 1001;
+          text-decoration: none;
+        }
+      `}</style>
       <Container maxW="1400px" px={{ base: 4, md: 8 }}>
         <Flex align="center" justify="space-between">
           {/* Logo */}
@@ -53,11 +89,7 @@ export function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <HStack
-            gap={8}
-            display={{ base: "none", md: "flex" }}
-            fontFamily="body"
-          >
+          <HStack gap={8} display={{ base: "none", md: "flex" }} fontFamily="body">
             {navLinks.map((link) => (
               <Link key={link.label} href={link.href}>
                 <Text
@@ -124,11 +156,7 @@ export function Header() {
               <Drawer.Body>
                 <VStack align="stretch" gap={4} py={4}>
                   {navLinks.map((link) => (
-                    <Link
-                      key={link.label}
-                      href={link.href}
-                      onClick={() => setIsOpen(false)}
-                    >
+                    <Link key={link.label} href={link.href} onClick={() => setIsOpen(false)}>
                       <Text
                         fontSize="xl"
                         fontFamily="body"
