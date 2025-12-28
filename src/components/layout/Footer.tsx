@@ -7,13 +7,13 @@ import {
   VStack,
   HStack,
   Text,
-  Image,
   Input,
   Button,
   Separator,
   Grid,
 } from "@chakra-ui/react";
 import Link from "next/link";
+import NextImage from "next/image";
 
 const footerLinks = [
   { text: "Privacy Policy", url: "/privacy-policy" },
@@ -57,13 +57,20 @@ export function Footer() {
           {/* Logo and Description */}
           <VStack align="flex-start" gap={6}>
             <Link href="/">
-              <Image
-                src="/images/logo.png"
-                alt="Kheelona Logo"
-                h="60px"
-                objectFit="contain"
-                filter="brightness(0) invert(1)"
-              />
+              <Box style={{ filter: "brightness(0) invert(1)" }}>
+                <NextImage
+                  src="/images/logo.png"
+                  alt="Kheelona Logo"
+                  width={180}
+                  height={60}
+                  loading="lazy"
+                  style={{
+                    height: "60px",
+                    width: "auto",
+                    objectFit: "contain",
+                  }}
+                />
+              </Box>
             </Link>
             <Text fontFamily="body" color="gray.400" fontSize="sm" maxW="300px">
               Kheelona creates AI-powered educational toys that help children learn, grow, and

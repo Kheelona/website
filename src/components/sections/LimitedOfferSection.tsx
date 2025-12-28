@@ -1,18 +1,9 @@
 "use client";
 
-import {
-  Box,
-  Container,
-  Flex,
-  Heading,
-  Text,
-  Image,
-  VStack,
-  HStack,
-  Button,
-} from "@chakra-ui/react";
+import { Box, Container, Flex, Heading, Text, VStack, HStack, Button } from "@chakra-ui/react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import NextImage from "next/image";
 
 export function LimitedOfferSection() {
   // Initialize with null to prevent hydration mismatch
@@ -268,20 +259,31 @@ export function LimitedOfferSection() {
               borderRadius="full"
               bg="radial-gradient(circle, rgba(80, 178, 213, 0.15) 0%, transparent 70%)"
             />
-            <Image
-              src="/images/lifestyle/all-colors-flowers.jpg"
-              alt="Lumi Family - All Colors with Flowers"
-              maxH={{ base: "280px", md: "350px", lg: "420px" }}
-              objectFit="cover"
+            <Box
+              position="relative"
               borderRadius="2xl"
+              overflow="hidden"
               boxShadow="2xl"
               _hover={{
                 transform: "scale(1.03)",
               }}
               transition="transform 0.3s ease"
-              position="relative"
               zIndex={1}
-            />
+            >
+              <NextImage
+                src="/images/lifestyle/all-colors-flowers.webp"
+                alt="Lumi Family - All Colors with Flowers"
+                width={1920}
+                height={1280}
+                loading="lazy"
+                sizes="(max-width: 768px) 280px, (max-width: 1024px) 350px, 420px"
+                style={{
+                  maxHeight: "420px",
+                  width: "auto",
+                  objectFit: "cover",
+                }}
+              />
+            </Box>
 
             {/* Price tag */}
             <Box

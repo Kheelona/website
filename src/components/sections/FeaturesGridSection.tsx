@@ -1,7 +1,8 @@
 "use client";
 
-import { Box, Container, Heading, Text, VStack, Grid, Image } from "@chakra-ui/react";
+import { Box, Container, Heading, Text, VStack, Grid } from "@chakra-ui/react";
 import { LinkButton } from "@/components/ui/LinkButton";
+import NextImage from "next/image";
 
 const features = [
   { name: "Curiosity", image: "/images/features/curiosity.png", color: "#50B2D5" },
@@ -101,21 +102,29 @@ export function FeaturesGridSection() {
                 role="group"
               >
                 {/* Feature Image */}
-                <Box position="relative" pb="130%">
-                  <Image
-                    src={feature.image}
-                    alt={feature.name}
+                <Box position="relative" pb="130%" overflow="hidden">
+                  <Box
                     position="absolute"
                     top={0}
                     left={0}
                     w="full"
                     h="full"
-                    objectFit="cover"
+                    transition="transform 0.4s"
                     _groupHover={{
                       transform: "scale(1.05)",
                     }}
-                    transition="transform 0.4s"
-                  />
+                  >
+                    <NextImage
+                      src={feature.image}
+                      alt={feature.name}
+                      fill
+                      loading="lazy"
+                      sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                      style={{
+                        objectFit: "cover",
+                      }}
+                    />
+                  </Box>
 
                   {/* Gradient Overlay */}
                   <Box

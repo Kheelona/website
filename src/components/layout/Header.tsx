@@ -6,7 +6,6 @@ import {
   Flex,
   HStack,
   IconButton,
-  Image,
   Drawer,
   Portal,
   CloseButton,
@@ -17,6 +16,7 @@ import {
 import { Menu } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
+import NextImage from "next/image";
 
 const navLinks = [
   { label: "Shop", href: "/shop" },
@@ -80,11 +80,18 @@ export function Header() {
         <Flex align="center" justify="space-between">
           {/* Logo */}
           <Link href="/" style={{ textDecoration: "none" }}>
-            <Image
+            <NextImage
               src="/images/logo.png"
               alt="Kheelona Logo"
-              h={{ base: "40px", md: "50px" }}
-              objectFit="contain"
+              width={150}
+              height={50}
+              priority
+              style={{
+                height: "auto",
+                width: "auto",
+                maxHeight: "50px",
+                objectFit: "contain",
+              }}
             />
           </Link>
 

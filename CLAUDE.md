@@ -465,3 +465,154 @@ After implementation, verify:
 - [x] JSON-LD structured data in layout.tsx
 - [x] Accessibility improvements (ARIA, keyboard nav, skip link)
 - [x] Site functionality unchanged (visual comparison)
+
+---
+
+## Performance Optimization (Phase 8)
+
+### Overview
+
+This phase focuses on achieving 90+ PageSpeed Insights scores by optimizing images, videos, and component loading strategies.
+
+**Implementation Date:** December 2024
+
+**Before Optimization:**
+| Metric | Mobile | Desktop |
+|--------|--------|---------|
+| Performance Score | 67 | 45 |
+| LCP | 10.6s | 26.8s |
+| FCP | 1.1s | 0.2s |
+| TBT | 340ms | 460ms |
+| Speed Index | 2.3s | 9.3s |
+
+**Target:** Mobile 90+ | Desktop 90+
+
+### Root Causes Identified
+
+1. **Massive Image Sizes**: Lifestyle images at 6000x4000px, 10-11MB each (total: 96MB)
+2. **No Image Optimization**: Using Chakra UI `Image` instead of Next.js `Image`
+3. **Video Loading**: Hero video (3.1MB) loads immediately without poster
+
+### Implementation Phases
+
+| Phase | Focus                                   | Status         |
+| ----- | --------------------------------------- | -------------- |
+| 8.1   | Image Asset Optimization (sharp)        | ⏳ In Progress |
+| 8.2   | Replace Chakra Image with Next.js Image | ⏳ Pending     |
+| 8.3   | Video Optimization (poster, lazy load)  | ⏳ Pending     |
+| 8.4   | Next.js Image Configuration             | ⏳ Pending     |
+
+### Image Optimization Guidelines
+
+#### Using Next.js Image Component
+
+Always use Next.js `Image` instead of Chakra UI `Image`:
+
+```tsx
+// ❌ Don't use Chakra Image
+import { Image } from "@chakra-ui/react";
+<Image src="/images/photo.jpg" alt="Photo" />;
+
+// ✅ Use Next.js Image
+import Image from "next/image";
+<Image src="/images/photo.jpg" alt="Photo" width={800} height={600} loading="lazy" />;
+```
+
+#### Image Loading Strategy
+
+| Position          | Loading | Priority | Example           |
+| ----------------- | ------- | -------- | ----------------- |
+| Above fold (hero) | eager   | true     | Hero image, logo  |
+| Below fold        | lazy    | false    | Gallery, products |
+
+#### Required Image Props
+
+```tsx
+// Above-fold images
+<Image
+  src="/images/hero.webp"
+  alt="Descriptive alt text"
+  width={1920}
+  height={1080}
+  priority
+  sizes="100vw"
+/>
+
+// Below-fold images
+<Image
+  src="/images/gallery.webp"
+  alt="Descriptive alt text"
+  width={800}
+  height={600}
+  loading="lazy"
+  sizes="(max-width: 768px) 100vw, 50vw"
+/>
+```
+
+### Optimized Image Assets
+
+Images have been optimized using sharp:
+
+- Max width: 1920px
+- Format: WebP
+- Quality: 80%
+- Original backups: `public/images/lifestyle/originals/`
+
+### Video Optimization
+
+#### Poster Image
+
+Hero video includes a poster for faster initial paint:
+
+```tsx
+<video poster="/images/posters/hero-poster.webp" autoPlay muted loop playsInline>
+  <source src="/videos/lumi-promo.mp4" type="video/mp4" />
+</video>
+```
+
+### Performance Testing Commands
+
+```bash
+# Run build to ensure no errors
+npm run build
+
+# Start production server for accurate testing
+npm run build && npm start
+
+# Test with PageSpeed Insights
+# https://pagespeed.web.dev/
+```
+
+### Performance Checklist
+
+After implementation, verify:
+
+- [ ] All images display correctly (no broken images)
+- [ ] No layout shifts (CLS < 0.1)
+- [ ] Video plays correctly with poster
+- [ ] `npm run build` succeeds
+- [ ] Mobile PageSpeed > 90
+- [ ] Desktop PageSpeed > 90
+
+### Files Modified
+
+**New Files:**
+
+- `scripts/optimize-images.js` - Image optimization script
+- `public/images/posters/hero-poster.webp` - Video poster
+- `public/images/lifestyle/originals/` - Backup of original images
+
+**Modified Files:**
+
+- `next.config.ts` - Image formats configuration
+- `src/components/sections/HeroSection.tsx`
+- `src/components/sections/LifestyleGallerySection.tsx`
+- `src/components/sections/ProductsSection.tsx`
+- `src/components/sections/WaitlistSection.tsx`
+- `src/components/sections/LimitedOfferSection.tsx`
+- `src/components/sections/FeaturesGridSection.tsx`
+- `src/components/sections/ComparisonTableSection.tsx`
+- `src/components/sections/BenchmarksSection.tsx`
+- `src/components/sections/BeforeAfterSection.tsx`
+- `src/components/layout/Header.tsx`
+- `src/components/layout/Footer.tsx`

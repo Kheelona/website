@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Box, Container, Heading, Text, Image, VStack, HStack, Tag, Flex } from "@chakra-ui/react";
+import { Box, Container, Heading, Text, VStack, HStack, Tag, Flex } from "@chakra-ui/react";
 import { LinkButton } from "@/components/ui/LinkButton";
+import NextImage from "next/image";
 
 const colorVariants = [
   {
@@ -144,14 +145,26 @@ export function ProductsSection() {
               </Tag.Root>
 
               {/* Main Product Image */}
-              <Box position="relative" w="full" display="flex" justifyContent="center">
-                <Image
+              <Box
+                position="relative"
+                w="full"
+                display="flex"
+                justifyContent="center"
+                h={{ base: "280px", md: "350px" }}
+              >
+                <NextImage
                   src={selectedColor.image}
                   alt={selectedColor.name}
-                  maxH={{ base: "280px", md: "350px" }}
-                  objectFit="contain"
-                  filter="drop-shadow(0 15px 30px rgba(0,0,0,0.15))"
-                  transition="all 0.4s ease"
+                  width={400}
+                  height={350}
+                  loading="lazy"
+                  style={{
+                    maxHeight: "100%",
+                    width: "auto",
+                    objectFit: "contain",
+                    filter: "drop-shadow(0 15px 30px rgba(0,0,0,0.15))",
+                    transition: "all 0.4s ease",
+                  }}
                 />
               </Box>
 
@@ -280,15 +293,21 @@ export function ProductsSection() {
           </Flex>
 
           {/* All Colors Preview */}
-          <Box w="full" maxW="1100px">
-            <Image
-              src="/images/lifestyle/all-colors-group-1.jpg"
+          <Box w="full" maxW="1100px" position="relative" overflow="hidden" borderRadius="2xl">
+            <NextImage
+              src="/images/lifestyle/all-colors-group-1.webp"
               alt="All Lumi colors - Pink, Blue, and Green"
-              w="full"
-              h={{ base: "200px", md: "300px", lg: "400px" }}
-              objectFit="cover"
-              borderRadius="2xl"
-              boxShadow="xl"
+              width={1920}
+              height={1280}
+              loading="lazy"
+              sizes="(max-width: 768px) 100vw, 1100px"
+              style={{
+                width: "100%",
+                height: "auto",
+                objectFit: "cover",
+                borderRadius: "1rem",
+                boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+              }}
             />
             <Text
               mt={4}

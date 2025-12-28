@@ -1,7 +1,8 @@
 "use client";
 
-import { Box, Container, Heading, Text, VStack, Grid, Flex, Image } from "@chakra-ui/react";
+import { Box, Container, Heading, Text, VStack, Grid, Flex } from "@chakra-ui/react";
 import { LinkButton } from "@/components/ui/LinkButton";
+import NextImage from "next/image";
 
 const benchmarks = [
   {
@@ -189,14 +190,20 @@ export function BenchmarksSection() {
               borderRadius="full"
               bg="radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%)"
             />
-            <Image
+            <NextImage
               src="/images/product-lumi-main.png"
               alt="Lumi Toy"
-              maxH="450px"
-              objectFit="contain"
-              filter="drop-shadow(0 20px 40px rgba(0,0,0,0.3))"
-              position="relative"
-              zIndex={1}
+              width={400}
+              height={450}
+              loading="lazy"
+              style={{
+                maxHeight: "450px",
+                width: "auto",
+                objectFit: "contain",
+                filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.3))",
+                position: "relative",
+                zIndex: 1,
+              }}
             />
           </Box>
         </Flex>

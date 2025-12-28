@@ -44,6 +44,8 @@ const eslintConfig = defineConfig([
     "**/*.spec.ts",
     "**/*.spec.tsx",
     "e2e/**",
+    // Build scripts
+    "scripts/**",
   ]),
 ]);
 

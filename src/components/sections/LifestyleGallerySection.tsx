@@ -1,37 +1,48 @@
 "use client";
 
-import { Box, Container, Heading, Text, VStack, Grid, Image } from "@chakra-ui/react";
+import { Box, Container, Heading, Text, VStack, Grid } from "@chakra-ui/react";
+import NextImage from "next/image";
 
 const galleryImages = [
   {
     id: 1,
-    src: "/images/lifestyle/all-colors-group-3.jpg",
+    src: "/images/lifestyle/all-colors-group-3.webp",
     alt: "Lumi collection - All three colors together",
     span: { base: 2, md: 2 },
+    width: 1920,
+    height: 960,
   },
   {
     id: 2,
-    src: "/images/lifestyle/lumi-pink-lifestyle.jpg",
+    src: "/images/lifestyle/lumi-pink-lifestyle.webp",
     alt: "Lumi Pink in natural setting",
     span: { base: 1, md: 1 },
+    width: 1920,
+    height: 1280,
   },
   {
     id: 3,
-    src: "/images/lifestyle/lumi-blue-lifestyle.jpg",
+    src: "/images/lifestyle/lumi-blue-lifestyle.webp",
     alt: "Lumi Blue in natural setting",
     span: { base: 1, md: 1 },
+    width: 1920,
+    height: 1280,
   },
   {
     id: 4,
-    src: "/images/lifestyle/lumi-green-lifestyle.jpg",
+    src: "/images/lifestyle/lumi-green-lifestyle.webp",
     alt: "Lumi Green in natural setting",
     span: { base: 1, md: 1 },
+    width: 1920,
+    height: 1280,
   },
   {
     id: 5,
-    src: "/images/lifestyle/all-colors-flowers.jpg",
+    src: "/images/lifestyle/all-colors-flowers.webp",
     alt: "Lumi collection with flowers",
     span: { base: 1, md: 1 },
+    width: 1920,
+    height: 1280,
   },
 ];
 
@@ -124,7 +135,23 @@ export function LifestyleGallerySection() {
                 }}
                 transition="all 0.3s ease"
               >
-                <Image src={image.src} alt={image.alt} w="full" h="full" objectFit="cover" />
+                <NextImage
+                  src={image.src}
+                  alt={image.alt}
+                  width={image.width}
+                  height={image.height}
+                  loading="lazy"
+                  sizes={
+                    image.span.md === 2
+                      ? "(max-width: 768px) 100vw, 50vw"
+                      : "(max-width: 768px) 50vw, 25vw"
+                  }
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
+                />
                 {/* Subtle overlay on hover */}
                 <Box
                   position="absolute"

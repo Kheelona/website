@@ -1,18 +1,8 @@
 "use client";
 
-import {
-  Box,
-  Container,
-  Heading,
-  Text,
-  VStack,
-  HStack,
-  Flex,
-  Tag,
-  Image,
-  Button,
-} from "@chakra-ui/react";
+import { Box, Container, Heading, Text, VStack, HStack, Flex, Tag, Button } from "@chakra-ui/react";
 import Link from "next/link";
+import NextImage from "next/image";
 
 const features = [
   { text: "AI Powered", icon: "🤖" },
@@ -41,6 +31,7 @@ export function HeroSection() {
           muted
           loop
           playsInline
+          poster="/images/posters/hero-poster.webp"
           style={{
             width: "100%",
             height: "100%",
@@ -174,19 +165,30 @@ export function HeroSection() {
             position="relative"
             className="float-animation"
           >
-            <Image
-              src="/images/lifestyle/all-colors-group-2.jpg"
-              alt="Lumi family - AI-powered talking toys in Pink, Blue, and Green"
-              w="full"
-              h="auto"
-              objectFit="contain"
+            <Box
+              position="relative"
               borderRadius="2xl"
+              overflow="hidden"
               filter="drop-shadow(0 20px 40px rgba(0,0,0,0.3))"
               _hover={{
                 transform: "scale(1.03)",
               }}
               transition="transform 0.5s ease"
-            />
+            >
+              <NextImage
+                src="/images/lifestyle/all-colors-group-2.webp"
+                alt="Lumi family - AI-powered talking toys in Pink, Blue, and Green"
+                width={1920}
+                height={1280}
+                priority
+                sizes="(max-width: 768px) 320px, (max-width: 1024px) 400px, 500px"
+                style={{
+                  width: "100%",
+                  height: "auto",
+                  objectFit: "contain",
+                }}
+              />
+            </Box>
             {/* Decorative badges - Using Chakra UI Tag */}
             <Tag.Root
               position="absolute"

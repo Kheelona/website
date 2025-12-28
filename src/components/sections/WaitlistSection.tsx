@@ -10,11 +10,11 @@ import {
   Button,
   HStack,
   Flex,
-  Image,
   Field,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { validateWaitlistForm, type WaitlistFormData } from "@/lib/validation";
+import NextImage from "next/image";
 
 type FormErrors = Partial<Record<keyof WaitlistFormData, string>>;
 
@@ -121,20 +121,31 @@ export function WaitlistSection() {
               bg="radial-gradient(circle, rgba(80, 178, 213, 0.1) 0%, transparent 70%)"
               aria-hidden="true"
             />
-            <Image
-              src="/images/lifestyle/all-colors-group-3.jpg"
-              alt="Lumi Family - All three colors"
-              maxH="400px"
-              objectFit="cover"
-              borderRadius="2xl"
-              boxShadow="xl"
+            <Box
               position="relative"
+              borderRadius="2xl"
+              overflow="hidden"
+              boxShadow="xl"
               zIndex={1}
               _hover={{
                 transform: "scale(1.02)",
               }}
               transition="transform 0.3s ease"
-            />
+            >
+              <NextImage
+                src="/images/lifestyle/all-colors-group-3.webp"
+                alt="Lumi Family - All three colors"
+                width={1920}
+                height={1280}
+                loading="lazy"
+                sizes="(max-width: 1024px) 0vw, 50vw"
+                style={{
+                  maxHeight: "400px",
+                  width: "auto",
+                  objectFit: "cover",
+                }}
+              />
+            </Box>
           </Box>
 
           {/* Form Area */}

@@ -7,7 +7,6 @@ import {
   Text,
   VStack,
   Table,
-  Image,
   Flex,
   Float,
   Card,
@@ -17,6 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { Check, X, Minus } from "lucide-react";
 import { LinkButton } from "@/components/ui/LinkButton";
+import NextImage from "next/image";
 
 const comparisonData = [
   {
@@ -106,14 +106,25 @@ export function ComparisonTableSection() {
               offsetX={{ base: "0", lg: "-20px", xl: "20px" }}
               display={{ base: "none", lg: "block" }}
             >
-              <Image
-                src="/images/product-lumi-secondary.png"
-                alt="Lumi Toy"
-                maxW={{ lg: "160px", xl: "200px" }}
-                objectFit="contain"
-                filter="drop-shadow(0 10px 20px rgba(0,0,0,0.15))"
-                transform="rotate(-5deg)"
-              />
+              <Box
+                style={{
+                  filter: "drop-shadow(0 10px 20px rgba(0,0,0,0.15))",
+                  transform: "rotate(-5deg)",
+                }}
+              >
+                <NextImage
+                  src="/images/product-lumi-secondary.png"
+                  alt="Lumi Toy"
+                  width={200}
+                  height={200}
+                  loading="lazy"
+                  style={{
+                    maxWidth: "200px",
+                    height: "auto",
+                    objectFit: "contain",
+                  }}
+                />
+              </Box>
             </Float>
           </Box>
 

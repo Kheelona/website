@@ -1,19 +1,10 @@
 "use client";
 
-import {
-  Box,
-  Container,
-  Heading,
-  Text,
-  VStack,
-  Image,
-  List,
-  Splitter,
-  HStack,
-} from "@chakra-ui/react";
+import { Box, Container, Heading, Text, VStack, List, Splitter, HStack } from "@chakra-ui/react";
 import { MoveHorizontal } from "lucide-react";
 import { useState } from "react";
 import { LinkButton } from "@/components/ui/LinkButton";
+import NextImage from "next/image";
 
 const lumiWayBenefits = [
   "Multi language conversations that encourage children to speak freely.",
@@ -186,12 +177,18 @@ export function BeforeAfterSection() {
                 transition="background 0.2s"
               >
                 <VStack gap={2} py={4}>
-                  <Image
+                  <NextImage
                     src="/images/before-after-toy.png"
                     alt="Lumi Toy"
-                    maxH="120px"
-                    objectFit="contain"
-                    filter="drop-shadow(0 5px 15px rgba(0,0,0,0.2))"
+                    width={100}
+                    height={120}
+                    loading="lazy"
+                    style={{
+                      maxHeight: "120px",
+                      width: "auto",
+                      objectFit: "contain",
+                      filter: "drop-shadow(0 5px 15px rgba(0,0,0,0.2))",
+                    }}
                   />
                   <HStack gap={1} color="gray.500">
                     <MoveHorizontal size={20} />
@@ -342,12 +339,18 @@ export function BeforeAfterSection() {
             </Box>
 
             {/* Mobile Image */}
-            <Image
+            <NextImage
               src="/images/before-after-toy.png"
               alt="Lumi Toy"
-              maxH="150px"
-              objectFit="contain"
-              filter="drop-shadow(0 10px 20px rgba(0,0,0,0.1))"
+              width={150}
+              height={150}
+              loading="lazy"
+              style={{
+                maxHeight: "150px",
+                width: "auto",
+                objectFit: "contain",
+                filter: "drop-shadow(0 10px 20px rgba(0,0,0,0.1))",
+              }}
             />
 
             {/* Old Way Card */}
