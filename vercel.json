@@ -1,14 +1,4 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": "nextjs",
-  "buildCommand": "npm run build",
-  "outputDirectory": ".next",
-  "installCommand": "npm install",
-  "regions": ["bom1"],
-  "functions": {
-    "src/**/*": {
-      "memory": 1024,
-      "maxDuration": 10
-    }
-  }
+  "framework": "nextjs"
 }
