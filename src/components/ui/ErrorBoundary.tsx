@@ -1,7 +1,6 @@
 "use client";
 
 import { Component, ReactNode } from "react";
-import { Box, Container, Heading, Text, VStack, Button } from "@chakra-ui/react";
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -24,13 +23,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    // Log error to console in development
     console.error("ErrorBoundary caught an error:", error, errorInfo);
-
-    // In production, you would send this to an error tracking service like Sentry
-    // if (typeof window !== 'undefined' && process.env.NODE_ENV === 'production') {
-    //   // Send to error tracking service
-    // }
   }
 
   handleRetry = () => {
@@ -44,49 +37,27 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
       }
 
       return (
-        <Box
-          minH="100vh"
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          bg="gray.50"
-          py={16}
-          px={4}
-        >
-          <Container maxW="md">
-            <VStack gap={6} textAlign="center">
-              <Text fontSize="6xl">🔧</Text>
-              <Heading
-                as="h1"
-                fontSize={{ base: "2xl", md: "3xl" }}
-                fontFamily="heading"
-                color="gray.800"
-              >
-                Oops! Something went wrong
-              </Heading>
-              <Text fontFamily="body" color="gray.600" fontSize={{ base: "md", md: "lg" }}>
-                We encountered an unexpected error. Please try again or contact support if the
-                problem persists.
-              </Text>
-              <Button
-                onClick={this.handleRetry}
-                bg="tangerine.500"
-                color="white"
-                size="lg"
-                borderRadius="full"
-                fontFamily="body"
-                px={8}
-                _hover={{
-                  bg: "tangerine.600",
-                  transform: "translateY(-2px)",
-                }}
-                transition="all 0.3s"
-              >
-                Try Again
-              </Button>
-            </VStack>
-          </Container>
-        </Box>
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-16">
+          <div className="max-w-md w-full text-center flex flex-col gap-6">
+            <div className="text-6xl">🔧</div>
+
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
+              Oops! Something went wrong
+            </h1>
+
+            <p className="text-gray-600 text-base md:text-lg">
+              We encountered an unexpected error. Please try again or contact support if the problem
+              persists.
+            </p>
+
+            <button
+              onClick={this.handleRetry}
+              className="mx-auto inline-flex items-center justify-center rounded-full bg-orange-500 px-8 py-3 text-white text-lg font-semibold transition-all duration-300 hover:bg-orange-600 hover:-translate-y-0.5"
+            >
+              Try Again
+            </button>
+          </div>
+        </div>
       );
     }
 

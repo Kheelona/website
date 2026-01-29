@@ -1,22 +1,10 @@
 "use client";
 
-import {
-  Box,
-  Container,
-  Flex,
-  HStack,
-  IconButton,
-  Drawer,
-  Portal,
-  CloseButton,
-  VStack,
-  Button,
-  Text,
-} from "@chakra-ui/react";
-import { Menu } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
-import NextImage from "next/image";
+import Image from "next/image";
+import { Menu, X } from "lucide-react";
+import * as Dialog from "@radix-ui/react-dialog";
 
 const navLinks = [
   { label: "Shop", href: "/shop" },
@@ -26,175 +14,101 @@ const navLinks = [
 ];
 
 export function Header() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
   return (
-    <Box
-      as="header"
-      position="fixed"
-      top={0}
-      left={0}
-      right={0}
-      zIndex={1000}
-      bg="white"
-      boxShadow="sm"
-      py={3}
-    >
-      {/* Skip Navigation Link */}
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm">
+      {/* Skip link */}
       <Link
         href="#main-content"
-        style={{
-          position: "absolute",
-          left: "-9999px",
-          top: "auto",
-          width: "1px",
-          height: "1px",
-          overflow: "hidden",
-          zIndex: 1001,
-        }}
-        className="skip-link"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 rounded-md bg-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-lg"
       >
         Skip to main content
       </Link>
-      <style>{`
-        .skip-link:focus {
-          position: fixed !important;
-          top: 8px !important;
-          left: 8px !important;
-          width: auto !important;
-          height: auto !important;
-          overflow: visible !important;
-          background: #EF762F;
-          color: white;
-          padding: 8px 16px;
-          border-radius: 6px;
-          font-family: var(--font-jua);
-          font-size: 14px;
-          font-weight: bold;
-          box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-          z-index: 1001;
-          text-decoration: none;
-        }
-      `}</style>
-      <Container maxW="1400px" px={{ base: 4, md: 8 }}>
-        <Flex align="center" justify="space-between">
-          {/* Logo */}
-          <Link href="/" style={{ textDecoration: "none" }}>
-            <NextImage
-              src="/images/logo.png"
-              alt="Kheelona Logo"
-              width={150}
-              height={50}
-              priority
-              style={{
-                height: "auto",
-                width: "auto",
-                maxHeight: "50px",
-                objectFit: "contain",
-              }}
-            />
+
+      <div className="mx-auto flex max-w-[1400px] items-center justify-between px-4 py-3 md:px-8">
+        {/* Logo */}
+        <Link href="/" className="flex items-center">
+          <Image
+            src="/images/logo.png"
+            alt="Kheelona Logo"
+            width={150}
+            height={50}
+            priority
+            className="h-auto w-auto max-h-[50px] object-contain"
+          />
+        </Link>
+
+        {/* Desktop nav */}
+        <nav className="hidden items-center gap-8 md:flex">
+          {navLinks.map((link) => (
+            <Link
+              key={link.label}
+              href={link.href}
+              className="text-lg font-medium text-gray-600 transition hover:text-orange-500"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+
+        {/* CTA + Mobile menu */}
+        <div className="flex items-center gap-3">
+          <Link
+            href="/product"
+            className="rounded-full bg-orange-500 px-4 py-2 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-orange-600 md:px-6 md:py-3 md:text-base"
+          >
+            Pre-Order now
           </Link>
 
-          {/* Desktop Navigation */}
-          <HStack gap={8} display={{ base: "none", md: "flex" }} fontFamily="body">
-            {navLinks.map((link) => (
-              <Link key={link.label} href={link.href}>
-                <Text
-                  fontSize="lg"
-                  fontWeight={500}
-                  color="gray.600"
-                  transition="color 0.2s"
-                  _hover={{ color: "tangerine.500" }}
-                >
-                  {link.label}
-                </Text>
-              </Link>
-            ))}
-          </HStack>
+          {/* Mobile menu */}
+          <Dialog.Root open={open} onOpenChange={setOpen}>
+            <Dialog.Trigger asChild>
+              <button
+                aria-label="Open menu"
+                className="flex items-center justify-center rounded-md p-2 text-gray-700 hover:bg-gray-100 md:hidden"
+              >
+                <Menu size={24} />
+              </button>
+            </Dialog.Trigger>
 
-          {/* CTA Button */}
-          <HStack gap={4}>
-            <Button
-              asChild
-              bg="tangerine.500"
-              color="white"
-              px={{ base: 4, md: 6 }}
-              py={{ base: 2, md: 3 }}
-              borderRadius="full"
-              fontFamily="body"
-              fontSize={{ base: "sm", md: "md" }}
-              _hover={{
-                bg: "tangerine.600",
-                transform: "translateY(-2px)",
-              }}
-              transition="all 0.2s"
-            >
-              <Link href="/product">Pre-Order now</Link>
-            </Button>
+            <Dialog.Portal>
+              <Dialog.Overlay className="fixed inset-0 bg-black/40" />
+              <Dialog.Content className="fixed right-0 top-0 h-full w-[300px] bg-white shadow-xl">
+                <div className="flex items-center justify-between border-b px-4 py-4">
+                  <Dialog.Title className="text-lg font-bold text-orange-500">Menu</Dialog.Title>
+                  <Dialog.Close asChild>
+                    <button aria-label="Close menu" className="rounded-md p-2 hover:bg-gray-100">
+                      <X size={20} />
+                    </button>
+                  </Dialog.Close>
+                </div>
 
-            {/* Mobile Menu Button */}
-            <IconButton
-              display={{ base: "flex", md: "none" }}
-              aria-label="Open menu"
-              variant="ghost"
-              onClick={() => setIsOpen(true)}
-              size="lg"
-            >
-              <Menu size={24} />
-            </IconButton>
-          </HStack>
-        </Flex>
-      </Container>
-
-      {/* Mobile Drawer */}
-      <Drawer.Root open={isOpen} onOpenChange={(e) => setIsOpen(e.open)} placement="end">
-        <Portal>
-          <Drawer.Backdrop />
-          <Drawer.Positioner>
-            <Drawer.Content bg="white" maxW="300px">
-              <Drawer.Header borderBottomWidth="1px">
-                <Drawer.Title fontFamily="heading" color="tangerine.500">
-                  Menu
-                </Drawer.Title>
-                <Drawer.CloseTrigger asChild position="absolute" top={3} right={3}>
-                  <CloseButton size="sm" />
-                </Drawer.CloseTrigger>
-              </Drawer.Header>
-              <Drawer.Body>
-                <VStack align="stretch" gap={4} py={4}>
+                <nav className="flex flex-col gap-4 px-4 py-6">
                   {navLinks.map((link) => (
-                    <Link key={link.label} href={link.href} onClick={() => setIsOpen(false)}>
-                      <Text
-                        fontSize="xl"
-                        fontFamily="body"
-                        color="gray.600"
-                        py={2}
-                        _hover={{ color: "tangerine.500" }}
-                      >
-                        {link.label}
-                      </Text>
+                    <Link
+                      key={link.label}
+                      href={link.href}
+                      onClick={() => setOpen(false)}
+                      className="py-2 text-xl font-medium text-gray-600 transition hover:text-orange-500"
+                    >
+                      {link.label}
                     </Link>
                   ))}
-                  <Button
-                    asChild
-                    bg="tangerine.500"
-                    color="white"
-                    w="full"
-                    px={6}
-                    py={6}
-                    borderRadius="full"
-                    fontFamily="body"
-                    mt={4}
-                    _hover={{ bg: "tangerine.600" }}
+
+                  <Link
+                    href="/product"
+                    onClick={() => setOpen(false)}
+                    className="mt-4 rounded-full bg-orange-500 px-6 py-3 text-center font-semibold text-white transition hover:bg-orange-600"
                   >
-                    <Link href="/product">Pre-Order now</Link>
-                  </Button>
-                </VStack>
-              </Drawer.Body>
-            </Drawer.Content>
-          </Drawer.Positioner>
-        </Portal>
-      </Drawer.Root>
-    </Box>
+                    Pre-Order now
+                  </Link>
+                </nav>
+              </Dialog.Content>
+            </Dialog.Portal>
+          </Dialog.Root>
+        </div>
+      </div>
+    </header>
   );
 }

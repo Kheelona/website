@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Jua, Luckiest_Guy } from "next/font/google";
 import Script from "next/script";
-import { Provider } from "@/components/ui/provider";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import "./globals.css";
 
@@ -149,9 +148,7 @@ export default function RootLayout({
         />
       </head>
       <body className={`${luckiestGuy.variable} ${jua.variable}`} suppressHydrationWarning>
-        <ErrorBoundary>
-          <Provider>{children}</Provider>
-        </ErrorBoundary>
+        <ErrorBoundary>{children}</ErrorBoundary>
       </body>
     </html>
   );
