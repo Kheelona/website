@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Jua, Luckiest_Guy } from "next/font/google";
+import { Lato, Luckiest_Guy, Jua } from "next/font/google";
 import Script from "next/script";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import "./globals.css";
@@ -60,6 +60,12 @@ const jsonLd = {
     },
   ],
 };
+
+export const lato = Lato({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-lato",
+});
 
 const luckiestGuy = Luckiest_Guy({
   weight: "400",
@@ -139,7 +145,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${lato.variable} ${luckiestGuy.variable} ${jua.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <Script
           id="json-ld"
@@ -147,7 +157,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className={`${luckiestGuy.variable} ${jua.variable}`} suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <ErrorBoundary>{children}</ErrorBoundary>
       </body>
     </html>
