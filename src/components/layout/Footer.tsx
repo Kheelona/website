@@ -1,215 +1,133 @@
 "use client";
 
-import {
-  Box,
-  Container,
-  Flex,
-  VStack,
-  HStack,
-  Text,
-  Input,
-  Button,
-  Separator,
-  Grid,
-} from "@chakra-ui/react";
+import Image from "next/image";
 import Link from "next/link";
-import NextImage from "next/image";
+import { Linkedin, Instagram, Facebook } from "lucide-react";
 
 const footerLinks = [
+  { text: "FAQ", url: "/faq" },
+  { text: "Blogs", url: "/blogs" },
+  { text: "Our Story", url: "/our-story" },
+  { text: "Contact Us", url: "/contact-us" },
   { text: "Privacy Policy", url: "/privacy-policy" },
-  { text: "Accessibility Statement", url: "/accessibility" },
-  { text: "Shipping Policy", url: "/shipping-policy" },
   { text: "Terms & Conditions", url: "/terms-conditions" },
-  { text: "Refund Policy", url: "/refund-policy" },
+  // { text: "Accessibility Statement", url: "/accessibility" },
+  // { text: "Shipping Policy", url: "/shipping-policy" },
+  // { text: "Refund Policy", url: "/refund-policy" },
 ];
 
 const socialLinks = [
   {
+    name: "Linkedin",
+    url: "https://www.linkedin.com/company/kheelona/",
+    icon: "/images/social/in.png",
+    bg: "#ffffff",
+  },
+  {
     name: "Instagram",
     url: "https://instagram.com/kheelona",
-    icon: "📸",
+    icon: "/images/social/ig.png",
+    bg: "#ffffff",
   },
   {
     name: "Facebook",
     url: "https://facebook.com/kheelona",
-    icon: "📘",
-  },
-  {
-    name: "Twitter",
-    url: "https://twitter.com/kheelona",
-    icon: "🐦",
+    icon: "/images/social/fb.png",
+    bg: "#3974BC,",
   },
 ];
 
 export function Footer() {
   return (
-    <Box as="footer" bg="#1a1a1a" color="white" pt={{ base: 12, md: 16 }} pb={6}>
-      <Container maxW="1400px">
-        <Grid
-          templateColumns={{
-            base: "1fr",
-            md: "repeat(2, 1fr)",
-            lg: "1.5fr 1fr 1fr 1.5fr",
-          }}
-          gap={{ base: 10, md: 8 }}
-          mb={12}
-        >
-          {/* Logo and Description */}
-          <VStack align="flex-start" gap={6}>
-            <Link href="/">
-              <Box style={{ filter: "brightness(0) invert(1)" }}>
-                <NextImage
-                  src="/images/logo.png"
-                  alt="Kheelona Logo"
-                  width={180}
-                  height={60}
-                  loading="lazy"
-                  style={{
-                    height: "60px",
-                    width: "auto",
-                    objectFit: "contain",
-                  }}
-                />
-              </Box>
-            </Link>
-            <Text fontFamily="body" color="gray.400" fontSize="sm" maxW="300px">
-              Kheelona creates AI-powered educational toys that help children learn, grow, and
-              develop essential skills through play.
-            </Text>
-            <HStack gap={4}>
-              {socialLinks.map((social) => (
-                <Link key={social.name} href={social.url} target="_blank" rel="noopener noreferrer">
-                  <Box
-                    bg="whiteAlpha.100"
-                    p={2}
-                    borderRadius="full"
-                    transition="background 0.2s"
-                    _hover={{ bg: "whiteAlpha.200" }}
-                  >
-                    <Text fontSize="xl">{social.icon}</Text>
-                  </Box>
+    <footer className="bg-tangerine text-white pt-12 md:pt-16 pb-6 mt-2 mb-70 md:mb-26">
+      <div className="mx-auto max-w-350 px-4 md:px-8">
+        <div className="flex justify-between flex-col md:flex-row gap-10 md:gap-0 mb-10">
+          <div className="block md:hidden">
+            <h3 className=" font-semibold text-white font-lato text-[20px] mb-5">Socials</h3>
+            <div className="flex gap-4">
+              {socialLinks.map(({ name, url, bg, icon }) => (
+                <Link
+                  key={name}
+                  href={url}
+                  aria-label={name}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ backgroundColor: bg }}
+                  className={`flex h-10 w-10 items-center justify-center rounded-md overflow-hidden text-xl transition`}
+                >
+                  <Image src={icon} alt={name} width={20} height={20} className="h-10 w-10" />
                 </Link>
               ))}
-            </HStack>
-          </VStack>
+            </div>
+          </div>
 
-          {/* Quick Links */}
-          <VStack align="flex-start" gap={4}>
-            <Text fontFamily="heading" fontSize="xl" color="tangerine.500">
-              Quick Links
-            </Text>
-            <VStack align="flex-start" gap={2}>
-              {footerLinks.slice(0, 3).map((link) => (
-                <Link key={link.text} href={link.url}>
-                  <Text
-                    fontFamily="body"
-                    color="gray.400"
-                    fontSize="sm"
-                    transition="color 0.2s"
-                    _hover={{ color: "skyBlue.400" }}
-                  >
-                    {link.text}
-                  </Text>
+          <div className="flex flex-col items-start gap-4">
+            <h3 className=" font-semibold text-white font-lato text-[20px] md:text-[30px]">
+              Grown Ups Stuff
+            </h3>
+            <div className="flex flex-col gap-2">
+              {footerLinks.map((link) => (
+                <Link
+                  key={link.text}
+                  href={link.url}
+                  className="text-sm text-white font-lato text-[14px] md:text-[18px]"
+                >
+                  {link.text}
                 </Link>
               ))}
-            </VStack>
-          </VStack>
+            </div>
+          </div>
 
-          {/* Legal */}
-          <VStack align="flex-start" gap={4}>
-            <Text fontFamily="heading" fontSize="xl" color="tangerine.500">
-              Legal
-            </Text>
-            <VStack align="flex-start" gap={2}>
-              {footerLinks.slice(3).map((link) => (
-                <Link key={link.text} href={link.url}>
-                  <Text
-                    fontFamily="body"
-                    color="gray.400"
-                    fontSize="sm"
-                    transition="color 0.2s"
-                    _hover={{ color: "skyBlue.400" }}
-                  >
-                    {link.text}
-                  </Text>
-                </Link>
-              ))}
-            </VStack>
-          </VStack>
-
-          {/* Newsletter */}
-          <VStack align="flex-start" gap={4}>
-            <Text fontFamily="heading" fontSize="xl" color="tangerine.500">
-              Subscribe to Our Newsletter
-            </Text>
-            <VStack w="full" gap={3}>
-              <Input
-                placeholder="Enter Your Email"
-                bg="whiteAlpha.100"
-                border="none"
-                borderRadius="xl"
-                fontFamily="body"
-                _placeholder={{ color: "gray.500" }}
-                _focus={{
-                  bg: "whiteAlpha.200",
-                  boxShadow: "0 0 0 1px",
-                  boxShadowColor: "skyBlue.400",
-                }}
+          <div className="relative flex items-center justify-center">
+            <Link href="/" className="inline-block">
+              <Image
+                src="/images/logo.png"
+                alt="Kheelona Logo"
+                width={180}
+                height={60}
+                loading="lazy"
+                className="h-15 object-contain drop-shadow-lg"
               />
-              <Button
-                w="full"
-                bg="tangerine.500"
-                color="white"
-                px={6}
-                py={5}
-                borderRadius="xl"
-                fontFamily="body"
-                _hover={{ bg: "tangerine.600" }}
-              >
-                Subscribe
-              </Button>
-            </VStack>
-            <VStack align="flex-start" gap={2} mt={4}>
-              <Text fontFamily="body" color="gray.400" fontSize="sm">
-                Contact Us: +91 9896597969
-              </Text>
-              <HStack>
-                <Text fontFamily="body" color="gray.400" fontSize="sm">
-                  Mail ID:{" "}
-                </Text>
-                <Link href="mailto:connect@kheelona.com">
-                  <Text
-                    fontFamily="body"
-                    color="skyBlue.400"
-                    fontSize="sm"
-                    _hover={{ textDecoration: "underline" }}
+              <Image
+                src="/images/hero-girl.webp"
+                alt="Kheelona Logo"
+                width={250}
+                height={100}
+                loading="lazy"
+                className="absolute -bottom-86 left-14 md:-bottom-42 md:left-0 h-100 md:h-75  object-cover object-top drop-shadow-lg"
+              />
+            </Link>
+          </div>
+
+          <div className="hidden md:flex items-center">
+            <div className="">
+              <h3 className="font-semibold text-white font-lato text-[30px] mb-5">Socials</h3>
+              <div className="flex gap-4">
+                {socialLinks.map(({ name, url, bg, icon }) => (
+                  <Link
+                    key={name}
+                    href={url}
+                    aria-label={name}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ backgroundColor: bg }}
+                    className={`flex h-10 w-10 items-center justify-center rounded-md overflow-hidden text-xl transition`}
                   >
-                    connect@kheelona.com
-                  </Text>
-                </Link>
-              </HStack>
-            </VStack>
-          </VStack>
-        </Grid>
+                    <Image src={icon} alt={name} width={20} height={20} className="h-10 w-10" />
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
 
-        <Separator borderColor="whiteAlpha.200" />
-
-        {/* Copyright */}
-        <Flex
-          direction={{ base: "column", md: "row" }}
-          justify="space-between"
-          align="center"
-          pt={6}
-          gap={4}
-        >
-          <Text fontFamily="body" color="gray.500" fontSize="sm">
-            © 2026 by Kheelona. All rights reserved.
-          </Text>
-          <Text fontFamily="body" color="gray.500" fontSize="sm">
-            Made with ❤️ in India
-          </Text>
-        </Flex>
-      </Container>
-    </Box>
+        {/* <div className="border-t border-white/20 pt-6">
+          <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
+            <p className="text-sm text-gray-500">© 2026 by Kheelona. All rights reserved.</p>
+            <p className="text-sm text-gray-500">Made with ❤️ in India</p>
+          </div>
+        </div> */}
+      </div>
+    </footer>
   );
 }

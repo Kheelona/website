@@ -1,272 +1,56 @@
 "use client";
 
-import { Box, Container, Heading, Text, VStack, HStack, Flex, Tag, Button } from "@chakra-ui/react";
-import Link from "next/link";
-import NextImage from "next/image";
-
-const features = [
-  { text: "AI Powered", icon: "🤖" },
-  { text: "No screens", icon: "📵" },
-  { text: "Child Safe", icon: "🛡️" },
-  { text: "10+ Languages", icon: "🌍" },
-];
+import Image from "next/image";
 
 export function HeroSection() {
   return (
-    <Box
-      as="section"
-      position="relative"
-      minH="100vh"
-      display="flex"
-      alignItems="center"
-      overflow="hidden"
-      pt={{ base: "100px", md: "80px" }}
-      pb={{ base: 10, md: 0 }}
-      layerStyle="gradient.hero"
-    >
-      {/* Background Video (optional enhancement) */}
-      <Box position="absolute" top={0} left={0} right={0} bottom={0} zIndex={0} overflow="hidden">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          poster="/images/posters/hero-poster.webp"
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            opacity: 0.45,
-          }}
-        >
-          <source src="/videos/lumi-promo.mp4" type="video/mp4" />
-        </video>
-      </Box>
+    <section className="relative h-screen overflow-hidden bg-white px-4 pt-15 md:pt-20">
+      <div className="mx-auto flex max-w-300 mt-25 flex-col items-center text-center">
+        {/* Heading for Mobile */}
+        <h1 className="mb-6 font-heading text-[26px] md:hidden text-stroke-tangerine">
+          SMARTEST PLAYMATES FOR BRIGHTEST MINDS.
+        </h1>
+        {/* Heading for Desktop */}
+        <h2 className="mb-6 hidden font-heading  text-[44px] md:block text-stroke-tangerine ">
+          CAn YOUR TOY TALK?
+        </h2>
 
-      {/* Overlay for better text readability */}
-      <Box
-        position="absolute"
-        top={0}
-        left={0}
-        right={0}
-        bottom={0}
-        layerStyle="gradient.heroOverlay"
-        zIndex={1}
-      />
-
-      <Container maxW="1400px" mx="auto" px={{ base: 4, md: 8 }} position="relative" zIndex={2}>
-        <Flex
-          direction={{ base: "column", lg: "row" }}
-          align="center"
-          justify="space-between"
-          gap={{ base: 8, lg: 12 }}
-        >
-          {/* Left Content */}
-          <VStack
-            align={{ base: "center", lg: "flex-start" }}
-            gap={6}
-            maxW={{ base: "100%", lg: "55%" }}
-            textAlign={{ base: "center", lg: "left" }}
-          >
-            <Heading
-              as="h1"
-              fontSize={{ base: "3xl", md: "5xl", lg: "6xl" }}
-              fontFamily="heading"
-              color="white"
-              lineHeight="1.1"
-              textShadow="2px 2px 4px rgba(0,0,0,0.3)"
-            >
-              Can your toy{" "}
-              <Text as="span" color="mutedOrange.400">
-                talk
-              </Text>{" "}
-              ?
-            </Heading>
-
-            <HStack gap={2} flexWrap="wrap" justify={{ base: "center", lg: "flex-start" }}>
-              <Heading
-                as="h2"
-                fontSize={{ base: "2xl", md: "4xl", lg: "5xl" }}
-                fontFamily="heading"
-                color="white"
-                textShadow="2px 2px 4px rgba(0,0,0,0.3)"
-              >
-                Meet
-              </Heading>
-              <Heading
-                as="h2"
-                fontSize={{ base: "2xl", md: "4xl", lg: "5xl" }}
-                fontFamily="heading"
-                color="tangerine.500"
-                textShadow="2px 2px 4px rgba(0,0,0,0.3)"
-              >
-                LUMI !
-              </Heading>
-            </HStack>
-
-            <Text
-              fontSize={{ base: "lg", md: "xl", lg: "2xl" }}
-              color="white"
-              fontFamily="body"
-              textShadow="1px 1px 2px rgba(0,0,0,0.3)"
-              maxW="500px"
-            >
-              Hii.. Friend - The Most Intelligent Toy for your Kid
-            </Text>
-
-            {/* Feature Pills - Using Chakra UI Tag */}
-            <HStack flexWrap="wrap" gap={3} justify={{ base: "center", lg: "flex-start" }}>
-              {features.map((feature) => (
-                <Tag.Root
-                  key={feature.text}
-                  size="lg"
-                  variant="solid"
-                  bg="white"
-                  color="gray.800"
-                  borderRadius="full"
-                  boxShadow="md"
-                  px={4}
-                  py={2}
-                >
-                  <Tag.StartElement>{feature.icon}</Tag.StartElement>
-                  <Tag.Label fontFamily="body" fontSize={{ base: "sm", md: "md" }}>
-                    {feature.text}
-                  </Tag.Label>
-                </Tag.Root>
-              ))}
-            </HStack>
-
-            {/* CTA Button - Using Chakra UI Button */}
-            <Button
-              asChild
-              size="lg"
-              bg="tangerine.500"
-              color="white"
-              borderRadius="full"
-              fontFamily="body"
-              px={{ base: 6, md: 8 }}
-              py={{ base: 3, md: 4 }}
-              boxShadow="0 4px 14px rgba(239, 118, 47, 0.4)"
-              _hover={{
-                bg: "tangerine.600",
-                transform: "translateY(-3px)",
-                boxShadow: "lg",
-              }}
-              transition="all 0.3s"
-            >
-              <Link href="/product">Pre-Order now</Link>
-            </Button>
-          </VStack>
-
-          {/* Right - Product Image */}
-          <Box
-            display={{ base: "block", lg: "block" }}
-            maxW={{ base: "320px", md: "400px", lg: "500px" }}
-            position="relative"
-            className="float-animation"
-          >
-            <Box
-              position="relative"
-              borderRadius="2xl"
-              overflow="hidden"
-              filter="drop-shadow(0 20px 40px rgba(0,0,0,0.3))"
-              _hover={{
-                transform: "scale(1.03)",
-              }}
-              transition="transform 0.5s ease"
-            >
-              <NextImage
-                src="/images/lifestyle/all-colors-group-2.webp"
-                alt="Lumi family - AI-powered talking toys in Pink, Blue, and Green"
-                width={1920}
-                height={1280}
-                priority
-                sizes="(max-width: 768px) 320px, (max-width: 1024px) 400px, 500px"
-                style={{
-                  width: "100%",
-                  height: "auto",
-                  objectFit: "contain",
-                }}
-              />
-            </Box>
-            {/* Decorative badges - Using Chakra UI Tag */}
-            <Tag.Root
-              position="absolute"
-              top={{ base: "-10px", md: "-15px" }}
-              right={{ base: "-10px", md: "-15px" }}
-              size="md"
-              variant="solid"
-              bg="tangerine.500"
-              color="white"
-              borderRadius="full"
-              boxShadow="lg"
-              transform="rotate(15deg)"
-              className="pulse-animation"
-              px={{ base: 3, md: 4 }}
-              py={{ base: 1, md: 2 }}
-            >
-              <Tag.Label fontFamily="body" fontSize={{ base: "xs", md: "sm" }}>
-                3 Colors!
-              </Tag.Label>
-            </Tag.Root>
-            <Tag.Root
-              position="absolute"
-              bottom={{ base: "-10px", md: "-15px" }}
-              left={{ base: "-10px", md: "-15px" }}
-              size="md"
-              variant="solid"
-              bg="skyBlue.400"
-              color="white"
-              borderRadius="full"
-              boxShadow="lg"
-              transform="rotate(-10deg)"
-              px={{ base: 3, md: 4 }}
-              py={{ base: 1, md: 2 }}
-            >
-              <Tag.Label fontFamily="body" fontSize={{ base: "xs", md: "sm" }}>
-                AI Powered!
-              </Tag.Label>
-            </Tag.Root>
-          </Box>
-        </Flex>
-
-        {/* Scroll Indicator */}
-        <Box
-          position="absolute"
-          bottom={{ base: "20px", md: "40px" }}
-          left="50%"
-          transform="translateX(-50%)"
-          display={{ base: "none", md: "flex" }}
-          flexDirection="column"
-          alignItems="center"
-          gap={2}
-          className="bounce-arrow"
-        >
-          <Text fontFamily="body" fontSize="sm" color="whiteAlpha.800">
-            Scroll to explore
-          </Text>
-          <Box
-            w="30px"
-            h="50px"
-            border="2px solid"
-            borderColor="whiteAlpha.600"
-            borderRadius="full"
-            position="relative"
-          >
-            <Box
-              position="absolute"
-              top="8px"
-              left="50%"
-              transform="translateX(-50%)"
-              w="6px"
-              h="10px"
-              bg="white"
-              borderRadius="full"
-              animation="bounce 1.5s ease-in-out infinite"
+        {/* Character Image */}
+        <div className="absolute bottom-0 md:mt-0 mt-10 w-full ">
+          <div className="relative max-w-59 mx-auto">
+            <Image
+              src="/images/hero-girl.webp"
+              alt="Child holding Lumi toy"
+              width={230}
+              height={569}
+              priority
+              className="relative h-auto w-full z-1"
             />
-          </Box>
-        </Box>
-      </Container>
-    </Box>
+            {/* Pills */}
+            <span className="absolute -left-[10%] top-[9%] text-tangerine bg-[#FFE8D2] py-0.5 px-3 rounded-full z-0">
+              ✦ AI Powered
+            </span>
+            <span className="absolute left-[68%] top-[16%] text-sky-blue bg-[#DBF2FF] py-0.5  whitespace-nowrap px-3 rounded-full z-0">
+              ✦ 10+ Languages
+            </span>
+            <span className="absolute -left-[20%] top-[20%] text-muted-orange bg-[#FFEDDB] py-0.5 px-3 rounded-full z-0">
+              ✦ 0% Screen time
+            </span>
+          </div>
+        </div>
+        {/* Decorative stars */}
+        <span className="absolute left-[12%] bottom-[28%] text-tangerine">✦</span>
+        <span className="absolute right-[18%] bottom-[34%] text-muted-orange">✦</span>
+        <span className="absolute left-[26%] bottom-[32%] text-tangerine">✦</span>
+
+        <span className="absolute right-[22%] bottom-[20%] text-muted-orange">✦</span>
+        <span className="absolute right-[35%] bottom-[52%] text-muted-orange">✦</span>
+        <span className="absolute left-[18%] bottom-[22%] text-muted-orange">✦</span>
+
+        <span className="absolute right-[28%] bottom-[18%] text-tangerine">✦</span>
+        <span className="absolute left-[34%] bottom-[46%] text-tangerine">✦</span>
+        <span className="absolute right-[14%] bottom-[42%] text-muted-orange">✦</span>
+      </div>
+    </section>
   );
 }
