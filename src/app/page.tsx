@@ -8,6 +8,7 @@ import ParentingGrowth from "@/components/sections/ParentingGrowth";
 import InteractiveLearning from "@/components/sections/InteractiveLearning";
 import WhyChooseUs from "@/components/sections/WhyChooseUs";
 import UsageScenarios from "@/components/sections/UsageScenarios";
+import WhatsAppCommunity from "@/components/sections/WhatsAppCommunity";
 
 export default function HomePage() {
   return (
@@ -21,6 +22,7 @@ export default function HomePage() {
       <InteractiveLearning />
       <WhyChooseUs />
       <UsageScenarios />
+      <WhatsAppCommunity />
       <Footer />
     </div>
   );
