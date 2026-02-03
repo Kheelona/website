@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
-import { Lato, Luckiest_Guy, Jua } from "next/font/google";
+import { Lato, Luckiest_Guy } from "next/font/google";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import "./globals.css";
 
@@ -65,6 +67,8 @@ export const lato = Lato({
   subsets: ["latin"],
   weight: ["400", "700"],
   variable: "--font-lato",
+  display: "swap",
+  preload: true,
 });
 
 const luckiestGuy = Luckiest_Guy({
@@ -72,13 +76,7 @@ const luckiestGuy = Luckiest_Guy({
   subsets: ["latin"],
   variable: "--font-luckiest-guy",
   display: "swap",
-});
-
-const jua = Jua({
-  weight: "400",
-  subsets: ["latin"],
-  variable: "--font-jua",
-  display: "swap",
+  preload: true,
 });
 
 export const metadata: Metadata = {
@@ -145,11 +143,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${lato.variable} ${luckiestGuy.variable} ${jua.variable}`}
-      suppressHydrationWarning
-    >
+    <html lang="en" className={`${lato.variable} ${luckiestGuy.variable}`} suppressHydrationWarning>
       <head>
         <Script
           id="json-ld"
@@ -159,6 +153,8 @@ export default function RootLayout({
       </head>
       <body suppressHydrationWarning>
         <ErrorBoundary>{children}</ErrorBoundary>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

@@ -45,7 +45,7 @@ export function Header() {
                     <Link
                       key={link.label}
                       href={link.href}
-                      className="text-lg font-medium text-gray-700 font-lato"
+                      className="text-lg font-medium text-gray-700 "
                     >
                       {link.label}
                     </Link>
@@ -57,15 +57,16 @@ export function Header() {
         </div>
 
         {/* Logo */}
-        <Link href="/" className="flex items-center justify-center md:ml-15 md:-mr-11">
+        <Link href="/" className="flex items-center justify-center ">
           <Image
             src="/images/logo.png"
             alt="Kheelona"
-            width={164}
-            height={40}
+            width={116}
+            height={28}
             priority
             sizes="(max-width: 768px) 116px, 164px"
-            className="h-[28.52px] w-29 md:h-10 md:w-[164.27px]"
+            className="h-[28.52px] w-29 md:h-10 object-contain md:w-[164.27px]"
+            style={{ filter: "drop-shadow(0px 2.15px 1px #00000040)" }}
           />
         </Link>
 
@@ -79,13 +80,15 @@ export function Header() {
         </nav>
 
         {/* Cart */}
-        <Link
-          href="/cart"
-          aria-label="Cart"
-          className="flex items-center justify-center rounded-md p-2 text-white"
-        >
-          <ShoppingCart size={22} />
-        </Link>
+        <div className="w-10 md:w-[164.27px]">
+          <Link
+            href="/cart"
+            aria-label="Cart"
+            className="flex items-center justify-center rounded-md p-2 text-white"
+          >
+            <ShoppingCart size={22} />
+          </Link>
+        </div>
       </div>
     </header>
   );

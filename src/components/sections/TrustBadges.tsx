@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 
 // Partner logos
 const partners = [
@@ -30,7 +31,13 @@ const TrustBadges = () => {
             <React.Fragment key={partner.id}>
               {partner.id > 1 && <div className="mx-8 w-0 h-20 border-l border-black" />}
               <div className="flex items-center">
-                <img src={partner.image} alt={partner.name} className="w-35 h-35 object-contain" />
+                <Image
+                  src={partner.image}
+                  alt={partner.name}
+                  width={140}
+                  height={140}
+                  className="w-35 h-35 object-contain"
+                />
               </div>
             </React.Fragment>
           ))}

@@ -3,6 +3,7 @@
 import * as React from "react";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
 import clsx from "clsx";
+import Image from "next/image";
 
 // card width in px
 const CARD_WIDTH = 400; // must match card width
@@ -11,7 +12,7 @@ const GAP = 16; // gap-4 = 16px
 
 const testimonials = [
   {
-    quote: "My child&apos;s best friend. She takes Lumi everywhere.",
+    quote: "My child's best friend. She takes Lumi everywhere.",
     name: "Gaurav Guha",
     meta: "Parent of a 4 year old.",
     avatar: "/images/testimonial.png",
@@ -36,7 +37,7 @@ const testimonials = [
     avatar: "/images/testimonial.png",
   },
   {
-    quote: "My child&apos;s best friend. She takes Lumi everywhere.",
+    quote: "My child's best friend. She takes Lumi everywhere.",
     name: "Gaurav Guha",
     meta: "Parent of a 4 year old.",
     avatar: "/images/testimonial.png",
@@ -79,9 +80,7 @@ export default function Testimonials() {
               <div key={i}>
                 {/* single testimonial card */}
                 <div className="relative shrink-0 w-100 rounded-2xl border border-gray-300 p-6 bg-white h-50 mb-5">
-                  <p className="mb-6 text-[22px] font-medium font-lato leading-[110%]">
-                    “{t.quote}”
-                  </p>
+                  <p className="mb-6 text-[22px] font-medium  leading-[110%]">“{t.quote}”</p>
 
                   <div className="absolute bottom-5 left-5 flex gap-1 text-yellow-400">
                     {Array.from({ length: 5 }).map((_, i) => (
@@ -91,15 +90,17 @@ export default function Testimonials() {
                 </div>
                 <div className="flex gap-2 items-center">
                   <div className="flex items-center gap-3">
-                    <img
+                    <Image
                       src={t.avatar}
                       alt={t.name}
+                      width={40}
+                      height={40}
                       className="h-10 w-10 rounded-full object-cover"
                     />
                   </div>
                   <div>
                     <h3 className="font-bold uppercase font-heading text-[22px]">{t.name}</h3>
-                    <p className="font-lato text-[17px] text-gray-600">{t.meta}</p>
+                    <p className=" text-[17px] text-gray-600">{t.meta}</p>
                   </div>
                 </div>
               </div>

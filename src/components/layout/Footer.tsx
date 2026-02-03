@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Linkedin, Instagram, Facebook } from "lucide-react";
 
 const footerLinks = [
   { text: "FAQ", url: "/faq" },
@@ -43,7 +42,7 @@ export function Footer() {
       <div className="mx-auto max-w-350 px-4 md:px-8">
         <div className="flex justify-between flex-col md:flex-row gap-10 md:gap-0 mb-10">
           <div className="block md:hidden">
-            <h3 className=" font-semibold text-white font-lato text-[20px] mb-5">Socials</h3>
+            <h3 className=" font-semibold text-white  text-[20px] mb-5">Socials</h3>
             <div className="flex gap-4">
               {socialLinks.map(({ name, url, bg, icon }) => (
                 <Link
@@ -62,7 +61,7 @@ export function Footer() {
           </div>
 
           <div className="flex flex-col items-start gap-4">
-            <h3 className=" font-semibold text-white font-lato text-[20px] md:text-[30px]">
+            <h3 className=" font-semibold text-white  text-[20px] md:text-[30px]">
               Grown Ups Stuff
             </h3>
             <div className="flex flex-col gap-2">
@@ -70,7 +69,7 @@ export function Footer() {
                 <Link
                   key={link.text}
                   href={link.url}
-                  className="text-sm text-white font-lato text-[14px] md:text-[18px]"
+                  className="text-sm text-white  text-[14px] md:text-[18px]"
                 >
                   {link.text}
                 </Link>
@@ -101,7 +100,7 @@ export function Footer() {
 
           <div className="hidden md:flex items-center">
             <div className="">
-              <h3 className="font-semibold text-white font-lato text-[30px] mb-5">Socials</h3>
+              <h3 className="font-semibold text-white  text-[30px] mb-5">Socials</h3>
               <div className="flex gap-4">
                 {socialLinks.map(({ name, url, bg, icon }) => (
                   <Link

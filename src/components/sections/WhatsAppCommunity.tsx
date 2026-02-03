@@ -15,7 +15,7 @@ export default function WhatsAppCommunity() {
       <div className="px-5 md:px-10">
         {/* Card */}
         <div className="mt-10 relative mx-auto ma rounded-3xl bg-tangerine p-8 text-white shadow-xl pb-10 sm:pb-30 md:pb-105">
-          <p className="mb-15 hidden md:block text-[30px] font-medium font-lato text-center ">
+          <p className="mb-15 hidden md:block text-[30px] font-medium  text-center ">
             Free online and offline counselling alternative Fridays !!
           </p>
 
@@ -31,8 +31,8 @@ export default function WhatsAppCommunity() {
               />
             </div>
 
-            <h4 className="font-bold font-lato">Welcome to the group: General</h4>
-            <p className="mt-2 text-sm font-lato ">
+            <h4 className="font-bold ">Welcome to the group: General</h4>
+            <p className="mt-2 text-sm  ">
               All community members can use this chat to talk with each other
             </p>
 
@@ -47,11 +47,11 @@ export default function WhatsAppCommunity() {
             </Link>
 
             {/* Free Badge */}
-            <div className="absolute -top-6 -right-6 flex h-25 w-25 items-center justify-center rounded-full border-4 border-muted-orange bg-white text-center font-bold text-sky-blue font-lato text-[24px] leading-7">
+            <div className="absolute -top-6 -right-6 flex h-25 w-25 items-center justify-center rounded-full border-4 border-muted-orange bg-white text-center font-bold text-sky-blue  text-[24px] leading-7">
               Its <br /> Free
             </div>
           </div>
-          <p className="my-15 block md:hidden text-[16px] font-medium font-lato text-center text-white">
+          <p className="my-15 block md:hidden text-[16px] font-medium  text-center text-white">
             Free online and offline counselling alternative Fridays !!
           </p>
         </div>

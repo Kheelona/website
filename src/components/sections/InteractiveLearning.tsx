@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 const InteractiveLearning = () => {
   return (
     <section className="pt-10">
@@ -8,53 +10,71 @@ const InteractiveLearning = () => {
       </div>
       {/* Need to revisit updating the images and separating the text and shapes properly */}
       <div className="relative h-140 md:h-180 w-full mt-10">
-        <img
+        <Image
           src="/images/language/languagetoy.png"
           alt="Interactive Learning"
-          className="w-150 h-auto -bottom-8 inset-x-0 absolute mx-auto hidden md:block"
+          width={600}
+          height={380}
+          className="w-150 h-auto -bottom-8 inset-x-0 absolute mx-auto hidden md:block object-contain"
         />
 
-        <img
+        <Image
           src="/images/language/leftBottomChar.png"
           alt="Left Bottom Character"
-          className="w-45 h-auto left-0 bottom-0 absolute mx-auto hidden md:block"
+          width={180}
+          height={180}
+          className="w-45 h-auto left-0 bottom-0 absolute mx-auto hidden md:block object-contain"
         />
 
-        <img
+        <Image
           src="/images/language/leftTopChar.png"
           alt="Left Top Character"
-          className="w-45 h-auto left-0 top-0 absolute mx-auto hidden md:block"
+          width={180}
+          height={180}
+          className="w-45 h-auto left-0 top-0 absolute mx-auto hidden md:block object-contain"
         />
-        <img
+        <Image
           src="/images/language/rightTopChar.png"
           alt="Right Top Character"
-          className="w-45 h-auto right-0 top-0 absolute mx-auto hidden md:block"
+          width={180}
+          height={180}
+          className="w-45 h-auto right-0 top-0 absolute mx-auto hidden md:block object-contain"
         />
-        <img
+        <Image
           src="/images/language/rightBottomChar.png"
           alt="Right Bottom Character"
-          className="w-45 h-auto right-0 bottom-0 absolute mx-auto hidden md:block"
+          width={180}
+          height={180}
+          className="w-45 h-auto right-0 bottom-0 absolute mx-auto hidden md:block object-contain"
         />
 
-        <img
+        <Image
           src="/images/language/leftBottomCharLang.png"
           alt="Left Bottom Character"
-          className="w-47 h-auto left-0 bottom-0 absolute mx-auto block md:hidden"
+          width={188}
+          height={188}
+          className="w-47 h-auto left-0 bottom-0 absolute mx-auto block md:hidden object-contain"
         />
-        <img
+        <Image
           src="/images/language/leftTopCharLang.png"
           alt="Left Top Character"
-          className="w-35 h-auto left-0 top-0 absolute mx-auto block md:hidden"
+          width={140}
+          height={140}
+          className="w-35 h-auto left-0 top-0 absolute mx-auto block md:hidden object-contain"
         />
-        <img
+        <Image
           src="/images/language/rightTopCharLang.png"
           alt="Right Top Character"
-          className="w-50 h-auto right-0 top-0 absolute mx-auto block md:hidden"
+          width={200}
+          height={200}
+          className="w-50 h-auto right-0 top-0 absolute mx-auto block md:hidden object-contain"
         />
-        <img
+        <Image
           src="/images/language/rightBottomCharLang.png"
           alt="Right Bottom Character"
-          className="w-45 h-auto right-0 bottom-0 absolute mx-auto block md:hidden"
+          width={180}
+          height={180}
+          className="w-45 h-auto right-0 bottom-0 absolute mx-auto block md:hidden object-contain"
         />
         {/* Decorative stars */}
         <span className="absolute left-[16%] bottom-[28%] text-tangerine">✦</span>

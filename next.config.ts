@@ -1,4 +1,9 @@
 import type { NextConfig } from "next";
+import withBundleAnalyzer from "@next/bundle-analyzer";
+
+const withAnalyzer = withBundleAnalyzer({
+  enabled: process.env.ANALYZE === "true",
+});
 
 // Security headers for enterprise-level protection
 const securityHeaders = [
@@ -57,7 +62,14 @@ const nextConfig: NextConfig = {
   // Image optimization
   images: {
     unoptimized: false,
-    remotePatterns: [],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "static.wixstatic.com",
+        port: "",
+        pathname: "/**",
+      },
+    ],
     // Enable modern image formats for better compression
     formats: ["image/avif", "image/webp"],
     // Device sizes for responsive images
@@ -84,4 +96,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withAnalyzer(nextConfig);

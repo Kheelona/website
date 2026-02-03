@@ -3,7 +3,8 @@
 :root {
   /* Kheelona Brand Colors */
   --tangerine: #ef762f;
-  --sky-blue: #50b2d5;
+  /* --sky-blue: #50b2d5; */
+  --sky-blue: #29a0d7;
   --muted-orange: #f1a23b;
   --pure-black: #000000;
   --pure-white: #ffffff;
@@ -11,8 +12,7 @@
 
   /* Fonts */
   --font-heading: var(--font-luckiest-guy), cursive;
-  --font-body: var(--font-jua), sans-serif;
-  --font-link: var(--font-lato), sans-serif;
+  --font-body: var(--font-lato), sans-serif;
 
   /* Theme */
   --background: #ffffff;
@@ -82,12 +82,12 @@ h6 {
 
 .navbar,
 .navbar a {
-  font-family: var(--font-link);
+  font-family: var(--font-body);
   font-weight: 400;
 }
 
 .font-lato {
-  font-family: var(--font-link);
+  font-family: var(--font-body);
 }
 
 /* Brand text stroke effect for headings */
@@ -264,4 +264,13 @@ h6 {
 /* Bounce arrow for scroll indicators */
 .bounce-arrow {
   animation: bounce 1.5s ease-in-out infinite;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important; /* Chrome, Safari */
 }

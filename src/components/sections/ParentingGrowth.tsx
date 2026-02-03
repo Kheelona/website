@@ -8,7 +8,7 @@ export default function ParentingHelpSection() {
       {/* Top Illustration */}
       <div className="relative w-full h-70 md:h-90">
         <Image
-          src="/images/parenting-growth.webp"
+          src="/images/growth.webp"
           alt="Happy parents illustration"
           fill
           priority
@@ -18,9 +18,7 @@ export default function ParentingHelpSection() {
 
       {/* Section Heading Overlay */}
       <div className="bg-muted-orange p-10">
-        <p className="text-white text-center font-lato text-[18px] md:text-[30px] mb-5">
-          Tracking growth
-        </p>
+        <p className="text-white text-center  text-[18px] md:text-[30px] mb-5">Tracking growth</p>
         <h2 className="font-heading text-[24px] md:text-[44px] text-stroke-tangerine text-center">
           How it helps in parenting?
         </h2>
@@ -41,7 +39,7 @@ export default function ParentingHelpSection() {
         </div>
 
         {/* Right Cards */}
-        <div className="grid grid-cols-6 gap-2 md:gap-5 w-full md:w-150 font-lato text-[13px] md:text-[24px] mb-5">
+        <div className="grid grid-cols-6 gap-2 md:gap-5 w-full md:w-150  text-[13px] md:text-[24px] mb-5">
           {/* Hi Parent */}
           <div className="col-span-2 bg-white rounded-3xl border-4 border-tangerine p-4 font-semibold">
             Hi, <br />
@@ -51,7 +49,13 @@ export default function ParentingHelpSection() {
           {/* Line Graph */}
           <div className="col-span-4 bg-white rounded-3xl border-4 border-tangerine p-4">
             <p className="font-semibold mb-2 text-center">New learnt words</p>
-            <img src="/images/graph.png" alt="tracking graph" className="w-55 h-auto mx-auto" />
+            <Image
+              src="/images/graph.png"
+              alt="tracking graph"
+              width={360}
+              height={180}
+              className="w-55 h-auto mx-auto object-contain"
+            />
           </div>
 
           {/* Read Hindi */}
@@ -61,7 +65,13 @@ export default function ParentingHelpSection() {
 
           {/* Bar Chart */}
           <div className="col-span-2 bg-white rounded-3xl border-4 border-tangerine p-4 flex justify-center">
-            <img src="/images/chart.png" alt="" />
+            <Image
+              src="/images/chart.png"
+              alt="chart"
+              width={120}
+              height={120}
+              className="object-contain"
+            />
           </div>
 
           {/* Bullying Alert */}
