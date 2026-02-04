@@ -6,9 +6,16 @@ import { MemoWhatsappIcon } from "@/assets/icons/MemoWhatsappIcon";
 
 export default function WhatsAppCommunity() {
   return (
-    <section className="relative bg-muted-orange py-16 px-4 overflow-hidden">
+    <section
+      id="contact"
+      className="relative bg-muted-orange py-16 px-4 overflow-hidden"
+      aria-labelledby="contact-heading"
+    >
       {/* Heading */}
-      <h2 className="font-heading text-[24px] md:text-[44px] text-stroke-tangerine text-center">
+      <h2
+        id="contact-heading"
+        className="font-heading text-[24px] md:text-[44px] text-stroke-tangerine text-center"
+      >
         JOIN THE WHATS APP <br />
         PARENTING COMMUNITY
       </h2>
