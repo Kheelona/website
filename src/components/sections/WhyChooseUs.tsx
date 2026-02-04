@@ -5,12 +5,19 @@ import { XCircle } from "lucide-react";
 
 export default function WhyChooseUs() {
   return (
-    <section className="w-full bg-muted-orange py-10 px-5 md:px-0">
+    <section
+      id="features"
+      className="w-full bg-muted-orange py-10 px-5 md:px-0"
+      aria-labelledby="features-heading"
+    >
       {/* Heading */}
       <div className="text-center mb-12">
         <p className="text-white text-sm text-[18px] md:text-[30px]  mb-5">Lumi vs Others</p>
 
-        <h2 className="font-heading text-[24px] md:text-[44px] text-stroke-tangerine text-center mb-5">
+        <h2
+          id="features-heading"
+          className="font-heading text-[24px] md:text-[44px] text-stroke-tangerine text-center mb-5"
+        >
           WHY SETTLE FOR LESS? <br /> UPGRADE TO LUMI
         </h2>
       </div>

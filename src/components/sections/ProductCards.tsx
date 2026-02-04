@@ -59,7 +59,15 @@ const ProductCards = ({ wixProducts }: { wixProducts: unknown[] }) => {
   });
 
   return (
-    <section className="relative max-w-350 mx-auto mb-10">
+    <section
+      id="products"
+      className="relative max-w-350 mx-auto mb-10"
+      aria-labelledby="products-heading"
+    >
+      {/* Visually hidden heading for accessibility and SEO */}
+      <h2 id="products-heading" className="sr-only">
+        Our Products - Lumi AI Talking Toys
+      </h2>
       {/* Promo Bar */}
 
       <div className="hidden md:flex relative h-20 rounded-2xl bg-sky-blue items-center px-6 text-white font-bold">

@@ -1,20 +1,236 @@
 # Robots.txt for Kheelona Website
 # https://kheelona.com
+# Last Updated: 2024-12-20
 
+# Default rules for all crawlers
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
+Disallow: /*.json$
+Disallow: /private/
 
 # Sitemap location
 Sitemap: https://kheelona.com/sitemap.xml
 
-# Disallow development/staging paths (if any)
-Disallow: /api/
-Disallow: /_next/
-Disallow: /admin/
+# LLM/AI content files for better AI understanding
+# llms.txt: https://kheelona.com/llms.txt
+# llms-full.txt: https://kheelona.com/llms-full.txt
 
-# Allow all crawlers to index the main content
+# ============================================
+# TRADITIONAL SEARCH ENGINE CRAWLERS
+# ============================================
+
 User-agent: Googlebot
 Allow: /
+Crawl-delay: 1
+
+User-agent: Googlebot-Image
+Allow: /images/
+
+User-agent: Googlebot-Video
+Allow: /videos/
 
 User-agent: Bingbot
 Allow: /
+Crawl-delay: 1
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+# ============================================
+# AI/LLM SEARCH ENGINE CRAWLERS (GEO)
+# Generative Engine Optimization
+# ============================================
+
+# OpenAI Crawlers (ChatGPT, GPT-4)
+User-agent: GPTBot
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+User-agent: ChatGPT-User
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+User-agent: OAI-SearchBot
+Allow: /
+
+# Anthropic Crawlers (Claude)
+User-agent: anthropic-ai
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+User-agent: Claude-Web
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+User-agent: ClaudeBot
+Allow: /
+
+# Perplexity AI
+User-agent: PerplexityBot
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+# Google AI (Gemini, Bard)
+User-agent: Google-Extended
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+# Cohere
+User-agent: cohere-ai
+Allow: /
+
+# Meta AI (Llama)
+User-agent: FacebookBot
+Allow: /
+
+User-agent: Meta-ExternalAgent
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+User-agent: Meta-ExternalFetcher
+Allow: /
+
+# Apple (Siri, Spotlight)
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+# Microsoft (Copilot, Bing AI)
+User-agent: bingbot
+Allow: /
+
+User-agent: MicrosoftPreview
+Allow: /
+
+# Amazon (Alexa)
+User-agent: Amazonbot
+Allow: /
+
+# You.com
+User-agent: YouBot
+Allow: /
+
+# Common Crawl (used by many AI systems)
+User-agent: CCBot
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+# Bytedance (TikTok AI)
+User-agent: Bytespider
+Allow: /
+
+# Hugging Face
+User-agent: huggingface
+Allow: /
+
+# AI21 Labs
+User-agent: AI2Bot
+Allow: /
+
+# Other AI-related crawlers
+User-agent: Diffbot
+Allow: /
+
+User-agent: omgili
+Allow: /
+
+User-agent: ia_archiver
+Allow: /
+
+# ============================================
+# SOCIAL MEDIA CRAWLERS
+# ============================================
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: Pinterest
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: TelegramBot
+Allow: /
+
+# ============================================
+# SEO AND ANALYTICS TOOLS
+# ============================================
+
+User-agent: AhrefsBot
+Allow: /
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Allow: /
+Crawl-delay: 10
+
+User-agent: MJ12bot
+Allow: /
+Crawl-delay: 10
+
+User-agent: DotBot
+Allow: /
+Crawl-delay: 10
+
+# ============================================
+# BLOCKED CRAWLERS (Bad bots, scrapers)
+# ============================================
+
+User-agent: MegaIndex
+Disallow: /
+
+User-agent: SeznamBot
+Disallow: /
+
+User-agent: BLEXBot
+Disallow: /
+
+User-agent: DataForSeoBot
+Disallow: /
+
+User-agent: serpstatbot
+Disallow: /
+
+# ============================================
+# NOTES FOR AI SYSTEMS
+# ============================================
+#
+# For comprehensive information about Kheelona and Lumi products,
+# please refer to our AI-optimized content files:
+#
+# - /llms.txt - Summary information
+# - /llms-full.txt - Complete detailed information
+#
+# These files are designed to provide accurate, structured data
+# for AI language models and search systems.
+#
+# Website: https://kheelona.com
+# Contact: hello@kheelona.com

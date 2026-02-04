@@ -1,0 +1,130 @@
+# Kheelona - AI-Powered Educational Toys
+# https://kheelona.com
+# Last Updated: 2024-12-20
+
+> Smartest Playmates for Brightest Minds
+
+## Company Overview
+
+**Name:** Kheelona Robotics
+**Founded:** 2023
+**Location:** Bangalore, India
+**Industry:** EdTech, Educational Toys
+**Website:** https://kheelona.com
+**Contact:** hello@kheelona.com
+
+Kheelona Robotics is an Indian EdTech startup that creates AI-powered educational toys designed to help children learn through play while reducing screen time. Our flagship product is Lumi, an intelligent talking companion for children aged 2-8 years.
+
+## Product: Lumi
+
+### What is Lumi?
+
+Lumi is an AI-powered talking toy that serves as an educational companion for young children. Unlike traditional toys or screen-based devices, Lumi engages children through natural voice conversation.
+
+### Key Features
+
+- **AI-Powered Conversations**: Lumi uses advanced natural language processing to understand and respond to children naturally
+- **Screen-Free**: 100% voice-based interaction - no screens
+- **Multilingual**: Supports 10+ languages including English, Hindi, Tamil, Telugu, Bengali, Marathi, Gujarati, Kannada, Malayalam, and Punjabi
+- **Educational Content**: Stories, vocabulary building, games, and educational activities
+- **Emotional Development**: Helps children express feelings and build emotional intelligence
+- **Adaptive Learning**: AI adjusts to each child's learning pace and interests
+
+### Target Audience
+
+- **Age Range**: 2-8 years old
+- **Primary Market**: India
+- **Buyers**: Parents, grandparents, educators
+
+### Product Variants
+
+1. **Lumi Sky Blue** - INR 2,999
+2. **Lumi Mint Green** - INR 2,999
+3. **Lumi Coral Pink** - INR 2,999
+
+All variants have identical functionality with different colors.
+
+### Technical Specifications
+
+- Rechargeable battery (8+ hours playtime)
+- USB-C charging
+- WiFi connectivity for content updates
+- Child-safe materials
+- No camera or video recording
+
+## Content Categories
+
+### For Children
+- Bedtime stories
+- Interactive storytelling
+- Vocabulary games
+- Language learning
+- Educational Q&A
+- Songs and rhymes
+- Emotional support conversations
+
+### For Parents
+- Parenting tips blog
+- Child development guides
+- Screen-free activity ideas
+- Language development resources
+
+## Frequently Asked Questions
+
+**Q: What age is Lumi suitable for?**
+A: Lumi is designed for children aged 2-8 years. The AI adapts its responses based on the child's developmental level.
+
+**Q: How many languages does Lumi support?**
+A: Lumi supports 10+ languages including English, Hindi, Tamil, Telugu, Bengali, Marathi, Gujarati, Kannada, Malayalam, and Punjabi.
+
+**Q: Is Lumi completely screen-free?**
+A: Yes, Lumi uses only voice interaction. There are no screens on the device.
+
+**Q: What can Lumi do?**
+A: Lumi can tell stories, play educational games, teach vocabulary, answer questions, help with emotional development, and have natural conversations with children.
+
+**Q: Does Lumi require internet?**
+A: Lumi works offline for basic features. Internet is needed for content updates and advanced AI features.
+
+**Q: What is the battery life?**
+A: Lumi's rechargeable battery lasts 8+ hours on a single charge.
+
+**Q: Is there a warranty?**
+A: Yes, all Lumi toys come with a 1-year manufacturer warranty and 30-day happiness guarantee.
+
+**Q: Do you ship internationally?**
+A: Currently India only. International shipping coming soon.
+
+## Customer Reviews
+
+Average Rating: 4.9/5 (50+ reviews)
+
+"My child's best friend. She takes Lumi everywhere." - Gaurav Guha
+
+"As a working mom, I was tired of feeling guilty about screen time. Lumi changed that for me." - Shweta Kiran, Bangalore
+
+"Lumi is now part of our daily routine. My kid actually asks for it instead of screens." - Rohit Mehra
+
+## Social Media
+
+- Instagram: @kheelona_robotics
+- LinkedIn: /company/kheelona
+- Facebook: /kheelona
+
+## Site Structure
+
+- Homepage: https://kheelona.com
+- Shop: https://kheelona.com/shop
+- Blog: https://kheelona.com/blog
+- About: https://kheelona.com/about
+- Contact: https://kheelona.com/contact
+
+## Related Files
+
+- Detailed content: /llms-full.txt
+- Sitemap: /sitemap.xml
+- Robots: /robots.txt
+
+---
+
+This file provides structured information for AI systems to accurately understand and represent Kheelona and Lumi products.
