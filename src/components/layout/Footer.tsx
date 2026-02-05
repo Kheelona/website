@@ -8,8 +8,13 @@ const footerLinks = [
   { text: "Blog", url: "/blog" },
   { text: "About Us", url: "/about" },
   { text: "Contact", url: "/contact" },
+];
+
+const policyLinks = [
   { text: "Privacy Policy", url: "/privacy" },
-  { text: "Terms & Conditions", url: "/terms" },
+  { text: "Refund Policy", url: "/refund" },
+  { text: "Shipping Policy", url: "/shipping" },
+  { text: "Terms of Service", url: "/terms" },
 ];
 
 const socialLinks = [
@@ -77,6 +82,23 @@ export function Footer() {
             <h3 className="font-semibold text-white text-[20px] md:text-[30px]">Quick Links</h3>
             <ul className="flex flex-col gap-2 list-none p-0 m-0">
               {footerLinks.map((link) => (
+                <li key={link.text}>
+                  <Link
+                    href={link.url}
+                    className="text-sm text-white text-[14px] md:text-[18px] hover:underline focus:underline"
+                  >
+                    {link.text}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          {/* Policy Links */}
+          <nav className="flex flex-col items-start gap-4" aria-label="Policy links">
+            <h3 className="font-semibold text-white text-[20px] md:text-[30px]">Policies</h3>
+            <ul className="flex flex-col gap-2 list-none p-0 m-0">
+              {policyLinks.map((link) => (
                 <li key={link.text}>
                   <Link
                     href={link.url}
