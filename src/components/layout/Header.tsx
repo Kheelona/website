@@ -6,7 +6,7 @@ import { Menu, ShoppingCart, X } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
 
 const navLinks = [
-  { label: "Shop", href: "/shop" },
+  { label: "Shop", href: "/product" },
   { label: "Blog", href: "/blog" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
@@ -16,7 +16,7 @@ export function Header() {
   return (
     <header className="absolute top-0 z-1 w-full px-3 py-4">
       {/* Skip to main content link for accessibility */}
-      <a href="#main-content" className="skip-link">
+      <a href="#main-content" className="skip-link ">
         Skip to main content
       </a>
       <div className="mx-auto flex max-w-350 items-center justify-between rounded-2xl bg-muted-orange h-16.75 md:h-20 px-5">

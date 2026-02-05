@@ -60,8 +60,8 @@ export default function Testimonials() {
   };
 
   return (
-    <section id="testimonials" className="py-20" aria-labelledby="testimonials-heading">
-      <SectionHeader id="testimonials-heading" title="WHAT THE PARENTS SAY?" />
+    <section className="pt-20">
+      <SectionHeader title="WHAT THE PARENTS SAY?" />
 
       <ScrollArea.Root className="relative w-full mt-10">
         <ScrollArea.Viewport
@@ -127,6 +127,16 @@ export default function Testimonials() {
             )}
           />
         ))}
+      </div>
+      <div className="w-full">
+        <Image
+          src="/images/community.webp"
+          alt="Parenting Community"
+          width={2400}
+          height={600}
+          className="mx-auto"
+          priority
+        />
       </div>
     </section>
   );

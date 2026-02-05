@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { SectionHeader } from "@/components/ui/SectionHeader";
 
 export default function ParentingHelpSection() {
   return (
@@ -18,10 +19,7 @@ export default function ParentingHelpSection() {
 
       {/* Section Heading Overlay */}
       <div className="bg-muted-orange p-10">
-        <p className="text-white text-center  text-[18px] md:text-[30px] mb-5">Tracking growth</p>
-        <h2 className="font-heading text-[24px] md:text-[44px] text-stroke-tangerine text-center">
-          How it helps in parenting?
-        </h2>
+        <SectionHeader subtitle="Tracking growth" title="How it helps in parenting?" />
       </div>
 
       {/* Content */}

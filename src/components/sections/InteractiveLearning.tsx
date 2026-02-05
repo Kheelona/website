@@ -1,6 +1,11 @@
 import Image from "next/image";
+import { DecoStar } from "@/components/ui/DecoStar";
 
 const InteractiveLearning = () => {
+  const decorStars = [
+    { pos: "left-[16%] bottom-[28%]", color: "tangerine" as const },
+    { pos: "right-[14%] bottom-[42%]", color: "muted-orange" as const },
+  ];
   return (
     <section className="pt-10">
       <div className="px-5">
@@ -77,17 +82,9 @@ const InteractiveLearning = () => {
           className="w-45 h-auto right-0 bottom-0 absolute mx-auto block md:hidden object-contain"
         />
         {/* Decorative stars */}
-        <span className="absolute left-[16%] bottom-[28%] text-tangerine">✦</span>
-        <span className="absolute right-[28%] top-[34%] text-muted-orange">✦</span>
-        <span className="absolute left-[36%] bottom-[32%] text-tangerine">✦</span>
-
-        <span className="absolute right-[42%] bottom-[20%] text-muted-orange">✦</span>
-        <span className="absolute right-[25%] top-[52%] text-muted-orange">✦</span>
-        <span className="absolute left-[28%] bottom-[22%] text-muted-orange">✦</span>
-
-        <span className="absolute right-[18%] bottom-[18%] text-tangerine">✦</span>
-        <span className="absolute left-[34%] bottom-[46%] text-tangerine">✦</span>
-        <span className="absolute right-[14%] bottom-[42%] text-muted-orange">✦</span>
+        {decorStars.map((star, i) => (
+          <DecoStar key={i} position={star.pos} color={star.color} />
+        ))}
       </div>
     </section>
   );

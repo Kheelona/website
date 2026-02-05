@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import { SectionHeader } from "@/components/ui/SectionHeader";
 
 // Partner logos
 const partners = [
@@ -22,9 +23,7 @@ const TrustBadges = () => {
   return (
     <section className=" w-full px-3 py-4">
       <div className="mx-auto max-w-350 rounded-2xl border border-[#B0B0B0] p-5">
-        <h2 className="font-heading text-[24px] md:text-[44px] text-stroke-tangerine text-center">
-          Kheelona is backed by
-        </h2>
+        <SectionHeader title="Kheelona is backed by" />
         <div className="flex justify-center items-center mt-5 md:mt-10">
           {/* Render with dividers */}
           {partners.map((partner) => (

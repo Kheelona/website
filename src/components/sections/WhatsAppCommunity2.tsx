@@ -8,15 +8,11 @@ import { Button } from "@/components/ui/Button";
 
 export default function WhatsAppCommunity() {
   return (
-    <section
-      id="contact"
-      className="relative bg-muted-orange py-16 px-4 overflow-hidden"
-      aria-labelledby="contact-heading"
-    >
-      <SectionHeader id="contact-heading" title="JOIN THE WHATS APP PARENTING COMMUNITY" />
+    <section className="relative bg-muted-orange py-16 px-4 overflow-hidden">
+      <SectionHeader title="JOIN THE WHATS APP PARENTING COMMUNITY" />
       <div className="px-5 md:px-10">
         {/* Card */}
-        <div className="mt-10 relative mx-auto ma rounded-3xl bg-tangerine p-8 text-white shadow-xl pb-10 sm:pb-30 md:pb-105">
+        <div className="mt-10 relative mx-auto ma rounded-3xl bg-tangerine p-8 text-white shadow-xl pb-8 sm:pb-30 ">
           <p className="mb-15 hidden md:block text-[30px] font-medium  text-center ">
             Free online and offline counselling alternative Fridays !!
           </p>
@@ -51,21 +47,9 @@ export default function WhatsAppCommunity() {
               Its <br /> Free
             </div>
           </div>
-          <p className="my-15 block md:hidden text-[16px] font-medium  text-center text-white">
+          <p className=" mt-5 block md:hidden text-[16px] font-medium  text-center text-white">
             Free online and offline counselling alternative Fridays !!
           </p>
-        </div>
-
-        {/* Bottom Illustration */}
-        <div className="absolute bottom-0 left-0 w-full overflow-hidden pointer-events-none">
-          <Image
-            src="/images/community.webp"
-            alt="Parenting Community"
-            width={2400}
-            height={600}
-            className="mx-auto"
-            priority
-          />
         </div>
       </div>
     </section>

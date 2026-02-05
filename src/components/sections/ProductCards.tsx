@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { Button } from "@/components/ui/Button";
 
 interface WixPrice {
   price?: number | null;
@@ -88,9 +89,7 @@ const ProductCards = ({ wixProducts }: { wixProducts: unknown[] }) => {
             </span>{" "}
             <span className="ml-5">Rs 2999</span>
           </h3>
-          <button className="bg-muted-orange hover:bg-orange-500 transition text-white px-6 rounded-xl text-sm h-12.5 flex justify-center items-center text-[25px] font-heading pt-4 pb-2 tracking-wider">
-            ORDER NOW
-          </button>
+          <Button variant="secondary">ORDER NOW</Button>
         </div>
       </div>
 
@@ -98,14 +97,14 @@ const ProductCards = ({ wixProducts }: { wixProducts: unknown[] }) => {
       <div className="md:overflow-visible overflow-x-auto no-scrollbar">
         <div className="flex gap-5 mt-0 md:-mt-20 px-3 md:px-20 w-max">
           {products.map((product: Product) => (
-            <div
+            <article
               key={product.id}
               className="min-w-58.5 h-97.5 rounded-2xl border border-[#BCBCBC] bg-white p-3"
             >
               <div className="rounded-2xl overflow-hidden bg-gray-400 mb-4 flex items-center justify-center">
                 <Image
                   src={product.images[0]}
-                  alt={product.name}
+                  alt={`${product.name} - Lumi toy`}
                   width={208}
                   height={217}
                   className="w-52 h-54.25 object-cover"
@@ -122,10 +121,8 @@ const ProductCards = ({ wixProducts }: { wixProducts: unknown[] }) => {
                 Rs {product.discountedPrice}
               </h3>
 
-              <button className="w-fit bg-sky-blue hover:opacity-90 text-white text-sm py-2 rounded-xl font-heading text-[20px] pt-2 pb-1 px-10">
-                BUY NOW
-              </button>
-            </div>
+              <Button variant="primary">BUY NOW</Button>
+            </article>
           ))}
         </div>
       </div>

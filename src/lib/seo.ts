@@ -156,3 +156,41 @@ export function generateFaqSchema(faqs: FaqItem[]) {
     })),
   };
 }
+/**
+ * SEO Keywords constants for consistent keyword strategy
+ */
+export const SEO_KEYWORDS = {
+  HOME: [
+    "AI toy for kids",
+    "talking toy",
+    "educational toy for children",
+    "screen-free learning",
+    "multilingual toy",
+    "smart toy India",
+    "kids chatbot",
+    "Lumi toy",
+    "interactive toy",
+    "child development toy",
+    "learning companion",
+    "AI powered toy",
+    "conversational toy for kids",
+  ],
+  PRODUCT: [
+    "buy Lumi toy online",
+    "AI talking toy price",
+    "interactive learning toy",
+    "kids educational device",
+    "screen-free toy",
+    "multilingual kids toy",
+    "smart talking toy",
+  ],
+  GENERAL: [
+    "Kheelona",
+    "Lumi",
+    "educational toys",
+    "child learning",
+    "parenting resources",
+    "child development",
+    "early childhood education",
+  ],
+};

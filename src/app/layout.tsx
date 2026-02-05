@@ -11,6 +11,30 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": "BreadcrumbList",
+      "@id": "https://kheelona.com/#breadcrumb",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Home",
+          item: "https://kheelona.com",
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Shop",
+          item: "https://kheelona.com/shop",
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: "Blog",
+          item: "https://kheelona.com/blog",
+        },
+      ],
+    },
+    {
       "@type": "Organization",
       "@id": "https://kheelona.com/#organization",
       name: "Kheelona Robotics",

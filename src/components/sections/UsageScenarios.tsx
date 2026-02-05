@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { SectionHeader } from "@/components/ui/SectionHeader";
 
 const scenarios = [
   { id: 1, image: "/images/features/discipline.png", label: "Discipline", class: "outline-blue" },
@@ -50,7 +51,7 @@ const UsageScenarios = () => {
                 alt={scenario.label}
                 width={270}
                 height={338}
-                className="w-67.5 h-84.5 object-cover transition-transform duration-300 group-hover:scale-105"
+                className="w-67.5 h-49.5 md:h-84.5 object-cover transition-transform duration-300 group-hover:scale-105"
               />
               <div className="absolute bottom-3 left-3 right-3">
                 <p

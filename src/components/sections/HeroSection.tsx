@@ -1,19 +1,29 @@
 "use client";
 
 import Image from "next/image";
+import { DecoStar } from "@/components/ui/DecoStar";
 
 export function HeroSection() {
+  const decorStars = [
+    { pos: "left-[12%] bottom-[28%]", color: "tangerine" as const },
+    { pos: "right-[18%] bottom-[34%]", color: "muted-orange" as const },
+    { pos: "left-[26%] bottom-[32%]", color: "tangerine" as const },
+    { pos: "right-[22%] bottom-[20%]", color: "muted-orange" as const },
+    { pos: "right-[35%] bottom-[60%]", color: "muted-orange" as const },
+    { pos: "left-[18%] bottom-[22%]", color: "muted-orange" as const },
+    { pos: "right-[28%] bottom-[18%]", color: "tangerine" as const },
+    { pos: "left-[34%] bottom-[46%]", color: "tangerine" as const },
+    { pos: "right-[14%] bottom-[42%]", color: "muted-orange" as const },
+  ];
   return (
     <section className="relative h-screen overflow-hidden bg-white px-4 pt-15 md:pt-20">
       <div className="mx-auto flex max-w-300 mt-25 flex-col items-center text-center">
-        {/* Heading for Mobile */}
-        <h1 className="mb-6 font-heading text-[26px] md:hidden text-stroke-tangerine">
-          SMARTEST PLAYMATES FOR BRIGHTEST MINDS.
+        {/* Heading for Mobile - Main h1 */}
+        <h1 className="mb-6 font-heading text-[26px] md:text-[44px] text-stroke-tangerine">
+          {/* Show different text on mobile vs desktop, but use same h1 */}
+          <span className="md:hidden">SMARTEST PLAYMATES FOR BRIGHTEST MINDS.</span>
+          <span className="hidden md:inline">CAn YOUR TOY TALK?</span>
         </h1>
-        {/* Heading for Desktop */}
-        <h2 className="mb-6 hidden font-heading  text-[44px] md:block text-stroke-tangerine ">
-          CAn YOUR TOY TALK?
-        </h2>
 
         {/* Character Image */}
         <div className="absolute bottom-0 md:mt-0 mt-10 w-full ">
@@ -39,17 +49,9 @@ export function HeroSection() {
           </div>
         </div>
         {/* Decorative stars */}
-        <span className="absolute left-[12%] bottom-[28%] text-tangerine">✦</span>
-        <span className="absolute right-[18%] bottom-[34%] text-muted-orange">✦</span>
-        <span className="absolute left-[26%] bottom-[32%] text-tangerine">✦</span>
-
-        <span className="absolute right-[22%] bottom-[20%] text-muted-orange">✦</span>
-        <span className="absolute right-[35%] bottom-[52%] text-muted-orange">✦</span>
-        <span className="absolute left-[18%] bottom-[22%] text-muted-orange">✦</span>
-
-        <span className="absolute right-[28%] bottom-[18%] text-tangerine">✦</span>
-        <span className="absolute left-[34%] bottom-[46%] text-tangerine">✦</span>
-        <span className="absolute right-[14%] bottom-[42%] text-muted-orange">✦</span>
+        {decorStars.map((star, i) => (
+          <DecoStar key={i} position={star.pos} color={star.color} />
+        ))}
       </div>
     </section>
   );

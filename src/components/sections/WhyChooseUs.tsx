@@ -2,6 +2,9 @@
 
 import { TickIcon } from "@/assets/icons/MemoTickIcon";
 import { XCircle } from "lucide-react";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import { ListItemWithIcon } from "@/components/ui/ListItemWithIcon";
+import { Button } from "../ui/Button";
 
 export default function WhyChooseUs() {
   return (
@@ -10,17 +13,11 @@ export default function WhyChooseUs() {
       className="w-full bg-muted-orange py-10 px-5 md:px-0"
       aria-labelledby="features-heading"
     >
-      {/* Heading */}
-      <div className="text-center mb-12">
-        <p className="text-white text-sm text-[18px] md:text-[30px]  mb-5">Lumi vs Others</p>
-
-        <h2
-          id="features-heading"
-          className="font-heading text-[24px] md:text-[44px] text-stroke-tangerine text-center mb-5"
-        >
-          WHY SETTLE FOR LESS? <br /> UPGRADE TO LUMI
-        </h2>
-      </div>
+      <SectionHeader
+        id="features-heading"
+        subtitle="Lumi vs Others"
+        title="WHY SETTLE FOR LESS? UPGRADE TO LUMI"
+      />
 
       {/* Comparison Card */}
       <div className="mx-auto max-w-6xl rounded-3xl overflow-hidden grid grid-cols-1 md:grid-cols-2 shadow-lg">
@@ -39,18 +36,16 @@ export default function WhyChooseUs() {
               "Boosts vocabulary, verbal skills, and language exposure",
               "Grows with your child through evolving conversations",
             ].map((text, i) => (
-              <li key={i} className="flex gap-3 items-start">
-                <TickIcon className="mt-1 h-5 w-5 text-lime-300 shrink-0" />
-                <span>{text}</span>
-              </li>
+              <ListItemWithIcon key={i} icon={<TickIcon className="text-lime-300" />}>
+                {text}
+              </ListItemWithIcon>
             ))}
           </ul>
         </div>
-
         {/* Old Way */}
         <div className="bg-white p-10 text-gray-800">
           <p className="text-sm text-gray-500 mb-2 text-[13px] md:text-[16px] ">The Old Approach</p>
-          <h3 className="font-heading text-[24px] md:text-[30px] mb-6">OLD WAY</h3>
+          <h3 className="font-heading text-[16px] md:text-[30px]">OLD WAY</h3>
 
           <ul className="space-y-4  text-[16px] md:text-[20px]">
             {[
@@ -60,20 +55,15 @@ export default function WhyChooseUs() {
               "Doesn't help the child express how they feel.",
               "It can't be used in new ways, so the child outgrows it fast.",
             ].map((text, i) => (
-              <li key={i} className="flex gap-3 items-start">
-                <XCircle className="mt-1 h-5 w-5 text-red-500 shrink-0" />
-                <span>{text}</span>
-              </li>
+              <ListItemWithIcon key={i} icon={<XCircle className="text-red-500" />}>
+                {text}
+              </ListItemWithIcon>
             ))}
           </ul>
         </div>
       </div>
-
-      {/* CTA */}
       <div className="mt-12 flex justify-center">
-        <button className="rounded-xl w-60 bg-sky-blue px-10 py-4 font-heading text-white text-lg shadow-md hover:bg-[#2a7b98] transition">
-          ORDER NOW
-        </button>
+        <Button variant="primary">ORDER NOW</Button>
       </div>
     </section>
   );
