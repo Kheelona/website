@@ -3,6 +3,8 @@
 import * as React from "react";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
 import clsx from "clsx";
+import Image from "next/image";
+import { SectionHeader } from "@/components/ui/SectionHeader";
 
 // card width in px
 const CARD_WIDTH = 400; // must match card width
@@ -11,7 +13,7 @@ const GAP = 16; // gap-4 = 16px
 
 const testimonials = [
   {
-    quote: "My child&apos;s best friend. She takes Lumi everywhere.",
+    quote: "My child's best friend. She takes Lumi everywhere.",
     name: "Gaurav Guha",
     meta: "Parent of a 4 year old.",
     avatar: "/images/testimonial.png",
@@ -36,7 +38,7 @@ const testimonials = [
     avatar: "/images/testimonial.png",
   },
   {
-    quote: "My child&apos;s best friend. She takes Lumi everywhere.",
+    quote: "My child's best friend. She takes Lumi everywhere.",
     name: "Gaurav Guha",
     meta: "Parent of a 4 year old.",
     avatar: "/images/testimonial.png",
@@ -58,10 +60,8 @@ export default function Testimonials() {
   };
 
   return (
-    <section className="py-20">
-      <h2 className="font-heading text-[24px] md:text-[44px] text-stroke-tangerine text-center">
-        WHAT THE PARENTS SAY?
-      </h2>
+    <section id="testimonials" className="py-20" aria-labelledby="testimonials-heading">
+      <SectionHeader id="testimonials-heading" title="WHAT THE PARENTS SAY?" />
 
       <ScrollArea.Root className="relative w-full mt-10">
         <ScrollArea.Viewport
@@ -76,33 +76,40 @@ export default function Testimonials() {
         >
           <div className="flex gap-4 p-4">
             {testimonials.map((t, i) => (
-              <div key={i}>
+              <article key={i}>
                 {/* single testimonial card */}
                 <div className="relative shrink-0 w-100 rounded-2xl border border-gray-300 p-6 bg-white h-50 mb-5">
-                  <p className="mb-6 text-[22px] font-medium font-lato leading-[110%]">
-                    “{t.quote}”
-                  </p>
+                  <blockquote className="mb-6 text-[22px] font-medium  leading-[110%]">
+                    &quot;{t.quote}&quot;
+                  </blockquote>
 
-                  <div className="absolute bottom-5 left-5 flex gap-1 text-yellow-400">
+                  <div
+                    className="absolute bottom-5 left-5 flex gap-1 text-yellow-400"
+                    aria-label="5 star rating"
+                  >
                     {Array.from({ length: 5 }).map((_, i) => (
-                      <span key={i}>★</span>
+                      <span key={i} aria-hidden="true">
+                        ★
+                      </span>
                     ))}
                   </div>
                 </div>
-                <div className="flex gap-2 items-center">
+                <footer className="flex gap-2 items-center">
                   <div className="flex items-center gap-3">
-                    <img
+                    <Image
                       src={t.avatar}
-                      alt={t.name}
+                      alt={`${t.name} profile picture`}
+                      width={40}
+                      height={40}
                       className="h-10 w-10 rounded-full object-cover"
                     />
                   </div>
                   <div>
                     <h3 className="font-bold uppercase font-heading text-[22px]">{t.name}</h3>
-                    <p className="font-lato text-[17px] text-gray-600">{t.meta}</p>
+                    <p className=" text-[17px] text-gray-600">{t.meta}</p>
                   </div>
-                </div>
-              </div>
+                </footer>
+              </article>
             ))}
           </div>
         </ScrollArea.Viewport>

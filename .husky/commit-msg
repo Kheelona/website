@@ -1,0 +1,22 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Optional: Suggest conventional commits format but don't enforce
+# This provides guidance without blocking commits
+# Format: type(scope): message
+# Examples: feat(hero): add new section, fix(types): resolve type issues
+
+COMMIT_MSG=$(cat "$1")
+CONVENTIONAL_COMMIT_REGEX="^(feat|fix|docs|style|refactor|perf|test|chore|ci|build|revert)(\(.+\))?: .{1,}"
+
+if ! echo "$COMMIT_MSG" | grep -qE "$CONVENTIONAL_COMMIT_REGEX"; then
+  echo "⚠️  Tip: Consider using Conventional Commits format"
+  echo "Format: type(scope): message"
+  echo "Examples:"
+  echo "  feat(seo): add JSON-LD schema"
+  echo "  fix(types): resolve TypeScript errors"
+  echo "  docs: update README"
+  # Note: Not exiting with 1, so commits still succeed
+fi
+
+exit 0

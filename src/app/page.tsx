@@ -9,19 +9,25 @@ import InteractiveLearning from "@/components/sections/InteractiveLearning";
 import WhyChooseUs from "@/components/sections/WhyChooseUs";
 import UsageScenarios from "@/components/sections/UsageScenarios";
 import WhatsAppCommunity from "@/components/sections/WhatsAppCommunity";
+import FAQSection from "@/components/sections/FAQSection";
 
-export default function HomePage() {
+import { getProducts } from "@/lib/wix/services/products";
+
+export default async function HomePage() {
+  const products = await getProducts();
+
   return (
     <div style={{ minHeight: "100vh", overflowX: "hidden" }} id="main-content" tabIndex={-1}>
       <Header />
       <HeroSection />
-      <ProductCards />
+      <ProductCards wixProducts={products} />
       <TrustBadges />
       <Testimonials />
       <ParentingGrowth />
       <InteractiveLearning />
       <WhyChooseUs />
       <UsageScenarios />
+      <FAQSection />
       <WhatsAppCommunity />
       <Footer />
     </div>

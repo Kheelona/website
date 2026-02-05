@@ -1,0 +1,49 @@
+2026-02-03 12:58:26 info: Congratulations, your extension "Embold" is now active!
+2026-02-03 12:58:26 info: ************* init ****************
+2026-02-03 12:58:26 info: tempDirectory : /Users/tanmoy/.vscode/extensions/embold-vscode.embold-0.3.6/temp
+2026-02-03 12:58:27 info: Extraction complete for source: /Users/tanmoy/.vscode/extensions/embold-vscode.embold-0.3.6/resources/embold-scanner-archive.zip, destination: /Users/tanmoy/.vscode/extensions/embold-vscode.embold-0.3.6/temp
+2026-02-03 12:58:27 info: Extension installed on machine OS : darwin
+2026-02-03 12:58:27 info: Loading issues from local database on startup (checkbox unchecked)
+2026-02-03 12:58:27 info: Using emboldDBDir: /Users/tanmoy/Documents/freelance/kheelona-website-react/.embold
+2026-02-03 12:58:27 info: Merged NO_PROXY applied: 
+2026-02-03 12:58:27 info: NODE_TLS_REJECT_UNAUTHORIZED not set (SSL verification enabled)
+2026-02-03 12:58:27 info: Using system certificates for SSL verification
+2026-02-03 12:58:27 info: [STARTUP] Processing 0 total issues from database
+2026-02-03 12:58:27 info: [STARTUP] Issues sorted by file path
+2026-02-03 12:58:27 info: [STARTUP] Complete - Processed: 0, Skipped: 0
+2026-02-03 12:58:27 info: Fetched the issues from DB
+2026-02-03 12:58:27 info: Java version installed on machine : 
+openjdk version "17.0.12" 2024-07-16 LTS
+OpenJDK Runtime Environment Zulu17.52+17-CA (build 17.0.12+7-LTS)
+OpenJDK 64-Bit Server VM Zulu17.52+17-CA (build 17.0.12+7-LTS, mixed mode, sharing)
+
+2026-02-03 12:58:27 info: Java installed on machine.
+2026-02-03 12:58:33 info: Embold extension version response:{"hasSupport":false,"version":"0.2.1","changeNotes":"<div> <p>Release Date: 30 Apr, 2025 <br><span>Bug fixes and improvements.</span></p> </div>"}
+2026-02-03 12:58:33 info: Current installed embold extension version : 0.3.6
+2026-02-03 12:58:33 info: Latest embold extension version on marketplace : 0.2.1
+2026-02-03 12:58:33 info: Current extension version: 0.3.6
+2026-02-03 12:58:33 info: Stored extension version: 0.3.6
+2026-02-03 12:58:33 info: No new installation or upgrade detected. Skipping plugin activation tracking.
+2026-02-03 12:58:39 info: Row(s) deleted
+2026-02-03 12:59:07 info: Row(s) deleted
+2026-02-03 12:59:07 info: Row(s) deleted
+2026-02-03 12:59:07 info: Row(s) deleted
+2026-02-03 12:59:07 info: Row(s) deleted
+2026-02-03 12:59:07 info: Row(s) deleted
+2026-02-03 12:59:07 info: Row(s) deleted
+2026-02-03 12:59:07 info: Row(s) deleted
+2026-02-03 12:59:07 info: Row(s) deleted
+2026-02-03 12:59:07 info: Row(s) deleted
+2026-02-03 12:59:07 info: Row(s) deleted
+2026-02-03 12:59:07 info: Row(s) deleted
+2026-02-03 12:59:07 info: Row(s) deleted
+2026-02-03 12:59:07 info: Row(s) deleted
+2026-02-03 12:59:07 info: Row(s) deleted
+2026-02-03 12:59:09 info: Row(s) deleted
+2026-02-03 12:59:09 info: Row(s) deleted
+2026-02-03 12:59:09 info: Row(s) deleted
+2026-02-03 12:59:09 info: Row(s) deleted
+2026-02-03 12:59:09 info: Row(s) deleted
+2026-02-03 12:59:09 info: Row(s) deleted
+2026-02-03 12:59:09 info: Row(s) deleted
+2026-02-03 12:59:09 info: Row(s) deleted

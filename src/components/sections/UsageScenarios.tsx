@@ -1,5 +1,8 @@
 "use client";
 
+import Image from "next/image";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+
 const scenarios = [
   { id: 1, image: "/images/features/discipline.png", label: "Discipline", class: "outline-blue" },
   { id: 2, image: "/images/features/manners.png", label: "Manners", class: "outline-blue" },
@@ -31,9 +34,9 @@ const UsageScenarios = () => {
     <section className="py-20 px-5 md:px-10">
       <div>
         <h2 className="font-heading text-[24px] md:text-[44px] text-stroke-tangerine text-center">
-          How Lumi adds value to millions of kids&apos; life
+          How Lumi adds value to <br /> millions of kids&apos; life
         </h2>
-        <p className="text-[18px] md:text-[30PX] text-muted-foreground text-center mb-6 font-lato ">
+        <p className="text-[18px] md:text-[30px] font-bold text-muted-foreground text-center mb-6 text-[#575757] ">
           What will happen if my kid has a lumi?
         </p>
 
@@ -41,16 +44,18 @@ const UsageScenarios = () => {
           {scenarios.map((scenario) => (
             <div
               key={scenario.id}
-              className="group relative rounded-3xl overflow-hidden shadow-card aspect-square"
+              className="group relative rounded-3xl overflow-hidden shadow-card "
             >
-              <img
+              <Image
                 src={scenario.image}
                 alt={scenario.label}
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                width={270}
+                height={338}
+                className="w-67.5 h-49.5 md:h-84.5 object-cover transition-transform duration-300 group-hover:scale-105"
               />
               <div className="absolute bottom-3 left-3 right-3">
                 <p
-                  className={`font-bold ${scenario.class} font-lato text-[17px] md:text-[29px] text-center p-1 `}
+                  className={`font-bold ${scenario.class}  text-[17px] md:text-[29px] text-center p-1 `}
                 >
                   {scenario.label}
                 </p>

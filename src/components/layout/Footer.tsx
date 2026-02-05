@@ -2,18 +2,19 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Linkedin, Instagram, Facebook } from "lucide-react";
 
 const footerLinks = [
-  { text: "FAQ", url: "/faq" },
-  { text: "Blogs", url: "/blogs" },
-  { text: "Our Story", url: "/our-story" },
-  { text: "Contact Us", url: "/contact-us" },
-  { text: "Privacy Policy", url: "/privacy-policy" },
-  { text: "Terms & Conditions", url: "/terms-conditions" },
-  // { text: "Accessibility Statement", url: "/accessibility" },
-  // { text: "Shipping Policy", url: "/shipping-policy" },
-  // { text: "Refund Policy", url: "/refund-policy" },
+  { text: "Shop", url: "/shop" },
+  { text: "Blog", url: "/blog" },
+  { text: "About Us", url: "/about" },
+  { text: "Contact", url: "/contact" },
+];
+
+const policyLinks = [
+  { text: "Privacy Policy", url: "/privacy" },
+  { text: "Refund Policy", url: "/refund" },
+  { text: "Shipping Policy", url: "/shipping" },
+  { text: "Terms of Service", url: "/terms" },
 ];
 
 const socialLinks = [
@@ -39,50 +40,83 @@ const socialLinks = [
 
 export function Footer() {
   return (
-    <footer className="bg-tangerine text-white pt-12 md:pt-16 pb-6 mt-2 mb-70 md:mb-26">
+    <footer
+      className="bg-tangerine text-white pt-12 md:pt-16 pb-6 mt-2 mb-70 md:mb-26"
+      role="contentinfo"
+      aria-label="Site footer"
+    >
       <div className="mx-auto max-w-350 px-4 md:px-8">
         <div className="flex justify-between flex-col md:flex-row gap-10 md:gap-0 mb-10">
+          {/* Mobile Social Links */}
           <div className="block md:hidden">
-            <h3 className=" font-semibold text-white font-lato text-[20px] mb-5">Socials</h3>
-            <div className="flex gap-4">
-              {socialLinks.map(({ name, url, bg, icon }) => (
-                <Link
-                  key={name}
-                  href={url}
-                  aria-label={name}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ backgroundColor: bg }}
-                  className={`flex h-10 w-10 items-center justify-center rounded-md overflow-hidden text-xl transition`}
-                >
-                  <Image src={icon} alt={name} width={20} height={20} className="h-10 w-10" />
-                </Link>
-              ))}
-            </div>
+            <h3 className="font-semibold text-white text-[20px] mb-5">Socials</h3>
+            <nav aria-label="Social media links">
+              <ul className="flex gap-4 list-none p-0 m-0">
+                {socialLinks.map(({ name, url, bg, icon }) => (
+                  <li key={name}>
+                    <Link
+                      href={url}
+                      aria-label={`Follow us on ${name}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ backgroundColor: bg }}
+                      className="flex h-10 w-10 items-center justify-center rounded-md overflow-hidden text-xl transition hover:opacity-80"
+                    >
+                      <Image
+                        src={icon}
+                        alt=""
+                        width={20}
+                        height={20}
+                        className="h-10 w-10"
+                        aria-hidden="true"
+                      />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
           </div>
 
-          <div className="flex flex-col items-start gap-4">
-            <h3 className=" font-semibold text-white font-lato text-[20px] md:text-[30px]">
-              Grown Ups Stuff
-            </h3>
-            <div className="flex flex-col gap-2">
+          {/* Footer Navigation */}
+          <nav className="flex flex-col items-start gap-4" aria-label="Footer navigation">
+            <h3 className="font-semibold text-white text-[20px] md:text-[30px]">Quick Links</h3>
+            <ul className="flex flex-col gap-2 list-none p-0 m-0">
               {footerLinks.map((link) => (
-                <Link
-                  key={link.text}
-                  href={link.url}
-                  className="text-sm text-white font-lato text-[14px] md:text-[18px]"
-                >
-                  {link.text}
-                </Link>
+                <li key={link.text}>
+                  <Link
+                    href={link.url}
+                    className="text-sm text-white text-[14px] md:text-[18px] hover:underline focus:underline"
+                  >
+                    {link.text}
+                  </Link>
+                </li>
               ))}
-            </div>
-          </div>
+            </ul>
+          </nav>
 
+          {/* Policy Links */}
+          <nav className="flex flex-col items-start gap-4" aria-label="Policy links">
+            <h3 className="font-semibold text-white text-[20px] md:text-[30px]">Policies</h3>
+            <ul className="flex flex-col gap-2 list-none p-0 m-0">
+              {policyLinks.map((link) => (
+                <li key={link.text}>
+                  <Link
+                    href={link.url}
+                    className="text-sm text-white text-[14px] md:text-[18px] hover:underline focus:underline"
+                  >
+                    {link.text}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          {/* Logo Section */}
           <div className="relative flex items-center justify-center">
-            <Link href="/" className="inline-block">
+            <Link href="/" className="inline-block" aria-label="Go to homepage">
               <Image
                 src="/images/logo.png"
-                alt="Kheelona Logo"
+                alt="Kheelona - Smartest Playmates for Brightest Minds"
                 width={180}
                 height={60}
                 loading="lazy"
@@ -90,43 +124,58 @@ export function Footer() {
               />
               <Image
                 src="/images/hero-girl.webp"
-                alt="Kheelona Logo"
+                alt=""
                 width={250}
                 height={100}
                 loading="lazy"
-                className="absolute -bottom-86 left-14 md:-bottom-42 md:left-0 h-100 md:h-75  object-cover object-top drop-shadow-lg"
+                className="absolute -bottom-86 left-14 md:-bottom-42 md:left-0 h-100 md:h-75 object-cover object-top drop-shadow-lg"
+                aria-hidden="true"
               />
             </Link>
           </div>
 
+          {/* Desktop Social Links */}
           <div className="hidden md:flex items-center">
-            <div className="">
-              <h3 className="font-semibold text-white font-lato text-[30px] mb-5">Socials</h3>
-              <div className="flex gap-4">
-                {socialLinks.map(({ name, url, bg, icon }) => (
-                  <Link
-                    key={name}
-                    href={url}
-                    aria-label={name}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ backgroundColor: bg }}
-                    className={`flex h-10 w-10 items-center justify-center rounded-md overflow-hidden text-xl transition`}
-                  >
-                    <Image src={icon} alt={name} width={20} height={20} className="h-10 w-10" />
-                  </Link>
-                ))}
-              </div>
+            <div>
+              <h3 className="font-semibold text-white text-[30px] mb-5">Socials</h3>
+              <nav aria-label="Social media links">
+                <ul className="flex gap-4 list-none p-0 m-0">
+                  {socialLinks.map(({ name, url, bg, icon }) => (
+                    <li key={name}>
+                      <Link
+                        href={url}
+                        aria-label={`Follow us on ${name}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ backgroundColor: bg }}
+                        className="flex h-10 w-10 items-center justify-center rounded-md overflow-hidden text-xl transition hover:opacity-80"
+                      >
+                        <Image
+                          src={icon}
+                          alt=""
+                          width={20}
+                          height={20}
+                          className="h-10 w-10"
+                          aria-hidden="true"
+                        />
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
             </div>
           </div>
         </div>
 
-        {/* <div className="border-t border-white/20 pt-6">
+        {/* Copyright Section */}
+        <div className="border-t border-white/20 pt-6 mt-6">
           <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-            <p className="text-sm text-gray-500">© 2026 by Kheelona. All rights reserved.</p>
-            <p className="text-sm text-gray-500">Made with ❤️ in India</p>
+            <p className="text-sm text-white/80">
+              © {new Date().getFullYear()} Kheelona Robotics. All rights reserved.
+            </p>
+            <p className="text-sm text-white/80">Made with ❤️ in India</p>
           </div>
-        </div> */}
+        </div>
       </div>
     </footer>
   );
