@@ -19,10 +19,10 @@ const partners = [
 ];
 
 // Displays partner logos
-const TrustBadges = () => {
+const TrustBadges = ({ bg = "" }: { bg?: string }) => {
   return (
-    <section className=" w-full px-3 py-4">
-      <div className="mx-auto max-w-350 rounded-2xl border border-[#B0B0B0] p-5">
+    <section className={`w-full px-3 py-4 ${bg}`}>
+      <div className="mx-auto max-w-350 rounded-2xl border border-[#B0B0B0] bg-white p-5">
         <SectionHeader title="Kheelona is backed by" />
         <div className="flex justify-center items-center mt-5 md:mt-10">
           {/* Render with dividers */}

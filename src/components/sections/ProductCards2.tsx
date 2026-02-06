@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
-import { useRouter } from "next/navigation";
+import { SectionHeader } from "../ui/SectionHeader";
 
 interface WixPrice {
   price?: number | null;
@@ -18,7 +18,6 @@ interface WixMedia {
 }
 
 interface WixProductRaw {
-  _id: string;
   name?: string | null;
   priceData?: WixPrice;
   price?: WixPrice;
@@ -26,7 +25,7 @@ interface WixProductRaw {
 }
 
 interface Product {
-  id: string;
+  id: number;
   name: string;
   price?: number;
   discountedPrice?: number;
@@ -34,8 +33,6 @@ interface Product {
 }
 
 const ProductCards = ({ wixProducts }: { wixProducts: unknown[] }) => {
-  console.log("wixProducts: ", wixProducts);
-  const router = useRouter();
   const products: Product[] = (wixProducts ?? []).map((item: unknown, index: number) => {
     // If item already matches Product shape
     const maybeProduct = item as Record<string, unknown>;
@@ -45,7 +42,7 @@ const ProductCards = ({ wixProducts }: { wixProducts: unknown[] }) => {
       typeof maybeProduct.name === "string"
     ) {
       return {
-        id: maybeProduct.id ?? index + 1,
+        id: (maybeProduct.id as number) ?? index + 1,
         name: maybeProduct.name ?? "",
         price: maybeProduct.price as number | undefined,
         discountedPrice: maybeProduct.discountedPrice as number | undefined,
@@ -55,7 +52,7 @@ const ProductCards = ({ wixProducts }: { wixProducts: unknown[] }) => {
 
     const raw = item as WixProductRaw;
     return {
-      id: raw._id,
+      id: index + 1,
       name: raw.name ?? "",
       price: raw.priceData?.price ?? raw.price?.price,
       discountedPrice: raw.priceData?.discountedPrice ?? raw.price?.discountedPrice,
@@ -66,47 +63,18 @@ const ProductCards = ({ wixProducts }: { wixProducts: unknown[] }) => {
   return (
     <section
       id="products"
-      className="relative max-w-350 mx-auto mb-10"
+      className="relative max-w-350 mx-auto mb-10 pt-10"
       aria-labelledby="products-heading"
     >
-      {/* Visually hidden heading for accessibility and SEO */}
-      <h2 id="products-heading" className="sr-only">
-        Our Products - Lumi AI Talking Toys
-      </h2>
-      {/* Promo Bar */}
-
-      <div className="hidden md:flex relative h-20 rounded-2xl bg-sky-blue items-center px-6 text-white font-bold">
-        <div className="absolute bottom-0 flex items-center gap-4">
-          <Image
-            src="/images/product-lumi-secondary.png"
-            alt="Lumi"
-            width={200}
-            height={200}
-            className="w-50 h-50 object-contain"
-          />
-        </div>
-        <div className="flex items-center justify-between w-full px-45">
-          <h3 className="text-[47px] h-10">
-            LUMI{" "}
-            <span className="text-[34px] line-through decoration-tangerine ml-10">
-              &nbsp;Rs 5999&nbsp;
-            </span>{" "}
-            <span className="ml-5">Rs 2999</span>
-          </h3>
-          <Button variant="secondary">ORDER NOW</Button>
-        </div>
-      </div>
+      <SectionHeader title="Explore our offerings?" />
 
       {/* Product Grid */}
-      <div className="md:overflow-visible overflow-x-auto no-scrollbar">
+      <div className="md:overflow-visible overflow-x-auto no-scrollbar mt-20">
         <div className="flex gap-5 mt-0 md:-mt-20 px-3 md:px-20 w-max">
           {products.map((product: Product) => (
             <article
               key={product.id}
               className="min-w-58.5 h-97.5 rounded-2xl border border-[#BCBCBC] bg-white p-3"
-              onClick={() => {
-                router.push(`/product/${product.id}`);
-              }}
             >
               <div className="rounded-2xl overflow-hidden bg-gray-400 mb-4 flex items-center justify-center">
                 <Image

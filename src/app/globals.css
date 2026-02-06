@@ -375,6 +375,14 @@ h6 {
   margin-bottom: 20px;
 }
 
+.bg-linear-blue {
+  background: linear-gradient(180deg, #ffffff 0%, rgba(41, 160, 215, 0.2) 100%);
+}
+
+.bg-linear-orange {
+  background: linear-gradient(180deg, #ffffff 0%, rgba(241, 162, 59, 0.2) 100%);
+}
+
 @media (min-width: 768px) {
   .subtitle {
     font-size: 30px;

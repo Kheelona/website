@@ -4,16 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 
 const footerLinks = [
-  { text: "Shop", url: "/shop" },
-  { text: "Blog", url: "/blog" },
-  { text: "About Us", url: "/about" },
+  { text: "FAQ", url: "/faq" },
+  { text: "Blogs", url: "/blog" },
+  { text: "Our Story", url: "/about" },
   { text: "Contact", url: "/contact" },
-];
-
-const policyLinks = [
   { text: "Privacy Policy", url: "/privacy" },
-  { text: "Refund Policy", url: "/refund" },
-  { text: "Shipping Policy", url: "/shipping" },
   { text: "Terms of Service", url: "/terms" },
 ];
 
@@ -41,7 +36,7 @@ const socialLinks = [
 export function Footer() {
   return (
     <footer
-      className="bg-tangerine text-white pt-12 md:pt-16 pb-6 mt-2 mb-70 md:mb-26"
+      className="relative bg-tangerine text-white pt-12 md:pt-16 pb-6 mt-2 mb-70 md:mb-26"
       role="contentinfo"
       aria-label="Site footer"
     >
@@ -79,26 +74,9 @@ export function Footer() {
 
           {/* Footer Navigation */}
           <nav className="flex flex-col items-start gap-4" aria-label="Footer navigation">
-            <h3 className="font-semibold text-white text-[20px] md:text-[30px]">Quick Links</h3>
+            <p className="font-semibold text-white text-[20px] md:text-[30px]">Grown Ups Stuff</p>
             <ul className="flex flex-col gap-2 list-none p-0 m-0">
               {footerLinks.map((link) => (
-                <li key={link.text}>
-                  <Link
-                    href={link.url}
-                    className="text-sm text-white text-[14px] md:text-[18px] hover:underline focus:underline"
-                  >
-                    {link.text}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          {/* Policy Links */}
-          <nav className="flex flex-col items-start gap-4" aria-label="Policy links">
-            <h3 className="font-semibold text-white text-[20px] md:text-[30px]">Policies</h3>
-            <ul className="flex flex-col gap-2 list-none p-0 m-0">
-              {policyLinks.map((link) => (
                 <li key={link.text}>
                   <Link
                     href={link.url}
@@ -120,7 +98,8 @@ export function Footer() {
                 width={180}
                 height={60}
                 loading="lazy"
-                className="h-15 object-contain drop-shadow-lg"
+                className="h-15 object-contain drop-shadow-xl"
+                style={{ filter: "drop-shadow(0px 4px 2px #00000055)" }}
               />
               <Image
                 src="/images/hero-girl.webp"
@@ -137,7 +116,7 @@ export function Footer() {
           {/* Desktop Social Links */}
           <div className="hidden md:flex items-center">
             <div>
-              <h3 className="font-semibold text-white text-[30px] mb-5">Socials</h3>
+              <p className="font-semibold text-white text-[30px] mb-5">Socials</p>
               <nav aria-label="Social media links">
                 <ul className="flex gap-4 list-none p-0 m-0">
                   {socialLinks.map(({ name, url, bg, icon }) => (
@@ -166,16 +145,11 @@ export function Footer() {
             </div>
           </div>
         </div>
+        <div className="absolute -bottom-70 md:-bottom-26 -left-1 w-full text-end">
+          <p className="text-black">© {new Date().getFullYear()} by Kheelona</p>
+        </div>
 
         {/* Copyright Section */}
-        <div className="border-t border-white/20 pt-6 mt-6">
-          <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-            <p className="text-sm text-white/80">
-              © {new Date().getFullYear()} Kheelona Robotics. All rights reserved.
-            </p>
-            <p className="text-sm text-white/80">Made with ❤️ in India</p>
-          </div>
-        </div>
       </div>
     </footer>
   );
