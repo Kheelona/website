@@ -6,7 +6,7 @@ import { Menu, ShoppingCart, X } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
 
 const navLinks = [
-  { label: "Shop", href: "/product" },
+  { label: "Shop", href: "/shop" },
   { label: "Blog", href: "/blog" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },

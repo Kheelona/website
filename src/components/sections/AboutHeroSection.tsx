@@ -1,0 +1,80 @@
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+
+export default function AboutHeroSection() {
+  return (
+    <section className="relative py-16 px-4 md:py-24" aria-labelledby="hero-heading">
+      <div className="max-w-6xl mx-auto">
+        {/* 1. Heading */}
+        <SectionHeader id="about-heading" title="The Story of Kheelona" />
+
+        {/* 2. Subtitle */}
+        <p className="text-[16px] md:text-[24px] md:text-xl text-gray-600 text-center mb-12 max-w-3xl mx-auto">
+          We’re building Kheelona Because every child deserves a best friend that actually
+          <span className="text-sky-blue"> listens</span>.
+        </p>
+
+        <Image
+          src={"/images/about/HeroSection.png"}
+          alt="Kheelona Hero Image"
+          width={500}
+          height={360}
+          className="w-75.25 h-35.5 md:w-150 md:h-80 object-contain mx-auto"
+        />
+        <p className="text-[10px] md:text-[14px] text-center mb-12">
+          Kheelona receiving Award and Grants from Govt. of Karnataka
+        </p>
+
+        {/* 4. Subheading */}
+        <div className="text-center mb-16">
+          <SectionHeader id="about-hero-heading" title="How it all started?" />
+        </div>
+
+        <div className="flex gap-1 md:gap-8 items-center">
+          <div className="w-2/5  flex items-end justify-center">
+            <Image
+              src={"/images/about/ApoorvaAction.png"}
+              alt="Kheelona Hero Image"
+              width={135}
+              height={110}
+              className="w-33.75 h-27.5 md:w-50 md:h-50 object-contain mx-auto"
+            />
+          </div>
+          <div className="w-3/5 px-2 md:p-12 rounded-2xl">
+            <p className="text-[12px] md:text-[16px] font-semibold leading-3.5 md:leading-5">
+              Apoorva watched his two-year-old ignore a shelf full of expensive, static toys to
+              stare at a glowing screen. The toys were beautiful, but they were &quot;dead.&quot;
+              The moment a human spoke to her, she lit up.
+            </p>
+            <p className="text-[12px] font-semibold text-end">~Apoorva, (Founder)</p>
+          </div>
+        </div>
+        <div className="border border-b -mx-4 border-[#868686]"></div>
+
+        <div className="flex gap-1 md:gap-8 items-center pt-10">
+          <div className="w-3/5 px-2 md:p-12 rounded-2xl">
+            <p className="text-[12px] md:text-[16px] font-semibold leading-3.5 md:leading-5">
+              Aman and Apoorva then realised the $100B toy industry was stuck in the past, selling
+              plastic while the world moved to AI. Then they decided to change that. Now we
+              aren&apos;t just making &quot;smart toys&quot;, we are building how the toys will feel
+              like, from now on.
+            </p>
+            <p className="text-[12px] font-semibold text-end">~Aman Soni, (Founder)</p>
+          </div>
+          <div className="w-2/5  flex items-end justify-center">
+            <Image
+              src={"/images/about/AmanAction.png"}
+              alt="Kheelona Hero Image"
+              width={135}
+              height={115}
+              className="w-33.75 h-28.75 md:w-50 md:h-50 object-contain mx-auto"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
