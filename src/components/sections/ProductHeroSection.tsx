@@ -33,7 +33,9 @@ const icons = [
 ];
 
 const ProductHero = ({ product }: { product: WixProduct }) => {
-  const [hilightedImage, setHilightedImage] = useState(product?.media?.items?.[0].image?.url ?? "");
+  const [hilightedImage, setHilightedImage] = useState<string>(
+    product.media?.items?.[0]?.image?.url ?? ""
+  );
   return (
     <section className="relative min-h-screen max-w-6xl mx-auto px-4 pt-40">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
@@ -55,11 +57,11 @@ const ProductHero = ({ product }: { product: WixProduct }) => {
                 key={index}
                 className="w-16 h-16 bg-gray-100 rounded-xl overflow-hidden cursor-pointer"
                 onClick={() => {
-                  setHilightedImage(item.image?.url);
+                  setHilightedImage(item.image?.url ?? "");
                 }}
               >
                 <Image
-                  src={item.image?.url}
+                  src={item.image?.url ?? ""}
                   alt={product.name}
                   width={64}
                   height={64}
