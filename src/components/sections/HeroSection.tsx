@@ -27,7 +27,7 @@ export function HeroSection() {
 
         {/* Character Image */}
         <div className="absolute bottom-0 md:mt-0 mt-10 w-full ">
-          <div className="relative max-w-59 mx-auto">
+          <div className="relative max-w-49 sm:max-w-59 mx-auto">
             <Image
               src="/images/hero-girl.webp"
               alt="Child holding Lumi toy"

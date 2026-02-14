@@ -5,6 +5,10 @@ import Script from "next/script";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { generatePageMetadata, generateBreadcrumbs } from "@/lib/metadata";
+import { getBlogs } from "@/lib/wix/services/blogs";
+import BlogsSwippable from "@/components/sections/BlogsSwippable";
+import BlogsGrid from "@/components/sections/BlogsGrid";
+import WhatsAppCommunity from "@/components/sections/WhatsAppCommunity";
 
 // SEO Metadata for Blog page
 export const metadata: Metadata = generatePageMetadata({
@@ -135,7 +139,8 @@ const blogJsonLd = {
   ],
 };
 
-export default function BlogPage() {
+export default async function BlogPage() {
+  const blogs: any = await getBlogs();
   return (
     <>
       <Script
@@ -149,144 +154,10 @@ export default function BlogPage() {
 
         <main id="main-content" className="flex-1 pt-24 md:pt-28">
           {/* Hero Section */}
-          <section className="bg-gradient-to-b from-muted-orange/10 to-white py-12 px-4">
-            <div className="max-w-6xl mx-auto text-center">
-              <h1 className="font-heading text-3xl md:text-5xl text-stroke-tangerine mb-4">
-                PARENTING INSIGHTS
-              </h1>
-              <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
-                Expert tips on child development, screen-free activities, and raising happy, curious
-                children in the digital age.
-              </p>
-            </div>
-          </section>
 
-          {/* Categories */}
-          <section className="py-6 px-4 border-b">
-            <div className="max-w-6xl mx-auto">
-              <nav aria-label="Blog categories" className="flex flex-wrap gap-3 justify-center">
-                <button className="px-4 py-2 rounded-full bg-tangerine text-white text-sm font-medium">
-                  All Posts
-                </button>
-                <button className="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium transition-colors">
-                  Parenting Tips
-                </button>
-                <button className="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium transition-colors">
-                  Child Development
-                </button>
-                <button className="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium transition-colors">
-                  Technology
-                </button>
-                <button className="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium transition-colors">
-                  Buying Guides
-                </button>
-              </nav>
-            </div>
-          </section>
-
-          {/* Blog Posts Grid */}
-          <section className="py-12 px-4" aria-labelledby="posts-heading">
-            <h2 id="posts-heading" className="sr-only">
-              Blog Posts
-            </h2>
-
-            <div className="max-w-6xl mx-auto">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                {blogPosts.map((post) => (
-                  <article
-                    key={post.id}
-                    className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover-lift transition-all"
-                    itemScope
-                    itemType="https://schema.org/BlogPosting"
-                  >
-                    {/* Post Image */}
-                    <div className="aspect-video relative">
-                      <Image
-                        src={post.image}
-                        alt={post.title}
-                        fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        className="object-cover"
-                        itemProp="image"
-                      />
-                      <span className="absolute top-4 left-4 bg-tangerine text-white text-xs px-3 py-1 rounded-full">
-                        {post.category}
-                      </span>
-                    </div>
-
-                    {/* Post Content */}
-                    <div className="p-5">
-                      <div className="flex items-center gap-3 text-sm text-gray-500 mb-3">
-                        <time dateTime={post.date} itemProp="datePublished">
-                          {new Date(post.date).toLocaleDateString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                          })}
-                        </time>
-                        <span>•</span>
-                        <span>{post.readTime}</span>
-                      </div>
-
-                      <h3 className="font-bold text-lg mb-2 line-clamp-2" itemProp="headline">
-                        <Link
-                          href={`/blog/${post.slug}`}
-                          className="hover:text-tangerine transition-colors"
-                        >
-                          {post.title}
-                        </Link>
-                      </h3>
-
-                      <p className="text-gray-600 text-sm line-clamp-3 mb-4" itemProp="description">
-                        {post.excerpt}
-                      </p>
-
-                      <Link
-                        href={`/blog/${post.slug}`}
-                        className="text-tangerine font-medium text-sm hover:underline inline-flex items-center gap-1"
-                      >
-                        Read More
-                        <span aria-hidden="true">→</span>
-                      </Link>
-
-                      <meta itemProp="author" content={post.author} />
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </div>
-          </section>
-
-          {/* Newsletter CTA */}
-          <section className="bg-sky-blue py-12 px-4">
-            <div className="max-w-2xl mx-auto text-center text-white">
-              <h2 className="font-heading text-2xl md:text-3xl mb-4">
-                GET PARENTING TIPS IN YOUR INBOX
-              </h2>
-              <p className="mb-6 opacity-90">
-                Join 10,000+ parents receiving weekly tips on raising happy, curious children.
-              </p>
-              <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-                <label htmlFor="email-input" className="sr-only">
-                  Email address
-                </label>
-                <input
-                  id="email-input"
-                  type="email"
-                  placeholder="Enter your email"
-                  className="flex-1 px-4 py-3 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-white"
-                  required
-                  aria-required="true"
-                />
-                <button
-                  type="submit"
-                  className="bg-tangerine hover:bg-tangerine/90 px-6 py-3 rounded-xl font-semibold transition-colors"
-                >
-                  Subscribe
-                </button>
-              </form>
-            </div>
-          </section>
+          <BlogsSwippable blogs={blogs} />
+          <BlogsGrid blogs={blogs} />
+          <WhatsAppCommunity />
         </main>
 
         <Footer />
