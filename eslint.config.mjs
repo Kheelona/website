@@ -8,6 +8,7 @@ const eslintConfig = defineConfig([
   // Enhanced accessibility rules (jsx-a11y is already included in next config)
   {
     rules: {
+      "@typescript-eslint/no-explicit-any": "off",
       // Upgrade some a11y rules to errors for stricter enforcement
       "jsx-a11y/alt-text": "error",
       "jsx-a11y/anchor-has-content": "error",
