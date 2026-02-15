@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, ShoppingCart, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
+import CartUI from "../ui/Cart";
 
 const navLinks = [
   { label: "Shop", href: "/shop" },
@@ -84,14 +85,8 @@ export function Header() {
         </nav>
 
         {/* Cart */}
-        <div className="w-10 md:w-[164.27px]">
-          <Link
-            href="/cart"
-            aria-label="Cart"
-            className="flex items-center justify-center rounded-md p-2 text-white"
-          >
-            <ShoppingCart size={22} />
-          </Link>
+        <div className="w-10 md:w-auto">
+          <CartUI />
         </div>
       </div>
     </header>

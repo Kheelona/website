@@ -8,10 +8,10 @@ export async function getProductById(productId: string) {
       return [];
     }
 
-    const res = await wixClient.products.queryProducts().find();
+    const res = await wixClient.products.queryProducts().eq("_id", productId).find();
 
     console.log("res.items: ", res.items, productId);
-    return res.items.filter((item) => item._id == productId)[0];
+    return res.items?.[0];
   } catch (error) {
     // Log the error for debugging but don't crash the build
     console.error("Error fetching products from Wix:", error);

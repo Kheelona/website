@@ -1,6 +1,11 @@
 "use client";
 import { useState } from "react";
 
+interface FormStatus {
+  type: "idle" | "success" | "error";
+  message: string;
+}
+
 export default function ContactUs() {
   const [formData, setFormData] = useState({
     name: "",
@@ -11,17 +16,23 @@ export default function ContactUs() {
   });
 
   const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState<FormStatus>({ type: "idle", message: "" });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
+    // Clear status when user starts typing
+    if (status.type !== "idle") {
+      setStatus({ type: "idle", message: "" });
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+    setStatus({ type: "idle", message: "" });
 
     try {
       const res = await fetch("/api/contact", {
@@ -36,8 +47,14 @@ export default function ContactUs() {
         throw new Error(data?.message || "Something went wrong");
       }
 
+      setStatus({
+        type: "success",
+        message: "Message sent successfully! We'll get back to you soon.",
+      });
+
       console.log("Success:", data);
 
+      // Reset form after successful submission
       setFormData({
         name: "",
         email: "",
@@ -46,6 +63,12 @@ export default function ContactUs() {
         message: "",
       });
     } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to send message. Please try again.";
+      setStatus({
+        type: "error",
+        message: errorMessage,
+      });
       console.error("Submission error:", error);
     } finally {
       setLoading(false);
@@ -63,6 +86,18 @@ export default function ContactUs() {
           <h2 className="text-stroke-black text-[24px] md:text[33px] text-center mb-10">
             Contact us
           </h2>
+
+          {/* Status Messages */}
+          {status.type !== "idle" && (
+            <div
+              className={`mb-5 p-4 rounded-xl text-white ${
+                status.type === "success" ? "bg-green-500" : "bg-red-500"
+              }`}
+              role="alert"
+            >
+              {status.message}
+            </div>
+          )}
 
           <form className="space-y-5" onSubmit={handleSubmit}>
             <div className="grid sm:grid-cols-2 gap-5">
@@ -128,7 +163,7 @@ export default function ContactUs() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-tangerine hover:bg-tangerine/90 font-lato text-white py-4 rounded-xl font-heading text-lg transition-colors"
+              className="w-full bg-tangerine hover:bg-tangerine/90 font-lato text-white py-4 rounded-xl font-heading text-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? "Sending..." : "Send Message"}
             </button>
