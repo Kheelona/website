@@ -3,6 +3,7 @@ import Image from "next/image";
 import Script from "next/script";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { ShopProductGrid } from "@/components/sections/ShopProductGrid";
 import { generatePageMetadata, generateBreadcrumbs } from "@/lib/metadata";
 
 // SEO Metadata for Shop page

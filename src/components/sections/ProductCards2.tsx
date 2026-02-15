@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { SectionHeader } from "../ui/SectionHeader";
+import { useCart } from "@/context/CartContext";
 
 interface WixPrice {
   price?: number | null;
@@ -33,6 +34,7 @@ interface Product {
 }
 
 const ProductCards = ({ wixProducts }: { wixProducts: unknown[] }) => {
+  const { addToCart } = useCart();
   const products: Product[] = (wixProducts ?? []).map((item: unknown, index: number) => {
     // If item already matches Product shape
     const maybeProduct = item as Record<string, unknown>;
@@ -96,7 +98,20 @@ const ProductCards = ({ wixProducts }: { wixProducts: unknown[] }) => {
                 Rs {product.discountedPrice}
               </h3>
 
-              <Button variant="primary">BUY NOW</Button>
+              <Button
+                variant="primary"
+                onClick={() => {
+                  addToCart({
+                    id: product.id,
+                    name: `Lumi - ${product.name}`,
+                    price: product.price ?? 0,
+                    discountedPrice: product.discountedPrice ?? 0,
+                    image: product.images[0] ?? "/toy.png",
+                  });
+                }}
+              >
+                BUY NOW
+              </Button>
             </article>
           ))}
         </div>
