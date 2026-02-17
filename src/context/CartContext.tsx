@@ -1,6 +1,13 @@
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
 
 export interface CartItem {
   id: string | number;
@@ -11,12 +18,22 @@ export interface CartItem {
   image: string;
 }
 
+export interface AddToCartInput {
+  productId: string | number;
+  name?: string;
+  price?: number;
+  discountedPrice?: number;
+  image?: string;
+  quantity?: number;
+}
+
 interface CartContextType {
   cartItems: CartItem[];
-  addToCart: (item: Omit<CartItem, "quantity">) => void;
-  removeFromCart: (id: string | number) => void;
-  updateQuantity: (id: string | number, quantity: number) => void;
-  clearCart: () => void;
+  addToCart: (item: AddToCartInput) => Promise<void>;
+  removeFromCart: (id: string | number) => Promise<void>;
+  updateQuantity: (id: string | number, quantity: number) => Promise<void>;
+  clearCart: () => Promise<void>;
+  refreshCart: () => Promise<void>;
   getTotalItems: () => number;
 }
 
@@ -24,37 +41,138 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const isWixEnabled = Boolean(process.env.NEXT_PUBLIC_WIX_CLIENT_ID);
 
-  const addToCart = (item: Omit<CartItem, "quantity">) => {
-    setCartItems((prevItems) => {
-      const existingItem = prevItems.find((cartItem) => cartItem.id === item.id);
+  const refreshCart = useCallback(async () => {
+    if (!isWixEnabled) return;
 
-      if (existingItem) {
-        return prevItems.map((cartItem) =>
-          cartItem.id === item.id ? { ...cartItem, quantity: cartItem.quantity + 1 } : cartItem
-        );
-      }
+    try {
+      const res = await fetch("/api/cart", { method: "GET" });
+      if (!res.ok) return;
+      const data = (await res.json()) as { items?: CartItem[] };
+      setCartItems(data.items ?? []);
+    } catch {
+      // Ignore cart fetch errors and keep UI functional
+    }
+  }, [isWixEnabled]);
 
-      return [...prevItems, { ...item, quantity: 1 }];
+  useEffect(() => {
+    if (!isWixEnabled) return;
+
+    queueMicrotask(() => {
+      void refreshCart();
     });
-  };
+  }, [isWixEnabled, refreshCart]);
 
-  const removeFromCart = (id: string | number) => {
-    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
-  };
+  const addToCart = async (item: AddToCartInput) => {
+    if (!isWixEnabled) {
+      setCartItems((prevItems) => {
+        const existingItem = prevItems.find((cartItem) => cartItem.id === item.productId);
+        if (existingItem) {
+          return prevItems.map((cartItem) =>
+            cartItem.id === item.productId
+              ? { ...cartItem, quantity: cartItem.quantity + (item.quantity ?? 1) }
+              : cartItem
+          );
+        }
 
-  const updateQuantity = (id: string | number, quantity: number) => {
-    if (quantity <= 0) {
-      removeFromCart(id);
-    } else {
-      setCartItems((prevItems) =>
-        prevItems.map((item) => (item.id === id ? { ...item, quantity } : item))
-      );
+        return [
+          ...prevItems,
+          {
+            id: item.productId,
+            name: item.name ?? "",
+            price: item.price ?? 0,
+            discountedPrice: item.discountedPrice ?? item.price ?? 0,
+            quantity: item.quantity ?? 1,
+            image: item.image ?? "/toy.png",
+          },
+        ];
+      });
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productId: item.productId,
+          quantity: item.quantity ?? 1,
+        }),
+      });
+      if (!res.ok) return;
+      const data = (await res.json()) as { items?: CartItem[] };
+      setCartItems(data.items ?? []);
+    } catch {
+      // Ignore add-to-cart errors and keep UI functional
     }
   };
 
-  const clearCart = () => {
-    setCartItems([]);
+  const removeFromCart = async (id: string | number) => {
+    if (!isWixEnabled) {
+      setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/cart", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ lineItemId: id }),
+      });
+      if (!res.ok) return;
+      const data = (await res.json()) as { items?: CartItem[] };
+      setCartItems(data.items ?? []);
+    } catch {
+      // Ignore remove errors
+    }
+  };
+
+  const updateQuantity = async (id: string | number, quantity: number) => {
+    if (quantity <= 0) {
+      await removeFromCart(id);
+      return;
+    }
+
+    if (!isWixEnabled) {
+      setCartItems((prevItems) =>
+        prevItems.map((item) => (item.id === id ? { ...item, quantity } : item))
+      );
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/cart", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ lineItemId: id, quantity }),
+      });
+      if (!res.ok) return;
+      const data = (await res.json()) as { items?: CartItem[] };
+      setCartItems(data.items ?? []);
+    } catch {
+      // Ignore quantity update errors
+    }
+  };
+
+  const clearCart = async () => {
+    if (!isWixEnabled) {
+      setCartItems([]);
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/cart", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ clearAll: true }),
+      });
+      if (!res.ok) return;
+      const data = (await res.json()) as { items?: CartItem[] };
+      setCartItems(data.items ?? []);
+    } catch {
+      // Ignore clear cart errors
+    }
   };
 
   const getTotalItems = () => {
@@ -69,6 +187,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         removeFromCart,
         updateQuantity,
         clearCart,
+        refreshCart,
         getTotalItems,
       }}
     >

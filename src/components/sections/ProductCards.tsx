@@ -134,7 +134,7 @@ const ProductCards = ({ wixProducts }: { wixProducts: unknown[] }) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   addToCart({
-                    id: product.id,
+                    productId: product.id,
                     name: `Lumi - ${product.name}`,
                     price: product.price ?? 0,
                     discountedPrice: product.discountedPrice ?? 0,

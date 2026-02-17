@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
 import CartUI from "../ui/Cart";
+import { WixAuthButton } from "../ui/WixAuthButton";
 
 const navLinks = [
   { label: "Shop", href: "/shop" },
@@ -84,9 +85,12 @@ export function Header() {
           ))}
         </nav>
 
-        {/* Cart */}
-        <div className="w-10 md:w-auto">
-          <CartUI />
+        {/* Auth + Cart */}
+        <div className="flex items-center justify-end gap-2 md:gap-3">
+          {/* <WixAuthButton /> */}
+          <div className="w-10 md:w-auto">
+            <CartUI />
+          </div>
         </div>
       </div>
     </header>

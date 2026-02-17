@@ -82,7 +82,7 @@ export function ShopProductGrid({ products }: { products: Product[] }) {
               <button
                 onClick={() => {
                   addToCart({
-                    id: product.id,
+                    productId: product.id,
                     name: `Lumi ${product.name}`,
                     price: product.price,
                     discountedPrice: product.discountedPrice,

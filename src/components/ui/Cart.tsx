@@ -6,8 +6,18 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
 
+export const getWixImageUrl = (wixImage: string, width = 800, height = 600) => {
+  if (!wixImage) return "";
+
+  const imageId = wixImage.split("/")[3];
+  // 7303e2_06733c7a98f542a3aabe9de534d7cc60~mv2.jpeg
+
+  return `https://static.wixstatic.com/media/${imageId}/v1/fill/w_${width},h_${height},al_c,q_90/${imageId}`;
+};
+
 export default function CartUI() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
   const { cartItems, removeFromCart, updateQuantity, getTotalItems } = useCart();
 
   const itemCount = getTotalItems();
@@ -16,6 +26,27 @@ export default function CartUI() {
     (total, item) => total + item.discountedPrice * item.quantity,
     0
   );
+
+  const handleCheckout = async () => {
+    if (isCheckingOut || cartItems.length === 0) return;
+    setIsCheckingOut(true);
+    try {
+      const response = await fetch("/api/cart/checkout", { method: "POST" });
+      if (!response.ok) {
+        throw new Error("Failed to create checkout");
+      }
+      const data = (await response.json()) as { redirectUrl?: string };
+      if (data.redirectUrl) {
+        window.location.href = data.redirectUrl;
+        return;
+      }
+      throw new Error("Missing redirect URL");
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsCheckingOut(false);
+    }
+  };
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
@@ -36,6 +67,7 @@ export default function CartUI() {
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-white/40 backdrop-blur-xl z-40" />
         <Dialog.Content className="fixed inset-0 flex items-center justify-center z-50">
+          <Dialog.Title className="sr-only">Shopping cart</Dialog.Title>
           {/* Cart Container */}
           <div className="w-105 rounded-3xl p-4 relative h-[80vh] overflow-y-visible">
             {/* Close Button */}
@@ -56,58 +88,61 @@ export default function CartUI() {
                 <>
                   {/* Cart Items */}
                   <div className="space-y-4 mb-6 h-[calc(100%-255px)] overflow-y-auto">
-                    {cartItems.map((item) => (
-                      <div
-                        key={item.id}
-                        className="flex items-center gap-4 pb-4 border-b last:border-b-0 border-[#BDBDBD]"
-                      >
-                        {/* Product Image */}
-                        <div className="relative w-20 h-20 rounded-2xl bg-gray-100 border border-[#BDBDBD] flex items-center justify-center shrink-0">
-                          <button
-                            onClick={() => removeFromCart(item.id)}
-                            className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-white shadow flex items-center justify-center hover:bg-gray-100 transition-colors border border-[#BDBDBD]"
-                          >
-                            <X size={14} />
-                          </button>
-                          <Image
-                            src={item.image}
-                            alt={item.name}
-                            width={80}
-                            height={80}
-                            className="object-cover border rounded-2xl overflow-hidden"
-                          />
-                        </div>
+                    {cartItems.map((item) => {
+                      const imageUrl = getWixImageUrl(item.image, 80, 80);
+                      return (
+                        <div
+                          key={item.id}
+                          className="flex items-center gap-4 pb-4 border-b last:border-b-0 border-[#BDBDBD]"
+                        >
+                          {/* Product Image */}
+                          <div className="relative w-20 h-20 rounded-2xl bg-gray-100 border border-[#BDBDBD] flex items-center justify-center shrink-0">
+                            <button
+                              onClick={() => removeFromCart(item.id)}
+                              className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-white shadow flex items-center justify-center hover:bg-gray-100 transition-colors border border-[#BDBDBD]"
+                            >
+                              <X size={14} />
+                            </button>
+                            <Image
+                              src={imageUrl}
+                              alt={item.name}
+                              width={80}
+                              height={80}
+                              className="object-cover border rounded-2xl overflow-hidden"
+                            />
+                          </div>
 
-                        {/* Product Name and Price */}
-                        <div className="flex-1">
-                          <h3 className="text-lg font-semibold text-[#4A4A4A] text-[20px]">
-                            {item.name}
-                          </h3>
-                          {/* <p className="text-sm text-gray-500">
+                          {/* Product Name and Price */}
+                          <div className="flex-1">
+                            <h3 className="text-lg font-semibold text-[#4A4A4A] text-[20px]">
+                              {item.name}
+                            </h3>
+                            {/* <p className="text-sm text-gray-500">
                             ₹{item.discountedPrice.toLocaleString("en-IN")}
                           </p> */}
-                        </div>
+                          </div>
 
-                        {/* Quantity Controls */}
-                        <div className="flex items-center gap-2 border border-[#C0C0C0] rounded-full px-3 py-1">
-                          <button
-                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                            className="flex items-center justify-center w-6 h-6 hover:bg-gray-100 rounded-full transition-colors font-heading leading-0 mt-1 text-[16px]"
-                          >
-                            -
-                          </button>
-                          <span className="font-medium text-center font-heading leading-0 mt-1 text-[16px]">
-                            {item.quantity}
-                          </span>
-                          <button
-                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                            className="flex items-center justify-center w-6 h-6 hover:bg-gray-100 rounded-full transition-colors font-heading leading-0 mt-1 text-[16px]"
-                          >
-                            +
-                          </button>
+                          {/* Quantity Controls */}
+                          <div className="flex items-center gap-2 border border-[#C0C0C0] rounded-full px-3 py-1">
+                            <button
+                              onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                              className="flex items-center justify-center w-6 h-6 hover:bg-gray-100 rounded-full transition-colors font-heading leading-0 mt-1 text-[16px]"
+                            >
+                              -
+                            </button>
+                            <span className="font-medium text-center font-heading leading-0 mt-1 text-[16px]">
+                              {item.quantity}
+                            </span>
+                            <button
+                              onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                              className="flex items-center justify-center w-6 h-6 hover:bg-gray-100 rounded-full transition-colors font-heading leading-0 mt-1 text-[16px]"
+                            >
+                              +
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
 
                   {/* Summary */}
@@ -129,8 +164,12 @@ export default function CartUI() {
                     </div>
 
                     {/* Buy Button */}
-                    <button className="w-full bg-tangerine text-white text-lg font-bold py-3 rounded-xl transition-colors font-heading text-[24px]">
-                      BUY NOW
+                    <button
+                      onClick={handleCheckout}
+                      disabled={isCheckingOut}
+                      className="w-full bg-tangerine text-white text-lg font-bold py-3 rounded-xl transition-colors font-heading text-[24px] disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      {isCheckingOut ? "Redirecting..." : "BUY NOW"}
                     </button>
                   </div>
                 </>
