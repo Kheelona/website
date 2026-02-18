@@ -12,14 +12,20 @@ import WhatsAppCommunity from "@/components/sections/WhatsAppCommunity";
 import FAQSection from "@/components/sections/FAQSection";
 
 import { getProducts } from "@/lib/wix/services/products";
+import Promo from "@/components/layout/Promo";
 
 export default async function HomePage() {
   const products = await getProducts();
 
   return (
-    <div style={{ minHeight: "100vh", overflowX: "hidden" }} id="main-content" tabIndex={-1}>
+    <div
+      style={{ position: "relative", minHeight: "100vh", overflowX: "hidden" }}
+      id="main-content"
+      tabIndex={-1}
+    >
       <Header />
       <HeroSection />
+      <Promo />
       <ProductCards wixProducts={products} />
       <TrustBadges />
       <Testimonials />
@@ -27,8 +33,8 @@ export default async function HomePage() {
       <InteractiveLearning />
       <WhyChooseUs />
       <UsageScenarios />
-      <FAQSection />
       <WhatsAppCommunity />
+      <FAQSection />
       <Footer />
     </div>
   );

@@ -7,9 +7,9 @@ import Image from "next/image";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 
 // card width in px
-const CARD_WIDTH = 400; // must match card width
+const CARD_WIDTH = 360; // must match card width
 // horizontal gap between cards in px
-const GAP = 16; // gap-4 = 16px
+const GAP = 32; // gap-4 = 16px
 
 const testimonials = [
   {
@@ -60,10 +60,10 @@ export default function Testimonials() {
   };
 
   return (
-    <section id="testimonials" className="py-20" aria-labelledby="testimonials-heading">
+    <section id="testimonials" className="pt-15 pb-20" aria-labelledby="testimonials-heading">
       <SectionHeader id="testimonials-heading" title="WHAT THE PARENTS SAY?" />
 
-      <ScrollArea.Root className="relative w-full mt-10">
+      <ScrollArea.Root className="relative w-full mt-15">
         <ScrollArea.Viewport
           ref={viewportRef}
           className="w-full flex overflow-x-auto"
@@ -74,12 +74,12 @@ export default function Testimonials() {
             setActive(index);
           }}
         >
-          <div className="flex gap-4 p-4">
+          <div className="flex gap-8 p-4">
             {testimonials.map((t, i) => (
               <article key={i}>
                 {/* single testimonial card */}
-                <div className="relative shrink-0 w-100 rounded-2xl border border-gray-300 p-6 bg-white h-50 mb-5">
-                  <blockquote className="mb-6 text-[22px] font-medium  leading-[110%]">
+                <div className="relative shrink-0 w-90 rounded-2xl border border-gray-300 p-6 bg-white h-50 mb-5">
+                  <blockquote className="mb-6 text-[22px] font-bold  leading-[110%]">
                     &quot;{t.quote}&quot;
                   </blockquote>
 

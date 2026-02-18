@@ -13,7 +13,11 @@ export default function WhatsAppCommunity() {
       className="relative bg-muted-orange py-16 px-4 overflow-hidden"
       aria-labelledby="contact-heading"
     >
-      <SectionHeader id="contact-heading" title="JOIN THE WHATS APP PARENTING COMMUNITY" />
+      <SectionHeader
+        id="contact-heading"
+        title="JOIN THE WHATS APP PARENTING COMMUNITY"
+        className="mx-auto w-150"
+      />
       <div className="px-5 md:px-10">
         {/* Card */}
         <div className="mt-10 relative mx-auto ma rounded-3xl bg-tangerine p-8 text-white shadow-xl pb-10 sm:pb-30 md:pb-105">
@@ -33,7 +37,7 @@ export default function WhatsAppCommunity() {
               />
             </div>
 
-            <h4 className="font-bold ">Welcome to the group: General</h4>
+            <h4 className="font-bold font-lato">Welcome to the group: General</h4>
             <p className="mt-2 text-sm  ">
               All community members can use this chat to talk with each other
             </p>

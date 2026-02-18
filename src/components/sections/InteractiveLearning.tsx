@@ -7,7 +7,7 @@ const InteractiveLearning = () => {
     { pos: "right-[14%] bottom-[42%]", color: "muted-orange" as const },
   ];
   return (
-    <section className="pt-10">
+    <section className="pt-15 md:pt-25">
       <div className="px-5">
         <h2 className="font-heading text-[24px] md:text-[44px] text-stroke-tangerine text-center">
           Toy talks in Every language

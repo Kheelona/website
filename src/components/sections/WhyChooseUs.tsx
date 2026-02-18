@@ -17,10 +17,11 @@ export default function WhyChooseUs() {
         id="features-heading"
         subtitle="Lumi vs Others"
         title="WHY SETTLE FOR LESS? UPGRADE TO LUMI"
+        className="w-80 md:w-150 mx-auto"
       />
 
       {/* Comparison Card */}
-      <div className="mx-auto max-w-6xl rounded-3xl overflow-hidden grid grid-cols-1 md:grid-cols-2 shadow-lg">
+      <div className="mx-auto max-w-6xl rounded-3xl overflow-hidden grid grid-cols-1 md:grid-cols-2 shadow-lg mt-15">
         {/* Lumi Way */}
         <div className="bg-tangerine p-10 text-white">
           <p className="text-sm opacity-90 mb-2 text-[13px] md:text-[16px] ">The Smart Choice</p>
@@ -63,7 +64,7 @@ export default function WhyChooseUs() {
         </div>
       </div>
       <div className="mt-12 flex justify-center">
-        <Button variant="primary">ORDER NOW</Button>
+        <Button variant="primary">PRE-ORDER</Button>
       </div>
     </section>
   );
