@@ -1,7 +1,9 @@
 import Image from "next/image";
 import { getBlogById } from "@/lib/wix/services/blogById";
+import { getBlogs } from "@/lib/wix/services/blogs";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import BlogsGrid from "@/components/sections/BlogsGrid";
 
 export const getWixImageUrl = (wixImage: string, width = 800, height = 600) => {
   if (!wixImage) return "";
@@ -15,6 +17,11 @@ export const getWixImageUrl = (wixImage: string, width = 800, height = 600) => {
 export default async function BlogDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const { post }: any = await getBlogById(id);
+  const allBlogs = await getBlogs();
+
+  // Filter out the current blog from the list
+  const relatedBlogs = allBlogs?.filter((blog: any) => blog.id !== id) || [];
+
   console.log("blog details", post);
   if (!post) {
     return <div className="py-40 text-center">Blog not found</div>;
@@ -25,45 +32,51 @@ export default async function BlogDetailsPage({ params }: { params: Promise<{ id
   return (
     <>
       <Header />
-      <section className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-6">
+      <section className="py-30 bg-white">
+        <div className="mx-auto px-25">
           {/* Hero Image */}
           {imageUrl && (
-            <div className="relative w-full h-100 md:h-125 rounded-2xl overflow-hidden mb-10">
+            <div className="relative w-full h-100 md:h-128 rounded-2xl overflow-hidden mb-10">
               <Image src={imageUrl} alt={post.title} fill className="object-cover" priority />
             </div>
           )}
 
-          {/* Author + Date */}
-          <div className="flex items-center justify-between text-sm text-gray-500 mb-6">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 bg-gray-300 rounded-full" />
-              <span className="font-medium">Nandini Mogara</span>
+          <div className="px-25">
+            {/* Author + Date */}
+            <div className="flex items-center justify-between text-sm text-gray-500 mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 bg-gray-300 rounded-full" />
+                <span className="font-medium text-[12px] md:text-[20px]">Nandini Mogara</span>
+              </div>
+
+              <span className="font-medium text-[12px] md:text-[20px]">
+                {new Date(post.firstPublishedDate).toLocaleDateString("en-GB", {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                })}
+              </span>
             </div>
 
-            <span>
-              {new Date(post.firstPublishedDate).toLocaleDateString("en-GB", {
-                day: "2-digit",
-                month: "short",
-                year: "numeric",
-              })}
-            </span>
+            {/* Title */}
+            <h1
+              className="text-[24px]  font-lato md:text-[32px] font-semibold leading-tight mb-8"
+              style={{ fontWeight: 700 }}
+            >
+              {post.title}
+            </h1>
+
+            {/* Content */}
+            <div
+              className="prose prose-lg max-w-none text-[20px]"
+              dangerouslySetInnerHTML={{
+                __html: post.richContent?.html || post.excerpt || "",
+              }}
+            />
           </div>
-
-          {/* Title */}
-          <h1 className="text-3xl font-lato md:text-4xl font-semibold leading-tight mb-8">
-            {post.title}
-          </h1>
-
-          {/* Content */}
-          <div
-            className="prose prose-lg max-w-none"
-            dangerouslySetInnerHTML={{
-              __html: post.richContent?.html || post.excerpt || "",
-            }}
-          />
         </div>
       </section>
+      <BlogsGrid blogs={relatedBlogs} />
       <Footer />
     </>
   );

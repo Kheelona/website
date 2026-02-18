@@ -25,28 +25,30 @@ const Team = () => {
     <section className="py-20 px-5 md:px-10">
       <SectionHeader title="Meet the kheelona team" />
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-5 max-w-176.25 mx-auto mb-20">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-8 max-w-176.25 md:max-w-275 mx-auto mb-20 md:mt-20">
         {team.map((member) => (
           <div key={member.id} className="border rounded-3xl border-[#BCBCBC] p-2">
             <div
-              className={`min-w-35.5 h-30.75 rounded-3xl overflow-hidden ${member.class} justify-center flex`}
+              className={`min-w-35.5 h-30.75 md:h-50 rounded-3xl overflow-hidden ${member.class} justify-center flex items-end`}
             >
               <Image
                 src={member.image}
                 alt={member.label}
                 width={270}
                 height={338}
-                className="w-35.5 h-30.75  object-cover transition-transform duration-300 group-hover:scale-105"
+                className="w-35.5 h-30.75 md:h-42 md:w-42 object-cover transition-transform duration-300 group-hover:scale-105"
               />
             </div>
             <div className="">
-              <p className={`font-bold text-[17px] text-center p-1 `}>{member.label}</p>
+              <p className={`font-bold text-[17px] md:text-[20px] md:pt-3 text-center p-1`}>
+                {member.label}
+              </p>
             </div>
           </div>
         ))}
       </div>
 
-      <SectionHeader title="Meet the kheelona team" />
+      <SectionHeader title="Our team comes from" />
       <div className="flex gap-8 items-center justify-center">
         {companies.map((company) => (
           <Image

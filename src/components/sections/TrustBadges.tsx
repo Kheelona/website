@@ -21,21 +21,23 @@ const partners = [
 // Displays partner logos
 const TrustBadges = ({ bg = "" }: { bg?: string }) => {
   return (
-    <section className={`w-full px-3 py-4 ${bg}`}>
+    <section className={`w-full py-5 px-5 md:py-15 ${bg}`}>
       <div className="mx-auto max-w-350 rounded-2xl border border-[#B0B0B0] bg-white pt-10 pb-5 md:pb-10">
         <SectionHeader title="Kheelona is backed by" />
         <div className="flex justify-center items-center mt-5 ">
           {/* Render with dividers */}
           {partners.map((partner) => (
             <React.Fragment key={partner.id}>
-              {partner.id > 1 && <div className="mx-12 w-0 h-20 border-l border-black" />}
+              {partner.id > 1 && (
+                <div className="mx-8 md:mx-12 w-0 h-15 md:h-20 border-l border-black" />
+              )}
               <div className="flex items-center">
                 <Image
                   src={partner.image}
                   alt={partner.name}
                   width={140}
                   height={140}
-                  className="w-35 h-35 object-contain"
+                  className="w-25 md:w-35 h-35 object-contain"
                 />
               </div>
             </React.Fragment>
