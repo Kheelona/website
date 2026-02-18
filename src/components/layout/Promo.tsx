@@ -26,7 +26,7 @@ function Promo() {
 
   return (
     <div className="fixed z-10 w-full bottom-10 hidden px-6 md:flex">
-      <div className="bg-sky-blue md:flex w-full h-20 rounded-2xl  items-center px-6 text-white font-bold">
+      <div className="w-350 bg-sky-blue md:flex mx-auto h-20 rounded-2xl  items-center px-6 text-white font-bold">
         <div className="absolute bottom-0 flex items-center gap-4">
           <Image
             src="/images/product-lumi-secondary.png"
@@ -40,14 +40,14 @@ function Promo() {
           <h3 className="text-[47px] h-10 ml-4">
             LUMI{" "}
             <span className="text-[34px] line-through decoration-tangerine ml-10">
-              &nbsp;Rs 5999&nbsp;
+              &nbsp;Rs {firstProduct?.price ?? 5999}&nbsp;
             </span>{" "}
-            <span className="ml-5">Rs 2999</span>
+            <span className="ml-5">Rs {firstProduct?.discountedPrice ?? 2999}</span>
           </h3>
           <Button
             variant="secondary"
             onClick={() => {
-              addToCart(promoProduct);
+              addToCart(promoProduct as any);
               setCartOpen(true);
             }}
           >

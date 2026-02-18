@@ -4,15 +4,25 @@ import Image from "next/image";
 import { X, Minus, Plus, ShoppingCart } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { useCart } from "@/context/CartContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+
+export const getWixImageUrl = (wixImage: string, width = 800, height = 600) => {
+  if (!wixImage) return "";
+
+  const imageId = wixImage.split("/")[3];
+  // 7303e2_06733c7a98f542a3aabe9de534d7cc60~mv2.jpeg
+
+  return `https://static.wixstatic.com/media/${imageId}/v1/fill/w_${width},h_${height},al_c,q_90/${imageId}`;
+};
 
 export default function CartUI() {
   const { cartItems, removeFromCart, updateQuantity, getTotalItems, isCartOpen, setCartOpen } =
     useCart();
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
 
   const itemCount = getTotalItems();
 
-  const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  // const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
   const total = cartItems.reduce((total, item) => total + item.discountedPrice * item.quantity, 0);
 
   useEffect(() => {
@@ -20,6 +30,29 @@ export default function CartUI() {
       setCartOpen(false);
     }
   }, [itemCount]);
+
+  const handleCheckout = async () => {
+    if (isCheckingOut || cartItems.length === 0) return;
+    setIsCheckingOut(true);
+    try {
+      const response = await fetch("/api/cart/checkout", { method: "POST" });
+      if (!response.ok) {
+        throw new Error("Failed to create checkout");
+      }
+      const data = (await response.json()) as { redirectUrl?: string };
+      if (data.redirectUrl) {
+        window.location.href = data.redirectUrl;
+        return;
+      }
+      throw new Error("Missing redirect URL");
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsCheckingOut(false);
+    }
+  };
+
+  console.log("Cart items:", cartItems);
 
   return (
     <Dialog.Root open={isCartOpen} onOpenChange={setCartOpen}>
@@ -40,9 +73,7 @@ export default function CartUI() {
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-white/40 backdrop-blur-xl z-40" />
         <Dialog.Content className="fixed inset-0 flex items-center justify-center z-50">
-          <Dialog.DialogTitle className="sr-only" id="cart-dialog-title">
-            Shopping Cart
-          </Dialog.DialogTitle>
+          <Dialog.Title className="sr-only">Shopping cart</Dialog.Title>
           {/* Cart Container */}
           <div className="w-105 rounded-3xl p-4 relative h-[700] max-h-[80vh] overflow-y-visible">
             {/* Close Button */}
@@ -62,7 +93,7 @@ export default function CartUI() {
               ) : (
                 <div className="flex flex-col h-full">
                   {/* Cart Items */}
-                  <div className="grow space-y-4 mb-6 h-[calc(100%-255px)] overflow-y-auto">
+                  <div className="grow space-y-4 mb-6 h-[calc(100%-255px)] ">
                     {cartItems.map((item) => (
                       <div
                         key={item.id}
@@ -77,11 +108,11 @@ export default function CartUI() {
                             <X size={14} />
                           </button>
                           <Image
-                            src={item.image}
+                            src={getWixImageUrl(item.image)}
                             alt={item.name}
                             width={80}
                             height={80}
-                            className="object-cover border rounded-2xl overflow-hidden"
+                            className="w-full h-full object-cover border rounded-2xl"
                           />
                         </div>
 
@@ -136,8 +167,12 @@ export default function CartUI() {
                     </div>
 
                     {/* Buy Button */}
-                    <button className="w-full h-13 bg-tangerine text-white text-lg font-bold py-3 rounded-xl transition-colors font-heading text-[24px]">
-                      BUY NOW
+                    <button
+                      onClick={handleCheckout}
+                      disabled={isCheckingOut}
+                      className="w-full bg-tangerine text-white text-lg font-bold py-3 rounded-xl transition-colors font-heading text-[24px] disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      {isCheckingOut ? "Redirecting..." : "BUY NOW"}
                     </button>
                   </div>
                 </div>

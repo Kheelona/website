@@ -163,7 +163,7 @@ export default function ContactUs() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-tangerine hover:bg-tangerine/90 font-lato text-white py-4 rounded-xl font-heading text-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-tangerine hover:bg-tangerine/90 font-lato text-white py-4 rounded-xl font-heading text-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {loading ? "Sending..." : "Send Message"}
             </button>
