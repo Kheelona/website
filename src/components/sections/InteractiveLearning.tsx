@@ -5,6 +5,15 @@ const InteractiveLearning = () => {
   const decorStars = [
     { pos: "left-[16%] bottom-[28%]", color: "tangerine" as const },
     { pos: "right-[14%] bottom-[42%]", color: "muted-orange" as const },
+    { pos: "left-[14%] top-[42%]", color: "tangerine" as const },
+    { pos: "left-[30%] top-[20%]", color: "muted-orange" as const },
+    { pos: "left-[36%] top-[40%]", color: "muted-orange" as const },
+    { pos: "right-[22%] top-[18%]", color: "tangerine" as const },
+    { pos: "right-[28%] top-[65%]", color: "muted-orange" as const },
+    { pos: "left-[8%] bottom-[15%]", color: "tangerine" as const },
+    { pos: "right-[8%] bottom-[8%]", color: "muted-orange" as const },
+    { pos: "left-[48%] top-[8%]", color: "tangerine" as const },
+    { pos: "right-[38%] bottom-[65%]", color: "muted-orange" as const },
   ];
   return (
     <section className="pt-15 md:pt-25">

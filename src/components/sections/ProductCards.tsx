@@ -4,6 +4,8 @@ import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
+import { useProducts } from "@/context/ProductsContext";
+import { useEffect, useMemo } from "react";
 
 interface WixPrice {
   price?: number | null;
@@ -36,33 +38,45 @@ interface Product {
 
 const ProductCards = ({ wixProducts }: { wixProducts: unknown[] }) => {
   const router = useRouter();
-  const { addToCart } = useCart();
-  const products: Product[] = (wixProducts ?? []).map((item: unknown, index: number) => {
-    // If item already matches Product shape
-    const maybeProduct = item as Record<string, unknown>;
-    if (
-      maybeProduct &&
-      Array.isArray(maybeProduct.images) &&
-      typeof maybeProduct.name === "string"
-    ) {
-      return {
-        id: maybeProduct.id ?? index + 1,
-        name: maybeProduct.name ?? "",
-        price: maybeProduct.price as number | undefined,
-        discountedPrice: maybeProduct.discountedPrice as number | undefined,
-        images: (maybeProduct.images as string[]) ?? [],
-      } as Product;
-    }
+  const { addToCart, setCartOpen } = useCart();
+  const { setProducts } = useProducts();
 
-    const raw = item as WixProductRaw;
-    return {
-      id: raw._id,
-      name: raw.name ?? "",
-      price: raw.priceData?.price ?? raw.price?.price,
-      discountedPrice: raw.priceData?.discountedPrice ?? raw.price?.discountedPrice,
-      images: raw.media?.items?.map((m) => m.image?.url ?? "").filter(Boolean) ?? [],
-    } as Product;
-  });
+  const products: Product[] = useMemo(
+    () =>
+      (wixProducts ?? []).map((item: unknown, index: number) => {
+        // If item already matches Product shape
+        const maybeProduct = item as Record<string, unknown>;
+        if (
+          maybeProduct &&
+          Array.isArray(maybeProduct.images) &&
+          typeof maybeProduct.name === "string"
+        ) {
+          return {
+            id: maybeProduct.id ?? index + 1,
+            name: maybeProduct.name ?? "",
+            price: maybeProduct.price as number | undefined,
+            discountedPrice: maybeProduct.discountedPrice as number | undefined,
+            images: (maybeProduct.images as string[]) ?? [],
+          } as Product;
+        }
+
+        const raw = item as WixProductRaw;
+        return {
+          id: raw._id,
+          name: raw.name ?? "",
+          price: raw.priceData?.price ?? raw.price?.price,
+          discountedPrice: raw.priceData?.discountedPrice ?? raw.price?.discountedPrice,
+          images: raw.media?.items?.map((m) => m.image?.url ?? "").filter(Boolean) ?? [],
+        } as Product;
+      }),
+    [wixProducts]
+  );
+
+  useEffect(() => {
+    if (products.length > 0) {
+      setProducts(products);
+    }
+  }, [products, setProducts]);
 
   return (
     <section
@@ -81,7 +95,7 @@ const ProductCards = ({ wixProducts }: { wixProducts: unknown[] }) => {
           {products.map((product: Product) => (
             <article
               key={product.id}
-              className="min-w-83.5 min-h-104 rounded-2xl border border-[#BCBCBC] bg-white p-3"
+              className="min-w-83.5 min-h-104 rounded-2xl border border-[#BCBCBC] bg-white p-3 cursor-pointer transition-shadow hover:shadow-lg"
               onClick={() => {
                 router.push(`/product/${product.id}`);
               }}
@@ -117,6 +131,7 @@ const ProductCards = ({ wixProducts }: { wixProducts: unknown[] }) => {
                       discountedPrice: product.discountedPrice ?? 0,
                       image: product.images[0] ?? "/toy.png",
                     });
+                    setCartOpen(true);
                   }}
                 >
                   PRE-ORDER
