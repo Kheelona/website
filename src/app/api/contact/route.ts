@@ -1,14 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient, OAuthStrategy } from "@wix/sdk";
-import { contacts } from "@wix/crm";
+import { createClient, ApiKeyStrategy } from "@wix/sdk";
+import { contacts, notes } from "@wix/crm";
 
-// Initialize Wix client with CRM module for contacts
-const wixClient = createClient({
-  modules: { contacts },
-  auth: OAuthStrategy({
-    clientId: process.env.NEXT_PUBLIC_WIX_CLIENT_ID!,
-  }),
-});
+function createWixClient() {
+  const apiKey = process.env.WIX_API_KEY;
+  const accountId = process.env.WIX_ACCOUNT_ID;
+
+  if (!apiKey || !accountId) {
+    throw new Error("WIX_API_KEY or WIX_ACCOUNT_ID is not configured");
+  }
+
+  return createClient({
+    modules: { contacts, notes },
+    auth: ApiKeyStrategy({
+      apiKey,
+      accountId,
+    }),
+  });
+}
 
 interface ContactFormData {
   name: string;
@@ -24,6 +33,8 @@ interface ContactFormData {
  */
 export async function POST(request: NextRequest) {
   try {
+    const wixClient = createWixClient();
+
     // Parse request body
     const body = (await request.json()) as ContactFormData;
 
@@ -41,41 +52,29 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: "Invalid email format" }, { status: 400 });
     }
 
-    // Create or update contact in Wix CRM
+    const trimmedName = body.name.trim();
+    const [firstName, ...lastNameParts] = trimmedName.split(/\s+/);
+
     const contactData = {
-      source: {
-        sourceType: "OTHER",
+      name: {
+        first: firstName || trimmedName,
+        last: lastNameParts.join(" ") || undefined,
       },
-      firstName: body.name.split(" ")[0] || body.name,
-      lastName: body.name.split(" ").slice(1).join(" ") || "",
       emails: {
-        emails: [body.email],
+        items: [{ email: body.email.trim(), primary: true, tag: "MAIN" as const }],
       },
-      ...(body.phone && {
-        phones: {
-          phones: [body.phone],
-        },
-      }),
-      info: {
-        customFields: [
-          {
-            key: "subject",
-            value: body.subject,
-          },
-          {
-            key: "message",
-            value: body.message,
-          },
-          {
-            key: "submissionDate",
-            value: new Date().toISOString(),
-          },
-        ],
-      },
+      ...(body.phone?.trim()
+        ? {
+            phones: {
+              items: [{ phone: body.phone.trim(), primary: true, tag: "MAIN" as const }],
+            },
+          }
+        : {}),
     };
 
     // Create contact in Wix CRM
-    const result = await wixClient.contacts.createContact(contactData as any);
+    console.log("contactData:", contactData);
+    const result = await wixClient.contacts.createContact(contactData);
 
     // Log successful submission (for debugging)
     console.log("Contact created in Wix CRM:", result);
@@ -85,6 +84,14 @@ export async function POST(request: NextRequest) {
       (result.contact && typeof result.contact === "object" && "_id" in result.contact
         ? (result.contact._id as string)
         : null) || "unknown";
+
+    if (contactId !== "unknown") {
+      await wixClient.notes.createNote({
+        contactId,
+        text: `Subject: ${body.subject}\nEmail: ${body.email}\nPhone: ${body.phone ?? ""}\n\n${body.message}`,
+        type: "NOT_SET",
+      });
+    }
 
     return NextResponse.json(
       {
@@ -97,11 +104,17 @@ export async function POST(request: NextRequest) {
     // Log error for debugging
     console.error("Error submitting contact form:", error);
 
+    const detail =
+      typeof error === "object" && error !== null && "details" in error
+        ? String((error as { details?: unknown }).details)
+        : "";
+
     // Return error response
     return NextResponse.json(
       {
         message: "Failed to submit message. Please try again or contact us directly.",
         error: error instanceof Error ? error.message : "Unknown error",
+        detail,
       },
       { status: 500 }
     );
