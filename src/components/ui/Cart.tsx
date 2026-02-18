@@ -4,6 +4,7 @@ import Image from "next/image";
 import { X, Minus, Plus, ShoppingCart } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { useCart } from "@/context/CartContext";
+import { useEffect } from "react";
 
 export default function CartUI() {
   const { cartItems, removeFromCart, updateQuantity, getTotalItems, isCartOpen, setCartOpen } =
@@ -13,6 +14,12 @@ export default function CartUI() {
 
   const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
   const total = cartItems.reduce((total, item) => total + item.discountedPrice * item.quantity, 0);
+
+  useEffect(() => {
+    if (itemCount == 0) {
+      setCartOpen(false);
+    }
+  }, [itemCount]);
 
   return (
     <Dialog.Root open={isCartOpen} onOpenChange={setCartOpen}>
@@ -37,7 +44,7 @@ export default function CartUI() {
             Shopping Cart
           </Dialog.DialogTitle>
           {/* Cart Container */}
-          <div className="w-105 rounded-3xl p-4 relative h-[80vh] overflow-y-visible">
+          <div className="w-105 rounded-3xl p-4 relative h-[700] max-h-[80vh] overflow-y-visible">
             {/* Close Button */}
             <Dialog.Close asChild>
               <button className="absolute -top-8 right-4 w-10 h-10 rounded-full text-black  bg-white border border-[#BDBDBD] flex items-center justify-center hover:bg-gray-100 transition-colors">
@@ -46,16 +53,16 @@ export default function CartUI() {
             </Dialog.Close>
 
             {/* Inner Card */}
-            <div className="bg-white h-full rounded-3xl p-4 pt-6 border border-[#BDBDBD]">
+            <div className="bg-white h-full rounded-3xl p-8 pt-15 px-5 border border-[#BDBDBD]">
               {cartItems.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-12">
                   <ShoppingCart size={48} className="text-gray-300 mb-4" />
                   <p className="text-gray-500 text-lg">Your cart is empty</p>
                 </div>
               ) : (
-                <>
+                <div className="flex flex-col h-full">
                   {/* Cart Items */}
-                  <div className="space-y-4 mb-6 h-[calc(100%-255px)] overflow-y-auto">
+                  <div className="grow space-y-4 mb-6 h-[calc(100%-255px)] overflow-y-auto">
                     {cartItems.map((item) => (
                       <div
                         key={item.id}
@@ -112,28 +119,28 @@ export default function CartUI() {
 
                   {/* Summary */}
                   <div className="border border-[#BDBDBD] rounded-2xl p-4">
-                    <div className="text-[12px] flex justify-between text-gray-600 mb-4">
+                    <div className="text-[14px] flex justify-between text-gray-600">
                       <span>Discount</span>
                       <span>-50%</span>
                     </div>
-                    <div className="text-[20px] flex justify-between text-gray-600 mb-2">
+                    {/* <div className="text-[20px] flex justify-between text-gray-600 mb-2">
                       <span>Subtotal</span>
                       <span>₹{subtotal.toLocaleString("en-IN")}</span>
-                    </div>
+                    </div> */}
 
-                    <div className="text-[20px] flex justify-between items-end pb-4 border-t border-[#BDBDBD] pt-4">
-                      <span className="text-2xl font-semibold">Total</span>
-                      <span className="text-3xl font-bold">
+                    <div className="text-[20px] flex justify-between items-end pb-4">
+                      <span className="text-[24px] font-semibold">Subtotal</span>
+                      <span className="text-[24px] font-bold">
                         ₹{Math.round(total).toLocaleString("en-IN")}
                       </span>
                     </div>
 
                     {/* Buy Button */}
-                    <button className="w-full bg-tangerine text-white text-lg font-bold py-3 rounded-xl transition-colors font-heading text-[24px]">
+                    <button className="w-full h-13 bg-tangerine text-white text-lg font-bold py-3 rounded-xl transition-colors font-heading text-[24px]">
                       BUY NOW
                     </button>
                   </div>
-                </>
+                </div>
               )}
             </div>
           </div>

@@ -16,7 +16,7 @@ export default function WhatsAppCommunity() {
       <SectionHeader
         id="contact-heading"
         title="JOIN THE WHATS APP PARENTING COMMUNITY"
-        className="mx-auto w-150"
+        className="mx-auto w-70 md:w-150"
       />
       <div className="px-5 md:px-10">
         {/* Card */}

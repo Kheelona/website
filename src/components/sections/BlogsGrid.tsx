@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import Image from "next/image";
 import clsx from "clsx";
 import { useState } from "react";
@@ -17,18 +18,18 @@ export default function BlogsGrid({ blogs }: { blogs: any[] }) {
   const [active, setActive] = useState<"kids" | "parents">("kids");
 
   return (
-    <section className="py-24 bg-[#f7f7f7]">
+    <section className="py-24">
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
         <div className="flex items-center justify-between mb-12">
-          <h2 className="text-3xl font-semibold">Love Reading?</h2>
+          <h2 className="text-[16px] md:text-3xl font-semibold font-lato">Love Reading?</h2>
 
           <div className="flex gap-3">
             <button
               onClick={() => setActive("kids")}
               className={clsx(
-                "px-5 py-2 rounded-full text-sm transition",
-                active === "kids" ? "bg-sky-400 text-white" : "bg-sky-100 text-gray-700"
+                "px-5 md:px-10 py-1 rounded-2xl text-[15px] md:text-[24px] transition cursor-pointer ",
+                active === "kids" ? "bg-[#8ADAFF]" : "bg-[#D2F1FF] "
               )}
             >
               Kids
@@ -37,8 +38,8 @@ export default function BlogsGrid({ blogs }: { blogs: any[] }) {
             <button
               onClick={() => setActive("parents")}
               className={clsx(
-                "px-5 py-2 rounded-full text-sm transition",
-                active === "parents" ? "bg-sky-400 text-white" : "bg-sky-100 text-gray-700"
+                "px-5 md:33px-10 py-1 rounded-2xl text-[15px] md:text-[24px] transition cursor-pointer",
+                active === "parents" ? "bg-[#8ADAFF]" : "bg-[#D2F1FF] "
               )}
             >
               Parents
@@ -47,55 +48,57 @@ export default function BlogsGrid({ blogs }: { blogs: any[] }) {
         </div>
 
         {/* Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {blogs.map((blog) => {
             const imageUrl = getWixImageUrl(blog.media?.wixMedia?.image, 710, 565);
             return (
-              <article
-                key={blog._id}
-                className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-md transition"
-              >
-                {/* Image */}
-                <div className="relative h-55 bg-gray-200">
-                  {imageUrl && (
-                    <Image src={imageUrl} alt={blog.title} fill className="object-cover" />
-                  )}
-                </div>
-
-                {/* Content */}
-                <div className="p-6 flex flex-col gap-4">
-                  <div className="flex items-center justify-between text-sm text-gray-500">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-gray-300 rounded-full" />
-                      <span>Nandini Mogara</span>
-                    </div>
-
-                    <span>
-                      {new Date(blog.firstPublishedDate).toLocaleDateString("en-GB", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                      })}
-                    </span>
+              <Link key={blog._id} href={`/blog/${blog._id}`} className="h-full">
+                <article className="relative pb-5 h-full bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-md transition cursor-pointer">
+                  {/* Image */}
+                  <div className="relative h-45.5 bg-gray-200">
+                    {imageUrl && (
+                      <Image src={imageUrl} alt={blog.title} fill className="object-cover" />
+                    )}
                   </div>
 
-                  <h3 className="text-lg font-semibold leading-snug">{blog.title}</h3>
+                  {/* Content */}
+                  <div className="p-6 flex flex-col gap-4">
+                    <div className="flex items-center justify-between text-sm text-gray-500">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 bg-gray-300 rounded-full" />
+                        <span className="text-[15px]">Nandini Mogara</span>
+                      </div>
 
-                  <a href={`/blog/${blog._id}`} className="ml-auto">
-                    <button className="text-sm text-gray-500 text-right hover:text-black transition">
+                      <span className="text-[15px]">
+                        {new Date(blog.firstPublishedDate).toLocaleDateString("en-GB", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </span>
+                    </div>
+
+                    <h3
+                      className="text-[20px] font-lato font-semibold leading-snug"
+                      style={{ fontWeight: 900 }}
+                    >
+                      {blog.title}
+                    </h3>
+
+                    <span className="absolute bottom-5 right-6 text-gray-500 hover:text-black transition text-[12px] md:text-[18px]">
                       Read more
-                    </button>
-                  </a>
-                </div>
-              </article>
+                    </span>
+                  </div>
+                </article>
+              </Link>
             );
           })}
         </div>
 
         {/* Bottom CTA */}
-        <div className="text-center mt-16">
+        {/* <div className="text-center mt-16">
           <button className="text-gray-600 hover:text-black transition">Read more</button>
-        </div>
+        </div> */}
       </div>
     </section>
   );

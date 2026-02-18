@@ -29,10 +29,8 @@ export default function WhatsAppCommunity() {
               />
             </div>
 
-            <h4 className="font-bold ">Welcome to the group: General</h4>
-            <p className="mt-2 text-sm  ">
-              All community members can use this chat to talk with each other
-            </p>
+            <h4 className="font-bold font-lato text-xl">Welcome to the group: General</h4>
+            <p className="mt-2 ">All community members can use this chat to talk with each other</p>
 
             <Link href="#" className="mt-5 flex items-center justify-center">
               <Button variant="green" className="w-full">
