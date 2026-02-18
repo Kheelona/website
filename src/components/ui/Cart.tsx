@@ -3,22 +3,19 @@
 import Image from "next/image";
 import { X, Minus, Plus, ShoppingCart } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { useState } from "react";
 import { useCart } from "@/context/CartContext";
 
 export default function CartUI() {
-  const [isOpen, setIsOpen] = useState(false);
-  const { cartItems, removeFromCart, updateQuantity, getTotalItems } = useCart();
+  const { cartItems, removeFromCart, updateQuantity, getTotalItems, isCartOpen, setCartOpen } =
+    useCart();
 
   const itemCount = getTotalItems();
 
-  const subtotal = cartItems.reduce(
-    (total, item) => total + item.discountedPrice * item.quantity,
-    0
-  );
+  const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  const total = cartItems.reduce((total, item) => total + item.discountedPrice * item.quantity, 0);
 
   return (
-    <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog.Root open={isCartOpen} onOpenChange={setCartOpen}>
       <Dialog.Trigger asChild>
         <button
           aria-label="Shopping cart"
@@ -36,6 +33,9 @@ export default function CartUI() {
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-white/40 backdrop-blur-xl z-40" />
         <Dialog.Content className="fixed inset-0 flex items-center justify-center z-50">
+          <Dialog.DialogTitle className="sr-only" id="cart-dialog-title">
+            Shopping Cart
+          </Dialog.DialogTitle>
           {/* Cart Container */}
           <div className="w-105 rounded-3xl p-4 relative h-[80vh] overflow-y-visible">
             {/* Close Button */}
@@ -124,7 +124,7 @@ export default function CartUI() {
                     <div className="text-[20px] flex justify-between items-end pb-4 border-t border-[#BDBDBD] pt-4">
                       <span className="text-2xl font-semibold">Total</span>
                       <span className="text-3xl font-bold">
-                        ₹{Math.round(subtotal * 0.5).toLocaleString("en-IN")}
+                        ₹{Math.round(total).toLocaleString("en-IN")}
                       </span>
                     </div>
 

@@ -69,7 +69,10 @@ export function Button({
   const sizeClass = variant === "primary" || variant === "secondary" ? "" : getSizeClasses();
 
   return (
-    <button className={`${getVariantClasses()} ${sizeClass} ${className}`} {...props}>
+    <button
+      className={`${getVariantClasses()} ${sizeClass} ${className} cursor-pointer font-bold transition-colors duration-300`}
+      {...props}
+    >
       {children}
     </button>
   );

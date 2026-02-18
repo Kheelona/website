@@ -1,7 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { SectionHeader } from "@/components/ui/SectionHeader";
+import { Button } from "../ui/Button";
+import { useCart } from "@/context/CartContext";
+import { useProducts } from "@/context/ProductsContext";
 
 const scenarios = [
   { id: 1, image: "/images/features/discipline.png", label: "Discipline", class: "outline-blue" },
@@ -30,13 +32,16 @@ const scenarios = [
 ];
 
 const UsageScenarios = () => {
+  const { addToCart, setCartOpen } = useCart();
+  const { firstProduct } = useProducts();
+
   return (
-    <section className="py-20 px-5 md:px-10">
+    <section className="pt-25 pb-15 px-5 md:px-10">
       <div>
         <h2 className="font-heading text-[24px] md:text-[44px] text-stroke-tangerine text-center">
           How Lumi adds value to <br /> millions of kids&apos; life
         </h2>
-        <p className="text-[18px] md:text-[30px] font-bold text-muted-foreground text-center mb-6 text-[#575757] ">
+        <p className="text-[18px] md:text-[30px] font-bold text-muted-foreground text-center mb-15 text-[#575757] ">
           What will happen if my kid has a lumi?
         </p>
 
@@ -62,6 +67,26 @@ const UsageScenarios = () => {
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="mt-12 flex justify-center">
+          <Button
+            variant="primary"
+            onClick={() => {
+              if (firstProduct) {
+                addToCart({
+                  id: firstProduct.id,
+                  name: firstProduct.name,
+                  price: firstProduct.price ?? 0,
+                  discountedPrice: firstProduct.discountedPrice ?? 0,
+                  image: firstProduct.images?.[0] ?? "/toy.png",
+                });
+                setCartOpen(true);
+              }
+            }}
+          >
+            PRE-ORDER
+          </Button>
         </div>
       </div>
     </section>

@@ -5,6 +5,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { CartProvider } from "@/context/CartContext";
+import { ProductsProvider } from "@/context/ProductsContext";
 import "./globals.css";
 
 // JSON-LD Structured Data with enhanced schema for SEO and GEO
@@ -462,9 +463,11 @@ export default function RootLayout({
         />
       </head>
       <body suppressHydrationWarning>
-        <CartProvider>
-          <ErrorBoundary>{children}</ErrorBoundary>
-        </CartProvider>
+        <ProductsProvider>
+          <CartProvider>
+            <ErrorBoundary>{children}</ErrorBoundary>
+          </CartProvider>
+        </ProductsProvider>
         <Analytics />
         <SpeedInsights />
       </body>

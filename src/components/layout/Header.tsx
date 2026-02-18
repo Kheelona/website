@@ -20,7 +20,7 @@ export function Header() {
       <a href="#main-content" className="skip-link ">
         Skip to main content
       </a>
-      <div className="mx-auto flex max-w-350 items-center justify-between rounded-2xl bg-muted-orange h-16.75 md:h-20 px-5">
+      <div className="mx-auto flex max-w-350 items-center justify-center rounded-2xl bg-muted-orange h-16.75 md:h-20 px-5">
         {/* Mobile: Hamburger */}
         <div className="flex md:hidden">
           <Dialog.Root>
@@ -70,7 +70,7 @@ export function Header() {
             height={28}
             priority
             sizes="(max-width: 768px) 116px, 164px"
-            className="h-[28.52px] w-29 md:h-10 object-contain md:w-[164.27px]"
+            className="absolute h-[28.52px] w-29 md:h-10 object-contain md:w-[164.27px] left-30"
             style={{ filter: "drop-shadow(0px 2.15px 1px #00000040)" }}
           />
         </Link>
@@ -78,14 +78,14 @@ export function Header() {
         {/* Desktop Nav */}
         <nav className="hidden items-center gap-8 md:flex navbar">
           {navLinks.map((link) => (
-            <Link key={link.label} href={link.href} className="text-[25px] text-white">
+            <Link key={link.label} href={link.href} className="text-[20px] text-white">
               {link.label}
             </Link>
           ))}
         </nav>
 
         {/* Cart */}
-        <div className="w-10 md:w-auto">
+        <div className="absolute right-20 w-10 md:w-auto">
           <CartUI />
         </div>
       </div>

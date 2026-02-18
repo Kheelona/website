@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { Button } from "../ui/Button";
 import { useState } from "react";
+import { useCart } from "@/context/CartContext";
 
 type WixImage = {
   image?: {
@@ -16,11 +17,13 @@ type WixImageItem = {
 };
 
 type WixProduct = {
+  _id?: string;
   name: string;
   description?: string;
   media?: {
     items?: WixImage[];
   };
+  price?: any;
 };
 
 const icons = [
@@ -33,11 +36,15 @@ const icons = [
 ];
 
 const ProductHero = ({ product }: { product: WixProduct }) => {
+  const { addToCart, setCartOpen } = useCart();
+
   const [hilightedImage, setHilightedImage] = useState<string>(
     product.media?.items?.[0]?.image?.url ?? ""
   );
+
+  console.log("Product in Hero:", product);
   return (
-    <section className="relative min-h-screen max-w-6xl mx-auto px-4 pt-40">
+    <section className="relative max-w-6xl mx-auto px-4 pt-40">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
         {/* Left: Image */}
         <div>
@@ -47,7 +54,7 @@ const ProductHero = ({ product }: { product: WixProduct }) => {
               alt={product.name}
               width={500}
               height={500}
-              className="w-125 h-125 object-contain mx-auto"
+              className="w-125 h-125 object-cover mx-auto rounded-2xl"
             />
           </div>
 
@@ -74,22 +81,25 @@ const ProductHero = ({ product }: { product: WixProduct }) => {
 
         {/* Right: Content */}
         <div>
-          <h1 className="text-2xl font-semibold ">{product.name}</h1>
+          <h1 className="md:text-[45px] text-[24px] font-semibold ">{product.name}</h1>
           <p className="text-[26px]">A dino That can Talk!</p>
-          <div className="flex items-center gap-2 mt-2 text-sm">
-            <span className="text-yellow-500">★ ★ ★ ★ ★</span>
+          <div className="flex items-center gap-2 mt-2 text-2xl">
+            <span className="text-[#FFD802]">★ ★ ★ ★ ★</span>
             <span>4.8/5</span>
           </div>
-          <div className="flex items-center gap-3 mt-3 font-heading">
-            <span className="line-through decoration-muted-orange text-[20px]"> Rs. 5,999 </span>
-            <span className="font-semibold text-[28px]">Rs. 2,999</span>
+          <div className="flex items-center gap-3 font-heading mt-8">
+            <span className="line-through decoration-muted-orange text-[20px]">
+              {" "}
+              Rs. {product.price.price}{" "}
+            </span>
+            <span className="font-semibold text-[28px]">Rs. {product.price.discountedPrice}</span>
           </div>
           {/* <p className="mt-4 text-[20px] leading-relaxed">
             Hello! I’m Lumi, your warm and snuggly dino buddy. I adore big hugs, gentle giggles, and
             discovering new things side by side.
           </p> */}
           <div dangerouslySetInnerHTML={{ __html: product.description ?? "" }} />
-          <div className="grid grid-cols-2 gap-3 mt-6 text-sm">
+          <div className="grid grid-cols-2 gap-y-3 gap-x-5 mt-6 text-sm">
             {icons.map((item) => (
               <div
                 key={item.id}
@@ -106,34 +116,22 @@ const ProductHero = ({ product }: { product: WixProduct }) => {
               </div>
             ))}
           </div>
-          <button className="font-heading bg-sky-blue text-white w-full flex items-center justify-center pt-4 pb-2 rounded-2xl mt-10 text-[32px]">
-            Buy Now
+          <button
+            className="font-heading bg-sky-blue text-white w-full flex items-center justify-center pt-4 pb-2 rounded-2xl mt-10 text-[32px] cursor-pointer font-bold transition-colors duration-300 hover:bg-[#0c83ba]"
+            onClick={(e) => {
+              e.stopPropagation();
+              addToCart({
+                id: product._id!,
+                name: `Lumi - ${product.name}`,
+                price: product.price.price ?? 0,
+                discountedPrice: product.price.discountedPrice ?? 0,
+                image: product.media?.items?.[0]?.image?.url ?? "",
+              });
+              setCartOpen(true);
+            }}
+          >
+            PRE-ORDER
           </button>
-        </div>
-      </div>
-      <div className="w-full absolute bottom-0 left-0 hidden md:flex bg-sky-blue rounded-2xl">
-        <div className="h-20  flex  items-center px-6 text-white font-bold">
-          <div className="absolute bottom-0 flex items-center gap-4">
-            <Image
-              src="/images/product-lumi-secondary.png"
-              alt="Lumi"
-              width={200}
-              height={200}
-              className="w-50 h-50 object-contain"
-            />
-          </div>
-          <div className="flex items-center justify-between w-full px-45">
-            <h3 className="text-[47px] h-10">
-              LUMI{" "}
-              <span className="text-[34px] line-through decoration-tangerine ml-10">
-                &nbsp;Rs 5999&nbsp;
-              </span>{" "}
-              <span className="ml-5">Rs 2999</span>
-            </h3>
-            <Button variant="secondary" className="absolute right-10">
-              ORDER NOW
-            </Button>
-          </div>
         </div>
       </div>
     </section>

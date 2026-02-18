@@ -9,6 +9,7 @@ import WhatsAppCommunity from "@/components/sections/WhatsAppCommunity";
 import ProductHero from "@/components/sections/ProductHeroSection";
 import { notFound } from "next/navigation";
 import { getProductById } from "@/lib/wix/services/productById";
+import Promo from "@/components/layout/Promo";
 
 type WixImage = {
   image?: {
@@ -34,6 +35,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
     <div style={{ minHeight: "100vh", overflowX: "hidden" }} id="main-content" tabIndex={-1}>
       <Header />
       <ProductHero product={product} />
+      <Promo />
       <UsageScenarios />
       <Testimonials />
       <ParentingGrowth />

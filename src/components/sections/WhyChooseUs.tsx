@@ -5,8 +5,13 @@ import { XCircle } from "lucide-react";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ListItemWithIcon } from "@/components/ui/ListItemWithIcon";
 import { Button } from "../ui/Button";
+import { useCart } from "@/context/CartContext";
+import { useProducts } from "@/context/ProductsContext";
 
 export default function WhyChooseUs() {
+  const { addToCart, setCartOpen } = useCart();
+  const { firstProduct } = useProducts();
+
   return (
     <section
       id="features"
@@ -17,10 +22,11 @@ export default function WhyChooseUs() {
         id="features-heading"
         subtitle="Lumi vs Others"
         title="WHY SETTLE FOR LESS? UPGRADE TO LUMI"
+        className="w-80 md:w-150 mx-auto"
       />
 
       {/* Comparison Card */}
-      <div className="mx-auto max-w-6xl rounded-3xl overflow-hidden grid grid-cols-1 md:grid-cols-2 shadow-lg">
+      <div className="mx-auto max-w-6xl rounded-3xl overflow-hidden grid grid-cols-1 md:grid-cols-2 shadow-lg mt-15">
         {/* Lumi Way */}
         <div className="bg-tangerine p-10 text-white">
           <p className="text-sm opacity-90 mb-2 text-[13px] md:text-[16px] ">The Smart Choice</p>
@@ -43,9 +49,9 @@ export default function WhyChooseUs() {
           </ul>
         </div>
         {/* Old Way */}
-        <div className="bg-white p-10 text-gray-800">
+        <div className="bg-white p-10 pb-30 text-gray-800">
           <p className="text-sm text-gray-500 mb-2 text-[13px] md:text-[16px] ">The Old Approach</p>
-          <h3 className="font-heading text-[16px] md:text-[30px]">OLD WAY</h3>
+          <h3 className="font-heading text-[16px] md:text-[30px] mb-6">OLD WAY</h3>
 
           <ul className="space-y-4  text-[16px] md:text-[20px]">
             {[
@@ -63,7 +69,23 @@ export default function WhyChooseUs() {
         </div>
       </div>
       <div className="mt-12 flex justify-center">
-        <Button variant="primary">ORDER NOW</Button>
+        <Button
+          variant="primary"
+          onClick={() => {
+            if (firstProduct) {
+              addToCart({
+                id: firstProduct.id,
+                name: firstProduct.name,
+                price: firstProduct.price ?? 0,
+                discountedPrice: firstProduct.discountedPrice ?? 0,
+                image: firstProduct.images?.[0] ?? "/toy.png",
+              });
+              setCartOpen(true);
+            }
+          }}
+        >
+          PRE-ORDER
+        </Button>
       </div>
     </section>
   );
