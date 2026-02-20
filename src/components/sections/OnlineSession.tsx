@@ -19,7 +19,12 @@ export default function OnlineSession() {
           className="rounded-2xl"
         />
       </div>
-      <Link href="#" className="mt-5 flex items-center justify-center">
+      <Link
+        href="https://chat.whatsapp.com/D2kenBUYhhRBaXT9lCJzKB?mode=gi_t"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mt-5 flex items-center justify-center"
+      >
         <Button variant="green" className="px-30 rounded-2xl">
           <MemoWhatsappIcon size={30} />
           <span className="-mb-2">Join now</span>

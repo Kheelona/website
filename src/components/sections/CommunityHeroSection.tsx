@@ -33,7 +33,12 @@ export default function CommunityHeroSection() {
               All community members can use this chat to talk with each other
             </p>
 
-            <Link href="#" className=" flex items-center justify-center">
+            <Link
+              href="https://chat.whatsapp.com/D2kenBUYhhRBaXT9lCJzKB?mode=gi_t"
+              target="_blank"
+              rel="noopener noreferrer"
+              className=" flex items-center justify-center"
+            >
               <Button variant="green" className="w-full rounded-full">
                 <MemoWhatsappIcon size={30} />
                 <span className="-mb-2">Join now</span>

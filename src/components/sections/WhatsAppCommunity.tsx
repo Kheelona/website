@@ -40,7 +40,12 @@ export default function WhatsAppCommunity() {
             <h4 className="font-bold font-lato text-xl">Welcome to the group: General</h4>
             <p className="mt-2 ">All community members can use this chat to talk with each other</p>
 
-            <Link href="#" className="mt-5 flex items-center justify-center">
+            <Link
+              href="https://chat.whatsapp.com/D2kenBUYhhRBaXT9lCJzKB?mode=gi_t"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-5 flex items-center justify-center"
+            >
               <Button variant="green" className="w-full">
                 <span className="hidden md:block">
                   <MemoWhatsappIcon size={30} />

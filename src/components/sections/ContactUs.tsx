@@ -33,15 +33,17 @@ export default function ContactUs() {
     e.preventDefault();
     setLoading(true);
     setStatus({ type: "idle", message: "" });
+    console.log("Submitting form with data:", formData);
 
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
       const data = await res.json();
+
+      console.log("Response from server:", data);
 
       if (!res.ok) {
         throw new Error(data?.message || "Something went wrong");
