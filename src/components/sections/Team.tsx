@@ -29,14 +29,13 @@ const Team = () => {
         {team.map((member) => (
           <div key={member.id} className="border rounded-3xl border-[#BCBCBC] p-2">
             <div
-              className={`min-w-35.5 h-30.75 md:h-50 rounded-3xl overflow-hidden ${member.class} justify-center flex items-end`}
+              className={`relative min-w-35.5 h-30.75 md:h-50 rounded-3xl overflow-hidden ${member.class} justify-center flex items-end`}
             >
               <Image
                 src={member.image}
                 alt={member.label}
-                width={270}
-                height={338}
-                className="w-35.5 h-30.75 md:h-42 md:w-42 object-cover transition-transform duration-300 group-hover:scale-105"
+                fill
+                className="w-35.5 h-30.75 md:h-full md:w-full object-cover transition-transform duration-300 group-hover:scale-105"
               />
             </div>
             <div className="">
