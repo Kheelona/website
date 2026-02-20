@@ -51,7 +51,7 @@ export function Header() {
                     <Link
                       key={link.label}
                       href={link.href}
-                      className="text-lg font-medium text-gray-700 "
+                      className="text-lg font-medium text-gray-700 transition-all duration-300 hover:text-tangerine hover:translate-x-1"
                     >
                       {link.label}
                     </Link>
@@ -79,7 +79,11 @@ export function Header() {
         {/* Desktop Nav */}
         <nav className="hidden items-center gap-8 md:flex navbar">
           {navLinks.map((link) => (
-            <Link key={link.label} href={link.href} className="text-[20px] text-white">
+            <Link
+              key={link.label}
+              href={link.href}
+              className="text-[20px] text-white transition-all duration-300 hover:opacity-75 hover:scale-105"
+            >
               {link.label}
             </Link>
           ))}

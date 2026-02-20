@@ -19,10 +19,10 @@ export default function AboutHeroSection() {
         </p>
 
         <Image
-          src={"/images/about/HeroSection.png"}
+          src={"/images/about/HeroSection.jpg"}
           alt="Kheelona Hero Image"
-          width={500}
-          height={360}
+          width={1200}
+          height={640}
           className="w-75.25 h-35.5 md:w-150 md:h-80 object-contain mx-auto"
         />
         <p className="text-[10px] md:text-[14px] text-center mb-12 mt-1">
@@ -39,8 +39,8 @@ export default function AboutHeroSection() {
             <Image
               src={"/images/about/ApoorvaAction.png"}
               alt="Kheelona Hero Image"
-              width={135}
-              height={110}
+              width={540}
+              height={440}
               className="w-33.75 h-27.5 md:w-50 md:h-full object-contain mx-auto"
             />
           </div>
@@ -73,8 +73,8 @@ export default function AboutHeroSection() {
             <Image
               src={"/images/about/AmanAction.png"}
               alt="Kheelona Hero Image"
-              width={135}
-              height={115}
+              width={540}
+              height={460}
               className="w-33.75 h-28.75 md:w-50 md:h-full object-contain mx-auto"
             />
           </div>

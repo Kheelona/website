@@ -45,6 +45,17 @@ body {
   overflow-x: hidden;
 }
 
+html,
+body {
+  cursor: url("/cursor.cur"), auto;
+}
+
+a,
+button,
+[role="button"] {
+  cursor: url("/hand-cursor.cur"), pointer;
+}
+
 h1,
 h2,
 h3,

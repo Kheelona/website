@@ -59,7 +59,7 @@ export default function CartUI() {
       <Dialog.Trigger asChild>
         <button
           aria-label="Shopping cart"
-          className="relative flex items-center justify-center rounded-md p-2 text-white hover:bg-white/10 transition-colors"
+          className="relative flex items-center justify-center rounded-md p-2 text-white hover:bg-white/10 transition-colors cursor-pointer"
         >
           <ShoppingCart size={22} />
           {itemCount > 0 && (
