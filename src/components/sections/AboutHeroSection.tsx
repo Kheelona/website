@@ -23,7 +23,7 @@ export default function AboutHeroSection() {
           alt="Kheelona Hero Image"
           width={1200}
           height={640}
-          className="w-75.25 h-35.5 md:w-150 md:h-80 object-contain mx-auto"
+          className="w-75.25 h-35.5 md:w-226.25 md:h-106.5 object-cover mx-auto rounded-2xl"
         />
         <p className="text-[10px] md:text-[14px] text-center mb-12 mt-1">
           Kheelona receiving Award and Grants from Govt. of Karnataka
