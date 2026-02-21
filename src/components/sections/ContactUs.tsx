@@ -36,7 +36,7 @@ export default function ContactUs() {
     console.log("Submitting form with data:", formData);
 
     try {
-      const res = await fetch("https://www.kheelona.com/_functions/contact", {
+      const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

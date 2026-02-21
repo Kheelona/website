@@ -1,23 +1,88 @@
+const WIX_CONTACT_FUNCTION_URL =
+  process.env.WIX_CONTACT_FUNCTION_URL || "https://kheelona.com/_functions/contact";
+
+interface ContactPayload {
+  name?: string;
+  phone?: string;
+  email?: string;
+  subject?: string;
+  message?: string;
+}
+
+function safeJsonParse(value: string): unknown {
+  try {
+    return JSON.parse(value);
+  } catch {
+    return null;
+  }
+}
+
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
+    const body = (await req.json()) as ContactPayload;
+    const name = body.name?.trim();
+    const email = body.email?.trim();
+    const message = body.message?.trim();
 
-    const res = await fetch("https://kheelona.com/_functions/contact", {
+    if (!name || !email || !message) {
+      return Response.json(
+        { success: false, message: "Missing required fields (name, email, message)" },
+        { status: 400 }
+      );
+    }
+
+    const upstreamRes = await fetch(WIX_CONTACT_FUNCTION_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name,
+        email,
+        message,
+        phone: body.phone?.trim() || "",
+        subject: body.subject?.trim() || "",
+      }),
+      cache: "no-store",
     });
 
-    const data = await res.text();
+    const raw = await upstreamRes.text();
+    const parsed = safeJsonParse(raw);
 
-    return new Response(data, {
-      status: res.status,
-    });
+    if (!upstreamRes.ok) {
+      const parsedError =
+        typeof parsed === "object" && parsed !== null
+          ? "error" in parsed && typeof parsed.error === "string"
+            ? parsed.error
+            : "message" in parsed && typeof parsed.message === "string"
+              ? parsed.message
+              : null
+          : null;
+
+      const rawPreview = raw.trim().slice(0, 220);
+
+      return Response.json(
+        {
+          success: false,
+          message: parsedError || rawPreview || "Failed to submit contact form",
+          upstreamStatus: upstreamRes.status,
+          upstreamUrl: WIX_CONTACT_FUNCTION_URL,
+        },
+        { status: upstreamRes.status }
+      );
+    }
+
+    return Response.json(
+      typeof parsed === "object" && parsed !== null ? parsed : { success: true },
+      { status: 200 }
+    );
   } catch (error) {
-    console.error("Error in contact API route:", error);
-    return new Response("Internal Server Error", { status: 500 });
+    console.error("Error in /api/contact:", error);
+    return Response.json(
+      {
+        success: false,
+        message: "Internal Server Error",
+      },
+      { status: 500 }
+    );
   }
 }
 

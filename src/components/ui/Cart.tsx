@@ -52,8 +52,6 @@ export default function CartUI() {
     }
   };
 
-  console.log("Cart items:", cartItems);
-
   return (
     <Dialog.Root open={isCartOpen} onOpenChange={setCartOpen}>
       <Dialog.Trigger asChild>
