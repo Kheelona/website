@@ -89,8 +89,9 @@ export function Header() {
           ))}
         </nav>
 
-        {/* Cart */}
-        <div className="absolute right-20 w-10 md:w-auto">
+        {/* Auth + Cart */}
+        <div className="absolute right-3 md:right-5 flex items-center gap-3">
+          {/* <WixAuthButton /> */}
           <CartUI />
         </div>
       </div>

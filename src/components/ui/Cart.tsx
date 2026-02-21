@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { X, Minus, Plus, ShoppingCart } from "lucide-react";
+import { X, ShoppingCart } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { useCart } from "@/context/CartContext";
 import { useEffect, useState } from "react";
@@ -19,6 +19,7 @@ export default function CartUI() {
   const { cartItems, removeFromCart, updateQuantity, getTotalItems, isCartOpen, setCartOpen } =
     useCart();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [checkoutError, setCheckoutError] = useState("");
 
   const itemCount = getTotalItems();
 
@@ -29,30 +30,47 @@ export default function CartUI() {
     if (itemCount == 0) {
       setCartOpen(false);
     }
-  }, [itemCount]);
+  }, [itemCount, setCartOpen]);
 
   const handleCheckout = async () => {
     if (isCheckingOut || cartItems.length === 0) return;
     setIsCheckingOut(true);
+    setCheckoutError("");
     try {
-      const response = await fetch("/api/cart/checkout", { method: "POST" });
-      if (!response.ok) {
-        throw new Error("Failed to create checkout");
+      const response = await fetch(
+        `/api/cart/checkout?returnTo=${encodeURIComponent(
+          `${window.location.pathname}${window.location.search}`
+        )}`,
+        { method: "POST" }
+      );
+
+      const data = (await response.json()) as {
+        redirectUrl?: string;
+        loginUrl?: string;
+        message?: string;
+      };
+
+      if (response.status === 401 && data.loginUrl) {
+        window.location.href = data.loginUrl;
+        return;
       }
-      const data = (await response.json()) as { redirectUrl?: string };
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to create checkout");
+      }
+
       if (data.redirectUrl) {
         window.location.href = data.redirectUrl;
         return;
       }
       throw new Error("Missing redirect URL");
     } catch (error) {
-      console.error(error);
+      const message = error instanceof Error ? error.message : "Failed to create checkout";
+      setCheckoutError(message);
     } finally {
       setIsCheckingOut(false);
     }
   };
-
-  console.log("Cart items:", cartItems);
 
   return (
     <Dialog.Root open={isCartOpen} onOpenChange={setCartOpen}>
@@ -174,6 +192,9 @@ export default function CartUI() {
                     >
                       {isCheckingOut ? "Redirecting..." : "BUY NOW"}
                     </button>
+                    {checkoutError ? (
+                      <p className="mt-2 text-sm text-red-600 text-center">{checkoutError}</p>
+                    ) : null}
                   </div>
                 </div>
               )}

@@ -33,18 +33,15 @@ export default function ContactUs() {
     e.preventDefault();
     setLoading(true);
     setStatus({ type: "idle", message: "" });
-    console.log("Submitting form with data:", formData);
 
     try {
-      const res = await fetch("https://www.kheelona.com/_functions/contact", {
+      const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
       const data = await res.json();
-
-      console.log("Response from server:", data);
 
       if (!res.ok) {
         throw new Error(data?.message || "Something went wrong");
@@ -54,8 +51,6 @@ export default function ContactUs() {
         type: "success",
         message: "Message sent successfully! We'll get back to you soon.",
       });
-
-      console.log("Success:", data);
 
       // Reset form after successful submission
       setFormData({
@@ -122,7 +117,7 @@ export default function ContactUs() {
                   value={formData.phone}
                   onChange={handleChange}
                   className="w-full px-4 py-3 rounded-xl border bg-white border-gray-300 focus:outline-none focus:ring-2 focus:ring-sky-blue focus:border-transparent"
-                  placeholder="Ph No *"
+                  placeholder="Phone number"
                 />
               </div>
             </div>
