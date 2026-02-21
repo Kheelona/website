@@ -21,7 +21,7 @@ export function Header() {
       <a href="#main-content" className="skip-link ">
         Skip to main content
       </a>
-      <div className="relative mx-auto flex max-w-350 items-center justify-center rounded-2xl bg-muted-orange h-16.75 md:h-20 px-5">
+      <div className="relative mx-auto flex max-w-350 items-center justify-start md:justify-center rounded-2xl bg-muted-orange h-16.75 md:h-20 px-5">
         {/* Mobile: Hamburger */}
         <div className="flex md:hidden">
           <Dialog.Root>

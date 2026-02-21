@@ -33,7 +33,7 @@ export default async function BlogDetailsPage({ params }: { params: Promise<{ id
     <>
       <Header />
       <section className="py-30 bg-white">
-        <div className="mx-auto px-25">
+        <div className="mx-auto px-3 md:px-25">
           {/* Hero Image */}
           {imageUrl && (
             <div className="relative w-full h-100 md:h-128 rounded-2xl overflow-hidden mb-10">
@@ -41,7 +41,7 @@ export default async function BlogDetailsPage({ params }: { params: Promise<{ id
             </div>
           )}
 
-          <div className="px-25">
+          <div className="px-3 md:px-25">
             {/* Author + Date */}
             <div className="flex items-center justify-between text-sm text-gray-500 mb-6">
               <div className="flex items-center gap-3">
