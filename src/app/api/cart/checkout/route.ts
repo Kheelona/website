@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: "Cart is empty" }, { status: 400 });
     }
 
-    const checkout = await wixClient.currentCart.createCheckoutFromCurrentCart({
+    const checkout: any = await wixClient.currentCart.createCheckoutFromCurrentCart({
       channelType: "WEB",
     });
 
