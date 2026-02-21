@@ -137,7 +137,6 @@ export default function ContactPage() {
 
       <div className="min-h-screen flex pt-40 flex-col">
         <Header />
-
         <ContactUs />
         <JoinUs />
 

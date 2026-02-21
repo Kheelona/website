@@ -76,7 +76,7 @@ export default function ContactUs() {
   return (
     <section
       id="contact"
-      className="relative py-16 px-4 overflow-hidden"
+      className="relative py-2 md:py-16 px-4 overflow-hidden"
       aria-labelledby="contact-heading"
     >
       <div className="bg-muted-orange mx-auto max-w-350 rounded-2xl p-10 flex justify-center">
