@@ -14,7 +14,7 @@ const partners = [
   {
     id: 2,
     name: "NASSCOM",
-    image: "/images/logos/nasscomLogo.svg",
+    image: "/images/logos/nasscomLogo.jpeg",
   },
 ];
 
