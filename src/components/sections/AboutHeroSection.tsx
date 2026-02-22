@@ -35,7 +35,7 @@ export default function AboutHeroSection() {
         </div>
 
         <div className="flex gap-1 md:gap-8 items-end">
-          <div className="w-2/5  flex items-end justify-center">
+          <div className="w-2/5 flex items-end justify-center">
             <Image
               src={"/images/about/ApoorvaAction.png"}
               alt="Kheelona Hero Image"
@@ -45,7 +45,7 @@ export default function AboutHeroSection() {
             />
           </div>
           <div className="w-3/5 px-2 md:p-12 rounded-2xl">
-            <p className="text-[12px] md:text-[20px] font-medium leading-3.5 md:leading-5">
+            <p className="text-[14px] md:text-[20px] font-medium leading-4 md:leading-5">
               Apoorva watched his two-year-old ignore a shelf full of expensive, static toys to
               stare at a glowing screen. The toys were beautiful, but they were &quot;dead.&quot;
               The moment a human spoke to her, she lit up.
@@ -59,7 +59,7 @@ export default function AboutHeroSection() {
 
         <div className="flex gap-1 md:gap-8 items-end pt-10">
           <div className="w-3/5 px-2 md:p-12 rounded-2xl">
-            <p className="ext-[12px] md:text-[20px] font-medium leading-3.5 md:leading-5">
+            <p className="text-[14px] md:text-[20px] font-medium leading-4 md:leading-5">
               Aman and Apoorva then realised the $100B toy industry was stuck in the past, selling
               plastic while the world moved to AI. Then they decided to change that. Now we
               aren&apos;t just making &quot;smart toys&quot;, we are building how the toys will feel
