@@ -8,7 +8,7 @@ import CartUI from "../ui/Cart";
 import { WixAuthButton } from "../ui/WixAuthButton";
 
 const navLinks = [
-  { label: "Shop", href: "/shop" },
+  { label: "Community", href: "/community" },
   { label: "Blog", href: "/blog" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
@@ -37,6 +37,7 @@ export function Header() {
             <Dialog.Portal>
               <Dialog.Overlay className="fixed inset-0 bg-black/40" />
               <Dialog.Content className="fixed left-0 top-0 z-50 h-full w-70 bg-white p-6 shadow-xl">
+                <Dialog.Title className="sr-only">Menu</Dialog.Title>
                 <div className="mb-6 flex items-center justify-between">
                   <span className="text-lg font-semibold text-tangerine-500">Menu</span>
                   <Dialog.Close asChild>

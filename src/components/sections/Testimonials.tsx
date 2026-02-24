@@ -79,7 +79,7 @@ export default function Testimonials() {
               <article key={i}>
                 {/* single testimonial card */}
                 <div className="relative shrink-0 w-90 rounded-2xl border border-gray-300 p-6 bg-white h-50 mb-5">
-                  <blockquote className="mb-6 text-[22px] font-bold  leading-[110%]">
+                  <blockquote className="mb-6 text-[18px] md:text-[22px] font-bold  leading-[110%]">
                     &quot;{t.quote}&quot;
                   </blockquote>
 

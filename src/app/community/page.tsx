@@ -8,7 +8,7 @@ import CommunityHeroSection from "@/components/sections/CommunityHeroSection";
 
 export default async function HomePage() {
   return (
-    <div style={{ minHeight: "100vh", overflowX: "hidden" }} id="main-content" tabIndex={-1}>
+    <div id="main-content" tabIndex={-1}>
       <Header />
       <CommunityHeroSection />
       <OnlineSession />
