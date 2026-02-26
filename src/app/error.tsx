@@ -6,20 +6,19 @@ export default function NotFound() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[linear-gradient(135deg,#E8F7FB_0%,#C5ECF5_50%,#9DDEED_100%)] px-4 py-16">
       <div className="w-full max-w-lg text-center flex flex-col items-center gap-8">
-        {/* 404 illustration */}
+        {/* Error illustration */}
         <div className="flex flex-col items-center gap-2">
-          <span className="text-8xl md:text-9xl font-bold text-sky-400 leading-none">404</span>
+          <span className="text-8xl md:text-9xl font-bold text-sky-400 leading-none">Oops</span>
           <div className="flex h-24 w-24 md:h-36 md:w-36 items-center justify-center rounded-full bg-white shadow-xl">
-            <span className="text-4xl md:text-6xl">🔍</span>
+            <span className="text-4xl md:text-6xl">⚠️</span>
           </div>
         </div>
 
         {/* Message */}
         <div className="flex flex-col gap-4">
-          <h1 className="text-2xl md:text-4xl font-bold text-gray-800">Page Not Found</h1>
+          <h1 className="text-2xl md:text-4xl font-bold text-gray-800">Something went wrong</h1>
           <p className="mx-auto max-w-md text-gray-600 md:text-lg">
-            Oops! Looks like Lumi couldn&apos;t find this page. It might have been moved or
-            doesn&apos;t exist anymore.
+            We hit an unexpected issue while loading this page. Please try again or go back home.
           </p>
         </div>
 
@@ -40,8 +39,8 @@ export default function NotFound() {
           </Link>
         </div>
 
-        {/* Fun message */}
-        <p className="text-sm italic text-gray-400">Even Lumi sometimes gets lost exploring!</p>
+        {/* Supportive message */}
+        <p className="text-sm italic text-gray-400">If this keeps happening, contact support.</p>
       </div>
     </div>
   );

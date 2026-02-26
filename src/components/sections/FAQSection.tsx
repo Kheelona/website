@@ -50,7 +50,7 @@ export default function FAQSection() {
         <div className="text-center mb-10">
           <h2
             id="faq-heading"
-            className="font-heading text-[28px] md:text-[44px] text-stroke-tangerine"
+            className="font-heading text-[28px] md:text-[40px] text-stroke-tangerine"
           >
             FREQUENTLY ASKED QUESTIONS
           </h2>

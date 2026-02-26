@@ -22,10 +22,10 @@ const companies = [
 
 const Team = () => {
   return (
-    <section className="py-20 px-5 md:px-10">
+    <section className="md:py-15 py-10 px-5 md:px-10">
       <SectionHeader title="Meet the kheelona team" />
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-8 max-w-176.25 md:max-w-275 mx-auto mb-20 md:mt-20">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-8 max-w-176.25 md:max-w-250 mx-auto mb-20 md:mt-20">
         {team.map((member) => (
           <div key={member.id} className="border rounded-3xl border-[#BCBCBC] p-2">
             <div

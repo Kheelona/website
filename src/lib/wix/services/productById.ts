@@ -9,8 +9,6 @@ export async function getProductById(productId: string) {
     }
 
     const res = await wixClient.products.queryProducts().eq("_id", productId).find();
-
-    console.log("res.items: ", res.items, productId);
     return res.items?.[0];
   } catch (error) {
     // Log the error for debugging but don't crash the build

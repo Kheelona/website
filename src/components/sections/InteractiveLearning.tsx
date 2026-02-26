@@ -8,17 +8,17 @@ const InteractiveLearning = () => {
     { pos: "left-[14%] top-[42%]", color: "tangerine" as const },
     { pos: "left-[30%] top-[20%]", color: "muted-orange" as const },
     { pos: "left-[36%] top-[40%]", color: "muted-orange" as const },
-    { pos: "right-[22%] top-[18%]", color: "tangerine" as const },
-    { pos: "right-[28%] top-[65%]", color: "muted-orange" as const },
-    { pos: "left-[8%] bottom-[15%]", color: "tangerine" as const },
-    { pos: "right-[8%] bottom-[8%]", color: "muted-orange" as const },
+    { pos: "right-[22%] top-[28%]", color: "tangerine" as const },
+    { pos: "right-[35%] top-[65%]", color: "muted-orange" as const },
+    { pos: "left-[32%] bottom-[15%]", color: "tangerine" as const },
+    { pos: "right-[20%] bottom-[8%]", color: "muted-orange" as const },
     { pos: "left-[48%] top-[8%]", color: "tangerine" as const },
-    { pos: "right-[38%] bottom-[65%]", color: "muted-orange" as const },
+    { pos: "right-[38%] bottom-[55%]", color: "muted-orange" as const },
   ];
   return (
     <section className="pt-15 md:pt-25">
-      <div className="px-5">
-        <h2 className="font-heading text-[24px] md:text-[44px] text-stroke-tangerine text-center">
+      <div className="px-5 mx-auto w-62.5 md:w-full ">
+        <h2 className="font-heading text-[24px] md:text-[40px] text-stroke-tangerine text-center">
           Toy talks in Every language
         </h2>
       </div>

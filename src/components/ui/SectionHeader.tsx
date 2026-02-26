@@ -26,7 +26,7 @@ export function SectionHeader({
     <div id={id} className={`mb-6 ${className}`}>
       {subtitle && <p className={`subtitle text-center ${subtitleClassName}`}>{subtitle}</p>}
       <h2
-        className={`mb-6 font-heading text-[24px] md:text-[44px] text-stroke-tangerine text-center ${titleClassName}`}
+        className={`mb-6 font-heading text-[22px] md:text-[36px] text-stroke-tangerine text-center ${titleClassName}`}
       >
         {title}
       </h2>

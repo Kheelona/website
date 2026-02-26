@@ -8,14 +8,19 @@ import { Button } from "@/components/ui/Button";
 
 export default function CommunityHeroSection() {
   return (
-    <section className="relative h-screen pt-35 pb-10 overflow-hidden">
+    <section className="relative pt-35 pb-10 overflow-hidden">
       <div className="px-4">
-        <SectionHeader title="Parenting is Hard. Doing it Alone is Harder." />
+        <SectionHeader
+          title="Parenting is Hard. Doing it Alone is Harder."
+          className="w-70 md:w-108.75 mx-auto"
+        />
       </div>
-      <p className="text-center font-bold">🥗 Nutrition 🧠 Wellness 💡Parenting tips</p>
+      <p className="text-center font-bold text-[16px] md:text-[24px]">
+        🥗 Nutrition 🧠 Wellness 💡Parenting tips
+      </p>
       <div className="px-5 md:px-10">
         {/* Card */}
-        <div className="mt-5 relative mx-auto ma rounded-3xl p-8 text-white  ">
+        <div className="mt-5 relative mx-auto rounded-3xl p-8 text-white  ">
           {/* WhatsApp Card */}
           <div className="relative mx-auto max-w-sm rounded-2xl bg-white p-6 text-center text-gray-800 border border-gray-200">
             <div className="mb-4 flex justify-center">
@@ -45,20 +50,19 @@ export default function CommunityHeroSection() {
               </Button>
             </Link>
 
-            <div className="absolute -top-6 -right-6 flex h-25 w-25 items-center justify-center rounded-full border-1 border-muted-orange bg-white text-center font-bold text-sky-blue  text-[24px] leading-7">
+            <div className="absolute -top-6 -right-6 flex h-25 w-25 items-center justify-center rounded-full border border-muted-orange bg-white text-center font-bold text-sky-blue  text-[24px] leading-7">
               Its <br /> Free
             </div>
           </div>
         </div>
       </div>
-      <div className="absolute bottom-0 h-60 w-full">
+      <div className="-mt-5 lg:h-105 md:h-60 h-20 w-full">
         <Image
           src="/images/growth.webp"
           alt="Parenting Community"
           width={2400}
           height={600}
-          className="mx-auto"
-          priority
+          className=" mx-auto"
         />
       </div>
     </section>

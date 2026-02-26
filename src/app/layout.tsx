@@ -98,18 +98,6 @@ const jsonLd = {
       },
     },
     {
-      "@type": "BreadcrumbList",
-      "@id": "https://kheelona.com/#breadcrumb",
-      itemListElement: [
-        {
-          "@type": "ListItem",
-          position: 1,
-          name: "Home",
-          item: "https://kheelona.com",
-        },
-      ],
-    },
-    {
       "@type": "Product",
       "@id": "https://kheelona.com/#product",
       name: "Lumi - AI-Powered Talking Toy",
@@ -139,7 +127,7 @@ const jsonLd = {
         priceCurrency: "INR",
         availability: "https://schema.org/PreOrder",
         url: "https://kheelona.com",
-        priceValidUntil: "2025-12-31",
+        priceValidUntil: "2026-12-31",
         seller: {
           "@id": "https://kheelona.com/#organization",
         },

@@ -7,7 +7,7 @@ import Image from "next/image";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 
 // card width in px
-const CARD_WIDTH = 360; // must match card width
+const CARD_WIDTH = 200; // must match card width
 // horizontal gap between cards in px
 const GAP = 32; // gap-4 = 16px
 
@@ -16,32 +16,32 @@ const testimonials = [
     quote: "My child's best friend. She takes Lumi everywhere.",
     name: "Gaurav Guha",
     meta: "Parent of a 4 year old.",
-    avatar: "/images/testimonial.png",
+    avatar: "/images/test.jpg",
   },
   {
     quote:
       "As a working mom in Bangalore, I was honestly tired of feeling guilty about screen time. Lumi changed that for me. Thank you.",
     name: "Shweta Kiran",
     meta: "Parent of a 3 year old.",
-    avatar: "/images/testimonial.png",
+    avatar: "/images/test2.jpg",
   },
   {
     quote: "Lumi is now part of our daily routine. My kid actually asks for it.",
     name: "Rohit Mehra",
     meta: "Parent of a 5 year old.",
-    avatar: "/images/testimonial.png",
+    avatar: "/images/test3.jpg",
   },
   {
     quote: "Finally something that keeps my child engaged without a screen.",
     name: "Ananya Das",
     meta: "Parent of a 4 year old.",
-    avatar: "/images/testimonial.png",
+    avatar: "/images/test.jpg",
   },
   {
     quote: "My child's best friend. She takes Lumi everywhere.",
     name: "Gaurav Guha",
     meta: "Parent of a 4 year old.",
-    avatar: "/images/testimonial.png",
+    avatar: "/images/test2.jpg",
   },
 ];
 
@@ -60,10 +60,10 @@ export default function Testimonials() {
   };
 
   return (
-    <section id="testimonials" className="pt-15 pb-20" aria-labelledby="testimonials-heading">
+    <section id="testimonials" className="pt-5 pb-20" aria-labelledby="testimonials-heading">
       <SectionHeader id="testimonials-heading" title="WHAT THE PARENTS SAY?" />
 
-      <ScrollArea.Root className="relative w-full mt-15">
+      <ScrollArea.Root className="relative w-full mt-3 md:mt-5">
         <ScrollArea.Viewport
           ref={viewportRef}
           className="w-full flex overflow-x-auto"
@@ -78,8 +78,8 @@ export default function Testimonials() {
             {testimonials.map((t, i) => (
               <article key={i}>
                 {/* single testimonial card */}
-                <div className="relative shrink-0 w-90 rounded-2xl border border-gray-300 p-6 bg-white h-50 mb-5">
-                  <blockquote className="mb-6 text-[18px] md:text-[22px] font-bold  leading-[110%]">
+                <div className="relative shrink-0 w-55 md:w-90 rounded-2xl border border-gray-300 p-6 bg-white h-40 md:h-50 mb-5">
+                  <blockquote className="mb-6 text-[13px] md:text-[18px] font-semibold  leading-[110%]">
                     &quot;{t.quote}&quot;
                   </blockquote>
 
@@ -105,8 +105,10 @@ export default function Testimonials() {
                     />
                   </div>
                   <div>
-                    <h3 className="font-bold uppercase font-heading text-[22px]">{t.name}</h3>
-                    <p className=" text-[17px] text-gray-600">{t.meta}</p>
+                    <h3 className="font-bold uppercase font-heading text-[16px] md:text-[20px]">
+                      {t.name}
+                    </h3>
+                    <p className="text-[14px] md:text-[17px] text-gray-600">{t.meta}</p>
                   </div>
                 </footer>
               </article>

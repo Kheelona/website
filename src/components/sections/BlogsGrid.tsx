@@ -2,8 +2,6 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import clsx from "clsx";
-import { useState } from "react";
 
 export const getWixImageUrl = (wixImage: string, width = 800, height = 600) => {
   if (!wixImage) return "";
@@ -15,37 +13,11 @@ export const getWixImageUrl = (wixImage: string, width = 800, height = 600) => {
 };
 
 export default function BlogsGrid({ blogs }: { blogs: any[] }) {
-  const [active, setActive] = useState<"kids" | "parents">("kids");
-
   return (
     <section className="py-24">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-6xl mx-auto px-6">
         {/* Header */}
-        <div className="flex items-center justify-between mb-12">
-          <h2 className="text-[16px] md:text-3xl font-semibold font-lato">Love Reading?</h2>
-
-          <div className="flex gap-3">
-            <button
-              onClick={() => setActive("kids")}
-              className={clsx(
-                "px-5 md:px-10 py-1 rounded-2xl text-[15px] md:text-[24px] transition cursor-pointer ",
-                active === "kids" ? "bg-[#8ADAFF]" : "bg-[#D2F1FF] "
-              )}
-            >
-              Kids
-            </button>
-
-            <button
-              onClick={() => setActive("parents")}
-              className={clsx(
-                "px-5 md:33px-10 py-1 rounded-2xl text-[15px] md:text-[24px] transition cursor-pointer",
-                active === "parents" ? "bg-[#8ADAFF]" : "bg-[#D2F1FF] "
-              )}
-            >
-              Parents
-            </button>
-          </div>
-        </div>
+        <p className="text-[16px] md:text-[24px] font-semibold font-lato mb-10">Love Reading?</p>
 
         {/* Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -62,14 +34,14 @@ export default function BlogsGrid({ blogs }: { blogs: any[] }) {
                   </div>
 
                   {/* Content */}
-                  <div className="p-6 flex flex-col gap-4">
+                  <div className="p-4 flex flex-col gap-4">
                     <div className="flex items-center justify-between text-sm text-gray-500">
                       <div className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-gray-300 rounded-full" />
-                        <span className="text-[15px]">Nandini Mogara</span>
+                        <span className="text-[13px]">Nandini Mogara</span>
                       </div>
 
-                      <span className="text-[15px]">
+                      <span className="text-[13px]">
                         {new Date(blog.firstPublishedDate).toLocaleDateString("en-GB", {
                           day: "2-digit",
                           month: "short",
@@ -78,14 +50,14 @@ export default function BlogsGrid({ blogs }: { blogs: any[] }) {
                       </span>
                     </div>
 
-                    <h3
-                      className="text-[20px] font-lato font-semibold leading-snug"
+                    <p
+                      className="text-[16px] font-lato font-semibold leading-snug mb-2"
                       style={{ fontWeight: 900 }}
                     >
                       {blog.title}
-                    </h3>
+                    </p>
 
-                    <span className="absolute bottom-5 right-6 text-gray-500 hover:text-black transition text-[12px] md:text-[18px]">
+                    <span className="absolute bottom-5 right-6 text-gray-500 hover:text-black transition text-[12px] md:text-[14px]">
                       Read more
                     </span>
                   </div>
