@@ -7,18 +7,18 @@ export default function JoinUs() {
   return (
     <section
       id="join-us"
-      className="relative py-16 px-4 overflow-hidden"
+      className="relative pt-2 pb-16 px-4 overflow-hidden"
       aria-labelledby="join-us-heading"
     >
       <div className="px-5 md:px-10">
         {/* Card */}
-        <div className=" relative mx-auto rounded-3xl p-8 pb-50 sm:pb-30 md:pb-105">
-          <p className="text-center text-lg md:text-xl lg:text-2xl max-w-2xl mx-auto mb-6">
+        <div className="relative mx-auto rounded-3xl p-4 pb-20 sm:pb-30 md:pb-105">
+          <p className="text-center text-lg md:text-xl lg:text-2xl max-w-2xl mx-auto mb-10 font-semibold md:leading-7 leading-5">
             Join our team of visionary creators based in Bangalore, dedicated to crafting joy-filled
             products!
           </p>
 
-          <p className="text-center text-gray-500 max-w-2xl mx-auto">
+          <p className="text-center text-gray-500 max-w-2xl mx-auto text-[15px] md:text-[20px] md:leading-7 leading-5">
             We&apos;re looking for stars like you! Propel your resume to {" "}
             <a href="mailto:connect@kheelona.com" className="text-sky-blue underline">
               connect@kheelona.com

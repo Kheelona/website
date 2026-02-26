@@ -103,7 +103,7 @@ export function Header() {
             height={100}
             priority
             sizes="(max-width: 768px) 116px, 164px"
-            className="absolute left-1/2 -translate-x-1/2 md:left-20 md:translate-x-0  w-35 md:h-10 object-cover md:w-[164.27px]"
+            className="absolute left-1/2 -translate-x-1/2 md:left-20 md:translate-x-0  w-35 md:h-10 object-cover md:w-35"
             // style={{ filter: "drop-shadow(0px 2.15px 1px #00000040)" }}
           />
         </Link>

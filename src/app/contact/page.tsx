@@ -133,7 +133,7 @@ export default function ContactPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(contactJsonLd) }}
       />
 
-      <div className="min-h-screen flex pt-40 flex-col">
+      <div className="min-h-screen flex pt-25 flex-col">
         <Header />
         <ContactUs />
         <JoinUs />

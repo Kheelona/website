@@ -37,14 +37,18 @@ export default function WhatsAppCommunity() {
               />
             </div>
 
-            <h4 className="font-bold font-lato text-xl">Welcome to the group: General</h4>
-            <p className="mt-2 ">All community members can use this chat to talk with each other</p>
+            <p className="font-bold font-lato md:text-xl text-[14px]">
+              Welcome to the group: General
+            </p>
+            <p className="mt-2 text-[13px] md:text-[15px]">
+              All community members can use this chat to talk with each other
+            </p>
 
             <Link
               href="https://chat.whatsapp.com/D2kenBUYhhRBaXT9lCJzKB?mode=gi_t"
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-5 flex items-center justify-center"
+              className="flex items-center justify-center"
             >
               <Button variant="green" className="w-full">
                 <span className="hidden md:block">

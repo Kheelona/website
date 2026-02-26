@@ -74,13 +74,13 @@ export function Footer() {
 
           {/* Footer Navigation */}
           <nav className="flex flex-col items-start gap-4" aria-label="Footer navigation">
-            <p className="font-semibold text-white text-[20px] md:text-[30px]">Grown Ups Stuff</p>
+            <p className="font-medium text-white text-[20px] md:text-[24px]">Grown Ups Stuff</p>
             <ul className="flex flex-col gap-2 list-none p-0 m-0">
               {footerLinks.map((link) => (
                 <li key={link.text}>
                   <Link
                     href={link.url}
-                    className="text-sm text-white text-[14px] md:text-[18px] hover:underline focus:underline"
+                    className="text-sm text-white text-[14px] md:text-[16px] hover:underline focus:underline"
                   >
                     {link.text}
                   </Link>
@@ -99,7 +99,7 @@ export function Footer() {
                 height={60}
                 loading="lazy"
                 className="h-15 object-contain drop-shadow-xl"
-                style={{ filter: "drop-shadow(0px 4px 2px #00000055)" }}
+                // style={{ filter: "drop-shadow(0px 4px 2px #00000055)" }}
               />
               <Image
                 src="/images/hero-girl.webp"
@@ -116,7 +116,7 @@ export function Footer() {
           {/* Desktop Social Links */}
           <div className="hidden md:flex items-center">
             <div>
-              <p className="font-semibold text-white text-[30px] mb-5">Socials</p>
+              <p className="font-medium text-white text-[24px] mb-5">Socials</p>
               <nav aria-label="Social media links">
                 <ul className="flex gap-4 list-none p-0 m-0">
                   {socialLinks.map(({ name, url, bg, icon }) => (

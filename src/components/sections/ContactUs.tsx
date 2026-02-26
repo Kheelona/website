@@ -79,7 +79,7 @@ export default function ContactUs() {
       className="relative py-2 md:py-16 px-4 overflow-hidden"
       aria-labelledby="contact-heading"
     >
-      <div className="bg-muted-orange mx-auto max-w-350 rounded-2xl p-10 flex justify-center">
+      <div className="bg-muted-orange mx-auto max-w-6xl rounded-2xl p-10 flex justify-center">
         <div className="w-100.75">
           <h2 className="text-stroke-black text-[24px] md:text-[33px] text-center mb-10">
             Contact us
