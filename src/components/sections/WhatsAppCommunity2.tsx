@@ -33,14 +33,18 @@ export default function WhatsAppCommunity() {
               />
             </div>
 
-            <h4 className="font-bold font-lato text-xl">Welcome to the group: General</h4>
-            <p className="mt-2 ">All community members can use this chat to talk with each other</p>
+            <p className="font-bold font-lato text-[14px] md:text-xl">
+              Welcome to the group: General
+            </p>
+            <p className="mt-2 text-[14px] md:text-xl">
+              All community members can use this chat to talk with each other
+            </p>
 
             <Link
               href="https://chat.whatsapp.com/D2kenBUYhhRBaXT9lCJzKB?mode=gi_t"
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-5 flex items-center justify-center"
+              className=" flex items-center justify-center"
             >
               <Button variant="green" className="w-full">
                 <span className="hidden md:block">
@@ -54,7 +58,7 @@ export default function WhatsAppCommunity() {
               Its <br /> Free
             </div>
           </div>
-          <p className="mt-5 text-[16px] md:text-[24px] font-medium  text-center text-white">
+          <p className="mt-5 text-[16px] md:text-[20px] font-medium  text-center text-white w-60 md:w-90 mx-auto leading-6">
             Free online and offline counselling alternative Fridays !!
           </p>
         </div>

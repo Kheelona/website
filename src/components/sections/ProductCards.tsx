@@ -115,7 +115,7 @@ const ProductCards = ({ wixProducts }: { wixProducts: unknown[] }) => {
                     <span className="text-tangerine">LUMI</span> – {product.name}
                   </h3>
                   <h3 className="font-bold text-[22px] line-through decoration-tangerine text-[#4F4F4F]">
-                    &nbsp;Rs {product.price}&nbsp;
+                    Rs {product.price}
                   </h3>
                   <h3 className="font-bold text-[29px] mb-1  text-[#4F4F4F]">
                     Rs {product.discountedPrice}

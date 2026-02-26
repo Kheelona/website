@@ -73,6 +73,7 @@ h6 {
   font-family: var(--font-heading);
   font-weight: normal;
   line-height: 1.2;
+  word-spacing: 8;
 }
 
 /* Custom Scrollbar */

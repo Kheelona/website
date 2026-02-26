@@ -21,7 +21,7 @@ const partners = [
 // Displays partner logos
 const TrustBadges = ({ bg = "" }: { bg?: string }) => {
   return (
-    <section className={`w-full py-5 px-5 md:py-10 ${bg}`}>
+    <section className={`w-full py-5 px-5 md:py-15 ${bg}`}>
       <div className="mx-auto max-w-350 rounded-2xl border border-[#B0B0B0] bg-white pt-10 pb-5 md:pb-10">
         <SectionHeader title="Kheelona is backed by" />
         <div className="flex justify-center items-center mt-5 ">
