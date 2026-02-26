@@ -8,15 +8,19 @@ import { Button } from "@/components/ui/Button";
 
 export default function WhatsAppCommunity() {
   return (
-    <section className="relative bg-muted-orange py-16 px-4 overflow-hidden">
-      <SectionHeader title="JOIN THE WHATS APP PARENTING COMMUNITY" />
+    <section
+      id="contact"
+      className="relative bg-muted-orange py-16 px-4 overflow-hidden"
+      aria-labelledby="contact-heading"
+    >
+      <SectionHeader
+        id="contact-heading"
+        title="JOIN THE WHATS APP PARENTING COMMUNITY"
+        className="mx-auto w-70 md:w-120"
+      />
       <div className="px-5 md:px-10">
         {/* Card */}
-        <div className="mt-10 relative mx-auto rounded-3xl bg-tangerine p-8 text-white shadow-xl pb-8 sm:pb-30 ">
-          <p className="mb-15 hidden md:block text-[30px] font-medium  text-center ">
-            Free online and offline counselling alternative Fridays !!
-          </p>
-
+        <div className="mt-10 relative mx-auto rounded-3xl bg-tangerine p-8 text-white shadow-xl">
           {/* WhatsApp Card */}
           <div className="relative mx-auto max-w-sm rounded-2xl bg-white p-6 text-center text-gray-800">
             <div className="mb-4 flex justify-center">
@@ -50,7 +54,7 @@ export default function WhatsAppCommunity() {
               Its <br /> Free
             </div>
           </div>
-          <p className=" mt-5 block md:hidden text-[16px] font-medium  text-center text-white">
+          <p className="mt-5 text-[16px] md:text-[24px] font-medium  text-center text-white">
             Free online and offline counselling alternative Fridays !!
           </p>
         </div>

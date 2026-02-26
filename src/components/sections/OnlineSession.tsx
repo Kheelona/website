@@ -9,14 +9,14 @@ import { Button } from "@/components/ui/Button";
 export default function OnlineSession() {
   return (
     <section className="relative bg-muted-orange py-16 px-10 overflow-hidden">
-      <SectionHeader title="Online Sessions alternate Fridays" />
+      <SectionHeader title="Online Sessions alternate Fridays" className="md:w-100 w-50 mx-auto" />
       <div className="mb-4 flex justify-center">
         <Image
           src="/images/online.jpg"
           alt="Community Avatar"
-          width={302}
-          height={162}
-          className="rounded-2xl"
+          width={800}
+          height={400}
+          className="md:w-200 md:h-100 md:border-6 border-4 border-white rounded-xl"
         />
       </div>
       <Link

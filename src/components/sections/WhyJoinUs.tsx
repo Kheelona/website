@@ -4,7 +4,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 
 export default function WhyJoinUs() {
   return (
-    <section className="pt-20 px-5 text-[18px]">
+    <section className="pt-10 md:pt-20 md:px-50 px-10 text-[18px] leading-5">
       <SectionHeader title="WHY JOIN US?" />
 
       <p>Expert Advice Without the Price Tag</p>
