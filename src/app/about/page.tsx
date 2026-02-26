@@ -1,6 +1,4 @@
 import { Metadata } from "next";
-import Image from "next/image";
-import Link from "next/link";
 import Script from "next/script";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -32,15 +30,6 @@ export const metadata: Metadata = generatePageMetadata({
   path: "/about",
   ogType: "website",
 });
-
-// Company milestones
-const milestones = [
-  { year: "2023", event: "Kheelona founded with a mission to reduce children's screen time" },
-  { year: "2023", event: "First prototype of Lumi developed" },
-  { year: "2024", event: "Lumi launched with 10+ language support" },
-  { year: "2024", event: "10,000+ happy families across India" },
-  { year: "2025", event: "Expanding to international markets" },
-];
 
 // JSON-LD for About page
 const aboutJsonLd = {

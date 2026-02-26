@@ -145,7 +145,7 @@ export function Footer() {
             </div>
           </div>
         </div>
-        <div className="absolute -bottom-70 md:-bottom-26 -left-1 w-full text-end">
+        <div className="absolute -bottom-70 md:-bottom-26 -left-1 w-full text-end text-[12px]">
           <p className="text-black">© {new Date().getFullYear()} by Kheelona</p>
         </div>
 

@@ -22,7 +22,6 @@ export default async function BlogDetailsPage({ params }: { params: Promise<{ id
   // Filter out the current blog from the list
   const relatedBlogs = allBlogs?.filter((blog: any) => blog.id !== id) || [];
 
-  console.log("blog details", post);
   if (!post) {
     return <div className="py-40 text-center">Blog not found</div>;
   }

@@ -22,19 +22,19 @@ export default function WhyChooseUs() {
         id="features-heading"
         subtitle="Lumi vs Others"
         title="WHY SETTLE FOR LESS? UPGRADE TO LUMI"
-        className="w-80 md:w-150 mx-auto"
+        className="w-60 md:w-120 mx-auto"
       />
 
       {/* Comparison Card */}
-      <div className="mx-auto max-w-6xl rounded-3xl overflow-hidden grid grid-cols-1 md:grid-cols-2 shadow-lg mt-15">
+      <div className="mx-auto max-w-4xl rounded-3xl overflow-hidden grid grid-cols-1 md:grid-cols-13 shadow-lg mt-15">
         {/* Lumi Way */}
-        <div className="bg-tangerine p-10 text-white">
+        <div className="col-span-7 bg-tangerine p-10 text-white">
           <p className="text-sm opacity-90 mb-2 text-[13px] md:text-[16px] ">The Smart Choice</p>
           <h3 className="font-heading text-[24px] md:text-[30px] mb-6">
             <span className="text-stroke-tangerine">LUMI</span> WAY
           </h3>
 
-          <ul className="space-y-4  text-[16px] md:text-[20px]">
+          <ul className="space-y-4  text-[16px]">
             {[
               "Multi language conversations that encourage children to speak freely.",
               "Screen-free, thoughtful play that reduces digital dependency",
@@ -49,11 +49,11 @@ export default function WhyChooseUs() {
           </ul>
         </div>
         {/* Old Way */}
-        <div className="bg-white p-10 pb-30 text-gray-800">
+        <div className="col-span-6 bg-white p-10 pb-15 text-gray-800">
           <p className="text-sm text-gray-500 mb-2 text-[13px] md:text-[16px] ">The Old Approach</p>
-          <h3 className="font-heading text-[16px] md:text-[30px] mb-6">OLD WAY</h3>
+          <h3 className="font-heading text-[24px] md:text-[30px] mb-6">OLD WAY</h3>
 
-          <ul className="space-y-4  text-[16px] md:text-[20px]">
+          <ul className="space-y-4  text-[16px]">
             {[
               "The toy entertains, but doesn't actually engage or listen.",
               "Fun for five minutes, then ends up in the donation pile.",

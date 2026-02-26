@@ -2,8 +2,8 @@
 
 import * as React from "react";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
-import clsx from "clsx";
 import Image from "next/image";
+import Link from "next/link";
 
 export const getWixImageUrl = (wixImage: string, width = 800, height = 600) => {
   if (!wixImage) return "";
@@ -16,7 +16,6 @@ export const getWixImageUrl = (wixImage: string, width = 800, height = 600) => {
 
 export default function BlogsSwippable({ blogs }: { blogs: any[] }) {
   const viewportRef = React.useRef<HTMLDivElement>(null);
-  console.log("blogs:", blogs);
 
   return (
     <section className="">
@@ -25,7 +24,7 @@ export default function BlogsSwippable({ blogs }: { blogs: any[] }) {
       <ScrollArea.Root className="relative w-full mt-5">
         <ScrollArea.Viewport ref={viewportRef} className="w-full flex overflow-x-auto">
           <div className="flex gap-6 p-4">
-            {blogs.map((blog, i) => {
+            {blogs.map((blog) => {
               const imageUrl = getWixImageUrl(blog.media?.wixMedia?.image, 1346, 404);
 
               return (
@@ -68,11 +67,12 @@ export default function BlogsSwippable({ blogs }: { blogs: any[] }) {
                     </h3>
 
                     {/* Read More */}
-                    <a href={`/blog/${blog._id}`} className="ml-auto">
-                      <button className="text-gray-500 text-sm text-right hover:text-black transition text-[12px] md:text-[20px] cursor-pointer">
-                        Read more
-                      </button>
-                    </a>
+                    <Link
+                      href={`/blog/${blog._id}`}
+                      className="ml-auto text-gray-500 text-sm text-right hover:text-black transition text-[12px] md:text-[20px] cursor-pointer"
+                    >
+                      Read more
+                    </Link>
                   </div>
                 </article>
               );

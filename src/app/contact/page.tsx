@@ -1,11 +1,9 @@
 import { Metadata } from "next";
-import Link from "next/link";
 import Script from "next/script";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { generatePageMetadata, generateBreadcrumbs } from "@/lib/metadata";
 import ContactUs from "@/components/sections/ContactUs";
-import WhatsAppCommunity from "@/components/sections/WhatsAppCommunity";
 import JoinUs from "@/components/sections/JoinUs";
 
 // SEO Metadata for Contact page

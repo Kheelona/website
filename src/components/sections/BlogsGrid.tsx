@@ -38,7 +38,7 @@ export default function BlogsGrid({ blogs }: { blogs: any[] }) {
             <button
               onClick={() => setActive("parents")}
               className={clsx(
-                "px-5 md:33px-10 py-1 rounded-2xl text-[15px] md:text-[24px] transition cursor-pointer",
+                "px-5 md:px-10 py-1 rounded-2xl text-[15px] md:text-[24px] transition cursor-pointer",
                 active === "parents" ? "bg-[#8ADAFF]" : "bg-[#D2F1FF] "
               )}
             >

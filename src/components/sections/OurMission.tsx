@@ -1,10 +1,6 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
-import { MemoWhatsappIcon } from "@/assets/icons/MemoWhatsappIcon";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { Button } from "@/components/ui/Button";
 
 export default function OurMission() {
   return (
@@ -17,7 +13,7 @@ export default function OurMission() {
 
       <div className="px-5 md:px-10">
         {/* Card */}
-        <div className="mt-10 relative mx-auto ma rounded-3xl bg-tangerine p-8 text-white">
+        <div className="mt-10 relative mx-auto rounded-3xl bg-tangerine p-8 text-white">
           <p className=" text-[16px] md:text-[24px] font-medium  text-center ">
             To bridge the gap between &quot;Digital Minds&quot; and &quot;Analog Bodies&quot;. The
             world doesn&apos;t need more screens, it needs more imagination. At Kheelona, our

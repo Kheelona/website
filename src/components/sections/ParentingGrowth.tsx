@@ -7,7 +7,7 @@ export default function ParentingHelpSection() {
   return (
     <section className="w-full overflow-hidden -mt-20">
       {/* Top Illustration */}
-      <div className="relative w-full h-50 md:h-90">
+      <div className="relative w-full h-50 md:h-115">
         <Image
           src="/images/growth.webp"
           alt="Happy parents illustration"
@@ -20,50 +20,54 @@ export default function ParentingHelpSection() {
       <div className="bg-muted-orange">
         {/* Section Heading Overlay */}
         <div className="pt-10 md:p-10 ">
-          <SectionHeader subtitle="Tracking growth" title="How it helps in parenting?" />
+          <SectionHeader
+            subtitle="Tracking growth"
+            title="How it helps in parenting?"
+            className="md:w-full w-[50vw] mx-auto "
+          />
         </div>
 
         {/* Content */}
-        <div className="px-5 w-full flex md:flex-row flex-col-reverse gap-28 items-center md:items-end justify-center pt-10 md:pt-0">
+        <div className="px-5 md:px-30  w-full flex md:flex-row flex-col-reverse gap-0 md:gap-20 items-center md:items-end justify-center pt-0">
           {/* Left Phone Mock */}
-          <div className="relative h-59.1 w-70 md:w-156.75 md:h-106.5">
+          <div className="relative h-59.1 w-70 md:w-156.75 md:h-106.5flex items-end">
             <Image
               src="/images/iphone.png"
               alt="App notification mock"
               width={426}
               height={627}
               priority
-              className="object-contain h-full w-full"
+              className="object-contain w-full"
             />
           </div>
 
           {/* Right Cards */}
-          <div className="grid grid-cols-6 gap-2 md:gap-5 w-full md:w-150  text-[13px] md:text-[24px] mb-5">
+          <div className="grid grid-cols-22 gap-2 md:gap-5 w-full md:w-150 text-[13px] md:text-[18px] mb-5">
             {/* Hi Parent */}
-            <div className="col-span-2 bg-white rounded-3xl border-4 border-tangerine p-4 font-semibold leading-3.5 md:leading-7">
+            <div className="col-span-7 bg-white rounded-3xl border-4 border-tangerine p-2 md:p-4 font-semibold leading-3.5 md:leading-7">
               Hi, <br />
               <span className="font-bold">Parent</span>
             </div>
 
             {/* Line Graph */}
-            <div className="col-span-4 bg-white rounded-3xl border-4 border-tangerine p-4">
-              <p className="font-semibold text-center">New learnt words</p>
+            <div className="col-span-15 bg-white rounded-3xl border-4 border-tangerine p-2 md:p-4">
+              <p className="font-semibold text-center mb-0">New learnt words</p>
               <Image
                 src="/images/graph.png"
                 alt="tracking graph"
                 width={226}
                 height={121}
-                className="h-20 md:h-25 mx-auto object-contain"
+                className="h-15 md:h-20 w-30 mx-auto object-cover"
               />
             </div>
 
             {/* Read Hindi */}
-            <div className="col-span-2 bg-white rounded-3xl border-4 border-tangerine p-4 leading-3.5 md:leading-7">
+            <div className="col-span-8 bg-white rounded-3xl border-4 border-tangerine p-2 md:p-4 leading-3.5 md:leading-5">
               Please read one Page of Hindi book with your kid.
             </div>
 
             {/* Bar Chart */}
-            <div className="col-span-2 bg-white rounded-3xl border-4 border-tangerine p-4 flex justify-center">
+            <div className="col-span-6 bg-white rounded-3xl border-4 border-tangerine p-2 md:p-4 flex justify-center">
               <Image
                 src="/images/chart.png"
                 alt="chart"
@@ -74,7 +78,7 @@ export default function ParentingHelpSection() {
             </div>
 
             {/* Bullying Alert */}
-            <div className="col-span-2 bg-white rounded-3xl border-4 border-tangerine p-4 leading-3.5 md:leading-7">
+            <div className="col-span-8 bg-white rounded-3xl border-4 border-tangerine p-4 leading-3.5 md:leading-5">
               He is being bullied by a kid of his class.
             </div>
           </div>

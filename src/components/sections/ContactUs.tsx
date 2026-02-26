@@ -81,7 +81,7 @@ export default function ContactUs() {
     >
       <div className="bg-muted-orange mx-auto max-w-350 rounded-2xl p-10 flex justify-center">
         <div className="w-100.75">
-          <h2 className="text-stroke-black text-[24px] md:text[33px] text-center mb-10">
+          <h2 className="text-stroke-black text-[24px] md:text-[33px] text-center mb-10">
             Contact us
           </h2>
 

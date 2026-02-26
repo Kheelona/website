@@ -12,7 +12,7 @@ export default function WhatsAppCommunity() {
       <SectionHeader title="JOIN THE WHATS APP PARENTING COMMUNITY" />
       <div className="px-5 md:px-10">
         {/* Card */}
-        <div className="mt-10 relative mx-auto ma rounded-3xl bg-tangerine p-8 text-white shadow-xl pb-8 sm:pb-30 ">
+        <div className="mt-10 relative mx-auto rounded-3xl bg-tangerine p-8 text-white shadow-xl pb-8 sm:pb-30 ">
           <p className="mb-15 hidden md:block text-[30px] font-medium  text-center ">
             Free online and offline counselling alternative Fridays !!
           </p>

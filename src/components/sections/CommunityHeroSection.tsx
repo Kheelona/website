@@ -15,7 +15,7 @@ export default function CommunityHeroSection() {
       <p className="text-center font-bold">🥗 Nutrition 🧠 Wellness 💡Parenting tips</p>
       <div className="px-5 md:px-10">
         {/* Card */}
-        <div className="mt-5 relative mx-auto ma rounded-3xl p-8 text-white  ">
+        <div className="mt-5 relative mx-auto rounded-3xl p-8 text-white  ">
           {/* WhatsApp Card */}
           <div className="relative mx-auto max-w-sm rounded-2xl bg-white p-6 text-center text-gray-800 border border-gray-200">
             <div className="mb-4 flex justify-center">
@@ -58,7 +58,6 @@ export default function CommunityHeroSection() {
           width={2400}
           height={600}
           className="mx-auto"
-          priority
         />
       </div>
     </section>

@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 
 export default function AboutHeroSection() {
