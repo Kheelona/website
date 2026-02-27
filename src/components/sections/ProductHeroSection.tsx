@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { Button } from "../ui/Button";
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
 
@@ -42,7 +41,6 @@ const ProductHero = ({ product }: { product: WixProduct }) => {
     product.media?.items?.[0]?.image?.url ?? ""
   );
 
-  console.log("Product in Hero:", product);
   return (
     <section className="relative max-w-6xl mx-auto px-4 pt-40">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
@@ -60,12 +58,14 @@ const ProductHero = ({ product }: { product: WixProduct }) => {
 
           <div className="flex gap-3 mt-4 justify-center">
             {product?.media?.items?.map((item: WixImageItem, index: number) => (
-              <div
+              <button
+                type="button"
                 key={index}
                 className="w-16 h-16 bg-gray-100 rounded-xl overflow-hidden cursor-pointer"
                 onClick={() => {
                   setHilightedImage(item.image?.url ?? "");
                 }}
+                aria-label={`View image ${index + 1} of ${product.name}`}
               >
                 <Image
                   src={item.image?.url ?? ""}
@@ -74,7 +74,7 @@ const ProductHero = ({ product }: { product: WixProduct }) => {
                   height={64}
                   className="w-16 h-16 object-cover mx-auto"
                 />
-              </div>
+              </button>
             ))}
           </div>
         </div>

@@ -8,15 +8,19 @@ import { Button } from "@/components/ui/Button";
 
 export default function WhatsAppCommunity() {
   return (
-    <section className="relative bg-muted-orange py-16 px-4 overflow-hidden">
-      <SectionHeader title="JOIN THE WHATS APP PARENTING COMMUNITY" />
+    <section
+      id="contact"
+      className="relative bg-muted-orange py-16 px-4 overflow-hidden"
+      aria-labelledby="contact-heading"
+    >
+      <SectionHeader
+        id="contact-heading"
+        title="JOIN THE WHATS APP PARENTING COMMUNITY"
+        className="mx-auto w-70 md:w-120"
+      />
       <div className="px-5 md:px-10">
         {/* Card */}
-        <div className="mt-10 relative mx-auto ma rounded-3xl bg-tangerine p-8 text-white shadow-xl pb-8 sm:pb-30 ">
-          <p className="mb-15 hidden md:block text-[30px] font-medium  text-center ">
-            Free online and offline counselling alternative Fridays !!
-          </p>
-
+        <div className="mt-10 relative mx-auto rounded-3xl bg-tangerine p-8 text-white shadow-xl">
           {/* WhatsApp Card */}
           <div className="relative mx-auto max-w-sm rounded-2xl bg-white p-6 text-center text-gray-800">
             <div className="mb-4 flex justify-center">
@@ -29,14 +33,18 @@ export default function WhatsAppCommunity() {
               />
             </div>
 
-            <h4 className="font-bold font-lato text-xl">Welcome to the group: General</h4>
-            <p className="mt-2 ">All community members can use this chat to talk with each other</p>
+            <p className="font-bold font-lato text-[14px] md:text-xl">
+              Welcome to the group: General
+            </p>
+            <p className="mt-2 text-[14px] md:text-xl">
+              All community members can use this chat to talk with each other
+            </p>
 
             <Link
               href="https://chat.whatsapp.com/D2kenBUYhhRBaXT9lCJzKB?mode=gi_t"
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-5 flex items-center justify-center"
+              className=" flex items-center justify-center"
             >
               <Button variant="green" className="w-full">
                 <span className="hidden md:block">
@@ -50,7 +58,7 @@ export default function WhatsAppCommunity() {
               Its <br /> Free
             </div>
           </div>
-          <p className=" mt-5 block md:hidden text-[16px] font-medium  text-center text-white">
+          <p className="mt-5 text-[16px] md:text-[20px] font-medium  text-center text-white w-60 md:w-90 mx-auto leading-6">
             Free online and offline counselling alternative Fridays !!
           </p>
         </div>

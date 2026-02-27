@@ -89,8 +89,8 @@ export default function CartUI() {
       </Dialog.Trigger>
 
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 bg-white/40 backdrop-blur-xl z-40" />
-        <Dialog.Content className="fixed inset-0 flex items-center justify-center z-50">
+        <Dialog.Overlay className="fixed inset-0 bg-white/40 backdrop-blur-xl z-[60]" />
+        <Dialog.Content className="fixed inset-0 flex items-center justify-center z-[70]">
           <Dialog.Title className="sr-only">Shopping cart</Dialog.Title>
           {/* Cart Container */}
           <div className="w-105 rounded-3xl p-4 relative h-[700] max-h-[80vh] overflow-y-visible">

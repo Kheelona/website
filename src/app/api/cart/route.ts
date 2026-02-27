@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json<CartResponse>({ items: mapCartItems(response.cart) });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ message: "Failed to add to cart" }, { status: 500 });
   }
 }
@@ -130,7 +130,7 @@ export async function PATCH(request: NextRequest) {
     ]);
 
     return NextResponse.json<CartResponse>({ items: mapCartItems(response.cart) });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ message: "Failed to update cart" }, { status: 500 });
   }
 }
@@ -154,7 +154,7 @@ export async function DELETE(request: NextRequest) {
 
     const response = await wixClient.currentCart.removeLineItemsFromCurrentCart([body.lineItemId]);
     return NextResponse.json<CartResponse>({ items: mapCartItems(response.cart) });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ message: "Failed to update cart" }, { status: 500 });
   }
 }

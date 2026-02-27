@@ -17,6 +17,8 @@
   /* Theme */
   --background: #ffffff;
   --foreground: #000000;
+  --site-max-width: 1728px;
+  --site-gutter: clamp(16px, 2.5vw, 40px);
 }
 
 @theme inline {
@@ -71,6 +73,7 @@ h6 {
   font-family: var(--font-heading);
   font-weight: normal;
   line-height: 1.2;
+  word-spacing: 8;
 }
 
 /* Custom Scrollbar */
@@ -184,7 +187,7 @@ h6 {
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-10px);
+    transform: translateY(-2px);
   }
 }
 
@@ -365,7 +368,7 @@ h6 {
 
 @media (min-width: 768px) {
   .heading-main {
-    font-size: 44px;
+    font-size: 40px;
   }
 }
 
@@ -396,8 +399,9 @@ h6 {
 .subtitle {
   color: white;
   font-family: var(--font-body);
-  font-size: 18px;
+  font-size: 17px;
   margin-bottom: 20px;
+  font-weight: 600;
 }
 
 .bg-linear-blue {
@@ -410,7 +414,7 @@ h6 {
 
 @media (min-width: 768px) {
   .subtitle {
-    font-size: 30px;
+    font-size: 25px;
   }
 }
 
@@ -418,42 +422,42 @@ h6 {
 .section-container {
   margin-left: auto;
   margin-right: auto;
-  max-width: 1400px;
+  width: min(calc(100% - (var(--site-gutter) * 2)), var(--site-max-width));
 }
 
 .section-padding-x {
-  padding-left: 12px;
-  padding-right: 12px;
+  padding-left: var(--site-gutter);
+  padding-right: var(--site-gutter);
 }
 
 @media (min-width: 768px) {
   .section-padding-x {
-    padding-left: 32px;
-    padding-right: 32px;
+    padding-left: var(--site-gutter);
+    padding-right: var(--site-gutter);
   }
 }
 
 .section-padding {
-  padding-left: 16px;
-  padding-right: 16px;
+  padding-left: var(--site-gutter);
+  padding-right: var(--site-gutter);
 }
 
 @media (min-width: 768px) {
   .section-padding {
-    padding-left: 32px;
-    padding-right: 32px;
+    padding-left: var(--site-gutter);
+    padding-right: var(--site-gutter);
   }
 }
 
 .container-padding {
-  padding-left: 20px;
-  padding-right: 20px;
+  padding-left: var(--site-gutter);
+  padding-right: var(--site-gutter);
 }
 
 @media (min-width: 768px) {
   .container-padding {
-    padding-left: 40px;
-    padding-right: 40px;
+    padding-left: var(--site-gutter);
+    padding-right: var(--site-gutter);
   }
 }
 
@@ -523,6 +527,16 @@ h6 {
 .btn-primary:hover {
   /* opacity: 0.9; */
   background-color: #0c83ba;
+  transition: cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.button-secondary {
+  background-color: var(--muted-orange);
+  transition: background-color 0.3s ease;
+  color: white;
+}
+.button-secondary:hover {
+  background-color: #ba7000;
   transition: cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 

@@ -68,7 +68,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [isWixEnabled, refreshCart]);
 
   const addToCart = async (item: AddToCartInput) => {
-    console.log("Adding to cart:", item);
     if (!isWixEnabled) {
       setCartItems((prevItems) => {
         const existingItem = prevItems.find((cartItem) => cartItem.id === item.id);

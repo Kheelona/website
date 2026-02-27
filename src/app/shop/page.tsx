@@ -3,7 +3,6 @@ import Image from "next/image";
 import Script from "next/script";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { ShopProductGrid } from "@/components/sections/ShopProductGrid";
 import { generatePageMetadata, generateBreadcrumbs } from "@/lib/metadata";
 
 // SEO Metadata for Shop page
@@ -88,7 +87,7 @@ const shopJsonLd = {
           name: `Lumi - ${product.name}`,
           description: product.description,
           image: `https://kheelona.com${product.image}`,
-          url: `https://kheelona.com/shop/${product.slug}`,
+          url: "https://kheelona.com/shop",
           brand: {
             "@type": "Brand",
             name: "Kheelona",
@@ -100,7 +99,7 @@ const shopJsonLd = {
             availability: product.inStock
               ? "https://schema.org/InStock"
               : "https://schema.org/OutOfStock",
-            priceValidUntil: "2025-12-31",
+            priceValidUntil: "2026-12-31",
           },
         },
       })),
