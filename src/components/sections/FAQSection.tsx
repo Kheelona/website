@@ -10,25 +10,34 @@ interface FAQItem {
 
 const faqs: FAQItem[] = [
   {
-    question: "Is my child's data safe?",
+    question: "How does it help my child speak better?",
     answer:
-      "Absolutely. We use end-to-end encryption and never share your child's data with third parties. Privacy is our top priority.",
+      "Kheelona toys are designed to talk with your child. By practicing daily conversations in a fun, friendly way, children naturally lose their hesitation and become more confident speakers.",
   },
   {
-    question: "What age range are these toys suitable for?",
+    question: "Will this help increase my child’s vocabulary?",
     answer:
-      "Our AI-soft plush toys are designed for children aged 5 and up. Each toy is crafted from hypoallergenic materials and meets all applicable safety standards.",
+      "Yes! Through interactive stories and smart chats, Kheelona introduces new words and phrases in the right context. It’s like having a playful tutor who makes learning feel like a game.",
   },
   {
-    question: "How long does shipping take?",
-    answer: "We offer India-wide tracked shipping. Standard delivery takes 5-7 business days.",
+    question: "Does kheelona help in reducing screen time?",
+    answer:
+      " Kheelona toys are 100% screen-free. Kheelona toys Helps in protecting your child’s eyes and encouraging them to play in the real world, not behind a glass screen.",
   },
   {
-    question: "Does the toy have emotion recognition?",
-    answer: [
-      "Captures children's multi-dimensional emotions (e.g., happiness, sadness, anger) through every conversation.",
-      "Automatically activates positive guidance dialogues when abnormal or dangerous emotions are detected, and sends real-time alerts to the parent app.",
-    ],
+    question: "Can you speak any regional language with kheelona toys?",
+    answer:
+      "Kheelona is multilingual. Your child can chat in English, Hindi, and other regional languages. This helps them stay connected to their roots while learning global languages.",
+  },
+  {
+    question: "Is my child’s data safe?",
+    answer:
+      "Your privacy is our top priority. We use high-level encryption to ensure all interactions remain private. We never sell your data or share it with third parties.",
+  },
+  {
+    question: "When will my pre-order be dispatched?",
+    answer:
+      "All pre-orders are scheduled to be shipped by June 2026. We will send you a tracking link via email as soon as your Kheelona is on its way.",
   },
 ];
 
