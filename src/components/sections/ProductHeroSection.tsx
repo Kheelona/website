@@ -52,7 +52,7 @@ const ProductHero = ({ product }: { product: WixProduct }) => {
               alt={product.name}
               width={500}
               height={500}
-              className="w-125 h-125 object-cover mx-auto rounded-2xl"
+              className="w-125 md:h-125 object-cover mx-auto rounded-2xl"
             />
           </div>
 
