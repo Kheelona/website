@@ -24,7 +24,7 @@ export default function BlogsGrid({ blogs }: { blogs: any[] }) {
           {blogs.map((blog) => {
             const imageUrl = getWixImageUrl(blog.media?.wixMedia?.image, 710, 565);
             return (
-              <Link key={blog._id} href={`/blog/${blog._id}`} className="h-full">
+              <Link key={blog._id} href={`/blog/${blog.slug}`} className="h-full">
                 <article className="relative pb-5 h-full bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-md transition cursor-pointer">
                   {/* Image */}
                   <div className="relative h-45.5 bg-gray-200">

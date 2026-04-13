@@ -65,29 +65,29 @@ const InteractiveLearning = () => {
         <Image
           src="/images/language/leftBottomCharLang.png"
           alt="Left Bottom Character"
-          width={188}
-          height={188}
+          width={400}
+          height={400}
           className="w-47 h-auto left-0 bottom-0 absolute mx-auto block md:hidden object-contain"
         />
         <Image
           src="/images/language/leftTopCharLang.png"
           alt="Left Top Character"
-          width={140}
-          height={140}
+          width={400}
+          height={400}
           className="w-35 h-auto left-0 top-0 absolute mx-auto block md:hidden object-contain"
         />
         <Image
           src="/images/language/rightTopCharLang.png"
           alt="Right Top Character"
-          width={200}
-          height={200}
+          width={400}
+          height={400}
           className="w-50 h-auto right-0 top-0 absolute mx-auto block md:hidden object-contain"
         />
         <Image
           src="/images/language/rightBottomCharLang.png"
           alt="Right Bottom Character"
-          width={180}
-          height={180}
+          width={400}
+          height={400}
           className="w-45 h-auto right-0 bottom-0 absolute mx-auto block md:hidden object-contain"
         />
         {/* Decorative stars */}

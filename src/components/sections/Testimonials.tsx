@@ -6,58 +6,110 @@ import clsx from "clsx";
 import Image from "next/image";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 
-// card width in px
-const CARD_WIDTH = 200; // must match card width
-// horizontal gap between cards in px
-const GAP = 32; // gap-4 = 16px
-
 const testimonials = [
   {
     quote: "My child's best friend. She takes Lumi everywhere.",
     name: "Gaurav Guha",
     meta: "Parent of a 4 year old.",
-    avatar: "/images/test.jpg",
+    avatar: "/images/test2.jpg",
   },
   {
     quote:
       "As a working mom in Bangalore, I was honestly tired of feeling guilty about screen time. Lumi changed that for me. Thank you.",
     name: "Shweta Kiran",
     meta: "Parent of a 3 year old.",
-    avatar: "/images/test2.jpg",
-  },
-  {
-    quote: "Lumi is now part of our daily routine. My kid actually asks for it.",
-    name: "Rohit Mehra",
-    meta: "Parent of a 5 year old.",
-    avatar: "/images/test3.jpg",
-  },
-  {
-    quote: "Finally something that keeps my child engaged without a screen.",
-    name: "Ananya Das",
-    meta: "Parent of a 4 year old.",
     avatar: "/images/test.jpg",
   },
   {
-    quote: "My child's best friend. She takes Lumi everywhere.",
-    name: "Gaurav Guha",
+    quote: "Lumi is now part of our daily routine. My kid actually asks for it.",
+    name: "Ananya Das",
+    meta: "Parent of a 5 year old.",
+    avatar: "/images/test3.png",
+  },
+  {
+    quote: "Finally something that keeps my child engaged without a screen.",
+    name: "Deepika",
     meta: "Parent of a 4 year old.",
-    avatar: "/images/test2.jpg",
+    avatar: "/images/test4.png",
   },
 ];
 
 export default function Testimonials() {
   // ref to scroll viewport
   const viewportRef = React.useRef<HTMLDivElement>(null);
+  const testimonialRefs = React.useRef<Array<HTMLElement | null>>([]);
   const [active, setActive] = React.useState(0);
+  const [scrollPositions, setScrollPositions] = React.useState<number[]>([]);
+
+  const calculateScrollPositions = React.useCallback(() => {
+    const viewport = viewportRef.current;
+    if (!viewport) return [];
+
+    const maxScroll = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+    const positions = testimonialRefs.current
+      .map((item) => (item ? Math.min(item.offsetLeft, maxScroll) : null))
+      .filter((value): value is number => value !== null);
+
+    const deduped: number[] = [];
+    positions.forEach((value) => {
+      if (!deduped.some((existing) => Math.abs(existing - value) < 1)) {
+        deduped.push(value);
+      }
+    });
+
+    return deduped;
+  }, []);
+
+  const updateActive = React.useCallback(() => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+    const positions = calculateScrollPositions();
+    if (!positions.length) return;
+
+    let closestIndex = 0;
+    let closestDistance = Number.POSITIVE_INFINITY;
+
+    positions.forEach((position, index) => {
+      const distance = Math.abs(position - viewport.scrollLeft);
+
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestIndex = index;
+      }
+    });
+
+    setActive(closestIndex);
+  }, [calculateScrollPositions]);
 
   // smooth scroll to a card by index
-  const scrollTo = (index: number) => {
-    if (!viewportRef.current) return;
-    viewportRef.current.scrollTo({
-      left: index * (CARD_WIDTH + GAP),
-      behavior: "smooth",
-    });
-  };
+  const scrollTo = React.useCallback(
+    (index: number) => {
+      if (!viewportRef.current || !scrollPositions.length) return;
+
+      viewportRef.current.scrollTo({
+        left: scrollPositions[index],
+        behavior: "smooth",
+      });
+    },
+    [scrollPositions]
+  );
+
+  React.useEffect(() => {
+    const sync = () => {
+      const positions = calculateScrollPositions();
+      setScrollPositions(positions);
+      setActive((prev) => Math.min(prev, Math.max(0, positions.length - 1)));
+      updateActive();
+    };
+
+    const rafId = window.requestAnimationFrame(sync);
+    window.addEventListener("resize", sync);
+
+    return () => {
+      window.cancelAnimationFrame(rafId);
+      window.removeEventListener("resize", sync);
+    };
+  }, [calculateScrollPositions, updateActive]);
 
   return (
     <section id="testimonials" className="pt-5 pb-20" aria-labelledby="testimonials-heading">
@@ -67,19 +119,20 @@ export default function Testimonials() {
         <ScrollArea.Viewport
           ref={viewportRef}
           className="w-full flex overflow-x-auto"
-          onScroll={(e) => {
-            const el = e.currentTarget;
-            // compute active index from scroll position
-            const index = Math.round(el.scrollLeft / (CARD_WIDTH + GAP));
-            setActive(index);
-          }}
+          onScroll={updateActive}
         >
           <div className="flex gap-8 p-4">
             {testimonials.map((t, i) => (
-              <article key={i}>
+              <article
+                key={i}
+                ref={(el) => {
+                  testimonialRefs.current[i] = el;
+                }}
+                className="shrink-0"
+              >
                 {/* single testimonial card */}
-                <div className="relative shrink-0 w-55 md:w-90 rounded-2xl border border-gray-300 p-6 bg-white h-40 md:h-50 mb-5">
-                  <blockquote className="mb-6 text-[13px] md:text-[18px] font-semibold  leading-[110%]">
+                <div className="relative shrink-0 w-55 md:w-90 rounded-2xl border border-gray-300 p-6 bg-white h-40 mb-5">
+                  <blockquote className=" text-[13px] md:text-[18px] font-semibold leading-[110%]">
                     &quot;{t.quote}&quot;
                   </blockquote>
 
@@ -119,11 +172,11 @@ export default function Testimonials() {
       </ScrollArea.Root>
 
       <div className="mt-10 flex justify-center gap-2">
-        {testimonials.map((_, i) => (
+        {scrollPositions.map((_, i) => (
           <button
             key={i}
             onClick={() => scrollTo(i)}
-            aria-label={`Go to testimonial ${i + 1}`}
+            aria-label={`Go to testimonial group ${i + 1}`}
             className={clsx(
               "flex min-h-11 min-w-11 items-center justify-center rounded-full transition-all",
               active === i ? "bg-orange-100" : "bg-transparent"

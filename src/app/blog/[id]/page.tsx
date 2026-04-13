@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { getBlogById } from "@/lib/wix/services/blogById";
+import { getBlogBySlug } from "@/lib/wix/services/blogById";
 import { getBlogs } from "@/lib/wix/services/blogs";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -155,11 +155,11 @@ function getPostHtml(post: any, firstImageToSkip = ""): string {
 
 export default async function BlogDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const { post }: any = await getBlogById(id);
+  const { post }: any = await getBlogBySlug(id);
   const allBlogs = await getBlogs();
 
   // Filter out the current blog from the list
-  const relatedBlogs = allBlogs?.filter((blog: any) => blog._id !== id) || [];
+  const relatedBlogs = allBlogs?.filter((blog: any) => blog.slug !== id) || [];
 
   if (!post) {
     return <div className="py-40 text-center">Blog not found</div>;
@@ -208,7 +208,7 @@ export default async function BlogDetailsPage({ params }: { params: Promise<{ id
 
             {/* Content */}
             <div
-              className="prose prose-lg max-w-none text-[18px]"
+              className="prose prose-lg max-w-none text-[18px] [&_p]:mb-0 [&_p+p]:mt-5 md:[&_p+p]:mt-6 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_li]:my-2"
               dangerouslySetInnerHTML={{
                 __html: postHtml,
               }}

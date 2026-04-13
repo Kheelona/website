@@ -16,8 +16,8 @@ export default function AboutHeroSection() {
         <Image
           src={"/images/about/HeroSection.jpg"}
           alt="Kheelona Hero Image"
-          width={1200}
-          height={640}
+          width={800}
+          height={420}
           className="w-65.25 h-35.5 md:w-200 md:h-105 object-cover mx-auto rounded-2xl"
         />
         <p className="text-[10px] md:text-[14px] text-center mb-12 mt-1">
