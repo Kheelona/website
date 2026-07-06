@@ -1,0 +1,13 @@
+# Secrets: never commit
+.env
+.env.*
+!.env.example
+
+# Dependencies / builds
+node_modules/
+.next/
+out/
+launch-video/out/
+
+# OS noise
+.DS_Store

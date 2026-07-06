@@ -1,0 +1,214 @@
+{
+  "project_name": "kheelona.com",
+  "created_at": "2026-07-06",
+  "last_updated": "2026-07-06",
+  "current_phase": "phase_8_blueprint",
+  "current_sprint": null,
+  "phase_status": {
+    "phase_0_kickoff": {
+      "status": "completed",
+      "completed_at": "2026-07-06",
+      "checkpoint_file": "docs/checkpoints/phase-0-kickoff.md"
+    },
+    "phase_1_ba_discovery": {
+      "status": "completed",
+      "completed_at": "2026-07-06",
+      "checkpoint_file": "docs/checkpoints/phase-0-kickoff.md",
+      "note": "Pre-filled by Brand Bible, confirmed via founder Q&A 2026-07-06. Documented inside phase-0 checkpoint."
+    },
+    "phase_2_ux_discovery": {
+      "status": "completed",
+      "completed_at": "2026-07-06",
+      "checkpoint_file": "docs/checkpoints/phase-2-ux-discovery.md",
+      "note": "Concept A+C blend approved. See checkpoint."
+    },
+    "phase_3_marketing": {
+      "status": "completed",
+      "completed_at": "2026-07-06",
+      "checkpoint_file": "docs/checkpoints/phase-0-kickoff.md",
+      "note": "Keyword map locked in build prompt §3.1 + PDF final page. Per-page meta drafted in Phase 8 blueprint."
+    },
+    "phase_4_content_strategy": {
+      "status": "completed",
+      "completed_at": "2026-07-06",
+      "checkpoint_file": "docs/checkpoints/phase-0-kickoff.md",
+      "note": "Messaging framework locked by Brand Bible §1. Home copy = PDF verbatim; 8 pages AI-drafted during build."
+    },
+    "phase_5_copywriting": {
+      "status": "pending",
+      "completed_at": null,
+      "checkpoint_file": null
+    },
+    "phase_6_qa_devops_planning": {
+      "status": "pending",
+      "completed_at": null,
+      "checkpoint_file": null
+    },
+    "phase_7_tech_stack": {
+      "status": "completed",
+      "completed_at": "2026-07-06",
+      "checkpoint_file": "docs/checkpoints/phase-0-kickoff.md",
+      "note": "Stack locked by prompt §7. Waitlist tool decided: Tally (founder choice, 2026-07-06). 3D: renders + parallax, no live WebGL at launch."
+    },
+    "phase_8_blueprint": {
+      "status": "pending",
+      "completed_at": null,
+      "checkpoint_file": null
+    },
+    "phase_9_readiness": {
+      "status": "pending",
+      "completed_at": null,
+      "checkpoint_file": null
+    },
+    "phase_10_implementation": {
+      "status": "pending",
+      "completed_at": null,
+      "checkpoint_file": null
+    },
+    "phase_11_delivery": {
+      "status": "pending",
+      "completed_at": null,
+      "checkpoint_file": null
+    }
+  },
+  "sprint_status": {},
+  "approvals": [
+    {
+      "date": "2026-07-06",
+      "what": "Design tokens come from Design/design-system/ (founder populated the folder mid-session)",
+      "decision": "approved"
+    },
+    {
+      "date": "2026-07-06",
+      "what": "Mascot 3D approach: pre-rendered PNGs + parallax at launch; live R3F slot reserved for when a GLB exists",
+      "decision": "approved"
+    },
+    {
+      "date": "2026-07-06",
+      "what": "Pre-order tool: Tally (6 fields: parent name, email, WhatsApp number, WhatsApp consent, child's birth month, city)",
+      "decision": "approved"
+    },
+    {
+      "date": "2026-07-06",
+      "what": "Concept round format: 3 full-scroll styled homepage concepts (HTML), founder picks one before build",
+      "decision": "approved"
+    },
+    {
+      "date": "2026-07-06",
+      "what": "Overall plan: concept round -> blueprint -> sprint build with milestone pauses",
+      "decision": "approved (plan-mode approval)"
+    },
+    {
+      "date": "2026-07-06",
+      "what": "Concept direction: A (Storybook) as base, blended with Concept C elements/sections (explicit: C's 'Reserve Lumi before the price goes up' orange finale with character lineup; plus C-style bold moments where they strengthen A)",
+      "decision": "approved"
+    },
+    {
+      "date": "2026-07-06",
+      "what": "Mascot appears as a dimensional (3D-feeling) character throughout the site: renders with parallax/pointer-tilt/float on every page; live R3F slot preserved for when a GLB exists",
+      "decision": "approved (founder directive)"
+    },
+    {
+      "date": "2026-07-06",
+      "what": "NEW deliverable: launch video built with Remotion (teaser using mascot renders, brand tokens, one-idea copy, reserve CTA)",
+      "decision": "requested by founder"
+    },
+    {
+      "date": "2026-07-06",
+      "what": "2D-to-3D pipeline: Tripo3D via REST API (founder subscribing). Key in repo-root .env as TRIPO_API_KEY. Multi-view mascot conversion -> rigged GLB -> Draco -> R3F slot. Renders+parallax remain the shipped fallback until GLB quality is founder-approved.",
+      "decision": "approved"
+    },
+    {
+      "date": "2026-07-06",
+      "what": "Tripo3D via UI (founder logged into tripo3d.ai in Chrome; no API key). Starter plan: spend conservatively. Sequence approved: mascot multi-view conversion + rig + 1 idle animation first, founder judges, then more (Lumi toy model etc.). 3D on site stays SUBTLE.",
+      "decision": "approved"
+    },
+    {
+      "date": "2026-07-06",
+      "what": "Launch video formats: 16:9 (1920x1080) + 9:16 vertical (1080x1920). v1 uses 2D cutouts; v2 may add 3D turntable after GLB approval.",
+      "decision": "approved"
+    },
+    {
+      "date": "2026-07-06",
+      "what": "Keyword validation: Google Trends India + autocomplete + People-also-ask via Chrome (no Keyword Planner). Goal: 10/10 SEO + AEO (FAQ schema, question-led headings, citable answer blocks) + GEO. Conversion-first copywriting per build prompt (re-read website-builder-prompt-final-kheelona.md when drafting).",
+      "decision": "approved (founder directive)"
+    }
+  ],
+  "blockers": [
+    {
+      "id": "claims-testimonials",
+      "desc": "Parent testimonials (quote, name, child age, city, consent) pending from founder",
+      "status": "open"
+    },
+    {
+      "id": "claims-certs",
+      "desc": "Safety standards / certification wording pending",
+      "status": "open"
+    },
+    {
+      "id": "claims-specs",
+      "desc": "Exact specs (battery, dimensions, materials, wake word) pending",
+      "status": "open"
+    },
+    {
+      "id": "claims-shipdate",
+      "desc": "Ship date pending",
+      "status": "open"
+    },
+    {
+      "id": "claims-contact",
+      "desc": "Footer contact email pending",
+      "status": "open"
+    },
+    {
+      "id": "tally-form-url",
+      "desc": "Founder to create Tally form (6 locked fields) and share the link before Sprint S9",
+      "status": "open"
+    },
+    {
+      "id": "design-folders",
+      "desc": "Verify Design/* folders present before build",
+      "status": "resolved",
+      "resolution": "2026-07-06: design-system populated by founder; mascot renders + product images verified. No GLB model (resolved by renders+parallax decision). Lumi Pink product folder is empty."
+    },
+    {
+      "id": "tripo-api-key",
+      "desc": "TRIPO_API_KEY in .env is a dummy; founder to paste real key after subscribing. Then run the multi-view mascot conversion.",
+      "status": "resolved",
+      "resolution": "2026-07-06: founder cannot get API key; switched to driving the Tripo3D web UI in Chrome (founder logged in). .env TRIPO_API_KEY stays dummy/unused."
+    }
+  ],
+  "last_handoff": {
+    "date": "2026-07-06",
+    "completed_in_this_session": [
+      "Read build prompt + full PDF (11 Home sections + keyword map)",
+      "Founder Q&A locked 4 decisions (see approvals)",
+      "Documentation scaffold created (README.md, this file, phase-0 checkpoint)",
+      "Mascot cutout pipeline built (white bg removed from renders, brand-shape color variants generated) into design-concepts/assets/",
+      "3 styled homepage concepts built + browser QA at desktop/mobile: concept-a (Storybook), concept-b (Playmat), concept-c (Sunshine). Voice-lint clean. Full-page previews rendered.",
+      "Bugs found+fixed during QA: duplicate fill attr in generated SVGs; body overflow-x hidden broke wheel scroll (now clip); .step.safety class collision in A; scroll-snap wheel trap in C; hero h1 capped at 3 lines",
+      "Tripo3D chosen for 2D->3D mascot (API route). .env created at root with dummy keys (TRIPO_API_KEY, NEXT_PUBLIC_TALLY_FORM_URL, GA4). .gitignore added. Memory updated.",
+      "Tripo (UI-driven): multi-view Smart Mesh generated (9711 tris, task 889ef77c), textured, auto-rig started. Credits: 950 start, 875 after rig purchase (35+20+20). Images relayed via localhost viewer tab postMessage (PNA blocks direct fetch; upload_image tool broken). Videos rendered: out/kheelona-launch-16x9.mp4 + 9x16.mp4.",
+      "Tripo pipeline COMPLETE: rigged GLB with idle animation exported (design-concepts/assets/tripo/kheelona-mascot.glb, 2.19MB, 9711 tris, 2K texture, 1 skin, 1 animation). Total spend 75 credits (875 left). Local preview: design-concepts/assets/tripo/model-viewer.html. Founder quality-judgment pending."
+    ],
+    "next_action": "Founder reviews GLB + launch videos. Then Next.js build S0 onward per docs/website-steps.md (SEO+AEO+GEO goals recorded; Trends/autocomplete keyword validation during S11).",
+    "files_modified": [
+      "README.md",
+      "docs/project-state.json",
+      "docs/checkpoints/phase-0-kickoff.md",
+      "design-concepts/*"
+    ],
+    "open_issues": [
+      "No true Sad mascot render; scared pose used as stand-in on the feelings card"
+    ],
+    "context_to_load_on_resume": [
+      "README.md",
+      "docs/project-state.json",
+      "docs/checkpoints/phase-0-kickoff.md",
+      "design-concepts/README.md",
+      "Design/design-system/colors_and_type.css",
+      "kheelona homepage website content.pdf"
+    ]
+  },
+  "resume_instructions": "Read README.md first. Then this file. Then the current-phase checkpoint. Then website-steps.md if it exists. Never re-ask anything settled in the Brand Bible (build prompt §1) or in approvals above."
+}

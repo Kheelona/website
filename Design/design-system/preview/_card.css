@@ -1,0 +1,27 @@
+/* Shared chrome for preview cards. The asset name shows OUTSIDE the card
+   in the Design System tab, so cards should just show the artifact. */
+@import url('../colors_and_type.css');
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #FFFFFF;
+  font-family: var(--kh-font-text);
+  color: var(--kh-ink-2);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.card {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 100%;
+  box-sizing: border-box;
+}
+.row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.col { display: flex; flex-direction: column; gap: 12px; }
+.note { font-size: 13px; color: var(--kh-ink-4); letter-spacing: 0.01em; }
+.label { font-size: 12px; color: var(--kh-ink-4); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
+.mono { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 13px; color: var(--kh-ink-3); }

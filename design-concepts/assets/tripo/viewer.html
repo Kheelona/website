@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>viewer</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #fff; }
+  body { display: flex; align-items: center; justify-content: center; }
+  img { height: 100vh; width: auto; object-fit: contain; }
+</style>
+</head>
+<body>
+<img id="i" src="">
+<script>
+  document.getElementById('i').src = new URLSearchParams(location.search).get('img') || 'front.jpg';
+</script>
+</body>
+</html>
