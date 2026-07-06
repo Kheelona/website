@@ -36,3 +36,19 @@ Three styled homepage concepts, built 2026-07-06. Same locked content on all thr
 - Mascot cutouts keep a faint natural ground shadow; on saturated backgrounds (Concept A safety strip) a slight white halo can show at the feet.
 - Concept C feelings row horizontally scrolls below 1100px; static 5-col grid above (a `scroll-snap x mandatory` row traps the mouse wheel, so snap is desktop-disabled).
 - `body { overflow-x: clip }` (not `hidden`) is load-bearing: `hidden` makes body a scroll container and breaks wheel scrolling.
+
+## Tripo3D mascot pipeline (2D renders → rigged GLB), 2026-07-06
+
+The live 3D mascot in the site hero (`site/public/models/kheelona-mascot.glb`) was produced by driving the **Tripo3D web UI** (studio.tripo3d.ai) in Chrome with the founder logged in (Starter plan; session spent 950→875 credits). The REST-API route was planned first (`TRIPO_API_KEY` in root `.env`) but the founder could not get a key, so the key is a dummy and the UI route is canonical.
+
+**Inputs** (in `assets/tripo/`): `front.png` / `side.png` / `back.png` — cutouts from `Design/mascot-3d-images/` (front pose has the wink baked in — that render is the canonical pose; back view needed its right-edge stray figure cropped).
+
+**Settings that produced the shipped model**:
+- Generate: Smart Mesh, multi-view (Front/Side/Back slots), Triangle topology, 10,000 polys, 2K texture.
+- Rig: auto-rig v2.5, "Good for Animals" → Humanoid skeleton.
+- Animate: idle preset; exported GLB with skeleton + 1 animation track ("NlaTrack").
+- Preview locally: `assets/tripo/model-viewer.html` (or the idle GIF next to it).
+
+**UI-automation gotchas** (if driving Tripo again): file inputs re-render after each upload, so find them by slot label text, not index; uploads from a localhost page require the postMessage relay trick (PNA blocks https→localhost fetch); popups need a real on-page button click for user activation.
+
+**Status**: founder judgment pending (FOUNDER-TODO #9) — the model is a stylized approximation; if rejected, the site falls back cleanly because the static render stays mounted until the GLB loads.

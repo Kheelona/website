@@ -37,22 +37,28 @@ Say where the project stands and what is next. Do NOT re-ask questions from comp
 ## Project Structure
 ```
 kheelona-com-website/
-├── README.md                              ← This file. AI entry point.
+├── CLAUDE.md                              ← Session entry point (founder identity, gates, commands).
+├── README.md                              ← This file. Resume protocol + status.
+├── FOUNDER-TODO.md                        ← Everything waiting on the founder (11 items).
 ├── website-builder-prompt-final-kheelona.md  ← Master build spec (Brand Bible, phases, sprints).
 ├── kheelona homepage website content.pdf  ← Highest source of truth (Home copy, verbatim).
+├── .env                                   ← Gitignored; dummy TRIPO_API_KEY / Tally URL / GA4 ID.
 ├── Design/                                ← NOTE: capital D (spec says /design/, actual folder is Design/)
 │   ├── design-system/                     ← Tokens (colors_and_type.css), fonts, brand README, shapes, logo.
-│   ├── mascot-3d-images/                  ← Mascot PNG renders (the star). No GLB model exists yet.
+│   ├── mascot-3d-images/                  ← Mascot PNG renders (source for cutouts + the Tripo GLB).
 │   └── product-images/                    ← Lumi photos (secondary support).
-├── design-concepts/                       ← 3 homepage concepts (approval gate before build).
+├── design-concepts/                       ← 3 archived concepts + cutout/Tripo pipelines (see its README).
 ├── docs/
 │   ├── project-state.json                 ← Machine-readable status. Always current.
-│   ├── website-steps.md                   ← Master blueprint (Phase 8, written after concept approval).
-│   ├── copy-reference.md                  ← All approved copy (Phase 5, during build).
-│   ├── qa-report.md                       ← Sprint reports + QA results.
+│   ├── website-steps.md                   ← Master blueprint (law; update it when reality diverges).
+│   ├── copy-reference.md                  ← Copy provenance + sanctioned deviations.
+│   ├── qa-report.md                       ← Sprint reports, Lighthouse, article AI-detection evidence.
+│   ├── stories-image-prompts.md           ← Ready prompts for the 7 articles still missing heroes.
 │   ├── snapshots/                         ← Pre-sprint backups.
 │   └── checkpoints/                       ← One file per completed phase.
-└── (app/, components/, lib/, public/ …)   ← Next.js app, created in Phase 9/10.
+├── site/                                  ← The Next.js 16 app (app/, components/, lib/, public/).
+│   └── public/models/kheelona-mascot.glb  ← Rigged mascot with idle animation (Tripo3D).
+└── launch-video/                          ← Remotion project; rendered teasers in out/ (16:9 + 9:16).
 ```
 
 ## Operating Rules
