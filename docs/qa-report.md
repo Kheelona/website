@@ -24,3 +24,15 @@
 **Outstanding for later sprints**
 - Placeholders live on Home by design: testimonials ×3, Tally panel (blockers `claims-testimonials`, `tally-form-url`). Launch gate = zero placeholders.
 - Lighthouse pass scheduled S12; GLB Draco compression evaluation S12 (current GLB 2.19MB raw).
+
+## Sprint S4–S6 · 2026-07-06 · commit 66ef52c
+
+**Scope shipped**
+- S4 `/products/lumi`: hero, conversation demo (chat bubbles), five-feelings-deeper (C-style saturated cards), parent app grid, in-the-box + PENDING specs card, safety strip, 8-question FAQ. Product + FAQPage JSON-LD.
+- S5 `/playos`: voice-path ledger (4 steps), privacy cards, family block (orange bold), quiet kheelona.ai link.
+- S6 `/safety`: teal hero, body (certs honestly flagged in-progress), four word-rules, voice-data cards, grown-up-holds-the-keys.
+- FinaleCTA closes every page; all CTAs same-page anchor to #reserve.
+
+**Checks**: build green (7 routes), voice-lint grep clean, all routes 200, visual pass on lumi + safety.
+**Fixed**: nested .git dirs from create-next-app/create-video made the repo track site/ and launch-video/ as submodule stubs; absorbed into the root repo.
+**Copy note**: all non-Home copy drafted this sprint is AI-drafted per prompt §5.2 and pending founder review at this milestone (compiled into copy-reference.md at S8).
