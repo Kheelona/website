@@ -55,12 +55,17 @@ body {
 /* Scroll reveals: enhancement-only. Without JS (no .js on <html>) content is
    fully visible; with JS, elements slide in as they enter the viewport. */
 @media (prefers-reduced-motion: no-preference) {
-  html.js [data-reveal] {
+  html.js [data-reveal="fade"] {
     opacity: 0;
     transform: translateY(26px);
     transition:
       opacity 0.65s var(--ease-calm),
       transform 0.65s var(--ease-calm);
+  }
+  /* "rise" keeps content painted (LCP-safe): movement only */
+  html.js [data-reveal="rise"] {
+    transform: translateY(22px);
+    transition: transform 0.65s var(--ease-calm);
   }
   html.js [data-reveal].reveal-in {
     opacity: 1;

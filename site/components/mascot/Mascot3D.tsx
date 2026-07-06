@@ -66,6 +66,7 @@ export function Mascot3D({ className }: { className?: string }) {
         width={419}
         height={808}
         priority
+        sizes="(max-width: 768px) 70vw, 360px"
         className={`mx-auto h-auto w-full max-w-[360px] drop-shadow-[0_18px_24px_rgba(216,95,27,0.18)] transition-opacity duration-500 ${modelReady ? "opacity-0" : "opacity-100"}`}
       />
       {mount3d && (

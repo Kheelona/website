@@ -36,3 +36,21 @@
 **Checks**: build green (7 routes), voice-lint grep clean, all routes 200, visual pass on lumi + safety.
 **Fixed**: nested .git dirs from create-next-app/create-video made the repo track site/ and launch-video/ as submodule stubs; absorbed into the root repo.
 **Copy note**: all non-Home copy drafted this sprint is AI-drafted per prompt §5.2 and pending founder review at this milestone (compiled into copy-reference.md at S8).
+
+## Sprint S7–S13 (project completion run) · 2026-07-06
+
+**Scope shipped**
+- S7 `/team`: manifesto hero, founder cards (locked facts), beliefs ledger, gentle close.
+- S8 `/stories`: index grouped by theme + 4 seed articles (lib/stories.ts, Article JSON-LD, soft closes). Home journal links now resolve.
+- S9 (partial): Tally adapter final; gtag event stubs; BLOCKED on founder URL (FOUNDER-TODO #1).
+- S10 `/privacy` `/terms` `/setup`: plain-language drafts, counsel TODO flags.
+- S11: sitemap.ts (13 URLs), robots.ts, Organization JSON-LD, OG image (public/og.png, brand card 1200x630), per-page canonicals/meta already in place. FAQPage schema on Lumi + Safety; Product schema on Lumi; Article schema on stories.
+- S12/S13: Lighthouse driven fixes: list semantics (Reveal `as="li"`), hero badge contrast, footer link underline, `sizes` on mascot images, LCP-safe "rise" reveal mode for all heroes (fade-from-opacity-0 was costing ~3.5s of LCP).
+
+**Final Lighthouse (production build, localhost)**
+- Desktop: Performance 99 · Accessibility 100 · Best Practices 100 · SEO 100 → §3 gates PASSED.
+- Mobile (simulated slow 4G): 85 · 100 · 96 · 100. LCP 4.4s from the hero character image; documented tradeoff per §3 (option: smaller mobile hero render).
+
+**QA checks**: build zero errors (18 static pages), all 16 routes 200, branded 404, voice-lint + hype grep clean across app/components/lib, sticky mobile CTA hides at #reserve, no-JS SSR shows full content.
+
+**Remaining founder-gated items**: see FOUNDER-TODO.md (Tally URL, deploy auth, testimonials, certs/specs, ship date, contact email, languages list, GA4 ID, counsel review, 3D judgment).

@@ -3,7 +3,7 @@
   "created_at": "2026-07-06",
   "last_updated": "2026-07-06",
   "current_phase": "phase_10_implementation",
-  "current_sprint": "S6-MILESTONE-PAUSE",
+  "current_sprint": "S14-awaiting-founder",
   "phase_status": {
     "phase_0_kickoff": {
       "status": "completed",
@@ -35,14 +35,14 @@
       "note": "Messaging framework locked by Brand Bible §1. Home copy = PDF verbatim; 8 pages AI-drafted during build."
     },
     "phase_5_copywriting": {
-      "status": "pending",
-      "completed_at": null,
-      "checkpoint_file": null
+      "status": "completed",
+      "completed_at": "2026-07-06",
+      "checkpoint_file": "docs/copy-reference.md"
     },
     "phase_6_qa_devops_planning": {
-      "status": "pending",
-      "completed_at": null,
-      "checkpoint_file": null
+      "status": "completed",
+      "completed_at": "2026-07-06",
+      "checkpoint_file": "docs/qa-report.md"
     },
     "phase_7_tech_stack": {
       "status": "completed",
@@ -63,14 +63,15 @@
       "note": "Next.js 16 + deps installed, build green, assets staged, fonts loaded. Git initialized at repo root (commit f451eae)."
     },
     "phase_10_implementation": {
-      "status": "in_progress",
-      "completed_at": null,
-      "checkpoint_file": null
+      "status": "completed",
+      "completed_at": "2026-07-06",
+      "checkpoint_file": "docs/qa-report.md"
     },
     "phase_11_delivery": {
-      "status": "pending",
+      "status": "in_progress",
       "completed_at": null,
-      "checkpoint_file": null
+      "checkpoint_file": null,
+      "note": "Everything buildable is built and QA'd. Deploy + launch gates need founder inputs (FOUNDER-TODO.md)."
     }
   },
   "sprint_status": {
@@ -81,14 +82,14 @@
     "S4": "completed",
     "S5": "completed",
     "S6": "completed (MILESTONE: paused for founder review of trust page + first 4 pages)",
-    "S7": "pending",
-    "S8": "pending",
-    "S9": "pending (needs tally-form-url)",
-    "S10": "pending",
-    "S11": "pending (SEO+AEO+GEO, Trends keyword validation)",
-    "S12": "pending (MILESTONE)",
-    "S13": "pending (MILESTONE)",
-    "S14": "pending (MILESTONE, Vercel deploy)"
+    "S7": "completed",
+    "S8": "completed",
+    "S9": "built; blocked on tally-form-url (founder)",
+    "S10": "completed",
+    "S11": "completed",
+    "S12": "completed",
+    "S13": "completed",
+    "S14": "blocked on founder Vercel auth; deploy notes in FOUNDER-TODO.md"
   },
   "approvals": [
     {
@@ -204,26 +205,24 @@
   "last_handoff": {
     "date": "2026-07-06",
     "completed_in_this_session": [
-      "Everything through S6. See git log (f451eae, 2b84a8a, 66ef52c) and docs/qa-report.md."
+      "Full project run: concepts, videos, 3D mascot GLB, all 9 pages + 4 articles, executive review round applied, SEO/AEO layer, Lighthouse desktop 99/100/100/100. See git log + qa-report.md."
     ],
-    "next_action": "S7 /team, S8 /stories (4 seed MDX articles; closes Home journal links), then S9+ per blueprint. Review round applied (checkpoint executive-review-round-1.md).",
+    "next_action": "Founder works through FOUNDER-TODO.md (Tally URL + Vercel auth are the launch-critical two). On Tally URL: set env, verify form e2e, fire analytics. On Vercel auth: deploy site/ as project root, add env vars, DNS, Search Console, then final launch checklist in blueprint 8.11.",
     "files_modified": [
-      "site/** (full app so far)",
-      "docs/qa-report.md",
-      "docs/project-state.json"
+      "site/** complete",
+      "FOUNDER-TODO.md",
+      "docs/*"
     ],
     "open_issues": [
-      "Founder to judge 3D mascot quality (GLB delivered)",
-      "tally-form-url blocker",
-      "claims-* blockers"
+      "Mobile perf 85 (documented tradeoff)",
+      "Sad pose is the scared render (asset gap)"
     ],
     "context_to_load_on_resume": [
       "README.md",
+      "FOUNDER-TODO.md",
       "docs/project-state.json",
-      "docs/website-steps.md",
       "docs/qa-report.md",
-      "site/app/page.tsx (as the pattern reference for section composition)",
-      "website-builder-prompt-final-kheelona.md §5.2 (copy directions per page)"
+      "docs/website-steps.md"
     ]
   },
   "resume_instructions": "Read README.md first. Then this file. Then the current-phase checkpoint. Then website-steps.md if it exists. Never re-ask anything settled in the Brand Bible (build prompt §1) or in approvals above."

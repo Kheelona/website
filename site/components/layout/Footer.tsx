@@ -29,7 +29,7 @@ export function Footer() {
             For partners and investors:{" "}
             <a
               href="https://kheelona.ai"
-              className="text-white/80 transition-colors hover:text-white"
+              className="text-white/80 underline transition-colors hover:text-white"
             >
               kheelona.ai
             </a>

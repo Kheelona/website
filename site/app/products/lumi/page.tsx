@@ -99,7 +99,7 @@ export default function LumiPage() {
       {/* Hero */}
       <Section wash="cream">
         <Container className="grid items-center gap-10 py-16 md:grid-cols-[1.05fr_0.95fr] md:py-20">
-          <Reveal>
+          <Reveal mode="rise">
             <Eyebrow>The talking toy</Eyebrow>
             <h1 className="mb-5 font-display text-[clamp(38px,4.5vw,58px)] font-extrabold leading-[1.08] text-ink-head">
               Meet Lumi. The friend who listens first.
@@ -114,7 +114,7 @@ export default function LumiPage() {
               your place.
             </p>
           </Reveal>
-          <Reveal className="relative flex justify-center">
+          <Reveal mode="rise" className="relative flex justify-center">
             <div
               aria-hidden="true"
               className="absolute left-1/2 top-1/2 aspect-square w-[85%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/70"

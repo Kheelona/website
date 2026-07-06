@@ -38,6 +38,21 @@ export const metadata: Metadata = {
   },
   description:
     "Lumi is a screen-free AI robot toy that listens first, then talks back, in all 10 languages you speak at home. Reserve at ₹4,999. No payment now.",
+  openGraph: {
+    siteName: "Kheelona",
+    type: "website",
+    images: [{ url: "/og.png", width: 1200, height: 630 }],
+  },
+  twitter: { card: "summary_large_image" },
+};
+
+const ORG_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Kheelona",
+  url: "https://kheelona.com",
+  logo: "https://kheelona.com/brand/logo-mark.png",
+  sameAs: ["https://kheelona.ai"],
 };
 
 export default function RootLayout({
@@ -59,6 +74,10 @@ export default function RootLayout({
         />
       </head>
       <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_JSON_LD) }}
+        />
         <Navbar />
         <main>{children}</main>
         <Footer />

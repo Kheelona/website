@@ -14,8 +14,8 @@ export function Hero() {
       <Shape kind="flower13" color="#3AA4E5" className="absolute right-[6%] top-[16%] w-[64px] md:w-[90px]" />
       <Shape kind="squircle" color="#1ABC9C" className="absolute -left-10 bottom-[20%] w-[120px] md:w-[180px]" />
       <Container className="grid min-h-[560px] items-center gap-8 py-10 md:grid-cols-[1.15fr_0.85fr]">
-        <Reveal className="py-6 md:py-14">
-          <span className="mb-5 inline-block rounded-full bg-orange/15 px-4 py-2 text-sm font-semibold uppercase tracking-[0.08em] text-orange-deep">
+        <Reveal mode="rise" className="py-6 md:py-14">
+          <span className="mb-5 inline-block rounded-full bg-orange/15 px-4 py-2 text-sm font-bold uppercase tracking-[0.08em] text-ink-head">
             For ages 3 to 6
           </span>
           <h1 className="mb-5 font-display text-[clamp(38px,4.5vw,58px)] font-extrabold leading-[1.08] text-ink-head">

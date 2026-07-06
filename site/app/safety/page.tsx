@@ -71,7 +71,7 @@ export default function SafetyPage() {
       {/* Hero */}
       <Section wash="teal">
         <Container className="grid items-center gap-10 py-16 md:grid-cols-[1.2fr_0.8fr] md:py-20">
-          <Reveal>
+          <Reveal mode="rise">
             <Eyebrow color="text-ink-head/80">Safety</Eyebrow>
             <h1 className="mb-5 max-w-[16ch] font-display text-[clamp(38px,4.5vw,58px)] font-extrabold leading-[1.08] text-ink-head">
               Safe in their hands. Careful with their words.

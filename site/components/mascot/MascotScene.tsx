@@ -82,6 +82,7 @@ export function MascotScene({
       width={width}
       height={Math.round(width * 1.5)}
       priority={priority}
+      sizes="(max-width: 768px) 70vw, 360px"
       className="h-auto w-full drop-shadow-[0_18px_24px_rgba(216,95,27,0.18)]"
     />
   );

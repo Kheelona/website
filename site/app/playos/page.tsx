@@ -47,7 +47,7 @@ export default function PlayOSPage() {
       {/* Hero */}
       <Section wash="cool">
         <Container className="grid items-center gap-10 py-16 md:grid-cols-[1.1fr_0.9fr] md:py-20">
-          <Reveal>
+          <Reveal mode="rise">
             <Eyebrow color="text-blue">How it works</Eyebrow>
             <h1 className="mb-5 font-display text-[clamp(38px,4.5vw,58px)] font-extrabold leading-[1.08] text-ink-head">
               How does Lumi talk with your child?
@@ -80,16 +80,14 @@ export default function PlayOSPage() {
           </Reveal>
           <ol className="space-y-0 border-t border-line">
             {VOICE_PATH.map((s) => (
-              <Reveal key={s.n}>
-                <li className="grid items-start gap-5 border-b border-line py-8 md:grid-cols-[90px_1fr_1.4fr] md:gap-7">
+              <Reveal as="li" key={s.n} className="grid items-start gap-5 border-b border-line py-8 md:grid-cols-[90px_1fr_1.4fr] md:gap-7">
                   <span aria-hidden="true" className={`font-display text-4xl font-extrabold ${s.color}`}>
                     {s.n}
                   </span>
                   <h3 className="font-display text-[24px] font-extrabold leading-tight text-ink-head">
                     {s.title}
                   </h3>
-                  <p className="text-[16.5px]">{s.body}</p>
-                </li>
+                <p className="text-[16.5px]">{s.body}</p>
               </Reveal>
             ))}
           </ol>

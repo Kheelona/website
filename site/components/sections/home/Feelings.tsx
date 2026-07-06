@@ -33,8 +33,8 @@ export function Feelings() {
         </Reveal>
         <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
           {FEELINGS.map((f, i) => (
-            <Reveal key={f.name} delay={i * 0.06} className={cn(i % 2 === 0 && "lg:mt-6")}>
-              <li
+            <Reveal as="li" key={f.name} delay={i * 0.06} className={cn(i % 2 === 0 && "lg:mt-6")}>
+              <div
                 className={cn(
                   "h-full rounded-(--radius-card) p-5 pb-6 text-center transition-transform duration-300 ease-(--ease-bounce) hover:-translate-y-2",
                   f.tint,
@@ -51,7 +51,7 @@ export function Feelings() {
                   {f.name}
                 </h3>
                 <p className="text-[15px] leading-snug text-ink-muted">{f.line}</p>
-              </li>
+              </div>
             </Reveal>
           ))}
         </ul>

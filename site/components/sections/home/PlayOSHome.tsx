@@ -27,9 +27,8 @@ export function PlayOSHome() {
         {/* Numbered editorial rows (design review: breaks the tinted-card
             monotony mid-page; treatment borrowed from /playos). Copy verbatim. */}
         <ol className="mb-11 border-t border-line">
-          <Reveal>
-            <li className="grid items-start gap-4 border-b border-line py-8 md:grid-cols-[80px_1fr_1.4fr] md:gap-7">
-              <span aria-hidden="true" className="font-display text-4xl font-extrabold text-blue">01</span>
+          <Reveal as="li" className="grid items-start gap-4 border-b border-line py-8 md:grid-cols-[80px_1fr_1.4fr] md:gap-7">
+            <span aria-hidden="true" className="font-display text-4xl font-extrabold text-blue">01</span>
               <h3 className="font-display text-[clamp(22px,2.4vw,28px)] font-extrabold leading-tight text-ink-head">
                 Think about the device first.
               </h3>
@@ -39,11 +38,9 @@ export function PlayOSHome() {
                 behind the words, not just the words. Low latency. No long
                 waits. No sending everything to a distant server.
               </p>
-            </li>
           </Reveal>
-          <Reveal>
-            <li className="grid items-start gap-4 border-b border-line py-8 md:grid-cols-[80px_1fr_1.4fr] md:gap-7">
-              <span aria-hidden="true" className="font-display text-4xl font-extrabold text-teal">02</span>
+          <Reveal as="li" className="grid items-start gap-4 border-b border-line py-8 md:grid-cols-[80px_1fr_1.4fr] md:gap-7">
+            <span aria-hidden="true" className="font-display text-4xl font-extrabold text-teal">02</span>
               <h3 className="font-display text-[clamp(22px,2.4vw,28px)] font-extrabold leading-tight text-ink-head">
                 Every response is the right response.
               </h3>
@@ -54,7 +51,6 @@ export function PlayOSHome() {
                 makes Lumi a cognitive development toy, not just a toy that
                 plays sounds.
               </p>
-            </li>
           </Reveal>
         </ol>
         <Reveal className="flex flex-wrap items-center gap-5">

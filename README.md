@@ -28,8 +28,10 @@ Master build spec: `website-builder-prompt-final-kheelona.md` (Brand Bible §1, 
 Say where the project stands and what is next. Do NOT re-ask questions from completed phases, and do NOT re-ask anything already settled in the Brand Bible.
 
 ## Current Status (keep this section current)
-- **Concept round**: 3 styled homepage concepts live in `design-concepts/` (A Storybook, B Playmat, C Sunshine), awaiting founder approval. The approved concept becomes the visual direction for the full build.
-- **Locked decisions (2026-07-06)**: design tokens from `Design/design-system/` (populated by founder); mascot = renders + parallax at launch (no GLB, live R3F slot reserved for later); pre-order tool = **Tally**; currency = ₹ site-wide.
+- **BUILD COMPLETE (2026-07-06)**: all 9 pages + 4 journal articles live in `site/` (Next.js 16). Lighthouse desktop 99/100/100/100. Launch is gated only on founder inputs: see `FOUNDER-TODO.md` at the repo root.
+- Extras delivered: launch teaser videos (`launch-video/out/`, 16:9 + 9:16), rigged 3D mascot GLB with idle animation (`site/public/models/`, hero uses it with static fallback), 3 archived design concepts (`design-concepts/`).
+- **Getting started (developers)**: `cd site && npm install && npm run dev` (Node 18+). Production: `npm run build && npm start`. Env: copy `site/.env.example` → `.env.local`. Deploy: Vercel, project root `site/`.
+- **Locked decisions**: tokens from `Design/design-system/` mapped in `site/app/globals.css`; Tally pre-order (adapter in `components/ui/TallyEmbed.tsx`); ₹ site-wide; A+C blended design (see `docs/checkpoints/phase-2-ux-discovery.md`); accessibility 90+ outranks any styling preference.
 
 ## Project Structure
 ```
