@@ -6,55 +6,68 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/ui/Reveal";
 import { cn } from "@/lib/cn";
 
-/** Home S04. Card copy verbatim. The Sad card uses the closest available render
- *  (a scared pose); TODO: swap when the 3D artist provides a true Sad pose. */
+/** Home S04. Card copy verbatim. Visual rework (2026-07-07): the five
+ *  feelings stand together on one soft ground as a cast lineup, with a color
+ *  tick per feeling, instead of five identical tinted cards. The Sad card
+ *  uses the closest available render (a scared pose); TODO: swap when the 3D
+ *  artist provides a true Sad pose. */
 const FEELINGS = [
-  { name: "Curious", line: "Asks why. Chases ideas. Wants to know what is around the corner.", img: "curious", tint: "bg-blue/15", alt: "The mascot with wide, curious eyes" },
-  { name: "Grumpy", line: "Has opinions. Not always wrong. Needs to be heard, not hushed.", img: "grumpy", tint: "bg-orange/15", alt: "The mascot frowning with hands on hips" },
-  { name: "Sad", line: "Sits with you. Does not rush past. Makes space for the hard moments.", img: "sad", tint: "bg-purple/15", alt: "The mascot holding its cheeks through a hard moment" },
-  { name: "Silly", line: "Cannot sit still. Turns everything into a game. Laughter is learning too.", img: "silly", tint: "bg-yellow/15", alt: "The mascot laughing with its head thrown back" },
-  { name: "Joy", line: "Lights up. Celebrates. Reminds your child that they are wonderful.", img: "joy", tint: "bg-teal/15", alt: "The mascot dancing with one arm in the air" },
+  { name: "Curious", line: "Asks why. Chases ideas. Wants to know what is around the corner.", img: "curious", tick: "bg-blue", alt: "The mascot with wide, curious eyes", h: "h-[130px] md:h-[150px]", lift: "md:mb-2" },
+  { name: "Grumpy", line: "Has opinions. Not always wrong. Needs to be heard, not hushed.", img: "grumpy", tick: "bg-orange", alt: "The mascot frowning with hands on hips", h: "h-[150px] md:h-[178px]", lift: "md:mb-8" },
+  { name: "Sad", line: "Sits with you. Does not rush past. Makes space for the hard moments.", img: "sad", tick: "bg-purple", alt: "The mascot holding its cheeks through a hard moment", h: "h-[140px] md:h-[164px]", lift: "md:mb-0" },
+  { name: "Silly", line: "Cannot sit still. Turns everything into a game. Laughter is learning too.", img: "silly", tick: "bg-yellow", alt: "The mascot laughing with its head thrown back", h: "h-[150px] md:h-[172px]", lift: "md:mb-10" },
+  { name: "Joy", line: "Lights up. Celebrates. Reminds your child that they are wonderful.", img: "joy", tick: "bg-teal", alt: "The mascot dancing with one arm in the air", h: "h-[155px] md:h-[186px]", lift: "md:mb-4" },
 ] as const;
 
 export function Feelings() {
   return (
     <Section wash="cool">
-      <CurveDivider from="white" />
+      <CurveDivider from="white" flip />
       <Container className="py-16 md:py-20">
         <Reveal>
           <Eyebrow color="text-blue">Meet the feelings</Eyebrow>
           <h2 className="max-w-[18ch] font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.08] text-ink-head">
             Learning starts with feeling understood.
           </h2>
-          <p className="mb-12 mt-4 max-w-[62ch] text-[clamp(18px,1.6vw,21px)]">
+          <p className="mb-14 mt-4 max-w-[62ch] text-[clamp(18px,1.6vw,21px)]">
             Lumi knows five feelings. They are the engine behind everything
             your child learns.
           </p>
         </Reveal>
-        <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
-          {FEELINGS.map((f, i) => (
-            <Reveal as="li" key={f.name} delay={i * 0.06} className={cn(i % 2 === 0 && "lg:mt-6")}>
-              <div
-                className={cn(
-                  "h-full rounded-(--radius-card) p-5 pb-6 text-center transition-transform duration-300 ease-(--ease-bounce) hover:-translate-y-2",
-                  f.tint,
-                )}
+        <div className="relative">
+          <div
+            aria-hidden="true"
+            className="absolute inset-x-[6%] bottom-[86px] hidden h-[90px] rounded-[50%] bg-[radial-gradient(ellipse,rgba(41,160,215,0.14)_0%,transparent_70%)] md:block"
+          />
+          <ul className="relative grid grid-cols-2 items-end gap-x-4 gap-y-12 sm:grid-cols-3 md:flex md:items-end md:justify-between md:gap-2">
+            {FEELINGS.map((f, i) => (
+              <Reveal
+                as="li"
+                key={f.name}
+                delay={i * 0.07}
+                className={cn("group text-center md:flex-1", f.lift)}
               >
                 <Image
                   src={`/mascot/mascot-${f.img}.png`}
                   alt={f.alt}
                   width={200}
                   height={260}
-                  className="mx-auto mb-3 h-[150px] w-auto object-contain"
+                  className={cn(
+                    "mx-auto w-auto object-contain drop-shadow-[0_14px_18px_rgba(41,160,215,0.18)] transition-transform duration-300 ease-(--ease-bounce) group-hover:-translate-y-2",
+                    f.h,
+                  )}
                 />
-                <h3 className="mb-2 font-display text-2xl font-extrabold text-ink-head">
+                <span aria-hidden="true" className={cn("mx-auto mt-5 block h-1.5 w-9 rounded-full", f.tick)} />
+                <h3 className="mt-3 font-display text-2xl font-extrabold text-ink-head">
                   {f.name}
                 </h3>
-                <p className="text-[15px] leading-snug text-ink-muted">{f.line}</p>
-              </div>
-            </Reveal>
-          ))}
-        </ul>
+                <p className="mx-auto mt-1 max-w-[24ch] text-[14.5px] leading-snug text-ink-muted">
+                  {f.line}
+                </p>
+              </Reveal>
+            ))}
+          </ul>
+        </div>
       </Container>
     </Section>
   );

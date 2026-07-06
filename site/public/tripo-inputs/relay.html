@@ -1,0 +1,13 @@
+<!doctype html><meta charset="utf-8"><title>relay</title>
+<script>
+const files = ['mascot-front.png','mascot-side.png','mascot-back.png','lumi-front.png','lumi-side.png','lumi-right.png'];
+(async () => {
+  for (const f of files) {
+    const buf = await fetch('/' + f).then(r => r.arrayBuffer());
+    window.opener && window.opener.postMessage({file: f, buf}, '*');
+  }
+  window.opener && window.opener.postMessage({done: true}, '*');
+  document.title = 'relay done';
+  setTimeout(() => window.close(), 500);
+})();
+</script>

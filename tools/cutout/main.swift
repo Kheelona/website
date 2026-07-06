@@ -28,11 +28,14 @@ guard args.count == 2 else { fail("usage: cutout <input> <output.png> [--pad N] 
 let inputURL = URL(fileURLWithPath: args[0])
 let outputURL = URL(fileURLWithPath: args[1])
 
-guard let src = CGImageSourceCreateWithURL(inputURL as CFURL, nil),
-      let cg = CGImageSourceCreateImageAtIndex(src, 0, [kCGImageSourceShouldCache: true] as CFDictionary)
+// applyOrientationProperty bakes EXIF rotation into the pixels (camera JPGs
+// are often stored sideways with an orientation tag).
+guard var ciInput = CIImage(contentsOf: inputURL, options: [.applyOrientationProperty: true])
 else { fail("cannot read \(inputURL.path)") }
+ciInput = ciInput.transformed(by: CGAffineTransform(translationX: -ciInput.extent.origin.x,
+                                                    y: -ciInput.extent.origin.y))
 
-let handler = VNImageRequestHandler(cgImage: cg, options: [:])
+let handler = VNImageRequestHandler(ciImage: ciInput, options: [:])
 let request = VNGenerateForegroundInstanceMaskRequest()
 do { try handler.perform([request]) } catch { fail("vision failed: \(error)") }
 guard let obs = request.results?.first else { fail("no foreground instances found") }
@@ -43,7 +46,6 @@ do {
 } catch { fail("mask generation failed: \(error)") }
 
 let ciMask = CIImage(cvPixelBuffer: maskBuffer)
-let ciInput = CIImage(cgImage: cg)
 // Scale mask to input extent in case of rounding differences.
 let sx = ciInput.extent.width / ciMask.extent.width
 let sy = ciInput.extent.height / ciMask.extent.height

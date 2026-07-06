@@ -28,7 +28,7 @@ const CARDS = [
 export function Journal() {
   return (
     <Section wash="sun" id="journal">
-      <CurveDivider from="teal" />
+      <CurveDivider from="teal" flip />
       <Container className="py-16 md:py-20">
         <Reveal>
           <Eyebrow color="text-purple">From the journal</Eyebrow>

@@ -1,0 +1,38 @@
+import { Container } from "@/components/layout/Container";
+import { Section } from "@/components/layout/Section";
+import { Reveal } from "@/components/ui/Reveal";
+
+/** Home S02b: the rest of the PDF hero paragraph, staged as three oversized
+ *  lines (founder decision 2026-07-07: hero slims down, no sentence leaves
+ *  the page). Copy verbatim and in reading order; only the presentation is
+ *  staged. */
+const LINES = [
+  { text: "In the years a brain grows fastest.", indent: "" },
+  {
+    text: "The more Lumi understands how your child feels, the more they learn.",
+    indent: "md:pl-[10%]",
+  },
+] as const;
+
+export function StagedIntro() {
+  return (
+    <Section wash="cream">
+      <Container className="pb-20 pt-4 md:pb-28">
+        <div className="flex flex-col gap-7 md:gap-9">
+          {LINES.map((l, i) => (
+            <Reveal key={i} delay={i * 0.12} className={l.indent}>
+              <p className="max-w-[26ch] font-display text-[clamp(28px,3.6vw,52px)] font-extrabold leading-[1.12] text-ink-head/90">
+                {l.text}
+              </p>
+            </Reveal>
+          ))}
+          <Reveal delay={0.24} className="md:pl-[20%]">
+            <p className="font-accent text-[clamp(26px,3.2vw,46px)] italic leading-[1.2] text-orange-deep">
+              In all 10 languages you speak at home.
+            </p>
+          </Reveal>
+        </div>
+      </Container>
+    </Section>
+  );
+}

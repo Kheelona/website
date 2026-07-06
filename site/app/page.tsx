@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Hero } from "@/components/sections/home/Hero";
+import { StagedIntro } from "@/components/sections/home/StagedIntro";
+import { LaunchVideo } from "@/components/sections/home/LaunchVideo";
 import { WhyWeExist } from "@/components/sections/home/WhyWeExist";
 import { Feelings } from "@/components/sections/home/Feelings";
 import { MeetLumi } from "@/components/sections/home/MeetLumi";
@@ -20,6 +22,8 @@ export default function HomePage() {
   return (
     <>
       <Hero />
+      <StagedIntro />
+      <LaunchVideo />
       <WhyWeExist />
       <Feelings />
       <MeetLumi />

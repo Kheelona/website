@@ -1,0 +1,35 @@
+<!doctype html><meta charset="utf-8"><title>glb check</title>
+<style>body{margin:0;background:#e8f4ec;font:12px monospace}#grid{display:grid;grid-template-columns:repeat(4,1fr)}#grid div{position:relative}#grid span{position:absolute;top:4px;left:6px;color:#333}</style>
+<div id="grid"></div><div id="meta"></div>
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.180.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.180.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+const file = new URLSearchParams(location.search).get('file');
+const W = 340, H = 420;
+const renderer = new THREE.WebGLRenderer({antialias: true, preserveDrawingBuffer: true});
+renderer.setSize(W, H);
+const gltf = await new GLTFLoader().loadAsync('/' + file);
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xe8f4ec);
+scene.add(new THREE.AmbientLight(0xffffff, 1.6));
+const dir = new THREE.DirectionalLight(0xffffff, 2.2); dir.position.set(2, 4, 3); scene.add(dir);
+scene.add(gltf.scene);
+const box = new THREE.Box3().setFromObject(gltf.scene);
+const c = box.getCenter(new THREE.Vector3()), s = box.getSize(new THREE.Vector3());
+const radius = Math.max(s.x, s.y, s.z) * 1.35;
+const cam = new THREE.PerspectiveCamera(40, W/H, 0.01, 100);
+const grid = document.getElementById('grid');
+for (let i = 0; i < 8; i++) {
+  const a = i * Math.PI / 4;
+  cam.position.set(c.x + radius * Math.sin(a), c.y + s.y * 0.15, c.z + radius * Math.cos(a));
+  cam.lookAt(c);
+  renderer.render(scene, cam);
+  const img = new Image(); img.src = renderer.domElement.toDataURL(); img.width = W; img.height = H;
+  const cell = document.createElement('div'); const lbl = document.createElement('span');
+  lbl.textContent = (i * 45) + 'deg';
+  cell.appendChild(img); cell.appendChild(lbl); grid.appendChild(cell);
+}
+document.getElementById('meta').textContent = 'animations: ' + gltf.animations.map(a => a.name).join(', ') + ' | done';
+document.title = 'glb check done';
+</script>
