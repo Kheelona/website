@@ -2,6 +2,7 @@ const FILLS: Record<string, string> = {
   white: "#ffffff",
   cream: "#fff7ee",
   cool: "#eaf6fc",
+  sun: "#fdf1e2",
   teal: "#1abc9c",
   orange: "#ef762f",
 };

@@ -150,6 +150,11 @@
       "date": "2026-07-06",
       "what": "Keyword validation: Google Trends India + autocomplete + People-also-ask via Chrome (no Keyword Planner). Goal: 10/10 SEO + AEO (FAQ schema, question-led headings, citable answer blocks) + GEO. Conversion-first copywriting per build prompt (re-read website-builder-prompt-final-kheelona.md when drafting).",
       "decision": "approved (founder directive)"
+    },
+    {
+      "date": "2026-07-06",
+      "what": "Executive review round (CMO/CDO/Copywriter) verdicts applied; see docs/checkpoints/executive-review-round-1.md",
+      "decision": "approved (founder delegated the decision)"
     }
   ],
   "blockers": [
@@ -201,7 +206,7 @@
     "completed_in_this_session": [
       "Everything through S6. See git log (f451eae, 2b84a8a, 66ef52c) and docs/qa-report.md."
     ],
-    "next_action": "MILESTONE PAUSE: founder reviews /, /products/lumi, /playos, /safety (+ 3D mascot GLB + launch videos). On approval: S7 /team, S8 /stories (4 seed MDX articles), S9 Tally (needs tally-form-url), S10 legal pages, S11 SEO/AEO/GEO + Trends validation, S12 perf, S13 QA, S14 Vercel deploy.",
+    "next_action": "S7 /team, S8 /stories (4 seed MDX articles; closes Home journal links), then S9+ per blueprint. Review round applied (checkpoint executive-review-round-1.md).",
     "files_modified": [
       "site/** (full app so far)",
       "docs/qa-report.md",

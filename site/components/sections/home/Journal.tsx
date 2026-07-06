@@ -27,8 +27,8 @@ const CARDS = [
 
 export function Journal() {
   return (
-    <Section wash="white" id="journal">
-      <CurveDivider from="cream" />
+    <Section wash="sun" id="journal">
+      <CurveDivider from="teal" />
       <Container className="py-16 md:py-20">
         <Reveal>
           <Eyebrow color="text-purple">From the journal</Eyebrow>
@@ -44,7 +44,7 @@ export function Journal() {
             <Reveal key={c.slug} delay={i * 0.08}>
               <Link
                 href={`/stories/${c.slug}`}
-                className="block h-full overflow-hidden rounded-(--radius-card) bg-cream transition-transform duration-300 ease-(--ease-bounce) hover:-translate-y-1.5"
+                className="block h-full overflow-hidden rounded-(--radius-card) bg-white transition-transform duration-300 ease-(--ease-bounce) hover:-translate-y-1.5"
               >
                 <div className={`flex h-[220px] items-end justify-center overflow-hidden ${c.bg}`}>
                   <Image

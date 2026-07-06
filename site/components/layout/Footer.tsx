@@ -7,7 +7,7 @@ export function Footer() {
       <div className="mx-auto w-full max-w-[1200px] px-6">
         <div className="flex flex-wrap items-center justify-between gap-6">
           <span className="font-display text-2xl font-extrabold text-white">
-            kheelona
+            Kheelona
           </span>
           <nav aria-label="Footer">
             <ul className="flex flex-wrap gap-x-5 gap-y-2">
@@ -21,7 +21,10 @@ export function Footer() {
             </ul>
           </nav>
         </div>
-        <div className="mt-6 flex flex-wrap justify-between gap-4 border-t border-white/15 pt-5 text-white/60">
+        <p className="mt-6 text-white/70">
+          Wake-word listening. No open internet. You see everything.
+        </p>
+        <div className="mt-5 flex flex-wrap justify-between gap-4 border-t border-white/15 pt-5 text-white/60">
           <span>
             For partners and investors:{" "}
             <a
@@ -31,8 +34,8 @@ export function Footer() {
               kheelona.ai
             </a>
           </span>
-          {/* TODO(claims-contact): replace with the confirmed contact email */}
-          <span>Contact: email pending</span>
+          {/* TODO(claims-contact): add the contact email here once the founder
+              confirms it. Never render a "pending" note publicly. */}
         </div>
       </div>
     </footer>

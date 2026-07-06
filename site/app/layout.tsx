@@ -5,6 +5,7 @@ import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { RevealObserver } from "@/components/ui/RevealObserver";
+import { StickyMobileCTA } from "@/components/layout/StickyMobileCTA";
 
 const glory = localFont({
   src: [
@@ -61,6 +62,7 @@ export default function RootLayout({
         <Navbar />
         <main>{children}</main>
         <Footer />
+        <StickyMobileCTA />
         <RevealObserver />
       </body>
     </html>

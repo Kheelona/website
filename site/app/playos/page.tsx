@@ -23,22 +23,22 @@ export const metadata: Metadata = {
 const VOICE_PATH = [
   { n: "01", title: "Your child says the wake word.", body: "Until then, the microphone is off. Lumi starts listening only when it is invited to.", color: "text-blue" },
   { n: "02", title: "The device thinks first.", body: "Speech is processed on the toy before anything goes anywhere. Low latency. No long waits. No sending everything to a distant server.", color: "text-teal" },
-  { n: "03", title: "The feeling gets read.", body: "PlayOS hears more than words. Curious, grumpy, sad, silly, joy: the answer meets the mood, and that is what makes a smart toy a teacher.", color: "text-purple" },
+  { n: "03", title: "The feeling gets read.", body: "PlayOS hears more than words. Curious, Grumpy, Sad, Silly, Joy: the answer meets the mood.", color: "text-purple" },
   { n: "04", title: "The right response comes back.", body: "Every reply passes through an age-graded safety layer before it is spoken. On-device and cloud filters work together. No open internet. No surprises.", color: "text-orange-deep" },
 ] as const;
 
 const PRIVACY_CARDS = [
   { title: "Region-pinned", body: "Your family's conversations stay in your region." },
-  { title: "Parent-consented", body: "Nothing is collected without your say-so. You agreed to it, or it does not happen." },
+  { title: "Parent-consented", body: "Nothing is collected without your say-so. If you have not said yes, it does not happen." },
   { title: "Deletable in one tap", body: "Any conversation, gone the moment you decide." },
   { title: "Never sold", body: "Your child's voice data is never sold. Full stop." },
 ] as const;
 
 const FAMILY = [
-  { name: "Lumi", note: "Here first. The friend who listens.", live: true },
-  { name: "Lori", note: "On the way.", live: false },
-  { name: "Lua", note: "On the way.", live: false },
-  { name: "Robu", note: "On the way.", live: false },
+  { name: "Lumi", note: "Here first. The friend who listens.", color: "bg-white" },
+  { name: "Lori", note: "Next in line.", color: "bg-blue/15" },
+  { name: "Lua", note: "In the workshop.", color: "bg-purple/15" },
+  { name: "Robu", note: "Worth the wait.", color: "bg-teal/15" },
 ] as const;
 
 export default function PlayOSPage() {
@@ -50,7 +50,7 @@ export default function PlayOSPage() {
           <Reveal>
             <Eyebrow color="text-blue">How it works</Eyebrow>
             <h1 className="mb-5 font-display text-[clamp(38px,4.5vw,58px)] font-extrabold leading-[1.08] text-ink-head">
-              One soul. Many bodies. This is PlayOS.
+              How does Lumi talk with your child?
             </h1>
             <p className="max-w-[58ch] text-[clamp(18px,1.6vw,21px)]">
               PlayOS is Kheelona&apos;s own voice engine, built from the ground
@@ -128,46 +128,40 @@ export default function PlayOSPage() {
         </Container>
       </Section>
 
-      {/* The family (C-style bold block) */}
-      <Section wash="orange">
+      {/* The family roadmap (cream, so the finale stays the page's one orange) */}
+      <Section wash="cream">
+        <CurveDivider from="cream" />
         <Container className="py-16 md:py-20">
           <Reveal>
-            <h2 className="mb-3 font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.08] text-white">
-              Made to be kept, not outgrown.
+            <h2 className="mb-3 font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.08] text-ink-head">
+              One soul. Many bodies.
             </h2>
-            <p className="mb-11 max-w-[58ch] text-[clamp(18px,1.6vw,21px)] text-white/95">
-              Lumi is the first of a family. Every friend that follows runs on
-              the same PlayOS soul, learns the same safety rules, and grows
-              with your child instead of gathering dust.
+            <p className="mb-11 max-w-[58ch] text-[clamp(18px,1.6vw,21px)]">
+              Made to be kept, not outgrown. Lumi is the first of a family.
+              Every friend that follows runs on the same PlayOS soul, learns
+              the same safety rules, and grows with your child instead of
+              gathering dust.
             </p>
           </Reveal>
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mb-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {FAMILY.map((m, i) => (
               <Reveal key={m.name} delay={i * 0.05}>
-                <div className={`h-full rounded-(--radius-card) p-7 ${m.live ? "bg-white" : "bg-white/15 text-white"}`}>
-                  <h3 className={`mb-1 font-display text-[26px] font-extrabold ${m.live ? "text-ink-head" : "text-white"}`}>
+                <div className={`h-full rounded-(--radius-card) p-7 ${m.color}`}>
+                  <h3 className="mb-1 font-display text-[26px] font-extrabold text-ink-head">
                     {m.name}
                   </h3>
-                  <p className={`text-[15.5px] ${m.live ? "text-ink" : "text-white/90"}`}>{m.note}</p>
+                  <p className="text-[15.5px] text-ink-head/85">{m.note}</p>
                 </div>
               </Reveal>
             ))}
           </div>
-        </Container>
-      </Section>
-
-      {/* Quiet dev link */}
-      <Section wash="white">
-        <Container className="flex flex-wrap items-center justify-between gap-5 py-12">
-          <Reveal>
-            <p className="text-[17px] text-ink-muted">
+          <Reveal className="flex flex-wrap items-center justify-between gap-5">
+            <p className="text-[16px] text-ink-muted">
               Building on PlayOS?{" "}
               <a href="https://kheelona.ai" className="font-semibold text-blue underline">
                 See kheelona.ai
               </a>
             </p>
-          </Reveal>
-          <Reveal delay={0.05}>
             <Button href="/products/lumi" variant="ghost">
               Meet Lumi, the first friend
             </Button>
@@ -175,7 +169,7 @@ export default function PlayOSPage() {
         </Container>
       </Section>
 
-      <FinaleCTA />
+      <FinaleCTA variant="compact" from="cream" />
     </>
   );
 }

@@ -6,7 +6,6 @@ import { MeetLumi } from "@/components/sections/home/MeetLumi";
 import { PlayOSHome } from "@/components/sections/home/PlayOSHome";
 import { Compare } from "@/components/sections/home/Compare";
 import { SafetyStrip } from "@/components/sections/home/SafetyStrip";
-import { ParentVoices } from "@/components/sections/home/ParentVoices";
 import { Journal } from "@/components/sections/home/Journal";
 import { FinaleCTA } from "@/components/sections/home/FinaleCTA";
 
@@ -27,9 +26,11 @@ export default function HomePage() {
       <PlayOSHome />
       <Compare />
       <SafetyStrip />
-      <ParentVoices />
+      {/* ParentVoices intentionally unmounted until real testimonials arrive
+          (claims-testimonials blocker): the review round found the empty
+          placeholders read as vaporware two sections before the ask. */}
       <Journal />
-      <FinaleCTA />
+      <FinaleCTA variant="full" from="sun" />
     </>
   );
 }

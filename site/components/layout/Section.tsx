@@ -1,12 +1,15 @@
 import { cn } from "@/lib/cn";
 
-export type Wash = "white" | "cream" | "cool" | "teal" | "orange";
+export type Wash = "white" | "cream" | "cool" | "sun" | "teal" | "orange";
 
+/* "sun" = Sunshine Yellow at the sanctioned 15% alpha, composited (#fdf1e2).
+   Teal sections use ink text: white on #1ABC9C fails WCAG even at large sizes. */
 const WASHES: Record<Wash, string> = {
   white: "bg-white",
   cream: "bg-cream",
   cool: "bg-cool",
-  teal: "bg-teal text-white",
+  sun: "bg-[#fdf1e2]",
+  teal: "bg-teal text-ink-head",
   orange: "bg-orange text-white",
 };
 

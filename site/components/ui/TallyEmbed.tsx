@@ -15,19 +15,25 @@ export function TallyEmbed() {
 
   if (!isConfigured) {
     return (
-      <div className="rounded-(--radius-card-lg) border-[1.5px] border-dashed border-line bg-white p-8 text-center">
-        <p className="text-[13px] font-bold uppercase tracking-wider text-orange-deep">
-          Pre-order form pending
+      <div className="rounded-(--radius-card-lg) bg-white p-8 text-center">
+        <p className="font-display text-[22px] font-extrabold text-ink-head">
+          The pre-order list opens here soon.
         </p>
-        <p className="mx-auto mt-2 max-w-[40ch] text-[15px] text-ink-muted">
-          The reservation form connects here. We hold the price, you hold your
-          place.
+        <p className="mx-auto mt-2 max-w-[42ch] text-[16px] text-ink">
+          ₹4,999 held for you, no payment now. We hold the price, you hold
+          your place.
         </p>
       </div>
     );
   }
 
   const embedUrl = `${FORM_URL}${FORM_URL.includes("?") ? "&" : "?"}transparentBackground=1&hideTitle=1`;
+
+  // Analytics stub: real GA4 wiring lands in the pre-order sprint.
+  const track = (event: string) => {
+    const w = window as unknown as { gtag?: (...args: unknown[]) => void };
+    w.gtag?.("event", event);
+  };
 
   return (
     <div className="relative overflow-hidden rounded-(--radius-card-lg) bg-white">
@@ -40,11 +46,15 @@ export function TallyEmbed() {
         src={embedUrl}
         title="Join the Lumi pre-order list"
         className="h-[560px] w-full"
-        onLoad={() => setLoaded(true)}
+        onLoad={() => { setLoaded(true); track("preorder_view"); }}
       />
       <p className="px-6 pb-4 text-center text-[14px] text-ink-muted">
         Form not loading?{" "}
-        <a href={FORM_URL} className="font-semibold text-blue underline">
+        <a
+          href={FORM_URL}
+          onClick={() => track("preorder_open_fallback")}
+          className="font-semibold text-blue underline"
+        >
           Open it in a new tab
         </a>
       </p>

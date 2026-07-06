@@ -24,16 +24,13 @@ export function PlayOSHome() {
             safety rules. Every product in the family runs on the same soul.
           </p>
         </Reveal>
-        <div className="mb-11 grid gap-6 md:grid-cols-2">
+        {/* Numbered editorial rows (design review: breaks the tinted-card
+            monotony mid-page; treatment borrowed from /playos). Copy verbatim. */}
+        <ol className="mb-11 border-t border-line">
           <Reveal>
-            <div className="h-full rounded-(--radius-card) bg-white p-9">
-              <div className="mb-4 grid h-12 w-12 place-items-center rounded-2xl bg-blue/15">
-                <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="#29A0D7" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-                  <rect x="5" y="3" width="14" height="18" rx="3" />
-                  <circle cx="12" cy="17" r="1.4" fill="#29A0D7" stroke="none" />
-                </svg>
-              </div>
-              <h3 className="mb-3 font-display text-[clamp(24px,2.6vw,32px)] font-extrabold text-ink-head">
+            <li className="grid items-start gap-4 border-b border-line py-8 md:grid-cols-[80px_1fr_1.4fr] md:gap-7">
+              <span aria-hidden="true" className="font-display text-4xl font-extrabold text-blue">01</span>
+              <h3 className="font-display text-[clamp(22px,2.4vw,28px)] font-extrabold leading-tight text-ink-head">
                 Think about the device first.
               </h3>
               <p className="text-[16.5px]">
@@ -42,17 +39,12 @@ export function PlayOSHome() {
                 behind the words, not just the words. Low latency. No long
                 waits. No sending everything to a distant server.
               </p>
-            </div>
+            </li>
           </Reveal>
-          <Reveal delay={0.08}>
-            <div className="h-full rounded-(--radius-card) bg-white p-9">
-              <div className="mb-4 grid h-12 w-12 place-items-center rounded-2xl bg-teal/15">
-                <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="#1ABC9C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z" />
-                  <path d="M9 12l2 2 4-4" />
-                </svg>
-              </div>
-              <h3 className="mb-3 font-display text-[clamp(24px,2.6vw,32px)] font-extrabold text-ink-head">
+          <Reveal>
+            <li className="grid items-start gap-4 border-b border-line py-8 md:grid-cols-[80px_1fr_1.4fr] md:gap-7">
+              <span aria-hidden="true" className="font-display text-4xl font-extrabold text-teal">02</span>
+              <h3 className="font-display text-[clamp(22px,2.4vw,28px)] font-extrabold leading-tight text-ink-head">
                 Every response is the right response.
               </h3>
               <p className="text-[16.5px]">
@@ -62,9 +54,9 @@ export function PlayOSHome() {
                 makes Lumi a cognitive development toy, not just a toy that
                 plays sounds.
               </p>
-            </div>
+            </li>
           </Reveal>
-        </div>
+        </ol>
         <Reveal className="flex flex-wrap items-center gap-5">
           <Button href={PREORDER_HREF}>Join the pre-order list</Button>
           <span className="text-[15px] text-ink-muted">
