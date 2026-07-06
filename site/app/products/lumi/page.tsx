@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { LumiHero } from "@/components/three/LumiHero";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { CurveDivider } from "@/components/layout/CurveDivider";
@@ -119,14 +120,7 @@ export default function LumiPage() {
               aria-hidden="true"
               className="absolute left-1/2 top-1/2 aspect-square w-[85%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/70"
             />
-            <Image
-              src="/product/lumi-blue.png"
-              alt="Lumi, a small blue talking toy with a striped party hat"
-              width={588}
-              height={854}
-              priority
-              className="relative w-full max-w-[360px] drop-shadow-[0_20px_26px_rgba(41,160,215,0.2)]"
-            />
+            <LumiHero className="relative h-[440px] w-full max-w-[420px] md:h-[520px]" />
           </Reveal>
         </Container>
       </Section>

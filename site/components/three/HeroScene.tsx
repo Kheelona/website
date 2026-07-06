@@ -78,7 +78,6 @@ export default function HeroScene({ onReady }: { onReady?: () => void }) {
       camera={{ fov: 32, position: [0, 1.35, 4.4] }}
       onCreated={({ camera }) => camera.lookAt(0, 1.05, 0)}
       style={{ width: "100%", height: "100%" }}
-      aria-label="The Kheelona mascot in 3D, gently idling. It turns as you scroll."
     >
       <ambientLight intensity={1.15} />
       <directionalLight position={[2.5, 4, 3]} intensity={1.7} color="#fff6ea" />

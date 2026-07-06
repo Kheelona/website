@@ -28,7 +28,7 @@ export function PlayOSHome() {
             monotony mid-page; treatment borrowed from /playos). Copy verbatim. */}
         <ol className="mb-11 border-t border-line">
           <Reveal as="li" className="grid items-start gap-4 border-b border-line py-8 md:grid-cols-[80px_1fr_1.4fr] md:gap-7">
-            <span aria-hidden="true" className="font-display text-4xl font-extrabold text-blue">01</span>
+            <span aria-hidden="true" className="font-display text-4xl font-extrabold text-orange-deep">01</span>
               <h3 className="font-display text-[clamp(22px,2.4vw,28px)] font-extrabold leading-tight text-ink-head">
                 Think about the device first.
               </h3>
@@ -40,7 +40,7 @@ export function PlayOSHome() {
               </p>
           </Reveal>
           <Reveal as="li" className="grid items-start gap-4 border-b border-line py-8 md:grid-cols-[80px_1fr_1.4fr] md:gap-7">
-            <span aria-hidden="true" className="font-display text-4xl font-extrabold text-teal">02</span>
+            <span aria-hidden="true" className="font-display text-4xl font-extrabold text-orange-deep">02</span>
               <h3 className="font-display text-[clamp(22px,2.4vw,28px)] font-extrabold leading-tight text-ink-head">
                 Every response is the right response.
               </h3>
@@ -55,9 +55,9 @@ export function PlayOSHome() {
         </ol>
         <Reveal className="flex flex-wrap items-center gap-5">
           <Button href={PREORDER_HREF}>Join the pre-order list</Button>
-          <span className="text-[15px] text-ink-muted">
+          <span className="text-[15px] text-ink">
             Building on PlayOS? See{" "}
-            <Link href="https://kheelona.ai" className="font-semibold text-blue">
+            <Link href="https://kheelona.ai" className="font-semibold text-ink-head underline">
               kheelona.ai
             </Link>
           </span>

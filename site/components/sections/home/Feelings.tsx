@@ -25,7 +25,7 @@ export function Feelings() {
       <CurveDivider from="white" flip />
       <Container className="py-16 md:py-20">
         <Reveal>
-          <Eyebrow color="text-blue">Meet the feelings</Eyebrow>
+          <Eyebrow>Meet the feelings</Eyebrow>
           <h2 className="max-w-[18ch] font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.08] text-ink-head">
             Learning starts with feeling understood.
           </h2>
@@ -61,7 +61,7 @@ export function Feelings() {
                 <h3 className="mt-3 font-display text-2xl font-extrabold text-ink-head">
                   {f.name}
                 </h3>
-                <p className="mx-auto mt-1 max-w-[24ch] text-[14.5px] leading-snug text-ink-muted">
+                <p className="mx-auto mt-1 max-w-[24ch] text-[14.5px] leading-snug text-ink">
                   {f.line}
                 </p>
               </Reveal>

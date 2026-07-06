@@ -203,28 +203,32 @@
     }
   ],
   "last_handoff": {
-    "date": "2026-07-06",
+    "date": "2026-07-07",
     "completed_in_this_session": [
-      "Full project run: concepts, videos, 3D mascot GLB, all 9 pages + 4 articles, executive review round applied, SEO/AEO layer, Lighthouse desktop 99/100/100/100. See git log + qa-report.md."
+      "Founder-directed visual rework: clean transparent cutouts for all mascot/product art (tools/cutout, Vision-based), scroll-reveal blanking fixed, hero rebuilt as R3F 3D scene with regenerated Tripo mascot (two-face artifact fixed, idle animation), staged verbatim hero copy, 20s ProductFilm launch video from real photoshoot (site/public/video), Lumi plush 3D turntable on /products/lumi, feelings cast-lineup rework, a11y contrast fixes. Lighthouse desktop: home 99/96/100/100, /products/lumi 100/92/100/100, /stories 100/96/100/100."
     ],
-    "next_action": "Founder works through FOUNDER-TODO.md (Tally URL + Vercel auth are the launch-critical two). On Tally URL: set env, verify form e2e, fire analytics. On Vercel auth: deploy site/ as project root, add env vars, DNS, Search Console, then final launch checklist in blueprint 8.11.",
+    "next_action": "Founder reviews the rework on http://localhost:3456 (hero 3D, launch film, /products/lumi turntable). Then FOUNDER-TODO.md as before (Tally URL + Vercel auth are launch-critical).",
     "files_modified": [
-      "site/** complete",
-      "FOUNDER-TODO.md",
+      "site/public/mascot/* + product/lumi-blue.png (re-cut)",
+      "site/public/models/* (kheelona-mascot idle GLB, lumi-plush.glb)",
+      "site/public/video/launch.mp4 + poster",
+      "site/components/three/*, sections/home/{Hero,StagedIntro,LaunchVideo,Feelings}.tsx",
+      "tools/cutout/",
+      "launch-video/src/ProductFilm.tsx",
       "docs/*"
     ],
     "open_issues": [
-      "Mobile perf 85 (documented tradeoff)",
-      "Sad pose is the scared render (asset gap)"
+      "Orange/white bands (compare table, finale) sit ~2.9:1 large-text contrast; gate met (a11y >= 90) but flagged by Lighthouse; brand-locked colors",
+      "Sad pose is the scared render (asset gap)",
+      "Remaining 7 journal heroes optional (docs/stories-image-prompts.md)"
     ],
     "context_to_load_on_resume": [
       "docs/qa-report.md",
       "FOUNDER-TODO.md",
-      "site/lib/stories-expansion.ts",
-      "docs/stories-image-prompts.md"
+      "site/components/three/HeroScene.tsx",
+      "design-concepts/README.md"
     ],
-    "what_happened": "Content expansion complete: 10 new keyword-researched articles (lib/stories-expansion.ts), engagement pass on the original 4, 7 Gemini hero illustrations wired (public/stories/, hero/heroAlt fields, Article JSON-LD image). AI-humanizer step resolved with evidence: QuillBot Humanizer degraded meaning on a sample, so instead all 14 articles were verified 0% AI / 100% human on QuillBot AI Detector v7.1.0 (4 scans) + Scribbr (final 4 articles). Build green: 28 static pages. See qa-report content-expansion entry.",
-    "what_is_next": "S14 deploy remains blocked on founder (Vercel auth, Tally URL - FOUNDER-TODO.md). Optional: generate remaining 7 article heroes from docs/stories-image-prompts.md."
+    "what_happened_last": "Visual-rework sprints S1-S5 (2026-07-07) complete and committed; site rebuilt and served on :3456."
   },
   "resume_instructions": "Read README.md first. Then this file. Then the current-phase checkpoint. Then website-steps.md if it exists. Never re-ask anything settled in the Brand Bible (build prompt §1) or in approvals above."
 }

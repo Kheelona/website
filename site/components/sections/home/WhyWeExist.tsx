@@ -11,7 +11,7 @@ export function WhyWeExist() {
       <CurveDivider from="cream" />
       <Container className="py-16 text-center md:py-20">
         <Reveal>
-          <Eyebrow color="text-teal">Why we exist</Eyebrow>
+          <Eyebrow>Why we exist</Eyebrow>
           <h2 className="mx-auto mb-6 max-w-[21ch] font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.08] text-ink-head">
             Your child&apos;s best years deserve more than a screen.
           </h2>

@@ -29,8 +29,8 @@ Footer currently omits contact entirely (better than "pending").
 ## 8. GA4 measurement ID (unlocks: measuring conversion)
 Create a GA4 property, put the `G-...` id in `.env` as `NEXT_PUBLIC_GA4_MEASUREMENT_ID`. Event stubs (`preorder_view` etc.) are already wired; the gtag snippet gets added when the ID exists. Also: verify Search Console after deploy.
 
-## 9. Judge the 3D mascot
-`design-concepts/assets/tripo/model-viewer.html` (needs the local server) or the GLB directly. If the wink or the softened colors bother you, options: retry credits on Tripo (875 left), or a non-winking front render from your 3D artist for a cleaner conversion.
+## 9. Judge the 3D mascot (regenerated 2026-07-07)
+The two-faced v1 was regenerated from cleaned multi-view inputs; the new model (idle animation, single face, sharper texture) is live in the home hero, and a Lumi plush 3D turntable is on /products/lumi. Judge both on http://localhost:3456. Retry credits remain (745 left) if anything bothers you.
 
 ## 10. Legal counsel review (launch gate)
 /privacy and /terms are plain-language drafts written to be fair; they must be reviewed by counsel before launch. Both carry TODO flags in code.

@@ -8,6 +8,7 @@ Copy lives in `site/components/sections/home/*.tsx`. Blue-box copy reproduced ex
 2. S09 Parent voices: section headline is built but UNMOUNTED until real testimonials exist (claims register §1.9; empty placeholders read as vaporware per CMO review).
 3. S11 Footer CTA: the PDF's `[BUTTON] Join the pre-order list` is implemented as the inline Tally reservation form + surrounding verbatim copy (deliberate conversion decision). The button label lives on in nav/CTAs.
 4. PDF label colors (brand green/terracotta small caps) rendered as Instrument Serif italic 24px in orange-deep: WCAG AA at label sizes (a11y gate).
+5. Hero staging (founder-approved 2026-07-07): the hero keeps the headline, the first two sentences of the lede, the CTA, and the price line; the remaining hero sentences render verbatim and in order as oversized staged lines in `StagedIntro.tsx` directly below. No sentence removed. The 20s launch film after it uses only verbatim site copy on screen.
 
 ## Drafted pages (AI copy per prompt §5.2, founder may redline anytime)
 - **/products/lumi** — `site/app/products/lumi/page.tsx`: hero, conversation demo script, five-feelings-deeper cards, parent-app features, box list + honest specs deferral, price block ("Under ₹4 a day" is locked fact §1.8), 10 FAQs. Keywords woven: talking toys, robot toy, educational toys, cognitive development toy for toddlers, voice toy (languages FAQ), toys for kids.

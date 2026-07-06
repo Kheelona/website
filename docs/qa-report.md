@@ -72,3 +72,24 @@
 - Conclusion: the copy already passes as human-written; humanizer rewrite unnecessary and harmful. QuillBot anonymous scan limit (~4) reached; future re-checks can use Scribbr or a logged-in QuillBot.
 
 **Checks**: build green (28 static pages, all 14 article routes), voice-lint grep clean (0 em-dashes, 0 hype, names exact), hero image + article page visually verified on production build (localhost:3456), heroes return 200.
+
+
+## Visual rework sprint (cutouts, 3D hero, launch film) · 2026-07-07
+
+**Founder brief**: pages not loading properly; images carrying baked backgrounds; hero dull + broken two-faced GLB; wants launch video and a ground-up, subtly immersive 3D visual language (keep brand tokens + verbatim copy; hero copy staged, all sentences retained).
+
+**Scope shipped**
+- `tools/cutout` (Swift + Vision subject lift, EXIF-aware, neutral shadow/halo cleanup): all 7 mascot poses + lumi-blue re-cut from `Design/` originals. Canvas pixel audit: no background remnants. Fixes the white patches on teal/orange/purple washes.
+- Loading: Reveal default is transform-only "rise" (nothing hides), observer fires at viewport edge (-8%), 0.45s transitions; above-fold MascotScene gets priority. Fast scroll can no longer land on blank viewports (reproduced then re-tested on /stories).
+- Tripo3D regeneration (web UI, cleaned multi-view inputs): mascot Smart Mesh 10k tri, 2k texture, rig v2.5 Good-for-Animals -> Humanoid, idle clip ("NlaTrack"). Verified from 8 angles offline: the Janus/two-face artifact is gone. Lumi plush generated from front/left/right product photos -> `lumi-plush.glb`. Credits 875 -> 745 (cap was ~400 spend; used 130).
+- Hero: slim copy + R3F scene (`components/three/HeroScene.tsx`): idle clip, scroll-linked yaw, pointer tilt, sparkles, static contact shadow; gates identical to old model-viewer slot (pointer:fine, no Save-Data, no reduced-motion) with the static cutout as LCP + fallback. `@google/model-viewer` removed.
+- StagedIntro: remaining PDF hero sentences as staged display lines (verbatim, in order).
+- LaunchVideo section + `launch-video/src/ProductFilm.tsx`: 20s, five scenes from real photoshoot cutouts (agent-shortlisted 14 of 60 photos), all on-screen text verbatim site copy, 2.1MB H.264 + poster. Autoplay muted, pauses offscreen, reduced-motion/Save-Data get poster + controls.
+- /products/lumi: photo hero cross-fades into a slow 3D turntable (`LumiTurntable`, no controls).
+- Feelings (home): five identical tinted cards -> cast lineup on one soft ground with per-feeling color ticks; curve dividers now alternate direction.
+- A11y: canvas aria-label removed (prohibited-attr), 3D layers aria-hidden (they restate the static art), eyebrows back to sanctioned orange-deep, feelings captions ink, PlayOS numerals orange-deep, kheelona.ai link ink-head underline.
+
+**Lighthouse desktop (post-rework)**: / 99/96/100/100 · /products/lumi 100/92/100/100 · /stories 100/96/100/100 (Perf/A11y/BP/SEO; gates 90+ met everywhere).
+**Known contrast remainder**: white-on-orange compare/finale bands measure ~2.9:1 at large text (needs 3:1). Brand-locked oranges; gate met; revisit only if the founder wants a deeper orange.
+**Verification**: full page-by-page screenshot walkthrough (all 9 pages + articles + 404) on the production build; GLB 8-angle contact sheets for both models; video scene stills reviewed; build green (28 pages).
+**Note for future automation**: Chrome throttles IntersectionObserver/rAF in unfocused tabs; the 3D mount and reveals can look inert in captures while being fine for real users. One real interaction wakes them.

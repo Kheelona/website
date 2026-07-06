@@ -52,3 +52,12 @@ The live 3D mascot in the site hero (`site/public/models/kheelona-mascot.glb`) w
 **UI-automation gotchas** (if driving Tripo again): file inputs re-render after each upload, so find them by slot label text, not index; uploads from a localhost page require the postMessage relay trick (PNA blocks https→localhost fetch); popups need a real on-page button click for user activation.
 
 **Status**: founder judgment pending (FOUNDER-TODO #9) — the model is a stylized approximation; if rejected, the site falls back cleanly because the static render stays mounted until the GLB loads.
+
+## Tripo3D v2 runs (2026-07-07): Janus fix + Lumi plush
+
+The v1 mascot GLB showed two faces (front texture projected on the back of the head). Regenerated via the same web-UI route with **cleaned inputs** (the main fix): `assets/tripo/front|side|back.png` re-cut with `tools/cutout` (no white shadows/strays; side view pre-cropped 12% to drop edge fragments). Same recipe (Smart Mesh multi-view, Triangle 10k, 2K texture, rig v2.5 Good for Animals → Humanoid, idle preset, export with skeleton + 1 animation "NlaTrack"). Verified from 8 angles in a local three.js contact sheet before accepting: single face, clean back. Shipped to `site/public/models/kheelona-mascot.glb` (R3F hero plays the clip; falls back to the static cutout).
+
+**Lumi plush 3D** (new): `assets/tripo/lumi/front|side|right.png` (from `Design/product-images/Lumi Blue`; the tagged back view skipped — the hang-tag would have been modeled). Smart Mesh multi-view, Triangle 10k, 2K texture, no rig. Shipped to `site/public/models/lumi-plush.glb` (slow turntable on /products/lumi).
+
+**Credits**: 875 → 745 (mascot gen 35 + texture 20 + rig 20; Lumi gen 35 + texture 20). Founder cap for the session was ~400; 130 spent.
+**Upload trick this round**: the extension's file_upload no longer takes paths; used a `postMessage` relay page served from `127.0.0.1:8787` (temp, removed) + `DataTransfer` injection into the slot inputs (found by label text, as before).
