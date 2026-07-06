@@ -35,5 +35,7 @@ Root `.env` (gitignored, DUMMY values until founder fills them): `TRIPO_API_KEY`
 - `docs/copy-reference.md` — copy provenance + sanctioned deviations
 - `docs/stories-image-prompts.md` — ready prompts for the 7 journal articles still missing hero images
 - `docs/checkpoints/` — per-phase snapshots
-- `design-concepts/README.md` — 3 archived concepts, mascot cutout pipeline, Tripo3D 2D→3D pipeline, engineering gotchas (overflow-x clip, scroll-snap wheel trap)
+- `design-concepts/README.md` — 3 archived concepts, mascot cutout pipeline, Tripo3D 2D→3D pipeline (v2 runs incl. Janus fix + Lumi plush), engineering gotchas (overflow-x clip, scroll-snap wheel trap)
 - `site/AGENTS.md` — Next.js 16 breaking-changes warning (read `node_modules/next/dist/docs/` before writing Next code)
+- `tools/cutout/` — offline background removal (Swift + Apple Vision; compile with `swiftc -O main.swift -o cutout`). Every mascot/product cutout and video asset goes through it; never ship art with baked backgrounds.
+- 3D + film assets: `site/public/models/{kheelona-mascot,lumi-plush}.glb` (R3F hero + product turntable), `site/public/video/launch.{mp4,jpg}` (rendered from `launch-video/src/ProductFilm.tsx`)
