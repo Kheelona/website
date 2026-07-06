@@ -1,0 +1,69 @@
+@import "tailwindcss";
+
+/* Kheelona design tokens, mapped from Design/design-system/colors_and_type.css.
+   Do not invent values; if a token is missing, flag it (blueprint §8.2). */
+@theme {
+  --color-orange: #ef762f;
+  --color-orange-deep: #d85f1b;
+  --color-yellow: #f1a23b;
+  --color-blue: #29a0d7;
+  --color-blue-soft: #3aa4e5;
+  --color-teal: #1abc9c;
+  --color-purple: #8b5bff;
+  --color-ink: #272727;
+  --color-ink-head: #1c1c1c;
+  --color-ink-muted: #727272;
+  --color-line: #cfcfcf;
+  --color-line-soft: #e2e2e2;
+  --color-cream: #fff7ee;
+  --color-cool: #eaf6fc;
+  --color-footer-cocoa: #2a1608;
+
+  --font-display: var(--font-glory);
+  --font-sans: var(--font-instrument-sans);
+  --font-accent: var(--font-instrument-serif);
+
+  --shadow-cta: 0 4px 4px rgb(0 0 0 / 0.25);
+
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-calm: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  --radius-card: 22px;
+  --radius-card-lg: 28px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #fff;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 18px;
+  line-height: 1.55;
+  /* clip, never hidden: hidden makes body a scroll container and breaks wheel scrolling */
+  overflow-x: clip;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Scroll reveals: enhancement-only. Without JS (no .js on <html>) content is
+   fully visible; with JS, elements slide in as they enter the viewport. */
+@media (prefers-reduced-motion: no-preference) {
+  html.js [data-reveal] {
+    opacity: 0;
+    transform: translateY(26px);
+    transition:
+      opacity 0.65s var(--ease-calm),
+      transform 0.65s var(--ease-calm);
+  }
+  html.js [data-reveal].reveal-in {
+    opacity: 1;
+    transform: none;
+  }
+}
