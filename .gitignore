@@ -11,3 +11,6 @@ launch-video/out/
 
 # OS noise
 .DS_Store
+
+# Compiled tool binaries
+tools/cutout/cutout

@@ -20,7 +20,9 @@ export function RevealObserver() {
           }
         }
       },
-      { threshold: 0.15 },
+      // Fire as soon as any part clears the bottom 8% of the viewport, so
+      // even fast scrolling never lands on unrevealed content.
+      { threshold: 0, rootMargin: "0px 0px -8% 0px" },
     );
     document.querySelectorAll("[data-reveal]").forEach((el) => io.observe(el));
     return () => io.disconnect();

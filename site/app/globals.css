@@ -57,15 +57,15 @@ body {
 @media (prefers-reduced-motion: no-preference) {
   html.js [data-reveal="fade"] {
     opacity: 0;
-    transform: translateY(26px);
+    transform: translateY(18px);
     transition:
-      opacity 0.65s var(--ease-calm),
-      transform 0.65s var(--ease-calm);
+      opacity 0.45s var(--ease-calm),
+      transform 0.45s var(--ease-calm);
   }
   /* "rise" keeps content painted (LCP-safe): movement only */
   html.js [data-reveal="rise"] {
-    transform: translateY(22px);
-    transition: transform 0.65s var(--ease-calm);
+    transform: translateY(18px);
+    transition: transform 0.45s var(--ease-calm);
   }
   html.js [data-reveal].reveal-in {
     opacity: 1;

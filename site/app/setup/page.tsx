@@ -40,7 +40,7 @@ export default function SetupPage() {
             </p>
           </Reveal>
           <Reveal className="flex justify-center">
-            <MascotScene pose="joy" width={300} parallax={34} />
+            <MascotScene pose="joy" width={300} parallax={34} priority />
           </Reveal>
         </Container>
       </Section>

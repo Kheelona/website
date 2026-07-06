@@ -60,7 +60,7 @@ export default function PlayOSPage() {
             </p>
           </Reveal>
           <Reveal className="flex justify-center">
-            <MascotScene pose="curious" width={320} parallax={36} />
+            <MascotScene pose="curious" width={320} parallax={36} priority />
           </Reveal>
         </Container>
       </Section>

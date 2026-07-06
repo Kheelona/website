@@ -3,7 +3,7 @@ import { Section } from "@/components/layout/Section";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { Shape } from "@/components/ui/Shapes";
-import { Mascot3D } from "@/components/mascot/Mascot3D";
+import { MascotScene } from "@/components/mascot/MascotScene";
 import { PREORDER_HREF } from "@/lib/site";
 
 /** Home S02. Copy verbatim from the homepage content doc (₹ per prompt §1.10). */
@@ -41,7 +41,9 @@ export function Hero() {
             aria-hidden="true"
             className="pointer-events-none absolute bottom-[-140px] left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(241,162,59,0.15)_0%,rgba(241,162,59,0.28)_35%,transparent_70%)]"
           />
-          <Mascot3D className="relative w-full max-w-[420px]" />
+          {/* Interim static mascot; the R3F hero scene replaces this slot
+              once the regenerated GLB lands (visual-rework sprint 3). */}
+          <MascotScene pose="hero-wink" width={360} parallax={24} priority className="relative" />
         </div>
       </Container>
     </Section>

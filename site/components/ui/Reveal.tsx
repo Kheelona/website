@@ -8,13 +8,15 @@ export function Reveal({
   delay = 0,
   className,
   as: Tag = "div",
-  mode = "fade",
+  mode = "rise",
 }: {
   children: React.ReactNode;
   delay?: number;
   className?: string;
   as?: "div" | "li";
-  /** "rise" never hides content (no opacity), safe for LCP-critical heroes */
+  /** "rise" never hides content (no opacity), so fast scrolling can never
+   *  land on a blank viewport; opt into "fade" only for small elements
+   *  inside an already-visible section. */
   mode?: "fade" | "rise";
 }) {
   return (

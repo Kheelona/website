@@ -83,7 +83,7 @@ export default function SafetyPage() {
             </p>
           </Reveal>
           <Reveal className="flex justify-center">
-            <MascotScene pose="bliss" width={260} parallax={30} />
+            <MascotScene pose="bliss" width={260} parallax={30} priority />
           </Reveal>
         </Container>
       </Section>

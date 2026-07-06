@@ -21,8 +21,8 @@ export function MeetLumi() {
             <Image
               src="/product/lumi-blue.png"
               alt="Lumi, a soft blue talking toy with a striped party hat"
-              width={584}
-              height={843}
+              width={588}
+              height={854}
               className="relative w-full max-w-[330px] drop-shadow-[0_20px_26px_rgba(41,160,215,0.16)]"
             />
           </Reveal>

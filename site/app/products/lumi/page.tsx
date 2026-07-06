@@ -122,8 +122,8 @@ export default function LumiPage() {
             <Image
               src="/product/lumi-blue.png"
               alt="Lumi, a small blue talking toy with a striped party hat"
-              width={584}
-              height={843}
+              width={588}
+              height={854}
               priority
               className="relative w-full max-w-[360px] drop-shadow-[0_20px_26px_rgba(41,160,215,0.2)]"
             />

@@ -68,7 +68,7 @@ export default function TeamPage() {
             </p>
           </Reveal>
           <Reveal className="flex justify-center">
-            <MascotScene pose="silly" width={300} parallax={34} />
+            <MascotScene pose="silly" width={300} parallax={34} priority />
           </Reveal>
         </Container>
       </Section>
