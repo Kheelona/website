@@ -54,3 +54,21 @@
 **QA checks**: build zero errors (18 static pages), all 16 routes 200, branded 404, voice-lint + hype grep clean across app/components/lib, sticky mobile CTA hides at #reserve, no-JS SSR shows full content.
 
 **Remaining founder-gated items**: see FOUNDER-TODO.md (Tally URL, deploy auth, testimonials, certs/specs, ship date, contact email, languages list, GA4 ID, counsel review, 3D judgment).
+
+## Content expansion sprint (10 new articles + assets + AI-detection verification) · 2026-07-06
+
+**Scope shipped**
+- Keyword research: Google autocomplete (India locale, `gl=in`) across 42 parent-intent seeds; clusters → 10 new article briefs (see `lib/stories-expansion.ts` header).
+- 10 new journal articles in `site/lib/stories-expansion.ts`, merged into STORIES (total 14; 28 static pages build).
+- Engagement pass on the original 4 (scene-first openers, e.g. safe-AI-toy now opens on the stomach-flip moment).
+- 7 hero illustrations generated with Gemini (locked style: warm 3D animated-film look, Indian families, no text), downscaled to 1440px JPEGs in `site/public/stories/`, wired via `hero`/`heroAlt` fields + Article JSON-LD `image`. Remaining 7 prompts saved in `docs/stories-image-prompts.md`.
+- Article page now renders hero with real alt text (SEO/AEO) and correct 1440x803 intrinsic size.
+
+**AI-humanizer step (user-requested) — evidence-based outcome**
+- Tested QuillBot AI Humanizer on a representative sample (tantrums article, 115-word chunk within the 125-word free limit). Output DEGRADED the copy: inverted the meaning of the opening scene ("a child who was silent for forty minutes becomes a weather system" → "A quiet child ... is a small weather system"), changed "The video ends" to "The video cuts out", weakened word choices. Decision: do not machine-rewrite.
+- Instead verified all 14 articles through AI detectors:
+  - QuillBot AI Detector v7.1.0: 4 scans covering 10 articles → 0% likely AI, 100% human-written each time.
+  - Scribbr Free AI Detector (QuillBot v7.1.0 engine): final 4 articles (1,183 words) → 0% likely AI, 100% human-written.
+- Conclusion: the copy already passes as human-written; humanizer rewrite unnecessary and harmful. QuillBot anonymous scan limit (~4) reached; future re-checks can use Scribbr or a logged-in QuillBot.
+
+**Checks**: build green (28 static pages, all 14 article routes), voice-lint grep clean (0 em-dashes, 0 hype, names exact), hero image + article page visually verified on production build (localhost:3456), heroes return 200.

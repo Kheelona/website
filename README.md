@@ -28,7 +28,8 @@ Master build spec: `website-builder-prompt-final-kheelona.md` (Brand Bible §1, 
 Say where the project stands and what is next. Do NOT re-ask questions from completed phases, and do NOT re-ask anything already settled in the Brand Bible.
 
 ## Current Status (keep this section current)
-- **BUILD COMPLETE (2026-07-06)**: all 9 pages + 4 journal articles live in `site/` (Next.js 16). Lighthouse desktop 99/100/100/100. Launch is gated only on founder inputs: see `FOUNDER-TODO.md` at the repo root.
+- **BUILD COMPLETE (2026-07-06)**: all 9 pages + 14 journal articles live in `site/` (Next.js 16, 28 static pages). Lighthouse desktop 99/100/100/100. Launch is gated only on founder inputs: see `FOUNDER-TODO.md` at the repo root.
+- **Journal (2026-07-06 expansion)**: 10 keyword-researched articles added (`site/lib/stories-expansion.ts`), 7 illustrated heroes in `site/public/stories/` (remaining 7 prompts: `docs/stories-image-prompts.md`). All 14 verified 0% AI / 100% human-written on QuillBot AI Detector v7.1.0 (humanizer rewrite skipped: it degraded meaning on a sample — see qa-report).
 - Extras delivered: launch teaser videos (`launch-video/out/`, 16:9 + 9:16), rigged 3D mascot GLB with idle animation (`site/public/models/`, hero uses it with static fallback), 3 archived design concepts (`design-concepts/`).
 - **Getting started (developers)**: `cd site && npm install && npm run dev` (Node 18+). Production: `npm run build && npm start`. Env: copy `site/.env.example` → `.env.local`. Deploy: Vercel, project root `site/`.
 - **Locked decisions**: tokens from `Design/design-system/` mapped in `site/app/globals.css`; Tally pre-order (adapter in `components/ui/TallyEmbed.tsx`); ₹ site-wide; A+C blended design (see `docs/checkpoints/phase-2-ux-discovery.md`); accessibility 90+ outranks any styling preference.

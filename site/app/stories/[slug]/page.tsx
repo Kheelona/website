@@ -43,6 +43,7 @@ export default async function StoryPage({
     author: { "@type": "Organization", name: "Kheelona" },
     publisher: { "@type": "Organization", name: "Kheelona" },
     mainEntityOfPage: `https://kheelona.com/stories/${story.slug}`,
+    ...(story.hero && { image: `https://kheelona.com${story.hero}` }),
   };
 
   return (
@@ -68,6 +69,16 @@ export default async function StoryPage({
         <CurveDivider from="cream" />
         <Container className="py-12 md:py-16">
           <article className="mx-auto max-w-[720px]">
+            {story.hero && (
+              <Image
+                src={story.hero}
+                alt={story.heroAlt ?? ""}
+                width={1440}
+                height={803}
+                priority
+                className="mb-9 h-auto w-full rounded-(--radius-card-lg)"
+              />
+            )}
             {story.paragraphs.map((block, i) => (
               <div key={i}>
                 {block.h && (

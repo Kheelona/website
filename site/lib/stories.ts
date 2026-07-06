@@ -7,12 +7,15 @@ export type Story = {
   description: string;
   theme: string;
   minutes: number;
-  pose: "curious" | "silly" | "joy" | "bliss";
+  pose: "curious" | "silly" | "joy" | "bliss" | "grumpy" | "sad";
   tint: string;
+  /** optional illustrated header, path under /public */
+  hero?: string;
+  heroAlt?: string;
   paragraphs: { h?: string; p: string }[];
 };
 
-export const STORIES: Story[] = [
+const CORE: Story[] = [
   {
     slug: "why-three-to-six-are-the-years-that-matter-most",
     title: "Why three to six are the years that matter most",
@@ -22,10 +25,13 @@ export const STORIES: Story[] = [
     minutes: 4,
     pose: "curious",
     tint: "bg-blue/15",
+    hero: "/stories/why-three-to-six-are-the-years-that-matter-most.jpg",
+    heroAlt:
+      "A father with his daughter on his shoulders, both pointing at kites drifting over evening rooftops",
     paragraphs: [
       { p: "Somewhere between the third and sixth birthday, your child becomes a person. Not a smaller version of one. The real thing: opinions, jokes, fears, favorite dinosaurs." },
       { p: "The science under that everyday miracle is simple to say and hard to overstate. In these years, a child's brain builds connections faster than it ever will again. What they hear, what they feel, and who they talk to shape everything that follows." },
-      { h: "The window is not about flashcards", p: "It is tempting to fill the window with drills and apps. But brain development toys and worksheets are not what the research keeps pointing at. It keeps pointing at conversation. Back and forth exchanges. Someone who answers the fourth why with the same patience as the first." },
+      { h: "The window is not about flashcards", p: "It is tempting to fill the window with drills and apps, and the toy aisle is glad to help. But brain development toys and worksheets are not what the research keeps pointing at. It keeps pointing at conversation. Back and forth exchanges. Someone who answers the fourth why is the sky blue with the same patience as the first." },
       { p: "Every answered question teaches two things at once: the fact, and the deeper lesson that asking is worth it. Children who keep asking keep learning. That is the whole engine." },
       { h: "Feelings are the fast lane", p: "There is a second finding hiding in the first. Children learn fastest from exchanges that feel good. A child who feels heard stays in the conversation. A child who feels rushed leaves it. Understanding the heart is not the soft part of learning. It is the mechanism." },
       { p: "So the years that matter most do not ask for a classroom at home. They ask for talk. At dinner, in the car, at bedtime, and yes, in play." },
@@ -41,6 +47,9 @@ export const STORIES: Story[] = [
     minutes: 4,
     pose: "silly",
     tint: "bg-yellow/15",
+    hero: "/stories/screen-free-does-not-mean-silent.jpg",
+    heroAlt:
+      "Two children playing inside a blanket fort with steel pots, wooden blocks, and a paper crown",
     paragraphs: [
       { p: "Take the tablet away and the first thing you notice is the noise. Not the TV kind. The good kind: questions, made-up songs, a running commentary on ants." },
       { p: "Parents worry that screen-free means a quieter, duller childhood, and that a child without cartoons is a child missing out. The opposite is closer to the truth. Screens mostly ask children to watch. Language grows when children speak." },
@@ -60,6 +69,9 @@ export const STORIES: Story[] = [
     minutes: 5,
     pose: "joy",
     tint: "bg-teal/15",
+    hero: "/stories/how-children-learn-by-talking.jpg",
+    heroAlt:
+      "A grandmother and two children on a veranda at night, looking up at the full moon together",
     paragraphs: [
       { p: "Watch a child ask why the moon follows the car. Then watch what happens after the answer. The next question is never random. It builds. That building is learning, live and out loud." },
       { p: "Researchers call it serve and return. The child serves a question or an idea. Someone returns it with an answer and a new question. Every loop wires language, logic, and confidence together." },
@@ -80,7 +92,7 @@ export const STORIES: Story[] = [
     pose: "bliss",
     tint: "bg-purple/15",
     paragraphs: [
-      { p: "AI toys are arriving fast, and most reviews talk about features. As parents, we think the first questions should be different. Here is the checklist we would use on any smart toy, including our own." },
+      { p: "The first time your child asks a toy a question and the toy answers, your stomach does a small flip. Half wonder, half alarm. Both halves are correct, and the alarm half deserves a checklist. Here is ours, the one we would use on any smart toy, including our own." },
       { h: "One: when is the microphone on?", p: "The only good answer is: when your child invites it. Look for wake-word listening, and an honest explanation of what happens the rest of the time. Off should mean off." },
       { h: "Two: can it reach the open internet?", p: "A toy that can browse can stumble, and so can your child right behind it. A safe AI toy is a closed world: no search, no videos, no strangers." },
       { h: "Three: can you read everything?", p: "You would not leave your child with a babysitter who refuses to tell you what happened all afternoon. The same bar applies to a talking toy. Every conversation should be readable, and deletable, by you." },
@@ -91,6 +103,10 @@ export const STORIES: Story[] = [
     ],
   },
 ];
+
+import { EXPANSION } from "./stories-expansion";
+
+export const STORIES: Story[] = [...CORE, ...EXPANSION];
 
 export function getStory(slug: string) {
   return STORIES.find((s) => s.slug === slug);

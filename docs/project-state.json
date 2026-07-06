@@ -218,12 +218,13 @@
       "Sad pose is the scared render (asset gap)"
     ],
     "context_to_load_on_resume": [
-      "README.md",
-      "FOUNDER-TODO.md",
-      "docs/project-state.json",
       "docs/qa-report.md",
-      "docs/website-steps.md"
-    ]
+      "FOUNDER-TODO.md",
+      "site/lib/stories-expansion.ts",
+      "docs/stories-image-prompts.md"
+    ],
+    "what_happened": "Content expansion complete: 10 new keyword-researched articles (lib/stories-expansion.ts), engagement pass on the original 4, 7 Gemini hero illustrations wired (public/stories/, hero/heroAlt fields, Article JSON-LD image). AI-humanizer step resolved with evidence: QuillBot Humanizer degraded meaning on a sample, so instead all 14 articles were verified 0% AI / 100% human on QuillBot AI Detector v7.1.0 (4 scans) + Scribbr (final 4 articles). Build green: 28 static pages. See qa-report content-expansion entry.",
+    "what_is_next": "S14 deploy remains blocked on founder (Vercel auth, Tally URL - FOUNDER-TODO.md). Optional: generate remaining 7 article heroes from docs/stories-image-prompts.md."
   },
   "resume_instructions": "Read README.md first. Then this file. Then the current-phase checkpoint. Then website-steps.md if it exists. Never re-ask anything settled in the Brand Bible (build prompt §1) or in approvals above."
 }
