@@ -4,6 +4,8 @@ The ground-up redesign round. Same locked copy, same tokens, same beats; four di
 
 **How to view:** open each file in Chrome (the scroll-linked color and motion use Chrome's scroll-driven animations; other browsers show a static-but-complete version). Scroll slowly. Hover things: mascots, shapes, story cards.
 
+Easiest route (founder-verified 2026-07-08): run `cd design-concepts && python3 -m http.server 4400`, then open http://localhost:4400/round-2-immersive/direction-1-world.html (each page links to the other three in the top bar). Opening the files straight from disk works too.
+
 | File | Direction | One-line pitch |
 |---|---|---|
 | `direction-1-world.html` | **Lumi's World** (the journey) | One continuous dreamscape; scrolling is a slow camera walk and every beat is a place along the path, ending at an orange sunset. The most cinematic. |
