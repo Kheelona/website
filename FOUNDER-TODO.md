@@ -2,6 +2,14 @@
 
 Each item unlocks something specific. Ordered by launch impact.
 
+## THE REDESIGN ROUND (2026-07-08) — two items, these outrank everything below
+
+**A. Pick a direction.** Four immersive wireframes are ready in `design-concepts/round-2-immersive/` (open the files in Chrome; each cross-links to the others; the dashed purple chips explain what the live 3D scene does). Pitches in that folder's README. Redlines and cross-direction mixes welcome. **The rebuild starts only after your pick.**
+
+**B. Generate the two 3D models** (parallel to A, not blocking it): `3d-handoff/README.md` has the exact images, Tripo settings, and export format for the mascot (rigged + idle) and the Lumi plush; or hand the kit to a 3D artist (spec included). Download results to `~/Downloads` and say "models are in".
+
+Everything below is the pre-existing launch list; it all carries over to the redesigned site unchanged.
+
 ## 0. Gemini assets — GENERATED, awaiting ingest (state as of 2026-07-07 night)
 You generated 5 of 6 items; they sit in `~/Downloads` (3 image fixes + Veo shots 1-2). Claude's next session starts by ingesting them (exact steps in `docs/project-state.json` → `last_handoff.next_action`).
 - **Still yours, when Gemini video credits reset (~24h from 2026-07-07 night)**: optional SHOT 3 "Cuddle" — attach `gemini-handoff/seed-3-cuddle.png`, prompt in `gemini-handoff/README.md`. The film works with 2 shots; this adds the cozy ending.

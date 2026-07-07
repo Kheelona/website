@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Direction 1: Lumi's World · kheelona.com immersive redesign</title>
+<link rel="icon" href="../assets/logo-mark.png">
+<style>
+/* ================================================================
+   DIRECTION 1 "LUMI'S WORLD" (the journey)
+   One continuous dreamscape. Scroll = a slow camera dolly along a
+   path; every content beat is a PLACE in the world. No section
+   edges: the sky itself grades through the wash tokens.
+   Wireframe notes ([ 3D ] chips) describe the live R3F scene.
+   Tokens from Design/design-system (do not invent).
+   Scroll motion: CSS scroll-driven animations (Chrome). Static
+   fallback keeps every beat readable.
+   ================================================================ */
+@font-face {
+  font-family: 'Glory';
+  src: url('../assets/Glory-VariableFont_wght.ttf') format('truetype-variations');
+  font-weight: 100 900; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Instrument Sans';
+  src: url('../assets/InstrumentSans-VariableFont_wdth_wght.ttf') format('truetype-variations');
+  font-weight: 100 900; font-style: normal; font-display: swap;
+}
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&display=swap');
+
+:root {
+  --orange: #EF762F; --orange-deep: #D85F1B;
+  --yellow: #F1A23B; --blue: #29A0D7; --blue-soft: #3AA4E5;
+  --teal: #1ABC9C; --purple: #8B5BFF;
+  --ink: #272727; --ink-head: #1C1C1C; --ink-muted: #727272;
+  --cream: #FFF7EE; --cool: #EAF6FC; --sun: #FDF1E2;
+  --display: 'Glory', system-ui, sans-serif;
+  --text: 'Instrument Sans', system-ui, sans-serif;
+  --accent: 'Instrument Serif', Georgia, serif;
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-calm: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --radius: 22px; --radius-lg: 28px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--text); color: var(--ink);
+  font-size: 18px; line-height: 1.55;
+  background: var(--cream);
+  overflow-x: clip; /* load-bearing: never `hidden` (wheel-scroll trap) */
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; }
+.wrap { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+
+h1, h2, h3 { font-family: var(--display); font-weight: 800; color: var(--ink-head); line-height: 1.08; letter-spacing: -0.01em; }
+p { max-width: 62ch; }
+.eyebrow { font-family: var(--accent); font-style: italic; font-size: 21px; color: var(--orange-deep); display: block; margin-bottom: 12px; line-height: 1.2; padding-bottom: 2px; }
+.btn {
+  font-family: var(--text); font-weight: 650; font-size: 17px; line-height: 1;
+  display: inline-flex; align-items: center; gap: 10px;
+  border-radius: 999px; padding: 17px 30px; border: 2px solid #fff;
+  background: var(--orange); color: #fff; text-decoration: none;
+  box-shadow: 0 4px 4px rgba(0,0,0,.18); cursor: pointer;
+  transition: transform .16s var(--ease-bounce), background-color .22s var(--ease-calm);
+}
+.btn:hover { background: var(--orange-deep); }
+.btn:active { transform: scale(.96); }
+.btn.ghost { background: transparent; color: var(--ink-head); border: 2px solid var(--ink-head); box-shadow: none; }
+.btn.ghost:hover { background: var(--ink-head); color: #fff; }
+.pricenote { font-size: 15px; color: var(--ink-muted); margin-top: 14px; }
+
+/* ---------- wireframe chrome (meta UI, not the design) ---------- */
+.wf-banner {
+  background: var(--ink-head); color: #fff; font-size: 13.5px;
+  padding: 10px 18px; display: flex; gap: 14px; align-items: center; flex-wrap: wrap;
+  position: relative; z-index: 60;
+}
+.wf-banner strong { font-weight: 700; }
+.wf-banner nav { margin-left: auto; display: flex; gap: 10px; flex-wrap: wrap; }
+.wf-banner a { color: #ffd9bd; text-decoration: none; border-bottom: 1px dotted #ffd9bd; }
+.note {
+  position: relative; z-index: 30;
+  display: block; width: fit-content; max-width: 560px;
+  margin: 18px auto 0; padding: 10px 16px;
+  border: 1.5px dashed var(--purple); border-radius: 12px;
+  background: rgba(255,255,255,.82);
+  font-size: 13.5px; line-height: 1.45; color: #4a3d75;
+}
+.note b { color: var(--purple); font-weight: 700; letter-spacing: .04em; }
+body.notes-off .note { display: none; }
+.note-toggle {
+  position: fixed; left: 16px; bottom: 16px; z-index: 70;
+  font-family: var(--text); font-size: 13px; font-weight: 650;
+  padding: 9px 14px; border-radius: 999px; border: 1.5px dashed var(--purple);
+  background: #fff; color: #4a3d75; cursor: pointer;
+}
+
+/* ---------- THE WORLD (fixed sky; the wash-handoff preview) ----- */
+/* In the build: the R3F canvas. Here: a fixed layer whose color
+   glides through the exact wash tokens as you travel. */
+.world { position: fixed; inset: 0; z-index: 0; pointer-events: none; background: var(--cream); }
+.world .sunball {
+  position: absolute; left: 50%; top: 18%;
+  width: 56vmin; height: 56vmin; border-radius: 50%;
+  transform: translateX(-50%);
+  background: radial-gradient(circle, rgba(241,162,59,.28) 0%, rgba(241,162,59,.10) 45%, transparent 70%);
+}
+/* parallax depth layers: far drifts slower than near */
+.layer { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+.layer img { position: absolute; opacity: .9; }
+.layer.far img { opacity: .5; }
+.puff {
+  position: absolute; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,.85), rgba(255,255,255,0) 70%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: scroll()) {
+    .world { animation: worldWash linear both; animation-timeline: scroll(root); }
+    @keyframes worldWash {
+      0%   { background-color: #FFF7EE; }  /* hero clearing: cream   */
+      13%  { background-color: #FFFDF9; }  /* the path opens: white  */
+      22%  { background-color: #EAF6FC; }  /* feelings grove: cool   */
+      36%  { background-color: #FFFFFF; }  /* Lumi's home: white     */
+      48%  { background-color: #EAF6FC; }  /* PlayOS sky: cool       */
+      60%  { background-color: #FFFFFF; }  /* the plateau: white     */
+      70%  { background-color: #D9F4EC; }  /* safety garden: teal 20%*/
+      80%  { background-color: #FDF1E2; }  /* journal meadow: sun    */
+      92%  { background-color: #F7B183; }  /* sunset approach        */
+      100% { background-color: #EF762F; }  /* the finale: orange     */
+    }
+    .world .sunball { animation: sunTravel linear both; animation-timeline: scroll(root); }
+    @keyframes sunTravel {
+      0%   { top: 16%; opacity: .9; }
+      45%  { top: 6%;  opacity: .7; }
+      80%  { top: 30%; opacity: .9; }
+      100% { top: 58%; opacity: 1; transform: translateX(-50%) scale(1.5); }
+    }
+    .layer.far  { animation: driftFar  linear both; animation-timeline: scroll(root); }
+    .layer.near { animation: driftNear linear both; animation-timeline: scroll(root); }
+    @keyframes driftFar  { from { transform: translateY(0); }    to { transform: translateY(-14vh); } }
+    @keyframes driftNear { from { transform: translateY(0); }    to { transform: translateY(-42vh); } }
+
+    /* each place rises gently as the camera arrives */
+    .place .arrive {
+      animation: arrive both var(--ease-calm);
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
+    @keyframes arrive {
+      from { transform: translateY(46px) scale(.985); }
+      to   { transform: translateY(0) scale(1); }
+    }
+  }
+}
+/* Static fallback and reduced motion: each place carries its own
+   wash so the journey still reads as a color story. */
+@supports not (animation-timeline: scroll()) {
+  .world, .layer { display: none; }
+  .place { background: var(--wash, var(--cream)); }
+  .place.finale { background: var(--orange); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .world, .layer { display: none; }
+  .place { background: var(--wash, var(--cream)); }
+  .place.finale { background: var(--orange); }
+  html { scroll-behavior: auto; }
+}
+
+/* ---------- top nav (proposed nav model) ----------------------- */
+.nav {
+  position: sticky; top: 0; z-index: 50;
+  display: flex; align-items: center; gap: 26px;
+  height: 68px; padding: 0 26px;
+  background: rgba(255,247,238,.86); backdrop-filter: blur(10px);
+}
+.nav img { height: 34px; width: auto; }
+.nav .links { display: flex; gap: 22px; font-size: 15.5px; font-weight: 600; color: var(--ink-head); }
+.nav .links a { text-decoration: none; }
+.nav .links a:hover { color: var(--orange-deep); }
+.nav .btn { margin-left: auto; padding: 12px 22px; font-size: 15px; border-width: 0; }
+@media (max-width: 900px) { .nav .links { display: none; } }
+@media (max-width: 560px) { .nav .btn { font-size: 13px; padding: 10px 14px; white-space: nowrap; } }
+
+/* journey rail: the direction-specific nav model */
+.rail {
+  position: fixed; right: 18px; top: 50%; transform: translateY(-50%);
+  z-index: 55; display: flex; flex-direction: column; gap: 14px;
+}
+.rail a {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: rgba(28,28,28,.22); text-decoration: none; position: relative;
+  transition: transform .2s var(--ease-bounce), background-color .2s;
+}
+.rail a.active { background: var(--orange-deep); transform: scale(1.45); }
+.rail a span {
+  position: absolute; right: 22px; top: 50%; transform: translateY(-50%);
+  font-size: 12.5px; font-weight: 650; color: var(--ink-head);
+  background: rgba(255,255,255,.92); border-radius: 999px; padding: 4px 12px;
+  white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .18s;
+}
+.rail a:hover span, .rail a:focus-visible span { opacity: 1; }
+@media (max-width: 900px) { .rail { display: none; } }
+
+/* ---------- places (the beats) --------------------------------- */
+.place { position: relative; z-index: 10; }
+.place .inner { position: relative; }
+
+/* readability treatment over the live sky */
+.panel {
+  background: rgba(255,255,255,.72);
+  border-radius: var(--radius-lg);
+  padding: 40px 44px;
+  backdrop-filter: blur(2px);
+}
+@media (max-width: 700px) { .panel { padding: 28px 22px; } }
+
+/* HERO ----------------------------------------------------------- */
+.hero { min-height: 92svh; display: grid; align-items: center; padding: 30px 0 40px; }
+.hero .grid { display: grid; gap: 40px; grid-template-columns: 1.05fr .95fr; align-items: center; }
+.hero .pill {
+  display: inline-block; border-radius: 999px; background: rgba(239,118,47,.15);
+  padding: 8px 16px; font-size: 14px; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--ink-head); margin-bottom: 20px;
+}
+.hero h1 { font-size: clamp(40px, 5vw, 62px); margin-bottom: 20px; max-width: 15ch; }
+.hero .lede { font-size: clamp(18px, 1.7vw, 22px); margin-bottom: 30px; max-width: 52ch; }
+.hero .mascot { position: relative; display: flex; justify-content: center; }
+.hero .mascot img { width: min(310px, 64vw); height: auto; filter: drop-shadow(0 22px 26px rgba(216,95,27,.20)); }
+.hero .mascot::before {
+  content: ""; position: absolute; left: 50%; bottom: -8%;
+  width: 130%; aspect-ratio: 1; transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(241,162,59,.20) 0%, rgba(241,162,59,.32) 35%, transparent 68%);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero .mascot img { animation: idleFloat 5.5s ease-in-out infinite; }
+  @keyframes idleFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+}
+@media (max-width: 900px) { .hero .grid { grid-template-columns: 1fr; } .hero { min-height: auto; padding-top: 40px; } }
+
+/* STAGED INTRO: the path opens ----------------------------------- */
+.intro { padding: 16vh 0 18vh; }
+.intro p.big {
+  font-family: var(--display); font-weight: 800; color: rgba(28,28,28,.9);
+  font-size: clamp(28px, 3.6vw, 52px); line-height: 1.12; max-width: 26ch;
+}
+.intro .l2 { margin: 34px 0 0 8%; }
+.intro .l3 {
+  margin: 34px 0 0 18%;
+  font-family: var(--accent); font-style: italic; font-weight: 400;
+  color: var(--orange-deep); font-size: clamp(26px, 3.2vw, 46px);
+  line-height: 1.22; padding-bottom: 4px;
+}
+/* the film: a soft floating screen beside the path */
+.film {
+  margin: 12vh auto 0; max-width: 780px;
+  border-radius: var(--radius-lg); overflow: hidden;
+  box-shadow: 0 30px 60px rgba(216,95,27,.16);
+  background: #fff; padding: 10px;
+}
+.film .screen {
+  aspect-ratio: 16/9; border-radius: 18px; display: grid; place-items: center;
+  background: linear-gradient(140deg, var(--cool), var(--cream));
+  color: var(--ink-muted); font-size: 15px; font-weight: 600;
+}
+
+/* WHY WE EXIST: over the hill ------------------------------------ */
+.why { padding: 20vh 0; text-align: center; }
+.why h2 { font-size: clamp(32px, 4vw, 50px); max-width: 21ch; margin: 0 auto 22px; }
+.why p { margin: 0 auto 16px; font-size: clamp(18px, 1.6vw, 21px); }
+
+/* FEELINGS GROVE -------------------------------------------------- */
+.grove { padding: 14vh 0 16vh; }
+.grove h2 { font-size: clamp(32px, 4vw, 50px); max-width: 18ch; }
+.grove .lede { margin: 16px 0 70px; font-size: clamp(18px, 1.6vw, 21px); }
+.cast { display: flex; align-items: flex-end; justify-content: space-between; gap: 8px; }
+.cast .friend { text-align: center; flex: 1; }
+.cast .friend img { margin: 0 auto; width: auto; transition: transform .3s var(--ease-bounce); filter: drop-shadow(0 14px 18px rgba(41,160,215,.18)); }
+.cast .friend:hover img { transform: translateY(-10px); }
+.cast .friend .tick { display: block; width: 36px; height: 6px; border-radius: 999px; margin: 18px auto 10px; }
+.cast .friend h3 { font-size: 24px; }
+.cast .friend p { font-size: 14.5px; line-height: 1.4; max-width: 24ch; margin: 4px auto 0; }
+@media (max-width: 860px) {
+  .cast { display: grid; grid-template-columns: 1fr 1fr; gap: 34px 14px; }
+  .cast .friend:last-child { grid-column: 1 / -1; }
+}
+
+/* LUMI'S HOME ----------------------------------------------------- */
+.home { padding: 16vh 0; }
+.home .grid { display: grid; gap: 54px; grid-template-columns: .9fr 1.1fr; align-items: center; }
+.home .stage { position: relative; display: flex; justify-content: center; }
+.home .stage::before {
+  content: ""; position: absolute; inset: 6% -4% -2%;
+  border-radius: 42% 58% 55% 45% / 48% 44% 56% 52%;
+  background: rgba(255,255,255,.8);
+}
+.home .stage img { position: relative; width: min(330px, 70vw); }
+.home h2 { font-size: clamp(32px, 4vw, 50px); margin-bottom: 20px; }
+.home p.body { font-size: clamp(18px, 1.6vw, 21px); margin-bottom: 16px; }
+.home .cards { display: grid; gap: 24px; grid-template-columns: 1fr 1fr; margin-top: 60px; }
+.home .card { border-radius: var(--radius); padding: 34px; }
+.home .card.c1 { background: rgba(255,247,238,.94); }
+.home .card.c2 { background: rgba(234,246,252,.94); }
+.home .card h3 { font-size: clamp(24px, 2.6vw, 32px); margin-bottom: 12px; }
+.home .card p { font-size: 16.5px; }
+.home .cta { text-align: center; margin-top: 44px; }
+@media (max-width: 900px) { .home .grid, .home .cards { grid-template-columns: 1fr; } }
+
+/* PLAYOS SKY ------------------------------------------------------ */
+.sky { padding: 16vh 0; }
+.sky h2 { font-size: clamp(32px, 4vw, 50px); max-width: 18ch; margin-bottom: 16px; }
+.sky .lede { font-size: clamp(18px, 1.6vw, 21px); margin-bottom: 64px; }
+.cloudrow { display: grid; gap: 26px; }
+.cloud {
+  display: grid; grid-template-columns: 80px 1fr 1.4fr; gap: 26px; align-items: start;
+  background: rgba(255,255,255,.85); border-radius: var(--radius-lg); padding: 36px 40px;
+}
+.cloud .num { font-family: var(--display); font-weight: 800; font-size: 38px; color: var(--orange-deep); }
+.cloud h3 { font-size: clamp(22px, 2.4vw, 28px); line-height: 1.2; }
+.cloud p { font-size: 16.5px; }
+.cloud.c2 { margin-left: 7%; }
+.sky .after { display: flex; align-items: center; gap: 22px; margin-top: 44px; flex-wrap: wrap; }
+.sky .after .quiet { font-size: 15px; }
+.sky .after .quiet a { font-weight: 600; color: var(--ink-head); }
+@media (max-width: 860px) { .cloud { grid-template-columns: 1fr; } .cloud.c2 { margin-left: 0; } }
+
+/* PLATEAU: the honest table --------------------------------------- */
+.plateau { padding: 14vh 0 16vh; }
+.plateau h2 { font-size: clamp(32px, 4vw, 50px); margin-bottom: 8px; }
+.plateau .lede { font-size: clamp(18px, 1.6vw, 21px); margin-bottom: 40px; }
+.tablewrap { overflow-x: auto; border-radius: var(--radius); background: rgba(255,255,255,.9); padding: 6px; }
+table { width: 100%; min-width: 640px; border-collapse: separate; border-spacing: 0; font-size: 16px; }
+th, td { padding: 15px 16px; text-align: center; }
+th[scope="row"] { text-align: left; font-weight: 600; color: var(--ink-head); }
+thead th { font-family: var(--display); font-size: 18px; font-weight: 700; color: var(--ink-head); }
+thead th.lumi { background: var(--orange); color: #fff; border-radius: 16px 16px 0 0; }
+td.lumi { background: var(--orange); color: #fff; font-weight: 700; }
+tr:last-child td.lumi { border-radius: 0 0 16px 16px; }
+tbody tr:nth-child(odd) th, tbody tr:nth-child(odd) td:not(.lumi) { background: rgba(255,247,238,.85); }
+td.no { color: var(--ink-muted); }
+
+/* SAFETY GARDEN --------------------------------------------------- */
+.garden { padding: 16vh 0; }
+.garden .grid { display: grid; gap: 44px; grid-template-columns: 1.2fr .8fr; align-items: center; }
+.garden h2 { font-size: clamp(32px, 4vw, 50px); max-width: 16ch; margin-bottom: 24px; }
+.garden p { font-size: 17.5px; color: rgba(28,28,28,.9); margin-bottom: 12px; max-width: 62ch; }
+.garden .mascot { display: flex; justify-content: center; }
+.garden .mascot img { width: min(280px, 60vw); filter: drop-shadow(0 18px 24px rgba(26,188,156,.28)); }
+@media (max-width: 900px) { .garden .grid { grid-template-columns: 1fr; } }
+
+/* JOURNAL MEADOW -------------------------------------------------- */
+.meadow { padding: 14vh 0 16vh; }
+.meadow h2 { font-size: clamp(32px, 4vw, 50px); margin-bottom: 8px; }
+.meadow .lede { font-size: clamp(18px, 1.6vw, 21px); margin-bottom: 40px; }
+.signposts { display: grid; gap: 26px; grid-template-columns: 1fr 1fr; margin-bottom: 40px; }
+.signpost { border-radius: var(--radius); overflow: hidden; background: #fff; text-decoration: none; display: block; transition: transform .3s var(--ease-bounce); }
+.signpost:hover { transform: translateY(-6px); }
+.signpost .art { height: 210px; display: flex; align-items: flex-end; justify-content: center; overflow: hidden; }
+.signpost .art.a1 { background: linear-gradient(160deg, rgba(58,164,229,.15), rgba(26,188,156,.15)); }
+.signpost .art.a2 { background: linear-gradient(160deg, rgba(241,162,59,.15), rgba(239,118,47,.15)); }
+.signpost .art img { height: 180px; width: auto; transform: translateY(10px); }
+.signpost .txt { padding: 26px; }
+.signpost h3 { font-size: 25px; line-height: 1.15; margin-bottom: 8px; }
+.signpost p { font-size: 16px; color: var(--ink-muted); }
+.meadow .more { text-align: center; }
+@media (max-width: 860px) { .signposts { grid-template-columns: 1fr; } }
+
+/* FINALE SUNSET --------------------------------------------------- */
+/* the finale guarantees its own orange (in the build, the scene
+   guarantees this wash); the transparent top lets the sunset
+   approach show through */
+.finale { padding: 16vh 0 0; text-align: center; background: linear-gradient(180deg, rgba(239,118,47,0), var(--orange) 150px); }
+.finale h2 { color: #fff; font-size: clamp(36px, 4.6vw, 60px); line-height: 1.05; max-width: 16ch; margin: 0 auto 18px; }
+.finale .sub { color: #fff; font-weight: 600; font-size: 20px; max-width: 50ch; margin: 0 auto 36px; }
+.reserve-panel {
+  max-width: 640px; margin: 0 auto; text-align: left;
+  background: #fff; border-radius: var(--radius-lg); padding: 34px 36px;
+  box-shadow: 0 30px 60px rgba(120,40,0,.25);
+}
+.reserve-panel h3 { font-size: 24px; margin-bottom: 6px; }
+.reserve-panel .fields { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; margin: 18px 0; }
+.reserve-panel .field { border: 1.5px solid #E2E2E2; border-radius: 12px; padding: 13px 16px; font-size: 15px; color: var(--ink-muted); }
+.reserve-panel .field.wide { grid-column: 1 / -1; }
+.reserve-panel .formnote { font-size: 13.5px; color: var(--ink-muted); }
+.finale .consent { color: #fff; font-size: 15px; font-weight: 500; margin: 22px auto 0; max-width: 52ch; }
+.lineup { display: flex; align-items: flex-end; justify-content: center; gap: 4vw; margin-top: 60px; }
+.lineup img { width: auto; }
+@media (max-width: 700px) { .lineup img:nth-child(1), .lineup img:nth-child(4) { display: none; } .reserve-panel .fields { grid-template-columns: 1fr; } }
+
+/* ---------- interior page preview ------------------------------- */
+.divider-band {
+  position: relative; z-index: 20; background: var(--ink-head); color: #fff;
+  text-align: center; padding: 30px 20px; font-size: 15px;
+}
+.divider-band strong { font-family: var(--display); font-size: 22px; display: block; margin-bottom: 4px; }
+.interior { position: relative; z-index: 10; background: var(--cream); padding-bottom: 0; }
+.interior .hero-l { display: grid; gap: 44px; grid-template-columns: 1.05fr .95fr; align-items: center; padding: 90px 0 70px; }
+.interior .hero-l h1 { font-size: clamp(38px, 4.5vw, 56px); margin-bottom: 18px; }
+.interior .hero-l .lede { font-size: clamp(18px, 1.6vw, 21px); margin-bottom: 28px; max-width: 58ch; }
+.interior .hero-l .stage { position: relative; display: flex; justify-content: center; }
+.interior .hero-l .stage::before { content: ""; position: absolute; inset: 4% 0; border-radius: 50%; background: rgba(255,255,255,.8); }
+.interior .hero-l .stage img { position: relative; width: min(340px, 70vw); }
+.convo { background: #fff; border-radius: var(--radius-lg); padding: 36px; display: flex; flex-direction: column; gap: 12px; max-width: 620px; }
+.bubble { max-width: 88%; border-radius: 18px; padding: 16px 20px; font-size: 16.5px; }
+.bubble .who { display: block; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-muted); margin-bottom: 4px; }
+.bubble.child { align-self: flex-start; background: var(--cream); }
+.bubble.lumi { align-self: flex-end; background: var(--cool); }
+.interior .convo-sec { display: grid; gap: 44px; grid-template-columns: 1fr 1.1fr; align-items: center; padding: 70px 0; }
+.interior .convo-sec h2 { font-size: clamp(30px, 3.6vw, 46px); max-width: 16ch; margin-bottom: 14px; }
+.interior .price { text-align: center; padding: 80px 0; }
+.interior .price h2 { font-size: clamp(30px, 3.4vw, 44px); margin-bottom: 12px; }
+.interior .price p { margin: 0 auto 26px; font-size: clamp(18px, 1.6vw, 21px); max-width: 46ch; }
+@media (max-width: 900px) { .interior .hero-l, .interior .convo-sec { grid-template-columns: 1fr; } }
+
+.endcard { position: relative; z-index: 20; background: var(--ink-head); color: #fff; text-align: center; padding: 48px 22px; font-size: 15px; }
+.endcard a { color: #ffd9bd; }
+</style>
+</head>
+<body>
+
+<!-- wireframe meta banner -->
+<div class="wf-banner">
+  <strong>Direction 1 of 4 · Lumi's World</strong>
+  <span>One world, one camera. Scroll travels the path; every beat is a place.</span>
+  <nav>
+    <a href="direction-2-day.html">Direction 2</a>
+    <a href="direction-3-playmat.html">Direction 3</a>
+    <a href="direction-4-popup-book.html">Direction 4</a>
+  </nav>
+</div>
+
+<!-- THE WORLD: in the build this is the single fixed R3F canvas -->
+<div class="world" aria-hidden="true"><div class="sunball"></div></div>
+<div class="layer far" aria-hidden="true">
+  <img src="../assets/flower-5--yellow.svg" alt="" style="left:6%; top:30vh; width:110px;">
+  <img src="../assets/squircle--teal.svg" alt="" style="right:8%; top:85vh; width:150px;">
+  <img src="../assets/flower-13--blue.svg" alt="" style="left:12%; top:170vh; width:90px;">
+  <img src="../assets/polygon--purple.svg" alt="" style="right:14%; top:260vh; width:80px;">
+  <img src="../assets/flower-3--orange.svg" alt="" style="left:8%; top:350vh; width:120px;">
+  <div class="puff" style="left:20%; top:60vh; width:220px; height:120px;"></div>
+  <div class="puff" style="right:12%; top:200vh; width:280px; height:140px;"></div>
+</div>
+<div class="layer near" aria-hidden="true">
+  <img src="../assets/flower-4--teal.svg" alt="" style="right:4%; top:55vh; width:180px;">
+  <img src="../assets/triangle-5--yellow.svg" alt="" style="left:3%; top:140vh; width:140px;">
+  <img src="../assets/squircle--blue.svg" alt="" style="right:6%; top:330vh; width:200px;">
+</div>
+
+<!-- proposed nav model: calm top bar + journey rail -->
+<header class="nav">
+  <img src="../assets/logo-wordmark-original.png" alt="Kheelona">
+  <nav class="links">
+    <a href="#lumi-home">Lumi</a><a href="#playos">How it works</a><a href="#safety">Safety</a><a href="#journal">Stories</a><a href="#">Team</a>
+  </nav>
+  <a class="btn" href="#reserve">Join the pre-order list</a>
+</header>
+
+<nav class="rail" aria-label="Journey">
+  <a href="#hero"><span>The clearing</span></a>
+  <a href="#why"><span>Why we exist</span></a>
+  <a href="#grove"><span>The feelings</span></a>
+  <a href="#lumi-home"><span>Meet Lumi</span></a>
+  <a href="#playos"><span>PlayOS</span></a>
+  <a href="#compare"><span>How Lumi compares</span></a>
+  <a href="#safety"><span>Safety</span></a>
+  <a href="#journal"><span>The journal</span></a>
+  <a href="#reserve"><span>Reserve</span></a>
+</nav>
+
+<main>
+
+<!-- PLACE 1: the hero clearing -->
+<section class="place hero" id="hero" style="--wash:#FFF7EE">
+  <div class="wrap inner">
+    <div class="grid">
+      <div class="arrive">
+        <span class="pill">For ages 3 to 6</span>
+        <h1>The smartest way to grow your child's brain is to understand their heart.</h1>
+        <p class="lede">Lumi is a screen-free AI robot toy that listens first, then talks back. Really talks.</p>
+        <a class="btn" href="#reserve">Reserve Lumi at ₹4,999</a>
+        <p class="pricenote">₹9,999 after launch. No payment now. We hold the price, you hold your place.</p>
+      </div>
+      <div class="mascot arrive">
+        <img src="../assets/mascot-hero-wink.png" alt="The Kheelona mascot winking and giving a thumbs up">
+      </div>
+    </div>
+    <span class="note"><b>[ 3D ]</b> You arrive in a warm clearing. The mascot is a live model: it breathes, watches your cursor, and waves once. Brand-shape flowers and clouds float at true depths around you. The camera holds still until you scroll.</span>
+  </div>
+</section>
+
+<!-- PLACE 2: the path opens -->
+<section class="place intro" style="--wash:#FFF7EE">
+  <div class="wrap inner">
+    <p class="big arrive">In the years a brain grows fastest.</p>
+    <p class="big l2 arrive">The more Lumi understands how your child feels, the more they learn.</p>
+    <p class="big l3 arrive">In all 10 languages you speak at home.</p>
+    <span class="note"><b>[ 3D ]</b> The camera starts to move. Each line stands along the path like a signpost you walk past; depth fog keeps the next place a soft silhouette ahead. The mascot walks with you at the edge of frame.</span>
+    <div class="film arrive">
+      <div class="screen">The launch film plays here, on a soft screen standing in the meadow. (site/public/video/launch.mp4)</div>
+    </div>
+    <span class="note"><b>[ 3D ]</b> The film is a floating surface inside the world, not a section. It autoplays muted when the camera faces it, exactly like today's IntersectionObserver behavior.</span>
+  </div>
+</section>
+
+<!-- PLACE 3: over the hill -->
+<section class="place why" id="why" style="--wash:#FFFFFF">
+  <div class="wrap inner">
+    <div class="panel arrive" style="max-width:860px; margin:0 auto;">
+      <span class="eyebrow">Why we exist</span>
+      <h2>Your child's best years deserve more than a screen.</h2>
+      <p>Between the ages of 3 and 6, a child's brain builds faster than it ever will again. What they hear, what they feel, and who they talk to shape everything that follows.</p>
+      <p>Most toys do one thing. Screens do too much. Lumi does the one thing that matters: it listens to your child, understands how they feel, and talks back in a way that helps them grow.</p>
+    </div>
+    <span class="note"><b>[ 3D ]</b> The path crests a squircle hill. The world quiets: shapes recede into fog, the sky brightens to white, and this promise gets the whole horizon to itself.</span>
+  </div>
+</section>
+
+<!-- PLACE 4: the feelings grove -->
+<section class="place grove" id="grove" style="--wash:#EAF6FC">
+  <div class="wrap inner">
+    <div class="arrive">
+      <span class="eyebrow">Meet the feelings</span>
+      <h2>Learning starts with feeling understood.</h2>
+      <p class="lede">Lumi knows five feelings. They are the engine behind everything your child learns.</p>
+    </div>
+    <div class="cast arrive">
+      <div class="friend">
+        <img src="../assets/mascot-curious.png" alt="The mascot with wide, curious eyes" style="height:150px">
+        <span class="tick" style="background:var(--blue)"></span>
+        <h3>Curious</h3><p>Asks why. Chases ideas. Wants to know what is around the corner.</p>
+      </div>
+      <div class="friend">
+        <img src="../assets/mascot-grumpy.png" alt="The mascot frowning with hands on hips" style="height:178px">
+        <span class="tick" style="background:var(--orange)"></span>
+        <h3>Grumpy</h3><p>Has opinions. Not always wrong. Needs to be heard, not hushed.</p>
+      </div>
+      <div class="friend">
+        <img src="../assets/mascot-sad.png" alt="The mascot holding its cheeks through a hard moment" style="height:164px">
+        <span class="tick" style="background:var(--purple)"></span>
+        <h3>Sad</h3><p>Sits with you. Does not rush past. Makes space for the hard moments.</p>
+      </div>
+      <div class="friend">
+        <img src="../assets/mascot-silly.png" alt="The mascot laughing with its head thrown back" style="height:172px">
+        <span class="tick" style="background:var(--yellow)"></span>
+        <h3>Silly</h3><p>Cannot sit still. Turns everything into a game. Laughter is learning too.</p>
+      </div>
+      <div class="friend">
+        <img src="../assets/mascot-joy.png" alt="The mascot dancing with one arm in the air" style="height:186px">
+        <span class="tick" style="background:var(--teal)"></span>
+        <h3>Joy</h3><p>Lights up. Celebrates. Reminds your child that they are wonderful.</p>
+      </div>
+    </div>
+    <span class="note"><b>[ 3D ]</b> The path enters a grove. The five feelings stand among the flowers at staggered depths; each one turns to face your cursor, and hovering one makes it hop and its color tick bloom on the nearest flower. On phones they react to the device tilt instead.</span>
+  </div>
+</section>
+
+<!-- PLACE 5: Lumi's home -->
+<section class="place home" id="lumi-home" style="--wash:#FFFFFF">
+  <div class="wrap inner">
+    <div class="grid">
+      <div class="stage arrive">
+        <img src="../assets/lumi-blue.png" alt="Lumi, a soft blue talking toy with a striped party hat">
+      </div>
+      <div class="arrive">
+        <h2>Meet Lumi. The friend who listens first.</h2>
+        <p class="body">Lumi is a smart toy for children aged 3 to 6. It is not a tablet. It is not a speaker. It is a talking toy that holds a real conversation with your child.</p>
+        <p class="body">Say the wake word, and Lumi is ready. It asks questions. It remembers what your child said yesterday. It grows with them across the ages of 3 to 6.</p>
+      </div>
+    </div>
+    <span class="note"><b>[ 3D ]</b> The path arrives at Lumi's home: the plush stands on a soft mound (a live model when your generated GLB lands; until then, the approved render on a gentle turn). The camera makes a slow half-circle around it as you scroll through this place.</span>
+    <div class="cards">
+      <div class="card c1 arrive">
+        <h3>Screen-free. A real conversation.</h3>
+        <p>No display. No video. Nothing to stare at. Just a voice that talks back. Made to be kept, not outgrown. Lumi adapts to where your child is, not just how old they are.</p>
+      </div>
+      <div class="card c2 arrive">
+        <h3>You see everything.</h3>
+        <p>The parent app gives you a window into every conversation. A daily summary, the full conversation log, and complete control over topics, time, and languages.</p>
+      </div>
+    </div>
+    <div class="cta arrive"><a class="btn" href="#reserve">Reserve Lumi at ₹4,999</a></div>
+  </div>
+</section>
+
+<!-- PLACE 6: the PlayOS sky -->
+<section class="place sky" id="playos" style="--wash:#EAF6FC">
+  <div class="wrap inner">
+    <div class="arrive">
+      <h2>The technology behind the talking.</h2>
+      <p class="lede">Lumi runs on PlayOS, Kheelona's own voice engine built from the ground up for children aged 3 to 6. One platform. One set of safety rules. Every product in the family runs on the same soul.</p>
+    </div>
+    <div class="cloudrow">
+      <div class="cloud arrive">
+        <span class="num">01</span>
+        <h3>Think about the device first.</h3>
+        <p>When your child speaks, PlayOS processes the conversation on the device before anything goes anywhere. It reads the feeling behind the words, not just the words. Low latency. No long waits. No sending everything to a distant server.</p>
+      </div>
+      <div class="cloud c2 arrive">
+        <span class="num">02</span>
+        <h3>Every response is the right response.</h3>
+        <p>Before Lumi speaks, every response passes through an age-graded safety layer. On-device and cloud filters work together. No open internet. No random content. No surprises. PlayOS is what makes Lumi a cognitive development toy, not just a toy that plays sounds.</p>
+      </div>
+    </div>
+    <div class="after arrive">
+      <a class="btn" href="#reserve">Join the pre-order list</a>
+      <span class="quiet">Building on PlayOS? See <a href="https://kheelona.ai">kheelona.ai</a></span>
+    </div>
+    <span class="note"><b>[ 3D ]</b> The camera tilts up: you are in the sky among soft clouds. Glowing voice-wave particles travel from a small Lumi below up through the two steps and back, tracing the round trip a child's question makes. Calm, slow, readable.</span>
+  </div>
+</section>
+
+<!-- PLACE 7: the plateau -->
+<section class="place plateau" id="compare" style="--wash:#FFFFFF">
+  <div class="wrap inner">
+    <div class="arrive">
+      <h2>How Lumi compares.</h2>
+      <p class="lede">A simple, honest look at what is out there.</p>
+    </div>
+    <div class="tablewrap arrive">
+      <table>
+        <thead>
+          <tr><th aria-label="Feature"></th><th class="lumi">Lumi</th><th>Smart toys</th><th>Phone / TV</th><th>Static toys</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Screen-free</th><td class="lumi">Yes</td><td>Varies</td><td class="no">No</td><td>Yes</td></tr>
+          <tr><th scope="row">Holds a conversation</th><td class="lumi">Yes</td><td>Limited</td><td class="no">No</td><td class="no">No</td></tr>
+          <tr><th scope="row">Speaks your language</th><td class="lumi">Yes (10)</td><td>Rarely</td><td>Varies</td><td class="no">No</td></tr>
+          <tr><th scope="row">No open internet</th><td class="lumi">Yes</td><td>Rarely</td><td class="no">No</td><td>Yes</td></tr>
+          <tr><th scope="row">The parent sees everything</th><td class="lumi">Yes</td><td>Partial</td><td>Partial</td><td class="no">No</td></tr>
+          <tr><th scope="row">Made for ages 3 to 6</th><td class="lumi">Yes</td><td>Varies</td><td class="no">No</td><td>Varies</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <span class="note"><b>[ 3D ]</b> A flat, calm plateau. The world deliberately empties here so the honest table gets full attention; only the far horizon keeps drifting. This is a designed quiet beat between two rich ones.</span>
+  </div>
+</section>
+
+<!-- PLACE 8: the safety garden -->
+<section class="place garden" id="safety" style="--wash:#D9F4EC">
+  <div class="wrap inner">
+    <div class="grid">
+      <div class="arrive">
+        <h2>Safe in their hands. Careful with their words.</h2>
+        <p>Lumi listens only when your child says the wake word. The microphone is off the rest of the time.</p>
+        <p>Every conversation passes a safety check before Lumi speaks. You can read and delete any conversation with one tap.</p>
+        <p>Your child's voice data is never sold.</p>
+        <a class="btn" href="#" style="margin-top:12px">Read how we built safety in</a>
+      </div>
+      <div class="mascot arrive">
+        <img src="../assets/mascot-bliss.png" alt="The mascot resting peacefully with closed eyes">
+      </div>
+    </div>
+    <span class="note"><b>[ 3D ]</b> The path enters a sheltered teal garden: taller shapes arch overhead like a canopy, the light goes soft, and the mascot rests with closed eyes. A few slow fireflies. The safest-feeling place in the world, on purpose.</span>
+  </div>
+</section>
+
+<!-- PLACE 9: the journal meadow -->
+<section class="place meadow" id="journal" style="--wash:#FDF1E2">
+  <div class="wrap inner">
+    <div class="arrive">
+      <span class="eyebrow" style="color:var(--purple)">From the journal</span>
+      <h2>Raising curious kids.</h2>
+      <p class="lede">Ideas and honest reads for parents who want more than a screen.</p>
+    </div>
+    <div class="signposts">
+      <a class="signpost arrive" href="#">
+        <div class="art a1"><img src="../assets/mascot-curious.png" alt=""></div>
+        <div class="txt">
+          <h3>Why three to six are the years that matter most</h3>
+          <p>A short, warm read on the window when a child's brain grows fastest.</p>
+        </div>
+      </a>
+      <a class="signpost arrive" href="#">
+        <div class="art a2"><img src="../assets/mascot-silly.png" alt=""></div>
+        <div class="txt">
+          <h3>Screen-free does not mean silent</h3>
+          <p>What a rich, language-filled childhood actually looks like.</p>
+        </div>
+      </a>
+    </div>
+    <div class="more arrive"><a class="btn ghost" href="#">See all stories</a></div>
+    <span class="note"><b>[ 3D ]</b> Late-afternoon meadow. The two stories stand as friendly signposts along the path; the sun is visibly lower now, warming everything toward the finale.</span>
+  </div>
+</section>
+
+<!-- PLACE 10: the sunset finale -->
+<section class="place finale" id="reserve" style="--wash:#EF762F">
+  <div class="wrap inner">
+    <div class="arrive">
+      <h2>Reserve Lumi before the price goes up.</h2>
+      <p class="sub">₹4,999 launch price. ₹9,999 after launch. No payment now. We hold the price, you hold your place.</p>
+    </div>
+    <div class="reserve-panel arrive">
+      <h3>Hold your place</h3>
+      <p class="formnote">The Tally pre-order form mounts here (parent name, email, WhatsApp, consent, child's birth month, city).</p>
+      <div class="fields" aria-hidden="true">
+        <span class="field">Parent name</span><span class="field">Email</span>
+        <span class="field">WhatsApp number</span><span class="field">Child's birth month</span>
+        <span class="field wide">City</span>
+      </div>
+      <a class="btn" href="#" style="border:0">Reserve Lumi at ₹4,999</a>
+    </div>
+    <p class="consent">Your WhatsApp number is only for updates about your reservation. You can leave the list anytime.</p>
+    <span class="note" style="background:rgba(255,255,255,.92)"><b>[ 3D ]</b> The path ends at sunset. The sky itself has become the orange block: the sun sets huge behind the form, and everyone you met on the journey gathers at the bottom edge to see you off.</span>
+    <div class="lineup" aria-hidden="true">
+      <img src="../assets/mascot-grumpy.png" alt="" style="height:150px">
+      <img src="../assets/mascot-hero-wink.png" alt="" style="height:180px">
+      <img src="../assets/lumi-blue.png" alt="" style="height:165px">
+      <img src="../assets/mascot-silly.png" alt="" style="height:160px">
+      <img src="../assets/mascot-joy.png" alt="" style="height:175px">
+    </div>
+  </div>
+</section>
+
+<!-- ============ INTERIOR PAGE PREVIEW ============ -->
+<div class="divider-band">
+  <strong>Interior page preview</strong>
+  /products/lumi in this direction. Interior pages are short walks: same world, one place per page, no long journey.
+</div>
+
+<section class="interior">
+  <div class="wrap">
+    <div class="hero-l">
+      <div>
+        <span class="eyebrow">The talking toy</span>
+        <h1>Meet Lumi. The friend who listens first.</h1>
+        <p class="lede">A talking toy for children aged 3 to 6. It listens, answers, then asks the next question. No screen, ever.</p>
+        <a class="btn" href="#reserve">Reserve Lumi at ₹4,999</a>
+        <p class="pricenote">₹9,999 after launch. No payment now. We hold the price, you hold your place.</p>
+      </div>
+      <div class="stage">
+        <img src="../assets/lumi-blue.png" alt="Lumi, a soft blue talking toy with a striped party hat">
+      </div>
+    </div>
+    <span class="note"><b>[ 3D ]</b> The product page opens already inside Lumi's home clearing (the same place from the journey, so arriving feels like returning). Lumi is the live centerpiece: a slow, calm turn, and it leans toward your cursor. The rest of the page scrolls as gentle dolly moves around this one place.</span>
+
+    <div class="convo-sec">
+      <div>
+        <h2>What talking with Lumi sounds like.</h2>
+        <p>Lumi answers, then asks. That back and forth is how children learn to think. A conversation with Lumi goes somewhere.</p>
+      </div>
+      <div class="convo" role="log" aria-label="A sample conversation between a child and Lumi">
+        <div class="bubble child"><span class="who">Your child</span>Lumi, why is the moon following us?</div>
+        <div class="bubble lumi"><span class="who">Lumi</span>It looks that way, doesn't it? The moon is very far away. When you move, it seems to move with you. Where are you off to?</div>
+        <div class="bubble child"><span class="who">Your child</span>To grandma's house!</div>
+        <div class="bubble lumi"><span class="who">Lumi</span>Lucky moon. It gets to come along. What will you do at grandma's?</div>
+      </div>
+    </div>
+    <span class="note"><b>[ 3D ]</b> As the dialogue plays, each line floats up out of Lumi as a soft voice-wave before settling into its bubble. The moon from the conversation actually rises in the scene sky.</span>
+
+    <div class="price">
+      <h2>₹4,999 now. ₹9,999 after launch.</h2>
+      <p>Under ₹4 a day across ages 3 to 6. An educational toy priced like a habit, not a gadget.</p>
+      <a class="btn" href="#reserve">Reserve Lumi at ₹4,999</a>
+    </div>
+    <span class="note" style="margin-bottom:60px"><b>[ 3D ]</b> Remaining beats (five feelings deeper, parent app, in the box, FAQ) follow the same pattern: DOM panels over the home clearing, one calm scene moment each. The page ends in the same sunset finale as Home.</span>
+  </div>
+</section>
+
+<div class="endcard">
+  Direction 1 · Lumi's World · interactive wireframe · copy verbatim from the live site ·
+  <a href="direction-2-day.html">next: Direction 2, A Day with Lumi</a>
+</div>
+
+<button class="note-toggle" type="button" onclick="document.body.classList.toggle('notes-off'); this.textContent = document.body.classList.contains('notes-off') ? 'Show 3D notes' : 'Hide 3D notes';">Hide 3D notes</button>
+
+<script>
+/* journey rail: highlight the place currently in view */
+(function () {
+  var links = document.querySelectorAll('.rail a');
+  var map = {};
+  links.forEach(function (a) { map[a.getAttribute('href').slice(1)] = a; });
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting && map[e.target.id]) {
+        links.forEach(function (a) { a.classList.remove('active'); });
+        map[e.target.id].classList.add('active');
+      }
+    });
+  }, { rootMargin: '-40% 0px -50% 0px' });
+  Object.keys(map).forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el) io.observe(el);
+  });
+})();
+</script>
+</body>
+</html>

@@ -2,8 +2,8 @@
   "project_name": "kheelona.com",
   "created_at": "2026-07-06",
   "last_updated": "2026-07-08",
-  "current_phase": "phase_10_implementation",
-  "current_sprint": "S14-awaiting-founder",
+  "current_phase": "phase_12_redesign",
+  "current_sprint": "R1-wireframes-awaiting-founder-pick",
   "phase_status": {
     "phase_0_kickoff": {
       "status": "completed",
@@ -68,10 +68,16 @@
       "checkpoint_file": "docs/qa-report.md"
     },
     "phase_11_delivery": {
-      "status": "in_progress",
+      "status": "paused",
       "completed_at": null,
       "checkpoint_file": null,
-      "note": "Everything buildable is built and QA'd. Deploy + launch gates need founder inputs (FOUNDER-TODO.md)."
+      "note": "Everything buildable was built and QA'd, then the founder rejected the design (2026-07-08). Deploy + launch gates (Tally, Vercel, claims) still stand and carry over to the redesign."
+    },
+    "phase_12_redesign": {
+      "status": "in_progress",
+      "completed_at": null,
+      "checkpoint_file": "docs/redesign-plan-2026-07.md",
+      "note": "Ground-up immersive 3D redesign (R3F). Stage A done: 4 wireframe directions delivered (design-concepts/round-2-immersive/) + founder model kit (3d-handoff/). GATE: founder picks a direction; no site code changes until then."
     }
   },
   "sprint_status": {
@@ -156,9 +162,29 @@
       "date": "2026-07-06",
       "what": "Executive review round (CMO/CDO/Copywriter) verdicts applied; see docs/checkpoints/executive-review-round-1.md",
       "decision": "approved (founder delegated the decision)"
+    },
+    {
+      "date": "2026-07-08",
+      "what": "GROUND-UP REDESIGN: founder rejected the shipped design ('sections forcefully put together, not one flowing website'). Mandate: completely immersive, browser-native interactive 3D (WebGL/R3F), copy stays. REVERSES '2D everywhere' (2026-07-08) and '3D stays SUBTLE' (2026-07-06). Founder likes the Storybook FEEL; only its flat stacked execution is rejected.",
+      "decision": "founder directive"
+    },
+    {
+      "date": "2026-07-08",
+      "what": "Redesign round format: FOUR interactive HTML wireframe mock-ups (Home + /products/lumi interior + nav model each): 1 Lumi's World (journey), 2 A Day with Lumi (conversation), 3 The Playmat (tabletop), 4 The Pop-up Storybook (storybook reborn). 3D assets hybrid: founder generates mascot+Lumi GLBs from the 3d-handoff/ kit; the world is brand shapes + approved cutouts. Mobile: adaptive tiers (full 3D on capable phones, lite fallback). Full plan: docs/redesign-plan-2026-07.md",
+      "decision": "approved (plan-mode approval)"
     }
   ],
   "blockers": [
+    {
+      "id": "redesign-direction-pick",
+      "desc": "Founder to pick one of the 4 wireframe directions in design-concepts/round-2-immersive/ (redlines/mixes welcome). Stage B build starts only after the pick.",
+      "status": "open"
+    },
+    {
+      "id": "redesign-3d-models",
+      "desc": "Founder to generate the mascot (rigged+idle) and Lumi plush GLBs per 3d-handoff/README.md (Tripo route or commissioned artist). Needed for the build, not the pick; git-history GLBs serve as dev stand-ins.",
+      "status": "open"
+    },
     {
       "id": "claims-testimonials",
       "desc": "Parent testimonials (quote, name, child age, city, consent) pending from founder",
@@ -205,28 +231,29 @@
   "last_handoff": {
     "date": "2026-07-08",
     "completed_in_this_session": [
-      "Asset-quality sprint (evening): Gemini (Nano Banana Pro via Chrome) faithful studio re-renders of Lumi from Design/product-images originals; blue front 1792x2400 shipped to site (lumi-blue.png 1113x1600, LumiHero+MeetLumi dims updated); left/back/green/pink renders staged in Design/product-images/generated-2026-07; three new 20s Remotion films (FilmFirstHello, FilmTwoFriends, FilmQuietOne) rendered to launch-video/out/film-v*.mp4 and delivered to founder for the pick; Veo orbit shot generated in Gemini (download founder-gated). Lighthouse desktop after swap: home 99/96/100/100 LCP 0.9s, /products/lumi 100/96/100/100 LCP 0.8s."
+      "REDESIGN Stage A: founder rejected the shipped design and mandated an immersive R3F rebuild (copy stays). Planned (docs/redesign-plan-2026-07.md, founder-approved), then built 4 full-scroll interactive wireframe mock-ups in design-concepts/round-2-immersive/ (Lumi's World / A Day with Lumi / The Playmat / The Pop-up Storybook), each with verbatim copy, CSS scroll-driven approximations of the scene, [3D] annotation chips, /products/lumi interior preview + nav model, reduced-motion fallbacks. Assembled the founder model kit 3d-handoff/ (mascot Janus-fix inputs + new Gemini Lumi 4-view cutouts + Tripo recipe + artist spec). QA: voice-lint clean, no horizontal scroll at 1280/375 (Playwright audit), finale-contrast bugs found and fixed, screenshots in round-2-immersive/previews/."
     ],
-    "next_action": "COMMIT is the immediate step if not already done (git add -A; the whole 2-day asset sprint is in the working tree). Then remaining founder items: FOUNDER-TODO #0 optional Cuddle shot (extend FilmTwoFriendsVeo to ~900f, slot between Play and end card), colorway strip on /products/lumi (approved assets: Design/product-images/generated-2026-07/cut-lumi-{green,pink}.png; copy founder-gated), and the launch-critical originals (#1 Tally URL, #2 Vercel auth).",
+    "next_action": "WAIT for the founder's direction pick (blocker redesign-direction-pick). When it lands: Stage B per docs/redesign-plan-2026-07.md (branch, restore three-stack at pinned versions from commit 3556157, StageGate/beat-registry/wash-handoff infrastructure, chapter-by-chapter Home rebuild, tiers, interior pages, QA matrix). When the founder says 'models are in': 8-angle contact sheet -> gltf-transform meshopt (mascot --no-simplify) -> site/public/models/.",
     "files_modified": [
-      "site: Hero.tsx (MascotScene), components/product/LumiHero.tsx (moved), components/three/ DELETED, public/models DELETED, public/video/launch.mp4+poster REPLACED, package.json (three deps pruned)",
-      "launch-video: src pruned to FilmTwoFriendsVeo+VeoSeeds+lib, out pruned to the veo master, public pruned",
-      "Design/product-images/generated-2026-07: final renders + union-mode cutouts only",
-      "docs/*, CLAUDE.md, README.md, FOUNDER-TODO.md"
+      "design-concepts/round-2-immersive/ NEW (4 direction mock-ups + README + previews/)",
+      "3d-handoff/ NEW (README + 7 source images for the founder's model generation)",
+      "docs/redesign-plan-2026-07.md NEW (the approved plan)",
+      "docs/project-state.json (phase_12_redesign, approvals, blockers, this handoff)",
+      "FOUNDER-TODO.md, README.md (redesign round status)"
     ],
     "open_issues": [
-      "Optional Cuddle Veo shot (founder credits)",
-      "Colorway strip unbuilt (assets ready, copy founder-gated)",
-      "Orange/white bands ~2.9:1 (pre-existing); 7 journal heroes optional",
-      "Launch-critical founder items unchanged: Tally URL, Vercel auth, testimonials, certs/specs, ship date, contact email, languages list, GA4, counsel review"
+      "Founder pick pending: 4 directions in design-concepts/round-2-immersive/ (open in Chrome)",
+      "Founder GLB generation pending: 3d-handoff/README.md (parallel to the pick; dev stand-ins exist in git history at 3556157)",
+      "Previous launch gates unchanged: Tally URL, Vercel auth, testimonials, certs/specs, ship date, contact email, languages list, GA4, counsel review",
+      "Optional from last sprint, still open: Cuddle Veo shot, colorway strip, 7 journal heroes"
     ],
     "context_to_load_on_resume": [
-      "gemini-handoff/README.md (what the founder generated + quality gates)",
-      "launch-video/films-v2-scripts.md (film plan + VEO_* const mechanism)",
-      "docs/qa-report.md (asset-quality sprint + feedback round: automation gotchas, keycut usage)",
-      "FOUNDER-TODO.md (#0)"
+      "docs/redesign-plan-2026-07.md (the approved plan: directions, architecture, build order, QA matrix)",
+      "design-concepts/round-2-immersive/README.md (what was delivered for the pick)",
+      "3d-handoff/README.md (the founder's model kit)",
+      "site/AGENTS.md (modified Next 16 warning; read node_modules/next/dist/docs/ before Stage B code)"
     ],
-    "what_happened_last": "SHIPPED (2026-07-08): FilmTwoFriendsVeo live on the site (site/public/video/launch.mp4, 3.0MB crf30 + new poster). Site is 2D EVERYWHERE per founder: Home hero now uses MascotScene (parallax cutout, width 290); components/three/ deleted (HeroScene, MascotHero), LumiHero moved to components/product/, kheelona-mascot.glb + models/ deleted, three/@react-three deps uninstalled. Repo cleanup per founder: deleted superseded film drafts (ProductFilm, LaunchTeaser, 3 motion-design films + their renders + teasers), rejected/superseded renders in generated-2026-07, create-next-app svg leftovers, orphan lumi-green.png, unused launch-video assets. Build green, Lighthouse home 99/96/100/100 LCP 0.9s, film verified playing on Home."
+    "what_happened_last": "Stage A of the immersive redesign delivered (2026-07-08): 4 wireframe directions + 3d-handoff kit, verified and sent to the founder. HARD GATE: no site code changes until the founder picks a direction. The live site in site/ is untouched and still the shipped 2D build."
   },
   "resume_instructions": "Read README.md first. Then this file. Then the current-phase checkpoint. Then website-steps.md if it exists. Never re-ask anything settled in the Brand Bible (build prompt §1) or in approvals above."
 }
