@@ -30,8 +30,8 @@ Say where the project stands and what is next. Do NOT re-ask questions from comp
 ## Current Status (keep this section current)
 - **BUILD COMPLETE (2026-07-06)**: all 9 pages + 14 journal articles live in `site/` (Next.js 16, 28 static pages). Lighthouse desktop 99/100/100/100. Launch is gated only on founder inputs: see `FOUNDER-TODO.md` at the repo root.
 - **Journal (2026-07-06 expansion)**: 10 keyword-researched articles added (`site/lib/stories-expansion.ts`), 7 illustrated heroes in `site/public/stories/` (remaining 7 prompts: `docs/stories-image-prompts.md`). All 14 verified 0% AI / 100% human-written on QuillBot AI Detector v7.1.0 (humanizer rewrite skipped: it degraded meaning on a sample — see qa-report).
-- **Visual rework (2026-07-07)**: clean transparent cutouts site-wide (`tools/cutout`), R3F 3D hero with regenerated idle mascot GLB (two-face artifact fixed), staged hero copy, 20s real-photo launch film after the hero, Lumi 3D turntable on /products/lumi, feelings cast lineup, scroll-reveal blanking fixed. Lighthouse desktop 99/96/100/100 (home).
-- Extras delivered: launch teaser videos (`launch-video/out/`, 16:9 + 9:16), rigged 3D mascot GLB with idle animation (`site/public/models/`, hero uses it with static fallback), 3 archived design concepts (`design-concepts/`).
+- **Visual rework (2026-07-07)**: clean transparent cutouts site-wide (`tools/cutout`), R3F 3D hero with regenerated idle mascot GLB (two-face artifact fixed), staged hero copy, 20s real-photo launch film after the hero, feelings cast lineup, scroll-reveal blanking fixed. Lighthouse desktop 99/96/100/100 (home).
+- **Asset-quality sprint (2026-07-07/08, committed 001fe78)**: Lumi imagery replaced with founder-approved Gemini studio renders (`lumi-blue.png` 1113×1600; green/right/left/back/pink staged in `Design/product-images/generated-2026-07/`); the site is **2D everywhere** (all GLBs/R3F/three deps removed; heroes use `MascotScene` parallax cutouts); the launch film is the 25s "Two friends" Veo build (founder-generated clips + Remotion overlays), live at `site/public/video/launch.mp4`. Hard rule: all Gemini generation is founder-run from `gemini-handoff/` kits (CLAUDE.md gate). Resume from `docs/project-state.json` → `last_handoff.next_action`.
 - **Getting started (developers)**: `cd site && npm install && npm run dev` (Node 18+). Production: `npm run build && npm start`. Env: copy `site/.env.example` → `.env.local`. Deploy: Vercel, project root `site/`.
 - **Locked decisions**: tokens from `Design/design-system/` mapped in `site/app/globals.css`; Tally pre-order (adapter in `components/ui/TallyEmbed.tsx`); ₹ site-wide; A+C blended design (see `docs/checkpoints/phase-2-ux-discovery.md`); accessibility 90+ outranks any styling preference.
 
@@ -57,9 +57,9 @@ kheelona-com-website/
 │   ├── stories-image-prompts.md           ← Ready prompts for the 7 articles still missing heroes.
 │   ├── snapshots/                         ← Pre-sprint backups.
 │   └── checkpoints/                       ← One file per completed phase.
-├── site/                                  ← The Next.js 16 app (app/, components/, lib/, public/).
-│   └── public/models/kheelona-mascot.glb  ← Rigged mascot with idle animation (Tripo3D).
-└── launch-video/                          ← Remotion project; rendered teasers in out/ (16:9 + 9:16).
+├── gemini-handoff/                        ← Founder generation kit (refs + Veo seeds + prompts).
+├── site/                                  ← The Next.js 16 app (app/, components/, lib/, public/). 2D everywhere (no GLB/R3F).
+└── launch-video/                          ← Remotion project; live film source FilmTwoFriendsVeo.tsx, master in out/.
 ```
 
 ## Operating Rules

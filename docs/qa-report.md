@@ -93,3 +93,49 @@
 **Known contrast remainder**: white-on-orange compare/finale bands measure ~2.9:1 at large text (needs 3:1). Brand-locked oranges; gate met; revisit only if the founder wants a deeper orange.
 **Verification**: full page-by-page screenshot walkthrough (all 9 pages + articles + 404) on the production build; GLB 8-angle contact sheets for both models; video scene stills reviewed; build green (28 pages).
 **Note for future automation**: Chrome throttles IntersectionObserver/rAF in unfocused tabs; the 3D mount and reveals can look inert in captures while being fine for real users. One real interaction wakes them.
+
+## Asset-quality sprint (Gemini renders, 3 launch films) · 2026-07-07 evening
+
+**Founder brief**: site imagery quality too low (Lumi product images especially); launch film quality bad, wants story-driven emotional film with Lumi + mascot, minimal text, 3 variants to pick from; judge whether live 3D stays.
+
+**Scope shipped**
+- Gemini (Nano Banana Pro, web UI via Chrome automation) faithful studio re-renders from `Design/product-images` originals: blue front 1792×2400 (horn stripe order, eyes, belly verified against the real plush), blue left 1792×2400, blue back 896×1200 (spike order corrected to real peach/yellow/lightblue/purple/green, hang tag removed), green front 1792×2400 (hat-tip fix pending), pink recolor 765×1024 v2 (founder-gated: invented colorway; horn stripes + ribbon tip corrected).
+- Shipped `site/public/product/lumi-blue.png` at 1113×1600 (was 588×854); intrinsic dims updated in LumiHero + MeetLumi. Cutouts via tools/cutout, pixel-audited.
+- 3 new Remotion films (20s, 1080p, verbatim copy, silent): FilmFirstHello (warm photoshoot moods), FilmTwoFriends (mascot + Lumi duo), FilmQuietOne (cinematic minimal). Rendered to launch-video/out/film-v*.mp4, delivered to founder for the pick. Veo orbit shot generated (download founder-gated); VEO_* consts in each film enable clip swap + re-render.
+- Lighthouse desktop after swap: home 99/96/100/100 (LCP 0.9s), /products/lumi 100/96/100/100 (LCP 0.8s). Gates hold.
+
+**Deviations / pending**
+- Right profile render hallucinated (pink-only spikes); redo speced, founder generating manually. Left profile spike order slightly off (kept; 3D-input use only).
+- Green hat tip: Gemini repeatedly renders a pom-pom instead of the thin lavender ribbon; two-reference retry speced for founder's manual run.
+- Photoshoot (DSCF84xx) features the real PINK sample; V1 film mixes it with blue renders (same as v1 film, founder-sanctioned material).
+
+**Chrome automation gotchas (for the next session)**
+- Gemini attach: no DOM file input; paste a synthetic ClipboardEvent with DataTransfer files onto .ql-editor AFTER a real click focuses it, editor must be text-empty.
+- Send: computer-type + Return works in fresh chats; in existing chats find the "Send message" button ref and real-click it (JS .click() and execCommand text do NOT register with Angular).
+- Downloads silently die behind Chrome's automatic-downloads permission; every download click can freeze ALL injected input until the user dismisses the prompt. Workaround: canvas/blob extraction + postMessage to a 127.0.0.1 relay popup that POSTs to a local server (bytes never touch the conversation). Video full-res URLs are cookie-authed (curl fails); only the browser download path or founder manual download works.
+- Injected buttons lose listeners to Angular re-renders: attach handlers via document-level capture delegation, label buttons with aria-label so find can target them, make them large.
+
+## Founder feedback round (same evening) · applied
+- **/products/lumi is 2D-only now**: LumiTurntable.tsx + lumi-plush.glb removed (founder: "looks bad, high quality 2d only"); LumiHero is a plain static render. Home mascot R3F hero untouched (not mentioned). 3D-stack evaluation (Meshy/Rodin) superseded for the plush by this decision.
+- **Pink render approved** by founder. Cutout ribbon fix: Vision mask ghosted the thin ribbon → new `tools/cutout/keycut.swift` (region-growing border color-key; optional hybrid mode takes the Vision --no-crop alpha for the body and keys only the top 24% where thin details live). Compile: `swiftc -O keycut.swift -o keycut`; hybrid: `keycut in.png out.png 24 vision-nocrop.png`.
+- **Green (all versions) + left profile rejected** (pom-pom instead of ribbon; spike colors off) → founder is regenerating via `gemini-handoff/README.md` (3 image prompts + refs).
+- **Film verdict**: V2 "Two friends" direction approved; wants more polish, tighter opening, text on the duo scene, and Veo 3 AI shots. Founder generates 3×8s clips from `gemini-handoff/` seeds (seed-1-hello/2-play/3-cuddle + prompts); final film = Veo clips + Remotion text overlays + orange end card (~22s).
+- Lighthouse unchanged-territory (page got lighter: -1.3MB GLB + R3F chunk off the lumi page).
+
+## Handoff checkpoint · 2026-07-07 night (session cleared here)
+- Founder generated 5/6 Gemini items into ~/Downloads (green front, right profile, left profile images; Veo shots 1 Hello + 2 Play). Shot 3 Cuddle blocked by Gemini's 24h video-credit cap; optional.
+- NOT yet ingested/verified — next session starts there (see project-state.json last_handoff.next_action for the exact pipeline + filenames).
+- NEW STANDING RULE (CLAUDE.md hard gates): all Gemini generation goes through the founder via prompt kits (gemini-handoff/ pattern); Claude never drives gemini.google.com directly.
+- Working tree is UNCOMMITTED across the whole asset-quality sprint (new renders, lumi-blue swap, 2D-only product page, 3 film drafts, VeoSeeds, keycut tool, docs). Commit after the film winner ships, or earlier if asked.
+
+## Ingest + film assembly · 2026-07-08 early
+- Founder's 5 files ingested from ~/Downloads. Fidelity: all 3 images PASS (green v3 ribbon correct; right v2 spikes peach/yellow/lightblue/purple/green + blue soles; left v2 correct, landscape 2400x1792).
+- keycut UNION mode is the final cutout recipe (transparent only where flood-fill AND Vision agree background): fixes Vision eating ribbons and, on green, the feet. All four colorway cutouts re-cut and staged; green+pink live in launch-video/public/product-v2.
+- Veo clips: 10s each (not 8), 1280x720@24fps with audio; film uses them muted, objectFit cover in 1080p comp.
+- FilmTwoFriendsVeo: 750f/25s = Hello (Meet Lumi. + listens-first line) -> Play (Really talks. + 10-languages italic) -> orange end card with lineup. Rendered 18.9MB master, sent to founder. Ship path once approved: compress <4MB, replace site/public/video/launch.mp4 + poster, rebuild, Lighthouse, commit everything.
+
+## Ship + 2D-everywhere + cleanup · 2026-07-08
+- Film LIVE: site/public/video/launch.mp4 = FilmTwoFriendsVeo (25s, crf30 H.264 3.0MB, muted, new poster). Verified playing on Home.
+- 2D everywhere (founder): Home hero -> MascotScene pose=hero-wink width=290 parallax=48 priority; components/three/ deleted; LumiHero -> components/product/; models/ + all GLBs deleted; three, @react-three/fiber, @react-three/drei uninstalled.
+- Cleanup (founder-directed): deleted old films/teasers + drafts (ProductFilm, LaunchTeaser, FilmFirstHello/TwoFriends/QuietOne + renders), rejected renders (blue-front-v1, green v1/v2, pink v1, blue-left-v1), CNA svgs, orphan product/lumi-green.png, launch-video unused publics (kept product-v2/cut-lumi-blue.png + veo/). launch-video/assets/product (photoshoot shortlist) kept as archive.
+- Gates: build green (28 pages), remotion compositions valid, Lighthouse home 99/96/100/100 LCP 0.9s.

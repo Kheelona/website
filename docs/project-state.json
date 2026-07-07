@@ -1,7 +1,7 @@
 {
   "project_name": "kheelona.com",
   "created_at": "2026-07-06",
-  "last_updated": "2026-07-06",
+  "last_updated": "2026-07-08",
   "current_phase": "phase_10_implementation",
   "current_sprint": "S14-awaiting-founder",
   "phase_status": {
@@ -203,32 +203,30 @@
     }
   ],
   "last_handoff": {
-    "date": "2026-07-07",
+    "date": "2026-07-08",
     "completed_in_this_session": [
-      "Founder-directed visual rework: clean transparent cutouts for all mascot/product art (tools/cutout, Vision-based), scroll-reveal blanking fixed, hero rebuilt as R3F 3D scene with regenerated Tripo mascot (two-face artifact fixed, idle animation), staged verbatim hero copy, 20s ProductFilm launch video from real photoshoot (site/public/video), Lumi plush 3D turntable on /products/lumi, feelings cast-lineup rework, a11y contrast fixes. Lighthouse desktop: home 99/96/100/100, /products/lumi 100/92/100/100, /stories 100/96/100/100."
+      "Asset-quality sprint (evening): Gemini (Nano Banana Pro via Chrome) faithful studio re-renders of Lumi from Design/product-images originals; blue front 1792x2400 shipped to site (lumi-blue.png 1113x1600, LumiHero+MeetLumi dims updated); left/back/green/pink renders staged in Design/product-images/generated-2026-07; three new 20s Remotion films (FilmFirstHello, FilmTwoFriends, FilmQuietOne) rendered to launch-video/out/film-v*.mp4 and delivered to founder for the pick; Veo orbit shot generated in Gemini (download founder-gated). Lighthouse desktop after swap: home 99/96/100/100 LCP 0.9s, /products/lumi 100/96/100/100 LCP 0.8s."
     ],
-    "next_action": "Founder reviews the rework on http://localhost:3456 (hero 3D, launch film, /products/lumi turntable). Then FOUNDER-TODO.md as before (Tally URL + Vercel auth are launch-critical).",
+    "next_action": "COMMIT is the immediate step if not already done (git add -A; the whole 2-day asset sprint is in the working tree). Then remaining founder items: FOUNDER-TODO #0 optional Cuddle shot (extend FilmTwoFriendsVeo to ~900f, slot between Play and end card), colorway strip on /products/lumi (approved assets: Design/product-images/generated-2026-07/cut-lumi-{green,pink}.png; copy founder-gated), and the launch-critical originals (#1 Tally URL, #2 Vercel auth).",
     "files_modified": [
-      "site/public/mascot/* + product/lumi-blue.png (re-cut)",
-      "site/public/models/* (kheelona-mascot idle GLB, lumi-plush.glb)",
-      "site/public/video/launch.mp4 + poster",
-      "site/components/three/*, sections/home/{Hero,StagedIntro,LaunchVideo,Feelings}.tsx",
-      "tools/cutout/",
-      "launch-video/src/ProductFilm.tsx",
-      "docs/*"
+      "site: Hero.tsx (MascotScene), components/product/LumiHero.tsx (moved), components/three/ DELETED, public/models DELETED, public/video/launch.mp4+poster REPLACED, package.json (three deps pruned)",
+      "launch-video: src pruned to FilmTwoFriendsVeo+VeoSeeds+lib, out pruned to the veo master, public pruned",
+      "Design/product-images/generated-2026-07: final renders + union-mode cutouts only",
+      "docs/*, CLAUDE.md, README.md, FOUNDER-TODO.md"
     ],
     "open_issues": [
-      "Orange/white bands (compare table, finale) sit ~2.9:1 large-text contrast; gate met (a11y >= 90) but flagged by Lighthouse; brand-locked colors",
-      "Sad pose is the scared render (asset gap)",
-      "Remaining 7 journal heroes optional (docs/stories-image-prompts.md)"
+      "Optional Cuddle Veo shot (founder credits)",
+      "Colorway strip unbuilt (assets ready, copy founder-gated)",
+      "Orange/white bands ~2.9:1 (pre-existing); 7 journal heroes optional",
+      "Launch-critical founder items unchanged: Tally URL, Vercel auth, testimonials, certs/specs, ship date, contact email, languages list, GA4, counsel review"
     ],
     "context_to_load_on_resume": [
-      "docs/qa-report.md",
-      "FOUNDER-TODO.md",
-      "site/components/three/HeroScene.tsx",
-      "design-concepts/README.md"
+      "gemini-handoff/README.md (what the founder generated + quality gates)",
+      "launch-video/films-v2-scripts.md (film plan + VEO_* const mechanism)",
+      "docs/qa-report.md (asset-quality sprint + feedback round: automation gotchas, keycut usage)",
+      "FOUNDER-TODO.md (#0)"
     ],
-    "what_happened_last": "Visual-rework sprints S1-S5 (2026-07-07) complete and committed; site rebuilt and served on :3456."
+    "what_happened_last": "SHIPPED (2026-07-08): FilmTwoFriendsVeo live on the site (site/public/video/launch.mp4, 3.0MB crf30 + new poster). Site is 2D EVERYWHERE per founder: Home hero now uses MascotScene (parallax cutout, width 290); components/three/ deleted (HeroScene, MascotHero), LumiHero moved to components/product/, kheelona-mascot.glb + models/ deleted, three/@react-three deps uninstalled. Repo cleanup per founder: deleted superseded film drafts (ProductFilm, LaunchTeaser, 3 motion-design films + their renders + teasers), rejected/superseded renders in generated-2026-07, create-next-app svg leftovers, orphan lumi-green.png, unused launch-video assets. Build green, Lighthouse home 99/96/100/100 LCP 0.9s, film verified playing on Home."
   },
   "resume_instructions": "Read README.md first. Then this file. Then the current-phase checkpoint. Then website-steps.md if it exists. Never re-ask anything settled in the Brand Bible (build prompt §1) or in approvals above."
 }

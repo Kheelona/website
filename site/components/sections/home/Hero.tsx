@@ -3,7 +3,7 @@ import { Section } from "@/components/layout/Section";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { Shape } from "@/components/ui/Shapes";
-import { MascotHero } from "@/components/three/MascotHero";
+import { MascotScene } from "@/components/mascot/MascotScene";
 import { PREORDER_HREF } from "@/lib/site";
 
 /** Home S02, slimmed by founder decision (2026-07-07): headline, the lede,
@@ -39,7 +39,7 @@ export function Hero() {
             aria-hidden="true"
             className="pointer-events-none absolute bottom-[-140px] left-1/2 h-[560px] w-[560px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(241,162,59,0.16)_0%,rgba(241,162,59,0.3)_35%,transparent_70%)]"
           />
-          <MascotHero className="relative h-[480px] w-full max-w-[440px] md:h-[560px]" />
+          <MascotScene pose="hero-wink" width={290} parallax={48} priority className="relative" />
         </div>
       </Container>
     </Section>

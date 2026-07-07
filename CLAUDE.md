@@ -16,6 +16,7 @@ Pre-order marketing site for **Lumi**, Kheelona's screen-free talking AI toy for
 3. `Design/design-system/` — tokens/fonts (note: capital-D `Design/`, and its README's "em-dash preferred" is OVERRIDDEN by the Brand Bible).
 
 ## Hard gates (non-negotiable)
+- **Gemini generation goes through the founder, never Claude** (founder directive 2026-07-07): for ANY Gemini image/video generation, prepare reference images + copy-paste prompts (pattern: `gemini-handoff/README.md`), hand them to the founder, and ingest the results from `~/Downloads`. Do not drive gemini.google.com yourself.
 - **Voice-lint**: zero em-dashes (en-dash only inside number ranges), no hype, rarely lead with "AI", exact names (PlayOS, Lumi, Lori, Lua, Robu, Kheelona Magic Box), second person present tense.
 - **Never invent claims**: testimonials, certifications, specs, ship date, contact email → flagged placeholders + blockers only.
 - **Accessibility 90+ outranks any styling preference** (spec §3). Lighthouse gates: A11y/BP/SEO 90+ everywhere, Perf 90+ desktop.
@@ -37,5 +38,6 @@ Root `.env` (gitignored, DUMMY values until founder fills them): `TRIPO_API_KEY`
 - `docs/checkpoints/` — per-phase snapshots
 - `design-concepts/README.md` — 3 archived concepts, mascot cutout pipeline, Tripo3D 2D→3D pipeline (v2 runs incl. Janus fix + Lumi plush), engineering gotchas (overflow-x clip, scroll-snap wheel trap)
 - `site/AGENTS.md` — Next.js 16 breaking-changes warning (read `node_modules/next/dist/docs/` before writing Next code)
-- `tools/cutout/` — offline background removal (Swift + Apple Vision; compile with `swiftc -O main.swift -o cutout`). Every mascot/product cutout and video asset goes through it; never ship art with baked backgrounds.
-- 3D + film assets: `site/public/models/{kheelona-mascot,lumi-plush}.glb` (R3F hero + product turntable), `site/public/video/launch.{mp4,jpg}` (rendered from `launch-video/src/ProductFilm.tsx`)
+- `tools/cutout/` — offline background removal (Swift + Apple Vision; compile with `swiftc -O main.swift -o cutout`). Every mascot/product cutout and video asset goes through it; never ship art with baked backgrounds. For thin pale details the Vision mask drops (hat ribbons), use `keycut.swift` (region-grow color-key; hybrid mode takes a Vision `--no-crop` alpha for the body: `keycut in.png out.png 24 vision-nocrop.png`).
+- Visuals are **2D everywhere** (founder decision 2026-07-08): no GLBs, no R3F, no three.js deps. The dimensional feel comes from `site/components/mascot/MascotScene.tsx` (pointer tilt + scroll parallax + idle float on cutouts). `site/public/video/launch.{mp4,jpg}` = the live "Two friends" film (Veo clips + Remotion, master in `launch-video/out/`, source `launch-video/src/FilmTwoFriendsVeo.tsx`)
+- `gemini-handoff/` — founder generation kit (refs + seeds + prompts); product renders staged in `Design/product-images/generated-2026-07/`
