@@ -1,6 +1,6 @@
 # Gemini handoff — 3 image fixes + 3 Veo shots
 
-**STATUS 2026-07-07 night: founder generated IMAGE 1-3 and SHOT 1-2 (in ~/Downloads, pending ingest). SHOT 3 pending Gemini credit reset. Orbit download still open, optional.**
+**STATUS 2026-07-08: DONE — images 1-3 and shots 1-2 ingested and shipped (film live on the site). Only optional item left: SHOT 3 "Cuddle" below, whenever Gemini video credits allow. The orbit video is obsolete (that film variant was retired).**
 
 Everything you need is in this folder (`gemini-handoff/`). For each item: start a **new chat** in Gemini, attach the listed image(s), paste the prompt, wait, then use the follow-up line to get the 4K version (images only). Download everything to `~/Downloads` — Claude watches that folder and takes over from there.
 

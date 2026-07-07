@@ -37,8 +37,9 @@ Arc: slow beauty film; one line only.
 3. (11–15s) Lumi on a child's bookshelf at golden hour, slight breeze in curtains. Text: "Screen-free. A real conversation."
 4. (15–20s) Cut to black, then end card: "Reserve Lumi at ₹4,999" / "₹9,999 after launch. No payment now."
 
-## Status (2026-07-08: film assembled, awaiting founder approval)
-- FilmTwoFriendsVeo (750f/25s) rendered from founder's Veo clips (public/veo/hello.mp4 + play.mp4, 10s 720p24 each, used muted) -> out/film-v2-two-friends-veo.mp4, sent to founder. Optional Cuddle shot extends it later.
+## Status (2026-07-08: SHIPPED)
+- FilmTwoFriendsVeo (750f/25s, from founder's Veo clips in public/veo/, muted) is LIVE at site/public/video/launch.mp4 (3MB crf30) + new poster. Master: out/film-v2-two-friends-veo.mp4. Optional Cuddle shot extends it later (~900f, slot between Play and end card).
+- The three motion-design drafts + old ProductFilm/LaunchTeaser were deleted in the 2026-07-08 cleanup (recoverable from git where committed); their designs remain documented below.
 
 ## Old status (2026-07-07 evening)
 - [x] Blue renders regenerated (Gemini, faithful, 1792×2400)
