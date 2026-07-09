@@ -182,7 +182,7 @@
     },
     {
       "id": "redesign-3d-models",
-      "desc": "Founder to generate the mascot (rigged+idle) and Lumi plush GLBs per 3d-handoff/README.md (Tripo route or commissioned artist). Needed for the build, not the pick; git-history GLBs serve as dev stand-ins.",
+      "desc": "MASCOT DONE (2026-07-09): v3 rigged clip-less GLB verified + compressed in 3d-handoff/exports/ (Tripo presets retarget-break the chibi body; site animates procedurally via Head/Spine bones). REMAINING: Lumi plush GLB, founder generating (retopo ~20k, no rig).",
       "status": "open"
     },
     {
