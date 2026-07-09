@@ -14,17 +14,24 @@ export function MeetLumi() {
       <Container className="py-16 md:py-20">
         <div className="mb-16 grid items-center gap-10 md:grid-cols-[0.9fr_1.1fr] md:gap-14">
           <Reveal className="relative flex justify-center py-6">
+            {/* The blob pedestal also yields to the live scene: it would
+                otherwise sit painted over the 3D plush. */}
             <div
               aria-hidden="true"
+              data-scene-hide=""
               className="absolute left-1/2 top-1/2 aspect-square w-[88%] -translate-x-1/2 -translate-y-1/2 rounded-[42%_58%_55%_45%/48%_44%_56%_52%] bg-cream"
             />
-            <Image
-              src="/product/lumi-blue.png"
-              alt="Lumi, a soft blue talking toy with a striped party hat"
-              width={1113}
-              height={1600}
-              className="relative w-full max-w-[330px] drop-shadow-[0_20px_26px_rgba(41,160,215,0.16)]"
-            />
+            {/* Static render; yields to the live model turning in the world
+                once the stage is up (data-scene-hide, see globals.css). */}
+            <div data-scene-hide="" className="relative">
+              <Image
+                src="/product/lumi-blue.png"
+                alt="Lumi, a soft blue talking toy with a striped party hat"
+                width={1113}
+                height={1600}
+                className="w-full max-w-[330px] drop-shadow-[0_20px_26px_rgba(41,160,215,0.16)]"
+              />
+            </div>
           </Reveal>
           <Reveal>
             <h2 className="mb-5 font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.08] text-ink-head">

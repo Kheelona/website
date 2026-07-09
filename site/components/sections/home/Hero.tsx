@@ -39,7 +39,11 @@ export function Hero() {
             aria-hidden="true"
             className="pointer-events-none absolute bottom-[-140px] left-1/2 h-[560px] w-[560px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(241,162,59,0.16)_0%,rgba(241,162,59,0.3)_35%,transparent_70%)]"
           />
-          <MascotScene pose="hero-wink" width={290} parallax={48} priority className="relative" />
+          {/* Static LCP render; yields to the live model once the stage has
+              painted (html.scene-3d, see globals.css). */}
+          <div data-hero-fallback="">
+            <MascotScene pose="hero-wink" width={290} parallax={48} priority className="relative" />
+          </div>
         </div>
       </Container>
     </Section>

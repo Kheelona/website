@@ -19,6 +19,7 @@ export function CurveDivider({
   return (
     <svg
       aria-hidden="true"
+      data-curve=""
       viewBox="0 0 1440 70"
       preserveAspectRatio="none"
       className="block h-[46px] w-full md:h-[70px]"

@@ -27,7 +27,7 @@ export function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section id={id} className={cn("relative", WASHES[wash], className)}>
+    <section id={id} data-wash={wash} className={cn("relative", WASHES[wash], className)}>
       {children}
     </section>
   );

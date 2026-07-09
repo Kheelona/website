@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { Beat } from "@/components/layout/Beat";
+import { RibbonNav } from "@/components/layout/RibbonNav";
+import { StageGate } from "@/components/three/StageGate";
 import { Hero } from "@/components/sections/home/Hero";
 import { StagedIntro } from "@/components/sections/home/StagedIntro";
 import { LaunchVideo } from "@/components/sections/home/LaunchVideo";
@@ -18,23 +21,53 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
+/* Home is one continuous journey (redesign: Direction 1 "Lumi's World" with
+   Pop-up Storybook elements). Every beat below is a place in the world; the
+   <Beat> order MUST match the place indices in components/three/ThreeStage.
+   Copy and section components are unchanged: the 3D stage is a decorative
+   layer that mounts behind them (StageGate) and the washes hand off to it. */
 export default function HomePage() {
   return (
     <>
-      <Hero />
-      <StagedIntro />
-      <LaunchVideo />
-      <WhyWeExist />
-      <Feelings />
-      <MeetLumi />
-      <PlayOSHome />
-      <Compare />
-      <SafetyStrip />
+      <Beat id="hero" anchor="hero">
+        <Hero />
+      </Beat>
+      <Beat id="intro">
+        <StagedIntro />
+      </Beat>
+      <Beat id="film">
+        <LaunchVideo />
+      </Beat>
+      <Beat id="why" anchor="why">
+        <WhyWeExist />
+      </Beat>
+      <Beat id="feelings" anchor="feelings">
+        <Feelings />
+      </Beat>
+      <Beat id="lumi">
+        <MeetLumi />
+      </Beat>
+      <Beat id="playos">
+        <PlayOSHome />
+      </Beat>
+      <Beat id="compare" anchor="compare">
+        <Compare />
+      </Beat>
+      <Beat id="safety">
+        <SafetyStrip />
+      </Beat>
       {/* ParentVoices intentionally unmounted until real testimonials arrive
           (claims-testimonials blocker): the review round found the empty
           placeholders read as vaporware two sections before the ask. */}
-      <Journal />
-      <FinaleCTA variant="full" from="sun" />
+      <Beat id="journal">
+        <Journal />
+      </Beat>
+      <Beat id="reserve">
+        <FinaleCTA variant="full" from="sun" />
+      </Beat>
+
+      <RibbonNav />
+      <StageGate />
     </>
   );
 }
