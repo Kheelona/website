@@ -3,7 +3,7 @@
   "created_at": "2026-07-06",
   "last_updated": "2026-07-08",
   "current_phase": "phase_12_redesign",
-  "current_sprint": "R1-wireframes-awaiting-founder-pick",
+  "current_sprint": "R2-stage-b-build (branch redesign/immersive; Direction 1 + D4 pop-up elements)",
   "phase_status": {
     "phase_0_kickoff": {
       "status": "completed",
@@ -177,13 +177,15 @@
   "blockers": [
     {
       "id": "redesign-direction-pick",
-      "desc": "Founder to pick one of the 4 wireframe directions in design-concepts/round-2-immersive/ (redlines/mixes welcome). Stage B build starts only after the pick.",
-      "status": "open"
+      "desc": "Founder to pick one of the 4 wireframe directions.",
+      "status": "resolved",
+      "resolution": "2026-07-09: Direction 1 (Lumi's World) as the base, blended with elements from Direction 4 (Pop-up Storybook). Claude's blend interpretation (founder can redline): pop-up rise-from-the-ground entrances for scene actors, D4's bookmark-ribbon chapter nav, paper-craft feel for shape scenery; D1's continuous world/camera journey is the spine. 'Recreate the complete website from this' (founder, 2026-07-09)."
     },
     {
       "id": "redesign-3d-models",
-      "desc": "MASCOT DONE (2026-07-09): v3 rigged clip-less GLB verified + compressed in 3d-handoff/exports/ (Tripo presets retarget-break the chibi body; site animates procedurally via Head/Spine bones). REMAINING: Lumi plush GLB, founder generating (retopo ~20k, no rig).",
-      "status": "open"
+      "desc": "Founder-generated GLBs for the immersive scene.",
+      "status": "resolved",
+      "resolution": "2026-07-09: BOTH DONE. Mascot v3 (rigged clip-less, procedural idle on site, meshopt 714KB@2K, bones Head/NeckTwist/Spine/Hip verified) + Lumi plush v3 (14,722 tris after local simplify from 150k, meshopt 479KB@2K, all gates pass: lavender ribbon curl, spike order, hat stripes). Finals in 3d-handoff/exports/*-v3-2k.glb."
     },
     {
       "id": "claims-testimonials",
