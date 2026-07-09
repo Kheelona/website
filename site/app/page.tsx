@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Beat } from "@/components/layout/Beat";
-import { RibbonNav } from "@/components/layout/RibbonNav";
 import { StageGate } from "@/components/three/StageGate";
 import { Hero } from "@/components/sections/home/Hero";
 import { StagedIntro } from "@/components/sections/home/StagedIntro";
@@ -66,7 +65,6 @@ export default function HomePage() {
         <FinaleCTA variant="full" from="sun" />
       </Beat>
 
-      <RibbonNav />
       <StageGate />
     </>
   );

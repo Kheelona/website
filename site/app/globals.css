@@ -129,59 +129,9 @@ main {
   z-index: 10;
 }
 
-/* Bookmark-ribbon chapter nav (D4): colored tabs at the right edge; the open
-   chapter's ribbon draws out. DOM-only, works on every tier. */
-.ribbon-nav {
-  position: fixed;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 40;
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
-}
-.ribbon-nav a {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  height: 28px;
-  width: 30px;
-  padding-right: 9px;
-  border-radius: 8px 0 0 8px;
-  text-decoration: none;
-  font-size: 12.5px;
-  font-weight: 700;
-  color: #fff;
-  white-space: nowrap;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgb(0 0 0 / 0.18);
-  transition: width 0.28s var(--ease-bounce);
-}
-.ribbon-nav a span {
-  opacity: 0;
-  transition: opacity 0.18s 0.08s;
-}
-.ribbon-nav a:hover,
-.ribbon-nav a:focus-visible,
-.ribbon-nav a.ribbon-active {
-  width: 148px;
-}
-.ribbon-nav a:hover span,
-.ribbon-nav a:focus-visible span,
-.ribbon-nav a.ribbon-active span {
-  opacity: 1;
-}
-/* Ribbons need free right-edge room: below ~1420px they would overlap the
-   1200px content column, so the chapter nav is a wide-screen enhancement. */
-@media (max-width: 1420px) {
-  .ribbon-nav {
-    display: none;
-  }
-}
+/* (The D4 bookmark-ribbon chapter nav was removed here on founder feedback
+   2026-07-09: the colored tabs read as clutter against the world.) */
 @media (prefers-reduced-motion: reduce) {
-  .ribbon-nav a,
-  .ribbon-nav a span,
   [data-wash],
   [data-curve],
   [data-hero-fallback],
