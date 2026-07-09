@@ -48,6 +48,12 @@ The founder generated a new high-detail mascot (1.96M faces) plus a segmented va
 4. The segmented model is an optional side export (same GLB settings): named parts enable procedural ear/tail motion and Direction-4 pop-up assembly tricks, but it is NOT a substitute for the rigged idle GLB.
 5. Credits: 625 left as of this session (~120 spent on the new batch). Retopo/rig cost credits: finish the mascot end-to-end and pass the quality check before starting Lumi.
 
+**Mascot v3 verification (2026-07-09, `exports/`):**
+- `kheelona-mascot-v3-raw.glb` (founder export, 5.07MB): PASS on all visual gates — 30,192 faces, single 4K packed atlas, feet-at-origin pivot, NO Janus face, wink/glasses/K-mark/tuft all correct (contact sheet + face close-up in `exports/`). 18 skinned sub-meshes, one shared material.
+- **FAIL: zero animation tracks.** The skeleton is present but the idle clip was not applied/exported. Fix in Tripo: Animate tab → apply the "idle" preset to the rigged model → export THAT result (same settings: GLB, Pack UV ON, Bottom Center Pivot ON).
+- Compression validated (meshopt, `--no-simplify`, WebP): 5.07MB → **524KB** @1K textures / **714KB** @2K (`exports/kheelona-mascot-v3-{1k,2k}.glb`); compressed render verified identical (`exports/compressed-2k-check.png`). Rerun on the animated re-export.
+- Cosmetic, founder's call: a faint scuff-like patch on the front of the shorts (in the texture). Ignorable at site scale; a texture regen fixes it if it bothers you.
+
 ## Route B: commission an artist (alternative)
 
 Hand them the same images in this folder as reference plus this spec:
