@@ -14,3 +14,11 @@ launch-video/out/
 
 # Compiled tool binaries
 tools/cutout/cutout
+
+# Raw photoshoot originals: stay on disk, never in git (620MB)
+Design/product-images/Kheelona photoshoot 2025/
+
+# QA screenshots and process artifacts
+docs/snapshots/
+3d-handoff/exports/
+design-concepts/round-2-immersive/previews/
