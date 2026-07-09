@@ -38,6 +38,15 @@ These are your approved Gemini studio cutouts, much better source art than the p
 - One face only (check the back of the head).
 - If a result fails, regenerate once before moving on; retry credits are fine (cap ~400 total).
 
+## LIVE SETTINGS ADDENDUM (2026-07-09, from the founder's actual Tripo session)
+
+The founder generated a new high-detail mascot (1.96M faces) plus a segmented variant. The web pipeline from there:
+1. **Retopo first** (the raw model is ~65x over the ~30k-face web budget): target ~30,000 faces for the mascot / ~20,000 for Lumi, with texture bake ON (2K). Verify the texture survives before spending more credits.
+2. **Then Animate**: auto-rig + idle preset on the retopo'd mascot (Lumi stays static).
+3. **Export dialog settings**: format **GLB**, **Pack UV ON** (single texture atlas, fewer draw calls), **Bottom Center Pivot ON** (origin at the feet). Never OBJ/FBX/STL/USD/3MF for the site.
+4. The segmented model is an optional side export (same GLB settings): named parts enable procedural ear/tail motion and Direction-4 pop-up assembly tricks, but it is NOT a substitute for the rigged idle GLB.
+5. Credits: 625 left as of this session (~120 spent on the new batch). Retopo/rig cost credits: finish the mascot end-to-end and pass the quality check before starting Lumi.
+
 ## Route B: commission an artist (alternative)
 
 Hand them the same images in this folder as reference plus this spec:
