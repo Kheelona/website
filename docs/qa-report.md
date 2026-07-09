@@ -139,3 +139,32 @@
 - 2D everywhere (founder): Home hero -> MascotScene pose=hero-wink width=290 parallax=48 priority; components/three/ deleted; LumiHero -> components/product/; models/ + all GLBs deleted; three, @react-three/fiber, @react-three/drei uninstalled.
 - Cleanup (founder-directed): deleted old films/teasers + drafts (ProductFilm, LaunchTeaser, FilmFirstHello/TwoFriends/QuietOne + renders), rejected renders (blue-front-v1, green v1/v2, pink v1, blue-left-v1), CNA svgs, orphan product/lumi-green.png, launch-video unused publics (kept product-v2/cut-lumi-blue.png + veo/). launch-video/assets/product (photoshoot shortlist) kept as archive.
 - Gates: build green (28 pages), remotion compositions valid, Lighthouse home 99/96/100/100 LCP 0.9s.
+
+---
+
+## Stage B verification: the immersive redesign (2026-07-09/10)
+
+Home rebuilt as one continuous 3D journey (Direction 1 "Lumi's World" + pop-up elements; plan in `docs/redesign-plan-2026-07.md`). What was verified before the demo went live:
+
+**Models (founder-generated via Tripo, verified locally before shipping):**
+- Mascot v3: 30,192 faces, 8-angle contact sheet (no Janus face, wink/K-mark/glasses pass), rigged but CLIP-LESS by decision: Tripo's humanoid presets retarget-crumple the chibi body, so the site drives the bones procedurally (Spine breathe, Head cursor-follow). Ships UNQUANTIZED (1.45MB): meshopt quantization node-scales break skinned meshes.
+- Lumi v3: locally simplified 150k -> 14,722 tris, meshopt 479KB; ribbon curl, spike order, hat stripes all pass.
+
+**Fallback contracts (probed in headless Chrome, prod build):**
+- prefers-reduced-motion: stage never mounts (0 canvases), flat washes + static art intact.
+- JavaScript disabled: full copy SSR'd, opaque washes, 0 canvases.
+- Mobile (390px): scene runs as ambient sky, DOM art stays (art handoff is >=900px only).
+- webglcontextlost / mid-session reduced-motion: scene-3d class removed, washes fade back (code path, StageGate).
+
+**Lighthouse (prod build, headless):**
+- / desktop: 99 / 100 / 100 / 100, LCP 0.9s (LCP element is still the static hero; three.js loads post-idle)
+- /products/lumi desktop: 100 / 100 / 100 / 100, LCP 0.8s
+- / mobile: 81 / 100 / 96 / 100, LCP 4.9s on simulated slow 4G (was 85/4.4s pre-redesign) - OPEN follow-up.
+
+**Voice-lint:** grep for em/en dashes over app/ components/ lib/ clean. Zero console errors across all screenshot runs.
+
+**Founder feedback applied:** ribbon chapter nav removed (read as clutter).
+
+**Repo cleanup before first push (2026-07-09):** history rewritten with git-filter-repo (no remote existed): raw photoshoot JPGs (620MB, kept on disk + gitignored), QA snapshots, model intermediates, wireframe previews, .b64 temps purged; .git 717MB -> 113MB. Pushed to github.com/Kheelona/website branch demo-website; Vercel deploy at https://website-hdn2.vercel.app (Root Directory must be `site` - an unset root "builds" in <1s and deploys nothing).
+
+**Known open items:** 7 interior pages still flat (ambient scenes next), mobile perf pass, full 9-route Lighthouse sweep, live-URL verification.

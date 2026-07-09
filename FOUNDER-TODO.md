@@ -6,7 +6,7 @@ Each item unlocks something specific. Ordered by launch impact.
 
 Direction picked (Lumi's World + pop-up elements), both models generated and verified, Home rebuilt as the immersive journey, ribbon nav removed on your feedback. Merged to `master`, temp-live for feedback per your call.
 
-**Deploying the temp version:** push the repo to GitHub, then in Vercel: import the repo, **project root = `site/`**, add the two `NEXT_PUBLIC_*` env vars from `.env` (dummies are fine for feedback: the reserve panel shows the "opens soon" card until the real Tally URL exists). The wireframe round (`design-concepts/round-2-immersive/`) and model kit (`3d-handoff/`) stay in the repo as the design record.
+**Deployed (2026-07-10):** https://website-hdn2.vercel.app — GitHub `Kheelona/website`, branch `demo-website`, Vercel Root Directory `site`. Still yours when ready: the two `NEXT_PUBLIC_*` env vars in Vercel (Tally URL makes the reserve form go live; GA4 id starts measuring) and pointing kheelona.com DNS when this stops being temporary. The wireframe round (`design-concepts/round-2-immersive/`) and model kit (`3d-handoff/`) stay in the repo as the design record.
 
 Everything below is the pre-existing launch list; it all carries over to the redesigned site unchanged.
 
