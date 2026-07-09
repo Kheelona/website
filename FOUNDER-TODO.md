@@ -2,16 +2,11 @@
 
 Each item unlocks something specific. Ordered by launch impact.
 
-## THE REDESIGN ROUND (2026-07-08) — two items, these outrank everything below
+## THE REDESIGN (2026-07-08/09) — DONE and on master; deploying is yours
 
-**A. Pick a direction.** Four immersive wireframes are ready in `design-concepts/round-2-immersive/` (open the files in Chrome; each cross-links to the others; the dashed purple chips explain what the live 3D scene does). Pitches in that folder's README. Redlines and cross-direction mixes welcome. **The rebuild starts only after your pick.**
-   Viewing links (start the server with `cd design-concepts && python3 -m http.server 4400` if they stop responding):
-   - http://localhost:4400/round-2-immersive/direction-1-world.html
-   - http://localhost:4400/round-2-immersive/direction-2-day.html
-   - http://localhost:4400/round-2-immersive/direction-3-playmat.html
-   - http://localhost:4400/round-2-immersive/direction-4-popup-book.html
+Direction picked (Lumi's World + pop-up elements), both models generated and verified, Home rebuilt as the immersive journey, ribbon nav removed on your feedback. Merged to `master`, temp-live for feedback per your call.
 
-**B. Generate the two 3D models** (parallel to A, not blocking it): `3d-handoff/README.md` has the exact images, Tripo settings, and export format for the mascot (rigged + idle) and the Lumi plush; or hand the kit to a 3D artist (spec included). Download results to `~/Downloads` and say "models are in".
+**Deploying the temp version:** push the repo to GitHub, then in Vercel: import the repo, **project root = `site/`**, add the two `NEXT_PUBLIC_*` env vars from `.env` (dummies are fine for feedback: the reserve panel shows the "opens soon" card until the real Tally URL exists). The wireframe round (`design-concepts/round-2-immersive/`) and model kit (`3d-handoff/`) stay in the repo as the design record.
 
 Everything below is the pre-existing launch list; it all carries over to the redesigned site unchanged.
 
