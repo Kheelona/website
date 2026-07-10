@@ -17,14 +17,14 @@ export function CompareTable() {
             <th scope="col" className="p-4 text-left">
               <span className="sr-only">What matters</span>
             </th>
-            {/* ink on orange (Button.tsx precedent, ~5.9:1): white on
-                #EF762F is 2.88:1 and fails even the large-text floor */}
-            <th scope="col" className="rounded-t-(--radius-card) bg-orange p-4 font-display text-lg font-bold text-ink-head">
+            {/* white on orange-cta #C25210 = 4.66:1 (R5 white-label rule);
+                raw #EF762F cannot carry white and stays decorative-only */}
+            <th scope="col" className="rounded-t-(--radius-card) bg-orange-cta p-4 text-left font-display text-lg font-bold text-white">
               Lumi
             </th>
-            <th scope="col" className="p-4 font-display text-lg font-bold text-ink-head">Smart toys</th>
-            <th scope="col" className="p-4 font-display text-lg font-bold text-ink-head">Phone / TV</th>
-            <th scope="col" className="p-4 font-display text-lg font-bold text-ink-head">Static toys</th>
+            <th scope="col" className="p-4 text-left font-display text-lg font-bold text-ink-head">Smart toys</th>
+            <th scope="col" className="p-4 text-left font-display text-lg font-bold text-ink-head">Phone / TV</th>
+            <th scope="col" className="p-4 text-left font-display text-lg font-bold text-ink-head">Static toys</th>
           </tr>
         </thead>
         <tbody>
@@ -37,14 +37,14 @@ export function CompareTable() {
                 {label}
               </th>
               <td
-                className={`bg-orange p-4 text-center font-bold text-ink-head ${i === ROWS.length - 1 ? "rounded-b-(--radius-card)" : ""}`}
+                className={`bg-orange-cta p-4 text-left font-bold text-white ${i === ROWS.length - 1 ? "rounded-b-(--radius-card)" : ""}`}
               >
                 {lumi}
               </td>
               {[smart, phone, staticToys].map((v, j) => (
                 <td
                   key={j}
-                  className={`p-4 text-center ${v === "No" ? "text-ink-muted" : ""} ${i % 2 === 0 ? "bg-cream" : ""}`}
+                  className={`p-4 text-left ${v === "No" ? "text-ink-muted" : ""} ${i % 2 === 0 ? "bg-cream" : ""}`}
                 >
                   {v}
                 </td>

@@ -10,6 +10,12 @@ Direction picked (Lumi's World + pop-up elements), both models generated and ver
 
 Everything below is the pre-existing launch list; it all carries over to the redesigned site unchanged.
 
+## R5 CALM PASS (2026-07-10) — done on your feedback; one new item for you
+
+Your review landed: home is now the calm ambient treatment (the /playos register you preferred), 2D mascot + 2D Lumi everywhere (3D one prop-flip away), no italics, all text left-aligned, white button/band text on accessible deep fills, feelings boxed, sticky pre-order bar never hides, shapes fewer/fainter/never over text.
+
+- **R5-a. New Kheelona logo** — you said you'll upload it later; the current wordmark stays until then. When it lands in `~/Downloads`, Claude swaps navbar, share image, and structured-data mark in one pass.
+
 ## R4 POLISH CYCLE (2026-07-10) — six decisions parked for you (site ships fine without them)
 
 The design panel review (`docs/design-review-2026-07-10.md`) surfaced these; each is a quick call or an asset, none blocks the deploy:

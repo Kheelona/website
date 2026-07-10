@@ -1,5 +1,23 @@
 # QA Report (sprint log)
 
+## R5 calm pass · 2026-07-10 · founder-feedback cycle on master
+
+**Trigger**: founder review of the live R4 site — the flying journey shapes overwhelmed the story; concrete punch list issued (dispositions in website-steps.md §8.14). Home switched to the calm ambient stage (2D mascot + 2D Lumi permanent, GLB journey dormant one prop-flip away), zero italics, all text left-aligned, orphan control via text-wrap, white-label CTAs/bands on new accessible fills (orange-cta #C25210 4.66:1, teal-deep #0F766E 5.47:1), feelings boxed in DS cards, sticky pre-order bar never ducks, shapes fewer/fainter/scattered with ghost-fade floor 0.04, one SVG icon family, broken logo-mark.png replaced with a real K-lockup crop, token gate extended to the two new fills (16 mappings).
+
+**Lighthouse (localhost :3456 prod, single runs)**:
+| route | desktop | mobile |
+|---|---|---|
+| / | 99/100/100/100 | 85/100/100/100 (LCP 4.4s) |
+| /products/lumi | 100/100/100/100 | 90/100/100/100 |
+| /playos | 100/100/100/100 | 91/100/100/100 |
+| /safety | 100/100/100/100 | — |
+
+localhost is HTTP/1.1 and reads ~5-9 mobile points under the live h2 deploy (R4 calibration: local 85-86 → live 90); the live URL after push is the binding perf gate. A11y/BP/SEO = 100 on every audit.
+
+**Contract audits**: voice-lint clean (em-dashes only in code comments); no italic classes; text-center only in pill-button labels; zero console errors on the visited routes; ambient stage verified in a VISIBLE tab (shapes ghost under copy, sky glides the page's own washes; hidden-tab rAF caveat from R4 still applies).
+
+**Visual approval**: full-page packs (home desktop + mobile, safety) sent to the founder pre-push per the radical-change gate.
+
 ## R4 elevate + polish · 2026-07-10 · design-panel cycle on master
 
 **Process**: 3-agent senior design panel (Brand, UI craft, UX/conversion) audited the live demo from a 61-shot evidence pack; findings merged into `docs/design-review-2026-07-10.md` (21 + 11 items, every one dispositioned). Implementation, then a same-day re-review round (same 3 panelists + a fresh-eyes QA agent over the full diff) — all four verdicts' fix-lists landed. Founder decisions parked in FOUNDER-TODO.md (R4-a..f).

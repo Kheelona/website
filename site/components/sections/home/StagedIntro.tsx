@@ -6,11 +6,13 @@ import { Reveal } from "@/components/ui/Reveal";
  *  lines (founder decision 2026-07-07: hero slims down, no sentence leaves
  *  the page). Copy verbatim and in reading order; only the presentation is
  *  staged. */
+/* R5: the staggered indents flattened — every line starts on the same left
+   rail (founder 2026-07-10: standardize left alignment). */
 const LINES = [
   { text: "In the years a brain grows fastest.", indent: "" },
   {
     text: "The more Lumi understands how your child feels, the more they learn.",
-    indent: "md:pl-[10%]",
+    indent: "",
   },
 ] as const;
 
@@ -26,8 +28,8 @@ export function StagedIntro() {
               </p>
             </Reveal>
           ))}
-          <Reveal delay={0.24} className="md:pl-[20%]">
-            <p className="font-accent text-[clamp(26px,3.2vw,46px)] italic leading-[1.2] text-orange-deep">
+          <Reveal delay={0.24}>
+            <p className="font-accent text-[clamp(26px,3.2vw,46px)] leading-[1.2] text-orange-deep">
               In all 10 languages you speak at home.
             </p>
           </Reveal>

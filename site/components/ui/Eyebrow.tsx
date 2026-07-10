@@ -1,6 +1,7 @@
 import { cn } from "@/lib/cn";
 
-/** Section label in Instrument Serif italic (design-system accent register).
+/** Section label in Instrument Serif, upright (R5: italics are banned
+ *  site-wide; the serif face alone carries the accent register).
  *  Used only where the Home content doc prescribes a label. */
 /* 24px = WCAG large text, so orange-deep on white (~4:1) passes 3:1.
    PDF label hues (teal/terracotta) fail contrast at label sizes; documented
@@ -13,7 +14,7 @@ export function Eyebrow({
   children: React.ReactNode;
 }) {
   return (
-    <span className={cn("mb-3 block font-accent text-[24px] italic", color)}>
+    <span className={cn("mb-3 block font-accent text-[24px]", color)}>
       {children}
     </span>
   );

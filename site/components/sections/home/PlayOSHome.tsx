@@ -12,7 +12,7 @@ export function PlayOSHome() {
   return (
     <Section wash="cool" id="playos-home" className="overflow-x-clip">
       <CurveDivider from="white" flip />
-      <Shape kind="flower13" color="#3AA4E5" className="absolute -right-14 top-24 w-[220px]" />
+      <Shape kind="flower13" color="#3AA4E5" className="opacity-25 absolute -right-14 top-24 w-[220px]" />
       <Container className="py-16 md:py-20">
         <Reveal>
           <h2 className="mb-4 max-w-[18ch] font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.08] text-ink-head">

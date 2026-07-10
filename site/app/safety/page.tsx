@@ -73,11 +73,11 @@ export default function SafetyPage() {
       <Section wash="teal">
         <Container className="grid items-center gap-10 py-16 md:grid-cols-[1.2fr_0.8fr] md:py-20">
           <Reveal mode="rise">
-            <Eyebrow color="text-ink-head/80">Safety</Eyebrow>
-            <h1 className="mb-5 max-w-[16ch] font-display text-[clamp(38px,4.5vw,58px)] font-extrabold leading-[1.08] text-ink-head">
+            <Eyebrow color="text-white/85">Safety</Eyebrow>
+            <h1 className="mb-5 max-w-[16ch] font-display text-[clamp(38px,4.5vw,58px)] font-extrabold leading-[1.08] text-white">
               Safe in their hands. Careful with their words.
             </h1>
-            <p className="max-w-[58ch] text-[clamp(18px,1.6vw,21px)] text-ink-head/90">
+            <p className="max-w-[58ch] text-[clamp(18px,1.6vw,21px)] text-white">
               You are not buying a gadget. You are trusting a friend near your
               child. Here is everything that friend will and will not do,
               in plain words.
@@ -176,7 +176,7 @@ export default function SafetyPage() {
             <ul className="space-y-3 text-[17px]">
               {PARENT_KEYS.map((k) => (
                 <li key={k} className="flex items-start gap-3">
-                  <span aria-hidden="true" className="mt-1 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-teal/15 text-teal">✓</span>
+                  <span aria-hidden="true" className="mt-1 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-teal/15 text-ink-head"><svg width="12" height="12" viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4L16 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
                   {k}
                 </li>
               ))}

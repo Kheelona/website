@@ -1,10 +1,12 @@
+/* teal/orange match the R5 band fills (teal-deep / orange-cta): the curve is
+   the section above bleeding into this one, so it must be that exact paint */
 const FILLS: Record<string, string> = {
   white: "#ffffff",
   cream: "#fff7ee",
   cool: "#eaf6fc",
   sun: "#fdf1e2",
-  teal: "#1abc9c",
-  orange: "#ef762f",
+  teal: "#0f766e",
+  orange: "#c25210",
 };
 
 /** Soft curved seam between two washes (concept A language).

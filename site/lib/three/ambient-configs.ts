@@ -23,13 +23,28 @@ export type AmbientConfig = {
   accents: AmbientAccent[];
 };
 
-const CALM_PALETTE = [TOKENS.yellow, TOKENS.blueSoft, TOKENS.teal, TOKENS.purple];
+/* R5 palette discipline (founder 2026-07-10, 80/20 rule): shape dressing
+   leans on the primary trio (yellow/blue/orange); teal and purple appear at
+   most once per palette so secondaries stay the seasoning, not the meal.
+   Densities cut ~35% across the board in the same pass: fewer, quieter. */
+const CALM_PALETTE = [TOKENS.yellow, TOKENS.blueSoft, TOKENS.orange, TOKENS.teal];
 
 const CONFIGS: Record<string, AmbientConfig> = {
+  // Home (R5): the journey retired in favor of this calm room. Two soft
+  // clouds up high, a modest field far from the copy column.
+  "/": {
+    enabled: true,
+    density: 8,
+    palette: CALM_PALETTE,
+    accents: [
+      { kind: "squircle", color: TOKENS.white, position: [-3.5, 3.2, -10], scale: 1.5, floatPhase: 2 },
+      { kind: "squircle", color: TOKENS.white, position: [3.7, 3.6, -12], scale: 1.8, floatPhase: 4.5 },
+    ],
+  },
   "/playos": {
     enabled: true,
-    density: 12,
-    palette: [TOKENS.blueSoft, TOKENS.teal, TOKENS.yellow, TOKENS.purple],
+    density: 8,
+    palette: [TOKENS.blueSoft, TOKENS.yellow, TOKENS.teal],
     accents: [
       // the PlayOS sky: soft clouds, echoing the home beat
       { kind: "squircle", color: TOKENS.cream, position: [-3.4, 3.0, -9], scale: 1.4, floatPhase: 2 },
@@ -38,7 +53,7 @@ const CONFIGS: Record<string, AmbientConfig> = {
   },
   "/safety": {
     enabled: true,
-    density: 10,
+    density: 7,
     palette: [TOKENS.teal, TOKENS.blueSoft, TOKENS.yellow],
     accents: [
       // the sheltering canopy from the safety garden
@@ -47,7 +62,7 @@ const CONFIGS: Record<string, AmbientConfig> = {
   },
   "/setup": {
     enabled: true,
-    density: 10,
+    density: 7,
     palette: CALM_PALETTE,
     accents: [
       { kind: "squircle", color: TOKENS.blueSoft, position: [-3.2, 2.6, -9], scale: 0.9, floatPhase: 3 },
@@ -55,15 +70,15 @@ const CONFIGS: Record<string, AmbientConfig> = {
   },
   "/team": {
     enabled: true,
-    density: 10,
-    palette: [TOKENS.yellow, TOKENS.orange, TOKENS.blueSoft, TOKENS.teal],
+    density: 7,
+    palette: [TOKENS.yellow, TOKENS.orange, TOKENS.blueSoft],
     accents: [
       { kind: "flower13", color: TOKENS.yellow, position: [3.3, 3.1, -10], scale: 1.1, floatPhase: 2.4 },
     ],
   },
   "/stories": {
     enabled: true,
-    density: 12,
+    density: 8,
     palette: CALM_PALETTE,
     accents: [
       // a small flower cluster for the journal meadow
@@ -72,8 +87,8 @@ const CONFIGS: Record<string, AmbientConfig> = {
     ],
   },
   // legal pages: nearly bare on purpose — quiet room, a whisper of brand
-  "/privacy": { enabled: true, density: 5, palette: CALM_PALETTE, accents: [] },
-  "/terms": { enabled: true, density: 5, palette: CALM_PALETTE, accents: [] },
+  "/privacy": { enabled: true, density: 4, palette: CALM_PALETTE, accents: [] },
+  "/terms": { enabled: true, density: 4, palette: CALM_PALETTE, accents: [] },
 };
 
 /** Longest-prefix match so /stories/[slug] inherits /stories. */

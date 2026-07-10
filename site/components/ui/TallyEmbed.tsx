@@ -15,11 +15,11 @@ export function TallyEmbed() {
 
   if (!isConfigured) {
     return (
-      <div className="rounded-(--radius-card-lg) bg-white p-8 text-center">
+      <div className="rounded-(--radius-card-lg) bg-white p-8">
         <p className="font-display text-[22px] font-extrabold text-ink-head">
           The pre-order list opens here soon.
         </p>
-        <p className="mx-auto mt-2 max-w-[42ch] text-[16px] text-ink">
+        <p className="mt-2 max-w-[42ch] text-[16px] text-ink">
           ₹4,999 held for you, no payment now. We hold the price, you hold
           your place.
         </p>
@@ -48,7 +48,7 @@ export function TallyEmbed() {
         className="h-[560px] w-full"
         onLoad={() => { setLoaded(true); track("preorder_view"); }}
       />
-      <p className="px-6 pb-4 text-center text-[14px] text-ink-muted">
+      <p className="px-6 pb-4 text-[14px] text-ink-muted">
         Form not loading?{" "}
         <a
           href={FORM_URL}

@@ -5,6 +5,11 @@
 @theme {
   --color-orange: #ef762f;
   --color-orange-deep: #d85f1b;
+  /* R5 (founder 2026-07-10): filled CTAs and colored bands carry WHITE text.
+     These are the lightest brand-family fills where white passes 4.5:1 at any
+     size (orange 4.66:1, teal 5.47:1). Sanctioned deviations, not DS tokens. */
+  --color-orange-cta: #c25210;
+  --color-teal-deep: #0f766e;
   --color-yellow: #f1a23b;
   --color-blue: #29a0d7;
   --color-blue-soft: #3aa4e5;
@@ -88,6 +93,19 @@ body {
   overflow-x: clip;
 }
 
+/* R5 typography hygiene (founder 2026-07-10): balanced headings, no orphaned
+   single words at the end of paragraphs. Progressive enhancement; browsers
+   without text-wrap support simply wrap as before. */
+h1,
+h2,
+h3,
+h4 {
+  text-wrap: balance;
+}
+p {
+  text-wrap: pretty;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -131,10 +149,12 @@ html.scene-3d [data-wash] {
   transition: background-color 0.8s var(--ease-calm);
 }
 html.scene-3d [data-wash="orange"] {
-  background-color: var(--color-orange-deep);
+  background-color: var(--color-orange-cta);
 }
+/* teal keeps its own opaque paint too since R5: the band carries white text,
+   which must never depend on what the canvas is showing behind a tint */
 html.scene-3d [data-wash="teal"] {
-  background-color: rgb(26 188 156 / 0.32);
+  background-color: var(--color-teal-deep);
 }
 html.scene-3d [data-curve] {
   opacity: 0;

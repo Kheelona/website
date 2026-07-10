@@ -90,7 +90,7 @@ export default function TeamPage() {
             {FOUNDERS.map((f, i) => (
               <Reveal key={f.name} delay={i * 0.06}>
                 <div className={`h-full rounded-(--radius-card) p-8 ${f.tint}`}>
-                  <p className="mb-1 font-accent text-[20px] italic text-ink-muted">{f.line}</p>
+                  <p className="mb-1 font-accent text-[20px] text-ink-muted">{f.line}</p>
                   <h3 className="font-display text-[26px] font-extrabold text-ink-head">
                     {f.name}
                   </h3>
@@ -132,9 +132,9 @@ export default function TeamPage() {
       {/* Gentle close */}
       <Section wash="cream">
         <CurveDivider from="cool" />
-        <Container className="py-14 text-center md:py-16">
+        <Container className="py-14 md:py-16">
           <Reveal>
-            <p className="mx-auto max-w-[52ch] text-[clamp(19px,1.8vw,23px)]">
+            <p className="max-w-[52ch] text-[clamp(19px,1.8vw,23px)]">
               If you have read this far, you care the way we care. Save your
               place in line, and grow with us.
             </p>

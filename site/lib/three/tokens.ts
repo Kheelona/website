@@ -13,6 +13,9 @@ export const TOKENS = {
   cool: "#EAF6FC",
   sun: "#FDF1E2",
   white: "#FFFFFF",
+  /* R5 white-label fills (sanctioned deviations, see globals.css) */
+  orangeCta: "#C25210",
+  tealDeep: "#0F766E",
 } as const;
 
 /** The sky/wash color the world holds at each Home beat (the wash-handoff
@@ -28,5 +31,5 @@ export const BEAT_WASHES: string[] = [
   "#FFFFFF", // 7 the plateau (compare)
   "#D9F4EC", // 8 safety garden: teal light
   "#FDF1E2", // 9 journal meadow: sun
-  "#D85F1B", // 10 finale: sunset orange (deep: white large type stays legal)
+  "#C25210", // 10 finale: sunset orange (orange-cta: white text at any size)
 ];

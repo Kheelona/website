@@ -16,8 +16,8 @@ const WASH_SKY: Record<string, string> = {
   cream: "#FFF7EE",
   cool: "#EAF6FC",
   sun: "#FDF1E2",
-  teal: "#D9F4EC",
-  orange: "#D85F1B", // matches the orange-deep band (R4 contrast migration)
+  teal: "#D9F4EC", // soft garden light; the band itself keeps opaque teal-deep paint
+  orange: "#C25210", // matches the orange-cta band (R5 white-label migration)
 };
 
 type WashRect = { top: number; height: number };

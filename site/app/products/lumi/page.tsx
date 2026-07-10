@@ -30,14 +30,15 @@ const CONVERSATION = [
   { who: "Lumi", text: "Lucky moon. It gets to come along. What will you do at grandma's?" },
 ] as const;
 
-/* Saturated feeling cards keep ink text: white fails WCAG on blue/teal/yellow,
-   and a single text rule keeps the row coherent (design review). */
+/* R5: the sanctioned 15%-alpha tints (design-system decorative recipe, same
+   as the team cards) instead of saturated fills — light surfaces carry ink
+   text legally, and the row stops shouting next to the calm ambient sky. */
 const FEELINGS_DEEP = [
-  { name: "Curious", body: "Feeds the why. When your child asks, Lumi answers in words they understand, then wonders with them.", bg: "bg-blue", img: "curious" },
-  { name: "Grumpy", body: "Takes the storm seriously. Lumi does not scold. It listens until the feeling has room to pass.", bg: "bg-orange", img: "grumpy" },
-  { name: "Sad", body: "Stays close. Some days are heavy. Lumi sits in them with your child, gently.", bg: "bg-purple", img: "sad" },
-  { name: "Silly", body: "Plays along. Rhymes, made-up words, giggle games. Laughing together is learning too.", bg: "bg-yellow", img: "silly" },
-  { name: "Joy", body: "Celebrates out loud. Small wins feel big when a friend cheers.", bg: "bg-teal", img: "joy" },
+  { name: "Curious", body: "Feeds the why. When your child asks, Lumi answers in words they understand, then wonders with them.", bg: "bg-blue/15", img: "curious" },
+  { name: "Grumpy", body: "Takes the storm seriously. Lumi does not scold. It listens until the feeling has room to pass.", bg: "bg-orange/15", img: "grumpy" },
+  { name: "Sad", body: "Stays close. Some days are heavy. Lumi sits in them with your child, gently.", bg: "bg-purple/15", img: "sad" },
+  { name: "Silly", body: "Plays along. Rhymes, made-up words, giggle games. Laughing together is learning too.", bg: "bg-yellow/15", img: "silly" },
+  { name: "Joy", body: "Celebrates out loud. Small wins feel big when a friend cheers.", bg: "bg-teal/15", img: "joy" },
 ] as const;
 
 const APP_FEATURES = [
@@ -181,13 +182,13 @@ export default function LumiPage() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
             {FEELINGS_DEEP.map((f, i) => (
               <Reveal key={f.name} delay={i * 0.05}>
-                <div className={`flex h-full flex-col rounded-(--radius-card-lg) p-6 ${f.bg}`}>
+                <div className={`flex h-full flex-col rounded-(--radius-card-lg) border border-line-soft p-6 ${f.bg}`}>
                   <Image
                     src={`/mascot/mascot-${f.img}.png`}
                     alt=""
                     width={180}
                     height={230}
-                    className="mx-auto mb-4 h-[140px] w-auto object-contain drop-shadow-[0_14px_18px_rgba(0,0,0,0.18)]"
+                    className="mx-auto mb-4 h-[140px] w-auto object-contain"
                   />
                   <h3 className="mb-2 font-display text-[26px] font-extrabold text-ink-head">
                     {f.name}
@@ -236,15 +237,15 @@ export default function LumiPage() {
             </h2>
             <ul className="mb-8 space-y-4 text-[17px]">
               <li className="flex items-start gap-3">
-                <span aria-hidden="true" className="mt-1 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-teal/15 text-ink-head">✓</span>
+                <span aria-hidden="true" className="mt-1 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-teal/15 text-ink-head"><svg width="12" height="12" viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4L16 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
                 Lumi, ready to talk.
               </li>
               <li className="flex items-start gap-3">
-                <span aria-hidden="true" className="mt-1 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-teal/15 text-ink-head">✓</span>
+                <span aria-hidden="true" className="mt-1 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-teal/15 text-ink-head"><svg width="12" height="12" viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4L16 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
                 A charger.
               </li>
               <li className="flex items-start gap-3">
-                <span aria-hidden="true" className="mt-1 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-teal/15 text-ink-head">✓</span>
+                <span aria-hidden="true" className="mt-1 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-teal/15 text-ink-head"><svg width="12" height="12" viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4L16 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
                 A quick-start card. Day one takes minutes.
               </li>
             </ul>
@@ -261,12 +262,12 @@ export default function LumiPage() {
       {/* Price block (CMO review: the ₹4-a-day line was buried in the FAQ) */}
       <Section wash="sun">
         <CurveDivider from="white" />
-        <Container className="py-14 text-center md:py-16">
+        <Container className="py-14 md:py-16">
           <Reveal>
-            <h2 className="mx-auto mb-3 max-w-[20ch] font-display text-[clamp(30px,3.4vw,44px)] font-extrabold leading-[1.1] text-ink-head">
+            <h2 className="mb-3 max-w-[20ch] font-display text-[clamp(30px,3.4vw,44px)] font-extrabold leading-[1.1] text-ink-head">
               ₹4,999 now. ₹9,999 after launch.
             </h2>
-            <p className="mx-auto mb-7 max-w-[46ch] text-[clamp(18px,1.6vw,21px)]">
+            <p className="mb-7 max-w-[46ch] text-[clamp(18px,1.6vw,21px)]">
               Under ₹4 a day across ages 3 to 6. An educational toy priced like
               a habit, not a gadget.
             </p>

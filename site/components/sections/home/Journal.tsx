@@ -67,7 +67,7 @@ export function Journal() {
             </Reveal>
           ))}
         </div>
-        <Reveal className="text-center">
+        <Reveal>
           <Button href="/stories" variant="ghost">
             See all stories
           </Button>

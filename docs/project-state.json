@@ -3,7 +3,7 @@
   "created_at": "2026-07-06",
   "last_updated": "2026-07-10",
   "current_phase": "phase_12_redesign",
-  "current_sprint": "R4-elevate-polish COMPLETE (2026-07-10: panel review + fixes + re-review approved; pushed to demo-website. Spec: docs/website-steps.md §8.13; findings: docs/design-review-2026-07-10.md; results: docs/qa-report.md R4 section. Open: live-URL mobile Lighthouse confirmation, founder items R4-a..f)",
+  "current_sprint": "R5-calm-pass",
   "phase_status": {
     "phase_0_kickoff": {
       "status": "completed",
@@ -236,31 +236,13 @@
     }
   ],
   "last_handoff": {
-    "date": "2026-07-08",
+    "date": "2026-07-10",
     "completed_in_this_session": [
-      "REDESIGN Stage A: founder rejected the shipped design and mandated an immersive R3F rebuild (copy stays). Planned (docs/redesign-plan-2026-07.md, founder-approved), then built 4 full-scroll interactive wireframe mock-ups in design-concepts/round-2-immersive/ (Lumi's World / A Day with Lumi / The Playmat / The Pop-up Storybook), each with verbatim copy, CSS scroll-driven approximations of the scene, [3D] annotation chips, /products/lumi interior preview + nav model, reduced-motion fallbacks. Assembled the founder model kit 3d-handoff/ (mascot Janus-fix inputs + new Gemini Lumi 4-view cutouts + Tripo recipe + artist spec). QA: voice-lint clean, no horizontal scroll at 1280/375 (Playwright audit), finale-contrast bugs found and fixed, screenshots in round-2-immersive/previews/."
+      "R5 calm pass (founder feedback on live R4): Home journey -> ambient stage (2D mascot + 2D Lumi permanent, GLB journey dormant behind stage prop), zero italics site-wide (serif accent upright), all text left-aligned + text-wrap orphan control, white-label color system (orange-cta #C25210 / teal-deep #0F766E, token gate extended), feelings boxed cards, sticky pre-order bar never ducks, shapes -35% density + 0.55 base opacity + ghost floor 0.04, SVG icon family unified, logo-mark.png fixed (was a Figma-panel screenshot)",
+      "QA: build+tsc+token-check green; localhost Lighthouse desktop 99-100 all sampled routes, mobile 85/90/91 (live h2 reads ~5-9 higher); A11y/BP/SEO 100 everywhere; voice-lint clean; visual pack sent to founder"
     ],
-    "next_action": "R4 SHIPPED (2026-07-10): design-panel cycle done (docs/design-review-2026-07-10.md, all 32 items dispositioned; re-review approved after fixes). Interior ambient scenes DONE, mobile perf pass DONE (GLBs off phones, WOFF2, AVIF, fetchPriority; local mobile 86-94 on h1, live h2 expected >=90 - verify on the live URL), footer-under-canvas bug fixed (was live), Radix accordion+sheet, contrast migration (finale band = orange-deep). CLAUDE NEXT: verify live URL post-deploy (mobile Lighthouse >=90 gate + ambient scenes in a VISIBLE tab - hidden tabs freeze rAF, see qa-report caveat), then the founder R4-a..f decisions in FOUNDER-TODO.md. OLD CONTEXT: first deploy 404'd because Vercel root was unset (root = site). Env vars still dummy (reserve panel shows the honest 'opens soon' card). REPO CLEANED 2026-07-09 pre-push: git history rewritten with git-filter-repo (all hashes changed; no remote existed) stripping raw photoshoot JPGs (620MB, still on disk + gitignored), 3d-handoff/exports, docs/snapshots QA shots, round-2 previews, .b64 temps; .git 717MB -> 113MB, tracked set 120MB; safety bundle of the pre-clean history in the session scratchpad (temporary). CLAUDE NEXT: interior pages ambient scenes, mobile perf pass (LCP 4.9s slow-4G), full 9-route Lighthouse sweep, act on public feedback. When it lands: Stage B per docs/redesign-plan-2026-07.md (branch, restore three-stack at pinned versions from commit 3556157, StageGate/beat-registry/wash-handoff infrastructure, chapter-by-chapter Home rebuild, tiers, interior pages, QA matrix). When the founder says 'models are in': 8-angle contact sheet -> gltf-transform meshopt (mascot --no-simplify) -> site/public/models/.",
-    "files_modified": [
-      "design-concepts/round-2-immersive/ NEW (4 direction mock-ups + README + previews/)",
-      "3d-handoff/ NEW (README + 7 source images for the founder's model generation)",
-      "docs/redesign-plan-2026-07.md NEW (the approved plan)",
-      "docs/project-state.json (phase_12_redesign, approvals, blockers, this handoff)",
-      "FOUNDER-TODO.md, README.md (redesign round status)"
-    ],
-    "open_issues": [
-      "Founder pick pending: 4 directions in design-concepts/round-2-immersive/ (open in Chrome)",
-      "Founder GLB generation pending: 3d-handoff/README.md (parallel to the pick; dev stand-ins exist in git history at 3556157)",
-      "Previous launch gates unchanged: Tally URL, Vercel auth, testimonials, certs/specs, ship date, contact email, languages list, GA4, counsel review",
-      "Optional from last sprint, still open: Cuddle Veo shot, colorway strip, 7 journal heroes"
-    ],
-    "context_to_load_on_resume": [
-      "docs/redesign-plan-2026-07.md (the approved plan: directions, architecture, build order, QA matrix)",
-      "design-concepts/round-2-immersive/README.md (what was delivered for the pick)",
-      "3d-handoff/README.md (the founder's model kit)",
-      "site/AGENTS.md (modified Next 16 warning; read node_modules/next/dist/docs/ before Stage B code)"
-    ],
-    "what_happened_last": "STAGE B BUILT (2026-07-09, branch redesign/immersive): Home is one continuous 3D journey (Direction 1 + D4 elements). Architecture as planned: fixed R3F canvas at z:-1 behind SSR DOM, native scroll -> beat registry (lib/three/store.ts, anchor = scrollY + 15% viewH, clamped at finale), camera dolly w/ sway + pointer parallax, wash-handoff CSS (scene-3d; orange stays opaque, teal keeps tint), StageGate gates (reduced-motion/saveData/WebGL2/tier/load+idle). Actors: mascot v3 GLB procedural idle (Spine breathe + Head cursor-follow; UNQUANTIZED glb: meshopt quantization broke skinned scale) crossfading over the hero PNG; Lumi v3 GLB oscillating at MeetLumi (DOM photo+blob hand off via data-scene-hide) and in LumiHero/LumiInset on /products/lumi; grove flowers, PlayOS sparkle particles + cream clouds, teal canopy, sun that sinks into the orange finale. RibbonNav (D4) >=1420px. Desktop-only art handoff (phones keep DOM art, world = ambient sky). VERIFIED: Lighthouse home desktop 99/100/100/100 LCP 0.9s, /products/lumi 100/100/100/100; reduced-motion mounts nothing; no-JS serves the full flat site; mobile keeps hero art; zero console errors; voice-lint clean. KNOWN: mobile perf 81 (LCP 4.9s slow-4G, was 85/4.4s) - follow-up; 7 interior pages still flat (next iteration); gray-ish clouds near top of some beats could be prettier."
+    "next_action": "Founder approval of the R5 visual pack -> git push (master -> origin/demo-website, Vercel auto-deploy) -> live Lighthouse verification -> close session. If founder requests changes, iterate before push.",
+    "founder_gate": "R5 pack sent 2026-07-10; awaiting yes. New logo upload = FOUNDER-TODO R5-a."
   },
   "resume_instructions": "Read README.md first. Then this file. Then the current-phase checkpoint. Then website-steps.md if it exists. Never re-ask anything settled in the Brand Bible (build prompt §1) or in approvals above."
 }

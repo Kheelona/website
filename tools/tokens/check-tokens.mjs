@@ -57,7 +57,17 @@ const MAP = [
  *  - color-footer-cocoa (site-only surface)
  *  - TOKENS.sun #fdf1e2 (the sanctioned 15%-alpha yellow, composited)
  *  - BEAT_WASHES intermediates (#fff9f1, #fffdf9, #d9f4ec) -- curated sky
- *    stops between wash tokens, not palette entries */
+ *    stops between wash tokens, not palette entries
+ *  - R5 white-label fills (founder 2026-07-10: white text on CTAs/bands):
+ *    orange-cta #c25210 and teal-deep #0f766e, the lightest brand-family
+ *    fills where white passes 4.5:1 at any size. Site-only, but they must
+ *    agree across globals.css / tokens.ts -- checked below. */
+
+/** Site-internal invariants: [globals.css --color-*, tokens.ts key, value] */
+const SITE_MAP = [
+  ["color-orange-cta", "orangeCta", "#c25210"],
+  ["color-teal-deep", "tealDeep", "#0f766e"],
+];
 
 let failed = false;
 for (const [dsName, themeName, threeKey] of MAP) {
@@ -87,8 +97,21 @@ for (const [dsName, themeName, threeKey] of MAP) {
   }
 }
 
+for (const [themeName, threeKey, want] of SITE_MAP) {
+  const got = cssVar(theme, themeName);
+  if (got !== want) {
+    console.error(`token-check: DRIFT --${themeName} in globals.css @theme is ${got}, sanctioned value is ${want}`);
+    failed = true;
+  }
+  const ts = tsHex(threeKey);
+  if (ts !== want) {
+    console.error(`token-check: DRIFT TOKENS.${threeKey} in lib/three/tokens.ts is ${ts}, sanctioned value is ${want}`);
+    failed = true;
+  }
+}
+
 if (failed) {
   console.error("token-check: FAILED — sync the palette (canonical: Design/design-system/colors_and_type.css)");
   process.exit(1);
 }
-console.log(`token-check: ok (${MAP.length} mappings)`);
+console.log(`token-check: ok (${MAP.length + SITE_MAP.length} mappings)`);

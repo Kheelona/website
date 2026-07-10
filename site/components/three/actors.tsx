@@ -284,7 +284,8 @@ export function BrandShape({
   scale = 1,
   rotation = [0, 0, 0] as [number, number, number],
   floatPhase = 0,
-  floatAmp = 0.18,
+  floatAmp = 0.12,
+  baseOpacity = 0.55,
   keepClear = true,
 }: {
   kind: ShapeKind;
@@ -294,6 +295,8 @@ export function BrandShape({
   rotation?: [number, number, number];
   floatPhase?: number;
   floatAmp?: number;
+  /** R5 calm pass: shapes are translucent set-dressing, never solid props */
+  baseOpacity?: number;
   /** ghost down when the projection crosses a copy rect (exclusion.ts) */
   keepClear?: boolean;
 }) {
@@ -305,14 +308,20 @@ export function BrandShape({
     const m = ref.current;
     if (!m) return;
     const t = state.clock.elapsedTime;
-    m.position.y = position[1] + Math.sin(t * 0.5 + floatPhase) * floatAmp;
-    m.rotation.z = rotation[2] + Math.sin(t * 0.3 + floatPhase) * 0.08;
+    // R5: slower drift, smaller wobble -- the shapes breathe, they don't fly
+    m.position.y = position[1] + Math.sin(t * 0.35 + floatPhase) * floatAmp;
+    m.rotation.z = rotation[2] + Math.sin(t * 0.22 + floatPhase) * 0.04;
 
     // the legibility contract: never sit vividly over copy. Radius covers
     // the extruded silhouette incl. bevel + corner reach, not the unit disc.
     if (keepClear && mat.current) {
       const target = contentFadeTarget(m.position, 0.75 * scale, state.camera);
-      mat.current.opacity = THREE.MathUtils.damp(mat.current.opacity, target, 8, delta);
+      mat.current.opacity = THREE.MathUtils.damp(
+        mat.current.opacity,
+        baseOpacity * target,
+        8,
+        delta,
+      );
     }
   });
 
@@ -323,7 +332,8 @@ export function BrandShape({
         color={color}
         roughness={0.65}
         metalness={0}
-        transparent={keepClear}
+        transparent
+        opacity={baseOpacity}
       />
     </mesh>
   );
@@ -364,9 +374,11 @@ export function ShapeField({
       out.push({
         kind: KINDS[i % KINDS.length],
         color: palette[i % palette.length],
+        // R5: pushed further out laterally so the scatter reads as margins
+        // dressing, not confetti over the content column
         position: [
-          side * (2.7 + r1 * 2.3),
-          0.5 + r2 * 3.0,
+          side * (3.1 + r1 * 2.5),
+          0.4 + r2 * 3.2,
           -(near + r3 * (far - near)),
         ],
         scale: 0.28 + r1 * 0.42,

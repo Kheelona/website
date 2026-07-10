@@ -24,7 +24,7 @@ export function Compare() {
         {/* the table is the conviction peak; give it an action (UX panel
             2026-07-10). Button label + reassurance line are the sanctioned
             CTA strings, no new copy. */}
-        <Reveal className="mt-10 text-center">
+        <Reveal className="mt-10">
           <Button href={PREORDER_HREF}>Reserve Lumi at ₹4,999</Button>
           <p className="mt-4 text-[15px] text-ink-muted">
             ₹9,999 after launch. No payment now. We hold the price, you hold

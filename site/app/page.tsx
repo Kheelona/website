@@ -20,11 +20,13 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-/* Home is one continuous journey (redesign: Direction 1 "Lumi's World" with
-   Pop-up Storybook elements). Every beat below is a place in the world; the
-   <Beat> order MUST match the place indices in components/three/ThreeStage.
-   Copy and section components are unchanged: the 3D stage is a decorative
-   layer that mounts behind them (StageGate) and the washes hand off to it. */
+/* Home rides the calm ambient stage since R5 (founder 2026-07-10: the flying
+   journey shapes overwhelmed the story; the /playos ambient treatment was the
+   approved register). The sky glides smoothly through the page's own washes,
+   a few ghosted shapes drift far from the copy, and the 2D mascot + Lumi art
+   stays in the DOM permanently. The full 3D journey (ThreeStage + GLBs) is
+   dormant, one prop-flip away: <StageGate stage="journey" /> brings it back.
+   The <Beat> wrappers stay so the journey's beat mapping still fits. */
 export default function HomePage() {
   return (
     <>
@@ -65,7 +67,7 @@ export default function HomePage() {
         <FinaleCTA variant="full" from="sun" />
       </Beat>
 
-      <StageGate />
+      <StageGate stage="ambient" />
     </>
   );
 }

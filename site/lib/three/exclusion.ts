@@ -10,7 +10,10 @@ import { stageStore } from "./store";
  *  store's scrollY. No DOM reads on the frame loop, no steering feedback --
  *  the shape keeps drifting, only its opacity ducks. */
 
-export const GHOST_OPACITY = 0.14;
+/* R5 (founder 2026-07-10): "ensure no text overlaps with these shapes" --
+   a shape over copy is now a 4% whisper, visually gone but fade-continuous
+   (a hard 0 would pop at the feather edge). */
+export const GHOST_OPACITY = 0.04;
 
 /** Feather (in NDC units) around a content rect where the fade eases in.
  *  Generous on purpose: a shape should start ducking well before its edge

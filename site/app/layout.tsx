@@ -8,9 +8,8 @@ import { RevealObserver } from "@/components/ui/RevealObserver";
 import { StickyMobileCTA } from "@/components/layout/StickyMobileCTA";
 
 const glory = localFont({
-  // Italic face intentionally not shipped: all italic text on the site is
-  // font-accent (Instrument Serif), so the Glory italic would be dead
-  // preloaded bytes on every route.
+  // Upright faces only: italics are banned site-wide (R5 typography rule,
+  // founder 2026-07-10), so italic font files would be dead preloaded bytes.
   src: [{ path: "./fonts/Glory.woff2", weight: "100 900", style: "normal" }],
   variable: "--font-glory",
   display: "swap",
@@ -24,7 +23,9 @@ const instrumentSans = localFont({
 
 const instrumentSerif = Instrument_Serif({
   weight: "400",
-  style: "italic",
+  // upright, never italic: the accent register keeps its serif voice
+  // without slanting (same R5 rule)
+  style: "normal",
   subsets: ["latin"],
   variable: "--font-instrument-serif",
   display: "swap",

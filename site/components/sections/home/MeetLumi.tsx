@@ -77,7 +77,7 @@ export function MeetLumi() {
           </Reveal>
         </div>
 
-        <Reveal className="text-center">
+        <Reveal>
           <Button href={PREORDER_HREF}>Reserve Lumi at ₹4,999</Button>
           {/* hero reassurance line, reused verbatim (UX panel: mid-page CTAs
               carried the ask without the risk reversal) */}
