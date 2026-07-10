@@ -14,7 +14,7 @@ import { StageGate } from "@/components/three/StageGate";
 export const metadata: Metadata = {
   title: "Team: the parents who build",
   description:
-    "Meet the people behind Kheelona and Lumi, the screen-free AI robot toy: a CTO with 14 patents filed, a hardware chief who built at Intel, and a CEO who owns the trust.",
+    "Meet the people behind Kheelona and Lumi, the screen-free AI robot toy: a CTO with 14 patents filed, a hardware chief who built at Intel, a marketing head who keeps the story honest, and a CEO who owns the trust.",
   alternates: { canonical: "/team" },
 };
 
@@ -52,6 +52,26 @@ const FOUNDERS = [
     bio: "Kashyap makes Lumi something small hands reach for. Over a decade, including years at Intel leading Thunderbolt 4 and 5 compliance, he took hardware from a blank page to certified products on real shelves. He owns the Kheelona Magic Box and the unglamorous work of making it safe to hug.",
     quote:
       "Anyone can build a demo. Shipping a safe, certified toy by the thousand is a different sport. I have played it for ten years.",
+  },
+  {
+    // R10 (founder 2026-07-11): Ria joins between Kashyap and Apoorva.
+    // Photo from the founder (transparent PNG, cropped square); bio facts
+    // from her published profile; quote drafted from her own published line
+    // ("most businesses don't have a marketing problem, they have a clarity
+    // problem") — founder-approved via the R10 plan, Ria's personal sign-off
+    // flagged in FOUNDER-TODO.
+    id: "ria",
+    name: "Ria Mangala Rewari",
+    role: "Head of Marketing",
+    tag: "The voice",
+    photo: "/team/ria.png",
+    tint: "bg-purple/15",
+    border: "border-t-purple",
+    quoteBorder: "border-l-purple",
+    linkedin: "https://www.linkedin.com/in/ria-mangala/",
+    bio: "Ria owns how Kheelona speaks to the world. She co-founded a marketing agency and ran it for seven years, and has trained more than 1,000 students and entrepreneurs in digital marketing. She owns the story: where Lumi shows up, how it speaks, and why it never overpromises.",
+    quote:
+      "Most brands do not have a marketing problem. They have a clarity problem. My job is to keep this one clear and honest.",
   },
   {
     id: "apoorva",
@@ -105,9 +125,9 @@ export default function TeamPage() {
             </p>
             <p className="max-w-[58ch] text-[17px] text-ink-muted">
               We are parents who build. We watched our own children reach for
-              screens and felt the same knot you feel. Between the three of us
-              we cover the three things a safe talking toy actually needs: a
-              brain, a body, and a business.
+              screens and felt the same knot you feel. Between the four of us
+              we cover the four things a safe talking toy actually needs: a
+              brain, a body, a business, and a voice.
             </p>
           </Reveal>
           <Reveal className="flex justify-center">
@@ -122,7 +142,7 @@ export default function TeamPage() {
         <Container className="py-16 md:py-20">
           <Reveal>
             <h2 className="mb-3 font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.08] text-ink-head">
-              A brain, a body, and a business.
+              A brain, a body, a business, and a voice.
             </h2>
             <p className="mb-11 max-w-[58ch] text-[clamp(18px,1.6vw,21px)]">
               You are trusting us near your child. You should know who we are.

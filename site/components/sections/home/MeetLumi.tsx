@@ -71,7 +71,9 @@ export function MeetLumi() {
         <div className="mb-14 grid gap-5 sm:grid-cols-3">
           {SKUS.map((s, i) => (
             <Reveal key={s.name} delay={i * 0.06}>
-              <TiltCard className="h-full">
+              {/* no TiltCard: whole-card links must not move under the
+                  cursor (TiltCard.tsx hard rule, R10) */}
+              <div className="h-full">
                 <Link
                   href="/products/lumi"
                   aria-label={`${s.name}: see Lumi and reserve at ₹4,999`}
@@ -96,7 +98,7 @@ export function MeetLumi() {
                     </p>
                   </div>
                 </Link>
-              </TiltCard>
+              </div>
             </Reveal>
           ))}
         </div>

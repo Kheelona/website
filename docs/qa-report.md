@@ -294,3 +294,12 @@ External reviewer (founder's friend) audited the live site; founder answered eve
 - Probes: Kheelu + 500-cap live on home; "I picked the colours" on /products/lumi; #reserve present on /privacy; old nav label gone; hero serves lumi-blue. Visible-tab check: product-first fold renders.
 - Live Lighthouse desktop home: 100/100/100/100, LCP 0.7s.
 - Live Lighthouse mobile home ×5: 97, 85, 93, 84, 100 → **median 93 — the ≥90 mobile gate PASSES** (was median 85). The hero LCP element change (mascot MascotScene → plain priority plush Image) removed the ~2s render delay; task #34 (R8 bisect) closed by fix. Residual variance (84–100) tracks image-optimizer/CDN cache state on cold hits; acceptable under the median gate, noted for any future CDN work.
+
+---
+
+## R10: click reliability, Ria on Team, stable ambient, hero fold (2026-07-11)
+
+- **Stories click bug ROOT-CAUSED**: vendored Tilt springs the card surface under the cursor → mousedown/mouseup element mismatch → dropped clicks (intermittent, edge-biased). Fix: TiltCard off all whole-card links (stories, Journal, MeetLumi SKUs); hard rule in TiltCard.tsx. Repro note: could not reproduce in automation tabs (hit-tests passed) — the tilt only engages on real pointer movement.
+- **Ambient**: margin-lane projection fix (near shapes were off-frustum, far shapes inside the copy column), asymmetric ghost ramp, opacity-0 ease-in on mount. Visible-window + founder live check pending by design (hidden tabs freeze rAF).
+- Ria card verified (order Aman→Kashyap→Ria→Apoorva, purple family, chip link); hero fold verified visually; wash seam covered by new LaunchVideo divider.
+- Gates: build 28 pages, tsc clean, token 17 ok, SSR probes pass (hero paragraph ×1, Ria on /team). Lighthouse desktop: home 99/100/100/100, team 100×4, stories 100×4.

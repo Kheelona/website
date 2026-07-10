@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
+import { CurveDivider } from "@/components/layout/CurveDivider";
 import { Reveal } from "@/components/ui/Reveal";
 import { KheeluSays } from "@/components/ui/KheeluSays";
 
@@ -37,7 +38,10 @@ export function LaunchVideo() {
 
   return (
     <Section wash="cream">
-      <Container className="pb-16 md:pb-24">
+      {/* R10: KheeluIntro (white) now precedes this section since
+          StagedIntro retired — the curve keeps the wash handoff soft */}
+      <CurveDivider from="white" flip />
+      <Container className="pb-16 pt-2 md:pb-24">
         <Reveal>
           <KheeluSays line="Press play. I will wait." pose="silly" />
         </Reveal>

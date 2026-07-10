@@ -7,7 +7,6 @@ import { CurveDivider } from "@/components/layout/CurveDivider";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/ui/Reveal";
 import { KheeluSays } from "@/components/ui/KheeluSays";
-import { TiltCard } from "@/components/ui/TiltCard";
 import { FinaleCTA } from "@/components/sections/home/FinaleCTA";
 import { STORIES } from "@/lib/stories";
 import { StageGate } from "@/components/three/StageGate";
@@ -56,7 +55,8 @@ export default function StoriesPage() {
               <div className="grid gap-6 md:grid-cols-2">
                 {STORIES.filter((s) => s.theme === theme).map((s, i) => (
                   <Reveal key={s.slug} delay={i * 0.06}>
-                    <TiltCard>
+                    {/* no TiltCard: whole-card links must not move under the
+                        cursor (TiltCard.tsx hard rule, R10) */}
                     <Link
                       href={`/stories/${s.slug}`}
                       className="flex h-full overflow-hidden rounded-(--radius-card) bg-cream transition-[transform,box-shadow] duration-300 ease-(--ease-bounce) hover:-translate-y-1.5 hover:shadow-[0_16px_32px_rgba(216,95,27,0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
@@ -80,7 +80,6 @@ export default function StoriesPage() {
                         </p>
                       </div>
                     </Link>
-                    </TiltCard>
                   </Reveal>
                 ))}
               </div>

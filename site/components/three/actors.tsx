@@ -316,12 +316,19 @@ export function BrandShape({
 
     // the legibility contract: never sit vividly over copy. Radius covers
     // the extruded silhouette incl. bevel + corner reach, not the unit disc.
-    if (keepClear && mat.current) {
-      const target = contentFadeTarget(m.position, 0.75 * scale, state.camera);
+    if (mat.current) {
+      const target = keepClear
+        ? contentFadeTarget(m.position, 0.75 * scale, state.camera)
+        : 1;
+      const goal = baseOpacity * target;
+      // R10 (founder: shapes "show up then go away"): asymmetric ramp —
+      // ghosting DOWN is a slow dim, recovering is quicker, so the fade
+      // reads as a polite step-aside instead of a blink.
+      const lambda = goal < mat.current.opacity ? 3.2 : 6;
       mat.current.opacity = THREE.MathUtils.damp(
         mat.current.opacity,
-        baseOpacity * target,
-        8,
+        goal,
+        lambda,
         delta,
       );
     }
@@ -329,13 +336,15 @@ export function BrandShape({
 
   return (
     <mesh ref={ref} geometry={geo} position={position} rotation={rotation} scale={scale}>
+      {/* opacity starts at 0: the frame loop eases every shape in, so the
+          post-idle stage mount never pops (R10) */}
       <meshStandardMaterial
         ref={mat}
         color={color}
         roughness={0.65}
         metalness={0}
         transparent
-        opacity={baseOpacity}
+        opacity={0}
       />
     </mesh>
   );
@@ -382,15 +391,21 @@ export function ShapeField({
       const r2 = (i * 0.7548776662) % 1;
       const r3 = (i * 0.8191725133) % 1;
       const side = i % 2 === 0 ? 1 : -1;
+      const dist = near + r3 * (far - near);
       out.push({
         kind: KINDS[i % KINDS.length],
         color: palette[i % palette.length],
-        // R5: pushed further out laterally so the scatter reads as margins
-        // dressing, not confetti over the content column
+        // R10 margin lanes (founder: shapes vanished or hid behind copy):
+        // the old fixed offset (3.1..5.6) put NEAR shapes outside the
+        // frustum and FAR shapes inside the copy column (projection shrinks
+        // with depth). Lateral offset now scales with distance so every
+        // shape projects into the ~0.72..0.92 NDC margin band on a 16:9
+        // desktop (k = tan(fov 32°/2) × aspect 1.78 × band). Narrower
+        // windows push them further out (safe); phones keep DOM art anyway.
         position: [
-          side * (3.1 + r1 * 2.5),
+          side * dist * (0.367 + r1 * 0.102),
           0.4 + r2 * 3.2,
-          -(near + r3 * (far - near)),
+          -dist,
         ],
         scale: 0.28 + r1 * 0.42,
         phase: i * 1.7,

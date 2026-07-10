@@ -7,9 +7,8 @@ import { Shape } from "@/components/ui/Shapes";
 import { HeroGlowBackground } from "@/components/vendor/animate-ui/backgrounds/hero-glow";
 import { PREORDER_HREF } from "@/lib/site";
 
-/** Home S02, slimmed by founder decision (2026-07-07): headline, the lede,
- *  and the ask. The rest of the PDF hero paragraph continues verbatim in
- *  StagedIntro directly below, so the page still carries every sentence.
+/** Home S02: headline, the lede, the PDF hero-paragraph continuation
+ *  (folded back in R10 when StagedIntro retired), and the ask.
  *  R9 (founder 2026-07-10): the hero figure is the PRODUCT — the Lumi plush,
  *  Blue leads — not the mascot (reviewer: "the thing you're selling doesn't
  *  appear until well down the page"). Kheelu moved to guide roles; if the
@@ -35,9 +34,19 @@ export function Hero() {
             The smartest way to grow your child&apos;s brain is to understand
             their heart.
           </h1>
-          <p className="mb-8 max-w-[52ch] text-[clamp(18px,1.7vw,22px)]">
+          <p className="mb-4 max-w-[52ch] text-[clamp(18px,1.7vw,22px)]">
             Lumi is a screen-free AI robot toy that listens first, then talks
             back. Really talks.
+          </p>
+          {/* R10 (founder): the StagedIntro section folded back in here —
+              its three sentences continue the PDF hero paragraph; lines 1+2
+              joined with a comma (sanctioned deviation, copy-reference.md) */}
+          <p className="mb-8 max-w-[52ch] text-[16.5px] leading-relaxed text-ink-muted">
+            In the years a brain grows fastest, the more Lumi understands how
+            your child feels, the more they learn.{" "}
+            <span className="font-semibold text-ink-head">
+              In all 10 languages you speak at home.
+            </span>
           </p>
           <Button href={PREORDER_HREF}>Reserve Lumi at ₹4,999</Button>
           {/* R9: the real launch cap (founder-supplied) leads the reassurance

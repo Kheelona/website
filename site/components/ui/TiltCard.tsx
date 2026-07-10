@@ -7,7 +7,12 @@ import { Tilt, TiltContent } from "@/components/vendor/animate-ui/primitives/til
  *  pointer-tracked perspective on card surfaces (R6 "elegant motion").
  *  Renders a plain div unless the device has a fine hover pointer AND the
  *  user allows motion — touch screens and reduced-motion never tilt.
- *  maxTilt 5 on purpose: depth cue, not a gimmick. */
+ *  maxTilt 5 on purpose: depth cue, not a gimmick.
+ *  HARD RULE (R10, founder bug report): NEVER wrap a card whose whole
+ *  surface is a link. The springed rotation moves the surface under the
+ *  cursor between mousedown and mouseup, the elements mismatch, and the
+ *  browser drops the click — intermittently, worst at card edges. Tilt is
+ *  for non-interactive surfaces only. */
 export function TiltCard({
   className,
   children,

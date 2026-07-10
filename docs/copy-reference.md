@@ -81,3 +81,8 @@ The full reassurance line now appears verbatim ONLY at hero + finale (reviewer: 
 **How-it-works band:** the four /setup steps verbatim (single source: `lib/setup-steps.ts`); H2 "Four steps. No manual required." derived from published copy ("four small steps", "no manual required").
 
 **Recognition safety line (Home only):** "Wake-word mic · Safety check on every reply · One-tap delete · Voice data never sold" — all four facts already published on /safety; pairs the accelerator badges with parent-relevant proof.
+
+## R10 copy decisions (2026-07-11)
+
+- **Hero paragraph fold (founder-approved preview):** StagedIntro's three verbatim lines return to the hero as one muted paragraph; lines 1+2 joined: "In the years a brain grows fastest, the more Lumi understands how your child feels, the more they learn." + "In all 10 languages you speak at home." (semibold beat). Sanctioned deviation from the 2026-07-07 staging (all sentences still on the page).
+- **Team additions:** manifesto/heading now "a brain, a body, a business, and a voice" (adapted copy). Ria bio facts from her published profile (The Ideagator co-founder, 7 years; 1,000+ students and entrepreneurs trained). Ria quote DRAFTED from her own published line ("most businesses don't have a marketing problem, they have a clarity problem") → "Most brands do not have a marketing problem. They have a clarity problem. My job is to keep this one clear and honest." — founder approved via R10 plan; Ria's personal sign-off pending (FOUNDER-TODO R10-a).

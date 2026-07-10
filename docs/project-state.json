@@ -3,7 +3,7 @@
   "created_at": "2026-07-06",
   "last_updated": "2026-07-11",
   "current_phase": "phase_12_redesign",
-  "current_sprint": "R9-friend-feedback-kheelu",
+  "current_sprint": "R10-clicks-ria-ambient-fold",
   "phase_status": {
     "phase_0_kickoff": {
       "status": "completed",
@@ -242,9 +242,10 @@
       "KHEELU NARRATOR (founder mandate): mascot publicly named Kheelu; KheeluSays bubble device + KheeluIntro card (founder's card verbatim); 10 Home lines + 1 moment on lumi/setup/stories/playos (safety none, gravity); character-voice contraction deviation sanctioned; feelings re-map Sad->bliss on home+lumi",
       "QA: build/tsc/token(17)/voice-lint green; LH desktop 99-100 + A11y/BP/SEO 100 all 9 routes (orange-cta kicker contrast regression caught and fixed with orange-ink); 29-href crawl clean; SSR probes pass",
       "Rollback flag: tag r7-live-2026-07-10 on origin",
-      "LIVE VERIFIED (2026-07-11): probes pass; desktop 100/100/100/100 LCP 0.7s; mobile x5 median 93 — the >=90 gate PASSES, R8/#34 closed by the hero fix. Docs/memory/README/CLAUDE.md/checkpoint all current for cold resume."
+      "LIVE VERIFIED (2026-07-11): probes pass; desktop 100/100/100/100 LCP 0.7s; mobile x5 median 93 — the >=90 gate PASSES, R8/#34 closed by the hero fix. Docs/memory/README/CLAUDE.md/checkpoint all current for cold resume.",
+      "R10 SHIPPED: story-click root cause (tilt moves the surface under the cursor -> dropped clicks; HARD RULE: tilt never wraps whole-card links), Ria Mangala Rewari on /team (Head of Marketing, The voice, purple; quote sign-off = FOUNDER-TODO R10-a), ambient margin-lane projection fix + asymmetric ghost + mount ease-in, StagedIntro folded into the hero (founder pick). Spec: website-steps 8.18."
     ],
-    "next_action": "Nothing engineering-side is open. Resume from founder input: R9-a real photography ingest (~/Downloads -> 'the real thing' strip on /products/lumi + Home trust moments), R9-b testimonial face, R9-c Kheelu line tweaks, or R4-a..f / R5-a (new logo swap). Read docs/checkpoints/r9-friend-feedback-kheelu.md first.",
+    "next_action": "Founder queue only: R10-a (Ria sign-off), R9-a..c, R4-a..f, R5-a. Founder should eyeball the stabilized ambient shapes on the live home (automation tabs cannot see WebGL).",
     "founder_gate": "R9 shipped per approved plan; Kheelu lines live exactly as approved. Open founder queue: R9-a..c, R4-a..f, R5-a (new logo).",
     "checkpoint": "docs/checkpoints/r9-friend-feedback-kheelu.md"
   },

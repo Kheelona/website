@@ -7,7 +7,6 @@ import { ParentQuotes } from "@/components/sections/shared/ParentQuotes";
 import { ParentAppSection } from "@/components/sections/shared/ParentAppSection";
 import { Hero } from "@/components/sections/home/Hero";
 import { KheeluIntro } from "@/components/sections/home/KheeluIntro";
-import { StagedIntro } from "@/components/sections/home/StagedIntro";
 import { LaunchVideo } from "@/components/sections/home/LaunchVideo";
 import { HowItWorks } from "@/components/sections/home/HowItWorks";
 import { WhyWeExist } from "@/components/sections/home/WhyWeExist";
@@ -44,9 +43,8 @@ export default function HomePage() {
           retuned in the same pass. */}
       <RecognitionStrip safetyLine />
       <KheeluIntro />
-      <Beat id="intro">
-        <StagedIntro />
-      </Beat>
+      {/* R10: StagedIntro retired — its sentences live in the hero again;
+          the dormant journey's "intro" beat gets retuned if it returns */}
       <Beat id="film">
         <LaunchVideo />
       </Beat>
