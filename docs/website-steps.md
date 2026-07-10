@@ -178,3 +178,10 @@ kheelona.ai (the founder's B2B sister site, senior-designed) is the sanctioned r
 
 - Home gains `PickYourLumi` (S06b, after MeetLumi): three SKU cards (Lumi Green / Lumi Pink / Lumi Blue), plush cutouts from `Design/product-images/generated-2026-07` on teal/purple/blue 15% tints, TiltCard + whole-card link to /products/lumi (no cart pre-launch; the reserve list is the buy). Reassurance line reused verbatim. Divider chain: MeetLumi(white) -> shelf(cream, from=white) -> PlayOS(cool, from=cream).
 - The /products/lumi pilot-stats band (10 families / 1 school / 10 languages) REMOVED on founder direction (same day it shipped); ParentQuotes' heading still carries the 10-families stat.
+
+### 8.16.2 Founder review round 2 (2026-07-10 evening)
+
+- **MeetLumi absorbs the SKU shelf**: the single-plush portrait is gone; the founder-picked three-card format (Lumi Green/Pink/Blue on 15% tints, price + link to /products/lumi) lives INSIDE Meet Lumi, between the verbatim copy and the info cards. The standalone PickYourLumi section is deleted.
+- **Feelings cards**: per-feeling 15% tints (the /products/lumi recipe) + one exact mascot render height (h-130/145) so the row reads in sync.
+- **"The technology behind the talking" REPLACED by WhatLumiDoes** (kheelona.ai/lumi's parent-feature grid): eyebrow "What Lumi does all day", H2 "Not a speaker with a face. A companion with a memory.", six cards (Real conversation / Breathes / 10 languages / Answers every 'why?' / Parent app / Safe by design) with design-system shape-face characters (Shapes.tsx now reads all 7 kinds from lib/shape-paths with per-kind viewBoxes). PlayOS tech story lives on /playos; both sanctioned links kept in the section footer. PlayOSHome.tsx deleted.
+- **WhyWeExist restaged as an editorial spread**: statement left, argument right, the strongest sentence in the accent register with an orange rule. Sentences verbatim, only presentation changed.

@@ -11,8 +11,7 @@ import { LaunchVideo } from "@/components/sections/home/LaunchVideo";
 import { WhyWeExist } from "@/components/sections/home/WhyWeExist";
 import { Feelings } from "@/components/sections/home/Feelings";
 import { MeetLumi } from "@/components/sections/home/MeetLumi";
-import { PickYourLumi } from "@/components/sections/home/PickYourLumi";
-import { PlayOSHome } from "@/components/sections/home/PlayOSHome";
+import { WhatLumiDoes } from "@/components/sections/home/WhatLumiDoes";
 import { Compare } from "@/components/sections/home/Compare";
 import { SafetyStrip } from "@/components/sections/home/SafetyStrip";
 import { Journal } from "@/components/sections/home/Journal";
@@ -57,9 +56,8 @@ export default function HomePage() {
       <Beat id="lumi">
         <MeetLumi />
       </Beat>
-      <PickYourLumi />
       <Beat id="playos">
-        <PlayOSHome />
+        <WhatLumiDoes />
       </Beat>
       <Beat id="compare" anchor="compare">
         <Compare />
