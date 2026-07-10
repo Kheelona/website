@@ -11,7 +11,7 @@ import { PREORDER_HREF } from "@/lib/site";
 export function PlayOSHome() {
   return (
     <Section wash="cool" id="playos-home" className="overflow-x-clip">
-      <CurveDivider from="white" flip />
+      <CurveDivider from="cream" flip />
       <Shape kind="flower13" color="#3AA4E5" className="opacity-40 absolute -right-14 top-24 w-[220px]" />
       <Container className="py-16 md:py-20">
         <Reveal>

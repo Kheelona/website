@@ -44,14 +44,6 @@ const FEELINGS_DEEP = [
   { name: "Joy", body: "Celebrates out loud. Small wins feel big when a friend cheers.", bg: "bg-teal/15", img: "joy" },
 ] as const;
 
-/* R7: live pilot numbers, verbatim from kheelona.ai/lumi (founder-published).
-   Update only when the source updates. */
-const STATS = [
-  { value: "10 families", label: "test Lumi every day" },
-  { value: "1 school", label: "signed on to pilot Lumi" },
-  { value: "10 languages", label: "spoken, switched mid-chat" },
-] as const;
-
 const APP_FEATURES = [
   { title: "A daily summary", body: "One card each evening. What your child talked about, what made them laugh, what they asked." },
   { title: "The full conversation log", body: "Every conversation, word for word. Read it anytime. Delete any of it with one tap." },
@@ -140,27 +132,9 @@ export default function LumiPage() {
         </Container>
       </Section>
 
-      {/* R7: live-testing stats, exactly as published on kheelona.ai/lumi */}
-      <Section wash="white">
-        <CurveDivider from="cream" />
-        <Container className="pb-4 pt-6 md:pb-6 md:pt-8">
-          <Reveal>
-            <dl className="grid gap-8 sm:grid-cols-3">
-              {STATS.map((s) => (
-                <div key={s.label} className="border-l-[3px] border-orange pl-5">
-                  <dd className="font-display text-[clamp(34px,3.4vw,44px)] font-extrabold leading-none text-ink-head">
-                    {s.value}
-                  </dd>
-                  <dt className="mt-1 text-[15.5px] text-ink-muted">{s.label}</dt>
-                </div>
-              ))}
-            </dl>
-          </Reveal>
-        </Container>
-      </Section>
-
       {/* Conversation demo: storybook dialogue cards (ink text, WCAG-safe) */}
       <Section wash="white">
+        <CurveDivider from="cream" />
         <Container className="grid items-center gap-12 py-16 md:grid-cols-[1fr_1.1fr] md:py-20">
           <Reveal>
             <h2 className="mb-4 max-w-[16ch] font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.08] text-ink-head">
