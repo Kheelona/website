@@ -77,7 +77,7 @@
       "status": "in_progress",
       "completed_at": null,
       "checkpoint_file": "docs/redesign-plan-2026-07.md",
-      "note": "Ground-up immersive 3D redesign (R3F). Stage A done: 4 wireframe directions delivered (design-concepts/round-2-immersive/) + founder model kit (3d-handoff/). GATE: founder picks a direction; no site code changes until then."
+      "note": "R1-R9 complete and LIVE (see docs/checkpoints/r9-friend-feedback-kheelu.md). Home = calm ambient + Kheelu narrator + product-first hero; 3D journey dormant one prop-flip away. All Lighthouse gates pass live (mobile median 93). Remaining work is founder-gated only."
     }
   },
   "sprint_status": {
@@ -241,10 +241,12 @@
       "R9 friend-feedback round: all 20 reviewer findings dispositioned (qa-report.md R9). Product-first hero (lumi-blue = LCP), finale product-forward, CTA verb unified (Reserve), REAL 500-unit cap live (founder-supplied), reassurance repetition killed, serif retreat to quotes, sans kickers in new guarded orange-ink token (a11y-driven), HowItWorks home band (shared lib/setup-steps.ts), recognition strip normalized + safety proof line, B2B line to footer only, nav 'Meet Lumi', dead #reserve anchors on privacy/terms fixed, rhythm trims",
       "KHEELU NARRATOR (founder mandate): mascot publicly named Kheelu; KheeluSays bubble device + KheeluIntro card (founder's card verbatim); 10 Home lines + 1 moment on lumi/setup/stories/playos (safety none, gravity); character-voice contraction deviation sanctioned; feelings re-map Sad->bliss on home+lumi",
       "QA: build/tsc/token(17)/voice-lint green; LH desktop 99-100 + A11y/BP/SEO 100 all 9 routes (orange-cta kicker contrast regression caught and fixed with orange-ink); 29-href crawl clean; SSR probes pass",
-      "Rollback flag: tag r7-live-2026-07-10 on origin"
+      "Rollback flag: tag r7-live-2026-07-10 on origin",
+      "LIVE VERIFIED (2026-07-11): probes pass; desktop 100/100/100/100 LCP 0.7s; mobile x5 median 93 — the >=90 gate PASSES, R8/#34 closed by the hero fix. Docs/memory/README/CLAUDE.md/checkpoint all current for cold resume."
     ],
-    "next_action": "Live verification of the R9 deploy (probes + live Lighthouse mobile/desktop — hero LCP element changed, re-tests the R8 85-vs-90 gate; close #34 if >=90). Then founder items R9-a (real photography), R9-b (testimonial faces), R9-c (Kheelu voice check), R4-a..f, R5-a.",
-    "founder_gate": "R9 shipped per approved plan; Kheelu lines live exactly as approved. Open founder queue: R9-a..c, R4-a..f, R5-a (new logo)."
+    "next_action": "Nothing engineering-side is open. Resume from founder input: R9-a real photography ingest (~/Downloads -> 'the real thing' strip on /products/lumi + Home trust moments), R9-b testimonial face, R9-c Kheelu line tweaks, or R4-a..f / R5-a (new logo swap). Read docs/checkpoints/r9-friend-feedback-kheelu.md first.",
+    "founder_gate": "R9 shipped per approved plan; Kheelu lines live exactly as approved. Open founder queue: R9-a..c, R4-a..f, R5-a (new logo).",
+    "checkpoint": "docs/checkpoints/r9-friend-feedback-kheelu.md"
   },
   "resume_instructions": "Read README.md first. Then this file. Then the current-phase checkpoint. Then website-steps.md if it exists. Never re-ask anything settled in the Brand Bible (build prompt §1) or in approvals above."
 }
