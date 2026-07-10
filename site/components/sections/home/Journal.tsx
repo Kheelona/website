@@ -7,6 +7,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { TiltCard } from "@/components/ui/TiltCard";
+import { KheeluSays } from "@/components/ui/KheeluSays";
 
 /** Home S10. Card copy verbatim; cards link into /stories. */
 const CARDS = [
@@ -32,8 +33,12 @@ export function Journal() {
       <CurveDivider from="cream" flip />
       <Container className="py-16 md:py-20">
         <Reveal>
-          {/* default orange-deep: one eyebrow rule site-wide (design panel
-              2026-07-10: per-page hues read as accidental) */}
+          <KheeluSays
+            line="I collect stories too. Here are some for you."
+            pose="joy"
+          />
+          {/* one eyebrow rule site-wide (design panel 2026-07-10: per-page
+              hues read as accidental) */}
           <Eyebrow>From the journal</Eyebrow>
           <h2 className="mb-2 font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.08] text-ink-head">
             Raising curious kids.

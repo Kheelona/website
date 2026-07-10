@@ -67,6 +67,9 @@ const MAP = [
 const SITE_MAP = [
   ["color-orange-cta", "orangeCta", "#c25210"],
   ["color-teal-deep", "tealDeep", "#0f766e"],
+  // R9 small-text orange: 13px sans kickers need 4.5:1 on every wash
+  // (white 5.3, cream 5.0, cool 4.8, sun 4.8) — orange-cta only clears white
+  ["color-orange-ink", "orangeInk", "#b54a0d"],
 ];
 
 let failed = false;

@@ -16,6 +16,8 @@ export const TOKENS = {
   /* R5 white-label fills (sanctioned deviations, see globals.css) */
   orangeCta: "#C25210",
   tealDeep: "#0F766E",
+  /* R9 small-text orange (kickers; 4.5:1 on every wash) */
+  orangeInk: "#B54A0D",
 } as const;
 
 /** The sky/wash color the world holds at each Home beat (the wash-handoff

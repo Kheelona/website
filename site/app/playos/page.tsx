@@ -6,6 +6,7 @@ import { CurveDivider } from "@/components/layout/CurveDivider";
 import { Button } from "@/components/ui/Button";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/ui/Reveal";
+import { KheeluSays } from "@/components/ui/KheeluSays";
 import { TiltCard } from "@/components/ui/TiltCard";
 import { MascotScene } from "@/components/mascot/MascotScene";
 import { FinaleCTA } from "@/components/sections/home/FinaleCTA";
@@ -74,6 +75,10 @@ export default function PlayOSPage() {
         <CurveDivider from="cool" />
         <Container className="py-16 md:py-20">
           <Reveal>
+            <KheeluSays
+              line="My friends built this brain. I asked it the first why."
+              pose="silly"
+            />
             <h2 className="mb-3 font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.08] text-ink-head">
               The path of one sentence.
             </h2>
@@ -143,9 +148,11 @@ export default function PlayOSPage() {
         <Container className="pb-14 pt-4 md:pb-16">
           <Reveal>
             <div className="items-center gap-8 rounded-(--radius-card-lg) border border-line-soft bg-cream p-7 md:flex md:p-9">
+              {/* R9: display, not serif (serif retreats to quotes); 26px
+                  extrabold orange-deep is large text, 3:1 holds */}
               <p className="mb-4 max-w-[14ch] shrink-0 font-display text-[26px] font-extrabold leading-[1.15] text-ink-head md:mb-0">
                 Your parenting philosophy,{" "}
-                <span className="font-accent font-normal text-orange-deep">in one prompt</span>
+                <span className="text-orange-deep">in one prompt</span>
               </p>
               <p className="max-w-[58ch] text-[17px]">
                 In the parent app you write one note about how your family

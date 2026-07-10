@@ -1,20 +1,26 @@
 import { cn } from "@/lib/cn";
 
-/** Section label in Instrument Serif, upright (R5: italics are banned
- *  site-wide; the serif face alone carries the accent register).
- *  Used only where the Home content doc prescribes a label. */
-/* 24px = WCAG large text, so orange-deep on white (~4:1) passes 3:1.
-   PDF label hues (teal/terracotta) fail contrast at label sizes; documented
-   deviation in favor of the non-negotiable accessibility gate. */
+/** Section label. R9 (reviewer + founder: the serif accent retreats to
+ *  human-voice quotes only): the eyebrow is now a sans kicker — the same
+ *  register as the hero chip and the recognition label, so the page keeps
+ *  two type moods (display + sans).
+ *  Color is orange-ink (#b54a0d): 13px is normal-size text, so it needs
+ *  4.5:1 on EVERY wash it sits on (white 5.3, cream 5.0, cool 4.8, sun
+ *  4.8) — orange-deep and orange-cta only clear white. */
 export function Eyebrow({
-  color = "text-orange-deep",
+  color = "text-orange-ink",
   children,
 }: {
   color?: string;
   children: React.ReactNode;
 }) {
   return (
-    <span className={cn("mb-3 block font-accent text-[24px]", color)}>
+    <span
+      className={cn(
+        "mb-3 block text-[13px] font-bold uppercase tracking-[0.1em]",
+        color,
+      )}
+    >
       {children}
     </span>
   );

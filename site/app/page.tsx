@@ -6,8 +6,10 @@ import { SafetyCallout } from "@/components/sections/shared/SafetyCallout";
 import { ParentQuotes } from "@/components/sections/shared/ParentQuotes";
 import { ParentAppSection } from "@/components/sections/shared/ParentAppSection";
 import { Hero } from "@/components/sections/home/Hero";
+import { KheeluIntro } from "@/components/sections/home/KheeluIntro";
 import { StagedIntro } from "@/components/sections/home/StagedIntro";
 import { LaunchVideo } from "@/components/sections/home/LaunchVideo";
+import { HowItWorks } from "@/components/sections/home/HowItWorks";
 import { WhyWeExist } from "@/components/sections/home/WhyWeExist";
 import { Feelings } from "@/components/sections/home/Feelings";
 import { MeetLumi } from "@/components/sections/home/MeetLumi";
@@ -37,10 +39,11 @@ export default function HomePage() {
       <Beat id="hero" anchor="hero">
         <Hero />
       </Beat>
-      {/* R7 sections ride outside the <Beat> map: the dormant journey's beat
-          indices stay untouched; if the journey ever returns, beats get
+      {/* R7/R9 sections ride outside the <Beat> map: the dormant journey's
+          beat indices stay untouched; if the journey ever returns, beats get
           retuned in the same pass. */}
-      <RecognitionStrip />
+      <RecognitionStrip safetyLine />
+      <KheeluIntro />
       <Beat id="intro">
         <StagedIntro />
       </Beat>
@@ -59,6 +62,7 @@ export default function HomePage() {
       <Beat id="playos">
         <WhatLumiDoes />
       </Beat>
+      <HowItWorks />
       <Beat id="compare" anchor="compare">
         <Compare />
       </Beat>
@@ -70,12 +74,16 @@ export default function HomePage() {
           are real, attributed, and founder-published on kheelona.ai — the
           claims-testimonials blocker is resolved. */}
       <ParentQuotes />
-      <ParentAppSection from="white" />
+      <ParentAppSection from="white" kheelu />
       <Beat id="journal">
         <Journal />
       </Beat>
       <Beat id="reserve">
-        <FinaleCTA variant="full" from="sun" />
+        <FinaleCTA
+          variant="full"
+          from="sun"
+          kheeluLine="Save your spot. I will keep Lumi company until launch."
+        />
       </Beat>
 
       <StageGate stage="ambient" />

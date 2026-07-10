@@ -1,15 +1,21 @@
+import Image from "next/image";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { Shape } from "@/components/ui/Shapes";
-import { MascotScene } from "@/components/mascot/MascotScene";
 import { HeroGlowBackground } from "@/components/vendor/animate-ui/backgrounds/hero-glow";
 import { PREORDER_HREF } from "@/lib/site";
 
 /** Home S02, slimmed by founder decision (2026-07-07): headline, the lede,
  *  and the ask. The rest of the PDF hero paragraph continues verbatim in
- *  StagedIntro directly below, so the page still carries every sentence. */
+ *  StagedIntro directly below, so the page still carries every sentence.
+ *  R9 (founder 2026-07-10): the hero figure is the PRODUCT — the Lumi plush,
+ *  Blue leads — not the mascot (reviewer: "the thing you're selling doesn't
+ *  appear until well down the page"). Kheelu moved to guide roles; if the
+ *  dormant 3D journey returns, the hero gets retuned in that pass (the old
+ *  data-hero-fallback contract left with the mascot). This image is the
+ *  page's LCP element. */
 export function Hero() {
   return (
     <Section wash="cream" className="overflow-x-clip">
@@ -34,9 +40,11 @@ export function Hero() {
             back. Really talks.
           </p>
           <Button href={PREORDER_HREF}>Reserve Lumi at ₹4,999</Button>
+          {/* R9: the real launch cap (founder-supplied) leads the reassurance
+              line; the rest stays verbatim (copy-reference.md). */}
           <p className="mt-4 text-[15px] text-ink-muted">
-            ₹9,999 after launch. No payment now. We hold the price, you hold
-            your place.
+            First 500 units at ₹4,999. ₹9,999 after launch. No payment now. We
+            hold the price, you hold your place.
           </p>
         </Reveal>
         <div className="relative flex justify-center self-end">
@@ -44,11 +52,15 @@ export function Hero() {
             aria-hidden="true"
             className="pointer-events-none absolute bottom-[-140px] left-1/2 h-[560px] w-[560px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(241,162,59,0.16)_0%,rgba(241,162,59,0.3)_35%,transparent_70%)]"
           />
-          {/* Static LCP render; yields to the live model once the stage has
-              painted (html.scene-3d, see globals.css). */}
-          <div data-hero-fallback="">
-            <MascotScene pose="hero-wink" width={290} parallax={48} priority className="relative" />
-          </div>
+          <Image
+            src="/product/lumi-blue.png"
+            alt="Lumi, the sky blue talking plush toy, wearing its striped party hat"
+            width={1113}
+            height={1600}
+            priority
+            sizes="(max-width: 768px) 62vw, 340px"
+            className="relative h-[380px] w-auto md:h-[470px]"
+          />
         </div>
       </Container>
     </Section>

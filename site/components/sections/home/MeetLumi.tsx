@@ -6,6 +6,7 @@ import { CurveDivider } from "@/components/layout/CurveDivider";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { TiltCard } from "@/components/ui/TiltCard";
+import { KheeluSays } from "@/components/ui/KheeluSays";
 import { PREORDER_HREF } from "@/lib/site";
 
 /** Home S05 (~40% of the page's weight). Copy verbatim.
@@ -43,8 +44,14 @@ export function MeetLumi() {
   return (
     <Section wash="white" id="lumi">
       <CurveDivider from="cool" />
-      <Container className="py-16 md:py-20">
+      {/* R9 rhythm: tighter top/bottom — the divider + narrator bubble carry
+          the transition (reviewer: near-blank viewports between sections) */}
+      <Container className="pb-12 pt-10 md:pb-14 md:pt-12">
         <Reveal>
+          <KheeluSays
+            line="Meet Lumi, my newest friend. Pick your favourite colour."
+            pose="joy"
+          />
           <h2 className="mb-5 font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.08] text-ink-head">
             Meet Lumi. The friend who listens first.
           </h2>
@@ -123,11 +130,10 @@ export function MeetLumi() {
 
         <Reveal>
           <Button href={PREORDER_HREF}>Reserve Lumi at ₹4,999</Button>
-          {/* hero reassurance line, reused verbatim (UX panel: mid-page CTAs
-              carried the ask without the risk reversal) */}
+          {/* R9: varied reassurance (reviewer: the full line repeated ×5
+              verbatim read as a template; hero + finale keep it whole) */}
           <p className="mt-4 text-[15px] text-ink-muted">
-            ₹9,999 after launch. No payment now. We hold the price, you hold
-            your place.
+            First 500 units at ₹4,999. No payment now.
           </p>
         </Reveal>
       </Container>

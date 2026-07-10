@@ -10,6 +10,9 @@
      size (orange 4.66:1, teal 5.47:1). Sanctioned deviations, not DS tokens. */
   --color-orange-cta: #c25210;
   --color-teal-deep: #0f766e;
+  /* R9: the small-text orange (13px sans kickers). Darkened until 4.5:1
+     holds on EVERY wash: white 5.3, cream 5.0, cool 4.8, sun 4.8. */
+  --color-orange-ink: #b54a0d;
   --color-yellow: #f1a23b;
   --color-blue: #29a0d7;
   --color-blue-soft: #3aa4e5;

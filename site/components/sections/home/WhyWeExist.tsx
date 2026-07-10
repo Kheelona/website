@@ -3,16 +3,21 @@ import { Section } from "@/components/layout/Section";
 import { CurveDivider } from "@/components/layout/CurveDivider";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/ui/Reveal";
+import { KheeluSays } from "@/components/ui/KheeluSays";
 
 /** Home S03. Copy verbatim — R8 restaged as an editorial spread (founder:
  *  the single text column read as an unstructured wall). The statement owns
  *  the left, the argument owns the right, and the strongest sentence gets
- *  the accent register. No sentence changed. */
+ *  the accent register (display since R9 — serif retreats to quotes).
+ *  No sentence changed. */
 export function WhyWeExist() {
   return (
     <Section wash="white">
       <CurveDivider from="cream" />
-      <Container className="py-16 md:py-24">
+      <Container className="py-16 md:py-20">
+        <Reveal>
+          <KheeluSays line="Let me tell you why we made Lumi." pose="curious" />
+        </Reveal>
         <div className="grid gap-10 md:grid-cols-[1fr_1.1fr] md:gap-16">
           <Reveal>
             <Eyebrow>Why we exist</Eyebrow>
@@ -21,7 +26,7 @@ export function WhyWeExist() {
             </h2>
           </Reveal>
           <Reveal delay={0.08} className="md:pt-12">
-            <p className="mb-5 max-w-[44ch] border-l-[3px] border-orange pl-5 font-accent text-[clamp(21px,2.2vw,27px)] leading-[1.35] text-ink-head">
+            <p className="mb-5 max-w-[44ch] border-l-[3px] border-orange pl-5 font-display text-[clamp(21px,2.2vw,27px)] font-bold leading-[1.35] text-ink-head">
               Between the ages of 3 and 6, a child&apos;s brain builds faster
               than it ever will again.
             </p>

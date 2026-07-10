@@ -5,8 +5,10 @@ import { CurveDivider } from "@/components/layout/CurveDivider";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/ui/Reveal";
 import { MascotScene } from "@/components/mascot/MascotScene";
+import { KheeluSays } from "@/components/ui/KheeluSays";
 import { FinaleCTA } from "@/components/sections/home/FinaleCTA";
 import { StageGate } from "@/components/three/StageGate";
+import { SETUP_STEPS } from "@/lib/setup-steps";
 
 export const metadata: Metadata = {
   title: "Setup: day one with Lumi",
@@ -15,15 +17,9 @@ export const metadata: Metadata = {
   alternates: { canonical: "/setup" },
 };
 
-/* Copy per prompt §5.2: show how simple day one will be. Steps stay generic
-   until final specs land (TODO claims-specs: wake word, charger details). */
-
-const STEPS = [
-  { n: "01", title: "Unbox and charge.", body: "Lumi arrives ready. Plug in the charger and let it drink while you do the next step.", color: "text-orange-deep" },
-  { n: "02", title: "Open the parent app.", body: "Set the languages you speak at home, pick the topics that are open, and set quiet hours. Five minutes, once.", color: "text-blue" },
-  { n: "03", title: "Teach the hello.", body: "Show your child how to wake Lumi up. One word, one friend, no manual required.", color: "text-teal" },
-  { n: "04", title: "Step back and listen.", body: "The first conversation belongs to them. You can read it later in the app, and smile.", color: "text-purple" },
-] as const;
+/* Copy per prompt §5.2: show how simple day one will be. The steps moved to
+   lib/setup-steps.ts in R9 — the Home "How it works" band renders the same
+   four, so the sequences can never drift apart. */
 
 export default function SetupPage() {
   return (
@@ -49,8 +45,12 @@ export default function SetupPage() {
       <Section wash="white">
         <CurveDivider from="cool" />
         <Container className="py-16 md:py-20">
+          <KheeluSays
+            line="I will be right here while you set up."
+            pose="curious"
+          />
           <ol className="border-t border-line">
-            {STEPS.map((s) => (
+            {SETUP_STEPS.map((s) => (
               <Reveal as="li" key={s.n} className="grid items-start gap-5 border-b border-line py-8 md:grid-cols-[90px_1fr_1.4fr] md:gap-7">
                   <span aria-hidden="true" className={`font-display text-4xl font-extrabold ${s.color}`}>
                     {s.n}

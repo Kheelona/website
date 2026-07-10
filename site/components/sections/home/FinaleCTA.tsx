@@ -3,28 +3,36 @@ import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { CurveDivider } from "@/components/layout/CurveDivider";
 import { Reveal } from "@/components/ui/Reveal";
+import { KheeluSays } from "@/components/ui/KheeluSays";
 import { TallyEmbed } from "@/components/ui/TallyEmbed";
 
 /** The conversion finale (Concept C treatment), id="reserve" on every page.
- *  `variant="full"` (Home, Lumi): big headline + character lineup.
+ *  `variant="full"` (Home, Lumi): big headline + lineup.
  *  `variant="compact"` (other pages): the ask + the form, no spectacle,
- *  so the moment stays a moment (design-review verdict). Copy verbatim.
+ *  so the moment stays a moment (design-review verdict). Copy verbatim
+ *  except the R9 cap line (founder-supplied "first 500 units").
+ *  R9 lineup is product-forward (reviewer: "4 squirrels and 1 dino" read as
+ *  brand confusion): the three Lumi SKUs center-stage, Blue tallest, Kheelu
+ *  celebrating at the edges. `kheeluLine` mounts the narrator bubble —
+ *  Home passes it; other pages keep their single Kheelu moment elsewhere.
  *  Contrast (R5): the band is orange-cta (#C25210, white 4.66:1), so every
  *  line here can be white at any size, including the 15px consent print. */
 const LINEUP = [
-  { img: "/mascot/mascot-grumpy.png", h: "h-[150px]", mobile: false },
-  { img: "/mascot/mascot-hero-wink.png", h: "h-[180px]", mobile: true },
-  { img: "/product/lumi-blue.png", h: "h-[165px]", mobile: true },
-  { img: "/mascot/mascot-silly.png", h: "h-[160px]", mobile: false },
-  { img: "/mascot/mascot-joy.png", h: "h-[175px]", mobile: true },
+  { img: "/mascot/mascot-joy.png", h: "h-[145px]", mobile: false },
+  { img: "/product/lumi-green.png", h: "h-[160px]", mobile: true },
+  { img: "/product/lumi-blue.png", h: "h-[180px]", mobile: true },
+  { img: "/product/lumi-pink.png", h: "h-[160px]", mobile: true },
+  { img: "/mascot/mascot-silly.png", h: "h-[145px]", mobile: false },
 ] as const;
 
 export function FinaleCTA({
   variant = "full",
   from = "white",
+  kheeluLine,
 }: {
   variant?: "full" | "compact";
   from?: "white" | "cream" | "cool" | "sun";
+  kheeluLine?: string;
 }) {
   return (
     <Section wash="orange" id="reserve" className="overflow-x-clip">
@@ -43,10 +51,11 @@ export function FinaleCTA({
             Reserve Lumi before the price goes up.
           </h2>
           <p className="mb-8 max-w-[50ch] text-[19px] font-bold text-white md:text-[21px]">
-            ₹4,999 launch price. ₹9,999 after launch. No payment now. We hold
-            the price, you hold your place.
+            ₹4,999 for the first 500 units. ₹9,999 after launch. No payment
+            now. We hold the price, you hold your place.
           </p>
         </Reveal>
+        {kheeluLine && <KheeluSays line={kheeluLine} className="mb-2" />}
         <Reveal className="max-w-[680px] text-left">
           <TallyEmbed />
           {/* Founder to confirm wording matches the Tally consent copy. */}

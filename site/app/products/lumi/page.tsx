@@ -10,6 +10,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/ui/Reveal";
 import { TiltCard } from "@/components/ui/TiltCard";
 import { Faq, type FaqEntry } from "@/components/ui/Faq";
+import { KheeluSays } from "@/components/ui/KheeluSays";
 import { FinaleCTA } from "@/components/sections/home/FinaleCTA";
 import { ParentQuotes } from "@/components/sections/shared/ParentQuotes";
 import { PREORDER_HREF } from "@/lib/site";
@@ -39,7 +40,9 @@ const CONVERSATION = [
 const FEELINGS_DEEP = [
   { name: "Curious", body: "Feeds the why. When your child asks, Lumi answers in words they understand, then wonders with them.", bg: "bg-blue/15", img: "curious" },
   { name: "Grumpy", body: "Takes the storm seriously. Lumi does not scold. It listens until the feeling has room to pass.", bg: "bg-orange/15", img: "grumpy" },
-  { name: "Sad", body: "Stays close. Some days are heavy. Lumi sits in them with your child, gently.", bg: "bg-purple/15", img: "sad" },
+  // R9 re-map (with Home): the serene render reads "stays close"; the old
+  // scared pose read panic
+  { name: "Sad", body: "Stays close. Some days are heavy. Lumi sits in them with your child, gently.", bg: "bg-purple/15", img: "bliss" },
   { name: "Silly", body: "Plays along. Rhymes, made-up words, giggle games. Laughing together is learning too.", bg: "bg-yellow/15", img: "silly" },
   { name: "Joy", body: "Celebrates out loud. Small wins feel big when a friend cheers.", bg: "bg-teal/15", img: "joy" },
 ] as const;
@@ -105,6 +108,10 @@ export default function LumiPage() {
       <Section wash="cream">
         <Container className="grid items-center gap-10 py-16 md:grid-cols-[1.05fr_0.95fr] md:py-20">
           <Reveal mode="rise">
+            <KheeluSays
+              line="This is Lumi. I picked the colours myself."
+              pose="hero-wink"
+            />
             <Eyebrow>The talking toy</Eyebrow>
             <h1 className="mb-5 font-display text-[clamp(38px,4.5vw,58px)] font-extrabold leading-[1.08] text-ink-head">
               Meet Lumi. The friend who listens first.
@@ -114,9 +121,10 @@ export default function LumiPage() {
               asks the next question. No screen, ever.
             </p>
             <Button href={PREORDER_HREF}>Reserve Lumi at ₹4,999</Button>
+            {/* R9 trim: the full reassurance line lives at the Home hero and
+                finale only (reviewer: ×5 verbatim repeats) */}
             <p className="mt-4 text-[15px] text-ink-muted">
-              ₹9,999 after launch. No payment now. We hold the price, you hold
-              your place.
+              ₹9,999 after launch. No payment now.
             </p>
           </Reveal>
           <Reveal mode="rise" className="relative flex justify-center">
@@ -212,8 +220,9 @@ export default function LumiPage() {
             <h2 className="mb-3 font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.08] text-ink-head">
               You see everything. You decide everything.
             </h2>
-            {/* R7 lead line adapted from kheelona.ai/lumi */}
-            <p className="mb-3 max-w-[58ch] font-accent text-[clamp(20px,2vw,24px)] text-orange-deep">
+            {/* R7 lead line adapted from kheelona.ai/lumi; R9: display, not
+                serif (bold at 20px+ is WCAG-large, orange-deep passes 3:1) */}
+            <p className="mb-3 max-w-[58ch] font-display text-[clamp(20px,2vw,24px)] font-bold text-orange-deep">
               They think they are playing. The app shows you they are growing.
             </p>
             <p className="mb-11 max-w-[58ch] text-[clamp(18px,1.6vw,21px)]">

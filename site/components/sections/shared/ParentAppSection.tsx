@@ -5,6 +5,7 @@ import { Section } from "@/components/layout/Section";
 import { CurveDivider } from "@/components/layout/CurveDivider";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/ui/Reveal";
+import { KheeluSays } from "@/components/ui/KheeluSays";
 import { PhoneFrame } from "@/components/ui/PhoneFrame";
 
 /** R7: the parent-app section from the kheelona.ai home page, adapted to
@@ -19,7 +20,15 @@ const CHIPS = [
   "Parenting philosophy, in one prompt",
 ] as const;
 
-export function ParentAppSection({ from = "white" }: { from?: "white" | "cream" | "cool" | "teal" }) {
+export function ParentAppSection({
+  from = "white",
+  kheelu = false,
+}: {
+  from?: "white" | "cream" | "cool" | "teal";
+  /** Home mounts the narrator bubble; other pages keep their own single
+   *  Kheelu moment, so it stays off by default. */
+  kheelu?: boolean;
+}) {
   return (
     <Section wash="cream" id="parent-app">
       <CurveDivider from={from} />
@@ -31,6 +40,12 @@ export function ParentAppSection({ from = "white" }: { from?: "white" | "cream" 
           />
         </Reveal>
         <Reveal>
+          {kheelu && (
+            <KheeluSays
+              line="Lumi and I keep no secrets from grown-ups."
+              pose="grumpy"
+            />
+          )}
           <Eyebrow>For the grown-ups</Eyebrow>
           <h2 className="mb-5 max-w-[16ch] font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.08] text-ink-head">
             Parents stay in the loop.

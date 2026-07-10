@@ -19,7 +19,8 @@ const LINES = [
 export function StagedIntro() {
   return (
     <Section wash="cream">
-      <Container className="pb-20 pt-4 md:pb-28">
+      {/* R9 rhythm: pb-28 read as a near-blank viewport on tall screens */}
+      <Container className="pb-16 pt-4 md:pb-20">
         <div className="flex flex-col gap-7 md:gap-9">
           {LINES.map((l, i) => (
             <Reveal key={i} delay={i * 0.12} className={l.indent}>
@@ -29,7 +30,9 @@ export function StagedIntro() {
             </Reveal>
           ))}
           <Reveal delay={0.24}>
-            <p className="font-accent text-[clamp(26px,3.2vw,46px)] leading-[1.2] text-orange-deep">
+            {/* R9: display, not serif (the serif accent retreats to quotes);
+                orange-deep is fine here — this is large text (3:1 rule) */}
+            <p className="font-display text-[clamp(26px,3.2vw,46px)] font-extrabold leading-[1.2] text-orange-deep">
               In all 10 languages you speak at home.
             </p>
           </Reveal>

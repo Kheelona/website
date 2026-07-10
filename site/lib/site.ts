@@ -5,7 +5,7 @@
 export const PREORDER_HREF = "#reserve";
 
 export const NAV_LINKS = [
-  { label: "Lumi", href: "/products/lumi" },
+  { label: "Meet Lumi", href: "/products/lumi" },
   { label: "How it works", href: "/playos" },
   { label: "Safety", href: "/safety" },
   { label: "Stories", href: "/stories" },

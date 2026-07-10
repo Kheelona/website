@@ -43,3 +43,41 @@ New sanctioned source: the founder's own kheelona.ai site (repo apoorva262/kheel
 | Pilot stats (10 families / 1 school / 10 languages) | /products/lumi | verbatim |
 | "They think they are playing. The app shows you they are growing." | /products/lumi | adapted (de-gendered, uncontracted) |
 | "Safety is built in, not bolted on." / one-prompt framing | /playos | adapted |
+
+## R9 copy decisions (2026-07-10/11) — friend-feedback round + Kheelu
+
+**CTA label system UPDATE (supersedes the two-label rule above):** one verb everywhere — *Reserve*. Nav + mobile sheet: "Reserve at ₹4,999" (was "Join the pre-order list"); desire peaks keep "Reserve Lumi at ₹4,999"; sticky bar unchanged. Reviewer finding #1, founder-approved.
+
+**The 500-unit cap (REAL, founder-supplied 2026-07-10):** "first 500 units at ₹4,999". Approved placements, exact lines:
+- Home hero: "First 500 units at ₹4,999. ₹9,999 after launch. No payment now. We hold the price, you hold your place."
+- Finale: "₹4,999 for the first 500 units. ₹9,999 after launch. No payment now. We hold the price, you hold your place."
+- MeetLumi mid-CTA (varied): "First 500 units at ₹4,999. No payment now."
+- Compare + /products/lumi hero (trimmed): "₹9,999 after launch. No payment now."
+The full reassurance line now appears verbatim ONLY at hero + finale (reviewer: ×5 repeats read as a template).
+
+**Kheelu, the narrator (founder mandate: "the website is told by Kheelu... he is telling his story"):**
+- The mascot's public name is **Kheelu** (resolves the brand-ambiguity finding; the plush = Lumi, the product).
+- Source: the founder's Kheelu intro card. Used verbatim in `KheeluIntro`: "Hi! I'm Kheelu." / "I love asking questions, discovering new things and learning together with you!" / traits Naturally Curious · Kind & Caring · Smart Explorer · Playful & Fun. Closing line (house-written): "Let me show you around."
+- **Sanctioned deviation — character voice:** Kheelu's quoted speech may use contractions (his published card voice). Body copy keeps the no-contraction house rule.
+- All narrator lines (KheeluSays bubbles), founder-approved via the R9 plan:
+  | Where | Line |
+  |---|---|
+  | Home film | Press play. I will wait. |
+  | Home why-we-exist | Let me tell you why we made Lumi. |
+  | Home feelings | These are the five feelings Lumi understands. I will act them out for you. |
+  | Home meet-Lumi | Meet Lumi, my newest friend. Pick your favourite colour. |
+  | Home feature grid | A whole day with Lumi looks like this. |
+  | Home how-it-works | From the box to the first hello, here is how it goes. |
+  | Home safety callout | This part is for your grown-ups. It matters the most. |
+  | Home parent app | Lumi and I keep no secrets from grown-ups. |
+  | Home journal | I collect stories too. Here are some for you. |
+  | Home finale | Save your spot. I will keep Lumi company until launch. |
+  | /products/lumi | This is Lumi. I picked the colours myself. |
+  | /setup | I will be right here while you set up. |
+  | /stories | My notebook. Take any story you like. |
+  | /playos | My friends built this brain. I asked it the first why. |
+  | /safety | (none — gravity wins; the handover line lives on Home) |
+
+**How-it-works band:** the four /setup steps verbatim (single source: `lib/setup-steps.ts`); H2 "Four steps. No manual required." derived from published copy ("four small steps", "no manual required").
+
+**Recognition safety line (Home only):** "Wake-word mic · Safety check on every reply · One-tap delete · Voice data never sold" — all four facts already published on /safety; pairs the accelerator badges with parent-relevant proof.

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Reveal } from "@/components/ui/Reveal";
+import { KheeluSays } from "@/components/ui/KheeluSays";
 
 /** Home S02c: the ambient launch film (real product photography, 20s loop).
  *  Autoplays muted only for users who have not asked for less motion or data;
@@ -37,6 +38,9 @@ export function LaunchVideo() {
   return (
     <Section wash="cream">
       <Container className="pb-16 md:pb-24">
+        <Reveal>
+          <KheeluSays line="Press play. I will wait." pose="silly" />
+        </Reveal>
         <Reveal>
           <video
             ref={video}

@@ -4,19 +4,28 @@ import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { CurveDivider } from "@/components/layout/CurveDivider";
 import { Reveal } from "@/components/ui/Reveal";
+import { KheeluSays } from "@/components/ui/KheeluSays";
 
 /** R7: the "first question, answered" callout from the kheelona.ai home page.
  *  Body line verbatim (founder: "this is a strong line, we should include
- *  it"). Teal-deep lead instead of raw teal: 5.47:1 on white. */
+ *  it"). Teal-deep lead instead of raw teal: 5.47:1 on white. R9: the lead
+ *  is all display (serif retreats to quotes); Kheelu hands the section to
+ *  the parents. */
 export function SafetyCallout() {
   return (
     <Section wash="cool">
       <CurveDivider from="white" />
       <Container className="pb-12 pt-4 md:pb-14">
         <Reveal>
+          <KheeluSays
+            line="This part is for your grown-ups. It matters the most."
+            pose="bliss"
+          />
+        </Reveal>
+        <Reveal>
           <div className="items-center gap-8 rounded-(--radius-card-lg) border border-teal-deep/40 bg-white p-7 md:flex md:p-9">
             <p className="mb-4 max-w-[13ch] shrink-0 font-display text-[26px] font-extrabold leading-[1.15] text-teal-deep md:mb-0">
-              The <span className="font-accent font-normal">first question, answered</span>
+              The first question, answered
             </p>
             <p className="mb-5 max-w-[58ch] text-[17px] md:mb-0">
               In 2026, the first question about any AI toy is whether it&apos;s

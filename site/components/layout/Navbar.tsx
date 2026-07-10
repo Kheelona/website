@@ -49,7 +49,7 @@ export function Navbar() {
               responsibility out of shared components */}
           <div className="hidden sm:block">
             <Button href={PREORDER_HREF} className="px-5 py-3 text-[15px]">
-              Join the pre-order list
+              Reserve at ₹4,999
             </Button>
           </div>
           <div className="lg:hidden">
@@ -81,7 +81,7 @@ export function Navbar() {
                 ))}
                 <li className="px-3 pb-2 pt-3">
                   <Button href={PREORDER_HREF} className="w-full">
-                    Join the pre-order list
+                    Reserve at ₹4,999
                   </Button>
                 </li>
               </ul>

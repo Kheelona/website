@@ -246,3 +246,46 @@ Home rebuilt as one continuous 3D journey (Direction 1 "Lumi's World" + pop-up e
 **Repo cleanup before first push (2026-07-09):** history rewritten with git-filter-repo (no remote existed): raw photoshoot JPGs (620MB, kept on disk + gitignored), QA snapshots, model intermediates, wireframe previews, .b64 temps purged; .git 717MB -> 113MB. Pushed to github.com/Kheelona/website branch demo-website; Vercel deploy at https://website-hdn2.vercel.app (Root Directory must be `site` - an unset root "builds" in <1s and deploys nothing).
 
 **Known open items:** 7 interior pages still flat (ambient scenes next), mobile perf pass, full 9-route Lighthouse sweep, live-URL verification.
+
+---
+
+## R9: friend-feedback round + Kheelu narrator (2026-07-10/11)
+
+External reviewer (founder's friend) audited the live site; founder answered every gated decision across 3 question batches (brand hierarchy, feelings art, urgency facts, typography, hero/finale composition, Kheelu prominence, cap wording, nav, how-it-works placement, kicker style, safety line). Rollback flag `r7-live-2026-07-10` pushed before work began.
+
+### Disposition of all 20 findings
+
+| # | Finding | Disposition |
+|---|---|---|
+| 1 | Two CTA labels | FIXED — verb = Reserve; nav/sheet → "Reserve at ₹4,999" |
+| 2 | Reassurance line ×5 verbatim | FIXED — verbatim only hero + finale; MeetLumi varied, Compare + lumi trimmed |
+| 3 | No urgency mechanism | FIXED with REAL cap (founder: "first 500 units at ₹4,999"); no fake counters |
+| 4 | Mascot/product ambiguity | FIXED — mascot named **Kheelu** (narrator device sitewide); plush = Lumi |
+| 5 | Product not the hero | FIXED — hero = lumi-blue plush; finale product-forward (3 SKUs center, Kheelu at edges) |
+| 6 | Feelings wrong character/poses | FIXED per founder (re-map only): Sad → serene bliss render (home + lumi page); scared pose → narrator "act them out" bubble. NOTE: the Grumpy render is a true grump on inspection — reviewer misread; unchanged |
+| 7 | Serif fights the brand | FIXED (founder: soften) — serif only in quotes; eyebrows = sans kicker in new orange-ink; accent leads = display |
+| 8 | Blank viewports | FIXED — StagedIntro/WhyWeExist/MeetLumi/Compare rhythm trims; full-scroll re-verified |
+| 9 | Renders vs real photography | FOUNDER — shot list added to FOUNDER-TODO (cannot fabricate reality) |
+| 10 | Logo row inconsistent, NVIDIA clipped | FIXED — uniform h-14/h-8 baseline; clip not reproducible after normalization, re-checked live |
+| 11 | Product shown too late | RESOLVED VIA #5 — the hero IS the product reveal now |
+| 12 | No concrete how-it-works | FIXED — Home band, 4 verbatim /setup steps (shared lib/setup-steps.ts) |
+| 13 | Verify nav anchors | VERIFIED — all nav items are real pages; crawl of 29 unique hrefs across 9 routes: all resolve. Found + fixed a real one: #reserve was DEAD on /privacy + /terms (FinaleCTA compact now mounted) |
+| 14 | "Lumi" nav item redundant | FIXED — "Meet Lumi" |
+| 15 | B2B line in parent flow | FIXED — removed from feature grid; partner link lives in footer only |
+| 16 | Keep the emotional core lines | GUARDED — untouched, verbatim |
+| 17 | Elevate safety near hero | FIXED — published-proof safety line under the recognition strip |
+| 18 | Substantiate claims | CARRIED — Safe-by-design card (on-device + cloud, no open internet) + /safety links; nothing new invented |
+| 19 | Testimonials thin | PARTIAL — pilot framing already explicit; names/faces/video → FOUNDER-TODO |
+| 20 | Badges ≠ parent credentials | FIXED via #17 pairing |
+
+### Founder additions beyond the audit
+- **Kheelu the narrator** (full-narrator mandate): KheeluSays device + KheeluIntro card + 10 Home lines + one moment each on lumi/setup/stories/playos (safety deliberately none). All lines founder-approved pre-build; character-voice contraction deviation logged in copy-reference.
+- SKU-rotation strategy (looks change every 30–45 days) deliberately NOT published.
+
+### QA results (localhost prod build, 2026-07-11)
+- build green (28 pages), tsc clean, token gate ok (**17 mappings** — orange-ink added), voice-lint clean (em-dash/italic hits are code comments only; zero hype words)
+- Lighthouse desktop: home 99–100/100/100/100, lumi 100/100/100/100; a11y/BP/SEO 100 on playos, setup, stories, team, safety. **Regression caught by the gate:** the first kicker pass (orange-cta) failed contrast on cream (lumi 96 a11y) → orange-ink #b54a0d minted, verified 4.5:1+ on all four washes, all routes back to 100
+- Home mobile localhost: 84 / LCP 4.5s — the known network-dominated localhost floor (cannot discriminate; live re-measured after deploy, see below)
+- No-JS/SSR probes: Kheelu greeting, 500-cap, unified CTA, how-it-works, safety line, bliss re-map all in server HTML
+- Full visible-tab scroll (desktop 1456px): product-first fold confirmed, all 10 narrator bubbles render with correct poses, SKU row, feature grid, finale lineup verified
+- Mobile 390px layout verified via LH device-emulation screenshot (stacked hero, sticky CTA visible; the window manager blocked a native resize this session)

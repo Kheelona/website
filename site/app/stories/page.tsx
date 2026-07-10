@@ -6,6 +6,7 @@ import { Section } from "@/components/layout/Section";
 import { CurveDivider } from "@/components/layout/CurveDivider";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/ui/Reveal";
+import { KheeluSays } from "@/components/ui/KheeluSays";
 import { TiltCard } from "@/components/ui/TiltCard";
 import { FinaleCTA } from "@/components/sections/home/FinaleCTA";
 import { STORIES } from "@/lib/stories";
@@ -26,6 +27,10 @@ export default function StoriesPage() {
       <Section wash="cream">
         <Container className="py-16 md:py-20">
           <Reveal mode="rise">
+            <KheeluSays
+              line="My notebook. Take any story you like."
+              pose="curious"
+            />
             <Eyebrow>The journal</Eyebrow>
             <h1 className="mb-4 font-display text-[clamp(38px,4.5vw,58px)] font-extrabold leading-[1.08] text-ink-head">
               Raising curious kids.

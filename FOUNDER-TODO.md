@@ -79,3 +79,12 @@ Names/logos when you are ready to show them.
 - Mobile Lighthouse performance is 85 (desktop 99): the hero character image on simulated slow 4G. Acceptable per blueprint §3; further squeezing possible with a smaller mobile hero render if you want it.
 - The finale renders the Tally form instead of the PDF's plain button: deliberate conversion decision, recorded in the copy reference.
 - PDF's teal/terracotta section-label colors were swapped to a darker accent at label sizes: accessibility (WCAG AA) is a locked 90+ gate and won.
+
+## R9 FRIEND-FEEDBACK ROUND (2026-07-10/11) — done; three items for you
+
+Your friend's audit is fully dispositioned (docs/qa-report.md R9). Kheelu now narrates the site, the plush owns the hero, the 500-unit cap is live, one CTA verb everywhere. New items only you can unlock:
+
+- **R9-a. Real photography** (your friend's strongest conversion point: "renders build the vibe; real photography builds the purchase decision"). Shot list, in priority order: (1) the plush in a child's hands — scale; (2) fabric/texture macro; (3) a short loop of the breathing motion (phone video is fine); (4) where the mic and button sit. When files land in ~/Downloads, Claude builds a "the real thing" strip on /products/lumi and swaps the trust moments on Home.
+- **R9-b. Testimonial faces** — the three pilot quotes are live but anonymous. One real first name + photo (or a 20-second parent video) with written consent turns the weakest trust signal into the strongest. Ties into existing item 3.
+- **R9-c. Kheelu voice check** — Kheelu's speech lines (list: docs/copy-reference.md R9) were approved in the plan, but read them once on the live page; wording tweaks are one-line changes.
+- Resolved this round: the mascot's public name is **Kheelu** (your card); urgency = "first 500 units at ₹4,999" (your number, now on hero/finale/mid-page).

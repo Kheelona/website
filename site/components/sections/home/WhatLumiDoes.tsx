@@ -5,6 +5,7 @@ import { CurveDivider } from "@/components/layout/CurveDivider";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/ui/Reveal";
 import { TiltCard } from "@/components/ui/TiltCard";
+import { KheeluSays } from "@/components/ui/KheeluSays";
 import { Shape } from "@/components/ui/Shapes";
 import type { ShapeKind } from "@/lib/shape-paths";
 
@@ -105,6 +106,7 @@ export function WhatLumiDoes() {
       <CurveDivider from="white" flip />
       <Container className="pb-16 pt-6 md:pb-20 md:pt-8">
         <Reveal>
+          <KheeluSays line="A whole day with Lumi looks like this." pose="bliss" />
           <Eyebrow>What Lumi does all day</Eyebrow>
           <h2 className="mb-4 max-w-[22ch] font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.08] text-ink-head">
             Not a speaker with a face. A companion with a memory.
@@ -127,21 +129,14 @@ export function WhatLumiDoes() {
             </Reveal>
           ))}
         </div>
+        {/* R9: the B2B "Building on PlayOS?" invite left the parent flow
+            (reviewer finding) — it lives in the footer's partners line. */}
         <Reveal className="mt-9">
           <p className="text-[16px] text-ink-muted">
             The technology behind the talking lives on the{" "}
             <Link href="/playos" className="font-semibold text-ink-head underline">
               PlayOS page
             </Link>
-            . Building on PlayOS? See{" "}
-            <a
-              href="https://kheelona.ai"
-              target="_blank"
-              rel="noopener"
-              className="font-semibold text-ink-head underline"
-            >
-              kheelona.ai
-            </a>
             .
           </p>
         </Reveal>

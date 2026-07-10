@@ -3,6 +3,7 @@ import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { CurveDivider } from "@/components/layout/CurveDivider";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { FinaleCTA } from "@/components/sections/home/FinaleCTA";
 import { StageGate } from "@/components/three/StageGate";
 
 export const metadata: Metadata = {
@@ -85,6 +86,9 @@ export default function TermsPage() {
           </div>
         </Container>
       </Section>
+      {/* R9: every page ends with the reserve moment — the nav CTA anchors
+          to #reserve (the anchor was dead here; reviewer-class trust bug) */}
+      <FinaleCTA variant="compact" from="white" />
       <StageGate stage="ambient" />
     </>
   );
