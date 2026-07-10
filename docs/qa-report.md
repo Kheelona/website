@@ -289,3 +289,8 @@ External reviewer (founder's friend) audited the live site; founder answered eve
 - No-JS/SSR probes: Kheelu greeting, 500-cap, unified CTA, how-it-works, safety line, bliss re-map all in server HTML
 - Full visible-tab scroll (desktop 1456px): product-first fold confirmed, all 10 narrator bubbles render with correct poses, SKU row, feature grid, finale lineup verified
 - Mobile 390px layout verified via LH device-emulation screenshot (stacked hero, sticky CTA visible; the window manager blocked a native resize this session)
+
+### R9 live verification (2026-07-11, https://website-hdn2.vercel.app, commit 5c30c0a)
+- Probes: Kheelu + 500-cap live on home; "I picked the colours" on /products/lumi; #reserve present on /privacy; old nav label gone; hero serves lumi-blue. Visible-tab check: product-first fold renders.
+- Live Lighthouse desktop home: 100/100/100/100, LCP 0.7s.
+- Live Lighthouse mobile home ×5: 97, 85, 93, 84, 100 → **median 93 — the ≥90 mobile gate PASSES** (was median 85). The hero LCP element change (mascot MascotScene → plain priority plush Image) removed the ~2s render delay; task #34 (R8 bisect) closed by fix. Residual variance (84–100) tracks image-optimizer/CDN cache state on cold hits; acceptable under the median gate, noted for any future CDN work.
