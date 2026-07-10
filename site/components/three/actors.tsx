@@ -344,7 +344,16 @@ export function BrandShape({
 /* ------------------------------------------------------------ shape field --
    The world dressing: brand shapes scattered along the whole path at varied
    depths. Deterministic layout (no Math.random: SSR/replay safety). */
-const KINDS: ShapeKind[] = ["flower5", "flower13", "squircle"];
+/* R7: the full brand-shape family, incl. the kheelona.ai kit additions */
+const KINDS: ShapeKind[] = [
+  "flower5",
+  "flower13",
+  "squircle",
+  "flower3",
+  "flower4",
+  "triangle5",
+  "polygon",
+];
 
 export function ShapeField({
   count,

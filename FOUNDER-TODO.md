@@ -10,6 +10,10 @@ Direction picked (Lumi's World + pop-up elements), both models generated and ver
 
 Everything below is the pre-existing launch list; it all carries over to the redesigned site unchanged.
 
+## R7 SISTER-SITE ENRICHMENT (2026-07-10) — done; two old blockers RESOLVED
+
+kheelona.ai became the sanctioned content/design reference on your direction. Team page now has photos, full bios, pull-quotes, LinkedIn; Home gained the recognition strip, the safety callout, the parent-app section (real dashboard), and three REAL early-tester quotes from your published site — the testimonials placeholder blocker and the "backed by" TODO are both closed. One flag for your eyes in the visual pack: Kashyap's bio now names Thunderbolt 4/5 (your kheelona.ai bio publishes it; the old rule here was "name only Intel") — say the word if you want it trimmed.
+
 ## R5 CALM PASS (2026-07-10) — done on your feedback; one new item for you
 
 Your review landed: home is now the calm ambient treatment (the /playos register you preferred), 2D mascot + 2D Lumi everywhere (3D one prop-flip away), no italics, all text left-aligned, white button/band text on accessible deep fills, feelings boxed, sticky pre-order bar never hides, shapes fewer/fainter/never over text.

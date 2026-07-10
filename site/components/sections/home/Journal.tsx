@@ -29,7 +29,7 @@ const CARDS = [
 export function Journal() {
   return (
     <Section wash="sun" id="journal">
-      <CurveDivider from="teal" flip />
+      <CurveDivider from="cream" flip />
       <Container className="py-16 md:py-20">
         <Reveal>
           {/* default orange-deep: one eyebrow rule site-wide (design panel

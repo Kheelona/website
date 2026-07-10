@@ -9,7 +9,7 @@ import { MascotScene } from "@/components/mascot/MascotScene";
 export function SafetyStrip() {
   return (
     <Section wash="teal" id="safety-strip">
-      <CurveDivider from="white" />
+      <CurveDivider from="cool" />
       <Container className="grid items-center gap-10 pb-16 pt-6 md:grid-cols-[1.2fr_0.8fr] md:pb-20 md:pt-8">
         <Reveal>
           <h2 className="mb-6 max-w-[16ch] font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.08] text-white">

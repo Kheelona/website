@@ -25,3 +25,21 @@ Copy lives in `site/components/sections/home/*.tsx`. Blue-box copy reproduced ex
 - "Reserve Lumi at ₹4,999" at desire peaks (heroes, price block, post-product moments).
 - "Join the pre-order list" in nav, utility slots, and PlayOS.
 - Sticky mobile bar: "Reserve at ₹4,999. No payment now."
+
+
+## R7 imported copy (2026-07-10) — source: kheelona.ai (founder-published)
+
+New sanctioned source: the founder's own kheelona.ai site (repo apoorva262/kheelona.ai, content/site.ts + page sources). Rules applied: statuses copied exactly, B2B phrasing adapted to second-person parent voice, voice-lint on every line. Inventory:
+
+| Copy | Where | Treatment |
+|---|---|---|
+| "In 2026, the first question about any AI toy..." | Home SafetyCallout | verbatim (founder-blessed) |
+| Recognition entries (NVIDIA Inception Program, Karnataka Elevate, nasscom, Founders Inc) | Home + Team strips | verbatim |
+| 3 early-tester parent quotes + attributions | Home + Lumi ParentQuotes | verbatim — RESOLVES claims-testimonials |
+| Parent-app chips (5) | Home ParentAppSection | verbatim; body adapted (dropped "branded yours", "sale into a subscription") |
+| Team manifesto, bios, pull-quotes, tags | /team | adapted to parent voice; facts verbatim (14 patents, Intel + Thunderbolt 4/5, CA + 15 yrs) |
+| Custody chain + "Nothing leaves without consent..." | /safety | adapted |
+| Standards statuses (COPPA 2026/GDPR-K/DPDP Designed for; ISO 27001 In progress) | /safety | status-exact |
+| Pilot stats (10 families / 1 school / 10 languages) | /products/lumi | verbatim |
+| "They think they are playing. The app shows you they are growing." | /products/lumi | adapted (de-gendered, uncontracted) |
+| "Safety is built in, not bolted on." / one-prompt framing | /playos | adapted |

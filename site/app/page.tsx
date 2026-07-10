@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { Beat } from "@/components/layout/Beat";
 import { StageGate } from "@/components/three/StageGate";
+import { RecognitionStrip } from "@/components/sections/shared/RecognitionStrip";
+import { SafetyCallout } from "@/components/sections/shared/SafetyCallout";
+import { ParentQuotes } from "@/components/sections/shared/ParentQuotes";
+import { ParentAppSection } from "@/components/sections/shared/ParentAppSection";
 import { Hero } from "@/components/sections/home/Hero";
 import { StagedIntro } from "@/components/sections/home/StagedIntro";
 import { LaunchVideo } from "@/components/sections/home/LaunchVideo";
@@ -33,6 +37,10 @@ export default function HomePage() {
       <Beat id="hero" anchor="hero">
         <Hero />
       </Beat>
+      {/* R7 sections ride outside the <Beat> map: the dormant journey's beat
+          indices stay untouched; if the journey ever returns, beats get
+          retuned in the same pass. */}
+      <RecognitionStrip />
       <Beat id="intro">
         <StagedIntro />
       </Beat>
@@ -54,12 +62,15 @@ export default function HomePage() {
       <Beat id="compare" anchor="compare">
         <Compare />
       </Beat>
+      <SafetyCallout />
       <Beat id="safety">
         <SafetyStrip />
       </Beat>
-      {/* ParentVoices intentionally unmounted until real testimonials arrive
-          (claims-testimonials blocker): the review round found the empty
-          placeholders read as vaporware two sections before the ask. */}
+      {/* ParentQuotes replaced the unmounted ParentVoices (R7): the quotes
+          are real, attributed, and founder-published on kheelona.ai — the
+          claims-testimonials blocker is resolved. */}
+      <ParentQuotes />
+      <ParentAppSection from="white" />
       <Beat id="journal">
         <Journal />
       </Beat>

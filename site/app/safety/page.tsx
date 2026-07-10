@@ -47,6 +47,24 @@ const SAFETY_FAQ: FaqEntry[] = [
   { q: "Where does my child's voice data go?", a: "It stays in your region, nothing is collected without your consent, you can delete any conversation in one tap, and it is never sold." },
 ];
 
+/* R7: the custody-chain steps, adapted to parent voice from the
+   kheelona.ai/safety data-flow diagram (founder-published). */
+const VOICE_PATH = [
+  { title: "Lumi hears the wake word", body: "Until your child says it, the microphone is off. Not muted. Off." },
+  { title: "The device checks first", body: "The first safety filters run on the toy itself, before anything travels anywhere." },
+  { title: "The voice brain answers", body: "Every reply passes an age-graded safety layer tuned for ages 3 to 6." },
+  { title: "It all lands in your app", body: "You can read the conversation, and delete any of it with one tap." },
+] as const;
+
+/* R7: standards, status-for-status as published on kheelona.ai/safety.
+   Never upgrade a status here (claims gate). */
+const STANDARDS = [
+  { name: "COPPA (2026)", status: "Designed for" },
+  { name: "GDPR-K", status: "Designed for" },
+  { name: "India DPDP", status: "Designed for" },
+  { name: "ISO 27001", status: "In progress" },
+] as const;
+
 const PARENT_KEYS = [
   "Topics: you choose what is open and what waits.",
   "Time: quiet hours are yours to set.",
@@ -146,10 +164,25 @@ export default function SafetyPage() {
             <h2 className="mb-3 font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.08] text-ink-head">
               Where a child&apos;s voice goes.
             </h2>
-            <p className="mb-11 max-w-[58ch] text-[clamp(18px,1.6vw,21px)]">
+            <p className="mb-10 max-w-[58ch] text-[clamp(18px,1.6vw,21px)]">
               A child&apos;s voice is precious cargo. We treat it that way.
+              Here is the whole journey, in order:
             </p>
           </Reveal>
+          {/* R7: the custody chain, step by step */}
+          <ol className="mb-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {VOICE_PATH.map((s, i) => (
+              <Reveal as="li" key={s.title} delay={i * 0.05}>
+                <div className="h-full rounded-(--radius-card) border border-line-soft bg-white/70 p-6">
+                  <span aria-hidden="true" className="font-display text-3xl font-extrabold text-orange-deep">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <h3 className="mt-2 font-display text-[19px] font-extrabold text-ink-head">{s.title}</h3>
+                  <p className="mt-1 text-[15px]">{s.body}</p>
+                </div>
+              </Reveal>
+            ))}
+          </ol>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {VOICE_RULES.map((c, i) => (
               <Reveal key={c.title} delay={i * 0.05}>
@@ -160,6 +193,12 @@ export default function SafetyPage() {
               </Reveal>
             ))}
           </div>
+          <Reveal>
+            <p className="mt-10 max-w-[40ch] font-display text-[clamp(22px,2.4vw,28px)] font-extrabold leading-[1.25] text-ink-head">
+              Nothing leaves without consent. Nothing stays you can&apos;t
+              delete.
+            </p>
+          </Reveal>
         </Container>
       </Section>
 
@@ -198,6 +237,40 @@ export default function SafetyPage() {
       </Section>
 
       {/* Safety questions (AEO) */}
+      {/* R7: standards, honest and status-exact (source: kheelona.ai/safety).
+          Toy-safety testing status is already stated in plain words above. */}
+      <Section wash="white">
+        <Container className="pb-16 pt-2 md:pb-20">
+          <Reveal>
+            <h2 className="mb-3 font-display text-[clamp(28px,3.2vw,40px)] font-extrabold leading-[1.1] text-ink-head">
+              The standards we build against.
+            </h2>
+            <p className="mb-8 max-w-[58ch] text-[17px]">
+              These are the children&apos;s privacy frameworks Lumi is designed
+              for, and where our certifications stand today. No badge appears
+              here before it is earned.
+            </p>
+          </Reveal>
+          <ul className="flex flex-wrap gap-3">
+            {STANDARDS.map((s) => (
+              <li
+                key={s.name}
+                className="flex items-center gap-3 rounded-full border border-line-soft bg-white px-5 py-2.5"
+              >
+                <span className="text-[16px] font-semibold text-ink-head">{s.name}</span>
+                <span
+                  className={`rounded-full px-2.5 py-0.5 text-[12.5px] font-bold uppercase tracking-wide ${
+                    s.status === "In progress" ? "bg-yellow/15 text-ink-head" : "bg-teal/15 text-ink-head"
+                  }`}
+                >
+                  {s.status}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </Container>
+      </Section>
+
       <Section wash="cream">
         <CurveDivider from="white" />
         <Container className="py-16 md:py-20">

@@ -39,6 +39,11 @@ const CONFIGS: Record<string, AmbientConfig> = {
     accents: [
       { kind: "squircle", color: TOKENS.white, position: [-3.5, 3.2, -10], scale: 1.5, floatPhase: 2 },
       { kind: "squircle", color: TOKENS.white, position: [3.7, 3.6, -12], scale: 1.8, floatPhase: 4.5 },
+      // R7 corner cluster (the kheelona.ai background language in 3D):
+      // a tight rotated trio tucked into the lower-right corner
+      { kind: "flower4", color: TOKENS.yellow, position: [4.2, -2.6, -8], scale: 0.9, floatPhase: 1.1 },
+      { kind: "triangle5", color: TOKENS.blueSoft, position: [4.9, -3.3, -9], scale: 0.6, floatPhase: 2.7 },
+      { kind: "flower3", color: TOKENS.orange, position: [5.5, -2.1, -10], scale: 0.7, floatPhase: 4.1 },
     ],
   },
   "/playos": {
@@ -49,6 +54,9 @@ const CONFIGS: Record<string, AmbientConfig> = {
       // the PlayOS sky: soft clouds, echoing the home beat
       { kind: "squircle", color: TOKENS.cream, position: [-3.4, 3.0, -9], scale: 1.4, floatPhase: 2 },
       { kind: "squircle", color: TOKENS.cream, position: [3.6, 3.5, -11], scale: 1.7, floatPhase: 4.5 },
+      // R7 corner cluster, lower-left
+      { kind: "flower4", color: TOKENS.teal, position: [-4.6, -2.8, -9], scale: 0.8, floatPhase: 1.9 },
+      { kind: "triangle5", color: TOKENS.yellow, position: [-5.3, -2.0, -10], scale: 0.55, floatPhase: 3.6 },
     ],
   },
   "/safety": {
@@ -74,6 +82,9 @@ const CONFIGS: Record<string, AmbientConfig> = {
     palette: [TOKENS.yellow, TOKENS.orange, TOKENS.blueSoft],
     accents: [
       { kind: "flower13", color: TOKENS.yellow, position: [3.3, 3.1, -10], scale: 1.1, floatPhase: 2.4 },
+      // R7 corner cluster, upper-left
+      { kind: "polygon", color: TOKENS.blueSoft, position: [-4.4, 3.4, -9], scale: 0.8, floatPhase: 0.8 },
+      { kind: "flower3", color: TOKENS.yellow, position: [-5.1, 2.6, -10], scale: 0.6, floatPhase: 3.2 },
     ],
   },
   "/stories": {

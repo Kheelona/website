@@ -11,6 +11,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { TiltCard } from "@/components/ui/TiltCard";
 import { Faq, type FaqEntry } from "@/components/ui/Faq";
 import { FinaleCTA } from "@/components/sections/home/FinaleCTA";
+import { ParentQuotes } from "@/components/sections/shared/ParentQuotes";
 import { PREORDER_HREF } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -41,6 +42,14 @@ const FEELINGS_DEEP = [
   { name: "Sad", body: "Stays close. Some days are heavy. Lumi sits in them with your child, gently.", bg: "bg-purple/15", img: "sad" },
   { name: "Silly", body: "Plays along. Rhymes, made-up words, giggle games. Laughing together is learning too.", bg: "bg-yellow/15", img: "silly" },
   { name: "Joy", body: "Celebrates out loud. Small wins feel big when a friend cheers.", bg: "bg-teal/15", img: "joy" },
+] as const;
+
+/* R7: live pilot numbers, verbatim from kheelona.ai/lumi (founder-published).
+   Update only when the source updates. */
+const STATS = [
+  { value: "10 families", label: "test Lumi every day" },
+  { value: "1 school", label: "signed on to pilot Lumi" },
+  { value: "10 languages", label: "spoken, switched mid-chat" },
 ] as const;
 
 const APP_FEATURES = [
@@ -131,9 +140,27 @@ export default function LumiPage() {
         </Container>
       </Section>
 
-      {/* Conversation demo: storybook dialogue cards (ink text, WCAG-safe) */}
+      {/* R7: live-testing stats, exactly as published on kheelona.ai/lumi */}
       <Section wash="white">
         <CurveDivider from="cream" />
+        <Container className="pb-4 pt-6 md:pb-6 md:pt-8">
+          <Reveal>
+            <dl className="grid gap-8 sm:grid-cols-3">
+              {STATS.map((s) => (
+                <div key={s.label} className="border-l-[3px] border-orange pl-5">
+                  <dd className="font-display text-[clamp(34px,3.4vw,44px)] font-extrabold leading-none text-ink-head">
+                    {s.value}
+                  </dd>
+                  <dt className="mt-1 text-[15.5px] text-ink-muted">{s.label}</dt>
+                </div>
+              ))}
+            </dl>
+          </Reveal>
+        </Container>
+      </Section>
+
+      {/* Conversation demo: storybook dialogue cards (ink text, WCAG-safe) */}
+      <Section wash="white">
         <Container className="grid items-center gap-12 py-16 md:grid-cols-[1fr_1.1fr] md:py-20">
           <Reveal>
             <h2 className="mb-4 max-w-[16ch] font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.08] text-ink-head">
@@ -211,9 +238,14 @@ export default function LumiPage() {
             <h2 className="mb-3 font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.08] text-ink-head">
               You see everything. You decide everything.
             </h2>
+            {/* R7 lead line adapted from kheelona.ai/lumi */}
+            <p className="mb-3 max-w-[58ch] font-accent text-[clamp(20px,2vw,24px)] text-orange-deep">
+              They think they are playing. The app shows you they are growing.
+            </p>
             <p className="mb-11 max-w-[58ch] text-[clamp(18px,1.6vw,21px)]">
               The parent app is your window into every conversation, and your
-              hand on every dial.
+              hand on every dial: new words, how long you talked, what made
+              them laugh.
             </p>
           </Reveal>
           <div className="grid gap-5 sm:grid-cols-2">
@@ -260,6 +292,9 @@ export default function LumiPage() {
           </Reveal>
         </Container>
       </Section>
+
+      {/* R7: real early-tester quotes (shared section) */}
+      <ParentQuotes from="cool" count={2} eyebrow="From the pilot" title="The first families are already talking." />
 
       {/* Price block (CMO review: the ₹4-a-day line was buried in the FAQ) */}
       <Section wash="sun">

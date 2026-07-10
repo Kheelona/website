@@ -121,7 +121,13 @@ export default function PlayOSPage() {
               </Reveal>
             ))}
           </div>
-          <Reveal className="mt-8">
+          {/* R7: the kheelona.ai safety framing, one line */}
+          <Reveal>
+            <p className="mt-10 max-w-[24ch] font-display text-[clamp(22px,2.4vw,28px)] font-extrabold leading-[1.25] text-ink-head">
+              Safety is built in, not bolted on.
+            </p>
+          </Reveal>
+          <Reveal className="mt-6">
             <p className="text-[16px] text-ink-muted">
               The full picture, including how we built the safety layer, lives
               on the <Link href="/safety" className="font-semibold text-ink-head underline">Safety page</Link>.
@@ -130,9 +136,31 @@ export default function PlayOSPage() {
         </Container>
       </Section>
 
+      {/* R7: one-prompt customization (adapted from the kheelona.ai parent
+          app framing: "align the toy to your own values in a single prompt") */}
+      <Section wash="white">
+        <CurveDivider from="cream" />
+        <Container className="pb-14 pt-4 md:pb-16">
+          <Reveal>
+            <div className="items-center gap-8 rounded-(--radius-card-lg) border border-line-soft bg-cream p-7 md:flex md:p-9">
+              <p className="mb-4 max-w-[14ch] shrink-0 font-display text-[26px] font-extrabold leading-[1.15] text-ink-head md:mb-0">
+                Your parenting philosophy,{" "}
+                <span className="font-accent font-normal text-orange-deep">in one prompt</span>
+              </p>
+              <p className="max-w-[58ch] text-[17px]">
+                In the parent app you write one note about how your family
+                talks: what you celebrate, what waits until later, which
+                languages live at home. PlayOS follows your lead in every
+                conversation after that.
+              </p>
+            </div>
+          </Reveal>
+        </Container>
+      </Section>
+
       {/* The family roadmap (cream, so the finale stays the page's one orange) */}
       <Section wash="cream">
-        <CurveDivider from="cream" />
+        <CurveDivider from="white" />
         <Container className="py-16 md:py-20">
           <Reveal>
             <h2 className="mb-3 font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.08] text-ink-head">

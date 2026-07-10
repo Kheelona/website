@@ -1,0 +1,38 @@
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { Container } from "@/components/layout/Container";
+import { Section } from "@/components/layout/Section";
+import { CurveDivider } from "@/components/layout/CurveDivider";
+import { Reveal } from "@/components/ui/Reveal";
+
+/** R7: the "first question, answered" callout from the kheelona.ai home page.
+ *  Body line verbatim (founder: "this is a strong line, we should include
+ *  it"). Teal-deep lead instead of raw teal: 5.47:1 on white. */
+export function SafetyCallout() {
+  return (
+    <Section wash="cool">
+      <CurveDivider from="white" />
+      <Container className="pb-12 pt-4 md:pb-14">
+        <Reveal>
+          <div className="items-center gap-8 rounded-(--radius-card-lg) border border-teal-deep/40 bg-white p-7 md:flex md:p-9">
+            <p className="mb-4 max-w-[13ch] shrink-0 font-display text-[26px] font-extrabold leading-[1.15] text-teal-deep md:mb-0">
+              The <span className="font-accent font-normal">first question, answered</span>
+            </p>
+            <p className="mb-5 max-w-[58ch] text-[17px] md:mb-0">
+              In 2026, the first question about any AI toy is whether it&apos;s
+              safe. We built the answer into the OS, so safety is the first
+              thing you point to, not the last thing you worry about.
+            </p>
+            <Link
+              href="/safety"
+              className="inline-flex shrink-0 items-center gap-1.5 font-bold text-orange-deep underline-offset-4 hover:underline"
+            >
+              See how we built safety in
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+          </div>
+        </Reveal>
+      </Container>
+    </Section>
+  );
+}

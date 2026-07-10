@@ -1,5 +1,13 @@
 # QA Report (sprint log)
 
+## R7 sister-site enrichment · 2026-07-10 · kheelona.ai content/asset import on master
+
+**Scope**: recognition strip, safety callout, parent-app section (real dashboard in a CSS phone frame), 3 real early-tester quotes (testimonials blocker RESOLVED), team page full parity (photos/bios/quotes/LinkedIn), safety custody-chain + status-exact standards, lumi pilot-stats band, playos built-in-not-bolted-on + one-prompt card, 4 new 3D shape varieties + corner clusters. All imported copy founder-published on kheelona.ai; B2B lines adapted to parent voice; statuses copied exactly.
+
+**Lighthouse (localhost :3456 prod, single runs)**: home desktop 99/100/100/100, mobile 85/100/100/100 (LCP 4.4s); /team desktop 100/100/100/100; /products/lumi desktop 100/100/100/100. R7 content added at zero perf cost. Live h2 reads ~5-9 mobile points above localhost.
+
+**Verified in a visible tab**: recognition logos render (post-rebuild — this Next build snapshots public/ at build time; new assets 404 until rebuilt), safety callout card matches the reference, quotes + team cards + new shape clusters all clean; voice-lint clean on every imported line.
+
 ## R6 elegant motion · 2026-07-10 · vendored-registry cycle on master
 
 **Trigger**: founder brainstorm after R5 ("floating items gone completely... they are impressive, we should not over[do] it"). Four decisions locked via question batch: present-but-polite shapes; all four animated surfaces site-wide; Animate UI primary registry (license verified MIT + Commons Clause, commit-pinned vendoring under `site/components/vendor/`); actors stay 2D. Shipped: shape presence dial (0.9 opacity, densities 11/9-10/4), warm hero glow (calm rebuild of the Bubble background, compositor-only), TiltCard on every card surface (capability-gated), storybook pop reveals, CTA press ripple, cn()→clsx+twMerge, lucide-react icon family.
