@@ -1,5 +1,13 @@
 # QA Report (sprint log)
 
+## Live verification after the R5+R6+R7 push · 2026-07-10 · commit 5f59b13
+
+Pushed master -> demo-website; new build live in ~20s, all R7 markers present (recognition strip, safety callout, parent quotes). **Live Lighthouse**: desktop home 100/100/100/100; mobile home runs 97/86/85/85/85/85 -> median 85 (LCP 4.0s, TBT 0ms, FCP 1.3s) — **below the >=90 mobile gate** (R4 live read 90, LCP 3.1s).
+
+Diagnosis so far (recorded for R8): the LCP element is the hero mascot img; its bytes arrive at ~250ms (TTFB 135 + delay 21 + load 96) but **element render delay is ~1980ms** — the paint waits on main-thread/hydration work. Image discovery is perfect (fetchpriority=high, in initial HTML, not lazy). localhost has read 85/4.4s SINCE R4 (network-dominated, HTTP/1.1), so local runs cannot discriminate — the live URL is the only regression signal. Suspects added since R4, all in the pre-LCP hydration path: R6 pop-reveal CSS + RevealObserver timing, HeroGlow's three immediately-starting motion loops, site-wide TiltCard client components, Button-as-client (ripple). Warming the image-optimizer cache did NOT help (not a cold-cache artifact); cpuSlowdownMultiplier=1 locally did not move simulated LCP (network-sim-dominated locally).
+
+**R8 queued**: bisect the render delay live (Vercel preview deploys per suspect), target = restore >=90 median. A11y/BP/SEO remain 100 everywhere live.
+
 ## R7 sister-site enrichment · 2026-07-10 · kheelona.ai content/asset import on master
 
 **Scope**: recognition strip, safety callout, parent-app section (real dashboard in a CSS phone frame), 3 real early-tester quotes (testimonials blocker RESOLVED), team page full parity (photos/bios/quotes/LinkedIn), safety custody-chain + status-exact standards, lumi pilot-stats band, playos built-in-not-bolted-on + one-prompt card, 4 new 3D shape varieties + corner clusters. All imported copy founder-published on kheelona.ai; B2B lines adapted to parent voice; statuses copied exactly.

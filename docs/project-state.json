@@ -243,7 +243,7 @@
       "QA: build+tsc+token green; localhost LH home d99/m84, lumi d100/m88, A11y/BP/SEO 100; TBT 0ms; founder pack sent",
       "R7 sister-site enrichment: kheelona.ai = sanctioned reference (founder). Recognition strip, safety callout, parent-app section (real dashboard + PhoneFrame), 3 real parent quotes (testimonials blocker RESOLVED), team full parity (photos/bios/quotes/LinkedIn; backed-by TODO closed), safety custody chain + status-exact standards, lumi stats band, playos enrichment, 4 new 3D shapes + corner clusters. Assets via gh api from private repo apoorva262/kheelona.ai. Gotcha: this Next build snapshots public/ at build time."
     ],
-    "next_action": "Founder approval of the R7 pack -> push R5+R6+R7 together (master -> origin/demo-website) -> live Lighthouse verify -> close. Law: website-steps.md §8.14/8.15/8.16.",
+    "next_action": "R8: live mobile LCP render-delay bisect (home median 85 vs >=90 gate; hero img paints ~2s after bytes arrive; suspects = R6 reveal/glow/tilt hydration path). Use Vercel preview deploys per suspect; localhost cannot discriminate (network-dominated since R4). Everything else shipped and verified.",
     "founder_gate": "R6 pack sent 2026-07-10; awaiting yes. Open founder items: R4-a..f, R5-a (new logo)."
   },
   "resume_instructions": "Read README.md first. Then this file. Then the current-phase checkpoint. Then website-steps.md if it exists. Never re-ask anything settled in the Brand Bible (build prompt §1) or in approvals above."
