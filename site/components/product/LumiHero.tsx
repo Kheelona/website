@@ -5,7 +5,11 @@ import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import { detectTier } from "@/lib/three/tier";
 
-const LumiInset = dynamic(() => import("./LumiInset"), { ssr: false });
+// via the single three-stack entry (see components/three/Stage.tsx): a
+// direct dynamic import here would re-create the twin-chunk fiber split
+const LumiInset = dynamic(() => import("../three/Stage").then((m) => m.LumiInset), {
+  ssr: false,
+});
 
 /** Product hero with the MascotHero resilience contract: the approved static
  *  render is mounted and visible from first paint (it is this page's LCP
@@ -42,6 +46,7 @@ export function LumiHero({ className }: { className?: string }) {
         width={1113}
         height={1600}
         priority
+        fetchPriority="high"
         sizes="(max-width: 768px) 80vw, 420px"
         className={`relative mx-auto h-full w-auto object-contain drop-shadow-[0_20px_26px_rgba(41,160,215,0.2)] transition-opacity duration-700 ${ready ? "opacity-0" : "opacity-100"}`}
       />

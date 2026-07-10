@@ -31,7 +31,9 @@ export function Journal() {
       <CurveDivider from="teal" flip />
       <Container className="py-16 md:py-20">
         <Reveal>
-          <Eyebrow color="text-purple">From the journal</Eyebrow>
+          {/* default orange-deep: one eyebrow rule site-wide (design panel
+              2026-07-10: per-page hues read as accidental) */}
+          <Eyebrow>From the journal</Eyebrow>
           <h2 className="mb-2 font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.08] text-ink-head">
             Raising curious kids.
           </h2>
@@ -44,7 +46,7 @@ export function Journal() {
             <Reveal key={c.slug} delay={i * 0.08}>
               <Link
                 href={`/stories/${c.slug}`}
-                className="block h-full overflow-hidden rounded-(--radius-card) bg-white transition-transform duration-300 ease-(--ease-bounce) hover:-translate-y-1.5"
+                className="block h-full overflow-hidden rounded-(--radius-card) bg-white transition-[transform,box-shadow] duration-300 ease-(--ease-bounce) hover:-translate-y-1.5 hover:shadow-[0_16px_32px_rgba(216,95,27,0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
               >
                 <div className={`flex h-[220px] items-end justify-center overflow-hidden ${c.bg}`}>
                   <Image

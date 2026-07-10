@@ -34,6 +34,7 @@ Root `.env` (gitignored, DUMMY values until founder fills them): `TRIPO_API_KEY`
 - `docs/website-steps.md` — blueprint (law; if reality diverges, update it first)
 - `docs/qa-report.md` — sprint logs, Lighthouse, AI-detection verification of all 14 articles
 - `docs/copy-reference.md` — copy provenance + sanctioned deviations
+- `docs/design-review-2026-07-10.md` — R4 panel findings, every item dispositioned (FIXED/FOUNDER/DEFERRED/REJECTED); §8.13 in website-steps.md is the matching spec. 3D QA gotcha: hidden tabs freeze rAF, so the canvas looks dead in background automation tabs — verify with a visible window
 - `docs/stories-image-prompts.md` — ready prompts for the 7 journal articles still missing hero images
 - `docs/checkpoints/` — per-phase snapshots
 - `design-concepts/README.md` — 3 archived concepts, mascot cutout pipeline, Tripo3D 2D→3D pipeline (v2 runs incl. Janus fix + Lumi plush), engineering gotchas (overflow-x clip, scroll-snap wheel trap)

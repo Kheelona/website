@@ -14,8 +14,12 @@ export function CompareTable() {
       <table className="w-full min-w-[640px] border-separate border-spacing-0 text-[16px]">
         <thead>
           <tr>
-            <th scope="col" className="p-4 text-left" aria-label="Feature" />
-            <th scope="col" className="rounded-t-2xl bg-orange p-4 font-display text-lg font-bold text-white">
+            <th scope="col" className="p-4 text-left">
+              <span className="sr-only">What matters</span>
+            </th>
+            {/* ink on orange (Button.tsx precedent, ~5.9:1): white on
+                #EF762F is 2.88:1 and fails even the large-text floor */}
+            <th scope="col" className="rounded-t-(--radius-card) bg-orange p-4 font-display text-lg font-bold text-ink-head">
               Lumi
             </th>
             <th scope="col" className="p-4 font-display text-lg font-bold text-ink-head">Smart toys</th>
@@ -33,7 +37,7 @@ export function CompareTable() {
                 {label}
               </th>
               <td
-                className={`bg-orange p-4 text-center font-bold text-white ${i === ROWS.length - 1 ? "rounded-b-2xl" : ""}`}
+                className={`bg-orange p-4 text-center font-bold text-ink-head ${i === ROWS.length - 1 ? "rounded-b-(--radius-card)" : ""}`}
               >
                 {lumi}
               </td>

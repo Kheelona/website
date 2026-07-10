@@ -34,9 +34,13 @@ export default function LumiInset({ onReady }: { onReady?: () => void }) {
       onCreated={({ camera }) => camera.lookAt(0, 0.78, 0)}
       style={{ width: "100%", height: "100%" }}
     >
-      <ambientLight intensity={1.25} />
-      <directionalLight position={[2.5, 4, 3]} intensity={1.6} color="#fff6ea" />
-      <directionalLight position={[-3, 2, -2]} intensity={0.5} color="#3aa4e5" />
+      {/* warmer key + soft peach rim: the plush read pale gray-blue under
+          the flat neutral rig (design panel 2026-07-10 -- the toy must look
+          huggable at the moment of sale) */}
+      <ambientLight intensity={1.15} />
+      <directionalLight position={[2.5, 4, 3]} intensity={1.8} color="#ffe3c4" />
+      <directionalLight position={[-3, 2, -2]} intensity={0.45} color="#3aa4e5" />
+      <directionalLight position={[0, 1.5, -3]} intensity={0.6} color="#ffd9b0" />
       <Suspense fallback={null}>
         <LumiModel position={[0, 0, 0]} height={1.6} />
         <Ready onReady={onReady} />

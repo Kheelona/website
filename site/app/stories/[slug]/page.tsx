@@ -8,6 +8,7 @@ import { CurveDivider } from "@/components/layout/CurveDivider";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { FinaleCTA } from "@/components/sections/home/FinaleCTA";
 import { STORIES, getStory } from "@/lib/stories";
+import { StageGate } from "@/components/three/StageGate";
 
 export function generateStaticParams() {
   return STORIES.map((s) => ({ slug: s.slug }));
@@ -99,11 +100,11 @@ export default async function StoryPage({
               />
               <p className="text-[16px]">
                 More reads like this on the{" "}
-                <Link href="/stories" className="font-semibold text-blue underline">
+                <Link href="/stories" className="font-semibold text-ink-head underline">
                   journal
                 </Link>
                 , or meet the friend behind it on the{" "}
-                <Link href="/products/lumi" className="font-semibold text-blue underline">
+                <Link href="/products/lumi" className="font-semibold text-ink-head underline">
                   Lumi page
                 </Link>
                 .
@@ -113,6 +114,7 @@ export default async function StoryPage({
         </Container>
       </Section>
       <FinaleCTA variant="compact" from="white" />
+      <StageGate stage="ambient" />
     </>
   );
 }

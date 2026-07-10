@@ -10,11 +10,23 @@ Direction picked (Lumi's World + pop-up elements), both models generated and ver
 
 Everything below is the pre-existing launch list; it all carries over to the redesigned site unchanged.
 
+## R4 POLISH CYCLE (2026-07-10) — six decisions parked for you (site ships fine without them)
+
+The design panel review (`docs/design-review-2026-07-10.md`) surfaced these; each is a quick call or an asset, none blocks the deploy:
+
+- **R4-a. Reorder Home so Safety follows "Meet Lumi"** — the panel's strongest structural note: for Indian parents, safety is the gating objection and it currently answers at ~85% scroll depth. One yes/no from you; the section + 3D beat swap is ready work.
+- **R4-b. Warm Lumi "beauty shot" for the /products/lumi hero** — the current render reads cool; a warm 2D shot would sell the hug. Claude prepares the Gemini prompt kit on your go.
+- **R4-c. Reuse the price band ("Under ₹4 a day…", "Reserving now does not commit you to buy.") on Home after the compare table** — copy already exists on /products/lumi; this is a placement approval.
+- **R4-d. Hero composition: bring the Lumi plush in next to Robu** — first-time visitors reserve Lumi but meet only the mascot in frame one. Staging change to the founder-blessed hero, so it's yours.
+- **R4-e. Founder strip in the Home finale** — your real credibility (14 patents, Intel) is only on /team; a compact strip before the closing CTA would put humans behind the mic. New Home section, needs your yes.
+- **R4-f. 7 journal hero images** — prompts are ready in `docs/stories-image-prompts.md`; cards use mascot placeholders until these exist.
+
+
 ## 0. Gemini assets — GENERATED, awaiting ingest (state as of 2026-07-07 night)
 You generated 5 of 6 items; they sit in `~/Downloads` (3 image fixes + Veo shots 1-2). Claude's next session starts by ingesting them (exact steps in `docs/project-state.json` → `last_handoff.next_action`).
 - **Still yours, when Gemini video credits reset (~24h from 2026-07-07 night)**: optional SHOT 3 "Cuddle" — attach `gemini-handoff/seed-3-cuddle.png`, prompt in `gemini-handoff/README.md`. The film works with 2 shots; this adds the cozy ending.
 - **Then yours: approve the rebuilt V2 film** when Claude sends it.
-- Settled this round: film = V2 "Two friends" Veo rebuild — **now LIVE on the site** (2026-07-08); the site is **2D everywhere** (all GLBs, R3F and three.js removed; hero uses the MascotScene parallax cutout); pink approved (cutout fixed); your 3 regenerated images ingested (green/right/left all pass); repo cleaned of superseded drafts/renders/teasers; **standing rule: all Gemini generation is done by you from Claude-prepared prompt kits, never by Claude directly** (in CLAUDE.md).
+- Settled this round: film = V2 "Two friends" Veo rebuild — **now LIVE on the site** (2026-07-08); the site was **2D everywhere** at that point (superseded 2026-07-09 by the immersive R3F redesign now on master); pink approved (cutout fixed); your 3 regenerated images ingested (green/right/left all pass); repo cleaned of superseded drafts/renders/teasers; **standing rule: all Gemini generation is done by you from Claude-prepared prompt kits, never by Claude directly** (in CLAUDE.md).
 - Optional, whenever credits allow: SHOT 3 "Cuddle" (`gemini-handoff/seed-3-cuddle.png` + prompt in the README there) to extend the film's ending.
 
 ## 1. Tally form link (unlocks: the site actually converting)

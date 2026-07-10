@@ -8,16 +8,16 @@ import { RevealObserver } from "@/components/ui/RevealObserver";
 import { StickyMobileCTA } from "@/components/layout/StickyMobileCTA";
 
 const glory = localFont({
-  src: [
-    { path: "./fonts/Glory.ttf", weight: "100 900", style: "normal" },
-    { path: "./fonts/Glory-Italic.ttf", weight: "100 900", style: "italic" },
-  ],
+  // Italic face intentionally not shipped: all italic text on the site is
+  // font-accent (Instrument Serif), so the Glory italic would be dead
+  // preloaded bytes on every route.
+  src: [{ path: "./fonts/Glory.woff2", weight: "100 900", style: "normal" }],
   variable: "--font-glory",
   display: "swap",
 });
 
 const instrumentSans = localFont({
-  src: [{ path: "./fonts/InstrumentSans.ttf", weight: "100 900", style: "normal" }],
+  src: [{ path: "./fonts/InstrumentSans.woff2", weight: "100 900", style: "normal" }],
   variable: "--font-instrument-sans",
   display: "swap",
 });

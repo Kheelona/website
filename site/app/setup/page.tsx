@@ -6,6 +6,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/ui/Reveal";
 import { MascotScene } from "@/components/mascot/MascotScene";
 import { FinaleCTA } from "@/components/sections/home/FinaleCTA";
+import { StageGate } from "@/components/three/StageGate";
 
 export const metadata: Metadata = {
   title: "Setup: day one with Lumi",
@@ -72,6 +73,7 @@ export default function SetupPage() {
       </Section>
 
       <FinaleCTA variant="compact" from="white" />
+      <StageGate stage="ambient" />
     </>
   );
 }

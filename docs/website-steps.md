@@ -77,7 +77,7 @@ Also: `sitemap.ts`, `robots.ts`, per-route metadata + OG images (1200x630, canva
 
 ## 8.8 SEO & performance
 - Keyword map: build prompt §3.1 (16 keywords, locked). Primary keyword in H1/first para/meta title per page. Meta titles 50-60 chars, descriptions 150-160, unique per page.
-- Lighthouse gates: A11y/BP/SEO ≥90 all pages; Perf ≥90 desktop (mobile: aim 90, static fallbacks where parallax hurts).
+- Lighthouse gates (raised 2026-07-10, §8.13): A11y/BP/SEO = 100 all routes both form factors; Perf ≥95 desktop, ≥90 mobile, all routes.
 - Images: next/image, AVIF/WebP, mascot PNGs pre-sized per breakpoint; fonts self-hosted with subset + `font-display: swap`; parallax/tilt only via transform/opacity; no layout animation.
 
 ## 8.9 QA plan (per sprint + full pass at S13)
@@ -115,3 +115,20 @@ sitemap+robots; favicon bundle (logo-mark); per-route OG; 404; canonical URLs; S
 - 3D models: `site/public/models/kheelona-mascot.glb` (idle "NlaTrack") and `site/public/models/lumi-plush.glb` (turntable moment on /products/lumi, `LumiTurntable.tsx`).
 - Feelings (home): cast lineup on a shared ground with color ticks replaces the five tinted cards; curve dividers alternate direction site-wide.
 - Video pipeline: `launch-video/src/ProductFilm.tsx` renders from real photoshoot cutouts in `launch-video/assets/product/`; output lives at `site/public/video/launch.mp4` (+poster).
+
+## 8.13 Elevate + polish cycle addendum (2026-07-10, founder-approved)
+
+Applies on top of the immersive redesign (`docs/redesign-plan-2026-07.md`). Founder decisions, locked:
+1. **Elevate, not rebuild** — D1+D4 journey architecture and verbatim copy stay.
+2. **Pragmatic hybrid libraries** — three/@react-three/fiber/@react-three/drei remain the only 3D stack (VengeanceUI and reactbits evaluated and rejected: unaudited/flashy, conflict with brand rule). Exactly two primitives vendored on Radix, restyled with `@theme` brand tokens: FAQ accordion (`@radix-ui/react-accordion`) and mobile-nav sheet (`@radix-ui/react-dialog`). No shadcn CLI, no CVA/tailwind-merge/lucide. Micro-interactions via `motion` (160–320ms, `--ease-calm`).
+3. **Lighthouse hard gates** — 100 A11y/BP/SEO on all 9 routes, both form factors; Perf ≥95 desktop / ≥90 mobile.
+4. **Scope** — Home journey deep-polish + ambient 3D scenes on the 7 flat interior routes.
+
+Mechanisms introduced this cycle:
+- **Copy legibility ghost-fade** (`site/lib/three/exclusion.ts`): every floating shape's screen projection is tested per frame against measured `[data-content]` rects (document coords cached at measure time, zero DOM reads on the frame loop); a shape whose projection would cross copy fades to 14% opacity and returns when clear. (A placement-time clamp was designed first but rejected during implementation: the copy column spans ~83% of the viewport, so clamping either emptied the field or failed at some depths.) The Lumi plush additionally transit-fades between beats so it never crosses a neighboring section's copy.
+- **Single three-stack entry** (`site/components/three/Stage.tsx`): every dynamic import of a WebGL surface goes through this one module. Sibling dynamic entries made the bundler emit twin chunks with duplicate three/fiber copies. Rule: never `dynamic(() => import(...))` any three-consuming module except Stage.tsx.
+- **Hidden-tab caveat for 3D QA**: R3F boots on requestAnimationFrame, which Chrome freezes in hidden/occluded tabs. A backgrounded automation tab shows an inert 300x150 canvas and no `scene-3d` class — that is browser throttling, not a site bug. Verify 3D with a visible window.
+- **AmbientStage** (`site/components/three/AmbientStage.tsx`): lighter per-route scene for interiors — static camera + pointer parallax, corridor-clamped shape field, wash colors measured from the page's own `[data-wash]` sections (`site/lib/three/ambient.ts`), per-route dressing in `site/lib/three/ambient-configs.ts` with `enabled:false` kill switch. No GLBs on interiors. Shared shell extracted from ThreeStage (`StageShell.tsx`, `backdrop.tsx`); `StageGate` takes `stage: "journey" | "ambient"`.
+- **Mobile perf contract**: `lite` tier arms the 3D stage on first user signal (scroll/pointer) then idle, keeping three.js out of the Lighthouse trace; fonts are WOFF2 (unused Glory-Italic removed); AVIF enabled in `next.config.ts`; `LaunchVideo` uses `preload="none"`.
+- **Token drift gate**: `tools/tokens/check-tokens.mjs` compares `Design/design-system/colors_and_type.css` ↔ `site/app/globals.css` `@theme` ↔ `site/lib/three/tokens.ts` and fails the site build on drift (curated wash intermediates whitelisted).
+- **Review loop**: design panel note lives at `docs/design-review-2026-07-10.md`; approval loop capped at 3 iterations before founder escalation.

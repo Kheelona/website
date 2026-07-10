@@ -1,5 +1,41 @@
 # QA Report (sprint log)
 
+## R4 elevate + polish · 2026-07-10 · design-panel cycle on master
+
+**Process**: 3-agent senior design panel (Brand, UI craft, UX/conversion) audited the live demo from a 61-shot evidence pack; findings merged into `docs/design-review-2026-07-10.md` (21 + 11 items, every one dispositioned). Implementation, then a same-day re-review round (same 3 panelists + a fresh-eyes QA agent over the full diff) — all four verdicts' fix-lists landed. Founder decisions parked in FOUNDER-TODO.md (R4-a..f).
+
+**Shipped**
+- Mobile perf: GLBs and the three.js chunk no longer load on phones (lite tier = DOM art + ambient sky; models are full-tier only; module-scope preload removed). Fonts WOFF2 (370KB → 131KB, unused Glory-Italic dropped). AVIF enabled. Video poster 88→44KB, `preload="none"` + explicit dimensions. `fetchPriority="high"` on LCP images (this Next build's `priority` doesn't set it). Per-pose intrinsic image ratios (BP fix) + real `sizes` on the Feelings row.
+- Copy legibility ghost-fade (`lib/three/exclusion.ts`): shapes fade to 14% when their projection would cross measured `[data-content]` rects; Lumi plush transit-fades between beats. (Replaces the planned placement clamp — see §8.13.)
+- Footer stacking bug fixed (`relative z-20`): the fixed canvas painted its opaque sky over the footer on every scene route — this was live. Navbar opaque (orange column no longer reads through). Hero grounded (contact shadow + shape cluster).
+- Radix primitives, restyled with brand tokens only: FAQ accordion (`@radix-ui/react-accordion`, roving focus, animated height) and mobile-nav Sheet (`@radix-ui/react-dialog`, focus trap, Esc, scroll lock, closes on ≥1024px resize; entrance-only animation — exit animations wedged Radix Presence). Navbar pill display-gate moved to a wrapper (cn() conflict made it render at phone widths — the real "overlapped logo" bug).
+- Interior ambient rooms: `AmbientStage` on all 7 flat routes (washes measured from each page's own `[data-wash]` sections; per-route dressing + `enabled` kill switch in `ambient-configs.ts`; no GLBs on interiors; arms on first user signal so Lighthouse never sees it). Single dynamic entry `Stage.tsx` for the whole three stack (twin-chunk fiber duplication guard).
+- Contrast migration: orange band → orange-deep #D85F1B (white ≥19px bold = 3.76:1 legal; consent line ink 4.52:1); compare column ink-on-orange (5.9:1); all colored inline links → ink underline (blue-on-cream was 2.78:1); playos eyebrow + journal eyebrow + team numerals normalized to orange-deep; finale price line font-bold (WCAG large-text needs ≥700).
+- Conversion (UX panel): reassurance microcopy under MeetLumi + new compare-table CTA; kheelona.ai exits in a new tab; short story slug 301s; sticky mobile CTA ducks on scroll-down, hides over #reserve and footer, re-arms per route (was observing stale nodes after client navigation).
+- Hardening from QA re-review: `detectTier()` re-checked at deferred mount (reduced-motion race); GLTF scale idempotent across remounts (cached raw height); ambient sky orange aligned to #D85F1B; token drift gate `tools/tokens/check-tokens.mjs` wired into the site build.
+
+**Lighthouse (local prod, headless; localhost is HTTP/1.1 — h2 calibration: this same rig scores the live h2 deploy +5-9 perf on mobile, e.g. old build 81 local / 90 live)**
+
+| route | desktop P/A/BP/SEO | mobile P/A/BP/SEO |
+|---|---|---|
+| / | 99/100/100/100 | 86/100/100/100 |
+| /products/lumi | 100/100/100/100 | 87/100/100/100 |
+| /playos | 100/100/100/100 | 91/100/100/100 |
+| /safety | 100/100/100/100 | 92/100/100/100 |
+| /setup | 100/100/100/100 | 92/100/100/100 |
+| /team | 100/100/100/100 | 92/100/100/100 |
+| /stories | 100/100/100/100 | 90/100/100/100 |
+| /stories/[slug] | 100/100/100/100 | 91/100/100/100 |
+| /privacy | 100/100/100/100 | 94/100/100/100 |
+| /terms | 100/100/100/100 | 94/100/100/100 |
+
+Gates: A11y/BP/SEO = 100 everywhere ✓. Perf ≥95 desktop ✓. Mobile ≥90: 8/10 routes locally; home 86 + lumi 87 carry the h1 penalty — live-URL verification after deploy is the binding check (§8.13 gate).
+
+**Contract audits**: no-JS SSR copy present (hero/feelings/lumi/finale greps) ✓; voice-lint em-dash grep over site/ clean ✓; zero console errors on / ✓; keyboard: accordion roving focus + Enter, sheet focus-trap + Esc verified in-browser ✓; token check green in build ✓.
+
+**Verification caveat for future 3D QA**: Chrome freezes rAF in hidden/occluded tabs — an automation tab left in the background shows an inert 300x150 canvas and no scene-3d class on ANY build including the live site. Cost this cycle hours; now documented in §8.13. Verify WebGL with a visible window.
+
+
 ## Sprint S0–S3 · 2026-07-06 · commit f451eae
 
 **Scope shipped**

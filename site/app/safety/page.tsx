@@ -8,6 +8,7 @@ import { MascotScene } from "@/components/mascot/MascotScene";
 import { Button } from "@/components/ui/Button";
 import { Faq, type FaqEntry } from "@/components/ui/Faq";
 import { FinaleCTA } from "@/components/sections/home/FinaleCTA";
+import { StageGate } from "@/components/three/StageGate";
 
 export const metadata: Metadata = {
   title: "Safety: how we built a safe AI toy",
@@ -213,6 +214,7 @@ export default function SafetyPage() {
       </Section>
 
       <FinaleCTA variant="compact" from="cream" />
+      <StageGate stage="ambient" />
     </>
   );
 }

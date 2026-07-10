@@ -1,0 +1,92 @@
+import { TOKENS } from "./tokens";
+import type { ShapeKind } from "@/lib/shape-paths";
+
+/** Per-route dressing for the interior ambient stages (§8.13). Wash colors
+ *  are NOT configured here — they are measured from the page's own
+ *  [data-wash] sections (lib/three/ambient.ts). This file is only the
+ *  route's personality: shape density, palette, one optional accent.
+ *  `enabled: false` is the instant per-route revert switch. */
+
+export type AmbientAccent = {
+  kind: ShapeKind;
+  color: string;
+  position: [number, number, number];
+  scale: number;
+  floatPhase?: number;
+};
+
+export type AmbientConfig = {
+  enabled: boolean;
+  /** shape count for the full tier (lite gets ~60%) */
+  density: number;
+  palette: string[];
+  accents: AmbientAccent[];
+};
+
+const CALM_PALETTE = [TOKENS.yellow, TOKENS.blueSoft, TOKENS.teal, TOKENS.purple];
+
+const CONFIGS: Record<string, AmbientConfig> = {
+  "/playos": {
+    enabled: true,
+    density: 12,
+    palette: [TOKENS.blueSoft, TOKENS.teal, TOKENS.yellow, TOKENS.purple],
+    accents: [
+      // the PlayOS sky: soft clouds, echoing the home beat
+      { kind: "squircle", color: TOKENS.cream, position: [-3.4, 3.0, -9], scale: 1.4, floatPhase: 2 },
+      { kind: "squircle", color: TOKENS.cream, position: [3.6, 3.5, -11], scale: 1.7, floatPhase: 4.5 },
+    ],
+  },
+  "/safety": {
+    enabled: true,
+    density: 10,
+    palette: [TOKENS.teal, TOKENS.blueSoft, TOKENS.yellow],
+    accents: [
+      // the sheltering canopy from the safety garden
+      { kind: "flower5", color: TOKENS.teal, position: [2.9, 3.9, -8], scale: 2.6, floatPhase: 1 },
+    ],
+  },
+  "/setup": {
+    enabled: true,
+    density: 10,
+    palette: CALM_PALETTE,
+    accents: [
+      { kind: "squircle", color: TOKENS.blueSoft, position: [-3.2, 2.6, -9], scale: 0.9, floatPhase: 3 },
+    ],
+  },
+  "/team": {
+    enabled: true,
+    density: 10,
+    palette: [TOKENS.yellow, TOKENS.orange, TOKENS.blueSoft, TOKENS.teal],
+    accents: [
+      { kind: "flower13", color: TOKENS.yellow, position: [3.3, 3.1, -10], scale: 1.1, floatPhase: 2.4 },
+    ],
+  },
+  "/stories": {
+    enabled: true,
+    density: 12,
+    palette: CALM_PALETTE,
+    accents: [
+      // a small flower cluster for the journal meadow
+      { kind: "flower5", color: TOKENS.purple, position: [-3.1, 0.5, -7], scale: 0.5, floatPhase: 0.5 },
+      { kind: "flower13", color: TOKENS.yellow, position: [-2.5, 0.4, -8], scale: 0.4, floatPhase: 1.6 },
+    ],
+  },
+  // legal pages: nearly bare on purpose — quiet room, a whisper of brand
+  "/privacy": { enabled: true, density: 5, palette: CALM_PALETTE, accents: [] },
+  "/terms": { enabled: true, density: 5, palette: CALM_PALETTE, accents: [] },
+};
+
+/** Longest-prefix match so /stories/[slug] inherits /stories. */
+export function ambientConfigFor(pathname: string): AmbientConfig | null {
+  let best: AmbientConfig | null = null;
+  let bestLen = 0;
+  for (const [prefix, cfg] of Object.entries(CONFIGS)) {
+    if (pathname === prefix || pathname.startsWith(prefix + "/")) {
+      if (prefix.length > bestLen) {
+        best = cfg;
+        bestLen = prefix.length;
+      }
+    }
+  }
+  return best && best.enabled ? best : null;
+}

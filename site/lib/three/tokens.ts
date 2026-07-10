@@ -28,5 +28,5 @@ export const BEAT_WASHES: string[] = [
   "#FFFFFF", // 7 the plateau (compare)
   "#D9F4EC", // 8 safety garden: teal light
   "#FDF1E2", // 9 journal meadow: sun
-  "#EF762F", // 10 finale: sunset orange
+  "#D85F1B", // 10 finale: sunset orange (deep: white large type stays legal)
 ];

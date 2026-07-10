@@ -53,7 +53,7 @@ export function TallyEmbed() {
         <a
           href={FORM_URL}
           onClick={() => track("preorder_open_fallback")}
-          className="font-semibold text-blue underline"
+          className="font-semibold text-ink-head underline"
         >
           Open it in a new tab
         </a>

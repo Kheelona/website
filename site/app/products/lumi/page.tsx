@@ -116,9 +116,12 @@ export default function LumiPage() {
             </p>
           </Reveal>
           <Reveal mode="rise" className="relative flex justify-center">
+            {/* soft radial halo instead of a hard-edged disc: the plush sat
+                on the circle like an unblended sticker (design panel
+                2026-07-10) */}
             <div
               aria-hidden="true"
-              className="absolute left-1/2 top-1/2 aspect-square w-[85%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/70"
+              className="absolute left-1/2 top-1/2 aspect-square w-[95%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.85)_0%,rgba(255,255,255,0.5)_55%,transparent_72%)]"
             />
             <LumiHero className="relative h-[440px] w-full max-w-[420px] md:h-[520px]" />
           </Reveal>

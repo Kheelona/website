@@ -30,6 +30,48 @@
 
   --radius-card: 22px;
   --radius-card-lg: 28px;
+
+  /* Radix accordion height animation (ui/Faq.tsx) */
+  --animate-accordion-down: accordion-down 0.24s var(--ease-calm);
+  --animate-accordion-up: accordion-up 0.2s var(--ease-calm);
+
+  /* Mobile-nav sheet (ui/Sheet.tsx) */
+  --animate-sheet-in: sheet-in 0.26s var(--ease-calm);
+  --animate-sheet-fade-in: sheet-fade-in 0.26s var(--ease-calm);
+
+  @keyframes sheet-in {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+  @keyframes sheet-fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
 }
 
 html {
@@ -89,7 +131,7 @@ html.scene-3d [data-wash] {
   transition: background-color 0.8s var(--ease-calm);
 }
 html.scene-3d [data-wash="orange"] {
-  background-color: var(--color-orange);
+  background-color: var(--color-orange-deep);
 }
 html.scene-3d [data-wash="teal"] {
   background-color: rgb(26 188 156 / 0.32);
@@ -115,9 +157,13 @@ html.scene-3d [data-curve] {
 [data-scene-hide] {
   transition: opacity 0.7s var(--ease-calm);
 }
-@media (min-width: 900px) {
-  html.scene-3d [data-hero-fallback],
-  html.scene-3d [data-scene-hide] {
+/* scene-3d-full is set only when the full-tier journey (the one with live
+   models) has mounted, so the DOM art can never fade without a model behind
+   it -- not at 900-1023px, and not when a lite-tier tablet rotates past
+   1024px mid-session (UI panel 2026-07-10 + re-review). */
+@media (min-width: 1024px) {
+  html.scene-3d-full [data-hero-fallback],
+  html.scene-3d-full [data-scene-hide] {
     opacity: 0;
     pointer-events: none;
   }

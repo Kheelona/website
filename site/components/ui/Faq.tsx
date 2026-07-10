@@ -1,42 +1,41 @@
 "use client";
 
-import { useState } from "react";
+import * as Accordion from "@radix-ui/react-accordion";
 
 export type FaqEntry = { q: string; a: string };
 
-/** Accessible FAQ accordion (native disclosure pattern, keyboard-friendly). */
+/** FAQ accordion on Radix (§8.13): arrow-key/Home/End roving focus, proper
+ *  region semantics, animated height via --radix-accordion-content-height
+ *  (keyframes in globals.css). Restyled with brand tokens only. */
 export function Faq({ items }: { items: FaqEntry[] }) {
-  const [openIdx, setOpenIdx] = useState<number | null>(0);
-
   return (
-    <div className="divide-y divide-line-soft rounded-(--radius-card) bg-white">
-      {items.map((item, i) => {
-        const open = openIdx === i;
-        return (
-          <div key={item.q}>
+    <Accordion.Root
+      type="single"
+      collapsible
+      defaultValue={items[0]?.q}
+      className="divide-y divide-line-soft rounded-(--radius-card) bg-white"
+    >
+      {items.map((item) => (
+        <Accordion.Item key={item.q} value={item.q}>
+          <Accordion.Header asChild>
             <h3>
-              <button
-                type="button"
-                aria-expanded={open}
-                onClick={() => setOpenIdx(open ? null : i)}
-                className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left font-display text-[20px] font-bold text-ink-head transition-colors hover:text-orange-deep"
-              >
+              <Accordion.Trigger className="group flex w-full items-center justify-between gap-4 px-6 py-5 text-left font-display text-[20px] font-bold text-ink-head transition-colors hover:text-orange-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-inset">
                 {item.q}
                 <svg
                   viewBox="0 0 20 20"
                   aria-hidden="true"
-                  className={`h-5 w-5 shrink-0 transition-transform duration-200 ${open ? "rotate-45" : ""}`}
+                  className="h-5 w-5 shrink-0 transition-transform duration-200 group-data-[state=open]:rotate-45"
                 >
                   <path d="M10 4v12M4 10h12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                 </svg>
-              </button>
+              </Accordion.Trigger>
             </h3>
-            {open && (
-              <p className="px-6 pb-6 text-[16.5px] text-ink">{item.a}</p>
-            )}
-          </div>
-        );
-      })}
-    </div>
+          </Accordion.Header>
+          <Accordion.Content className="overflow-hidden data-[state=closed]:animate-(--animate-accordion-up) data-[state=open]:animate-(--animate-accordion-down)">
+            <p className="px-6 pb-6 text-[16.5px] text-ink">{item.a}</p>
+          </Accordion.Content>
+        </Accordion.Item>
+      ))}
+    </Accordion.Root>
   );
 }

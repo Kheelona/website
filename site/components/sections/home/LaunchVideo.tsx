@@ -45,7 +45,12 @@ export function LaunchVideo() {
             playsInline
             autoPlay={ambient}
             controls={!ambient}
-            preload="metadata"
+            preload="none"
+            // with preload=none there is no metadata to size the box from;
+            // explicit dimensions keep the document height stable (no CLS,
+            // no smooth-scroll landing drift)
+            width={1920}
+            height={1080}
             poster="/video/launch-poster.jpg"
             src="/video/launch.mp4"
             aria-label="A short film of the Lumi talking toy: it listens first, then talks back, in the three colors, with the launch price of 4,999 rupees"

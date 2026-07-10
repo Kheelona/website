@@ -57,7 +57,14 @@ export function PlayOSHome() {
           <Button href={PREORDER_HREF}>Join the pre-order list</Button>
           <span className="text-[15px] text-ink">
             Building on PlayOS? See{" "}
-            <Link href="https://kheelona.ai" className="font-semibold text-ink-head underline">
+            {/* new tab: an equal-emphasis exit link mid-funnel was walking the
+                most engaged readers off-site (UX panel 2026-07-10) */}
+            <Link
+              href="https://kheelona.ai"
+              target="_blank"
+              rel="noopener"
+              className="font-semibold text-ink-head underline"
+            >
               kheelona.ai
             </Link>
           </span>

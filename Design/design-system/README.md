@@ -136,3 +136,13 @@ Kheelona has **no traditional icon system** — no Material Symbols, Lucide, or 
 - **Functional icons (close, arrows, etc.) substitute Lucide** — the source uses one-off Streamline icons that don't form a consistent system.
 - **Fonts** load from Google Fonts (Glory, Instrument Sans, Instrument Serif). All three are first-party Google families so no manual font files are needed.
 - **The "Mobile application logo" slide** (frame 16) is mostly empty rectangles in the source — interpreted as a placeholder for a future app-icon explore.
+
+## Palette sync checklist (kheelona.com, added 2026-07-10)
+
+The site keeps two mirrors of this palette. To change a color:
+
+1. Edit `colors_and_type.css` here (the canonical file).
+2. Mirror it in `site/app/globals.css` under `@theme` (`--color-*` names).
+3. If the 3D scene uses it, mirror it in `site/lib/three/tokens.ts`.
+4. Run `cd site && npm run build` — `tools/tokens/check-tokens.mjs` fails the build on any drift.
+5. Sanctioned site-only values (heading ink `#1C1C1C`, footer cocoa, sun wash `#FDF1E2`, sky stops) are whitelisted inside that script; add new deviations there with a comment.

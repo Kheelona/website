@@ -8,6 +8,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/ui/Reveal";
 import { MascotScene } from "@/components/mascot/MascotScene";
 import { FinaleCTA } from "@/components/sections/home/FinaleCTA";
+import { StageGate } from "@/components/three/StageGate";
 
 export const metadata: Metadata = {
   title: "PlayOS: the voice engine behind Lumi",
@@ -48,7 +49,9 @@ export default function PlayOSPage() {
       <Section wash="cool">
         <Container className="grid items-center gap-10 py-16 md:grid-cols-[1.1fr_0.9fr] md:py-20">
           <Reveal mode="rise">
-            <Eyebrow color="text-blue">How it works</Eyebrow>
+            {/* default orange-deep: text-blue on the cool wash is 2.68:1,
+                under the 3:1 large-text floor (Eyebrow.tsx deviation note) */}
+            <Eyebrow>How it works</Eyebrow>
             <h1 className="mb-5 font-display text-[clamp(38px,4.5vw,58px)] font-extrabold leading-[1.08] text-ink-head">
               How does Lumi talk with your child?
             </h1>
@@ -120,7 +123,7 @@ export default function PlayOSPage() {
           <Reveal className="mt-8">
             <p className="text-[16px] text-ink-muted">
               The full picture, including how we built the safety layer, lives
-              on the <Link href="/safety" className="font-semibold text-teal underline">Safety page</Link>.
+              on the <Link href="/safety" className="font-semibold text-ink-head underline">Safety page</Link>.
             </p>
           </Reveal>
         </Container>
@@ -156,7 +159,7 @@ export default function PlayOSPage() {
           <Reveal className="flex flex-wrap items-center justify-between gap-5">
             <p className="text-[16px] text-ink-muted">
               Building on PlayOS?{" "}
-              <a href="https://kheelona.ai" className="font-semibold text-blue underline">
+              <a href="https://kheelona.ai" className="font-semibold text-ink-head underline">
                 See kheelona.ai
               </a>
             </p>
@@ -168,6 +171,7 @@ export default function PlayOSPage() {
       </Section>
 
       <FinaleCTA variant="compact" from="cream" />
+      <StageGate stage="ambient" />
     </>
   );
 }

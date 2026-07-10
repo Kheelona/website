@@ -5,6 +5,7 @@ import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { useGLTF, useTexture } from "@react-three/drei";
 import { stageStore } from "@/lib/three/store";
+import { contentFadeTarget } from "@/lib/three/exclusion";
 import { getShapeGeometry } from "@/lib/three/shape-geometry";
 import type { ShapeKind } from "@/lib/shape-paths";
 
@@ -56,11 +57,19 @@ export function MascotModel({
   }>({});
 
   useMemo(() => {
-    const box = new THREE.Box3().setFromObject(model);
-    const size = box.getSize(new THREE.Vector3());
-    const s = height / size.y;
+    // the GLTF scene is cached and shared across mounts: measure its RAW
+    // size once and derive scale from that, or a remount would re-measure
+    // the already-scaled model and undo itself (QA 2026-07-10)
+    if (!model.userData.rawHeight) {
+      model.scale.setScalar(1);
+      model.position.set(0, 0, 0);
+      const raw = new THREE.Box3().setFromObject(model);
+      model.userData.rawHeight = raw.getSize(new THREE.Vector3()).y || 1;
+    }
+    const s = height / (model.userData.rawHeight as number);
     model.scale.setScalar(s);
-    box.setFromObject(model);
+    model.position.set(0, 0, 0);
+    const box = new THREE.Box3().setFromObject(model);
     const c = box.getCenter(new THREE.Vector3());
     model.position.x -= c.x;
     model.position.z -= c.z;
@@ -122,24 +131,60 @@ export function MascotModel({
 export function LumiModel({
   position = [0, 0, 0] as [number, number, number],
   height = 1.55,
+  fadeByDistance = false,
 }: {
   position?: [number, number, number];
   height?: number;
+  /** journey use: fade out while the camera is in transit between beats so
+   *  the plush never crosses a neighboring section's copy (the inset canvas
+   *  on /products/lumi keeps it always-on) */
+  fadeByDistance?: boolean;
 }) {
   const { scene: model } = useGLTF("/models/lumi-plush.glb");
   const group = useRef<THREE.Group>(null);
+  const mats = useRef<THREE.Material[]>([]);
 
   useMemo(() => {
-    const box = new THREE.Box3().setFromObject(model);
-    const size = box.getSize(new THREE.Vector3());
-    const s = height / size.y;
+    // idempotent across remounts of the cached GLTF scene (QA 2026-07-10)
+    if (!model.userData.rawHeight) {
+      model.scale.setScalar(1);
+      model.position.set(0, 0, 0);
+      const raw = new THREE.Box3().setFromObject(model);
+      model.userData.rawHeight = raw.getSize(new THREE.Vector3()).y || 1;
+    }
+    const s = height / (model.userData.rawHeight as number);
     model.scale.setScalar(s);
-    box.setFromObject(model);
+    model.position.set(0, 0, 0);
+    const box = new THREE.Box3().setFromObject(model);
     const c = box.getCenter(new THREE.Vector3());
     model.position.x -= c.x;
     model.position.z -= c.z;
     model.position.y -= box.min.y;
   }, [model, height]);
+
+  useEffect(() => {
+    if (!fadeByDistance) return;
+    const found: THREE.Material[] = [];
+    model.traverse((o) => {
+      const mesh = o as THREE.Mesh;
+      if (mesh.isMesh && mesh.material) {
+        for (const m of Array.isArray(mesh.material) ? mesh.material : [mesh.material]) {
+          m.transparent = true;
+          found.push(m);
+        }
+      }
+    });
+    mats.current = found;
+    return () => {
+      // the GLB scene is cached by useGLTF and shared with LumiInset:
+      // leave the materials the way the inset expects them
+      for (const m of found) {
+        m.opacity = 1;
+        m.transparent = false;
+      }
+      mats.current = [];
+    };
+  }, [model, fadeByDistance]);
 
   useFrame((state, delta) => {
     const g = group.current;
@@ -150,6 +195,17 @@ export function LumiModel({
     g.rotation.y = -0.15 + Math.sin(t * 0.32) * 0.55 + px * 0.12;
     g.rotation.z = THREE.MathUtils.damp(g.rotation.z, px * -0.04, 2.5, delta);
     g.position.y = position[1] + Math.sin(t * 1.05) * 0.012;
+
+    if (fadeByDistance && mats.current.length) {
+      // full presence while the camera dwells at this place, softening on
+      // approach, fully gone by the neighboring beat (a steeper curve made
+      // the plush invisible while its own card was still arriving)
+      const away = Math.abs(state.camera.position.z - 4.6 - position[2]) / SPACING;
+      const target = THREE.MathUtils.clamp(1.45 - away * 1.5, 0, 1);
+      const next = THREE.MathUtils.damp(mats.current[0].opacity, target, 6, delta);
+      for (const m of mats.current) m.opacity = next;
+      g.visible = next > 0.02;
+    }
   });
 
   return (
@@ -229,6 +285,7 @@ export function BrandShape({
   rotation = [0, 0, 0] as [number, number, number],
   floatPhase = 0,
   floatAmp = 0.18,
+  keepClear = true,
 }: {
   kind: ShapeKind;
   color: string;
@@ -237,21 +294,37 @@ export function BrandShape({
   rotation?: [number, number, number];
   floatPhase?: number;
   floatAmp?: number;
+  /** ghost down when the projection crosses a copy rect (exclusion.ts) */
+  keepClear?: boolean;
 }) {
   const geo = useMemo(() => getShapeGeometry(kind), [kind]);
   const ref = useRef<THREE.Mesh>(null);
+  const mat = useRef<THREE.MeshStandardMaterial>(null);
 
-  useFrame((state) => {
+  useFrame((state, delta) => {
     const m = ref.current;
     if (!m) return;
     const t = state.clock.elapsedTime;
     m.position.y = position[1] + Math.sin(t * 0.5 + floatPhase) * floatAmp;
     m.rotation.z = rotation[2] + Math.sin(t * 0.3 + floatPhase) * 0.08;
+
+    // the legibility contract: never sit vividly over copy. Radius covers
+    // the extruded silhouette incl. bevel + corner reach, not the unit disc.
+    if (keepClear && mat.current) {
+      const target = contentFadeTarget(m.position, 0.75 * scale, state.camera);
+      mat.current.opacity = THREE.MathUtils.damp(mat.current.opacity, target, 8, delta);
+    }
   });
 
   return (
     <mesh ref={ref} geometry={geo} position={position} rotation={rotation} scale={scale}>
-      <meshStandardMaterial color={color} roughness={0.65} metalness={0} />
+      <meshStandardMaterial
+        ref={mat}
+        color={color}
+        roughness={0.65}
+        metalness={0}
+        transparent={keepClear}
+      />
     </mesh>
   );
 }
@@ -261,7 +334,17 @@ export function BrandShape({
    depths. Deterministic layout (no Math.random: SSR/replay safety). */
 const KINDS: ShapeKind[] = ["flower5", "flower13", "squircle"];
 
-export function ShapeField({ count, palette }: { count: number; palette: string[] }) {
+export function ShapeField({
+  count,
+  palette,
+  depthRange = [6, 6 + 10.2 * SPACING],
+}: {
+  count: number;
+  palette: string[];
+  /** [near, far] distance in front of the camera line (z = -near..-far);
+   *  the journey spreads along the whole path, interiors hold a static room */
+  depthRange?: [number, number];
+}) {
   const items = useMemo(() => {
     const out: {
       kind: ShapeKind;
@@ -271,6 +354,7 @@ export function ShapeField({ count, palette }: { count: number; palette: string[
       phase: number;
       rz: number;
     }[] = [];
+    const [near, far] = depthRange;
     for (let i = 0; i < count; i++) {
       // golden-ratio driven pseudo-random, stable across renders
       const r1 = (i * 0.6180339887) % 1;
@@ -283,7 +367,7 @@ export function ShapeField({ count, palette }: { count: number; palette: string[
         position: [
           side * (2.7 + r1 * 2.3),
           0.5 + r2 * 3.0,
-          -(r3 * 10.2 * SPACING) - 6,
+          -(near + r3 * (far - near)),
         ],
         scale: 0.28 + r1 * 0.42,
         phase: i * 1.7,
@@ -291,7 +375,7 @@ export function ShapeField({ count, palette }: { count: number; palette: string[
       });
     }
     return out;
-  }, [count, palette]);
+  }, [count, palette, depthRange]);
 
   return (
     <group>
@@ -310,4 +394,7 @@ export function ShapeField({ count, palette }: { count: number; palette: string[
   );
 }
 
-useGLTF.preload("/models/kheelona-mascot.glb");
+// No module-scope useGLTF.preload here: it would fetch the 1.4MB mascot GLB
+// on every tier the moment this chunk parses, including phones that never
+// render the models (they keep DOM art). Suspense fetches on mount instead;
+// the stage mounts post-idle, so the crossfade contract already tolerates it.

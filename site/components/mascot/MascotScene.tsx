@@ -21,6 +21,19 @@ export type MascotPose =
   | "joy"
   | "bliss";
 
+/** Intrinsic pixel sizes of the cutout PNGs in public/mascot/. Each pose is
+ *  cropped differently, so a shared ratio would distort the width/height
+ *  attrs (CLS + Lighthouse image-aspect-ratio). */
+const DIMS: Record<MascotPose, { w: number; h: number }> = {
+  "hero-wink": { w: 384, h: 737 },
+  curious: { w: 505, h: 595 },
+  grumpy: { w: 459, h: 757 },
+  sad: { w: 430, h: 664 },
+  silly: { w: 468, h: 649 },
+  joy: { w: 513, h: 696 },
+  bliss: { w: 423, h: 726 },
+};
+
 const ALT: Record<MascotPose, string> = {
   "hero-wink":
     "The Kheelona mascot, a friendly fox with round blue glasses, winking and giving a thumbs up",
@@ -80,8 +93,12 @@ export function MascotScene({
       src={`/mascot/mascot-${pose}.png`}
       alt={ALT[pose]}
       width={width}
-      height={Math.round(width * 1.5)}
+      height={Math.round((width * DIMS[pose].h) / DIMS[pose].w)}
       priority={priority}
+      // this Next build's priority preload carries no fetchpriority; without
+      // the explicit hint the LCP image queues behind fonts/JS under mobile
+      // throttling (Lighthouse lcp-discovery flags it)
+      fetchPriority={priority ? "high" : undefined}
       sizes="(max-width: 768px) 70vw, 360px"
       className="h-auto w-full drop-shadow-[0_18px_24px_rgba(216,95,27,0.18)]"
     />

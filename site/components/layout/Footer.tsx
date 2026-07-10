@@ -3,7 +3,10 @@ import { FOOTER_LINKS } from "@/lib/site";
 
 export function Footer() {
   return (
-    <footer className="bg-footer-cocoa py-11 text-[15px] text-white/85">
+    // relative z-20: the fixed stage canvas lives inside main (z-10) and
+    // covers the viewport, so without a higher stacking level the opaque
+    // WebGL sky paints over the footer whenever a scene is on
+    <footer className="relative z-20 bg-footer-cocoa py-11 text-[15px] text-white/85">
       <div className="mx-auto w-full max-w-[1200px] px-6">
         <div className="flex flex-wrap items-center justify-between gap-6">
           <span className="font-display text-2xl font-extrabold text-white">

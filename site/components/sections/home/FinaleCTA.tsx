@@ -9,7 +9,9 @@ import { TallyEmbed } from "@/components/ui/TallyEmbed";
  *  `variant="full"` (Home, Lumi): big headline + character lineup.
  *  `variant="compact"` (other pages): the ask + the form, no spectacle,
  *  so the moment stays a moment (design-review verdict). Copy verbatim.
- *  Body copy is bold ≥19px: white on orange passes WCAG large-text 3:1. */
+ *  Contrast: the band is orange-deep (#D85F1B) so white bold >=19px sits at
+ *  3.76:1 (large-text 3:1 passes); the 15px consent line uses ink-head
+ *  (4.6:1) because small print can never pass in white on any brand orange. */
 const LINEUP = [
   { img: "/mascot/mascot-grumpy.png", h: "h-[150px]", mobile: false },
   { img: "/mascot/mascot-hero-wink.png", h: "h-[180px]", mobile: true },
@@ -41,7 +43,9 @@ export function FinaleCTA({
           >
             Reserve Lumi before the price goes up.
           </h2>
-          <p className="mx-auto mb-8 max-w-[50ch] text-[19px] font-semibold text-white md:text-[21px]">
+          {/* font-bold, not semibold: WCAG's large-text 3:1 floor for 19-21px
+              type requires weight >=700 (UI panel re-review) */}
+          <p className="mx-auto mb-8 max-w-[50ch] text-[19px] font-bold text-white md:text-[21px]">
             ₹4,999 launch price. ₹9,999 after launch. No payment now. We hold
             the price, you hold your place.
           </p>
@@ -49,7 +53,7 @@ export function FinaleCTA({
         <Reveal className="mx-auto max-w-[680px] text-left">
           <TallyEmbed />
           {/* Founder to confirm wording matches the Tally consent copy. */}
-          <p className="mt-3 text-center text-[15px] font-medium text-white">
+          <p className="mt-3 text-center text-[15px] font-medium text-ink-head">
             Your WhatsApp number is only for updates about your reservation.
             You can leave the list anytime.
           </p>

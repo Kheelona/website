@@ -4,11 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "node ../tools/tokens/check-tokens.mjs && next build",
     "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
+    "@radix-ui/react-accordion": "^1.2.16",
+    "@radix-ui/react-dialog": "^1.1.19",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.1",
     "motion": "^12.42.2",

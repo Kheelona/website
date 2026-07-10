@@ -6,6 +6,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/ui/Reveal";
 import { MascotScene } from "@/components/mascot/MascotScene";
 import { FinaleCTA } from "@/components/sections/home/FinaleCTA";
+import { StageGate } from "@/components/three/StageGate";
 
 export const metadata: Metadata = {
   title: "Team: the parents who build",
@@ -114,7 +115,9 @@ export default function TeamPage() {
           <ol className="border-t border-line">
             {BELIEFS.map((b, i) => (
               <Reveal as="li" key={b} className="grid items-center gap-4 border-b border-line py-7 md:grid-cols-[80px_1fr]">
-                  <span aria-hidden="true" className="font-display text-4xl font-extrabold text-blue">
+                  {/* orange-deep: the normalized numeral accent (design panel
+                      re-review; text-blue washed out on the cool wash) */}
+                  <span aria-hidden="true" className="font-display text-4xl font-extrabold text-orange-deep">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <p className="font-display text-[clamp(20px,2.2vw,26px)] font-extrabold text-ink-head">
@@ -140,6 +143,7 @@ export default function TeamPage() {
       </Section>
 
       <FinaleCTA variant="compact" from="cream" />
+      <StageGate stage="ambient" />
     </>
   );
 }

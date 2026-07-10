@@ -3,6 +3,7 @@ import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { CurveDivider } from "@/components/layout/CurveDivider";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { StageGate } from "@/components/three/StageGate";
 
 export const metadata: Metadata = {
   title: "Privacy",
@@ -63,7 +64,7 @@ export default function PrivacyPage() {
         <Container className="py-14 md:py-16">
           <div className="mx-auto max-w-[760px]">
             <Eyebrow>The fine print, unfine</Eyebrow>
-            <h1 className="mb-4 font-display text-[clamp(34px,4vw,52px)] font-extrabold leading-[1.1] text-ink-head">
+            <h1 className="mb-4 font-display text-[clamp(38px,4.5vw,58px)] font-extrabold leading-[1.1] text-ink-head">
               Privacy, in plain words.
             </h1>
             <p className="text-[18px]">
@@ -92,6 +93,7 @@ export default function PrivacyPage() {
           </div>
         </Container>
       </Section>
+      <StageGate stage="ambient" />
     </>
   );
 }

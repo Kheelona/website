@@ -32,7 +32,9 @@ export function Button({
     <Link
       href={href}
       className={cn(
-        "inline-flex items-center justify-center rounded-full leading-none",
+        // nowrap: a pill label that wraps to two lines crowds whatever sits
+        // beside it (seen with the navbar CTA in the 640-1023px band)
+        "inline-flex items-center justify-center whitespace-nowrap rounded-full leading-none",
         "transition-[transform,background-color] duration-150 ease-(--ease-bounce) active:scale-[0.96]",
         size === "md" ? "px-7 py-4 text-[17px] font-bold" : "px-9 py-5 text-lg font-bold",
         VARIANTS[variant],
