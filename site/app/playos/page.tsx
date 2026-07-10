@@ -6,6 +6,7 @@ import { CurveDivider } from "@/components/layout/CurveDivider";
 import { Button } from "@/components/ui/Button";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/ui/Reveal";
+import { TiltCard } from "@/components/ui/TiltCard";
 import { MascotScene } from "@/components/mascot/MascotScene";
 import { FinaleCTA } from "@/components/sections/home/FinaleCTA";
 import { StageGate } from "@/components/three/StageGate";
@@ -113,10 +114,10 @@ export default function PlayOSPage() {
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {PRIVACY_CARDS.map((c, i) => (
               <Reveal key={c.title} delay={i * 0.05}>
-                <div className="h-full rounded-(--radius-card) bg-white p-7">
+                <TiltCard className="h-full rounded-(--radius-card) bg-white p-7">
                   <h3 className="mb-2 font-display text-[22px] font-extrabold text-ink-head">{c.title}</h3>
                   <p className="text-[15.5px]">{c.body}</p>
-                </div>
+                </TiltCard>
               </Reveal>
             ))}
           </div>

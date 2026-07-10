@@ -26,7 +26,7 @@ export type AmbientConfig = {
 /* R5 palette discipline (founder 2026-07-10, 80/20 rule): shape dressing
    leans on the primary trio (yellow/blue/orange); teal and purple appear at
    most once per palette so secondaries stay the seasoning, not the meal.
-   Densities cut ~35% across the board in the same pass: fewer, quieter. */
+   Densities retuned R6 (founder: shapes back to 'present but polite'): home 11, interiors 9-10, legal 4. */
 const CALM_PALETTE = [TOKENS.yellow, TOKENS.blueSoft, TOKENS.orange, TOKENS.teal];
 
 const CONFIGS: Record<string, AmbientConfig> = {
@@ -34,7 +34,7 @@ const CONFIGS: Record<string, AmbientConfig> = {
   // clouds up high, a modest field far from the copy column.
   "/": {
     enabled: true,
-    density: 8,
+    density: 11,
     palette: CALM_PALETTE,
     accents: [
       { kind: "squircle", color: TOKENS.white, position: [-3.5, 3.2, -10], scale: 1.5, floatPhase: 2 },
@@ -43,7 +43,7 @@ const CONFIGS: Record<string, AmbientConfig> = {
   },
   "/playos": {
     enabled: true,
-    density: 8,
+    density: 10,
     palette: [TOKENS.blueSoft, TOKENS.yellow, TOKENS.teal],
     accents: [
       // the PlayOS sky: soft clouds, echoing the home beat
@@ -53,7 +53,7 @@ const CONFIGS: Record<string, AmbientConfig> = {
   },
   "/safety": {
     enabled: true,
-    density: 7,
+    density: 9,
     palette: [TOKENS.teal, TOKENS.blueSoft, TOKENS.yellow],
     accents: [
       // the sheltering canopy from the safety garden
@@ -62,7 +62,7 @@ const CONFIGS: Record<string, AmbientConfig> = {
   },
   "/setup": {
     enabled: true,
-    density: 7,
+    density: 9,
     palette: CALM_PALETTE,
     accents: [
       { kind: "squircle", color: TOKENS.blueSoft, position: [-3.2, 2.6, -9], scale: 0.9, floatPhase: 3 },
@@ -70,7 +70,7 @@ const CONFIGS: Record<string, AmbientConfig> = {
   },
   "/team": {
     enabled: true,
-    density: 7,
+    density: 9,
     palette: [TOKENS.yellow, TOKENS.orange, TOKENS.blueSoft],
     accents: [
       { kind: "flower13", color: TOKENS.yellow, position: [3.3, 3.1, -10], scale: 1.1, floatPhase: 2.4 },
@@ -78,7 +78,7 @@ const CONFIGS: Record<string, AmbientConfig> = {
   },
   "/stories": {
     enabled: true,
-    density: 8,
+    density: 10,
     palette: CALM_PALETTE,
     accents: [
       // a small flower cluster for the journal meadow

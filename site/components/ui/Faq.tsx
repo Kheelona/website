@@ -1,6 +1,7 @@
 "use client";
 
 import * as Accordion from "@radix-ui/react-accordion";
+import { Plus } from "lucide-react";
 
 export type FaqEntry = { q: string; a: string };
 
@@ -21,13 +22,10 @@ export function Faq({ items }: { items: FaqEntry[] }) {
             <h3>
               <Accordion.Trigger className="group flex w-full items-center justify-between gap-4 px-6 py-5 text-left font-display text-[20px] font-bold text-ink-head transition-colors hover:text-orange-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-inset">
                 {item.q}
-                <svg
-                  viewBox="0 0 20 20"
+                <Plus
                   aria-hidden="true"
                   className="h-5 w-5 shrink-0 transition-transform duration-200 group-data-[state=open]:rotate-45"
-                >
-                  <path d="M10 4v12M4 10h12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                </svg>
+                />
               </Accordion.Trigger>
             </h3>
           </Accordion.Header>

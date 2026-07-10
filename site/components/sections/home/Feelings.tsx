@@ -4,6 +4,7 @@ import { Section } from "@/components/layout/Section";
 import { CurveDivider } from "@/components/layout/CurveDivider";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/ui/Reveal";
+import { TiltCard } from "@/components/ui/TiltCard";
 import { cn } from "@/lib/cn";
 
 /** Home S04. Card copy verbatim. R5 rework (founder 2026-07-10): each feeling
@@ -36,12 +37,8 @@ export function Feelings() {
         </Reveal>
         <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
           {FEELINGS.map((f, i) => (
-            <Reveal
-              as="li"
-              key={f.name}
-              delay={i * 0.07}
-              className="group h-full rounded-(--radius-card) border border-line-soft bg-white p-5"
-            >
+            <Reveal as="li" key={f.name} delay={i * 0.07}>
+              <TiltCard className="group h-full rounded-(--radius-card) border border-line-soft bg-white p-5">
               <div className="grid h-[150px] place-items-center md:h-[170px]">
                 <Image
                   src={`/mascot/mascot-${f.img}.png`}
@@ -61,6 +58,7 @@ export function Feelings() {
               <p className="mt-1 text-[14.5px] leading-snug text-ink">
                 {f.line}
               </p>
+              </TiltCard>
             </Reveal>
           ))}
         </ul>

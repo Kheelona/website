@@ -3,7 +3,7 @@
   "created_at": "2026-07-06",
   "last_updated": "2026-07-10",
   "current_phase": "phase_12_redesign",
-  "current_sprint": "R5-calm-pass",
+  "current_sprint": "R6-elegant-motion",
   "phase_status": {
     "phase_0_kickoff": {
       "status": "completed",
@@ -238,11 +238,12 @@
   "last_handoff": {
     "date": "2026-07-10",
     "completed_in_this_session": [
-      "R5 calm pass (founder feedback on live R4): Home journey -> ambient stage (2D mascot + 2D Lumi permanent, GLB journey dormant behind stage prop), zero italics site-wide (serif accent upright), all text left-aligned + text-wrap orphan control, white-label color system (orange-cta #C25210 / teal-deep #0F766E, token gate extended), feelings boxed cards, sticky pre-order bar never ducks, shapes -35% density + 0.55 base opacity + ghost floor 0.04, SVG icon family unified, logo-mark.png fixed (was a Figma-panel screenshot)",
-      "QA: build+tsc+token-check green; localhost Lighthouse desktop 99-100 all sampled routes, mobile 85/90/91 (live h2 reads ~5-9 higher); A11y/BP/SEO 100 everywhere; voice-lint clean; visual pack sent to founder"
+      "R5 calm pass (committed dd1e086, unpushed): ambient home, 2D actors, white-label color, typography law",
+      "R6 elegant motion (founder brainstorm, 4 decisions locked): vendor registry at site/components/vendor/ (Animate UI primary, MIT+Commons-Clause verified, commit-pinned), cn->clsx+twMerge, lucide-react icon family, shape presence dial (0.9 opacity, densities up ~30%), warm hero glow (calm Bubble rebuild), TiltCard on all card surfaces (capability-gated), storybook pop reveals, CTA press ripple",
+      "QA: build+tsc+token green; localhost LH home d99/m84, lumi d100/m88, A11y/BP/SEO 100; TBT 0ms; founder pack sent"
     ],
-    "next_action": "Founder approval of the R5 visual pack -> git push (master -> origin/demo-website, Vercel auto-deploy) -> live Lighthouse verification -> close session. If founder requests changes, iterate before push.",
-    "founder_gate": "R5 pack sent 2026-07-10; awaiting yes. New logo upload = FOUNDER-TODO R5-a."
+    "next_action": "Founder approval of R6 pack -> push R5+R6 together (master -> origin/demo-website) -> live Lighthouse verify -> close. Blueprint law: website-steps.md §8.14 (R5) + §8.15 (R6).",
+    "founder_gate": "R6 pack sent 2026-07-10; awaiting yes. Open founder items: R4-a..f, R5-a (new logo)."
   },
   "resume_instructions": "Read README.md first. Then this file. Then the current-phase checkpoint. Then website-steps.md if it exists. Never re-ask anything settled in the Brand Bible (build prompt §1) or in approvals above."
 }

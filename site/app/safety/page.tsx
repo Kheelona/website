@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import { Check } from "lucide-react";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { CurveDivider } from "@/components/layout/CurveDivider";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/ui/Reveal";
+import { TiltCard } from "@/components/ui/TiltCard";
 import { MascotScene } from "@/components/mascot/MascotScene";
 import { Button } from "@/components/ui/Button";
 import { Faq, type FaqEntry } from "@/components/ui/Faq";
@@ -126,10 +128,10 @@ export default function SafetyPage() {
           <div className="grid gap-5 sm:grid-cols-2">
             {WORD_RULES.map((r, i) => (
               <Reveal key={r.title} delay={i * 0.05}>
-                <div className="h-full rounded-(--radius-card) bg-white p-8">
+                <TiltCard className="h-full rounded-(--radius-card) bg-white p-8">
                   <h3 className="mb-2 font-display text-[24px] font-extrabold text-ink-head">{r.title}</h3>
                   <p className="text-[16.5px]">{r.body}</p>
-                </div>
+                </TiltCard>
               </Reveal>
             ))}
           </div>
@@ -151,10 +153,10 @@ export default function SafetyPage() {
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {VOICE_RULES.map((c, i) => (
               <Reveal key={c.title} delay={i * 0.05}>
-                <div className="h-full rounded-(--radius-card) bg-white p-7">
+                <TiltCard className="h-full rounded-(--radius-card) bg-white p-7">
                   <h3 className="mb-2 font-display text-[22px] font-extrabold text-ink-head">{c.title}</h3>
                   <p className="text-[15.5px]">{c.body}</p>
-                </div>
+                </TiltCard>
               </Reveal>
             ))}
           </div>
@@ -176,7 +178,7 @@ export default function SafetyPage() {
             <ul className="space-y-3 text-[17px]">
               {PARENT_KEYS.map((k) => (
                 <li key={k} className="flex items-start gap-3">
-                  <span aria-hidden="true" className="mt-1 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-teal/15 text-ink-head"><svg width="12" height="12" viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4L16 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
+                  <span aria-hidden="true" className="mt-1 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-teal/15 text-ink-head"><Check className="h-3 w-3" strokeWidth={2.5} aria-hidden="true" /></span>
                   {k}
                 </li>
               ))}

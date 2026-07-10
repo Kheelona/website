@@ -4,6 +4,7 @@ import { Section } from "@/components/layout/Section";
 import { CurveDivider } from "@/components/layout/CurveDivider";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/ui/Reveal";
+import { TiltCard } from "@/components/ui/TiltCard";
 import { MascotScene } from "@/components/mascot/MascotScene";
 import { FinaleCTA } from "@/components/sections/home/FinaleCTA";
 import { StageGate } from "@/components/three/StageGate";
@@ -89,14 +90,14 @@ export default function TeamPage() {
           <div className="grid gap-5 md:grid-cols-3">
             {FOUNDERS.map((f, i) => (
               <Reveal key={f.name} delay={i * 0.06}>
-                <div className={`h-full rounded-(--radius-card) p-8 ${f.tint}`}>
+                <TiltCard className={`h-full rounded-(--radius-card) p-8 ${f.tint}`}>
                   <p className="mb-1 font-accent text-[20px] text-ink-muted">{f.line}</p>
                   <h3 className="font-display text-[26px] font-extrabold text-ink-head">
                     {f.name}
                   </h3>
                   <p className="mb-3 text-[15px] font-semibold text-ink-muted">{f.role}</p>
                   <p className="text-[16px]">{f.body}</p>
-                </div>
+                </TiltCard>
               </Reveal>
             ))}
           </div>

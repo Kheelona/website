@@ -1,5 +1,13 @@
 # QA Report (sprint log)
 
+## R6 elegant motion · 2026-07-10 · vendored-registry cycle on master
+
+**Trigger**: founder brainstorm after R5 ("floating items gone completely... they are impressive, we should not over[do] it"). Four decisions locked via question batch: present-but-polite shapes; all four animated surfaces site-wide; Animate UI primary registry (license verified MIT + Commons Clause, commit-pinned vendoring under `site/components/vendor/`); actors stay 2D. Shipped: shape presence dial (0.9 opacity, densities 11/9-10/4), warm hero glow (calm rebuild of the Bubble background, compositor-only), TiltCard on every card surface (capability-gated), storybook pop reveals, CTA press ripple, cn()→clsx+twMerge, lucide-react icon family.
+
+**Lighthouse (localhost :3456 prod, single runs)**: home desktop 99/100/100/100, mobile 84/100/100/100 (LCP 4.5s, TBT 0ms); /products/lumi desktop 100/100/100/100, mobile 88/100/100/100 (TBT 0ms). Deltas vs R5 within single-run noise; all new motion is transform/opacity-only. Live h2 deploy reads ~5-9 mobile points above localhost (R4/R5 calibration) — live URL after push is the binding gate.
+
+**Verified in a visible tab**: hero glow alive and warm behind the mascot; shapes clearly present, still ghosting to 4% near copy; boxed cards intact inside TiltCard wrappers; zero console errors. Founder pack (home desktop+mobile, /products/lumi) sent pre-push.
+
 ## R5 calm pass · 2026-07-10 · founder-feedback cycle on master
 
 **Trigger**: founder review of the live R4 site — the flying journey shapes overwhelmed the story; concrete punch list issued (dispositions in website-steps.md §8.14). Home switched to the calm ambient stage (2D mascot + 2D Lumi permanent, GLB journey dormant one prop-flip away), zero italics, all text left-aligned, orphan control via text-wrap, white-label CTAs/bands on new accessible fills (orange-cta #C25210 4.66:1, teal-deep #0F766E 5.47:1), feelings boxed in DS cards, sticky pre-order bar never ducks, shapes fewer/fainter/scattered with ghost-fade floor 0.04, one SVG icon family, broken logo-mark.png replaced with a real K-lockup crop, token gate extended to the two new fills (16 mappings).

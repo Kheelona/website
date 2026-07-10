@@ -285,7 +285,9 @@ export function BrandShape({
   rotation = [0, 0, 0] as [number, number, number],
   floatPhase = 0,
   floatAmp = 0.12,
-  baseOpacity = 0.55,
+  // R6 "present but polite" (founder): near-solid presence, but the 0.04
+  // ghost floor near copy stays non-negotiable
+  baseOpacity = 0.9,
   keepClear = true,
 }: {
   kind: ShapeKind;

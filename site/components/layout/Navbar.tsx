@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { Menu } from "lucide-react";
 import { NAV_LINKS, PREORDER_HREF } from "@/lib/site";
 import { Button } from "@/components/ui/Button";
 import { Sheet } from "@/components/ui/Sheet";
@@ -43,9 +44,9 @@ export function Navbar() {
         </ul>
 
         <div className="flex items-center gap-3">
-          {/* display gate lives on a wrapper: Button's own inline-flex would
-              fight a `hidden` utility on the same element (cn() is a plain
-              join, no conflict resolution) — UI panel 2026-07-10 */}
+          {/* display gate on a wrapper by convention (R4); cn() now merges
+              conflicts (R6, clsx+twMerge), but wrappers keep display
+              responsibility out of shared components */}
           <div className="hidden sm:block">
             <Button href={PREORDER_HREF} className="px-5 py-3 text-[15px]">
               Join the pre-order list
@@ -62,9 +63,7 @@ export function Navbar() {
                   aria-label="Open menu"
                   className="grid h-11 w-11 place-items-center rounded-full border border-line text-ink-head"
                 >
-                  <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
-                    <path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                  </svg>
+                  <Menu className="h-5 w-5" aria-hidden="true" />
                 </button>
               }
             >

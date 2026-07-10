@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
+import { X } from "lucide-react";
 
 /** Mobile-nav sheet on Radix Dialog (§8.13): focus trap, Esc close, scroll
  *  lock, aria-modal — the a11y the hand-rolled dropdown lacked. Slides in
@@ -50,9 +51,7 @@ export function Sheet({
               aria-label="Close menu"
               className="mr-5 mt-5 grid h-11 w-11 shrink-0 place-items-center self-end rounded-full border border-line text-ink-head"
             >
-              <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
-                <path d="M4 4l12 12M16 4L4 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              </svg>
+              <X className="h-5 w-5" aria-hidden="true" />
             </button>
           </Dialog.Close>
           {children}

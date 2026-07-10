@@ -6,6 +6,7 @@ import { CurveDivider } from "@/components/layout/CurveDivider";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
+import { TiltCard } from "@/components/ui/TiltCard";
 
 /** Home S10. Card copy verbatim; cards link into /stories. */
 const CARDS = [
@@ -44,6 +45,7 @@ export function Journal() {
         <div className="mb-10 grid gap-6 md:grid-cols-2">
           {CARDS.map((c, i) => (
             <Reveal key={c.slug} delay={i * 0.08}>
+              <TiltCard>
               <Link
                 href={`/stories/${c.slug}`}
                 className="block h-full overflow-hidden rounded-(--radius-card) bg-white transition-[transform,box-shadow] duration-300 ease-(--ease-bounce) hover:-translate-y-1.5 hover:shadow-[0_16px_32px_rgba(216,95,27,0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
@@ -64,6 +66,7 @@ export function Journal() {
                   <p className="text-[16px] text-ink-muted">{c.line}</p>
                 </div>
               </Link>
+              </TiltCard>
             </Reveal>
           ))}
         </div>

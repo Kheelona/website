@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Check } from "lucide-react";
 import Image from "next/image";
 import { LumiHero } from "@/components/product/LumiHero";
 import { Container } from "@/components/layout/Container";
@@ -7,6 +8,7 @@ import { CurveDivider } from "@/components/layout/CurveDivider";
 import { Button } from "@/components/ui/Button";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/ui/Reveal";
+import { TiltCard } from "@/components/ui/TiltCard";
 import { Faq, type FaqEntry } from "@/components/ui/Faq";
 import { FinaleCTA } from "@/components/sections/home/FinaleCTA";
 import { PREORDER_HREF } from "@/lib/site";
@@ -182,7 +184,7 @@ export default function LumiPage() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
             {FEELINGS_DEEP.map((f, i) => (
               <Reveal key={f.name} delay={i * 0.05}>
-                <div className={`flex h-full flex-col rounded-(--radius-card-lg) border border-line-soft p-6 ${f.bg}`}>
+                <TiltCard className={`flex h-full flex-col rounded-(--radius-card-lg) border border-line-soft p-6 ${f.bg}`}>
                   <Image
                     src={`/mascot/mascot-${f.img}.png`}
                     alt=""
@@ -194,7 +196,7 @@ export default function LumiPage() {
                     {f.name}
                   </h3>
                   <p className="text-[15px] leading-snug text-ink-head/85">{f.body}</p>
-                </div>
+                </TiltCard>
               </Reveal>
             ))}
           </div>
@@ -217,10 +219,10 @@ export default function LumiPage() {
           <div className="grid gap-5 sm:grid-cols-2">
             {APP_FEATURES.map((f, i) => (
               <Reveal key={f.title} delay={i * 0.05}>
-                <div className="h-full rounded-(--radius-card) bg-white p-8">
+                <TiltCard className="h-full rounded-(--radius-card) bg-white p-8">
                   <h3 className="mb-2 font-display text-[24px] font-extrabold text-ink-head">{f.title}</h3>
                   <p className="text-[16.5px]">{f.body}</p>
-                </div>
+                </TiltCard>
               </Reveal>
             ))}
           </div>
@@ -237,15 +239,15 @@ export default function LumiPage() {
             </h2>
             <ul className="mb-8 space-y-4 text-[17px]">
               <li className="flex items-start gap-3">
-                <span aria-hidden="true" className="mt-1 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-teal/15 text-ink-head"><svg width="12" height="12" viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4L16 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
+                <span aria-hidden="true" className="mt-1 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-teal/15 text-ink-head"><Check className="h-3 w-3" strokeWidth={2.5} aria-hidden="true" /></span>
                 Lumi, ready to talk.
               </li>
               <li className="flex items-start gap-3">
-                <span aria-hidden="true" className="mt-1 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-teal/15 text-ink-head"><svg width="12" height="12" viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4L16 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
+                <span aria-hidden="true" className="mt-1 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-teal/15 text-ink-head"><Check className="h-3 w-3" strokeWidth={2.5} aria-hidden="true" /></span>
                 A charger.
               </li>
               <li className="flex items-start gap-3">
-                <span aria-hidden="true" className="mt-1 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-teal/15 text-ink-head"><svg width="12" height="12" viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4L16 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
+                <span aria-hidden="true" className="mt-1 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-teal/15 text-ink-head"><Check className="h-3 w-3" strokeWidth={2.5} aria-hidden="true" /></span>
                 A quick-start card. Day one takes minutes.
               </li>
             </ul>
