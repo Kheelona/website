@@ -46,14 +46,19 @@ export function Hero() {
             aria-hidden="true"
             className="pointer-events-none absolute top-1/2 left-1/2 h-[560px] w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(241,162,59,0.16)_0%,rgba(241,162,59,0.3)_35%,transparent_70%)]"
           />
+          {/* LCP law (R9, re-learned in R11 live verify): the plush must be
+              the hero's LARGEST element so the priority image owns LCP. At
+              300px it tied the H1 (~62k px² each) and the font-gated H1 won
+              on phones — LCP 3.8s, mobile median 86. 340px restores a ~30%
+              area margin (median back over the 90 gate). */}
           <Image
             src="/product/lumi-blue.png"
             alt="Lumi, the sky blue talking plush toy, wearing its striped party hat"
             width={1113}
             height={1600}
             priority
-            sizes="(max-width: 768px) 52vw, 300px"
-            className="relative h-[300px] w-auto md:h-[380px]"
+            sizes="(max-width: 768px) 58vw, 300px"
+            className="relative h-[340px] w-auto md:h-[380px]"
           />
           <HeroConversation className="relative -mt-5 w-full max-w-[420px]" />
           {/* the PDF lede, now the demo's caption (left-aligned to the card
