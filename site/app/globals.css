@@ -156,11 +156,15 @@ p {
    the LCP image. The BASE state is the finished card — no-JS visitors,
    crawlers, and reduced-motion all see both bubbles at rest; the entrance
    only runs for motion-friendly visitors. The dots bubble is transient: it
-   ends hidden in every mode. */
+   ends hidden in every mode.
+   DESKTOP-ONLY on purpose (min-width gate): on phones the stacked card is
+   the largest hero element, so an opacity entrance BECOMES the LCP and
+   pushed live mobile LCP 1.3s -> 3.8s (median 86 vs the >=90 gate, caught
+   in R11 live verify). Phones get the finished exchange at first paint. */
 .convo-dots {
   opacity: 0;
 }
-@media (prefers-reduced-motion: no-preference) {
+@media (prefers-reduced-motion: no-preference) and (min-width: 768px) {
   .convo-bubble-1 {
     animation: convo-in 0.5s var(--ease-bounce) 0.7s both;
   }
