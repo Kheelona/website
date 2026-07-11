@@ -9,9 +9,12 @@ import { cn } from "@/lib/cn";
  *  4.8) — orange-deep and orange-cta only clear white. */
 export function Eyebrow({
   color = "text-orange-ink",
+  className,
   children,
 }: {
   color?: string;
+  /** R11: spacing overrides for inline meta-label uses (cn merges last-wins). */
+  className?: string;
   children: React.ReactNode;
 }) {
   return (
@@ -19,6 +22,7 @@ export function Eyebrow({
       className={cn(
         "mb-3 block text-[13px] font-bold uppercase tracking-[0.1em]",
         color,
+        className,
       )}
     >
       {children}

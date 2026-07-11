@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { CurveDivider } from "@/components/layout/CurveDivider";
-import { Eyebrow } from "@/components/ui/Eyebrow";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { KheeluSays } from "@/components/ui/KheeluSays";
@@ -38,13 +38,13 @@ export function Journal() {
           />
           {/* one eyebrow rule site-wide (design panel 2026-07-10: per-page
               hues read as accidental) */}
-          <Eyebrow>From the journal</Eyebrow>
-          <h2 className="mb-2 font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.08] text-ink-head">
-            Raising curious kids.
-          </h2>
-          <p className="mb-10 text-[clamp(18px,1.6vw,21px)]">
-            Ideas and honest reads for parents who want more than a screen.
-          </p>
+          <SectionHeading
+            eyebrow="From the journal"
+            title="Raising curious kids."
+            titleClassName="mb-2"
+            lede="Ideas and honest reads for parents who want more than a screen."
+            ledeClassName="mb-10"
+          />
         </Reveal>
         <div className="mb-10 grid gap-6 md:grid-cols-2">
           {CARDS.map((c, i) => (

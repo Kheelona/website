@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Menu } from "lucide-react";
-import { NAV_LINKS, PREORDER_HREF } from "@/lib/site";
+import { NAV_LINKS, PREORDER_HREF, RESERVE_LABEL_SHORT } from "@/lib/site";
 import { Button } from "@/components/ui/Button";
 import { Sheet } from "@/components/ui/Sheet";
 
@@ -33,9 +33,12 @@ export function Navbar() {
         <ul className="hidden items-center gap-8 lg:flex">
           {NAV_LINKS.map((l) => (
             <li key={l.href}>
+              {/* R11: py enlarges the hit area past the 24px target-size
+                  floor (bar height is fixed by the h-[72px] flex, so the
+                  padding is invisible); shared brand focus ring */}
               <Link
                 href={l.href}
-                className="text-[16px] font-medium text-ink transition-colors hover:text-orange"
+                className="inline-block rounded py-2.5 text-[16px] font-medium text-ink transition-colors hover:text-orange focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
               >
                 {l.label}
               </Link>
@@ -49,7 +52,7 @@ export function Navbar() {
               responsibility out of shared components */}
           <div className="hidden sm:block">
             <Button href={PREORDER_HREF} className="px-5 py-3 text-[15px]">
-              Reserve at ₹4,999
+              {RESERVE_LABEL_SHORT}
             </Button>
           </div>
           <div className="lg:hidden">
@@ -81,7 +84,7 @@ export function Navbar() {
                 ))}
                 <li className="px-3 pb-2 pt-3">
                   <Button href={PREORDER_HREF} className="w-full">
-                    Reserve at ₹4,999
+                    {RESERVE_LABEL_SHORT}
                   </Button>
                 </li>
               </ul>

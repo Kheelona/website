@@ -152,6 +152,70 @@ p {
   }
 }
 
+/* R11 hero conversation: pure-CSS choreography, zero hydration cost next to
+   the LCP image. The BASE state is the finished card — no-JS visitors,
+   crawlers, and reduced-motion all see both bubbles at rest; the entrance
+   only runs for motion-friendly visitors. The dots bubble is transient: it
+   ends hidden in every mode. */
+.convo-dots {
+  opacity: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .convo-bubble-1 {
+    animation: convo-in 0.5s var(--ease-bounce) 0.7s both;
+  }
+  .convo-bubble-2 {
+    animation: convo-in 0.5s var(--ease-bounce) 2.1s both;
+  }
+  .convo-dots {
+    animation: convo-dots 1.4s ease-in-out 0.9s both;
+  }
+  .convo-dot {
+    animation: convo-dot-pulse 0.9s ease-in-out infinite;
+  }
+  .convo-dot:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+  .convo-dot:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+}
+@keyframes convo-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes convo-dots {
+  0% {
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes convo-dot-pulse {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateY(-3px);
+    opacity: 1;
+  }
+}
+
 /* ================================================================
    THE 3D STAGE (redesign, Direction 1 "Lumi's World" + D4 elements)
    html.scene-3d is set only after the WebGL world has painted its

@@ -3,7 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { CurveDivider } from "@/components/layout/CurveDivider";
-import { Eyebrow } from "@/components/ui/Eyebrow";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import { KheeluSays } from "@/components/ui/KheeluSays";
 import { PhoneFrame } from "@/components/ui/PhoneFrame";
@@ -46,28 +46,28 @@ export function ParentAppSection({
               pose="grumpy"
             />
           )}
-          <Eyebrow>For the grown-ups</Eyebrow>
-          <h2 className="mb-5 max-w-[16ch] font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.08] text-ink-head">
-            Parents stay in the loop.
-          </h2>
-          <p className="mb-6 max-w-[56ch] text-[clamp(18px,1.6vw,21px)]">
-            Lumi ships with a parent app made for you. Watch the
-            conversations, get a summary that tells you what mattered, and
-            align Lumi to your family&apos;s values in a single prompt.
-          </p>
+          <SectionHeading
+            eyebrow="For the grown-ups"
+            title="Parents stay in the loop."
+            titleClassName="mb-5 max-w-[16ch]"
+            lede="Lumi ships with a parent app made for you. Watch the conversations, get a summary that tells you what mattered, and align Lumi to your family's values in a single prompt."
+            ledeClassName="mb-6 max-w-[56ch]"
+          />
           <ul className="mb-7 flex max-w-[560px] flex-wrap gap-2.5">
             {CHIPS.map((c) => (
               <li
                 key={c}
-                className="rounded-full border border-line-soft bg-white px-4 py-2 text-[14.5px] font-medium text-ink-head"
+                className="rounded-full border border-line-soft bg-white px-4 py-2 text-[15px] font-medium text-ink-head"
               >
                 {c}
               </li>
             ))}
           </ul>
+          {/* R11 audit: orange-deep is ~3.9:1 on the cream wash; orange-ink
+              was minted for non-white washes (4.5:1 everywhere) */}
           <Link
             href="/products/lumi"
-            className="inline-flex items-center gap-1.5 font-bold text-orange-deep underline-offset-4 hover:underline"
+            className="inline-flex items-center gap-1.5 rounded font-bold text-orange-ink underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
           >
             See what the app shows you
             <ArrowRight className="h-4 w-4" aria-hidden="true" />

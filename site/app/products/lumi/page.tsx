@@ -1,19 +1,21 @@
 import type { Metadata } from "next";
-import { Check } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { LumiHero } from "@/components/product/LumiHero";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { CurveDivider } from "@/components/layout/CurveDivider";
 import { Button } from "@/components/ui/Button";
-import { Eyebrow } from "@/components/ui/Eyebrow";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { Card } from "@/components/ui/Card";
+import { StepList } from "@/components/ui/StepList";
+import { CheckList } from "@/components/ui/CheckList";
 import { Reveal } from "@/components/ui/Reveal";
-import { TiltCard } from "@/components/ui/TiltCard";
 import { Faq, type FaqEntry } from "@/components/ui/Faq";
 import { KheeluSays } from "@/components/ui/KheeluSays";
-import { FinaleCTA } from "@/components/sections/home/FinaleCTA";
+import { FinaleCTA } from "@/components/sections/shared/FinaleCTA";
 import { ParentQuotes } from "@/components/sections/shared/ParentQuotes";
-import { PREORDER_HREF } from "@/lib/site";
+import { PREORDER_HREF, RESERVE_LABEL, PRICE_CAPTION, LAUNCH_PRICE, LATER_PRICE } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Lumi: the talking toy that holds a real conversation",
@@ -45,6 +47,17 @@ const FEELINGS_DEEP = [
   { name: "Sad", body: "Stays close. Some days are heavy. Lumi sits in them with your child, gently.", bg: "bg-purple/15", img: "bliss" },
   { name: "Silly", body: "Plays along. Rhymes, made-up words, giggle games. Laughing together is learning too.", bg: "bg-yellow/15", img: "silly" },
   { name: "Joy", body: "Celebrates out loud. Small wins feel big when a friend cheers.", bg: "bg-teal/15", img: "joy" },
+] as const;
+
+/* R11 (founder): the "how it works" steps moved here from /playos — they
+   explain the conversation demo directly above them. PlayOS keeps the
+   deeper end-to-end technical path. Copy verbatim from the old /playos
+   section (drafted per prompt §5.2). */
+const HOW_IT_ANSWERS = [
+  { n: "01", title: "Your child says the wake word.", body: "Until then, the microphone is off. Lumi starts listening only when it is invited to.", color: "text-blue" },
+  { n: "02", title: "The device thinks first.", body: "Speech is processed on the toy before anything goes anywhere. Low latency. No long waits. No sending everything to a distant server.", color: "text-teal" },
+  { n: "03", title: "The feeling gets read.", body: "PlayOS hears more than words. Curious, Grumpy, Sad, Silly, Joy: the answer meets the mood.", color: "text-purple" },
+  { n: "04", title: "The right response comes back.", body: "Every reply passes through an age-graded safety layer before it is spoken. On-device and cloud filters work together. No open internet. No surprises.", color: "text-orange-deep" },
 ] as const;
 
 const APP_FEATURES = [
@@ -112,20 +125,18 @@ export default function LumiPage() {
               line="This is Lumi. I picked the colours myself."
               pose="hero-wink"
             />
-            <Eyebrow>The talking toy</Eyebrow>
-            <h1 className="mb-5 font-display text-[clamp(38px,4.5vw,58px)] font-extrabold leading-[1.08] text-ink-head">
-              Meet Lumi. The friend who listens first.
-            </h1>
-            <p className="mb-7 max-w-[58ch] text-[clamp(18px,1.6vw,21px)]">
-              A talking toy for children aged 3 to 6. It listens, answers, then
-              asks the next question. No screen, ever.
-            </p>
-            <Button href={PREORDER_HREF}>Reserve Lumi at ₹4,999</Button>
+            <SectionHeading
+              as="h1"
+              eyebrow="The talking toy"
+              title="Meet Lumi. The friend who listens first."
+              titleClassName="mb-5"
+              lede="A talking toy for children aged 3 to 6. It listens, answers, then asks the next question. No screen, ever."
+              ledeClassName="mb-7 max-w-[58ch]"
+            />
+            <Button href={PREORDER_HREF}>{RESERVE_LABEL}</Button>
             {/* R9 trim: the full reassurance line lives at the Home hero and
                 finale only (reviewer: ×5 verbatim repeats) */}
-            <p className="mt-4 text-[15px] text-ink-muted">
-              ₹9,999 after launch. No payment now.
-            </p>
+            <p className="mt-4 text-[15px] text-ink-muted">{PRICE_CAPTION}</p>
           </Reveal>
           <Reveal mode="rise" className="relative flex justify-center">
             {/* soft radial halo instead of a hard-edged disc: the plush sat
@@ -145,13 +156,12 @@ export default function LumiPage() {
         <CurveDivider from="cream" />
         <Container className="grid items-center gap-12 py-16 md:grid-cols-[1fr_1.1fr] md:py-20">
           <Reveal>
-            <h2 className="mb-4 max-w-[16ch] font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.08] text-ink-head">
-              What talking with Lumi sounds like.
-            </h2>
-            <p className="max-w-[52ch] text-[clamp(18px,1.6vw,21px)]">
-              Lumi answers, then asks. That back and forth is how children
-              learn to think. A conversation with Lumi goes somewhere.
-            </p>
+            <SectionHeading
+              title="What talking with Lumi sounds like."
+              titleClassName="mb-4 max-w-[16ch]"
+              lede="Lumi answers, then asks. That back and forth is how children learn to think. A conversation with Lumi goes somewhere."
+              ledeClassName="max-w-[52ch]"
+            />
           </Reveal>
           <Reveal delay={0.08}>
             <div
@@ -167,10 +177,35 @@ export default function LumiPage() {
                   <p className="mb-1 text-[12px] font-bold uppercase tracking-wider text-ink-muted">
                     {m.who}
                   </p>
-                  <p className="text-[16.5px] text-ink">{m.text}</p>
+                  <p className="text-[16px] text-ink">{m.text}</p>
                 </div>
               ))}
             </div>
+          </Reveal>
+        </Container>
+      </Section>
+
+      {/* R11: how that answer happens — the steps that explain the demo
+          above (moved from /playos, founder direction) */}
+      <Section wash="white">
+        <Container className="pb-16 pt-2 md:pb-20">
+          <Reveal>
+            <SectionHeading
+              title="From question to answer, in four steps."
+              titleClassName="mb-3 max-w-[20ch]"
+              lede="Every conversation walks the same guarded path."
+              ledeClassName="mb-10 max-w-[58ch]"
+            />
+          </Reveal>
+          <StepList items={HOW_IT_ANSWERS} />
+          <Reveal className="mt-8">
+            <p className="text-[16px] text-ink-muted">
+              The technology behind the talking lives on the{" "}
+              <Link href="/playos" className="rounded font-semibold text-ink-head underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2">
+                PlayOS page
+              </Link>
+              .
+            </p>
           </Reveal>
         </Container>
       </Section>
@@ -180,20 +215,18 @@ export default function LumiPage() {
         <CurveDivider from="white" />
         <Container className="py-16 md:py-20">
           <Reveal>
-            <Eyebrow>Meet the feelings</Eyebrow>
-            <h2 className="mb-3 font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.08] text-ink-head">
-              Five feelings. One growing brain.
-            </h2>
-            <p className="mb-11 max-w-[58ch] text-[clamp(18px,1.6vw,21px)]">
-              Lumi reads how your child feels and meets them there. That is
-              what makes it a cognitive development toy: the learning starts
-              with the heart.
-            </p>
+            <SectionHeading
+              eyebrow="Meet the feelings"
+              title="Five feelings. One growing brain."
+              titleClassName="mb-3"
+              lede="Lumi reads how your child feels and meets them there. That is what makes it a cognitive development toy: the learning starts with the heart."
+              ledeClassName="mb-11 max-w-[58ch]"
+            />
           </Reveal>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
             {FEELINGS_DEEP.map((f, i) => (
               <Reveal key={f.name} delay={i * 0.05}>
-                <TiltCard className={`flex h-full flex-col rounded-(--radius-card-lg) border border-line-soft p-6 ${f.bg}`}>
+                <Card className={`flex flex-col rounded-(--radius-card-lg) border border-line-soft p-6 ${f.bg}`}>
                   <Image
                     src={`/mascot/mascot-${f.img}.png`}
                     alt=""
@@ -205,7 +238,7 @@ export default function LumiPage() {
                     {f.name}
                   </h3>
                   <p className="text-[15px] leading-snug text-ink-head/85">{f.body}</p>
-                </TiltCard>
+                </Card>
               </Reveal>
             ))}
           </div>
@@ -217,9 +250,10 @@ export default function LumiPage() {
         <CurveDivider from="cream" />
         <Container className="py-16 md:py-20">
           <Reveal>
-            <h2 className="mb-3 font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.08] text-ink-head">
-              You see everything. You decide everything.
-            </h2>
+            <SectionHeading
+              title="You see everything. You decide everything."
+              titleClassName="mb-3"
+            />
             {/* R7 lead line adapted from kheelona.ai/lumi; R9: display, not
                 serif (bold at 20px+ is WCAG-large, orange-deep passes 3:1) */}
             <p className="mb-3 max-w-[58ch] font-display text-[clamp(20px,2vw,24px)] font-bold text-orange-deep">
@@ -234,10 +268,13 @@ export default function LumiPage() {
           <div className="grid gap-5 sm:grid-cols-2">
             {APP_FEATURES.map((f, i) => (
               <Reveal key={f.title} delay={i * 0.05}>
-                <TiltCard className="h-full rounded-(--radius-card) bg-white p-8">
-                  <h3 className="mb-2 font-display text-[24px] font-extrabold text-ink-head">{f.title}</h3>
-                  <p className="text-[16.5px]">{f.body}</p>
-                </TiltCard>
+                <Card
+                  className="p-8"
+                  title={f.title}
+                  titleClassName="mb-2 font-display text-[24px] font-extrabold text-ink-head"
+                >
+                  <p className="text-[16px]">{f.body}</p>
+                </Card>
               </Reveal>
             ))}
           </div>
@@ -249,23 +286,19 @@ export default function LumiPage() {
         <CurveDivider from="cool" />
         <Container className="py-16 md:py-20">
           <Reveal>
-            <h2 className="mb-6 font-display text-[clamp(28px,3vw,40px)] font-extrabold text-ink-head">
-              What is in the box.
-            </h2>
-            <ul className="mb-8 space-y-4 text-[17px]">
-              <li className="flex items-start gap-3">
-                <span aria-hidden="true" className="mt-1 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-teal/15 text-ink-head"><Check className="h-3 w-3" strokeWidth={2.5} aria-hidden="true" /></span>
-                Lumi, ready to talk.
-              </li>
-              <li className="flex items-start gap-3">
-                <span aria-hidden="true" className="mt-1 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-teal/15 text-ink-head"><Check className="h-3 w-3" strokeWidth={2.5} aria-hidden="true" /></span>
-                A charger.
-              </li>
-              <li className="flex items-start gap-3">
-                <span aria-hidden="true" className="mt-1 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-teal/15 text-ink-head"><Check className="h-3 w-3" strokeWidth={2.5} aria-hidden="true" /></span>
-                A quick-start card. Day one takes minutes.
-              </li>
-            </ul>
+            <SectionHeading
+              level="minor"
+              title="What is in the box."
+              titleClassName="mb-6"
+            />
+            <CheckList
+              className="mb-8"
+              items={[
+                "Lumi, ready to talk.",
+                "A charger.",
+                "A quick-start card. Day one takes minutes.",
+              ]}
+            />
             {/* TODO(claims-specs): full specs pending from founder. */}
             <p className="max-w-[62ch] text-[16.5px] text-ink-muted">
               We publish the full specs, battery, size, materials, and the wake
@@ -276,22 +309,24 @@ export default function LumiPage() {
         </Container>
       </Section>
 
-      {/* R7: real early-tester quotes (shared section) */}
-      <ParentQuotes from="cool" count={2} eyebrow="From the pilot" title="The first families are already talking." />
+      {/* R7: real early-tester quotes (shared section).
+          R11 audit fix: from="white" — the section above is WHITE ("in the
+          box"); the old from="cool" painted a visible tinted seam */}
+      <ParentQuotes from="white" count={2} eyebrow="From the pilot" title="The first families are already talking." />
 
       {/* Price block (CMO review: the ₹4-a-day line was buried in the FAQ) */}
       <Section wash="sun">
         <CurveDivider from="white" />
         <Container className="py-14 md:py-16">
           <Reveal>
-            <h2 className="mb-3 max-w-[20ch] font-display text-[clamp(30px,3.4vw,44px)] font-extrabold leading-[1.1] text-ink-head">
-              ₹4,999 now. ₹9,999 after launch.
-            </h2>
-            <p className="mb-7 max-w-[46ch] text-[clamp(18px,1.6vw,21px)]">
-              Under ₹4 a day across ages 3 to 6. An educational toy priced like
-              a habit, not a gadget.
-            </p>
-            <Button href={PREORDER_HREF}>Reserve Lumi at ₹4,999</Button>
+            <SectionHeading
+              level="minor"
+              title={`${LAUNCH_PRICE} now. ${LATER_PRICE} after launch.`}
+              titleClassName="mb-3 max-w-[20ch]"
+              lede="Under ₹4 a day across ages 3 to 6. An educational toy priced like a habit, not a gadget."
+              ledeClassName="mb-7 max-w-[46ch]"
+            />
+            <Button href={PREORDER_HREF}>{RESERVE_LABEL}</Button>
           </Reveal>
         </Container>
       </Section>
@@ -301,12 +336,12 @@ export default function LumiPage() {
         <CurveDivider from="sun" />
         <Container className="py-16 md:py-20">
           <Reveal>
-            <h2 className="mb-3 font-display text-[clamp(32px,4vw,50px)] font-extrabold text-ink-head">
-              Questions parents ask.
-            </h2>
-            <p className="mb-10 max-w-[58ch] text-[clamp(18px,1.6vw,21px)]">
-              Honest answers, in plain words. Anything else, ask us anytime.
-            </p>
+            <SectionHeading
+              title="Questions parents ask."
+              titleClassName="mb-3"
+              lede="Honest answers, in plain words. Anything else, ask us anytime."
+              ledeClassName="mb-10 max-w-[58ch]"
+            />
           </Reveal>
           <Reveal className="mx-auto max-w-[820px]">
             <Faq items={FAQ_ITEMS} />

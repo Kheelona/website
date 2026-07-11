@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { LAUNCH_PRICE } from "@/lib/site";
 
 const FORM_URL = process.env.NEXT_PUBLIC_TALLY_FORM_URL ?? "";
 const isConfigured = FORM_URL.startsWith("https://tally.so/") && !FORM_URL.includes("DUMMY");
@@ -20,8 +21,8 @@ export function TallyEmbed() {
           The pre-order list opens here soon.
         </p>
         <p className="mt-2 max-w-[42ch] text-[16px] text-ink">
-          ₹4,999 held for you, no payment now. We hold the price, you hold
-          your place.
+          {LAUNCH_PRICE} held for you, no payment now. We hold the price, you
+          hold your place.
         </p>
       </div>
     );
@@ -44,7 +45,7 @@ export function TallyEmbed() {
       )}
       <iframe
         src={embedUrl}
-        title="Join the Lumi pre-order list"
+        title="Reserve Lumi: the pre-order form"
         className="h-[560px] w-full"
         onLoad={() => { setLoaded(true); track("preorder_view"); }}
       />

@@ -16,7 +16,10 @@ export function Footer() {
             <ul className="flex flex-wrap gap-x-5 gap-y-2">
               {FOOTER_LINKS.map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="transition-colors hover:text-white">
+                  <Link
+                    href={l.href}
+                    className="inline-block rounded py-1.5 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange"
+                  >
                     {l.label}
                   </Link>
                 </li>
@@ -32,7 +35,7 @@ export function Footer() {
             For partners and investors:{" "}
             <a
               href="https://kheelona.ai"
-              className="text-white/80 underline transition-colors hover:text-white"
+              className="inline-block rounded py-1 text-white/80 underline transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange"
             >
               kheelona.ai
             </a>

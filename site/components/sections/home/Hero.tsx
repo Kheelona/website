@@ -5,16 +5,16 @@ import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { Shape } from "@/components/ui/Shapes";
 import { HeroGlowBackground } from "@/components/vendor/animate-ui/backgrounds/hero-glow";
-import { PREORDER_HREF } from "@/lib/site";
+import { HeroConversation } from "@/components/sections/home/HeroConversation";
+import { PREORDER_HREF, RESERVE_LABEL, CAP_LINE } from "@/lib/site";
 
-/** Home S02: headline, the lede, the PDF hero-paragraph continuation
- *  (folded back in R10 when StagedIntro retired), and the ask.
- *  R9 (founder 2026-07-10): the hero figure is the PRODUCT — the Lumi plush,
- *  Blue leads — not the mascot (reviewer: "the thing you're selling doesn't
- *  appear until well down the page"). Kheelu moved to guide roles; if the
- *  dormant 3D journey returns, the hero gets retuned in that pass (the old
- *  data-hero-fallback contract left with the mascot). This image is the
- *  page's LCP element. */
+/** Home S02 (R11, founder pick "show the conversation"): headline + ask on
+ *  the left; the product DEMONSTRATING itself on the right — the plush with
+ *  one real child-and-Lumi exchange playing out beneath it. The old lede
+ *  rides under the exchange as its caption; the R10 folded paragraph moved
+ *  to WhyWeExist (copy-reference R11). The plush Image stays the LCP
+ *  element (R9: product owns the hero — that swap closed the mobile perf
+ *  gate; do not reintroduce work before its paint). */
 export function Hero() {
   return (
     <Section wash="cream" className="overflow-x-clip">
@@ -30,36 +30,21 @@ export function Hero() {
           <span className="mb-5 inline-block rounded-full bg-orange/15 px-4 py-2 text-sm font-bold uppercase tracking-[0.08em] text-ink-head">
             For ages 3 to 6
           </span>
-          <h1 className="mb-5 font-display text-[clamp(40px,5vw,64px)] font-extrabold leading-[1.06] text-ink-head">
+          <h1 className="mb-7 font-display text-[clamp(40px,5vw,64px)] font-extrabold leading-[1.06] text-ink-head">
             The smartest way to grow your child&apos;s brain is to understand
             their heart.
           </h1>
-          <p className="mb-4 max-w-[52ch] text-[clamp(18px,1.7vw,22px)]">
-            Lumi is a screen-free AI robot toy that listens first, then talks
-            back. Really talks.
-          </p>
-          {/* R10 (founder): the StagedIntro section folded back in here —
-              its three sentences continue the PDF hero paragraph; lines 1+2
-              joined with a comma (sanctioned deviation, copy-reference.md) */}
-          <p className="mb-8 max-w-[52ch] text-[16.5px] leading-relaxed text-ink-muted">
-            In the years a brain grows fastest, the more Lumi understands how
-            your child feels, the more they learn.{" "}
-            <span className="font-semibold text-ink-head">
-              In all 10 languages you speak at home.
-            </span>
-          </p>
-          <Button href={PREORDER_HREF}>Reserve Lumi at ₹4,999</Button>
-          {/* R9: the real launch cap (founder-supplied) leads the reassurance
-              line; the rest stays verbatim (copy-reference.md). */}
-          <p className="mt-4 text-[15px] text-ink-muted">
-            First 500 units at ₹4,999. ₹9,999 after launch. No payment now. We
-            hold the price, you hold your place.
+          <Button href={PREORDER_HREF}>{RESERVE_LABEL}</Button>
+          {/* R9 real cap, R11 compressed to one line ("we hold the price"
+              closes the page at the finale — copy-reference R11) */}
+          <p className="mt-4 max-w-[44ch] text-[15px] text-ink-muted">
+            {CAP_LINE}
           </p>
         </Reveal>
-        <div className="relative flex justify-center self-end">
+        <div className="relative flex flex-col items-center self-center pb-4">
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute bottom-[-140px] left-1/2 h-[560px] w-[560px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(241,162,59,0.16)_0%,rgba(241,162,59,0.3)_35%,transparent_70%)]"
+            className="pointer-events-none absolute top-1/2 left-1/2 h-[560px] w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(241,162,59,0.16)_0%,rgba(241,162,59,0.3)_35%,transparent_70%)]"
           />
           <Image
             src="/product/lumi-blue.png"
@@ -67,9 +52,16 @@ export function Hero() {
             width={1113}
             height={1600}
             priority
-            sizes="(max-width: 768px) 62vw, 340px"
-            className="relative h-[380px] w-auto md:h-[470px]"
+            sizes="(max-width: 768px) 52vw, 300px"
+            className="relative h-[300px] w-auto md:h-[380px]"
           />
+          <HeroConversation className="relative -mt-5 w-full max-w-[420px]" />
+          {/* the PDF lede, now the demo's caption (left-aligned to the card
+              edge — R5 law; copy-reference R11) */}
+          <p className="relative mt-3 w-full max-w-[420px] text-[15px] text-ink-muted">
+            Lumi is a screen-free AI robot toy that listens first, then talks
+            back. Really talks.
+          </p>
         </div>
       </Container>
     </Section>

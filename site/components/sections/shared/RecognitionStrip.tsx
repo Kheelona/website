@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Reveal } from "@/components/ui/Reveal";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 
 /** R7: the recognition row from kheelona.ai (founder-published; assets from
  *  the kheelona.ai repo, entries mirror its content/site.ts RECOGNITION).
@@ -46,9 +47,11 @@ export function RecognitionStrip({
     <Section wash="white">
       <Container className="py-8 md:py-10">
         <Reveal className="flex flex-wrap items-center gap-x-6 gap-y-4">
-          <span className="text-[13px] font-bold uppercase tracking-[0.1em] text-ink-muted">
+          {/* R11: the muted inline variant of the shared kicker (audit: this
+              was the one hand-rolled copy of Eyebrow's classes) */}
+          <Eyebrow color="text-ink-muted" className="mb-0">
             {label}
-          </span>
+          </Eyebrow>
           <ul className="flex flex-wrap items-center gap-3">
             {ENTRIES.map((e) => (
               <li
@@ -85,7 +88,7 @@ export function RecognitionStrip({
         </Reveal>
         {safetyLine && (
           <Reveal className="mt-5">
-            <p className="text-[14.5px] leading-relaxed text-ink-muted">
+            <p className="text-[15px] leading-relaxed text-ink-muted">
               {SAFETY_PROOFS.join(" · ")} ·{" "}
               <Link
                 href="/safety"

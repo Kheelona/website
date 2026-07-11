@@ -40,13 +40,15 @@ export function KheeluSays({
         sizes="80px"
         className="h-[76px] w-auto shrink-0 md:h-[88px]"
       />
-      <div className="relative mb-5 ml-4 max-w-[46ch] rounded-2xl border border-line-soft bg-white px-5 py-3">
+      {/* R11: token radius (audit: this shared card was the one rounded-2xl
+          surface, and it propagated the drift to every route) */}
+      <div className="relative mb-5 ml-4 max-w-[46ch] rounded-(--radius-card) border border-line-soft bg-white px-5 py-3">
         {/* classic tooltip tail: rotated square, two borders form the notch */}
         <span
           aria-hidden="true"
           className="absolute -left-[7px] bottom-[13px] h-3.5 w-3.5 rotate-45 border-b border-l border-line-soft bg-white"
         />
-        <p className="font-display text-[16.5px] font-bold leading-snug text-ink-head md:text-[17.5px]">
+        <p className="font-display text-[17px] font-bold leading-snug text-ink-head">
           {line}
         </p>
       </div>

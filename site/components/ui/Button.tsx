@@ -58,6 +58,9 @@ export function Button({
         // nowrap: a pill label that wraps to two lines crowds whatever sits
         // beside it (seen with the navbar CTA in the 640-1023px band)
         "relative inline-flex items-center justify-center overflow-hidden whitespace-nowrap rounded-full leading-none",
+        // R11: the shared brand focus ring (audit: only 4 card links had one;
+        // every other control fell back to the UA outline — incoherent)
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2",
         "transition-[transform,box-shadow,background-color] duration-150 ease-(--ease-bounce) active:scale-[0.96]",
         size === "md" ? "px-7 py-4 text-[17px] font-bold" : "px-9 py-5 text-lg font-bold",
         VARIANTS[variant],

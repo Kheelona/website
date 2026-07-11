@@ -4,10 +4,10 @@ import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { CurveDivider } from "@/components/layout/CurveDivider";
-import { Eyebrow } from "@/components/ui/Eyebrow";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import { KheeluSays } from "@/components/ui/KheeluSays";
-import { FinaleCTA } from "@/components/sections/home/FinaleCTA";
+import { FinaleCTA } from "@/components/sections/shared/FinaleCTA";
 import { STORIES } from "@/lib/stories";
 import { StageGate } from "@/components/three/StageGate";
 
@@ -30,14 +30,13 @@ export default function StoriesPage() {
               line="My notebook. Take any story you like."
               pose="curious"
             />
-            <Eyebrow>The journal</Eyebrow>
-            <h1 className="mb-4 font-display text-[clamp(38px,4.5vw,58px)] font-extrabold leading-[1.08] text-ink-head">
-              Raising curious kids.
-            </h1>
-            <p className="max-w-[58ch] text-[clamp(18px,1.6vw,21px)]">
-              Ideas and honest reads for parents who want more than a screen.
-              Useful first, always.
-            </p>
+            <SectionHeading
+              as="h1"
+              eyebrow="The journal"
+              title="Raising curious kids."
+              titleClassName="mb-4"
+              lede="Ideas and honest reads for parents who want more than a screen. Useful first, always."
+            />
           </Reveal>
         </Container>
       </Section>

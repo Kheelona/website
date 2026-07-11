@@ -5,6 +5,7 @@ import { CurveDivider } from "@/components/layout/CurveDivider";
 import { Reveal } from "@/components/ui/Reveal";
 import { KheeluSays } from "@/components/ui/KheeluSays";
 import { TallyEmbed } from "@/components/ui/TallyEmbed";
+import { LAUNCH_PRICE, LATER_PRICE } from "@/lib/site";
 
 /** The conversion finale (Concept C treatment), id="reserve" on every page.
  *  `variant="full"` (Home, Lumi): big headline + lineup.
@@ -51,8 +52,8 @@ export function FinaleCTA({
             Reserve Lumi before the price goes up.
           </h2>
           <p className="mb-8 max-w-[50ch] text-[19px] font-bold text-white md:text-[21px]">
-            ₹4,999 for the first 500 units. ₹9,999 after launch. No payment
-            now. We hold the price, you hold your place.
+            {LAUNCH_PRICE} for the first 500 units. {LATER_PRICE} after
+            launch. No payment now. We hold the price, you hold your place.
           </p>
         </Reveal>
         {kheeluLine && <KheeluSays line={kheeluLine} className="mb-2" />}

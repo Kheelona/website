@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { Beat } from "@/components/layout/Beat";
 import { StageGate } from "@/components/three/StageGate";
 import { RecognitionStrip } from "@/components/sections/shared/RecognitionStrip";
-import { SafetyCallout } from "@/components/sections/shared/SafetyCallout";
+import { SafetyCallout } from "@/components/sections/home/SafetyCallout";
 import { ParentQuotes } from "@/components/sections/shared/ParentQuotes";
-import { ParentAppSection } from "@/components/sections/shared/ParentAppSection";
+import { ParentAppSection } from "@/components/sections/home/ParentAppSection";
 import { Hero } from "@/components/sections/home/Hero";
 import { KheeluIntro } from "@/components/sections/home/KheeluIntro";
 import { LaunchVideo } from "@/components/sections/home/LaunchVideo";
@@ -16,7 +16,7 @@ import { WhatLumiDoes } from "@/components/sections/home/WhatLumiDoes";
 import { Compare } from "@/components/sections/home/Compare";
 import { SafetyStrip } from "@/components/sections/home/SafetyStrip";
 import { Journal } from "@/components/sections/home/Journal";
-import { FinaleCTA } from "@/components/sections/home/FinaleCTA";
+import { FinaleCTA } from "@/components/sections/shared/FinaleCTA";
 
 export const metadata: Metadata = {
   title: "Lumi by Kheelona: the screen-free AI robot toy for ages 3 to 6",

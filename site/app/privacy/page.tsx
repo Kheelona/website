@@ -1,10 +1,5 @@
 import type { Metadata } from "next";
-import { Container } from "@/components/layout/Container";
-import { Section } from "@/components/layout/Section";
-import { CurveDivider } from "@/components/layout/CurveDivider";
-import { Eyebrow } from "@/components/ui/Eyebrow";
-import { FinaleCTA } from "@/components/sections/home/FinaleCTA";
-import { StageGate } from "@/components/three/StageGate";
+import { LegalDoc, type LegalSection } from "@/components/ui/LegalDoc";
 
 export const metadata: Metadata = {
   title: "Privacy",
@@ -16,7 +11,7 @@ export const metadata: Metadata = {
 /* TODO(counsel-review): plain-language draft per prompt §5.2. This page MUST
    be reviewed by counsel before launch (launch checklist gate). */
 
-const SECTIONS = [
+const SECTIONS: readonly LegalSection[] = [
   {
     h: "What we collect when you join the list",
     ps: [
@@ -56,49 +51,14 @@ const SECTIONS = [
       "A full product privacy policy will be published here before Lumi ships.",
     ],
   },
-] as const;
+];
 
 export default function PrivacyPage() {
   return (
-    <>
-      <Section wash="cream">
-        <Container className="py-14 md:py-16">
-          <div className="mx-auto max-w-[760px]">
-            <Eyebrow>The fine print, unfine</Eyebrow>
-            <h1 className="mb-4 font-display text-[clamp(38px,4.5vw,58px)] font-extrabold leading-[1.1] text-ink-head">
-              Privacy, in plain words.
-            </h1>
-            <p className="text-[18px]">
-              This page covers the pre-order list. It is written to be read,
-              not skimmed past.
-            </p>
-          </div>
-        </Container>
-      </Section>
-      <Section wash="white">
-        <CurveDivider from="cream" />
-        <Container className="py-12 md:py-16">
-          <div className="mx-auto max-w-[720px]">
-            {SECTIONS.map((s) => (
-              <div key={s.h}>
-                <h2 className="mb-3 mt-9 font-display text-[24px] font-extrabold text-ink-head">
-                  {s.h}
-                </h2>
-                {s.ps.map((p, i) => (
-                  <p key={i} className="mb-4 text-[17px] leading-[1.65]">
-                    {p}
-                  </p>
-                ))}
-              </div>
-            ))}
-          </div>
-        </Container>
-      </Section>
-      {/* R9: every page ends with the reserve moment — the nav CTA anchors
-          to #reserve, which only exists if this is mounted (the anchor was
-          dead here; reviewer-class trust bug) */}
-      <FinaleCTA variant="compact" from="white" />
-      <StageGate stage="ambient" />
-    </>
+    <LegalDoc
+      title="Privacy, in plain words."
+      lede="This page covers the pre-order list. It is written to be read, not skimmed past."
+      sections={SECTIONS}
+    />
   );
 }

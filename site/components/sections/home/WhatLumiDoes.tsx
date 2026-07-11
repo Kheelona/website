@@ -2,9 +2,9 @@ import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { CurveDivider } from "@/components/layout/CurveDivider";
-import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/ui/Reveal";
-import { TiltCard } from "@/components/ui/TiltCard";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { Card } from "@/components/ui/Card";
 import { KheeluSays } from "@/components/ui/KheeluSays";
 import { Shape } from "@/components/ui/Shapes";
 import type { ShapeKind } from "@/lib/shape-paths";
@@ -107,25 +107,24 @@ export function WhatLumiDoes() {
       <Container className="pb-16 pt-6 md:pb-20 md:pt-8">
         <Reveal>
           <KheeluSays line="A whole day with Lumi looks like this." pose="bliss" />
-          <Eyebrow>What Lumi does all day</Eyebrow>
-          <h2 className="mb-4 max-w-[22ch] font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.08] text-ink-head">
-            Not a speaker with a face. A companion with a memory.
-          </h2>
-          <p className="mb-11 max-w-[58ch] text-[clamp(18px,1.6vw,21px)]">
-            Lumi runs on PlayOS, Kheelona&apos;s own voice engine built from
-            the ground up for children aged 3 to 6.
-          </p>
+          <SectionHeading
+            eyebrow="What Lumi does all day"
+            title="Not a speaker with a face. A companion with a memory."
+            titleClassName="mb-4 max-w-[22ch]"
+            lede="Lumi runs on PlayOS, Kheelona's own voice engine built from the ground up for children aged 3 to 6."
+            ledeClassName="mb-11 max-w-[58ch]"
+          />
         </Reveal>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map((f, i) => (
             <Reveal key={f.title} delay={i * 0.05}>
-              <TiltCard className="h-full rounded-(--radius-card) border border-line-soft bg-white p-7">
+              <Card className="border border-line-soft">
                 <ShapeFace kind={f.kind} color={f.color} mouth={f.mouth} />
                 <h3 className="mt-4 font-display text-[22px] font-extrabold text-ink-head">
                   {f.title}
                 </h3>
-                <p className="mt-1.5 text-[15.5px]">{f.body}</p>
-              </TiltCard>
+                <p className="mt-1.5 text-[15px]">{f.body}</p>
+              </Card>
             </Reveal>
           ))}
         </div>

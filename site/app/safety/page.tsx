@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
-import { Check } from "lucide-react";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { CurveDivider } from "@/components/layout/CurveDivider";
-import { Eyebrow } from "@/components/ui/Eyebrow";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { PageHero } from "@/components/ui/PageHero";
+import { Card } from "@/components/ui/Card";
+import { CheckList } from "@/components/ui/CheckList";
 import { Reveal } from "@/components/ui/Reveal";
-import { TiltCard } from "@/components/ui/TiltCard";
 import { MascotScene } from "@/components/mascot/MascotScene";
 import { Button } from "@/components/ui/Button";
 import { Faq, type FaqEntry } from "@/components/ui/Faq";
-import { FinaleCTA } from "@/components/sections/home/FinaleCTA";
+import { FinaleCTA } from "@/components/sections/shared/FinaleCTA";
 import { StageGate } from "@/components/three/StageGate";
 
 export const metadata: Metadata = {
@@ -91,25 +92,23 @@ export default function SafetyPage() {
       />
       {/* Hero */}
       <Section wash="teal">
-        <Container className="grid items-center gap-10 py-16 md:grid-cols-[1.2fr_0.8fr] md:py-20">
-          <Reveal mode="rise">
-            {/* R9: full white — the sans kicker is 13px normal-size text, so
-                it needs 4.5:1 on teal-deep (white = 5.47:1; white/85 dipped
-                under) */}
-            <Eyebrow color="text-white">Safety</Eyebrow>
-            <h1 className="mb-5 max-w-[16ch] font-display text-[clamp(38px,4.5vw,58px)] font-extrabold leading-[1.08] text-white">
-              Safe in their hands. Careful with their words.
-            </h1>
-            <p className="max-w-[58ch] text-[clamp(18px,1.6vw,21px)] text-white">
-              You are not buying a gadget. You are trusting a friend near your
-              child. Here is everything that friend will and will not do,
-              in plain words.
-            </p>
-          </Reveal>
-          <Reveal className="flex justify-center">
-            <MascotScene pose="bliss" width={260} parallax={30} priority />
-          </Reveal>
-        </Container>
+        <PageHero
+          ratio="md:grid-cols-[1.2fr_0.8fr]"
+          media={<MascotScene pose="bliss" width={260} parallax={30} priority />}
+        >
+          {/* R9: full-white kicker — 13px normal-size text needs 4.5:1 on
+              teal-deep (white = 5.47:1; white/85 dipped under) */}
+          <SectionHeading
+            as="h1"
+            tone="white"
+            eyebrow="Safety"
+            eyebrowColor="text-white"
+            title="Safe in their hands. Careful with their words."
+            titleClassName="mb-5 max-w-[16ch]"
+            lede="You are not buying a gadget. You are trusting a friend near your child. Here is everything that friend will and will not do, in plain words."
+            ledeClassName="max-w-[58ch] text-white"
+          />
+        </PageHero>
       </Section>
 
       {/* The body */}
@@ -117,18 +116,15 @@ export default function SafetyPage() {
         <CurveDivider from="teal" />
         <Container className="py-16 md:py-20">
           <Reveal>
-            <h2 className="mb-4 font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.08] text-ink-head">
-              Safe in their hands.
-            </h2>
             {/* TODO(claims-certs): exact toy-safety standards and certificate
                 references pending from founder. No physical claims before
                 certification (copy-review verdict); launch gate needs the list. */}
-            <p className="max-w-[62ch] text-[clamp(18px,1.6vw,21px)]">
-              Lumi is designed for small hands and big feelings. We are
-              completing formal toy-safety testing now. The exact materials,
-              standards, and certificates will be listed here, in full, before
-              Lumi ships.
-            </p>
+            <SectionHeading
+              title="Safe in their hands."
+              titleClassName="mb-4"
+              lede="Lumi is designed for small hands and big feelings. We are completing formal toy-safety testing now. The exact materials, standards, and certificates will be listed here, in full, before Lumi ships."
+              ledeClassName="max-w-[62ch]"
+            />
           </Reveal>
         </Container>
       </Section>
@@ -138,21 +134,23 @@ export default function SafetyPage() {
         <CurveDivider from="white" />
         <Container className="py-16 md:py-20">
           <Reveal>
-            <h2 className="mb-3 font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.08] text-ink-head">
-              Careful with their words.
-            </h2>
-            <p className="mb-11 max-w-[58ch] text-[clamp(18px,1.6vw,21px)]">
-              Four rules govern every word Lumi hears and says. They are not
-              settings. They are how it is built.
-            </p>
+            <SectionHeading
+              title="Careful with their words."
+              titleClassName="mb-3"
+              lede="Four rules govern every word Lumi hears and says. They are not settings. They are how it is built."
+              ledeClassName="mb-11 max-w-[58ch]"
+            />
           </Reveal>
           <div className="grid gap-5 sm:grid-cols-2">
             {WORD_RULES.map((r, i) => (
               <Reveal key={r.title} delay={i * 0.05}>
-                <TiltCard className="h-full rounded-(--radius-card) bg-white p-8">
-                  <h3 className="mb-2 font-display text-[24px] font-extrabold text-ink-head">{r.title}</h3>
-                  <p className="text-[16.5px]">{r.body}</p>
-                </TiltCard>
+                <Card
+                  className="p-8"
+                  title={r.title}
+                  titleClassName="mb-2 font-display text-[24px] font-extrabold text-ink-head"
+                >
+                  <p className="text-[16px]">{r.body}</p>
+                </Card>
               </Reveal>
             ))}
           </div>
@@ -164,41 +162,42 @@ export default function SafetyPage() {
         <CurveDivider from="cool" />
         <Container className="py-16 md:py-20">
           <Reveal>
-            <h2 className="mb-3 font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.08] text-ink-head">
-              Where a child&apos;s voice goes.
-            </h2>
-            <p className="mb-10 max-w-[58ch] text-[clamp(18px,1.6vw,21px)]">
-              A child&apos;s voice is precious cargo. We treat it that way.
-              Here is the whole journey, in order:
-            </p>
+            <SectionHeading
+              title="Where a child's voice goes."
+              titleClassName="mb-3"
+              lede="A child's voice is precious cargo. We treat it that way. Here is the whole journey, in order:"
+              ledeClassName="mb-10 max-w-[58ch]"
+            />
           </Reveal>
           {/* R7: the custody chain, step by step */}
           <ol className="mb-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {VOICE_PATH.map((s, i) => (
               <Reveal as="li" key={s.title} delay={i * 0.05}>
-                <div className="h-full rounded-(--radius-card) border border-line-soft bg-white/70 p-6">
+                <Card tilt={false} className="border border-line-soft bg-white/70 p-6">
                   <span aria-hidden="true" className="font-display text-3xl font-extrabold text-orange-deep">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <h3 className="mt-2 font-display text-[19px] font-extrabold text-ink-head">{s.title}</h3>
                   <p className="mt-1 text-[15px]">{s.body}</p>
-                </div>
+                </Card>
               </Reveal>
             ))}
           </ol>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {VOICE_RULES.map((c, i) => (
               <Reveal key={c.title} delay={i * 0.05}>
-                <TiltCard className="h-full rounded-(--radius-card) bg-white p-7">
-                  <h3 className="mb-2 font-display text-[22px] font-extrabold text-ink-head">{c.title}</h3>
-                  <p className="text-[15.5px]">{c.body}</p>
-                </TiltCard>
+                <Card title={c.title}>
+                  <p className="text-[15px]">{c.body}</p>
+                </Card>
               </Reveal>
             ))}
           </div>
           <Reveal>
+            {/* R11 voice-lint: "can't" de-contracted — the .ai line arrived
+                verbatim, but the contraction gate outranks the reference
+                (founder can revert on live read; copy-reference R11) */}
             <p className="mt-10 max-w-[40ch] font-display text-[clamp(22px,2.4vw,28px)] font-extrabold leading-[1.25] text-ink-head">
-              Nothing leaves without consent. Nothing stays you can&apos;t
+              Nothing leaves without consent. Nothing stays that you cannot
               delete.
             </p>
           </Reveal>
@@ -210,21 +209,13 @@ export default function SafetyPage() {
         <CurveDivider from="cream" />
         <Container className="grid items-center gap-10 py-16 md:grid-cols-[1fr_1fr] md:py-20">
           <Reveal>
-            <h2 className="mb-4 font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.08] text-ink-head">
-              The grown-up holds the keys.
-            </h2>
-            <p className="mb-6 max-w-[54ch] text-[clamp(18px,1.6vw,21px)]">
-              Lumi never decides what is right for your family. You do. The
-              parent app is where you turn the keys:
-            </p>
-            <ul className="space-y-3 text-[17px]">
-              {PARENT_KEYS.map((k) => (
-                <li key={k} className="flex items-start gap-3">
-                  <span aria-hidden="true" className="mt-1 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-teal/15 text-ink-head"><Check className="h-3 w-3" strokeWidth={2.5} aria-hidden="true" /></span>
-                  {k}
-                </li>
-              ))}
-            </ul>
+            <SectionHeading
+              title="The grown-up holds the keys."
+              titleClassName="mb-4"
+              lede="Lumi never decides what is right for your family. You do. The parent app is where you turn the keys:"
+              ledeClassName="mb-6 max-w-[54ch]"
+            />
+            <CheckList items={PARENT_KEYS} className="space-y-3" />
           </Reveal>
           <Reveal className="flex justify-center">
             <MascotScene pose="joy" width={300} parallax={34} />
@@ -245,14 +236,13 @@ export default function SafetyPage() {
       <Section wash="white">
         <Container className="pb-16 pt-2 md:pb-20">
           <Reveal>
-            <h2 className="mb-3 font-display text-[clamp(28px,3.2vw,40px)] font-extrabold leading-[1.1] text-ink-head">
-              The standards we build against.
-            </h2>
-            <p className="mb-8 max-w-[58ch] text-[17px]">
-              These are the children&apos;s privacy frameworks Lumi is designed
-              for, and where our certifications stand today. No badge appears
-              here before it is earned.
-            </p>
+            <SectionHeading
+              level="minor"
+              title="The standards we build against."
+              titleClassName="mb-3"
+              lede="These are the children's privacy frameworks Lumi is designed for, and where our certifications stand today. No badge appears here before it is earned."
+              ledeClassName="mb-8 max-w-[58ch] text-[17px]"
+            />
           </Reveal>
           <ul className="flex flex-wrap gap-3">
             {STANDARDS.map((s) => (
@@ -262,7 +252,7 @@ export default function SafetyPage() {
               >
                 <span className="text-[16px] font-semibold text-ink-head">{s.name}</span>
                 <span
-                  className={`rounded-full px-2.5 py-0.5 text-[12.5px] font-bold uppercase tracking-wide ${
+                  className={`rounded-full px-2.5 py-0.5 text-[12px] font-bold uppercase tracking-wide ${
                     s.status === "In progress" ? "bg-yellow/15 text-ink-head" : "bg-teal/15 text-ink-head"
                   }`}
                 >
@@ -278,12 +268,12 @@ export default function SafetyPage() {
         <CurveDivider from="white" />
         <Container className="py-16 md:py-20">
           <Reveal>
-            <h2 className="mb-3 font-display text-[clamp(32px,4vw,50px)] font-extrabold text-ink-head">
-              The questions we would ask too.
-            </h2>
-            <p className="mb-10 max-w-[58ch] text-[clamp(18px,1.6vw,21px)]">
-              Straight answers about AI toys and your child.
-            </p>
+            <SectionHeading
+              title="The questions we would ask too."
+              titleClassName="mb-3"
+              lede="Straight answers about AI toys and your child."
+              ledeClassName="mb-10 max-w-[58ch]"
+            />
           </Reveal>
           <Reveal className="mx-auto max-w-[820px]">
             <Faq items={SAFETY_FAQ} />

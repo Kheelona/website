@@ -1,10 +1,6 @@
 import type { Metadata } from "next";
-import { Container } from "@/components/layout/Container";
-import { Section } from "@/components/layout/Section";
-import { CurveDivider } from "@/components/layout/CurveDivider";
-import { Eyebrow } from "@/components/ui/Eyebrow";
-import { FinaleCTA } from "@/components/sections/home/FinaleCTA";
-import { StageGate } from "@/components/three/StageGate";
+import { LegalDoc, type LegalSection } from "@/components/ui/LegalDoc";
+import { LAUNCH_PRICE, LATER_PRICE } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Terms",
@@ -16,11 +12,11 @@ export const metadata: Metadata = {
 /* TODO(counsel-review): plain-language draft per prompt §5.2. This page MUST
    be reviewed by counsel before launch (launch checklist gate). */
 
-const SECTIONS = [
+const SECTIONS: readonly LegalSection[] = [
   {
     h: "What a reservation is",
     ps: [
-      "Joining the pre-order list reserves your place in line and holds the launch price of ₹4,999 for you. The price after launch is ₹9,999.",
+      `Joining the pre-order list reserves your place in line and holds the launch price of ${LAUNCH_PRICE} for you. The price after launch is ${LATER_PRICE}.`,
       "A reservation is not a purchase. You pay nothing now, and nothing is charged automatically, ever.",
     ],
   },
@@ -33,7 +29,7 @@ const SECTIONS = [
   {
     h: "The price hold",
     ps: [
-      "The ₹4,999 price is held for everyone who joins the list before launch. If our launch plans change in a way that affects the hold, we will tell you directly before anything else happens.",
+      `The ${LAUNCH_PRICE} price is held for everyone who joins the list before launch. If our launch plans change in a way that affects the hold, we will tell you directly before anything else happens.`,
     ],
   },
   {
@@ -49,47 +45,14 @@ const SECTIONS = [
       "Full terms of sale, including delivery, returns, and warranty, will be published before anyone is asked to pay anything.",
     ],
   },
-] as const;
+];
 
 export default function TermsPage() {
   return (
-    <>
-      <Section wash="cream">
-        <Container className="py-14 md:py-16">
-          <div className="mx-auto max-w-[760px]">
-            <Eyebrow>The fine print, unfine</Eyebrow>
-            <h1 className="mb-4 font-display text-[clamp(38px,4.5vw,58px)] font-extrabold leading-[1.1] text-ink-head">
-              Reservation terms, in plain words.
-            </h1>
-            <p className="text-[18px]">
-              A fair deal should survive being written clearly. Here is ours.
-            </p>
-          </div>
-        </Container>
-      </Section>
-      <Section wash="white">
-        <CurveDivider from="cream" />
-        <Container className="py-12 md:py-16">
-          <div className="mx-auto max-w-[720px]">
-            {SECTIONS.map((s) => (
-              <div key={s.h}>
-                <h2 className="mb-3 mt-9 font-display text-[24px] font-extrabold text-ink-head">
-                  {s.h}
-                </h2>
-                {s.ps.map((p, i) => (
-                  <p key={i} className="mb-4 text-[17px] leading-[1.65]">
-                    {p}
-                  </p>
-                ))}
-              </div>
-            ))}
-          </div>
-        </Container>
-      </Section>
-      {/* R9: every page ends with the reserve moment — the nav CTA anchors
-          to #reserve (the anchor was dead here; reviewer-class trust bug) */}
-      <FinaleCTA variant="compact" from="white" />
-      <StageGate stage="ambient" />
-    </>
+    <LegalDoc
+      title="Reservation terms, in plain words."
+      lede="A fair deal should survive being written clearly. Here is ours."
+      sections={SECTIONS}
+    />
   );
 }

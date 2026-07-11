@@ -2,9 +2,9 @@ import Image from "next/image";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { CurveDivider } from "@/components/layout/CurveDivider";
-import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/ui/Reveal";
-import { TiltCard } from "@/components/ui/TiltCard";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { Card } from "@/components/ui/Card";
 import { KheeluSays } from "@/components/ui/KheeluSays";
 import { cn } from "@/lib/cn";
 
@@ -36,19 +36,18 @@ export function Feelings() {
             line="These are the five feelings Lumi understands. I will act them out for you."
             pose="sad"
           />
-          <Eyebrow>Meet the feelings</Eyebrow>
-          <h2 className="max-w-[18ch] font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.08] text-ink-head">
-            Learning starts with feeling understood.
-          </h2>
-          <p className="mb-14 mt-4 max-w-[62ch] text-[clamp(18px,1.6vw,21px)]">
-            Lumi knows five feelings. They are the engine behind everything
-            your child learns.
-          </p>
+          <SectionHeading
+            eyebrow="Meet the feelings"
+            title="Learning starts with feeling understood."
+            titleClassName="max-w-[18ch]"
+            lede="Lumi knows five feelings. They are the engine behind everything your child learns."
+            ledeClassName="mb-14 mt-4 max-w-[62ch]"
+          />
         </Reveal>
         <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
           {FEELINGS.map((f, i) => (
             <Reveal as="li" key={f.name} delay={i * 0.07}>
-              <TiltCard className={cn("group h-full rounded-(--radius-card) border border-line-soft p-5", f.card)}>
+              <Card className={cn("group border border-line-soft p-5", f.card)}>
               <div className="grid h-[150px] place-items-center md:h-[165px]">
                 <Image
                   src={`/mascot/mascot-${f.img}.png`}
@@ -65,10 +64,10 @@ export function Feelings() {
               <h3 className="mt-3 font-display text-2xl font-extrabold text-ink-head">
                 {f.name}
               </h3>
-              <p className="mt-1 text-[14.5px] leading-snug text-ink">
+              <p className="mt-1 text-[15px] leading-snug text-ink">
                 {f.line}
               </p>
-              </TiltCard>
+              </Card>
             </Reveal>
           ))}
         </ul>

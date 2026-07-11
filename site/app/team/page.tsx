@@ -3,12 +3,14 @@ import Image from "next/image";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { CurveDivider } from "@/components/layout/CurveDivider";
-import { Eyebrow } from "@/components/ui/Eyebrow";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { PageHero } from "@/components/ui/PageHero";
+import { StepList } from "@/components/ui/StepList";
 import { Reveal } from "@/components/ui/Reveal";
 import { TiltCard } from "@/components/ui/TiltCard";
 import { MascotScene } from "@/components/mascot/MascotScene";
 import { RecognitionStrip } from "@/components/sections/shared/RecognitionStrip";
-import { FinaleCTA } from "@/components/sections/home/FinaleCTA";
+import { FinaleCTA } from "@/components/sections/shared/FinaleCTA";
 import { StageGate } from "@/components/three/StageGate";
 
 export const metadata: Metadata = {
@@ -55,16 +57,18 @@ const FOUNDERS = [
   },
   {
     // R10 (founder 2026-07-11): Ria joins between Kashyap and Apoorva.
-    // Photo from the founder (transparent PNG, cropped square); bio facts
-    // from her published profile; quote drafted from her own published line
-    // ("most businesses don't have a marketing problem, they have a clarity
-    // problem") — founder-approved via the R10 plan, Ria's personal sign-off
-    // flagged in FOUNDER-TODO.
+    // Bio facts from her published profile; quote drafted from her own
+    // published line ("most businesses don't have a marketing problem, they
+    // have a clarity problem") — founder-approved via the R10 plan, Ria's
+    // personal sign-off flagged in FOUNDER-TODO. R11: the founder's source
+    // PNG had a BAKED checkerboard (fake transparency) — re-cut with
+    // tools/cutout (Vision) and composited on flat pale lavender #F1ECFB,
+    // matching the set (each photo bg echoes its card tint family).
     id: "ria",
     name: "Ria Mangala Rewari",
     role: "Head of Marketing",
     tag: "The voice",
-    photo: "/team/ria.png",
+    photo: "/team/ria.jpg",
     tint: "bg-purple/15",
     border: "border-t-purple",
     quoteBorder: "border-l-purple",
@@ -111,29 +115,25 @@ export default function TeamPage() {
     <>
       {/* Manifesto hero (kheelona.ai framing, parent voice) */}
       <Section wash="cream">
-        <Container className="grid items-center gap-10 py-16 md:grid-cols-[1.15fr_0.85fr] md:py-20">
-          <Reveal mode="rise">
-            <Eyebrow>Why we built Kheelona</Eyebrow>
-            <h1 className="mb-5 max-w-[18ch] font-display text-[clamp(38px,4.5vw,58px)] font-extrabold leading-[1.08] text-ink-head">
-              Every object a child holds is about to wake up.
-            </h1>
-            <p className="mb-4 max-w-[58ch] text-[clamp(18px,1.6vw,21px)]">
-              The plush, the crib, the night-light. Within a few years each one
-              will listen, answer, and remember the child who loves it. Someone
-              has to build the mind that wakes them, and build it safely. That
-              is the whole reason Kheelona exists.
-            </p>
-            <p className="max-w-[58ch] text-[17px] text-ink-muted">
-              We are parents who build. We watched our own children reach for
-              screens and felt the same knot you feel. Between the four of us
-              we cover the four things a safe talking toy actually needs: a
-              brain, a body, a business, and a voice.
-            </p>
-          </Reveal>
-          <Reveal className="flex justify-center">
-            <MascotScene pose="silly" width={300} parallax={34} priority />
-          </Reveal>
-        </Container>
+        <PageHero
+          ratio="md:grid-cols-[1.15fr_0.85fr]"
+          media={<MascotScene pose="silly" width={300} parallax={34} priority />}
+        >
+          <SectionHeading
+            as="h1"
+            eyebrow="Why we built Kheelona"
+            title="Every object a child holds is about to wake up."
+            titleClassName="mb-5 max-w-[18ch]"
+            lede="The plush, the crib, the night-light. Within a few years each one will listen, answer, and remember the child who loves it. Someone has to build the mind that wakes them, and build it safely. That is the whole reason Kheelona exists."
+            ledeClassName="mb-4 max-w-[58ch]"
+          />
+          <p className="max-w-[58ch] text-[17px] text-ink-muted">
+            We are parents who build. We watched our own children reach for
+            screens and felt the same knot you feel. Between the four of us
+            we cover the four things a safe talking toy actually needs: a
+            brain, a body, a business, and a voice.
+          </p>
+        </PageHero>
       </Section>
 
       {/* Founder cards (full parity: photo, tag, bio, pull-quote, LinkedIn) */}
@@ -141,12 +141,12 @@ export default function TeamPage() {
         <CurveDivider from="cream" />
         <Container className="py-16 md:py-20">
           <Reveal>
-            <h2 className="mb-3 font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.08] text-ink-head">
-              A brain, a body, a business, and a voice.
-            </h2>
-            <p className="mb-11 max-w-[58ch] text-[clamp(18px,1.6vw,21px)]">
-              You are trusting us near your child. You should know who we are.
-            </p>
+            <SectionHeading
+              title="A brain, a body, a business, and a voice."
+              titleClassName="mb-3"
+              lede="You are trusting us near your child. You should know who we are."
+              ledeClassName="mb-11 max-w-[58ch]"
+            />
           </Reveal>
           <div className="flex flex-col gap-6">
             {FOUNDERS.map((f, i) => (
@@ -156,7 +156,8 @@ export default function TeamPage() {
                   className={`rounded-(--radius-card) border border-line-soft border-t-4 bg-white p-7 ${f.border}`}
                 >
                   <div className="flex flex-wrap items-start gap-7">
-                    <div className={`shrink-0 rounded-[18px] p-2 ${f.tint}`}>
+                    {/* R11: token radius (was arbitrary rounded-[18px]) */}
+                    <div className={`shrink-0 rounded-2xl p-2 ${f.tint}`}>
                       <Image
                         src={f.photo}
                         alt={`${f.name}, ${f.role} at Kheelona`}
@@ -181,7 +182,7 @@ export default function TeamPage() {
                           <LinkedInIcon />
                         </a>
                       </div>
-                      <p className="mt-1 text-[13.5px] font-bold uppercase tracking-[0.05em] text-ink-muted">
+                      <p className="mt-1 text-[13px] font-bold uppercase tracking-[0.05em] text-ink-muted">
                         {f.role} <span className="font-semibold">· {f.tag}</span>
                       </p>
                       <p className="mt-3 max-w-[68ch] text-[16px] leading-relaxed">
@@ -206,24 +207,16 @@ export default function TeamPage() {
         <CurveDivider from="white" />
         <Container className="py-16 md:py-20">
           <Reveal>
-            <h2 className="mb-11 font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.08] text-ink-head">
-              What we believe.
-            </h2>
+            <SectionHeading title="What we believe." titleClassName="mb-11" />
           </Reveal>
-          <ol className="border-t border-line">
-            {BELIEFS.map((b, i) => (
-              <Reveal as="li" key={b} className="grid items-center gap-4 border-b border-line py-7 md:grid-cols-[80px_1fr]">
-                  {/* orange-deep: the normalized numeral accent (design panel
-                      re-review; text-blue washed out on the cool wash) */}
-                  <span aria-hidden="true" className="font-display text-4xl font-extrabold text-orange-deep">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <p className="font-display text-[clamp(20px,2.2vw,26px)] font-extrabold text-ink-head">
-                    {b}
-                  </p>
-              </Reveal>
-            ))}
-          </ol>
+          {/* orange-deep numerals: the normalized accent (design panel
+              re-review; text-blue washed out on the cool wash) */}
+          <StepList
+            items={BELIEFS.map((b) => ({ title: b }))}
+            columns="md:grid-cols-[80px_1fr]"
+            rowClassName="items-center gap-4 py-7"
+            titleClassName="font-display text-[clamp(20px,2.2vw,26px)] font-extrabold text-ink-head"
+          />
         </Container>
       </Section>
 

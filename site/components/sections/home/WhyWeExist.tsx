@@ -34,10 +34,20 @@ export function WhyWeExist() {
               What they hear, what they feel, and who they talk to shape
               everything that follows.
             </p>
-            <p className="max-w-[54ch] text-[clamp(18px,1.6vw,21px)]">
+            <p className="mb-4 max-w-[54ch] text-[clamp(18px,1.6vw,21px)]">
               Most toys do one thing. Screens do too much. Lumi does the one
               thing that matters: it listens to your child, understands how
               they feel, and talks back in a way that helps them grow.
+            </p>
+            {/* R11: the PDF hero-paragraph continuation lands here — it left
+                the hero when the conversation device arrived (this section IS
+                the brain-growth argument; copy-reference R11) */}
+            <p className="max-w-[54ch] text-[clamp(18px,1.6vw,21px)]">
+              In the years a brain grows fastest, the more Lumi understands
+              how your child feels, the more they learn.{" "}
+              <span className="font-semibold text-ink-head">
+                In all 10 languages you speak at home.
+              </span>
             </p>
           </Reveal>
         </div>

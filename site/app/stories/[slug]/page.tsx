@@ -5,8 +5,8 @@ import { notFound } from "next/navigation";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { CurveDivider } from "@/components/layout/CurveDivider";
-import { Eyebrow } from "@/components/ui/Eyebrow";
-import { FinaleCTA } from "@/components/sections/home/FinaleCTA";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { FinaleCTA } from "@/components/sections/shared/FinaleCTA";
 import { STORIES, getStory } from "@/lib/stories";
 import { StageGate } from "@/components/three/StageGate";
 
@@ -56,11 +56,16 @@ export default async function StoryPage({
       <Section wash="cream">
         <Container className="py-14 md:py-16">
           <div className="mx-auto max-w-[760px]">
-            <Eyebrow>{story.theme}</Eyebrow>
-            <h1 className="mb-3 font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.1] text-ink-head">
-              {story.title}
-            </h1>
-            <p className="text-[15px] font-semibold uppercase tracking-wide text-ink-muted">
+            {/* article titles ride the section scale on purpose — quieter
+                than a page hero */}
+            <SectionHeading
+              as="h1"
+              level="section"
+              eyebrow={story.theme}
+              title={story.title}
+              titleClassName="mb-3"
+            />
+            <p className="text-[13px] font-semibold uppercase tracking-wide text-ink-muted">
               {story.minutes} minute read
             </p>
           </div>

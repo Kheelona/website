@@ -42,7 +42,7 @@ export function KheeluIntro() {
               {TRAITS.map((t) => (
                 <li
                   key={t.label}
-                  className={`rounded-full px-4 py-2 text-[14.5px] font-bold text-ink-head ${t.tint}`}
+                  className={`rounded-full px-4 py-2 text-[15px] font-bold text-ink-head ${t.tint}`}
                 >
                   {t.label}
                 </li>

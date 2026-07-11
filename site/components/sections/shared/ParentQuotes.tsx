@@ -1,9 +1,9 @@
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { CurveDivider } from "@/components/layout/CurveDivider";
-import { Eyebrow } from "@/components/ui/Eyebrow";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
-import { TiltCard } from "@/components/ui/TiltCard";
+import { Card } from "@/components/ui/Card";
 
 /** R7: real early-tester quotes, verbatim from the founder-published
  *  kheelona.ai (content/site.ts QUOTES). This resolves the long-standing
@@ -40,15 +40,16 @@ export function ParentQuotes({
       <CurveDivider from={from} />
       <Container className="pb-16 pt-6 md:pb-20 md:pt-8">
         <Reveal>
-          <Eyebrow>{eyebrow}</Eyebrow>
-          <h2 className="mb-10 max-w-[20ch] font-display text-[clamp(32px,4vw,50px)] font-extrabold leading-[1.08] text-ink-head">
-            {title}
-          </h2>
+          <SectionHeading
+            eyebrow={eyebrow}
+            title={title}
+            titleClassName="mb-10 max-w-[20ch]"
+          />
         </Reveal>
         <div className={count === 2 ? "grid gap-5 md:grid-cols-2" : "grid gap-5 md:grid-cols-3"}>
           {QUOTES.slice(0, count).map((q, i) => (
             <Reveal key={q.who} delay={i * 0.06}>
-              <TiltCard className="h-full rounded-(--radius-card) border border-line-soft bg-cream p-7">
+              <Card className="border border-line-soft bg-cream">
                 <p
                   aria-hidden="true"
                   className="mb-2 font-display text-4xl font-extrabold leading-none text-orange"
@@ -58,10 +59,10 @@ export function ParentQuotes({
                 <p className="mb-4 font-accent text-[20px] leading-[1.4] text-ink-head">
                   {q.text}
                 </p>
-                <p className="text-[14px] font-semibold uppercase tracking-wide text-ink-muted">
+                <p className="text-[13px] font-semibold uppercase tracking-wide text-ink-muted">
                   {q.who}
                 </p>
-              </TiltCard>
+              </Card>
             </Reveal>
           ))}
         </div>
