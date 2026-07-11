@@ -91,3 +91,8 @@ Your friend's audit is fully dispositioned (docs/qa-report.md R9). Kheelu now na
 
 ## R10 (2026-07-11) — one item for you
 - **R10-a. Ria's sign-off on her card**: bio + quote were drafted from her public profile and approved by you in the plan; have Ria read her card on /team once — any wording change is a one-line edit. Also say the word if you want a different photo crop.
+
+## R11 (2026-07-11) — two items for you
+- **R11-a. Read the two new pages live**: the Home hero now demonstrates Lumi with the moon exchange (desktop shows it typing in; phones show it settled), and /playos is the platform story (family renders, the real Magic Box photo, six safety layers, the "brain keeps growing" note). Everything is adapted from your published kheelona.ai copy — flag any line you want tuned.
+- **R11-b. Two de-contracted lines**: the voice gate (no contractions outside Kheelu) outranked your published .ai phrasing in two spots — "whether it is safe" (Home safety callout) and "Nothing stays that you cannot delete." (/safety). If you prefer the original contractions as sanctioned exceptions, say so and they go back in one line each.
+- Also for your eyes: Ria's photo is re-cut on a pale lavender background (the checkerboard in the source file was baked-in fake transparency); her card sign-off (R10-a) still stands.
