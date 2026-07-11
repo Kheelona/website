@@ -243,11 +243,12 @@
       "QA: build/tsc/token(17)/voice-lint green; LH desktop 99-100 + A11y/BP/SEO 100 all 9 routes (orange-cta kicker contrast regression caught and fixed with orange-ink); 29-href crawl clean; SSR probes pass",
       "Rollback flag: tag r7-live-2026-07-10 on origin",
       "LIVE VERIFIED (2026-07-11): probes pass; desktop 100/100/100/100 LCP 0.7s; mobile x5 median 93 — the >=90 gate PASSES, R8/#34 closed by the hero fix. Docs/memory/README/CLAUDE.md/checkpoint all current for cold resume.",
-      "R10 SHIPPED: story-click root cause (tilt moves the surface under the cursor -> dropped clicks; HARD RULE: tilt never wraps whole-card links), Ria Mangala Rewari on /team (Head of Marketing, The voice, purple; quote sign-off = FOUNDER-TODO R10-a), ambient margin-lane projection fix + asymmetric ghost + mount ease-in, StagedIntro folded into the hero (founder pick). Spec: website-steps 8.18."
+      "R10 SHIPPED: story-click root cause (tilt moves the surface under the cursor -> dropped clicks; HARD RULE: tilt never wraps whole-card links), Ria Mangala Rewari on /team (Head of Marketing, The voice, purple; quote sign-off = FOUNDER-TODO R10-a), ambient margin-lane projection fix + asymmetric ghost + mount ease-in, StagedIntro folded into the hero (founder pick). Spec: website-steps 8.18.",
+      "R10 LIVE-VERIFIED: probes + click storm (center + corner) pass on live /stories; docs/checkpoint/README/CLAUDE.md/memory synced for cold resume."
     ],
-    "next_action": "Founder queue only: R10-a (Ria sign-off), R9-a..c, R4-a..f, R5-a. Founder should eyeball the stabilized ambient shapes on the live home (automation tabs cannot see WebGL).",
+    "next_action": "Founder queue only (no engineering dangling): R10-a Ria card sign-off + ambient shapes visual check on live Home; then R9-a..c, R4-a..f, R5-a, Tally URL, GA4, claims. Cold resume: read docs/checkpoints/r10-clicks-ria-ambient-fold.md first.",
     "founder_gate": "R9 shipped per approved plan; Kheelu lines live exactly as approved. Open founder queue: R9-a..c, R4-a..f, R5-a (new logo).",
-    "checkpoint": "docs/checkpoints/r9-friend-feedback-kheelu.md"
+    "checkpoint": "docs/checkpoints/r10-clicks-ria-ambient-fold.md"
   },
   "resume_instructions": "Read README.md first. Then this file. Then the current-phase checkpoint. Then website-steps.md if it exists. Never re-ask anything settled in the Brand Bible (build prompt §1) or in approvals above."
 }

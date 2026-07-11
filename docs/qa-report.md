@@ -303,3 +303,8 @@ External reviewer (founder's friend) audited the live site; founder answered eve
 - **Ambient**: margin-lane projection fix (near shapes were off-frustum, far shapes inside the copy column), asymmetric ghost ramp, opacity-0 ease-in on mount. Visible-window + founder live check pending by design (hidden tabs freeze rAF).
 - Ria card verified (order Aman→Kashyap→Ria→Apoorva, purple family, chip link); hero fold verified visually; wash seam covered by new LaunchVideo divider.
 - Gates: build 28 pages, tsc clean, token 17 ok, SSR probes pass (hero paragraph ×1, Ria on /team). Lighthouse desktop: home 99/100/100/100, team 100×4, stories 100×4.
+
+### R10 live verification (2026-07-11, commit 107344b)
+- Live probes: Ria on /team, "a business, and a voice" manifesto, hero fold present, old intro section absent.
+- Live click test on /stories: center click AND top-left corner click (the old failure zone) both navigate. The structural cause (pointer-tracked tilt on whole-card links) is removed; the frozen-0.99 transform seen in the automation tab is the entrance animation stalled by the occluded-tab rAF freeze, not a defect.
+- Ambient shapes: margin-lane math verified against camera fov/aspect; visual confirmation delegated to the founder (WebGL does not render in automation tabs).
