@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Instrument_Serif } from "next/font/google";
 import "@/styles/globals.css";
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
-import { RevealObserver } from "@/components/ui/RevealObserver";
-import { StickyMobileCTA } from "@/components/layout/StickyMobileCTA";
+import { Navbar } from "@/components/organisms/Navbar";
+import { Footer } from "@/components/organisms/Footer";
+import { RevealObserver } from "@/components/molecules/RevealObserver";
+import { StickyMobileCTA } from "@/components/organisms/StickyMobileCTA";
 
 const glory = localFont({
   // Upright faces only: italics are banned site-wide (R5 typography rule,

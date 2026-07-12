@@ -21,7 +21,7 @@ if (!existsSync(join(root, "Design/design-system/colors_and_type.css"))) {
 
 const ds = readFileSync(join(root, "Design/design-system/colors_and_type.css"), "utf8");
 const theme = readFileSync(join(root, "site/src/styles/globals.css"), "utf8");
-const three = readFileSync(join(root, "site/src/lib/three/tokens.ts"), "utf8");
+const three = readFileSync(join(root, "site/src/features/ambient-stage/lib/tokens.ts"), "utf8");
 
 const cssVar = (src, name) => {
   const m = src.match(new RegExp(`--${name}\\s*:\\s*([^;]+);`));

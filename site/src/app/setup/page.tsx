@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
-import { Container } from "@/components/layout/Container";
-import { Section } from "@/components/layout/Section";
-import { CurveDivider } from "@/components/layout/CurveDivider";
-import { SectionHeading } from "@/components/ui/SectionHeading";
-import { PageHero } from "@/components/ui/PageHero";
-import { StepList } from "@/components/ui/StepList";
-import { Reveal } from "@/components/ui/Reveal";
-import { MascotScene } from "@/components/mascot/MascotScene";
-import { KheeluSays } from "@/components/ui/KheeluSays";
-import { FinaleCTA } from "@/components/sections/shared/FinaleCTA";
-import { StageGate } from "@/components/three/StageGate";
+import { Container } from "@/components/atoms/Container";
+import { Section } from "@/components/atoms/Section";
+import { CurveDivider } from "@/components/atoms/CurveDivider";
+import { SectionHeading } from "@/components/molecules/SectionHeading";
+import { PageHero } from "@/components/templates/PageHero";
+import { StepList } from "@/components/molecules/StepList";
+import { Reveal } from "@/components/molecules/Reveal";
+import { MascotScene } from "@/components/organisms/MascotScene";
+import { KheeluSays } from "@/components/molecules/KheeluSays";
+import { FinaleCTA } from "@/components/organisms/FinaleCTA";
+import { StageGate } from "@/features/ambient-stage";
 import { SETUP_STEPS } from "@/lib/setup-steps";
 
 export const metadata: Metadata = {

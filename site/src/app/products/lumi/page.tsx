@@ -1,21 +1,21 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { LumiHero } from "@/components/product/LumiHero";
-import { Container } from "@/components/layout/Container";
-import { Section } from "@/components/layout/Section";
-import { CurveDivider } from "@/components/layout/CurveDivider";
-import { Button } from "@/components/ui/Button";
-import { SectionHeading } from "@/components/ui/SectionHeading";
-import { Card } from "@/components/ui/Card";
-import { StepList } from "@/components/ui/StepList";
-import { CheckList } from "@/components/ui/CheckList";
-import { Reveal } from "@/components/ui/Reveal";
-import { Faq, type FaqEntry } from "@/components/ui/Faq";
-import { KheeluSays } from "@/components/ui/KheeluSays";
-import { FinaleCTA } from "@/components/sections/shared/FinaleCTA";
-import { ParentQuotes } from "@/components/sections/shared/ParentQuotes";
-import { PREORDER_HREF, RESERVE_LABEL, PRICE_CAPTION, LAUNCH_PRICE, LATER_PRICE } from "@/lib/site";
+import { LumiHero } from "./_components/LumiHero";
+import { Container } from "@/components/atoms/Container";
+import { Section } from "@/components/atoms/Section";
+import { CurveDivider } from "@/components/atoms/CurveDivider";
+import { Button } from "@/components/atoms/Button";
+import { SectionHeading } from "@/components/molecules/SectionHeading";
+import { Card } from "@/components/molecules/Card";
+import { StepList } from "@/components/molecules/StepList";
+import { CheckList } from "@/components/molecules/CheckList";
+import { Reveal } from "@/components/molecules/Reveal";
+import { Faq, type FaqEntry } from "@/components/molecules/Faq";
+import { KheeluSays } from "@/components/molecules/KheeluSays";
+import { FinaleCTA } from "@/components/organisms/FinaleCTA";
+import { ParentQuotes } from "@/components/organisms/ParentQuotes";
+import { PREORDER_HREF, RESERVE_LABEL, PRICE_CAPTION, LAUNCH_PRICE, LATER_PRICE } from "@/config/site";
 
 export const metadata: Metadata = {
   title: "Lumi: the talking toy that holds a real conversation",

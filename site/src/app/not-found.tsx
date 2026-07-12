@@ -1,8 +1,8 @@
-import { Container } from "@/components/layout/Container";
-import { Section } from "@/components/layout/Section";
-import { SectionHeading } from "@/components/ui/SectionHeading";
-import { Button } from "@/components/ui/Button";
-import { MascotScene } from "@/components/mascot/MascotScene";
+import { Container } from "@/components/atoms/Container";
+import { Section } from "@/components/atoms/Section";
+import { SectionHeading } from "@/components/molecules/SectionHeading";
+import { Button } from "@/components/atoms/Button";
+import { MascotScene } from "@/components/organisms/MascotScene";
 
 export default function NotFound() {
   return (

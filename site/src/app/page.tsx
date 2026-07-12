@@ -1,22 +1,24 @@
 import type { Metadata } from "next";
-import { Beat } from "@/components/layout/Beat";
-import { StageGate } from "@/components/three/StageGate";
-import { RecognitionStrip } from "@/components/sections/shared/RecognitionStrip";
-import { SafetyCallout } from "@/components/sections/home/SafetyCallout";
-import { ParentQuotes } from "@/components/sections/shared/ParentQuotes";
-import { ParentAppSection } from "@/components/sections/home/ParentAppSection";
-import { Hero } from "@/components/sections/home/Hero";
-import { KheeluIntro } from "@/components/sections/home/KheeluIntro";
-import { LaunchVideo } from "@/components/sections/home/LaunchVideo";
-import { HowItWorks } from "@/components/sections/home/HowItWorks";
-import { WhyWeExist } from "@/components/sections/home/WhyWeExist";
-import { Feelings } from "@/components/sections/home/Feelings";
-import { MeetLumi } from "@/components/sections/home/MeetLumi";
-import { WhatLumiDoes } from "@/components/sections/home/WhatLumiDoes";
-import { Compare } from "@/components/sections/home/Compare";
-import { SafetyStrip } from "@/components/sections/home/SafetyStrip";
-import { Journal } from "@/components/sections/home/Journal";
-import { FinaleCTA } from "@/components/sections/shared/FinaleCTA";
+import { Beat } from "@/components/atoms/Beat";
+import { StageGate } from "@/features/ambient-stage";
+import { RecognitionStrip } from "@/components/organisms/RecognitionStrip";
+import { ParentQuotes } from "@/components/organisms/ParentQuotes";
+import { FinaleCTA } from "@/components/organisms/FinaleCTA";
+import {
+  Hero,
+  KheeluIntro,
+  WhyWeExist,
+  LaunchVideo,
+  Feelings,
+  MeetLumi,
+  WhatLumiDoes,
+  HowItWorks,
+  Compare,
+  SafetyCallout,
+  SafetyStrip,
+  Journal,
+  ParentAppSection,
+} from "@/features/home";
 
 export const metadata: Metadata = {
   title: "Lumi by Kheelona: the screen-free AI robot toy for ages 3 to 6",

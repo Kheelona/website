@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { Container } from "@/components/layout/Container";
-import { Section } from "@/components/layout/Section";
-import { CurveDivider } from "@/components/layout/CurveDivider";
-import { SectionHeading } from "@/components/ui/SectionHeading";
-import { Reveal } from "@/components/ui/Reveal";
-import { KheeluSays } from "@/components/ui/KheeluSays";
-import { FinaleCTA } from "@/components/sections/shared/FinaleCTA";
+import { Container } from "@/components/atoms/Container";
+import { Section } from "@/components/atoms/Section";
+import { CurveDivider } from "@/components/atoms/CurveDivider";
+import { SectionHeading } from "@/components/molecules/SectionHeading";
+import { Reveal } from "@/components/molecules/Reveal";
+import { KheeluSays } from "@/components/molecules/KheeluSays";
+import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { STORIES } from "@/lib/stories";
-import { StageGate } from "@/components/three/StageGate";
+import { StageGate } from "@/features/ambient-stage";
 
 export const metadata: Metadata = {
   title: "Stories: raising curious kids",

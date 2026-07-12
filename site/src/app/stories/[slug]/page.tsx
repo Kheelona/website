@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Container } from "@/components/layout/Container";
-import { Section } from "@/components/layout/Section";
-import { CurveDivider } from "@/components/layout/CurveDivider";
-import { SectionHeading } from "@/components/ui/SectionHeading";
-import { FinaleCTA } from "@/components/sections/shared/FinaleCTA";
+import { Container } from "@/components/atoms/Container";
+import { Section } from "@/components/atoms/Section";
+import { CurveDivider } from "@/components/atoms/CurveDivider";
+import { SectionHeading } from "@/components/molecules/SectionHeading";
+import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { STORIES, getStory } from "@/lib/stories";
-import { StageGate } from "@/components/three/StageGate";
+import { StageGate } from "@/features/ambient-stage";
 
 export function generateStaticParams() {
   return STORIES.map((s) => ({ slug: s.slug }));

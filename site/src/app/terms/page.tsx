@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { LegalDoc, type LegalSection } from "@/components/ui/LegalDoc";
-import { LAUNCH_PRICE, LATER_PRICE } from "@/lib/site";
+import { LegalDoc, type LegalSection } from "@/components/templates/LegalDoc";
+import { LAUNCH_PRICE, LATER_PRICE } from "@/config/site";
 
 export const metadata: Metadata = {
   title: "Terms",

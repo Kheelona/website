@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { LegalDoc, type LegalSection } from "@/components/ui/LegalDoc";
+import { LegalDoc, type LegalSection } from "@/components/templates/LegalDoc";
 
 export const metadata: Metadata = {
   title: "Privacy",

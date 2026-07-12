@@ -1,17 +1,17 @@
 import type { Metadata } from "next";
-import { Container } from "@/components/layout/Container";
-import { Section } from "@/components/layout/Section";
-import { CurveDivider } from "@/components/layout/CurveDivider";
-import { SectionHeading } from "@/components/ui/SectionHeading";
-import { PageHero } from "@/components/ui/PageHero";
-import { Card } from "@/components/ui/Card";
-import { CheckList } from "@/components/ui/CheckList";
-import { Reveal } from "@/components/ui/Reveal";
-import { MascotScene } from "@/components/mascot/MascotScene";
-import { Button } from "@/components/ui/Button";
-import { Faq, type FaqEntry } from "@/components/ui/Faq";
-import { FinaleCTA } from "@/components/sections/shared/FinaleCTA";
-import { StageGate } from "@/components/three/StageGate";
+import { Container } from "@/components/atoms/Container";
+import { Section } from "@/components/atoms/Section";
+import { CurveDivider } from "@/components/atoms/CurveDivider";
+import { SectionHeading } from "@/components/molecules/SectionHeading";
+import { PageHero } from "@/components/templates/PageHero";
+import { Card } from "@/components/molecules/Card";
+import { CheckList } from "@/components/molecules/CheckList";
+import { Reveal } from "@/components/molecules/Reveal";
+import { MascotScene } from "@/components/organisms/MascotScene";
+import { Button } from "@/components/atoms/Button";
+import { Faq, type FaqEntry } from "@/components/molecules/Faq";
+import { FinaleCTA } from "@/components/organisms/FinaleCTA";
+import { StageGate } from "@/features/ambient-stage";
 
 export const metadata: Metadata = {
   title: "Safety: how we built a safe AI toy",
