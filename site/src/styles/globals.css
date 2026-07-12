@@ -1,4 +1,11 @@
-@import "tailwindcss";
+@import "tailwindcss" source(none);
+
+/* Explicit, deterministic content sources (production hygiene): scan the app
+   source under src/, and NEVER the dev-only Storybook stories / tests, so their
+   className strings can never leak utilities into the shipped CSS. */
+@source "../**/*.{ts,tsx}";
+@source not "../**/*.stories.tsx";
+@source not "../**/*.test.tsx";
 
 /* Kheelona design tokens, mapped from Design/design-system/colors_and_type.css.
    Do not invent values; if a token is missing, flag it (blueprint §8.2). */
