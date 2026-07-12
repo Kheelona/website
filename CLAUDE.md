@@ -15,6 +15,30 @@ Pre-order marketing site for **Lumi**, Kheelona's screen-free talking AI toy for
 2. `website-builder-prompt-final-kheelona.md` — master build spec (Brand Bible §1, voice rules §1.7, keyword map §3.1).
 3. `Design/design-system/` — tokens/fonts (note: capital-D `Design/`, and its README's "em-dash preferred" is OVERRIDDEN by the Brand Bible).
 
+## Production structure & standards (BINDING LAW, 2026-07-12)
+The app is now a **`src/`-based atomic-design** Next.js project. Two standards in
+`docs/standards/` govern EVERY future change to `site/` (non-negotiable):
+- `PROJECT_STRUCTURE.md` — where code lives (`src/`; components in
+  atoms/molecules/organisms/templates; self-contained `features/`; `config/ lib/ styles/`;
+  `@/* → src/*`; naming).
+- `COMPONENT_GUIDELINES.md` — search-before-build / reuse-extend-compose; token-driven;
+  every component ships a Storybook story + a Vitest test.
+- `STRUCTURE-MAP.md` — old→new path translation (paths in older docs/checkpoints/bullets
+  below predate the reorg; translate through this).
+
+Rules for any change:
+1. New UI: search the catalog first (Storybook + `docs/standards`); reuse/extend/compose
+   before creating. Place by scope: generic → `src/components/{atoms|molecules|organisms|templates}`;
+   one route → that route's `_components/`; one feature → `src/features/<f>/` (imported via its
+   `index.ts` barrel).
+2. Token-driven only; prices/CTA labels from `@/config/site`; the shared molecules
+   (SectionHeading/Card/StepList/PageHero/CheckList/LegalDoc — §8.19) are the registry.
+3. Every new/changed component ships a colocated `X.stories.tsx` + `X.test.tsx`
+   (`cd site && npm test`, `npm run storybook`). Node ≥ 24 (`.nvmrc`). Storybook/Vitest are
+   dev-only and MUST never affect `next build`.
+4. Structural work keeps the no-user-facing-change discipline: prove it (build + generated-CSS
+   parity + a route render), never assume it.
+
 ## Hard gates (non-negotiable)
 - **Gemini generation goes through the founder, never Claude** (founder directive 2026-07-07): for ANY Gemini image/video generation, prepare reference images + copy-paste prompts (pattern: `gemini-handoff/README.md`), hand them to the founder, and ingest the results from `~/Downloads`. Do not drive gemini.google.com yourself.
 - **Voice-lint**: zero em-dashes (en-dash only inside number ranges), no hype, rarely lead with "AI", exact names (PlayOS, Lumi, **Kheelu** = the brand mascot, Lori, Lua, Robu, Kheelona Magic Box), second person present tense. ONE exemption: Kheelu's quoted speech (KheeluSays bubbles) may use contractions — his founder-published card voice (copy-reference.md R9).
@@ -22,15 +46,17 @@ Pre-order marketing site for **Lumi**, Kheelona's screen-free talking AI toy for
 - **Never invent claims**: testimonials, certifications, specs, ship date, contact email → flagged placeholders + blockers only.
 - **Accessibility 90+ outranks any styling preference** (spec §3). Lighthouse gates: A11y/BP/SEO 90+ everywhere, Perf 90+ desktop.
 
-## Commands
+## Commands (app code lives in `site/src/`)
 - Dev: `cd site && npm run dev` (port 3000)
 - Prod: `cd site && npx next build && npx next start -p 3456` (local prod URL the founder uses: http://localhost:3456)
+- Test: `cd site && npm test` (Vitest; a test per component) · Storybook: `npm run storybook` / `npm run build-storybook`
 - Deploy target: Vercel, project root `site/` (blocked on founder auth, FOUNDER-TODO #2)
 
 ## Env
 Root `.env` (gitignored, DUMMY values until founder fills them): `TRIPO_API_KEY` (unused — mascot pipeline went through the Tripo web UI instead, see `design-concepts/README.md`), `NEXT_PUBLIC_TALLY_FORM_URL`, `NEXT_PUBLIC_GA4_MEASUREMENT_ID`. Site reads the two `NEXT_PUBLIC_*` vars (`site/.env.example` mirrors them; `TallyEmbed` treats values containing "DUMMY" as unconfigured).
 
 ## Docs map
+- `docs/standards/` — BINDING production standards: `PROJECT_STRUCTURE.md`, `COMPONENT_GUIDELINES.md`, and `STRUCTURE-MAP.md` (old→new path translation for the `src/` reorg). See the "Production structure & standards" section above.
 - `docs/project-state.json` — machine-readable status, always current
 - `docs/website-steps.md` — blueprint (law; if reality diverges, update it first)
 - `docs/qa-report.md` — sprint logs, Lighthouse, AI-detection verification of all 14 articles
