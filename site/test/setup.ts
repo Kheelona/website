@@ -79,6 +79,17 @@ vi.mock("next/navigation", () => ({
   useSearchParams: () => new URLSearchParams(),
 }));
 
+// next/dynamic: the only user is StageGate (lazy-loads the 3D Stage). Render a
+// null stub so tests never enter the async dynamic-import/WebGL path (which
+// hangs jsdom). The gate's own logic still runs; the 3D canvas is dev-visual only.
+vi.mock("next/dynamic", () => ({
+  default: () => {
+    const DynamicStub = () => null;
+    DynamicStub.displayName = "DynamicStub";
+    return DynamicStub;
+  },
+}));
+
 // ---------------------------------------------------------------------------
 // three / R3F / drei — the WebGL kill-switch (never construct a WebGLRenderer)
 // ---------------------------------------------------------------------------
@@ -107,6 +118,13 @@ vi.mock("@react-three/drei", async () => {
     {},
     {
       get: (_t, key) => {
+        // Guard the thenable trap: a catch-all that returns a function for
+        // `then` makes this namespace look like a Promise, so module resolution
+        // (Promise.resolve(namespace)) calls then() and hangs forever. Also keep
+        // ESM/symbol interop keys undefined.
+        if (key === "then" || key === "__esModule" || typeof key === "symbol") {
+          return undefined;
+        }
         if (typeof key === "string" && key.startsWith("use")) {
           return () => ({ scene: {}, nodes: {}, materials: {}, animations: [] });
         }
@@ -117,6 +135,19 @@ vi.mock("@react-three/drei", async () => {
   );
 });
 
+// three-stdlib: only shape-geometry.ts uses it (SVGLoader, dormant journey
+// geometry). The full barrel stalls jsdom on import, so stub the one export.
+vi.mock("three-stdlib", () => ({
+  SVGLoader: class {
+    parse() {
+      return { paths: [] as unknown[] };
+    }
+    static createShapes() {
+      return [] as unknown[];
+    }
+  },
+}));
+
 // ---------------------------------------------------------------------------
 // motion/react — deterministic, no rAF-driven animation in jsdom
 // ---------------------------------------------------------------------------
@@ -125,7 +156,15 @@ vi.mock("motion/react", async () => {
   const make = (tag: string) => ({ children, ...rest }: { children?: React.ReactNode } & Record<string, unknown>) =>
     React.createElement(tag, rest, children);
   return {
-    motion: new Proxy({}, { get: (_t, tag: string) => make(tag) }),
+    motion: new Proxy(
+      {},
+      {
+        get: (_t, tag) => {
+          if (tag === "then" || tag === "__esModule" || typeof tag === "symbol") return undefined;
+          return make(tag as string);
+        },
+      },
+    ),
     AnimatePresence: ({ children }: { children?: React.ReactNode }) => children,
     useReducedMotion: () => false,
     useScroll: () => ({ scrollYProgress: { get: () => 0, on: () => () => {}, set: () => {} } }),
