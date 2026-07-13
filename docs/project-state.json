@@ -1,7 +1,7 @@
 {
   "project_name": "kheelona.com",
   "created_at": "2026-07-06",
-  "last_updated": "2026-07-12",
+  "last_updated": "2026-07-13",
   "current_phase": "phase_12_redesign",
   "current_sprint": "R11-hero-playos-consistency",
   "phase_status": {
@@ -248,8 +248,8 @@
     ],
     "next_action": "Founder queue only (no engineering dangling): R11-a read the new hero + /playos live, R11-b contraction revert call; R10-a Ria card sign-off + ambient visual check; then R9-a..c, R4-a..f, R5-a, Tally URL, GA4, claims. Cold resume: read docs/checkpoints/r11-hero-playos-consistency.md first.",
     "founder_gate": "R11 shipped per approved plan (one question batch). Open founder queue: R11-a/b, R10-a, R9-a..c, R4-a..f, R5-a (new logo).",
-    "checkpoint": "docs/checkpoints/r11-hero-playos-consistency.md",
-    "production_restructure": "Branch chore/production-structure (2026-07-12, NOT pushed): POC->production structure/docs/tooling sprint, ZERO user-facing change. src/-based atomic-design reorg (atoms/molecules/organisms/templates + features/home + features/ambient-stage + config/ + styles/; @/*->src/*), compliant with docs/standards/ (PROJECT_STRUCTURE.md + COMPONENT_GUIDELINES.md + STRUCTURE-MAP.md). Storybook 10 + Vitest added (dev-only): a story + test per component, 55 files / 165 tests green. No-change proven each phase (production CSS byte-identical, build green, pages pixel-identical). Binding law in CLAUDE.md. Awaiting founder review/merge to master."
+    "checkpoint": "docs/checkpoints/production-restructure-2026-07-12.md",
+    "production_restructure": "MERGED + LIVE on demo-website (2026-07-13, commits b80142a..4f4afac + docs banner 890a24a; branch chore/production-structure deleted; checkpoint docs/checkpoints/production-restructure-2026-07-12.md): POC->production structure/docs/tooling sprint, ZERO user-facing change. src/-based atomic-design reorg (atoms/molecules/organisms/templates + features/home + features/ambient-stage + config/ + styles/; @/*->src/*), compliant with docs/standards/ (PROJECT_STRUCTURE.md + COMPONENT_GUIDELINES.md + STRUCTURE-MAP.md). Storybook 10 + Vitest added (dev-only): a story + test per component, 55 files / 165 tests green. No-change proven each phase (production CSS byte-identical, build green, pages pixel-identical). Binding law in CLAUDE.md. Live on demo-website (Vercel redeploy byte-identical). Founder launch queue unchanged (R11-a/b, R10-a, R9-a..c, R4-a..f, R5-a, Tally, GA4, claims). Local-only cleanup 2026-07-13: build caches + launch-video node_modules/out removed (regenerable; cd launch-video && npm install to re-render the film)."
   },
   "resume_instructions": "Read README.md first. Then this file. Then the current-phase checkpoint. Then website-steps.md if it exists. Never re-ask anything settled in the Brand Bible (build prompt §1) or in approvals above."
 }
