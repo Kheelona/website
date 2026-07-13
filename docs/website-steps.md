@@ -2,6 +2,18 @@
 
 > Phase 8 output. The single source of truth for implementation. If reality diverges, update this file first. Approved direction: **Concept A (Storybook) base + Concept C bold moments** (see `docs/checkpoints/phase-2-ux-discovery.md`).
 
+> **STRUCTURE UPDATE (2026-07-12) — read before using any path below.** The app is now
+> `src/`-based atomic design per the BINDING standards in `docs/standards/` (see CLAUDE.md
+> "Production structure & standards"). Component/file paths in the §8.x sections below trace
+> the R4→R11 build and PREDATE that reorg (some name since-retired components); translate any
+> path through `docs/standards/STRUCTURE-MAP.md`. New sections MUST follow the standards
+> (atoms/molecules/organisms/templates + features/, `@/config/site`, a Storybook story + a
+> Vitest test per component). Quick map: `components/three/*` + `lib/three/*` →
+> `src/features/ambient-stage/`; `components/sections/home/*` → `src/features/home/`;
+> `components/ui/*` → `src/components/{atoms|molecules|templates}`;
+> `components/sections/shared/*` + `components/layout/*` (Nav/Footer) → `src/components/organisms/`;
+> `lib/site.ts` → `src/config/site.ts`; `app/globals.css` → `src/styles/globals.css`.
+
 ## 8.1 Overview
 - **Job**: turn parent interest into a qualified pre-order list for Lumi at ₹4,999 (₹9,999 after launch, no payment now), and earn trust.
 - **Audience**: parents of children aged 3 to 6, India-first, screen-wary, often the mother.
@@ -130,7 +142,7 @@ Mechanisms introduced this cycle:
 - **Hidden-tab caveat for 3D QA**: R3F boots on requestAnimationFrame, which Chrome freezes in hidden/occluded tabs. A backgrounded automation tab shows an inert 300x150 canvas and no `scene-3d` class — that is browser throttling, not a site bug. Verify 3D with a visible window.
 - **AmbientStage** (`site/components/three/AmbientStage.tsx`): lighter per-route scene for interiors — static camera + pointer parallax, corridor-clamped shape field, wash colors measured from the page's own `[data-wash]` sections (`site/lib/three/ambient.ts`), per-route dressing in `site/lib/three/ambient-configs.ts` with `enabled:false` kill switch. No GLBs on interiors. Shared shell extracted from ThreeStage (`StageShell.tsx`, `backdrop.tsx`); `StageGate` takes `stage: "journey" | "ambient"`.
 - **Mobile perf contract**: `lite` tier arms the 3D stage on first user signal (scroll/pointer) then idle, keeping three.js out of the Lighthouse trace; fonts are WOFF2 (unused Glory-Italic removed); AVIF enabled in `next.config.ts`; `LaunchVideo` uses `preload="none"`.
-- **Token drift gate**: `tools/tokens/check-tokens.mjs` compares `Design/design-system/colors_and_type.css` ↔ `site/app/globals.css` `@theme` ↔ `site/lib/three/tokens.ts` and fails the site build on drift (curated wash intermediates whitelisted).
+- **Token drift gate**: `tools/tokens/check-tokens.mjs` compares `Design/design-system/colors_and_type.css` ↔ `site/src/styles/globals.css` `@theme` ↔ `site/src/features/ambient-stage/lib/tokens.ts` and fails the site build on drift (curated wash intermediates whitelisted). [paths updated for the 2026-07-12 src/ reorg]
 - **Review loop**: design panel note lives at `docs/design-review-2026-07-10.md`; approval loop capped at 3 iterations before founder escalation.
 
 ## 8.14 R5 calm pass (2026-07-10, founder-directed)
