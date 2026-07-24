@@ -20,9 +20,9 @@ import { LAUNCH_PRICE, LATER_PRICE } from "@/config/site";
  *  line here can be white at any size, including the 15px consent print. */
 const LINEUP = [
   { img: "/mascot/mascot-joy.png", h: "h-[145px]", mobile: false },
-  { img: "/product/lumi-green.png", h: "h-[160px]", mobile: true },
-  { img: "/product/lumi-blue.png", h: "h-[180px]", mobile: true },
-  { img: "/product/lumi-pink.png", h: "h-[160px]", mobile: true },
+  { img: "/product/lumi-green-2.png", h: "h-[160px]", mobile: true },
+  { img: "/product/lumi-blue-2.png", h: "h-[180px]", mobile: true },
+  { img: "/product/lumi-pink-2.png", h: "h-[160px]", mobile: true },
   { img: "/mascot/mascot-silly.png", h: "h-[145px]", mobile: false },
 ] as const;
 

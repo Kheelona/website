@@ -16,7 +16,7 @@ describe("Hero", () => {
     render(<Hero />);
     const plush = screen.getByAltText(/Lumi, the sky blue talking plush toy/i);
     expect(plush).toBeInTheDocument();
-    expect(plush).toHaveAttribute("src", "/product/lumi-blue.png");
+    expect(plush).toHaveAttribute("src", "/product/lumi-blue-2.png");
   });
 
   it("offers the reserve CTA with the launch-cap line", () => {

@@ -8,7 +8,7 @@ export function LumiHero({ className }: { className?: string }) {
   return (
     <div className={className} style={{ position: "relative" }}>
       <Image
-        src="/product/lumi-blue.png"
+        src="/product/lumi-blue-2.png"
         alt="Lumi, a small blue talking toy with a striped party hat"
         width={1113}
         height={1600}

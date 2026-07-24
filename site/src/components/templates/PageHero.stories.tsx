@@ -12,7 +12,7 @@ const meta = {
       </div>
     ),
     media: (
-      <img src="/product/lumi-blue.png" alt="The Lumi plush" width={320} height={320} />
+      <img src="/product/lumi-blue-2.png" alt="The Lumi plush" width={320} height={320} />
     ),
   },
   parameters: { nextjs: { appDirectory: true } },

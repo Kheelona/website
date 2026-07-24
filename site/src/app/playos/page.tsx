@@ -36,7 +36,7 @@ const FAMILY = [
   {
     name: "Lumi",
     note: "Here first. The friend who listens.",
-    img: "/product/lumi-blue.png",
+    img: "/product/lumi-blue-2.png",
     alt: "Lumi, the sky blue talking plush toy, wearing its striped party hat",
     w: 1113,
     h: 1600,

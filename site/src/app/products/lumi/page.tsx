@@ -89,7 +89,7 @@ const JSON_LD = {
       brand: { "@type": "Brand", name: "Kheelona" },
       description:
         "A screen-free AI robot toy for children aged 3 to 6 that holds a real conversation in 10 home languages, with a parent app that shows you everything.",
-      image: "https://kheelona.com/product/lumi-blue.png",
+      image: "https://kheelona.com/product/lumi-blue-2.png",
       offers: {
         "@type": "Offer",
         price: "4999",

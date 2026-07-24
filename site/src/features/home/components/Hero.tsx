@@ -52,7 +52,7 @@ export function Hero() {
               on phones — LCP 3.8s, mobile median 86. 340px restores a ~30%
               area margin (median back over the 90 gate). */}
           <Image
-            src="/product/lumi-blue.png"
+            src="/product/lumi-blue-2.png"
             alt="Lumi, the sky blue talking plush toy, wearing its striped party hat"
             width={1113}
             height={1600}
