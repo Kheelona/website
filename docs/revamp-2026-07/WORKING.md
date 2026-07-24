@@ -19,7 +19,7 @@ here in full so nothing depends on conversation memory.
 | P1.4 production copy (all routes, B voice) | DONE — `docs/revamp-2026-07/copy-v2.md` (the build transplants it verbatim; provenance-tagged; GATED blocks marked). Kheelu line queue = copy-v2.md guide-line lists |
 | P1.5 QA strategy into blueprint | DONE — website-steps.md §8.20 |
 | P2 tokens/design-system | DONE — branch commit `850a87a`: teal/purple/blue-soft/serif retired + usages migrated, blue-ink + action + room tokens added, check-tokens synced (18 mappings), DS annotated. teal-deep DEPRECATED until M5 |
-| M1 theme core (branch `revamp/kheelu-tour`) | pending |
+| M1 theme core (branch `revamp/kheelu-tour`) | DONE — atoms `SiteBackdrop`/`Room`/`RoomsTrack`, reveal variants left/right/pop, `lib/kheelu-poses.ts` extraction, `KheeluGuide` organism mounted in layout (StickyMobileCTA unmounted; file deletes in M5), tests 179/179 + build green + SSR probe. Navbar/Footer restyle deferred into M2 (judge against real rooms). NOTE for M5 QA: verify [data-reveal] still animates after CLIENT-side nav (RevealObserver scans only on mount — possible latent gap, check before reveals go on rooms) |
 | M2 Home (founder preview #1) | pending |
 | M3 /products/lumi (founder preview #2) | pending |
 | M4 remaining 8 routes | pending |

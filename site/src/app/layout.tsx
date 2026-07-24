@@ -4,7 +4,8 @@ import "@/styles/globals.css";
 import { Navbar } from "@/components/organisms/Navbar";
 import { Footer } from "@/components/organisms/Footer";
 import { RevealObserver } from "@/components/molecules/RevealObserver";
-import { StickyMobileCTA } from "@/components/organisms/StickyMobileCTA";
+import { SiteBackdrop } from "@/components/atoms/SiteBackdrop";
+import { KheeluGuide } from "@/components/organisms/KheeluGuide";
 
 const glory = localFont({
   // Upright faces only: italics are banned site-wide (R5 typography rule,
@@ -71,10 +72,14 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_JSON_LD) }}
         />
+        {/* Revamp M1: one warm CSS sky behind every route (theme B) */}
+        <SiteBackdrop />
         <Navbar />
         <main>{children}</main>
         <Footer />
-        <StickyMobileCTA />
+        {/* Revamp M1: the persistent narrator; its mobile dock ABSORBS the
+            old StickyMobileCTA (same hide-at-#reserve contract) */}
+        <KheeluGuide />
         <RevealObserver />
       </body>
     </html>

@@ -168,6 +168,30 @@ p {
     transform: perspective(700px) translateY(18px) scale(0.99);
     transition: transform 0.55s var(--ease-bounce);
   }
+  /* Theme-B room entrances (revamp M1): sections slide in from alternating
+     sides "like turning a corner". Below-fold rooms only — never the room
+     that owns the page's LCP. */
+  html.js [data-reveal="left"] {
+    opacity: 0;
+    transform: translate3d(-46px, 10px, 0);
+    transition:
+      opacity 0.5s var(--ease-calm),
+      transform 0.6s var(--ease-bounce);
+  }
+  html.js [data-reveal="right"] {
+    opacity: 0;
+    transform: translate3d(46px, 10px, 0);
+    transition:
+      opacity 0.5s var(--ease-calm),
+      transform 0.6s var(--ease-bounce);
+  }
+  html.js [data-reveal="pop"] {
+    opacity: 0;
+    transform: scale(0.94);
+    transition:
+      opacity 0.45s var(--ease-calm),
+      transform 0.55s var(--ease-bounce);
+  }
   html.js [data-reveal].reveal-in {
     opacity: 1;
     transform: none;
@@ -302,6 +326,101 @@ html.scene-3d [data-curve] {
 main {
   position: relative;
   z-index: 10;
+}
+
+/* ================================================================
+   THEME-B BACKDROP (revamp M1, atoms/SiteBackdrop.tsx)
+   One warm CSS sky behind every route. Gradient endpoints #fffdf9 /
+   #fceeda are curated intermediates around the cream token (same
+   sanctioned family as the old BEAT_WASHES sky stops).
+   ================================================================ */
+.site-backdrop-base {
+  background: radial-gradient(
+    130% 100% at 50% -18%,
+    #fffdf9,
+    var(--color-cream) 52%,
+    #fceeda 100%
+  );
+}
+.site-backdrop-tint-warm {
+  background: radial-gradient(circle at 12% 8%, rgb(241 162 59 / 0.1), transparent 60%);
+}
+.site-backdrop-tint-cool {
+  background: radial-gradient(circle at 88% 92%, rgb(41 160 215 / 0.1), transparent 60%);
+}
+.site-backdrop-blob {
+  background: radial-gradient(circle at center, rgb(241 162 59 / 0.14), transparent 62%);
+  filter: blur(60px);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .site-backdrop-blob {
+    animation: backdrop-drift 32s ease-in-out infinite alternate;
+  }
+}
+@keyframes backdrop-drift {
+  from {
+    transform: translate3d(-4%, 2%, 0);
+  }
+  to {
+    transform: translate3d(5%, -4%, 0);
+  }
+}
+
+/* ================================================================
+   KHEELU GUIDE (revamp M1, organisms/KheeluGuide.tsx)
+   The persistent narrator. Purely decorative motion; the whole
+   widget disappears without JS (it has nothing to say there).
+   ================================================================ */
+html:not(.js) [data-kheelu-guide] {
+  display: none;
+}
+.kheelu-guide-follow {
+  transform: translate3d(var(--gx, 0px), var(--gy, 0px), 0) rotate(var(--gr, 0deg));
+}
+@media (prefers-reduced-motion: no-preference) {
+  .kheelu-guide-idle {
+    animation: guide-bob 5.5s ease-in-out infinite;
+  }
+  .kheelu-guide-bubble {
+    animation: guide-bubble-in 0.3s var(--ease-bounce) both;
+  }
+  /* declared after -idle so a poke wins while both classes are present */
+  .kheelu-guide-poke {
+    animation: guide-poke 0.5s var(--ease-bounce);
+  }
+}
+@keyframes guide-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+@keyframes guide-bubble-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes guide-poke {
+  0% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-14px) scale(1.04);
+  }
+  60% {
+    transform: translateY(2px);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 
 /* (The D4 bookmark-ribbon chapter nav was removed here on founder feedback
