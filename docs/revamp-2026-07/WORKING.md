@@ -15,10 +15,10 @@ here in full so nothing depends on conversation memory.
 | P0 hotfix (lumi image renames) | DONE — master `e71a963`, tests 165/165, build green, render 200 |
 | P1.1 working file + CLAUDE.md pointer | DONE (this file) |
 | P1.2 Gemini hero-art kit | DONE — `gemini-handoff/hero-2026-07/` (3 refs + prompt + gates). WAITING ON FOUNDER to generate + drop in ~/Downloads |
-| P1.3 market research memo | in progress |
-| P1.4 production copy (all routes, B voice) | pending |
-| P1.5 QA strategy into blueprint | pending |
-| P2 tokens/design-system | pending |
+| P1.3 market research memo | DONE — `docs/revamp-2026-07/research.md` (competitors, parent voice, keyword map v2, AEO question bank). NEW founder facts needed: FOUNDER-TODO REV-b (subscription/camera/ship/languages) + REV-c (stale ₹2,999 in Google index) |
+| P1.4 production copy (all routes, B voice) | in progress |
+| P1.5 QA strategy into blueprint | DONE — website-steps.md §8.20 |
+| P2 tokens/design-system | DONE — branch commit `850a87a`: teal/purple/blue-soft/serif retired + usages migrated, blue-ink + action + room tokens added, check-tokens synced (18 mappings), DS annotated. teal-deep DEPRECATED until M5 |
 | M1 theme core (branch `revamp/kheelu-tour`) | pending |
 | M2 Home (founder preview #1) | pending |
 | M3 /products/lumi (founder preview #2) | pending |

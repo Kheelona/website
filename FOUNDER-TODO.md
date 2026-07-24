@@ -2,6 +2,27 @@
 
 Each item unlocks something specific. Ordered by launch impact.
 
+## THE REVAMP (2026-07-24) — theme B build IN PROGRESS; these are yours
+
+Status + everything already decided: `docs/revamp-2026-07/WORKING.md`.
+
+- **REV-a. Hero art (the one that unblocks the new Home hero)** — run the kit in
+  `gemini-handoff/hero-2026-07/README.md` (3 reference images + one prompt + a 4K follow-up),
+  drop the result in `~/Downloads`, say "hero art is in". Until then previews use interim
+  composed art.
+- **REV-b. Four product facts the new copy needs** (research memo `docs/revamp-2026-07/research.md`):
+  (1) subscription: yes/no, and what stays free — "no subscription" is the incumbent's sorest
+  point in Indian reviews, we can only say it if true; (2) camera: yes/no — if none, it is a
+  one-line trust differentiator; (3) ship window (existing item 5 — never invented); (4) the 10
+  languages, named (existing item 7).
+- **REV-c. Stale ₹2,999 price in Google's index** — the old Wix site (kheelona.com/product-page/
+  lumi-pink, "Kheelona Robotics") and the Play Store listing (com.kheelona.toyapp) still show
+  ₹2,999. Until the new site ships with 301s from `/product-page/lumi-*` and the Play Store
+  copy is updated to ₹4,999, search engines and AI answers can quote the old price against us.
+  Play Store edit is yours; the 301s are queued in the build.
+- **REV-d. 3 mobile app images** — you said you'll share them; per your brief we ask AFTER the
+  v1 deploy, so nothing to do yet. Listed so it is not forgotten.
+
 ## THE REDESIGN (2026-07-08/09) — DONE and on master; deploying is yours
 
 Direction picked (Lumi's World + pop-up elements), both models generated and verified, Home rebuilt as the immersive journey, ribbon nav removed on your feedback. Merged to `master`, temp-live for feedback per your call.
