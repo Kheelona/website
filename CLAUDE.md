@@ -2,6 +2,14 @@
 
 Pre-order marketing site for **Lumi**, Kheelona's screen-free talking AI toy for ages 3 to 6 (India-first). One job: convert parents into the Tally pre-order list at ₹4,999 (₹9,999 after launch, no payment now).
 
+## ⚠ ACTIVE REVAMP (2026-07-24) — read this first
+A full re-theme onto wireframe direction B ("Kheelu's Tour") is IN PROGRESS per the founder
+brief `Websit prompt based on B + inputs - 24-Jul.pdf`. Status, locked decisions, and the
+restart guide live in **`docs/revamp-2026-07/WORKING.md`** — read it BEFORE the resume protocol
+below. Where the brief conflicts with older laws, the brief wins (e.g. the "Home copy = PDF
+verbatim" precedence and ages "3 to 6" are superseded — new production copy, ages 3 to 10).
+Delete this note + the working file once the revamp is founder-approved.
+
 ## Who you work for
 **Apoorva Sahu** (apoorva@geekyants.work) — Founder & CEO of Kheelona (kheelona.com + sister site kheelona.ai), also a Director at GeekyAnts. Full authority on brand, product, and copy; defer to them on brand calls. Co-founders: Aman Soni (CTO, 14 patents filed), Kashyap C.R (Chief Hardware Officer, built at Intel — his published kheelona.ai bio names Thunderbolt 4/5, mirrored on /team). Team also includes Ria Mangala Rewari (Head of Marketing, not a co-founder; added R10).
 

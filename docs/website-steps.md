@@ -232,3 +232,47 @@ Founder round (one question batch: hero = "show the conversation", PlayOS = plat
 - **Type scale (documented)**: display = SectionHeading's three clamps (+ home-hero 40..64); body 17 (prose) / 16 (card+step bodies) / 15 (captions, compact cards) / 13 (kickers + meta labels) / 12 (micro chips). Half-pixel sizes are retired.
 - **Focus + targets**: the brand focus ring (`focus-visible:ring-2 ring-orange` + offset on light surfaces) rides Button, nav/footer links, and inline text links; nav/footer links carry vertical padding for the 24px target-size floor.
 - **Audit dispositions**: seam fixed on lumi (`ParentQuotes from="white"`); two .ai-verbatim body contractions de-contracted (voice gate outranks the reference; founder can revert — FOUNDER-TODO); orange-deep links on tinted washes → orange-ink; KheeluSays bubble on the token radius; FinaleCTA moved to `sections/shared/`.
+
+### 8.20 REVAMP 2026-07-24: theme B "Kheelu's Tour" + QA/launch strategy (founder brief)
+
+The whole site re-themes onto wireframe direction B per the founder brief
+(`Websit prompt based on B + inputs - 24-Jul.pdf`). Live status, locked decisions (colour/hero/
+copy/fonts answers), architecture, and restart guide: **`docs/revamp-2026-07/WORKING.md`** — that
+file leads while the revamp runs; this section records the QA/launch-readiness strategy, planned
+BEFORE build as the brief requires. Where §8.12–8.19 conflict with the revamp (washes/dividers,
+serif quotes, KheeluSays-per-section, StickyMobileCTA, ambient canvas), the revamp supersedes;
+surviving laws are restated below.
+
+**Laws that carry over unchanged**: voice-lint (zero em-dashes, no italics, exact names, Kheelu
+bubble contraction exemption); never-invent-claims (`TODO(claims-*)` placeholders only); tilt
+never wraps whole-card links; hero's LARGEST element = the priority product/hero image (mobile
+LCP; hero motion desktop-gated + motion-ok); every page ends `FinaleCTA` id="reserve"; one CTA
+verb; prices/CTA labels from `config/site`; registry molecules for new sections; every component
+ships story + test; token lint gates the build; structural moves = zero user-facing change.
+
+**QA plan (per milestone M1–M5, branch `revamp/kheelu-tour`)**
+1. Every milestone: `npm test` green, `npm run build` green (includes token lint), new/changed
+   components have colocated story + test, affected routes render on a local prod server.
+2. New interactive surfaces get an explicit a11y pass when built, not at the end: KheeluGuide
+   (exactly one tab stop; no live regions; hidden no-JS; reduced-motion static), FeelingsGallery
+   dialog (focus trap/restore, Esc, Title/Description, ≥44px close, body scroll unlock verified
+   against the `overflow-x: clip` footgun), ColorwayPicker (radiogroup + roving arrows), orbit
+   (static grid fallback, DOM order = reading order).
+3. Voice-lint sweep per milestone: em-dash/italic grep + names + contractions outside Kheelu
+   lines; Kheelu `data-say`/poke lines ship only founder-approved (queue in WORKING.md).
+4. CLS discipline: reveals transform/opacity only, below-fold rooms only for directional
+   variants; orbit reserves height (aspect-ratio); hero content never opacity-hidden.
+5. Full pass at M5: Lighthouse **100 A11y/BP/SEO on every route, both form factors; Perf ≥95
+   desktop, ≥90 mobile** — mobile judged on devtools-throttled runs (×3–5 median), simulate
+   recorded alongside (known lantern artifact, qa-report R11); full internal-href crawl 200s +
+   #reserve anchor present everywhere; JSON-LD valid; sitemap/robots/OG intact; SSR/no-JS render
+   check (all copy readable, guide absent, reveals visible); axe clean on all 10 routes.
+6. Regression safety: tag master pre-merge (`pre-revamp-2026-07`); founder previews after Home
+   (M2) and Home+Lumi (M3) on the demo-website Vercel pattern before the remaining routes build.
+
+**Launch readiness (unchanged gates + revamp deltas)**: S14/§8.11 checklist still applies —
+Tally URL + GA4 ID + Vercel/DNS + claims remain founder-gated (FOUNDER-TODO). Revamp deltas
+before merge to master: founder sign-off on the full v1 preview; hero final art ingested (or
+founder explicitly ships interim); the 3 app images requested only AFTER v1 deploy (brief
+pointer 9); `Design/design-system/` updated with the new recipes (single-source-of-truth
+mandate); docs current (this file, WORKING.md, copy-reference, project-state, qa-report).
