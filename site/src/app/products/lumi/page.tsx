@@ -44,9 +44,9 @@ const FEELINGS_DEEP = [
   { name: "Grumpy", body: "Takes the storm seriously. Lumi does not scold. It listens until the feeling has room to pass.", bg: "bg-orange/15", img: "grumpy" },
   // R9 re-map (with Home): the serene render reads "stays close"; the old
   // scared pose read panic
-  { name: "Sad", body: "Stays close. Some days are heavy. Lumi sits in them with your child, gently.", bg: "bg-purple/15", img: "bliss" },
+  { name: "Sad", body: "Stays close. Some days are heavy. Lumi sits in them with your child, gently.", bg: "bg-blue/15", img: "bliss" },
   { name: "Silly", body: "Plays along. Rhymes, made-up words, giggle games. Laughing together is learning too.", bg: "bg-yellow/15", img: "silly" },
-  { name: "Joy", body: "Celebrates out loud. Small wins feel big when a friend cheers.", bg: "bg-teal/15", img: "joy" },
+  { name: "Joy", body: "Celebrates out loud. Small wins feel big when a friend cheers.", bg: "bg-orange/15", img: "joy" },
 ] as const;
 
 /* R11 (founder): the "how it works" steps moved here from /playos — they
@@ -55,8 +55,8 @@ const FEELINGS_DEEP = [
    section (drafted per prompt §5.2). */
 const HOW_IT_ANSWERS = [
   { n: "01", title: "Your child says the wake word.", body: "Until then, the microphone is off. Lumi starts listening only when it is invited to.", color: "text-blue" },
-  { n: "02", title: "The device thinks first.", body: "Speech is processed on the toy before anything goes anywhere. Low latency. No long waits. No sending everything to a distant server.", color: "text-teal" },
-  { n: "03", title: "The feeling gets read.", body: "PlayOS hears more than words. Curious, Grumpy, Sad, Silly, Joy: the answer meets the mood.", color: "text-purple" },
+  { n: "02", title: "The device thinks first.", body: "Speech is processed on the toy before anything goes anywhere. Low latency. No long waits. No sending everything to a distant server.", color: "text-blue-ink" },
+  { n: "03", title: "The feeling gets read.", body: "PlayOS hears more than words. Curious, Grumpy, Sad, Silly, Joy: the answer meets the mood.", color: "text-orange-ink" },
   { n: "04", title: "The right response comes back.", body: "Every reply passes through an age-graded safety layer before it is spoken. On-device and cloud filters work together. No open internet. No surprises.", color: "text-orange-deep" },
 ] as const;
 

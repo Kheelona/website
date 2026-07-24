@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { Instrument_Serif } from "next/font/google";
 import "@/styles/globals.css";
 import { Navbar } from "@/components/organisms/Navbar";
 import { Footer } from "@/components/organisms/Footer";
@@ -21,15 +20,8 @@ const instrumentSans = localFont({
   display: "swap",
 });
 
-const instrumentSerif = Instrument_Serif({
-  weight: "400",
-  // upright, never italic: the accent register keeps its serif voice
-  // without slanting (same R5 rule)
-  style: "normal",
-  subsets: ["latin"],
-  variable: "--font-instrument-serif",
-  display: "swap",
-});
+// Instrument Serif retired 2026-07-24 (founder revamp decision: two fonts
+// only — Glory + Instrument Sans). Human quotes now use the display face.
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://kheelona.com"),
@@ -63,7 +55,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${glory.variable} ${instrumentSans.variable} ${instrumentSerif.variable}`}
+      className={`${glory.variable} ${instrumentSans.variable}`}
     >
       <head>
         {/* Marks JS availability before first paint so reveal styles only apply

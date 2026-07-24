@@ -68,7 +68,7 @@ const CORE: Story[] = [
     theme: "How children grow",
     minutes: 5,
     pose: "joy",
-    tint: "bg-teal/15",
+    tint: "bg-orange/15",
     hero: "/stories/how-children-learn-by-talking.jpg",
     heroAlt:
       "A grandmother and two children on a veranda at night, looking up at the full moon together",
@@ -90,7 +90,7 @@ const CORE: Story[] = [
     theme: "Safety",
     minutes: 5,
     pose: "bliss",
-    tint: "bg-purple/15",
+    tint: "bg-blue/15",
     paragraphs: [
       { p: "The first time your child asks a toy a question and the toy answers, your stomach does a small flip. Half wonder, half alarm. Both halves are correct, and the alarm half deserves a checklist. Here is ours, the one we would use on any smart toy, including our own." },
       { h: "One: when is the microphone on?", p: "The only good answer is: when your child invites it. Look for wake-word listening, and an honest explanation of what happens the rest of the time. Off should mean off." },

@@ -56,7 +56,7 @@ export function ParentQuotes({
                 >
                   &ldquo;
                 </p>
-                <p className="mb-4 font-accent text-[20px] leading-[1.4] text-ink-head">
+                <p className="mb-4 font-display text-[20px] leading-[1.4] text-ink-head">
                   {q.text}
                 </p>
                 <p className="text-[13px] font-semibold uppercase tracking-wide text-ink-muted">

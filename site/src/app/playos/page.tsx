@@ -49,7 +49,7 @@ const FAMILY = [
     alt: "Lori, the white baby monitor with a camera, temperature display, and fabric speaker",
     w: 900,
     h: 900,
-    tint: "bg-purple/15",
+    tint: "bg-orange/15",
   },
   {
     name: "Lua",
@@ -67,7 +67,7 @@ const FAMILY = [
     alt: "Robu, a small friendly white and orange robot waving hello",
     w: 900,
     h: 900,
-    tint: "bg-teal/15",
+    tint: "bg-blue/15",
   },
 ] as const;
 
@@ -82,11 +82,11 @@ const APP_FEATURES = [
 /* The end-to-end voice path (kheelona.ai/playos, parent voice). */
 const VOICE_PATH = [
   { n: "01", title: "Wake, or press.", body: "The device listens only on the wake word or a button. The rest of the time, the microphones are off. Better for privacy, better for battery.", color: "text-blue" },
-  { n: "02", title: "The voice is captured.", body: "The mic array picks up your child's voice, and the device trims the silence before anything travels.", color: "text-teal" },
-  { n: "03", title: "The right brain answers.", body: "Light turns run on the module itself. Richer turns go to the PlayOS cloud. The device decides, turn by turn.", color: "text-purple" },
+  { n: "02", title: "The voice is captured.", body: "The mic array picks up your child's voice, and the device trims the silence before anything travels.", color: "text-blue-ink" },
+  { n: "03", title: "The right brain answers.", body: "Light turns run on the module itself. Richer turns go to the PlayOS cloud. The device decides, turn by turn.", color: "text-orange-ink" },
   { n: "04", title: "Voice to voice.", body: "The reply comes back as a voice, with no text step in the middle. That is what keeps an answer quick enough for a three year old.", color: "text-orange-deep" },
   { n: "05", title: "Safety on every turn.", body: "On-device filters and cloud guardrails check what goes in and what comes out, grade the answer to your child's age, and keep it off the open internet.", color: "text-blue" },
-  { n: "06", title: "The toy speaks.", body: "In the language your family speaks at home, remembering what was said a minute, or a week, ago.", color: "text-teal" },
+  { n: "06", title: "The toy speaks.", body: "In the language your family speaks at home, remembering what was said a minute, or a week, ago.", color: "text-blue-ink" },
 ] as const;
 
 const STACK = [
@@ -265,7 +265,7 @@ export default function PlayOSPage() {
                   languages live at home. PlayOS follows your lead in every
                   conversation after that.
                 </p>
-                <p className="max-w-[48ch] border-l-[3px] border-orange pl-4 font-accent text-[18px] leading-[1.4] text-ink-head">
+                <p className="max-w-[48ch] border-l-[3px] border-orange pl-4 font-display text-[18px] leading-[1.4] text-ink-head">
                   Tell stories where patience wins, and make my child the
                   hero.
                 </p>

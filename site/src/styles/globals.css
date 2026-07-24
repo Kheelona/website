@@ -22,9 +22,20 @@
   --color-orange-ink: #b54a0d;
   --color-yellow: #f1a23b;
   --color-blue: #29a0d7;
-  --color-blue-soft: #3aa4e5;
-  --color-teal: #1abc9c;
-  --color-purple: #8b5bff;
+  /* Revamp P2 (founder 2026-07-24, "brand colours only"): teal #1abc9c,
+     purple #8b5bff, and blue-soft #3aa4e5 are RETIRED from the web palette.
+     They remain brand-deck decoratives (Design/design-system) and dormant
+     ambient-stage mirrors, but no live surface may use them. teal-deep
+     (above) is DEPRECATED: it survives only under the legacy teal wash
+     (SafetyStrip, safety hero) until those sections retire in M2/M4, then
+     leaves with them (M5 cleanup). */
+  /* Small-text blue: the darkened #29a0d7 that holds 4.5:1 on every wash
+     (white 5.7, cream 5.3, cool 5.1, sun 5.0). The blue twin of orange-ink. */
+  --color-blue-ink: #1b6e96;
+  /* Semantic action slots (revamp): new/refactored components reference these
+     for text-carrying colour, so a future contrast ruling flips ONE mapping. */
+  --color-action: var(--color-orange-cta);
+  --color-action-ink: var(--color-orange-ink);
   --color-ink: #272727;
   --color-ink-head: #1c1c1c;
   --color-ink-muted: #727272;
@@ -36,15 +47,19 @@
 
   --font-display: var(--font-glory);
   --font-sans: var(--font-instrument-sans);
-  --font-accent: var(--font-instrument-serif);
+  /* --font-accent (Instrument Serif) retired 2026-07-24: two fonts only. */
 
   --shadow-cta: 0 4px 4px rgb(0 0 0 / 0.25);
+  /* Theme-B room panels (revamp): warm-tinted shadows, never pure black */
+  --shadow-room: 0 12px 34px rgb(74 40 12 / 0.1);
+  --shadow-room-sm: 0 2px 10px rgb(74 40 12 / 0.06);
 
   --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-calm: cubic-bezier(0.2, 0.8, 0.2, 1);
 
   --radius-card: 22px;
   --radius-card-lg: 28px;
+  --radius-room: 28px;
 
   /* Radix accordion height animation (ui/Faq.tsx) */
   --animate-accordion-down: accordion-down 0.24s var(--ease-calm);

@@ -253,7 +253,7 @@ export default function SafetyPage() {
                 <span className="text-[16px] font-semibold text-ink-head">{s.name}</span>
                 <span
                   className={`rounded-full px-2.5 py-0.5 text-[12px] font-bold uppercase tracking-wide ${
-                    s.status === "In progress" ? "bg-yellow/15 text-ink-head" : "bg-teal/15 text-ink-head"
+                    s.status === "In progress" ? "bg-yellow/15 text-ink-head" : "bg-blue/15 text-ink-head"
                   }`}
                 >
                   {s.status}

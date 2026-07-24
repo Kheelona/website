@@ -57,7 +57,7 @@ export const EXPANSION: Story[] = [
     theme: "Screen-free living",
     minutes: 6,
     pose: "bliss",
-    tint: "bg-teal/15",
+    tint: "bg-yellow/15",
     hero: "/stories/the-gentle-way-off-the-phone.jpg",
     heroAlt:
       "A parent's hand placing a phone into a wooden drawer while a child builds a block tower in the background",
@@ -79,7 +79,7 @@ export const EXPANSION: Story[] = [
     theme: "Talking together",
     minutes: 5,
     pose: "joy",
-    tint: "bg-teal/15",
+    tint: "bg-blue/15",
     hero: "/stories/how-to-get-your-child-talking.jpg",
     heroAlt:
       "A child standing at the family dinner table, arms wide mid-story, while his parents lean in laughing",
@@ -101,7 +101,7 @@ export const EXPANSION: Story[] = [
     theme: "Talking together",
     minutes: 5,
     pose: "sad",
-    tint: "bg-purple/15",
+    tint: "bg-orange/15",
     paragraphs: [
       { p: "Somewhere at every birthday party there is a parent doing quiet math: that child is narrating a whole movie, mine points and says come. Is this fine? Is this something?" },
       { p: "First, the honest frame. Children spread themselves across a wide normal range, late talkers often catch up completely, and quiet is a temperament as well as a milestone. Also true: some children need help, earlier help works better, and a parent's gut feeling is real information." },
@@ -155,7 +155,7 @@ export const EXPANSION: Story[] = [
     theme: "Languages at home",
     minutes: 5,
     pose: "joy",
-    tint: "bg-teal/15",
+    tint: "bg-blue/15",
     paragraphs: [
       { p: "There is a moment many Indian parents know: your child answers your Kannada in English, and something in you notes it, half proud, half strangely sad." },
       { p: "The pride makes sense. English opens doors here, and every parent knows which exams and interviews wait down the road. But the quiet math many families do, that home language time is time stolen from English, has the research exactly backwards." },

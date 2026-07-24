@@ -18,7 +18,7 @@ const SKUS = [
   {
     name: "Lumi Green",
     img: "/product/lumi-green-2.png",
-    tint: "bg-teal/15",
+    tint: "bg-yellow/15",
     alt: "Lumi Green, the pastel green Lumi plush with a striped party hat",
     w: 1473,
     h: 1954,
@@ -26,7 +26,7 @@ const SKUS = [
   {
     name: "Lumi Pink",
     img: "/product/lumi-pink-2.png",
-    tint: "bg-purple/15",
+    tint: "bg-orange/15",
     alt: "Lumi Pink, the soft pink Lumi plush with a striped party hat",
     w: 617,
     h: 932,

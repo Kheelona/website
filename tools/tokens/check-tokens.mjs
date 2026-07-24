@@ -38,9 +38,13 @@ const MAP = [
   ["kh-orange-deep", "color-orange-deep", "orangeDeep"],
   ["kh-yellow", "color-yellow", "yellow"],
   ["kh-blue", "color-blue", "blue"],
-  ["kh-blue-soft", "color-blue-soft", "blueSoft"],
-  ["kh-teal", "color-teal", "teal"],
-  ["kh-purple", "color-purple", "purple"],
+  // Revamp P2 (founder 2026-07-24, brand colours only): blue-soft, teal and
+  // purple are RETIRED from the live web palette — no @theme entry anymore.
+  // They stay brand-deck decoratives and dormant ambient-stage mirrors, so
+  // the DS ↔ tokens.ts agreement is still checked (theme column = null).
+  ["kh-blue-soft", null, "blueSoft"],
+  ["kh-teal", null, "teal"],
+  ["kh-purple", null, "purple"],
   ["kh-ink-2", "color-ink", "ink"],
   ["kh-ink-4", "color-ink-muted", null],
   ["kh-line", "color-line", null],
@@ -66,10 +70,20 @@ const MAP = [
 /** Site-internal invariants: [globals.css --color-*, tokens.ts key, value] */
 const SITE_MAP = [
   ["color-orange-cta", "orangeCta", "#c25210"],
+  // teal-deep is DEPRECATED (revamp P2): lives only under the legacy teal
+  // wash until SafetyStrip + the safety hero retire (M2/M4); drop this row
+  // with the token in M5 cleanup.
   ["color-teal-deep", "tealDeep", "#0f766e"],
   // R9 small-text orange: 13px sans kickers need 4.5:1 on every wash
   // (white 5.3, cream 5.0, cool 4.8, sun 4.8) — orange-cta only clears white
   ["color-orange-ink", "orangeInk", "#b54a0d"],
+];
+
+/** Site theme-only invariants (no ambient-stage mirror): [--color-*, value] */
+const SITE_THEME = [
+  // Revamp P2 small-text blue: darkened #29a0d7, 4.5:1+ on every wash
+  // (white 5.7, cream 5.3, cool 5.1, sun 5.0) — the blue twin of orange-ink
+  ["color-blue-ink", "#1b6e96"],
 ];
 
 let failed = false;
@@ -100,6 +114,14 @@ for (const [dsName, themeName, threeKey] of MAP) {
   }
 }
 
+for (const [themeName, want] of SITE_THEME) {
+  const got = cssVar(theme, themeName);
+  if (got !== want) {
+    console.error(`token-check: DRIFT --${themeName} in globals.css @theme is ${got}, sanctioned value is ${want}`);
+    failed = true;
+  }
+}
+
 for (const [themeName, threeKey, want] of SITE_MAP) {
   const got = cssVar(theme, themeName);
   if (got !== want) {
@@ -117,4 +139,4 @@ if (failed) {
   console.error("token-check: FAILED — sync the palette (canonical: Design/design-system/colors_and_type.css)");
   process.exit(1);
 }
-console.log(`token-check: ok (${MAP.length + SITE_MAP.length} mappings)`);
+console.log(`token-check: ok (${MAP.length + SITE_MAP.length + SITE_THEME.length} mappings)`);

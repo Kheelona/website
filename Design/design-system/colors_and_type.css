@@ -45,6 +45,10 @@
   --kh-orange-deep:   #D85F1B;   /* Hover/press darken */
   --kh-yellow:        #F1A23B;   /* Sunshine — 30% usage */
   --kh-blue:          #29A0D7;   /* Sky — 20% usage, "tech" anchor */
+  /* WEB NOTE (founder, 2026-07-24 revamp): the website palette is the four
+     locked brand colours only — orange, yellow, blue, white (+ neutrals and
+     the WCAG functional darks). blue-soft, teal and purple below stay in the
+     deck for print/logo/decorative use but are RETIRED from kheelona.com. */
   --kh-blue-soft:     #3AA4E5;   /* Logo "A" + secondary blue surface */
   --kh-teal:          #1ABC9C;   /* Mint — 5% usage, cognitive freshness */
   --kh-purple:        #8B5BFF;   /* Magic — 5% usage, AI spark */
@@ -76,6 +80,8 @@
   /* ── Typography ───────────────────────────────────────────────── */
   --kh-font-display:  'Glory', system-ui, sans-serif;
   --kh-font-text:     'Instrument Sans', system-ui, sans-serif;
+  /* WEB NOTE (founder, 2026-07-24 revamp): kheelona.com uses Glory +
+     Instrument Sans ONLY; the serif accent is retired from the website. */
   --kh-font-accent:   'Instrument Serif', Georgia, serif;
 
   /* Headings: tight, Disney-bouncy */

@@ -69,9 +69,9 @@ const FOUNDERS = [
     role: "Head of Marketing",
     tag: "The voice",
     photo: "/team/ria.jpg",
-    tint: "bg-purple/15",
-    border: "border-t-purple",
-    quoteBorder: "border-l-purple",
+    tint: "bg-blue/15",
+    border: "border-t-blue",
+    quoteBorder: "border-l-blue",
     linkedin: "https://www.linkedin.com/in/ria-mangala/",
     bio: "Ria owns how Kheelona speaks to the world. She co-founded a marketing agency and ran it for seven years, and has trained more than 1,000 students and entrepreneurs in digital marketing. She owns the story: where Lumi shows up, how it speaks, and why it never overpromises.",
     quote:
@@ -83,9 +83,9 @@ const FOUNDERS = [
     role: "Co-founder and CEO",
     tag: "The business and the trust",
     photo: "/team/apoorva.jpg",
-    tint: "bg-teal/15",
-    border: "border-t-teal",
-    quoteBorder: "border-l-teal",
+    tint: "bg-yellow/15",
+    border: "border-t-yellow",
+    quoteBorder: "border-l-yellow",
     linkedin: "https://www.linkedin.com/in/sahu-apoorva/",
     bio: "Apoorva spent fifteen years in finance and company-building, including a decade as a director scaling a global tech firm of around 500 people. He is a Chartered Accountant who learned to ship AI. He owns the part you care about most: safety, privacy, and the promise this brand makes to your family.",
     quote:
@@ -189,7 +189,7 @@ export default function TeamPage() {
                         {f.bio}
                       </p>
                       <p
-                        className={`mt-4 max-w-[62ch] border-l-[3px] pl-4 font-accent text-[19px] leading-[1.4] text-ink-head ${f.quoteBorder}`}
+                        className={`mt-4 max-w-[62ch] border-l-[3px] pl-4 font-display text-[19px] leading-[1.4] text-ink-head ${f.quoteBorder}`}
                       >
                         {f.quote}
                       </p>

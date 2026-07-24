@@ -11,7 +11,7 @@ import { Reveal } from "@/components/molecules/Reveal";
 const TRAITS = [
   { label: "Naturally Curious", tint: "bg-blue/15" },
   { label: "Kind & Caring", tint: "bg-orange/15" },
-  { label: "Smart Explorer", tint: "bg-teal/15" },
+  { label: "Smart Explorer", tint: "bg-blue/15" },
   { label: "Playful & Fun", tint: "bg-yellow/15" },
 ] as const;
 
