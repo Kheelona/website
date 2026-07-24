@@ -230,6 +230,40 @@ p {
     animation-delay: 0.3s;
   }
 }
+/* ChatDemo (revamp M2): the generalized conversation demo. Same contract as
+   the R11 hero exchange — at rest by default, staggered entrance only for
+   motion-friendly desktop visitors (per-bubble delay set inline). */
+@media (prefers-reduced-motion: no-preference) and (min-width: 768px) {
+  .chat-demo-bubble {
+    animation: convo-in 0.5s var(--ease-bounce) both;
+  }
+}
+
+/* FeelingsGallery dialog (revamp M2): App-Store-card expansion feel.
+   Motion-gated; reduced-motion opens instantly. */
+@media (prefers-reduced-motion: no-preference) {
+  .feelings-dialog {
+    animation: feelings-dialog-in 0.3s var(--ease-bounce) both;
+  }
+  .feelings-dialog-overlay {
+    animation: sheet-fade-in 0.22s var(--ease-calm) both;
+  }
+}
+/* animate the standalone `scale`/`opacity` properties ONLY: the centering
+   utilities use the standalone `translate` property (Tailwind v4), and a
+   transform-based keyframe would STACK with it and double-shift the panel
+   (caught in the M2 visual pass) */
+@keyframes feelings-dialog-in {
+  from {
+    opacity: 0;
+    scale: 0.92;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
 @keyframes convo-in {
   from {
     opacity: 0;
@@ -363,6 +397,97 @@ main {
   }
   to {
     transform: translate3d(5%, -4%, 0);
+  }
+}
+
+/* ================================================================
+   HERO BUBBLES + KHEELU ORBIT (revamp M2)
+   Hero fact chips: SSR-visible text, transform-only float, desktop +
+   motion only (they are display:none on phones — LCP law).
+   Orbit: static 2-col grid by default (phones, reduced motion, no-JS);
+   desktop + motion composes the ring. Cards counter-rotate to stay
+   upright; hover/focus pauses everything. DOM order = reading order.
+   ================================================================ */
+@media (prefers-reduced-motion: no-preference) and (min-width: 768px) {
+  .hero-bubble {
+    animation: hero-bubble-float 6s ease-in-out infinite;
+  }
+}
+@keyframes hero-bubble-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.kheelu-orbit .orbit-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+@media (min-width: 768px) {
+  .kheelu-orbit {
+    position: relative;
+    height: 560px;
+    max-width: 620px;
+    margin-inline: auto;
+  }
+  .kheelu-orbit .kheelu-orbit-center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .kheelu-orbit .orbit-cards {
+    position: absolute;
+    inset: 0;
+    display: block;
+    margin: 0;
+  }
+  .kheelu-orbit .orbit-seat {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: rotate(var(--a, 0deg)) translateX(var(--orbit-r, 225px))
+      rotate(calc(-1 * var(--a, 0deg)));
+  }
+  .kheelu-orbit .orbit-card {
+    width: 200px;
+    transform: translate(-50%, -50%);
+  }
+}
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+  .kheelu-orbit .orbit-cards {
+    animation: orbit-spin 60s linear infinite;
+  }
+  .kheelu-orbit .orbit-card {
+    animation: orbit-unspin 60s linear infinite;
+  }
+  .kheelu-orbit:hover .orbit-cards,
+  .kheelu-orbit:hover .orbit-card,
+  .kheelu-orbit:focus-within .orbit-cards,
+  .kheelu-orbit:focus-within .orbit-card {
+    animation-play-state: paused;
+  }
+}
+@keyframes orbit-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes orbit-unspin {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(-360deg);
   }
 }
 

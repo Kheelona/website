@@ -10,29 +10,34 @@ describe("CompareTable", () => {
     ).toBeInTheDocument();
   });
 
-  it("labels each honest-comparison row via a row header", () => {
+  it("labels each row in parent words via a row header", () => {
     render(<CompareTable />);
     expect(
-      screen.getByRole("rowheader", { name: "Screen-free" }),
+      screen.getByRole("rowheader", { name: "No screen, ever" }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("rowheader", { name: "Holds a conversation" }),
+      screen.getByRole("rowheader", { name: "Talks with your child, not at them" }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("rowheader", { name: "Made for ages 3 to 6" }),
+      screen.getByRole("rowheader", { name: "Grows with them, ages 3 to 10" }),
     ).toBeInTheDocument();
   });
 
-  it("keeps the category columns", () => {
+  it("keeps the category columns, renamed for humans", () => {
     render(<CompareTable />);
     expect(
       screen.getByRole("columnheader", { name: "Smart toys" }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("columnheader", { name: "Phone / TV" }),
+      screen.getByRole("columnheader", { name: "Phone or TV" }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("columnheader", { name: "Static toys" }),
+      screen.getByRole("columnheader", { name: "Ordinary toys" }),
     ).toBeInTheDocument();
+  });
+
+  it("answers the languages row with the published number", () => {
+    render(<CompareTable />);
+    expect(screen.getByText("Yes, up to 10")).toBeInTheDocument();
   });
 });

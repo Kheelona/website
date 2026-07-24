@@ -27,11 +27,11 @@ const instrumentSans = localFont({
 export const metadata: Metadata = {
   metadataBase: new URL("https://kheelona.com"),
   title: {
-    default: "Lumi by Kheelona: the screen-free AI robot toy for ages 3 to 6",
+    default: "Lumi by Kheelona: the screen-free AI toy that talks with your child",
     template: "%s · Kheelona",
   },
   description:
-    "Lumi is a screen-free AI robot toy that listens first, then talks back, in all 10 languages you speak at home. Reserve at ₹4,999. No payment now.",
+    "Lumi is a screen-free talking companion for ages 3 to 10. It listens first, then talks back, in up to 10 languages you speak at home. Reserve at ₹4,999. No payment now.",
   openGraph: {
     siteName: "Kheelona",
     type: "website",

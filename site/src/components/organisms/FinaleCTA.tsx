@@ -30,18 +30,18 @@ export function FinaleCTA({
   variant = "full",
   from = "white",
   kheeluLine,
+  bare = false,
 }: {
   variant?: "full" | "compact";
   from?: "white" | "cream" | "cool" | "sun";
   kheeluLine?: string;
+  /** Revamp M2: content-only, for composition inside a Room fill="orange"
+   *  (the Room then owns id="reserve" and the white-text paint). */
+  bare?: boolean;
 }) {
-  return (
-    <Section wash="orange" id="reserve" className="overflow-x-clip">
-      <CurveDivider from={from} />
-      <Container
-        className={variant === "full" ? "pt-10 md:pt-14" : "pb-16 pt-8 md:pb-20"}
-      >
-        <Reveal>
+  const content = (
+    <>
+      <Reveal>
           <h2
             className={
               variant === "full"
@@ -65,23 +65,35 @@ export function FinaleCTA({
             You can leave the list anytime.
           </p>
         </Reveal>
-        {variant === "full" && (
-          <div
-            aria-hidden="true"
-            className="mt-12 flex items-end justify-center gap-[5vw] md:gap-[4vw]"
-          >
-            {LINEUP.map((m) => (
-              <Image
-                key={m.img}
-                src={m.img}
-                alt=""
-                width={200}
-                height={280}
-                className={`w-auto translate-y-[3px] ${m.h} ${m.mobile ? "" : "hidden sm:block"}`}
-              />
-            ))}
-          </div>
-        )}
+      {variant === "full" && (
+        <div
+          aria-hidden="true"
+          className="mt-12 flex items-end justify-center gap-[5vw] md:gap-[4vw]"
+        >
+          {LINEUP.map((m) => (
+            <Image
+              key={m.img}
+              src={m.img}
+              alt=""
+              width={200}
+              height={280}
+              className={`w-auto translate-y-[3px] ${m.h} ${m.mobile ? "" : "hidden sm:block"}`}
+            />
+          ))}
+        </div>
+      )}
+    </>
+  );
+
+  if (bare) return content;
+
+  return (
+    <Section wash="orange" id="reserve" className="overflow-x-clip">
+      <CurveDivider from={from} />
+      <Container
+        className={variant === "full" ? "pt-10 md:pt-14" : "pb-16 pt-8 md:pb-20"}
+      >
+        {content}
       </Container>
     </Section>
   );

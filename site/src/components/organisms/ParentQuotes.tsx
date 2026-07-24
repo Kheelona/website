@@ -29,24 +29,25 @@ export function ParentQuotes({
   count = 3,
   eyebrow = "From the pilot families",
   title = "Ten families test Lumi every day.",
+  bare = false,
 }: {
   from?: "white" | "cream" | "cool" | "teal";
   count?: 2 | 3;
   eyebrow?: string;
   title?: string;
+  /** Revamp M2: content-only, for composition inside a Room. */
+  bare?: boolean;
 }) {
-  return (
-    <Section wash="white" id="parent-voices">
-      <CurveDivider from={from} />
-      <Container className="pb-16 pt-6 md:pb-20 md:pt-8">
-        <Reveal>
-          <SectionHeading
-            eyebrow={eyebrow}
-            title={title}
-            titleClassName="mb-10 max-w-[20ch]"
-          />
-        </Reveal>
-        <div className={count === 2 ? "grid gap-5 md:grid-cols-2" : "grid gap-5 md:grid-cols-3"}>
+  const content = (
+    <>
+      <Reveal>
+        <SectionHeading
+          eyebrow={eyebrow}
+          title={title}
+          titleClassName="mb-10 max-w-[20ch]"
+        />
+      </Reveal>
+      <div className={count === 2 ? "grid gap-5 md:grid-cols-2" : "grid gap-5 md:grid-cols-3"}>
           {QUOTES.slice(0, count).map((q, i) => (
             <Reveal key={q.who} delay={i * 0.06}>
               <Card className="border border-line-soft bg-cream">
@@ -65,8 +66,16 @@ export function ParentQuotes({
               </Card>
             </Reveal>
           ))}
-        </div>
-      </Container>
+      </div>
+    </>
+  );
+
+  if (bare) return content;
+
+  return (
+    <Section wash="white" id="parent-voices">
+      <CurveDivider from={from} />
+      <Container className="pb-16 pt-6 md:pb-20 md:pt-8">{content}</Container>
     </Section>
   );
 }
