@@ -16,7 +16,7 @@ here in full so nothing depends on conversation memory.
 | P1.1 working file + CLAUDE.md pointer | DONE (this file) |
 | P1.2 Gemini hero-art kit | DONE — `gemini-handoff/hero-2026-07/` (3 refs + prompt + gates). WAITING ON FOUNDER to generate + drop in ~/Downloads |
 | P1.3 market research memo | DONE — `docs/revamp-2026-07/research.md` (competitors, parent voice, keyword map v2, AEO question bank). NEW founder facts needed: FOUNDER-TODO REV-b (subscription/camera/ship/languages) + REV-c (stale ₹2,999 in Google index) |
-| P1.4 production copy (all routes, B voice) | in progress |
+| P1.4 production copy (all routes, B voice) | DONE — `docs/revamp-2026-07/copy-v2.md` (the build transplants it verbatim; provenance-tagged; GATED blocks marked). Kheelu line queue = copy-v2.md guide-line lists |
 | P1.5 QA strategy into blueprint | DONE — website-steps.md §8.20 |
 | P2 tokens/design-system | DONE — branch commit `850a87a`: teal/purple/blue-soft/serif retired + usages migrated, blue-ink + action + room tokens added, check-tokens synced (18 mappings), DS annotated. teal-deep DEPRECATED until M5 |
 | M1 theme core (branch `revamp/kheelu-tour`) | pending |
@@ -97,11 +97,9 @@ research-only GA4 via Chrome.
 
 ## Kheelu guide say-lines (founder sign-off queue)
 
-Drafted during P1.4 copy, listed here per route before shipping (brand law: every Kheelu line
-founder-approved). Status: not yet drafted. B-wireframe seeds (need sign-off too if reused):
-"Hi, I'm Kheelu. Come on in, I'll show you around." · "These folks vouch for us. Real ones." ·
-"That was the careful part. Now let me show you the fun." · poke lines ("Hehe, that tickles." /
-"Oi, mind the fur." / "Ready when you are." / "Come on, this way." / "I've got you.").
+DRAFTED — full per-route list lives in `copy-v2.md` (Home 12 lines + poke 5 + one or two per
+interior route), every one tagged GATED:kheelu-line. Founder signs off at the M2/M3 preview;
+none ship to production before sign-off (previews on the branch are fine).
 
 ## Founder checkpoints at previews (do not forget)
 
