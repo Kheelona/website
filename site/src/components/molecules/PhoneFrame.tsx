@@ -18,7 +18,11 @@ export function PhoneFrame({
 }) {
   return (
     <div
-      className="relative rounded-[44px] border-[10px] border-ink-head bg-ink-head shadow-[0_24px_48px_rgba(42,22,8,0.22)]"
+      /* max-w-full (M4 mobile pass): `width` is a fixed px request, and with
+         the 10px chrome on each side a 280px frame is 300px wide — wider than a
+         room's content box on a 320px phone, which widened the layout viewport.
+         The screenshot inside is w-full, so shrinking is lossless. */
+      className="relative max-w-full rounded-[44px] border-[10px] border-ink-head bg-ink-head shadow-[0_24px_48px_rgba(42,22,8,0.22)]"
       style={{ width }}
     >
       <div className="overflow-hidden rounded-[34px]">

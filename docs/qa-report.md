@@ -367,3 +367,53 @@ rooms, and finale render; the guide swaps pose and line per room; reveals fire.
 `/a` `/b` `/c` wireframes survive) and pushed. https://website-hdn2.vercel.app verified live:
 10 routes 200, new title/metadata serving, `/b` still resolving. Env vars still unset there, so
 the reserve panel is the placeholder card and GA4 is not measuring.
+
+## Revamp M4-b: mobile pass (2026-07-25)
+
+Founder review of the M4 preview flagged "the mobile view has issues". Reviewed at real mobile
+viewports (Chrome headless over CDP with `Emulation.setDeviceMetricsOverride`, mobile:true,
+DPR 2) at 320 / 360 / 390 / 430 / 768 / 1024 px, measuring per route: can the user pan the page
+sideways, does any `position: fixed` layer stretch past the screen, and which elements stick out.
+
+**One root cause behind most of it.** The theme-B room entrances translate X by ±46px while
+unrevealed. On a 390px phone that pushes a full-width room's box past the screen edge, and
+mobile Chrome answers by WIDENING THE LAYOUT VIEWPORT to fit (measured: 417px on a 390px
+screen). Everything else followed from that: the page panned sideways, `position: fixed`
+elements sized to the wider viewport so the guide dock's Reserve button fell off-screen, the
+backdrop stretched, and copy looked cropped on the right. Fix: below 960px the directional
+reveals settle vertically instead. The gate is 960, not md — RoomsTrack's gutter is
+`clamp(20px, 5vw, 64px)`, which only reaches 46px of travel at ~920px wide, so tablets
+overflowed for the same reason.
+
+**Then five narrower squeezes, each a fixed-width child inside a room's ~290px content box:**
+1. `Button` — a long ghost label ("See the parent app on the Lumi page") is 352px with
+   `whitespace-nowrap`. Now `max-sm:whitespace-normal` (the 640-1023px band that wanted nowrap
+   for the navbar CTA is untouched).
+2. `PhoneFrame` — `width` is a fixed px request and the 10px chrome each side makes a 280px
+   frame 300px wide. Now `max-w-full`; the screenshot inside is `w-full`, so shrinking is
+   lossless.
+3. `ParentAppSection` — `max-w-full` caps the frame's USED width but not the min-content it
+   contributes to its grid track, so the room still blew out at 320px. `min-w-0` on the item.
+4. `/team` — `min-w-[280px]` on the bio column → `sm:min-w-[280px]`; below sm it wraps under
+   the photo.
+5. `/stories` — the card's 130px art column + `p-6` overshot at 320px → `w-[104px] sm:w-[130px]`
+   and `p-5 sm:p-6`.
+
+**The guide dock was 86px tall and three lines.** `truncate` was in the markup but Chrome
+computed `white-space: normal`. Cause: the R5 typography rule `p { text-wrap: pretty }` sat
+UNLAYERED in globals.css, and unlayered CSS outranks every Tailwind utility regardless of
+specificity — `text-wrap` is a longhand of the same group as `white-space`, so it quietly beat
+`truncate`. Moving those base rules into `@layer base` restored the intended precedence: the
+dock is now one line, 67px. Worth remembering for any future base-level element rule.
+
+**The comparison table was the worst of it.** On a phone the 640px table could only be a
+sideways scroll with no affordance: parents saw the claims and Lumi's column with "Yes, up to
+10" sliced mid-word, and the three alternatives sat entirely off-screen. `CompareTable` now
+renders a STACK below sm — one card per claim, Lumi's verdict first and in orange-ink, then each
+alternative — and keeps the real table from sm up. Both views read one ROWS array, and a test
+asserts they cannot disagree.
+
+**Result:** 320 / 360 / 390 / 430 px — 9/9 routes with no sideways pan and no stretched fixed
+layer. 1024px unchanged. One 3px artifact remains at exactly 768px on Home (a `.orbit-seat`
+2px past the edge; the user cannot pan and the mobile dock is already hidden at that width).
+Tests 226/226, tsc clean, build green.

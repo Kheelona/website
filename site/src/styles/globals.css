@@ -134,15 +134,24 @@ body {
 
 /* R5 typography hygiene (founder 2026-07-10): balanced headings, no orphaned
    single words at the end of paragraphs. Progressive enhancement; browsers
-   without text-wrap support simply wrap as before. */
-h1,
-h2,
-h3,
-h4 {
-  text-wrap: balance;
-}
-p {
-  text-wrap: pretty;
+   without text-wrap support simply wrap as before.
+
+   IN @layer base ON PURPOSE (M4 mobile pass): `text-wrap` is a longhand of the
+   same group as `white-space`, and unlayered CSS outranks every Tailwind
+   utility no matter the specificity. Left unlayered, this `p` rule silently
+   beat `truncate` on the guide's mobile dock — the line wrapped to three rows
+   and the fixed bar grew to 86px, eating the screen. Base-layer rules lose to
+   utilities, which is what a caller expects. */
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -170,20 +179,36 @@ p {
   }
   /* Theme-B room entrances (revamp M1): sections slide in from alternating
      sides "like turning a corner". Below-fold rooms only — never the room
-     that owns the page's LCP. */
-  html.js [data-reveal="left"] {
+     that owns the page's LCP.
+
+     PHONES SETTLE VERTICALLY INSTEAD (M4 mobile pass, hard rule): an X
+     translate on a 390px viewport pushes the room's box past the screen edge,
+     and mobile Chrome answers by widening the LAYOUT viewport to fit it. That
+     one detail caused every mobile symptom at once — the page panned sideways,
+     `position: fixed` elements (the guide dock, the backdrop) stretched to the
+     wider viewport so the dock's Reserve button fell off-screen, and copy
+     looked cropped on the right. Never animate X on an element that spans the
+     track width; sideways motion waits until the page gutter can absorb it.
+
+     The gate is 960px, not the md breakpoint: RoomsTrack's gutter is
+     clamp(20px, 5vw, 64px), so it only reaches the 46px of travel at 5vw =
+     46px, i.e. ~920px wide. Between 768 and 959 a tablet would overflow by the
+     same few dozen pixels for the same reason. */
+  html.js [data-reveal="left"],
+  html.js [data-reveal="right"] {
     opacity: 0;
-    transform: translate3d(-46px, 10px, 0);
+    transform: translate3d(0, 18px, 0);
     transition:
       opacity 0.5s var(--ease-calm),
       transform 0.6s var(--ease-bounce);
   }
-  html.js [data-reveal="right"] {
-    opacity: 0;
-    transform: translate3d(46px, 10px, 0);
-    transition:
-      opacity 0.5s var(--ease-calm),
-      transform 0.6s var(--ease-bounce);
+  @media (min-width: 960px) {
+    html.js [data-reveal="left"] {
+      transform: translate3d(-46px, 10px, 0);
+    }
+    html.js [data-reveal="right"] {
+      transform: translate3d(46px, 10px, 0);
+    }
   }
   html.js [data-reveal="pop"] {
     opacity: 0;
