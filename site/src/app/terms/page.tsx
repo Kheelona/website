@@ -53,6 +53,9 @@ export default function TermsPage() {
       title="Reservation terms, in plain words."
       lede="A fair deal should survive being written clearly. Here is ours."
       sections={SECTIONS}
+      guide="curious"
+      /* GATED:kheelu-line — founder sign-off before merge to master */
+      say="Short version: be kind, we will be too."
     />
   );
 }

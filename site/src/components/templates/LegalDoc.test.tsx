@@ -37,4 +37,26 @@ describe("LegalDoc", () => {
     ).toBeInTheDocument();
     expect(container.querySelector("#reserve")).toBeInTheDocument();
   });
+
+  it("rides the room grammar, not the retired full-bleed washes", () => {
+    const { container } = render(<LegalDoc title="Terms" lede="Read me." sections={SECTIONS} />);
+    expect(container.querySelector("[data-wash]")).toBeNull();
+  });
+
+  it("carries the page's one quiet Kheelu line", () => {
+    const { container } = render(
+      <LegalDoc
+        title="Privacy"
+        lede="Read me."
+        sections={SECTIONS}
+        guide="bliss"
+        say="I'll wait here while you read the careful words."
+      />,
+    );
+    const hero = container.querySelector("[data-guide='bliss']");
+    expect(hero).toHaveAttribute(
+      "data-say",
+      "I'll wait here while you read the careful words.",
+    );
+  });
 });

@@ -12,7 +12,7 @@ import { KheeluSays } from "@/components/molecules/KheeluSays";
 const CARDS = [
   {
     slug: "why-three-to-six-are-the-years-that-matter-most",
-    title: "Why three to six are the years that matter most",
+    title: "Why the early years matter most",
     line: "A short, warm read on the window when a child's brain grows fastest.",
     img: "curious",
     // P2 palette: blue -> yellow (blue-soft and teal retired from the web)

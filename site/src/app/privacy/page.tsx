@@ -59,6 +59,9 @@ export default function PrivacyPage() {
       title="Privacy, in plain words."
       lede="This page covers the pre-order list. It is written to be read, not skimmed past."
       sections={SECTIONS}
+      guide="bliss"
+      /* GATED:kheelu-line — founder sign-off before merge to master */
+      say="I'll wait here while you read the careful words."
     />
   );
 }

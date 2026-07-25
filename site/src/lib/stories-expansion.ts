@@ -7,7 +7,7 @@ import type { Story } from "./stories";
 export const EXPANSION: Story[] = [
   {
     slug: "how-much-screen-time-for-a-3-to-6-year-old",
-    title: "How much screen time is okay for a 3 to 6 year old?",
+    title: "How much screen time is okay for a young child?",
     description:
       "What the WHO and AAP actually recommend, why the number is not the whole story, and what to do at 6pm when the guideline meets real life.",
     theme: "Screen-free living",
@@ -113,7 +113,7 @@ export const EXPANSION: Story[] = [
   },
   {
     slug: "what-actually-builds-a-sharp-brain",
-    title: "What actually builds a sharp brain at 3 to 6",
+    title: "What actually builds a sharp brain in the early years",
     description:
       "Past the flashcards and brain-training claims: the four everyday things research keeps pointing at, and how to get more of them.",
     theme: "How children grow",
@@ -123,6 +123,9 @@ export const EXPANSION: Story[] = [
     paragraphs: [
       { p: "Type how to make my child's brain sharp into any search box and an industry answers: apps, flashcards, tonics, courses for three year olds. The volume of it can make an ordinary home feel like not enough." },
       { p: "Here is the comforting, slightly boring truth. The things that build a young brain are old things. Research keeps circling the same four." },
+      /* The "aged 3 to 6" below is SOURCED sleep guidance, not our audience
+         range. M4 age pass: product-facing copy moved to 3 to 10, but a cited
+         age band keeps its real numbers (never-invent-claims). */
       { h: "Conversation, sleep, play, and calm", p: "Conversation, especially the back and forth kind, builds language and thinking at once; researchers count conversational turns, not vocabulary drills. Sleep is when the day's learning gets filed, and children aged 3 to 6 need ten to thirteen hours of it. Play, the unstructured kind where the sofa becomes a ship, is where planning, memory, and self-control get their reps. And a calm, warm home is not a luxury: chronic stress is one of the few things reliably shown to work against a growing brain." },
       { p: "Notice what is not on the list. There is no app on it. Educational toys and brain development toys can help, but only the ones that produce more of the four: a toy that starts a conversation earns its place, a toy that performs at your child does not." },
       { h: "The dinner-table test", p: "A useful filter for anything sold as brain-building: after ten minutes with it, does your child have something to say? Blocks pass the test. A good story passes. A cartoon marathon mostly fails. Judge our talking toy with the same test, and judge everything else with it too." },
@@ -187,7 +190,7 @@ export const EXPANSION: Story[] = [
     slug: "busy-hands-no-screens",
     title: "Busy hands, no screens",
     description:
-      "Screen-free ways to keep a 3 to 6 year old genuinely busy at home, including on the days you have to work.",
+      "Screen-free ways to keep a young child genuinely busy at home, including on the days you have to work.",
     theme: "Screen-free living",
     minutes: 5,
     pose: "silly",
@@ -196,7 +199,7 @@ export const EXPANSION: Story[] = [
       { p: "It is 4pm, your call starts in ten minutes, and a small person is orbiting your desk asking what they can do. The tablet would solve this in four seconds. That is exactly why it feels like cheating." },
       { p: "The screen-free answer is not one magic activity. It is understanding what the screen was providing: a task with no setup, no adult, and no way to fail. Anything with those three properties can compete." },
       { h: "The ten-second setups", p: "Keep a shelf of things that start instantly and end wherever: a bucket of water and a paintbrush to paint the balcony floor, a dabba of rajma to sort by wrinkles, old newspaper to tear into the world's largest salad, a blanket over two chairs that is a house until dinner. The humbler the material, the longer it lasts. Expensive toys have one script. A cardboard box has forty." },
-      { h: "Jobs beat games", p: "The secret weapon of the 3 to 6 crowd is that they do not yet know work is work. Being asked to match all the socks, wash the potatoes, or guard the dough while it rises is not a chore to a four year old. It is a promotion. Real jobs hold attention longer than invented games because children can smell the difference." },
+      { h: "Jobs beat games", p: "The secret weapon of small children is that they do not yet know work is work. Being asked to match all the socks, wash the potatoes, or guard the dough while it rises is not a chore to a four year old. It is a promotion. Real jobs hold attention longer than invented games because children can smell the difference." },
       { p: "And for the stretches where you truly cannot be interrupted, line up company that talks: story audio in your language, a grandparent on speaker, a voice that asks questions back. Busy hands last longest when there is a voice keeping the mind company too. Building that voice is our whole project, but the shelf and the socks need no technology at all." },
       { p: "The house does not need to become a preschool. It needs six reliable boredom exits. Build the shelf once, and 4pm gets easier for a year." },
     ],

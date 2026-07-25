@@ -1,30 +1,29 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Container } from "@/components/atoms/Container";
-import { Section } from "@/components/atoms/Section";
-import { CurveDivider } from "@/components/atoms/CurveDivider";
+import { Room } from "@/components/atoms/Room";
+import { RoomsTrack } from "@/components/atoms/RoomsTrack";
 import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { PageHero } from "@/components/templates/PageHero";
 import { StepList } from "@/components/molecules/StepList";
 import { Reveal } from "@/components/molecules/Reveal";
 import { TiltCard } from "@/components/molecules/TiltCard";
-import { MascotScene } from "@/components/organisms/MascotScene";
 import { RecognitionStrip } from "@/components/organisms/RecognitionStrip";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
-import { StageGate } from "@/features/ambient-stage";
 
 export const metadata: Metadata = {
   title: "Team: the parents who build",
   description:
-    "Meet the people behind Kheelona and Lumi, the screen-free AI robot toy: a CTO with 14 patents filed, a hardware chief who built at Intel, a marketing head who keeps the story honest, and a CEO who owns the trust.",
+    "Meet the people behind Kheelona and Lumi, the screen-free talking AI toy: a CTO with 14 patents filed, a hardware chief who built at Intel, a marketing head who keeps the story honest, and a CEO who owns the trust.",
   alternates: { canonical: "/team" },
 };
 
 /* R7 full-parity rebuild from kheelona.ai/team (founder-published source:
    its content/site.ts TEAM object). Bios adapted to parent voice; facts
    verbatim (14 patents, Intel + Thunderbolt 4/5 compliance, CA + 15 years
-   scaling). Pull-quotes verbatim, upright serif (zero-italics law).
-   Colored text stays decorative-only: names/titles are ink (contrast). */
+   scaling). Pull-quotes verbatim. Colored text stays decorative-only:
+   names/titles are ink (contrast).
+   Revamp M4 (theme B): hero on the backdrop + rooms; the quotes moved from
+   Instrument Serif to the display face (two-font law, P2). */
 
 const FOUNDERS = [
   {
@@ -113,33 +112,32 @@ function LinkedInIcon() {
 export default function TeamPage() {
   return (
     <>
-      {/* Manifesto hero (kheelona.ai framing, parent voice) */}
-      <Section wash="cream">
-        <PageHero
-          ratio="md:grid-cols-[1.15fr_0.85fr]"
-          media={<MascotScene pose="silly" width={300} parallax={34} priority />}
-        >
-          <SectionHeading
-            as="h1"
-            eyebrow="Why we built Kheelona"
-            title="Every object a child holds is about to wake up."
-            titleClassName="mb-5 max-w-[18ch]"
-            lede="The plush, the crib, the night-light. Within a few years each one will listen, answer, and remember the child who loves it. Someone has to build the mind that wakes them, and build it safely. That is the whole reason Kheelona exists."
-            ledeClassName="mb-4 max-w-[58ch]"
-          />
-          <p className="max-w-[58ch] text-[17px] text-ink-muted">
-            We are parents who build. We watched our own children reach for
-            screens and felt the same knot you feel. Between the four of us
-            we cover the four things a safe talking toy actually needs: a
-            brain, a body, a business, and a voice.
-          </p>
-        </PageHero>
-      </Section>
+      {/* Manifesto hero (kheelona.ai framing, parent voice). Copy-only: the
+          four founder photos below are this page's picture. */}
+      <PageHero
+        guide="silly"
+        /* GATED:kheelu-line — founder sign-off before merge to master */
+        say="These are my people. They made me, then they made Lumi."
+      >
+        <SectionHeading
+          as="h1"
+          eyebrow="Why we built Kheelona"
+          title="Every object a child holds is about to wake up."
+          titleClassName="mb-5 max-w-[18ch]"
+          lede="The plush, the crib, the night-light. Within a few years each one will listen, answer, and remember the child who loves it. Someone has to build the mind that wakes them, and build it safely. That is the whole reason Kheelona exists."
+          ledeClassName="mb-4 max-w-[58ch]"
+        />
+        <p className="max-w-[58ch] text-[17px] text-ink-muted">
+          We are parents who build. We watched our own children reach for
+          screens and felt the same knot you feel. Between the four of us we
+          cover the four things a safe talking toy actually needs: a brain, a
+          body, a business, and a voice.
+        </p>
+      </PageHero>
 
-      {/* Founder cards (full parity: photo, tag, bio, pull-quote, LinkedIn) */}
-      <Section wash="white">
-        <CurveDivider from="cream" />
-        <Container className="py-16 md:py-20">
+      <RoomsTrack>
+        {/* Founder cards (full parity: photo, tag, bio, pull-quote, LinkedIn) */}
+        <Room fill="white" reveal="left">
           <Reveal>
             <SectionHeading
               title="A brain, a body, a business, and a voice."
@@ -153,10 +151,9 @@ export default function TeamPage() {
               <Reveal key={f.id} delay={i * 0.06}>
                 <TiltCard
                   maxTilt={2}
-                  className={`rounded-(--radius-card) border border-line-soft border-t-4 bg-white p-7 ${f.border}`}
+                  className={`rounded-(--radius-card) border border-line-soft border-t-4 bg-cream p-7 ${f.border}`}
                 >
                   <div className="flex flex-wrap items-start gap-7">
-                    {/* R11: token radius (was arbitrary rounded-[18px]) */}
                     <div className={`shrink-0 rounded-2xl p-2 ${f.tint}`}>
                       <Image
                         src={f.photo}
@@ -177,7 +174,7 @@ export default function TeamPage() {
                           target="_blank"
                           rel="noopener noreferrer"
                           aria-label={`${f.name} on LinkedIn`}
-                          className="grid h-9 w-9 place-items-center rounded-lg border border-line text-ink-head transition-colors hover:bg-cream"
+                          className="grid h-9 w-9 place-items-center rounded-lg border border-line text-ink-head transition-colors hover:bg-white"
                         >
                           <LinkedInIcon />
                         </a>
@@ -199,13 +196,9 @@ export default function TeamPage() {
               </Reveal>
             ))}
           </div>
-        </Container>
-      </Section>
+        </Room>
 
-      {/* What we believe */}
-      <Section wash="cool">
-        <CurveDivider from="white" />
-        <Container className="py-16 md:py-20">
+        <Room fill="cool" reveal="right">
           <Reveal>
             <SectionHeading title="What we believe." titleClassName="mb-11" />
           </Reveal>
@@ -217,28 +210,34 @@ export default function TeamPage() {
             rowClassName="items-center gap-4 py-7"
             titleClassName="font-display text-[clamp(20px,2.2vw,26px)] font-extrabold text-ink-head"
           />
-        </Container>
-      </Section>
+        </Room>
 
-      {/* Recognition (closes the old claims-backed-by TODO: these programs
-          are founder-published on kheelona.ai) */}
-      <RecognitionStrip label="Backed by" />
+        {/* Recognition (these programs are founder-published on kheelona.ai) */}
+        <Room fill="white" reveal="left">
+          <RecognitionStrip bare label="Backed by" />
+        </Room>
 
-      {/* Gentle close */}
-      <Section wash="cream">
-        <CurveDivider from="white" />
-        <Container className="py-14 md:py-16">
+        <Room fill="cream" reveal="right">
           <Reveal>
             <p className="max-w-[52ch] text-[clamp(19px,1.8vw,23px)]">
               If you have read this far, you care the way we care. Save your
               place in line, and grow with us.
             </p>
           </Reveal>
-        </Container>
-      </Section>
+        </Room>
 
-      <FinaleCTA variant="compact" from="cream" />
-      <StageGate stage="ambient" />
+        <Room
+          fill="orange"
+          id="reserve"
+          guide="silly"
+          /* GATED:kheelu-line */
+          say="Save your spot. I'll keep Lumi company until launch."
+          reveal="pop"
+          className="overflow-x-clip"
+        >
+          <FinaleCTA bare variant="compact" />
+        </Room>
+      </RoomsTrack>
     </>
   );
 }

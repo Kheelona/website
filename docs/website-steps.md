@@ -270,6 +270,26 @@ ships story + test; token lint gates the build; structural moves = zero user-fac
 6. Regression safety: tag master pre-merge (`pre-revamp-2026-07`); founder previews after Home
    (M2) and Home+Lumi (M3) on the demo-website Vercel pattern before the remaining routes build.
 
+**M4 record (2026-07-25) — shared parts the interior routes added to the registry.** All 8
+interior routes now run the room grammar, so these join §8.19's law:
+- `templates/PageHero` IS the theme-B hero shell: it renders its own `<section>` on the
+  SiteBackdrop (no wash, no divider), at RoomsTrack width so hero and room copy share one left
+  edge, and takes `guide`/`say` like `Room`. New interior heroes use it; hand-rolling the grid
+  is a review flag. Its media rides `Reveal mode="rise"` only (never opacity — hero LCP law).
+- `molecules/AnswerBlock` owns the AEO pattern: a question-led H2/H3 plus a 40–60 word VISIBLE
+  answer, composed from `SectionHeading` so the type scale stays in one place. FAQPage schema
+  may only ever mirror these visible answers. The accordion `Faq` keeps the long lists, and a
+  question must not appear in both places on one page.
+- `SectionHeading` gained a fourth step, `nested` (clamp 21–26px), the default for `as="h3"`, so
+  a nested question cannot compete with the room heading above it. Mirrored into
+  `Design/design-system/colors_and_type.css` as a WEB NOTE (single-source mandate).
+- `organisms/FamilyGrid` is the one companion lineup (Home + /playos previously duplicated it).
+- `RevealObserver` re-arms on `usePathname()`. It sits in the persistent layout, so a mount-only
+  effect left every client-navigated route's rooms stuck at `opacity: 0` — the same class of bug
+  as the StickyMobileCTA lesson. Any future observer mounted in the layout must do the same.
+- Every route ends `FinaleCTA bare variant="compact"` inside `Room fill="orange" id="reserve"`,
+  including `not-found` (the navbar CTA is `#reserve`, so the 404 had a dead anchor before M4).
+
 **Launch readiness (unchanged gates + revamp deltas)**: S14/§8.11 checklist still applies —
 Tally URL + GA4 ID + Vercel/DNS + claims remain founder-gated (FOUNDER-TODO). Revamp deltas
 before merge to master: founder sign-off on the full v1 preview; hero final art ingested (or

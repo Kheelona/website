@@ -23,3 +23,6 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 export const CopyOnly: Story = { args: { media: undefined } };
+export const Narrated: Story = {
+  args: { guide: "curious", say: "Come on in, I'll show you around." },
+};

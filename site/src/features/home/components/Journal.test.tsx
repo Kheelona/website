@@ -9,12 +9,10 @@ describe("Journal", () => {
     ).toBeInTheDocument();
   });
 
-  it("links each story card into /stories", () => {
+  it("links each story card into /stories, retitled but on its original slug", () => {
     render(<Journal />);
     expect(
-      screen.getByRole("link", {
-        name: /Why three to six are the years that matter most/i,
-      }),
+      screen.getByRole("link", { name: /Why the early years matter most/i }),
     ).toHaveAttribute(
       "href",
       "/stories/why-three-to-six-are-the-years-that-matter-most",
