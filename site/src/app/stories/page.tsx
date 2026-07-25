@@ -69,7 +69,9 @@ export default function StoriesPage() {
                     href={`/stories/${s.slug}`}
                     className={`flex h-full overflow-hidden rounded-(--radius-card) border border-line-soft ${room.card} transition-[transform,box-shadow] duration-300 ease-(--ease-bounce) hover:-translate-y-1.5 hover:shadow-(--shadow-room) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2`}
                   >
-                    <div className={`flex w-[130px] shrink-0 items-end justify-center ${s.tint}`}>
+                    {/* narrower art column on small phones: 130px + p-6 text
+                        overshoots a room's content box at 320px wide */}
+                    <div className={`flex w-[104px] shrink-0 items-end justify-center sm:w-[130px] ${s.tint}`}>
                       <Image
                         src={`/mascot/mascot-${s.pose}.png`}
                         alt=""
@@ -79,7 +81,7 @@ export default function StoriesPage() {
                         className="h-[110px] w-auto translate-y-1"
                       />
                     </div>
-                    <div className="p-6">
+                    <div className="p-5 sm:p-6">
                       <h3 className="mb-1 font-display text-[22px] font-extrabold leading-tight text-ink-head">
                         {s.title}
                       </h3>

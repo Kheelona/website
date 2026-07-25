@@ -164,7 +164,10 @@ export default function TeamPage() {
                         className="block h-[150px] w-[150px] rounded-xl object-cover"
                       />
                     </div>
-                    <div className="min-w-[280px] flex-1">
+                    {/* the min-width keeps the bio beside the photo on real
+                        screens, but below sm it must yield: 280px does not fit
+                        a room's content box on a 320px phone (M4 mobile pass) */}
+                    <div className="flex-1 sm:min-w-[280px]">
                       <div className="flex flex-wrap items-center gap-3">
                         <h3 className="font-display text-[26px] font-extrabold text-ink-head">
                           {f.name}

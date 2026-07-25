@@ -46,6 +46,22 @@ dead nav anchor before M4).
 it, and then the 3 app images — brief pointer 9 gated that ask on the v1 deploy, which has now
 happened, so **REV-d is unblocked and askable** (FOUNDER-TODO updated to say so).
 
+**M4-b mobile pass DONE (2026-07-25)**, after the founder reported mobile issues. Root cause:
+the directional room reveals translate X by ±46px, which on a phone pushes a full-width room
+past the screen and makes mobile Chrome widen the LAYOUT VIEWPORT (417px on a 390px screen) —
+that one detail caused the sideways pan, the stretched fixed dock with its Reserve button
+off-screen, and the cropped-looking copy. Sideways reveals now wait for 960px (the gutter only
+absorbs 46px at ~920px wide). Also fixed: long ghost button labels wrap below sm; PhoneFrame is
+`max-w-full` + its grid item `min-w-0`; /team's bio column drops its 280px minimum below sm;
+/stories' art column narrows; `p { text-wrap: pretty }` moved into `@layer base` (unlayered CSS
+outranks utilities, so it had been silently beating `truncate` and making the guide dock three
+lines / 86px tall — now one line / 67px); and **CompareTable stacks one card per claim below sm**
+instead of being a 640px sideways scroll with Lumi's "Yes, up to 10" sliced mid-word and the
+three alternatives off-screen. Verified 320/360/390/430px: 9/9 routes, no pan, no stretched
+fixed layer; 1024px unchanged. Full write-up: `docs/qa-report.md` "Revamp M4-b".
+HARD RULE ADDED: never animate X on an element that spans the track width; and any base-level
+element rule in globals.css belongs in `@layer base`.
+
 **M4 preview flags for the founder** (say so at review):
 - **The guide overlaps room copy**, not just headings. At a 1200×760 desktop window Kheelu
   (fixed, bottom-left, 150px) sits over the first ~100px of the room's text column, so a few

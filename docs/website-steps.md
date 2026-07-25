@@ -290,6 +290,23 @@ interior routes now run the room grammar, so these join §8.19's law:
 - Every route ends `FinaleCTA bare variant="compact"` inside `Room fill="orange" id="reserve"`,
   including `not-found` (the navbar CTA is `#reserve`, so the 404 had a dead anchor before M4).
 
+**M4-b mobile pass (2026-07-25) — two hard rules the revamp added.**
+- **Never animate X on an element that spans the track width.** A room is full-bleed inside the
+  track, so a ±46px X translate puts its box past a phone's screen edge, and mobile Chrome
+  responds by widening the LAYOUT viewport. Every `position: fixed` element then sizes to that
+  wider viewport, so the guide dock overhangs and its CTA falls off-screen, and the page pans.
+  Sideways reveals are gated to ≥960px because RoomsTrack's `clamp(20px, 5vw, 64px)` gutter only
+  absorbs 46px of travel at ~920px wide. Vertical settle below that.
+- **Base-level element rules belong in `@layer base`.** Unlayered CSS outranks every Tailwind
+  utility regardless of specificity. `p { text-wrap: pretty }` sat unlayered and silently beat
+  `truncate` on the guide dock (text-wrap is a longhand of the white-space group), so the fixed
+  bar ran to three lines. Utilities must be able to win.
+- Corollary for narrow rooms: a room's content box is ~290px on a 390px phone, so any fixed-px
+  child needs `max-w-full` AND `min-w-0` on its grid/flex item (max-width caps the used width,
+  not the min-content contributed to track sizing), and long pill labels need
+  `max-sm:whitespace-normal`. Wide data (the compare table) gets a stacked view below `sm` rather
+  than a sideways scroll — one data source, two views, a test that they agree.
+
 **Launch readiness (unchanged gates + revamp deltas)**: S14/§8.11 checklist still applies —
 Tally URL + GA4 ID + Vercel/DNS + claims remain founder-gated (FOUNDER-TODO). Revamp deltas
 before merge to master: founder sign-off on the full v1 preview; hero final art ingested (or

@@ -34,7 +34,11 @@ export function ParentAppSection({
 }) {
   const content = (
     <div className="grid items-center gap-12 md:grid-cols-[0.85fr_1.15fr]">
-        <Reveal className="flex justify-center md:justify-start">
+        {/* min-w-0 (M4 mobile pass): without it this grid item sizes to the
+            phone frame's fixed px width as its minimum, which pushes the whole
+            room past a 320px screen — max-w-full on the frame caps the USED
+            width but not the min-content it contributes to the track. */}
+        <Reveal className="flex min-w-0 justify-center md:justify-start">
           <PhoneFrame
             src="/app/dashboard.png"
             alt="The Kheelona parent app dashboard showing a child's interests and conversation activity"

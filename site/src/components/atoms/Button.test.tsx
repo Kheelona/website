@@ -28,6 +28,13 @@ describe("Button", () => {
     expect(link.className).not.toContain("bg-orange-cta");
   });
 
+  it("holds one line from sm up but wraps below it, so long labels stay on screen", () => {
+    render(<Button href="#">See the parent app on the Lumi page</Button>);
+    const cls = screen.getByRole("link").className;
+    expect(cls).toContain("whitespace-nowrap");
+    expect(cls).toContain("max-sm:whitespace-normal");
+  });
+
   it("emits a ripple element on pointer-down when motion is allowed", async () => {
     const user = userEvent.setup();
     render(<Button href="#">Go</Button>);
