@@ -6,6 +6,19 @@ Each item unlocks something specific. Ordered by launch impact.
 
 Status + everything already decided: `docs/revamp-2026-07/WORKING.md`.
 
+**► REVIEW IT NOW: https://website-hdn2.vercel.app** (updated 2026-07-25). The whole site is
+rebuilt on theme B: Home, /products/lumi, and all 8 interior routes. What to know while you
+look:
+- The reserve panel still shows the "opens soon" card and GA4 is not measuring, because the two
+  `NEXT_PUBLIC_*` env vars are not set in Vercel (items 1 and 2 below).
+- The Home hero uses INTERIM composed art until REV-a lands, so Kheelu appears twice there.
+- Gated copy is deliberately live on this preview and does not reach `main` until you sign off:
+  every Kheelu speech line, and the /safety answer block "Is an AI toy OK for a three-year-old?".
+- Wireframe B is still at /b if you want to compare.
+- One thing to judge: at around 1200px browser width the Kheelu guide covers the first ~100px of
+  the room text column and hides a few words per line. It is clean on wider screens. Say the
+  word and he shrinks and shifts on narrow desktops.
+
 - **REV-a. Hero art (the one that unblocks the new Home hero)** — run the kit in
   `gemini-handoff/hero-2026-07/README.md` (3 reference images + one prompt + a 4K follow-up),
   drop the result in `~/Downloads`, say "hero art is in". Until then previews use interim
@@ -20,14 +33,16 @@ Status + everything already decided: `docs/revamp-2026-07/WORKING.md`.
   ₹2,999. Until the new site ships with 301s from `/product-page/lumi-*` and the Play Store
   copy is updated to ₹4,999, search engines and AI answers can quote the old price against us.
   Play Store edit is yours; the 301s are queued in the build.
-- **REV-d. 3 mobile app images** — you said you'll share them; per your brief we ask AFTER the
-  v1 deploy, so nothing to do yet. Listed so it is not forgotten.
+- **REV-d. 3 mobile app images — NOW ASKABLE (the gate cleared).** Your brief said to ask only
+  after the v1 deploy; that deploy happened 2026-07-25 (link above). Drop them in `~/Downloads`
+  and say "app images are in". They land in the parent-app rooms on Home, /playos, and
+  /products/lumi, which currently reuse the three existing dashboard screenshots.
 
 ## THE REDESIGN (2026-07-08/09) — DONE and on master; deploying is yours
 
 Direction picked (Lumi's World + pop-up elements), both models generated and verified, Home rebuilt as the immersive journey, ribbon nav removed on your feedback. Merged to `master`, temp-live for feedback per your call.
 
-**Deployed (2026-07-10):** https://website-hdn2.vercel.app — GitHub `Kheelona/website`, branch `demo-website`, Vercel Root Directory `site`. Still yours when ready: the two `NEXT_PUBLIC_*` env vars in Vercel (Tally URL makes the reserve form go live; GA4 id starts measuring) and pointing kheelona.com DNS when this stops being temporary. The wireframe round (`design-concepts/round-2-immersive/`) and model kit (`3d-handoff/`) stay in the repo as the design record.
+**Deployed (2026-07-10; branch updated to the theme-B revamp on 2026-07-25):** https://website-hdn2.vercel.app — GitHub `Kheelona/website`, branch `demo-website`, Vercel Root Directory `site`. That URL now serves the revamp, not this redesign; the redesign remains on `main`. Still yours when ready: the two `NEXT_PUBLIC_*` env vars in Vercel (Tally URL makes the reserve form go live; GA4 id starts measuring) and pointing kheelona.com DNS when this stops being temporary. The wireframe round (`design-concepts/round-2-immersive/`) and model kit (`3d-handoff/`) stay in the repo as the design record.
 
 Everything below is the pre-existing launch list; it all carries over to the redesigned site unchanged.
 

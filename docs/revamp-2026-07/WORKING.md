@@ -12,8 +12,15 @@ here in full so nothing depends on conversation memory.
 
 ## ⏭ COLD-RESTART: START HERE (last updated 2026-07-25, after M4)
 
-**All work is on branch `revamp/kheelu-tour`** (pushed to origin). `master` only holds the P0
-image hotfix + the P1 doc commit — the revamp itself lives on the branch. To continue:
+**LIVE PREVIEW: https://website-hdn2.vercel.app** (updated 2026-07-25 with M4). The founder
+review URL now serves the revamp: branch `demo-website` was MERGED with `revamp/kheelu-tour`
+(merge, not force-push, so the wireframe drafts at `/a` `/b` `/c` still resolve) and pushed.
+`demo-website` = `a0d6b41`. Vercel root directory is `site`; its `NEXT_PUBLIC_*` env vars are
+still unset, so the reserve panel shows the placeholder card and GA4 is not measuring.
+
+**All work is on branch `revamp/kheelu-tour`** (pushed to origin, through M4 `7e7e2b7`).
+`main` only holds the P0 image hotfix + the P1 doc commit — the revamp itself lives on the
+branch. To continue:
 
 ```bash
 cd /Users/apoorvasahu/Documents/kheelona-com-website
@@ -35,7 +42,9 @@ dead nav anchor before M4).
    axe on all 10 routes, JSON-LD validation, sitemap/robots/OG, SSR/no-JS render check.
 3. AEO plumbing deferred here by founder call: `llms.txt`, robots.txt allowances for
    GPTBot/PerplexityBot/ClaudeBot/Google-Extended, visible last-updated dates.
-Then **P5** = Vercel preview of the branch → founder review → ask for the 3 app images.
+**P5 is half done**: the preview is deployed (link above). What remains is the founder review of
+it, and then the 3 app images — brief pointer 9 gated that ask on the v1 deploy, which has now
+happened, so **REV-d is unblocked and askable** (FOUNDER-TODO updated to say so).
 
 **M4 preview flags for the founder** (say so at review):
 - **The guide overlaps room copy**, not just headings. At a 1200×760 desktop window Kheelu
@@ -97,7 +106,7 @@ Then **P5** = Vercel preview of the branch → founder review → ask for the 3 
 | M3 /products/lumi (founder preview #2) | DONE + visually verified in Chrome (commit `87a812a`). ColorwayPicker (radiogroup, arrow keys, no-CLS swap verified blue→green→pink) + 11 rooms + FAQ v2 + JSON-LD "Lumi by Kheelona". Tests 206/206, build green |
 | M4 remaining 8 routes | DONE + verified in Chrome. playos/safety/setup/team/stories/stories-slug/privacy/terms/not-found all on the room grammar. New shared parts: `PageHero` became the theme-B hero shell (own `<section>`, track width, `guide`/`say`), new `AnswerBlock` molecule (question-led H2/H3 + 40–60 word visible answer, AEO), new `FamilyGrid` organism (de-duplicated Home + /playos lineups), `LegalDoc` on rooms, `SectionHeading` gained a fourth `nested` type step, `PhoneFrame` gained `priority` (the /setup hero owns its LCP). Fixed the latent `RevealObserver` client-nav bug. Journal age pass done (slugs unchanged). FAQPage schema mirrors the new visible answers on /safety + /playos. Tests 222/222, build green (token-check 18) |
 | M5 cleanup + full QA | **NEXT** — delete retired files (list above) + `teal-deep`, Lighthouse/a11y/voice-lint/crawl pass, then the deferred AEO plumbing (llms.txt, AI-crawler robots rules, last-updated dates) |
-| P5 deploy v1 → THEN ask for 3 app images | pending — branch already pushed; a Vercel preview of `revamp/kheelu-tour` gives the founder a review URL |
+| P5 deploy v1 → THEN ask for 3 app images | PREVIEW DEPLOYED 2026-07-25 — `demo-website` merged with the revamp (merge, NOT force-push, so `/a` `/b` `/c` survive) and pushed; https://website-hdn2.vercel.app verified live (10 routes 200, new metadata serving, `/b` still resolving). REMAINING: founder review of that URL, then ask for the 3 app images (REV-d — brief pointer 9 gated it on the v1 deploy, which has now happened) |
 
 ## Locked decisions (founder, 2026-07-24 — do not re-ask)
 

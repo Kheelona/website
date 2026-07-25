@@ -328,3 +328,42 @@ Founder round, 4 items; decisions locked in one AskUserQuestion batch (hero = "S
 1. First live mobile ×5: median 86, LCP 3.8s. Breakdown: the conversation card's opacity entrance had BECOME the LCP element on phones. FIX 1 (`9d0c2e5`): the choreography is gated `(prefers-reduced-motion: no-preference) and (min-width: 768px)` — phones paint the finished exchange.
 2. Still 86: the LCP element was now the H1, paint pinned to the display-font swap (~3.8s slow-4G). At 300px the plush tied the H1 for visible area. FIX 2 (`9a62b59`): plush 340px mobile — the priority image owns LCP again with ~30% area margin (LH confirmed the element flipped to the plush in all runs).
 3. Remaining 86s are a MEASUREMENT ARTIFACT, proven three ways: (a) observed FCP == observed LCP in every run — nothing in-page delays the plush; (b) identical local A/B (R11 vs R10 worktree builds, same machine): the ~2.1s slow-first-frame mode appears in BOTH builds (R10 read 81 in the slow mode, R11 86) — no R11 regression; (c) **live devtools-throttled runs (applied throttle, no lantern simulation): 98 / 98 / 98, LCP 2.0s, FCP 1.7s, zero variance.** The default lantern simulation amplifies a headless-Chrome first-frame scheduling quirk (observed FCP bimodal 1.5s vs 2.25s on identical bytes) into 99-vs-86 scores. VERDICT: mobile gate PASSES on faithful measurement (98 devtools ×3; simulate-mode median that day: 86 with the same artifact present in R10). Future mobile verifies: record BOTH methods; judge regressions by the devtools numbers and the observed-metrics breakdown, not the simulate median alone.
+
+## Revamp M4: the 8 interior routes on the room grammar (2026-07-25)
+
+Branch `revamp/kheelu-tour`, commit `7e7e2b7`. The full Lighthouse/axe sweep is M5's job per
+website-steps §8.20 item 5; this is the per-milestone gate (§8.20 item 1).
+
+**Automated**
+- `npm test` 222/222 green (206 before M4; +16 across the new and changed components).
+- `npx tsc --noEmit` clean. `npm run build` green, token-check 18 mappings, 28 static pages.
+- Route probe on local prod (`next start -p 3456`), 11 URLs: all 200 except the intentional
+  404, `id="reserve"` present on every one including the 404, zero legacy `data-wash` sections
+  left, `data-say` present on every route.
+- Internal href crawl: 23 unique links from the 9 top-level routes, all 200.
+- Voice-lint on RENDERED html (tags stripped, per route): zero em-dashes, zero `italic`
+  classes, zero "3 to 6"/"three to six"/"toddler" on product surfaces. Two exclamation marks
+  survive on Home and /products/lumi: both are inside ChatDemo's quoted child speech ("To
+  grandma's house!"), the sanctioned quoted-speech exemption, and both predate M4. Two "3 to 6"
+  hits remain on /stories/what-actually-builds-a-sharp-brain: the SOURCED WHO/AAP sleep-guidance
+  band, kept deliberately (restating a cited age range as 3 to 10 would fabricate a claim).
+
+**Chrome walkthrough** (visible window, local prod then the live preview): every route's hero,
+rooms, and finale render; the guide swaps pose and line per room; reveals fire.
+
+**Regression caught and fixed during the pass**
+1. `RevealObserver` client-nav bug (the reason it was on the M5 watch list): the observer lives
+   in the persistent root layout with a mount-only effect, so a client-side navigation left the
+   destination route's `[data-reveal]` rooms unobserved and stuck at `opacity: 0`. Fixed by
+   re-arming on `usePathname()`; regression test added; verified in Chrome by navigating
+   Home → Team → Stories and confirming full content.
+2. Type-scale collision found by eye on /playos: the AEO question `as="h3"` rendered at nearly
+   the size of the `h2` above it. `SectionHeading` gained a fourth `nested` step
+   (clamp 21–26px), now the default for h3, mirrored into `Design/design-system`.
+3. `/safety` had the same question in the visible answer blocks AND the accordion below.
+   Trimmed the duplicates and replaced them with two questions the page did not answer.
+
+**Deploy** (P5, part): `demo-website` merged with the revamp (merge, NOT force-push, so the
+`/a` `/b` `/c` wireframes survive) and pushed. https://website-hdn2.vercel.app verified live:
+10 routes 200, new title/metadata serving, `/b` still resolving. Env vars still unset there, so
+the reserve panel is the placeholder card and GA4 is not measuring.
