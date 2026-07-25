@@ -8,6 +8,51 @@ cold restart = read this file top to bottom, then `docs/project-state.json`. Del
 Approved plan (session 2026-07-24): `~/.claude/plans/virtual-spinning-dolphin.md` — mirrored
 here in full so nothing depends on conversation memory.
 
+---
+
+## ⏭ COLD-RESTART: START HERE (last updated 2026-07-25)
+
+**All work is on branch `revamp/kheelu-tour`** (pushed to origin; 6 commits ahead of master).
+`master` only holds the P0 image hotfix + the P1 doc commit — the revamp itself lives on the
+branch. To continue:
+
+```bash
+cd /Users/apoorvasahu/Documents/kheelona-com-website
+git checkout revamp/kheelu-tour          # the revamp branch (already pushed)
+cd site && npm test                       # expect 206/206 green
+```
+
+**DONE so far:** P0, P1 (all), P2, M1, M2 (Home), M3 (/products/lumi). Home + Lumi are fully
+rebuilt on the theme-B room grammar, visually verified in Chrome, tests + build green.
+
+**NEXT = M4** — re-theme the remaining 8 routes onto the room grammar:
+`/playos` · `/safety` · `/setup` · `/team` · `/stories` · `/stories/[slug]` · `/privacy` ·
+`/terms` · `not-found`. Pattern is fixed (copy Home/Lumi): each route = a hero `<section>` on
+the backdrop (no wash, `data-guide`/`data-say` for the guide) → `<RoomsTrack>` of `<Room>`s →
+finale `<Room fill="orange" id="reserve">` wrapping `<FinaleCTA bare />`. Remove each route's
+`<StageGate>` + `<CurveDivider>` + `<Section wash>` + `<MascotScene>`/`<KheeluSays>` as you
+convert (MascotScene media slots → product art or a calm placeholder). Copy for every route is
+in `docs/revamp-2026-07/copy-v2.md` (provenance-tagged; GATED blocks stay as flagged
+placeholders). Then **M5** = delete retired files + their tests/stories (list below), full
+Lighthouse/a11y/voice-lint pass; then **P5** = deploy preview + ask founder for the 3 app
+images.
+
+**Known follow-ups to honour during M4/M5** (from earlier milestones):
+- M5 QA: verify `[data-reveal]` still animates after CLIENT-side nav — `RevealObserver` scans
+  only on mount, so a route change may leave new rooms unrevealed (latent; check before sign-off).
+- Retire in M5 (files still present, unmounted from routes): `KheeluIntro`, `WhyWeExist`,
+  `Feelings`, `MeetLumi`, `WhatLumiDoes`, `HowItWorks`, `SafetyCallout`, `SafetyStrip`,
+  `HeroConversation`, `StickyMobileCTA`, `CurveDivider`, `MascotScene`, `KheeluSays`,
+  `hero-glow`, `Beat` — each with its `.test.tsx`/`.stories.tsx`. `features/ambient-stage/`
+  stays DORMANT (not deleted — same law as the 3D journey). `home/index.ts` marks the retired
+  exports.
+- Founder-gated, do NOT invent: REV-a hero art, REV-b (subscription/camera/ship/languages),
+  REV-c stale ₹2,999 index, plus all launch gates in FOUNDER-TODO.md.
+- Every Kheelu `data-say` line is GATED:kheelu-line — founder sign-off before merge to master
+  (queue = the guide-line lists in copy-v2.md). Fine to ship on the preview branch.
+
+---
+
 ## Status
 
 | Step | State |
@@ -20,11 +65,11 @@ here in full so nothing depends on conversation memory.
 | P1.5 QA strategy into blueprint | DONE — website-steps.md §8.20 |
 | P2 tokens/design-system | DONE — branch commit `850a87a`: teal/purple/blue-soft/serif retired + usages migrated, blue-ink + action + room tokens added, check-tokens synced (18 mappings), DS annotated. teal-deep DEPRECATED until M5 |
 | M1 theme core (branch `revamp/kheelu-tour`) | DONE — atoms `SiteBackdrop`/`Room`/`RoomsTrack`, reveal variants left/right/pop, `lib/kheelu-poses.ts` extraction, `KheeluGuide` organism mounted in layout (StickyMobileCTA unmounted; file deletes in M5), tests 179/179 + build green + SSR probe. Navbar/Footer restyle deferred into M2 (judge against real rooms). NOTE for M5 QA: verify [data-reveal] still animates after CLIENT-side nav (RevealObserver scans only on mount — possible latent gap, check before reveals go on rooms) |
-| M2 Home (founder preview #1) | BUILT + visually verified in Chrome (dialog double-shift bug found + fixed: Tailwind v4 standalone `translate` vs keyframe `transform` — animate `scale`/`opacity` only). Home = hero (interim composed art) + 12 rooms + guide narration. Tests 202/202, build green. PREVIEW FLAGS for founder: guide bubble can overlap bottom-left copy on short viewports (theme-inherent, B behaved the same); two Kheelus visible in hero (guide + art) until REV-a final art; Family row replaced the 3-SKU shop (colorways moved to /products/lumi); footer cocoa unchanged |
-| M3 /products/lumi (founder preview #2) | pending |
-| M4 remaining 8 routes | pending |
-| M5 cleanup + full QA | pending |
-| P5 deploy v1 → THEN ask for 3 app images | pending |
+| M2 Home (founder preview #1) | DONE + visually verified in Chrome (commit `ddf5996`). Dialog double-shift bug found + fixed: Tailwind v4 standalone `translate` vs keyframe `transform` — animate `scale`/`opacity` only. Home = hero (interim composed art) + 12 rooms + guide narration. Tests + build green. PREVIEW FLAGS for founder: guide bubble can overlap bottom-left copy on short viewports (theme-inherent, B behaved the same); two Kheelus visible in hero (guide + art) until REV-a final art; Family row replaced the 3-SKU shop (colorways moved to /products/lumi); footer cocoa unchanged |
+| M3 /products/lumi (founder preview #2) | DONE + visually verified in Chrome (commit `87a812a`). ColorwayPicker (radiogroup, arrow keys, no-CLS swap verified blue→green→pink) + 11 rooms + FAQ v2 + JSON-LD "Lumi by Kheelona". Tests 206/206, build green |
+| M4 remaining 8 routes | **NEXT** — playos/safety/setup/team/stories/stories-slug/privacy/terms/not-found. Pattern locked (see cold-restart section above). Copy in copy-v2.md |
+| M5 cleanup + full QA | pending — delete retired files (list above), Lighthouse/a11y/voice-lint/crawl pass |
+| P5 deploy v1 → THEN ask for 3 app images | pending — branch already pushed; a Vercel preview of `revamp/kheelu-tour` gives the founder a review URL |
 
 ## Locked decisions (founder, 2026-07-24 — do not re-ask)
 
