@@ -8,6 +8,8 @@ brief `Websit prompt based on B + inputs - 24-Jul.pdf`. Status, locked decisions
 restart guide live in **`docs/revamp-2026-07/WORKING.md`** — read it BEFORE the resume protocol
 below. Where the brief conflicts with older laws, the brief wins (e.g. the "Home copy = PDF
 verbatim" precedence and ages "3 to 6" are superseded — new production copy, ages 3 to 10).
+Every route is now rebuilt (P0..M4); the founder preview is LIVE at
+**https://website-hdn2.vercel.app** (branch `demo-website`, merged with `revamp/kheelu-tour`).
 Delete this note + the working file once the revamp is founder-approved.
 
 ## Who you work for
