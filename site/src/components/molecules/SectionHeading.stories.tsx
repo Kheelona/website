@@ -11,7 +11,7 @@ const meta = {
   },
   argTypes: {
     as: { control: "inline-radio", options: ["h1", "h2", "h3"] },
-    level: { control: "inline-radio", options: ["hero", "section", "minor"] },
+    level: { control: "inline-radio", options: ["hero", "section", "minor", "nested"] },
     tone: { control: "inline-radio", options: ["ink", "white"] },
   },
   parameters: { nextjs: { appDirectory: true } },
@@ -24,3 +24,5 @@ export const Default: Story = {};
 export const Hero: Story = { args: { as: "h1", level: "hero" } };
 export const TitleOnly: Story = { args: { eyebrow: undefined, lede: undefined } };
 export const OnDark: Story = { args: { tone: "white" } };
+/** The nested step: an h3 question under a room heading (AnswerBlock). */
+export const Nested: Story = { args: { as: "h3", eyebrow: undefined } };

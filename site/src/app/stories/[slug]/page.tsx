@@ -2,13 +2,12 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Container } from "@/components/atoms/Container";
-import { Section } from "@/components/atoms/Section";
-import { CurveDivider } from "@/components/atoms/CurveDivider";
+import { Room } from "@/components/atoms/Room";
+import { RoomsTrack } from "@/components/atoms/RoomsTrack";
 import { SectionHeading } from "@/components/molecules/SectionHeading";
+import { PageHero } from "@/components/templates/PageHero";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { STORIES, getStory } from "@/lib/stories";
-import { StageGate } from "@/features/ambient-stage";
 
 export function generateStaticParams() {
   return STORIES.map((s) => ({ slug: s.slug }));
@@ -28,6 +27,9 @@ export async function generateMetadata({
   };
 }
 
+/* Revamp M4 (theme B): the article reads inside one white room. No guide
+   lines here on purpose — the reading page stays quiet, and Kheelu keeps his
+   pose from the journal index. */
 export default async function StoryPage({
   params,
 }: {
@@ -53,27 +55,26 @@ export default async function StoryPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <Section wash="cream">
-        <Container className="py-14 md:py-16">
-          <div className="mx-auto max-w-[760px]">
-            {/* article titles ride the section scale on purpose — quieter
-                than a page hero */}
-            <SectionHeading
-              as="h1"
-              level="section"
-              eyebrow={story.theme}
-              title={story.title}
-              titleClassName="mb-3"
-            />
-            <p className="text-[13px] font-semibold uppercase tracking-wide text-ink-muted">
-              {story.minutes} minute read
-            </p>
-          </div>
-        </Container>
-      </Section>
-      <Section wash="white">
-        <CurveDivider from="cream" />
-        <Container className="py-12 md:py-16">
+
+      <PageHero>
+        <div className="max-w-[760px]">
+          {/* article titles ride the section scale on purpose — quieter
+              than a page hero */}
+          <SectionHeading
+            as="h1"
+            level="section"
+            eyebrow={story.theme}
+            title={story.title}
+            titleClassName="mb-3"
+          />
+          <p className="text-[13px] font-semibold uppercase tracking-wide text-ink-muted">
+            {story.minutes} minute read
+          </p>
+        </div>
+      </PageHero>
+
+      <RoomsTrack>
+        <Room fill="white">
           <article className="mx-auto max-w-[720px]">
             {story.hero && (
               <Image
@@ -81,6 +82,7 @@ export default async function StoryPage({
                 alt={story.heroAlt ?? ""}
                 width={1440}
                 height={803}
+                sizes="(max-width: 768px) 90vw, 720px"
                 priority
                 className="mb-9 h-auto w-full rounded-(--radius-card-lg)"
               />
@@ -101,6 +103,7 @@ export default async function StoryPage({
                 alt=""
                 width={90}
                 height={120}
+                sizes="90px"
                 className="h-[86px] w-auto"
               />
               <p className="text-[16px]">
@@ -116,10 +119,20 @@ export default async function StoryPage({
               </p>
             </div>
           </article>
-        </Container>
-      </Section>
-      <FinaleCTA variant="compact" from="white" />
-      <StageGate stage="ambient" />
+        </Room>
+
+        <Room
+          fill="orange"
+          id="reserve"
+          guide="silly"
+          /* GATED:kheelu-line */
+          say="Save your spot. I'll keep Lumi company until launch."
+          reveal="pop"
+          className="overflow-x-clip"
+        >
+          <FinaleCTA bare variant="compact" />
+        </Room>
+      </RoomsTrack>
     </>
   );
 }

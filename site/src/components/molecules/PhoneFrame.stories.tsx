@@ -18,3 +18,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 export const Narrow: Story = { args: { width: 220 } };
+/** How the /setup hero mounts it: eager, because it owns the LCP. */
+export const HeroPriority: Story = {
+  args: { src: "/app/onboarding.png", alt: "The parent app on day one", width: 240, priority: true },
+};

@@ -45,6 +45,10 @@
   --kh-orange-deep:   #D85F1B;   /* Hover/press darken */
   --kh-yellow:        #F1A23B;   /* Sunshine — 30% usage */
   --kh-blue:          #29A0D7;   /* Sky — 20% usage, "tech" anchor */
+  /* WEB NOTE (founder, 2026-07-24 revamp): the website palette is the four
+     locked brand colours only — orange, yellow, blue, white (+ neutrals and
+     the WCAG functional darks). blue-soft, teal and purple below stay in the
+     deck for print/logo/decorative use but are RETIRED from kheelona.com. */
   --kh-blue-soft:     #3AA4E5;   /* Logo "A" + secondary blue surface */
   --kh-teal:          #1ABC9C;   /* Mint — 5% usage, cognitive freshness */
   --kh-purple:        #8B5BFF;   /* Magic — 5% usage, AI spark */
@@ -76,6 +80,8 @@
   /* ── Typography ───────────────────────────────────────────────── */
   --kh-font-display:  'Glory', system-ui, sans-serif;
   --kh-font-text:     'Instrument Sans', system-ui, sans-serif;
+  /* WEB NOTE (founder, 2026-07-24 revamp): kheelona.com uses Glory +
+     Instrument Sans ONLY; the serif accent is retired from the website. */
   --kh-font-accent:   'Instrument Serif', Georgia, serif;
 
   /* Headings: tight, Disney-bouncy */
@@ -101,6 +107,20 @@
 
   --kh-small-size:    16px;
   --kh-small-lh:      1.3;
+
+  /* WEB NOTE (2026-07-25, revamp M4): the deck sizes above are fixed print
+     scale. kheelona.com renders headings on a FLUID four-step scale, owned by
+     one component (site/src/components/molecules/SectionHeading.tsx) and used
+     by every section on the site:
+       hero    clamp(38px, 4.5vw, 58px)   h1 on interior pages
+       section clamp(32px, 4vw,   50px)   h2 inside a page
+       minor   clamp(28px, 3.2vw, 42px)   quieter h2 bands
+       nested  clamp(21px, 2.2vw, 26px)   h3 under an h2 (question-led
+                                          AnswerBlock; added M4 so a nested
+                                          question cannot compete with the
+                                          room heading above it)
+     All four are Glory extrabold, leading 1.08. A hand-rolled heading block on
+     the site is a review flag (website-steps §8.19). */
 
   /* ── Spacing scale (multiples of 4) ────────────────────────────── */
   --kh-s-1: 4px;

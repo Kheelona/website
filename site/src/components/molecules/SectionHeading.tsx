@@ -7,6 +7,7 @@ import { Eyebrow } from "@/components/atoms/Eyebrow";
  *    hero    = h1 on interior pages  (clamp 38px..58px)
  *    section = h2 inside a page      (clamp 32px..50px)
  *    minor   = quieter h2 bands      (clamp 28px..42px)
+ *    nested  = h3 under an h2        (clamp 21px..26px)  [M4: AnswerBlock]
  *  Spacing and max-widths stay per-call-site via the *ClassName escape
  *  hatches (Tailwind needs literal classes, so no numeric props).
  *  R11 law (website-steps §8.19): new sections use this component; a
@@ -16,6 +17,7 @@ const TITLE_SIZES = {
   hero: "text-[clamp(38px,4.5vw,58px)]",
   section: "text-[clamp(32px,4vw,50px)]",
   minor: "text-[clamp(28px,3.2vw,42px)]",
+  nested: "text-[clamp(21px,2.2vw,26px)]",
 } as const;
 
 export function SectionHeading({
@@ -31,7 +33,7 @@ export function SectionHeading({
   className,
 }: {
   as?: "h1" | "h2" | "h3";
-  /** Defaults from the tag: h1 → hero, h2/h3 → section. */
+  /** Defaults from the tag: h1 → hero, h2 → section, h3 → nested. */
   level?: keyof typeof TITLE_SIZES;
   eyebrow?: React.ReactNode;
   eyebrowColor?: string;
@@ -44,7 +46,8 @@ export function SectionHeading({
   ledeClassName?: string;
   className?: string;
 }) {
-  const size = TITLE_SIZES[level ?? (Tag === "h1" ? "hero" : "section")];
+  const size =
+    TITLE_SIZES[level ?? (Tag === "h1" ? "hero" : Tag === "h3" ? "nested" : "section")];
   return (
     <div className={className}>
       {eyebrow ? <Eyebrow color={eyebrowColor}>{eyebrow}</Eyebrow> : null}

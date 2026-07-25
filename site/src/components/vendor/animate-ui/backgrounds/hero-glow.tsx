@@ -6,7 +6,7 @@
  * Brand modifications (the calm rebuild — see vendor/README.md):
  *  - goo/blur SVG filter chain removed: the radial-gradient blobs are soft
  *    already, and transform-only animation stays on the compositor
- *  - 6 saturated blobs -> 3 brand-warm blobs (yellow / orange-15 / blue-soft),
+ *  - 6 saturated blobs -> 3 brand-warm blobs (yellow / orange-15 / blue),
  *    30-70s loops instead of 20-40s
  *  - global `:root` style injection removed (colors are per-blob inline)
  *  - interactive pointer blob removed; `useReducedMotion` renders it static
@@ -25,7 +25,7 @@ type Blob = {
 };
 
 /* Brand palette in rgb triplets: yellow #F1A23B, orange #EF762F,
-   blue-soft #3AA4E5 (tokens locked; see lib/three/tokens.ts). */
+   blue #29A0D7 (revamp P2: blue-soft retired from the web palette). */
 const BLOBS: Blob[] = [
   {
     rgb: "241,162,59",
@@ -44,7 +44,7 @@ const BLOBS: Blob[] = [
     duration: 52,
   },
   {
-    rgb: "58,164,229",
+    rgb: "41,160,215",
     alpha: 0.22,
     size: "size-[55%]",
     pos: "left-[30%] bottom-[-10%]",

@@ -64,10 +64,13 @@ vi.mock("next/link", async () => {
 vi.mock("next/image", async () => {
   const React = await import("react");
   return {
+    // `priority` is surfaced as a data attribute (jsdom would warn on the real
+    // prop) so tests can assert the LCP law: a hero's largest image is eager.
     default: ({ src, alt, fill, priority, ...rest }: Record<string, unknown>) =>
       React.createElement("img", {
         src: typeof src === "string" ? src : "",
         alt: typeof alt === "string" ? alt : "",
+        ...(priority ? { "data-priority": "true" } : {}),
         ...rest,
       }),
   };

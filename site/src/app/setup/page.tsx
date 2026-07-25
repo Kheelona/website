@@ -1,15 +1,12 @@
 import type { Metadata } from "next";
-import { Container } from "@/components/atoms/Container";
-import { Section } from "@/components/atoms/Section";
-import { CurveDivider } from "@/components/atoms/CurveDivider";
+import { Room } from "@/components/atoms/Room";
+import { RoomsTrack } from "@/components/atoms/RoomsTrack";
 import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { PageHero } from "@/components/templates/PageHero";
 import { StepList } from "@/components/molecules/StepList";
 import { Reveal } from "@/components/molecules/Reveal";
-import { MascotScene } from "@/components/organisms/MascotScene";
-import { KheeluSays } from "@/components/molecules/KheeluSays";
+import { PhoneFrame } from "@/components/molecules/PhoneFrame";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
-import { StageGate } from "@/features/ambient-stage";
 import { SETUP_STEPS } from "@/lib/setup-steps";
 
 export const metadata: Metadata = {
@@ -19,35 +16,40 @@ export const metadata: Metadata = {
   alternates: { canonical: "/setup" },
 };
 
-/* Copy per prompt §5.2: show how simple day one will be. The steps moved to
-   lib/setup-steps.ts in R9 — the Home "How it works" band renders the same
-   four, so the sequences can never drift apart. */
+/* Revamp M4 (theme B): hero on the backdrop + rooms, narrated by the
+   persistent KheeluGuide (the old per-section KheeluSays bubble is gone).
+   Copy: copy-v2 /SETUP. The four steps stay in lib/setup-steps so the Home
+   band and this page can never drift apart (R9). */
 
 export default function SetupPage() {
   return (
     <>
-      <Section wash="cool">
-        <PageHero
-          media={<MascotScene pose="joy" width={300} parallax={34} priority />}
-        >
-          <SectionHeading
-            as="h1"
-            eyebrow="Day one"
-            title="Set up in minutes. Then get out of the way."
-            titleClassName="mb-5"
-            lede="Lumi is made for homes, not IT departments. Day one is four small steps, and only one of them is yours to do alone."
-            ledeClassName="max-w-[56ch]"
+      <PageHero
+        ratio="md:grid-cols-[1.15fr_0.85fr]"
+        guide="joy"
+        /* GATED:kheelu-line — founder sign-off before merge to master */
+        say="Step three is my favourite. That's when we say hello."
+        media={
+          <PhoneFrame
+            src="/app/onboarding.png"
+            alt="The parent app on day one, choosing who you are to your child"
+            width={240}
+            priority
           />
-        </PageHero>
-      </Section>
+        }
+      >
+        <SectionHeading
+          as="h1"
+          eyebrow="Day one"
+          title="Day one takes minutes."
+          titleClassName="mb-5"
+          lede="Four steps, no manual required. Lumi is made for homes, not IT departments, and only one of the four is yours to do alone."
+          ledeClassName="max-w-[56ch]"
+        />
+      </PageHero>
 
-      <Section wash="white">
-        <CurveDivider from="cool" />
-        <Container className="py-16 md:py-20">
-          <KheeluSays
-            line="I will be right here while you set up."
-            pose="curious"
-          />
+      <RoomsTrack>
+        <Room fill="white" reveal="left">
           {/* steps sit directly under the h1, so their titles are h2 */}
           <StepList items={SETUP_STEPS} as="h2" />
           <Reveal className="mt-8">
@@ -57,11 +59,20 @@ export default function SetupPage() {
               with the final specs, before Lumi ships.
             </p>
           </Reveal>
-        </Container>
-      </Section>
+        </Room>
 
-      <FinaleCTA variant="compact" from="white" />
-      <StageGate stage="ambient" />
+        <Room
+          fill="orange"
+          id="reserve"
+          guide="silly"
+          /* GATED:kheelu-line */
+          say="Save your spot. I'll keep Lumi company until launch."
+          reveal="pop"
+          className="overflow-x-clip"
+        >
+          <FinaleCTA bare variant="compact" />
+        </Room>
+      </RoomsTrack>
     </>
   );
 }

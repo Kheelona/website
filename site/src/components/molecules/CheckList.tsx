@@ -16,7 +16,7 @@ export function CheckList({
         <li key={i} className="flex items-start gap-3">
           <span
             aria-hidden="true"
-            className="mt-1 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-teal/15 text-ink-head"
+            className="mt-1 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-blue/15 text-ink-head"
           >
             <Check className="h-3 w-3" strokeWidth={2.5} aria-hidden="true" />
           </span>

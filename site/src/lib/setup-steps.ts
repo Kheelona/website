@@ -5,6 +5,6 @@
 export const SETUP_STEPS = [
   { n: "01", title: "Unbox and charge.", body: "Lumi arrives ready. Plug in the charger and let it drink while you do the next step.", color: "text-orange-deep" },
   { n: "02", title: "Open the parent app.", body: "Set the languages you speak at home, pick the topics that are open, and set quiet hours. Five minutes, once.", color: "text-blue" },
-  { n: "03", title: "Teach the hello.", body: "Show your child how to wake Lumi up. One word, one friend, no manual required.", color: "text-teal" },
-  { n: "04", title: "Step back and listen.", body: "The first conversation belongs to them. You can read it later in the app, and smile.", color: "text-purple" },
+  { n: "03", title: "Teach the hello.", body: "Show your child how to wake Lumi up. One word, one friend, no manual required.", color: "text-blue-ink" },
+  { n: "04", title: "Step back and listen.", body: "The first conversation belongs to them. You can read it later in the app, and smile.", color: "text-orange-ink" },
 ] as const;

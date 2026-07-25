@@ -23,16 +23,17 @@ const CHIPS = [
 export function ParentAppSection({
   from = "white",
   kheelu = false,
+  bare = false,
 }: {
   from?: "white" | "cream" | "cool" | "teal";
   /** Home mounts the narrator bubble; other pages keep their own single
    *  Kheelu moment, so it stays off by default. */
   kheelu?: boolean;
+  /** Revamp M2: content-only, for composition inside a Room. */
+  bare?: boolean;
 }) {
-  return (
-    <Section wash="cream" id="parent-app">
-      <CurveDivider from={from} />
-      <Container className="grid items-center gap-12 pb-16 pt-6 md:grid-cols-[0.85fr_1.15fr] md:pb-20 md:pt-8">
+  const content = (
+    <div className="grid items-center gap-12 md:grid-cols-[0.85fr_1.15fr]">
         <Reveal className="flex justify-center md:justify-start">
           <PhoneFrame
             src="/app/dashboard.png"
@@ -73,7 +74,15 @@ export function ParentAppSection({
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
         </Reveal>
-      </Container>
+    </div>
+  );
+
+  if (bare) return content;
+
+  return (
+    <Section wash="cream" id="parent-app">
+      <CurveDivider from={from} />
+      <Container className="pb-16 pt-6 md:pb-20 md:pt-8">{content}</Container>
     </Section>
   );
 }

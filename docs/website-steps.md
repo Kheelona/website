@@ -232,3 +232,67 @@ Founder round (one question batch: hero = "show the conversation", PlayOS = plat
 - **Type scale (documented)**: display = SectionHeading's three clamps (+ home-hero 40..64); body 17 (prose) / 16 (card+step bodies) / 15 (captions, compact cards) / 13 (kickers + meta labels) / 12 (micro chips). Half-pixel sizes are retired.
 - **Focus + targets**: the brand focus ring (`focus-visible:ring-2 ring-orange` + offset on light surfaces) rides Button, nav/footer links, and inline text links; nav/footer links carry vertical padding for the 24px target-size floor.
 - **Audit dispositions**: seam fixed on lumi (`ParentQuotes from="white"`); two .ai-verbatim body contractions de-contracted (voice gate outranks the reference; founder can revert — FOUNDER-TODO); orange-deep links on tinted washes → orange-ink; KheeluSays bubble on the token radius; FinaleCTA moved to `sections/shared/`.
+
+### 8.20 REVAMP 2026-07-24: theme B "Kheelu's Tour" + QA/launch strategy (founder brief)
+
+The whole site re-themes onto wireframe direction B per the founder brief
+(`Websit prompt based on B + inputs - 24-Jul.pdf`). Live status, locked decisions (colour/hero/
+copy/fonts answers), architecture, and restart guide: **`docs/revamp-2026-07/WORKING.md`** — that
+file leads while the revamp runs; this section records the QA/launch-readiness strategy, planned
+BEFORE build as the brief requires. Where §8.12–8.19 conflict with the revamp (washes/dividers,
+serif quotes, KheeluSays-per-section, StickyMobileCTA, ambient canvas), the revamp supersedes;
+surviving laws are restated below.
+
+**Laws that carry over unchanged**: voice-lint (zero em-dashes, no italics, exact names, Kheelu
+bubble contraction exemption); never-invent-claims (`TODO(claims-*)` placeholders only); tilt
+never wraps whole-card links; hero's LARGEST element = the priority product/hero image (mobile
+LCP; hero motion desktop-gated + motion-ok); every page ends `FinaleCTA` id="reserve"; one CTA
+verb; prices/CTA labels from `config/site`; registry molecules for new sections; every component
+ships story + test; token lint gates the build; structural moves = zero user-facing change.
+
+**QA plan (per milestone M1–M5, branch `revamp/kheelu-tour`)**
+1. Every milestone: `npm test` green, `npm run build` green (includes token lint), new/changed
+   components have colocated story + test, affected routes render on a local prod server.
+2. New interactive surfaces get an explicit a11y pass when built, not at the end: KheeluGuide
+   (exactly one tab stop; no live regions; hidden no-JS; reduced-motion static), FeelingsGallery
+   dialog (focus trap/restore, Esc, Title/Description, ≥44px close, body scroll unlock verified
+   against the `overflow-x: clip` footgun), ColorwayPicker (radiogroup + roving arrows), orbit
+   (static grid fallback, DOM order = reading order).
+3. Voice-lint sweep per milestone: em-dash/italic grep + names + contractions outside Kheelu
+   lines; Kheelu `data-say`/poke lines ship only founder-approved (queue in WORKING.md).
+4. CLS discipline: reveals transform/opacity only, below-fold rooms only for directional
+   variants; orbit reserves height (aspect-ratio); hero content never opacity-hidden.
+5. Full pass at M5: Lighthouse **100 A11y/BP/SEO on every route, both form factors; Perf ≥95
+   desktop, ≥90 mobile** — mobile judged on devtools-throttled runs (×3–5 median), simulate
+   recorded alongside (known lantern artifact, qa-report R11); full internal-href crawl 200s +
+   #reserve anchor present everywhere; JSON-LD valid; sitemap/robots/OG intact; SSR/no-JS render
+   check (all copy readable, guide absent, reveals visible); axe clean on all 10 routes.
+6. Regression safety: tag master pre-merge (`pre-revamp-2026-07`); founder previews after Home
+   (M2) and Home+Lumi (M3) on the demo-website Vercel pattern before the remaining routes build.
+
+**M4 record (2026-07-25) — shared parts the interior routes added to the registry.** All 8
+interior routes now run the room grammar, so these join §8.19's law:
+- `templates/PageHero` IS the theme-B hero shell: it renders its own `<section>` on the
+  SiteBackdrop (no wash, no divider), at RoomsTrack width so hero and room copy share one left
+  edge, and takes `guide`/`say` like `Room`. New interior heroes use it; hand-rolling the grid
+  is a review flag. Its media rides `Reveal mode="rise"` only (never opacity — hero LCP law).
+- `molecules/AnswerBlock` owns the AEO pattern: a question-led H2/H3 plus a 40–60 word VISIBLE
+  answer, composed from `SectionHeading` so the type scale stays in one place. FAQPage schema
+  may only ever mirror these visible answers. The accordion `Faq` keeps the long lists, and a
+  question must not appear in both places on one page.
+- `SectionHeading` gained a fourth step, `nested` (clamp 21–26px), the default for `as="h3"`, so
+  a nested question cannot compete with the room heading above it. Mirrored into
+  `Design/design-system/colors_and_type.css` as a WEB NOTE (single-source mandate).
+- `organisms/FamilyGrid` is the one companion lineup (Home + /playos previously duplicated it).
+- `RevealObserver` re-arms on `usePathname()`. It sits in the persistent layout, so a mount-only
+  effect left every client-navigated route's rooms stuck at `opacity: 0` — the same class of bug
+  as the StickyMobileCTA lesson. Any future observer mounted in the layout must do the same.
+- Every route ends `FinaleCTA bare variant="compact"` inside `Room fill="orange" id="reserve"`,
+  including `not-found` (the navbar CTA is `#reserve`, so the 404 had a dead anchor before M4).
+
+**Launch readiness (unchanged gates + revamp deltas)**: S14/§8.11 checklist still applies —
+Tally URL + GA4 ID + Vercel/DNS + claims remain founder-gated (FOUNDER-TODO). Revamp deltas
+before merge to master: founder sign-off on the full v1 preview; hero final art ingested (or
+founder explicitly ships interim); the 3 app images requested only AFTER v1 deploy (brief
+pointer 9); `Design/design-system/` updated with the new recipes (single-source-of-truth
+mandate); docs current (this file, WORKING.md, copy-reference, project-state, qa-report).

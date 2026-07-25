@@ -12,10 +12,11 @@ import { KheeluSays } from "@/components/molecules/KheeluSays";
 const CARDS = [
   {
     slug: "why-three-to-six-are-the-years-that-matter-most",
-    title: "Why three to six are the years that matter most",
+    title: "Why the early years matter most",
     line: "A short, warm read on the window when a child's brain grows fastest.",
     img: "curious",
-    bg: "bg-[linear-gradient(160deg,rgba(58,164,229,0.15),rgba(26,188,156,0.15))]",
+    // P2 palette: blue -> yellow (blue-soft and teal retired from the web)
+    bg: "bg-[linear-gradient(160deg,rgba(41,160,215,0.15),rgba(241,162,59,0.15))]",
   },
   {
     slug: "screen-free-does-not-mean-silent",
@@ -26,27 +27,21 @@ const CARDS = [
   },
 ] as const;
 
-export function Journal() {
-  return (
-    <Section wash="sun" id="journal">
-      <CurveDivider from="cream" flip />
-      <Container className="py-16 md:py-20">
-        <Reveal>
-          <KheeluSays
-            line="I collect stories too. Here are some for you."
-            pose="joy"
-          />
-          {/* one eyebrow rule site-wide (design panel 2026-07-10: per-page
-              hues read as accidental) */}
-          <SectionHeading
-            eyebrow="From the journal"
-            title="Raising curious kids."
-            titleClassName="mb-2"
-            lede="Ideas and honest reads for parents who want more than a screen."
-            ledeClassName="mb-10"
-          />
-        </Reveal>
-        <div className="mb-10 grid gap-6 md:grid-cols-2">
+export function Journal({ bare = false }: { bare?: boolean }) {
+  const content = (
+    <>
+      <Reveal>
+        {/* one eyebrow rule site-wide (design panel 2026-07-10: per-page
+            hues read as accidental) */}
+        <SectionHeading
+          eyebrow="From the journal"
+          title="Raising curious kids."
+          titleClassName="mb-2"
+          lede="Ideas and honest reads for parents who want more than a screen."
+          ledeClassName="mb-10"
+        />
+      </Reveal>
+      <div className="mb-10 grid gap-6 md:grid-cols-2">
           {CARDS.map((c, i) => (
             <Reveal key={c.slug} delay={i * 0.08}>
               {/* no TiltCard: whole-card links must not move under the
@@ -74,11 +69,27 @@ export function Journal() {
             </Reveal>
           ))}
         </div>
+      <Reveal>
+        <Button href="/stories" variant="ghost">
+          See all stories
+        </Button>
+      </Reveal>
+    </>
+  );
+
+  if (bare) return content;
+
+  return (
+    <Section wash="sun" id="journal">
+      <CurveDivider from="cream" flip />
+      <Container className="py-16 md:py-20">
         <Reveal>
-          <Button href="/stories" variant="ghost">
-            See all stories
-          </Button>
+          <KheeluSays
+            line="I collect stories too. Here are some for you."
+            pose="joy"
+          />
         </Reveal>
+        {content}
       </Container>
     </Section>
   );

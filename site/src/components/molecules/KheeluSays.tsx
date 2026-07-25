@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { cn } from "@/lib/cn";
+import { KHEELU_POSES as POSES, kheeluPoseSrc, type KheeluPose } from "@/lib/kheelu-poses";
 
 /** R9 narrator device (founder 2026-07-10: the site is told by Kheelu, the
  *  Kheelona brand mascot). One consistent motif — Kheelu beside a speech
@@ -7,18 +8,10 @@ import { cn } from "@/lib/cn";
  *  inside the R5 calm laws: left-aligned, zero italics, one white card
  *  surface. Kheelu's speech is the one sanctioned contraction zone (his
  *  founder-published card voice); body copy keeps the house rules.
- *  The render is decorative (alt="") because the speech is real text. */
-const POSES = {
-  "hero-wink": { w: 384, h: 737 },
-  curious: { w: 505, h: 595 },
-  grumpy: { w: 459, h: 757 },
-  sad: { w: 430, h: 664 },
-  silly: { w: 468, h: 649 },
-  joy: { w: 513, h: 696 },
-  bliss: { w: 423, h: 726 },
-} as const;
+ *  The render is decorative (alt="") because the speech is real text.
+ *  Pose map shared via lib/kheelu-poses (revamp M1). */
 
-export type KheeluPose = keyof typeof POSES;
+export type { KheeluPose };
 
 export function KheeluSays({
   line,
@@ -33,7 +26,7 @@ export function KheeluSays({
   return (
     <div className={cn("mb-9 flex items-end", className)}>
       <Image
-        src={`/mascot/mascot-${pose}.png`}
+        src={kheeluPoseSrc(pose)}
         alt=""
         width={dim.w}
         height={dim.h}

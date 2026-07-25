@@ -21,9 +21,9 @@ import { cn } from "@/lib/cn";
 const FEELINGS = [
   { name: "Curious", card: "bg-blue/15", line: "Asks why. Chases ideas. Wants to know what is around the corner.", img: "curious", tick: "bg-blue", alt: "Kheelu sitting with wide, curious eyes behind his glasses", iw: 505, ih: 595 },
   { name: "Grumpy", card: "bg-orange/15", line: "Has opinions. Not always wrong. Needs to be heard, not hushed.", img: "grumpy", tick: "bg-orange", alt: "Kheelu frowning with his fists on his hips", iw: 459, ih: 757 },
-  { name: "Sad", card: "bg-purple/15", line: "Sits with you. Does not rush past. Makes space for the hard moments.", img: "bliss", tick: "bg-purple", alt: "Kheelu standing quietly with his eyes closed", iw: 423, ih: 726 },
+  { name: "Sad", card: "bg-blue/15", line: "Sits with you. Does not rush past. Makes space for the hard moments.", img: "bliss", tick: "bg-blue", alt: "Kheelu standing quietly with his eyes closed", iw: 423, ih: 726 },
   { name: "Silly", card: "bg-yellow/15", line: "Cannot sit still. Turns everything into a game. Laughter is learning too.", img: "silly", tick: "bg-yellow", alt: "Kheelu laughing with his head thrown back", iw: 468, ih: 649 },
-  { name: "Joy", card: "bg-teal/15", line: "Lights up. Celebrates. Reminds your child that they are wonderful.", img: "joy", tick: "bg-teal", alt: "Kheelu dancing with one arm in the air", iw: 513, ih: 696 },
+  { name: "Joy", card: "bg-orange/15", line: "Lights up. Celebrates. Reminds your child that they are wonderful.", img: "joy", tick: "bg-orange", alt: "Kheelu dancing with one arm in the air", iw: 513, ih: 696 },
 ] as const;
 
 export function Feelings() {

@@ -17,6 +17,13 @@ describe("PhoneFrame", () => {
     });
   });
 
+  it("lazy-loads by default and goes eager when it owns the hero LCP", () => {
+    const { rerender } = render(<PhoneFrame src="/app/onboarding.png" alt="Day one" />);
+    expect(screen.getByRole("img", { name: "Day one" })).not.toHaveAttribute("data-priority");
+    rerender(<PhoneFrame src="/app/onboarding.png" alt="Day one" priority />);
+    expect(screen.getByRole("img", { name: "Day one" })).toHaveAttribute("data-priority", "true");
+  });
+
   it("defaults to a 280px frame", () => {
     const { container } = render(<PhoneFrame src="/app/x.png" alt="App" />);
     expect(container.firstElementChild as HTMLElement).toHaveStyle({

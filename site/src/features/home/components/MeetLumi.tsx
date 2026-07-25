@@ -17,23 +17,23 @@ import { PREORDER_HREF, RESERVE_LABEL, LAUNCH_PRICE } from "@/config/site";
 const SKUS = [
   {
     name: "Lumi Green",
-    img: "/product/lumi-green.png",
-    tint: "bg-teal/15",
+    img: "/product/lumi-green-2.png",
+    tint: "bg-yellow/15",
     alt: "Lumi Green, the pastel green Lumi plush with a striped party hat",
     w: 1473,
     h: 1954,
   },
   {
     name: "Lumi Pink",
-    img: "/product/lumi-pink.png",
-    tint: "bg-purple/15",
+    img: "/product/lumi-pink-2.png",
+    tint: "bg-orange/15",
     alt: "Lumi Pink, the soft pink Lumi plush with a striped party hat",
     w: 617,
     h: 932,
   },
   {
     name: "Lumi Blue",
-    img: "/product/lumi-blue.png",
+    img: "/product/lumi-blue-2.png",
     tint: "bg-blue/15",
     alt: "Lumi Blue, the sky blue Lumi plush with a striped party hat",
     w: 1113,

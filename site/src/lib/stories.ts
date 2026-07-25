@@ -18,7 +18,7 @@ export type Story = {
 const CORE: Story[] = [
   {
     slug: "why-three-to-six-are-the-years-that-matter-most",
-    title: "Why three to six are the years that matter most",
+    title: "Why the early years matter most",
     description:
       "A short, warm read on the window when a child's brain grows fastest, and what actually fills it.",
     theme: "How children grow",
@@ -68,7 +68,7 @@ const CORE: Story[] = [
     theme: "How children grow",
     minutes: 5,
     pose: "joy",
-    tint: "bg-teal/15",
+    tint: "bg-orange/15",
     hero: "/stories/how-children-learn-by-talking.jpg",
     heroAlt:
       "A grandmother and two children on a veranda at night, looking up at the full moon together",
@@ -90,14 +90,14 @@ const CORE: Story[] = [
     theme: "Safety",
     minutes: 5,
     pose: "bliss",
-    tint: "bg-purple/15",
+    tint: "bg-blue/15",
     paragraphs: [
       { p: "The first time your child asks a toy a question and the toy answers, your stomach does a small flip. Half wonder, half alarm. Both halves are correct, and the alarm half deserves a checklist. Here is ours, the one we would use on any smart toy, including our own." },
       { h: "One: when is the microphone on?", p: "The only good answer is: when your child invites it. Look for wake-word listening, and an honest explanation of what happens the rest of the time. Off should mean off." },
       { h: "Two: can it reach the open internet?", p: "A toy that can browse can stumble, and so can your child right behind it. A safe AI toy is a closed world: no search, no videos, no strangers." },
       { h: "Three: can you read everything?", p: "You would not leave your child with a babysitter who refuses to tell you what happened all afternoon. The same bar applies to a talking toy. Every conversation should be readable, and deletable, by you." },
       { h: "Four: where does the voice go?", p: "Ask where recordings live, who can see them, and whether they are ever sold. Vague answers are answers." },
-      { h: "Five: is it built for your child's age?", p: "A toy for ages 3 to 6 should filter every response for ages 3 to 6. Age-graded safety is the difference between a children's product and a gadget with a cute shell." },
+      { h: "Five: is it built for your child's age?", p: "A toy for ages 3 to 10 should filter every response for the age of the child holding it. Age-graded safety is the difference between a children's product and a gadget with a cute shell." },
       { p: "That is the bar we hold Lumi to: wake-word listening, no open internet, a full conversation log in the parent app, voice data that stays in your region and is never sold, and an age-graded safety layer on every reply." },
       { p: "Hold us to it too. Read the Safety page, ask us the hard questions, and if the answers earn your trust, the pre-order list is open." },
     ],

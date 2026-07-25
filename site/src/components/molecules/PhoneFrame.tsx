@@ -7,10 +7,14 @@ export function PhoneFrame({
   src,
   alt,
   width = 280,
+  priority = false,
 }: {
   src: string;
   alt: string;
   width?: number;
+  /** Set when the frame is a hero's largest element, so it owns the LCP
+   *  instead of waiting in the lazy queue (M4: the /setup hero). */
+  priority?: boolean;
 }) {
   return (
     <div
@@ -24,6 +28,7 @@ export function PhoneFrame({
           width={393}
           height={852}
           sizes={`${width}px`}
+          priority={priority}
           className="block h-auto w-full"
         />
       </div>

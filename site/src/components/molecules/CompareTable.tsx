@@ -1,11 +1,14 @@
-/** The honest comparison table (Home S07, content verbatim from the doc). */
+/** The honest comparison table. Revamp M2 (founder brief pointer 6): same
+ *  verdicts, parent words instead of technical ones, ages widened to 3 to 10,
+ *  "Static toys" renamed for humans. The Lumi column fills with the semantic
+ *  action token (white 4.66:1); raw brand orange stays decorative-only. */
 const ROWS = [
-  ["Screen-free", "Yes", "Varies", "No", "Yes"],
-  ["Holds a conversation", "Yes", "Limited", "No", "No"],
-  ["Speaks your language", "Yes (10)", "Rarely", "Varies", "No"],
-  ["No open internet", "Yes", "Rarely", "No", "Yes"],
-  ["The parent sees everything", "Yes", "Partial", "Partial", "No"],
-  ["Made for ages 3 to 6", "Yes", "Varies", "No", "Varies"],
+  ["No screen, ever", "Yes", "Varies", "No", "Yes"],
+  ["Talks with your child, not at them", "Yes", "Limited", "No", "No"],
+  ["Speaks the languages of your home", "Yes, up to 10", "Rarely", "Varies", "No"],
+  ["Cannot wander the internet", "Yes", "Rarely", "No", "Yes"],
+  ["You can read every conversation", "Yes", "Partial", "Partial", "No"],
+  ["Grows with them, ages 3 to 10", "Yes", "Varies", "No", "Varies"],
 ] as const;
 
 export function CompareTable() {
@@ -17,18 +20,16 @@ export function CompareTable() {
             <th scope="col" className="p-4 text-left">
               <span className="sr-only">What matters</span>
             </th>
-            {/* white on orange-cta #C25210 = 4.66:1 (R5 white-label rule);
-                raw #EF762F cannot carry white and stays decorative-only */}
-            <th scope="col" className="rounded-t-(--radius-card) bg-orange-cta p-4 text-left font-display text-lg font-bold text-white">
+            <th scope="col" className="rounded-t-(--radius-card) bg-action p-4 text-left font-display text-lg font-bold text-white">
               Lumi
             </th>
             <th scope="col" className="p-4 text-left font-display text-lg font-bold text-ink-head">Smart toys</th>
-            <th scope="col" className="p-4 text-left font-display text-lg font-bold text-ink-head">Phone / TV</th>
-            <th scope="col" className="p-4 text-left font-display text-lg font-bold text-ink-head">Static toys</th>
+            <th scope="col" className="p-4 text-left font-display text-lg font-bold text-ink-head">Phone or TV</th>
+            <th scope="col" className="p-4 text-left font-display text-lg font-bold text-ink-head">Ordinary toys</th>
           </tr>
         </thead>
         <tbody>
-          {ROWS.map(([label, lumi, smart, phone, staticToys], i) => (
+          {ROWS.map(([label, lumi, smart, phone, ordinary], i) => (
             <tr key={label}>
               <th
                 scope="row"
@@ -37,11 +38,11 @@ export function CompareTable() {
                 {label}
               </th>
               <td
-                className={`bg-orange-cta p-4 text-left font-bold text-white ${i === ROWS.length - 1 ? "rounded-b-(--radius-card)" : ""}`}
+                className={`bg-action p-4 text-left font-bold text-white ${i === ROWS.length - 1 ? "rounded-b-(--radius-card)" : ""}`}
               >
                 {lumi}
               </td>
-              {[smart, phone, staticToys].map((v, j) => (
+              {[smart, phone, ordinary].map((v, j) => (
                 <td
                   key={j}
                   className={`p-4 text-left ${v === "No" ? "text-ink-muted" : ""} ${i % 2 === 0 ? "bg-cream" : ""}`}

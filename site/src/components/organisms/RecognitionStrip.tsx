@@ -39,14 +39,17 @@ const SAFETY_PROOFS = [
 export function RecognitionStrip({
   label = "Recognised by",
   safetyLine = false,
+  bare = false,
 }: {
   label?: string;
   safetyLine?: boolean;
+  /** Revamp M2: render content-only, for composition inside a Room (the
+   *  legacy Section shell stays for routes not yet on the room grammar). */
+  bare?: boolean;
 }) {
-  return (
-    <Section wash="white">
-      <Container className="py-8 md:py-10">
-        <Reveal className="flex flex-wrap items-center gap-x-6 gap-y-4">
+  const content = (
+    <>
+      <Reveal className="flex flex-wrap items-center gap-x-6 gap-y-4">
           {/* R11: the muted inline variant of the shared kicker (audit: this
               was the one hand-rolled copy of Eyebrow's classes) */}
           <Eyebrow color="text-ink-muted" className="mb-0">
@@ -86,20 +89,27 @@ export function RecognitionStrip({
             ))}
           </ul>
         </Reveal>
-        {safetyLine && (
-          <Reveal className="mt-5">
-            <p className="text-[15px] leading-relaxed text-ink-muted">
-              {SAFETY_PROOFS.join(" · ")} ·{" "}
-              <Link
-                href="/safety"
-                className="font-semibold text-ink-head underline underline-offset-4"
-              >
-                See how we built safety in
-              </Link>
-            </p>
-          </Reveal>
-        )}
-      </Container>
+      {safetyLine && (
+        <Reveal className="mt-5">
+          <p className="text-[15px] leading-relaxed text-ink-muted">
+            {SAFETY_PROOFS.join(" · ")} ·{" "}
+            <Link
+              href="/safety"
+              className="font-semibold text-ink-head underline underline-offset-4"
+            >
+              See how we built safety in
+            </Link>
+          </p>
+        </Reveal>
+      )}
+    </>
+  );
+
+  if (bare) return content;
+
+  return (
+    <Section wash="white">
+      <Container className="py-8 md:py-10">{content}</Container>
     </Section>
   );
 }

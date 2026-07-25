@@ -22,9 +22,20 @@
   --color-orange-ink: #b54a0d;
   --color-yellow: #f1a23b;
   --color-blue: #29a0d7;
-  --color-blue-soft: #3aa4e5;
-  --color-teal: #1abc9c;
-  --color-purple: #8b5bff;
+  /* Revamp P2 (founder 2026-07-24, "brand colours only"): teal #1abc9c,
+     purple #8b5bff, and blue-soft #3aa4e5 are RETIRED from the web palette.
+     They remain brand-deck decoratives (Design/design-system) and dormant
+     ambient-stage mirrors, but no live surface may use them. teal-deep
+     (above) is DEPRECATED: it survives only under the legacy teal wash
+     (SafetyStrip, safety hero) until those sections retire in M2/M4, then
+     leaves with them (M5 cleanup). */
+  /* Small-text blue: the darkened #29a0d7 that holds 4.5:1 on every wash
+     (white 5.7, cream 5.3, cool 5.1, sun 5.0). The blue twin of orange-ink. */
+  --color-blue-ink: #1b6e96;
+  /* Semantic action slots (revamp): new/refactored components reference these
+     for text-carrying colour, so a future contrast ruling flips ONE mapping. */
+  --color-action: var(--color-orange-cta);
+  --color-action-ink: var(--color-orange-ink);
   --color-ink: #272727;
   --color-ink-head: #1c1c1c;
   --color-ink-muted: #727272;
@@ -36,15 +47,19 @@
 
   --font-display: var(--font-glory);
   --font-sans: var(--font-instrument-sans);
-  --font-accent: var(--font-instrument-serif);
+  /* --font-accent (Instrument Serif) retired 2026-07-24: two fonts only. */
 
   --shadow-cta: 0 4px 4px rgb(0 0 0 / 0.25);
+  /* Theme-B room panels (revamp): warm-tinted shadows, never pure black */
+  --shadow-room: 0 12px 34px rgb(74 40 12 / 0.1);
+  --shadow-room-sm: 0 2px 10px rgb(74 40 12 / 0.06);
 
   --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-calm: cubic-bezier(0.2, 0.8, 0.2, 1);
 
   --radius-card: 22px;
   --radius-card-lg: 28px;
+  --radius-room: 28px;
 
   /* Radix accordion height animation (ui/Faq.tsx) */
   --animate-accordion-down: accordion-down 0.24s var(--ease-calm);
@@ -153,6 +168,30 @@ p {
     transform: perspective(700px) translateY(18px) scale(0.99);
     transition: transform 0.55s var(--ease-bounce);
   }
+  /* Theme-B room entrances (revamp M1): sections slide in from alternating
+     sides "like turning a corner". Below-fold rooms only — never the room
+     that owns the page's LCP. */
+  html.js [data-reveal="left"] {
+    opacity: 0;
+    transform: translate3d(-46px, 10px, 0);
+    transition:
+      opacity 0.5s var(--ease-calm),
+      transform 0.6s var(--ease-bounce);
+  }
+  html.js [data-reveal="right"] {
+    opacity: 0;
+    transform: translate3d(46px, 10px, 0);
+    transition:
+      opacity 0.5s var(--ease-calm),
+      transform 0.6s var(--ease-bounce);
+  }
+  html.js [data-reveal="pop"] {
+    opacity: 0;
+    transform: scale(0.94);
+    transition:
+      opacity 0.45s var(--ease-calm),
+      transform 0.55s var(--ease-bounce);
+  }
   html.js [data-reveal].reveal-in {
     opacity: 1;
     transform: none;
@@ -191,6 +230,40 @@ p {
     animation-delay: 0.3s;
   }
 }
+/* ChatDemo (revamp M2): the generalized conversation demo. Same contract as
+   the R11 hero exchange — at rest by default, staggered entrance only for
+   motion-friendly desktop visitors (per-bubble delay set inline). */
+@media (prefers-reduced-motion: no-preference) and (min-width: 768px) {
+  .chat-demo-bubble {
+    animation: convo-in 0.5s var(--ease-bounce) both;
+  }
+}
+
+/* FeelingsGallery dialog (revamp M2): App-Store-card expansion feel.
+   Motion-gated; reduced-motion opens instantly. */
+@media (prefers-reduced-motion: no-preference) {
+  .feelings-dialog {
+    animation: feelings-dialog-in 0.3s var(--ease-bounce) both;
+  }
+  .feelings-dialog-overlay {
+    animation: sheet-fade-in 0.22s var(--ease-calm) both;
+  }
+}
+/* animate the standalone `scale`/`opacity` properties ONLY: the centering
+   utilities use the standalone `translate` property (Tailwind v4), and a
+   transform-based keyframe would STACK with it and double-shift the panel
+   (caught in the M2 visual pass) */
+@keyframes feelings-dialog-in {
+  from {
+    opacity: 0;
+    scale: 0.92;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
 @keyframes convo-in {
   from {
     opacity: 0;
@@ -287,6 +360,192 @@ html.scene-3d [data-curve] {
 main {
   position: relative;
   z-index: 10;
+}
+
+/* ================================================================
+   THEME-B BACKDROP (revamp M1, atoms/SiteBackdrop.tsx)
+   One warm CSS sky behind every route. Gradient endpoints #fffdf9 /
+   #fceeda are curated intermediates around the cream token (same
+   sanctioned family as the old BEAT_WASHES sky stops).
+   ================================================================ */
+.site-backdrop-base {
+  background: radial-gradient(
+    130% 100% at 50% -18%,
+    #fffdf9,
+    var(--color-cream) 52%,
+    #fceeda 100%
+  );
+}
+.site-backdrop-tint-warm {
+  background: radial-gradient(circle at 12% 8%, rgb(241 162 59 / 0.1), transparent 60%);
+}
+.site-backdrop-tint-cool {
+  background: radial-gradient(circle at 88% 92%, rgb(41 160 215 / 0.1), transparent 60%);
+}
+.site-backdrop-blob {
+  background: radial-gradient(circle at center, rgb(241 162 59 / 0.14), transparent 62%);
+  filter: blur(60px);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .site-backdrop-blob {
+    animation: backdrop-drift 32s ease-in-out infinite alternate;
+  }
+}
+@keyframes backdrop-drift {
+  from {
+    transform: translate3d(-4%, 2%, 0);
+  }
+  to {
+    transform: translate3d(5%, -4%, 0);
+  }
+}
+
+/* ================================================================
+   HERO BUBBLES + KHEELU ORBIT (revamp M2)
+   Hero fact chips: SSR-visible text, transform-only float, desktop +
+   motion only (they are display:none on phones — LCP law).
+   Orbit: static 2-col grid by default (phones, reduced motion, no-JS);
+   desktop + motion composes the ring. Cards counter-rotate to stay
+   upright; hover/focus pauses everything. DOM order = reading order.
+   ================================================================ */
+@media (prefers-reduced-motion: no-preference) and (min-width: 768px) {
+  .hero-bubble {
+    animation: hero-bubble-float 6s ease-in-out infinite;
+  }
+}
+@keyframes hero-bubble-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.kheelu-orbit .orbit-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+@media (min-width: 768px) {
+  .kheelu-orbit {
+    position: relative;
+    height: 560px;
+    max-width: 620px;
+    margin-inline: auto;
+  }
+  .kheelu-orbit .kheelu-orbit-center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .kheelu-orbit .orbit-cards {
+    position: absolute;
+    inset: 0;
+    display: block;
+    margin: 0;
+  }
+  .kheelu-orbit .orbit-seat {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: rotate(var(--a, 0deg)) translateX(var(--orbit-r, 225px))
+      rotate(calc(-1 * var(--a, 0deg)));
+  }
+  .kheelu-orbit .orbit-card {
+    width: 200px;
+    transform: translate(-50%, -50%);
+  }
+}
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+  .kheelu-orbit .orbit-cards {
+    animation: orbit-spin 60s linear infinite;
+  }
+  .kheelu-orbit .orbit-card {
+    animation: orbit-unspin 60s linear infinite;
+  }
+  .kheelu-orbit:hover .orbit-cards,
+  .kheelu-orbit:hover .orbit-card,
+  .kheelu-orbit:focus-within .orbit-cards,
+  .kheelu-orbit:focus-within .orbit-card {
+    animation-play-state: paused;
+  }
+}
+@keyframes orbit-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes orbit-unspin {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(-360deg);
+  }
+}
+
+/* ================================================================
+   KHEELU GUIDE (revamp M1, organisms/KheeluGuide.tsx)
+   The persistent narrator. Purely decorative motion; the whole
+   widget disappears without JS (it has nothing to say there).
+   ================================================================ */
+html:not(.js) [data-kheelu-guide] {
+  display: none;
+}
+.kheelu-guide-follow {
+  transform: translate3d(var(--gx, 0px), var(--gy, 0px), 0) rotate(var(--gr, 0deg));
+}
+@media (prefers-reduced-motion: no-preference) {
+  .kheelu-guide-idle {
+    animation: guide-bob 5.5s ease-in-out infinite;
+  }
+  .kheelu-guide-bubble {
+    animation: guide-bubble-in 0.3s var(--ease-bounce) both;
+  }
+  /* declared after -idle so a poke wins while both classes are present */
+  .kheelu-guide-poke {
+    animation: guide-poke 0.5s var(--ease-bounce);
+  }
+}
+@keyframes guide-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+@keyframes guide-bubble-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes guide-poke {
+  0% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-14px) scale(1.04);
+  }
+  60% {
+    transform: translateY(2px);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 
 /* (The D4 bookmark-ribbon chapter nav was removed here on founder feedback

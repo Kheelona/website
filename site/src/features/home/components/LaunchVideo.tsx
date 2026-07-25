@@ -11,7 +11,7 @@ import { KheeluSays } from "@/components/molecules/KheeluSays";
  *  Autoplays muted only for users who have not asked for less motion or data;
  *  pauses whenever it leaves the viewport. All text in the film is verbatim
  *  site copy, so nothing here is content a screen reader misses. */
-export function LaunchVideo() {
+export function LaunchVideo({ bare = false }: { bare?: boolean }) {
   const video = useRef<HTMLVideoElement>(null);
   const [ambient, setAmbient] = useState(false);
 
@@ -36,16 +36,8 @@ export function LaunchVideo() {
     return () => io.disconnect();
   }, []);
 
-  return (
-    <Section wash="cream">
-      {/* R10: KheeluIntro (white) now precedes this section since
-          StagedIntro retired — the curve keeps the wash handoff soft */}
-      <CurveDivider from="white" flip />
-      <Container className="pb-16 pt-2 md:pb-24">
-        <Reveal>
-          <KheeluSays line="Press play. I will wait." pose="silly" />
-        </Reveal>
-        <Reveal>
+  const player = (
+    <Reveal>
           <video
             ref={video}
             muted
@@ -64,7 +56,21 @@ export function LaunchVideo() {
             aria-label="A short film of the Lumi talking toy: it listens first, then talks back, in the three colors, with the launch price of 4,999 rupees"
             className="w-full rounded-(--radius-card-lg) shadow-[0_24px_60px_rgba(216,95,27,0.16)]"
           />
+    </Reveal>
+  );
+
+  if (bare) return player;
+
+  return (
+    <Section wash="cream">
+      {/* R10: KheeluIntro (white) now precedes this section since
+          StagedIntro retired — the curve keeps the wash handoff soft */}
+      <CurveDivider from="white" flip />
+      <Container className="pb-16 pt-2 md:pb-24">
+        <Reveal>
+          <KheeluSays line="Press play. I will wait." pose="silly" />
         </Reveal>
+        {player}
       </Container>
     </Section>
   );
