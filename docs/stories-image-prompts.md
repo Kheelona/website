@@ -41,14 +41,14 @@ Create a 16:9 image, warm soft 3D illustration style like a modern animated film
 1. Download the PNG, then convert (from repo root):
    ```bash
    sips -Z 1440 -s format jpeg -s formatOptions 78 <downloaded>.png \
-     --out site/public/stories/<slug>.jpg
+     --out public/stories/<slug>.jpg
    ```
-2. In `site/lib/stories.ts` or `site/lib/stories-expansion.ts`, add to the article:
+2. In `src/lib/stories.ts` or `src/lib/stories-expansion.ts`, add to the article:
    ```ts
    hero: "/stories/<slug>.jpg",
    heroAlt: "<one plain sentence describing the scene>",
    ```
-3. `cd site && npm run build` — the article page and its JSON-LD pick the image up automatically.
+3. `npm run build` — the article page and its JSON-LD pick the image up automatically.
 
 ## Gemini web UI notes (if driving it manually)
 

@@ -1,10 +1,10 @@
 {
-  "name": "site",
+  "name": "kheelona-com",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "node ../tools/tokens/check-tokens.mjs && next build",
+    "build": "node tools/tokens/check-tokens.mjs && next build",
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",

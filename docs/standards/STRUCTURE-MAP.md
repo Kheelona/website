@@ -1,5 +1,12 @@
 # Structure Map — POC → production reorg (2026-07-11)
 
+> **UPDATE 2026-07-28 — the app left `site/`.** Everything that was in `site/` now sits at
+> the repo root (`package.json`, `next.config.ts`, `src/`, `public/`, `test/`, `.storybook/`).
+> Vercel resolves a project's framework from its Root Directory, which was the repo root,
+> so with the app one level down every build failed with "No Next.js version detected".
+> **Translating older docs: drop the leading `site/` from any path.** `cd site && npm test`
+> is now just `npm test`. The two mappings below (pre-`src/` → `src/`) still apply on top.
+
 This is the authoritative record of the production-structure sprint that made `site/`
 compliant with [`PROJECT_STRUCTURE.md`](./PROJECT_STRUCTURE.md) and
 [`COMPONENT_GUIDELINES.md`](./COMPONENT_GUIDELINES.md). It maps every file's old location to
@@ -10,7 +17,7 @@ specifiers, and new dev-only files (Storybook/tests) changed. No JSX/CSS body wa
 
 ## Top-level move
 
-Everything application code moved under `site/src/`. `public/`, all config files
+Everything application code moved under `src/`. `public/`, all config files
 (`next.config.ts`, `postcss.config.mjs`, `eslint.config.mjs`, `tsconfig.json`,
 `package.json`) stay at `site/` root (Next.js requirement). The path alias changed from
 `@/* → ./*` to `@/* → ./src/*`, so aliased imports whose post-`@/` path is unchanged keep
@@ -98,12 +105,12 @@ such code first appears — creating empty folders now would be cargo-culting.
 
 ## Config / tooling edits (beyond moves)
 
-- `site/tsconfig.json` — `"@/*": ["./*"]` → `["./src/*"]`.
+- `tsconfig.json` — `"@/*": ["./*"]` → `["./src/*"]`.
 - `tools/tokens/check-tokens.mjs` — the two hard-coded paths now point at
-  `site/src/styles/globals.css` and `site/src/features/ambient-stage/lib/tokens.ts`.
-- `site/app/layout.tsx` (→ `src/app/layout.tsx`) — `globals.css` import path; fonts stay
+  `src/styles/globals.css` and `src/features/ambient-stage/lib/tokens.ts`.
+- `src/app/layout.tsx` (→ `src/app/layout.tsx`) — `globals.css` import path; fonts stay
   relative (`./fonts/*`).
-- New dev-only: `.storybook/`, `vitest.config.ts`, `test/`, `.nvmrc`, `site/package.json`
+- New dev-only: `.storybook/`, `vitest.config.ts`, `test/`, `.nvmrc`, `package.json`
   devDeps, `.gitignore` additions. None reach the route graph, so `next build` is unchanged.
 
 ## Not touched

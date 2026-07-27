@@ -7,7 +7,7 @@ Pre-order marketing site for **Lumi**, Kheelona's screen-free talking AI toy for
 "Kheelu's Tour") plus the V3 repositioning (founder's YC application: 40% fun, 20% brain
 development, 40% education) replaced the legacy Wix-backed commerce app that used to live at the
 repo root. That old app is preserved at the tag **`pre-revamp-2026-07`** and its URLs are 301'd in
-`site/next.config.ts`. The `revamp/kheelu-tour` branch is deleted; its history is inside `main`.
+`next.config.ts`. The `revamp/kheelu-tour` branch is deleted; its history is inside `main`.
 
 - **Work on `main`.** `demo-website` exists only as the Vercel preview branch
   (https://website-hdn2.vercel.app) and additionally carries the `/a` `/b` `/c` wireframe drafts.
@@ -43,7 +43,7 @@ repo root. That old app is preserved at the tag **`pre-revamp-2026-07`** and its
 
 ## Production structure & standards (BINDING LAW, 2026-07-12)
 The app is now a **`src/`-based atomic-design** Next.js project. Two standards in
-`docs/standards/` govern EVERY future change to `site/` (non-negotiable):
+`docs/standards/` govern EVERY future change to the app (non-negotiable):
 - `PROJECT_STRUCTURE.md` — where code lives (`src/`; components in
   atoms/molecules/organisms/templates; self-contained `features/`; `config/ lib/ styles/`;
   `@/* → src/*`; naming).
@@ -62,7 +62,7 @@ Rules for any change:
    FootnotesRow/KheelonaPlusBand/FamilyGrid/LumiModes — §8.19 + §8.21) are the registry. Age copy comes
    from LUMI_AGES/PLATFORM_AGES and subscription copy from KHEELONA_PLUS_LINE, never inline.
 3. Every new/changed component ships a colocated `X.stories.tsx` + `X.test.tsx`
-   (`cd site && npm test`, `npm run storybook`). Node ≥ 24 (`.nvmrc`). Storybook/Vitest are
+   (`npm test`, `npm run storybook`). Node ≥ 24 (`.nvmrc`). Storybook/Vitest are
    dev-only and MUST never affect `next build`.
 4. Structural work keeps the no-user-facing-change discipline: prove it (build + generated-CSS
    parity + a route render), never assume it.
@@ -74,14 +74,18 @@ Rules for any change:
 - **Never invent claims**: testimonials, certifications, specs, ship date, contact email → flagged placeholders + blockers only.
 - **Accessibility 90+ outranks any styling preference** (spec §3). Lighthouse gates: A11y/BP/SEO 90+ everywhere, Perf 90+ desktop.
 
-## Commands (app code lives in `site/src/`)
-- Dev: `cd site && npm run dev` (port 3000)
-- Prod: `cd site && npx next build && npx next start -p 3456` (local prod URL the founder uses: http://localhost:3456)
-- Test: `cd site && npm test` (Vitest; a test per component) · Storybook: `npm run storybook` / `npm run build-storybook`
-- Deploy target: Vercel, project root `site/` (blocked on founder auth, FOUNDER-TODO #2)
+@AGENTS.md
+
+## Commands (app code lives in `src/`)
+- Dev: `npm run dev` (port 3000)
+- Prod: `npx next build && npx next start -p 3456` (local prod URL the founder uses: http://localhost:3456)
+- Test: `npm test` (Vitest; a test per component) · Storybook: `npm run storybook` / `npm run build-storybook`
+- Deploy target: Vercel, project Root Directory = **repo root** (the app moved out of
+  `site/` on 2026-07-28; paths in older docs and checkpoints that say `site/...` now mean
+  the repo root). Env vars + DNS are still founder-gated, FOUNDER-TODO #2.
 
 ## Env
-Root `.env` (gitignored, DUMMY values until founder fills them): `TRIPO_API_KEY` (unused — mascot pipeline went through the Tripo web UI instead, see `design-concepts/README.md`), `NEXT_PUBLIC_TALLY_FORM_URL`, `NEXT_PUBLIC_GA4_MEASUREMENT_ID`. Site reads the two `NEXT_PUBLIC_*` vars (`site/.env.example` mirrors them; `TallyEmbed` treats values containing "DUMMY" as unconfigured).
+Root `.env` (gitignored, DUMMY values until founder fills them): `TRIPO_API_KEY` (unused — mascot pipeline went through the Tripo web UI instead, see `design-concepts/README.md`), `NEXT_PUBLIC_TALLY_FORM_URL`, `NEXT_PUBLIC_GA4_MEASUREMENT_ID`. Site reads the two `NEXT_PUBLIC_*` vars (`.env.example` mirrors them; `TallyEmbed` treats values containing "DUMMY" as unconfigured).
 
 ## Docs map
 - `docs/standards/` — BINDING production standards: `PROJECT_STRUCTURE.md`, `COMPONENT_GUIDELINES.md`, and `STRUCTURE-MAP.md` (old→new path translation for the `src/` reorg). See the "Production structure & standards" section above.
@@ -93,7 +97,7 @@ Root `.env` (gitignored, DUMMY values until founder fills them): `TRIPO_API_KEY`
 - `docs/stories-image-prompts.md` — ready prompts for the 7 journal articles still missing hero images
 - `docs/checkpoints/` — per-phase snapshots
 - `design-concepts/README.md` — 3 archived concepts, mascot cutout pipeline, Tripo3D 2D→3D pipeline (v2 runs incl. Janus fix + Lumi plush), engineering gotchas (overflow-x clip, scroll-snap wheel trap)
-- `site/AGENTS.md` — Next.js 16 breaking-changes warning (read `node_modules/next/dist/docs/` before writing Next code)
+- `AGENTS.md` — Next.js 16 breaking-changes warning (read `node_modules/next/dist/docs/` before writing Next code)
 - `tools/cutout/` — offline background removal (Swift + Apple Vision; compile with `swiftc -O main.swift -o cutout`). Every mascot/product cutout and video asset goes through it; never ship art with baked backgrounds. For thin pale details the Vision mask drops (hat ribbons), use `keycut.swift` (region-grow color-key; hybrid mode takes a Vision `--no-crop` alpha for the body: `keycut in.png out.png 24 vision-nocrop.png`).
-- Visuals are the **calm ambient treatment** (R5, founder 2026-07-10: the R4 flying journey overwhelmed — every route incl. Home now rides `AmbientStage`; punch-list law in `docs/website-steps.md` §8.14): fixed canvas sky glides the page's own washes behind SSR DOM (`site/components/three/`, `site/lib/three/`), few translucent shapes that ghost to 4% under copy, **2D Kheelu + 2D Lumi in the DOM permanently** (`MascotScene.tsx`, `LumiHero.tsx`; since R9 the HOME hero is a plain priority `Image` of the lumi-blue plush — that swap is what finally passed the live mobile perf gate, median 93). The full 3D journey (GLBs in `site/public/models/`, mascot rigged clip-less + procedural idle) is DORMANT, one prop-flip away: `<StageGate stage="journey" />` on Home. R5 hard rules: zero italics, all text left-aligned, white button/band labels on `orange-cta #C25210` / `teal-deep #0F766E` only; R9 adds: serif ONLY in human quotes, 13px sans kickers in `orange-ink #b54a0d` (the only orange passing 4.5:1 on every wash), one CTA verb (nav "Reserve at ₹4,999"), every page ends with `FinaleCTA` (id="reserve" — the nav CTA anchors to it), Kheelu narrator bubbles = `ui/KheeluSays.tsx` (§8.17). R10 adds: **tilt never wraps a whole-card link** (pointer-tracked transforms drop clicks — `ui/TiltCard.tsx` hard rule, §8.18); ambient shape lanes are perspective-corrected (lateral offset scales with depth). R11 adds (§8.19): the Home hero SHOWS the conversation (`home/HeroConversation.tsx`, CSS-only, desktop-gated) — **the priority plush image must stay the hero's LARGEST element** (it owns mobile LCP; two live regressions taught this, qa-report R11); nav tab = "PlayOS" and /playos is the parent-voice platform page (no pricing/partner CTAs on .com); **component registry law: new sections use the shared `SectionHeading`/`Card`/`StepList`/`PageHero`/`CheckList`/`LegalDoc` molecules and the `lib/site.ts` price/CTA constants** — hand-rolling those shapes is a review flag; mobile perf verifies record BOTH Lighthouse throttling methods (simulate amplifies a headless artifact; judge by devtools numbers). Plan + architecture: `docs/redesign-plan-2026-07.md`. `site/public/video/launch.{mp4,jpg}` = the "Two friends" film (source `launch-video/src/FilmTwoFriendsVeo.tsx`)
+- Visuals are the **calm ambient treatment** (R5, founder 2026-07-10: the R4 flying journey overwhelmed — every route incl. Home now rides `AmbientStage`; punch-list law in `docs/website-steps.md` §8.14): fixed canvas sky glides the page's own washes behind SSR DOM (`src/components/three/`, `src/lib/three/`), few translucent shapes that ghost to 4% under copy, **2D Kheelu + 2D Lumi in the DOM permanently** (`MascotScene.tsx`, `LumiHero.tsx`; since R9 the HOME hero is a plain priority `Image` of the lumi-blue plush — that swap is what finally passed the live mobile perf gate, median 93). The full 3D journey (GLBs in `public/models/`, mascot rigged clip-less + procedural idle) is DORMANT, one prop-flip away: `<StageGate stage="journey" />` on Home. R5 hard rules: zero italics, all text left-aligned, white button/band labels on `orange-cta #C25210` / `teal-deep #0F766E` only; R9 adds: serif ONLY in human quotes, 13px sans kickers in `orange-ink #b54a0d` (the only orange passing 4.5:1 on every wash), one CTA verb (nav "Reserve at ₹4,999"), every page ends with `FinaleCTA` (id="reserve" — the nav CTA anchors to it), Kheelu narrator bubbles = `ui/KheeluSays.tsx` (§8.17). R10 adds: **tilt never wraps a whole-card link** (pointer-tracked transforms drop clicks — `ui/TiltCard.tsx` hard rule, §8.18); ambient shape lanes are perspective-corrected (lateral offset scales with depth). R11 adds (§8.19): the Home hero SHOWS the conversation (`home/HeroConversation.tsx`, CSS-only, desktop-gated) — **the priority plush image must stay the hero's LARGEST element** (it owns mobile LCP; two live regressions taught this, qa-report R11); nav tab = "PlayOS" and /playos is the parent-voice platform page (no pricing/partner CTAs on .com); **component registry law: new sections use the shared `SectionHeading`/`Card`/`StepList`/`PageHero`/`CheckList`/`LegalDoc` molecules and the `lib/site.ts` price/CTA constants** — hand-rolling those shapes is a review flag; mobile perf verifies record BOTH Lighthouse throttling methods (simulate amplifies a headless artifact; judge by devtools numbers). Plan + architecture: `docs/redesign-plan-2026-07.md`. `public/video/launch.{mp4,jpg}` = the "Two friends" film (source `launch-video/src/FilmTwoFriendsVeo.tsx`)
 - `gemini-handoff/` — founder generation kit (refs + seeds + prompts); product renders staged in `Design/product-images/generated-2026-07/`

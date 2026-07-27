@@ -20,7 +20,13 @@ const nextConfig: NextConfig = {
          was the biggest active SEO liability on the list (V3-h). Every source
          below existed on the previous site. */
       { source: "/product-page/:slug*", destination: "/products/lumi", permanent: true },
-      { source: "/product/:slug*", destination: "/products/lumi", permanent: true },
+      /* `[^.]+` instead of `:slug*` on purpose, and it must stay: redirects are
+         matched BEFORE public/ files, and our own plush renders live in
+         public/product/. A plain `/product/:slug*` 308s lumi-blue-2.png to the
+         product page, which makes the image optimizer 400 and blanks the hero
+         (caught locally 2026-07-28, before it reached a customer). Legacy Wix
+         product slugs never contain a dot; asset filenames always do. */
+      { source: "/product/:slug([^.]+)", destination: "/products/lumi", permanent: true },
       { source: "/shop", destination: "/products/lumi", permanent: true },
       { source: "/blog", destination: "/stories", permanent: true },
       { source: "/blog/:slug*", destination: "/stories", permanent: true },

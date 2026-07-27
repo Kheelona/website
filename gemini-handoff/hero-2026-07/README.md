@@ -48,7 +48,7 @@ least 2400 pixels on each side. Change nothing." → download that one.
 ## What happens after
 
 Claude ingests from `~/Downloads`: fidelity check against the two identity refs → background
-removal via `tools/cutout` → the cutout becomes `site/public/hero/kheelu-lumi.png`, the Home
+removal via `tools/cutout` → the cutout becomes `public/hero/kheelu-lumi.png`, the Home
 hero image, with the interactive speech bubbles built around it in code (they are HTML, not
 part of the image). Until then the site preview uses an interim composed placeholder, so
 nothing blocks the build.

@@ -17,7 +17,7 @@ here in full so nothing depends on conversation memory.
 ```bash
 cd /Users/apoorvasahu/Documents/kheelona-com-website
 git switch main && git pull
-cd site && npm test          # expect 225/225 green
+npm test          # expect 225/225 green
 npm run build                # token-check 17, then next build
 npx next start -p 3456       # local prod at http://localhost:3456
 ```
@@ -26,7 +26,7 @@ npx next start -p 3456       # local prod at http://localhost:3456
 - `main` IS the website: the theme-B revamp + V3 repositioning, merged 2026-07-28. It replaced the
   legacy Wix commerce app that used to live at the repo root (cart, checkout, member accounts,
   Wix SDK). That app is preserved at the tag **`pre-revamp-2026-07`** — one checkout recovers it —
-  and its URLs are 301'd in `site/next.config.ts` so nothing 404s and the old ₹2,999 product pages
+  and its URLs are 301'd in `next.config.ts` so nothing 404s and the old ₹2,999 product pages
   stop competing in Google's index.
 - `demo-website` is the Vercel preview branch only (https://website-hdn2.vercel.app). It carries
   the `/a` `/b` `/c` wireframe drafts on top of main. **Sync by MERGING main into it. Never
@@ -69,7 +69,7 @@ Everything below this line describes the COMPLETED theme-B revamp (P0..M4-b) tha
 review URL now serves the revamp: branch `demo-website` was MERGED with `revamp/kheelu-tour`
 (merge, not force-push, so the wireframe drafts at `/a` `/b` `/c` still resolve) and pushed.
 Keep `demo-website` in sync by MERGING the revamp branch into it (never force-push: that
-would delete the wireframe commit). Vercel root directory is `site`; its `NEXT_PUBLIC_*` env vars are
+would delete the wireframe commit). Its `NEXT_PUBLIC_*` env vars are
 still unset, so the reserve panel shows the placeholder card and GA4 is not measuring.
 
 **All work is on branch `revamp/kheelu-tour`** (pushed to origin; `git log --oneline -8`
@@ -80,7 +80,7 @@ branch. To continue:
 ```bash
 cd /Users/apoorvasahu/Documents/kheelona-com-website
 git checkout revamp/kheelu-tour          # the revamp branch (already pushed)
-cd site && npm test                       # expect 215/215 green
+npm test                       # expect 215/215 green
 ```
 
 **DONE so far:** P0, P1 (all), P2, M1, M2 (Home), M3 (/products/lumi), M4 (all 8 interior
@@ -128,7 +128,7 @@ element rule in globals.css belongs in `@layer base`.
 - `/safety` carries the **GATED:founder-signoff** answer block "Is an AI toy OK for a
   three-year-old?" (the point-by-point reply to child-development guidance). It renders on the
   preview so it can be read in place, is marked `GATED:founder-signoff` in
-  `site/src/app/safety/page.tsx`, and is deliberately absent from the page's FAQPage schema so
+  `src/app/safety/page.tsx`, and is deliberately absent from the page's FAQPage schema so
   pulling it leaves no orphaned structured data.
 - Journal age pass (founder call): product-facing copy is 3 to 10 everywhere; three articles
   were retitled off the "3 to 6" band with **slugs unchanged** ("Why the early years matter
@@ -248,7 +248,7 @@ research-only GA4 via Chrome.
 |---|---|---|
 | A1 | HERO: Kheelu talking/whispering to Lumi (final art) | KIT READY: `gemini-handoff/hero-2026-07/` — founder to run |
 | A2 | 3 mobile app images | WAIT until after v1 deploy (brief pointer 9) |
-| A3 | Belly-speaker product renders (lumi-*.jpeg in site/public/product/) | need `tools/cutout` + founder call on adopting as product art |
+| A3 | Belly-speaker product renders (lumi-*.jpeg in public/product/) | need `tools/cutout` + founder call on adopting as product art |
 | A4 | Infographic slots discovered during build (per-room) | collect during M2-M4, batch kit |
 
 ## Kheelu guide say-lines (founder sign-off queue)
@@ -271,6 +271,6 @@ none ship to production before sign-off (previews on the branch are fine).
 2. Wireframe B source: `docs/wireframes/2026-07/` (templates/b.html + kit.css + copy.json +
    README). Copy seed = copy.json. Standards: `docs/standards/`.
 3. Work happens on branch `revamp/kheelu-tour` (except P0/P1 docs which live on master).
-4. Verify commands: `cd site && npm test` · `npm run build` · Storybook `npm run storybook`.
+4. Verify commands: `npm test` · `npm run build` · Storybook `npm run storybook`.
    Local prod: `npx next start -p 3456`. Node ≥ 24.
 5. Launch gates unchanged in FOUNDER-TODO.md (Tally URL, GA4, Vercel, claims...).
