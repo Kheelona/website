@@ -9,6 +9,7 @@ import { PageHero } from "@/components/templates/PageHero";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { STORIES, getStory } from "@/lib/stories";
 import { JOURNAL_REVIEWED } from "@/config/site";
+import { graph, breadcrumbs, SITE_URL } from "@/lib/seo";
 
 export function generateStaticParams() {
   return STORIES.map((s) => ({ slug: s.slug }));
@@ -39,19 +40,33 @@ export default async function StoryPage({
   const story = getStory((await params).slug);
   if (!story) notFound();
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    headline: story.title,
-    description: story.description,
-    author: { "@type": "Organization", name: "Kheelona" },
-    publisher: { "@type": "Organization", name: "Kheelona" },
-    mainEntityOfPage: `https://kheelona.com/stories/${story.slug}`,
-    /* Month precision on purpose: the journal was written and verified in one
-       pass (qa-report), and per-article days would be invented. */
-    dateModified: "2026-07-01",
-    ...(story.hero && { image: `https://kheelona.com${story.hero}` }),
-  };
+  /* BlogPosting, not bare Article: it places the piece inside the journal as a
+     publication, which is what an answer engine looks for when deciding whether
+     a page is editorial or an ad. `author` stays the Organization until the
+     founder tells us who wrote each piece (a named author with credentials is
+     the strongest remaining E-E-A-T win — gate V3-f). Month precision on the
+     date on purpose: per-article days would be invented. */
+  const jsonLd = graph(
+    {
+      "@type": "BlogPosting",
+      headline: story.title,
+      description: story.description,
+      articleSection: story.theme,
+      wordCount: story.paragraphs.reduce((n, b) => n + b.p.split(/\s+/).length, 0),
+      timeRequired: `PT${story.minutes}M`,
+      inLanguage: "en-IN",
+      author: { "@id": `${SITE_URL}/#organization` },
+      publisher: { "@id": `${SITE_URL}/#organization` },
+      isPartOf: { "@id": `${SITE_URL}/stories#blog` },
+      mainEntityOfPage: `${SITE_URL}/stories/${story.slug}`,
+      dateModified: "2026-07-01",
+      ...(story.hero && { image: `${SITE_URL}${story.hero}` }),
+    },
+    breadcrumbs([
+      { name: "Stories", path: "/stories" },
+      { name: story.title, path: `/stories/${story.slug}` },
+    ]),
+  );
 
   return (
     <>

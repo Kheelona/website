@@ -8,6 +8,8 @@ import { PageHero } from "@/components/templates/PageHero";
 import { Reveal } from "@/components/molecules/Reveal";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { STORIES } from "@/lib/stories";
+import { graph, breadcrumbs, SITE_URL } from "@/lib/seo";
+import { JOURNAL_REVIEWED } from "@/config/site";
 
 export const metadata: Metadata = {
   title: "Stories: raising curious kids",
@@ -29,11 +31,36 @@ const ROOM_CYCLE = [
 ] as const;
 const REVEALS = ["left", "right"] as const;
 
+const JOURNAL_JSON_LD = graph(
+  {
+    "@type": "Blog",
+    "@id": `${SITE_URL}/stories#blog`,
+    name: "The Kheelona journal",
+    description:
+      "Plain answers for parents on screen time, how children learn by talking, language at home, and how to judge an AI toy.",
+    url: `${SITE_URL}/stories`,
+    inLanguage: "en-IN",
+    publisher: { "@id": `${SITE_URL}/#organization` },
+    blogPost: STORIES.map((s) => ({
+      "@type": "BlogPosting",
+      headline: s.title,
+      description: s.description,
+      url: `${SITE_URL}/stories/${s.slug}`,
+      ...(s.hero ? { image: `${SITE_URL}${s.hero}` } : {}),
+    })),
+  },
+  breadcrumbs([{ name: "Stories", path: "/stories" }]),
+);
+
 export default function StoriesPage() {
   const themes = [...new Set(STORIES.map((s) => s.theme))];
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(JOURNAL_JSON_LD) }}
+      />
       <PageHero
         guide="curious"
         /* GATED:kheelu-line — founder sign-off before merge to master */
@@ -44,7 +71,7 @@ export default function StoriesPage() {
           eyebrow="The journal"
           title="Raising curious kids."
           titleClassName="mb-4"
-          lede="Plain answers to the questions parents actually ask. No jargon, no scare stories."
+          lede={`Plain answers to the questions parents actually ask. No jargon, no scare stories. Reviewed ${JOURNAL_REVIEWED}.`}
         />
       </PageHero>
 

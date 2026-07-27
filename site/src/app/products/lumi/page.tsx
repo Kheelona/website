@@ -17,6 +17,7 @@ import { FootnotesRow, V3_FOOTNOTES, Footnote } from "@/components/molecules/Foo
 import { FeelingsGallery } from "@/components/organisms/FeelingsGallery";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { LumiModes } from "@/components/organisms/LumiModes";
+import { graph, faqPage, breadcrumbs, LUMI_PRODUCT } from "@/lib/seo";
 import { ParentQuotes } from "@/components/organisms/ParentQuotes";
 import { PREORDER_HREF, RESERVE_LABEL, PRICE_CAPTION, LAUNCH_PRICE, LATER_PRICE } from "@/config/site";
 
@@ -84,34 +85,11 @@ const FAQ_ITEMS: FaqEntry[] = [
   { q: "Why reserve now?", a: "The first 500 units are ₹4,999. After launch it is ₹9,999. There is no payment today." },
 ];
 
-const JSON_LD = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Product",
-      name: "Lumi by Kheelona",
-      brand: { "@type": "Brand", name: "Kheelona" },
-      description:
-        "A screen-free talking friend for children aged 2 to 5 that holds a real conversation in up to 10 home languages, carries stories and lessons they can be quizzed on, and comes with a parent app that shows you everything.",
-      image: "https://kheelona.com/product/lumi-blue-2.png",
-      offers: {
-        "@type": "Offer",
-        price: "4999",
-        priceCurrency: "INR",
-        availability: "https://schema.org/PreOrder",
-        url: "https://kheelona.com/products/lumi",
-      },
-    },
-    {
-      "@type": "FAQPage",
-      mainEntity: FAQ_ITEMS.map((f) => ({
-        "@type": "Question",
-        name: f.q,
-        acceptedAnswer: { "@type": "Answer", text: f.a },
-      })),
-    },
-  ],
-};
+const JSON_LD = graph(
+  LUMI_PRODUCT,
+  faqPage(FAQ_ITEMS),
+  breadcrumbs([{ name: "Meet Lumi", path: "/products/lumi" }]),
+);
 
 export default function LumiPage() {
   return (

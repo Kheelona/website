@@ -8,6 +8,7 @@ import { Reveal } from "@/components/molecules/Reveal";
 import { PhoneFrame } from "@/components/molecules/PhoneFrame";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { SETUP_STEPS } from "@/lib/setup-steps";
+import { graph, setupHowTo, breadcrumbs } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Setup: day one with Lumi",
@@ -24,6 +25,14 @@ export const metadata: Metadata = {
 export default function SetupPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            graph(setupHowTo(SETUP_STEPS), breadcrumbs([{ name: "Setup", path: "/setup" }])),
+          ),
+        }}
+      />
       <PageHero
         ratio="md:grid-cols-[1.15fr_0.85fr]"
         guide="joy"

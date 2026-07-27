@@ -528,3 +528,65 @@ Verified: tests **215/215**, tsc clean, build green (token-check 17). axe **zero
 the two changed routes at desktop and mobile. Mobile overflow clean at 320 and 390px on both.
 Screenshotted at 1200px and 390px. A test guards gate V3-b: the section must never frame Bluetooth
 as a subscription fallback.
+
+## V3 SEO / AEO / GEO pass (2026-07-28)
+
+Founder asked for search and AI-citation optimisation. Skills applied: `ai-seo`, plus the keyword
+map and AEO question bank in `docs/revamp-2026-07/research.md`.
+
+**One regression caught and fixed.** Today's adaptive-hero rewrite dropped "AI toy" from the Home
+title, which is the page's primary search term in the keyword map. Restored:
+`Lumi: the screen-free AI toy that learns with your child, ages 2 to 5 | Kheelona`, and the
+description now carries "made in India" plus the offer. The visible hero still does not lead with
+AI, so the voice rule holds.
+
+**The biggest gap was Home having no FAQ at all**, so the queries most likely to reach us ("what is
+Lumi", "how much does Lumi cost in India") had nothing to cite. Home now carries six question-led
+answers straight from the AEO bank, each 40 to 60 words and self-contained enough to be quoted
+alone, in a `#questions` room before the journal — and mirrored into FAQPage schema. Verified
+programmatically: all six exist in BOTH the schema and the visible text, which is the standing rule.
+
+**Structured data, before → after (per route):**
+
+| Route | Before | After |
+|---|---|---|
+| / | Organization (thin) | Organization + WebSite + Product + VideoObject + FAQPage + BreadcrumbList |
+| /products/lumi | Product, FAQPage | + Organization, WebSite, BreadcrumbList, richer Product (audience 2–5, eligibleRegion India) |
+| /safety, /playos | FAQPage | + Organization, WebSite, BreadcrumbList |
+| /setup | none | HowTo (the four real day-one steps) + BreadcrumbList |
+| /team | none | AboutPage + BreadcrumbList |
+| /stories | none | Blog with every post + BreadcrumbList |
+| /stories/[slug] | Article | BlogPosting inside the Blog, with wordCount, timeRequired, articleSection |
+
+The nodes now share one graph via `@id`, so every page contributes to a single company entity
+rather than a per-page island. `lib/seo.ts` owns it.
+
+**E-E-A-T**: the Organization node carries the three founders as `Person` entities with their
+published credentials (14 patents filed, Thunderbolt 4/5 compliance at Intel, CA with fifteen
+years). That is the strongest authority signal we have and it was previously absent.
+
+**GEO (India)**: `addressLocality` Bengaluru, `addressCountry` IN, `areaServed` India,
+`eligibleRegion` on the offer, `inLanguage` en-IN, `<html lang="en-IN">`, `og:locale` en_IN.
+
+**Agent-readable**: `/pricing.md` added (agents compare products programmatically before a human
+visits; opaque pricing gets filtered out), linked from `/llms.txt`. Both restate visible copy only,
+read prices from `config/site`, and mark every gated item unannounced.
+
+**A new test file guards the schema** (`lib/seo.test.ts`, 10 cases), because schema is the easiest
+place for an invented claim to hide — nobody reads it. It asserts: no ship date, no certification
+property on the product, no Kheelona+ price, no post-lapse claim, no retired age band, and that
+every number of four digits or more is one we can point at (the two published prices, or a year we
+state). Two false positives while writing it are worth recording: Kashyap's bio legitimately
+contains the word "certification" (his career, not our claim) and a LinkedIn slug contains digits,
+so the test checks certification *properties* and strips URLs before counting numbers.
+
+**Verified**: tests 225/225, tsc clean, build green (token-check 17), axe zero violations on the
+changed routes at both viewports, mobile overflow clean at 320 and 390px, every JSON-LD block
+parses, `/llms.txt` `/pricing.md` `/robots.txt` all 200 with correct content types.
+
+**Not done, and why** (all founder-gated): named article authors, which is the biggest remaining
+E-E-A-T win — a byline needs a real author, so it is now gate V3-f; Search Console verification and
+sitemap submission (needs founder account access); backlinks and directory submissions (the
+`directory-submissions` skill is installed and ready when the founder wants a campaign); and the
+301s from the old Wix `/product-page/lumi-*` URLs plus the Play Store listing still showing ₹2,999
+(REV-c), which actively competes with the new pricing in Google's index.

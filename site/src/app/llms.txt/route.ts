@@ -61,6 +61,9 @@ const BODY = `# Kheelona
 - https://kheelona.com/stories : the journal, for parents
 - https://kheelona.com/privacy and https://kheelona.com/terms : the fine print
 
+## Machine-readable
+- https://kheelona.com/pricing.md : prices, what is included, and what is not yet announced
+
 ## Company
 Kheelona Robotics Pvt Ltd, Bengaluru, India. Recognised by the NVIDIA Inception
 Program, Karnataka Elevate, nasscom startups, and Founders Inc.
