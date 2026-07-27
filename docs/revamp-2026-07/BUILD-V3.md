@@ -1,7 +1,17 @@
 # BUILD-V3 — content repositioning build spec (2026-07-27)
 
-**This document is self-contained.** A developer (or a fresh Claude session) executes it start
-to finish without any other conversation context. Read §0 and §1 fully before touching code.
+> **STATUS: BUILT AND DEPLOYED 2026-07-28.** This is now the RECORD of what the copy means and
+> why each fold exists, not a queue of work. Everything below shipped, in five slices, plus a
+> founder review round that added the adaptive hero and the pace panel. Where the build diverged
+> from this text, `docs/copy-reference.md` (V3 entry) records why. The remaining items are
+> founder-gated: see FOUNDER-TODO.md V3-a..e. Verification: `docs/qa-report.md` "V3".
+>
+> **Its laws still bind every future change to these pages** — §0, §1's locked decisions, and the
+> gated-facts registry in §6 especially. New laws this round produced are consolidated in
+> `docs/website-steps.md` §8.21.
+
+**This document is self-contained.** A developer (or a fresh Claude session) can read it start to
+finish without any other conversation context. Read §0 and §1 fully before touching code.
 
 Goal: kheelona.com converts parents into ₹4,999 pre-bookings. Positioning mix: **40% fun,
 20% brain development, 40% education** — companion story leads, education layer added.

@@ -515,4 +515,4 @@ reveal-free.
 
 Also verified in the same pass: sitemap intact (9 routes + 14 articles), canonical tags,
 OG title/description/image, all JSON-LD blocks parse, and `/llms.txt` correctly absent from the
-sitemap.
+sitemap. Suite at completion: **tests 210/210**, tsc clean, `next build` green (token-check 17).

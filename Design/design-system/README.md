@@ -137,6 +137,25 @@ Kheelona has **no traditional icon system** — no Material Symbols, Lucide, or 
 - **Fonts** load from Google Fonts (Glory, Instrument Sans, Instrument Serif). All three are first-party Google families so no manual font files are needed.
 - **The "Mobile application logo" slide** (frame 16) is mostly empty rectangles in the source — interpreted as a placeholder for a future app-icon explore.
 
+## Web patterns added by the site (kheelona.com, V3 — 2026-07-28)
+
+These are site recipes, not deck components, recorded here because this system is the single
+source of truth. Each lives in one component; hand-rolling the shape on the site is a review flag.
+
+| Pattern | What it is | Where it lives |
+|---|---|---|
+| **Room** | Content sits in a contained rounded panel on one warm backdrop, not in full-bleed washes. Fills: white, cream, cool, sun, orange (the orange one is the conversion moment and carries white text on `#C25210`). | `site/src/components/atoms/Room.tsx` |
+| **Answer block** | A question-led heading with its answer visible underneath in 40 to 60 words. Used where a parent's question deserves an answer in the open rather than behind an accordion. Schema may mirror only these visible answers. | `molecules/AnswerBlock.tsx` |
+| **Footnote + footnotes row** | Apple-style small print: a superscript marker in copy, an ordered list once per page. For claims that invite a follow-up question ("up to 10 languages", "6 months included"). Naming the limit is the trust signal. | `molecules/FootnotesRow.tsx` |
+| **Fact band** | A wide bordered panel, bold label left and explanation right, for one thing a parent must not miss. Two instances: the parenting-prompt band and the Kheelona+ band. | `molecules/KheelonaPlusBand.tsx` (and the /playos one-prompt band) |
+| **Age-chip lineup** | Product cards each carrying an age pill, threaded by a hairline on md+ so a row of products reads as one arc across ages rather than three unrelated things. | `organisms/FamilyGrid.tsx` |
+| **Placeholder mark** | Where art is commissioned but not delivered, a dashed circle with a plain label ("In the workshop") — never a stand-in render that could be mistaken for the real product. | `organisms/FamilyGrid.tsx` |
+
+Motion rules that bind these: transform and opacity only; no X translation on anything spanning
+the content column (it widens the layout viewport on phones); a directional reveal never sits on
+the element that owns the page's LCP; every animation has a reduced-motion path that shows the
+finished state.
+
 ## Palette sync checklist (kheelona.com, added 2026-07-10)
 
 The site keeps two mirrors of this palette. To change a color:
