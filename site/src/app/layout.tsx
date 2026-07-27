@@ -6,6 +6,7 @@ import { Footer } from "@/components/organisms/Footer";
 import { RevealObserver } from "@/components/molecules/RevealObserver";
 import { SiteBackdrop } from "@/components/atoms/SiteBackdrop";
 import { KheeluGuide } from "@/components/organisms/KheeluGuide";
+import { graph } from "@/lib/seo";
 
 const glory = localFont({
   // Upright faces only: italics are banned site-wide (R5 typography rule,
@@ -35,26 +36,27 @@ export const metadata: Metadata = {
   openGraph: {
     siteName: "Kheelona",
     type: "website",
+    /* GEO: India-first, and stated. "AI toy India" style queries reward an
+       explicit locale, and the offer (₹, WhatsApp, first 500 units) is only
+       true here. */
+    locale: "en_IN",
     images: [{ url: "/og.png", width: 1200, height: 630 }],
   },
   twitter: { card: "summary_large_image" },
 };
 
-const ORG_JSON_LD = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: "Kheelona",
-  url: "https://kheelona.com",
-  logo: "https://kheelona.com/brand/logo-mark.png",
-  sameAs: ["https://kheelona.ai"],
-};
+/* The entity graph moved to lib/seo.ts in the V3 SEO pass: every page now
+   emits the same Organization and WebSite nodes by @id, so an answer engine
+   builds ONE picture of the company (with the founders' credentials, which is
+   our strongest E-E-A-T signal) instead of a thin island per page. */
+const ORG_JSON_LD = graph();
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
-      lang="en"
+      lang="en-IN"
       suppressHydrationWarning
       className={`${glory.variable} ${instrumentSans.variable}`}
     >

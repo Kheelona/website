@@ -9,6 +9,7 @@ import { Reveal } from "@/components/molecules/Reveal";
 import { TiltCard } from "@/components/molecules/TiltCard";
 import { RecognitionStrip } from "@/components/organisms/RecognitionStrip";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
+import { graph, breadcrumbs } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Team: the parents who build",
@@ -112,6 +113,19 @@ function LinkedInIcon() {
 export default function TeamPage() {
   return (
     <>
+      {/* The founders are already entities in the Organization node (lib/seo),
+          so this page just declares itself as the about page for them. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            graph(
+              { "@type": "AboutPage", name: "The people who build Kheelona", url: "https://kheelona.com/team" },
+              breadcrumbs([{ name: "Team", path: "/team" }]),
+            ),
+          ),
+        }}
+      />
       {/* Manifesto hero (kheelona.ai framing, parent voice). Copy-only: the
           four founder photos below are this page's picture. */}
       <PageHero

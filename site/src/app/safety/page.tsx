@@ -11,6 +11,7 @@ import { Reveal } from "@/components/molecules/Reveal";
 import { Button } from "@/components/atoms/Button";
 import { Faq, type FaqEntry } from "@/components/molecules/Faq";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
+import { graph, faqPage, breadcrumbs } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Are AI toys safe? How Lumi by Kheelona is built to be",
@@ -119,22 +120,13 @@ const SAFETY_FAQ: FaqEntry[] = [
   { q: "Which safety standards does Lumi meet?", a: "Lumi is designed for COPPA, GDPR-K, and India's DPDP rules, and ISO 27001 certification is in progress. Formal toy-safety testing is underway, and the exact materials, standards, and certificates will be listed on this page before Lumi ships." },
 ];
 
-const SAFETY_JSON_LD = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: [
-    ...Object.values(ANSWERS).map((x) => ({
-      "@type": "Question",
-      name: x.q,
-      acceptedAnswer: { "@type": "Answer", text: x.a },
-    })),
-    ...SAFETY_FAQ.map((f) => ({
-      "@type": "Question",
-      name: f.q,
-      acceptedAnswer: { "@type": "Answer", text: f.a },
-    })),
-  ],
-};
+const SAFETY_JSON_LD = graph(
+  faqPage([
+    ...Object.values(ANSWERS).map((x) => ({ q: x.q, a: x.a })),
+    ...SAFETY_FAQ,
+  ]),
+  breadcrumbs([{ name: "Safety", path: "/safety" }]),
+);
 
 export default function SafetyPage() {
   return (

@@ -13,6 +13,7 @@ import { Reveal } from "@/components/molecules/Reveal";
 import { PhoneFrame } from "@/components/molecules/PhoneFrame";
 import { FamilyGrid } from "@/components/organisms/FamilyGrid";
 import { KheelonaPlusBand } from "@/components/molecules/KheelonaPlusBand";
+import { graph, faqPage, breadcrumbs } from "@/lib/seo";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 
 export const metadata: Metadata = {
@@ -85,17 +86,10 @@ const PRIVACY_CARDS = [
 const APP_ANSWER =
   "Everything the toy said and heard. The parent app gives you a summary of the day, the full conversation log word for word, and topic filters that decide what is open and what waits. It counts the new words your child learned and gives you one simple thing to do together each day. One app covers every Kheelona friend.";
 
-const JSON_LD = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: [
-    {
-      "@type": "Question",
-      name: "What can you see in the parent app?",
-      acceptedAnswer: { "@type": "Answer", text: APP_ANSWER },
-    },
-  ],
-};
+const JSON_LD = graph(
+  faqPage([{ q: "What can you see in the parent app?", a: APP_ANSWER }]),
+  breadcrumbs([{ name: "PlayOS", path: "/playos" }]),
+);
 
 export default function PlayOSPage() {
   return (
