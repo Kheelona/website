@@ -72,7 +72,10 @@ function FamilyCardInner({ member: m }: { member: FamilyMember }) {
           <span
             role="img"
             aria-label={m.alt}
-            className="grid h-[124px] w-[124px] place-items-center rounded-full border border-dashed border-ink-muted/40 text-center text-[13px] font-semibold leading-tight text-ink-muted"
+            /* text-ink, not text-ink-muted: at 13px on the 15% brand tints the
+               muted grey lands at ~3.9:1 and axe fails it (caught in the V3 QA
+               sweep). The tints are fixed by the palette, so the text darkens. */
+            className="grid h-[124px] w-[124px] place-items-center rounded-full border border-dashed border-ink-muted/50 text-center text-[13px] font-semibold leading-tight text-ink"
           >
             In the workshop
           </span>
