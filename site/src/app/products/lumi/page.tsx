@@ -11,15 +11,17 @@ import { CheckList } from "@/components/molecules/CheckList";
 import { Reveal } from "@/components/molecules/Reveal";
 import { ChatDemo } from "@/components/molecules/ChatDemo";
 import { Faq, type FaqEntry } from "@/components/molecules/Faq";
+import { KheelonaPlusBand } from "@/components/molecules/KheelonaPlusBand";
+import { FootnotesRow, V3_FOOTNOTES, Footnote } from "@/components/molecules/FootnotesRow";
 import { FeelingsGallery } from "@/components/organisms/FeelingsGallery";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { ParentQuotes } from "@/components/organisms/ParentQuotes";
 import { PREORDER_HREF, RESERVE_LABEL, PRICE_CAPTION, LAUNCH_PRICE, LATER_PRICE } from "@/config/site";
 
 export const metadata: Metadata = {
-  title: "Meet Lumi by Kheelona: the talking plush friend for ages 3 to 10",
+  title: "Meet Lumi by Kheelona: the talking plush friend for ages 2 to 5",
   description:
-    "Lumi is a screen-free talking companion. It listens, answers, then asks the next question, in up to 10 home languages. Reserve at ₹4,999, no payment now.",
+    "Lumi is a screen-free talking friend for ages 2 to 5. It listens, answers, then asks the next question, and slips learning into the play. Reserve at ₹4,999, no payment now.",
   alternates: { canonical: "/products/lumi" },
 };
 
@@ -31,7 +33,7 @@ export const metadata: Metadata = {
 const DOES = [
   { h: "Real conversation", b: "Lumi listens, answers, and asks the next question." },
   { h: "Stories on demand", b: "A new story whenever your child wants one." },
-  { h: "Lessons that feel like play", b: "Numbers, words, and why the sky is blue." },
+  { h: "Lessons that feel like play", b: "Numbers, words, and why the sky is blue. Stories your child can be quizzed on." },
   { h: "Songs and rhymes", b: "The ones you grew up with, and new ones too." },
   { h: "Offline adventures", b: "Play that does not need the internet." },
   { h: "Bluetooth music", b: "Your playlist, through Lumi's speaker." },
@@ -45,6 +47,15 @@ const HOW_IT_ANSWERS = [
 ] as const;
 
 const MODES = ["Companion", "Storyteller", "Teacher"] as const;
+
+/* The Kheelu-mode exchange (V3). Same script as Home's learning room, so a
+   parent who saw it there recognises it here. Quoted toy and child speech keeps
+   its natural contractions — the sanctioned exemption. */
+const KHEELU_MODE_DEMO = [
+  { who: "lumi" as const, text: "And the slow tortoise crossed the line first. Why do you think the hare lost?" },
+  { who: "child" as const, text: "He went to sleep!" },
+  { who: "lumi" as const, text: "He did. If you were the hare, what would you do?" },
+] as const;
 
 const APP_FEATURES = [
   { title: "A daily summary", body: "One card each evening. What your child talked about, what made them laugh, what they asked." },
@@ -60,7 +71,7 @@ const FAQ_ITEMS: FaqEntry[] = [
   { q: "Is Lumi safe for my child?", a: "Lumi wakes to a word, thinks on the device first, and answers from a closed library. There is a safety check on every reply, and you can read or delete anything." },
   { q: "Does Lumi need the internet?", a: "No. Lumi plays offline. You connect only to download new content or updates, and you decide when." },
   { q: "What languages does Lumi speak?", a: "The languages you speak at home. Up to ten of them, and Lumi can switch mid-sentence." },
-  { q: "What ages is Lumi for?", a: "Ages 3 to 10. Lumi meets younger children where they are and grows up with them." },
+  { q: "What ages is Lumi for?", a: "Ages 2 to 5. Lumi meets your child where they are, and the family of friends grows with them to 14." },
   { q: "Can I read the conversations?", a: "Yes. The full log stays private to you, in the parent app." },
   { q: "Do you sell our data?", a: "No. Never sold, never used to sell your child anything. That is the whole point." },
   { q: "What if my child breaks it?", a: "Lumi is built for small hands and rough days. Warranty details land closer to launch." },
@@ -68,6 +79,8 @@ const FAQ_ITEMS: FaqEntry[] = [
   { q: "How much does Lumi cost?", a: "₹4,999 at launch if you reserve now. ₹9,999 after launch. You pay nothing today. We hold the price, you hold your place." },
   { q: "Do I have to pay anything now?", a: "No. Reserving holds your price and your place, and it does not commit you to buy. You can leave the list anytime." },
   { q: "What is PlayOS?", a: "The platform Lumi runs on. It gives each character a voice and a personality, and keeps every answer right for your child's age." },
+  { q: "Does Lumi need a subscription?", a: "Every Lumi includes 6 months of Kheelona+, the stories, lessons, languages, and the parent app. The monthly price after that is announced before launch. Nothing renews without you." },
+  { q: "What is Kheelona+?", a: "The content and the controls: stories, lessons, language packs, and the parent app that shows you the learning. It is included free for the first 6 months with every Lumi." },
   { q: "Why reserve now?", a: "The first 500 units are ₹4,999. After launch it is ₹9,999. There is no payment today." },
 ];
 
@@ -79,7 +92,7 @@ const JSON_LD = {
       name: "Lumi by Kheelona",
       brand: { "@type": "Brand", name: "Kheelona" },
       description:
-        "A screen-free talking companion for children aged 3 to 10 that holds a real conversation in up to 10 home languages, with a parent app that shows you everything.",
+        "A screen-free talking friend for children aged 2 to 5 that holds a real conversation in up to 10 home languages, carries stories and lessons they can be quizzed on, and comes with a parent app that shows you everything.",
       image: "https://kheelona.com/product/lumi-blue-2.png",
       offers: {
         "@type": "Offer",
@@ -121,7 +134,7 @@ export default function LumiPage() {
               eyebrow="The talking friend"
               title="Meet Lumi. The friend who listens first."
               titleClassName="mb-5"
-              lede="A talking friend for ages 3 to 10. No screen, ever. Lumi listens, answers, then asks the next question."
+              lede="A talking friend for ages 2 to 5. No screen, ever. Lumi listens, answers, then asks the next question."
               ledeClassName="mb-7 max-w-[58ch]"
             />
             <Button href={PREORDER_HREF}>{RESERVE_LABEL}</Button>
@@ -169,6 +182,25 @@ export default function LumiPage() {
               .
             </p>
           </Reveal>
+        </Room>
+
+        {/* V3: the education fold, mirroring Home's learning room. The loop is
+            the proof — a claim about learning that a parent can watch. */}
+        <Room fill="white" id="kheelu-mode" guide="curious" say="This is the part where the games are secretly lessons." reveal="left">
+          <div className="grid items-start gap-10 md:grid-cols-[1fr_1.05fr]">
+            <Reveal>
+              <SectionHeading
+                eyebrow="Kheelu mode"
+                title="Stories that ask questions back."
+                titleClassName="mb-4 max-w-[18ch]"
+                lede="Kheelu mode fills Lumi with stories and lessons your child can interrupt, question, and be quizzed on, offline. New packs arrive over time."
+                ledeClassName="max-w-[52ch]"
+              />
+            </Reveal>
+            <Reveal delay={0.08}>
+              <ChatDemo turns={KHEELU_MODE_DEMO} />
+            </Reveal>
+          </div>
         </Room>
 
         <Room fill="white" reveal="left">
@@ -243,7 +275,7 @@ export default function LumiPage() {
             <SectionHeading
               title="You see every conversation. You decide what Lumi does next."
               titleClassName="mb-3 max-w-[24ch]"
-              lede="The parent app is your window into every conversation, and your hand on every dial: new words, how long you talked, what made them laugh."
+              lede="The parent app is your window into every conversation, and your hand on every dial. The new words your child learned are counted for you, you get one simple thing to do together each day, and if something ever needs your attention, you hear about it first."
               ledeClassName="mb-11 max-w-[58ch]"
             />
           </Reveal>
@@ -260,6 +292,9 @@ export default function LumiPage() {
               </Reveal>
             ))}
           </div>
+          <Reveal className="mt-8">
+            <KheelonaPlusBand footnote={2} />
+          </Reveal>
         </Room>
 
         <Room fill="white" reveal="right">
@@ -308,13 +343,21 @@ export default function LumiPage() {
             <SectionHeading
               title="Questions parents ask."
               titleClassName="mb-3"
-              lede="Honest answers, in plain words. Anything else, ask us anytime."
+              lede={
+                <>
+                  Honest answers, in plain words. Two of them carry small print
+                  below: the languages
+                  <Footnote n={1} id="fn-languages" /> and Kheelona+
+                  <Footnote n={2} id="fn-kheelona-plus" />.
+                </>
+              }
               ledeClassName="mb-10 max-w-[58ch]"
             />
           </Reveal>
           <Reveal className="mx-auto max-w-[820px]">
             <Faq items={FAQ_ITEMS} />
           </Reveal>
+          <FootnotesRow items={V3_FOOTNOTES} className="mx-auto mt-10 max-w-[820px] border-t border-line-soft pt-6" />
         </Room>
 
         <Room
