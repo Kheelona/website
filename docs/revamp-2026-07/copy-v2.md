@@ -1,5 +1,14 @@
 # Production copy v2 — theme B voice, all routes (2026-07-24)
 
+> **⚠ SUPERSEDED — do not build from this file.** `docs/revamp-2026-07/BUILD-V3.md` replaced it on
+> 2026-07-27/28 and wins on every conflict. This document is kept as the record of the theme-B M2–M4
+> copy round. Specifically dead here: **"Ages are 3 to 10 everywhere"** (Lumi is **2 to 5**, the
+> platform arc **2 to 14** — render from `LUMI_AGES`/`PLATFORM_AGES`), the Lori/Lua/Robu line-up on
+> .com (now Lumi → Kheelu Speaker → AI books), the "ten families test Lumi every day" proof point
+> (withdrawn by the founder), and anything about the Home hero, which V3 rebuilt. Voice law, the one
+> CTA verb, and the provenance-tag system below are still in force.
+
+
 The build transplants THIS document verbatim (M2–M4). Provenance tags: **[seed]** =
 `docs/wireframes/2026-07/copy.json` (founder-picked wireframe round, CMO + editor pass) ·
 **[fact]** = already published on the live site or kheelona.ai (sanctioned) · **[NEW]** = written

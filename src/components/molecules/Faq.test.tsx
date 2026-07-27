@@ -1,10 +1,11 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Faq } from "./Faq";
+import { LUMI_AGES } from "@/config/site";
 
 const items = [
   { q: "Is Lumi screen-free?", a: "Yes. Lumi never shows a screen." },
-  { q: "What ages is Lumi for?", a: "Lumi is built for children ages 3 to 6." },
+  { q: "What ages is Lumi for?", a: `Lumi is built for children ages ${LUMI_AGES}.` },
 ];
 
 describe("Faq", () => {

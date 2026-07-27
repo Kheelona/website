@@ -20,13 +20,15 @@ the same day: the home hero plush was rendering as a broken image on the review 
 legacy redirect was intercepting our own product images. That fix is committed and pushed on
 `main` and `demo-website`, waiting on this setting.
 
-## THE REVAMP (2026-07-24) — theme B build IN PROGRESS; these are yours
+## THE REVAMP (2026-07-24) — theme B + V3 are BUILT, MERGED to `main` and verified; these are yours
 
 Status + everything already decided: `docs/revamp-2026-07/WORKING.md`.
 
-**► REVIEW IT NOW: https://website-hdn2.vercel.app** (updated 2026-07-25). The whole site is
-rebuilt on theme B: Home, /products/lumi, and all 8 interior routes. What to know while you
-look:
+**► REVIEW URL: https://website-hdn2.vercel.app** — but read #0 first. It is currently serving a
+**pre-fix bundle** (last successfully built 2026-07-25), so the home hero shows a broken image
+where Lumi should be. That is fixed and pushed; it reaches the URL when the Root Directory setting
+is cleared. The whole site is rebuilt on theme B plus the V3 repositioning: Home,
+/products/lumi, and all 8 interior routes. What to know while you look:
 - The reserve panel still shows the "opens soon" card and GA4 is not measuring, because the two
   `NEXT_PUBLIC_*` env vars are not set in Vercel (items 1 and 2 below).
 - The Home hero uses INTERIM composed art until REV-a lands, so Kheelu appears twice there.

@@ -6,6 +6,11 @@
 
 ---
 
+> **In THIS repo (kheelona.com):** the app is at the **repo root** — `package.json`,
+> `next.config.ts`, `src/`, `public/`, `test/`, `.storybook/`. It used to be in `site/`;
+> that moved on 2026-07-28 (`docs/standards/STRUCTURE-MAP.md` has the translation rule and
+> `docs/checkpoints/repo-root-move-2026-07-28.md` the reason). So `my-app/` below = the repo root.
+
 ## 1. Core principles
 
 Before the folders, the rules that decide the folders:
