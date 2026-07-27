@@ -58,7 +58,12 @@ Bengaluru." in the footer. Lumi's age band now reads 2 to 5 everywhere.
 
 Spec: `docs/revamp-2026-07/BUILD-V3.md`. **Your gates, all of which BLOCK merge to main
 (the preview is fine):**
-- **V3-a. Real testimonials** — the site will carry three named quote slots (Shweta,
+- **V3-a. Real testimonials — FOUNDER DECIDED 2026-07-28: the drafted quotes STAY LIVE as they
+  are.** Raised once, when the site went public, on the ground that three quotes attributed to
+  named people (Shweta, Priyamvada, Gaurav, labelled "Pilot parent") read as real endorsements
+  and are not marked as illustrative. The founder's call is to leave them. Recorded so nobody
+  re-raises it or "fixes" it. Real quotes are still welcome and swap in cleanly.
+- **V3-a (original wording). Real testimonials** — the site will carry three named quote slots (Shweta,
   Priyamvada, Gaurav) with clearly-marked placeholder text you asked for. Send each person's
   real words + consent and they replace the placeholders verbatim.
 - **V3-b. Kheelona+ facts** — the site says only "6 months included, monthly price announced

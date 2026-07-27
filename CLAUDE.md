@@ -12,13 +12,20 @@ repo root. That old app is preserved at the tag **`pre-revamp-2026-07`** and its
 - **Work on `main`.** `demo-website` exists only as the Vercel preview branch
   (https://website-hdn2.vercel.app) and additionally carries the `/a` `/b` `/c` wireframe drafts.
   Keep it in sync by MERGING main into it, never force-push.
-- **⚠ NOTHING DEPLOYS RIGHT NOW, AND NO CODE CHANGE WILL FIX IT.** Vercel's **Root Directory** is
-  still `site`, a path that no longer exists, so pushes do not become deployments. It must be
-  cleared to the repo root and redeployed — a dashboard action, and **Vercel is the founder's**
-  (never run the Vercel CLI; push to GitHub and hand over the setting). See **FOUNDER-TODO #0** and
-  the `vercel-root-directory` blocker in `project-state.json`. The preview therefore still serves a
-  pre-fix bundle whose home hero is a broken image; both branches are pushed and verified locally.
-- **Nothing is live to customers yet either**: kheelona.com DNS does not point at Vercel (founder gate).
+- **🟢 THE SITE IS LIVE TO CUSTOMERS** at https://www.kheelona.com (2026-07-28; `kheelona.com`
+  307s to `www`). DNS is pointed and the Vercel Root Directory is fixed. **The pre-order form works**
+  (Tally `Y5XW7J`, set as `NEXT_PUBLIC_TALLY_FORM_URL` in Vercel production only — the preview still
+  shows the "opens soon" card, which is expected). Both analytics tools verified on the real domain.
+  Treat every change from here as a change to a live commercial site: it takes real reservations.
+- **Vercel is the founder's** — never run the Vercel CLI. Push to GitHub and hand over any dashboard
+  change. Same shape as the Gemini gate.
+- **Verifying Vercel Web Analytics**: it loads from a per-project **obfuscated path**
+  (`/8f88bf018d5e772b/script.js`), not `/_vercel/insights/`, because Vercel randomizes it to survive
+  ad blockers. Grep for `window.vai` or that hash, never the literal insights path, or you will
+  wrongly conclude it is missing.
+- **Live testimonials are drafted words on named people** (Shweta, Priyamvada, Gaurav, "Pilot
+  parent"). Raised with the founder when the site went public; **their decision is to leave them
+  as-is** (FOUNDER-TODO V3-a). Do not re-raise it and do not remove them.
 - **The spec that built this**: `docs/revamp-2026-07/BUILD-V3.md` (it wins over `copy-v2.md` and
   older copy laws). Status and the restart guide: `docs/revamp-2026-07/WORKING.md`.
 - **Locked product facts**: Lumi is ages **2 to 5**, the platform arc is **2 to 14** (both "3 to 6"
