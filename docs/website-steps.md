@@ -421,3 +421,22 @@ slugs, including multi-segment ones. `test/redirects-vs-assets.test.ts` cross-ch
 redirect source against every `public/` directory and fails on exactly this shape; it was verified
 by reintroducing the bug. Adding a redirect whose first segment names an asset directory is a
 review flag.
+
+**8.21-c WEB ANALYTICS (2026-07-28, founder request).** `<Analytics />` from
+`@vercel/analytics/next` is mounted as the **last element in the body** of `src/app/layout.tsx`.
+Placement is deliberate: it injects its script client-side via an effect, and the body tail keeps
+it behind the hero image, which owns mobile LCP (§8.19). It takes no env var and reports only from
+a Vercel deployment with Web Analytics enabled; locally the injected
+`/_vercel/insights/script.js` 404s, which is expected and harmless (Vercel serves that path at the
+edge). Verified in Chrome: the script element is injected `defer async`, `window.va` is a function,
+one pageview queued, hero image still loads.
+
+Two consequences that are law, not preference:
+1. **The privacy page has to say so.** /privacy promises plain words about what is collected, so it
+   carries a "How we measure visits" section naming Vercel Web Analytics and what it records. Any
+   future measurement tool must land in that section in the same breath as the code.
+2. **GA4 remains unimplemented, and the docs now say that.** There is no gtag snippet in `src/`;
+   `TallyEmbed`'s `preorder_view` stub pushes to a `window.gtag` that nothing defines, so
+   `NEXT_PUBLIC_GA4_MEASUREMENT_ID` measures nothing. Older notes claiming "the GA4 id starts
+   measuring" were wrong and are corrected in CLAUDE.md and FOUNDER-TODO #8. If GA4 is ever wired,
+   it needs consent handling that Vercel's cookieless product does not.

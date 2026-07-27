@@ -29,7 +29,9 @@ Status + everything already decided: `docs/revamp-2026-07/WORKING.md`.
 where Lumi should be. That is fixed and pushed; it reaches the URL when the Root Directory setting
 is cleared. The whole site is rebuilt on theme B plus the V3 repositioning: Home,
 /products/lumi, and all 8 interior routes. What to know while you look:
-- The reserve panel still shows the "opens soon" card and GA4 is not measuring, because the two
+- Visitor counting is now live through Vercel Web Analytics, which needs nothing from you beyond
+  keeping it enabled in the dashboard. GA4 is a separate, optional thing and is NOT wired (item 8).
+- The reserve panel still shows the "opens soon" card, because the two
   `NEXT_PUBLIC_*` env vars are not set in Vercel (items 1 and 2 below).
 - The Home hero uses INTERIM composed art until REV-a lands, so Kheelu appears twice there.
 - Gated copy is deliberately live on this preview and does not reach `main` until you sign off:
@@ -122,7 +124,8 @@ Spec: `docs/revamp-2026-07/BUILD-V3.md`. **Your gates, all of which BLOCK merge 
 
 Direction picked (Lumi's World + pop-up elements), both models generated and verified, Home rebuilt as the immersive journey, ribbon nav removed on your feedback. Merged to `master`, temp-live for feedback per your call.
 
-**Deployed (2026-07-10; branch updated to the theme-B revamp on 2026-07-25):** https://website-hdn2.vercel.app — GitHub `Kheelona/website`, branch `demo-website`, Vercel Root Directory = repo root (was `site`; the app moved on 2026-07-28). That URL now serves the revamp, not this redesign; the redesign remains on `main`. Still yours when ready: the two `NEXT_PUBLIC_*` env vars in Vercel (Tally URL makes the reserve form go live; GA4 id starts measuring) and pointing kheelona.com DNS when this stops being temporary. The wireframe round (`design-concepts/round-2-immersive/`) and model kit (`3d-handoff/`) stay in the repo as the design record.
+**Deployed (2026-07-10; branch updated to the theme-B revamp on 2026-07-25):** https://website-hdn2.vercel.app — GitHub `Kheelona/website`, branch `demo-website`, Vercel Root Directory = repo root (was `site`; the app moved on 2026-07-28). That URL now serves the revamp, not this redesign; the redesign remains on `main`. Still yours when ready: the two `NEXT_PUBLIC_*` env vars in Vercel (the Tally URL makes the reserve form go live; the GA4 id measures nothing until GA4 is actually
+wired, item 8 — visitor counting already works through Vercel Web Analytics) and pointing kheelona.com DNS when this stops being temporary. The wireframe round (`design-concepts/round-2-immersive/`) and model kit (`3d-handoff/`) stay in the repo as the design record.
 
 Everything below is the pre-existing launch list; it all carries over to the redesigned site unchanged.
 
@@ -179,8 +182,18 @@ Footer currently omits contact entirely (better than "pending").
 ## 7. The 10 languages list (unlocks: the top AEO answer for India)
 "Which languages does Lumi speak?" currently answers "ten." Naming them is the single best answer-engine content on this product. Send the list.
 
-## 8. GA4 measurement ID (unlocks: measuring conversion)
-Create a GA4 property, put the `G-...` id in `.env` as `NEXT_PUBLIC_GA4_MEASUREMENT_ID`. Event stubs (`preorder_view` etc.) are already wired; the gtag snippet gets added when the ID exists. Also: verify Search Console after deploy.
+## 8. GA4 measurement ID — OPTIONAL now, and honestly reported (unlocks: conversion funnels)
+**Traffic is already measured.** Vercel Web Analytics went in on 2026-07-28 (`<Analytics />` in
+the app layout), so page views, visitors, referrers and countries appear in your Vercel dashboard
+with no key from you. It is cookieless, and /privacy now states what it collects.
+
+GA4 would add what Vercel Analytics does not do: custom conversion events and funnels. **Correcting
+an older claim on this line: GA4 is NOT wired.** There is no gtag snippet anywhere in the app; the
+`preorder_view` stub in `TallyEmbed` pushes to a `window.gtag` that nothing defines. So setting
+`NEXT_PUBLIC_GA4_MEASUREMENT_ID` today measures nothing. If you want GA4, create the property and
+share the `G-...` id, and the snippet plus consent handling gets built then. If you do not, Vercel
+Analytics is enough to see whether the pre-order page is working. Either way: verify Search Console
+after deploy (V3-g).
 
 ## 9. Judge the 3D mascot (regenerated 2026-07-07)
 The two-faced v1 was regenerated from cleaned multi-view inputs; the new model (idle animation, single face, sharper texture) is live in the home hero, and a Lumi plush 3D turntable is on /products/lumi. Judge both on http://localhost:3456. Retry credits remain (745 left) if anything bothers you.

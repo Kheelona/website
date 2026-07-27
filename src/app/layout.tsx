@@ -6,6 +6,7 @@ import { Footer } from "@/components/organisms/Footer";
 import { RevealObserver } from "@/components/molecules/RevealObserver";
 import { SiteBackdrop } from "@/components/atoms/SiteBackdrop";
 import { KheeluGuide } from "@/components/organisms/KheeluGuide";
+import { Analytics } from "@vercel/analytics/next";
 import { graph } from "@/lib/seo";
 
 const glory = localFont({
@@ -83,6 +84,12 @@ export default function RootLayout({
             old StickyMobileCTA (same hide-at-#reserve contract) */}
         <KheeluGuide />
         <RevealObserver />
+        {/* Vercel Web Analytics: page views and visitors, cookieless, no
+            cross-site tracking and no fingerprinting. Last element in the body
+            so its script never competes with the hero image, which owns mobile
+            LCP (§8.19). It only reports from a Vercel deployment; locally it is
+            a no-op. What it collects is stated on /privacy. */}
+        <Analytics />
       </body>
     </html>
   );

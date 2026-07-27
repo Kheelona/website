@@ -33,6 +33,16 @@ const SECTIONS: readonly LegalSection[] = [
     ],
   },
   {
+    /* Added with Vercel Web Analytics (2026-07-28). The page promises plain
+       words about what we collect, so measuring visits has to be stated here
+       rather than left implicit. */
+    h: "How we measure visits",
+    ps: [
+      "We count page views and visits so we can see which parts of this site actually help you decide. The service we use is Vercel Web Analytics. It sets no cookies, it does not follow you to other sites, and it does not build a profile of you.",
+      "What it records is the page you looked at, your country, your browser, and where the visit came from. It never sees your name, your email, or anything you type into the reservation form.",
+    ],
+  },
+  {
     h: "What we never do",
     ps: [
       "We never sell your data. We never sell your child's data. We do not run ads with it, trade it, or share it with anyone who is not helping us deliver Lumi to you.",

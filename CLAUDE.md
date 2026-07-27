@@ -96,7 +96,14 @@ Rules for any change:
   the repo root). Env vars + DNS are still founder-gated, FOUNDER-TODO #2.
 
 ## Env
-Root `.env` (gitignored, DUMMY values until founder fills them): `TRIPO_API_KEY` (unused — mascot pipeline went through the Tripo web UI instead, see `design-concepts/README.md`), `NEXT_PUBLIC_TALLY_FORM_URL`, `NEXT_PUBLIC_GA4_MEASUREMENT_ID`. Site reads the two `NEXT_PUBLIC_*` vars (`.env.example` mirrors them; `TallyEmbed` treats values containing "DUMMY" as unconfigured).
+Root `.env` (gitignored, DUMMY values until founder fills them): `TRIPO_API_KEY` (unused — mascot pipeline went through the Tripo web UI instead, see `design-concepts/README.md`), `NEXT_PUBLIC_TALLY_FORM_URL`, `NEXT_PUBLIC_GA4_MEASUREMENT_ID` (`.env.example` mirrors them).
+**Only the Tally one is wired**: `TallyEmbed` reads it and treats values containing "DUMMY" as
+unconfigured. **GA4 is declared but NOT implemented** — no gtag snippet exists anywhere in `src/`;
+`TallyEmbed` only pushes events to a `window.gtag` that nothing defines. Setting that env var
+therefore measures nothing today (FOUNDER-TODO #8 says so now). **Vercel Web Analytics IS live**
+(`<Analytics />` from `@vercel/analytics/next`, last element in the body of `src/app/layout.tsx`)
+and needs no env var: it reports whenever the app runs on a Vercel deployment with Web Analytics
+enabled, and is a no-op locally. What it collects is stated on /privacy.
 
 ## Docs map
 - `docs/standards/` — BINDING production standards: `PROJECT_STRUCTURE.md`, `COMPONENT_GUIDELINES.md`, and `STRUCTURE-MAP.md` (old→new path translation for the `src/` reorg). See the "Production structure & standards" section above.

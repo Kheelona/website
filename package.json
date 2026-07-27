@@ -17,6 +17,7 @@
     "@radix-ui/react-dialog": "^1.1.19",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.1",
+    "@vercel/analytics": "^2.0.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.24.0",
     "motion": "^12.42.2",
