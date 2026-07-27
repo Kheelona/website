@@ -46,7 +46,15 @@ export function TallyEmbed() {
       <iframe
         src={embedUrl}
         title="Reserve Lumi: the pre-order form"
-        className="h-[560px] w-full"
+        /* Measured against the real form, not guessed: the live embed
+           (6 fields + Submit, hideTitle=1) is 886px tall. At the old 560px the
+           City field and the SUBMIT BUTTON sat below the iframe's own fold,
+           reachable only by scrolling inside the frame — which plenty of people
+           never realise they can do, on the one panel the whole site exists to
+           convert. The headroom above 886px absorbs validation messages, which
+           push fields down on a failed submit. Re-measure if fields change:
+           open the embed URL directly and read documentElement.scrollHeight. */
+        className="h-[960px] w-full"
         onLoad={() => { setLoaded(true); track("preorder_view"); }}
       />
       <p className="px-6 pb-4 text-[14px] text-ink-muted">
