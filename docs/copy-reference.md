@@ -185,3 +185,19 @@ music?" mirrors into the FAQPage schema, and /llms.txt now lists the three modes
 **Gate discipline**: Bluetooth is framed as a MODE and never as what a family is left with if
 Kheelona+ lapses. That would be a post-lapse claim, which V3-b still gates. A test asserts the
 section contains no "without a subscription / still works / expires" framing.
+
+## Web analytics privacy copy (2026-07-28)
+
+**New section on /privacy: "How we measure visits"** [NEW]. Written when Vercel Web Analytics was
+installed at the founder's request. The page's promise is plain words about what Kheelona collects,
+and "That is the whole list" in the section above it is scoped to the reservation form, so silently
+adding site measurement would have made the page misleading by omission.
+
+Two paragraphs, both checked against what the product actually does rather than what reads well:
+counting page views and visits; naming Vercel Web Analytics; no cookies, no cross-site following,
+no profile; and what it records (page, country, browser, where the visit came from) with the
+explicit line that it never sees a name, an email, or anything typed into the reservation form,
+which is true because the form is a Tally iframe.
+
+Voice: no em-dashes, no italics, no contractions, second person present. Counsel review of /privacy
+(an existing launch gate) now has to cover this section too.
