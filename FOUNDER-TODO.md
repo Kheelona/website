@@ -18,6 +18,11 @@ look:
 - One thing to judge: at around 1200px browser width the Kheelu guide covers the first ~100px of
   the room text column and hides a few words per line. It is clean on wider screens. Say the
   word and he shrinks and shifts on narrow desktops.
+- **Phones were fixed on 2026-07-25** after you flagged them: the page no longer slides sideways,
+  the bottom Kheelu bar is one line with its Reserve button fully on screen, nothing is cropped
+  on the right, and the "How Lumi compares" table is now one card per claim instead of a table
+  you had to swipe. Checked at 320/360/390/430px on every route. **Please re-check on your own
+  phone** — that is the one thing emulation cannot confirm.
 
 - **REV-a. Hero art (the one that unblocks the new Home hero)** — run the kit in
   `gemini-handoff/hero-2026-07/README.md` (3 reference images + one prompt + a 4K follow-up),
