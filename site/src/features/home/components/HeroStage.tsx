@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { cn } from "@/lib/cn";
+import { Footnote } from "@/components/molecules/FootnotesRow";
 
 /** The hero art stage (revamp M2, founder brief pointer 2): Kheelu talking
  *  to Lumi on the right, a few fact bubbles around them.
@@ -16,7 +17,7 @@ import { cn } from "@/lib/cn";
  *  desktops and hidden on phones so nothing competes with the LCP paint. */
 const BUBBLES = [
   { text: "No screen, ever.", pos: "left-[-6%] top-[4%]", delay: "0s" },
-  { text: "Up to 10 home languages.", pos: "right-[-4%] top-[28%]", delay: "2s" },
+  { text: "Up to 10 home languages.", pos: "right-[-4%] top-[28%]", delay: "2s", footnote: 1 },
   { text: "You read every word.", pos: "left-[-2%] bottom-[14%]", delay: "4s" },
 ] as const;
 
@@ -54,6 +55,11 @@ export function HeroStage({ className }: { className?: string }) {
           style={{ animationDelay: b.delay }}
         >
           {b.text}
+          {/* V3: the languages claim carries its footnote marker — the full
+              list is founder-gated, and saying so is the trust signal */}
+          {"footnote" in b && b.footnote ? (
+            <Footnote n={b.footnote} id="fn-languages" />
+          ) : null}
         </p>
       ))}
     </div>

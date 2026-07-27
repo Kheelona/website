@@ -5,7 +5,7 @@ describe("ParentAppSection", () => {
   it("renders the heading and app chips", () => {
     render(<ParentAppSection />);
     expect(
-      screen.getByRole("heading", { name: /Parents stay in the loop\./i }),
+      screen.getByRole("heading", { name: /You can see the learning/i }),
     ).toBeInTheDocument();
     expect(screen.getByText("Conversation log")).toBeInTheDocument();
     expect(

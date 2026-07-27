@@ -13,8 +13,8 @@ import { KHEELU_POSES, kheeluPoseSrc } from "@/lib/kheelu-poses";
  *  facts — no new claims. */
 const MOMENTS = [
   { label: "Morning", text: "Why is the sky blue? Lumi answers, then asks one back." },
-  { label: "After school", text: "A new story, made to order." },
-  { label: "Homework hour", text: "Numbers and words that feel like a game." },
+  { label: "After playschool", text: "A new story, made to order." },
+  { label: "Counting time", text: "Numbers and rhymes that feel like a game." },
   { label: "Evening", text: "Songs you grew up with, and new ones too." },
   { label: "On the train", text: "No internet needed. Lumi plays offline." },
   { label: "Bedtime", text: "One last story, lights low." },

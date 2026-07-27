@@ -5,7 +5,13 @@ import { CurveDivider } from "@/components/atoms/CurveDivider";
 import { Reveal } from "@/components/molecules/Reveal";
 import { KheeluSays } from "@/components/molecules/KheeluSays";
 import { TallyEmbed } from "@/components/molecules/TallyEmbed";
-import { LAUNCH_PRICE, LATER_PRICE } from "@/config/site";
+import {
+  LAUNCH_PRICE,
+  LATER_PRICE,
+  KHEELONA_PLUS_SHORT,
+  WHATSAPP_SHARE_HREF,
+  WHATSAPP_SHARE_LABEL,
+} from "@/config/site";
 
 /** The conversion finale (Concept C treatment), id="reserve" on every page.
  *  `variant="full"` (Home, Lumi): big headline + lineup.
@@ -31,6 +37,7 @@ export function FinaleCTA({
   from = "white",
   kheeluLine,
   bare = false,
+  share = true,
 }: {
   variant?: "full" | "compact";
   from?: "white" | "cream" | "cool" | "sun";
@@ -38,6 +45,8 @@ export function FinaleCTA({
   /** Revamp M2: content-only, for composition inside a Room fill="orange"
    *  (the Room then owns id="reserve" and the white-text paint). */
   bare?: boolean;
+  /** V3: the WhatsApp share line under the consent print. */
+  share?: boolean;
 }) {
   const content = (
     <>
@@ -58,12 +67,32 @@ export function FinaleCTA({
         </Reveal>
         {kheeluLine && <KheeluSays line={kheeluLine} className="mb-2" />}
         <Reveal className="max-w-[680px] text-left">
+          {/* V3: the deal on the subscription, said before the form and not
+              after the purchase (gate V3-b keeps the price out) */}
+          <p className="mb-4 text-[15px] font-medium text-white">
+            {KHEELONA_PLUS_SHORT}
+          </p>
           <TallyEmbed />
           {/* Founder to confirm wording matches the Tally consent copy. */}
           <p className="mt-3 text-[15px] font-medium text-white">
             Your WhatsApp number is only for updates about your reservation.
             You can leave the list anytime.
           </p>
+          {/* V3: the one growth loop a pre-launch site can honestly run —
+              WhatsApp is where Indian parents already pass things along, and it
+              needs no backend, no counter, and no invented numbers. */}
+          {share && (
+            <p className="mt-5 text-[15px] font-medium text-white">
+              <a
+                href={WHATSAPP_SHARE_HREF}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+              >
+                {WHATSAPP_SHARE_LABEL}
+              </a>
+            </p>
+          )}
         </Reveal>
       {variant === "full" && (
         <div

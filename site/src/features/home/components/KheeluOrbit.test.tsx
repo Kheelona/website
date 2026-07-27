@@ -4,7 +4,7 @@ import { KheeluOrbit } from "./KheeluOrbit";
 describe("KheeluOrbit", () => {
   it("renders all six day moments in reading order", () => {
     render(<KheeluOrbit />);
-    const labels = ["Morning", "After school", "Homework hour", "Evening", "On the train", "Bedtime"];
+    const labels = ["Morning", "After playschool", "Counting time", "Evening", "On the train", "Bedtime"];
     const rendered = screen.getAllByText(new RegExp(`^(${labels.join("|")})$`)).map((el) => el.textContent);
     expect(rendered).toEqual(labels);
   });
