@@ -22,3 +22,14 @@ Design/product-images/Kheelona photoshoot 2025/
 docs/snapshots/
 3d-handoff/exports/
 design-concepts/round-2-immersive/previews/
+
+# Agent skill packages (2026-07-28 cleanup). These are tooling, not the website,
+# and every one is reinstallable from skills-lock.json (which IS tracked, with a
+# source and hash per skill). Keeping ~3MB of vendored markdown out of the repo.
+.agents/skills/
+.claude/skills/
+.codex/skills/
+
+# The founder brief exists here as a PDF (tracked, because docs reference it by
+# name). The .docx is the same content in editable form — no need for both.
+*.docx
