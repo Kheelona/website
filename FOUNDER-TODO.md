@@ -2,6 +2,24 @@
 
 Each item unlocks something specific. Ordered by launch impact.
 
+## ► #0 — THE ONE THING BLOCKING EVERY DEPLOYMENT (2 minutes, Vercel dashboard)
+
+**Set the project's Root Directory to empty (the repo root).** In Vercel → the project →
+Settings → Build and Deployment → Root Directory: clear the value (it says `site`), save, then
+Deployments → Redeploy.
+
+Why: Vercel decides "is this a Next.js app?" by reading `package.json` from the Root Directory.
+The app used to be in `site/`, so a project pointing at the repo root failed every build with
+"No Next.js version detected" — that is the error you sent. On 2026-07-28 the app moved to the
+repo root to match, which means a project still pointing at `site` now finds an empty path. Both
+settings must end up at the root. Nothing in the code can do this; it is a dashboard setting, and
+I have no Vercel access.
+
+Until it is cleared, pushes do not become deployments — including the fix for a real bug found
+the same day: the home hero plush was rendering as a broken image on the review URL, because a
+legacy redirect was intercepting our own product images. That fix is committed and pushed on
+`main` and `demo-website`, waiting on this setting.
+
 ## THE REVAMP (2026-07-24) — theme B build IN PROGRESS; these are yours
 
 Status + everything already decided: `docs/revamp-2026-07/WORKING.md`.

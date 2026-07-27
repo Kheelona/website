@@ -1,5 +1,39 @@
 # QA Report (sprint log)
 
+## Repo-root move + a caught image regression · 2026-07-28 · commit 707ec46
+
+**Why the move**: both Vercel projects were failing. The build log said "No Next.js version
+detected" because Vercel reads `package.json` from the project's Root Directory, and the app was
+one level down in `site/`. Moved the whole app to the repo root.
+
+**What the move broke and how it was caught** — three path assumptions, all found by running the
+gates rather than by reading:
+| Symptom | Cause | Fix |
+|---|---|---|
+| `npm run build` → "Cannot find module /Users/apoorvasahu/Documents/tools/..." | build script ran `../tools/tokens/check-tokens.mjs`, now outside the repo | drop the `../`; check-tokens' own `site/src/...` reads updated |
+| `tsc` → 4 errors in `launch-video/` | the root `tsconfig.json` include now sweeps sibling projects with uninstalled deps | exclude `launch-video tools docs design-concepts 3d-handoff` |
+| `build-storybook` → "Rolldown failed to resolve @/components/atoms/Room" | Storybook never resolved the `@/` alias; only one story uses it, so it stayed latent since the revamp | declare the alias in `.storybook/main.ts` `viteFinal` |
+
+**The regression that mattered** (unrelated to the move, introduced with the legacy 301s and
+already live on the founder review URL): redirects match before `public/` files, so
+`/product/:slug*` 308'd `public/product/lumi-blue-2.png`, and `/_next/image?url=%2Fproduct%2F...`
+returned **400 at every width**. Chrome confirmed it visually — the home hero rendered as a
+broken-image placeholder with alt text where the plush belongs, and that image is the mobile LCP
+element. Fixed with `/product/:slug([^.]+)`. New guard `test/redirects-vs-assets.test.ts` checks
+every redirect source against every `public/` directory; proven by reintroducing the bug
+(2 failures) and reverting (12 passes). It also flagged the literal `/stories/...` redirect, which
+is safe because no extensionless file of that name exists — the test encodes that distinction.
+
+**Verified on main**: 237 tests (225 + 12), tsc clean, build green (token-check 17), Storybook
+builds, 11 routes 200 + `/nope` 404, 24 sitemap URLs, all 14 legacy redirects 308 to the right
+destinations, `/product/*.png` 200 raw and 200 through the optimizer at 384/828/1200, JSON-LD
+graph intact on Home (Product/FAQPage/VideoObject/Organization/WebSite/BreadcrumbList) and on an
+article (BlogPosting/BreadcrumbList).
+
+**Still failing to deploy, and not fixable in code**: Vercel's Root Directory is still `site`,
+which no longer exists. Polled the preview for 100s after pushing — edge `age` kept climbing and
+`/product/lumi-blue-2.png` still 308'd, so no rebuild landed. FOUNDER-TODO #0.
+
 ## Live verification after the R5+R6+R7 push · 2026-07-10 · commit 5f59b13
 
 Pushed master -> demo-website; new build live in ~20s, all R7 markers present (recognition strip, safety callout, parent quotes). **Live Lighthouse**: desktop home 100/100/100/100; mobile home runs 97/86/85/85/85/85 -> median 85 (LCP 4.0s, TBT 0ms, FCP 1.3s) — **below the >=90 mobile gate** (R4 live read 90, LCP 3.1s).

@@ -10,19 +10,30 @@ here in full so nothing depends on conversation memory.
 
 ---
 
-## ⏭ COLD-RESTART: START HERE (last updated 2026-07-28 — MERGED TO MAIN)
+## ⏭ COLD-RESTART: START HERE (last updated 2026-07-28 — MERGED TO MAIN, APP AT REPO ROOT)
 
-**The site is finished, merged, and deployed to the preview. Work on `main`.**
+**The site is finished, merged, and pushed. Work on `main`.**
+
+> **⚠ ONE THING IS NOT DONE, AND ONLY THE FOUNDER CAN DO IT.** Vercel's **Root Directory**
+> setting must be **empty (the repo root)**. It was `site`, and on 2026-07-28 the app moved out
+> of `site/` to the repo root — so a project still pointing at `site` builds nothing, and a
+> project pointing at the root was already failing before the move with "No Next.js version
+> detected". Until that setting is cleared, pushes do not become deployments. Nothing in the
+> code can fix this; it is a dashboard setting. FOUNDER-TODO #0.
+
 
 ```bash
 cd /Users/apoorvasahu/Documents/kheelona-com-website
 git switch main && git pull
-npm test          # expect 225/225 green
+npm test                     # expect 237/237 green
 npm run build                # token-check 17, then next build
 npx next start -p 3456       # local prod at http://localhost:3456
 ```
 
 **Repository state after the 2026-07-28 cleanup**
+- **The app lives at the REPO ROOT** since 2026-07-28 (`package.json`, `next.config.ts`, `src/`,
+  `public/`, `test/`, `.storybook/`). `site/` is gone. Any doc, checkpoint or note that says
+  `site/...` predates the move: drop the prefix (`cd site && npm test` is now `npm test`).
 - `main` IS the website: the theme-B revamp + V3 repositioning, merged 2026-07-28. It replaced the
   legacy Wix commerce app that used to live at the repo root (cart, checkout, member accounts,
   Wix SDK). That app is preserved at the tag **`pre-revamp-2026-07`** — one checkout recovers it —
