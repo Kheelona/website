@@ -356,6 +356,26 @@ placeholders until real quotes land · /team keeps four people.
   third-party logo in a trust row without a documented relationship (one founder's employment
   history is not an institutional endorsement).
 
+**SEO/AEO/GEO laws (V3 pass, 2026-07-28)**
+- **All structured data comes from `lib/seo.ts`**, emitted as ONE `@graph` per page with the
+  Organization and WebSite nodes attached by `@id`. Never hand-roll a JSON-LD island in a page file:
+  the point is that every page contributes to one company entity.
+- **Schema may only describe copy visible on the same page.** A FAQPage entry whose question is not
+  in the DOM is spam to Google and a lie to a parent. `lib/seo.test.ts` guards the gated facts;
+  visibility is verified in the QA sweep.
+- **The founders are entities.** Their published credentials (14 patents filed, Thunderbolt 4/5
+  compliance at Intel, CA with fifteen years) are the site's strongest E-E-A-T signal. Keep them
+  in the Organization node and keep them accurate.
+- **Titles carry the keyword, the visible hero carries the voice.** The Home title says "screen-free
+  AI toy" because that is the search term; the H1 does not lead with AI because that is the voice
+  rule. Both can be true at once, and a rewrite that drops the keyword from metadata is a
+  regression (it happened once, on 2026-07-28, and was caught in the same session).
+- **India is stated, not implied**: `addressCountry` IN, `areaServed`/`eligibleRegion` India,
+  `inLanguage`/`lang` en-IN, `og:locale` en_IN.
+- **Machine-readable files restate visible copy only**: `/llms.txt` and `/pricing.md` read prices
+  from `config/site` and mark every gated item unannounced. An agent that cannot parse the price
+  filters us out of AI-mediated buying, which is why `/pricing.md` exists.
+
 **AEO plumbing (V3)**: `/llms.txt` route (visible-copy facts only, gated items marked
 unannounced, prices from `config/site`), robots rules naming GPTBot/OAI-SearchBot/ChatGPT-User/
 PerplexityBot/Perplexity-User/ClaudeBot/Claude-User/Claude-SearchBot/Google-Extended/

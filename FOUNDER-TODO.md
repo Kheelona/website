@@ -48,6 +48,26 @@ Spec: `docs/revamp-2026-07/BUILD-V3.md`. **Your gates, all of which BLOCK merge 
   BUILD-V3.md §6.4): "This is the part where the games are secretly lessons.", "The Speaker is
   my cousin. Louder, and better at maths.", and "I only ever have one child to keep up with."
   (the last one on the new pace panel).
+- **V3-f. Named article authors (the biggest remaining authority win)** — AI engines and Google
+  both weight named authors with credentials. The 14 journal articles are currently attributed to
+  "Kheelona" as an organisation. Tell me who wrote each one (or who should be credited as the
+  reviewer) and the bylines plus author schema go in. Aman's 14 patents and Kashyap's Intel
+  background are exactly the credentials that make a piece citable.
+- **V3-g. Search Console + Bing Webmaster (needed before ANY ranking happens)** — I cannot verify
+  the domain or submit the sitemap without your account. Once kheelona.com points at Vercel: add
+  the property, verify, submit `https://kheelona.com/sitemap.xml`, and check the Coverage report.
+  Until this is done Google discovers us slowly and we are blind to what it thinks.
+- **V3-h. The ₹2,999 problem is now the biggest active SEO liability (was REV-c)** — the old Wix
+  pages and the Play Store listing still show ₹2,999 in Google's index, competing with our own
+  pricing for our own brand name. Two halves: the Play Store copy is yours to edit; the 301
+  redirects from `/product-page/lumi-*` are mine, and I can only add them once DNS points at
+  Vercel.
+- **V3-i. Backlinks, when you want the campaign** — a new domain ranks on authority it does not have
+  yet. The realistic first wave is directory and listing submissions (Product Hunt, BetaList, Indian
+  startup directories, AI-toy roundups, FirstCry-style retail listings) plus any press from the
+  Karnataka Elevate and NVIDIA Inception programmes. I have a `directory-submissions` skill ready
+  for this; say the word and I will produce the submission kit and tracker.
+
 - **V3-e (small, yours)**: the site lets parents pick a Lumi colour, but the Tally form has
   no colour field, so the preference is lost. Consider adding one (blue/green/pink) to the
   form. And once the V3-c/REV-a art lands, the share image (`og.png`) gets refreshed to match.
