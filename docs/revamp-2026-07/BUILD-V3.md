@@ -6,6 +6,13 @@
 > from this text, `docs/copy-reference.md` (V3 entry) records why. The remaining items are
 > founder-gated: see FOUNDER-TODO.md V3-a..e. Verification: `docs/qa-report.md` "V3".
 >
+> **Superseded within this spec (founder, 2026-07-28)**: §4.1 kept the "Three ways to be there"
+> section with its Companion / Storyteller / Teacher chips. That is GONE. The three real modes
+> replaced it — AI mode, Kheelu mode, Bluetooth mode — rendered by the shared `LumiModes`
+> organism (full cards on `/products/lumi#modes`, compact strip on Home), and the Bluetooth entry
+> left the what-it-does grid so the fact is stated once. See `docs/copy-reference.md` (V3 modes)
+> and website-steps §8.21.
+>
 > **Its laws still bind every future change to these pages** — §0, §1's locked decisions, and the
 > gated-facts registry in §6 especially. New laws this round produced are consolidated in
 > `docs/website-steps.md` §8.21.

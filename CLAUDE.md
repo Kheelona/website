@@ -56,7 +56,7 @@ Rules for any change:
    `index.ts` barrel).
 2. Token-driven only; prices/CTA labels from `@/config/site`; the shared molecules
    (SectionHeading/Card/StepList/PageHero/CheckList/LegalDoc, plus V3's AnswerBlock/
-   FootnotesRow/KheelonaPlusBand/FamilyGrid — §8.19 + §8.21) are the registry. Age copy comes
+   FootnotesRow/KheelonaPlusBand/FamilyGrid/LumiModes — §8.19 + §8.21) are the registry. Age copy comes
    from LUMI_AGES/PLATFORM_AGES and subscription copy from KHEELONA_PLUS_LINE, never inline.
 3. Every new/changed component ships a colocated `X.stories.tsx` + `X.test.tsx`
    (`cd site && npm test`, `npm run storybook`). Node ≥ 24 (`.nvmrc`). Storybook/Vitest are

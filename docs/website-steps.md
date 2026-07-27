@@ -330,7 +330,14 @@ placeholders until real quotes land · /team keeps four people.
   `LegalDoc` · `AnswerBlock` (question-led H2/H3 + a visible 40–60 word answer, M4) ·
   `FootnotesRow`/`Footnote` (small print for claims that invite a follow-up, V3) ·
   `KheelonaPlusBand` (the ONLY place subscription wording renders, V3) · `FamilyGrid` (the one
-  pipeline lineup, shared by Home and /playos). Hand-rolling any of these shapes is a review flag.
+  pipeline lineup, shared by Home and /playos) · `LumiModes` (the three modes, shared by Home
+  and /products/lumi). Hand-rolling any of these shapes is a review flag.
+- **The three modes are the answer to "what does it do"** (founder, 2026-07-28): AI mode
+  (conversation), Kheelu mode (stories that quiz back), Bluetooth mode (pair a phone, Lumi is
+  the speaker). The parent verb is the heading, the product term is the label under it, so a
+  small "AI mode" label never leads. Each fact is stated ONCE — Bluetooth left the
+  what-it-does grid when it gained a mode card. **Bluetooth is a MODE, never what a family is
+  left with if Kheelona+ lapses**: that is a post-lapse claim and V3-b still gates it.
 - **Age copy renders from `config/site` constants** (`LUMI_AGES`, `PLATFORM_AGES`). A hardcoded
   age band is a bug; the final QA greps for one.
 - **Subscription copy renders from `KHEELONA_PLUS_LINE`**, so a price cannot creep in via a call
@@ -360,7 +367,7 @@ stories, after stripping the dormant `KheeluSays`/`CurveDivider` call sites from
 components; `teal-deep` and the teal wash removed (token-check 17). `features/ambient-stage/`
 remains DORMANT and must not be deleted.
 
-**Verified at completion**: tests 210/210, tsc clean, build green; axe zero violations on 10
+**Verified at completion**: tests 215/215, tsc clean, build green; axe zero violations on 10
 routes × 2 viewports; Lighthouse A11y/BP/SEO **100 on all 18 runs**, Perf 99–100 (mobile judged
 on devtools throttling); mobile overflow clean 320–430px; 23-href crawl 200s; `#reserve`
 everywhere including the 404; all JSON-LD parses and mirrors visible copy only.
