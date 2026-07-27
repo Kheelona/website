@@ -182,10 +182,26 @@ Footer currently omits contact entirely (better than "pending").
 ## 7. The 10 languages list (unlocks: the top AEO answer for India)
 "Which languages does Lumi speak?" currently answers "ten." Naming them is the single best answer-engine content on this product. Send the list.
 
-## 8. GA4 measurement ID — OPTIONAL now, and honestly reported (unlocks: conversion funnels)
-**Traffic is already measured.** Vercel Web Analytics went in on 2026-07-28 (`<Analytics />` in
-the app layout), so page views, visitors, referrers and countries appear in your Vercel dashboard
-with no key from you. It is cookieless, and /privacy now states what it collects.
+## 8. GA4 — ✅ DONE 2026-07-28, nothing left for you (unlocks: conversion funnels)
+**Both analytics tools are wired and verified.** Vercel Web Analytics (cookieless) and GA4
+(`G-7LMKSFEXZ9`, your `kheelona.com` stream) are both in the app layout. You do not need to paste
+an ID anywhere: it is in the code, because a measurement ID is a public identifier, not a secret.
+
+Manual gtag install, not Tag Manager, for the reason Google's own dialog recommends it: GTM would
+ship a container runtime roughly three times the size to solve a problem you do not have, and this
+site's mobile performance was won back a point at a time.
+
+**The tag only fires on kheelona.com and www.kheelona.com.** Not on localhost, not on preview
+deploys. Without that, every test run of mine would land in your reports and you could not trust
+the numbers. One consequence worth knowing: **your GA4 reports will stay empty until DNS points at
+Vercel**, because that is the only place the tag runs. The preview URL will never report.
+
+While proving the wiring works I briefly allowed localhost and loaded the real tag, so **expect one
+or two page views with a hostname of `localhost` in your property**, dated 2026-07-28. That is me,
+not a visitor. It also means the "Data collection isn't active" warning on your stream should now
+have cleared, which is the confirmation that the ID and the snippet are right. Filter it out under
+Admin, Data Streams, your stream, Configure tag settings, Define internal traffic if you want the
+history perfectly clean.
 
 GA4 would add what Vercel Analytics does not do: custom conversion events and funnels. **Correcting
 an older claim on this line: GA4 is NOT wired.** There is no gtag snippet anywhere in the app; the

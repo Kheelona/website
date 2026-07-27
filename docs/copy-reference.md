@@ -201,3 +201,20 @@ which is true because the form is a Tally iframe.
 
 Voice: no em-dashes, no italics, no contractions, second person present. Counsel review of /privacy
 (an existing launch gate) now has to cover this section too.
+
+## Privacy copy revised for GA4 (2026-07-28, same day)
+
+The "How we measure visits" section written hours earlier said the analytics in use "sets no
+cookies". True of Vercel Web Analytics, false the moment GA4 landed, so the copy was corrected in
+the same commit as the wiring rather than left to drift.
+
+Now three paragraphs: both tools named, with the cookie difference stated plainly (GA4 sets them,
+Vercel's does not — verified by observing the `_ga` cookie in a browser, not assumed from docs);
+what either records; that neither sees anything typed into the reservation form, because that form
+is a Tally iframe; and a closing paragraph telling a reader how to refuse both, which no banner
+currently does for them. Voice checked: no em-dashes, no italics, no contractions, second person
+present.
+
+**Standing rule this establishes**: a measurement tool and the sentence describing it ship together.
+A privacy page that is accurate on Tuesday and wrong on Wednesday is worse than one that never
+mentioned the subject.

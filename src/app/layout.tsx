@@ -7,6 +7,7 @@ import { RevealObserver } from "@/components/molecules/RevealObserver";
 import { SiteBackdrop } from "@/components/atoms/SiteBackdrop";
 import { KheeluGuide } from "@/components/organisms/KheeluGuide";
 import { Analytics } from "@vercel/analytics/next";
+import { GoogleAnalyticsGate } from "@/components/molecules/GoogleAnalyticsGate";
 import { graph } from "@/lib/seo";
 
 const glory = localFont({
@@ -90,6 +91,9 @@ export default function RootLayout({
             LCP (§8.19). It only reports from a Vercel deployment; locally it is
             a no-op. What it collects is stated on /privacy. */}
         <Analytics />
+        {/* GA4 (gtag.js), manual install, production hosts only — see the
+            component for why the host gate exists and why it is not GTM. */}
+        <GoogleAnalyticsGate />
       </body>
     </html>
   );

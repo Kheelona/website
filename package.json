@@ -13,6 +13,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@next/third-parties": "^16.2.12",
     "@radix-ui/react-accordion": "^1.2.16",
     "@radix-ui/react-dialog": "^1.1.19",
     "@react-three/drei": "^10.7.7",

@@ -73,3 +73,19 @@ export const JOURNAL_REVIEWED = "July 2026";
  *  before use and the phone number was NOT carried over. If a phone line ever
  *  becomes real, it needs the same confirmation. */
 export const CONTACT_EMAIL: string | null = "hello@kheelona.com";
+
+/** GA4, wired 2026-07-28 (founder's property: stream "kheelona.com",
+ *  https://kheelona.com, stream id 15336032355, enhanced measurement ON).
+ *
+ *  Hardcoded on purpose. A measurement ID is a public client-side identifier,
+ *  not a secret — Google's own snippet ships it in the page — and the env var
+ *  this replaces (`NEXT_PUBLIC_GA4_MEASUREMENT_ID`) was never read by anything,
+ *  so keeping it would have added a founder gate for no security gain.
+ *
+ *  GA4_HOSTS is the reason this is safe to hardcode: the tag loads ONLY on
+ *  these hostnames. Without that, every localhost run and every preview deploy
+ *  would report into the founder's real property, and analytics you cannot
+ *  trust is worse than none. Add a host here when a new production domain goes
+ *  live, not when a preview URL changes. */
+export const GA4_MEASUREMENT_ID = "G-7LMKSFEXZ9";
+export const GA4_HOSTS = ["kheelona.com", "www.kheelona.com"] as const;

@@ -431,12 +431,39 @@ a Vercel deployment with Web Analytics enabled; locally the injected
 edge). Verified in Chrome: the script element is injected `defer async`, `window.va` is a function,
 one pageview queued, hero image still loads.
 
+**GA4 followed the same day** (founder chose manual over Tag Manager): `GoogleAnalyticsGate`
+(`molecules/`) renders `<GoogleAnalytics>` from `@next/third-parties/google`, which is the approach
+this Next version's own docs prescribe and which emits the same `gtag('config', ...)` as Google's
+copy-paste snippet while loading after hydration instead of blocking in `<head>`. GTM was rejected
+on the reason Google's dialog itself gives: it ships a container runtime several times gtag's size
+to manage multi-team tag sprawl this repo does not have.
+
+**8.21-c-i THE GA4 HOST GATE IS THE LAW HERE.** `GA4_MEASUREMENT_ID` is hardcoded in
+`config/site.ts` on purpose (a measurement ID is a public client-side identifier, and the env var it
+replaced was never read by anything, so keeping it meant a founder gate for no security gain). What
+makes that safe is `GA4_HOSTS`: the tag fires only on `kheelona.com` and `www.kheelona.com`, so
+localhost runs and preview deploys can never pollute the property. Rules:
+- The host check runs in an **effect**, never during render. Reading `location` while rendering would
+  force the whole site dynamic and lose 31 static pages, or mismatch on hydration. Verified after
+  the change: every route still builds ○ static or ● SSG.
+- **Add to `GA4_HOSTS` only for a real production domain.** `GoogleAnalyticsGate.test.tsx` asserts
+  that no `vercel.app`, `localhost` or `127.0.0.1` entry is in that list, and that localhost, preview
+  hosts, `kheelona.ai` and lookalikes like `kheelona.com.evil.example` all stay closed.
+- Consequence to state, not discover: **GA4 reports nothing until DNS points at Vercel**, because the
+  preview host is deliberately excluded.
+- Proven end to end by temporarily allowing localhost and checking in Chrome: script loaded with
+  `id=G-7LMKSFEXZ9`, `window.gtag` a function, `config G-7LMKSFEXZ9` in the dataLayer, `_ga` cookie
+  set, hero image still loading. Reverted, and the guard test fails when the allowance is present.
+
 Two consequences that are law, not preference:
-1. **The privacy page has to say so.** /privacy promises plain words about what is collected, so it
-   carries a "How we measure visits" section naming Vercel Web Analytics and what it records. Any
-   future measurement tool must land in that section in the same breath as the code.
-2. **GA4 remains unimplemented, and the docs now say that.** There is no gtag snippet in `src/`;
-   `TallyEmbed`'s `preorder_view` stub pushes to a `window.gtag` that nothing defines, so
-   `NEXT_PUBLIC_GA4_MEASUREMENT_ID` measures nothing. Older notes claiming "the GA4 id starts
-   measuring" were wrong and are corrected in CLAUDE.md and FOUNDER-TODO #8. If GA4 is ever wired,
-   it needs consent handling that Vercel's cookieless product does not.
+1. **The privacy page has to say so, in the same commit.** /privacy promises plain words about what
+   is collected. It names both tools, says which one sets cookies (GA4 does, Vercel's does not — the
+   `_ga` cookie was observed, not assumed), states that neither sees anything typed into the
+   reservation form because that form is a Tally iframe, and tells a reader how to opt out by
+   blocking them. Any future measurement tool lands in that section as part of wiring it, never after.
+2. **No consent gate ships today, and that is a decision, not an oversight.** GA4 sets cookies. The
+   site is India-first with no cookie banner anywhere, and adding one is new UI that the founder has
+   not asked for. Consent Mode without a banner is theatre: it either denies everything (measuring
+   nothing) or grants everything (identical to no gate). So the honest position is disclosure on
+   /privacy plus a documented opt-out, with a banner as an open founder decision. Counsel review of
+   /privacy, already a launch gate, now has to cover the GA4 paragraph.

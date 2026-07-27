@@ -96,14 +96,17 @@ Rules for any change:
   the repo root). Env vars + DNS are still founder-gated, FOUNDER-TODO #2.
 
 ## Env
-Root `.env` (gitignored, DUMMY values until founder fills them): `TRIPO_API_KEY` (unused — mascot pipeline went through the Tripo web UI instead, see `design-concepts/README.md`), `NEXT_PUBLIC_TALLY_FORM_URL`, `NEXT_PUBLIC_GA4_MEASUREMENT_ID` (`.env.example` mirrors them).
-**Only the Tally one is wired**: `TallyEmbed` reads it and treats values containing "DUMMY" as
-unconfigured. **GA4 is declared but NOT implemented** — no gtag snippet exists anywhere in `src/`;
-`TallyEmbed` only pushes events to a `window.gtag` that nothing defines. Setting that env var
-therefore measures nothing today (FOUNDER-TODO #8 says so now). **Vercel Web Analytics IS live**
-(`<Analytics />` from `@vercel/analytics/next`, last element in the body of `src/app/layout.tsx`)
-and needs no env var: it reports whenever the app runs on a Vercel deployment with Web Analytics
-enabled, and is a no-op locally. What it collects is stated on /privacy.
+Root `.env` (gitignored, DUMMY values until founder fills them): `TRIPO_API_KEY` (unused — mascot pipeline went through the Tripo web UI instead, see `design-concepts/README.md`), `NEXT_PUBLIC_TALLY_FORM_URL` (`.env.example` mirrors it). `TallyEmbed` reads it and treats values
+containing "DUMMY" as unconfigured.
+- **Analytics needs NO env var** (both wired 2026-07-28, laws in §8.21-c). Vercel Web Analytics =
+  `<Analytics />` from `@vercel/analytics/next`; GA4 = `GoogleAnalyticsGate`, a manual gtag install
+  via `@next/third-parties` (NOT Tag Manager). Both sit last in the body of `src/app/layout.tsx` so
+  they never compete with the hero LCP. **The GA4 ID is hardcoded in `config/site.ts`**
+  (`GA4_MEASUREMENT_ID` — a public client-side identifier, not a secret) and fires ONLY on
+  `GA4_HOSTS`, so localhost and preview deploys never pollute the founder's property. Add a host
+  there when a production domain goes live; the guard test asserts no preview or local host is in
+  that list. `NEXT_PUBLIC_GA4_MEASUREMENT_ID` is RETIRED (nothing ever read it). What both tools
+  collect is stated on /privacy, which is counsel-gated.
 
 ## Docs map
 - `docs/standards/` — BINDING production standards: `PROJECT_STRUCTURE.md`, `COMPONENT_GUIDELINES.md`, and `STRUCTURE-MAP.md` (old→new path translation for the `src/` reorg). See the "Production structure & standards" section above.
