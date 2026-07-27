@@ -1,4 +1,4 @@
-import { LAUNCH_PRICE, LATER_PRICE, LUMI_AGES, PLATFORM_AGES } from "@/config/site";
+import { LAUNCH_PRICE, LATER_PRICE, LUMI_AGES, PLATFORM_AGES, CONTACT_EMAIL } from "@/config/site";
 
 /** Structured data builders (V3 SEO/AEO/GEO pass, 2026-07-28).
  *
@@ -78,6 +78,20 @@ export const ORGANIZATION = {
     "Indian language voice technology",
   ],
   sameAs: ["https://kheelona.ai"],
+  /* Only listed because the inbox is confirmed monitored (2026-07-28). Schema
+     must never promise a channel that does not answer. No telephone: the number
+     on the legacy site was a placeholder. */
+  ...(CONTACT_EMAIL
+    ? {
+        contactPoint: {
+          "@type": "ContactPoint",
+          email: CONTACT_EMAIL,
+          contactType: "customer support",
+          areaServed: "IN",
+          availableLanguage: ["English", "Hindi"],
+        },
+      }
+    : {}),
 } as const;
 
 export const WEBSITE = {

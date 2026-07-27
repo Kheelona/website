@@ -16,6 +16,7 @@ export const NAV_LINKS = [
 
 export const FOOTER_LINKS = [
   ...NAV_LINKS,
+  { label: "Contact", href: "/contact" },
   { label: "Privacy", href: "/privacy" },
   { label: "Terms", href: "/terms" },
   { label: "Setup", href: "/setup" },
@@ -64,3 +65,11 @@ export const WHATSAPP_SHARE_LABEL = "Know a parent who needs this? Share Lumi on
  *  (documented in docs/qa-report.md). NOT per-article publication dates —
  *  those would be invented. Update this when the journal is next reviewed. */
 export const JOURNAL_REVIEWED = "July 2026";
+
+/** The contact email. Founder-confirmed 2026-07-28 as a monitored inbox.
+ *
+ *  The old Wix site published this address beside "+91 98765 43210" — the
+ *  canonical fake Indian phone number — so the email was confirmed separately
+ *  before use and the phone number was NOT carried over. If a phone line ever
+ *  becomes real, it needs the same confirmation. */
+export const CONTACT_EMAIL: string | null = "hello@kheelona.com";

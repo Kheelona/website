@@ -59,6 +59,7 @@ const BODY = `# Kheelona
 - https://kheelona.com/setup : day one
 - https://kheelona.com/team : the people who build it
 - https://kheelona.com/stories : the journal, for parents
+- https://kheelona.com/contact : how to reach us
 - https://kheelona.com/privacy and https://kheelona.com/terms : the fine print
 
 ## Machine-readable
