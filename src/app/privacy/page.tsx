@@ -38,8 +38,9 @@ const SECTIONS: readonly LegalSection[] = [
        rather than left implicit. */
     h: "How we measure visits",
     ps: [
-      "We count page views and visits so we can see which parts of this site actually help you decide. The service we use is Vercel Web Analytics. It sets no cookies, it does not follow you to other sites, and it does not build a profile of you.",
-      "What it records is the page you looked at, your country, your browser, and where the visit came from. It never sees your name, your email, or anything you type into the reservation form.",
+      "We count page views and visits so we can see which parts of this site actually help you decide. We use two tools for it. Vercel Web Analytics sets no cookies and does not follow you to other sites. Google Analytics does set cookies, in your browser, to tell a returning visit from a new one.",
+      "What either tool records is the page you looked at, your country, your browser, and where the visit came from. Neither one ever sees your name, your email, or anything you type into the reservation form, because that form is run by Tally in a separate frame.",
+      "If you would rather not be counted, your browser can block both. Private browsing, an ad blocker, or turning off third party cookies all work, and none of them stop the site itself from working.",
     ],
   },
   {
