@@ -2,23 +2,26 @@
 
 Each item unlocks something specific. Ordered by launch impact.
 
-## ► #0 — THE ONE THING BLOCKING EVERY DEPLOYMENT (2 minutes, Vercel dashboard)
+## ✅ #0 — LAUNCH IS DONE (2026-07-28). Nothing here blocks anything.
 
-**Set the project's Root Directory to empty (the repo root).** In Vercel → the project →
-Settings → Build and Deployment → Root Directory: clear the value (it says `site`), save, then
-Deployments → Redeploy.
+**https://kheelona.com is live and taking reservations.** Everything that was blocking has cleared,
+in this order, all on 2026-07-28:
 
-Why: Vercel decides "is this a Next.js app?" by reading `package.json` from the Root Directory.
-The app used to be in `site/`, so a project pointing at the repo root failed every build with
-"No Next.js version detected" — that is the error you sent. On 2026-07-28 the app moved to the
-repo root to match, which means a project still pointing at `site` now finds an empty path. Both
-settings must end up at the root. Nothing in the code can do this; it is a dashboard setting, and
-I have no Vercel access.
+| Was blocking | Now |
+|---|---|
+| Vercel Root Directory said `site` | cleared to the repo root; builds succeed |
+| kheelona.com DNS | pointed; apex is the canonical host, `www` 308s to it |
+| Pre-order form | live — Tally `Y5XW7J`, `NEXT_PUBLIC_TALLY_FORM_URL` set in production |
+| Analytics | Vercel Web Analytics + GA4 `G-7LMKSFEXZ9`, both verified firing on the live domain |
+| Search Console | domain property verified, sitemap processed, 24 pages discovered |
+| Bing Webmaster | sitemap submitted |
 
-Until it is cleared, pushes do not become deployments — including the fix for a real bug found
-the same day: the home hero plush was rendering as a broken image on the review URL, because a
-legacy redirect was intercepting our own product images. That fix is committed and pushed on
-`main` and `demo-website`, waiting on this setting.
+Two things about the live setup worth remembering rather than rediscovering:
+- **The preview (website-hdn2.vercel.app) still shows the "opens soon" card**, because the Tally env
+  var is scoped to production only. That is expected, not a fault.
+- **GA4 only fires on `kheelona.com` and `www.kheelona.com`** by design, so no localhost run or
+  preview deploy pollutes your reports. If the canonical host ever changes, `GA4_HOSTS` in
+  `src/config/site.ts` must change with it, or the tag goes silently dead.
 
 ## THE REVAMP (2026-07-24) — theme B + V3 are BUILT, MERGED to `main` and verified; these are yours
 
@@ -163,15 +166,38 @@ You generated 5 of 6 items; they sit in `~/Downloads` (3 image fixes + Veo shots
 - Settled this round: film = V2 "Two friends" Veo rebuild — **now LIVE on the site** (2026-07-08); the site was **2D everywhere** at that point (superseded 2026-07-09 by the immersive R3F redesign now on master); pink approved (cutout fixed); your 3 regenerated images ingested (green/right/left all pass); repo cleaned of superseded drafts/renders/teasers; **standing rule: all Gemini generation is done by you from Claude-prepared prompt kits, never by Claude directly** (in CLAUDE.md).
 - Optional, whenever credits allow: SHOT 3 "Cuddle" (`gemini-handoff/seed-3-cuddle.png` + prompt in the README there) to extend the film's ending.
 
-## 1. Tally form link (unlocks: the site actually converting)
+## 1. ✅ DONE 2026-07-28 — Tally form link (unlocked: the site actually converting)
+Live: `https://tally.so/r/Y5XW7J`, set as `NEXT_PUBLIC_TALLY_FORM_URL` in Vercel production. All six
+fields present and correctly typed, Submit reachable (the iframe was raised 560px → 960px on the day,
+because the form measures 886px and Submit had been below the frame's own fold). Your Tally consent
+wording matches the site line. `preorder_view` now reaches GA4.
+
+<details><summary>Original instructions, kept for reference</summary>
+
 Create the Tally form with exactly these fields: parent name, email, WhatsApp number, WhatsApp consent checkbox, child's birth month, city. Turn on the confirmation email. Then paste the share URL into `.env` at the repo root as `NEXT_PUBLIC_TALLY_FORM_URL=` (and into Vercel env settings when deploying). The reserve panel on every page switches from the "opens soon" card to the live form automatically.
 - Also confirm: the consent text in Tally should match the site's promise "Your WhatsApp number is only for updates about your reservation. You can leave the list anytime." If your Tally wording differs, tell Claude and the site line gets updated.
+</details>
 
-## 2. Vercel deploy (unlocks: the site being live)
+## 2. ✅ DONE 2026-07-28 — Vercel deploy (unlocked: the site being live)
+Live at https://kheelona.com, apex canonical, `www` 308s to it, Root Directory = repo root.
+Env vars set in production. Claude has NO Vercel access and never runs the Vercel CLI: it pushes to
+GitHub and hands you any dashboard change.
+
+<details><summary>Original instructions</summary>
+
 Run `vercel` (or connect the GitHub repo in the Vercel dashboard) with Root Directory = the repo root (leave it empty). Add the env vars from `.env`. Point kheelona.com DNS at Vercel. Claude can drive everything after `vercel login` happens in your terminal (`! npx vercel login`).
+</details>
 
-## 3. Testimonials (unlocks: the strongest missing trust signal)
+## 3. CLOSED BY YOUR DECISION 2026-07-28 — Testimonials
+The three drafted quotes attributed to Shweta, Priyamvada and Gaurav ("Pilot parent") **stay live as
+they are**. Raised once when the site went public, on the ground that nothing marks them as
+illustrative; your call was to leave them. Recorded so it is not re-raised. Real quotes still swap in
+cleanly whenever you have them: paste them to Claude.
+
+<details><summary>Original ask</summary>
+
 Three real quotes, each with parent name, child age, city, and written consent. The section is already built (`ParentVoices`) and unmounts itself until quotes exist; paste them to Claude and it goes live on Home.
+</details>
 
 ## 4. Certifications + specs (unlocks: Safety page completeness + specs blocks)
 - Toy-safety standards/certificates once testing completes (exact names and numbers).
@@ -181,8 +207,10 @@ Three real quotes, each with parent name, child age, city, and written consent. 
 ## 5. Ship date (unlocks: the FAQ answer + urgency)
 Currently answered honestly as "not announced yet."
 
-## 6. Contact email (unlocks: footer contact + Privacy page contact route)
-Footer currently omits contact entirely (better than "pending").
+## 6. ✅ DONE 2026-07-28 — Contact email
+`hello@kheelona.com`, founder-confirmed, live in the footer and on /contact. The phone number beside
+it on the legacy Wix site was `+91 98765 43210`, the canonical fake Indian number, and is never
+published. If a real phone line appears it needs the same confirmation before it goes on the site.
 
 ## 7. The 10 languages list (unlocks: the top AEO answer for India)
 "Which languages does Lumi speak?" currently answers "ten." Naming them is the single best answer-engine content on this product. Send the list.

@@ -3,6 +3,10 @@
 Pre-order marketing site for **Lumi**, Kheelona's screen-free talking AI toy for ages 3 to 6 (India-first). One job: convert parents into the Tally pre-order list at ₹4,999 (₹9,999 after launch, no payment now).
 
 ## ⚠ STATE OF PLAY (2026-07-28) — read this first
+**THE SITE IS LIVE AT https://kheelona.com. It is indexed and taking pre-orders, so every change you
+make from here touches a live commercial site.** Latest checkpoint, read it before touching anything:
+`docs/checkpoints/go-live-2026-07-28.md`.
+
 **The new site is MERGED TO `main` and is the only site.** The 2026-07 revamp (theme B
 "Kheelu's Tour") plus the V3 repositioning (founder's YC application: 40% fun, 20% brain
 development, 40% education) replaced the legacy Wix-backed commerce app that used to live at the
@@ -31,7 +35,9 @@ repo root. That old app is preserved at the tag **`pre-revamp-2026-07`** and its
   parent"). Raised with the founder when the site went public; **their decision is to leave them
   as-is** (FOUNDER-TODO V3-a). Do not re-raise it and do not remove them.
 - **The spec that built this**: `docs/revamp-2026-07/BUILD-V3.md` (it wins over `copy-v2.md` and
-  older copy laws). Status and the restart guide: `docs/revamp-2026-07/WORKING.md`.
+  older copy laws). Status and the restart guide: `docs/revamp-2026-07/WORKING.md` — **read it first on any resume,
+  and do not delete it** (an older note said to remove it after founder approval; it is now the
+  site's operating record).
 - **Locked product facts**: Lumi is ages **2 to 5**, the platform arc is **2 to 14** (both "3 to 6"
   and "3 to 10" are dead — render ages from `LUMI_AGES`/`PLATFORM_AGES`). The .com line-up is the
   pipeline Lumi → Kheelu Speaker → AI books. Lumi has **three modes**: AI mode, Kheelu mode,
@@ -127,8 +133,10 @@ containing "DUMMY" as unconfigured.
 - `docs/copy-reference.md` — copy provenance + sanctioned deviations
 - `docs/design-review-2026-07-10.md` — R4 panel findings, every item dispositioned (FIXED/FOUNDER/DEFERRED/REJECTED); §8.13 in website-steps.md is the matching spec. 3D QA gotcha: hidden tabs freeze rAF, so the canvas looks dead in background automation tabs — verify with a visible window
 - `docs/stories-image-prompts.md` — ready prompts for the 7 journal articles still missing hero images
-- `docs/checkpoints/` — per-phase snapshots. Latest: `repo-root-move-2026-07-28.md` (why the app
-  sits at the repo root, and the redirect that blanked every product image)
+- `docs/checkpoints/` — per-phase snapshots. **Latest: `go-live-2026-07-28.md`** (the launch: the
+  sequence, the three real findings, the live-setup gotchas, and the decisions not to re-litigate).
+  Before it: `repo-root-move-2026-07-28.md` (why the app sits at the repo root, and the redirect
+  that blanked every product image)
 - `design-concepts/README.md` — 3 archived concepts, mascot cutout pipeline, Tripo3D 2D→3D pipeline (v2 runs incl. Janus fix + Lumi plush), engineering gotchas (overflow-x clip, scroll-snap wheel trap)
 - `AGENTS.md` — Next.js 16 breaking-changes warning (read `node_modules/next/dist/docs/` before writing Next code)
 - `tools/cutout/` — offline background removal (Swift + Apple Vision; compile with `swiftc -O main.swift -o cutout`). Every mascot/product cutout and video asset goes through it; never ship art with baked backgrounds. For thin pale details the Vision mask drops (hat ribbons), use `keycut.swift` (region-grow color-key; hybrid mode takes a Vision `--no-crop` alpha for the body: `keycut in.png out.png 24 vision-nocrop.png`).
