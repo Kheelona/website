@@ -2,8 +2,11 @@
 
 **This is the brief-mandated working file for the 2026-07-24 revamp** (founder brief:
 `Websit prompt based on B + inputs - 24-Jul.pdf`, repo root). Keep it current at every step;
-cold restart = read this file top to bottom, then `docs/project-state.json`. Delete this file
-(and its CLAUDE.md pointer) only after the founder approves the finished revamp.
+cold restart = read this file top to bottom, then `docs/project-state.json`. **Do NOT delete this file.** The original instruction was to
+delete it once the founder approved the finished revamp. That approval effectively happened when the
+site went live on 2026-07-28, but by then this had become the site's operating record and the entry
+point every other doc points at: the cold-restart block, the commands, the live-setup gotchas, and the
+full milestone table. Superseding it means replacing it, not removing it.
 
 Approved plan (session 2026-07-24): `~/.claude/plans/virtual-spinning-dolphin.md` — mirrored
 here in full so nothing depends on conversation memory.
@@ -14,18 +17,27 @@ here in full so nothing depends on conversation memory.
 
 **The site is finished, merged, and pushed. Work on `main`.**
 
-> **⚠ ONE THING IS NOT DONE, AND ONLY THE FOUNDER CAN DO IT.** Vercel's **Root Directory**
-> setting must be **empty (the repo root)**. It was `site`, and on 2026-07-28 the app moved out
-> of `site/` to the repo root — so a project still pointing at `site` builds nothing, and a
-> project pointing at the root was already failing before the move with "No Next.js version
-> detected". Until that setting is cleared, pushes do not become deployments. Nothing in the
-> code can fix this; it is a dashboard setting. FOUNDER-TODO #0.
-
+> **🟢 LAUNCHED 2026-07-28. https://kheelona.com is live and taking reservations.** The apex is the
+> canonical host and `www` 308s to it. The pre-order form works (Tally `Y5XW7J`). Vercel Web Analytics
+> and GA4 `G-7LMKSFEXZ9` are both verified firing on the live domain. Search Console is verified as a
+> domain property with the sitemap processed and 24 pages discovered; Bing is submitted.
+>
+> **Treat every change from here as a change to a live commercial site.** It takes real money-free
+> reservations from real parents, and it is indexed.
+>
+> Three live-setup facts that cost time to rediscover:
+> 1. The preview (`website-hdn2.vercel.app`) still shows the "opens soon" card, because the Tally env
+>    var is production-scoped. Expected, not a fault.
+> 2. GA4 fires only on `kheelona.com` / `www.kheelona.com` (`GA4_HOSTS` in `config/site.ts`), so local
+>    and preview traffic never pollutes the property. **Change that list with any host change** or the
+>    tag dies silently.
+> 3. Vercel Web Analytics loads from a per-project **obfuscated path** (`/8f88bf018d5e772b/script.js`),
+>    not `/_vercel/insights/`. Verify with `window.vai`, or you will wrongly call it missing.
 
 ```bash
 cd /Users/apoorvasahu/Documents/kheelona-com-website
 git switch main && git pull
-npm test                     # expect 237/237 green
+npm test                     # expect 245/245 green
 npm run build                # token-check 17, then next build
 npx next start -p 3456       # local prod at http://localhost:3456
 ```
@@ -59,7 +71,7 @@ gates still bind every future change.
 across 10 routes at two viewports, Lighthouse A11y/BP/SEO 100 on all 18 runs with Perf 99–100,
 mobile clean 320–430px, all internal links 200.
 
-**NOTHING IS LIVE TO CUSTOMERS.** kheelona.com DNS does not point at Vercel. Everything remaining
+**THE SITE IS LIVE AT https://kheelona.com** (since 2026-07-28). Everything remaining
 is founder-gated, listed in FOUNDER-TODO.md: V3-a real testimonial quotes (the site carries
 drafted placeholders), V3-b the Kheelona+ price and post-lapse behaviour, V3-c pipeline art,
 V3-d Kheelu line sign-off, V3-e a colour field on the Tally form, V3-f named article authors,
@@ -197,7 +209,7 @@ element rule in globals.css belongs in `@layer base`.
 | /privacy /terms /contact + legacy 301s | **DONE** — the three routes the old site had all work with real content (`hello@kheelona.com`, founder-confirmed; the old phone number was a placeholder and is never published), and 14 legacy Wix URLs 301 to their new homes so the retired ₹2,999 pages stop competing in Google's index |
 | Merge to `main` + repo cleanup | **DONE 2026-07-28** — old main tagged `pre-revamp-2026-07` (the legacy Wix app, one checkout away), then merged so main's tree is exactly the revamp's with both histories preserved. GitHub: 0 open PRs, 2 branches, 2 tags. `revamp/kheelu-tour` deleted after confirming every commit is reachable from main |
 | App moved to the repo root | **DONE 2026-07-28** — Vercel reads `package.json` from the project's Root Directory, so an app in `site/` meant every build failed with "No Next.js version detected". Everything moved up; three broken path assumptions fixed (build script, root tsconfig sweeping in `launch-video/`, Storybook's `@/` alias). Also fixed a live bug found while verifying: the legacy `/product/:slug*` 301 was intercepting our own product images, so the review URL served a blank hero. §8.21-a/b |
-| ⏳ Vercel Root Directory | **WAITING ON FOUNDER** — the last step, and the only one Claude cannot do: clear the setting from `site` to the repo root, then redeploy. Until then pushes do not become deployments. FOUNDER-TODO #0 |
+| 🟢 GO LIVE | **DONE 2026-07-28** — founder cleared the Vercel Root Directory, pointed DNS, created the Tally form and set its env var, then verified Search Console and Bing. Claude wired both analytics tools (Vercel Web Analytics + a manual GA4 gtag install, production-host gated), fixed the pre-order iframe height (886px form in a 560px frame hid Submit), and flipped the canonical host reasoning to the apex so the sitemap's 24 URLs stop redirecting. All verified on the live domain. §8.21-c/c-i |
 
 ## Locked decisions (founder, 2026-07-24 — do not re-ask)
 

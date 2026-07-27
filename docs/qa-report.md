@@ -1,5 +1,46 @@
 # QA Report (sprint log)
 
+## GO-LIVE verification · 2026-07-28 · https://kheelona.com · commits 070180b + de6874d + 14959e9
+
+Everything below was checked against the **live domain**, not localhost.
+
+**Hosts.** apex 200; `www` **308** to apex, paths preserved (`www…/products/lumi` →
+`kheelona.com/products/lumi`); canonical tag and robots.txt Sitemap line both agree with the served
+host. The site launched the other way round (www primary, apex 307) — see the checkpoint for why that
+would have cost the sitemap submission.
+
+**Routes.** 10 routes 200, `/nope` 404, all **24 sitemap URLs 200** on the apex, sitemap 200,
+`llms.txt` / `pricing.md` / `robots.txt` 200, every legacy Wix 301 still landing right.
+
+**Indexability** (checked because it is the classic silent launch killer): **no route carries a
+`robots` meta tag**, so all ten are indexable by default, and robots.txt Allows everything including
+the named AI crawlers. Search Console: domain property `sc-domain:kheelona.com`, sitemap processed
+successfully, 24 pages discovered. Bing: submitted, processing.
+
+**Assets and forms.** Hero asset 200 raw and 200 through the optimizer at 384/828/1200; hero plush
+renders (both Lumi and Kheelu visible). Tally iframe loads with all six fields correctly typed.
+
+**Analytics, both confirmed on the live domain.** GA4: script loaded, `window.gtag` a function,
+`config G-7LMKSFEXZ9` in the dataLayer, `_ga` cookie set. Vercel Web Analytics: loaded. `preorder_view`
+now reaches GA4 — the stub had been dead since written, for want of a gtag.
+
+**axe**: 0 violations on `/` and `/privacy`, desktop and mobile.
+
+**Two things fixed during this pass, both real:**
+1. The pre-order iframe was `h-[560px]` against an **886px** form, so City and the **Submit button**
+   sat below the frame's own fold, reachable only by scrolling inside the iframe. Raised to 960px,
+   measured not guessed, guarded by a test that fails below 900.
+2. The canonical host, as above.
+
+**One measurement mistake worth recording**: I first reported Vercel Web Analytics as missing on the
+live site. It loads from a per-project **obfuscated path** (`/8f88bf018d5e772b/script.js`), not
+`/_vercel/insights/`, because Vercel randomizes it against ad blockers. Verify with `window.vai`.
+
+**Not verified, and honest about it**: no live Lighthouse run was taken after go-live. The last
+numbers (A11y/BP/SEO 100 across 18 runs, Perf 99–100) predate the analytics scripts and the taller
+iframe. Both additions load after hydration and below the hero, so the LCP path is unchanged in
+principle — but that is reasoning, not a measurement. Worth one live mobile run when convenient.
+
 ## Repo-root move + a caught image regression · 2026-07-28 · commit 707ec46
 
 **Why the move**: both Vercel projects were failing. The build log said "No Next.js version
