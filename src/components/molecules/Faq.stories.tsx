@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { Faq } from "./Faq";
+import { LUMI_AGES } from "@/config/site";
 
 const items = [
   {
@@ -8,7 +9,7 @@ const items = [
   },
   {
     q: "What ages is Lumi for?",
-    a: "Lumi is built for children ages 3 to 6.",
+    a: `Lumi is built for children ages ${LUMI_AGES}.`,
   },
   {
     q: "Can the parent see conversations?",

@@ -1,5 +1,10 @@
 # Checkpoint: POC → production structure, tooling & docs
 
+> **Path note (added 2026-07-28):** every `site/...` path and `cd site &&` command below
+> predate the 2026-07-28 move of the app to the repo root. Drop the prefix when reading:
+> `cd site && npm test` is now just `npm test`. See `docs/standards/STRUCTURE-MAP.md`.
+
+
 **Sprint:** 2026-07-12 (merged + deployed 2026-07-13) · **Commits:** `b80142a`→`4f4afac` (6 phases) + `890a24a` (docs banner) · **Status:** MERGED to `demo-website` and LIVE · **Previous checkpoint:** `r11-hero-playos-consistency.md`
 
 ## What this was
