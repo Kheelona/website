@@ -16,7 +16,9 @@ export default defineConfig({
     globals: true,
     environment: "jsdom",
     setupFiles: ["./test/setup.ts"],
-    include: ["src/**/*.test.{ts,tsx}"],
+    // `test/` holds repo-level guards (config, redirects); `src/` holds the
+    // per-component tests COMPONENT_GUIDELINES requires.
+    include: ["src/**/*.test.{ts,tsx}", "test/**/*.test.{ts,tsx}"],
     css: true,
   },
 });

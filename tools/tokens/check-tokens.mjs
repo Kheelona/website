@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /** Token drift gate (§8.13): the palette lives in three places by design --
- *  Design/design-system/colors_and_type.css (canonical), site/app/globals.css
- *  @theme (Tailwind v4), site/lib/three/tokens.ts (the 3D scene's JS mirror).
+ *  Design/design-system/colors_and_type.css (canonical), src/styles/globals.css
+ *  @theme (Tailwind v4), src/features/ambient-stage/lib/tokens.ts (the 3D mirror).
  *  This script fails the site build when any mapped value drifts.
  *
  *  Run: node tools/tokens/check-tokens.mjs   (site build runs it automatically)
@@ -20,8 +20,8 @@ if (!existsSync(join(root, "Design/design-system/colors_and_type.css"))) {
 }
 
 const ds = readFileSync(join(root, "Design/design-system/colors_and_type.css"), "utf8");
-const theme = readFileSync(join(root, "site/src/styles/globals.css"), "utf8");
-const three = readFileSync(join(root, "site/src/features/ambient-stage/lib/tokens.ts"), "utf8");
+const theme = readFileSync(join(root, "src/styles/globals.css"), "utf8");
+const three = readFileSync(join(root, "src/features/ambient-stage/lib/tokens.ts"), "utf8");
 
 const cssVar = (src, name) => {
   const m = src.match(new RegExp(`--${name}\\s*:\\s*([^;]+);`));

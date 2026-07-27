@@ -37,6 +37,11 @@
     "**/*.test.ts",
     "**/*.test.tsx",
     ".storybook",
-    "test"
+    "test",
+    "launch-video",
+    "tools",
+    "docs",
+    "design-concepts",
+    "3d-handoff"
   ]
 }

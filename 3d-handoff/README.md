@@ -66,4 +66,4 @@ Hand them the same images in this folder as reference plus this spec:
 
 ## When you are done
 
-Both files sit in `~/Downloads`. Tell Claude **"models are in"**. The pipeline from there: 8-angle contact-sheet check against the gates above, meshopt compression (the idle clip is verified to survive it), then into `site/public/models/` and the live scene.
+Both files sit in `~/Downloads`. Tell Claude **"models are in"**. The pipeline from there: 8-angle contact-sheet check against the gates above, meshopt compression (the idle clip is verified to survive it), then into `public/models/` and the live scene.

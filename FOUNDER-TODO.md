@@ -102,7 +102,7 @@ Spec: `docs/revamp-2026-07/BUILD-V3.md`. **Your gates, all of which BLOCK merge 
 
 Direction picked (Lumi's World + pop-up elements), both models generated and verified, Home rebuilt as the immersive journey, ribbon nav removed on your feedback. Merged to `master`, temp-live for feedback per your call.
 
-**Deployed (2026-07-10; branch updated to the theme-B revamp on 2026-07-25):** https://website-hdn2.vercel.app — GitHub `Kheelona/website`, branch `demo-website`, Vercel Root Directory `site`. That URL now serves the revamp, not this redesign; the redesign remains on `main`. Still yours when ready: the two `NEXT_PUBLIC_*` env vars in Vercel (Tally URL makes the reserve form go live; GA4 id starts measuring) and pointing kheelona.com DNS when this stops being temporary. The wireframe round (`design-concepts/round-2-immersive/`) and model kit (`3d-handoff/`) stay in the repo as the design record.
+**Deployed (2026-07-10; branch updated to the theme-B revamp on 2026-07-25):** https://website-hdn2.vercel.app — GitHub `Kheelona/website`, branch `demo-website`, Vercel Root Directory = repo root (was `site`; the app moved on 2026-07-28). That URL now serves the revamp, not this redesign; the redesign remains on `main`. Still yours when ready: the two `NEXT_PUBLIC_*` env vars in Vercel (Tally URL makes the reserve form go live; GA4 id starts measuring) and pointing kheelona.com DNS when this stops being temporary. The wireframe round (`design-concepts/round-2-immersive/`) and model kit (`3d-handoff/`) stay in the repo as the design record.
 
 Everything below is the pre-existing launch list; it all carries over to the redesigned site unchanged.
 
@@ -140,7 +140,7 @@ Create the Tally form with exactly these fields: parent name, email, WhatsApp nu
 - Also confirm: the consent text in Tally should match the site's promise "Your WhatsApp number is only for updates about your reservation. You can leave the list anytime." If your Tally wording differs, tell Claude and the site line gets updated.
 
 ## 2. Vercel deploy (unlocks: the site being live)
-Run `vercel` (or connect the GitHub repo in the Vercel dashboard) with project root = `site/`. Add the env vars from `.env`. Point kheelona.com DNS at Vercel. Claude can drive everything after `vercel login` happens in your terminal (`! npx vercel login`).
+Run `vercel` (or connect the GitHub repo in the Vercel dashboard) with Root Directory = the repo root (leave it empty). Add the env vars from `.env`. Point kheelona.com DNS at Vercel. Claude can drive everything after `vercel login` happens in your terminal (`! npx vercel login`).
 
 ## 3. Testimonials (unlocks: the strongest missing trust signal)
 Three real quotes, each with parent name, child age, city, and written consent. The section is already built (`ParentVoices`) and unmounts itself until quotes exist; paste them to Claude and it goes live on Home.

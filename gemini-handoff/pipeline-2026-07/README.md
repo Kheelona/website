@@ -14,9 +14,9 @@ Attach these with every prompt so the new bodies inherit the family look:
 
 | File | Why |
 |---|---|
-| `../../site/public/product/lumi-blue-2.png` | The house style anchor: real product photo, soft studio light, plain background, three-quarter view. |
-| `../../site/public/mascot/mascot-hero-wink.png` | Kheelu's colour language (orange body, blue glasses) and the soft-shape feel. |
-| `../../site/public/products/magic-box.png` | The hardware idiom already published: matte, rounded, no screen. |
+| `../../public/product/lumi-blue-2.png` | The house style anchor: real product photo, soft studio light, plain background, three-quarter view. |
+| `../../public/mascot/mascot-hero-wink.png` | Kheelu's colour language (orange body, blue glasses) and the soft-shape feel. |
+| `../../public/products/magic-box.png` | The hardware idiom already published: matte, rounded, no screen. |
 
 ## Prompt A — the Kheelu Speaker
 
@@ -93,6 +93,6 @@ shapes, nothing photorealistic. Aspect ratio 4:3.
 
 1. Cuts them out with `tools/cutout` (Swift + Apple Vision) so nothing ships with a baked
    background.
-2. Drops the results into `site/public/products/` and points `site/src/lib/family.ts` at them
+2. Drops the results into `public/products/` and points `src/lib/family.ts` at them
    (`img: null` → the real path), which lights up both the Home pipeline room and /playos.
 3. Updates the alt text from "coming soon" to a real description.

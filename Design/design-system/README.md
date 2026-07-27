@@ -144,7 +144,7 @@ source of truth. Each lives in one component; hand-rolling the shape on the site
 
 | Pattern | What it is | Where it lives |
 |---|---|---|
-| **Room** | Content sits in a contained rounded panel on one warm backdrop, not in full-bleed washes. Fills: white, cream, cool, sun, orange (the orange one is the conversion moment and carries white text on `#C25210`). | `site/src/components/atoms/Room.tsx` |
+| **Room** | Content sits in a contained rounded panel on one warm backdrop, not in full-bleed washes. Fills: white, cream, cool, sun, orange (the orange one is the conversion moment and carries white text on `#C25210`). | `src/components/atoms/Room.tsx` |
 | **Answer block** | A question-led heading with its answer visible underneath in 40 to 60 words. Used where a parent's question deserves an answer in the open rather than behind an accordion. Schema may mirror only these visible answers. | `molecules/AnswerBlock.tsx` |
 | **Footnote + footnotes row** | Apple-style small print: a superscript marker in copy, an ordered list once per page. For claims that invite a follow-up question ("up to 10 languages", "6 months included"). Naming the limit is the trust signal. | `molecules/FootnotesRow.tsx` |
 | **Fact band** | A wide bordered panel, bold label left and explanation right, for one thing a parent must not miss. Two instances: the parenting-prompt band and the Kheelona+ band. | `molecules/KheelonaPlusBand.tsx` (and the /playos one-prompt band) |
@@ -161,7 +161,7 @@ finished state.
 The site keeps two mirrors of this palette. To change a color:
 
 1. Edit `colors_and_type.css` here (the canonical file).
-2. Mirror it in `site/app/globals.css` under `@theme` (`--color-*` names).
-3. If the 3D scene uses it, mirror it in `site/lib/three/tokens.ts`.
-4. Run `cd site && npm run build` — `tools/tokens/check-tokens.mjs` fails the build on any drift.
+2. Mirror it in `src/app/globals.css` under `@theme` (`--color-*` names).
+3. If the 3D scene uses it, mirror it in `src/lib/three/tokens.ts`.
+4. Run `npm run build` — `tools/tokens/check-tokens.mjs` fails the build on any drift.
 5. Sanctioned site-only values (heading ink `#1C1C1C`, footer cocoa, sun wash `#FDF1E2`, sky stops) are whitelisted inside that script; add new deviations there with a comment.
