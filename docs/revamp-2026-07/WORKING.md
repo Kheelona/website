@@ -12,8 +12,26 @@ here in full so nothing depends on conversation memory.
 
 ## ⏭ COLD-RESTART: START HERE (last updated 2026-07-27 — V3 content repositioning is NEXT)
 
-**NEXT WORK = V3, specced in full in `docs/revamp-2026-07/BUILD-V3.md` — read THAT file and
-execute it end to end.** It is self-contained: positioning brief (40% fun / 20% brain
+**V3 IS BUILT (2026-07-28).** All five slices shipped: V3-1 shared parts, V3-2 Home,
+V3-3 /products/lumi, V3-4 interior routes, V3-5 cleanup + QA + deploy. The site now argues
+40% fun / 20% brain development / 40% education with the companion story leading. The M5
+cleanup went with it: the 15 retired components, the `teal-deep` token and the teal wash are
+deleted, and the AEO plumbing (llms.txt, AI-crawler robots rules, journal review date) is in.
+NEXT = the founder's review of the preview, then the V3-a..e gates below. The spec that was
+built is `docs/revamp-2026-07/BUILD-V3.md`; it stays as the record of what the copy means and
+why each fold exists.
+
+**What V3 changed, in one paragraph**: Lumi's age band is 2 to 5 with the platform arc 2 to 14
+(the 3-to-10 law is gone from code and copy); the .com lineup is now the pipeline — Lumi, the
+Kheelu Speaker, AI books — with age chips and an arc rule, and Lori/Lua/Robu are off the site;
+Home gained a Learning room that shows the Kheelu-mode loop as a real exchange and a
+Brain-development room that explains serve and return; Kheelona+ is published as "6 months
+included, price announced before launch" in a band on Home, /products/lumi and /playos;
+testimonials are three named placeholders (Shweta, Priyamvada, Gaurav) pending real words;
+footnotes answer the two claims that invite a follow-up; the footer signs the work "Designed by
+parents in Bengaluru."; and the finale carries a WhatsApp share link.
+
+Original brief for the slice work (kept for provenance): It is self-contained: positioning brief (40% fun / 20% brain
 development / 40% education, companion-led per the founder's YC application), locked founder
 decisions (India-first ₹4,999; Lumi ages 2 to 5, platform 2 to 14; pipeline = Lumi → Kheelu
 Speaker → AI books, Lori/Lua/Robu retired from .com; Kheelona+ published as "6 months

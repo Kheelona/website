@@ -417,3 +417,52 @@ asserts they cannot disagree.
 layer. 1024px unchanged. One 3px artifact remains at exactly 768px on Home (a `.orbit-seat`
 2px past the edge; the user cannot pan and the mobile dock is already hidden at that width).
 Tests 226/226, tsc clean, build green.
+
+## V3 content repositioning (2026-07-28) — build + QA
+
+Spec `docs/revamp-2026-07/BUILD-V3.md`, research `benchmarks-v3.md`. Five slices, per-slice
+gates (`npm test` + `npm run build` green before each commit).
+
+**Slices**: V3-1 shared parts · V3-2 Home (14 folds, two new rooms) · V3-3 /products/lumi ·
+V3-4 interior routes · V3-5 cleanup + QA + deploy.
+
+**Cleanup folded in (the old M5)**: the 15 retired components deleted — KheeluIntro,
+WhyWeExist, Feelings, MeetLumi, WhatLumiDoes, HowItWorks, SafetyCallout, SafetyStrip,
+HeroConversation, StickyMobileCTA, MascotScene, KheeluSays, CurveDivider, Beat (with their
+tests and stories) — after first stripping the dormant `KheeluSays` and `CurveDivider` call
+sites from six still-live components (FinaleCTA, ParentQuotes, Compare, Journal, LaunchVideo,
+ParentAppSection), which also removed the now-pointless `kheelu`/`kheeluLine`/`from` props.
+`teal-deep` and the teal wash went too: their last user was /safety's hero, which moved onto
+the backdrop in M4. Token-check is now 17 mappings (was 18). `features/ambient-stage/` stays
+dormant, untouched.
+
+**Test count moved 251 → 206 on purpose**: the deleted components took 45 tests with them.
+
+**AEO plumbing**: `/llms.txt` route (facts only, gated items marked unannounced, prices from
+`config/site`), robots rules naming GPTBot, OAI-SearchBot, ChatGPT-User, PerplexityBot,
+Perplexity-User, ClaudeBot, Claude-User, Claude-SearchBot, Google-Extended, Applebot-Extended
+and CCBot, and a journal freshness signal — "Reviewed July 2026" plus `dateModified` at month
+precision. Deliberately NOT per-article publication dates: we do not have them, so they would
+be invented.
+
+**Verification**
+- `npm test` 206/206 · `npx tsc --noEmit` clean · `npm run build` green (token-check 17).
+- Voice-lint on RENDERED html, 11 routes incl. /llms.txt and the 404: zero em-dashes, zero
+  italic classes, zero "3 to 10"/"3 to 6"/"toddler", zero retired names (Lori/Lua/Robu, "ten
+  families"). Four exclamation marks total, all inside quoted child speech in the two demo
+  cards ("He went to sleep!", "To grandma's house!") — the sanctioned exemption, two of the
+  four being the RSC payload copy of the visible ones.
+- Mobile overflow probe (CDP, mobile emulation): 9/9 routes clean at 320px and 390px, no
+  sideways pan, no stretched fixed layer. The two new rooms and the three-card pipeline row
+  hold at both widths.
+- 23-href internal crawl all 200 · `#reserve` present on all 10 routes including the 404.
+- Every JSON-LD block parses; the two new Lumi FAQ entries (subscription, Kheelona+) exist in
+  both the FAQPage graph AND visible copy, which is the standing rule for that schema.
+- No-JS render intact (hero copy present, guide markup CSS-hidden).
+- Chrome pass at 390px on the new folds: Learning room (heading, chips, demo card), pipeline
+  row (age chips, "In the workshop" placeholders), Kheelona+ band.
+
+**Gates the build respected rather than guessed**: no ₹ price for Kheelona+ and no claim about
+what happens if it lapses (V3-b), placeholder testimonial words marked in-file (V3-a),
+placeholder art instead of stand-in renders (V3-c), no pilot counts, no ship date, no named
+language list, no certification claims.

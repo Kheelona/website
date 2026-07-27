@@ -1,9 +1,7 @@
 import Image from "next/image";
 import { Container } from "@/components/atoms/Container";
 import { Section } from "@/components/atoms/Section";
-import { CurveDivider } from "@/components/atoms/CurveDivider";
 import { Reveal } from "@/components/molecules/Reveal";
-import { KheeluSays } from "@/components/molecules/KheeluSays";
 import { TallyEmbed } from "@/components/molecules/TallyEmbed";
 import {
   LAUNCH_PRICE,
@@ -34,14 +32,10 @@ const LINEUP = [
 
 export function FinaleCTA({
   variant = "full",
-  from = "white",
-  kheeluLine,
   bare = false,
   share = true,
 }: {
   variant?: "full" | "compact";
-  from?: "white" | "cream" | "cool" | "sun";
-  kheeluLine?: string;
   /** Revamp M2: content-only, for composition inside a Room fill="orange"
    *  (the Room then owns id="reserve" and the white-text paint). */
   bare?: boolean;
@@ -65,7 +59,6 @@ export function FinaleCTA({
             launch. No payment now. We hold the price, you hold your place.
           </p>
         </Reveal>
-        {kheeluLine && <KheeluSays line={kheeluLine} className="mb-2" />}
         <Reveal className="max-w-[680px] text-left">
           {/* V3: the deal on the subscription, said before the form and not
               after the purchase (gate V3-b keeps the price out) */}
@@ -118,7 +111,6 @@ export function FinaleCTA({
 
   return (
     <Section wash="orange" id="reserve" className="overflow-x-clip">
-      <CurveDivider from={from} />
       <Container
         className={variant === "full" ? "pt-10 md:pt-14" : "pb-16 pt-8 md:pb-20"}
       >

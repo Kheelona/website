@@ -3,9 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Container } from "@/components/atoms/Container";
 import { Section } from "@/components/atoms/Section";
-import { CurveDivider } from "@/components/atoms/CurveDivider";
 import { Reveal } from "@/components/molecules/Reveal";
-import { KheeluSays } from "@/components/molecules/KheeluSays";
 
 /** Home S02c: the ambient launch film (real product photography, 20s loop).
  *  Autoplays muted only for users who have not asked for less motion or data;
@@ -65,11 +63,7 @@ export function LaunchVideo({ bare = false }: { bare?: boolean }) {
     <Section wash="cream">
       {/* R10: KheeluIntro (white) now precedes this section since
           StagedIntro retired — the curve keeps the wash handoff soft */}
-      <CurveDivider from="white" flip />
       <Container className="pb-16 pt-2 md:pb-24">
-        <Reveal>
-          <KheeluSays line="Press play. I will wait." pose="silly" />
-        </Reveal>
         {player}
       </Container>
     </Section>

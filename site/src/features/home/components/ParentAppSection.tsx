@@ -2,10 +2,8 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Container } from "@/components/atoms/Container";
 import { Section } from "@/components/atoms/Section";
-import { CurveDivider } from "@/components/atoms/CurveDivider";
 import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { Reveal } from "@/components/molecules/Reveal";
-import { KheeluSays } from "@/components/molecules/KheeluSays";
 import { PhoneFrame } from "@/components/molecules/PhoneFrame";
 import { KheelonaPlusBand } from "@/components/molecules/KheelonaPlusBand";
 
@@ -22,14 +20,8 @@ const CHIPS = [
 ] as const;
 
 export function ParentAppSection({
-  from = "white",
-  kheelu = false,
   bare = false,
 }: {
-  from?: "white" | "cream" | "cool" | "teal";
-  /** Home mounts the narrator bubble; other pages keep their own single
-   *  Kheelu moment, so it stays off by default. */
-  kheelu?: boolean;
   /** Revamp M2: content-only, for composition inside a Room. */
   bare?: boolean;
 }) {
@@ -46,12 +38,6 @@ export function ParentAppSection({
           />
         </Reveal>
         <Reveal>
-          {kheelu && (
-            <KheeluSays
-              line="Lumi and I keep no secrets from grown-ups."
-              pose="grumpy"
-            />
-          )}
           <SectionHeading
             eyebrow="For the grown-ups"
             title="Your child is just playing. You can see the learning."
@@ -91,7 +77,6 @@ export function ParentAppSection({
 
   return (
     <Section wash="cream" id="parent-app">
-      <CurveDivider from={from} />
       <Container className="pb-16 pt-6 md:pb-20 md:pt-8">{content}</Container>
     </Section>
   );

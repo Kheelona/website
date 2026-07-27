@@ -14,13 +14,6 @@ describe("Section", () => {
     expect(el.className).toContain("bg-white");
   });
 
-  it("carries white text on the deep teal band for contrast", () => {
-    render(<Section wash="teal">copy</Section>);
-    const el = screen.getByText("copy").closest("section")!;
-    expect(el).toHaveAttribute("data-wash", "teal");
-    expect(el.className).toContain("bg-teal-deep");
-    expect(el.className).toContain("text-white");
-  });
 
   it("uses the orange-cta fill for the orange wash", () => {
     render(<Section wash="orange">copy</Section>);
@@ -34,5 +27,10 @@ describe("Section", () => {
     );
     const el = screen.getByText("copy").closest("section")!;
     expect(el).toHaveAttribute("id", "reserve");
+  });
+
+  it("no longer offers the retired teal wash (V3 cleanup)", () => {
+    const { container } = render(<Section wash="orange">band</Section>);
+    expect(container.innerHTML).not.toContain("teal");
   });
 });

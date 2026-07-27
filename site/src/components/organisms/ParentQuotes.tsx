@@ -1,6 +1,5 @@
 import { Container } from "@/components/atoms/Container";
 import { Section } from "@/components/atoms/Section";
-import { CurveDivider } from "@/components/atoms/CurveDivider";
 import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { Reveal } from "@/components/molecules/Reveal";
 import { Card } from "@/components/molecules/Card";
@@ -33,13 +32,11 @@ const QUOTES = [
 ] as const;
 
 export function ParentQuotes({
-  from = "cream",
   count = 3,
   eyebrow = "From the pilot families",
   title = "The first families are already talking.",
   bare = false,
 }: {
-  from?: "white" | "cream" | "cool";
   count?: 2 | 3;
   eyebrow?: string;
   title?: string;
@@ -85,7 +82,6 @@ export function ParentQuotes({
 
   return (
     <Section wash="white" id="parent-voices">
-      <CurveDivider from={from} />
       <Container className="pb-16 pt-6 md:pb-20 md:pt-8">{content}</Container>
     </Section>
   );

@@ -58,3 +58,9 @@ export const WHATSAPP_SHARE_HREF = `https://wa.me/?text=${encodeURIComponent(
   `A screen-free talking friend that teaches, for ages ${LUMI_AGES}. First 500 units at Rs 4,999, no payment now: https://kheelona.com`,
 )}`;
 export const WHATSAPP_SHARE_LABEL = "Know a parent who needs this? Share Lumi on WhatsApp";
+
+/** V3 (AEO): journal freshness. Answer engines weight recency, and the honest
+ *  signal we have is the month the whole journal was written and verified
+ *  (documented in docs/qa-report.md). NOT per-article publication dates —
+ *  those would be invented. Update this when the journal is next reviewed. */
+export const JOURNAL_REVIEWED = "July 2026";

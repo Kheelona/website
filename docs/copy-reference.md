@@ -154,3 +154,14 @@ Superseded laws: ages 3 to 10 (now Lumi 2 to 5 / platform 2 to 14), the Lori/Lua
 row on .com, all pilot-count claims. New always-gated facts: ₹ price of Kheelona+ and
 post-lapse device behaviour (V3-b), the named 10 languages, camera, ship date. The hero H1
 line 2 chosen: "A teacher who plays." (alternates recorded in BUILD-V3.md appendix A1).
+
+**V3 BUILT 2026-07-28.** Deviations from the spec worth recording: (1) `ChatDemo` already had
+a `turns` prop, so the spec's "script prop" needed no new API — the Kheelu-mode exchange rides
+the existing contract; (2) the Kheelona+ band became a shared molecule
+(`KheelonaPlusBand`) rather than three hand-composed bands, because Home, /products/lumi and
+/playos all needed it and a price must never be able to creep in through a call site; (3) the
+journal's freshness signal is one honest review month ("Reviewed July 2026" + `dateModified` at
+month precision), NOT the per-article publication dates the spec sketched — we do not have
+those, so they would have been invented; (4) the safe-toy checklist article's age line became
+"a toy sold for small children" rather than moving to a new band, so the advice stays true at
+any age.

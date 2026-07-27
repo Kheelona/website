@@ -25,8 +25,4 @@ describe("FinaleCTA", () => {
     expect(container.querySelector('[aria-hidden="true"].flex')).toBeNull();
   });
 
-  it("mounts the Kheelu narrator bubble only when kheeluLine is passed", () => {
-    render(<FinaleCTA kheeluLine="Your spot is one tap away." />);
-    expect(screen.getByText("Your spot is one tap away.")).toBeInTheDocument();
-  });
 });

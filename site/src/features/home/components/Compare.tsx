@@ -1,6 +1,5 @@
 import { Container } from "@/components/atoms/Container";
 import { Section } from "@/components/atoms/Section";
-import { CurveDivider } from "@/components/atoms/CurveDivider";
 import { Button } from "@/components/atoms/Button";
 import { Reveal } from "@/components/molecules/Reveal";
 import { SectionHeading } from "@/components/molecules/SectionHeading";
@@ -42,7 +41,6 @@ export function Compare({ bare = false }: { bare?: boolean }) {
 
   return (
     <Section wash="white">
-      <CurveDivider from="cool" />
       <Container className="pb-12 pt-16 md:pb-14 md:pt-20">{content}</Container>
     </Section>
   );
