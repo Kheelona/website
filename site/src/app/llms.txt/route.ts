@@ -28,7 +28,7 @@ const BODY = `# Kheelona
 - Ages ${LUMI_AGES}. The wider family of friends spans ages ${PLATFORM_AGES}: the Kheelu Speaker (5 to 14) and AI books are in development.
 - Speaks up to 10 languages spoken at home. The full list is announced before launch.
 - Runs on PlayOS, Kheelona's own platform: a small language model built only for children, not shrunk from adult AI.
-- Kheelu mode: pre-loaded stories and lessons a child can interrupt, question, and be quizzed on, offline.
+- Three modes, one toy: AI mode (open conversation), Kheelu mode (pre-loaded stories and lessons a child can interrupt, question, and be quizzed on, offline), and Bluetooth mode (pair a phone and Lumi is the speaker for your own playlist or audiobook).
 
 ## Safety, in mechanisms rather than badges
 - The microphone wakes to a word and is off the rest of the time.

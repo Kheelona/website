@@ -516,3 +516,15 @@ reveal-free.
 Also verified in the same pass: sitemap intact (9 routes + 14 articles), canonical tags,
 OG title/description/image, all JSON-LD blocks parse, and `/llms.txt` correctly absent from the
 sitemap. Suite at completion: **tests 210/210**, tsc clean, `next build` green (token-check 17).
+
+## V3 modes section (2026-07-28)
+
+Founder asked whether the site showed Lumi's three modes. It did not: conversation was never named
+as a mode, and Bluetooth was a single card in a grid. Shipped `LumiModes` (cards on
+/products/lumi, compact strip on Home), replacing the vague Companion/Storyteller/Teacher chips,
+and removed the duplicate Bluetooth card from the what-it-does grid.
+
+Verified: tests **215/215**, tsc clean, build green (token-check 17). axe **zero violations** on
+the two changed routes at desktop and mobile. Mobile overflow clean at 320 and 390px on both.
+Screenshotted at 1200px and 390px. A test guards gate V3-b: the section must never frame Bluetooth
+as a subscription fallback.
