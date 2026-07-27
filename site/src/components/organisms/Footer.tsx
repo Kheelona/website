@@ -30,6 +30,10 @@ export function Footer() {
         <p className="mt-6 text-white/70">
           Wake-word listening. No open internet. You see everything.
         </p>
+        {/* V3 (Apple-tier pass): the provenance line. "Designed by Apple in
+            California" works because it is a fact stated plainly — this is
+            ours, and it is the answer to "who is behind this toy". */}
+        <p className="mt-2 text-white/70">Designed by parents in Bengaluru.</p>
         <div className="mt-5 flex flex-wrap justify-between gap-4 border-t border-white/15 pt-5 text-white/60">
           <span>
             For partners and investors:{" "}

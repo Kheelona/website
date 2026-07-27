@@ -1,5 +1,6 @@
 /** The honest comparison table. Revamp M2 (founder brief pointer 6): same
- *  verdicts, parent words instead of technical ones, ages widened to 3 to 10,
+ *  verdicts, parent words instead of technical ones, the growth row now carrying
+ *  the V3 age arc (2 to 14 with the family),
  *  "Static toys" renamed for humans. The Lumi column fills with the semantic
  *  action token (white 4.66:1); raw brand orange stays decorative-only.
  *

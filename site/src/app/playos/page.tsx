@@ -12,6 +12,7 @@ import { StepList } from "@/components/molecules/StepList";
 import { Reveal } from "@/components/molecules/Reveal";
 import { PhoneFrame } from "@/components/molecules/PhoneFrame";
 import { FamilyGrid } from "@/components/organisms/FamilyGrid";
+import { KheelonaPlusBand } from "@/components/molecules/KheelonaPlusBand";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 
 export const metadata: Metadata = {
@@ -32,7 +33,9 @@ export const metadata: Metadata = {
    Revamp M4 (theme B): hero + room track, guide narration, and the
    parent-app room opens with the question parents actually search
    ("parental controls AI toy" is the page's new primary term, research.md).
-   Ages now 3 to 10 (locked, wireframe round). */
+   V3 (2026-07-27): the platform arc is ages 2 to 14 — Lumi from 2, the Kheelu
+   Speaker to 14, AI books across — and per-answer age framing replaces any
+   single band. The Kheelona+ band states the subscription plainly. */
 
 /* Family lineup shared with the Home family room (lib/family, FamilyGrid). */
 
@@ -64,7 +67,7 @@ const STACK = [
 const SAFETY_LAYERS = [
   { title: "On-device safety filter", body: "The first check happens on the toy, before anything travels." },
   { title: "Cloud guardrail", body: "A second, independent check on every reply." },
-  { title: "Age-graded responses", body: "Answers tuned for ages 3 to 10, not shrunk from adult AI." },
+  { title: "Age-graded responses", body: "Answers tuned to your child's age, not shrunk from adult AI." },
   { title: "No open internet", body: "No browsing, no search, no rabbit holes. Ever." },
   { title: "Red-team tested", body: "We attack our own safety layer before every release." },
   { title: "A parent kill switch", body: "One tap from you stops everything, instantly." },
@@ -80,7 +83,7 @@ const PRIVACY_CARDS = [
 /* The parent-app answer, mirrored into FAQPage schema below (schema may only
    ever describe copy a parent can read on the page). */
 const APP_ANSWER =
-  "Everything the toy said and heard. The parent app gives you a summary of the day, the full conversation log word for word, topic filters that decide what is open and what waits, and one note about your family's language, culture, and values that shapes every conversation after it. One app covers every Kheelona friend.";
+  "Everything the toy said and heard. The parent app gives you a summary of the day, the full conversation log word for word, and topic filters that decide what is open and what waits. It counts the new words your child learned and gives you one simple thing to do together each day. One app covers every Kheelona friend.";
 
 const JSON_LD = {
   "@context": "https://schema.org",
@@ -124,7 +127,7 @@ export default function PlayOSPage() {
           eyebrow="PlayOS"
           title="One soul. Many bodies."
           titleClassName="mb-5"
-          lede="PlayOS is the friend inside every Kheelona companion. It remembers, speaks your languages, and answers to you. Lumi is the first body it lives in. It will not be the last."
+          lede="PlayOS is the friend inside every Kheelona companion, from age 2 to 14. It remembers, speaks your languages, and answers to you. Lumi is the first body it lives in. It will not be the last."
         />
       </PageHero>
 
@@ -135,7 +138,7 @@ export default function PlayOSPage() {
             <SectionHeading
               title="The same friend, in every body."
               titleClassName="mb-3 max-w-[18ch]"
-              lede="Every friend that follows Lumi runs on the same PlayOS soul, learns the same safety rules, and grows with your child instead of gathering dust. When PlayOS gets smarter, every friend does."
+              lede="Every friend that follows Lumi runs on the same PlayOS soul and the same memory of your child. What Lumi starts at 2, the Kheelu Speaker carries to 14, and AI books bind together. When PlayOS gets smarter, every friend does."
               ledeClassName="mb-11 max-w-[58ch]"
             />
           </Reveal>
@@ -237,6 +240,9 @@ export default function PlayOSPage() {
                 </p>
               </div>
             </div>
+          </Reveal>
+          <Reveal className="mt-6">
+            <KheelonaPlusBand />
           </Reveal>
         </Room>
 
@@ -343,7 +349,7 @@ export default function PlayOSPage() {
             <SectionHeading
               title="The brain keeps growing."
               titleClassName="mb-3 max-w-[20ch]"
-              lede="Kheelona is building its own child-safe voice model, made for toys instead of borrowed from chatbots. It learns only from conversations families separately opt into, every family can withdraw with one tap, and nothing is ever sold. Each consented conversation makes every friend a little smarter."
+              lede="Kheelona is building its own child-safe voice model, made for toys instead of borrowed from chatbots. It is a small brain trained only for children. It learns only from conversations families separately opt into, every family can withdraw with one tap, and nothing is ever sold. Each consented conversation makes every friend a little smarter."
               ledeClassName="mb-8 max-w-[62ch]"
             />
             <p className="mb-8 text-[16px] text-ink-muted">

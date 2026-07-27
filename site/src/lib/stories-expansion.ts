@@ -124,7 +124,7 @@ export const EXPANSION: Story[] = [
       { p: "Type how to make my child's brain sharp into any search box and an industry answers: apps, flashcards, tonics, courses for three year olds. The volume of it can make an ordinary home feel like not enough." },
       { p: "Here is the comforting, slightly boring truth. The things that build a young brain are old things. Research keeps circling the same four." },
       /* The "aged 3 to 6" below is SOURCED sleep guidance, not our audience
-         range. M4 age pass: product-facing copy moved to 3 to 10, but a cited
+         range. Age passes moved product-facing copy (now 2 to 5 / 2 to 14), but a cited
          age band keeps its real numbers (never-invent-claims). */
       { h: "Conversation, sleep, play, and calm", p: "Conversation, especially the back and forth kind, builds language and thinking at once; researchers count conversational turns, not vocabulary drills. Sleep is when the day's learning gets filed, and children aged 3 to 6 need ten to thirteen hours of it. Play, the unstructured kind where the sofa becomes a ship, is where planning, memory, and self-control get their reps. And a calm, warm home is not a luxury: chronic stress is one of the few things reliably shown to work against a growing brain." },
       { p: "Notice what is not on the list. There is no app on it. Educational toys and brain development toys can help, but only the ones that produce more of the four: a toy that starts a conversation earns its place, a toy that performs at your child does not." },

@@ -36,7 +36,7 @@ const FOUNDERS = [
     border: "border-t-orange",
     quoteBorder: "border-l-orange",
     linkedin: "https://www.linkedin.com/in/aman-soni-6b17b6223/",
-    bio: "Aman builds the part that thinks. He studied AI, shipped machine learning in production, and holds 14 patents filed in his own name. He owns PlayOS: the voice engine, the on-device safety filters, and the model that gets gentler and smarter with every conversation.",
+    bio: "Aman builds the part that thinks. He studied AI, shipped machine learning in production, and holds 14 patents filed in his own name. He owns the backend and the brain: the voice loop your child talks to, the safety filters, and the small language model we train ourselves.",
     quote:
       "A toy that listens has to think on the device, in real time, and never say the wrong thing. That is the hard problem. It is the only one I want to work on.",
   },
@@ -50,7 +50,7 @@ const FOUNDERS = [
     border: "border-t-blue",
     quoteBorder: "border-l-blue",
     linkedin: "https://www.linkedin.com/in/kashyap-c-r-7ba18177/",
-    bio: "Kashyap makes Lumi something small hands reach for. Over a decade, including years at Intel leading Thunderbolt 4 and 5 compliance, he took hardware from a blank page to certified products on real shelves. He owns the Kheelona Magic Box and the unglamorous work of making it safe to hug.",
+    bio: "Kashyap makes Lumi something small hands reach for. Over a decade, including years at Intel leading Thunderbolt 4 and 5 compliance, he took hardware from a blank page to certified products on real shelves. He owns the hardware and the power: the Kheelona Magic Box, the battery that lasts, and the unglamorous work of making it safe to hug.",
     quote:
       "Anyone can build a demo. Shipping a safe, certified toy by the thousand is a different sport. I have played it for ten years.",
   },
@@ -86,7 +86,7 @@ const FOUNDERS = [
     border: "border-t-yellow",
     quoteBorder: "border-l-yellow",
     linkedin: "https://www.linkedin.com/in/sahu-apoorva/",
-    bio: "Apoorva spent fifteen years in finance and company-building, including a decade as a director scaling a global tech firm of around 500 people. He is a Chartered Accountant who learned to ship AI. He owns the part you care about most: safety, privacy, and the promise this brand makes to your family.",
+    bio: "Apoorva grew up inside education businesses: his family runs the pre-school where he was the first student, in 1994, and he helped run his father's coaching centre as a teenager. Fifteen years in finance and company-building later, he is a Chartered Accountant who learned to ship AI. He owns the frontend, the firmware, and the promise this brand makes to your family.",
     quote:
       "The hard part of AI for children is not the model. It is the trust. So we build that first, and everything else second.",
   },
@@ -131,7 +131,9 @@ export default function TeamPage() {
           We are parents who build. We watched our own children reach for
           screens and felt the same knot you feel. Between the four of us we
           cover the four things a safe talking toy actually needs: a brain, a
-          body, a business, and a voice.
+          body, a business, and a voice. And education runs in the family: the
+          first school Apoorva attended was the one his family runs, and he has
+          been enrolling friends into classrooms since he was a teenager.
         </p>
       </PageHero>
 
