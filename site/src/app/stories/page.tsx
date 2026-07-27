@@ -55,7 +55,13 @@ export default function StoriesPage() {
           <Room
             key={theme}
             fill={room.fill}
-            reveal={REVEALS[t % REVEALS.length]}
+            /* The FIRST room owns this page's LCP: its hero is copy-only, so
+               the largest element in the opening viewport is a card inside room
+               one. A directional reveal holds that at opacity 0 until the
+               observer hydrates, which measured a 4.3s LCP on throttled mobile
+               (Lighthouse 85). Room.tsx already carries the rule — reveals are
+               for BELOW-fold rooms — this makes the loop obey it. */
+            reveal={t === 0 ? "none" : REVEALS[t % REVEALS.length]}
           >
             <Reveal>
               <SectionHeading level="minor" title={theme} titleClassName="mb-7" />

@@ -466,3 +466,53 @@ be invented.
 what happens if it lapses (V3-b), placeholder testimonial words marked in-file (V3-a),
 placeholder art instead of stand-in renders (V3-c), no pilot counts, no ship date, no named
 language list, no certification claims.
+
+## V3 full QA sweep: Lighthouse + axe (2026-07-28)
+
+The gate that had not been run. Local production server (`next start -p 3456`), Chrome for
+Testing, Lighthouse 12. Mobile runs use `--throttling-method=devtools`, per the project's own
+measurement law (simulate/lantern medians proved unreliable here — qa-report R11).
+
+**axe-core, all 10 routes × desktop 1440 and mobile 390: ZERO violations.**
+One violation was found and fixed first: the pipeline placeholder label "In the workshop" at
+13px in `text-ink-muted` lands near 3.9:1 on the 15% brand tints. The tints are fixed by the
+palette, so the text darkened to `text-ink`. (It surfaced only on /playos desktop because axe
+skips elements still held at `opacity: 0` by an unrevealed room — worth knowing for future
+sweeps: an axe pass on a reveal-heavy page under-reports unless rooms are revealed.)
+
+**Lighthouse, 9 routes × 2 form factors, after the fix — every score 99 or 100:**
+
+| Route | Desktop (P/A/BP/SEO) | Mobile (P/A/BP/SEO) |
+|---|---|---|
+| / | 100 / 100 / 100 / 100 | 99 / 100 / 100 / 100 |
+| /products/lumi | 100 / 100 / 100 / 100 | 99 / 100 / 100 / 100 |
+| /playos | 100 / 100 / 100 / 100 | 99 / 100 / 100 / 100 |
+| /safety | 99 / 100 / 100 / 100 | 99 / 100 / 100 / 100 |
+| /setup | 100 / 100 / 100 / 100 | 99 / 100 / 100 / 100 |
+| /team | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| /stories | 100 / 100 / 100 / 100 | **100** / 100 / 100 / 100 |
+| /privacy | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| /terms | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+
+Gates: A11y/BP/SEO 100 everywhere (18/18 runs), Perf ≥95 desktop and ≥90 mobile everywhere.
+
+**The one real finding, and the rule it confirms.** `/stories` mobile first measured **85**, with a
+4.3s LCP against a 1.5s FCP, CLS 0 and TBT 0 — a page that painted fast but whose largest
+element arrived late. The LCP element was a card's description paragraph *inside the first room*,
+and that room carried a directional reveal, which holds it at `opacity: 0` until the
+IntersectionObserver hydrates. On throttled mobile that wait is the entire gap.
+
+`Room.tsx` already carries the rule ("reveals must stay on BELOW-FOLD rooms, never the room that
+owns the page's LCP") — the theme loop on /stories was generating a reveal for room one anyway.
+Gating the first room to `reveal="none"` took mobile to **100** and LCP to 1.5s.
+
+**The generalisable lesson**: a route with a copy-only hero has no priority image to win LCP, so
+the first room below it becomes the LCP owner and must not fade in. Routes with a media hero
+(Home, /products/lumi, /playos, /safety, /setup) are immune because their priority image paints
+first. /privacy and /terms were already safe (their prose room carries no reveal). /team survives
+on the weight of its hero h1. Any FUTURE route with a copy-only hero must ship its first room
+reveal-free.
+
+Also verified in the same pass: sitemap intact (9 routes + 14 articles), canonical tags,
+OG title/description/image, all JSON-LD blocks parse, and `/llms.txt` correctly absent from the
+sitemap.
