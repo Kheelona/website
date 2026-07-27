@@ -37,6 +37,13 @@ fine):**
   prepare (`gemini-handoff/pipeline-2026-07/`); calm placeholders until then.
 - **V3-d. Kheelu lines v3** — two new guide lines join the existing sign-off queue (list in
   BUILD-V3.md §6.4).
+- **V3-e (small, yours)**: the site lets parents pick a Lumi colour, but the Tally form has
+  no colour field, so the preference is lost. Consider adding one (blue/green/pink) to the
+  form. And once the V3-c/REV-a art lands, the share image (`og.png`) gets refreshed to match.
+- **The Apple-tier pass verdict (benchmarks-v3.md Pass 2)**: the site structure is at tier;
+  the gap only you can close is ASSET QUALITY. The two highest-leverage items on this whole
+  list are REV-a (final hero art) and R9-a (real photos of Lumi in children's hands). They
+  are worth more than any further copy round.
 - Superseded by your V3 answers: REV-b(1) subscription (now published per V3-b wording) and
   the "ten families" line (removed; no pilot counts anywhere). REV-b(4) stays open for the
   NAMED language list only.

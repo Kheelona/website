@@ -129,6 +129,18 @@ Row 6 becomes: `Grows with them` — Lumi: `Yes, 2 to 14 with the family` / Smar
 justifies "with the family".) Both views read the one ROWS array; the existing
 views-cannot-disagree test keeps passing. Update the row-header test string.
 
+### 2.6 NEW `src/components/molecules/FootnotesRow.tsx` (Apple-tier pass)
+A quiet footnotes block: `<ol>` of small-print notes (13px, `text-ink-muted`), each linked
+from superscript markers in copy via `id`/`href` anchors (`#fn-1`, `aria-describedby` on the
+marker). Story + test (renders items, anchors resolve, list semantics). Mounted once per page
+as the LAST content of the room preceding the finale, Home + /products/lumi only. V3
+footnotes (the only two — do not add more without a claim that needs one):
+1. `Up to 10 languages: the full language list is announced before launch.`
+2. `Kheelona+: included free for 6 months with every Lumi; monthly price announced before
+   launch. Nothing renews without you.`
+Superscript markers go on: the hero bubble `Up to 10 home languages.` (Home) / the languages
+FAQ answer (Lumi), and on each `Kheelona+` band heading.
+
 ## §3 Home (`src/app/page.tsx`) — slice V3-2
 
 Order (14 folds). Rooms keep the existing fills/reveal alternation; new rooms noted. Every
@@ -184,6 +196,8 @@ say `This is the part where the games are secretly lessons.` [GATED:kheelu-line]
   `New words, counted in the app` · `Numbers and rhymes` · `Feelings, named` [YC + live]
 - Closing line (16px, ink-muted): `Lessons follow your child's age, from 2 to 5 today, and
   grow with the family of friends to 14.` (from constants)
+- Mid-page CTA (Apple-tier pass: a buy path after the strongest new fold): Reserve Button +
+  PRICE_CAPTION under the demo column on md+, full width below sm.
 
 ### F7 NEW — Brain-development room (the 20%; compact, one Reveal)
 Room `fill="cream"`, `reveal="left"`, no guide line (gravity).
@@ -233,10 +247,17 @@ Then Button + PRICE_CAPTION as shipped.
 
 ### F13 Journal (unchanged)
 
-### F14 Finale (existing orange room) + one line
-After the price paragraph, add small print line (white, 15px, above the Tally embed):
-`Every Lumi includes 6 months of Kheelona+.` (Short form; the parents room carries the full
-sentence.)
+### F14 Finale (existing orange room) + two additions
+1. After the price paragraph, small print line (white, 15px, above the Tally embed):
+   `Every Lumi includes 6 months of Kheelona+.` (Short form; the parents room carries the
+   full sentence.)
+2. NEW share element (Apple-tier pass; India's native growth loop, zero backend): under the
+   consent print, one plain white underlined link, `target="_blank" rel="noopener"`, label
+   `Know a parent who needs this? Share Lumi on WhatsApp` → href `https://wa.me/?text=` +
+   URL-encoded `A screen-free talking friend that teaches, for ages 2 to 5. First 500 units
+   at Rs 4,999, no payment now: https://kheelona.com` (Rs in the payload — the rupee sign
+   garbles in some WhatsApp clients). Implement as a `share` prop on FinaleCTA, default on;
+   test asserts the encoded href.
 
 Metadata (layout + page): title
 `Lumi by Kheelona: the screen-free talking friend that teaches, ages 2 to 5`
@@ -314,8 +335,21 @@ to 10 home languages. No screen. You read every word. Reserve at ₹4,999, no pa
 - Legal: unchanged (counsel gate). 404: unchanged.
 - `src/app/layout.tsx` metadata: description ages → `for ages 2 to 5` phrasing consistent
   with Home.
+- `src/components/organisms/Footer.tsx` (Apple-tier pass): add the signature line
+  `Designed by parents in Bengaluru.` as the last line of the brand column (15px, existing
+  muted footer style; factual per the YC application). Update the Footer test.
 
 ## §5 Micro-interactions (per fold; a junior dev implements from this table alone)
+
+### 5.1 The visual-anchor rule (Apple-tier pass — binding for Home and /products/lumi)
+Every room owns exactly ONE visual anchor; copy never stands alone in a room on the two
+conversion pages. Home audit: F1 hero art (interim until REV-a — the single highest-leverage
+asset on the site) · F2 logos · F3 big-type statement (the one sanctioned type-only moment
+per page) · F4 film · F5 orbit · F6 LearnDemo card · F7 the journal photo
+`/stories/how-children-learn-by-talking.jpg` as a right-column image (grandmother
+storytelling scene, already on disk; below-fold lazy, proper `sizes`) · F8 shape chips ·
+F9 pipeline cards · F10 PhoneFrame dashboard · F11 the table · F12 quote cards · F14 the
+product lineup. If an edit ever leaves a room text-only, add the visual before shipping.
 
 **Global rules recap first**: only `transform`/`opacity`; directional (left/right) reveals
 render as vertical below 960px (already in `globals.css` — do not add new X animation
@@ -348,6 +382,13 @@ exist — never fake data motion), parallax on the pipeline row, autoplaying car
 - **V3-c Pipeline art**: Kheelu Speaker + AI books renders via Gemini kit (§6.3). Until then
   AssetSlot calm placeholders.
 - **V3-d Kheelu lines v3**: §6.4 queue sign-off. BLOCKS merge to main (same as v2 lines).
+- **V3-e (note, not a blocker)**: consider adding a colour-preference field (blue/green/
+  pink) to the Tally form — the site's ColorwayPicker builds a preference the form currently
+  drops. Founder owns the form. Also: refresh `public/og.png` once REV-a hero art lands.
+- Evaluated and REJECTED for V3 (do not build): sticky product subnav (navbar pill + mobile
+  dock already give a persistent Reserve), autoplay hero video loop (revisit after REV-a,
+  founder call), waitlist counters/referral leaderboards (no backend; invented numbers break
+  the honesty law), announcement ribbon (cap line already above the fold; calm law).
 - Surviving gates unchanged: REV-a hero art, camera, ship date, named languages, certs/specs,
   Tally URL, GA4, counsel review.
 
@@ -365,6 +406,9 @@ look), one prompt per asset — (a) "Kheelu Speaker": a friendly kid-room smart 
 the Kheelu character's colour language (orange/blue), soft shapes, no screen, studio cutout
 style matching the Lumi renders; (b) "AI book": an open illustrated storybook with a subtle
 speaker grille in the spine, same palette. 3:4 renders, plain background for `tools/cutout`.
+ALSO include in the same kit (visual-anchor rule §5.1, optional batch): (c) a warm
+learning-moment illustration for the Home Learning room in the brand shape language, if the
+founder prefers it over the demo-only layout.
 Founder runs; ingest from `~/Downloads`; process through `tools/cutout`.
 
 ### 6.4 Kheelu say-line queue v3 (ALL GATED:kheelu-line; adds to the v2 queue)
@@ -375,7 +419,7 @@ Founder runs; ingest from `~/Downloads`; process through `tools/cutout`.
 ## §7 Build order and QA (per slice: `npm test` + `npm run build` green before commit)
 
 - **V3-1 Shared** (§2): constants, family.ts + FamilyGrid, ChatDemo script prop, ParentQuotes,
-  CompareTable. Tests updated alongside.
+  CompareTable, FootnotesRow. Tests updated alongside.
 - **V3-2 Home** (§3). Chrome pass desktop + 390px mobile.
 - **V3-3 /products/lumi** (§4.1).
 - **V3-4 Interior** (§4.2–4.5).
