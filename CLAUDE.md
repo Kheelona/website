@@ -12,8 +12,12 @@ repo root. That old app is preserved at the tag **`pre-revamp-2026-07`** and its
 - **Work on `main`.** `demo-website` exists only as the Vercel preview branch
   (https://website-hdn2.vercel.app) and additionally carries the `/a` `/b` `/c` wireframe drafts.
   Keep it in sync by MERGING main into it, never force-push.
-- **🟢 THE SITE IS LIVE TO CUSTOMERS** at https://www.kheelona.com (2026-07-28; `kheelona.com`
-  307s to `www`). DNS is pointed and the Vercel Root Directory is fixed. **The pre-order form works**
+- **🟢 THE SITE IS LIVE TO CUSTOMERS** at **https://kheelona.com** (2026-07-28). The apex is the
+  canonical host and `www` 308s to it — settled deliberately, because every URL the code emits
+  (sitemap, canonicals, robots, WhatsApp share, every JSON-LD `@id`) is apex. It was briefly the
+  other way round, which would have made Search Console report 24 redirects instead of 24 pages.
+  **If the canonical host ever changes, `GA4_HOSTS` must change with it** — that list covering both
+  hosts is the only reason GA4 survived this switch. **The pre-order form works**
   (Tally `Y5XW7J`, set as `NEXT_PUBLIC_TALLY_FORM_URL` in Vercel production only — the preview still
   shows the "opens soon" card, which is expected). Both analytics tools verified on the real domain.
   Treat every change from here as a change to a live commercial site: it takes real reservations.
