@@ -140,3 +140,17 @@ block provenance-tagged there). Deviations and additions worth recording:
   parent-app rooms, and the 404 were deleted rather than added to the founder queue.
 - **/setup stayed short** (hero + one steps room + finale) rather than padding the route with
   unreviewed copy; copy-v2 specifies only H1, sub, and the four steps for it.
+
+
+## V3 copy decisions (2026-07-27) — YC application becomes a sanctioned source
+
+The founder supplied the YC application text in-session and directed the repositioning (40%
+fun / 20% brain development / 40% education; companion-led). Full spec + final copy:
+`docs/revamp-2026-07/BUILD-V3.md` (that file wins over copy-v2.md on conflict). Provenance
+rules for V3 copy: **[YC]** = the application text, founder-authored, sanctioned; **[live]** =
+already published; **[NEW]** = written this round against `benchmarks-v3.md`;
+**[PLACEHOLDER]** = renders on preview only, founder replaces verbatim (testimonials).
+Superseded laws: ages 3 to 10 (now Lumi 2 to 5 / platform 2 to 14), the Lori/Lua/Robu family
+row on .com, all pilot-count claims. New always-gated facts: ₹ price of Kheelona+ and
+post-lapse device behaviour (V3-b), the named 10 languages, camera, ship date. The hero H1
+line 2 chosen: "A teacher who plays." (alternates recorded in BUILD-V3.md appendix A1).

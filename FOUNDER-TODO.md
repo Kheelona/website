@@ -24,6 +24,23 @@ look:
   you had to swipe. Checked at 320/360/390/430px on every route. **Please re-check on your own
   phone** — that is the one thing emulation cannot confirm.
 
+**V3 (2026-07-27) — the content repositioning from your YC application. Spec:
+`docs/revamp-2026-07/BUILD-V3.md`. New gates, all of which BLOCK merge to main (previews are
+fine):**
+- **V3-a. Real testimonials** — the site will carry three named quote slots (Shweta,
+  Priyamvada, Gaurav) with clearly-marked placeholder text you asked for. Send each person's
+  real words + consent and they replace the placeholders verbatim.
+- **V3-b. Kheelona+ facts** — the site says only "6 months included, monthly price announced
+  before launch." Two facts stay yours: (1) the ₹ monthly price, (2) what Lumi does if the
+  subscription lapses. Nothing about either is claimed until you state them.
+- **V3-c. Pipeline art** — Kheelu Speaker + AI book renders via the Gemini kit the build will
+  prepare (`gemini-handoff/pipeline-2026-07/`); calm placeholders until then.
+- **V3-d. Kheelu lines v3** — two new guide lines join the existing sign-off queue (list in
+  BUILD-V3.md §6.4).
+- Superseded by your V3 answers: REV-b(1) subscription (now published per V3-b wording) and
+  the "ten families" line (removed; no pilot counts anywhere). REV-b(4) stays open for the
+  NAMED language list only.
+
 - **REV-a. Hero art (the one that unblocks the new Home hero)** — run the kit in
   `gemini-handoff/hero-2026-07/README.md` (3 reference images + one prompt + a 4K follow-up),
   drop the result in `~/Downloads`, say "hero art is in". Until then previews use interim
