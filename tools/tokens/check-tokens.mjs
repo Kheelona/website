@@ -70,10 +70,11 @@ const MAP = [
 /** Site-internal invariants: [globals.css --color-*, tokens.ts key, value] */
 const SITE_MAP = [
   ["color-orange-cta", "orangeCta", "#c25210"],
-  // teal-deep is DEPRECATED (revamp P2): lives only under the legacy teal
+  // teal-deep was DEPRECATED in P2 and DELETED in V3 cleanup: its last user
+  // (/safety's teal hero) moved onto the backdrop in M4, so neither the token
+  // nor the wash exists any more.
   // wash until SafetyStrip + the safety hero retire (M2/M4); drop this row
   // with the token in M5 cleanup.
-  ["color-teal-deep", "tealDeep", "#0f766e"],
   // R9 small-text orange: 13px sans kickers need 4.5:1 on every wash
   // (white 5.3, cream 5.0, cool 4.8, sun 4.8) — orange-cta only clears white
   ["color-orange-ink", "orangeInk", "#b54a0d"],

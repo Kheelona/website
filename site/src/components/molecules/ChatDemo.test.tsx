@@ -28,4 +28,18 @@ describe("ChatDemo", () => {
       expect((b as HTMLElement).style.opacity).toBe("");
     });
   });
+
+  it("renders a custom exchange in order (the V3 Kheelu-mode demo)", () => {
+    const script = [
+      { who: "lumi" as const, text: "Why do you think the hare lost?" },
+      { who: "child" as const, text: "He went to sleep!" },
+      { who: "lumi" as const, text: "If you were the hare, what would you do?" },
+    ];
+    const { container } = render(<ChatDemo turns={script} />);
+    const bubbles = Array.from(container.querySelectorAll(".chat-demo-bubble"));
+    expect(bubbles.length).toBe(3);
+    expect(bubbles[0].textContent).toContain("Why do you think the hare lost?");
+    expect(bubbles[1].textContent).toContain("He went to sleep!");
+    expect(bubbles[2].textContent).toContain("what would you do?");
+  });
 });

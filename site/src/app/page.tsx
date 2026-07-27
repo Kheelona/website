@@ -4,6 +4,7 @@ import { RoomsTrack } from "@/components/atoms/RoomsTrack";
 import { Reveal } from "@/components/molecules/Reveal";
 import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { ChatDemo } from "@/components/molecules/ChatDemo";
+import { FootnotesRow, V3_FOOTNOTES } from "@/components/molecules/FootnotesRow";
 import { RecognitionStrip } from "@/components/organisms/RecognitionStrip";
 import { ParentQuotes } from "@/components/organisms/ParentQuotes";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
@@ -15,25 +16,30 @@ import {
   Family,
   KheeluOrbit,
   LaunchVideo,
+  LearningRoom,
+  BrainRoom,
   Compare,
   Journal,
   ParentAppSection,
 } from "@/features/home";
 
 export const metadata: Metadata = {
-  title: "Lumi by Kheelona: the screen-free AI toy that talks with your child",
+  title:
+    "Lumi by Kheelona: the screen-free talking friend that teaches, ages 2 to 5",
   description:
-    "Lumi listens first, then talks back, in up to 10 languages you speak at home. No screen. No open internet. You read every word. Reserve at ₹4,999, no payment now.",
+    "Lumi talks with your child, tells stories, and slips learning into play, in up to 10 home languages. No screen. You read every word. Reserve at ₹4,999, no payment now.",
   alternates: { canonical: "/" },
 };
 
-/* Revamp M2 (theme B "Kheelu's Tour", founder brief 2026-07-24): the page is
-   a track of contained rooms on the SiteBackdrop sky, narrated by the
-   persistent KheeluGuide (each room's guide/say feeds it; every say line is
-   GATED:kheelu-line until founder sign-off — docs/revamp-2026-07/copy-v2.md).
-   No section numbering (brief pointer 1). The ambient canvas is dormant
-   (StageGate unmounted; the 3D journey remains one prop-flip away in
-   features/ambient-stage). Copy: copy-v2 Home, provenance-tagged there. */
+/* Revamp M2 (theme B "Kheelu's Tour") + V3 repositioning (founder 2026-07-27,
+   from the YC application): the page is a track of contained rooms on the
+   SiteBackdrop sky, narrated by the persistent KheeluGuide, and the argument
+   now runs fun → learning → why talking works → trust → the age arc → the
+   parent's view → the comparison → proof → the ask. Positioning mix is 40%
+   fun, 20% brain development, 40% education; the companion story still leads,
+   because that is what a child sees and what a parent falls for first.
+   Every say line is GATED:kheelu-line until founder sign-off (queue:
+   docs/revamp-2026-07/BUILD-V3.md §6.4). Copy provenance: BUILD-V3 §3. */
 export default function HomePage() {
   return (
     <>
@@ -54,14 +60,7 @@ export default function HomePage() {
           <LaunchVideo bare />
         </Room>
 
-        <Room fill="cool" id="trust" guide="curious" say="Read this bit slowly. It's for you, not the kids." reveal="left">
-          <TrustRoom />
-        </Room>
-
-        <Room fill="white" id="lumi" guide="joy" say="I picked Lumi's colours myself." reveal="right">
-          <Family />
-        </Room>
-
+        {/* Fun (40%): the day a child actually has */}
         <Room fill="sun" id="warm" guide="bliss" say="That was the careful part. Now the fun." reveal="pop">
           <Reveal>
             <SectionHeading
@@ -72,7 +71,37 @@ export default function HomePage() {
           <KheeluOrbit />
         </Room>
 
-        <Room fill="cool" guide="silly" say="Five feelings. I can act them all out." reveal="left">
+        {/* Education (40%): the mechanism, not the adjective */}
+        <Room
+          fill="white"
+          id="learning"
+          guide="curious"
+          say="This is the part where the games are secretly lessons."
+          reveal="right"
+        >
+          <LearningRoom />
+        </Room>
+
+        {/* Brain development (20%): why any of this counts */}
+        <Room fill="cream" reveal="left">
+          <BrainRoom />
+        </Room>
+
+        <Room fill="cool" id="trust" guide="curious" say="Read this bit slowly. It's for you, not the kids." reveal="right">
+          <TrustRoom />
+        </Room>
+
+        <Room
+          fill="white"
+          id="lumi"
+          guide="joy"
+          say="The Speaker is my cousin. Louder, and better at maths."
+          reveal="left"
+        >
+          <Family />
+        </Room>
+
+        <Room fill="cool" guide="silly" say="Five feelings. I can act them all out." reveal="right">
           <Reveal>
             <SectionHeading
               eyebrow="Meet the feelings"
@@ -96,20 +125,23 @@ export default function HomePage() {
           </div>
         </Room>
 
-        <Room fill="cream" id="parent-app" guide="bliss" say="You get to see everything. That's the deal." reveal="right">
+        <Room fill="cream" id="parent-app" guide="bliss" say="You get to see everything. That's the deal." reveal="left">
           <ParentAppSection bare />
         </Room>
 
-        <Room fill="white" guide="curious" say="We did the homework so you don't have to." reveal="left">
+        <Room fill="white" guide="curious" say="We did the homework so you don't have to." reveal="right">
           <Compare bare />
         </Room>
 
-        <Room fill="white" id="parent-voices" guide="joy" say="Real families, real words." reveal="right">
+        <Room fill="white" id="parent-voices" guide="joy" say="Real families, real words." reveal="left">
           <ParentQuotes bare />
         </Room>
 
-        <Room fill="sun" id="journal" guide="curious" reveal="left">
+        <Room fill="sun" id="journal" guide="curious" reveal="right">
           <Journal bare />
+          {/* The page's small print, Apple-style: the two claims that invite a
+              follow-up question get their answer here rather than nowhere. */}
+          <FootnotesRow items={V3_FOOTNOTES} className="mt-12 border-t border-line-soft pt-6" />
         </Room>
 
         <Room

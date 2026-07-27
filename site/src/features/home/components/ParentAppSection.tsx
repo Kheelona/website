@@ -2,11 +2,10 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Container } from "@/components/atoms/Container";
 import { Section } from "@/components/atoms/Section";
-import { CurveDivider } from "@/components/atoms/CurveDivider";
 import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { Reveal } from "@/components/molecules/Reveal";
-import { KheeluSays } from "@/components/molecules/KheeluSays";
 import { PhoneFrame } from "@/components/molecules/PhoneFrame";
+import { KheelonaPlusBand } from "@/components/molecules/KheelonaPlusBand";
 
 /** R7: the parent-app section from the kheelona.ai home page, adapted to
  *  second-person parent voice (B2B lines like "branded yours" and "turns a
@@ -21,14 +20,8 @@ const CHIPS = [
 ] as const;
 
 export function ParentAppSection({
-  from = "white",
-  kheelu = false,
   bare = false,
 }: {
-  from?: "white" | "cream" | "cool" | "teal";
-  /** Home mounts the narrator bubble; other pages keep their own single
-   *  Kheelu moment, so it stays off by default. */
-  kheelu?: boolean;
   /** Revamp M2: content-only, for composition inside a Room. */
   bare?: boolean;
 }) {
@@ -45,18 +38,12 @@ export function ParentAppSection({
           />
         </Reveal>
         <Reveal>
-          {kheelu && (
-            <KheeluSays
-              line="Lumi and I keep no secrets from grown-ups."
-              pose="grumpy"
-            />
-          )}
           <SectionHeading
             eyebrow="For the grown-ups"
-            title="Parents stay in the loop."
-            titleClassName="mb-5 max-w-[16ch]"
-            lede="Lumi ships with a parent app made for you. Watch the conversations, get a summary that tells you what mattered, and align Lumi to your family's values in a single prompt."
-            ledeClassName="mb-6 max-w-[56ch]"
+            title="Your child is just playing. You can see the learning."
+            titleClassName="mb-5 max-w-[20ch]"
+            lede="Open the app for a daily summary, the full conversation log, and one simple thing to do together each day. The new words your child learned are counted for you. If something ever needs your attention, you hear about it first."
+            ledeClassName="mb-6 max-w-[58ch]"
           />
           <ul className="mb-7 flex max-w-[560px] flex-wrap gap-2.5">
             {CHIPS.map((c) => (
@@ -78,6 +65,11 @@ export function ParentAppSection({
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
         </Reveal>
+        {/* V3: the subscription said plainly, in the room where a parent is
+            already thinking about what they get after the box arrives */}
+        <Reveal className="md:col-span-2">
+          <KheelonaPlusBand footnote={2} />
+        </Reveal>
     </div>
   );
 
@@ -85,7 +77,6 @@ export function ParentAppSection({
 
   return (
     <Section wash="cream" id="parent-app">
-      <CurveDivider from={from} />
       <Container className="pb-16 pt-6 md:pb-20 md:pt-8">{content}</Container>
     </Section>
   );

@@ -1,20 +1,20 @@
 import { render, screen } from "@testing-library/react";
 import { Family } from "./Family";
 
-describe("Family", () => {
-  it("renders the family heading and the age range line", () => {
+describe("Family (Home pipeline room)", () => {
+  it("leads with the one-friend-many-bodies story", () => {
     render(<Family />);
     expect(
-      screen.getByRole("heading", { name: "Meet the family. Lumi comes first." }),
+      screen.getByRole("heading", { name: "One friend inside. More bodies on the way." }),
     ).toBeInTheDocument();
     expect(
-      screen.getByText("Made for a three-year-old. Still a friend at ten."),
+      screen.getByText("Starts talking at 2. Still teaching at 14."),
     ).toBeInTheDocument();
   });
 
-  it("shows all four companions with Lumi as the only link", () => {
+  it("shows the three pipeline bodies with Lumi as the only link", () => {
     render(<Family />);
-    for (const name of ["Lumi", "Lori", "Lua", "Robu"]) {
+    for (const name of ["Lumi", "Kheelu Speaker", "AI books"]) {
       expect(screen.getByRole("heading", { name })).toBeInTheDocument();
     }
     const links = screen.getAllByRole("link");
@@ -22,8 +22,8 @@ describe("Family", () => {
     expect(links[0]).toHaveAttribute("href", "/products/lumi");
   });
 
-  it("marks the not-yet companions as coming soon", () => {
+  it("marks the two unbuilt bodies as coming soon", () => {
     render(<Family />);
-    expect(screen.getAllByText("Coming soon").length).toBe(3);
+    expect(screen.getAllByText("Coming soon").length).toBe(2);
   });
 });

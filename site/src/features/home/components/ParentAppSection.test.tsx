@@ -5,7 +5,7 @@ describe("ParentAppSection", () => {
   it("renders the heading and app chips", () => {
     render(<ParentAppSection />);
     expect(
-      screen.getByRole("heading", { name: /Parents stay in the loop\./i }),
+      screen.getByRole("heading", { name: /You can see the learning/i }),
     ).toBeInTheDocument();
     expect(screen.getByText("Conversation log")).toBeInTheDocument();
     expect(
@@ -20,10 +20,12 @@ describe("ParentAppSection", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("shows the Kheelu narrator bubble when kheelu is set", () => {
-    render(<ParentAppSection kheelu />);
+
+  it("carries the Kheelona+ band (V3): the subscription said plainly", () => {
+    render(<ParentAppSection />);
+    expect(screen.getByText(/includes 6 months of Kheelona\+/)).toBeInTheDocument();
     expect(
-      screen.getByText(/Lumi and I keep no secrets from grown-ups/i),
+      screen.getByText("You pay nothing today, and nothing renews without you."),
     ).toBeInTheDocument();
   });
 });

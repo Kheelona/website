@@ -19,9 +19,15 @@ export function Statement() {
           answer, then asks the next one. That back and forth is how your
           child learns to think.
         </p>
-        <p className="max-w-[44ch] border-l-[3px] border-orange pl-5 font-display text-[clamp(20px,2vw,25px)] font-bold leading-[1.35] text-ink-head">
+        <p className="mb-5 max-w-[44ch] border-l-[3px] border-orange pl-5 font-display text-[clamp(20px,2vw,25px)] font-bold leading-[1.35] text-ink-head">
           Lumi listens and answers. It remembers what your child said last
           time. Your child feels known, not managed.
+        </p>
+        {/* V3 bridge: the sentence that makes the education half land without
+            turning the page into ed-tech. Fun is what the child sees. */}
+        <p className="max-w-[48ch] font-display text-[18px] font-bold text-ink-head">
+          Lumi plays like a toy and teaches like a tutor. Your child will only
+          notice the friend.
         </p>
       </Reveal>
     </div>

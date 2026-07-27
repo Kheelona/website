@@ -7,7 +7,7 @@ describe("Hero (revamp M2)", () => {
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: /A friend who listens[\s\S]*Made by people you can trust/i,
+        name: /A friend who listens[\s\S]*A teacher who plays/i,
       }),
     ).toBeInTheDocument();
   });
@@ -38,9 +38,9 @@ describe("Hero (revamp M2)", () => {
     expect(screen.getByText(/First 500 units at ₹4,999/i)).toBeInTheDocument();
   });
 
-  it("carries the widened age range", () => {
+  it("carries Lumi's own age band", () => {
     render(<Hero />);
-    expect(screen.getByText("For ages 3 to 10")).toBeInTheDocument();
+    expect(screen.getByText("For ages 2 to 5")).toBeInTheDocument();
   });
 
   it("renders the SSR fact bubbles (no opacity hiding)", () => {

@@ -5,20 +5,32 @@ import { Reveal } from "@/components/molecules/Reveal";
 import { FAMILY, type FamilyMember } from "@/lib/family";
 import { LAUNCH_PRICE } from "@/config/site";
 
-/** The companion lineup as cards (revamp M4 extraction).
+/** The pipeline lineup as cards (M4 extraction, V3 rebuild).
  *
- *  Home's family room and /playos both show this lineup; the markup was
- *  duplicated, so the two grids had already drifted apart in card height,
- *  columns, and whether "Coming soon" was shown at all. One component now,
- *  fed by the single `lib/family` source.
+ *  Home's pipeline room and /playos both show this lineup; the markup was
+ *  duplicated once and had already drifted, so one component owns it, fed by
+ *  the single `lib/family` source.
+ *
+ *  V3: three bodies with an age chip each, and a hairline threaded behind them
+ *  on md+ so the row reads as one arc from 2 to 14 rather than three unrelated
+ *  products. Members without art yet (gate V3-c) render a calm placeholder
+ *  instead of a stand-in render that could be mistaken for the real product.
  *
  *  Lumi's card is a whole-card link, so it carries NO tilt (hard rule, §8.18:
  *  a surface that moves under the cursor drops clicks). */
 export function FamilyGrid({ className }: { className?: string }) {
   return (
-    <ul className={cn("grid grid-cols-2 gap-5 md:grid-cols-4", className)}>
+    <ul
+      className={cn(
+        // the arc: a hairline behind the cards, aligned with the age chips.
+        // Pure CSS, no JS, no animation (BUILD-V3 §5, pipeline row).
+        "relative grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3",
+        "md:before:absolute md:before:left-[8%] md:before:right-[8%] md:before:top-[38px] md:before:h-px md:before:bg-line-soft md:before:content-['']",
+        className,
+      )}
+    >
       {FAMILY.map((m, i) => (
-        <Reveal as="li" key={m.name} delay={i * 0.06}>
+        <Reveal as="li" key={m.name} delay={i * 0.06} className="relative">
           {m.here ? (
             <Link
               href="/products/lumi"
@@ -41,15 +53,30 @@ export function FamilyGrid({ className }: { className?: string }) {
 function FamilyCardInner({ member: m }: { member: FamilyMember }) {
   return (
     <>
-      <div className={`grid h-[180px] place-items-center p-5 ${m.tint}`}>
-        <Image
-          src={m.img}
-          alt={m.alt}
-          width={m.w}
-          height={m.h}
-          sizes="(max-width: 640px) 45vw, 220px"
-          className="h-[140px] w-auto object-contain"
-        />
+      <div className={`relative grid h-[180px] place-items-center p-5 ${m.tint}`}>
+        <span className="absolute right-3 top-3 max-w-full rounded-full bg-cream px-2.5 py-1 text-[12px] font-bold uppercase tracking-wide text-ink-head">
+          Ages {m.ages}
+        </span>
+        {m.img ? (
+          <Image
+            src={m.img}
+            alt={m.alt}
+            width={m.w}
+            height={m.h}
+            sizes="(max-width: 640px) 80vw, 240px"
+            className="h-[140px] w-auto object-contain"
+          />
+        ) : (
+          /* Gate V3-c: the founder generates this art from the Gemini kit
+             (gemini-handoff/pipeline-2026-07/). Until then, a calm mark. */
+          <span
+            role="img"
+            aria-label={m.alt}
+            className="grid h-[124px] w-[124px] place-items-center rounded-full border border-dashed border-ink-muted/40 text-center text-[13px] font-semibold leading-tight text-ink-muted"
+          >
+            In the workshop
+          </span>
+        )}
       </div>
       <div className="p-5">
         <div className="flex items-center justify-between gap-2">

@@ -26,12 +26,13 @@ export const metadata: Metadata = {
    mechanisms). Every mechanism cited here is already published; nothing new
    is claimed. Toy-safety standards and certifications stay PENDING (§1.9),
    shown as "in progress" honestly, and no badge appears before it is earned.
-   Ages are 3 to 10 (locked). The retired teal wash goes with the palette. */
+   V3: age copy is per-answer ("tuned to your child's age") with Lumi's own band,
+   2 to 5, where a number is needed. The retired teal wash went with the palette. */
 
 const WORD_RULES = [
   { title: "Listening starts with the wake word.", body: "Lumi listens only after your child says the wake word. The rest of the time, the microphone is off. Not muted. Off." },
   { title: "Filters live on the device.", body: "The first safety checks happen on the toy itself, before anything travels anywhere." },
-  { title: "Every answer is age-graded.", body: "Replies pass through a safety layer tuned for ages 3 to 10. On-device and cloud filters work together." },
+  { title: "Every answer is age-graded.", body: "Replies pass through a safety layer tuned to your child's age. On-device and cloud filters work together." },
   { title: "There is no open internet.", body: "Lumi cannot browse, search, or stumble. No random videos, no rabbit holes, no strangers. Ever." },
 ] as const;
 
@@ -47,7 +48,7 @@ const VOICE_RULES = [
 const VOICE_PATH = [
   { title: "Lumi hears the wake word", body: "Until your child says it, the microphone is off. Not muted. Off." },
   { title: "The device checks first", body: "The first safety filters run on the toy itself, before anything travels anywhere." },
-  { title: "The voice brain answers", body: "Every reply passes an age-graded safety layer tuned for ages 3 to 10." },
+  { title: "The voice brain answers", body: "Every reply passes an age-graded safety layer tuned to your child's age." },
   { title: "It all lands in your app", body: "You can read the conversation, and delete any of it with one tap." },
 ] as const;
 
@@ -111,7 +112,7 @@ const GATED_UNDER_FIVE = {
    page does not already answer (a duplicate question in both places reads as
    padding to a parent and to a crawler). */
 const SAFETY_FAQ: FaqEntry[] = [
-  { q: "Is an AI toy safe for a 3 year old?", a: "A safe AI toy needs three things: no open internet, age-graded answers, and a parent who sees everything. Lumi is built on all three, for ages 3 to 10 exactly." },
+  { q: "Is an AI toy safe for a 3 year old?", a: "A safe AI toy needs three things: no open internet, age-graded answers, and a parent who sees everything. Lumi is built on all three, for ages 2 to 5 exactly, and it grows with the family of friends." },
   { q: "Does Lumi reduce screen time?", a: "That is the point. Lumi has no screen at all. It is a toy that helps you cut screen time: your child talks, listens, and imagines instead of watching." },
   { q: "Can Lumi reach the open internet?", a: "No. Lumi cannot browse or search. Answers come from a closed library built for children, so there are no random videos, no rabbit holes, and no strangers." },
   /* Status-exact, never upgraded: mirrors the STANDARDS chips above. */

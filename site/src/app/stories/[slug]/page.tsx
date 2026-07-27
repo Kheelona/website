@@ -8,6 +8,7 @@ import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { PageHero } from "@/components/templates/PageHero";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { STORIES, getStory } from "@/lib/stories";
+import { JOURNAL_REVIEWED } from "@/config/site";
 
 export function generateStaticParams() {
   return STORIES.map((s) => ({ slug: s.slug }));
@@ -46,6 +47,9 @@ export default async function StoryPage({
     author: { "@type": "Organization", name: "Kheelona" },
     publisher: { "@type": "Organization", name: "Kheelona" },
     mainEntityOfPage: `https://kheelona.com/stories/${story.slug}`,
+    /* Month precision on purpose: the journal was written and verified in one
+       pass (qa-report), and per-article days would be invented. */
+    dateModified: "2026-07-01",
     ...(story.hero && { image: `https://kheelona.com${story.hero}` }),
   };
 
@@ -69,6 +73,10 @@ export default async function StoryPage({
           />
           <p className="text-[13px] font-semibold uppercase tracking-wide text-ink-muted">
             {story.minutes} minute read
+            <span aria-hidden="true"> · </span>
+            <span className="font-medium normal-case tracking-normal">
+              Reviewed {JOURNAL_REVIEWED}
+            </span>
           </p>
         </div>
       </PageHero>

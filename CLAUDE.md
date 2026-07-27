@@ -14,9 +14,13 @@ LIVE at **https://website-hdn2.vercel.app** (branch `demo-website`, merged with
 element that spans the track width (it widens the layout viewport on phones and drags every
 `position: fixed` element with it), and base-level element rules in `globals.css` belong in
 `@layer base` (unlayered CSS outranks every Tailwind utility).
-**V3 (2026-07-27): the founder's YC application triggered a content repositioning — the
-next build executes `docs/revamp-2026-07/BUILD-V3.md` (self-contained spec; it WINS over
-copy-v2.md and older copy laws, incl. ages: Lumi 2 to 5 / platform 2 to 14).**
+**V3 BUILT (2026-07-28): the content repositioning from the founder's YC application is
+live on the preview — 40% fun / 20% brain development / 40% education, companion story leading.
+`docs/revamp-2026-07/BUILD-V3.md` is the spec that was built and still WINS over copy-v2.md and
+older copy laws. Ages: Lumi 2 to 5, platform arc 2 to 14. The .com lineup is the pipeline
+(Lumi → Kheelu Speaker → AI books); Lori/Lua/Robu live on kheelona.ai only. Kheelona+ may only
+ever be described as "6 months included, monthly price announced before launch" — no ₹ amount,
+no post-lapse claim (gate V3-b). Testimonial words are placeholders (gate V3-a).**
 Delete this note + the working file once the revamp is founder-approved.
 
 ## Who you work for

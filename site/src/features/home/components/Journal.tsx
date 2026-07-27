@@ -2,11 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/atoms/Container";
 import { Section } from "@/components/atoms/Section";
-import { CurveDivider } from "@/components/atoms/CurveDivider";
 import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { Button } from "@/components/atoms/Button";
 import { Reveal } from "@/components/molecules/Reveal";
-import { KheeluSays } from "@/components/molecules/KheeluSays";
 
 /** Home S10. Card copy verbatim; cards link into /stories. */
 const CARDS = [
@@ -81,14 +79,7 @@ export function Journal({ bare = false }: { bare?: boolean }) {
 
   return (
     <Section wash="sun" id="journal">
-      <CurveDivider from="cream" flip />
       <Container className="py-16 md:py-20">
-        <Reveal>
-          <KheeluSays
-            line="I collect stories too. Here are some for you."
-            pose="joy"
-          />
-        </Reveal>
         {content}
       </Container>
     </Section>

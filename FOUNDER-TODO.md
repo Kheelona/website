@@ -24,9 +24,18 @@ look:
   you had to swipe. Checked at 320/360/390/430px on every route. **Please re-check on your own
   phone** — that is the one thing emulation cannot confirm.
 
-**V3 (2026-07-27) — the content repositioning from your YC application. Spec:
-`docs/revamp-2026-07/BUILD-V3.md`. New gates, all of which BLOCK merge to main (previews are
-fine):**
+**V3 IS BUILT AND LIVE ON THE PREVIEW (2026-07-28).** The repositioning from your YC
+application shipped: the site now argues 40% fun / 20% brain development / 40% education with
+the friend story still leading. New on the site — a Learning room that shows Kheelu mode as a
+real exchange (Lumi tells the tortoise story, the child interrupts, Lumi asks one back), a
+short brain-development room on serve and return, the pipeline (Lumi → Kheelu Speaker → AI
+books) with age chips reading 2 to 14, Kheelona+ stated plainly as "6 months included, price
+announced before launch", the tutor line under the comparison, footnotes on the two claims that
+invite a follow-up, a WhatsApp share link at the finale, and "Designed by parents in
+Bengaluru." in the footer. Lumi's age band now reads 2 to 5 everywhere.
+
+Spec: `docs/revamp-2026-07/BUILD-V3.md`. **Your gates, all of which BLOCK merge to main
+(the preview is fine):**
 - **V3-a. Real testimonials** — the site will carry three named quote slots (Shweta,
   Priyamvada, Gaurav) with clearly-marked placeholder text you asked for. Send each person's
   real words + consent and they replace the placeholders verbatim.

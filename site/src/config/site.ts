@@ -37,3 +37,30 @@ export const RESERVE_LABEL_SHORT = `Reserve at ${LAUNCH_PRICE}`;
 export const PRICE_CAPTION = `${LATER_PRICE} after launch. No payment now.`;
 /** The launch-cap line (R9, founder-supplied real number). */
 export const CAP_LINE = `First 500 units at ${LAUNCH_PRICE}. ${LATER_PRICE} after launch. No payment now.`;
+
+/* V3 (founder 2026-07-27, from the YC application): Lumi's own age band and
+   the platform arc it grows into. These replace the retired "3 to 10" law —
+   render age copy from here so the two can never drift again. */
+export const LUMI_AGES = "2 to 5";
+export const PLATFORM_AGES = "2 to 14";
+
+/** The ONLY sanctioned Kheelona+ wording (V3). The monthly price and what
+ *  happens if the subscription lapses are BOTH founder-gated (V3-b): never
+ *  render a ₹ amount for Kheelona+, and never claim post-lapse behaviour. */
+export const KHEELONA_PLUS_LINE =
+  "Every Lumi includes 6 months of Kheelona+, the stories, lessons, languages, and the parent app. The monthly price after that is announced before launch.";
+/** Short form, for the finale's small print. */
+export const KHEELONA_PLUS_SHORT = "Every Lumi includes 6 months of Kheelona+.";
+
+/** WhatsApp share (V3, India's native referral loop — no backend). "Rs" not
+ *  "₹" in the payload: the rupee sign garbles in some WhatsApp clients. */
+export const WHATSAPP_SHARE_HREF = `https://wa.me/?text=${encodeURIComponent(
+  `A screen-free talking friend that teaches, for ages ${LUMI_AGES}. First 500 units at Rs 4,999, no payment now: https://kheelona.com`,
+)}`;
+export const WHATSAPP_SHARE_LABEL = "Know a parent who needs this? Share Lumi on WhatsApp";
+
+/** V3 (AEO): journal freshness. Answer engines weight recency, and the honest
+ *  signal we have is the month the whole journal was written and verified
+ *  (documented in docs/qa-report.md). NOT per-article publication dates —
+ *  those would be invented. Update this when the journal is next reviewed. */
+export const JOURNAL_REVIEWED = "July 2026";

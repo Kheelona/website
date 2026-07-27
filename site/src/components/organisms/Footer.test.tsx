@@ -24,4 +24,9 @@ describe("Footer", () => {
     const link = screen.getByRole("link", { name: "kheelona.ai" });
     expect(link).toHaveAttribute("href", "https://kheelona.ai");
   });
+
+  it("signs the work with its provenance (V3)", () => {
+    render(<Footer />);
+    expect(screen.getByText("Designed by parents in Bengaluru.")).toBeInTheDocument();
+  });
 });
