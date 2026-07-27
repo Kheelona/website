@@ -25,9 +25,9 @@ import {
 
 export const metadata: Metadata = {
   title:
-    "Lumi by Kheelona: the screen-free talking friend that teaches, ages 2 to 5",
+    "Lumi by Kheelona: the screen-free friend that learns with your child, ages 2 to 5",
   description:
-    "Lumi talks with your child, tells stories, and slips learning into play, in up to 10 home languages. No screen. You read every word. Reserve at ₹4,999, no payment now.",
+    "Lumi talks with your child, remembers what they said last time, and moves at their pace, in up to 10 home languages. No screen. You read every word. Reserve at ₹4,999, no payment now.",
   alternates: { canonical: "/" },
 };
 

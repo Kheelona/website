@@ -21,17 +21,22 @@ export function Hero() {
           <span className="mb-5 inline-block rounded-full bg-orange/15 px-4 py-2 text-sm font-bold uppercase tracking-[0.08em] text-ink-head">
             For ages {LUMI_AGES}
           </span>
-          {/* V3: the second line carries the education half of the promise.
-              The 5-second test this hero has to pass: what it is, who it is
-              for, the offer, and no risk — all without a scroll. */}
+          {/* V3-b hero (founder 2026-07-28): the promise is ADAPTATION, not a
+              role. "A teacher who plays" named what Lumi is; this names what it
+              does that nothing on the shelf can claim — it moves at your
+              child's pace and remembers where they were. Both halves are
+              already-published behaviour (memory + age-graded lessons), so the
+              strongest line is also the honest one.
+              The 5-second test this hero must pass: what it is, who it is for,
+              the offer, and no risk, all without a scroll. */}
           <h1 className="mb-5 font-display text-[clamp(38px,4.8vw,60px)] font-extrabold leading-[1.06] text-ink-head">
-            A friend who listens.{" "}
-            <span className="block text-action-ink">A teacher who plays.</span>
+            Every child learns differently.{" "}
+            <span className="block text-action-ink">Lumi learns with them.</span>
           </h1>
           <p className="mb-7 max-w-[42ch] text-[clamp(17px,1.5vw,20px)] text-ink">
-            Screen-free friends that talk with your child, tell stories, sing,
-            and slip learning into the play. In the languages you speak at
-            home.
+            Lumi talks with your child, remembers what they said last time, and
+            moves at the pace they set. Stories, words, and numbers, in the
+            languages you speak at home.
           </p>
           <div className="flex flex-wrap items-center gap-3">
             <Button href={PREORDER_HREF}>{RESERVE_LABEL}</Button>

@@ -27,7 +27,7 @@ const instrumentSans = localFont({
 export const metadata: Metadata = {
   metadataBase: new URL("https://kheelona.com"),
   title: {
-    default: "Lumi by Kheelona: the screen-free talking friend that teaches, ages 2 to 5",
+    default: "Lumi by Kheelona: the screen-free friend that learns with your child, ages 2 to 5",
     template: "%s · Kheelona",
   },
   description:
