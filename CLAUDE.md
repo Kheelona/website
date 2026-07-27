@@ -2,13 +2,15 @@
 
 Pre-order marketing site for **Lumi**, Kheelona's screen-free talking AI toy for ages 3 to 6 (India-first). One job: convert parents into the Tally pre-order list at ₹4,999 (₹9,999 after launch, no payment now).
 
-## ⚠ ACTIVE REVAMP (2026-07-24) — read this first
-A full re-theme onto wireframe direction B ("Kheelu's Tour") is IN PROGRESS per the founder
-brief `Websit prompt based on B + inputs - 24-Jul.pdf`. Status, locked decisions, and the
-restart guide live in **`docs/revamp-2026-07/WORKING.md`** — read it BEFORE the resume protocol
-below. Where the brief conflicts with older laws, the brief wins (e.g. the "Home copy = PDF
-verbatim" precedence and ages "3 to 6" are superseded — new production copy, ages 3 to 10).
-Every route is now rebuilt (P0..M4) and the mobile pass (M4-b) is done; the founder preview is
+## ⚠ REVAMP + V3 BUILT, AWAITING FOUNDER GATES — read this first
+The site was re-themed onto wireframe direction B ("Kheelu's Tour") per the founder brief
+`Websit prompt based on B + inputs - 24-Jul.pdf`, then repositioned in V3 per the founder's YC
+application. Status, locked decisions, and the restart guide live in
+**`docs/revamp-2026-07/WORKING.md`** — read it BEFORE the resume protocol below. Superseded older
+laws: "Home copy = PDF verbatim" is retired (new production copy everywhere), and the age band is
+**Lumi 2 to 5 with the platform arc 2 to 14** — both "3 to 6" and the interim "3 to 10" are dead;
+render ages from `LUMI_AGES`/`PLATFORM_AGES`, never inline.
+Every route is rebuilt (P0..M4), the mobile pass (M4-b) is done, and V3 shipped; the founder preview is
 LIVE at **https://website-hdn2.vercel.app** (branch `demo-website`, merged with
 `revamp/kheelu-tour`). Two hard rules M4-b added (website-steps §8.20): never animate X on an
 element that spans the track width (it widens the layout viewport on phones and drags every
@@ -53,7 +55,9 @@ Rules for any change:
    one route → that route's `_components/`; one feature → `src/features/<f>/` (imported via its
    `index.ts` barrel).
 2. Token-driven only; prices/CTA labels from `@/config/site`; the shared molecules
-   (SectionHeading/Card/StepList/PageHero/CheckList/LegalDoc — §8.19) are the registry.
+   (SectionHeading/Card/StepList/PageHero/CheckList/LegalDoc, plus V3's AnswerBlock/
+   FootnotesRow/KheelonaPlusBand/FamilyGrid — §8.19 + §8.21) are the registry. Age copy comes
+   from LUMI_AGES/PLATFORM_AGES and subscription copy from KHEELONA_PLUS_LINE, never inline.
 3. Every new/changed component ships a colocated `X.stories.tsx` + `X.test.tsx`
    (`cd site && npm test`, `npm run storybook`). Node ≥ 24 (`.nvmrc`). Storybook/Vitest are
    dev-only and MUST never affect `next build`.

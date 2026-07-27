@@ -10,7 +10,7 @@ here in full so nothing depends on conversation memory.
 
 ---
 
-## ⏭ COLD-RESTART: START HERE (last updated 2026-07-27 — V3 content repositioning is NEXT)
+## ⏭ COLD-RESTART: START HERE (last updated 2026-07-28 — V3 is BUILT; only founder gates remain)
 
 **V3 IS BUILT (2026-07-28).** All five slices shipped: V3-1 shared parts, V3-2 Home,
 V3-3 /products/lumi, V3-4 interior routes, V3-5 cleanup + QA + deploy. The site now argues
@@ -78,13 +78,13 @@ branch. To continue:
 ```bash
 cd /Users/apoorvasahu/Documents/kheelona-com-website
 git checkout revamp/kheelu-tour          # the revamp branch (already pushed)
-cd site && npm test                       # expect 226/226 green
+cd site && npm test                       # expect 210/210 green
 ```
 
 **DONE so far:** P0, P1 (all), P2, M1, M2 (Home), M3 (/products/lumi), M4 (all 8 interior
 routes), M4-b (the mobile pass), and P5's deploy step. **The whole site now runs one theme** —
 every route is a backdrop hero + a room track + the orange finale, narrated by KheeluGuide.
-Tests 226/226 + build green, all 10 routes walked in Chrome, 23-href crawl clean, `#reserve`
+Tests 210/210 + build green, all 10 routes walked in Chrome, 23-href crawl clean, `#reserve`
 present everywhere (including the 404, which had a dead nav anchor before M4), and phones are
 clean at 320/360/390/430px (no sideways pan, no stretched fixed layer) both locally and on the
 live preview.

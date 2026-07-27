@@ -307,6 +307,64 @@ interior routes now run the room grammar, so these join §8.19's law:
   `max-sm:whitespace-normal`. Wide data (the compare table) gets a stacked view below `sm` rather
   than a sideways scroll — one data source, two views, a test that they agree.
 
+
+### 8.21 V3 CONTENT REPOSITIONING (2026-07-27/28, founder's YC application)
+
+The founder shared the YC application, which reveals the company's real positioning, and directed
+a content rewrite for one goal: **pre-bookings**. Mix: **40% fun, 20% brain development, 40%
+education**, with the companion story still leading. Built spec:
+**`docs/revamp-2026-07/BUILD-V3.md`** (it WINS over `copy-v2.md` and any older copy law).
+Research: `docs/revamp-2026-07/benchmarks-v3.md` (7 reference sites + a 12-point winning-criteria
+checklist, plus an Apple-tier pass). QA: `docs/qa-report.md` "V3".
+
+**Locked founder decisions (do not re-ask)**: India-first, ₹4,999 first-500 / ₹9,999 after ·
+Lumi ages **2 to 5**, platform arc **2 to 14** (the 3-to-10 law is RETIRED everywhere) · the .com
+lineup is the pipeline **Lumi → Kheelu Speaker → AI books** (Lori/Lua/Robu live on kheelona.ai
+only) · **Kheelona+** may only ever be described as "6 months included, monthly price announced
+before launch" — no ₹ amount, no post-lapse claim · the mascot lends his name to the product line
+(Kheelu Speaker, Kheelu mode) · no pilot-count claims of any kind · testimonials are three NAMED
+placeholders until real quotes land · /team keeps four people.
+
+**New laws this round adds to §8.19's registry**
+- Registry molecules are now: `SectionHeading` · `Card` · `StepList` · `PageHero` · `CheckList` ·
+  `LegalDoc` · `AnswerBlock` (question-led H2/H3 + a visible 40–60 word answer, M4) ·
+  `FootnotesRow`/`Footnote` (small print for claims that invite a follow-up, V3) ·
+  `KheelonaPlusBand` (the ONLY place subscription wording renders, V3) · `FamilyGrid` (the one
+  pipeline lineup, shared by Home and /playos). Hand-rolling any of these shapes is a review flag.
+- **Age copy renders from `config/site` constants** (`LUMI_AGES`, `PLATFORM_AGES`). A hardcoded
+  age band is a bug; the final QA greps for one.
+- **Subscription copy renders from `KHEELONA_PLUS_LINE`**, so a price cannot creep in via a call
+  site. A test asserts the band never grows a ₹ amount and never claims post-lapse behaviour.
+- **Every room on a conversion page owns one visual anchor** (the Apple-tier visual rule). One
+  type-only moment per page is sanctioned; a second is a review flag.
+- **LCP + reveals, generalised (V3 QA finding)**: a route with a **copy-only hero** has no priority
+  image to win LCP, so its FIRST room owns the LCP and must ship `reveal="none"`. A directional
+  reveal holds it at `opacity: 0` until hydration — that measured a 4.3s LCP and Lighthouse 85 on
+  /stories mobile before the fix. Routes with a media hero are immune.
+- **axe caveat for future sweeps**: axe skips `opacity: 0` subtrees, so a reveal-heavy page
+  under-reports. Treat a clean axe run on an unrevealed page as unproven.
+- **Never invent, extended**: no invented telemetry in a parent-dashboard mock (a filled-in
+  dashboard reads as real data from a product that has not shipped — the pattern independent
+  testers called misleading about a competitor), no "first in India" style superlative, and no
+  third-party logo in a trust row without a documented relationship (one founder's employment
+  history is not an institutional endorsement).
+
+**AEO plumbing (V3)**: `/llms.txt` route (visible-copy facts only, gated items marked
+unannounced, prices from `config/site`), robots rules naming GPTBot/OAI-SearchBot/ChatGPT-User/
+PerplexityBot/Perplexity-User/ClaudeBot/Claude-User/Claude-SearchBot/Google-Extended/
+Applebot-Extended/CCBot, and one honest journal freshness signal ("Reviewed July 2026" +
+`dateModified` at month precision — NOT per-article dates, which we do not have).
+
+**Cleanup completed here (the old M5)**: the 15 retired components deleted with their tests and
+stories, after stripping the dormant `KheeluSays`/`CurveDivider` call sites from six live
+components; `teal-deep` and the teal wash removed (token-check 17). `features/ambient-stage/`
+remains DORMANT and must not be deleted.
+
+**Verified at completion**: tests 210/210, tsc clean, build green; axe zero violations on 10
+routes × 2 viewports; Lighthouse A11y/BP/SEO **100 on all 18 runs**, Perf 99–100 (mobile judged
+on devtools throttling); mobile overflow clean 320–430px; 23-href crawl 200s; `#reserve`
+everywhere including the 404; all JSON-LD parses and mirrors visible copy only.
+
 **Launch readiness (unchanged gates + revamp deltas)**: S14/§8.11 checklist still applies —
 Tally URL + GA4 ID + Vercel/DNS + claims remain founder-gated (FOUNDER-TODO). Revamp deltas
 before merge to master: founder sign-off on the full v1 preview; hero final art ingested (or

@@ -1,4 +1,4 @@
-# Checkpoint — Revamp to theme B "Kheelu's Tour" (2026-07-25)
+# Checkpoint — theme B "Kheelu's Tour" + the V3 repositioning (2026-07-25 → 28)
 
 Cold-restart snapshot for the in-progress revamp. The live working file is
 `docs/revamp-2026-07/WORKING.md` (read its "COLD-RESTART: START HERE" section first). This
@@ -50,9 +50,13 @@ two fonts only (Glory + Instrument Sans).
 | M3 | /products/lumi = hero + `ColorwayPicker` (radiogroup, no-CLS blue/green/pink swap) + 11 rooms + FAQ v2 + JSON-LD "Lumi by Kheelona". Visually verified. |
 | M4 | **All 8 interior routes** on the room grammar, so the whole site is one theme. `/playos` (Magic Box hero, parent-app room led by a question), `/safety` (rewritten question-led: five visible 40–60 word answers + trimmed FAQ + status-exact standards), `/setup`, `/team`, `/stories`, `/stories/[slug]`, `/privacy`, `/terms`, `not-found` (gained the finale, closing a dead `#reserve` nav anchor). New shared parts: `PageHero` became the theme-B hero shell, new `AnswerBlock` molecule (AEO), new `FamilyGrid` organism, `LegalDoc` on rooms, `SectionHeading` gained a fourth `nested` step, `PhoneFrame` gained `priority`. Journal age pass (product copy 3 to 10; three articles retitled, slugs unchanged; one cited WHO/AAP band kept). |
 | P5 (part) | Preview deployed: `demo-website` merged + pushed, https://website-hdn2.vercel.app now serves the revamp. Founder review pending. |
+| V3 | **Content repositioning** (founder's YC application, 2026-07-27/28). Spec `docs/revamp-2026-07/BUILD-V3.md`, research `benchmarks-v3.md`. Mix 40% fun / 20% brain development / 40% education, companion story still leading. Lumi ages **2 to 5**, platform arc **2 to 14** (3-to-10 retired). Pipeline **Lumi → Kheelu Speaker → AI books** replaces the .com companion lineup. NEW: Home Learning room (shows the Kheelu-mode loop as a real exchange, with its own Reserve), Home Brain room (serve and return, journal photo), `/products/lumi` Kheelu-mode room, the pace panel ("School teaches the class. Lumi teaches your child.", framed as addition), `KheelonaPlusBand` ("6 months included, price announced before launch" — no ₹, no post-lapse claim), `FootnotesRow`, named placeholder testimonials, footer signature, WhatsApp share. Adaptive hero: "Every child learns differently. / Lumi learns with them." |
+| V3 cleanup | The old M5, folded in: 15 retired components deleted with tests and stories (after stripping dormant `KheeluSays`/`CurveDivider` call sites from six live components), `teal-deep` + the teal wash removed (token-check 17). `features/ambient-stage/` stays dormant. |
+| V3 AEO | `/llms.txt`, robots rules for the AI crawlers, one honest journal freshness signal. |
+| V3 QA | axe **zero violations** on 10 routes × desktop and mobile. Lighthouse **A11y/BP/SEO 100 on all 18 runs**, Perf 99–100 (mobile on devtools throttling). Tests **210/210**. |
 | M4-b | **Mobile pass** (founder reported mobile issues on the preview). Reviewed at real mobile viewports over CDP, 320-1024px. Root cause of most symptoms: the room reveals translate X by ±46px, which on a phone pushes a full-width room past the screen edge and makes mobile Chrome WIDEN THE LAYOUT VIEWPORT (417px on a 390px screen) — hence the sideways pan, the stretched fixed dock with its CTA off-screen, and the cropped-looking copy. Sideways reveals now gated to ≥960px. Plus: long ghost labels wrap below sm; PhoneFrame `max-w-full` + `min-w-0` on its grid item; /team bio column and /stories art column yield on small phones; `p { text-wrap: pretty }` moved into `@layer base` (unlayered CSS outranks utilities — it had been beating `truncate`, so the dock ran 3 lines / 86px, now 1 line / 67px); **CompareTable stacks one card per claim below sm** instead of a 640px sideways scroll. Verified 320/360/390/430px: 9/9 routes, no pan, no stretched fixed layer. Live-verified on the preview. |
 
-Tests **226/226**, `next build` green (token-check 18), tsc clean. All 10 routes walked in
+At the end of M4-b: tests 226/226, `next build` green (token-check 18), tsc clean. All 10 routes walked in
 Chrome (local prod + live), 23-href crawl 200s, `#reserve` on every route including the 404,
 voice-lint clean (zero em-dashes, zero italics, no stale ages on product surfaces).
 
@@ -64,6 +68,13 @@ Two bugs found + fixed:
   after a CLIENT-side navigation the new route's `[data-reveal]` rooms were never observed and
   stayed at `opacity: 0`. It re-arms on `usePathname()` now, with a regression test. Any future
   observer mounted in the layout must do the same.
+- **V3 QA** — `/stories` mobile measured Lighthouse 85 with a 4.3s LCP against a 1.5s FCP. The
+  LCP element was a card paragraph inside the FIRST room, and that room carried a directional
+  reveal, which holds it at `opacity: 0` until the observer hydrates. `Room.tsx` already stated the
+  rule; the theme loop was generating a reveal for room one anyway. Gating it to `reveal="none"`
+  gave 100 and a 1.5s LCP. **Generalised rule (§8.21): a route with a copy-only hero has no
+  priority image to win LCP, so its first room owns it and must ship reveal-free.** Also learned:
+  axe skips `opacity: 0` subtrees, so a reveal-heavy page under-reports.
 - **M4-b** — two rules now in website-steps §8.20: never animate X on an element that spans the
   track width (it widens the layout viewport on phones and drags every fixed element with it),
   and base-level element rules in globals.css belong in `@layer base` (unlayered CSS outranks
@@ -71,7 +82,18 @@ Two bugs found + fixed:
 
 ## Next
 
-- **M5** — delete retired components + tests/stories (`KheeluIntro`, `WhyWeExist`, `Feelings`,
+**All build work is done.** Every remaining item is founder-gated (see FOUNDER-TODO.md):
+V3-a real testimonial quotes (the site carries drafted placeholders — this BLOCKS merge to main),
+V3-b the Kheelona+ monthly price and post-lapse behaviour, V3-c pipeline art via
+`gemini-handoff/pipeline-2026-07/`, V3-d Kheelu line sign-off (three new in V3), V3-e a colour
+field on the Tally form, plus the standing launch gates: Tally URL, GA4, the two Vercel env vars,
+DNS, counsel review, certifications/specs/ship date. The two highest-leverage founder items for
+quality are REV-a (final hero art) and R9-a (real photography) — the Apple-tier audit's verdict was
+that the structure is at tier and the remaining gap is asset quality.
+
+Historical, completed by V3 (kept for provenance):
+
+- ~~**M5**~~ (folded into V3 cleanup) — delete retired components + tests/stories (`KheeluIntro`, `WhyWeExist`, `Feelings`,
   `MeetLumi`, `WhatLumiDoes`, `HowItWorks`, `SafetyCallout`, `SafetyStrip`, `HeroConversation`,
   `StickyMobileCTA`, `CurveDivider`, `MascotScene`, `KheeluSays`, `hero-glow`, `Beat`) plus the
   `teal-deep` token and `Section`'s teal wash, whose last usage M4 removed. `KheeluSays` is
