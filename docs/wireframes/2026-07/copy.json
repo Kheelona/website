@@ -1,0 +1,148 @@
+{
+  "_note": "Final copy after senior-editor pass. Em-dash clean. De-patterned headlines. Testimonials + ship date are flagged placeholders.",
+  "cta": {
+    "reserve": "Reserve at ₹4,999",
+    "reserveLong": "Reserve Lumi at ₹4,999",
+    "meetKheelu": "Meet Kheelu",
+    "priceCaption": "₹9,999 after launch. No payment now.",
+    "cap": "First 500 units at ₹4,999."
+  },
+  "nav": { "world": "Meet Kheelu", "lumi": "Lumi", "trust": "Trust", "reserve": "Reserve at ₹4,999" },
+  "landing": {
+    "hero": {
+      "kheelu": "Hi, I'm Kheelu. Come see what we're making.",
+      "h1a": "A friend who listens.",
+      "h1b": "Made by people you can trust.",
+      "sub": "Screen-free friends that talk with your child and grow with them. We do not sell your family's data."
+    },
+    "recognition": { "label": "Recognised by" },
+    "building": {
+      "h2": "We build companions, not gadgets.",
+      "body": "A gadget waits to be told what to do. A companion starts the conversation. Lumi asks your child a question, listens to the answer, then asks the next one. That back and forth is how your child learns to think.",
+      "support": "Lumi listens and answers. It remembers what your child said last time. Your child feels known, not managed."
+    },
+    "trust": {
+      "eyebrow": "The promise under everything",
+      "h2": "The part that matters most to you.",
+      "points": [
+        { "h": "We do not sell data.", "b": "Your child's voice and words are never sold, and never used to sell them anything. That is a promise, not a setting you have to go find." },
+        { "h": "Lumi thinks on the device.", "b": "The first thinking happens on Lumi itself, before anything is sent anywhere." },
+        { "h": "You hold the keys.", "b": "Read every conversation. Delete anything in one tap. Choose the topics. The grown-up decides, always." },
+        { "h": "No open internet.", "b": "Lumi answers from a library you can see, not the open web. It wakes to a word, and the mic is off the rest of the time." }
+      ]
+    },
+    "companions": {
+      "h2": "Meet the family. Lumi comes first.",
+      "body": "The same friend lives inside each one. Lumi is the first your child will meet. Lori, Lua, and Robu are on the way.",
+      "range": "Made for a three-year-old. Still a friend at ten.",
+      "soon": "Coming soon"
+    },
+    "warm": {
+      "kheelu": "That was the careful part. Now let me show you the fun.",
+      "h2": "Here is what a day with Lumi feels like."
+    },
+    "feelings": {
+      "h2": "Learning starts with feeling understood.",
+      "body": "Lumi knows five feelings. Feeling comes first, and the learning follows.",
+      "cards": [
+        { "name": "Curious", "b": "Asks why. Chases ideas. Wants to know what is around the corner." },
+        { "name": "Grumpy", "b": "Names the hard feeling instead of hiding it." },
+        { "name": "Sad", "b": "Sits with you. Does not rush past. Makes space for the hard moments." },
+        { "name": "Silly", "b": "Turns a dull afternoon into a game." },
+        { "name": "Joy", "b": "Celebrates the small wins out loud." }
+      ],
+      "languages": "Lumi talks in the languages you speak at home. Up to ten of them."
+    },
+    "convo": {
+      "turns": [
+        { "who": "child", "t": "Lumi, why is the moon following us?" },
+        { "who": "lumi", "t": "It looks that way, doesn't it? The moon is very far away. Where are you off to?" },
+        { "who": "child", "t": "To grandma's house!" },
+        { "who": "lumi", "t": "Then the moon gets to meet her too." }
+      ]
+    },
+    "upclose": {
+      "h2": "Most toys forget your child by morning. Lumi remembers.",
+      "does": ["Holds a conversation", "Tells a story on demand", "Teaches without a screen", "Sings and rhymes", "Plays offline", "Streams your music over Bluetooth"],
+      "modes": "Three ways to be there. A friend when your child wants one. A storyteller at bedtime. A teacher when a why turns into a lesson. Lumi reads the moment and picks.",
+      "link": "See how Lumi keeps your child safe"
+    },
+    "parents": {
+      "h2": "Your child is just playing. You can see the learning.",
+      "body": "Open the app for a daily summary, the full conversation log, and simple controls. Choose the character and the age setting. Manage what is downloaded. Updates arrive on their own."
+    },
+    "pilot": {
+      "h2": "The first families are already talking.",
+      "quotes": [
+        { "q": "My daughter says goodnight to Lumi before she says it to me. I have read every word they say. It is kind.", "by": "Ananya R., mother of two, Bengaluru" },
+        { "q": "No screen, and he still asks for it first thing. That never happens.", "by": "Karthik M., father, Pune" },
+        { "q": "She switched to Kannada and Lumi kept up. My mother was in tears.", "by": "Divya S., Bengaluru" }
+      ]
+    },
+    "finale": {
+      "kheelu": "Save your spot. I'll keep Lumi company until launch.",
+      "h2": "Reserve Lumi before the price goes up.",
+      "price": "₹4,999 now. ₹9,999 after launch. No payment today.",
+      "reassure": "We hold the price. You hold your place."
+    }
+  },
+  "lumi": {
+    "hero": {
+      "kheelu": "This is Lumi. I picked the colours myself.",
+      "h1": "Meet Lumi. The friend who listens first.",
+      "sub": "A talking friend for ages 3 to 10. No screen, ever. Lumi listens, answers, then asks the next question.",
+      "picker": ["Blue", "Green", "Pink"]
+    },
+    "convo": { "h2": "What talking with Lumi sounds like.", "body": "Lumi answers, then asks. That is how a conversation goes somewhere." },
+    "does": {
+      "h2": "One friend. A whole day of things to do.",
+      "items": [
+        { "h": "Real conversation", "b": "Lumi listens, answers, and asks the next question." },
+        { "h": "Stories on demand", "b": "A new story whenever your child wants one." },
+        { "h": "Lessons that feel like play", "b": "Numbers, words, and why the sky is blue." },
+        { "h": "Songs and rhymes", "b": "The ones you grew up with, and new ones too." },
+        { "h": "Offline adventures", "b": "Play that does not need the internet." },
+        { "h": "Bluetooth music", "b": "Your playlist, through Lumi's speaker." }
+      ]
+    },
+    "playos": {
+      "h2": "Three ways to be there.",
+      "body": "Lumi runs on PlayOS. It gives every character its own voice and personality, and answers that fit your child's age. It knows when to be a friend, a storyteller, or a teacher.",
+      "modes": ["Companion", "Storyteller", "Teacher"]
+    },
+    "feelings": { "h2": "Five feelings your child learns to name.", "body": "The learning starts with the heart. Name the feeling first, and the thinking follows." },
+    "library": {
+      "h2": "New things to do, long after launch.",
+      "body": "You choose what Lumi carries. Stories, songs, lessons, and activity packs download to the device, so your child plays with them offline and screen-free. New packs and seasonal sets arrive over time. School learning modules are on the way."
+    },
+    "parents": {
+      "h2": "You see every conversation. You decide what Lumi does next.",
+      "body": "A daily summary of what your child talked about. The full conversation log, kept private to you. Topic controls. Pick the character and the age setting. Manage downloads. Firmware and content update on their own."
+    },
+    "safe": {
+      "h2": "Built to keep your child safe, word by word.",
+      "points": ["Wakes to a word, mic off otherwise", "Thinks on the device first", "Answers from a closed library, no open internet", "A safety check on every reply", "Delete anything in one tap", "Voice data never sold"]
+    },
+    "box": {
+      "h2": "What is in the box.",
+      "items": ["Lumi, ready to talk.", "A charger.", "A quick-start card. Day one takes minutes."],
+      "note": "Full specs land closer to launch."
+    },
+    "price": {
+      "h2": "₹4,999 now. ₹9,999 after launch.",
+      "body": "Reserve today at ₹4,999. You pay nothing now, and Lumi stays a friend for years."
+    },
+    "faq": [
+      { "q": "Is Lumi safe for my child?", "a": "Lumi wakes to a word, thinks on the device first, and answers from a closed library. There is a safety check on every reply, and you can read or delete anything." },
+      { "q": "Does it need the internet?", "a": "No. Lumi plays offline. You connect only to download new content or updates, and you decide when." },
+      { "q": "What languages does Lumi speak?", "a": "The languages you speak at home. Up to ten of them, and Lumi can switch mid-sentence." },
+      { "q": "What ages is Lumi for?", "a": "Ages 3 to 10. Lumi meets younger children where they are and grows up with them." },
+      { "q": "What if my child breaks it?", "a": "Lumi is built for small hands and rough days. Warranty details land closer to launch." },
+      { "q": "When does Lumi ship?", "a": "Ship date lands soon. Reserve now and you are first in line. [Founder to confirm date.]" },
+      { "q": "Do you sell our data?", "a": "No. Never sold, never used to sell your child anything. That is the whole point." },
+      { "q": "Can I read the conversations?", "a": "Yes. The full log stays private to you, in the parent app." },
+      { "q": "What is PlayOS?", "a": "The platform Lumi runs on. It gives each character a voice and a personality, and keeps every answer right for your child's age." },
+      { "q": "Why reserve now?", "a": "The first 500 units are ₹4,999. After launch it is ₹9,999. There is no payment today." }
+    ]
+  }
+}

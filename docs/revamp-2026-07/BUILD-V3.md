@@ -414,6 +414,8 @@ Founder runs; ingest from `~/Downloads`; process through `tools/cutout`.
 ### 6.4 Kheelu say-line queue v3 (ALL GATED:kheelu-line; adds to the v2 queue)
 - Home F6: `This is the part where the games are secretly lessons.`
 - Home F9: `The Speaker is my cousin. Louder, and better at maths.`
+- /products/lumi Kheelu-mode room: reuses the Home F6 line (same fold, same voice).
+- /products/lumi pace panel (added 2026-07-28): `I only ever have one child to keep up with.`
 - All v2 lines carry over unchanged (WORKING.md queue). No other new lines.
 
 ## §7 Build order and QA (per slice: `npm test` + `npm run build` green before commit)
