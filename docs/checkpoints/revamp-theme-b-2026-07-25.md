@@ -50,8 +50,9 @@ two fonts only (Glory + Instrument Sans).
 | M3 | /products/lumi = hero + `ColorwayPicker` (radiogroup, no-CLS blue/green/pink swap) + 11 rooms + FAQ v2 + JSON-LD "Lumi by Kheelona". Visually verified. |
 | M4 | **All 8 interior routes** on the room grammar, so the whole site is one theme. `/playos` (Magic Box hero, parent-app room led by a question), `/safety` (rewritten question-led: five visible 40–60 word answers + trimmed FAQ + status-exact standards), `/setup`, `/team`, `/stories`, `/stories/[slug]`, `/privacy`, `/terms`, `not-found` (gained the finale, closing a dead `#reserve` nav anchor). New shared parts: `PageHero` became the theme-B hero shell, new `AnswerBlock` molecule (AEO), new `FamilyGrid` organism, `LegalDoc` on rooms, `SectionHeading` gained a fourth `nested` step, `PhoneFrame` gained `priority`. Journal age pass (product copy 3 to 10; three articles retitled, slugs unchanged; one cited WHO/AAP band kept). |
 | P5 (part) | Preview deployed: `demo-website` merged + pushed, https://website-hdn2.vercel.app now serves the revamp. Founder review pending. |
+| M4-b | **Mobile pass** (founder reported mobile issues on the preview). Reviewed at real mobile viewports over CDP, 320-1024px. Root cause of most symptoms: the room reveals translate X by ±46px, which on a phone pushes a full-width room past the screen edge and makes mobile Chrome WIDEN THE LAYOUT VIEWPORT (417px on a 390px screen) — hence the sideways pan, the stretched fixed dock with its CTA off-screen, and the cropped-looking copy. Sideways reveals now gated to ≥960px. Plus: long ghost labels wrap below sm; PhoneFrame `max-w-full` + `min-w-0` on its grid item; /team bio column and /stories art column yield on small phones; `p { text-wrap: pretty }` moved into `@layer base` (unlayered CSS outranks utilities — it had been beating `truncate`, so the dock ran 3 lines / 86px, now 1 line / 67px); **CompareTable stacks one card per claim below sm** instead of a 640px sideways scroll. Verified 320/360/390/430px: 9/9 routes, no pan, no stretched fixed layer. Live-verified on the preview. |
 
-Tests **222/222**, `next build` green (token-check 18), tsc clean. All 10 routes walked in
+Tests **226/226**, `next build` green (token-check 18), tsc clean. All 10 routes walked in
 Chrome (local prod + live), 23-href crawl 200s, `#reserve` on every route including the 404,
 voice-lint clean (zero em-dashes, zero italics, no stale ages on product surfaces).
 
@@ -63,6 +64,10 @@ Two bugs found + fixed:
   after a CLIENT-side navigation the new route's `[data-reveal]` rooms were never observed and
   stayed at `opacity: 0`. It re-arms on `usePathname()` now, with a regression test. Any future
   observer mounted in the layout must do the same.
+- **M4-b** — two rules now in website-steps §8.20: never animate X on an element that spans the
+  track width (it widens the layout viewport on phones and drags every fixed element with it),
+  and base-level element rules in globals.css belong in `@layer base` (unlayered CSS outranks
+  every Tailwind utility regardless of specificity).
 
 ## Next
 

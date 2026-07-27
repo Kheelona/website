@@ -10,29 +10,31 @@ here in full so nothing depends on conversation memory.
 
 ---
 
-## ⏭ COLD-RESTART: START HERE (last updated 2026-07-25, after M4)
+## ⏭ COLD-RESTART: START HERE (last updated 2026-07-25, after M4 + the M4-b mobile pass)
 
-**LIVE PREVIEW: https://website-hdn2.vercel.app** (updated 2026-07-25 with M4). The founder
+**LIVE PREVIEW: https://website-hdn2.vercel.app** (updated 2026-07-25 with M4 + the mobile pass). The founder
 review URL now serves the revamp: branch `demo-website` was MERGED with `revamp/kheelu-tour`
 (merge, not force-push, so the wireframe drafts at `/a` `/b` `/c` still resolve) and pushed.
-`demo-website` = `a0d6b41`. Vercel root directory is `site`; its `NEXT_PUBLIC_*` env vars are
+`demo-website` = `ac59ade`. Vercel root directory is `site`; its `NEXT_PUBLIC_*` env vars are
 still unset, so the reserve panel shows the placeholder card and GA4 is not measuring.
 
-**All work is on branch `revamp/kheelu-tour`** (pushed to origin, through M4 `7e7e2b7`).
+**All work is on branch `revamp/kheelu-tour`** (pushed to origin, HEAD `2eb793b`).
 `main` only holds the P0 image hotfix + the P1 doc commit — the revamp itself lives on the
 branch. To continue:
 
 ```bash
 cd /Users/apoorvasahu/Documents/kheelona-com-website
 git checkout revamp/kheelu-tour          # the revamp branch (already pushed)
-cd site && npm test                       # expect 222/222 green
+cd site && npm test                       # expect 226/226 green
 ```
 
 **DONE so far:** P0, P1 (all), P2, M1, M2 (Home), M3 (/products/lumi), M4 (all 8 interior
-routes). **The whole site now runs one theme** — every route is a backdrop hero + a room track
-+ the orange finale, narrated by KheeluGuide. Tests + build green, all 10 routes walked in
-Chrome, 23-href crawl clean, `#reserve` present everywhere (including the 404, which had a
-dead nav anchor before M4).
+routes), M4-b (the mobile pass), and P5's deploy step. **The whole site now runs one theme** —
+every route is a backdrop hero + a room track + the orange finale, narrated by KheeluGuide.
+Tests 226/226 + build green, all 10 routes walked in Chrome, 23-href crawl clean, `#reserve`
+present everywhere (including the 404, which had a dead nav anchor before M4), and phones are
+clean at 320/360/390/430px (no sideways pan, no stretched fixed layer) both locally and on the
+live preview.
 
 **NEXT = M5 (cleanup + full QA)**:
 1. Delete the retired files + their `.test.tsx`/`.stories.tsx` (list below) and the now-unused

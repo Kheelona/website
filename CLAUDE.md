@@ -8,8 +8,12 @@ brief `Websit prompt based on B + inputs - 24-Jul.pdf`. Status, locked decisions
 restart guide live in **`docs/revamp-2026-07/WORKING.md`** — read it BEFORE the resume protocol
 below. Where the brief conflicts with older laws, the brief wins (e.g. the "Home copy = PDF
 verbatim" precedence and ages "3 to 6" are superseded — new production copy, ages 3 to 10).
-Every route is now rebuilt (P0..M4); the founder preview is LIVE at
-**https://website-hdn2.vercel.app** (branch `demo-website`, merged with `revamp/kheelu-tour`).
+Every route is now rebuilt (P0..M4) and the mobile pass (M4-b) is done; the founder preview is
+LIVE at **https://website-hdn2.vercel.app** (branch `demo-website`, merged with
+`revamp/kheelu-tour`). Two hard rules M4-b added (website-steps §8.20): never animate X on an
+element that spans the track width (it widens the layout viewport on phones and drags every
+`position: fixed` element with it), and base-level element rules in `globals.css` belong in
+`@layer base` (unlayered CSS outranks every Tailwind utility).
 Delete this note + the working file once the revamp is founder-approved.
 
 ## Who you work for
