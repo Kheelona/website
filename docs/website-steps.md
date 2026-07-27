@@ -398,3 +398,26 @@ before merge to master: founder sign-off on the full v1 preview; hero final art 
 founder explicitly ships interim); the 3 app images requested only AFTER v1 deploy (brief
 pointer 9); `Design/design-system/` updated with the new recipes (single-source-of-truth
 mandate); docs current (this file, WORKING.md, copy-reference, project-state, qa-report).
+
+
+**8.21-a THE APP LIVES AT THE REPO ROOT (2026-07-28, deploy law).** Vercel resolves a project's
+framework from its Root Directory. The app sat in `site/` while that setting pointed at the repo
+root, so every build failed with "No Next.js version detected" and nothing was ever live. The app
+moved up: `package.json`, `next.config.ts`, `src/`, `public/`, `test/`, `.storybook/`, both
+tsconfigs. Three path assumptions broke and are now fixed — the build script reached
+`../tools/tokens/check-tokens.mjs` (outside the repo), the root `tsconfig.json` swept in
+`launch-video/` (a separate Remotion project with uninstalled deps, so `tsc` failed on phantom
+modules), and `.storybook` could not resolve `@/` (latent since the revamp: `next build` and
+Vitest each resolve that alias their own way, Storybook never did). **Translating older docs: drop
+the leading `site/`.** `docs/standards/STRUCTURE-MAP.md` carries the same rule.
+
+**8.21-b A REDIRECT SOURCE MUST NEVER SHADOW A `public/` DIRECTORY (2026-07-28, hard rule).**
+Next matches redirects BEFORE it serves `public/` files. The legacy Wix 301 `/product/:slug*`
+therefore 308'd our own plush renders in `public/product/` to the product page, and the image
+optimizer answered **400 for every product image** — the live preview was serving a blank home
+hero, which is the mobile LCP element. Fix: `/product/:slug([^.]+)`, which cannot match a
+filename (legacy slugs never contain a dot; asset filenames always do) while still redirecting
+slugs, including multi-segment ones. `test/redirects-vs-assets.test.ts` cross-checks every
+redirect source against every `public/` directory and fails on exactly this shape; it was verified
+by reintroducing the bug. Adding a redirect whose first segment names an asset directory is a
+review flag.

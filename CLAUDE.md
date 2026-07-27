@@ -26,6 +26,11 @@ repo root. That old app is preserved at the tag **`pre-revamp-2026-07`** and its
   (it widens the layout viewport on phones), and base-level element CSS belongs in `@layer base`.
 - **One from the QA pass**: a route with a copy-only hero must ship its first room reveal-free, or
   it owns the LCP while invisible.
+- **Two from the deploy pass (2026-07-28)**: the app lives at the **repo root**, not `site/`
+  (Vercel reads `package.json` from the Root Directory — that mismatch was why nothing deployed);
+  and **a redirect source must never shadow a `public/` directory**, because redirects match before
+  static files (`/product/:slug*` blanked every product image incl. the hero — hence
+  `/product/:slug([^.]+)` and `test/redirects-vs-assets.test.ts`). Both in §8.21-a/b.
 - New laws are consolidated in `docs/website-steps.md` §8.21.
 
 ## Who you work for
