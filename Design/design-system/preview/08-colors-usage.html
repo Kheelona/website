@@ -1,0 +1,30 @@
+<!doctype html>
+<!-- @dsCard group="Colors" name="Color usage ratio" subtitle="30 / 30 / 20 / 10 / 5 / 5 split" viewport="700x180" -->
+<html><head><meta charset="utf-8"><title>Color usage ratio</title>
+<link rel="stylesheet" href="_card.css">
+<style>
+  .bar { width: 100%; height: 56px; display:flex; border-radius: 10px; overflow:hidden; border:1px solid var(--kh-line); }
+  .seg { display:flex; align-items:center; justify-content:center; font-family:'Glory',sans-serif; font-weight:700; font-size: 14px; color: #fff; }
+  .seg.dark { color: var(--kh-ink); }
+  .legend { display:grid; grid-template-columns: repeat(3, 1fr); gap: 8px 16px; font-family:'Instrument Sans'; font-size: 13px; color: var(--kh-ink-3); }
+  .dot { display:inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 8px; vertical-align: -2px; border:1px solid rgba(0,0,0,.05);}
+</style></head>
+<body><div class="card">
+  <div class="bar">
+    <div class="seg" style="flex:30;background:var(--kh-yellow);">30%</div>
+    <div class="seg dark" style="flex:30;background:#fff;">30%</div>
+    <div class="seg" style="flex:20;background:var(--kh-blue);">20%</div>
+    <div class="seg" style="flex:10;background:var(--kh-orange);">10%</div>
+    <div class="seg" style="flex:5;background:var(--kh-teal);">5%</div>
+    <div class="seg" style="flex:5;background:var(--kh-purple);">5%</div>
+  </div>
+  <div class="legend">
+    <span><span class="dot" style="background:var(--kh-yellow);"></span>Yellow 30%</span>
+    <span><span class="dot" style="background:#fff;"></span>White 30%</span>
+    <span><span class="dot" style="background:var(--kh-blue);"></span>Blue 20%</span>
+    <span><span class="dot" style="background:var(--kh-orange);"></span>Orange 10%</span>
+    <span><span class="dot" style="background:var(--kh-teal);"></span>Teal 5%</span>
+    <span><span class="dot" style="background:var(--kh-purple);"></span>Purple 5%</span>
+  </div>
+  <p class="note" style="margin:0;">Warm-first, tech-second. Treat as a budget, not a rule.</p>
+</div></body></html>

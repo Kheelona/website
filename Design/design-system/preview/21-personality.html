@@ -1,0 +1,25 @@
+<!doctype html>
+<!-- @dsCard group="Brand" name="Personality slider" subtitle="Playful ↔ Serious axes" viewport="700x300" -->
+<html><head><meta charset="utf-8"><title>Voice</title>
+<link rel="stylesheet" href="_card.css">
+<style>
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 24px; }
+  .axis { display: flex; flex-direction: column; gap: 4px; }
+  .axis .label-row { display:flex; justify-content: space-between; font-family:'Instrument Sans'; font-size: 12px; color: var(--kh-ink-3); }
+  .axis .label-row .left { font-weight: 700; color: var(--kh-ink); }
+  .track { position: relative; height: 6px; background: var(--kh-line-soft); border-radius: 3px; }
+  .dot { position: absolute; top: 50%; transform: translate(-50%, -50%); width: 14px; height: 14px; border-radius: 50%; background: var(--kh-orange); box-shadow: var(--kh-shadow-soft); }
+</style></head>
+<body><div class="card">
+  <div class="grid">
+    <div class="axis"><div class="label-row"><span class="left">Playful</span><span>Serious</span></div><div class="track"><div class="dot" style="left:22%;"></div></div></div>
+    <div class="axis"><div class="label-row"><span class="left">Modern</span><span>Classic</span></div><div class="track"><div class="dot" style="left:25%;"></div></div></div>
+    <div class="axis"><div class="label-row"><span class="left">Friendly</span><span>Formal</span></div><div class="track"><div class="dot" style="left:18%;"></div></div></div>
+    <div class="axis"><div class="label-row"><span class="left">Developmental</span><span>Entertainment</span></div><div class="track"><div class="dot" style="left:30%;"></div></div></div>
+    <div class="axis"><div class="label-row"><span class="left">Curious</span><span>Directive</span></div><div class="track"><div class="dot" style="left:20%;"></div></div></div>
+    <div class="axis"><div class="label-row"><span class="left">Progressive</span><span>Secure</span></div><div class="track"><div class="dot" style="left:42%;"></div></div></div>
+    <div class="axis"><div class="label-row"><span class="left">Whimsical</span><span>Rational</span></div><div class="track"><div class="dot" style="left:32%;"></div></div></div>
+    <div class="axis"><div class="label-row"><span class="left">Premium</span><span>Standard</span></div><div class="track"><div class="dot" style="left:28%;"></div></div></div>
+  </div>
+  <p class="note" style="margin:0;">Eight sliders, eight intentional tilts. Kheelona lives <em>just</em> past the midpoint on the playful, modern, friendly, developmental, curious, progressive, whimsical, premium side of every axis.</p>
+</div></body></html>

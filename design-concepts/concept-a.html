@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concept A: Storybook · kheelona.com</title>
+<link rel="icon" href="assets/logo-mark.png">
+<style>
+/* ================================================================
+   CONCEPT A "STORYBOOK"
+   Warm full-bleed illustrated scenes, curved dividers, mascot
+   staged large. Tokens from Design/design-system (do not invent).
+   ================================================================ */
+@font-face {
+  font-family: 'Glory';
+  src: url('assets/Glory-VariableFont_wght.ttf') format('truetype-variations');
+  font-weight: 100 900; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Instrument Sans';
+  src: url('assets/InstrumentSans-VariableFont_wdth_wght.ttf') format('truetype-variations');
+  font-weight: 100 900; font-style: normal; font-display: swap;
+}
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&display=swap');
+
+:root {
+  --orange: #EF762F; --orange-deep: #D85F1B;
+  --yellow: #F1A23B; --blue: #29A0D7; --blue-soft: #3AA4E5;
+  --teal: #1ABC9C; --purple: #8B5BFF;
+  --ink: #272727; --ink-head: #1C1C1C; --ink-muted: #727272;
+  --line: #CFCFCF;
+  --bg: #FFFFFF; --bg-warm: #FFF7EE; --bg-cool: #EAF6FC;
+  --orange-15: rgba(239,118,47,.15); --yellow-15: rgba(241,162,59,.15);
+  --blue-15: rgba(58,164,229,.15); --teal-15: rgba(26,188,156,.15);
+  --purple-15: rgba(139,91,255,.15);
+  --display: 'Glory', system-ui, sans-serif;
+  --text: 'Instrument Sans', system-ui, sans-serif;
+  --accent: 'Instrument Serif', Georgia, serif;
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --shadow: 0 4px 4px rgba(0,0,0,.25);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--text); color: var(--ink);
+  font-size: 18px; line-height: 1.55; background: var(--bg-warm);
+  overflow-x: clip;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; }
+.wrap { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+/* ---- type ---- */
+h1, h2, h3 { font-family: var(--display); font-weight: 800; color: var(--ink-head); line-height: 1.08; letter-spacing: -0.01em; }
+h1 { font-size: clamp(38px, 4.5vw, 58px); }
+h2 { font-size: clamp(32px, 4vw, 50px); }
+h3 { font-size: clamp(24px, 2.6vw, 32px); }
+p  { max-width: 62ch; }
+.eyebrow {
+  font-family: var(--accent); font-style: italic; font-size: 21px;
+  letter-spacing: 0.02em; display: block; margin-bottom: 14px;
+}
+.lead { font-size: clamp(18px, 1.6vw, 21px); color: var(--ink); }
+.muted { color: var(--ink-muted); }
+
+/* ---- buttons ---- */
+.btn {
+  font-family: var(--text); font-weight: 650; font-size: 17px; line-height: 1;
+  display: inline-flex; align-items: center; gap: 10px;
+  border-radius: 999px; padding: 17px 30px; border: 2px solid #fff;
+  background: var(--orange); color: #fff; text-decoration: none;
+  box-shadow: var(--shadow); cursor: pointer;
+  transition: transform .16s var(--ease-bounce), background-color .22s var(--ease-out);
+}
+.btn:hover { background: var(--orange-deep); }
+.btn:active { transform: scale(.96); }
+.btn.ghost { background: transparent; color: var(--ink-head); border: 2px solid var(--ink-head); box-shadow: none; }
+.btn.ghost:hover { background: var(--ink-head); color: #fff; }
+.pricenote { font-size: 15px; color: var(--ink-muted); margin-top: 14px; }
+
+/* ---- nav ---- */
+nav {
+  position: sticky; top: 0; z-index: 50; height: 72px;
+  background: rgba(255,255,255,.94); backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(207,207,207,.4);
+}
+nav .wrap { height: 100%; display: flex; align-items: center; justify-content: space-between; }
+nav .logo img { height: 34px; width: auto; }
+nav ul { display: flex; gap: 30px; list-style: none; }
+nav ul a { text-decoration: none; font-weight: 550; font-size: 16px; transition: color .2s; }
+nav ul a:hover { color: var(--orange); }
+nav .btn { padding: 12px 22px; font-size: 15px; }
+@media (max-width: 900px) { nav ul { display: none; } }
+
+/* ---- hero ---- */
+.hero { position: relative; padding: 40px 0 0; overflow: hidden; }
+.hero .wrap { display: grid; grid-template-columns: 1.15fr .85fr; gap: 32px; align-items: center; min-height: 560px; }
+.hero-copy { padding: 40px 0 72px; }
+.agebadge {
+  display: inline-block; font-weight: 650; font-size: 14px; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--orange-deep);
+  background: var(--orange-15); border-radius: 999px; padding: 8px 16px; margin-bottom: 20px;
+}
+.hero h1 { margin-bottom: 20px; }
+.hero .lead { margin-bottom: 10px; }
+.hero .lang { font-weight: 650; color: var(--ink-head); margin-bottom: 28px; }
+.hero-scene { position: relative; align-self: end; display: flex; justify-content: center; }
+.hero-scene .sun {
+  position: absolute; inset: auto; width: 520px; height: 520px; border-radius: 50%;
+  background: radial-gradient(circle, var(--yellow-15) 0%, rgba(241,162,59,.28) 35%, transparent 70%);
+  bottom: -140px; left: 50%; transform: translateX(-50%); pointer-events: none;
+}
+.hero-scene img.mascot { position: relative; width: min(360px, 78%); filter: drop-shadow(0 18px 24px rgba(216,95,27,.18)); }
+.shape { position: absolute; pointer-events: none; }
+.hero .sh1 { width: 130px; top: 8%; left: 4%; }
+.hero .sh2 { width: 90px; top: 16%; right: 6%; }
+.hero .sh3 { width: 180px; bottom: 20%; left: -40px; }
+@media (max-width: 900px) {
+  .hero .wrap { grid-template-columns: 1fr; min-height: 0; }
+  .hero-copy { padding: 24px 0 8px; }
+  .hero-scene img.mascot { width: min(280px, 64%); }
+}
+
+/* ---- curved dividers ---- */
+.curve { display: block; width: 100%; height: 70px; }
+.curve path { fill: var(--bg); }
+.curve.to-warm path { fill: var(--bg-warm); }
+.curve.to-cool path { fill: var(--bg-cool); }
+.curve.flip { transform: scaleY(-1); }
+
+/* ---- why we exist ---- */
+.why { background: var(--bg); padding: 84px 0 90px; text-align: center; }
+.why .eyebrow { color: var(--teal); }
+.why h2 { max-width: 21ch; margin: 0 auto 26px; }
+.why p { margin: 0 auto 18px; }
+
+/* ---- feelings ---- */
+.feelings { background: var(--bg-cool); padding: 90px 0 100px; position: relative; overflow: hidden; }
+.feelings .eyebrow { color: var(--blue); }
+.feelings h2 { max-width: 18ch; }
+.feelings .intro { margin: 18px 0 48px; }
+.fgrid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px; align-items: stretch; }
+.fcard {
+  border-radius: 22px; padding: 22px 18px 24px; text-align: center;
+  background: #fff; transition: transform .3s var(--ease-bounce);
+}
+.fcard:hover { transform: translateY(-8px) rotate(-1deg); }
+.fcard:nth-child(even):hover { transform: translateY(-8px) rotate(1deg); }
+.fcard img { width: 76%; margin: 0 auto 14px; height: 150px; object-fit: contain; }
+.fcard h3 { font-size: 24px; margin-bottom: 8px; }
+.fcard p { font-size: 15px; line-height: 1.45; color: var(--ink-muted); }
+.fcard.curious { background: var(--blue-15); }
+.fcard.grumpy  { background: var(--orange-15); }
+.fcard.sad     { background: var(--purple-15); }
+.fcard.silly   { background: var(--yellow-15); }
+.fcard.joy     { background: var(--teal-15); }
+.fcard:nth-child(odd) { margin-top: 22px; }
+@media (max-width: 1000px) { .fgrid { grid-template-columns: repeat(2, 1fr); } .fcard:nth-child(odd) { margin-top: 0; } }
+@media (max-width: 560px) { .fgrid { grid-template-columns: 1fr; } }
+
+/* ---- meet lumi ---- */
+.lumi { background: var(--bg); padding: 90px 0 40px; }
+.lumi-hero { display: grid; grid-template-columns: .9fr 1.1fr; gap: 56px; align-items: center; margin-bottom: 72px; }
+.lumi-scene { position: relative; display: flex; justify-content: center; padding: 30px 0; }
+.lumi-scene .blob {
+  position: absolute; width: 88%; aspect-ratio: 1; border-radius: 42% 58% 55% 45% / 48% 44% 56% 52%;
+  background: var(--bg-warm); top: 50%; left: 50%; transform: translate(-50%,-50%);
+}
+.lumi-scene img { position: relative; width: min(330px, 74%); filter: drop-shadow(0 20px 26px rgba(41,160,215,.16)); }
+.lumi-hero h2 { margin-bottom: 20px; }
+.lumi-hero p { margin-bottom: 16px; }
+.lumi-sub { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 56px; }
+.lcard { border-radius: 24px; padding: 40px 36px; }
+.lcard.screenfree { background: var(--bg-warm); }
+.lcard.parentapp { background: var(--bg-cool); }
+.lcard h3 { margin-bottom: 12px; }
+.lcard p { font-size: 16.5px; }
+.lumi-cta { text-align: center; padding-bottom: 48px; }
+@media (max-width: 900px) { .lumi-hero, .lumi-sub { grid-template-columns: 1fr; } }
+
+/* ---- playos ---- */
+.playos { background: var(--bg-cool); padding: 90px 0 90px; position: relative; overflow: hidden; }
+.playos .wrap { position: relative; }
+.playos h2 { max-width: 18ch; margin-bottom: 18px; }
+.playos .intro { margin-bottom: 54px; }
+.steps { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 44px; }
+.step { background: #fff; border-radius: 24px; padding: 38px 34px; position: relative; }
+.step .dot { width: 46px; height: 46px; border-radius: 14px; margin-bottom: 18px; display: grid; place-items: center; }
+.step .dot svg { width: 24px; height: 24px; }
+.step.ondevice .dot { background: var(--blue-15); }
+.step.guard .dot { background: var(--teal-15); }
+.step h3 { margin-bottom: 10px; }
+.step p { font-size: 16.5px; }
+.playos-cta { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+.quiet { font-size: 15px; color: var(--ink-muted); }
+.quiet a { color: var(--blue); text-decoration: none; font-weight: 600; }
+.playos .sh4 { width: 220px; right: -60px; top: 40px; }
+@media (max-width: 900px) { .steps { grid-template-columns: 1fr; } }
+
+/* ---- compare ---- */
+.compare { background: var(--bg); padding: 90px 0; }
+.compare h2 { margin-bottom: 10px; }
+.compare .intro { margin-bottom: 40px; }
+.tablewrap { overflow-x: auto; border-radius: 20px; }
+table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 640px; font-size: 16px; }
+th, td { padding: 16px 18px; text-align: center; }
+td:first-child, th:first-child { text-align: left; font-weight: 600; color: var(--ink-head); }
+thead th { font-family: var(--display); font-weight: 750; font-size: 18px; color: var(--ink-head); }
+tbody tr:nth-child(odd) td { background: var(--bg-warm); }
+td.lumi-col, th.lumi-col { background: var(--orange) !important; color: #fff !important; font-weight: 700; }
+thead th.lumi-col { border-radius: 16px 16px 0 0; }
+tbody tr:last-child td.lumi-col { border-radius: 0 0 16px 16px; }
+td .no { color: var(--ink-muted); }
+
+/* ---- safety ---- */
+.safety { background: var(--teal); color: #fff; padding: 90px 0; position: relative; overflow: hidden; }
+.safety .wrap { display: grid; grid-template-columns: 1.2fr .8fr; gap: 40px; align-items: center; }
+.safety h2 { color: #fff; max-width: 16ch; margin-bottom: 24px; }
+.safety p { margin-bottom: 14px; font-size: 17.5px; color: rgba(255,255,255,.94); }
+.safety .btn { background: #fff; color: var(--teal); border-color: #fff; margin-top: 16px; }
+.safety .btn:hover { background: var(--bg-warm); }
+.safety-scene { display: flex; justify-content: center; }
+.safety-scene img { width: min(280px, 80%); filter: drop-shadow(0 16px 22px rgba(0,0,0,.18)); }
+@media (max-width: 900px) { .safety .wrap { grid-template-columns: 1fr; } }
+
+/* ---- voices ---- */
+.voices { background: var(--bg-warm); padding: 90px 0; }
+.voices .eyebrow { color: var(--orange-deep); }
+.voices h2 { margin-bottom: 44px; }
+.vgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.vcard {
+  background: #fff; border-radius: 20px; padding: 30px 28px;
+  border: 1.5px dashed var(--line); min-height: 180px;
+  display: flex; flex-direction: column; justify-content: center; gap: 8px;
+}
+.vcard .pending {
+  font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--orange-deep);
+}
+.vcard p { font-size: 15px; color: var(--ink-muted); }
+@media (max-width: 900px) { .vgrid { grid-template-columns: 1fr; } }
+
+/* ---- journal ---- */
+.journal { background: var(--bg); padding: 90px 0; }
+.journal .eyebrow { color: var(--purple); }
+.journal h2 { margin-bottom: 8px; }
+.journal .intro { margin-bottom: 44px; }
+.jgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 40px; }
+.jcard { border-radius: 24px; overflow: hidden; background: var(--bg-warm); text-decoration: none; display: block; transition: transform .3s var(--ease-bounce); }
+.jcard:hover { transform: translateY(-6px); }
+.jcard .jart { height: 220px; display: flex; align-items: flex-end; justify-content: center; overflow: hidden; }
+.jcard:first-child .jart { background: linear-gradient(160deg, var(--blue-15), var(--teal-15)); }
+.jcard:last-child .jart { background: linear-gradient(160deg, var(--yellow-15), var(--orange-15)); }
+.jcard .jart img { height: 190px; width: auto; transform: translateY(12px); }
+.jcard .jbody { padding: 26px 28px 30px; }
+.jcard h3 { font-size: 26px; margin-bottom: 8px; }
+.jcard p { font-size: 16px; color: var(--ink-muted); }
+.journal .more { text-align: center; }
+@media (max-width: 800px) { .jgrid { grid-template-columns: 1fr; } }
+
+/* ---- footer ---- */
+.foot-cta { background: var(--orange); color: #fff; padding: 96px 0 80px; text-align: center; position: relative; overflow: hidden; }
+.foot-cta h2 { color: #fff; max-width: 18ch; margin: 0 auto 18px; }
+.foot-cta p { margin: 0 auto 30px; color: rgba(255,255,255,.95); max-width: 52ch; }
+.foot-cta .btn { background: #fff; color: var(--orange-deep); border-color: #fff; font-size: 18px; padding: 19px 36px; }
+.foot-cta .btn:hover { background: var(--bg-warm); }
+.foot-cta img.peek { position: absolute; bottom: -8px; right: 6%; height: 190px; opacity: .96; }
+@media (max-width: 900px) { .foot-cta img.peek { display: none; } }
+footer { background: #2A1608; color: rgba(255,255,255,.85); padding: 44px 0 36px; font-size: 15px; }
+footer .cols { display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; align-items: center; }
+footer .brand { font-family: var(--display); font-weight: 800; font-size: 24px; color: #fff; }
+footer nav2, footer .links { display: flex; gap: 20px; flex-wrap: wrap; }
+footer a { color: rgba(255,255,255,.85); text-decoration: none; }
+footer a:hover { color: #fff; }
+footer .fine { margin-top: 26px; padding-top: 22px; border-top: 1px solid rgba(255,255,255,.14); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; color: rgba(255,255,255,.6); }
+footer .fine a { color: rgba(255,255,255,.75); }
+
+/* ---- motion ---- */
+.reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s var(--ease-out), transform .7s var(--ease-out); }
+.reveal.in { opacity: 1; transform: none; }
+@keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+.floaty { animation: floaty 5.5s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .floaty { animation: none; }
+  html { scroll-behavior: auto; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="logo" href="#"><img src="assets/logo-wordmark-original.png" alt="Kheelona"></a>
+    <ul>
+      <li><a href="#lumi">Lumi</a></li>
+      <li><a href="#playos">How it works</a></li>
+      <li><a href="#safety">Safety</a></li>
+      <li><a href="#journal">Stories</a></li>
+      <li><a href="#">Team</a></li>
+    </ul>
+    <a class="btn" href="#reserve">Join the pre-order list</a>
+  </div>
+</nav>
+
+<!-- S02 HERO -->
+<header class="hero">
+  <img class="shape sh1 floaty" src="assets/flower-5--yellow.svg" alt="">
+  <img class="shape sh2" src="assets/flower-3--blue.svg" alt="">
+  <img class="shape sh3" src="assets/flower-13--teal.svg" alt="">
+  <div class="wrap">
+    <div class="hero-copy reveal">
+      <span class="agebadge">For ages 3 to 6</span>
+      <h1>The smartest way to grow your child's brain is to understand their heart.</h1>
+      <p class="lead">Lumi is a screen-free AI robot toy that listens first, then talks back. Really talks. In the years a brain grows fastest. The more Lumi understands how your child feels, the more they learn.</p>
+      <p class="lang">In all 10 languages you speak at home.</p>
+      <a class="btn" href="#reserve">Reserve Lumi at ₹4,999</a>
+      <p class="pricenote">₹9,999 after launch. No payment now. We hold the price, you hold your place.</p>
+    </div>
+    <div class="hero-scene">
+      <div class="sun"></div>
+      <img class="mascot floaty" src="assets/mascot-hero-wink.png" alt="The Kheelona mascot, a friendly fox with round blue glasses, winking and giving a thumbs up">
+    </div>
+  </div>
+</header>
+<svg class="curve" viewBox="0 0 1440 70" preserveAspectRatio="none" aria-hidden="true"><path d="M0,70 C360,0 1080,0 1440,70 L1440,70 L0,70 Z"/></svg>
+
+<!-- S03 WHY WE EXIST -->
+<section class="why">
+  <div class="wrap reveal">
+    <span class="eyebrow">Why we exist</span>
+    <h2>Your child's best years deserve more than a screen.</h2>
+    <p class="lead">Between the ages of 3 and 6, a child's brain builds faster than it ever will again. What they hear, what they feel, and who they talk to shape everything that follows.</p>
+    <p class="lead">Most toys do one thing. Screens do too much. Lumi does the one thing that matters: it listens to your child, understands how they feel, and talks back in a way that helps them grow.</p>
+  </div>
+</section>
+<div style="background: var(--bg-cool)"><svg class="curve" viewBox="0 0 1440 70" preserveAspectRatio="none" aria-hidden="true"><path d="M0,0 C480,70 960,70 1440,0 L1440,0 L0,0 Z"/></svg></div>
+
+<!-- S04 MEET THE FEELINGS -->
+<section class="feelings">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="eyebrow">Meet the feelings</span>
+      <h2>Learning starts with feeling understood.</h2>
+      <p class="intro lead">Lumi knows five feelings. They are the engine behind everything your child learns.</p>
+    </div>
+    <div class="fgrid">
+      <div class="fcard curious reveal">
+        <img src="assets/mascot-curious.png" alt="The mascot sitting with wide, curious eyes">
+        <h3>Curious</h3>
+        <p>Asks why. Chases ideas. Wants to know what is around the corner.</p>
+      </div>
+      <div class="fcard grumpy reveal">
+        <img src="assets/mascot-grumpy.png" alt="The mascot frowning with hands on hips">
+        <h3>Grumpy</h3>
+        <p>Has opinions. Not always wrong. Needs to be heard, not hushed.</p>
+      </div>
+      <div class="fcard sad reveal">
+        <img src="assets/mascot-sad.png" alt="The mascot holding its cheeks through a hard moment">
+        <h3>Sad</h3>
+        <p>Sits with you. Does not rush past. Makes space for the hard moments.</p>
+      </div>
+      <div class="fcard silly reveal">
+        <img src="assets/mascot-silly.png" alt="The mascot laughing with its head thrown back">
+        <h3>Silly</h3>
+        <p>Cannot sit still. Turns everything into a game. Laughter is learning too.</p>
+      </div>
+      <div class="fcard joy reveal">
+        <img src="assets/mascot-joy.png" alt="The mascot dancing with one arm in the air">
+        <h3>Joy</h3>
+        <p>Lights up. Celebrates. Reminds your child that they are wonderful.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<div style="background: var(--bg-cool)"><svg class="curve" viewBox="0 0 1440 70" preserveAspectRatio="none" aria-hidden="true"><path d="M0,70 C360,0 1080,0 1440,70 L1440,70 L0,70 Z"/></svg></div>
+
+<!-- S05 MEET LUMI -->
+<section class="lumi" id="lumi">
+  <div class="wrap">
+    <div class="lumi-hero">
+      <div class="lumi-scene reveal">
+        <div class="blob"></div>
+        <img class="floaty" src="assets/lumi-blue.png" alt="Lumi, a soft blue talking toy with a striped party hat">
+      </div>
+      <div class="reveal">
+        <h2>Meet Lumi. The friend who listens first.</h2>
+        <p class="lead">Lumi is a smart toy for children aged 3 to 6. It is not a tablet. It is not a speaker. It is a talking toy that holds a real conversation with your child.</p>
+        <p class="lead">Say the wake word, and Lumi is ready. It asks questions. It remembers what your child said yesterday. It grows with them across the ages of 3 to 6.</p>
+      </div>
+    </div>
+    <div class="lumi-sub">
+      <div class="lcard screenfree reveal">
+        <h3>Screen-free. A real conversation.</h3>
+        <p>No display. No video. Nothing to stare at. Just a voice that talks back. Made to be kept, not outgrown. Lumi adapts to where your child is, not just how old they are.</p>
+      </div>
+      <div class="lcard parentapp reveal">
+        <h3>You see everything.</h3>
+        <p>The parent app gives you a window into every conversation. A daily summary, the full conversation log, and complete control over topics, time, and languages.</p>
+      </div>
+    </div>
+    <div class="lumi-cta reveal">
+      <a class="btn" href="#reserve">Reserve Lumi at ₹4,999</a>
+    </div>
+  </div>
+</section>
+<div style="background: var(--bg)"><svg class="curve to-cool flip" viewBox="0 0 1440 70" preserveAspectRatio="none" aria-hidden="true"><path d="M0,70 C480,0 960,0 1440,70 L1440,70 L0,70 Z"/></svg></div>
+
+<!-- S06 PLAYOS -->
+<section class="playos" id="playos">
+  <img class="shape sh4" src="assets/polygon--blue.svg" alt="">
+  <div class="wrap">
+    <div class="reveal">
+      <h2>The technology behind the talking.</h2>
+      <p class="intro lead">Lumi runs on PlayOS, Kheelona's own voice engine built from the ground up for children aged 3 to 6. One platform. One set of safety rules. Every product in the family runs on the same soul.</p>
+    </div>
+    <div class="steps">
+      <div class="step ondevice reveal">
+        <div class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="#29A0D7" stroke-width="2" stroke-linecap="round"><rect x="5" y="3" width="14" height="18" rx="3"/><circle cx="12" cy="17" r="1.4" fill="#29A0D7" stroke="none"/></svg></div>
+        <h3>Think about the device first.</h3>
+        <p>When your child speaks, PlayOS processes the conversation on the device before anything goes anywhere. It reads the feeling behind the words, not just the words. Low latency. No long waits. No sending everything to a distant server.</p>
+      </div>
+      <div class="step guard reveal">
+        <div class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="#1ABC9C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
+        <h3>Every response is the right response.</h3>
+        <p>Before Lumi speaks, every response passes through an age-graded safety layer. On-device and cloud filters work together. No open internet. No random content. No surprises. PlayOS is what makes Lumi a cognitive development toy, not just a toy that plays sounds.</p>
+      </div>
+    </div>
+    <div class="playos-cta reveal">
+      <a class="btn" href="#reserve">Join the pre-order list</a>
+      <span class="quiet">Building on PlayOS? See <a href="https://kheelona.ai">kheelona.ai</a></span>
+    </div>
+  </div>
+</section>
+<div style="background: var(--bg-cool)"><svg class="curve" viewBox="0 0 1440 70" preserveAspectRatio="none" aria-hidden="true"><path d="M0,70 C360,0 1080,0 1440,70 L1440,70 L0,70 Z"/></svg></div>
+
+<!-- S07 COMPARE -->
+<section class="compare">
+  <div class="wrap reveal">
+    <h2>How Lumi compares.</h2>
+    <p class="intro lead">A simple, honest look at what is out there.</p>
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr><th></th><th class="lumi-col">Lumi</th><th>Smart toys</th><th>Phone / TV</th><th>Static toys</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Screen-free</td><td class="lumi-col">Yes</td><td>Varies</td><td class="no">No</td><td>Yes</td></tr>
+          <tr><td>Holds a conversation</td><td class="lumi-col">Yes</td><td>Limited</td><td class="no">No</td><td class="no">No</td></tr>
+          <tr><td>Speaks your language</td><td class="lumi-col">Yes (10)</td><td>Rarely</td><td>Varies</td><td class="no">No</td></tr>
+          <tr><td>No open internet</td><td class="lumi-col">Yes</td><td>Rarely</td><td class="no">No</td><td>Yes</td></tr>
+          <tr><td>The parent sees everything</td><td class="lumi-col">Yes</td><td>Partial</td><td>Partial</td><td class="no">No</td></tr>
+          <tr><td>Made for ages 3 to 6</td><td class="lumi-col">Yes</td><td>Varies</td><td class="no">No</td><td>Varies</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- S08 SAFETY STRIP -->
+<section class="safety" id="safety">
+  <div class="wrap">
+    <div class="reveal">
+      <h2>Safe in their hands. Careful with their words.</h2>
+      <p>Lumi listens only when your child says the wake word. The microphone is off the rest of the time.</p>
+      <p>Every conversation passes a safety check before Lumi speaks. You can read and delete any conversation with one tap.</p>
+      <p>Your child's voice data is never sold.</p>
+      <a class="btn" href="#">Read how we built safety in</a>
+    </div>
+    <div class="safety-scene reveal">
+      <img src="assets/mascot-bliss.png" alt="The mascot standing calm and content, eyes closed">
+    </div>
+  </div>
+</section>
+
+<!-- S09 PARENT VOICES (PENDING) -->
+<section class="voices">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="eyebrow">What parents are saying</span>
+      <h2>Families who have met Lumi.</h2>
+    </div>
+    <div class="vgrid">
+      <div class="vcard reveal"><span class="pending">Testimonial pending</span><p>Real quote, parent name, child age, and city. Founder to provide, with consent.</p></div>
+      <div class="vcard reveal"><span class="pending">Testimonial pending</span><p>Real quote, parent name, child age, and city. Founder to provide, with consent.</p></div>
+      <div class="vcard reveal"><span class="pending">Testimonial pending</span><p>Real quote, parent name, child age, and city. Founder to provide, with consent.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- S10 FROM THE JOURNAL -->
+<section class="journal" id="journal">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="eyebrow">From the journal</span>
+      <h2>Raising curious kids.</h2>
+      <p class="intro lead">Ideas and honest reads for parents who want more than a screen.</p>
+    </div>
+    <div class="jgrid">
+      <a class="jcard reveal" href="#">
+        <div class="jart"><img src="assets/mascot-curious.png" alt=""></div>
+        <div class="jbody">
+          <h3>Why three to six are the years that matter most</h3>
+          <p>A short, warm read on the window when a child's brain grows fastest.</p>
+        </div>
+      </a>
+      <a class="jcard reveal" href="#">
+        <div class="jart"><img src="assets/mascot-silly.png" alt=""></div>
+        <div class="jbody">
+          <h3>Screen-free does not mean silent</h3>
+          <p>What a rich, language-filled childhood actually looks like.</p>
+        </div>
+      </a>
+    </div>
+    <div class="more reveal"><a class="btn ghost" href="#">See all stories</a></div>
+  </div>
+</section>
+
+<!-- S11 FOOTER CTA -->
+<section class="foot-cta" id="reserve">
+  <img class="peek" src="assets/mascot-joy.png" alt="">
+  <div class="wrap reveal">
+    <h2>Reserve Lumi before the price goes up.</h2>
+    <p>₹4,999 launch price. ₹9,999 after launch. No payment now. We hold the price, you hold your place.</p>
+    <a class="btn" href="#">Join the pre-order list</a>
+  </div>
+</section>
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <span class="brand">kheelona</span>
+      <div class="links">
+        <a href="#lumi">Lumi</a><a href="#playos">How it works</a><a href="#safety">Safety</a><a href="#journal">Stories</a><a href="#">Team</a><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Setup</a>
+      </div>
+    </div>
+    <div class="fine">
+      <span>For partners and investors: <a href="https://kheelona.ai">kheelona.ai</a></span>
+      <span>Contact: email pending (founder to confirm)</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal, gated by reduced motion
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduce && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  } else {
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
+  }
+</script>
+</body>
+</html>

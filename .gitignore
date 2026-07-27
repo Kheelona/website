@@ -1,45 +1,35 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# Secrets: never commit
+.env
+.env.*
+!.env.example
 
-# dependencies
-/node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
+# Dependencies / builds
+node_modules/
+.next/
+out/
+launch-video/out/
 
-# testing
-/coverage
-/test-results
-/playwright-report
-/blob-report
-/playwright/.cache
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
+# OS noise
 .DS_Store
-*.pem
 
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
+# Compiled tool binaries
+tools/cutout/cutout
 
-# env files (can opt-in for committing if needed)
-.env*
+# Raw photoshoot originals: stay on disk, never in git (620MB)
+Design/product-images/Kheelona photoshoot 2025/
 
-# vercel
-.vercel
+# QA screenshots and process artifacts
+docs/snapshots/
+3d-handoff/exports/
+design-concepts/round-2-immersive/previews/
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+# Agent skill packages (2026-07-28 cleanup). These are tooling, not the website,
+# and every one is reinstallable from skills-lock.json (which IS tracked, with a
+# source and hash per skill). Keeping ~3MB of vendored markdown out of the repo.
+.agents/skills/
+.claude/skills/
+.codex/skills/
+
+# The founder brief exists here as a PDF (tracked, because docs reference it by
+# name). The .docx is the same content in editable form — no need for both.
+*.docx

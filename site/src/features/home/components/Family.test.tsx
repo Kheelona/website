@@ -1,0 +1,29 @@
+import { render, screen } from "@testing-library/react";
+import { Family } from "./Family";
+
+describe("Family (Home pipeline room)", () => {
+  it("leads with the one-friend-many-bodies story", () => {
+    render(<Family />);
+    expect(
+      screen.getByRole("heading", { name: "One friend inside. More bodies on the way." }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Starts talking at 2. Still teaching at 14."),
+    ).toBeInTheDocument();
+  });
+
+  it("shows the three pipeline bodies with Lumi as the only link", () => {
+    render(<Family />);
+    for (const name of ["Lumi", "Kheelu Speaker", "AI books"]) {
+      expect(screen.getByRole("heading", { name })).toBeInTheDocument();
+    }
+    const links = screen.getAllByRole("link");
+    expect(links.length).toBe(1);
+    expect(links[0]).toHaveAttribute("href", "/products/lumi");
+  });
+
+  it("marks the two unbuilt bodies as coming soon", () => {
+    render(<Family />);
+    expect(screen.getAllByText("Coming soon").length).toBe(2);
+  });
+});

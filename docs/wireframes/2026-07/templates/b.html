@@ -1,0 +1,740 @@
+<title>Kheelona - Kheelu's Tour (Direction B)</title>
+<style>
+{{KIT_CSS}}
+
+/* ================= Direction B - "Kheelu's Tour" ================= */
+/* Kheelu is a PERSISTENT on-screen guide, bottom-left. His pose and speech
+   bubble update per section via IntersectionObserver, so the page reads like a
+   guided walk. Content sits in contained "room" panels linked by a dotted trail
+   with numbered stop nodes. Sections slide in from alternating sides, like
+   turning a corner. Distinct from A: A had no guide and full-bleed wash bands. */
+
+/* fixed warm backdrop: static top glow + one slow-drifting soft shape */
+.backdrop{position:fixed; inset:0; z-index:-2; pointer-events:none;
+  background:radial-gradient(130% 100% at 50% -18%, #FFFDF9, var(--cream) 52%, #FCEEDA 100%)}
+.backdrop::after{content:""; position:absolute; inset:0; opacity:.55;
+  background:
+    radial-gradient(42vw 42vw at 10% 18%, rgba(241,162,59,.10), transparent 70%),
+    radial-gradient(44vw 44vw at 90% 74%, rgba(41,160,215,.10), transparent 70%)}
+.backdrop b{position:absolute; width:52vw; height:52vw; right:-12vw; top:6vh;
+  border-radius:50%; filter:blur(46px);
+  background:radial-gradient(circle, rgba(26,188,156,.09), transparent 70%);
+  animation:floatBg 32s var(--ease) infinite alternate}
+@keyframes floatBg{to{transform:translate(-6vw,7vh)}}
+
+/* nav - one line, <=72px */
+.nav{position:fixed; top:0; left:0; right:0; height:64px; z-index:60;
+  display:flex; align-items:center; gap:1.1rem; padding-inline:clamp(16px,4vw,40px);
+  background:rgba(255,247,238,.78); backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(74,40,12,.07)}
+.brand{font-family:var(--font-display); font-weight:800; font-size:1.35rem; color:var(--heading); letter-spacing:-.02em; cursor:pointer}
+.brand span{color:var(--orange)}
+.nav .links{display:flex; gap:.25rem; margin-left:auto}
+.nav .links a{padding:.5rem .8rem; border-radius:var(--r-pill); font-weight:600; font-size:.95rem; color:var(--ink); cursor:pointer; transition:background .2s,color .2s}
+.nav .links a:hover{background:rgba(255,255,255,.85)}
+.nav .links a.on{color:var(--orange-ink)}
+.nav .cta{margin-left:.35rem}
+@media(max-width:820px){ .nav .links a.hide-sm{display:none} }
+
+/* view switching */
+.view{display:block}
+.view[hidden]{display:none}
+
+/* ---------- entrance hero (Kheelu leads via the corner guide; no product) ---------- */
+.hero{padding-top:clamp(88px,11vw,120px); padding-bottom:clamp(24px,4vw,48px)}
+.hero-grid{display:grid; grid-template-columns:1.05fr .95fr; gap:clamp(24px,4vw,56px);
+  align-items:center; min-height:min(80vh,700px)}
+.hero h1{margin-bottom:1.1rem}
+.hero h1 .l2{color:var(--orange-ink)}
+.hero-sub{max-width:34ch; margin-bottom:1.6rem; font-size:clamp(1.05rem,1.5vw,1.22rem); color:var(--muted)}
+.hero-cta{display:flex; gap:.8rem; flex-wrap:wrap; align-items:center}
+.hero-hint{margin-top:1.5rem; font-size:.92rem; color:var(--muted-soft); font-weight:600;
+  display:inline-flex; align-items:center; gap:.5rem}
+.hero-hint::before{content:""; width:26px; height:26px; border-radius:50%; flex:none;
+  background:radial-gradient(circle at 40% 35%,var(--orange),var(--orange-deep));
+  box-shadow:inset 0 -3px 6px rgba(0,0,0,.14)}
+.hero-stage{position:relative; height:clamp(300px,42vw,520px)}
+.hero-stage .orb{position:absolute; inset:9% 11%; border-radius:50%;
+  background:radial-gradient(circle at 38% 34%, #FFEFD4, #F7C88C 52%, #EFA05A 100%);
+  box-shadow:0 44px 96px rgba(239,118,47,.26), inset 0 -22px 52px rgba(216,95,27,.16)}
+.hero-stage .ring{position:absolute; inset:0; border-radius:50%;
+  border:2px dashed rgba(41,160,215,.32); animation:spin 44s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hero-stage .hs{position:absolute; border-radius:46% 54% 52% 48%/54% 46% 54% 46%; box-shadow:var(--sh-sm)}
+.hero-stage .s1{width:56px; height:56px; background:var(--teal); left:1%; top:16%; animation:bobA 6s var(--ease) infinite alternate}
+.hero-stage .s2{width:40px; height:40px; background:var(--orange); right:6%; top:8%; animation:bobB 7.5s var(--ease) infinite alternate}
+.hero-stage .s3{width:48px; height:48px; background:var(--blue-soft); right:15%; bottom:9%; animation:bobA 8s var(--ease) infinite alternate}
+@keyframes bobA{to{transform:translateY(-16px)}}
+@keyframes bobB{to{transform:translateY(14px)}}
+
+/* ---------- the tour: contained "room" panels linked by a dotted trail ---------- */
+.rooms{position:relative; counter-reset:stop; margin-top:clamp(20px,3vw,40px);
+  padding-bottom:clamp(20px,4vw,48px); display:flex; flex-direction:column; gap:34px}
+.room{position:relative; counter-increment:stop; border-radius:26px;
+  padding:clamp(30px,4.6vw,60px); box-shadow:var(--sh); background:var(--white)}
+.room.r-cream{background:var(--cream)}
+.room.r-cool{background:var(--cool)}
+.room.r-sun{background:var(--sun)}
+.room.r-teal{background:var(--teal-light)}
+.room.r-white{background:var(--white)}
+.room.r-orange{background:var(--orange-cta)}
+/* dotted connector rising from the previous room */
+.room::before{content:""; position:absolute; left:45px; top:-34px; height:34px;
+  border-left:2px dotted rgba(74,40,12,.24)}
+.room:first-child::before{display:none}
+/* numbered stop node sitting on the top-left rim */
+.node{position:absolute; left:30px; top:-16px; width:32px; height:32px; border-radius:50%;
+  display:grid; place-items:center; font-family:var(--font-display); font-weight:800;
+  font-size:.92rem; color:#fff; box-shadow:var(--sh-sm); z-index:2}
+.node::after{content:counter(stop)}
+.room:nth-child(6n+1) .node{background:var(--blue)}
+.room:nth-child(6n+2) .node{background:var(--orange)}
+.room:nth-child(6n+3) .node{background:var(--teal-deep)}
+.room:nth-child(6n+4) .node{background:var(--purple)}
+.room:nth-child(6n+5) .node{background:var(--yellow)}
+.room:nth-child(6n) .node{background:var(--orange-deep)}
+.room.finale .node{background:#fff; color:var(--orange-cta)}
+
+/* directional slide-in entrances (kit .rev drives opacity + .in toggle) */
+.rev.from-l:not(.in){transform:translate3d(-46px,10px,0)}
+.rev.from-r:not(.in){transform:translate3d(46px,10px,0)}
+.rev.pop:not(.in){transform:scale(.94)}
+
+/* recognition strip (logos only, single group label) */
+.recog{padding-block:clamp(22px,3vw,32px)}
+.recog .inner{display:flex; align-items:center; gap:clamp(18px,4vw,52px); flex-wrap:wrap; justify-content:center}
+.recog .lbl{font-size:.85rem; letter-spacing:.05em; color:var(--muted-soft); font-weight:700}
+.recog img{height:34px; width:auto; opacity:.82; filter:grayscale(.2)}
+
+/* editorial statement */
+.statement h2{font-size:clamp(2.1rem,4.8vw,3.5rem); max-width:16ch}
+.statement .body{font-size:clamp(1.14rem,2vw,1.5rem); color:var(--ink); max-width:40ch; margin-top:1.3rem; line-height:1.42}
+.statement .support{margin-top:1.3rem; color:var(--muted); max-width:44ch}
+
+/* trust cells - white cards with a left accent bar */
+.tgrid{display:grid; grid-template-columns:repeat(2,1fr); gap:clamp(14px,1.8vw,20px); margin-top:2.2rem}
+.tcell{position:relative; background:#fff; border-radius:var(--r); padding:clamp(20px,2.4vw,30px) clamp(20px,2.4vw,30px) clamp(20px,2.4vw,30px) clamp(24px,2.8vw,34px);
+  box-shadow:var(--sh-sm); overflow:hidden; transition:transform .3s var(--ease), box-shadow .3s var(--ease)}
+.tcell::before{content:""; position:absolute; left:0; top:0; bottom:0; width:6px; border-radius:6px 0 0 6px}
+.tcell:nth-child(1)::before{background:var(--blue)}
+.tcell:nth-child(2)::before{background:var(--orange)}
+.tcell:nth-child(3)::before{background:var(--teal-deep)}
+.tcell:nth-child(4)::before{background:var(--purple)}
+.tcell:hover{transform:translateY(-4px); box-shadow:var(--sh)}
+.tcell .ic{width:34px; height:34px; border-radius:10px; margin-bottom:.9rem; display:grid; place-items:center; background:rgba(74,40,12,.05)}
+.tcell .ic b{width:14px; height:14px; border-radius:4px; display:block}
+.tcell:nth-child(1) .ic b{background:var(--blue)} .tcell:nth-child(2) .ic b{background:var(--orange)}
+.tcell:nth-child(3) .ic b{background:var(--teal-deep)} .tcell:nth-child(4) .ic b{background:var(--purple)}
+.tcell h3{margin-bottom:.5rem}
+.tcell p{color:var(--muted); font-size:1rem}
+
+/* companions row */
+.fam .row{display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:16px; margin-top:2.1rem; align-items:end}
+.comp{border-radius:var(--r); background:#fff; box-shadow:var(--sh-sm); padding:20px; text-align:center; position:relative; transition:transform .3s var(--ease)}
+.comp:hover{transform:translateY(-5px)}
+.comp.lead{background:linear-gradient(170deg,#fff,#EAF6FC); box-shadow:var(--sh)}
+.comp img{margin:0 auto; height:clamp(118px,15vw,196px); width:auto}
+.comp .nm{font-family:var(--font-display); font-weight:700; margin-top:.6rem; color:var(--heading)}
+.comp .tag{font-size:.82rem; color:var(--muted-soft); margin-top:.2rem}
+.comp.soon img{opacity:.42; filter:grayscale(.5)}
+.comp.soon .pill{position:absolute; top:12px; right:12px; font-size:.7rem; font-weight:700; color:var(--muted); background:rgba(255,255,255,.92); padding:.25rem .5rem; border-radius:var(--r-pill)}
+.fam .range{margin-top:1.3rem; color:var(--muted)}
+
+/* warm transition room - a celebratory turn in the walk */
+.warm{text-align:left}
+.warm h2{max-width:18ch; font-size:clamp(2.1rem,4.6vw,3.4rem)}
+.warm .glow{position:absolute; right:-4%; top:-30%; width:44%; height:160%; border-radius:50%;
+  background:radial-gradient(circle, rgba(241,162,59,.30), transparent 66%); filter:blur(24px); pointer-events:none}
+
+/* feelings cards + conversation + languages */
+.feel .head{max-width:44ch}
+.fcards{display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-top:2rem}
+.fcard{background:#fff; border-radius:var(--r); padding:18px 14px; text-align:center; box-shadow:var(--sh-sm);
+  transition:transform .3s var(--ease), box-shadow .3s var(--ease)}
+.fcard:hover{transform:translateY(-6px) rotate(-1.5deg); box-shadow:var(--sh)}
+.fcard img{height:84px; width:auto; margin:0 auto .5rem; padding:6px; border-radius:50%;
+  background:radial-gradient(circle at 50% 40%, rgba(241,162,59,.16), transparent 70%)}
+.fcard .nm{font-family:var(--font-display); font-weight:700; color:var(--heading)}
+.fcard p{font-size:.82rem; color:var(--muted); margin-top:.3rem; line-height:1.35}
+.convo{margin-top:2.2rem; display:grid; grid-template-columns:1fr 1.1fr; gap:clamp(20px,3vw,44px); align-items:center}
+.chat{background:#fff; border-radius:var(--r-lg); padding:22px; box-shadow:var(--sh)}
+.bubble{max-width:82%; padding:.7rem 1rem; border-radius:18px; margin-bottom:.7rem; line-height:1.4;
+  opacity:0; transform:translateY(8px); transition:opacity .4s var(--ease), transform .4s var(--ease)}
+.bubble.show{opacity:1; transform:none}
+.bubble.child{background:var(--cool); color:var(--heading); border-bottom-left-radius:6px}
+.bubble.lumi{background:var(--orange-cta); color:#fff; margin-left:auto; border-bottom-right-radius:6px}
+.lang{margin-top:1.1rem; color:var(--muted)}
+
+/* upclose: chips + modes + safety link */
+.uc .top{display:grid; grid-template-columns:1.1fr .9fr; gap:clamp(20px,3vw,48px); align-items:center}
+.uc .lumi-shot{height:clamp(230px,30vw,370px); margin-left:auto; filter:drop-shadow(0 24px 36px rgba(41,160,215,.25))}
+.chips{display:flex; flex-wrap:wrap; gap:.6rem; margin-top:1.4rem}
+.tags{display:flex; flex-wrap:wrap; gap:.55rem; margin-top:1.3rem}
+.chip{background:#fff; border:1px solid rgba(74,40,12,.1); border-radius:var(--r-pill); padding:.55rem 1rem;
+  font-weight:600; font-size:.95rem; color:var(--heading); transition:transform .2s var(--ease), box-shadow .2s var(--ease)}
+.chip:hover{transform:translateY(-2px); box-shadow:var(--sh-sm)}
+.modes{margin-top:2rem; display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
+.mode{border-radius:var(--r); padding:18px 20px; background:#fff; box-shadow:var(--sh-sm);
+  border-top:4px solid var(--orange); transition:transform .3s var(--ease)}
+.mode:nth-child(2){border-top-color:var(--teal-deep)}
+.mode:nth-child(3){border-top-color:var(--blue)}
+.mode:hover{transform:translateY(-4px)}
+.mode .n{font-family:var(--font-display); font-weight:700; color:var(--orange-ink); font-size:1.2rem}
+.uc .modes-lede{margin-top:1.2rem; color:var(--muted); max-width:52ch}
+.linkline{margin-top:1.4rem}
+.linkline a{color:var(--orange-ink); font-weight:700; border-bottom:2px solid rgba(181,74,13,.28); padding-bottom:1px}
+
+/* parents split */
+.par .split{display:grid; grid-template-columns:1fr 1fr; gap:clamp(24px,4vw,56px); align-items:center}
+.par .shot{border-radius:var(--r-lg); overflow:hidden; box-shadow:var(--sh-lg); background:#fff}
+.par .shot img{width:100%}
+
+/* pilot quotes - serif, offset middle card */
+.qgrid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-top:2rem}
+.qcard{background:#fff; border-radius:var(--r-lg); padding:26px; box-shadow:var(--sh-sm); transition:transform .3s var(--ease)}
+.qcard:nth-child(2){transform:translateY(20px)}
+.qcard:nth-child(2):hover{transform:translateY(14px)}
+.qcard:hover{transform:translateY(-6px)}
+.qcard .mark{font-family:var(--font-quote); font-size:2.4rem; color:var(--yellow); line-height:.6}
+
+/* finale room - orange, white text, white-fill CTA */
+.finale{color:#fff; text-align:center}
+.finale .node{}
+.finale h2{color:#fff; max-width:16ch; margin-inline:auto}
+.finale .price{margin-top:1rem; font-size:1.2rem; opacity:.96}
+.finale .cap{margin-top:.4rem; opacity:.84}
+.finale .btn-primary{background:#fff; color:var(--orange-cta); margin-top:1.8rem; box-shadow:0 16px 40px rgba(0,0,0,.2)}
+.finale .btn-primary:hover{background:#fff}
+.finale .reassure{margin-top:1.4rem; font-family:var(--font-quote); font-style:italic; opacity:.94}
+.tally{max-width:440px; margin:1.6rem auto 0; background:rgba(255,255,255,.14); border:1px dashed rgba(255,255,255,.45); border-radius:var(--r); padding:20px; font-size:.9rem}
+
+/* ---------- lumi page ---------- */
+.lhero .lgrid{display:grid; grid-template-columns:.95fr 1.05fr; gap:clamp(24px,4vw,56px);
+  align-items:center; min-height:min(78vh,680px)}
+.lstage{position:relative; text-align:center}
+.lstage .halo{position:absolute; inset:4% 8%; border-radius:50%; background:radial-gradient(circle,var(--blue-soft),transparent 66%); opacity:.4; filter:blur(20px)}
+.lstage img.plush{position:relative; height:clamp(320px,44vw,560px); width:auto; margin:0 auto; filter:drop-shadow(0 30px 46px rgba(41,160,215,.28))}
+.lstage img.plush{display:none} .lstage img.plush.on{display:inline-block}
+.picker{display:inline-flex; gap:.5rem; margin-top:1.2rem; background:#fff; padding:.4rem; border-radius:var(--r-pill); box-shadow:var(--sh-sm)}
+.sw{width:30px; height:30px; border-radius:50%; border:2px solid transparent; cursor:pointer}
+.sw.on{border-color:var(--heading)}
+.sw.blue{background:#8fd0ef} .sw.green{background:#bfe6c2} .sw.pink{background:#f4c7d8}
+.lhero .lsub{max-width:36ch; color:var(--muted); margin:1rem 0 1.4rem}
+
+/* lumi generic layouts */
+.doer{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:2rem}
+.doer .d{background:#fff; border-radius:var(--r); padding:20px; box-shadow:var(--sh-sm); transition:transform .3s var(--ease)}
+.doer .d:hover{transform:translateY(-4px)}
+.doer .d h3{font-size:1.15rem; margin-bottom:.35rem}
+.doer .d p{color:var(--muted); font-size:.95rem}
+.libr{display:grid; grid-template-columns:1fr 1fr; gap:clamp(24px,4vw,56px); align-items:center}
+.libr img{height:clamp(200px,26vw,320px); width:auto; margin:0 auto; filter:drop-shadow(0 24px 36px rgba(41,160,215,.22))}
+.checks{margin-top:1.6rem; display:grid; grid-template-columns:1fr 1fr; gap:.8rem 1.6rem}
+.checks div{display:flex; gap:.6rem; align-items:flex-start; color:var(--heading); font-weight:600}
+.checks .tick{width:20px; height:20px; border-radius:50%; background:var(--teal-deep); flex:none; margin-top:2px; position:relative}
+.checks .tick::after{content:""; position:absolute; left:6px; top:3px; width:5px; height:9px; border:2px solid #fff; border-top:0; border-left:0; transform:rotate(45deg)}
+.box .list{margin-top:1.4rem; display:grid; gap:.7rem; max-width:520px}
+.box .list div{background:#fff; border-radius:var(--r); padding:.9rem 1.2rem; box-shadow:var(--sh-sm); font-weight:600; color:var(--heading)}
+.pricebox{text-align:center}
+.pricebox .lede{margin:1rem auto 1.6rem}
+.faq{margin-top:2rem; max-width:820px}
+.faq details{background:#fff; border-radius:var(--r); padding:.2rem 1.2rem; margin-bottom:.7rem; box-shadow:var(--sh-sm)}
+.faq summary{cursor:pointer; font-weight:700; color:var(--heading); padding:1rem 0; list-style:none; display:flex; justify-content:space-between; align-items:center; gap:1rem}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+"; color:var(--orange); font-size:1.4rem; font-weight:400; line-height:1}
+.faq details[open] summary::after{content:"-"}
+.faq p{color:var(--muted); padding:0 0 1rem}
+
+/* footer */
+footer{background:var(--cocoa); color:#f4e6d6; padding-block:44px}
+footer .fwrap{max-width:var(--maxw); margin-inline:auto; padding-inline:var(--gut);
+  display:flex; justify-content:space-between; gap:24px; flex-wrap:wrap; align-items:center}
+footer .brand{color:#fff}
+footer .brand span{color:var(--yellow)}
+footer .ai{font-size:.9rem; opacity:.82}
+footer .ai a{color:var(--yellow)}
+footer small{opacity:.6}
+
+/* ---------- PERSISTENT GUIDE (the tour host) ---------- */
+.guide{position:fixed; left:22px; bottom:22px; z-index:55; width:186px;
+  transform:translate3d(var(--gx,0),var(--gy,0),0) rotate(var(--gr,0deg))}
+.guide-inner{position:relative}
+.guide-bubble{position:absolute; bottom:calc(100% + 12px); left:0; max-width:232px;
+  background:#fff; border:1px solid rgba(74,40,12,.1); border-radius:16px; padding:.7rem .9rem;
+  box-shadow:var(--sh); font-weight:600; color:var(--heading); font-size:.95rem; line-height:1.32}
+.guide-bubble .tail{position:absolute; left:34px; top:100%; width:14px; height:14px; background:#fff;
+  border-right:1px solid rgba(74,40,12,.1); border-bottom:1px solid rgba(74,40,12,.1);
+  transform:translateY(-7px) rotate(45deg)}
+.guide-body{display:block; background:none; border:0; padding:0; cursor:pointer; position:relative;
+  transform-origin:bottom center}
+.guide-img{width:170px; height:auto; display:block; margin:0 auto;
+  filter:drop-shadow(0 18px 26px rgba(74,40,12,.22));
+  transition:opacity .18s var(--ease), transform .18s var(--ease)}
+.poke-hint{position:absolute; left:50%; bottom:-4px; transform:translateX(-50%); white-space:nowrap;
+  font-size:.7rem; font-weight:700; color:var(--orange-ink); background:#fff; padding:.15rem .55rem;
+  border-radius:var(--r-pill); box-shadow:var(--sh-sm); opacity:0; transition:opacity .2s}
+.guide-body:hover .poke-hint{opacity:1}
+.guide.talk .guide-bubble{animation:bpop .5s var(--ease)}
+@keyframes bpop{0%{transform:scale(.96)} 60%{transform:scale(1.03)} 100%{transform:scale(1)}}
+.guide.poke .guide-body{animation:poke .62s var(--ease)}
+@keyframes poke{0%{transform:translateY(0) rotate(0)} 25%{transform:translateY(-18px) rotate(-5deg)}
+  55%{transform:translateY(0) rotate(4deg)} 80%{transform:translateY(-4px) rotate(-2deg)} 100%{transform:none}}
+
+/* ---------- responsive ---------- */
+@media(max-width:860px){
+  .hero-grid,.uc .top,.par .split,.libr,.convo,.lhero .lgrid{grid-template-columns:1fr}
+  .tgrid,.checks{grid-template-columns:1fr}
+  .fcards{grid-template-columns:repeat(2,1fr)}
+  .fam .row{grid-template-columns:1fr 1fr}
+  .doer,.modes{grid-template-columns:1fr}
+  .qgrid{grid-template-columns:1fr} .qcard:nth-child(2){transform:none}
+  .hero-stage{height:300px} .hero-grid{min-height:auto}
+  .uc .lumi-shot{margin:1rem auto 0}
+  .room{padding:clamp(24px,6vw,34px)}
+  .node{left:18px} .room::before{left:33px}
+  /* guide docks to a slim bottom bar so it never covers content */
+  body{padding-bottom:72px}
+  .guide{left:0; right:0; bottom:0; width:auto; transform:none !important;
+    display:flex; align-items:center; gap:10px; padding:8px 14px;
+    background:rgba(255,255,255,.95); backdrop-filter:blur(10px);
+    box-shadow:0 -6px 24px rgba(74,40,12,.12); border-top:1px solid rgba(74,40,12,.08)}
+  .guide-inner{display:flex; align-items:center; gap:10px; width:100%}
+  .guide-body{order:1; flex:none}
+  .guide-img{width:46px; filter:drop-shadow(0 6px 10px rgba(74,40,12,.2))}
+  .poke-hint{display:none}
+  .guide-bubble{order:2; position:static; max-width:none; flex:1; background:none; border:0; box-shadow:none;
+    padding:0; font-size:.9rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin:0}
+  .guide-bubble .tail{display:none}
+}
+</style>
+
+<div class="backdrop" aria-hidden="true"><b></b></div>
+
+<nav class="nav">
+  <div class="brand" data-view="home">Kheelona<span>.</span></div>
+  <div class="links">
+    <a class="hide-sm" data-scroll="trust">Trust</a>
+    <a class="hide-sm" data-view="lumi">Lumi</a>
+    <a class="hide-sm" data-scroll="warm">Meet Kheelu</a>
+  </div>
+  <a class="btn btn-primary cta" data-scroll="reserve">{{COPY:cta.reserve}}</a>
+</nav>
+
+<!-- ================= HOME VIEW ================= -->
+<main id="home" class="view">
+
+  <header class="hero" data-guide="wink" data-say="Hi, I'm Kheelu. Come on in, I'll show you around.">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <h1 class="rev">{{COPY:landing.hero.h1a}}<br><span class="l2">{{COPY:landing.hero.h1b}}</span></h1>
+        <p class="hero-sub rev">{{COPY:landing.hero.sub}}</p>
+        <div class="hero-cta rev">
+          <a class="btn btn-primary btn-lg" data-scroll="reserve">{{COPY:cta.reserve}}</a>
+          <a class="btn btn-ghost" data-scroll="warm">{{COPY:cta.meetKheelu}}</a>
+        </div>
+        <p class="hero-hint rev">Your guide is waiting in the corner. Give Kheelu a poke.</p>
+      </div>
+      <div class="hero-stage rev" aria-hidden="true">
+        <div class="orb"></div>
+        <div class="ring"></div>
+        <span class="hs s1"></span><span class="hs s2"></span><span class="hs s3"></span>
+      </div>
+    </div>
+  </header>
+
+  <div class="rooms wrap">
+
+    <section class="room r-white recog rev pop" data-guide="curious" data-say="These folks vouch for us. Real ones.">
+      <span class="node"></span>
+      <div class="inner">
+        <span class="lbl">{{COPY:landing.recognition.label}}</span>
+        <img src="{{IMG:nvidia-inception}}" alt="NVIDIA Inception Program">
+        <img src="{{IMG:nasscom}}" alt="nasscom">
+        <img src="{{IMG:karnataka-seal}}" alt="Karnataka Elevate">
+      </div>
+    </section>
+
+    <section class="room r-cream statement rev from-l" data-guide="bliss" data-say="Here's the heart of it. A companion, not a gadget.">
+      <span class="node"></span>
+      <h2 class="rev">{{COPY:landing.building.h2}}</h2>
+      <p class="body rev">{{COPY:landing.building.body}}</p>
+      <p class="support rev">{{COPY:landing.building.support}}</p>
+    </section>
+
+    <section id="trust" class="room r-cool trust rev from-r" data-guide="curious" data-say="This next bit matters most to your grown-ups.">
+      <span class="node"></span>
+      <p class="eyebrow rev">{{COPY:landing.trust.eyebrow}}</p>
+      <h2 class="rev">{{COPY:landing.trust.h2}}</h2>
+      <div class="tgrid" id="trustGrid"></div>
+    </section>
+
+    <section class="room r-white fam rev from-l" data-guide="joy" data-say="Meet the family. Lumi goes first.">
+      <span class="node"></span>
+      <h2 class="rev">{{COPY:landing.companions.h2}}</h2>
+      <p class="lede rev">{{COPY:landing.companions.body}}</p>
+      <div class="row">
+        <div class="comp lead rev"><img src="{{IMG:lumi-blue}}" alt="Lumi, the first Kheelona companion"><div class="nm">Lumi</div><div class="tag">Available first</div></div>
+        <div class="comp soon rev"><span class="pill">{{COPY:landing.companions.soon}}</span><img src="{{IMG:mascot-curious}}" alt="Lori, a future companion"><div class="nm">Lori</div></div>
+        <div class="comp soon rev"><span class="pill">{{COPY:landing.companions.soon}}</span><img src="{{IMG:mascot-joy}}" alt="Lua, a future companion"><div class="nm">Lua</div></div>
+        <div class="comp soon rev"><span class="pill">{{COPY:landing.companions.soon}}</span><img src="{{IMG:mascot-silly}}" alt="Robu, a future companion"><div class="nm">Robu</div></div>
+      </div>
+      <p class="range rev">{{COPY:landing.companions.range}}</p>
+    </section>
+
+    <section id="warm" class="room r-sun warm rev from-r" data-guide="bliss" data-say="That was the careful part. Now for the fun.">
+      <span class="node"></span>
+      <div class="glow" aria-hidden="true"></div>
+      <h2 class="rev">{{COPY:landing.warm.h2}}</h2>
+    </section>
+
+    <section class="room r-teal feel rev from-l" data-guide="silly" data-say="I know five feelings. Watch me chat with a kid.">
+      <span class="node"></span>
+      <div class="head">
+        <h2 class="rev">{{COPY:landing.feelings.h2}}</h2>
+        <p class="lede rev">{{COPY:landing.feelings.body}}</p>
+      </div>
+      <div class="fcards" id="feelCards"></div>
+      <div class="convo">
+        <div>
+          <h3 class="rev">A real back and forth.</h3>
+          <p class="lang rev">{{COPY:landing.feelings.languages}}</p>
+        </div>
+        <div class="chat rev" id="chatHome"></div>
+      </div>
+    </section>
+
+    <section class="room r-cream uc rev from-r" data-guide="curious" data-say="Most toys forget your child. Lumi remembers.">
+      <span class="node"></span>
+      <div class="top">
+        <div>
+          <h2 class="rev">{{COPY:landing.upclose.h2}}</h2>
+          <div class="chips rev" id="ucChips"></div>
+          <p class="modes-lede rev">{{COPY:landing.upclose.modes}}</p>
+          <p class="linkline rev"><a data-view="lumi">{{COPY:landing.upclose.link}}</a></p>
+        </div>
+        <img class="lumi-shot rev" src="{{IMG:lumi-green}}" alt="Lumi in green">
+      </div>
+    </section>
+
+    <section class="room r-cool par rev from-l" data-guide="bliss" data-say="Grown-ups get a clear window in.">
+      <span class="node"></span>
+      <div class="split">
+        <div>
+          <h2 class="rev">{{COPY:landing.parents.h2}}</h2>
+          <p class="lede rev">{{COPY:landing.parents.body}}</p>
+        </div>
+        <div class="shot rev"><img src="{{IMG:dashboard}}" alt="The Kheelona parent app dashboard"></div>
+      </div>
+    </section>
+
+    <section class="room r-white pilot rev from-r" data-guide="joy" data-say="The first families already love theirs.">
+      <span class="node"></span>
+      <h2 class="rev">{{COPY:landing.pilot.h2}}</h2>
+      <div class="qgrid" id="pilotGrid"></div>
+    </section>
+
+    <section id="reserve" class="room r-orange finale rev pop" data-guide="silly" data-say="You made it. Save your spot and I'll wait with Lumi.">
+      <span class="node"></span>
+      <h2 class="rev">{{COPY:landing.finale.h2}}</h2>
+      <p class="price rev">{{COPY:landing.finale.price}}</p>
+      <p class="cap rev">{{COPY:cta.cap}}</p>
+      <div class="tally rev">Reservation form (Tally) mounts here. No payment now.</div>
+      <a class="btn btn-primary btn-lg rev" href="#reserve">{{COPY:cta.reserveLong}}</a>
+      <p class="reassure rev">{{COPY:landing.finale.reassure}}</p>
+    </section>
+
+  </div>
+</main>
+
+<!-- ================= LUMI VIEW ================= -->
+<main id="lumi" class="view" hidden>
+
+  <header class="hero lhero" data-guide="wink" data-say="This is Lumi up close. I picked the colours.">
+    <div class="wrap lgrid">
+      <div>
+        <h1 class="rev">{{COPY:lumi.hero.h1}}</h1>
+        <p class="lsub rev">{{COPY:lumi.hero.sub}}</p>
+        <div class="hero-cta rev">
+          <a class="btn btn-primary btn-lg" data-scroll="lreserve">{{COPY:cta.reserve}}</a>
+          <span style="color:var(--muted);font-size:.92rem">{{COPY:cta.priceCaption}}</span>
+        </div>
+      </div>
+      <div class="lstage rev">
+        <div class="halo" aria-hidden="true"></div>
+        <img class="plush blue on" src="{{IMG:lumi-blue}}" alt="Lumi in blue">
+        <img class="plush green" src="{{IMG:lumi-green}}" alt="Lumi in green">
+        <img class="plush pink" src="{{IMG:lumi-pink}}" alt="Lumi in pink">
+        <div class="picker" id="picker">
+          <span class="sw blue on" data-c="blue" role="button" aria-label="Blue"></span>
+          <span class="sw green" data-c="green" role="button" aria-label="Green"></span>
+          <span class="sw pink" data-c="pink" role="button" aria-label="Pink"></span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="rooms wrap">
+
+    <section class="room r-white rev pop" data-guide="silly" data-say="Listen. Lumi answers, then asks back.">
+      <span class="node"></span>
+      <div class="convo" style="margin-top:0">
+        <div>
+          <h2 class="rev">{{COPY:lumi.convo.h2}}</h2>
+          <p class="lede rev">{{COPY:lumi.convo.body}}</p>
+        </div>
+        <div class="chat rev" id="chatLumi"></div>
+      </div>
+    </section>
+
+    <section class="room r-cool rev from-l" data-guide="curious" data-say="One friend, a whole day of things to do.">
+      <span class="node"></span>
+      <h2 class="rev">{{COPY:lumi.does.h2}}</h2>
+      <div class="doer" id="doerGrid"></div>
+    </section>
+
+    <section class="room r-white uc rev from-r" data-guide="bliss" data-say="PlayOS gives Lumi three ways to be there.">
+      <span class="node"></span>
+      <h2 class="rev">{{COPY:lumi.playos.h2}}</h2>
+      <p class="lede rev">{{COPY:lumi.playos.body}}</p>
+      <div class="modes" id="modeGrid"></div>
+    </section>
+
+    <section class="room r-teal feel rev from-l" data-guide="joy" data-say="Five feelings, named out loud.">
+      <span class="node"></span>
+      <div class="head"><h2 class="rev">{{COPY:lumi.feelings.h2}}</h2><p class="lede rev">{{COPY:lumi.feelings.body}}</p></div>
+      <div class="fcards" id="feelCards2"></div>
+    </section>
+
+    <section class="room r-sun rev from-r" data-guide="curious" data-say="New things to do, long after launch.">
+      <span class="node"></span>
+      <div class="libr">
+        <div>
+          <h2 class="rev">{{COPY:lumi.library.h2}}</h2>
+          <p class="lede rev">{{COPY:lumi.library.body}}</p>
+          <div class="tags rev" id="libTags"></div>
+        </div>
+        <img class="rev" src="{{IMG:lumi-pink}}" alt="Lumi in pink">
+      </div>
+    </section>
+
+    <section class="room r-cool par rev from-l" data-guide="bliss" data-say="You see every word. You choose what's next.">
+      <span class="node"></span>
+      <div class="split">
+        <div>
+          <h2 class="rev">{{COPY:lumi.parents.h2}}</h2>
+          <p class="lede rev">{{COPY:lumi.parents.body}}</p>
+        </div>
+        <div class="shot rev"><img src="{{IMG:dashboard}}" alt="Parent app dashboard"></div>
+      </div>
+    </section>
+
+    <section class="room r-white rev from-r" data-guide="curious" data-say="Safe by design, word by word.">
+      <span class="node"></span>
+      <h2 class="rev">{{COPY:lumi.safe.h2}}</h2>
+      <div class="checks rev" id="safeChecks"></div>
+    </section>
+
+    <section class="room r-cream box rev from-l" data-guide="joy" data-say="Here's what lands at your door.">
+      <span class="node"></span>
+      <h2 class="rev">{{COPY:lumi.box.h2}}</h2>
+      <div class="list rev" id="boxList"></div>
+      <p class="rev" style="margin-top:1rem;color:var(--muted-soft);font-size:.9rem">{{COPY:lumi.box.note}}</p>
+    </section>
+
+    <section class="room r-sun pricebox rev pop" data-guide="wink" data-say="4,999 rupees now. That's the deal.">
+      <span class="node"></span>
+      <h2 class="rev">{{COPY:lumi.price.h2}}</h2>
+      <p class="lede rev">{{COPY:lumi.price.body}}</p>
+      <a class="btn btn-primary btn-lg rev" data-scroll="lreserve">{{COPY:cta.reserve}}</a>
+    </section>
+
+    <section class="room r-cream rev from-r" data-guide="curious" data-say="Questions? I've got answers.">
+      <span class="node"></span>
+      <h2 class="rev">Questions parents ask.</h2>
+      <div class="faq rev" id="faqList"></div>
+    </section>
+
+    <section id="lreserve" class="room r-orange finale rev pop" data-guide="silly" data-say="Ready? Reserve your Lumi. See you at launch.">
+      <span class="node"></span>
+      <h2 class="rev">{{COPY:landing.finale.h2}}</h2>
+      <p class="price rev">{{COPY:landing.finale.price}}</p>
+      <p class="cap rev">{{COPY:cta.cap}}</p>
+      <div class="tally rev">Reservation form (Tally) mounts here. No payment now.</div>
+      <a class="btn btn-primary btn-lg rev" href="#lreserve">{{COPY:cta.reserveLong}}</a>
+      <p class="reassure rev">{{COPY:landing.finale.reassure}}</p>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class="fwrap">
+    <div>
+      <div class="brand">Kheelona<span>.</span></div>
+      <div class="ai">Building something with us? See <a href="#">kheelona.ai</a>.</div>
+    </div>
+    <small>Wireframe, Direction B. Copy and pricing subject to founder sign-off.</small>
+  </div>
+</footer>
+
+<!-- persistent guide: Kheelu walks the reader through the tour -->
+<aside class="guide" id="guide" aria-label="Kheelu, your guide">
+  <div class="guide-inner">
+    <div class="guide-bubble" id="guideBubble" aria-hidden="true"><span id="guideText"></span><i class="tail"></i></div>
+    <button class="guide-body" id="guideBody" type="button" aria-label="Give Kheelu a poke">
+      <img class="guide-img" id="guideImg" src="{{IMG:mascot-hero-wink}}" alt="">
+      <span class="poke-hint">poke me</span>
+    </button>
+  </div>
+</aside>
+
+<script>
+const COPY = {{COPY_JSON}};
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const el = (t,c,h)=>{const e=document.createElement(t); if(c)e.className=c; if(h!=null)e.innerHTML=h; return e;};
+let refreshGuide = ()=>{};
+
+/* ---- render list-driven sections (markup differs per direction; strings shared) ---- */
+function fill(id, nodes){const host=document.getElementById(id); if(!host)return; nodes.forEach(n=>host.appendChild(n));}
+
+// trust cells
+fill('trustGrid', COPY.landing.trust.points.map(p=>{
+  const c=el('div','tcell rev'); c.appendChild(el('div','ic','<b></b>'));
+  c.appendChild(el('h3',null,p.h)); c.appendChild(el('p',null,p.b)); return c;
+}));
+// feelings
+const feelNode=()=>COPY.landing.feelings.cards.map((f,i)=>{
+  const imgs=['{{IMG:mascot-curious}}','{{IMG:mascot-grumpy}}','{{IMG:mascot-sad}}','{{IMG:mascot-silly}}','{{IMG:mascot-joy}}'];
+  const c=el('div','fcard rev'); c.innerHTML=`<img src="${imgs[i]}" alt="Kheelu feeling ${f.name}"><div class="nm">${f.name}</div><p>${f.b}</p>`; return c;});
+fill('feelCards', feelNode()); fill('feelCards2', feelNode());
+// upclose chips
+fill('ucChips', COPY.landing.upclose.does.map(d=>el('span','chip',d)));
+// pilot quotes
+fill('pilotGrid', COPY.landing.pilot.quotes.map(q=>{
+  const c=el('div','qcard rev'); c.innerHTML=`<div class="mark">&ldquo;</div><p class="quote">${q.q}</p><p class="quote-by">${q.by}</p>`; return c;}));
+// lumi does
+fill('doerGrid', COPY.lumi.does.items.map(d=>el('div','d rev',`<h3>${d.h}</h3><p>${d.b}</p>`)));
+// modes
+fill('modeGrid', COPY.lumi.playos.modes.map(m=>el('div','mode rev',`<div class="n">${m}</div>`)));
+// library tags
+fill('libTags', ['Stories','Songs','Lessons','Activity packs','Seasonal sets','School modules'].map(t=>el('span','chip',t)));
+// safety checks
+fill('safeChecks', COPY.lumi.safe.points.map(p=>el('div','rev',`<span class="tick"></span><span>${p}</span>`)));
+// box
+fill('boxList', COPY.lumi.box.items.map(t=>el('div',null,t)));
+// faq
+fill('faqList', COPY.lumi.faq.map(f=>el('details',null,`<summary>${f.q}</summary><p>${f.a}</p>`)));
+
+/* ---- chat typing ---- */
+function chat(id, turns){
+  const host=document.getElementById(id); if(!host)return;
+  turns.forEach(t=>{const b=el('div','bubble '+(t.who==='child'?'child':'lumi'),t.t); host.appendChild(b);});
+  const bubbles=[...host.children];
+  if(reduce){bubbles.forEach(b=>b.classList.add('show')); return;}
+  let i=0; const io=new IntersectionObserver((es)=>{es.forEach(e=>{ if(e.isIntersecting){
+    const step=()=>{ if(i<bubbles.length){bubbles[i].classList.add('show'); i++; setTimeout(step,650);} };
+    step(); io.disconnect(); }});},{threshold:.4});
+  io.observe(host);
+}
+chat('chatHome', COPY.landing.convo.turns);
+chat('chatLumi', COPY.landing.convo.turns);
+
+/* ---- reveal on scroll ---- */
+const ro=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in'); ro.unobserve(e.target);}}),{threshold:.14});
+function observeReveals(scope){(scope||document).querySelectorAll('.rev:not(.in)').forEach(n=>reduce?n.classList.add('in'):ro.observe(n));}
+observeReveals();
+
+/* ---- view switching ---- */
+function showView(name){
+  document.querySelectorAll('.view').forEach(v=>v.hidden = v.id!==name);
+  document.querySelectorAll('.nav .links a').forEach(a=>a.classList.toggle('on', a.dataset.view===name));
+  window.scrollTo({top:0,behavior:'instant' in window?'instant':'auto'});
+  const _v=document.getElementById(name);
+  _v.querySelectorAll('.rev').forEach(n=>n.classList.add('in'));  // toggled view appears instantly, no blank frame
+  observeReveals(_v);
+  refreshGuide();
+}
+function scrollToId(id){const t=document.getElementById(id); if(t){window.scrollTo({top:t.getBoundingClientRect().top+window.scrollY-70,behavior:reduce?'auto':'smooth'});}}
+document.addEventListener('click',e=>{
+  const v=e.target.closest('[data-view]'); const s=e.target.closest('[data-scroll]');
+  if(v){e.preventDefault(); showView(v.dataset.view); if(v.dataset.view==='home')scrollToId('home');}
+  else if(s){e.preventDefault();
+    const id=s.dataset.scroll;
+    // if the target lives in the other view, switch first
+    if(id==='lreserve' && document.getElementById('lumi').hidden){showView('lumi');}
+    if((id==='trust'||id==='warm'||id==='reserve') && document.getElementById('home').hidden){showView('home');}
+    setTimeout(()=>scrollToId(id),30);
+  }
+});
+
+/* ---- colorway picker ---- */
+(function(){
+  const p=document.getElementById('picker'); if(!p)return;
+  p.addEventListener('click',e=>{const s=e.target.closest('.sw'); if(!s)return;
+    p.querySelectorAll('.sw').forEach(x=>x.classList.toggle('on',x===s));
+    document.querySelectorAll('.lstage .plush').forEach(img=>img.classList.toggle('on',img.classList.contains(s.dataset.c)));});
+})();
+
+/* ---- persistent guide: pose + speech bubble follow the reader through the tour ---- */
+(function(){
+  const guide=document.getElementById('guide');
+  const gImg=document.getElementById('guideImg');
+  const gText=document.getElementById('guideText');
+  const gBody=document.getElementById('guideBody');
+  if(!guide||!gImg||!gText||!gBody) return;
+  const POSE={
+    wink:'{{IMG:mascot-hero-wink}}', curious:'{{IMG:mascot-curious}}',
+    grumpy:'{{IMG:mascot-grumpy}}', bliss:'{{IMG:mascot-bliss}}',
+    joy:'{{IMG:mascot-joy}}', sad:'{{IMG:mascot-sad}}', silly:'{{IMG:mascot-silly}}'
+  };
+  let current=null;
+  function setGuide(pose,say){
+    if(say && gText.textContent!==say){
+      gText.textContent=say;
+      if(!reduce){guide.classList.remove('talk'); void guide.offsetWidth; guide.classList.add('talk');}
+    }
+    const src=POSE[pose]||POSE.wink;
+    if(gImg.getAttribute('src')!==src){
+      if(reduce){gImg.setAttribute('src',src);}
+      else{
+        gImg.style.opacity='0'; gImg.style.transform='translateY(6px) scale(.9)';
+        setTimeout(()=>{gImg.setAttribute('src',src); gImg.style.opacity=''; gImg.style.transform='';},150);
+      }
+    }
+  }
+  const secs=[...document.querySelectorAll('[data-say]')];
+  const io=new IntersectionObserver((es)=>{
+    es.forEach(e=>{ if(e.isIntersecting){ current=e.target; setGuide(e.target.dataset.guide, e.target.dataset.say); } });
+  },{rootMargin:'-45% 0px -45% 0px', threshold:0});
+  secs.forEach(s=>io.observe(s));
+
+  refreshGuide=function(){
+    const first=secs.find(s=>s.offsetParent!==null);
+    if(first){current=first; setGuide(first.dataset.guide, first.dataset.say);}
+  };
+  refreshGuide();
+
+  // poke: a little bounce and a playful line, then back to the section's line
+  const pokes=["Hehe, that tickles.","Oi, mind the fur.","Ready when you are.","Come on, this way.","I've got you."];
+  gBody.addEventListener('click',()=>{
+    if(!reduce){guide.classList.remove('poke'); void guide.offsetWidth; guide.classList.add('poke');}
+    setGuide('silly', pokes[Math.floor(Math.random()*pokes.length)]);
+    clearTimeout(gBody._t);
+    gBody._t=setTimeout(()=>{const c=current; if(c) setGuide(c.dataset.guide, c.dataset.say);},1600);
+  });
+
+  // pointer follow + idle bob (desktop, motion allowed only)
+  if(!reduce && matchMedia('(min-width:861px)').matches && matchMedia('(pointer:fine)').matches){
+    let tx=0,ty=0,cx=0,cy=0; const t0=performance.now();
+    addEventListener('pointermove',ev=>{tx=(ev.clientX/innerWidth-0.5); ty=(ev.clientY/innerHeight-0.5);},{passive:true});
+    (function loop(now){
+      cx+=(tx-cx)*.06; cy+=(ty-cy)*.06;
+      const bob=Math.sin((now-t0)/900)*4;
+      guide.style.setProperty('--gx',(cx*10).toFixed(2)+'px');
+      guide.style.setProperty('--gy',(cy*8+bob).toFixed(2)+'px');
+      guide.style.setProperty('--gr',(cx*3).toFixed(2)+'deg');
+      requestAnimationFrame(loop);
+    })(performance.now());
+  }
+})();
+</script>

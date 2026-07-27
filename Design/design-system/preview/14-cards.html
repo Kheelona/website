@@ -1,0 +1,34 @@
+<!doctype html>
+<!-- @dsCard group="Components" name="Cards" subtitle="Hairline-border card recipe" viewport="700x280" -->
+<html><head><meta charset="utf-8"><title>Cards</title>
+<link rel="stylesheet" href="_card.css">
+<style>
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .demo { padding: 20px; border-radius: 10px; min-height: 130px; }
+  .h { font-family:'Instrument Sans',sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em; color: var(--kh-ink); margin: 0 0 6px; }
+  .b { font-family:'Instrument Sans',sans-serif; font-size: 14px; color: var(--kh-ink-3); margin: 0; line-height: 1.4; }
+</style></head>
+<body><div class="card">
+  <div class="grid">
+    <div class="demo" style="background:#fff;border:1px solid var(--kh-line);">
+      <div style="font-family:'Instrument Sans';font-size:11px;color:var(--kh-ink-4);text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-bottom:6px;">Default</div>
+      <h4 class="h">Tier 1 cities</h4>
+      <p class="b">Hairline 1px #CFCFCF border, no shadow.</p>
+    </div>
+    <div class="demo" style="background:var(--kh-bg-warm);border:1px solid var(--kh-line);">
+      <div style="font-family:'Instrument Sans';font-size:11px;color:var(--kh-ink-4);text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-bottom:6px;">Warm fill</div>
+      <h4 class="h">Cognitive Freshness</h4>
+      <p class="b">Warm fill background = subtle section emphasis.</p>
+    </div>
+    <div class="demo" style="background:var(--kh-orange);color:#fff;">
+      <div style="font-family:'Instrument Sans';font-size:11px;color:#fff;opacity:.7;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-bottom:6px;">Filled · Orange</div>
+      <h4 class="h" style="color:#fff;">Why Kheelona</h4>
+      <p class="b" style="color:#fff;opacity:.9;">Solid color cards drop the border and use white text.</p>
+    </div>
+    <div class="demo" style="background:#fff;border:1px solid var(--kh-line);box-shadow:var(--kh-shadow-soft);">
+      <div style="font-family:'Instrument Sans';font-size:11px;color:var(--kh-ink-4);text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-bottom:6px;">Floating · soft</div>
+      <h4 class="h">Modal / Drawer</h4>
+      <p class="b">Soft shadow only when a card floats above another card.</p>
+    </div>
+  </div>
+</div></body></html>
