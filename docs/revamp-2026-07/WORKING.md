@@ -15,10 +15,12 @@ here in full so nothing depends on conversation memory.
 **LIVE PREVIEW: https://website-hdn2.vercel.app** (updated 2026-07-25 with M4 + the mobile pass). The founder
 review URL now serves the revamp: branch `demo-website` was MERGED with `revamp/kheelu-tour`
 (merge, not force-push, so the wireframe drafts at `/a` `/b` `/c` still resolve) and pushed.
-`demo-website` = `ac59ade`. Vercel root directory is `site`; its `NEXT_PUBLIC_*` env vars are
+Keep `demo-website` in sync by MERGING the revamp branch into it (never force-push: that
+would delete the wireframe commit). Vercel root directory is `site`; its `NEXT_PUBLIC_*` env vars are
 still unset, so the reserve panel shows the placeholder card and GA4 is not measuring.
 
-**All work is on branch `revamp/kheelu-tour`** (pushed to origin, HEAD `2eb793b`).
+**All work is on branch `revamp/kheelu-tour`** (pushed to origin; `git log --oneline -8`
+lists the milestone commits).
 `main` only holds the P0 image hotfix + the P1 doc commit — the revamp itself lives on the
 branch. To continue:
 
