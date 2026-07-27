@@ -17,7 +17,10 @@ const ROWS = [
   ["Speaks the languages of your home", "Yes, up to 10", "Rarely", "Varies", "No"],
   ["Cannot wander the internet", "Yes", "Rarely", "No", "Yes"],
   ["You can read every conversation", "Yes", "Partial", "Partial", "No"],
-  ["Grows with them, ages 3 to 10", "Yes", "Varies", "No", "Varies"],
+  /* V3: the row that carries the pipeline story (Lumi 2 to 5, the Kheelu
+     Speaker to 14, books across) — the age arc IS the differentiator the
+     category cannot match (benchmarks-v3.md: MyWonder's clearest gap). */
+  ["Grows with them", "Yes, 2 to 14 with the family", "Varies", "No", "Varies"],
 ] as const;
 
 export function CompareTable() {

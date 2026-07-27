@@ -5,33 +5,41 @@ import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { Reveal } from "@/components/molecules/Reveal";
 import { Card } from "@/components/molecules/Card";
 
-/** R7: real early-tester quotes, verbatim from the founder-published
- *  kheelona.ai (content/site.ts QUOTES). This resolves the long-standing
- *  claims-testimonials blocker: these are published, attributed quotes from
- *  the live pilot, not invented copy. */
+/* PLACEHOLDER TESTIMONIALS — GATE V3-a (founder, 2026-07-27).
+ *
+ * The founder named the three pilot parents (Shweta, Priyamvada, Gaurav) and
+ * asked for placeholder words until the real quotes and consent arrive. These
+ * three `text` values are DRAFTED, not spoken — they ship on the preview only
+ * and must be replaced verbatim before this branch merges to main. The names
+ * are real; the words are not yet. Do not add a fourth, and do not restore the
+ * old anonymous "Parent of a 4-year-old" set: the founder retired every
+ * pilot-count and anonymous-tester claim in V3 (no "ten families" anywhere). */
 const QUOTES = [
   {
-    text: "Her face lit up in the first sixty seconds, and now I can see the words adding up.",
-    who: "Parent of a 4-year-old, early tester",
+    text: "The first thing she does after school is tell Lumi about her day. I listen from the kitchen and learn things she forgets to tell me.",
+    who: "Shweta",
+    meta: "Pilot parent",
   },
   {
-    text: "She asks for it before the TV now. I can literally hear her vocabulary growing.",
-    who: "Parent of a 5-year-old, daily tester",
+    text: "It sings the same rhymes my mother sang to me, and then it asks him questions about them. He answers before I can.",
+    who: "Priyamvada",
+    meta: "Pilot parent",
   },
   {
-    text: "It's the first 'smart' thing in our house that made bedtime easier, not harder.",
-    who: "Lumi pilot family",
+    text: "We wanted less screen time without a fight. This is the first thing that worked without one.",
+    who: "Gaurav",
+    meta: "Pilot parent",
   },
 ] as const;
 
 export function ParentQuotes({
-  from = "teal",
+  from = "cream",
   count = 3,
   eyebrow = "From the pilot families",
-  title = "Ten families test Lumi every day.",
+  title = "The first families are already talking.",
   bare = false,
 }: {
-  from?: "white" | "cream" | "cool" | "teal";
+  from?: "white" | "cream" | "cool";
   count?: 2 | 3;
   eyebrow?: string;
   title?: string;
@@ -60,8 +68,11 @@ export function ParentQuotes({
                 <p className="mb-4 font-display text-[20px] leading-[1.4] text-ink-head">
                   {q.text}
                 </p>
-                <p className="text-[13px] font-semibold uppercase tracking-wide text-ink-muted">
+                <p className="font-display text-[16px] font-extrabold text-ink-head">
                   {q.who}
+                </p>
+                <p className="text-[13px] font-semibold uppercase tracking-wide text-ink-muted">
+                  {q.meta}
                 </p>
               </Card>
             </Reveal>

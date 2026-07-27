@@ -19,7 +19,7 @@ describe("CompareTable", () => {
       screen.getByRole("rowheader", { name: "Talks with your child, not at them" }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("rowheader", { name: "Grows with them, ages 3 to 10" }),
+      screen.getByRole("rowheader", { name: "Grows with them" }),
     ).toBeInTheDocument();
   });
 
@@ -55,6 +55,11 @@ describe("CompareTable", () => {
     expect(
       container.querySelector("div.overflow-x-auto")!.className,
     ).toContain("hidden");
+  });
+
+  it("carries the age arc as the growth verdict (V3)", () => {
+    render(<CompareTable />);
+    expect(screen.getAllByText("Yes, 2 to 14 with the family").length).toBe(2);
   });
 
   it("answers the languages row with the published number in both views", () => {
