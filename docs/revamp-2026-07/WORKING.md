@@ -39,6 +39,13 @@ parents in Bengaluru."; and the finale carries a WhatsApp share link.
   Lumi teaches your child.` — framed as ADDITION, not indictment (Indian parents are loyal to
   their schools), drawn with brand shapes rather than a stock classroom photo, with a test that
   asserts the word "replace" never appears.
+- SHIPPED (founder question, 2026-07-28): **Lumi's three modes, named**. The site showed none of
+  them properly — conversation was the spine but was never called a mode, and Bluetooth was one
+  line in a six-card grid. `LumiModes` replaced "Three ways to be there" (Companion / Storyteller /
+  Teacher, personality words): **Talk about anything / AI mode · Learn inside a story / Kheelu mode
+  · Play your own music / Bluetooth mode**, full cards on `/products/lumi#modes` and a compact strip
+  on Home. All three were already-published facts, so no new gate. Bluetooth is a MODE, never a
+  subscription fallback (V3-b), enforced by a test.
 - REFUSED, on the founder's instruction: the Intel and IIT Bombay logos in a "trusted by" row
   (one founder's CV is not an institutional endorsement, and neither relationship is published —
   logos plus implied endorsement is a trademark risk); the filled-in parent dashboard (+12 words,
@@ -78,13 +85,13 @@ branch. To continue:
 ```bash
 cd /Users/apoorvasahu/Documents/kheelona-com-website
 git checkout revamp/kheelu-tour          # the revamp branch (already pushed)
-cd site && npm test                       # expect 210/210 green
+cd site && npm test                       # expect 215/215 green
 ```
 
 **DONE so far:** P0, P1 (all), P2, M1, M2 (Home), M3 (/products/lumi), M4 (all 8 interior
 routes), M4-b (the mobile pass), and P5's deploy step. **The whole site now runs one theme** —
 every route is a backdrop hero + a room track + the orange finale, narrated by KheeluGuide.
-Tests 210/210 + build green, all 10 routes walked in Chrome, 23-href crawl clean, `#reserve`
+Tests 215/215 + build green, all 10 routes walked in Chrome, 23-href crawl clean, `#reserve`
 present everywhere (including the 404, which had a dead nav anchor before M4), and phones are
 clean at 320/360/390/430px (no sideways pan, no stretched fixed layer) both locally and on the
 live preview.
