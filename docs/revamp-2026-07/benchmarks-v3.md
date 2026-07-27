@@ -107,3 +107,54 @@ framing. Read with `docs/revamp-2026-07/research.md` (competitor weaknesses, par
   learning room's three chips: words and numbers · feelings named · languages of home.
 - Curio proves the sequence "cute grid, no mechanism" fails the trust test; every fun fold on
   our site must sit within one scroll of a mechanism or a control.
+
+---
+
+# Pass 2 — the Apple-tier lens (2026-07-27, founder request)
+
+Question asked: what makes the world's top consumer tech sites successful, and does BUILD-V3
+have everything a pre-launch brand CAN have? Live references: apple.com/iphone, nothing.tech.
+
+## What the top tier actually does
+
+1. **One idea per viewport, progressive disclosure** — answer "why should I care" before any
+   spec; details expand on demand.
+2. **Imagery carries the narrative, text refines it** — roughly 60% of each viewport is
+   product photography or a working demonstration; copy never exceeds ~40%.
+3. **Footnote discipline** — every superlative and "up to" claim carries a footnote; the
+   precision itself is a trust signal.
+4. **Persistent, redundant CTAs** — a buy path after every major section; assume nobody
+   scrolls linearly.
+5. **Ecosystem continuity told as daily workflow** — the product is part of a life, not a
+   standalone gadget ("Significant Others" section).
+6. **A signature line** — "Designed by Apple in California": provenance as brand.
+7. **Craft naming and restraint** (Nothing) — the aesthetic is the communication; soft
+   community infrastructure (Club Nothing, community hub) over scarcity theatre.
+8. **The buy flow is part of the design** — configurators, comparison tools, sticky product
+   subnav with a Buy button.
+
+## Gap audit: BUILD-V3 vs the tier
+
+| Principle | Status in BUILD-V3 | Action |
+|---|---|---|
+| One idea per viewport | HAVE — the room grammar is exactly this | none |
+| Imagery ≥ text | **GAP** — several rooms are copy-only; hero art still interim | ADOPTED: §5.1 visual-anchor rule added; every Home/Lumi room must own one visual; Gemini kit extended; REV-a flagged the single highest-leverage asset |
+| Footnote discipline | **GAP** | ADOPTED: FootnotesRow molecule + footnotes for "up to 10 languages" and Kheelona+ (§2.6) |
+| Redundant CTAs | PARTIAL (hero, compare, finale, nav, dock) | ADOPTED: one more Reserve after the Learning room — the education fold is the new conversion moment |
+| Ecosystem continuity | HAVE — pipeline fold + PlayOS page + "memory moves with them" | none |
+| Signature line | **GAP** | ADOPTED: footer line "Designed by parents in Bengaluru." (factual per YC) |
+| Community/soft growth | **GAP**, mostly post-launch | ADOPTED (feasible slice): WhatsApp share link in the finale — India's native share loop, zero backend. Journal already = content hub |
+| Buy-flow design | HAVE ColorwayPicker (the configurator); Tally form lacks a colour field | FOUNDER note V3-e: add colour preference to the Tally form |
+| Specs page split | Correctly gated — specs publish before ship (claims law) | none |
+| Sticky product subnav | Covered by navbar Reserve pill + mobile guide dock | REJECTED: a third persistent CTA layer is clutter at our page count |
+| Autoplay hero loop | Needs final art first | DEFERRED: founder call after REV-a lands |
+| Waitlist counters / referral leaderboards | No backend; fake numbers violate the honesty law | REJECTED for pre-launch |
+| Announcement ribbon | Cap line already above the fold; calm law | REJECTED |
+
+## The honest bottom line
+
+The structure (rooms, one-idea folds, ecosystem story, configurator, comparison, honest
+footnotes) is now at tier. The gap that no copy can close is **asset quality**: Apple's pages
+work because the imagery is extraordinary. Pre-launch, the two highest-leverage moves are
+(1) the final hero art (REV-a) and (2) real product photography of v2 in children's hands
+(R9-a) — both founder-gated, both worth more than any further copy iteration.
