@@ -10,59 +10,54 @@ here in full so nothing depends on conversation memory.
 
 ---
 
-## ⏭ COLD-RESTART: START HERE (last updated 2026-07-28 — V3 is BUILT; only founder gates remain)
+## ⏭ COLD-RESTART: START HERE (last updated 2026-07-28 — MERGED TO MAIN)
 
-**V3 IS BUILT (2026-07-28).** All five slices shipped: V3-1 shared parts, V3-2 Home,
-V3-3 /products/lumi, V3-4 interior routes, V3-5 cleanup + QA + deploy. The site now argues
-40% fun / 20% brain development / 40% education with the companion story leading. The M5
-cleanup went with it: the 15 retired components, the `teal-deep` token and the teal wash are
-deleted, and the AEO plumbing (llms.txt, AI-crawler robots rules, journal review date) is in.
-NEXT = the founder's review of the preview, then the V3-a..e gates below. The spec that was
-built is `docs/revamp-2026-07/BUILD-V3.md`; it stays as the record of what the copy means and
-why each fold exists.
+**The site is finished, merged, and deployed to the preview. Work on `main`.**
 
-**What V3 changed, in one paragraph**: Lumi's age band is 2 to 5 with the platform arc 2 to 14
-(the 3-to-10 law is gone from code and copy); the .com lineup is now the pipeline — Lumi, the
-Kheelu Speaker, AI books — with age chips and an arc rule, and Lori/Lua/Robu are off the site;
-Home gained a Learning room that shows the Kheelu-mode loop as a real exchange and a
-Brain-development room that explains serve and return; Kheelona+ is published as "6 months
-included, price announced before launch" in a band on Home, /products/lumi and /playos;
-testimonials are three named placeholders (Shweta, Priyamvada, Gaurav) pending real words;
-footnotes answer the two claims that invite a follow-up; the footer signs the work "Designed by
-parents in Bengaluru."; and the finale carries a WhatsApp share link.
+```bash
+cd /Users/apoorvasahu/Documents/kheelona-com-website
+git switch main && git pull
+cd site && npm test          # expect 225/225 green
+npm run build                # token-check 17, then next build
+npx next start -p 3456       # local prod at http://localhost:3456
+```
 
-**Founder review round 1 (2026-07-28)** — a third-party mockup was reviewed and dispositioned:
-- SHIPPED: the adaptive hero, `Every child learns differently. / Lumi learns with them.` (it names
-  the mechanism, which nothing on the shelf can claim, and both halves are already-published
-  behaviour). Metadata moved with it.
-- SHIPPED on /products/lumi (founder placement call): the pace panel, `School teaches the class.
-  Lumi teaches your child.` — framed as ADDITION, not indictment (Indian parents are loyal to
-  their schools), drawn with brand shapes rather than a stock classroom photo, with a test that
-  asserts the word "replace" never appears.
-- SHIPPED (founder question, 2026-07-28): **Lumi's three modes, named**. The site showed none of
-  them properly — conversation was the spine but was never called a mode, and Bluetooth was one
-  line in a six-card grid. `LumiModes` replaced "Three ways to be there" (Companion / Storyteller /
-  Teacher, personality words): **Talk about anything / AI mode · Learn inside a story / Kheelu mode
-  · Play your own music / Bluetooth mode**, full cards on `/products/lumi#modes` and a compact strip
-  on Home. All three were already-published facts, so no new gate. Bluetooth is a MODE, never a
-  subscription fallback (V3-b), enforced by a test.
-- REFUSED, on the founder's instruction: the Intel and IIT Bombay logos in a "trusted by" row
-  (one founder's CV is not an institutional endorsement, and neither relationship is published —
-  logos plus implied endorsement is a trademark risk); the filled-in parent dashboard (+12 words,
-  92% accuracy, Level 3, Mood: Curious — invented telemetry from a product that has not shipped,
-  the exact pattern PIRG called misleading about a competitor); and "India's first AI learning
-  companion" (checkable, and MyWonder shipped a first-claim before us). Ages stay 2 to 5 / 2 to 14.
+**Repository state after the 2026-07-28 cleanup**
+- `main` IS the website: the theme-B revamp + V3 repositioning, merged 2026-07-28. It replaced the
+  legacy Wix commerce app that used to live at the repo root (cart, checkout, member accounts,
+  Wix SDK). That app is preserved at the tag **`pre-revamp-2026-07`** — one checkout recovers it —
+  and its URLs are 301'd in `site/next.config.ts` so nothing 404s and the old ₹2,999 product pages
+  stop competing in Google's index.
+- `demo-website` is the Vercel preview branch only (https://website-hdn2.vercel.app). It carries
+  the `/a` `/b` `/c` wireframe drafts on top of main. **Sync by MERGING main into it. Never
+  force-push** — that would delete the wireframe commit.
+- `revamp/kheelu-tour` is deleted; every one of its commits is reachable from `main`.
+- GitHub is clean: 0 open PRs, 0 stale branches. The 5 dependabot PRs and one outside
+  contributor's PR were closed with explanations; the dependabot and `feat/login` branches are gone.
+- Agent skill packages are gitignored and reinstallable from `skills-lock.json`.
 
-Original brief for the slice work (kept for provenance): It is self-contained: positioning brief (40% fun / 20% brain
-development / 40% education, companion-led per the founder's YC application), locked founder
-decisions (India-first ₹4,999; Lumi ages 2 to 5, platform 2 to 14; pipeline = Lumi → Kheelu
-Speaker → AI books, Lori/Lua/Robu retired from .com; Kheelona+ published as "6 months
-included, price announced before launch"; named placeholder testimonials Shweta/Priyamvada/
-Gaurav; team bios refreshed from YC facts), per-page fold specs with final copy, the
-micro-interactions table, the founder-gate registry (V3-a..d), and the build order V3-1..V3-5
-(M5's cleanup + full QA + AEO plumbing are folded into V3-5). Research inputs:
-`benchmarks-v3.md` (7-site benchmark memo + the 12-point winning-criteria checklist) and
-`research.md`. Where BUILD-V3.md conflicts with copy-v2.md or older laws, BUILD-V3 WINS.
+**What the site is**: 11 routes on the room grammar (Home, /products/lumi, /playos, /safety,
+/setup, /team, /stories, /stories/[slug], /contact, /privacy, /terms, plus a 404), narrated by a
+persistent Kheelu guide, with one schema graph carrying the company as an entity, `/llms.txt` and
+`/pricing.md` for agents, and the offer at ₹4,999 for the first 500 units with no payment taken.
+
+**The spec is `BUILD-V3.md`** — the record of what every fold means and why. Its §0 laws and §6
+gates still bind every future change.
+
+**Verified at merge**: 225 tests, tsc clean, build green (token-check 17), axe zero violations
+across 10 routes at two viewports, Lighthouse A11y/BP/SEO 100 on all 18 runs with Perf 99–100,
+mobile clean 320–430px, all internal links 200.
+
+**NOTHING IS LIVE TO CUSTOMERS.** kheelona.com DNS does not point at Vercel. Everything remaining
+is founder-gated, listed in FOUNDER-TODO.md: V3-a real testimonial quotes (the site carries
+drafted placeholders), V3-b the Kheelona+ price and post-lapse behaviour, V3-c pipeline art,
+V3-d Kheelu line sign-off, V3-e a colour field on the Tally form, V3-f named article authors,
+V3-g Search Console verification, V3-h the Play Store's ₹2,999 listing, V3-i the backlink campaign,
+plus the Tally URL, GA4 ID, the Vercel env vars, DNS, and counsel review of /privacy and /terms.
+The two highest-leverage items for quality remain REV-a (final hero art) and R9-a (real
+photography).
+
+---
 
 Everything below this line describes the COMPLETED theme-B revamp (P0..M4-b) that V3 builds on.
 

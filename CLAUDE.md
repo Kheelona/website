@@ -2,28 +2,31 @@
 
 Pre-order marketing site for **Lumi**, Kheelona's screen-free talking AI toy for ages 3 to 6 (India-first). One job: convert parents into the Tally pre-order list at ₹4,999 (₹9,999 after launch, no payment now).
 
-## ⚠ REVAMP + V3 BUILT, AWAITING FOUNDER GATES — read this first
-The site was re-themed onto wireframe direction B ("Kheelu's Tour") per the founder brief
-`Websit prompt based on B + inputs - 24-Jul.pdf`, then repositioned in V3 per the founder's YC
-application. Status, locked decisions, and the restart guide live in
-**`docs/revamp-2026-07/WORKING.md`** — read it BEFORE the resume protocol below. Superseded older
-laws: "Home copy = PDF verbatim" is retired (new production copy everywhere), and the age band is
-**Lumi 2 to 5 with the platform arc 2 to 14** — both "3 to 6" and the interim "3 to 10" are dead;
-render ages from `LUMI_AGES`/`PLATFORM_AGES`, never inline.
-Every route is rebuilt (P0..M4), the mobile pass (M4-b) is done, and V3 shipped; the founder preview is
-LIVE at **https://website-hdn2.vercel.app** (branch `demo-website`, merged with
-`revamp/kheelu-tour`). Two hard rules M4-b added (website-steps §8.20): never animate X on an
-element that spans the track width (it widens the layout viewport on phones and drags every
-`position: fixed` element with it), and base-level element rules in `globals.css` belong in
-`@layer base` (unlayered CSS outranks every Tailwind utility).
-**V3 BUILT (2026-07-28): the content repositioning from the founder's YC application is
-live on the preview — 40% fun / 20% brain development / 40% education, companion story leading.
-`docs/revamp-2026-07/BUILD-V3.md` is the spec that was built and still WINS over copy-v2.md and
-older copy laws. Ages: Lumi 2 to 5, platform arc 2 to 14. The .com lineup is the pipeline
-(Lumi → Kheelu Speaker → AI books); Lori/Lua/Robu live on kheelona.ai only. Kheelona+ may only
-ever be described as "6 months included, monthly price announced before launch" — no ₹ amount,
-no post-lapse claim (gate V3-b). Testimonial words are placeholders (gate V3-a).**
-Delete this note + the working file once the revamp is founder-approved.
+## ⚠ STATE OF PLAY (2026-07-28) — read this first
+**The new site is MERGED TO `main` and is the only site.** The 2026-07 revamp (theme B
+"Kheelu's Tour") plus the V3 repositioning (founder's YC application: 40% fun, 20% brain
+development, 40% education) replaced the legacy Wix-backed commerce app that used to live at the
+repo root. That old app is preserved at the tag **`pre-revamp-2026-07`** and its URLs are 301'd in
+`site/next.config.ts`. The `revamp/kheelu-tour` branch is deleted; its history is inside `main`.
+
+- **Work on `main`.** `demo-website` exists only as the Vercel preview branch
+  (https://website-hdn2.vercel.app) and additionally carries the `/a` `/b` `/c` wireframe drafts.
+  Keep it in sync by MERGING main into it, never force-push.
+- **Nothing is live to customers yet**: kheelona.com DNS does not point at Vercel (founder gate).
+- **The spec that built this**: `docs/revamp-2026-07/BUILD-V3.md` (it wins over `copy-v2.md` and
+  older copy laws). Status and the restart guide: `docs/revamp-2026-07/WORKING.md`.
+- **Locked product facts**: Lumi is ages **2 to 5**, the platform arc is **2 to 14** (both "3 to 6"
+  and "3 to 10" are dead — render ages from `LUMI_AGES`/`PLATFORM_AGES`). The .com line-up is the
+  pipeline Lumi → Kheelu Speaker → AI books. Lumi has **three modes**: AI mode, Kheelu mode,
+  Bluetooth mode. Kheelona+ may only ever be described as "6 months included, monthly price
+  announced before launch" — no ₹ amount, and no claim about what happens if it lapses (V3-b).
+  Testimonial words are placeholders (V3-a). Contact is `hello@kheelona.com`; the phone number on
+  the legacy site was a placeholder and must never be published.
+- **Two hard rules from the mobile pass**: never animate X on an element spanning the track width
+  (it widens the layout viewport on phones), and base-level element CSS belongs in `@layer base`.
+- **One from the QA pass**: a route with a copy-only hero must ship its first room reveal-free, or
+  it owns the LCP while invisible.
+- New laws are consolidated in `docs/website-steps.md` §8.21.
 
 ## Who you work for
 **Apoorva Sahu** (apoorva@geekyants.work) — Founder & CEO of Kheelona (kheelona.com + sister site kheelona.ai), also a Director at GeekyAnts. Full authority on brand, product, and copy; defer to them on brand calls. Co-founders: Aman Soni (CTO, 14 patents filed), Kashyap C.R (Chief Hardware Officer, built at Intel — his published kheelona.ai bio names Thunderbolt 4/5, mirrored on /team). Team also includes Ria Mangala Rewari (Head of Marketing, not a co-founder; added R10).
