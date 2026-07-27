@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ColorwayPicker } from "./_components/ColorwayPicker";
+import { PacePanel } from "./_components/PacePanel";
 import { Room } from "@/components/atoms/Room";
 import { RoomsTrack } from "@/components/atoms/RoomsTrack";
 import { Button } from "@/components/atoms/Button";
@@ -201,6 +202,12 @@ export default function LumiPage() {
               <ChatDemo turns={KHEELU_MODE_DEMO} />
             </Reveal>
           </div>
+        </Room>
+
+        {/* Founder call 2026-07-28: move the comparison to what a parent
+            actually pays for — school and tuition — framed as addition. */}
+        <Room fill="cool" id="pace" guide="bliss" say="I only ever have one child to keep up with." reveal="right">
+          <PacePanel />
         </Room>
 
         <Room fill="white" reveal="left">
