@@ -165,3 +165,23 @@ month precision), NOT the per-article publication dates the spec sketched — we
 those, so they would have been invented; (4) the safe-toy checklist article's age line became
 "a toy sold for small children" rather than moving to a new band, so the advice stays true at
 any age.
+
+**V3 modes (founder, 2026-07-28).** The founder named Lumi's three modes — AI mode (open
+conversation), Kheelu mode (stories and lessons that quiz back), Bluetooth mode (pair a phone and
+Lumi is the speaker) — and asked whether the site showed them. It did not, properly: conversation
+was the site's spine but was never named as a mode, Kheelu mode had rooms, and Bluetooth was one
+line in a six-card grid. All three were already-published facts, so naming them is a STRUCTURAL
+copy change and needed no new gate.
+
+What shipped: a `LumiModes` organism, in place of the old "Three ways to be there" section whose
+chips read Companion / Storyteller / Teacher — personality words, where a parent deciding on a
+pre-order is asking what it does. The full card section sits on /products/lumi (`#modes`), a
+compact strip closes Home's day-with-Lumi room, and the Bluetooth card left the what-it-does grid
+so the fact is stated once. Naming convention: the parent verb is the heading ("Play your own
+music.") and the founder's product term is the label under it ("BLUETOOTH MODE") — a small "AI
+mode" label does not breach the rule about rarely leading with AI. New FAQ entry "Can Lumi play
+music?" mirrors into the FAQPage schema, and /llms.txt now lists the three modes.
+
+**Gate discipline**: Bluetooth is framed as a MODE and never as what a family is left with if
+Kheelona+ lapses. That would be a post-lapse claim, which V3-b still gates. A test asserts the
+section contains no "without a subscription / still works / expires" framing.

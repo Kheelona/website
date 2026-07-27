@@ -16,6 +16,7 @@ import { KheelonaPlusBand } from "@/components/molecules/KheelonaPlusBand";
 import { FootnotesRow, V3_FOOTNOTES, Footnote } from "@/components/molecules/FootnotesRow";
 import { FeelingsGallery } from "@/components/organisms/FeelingsGallery";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
+import { LumiModes } from "@/components/organisms/LumiModes";
 import { ParentQuotes } from "@/components/organisms/ParentQuotes";
 import { PREORDER_HREF, RESERVE_LABEL, PRICE_CAPTION, LAUNCH_PRICE, LATER_PRICE } from "@/config/site";
 
@@ -37,7 +38,6 @@ const DOES = [
   { h: "Lessons that feel like play", b: "Numbers, words, and why the sky is blue. Stories your child can be quizzed on." },
   { h: "Songs and rhymes", b: "The ones you grew up with, and new ones too." },
   { h: "Offline adventures", b: "Play that does not need the internet." },
-  { h: "Bluetooth music", b: "Your playlist, through Lumi's speaker." },
 ] as const;
 
 const HOW_IT_ANSWERS = [
@@ -46,8 +46,6 @@ const HOW_IT_ANSWERS = [
   { n: "03", title: "The feeling gets read.", body: "PlayOS hears more than words. Curious, Grumpy, Sad, Silly, Joy: the answer meets the mood.", color: "text-orange-ink" },
   { n: "04", title: "The right response comes back.", body: "Every reply passes through an age-graded safety layer before it is spoken. On-device and cloud filters work together. No open internet. No surprises.", color: "text-orange-deep" },
 ] as const;
-
-const MODES = ["Companion", "Storyteller", "Teacher"] as const;
 
 /* The Kheelu-mode exchange (V3). Same script as Home's learning room, so a
    parent who saw it there recognises it here. Quoted toy and child speech keeps
@@ -80,6 +78,7 @@ const FAQ_ITEMS: FaqEntry[] = [
   { q: "How much does Lumi cost?", a: "₹4,999 at launch if you reserve now. ₹9,999 after launch. You pay nothing today. We hold the price, you hold your place." },
   { q: "Do I have to pay anything now?", a: "No. Reserving holds your price and your place, and it does not commit you to buy. You can leave the list anytime." },
   { q: "What is PlayOS?", a: "The platform Lumi runs on. It gives each character a voice and a personality, and keeps every answer right for your child's age." },
+  { q: "Can Lumi play music?", a: "Yes. Pair a phone over Bluetooth and Lumi becomes the speaker in the room, for your playlist, rhymes, or an audiobook. That is one of its three modes, alongside conversation and Kheelu mode stories." },
   { q: "Does Lumi need a subscription?", a: "Every Lumi includes 6 months of Kheelona+, the stories, lessons, languages, and the parent app. The monthly price after that is announced before launch. Nothing renews without you." },
   { q: "What is Kheelona+?", a: "The content and the controls: stories, lessons, language packs, and the parent app that shows you the learning. It is included free for the first 6 months with every Lumi." },
   { q: "Why reserve now?", a: "The first 500 units are ₹4,999. After launch it is ₹9,999. There is no payment today." },
@@ -245,25 +244,11 @@ export default function LumiPage() {
           <FeelingsGallery />
         </Room>
 
-        <Room fill="cool" reveal="left">
-          <Reveal>
-            <SectionHeading
-              title="Three ways to be there."
-              titleClassName="mb-3"
-              lede="Lumi runs on PlayOS. It gives every character its own voice and personality, and answers that fit your child's age. It knows when to be a friend, a storyteller, or a teacher."
-              ledeClassName="mb-8 max-w-[58ch]"
-            />
-          </Reveal>
-          <ul className="flex flex-wrap gap-3">
-            {MODES.map((m) => (
-              <li
-                key={m}
-                className="rounded-full border border-line-soft bg-white px-6 py-3 font-display text-[18px] font-bold text-ink-head"
-              >
-                {m}
-              </li>
-            ))}
-          </ul>
+        {/* Founder call 2026-07-28: the three real modes replace the old
+            personality chips (Companion / Storyteller / Teacher). A parent
+            deciding on a pre-order asks what it does, not what it is like. */}
+        <Room fill="cool" id="modes" guide="joy" say="Three modes. I am the one doing the talking in all of them." reveal="left">
+          <LumiModes />
         </Room>
 
         <Room fill="white" reveal="right">

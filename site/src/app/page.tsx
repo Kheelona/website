@@ -9,6 +9,7 @@ import { RecognitionStrip } from "@/components/organisms/RecognitionStrip";
 import { ParentQuotes } from "@/components/organisms/ParentQuotes";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { FeelingsGallery } from "@/components/organisms/FeelingsGallery";
+import { LumiModes } from "@/components/organisms/LumiModes";
 import {
   Hero,
   Statement,
@@ -69,6 +70,10 @@ export default function HomePage() {
             />
           </Reveal>
           <KheeluOrbit />
+          {/* Founder call 2026-07-28: name the three modes where a parent is
+              already enjoying the day-with-Lumi picture. One toy that talks,
+              teaches and plays music is a different purchase from a gadget. */}
+          <LumiModes variant="strip" className="mt-12" />
         </Room>
 
         {/* Education (40%): the mechanism, not the adjective */}
