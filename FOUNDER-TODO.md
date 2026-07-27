@@ -80,7 +80,7 @@ Spec: `docs/revamp-2026-07/BUILD-V3.md`. **Your gates, all of which BLOCK merge 
   "Kheelona" as an organisation. Tell me who wrote each one (or who should be credited as the
   reviewer) and the bylines plus author schema go in. Aman's 14 patents and Kashyap's Intel
   background are exactly the credentials that make a piece citable.
-- **V3-g. Search Console + Bing Webmaster (needed before ANY ranking happens)** — I cannot verify
+- **V3-g. Search Console + Bing — ✅ DONE 2026-07-28.** Google Search Console verified as a DOMAIN property (`sc-domain:kheelona.com`, so apex + www + http/https are all covered) and `sitemap.xml` processed successfully: **24 discovered pages**, matching the 24 the site emits. Bing Webmaster Tools submitted and processing. Nothing left here for you.
   the domain or submit the sitemap without your account. Once kheelona.com points at Vercel: add
   the property, verify, submit `https://kheelona.com/sitemap.xml`, and check the Coverage report.
   Until this is done Google discovers us slowly and we are blind to what it thinks.
