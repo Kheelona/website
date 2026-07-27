@@ -21,7 +21,7 @@ Read `docs/project-state.json`:
 | phase_9 (readiness) | `project-state.json` + `docs/website-steps.md` + `package.json` |
 | phase_10 (implementation) | `project-state.json` + `docs/website-steps.md` + `tailwind.config.ts` + relevant files. See `last_handoff.context_to_load_on_resume`. |
 | phase_11 (delivery) | `project-state.json` + `docs/website-steps.md` + `docs/qa-report.md` |
-| phase_13 (revamp theme B) | **`docs/revamp-2026-07/WORKING.md` FIRST** + `project-state.json` + `docs/revamp-2026-07/copy-v2.md` + `docs/checkpoints/revamp-theme-b-2026-07-25.md`. Work on branch `revamp/kheelu-tour`. |
+| phase_13 (revamp theme B → V3) | **`docs/revamp-2026-07/WORKING.md` FIRST**, then **`docs/revamp-2026-07/BUILD-V3.md`** (the executable spec; wins over copy-v2.md) + `project-state.json`. Work on branch `revamp/kheelu-tour`. |
 
 Master build spec: `website-builder-prompt-final-kheelona.md` (Brand Bible §1, site map §2, design direction §3, phases, sprint plan). Highest source of truth for Home copy: `kheelona homepage website content.pdf` (blue-box copy is verbatim).
 

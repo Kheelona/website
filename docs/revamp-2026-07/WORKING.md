@@ -10,6 +10,24 @@ here in full so nothing depends on conversation memory.
 
 ---
 
+## ⏭ COLD-RESTART: START HERE (last updated 2026-07-27 — V3 content repositioning is NEXT)
+
+**NEXT WORK = V3, specced in full in `docs/revamp-2026-07/BUILD-V3.md` — read THAT file and
+execute it end to end.** It is self-contained: positioning brief (40% fun / 20% brain
+development / 40% education, companion-led per the founder's YC application), locked founder
+decisions (India-first ₹4,999; Lumi ages 2 to 5, platform 2 to 14; pipeline = Lumi → Kheelu
+Speaker → AI books, Lori/Lua/Robu retired from .com; Kheelona+ published as "6 months
+included, price announced before launch"; named placeholder testimonials Shweta/Priyamvada/
+Gaurav; team bios refreshed from YC facts), per-page fold specs with final copy, the
+micro-interactions table, the founder-gate registry (V3-a..d), and the build order V3-1..V3-5
+(M5's cleanup + full QA + AEO plumbing are folded into V3-5). Research inputs:
+`benchmarks-v3.md` (7-site benchmark memo + the 12-point winning-criteria checklist) and
+`research.md`. Where BUILD-V3.md conflicts with copy-v2.md or older laws, BUILD-V3 WINS.
+
+Everything below this line describes the COMPLETED theme-B revamp (P0..M4-b) that V3 builds on.
+
+---
+
 ## ⏭ COLD-RESTART: START HERE (last updated 2026-07-25, after M4 + the M4-b mobile pass)
 
 **LIVE PREVIEW: https://website-hdn2.vercel.app** (updated 2026-07-25 with M4 + the mobile pass). The founder
@@ -126,6 +144,7 @@ element rule in globals.css belongs in `@layer base`.
 | M3 /products/lumi (founder preview #2) | DONE + visually verified in Chrome (commit `87a812a`). ColorwayPicker (radiogroup, arrow keys, no-CLS swap verified blue→green→pink) + 11 rooms + FAQ v2 + JSON-LD "Lumi by Kheelona". Tests 206/206, build green |
 | M4 remaining 8 routes | DONE + verified in Chrome. playos/safety/setup/team/stories/stories-slug/privacy/terms/not-found all on the room grammar. New shared parts: `PageHero` became the theme-B hero shell (own `<section>`, track width, `guide`/`say`), new `AnswerBlock` molecule (question-led H2/H3 + 40–60 word visible answer, AEO), new `FamilyGrid` organism (de-duplicated Home + /playos lineups), `LegalDoc` on rooms, `SectionHeading` gained a fourth `nested` type step, `PhoneFrame` gained `priority` (the /setup hero owns its LCP). Fixed the latent `RevealObserver` client-nav bug. Journal age pass done (slugs unchanged). FAQPage schema mirrors the new visible answers on /safety + /playos. Tests 222/222, build green (token-check 18) |
 | M5 cleanup + full QA | **NEXT** — delete retired files (list above) + `teal-deep`, Lighthouse/a11y/voice-lint/crawl pass, then the deferred AEO plumbing (llms.txt, AI-crawler robots rules, last-updated dates) |
+| V3 content repositioning | **NEXT** — full spec `BUILD-V3.md` (2026-07-27, from the founder's YC application + benchmark research `benchmarks-v3.md`). Supersedes M5-as-next; M5 cleanup folds into V3-5 |
 | P5 deploy v1 → THEN ask for 3 app images | PREVIEW DEPLOYED 2026-07-25 — `demo-website` merged with the revamp (merge, NOT force-push, so `/a` `/b` `/c` survive) and pushed; https://website-hdn2.vercel.app verified live (10 routes 200, new metadata serving, `/b` still resolving). REMAINING: founder review of that URL, then ask for the 3 app images (REV-d — brief pointer 9 gated it on the v1 deploy, which has now happened) |
 
 ## Locked decisions (founder, 2026-07-24 — do not re-ask)
