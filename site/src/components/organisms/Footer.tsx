@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FOOTER_LINKS } from "@/config/site";
+import { FOOTER_LINKS, CONTACT_EMAIL } from "@/config/site";
 
 export function Footer() {
   return (
@@ -43,9 +43,18 @@ export function Footer() {
             >
               kheelona.ai
             </a>
-          </span>
-          {/* TODO(claims-contact): add the contact email here once the founder
-              confirms it. Never render a "pending" note publicly. */}
+          </span>          {CONTACT_EMAIL ? (
+            <span>
+              {" · "}
+              <a
+                href={`mailto:${CONTACT_EMAIL}`}
+                className="inline-block rounded py-1 text-white/80 underline transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange"
+              >
+                {CONTACT_EMAIL}
+              </a>
+            </span>
+          ) : null}
+  
         </div>
       </div>
     </footer>
