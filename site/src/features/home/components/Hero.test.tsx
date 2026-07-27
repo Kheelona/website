@@ -7,7 +7,7 @@ describe("Hero (revamp M2)", () => {
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: /A friend who listens[\s\S]*A teacher who plays/i,
+        name: /Every child learns differently[\s\S]*Lumi learns with them/i,
       }),
     ).toBeInTheDocument();
   });
