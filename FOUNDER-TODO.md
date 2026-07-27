@@ -44,8 +44,10 @@ Spec: `docs/revamp-2026-07/BUILD-V3.md`. **Your gates, all of which BLOCK merge 
   subscription lapses. Nothing about either is claimed until you state them.
 - **V3-c. Pipeline art** — Kheelu Speaker + AI book renders via the Gemini kit the build will
   prepare (`gemini-handoff/pipeline-2026-07/`); calm placeholders until then.
-- **V3-d. Kheelu lines v3** — two new guide lines join the existing sign-off queue (list in
-  BUILD-V3.md §6.4).
+- **V3-d. Kheelu lines v3** — three new guide lines join the existing sign-off queue (list in
+  BUILD-V3.md §6.4): "This is the part where the games are secretly lessons.", "The Speaker is
+  my cousin. Louder, and better at maths.", and "I only ever have one child to keep up with."
+  (the last one on the new pace panel).
 - **V3-e (small, yours)**: the site lets parents pick a Lumi colour, but the Tally form has
   no colour field, so the preference is lost. Consider adding one (blue/green/pink) to the
   form. And once the V3-c/REV-a art lands, the share image (`og.png`) gets refreshed to match.

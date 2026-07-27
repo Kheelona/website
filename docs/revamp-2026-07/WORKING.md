@@ -31,6 +31,21 @@ testimonials are three named placeholders (Shweta, Priyamvada, Gaurav) pending r
 footnotes answer the two claims that invite a follow-up; the footer signs the work "Designed by
 parents in Bengaluru."; and the finale carries a WhatsApp share link.
 
+**Founder review round 1 (2026-07-28)** — a third-party mockup was reviewed and dispositioned:
+- SHIPPED: the adaptive hero, `Every child learns differently. / Lumi learns with them.` (it names
+  the mechanism, which nothing on the shelf can claim, and both halves are already-published
+  behaviour). Metadata moved with it.
+- SHIPPED on /products/lumi (founder placement call): the pace panel, `School teaches the class.
+  Lumi teaches your child.` — framed as ADDITION, not indictment (Indian parents are loyal to
+  their schools), drawn with brand shapes rather than a stock classroom photo, with a test that
+  asserts the word "replace" never appears.
+- REFUSED, on the founder's instruction: the Intel and IIT Bombay logos in a "trusted by" row
+  (one founder's CV is not an institutional endorsement, and neither relationship is published —
+  logos plus implied endorsement is a trademark risk); the filled-in parent dashboard (+12 words,
+  92% accuracy, Level 3, Mood: Curious — invented telemetry from a product that has not shipped,
+  the exact pattern PIRG called misleading about a competitor); and "India's first AI learning
+  companion" (checkable, and MyWonder shipped a first-claim before us). Ages stay 2 to 5 / 2 to 14.
+
 Original brief for the slice work (kept for provenance): It is self-contained: positioning brief (40% fun / 20% brain
 development / 40% education, companion-led per the founder's YC application), locked founder
 decisions (India-first ₹4,999; Lumi ages 2 to 5, platform 2 to 14; pipeline = Lumi → Kheelu
