@@ -7,6 +7,12 @@ Pre-order marketing site for **Lumi**, Kheelona's screen-free talking AI toy for
 every change you make from here touches a live commercial site.** Latest checkpoint, read it before
 touching anything: `docs/checkpoints/v4-merge-2026-07-31.md` (before it: `go-live-2026-07-28.md`).
 
+**V5 (the end-to-end design/UX review round) IS BUILT ON `demo-website` AND WAITS FOR FOUNDER REVIEW**
+— one interaction contract so touch surfaces actually answer, the reserve form's measured white-space
+fix plus a reassurance strip, /safety's fourfold repetition cut, the brand shapes given one job as
+`PromiseMark`, and hero craft (Kheelu no longer appears twice, cap chip readable, art scaled). Spec:
+`docs/revamp-2026-07/BUILD-V5.md`; laws §8.23; record: `docs/qa-report.md` "V5".
+
 **V4 (the team-feedback round) MERGED TO `main` on 2026-07-31 at the founder's order** — the tutor
 hero, brand-orange CTAs with ink labels (the R5 white-label law is RETIRED), the real-audio room,
 the How-It-Works loop, white finales, the VC-voiced /playos with the ArchitectureStack, 19
@@ -73,9 +79,17 @@ repo root. That old app is preserved at the tag **`pre-revamp-2026-07`** and its
   and **a redirect source must never shadow a `public/` directory**, because redirects match before
   static files (`/product/:slug*` blanked every product image incl. the hero — hence
   `/product/:slug([^.]+)` and `test/redirects-vs-assets.test.ts`). Both in §8.21-a/b.
-- New laws are consolidated in `docs/website-steps.md` §8.21 + §8.22 (the V4 round: action colour,
-  white finale, VC playos, 48-char say lines, audio-transcript exemption, missing-audio fold,
-  no-shrink-labels viewport rule, V4 registry).
+- New laws are consolidated in `docs/website-steps.md` §8.21 + §8.22 (V4) + **§8.23 (V5, the
+  design/UX review round)**: every tappable surface answers touch via `lib/interactions.ts`
+  (hand-rolled hover/active is a review flag), an embedded form's height is measured inside the
+  shipping iframe, a brand mark needs a job (`PromiseMark`), one idea one statement per page, the
+  same character never doubles at illustration scale, **axe is blind to un-revealed rooms — force
+  `.reveal-in` before running it**, and build a control before believing a perf story.
+- **Visual reviews run headless, not through the extension.** Its window is locked ~390px and its tab
+  runs hidden, which freezes IntersectionObserver reveals and defers image/media painting — a
+  screenshot from it is not evidence. The harness lives in the session scratchpad (`shot.mjs`
+  sections/clip/probe, `audit.mjs`, `iframe-measure.mjs`, `axe-run.mjs`, `lcp-probe.mjs`) and drives
+  Chrome via the puppeteer-core in the npx cache; re-create it from §8.23 if the scratchpad is gone.
 
 ## Who you work for
 **Apoorva Sahu** (apoorva@geekyants.work) — Founder & CEO of Kheelona (kheelona.com + sister site kheelona.ai), also a Director at GeekyAnts. Full authority on brand, product, and copy; defer to them on brand calls. Co-founders: Aman Soni (CTO, 14 patents filed), Kashyap C.R (Chief Hardware Officer, built at Intel — his published kheelona.ai bio names Thunderbolt 4/5, mirrored on /team). Team also includes Ria Mangala Rewari (Head of Marketing, not a co-founder; added R10).

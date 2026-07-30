@@ -107,6 +107,57 @@ revalidation). Verified after clear: fresh bytes at every width, v2 rendering in
 
 Tests 254/254, build green, token-check 17.
 
+### V5 design/UX review round · 2026-07-31 · branch demo-website · spec BUILD-V5.md
+
+The founder asked for an end-to-end review from a customer's perspective, three hats (CMO, design,
+content), with the team's observations as seeds. **Method:** the Chrome extension's window is locked
+~390px and its tab runs hidden, freezing reveals and deferring paint — so the review ran through a
+headless harness (`scratchpad/shot.mjs`, `audit.mjs`, `iframe-measure.mjs`, `axe-run.mjs`,
+`lcp-probe.mjs`): exact viewports, reveals forced, lazy images warmed, every section clipped, plus a
+numeric audit of 9 routes at 1440 and 390.
+
+**Every team observation checked out, and the numbers located each one:**
+- *"Micro-interactions inconsistent"* → **2** `active:` states in the entire codebase, and
+  `TiltCard` renders a plain div on touch. Hover coverage per route: 19 · 6 · 3 · 0 · 0 · 0. Four
+  different hover treatments across four card types, one with a hardcoded shadow. Fixed with one
+  contract (`lib/interactions.ts`) + a guard test; press feedback now reaches 24 surfaces on Home,
+  40 on /stories, 22 on /products/lumi. Static cards deliberately got NOTHING — faking an affordance
+  is worse than none (§8.23-1).
+- *"Form section has excessive white space, seems a UI error"* → measured **191px dead on desktop,
+  93px on mobile**. Root cause: the 900px iframe was set from a standalone-URL reading (~721px) that
+  does not apply inside our 680px iframe (real: 609px). Now 730 mobile / 690 desktop — and mobile is
+  correctly the TALLER frame. Dead space desktop 191px → 81px (§8.23-2).
+- *"The promise section's elements are used nowhere else"* → true, one place only, 24px at 0.15
+  opacity. Now `molecules/PromiseMark` with one job across four card groups (§8.23-3).
+- *"/safety too wordy"* → not just long: one promise stated **four times** in a single fold, and the
+  custody steps duplicated the previous section's cards verbatim ("Not muted. Off." in both). Cut the
+  duplicate row; flagship AEO answer 85 → 57 words (40-60 is the citable range); 4-col grids → 2-col
+  so titles stop breaking mid-phrase (§8.23-4).
+
+**Found by the review, not reported by anyone:**
+- **Kheelu appeared twice in the hero viewport** — REV-a's art contains him and the corner guide
+  showed him. Guide now waits out the hero (§8.23-5). Its `aria-hidden` fix needed a `tabIndex`
+  companion, caught by axe.
+- **Home and /products/lumi were 60% the same page** — six shared components. Dropped the duplicate
+  FeelingsGallery; Lumi went 17.0k → 15.8k px on mobile, 14 → 13 sections.
+- **A real contrast failure in `FootnotesRow`** (13px `text-ink-muted` ≈ 4.3:1 on the sun wash) that
+  three prior "axe zero violations" sweeps could not see, because axe skips opacity-0 subtrees and
+  nobody had forced reveals first (§8.23-6).
+- Hero composition: art was 420px in an 800px hero with a band of empty wash above it → 470/500px on
+  desktop. The instruction line "Your guide is waiting in the corner" was REMOVED — the guide fade
+  made it literally untrue.
+
+**Verified:** 267 tests (67 files) · tsc clean · build green, token-check 17 · **axe 0 violations**
+across 5 routes at 1440 and 390 with reveals forced · **0 overflow** at 1440/390/320 · voice-lint
+probe ALL CLEAN on 16 routes · Lighthouse Home desktop 99/100/96*/100 LCP 0.8s, Home mobile
+98/100/96*/100 LCP 2.3s, /safety mobile 99/100/96*/100 (*BP is the localhost insights 404).
+
+**LCP discipline, worth reading before believing a perf story:** Home mobile LCP read 1.73s at the
+session's start and 2.31s after the round. A control build with the hero changes reverted measured
+**2.31s — identical**, so the delta was environment drift, not the change (§8.23-7). Confirmed 4-run
+consistency and identified the LCP element as the hero image via PerformanceObserver; both viewports
+fetch the same 640w / 57KB variant, so the enlargement is free.
+
 ### The great clearance · 2026-07-31 · founder answers land, REV-a ships
 
 One founder message cleared nearly every standing gate, same day as the merge. Shipped: the FINAL

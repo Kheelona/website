@@ -4,6 +4,7 @@ import { Room } from "@/components/atoms/Room";
 import { RoomsTrack } from "@/components/atoms/RoomsTrack";
 import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { AnswerBlock } from "@/components/molecules/AnswerBlock";
+import { PromiseMark } from "@/components/molecules/PromiseMark";
 import { PageHero } from "@/components/templates/PageHero";
 import { Card } from "@/components/molecules/Card";
 import { CheckList } from "@/components/molecules/CheckList";
@@ -38,20 +39,18 @@ const WORD_RULES = [
 ] as const;
 
 const VOICE_RULES = [
-  { title: "Region-pinned", body: "Conversations stay in your region." },
-  { title: "Parent-consented", body: "Nothing is collected without your say-so." },
-  { title: "Deletable in one tap", body: "Read any conversation. Delete any conversation." },
-  { title: "Never sold", body: "Your child's voice data is never sold." },
+  { title: "Region-pinned", body: "Your family's conversations stay in your region. They do not travel to another country to be processed." },
+  { title: "Parent-consented", body: "Nothing is collected without your say-so. If you have not said yes, it does not happen." },
+  { title: "Deletable in one tap", body: "Read any conversation in the parent app. Delete any of it, whenever you like." },
+  { title: "Never sold", body: "Your child's voice data is never sold, and never used to sell them anything." },
 ] as const;
 
-/* R7: the custody-chain steps, adapted to parent voice from the
-   kheelona.ai/safety data-flow diagram (founder-published). */
-const VOICE_PATH = [
-  { title: "Lumi hears the wake word", body: "Until your child says it, the microphone is off. Not muted. Off." },
-  { title: "The device checks first", body: "The first safety filters run on the toy itself, before anything travels anywhere." },
-  { title: "The voice brain answers", body: "Every reply passes an age-graded safety layer tuned to your child's age." },
-  { title: "It all lands in your app", body: "You can read the conversation, and delete any of it with one tap." },
-] as const;
+/* V5-3 (2026-07-31 review): the four-step custody chain that used to sit here
+   was DELETED. It restated WORD_RULES above almost word for word — "Not muted.
+   Off." appeared in both, one section apart — so the page stated one promise
+   four times in a single fold: the answer block, the steps, the rules row, and
+   the closing display line. The mechanisms live in WORD_RULES; the data-custody
+   facts live in VOICE_RULES; each is now said once. Law: §8.23-4. */
 
 /* R7: standards, status-for-status as published on kheelona.ai/safety.
    Never upgrade a status here (claims gate). */
@@ -76,7 +75,11 @@ const PARENT_KEYS = [
 const ANSWERS = {
   flagship: {
     q: "Are AI toys safe for children?",
-    a: "Not all of them. Independent testers found toys that talked about things no child should hear, and toys that kept recordings parents never saw. Those findings are why Lumi works the way it does: the mic wakes to a word and is off the rest of the time, the first thinking happens on the device, answers come from a closed library instead of the open internet, and you can read or delete every conversation. You do not have to trust a badge. You can check.",
+    /* V5-3: 85 words → 57. This is the page's primary citable answer and answer
+       engines quote 40 to 60 words, so length was costing us the citation. The
+       independent-testing context moved into the page body where it belongs; the
+       mechanisms and the closing challenge — the strongest line here — stay. */
+    a: "Not all of them, and the difference is in the mechanisms. Lumi's mic wakes to a word and is off otherwise. The first thinking happens on the device. Replies come from a closed library, never the open internet. Every conversation is readable and deletable by you. You do not have to trust a badge. You can check.",
   },
   listening: {
     q: "Is Lumi always listening?",
@@ -221,25 +224,17 @@ export default function SafetyPage() {
               answer={ANSWERS.voice.a}
             />
           </Reveal>
-          {/* R7: the custody chain, step by step */}
-          <ol className="mb-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {VOICE_PATH.map((s, i) => (
-              <Reveal as="li" key={s.title} delay={i * 0.05}>
-                <Card tilt={false} className="h-full border border-line-soft bg-white p-6">
-                  <span aria-hidden="true" className="font-display text-3xl font-extrabold text-orange-deep">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <h3 className="mt-2 font-display text-[19px] font-extrabold text-ink-head">{s.title}</h3>
-                  <p className="mt-1 text-[15px]">{s.body}</p>
-                </Card>
-              </Reveal>
-            ))}
-          </ol>
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {/* Data custody, as promises. Two columns, not four: at four the
+              titles wrapped mid-phrase ("Deletable / in one tap"). */}
+          <div className="grid gap-5 sm:grid-cols-2">
             {VOICE_RULES.map((c, i) => (
               <Reveal key={c.title} delay={i * 0.05}>
-                <Card className="bg-white" title={c.title}>
-                  <p className="text-[15px]">{c.body}</p>
+                <Card className="h-full border border-line-soft bg-white">
+                  <PromiseMark index={i} className="mb-3" />
+                  <h3 className="mb-2 font-display text-[22px] font-extrabold text-ink-head">
+                    {c.title}
+                  </h3>
+                  <p className="text-[15.5px]">{c.body}</p>
                 </Card>
               </Reveal>
             ))}

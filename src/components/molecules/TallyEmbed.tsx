@@ -53,16 +53,25 @@ export function TallyEmbed() {
       <iframe
         src={embedUrl}
         title="Reserve Lumi: the pre-order form"
-        /* Measured against the real form, not guessed: the live embed after
-           the founder's 5-field edit (V4-a, 2026-07-31, hideTitle=1) is 827px
-           tall — re-measured the day the fields changed, per this comment's
-           own instruction. At the original 560px the SUBMIT BUTTON sat below
-           the iframe's own fold, reachable only by scrolling inside the frame,
-           on the one panel the whole site exists to convert. The headroom
-           above 827px absorbs validation messages, which push fields down on
-           a failed submit. Re-measure if fields change: open the embed URL
-           directly and read documentElement.scrollHeight. */
-        className="h-[900px] w-full"
+        /* MEASURED, never guessed (§8.23-2) — and measured INSIDE THIS IFRAME,
+           which is the part that is easy to get wrong. Loading the Tally URL
+           standalone renders the form in a 700px-wide centred layout and
+           reports ~721px; inside our ~680px iframe the same form is 609px. Two
+           readings of "the same" form, 112px apart. Measure where it ships.
+           As of the 5-field form (2026-07-31), submit bottom sits at:
+             609px in the 680px desktop iframe
+             627px in the 290px mobile iframe  ← TALLER, because a narrow frame
+             wraps labels and fields onto more lines. Mobile therefore needs the
+             taller frame, which is the opposite of the obvious guess.
+           The previous flat 900px left 191px of dead white on desktop and 93px
+           on mobile with Tally's badge floating alone in it — the "excessive
+           white space" the review flagged, on the one panel the whole site
+           exists to convert. Heights below keep ~100px (mobile) / ~80px
+           (desktop) of headroom, because a failed submit adds roughly 24px per
+           errored field.
+           RE-MEASURE whenever the fields change: scratchpad/iframe-measure.mjs
+           reads the submit button's bottom from inside the live frame. */
+        className="h-[730px] w-full sm:h-[690px]"
         onLoad={() => { setLoaded(true); track("preorder_view"); }}
       />
       <p className="px-6 pb-4 text-[14px] text-ink-muted">

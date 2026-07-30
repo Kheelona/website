@@ -31,7 +31,13 @@ export function Hero() {
               positioning mix. Both halves are published behaviour. The
               5-second test: what it is (tutor in a plush), who it is for
               (2 to 5), the offer (cap chip), the risk (none, no payment). */}
-          <h1 className="mb-5 font-display text-[clamp(38px,4.8vw,60px)] font-extrabold leading-[1.06] text-ink-head">
+          {/* V5-5 note for the next person tempted to "fix" the wrap: at 60px
+              in this ~590px column, "Your kid's favourite tutor." cannot fit on
+              one line, and it should not — shrinking the hero type to force it
+              would cost more than the break does. Two lines per sentence is the
+              rhythm, and it pairs with the two-colour treatment. `text-balance`
+              just keeps those pairs even. */}
+          <h1 className="mb-5 text-balance font-display text-[clamp(38px,4.8vw,60px)] font-extrabold leading-[1.06] text-ink-head">
             Your kid&rsquo;s favourite tutor.{" "}
             <span className="block text-action-ink">Their best friend first.</span>
           </h1>
@@ -43,12 +49,20 @@ export function Hero() {
           <div className="flex flex-wrap items-center gap-3">
             <Button href={PREORDER_HREF}>{RESERVE_LABEL}</Button>
           </div>
-          <p className="mt-4 inline-block max-w-[44ch] rounded-2xl bg-yellow/15 px-4 py-2.5 text-[16px] font-semibold text-ink-head">
+          {/* V5-5: `bg-yellow/15` on the warm backdrop was nearly the same
+              value as the page behind it, so the offer still did not read —
+              which is what the team meant by "not clearly visible", and what
+              V4's chip only half-fixed. White card + a keyline lifts it off the
+              wash without adding another colour to the palette. */}
+          <p className="mt-4 inline-block max-w-[46ch] rounded-2xl border border-line-soft bg-white px-4 py-3 text-[16px] font-semibold text-ink-head shadow-(--shadow-room-sm)">
             {CAP_LINE}
           </p>
-          <p className="mt-6 hidden text-[14px] font-semibold text-ink-muted md:block">
-            Your guide is waiting in the corner. Give Kheelu a poke.
-          </p>
+          {/* V5-5: "Your guide is waiting in the corner. Give Kheelu a poke."
+              was REMOVED here. It became literally untrue the moment the guide
+              started holding back during the hero — it pointed at an empty
+              corner. It was also the kind of line that explains the interface
+              instead of selling the product, and Kheelu introduces himself with
+              a speech bubble the moment he does arrive. */}
         </Reveal>
         <HeroStage />
       </div>

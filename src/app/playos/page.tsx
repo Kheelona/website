@@ -9,6 +9,7 @@ import { AnswerBlock } from "@/components/molecules/AnswerBlock";
 import { PageHero } from "@/components/templates/PageHero";
 import { Card } from "@/components/molecules/Card";
 import { Reveal } from "@/components/molecules/Reveal";
+import { PromiseMark } from "@/components/molecules/PromiseMark";
 import { ArchitectureStack, type ArchLayer } from "@/components/organisms/ArchitectureStack";
 import { RecognitionStrip } from "@/components/organisms/RecognitionStrip";
 import { graph, faqPage, breadcrumbs } from "@/lib/seo";
@@ -211,11 +212,11 @@ export default function PlayOSPage() {
           <div className="grid gap-5 sm:grid-cols-2">
             {MOAT.map((m, i) => (
               <Reveal key={m.title} delay={i * 0.05}>
-                <Card
-                  className="h-full border border-line-soft bg-cream"
-                  title={m.title}
-                  titleClassName="mb-2 font-display text-[21px] font-extrabold text-ink-head"
-                >
+                <Card className="h-full border border-line-soft bg-cream">
+                  <PromiseMark index={i} className="mb-3" />
+                  <h3 className="mb-2 font-display text-[21px] font-extrabold text-ink-head">
+                    {m.title}
+                  </h3>
                   <p className="text-[15.5px]">{m.body}</p>
                 </Card>
               </Reveal>

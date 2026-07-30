@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { PRESS_LIFT } from "@/lib/interactions";
 import { cn } from "@/lib/cn";
 import { Reveal } from "@/components/molecules/Reveal";
 import { FAMILY, type FamilyMember } from "@/lib/family";
@@ -35,7 +36,7 @@ export function FamilyGrid({ className }: { className?: string }) {
             <Link
               href="/products/lumi"
               aria-label={`Lumi: meet the friend who listens and reserve at ${LAUNCH_PRICE}`}
-              className="block h-full overflow-hidden rounded-(--radius-card) border border-line-soft bg-white transition-shadow duration-300 ease-(--ease-calm) hover:shadow-(--shadow-room) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
+              className={`block h-full overflow-hidden rounded-(--radius-card) border border-line-soft bg-white ${PRESS_LIFT} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2`}
             >
               <FamilyCardInner member={m} />
             </Link>

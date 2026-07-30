@@ -44,18 +44,35 @@ describe("TallyEmbed", () => {
     vi.resetModules();
   });
 
-  /* The live embed measures 827px after the founder's 5-field edit
-     (2026-07-31; was 886px with 6 fields). A shorter iframe hides the submit
-     button behind an inner scroll, which is invisible to most people. This
-     asserts the height stays above the form with room for validation
-     messages. */
-  it("gives the iframe enough height to show the submit button", () => {
+  /* Two failure modes, opposite directions, both real and both seen on this
+     component. TOO SHORT hides the submit button behind an inner scroll most
+     people never discover (the original 560px bug). TOO TALL leaves dead white
+     space on the site's one conversion panel (the 900px bug the review team
+     flagged). So the test brackets both sides of the content height, measured
+     INSIDE the shipping iframe on 2026-07-31 (5-field form): submit bottom at
+     609px in the 680px desktop frame, 627px in the 290px mobile frame. */
+  it("brackets the iframe height around the measured form: tall enough to submit, tight enough to look built", () => {
     const cls = readFileSync(
       `${process.cwd()}/src/components/molecules/TallyEmbed.tsx`,
       "utf8",
     );
-    const m = cls.match(/className="h-\[(\d+)px\] w-full"/);
-    expect(m, "iframe height class not found in TallyEmbed.tsx").toBeTruthy();
-    expect(Number(m![1])).toBeGreaterThanOrEqual(860);
+    const mobile = cls.match(/h-\[(\d+)px\]/);
+    const desktop = cls.match(/sm:h-\[(\d+)px\]/);
+    expect(mobile, "mobile iframe height not found").toBeTruthy();
+    expect(desktop, "desktop iframe height not found").toBeTruthy();
+    const m = Number(mobile![1]);
+    const d = Number(desktop![1]);
+    // clears the measured content plus room for validation messages
+    expect(m).toBeGreaterThanOrEqual(680);
+    expect(d).toBeGreaterThanOrEqual(660);
+    // ...without reintroducing a field of empty white
+    expect(m).toBeLessThanOrEqual(780);
+    expect(d).toBeLessThanOrEqual(740);
+    /* Mobile is the TALLER frame, which is counter-intuitive and therefore worth
+       locking: the 290px mobile iframe wraps labels and fields onto more lines
+       than the 680px desktop one, so the narrow form is the tall one. If someone
+       "fixes" this by making desktop taller, the desktop panel grows a field of
+       dead white again. */
+    expect(m).toBeGreaterThan(d);
   });
 });

@@ -2,6 +2,7 @@
 
 import * as Accordion from "@radix-ui/react-accordion";
 import { Plus } from "lucide-react";
+import { PRESS_TINT } from "@/lib/interactions";
 
 export type FaqEntry = { q: string; a: string };
 
@@ -20,7 +21,7 @@ export function Faq({ items }: { items: FaqEntry[] }) {
         <Accordion.Item key={item.q} value={item.q}>
           <Accordion.Header asChild>
             <h3>
-              <Accordion.Trigger className="group flex w-full items-center justify-between gap-4 px-6 py-5 text-left font-display text-[20px] font-bold text-ink-head transition-colors hover:text-orange-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-inset">
+              <Accordion.Trigger className={`group flex w-full cursor-pointer items-center justify-between gap-4 px-6 py-5 text-left font-display text-[20px] font-bold text-ink-head transition-colors hover:text-orange-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-inset ${PRESS_TINT}`}>
                 {item.q}
                 <Plus
                   aria-hidden="true"

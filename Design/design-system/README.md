@@ -165,3 +165,29 @@ The site keeps two mirrors of this palette. To change a color:
 3. If the 3D scene uses it, mirror it in `src/lib/three/tokens.ts`.
 4. Run `npm run build` — `tools/tokens/check-tokens.mjs` fails the build on any drift.
 5. Sanctioned site-only values (heading ink `#1C1C1C`, footer cocoa, sun wash `#FDF1E2`, sky stops) are whitelisted inside that script; add new deviations there with a comment.
+
+
+## Interaction contract (V5, 2026-07-31)
+
+`src/lib/interactions.ts` is the single source for interactive motion. Compose it; never hand-roll.
+
+| Constant | Use | Behaviour |
+|---|---|---|
+| `PRESS` | any tappable control | `active:scale-[0.97]`, bouncy ease — the mobile-critical one |
+| `LIFT` | clickable cards, fine pointers | `md:hover:-translate-y-1` + `shadow-room-sm`, calm ease |
+| `PRESS_LIFT` | default for a clickable card | both |
+| `PRESS_TINT` | chips, swatches, accordion rows | press without a full card lift |
+| `LIFT_WHEN_CLOSED` | expandable rows | lifts only while collapsed, so opening never jumps |
+
+Every one neutralises under `motion-reduce`. Lift is `md:` and up because a hover state sticks after
+a tap on touch and reads as a bug. Tilt (`TiltCard`) is for NON-interactive surfaces only and is
+mutually exclusive with lift — it moves the surface under the cursor and drops clicks (R10).
+A surface that does nothing when tapped gets no press feedback.
+
+## The promise mark (V5, 2026-07-31)
+
+The four brand blob shapes have exactly one meaning on the website: **this card is a promise**.
+Rendered through `molecules/PromiseMark` — a fixed positional rotation (so a four-up never repeats a
+shape and position 1 is always the same mark site-wide), 36px, fill opacity 0.22, `aria-hidden`.
+In use on: Home's trust room, /safety's data-custody promises, /playos's moat cards, and the reserve
+reassurance strip. Not to be used as background texture or general decoration.

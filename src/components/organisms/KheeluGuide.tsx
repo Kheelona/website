@@ -11,6 +11,7 @@ import {
   type KheeluPose,
 } from "@/lib/kheelu-poses";
 import { PREORDER_HREF, RESERVE_LABEL_SHORT } from "@/config/site";
+import { PRESS } from "@/lib/interactions";
 
 /** The persistent Kheelu guide (revamp M1, theme B's signature device).
  *
@@ -49,6 +50,7 @@ export function KheeluGuide({ defaultPose = "hero-wink" }: { defaultPose?: Kheel
   const [pokeSay, setPokeSay] = useState("");
   const [poking, setPoking] = useState(false);
   const [reserveVisible, setReserveVisible] = useState(false);
+  const [heroArtVisible, setHeroArtVisible] = useState(false);
   const followRef = useRef<HTMLDivElement>(null);
   const pokeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -89,6 +91,28 @@ export function KheeluGuide({ defaultPose = "hero-wink" }: { defaultPose?: Kheel
       { rootMargin: "0px 0px -20% 0px" },
     );
     io.observe(reserve);
+    return () => io.disconnect();
+  }, [pathname]);
+
+  /* V5-5: hold the DESKTOP guide back while hero art that already contains
+     Kheelu is on screen. REV-a's final artwork is Kheelu whispering to Lumi, so
+     the corner guide put the same character on screen twice in the first
+     impression — a craft flaw the M2 notes predicted and the final art locked
+     in rather than removed. He fades in once the art has scrolled away, which
+     also gives him a proper entrance instead of being there from frame one.
+     Only pages whose hero carries Kheelu opt in, via [data-hero-has-kheelu].
+     The mobile dock is unaffected: it sits below the fold, never beside the
+     art. */
+  useEffect(() => {
+    const art = document.querySelector("[data-hero-has-kheelu]");
+    setHeroArtVisible(false);
+    if (!art) return;
+    const io = new IntersectionObserver(
+      (entries) => setHeroArtVisible(entries.some((e) => e.isIntersecting)),
+      // most of the art has to leave before he appears, so they never overlap
+      { threshold: 0.25 },
+    );
+    io.observe(art);
     return () => io.disconnect();
   }, [pathname]);
 
@@ -172,7 +196,18 @@ export function KheeluGuide({ defaultPose = "hero-wink" }: { defaultPose?: Kheel
           leaves him the least room. Bubble narrowed to match, with the §5.1
           law capping say lines at 48 characters so it never wraps past two
           lines. */}
-      <div className="pointer-events-none fixed bottom-[22px] right-[22px] z-40 hidden md:block">
+      <div
+        className={cn(
+          "pointer-events-none fixed bottom-[22px] right-[22px] z-40 hidden md:block",
+          // V5-5: he waits out hero art that already shows him, then fades in
+          "transition-opacity duration-500 ease-(--ease-calm) motion-reduce:transition-none",
+          heroArtVisible ? "opacity-0" : "opacity-100",
+        )}
+        /* aria-hidden alone is a violation while the poke button inside stays
+           focusable ("aria-hidden element must not contain focusable
+           elements"), so the button drops out of the tab order with it. */
+        aria-hidden={heroArtVisible || undefined}
+      >
         <div ref={followRef} className="kheelu-guide-follow flex flex-col items-end">
           {line ? (
             <div
@@ -190,6 +225,9 @@ export function KheeluGuide({ defaultPose = "hero-wink" }: { defaultPose?: Kheel
             type="button"
             aria-label="Give Kheelu a poke"
             onClick={poke}
+            /* leaves the tab order while the wrapper is aria-hidden, so the
+               hidden guide is never a focus trap for a keyboard visitor */
+            tabIndex={heroArtVisible ? -1 : 0}
             className={cn(
               "kheelu-guide-idle pointer-events-auto flex h-[132px] cursor-pointer items-end justify-end rounded-(--radius-card) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2 min-[1320px]:h-[168px]",
               poking && "kheelu-guide-poke",
@@ -233,7 +271,7 @@ export function KheeluGuide({ defaultPose = "hero-wink" }: { defaultPose?: Kheel
             </p>
             <a
               href={PREORDER_HREF}
-              className="shrink-0 rounded-full bg-action px-4 py-3 text-[14px] font-bold leading-none text-ink-head shadow-cta"
+              className={`shrink-0 rounded-full bg-action px-4 py-3 text-[14px] font-bold leading-none text-ink-head shadow-cta ${PRESS}`}
             >
               {RESERVE_LABEL_SHORT}
             </a>

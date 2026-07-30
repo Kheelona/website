@@ -17,7 +17,13 @@ import { cn } from "@/lib/cn";
  *  it, ever. */
 export function HeroStage({ className }: { className?: string }) {
   return (
-    <div className={cn("relative flex items-end justify-center pb-4", className)}>
+    /* data-hero-has-kheelu: this artwork contains Kheelu, so the corner guide
+       holds back until it scrolls away (V5-5) — two of the same character in
+       one viewport was the craft flaw REV-a's final art locked in. */
+    <div
+      data-hero-has-kheelu
+      className={cn("relative flex items-end justify-center pb-4", className)}
+    >
       <div
         aria-hidden="true"
         className="pointer-events-none absolute left-1/2 top-1/2 h-[560px] w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(241,162,59,0.16)_0%,rgba(241,162,59,0.3)_35%,transparent_70%)]"
@@ -28,8 +34,13 @@ export function HeroStage({ className }: { className?: string }) {
         width={1106}
         height={1185}
         priority
-        sizes="(max-width: 768px) 82vw, 420px"
-        className="relative h-[350px] w-auto md:h-[420px]"
+        sizes="(max-width: 768px) 82vw, 500px"
+        /* V5-5: the art was 420px in an ~800px hero, leaving a band of empty
+           wash above it — the composition read left-heavy and the product,
+           which is the thing being sold, was the smaller half of its own hero.
+           Scaled up on desktop only; the phone size already filled its frame
+           and it owns the mobile LCP, so it is left exactly as measured. */
+        className="relative h-[350px] w-auto md:h-[470px] xl:h-[500px]"
       />
     </div>
   );

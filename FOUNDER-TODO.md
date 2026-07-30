@@ -55,6 +55,33 @@ So local and preview page views will show up in your Ahrefs numbers. Small, and 
 verify button that works. Say the word if you would rather have it clean and I will restrict it and
 verify another way.
 
+## ► V5 — the end-to-end design review is BUILT on `demo-website`, waiting for you (2026-07-31)
+
+Review on **https://website-hdn2.vercel.app** in a **visible** tab (hidden tabs freeze the scroll
+reveals and defer images), then merge `demo-website` → `main`. Spec `docs/revamp-2026-07/BUILD-V5.md`.
+
+Your team's four observations all checked out, and the numbers found each one:
+- **Micro-interactions inconsistent** → the whole codebase had *two* press states, and the card
+  interaction was desktop-only, so phones answered almost nothing. There is now one contract used
+  everywhere. **On your phone: tap a story card, a feeling, a colour swatch, an FAQ row** — they all
+  respond now. Static cards deliberately do not: pretending a card is tappable is worse than nothing.
+- **Form white space** → measured 191px of dead space on desktop, 93px on mobile. It came from
+  measuring the form on its own page instead of inside our embed. Fixed, and the section now carries
+  three answers (no payment today / first 500 / ships 1 Sep) instead of padding.
+- **The promise section's elements used nowhere else** → they now mean one thing, "this is a
+  promise", and appear on /safety, /playos and the reserve section too.
+- **/safety too wordy** → it stated one promise *four times* in a single fold, and one row repeated
+  the previous section almost verbatim. Cut. The main answer went 85 → 57 words, which also makes it
+  more quotable by AI search.
+
+Two things I found that nobody had flagged: **Kheelu was appearing twice in the hero** (the new
+artwork contains him and the corner guide showed him too — he now waits), and **Home and Meet Lumi
+were 60% the same page**, so the duplicate feelings section came off the product page.
+
+**One decision left for you (not urgent):** Home and Meet Lumi still share the modes, the quotes, the
+audio demos and a near-identical FAQ. Cutting further needs your call on which page owns each beat —
+tell me and it is a short job.
+
 ## ✅ V4 — MERGED AND LIVE ON https://kheelona.com (2026-07-31, your order)
 
 Everything below shipped. Spec: `docs/revamp-2026-07/BUILD-V4.md`; the merge record:
