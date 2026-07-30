@@ -267,6 +267,41 @@ body {
   }
 }
 
+/* V4 audio moments + how-it-works loop (team feedback 2026-07-30).
+   Both are decoration over always-visible content: the equaliser bars scale
+   only while that card is playing, and the loop glow is an opacity-only
+   overlay that walks the three step cards (delay staggered a third of the
+   period each) so the cycle reads as a cycle. Reduced motion: bars rest,
+   glow never appears — nothing is hidden either way. */
+@media (prefers-reduced-motion: no-preference) {
+  .audio-eq[data-playing="true"] .audio-eq-bar {
+    animation: eq-bounce 0.9s ease-in-out infinite;
+  }
+  .loop-step-glow {
+    animation: loop-glow-fade 7.5s ease-in-out infinite;
+  }
+}
+@keyframes eq-bounce {
+  0%,
+  100% {
+    transform: scaleY(0.35);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+@keyframes loop-glow-fade {
+  0%,
+  33.4%,
+  100% {
+    opacity: 0;
+  }
+  9%,
+  24% {
+    opacity: 1;
+  }
+}
+
 /* FeelingsGallery dialog (revamp M2): App-Store-card expansion feel.
    Motion-gated; reduced-motion opens instantly. */
 @media (prefers-reduced-motion: no-preference) {

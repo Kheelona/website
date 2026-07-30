@@ -1,26 +1,31 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Room } from "@/components/atoms/Room";
 import { RoomsTrack } from "@/components/atoms/RoomsTrack";
+import { Button } from "@/components/atoms/Button";
 import { Reveal } from "@/components/molecules/Reveal";
 import { SectionHeading } from "@/components/molecules/SectionHeading";
-import { ChatDemo } from "@/components/molecules/ChatDemo";
-import { FootnotesRow, V3_FOOTNOTES } from "@/components/molecules/FootnotesRow";
+import { AudioMoments } from "@/components/molecules/AudioMoments";
+import { FootnotesRow, Footnote, V3_FOOTNOTES } from "@/components/molecules/FootnotesRow";
 import { Faq, type FaqEntry } from "@/components/molecules/Faq";
-import { graph, faqPage, breadcrumbs, LAUNCH_VIDEO, LUMI_PRODUCT } from "@/lib/seo";
+import { graph, faqPage, breadcrumbs, LUMI_PRODUCT } from "@/lib/seo";
+import { AUDIO_MOMENTS } from "@/lib/audio-moments";
 import { RecognitionStrip } from "@/components/organisms/RecognitionStrip";
 import { ParentQuotes } from "@/components/organisms/ParentQuotes";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { FeelingsGallery } from "@/components/organisms/FeelingsGallery";
 import { LumiModes } from "@/components/organisms/LumiModes";
+import { HowItWorksLoop, type LoopStep } from "@/components/organisms/HowItWorksLoop";
+import {
+  PREORDER_HREF,
+  RESERVE_LABEL,
+  PRICE_CAPTION,
+} from "@/config/site";
 import {
   Hero,
-  Statement,
   TrustRoom,
   Family,
   KheeluOrbit,
-  LaunchVideo,
-  LearningRoom,
-  BrainRoom,
   Compare,
   Journal,
   ParentAppSection,
@@ -28,12 +33,11 @@ import {
 
 export const metadata: Metadata = {
   title:
-    "Lumi: the screen-free AI toy that learns with your child, ages 2 to 5 | Kheelona",
+    "Lumi: your kid's favourite tutor, in a screen-free AI toy | Kheelona",
   description:
-    "Lumi is a screen-free AI toy for ages 2 to 5, made in India. It talks with your child, remembers what they said last time, and moves at their pace, in up to 10 home languages. No screen, no open internet, and you read every word. Reserve at ₹4,999, no payment now.",
+    "Lumi listens, remembers, and adapts. Stories, numbers, and languages at your child's natural speed, for ages 2 to 5, with no screen and every word readable by you. Reserve at ₹4,999, no payment now.",
   alternates: { canonical: "/" },
 };
-
 
 /* The questions parents actually type, answered on the page a search or an
    answer engine lands on first. Straight from the AEO question bank in
@@ -67,22 +71,42 @@ const HOME_FAQ: FaqEntry[] = [
   },
 ];
 
+/* V4 (D7): the VideoObject left this graph with the film — schema mirrors
+   visible content only, and the film is no longer on the page. */
 const HOME_JSON_LD = graph(
   LUMI_PRODUCT,
-  LAUNCH_VIDEO,
   faqPage(HOME_FAQ),
   breadcrumbs([]),
 );
 
-/* Revamp M2 (theme B "Kheelu's Tour") + V3 repositioning (founder 2026-07-27,
-   from the YC application): the page is a track of contained rooms on the
-   SiteBackdrop sky, narrated by the persistent KheeluGuide, and the argument
-   now runs fun → learning → why talking works → trust → the age arc → the
-   parent's view → the comparison → proof → the ask. Positioning mix is 40%
-   fun, 20% brain development, 40% education; the companion story still leads,
-   because that is what a child sees and what a parent falls for first.
-   Every say line is GATED:kheelu-line until founder sign-off (queue:
-   docs/revamp-2026-07/BUILD-V3.md §6.4). Copy provenance: BUILD-V3 §3. */
+/* The team's How-It-Works sequence (BUILD-V4 §3 F4), typos mended, with the
+   LumiModes naming convention: the parent verb leads, the term follows. */
+const LOOP_STEPS: readonly LoopStep[] = [
+  {
+    title: "Talk and play",
+    label: "Step 1",
+    body: "Your child asks questions, plays word games, and listens to stories that talk back, in their own language.",
+  },
+  {
+    title: "Lumi remembers",
+    label: "Step 2 · Adaptive memory",
+    body: "Lumi keeps track of the words your child knows, what they love, and the pace they learn at.",
+  },
+  {
+    title: "Knowledge that sticks",
+    label: "Step 3 · Real-world learning",
+    body: "New ideas arrive inside everyday conversation, not forced drills.",
+  },
+];
+
+/* V4 recomposition (team feedback 2026-07-30, BUILD-V4 §3): the argument now
+   runs claim → proof → HEAR IT (real audio) → how it works → the day → trust
+   → the age arc → feelings → the parent's view → comparison → proof → the
+   ask. Two team verdicts shaped it: "too much content, less value" (four
+   heavy rooms out, two lighter ones in) and "show, don't tell" (the audio IS
+   the concept section). Every say line is GATED:kheelu-line until founder
+   sign-off, and V4's §5.1 caps them at 48 characters for the right-corner
+   bubble. Copy provenance: BUILD-V4 §3. */
 export default function HomePage() {
   return (
     <>
@@ -93,18 +117,80 @@ export default function HomePage() {
       <Hero />
       <RoomsTrack>
         <Room fill="white" guide="curious" say="These folks vouch for us. Real ones." reveal="pop">
-          <RecognitionStrip bare safetyLine />
+          <RecognitionStrip bare />
         </Room>
 
-        <Room fill="cream" guide="bliss" say="This is the part we mean the most." reveal="left">
-          <Statement />
-        </Room>
-
-        <Room fill="white" guide="joy" say="That blue one is Lumi. My best friend." reveal="right">
+        {/* Hear it (the concept, demonstrated): real Lumi audio replaces the
+            old statement room — the team asked for the product's own voice
+            where the manifesto used to be. */}
+        <Room
+          fill="cream"
+          id="learning"
+          guide="joy"
+          say="Go on, press play. That's my best friend."
+          reveal="left"
+        >
           <Reveal>
-            <SectionHeading title="Watch two friends meet." titleClassName="mb-8" />
+            <SectionHeading
+              eyebrow="Hear it for yourself"
+              title="Play, learn, together."
+              titleClassName="mb-3"
+              lede="Lumi teaches in the way your child likes. Press play and listen in."
+              ledeClassName="mb-10 max-w-[58ch]"
+            />
           </Reveal>
-          <LaunchVideo bare />
+          <Reveal>
+            <AudioMoments moments={AUDIO_MOMENTS} />
+          </Reveal>
+          <Reveal className="mt-7">
+            <p className="text-[16px] text-ink-muted">
+              In the languages you speak at home, up to ten of them.
+              <Footnote n={1} id="fn-languages" />
+            </p>
+          </Reveal>
+          {/* the strongest fold carries the ask (Apple-tier rule) */}
+          <Reveal className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
+            <Button href={PREORDER_HREF}>{RESERVE_LABEL}</Button>
+            <p className="text-[15px] text-ink-muted">{PRICE_CAPTION}</p>
+          </Reveal>
+        </Room>
+
+        {/* How it works: the team's three-step sequence, drawn as the loop it
+            is. Serve-and-return survives as this room's closing science. */}
+        <Room
+          fill="white"
+          guide="curious"
+          say="Round and round we go. Cleverer every lap."
+          reveal="right"
+        >
+          <Reveal>
+            <SectionHeading
+              eyebrow="How it works"
+              title="A loop that learns your child."
+              titleClassName="mb-3"
+              lede="Three steps, then it repeats. Every round fits your child a little better."
+              ledeClassName="mb-10 max-w-[58ch]"
+            />
+          </Reveal>
+          <Reveal>
+            <HowItWorksLoop
+              steps={LOOP_STEPS}
+              repeatNote="Then it begins again, one level wiser."
+            />
+          </Reveal>
+          <Reveal className="mt-9">
+            <p className="max-w-[64ch] text-[16px] text-ink-muted">
+              Researchers call this serve and return, the back and forth that
+              builds language and thinking in the years the brain grows
+              fastest.{" "}
+              <Link
+                href="/stories/how-children-learn-by-talking"
+                className="rounded font-semibold text-ink-head underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
+              >
+                Read the science in the journal
+              </Link>
+            </p>
+          </Reveal>
         </Room>
 
         {/* Fun (40%): the day a child actually has */}
@@ -122,23 +208,7 @@ export default function HomePage() {
           <LumiModes variant="strip" className="mt-12" />
         </Room>
 
-        {/* Education (40%): the mechanism, not the adjective */}
-        <Room
-          fill="white"
-          id="learning"
-          guide="curious"
-          say="This is the part where the games are secretly lessons."
-          reveal="right"
-        >
-          <LearningRoom />
-        </Room>
-
-        {/* Brain development (20%): why any of this counts */}
-        <Room fill="cream" reveal="left">
-          <BrainRoom />
-        </Room>
-
-        <Room fill="cool" id="trust" guide="curious" say="Read this bit slowly. It's for you, not the kids." reveal="right">
+        <Room fill="cool" id="trust" guide="curious" say="This bit is for you, not the kids." reveal="right">
           <TrustRoom />
         </Room>
 
@@ -146,7 +216,7 @@ export default function HomePage() {
           fill="white"
           id="lumi"
           guide="joy"
-          say="The Speaker is my cousin. Louder, and better at maths."
+          say="The Speaker is my cousin. Better at maths."
           reveal="left"
         >
           <Family />
@@ -162,18 +232,7 @@ export default function HomePage() {
               ledeClassName="mb-10 mt-4 max-w-[62ch]"
             />
           </Reveal>
-          <FeelingsGallery className="mb-10" />
-          <div className="grid items-start gap-8 md:grid-cols-[1.05fr_0.95fr]">
-            <Reveal>
-              <ChatDemo />
-            </Reveal>
-            <Reveal delay={0.08}>
-              <p className="max-w-[36ch] font-display text-[clamp(19px,1.8vw,23px)] font-bold leading-[1.4] text-ink-head md:pt-6">
-                Lumi talks in the languages you speak at home. Up to ten of
-                them.
-              </p>
-            </Reveal>
-          </div>
+          <FeelingsGallery />
         </Room>
 
         <Room fill="cream" id="parent-app" guide="bliss" say="You get to see everything. That's the deal." reveal="left">
@@ -213,7 +272,7 @@ export default function HomePage() {
           fill="white"
           id="reserve"
           guide="silly"
-          say="Save your spot. I'll keep Lumi company until launch."
+          say="Save your spot. I'll mind Lumi till launch."
           reveal="pop"
           className="overflow-x-clip"
         >
