@@ -2,6 +2,27 @@
 
 Each item unlocks something specific. Ordered by launch impact.
 
+## ✅ THE GREAT CLEARANCE (2026-07-31) — you answered almost everything in one message
+
+| Gate | Your answer | Now live |
+|---|---|---|
+| REV-a final hero art | generated | The whisper artwork IS the hero (single image, interim two-cutout composition retired) |
+| Ship date | "Shipping starting 1st Sep" | FAQ on Home + /products/lumi, `availabilityStarts: 2026-09-01` in the Product schema, llms.txt, pricing.md — all from `SHIP_DATE_*` constants |
+| Languages | 8 named, final | Named in both FAQs, footnote 1, llms.txt, pricing.md via `LANGUAGES_LINE`; ceiling stays "up to 10" so two more slot in with zero copy changes |
+| Kheelona+ (V3-b) | smart features lifetime; AI pricing open-ended | `KHEELONA_PLUS_LINE` now says "smart features are yours for life" + "pricing announced soon". A ₹ amount is STILL gated — say the number when you have it |
+| Certifications | none yet, drop from FAQ | The standards FAQ entry is removed (the status-honest standards room stays); reinstate when the first certificate lands |
+| Counsel review | "Remove this point" | Waived by you, 2026-07-31 — recorded here so nobody re-raises it |
+| Article authors (V3-f) | assign from /team | All 19 articles carry bylines + Person schema (Apoorva 5, Ria 7, Kashyap 4, Aman 3, matched to topics) |
+| Backlinks (V3-i) | ignore for now | Parked at your instruction |
+| Ahrefs extras (V4-d) | not required | Closed |
+| Play Store ₹2,999 listing (V3-h) | you will take it down | With you |
+
+**Still open, the short list**: the Kheelona+ ₹ amount when you decide it (one-constant edit) ·
+the first toy-safety certificate when it lands (reinstates the FAQ + the badge) · real
+testimonial quotes whenever you want to swap them in (V3-a stays your standing decision) ·
+R9-a real photography (optional polish) · og.png can be refreshed with the new whisper artwork
+(optional, the current card is accurate).
+
 ## ✅ #0 — LAUNCH IS DONE (2026-07-28). Nothing here blocks anything.
 
 **https://kheelona.com is live and taking reservations.** Everything that was blocking has cleared,
@@ -23,7 +44,7 @@ Two things about the live setup worth remembering rather than rediscovering:
   preview deploy pollutes your reports. If the canonical host ever changes, `GA4_HOSTS` in
   `src/config/site.ts` must change with it, or the tag goes silently dead.
 
-## ► #0b — Ahrefs: click "Recheck installation" (30 seconds)
+## ✅ #0b — DONE (2026-07-31): you clicked Recheck installation
 
 The tag is live on https://kheelona.com with your key `N7vd/jLtIIlHqzFqu57UBg`, in `<head>` on all 24
 routes, verified in the served HTML. Ahrefs just needs you to press its button.

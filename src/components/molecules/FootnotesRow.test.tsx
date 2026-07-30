@@ -5,7 +5,7 @@ describe("FootnotesRow", () => {
   it("renders the notes as an ordered list", () => {
     const { container } = render(<FootnotesRow items={V3_FOOTNOTES} />);
     expect(container.querySelectorAll("ol > li").length).toBe(2);
-    expect(screen.getByText(/the full language list is announced before launch/)).toBeInTheDocument();
+    expect(screen.getByText(/Announced so far: English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish, and French/)).toBeInTheDocument();
   });
 
   it("gives every note an anchor id a marker can reach", () => {
@@ -25,6 +25,9 @@ describe("FootnotesRow", () => {
     render(<FootnotesRow items={V3_FOOTNOTES} />);
     const plus = screen.getByText(/Kheelona\+:/);
     expect(plus.textContent).not.toMatch(/₹|Rs\.?\s?\d/);
-    expect(plus.textContent).toMatch(/announced before launch/);
+    // 2026-07-31: pricing is deliberately open-ended ("announced soon") and
+    // the founder cleared the lifetime line — the ₹ guard above still stands
+    expect(plus.textContent).toMatch(/announced soon/);
+    expect(plus.textContent).toMatch(/yours for life/);
   });
 });

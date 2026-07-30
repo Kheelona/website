@@ -54,10 +54,16 @@ repo root. That old app is preserved at the tag **`pre-revamp-2026-07`** and its
 - **Locked product facts**: Lumi is ages **2 to 5**, the platform arc is **2 to 14** (both "3 to 6"
   and "3 to 10" are dead — render ages from `LUMI_AGES`/`PLATFORM_AGES`). The .com line-up is the
   pipeline Lumi → Kheelu Speaker → AI books. Lumi has **three modes**: AI mode, Kheelu mode,
-  Bluetooth mode. Kheelona+ may only ever be described as "6 months included, monthly price
-  announced before launch" — no ₹ amount, and no claim about what happens if it lapses (V3-b).
-  Testimonial words are placeholders (V3-a). Contact is `hello@kheelona.com`; the phone number on
-  the legacy site was a placeholder and must never be published.
+  Bluetooth mode. **Shipping starts 1 September 2026** (founder 2026-07-31 — render from
+  `SHIP_DATE_TEXT`/`SHIP_DATE_ISO`, never inline). **Eight languages are named and final**
+  (English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish, French — render from
+  `LUMI_LANGUAGES`/`LANGUAGES_LINE`); the published ceiling stays "up to 10". **Kheelona+** may
+  only ever be described per `KHEELONA_PLUS_LINE`: 6 months included, **Lumi's smart features are
+  lifetime** (the sanctioned post-lapse answer since 2026-07-31), pricing "announced soon" — a ₹
+  amount for it is STILL gated. Certifications: none received; the safety-standards FAQ is
+  removed until the first certificate lands (the status-honest standards room stays). Testimonial
+  words are placeholders (V3-a). Contact is `hello@kheelona.com`; the phone number on the legacy
+  site was a placeholder and must never be published.
 - **Two hard rules from the mobile pass**: never animate X on an element spanning the track width
   (it widens the layout viewport on phones), and base-level element CSS belongs in `@layer base`.
 - **One from the QA pass**: a route with a copy-only hero must ship its first room reveal-free, or

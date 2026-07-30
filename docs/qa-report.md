@@ -107,6 +107,23 @@ revalidation). Verified after clear: fresh bytes at every width, v2 rendering in
 
 Tests 254/254, build green, token-check 17.
 
+### The great clearance · 2026-07-31 · founder answers land, REV-a ships
+
+One founder message cleared nearly every standing gate, same day as the merge. Shipped: the FINAL
+hero artwork (Kheelu whispering to Lumi v2 — Vision cutout, character gap verified transparent,
+tassels intact; the two-cutout interim composition HeroStage carried since M2 is retired), the
+ship date (1 September 2026 — FAQs, Product schema availabilityStarts, llms.txt, pricing.md, all
+from new SHIP_DATE_* constants; the seo.test no-ship-date guard FLIPPED into a positive
+assertion), the eight named languages (LANGUAGES_LINE everywhere the "announced before launch"
+placeholder lived; ceiling stays "up to 10"), the new Kheelona+ law (smart features LIFETIME — the
+post-lapse answer V3 predicted would be the objection-killer; pricing "announced soon"; ₹ amount
+still gated and still guard-tested), the safety-standards FAQ removed at founder instruction
+(certs pending; the status room stays), and bylines + Person schema on all 19 articles (V3-f
+cleared: Apoorva 5, Ria 7, Kashyap 4, Aman 3). Counsel review WAIVED by the founder; V3-i/V4-d/
+V3-h dispositioned. Verified: 255/255 (three wording guards updated to the new sanctioned lines),
+build green, voice-lint probe ALL CLEAN on 16 routes, byline + schema confirmed in served HTML
+(mind React's comment node: `By <!-- -->Name` breaks naive greps).
+
 ### V4 MERGE + LIVE · 2026-07-31 · main 99f1bc8 · rollback tag v3-live-2026-07-31
 
 Founder-ordered merge (also closing V3-d — Kheelu lines ship as reviewed). Wireframe drafts

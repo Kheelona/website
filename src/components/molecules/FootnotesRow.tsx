@@ -54,10 +54,12 @@ export function FootnotesRow({
 export const V3_FOOTNOTES: readonly FootnoteItem[] = [
   {
     id: "fn-languages",
-    text: "Up to 10 languages: the full language list is announced before launch.",
+    /* Founder cleared the named list 2026-07-31; the ceiling stays "up to 10"
+       so two more can land without a copy change. */
+    text: "Up to 10 languages at launch. Announced so far: English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish, and French.",
   },
   {
     id: "fn-kheelona-plus",
-    text: "Kheelona+: included free for 6 months with every Lumi; the monthly price after that is announced before launch. Nothing renews without you.",
+    text: "Kheelona+: included free for 6 months with every Lumi; pricing after that is announced soon. Lumi's smart features are yours for life, and nothing renews without you.",
   },
 ];

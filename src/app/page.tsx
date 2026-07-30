@@ -59,7 +59,11 @@ const HOME_FAQ: FaqEntry[] = [
   },
   {
     q: "Which languages does Lumi speak?",
-    a: "The languages you speak at home, up to ten of them, including English, Hindi, and regional Indian languages. Lumi can switch mid-sentence. The full list is announced before launch.",
+    a: "English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish, and French, with up to ten languages at launch. Lumi can switch mid-sentence, in the languages you speak at home.",
+  },
+  {
+    q: "When does Lumi ship?",
+    a: "Shipping starts 1 September 2026. Reserving now holds the launch price of ₹4,999 and your place in line, and you pay nothing today.",
   },
   {
     q: "Does Lumi need the internet to work?",

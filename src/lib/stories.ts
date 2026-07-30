@@ -6,6 +6,8 @@ export type Story = {
   title: string;
   description: string;
   theme: string;
+  /** Byline (V3-f cleared 2026-07-31): one of the four people on /team. */
+  author: string;
   minutes: number;
   pose: "curious" | "silly" | "joy" | "bliss" | "grumpy" | "sad";
   tint: string;
@@ -22,6 +24,7 @@ const CORE: Story[] = [
     description:
       "A short, warm read on the window when a child's brain grows fastest, and what actually fills it.",
     theme: "How children grow",
+    author: "Apoorva Sahu",
     minutes: 4,
     pose: "curious",
     tint: "bg-blue/15",
@@ -44,6 +47,7 @@ const CORE: Story[] = [
     description:
       "What a rich, language-filled childhood actually looks like, without a single screen.",
     theme: "Screen-free living",
+    author: "Ria Mangala Rewari",
     minutes: 4,
     pose: "silly",
     tint: "bg-yellow/15",
@@ -66,6 +70,7 @@ const CORE: Story[] = [
     description:
       "The back and forth of conversation is the oldest learning technology in the world. Here is how it works.",
     theme: "How children grow",
+    author: "Ria Mangala Rewari",
     minutes: 5,
     pose: "joy",
     tint: "bg-orange/15",
@@ -88,6 +93,7 @@ const CORE: Story[] = [
     description:
       "A parent's plain-words checklist for judging AI toys, including ours.",
     theme: "Safety",
+    author: "Aman Soni",
     minutes: 5,
     pose: "bliss",
     tint: "bg-blue/15",

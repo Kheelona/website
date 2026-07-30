@@ -21,7 +21,7 @@ the /a /b /c wireframe drafts were stripped from the production tree inside the 
 Full record: `docs/checkpoints/v4-merge-2026-07-31.md`. Rollback: tag `v3-live-2026-07-31`.
 Verify locally: `npm test` (254/254) · `npm run build` (token-check 17) · `npx next start -p 3456`
 (check `lsof -iTCP:3456` for stale servers first; `rm -rf .next/cache/images` if a replaced image
-serves stale). Remaining founder queue lives in FOUNDER-TODO (REV-a hero art is the only open art).
+serves stale). The 2026-07-31 GREAT CLEARANCE then landed the same day: REV-a hero art SHIPPED, ship date (1 Sep 2026) + eight named languages + the lifetime-smart-features Kheelona+ law published, authors on all 19 articles, counsel waived. Still gated: the Kheelona+ ₹ amount, certifications, testimonials. See FOUNDER-TODO's clearance table + qa-report.
 
 The section below is the now-historical record of the round while it sat on `demo-website`.
 

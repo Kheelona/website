@@ -54,6 +54,7 @@ const JOURNAL_JSON_LD = graph(
       headline: s.title,
       description: s.description,
       url: `${SITE_URL}/stories/${s.slug}`,
+      author: { "@type": "Person", name: s.author, url: `${SITE_URL}/team` },
       ...(s.hero ? { image: `${SITE_URL}${s.hero}` } : {}),
     })),
   },

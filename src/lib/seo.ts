@@ -1,4 +1,4 @@
-import { LAUNCH_PRICE, LATER_PRICE, LUMI_AGES, PLATFORM_AGES, CONTACT_EMAIL } from "@/config/site";
+import { LAUNCH_PRICE, LATER_PRICE, LUMI_AGES, PLATFORM_AGES, CONTACT_EMAIL, SHIP_DATE_ISO } from "@/config/site";
 
 /** Structured data builders (V3 SEO/AEO/GEO pass, 2026-07-28).
  *
@@ -164,7 +164,8 @@ export const LAUNCH_VIDEO = {
 
 /** The product. Kept in one place so the price can only ever come from the
  *  constants, and `availability` stays PreOrder until the founder says
- *  otherwise. No shipping date: it is not announced. */
+ *  otherwise. The ship date became a published fact on 2026-07-31
+ *  (availabilityStarts below). */
 export const LUMI_PRODUCT = {
   "@type": "Product",
   "@id": `${SITE_URL}/products/lumi#product`,
@@ -185,6 +186,7 @@ export const LUMI_PRODUCT = {
     price: LAUNCH_PRICE.replace(/[^0-9]/g, ""),
     priceCurrency: "INR",
     availability: "https://schema.org/PreOrder",
+    availabilityStarts: SHIP_DATE_ISO,
     url: `${SITE_URL}/products/lumi`,
     eligibleRegion: { "@type": "Country", name: "India" },
     description: `${LAUNCH_PRICE} for the first 500 units, ${LATER_PRICE} after launch. No payment is taken at pre-order.`,

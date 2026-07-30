@@ -117,7 +117,9 @@ const SAFETY_FAQ: FaqEntry[] = [
   { q: "Does Lumi reduce screen time?", a: "That is the point. Lumi has no screen at all. It is a toy that helps you cut screen time: your child talks, listens, and imagines instead of watching." },
   { q: "Can Lumi reach the open internet?", a: "No. Lumi cannot browse or search. Answers come from a closed library built for children, so there are no random videos, no rabbit holes, and no strangers." },
   /* Status-exact, never upgraded: mirrors the STANDARDS chips above. */
-  { q: "Which safety standards does Lumi meet?", a: "Lumi is designed for COPPA, GDPR-K, and India's DPDP rules, and ISO 27001 certification is in progress. Formal toy-safety testing is underway, and the exact materials, standards, and certificates will be listed on this page before Lumi ships." },
+  /* The standards FAQ entry was REMOVED 2026-07-31 (founder: no certificate
+     received yet, keep it off the FAQ; the status-honest standards room below
+     stays). Reinstate when the first certificate lands. */
 ];
 
 const SAFETY_JSON_LD = graph(

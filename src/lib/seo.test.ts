@@ -19,8 +19,11 @@ describe("structured data", () => {
     graph(LUMI_PRODUCT, LAUNCH_VIDEO, faqPage([{ q: "q", a: "a" }]), setupHowTo(SETUP_STEPS), breadcrumbs([])),
   );
 
-  it("never leaks a gated fact (ship date, Kheelona+ price, certifications)", () => {
-    expect(everything).not.toMatch(/shipDate|deliveryDate|availabilityStarts/);
+  it("never leaks a gated fact (Kheelona+ price, certifications) and carries the published ship date", () => {
+    /* The ship date became a PUBLISHED fact on 2026-07-31 (founder), so the
+       old no-ship-date guard flipped into a positive assertion. */
+    expect(everything).toMatch(/"availabilityStarts":"2026-09-01"/);
+    expect(everything).not.toMatch(/shipDate|deliveryDate/);
     /* Certification is gated for the PRODUCT, not for a person's career. The
        risk is a schema property asserting Lumi is certified, so test for the
        properties and the badge names — Kashyap's bio legitimately says he has

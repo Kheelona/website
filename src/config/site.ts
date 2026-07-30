@@ -45,13 +45,37 @@ export const CAP_LINE = `First 500 units at ${LAUNCH_PRICE}. ${LATER_PRICE} afte
 export const LUMI_AGES = "2 to 5";
 export const PLATFORM_AGES = "2 to 14";
 
-/** The ONLY sanctioned Kheelona+ wording (V3). The monthly price and what
- *  happens if the subscription lapses are BOTH founder-gated (V3-b): never
- *  render a ₹ amount for Kheelona+, and never claim post-lapse behaviour. */
+/** The ONLY sanctioned Kheelona+ wording (V3; updated 2026-07-31 when the
+ *  founder cleared HALF of gate V3-b): Lumi's smart features are LIFETIME —
+ *  that is the post-lapse answer — and pricing stays deliberately open-ended
+ *  as "announced soon" (founder: no details yet). STILL GATED: any ₹ amount
+ *  for Kheelona+. */
 export const KHEELONA_PLUS_LINE =
-  "Every Lumi includes 6 months of Kheelona+, the stories, lessons, languages, and the parent app. The monthly price after that is announced before launch.";
+  "Every Lumi includes 6 months of Kheelona+, the stories, lessons, languages, and the parent app. Lumi's smart features are yours for life, and Kheelona+ pricing is announced soon.";
 /** Short form, for the finale's small print. */
 export const KHEELONA_PLUS_SHORT = "Every Lumi includes 6 months of Kheelona+.";
+
+/** Ship date (founder, 2026-07-31): the gate is CLEARED. Render from these,
+ *  never inline, so a logistics change is a one-file edit. */
+export const SHIP_DATE_TEXT = "1 September 2026";
+export const SHIP_DATE_ISO = "2026-09-01";
+
+/** The announced languages (founder, 2026-07-31 — "they are final"). Eight
+ *  named today; the published ceiling stays "up to 10", so two more can land
+ *  without any copy change. Render the list from here (AEO: the named list is
+ *  the strongest answer content this product has). */
+export const LUMI_LANGUAGES = [
+  "English",
+  "Hindi",
+  "Bengali",
+  "Telugu",
+  "Tamil",
+  "Kannada",
+  "Spanish",
+  "French",
+] as const;
+export const LANGUAGES_LINE =
+  "English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish, and French";
 
 /** WhatsApp share (V3, India's native referral loop — no backend). "Rs" not
  *  "₹" in the payload: the rupee sign garbles in some WhatsApp clients. */

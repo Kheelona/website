@@ -42,9 +42,9 @@ export default async function StoryPage({
 
   /* BlogPosting, not bare Article: it places the piece inside the journal as a
      publication, which is what an answer engine looks for when deciding whether
-     a page is editorial or an ad. `author` stays the Organization until the
-     founder tells us who wrote each piece (a named author with credentials is
-     the strongest remaining E-E-A-T win — gate V3-f). Month precision on the
+     a page is editorial or an ad. V3-f CLEARED 2026-07-31: every piece carries
+     a named author from /team (founder assignment), which is the E-E-A-T win
+     the Organization byline was holding a place for. Month precision on the
      date on purpose: per-article days would be invented. */
   const jsonLd = graph(
     {
@@ -55,7 +55,7 @@ export default async function StoryPage({
       wordCount: story.paragraphs.reduce((n, b) => n + b.p.split(/\s+/).length, 0),
       timeRequired: `PT${story.minutes}M`,
       inLanguage: "en-IN",
-      author: { "@id": `${SITE_URL}/#organization` },
+      author: { "@type": "Person", name: story.author, url: `${SITE_URL}/team` },
       publisher: { "@id": `${SITE_URL}/#organization` },
       isPartOf: { "@id": `${SITE_URL}/stories#blog` },
       mainEntityOfPage: `${SITE_URL}/stories/${story.slug}`,
@@ -87,6 +87,10 @@ export default async function StoryPage({
             titleClassName="mb-3"
           />
           <p className="text-[13px] font-semibold uppercase tracking-wide text-ink-muted">
+            <span className="font-medium normal-case tracking-normal">
+              By {story.author}
+            </span>
+            <span aria-hidden="true"> · </span>
             {story.minutes} minute read
             <span aria-hidden="true"> · </span>
             <span className="font-medium normal-case tracking-normal">

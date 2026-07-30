@@ -11,6 +11,7 @@ export const EXPANSION: Story[] = [
     description:
       "What the WHO and AAP actually recommend, why the number is not the whole story, and what to do at 6pm when the guideline meets real life.",
     theme: "Screen-free living",
+    author: "Kashyap C.R",
     minutes: 5,
     pose: "curious",
     tint: "bg-blue/15",
@@ -33,6 +34,7 @@ export const EXPANSION: Story[] = [
     description:
       "Why the meltdown lands the moment the screen goes off, and how to make switching off boring instead of explosive.",
     theme: "Screen-free living",
+    author: "Kashyap C.R",
     minutes: 5,
     pose: "grumpy",
     tint: "bg-orange/15",
@@ -55,6 +57,7 @@ export const EXPANSION: Story[] = [
     description:
       "A realistic week-long plan to reduce a young child's screen time without turning your home into a battlefield.",
     theme: "Screen-free living",
+    author: "Kashyap C.R",
     minutes: 6,
     pose: "bliss",
     tint: "bg-yellow/15",
@@ -77,6 +80,7 @@ export const EXPANSION: Story[] = [
     description:
       "Better questions than 'how was school', and the small habits that turn one-word answers into real conversations.",
     theme: "Talking together",
+    author: "Ria Mangala Rewari",
     minutes: 5,
     pose: "joy",
     tint: "bg-blue/15",
@@ -99,6 +103,7 @@ export const EXPANSION: Story[] = [
     description:
       "A calm guide for parents of quiet 3 and 4 year olds: what varies normally, what deserves a professional look, and what helps at home either way.",
     theme: "Talking together",
+    author: "Ria Mangala Rewari",
     minutes: 5,
     pose: "sad",
     tint: "bg-orange/15",
@@ -120,6 +125,7 @@ export const EXPANSION: Story[] = [
     description:
       "Past the flashcards and brain-training claims: the four everyday things research keeps pointing at, and how to get more of them.",
     theme: "How children grow",
+    author: "Apoorva Sahu",
     minutes: 5,
     pose: "curious",
     tint: "bg-blue/15",
@@ -144,6 +150,7 @@ export const EXPANSION: Story[] = [
     description:
       "Vocabulary is not memorized, it is collected. How children pick up words at home, in any language, without a single worksheet.",
     theme: "Talking together",
+    author: "Ria Mangala Rewari",
     minutes: 4,
     pose: "silly",
     tint: "bg-yellow/15",
@@ -165,6 +172,7 @@ export const EXPANSION: Story[] = [
     description:
       "English will come. The mother tongue is the one at risk. Why home languages matter for thinking, and how families keep them alive.",
     theme: "Languages at home",
+    author: "Ria Mangala Rewari",
     minutes: 5,
     pose: "joy",
     tint: "bg-blue/15",
@@ -186,6 +194,7 @@ export const EXPANSION: Story[] = [
     description:
       "We build AI for children, and we would not hand a chatbot to a four year old. Where the line is and how to judge anything with AI inside.",
     theme: "AI and childhood",
+    author: "Aman Soni",
     minutes: 6,
     pose: "grumpy",
     tint: "bg-orange/15",
@@ -207,6 +216,7 @@ export const EXPANSION: Story[] = [
     description:
       "Screen-free ways to keep a young child genuinely busy at home, including on the days you have to work.",
     theme: "Screen-free living",
+    author: "Apoorva Sahu",
     minutes: 5,
     pose: "silly",
     tint: "bg-yellow/15",
@@ -234,6 +244,7 @@ export const EXPANSION: Story[] = [
     description:
       "Tutoring apps promise homework help. Your child cannot do homework yet. What an AI tutor should mean before school age.",
     theme: "AI and childhood",
+    author: "Apoorva Sahu",
     minutes: 5,
     pose: "curious",
     tint: "bg-orange/15",
@@ -257,6 +268,7 @@ export const EXPANSION: Story[] = [
     description:
       "India's bestselling talking toy repeats what you say in a squeaky voice. Why the difference between repeating and replying matters for a growing brain.",
     theme: "Talking together",
+    author: "Aman Soni",
     minutes: 4,
     pose: "silly",
     tint: "bg-blue/15",
@@ -279,6 +291,7 @@ export const EXPANSION: Story[] = [
     description:
       "Named rules travel fast in parent groups. Some have research behind them, some are folklore. A plain-words guide to which is which.",
     theme: "Screen-free living",
+    author: "Kashyap C.R",
     minutes: 5,
     pose: "grumpy",
     tint: "bg-yellow/15",
@@ -302,6 +315,7 @@ export const EXPANSION: Story[] = [
     description:
       "The waiting is hard, the advice is noisy, and the toys promise miracles. What actually moves the needle for a quiet two-year-old.",
     theme: "Talking together",
+    author: "Ria Mangala Rewari",
     minutes: 5,
     pose: "sad",
     tint: "bg-blue/15",
@@ -324,6 +338,7 @@ export const EXPANSION: Story[] = [
     description:
       "Every box in the toy aisle promises cognitive growth. What a two-year-old brain actually builds with, and how to shop for it.",
     theme: "How children grow",
+    author: "Apoorva Sahu",
     minutes: 4,
     pose: "joy",
     tint: "bg-orange/15",

@@ -1,4 +1,4 @@
-import { LAUNCH_PRICE, LATER_PRICE, LUMI_AGES, PLATFORM_AGES } from "@/config/site";
+import { LAUNCH_PRICE, LATER_PRICE, LUMI_AGES, PLATFORM_AGES, LANGUAGES_LINE, SHIP_DATE_TEXT } from "@/config/site";
 
 /** `/llms.txt` (V3 AEO plumbing).
  *
@@ -8,9 +8,11 @@ import { LAUNCH_PRICE, LATER_PRICE, LUMI_AGES, PLATFORM_AGES } from "@/config/si
  *  of the site and the facts in a single fetch, with the gated items marked
  *  unannounced so nothing here can be quoted as a promise we have not made.
  *
- *  HARD RULE: this file may only restate copy that is visible on the site. No
- *  ship date, no named language list, no Kheelona+ price, no certification
- *  claims. Prices come from `config/site` so they cannot drift.
+ *  HARD RULE: this file may only restate copy that is visible on the site.
+ *  2026-07-31: the ship date and the named language list are now PUBLISHED
+ *  facts (founder-cleared) and render from config; still gated: any Kheelona+
+ *  ₹ amount and certification claims. Prices come from `config/site` so they
+ *  cannot drift.
  *
  *  Served as a Route Handler because Next has no static-text file convention;
  *  `force-static` means it is generated at build time like the sitemap. */
@@ -26,7 +28,7 @@ const BODY = `# Kheelona
 ## What Lumi is
 - A screen-free plush toy that talks with a child and answers back. No screen, ever.
 - Ages ${LUMI_AGES}. The wider family of friends spans ages ${PLATFORM_AGES}: the Kheelu Speaker (5 to 14) and AI books are in development.
-- Speaks up to 10 languages spoken at home. The full list is announced before launch.
+- Speaks the languages spoken at home: ${LANGUAGES_LINE}, with up to 10 at launch. Switches mid-sentence.
 - Runs on PlayOS, Kheelona's own platform: a small language model built only for children, not shrunk from adult AI.
 - Three modes, one toy: AI mode (open conversation), Kheelu mode (pre-loaded stories and lessons a child can interrupt, question, and be quizzed on, offline), and Bluetooth mode (pair a phone and Lumi is the speaker for your own playlist or audiobook).
 
@@ -48,8 +50,8 @@ const BODY = `# Kheelona
 ## Price and availability
 - Pre-order: ${LAUNCH_PRICE} for the first 500 units. ${LATER_PRICE} after launch.
 - No payment is taken at pre-order. Reserving holds the price and the place, and does not commit anyone to buy.
-- Every Lumi includes 6 months of Kheelona+ (stories, lessons, language packs, parent app). The monthly price after that is announced before launch. Nothing renews without the parent.
-- Ship date: not announced. Everyone on the list hears it first.
+- Every Lumi includes 6 months of Kheelona+ (stories, lessons, language packs, parent app). Lumi's smart features are lifetime; Kheelona+ pricing is announced soon. Nothing renews without the parent.
+- Shipping starts ${SHIP_DATE_TEXT}. Everyone on the list is served first, in reservation order.
 
 ## Pages
 - https://kheelona.com/ : what Lumi is, what it teaches, and how to reserve

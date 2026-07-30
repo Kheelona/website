@@ -12,18 +12,11 @@ describe("Hero (V4, team feedback 2026-07-30)", () => {
     ).toBeInTheDocument();
   });
 
-  it("keeps the priority plush image as the LCP element", () => {
+  it("keeps the priority hero artwork as the LCP element (REV-a final art)", () => {
     render(<Hero />);
-    const plush = screen.getByAltText(/Lumi, the sky blue talking plush toy/i);
-    expect(plush).toBeInTheDocument();
-    expect(plush).toHaveAttribute("src", "/product/lumi-blue-2.png");
-  });
-
-  it("shows Kheelu talking to Lumi with named alt text", () => {
-    render(<Hero />);
-    expect(
-      screen.getByAltText(/Kheelu, the Kheelona mascot, winking beside Lumi/i),
-    ).toBeInTheDocument();
+    const art = screen.getByAltText(/kneeling to whisper a secret to Lumi/i);
+    expect(art).toBeInTheDocument();
+    expect(art).toHaveAttribute("src", "/hero/kheelu-lumi.png");
   });
 
   it("offers exactly ONE button, and the cap line rides under it (team items 7 and 10)", () => {
