@@ -9,8 +9,8 @@ export function LumiHero({ className }: { className?: string }) {
     <div className={className} style={{ position: "relative" }}>
       <Image
         src="/product/lumi-blue-2.png"
-        alt="Lumi, a small blue talking toy with a striped party hat"
-        width={1113}
+        alt="Lumi, a small blue talking toy with a speaker in its tummy and a striped party hat"
+        width={1234}
         height={1600}
         priority
         fetchPriority="high"

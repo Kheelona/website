@@ -17,7 +17,7 @@ const COLORWAYS = [
     swatch: "#8fd0ef",
     img: "/product/lumi-blue-2.png",
     alt: "Lumi Blue, the sky blue talking plush toy, wearing its striped party hat",
-    w: 1113,
+    w: 1234,
     h: 1600,
   },
   {
@@ -26,8 +26,8 @@ const COLORWAYS = [
     swatch: "#bfe6c2",
     img: "/product/lumi-green-2.png",
     alt: "Lumi Green, the pastel green Lumi plush with a striped party hat",
-    w: 1473,
-    h: 1954,
+    w: 1239,
+    h: 1600,
   },
   {
     id: "pink",
@@ -35,8 +35,8 @@ const COLORWAYS = [
     swatch: "#f4c7d8",
     img: "/product/lumi-pink-2.png",
     alt: "Lumi Pink, the soft pink Lumi plush with a striped party hat",
-    w: 617,
-    h: 932,
+    w: 1239,
+    h: 1600,
   },
 ] as const;
 

@@ -118,7 +118,7 @@ Rules for any change:
 
 ## Commands (app code lives in `src/`)
 - Dev: `npm run dev` (port 3000)
-- Prod: `npx next build && npx next start -p 3456` (local prod URL the founder uses: http://localhost:3456)
+- Prod: `npx next build && npx next start -p 3456` (local prod URL the founder uses: http://localhost:3456). If a replaced `public/` image serves stale through `/_next/image`, `rm -rf .next/cache/images` — the optimizer cache survives rebuilds (qa-report 2026-07-31). Check `lsof -iTCP:3456` for stale servers from old sessions.
 - Test: `npm test` (Vitest; a test per component) · Storybook: `npm run storybook` / `npm run build-storybook`
 - Deploy target: Vercel, project Root Directory = **repo root** (the app moved out of
   `site/` on 2026-07-28; paths in older docs and checkpoints that say `site/...` now mean

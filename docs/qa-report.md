@@ -79,6 +79,34 @@ text; the /stories index renders zero pose-fallback cards (the fallback branch s
 the graceful state for future not-yet-arted articles). Verified: 254/254, build green, heroes 200,
 index card count photographic 19/19.
 
+### Lumi v2 product images · 2026-07-31 · founder-supplied renders, site-wide swap
+
+The founder's v2 renders (blue/green/pink, 2070×2048, baked white backgrounds + a speaker module
+visible in the tummy) went through the house pipeline: `cutout --no-crop` for the Vision body
+alpha, then `keycut <in> <out> 24 <vision-alpha>` hybrid — hat ribbons survived, speaker panel and
+purple ring crisp, no halo (verified visually per colour). Normalised to the house 1600px height
+(1234–1239 wide), installed under the CANONICAL names so zero reference churn; the v1 files stay
+web-served as `lumi-*-2-old.png` per the founder's keep-for-reference ask. All 8 code references
+kept, hardcoded width props updated (1113 → 1234/1239), hero/family alts now mention the speaker
+tummy. Sources + the unused Playbox speaker render staged in
+`Design/product-images/generated-2026-07/` (founder: may or may not use — NOT published).
+
+**Found while verifying, fixed: `public/og.png` still said "ages 3 to 6"** — the retired band,
+live on every social share, invisible to voice-lint because it is pixels. Rebuilt at exact
+1200×630 via a styled HTML card screenshotted in Chrome (Glory + Instrument Sans from Google
+Fonts): V4 hero copy, correct `ages 2 to 5`, the D1 brand-orange/ink pill, Kheelu + the v2 plush.
+Old card archived at `Design/product-images/generated-2026-07/og-2026-07-old.png` (off the web
+root — it carries the stale claim). LESSON: image assets carry claims too; check og/posters when
+copy laws change.
+
+**Local gotcha, cost 20 minutes: `next start`'s image optimizer cache survives rebuilds.**
+`.next/cache/images/` kept serving the OLD optimized variants for the same-named replaced files
+(raw URL served v2 byte-exact while `/_next/image` served v1). Fix: `rm -rf .next/cache/images`
+and restart. Vercel deployments are immune (fresh optimizer cache per deploy + source etag
+revalidation). Verified after clear: fresh bytes at every width, v2 rendering in the hero.
+
+Tests 254/254, build green, token-check 17.
+
 ## Ahrefs Web Analytics · 2026-07-30 · commit 15902c5 · live-verified
 
 Added at the founder's request. Raw `<script async>` in the root layout `<head>`, so it ships in the

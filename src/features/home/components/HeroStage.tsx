@@ -33,8 +33,8 @@ export function HeroStage({ className }: { className?: string }) {
       />
       <Image
         src="/product/lumi-blue-2.png"
-        alt="Lumi, the sky blue talking plush toy, wearing its striped party hat"
-        width={1113}
+        alt="Lumi, the sky blue talking plush toy with a speaker in its tummy, wearing its striped party hat"
+        width={1234}
         height={1600}
         priority
         sizes="(max-width: 768px) 58vw, 320px"

@@ -20,7 +20,7 @@ export default function NotFound() {
           <Image
             src="/product/lumi-blue-2.png"
             alt="Lumi, the sky blue talking plush toy, waiting patiently"
-            width={1113}
+            width={1234}
             height={1600}
             sizes="(max-width: 768px) 60vw, 300px"
             priority
