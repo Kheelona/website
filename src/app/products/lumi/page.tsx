@@ -24,9 +24,12 @@ import { ParentQuotes } from "@/components/organisms/ParentQuotes";
 import { PREORDER_HREF, RESERVE_LABEL, PRICE_CAPTION, LAUNCH_PRICE, LATER_PRICE } from "@/config/site";
 
 export const metadata: Metadata = {
-  title: "Meet Lumi by Kheelona: the talking plush friend for ages 2 to 5",
+  /* V4 CMO pass (keywords-v3.md): "talking toy" is the head term the India
+     SERP actually trades in — the old title said "talking plush friend",
+     which no parent types. */
+  title: "Meet Lumi by Kheelona: the talking toy that teaches, ages 2 to 5",
   description:
-    "Lumi is a screen-free talking friend for ages 2 to 5. It listens, answers, then asks the next question, and slips learning into the play. Reserve at ₹4,999, no payment now.",
+    "Lumi is a screen-free talking toy for ages 2 to 5. It listens, answers, then asks the next question, and slips learning into the play. Reserve at ₹4,999, no payment now.",
   alternates: { canonical: "/products/lumi" },
 };
 

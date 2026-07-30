@@ -204,4 +204,107 @@ export const EXPANSION: Story[] = [
       { p: "The house does not need to become a preschool. It needs six reliable boredom exits. Build the shelf once, and 4pm gets easier for a year." },
     ],
   },
+  /* V4 additions (2026-07-30): five pieces against demand validated live in
+     Google India (evidence per slug: docs/revamp-2026-07/keywords-v3.md).
+     Same laws as the rest of the journal: useful-first, scene-first, no
+     invented statistics, one soft invite at most. Heroes pending from the
+     founder (gemini-handoff/feedback-round-2026-07/) — pose+tint carry the
+     cards until then. */
+  {
+    slug: "does-a-three-year-old-need-an-ai-tutor",
+    title: "Does a three-year-old need an AI tutor?",
+    description:
+      "Tutoring apps promise homework help. Your child cannot do homework yet. What an AI tutor should mean before school age.",
+    theme: "AI and childhood",
+    minutes: 5,
+    pose: "curious",
+    tint: "bg-orange/15",
+    paragraphs: [
+      { p: "Type AI tutor for kids into a search bar and you meet a wall of homework apps. Fraction practice, essay feedback, exam prep. All of it useful, and none of it built for a person who still needs help with shoe laces." },
+      { p: "Yet the phrase keeps rising, and parents of much younger children are the ones typing it. The instinct underneath is sound. The years before school are when a child learns faster than they ever will again, and every parent quietly wonders whether they are doing enough with them." },
+      { h: "What tutoring means at three", p: "A school tutor drills a syllabus. A three-year-old has no syllabus. What they have is questions, hundreds of them a day, and the research on early learning keeps arriving at the same place: children this age learn through back and forth conversation, not instruction. The tutor a three-year-old needs is a patient answerer who asks one question back." },
+      { p: "Measured against that, most of what is sold as an AI tutor is simply the wrong tool. A screen-based app asks a small child to sit still, watch a display, and follow a curriculum. That is a classroom shrunk to phone size, and small children learn least that way." },
+      { h: "What to look for instead", p: "If you are weighing AI tutoring for a child under five, look for four things. Voice first, because conversation is the skill being built. No screen, because the display adds nothing a small child needs. A pace set by the child, not by a lesson plan. And a full record you can read, because you should never wonder what a tutor said to your child." },
+      { p: "Notice that none of those four is about a syllabus. At this age the syllabus is the conversation itself: words, numbers, feelings, and the endless why. A child who is heard keeps asking, and a child who keeps asking keeps learning." },
+      { p: "There is one more honest answer to the question in the title: no, a three-year-old does not need an AI tutor. Children have grown up brilliantly for millennia without one. What a good one offers is more of the thing that already works, conversation, in the hours your own patience runs out." },
+      { p: "That is the job we are building Lumi for: a screen-free friend that answers, asks one back, and moves at your child's pace, in the languages you speak at home. If that sounds like the tutor you were actually searching for, the pre-order list is open and costs nothing." },
+    ],
+  },
+  {
+    slug: "a-toy-that-talks-vs-a-toy-that-listens",
+    title: "A toy that talks is not a toy that listens",
+    description:
+      "India's bestselling talking toy repeats what you say in a squeaky voice. Why the difference between repeating and replying matters for a growing brain.",
+    theme: "Talking together",
+    minutes: 4,
+    pose: "silly",
+    tint: "bg-blue/15",
+    paragraphs: [
+      { p: "The bestselling talking toy in India right now is a dancing cactus. It records what your child says and squeaks it back in a chipmunk voice. Children find it hilarious, for about a week." },
+      { p: "Search for a talking toy and that is mostly what you will find: repeat-after-me plushes, phrase-button phones, dolls with six sentences. They all talk. Almost none of them listen." },
+      { h: "Why repeating runs out", p: "A toy that repeats gives your child their own words back. That is a mirror, and mirrors are entertaining, but they do not answer questions. Once the novelty fades there is nothing left to discover, which is why these toys migrate to the bottom of the basket by month two." },
+      { h: "What listening actually does", p: "Language researchers describe learning to talk as a game of serve and return. The child serves a sound or a question, someone returns it with meaning and a new serve. It is the return that builds vocabulary, logic, and confidence. A toy that only repeats never returns the serve." },
+      { p: "So when a toy calls itself interactive, put one question to it: can it answer something it has never heard before? A button toy cannot. A repeat toy cannot. Only a toy that understands speech and forms a reply can, and until recently that did not exist at toy prices." },
+      { h: "A short checklist", p: "If you are choosing a talking toy for a child under five: does it reply, or just repeat. Does it ask questions back. Does it speak your home language. Can you read afterwards what it said. And does it work without a screen in the room." },
+      { p: "We are building Lumi to pass that checklist: a plush friend that listens, answers, then asks the next question, in up to 10 home languages, with every word readable in the parent app. If your house has a bored cactus in it, the pre-order list is open." },
+    ],
+  },
+  {
+    slug: "screen-time-rules-parents-swear-by",
+    title: "The 3-6-9-12 rule, and other screen rules parents swear by",
+    description:
+      "Named rules travel fast in parent groups. Some have research behind them, some are folklore. A plain-words guide to which is which.",
+    theme: "Screen-free living",
+    minutes: 5,
+    pose: "grumpy",
+    tint: "bg-yellow/15",
+    paragraphs: [
+      { p: "Every parenting group has a moment where someone asks about screens and the replies fill with numbers. Follow 3-6-9-12. We do the one-hour rule. Have you tried 20-20-20. The rules travel fast because they are easy to remember, which is not the same as being true." },
+      { p: "Here is what the named rules actually say, where they come from, and which ones deserve a place on your fridge." },
+      { h: "The one-hour guidance", p: "The World Health Organization recommends no more than one hour of sedentary screen time a day for children aged 3 to 4, and says less is better. The American Academy of Pediatrics lands close by for ages 2 to 5: about an hour of good content, watched together when you can. These carry the most evidence, and both bodies say the same quiet thing underneath: what matters most is what the hour replaces." },
+      { h: "3-6-9-12", p: "A French psychiatrist, Serge Tisseron, proposed it as a set of doorways: no screens before 3, no personal console before 6, the internet only after 9 with an adult nearby, and social media after 12. It is a framework rather than a finding, but its first doorway agrees with the strongest research. The youngest brains gain the least from screens and lose the most conversation to them." },
+      { h: "20-20-20", p: "Every 20 minutes, look at something 20 feet away for 20 seconds. This one is about eyes, not development, and it is sensible for anyone who reads on a screen, including you." },
+      { h: "The rules nobody can source", p: "You will also meet the 3-3-3 rule and the 7-7-7 rule, which mean something different in every post that mentions them. When a rule has no stable meaning, treat it as a costume that folklore wears. You do not need it. The principles underneath every good rule fit in one sentence: less is better under five, together beats alone, and conversation is the thing screens quietly eat." },
+      { p: "So pick the rule your family can actually keep. A rule kept loosely for a year beats a strict one abandoned by Thursday." },
+      { p: "And if the hardest part is what fills the quiet after the screen goes off, that is the exact gap we built Lumi for: a screen-free friend that talks, tells stories, and asks your child questions back. The pre-order list is open, and joining costs nothing." },
+    ],
+  },
+  {
+    slug: "talking-toys-and-late-talkers",
+    title: "Late talker? What helps a child find their words",
+    description:
+      "The waiting is hard, the advice is noisy, and the toys promise miracles. What actually moves the needle for a quiet two-year-old.",
+    theme: "Talking together",
+    minutes: 5,
+    pose: "sad",
+    tint: "bg-blue/15",
+    paragraphs: [
+      { p: "Few silences are louder than a two-year-old who is not talking yet. Cousins the same age narrate their whole day, the family group chat fills with advice, and every toy in the shop suddenly claims to teach speech." },
+      { p: "First, the reassuring truth: children start talking across a wide range of ages, and a late start is usually just that, a start that is late. The signal that matters is understanding. A child who follows what you say, points at things, and finds their own ways to tell you things is building language even while quiet. When understanding also seems behind, or gestures are missing, ask a paediatrician or a speech therapist, early and without embarrassment. Asking early never hurts. Waiting can." },
+      { h: "What the research keeps saying", p: "Speech grows from the number of back and forth exchanges a child gets, not from the number of words spoken near them. Researchers call these conversational turns, and they matter more than flashcards, more than videos labelled educational, and far more than any toy. A turn can be tiny. The child points, you name it, they try the word, you smile and stretch it by one. That loop, repeated across ordinary days, is the engine." },
+      { h: "Two myths worth dropping", p: "The first myth: a second home language causes speech delay. Speech researchers consistently find that it does not. A bilingual child may split their words across two languages for a while, and the total is what counts. Keep both languages. They are a gift, not a burden. The second myth: talking toys teach talking. A toy that repeats or plays phrases gives a child nothing to answer. If a toy joins the effort at all, it earns its place only by taking turns, answering, and asking something back." },
+      { h: "What helps at home", p: "Narrate what you are doing in short sentences. Pause longer than feels natural, because a beginner needs time to load a word. Offer choices out loud, the red cup or the blue cup, so an answer is worth attempting. Sing, because melody carries words into memory. And switch off the background TV, which quietly eats the turns a room produces." },
+      { p: "None of this needs a programme or a purchase. It needs turns, and anyone who loves the child can supply them." },
+      { p: "Where a talking friend can honestly help is in adding turns when yours run out, and doing it in your home language. That is what we are building Lumi to do, with every exchange staying readable by you. The pre-order list is open if you want one more voice in the room." },
+    ],
+  },
+  {
+    slug: "brain-development-toys-for-a-2-year-old",
+    title: "Brain development toys for a two-year-old: read this before the label",
+    description:
+      "Every box in the toy aisle promises cognitive growth. What a two-year-old brain actually builds with, and how to shop for it.",
+    theme: "How children grow",
+    minutes: 4,
+    pose: "joy",
+    tint: "bg-orange/15",
+    paragraphs: [
+      { p: "Stand in any toy aisle and count the boxes that say brain development. Stacking cups promise it. Busy boards promise it. A plastic drum promises it. The phrase is doing a lot of work, and most of it is marketing." },
+      { p: "Here is the version without a box: a two-year-old brain builds itself out of repetition, movement, and above all response. Things happen because the child did something, and someone noticed." },
+      { h: "What actually earns the label", p: "Simple open toys do: blocks, cups, things that stack, pour, and fit inside each other. They earn it not because they are clever but because the child must be. A toy that does one loud thing when a button is pressed teaches the button. A toy that can become ten things teaches the child." },
+      { h: "The ingredient no box lists", p: "The strongest finding in early development is that brains grow through serve and return, the loop where a child acts or asks and a person responds. No object on the shelf outranks a person on the floor. The same cups are twice the toy when someone counts the stack, asks which is biggest, and cheers the crash." },
+      { p: "So the honest shopping rule for a two-year-old: fewer toys that perform, more toys that wait for the child to act. Check the safety mark, skip the promises, and spend the difference on time on the carpet." },
+      { p: "Where does a talking toy fit that rule? Only if it responds rather than performs. A toy that answers a question and asks one back is doing the serve and return job. A toy that sings at the ceiling is furniture with batteries." },
+      { p: "That is the bar we hold Lumi to: it listens, answers, remembers, and moves at your child's pace, with no screen anywhere. If a friend on the carpet sounds better than another performing box, the pre-order list is open." },
+    ],
+  },
 ];
