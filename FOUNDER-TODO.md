@@ -58,8 +58,8 @@ mid-sentence; the on-site transcript keeps the full line from your doc).
 **✅ V4-c — FULLY DONE (2026-07-31, two batches).** You generated all TWELVE story heroes (five
 from the kit, then the remaining seven from the chat prompts) — **all 19 journal articles are now
 photographed** and the /stories index leads every card with its story's own image. Nothing left in
-the journal's art queue. ✅ V3-c also cleared the same day (below). The one kit left in impact order: REV-a hero art, V3-c pipeline
-renders.
+the journal's art queue. ✅ V3-c (the pipeline renders) also cleared the same day — see its entry
+below. **The one piece of art still open anywhere: REV-a, the final hero artwork.**
 
 **V4-d — Ahrefs, two optional buttons.** (1) Keywords Explorer and CSV export are locked on the
 current plan — upgrade only if you want volume numbers; the strategy does not depend on them.
