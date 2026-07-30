@@ -1,3 +1,6 @@
+> **SUPERSEDED 2026-07-31**: the founder generated both renders themselves (V3-c CLEARED — art
+> live on the Home family room). This kit stays only as the record of the original brief.
+
 # Gemini kit — the pipeline art (Kheelu Speaker + AI books)
 
 **For: Apoorva. Gate V3-c.** The Home pipeline room and /playos both show three bodies now:

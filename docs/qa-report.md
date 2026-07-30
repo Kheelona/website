@@ -1,5 +1,124 @@
 # QA Report (sprint log)
 
+## V4 team-feedback round · 2026-07-30 · branch demo-website · spec BUILD-V4.md
+
+**Scope**: brand-orange CTA system + white finale (D1/D5), Home rebuilt around real audio + the
+How-It-Works loop, /playos rebuilt for VCs with the interactive ArchitectureStack (D6), guide moved
+bottom-right with the 48-char say-line law, 5 new keyword-targeted stories, keyword map v3.
+
+**Verified** (local prod, `next start -p 3456`, fresh build):
+- Tests **253/253** (65 files) including NEW axe-core checks on AudioMoments / HowItWorksLoop /
+  ArchitectureStack / FinaleCTA and the audio hang-path regression; tsc clean; build green,
+  token-check 17.
+- **Voice-lint probe on rendered TEXT of all 16 routes: ALL CLEAN** (em-dash, italics, retired ages,
+  `toddler`, retired characters, pilot counts — zero; exclamations only inside the sanctioned quoted
+  toy/child speech). JSON-LD parses on every route; `#reserve` everywhere; `/nope` 404s.
+- **Mobile overflow probe** (iframe scrollWidth at 320 + 390px): 9 routes **clean** — after catching
+  one real overflow it existed to catch (below).
+- Live interaction checks in Chrome: audio one-at-a-time contract; the accordion stack (tap opens,
+  aria-expanded, one open); guide narration firing the new lines on the right side; white finale.
+
+**Three real findings, all fixed and law'd**:
+1. **A 404'd mp3 hangs at NETWORK_LOADING without firing `error`** — the play control sat in a
+   phantom playing state, equaliser dancing to silence. AudioMoments now folds a card to
+   transcript-only when no data arrives in 4s (cleared by onPlaying/onLoadedData). §8.22-f, with a
+   fake-timer regression test.
+2. **The ArchitectureStack waterline forced /playos to 439px on a 320px screen** (+119px overflow):
+   two no-shrink labels in one flex row, the M4-b failure class. Labels stack below `sm`. §8.22-g.
+3. **A stale `next start` from an earlier session was still holding port 3456** and serving the
+   pre-V4 build — the first probe pass "passed" against old HTML (caught because the new rooms were
+   missing from it). Killed and restarted; worth checking `lsof -iTCP:3456` before trusting :3456.
+
+**Deliberately NOT run here**: Lighthouse (no local binary in this environment) — it stays on the
+pre-merge checklist with the usual gates (A11y/BP/SEO 100, perf ≥90 mobile devtools-throttled).
+Perf-risk of this round is low by construction: no new priority images, audio `preload="none"`,
+pure-CSS choreography, and the first rooms of copy-only-hero routes stay reveal-free.
+
+**Pending founder inputs that show on the preview**: the four audio MP3s (cards render
+transcript-only until then — by design), story hero images (pose+tint fallback), Tally 5-field edit.
+
+### V4-b/V4-a addendum · 2026-07-31 · founder inputs landed
+
+Audio: four founder-supplied MP3s into `public/audio/` (128kbps, 6.5–11.2s, 140–215KB), apples
+transcript corrected 40 → "4" to match the audio (the TTS filename is the prompt). Tally: the
+founder's 5-field form re-measured live at 827px (was 886) → iframe `h-[900px]`, guard ≥860; the
+form URL became the hardcoded public `TALLY_FORM_URL` constant so the preview renders the real form.
+
+**Two more real findings while verifying, both handled:**
+1. `play()` with no user gesture rejects with NotAllowedError (scripted clicks) — that is a policy
+   refusal, not a broken file, and no longer folds the card.
+2. **Hidden tabs defer BOTH IntersectionObserver and media loading**: with `visibilityState:
+   "hidden"`, only 4/52 reveal nodes fired and a playing element sat at `readyState 0` forever. The
+   4s no-data fold now arms only in visible tabs, and the 3D visible-window QA law provably extends
+   to reveal and media verification. Verified playback chain instead: file decodes (afinfo), serves
+   200 `audio/mpeg`, trusted click accepted (`paused:false`, Pause control shown, all 4 controls
+   intact).
+
+Tests 254/254; TallyEmbed suite rewritten for the real-form default + blanked-constant placeholder.
+
+### V4-c addendum · 2026-07-31 · story heroes + the journal index leads with them
+
+The founder generated all five story heroes (1672×941 PNGs → sips to the journal's 1440×803 JPEG,
+164–276KB, matching the existing heroes). Wired into the five V4 articles with written-to-the-image
+alt text. THE /STORIES INDEX REDESIGNED on the founder's ask ("generic lumi image" on every card):
+cards now lead with the story's own hero as a 16:9 top band — 12 of 19 articles carry photography —
+with the pose-on-tint treatment surviving as the same-shaped fallback band for the 7 without, so
+the remaining prompts (docs/stories-image-prompts.md) slot in with zero layout work. The first card
+of room one takes `priority` (it owns the page's LCP; room one is already reveal-free). The old
+narrow art column retired, and with it its M4-b 104px-at-320px workaround. Hover adds a
+motion-safe 1.03 image scale under the existing lift. Verified: 254/254, build green, /stories
+clean at 320/390 (iframe probe), hero assets 200 through the optimizer. Hidden-tab caveat applies
+to reviewing this page too: lazy card images defer until the tab is visible.
+
+### V4-c second batch · 2026-07-31 · the journal is fully photographed
+
+The founder generated the remaining SEVEN heroes from full self-contained ChatGPT prompts (mirrored
+in docs/stories-image-prompts.md, now marked historical). Same pipeline: 1672×941 PNG → sips →
+1440×803 JPEG (182–272KB). All 19 articles now carry photography with written-to-the-image alt
+text; the /stories index renders zero pose-fallback cards (the fallback branch stays in the page as
+the graceful state for future not-yet-arted articles). Verified: 254/254, build green, heroes 200,
+index card count photographic 19/19.
+
+### Lumi v2 product images · 2026-07-31 · founder-supplied renders, site-wide swap
+
+The founder's v2 renders (blue/green/pink, 2070×2048, baked white backgrounds + a speaker module
+visible in the tummy) went through the house pipeline: `cutout --no-crop` for the Vision body
+alpha, then `keycut <in> <out> 24 <vision-alpha>` hybrid — hat ribbons survived, speaker panel and
+purple ring crisp, no halo (verified visually per colour). Normalised to the house 1600px height
+(1234–1239 wide), installed under the CANONICAL names so zero reference churn; the v1 files stay
+web-served as `lumi-*-2-old.png` per the founder's keep-for-reference ask. All 8 code references
+kept, hardcoded width props updated (1113 → 1234/1239), hero/family alts now mention the speaker
+tummy. Sources + the unused Playbox speaker render staged in
+`Design/product-images/generated-2026-07/` (founder: may or may not use — NOT published).
+
+**Found while verifying, fixed: `public/og.png` still said "ages 3 to 6"** — the retired band,
+live on every social share, invisible to voice-lint because it is pixels. Rebuilt at exact
+1200×630 via a styled HTML card screenshotted in Chrome (Glory + Instrument Sans from Google
+Fonts): V4 hero copy, correct `ages 2 to 5`, the D1 brand-orange/ink pill, Kheelu + the v2 plush.
+Old card archived at `Design/product-images/generated-2026-07/og-2026-07-old.png` (off the web
+root — it carries the stale claim). LESSON: image assets carry claims too; check og/posters when
+copy laws change.
+
+**Local gotcha, cost 20 minutes: `next start`'s image optimizer cache survives rebuilds.**
+`.next/cache/images/` kept serving the OLD optimized variants for the same-named replaced files
+(raw URL served v2 byte-exact while `/_next/image` served v1). Fix: `rm -rf .next/cache/images`
+and restart. Vercel deployments are immune (fresh optimizer cache per deploy + source etag
+revalidation). Verified after clear: fresh bytes at every width, v2 rendering in the hero.
+
+Tests 254/254, build green, token-check 17.
+
+### V3-c pipeline art · 2026-07-31 · the family room is fully rendered
+
+The founder generated the Kheelu Speaker and AI Book renders (closing gate V3-c, which had shipped
+as 'In the workshop' placeholders since V3). Plain Vision `cutout` this time, deliberately NOT the
+keycut hybrid: neither object has ribbon-thin details, and the book's enclosed carry-handle hole is
+exactly what a border flood fill cannot reach — Vision handles holes natively (verified: the hole
+is transparent, tabs and glow ring intact, the white-on-white speaker body survived whole).
+Installed at `public/products/{kheelu-speaker,ai-book}.png` (1200px height, joining magic-box.png),
+`lib/family.ts` filled with real art + written-to-the-image alts, FamilyGrid's placeholder branch
+retained for future members with the test flipped to assert all three cards render real images.
+Sources staged in Design/product-images/generated-2026-07/. Tests 254/254, build green.
+
 ## Ahrefs Web Analytics · 2026-07-30 · commit 15902c5 · live-verified
 
 Added at the founder's request. Raw `<script async>` in the root layout `<head>`, so it ships in the

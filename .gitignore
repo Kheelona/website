@@ -54,3 +54,7 @@ yarn-error.log*
 .vercel
 *.tsbuildinfo
 next-env.d.ts
+
+# Team feedback round 2026-07-30: committed as docs/revamp-2026-07/team-feedback-2026-07-30.pdf;
+# the root originals (PDF + DOCX the founder dropped in) stay untracked working files.
+/Website prompt based on B + inputs - 24-Jul.*

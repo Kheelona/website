@@ -20,7 +20,7 @@ export default function NotFound() {
           <Image
             src="/product/lumi-blue-2.png"
             alt="Lumi, the sky blue talking plush toy, waiting patiently"
-            width={1113}
+            width={1234}
             height={1600}
             sizes="(max-width: 768px) 60vw, 300px"
             priority
@@ -45,11 +45,11 @@ export default function NotFound() {
 
       <RoomsTrack>
         <Room
-          fill="orange"
+          fill="white"
           id="reserve"
           guide="silly"
           /* GATED:kheelu-line */
-          say="Save your spot. I'll keep Lumi company until launch."
+          say="Save your spot. I'll mind Lumi till launch."
           reveal="pop"
           className="overflow-x-clip"
         >

@@ -19,8 +19,16 @@ export const metadata: Metadata = {
 };
 
 /* Revamp M4 (theme B): the journal on the room grammar, one room per theme.
-   Copy: copy-v2 /STORIES. Cards keep their Kheelu pose art and stay
-   tilt-free, because the whole card is the link (hard rule, §8.18). */
+   Copy: copy-v2 /STORIES. Cards stay tilt-free, because the whole card is
+   the link (hard rule, §8.18).
+   V4-c (founder ask, 2026-07-31): cards LEAD WITH THE STORY'S OWN HERO —
+   12 of 19 articles now carry editorial photography, and a page of repeating
+   mascot poses read as "generic Lumi image" to the team. The hero sits as a
+   16:9 top band (the journal's native crop); the 7 articles still without
+   art keep the pose-on-tint treatment in the same band, so the grid stays
+   even and the remaining prompts (docs/stories-image-prompts.md) slot in
+   with zero layout work. The old narrow art column is gone, which also
+   retires the M4-b 104px-at-320px workaround it needed. */
 
 /* Fills alternate down the track so each theme reads as its own room; the
    card surface flips with the room so a card never sits on its own colour. */
@@ -97,29 +105,46 @@ export default function StoriesPage() {
               {STORIES.filter((s) => s.theme === theme).map((s, i) => (
                 <Reveal as="li" key={s.slug} delay={i * 0.06}>
                   {/* no tilt: whole-card links must not move under the cursor
-                      (TiltCard.tsx hard rule, R10) */}
+                      (TiltCard.tsx hard rule, R10). The lift-on-hover is not
+                      pointer-tracked, so it stays. */}
                   <Link
                     href={`/stories/${s.slug}`}
-                    className={`flex h-full overflow-hidden rounded-(--radius-card) border border-line-soft ${room.card} transition-[transform,box-shadow] duration-300 ease-(--ease-bounce) hover:-translate-y-1.5 hover:shadow-(--shadow-room) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2`}
+                    className={`group flex h-full flex-col overflow-hidden rounded-(--radius-card) border border-line-soft ${room.card} transition-[transform,box-shadow] duration-300 ease-(--ease-bounce) hover:-translate-y-1.5 hover:shadow-(--shadow-room) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2`}
                   >
-                    {/* narrower art column on small phones: 130px + p-6 text
-                        overshoots a room's content box at 320px wide */}
-                    <div className={`flex w-[104px] shrink-0 items-end justify-center sm:w-[130px] ${s.tint}`}>
-                      <Image
-                        src={`/mascot/mascot-${s.pose}.png`}
-                        alt=""
-                        width={120}
-                        height={160}
-                        sizes="130px"
-                        className="h-[110px] w-auto translate-y-1"
-                      />
-                    </div>
-                    <div className="p-5 sm:p-6">
+                    {s.hero ? (
+                      <div className="aspect-[16/9] w-full overflow-hidden">
+                        <Image
+                          src={s.hero}
+                          alt=""
+                          width={1440}
+                          height={803}
+                          sizes="(max-width: 767px) 92vw, 520px"
+                          /* the first card of the first room is this page's
+                             LCP (copy-only hero, room one reveal-free) —
+                             priority keeps the QA law honest now that the
+                             LCP element is a photo */
+                          priority={t === 0 && i === 0}
+                          className="h-full w-full object-cover transition-transform duration-500 ease-(--ease-calm) motion-safe:group-hover:scale-[1.03]"
+                        />
+                      </div>
+                    ) : (
+                      <div className={`flex aspect-[16/9] w-full items-end justify-center overflow-hidden ${s.tint}`}>
+                        <Image
+                          src={`/mascot/mascot-${s.pose}.png`}
+                          alt=""
+                          width={120}
+                          height={160}
+                          sizes="130px"
+                          className="h-[120px] w-auto translate-y-1"
+                        />
+                      </div>
+                    )}
+                    <div className="flex flex-1 flex-col p-5 sm:p-6">
                       <h3 className="mb-1 font-display text-[22px] font-extrabold leading-tight text-ink-head">
                         {s.title}
                       </h3>
-                      <p className="mb-2 text-[15px] text-ink-muted">{s.description}</p>
-                      <p className="text-[13px] font-semibold uppercase tracking-wide text-ink-muted">
+                      <p className="mb-3 text-[15px] text-ink-muted">{s.description}</p>
+                      <p className="mt-auto text-[13px] font-semibold uppercase tracking-wide text-ink-muted">
                         {s.minutes} minute read
                       </p>
                     </div>
@@ -132,11 +157,11 @@ export default function StoriesPage() {
         })}
 
         <Room
-          fill="orange"
+          fill="white"
           id="reserve"
           guide="silly"
           /* GATED:kheelu-line */
-          say="Save your spot. I'll keep Lumi company until launch."
+          say="Save your spot. I'll mind Lumi till launch."
           reveal="pop"
           className="overflow-x-clip"
         >

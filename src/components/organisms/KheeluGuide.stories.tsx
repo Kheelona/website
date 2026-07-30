@@ -24,7 +24,7 @@ export const WithRooms: Story = {
         <Room fill="cool" guide="curious" say="Read this bit slowly.">
           <div style={{ minHeight: "80vh" }}>Second room</div>
         </Room>
-        <Room fill="orange" guide="silly" say="Save your spot.">
+        <Room fill="white" guide="silly" say="Save your spot.">
           <div style={{ minHeight: "80vh" }}>Finale</div>
         </Room>
       </RoomsTrack>

@@ -1,20 +1,19 @@
 import { cn } from "@/lib/cn";
 import type { KheeluPose } from "@/lib/kheelu-poses";
 
-export type RoomFill = "white" | "cream" | "cool" | "sun" | "orange";
+export type RoomFill = "white" | "cream" | "cool" | "sun";
 export type RoomReveal = "left" | "right" | "pop" | "none";
 
 /* Theme-B sectioning (revamp M1): content lives in contained rounded panels
-   on the SiteBackdrop sky, not full-bleed washes. The orange room is the
-   conversion moment and carries white text, so it fills with the semantic
-   action token (today orange-cta #C25210, white 4.66:1) — never raw brand
-   orange. No stop-node numbering, no dotted trail (founder brief pointer 1). */
+   on the SiteBackdrop sky, not full-bleed washes. No stop-node numbering, no
+   dotted trail (founder brief pointer 1). The orange conversion fill RETIRED
+   in V4 (team feedback 2026-07-30): the finale is a white room and the brand
+   orange lives on the buttons instead. */
 const FILLS: Record<RoomFill, string> = {
   white: "bg-white",
   cream: "bg-cream",
   cool: "bg-cool",
   sun: "bg-[#fdf1e2]",
-  orange: "bg-action text-white",
 };
 
 /** One room panel. `guide` + `say` feed the persistent KheeluGuide via

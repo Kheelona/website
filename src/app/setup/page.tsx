@@ -37,7 +37,7 @@ export default function SetupPage() {
         ratio="md:grid-cols-[1.15fr_0.85fr]"
         guide="joy"
         /* GATED:kheelu-line — founder sign-off before merge to master */
-        say="Step three is my favourite. That's when we say hello."
+        say="Step three is my favourite. We say hello."
         media={
           <PhoneFrame
             src="/app/onboarding.png"
@@ -71,11 +71,11 @@ export default function SetupPage() {
         </Room>
 
         <Room
-          fill="orange"
+          fill="white"
           id="reserve"
           guide="silly"
           /* GATED:kheelu-line */
-          say="Save your spot. I'll keep Lumi company until launch."
+          say="Save your spot. I'll mind Lumi till launch."
           reveal="pop"
           className="overflow-x-clip"
         >

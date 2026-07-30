@@ -7,6 +7,14 @@ Pre-order marketing site for **Lumi**, Kheelona's screen-free talking AI toy for
 make from here touches a live commercial site.** Latest checkpoint, read it before touching anything:
 `docs/checkpoints/go-live-2026-07-28.md`.
 
+**V4 (2026-07-30) IS BUILT ON `demo-website` AND WAITS FOR THE FOUNDER'S REVIEW + MANUAL MERGE**
+(their explicit instruction — never merge it for them). It is the team-feedback round: brand-orange
+CTAs with ink labels (the R5 white-label law is RETIRED), the tutor hero, real audio demos, a
+How-It-Works loop, white finales, a VC-voiced /playos with the ArchitectureStack, five new stories,
+and the §5.1 say-line cap. Spec: `docs/revamp-2026-07/BUILD-V4.md` (wins over BUILD-V3 where they
+conflict); laws §8.22; founder queue FOUNDER-TODO V4-a..d (Tally 5-field edit, the four audio MP3s,
+story heroes, optional Ahrefs buttons). `main` below still serves the live V3 site until that merge.
+
 **The new site is MERGED TO `main` and is the only site.** The 2026-07 revamp (theme B
 "Kheelu's Tour") plus the V3 repositioning (founder's YC application: 40% fun, 20% brain
 development, 40% education) replaced the legacy Wix-backed commerce app that used to live at the
@@ -21,9 +29,13 @@ repo root. That old app is preserved at the tag **`pre-revamp-2026-07`** and its
   (sitemap, canonicals, robots, WhatsApp share, every JSON-LD `@id`) is apex. It was briefly the
   other way round, which would have made Search Console report 24 redirects instead of 24 pages.
   **If the canonical host ever changes, `GA4_HOSTS` must change with it** — that list covering both
-  hosts is the only reason GA4 survived this switch. **The pre-order form works**
-  (Tally `Y5XW7J`, set as `NEXT_PUBLIC_TALLY_FORM_URL` in Vercel production only — the preview still
-  shows the "opens soon" card, which is expected). Both analytics tools verified on the real domain.
+  hosts is the only reason GA4 survived this switch. **The pre-order form works everywhere**
+  (V4-a, 2026-07-31: the founder cut Tally `Y5XW7J` to 5 fields — parent name, kid's age, city,
+  WhatsApp number, WhatsApp consent — and the URL is now the hardcoded public `TALLY_FORM_URL` in
+  `config/site.ts`, so the preview and local builds render the REAL form; a valid
+  `NEXT_PUBLIC_TALLY_FORM_URL` still overrides. Preview/local submissions are REAL Tally entries —
+  delete test rows there. Iframe re-measured at 827px → `h-[900px]`, guard test ≥860).
+  Both analytics tools verified on the real domain.
   Treat every change from here as a change to a live commercial site: it takes real reservations.
 - **Vercel is the founder's** — never run the Vercel CLI. Push to GitHub and hand over any dashboard
   change. Same shape as the Gemini gate.
@@ -34,8 +46,8 @@ repo root. That old app is preserved at the tag **`pre-revamp-2026-07`** and its
 - **Live testimonials are drafted words on named people** (Shweta, Priyamvada, Gaurav, "Pilot
   parent"). Raised with the founder when the site went public; **their decision is to leave them
   as-is** (FOUNDER-TODO V3-a). Do not re-raise it and do not remove them.
-- **The spec that built this**: `docs/revamp-2026-07/BUILD-V3.md` (it wins over `copy-v2.md` and
-  older copy laws). Status and the restart guide: `docs/revamp-2026-07/WORKING.md` — **read it first on any resume,
+- **The spec that built this**: `docs/revamp-2026-07/BUILD-V4.md` (the 2026-07-30 team-feedback
+  round; wins over BUILD-V3, which wins over `copy-v2.md` and older copy laws). Status and the restart guide: `docs/revamp-2026-07/WORKING.md` — **read it first on any resume,
   and do not delete it** (an older note said to remove it after founder approval; it is now the
   site's operating record).
 - **Locked product facts**: Lumi is ages **2 to 5**, the platform arc is **2 to 14** (both "3 to 6"
@@ -106,15 +118,17 @@ Rules for any change:
 
 ## Commands (app code lives in `src/`)
 - Dev: `npm run dev` (port 3000)
-- Prod: `npx next build && npx next start -p 3456` (local prod URL the founder uses: http://localhost:3456)
+- Prod: `npx next build && npx next start -p 3456` (local prod URL the founder uses: http://localhost:3456). If a replaced `public/` image serves stale through `/_next/image`, `rm -rf .next/cache/images` — the optimizer cache survives rebuilds (qa-report 2026-07-31). Check `lsof -iTCP:3456` for stale servers from old sessions.
 - Test: `npm test` (Vitest; a test per component) · Storybook: `npm run storybook` / `npm run build-storybook`
 - Deploy target: Vercel, project Root Directory = **repo root** (the app moved out of
   `site/` on 2026-07-28; paths in older docs and checkpoints that say `site/...` now mean
   the repo root). Env vars + DNS are still founder-gated, FOUNDER-TODO #2.
 
 ## Env
-Root `.env` (gitignored, DUMMY values until founder fills them): `TRIPO_API_KEY` (unused — mascot pipeline went through the Tripo web UI instead, see `design-concepts/README.md`), `NEXT_PUBLIC_TALLY_FORM_URL` (`.env.example` mirrors it). `TallyEmbed` reads it and treats values
-containing "DUMMY" as unconfigured.
+Root `.env` (gitignored, DUMMY values until founder fills them): `TRIPO_API_KEY` (unused — mascot pipeline went through the Tripo web UI instead, see `design-concepts/README.md`), `NEXT_PUBLIC_TALLY_FORM_URL` (`.env.example` mirrors it). Since V4-a the form URL DEFAULTS to the public
+`TALLY_FORM_URL` constant in `config/site.ts` (same public-identifier rationale as the GA4 ID), so
+the real form renders on preview and localhost too; a valid env value overrides, a DUMMY one falls
+through to the constant, and the placeholder card survives only if the constant is ever blanked.
 - **Analytics needs NO env var** (three tools; laws in §8.21-c, c-i, c-ii). **Ahrefs** is a raw
   `<script async>` in the layout's `<head>` and is deliberately NOT host-gated, because Ahrefs
   verifies by fetching the page and looking for the tag. **Adding or removing any measurement
@@ -135,7 +149,7 @@ containing "DUMMY" as unconfigured.
 - `docs/qa-report.md` — sprint logs, Lighthouse, AI-detection verification of all 14 articles
 - `docs/copy-reference.md` — copy provenance + sanctioned deviations
 - `docs/design-review-2026-07-10.md` — R4 panel findings, every item dispositioned (FIXED/FOUNDER/DEFERRED/REJECTED); §8.13 in website-steps.md is the matching spec. 3D QA gotcha: hidden tabs freeze rAF, so the canvas looks dead in background automation tabs — verify with a visible window
-- `docs/stories-image-prompts.md` — ready prompts for the 7 journal articles still missing hero images
+- `docs/stories-image-prompts.md` — HISTORICAL since 2026-07-31: all 19 journal articles are photographed; the doc keeps the style block for any future article's hero prompt
 - `docs/checkpoints/` — per-phase snapshots. **Latest: `go-live-2026-07-28.md`** (the launch: the
   sequence, the three real findings, the live-setup gotchas, and the decisions not to re-litigate).
   Before it: `repo-root-move-2026-07-28.md` (why the app sits at the repo root, and the redirect
@@ -144,7 +158,7 @@ containing "DUMMY" as unconfigured.
 - `AGENTS.md` — Next.js 16 breaking-changes warning (read `node_modules/next/dist/docs/` before writing Next code)
 - `tools/cutout/` — offline background removal (Swift + Apple Vision; compile with `swiftc -O main.swift -o cutout`). Every mascot/product cutout and video asset goes through it; never ship art with baked backgrounds. For thin pale details the Vision mask drops (hat ribbons), use `keycut.swift` (region-grow color-key; hybrid mode takes a Vision `--no-crop` alpha for the body: `keycut in.png out.png 24 vision-nocrop.png`).
 - **Visuals: the calm ambient treatment** (R5, founder 2026-07-10 — the R4 flying journey overwhelmed; punch-list law §8.14). A fixed canvas sky glides the page's own washes behind SSR DOM, with a few translucent shapes that ghost to 4% under copy. The whole 3D stack lives in **`src/features/ambient-stage/`** (imported through its `index.ts`); the full 3D journey (GLBs in `public/models/`, mascot rigged clip-less + procedural idle) is DORMANT, one prop away: `<StageGate stage="journey" />`. **Never `dynamic(() => import(...))` any three-consuming module except `Stage.tsx`** — sibling entries emit twin chunks with duplicate three copies. 3D QA needs a VISIBLE window: hidden tabs freeze rAF, so the canvas looks dead in background automation.
-- **Styling laws that still bind** (violating one is a review flag): zero italics; all text left-aligned; white button/band labels only on `orange-cta #C25210` (`teal-deep` was RETIRED in V3-5 — token-check is 17 mappings); serif ONLY in human quotes; 13px sans kickers in `orange-ink #b54a0d`, the only orange passing 4.5:1 on every wash; one CTA verb (nav = "Reserve at ₹4,999"); every page ends with `FinaleCTA` (`id="reserve"`, the nav CTA's anchor); **tilt never wraps a whole-card link** (`molecules/TiltCard.tsx`, §8.18 — pointer-tracked transforms drop clicks); **the priority plush image must stay the hero's LARGEST element** (it owns mobile LCP; two live regressions taught this, qa-report R11); nav tab is "PlayOS" and /playos is the parent-voice platform page (no pricing/partner CTAs on .com); mobile perf verifies record BOTH Lighthouse throttling methods (simulate amplifies a headless artifact — judge by devtools numbers).
-- **Registry law** (§8.19 + §8.21): new sections compose the shared molecules — `SectionHeading`/`Card`/`StepList`/`PageHero`/`CheckList`/`LegalDoc` plus V3's `AnswerBlock`/`FootnotesRow`/`KheelonaPlusBand`/`FamilyGrid`/`LumiModes` — and take prices, CTA labels, ages and subscription copy from `@/config/site`. Hand-rolling those shapes is a review flag.
-- **Retired in V3-5, do not resurrect or cite**: `MascotScene`, `KheeluSays`, `HeroConversation`, `KheeluIntro`, `WhyWeExist`, `Feelings`, `MeetLumi`, `WhatLumiDoes`, `HowItWorks`, `SafetyCallout`, `SafetyStrip`, `StickyMobileCTA`, `CurveDivider`, `Beat`, and the `teal-deep` token. Older §8.x entries and checkpoints still name them because they describe what shipped at the time. Plan + architecture: `docs/redesign-plan-2026-07.md`. `public/video/launch.{mp4,jpg}` = the "Two friends" film (source `launch-video/src/FilmTwoFriendsVeo.tsx`).
+- **Styling laws that still bind** (violating one is a review flag): zero italics; all text left-aligned; **CTAs are brand orange `#EF762F` via the `action` token with `ink-head` labels — NO white text on the action fill anywhere** (V4 D1, §8.22-a; white measures 2.9:1 and the R5 white-label law is retired; `orange-cta #C25210` survives only as a dormant token; token-check is 17 mappings); the finale is a WHITE room on every route (D5); serif ONLY in human quotes; 13px sans kickers in `orange-ink #b54a0d`, the only orange passing 4.5:1 on every wash; one CTA verb (nav = "Reserve at ₹4,999"); every page ends with `FinaleCTA` (`id="reserve"`, the nav CTA's anchor); Kheelu say lines ≤ 48 characters and the guide docks bottom-RIGHT (§8.22-d); **tilt never wraps a whole-card link** (`molecules/TiltCard.tsx`, §8.18 — pointer-tracked transforms drop clicks); **the priority plush image must stay the hero's LARGEST element** (it owns mobile LCP; two live regressions taught this, qa-report R11); nav tab is "PlayOS" and /playos is the VC-voiced platform page (V4 D6 — vision, moat, ArchitectureStack; still no per-unit pricing, kheelona.ai stays the only partner CTA); mobile perf verifies record BOTH Lighthouse throttling methods (simulate amplifies a headless artifact — judge by devtools numbers).
+- **Registry law** (§8.19 + §8.21 + §8.22-h): new sections compose the shared molecules — `SectionHeading`/`Card`/`StepList`/`PageHero`/`CheckList`/`LegalDoc` plus V3's `AnswerBlock`/`FootnotesRow`/`KheelonaPlusBand`/`FamilyGrid`/`LumiModes` plus V4's `AudioMoments` (data ONLY from `lib/audio-moments.ts`)/`HowItWorksLoop`/`ArchitectureStack` — and take prices, CTA labels, ages and subscription copy from `@/config/site`. Hand-rolling those shapes is a review flag.
+- **Retired in V3-5, do not resurrect or cite**: `MascotScene`, `KheeluSays`, `HeroConversation`, `KheeluIntro`, `WhyWeExist`, `Feelings`, `MeetLumi`, `WhatLumiDoes`, `HowItWorks`, `SafetyCallout`, `SafetyStrip`, `StickyMobileCTA`, `CurveDivider`, `Beat`, and the `teal-deep` token. **Retired in V4** (team feedback): `Statement`, `LaunchVideo` (component only — the film files stay in `public/video/`), `LearningRoom`, `BrainRoom`, the hero fact bubbles, the orange Room fill/Section wash, and the launch film's VideoObject in Home's JSON-LD. Older §8.x entries and checkpoints still name them because they describe what shipped at the time. Plan + architecture: `docs/redesign-plan-2026-07.md`. `public/video/launch.{mp4,jpg}` = the "Two friends" film (source `launch-video/src/FilmTwoFriendsVeo.tsx`).
 - `gemini-handoff/` — founder generation kit (refs + seeds + prompts); product renders staged in `Design/product-images/generated-2026-07/`

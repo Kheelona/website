@@ -34,6 +34,42 @@ So local and preview page views will show up in your Ahrefs numbers. Small, and 
 verify button that works. Say the word if you would rather have it clean and I will restrict it and
 verify another way.
 
+## ► V4 (2026-07-30) — your team's feedback round is BUILT on `demo-website`, waiting for your review + merge
+
+Review at **https://website-hdn2.vercel.app** once the push deploys (the reserve panel shows the
+"opens soon" card there — production-scoped env var, expected). Spec: `docs/revamp-2026-07/BUILD-V4.md`.
+You merge `demo-website` → `main` yourself after review, per your instruction.
+
+**✅ V4-a — DONE (2026-07-31).** You cut `Y5XW7J` to the 5 fields (parent name, kid's age, city,
+WhatsApp number, WhatsApp consent) and Claude re-measured the live embed (827px, was 886) and set
+the iframe to 900px with the guard test at ≥860. The form URL is now a hardcoded public constant
+(`TALLY_FORM_URL` in `config/site.ts`), so the REAL form renders on the preview and localhost too —
+which you asked for. **Heads-up: submissions from the preview are real Tally entries; delete test
+rows in Tally after reviewing.** (The old V3-e colour-field note stays optional.)
+
+**✅ V4-b — DONE (2026-07-31).** You dropped the four MP3s in ~/Downloads and they now live in
+`public/audio/` (128kbps, 6.5–11.2s each). All four cards play on the site, one voice at a time.
+**One word changed to match your audio**: the apples transcript says "4 apples" (the team doc said
+"40", but your MP3's own filename — the TTS prompt — says four, and 4 is the better number for a
+2-to-5-year-old anyway). If the audio actually says forty, tell Claude and it is a one-word flip.
+Worth one listen: whether the knight clip really ends with "Choose one." (its filename truncates
+mid-sentence; the on-site transcript keeps the full line from your doc).
+
+**✅ V4-c — FULLY DONE (2026-07-31, two batches).** You generated all TWELVE story heroes (five
+from the kit, then the remaining seven from the chat prompts) — **all 19 journal articles are now
+photographed** and the /stories index leads every card with its story's own image. Nothing left in
+the journal's art queue. ✅ V3-c (the pipeline renders) also cleared the same day — see its entry
+below. **The one piece of art still open anywhere: REV-a, the final hero artwork.**
+
+**V4-d — Ahrefs, two optional buttons.** (1) Keywords Explorer and CSV export are locked on the
+current plan — upgrade only if you want volume numbers; the strategy does not depend on them.
+(2) Connecting Search Console inside the Ahrefs project (GSC Insights tab) would surface real
+query impressions. Also: `docs/snapshots/serp-bilingual-no1-2026-07-30.jpg` — you rank #1 in India
+for "raising bilingual child in india" already; the journal works.
+
+**Kheelu line sign-off queue grew (V3-d):** the V4 lines are listed in BUILD-V4 §6 (audio room,
+loop room, the shortened versions of ten existing lines for the new 48-character bubble).
+
 ## THE REVAMP (2026-07-24) — theme B + V3 are BUILT, MERGED to `main` and verified; these are yours
 
 Status + everything already decided: `docs/revamp-2026-07/WORKING.md`.
@@ -83,7 +119,7 @@ Spec: `docs/revamp-2026-07/BUILD-V3.md`. **Your gates, all of which BLOCK merge 
 - **V3-b. Kheelona+ facts** — the site says only "6 months included, monthly price announced
   before launch." Two facts stay yours: (1) the ₹ monthly price, (2) what Lumi does if the
   subscription lapses. Nothing about either is claimed until you state them.
-- **V3-c. Pipeline art** — Kheelu Speaker + AI book renders via the Gemini kit the build will
+- **✅ V3-c. DONE (2026-07-31)** — you generated the Kheelu Speaker + AI Book renders yourself; both went through the house cutout pipeline and now render on the Home family room (the 'In the workshop' placeholders are gone). Sources staged in Design/product-images/generated-2026-07/. Original ask, for the record: Kheelu Speaker + AI book renders via the Gemini kit the build will
   prepare (`gemini-handoff/pipeline-2026-07/`); calm placeholders until then.
 - **V3-d. Kheelu lines v3** — three new guide lines join the existing sign-off queue (list in
   BUILD-V3.md §6.4): "This is the part where the games are secretly lessons.", "The Speaker is

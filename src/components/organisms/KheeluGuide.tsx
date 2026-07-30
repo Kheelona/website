@@ -165,16 +165,22 @@ export function KheeluGuide({ defaultPose = "hero-wink" }: { defaultPose?: Kheel
 
   return (
     <aside aria-label="Kheelu, your guide" data-kheelu-guide>
-      {/* Desktop: the corner guide */}
-      <div className="pointer-events-none fixed bottom-[22px] left-[22px] z-40 hidden md:block">
-        <div ref={followRef} className="kheelu-guide-follow">
+      {/* Desktop: the corner guide.
+          V4 (team feedback 2026-07-30): moved to the bottom-RIGHT — room copy
+          is left-aligned, so the right corner overlays whitespace and media
+          instead of words — and he shrinks below 1320px, where the track
+          leaves him the least room. Bubble narrowed to match, with the §5.1
+          law capping say lines at 48 characters so it never wraps past two
+          lines. */}
+      <div className="pointer-events-none fixed bottom-[22px] right-[22px] z-40 hidden md:block">
+        <div ref={followRef} className="kheelu-guide-follow flex flex-col items-end">
           {line ? (
             <div
               aria-hidden="true"
               key={line}
-              className="kheelu-guide-bubble relative mb-3 w-max max-w-[240px] rounded-(--radius-card) border border-line-soft bg-white px-4 py-2.5 shadow-(--shadow-room-sm)"
+              className="kheelu-guide-bubble relative mb-3 w-max max-w-[220px] rounded-(--radius-card) border border-line-soft bg-white px-4 py-2.5 shadow-(--shadow-room-sm)"
             >
-              <span className="absolute -bottom-[7px] left-7 h-3.5 w-3.5 rotate-45 border-b border-r border-line-soft bg-white" />
+              <span className="absolute -bottom-[7px] right-7 h-3.5 w-3.5 rotate-45 border-b border-r border-line-soft bg-white" />
               <p className="font-display text-[15px] font-bold leading-snug text-ink-head">
                 {line}
               </p>
@@ -185,7 +191,7 @@ export function KheeluGuide({ defaultPose = "hero-wink" }: { defaultPose?: Kheel
             aria-label="Give Kheelu a poke"
             onClick={poke}
             className={cn(
-              "kheelu-guide-idle pointer-events-auto flex h-[150px] cursor-pointer items-end justify-start rounded-(--radius-card) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2 xl:h-[176px]",
+              "kheelu-guide-idle pointer-events-auto flex h-[132px] cursor-pointer items-end justify-end rounded-(--radius-card) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2 min-[1320px]:h-[168px]",
               poking && "kheelu-guide-poke",
             )}
           >
@@ -227,7 +233,7 @@ export function KheeluGuide({ defaultPose = "hero-wink" }: { defaultPose?: Kheel
             </p>
             <a
               href={PREORDER_HREF}
-              className="shrink-0 rounded-full bg-action px-4 py-3 text-[14px] font-bold leading-none text-white shadow-cta"
+              className="shrink-0 rounded-full bg-action px-4 py-3 text-[14px] font-bold leading-none text-ink-head shadow-cta"
             >
               {RESERVE_LABEL_SHORT}
             </a>

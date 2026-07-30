@@ -1,13 +1,13 @@
 import { render, screen } from "@testing-library/react";
 import { Hero } from "./Hero";
 
-describe("Hero (revamp M2)", () => {
-  it("renders the two-line H1 promise", () => {
+describe("Hero (V4, team feedback 2026-07-30)", () => {
+  it("renders the two-line tutor H1 (founder decision D2)", () => {
     render(<Hero />);
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: /Every child learns differently[\s\S]*Lumi learns with them/i,
+        name: /Your kid.s favourite tutor[\s\S]*Their best friend first/i,
       }),
     ).toBeInTheDocument();
   });
@@ -26,16 +26,15 @@ describe("Hero (revamp M2)", () => {
     ).toBeInTheDocument();
   });
 
-  it("offers the reserve CTA, the Meet Kheelu anchor, and the cap line", () => {
+  it("offers exactly ONE button, and the cap line rides under it (team items 7 and 10)", () => {
     render(<Hero />);
     expect(
       screen.getByRole("link", { name: /Reserve Lumi at ₹4,999/i }),
     ).toHaveAttribute("href", "#reserve");
-    expect(screen.getByRole("link", { name: "Meet Kheelu" })).toHaveAttribute(
-      "href",
-      "#warm",
-    );
-    expect(screen.getByText(/First 500 units at ₹4,999/i)).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Meet Kheelu" })).toBeNull();
+    // promoted, not buried: the chip carries the whole offer line
+    const cap = screen.getByText(/First 500 units at ₹4,999/i);
+    expect(cap.className).toContain("bg-yellow/15");
   });
 
   it("carries Lumi's own age band", () => {
@@ -43,10 +42,10 @@ describe("Hero (revamp M2)", () => {
     expect(screen.getByText("For ages 2 to 5")).toBeInTheDocument();
   });
 
-  it("renders the SSR fact bubbles (no opacity hiding)", () => {
+  it("renders no floating fact bubbles (team items 2 to 4)", () => {
     render(<Hero />);
     for (const t of ["No screen, ever.", "Up to 10 home languages.", "You read every word."]) {
-      expect(screen.getByText(t)).toBeInTheDocument();
+      expect(screen.queryByText(t)).toBeNull();
     }
   });
 

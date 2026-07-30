@@ -483,3 +483,49 @@ Two consequences that are law, not preference:
    nothing) or grants everything (identical to no gate). So the honest position is disclosure on
    /privacy plus a documented opt-out, with a banner as an open founder decision. Counsel review of
    /privacy, already a launch gate, now has to cover the GA4 paragraph.
+
+### 8.22 V4 TEAM-FEEDBACK ROUND (2026-07-30, spec BUILD-V4.md — every law here is founder-decided)
+
+**8.22-a THE ACTION COLOUR IS BRAND ORANGE WITH INK LABELS (D1, supersedes R5's white-label law).**
+`--color-action` points at `--color-orange` (#EF762F) and every label on it is `text-ink-head`
+(measured 5.9:1). White on #EF762F is 2.9:1 and fails WCAG at every size, so **no live surface may
+put white text on the action fill** — that includes buttons, the nav pill, the guide dock chip, and
+CompareTable's brand column. The white keyline on buttons retired with the white labels. `orange-cta`
+(#C25210) stays DEFINED for the dormant 3D-scene CSS and ambient mirrors but has zero live usages.
+
+**8.22-b THE FINALE IS A WHITE ROOM ON EVERY ROUTE (D5).** The orange Room fill and Section wash are
+retired; `id="reserve"` and the every-page-ends-with-FinaleCTA contract are unchanged. The plush
+lineup left the finale — the form is the moment. Small print sits in ink-muted on white.
+
+**8.22-c /PLAYOS SPEAKS TO INVESTORS (D6, supersedes the R11 parent-voice-only law).** Vision, moat,
+and stack depth first; parents get a compact bridge room. Still no per-unit pricing there, and
+kheelona.ai stays the only partner CTA. Architecture labels come ONLY from the team's published
+diagram (docs/revamp-2026-07/team-feedback-2026-07-30.pdf p6) — with the one recorded deviation that
+its "Age 3+" chip renders from `LUMI_AGES`.
+
+**8.22-d KHEELU SAY LINES ARE ≤ 48 CHARACTERS (§5.1).** The guide now lives bottom-RIGHT (the team's
+overlap finding: room copy is left-aligned) and shrinks below 1320px; the narrower bubble caps every
+`data-say` line at 48 characters so it never wraps past two lines. All existing lines were shortened
+in place and rejoin the sign-off queue.
+
+**8.22-e QUOTED TOY SPEECH IN AUDIO TRANSCRIPTS carries the same exemption as ChatDemo**: the
+exclamation marks and contractions inside `lib/audio-moments.ts` transcripts are sanctioned because
+the text is exactly what the audio says (two punctuation-only edits recorded in BUILD-V4 D8). The
+voice-lint QA allowlist covers them explicitly.
+
+**8.22-f A MISSING AUDIO FILE MUST FOLD TO TRANSCRIPT-ONLY.** Learned live: a 404'd mp3 can hang at
+`NETWORK_LOADING` forever without firing `error`, leaving a phantom playing state. `AudioMoments`
+therefore treats "no data after 4s" as broken (cleared by `onPlaying`/`onLoadedData`), pauses the
+element, and hides only the control — the transcript is the content, and it never disappears.
+`preload="none"` is law (mobile data), and one voice plays at a time.
+
+**8.22-g TWO NO-SHRINK LABELS IN ONE FLEX ROW ARE A VIEWPORT WIDENER** (the M4-b class, caught again
+by the V4 probe: the ArchitectureStack waterline forced /playos to 439px on a 320px screen). Any row
+of fixed-width text fragments must stack below `sm`. The V4 QA probe (iframe at 320/390 measuring
+`scrollWidth`) is the cheap tripwire; run it on every layout change.
+
+**8.22-h REGISTRY ADDITIONS**: `AudioMoments` (+ `lib/audio-moments.ts`, one data source for Home and
+/products/lumi), `HowItWorksLoop` (zero-JS CSS cycle — the walking glow is an opacity-only overlay),
+`ArchitectureStack` (composed on the same vendored Radix accordion as Faq; hover lifts, only tap
+opens). Retired with their rooms: `Statement`, `LaunchVideo` (component only — the film files stay in
+public/video/), `LearningRoom`, `BrainRoom`. The Home VideoObject left the JSON-LD with the film (D7).

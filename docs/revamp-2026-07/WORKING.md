@@ -13,7 +13,41 @@ here in full so nothing depends on conversation memory.
 
 ---
 
-## ⏭ COLD-RESTART: START HERE (last updated 2026-07-28 — MERGED TO MAIN, APP AT REPO ROOT)
+## ⏭ COLD-RESTART: START HERE (last updated 2026-07-30 — V4 BUILT ON `demo-website`, AWAITING FOUNDER REVIEW)
+
+**The V4 team-feedback round is BUILT and pushed on `demo-website`.** The founder reviews at
+https://website-hdn2.vercel.app and merges to `main` themselves (their explicit instruction,
+2026-07-30 — do not merge for them). `main` still serves the live site unchanged.
+
+- **Spec + every decision**: `docs/revamp-2026-07/BUILD-V4.md` (D1 brand-orange CTAs with ink
+  labels, D2 tutor hero, D3 five-field form, D4 calm motion, D5 white finale, D6 VC-voiced
+  /playos, D7 film off Home, D8 real audio demos). New laws: `docs/website-steps.md` §8.22.
+- **Feedback source**: `docs/revamp-2026-07/team-feedback-2026-07-30.pdf` (NOT the same document
+  as the near-identically named 24-Jul brief at the repo root).
+- **CMO pass**: `docs/revamp-2026-07/keywords-v3.md` — incl. the finding that the journal already
+  ranks #1 in India for "raising bilingual child in india". Five new stories shipped (journal = 19).
+- **V4-a + V4-b LANDED (2026-07-31)**: the founder cut Tally `Y5XW7J` to the 5 fields (embed
+  re-measured 827px → iframe 900px, guard ≥860; the form URL is now the hardcoded public
+  `TALLY_FORM_URL` constant so the REAL form renders on preview + localhost, env still overrides;
+  preview submissions are real Tally rows) and supplied the four audio MP3s (now in
+  `public/audio/`; apples transcript corrected to "4" to match the audio). **V4-c LANDED the same
+  day**: all five story heroes ingested and the /stories index redesigned to lead every card with
+  its story's own photography (16:9 band). **Second batch landed the same day: ALL 19 articles are
+  now photographed — zero pose-fallback cards remain** (the fallback branch stays in the page only
+  for future not-yet-arted articles). Still waiting: the Kheelu line sign-off (V3-d), a pre-merge
+  Lighthouse run, and the two optional Ahrefs buttons (V4-d). **Review with a VISIBLE tab: hidden tabs freeze the reveals AND
+  defer media/lazy-image loading** (all observed while verifying — the 3D visible-window law
+  covers all QA now). Kheelu lines (old + shortened) still queue for sign-off (V3-d).
+- **Verify locally**: `npm test` (253/253) · `npm run build` (token-check 17) ·
+  `npx next start -p 3456` — and check `lsof -iTCP:3456` first: a stale server from an old session
+  once sat there serving the previous build (qa-report V4, finding 3).
+- **Lighthouse** was not runnable in the build environment; run the usual gates before the merge.
+
+Everything below describes the LIVE site on `main` (V3), which V4 supersedes on merge.
+
+---
+
+## ⏭ COLD-RESTART (superseded): 2026-07-28 — MERGED TO MAIN, APP AT REPO ROOT
 
 **The site is finished, merged, and pushed. Work on `main`.**
 

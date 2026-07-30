@@ -1,19 +1,17 @@
 import { cn } from "@/lib/cn";
 
-export type Wash = "white" | "cream" | "cool" | "sun" | "orange";
+export type Wash = "white" | "cream" | "cool" | "sun";
 
 /* "sun" = Sunshine Yellow at the sanctioned 15% alpha, composited (#fdf1e2).
-   R5 (founder 2026-07-10): colored bands carry high-contrast WHITE text, so
-   the fills deepen to the lightest brand-family values where white passes
-   4.5:1 at ANY text size: orange-cta #C25210 (4.66:1). Raw #EF762F stays
-   decorative-only. V3 cleanup: the teal wash retired with the token — its last
-   user was /safety's hero, which moved onto the backdrop in M4. */
+   V3 cleanup: the teal wash retired with the token — its last user was
+   /safety's hero, which moved onto the backdrop in M4. V4 (team feedback
+   2026-07-30): the orange wash retired with the white finale — no wash
+   carries white text any more. */
 const WASHES: Record<Wash, string> = {
   white: "bg-white",
   cream: "bg-cream",
   cool: "bg-cool",
   sun: "bg-[#fdf1e2]",
-  orange: "bg-orange-cta text-white",
 };
 
 /** Full-bleed section with an A-concept wash. Curved joins between washes are

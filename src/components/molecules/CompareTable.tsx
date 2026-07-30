@@ -79,7 +79,7 @@ export function CompareTable() {
                   scope="col"
                   className={
                     i === 0
-                      ? "rounded-t-(--radius-card) bg-action p-4 text-left font-display text-lg font-bold text-white"
+                      ? "rounded-t-(--radius-card) bg-action p-4 text-left font-display text-lg font-bold text-ink-head"
                       : "p-4 text-left font-display text-lg font-bold text-ink-head"
                   }
                 >
@@ -98,7 +98,7 @@ export function CompareTable() {
                   {label}
                 </th>
                 <td
-                  className={`bg-action p-4 text-left font-bold text-white ${i === ROWS.length - 1 ? "rounded-b-(--radius-card)" : ""}`}
+                  className={`bg-action p-4 text-left font-bold text-ink-head ${i === ROWS.length - 1 ? "rounded-b-(--radius-card)" : ""}`}
                 >
                   {lumi}
                 </td>

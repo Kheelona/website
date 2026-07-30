@@ -12,12 +12,8 @@ describe("HeroStage", () => {
     ).toHaveAttribute("src", "/mascot/mascot-hero-wink.png");
   });
 
-  it("keeps the fact bubbles as visible SSR text", () => {
+  it("carries no fact bubbles (V4: the team asked for them off)", () => {
     render(<HeroStage />);
-    const bubbles = document.querySelectorAll(".hero-bubble");
-    expect(bubbles.length).toBe(3);
-    bubbles.forEach((b) => {
-      expect((b as HTMLElement).style.opacity).toBe("");
-    });
+    expect(document.querySelectorAll(".hero-bubble").length).toBe(0);
   });
 });
