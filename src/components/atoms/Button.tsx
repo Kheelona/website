@@ -6,17 +6,21 @@ import { cn } from "@/lib/cn";
 
 type Variant = "primary" | "ghost" | "onDark";
 
-/* R5 (founder 2026-07-10): button labels are WHITE. The fill is orange-cta
-   #C25210, the lightest brand orange where white passes 4.5:1 at any size --
-   both directives (white labels + a11y 100) hold at once. Hover lifts with
-   shadow/transform instead of a lighter fill so contrast never dips. */
+/* V4 (founder decision D1, 2026-07-30, supersedes R5): the fill is BRAND
+   orange #EF762F via the semantic action token, the label is dark ink
+   (ink-head on #EF762F measures 5.9:1 -- the team's colour and the a11y-100
+   gate hold at once; white on #EF762F is 2.9:1 and fails at every size).
+   The white keyline is gone by the same feedback item. Hover still lifts
+   with shadow/transform instead of a fill change so contrast never dips. */
 const VARIANTS: Record<Variant, string> = {
   primary:
-    "bg-orange-cta text-white border-2 border-white shadow-cta hover:-translate-y-0.5 hover:shadow-[0_6px_10px_rgb(0_0_0/0.28)]",
+    "bg-action text-ink-head shadow-cta hover:-translate-y-0.5 hover:shadow-[0_6px_10px_rgb(0_0_0/0.28)]",
   ghost:
     "bg-transparent text-ink-head border-2 border-ink-head hover:bg-ink-head hover:text-white",
+  // the same action fill reads correctly on the cocoa footer; the variant
+  // survives for call sites that want a darker hover shadow on dark ground
   onDark:
-    "bg-footer-cocoa text-white border-2 border-white shadow-cta hover:-translate-y-0.5 hover:shadow-[0_6px_10px_rgb(0_0_0/0.28)]",
+    "bg-action text-ink-head shadow-cta hover:-translate-y-0.5 hover:shadow-[0_6px_10px_rgb(0_0_0/0.4)]",
 };
 
 type Ripple = { id: number; x: number; y: number };

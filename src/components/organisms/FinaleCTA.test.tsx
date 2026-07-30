@@ -11,18 +11,19 @@ describe("FinaleCTA", () => {
     expect(container.querySelector("#reserve")).toBeInTheDocument();
   });
 
-  it("full variant renders the decorative lineup images", () => {
-    const { container } = render(<FinaleCTA variant="full" />);
-    // aria-hidden lineup (5 mascot/product cutouts, alt="")
-    const lineup = container.querySelector('[aria-hidden="true"].flex');
-    expect(lineup).toBeInTheDocument();
-    expect(lineup?.querySelectorAll("img").length).toBe(5);
+  it("renders no decorative lineup in any variant (V4: the form is the moment)", () => {
+    const { container: full } = render(<FinaleCTA variant="full" />);
+    const { container: compact } = render(<FinaleCTA variant="compact" />);
+    expect(full.querySelectorAll("img").length).toBe(0);
+    expect(compact.querySelectorAll("img").length).toBe(0);
   });
 
-  it("compact variant drops the lineup spectacle", () => {
-    const { container } = render(<FinaleCTA variant="compact" />);
-    // no aria-hidden flex row of cutout images
-    expect(container.querySelector('[aria-hidden="true"].flex')).toBeNull();
+  it("sets the finale in ink on a white shell, never white-on-orange (V4 D5)", () => {
+    const { container } = render(<FinaleCTA />);
+    const heading = container.querySelector("h2")!;
+    expect(heading.className).toContain("text-ink-head");
+    expect(container.innerHTML).not.toContain("text-white");
+    expect(container.querySelector("section")?.className).toContain("bg-white");
   });
 
 });

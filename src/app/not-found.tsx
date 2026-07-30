@@ -45,7 +45,7 @@ export default function NotFound() {
 
       <RoomsTrack>
         <Room
-          fill="orange"
+          fill="white"
           id="reserve"
           guide="silly"
           /* GATED:kheelu-line */

@@ -15,10 +15,11 @@ describe("Section", () => {
   });
 
 
-  it("uses the orange-cta fill for the orange wash", () => {
-    render(<Section wash="orange">copy</Section>);
+  it("no longer offers the retired orange wash (V4: the finale is white)", () => {
+    render(<Section wash="sun">copy</Section>);
     const el = screen.getByText("copy").closest("section")!;
-    expect(el.className).toContain("bg-orange-cta");
+    expect(el.className).toContain("bg-[#fdf1e2]");
+    expect(el.className).not.toContain("orange-cta");
   });
 
   it("forwards an id for anchor targets", () => {
@@ -30,7 +31,7 @@ describe("Section", () => {
   });
 
   it("no longer offers the retired teal wash (V3 cleanup)", () => {
-    const { container } = render(<Section wash="orange">band</Section>);
+    const { container } = render(<Section wash="sun">band</Section>);
     expect(container.innerHTML).not.toContain("teal");
   });
 });

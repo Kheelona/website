@@ -145,7 +145,7 @@ export default async function StoryPage({
         </Room>
 
         <Room
-          fill="orange"
+          fill="white"
           id="reserve"
           guide="silly"
           /* GATED:kheelu-line */

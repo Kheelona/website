@@ -17,7 +17,7 @@ export const ThreeRooms: Story = {
       <>
         <Room fill="white">First room</Room>
         <Room fill="cool">Second room</Room>
-        <Room fill="orange">Finale room</Room>
+        <Room fill="white">Finale room</Room>
       </>
     ),
   },

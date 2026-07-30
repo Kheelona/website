@@ -132,7 +132,7 @@ export default function StoriesPage() {
         })}
 
         <Room
-          fill="orange"
+          fill="white"
           id="reserve"
           guide="silly"
           /* GATED:kheelu-line */

@@ -10,11 +10,13 @@ describe("Button", () => {
     expect(link).toHaveAttribute("href", "/reserve");
   });
 
-  it("primary variant carries the brand fill and white label", () => {
+  it("primary variant carries the brand action fill and dark ink label (V4 D1)", () => {
     render(<Button href="#">Go</Button>);
     const link = screen.getByRole("link");
-    expect(link.className).toContain("bg-orange-cta");
-    expect(link.className).toContain("text-white");
+    expect(link.className).toContain("bg-action");
+    expect(link.className).toContain("text-ink-head");
+    // D1: the white keyline left with the white label
+    expect(link.className).not.toContain("border-white");
   });
 
   it("ghost variant uses the outlined ink treatment, not the fill", () => {
@@ -25,7 +27,7 @@ describe("Button", () => {
     );
     const link = screen.getByRole("link");
     expect(link.className).toContain("border-ink-head");
-    expect(link.className).not.toContain("bg-orange-cta");
+    expect(link.className).not.toContain("bg-action");
   });
 
   it("holds one line from sm up but wraps below it, so long labels stay on screen", () => {

@@ -246,7 +246,7 @@ export default function TeamPage() {
         </Room>
 
         <Room
-          fill="orange"
+          fill="white"
           id="reserve"
           guide="silly"
           /* GATED:kheelu-line */

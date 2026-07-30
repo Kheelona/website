@@ -71,7 +71,7 @@ export default function SetupPage() {
         </Room>
 
         <Room
-          fill="orange"
+          fill="white"
           id="reserve"
           guide="silly"
           /* GATED:kheelu-line */

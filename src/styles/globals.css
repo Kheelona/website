@@ -12,9 +12,12 @@
 @theme {
   --color-orange: #ef762f;
   --color-orange-deep: #d85f1b;
-  /* R5 (founder 2026-07-10): filled CTAs and colored bands carry WHITE text.
-     These are the lightest brand-family fills where white passes 4.5:1 at any
-     size (orange 4.66:1). Sanctioned deviations, not DS tokens. */
+  /* V4 (founder decision D1, 2026-07-30): CTAs are BRAND orange #EF762F with
+     dark ink labels (ink-head on #EF762F measures 5.9:1). The R5 white-label
+     law is RETIRED with it — white on #EF762F is 2.9:1 and fails at every
+     size, so no live surface may put white text on the action fill.
+     orange-cta stays DEFINED for the dormant 3D-scene CSS and the parked
+     ambient mirrors, but no live surface uses it. */
   --color-orange-cta: #c25210;
   /* R9: the small-text orange (13px sans kickers). Darkened until 4.5:1
      holds on EVERY wash: white 5.3, cream 5.0, cool 4.8, sun 4.8. */
@@ -32,8 +35,9 @@
      (white 5.7, cream 5.3, cool 5.1, sun 5.0). The blue twin of orange-ink. */
   --color-blue-ink: #1b6e96;
   /* Semantic action slots (revamp): new/refactored components reference these
-     for text-carrying colour, so a future contrast ruling flips ONE mapping. */
-  --color-action: var(--color-orange-cta);
+     for text-carrying colour, so a future contrast ruling flips ONE mapping.
+     V4 flipped exactly that mapping: action = brand orange, labels in ink. */
+  --color-action: var(--color-orange);
   --color-action-ink: var(--color-orange-ink);
   --color-ink: #272727;
   --color-ink-head: #1c1c1c;
@@ -339,9 +343,8 @@ html.scene-3d [data-wash] {
   background-color: transparent;
   transition: background-color 0.8s var(--ease-calm);
 }
-html.scene-3d [data-wash="orange"] {
-  background-color: var(--color-orange-cta);
-}
+/* (The orange-wash keep-own-paint rule left with the orange wash itself:
+   V4's finale is white, so no wash carries white text any more.) */
 html.scene-3d [data-curve] {
   opacity: 0;
   transition: opacity 0.8s var(--ease-calm);

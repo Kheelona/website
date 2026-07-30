@@ -9,11 +9,12 @@ describe("Room", () => {
     expect(el.className).toContain("rounded-(--radius-room)");
   });
 
-  it("fills the orange room with the semantic action token and white text", () => {
-    render(<Room fill="orange">copy</Room>);
+  it("offers the four calm fills and no conversion orange (retired in V4)", () => {
+    render(<Room fill="sun">copy</Room>);
     const el = screen.getByText("copy").closest("section")!;
-    expect(el.className).toContain("bg-action");
-    expect(el.className).toContain("text-white");
+    expect(el.className).toContain("bg-[#fdf1e2]");
+    expect(el.className).not.toContain("bg-action");
+    expect(el.className).not.toContain("text-white");
   });
 
   it("exposes guide pose and say line as data attributes for KheeluGuide", () => {

@@ -349,7 +349,7 @@ export default function SafetyPage() {
         </Room>
 
         <Room
-          fill="orange"
+          fill="white"
           id="reserve"
           guide="silly"
           /* GATED:kheelu-line */

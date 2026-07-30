@@ -331,7 +331,7 @@ export default function LumiPage() {
         </Room>
 
         <Room
-          fill="orange"
+          fill="white"
           id="reserve"
           guide="silly"
           say="Save your spot. I'll keep Lumi company until launch."
