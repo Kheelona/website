@@ -164,7 +164,7 @@ export default function ContactPage() {
           fill="white"
           id="reserve"
           guide="silly"
-          say="Save your spot. I'll keep Lumi company until launch."
+          say="Save your spot. I'll mind Lumi till launch."
           reveal="pop"
           className="overflow-x-clip"
         >

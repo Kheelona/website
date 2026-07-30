@@ -11,6 +11,8 @@ import { StepList } from "@/components/molecules/StepList";
 import { CheckList } from "@/components/molecules/CheckList";
 import { Reveal } from "@/components/molecules/Reveal";
 import { ChatDemo } from "@/components/molecules/ChatDemo";
+import { AudioMoments } from "@/components/molecules/AudioMoments";
+import { LUMI_PAGE_MOMENTS } from "@/lib/audio-moments";
 import { Faq, type FaqEntry } from "@/components/molecules/Faq";
 import { KheelonaPlusBand } from "@/components/molecules/KheelonaPlusBand";
 import { FootnotesRow, V3_FOOTNOTES, Footnote } from "@/components/molecules/FootnotesRow";
@@ -46,15 +48,6 @@ const HOW_IT_ANSWERS = [
   { n: "02", title: "The device thinks first.", body: "Speech is processed on the toy before anything goes anywhere. Low latency. No long waits. No sending everything to a distant server.", color: "text-blue-ink" },
   { n: "03", title: "The feeling gets read.", body: "PlayOS hears more than words. Curious, Grumpy, Sad, Silly, Joy: the answer meets the mood.", color: "text-orange-ink" },
   { n: "04", title: "The right response comes back.", body: "Every reply passes through an age-graded safety layer before it is spoken. On-device and cloud filters work together. No open internet. No surprises.", color: "text-orange-deep" },
-] as const;
-
-/* The Kheelu-mode exchange (V3). Same script as Home's learning room, so a
-   parent who saw it there recognises it here. Quoted toy and child speech keeps
-   its natural contractions — the sanctioned exemption. */
-const KHEELU_MODE_DEMO = [
-  { who: "lumi" as const, text: "And the slow tortoise crossed the line first. Why do you think the hare lost?" },
-  { who: "child" as const, text: "He went to sleep!" },
-  { who: "lumi" as const, text: "He did. If you were the hare, what would you do?" },
 ] as const;
 
 const APP_FEATURES = [
@@ -162,21 +155,23 @@ export default function LumiPage() {
           </Reveal>
         </Room>
 
-        {/* V3: the education fold, mirroring Home's learning room. The loop is
-            the proof — a claim about learning that a parent can watch. */}
-        <Room fill="white" id="kheelu-mode" guide="curious" say="This is the part where the games are secretly lessons." reveal="left">
+        {/* V4: the education fold now PLAYS instead of typing — the two
+            clearest lesson-in-play clips from the Home audio room (one data
+            source, lib/audio-moments). The "new things after launch" room
+            folded into this lede — each fact once, per the slim mandate. */}
+        <Room fill="white" id="kheelu-mode" guide="curious" say="The games here are secretly lessons." reveal="left">
           <div className="grid items-start gap-10 md:grid-cols-[1fr_1.05fr]">
             <Reveal>
               <SectionHeading
                 eyebrow="Kheelu mode"
                 title="Stories that ask questions back."
                 titleClassName="mb-4 max-w-[18ch]"
-                lede="Kheelu mode fills Lumi with stories and lessons your child can interrupt, question, and be quizzed on, offline. New packs arrive over time."
+                lede="Kheelu mode fills Lumi with stories and lessons your child can interrupt, question, and be quizzed on, offline. New packs and seasonal sets arrive over time, and school learning modules are on the way."
                 ledeClassName="max-w-[52ch]"
               />
             </Reveal>
             <Reveal delay={0.08}>
-              <ChatDemo turns={KHEELU_MODE_DEMO} />
+              <AudioMoments moments={LUMI_PAGE_MOMENTS} className="md:grid-cols-1" />
             </Reveal>
           </div>
         </Room>
@@ -225,19 +220,8 @@ export default function LumiPage() {
         {/* Founder call 2026-07-28: the three real modes replace the old
             personality chips (Companion / Storyteller / Teacher). A parent
             deciding on a pre-order asks what it does, not what it is like. */}
-        <Room fill="cool" id="modes" guide="joy" say="Three modes. I am the one doing the talking in all of them." reveal="left">
+        <Room fill="cool" id="modes" guide="joy" say="Three modes. I do the talking in all of them." reveal="left">
           <LumiModes />
-        </Room>
-
-        <Room fill="white" reveal="right">
-          <Reveal>
-            <SectionHeading
-              title="New things to do, long after launch."
-              titleClassName="mb-3 max-w-[20ch]"
-              lede="You choose what Lumi carries. Stories, songs, lessons, and activity packs download to the device, so your child plays with them offline and screen-free. New packs and seasonal sets arrive over time. School learning modules are on the way."
-              ledeClassName="max-w-[62ch]"
-            />
-          </Reveal>
         </Room>
 
         <Room fill="cream" id="parent-app" guide="bliss" say="You get to see everything. That's the deal." reveal="left">
@@ -334,7 +318,7 @@ export default function LumiPage() {
           fill="white"
           id="reserve"
           guide="silly"
-          say="Save your spot. I'll keep Lumi company until launch."
+          say="Save your spot. I'll mind Lumi till launch."
           reveal="pop"
           className="overflow-x-clip"
         >

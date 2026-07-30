@@ -140,7 +140,7 @@ export default function SafetyPage() {
         ratio="md:grid-cols-[1.2fr_0.8fr]"
         guide="bliss"
         /* GATED:kheelu-line — founder sign-off before merge to master */
-        say="No jokes on this page. This is the part parents read twice."
+        say="No jokes on this page. Parents read this twice."
         media={
           <Image
             src="/product/lumi-blue-2.png"
@@ -353,7 +353,7 @@ export default function SafetyPage() {
           id="reserve"
           guide="silly"
           /* GATED:kheelu-line */
-          say="Save your spot. I'll keep Lumi company until launch."
+          say="Save your spot. I'll mind Lumi till launch."
           reveal="pop"
           className="overflow-x-clip"
         >

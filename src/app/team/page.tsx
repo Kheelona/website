@@ -131,7 +131,7 @@ export default function TeamPage() {
       <PageHero
         guide="silly"
         /* GATED:kheelu-line — founder sign-off before merge to master */
-        say="These are my people. They made me, then they made Lumi."
+        say="My people. They made me, then Lumi."
       >
         <SectionHeading
           as="h1"
@@ -250,7 +250,7 @@ export default function TeamPage() {
           id="reserve"
           guide="silly"
           /* GATED:kheelu-line */
-          say="Save your spot. I'll keep Lumi company until launch."
+          say="Save your spot. I'll mind Lumi till launch."
           reveal="pop"
           className="overflow-x-clip"
         >
