@@ -8,6 +8,7 @@ import { SiteBackdrop } from "@/components/atoms/SiteBackdrop";
 import { KheeluGuide } from "@/components/organisms/KheeluGuide";
 import { Analytics } from "@vercel/analytics/next";
 import { GoogleAnalyticsGate } from "@/components/molecules/GoogleAnalyticsGate";
+import { AHREFS_ANALYTICS_KEY } from "@/config/site";
 import { graph } from "@/lib/seo";
 
 const glory = localFont({
@@ -69,6 +70,16 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: "document.documentElement.classList.add('js')",
           }}
+        />
+        {/* Ahrefs Web Analytics. In the <head> and in the SSR HTML on purpose:
+            Ahrefs verifies by fetching the page and looking for this tag, so the
+            deferred client-side pattern GA4 uses would fail its check. `async`
+            keeps it off the parser's critical path, so the hero image still owns
+            LCP. What it collects is stated on /privacy. */}
+        <script
+          src="https://analytics.ahrefs.com/analytics.js"
+          data-key={AHREFS_ANALYTICS_KEY}
+          async
         />
       </head>
       <body>

@@ -115,7 +115,10 @@ Rules for any change:
 ## Env
 Root `.env` (gitignored, DUMMY values until founder fills them): `TRIPO_API_KEY` (unused — mascot pipeline went through the Tripo web UI instead, see `design-concepts/README.md`), `NEXT_PUBLIC_TALLY_FORM_URL` (`.env.example` mirrors it). `TallyEmbed` reads it and treats values
 containing "DUMMY" as unconfigured.
-- **Analytics needs NO env var** (both wired 2026-07-28, laws in §8.21-c). Vercel Web Analytics =
+- **Analytics needs NO env var** (three tools; laws in §8.21-c, c-i, c-ii). **Ahrefs** is a raw
+  `<script async>` in the layout's `<head>` and is deliberately NOT host-gated, because Ahrefs
+  verifies by fetching the page and looking for the tag. **Adding or removing any measurement
+  tool means changing /privacy in the SAME commit** — `test/analytics-tags.test.ts` enforces it. Vercel Web Analytics =
   `<Analytics />` from `@vercel/analytics/next`; GA4 = `GoogleAnalyticsGate`, a manual gtag install
   via `@next/third-parties` (NOT Tag Manager). Both sit last in the body of `src/app/layout.tsx` so
   they never compete with the hero LCP. **The GA4 ID is hardcoded in `config/site.ts`**

@@ -218,3 +218,16 @@ present.
 **Standing rule this establishes**: a measurement tool and the sentence describing it ship together.
 A privacy page that is accurate on Tuesday and wrong on Wednesday is worse than one that never
 mentioned the subject.
+
+## Privacy copy revised again for Ahrefs (2026-07-30)
+
+Third measurement tool, third revision of the same paragraph, which is the standing rule working as
+intended: a tool and the sentence describing it ship together.
+
+"We use two tools for it" became "Three tools do it", with Vercel and Ahrefs grouped as the ones that
+set no cookies and Google Analytics named as the one that does. "Neither one" became "None of them",
+and "block both" became "block all three".
+
+The cookie claim for Ahrefs was **verified before it was written**: loaded on a clean page with the
+stale GA cookies wiped, Ahrefs set no cookies, no localStorage and no sessionStorage. The vendor says
+the same thing, but the vendor saying it is not evidence.

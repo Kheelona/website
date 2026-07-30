@@ -89,3 +89,17 @@ export const CONTACT_EMAIL: string | null = "hello@kheelona.com";
  *  live, not when a preview URL changes. */
 export const GA4_MEASUREMENT_ID = "G-7LMKSFEXZ9";
 export const GA4_HOSTS = ["kheelona.com", "www.kheelona.com"] as const;
+
+/** Ahrefs Web Analytics, added 2026-07-30 at the founder's request.
+ *
+ *  A public site key, like the GA4 measurement ID above — it identifies the
+ *  property, it does not authorise anything, and Ahrefs' own instructions have
+ *  you paste it into public HTML.
+ *
+ *  Unlike GA4 this one is NOT host-gated, and that is a deliberate trade. Ahrefs
+ *  verifies an installation by fetching the page and looking for the tag, so a
+ *  client-side gate would leave the script out of the HTML source and the
+ *  "Recheck installation" button would keep failing. The cost is that local and
+ *  preview page views reach the property. If that noise ever matters, the fix is
+ *  the GA4_HOSTS pattern plus re-verifying by another method. */
+export const AHREFS_ANALYTICS_KEY = "N7vd/jLtIIlHqzFqu57UBg";
