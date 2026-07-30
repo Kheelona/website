@@ -455,6 +455,22 @@ localhost runs and preview deploys can never pollute the property. Rules:
   `id=G-7LMKSFEXZ9`, `window.gtag` a function, `config G-7LMKSFEXZ9` in the dataLayer, `_ga` cookie
   set, hero image still loading. Reverted, and the guard test fails when the allowance is present.
 
+**8.21-c-ii AHREFS WEB ANALYTICS (2026-07-30, founder request) — and why it is NOT host-gated.**
+The tag is a raw `<script async>` in the root layout's `<head>`, so it appears in the SSR HTML of
+every route. That is deliberate and it breaks the pattern GA4 follows: **Ahrefs verifies an
+installation by fetching the page and looking for the tag**, so the deferred, client-side, host-gated
+approach would leave it out of the HTML source and "Recheck installation" would keep failing. The
+price is that localhost and preview page views reach the property. Accepted knowingly; if that noise
+ever matters, move it to the `GA4_HOSTS` pattern and re-verify by another method. `async` keeps it
+off the parser's critical path, so the hero image still owns LCP (§8.19).
+
+Cookie behaviour was **observed, not quoted from the vendor**: on a clean load with the stale GA
+cookies wiped, Ahrefs set no cookies, no localStorage and no sessionStorage. That is what licences
+the sentence on /privacy. Never publish a vendor's privacy claim you have not watched happen.
+
+Three tools now run: Vercel Web Analytics, Ahrefs, GA4. `test/analytics-tags.test.ts` guards the
+pairing — it fails if a tag is added or removed without the privacy page changing to match.
+
 Two consequences that are law, not preference:
 1. **The privacy page has to say so, in the same commit.** /privacy promises plain words about what
    is collected. It names both tools, says which one sets cookies (GA4 does, Vercel's does not — the
