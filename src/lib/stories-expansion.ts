@@ -102,6 +102,9 @@ export const EXPANSION: Story[] = [
     minutes: 5,
     pose: "sad",
     tint: "bg-orange/15",
+    hero: "/stories/talking-late-or-talking-little.jpg",
+    heroAlt:
+      "A father and his young daughter share a picture book on a window seat, her finger resting on a page, morning light behind them",
     paragraphs: [
       { p: "Somewhere at every birthday party there is a parent doing quiet math: that child is narrating a whole movie, mine points and says come. Is this fine? Is this something?" },
       { p: "First, the honest frame. Children spread themselves across a wide normal range, late talkers often catch up completely, and quiet is a temperament as well as a milestone. Also true: some children need help, earlier help works better, and a parent's gut feeling is real information." },
@@ -120,6 +123,9 @@ export const EXPANSION: Story[] = [
     minutes: 5,
     pose: "curious",
     tint: "bg-blue/15",
+    hero: "/stories/what-actually-builds-a-sharp-brain.jpg",
+    heroAlt:
+      "A young boy on a stool drops peas into a steel bowl mid-chat while his mother stirs a pot beside him",
     paragraphs: [
       { p: "Type how to make my child's brain sharp into any search box and an industry answers: apps, flashcards, tonics, courses for three year olds. The volume of it can make an ordinary home feel like not enough." },
       { p: "Here is the comforting, slightly boring truth. The things that build a young brain are old things. Research keeps circling the same four." },
@@ -141,6 +147,9 @@ export const EXPANSION: Story[] = [
     minutes: 4,
     pose: "silly",
     tint: "bg-yellow/15",
+    hero: "/stories/how-children-collect-words.jpg",
+    heroAlt:
+      "A father carries his daughter through a vegetable market at golden hour as she points at something for him to name",
     paragraphs: [
       { p: "Nobody taught your child the word auto. Or gravy, or cousin, or the slightly alarming place they learned whatever they said last Tuesday. Words arrive like sand in beach clothes: constantly, invisibly, from everywhere." },
       { p: "Between three and six the collection explodes. Many children add words at a pace that works out to several a day, every day, for years. The question is not how to make a child memorize words. It is how to stand in the sandstorm." },
@@ -159,6 +168,9 @@ export const EXPANSION: Story[] = [
     minutes: 5,
     pose: "joy",
     tint: "bg-blue/15",
+    hero: "/stories/raising-a-bilingual-child-in-india.jpg",
+    heroAlt:
+      "A grandmother braids her granddaughter's hair on a sunlit courtyard step, both mid-song, a plate of jasmine beside them",
     paragraphs: [
       { p: "There is a moment many Indian parents know: your child answers your Kannada in English, and something in you notes it, half proud, half strangely sad." },
       { p: "The pride makes sense. English opens doors here, and every parent knows which exams and interviews wait down the road. But the quiet math many families do, that home language time is time stolen from English, has the research exactly backwards." },
@@ -177,6 +189,9 @@ export const EXPANSION: Story[] = [
     minutes: 6,
     pose: "grumpy",
     tint: "bg-orange/15",
+    hero: "/stories/should-kids-use-ai.jpg",
+    heroAlt:
+      "A father with his son on his lap points at a laptop screen while the boy follows his finger, lamp-lit and side by side",
     paragraphs: [
       { p: "We should be the last people to ask, or the first: we build AI for children. And our honest answer is one most AI companies will not give you. No, your child should not use AI. Not the AI most people mean by the word." },
       { p: "The chatbots and apps in the news were built for adults. They will talk about anything, they are wrong with total confidence, they are engineered to keep a user engaged, and they will happily fill the hours a childhood is supposed to spend elsewhere. Handing one to a four year old is handing over the open internet with a friendlier face." },
@@ -195,6 +210,9 @@ export const EXPANSION: Story[] = [
     minutes: 5,
     pose: "silly",
     tint: "bg-yellow/15",
+    hero: "/stories/busy-hands-no-screens.jpg",
+    heroAlt:
+      "A young girl paints the balcony floor with water and a big brush while her mother works at the table inside, glancing over with a smile",
     paragraphs: [
       { p: "It is 4pm, your call starts in ten minutes, and a small person is orbiting your desk asking what they can do. The tablet would solve this in four seconds. That is exactly why it feels like cheating." },
       { p: "The screen-free answer is not one magic activity. It is understanding what the screen was providing: a task with no setup, no adult, and no way to fail. Anything with those three properties can compete." },

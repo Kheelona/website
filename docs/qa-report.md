@@ -70,6 +70,15 @@ motion-safe 1.03 image scale under the existing lift. Verified: 254/254, build g
 clean at 320/390 (iframe probe), hero assets 200 through the optimizer. Hidden-tab caveat applies
 to reviewing this page too: lazy card images defer until the tab is visible.
 
+### V4-c second batch · 2026-07-31 · the journal is fully photographed
+
+The founder generated the remaining SEVEN heroes from full self-contained ChatGPT prompts (mirrored
+in docs/stories-image-prompts.md, now marked historical). Same pipeline: 1672×941 PNG → sips →
+1440×803 JPEG (182–272KB). All 19 articles now carry photography with written-to-the-image alt
+text; the /stories index renders zero pose-fallback cards (the fallback branch stays in the page as
+the graceful state for future not-yet-arted articles). Verified: 254/254, build green, heroes 200,
+index card count photographic 19/19.
+
 ## Ahrefs Web Analytics · 2026-07-30 · commit 15902c5 · live-verified
 
 Added at the founder's request. Raw `<script async>` in the root layout `<head>`, so it ships in the

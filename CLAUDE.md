@@ -149,7 +149,7 @@ through to the constant, and the placeholder card survives only if the constant 
 - `docs/qa-report.md` — sprint logs, Lighthouse, AI-detection verification of all 14 articles
 - `docs/copy-reference.md` — copy provenance + sanctioned deviations
 - `docs/design-review-2026-07-10.md` — R4 panel findings, every item dispositioned (FIXED/FOUNDER/DEFERRED/REJECTED); §8.13 in website-steps.md is the matching spec. 3D QA gotcha: hidden tabs freeze rAF, so the canvas looks dead in background automation tabs — verify with a visible window
-- `docs/stories-image-prompts.md` — ready prompts for the 7 journal articles still missing hero images
+- `docs/stories-image-prompts.md` — HISTORICAL since 2026-07-31: all 19 journal articles are photographed; the doc keeps the style block for any future article's hero prompt
 - `docs/checkpoints/` — per-phase snapshots. **Latest: `go-live-2026-07-28.md`** (the launch: the
   sequence, the three real findings, the live-setup gotchas, and the decisions not to re-litigate).
   Before it: `repo-root-move-2026-07-28.md` (why the app sits at the repo root, and the redirect

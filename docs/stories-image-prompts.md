@@ -55,3 +55,22 @@ Create a 16:9 image, warm soft 3D illustration style like a modern animated film
 - The composer's Return key does not submit; click the arrow button.
 - Batch up to 3 scenes per prompt ("Create three separate images...") — they generate sequentially.
 - Hover a generated image for its download icon (top right of the image).
+
+---
+
+## 2026-07-31 — full self-contained ChatGPT prompts (supersede the drafts above)
+
+The founder asked for copy-paste-ready prompts with the style baked into every one (no reference
+images needed). Given in chat the same day; mirrored here for the record. Output contract per
+image: widescreen landscape 16:9, at least 1680px wide, saved as `<slug>.jpg`, ingest via sips to
+1440×803 like the V4-c batch. Reject: readable text, watermarks, wrong finger counts, plastic
+faces, cold/blue light, any toy resembling Lumi or Kheelu.
+
+## ✅ COMPLETE (2026-07-31, second batch): this document is now HISTORICAL
+
+The founder generated the remaining seven from the full ChatGPT prompts above, same session.
+**All 19 journal articles now carry 1440×803 photography** in `public/stories/`, wired with
+written-to-the-image alt text, and the /stories index renders zero pose-fallback cards. Any FUTURE
+article ships with a hero from day one (compose its prompt in the style block above); the
+pose+tint fallback in `src/app/stories/page.tsx` stays as the graceful state for a not-yet-arted
+article, not as a normal condition.

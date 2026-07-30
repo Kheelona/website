@@ -32,9 +32,10 @@ https://website-hdn2.vercel.app and merges to `main` themselves (their explicit 
   preview submissions are real Tally rows) and supplied the four audio MP3s (now in
   `public/audio/`; apples transcript corrected to "4" to match the audio). **V4-c LANDED the same
   day**: all five story heroes ingested and the /stories index redesigned to lead every card with
-  its story's own photography (16:9 band; pose-on-tint fallback for the 7 articles still without
-  art). Still waiting: the Kheelu line sign-off (V3-d), a pre-merge Lighthouse run, and the two
-  optional Ahrefs buttons (V4-d). **Review with a VISIBLE tab: hidden tabs freeze the reveals AND
+  its story's own photography (16:9 band). **Second batch landed the same day: ALL 19 articles are
+  now photographed — zero pose-fallback cards remain** (the fallback branch stays in the page only
+  for future not-yet-arted articles). Still waiting: the Kheelu line sign-off (V3-d), a pre-merge
+  Lighthouse run, and the two optional Ahrefs buttons (V4-d). **Review with a VISIBLE tab: hidden tabs freeze the reveals AND
   defer media/lazy-image loading** (all observed while verifying — the 3D visible-window law
   covers all QA now). Kheelu lines (old + shortened) still queue for sign-off (V3-d).
 - **Verify locally**: `npm test` (253/253) · `npm run build` (token-check 17) ·

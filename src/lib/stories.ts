@@ -91,6 +91,9 @@ const CORE: Story[] = [
     minutes: 5,
     pose: "bliss",
     tint: "bg-blue/15",
+    hero: "/stories/what-to-look-for-in-a-safe-ai-toy.jpg",
+    heroAlt:
+      "A mother examines the underside of a small white toy robot by lamp light while her young son sits waiting beside the open box",
     paragraphs: [
       { p: "The first time your child asks a toy a question and the toy answers, your stomach does a small flip. Half wonder, half alarm. Both halves are correct, and the alarm half deserves a checklist. Here is ours, the one we would use on any smart toy, including our own." },
       { h: "One: when is the microphone on?", p: "The only good answer is: when your child invites it. Look for wake-word listening, and an honest explanation of what happens the rest of the time. Off should mean off." },
