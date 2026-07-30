@@ -23,6 +23,17 @@ Two things about the live setup worth remembering rather than rediscovering:
   preview deploy pollutes your reports. If the canonical host ever changes, `GA4_HOSTS` in
   `src/config/site.ts` must change with it, or the tag goes silently dead.
 
+## ► #0b — Ahrefs: click "Recheck installation" (30 seconds)
+
+The tag is live on https://kheelona.com with your key `N7vd/jLtIIlHqzFqu57UBg`, in `<head>` on all 24
+routes, verified in the served HTML. Ahrefs just needs you to press its button.
+
+Worth knowing: unlike GA4, this one is **not** restricted to the live domain, because Ahrefs verifies
+by fetching the page and looking for the tag, and a restricted tag would be invisible to that check.
+So local and preview page views will show up in your Ahrefs numbers. Small, and it is the price of a
+verify button that works. Say the word if you would rather have it clean and I will restrict it and
+verify another way.
+
 ## THE REVAMP (2026-07-24) — theme B + V3 are BUILT, MERGED to `main` and verified; these are yours
 
 Status + everything already decided: `docs/revamp-2026-07/WORKING.md`.

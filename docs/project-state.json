@@ -1,7 +1,7 @@
 {
   "project_name": "kheelona.com",
   "created_at": "2026-07-06",
-  "last_updated": "2026-07-28",
+  "last_updated": "2026-07-30",
   "current_phase": "LAUNCHED. https://kheelona.com is live, indexed and taking pre-orders. All remaining work is founder-gated content and assets.",
   "current_sprint": "revamp-M4-interior-routes",
   "phase_status": {
@@ -281,5 +281,5 @@
     "ahrefs_analytics_2026_07_30": "AHREFS WEB ANALYTICS added at the founder's request. Raw <script async> in the root layout's <head> with data-key from AHREFS_ANALYTICS_KEY in config/site.ts, so it is in the SSR HTML of every route. DELIBERATELY NOT HOST-GATED, unlike GA4: Ahrefs verifies by fetching the page and looking for the tag, so the deferred client-side pattern would leave it out of the HTML source and 'Recheck installation' would keep failing. Cost accepted knowingly: localhost and preview page views reach the property. Cookie behaviour was OBSERVED before the privacy copy was written - on a clean load with the stale GA cookies wiped, Ahrefs set no cookies, no localStorage, no sessionStorage - which is what licences the sentence on /privacy. Three tools now run (Vercel, Ahrefs, GA4) and test/analytics-tags.test.ts fails if a tag is added or removed without the privacy page changing to match. Law: website-steps 8.21-c-ii. Verified: 249 tests, tsc clean, build green, tag present in the SSR HTML of / and /privacy, axe 0 violations on both at both viewports. FOUNDER STEP REMAINING: click 'Recheck installation' in Ahrefs once this deploys."
   },
   "resume_instructions": "Read README.md first. Then this file. Then the current-phase checkpoint. Then website-steps.md if it exists. Never re-ask anything settled in the Brand Bible (build prompt §1) or in approvals above.",
-  "tests": 245
+  "tests": 249
 }

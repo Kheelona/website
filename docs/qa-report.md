@@ -1,5 +1,31 @@
 # QA Report (sprint log)
 
+## Ahrefs Web Analytics · 2026-07-30 · commit 15902c5 · live-verified
+
+Added at the founder's request. Raw `<script async>` in the root layout `<head>`, so it ships in the
+SSR HTML of every route — which is what Ahrefs' verifier fetches.
+
+**Deliberately not host-gated**, breaking the GA4 pattern on purpose: a client-side gate keeps the tag
+out of the HTML source, and "Recheck installation" would fail forever. Localhost and preview hits
+reaching the property is the accepted cost, recorded rather than discovered later.
+
+**Cookie behaviour observed, not quoted.** Ahrefs advertises itself as cookieless. That is not
+evidence, and it would have been our sentence in a privacy policy. Wiped the stale `_ga` cookies left
+from the earlier GA4 host test, loaded clean, waited: no cookies, no localStorage, no sessionStorage.
+Only then was the /privacy line written.
+
+**Verified after deploy** (live in ~60s): tag present in the served HTML of `/`, `/products/lumi`,
+`/privacy`, `/stories` with the exact `data-key`. 249 tests, tsc clean, build green (token-check 17),
+axe 0 violations on `/` and `/privacy` at desktop and mobile.
+
+**New guard**: `test/analytics-tags.test.ts` fails if a measurement tag is added or removed without
+the privacy page changing to match. Three tools was the point where relying on memory stopped being
+reasonable.
+
+**Still not measured**: no post-launch Lighthouse run, same caveat as the go-live entry. Three async
+analytics scripts now load per page. Each is off the parser's critical path and none precedes the hero
+image, so LCP should be unaffected — but that remains reasoning, not a measurement.
+
 ## GO-LIVE verification · 2026-07-28 · https://kheelona.com · commits 070180b + de6874d + 14959e9
 
 Everything below was checked against the **live domain**, not localhost.

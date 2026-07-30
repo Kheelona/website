@@ -37,7 +37,7 @@ here in full so nothing depends on conversation memory.
 ```bash
 cd /Users/apoorvasahu/Documents/kheelona-com-website
 git switch main && git pull
-npm test                     # expect 245/245 green
+npm test                     # expect 249/249 green
 npm run build                # token-check 17, then next build
 npx next start -p 3456       # local prod at http://localhost:3456
 ```
@@ -209,6 +209,7 @@ element rule in globals.css belongs in `@layer base`.
 | /privacy /terms /contact + legacy 301s | **DONE** — the three routes the old site had all work with real content (`hello@kheelona.com`, founder-confirmed; the old phone number was a placeholder and is never published), and 14 legacy Wix URLs 301 to their new homes so the retired ₹2,999 pages stop competing in Google's index |
 | Merge to `main` + repo cleanup | **DONE 2026-07-28** — old main tagged `pre-revamp-2026-07` (the legacy Wix app, one checkout away), then merged so main's tree is exactly the revamp's with both histories preserved. GitHub: 0 open PRs, 2 branches, 2 tags. `revamp/kheelu-tour` deleted after confirming every commit is reachable from main |
 | App moved to the repo root | **DONE 2026-07-28** — Vercel reads `package.json` from the project's Root Directory, so an app in `site/` meant every build failed with "No Next.js version detected". Everything moved up; three broken path assumptions fixed (build script, root tsconfig sweeping in `launch-video/`, Storybook's `@/` alias). Also fixed a live bug found while verifying: the legacy `/product/:slug*` 301 was intercepting our own product images, so the review URL served a blank hero. §8.21-a/b |
+| Ahrefs Web Analytics | **DONE 2026-07-30** — raw `<script async>` in the layout `<head>`, key in `config/site.ts`. NOT host-gated on purpose: Ahrefs verifies by fetching the page for the tag, so the GA4 pattern would fail its check; localhost and preview hits reaching the property is the accepted cost. /privacy updated in the same commit (three tools now), cookie behaviour observed in a browser rather than quoted from the vendor, and `test/analytics-tags.test.ts` fails if a tag changes without the privacy page changing. §8.21-c-ii. **Founder step left: click "Recheck installation" in Ahrefs.** |
 | 🟢 GO LIVE | **DONE 2026-07-28** — founder cleared the Vercel Root Directory, pointed DNS, created the Tally form and set its env var, then verified Search Console and Bing. Claude wired both analytics tools (Vercel Web Analytics + a manual GA4 gtag install, production-host gated), fixed the pre-order iframe height (886px form in a 560px frame hid Submit), and flipped the canonical host reasoning to the apex so the sitemap's 24 URLs stop redirecting. All verified on the live domain. §8.21-c/c-i |
 
 ## Locked decisions (founder, 2026-07-24 — do not re-ask)
