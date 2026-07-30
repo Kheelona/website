@@ -55,11 +55,12 @@ rows in Tally after reviewing.** (The old V3-e colour-field note stays optional.
 Worth one listen: whether the knight clip really ends with "Choose one." (its filename truncates
 mid-sentence; the on-site transcript keeps the full line from your doc).
 
-**V4-c — Five story hero images (when you next run Gemini).** Kit:
-`gemini-handoff/feedback-round-2026-07/AI-image-prompt.md` — five prompts, references beside them,
-exact output filenames inside. The five new articles are LIVE in the build with their pose+tint
-cards meanwhile. (The older kits still queue ahead of this one in impact: REV-a hero art,
-V3-c pipeline renders.)
+**✅ V4-c — DONE (2026-07-31).** You generated all five story heroes; they are converted to the
+journal's 1440×803 format, wired into the articles, and the /stories index now leads every card
+with its story's own photography (16:9 top band; the 7 articles still without art keep the
+pose-on-tint band — their prompts wait in `docs/stories-image-prompts.md` whenever you want the
+journal fully photographed). The older kits still queue ahead in impact: REV-a hero art, V3-c
+pipeline renders.
 
 **V4-d — Ahrefs, two optional buttons.** (1) Keywords Explorer and CSV export are locked on the
 current plan — upgrade only if you want volume numbers; the strategy does not depend on them.

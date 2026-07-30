@@ -30,10 +30,13 @@ https://website-hdn2.vercel.app and merges to `main` themselves (their explicit 
   re-measured 827px → iframe 900px, guard ≥860; the form URL is now the hardcoded public
   `TALLY_FORM_URL` constant so the REAL form renders on preview + localhost, env still overrides;
   preview submissions are real Tally rows) and supplied the four audio MP3s (now in
-  `public/audio/`; apples transcript corrected to "4" to match the audio). Still waiting: V4-c
-  story heroes from the Gemini kit, two optional Ahrefs buttons (V4-d), and the Kheelu line
-  sign-off. **Review with a VISIBLE tab: hidden tabs freeze the reveals AND defer media loading**
-  (both observed while verifying — the 3D visible-window law covers all QA now). Kheelu lines (old + shortened) still queue for sign-off (V3-d).
+  `public/audio/`; apples transcript corrected to "4" to match the audio). **V4-c LANDED the same
+  day**: all five story heroes ingested and the /stories index redesigned to lead every card with
+  its story's own photography (16:9 band; pose-on-tint fallback for the 7 articles still without
+  art). Still waiting: the Kheelu line sign-off (V3-d), a pre-merge Lighthouse run, and the two
+  optional Ahrefs buttons (V4-d). **Review with a VISIBLE tab: hidden tabs freeze the reveals AND
+  defer media/lazy-image loading** (all observed while verifying — the 3D visible-window law
+  covers all QA now). Kheelu lines (old + shortened) still queue for sign-off (V3-d).
 - **Verify locally**: `npm test` (253/253) · `npm run build` (token-check 17) ·
   `npx next start -p 3456` — and check `lsof -iTCP:3456` first: a stale server from an old session
   once sat there serving the previous build (qa-report V4, finding 3).

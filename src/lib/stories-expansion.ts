@@ -219,6 +219,9 @@ export const EXPANSION: Story[] = [
     minutes: 5,
     pose: "curious",
     tint: "bg-orange/15",
+    hero: "/stories/does-a-three-year-old-need-an-ai-tutor.jpg",
+    heroAlt:
+      "A father listens, chin in hand, while his young daughter explains her tower of blocks across the coffee table",
     paragraphs: [
       { p: "Type AI tutor for kids into a search bar and you meet a wall of homework apps. Fraction practice, essay feedback, exam prep. All of it useful, and none of it built for a person who still needs help with shoe laces." },
       { p: "Yet the phrase keeps rising, and parents of much younger children are the ones typing it. The instinct underneath is sound. The years before school are when a child learns faster than they ever will again, and every parent quietly wonders whether they are doing enough with them." },
@@ -239,6 +242,9 @@ export const EXPANSION: Story[] = [
     minutes: 4,
     pose: "silly",
     tint: "bg-blue/15",
+    hero: "/stories/a-toy-that-talks-vs-a-toy-that-listens.jpg",
+    heroAlt:
+      "A boy whispers a secret into a teddy bear's ear while battery-operated toys sit ignored on the shelf behind them",
     paragraphs: [
       { p: "The bestselling talking toy in India right now is a dancing cactus. It records what your child says and squeaks it back in a chipmunk voice. Children find it hilarious, for about a week." },
       { p: "Search for a talking toy and that is mostly what you will find: repeat-after-me plushes, phrase-button phones, dolls with six sentences. They all talk. Almost none of them listen." },
@@ -258,6 +264,9 @@ export const EXPANSION: Story[] = [
     minutes: 5,
     pose: "grumpy",
     tint: "bg-yellow/15",
+    hero: "/stories/screen-time-rules-parents-swear-by.jpg",
+    heroAlt:
+      "Two children laugh inside a blanket fort by torchlight while the television sits dark and a father watches from the doorway",
     paragraphs: [
       { p: "Every parenting group has a moment where someone asks about screens and the replies fill with numbers. Follow 3-6-9-12. We do the one-hour rule. Have you tried 20-20-20. The rules travel fast because they are easy to remember, which is not the same as being true." },
       { p: "Here is what the named rules actually say, where they come from, and which ones deserve a place on your fridge." },
@@ -278,6 +287,9 @@ export const EXPANSION: Story[] = [
     minutes: 5,
     pose: "sad",
     tint: "bg-blue/15",
+    hero: "/stories/talking-toys-and-late-talkers.jpg",
+    heroAlt:
+      "A mother on a veranda points up at a bird on a wire while her young son looks up, mouth open, about to try the word",
     paragraphs: [
       { p: "Few silences are louder than a two-year-old who is not talking yet. Cousins the same age narrate their whole day, the family group chat fills with advice, and every toy in the shop suddenly claims to teach speech." },
       { p: "First, the reassuring truth: children start talking across a wide range of ages, and a late start is usually just that, a start that is late. The signal that matters is understanding. A child who follows what you say, points at things, and finds their own ways to tell you things is building language even while quiet. When understanding also seems behind, or gestures are missing, ask a paediatrician or a speech therapist, early and without embarrassment. Asking early never hurts. Waiting can." },
@@ -297,6 +309,9 @@ export const EXPANSION: Story[] = [
     minutes: 4,
     pose: "joy",
     tint: "bg-orange/15",
+    hero: "/stories/brain-development-toys-for-a-2-year-old.jpg",
+    heroAlt:
+      "A two-year-old claps with delight as a tower of wooden stacking cups topples on the living room floor",
     paragraphs: [
       { p: "Stand in any toy aisle and count the boxes that say brain development. Stacking cups promise it. Busy boards promise it. A plastic drum promises it. The phrase is doing a lot of work, and most of it is marketing." },
       { p: "Here is the version without a box: a two-year-old brain builds itself out of repetition, movement, and above all response. Things happen because the child did something, and someone noticed." },

@@ -56,6 +56,20 @@ form URL became the hardcoded public `TALLY_FORM_URL` constant so the preview re
 
 Tests 254/254; TallyEmbed suite rewritten for the real-form default + blanked-constant placeholder.
 
+### V4-c addendum · 2026-07-31 · story heroes + the journal index leads with them
+
+The founder generated all five story heroes (1672×941 PNGs → sips to the journal's 1440×803 JPEG,
+164–276KB, matching the existing heroes). Wired into the five V4 articles with written-to-the-image
+alt text. THE /STORIES INDEX REDESIGNED on the founder's ask ("generic lumi image" on every card):
+cards now lead with the story's own hero as a 16:9 top band — 12 of 19 articles carry photography —
+with the pose-on-tint treatment surviving as the same-shaped fallback band for the 7 without, so
+the remaining prompts (docs/stories-image-prompts.md) slot in with zero layout work. The first card
+of room one takes `priority` (it owns the page's LCP; room one is already reveal-free). The old
+narrow art column retired, and with it its M4-b 104px-at-320px workaround. Hover adds a
+motion-safe 1.03 image scale under the existing lift. Verified: 254/254, build green, /stories
+clean at 320/390 (iframe probe), hero assets 200 through the optimizer. Hidden-tab caveat applies
+to reviewing this page too: lazy card images defer until the tab is visible.
+
 ## Ahrefs Web Analytics · 2026-07-30 · commit 15902c5 · live-verified
 
 Added at the founder's request. Raw `<script async>` in the root layout `<head>`, so it ships in the
