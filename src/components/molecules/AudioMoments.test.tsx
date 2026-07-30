@@ -12,7 +12,7 @@ const MOMENTS: readonly AudioMomentData[] = [
   {
     id: "apples",
     chip: "Numbers",
-    transcript: "We have 40 apples for our picnic.",
+    transcript: "We have 4 apples for our picnic.",
     src: "/audio/lumi-demo-apples.mp3",
   },
 ];
@@ -44,7 +44,7 @@ describe("AudioMoments", () => {
     expect(screen.getByRole("button", { name: "Play: Numbers" })).toBeInTheDocument();
     // the transcript is always-visible content, not an alternative
     expect(screen.getByText("Oh no, the bridge is out!")).toBeInTheDocument();
-    expect(screen.getByText("We have 40 apples for our picnic.")).toBeInTheDocument();
+    expect(screen.getByText("We have 4 apples for our picnic.")).toBeInTheDocument();
   });
 
   it("plays on press and reflects the state on the control", () => {

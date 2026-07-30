@@ -37,6 +37,25 @@ pure-CSS choreography, and the first rooms of copy-only-hero routes stay reveal-
 **Pending founder inputs that show on the preview**: the four audio MP3s (cards render
 transcript-only until then — by design), story hero images (pose+tint fallback), Tally 5-field edit.
 
+### V4-b/V4-a addendum · 2026-07-31 · founder inputs landed
+
+Audio: four founder-supplied MP3s into `public/audio/` (128kbps, 6.5–11.2s, 140–215KB), apples
+transcript corrected 40 → "4" to match the audio (the TTS filename is the prompt). Tally: the
+founder's 5-field form re-measured live at 827px (was 886) → iframe `h-[900px]`, guard ≥860; the
+form URL became the hardcoded public `TALLY_FORM_URL` constant so the preview renders the real form.
+
+**Two more real findings while verifying, both handled:**
+1. `play()` with no user gesture rejects with NotAllowedError (scripted clicks) — that is a policy
+   refusal, not a broken file, and no longer folds the card.
+2. **Hidden tabs defer BOTH IntersectionObserver and media loading**: with `visibilityState:
+   "hidden"`, only 4/52 reveal nodes fired and a playing element sat at `readyState 0` forever. The
+   4s no-data fold now arms only in visible tabs, and the 3D visible-window QA law provably extends
+   to reveal and media verification. Verified playback chain instead: file decodes (afinfo), serves
+   200 `audio/mpeg`, trusted click accepted (`paused:false`, Pause control shown, all 4 controls
+   intact).
+
+Tests 254/254; TallyEmbed suite rewritten for the real-form default + blanked-constant placeholder.
+
 ## Ahrefs Web Analytics · 2026-07-30 · commit 15902c5 · live-verified
 
 Added at the founder's request. Raw `<script async>` in the root layout `<head>`, so it ships in the

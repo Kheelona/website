@@ -68,22 +68,37 @@ export function AudioMoments({
     });
     const attempt = el.play();
     // jsdom's play() returns undefined; browsers return a promise that
-    // rejects when the source is missing — treat that like a load error
+    // rejects when the source is missing — treat that like a load error.
+    // EXCEPT NotAllowedError: that is the autoplay policy refusing a call
+    // with no user gesture (scripted clicks, some webviews) — the file is
+    // fine, so the control must survive for the next real tap.
     if (attempt && typeof attempt.catch === "function") {
-      attempt.catch(() => markBroken(id));
+      attempt.catch((err: unknown) => {
+        if ((err as DOMException)?.name === "NotAllowedError") {
+          clearLoadTimer(id);
+          setPlaying((current) => (current === id ? null : current));
+          return;
+        }
+        markBroken(id);
+      });
     }
     // A missing file can also HANG at NETWORK_LOADING without ever firing
     // `error` (seen live: a 404'd mp3 left the control in a phantom playing
     // state, equaliser dancing to silence). If no data at all has arrived
     // after 4s, fold the card to transcript-only. `onPlaying`/`onLoadedData`
     // clear this, so a real file on a slow network keeps its control.
+    // Hidden tabs are exempt: Chrome legitimately defers media loading in
+    // background tabs (observed during V4-b verification), and a deferral is
+    // not a missing file.
     clearLoadTimer(id);
-    loadTimers.current.set(
-      id,
-      setTimeout(() => {
-        if (el.readyState === 0) markBroken(id);
-      }, 4000),
-    );
+    if (document.visibilityState === "visible") {
+      loadTimers.current.set(
+        id,
+        setTimeout(() => {
+          if (el.readyState === 0) markBroken(id);
+        }, 4000),
+      );
+    }
   };
 
   return (

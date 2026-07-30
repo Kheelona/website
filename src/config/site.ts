@@ -74,6 +74,18 @@ export const JOURNAL_REVIEWED = "July 2026";
  *  becomes real, it needs the same confirmation. */
 export const CONTACT_EMAIL: string | null = "hello@kheelona.com";
 
+/** The Tally pre-order form (the founder's; 5 fields as of 2026-07-31:
+ *  parent name, kid's age, city, WhatsApp number, WhatsApp consent).
+ *
+ *  Hardcoded for the same reason as the GA4 ID below: it is a public
+ *  identifier the live site prints in every reserve panel, and hardcoding it
+ *  lets the PREVIEW and local builds render the real form — the founder asked
+ *  to review the form on the demo site (2026-07-31). NEXT_PUBLIC_TALLY_FORM_URL
+ *  still overrides when set, so the production env config keeps working
+ *  unchanged. Submissions from preview/local are REAL submissions in Tally;
+ *  delete test entries there. */
+export const TALLY_FORM_URL = "https://tally.so/r/Y5XW7J";
+
 /** GA4, wired 2026-07-28 (founder's property: stream "kheelona.com",
  *  https://kheelona.com, stream id 15336032355, enhanced measurement ON).
  *

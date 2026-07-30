@@ -1,16 +1,23 @@
 "use client";
 
 import { useState } from "react";
-import { LAUNCH_PRICE } from "@/config/site";
+import { LAUNCH_PRICE, TALLY_FORM_URL } from "@/config/site";
 
-const FORM_URL = process.env.NEXT_PUBLIC_TALLY_FORM_URL ?? "";
+/* V4-a (2026-07-31): the form URL now defaults to the public constant in
+   config/site so the preview and local builds render the REAL form (the env
+   var was production-scoped, which kept the founder from reviewing the form
+   on the demo site). A valid env value still wins; a DUMMY one falls through
+   to the constant. */
+const ENV_URL = process.env.NEXT_PUBLIC_TALLY_FORM_URL ?? "";
+const envValid = ENV_URL.startsWith("https://tally.so/") && !ENV_URL.includes("DUMMY");
+const FORM_URL = envValid ? ENV_URL : TALLY_FORM_URL;
 const isConfigured = FORM_URL.startsWith("https://tally.so/") && !FORM_URL.includes("DUMMY");
 
 /** Pre-order capture adapter (blueprint §8.6). Tally owns storage, confirmation
- *  email, and the price hold. Fields are configured in Tally itself: parent name,
- *  email, WhatsApp number, WhatsApp consent, child's birth month, city.
- *  TODO(tally-form-url): placeholder panel renders until the founder provides
- *  NEXT_PUBLIC_TALLY_FORM_URL. Launch gate requires zero placeholders. */
+ *  email, and the price hold. Fields are configured in Tally itself — 5 as of
+ *  2026-07-31 (founder edit, V4-a): parent name, kid's age, city, WhatsApp
+ *  number, WhatsApp consent. The placeholder branch survives only as the
+ *  graceful state if the constant is ever blanked. */
 export function TallyEmbed() {
   const [loaded, setLoaded] = useState(false);
 
@@ -46,15 +53,16 @@ export function TallyEmbed() {
       <iframe
         src={embedUrl}
         title="Reserve Lumi: the pre-order form"
-        /* Measured against the real form, not guessed: the live embed
-           (6 fields + Submit, hideTitle=1) is 886px tall. At the old 560px the
-           City field and the SUBMIT BUTTON sat below the iframe's own fold,
-           reachable only by scrolling inside the frame — which plenty of people
-           never realise they can do, on the one panel the whole site exists to
-           convert. The headroom above 886px absorbs validation messages, which
-           push fields down on a failed submit. Re-measure if fields change:
-           open the embed URL directly and read documentElement.scrollHeight. */
-        className="h-[960px] w-full"
+        /* Measured against the real form, not guessed: the live embed after
+           the founder's 5-field edit (V4-a, 2026-07-31, hideTitle=1) is 827px
+           tall — re-measured the day the fields changed, per this comment's
+           own instruction. At the original 560px the SUBMIT BUTTON sat below
+           the iframe's own fold, reachable only by scrolling inside the frame,
+           on the one panel the whole site exists to convert. The headroom
+           above 827px absorbs validation messages, which push fields down on
+           a failed submit. Re-measure if fields change: open the embed URL
+           directly and read documentElement.scrollHeight. */
+        className="h-[900px] w-full"
         onLoad={() => { setLoaded(true); track("preorder_view"); }}
       />
       <p className="px-6 pb-4 text-[14px] text-ink-muted">

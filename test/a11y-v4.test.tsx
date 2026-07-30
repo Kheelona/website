@@ -14,6 +14,9 @@ import { AUDIO_MOMENTS } from "@/lib/audio-moments";
 async function expectNoViolations(container: HTMLElement) {
   const results = await axe.run(container, {
     rules: { "color-contrast": { enabled: false } },
+    // jsdom cannot host axe's cross-frame bridge; the Tally iframe inside
+    // FinaleCTA is third-party content anyway (V4-a made it render by default)
+    iframes: false,
   });
   expect(
     results.violations.map((v) => `${v.id}: ${v.nodes.length} nodes`),

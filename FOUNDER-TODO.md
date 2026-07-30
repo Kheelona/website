@@ -40,25 +40,20 @@ Review at **https://website-hdn2.vercel.app** once the push deploys (the reserve
 "opens soon" card there — production-scoped env var, expected). Spec: `docs/revamp-2026-07/BUILD-V4.md`.
 You merge `demo-website` → `main` yourself after review, per your instruction.
 
-**V4-a — Edit the Tally form to the 5 agreed fields (10 min).** You picked: Your name · Kid's age ·
-Mobile number · WhatsApp consent · City. Edit form `Y5XW7J` in Tally (it is yours). The site copy
-already reads correctly for both the old and new field sets, and the iframe gets re-measured after
-your edit. (This supersedes the old V3-e note about a colour field — add one only if you still want it.)
+**✅ V4-a — DONE (2026-07-31).** You cut `Y5XW7J` to the 5 fields (parent name, kid's age, city,
+WhatsApp number, WhatsApp consent) and Claude re-measured the live embed (827px, was 886) and set
+the iframe to 900px with the guard test at ≥860. The form URL is now a hardcoded public constant
+(`TALLY_FORM_URL` in `config/site.ts`), so the REAL form renders on the preview and localhost too —
+which you asked for. **Heads-up: submissions from the preview are real Tally entries; delete test
+rows in Tally after reviewing.** (The old V3-e colour-field note stays optional.)
 
-**V4-b — The four audio demo files (5 min).** The new "Play, learn, together." section plays REAL
-Lumi audio, but Claude's sandbox cannot download from Google Drive. Run this in a terminal (or type
-`! ` before it in a Claude session), then the next session wires them in:
-
-```bash
-cd ~/Downloads
-curl -L -o lumi-demo-knight.mp3  "https://drive.google.com/uc?export=download&id=1JDDWLVf1w-HzY4IdAw7wOMJ-hSxbdr4X"
-curl -L -o lumi-demo-shoes.mp3   "https://drive.google.com/uc?export=download&id=1ajSRstwzJMN2aXqfszKHWXiStqRmfPGH"
-curl -L -o lumi-demo-breathe.mp3 "https://drive.google.com/uc?export=download&id=1R2o4q18vQyM098fyjqbwU3yooo8U7pb4"
-curl -L -o lumi-demo-apples.mp3  "https://drive.google.com/uc?export=download&id=1BmqWupud4KIOj0Gb_yDn6QefXpw4hoW0"
-```
-
-Until they exist, the audio cards show the transcript with the play control hidden — deliberate,
-nothing is broken.
+**✅ V4-b — DONE (2026-07-31).** You dropped the four MP3s in ~/Downloads and they now live in
+`public/audio/` (128kbps, 6.5–11.2s each). All four cards play on the site, one voice at a time.
+**One word changed to match your audio**: the apples transcript says "4 apples" (the team doc said
+"40", but your MP3's own filename — the TTS prompt — says four, and 4 is the better number for a
+2-to-5-year-old anyway). If the audio actually says forty, tell Claude and it is a one-word flip.
+Worth one listen: whether the knight clip really ends with "Choose one." (its filename truncates
+mid-sentence; the on-site transcript keeps the full line from your doc).
 
 **V4-c — Five story hero images (when you next run Gemini).** Kit:
 `gemini-handoff/feedback-round-2026-07/AI-image-prompt.md` — five prompts, references beside them,

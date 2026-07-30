@@ -257,3 +257,9 @@ polish, every case recorded here:
 - Five new journal pieces (slugs in keywords-v3.md): original copy, same journal laws; the named
   screen rules are attributed (WHO / AAP hour, Tisseron's 3-6-9-12) and the unsourceable ones
   (3-3-3, 7-7-7) are called folklore rather than explained.
+
+**V4-b addendum (2026-07-31)**: the apples transcript says "4 apples", not the team doc's "40" —
+the founder-supplied MP3's filename (the TTS generation prompt) says four, and the transcript's one
+job is to match the audio. Also the better number for ages 2 to 5. Flagged to the founder. The
+knight clip's filename truncates before "Choose one." (a filename length limit, mid-sentence);
+the transcript keeps the doc's full line pending one listen-through.

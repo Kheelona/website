@@ -44,8 +44,12 @@ export const AUDIO_MOMENTS: readonly AudioMomentData[] = [
   {
     id: "apples",
     chip: "Numbers",
+    /* "4", not the team doc's "40": the founder-supplied MP3's filename (the
+       TTS generation prompt) says four, and the transcript's one job is to
+       match the audio. Flagged to the founder 2026-07-31; also the better
+       number for ages 2 to 5. */
     transcript:
-      "We have 40 apples for our picnic, but a sneaky squirrel just ran off with 2! How many do we have left to share?",
+      "We have 4 apples for our picnic, but a sneaky squirrel just ran off with 2! How many do we have left to share?",
     src: "/audio/lumi-demo-apples.mp3",
   },
 ] as const;

@@ -29,9 +29,13 @@ repo root. That old app is preserved at the tag **`pre-revamp-2026-07`** and its
   (sitemap, canonicals, robots, WhatsApp share, every JSON-LD `@id`) is apex. It was briefly the
   other way round, which would have made Search Console report 24 redirects instead of 24 pages.
   **If the canonical host ever changes, `GA4_HOSTS` must change with it** — that list covering both
-  hosts is the only reason GA4 survived this switch. **The pre-order form works**
-  (Tally `Y5XW7J`, set as `NEXT_PUBLIC_TALLY_FORM_URL` in Vercel production only — the preview still
-  shows the "opens soon" card, which is expected). Both analytics tools verified on the real domain.
+  hosts is the only reason GA4 survived this switch. **The pre-order form works everywhere**
+  (V4-a, 2026-07-31: the founder cut Tally `Y5XW7J` to 5 fields — parent name, kid's age, city,
+  WhatsApp number, WhatsApp consent — and the URL is now the hardcoded public `TALLY_FORM_URL` in
+  `config/site.ts`, so the preview and local builds render the REAL form; a valid
+  `NEXT_PUBLIC_TALLY_FORM_URL` still overrides. Preview/local submissions are REAL Tally entries —
+  delete test rows there. Iframe re-measured at 827px → `h-[900px]`, guard test ≥860).
+  Both analytics tools verified on the real domain.
   Treat every change from here as a change to a live commercial site: it takes real reservations.
 - **Vercel is the founder's** — never run the Vercel CLI. Push to GitHub and hand over any dashboard
   change. Same shape as the Gemini gate.
@@ -121,8 +125,10 @@ Rules for any change:
   the repo root). Env vars + DNS are still founder-gated, FOUNDER-TODO #2.
 
 ## Env
-Root `.env` (gitignored, DUMMY values until founder fills them): `TRIPO_API_KEY` (unused — mascot pipeline went through the Tripo web UI instead, see `design-concepts/README.md`), `NEXT_PUBLIC_TALLY_FORM_URL` (`.env.example` mirrors it). `TallyEmbed` reads it and treats values
-containing "DUMMY" as unconfigured.
+Root `.env` (gitignored, DUMMY values until founder fills them): `TRIPO_API_KEY` (unused — mascot pipeline went through the Tripo web UI instead, see `design-concepts/README.md`), `NEXT_PUBLIC_TALLY_FORM_URL` (`.env.example` mirrors it). Since V4-a the form URL DEFAULTS to the public
+`TALLY_FORM_URL` constant in `config/site.ts` (same public-identifier rationale as the GA4 ID), so
+the real form renders on preview and localhost too; a valid env value overrides, a DUMMY one falls
+through to the constant, and the placeholder card survives only if the constant is ever blanked.
 - **Analytics needs NO env var** (three tools; laws in §8.21-c, c-i, c-ii). **Ahrefs** is a raw
   `<script async>` in the layout's `<head>` and is deliberately NOT host-gated, because Ahrefs
   verifies by fetching the page and looking for the tag. **Adding or removing any measurement

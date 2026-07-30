@@ -26,9 +26,14 @@ https://website-hdn2.vercel.app and merges to `main` themselves (their explicit 
   as the near-identically named 24-Jul brief at the repo root).
 - **CMO pass**: `docs/revamp-2026-07/keywords-v3.md` — incl. the finding that the journal already
   ranks #1 in India for "raising bilingual child in india". Five new stories shipped (journal = 19).
-- **Waiting on the founder** (FOUNDER-TODO V4-a..d): the Tally 5-field edit, the four audio MP3s
-  (cards are transcript-only until then, by design), five story heroes from the new Gemini kit,
-  two optional Ahrefs buttons. Kheelu lines (old + shortened) still queue for sign-off (V3-d).
+- **V4-a + V4-b LANDED (2026-07-31)**: the founder cut Tally `Y5XW7J` to the 5 fields (embed
+  re-measured 827px → iframe 900px, guard ≥860; the form URL is now the hardcoded public
+  `TALLY_FORM_URL` constant so the REAL form renders on preview + localhost, env still overrides;
+  preview submissions are real Tally rows) and supplied the four audio MP3s (now in
+  `public/audio/`; apples transcript corrected to "4" to match the audio). Still waiting: V4-c
+  story heroes from the Gemini kit, two optional Ahrefs buttons (V4-d), and the Kheelu line
+  sign-off. **Review with a VISIBLE tab: hidden tabs freeze the reveals AND defer media loading**
+  (both observed while verifying — the 3D visible-window law covers all QA now). Kheelu lines (old + shortened) still queue for sign-off (V3-d).
 - **Verify locally**: `npm test` (253/253) · `npm run build` (token-check 17) ·
   `npx next start -p 3456` — and check `lsof -iTCP:3456` first: a stale server from an old session
   once sat there serving the previous build (qa-report V4, finding 3).
