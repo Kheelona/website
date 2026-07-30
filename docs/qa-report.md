@@ -107,6 +107,18 @@ revalidation). Verified after clear: fresh bytes at every width, v2 rendering in
 
 Tests 254/254, build green, token-check 17.
 
+### V3-c pipeline art · 2026-07-31 · the family room is fully rendered
+
+The founder generated the Kheelu Speaker and AI Book renders (closing gate V3-c, which had shipped
+as 'In the workshop' placeholders since V3). Plain Vision `cutout` this time, deliberately NOT the
+keycut hybrid: neither object has ribbon-thin details, and the book's enclosed carry-handle hole is
+exactly what a border flood fill cannot reach — Vision handles holes natively (verified: the hole
+is transparent, tabs and glow ring intact, the white-on-white speaker body survived whole).
+Installed at `public/products/{kheelu-speaker,ai-book}.png` (1200px height, joining magic-box.png),
+`lib/family.ts` filled with real art + written-to-the-image alts, FamilyGrid's placeholder branch
+retained for future members with the test flipped to assert all three cards render real images.
+Sources staged in Design/product-images/generated-2026-07/. Tests 254/254, build green.
+
 ## Ahrefs Web Analytics · 2026-07-30 · commit 15902c5 · live-verified
 
 Added at the founder's request. Raw `<script async>` in the root layout `<head>`, so it ships in the

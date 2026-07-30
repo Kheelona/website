@@ -35,13 +35,20 @@ describe("FamilyGrid", () => {
     expect(screen.getAllByText("Coming soon").length).toBe(2);
   });
 
-  it("shows a calm placeholder, never a stand-in render, where art is gated (V3-c)", () => {
+  it("renders real art for all three bodies (V3-c cleared 2026-07-31)", () => {
     render(<FamilyGrid />);
-    expect(screen.getByRole("img", { name: "The Kheelu Speaker, coming soon" })).toBeInTheDocument();
-    expect(screen.getByRole("img", { name: "Kheelona AI books, coming soon" })).toBeInTheDocument();
-    // only Lumi has real art
+    // founder-generated renders through the house cutout pipeline — the
+    // "In the workshop" placeholder branch stays in code for FUTURE members
+    // but no current card uses it
+    expect(screen.queryByText("In the workshop")).toBeNull();
     const realImages = screen.getAllByRole("img").filter((el) => el.tagName === "IMG");
-    expect(realImages.length).toBe(1);
+    expect(realImages.length).toBe(3);
+    expect(
+      screen.getByRole("img", { name: /Kheelu Speaker: a friendly robot-shaped speaker/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("img", { name: /AI book: a sturdy white talking book/i }),
+    ).toBeInTheDocument();
   });
 
   it("keeps list semantics (li children of the ul)", () => {

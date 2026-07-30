@@ -36,20 +36,23 @@ export const FAMILY: readonly FamilyMember[] = [
     name: "Kheelu Speaker",
     ages: "5 to 14",
     note: "The same friend, grown up a little. For the school years.",
-    img: null,
-    alt: "The Kheelu Speaker, coming soon",
-    w: 900,
-    h: 900,
+    /* V3-c CLEARED 2026-07-31: founder-generated render, house cutout
+       pipeline (Vision, tight crop). Source staged in
+       Design/product-images/generated-2026-07/. */
+    img: "/products/kheelu-speaker.png",
+    alt: "The Kheelu Speaker: a friendly robot-shaped speaker with softly glowing eyes and five simple buttons",
+    w: 653,
+    h: 1200,
     tint: "bg-orange/15",
   },
   {
     name: "AI books",
     ages: "2 to 14",
     note: "Stories that answer back. Read, ask, and be asked.",
-    img: null,
-    alt: "Kheelona AI books, coming soon",
-    w: 900,
-    h: 900,
+    img: "/products/ai-book.png",
+    alt: "A Kheelona AI book: a sturdy white talking book with a carry handle, pastel page tabs, and a glowing speaker in its cover",
+    w: 883,
+    h: 1200,
     tint: "bg-yellow/15",
   },
 ] as const;

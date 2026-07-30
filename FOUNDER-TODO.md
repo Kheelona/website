@@ -58,7 +58,7 @@ mid-sentence; the on-site transcript keeps the full line from your doc).
 **✅ V4-c — FULLY DONE (2026-07-31, two batches).** You generated all TWELVE story heroes (five
 from the kit, then the remaining seven from the chat prompts) — **all 19 journal articles are now
 photographed** and the /stories index leads every card with its story's own image. Nothing left in
-the journal's art queue. The older kits still queue ahead in impact: REV-a hero art, V3-c pipeline
+the journal's art queue. ✅ V3-c also cleared the same day (below). The one kit left in impact order: REV-a hero art, V3-c pipeline
 renders.
 
 **V4-d — Ahrefs, two optional buttons.** (1) Keywords Explorer and CSV export are locked on the
@@ -119,7 +119,7 @@ Spec: `docs/revamp-2026-07/BUILD-V3.md`. **Your gates, all of which BLOCK merge 
 - **V3-b. Kheelona+ facts** — the site says only "6 months included, monthly price announced
   before launch." Two facts stay yours: (1) the ₹ monthly price, (2) what Lumi does if the
   subscription lapses. Nothing about either is claimed until you state them.
-- **V3-c. Pipeline art** — Kheelu Speaker + AI book renders via the Gemini kit the build will
+- **✅ V3-c. DONE (2026-07-31)** — you generated the Kheelu Speaker + AI Book renders yourself; both went through the house cutout pipeline and now render on the Home family room (the 'In the workshop' placeholders are gone). Sources staged in Design/product-images/generated-2026-07/. Original ask, for the record: Kheelu Speaker + AI book renders via the Gemini kit the build will
   prepare (`gemini-handoff/pipeline-2026-07/`); calm placeholders until then.
 - **V3-d. Kheelu lines v3** — three new guide lines join the existing sign-off queue (list in
   BUILD-V3.md §6.4): "This is the part where the games are secretly lessons.", "The Speaker is
