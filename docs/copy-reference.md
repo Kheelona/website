@@ -231,3 +231,29 @@ and "block both" became "block all three".
 The cookie claim for Ahrefs was **verified before it was written**: loaded on a clean page with the
 stale GA cookies wiped, Ahrefs set no cookies, no localStorage and no sessionStorage. The vendor says
 the same thing, but the vendor saying it is not evidence.
+
+## V4 team-feedback round (2026-07-30) — provenance + sanctioned deviations
+
+Source: `docs/revamp-2026-07/team-feedback-2026-07-30.pdf` (the team's section-wise feedback),
+decisions D1–D8 in BUILD-V4 §0. The team's words ship verbatim except where the voice law required
+polish, every case recorded here:
+
+- Hero H1: team wrote "Kid's Favourite tutor" → founder picked the two-line lockup
+  **"Your kid's favourite tutor. / Their best friend first."** (second person per the voice law;
+  the friend line keeps the 40% fun in the positioning mix).
+- Hero sub: team's sentence kept, fragment mended ("Guiding your child…" → "It guides your
+  child…"), "Speed" lowercased.
+- Section heading "Play, Learn Together" → **"Play, learn, together."** (site sentence-case style).
+- Audio transcripts verbatim with two punctuation-only edits (D8): the em-dash in the breathing
+  clip became a comma; the stray comma before "floating logs" dropped. Exclamations/contractions
+  stay — quoted toy speech is the sanctioned exemption, now also covering AudioMoments (§8.22-e).
+- How-It-Works steps: team copy with typos mended ("Lumi's remembers" → "Lumi keeps track of",
+  "Spped" → pace wording), parent-verb headings with the team's terms as labels (the LumiModes
+  naming convention).
+- PlayOS architecture chips: the team's diagram labels, sentence-cased; "Speech Analyses" →
+  "Speech analysis"; **"Age 3+" renders from `LUMI_AGES` ("Ages 2 to 5")** per the locked age law.
+- The safety proof line under the recognition logos was REMOVED on the team's instruction; the
+  four facts still live on /safety and in the Trust room.
+- Five new journal pieces (slugs in keywords-v3.md): original copy, same journal laws; the named
+  screen rules are attributed (WHO / AAP hour, Tisseron's 3-6-9-12) and the unsourceable ones
+  (3-3-3, 7-7-7) are called folklore rather than explained.

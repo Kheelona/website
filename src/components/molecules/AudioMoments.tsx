@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Play, Pause } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { Eyebrow } from "@/components/atoms/Eyebrow";
@@ -33,6 +33,28 @@ export function AudioMoments({
   const [playing, setPlaying] = useState<string | null>(null);
   const [broken, setBroken] = useState<ReadonlySet<string>>(new Set());
   const audioRefs = useRef(new Map<string, HTMLAudioElement>());
+  const loadTimers = useRef(new Map<string, ReturnType<typeof setTimeout>>());
+
+  const markBroken = (id: string) => {
+    const el = audioRefs.current.get(id);
+    el?.pause();
+    const t = loadTimers.current.get(id);
+    if (t) clearTimeout(t);
+    loadTimers.current.delete(id);
+    setBroken((prev) => new Set(prev).add(id));
+    setPlaying((current) => (current === id ? null : current));
+  };
+
+  const clearLoadTimer = (id: string) => {
+    const t = loadTimers.current.get(id);
+    if (t) clearTimeout(t);
+    loadTimers.current.delete(id);
+  };
+
+  useEffect(() => {
+    const timers = loadTimers.current;
+    return () => timers.forEach((t) => clearTimeout(t));
+  }, []);
 
   const toggle = (id: string) => {
     const el = audioRefs.current.get(id);
@@ -48,11 +70,20 @@ export function AudioMoments({
     // jsdom's play() returns undefined; browsers return a promise that
     // rejects when the source is missing — treat that like a load error
     if (attempt && typeof attempt.catch === "function") {
-      attempt.catch(() => {
-        setBroken((prev) => new Set(prev).add(id));
-        setPlaying((current) => (current === id ? null : current));
-      });
+      attempt.catch(() => markBroken(id));
     }
+    // A missing file can also HANG at NETWORK_LOADING without ever firing
+    // `error` (seen live: a 404'd mp3 left the control in a phantom playing
+    // state, equaliser dancing to silence). If no data at all has arrived
+    // after 4s, fold the card to transcript-only. `onPlaying`/`onLoadedData`
+    // clear this, so a real file on a slow network keeps its control.
+    clearLoadTimer(id);
+    loadTimers.current.set(
+      id,
+      setTimeout(() => {
+        if (el.readyState === 0) markBroken(id);
+      }, 4000),
+    );
   };
 
   return (
@@ -123,16 +154,15 @@ export function AudioMoments({
               src={m.src}
               preload="none"
               onPlay={() => setPlaying(m.id)}
+              onPlaying={() => clearLoadTimer(m.id)}
+              onLoadedData={() => clearLoadTimer(m.id)}
               onPause={() =>
                 setPlaying((current) => (current === m.id ? null : current))
               }
               onEnded={() =>
                 setPlaying((current) => (current === m.id ? null : current))
               }
-              onError={() => {
-                setBroken((prev) => new Set(prev).add(m.id));
-                setPlaying((current) => (current === m.id ? null : current));
-              }}
+              onError={() => markBroken(m.id)}
             />
           </li>
         );

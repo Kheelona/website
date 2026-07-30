@@ -1,5 +1,42 @@
 # QA Report (sprint log)
 
+## V4 team-feedback round · 2026-07-30 · branch demo-website · spec BUILD-V4.md
+
+**Scope**: brand-orange CTA system + white finale (D1/D5), Home rebuilt around real audio + the
+How-It-Works loop, /playos rebuilt for VCs with the interactive ArchitectureStack (D6), guide moved
+bottom-right with the 48-char say-line law, 5 new keyword-targeted stories, keyword map v3.
+
+**Verified** (local prod, `next start -p 3456`, fresh build):
+- Tests **253/253** (65 files) including NEW axe-core checks on AudioMoments / HowItWorksLoop /
+  ArchitectureStack / FinaleCTA and the audio hang-path regression; tsc clean; build green,
+  token-check 17.
+- **Voice-lint probe on rendered TEXT of all 16 routes: ALL CLEAN** (em-dash, italics, retired ages,
+  `toddler`, retired characters, pilot counts — zero; exclamations only inside the sanctioned quoted
+  toy/child speech). JSON-LD parses on every route; `#reserve` everywhere; `/nope` 404s.
+- **Mobile overflow probe** (iframe scrollWidth at 320 + 390px): 9 routes **clean** — after catching
+  one real overflow it existed to catch (below).
+- Live interaction checks in Chrome: audio one-at-a-time contract; the accordion stack (tap opens,
+  aria-expanded, one open); guide narration firing the new lines on the right side; white finale.
+
+**Three real findings, all fixed and law'd**:
+1. **A 404'd mp3 hangs at NETWORK_LOADING without firing `error`** — the play control sat in a
+   phantom playing state, equaliser dancing to silence. AudioMoments now folds a card to
+   transcript-only when no data arrives in 4s (cleared by onPlaying/onLoadedData). §8.22-f, with a
+   fake-timer regression test.
+2. **The ArchitectureStack waterline forced /playos to 439px on a 320px screen** (+119px overflow):
+   two no-shrink labels in one flex row, the M4-b failure class. Labels stack below `sm`. §8.22-g.
+3. **A stale `next start` from an earlier session was still holding port 3456** and serving the
+   pre-V4 build — the first probe pass "passed" against old HTML (caught because the new rooms were
+   missing from it). Killed and restarted; worth checking `lsof -iTCP:3456` before trusting :3456.
+
+**Deliberately NOT run here**: Lighthouse (no local binary in this environment) — it stays on the
+pre-merge checklist with the usual gates (A11y/BP/SEO 100, perf ≥90 mobile devtools-throttled).
+Perf-risk of this round is low by construction: no new priority images, audio `preload="none"`,
+pure-CSS choreography, and the first rooms of copy-only-hero routes stay reveal-free.
+
+**Pending founder inputs that show on the preview**: the four audio MP3s (cards render
+transcript-only until then — by design), story hero images (pose+tint fallback), Tally 5-field edit.
+
 ## Ahrefs Web Analytics · 2026-07-30 · commit 15902c5 · live-verified
 
 Added at the founder's request. Raw `<script async>` in the root layout `<head>`, so it ships in the

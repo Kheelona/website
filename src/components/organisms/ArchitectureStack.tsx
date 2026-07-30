@@ -88,16 +88,20 @@ export function ArchitectureStack({
     >
       {above.map(renderLayer)}
 
-      {/* the waterline: meaningful copy, not decoration */}
-      <div className="flex items-center gap-3 px-1 py-1.5">
-        <p className="shrink-0 text-[12px] font-bold uppercase tracking-[0.08em] text-blue-ink">
+      {/* the waterline: meaningful copy, not decoration. Below sm the two
+          labels STACK with the line between them — side by side they are
+          wider than a 320px viewport, and two no-shrink labels in a flex row
+          force the layout viewport wide (the M4-b failure class, caught by
+          the V4 overflow probe at 320/390). */}
+      <div className="flex flex-col gap-1.5 px-1 py-1.5 sm:flex-row sm:items-center sm:gap-3">
+        <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-blue-ink sm:shrink-0">
           What families see
         </p>
         <span
           aria-hidden="true"
-          className="h-[2px] min-w-6 flex-1 rounded-full bg-gradient-to-r from-blue/50 via-blue/20 to-blue/50"
+          className="h-[2px] w-full rounded-full bg-gradient-to-r from-blue/50 via-blue/20 to-blue/50 sm:w-auto sm:min-w-6 sm:flex-1"
         />
-        <p className="shrink-0 text-[12px] font-bold uppercase tracking-[0.08em] text-ink-muted">
+        <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-ink-muted sm:shrink-0">
           What we build underneath
         </p>
       </div>

@@ -34,6 +34,47 @@ So local and preview page views will show up in your Ahrefs numbers. Small, and 
 verify button that works. Say the word if you would rather have it clean and I will restrict it and
 verify another way.
 
+## ► V4 (2026-07-30) — your team's feedback round is BUILT on `demo-website`, waiting for your review + merge
+
+Review at **https://website-hdn2.vercel.app** once the push deploys (the reserve panel shows the
+"opens soon" card there — production-scoped env var, expected). Spec: `docs/revamp-2026-07/BUILD-V4.md`.
+You merge `demo-website` → `main` yourself after review, per your instruction.
+
+**V4-a — Edit the Tally form to the 5 agreed fields (10 min).** You picked: Your name · Kid's age ·
+Mobile number · WhatsApp consent · City. Edit form `Y5XW7J` in Tally (it is yours). The site copy
+already reads correctly for both the old and new field sets, and the iframe gets re-measured after
+your edit. (This supersedes the old V3-e note about a colour field — add one only if you still want it.)
+
+**V4-b — The four audio demo files (5 min).** The new "Play, learn, together." section plays REAL
+Lumi audio, but Claude's sandbox cannot download from Google Drive. Run this in a terminal (or type
+`! ` before it in a Claude session), then the next session wires them in:
+
+```bash
+cd ~/Downloads
+curl -L -o lumi-demo-knight.mp3  "https://drive.google.com/uc?export=download&id=1JDDWLVf1w-HzY4IdAw7wOMJ-hSxbdr4X"
+curl -L -o lumi-demo-shoes.mp3   "https://drive.google.com/uc?export=download&id=1ajSRstwzJMN2aXqfszKHWXiStqRmfPGH"
+curl -L -o lumi-demo-breathe.mp3 "https://drive.google.com/uc?export=download&id=1R2o4q18vQyM098fyjqbwU3yooo8U7pb4"
+curl -L -o lumi-demo-apples.mp3  "https://drive.google.com/uc?export=download&id=1BmqWupud4KIOj0Gb_yDn6QefXpw4hoW0"
+```
+
+Until they exist, the audio cards show the transcript with the play control hidden — deliberate,
+nothing is broken.
+
+**V4-c — Five story hero images (when you next run Gemini).** Kit:
+`gemini-handoff/feedback-round-2026-07/AI-image-prompt.md` — five prompts, references beside them,
+exact output filenames inside. The five new articles are LIVE in the build with their pose+tint
+cards meanwhile. (The older kits still queue ahead of this one in impact: REV-a hero art,
+V3-c pipeline renders.)
+
+**V4-d — Ahrefs, two optional buttons.** (1) Keywords Explorer and CSV export are locked on the
+current plan — upgrade only if you want volume numbers; the strategy does not depend on them.
+(2) Connecting Search Console inside the Ahrefs project (GSC Insights tab) would surface real
+query impressions. Also: `docs/snapshots/serp-bilingual-no1-2026-07-30.jpg` — you rank #1 in India
+for "raising bilingual child in india" already; the journal works.
+
+**Kheelu line sign-off queue grew (V3-d):** the V4 lines are listed in BUILD-V4 §6 (audio room,
+loop room, the shortened versions of ten existing lines for the new 48-character bubble).
+
 ## THE REVAMP (2026-07-24) — theme B + V3 are BUILT, MERGED to `main` and verified; these are yours
 
 Status + everything already decided: `docs/revamp-2026-07/WORKING.md`.

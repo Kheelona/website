@@ -121,8 +121,10 @@ You can leave the list anytime.` No code change needed for the fields themselves
   `aria-expanded`, chevron); hover on fine pointers previews with a gentle lift
   (transform only) but never opens — tap/click is the single source of truth, so
   mobile and desktop share one mental model.
-- Reduced motion: instant expand/collapse. No-JS: server renders ALL layers
-  expanded (the full architecture is crawlable). Colocated story + test.
+- Reduced motion: instant expand/collapse. At rest the FIRST layer is open (the
+  Faq precedent — Radix single+collapsible; layer names and blurbs are always
+  visible, so no-JS still reads the whole architecture's shape). Colocated
+  story + test. (BUILT: this replaced the earlier all-layers-open-no-JS idea.)
 - Content: ONLY labels legible in the team's reference diagram (re-verified against
   the PDF at build time) + facts already published on /playos or kheelona.ai.
   Anything illegible is omitted, never guessed (§6).

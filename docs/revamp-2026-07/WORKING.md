@@ -13,7 +13,32 @@ here in full so nothing depends on conversation memory.
 
 ---
 
-## ⏭ COLD-RESTART: START HERE (last updated 2026-07-28 — MERGED TO MAIN, APP AT REPO ROOT)
+## ⏭ COLD-RESTART: START HERE (last updated 2026-07-30 — V4 BUILT ON `demo-website`, AWAITING FOUNDER REVIEW)
+
+**The V4 team-feedback round is BUILT and pushed on `demo-website`.** The founder reviews at
+https://website-hdn2.vercel.app and merges to `main` themselves (their explicit instruction,
+2026-07-30 — do not merge for them). `main` still serves the live site unchanged.
+
+- **Spec + every decision**: `docs/revamp-2026-07/BUILD-V4.md` (D1 brand-orange CTAs with ink
+  labels, D2 tutor hero, D3 five-field form, D4 calm motion, D5 white finale, D6 VC-voiced
+  /playos, D7 film off Home, D8 real audio demos). New laws: `docs/website-steps.md` §8.22.
+- **Feedback source**: `docs/revamp-2026-07/team-feedback-2026-07-30.pdf` (NOT the same document
+  as the near-identically named 24-Jul brief at the repo root).
+- **CMO pass**: `docs/revamp-2026-07/keywords-v3.md` — incl. the finding that the journal already
+  ranks #1 in India for "raising bilingual child in india". Five new stories shipped (journal = 19).
+- **Waiting on the founder** (FOUNDER-TODO V4-a..d): the Tally 5-field edit, the four audio MP3s
+  (cards are transcript-only until then, by design), five story heroes from the new Gemini kit,
+  two optional Ahrefs buttons. Kheelu lines (old + shortened) still queue for sign-off (V3-d).
+- **Verify locally**: `npm test` (253/253) · `npm run build` (token-check 17) ·
+  `npx next start -p 3456` — and check `lsof -iTCP:3456` first: a stale server from an old session
+  once sat there serving the previous build (qa-report V4, finding 3).
+- **Lighthouse** was not runnable in the build environment; run the usual gates before the merge.
+
+Everything below describes the LIVE site on `main` (V3), which V4 supersedes on merge.
+
+---
+
+## ⏭ COLD-RESTART (superseded): 2026-07-28 — MERGED TO MAIN, APP AT REPO ROOT
 
 **The site is finished, merged, and pushed. Work on `main`.**
 

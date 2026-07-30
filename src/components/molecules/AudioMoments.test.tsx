@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { AudioMoments } from "./AudioMoments";
 import type { AudioMomentData } from "@/lib/audio-moments";
 
@@ -81,6 +81,23 @@ describe("AudioMoments", () => {
     expect(screen.getByText("Oh no, the bridge is out!")).toBeInTheDocument();
     // the healthy card keeps its control
     expect(screen.getByRole("button", { name: "Play: Numbers" })).toBeInTheDocument();
+  });
+
+  it("folds to transcript-only when a file hangs without data (the 404 that never errors)", () => {
+    vi.useFakeTimers();
+    try {
+      render(<AudioMoments moments={MOMENTS} />);
+      // jsdom media elements sit at readyState 0 forever — exactly the
+      // hang this guards against
+      fireEvent.click(screen.getByRole("button", { name: "Play: Thinking games" }));
+      act(() => {
+        vi.advanceTimersByTime(4100);
+      });
+      expect(screen.queryByRole("button", { name: /Thinking games/ })).toBeNull();
+      expect(screen.getByText("Oh no, the bridge is out!")).toBeInTheDocument();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it("never preloads audio (mobile data respect)", () => {
