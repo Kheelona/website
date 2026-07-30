@@ -13,11 +13,17 @@ here in full so nothing depends on conversation memory.
 
 ---
 
-## ⏭ COLD-RESTART: START HERE (last updated 2026-07-30 — V4 BUILT ON `demo-website`, AWAITING FOUNDER REVIEW)
+## ⏭ COLD-RESTART: START HERE (last updated 2026-07-31 — V4 MERGED, LIVE ON kheelona.com)
 
-**The V4 team-feedback round is BUILT and pushed on `demo-website`.** The founder reviews at
-https://website-hdn2.vercel.app and merges to `main` themselves (their explicit instruction,
-2026-07-30 — do not merge for them). `main` still serves the live site unchanged.
+**V4 is MERGED to `main` (99f1bc8) and LIVE-VERIFIED on https://kheelona.com. Work on `main`
+again.** The founder ordered the merge on 2026-07-31 (which also closed the V3-d Kheelu-line gate);
+the /a /b /c wireframe drafts were stripped from the production tree inside the merge commit.
+Full record: `docs/checkpoints/v4-merge-2026-07-31.md`. Rollback: tag `v3-live-2026-07-31`.
+Verify locally: `npm test` (254/254) · `npm run build` (token-check 17) · `npx next start -p 3456`
+(check `lsof -iTCP:3456` for stale servers first; `rm -rf .next/cache/images` if a replaced image
+serves stale). Remaining founder queue lives in FOUNDER-TODO (REV-a hero art is the only open art).
+
+The section below is the now-historical record of the round while it sat on `demo-website`.
 
 - **Spec + every decision**: `docs/revamp-2026-07/BUILD-V4.md` (D1 brand-orange CTAs with ink
   labels, D2 tutor hero, D3 five-field form, D4 calm motion, D5 white finale, D6 VC-voiced

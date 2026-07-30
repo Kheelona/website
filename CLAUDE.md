@@ -1,19 +1,20 @@
 # kheelona.com — session entry point
 
-Pre-order marketing site for **Lumi**, Kheelona's screen-free talking AI toy for ages 3 to 6 (India-first). One job: convert parents into the Tally pre-order list at ₹4,999 (₹9,999 after launch, no payment now).
+Pre-order marketing site for **Lumi**, Kheelona's screen-free talking AI toy for ages 2 to 5 (India-first). One job: convert parents into the Tally pre-order list at ₹4,999 (₹9,999 after launch, no payment now).
 
-## ⚠ STATE OF PLAY (2026-07-28) — read this first
-**THE SITE IS LIVE AT https://kheelona.com. It is indexed and taking pre-orders, so every change you
-make from here touches a live commercial site.** Latest checkpoint, read it before touching anything:
-`docs/checkpoints/go-live-2026-07-28.md`.
+## ⚠ STATE OF PLAY (2026-07-31) — read this first
+**THE SITE IS LIVE AT https://kheelona.com AND SERVES V4. It is indexed and taking pre-orders, so
+every change you make from here touches a live commercial site.** Latest checkpoint, read it before
+touching anything: `docs/checkpoints/v4-merge-2026-07-31.md` (before it: `go-live-2026-07-28.md`).
 
-**V4 (2026-07-30) IS BUILT ON `demo-website` AND WAITS FOR THE FOUNDER'S REVIEW + MANUAL MERGE**
-(their explicit instruction — never merge it for them). It is the team-feedback round: brand-orange
-CTAs with ink labels (the R5 white-label law is RETIRED), the tutor hero, real audio demos, a
-How-It-Works loop, white finales, a VC-voiced /playos with the ArchitectureStack, five new stories,
-and the §5.1 say-line cap. Spec: `docs/revamp-2026-07/BUILD-V4.md` (wins over BUILD-V3 where they
-conflict); laws §8.22; founder queue FOUNDER-TODO V4-a..d (Tally 5-field edit, the four audio MP3s,
-story heroes, optional Ahrefs buttons). `main` below still serves the live V3 site until that merge.
+**V4 (the team-feedback round) MERGED TO `main` on 2026-07-31 at the founder's order** — the tutor
+hero, brand-orange CTAs with ink labels (the R5 white-label law is RETIRED), the real-audio room,
+the How-It-Works loop, white finales, the VC-voiced /playos with the ArchitectureStack, 19
+photographed journal articles, Lumi v2 art with the speaker tummy, and the family pipeline renders
+(V3-c closed). The merge order also closed **V3-d: every Kheelu line shipped as reviewed**. The
+/a /b /c wireframe drafts were STRIPPED from the production tree in the merge commit (preview-only
+artifacts; the next main → demo-website sync retires them there too, history keeps them). Rollback:
+tag `v3-live-2026-07-31`.
 
 **The new site is MERGED TO `main` and is the only site.** The 2026-07 revamp (theme B
 "Kheelu's Tour") plus the V3 repositioning (founder's YC application: 40% fun, 20% brain
@@ -66,7 +67,9 @@ repo root. That old app is preserved at the tag **`pre-revamp-2026-07`** and its
   and **a redirect source must never shadow a `public/` directory**, because redirects match before
   static files (`/product/:slug*` blanked every product image incl. the hero — hence
   `/product/:slug([^.]+)` and `test/redirects-vs-assets.test.ts`). Both in §8.21-a/b.
-- New laws are consolidated in `docs/website-steps.md` §8.21.
+- New laws are consolidated in `docs/website-steps.md` §8.21 + §8.22 (the V4 round: action colour,
+  white finale, VC playos, 48-char say lines, audio-transcript exemption, missing-audio fold,
+  no-shrink-labels viewport rule, V4 registry).
 
 ## Who you work for
 **Apoorva Sahu** (apoorva@geekyants.work) — Founder & CEO of Kheelona (kheelona.com + sister site kheelona.ai), also a Director at GeekyAnts. Full authority on brand, product, and copy; defer to them on brand calls. Co-founders: Aman Soni (CTO, 14 patents filed), Kashyap C.R (Chief Hardware Officer, built at Intel — his published kheelona.ai bio names Thunderbolt 4/5, mirrored on /team). Team also includes Ria Mangala Rewari (Head of Marketing, not a co-founder; added R10).

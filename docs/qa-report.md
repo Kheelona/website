@@ -107,6 +107,22 @@ revalidation). Verified after clear: fresh bytes at every width, v2 rendering in
 
 Tests 254/254, build green, token-check 17.
 
+### V4 MERGE + LIVE · 2026-07-31 · main 99f1bc8 · rollback tag v3-live-2026-07-31
+
+Founder-ordered merge (also closing V3-d — Kheelu lines ship as reviewed). Wireframe drafts
+(/a /b /c + vercel.json rewrites) STRIPPED inside the merge commit; 254/254 + build green on the
+merge result before push. **Pre-merge Lighthouse** (local prod): Home desktop 100/100/96*/100
+LCP 0.8s · Home mobile devtools-throttled 99/100/96*/100 LCP 1.7s CLS 0.033 TBT 39ms — *BP
+deduction is only the documented localhost /_vercel/insights 404 (live BP is 100). The exec
+environment then degraded (PATH corruption; even ls stopped resolving — recipe that survives it:
+absolute binaries + `/usr/bin/env PATH=… node npm-cli.js`), so lumi/playos/stories ship on the
+round's axe suite + overflow probes instead of fresh LH numbers; risk judged low and recorded.
+**Live verification on kheelona.com**: 11 routes 200 + 404 route, tutor title, audio 200
+audio/mpeg, og.png + Lumi v2 byte-exact, speaker/book renders 200, real 5-field form (no
+"opens soon"), zero workshop placeholders, "4 apples", WhatsApp share, Ahrefs tag, sitemap 29
+URLs, llms/robots 200, www 308, legacy 301s. GA4 invisible to curl BY DESIGN (client host gate,
+untouched this round). Full story: docs/checkpoints/v4-merge-2026-07-31.md.
+
 ### V3-c pipeline art · 2026-07-31 · the family room is fully rendered
 
 The founder generated the Kheelu Speaker and AI Book renders (closing gate V3-c, which had shipped

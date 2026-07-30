@@ -34,11 +34,13 @@ So local and preview page views will show up in your Ahrefs numbers. Small, and 
 verify button that works. Say the word if you would rather have it clean and I will restrict it and
 verify another way.
 
-## ► V4 (2026-07-30) — your team's feedback round is BUILT on `demo-website`, waiting for your review + merge
+## ✅ V4 — MERGED AND LIVE ON https://kheelona.com (2026-07-31, your order)
 
-Review at **https://website-hdn2.vercel.app** once the push deploys (the reserve panel shows the
-"opens soon" card there — production-scoped env var, expected). Spec: `docs/revamp-2026-07/BUILD-V4.md`.
-You merge `demo-website` → `main` yourself after review, per your instruction.
+Everything below shipped. Spec: `docs/revamp-2026-07/BUILD-V4.md`; the merge record:
+`docs/checkpoints/v4-merge-2026-07-31.md`. Your merge order also **closed V3-d — the Kheelu
+lines are live as reviewed**. Rollback tag if ever needed: `v3-live-2026-07-31`.
+Still worth 2 minutes: the two one-listen audio checks in V4-b below, and deleting any Tally
+test rows you made while reviewing.
 
 **✅ V4-a — DONE (2026-07-31).** You cut `Y5XW7J` to the 5 fields (parent name, kid's age, city,
 WhatsApp number, WhatsApp consent) and Claude re-measured the live embed (827px, was 886) and set
@@ -67,8 +69,8 @@ current plan — upgrade only if you want volume numbers; the strategy does not 
 query impressions. Also: `docs/snapshots/serp-bilingual-no1-2026-07-30.jpg` — you rank #1 in India
 for "raising bilingual child in india" already; the journal works.
 
-**Kheelu line sign-off queue grew (V3-d):** the V4 lines are listed in BUILD-V4 §6 (audio room,
-loop room, the shortened versions of ten existing lines for the new 48-character bubble).
+**✅ V3-d — CLOSED by your merge order (2026-07-31).** Every Kheelu line is live as it stood on
+the preview you reviewed. If any line ever reads wrong, it is a one-string edit — just say which.
 
 ## THE REVAMP (2026-07-24) — theme B + V3 are BUILT, MERGED to `main` and verified; these are yours
 
