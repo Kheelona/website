@@ -7,8 +7,11 @@ Pre-order marketing site for **Lumi**, Kheelona's screen-free talking AI toy for
 every change you make from here touches a live commercial site.** Latest checkpoint, read it before
 touching anything: `docs/checkpoints/v5-merge-2026-07-31.md` (before it: `v4-merge-2026-07-31.md`, `go-live-2026-07-28.md`).
 
-**V6 (the growth-arc CONTENT round) is BUILT on `demo-website`, gates green, NOT yet on main —
-THE FOUNDER MERGES IT THEMSELVES** (their standing instruction; never merge for them). Spec:
+**V6 (the growth-arc CONTENT round) is QA-APPROVED and ON `demo-website`, NOT yet on main —
+THE FOUNDER MERGES IT THEMSELVES** (their standing instruction; never merge for them). The
+independent content QA REJECTED the first pass (4 real blockers, worst: /privacy described the
+retired six-field Tally form) and APPROVED after fixes (`QA-V6-note.md` + addendum). Checkpoint:
+`docs/checkpoints/v6-content-2026-07-31.md`; design handoff `HANDOFF-design-v6.md`. Spec:
 `docs/revamp-2026-07/BUILD-V6.md` (approved as written); plan `PLAN-V6.md`; laws §8.24; QA
 `docs/qa-report.md` "V6"; provenance `copy-reference.md` "V6". What it is: the outcome-arc hero
 ("A best friend at 2. / A head start by 5."), the year-by-year `GrowthArc` room answering the

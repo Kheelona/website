@@ -2,7 +2,7 @@
   "project_name": "kheelona.com",
   "created_at": "2026-07-06",
   "last_updated": "2026-07-31",
-  "current_phase": "V5 LIVE on https://kheelona.com (main 740845a, rollback tag v4-live-2026-07-31). V6 — the growth-arc content round, spec BUILD-V6.md — is BUILT on demo-website with all gates green (276 tests, axe 0 settled, voice-lint clean), awaiting the independent senior-content-QA note (Step 3) and then the preview push; THE FOUNDER MERGES TO MAIN THEMSELVES (standing instruction for this round).",
+  "current_phase": "V5 LIVE on https://kheelona.com (main 740845a, rollback tag v4-live-2026-07-31). V6 — the growth-arc content round, spec BUILD-V6.md — is QA-APPROVED (independent review: first pass REJECTED with 4 real blockers incl. /privacy describing the retired six-field form; all fixed + re-verified; final verdict APPROVE, QA-V6-note.md) and PUSHED to demo-website for the preview. Checkpoint: docs/checkpoints/v6-content-2026-07-31.md. NEXT: THE FOUNDER reviews https://website-hdn2.vercel.app and MERGES TO MAIN THEMSELVES (standing instruction). Design team: HANDOFF-design-v6.md, micro only.",
   "current_sprint": "revamp-M4-interior-routes",
   "phase_status": {
     "phase_0_kickoff": {
