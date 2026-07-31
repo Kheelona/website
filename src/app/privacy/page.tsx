@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { LegalDoc, type LegalSection } from "@/components/templates/LegalDoc";
+import { SHIP_DATE_TEXT } from "@/config/site";
 
 export const metadata: Metadata = {
   title: "Privacy",
@@ -22,7 +23,9 @@ const SECTIONS: readonly LegalSection[] = [
   {
     h: "Why we ask for it",
     ps: [
-      "Your email and WhatsApp number let us tell you about your reservation: the price hold, the ship date when it is announced, and your place in line.",
+      /* V6 D8a: the date is published (founder, 2026-07-31) — hedging it here
+         while the finale card below states it read as a loophole. */
+      `Your email and WhatsApp number let us tell you about your reservation: the price hold, your place in line, and any change to the ${SHIP_DATE_TEXT} ship date.`,
       "Your child's birth month helps us plan for the right ages. Your city helps us plan delivery. Neither is ever used to profile your child.",
     ],
   },
