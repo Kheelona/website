@@ -1,14 +1,19 @@
 import { render, screen } from "@testing-library/react";
 import { Hero } from "./Hero";
 
-describe("Hero (V4, team feedback 2026-07-30)", () => {
-  it("renders the two-line tutor H1 (founder decision D2)", () => {
+describe("Hero (V6, the growth-arc round)", () => {
+  it("renders the two-line outcome-arc H1 (BUILD-V6 D1, founder-approved)", () => {
     render(<Hero />);
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: /Your kid.s favourite tutor[\s\S]*Their best friend first/i,
+        name: /A best friend at 2[\s\S]*A head start by 5/i,
       }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /Lumi listens, remembers, and grows with your child\. Stories, numbers, and the languages you speak at home, at their pace\./,
+      ),
     ).toBeInTheDocument();
   });
 

@@ -33,9 +33,9 @@ import {
 
 export const metadata: Metadata = {
   title:
-    "Lumi: your kid's favourite tutor, in a screen-free AI toy | Kheelona",
+    "Lumi: the screen-free AI toy with a tutor inside, ages 2 to 5 | Kheelona",
   description:
-    "Lumi listens, remembers, and adapts. Stories, numbers, and languages at your child's natural speed, for ages 2 to 5, with no screen and every word readable by you. Reserve at ₹4,999, no payment now.",
+    "A best friend at 2, a head start by 5. The screen-free toy that grows with your child, in the languages you speak at home. Reserve at ₹4,999, no payment now.",
   alternates: { canonical: "/" },
 };
 
