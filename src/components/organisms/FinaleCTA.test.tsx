@@ -7,7 +7,11 @@ describe("FinaleCTA", () => {
     expect(
       screen.getByRole("heading", { name: /Reserve Lumi before the price goes up/i }),
     ).toBeInTheDocument();
-    expect(screen.getByText(/₹4,999 for the first 500 units/i)).toBeInTheDocument();
+    // V6 D11: the lede is exactly CAP_LINE + the hold promise — one wording,
+    // one source, no drift between the three price surfaces.
+    expect(
+      screen.getByText("First 500 units at ₹4,999. ₹9,999 after launch. No payment now. We hold the price, you hold your place."),
+    ).toBeInTheDocument();
     expect(container.querySelector("#reserve")).toBeInTheDocument();
   });
 

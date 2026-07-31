@@ -6,6 +6,8 @@ import { PromiseMark } from "@/components/molecules/PromiseMark";
 import {
   LAUNCH_PRICE,
   LATER_PRICE,
+  CAP_LINE,
+  PRICE_HOLD_LINE,
   KHEELONA_PLUS_SHORT,
   WHATSAPP_SHARE_HREF,
   WHATSAPP_SHARE_LABEL,
@@ -55,9 +57,11 @@ export function FinaleCTA({
         >
           Reserve Lumi before the price goes up.
         </h2>
+        {/* V6 D11: exactly CAP_LINE + the hold promise. Repetition builds
+            trust only when it is verbatim — three paraphrases of one price
+            read like three offers. */}
         <p className="mb-8 max-w-[50ch] text-[19px] font-bold text-ink-head md:text-[21px]">
-          {LAUNCH_PRICE} for the first 500 units. {LATER_PRICE} after launch.
-          No payment now. We hold the price, you hold your place.
+          {CAP_LINE} {PRICE_HOLD_LINE}
         </p>
       </Reveal>
       {/* V5-2: the reserve moment lost its weight when V4 turned the finale
