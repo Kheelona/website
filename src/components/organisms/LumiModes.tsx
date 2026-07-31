@@ -28,7 +28,9 @@ export const LUMI_MODES = [
   {
     mode: "AI mode",
     heading: "Talk about anything.",
-    body: "Your child asks why the sky is blue, and Lumi answers in words they already own, then asks one back. This is the mode they will use most, and the one that grows their vocabulary without anyone calling it a lesson.",
+    /* V6 D4d: the closing WiFi sentence mirrors Kheelu mode's "It works
+       offline." — the contrast is legible at a glance (founder-licensed). */
+    body: "Your child asks why the sky is blue, and Lumi answers in words they already own, then asks one back. This is the mode they will use most, and the one that grows their vocabulary without anyone calling it a lesson. It runs on your home WiFi.",
     short: "Talk about anything",
   },
   {
