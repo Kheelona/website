@@ -2,10 +2,23 @@
 
 Pre-order marketing site for **Lumi**, Kheelona's screen-free talking AI toy for ages 2 to 5 (India-first). One job: convert parents into the Tally pre-order list at ₹4,999 (₹9,999 after launch, no payment now).
 
-## ⚠ STATE OF PLAY (2026-07-31, V5 live) — read this first
-**THE SITE IS LIVE AT https://kheelona.com AND SERVES V4. It is indexed and taking pre-orders, so
+## ⚠ STATE OF PLAY (2026-07-31, V5 live · V6 on demo-website) — read this first
+**THE SITE IS LIVE AT https://kheelona.com AND SERVES V5. It is indexed and taking pre-orders, so
 every change you make from here touches a live commercial site.** Latest checkpoint, read it before
 touching anything: `docs/checkpoints/v5-merge-2026-07-31.md` (before it: `v4-merge-2026-07-31.md`, `go-live-2026-07-28.md`).
+
+**V6 (the growth-arc CONTENT round) is BUILT on `demo-website`, gates green, NOT yet on main —
+THE FOUNDER MERGES IT THEMSELVES** (their standing instruction; never merge for them). Spec:
+`docs/revamp-2026-07/BUILD-V6.md` (approved as written); plan `PLAN-V6.md`; laws §8.24; QA
+`docs/qa-report.md` "V6"; provenance `copy-reference.md` "V6". What it is: the outcome-arc hero
+("A best friend at 2. / A head start by 5."), the year-by-year `GrowthArc` room answering the
+parents' "what does my kid have at 5" feedback, the founder-licensed mode-precise connectivity law
+(AI mode = home WiFi; Kheelu-mode stories + Bluetooth music work offline — NO blanket offline
+claim anywhere, §8.24-1), the consistency sweep (legal ship-date, /safety dedup, journal band and
+ceiling, price wording via the new `PRICE_HOLD_LINE`), and four pre-existing /products/lumi
+contrast failures fixed (axe needs a ~1.5s settle after forcing reveals, §8.24-5e). The tutor
+narrative lives in exactly four places (Compare, PacePanel, the arc's closing line, the Home meta
+title) — adding a fifth is a review flag.
 
 **V5 (the end-to-end design/UX review round) MERGED TO `main` AND LIVE on 2026-07-31** (`740845a`,
 rollback tag `v4-live-2026-07-31`): one interaction contract so touch surfaces actually answer, the

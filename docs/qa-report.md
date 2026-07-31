@@ -894,3 +894,39 @@ sitemap submission (needs founder account access); backlinks and directory submi
 `directory-submissions` skill is installed and ready when the founder wants a campaign); and the
 301s from the old Wix `/product-page/lumi-*` URLs plus the Play Store listing still showing ₹2,999
 (REV-c), which actively competes with the new pricing in Google's index.
+
+## V6 growth-arc content round (2026-07-31) — build + QA
+
+Spec `BUILD-V6.md` (founder-approved as written), plan `PLAN-V6.md`, built as 14 tasks on
+`demo-website`. **276 tests green** (269 → 276: config-copy guard, growth-arc data guard, GrowthArc
+organism, PacePanel echo, Hero rewrite, FinaleCTA lede), tsc clean, build green (token-check 17).
+
+**Evidence method**: the §8.23 headless harness, rebuilt in the session scratchpad (`shot.mjs`,
+`axe-run.mjs`, `voice-lint.mjs`, `overflow-probe.mjs`, `jsonld-check.mjs`). BEFORE captures
+(22/22, all 11 routes × 1440/390) were taken from the pre-V6 build and verified genuine (the old
+tutor hero is in `before/home-desktop.png`); AFTER captures 22/22 plus re-shoots of the two
+axe-fixed routes. Chromium facts recorded in §8.24-5: lazy images need dwell; await only visible
+images; the Tally iframe never paints beyond-viewport (judge it from the in-view clip, where all
+5 fields + Submit render); >16384px pages capture at reduced deviceScaleFactor.
+
+**Gates**: voice-lint 0 em-dashes / 0 italics on all 11 routes; contraction scan — the only hits
+outside Kheelu say lines are quoted Lumi speech in AudioMoments and ChatDemo, which §8.22-e
+sanctions (the probe's exemption list was narrower than the law; noted here so the next sweep
+knows). Overflow 0 at 320/390 on Home + /products/lumi. JSON-LD parses on all three FAQ pages and
+mirrors the new visible copy exactly (new growth FAQ + mode-precise internet answers in, the
+retired /safety duplicate out). `#reserve` on all 11 routes. Spot-checks from pixels: new hero,
+growth room with four stage cards, and the /products/lumi arc echo all render at both viewports.
+
+**The axe finding that matters** (§8.24-5e): an axe run fired immediately after forcing reveals is
+UNSTABLE — mid-fade opacity both invents failures and masks real ones. With a ~1.5s settle, axe
+surfaced **four real, pre-existing contrast failures on /products/lumi** that every earlier
+"axe zero" sweep (V3, V5) had missed: `text-blue` step numeral 2.68:1 on the cool wash, and
+`text-ink-muted` at 4.31–4.37:1 on tinted washes (PacePanel kickers, ChatDemo speaker labels, the
+PlayOS pointer line). All fixed with existing darker tokens (blue-ink is now the numeral blue
+everywhere, incl. the same latent pattern in `setup-steps.ts`; muted text left the tinted washes).
+Re-run after fixes: **0 violations** on /products/lumi and /setup at both viewports; /, /safety
+were already 0. These failures are LIVE on kheelona.com today and ship fixed with the V6 merge.
+
+**Pending**: Step-3 independent senior content QA (this round's own gate), then the preview deploy.
+Lighthouse not re-run this round (copy + token-swap changes only; no media, no new JS beyond one
+static organism; the LCP element and hero image pipeline are untouched).

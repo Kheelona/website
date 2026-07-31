@@ -1,6 +1,11 @@
 # BUILD-V6 — the growth-arc content round (2026-07-31)
 
-> **STATUS: APPROVED AS WRITTEN (founder, 2026-07-31) — IN BUILD on `demo-website`.** The founder
+> **STATUS: BUILT, ALL GATES GREEN (2026-07-31) — on `demo-website`, awaiting the Step-3
+> independent content QA note and the founder's review.** 276 tests · tsc clean · build green ·
+> axe 0 violations (settled runs, §8.24-5e — four pre-existing /products/lumi contrast failures
+> found and fixed in-round) · voice-lint clean · overflow 0 · JSON-LD mirrors visible copy ·
+> before/after captures 22+22 in the session scratchpad. QA record: `docs/qa-report.md` "V6".
+> Spec approved as written by the founder 2026-07-31; the founder
 > merges to `main` after review (their instruction for this round, same shape as V4/V5). Where this
 > spec conflicts with BUILD-V5, THIS SPEC WINS; V5's laws (§8.23) and V4's §0 laws still bind
 > except where a decision below supersedes one. Approach approved by the founder 2026-07-31:
