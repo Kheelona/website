@@ -118,7 +118,10 @@ repo root. That old app is preserved at the tag **`pre-revamp-2026-07`** and its
 ## Resume protocol
 1. Read `docs/project-state.json` (`current_phase`, `last_handoff`, `blockers`).
 2. Follow the "For AI: How to Resume" table in `README.md`.
-3. Founder-gated items live in `FOUNDER-TODO.md` — never re-ask what's already settled there or in checkpoints.
+3. Founder-gated items live in `FOUNDER-TODO.md` — never re-ask what's already settled there or in
+   checkpoints. **The live queue is its "📋 THE ONLY THINGS STILL WAITING ON YOU" section** (audited
+   2026-07-31); everything above and below that section is closed history. Nothing in it blocks the
+   site. The two highest-value items are the Kheelona+ ₹ amount and real photography.
 
 ## Source-of-truth precedence
 1. `kheelona homepage website content.pdf` — Home copy, verbatim (Rs. → ₹ is the one sanctioned deviation).

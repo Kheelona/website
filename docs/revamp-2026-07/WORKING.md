@@ -45,8 +45,15 @@ consistency sweep.
    contrast failures that had been live on kheelona.com through three "axe zero" rounds.
 
 **Still founder-gated, do not invent:** the Kheelona+ ₹ amount, certifications (until a certificate
-lands), real testimonial words (their standing decision). Open, non-blocking: which page owns the
-modes/quotes/audio/FAQ that Home and Meet Lumi still share.
+lands), real testimonial words (their standing decision), and the final specs including the WAKE WORD
+(three pages promise these "before Lumi ships").
+
+**THE FOUNDER'S FULL OPEN QUEUE IS ONE SECTION**: `FOUNDER-TODO.md` → "📋 THE ONLY THINGS STILL
+WAITING ON YOU" (audited 2026-07-31, twelve items, none blocking). Read it before proposing work, and
+do not resurrect anything outside it — the rest of that file is closed history. One cross-dependency
+worth knowing: **R5-a, the new logo, now also owns the favicon and app icons** (built from the current
+mark in `public/brand/logo-mark.png`), so a logo swap is one pass across navbar + icons + og.png +
+the schema logo.
 
 Everything below is the historical record of earlier rounds.
 

@@ -20,7 +20,9 @@ Read `docs/project-state.json`:
    commands, the repository state, the full milestone table, and the one open action.
 2. **`docs/project-state.json`** — `current_phase`, `blockers` (the open one is the Vercel Root
    Directory), and `last_handoff.next_action`.
-3. **`FOUNDER-TODO.md`** — everything waiting on the founder, #0 first. Never re-ask what is settled here.
+3. **`FOUNDER-TODO.md`** — go straight to **"📋 THE ONLY THINGS STILL WAITING ON YOU"** (audited
+   2026-07-31): the whole live queue in one section, twelve items, none blocking. Everything else on
+   that page is closed history kept for provenance. Never re-ask what is settled here.
 4. **`docs/revamp-2026-07/BUILD-V6.md`** — the spec that built the current copy, with every
    published sentence verbatim in §2. It is a record, not a queue, and it wins over BUILD-V5 →
    BUILD-V4 → BUILD-V3 → `copy-v2.md` and older copy laws, in that order.

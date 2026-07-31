@@ -271,6 +271,11 @@ mark's white keyline, because the keyline was contiguous with it — the result 
 orange K on nothing, which reads correctly on both dark and light tab bars. **Never plate the tab
 icons**, and never plate the iOS tile in brand orange: the orange K disappears into it.
 
+**⚠ IF THE LOGO EVER CHANGES (founder gate R5-a), THIS SET CHANGES WITH IT.** The icons are derived
+from `public/brand/logo-mark.png`, so a new logo is ONE pass across four surfaces: the navbar wordmark,
+this icon set, `public/og.png`, and the Organization `logo` in `src/lib/seo.ts`. Do not swap the logo
+without redoing all four.
+
 **Known, not fixed here**: `src/lib/seo.ts` still points the Organization JSON-LD `logo` at the
 plated `public/brand/logo-mark.png`. Harmless (search engines composite logos on white) and left
 alone deliberately, since repointing a schema asset is an SEO-adjacent change nobody asked for.
