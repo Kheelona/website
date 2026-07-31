@@ -965,3 +965,26 @@ routes including llms.txt and pricing.md · overflow 0 at 320 and 390 · JSON-LD
 mirroring visible copy · `#reserve` on all 11 HTML routes · **internal href crawl, run for the
 first time: 34 unique internal links across 11 pages, all 200** · the two in-copy Home story links
 carry byte-identical class strings.
+
+## Favicon: the site was wearing Vercel's logo (2026-07-31)
+
+Founder spotted the browser tab showing a black circle with a white triangle. That is
+`create-next-app`'s default `app/favicon.ico`, untouched since the app was scaffolded — so from
+launch until now every tab, bookmark, and any surface that fetches `/favicon.ico` presented Vercel's
+mark as Kheelona's. It had never been caught because it 200s: the file exists and is valid, it is
+simply the wrong logo, so no status check or link crawl would ever flag it.
+
+Fixed with a proper set derived from `public/brand/logo-mark.png`: `src/app/favicon.ico` (multi-size
+16/32/48), `src/app/icon.png` (512, transparent), `src/app/apple-icon.png` (180, **opaque** — iOS
+composites transparency onto black, which would fill the K's counters). Next.js App Router
+auto-detects all three and emits the link tags; no `metadata.icons` block and no hand-written
+`<head>` markup are involved. Full derivation recipe, including the stdlib-Python ICO packing used
+because this machine has no ImageMagick: `Design/design-system/README.md`.
+
+Verified: all three `<link rel>` tags in the served `<head>` with correct `sizes` and `type`, all
+three URLs 200 with the right content types, and the rendered marks eyeballed at 32px and 180px.
+
+**LESSON, cheap to state and easy to repeat**: a boilerplate asset that is valid and 200s is
+invisible to every automated check we run. When a project is scaffolded from a template, audit the
+template's assets (favicon, OG image, `robots`, manifest, placeholder copy) explicitly — status codes
+will never tell you they are wrong.

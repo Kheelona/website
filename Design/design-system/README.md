@@ -222,3 +222,39 @@ carries `PRESS_TINT`, and the height animation rides `::details-content` behind 
 rather than `:root`. Any new collapse follows this pattern. The one sanctioned exception is
 `ArchitectureStack`, whose layered diagram earns its Radix accordion through roving arrow keys.
 See website-steps §8.24-6.
+
+## The favicon / app icon set (2026-07-31)
+
+**The site shipped Vercel's boilerplate favicon from the day it was scaffolded until now** — the
+black circle with a white triangle that `create-next-app` puts in `app/favicon.ico`. Nobody had
+replaced it, so every browser tab, bookmark and search result carried Vercel's logo as Kheelona's
+identity. Founder spotted it in a tab.
+
+The set now lives where Next.js App Router expects metadata icons, and Next emits the `<link>` tags
+automatically (no manual `<head>` markup, no `metadata.icons` block needed):
+
+| File | Size | Alpha | Purpose |
+|---|---|---|---|
+| `src/app/favicon.ico` | 16 + 32 + 48 | yes | `/favicon.ico`, legacy browsers, crawlers, bookmarks |
+| `src/app/icon.png` | 512 | yes | modern browsers, high-DPI tabs |
+| `src/app/apple-icon.png` | 180 | **no** | iOS home screen |
+
+**Derivation, all from `public/brand/logo-mark.png` (300×410, the blue-leaf-and-orange-K mark):**
+
+```bash
+sips --padToHeightWidth 410 410 public/brand/logo-mark.png --out master.png   # square, alpha kept
+for s in 16 32 48 512; do sips -Z $s master.png --out t$s.png; done
+cp t512.png src/app/icon.png
+# apple-icon MUST be opaque: iOS composites transparency onto BLACK, which would
+# put black in the K's counters. A JPEG round-trip flattens onto white.
+sips --padToHeightWidth 410 410 --padColor FFFFFF public/brand/logo-mark.png --out apple-src.png
+sips -Z 180 apple-src.png --out apple-180.png
+sips -s format jpeg apple-180.png --out flat.jpg && sips -s format png flat.jpg --out src/app/apple-icon.png
+```
+
+The `.ico` is a multi-size container packed with stdlib Python (no ImageMagick on this machine):
+ICONDIR + one ICONDIRENTRY per size + embedded PNG payloads, which every current browser reads.
+The recipe is in `docs/qa-report.md` under the favicon entry if it needs rebuilding.
+
+**Transparent for the tab icons on purpose**: the mark carries its own white outline, so it reads on
+both dark and light tab bars. Do not add a coloured plate behind it.
