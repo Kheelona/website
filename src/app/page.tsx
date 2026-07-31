@@ -16,10 +16,12 @@ import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { FeelingsGallery } from "@/components/organisms/FeelingsGallery";
 import { LumiModes } from "@/components/organisms/LumiModes";
 import { HowItWorksLoop, type LoopStep } from "@/components/organisms/HowItWorksLoop";
+import { GrowthArc } from "@/components/organisms/GrowthArc";
 import {
   PREORDER_HREF,
   RESERVE_LABEL,
   PRICE_CAPTION,
+  LUMI_AGES,
 } from "@/config/site";
 import {
   Hero,
@@ -49,6 +51,13 @@ const HOME_FAQ: FaqEntry[] = [
     q: "What is Lumi?",
     a: "Lumi is a screen-free talking toy for children aged 2 to 5. Your child speaks to it and it answers, tells stories, sings, and asks questions back. It has no screen at all, it cannot reach the open internet, and every conversation is readable by you in the parent app.",
   },
+  /* V6 D3: the parents' own question from the feedback that drove this round,
+     kept nearly verbatim — the FAQ that mirrors the reader's exact objection
+     is the one they open. */
+  {
+    q: "What will my child actually get out of Lumi?",
+    a: "A friend at 2, and a head start by 5. Lumi answers your child's questions, remembers the words they know, and builds on them the next day: stories, numbers, thinking games, and the languages you speak at home. The parent app counts the new words, so you see the growth, not just the play.",
+  },
   {
     q: "How much does Lumi cost in India?",
     a: "₹4,999 for the first 500 units if you reserve now, and ₹9,999 after launch. You pay nothing today: reserving holds the price and your place in line without committing you to buy. Every Lumi includes 6 months of Kheelona+.",
@@ -65,13 +74,18 @@ const HOME_FAQ: FaqEntry[] = [
     q: "When does Lumi ship?",
     a: "Shipping starts 1 September 2026. Reserving now holds the launch price of ₹4,999 and your place in line, and you pay nothing today.",
   },
+  /* V6 D4a (founder-licensed fact): mode-precise. The old flat "No" was a
+     post-purchase complaint in waiting — a precise admission converts better
+     than a broad claim. */
   {
     q: "Does Lumi need the internet to work?",
-    a: "No. Lumi plays offline, so it works on a train or in a village with no signal. You connect only to download new stories and updates, and you choose when.",
+    a: "For open conversation, yes: AI mode runs on your home WiFi. For everything else, no: Kheelu-mode stories and lessons play offline, and Bluetooth music needs only a paired phone. On a train or anywhere without a signal, your child still has stories to interrupt, question, and be quizzed on.",
   },
+  /* V6 D7: opens with the same honest verdict as the /safety flagship answer,
+     so the two pages agree in substance and differ only in length. */
   {
     q: "Is an AI toy safe for a small child?",
-    a: "It depends entirely on how it is built. Lumi wakes to a word and the microphone is off the rest of the time, the first thinking happens on the toy, answers come from a closed library rather than the open internet, and you can read or delete every conversation.",
+    a: "Not all of them are, and the difference is in how they are built. Lumi wakes to a word and the microphone is off the rest of the time, the first thinking happens on the toy, answers come from a closed library rather than the open internet, and you can read or delete every conversation.",
   },
 ];
 
@@ -152,6 +166,24 @@ export default function HomePage() {
               <Footnote n={1} id="fn-languages" />
             </p>
           </Reveal>
+          {/* V6 D6: the first language line on the site that names what the
+              child GAINS rather than what the toy does — and it points the
+              bilingual-intent parent at the journal page that already ranks
+              first in India for exactly this worry. */}
+          <Reveal className="mt-4">
+            <p className="max-w-[64ch] text-[16px] text-ink-muted">
+              A child who can wonder in their own words wonders more, and a
+              child who plays in two languages keeps both. Why that matters for
+              years to come:{" "}
+              <Link
+                href="/stories/raising-a-bilingual-child-in-india"
+                className="rounded font-semibold text-ink-head underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
+              >
+                Raising a bilingual child in India
+              </Link>
+              .
+            </p>
+          </Reveal>
           {/* the strongest fold carries the ask (Apple-tier rule) */}
           <Reveal className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
             <Button href={PREORDER_HREF}>{RESERVE_LABEL}</Button>
@@ -195,6 +227,28 @@ export default function HomePage() {
               </Link>
             </p>
           </Reveal>
+        </Room>
+
+        {/* The growth arc (V6 D2): what the loop above adds up to — the
+            year-by-year answer to "what does my child get by 5". Say line
+            founder-approved at the V6 spec review. */}
+        <Room
+          fill="cream"
+          id="growth"
+          guide="joy"
+          say="From first words to big ideas. I'm there."
+          reveal="left"
+        >
+          <Reveal>
+            <SectionHeading
+              eyebrow={`From ${LUMI_AGES}`}
+              title="What your child gets, year by year."
+              titleClassName="mb-3"
+              lede="Lumi remembers what your child knows and asks the next question. Here is how the same friend meets them at every age."
+              ledeClassName="mb-10 max-w-[58ch]"
+            />
+          </Reveal>
+          <GrowthArc />
         </Room>
 
         {/* Fun (40%): the day a child actually has */}
