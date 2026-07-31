@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { PRESS_LIFT } from "@/lib/interactions";
 import { Container } from "@/components/atoms/Container";
 import { Section } from "@/components/atoms/Section";
 import { SectionHeading } from "@/components/molecules/SectionHeading";
@@ -46,7 +47,7 @@ export function Journal({ bare = false }: { bare?: boolean }) {
                   cursor (TiltCard.tsx hard rule, R10) */}
               <Link
                 href={`/stories/${c.slug}`}
-                className="block h-full overflow-hidden rounded-(--radius-card) bg-white transition-[transform,box-shadow] duration-300 ease-(--ease-bounce) hover:-translate-y-1.5 hover:shadow-[0_16px_32px_rgba(216,95,27,0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
+                className={`block h-full overflow-hidden rounded-(--radius-card) bg-white ${PRESS_LIFT} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2`}
               >
                 <div className={`flex h-[220px] items-end justify-center overflow-hidden ${c.bg}`}>
                   <Image

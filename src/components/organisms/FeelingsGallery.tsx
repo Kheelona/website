@@ -4,6 +4,7 @@ import Image from "next/image";
 import * as Dialog from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 import { cn } from "@/lib/cn";
+import { PRESS_LIFT } from "@/lib/interactions";
 import { FEELINGS, type Feeling } from "@/lib/feelings";
 import { KHEELU_POSES, kheeluPoseSrc } from "@/lib/kheelu-poses";
 
@@ -30,7 +31,7 @@ export function FeelingsGallery({
               <button
                 type="button"
                 className={cn(
-                  "group block h-full w-full cursor-pointer rounded-(--radius-card) border border-line-soft p-5 text-left transition-shadow duration-300 ease-(--ease-calm) hover:shadow-(--shadow-room-sm) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2",
+                  `group block h-full w-full cursor-pointer rounded-(--radius-card) border border-line-soft p-5 text-left ${PRESS_LIFT} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2`,
                   f.card,
                 )}
               >

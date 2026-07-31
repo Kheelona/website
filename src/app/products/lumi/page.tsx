@@ -16,7 +16,6 @@ import { LUMI_PAGE_MOMENTS } from "@/lib/audio-moments";
 import { Faq, type FaqEntry } from "@/components/molecules/Faq";
 import { KheelonaPlusBand } from "@/components/molecules/KheelonaPlusBand";
 import { FootnotesRow, V3_FOOTNOTES, Footnote } from "@/components/molecules/FootnotesRow";
-import { FeelingsGallery } from "@/components/organisms/FeelingsGallery";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { LumiModes } from "@/components/organisms/LumiModes";
 import { graph, faqPage, breadcrumbs, LUMI_PRODUCT } from "@/lib/seo";
@@ -207,18 +206,13 @@ export default function LumiPage() {
           </div>
         </Room>
 
-        <Room fill="cream" guide="silly" say="Five feelings. I can act them all out." reveal="right">
-          <Reveal>
-            <SectionHeading
-              eyebrow="Meet the feelings"
-              title="Five feelings your child learns to name."
-              titleClassName="mb-3"
-              lede="The learning starts with the heart. Name the feeling first, and the thinking follows."
-              ledeClassName="mb-11 max-w-[58ch]"
-            />
-          </Reveal>
-          <FeelingsGallery />
-        </Room>
+        {/* V5-6 (2026-07-31 review): the five-feeling gallery used to repeat
+            here in full. Six components rendered on BOTH Home and this page, so
+            a visitor who read Home and clicked "Meet Lumi" met the same audio
+            demos, the same feelings, the same modes and the same quotes — the
+            real root of "too much content, less value". Home owns the feelings
+            beat; this page keeps what only a product page can say: the modes,
+            the pace panel, the colourways, the box, and its own FAQ. */}
 
         {/* Founder call 2026-07-28: the three real modes replace the old
             personality chips (Companion / Storyteller / Teacher). A parent

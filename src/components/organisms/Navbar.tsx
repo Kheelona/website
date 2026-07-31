@@ -7,6 +7,7 @@ import { Menu } from "lucide-react";
 import { NAV_LINKS, PREORDER_HREF, RESERVE_LABEL_SHORT } from "@/config/site";
 import { Button } from "@/components/atoms/Button";
 import { Sheet } from "@/components/molecules/Sheet";
+import { PRESS_TINT } from "@/lib/interactions";
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
@@ -76,7 +77,7 @@ export function Navbar() {
                     <Link
                       href={l.href}
                       onClick={() => setOpen(false)}
-                      className="block rounded-xl px-3 py-3 text-[17px] font-medium text-ink hover:bg-cream"
+                      className={`block rounded-xl px-3 py-3 text-[17px] font-medium text-ink hover:bg-cream ${PRESS_TINT}`}
                     >
                       {l.label}
                     </Link>

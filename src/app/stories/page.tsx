@@ -8,6 +8,7 @@ import { PageHero } from "@/components/templates/PageHero";
 import { Reveal } from "@/components/molecules/Reveal";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { STORIES } from "@/lib/stories";
+import { PRESS_LIFT } from "@/lib/interactions";
 import { graph, breadcrumbs, SITE_URL } from "@/lib/seo";
 import { JOURNAL_REVIEWED } from "@/config/site";
 
@@ -110,7 +111,7 @@ export default function StoriesPage() {
                       pointer-tracked, so it stays. */}
                   <Link
                     href={`/stories/${s.slug}`}
-                    className={`group flex h-full flex-col overflow-hidden rounded-(--radius-card) border border-line-soft ${room.card} transition-[transform,box-shadow] duration-300 ease-(--ease-bounce) hover:-translate-y-1.5 hover:shadow-(--shadow-room) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2`}
+                    className={`group flex h-full flex-col overflow-hidden rounded-(--radius-card) border border-line-soft ${room.card} ${PRESS_LIFT} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2`}
                   >
                     {s.hero ? (
                       <div className="aspect-[16/9] w-full overflow-hidden">

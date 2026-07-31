@@ -3,6 +3,7 @@
 import * as Accordion from "@radix-ui/react-accordion";
 import { Plus } from "lucide-react";
 import { cn } from "@/lib/cn";
+import { PRESS_TINT, LIFT_WHEN_CLOSED } from "@/lib/interactions";
 
 export type ArchLayer = {
   id: string;
@@ -42,13 +43,16 @@ export function ArchitectureStack({
       key={layer.id}
       value={layer.id}
       className={cn(
-        "overflow-hidden rounded-(--radius-card) border border-line-soft transition-transform duration-150 ease-(--ease-calm) md:data-[state=closed]:hover:-translate-y-0.5",
+        "overflow-hidden rounded-(--radius-card) border border-line-soft",
+        LIFT_WHEN_CLOSED,
         layer.tint,
       )}
     >
       <Accordion.Header asChild>
         <h3>
-          <Accordion.Trigger className="group flex w-full cursor-pointer items-center justify-between gap-4 px-5 py-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-inset sm:px-6">
+          <Accordion.Trigger
+            className={`group flex w-full cursor-pointer items-center justify-between gap-4 px-5 py-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-inset sm:px-6 ${PRESS_TINT}`}
+          >
             <span>
               <span className="block font-display text-[19px] font-extrabold text-ink-head">
                 {layer.name}

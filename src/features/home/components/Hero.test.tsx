@@ -25,9 +25,12 @@ describe("Hero (V4, team feedback 2026-07-30)", () => {
       screen.getByRole("link", { name: /Reserve Lumi at ₹4,999/i }),
     ).toHaveAttribute("href", "#reserve");
     expect(screen.queryByRole("link", { name: "Meet Kheelu" })).toBeNull();
-    // promoted, not buried: the chip carries the whole offer line
+    /* Promoted, not buried: the chip carries the whole offer line and must be
+       lifted OFF the warm backdrop. V5-5 moved it from bg-yellow/15 (nearly the
+       same value as the page behind it) to a white card with a keyline. */
     const cap = screen.getByText(/First 500 units at ₹4,999/i);
-    expect(cap.className).toContain("bg-yellow/15");
+    expect(cap.className).toContain("bg-white");
+    expect(cap.className).toMatch(/border|shadow/);
   });
 
   it("carries Lumi's own age band", () => {

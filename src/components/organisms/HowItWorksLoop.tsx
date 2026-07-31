@@ -46,7 +46,10 @@ export function HowItWorksLoop({
               <p className="relative mb-1 font-display text-[21px] font-extrabold text-ink-head">
                 {s.title}
               </p>
-              <p className="relative mb-3 text-[13px] font-bold uppercase tracking-[0.08em] text-orange-ink">
+              {/* V5-5: min-h reserves two lines. "Step 3 · Real-world learning"
+                  wraps where steps 1-2 do not, and without the reservation the
+                  three body paragraphs started at three different heights. */}
+              <p className="relative mb-3 min-h-[2.6em] text-[13px] font-bold uppercase leading-[1.3] tracking-[0.08em] text-orange-ink">
                 {s.label}
               </p>
               <p className="relative text-[15px] leading-relaxed">{s.body}</p>

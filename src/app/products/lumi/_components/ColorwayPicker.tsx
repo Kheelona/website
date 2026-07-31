@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/cn";
+import { PRESS_TINT } from "@/lib/interactions";
 
 /** The colorway picker (revamp M3, from wireframe B's lhero): three product
  *  colours, a real radiogroup (B's span-buttons fixed). All three plush
@@ -95,7 +96,7 @@ export function ColorwayPicker({ className }: { className?: string }) {
             tabIndex={c.id === active ? 0 : -1}
             onClick={() => setActive(c.id)}
             className={cn(
-              "flex cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-[14px] font-bold text-ink-head transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2",
+              `flex cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-[14px] font-bold text-ink-head ${PRESS_TINT} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2`,
               c.id === active
                 ? "border-ink-head bg-white shadow-(--shadow-room-sm)"
                 : "border-line-soft bg-white/70",

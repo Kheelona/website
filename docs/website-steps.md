@@ -529,3 +529,62 @@ of fixed-width text fragments must stack below `sm`. The V4 QA probe (iframe at 
 `ArchitectureStack` (composed on the same vendored Radix accordion as Faq; hover lifts, only tap
 opens). Retired with their rooms: `Statement`, `LaunchVideo` (component only — the film files stay in
 public/video/), `LearningRoom`, `BrainRoom`. The Home VideoObject left the JSON-LD with the film (D7).
+
+
+### 8.23 V5 DESIGN/UX REVIEW ROUND (2026-07-31) — the end-to-end pass
+
+Spec + evidence: `docs/revamp-2026-07/BUILD-V5.md`. Method note worth keeping: the Chrome extension's
+window is locked ~390px and its tab runs hidden, which freezes reveals and defers painting, so this
+review ran through a headless harness at exact viewports with reveals forced. **Any future visual
+review should do the same** — screenshots of a hidden tab are not evidence.
+
+**8.23-1 EVERY TAPPABLE SURFACE ANSWERS TOUCH.** New interactive surfaces compose `PRESS`,
+`PRESS_LIFT`, `PRESS_TINT` or `LIFT_WHEN_CLOSED` from `src/lib/interactions.ts`. Hand-rolled
+hover/active classes are a review flag (`test/interactions.test.ts` enforces it). The review that
+produced this found **two** `active:` states in the whole codebase and four different hover
+treatments across four card types, one with a hardcoded shadow — while `TiltCard`, the only card
+interaction, renders a plain div on touch. Hover coverage read 19 · 6 · 3 · 0 · 0 · 0 across routes.
+A hover-only affordance is incomplete by definition: the primary customer is on a phone.
+COROLLARY: a card that does nothing when tapped must NOT get press feedback. Faking an affordance is
+worse than having none — so static informational cards keep tilt (desktop depth) and nothing else.
+
+**8.23-2 AN EMBEDDED FORM'S HEIGHT IS MEASURED WHERE IT SHIPS, AND RE-MEASURED WHEN ITS FIELDS
+CHANGE.** Two traps, both hit on this component. (a) Measuring the form's own URL standalone reports
+~721px because it renders in a 700px centred layout; inside our ~680px iframe the same form is
+609px. Measure inside the real iframe (`scratchpad/iframe-measure.mjs`). (b) `documentElement.
+scrollHeight` just reports the viewport the iframe was given — read the submit button's
+`getBoundingClientRect().bottom` instead. That mistake is how a flat 900px got set and left 191px of
+dead white on desktop, 93px on mobile, with the vendor badge floating in it. **Mobile needs the
+TALLER frame** (730 vs 690): a narrow iframe wraps labels onto more lines, so the narrow form is the
+tall one. The guard test brackets both sides — too short hides Submit, too tall looks unbuilt.
+
+**8.23-3 A BRAND MARK NEEDS A JOB.** The four blob shapes mean "this card is a promise", rendered
+through `molecules/PromiseMark` (fixed positional rotation, 0.22 opacity, 36px). They appear on
+Home's trust room, /safety's data-custody promises, /playos's moat, and the reserve reassurances —
+and nowhere else. Using them as background texture is a review flag: the calm law and the founder's
+"keep it clean" both refuse decoration without a job.
+
+**8.23-4 ONE IDEA, ONE STATEMENT, PER PAGE.** If a fact appears in an answer block, it does not also
+become a card row and then a display line. /safety stated one promise FOUR times in a single fold
+(85-word answer, four numbered steps, four label cards, closing display line) — and the steps
+duplicated the previous section's cards nearly verbatim, "Not muted. Off." included. The
+mechanisms live in one row, the data-custody facts in another, each said once.
+
+**8.23-5 THE SAME CHARACTER NEVER APPEARS TWICE AT ILLUSTRATION SCALE IN ONE VIEWPORT.** REV-a's
+final hero art contains Kheelu, so the persistent corner guide put him on screen twice on first
+impression. The desktop guide now waits out any hero carrying `[data-hero-has-kheelu]` and fades in
+after. Scope is deliberate: a 46px avatar inside the mobile dock is UI chrome, not a second
+character, and the dock must keep its Reserve CTA.
+ACCESSIBILITY COROLLARY, learned immediately: `aria-hidden` on a wrapper whose child is focusable is
+a serious violation. Anything hidden this way also leaves the tab order.
+
+**8.23-6 AXE IS BLIND TO UN-REVEALED ROOMS.** axe skips `opacity-0` subtrees, so every earlier sweep
+on this site was structurally unable to see anything inside a room that had not revealed. Force
+`.reveal-in` on all `[data-reveal]` before running it. Doing so immediately surfaced a real 13px
+`text-ink-muted` contrast failure in `FootnotesRow` that three prior "zero violations" sweeps had
+missed.
+
+**8.23-7 MEASUREMENT DISCIPLINE, RE-CONFIRMED BY CONTROL.** Home's mobile LCP read 1.73s at the start
+of this session and 2.31s at the end. A control build with the round's hero changes reverted measured
+**2.31s** — identical. The delta was environment drift, not the change. When a perf number moves,
+build the control before believing the story.

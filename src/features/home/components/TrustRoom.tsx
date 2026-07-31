@@ -3,36 +3,30 @@ import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/molecules/Reveal";
 import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { Card } from "@/components/molecules/Card";
-import { Shape } from "@/components/atoms/Shapes";
-import type { ShapeKind } from "@/lib/shape-paths";
+import { PromiseMark } from "@/components/molecules/PromiseMark";
 
 /** Home room 4 (revamp M2, founder brief 11a): the four promises, each with
  *  a brand blob shape chip. Copy-v2 [seed]. Absorbs the jobs of the old
- *  SafetyCallout + SafetyStrip (both retire); the deep dive stays /safety. */
+ *  SafetyCallout + SafetyStrip (both retire); the deep dive stays /safety.
+ *  V5-4: the marks now come from the shared PromiseMark rotation, so the same
+ *  language reads on /safety, /playos and the reserve reassurances instead of
+ *  living only here. */
 const POINTS = [
   {
     h: "We do not sell data.",
     b: "Your child's voice and words are never sold, and never used to sell them anything. That is a promise, not a setting you have to go find.",
-    shape: "flower5" as ShapeKind,
-    color: "#29A0D7",
   },
   {
     h: "Lumi thinks on the device.",
     b: "The first thinking happens on Lumi itself, before anything is sent anywhere.",
-    shape: "squircle" as ShapeKind,
-    color: "#EF762F",
   },
   {
     h: "You hold the keys.",
     b: "Read every conversation. Delete anything in one tap. Choose the topics. The grown-up decides, always.",
-    shape: "flower13" as ShapeKind,
-    color: "#F1A23B",
   },
   {
     h: "No open internet.",
     b: "Lumi answers from a library you can see, not the open web. It wakes to a word, and the mic is off the rest of the time.",
-    shape: "polygon" as ShapeKind,
-    color: "#29A0D7",
   },
 ] as const;
 
@@ -50,7 +44,7 @@ export function TrustRoom() {
         {POINTS.map((p, i) => (
           <Reveal key={p.h} delay={i * 0.06}>
             <Card className="h-full border border-line-soft bg-white p-7">
-              <Shape kind={p.shape} color={p.color} className="mb-4 w-9" />
+              <PromiseMark index={i} className="mb-4" />
               <h3 className="mb-2 font-display text-[22px] font-extrabold text-ink-head">
                 {p.h}
               </h3>

@@ -35,7 +35,12 @@ export function FootnotesRow({
   className?: string;
 }) {
   return (
-    <ol className={cn("space-y-1.5 text-[13px] leading-snug text-ink-muted", className)}>
+    /* text-ink, not text-ink-muted: at 13px the muted grey measures ~4.3:1 on
+       the sun wash where these notes live, which fails the 4.5:1 floor. Same
+       fix, same cause as the V3 pipeline label. Caught by forcing reveals before
+       running axe — axe skips opacity-0 subtrees, so every earlier sweep was
+       structurally blind to anything inside an un-revealed room. */
+    <ol className={cn("space-y-1.5 text-[13px] leading-snug text-ink", className)}>
       {items.map((f, i) => (
         <li key={f.id} id={f.id} className="scroll-mt-28">
           <span aria-hidden="true" className="mr-1.5 font-bold">
