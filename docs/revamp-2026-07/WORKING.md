@@ -13,7 +13,46 @@ here in full so nothing depends on conversation memory.
 
 ---
 
-## ⏭ COLD-RESTART: START HERE (last updated 2026-07-31 — V4 MERGED, LIVE ON kheelona.com)
+## ⏭ COLD-RESTART: START HERE (last updated 2026-07-31 — **V6 MERGED AND LIVE**)
+
+**V6 IS LIVE on https://kheelona.com** (`main` = `demo-website` = `29d2fdd`, trees identical;
+rollback tag **`v5-live-2026-07-31`**). Work on `main`; keep `demo-website` in sync by merging.
+Verify locally: `npm test` (**279**) · `npx tsc --noEmit` · `npm run build` (token-check 17) ·
+`npx next start -p 3456` (check `lsof` first; `rm -rf .next/cache/images` if a replaced image
+serves stale).
+
+**What V6 is** — the growth-arc CONTENT round, spec `BUILD-V6.md`, plan `PLAN-V6.md`, laws §8.24,
+QA `QA-V6-note.md` (independent; it REJECTED the first pass), checkpoint
+`docs/checkpoints/v6-content-2026-07-31.md`, design record `HANDOFF-design-v6.md` (all items closed).
+It exists because parents said the site never answered *"what will a kid who buys this at 2 get when
+they are 5?"*. Shipped: the outcome hero "A best friend at 2. / A head start by 5.", the Home
+`#growth` room (`lib/growth-arc.ts` + `organisms/GrowthArc`, kickers **At 2 years … By 5 years**
+derived from `LUMI_AGES`), the new FAQ "What will my child actually get out of Lumi?", and the
+consistency sweep.
+
+**The four things a newcomer most needs to know from this round:**
+1. **Connectivity is MODE-PRECISE everywhere (§8.24-1).** AI mode needs home WiFi; Kheelu-mode
+   stories and Bluetooth music work offline. A blanket "works offline" claim is now a bug — the old
+   flat "No. Lumi plays offline." FAQ answer was factually wrong and shipped live for weeks.
+2. **The FAQ is native `<details>`, not an accordion component (§8.24-6).** The Radix version put
+   only the OPEN answer in the HTML, so Home served 8 questions and **1** answer to anyone without
+   JS, AI crawlers included, while the schema carried all 8 and hid it from three QA sweeps. When
+   you verify a disclosure, **strip `<script>` blocks first** or the JSON-LD answers for the page.
+   `ArchitectureStack` keeps Radix on purpose.
+3. **Small uppercase labels are `orange-ink` (§8.24-7)**; `ink-muted` is banned at that size on any
+   tinted wash (measured 4.31–4.37:1).
+4. **axe needs forced reveals PLUS a ~1.5s settle (§8.24-5e)** — that combination found four real
+   contrast failures that had been live on kheelona.com through three "axe zero" rounds.
+
+**Still founder-gated, do not invent:** the Kheelona+ ₹ amount, certifications (until a certificate
+lands), real testimonial words (their standing decision). Open, non-blocking: which page owns the
+modes/quotes/audio/FAQ that Home and Meet Lumi still share.
+
+Everything below is the historical record of earlier rounds.
+
+---
+
+## ⏭ COLD-RESTART (superseded): V4 MERGED, LIVE ON kheelona.com
 
 **V4 is MERGED to `main` (99f1bc8) and LIVE-VERIFIED on https://kheelona.com. Work on `main`
 again.** The founder ordered the merge on 2026-07-31 (which also closed the V3-d Kheelu-line gate);

@@ -12,8 +12,10 @@ Rollback tag if ever needed: `v5-live-2026-07-31`. Records: `BUILD-V6.md` (spec)
 
 | # | What | Status |
 |---|---|---|
-| V6-a | Merge to `main` | **DONE at your order.** Both branches now carry it. |
-| V6-b | **Delete the test rows in Tally** if you submitted the form while reviewing | **Yours** — preview and production submissions are real reservations. |
+| V6-a | Merge to `main` | **DONE at your order.** Both branches carry it, live-verified. |
+| V6-b | Delete the Tally test rows | **DONE — you confirmed Tally is all clear (2026-07-31).** |
+
+**Nothing on this page is waiting on you for V6.** The whole round is live and verified.
 
 **Worth doing once on your phone:** open the FAQ on Home. It now works with JavaScript switched
 off, because the answers are in the page rather than being drawn by script — see below.

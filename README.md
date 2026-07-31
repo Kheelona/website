@@ -21,11 +21,13 @@ Read `docs/project-state.json`:
 2. **`docs/project-state.json`** — `current_phase`, `blockers` (the open one is the Vercel Root
    Directory), and `last_handoff.next_action`.
 3. **`FOUNDER-TODO.md`** — everything waiting on the founder, #0 first. Never re-ask what is settled here.
-4. **`docs/revamp-2026-07/BUILD-V3.md`** — the spec that built the current copy. It is now a record,
-   not a queue, and it still wins over `copy-v2.md` and older copy laws.
+4. **`docs/revamp-2026-07/BUILD-V6.md`** — the spec that built the current copy, with every
+   published sentence verbatim in §2. It is a record, not a queue, and it wins over BUILD-V5 →
+   BUILD-V4 → BUILD-V3 → `copy-v2.md` and older copy laws, in that order.
 5. **Before changing any code**: `docs/standards/` (`PROJECT_STRUCTURE.md`,
-   `COMPONENT_GUIDELINES.md`, `STRUCTURE-MAP.md`) and `docs/website-steps.md` §8 (the laws; §8.21-a/b
-   are the newest — app at the repo root, and no redirect may shadow a `public/` directory).
+   `COMPONENT_GUIDELINES.md`, `STRUCTURE-MAP.md`) and `docs/website-steps.md` §8 (the laws;
+   **§8.24 is the newest** — mode-precise connectivity, one-source facts, disclosure content ships
+   in the markup, one kicker language, and axe needs a settle after forcing reveals).
 
 Older phase-by-phase routing (`phase_0` … `phase_11`) is history; those checkpoints live in
 `docs/checkpoints/` if you need to know why something is the way it is.
@@ -36,6 +38,20 @@ Master build spec: `website-builder-prompt-final-kheelona.md` (Brand Bible §1, 
 Say where the project stands and what is next. Do NOT re-ask questions from completed phases, and do NOT re-ask anything already settled in the Brand Bible.
 
 ## Current Status (keep this section current)
+- **🟢 CURRENT STATE — V6 IS LIVE (2026-07-31).** `main` = `demo-website` = `29d2fdd`, trees
+  identical; rollback tag **`v5-live-2026-07-31`**; **279 tests**. Four rounds shipped that day:
+  **V4** (team feedback — brand-orange CTAs with ink labels, real-audio demos, white finales,
+  VC-voiced /playos, 19 photographed journal heroes), **V5** (design/UX review — one interaction
+  contract in `lib/interactions.ts`, the measured reserve form, `PromiseMark`), **the Great
+  Clearance** (ship date 1 September 2026, eight named languages, lifetime smart features, article
+  bylines), and **V6** (the growth-arc content round: the outcome hero "A best friend at 2. / A head
+  start by 5.", the Home `#growth` room answering what a child gets from 2 to 5, mode-precise
+  connectivity, the native-`<details>` FAQ, and the consistency sweep). Read
+  **`docs/revamp-2026-07/WORKING.md`** first, then `BUILD-V6.md` and `website-steps.md` §8.22–8.24.
+  Three facts that were WRONG on the live site until V6 and must not regress: the internet FAQ
+  claimed Lumi plays offline (AI mode needs home WiFi), /privacy described a Tally form that had
+  stopped collecting email and birth month, and the FAQ served 1 of 8 answers to anyone without
+  JavaScript. Still founder-gated: the Kheelona+ ₹ amount, certifications, real testimonial words.
 - **🟢 LIVE TO CUSTOMERS (2026-07-28): https://kheelona.com** (apex canonical, `www` 308s to it). DNS pointed, Vercel Root Directory fixed, repo-root move and the product-image redirect fix deployed. **The pre-order form is live** (Tally `Y5XW7J` via `NEXT_PUBLIC_TALLY_FORM_URL`, production only, so the preview still shows the placeholder card). Verified in Chrome on the real domain: hero renders Lumi and Kheelu, GA4 `G-7LMKSFEXZ9` firing, Vercel Web Analytics loading from its obfuscated path, Tally iframe loading with all six fields, `preorder_view` reaching GA4. Iframe height was raised 560px → 960px the same day: the form measures 886px, so Submit had been below the frame's own fold. **245 tests at that point** (249 after the 2026-07-30 Ahrefs work). Search Console and Bing were both done the same day, so V3-g is closed: domain property verified, sitemap processed, 24 pages discovered.
 - **✅ THE NEW SITE IS MERGED TO `main` (2026-07-28) and is the only site.** The 2026-07 revamp (theme B "Kheelu's Tour") plus the V3 repositioning from the founder's YC application (40% fun / 20% brain development / 40% education) replaced the legacy Wix commerce app that used to live at the repo root — preserved at the tag **`pre-revamp-2026-07`**, with its URLs 301'd in `next.config.ts`. **Work on `main`**; `demo-website` is only the Vercel preview branch (https://website-hdn2.vercel.app) and carries the `/a` `/b` `/c` wireframes, so sync it by MERGING, never force-push. **READ FIRST on resume: `docs/revamp-2026-07/WORKING.md`**, then `docs/revamp-2026-07/BUILD-V3.md` (the spec, whose laws still bind). Lumi is **ages 2 to 5** with the platform arc **2 to 14**; three modes (AI, Kheelu, Bluetooth); Kheelona+ is "6 months included, price announced before launch" and may never carry a ₹ amount. VERIFIED: **249 tests**, tsc clean, build green, **axe zero violations** on 10 routes × 2 viewports, **Lighthouse A11y/BP/SEO 100 on all 18 runs** with Perf 99-100, mobile clean 320-430px. **This shipped: the site went live at https://kheelona.com on 2026-07-28** — see the bullet above. **2026-07-30**: Ahrefs Web Analytics added (raw `<script async>` in `<head>`, deliberately NOT host-gated because Ahrefs verifies by fetching the page); /privacy updated in the same commit to name all three measurement tools and say which set cookies.
 - **PRODUCTION RESTRUCTURE (2026-07-12, MERGED + LIVE on `demo-website` at `890a24a`) — structure/docs/tooling only, ZERO user-facing change**: the app moved to a **`src/`-based atomic-design** layout (components in `atoms/molecules/organisms/templates`, home sections in `features/home/`, the 3D stack in `features/ambient-stage/`, constants in `config/`, styles in `styles/`; `@/* → src/*`), made compliant with the two standards now in **`docs/standards/`** (`PROJECT_STRUCTURE.md` + `COMPONENT_GUIDELINES.md`, plus `STRUCTURE-MAP.md` for old→new paths). Added **Storybook 10 + Vitest** (dev-only): a story + a test per component (55 files, 165 tests green). No-change proven per phase (production CSS byte-identical, build green, pages render pixel-identically). Binding law recorded in `CLAUDE.md`. **Merged to `demo-website` and live** (branch deleted); the docs-only redeploy is byte-identical. Checkpoint: `docs/checkpoints/production-restructure-2026-07-12.md`.

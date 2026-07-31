@@ -1,12 +1,17 @@
 # BUILD-V6 — the growth-arc content round (2026-07-31)
 
-> **STATUS: BUILT, ALL GATES GREEN (2026-07-31) — on `demo-website`, awaiting the Step-3
-> independent content QA note and the founder's review.** 276 tests · tsc clean · build green ·
-> axe 0 violations (settled runs, §8.24-5e — four pre-existing /products/lumi contrast failures
-> found and fixed in-round) · voice-lint clean · overflow 0 · JSON-LD mirrors visible copy ·
-> before/after captures 22+22 in the session scratchpad. QA record: `docs/qa-report.md` "V6".
-> Spec approved as written by the founder 2026-07-31; the founder
-> merges to `main` after review (their instruction for this round, same shape as V4/V5). Where this
+> **STATUS: SHIPPED AND LIVE on https://kheelona.com (2026-07-31).** `main` = `demo-website` =
+> `29d2fdd`, trees identical; rollback tag `v5-live-2026-07-31`; **279 tests** (276 at spec
+> approval, +3 from the native-FAQ rebuild). Independent content QA REJECTED the first pass with
+> four real blockers and APPROVED after fixes (`QA-V6-note.md` + addendum). Then the founder ordered
+> the design-handoff items built rather than handed over, adding §8.24-6 (the FAQ is native
+> `<details>`) and §8.24-7 (one kicker language) — see `HANDOFF-design-v6.md`. Gates at merge: tsc
+> clean · build green (token-check 17) · axe 0 violations across settled runs (§8.24-5e, which found
+> four pre-existing /products/lumi contrast failures) · voice-lint clean on 13 routes including the
+> machine pages · overflow 0 · JSON-LD mirrors visible copy · 34 internal links all 200. QA record:
+> `docs/qa-report.md` "V6"; live verification in the checkpoint.
+> Spec approved as written by the founder 2026-07-31, who
+> then ordered the merge ("make it live on demo and main both"). Where this
 > spec conflicts with BUILD-V5, THIS SPEC WINS; V5's laws (§8.23) and V4's §0 laws still bind
 > except where a decision below supersedes one. Approach approved by the founder 2026-07-31:
 > **targeted conversion revision** — not a rewrite.
