@@ -132,7 +132,7 @@ sitemap+robots; favicon bundle (logo-mark); per-route OG; 404; canonical URLs; S
 
 Applies on top of the immersive redesign (`docs/redesign-plan-2026-07.md`). Founder decisions, locked:
 1. **Elevate, not rebuild** — D1+D4 journey architecture and verbatim copy stay.
-2. **Pragmatic hybrid libraries** — three/@react-three/fiber/@react-three/drei remain the only 3D stack (VengeanceUI and reactbits evaluated and rejected: unaudited/flashy, conflict with brand rule). Exactly two primitives vendored on Radix, restyled with `@theme` brand tokens: FAQ accordion (`@radix-ui/react-accordion`) and mobile-nav sheet (`@radix-ui/react-dialog`). No shadcn CLI, no CVA/tailwind-merge/lucide. Micro-interactions via `motion` (160–320ms, `--ease-calm`).
+2. **Pragmatic hybrid libraries** — three/@react-three/fiber/@react-three/drei remain the only 3D stack (VengeanceUI and reactbits evaluated and rejected: unaudited/flashy, conflict with brand rule). Exactly two primitives vendored on Radix, restyled with `@theme` brand tokens: FAQ accordion (`@radix-ui/react-accordion`) and mobile-nav sheet (`@radix-ui/react-dialog`). **[SUPERSEDED IN PART, V6 §8.24-6: the FAQ moved to native `<details>` because the accordion kept its closed answers out of the HTML. `@radix-ui/react-accordion` is still a dependency, now used by `ArchitectureStack` alone.]** No shadcn CLI, no CVA/tailwind-merge/lucide. Micro-interactions via `motion` (160–320ms, `--ease-calm`).
 3. **Lighthouse hard gates** — 100 A11y/BP/SEO on all 9 routes, both form factors; Perf ≥95 desktop / ≥90 mobile.
 4. **Scope** — Home journey deep-polish + ambient 3D scenes on the 7 flat interior routes.
 
@@ -636,3 +636,28 @@ pre-existing contrast failures on /products/lumi that every earlier "axe zero" s
 (`text-blue` numerals at 2.68:1 and `text-ink-muted` at 4.31–4.37:1 on tinted washes — hence the
 V6 rules: blue-ink is the numeral blue, and muted text does not sit on tinted washes). Harness:
 session scratchpad `shot.mjs` + `axe-run.mjs` (§8.23 records the recipe if the scratchpad is gone).
+
+**8.24-6 A DISCLOSURE'S CONTENT SHIPS IN THE MARKUP.** An accordion, FAQ or any collapse whose
+closed panels are absent from the served HTML is a content bug, not a UI choice. `molecules/Faq`
+was a Radix accordion rendering only the OPEN answer, so Home served eight questions and **one**
+answer to every reader without JavaScript, AI crawlers included — and the FAQPage schema carried
+all eight, which kept Google happy and hid the gap from three earlier QA sweeps. It is now the
+browser's own `<details>`/`<summary>`: every answer is in the HTML, rows open with JS off,
+exclusivity comes from the native `name` attribute, and the component ships zero client JS. The
+question stays an `<h3>` inside the `<summary>` so the question-led outline the AEO work depends on
+survives, and the summary keeps `PRESS_TINT` (§8.23-1). Height animation rides `::details-content`
+behind an `@supports (interpolate-size: allow-keywords)` gate with `interpolate-size` scoped to the
+disclosure rather than `:root`, so nothing else on the page gains keyword interpolation; where
+unsupported the answer simply appears, which is also the reduced-motion state.
+**Verification that actually catches this**: strip every `<script>` block from the served HTML
+before counting answers — the JSON-LD will otherwise answer for the page and report a false pass.
+EXCEPTION, deliberate: `ArchitectureStack` keeps the Radix accordion. Its rows are a layered
+diagram where roving arrow keys earn the JavaScript, and its content is decorative chips rather
+than prose an answer engine should quote.
+
+**8.24-7 ONE KICKER LANGUAGE: SMALL UPPERCASE LABELS ARE `orange-ink`.** Every 12 to 13px uppercase
+tracked label — section eyebrows, the growth-arc year markers, panel labels, chat-demo speaker
+names — renders in `orange-ink` (#b54a0d, the only orange clearing 4.5:1 on every wash). Founder
+call, 2026-07-31. It replaces the interim dark-ink fix applied when `ink-muted` was caught failing
+contrast on tinted washes (4.31 to 4.37:1): dark ink passed but introduced a second visual language
+for the same kind of label. `ink-muted` remains banned on any tinted wash at that size.

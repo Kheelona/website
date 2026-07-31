@@ -3,47 +3,42 @@
 **Scope instruction from the founder: MICRO improvements only — spacing, link states, small
 polish. No structural or layout changes.** The content of this round is founder-approved verbatim
 (spec `BUILD-V6.md` §2) and QA'd independently (`QA-V6-note.md`); copy is not the design team's
-surface. Anything here that grows beyond micro goes back through a founder decision.
+surface.
 
-## What V6 changed visually (so you know what you are looking at)
+> **STATUS UPDATE (2026-07-31, same day):** the founder asked for this list to be implemented
+> rather than handed over, and answered the three judgement calls it contained. **All five items
+> are now closed** — four implemented, one measured and dismissed. What remains below is the
+> record of what changed and the standing constraints, not a task list. The next design pass
+> starts from a clean sheet.
 
-1. **Home hero**: new two-line H1 ("A best friend at 2. / A head start by 5.") — shorter lines
-   than V5's. Art, chip, CTA, cap card unchanged.
+## What V6 changed visually
+
+1. **Home hero**: two-line H1 ("A best friend at 2. / A head start by 5.") — shorter lines than
+   V5's. Art, chip, CTA, cap card unchanged.
 2. **New Home room `#growth`** ("What your child gets, year by year."): cream room, 2×2 white
    stage cards (registry `Card`, static — tilt only, deliberately no press/lift), orange-ink
-   kickers, a muted hedge line, a 19px display line.
-3. **/products/lumi**: two paragraphs added at the end of the pace room (the arc echo); step
-   numeral 01 and /setup's numeral 02 are now `blue-ink` (contrast law — `text-blue` measured
-   2.68:1); PacePanel kickers and ChatDemo speaker labels are now full `ink` (were `ink-muted`,
-   4.31–4.37:1 on tinted washes).
+   kickers reading **AT 2 YEARS / AT 3 YEARS / AT 4 YEARS / BY 5 YEARS**, a muted hedge line, and
+   a 19px display line.
+3. **/products/lumi**: two paragraphs added at the end of the pace room (the arc echo).
 4. **FinaleCTA lede** is one sentence longer (the hold promise joined the cap line).
-5. Small copy swaps with visual footprint: /team's logo row label ("Recognised by"), /playos's
-   top chip ("AI mode on home WiFi"), the Home feelings lede now names Kheelu.
+5. Small copy swaps with visual footprint: /team's logo row label ("Recognised by"), /playos's top
+   chip ("AI mode on home WiFi"), the Home feelings lede now names Kheelu.
 
-## The micro-improvement list (ordered by value)
+## The five items, and how each was closed
 
-1. **Server-render the FAQ answer bodies** (QA finding N3, deferred to you): only the first
-   answer of each accordion is in the served HTML; the rest exist solely in JSON-LD until JS
-   expands them. A no-JS reader or DOM-reading agent sees the questions and one answer.
-   Component: `molecules/Faq.tsx`. This is the one item on this list that is code, not polish —
-   treat the interaction contract (§8.23-1) and the FAQPage-mirrors-visible-copy law as binding.
-2. **GrowthArc room rhythm**: check the 2×2 card grid at 768–1024px (single → two column
-   transition) and whether the closing display line (19px, Family-scale) carries enough weight
-   for a room this important. The larger display clamp is available if it reads quiet — design
-   call, copy unchanged.
-3. **Hero balance at mid widths**: the shorter H1 changes the left-column mass against the art
-   at 1024–1280px. `text-balance` handles the wrap; judge the whitespace.
-4. **Kicker treatment consistency**: PacePanel kickers and ChatDemo labels moved to full `ink`
-   for contrast. If they now read heavier than the site's orange-ink kickers, `orange-ink` is
-   the sanctioned alternative (passes 4.5:1 on every wash). Either passes; pick one language.
-5. **Link states**: the new in-copy link (Home audio room → the bilingual article) uses the
-   standard underline + focus-ring pattern; verify hover/focus parity with the loop room's
-   journal link. Run the internal-link crawl on the preview while you are there.
+| # | Item | Outcome |
+|---|---|---|
+| 1 | Server-render the FAQ answer bodies | **IMPLEMENTED.** Rebuilt on native `<details>`/`<summary>` (founder's pick over forcing hidden text into the Radix markup). All answers now ship in the HTML — Home went from **1 of 8** to **8 of 8** — they open with JavaScript off, and the component ships no client JS at all. The Radix accordion chunk now loads on **/playos alone**. Law: §8.24-6. |
+| 2 | GrowthArc room rhythm | **MEASURED, NO CHANGE.** At 768px the cards are 300px with copy wrapping comfortably; 1024px gives 404px, 1280px gives 457px. The `md:grid-cols-2` transition is sound. Founder kept the closing display line at 19px so it matches every other display line on the site. |
+| 3 | Hero balance at mid widths | **MEASURED, NO CHANGE.** At 1024px the H1 is 454px against 436px of art; at 1280px, 520px against 466px. Balanced at both. |
+| 4 | Kicker treatment consistency | **IMPLEMENTED.** Founder chose one language: every small uppercase label is `orange-ink`. The pace-panel and chat-demo labels moved off dark ink accordingly. Law: §8.24-7. |
+| 5 | Link states + internal crawl | **VERIFIED.** The two in-copy story links on Home carry byte-identical class strings (hover, underline offset, focus ring). The crawl that had never been run is now run: **34 unique internal hrefs across 11 pages, all 200.** |
 
-## Laws that bind this work (pointers, not repetition)
+## Laws that bind any future work here
 
 `docs/website-steps.md` §8.23 (interaction contract; axe with reveals forced **plus a ~1.5s
-settle**, §8.24-5e) and §8.24 (mode-precise connectivity, one-source facts, GrowthArc registry).
+settle**, §8.24-5e) and §8.24 (mode-precise connectivity, one-source facts, the GrowthArc
+registry, **§8.24-6 disclosure content ships in the markup**, **§8.24-7 one kicker language**).
 CTAs stay brand orange `#EF762F` with ink labels — no white text on the action fill. Zero italics,
 all text left-aligned, tilt never wraps a whole-card link, the plush stays the hero's largest
 element (mobile LCP). Visual reviews run through the headless harness, never the Chrome extension
@@ -54,11 +49,12 @@ element (mobile LCP). Visual reviews run through the headless harness, never the
 The growth-room copy and its data module (`lib/growth-arc.ts`), every connectivity sentence
 (§8.24-1), the tutor's four homes (§8.24-2), the testimonial quotes (settled founder decision),
 the Tally form and its measured iframe heights, anything gated (Kheelona+ price, certifications,
-wake word, specs).
+wake word, specs). `ArchitectureStack` keeps its Radix accordion on purpose — a layered diagram
+with roving arrow keys is the one place the JavaScript earns itself.
 
 ## Evidence
 
-Before/after full-page captures (11 routes × desktop 1440/mobile 390) live in the session
-scratchpad (`before/`, `after/`, key crops in `crops/`) — session-local; re-generate with the
-§8.23 harness if needed. Independent QA verdict + facts table: `QA-V6-note.md`. QA record:
-`docs/qa-report.md` "V6".
+Before/after full-page captures (11 routes × desktop 1440 / mobile 390), breakpoint captures at
+768/1024/1280, and the FAQ open-state crops live in the session scratchpad (`before/`, `after/`,
+`bp/`, `crops/`) — session-local; re-generate with the §8.23 harness if needed. Independent QA
+verdict + facts table: `QA-V6-note.md`. QA record: `docs/qa-report.md` "V6".

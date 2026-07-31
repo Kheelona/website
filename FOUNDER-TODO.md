@@ -2,14 +2,21 @@
 
 Each item unlocks something specific. Ordered by launch impact.
 
-## 🔵 V6 — the growth-arc content round is BUILT, QA-APPROVED, and ON THE PREVIEW (2026-07-31)
+## ✅ V6 — the growth-arc content round is MERGED AND LIVE on https://kheelona.com (2026-07-31)
 
-**Two things for you, one of them the only real action on this page.**
+Merged to `main` at your instruction ("make it live on demo and main both"), after the independent
+content QA approved it and after its design-handoff items were built rather than handed over.
+Rollback tag if ever needed: `v5-live-2026-07-31`. Records: `BUILD-V6.md` (spec), `QA-V6-note.md`
+(the review), `HANDOFF-design-v6.md` (all five items closed), checkpoint
+`docs/checkpoints/v6-content-2026-07-31.md`.
 
-| # | What | Why it is yours |
+| # | What | Status |
 |---|---|---|
-| **V6-a** | **Review https://website-hdn2.vercel.app and merge `demo-website` → `main`** (22 commits, `1e9550b`) | You asked to merge yourself after review. `main` is untouched at V5, so rollback is doing nothing. |
-| V6-b | **Delete the test rows in Tally** if you submit the form while reviewing | The preview renders the REAL form, so preview submissions are real reservations. |
+| V6-a | Merge to `main` | **DONE at your order.** Both branches now carry it. |
+| V6-b | **Delete the test rows in Tally** if you submitted the form while reviewing | **Yours** — preview and production submissions are real reservations. |
+
+**Worth doing once on your phone:** open the FAQ on Home. It now works with JavaScript switched
+off, because the answers are in the page rather than being drawn by script — see below.
 
 **What it fixes.** The feedback you relayed — *"it's good that you are teaching, but what will a kid
 who buys this at 2 get when they are 5?"* — was true: the site had no answer anywhere. Now the hero
@@ -33,6 +40,19 @@ and the Google title, per your note.
 Also fixed while in there: four **real contrast failures live on kheelona.com today** on Meet Lumi
 (pale blue numerals, grey text on tinted panels) that three earlier accessibility sweeps could not
 see, because the checker skips content that has not faded in yet.
+
+**One more thing that was quietly broken, found after the QA passed.** The FAQ was drawn by
+JavaScript, and it only put the *open* answer into the page. So Home was serving eight questions and
+**one** answer to anyone whose browser had JavaScript off, and to the AI assistants that read pages
+without running it — exactly the audience the journal and the answer-style copy are written for.
+Google was fine, because the structured data carried all eight, which is why three earlier reviews
+missed it. It is now built on the browser's own accordion: all eight answers are in the page, they
+open with JavaScript off, and the page ships less code than before. Nothing you read on screen
+changed.
+
+Also from that pass: every small uppercase label on the site is now the same brand orange, and two
+things I had flagged for the design team turned out to need nothing once measured (the year-by-year
+card grid and the hero's balance at tablet widths).
 
 **No decisions needed.** Every word was approved in the spec before it was built (`BUILD-V6.md` §2),
 and the independent QA's verdict is APPROVE (`QA-V6-note.md`). Your V5 open decision — which page

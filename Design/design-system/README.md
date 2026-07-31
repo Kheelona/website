@@ -202,3 +202,23 @@ law), then the hedge line, then a display line. The cards are STATIC: tilt only,
 `LUMI_AGES` via `lumiAgeEndpoints()` and are guard-tested — never hand-type "At 2 years"/"By 5 years" in a new
 surface; import the data. New year-staged sections must compose `GrowthArc` or extend its data
 module rather than hand-rolling the shape.
+
+## Small uppercase labels are orange-ink (V6, founder 2026-07-31)
+
+Every 12 to 13px uppercase tracked label — section eyebrows, the growth-arc year markers
+("AT 2 YEARS"), panel labels ("A CLASSROOM", "LUMI"), chat-demo speaker names — renders in
+`orange-ink` (#b54a0d), the only orange that clears 4.5:1 on every wash. One language for one kind
+of element. `ink-muted` is BANNED at that size on any tinted wash: it measures 4.31 to 4.37:1 on
+the cool and cream tints and was caught failing there. Dark `ink` passes contrast but introduces a
+second label language, which is why it was retired as an interim fix. See website-steps §8.24-7.
+
+## Disclosures use the browser's own details/summary (V6, 2026-07-31)
+
+`molecules/Faq` is native `<details>`/`<summary>`, not a JS accordion: every answer ships in the
+markup, rows open with JavaScript off, exclusivity comes from the native `name` attribute, and the
+component ships zero client JS. The question stays an `<h3>` inside the `<summary>`, the summary
+carries `PRESS_TINT`, and the height animation rides `::details-content` behind an
+`@supports (interpolate-size: allow-keywords)` gate with `interpolate-size` scoped to the disclosure
+rather than `:root`. Any new collapse follows this pattern. The one sanctioned exception is
+`ArchitectureStack`, whose layered diagram earns its Radix accordion through roving arrow keys.
+See website-steps §8.24-6.

@@ -311,3 +311,16 @@ first classroom with them") — no skill guarantees.
 - **Languages as outcome (D6)**: "A child who can wonder in their own words wonders more" is
   published verbatim (/playos moat); the bilingual-retention clause is the linked article's own
   thesis; the link targets the journal page that ranks #1 in India for the query.
+
+### V6 handoff addendum (2026-07-31): no copy changed, one law added
+
+The five design-handoff items were implemented the same day. **No published sentence changed** —
+the FAQ rebuild moved the same answers from a JS-expanded accordion into native markup, and the
+kicker change was colour only. Two provenance notes worth keeping:
+
+- The FAQ's questions remain `<h3>` headings inside the disclosure, so the question-led outline the
+  AEO work relies on is unchanged, and the FAQPage schema still mirrors exactly the visible copy.
+  What changed is that the visible copy is now genuinely visible to a machine that does not run
+  JavaScript (§8.24-6).
+- Small uppercase labels are `orange-ink` everywhere (§8.24-7), founder call. This is a token
+  decision, not a copy one; no label text moved.

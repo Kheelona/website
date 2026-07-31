@@ -7,11 +7,15 @@ Pre-order marketing site for **Lumi**, Kheelona's screen-free talking AI toy for
 every change you make from here touches a live commercial site.** Latest checkpoint, read it before
 touching anything: `docs/checkpoints/v5-merge-2026-07-31.md` (before it: `v4-merge-2026-07-31.md`, `go-live-2026-07-28.md`).
 
-**V6 (the growth-arc CONTENT round) is QA-APPROVED and ON `demo-website`, NOT yet on main —
-THE FOUNDER MERGES IT THEMSELVES** (their standing instruction; never merge for them). The
-independent content QA REJECTED the first pass (4 real blockers, worst: /privacy described the
-retired six-field Tally form) and APPROVED after fixes (`QA-V6-note.md` + addendum). Checkpoint:
-`docs/checkpoints/v6-content-2026-07-31.md`; design handoff `HANDOFF-design-v6.md`. Spec:
+**V6 (the growth-arc CONTENT round + its design-handoff items) is MERGED TO `main` AND LIVE**
+(founder instruction 2026-07-31: "make it live on demo and main both"; rollback tag
+`v5-live-2026-07-31`). The independent content QA REJECTED the first pass (4 real blockers, worst:
+/privacy described the retired six-field Tally form) and APPROVED after fixes (`QA-V6-note.md` +
+addendum). Then the founder ordered the design-handoff list built rather than handed over: **the
+FAQ is now native `<details>`** (it was serving 1 of 8 answers to any reader without JavaScript —
+§8.24-6) and **every small uppercase label is `orange-ink`** (§8.24-7). Checkpoint:
+`docs/checkpoints/v6-content-2026-07-31.md`; handoff record `HANDOFF-design-v6.md` (all five items
+closed). Spec:
 `docs/revamp-2026-07/BUILD-V6.md` (approved as written); plan `PLAN-V6.md`; laws §8.24; QA
 `docs/qa-report.md` "V6"; provenance `copy-reference.md` "V6". What it is: the outcome-arc hero
 ("A best friend at 2. / A head start by 5."), the year-by-year `GrowthArc` room answering the

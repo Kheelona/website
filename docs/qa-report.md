@@ -930,3 +930,38 @@ were already 0. These failures are LIVE on kheelona.com today and ship fixed wit
 **Pending**: Step-3 independent senior content QA (this round's own gate), then the preview deploy.
 Lighthouse not re-run this round (copy + token-swap changes only; no media, no new JS beyond one
 static organism; the LCP element and hero image pipeline are untouched).
+
+## V6 handoff implementation (2026-07-31, same day) — the five design items closed
+
+The founder asked for the handoff list to be built rather than handed over, and answered its three
+judgement calls: native `<details>` over forced-hidden Radix markup, one `orange-ink` kicker
+language, and the growth room's closing line kept at 19px.
+
+**The finding that justified the round.** With every `<script>` block stripped from the served HTML,
+Home's FAQ contained **1 of 8 answers**. The other seven existed only inside the FAQPage JSON-LD,
+so a reader with JavaScript off, or an AI crawler that does not execute it, got eight questions and
+one answer. This is why the first probe of it reported a false 8-of-8: grepping raw HTML finds the
+answers in the schema. **Strip scripts before counting.** After the rebuild: **8 of 8** on Home,
+15 of 15 on /products/lumi, 3 of 3 on /safety.
+
+**Behaviour verified in a real browser, not inferred**: first row open, others collapsed to their
+question, clicking row two opened it and closed row one (native `name` exclusivity, no JS of ours),
+plus icon rotating to an ×, no default disclosure triangle, and no answer spilling. Note for the
+next verifier: `getBoundingClientRect()` on a `<p>` inside a CLOSED `<details>` still reports its
+natural height (101px desktop / 280px mobile) because the clip lives on `::details-content` — judge
+collapse from pixels or from the row height, never from the child's rect.
+
+**Bundle effect, checked rather than assumed**: the chunk carrying Radix accordion code is now
+loaded by **/playos alone**; Home, /products/lumi and /safety no longer reference it. `Faq` went
+from a `"use client"` component to a server component on three routes.
+
+**Two items measured and dismissed** (no change shipped): the growth grid reads correctly at 768px
+(300px cards), 1024px (404px) and 1280px (457px); the hero balances at mid widths (H1 454px vs art
+436px at 1024, 520 vs 466 at 1280).
+
+**Gates**: 279 tests · tsc clean · build green · **axe 0 violations** on /, /products/lumi and
+/safety at 1440 and 390 with settled forced reveals · voice-lint 0 em-dashes / 0 italics on 13
+routes including llms.txt and pricing.md · overflow 0 at 320 and 390 · JSON-LD intact and still
+mirroring visible copy · `#reserve` on all 11 HTML routes · **internal href crawl, run for the
+first time: 34 unique internal links across 11 pages, all 200** · the two in-copy Home story links
+carry byte-identical class strings.
