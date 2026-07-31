@@ -267,6 +267,37 @@ body {
   }
 }
 
+/* V6 handoff: the FAQ moved off the Radix accordion onto native
+   <details>/<summary>, so every answer now ships in the HTML and opens with
+   JavaScript off (molecules/Faq.tsx explains why that mattered). This restores
+   the height animation the accordion used to give, on the browsers that can do
+   it: `interpolate-size` is scoped to the disclosure rather than :root, so
+   nothing else on the page gains keyword interpolation, and the whole block is
+   @supports-gated — where it is unsupported the answer simply appears, which is
+   also the reduced-motion state. Height is the one layout property this site
+   animates, and the retired accordion animated the same one. */
+@supports (interpolate-size: allow-keywords) {
+  .faq-disclosure {
+    interpolate-size: allow-keywords;
+  }
+  .faq-disclosure::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition:
+      block-size 0.24s var(--ease-calm),
+      content-visibility 0.24s var(--ease-calm);
+    transition-behavior: allow-discrete;
+  }
+  .faq-disclosure[open]::details-content {
+    block-size: auto;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .faq-disclosure::details-content {
+      transition: none;
+    }
+  }
+}
+
 /* V4 audio moments + how-it-works loop (team feedback 2026-07-30).
    Both are decoration over always-visible content: the equaliser bars scale
    only while that card is playing, and the loop glow is an opacity-only

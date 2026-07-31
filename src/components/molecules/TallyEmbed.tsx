@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { LAUNCH_PRICE, TALLY_FORM_URL } from "@/config/site";
+import { LAUNCH_PRICE, PRICE_HOLD_LINE, TALLY_FORM_URL } from "@/config/site";
 
 /* V4-a (2026-07-31): the form URL now defaults to the public constant in
    config/site so the preview and local builds render the REAL form (the env
@@ -28,8 +28,7 @@ export function TallyEmbed() {
           The pre-order list opens here soon.
         </p>
         <p className="mt-2 max-w-[42ch] text-[16px] text-ink">
-          {LAUNCH_PRICE} held for you, no payment now. We hold the price, you
-          hold your place.
+          {LAUNCH_PRICE} held for you, no payment now. {PRICE_HOLD_LINE}
         </p>
       </div>
     );

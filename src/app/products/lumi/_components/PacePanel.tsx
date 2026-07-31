@@ -1,6 +1,7 @@
 import { Reveal } from "@/components/molecules/Reveal";
 import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { Shape } from "@/components/atoms/Shapes";
+import { lumiAgeEndpoints } from "@/lib/growth-arc";
 
 /** "School teaches the class. Lumi teaches one child." (founder call,
  *  2026-07-28.)
@@ -41,6 +42,7 @@ const CONTRAST = [
 ] as const;
 
 export function PacePanel() {
+  const [ageStart, ageEnd] = lumiAgeEndpoints();
   return (
     <div>
       <Reveal>
@@ -56,7 +58,12 @@ export function PacePanel() {
         {CONTRAST.map((c, i) => (
           <Reveal key={c.label} delay={i * 0.08}>
             <div className={`h-full rounded-(--radius-card) border border-line-soft p-7 ${c.tint}`}>
-              <p className="mb-5 text-[13px] font-bold uppercase tracking-[0.1em] text-ink-muted">
+              {/* V6: ink-muted measured 4.31 to 4.37:1 on these two card
+                  tints and had to go. Founder call at the handoff review —
+                  one kicker language site-wide, so small uppercase labels are
+                  orange-ink (the guarded orange that clears 4.5:1 on every
+                  wash), not dark ink. */}
+              <p className="mb-5 text-[13px] font-bold uppercase tracking-[0.1em] text-orange-ink">
                 {c.label}
               </p>
               {/* the seats: many small marks for a room, one large for a child.
@@ -86,6 +93,18 @@ export function PacePanel() {
       <Reveal className="mt-8">
         <p className="max-w-[46ch] font-display text-[19px] font-bold text-ink-head">
           Every answer. Every day. At exactly the pace they set.
+        </p>
+      </Reveal>
+      {/* V6 D5: the pace argument extended from days to years, closing on the
+          hero promise verbatim — one promise, said identically on both pages. */}
+      <Reveal className="mt-10">
+        <p className="max-w-[58ch] text-[16px] text-ink">
+          The memory that picks up where your child stopped tomorrow keeps
+          picking up for years. First words at {ageStart} become stories,
+          numbers, and questions by {ageEnd}, one day at a time.
+        </p>
+        <p className="mt-4 font-display text-[19px] font-bold text-ink-head">
+          A best friend at {ageStart}. A head start by {ageEnd}.
         </p>
       </Reveal>
     </div>

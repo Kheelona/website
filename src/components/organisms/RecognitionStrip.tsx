@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import { Container } from "@/components/atoms/Container";
 import { Section } from "@/components/atoms/Section";
 import { Reveal } from "@/components/molecules/Reveal";
@@ -10,9 +9,9 @@ import { Eyebrow } from "@/components/atoms/Eyebrow";
  *  Karnataka renders as seal + live text (the tall seal goes unreadable when
  *  squeezed); Founders Inc is text-only by design.
  *  R9: every logo box is one height (h-8) on one baseline (reviewer:
- *  inconsistent sizing), and `safetyLine` pairs the startup badges with the
- *  proof a worried parent actually cares about — all four facts already
- *  published on /safety. Home turns it on; Team's "Backed by" stays clean. */
+ *  inconsistent sizing).
+ *  V6-12: the `safetyLine` prop is gone — no call site ever passed it after
+ *  the V3 rebuild, so it was a dead branch shipping four proof chips nowhere. */
 const ENTRIES = [
   {
     name: "NVIDIA Inception Program",
@@ -29,20 +28,11 @@ const ENTRIES = [
   { name: "Founders Inc" },
 ] as const;
 
-const SAFETY_PROOFS = [
-  "Wake-word mic",
-  "Safety check on every reply",
-  "One-tap delete",
-  "Voice data never sold",
-] as const;
-
 export function RecognitionStrip({
   label = "Recognised by",
-  safetyLine = false,
   bare = false,
 }: {
   label?: string;
-  safetyLine?: boolean;
   /** Revamp M2: render content-only, for composition inside a Room (the
    *  legacy Section shell stays for routes not yet on the room grammar). */
   bare?: boolean;
@@ -89,19 +79,6 @@ export function RecognitionStrip({
             ))}
           </ul>
         </Reveal>
-      {safetyLine && (
-        <Reveal className="mt-5">
-          <p className="text-[15px] leading-relaxed text-ink-muted">
-            {SAFETY_PROOFS.join(" · ")} ·{" "}
-            <Link
-              href="/safety"
-              className="font-semibold text-ink-head underline underline-offset-4"
-            >
-              See how we built safety in
-            </Link>
-          </p>
-        </Reveal>
-      )}
     </>
   );
 

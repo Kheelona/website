@@ -233,7 +233,9 @@ export default function TeamPage() {
 
         {/* Recognition (these programs are founder-published on kheelona.ai) */}
         <Room fill="white" reveal="left">
-          <RecognitionStrip bare label="Backed by" />
+          {/* V6 QA M1: "Backed by" over recognition programs is an investment
+              claim we cannot make — one truthful label site-wide. */}
+          <RecognitionStrip bare />
         </Room>
 
         <Room fill="cream" reveal="right">

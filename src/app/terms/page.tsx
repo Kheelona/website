@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { LegalDoc, type LegalSection } from "@/components/templates/LegalDoc";
-import { LAUNCH_PRICE, LATER_PRICE } from "@/config/site";
+import { LAUNCH_PRICE, LATER_PRICE, SHIP_DATE_TEXT } from "@/config/site";
 
 export const metadata: Metadata = {
   title: "Terms",
@@ -29,7 +29,9 @@ const SECTIONS: readonly LegalSection[] = [
   {
     h: "The price hold",
     ps: [
-      `The ${LAUNCH_PRICE} price is held for everyone who joins the list before launch. If our launch plans change in a way that affects the hold, we will tell you directly before anything else happens.`,
+      /* V6 QA blocker B2: "everyone" contradicted the 500-unit cap stated on
+         the same page's reserve strip. */
+      `The ${LAUNCH_PRICE} price is held for the first 500 families on the list. If our launch plans change in a way that affects the hold, we will tell you directly before anything else happens.`,
     ],
   },
   {
@@ -41,7 +43,9 @@ const SECTIONS: readonly LegalSection[] = [
   {
     h: "The boring but honest part",
     ps: [
-      "Lumi is still being finished. Dates, specifications, and availability can change while we complete testing and certification. We will communicate every change that affects your reservation.",
+      /* V6 D8b: names the published date and the notification promise
+         together — honesty without weakening the reservation. */
+      `Lumi is still being finished. The ship date is published, ${SHIP_DATE_TEXT}, and we build to it. Specifications and availability can still move while we complete testing and certification. If the ship date itself ever moves, you hear it from us first, and your ${LAUNCH_PRICE} hold stays exactly as it is.`,
       "Full terms of sale, including delivery, returns, and warranty, will be published before anyone is asked to pay anything.",
     ],
   },

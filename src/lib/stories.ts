@@ -32,7 +32,9 @@ const CORE: Story[] = [
     heroAlt:
       "A father with his daughter on his shoulders, both pointing at kites drifting over evening rooftops",
     paragraphs: [
-      { p: "Somewhere between the third and sixth birthday, your child becomes a person. Not a smaller version of one. The real thing: opinions, jokes, fears, favorite dinosaurs." },
+      /* V6 D9b: the author's own observation (not a cited band), aligned to
+         LUMI_AGES; spelling normalized to en-IN. Slug deliberately unchanged. */
+      { p: "Somewhere between the second and fifth birthday, your child becomes a person. Not a smaller version of one. The real thing: opinions, jokes, fears, favourite dinosaurs." },
       { p: "The science under that everyday miracle is simple to say and hard to overstate. In these years, a child's brain builds connections faster than it ever will again. What they hear, what they feel, and who they talk to shape everything that follows." },
       { h: "The window is not about flashcards", p: "It is tempting to fill the window with drills and apps, and the toy aisle is glad to help. But brain development toys and worksheets are not what the research keeps pointing at. It keeps pointing at conversation. Back and forth exchanges. Someone who answers the fourth why is the sky blue with the same patience as the first." },
       { p: "Every answered question teaches two things at once: the fact, and the deeper lesson that asking is worth it. Children who keep asking keep learning. That is the whole engine." },
@@ -83,7 +85,7 @@ const CORE: Story[] = [
       { h: "Why talking beats watching", p: "A video can show your child a volcano. But it cannot pause when their eyes go wide, ask what they think happens next, and wait. The waiting matters. Children learn to think in the space a listener gives them." },
       { h: "The mother tongue advantage", p: "The loop works best in the languages you speak at home. A child who can wonder in their own words wonders more. That is why a voice toy for kids should speak your language, not just English." },
       { p: "Vocabulary is the visible result. The invisible one is bigger: a child who expects to be heard. That expectation walks into every classroom with them." },
-      { p: "You cannot be available for every loop, and you should not have to be. That is the gap Lumi lives in: a cognitive development toy that keeps serve and return going, in 10 home languages, with you watching the whole exchange in the parent app." },
+      { p: "You cannot be available for every loop, and you should not have to be. That is the gap Lumi lives in: a cognitive development toy that keeps serve and return going, in up to 10 home languages, with you watching the whole exchange in the parent app." },
       { p: "If a house full of good questions sounds right to you, reserve a spot on the list. It is free, and it holds the launch price." },
     ],
   },

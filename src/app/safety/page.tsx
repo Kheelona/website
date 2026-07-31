@@ -116,7 +116,10 @@ const GATED_UNDER_FIVE = {
    page does not already answer (a duplicate question in both places reads as
    padding to a parent and to a crawler). */
 const SAFETY_FAQ: FaqEntry[] = [
-  { q: "Is an AI toy safe for a 3 year old?", a: "A safe AI toy needs three things: no open internet, age-graded answers, and a parent who sees everything. Lumi is built on all three, for ages 2 to 5 exactly, and it grows with the family of friends." },
+  /* V6 D7: the old first entry near-duplicated the flagship AnswerBlock (the
+     padding §8.23-4 warns against). Replaced with the dependence anxiety no
+     page answered — built entirely from published facts. */
+  { q: "Will Lumi replace time with me?", a: "No, and it is not built to. Lumi is for the moments your hands are full, not the ones they are not. The parent app gives you one simple thing to do together each day, quiet hours are yours to set, and the grown-up holds the keys, always." },
   { q: "Does Lumi reduce screen time?", a: "That is the point. Lumi has no screen at all. It is a toy that helps you cut screen time: your child talks, listens, and imagines instead of watching." },
   { q: "Can Lumi reach the open internet?", a: "No. Lumi cannot browse or search. Answers come from a closed library built for children, so there are no random videos, no rabbit holes, and no strangers." },
   /* Status-exact, never upgraded: mirrors the STANDARDS chips above. */

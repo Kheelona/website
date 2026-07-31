@@ -2,6 +2,7 @@ import { Button } from "@/components/atoms/Button";
 import { Reveal } from "@/components/molecules/Reveal";
 import { HeroStage } from "./HeroStage";
 import { PREORDER_HREF, RESERVE_LABEL, CAP_LINE, LUMI_AGES } from "@/config/site";
+import { lumiAgeEndpoints } from "@/lib/growth-arc";
 
 /** Revamp M2 hero (theme B + founder brief pointer 2): minimal copy on the
  *  left, the Kheelu-talks-to-Lumi stage on the right. Sits directly on the
@@ -14,6 +15,7 @@ import { PREORDER_HREF, RESERVE_LABEL, CAP_LINE, LUMI_AGES } from "@/config/site
  *  audio room, the trust room, and the parents room). LCP law lives in
  *  HeroStage. */
 export function Hero() {
+  const [ageStart, ageEnd] = lumiAgeEndpoints();
   return (
     <section
       data-guide="hero-wink"
@@ -25,26 +27,24 @@ export function Hero() {
           <span className="mb-5 inline-block rounded-full bg-orange/15 px-4 py-2 text-sm font-bold uppercase tracking-[0.08em] text-ink-head">
             For ages {LUMI_AGES}
           </span>
-          {/* V4 hero (D2): the team's claim, polished to the voice law. Line
-              one names the role parents are shopping for; line two keeps the
-              brand's soul (a friend before a lesson) and the 40% fun in the
-              positioning mix. Both halves are published behaviour. The
-              5-second test: what it is (tutor in a plush), who it is for
-              (2 to 5), the offer (cap chip), the risk (none, no payment). */}
-          {/* V5-5 note for the next person tempted to "fix" the wrap: at 60px
-              in this ~590px column, "Your kid's favourite tutor." cannot fit on
-              one line, and it should not — shrinking the hero type to force it
-              would cost more than the break does. Two lines per sentence is the
-              rhythm, and it pairs with the two-colour treatment. `text-balance`
-              just keeps those pairs even. */}
+          {/* V6 hero (BUILD-V6 D1, founder-approved): the outcome arc. It
+              answers the feedback that drove this round ("what will a kid who
+              gets this at 2 GET at 5") in the first two lines of the site.
+              The tutor claim moved out of the hero (it confused readers) and
+              lives in Compare, PacePanel, the growth room's closing line, and
+              the metadata title (BUILD-V6 §1). Ages render from LUMI_AGES via
+              lumiAgeEndpoints. The 5-second test still holds: what it is
+              (a friend that gives a head start), who it is for (2 to 5), the
+              offer (cap card), the risk (none, no payment). Two lines per
+              sentence is still the rhythm, paired with the two-colour
+              treatment; `text-balance` keeps the pairs even. */}
           <h1 className="mb-5 text-balance font-display text-[clamp(38px,4.8vw,60px)] font-extrabold leading-[1.06] text-ink-head">
-            Your kid&rsquo;s favourite tutor.{" "}
-            <span className="block text-action-ink">Their best friend first.</span>
+            A best friend at {ageStart}.{" "}
+            <span className="block text-action-ink">A head start by {ageEnd}.</span>
           </h1>
           <p className="mb-7 max-w-[42ch] text-[clamp(17px,1.5vw,20px)] text-ink">
-            A smart plush companion that listens, remembers, and adapts. It
-            guides your child through stories, numbers, and languages at their
-            own natural speed.
+            Lumi listens, remembers, and grows with your child. Stories,
+            numbers, and the languages you speak at home, at their pace.
           </p>
           <div className="flex flex-wrap items-center gap-3">
             <Button href={PREORDER_HREF}>{RESERVE_LABEL}</Button>

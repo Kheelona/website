@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { LegalDoc, type LegalSection } from "@/components/templates/LegalDoc";
+import { CONTACT_EMAIL, SHIP_DATE_TEXT } from "@/config/site";
 
 export const metadata: Metadata = {
   title: "Privacy",
@@ -15,15 +16,21 @@ const SECTIONS: readonly LegalSection[] = [
   {
     h: "What we collect when you join the list",
     ps: [
-      "When you reserve Lumi, we ask for your name, your email, your WhatsApp number, your child's birth month, and your city. We also ask for your consent before we contact you on WhatsApp.",
+      /* V6 QA blocker B1: this list must mirror the LIVE Tally form
+         (Y5XW7J, five fields since 2026-07-31) exactly — it previously
+         described the retired six-field form (email + birth month), which
+         the form no longer collects. */
+      "When you reserve Lumi, we ask for your name, your child's age, your city, your WhatsApp number, and your consent before we contact you on WhatsApp.",
       "That is the whole list. We do not ask for payment details, because there is no payment.",
     ],
   },
   {
     h: "Why we ask for it",
     ps: [
-      "Your email and WhatsApp number let us tell you about your reservation: the price hold, the ship date when it is announced, and your place in line.",
-      "Your child's birth month helps us plan for the right ages. Your city helps us plan delivery. Neither is ever used to profile your child.",
+      /* V6 D8a: the date is published (founder, 2026-07-31) — hedging it here
+         while the finale card below states it read as a loophole. */
+      `Your WhatsApp number lets us tell you about your reservation: the price hold, your place in line, and any change to the ${SHIP_DATE_TEXT} ship date.`,
+      "Your child's age helps us plan for the right ages. Your city helps us plan delivery. Neither is ever used to profile your child.",
     ],
   },
   {
@@ -52,7 +59,10 @@ const SECTIONS: readonly LegalSection[] = [
   {
     h: "Leaving the list",
     ps: [
-      "You can leave the pre-order list anytime, and we will delete your details on request. Reply to any email we have sent you and ask. That is all it takes.",
+      /* V6 QA blocker B1: the exit route must be one that exists — the form
+         collects no email, so "reply to any email" was a door that opened
+         onto a wall. */
+      `You can leave the pre-order list anytime, and we will delete your details on request. Reply to any WhatsApp message we have sent you, or write to ${CONTACT_EMAIL}. That is all it takes.`,
     ],
   },
   {

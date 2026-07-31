@@ -38,6 +38,9 @@ export const RESERVE_LABEL_SHORT = `Reserve at ${LAUNCH_PRICE}`;
 export const PRICE_CAPTION = `${LATER_PRICE} after launch. No payment now.`;
 /** The launch-cap line (R9, founder-supplied real number). */
 export const CAP_LINE = `First 500 units at ${LAUNCH_PRICE}. ${LATER_PRICE} after launch. No payment now.`;
+/** The hold promise (V6 D11): one sentence, one source. It closes the finale
+ *  lede and the Tally placeholder card — paraphrases of it kept drifting. */
+export const PRICE_HOLD_LINE = "We hold the price, you hold your place.";
 
 /* V3 (founder 2026-07-27, from the YC application): Lumi's own age band and
    the platform arc it grows into. These replace the retired "3 to 10" law —
@@ -74,8 +77,9 @@ export const LUMI_LANGUAGES = [
   "Spanish",
   "French",
 ] as const;
-export const LANGUAGES_LINE =
-  "English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish, and French";
+export const LANGUAGES_LINE = `${LUMI_LANGUAGES.slice(0, -1).join(", ")}, and ${
+  LUMI_LANGUAGES[LUMI_LANGUAGES.length - 1]
+}`;
 
 /** WhatsApp share (V3, India's native referral loop — no backend). "Rs" not
  *  "₹" in the payload: the rupee sign garbles in some WhatsApp clients. */

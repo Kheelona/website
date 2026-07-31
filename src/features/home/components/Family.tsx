@@ -15,7 +15,7 @@ export function Family() {
     <div>
       <Reveal>
         <SectionHeading
-          title="One friend inside. More bodies on the way."
+          title="One friend inside. More friends on the way."
           titleClassName="mb-4 max-w-[20ch]"
           lede="The same friend lives inside everything we make, and it remembers your child across all of it. Lumi is here first. The Kheelu Speaker and AI books follow."
           ledeClassName="mb-2 max-w-[58ch]"

@@ -8,9 +8,10 @@ import { LAUNCH_PRICE } from "@/config/site";
 
 /** The pipeline lineup as cards (M4 extraction, V3 rebuild).
  *
- *  Home's pipeline room and /playos both show this lineup; the markup was
- *  duplicated once and had already drifted, so one component owns it, fed by
- *  the single `lib/family` source.
+ *  Home's pipeline room shows this lineup, fed by the single `lib/family`
+ *  source (it was hand-typed twice before the M4 extraction and had drifted;
+ *  /playos has since dropped its copy, keeping only the "Own the years" moat
+ *  card).
  *
  *  V3: three bodies with an age chip each, and a hairline threaded behind them
  *  on md+ so the row reads as one arc from 2 to 14 rather than three unrelated

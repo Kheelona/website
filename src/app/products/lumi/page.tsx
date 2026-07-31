@@ -42,11 +42,15 @@ const DOES = [
   { h: "Stories on demand", b: "A new story whenever your child wants one." },
   { h: "Lessons that feel like play", b: "Numbers, words, and why the sky is blue. Stories your child can be quizzed on." },
   { h: "Songs and rhymes", b: "The ones you grew up with, and new ones too." },
-  { h: "Offline adventures", b: "Play that does not need the internet." },
+  /* V6 D4f: the last blanket offline claim, made mode-precise. */
+  { h: "Offline adventures", b: "Kheelu-mode stories and your paired playlist travel anywhere, no signal needed." },
 ] as const;
 
 const HOW_IT_ANSWERS = [
-  { n: "01", title: "Your child says the wake word.", body: "Until then, the microphone is off. Lumi starts listening only when it is invited to.", color: "text-blue" },
+  /* V6 axe fix: text-blue measures 2.68:1 on the cool wash (the team page
+     recorded the same finding) — the darkened blue-ink token is the numeral
+     blue everywhere now. */
+  { n: "01", title: "Your child says the wake word.", body: "Until then, the microphone is off. Lumi starts listening only when it is invited to.", color: "text-blue-ink" },
   { n: "02", title: "The device thinks first.", body: "Speech is processed on the toy before anything goes anywhere. Low latency. No long waits. No sending everything to a distant server.", color: "text-blue-ink" },
   { n: "03", title: "The feeling gets read.", body: "PlayOS hears more than words. Curious, Grumpy, Sad, Silly, Joy: the answer meets the mood.", color: "text-orange-ink" },
   { n: "04", title: "The right response comes back.", body: "Every reply passes through an age-graded safety layer before it is spoken. On-device and cloud filters work together. No open internet. No surprises.", color: "text-orange-deep" },
@@ -64,7 +68,8 @@ const APP_FEATURES = [
    founder confirms the facts. */
 const FAQ_ITEMS: FaqEntry[] = [
   { q: "Is Lumi safe for my child?", a: "Lumi wakes to a word, thinks on the device first, and answers from a closed library. There is a safety check on every reply, and you can read or delete anything." },
-  { q: "Does Lumi need the internet?", a: "No. Lumi plays offline. You connect only to download new content or updates, and you decide when." },
+  /* V6 D4b (founder-licensed fact): mode-precise. */
+  { q: "Does Lumi need the internet?", a: "Only for open conversation: AI mode runs on your home WiFi. Kheelu-mode stories and lessons work offline, and Bluetooth music needs only a paired phone. New content and updates download when you choose." },
   { q: "What languages does Lumi speak?", a: "English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish, and French, with up to ten at launch. Lumi switches mid-sentence, in the languages you speak at home." },
   { q: "What ages is Lumi for?", a: "Ages 2 to 5. Lumi meets your child where they are, and the family of friends grows with them to 14." },
   { q: "Can I read the conversations?", a: "Yes. The full log stays private to you, in the parent app." },
@@ -147,7 +152,9 @@ export default function LumiPage() {
           </Reveal>
           <StepList items={HOW_IT_ANSWERS} />
           <Reveal className="mt-8">
-            <p className="text-[16px] text-ink-muted">
+            {/* V6 axe fix: ink-muted is 4.37:1 on the cool wash — muted text
+                does not sit on tinted washes. */}
+            <p className="text-[16px] text-ink">
               The technology behind the talking lives on the{" "}
               <Link href="/playos" className="rounded font-semibold text-ink-head underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2">
                 PlayOS page

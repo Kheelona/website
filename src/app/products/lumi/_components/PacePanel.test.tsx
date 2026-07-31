@@ -25,6 +25,18 @@ describe("PacePanel", () => {
     ).toBeInTheDocument();
   });
 
+  it("extends the pace argument to years and closes on the hero promise verbatim (V6 D5)", () => {
+    render(<PacePanel />);
+    expect(
+      screen.getByText(
+        /The memory that picks up where your child stopped tomorrow keeps picking up for years\. First words at 2 become stories, numbers, and questions by 5, one day at a time\./,
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("A best friend at 2. A head start by 5."),
+    ).toBeInTheDocument();
+  });
+
   it("draws the seats with decorative brand shapes, not a stock classroom photo", () => {
     const { container } = render(<PacePanel />);
     expect(container.querySelectorAll("img").length).toBe(0);
