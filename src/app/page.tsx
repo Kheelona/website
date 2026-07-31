@@ -286,7 +286,7 @@ export default function HomePage() {
               eyebrow="Meet the feelings"
               title="Learning starts with feeling understood."
               titleClassName="max-w-[18ch]"
-              lede="Lumi knows five feelings. Feeling comes first, and the learning follows."
+              lede="Kheelu acts out the five feelings Lumi knows. Feeling comes first, and the learning follows."
               ledeClassName="mb-10 mt-4 max-w-[62ch]"
             />
           </Reveal>

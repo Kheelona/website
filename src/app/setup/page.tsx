@@ -52,7 +52,7 @@ export default function SetupPage() {
           eyebrow="Day one"
           title="Day one takes minutes."
           titleClassName="mb-5"
-          lede="Four steps, no manual required. Lumi is made for homes, not IT departments, and only one of the four is yours to do alone."
+          lede="Four steps, no manual required. Lumi is made for homes, not IT departments."
           ledeClassName="max-w-[56ch]"
         />
       </PageHero>

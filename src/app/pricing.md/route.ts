@@ -20,13 +20,13 @@ import {
  *  amount. */
 export const dynamic = "force-static";
 
-const BODY = `# Pricing — Lumi by Kheelona
+const BODY = `# Pricing: Lumi by Kheelona
 
 Market: India. Currency: INR. Stage: pre-order, no payment taken.
 
 ## Lumi (the talking toy, ages ${LUMI_AGES})
 
-- Pre-order price: ${LAUNCH_PRICE} — the first 500 units
+- Pre-order price: ${LAUNCH_PRICE} for the first 500 units
 - Price after launch: ${LATER_PRICE}
 - Payment taken at pre-order: none. Reserving holds the price and your place, and does not commit you to buy.
 - Included with every Lumi: 6 months of Kheelona+
@@ -42,8 +42,8 @@ Market: India. Currency: INR. Stage: pre-order, no payment taken.
 
 ## Also in the family (not yet purchasable)
 
-- Kheelu Speaker, ages 5 to 14 — in development, price not announced
-- AI books, ages ${PLATFORM_AGES} — in development, price not announced
+- Kheelu Speaker, ages 5 to 14: in development, price not announced
+- AI books, ages ${PLATFORM_AGES}: in development, price not announced
 
 ## What you get for the price
 

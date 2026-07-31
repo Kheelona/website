@@ -185,7 +185,7 @@ export const EXPANSION: Story[] = [
       { h: "The mother tongue is the foundation, not the competitor", p: "Concepts learned in the mother tongue transfer. A child who understands big and small, before and after, why and because in Tamil does not relearn those ideas in English. They relabel them, which is far faster. Strong first languages consistently travel with stronger later languages, not weaker ones." },
       { p: "And in most Indian homes, English has school, screens, and half the world working for it already. It does not need your kitchen too. The language that needs your kitchen is the one only your family can pass on." },
       { h: "What keeps a home language alive", p: "Children keep languages that are useful and loved, and drop languages that are neither. So give the language living jobs: the funny relatives, the food words, the songs, the one grandparent whose stories only exist in it. Speak it without apology, and when your child answers in English, answer back warmly in your language without making it a correction. The war is lost in the moment the language becomes homework." },
-      { p: "We are building for exactly these houses. Lumi speaks ten languages so the friend can meet your family where it lives, not drag it toward English. But with or without any toy, the principle holds: the mother tongue is not in the way of your child's future. It is under it." },
+      { p: "We are building for exactly these houses. Lumi speaks up to ten languages so the friend can meet your family where it lives, not drag it toward English. But with or without any toy, the principle holds: the mother tongue is not in the way of your child's future. It is under it." },
     ],
   },
   {

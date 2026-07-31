@@ -2,10 +2,10 @@ import { render, screen } from "@testing-library/react";
 import { Family } from "./Family";
 
 describe("Family (Home pipeline room)", () => {
-  it("leads with the one-friend-many-bodies story", () => {
+  it("leads with the one-friend-many-friends story (V6 QA N2: 'bodies' is platform language, kept off the parent-facing Home)", () => {
     render(<Family />);
     expect(
-      screen.getByRole("heading", { name: "One friend inside. More bodies on the way." }),
+      screen.getByRole("heading", { name: "One friend inside. More friends on the way." }),
     ).toBeInTheDocument();
     expect(
       screen.getByText("Starts talking at 2. Still teaching at 14."),

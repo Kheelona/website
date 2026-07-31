@@ -48,7 +48,10 @@ const ARCH_ABOVE: readonly ArchLayer[] = [
       "Cognitive development",
       "Educational",
       "Endless conversations",
-      "WiFi operated",
+      /* V6 QA N1: the team diagram's bare "WiFi operated" predates the
+         mode-precise connectivity law (§8.24-1); aligned so the chip cannot
+         read as "dead without WiFi". */
+      "AI mode on home WiFi",
       `Ages ${LUMI_AGES}`,
       "Multi-language",
     ],

@@ -29,7 +29,9 @@ const SECTIONS: readonly LegalSection[] = [
   {
     h: "The price hold",
     ps: [
-      `The ${LAUNCH_PRICE} price is held for everyone who joins the list before launch. If our launch plans change in a way that affects the hold, we will tell you directly before anything else happens.`,
+      /* V6 QA blocker B2: "everyone" contradicted the 500-unit cap stated on
+         the same page's reserve strip. */
+      `The ${LAUNCH_PRICE} price is held for the first 500 families on the list. If our launch plans change in a way that affects the hold, we will tell you directly before anything else happens.`,
     ],
   },
   {

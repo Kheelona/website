@@ -32,7 +32,7 @@ export const metadata: Metadata = {
 const ROUTES = [
   {
     title: "Reserving Lumi",
-    body: "Join the pre-order list. You pay nothing, and we write to you about your reservation by email, and on WhatsApp if you say yes to that.",
+    body: "Join the pre-order list. You pay nothing, and we write to you about your reservation on WhatsApp, with your consent.",
     cta: { label: RESERVE_LABEL, href: PREORDER_HREF },
   },
   {
