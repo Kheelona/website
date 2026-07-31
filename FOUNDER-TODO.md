@@ -55,10 +55,12 @@ So local and preview page views will show up in your Ahrefs numbers. Small, and 
 verify button that works. Say the word if you would rather have it clean and I will restrict it and
 verify another way.
 
-## ► V5 — the end-to-end design review is BUILT on `demo-website`, waiting for you (2026-07-31)
+## ✅ V5 — the end-to-end design review is MERGED AND LIVE on https://kheelona.com (2026-07-31)
 
-Review on **https://website-hdn2.vercel.app** in a **visible** tab (hidden tabs freeze the scroll
-reveals and defer images), then merge `demo-website` → `main`. Spec `docs/revamp-2026-07/BUILD-V5.md`.
+Merged at your instruction the same day it was built. Spec `docs/revamp-2026-07/BUILD-V5.md`,
+record `docs/checkpoints/v5-merge-2026-07-31.md`. Rollback tag if ever needed: `v4-live-2026-07-31`.
+**Worth doing once on your phone:** tap a story card, a feeling, a colour swatch, an FAQ row — they
+answer now, which they never did before.
 
 Your team's four observations all checked out, and the numbers found each one:
 - **Micro-interactions inconsistent** → the whole codebase had *two* press states, and the card

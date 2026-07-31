@@ -2,16 +2,17 @@
 
 Pre-order marketing site for **Lumi**, Kheelona's screen-free talking AI toy for ages 2 to 5 (India-first). One job: convert parents into the Tally pre-order list at ₹4,999 (₹9,999 after launch, no payment now).
 
-## ⚠ STATE OF PLAY (2026-07-31) — read this first
+## ⚠ STATE OF PLAY (2026-07-31, V5 live) — read this first
 **THE SITE IS LIVE AT https://kheelona.com AND SERVES V4. It is indexed and taking pre-orders, so
 every change you make from here touches a live commercial site.** Latest checkpoint, read it before
-touching anything: `docs/checkpoints/v4-merge-2026-07-31.md` (before it: `go-live-2026-07-28.md`).
+touching anything: `docs/checkpoints/v5-merge-2026-07-31.md` (before it: `v4-merge-2026-07-31.md`, `go-live-2026-07-28.md`).
 
-**V5 (the end-to-end design/UX review round) IS BUILT ON `demo-website` AND WAITS FOR FOUNDER REVIEW**
-— one interaction contract so touch surfaces actually answer, the reserve form's measured white-space
-fix plus a reassurance strip, /safety's fourfold repetition cut, the brand shapes given one job as
-`PromiseMark`, and hero craft (Kheelu no longer appears twice, cap chip readable, art scaled). Spec:
-`docs/revamp-2026-07/BUILD-V5.md`; laws §8.23; record: `docs/qa-report.md` "V5".
+**V5 (the end-to-end design/UX review round) MERGED TO `main` AND LIVE on 2026-07-31** (`740845a`,
+rollback tag `v4-live-2026-07-31`): one interaction contract so touch surfaces actually answer, the
+reserve form's measured white-space fix plus a reassurance strip, /safety's fourfold repetition cut,
+the brand shapes given one job as `PromiseMark`, and hero craft (Kheelu no longer appears twice, cap
+chip readable, art scaled). Spec: `docs/revamp-2026-07/BUILD-V5.md`; laws §8.23; checkpoint:
+`docs/checkpoints/v5-merge-2026-07-31.md`.
 
 **V4 (the team-feedback round) MERGED TO `main` on 2026-07-31 at the founder's order** — the tutor
 hero, brand-orange CTAs with ink labels (the R5 white-label law is RETIRED), the real-audio room,

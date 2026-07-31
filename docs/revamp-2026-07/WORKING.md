@@ -23,7 +23,7 @@ Verify locally: `npm test` (254/254) · `npm run build` (token-check 17) · `npx
 (check `lsof -iTCP:3456` for stale servers first; `rm -rf .next/cache/images` if a replaced image
 serves stale). The 2026-07-31 GREAT CLEARANCE then landed the same day: REV-a hero art SHIPPED, ship date (1 Sep 2026) + eight named languages + the lifetime-smart-features Kheelona+ law published, authors on all 19 articles, counsel waived. Still gated: the Kheelona+ ₹ amount, certifications, testimonials. See FOUNDER-TODO's clearance table + qa-report.
 
-**V5 (2026-07-31) IS THE CURRENT ROUND, built on `demo-website` awaiting founder review**: the
+**V5 (2026-07-31) IS MERGED AND LIVE** (`740845a` on `main`, both branches in sync; rollback tag `v4-live-2026-07-31`): the
 end-to-end design/UX pass. One interaction contract (`lib/interactions.ts` — the codebase had two
 `active:` states total, so mobile answered almost nothing), the reserve form's 191px of measured dead
 space fixed plus a reassurance strip, /safety's fourfold repetition cut, the orphaned brand shapes
