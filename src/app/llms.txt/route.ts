@@ -31,6 +31,7 @@ const BODY = `# Kheelona
 - Speaks the languages spoken at home: ${LANGUAGES_LINE}, with up to 10 at launch. Switches mid-sentence.
 - Runs on PlayOS, Kheelona's own platform: a small language model built only for children, not shrunk from adult AI.
 - Three modes, one toy: AI mode (open conversation), Kheelu mode (pre-loaded stories and lessons a child can interrupt, question, and be quizzed on, offline), and Bluetooth mode (pair a phone and Lumi is the speaker for your own playlist or audiobook).
+- Connectivity: AI mode (open conversation) runs on home WiFi. Kheelu-mode stories and lessons work offline, and Bluetooth music needs only a paired phone.
 
 ## Safety, in mechanisms rather than badges
 - The microphone wakes to a word and is off the rest of the time.
