@@ -58,9 +58,12 @@ export function PacePanel() {
         {CONTRAST.map((c, i) => (
           <Reveal key={c.label} delay={i * 0.08}>
             <div className={`h-full rounded-(--radius-card) border border-line-soft p-7 ${c.tint}`}>
-              {/* V6 axe fix: ink-muted measured 4.31 to 4.37:1 on these two
-                  card tints — kickers on washes read in full ink. */}
-              <p className="mb-5 text-[13px] font-bold uppercase tracking-[0.1em] text-ink">
+              {/* V6: ink-muted measured 4.31 to 4.37:1 on these two card
+                  tints and had to go. Founder call at the handoff review —
+                  one kicker language site-wide, so small uppercase labels are
+                  orange-ink (the guarded orange that clears 4.5:1 on every
+                  wash), not dark ink. */}
+              <p className="mb-5 text-[13px] font-bold uppercase tracking-[0.1em] text-orange-ink">
                 {c.label}
               </p>
               {/* the seats: many small marks for a room, one large for a child.
