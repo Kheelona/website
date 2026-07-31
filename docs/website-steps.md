@@ -630,5 +630,9 @@ load/error and burn the whole decode cap; filter by checkVisibility(). (c) The T
 paints in the beyond-viewport region of full-page captures (Chromium behaviour for cross-origin
 iframes) — judge the reserve form from an in-viewport clip, never from a full-page shot.
 (d) Pages taller than ~16384 CSS px hit Chrome's texture cap; capture at a reduced
-deviceScaleFactor so nothing clips. Harness: session scratchpad `shot.mjs` (§8.23 records the
-recipe if the scratchpad is gone).
+deviceScaleFactor so nothing clips. (e) **Axe needs a ~1.5s settle AFTER forcing reveals** — a run
+fired mid-fade both invents failures and masks real ones; the settled re-run surfaced four REAL
+pre-existing contrast failures on /products/lumi that every earlier "axe zero" sweep missed
+(`text-blue` numerals at 2.68:1 and `text-ink-muted` at 4.31–4.37:1 on tinted washes — hence the
+V6 rules: blue-ink is the numeral blue, and muted text does not sit on tinted washes). Harness:
+session scratchpad `shot.mjs` + `axe-run.mjs` (§8.23 records the recipe if the scratchpad is gone).

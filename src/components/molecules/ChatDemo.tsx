@@ -45,7 +45,8 @@ export function ChatDemo({
           )}
           style={{ animationDelay: `${0.6 + i * 0.9}s` }}
         >
-          <p className="mb-0.5 text-[12px] font-bold uppercase tracking-wider text-ink-muted">
+          {/* V6 axe fix: ink-muted is 4.37:1 on the cool bubble tint. */}
+          <p className="mb-0.5 text-[12px] font-bold uppercase tracking-wider text-ink">
             {t.who === "child" ? "Your child" : "Lumi"}
           </p>
           <p className="text-[16px] leading-snug text-ink">{t.text}</p>

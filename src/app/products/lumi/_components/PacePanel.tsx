@@ -58,7 +58,9 @@ export function PacePanel() {
         {CONTRAST.map((c, i) => (
           <Reveal key={c.label} delay={i * 0.08}>
             <div className={`h-full rounded-(--radius-card) border border-line-soft p-7 ${c.tint}`}>
-              <p className="mb-5 text-[13px] font-bold uppercase tracking-[0.1em] text-ink-muted">
+              {/* V6 axe fix: ink-muted measured 4.31 to 4.37:1 on these two
+                  card tints — kickers on washes read in full ink. */}
+              <p className="mb-5 text-[13px] font-bold uppercase tracking-[0.1em] text-ink">
                 {c.label}
               </p>
               {/* the seats: many small marks for a room, one large for a child.

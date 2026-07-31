@@ -47,7 +47,10 @@ const DOES = [
 ] as const;
 
 const HOW_IT_ANSWERS = [
-  { n: "01", title: "Your child says the wake word.", body: "Until then, the microphone is off. Lumi starts listening only when it is invited to.", color: "text-blue" },
+  /* V6 axe fix: text-blue measures 2.68:1 on the cool wash (the team page
+     recorded the same finding) — the darkened blue-ink token is the numeral
+     blue everywhere now. */
+  { n: "01", title: "Your child says the wake word.", body: "Until then, the microphone is off. Lumi starts listening only when it is invited to.", color: "text-blue-ink" },
   { n: "02", title: "The device thinks first.", body: "Speech is processed on the toy before anything goes anywhere. Low latency. No long waits. No sending everything to a distant server.", color: "text-blue-ink" },
   { n: "03", title: "The feeling gets read.", body: "PlayOS hears more than words. Curious, Grumpy, Sad, Silly, Joy: the answer meets the mood.", color: "text-orange-ink" },
   { n: "04", title: "The right response comes back.", body: "Every reply passes through an age-graded safety layer before it is spoken. On-device and cloud filters work together. No open internet. No surprises.", color: "text-orange-deep" },
@@ -149,7 +152,9 @@ export default function LumiPage() {
           </Reveal>
           <StepList items={HOW_IT_ANSWERS} />
           <Reveal className="mt-8">
-            <p className="text-[16px] text-ink-muted">
+            {/* V6 axe fix: ink-muted is 4.37:1 on the cool wash — muted text
+                does not sit on tinted washes. */}
+            <p className="text-[16px] text-ink">
               The technology behind the talking lives on the{" "}
               <Link href="/playos" className="rounded font-semibold text-ink-head underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2">
                 PlayOS page
