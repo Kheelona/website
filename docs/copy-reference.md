@@ -278,9 +278,9 @@ first classroom with them") — no skill guarantees.
   batch, shipped unchanged (Joanna: "no alternative beat its specificity"). Sub composes published
   behaviour only. The tutor idea moved to Compare + PacePanel + the arc's closing line + the Home
   metadata title (founder note on Q2: keep the tutor narrative alive off-hero).
-- **Growth arc (D2)**: every stage card traces to published copy — At 2 (LumiModes AI card +
-  loop step 2 + rhymes), At 3 (PacePanel fourth-why + "asks one back"), At 4 (AudioMoments
-  transcripts + Feelings "Grumpy" + PacePanel pick-up-tomorrow), By 5 (serve-and-return close +
+- **Growth arc (D2)**: every stage card traces to published copy — At 2 years (LumiModes AI card +
+  loop step 2 + rhymes), At 3 years (PacePanel fourth-why + "asks one back"), At 4 years (AudioMoments
+  transcripts + Feelings "Grumpy" + PacePanel pick-up-tomorrow), By 5 years (serve-and-return close +
   the journal's "a child who expects to be heard" + the licensed soft frame). Hedge line
   pre-empts "every child is different". Kheelu say line for the room founder-picked at spec
   review: "From first words to big ideas. I'm there." (41 chars).

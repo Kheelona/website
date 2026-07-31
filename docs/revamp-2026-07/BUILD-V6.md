@@ -78,10 +78,10 @@ texture). Room id `growth`. Home goes 13 → 14 rooms; nothing is removed this r
 - H2: **What your child gets, year by year.**
 - Lede: "Lumi remembers what your child knows and asks the next question. Here is how the same friend meets them at every age."
 - Four stage cards (kicker + body), data in new `src/lib/growth-arc.ts`:
-  1. **At 2: Naming the world.** "Your child points, names, and repeats. Lumi answers in short words they already own, sings the rhymes you grew up with, and starts remembering which words they know."
-  2. **At 3: Asking why, and why again.** "Why is the sky blue? Lumi answers the fourth why with the same patience as the first, then asks one back. Every answered why teaches your child that asking is worth it."
-  3. **At 4: Playing with ideas.** "Thinking games, counting the apples a squirrel ran off with, naming a big feeling instead of hiding it. Lumi remembers where your child stopped yesterday and starts one small step further."
-  4. **By 5: Words, numbers, confidence.** "Three years of serve and return add up: the words, the numbers, and the confidence of a child who expects to be heard. All of it walks into their first classroom with them."
+  1. **At 2 years: Naming the world.** "Your child points, names, and repeats. Lumi answers in short words they already own, sings the rhymes you grew up with, and starts remembering which words they know."
+  2. **At 3 years: Asking why, and why again.** "Why is the sky blue? Lumi answers the fourth why with the same patience as the first, then asks one back. Every answered why teaches your child that asking is worth it."
+  3. **At 4 years: Playing with ideas.** "Thinking games, counting the apples a squirrel ran off with, naming a big feeling instead of hiding it. Lumi remembers where your child stopped yesterday and starts one small step further."
+  4. **By 5 years: Words, numbers, confidence.** "Three years of serve and return add up: the words, the numbers, and the confidence of a child who expects to be heard. All of it walks into their first classroom with them."
 - Hedge line (after the cards): "Every child grows at their own pace. Lumi follows theirs."
 - Closing display line: **"A best friend the whole way. A tutor whenever they need one."**
 - No CTA inside the room (the audio room's CTA sits one fold above; V5's one-idea-one-statement law).
@@ -235,7 +235,7 @@ like three offers.
    small `lumiAgeEndpoints()` helper that parses `LUMI_AGES` ("2 to 5") into its endpoints. The
    helper feeds the hero H1 ages (D1), the arc eyebrow, and the stage kickers' endpoints; a guard
    test asserts the first kicker's age equals the start of `LUMI_AGES` and the last equals its
-   end ("At 3"/"At 4" are data and cannot drift past the endpoints).
+   end ("At 3 years"/"At 4 years" are data and cannot drift past the endpoints).
 2. **New organism `src/components/organisms/GrowthArc.tsx`** — composes `SectionHeading` (eyebrow/
    H2/lede) + the existing card grammar + a display line, per the registry law. Static
    informational cards: NO press/lift (V5 interaction contract — static surfaces deliberately get

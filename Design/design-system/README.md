@@ -194,11 +194,11 @@ reassurance strip. Not to be used as background texture or general decoration.
 
 ## The growth arc (V6, 2026-07-31)
 
-The year-by-year outcome answer ("At 2 … By 5") is a system pattern, not one-off copy:
+The year-by-year outcome answer ("At 2 years" … "By 5 years") is a system pattern, not one-off copy:
 `organisms/GrowthArc` renders `src/lib/growth-arc.ts` — four stage cards on the registry `Card`
 (white, `border-line-soft`), each led by a 13px uppercase `orange-ink` kicker (the site kicker
 law), then the hedge line, then a display line. The cards are STATIC: tilt only, never press/lift
 (a surface that does nothing when tapped gets no press feedback). The band endpoints derive from
-`LUMI_AGES` via `lumiAgeEndpoints()` and are guard-tested — never hand-type "At 2"/"By 5" in a new
+`LUMI_AGES` via `lumiAgeEndpoints()` and are guard-tested — never hand-type "At 2 years"/"By 5 years" in a new
 surface; import the data. New year-staged sections must compose `GrowthArc` or extend its data
 module rather than hand-rolling the shape.

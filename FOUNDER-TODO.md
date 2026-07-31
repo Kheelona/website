@@ -14,7 +14,7 @@ Each item unlocks something specific. Ordered by launch impact.
 **What it fixes.** The feedback you relayed — *"it's good that you are teaching, but what will a kid
 who buys this at 2 get when they are 5?"* — was true: the site had no answer anywhere. Now the hero
 leads with it ("A best friend at 2. A head start by 5."), a new Home room walks it year by year
-(At 2 → At 3 → At 4 → By 5, hedged with "Every child grows at their own pace. Lumi follows theirs."),
+(At 2 years → At 3 years → At 4 years → By 5 years, hedged with "Every child grows at their own pace. Lumi follows theirs."),
 and a new FAQ carries the question in parents' own words. The confusing tutor hero is gone but the
 tutor narrative is not — it lives in the comparison, the pacing panel, the new room's closing line,
 and the Google title, per your note.

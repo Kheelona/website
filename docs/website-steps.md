@@ -605,7 +605,7 @@ than a broad claim a parent later catches. This also made the /playos "WiFi oper
 consistent instead of contradictory (inventory inconsistency #2, closed).
 
 **8.24-2 THE OUTCOME ANSWER LIVES IN ONE PLACE AND DERIVES FROM `LUMI_AGES`.** The year-by-year
-answer ("At 2 … By 5") is data in `src/lib/growth-arc.ts`, rendered by `organisms/GrowthArc`
+answer ("At 2 years" … "By 5 years", unit spelled out per the founder 2026-07-31) is data in `src/lib/growth-arc.ts`, rendered by `organisms/GrowthArc`
 (Home room `id="growth"`) and echoed once, verbatim, after `/products/lumi`'s PacePanel. The band
 endpoints parse from `LUMI_AGES` via `lumiAgeEndpoints()` — the hero H1, the arc eyebrow, the
 kickers, and the PacePanel echo all render from it, and `growth-arc.test.ts` fails if the kickers

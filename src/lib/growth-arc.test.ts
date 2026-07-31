@@ -14,8 +14,8 @@ describe("growth-arc data (BUILD-V6 D2)", () => {
   it("cannot drift from LUMI_AGES: first kicker starts the band, last ends it", () => {
     const [start, end] = lumiAgeEndpoints();
     expect(LUMI_AGES).toBe(`${start} to ${end}`);
-    expect(GROWTH_ARC[0]!.kicker).toBe(`At ${start}`);
-    expect(GROWTH_ARC.at(-1)!.kicker).toBe(`By ${end}`);
+    expect(GROWTH_ARC[0]!.kicker).toBe(`At ${start} years`);
+    expect(GROWTH_ARC.at(-1)!.kicker).toBe(`By ${end} years`);
   });
 
   it("ships four stages, a hedge, and the tutor re-homing line", () => {

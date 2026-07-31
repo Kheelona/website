@@ -143,7 +143,7 @@ export function lumiAgeEndpoints(): [string, string] {
 const [AGE_START, AGE_END] = lumiAgeEndpoints();
 
 export type GrowthStage = {
-  /** "At 2" … "By 5" — the year marker, rendered as the card kicker. */
+  /** "At 2 years" … "By 5 years" — the year marker, rendered as the card kicker. */
   kicker: string;
   title: string;
   body: string;
@@ -160,12 +160,12 @@ export const GROWTH_ARC: readonly GrowthStage[] = [
     body: "Your child points, names, and repeats. Lumi answers in short words they already own, sings the rhymes you grew up with, and starts remembering which words they know.",
   },
   {
-    kicker: "At 3",
+    kicker: "At 3 years",
     title: "Asking why, and why again.",
     body: "Why is the sky blue? Lumi answers the fourth why with the same patience as the first, then asks one back. Every answered why teaches your child that asking is worth it.",
   },
   {
-    kicker: "At 4",
+    kicker: "At 4 years",
     title: "Playing with ideas.",
     body: "Thinking games, counting the apples a squirrel ran off with, naming a big feeling instead of hiding it. Lumi remembers where your child stopped yesterday and starts one small step further.",
   },
