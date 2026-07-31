@@ -976,7 +976,18 @@ simply the wrong logo, so no status check or link crawl would ever flag it.
 
 Fixed with a proper set derived from `public/brand/logo-mark.png`: `src/app/favicon.ico` (multi-size
 16/32/48), `src/app/icon.png` (512, transparent), `src/app/apple-icon.png` (180, **opaque** — iOS
-composites transparency onto black, which would fill the K's counters). Next.js App Router
+composites transparency onto black, which would fill the K's counters).
+
+**SECOND FINDING, from the founder's follow-up "can we use it without white background?"** The first
+version of this fix shipped a white box into every dark tab, because the source asset has a **baked
+white plate**: `public/brand/logo-mark.png` reports `hasAlpha: yes` yet its alpha is fully opaque over
+the original canvas, so the mark sits on a solid white rectangle. **`sips -g hasAlpha` is not proof of
+a clean cutout — composite over a dark background and look.** Stripped with the project's own
+`tools/cutout/keycut` at tolerance 40 (the standing law: no art ships with a baked background), which
+also removes the mark's white keyline because the keyline was contiguous with the plate; the result is
+the blue leaf and orange K on nothing, verified legible at 16px and 32px on both cocoa and white tab
+bars. The iOS tile is plated in footer cocoa `#2A1608` rather than white — brand orange was rejected
+because the orange K vanishes into it, cream because it reads as white. Next.js App Router
 auto-detects all three and emits the link tags; no `metadata.icons` block and no hand-written
 `<head>` markup are involved. Full derivation recipe, including the stdlib-Python ICO packing used
 because this machine has no ImageMagick: `Design/design-system/README.md`.

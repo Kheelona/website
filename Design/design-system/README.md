@@ -239,22 +239,39 @@ automatically (no manual `<head>` markup, no `metadata.icons` block needed):
 | `src/app/icon.png` | 512 | yes | modern browsers, high-DPI tabs |
 | `src/app/apple-icon.png` | 180 | **no** | iOS home screen |
 
-**Derivation, all from `public/brand/logo-mark.png` (300×410, the blue-leaf-and-orange-K mark):**
+**⚠ THE SOURCE ASSET HAS A BAKED WHITE PLATE.** `public/brand/logo-mark.png` (300×410) reports
+`hasAlpha: yes`, but its alpha is fully opaque across the original canvas: the mark sits on a solid
+white rectangle. Composite it over anything that is not white and the plate is obvious — which is how
+the first version of this favicon shipped a white box into every dark browser tab. **`sips -g
+hasAlpha` is not proof of a clean cutout; composite over dark and look.** The design-system copy at
+`Design/design-system/assets/logo-mark.png` is worse: it is still a Figma UI screenshot, not a logo.
+
+So the plate is keycut off first, per the standing law that no art ships with a baked background:
 
 ```bash
-sips --padToHeightWidth 410 410 public/brand/logo-mark.png --out master.png   # square, alpha kept
-for s in 16 32 48 512; do sips -Z $s master.png --out t$s.png; done
-cp t512.png src/app/icon.png
-# apple-icon MUST be opaque: iOS composites transparency onto BLACK, which would
-# put black in the K's counters. A JPEG round-trip flattens onto white.
-sips --padToHeightWidth 410 410 --padColor FFFFFF public/brand/logo-mark.png --out apple-src.png
-sips -Z 180 apple-src.png --out apple-180.png
-sips -s format jpeg apple-180.png --out flat.jpg && sips -s format png flat.jpg --out src/app/apple-icon.png
+# 1. strip the plate with the project's own region-grow key (tools/cutout)
+tools/cutout/keycut public/brand/logo-mark.png cut.png 40      # tol 40 leaves the least edge residue
+# 2. square it, transparent padding, then the tab sizes
+sips --padToHeightWidth 410 410 cut.png --out master.png
+for s in 16 32 48 512; do sips -Z $s master.png --out n$s.png; done
+cp n512.png src/app/icon.png
+# 3. apple-icon MUST be opaque — iOS composites transparency onto BLACK, which would fill
+#    the K's counters. Plate it in FOOTER COCOA #2A1608, never white (founder, 2026-07-31).
+sips --padToHeightWidth 410 410 --padColor 2A1608 cut.png --out ap.png
+sips -Z 180 ap.png --out ap180.png
+sips -s format jpeg ap180.png --out flat.jpg && sips -s format png flat.jpg --out src/app/apple-icon.png
 ```
 
 The `.ico` is a multi-size container packed with stdlib Python (no ImageMagick on this machine):
 ICONDIR + one ICONDIRENTRY per size + embedded PNG payloads, which every current browser reads.
-The recipe is in `docs/qa-report.md` under the favicon entry if it needs rebuilding.
+Recipe repeated in `docs/qa-report.md` under the favicon entry.
 
-**Transparent for the tab icons on purpose**: the mark carries its own white outline, so it reads on
-both dark and light tab bars. Do not add a coloured plate behind it.
+**Transparent for the tab icons, cocoa for the iOS tile.** Keycutting the plate also removes the
+mark's white keyline, because the keyline was contiguous with it — the result is the blue leaf and
+orange K on nothing, which reads correctly on both dark and light tab bars. **Never plate the tab
+icons**, and never plate the iOS tile in brand orange: the orange K disappears into it.
+
+**Known, not fixed here**: `src/lib/seo.ts` still points the Organization JSON-LD `logo` at the
+plated `public/brand/logo-mark.png`. Harmless (search engines composite logos on white) and left
+alone deliberately, since repointing a schema asset is an SEO-adjacent change nobody asked for.
+Swap it to a keycut master if a transparent brand logo is ever wanted there.
