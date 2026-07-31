@@ -2,6 +2,42 @@
 
 Each item unlocks something specific. Ordered by launch impact.
 
+## 🔵 V6 — the growth-arc content round is BUILT, QA-APPROVED, and ON THE PREVIEW (2026-07-31)
+
+**Two things for you, one of them the only real action on this page.**
+
+| # | What | Why it is yours |
+|---|---|---|
+| **V6-a** | **Review https://website-hdn2.vercel.app and merge `demo-website` → `main`** (22 commits, `1e9550b`) | You asked to merge yourself after review. `main` is untouched at V5, so rollback is doing nothing. |
+| V6-b | **Delete the test rows in Tally** if you submit the form while reviewing | The preview renders the REAL form, so preview submissions are real reservations. |
+
+**What it fixes.** The feedback you relayed — *"it's good that you are teaching, but what will a kid
+who buys this at 2 get when they are 5?"* — was true: the site had no answer anywhere. Now the hero
+leads with it ("A best friend at 2. A head start by 5."), a new Home room walks it year by year
+(At 2 → At 3 → At 4 → By 5, hedged with "Every child grows at their own pace. Lumi follows theirs."),
+and a new FAQ carries the question in parents' own words. The confusing tutor hero is gone but the
+tutor narrative is not — it lives in the comparison, the pacing panel, the new room's closing line,
+and the Google title, per your note.
+
+**Two things worth knowing, because they were wrong on the live site:**
+1. **The old internet FAQ was factually wrong.** It said "No. Lumi plays offline." Your answer set
+   the record: AI mode runs on home WiFi; Kheelu-mode stories and Bluetooth music work offline. Every
+   surface now names the mode, which also makes /playos's "WiFi operated" chip consistent instead of
+   contradictory.
+2. **/privacy described a form that no longer exists** — it listed email and your child's birth
+   month, which the five-field Tally form stopped collecting, and it told parents to leave the list
+   by "replying to any email" they were never sent. Found by the independent content QA, not by us.
+   Fixed to the five real fields with a WhatsApp-or-email exit that works. This is the kind of thing
+   a DPDP complaint is made of, so it is the single most valuable fix in the round.
+
+Also fixed while in there: four **real contrast failures live on kheelona.com today** on Meet Lumi
+(pale blue numerals, grey text on tinted panels) that three earlier accessibility sweeps could not
+see, because the checker skips content that has not faded in yet.
+
+**No decisions needed.** Every word was approved in the spec before it was built (`BUILD-V6.md` §2),
+and the independent QA's verdict is APPROVE (`QA-V6-note.md`). Your V5 open decision — which page
+owns the modes, quotes, audio and FAQ — is still open and still a short job when you want it.
+
 ## ✅ THE GREAT CLEARANCE (2026-07-31) — you answered almost everything in one message
 
 | Gate | Your answer | Now live |
