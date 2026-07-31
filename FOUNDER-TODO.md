@@ -17,6 +17,36 @@ Rollback tag if ever needed: `v5-live-2026-07-31`. Records: `BUILD-V6.md` (spec)
 
 **Nothing on this page is waiting on you for V6.** The whole round is live and verified.
 
+---
+
+## 📋 THE ONLY THINGS STILL WAITING ON YOU (audited 2026-07-31, everything else on this page is closed)
+
+Nothing here blocks the site. It is live, converting, and correct as it stands.
+
+**A. Facts only you have** — each is a one-file edit the moment you say the word:
+1. **The Kheelona+ price.** The last gated commercial fact. Every surface says "pricing announced soon"; a ₹ amount stays forbidden until you set it.
+2. **Toy-safety certificates** — exact names and numbers when testing completes. Reinstates the standards FAQ and lets a badge appear (no badge appears before it is earned).
+3. **Final specs** — battery life, size and weight, materials, **the wake word**, charger details. Three pages currently promise these "before Lumi ships" (/safety, /products/lumi, /setup).
+
+**B. One content decision:**
+4. **Which page owns the shared beats.** Home and Meet Lumi still both carry the modes, the pilot quotes, the audio demos and a near-identical FAQ. Cutting the duplication needs your call on which page owns each; then it is a short job.
+
+**C. Two one-line confirmations:**
+5. **R10-a — Ria reads her /team card once.** Her bio and quote were drafted from her public profile and approved by you, but she has not read them herself.
+6. **R11-b — two de-contracted lines.** The no-contractions rule overrode your published kheelona.ai phrasing in one surviving spot on /safety ("Nothing stays that you cannot delete."). Say the word and the contraction goes back as a sanctioned exception.
+
+**D. Assets, whenever you want them** (the site is complete without all four):
+7. **R9-a real photography** — still the single strongest conversion lever anyone has identified: the plush in a child's hands, a fabric macro, a breathing-motion loop, and where the mic and button sit. Drop them in `~/Downloads`.
+8. **Real testimonial quotes / faces** — your standing decision is to keep the drafted placeholders (V3-a); real ones swap in cleanly whenever.
+9. **R5-a the new logo** — you said you would upload it later. **Now newly relevant: the favicon and app icons were just built from the current mark, so a new logo means one pass to redo the navbar, the icons, the share image and the schema logo together.**
+10. **og.png refresh** with the whisper hero artwork (optional — the current card is accurate, just older art).
+
+**E. Off-site, only you can do:**
+11. **The Play Store listing still showing ₹2,999** (V3-h). It competes with the live pricing in Google's index.
+12. **Investor "backed by" band on /team** — names and logos when you are ready to show them. Note the row is currently labelled "Recognised by" everywhere, because NVIDIA Inception and nasscom are recognition programmes, not backers.
+
+**F. Parked R4 design calls** (from the 2026-07-10 panel; the site ships fine without them, and two have since been overtaken): R4-a reorder Home so safety answers earlier than ~85% scroll depth · R4-c reuse the price band on Home after the compare table · R4-e a founder-credibility strip before the closing CTA.
+
 **Worth doing once on your phone:** open the FAQ on Home. It now works with JavaScript switched
 off, because the answers are in the page rather than being drawn by script — see below.
 
@@ -313,7 +343,7 @@ The design panel review (`docs/design-review-2026-07-10.md`) surfaced these; eac
 - **R4-c. Reuse the price band ("Under ₹4 a day…", "Reserving now does not commit you to buy.") on Home after the compare table** — copy already exists on /products/lumi; this is a placement approval.
 - **R4-d. Hero composition: bring the Lumi plush in next to Robu** — first-time visitors reserve Lumi but meet only the mascot in frame one. Staging change to the founder-blessed hero, so it's yours.
 - **R4-e. Founder strip in the Home finale** — your real credibility (14 patents, Intel) is only on /team; a compact strip before the closing CTA would put humans behind the mic. New Home section, needs your yes.
-- **R4-f. 7 journal hero images** — prompts are ready in `docs/stories-image-prompts.md`; cards use mascot placeholders until these exist.
+- ~~**R4-f. 7 journal hero images**~~ — **DONE 2026-07-31**: all 19 articles carry real photography; zero placeholder cards remain.
 
 
 ## 0. Gemini assets — GENERATED, awaiting ingest (state as of 2026-07-07 night)
@@ -361,16 +391,20 @@ Three real quotes, each with parent name, child age, city, and written consent. 
 - Final specs: battery life, size and weight, materials, the wake word, charger details.
 - These fill the flagged "published before Lumi ships" spots on /safety, /products/lumi, /setup.
 
-## 5. Ship date (unlocks: the FAQ answer + urgency)
-Currently answered honestly as "not announced yet."
+## 5. ✅ DONE 2026-07-31 — Ship date
+**1 September 2026**, published everywhere from `SHIP_DATE_*` constants: both FAQs, the Product
+schema's `availabilityStarts`, llms.txt, pricing.md, and the reserve cards. /privacy and /terms now
+state it too (V6 fixed those two, which had still hedged it).
 
 ## 6. ✅ DONE 2026-07-28 — Contact email
 `hello@kheelona.com`, founder-confirmed, live in the footer and on /contact. The phone number beside
 it on the legacy Wix site was `+91 98765 43210`, the canonical fake Indian number, and is never
 published. If a real phone line appears it needs the same confirmation before it goes on the site.
 
-## 7. The 10 languages list (unlocks: the top AEO answer for India)
-"Which languages does Lumi speak?" currently answers "ten." Naming them is the single best answer-engine content on this product. Send the list.
+## 7. ✅ DONE 2026-07-31 — The languages list
+**Eight named and final** (English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish, French) from
+`LUMI_LANGUAGES`, with the published ceiling kept at "up to 10" so two more slot in with no copy
+change. V6 also caught and fixed the one journal sentence that had flatly claimed ten.
 
 ## 8. GA4 — ✅ DONE 2026-07-28, nothing left for you (unlocks: conversion funnels)
 **Both analytics tools are wired and verified.** Vercel Web Analytics (cookieless) and GA4
@@ -404,14 +438,18 @@ after deploy (V3-g).
 ## 9. Judge the 3D mascot (regenerated 2026-07-07)
 The two-faced v1 was regenerated from cleaned multi-view inputs; the new model (idle animation, single face, sharper texture) is live in the home hero, and a Lumi plush 3D turntable is on /products/lumi. Judge both on http://localhost:3456. Retry credits remain (745 left) if anything bothers you.
 
-## 10. Legal counsel review (launch gate)
-/privacy and /terms are plain-language drafts written to be fair; they must be reviewed by counsel before launch. Both carry TODO flags in code.
+## 10. WAIVED BY YOU 2026-07-31 — Legal counsel review
+You said to remove this gate. Recorded so nobody re-raises it. Worth knowing: V6 rewrote /privacy's
+collection list to match the real five-field form and gave /terms a hold that matches the 500 cap, so
+both pages are more defensible than when this gate was written. The `TODO(counsel-review)` markers
+stay in code as a pointer, not a blocker.
 
 ## 11. Investor "backed by" band (optional, /team)
 Names/logos when you are ready to show them.
 
 ## Known tradeoffs already documented
-- Mobile Lighthouse performance is 85 (desktop 99): the hero character image on simulated slow 4G. Acceptable per blueprint §3; further squeezing possible with a smaller mobile hero render if you want it.
+- ~~Mobile Lighthouse 85~~ — STALE. Fixed by the R9 product-first hero: mobile reads 98-99 on
+  devtools throttling. Simulate-mode medians on this site are a proven measurement artifact (qa-report R11).
 - The finale renders the Tally form instead of the PDF's plain button: deliberate conversion decision, recorded in the copy reference.
 - PDF's teal/terracotta section-label colors were swapped to a darker accent at label sizes: accessibility (WCAG AA) is a locked 90+ gate and won.
 
@@ -421,13 +459,13 @@ Your friend's audit is fully dispositioned (docs/qa-report.md R9). Kheelu now na
 
 - **R9-a. Real photography** (your friend's strongest conversion point: "renders build the vibe; real photography builds the purchase decision"). Shot list, in priority order: (1) the plush in a child's hands — scale; (2) fabric/texture macro; (3) a short loop of the breathing motion (phone video is fine); (4) where the mic and button sit. When files land in ~/Downloads, Claude builds a "the real thing" strip on /products/lumi and swaps the trust moments on Home.
 - **R9-b. Testimonial faces** — the three pilot quotes are live but anonymous. One real first name + photo (or a 20-second parent video) with written consent turns the weakest trust signal into the strongest. Ties into existing item 3.
-- **R9-c. Kheelu voice check** — Kheelu's speech lines (list: docs/copy-reference.md R9) were approved in the plan, but read them once on the live page; wording tweaks are one-line changes.
+- ~~**R9-c. Kheelu voice check**~~ — **CLOSED 2026-07-31**: your V4 merge order also closed the Kheelu-line gate (V3-d), so every line ships as reviewed. The one new V6 line ("From first words to big ideas. I'm there.") you signed off at spec review.
 - Resolved this round: the mascot's public name is **Kheelu** (your card); urgency = "first 500 units at ₹4,999" (your number, now on hero/finale/mid-page).
 
 ## R10 (2026-07-11) — one item for you
 - **R10-a. Ria's sign-off on her card**: bio + quote were drafted from her public profile and approved by you in the plan; have Ria read her card on /team once — any wording change is a one-line edit. Also say the word if you want a different photo crop.
 
 ## R11 (2026-07-11) — two items for you
-- **R11-a. Read the two new pages live**: the Home hero now demonstrates Lumi with the moon exchange (desktop shows it typing in; phones show it settled), and /playos is the platform story (family renders, the real Magic Box photo, six safety layers, the "brain keeps growing" note). Everything is adapted from your published kheelona.ai copy — flag any line you want tuned.
+- ~~**R11-a. Read the two new pages live**~~ — **SUPERSEDED**: that Home hero (the moon exchange) was replaced by V4's tutor hero and then V6's outcome hero; the moon exchange now lives on /products/lumi. /playos was rebuilt for investors in V4. Nothing to check here.
 - **R11-b. Two de-contracted lines**: the voice gate (no contractions outside Kheelu) outranked your published .ai phrasing in two spots — "whether it is safe" (Home safety callout) and "Nothing stays that you cannot delete." (/safety). If you prefer the original contractions as sanctioned exceptions, say so and they go back in one line each.
 - Also for your eyes: Ria's photo is re-cut on a pale lavender background (the checkerboard in the source file was baked-in fake transparency); her card sign-off (R10-a) still stands.

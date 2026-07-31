@@ -220,7 +220,8 @@
     {
       "id": "claims-shipdate",
       "desc": "Ship date pending",
-      "status": "open"
+      "status": "resolved",
+      "resolution": "2026-07-31: the founder published it \u2014 1 September 2026. Rendered from SHIP_DATE_TEXT/SHIP_DATE_ISO everywhere (both FAQs, Product schema availabilityStarts, llms.txt, pricing.md, reserve cards) and V6 fixed /privacy and /terms, which had still hedged it."
     },
     {
       "id": "claims-contact",
