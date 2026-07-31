@@ -1,6 +1,6 @@
 # BUILD-V6 — the growth-arc content round (2026-07-31)
 
-> **STATUS: SPEC AWAITING FOUNDER SIGN-OFF.** Built and reviewed on `demo-website`; the founder
+> **STATUS: APPROVED AS WRITTEN (founder, 2026-07-31) — IN BUILD on `demo-website`.** The founder
 > merges to `main` after review (their instruction for this round, same shape as V4/V5). Where this
 > spec conflicts with BUILD-V5, THIS SPEC WINS; V5's laws (§8.23) and V4's §0 laws still bind
 > except where a decision below supersedes one. Approach approved by the founder 2026-07-31:
@@ -295,8 +295,8 @@ connectivity law), `docs/project-state.json` (`last_handoff`), `CLAUDE.md` state
 `Design/design-system/` note for the GrowthArc pattern (per the design-system-as-source-of-truth
 process note).
 
-## §7 Open founder picks (answer at spec review; everything else is licensed)
+## §7 Founder picks — ANSWERED at spec review (2026-07-31, spec approved as written)
 
-1. **Kheelu say line for the growth room** — candidate 1, 2, or 3 (D2). CMO recommends 3.
-2. **Home metadata title** — candidate 1 or 2 (D10). CMO recommends 1.
-3. **"favorite" → "favourite"** in the journal (D9b) — flag only; say if US spelling was deliberate.
+1. **Kheelu say line for the growth room**: candidate 3 — `From first words to big ideas. I'm there.` (41 chars). Sign-off given; the line ships.
+2. **Home metadata title**: candidate 1 — `Lumi: the screen-free AI toy with a tutor inside, ages 2 to 5 | Kheelona`.
+3. **"favorite" → "favourite"** in the journal (D9b): normalize to en-IN.
