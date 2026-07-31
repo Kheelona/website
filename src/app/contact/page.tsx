@@ -21,13 +21,9 @@ export const metadata: Metadata = {
 /* /contact (2026-07-28, founder-requested: the legacy site had this route and
    it must keep working).
  *
- * Written around a hard constraint: the ONLY contact email we have is the one
- * the old Wix site published, and it sat directly beside "+91 98765 43210" —
- * the canonical fake Indian phone number. That tells us the block was scaffold
- * copy, not verified detail, so neither the number nor the address is repeated
- * here on trust. `CONTACT_EMAIL` in config/site is null until the founder
- * confirms which inbox is actually monitored (gate claims-contact); the page is
- * built to light up the moment it is set, and reads correctly without it.
+ * `CONTACT_EMAIL` is the founder-confirmed monitored inbox (2026-07-28). The
+ * old Wix phone number beside it ("+91 98765 43210", the canonical fake Indian
+ * number) was scaffold copy and is never published (see config/site).
  *
  * A contact page that routes a worried parent to a dead inbox is worse than one
  * that routes them somewhere a human actually is. So every route below is one

@@ -14,13 +14,9 @@ describe("RecognitionStrip", () => {
     expect(screen.getByText("Backed by")).toBeInTheDocument();
   });
 
-  it("omits the safety proofs line by default and shows it when enabled", () => {
-    const { rerender } = render(<RecognitionStrip />);
+  it("renders no safety proofs line (the dead safetyLine prop went in V6-12)", () => {
+    render(<RecognitionStrip />);
+    expect(screen.queryByText(/Wake-word mic/i)).toBeNull();
     expect(screen.queryByRole("link", { name: /See how we built safety in/i })).toBeNull();
-
-    rerender(<RecognitionStrip safetyLine />);
-    expect(screen.getByText(/Wake-word mic/i)).toBeInTheDocument();
-    const link = screen.getByRole("link", { name: /See how we built safety in/i });
-    expect(link).toHaveAttribute("href", "/safety");
   });
 });
