@@ -191,3 +191,14 @@ Rendered through `molecules/PromiseMark` — a fixed positional rotation (so a f
 shape and position 1 is always the same mark site-wide), 36px, fill opacity 0.22, `aria-hidden`.
 In use on: Home's trust room, /safety's data-custody promises, /playos's moat cards, and the reserve
 reassurance strip. Not to be used as background texture or general decoration.
+
+## The growth arc (V6, 2026-07-31)
+
+The year-by-year outcome answer ("At 2 … By 5") is a system pattern, not one-off copy:
+`organisms/GrowthArc` renders `src/lib/growth-arc.ts` — four stage cards on the registry `Card`
+(white, `border-line-soft`), each led by a 13px uppercase `orange-ink` kicker (the site kicker
+law), then the hedge line, then a display line. The cards are STATIC: tilt only, never press/lift
+(a surface that does nothing when tapped gets no press feedback). The band endpoints derive from
+`LUMI_AGES` via `lumiAgeEndpoints()` and are guard-tested — never hand-type "At 2"/"By 5" in a new
+surface; import the data. New year-staged sections must compose `GrowthArc` or extend its data
+module rather than hand-rolling the shape.

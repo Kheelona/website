@@ -263,3 +263,51 @@ the founder-supplied MP3's filename (the TTS generation prompt) says four, and t
 job is to match the audio. Also the better number for ages 2 to 5. Flagged to the founder. The
 knight clip's filename truncates before "Choose one." (a filename length limit, mid-sentence);
 the transcript keeps the doc's full line pending one listen-through.
+
+## V6 — the growth-arc content round (2026-07-31, BUILD-V6.md approved as written)
+
+Drafted by the Joanna Wiebe chief-content-writer persona (conversion method), CMO-edited, founder-
+approved verbatim in the spec. Full draft package with per-claim provenance: the session scratchpad
+`joanna-copy-v6.md`; the spec §2 is the document of record. Licensed this round (founder question
+batch, 2026-07-31): (Q3) AI mode needs home WiFi, Kheelu-mode stories and Bluetooth music work
+offline — the previous flat "No. Lumi plays offline" FAQ answer was WRONG and is retired site-wide;
+(Q4) the SOFT school-readiness frame ("the words, numbers, and confidence that walk into their
+first classroom with them") — no skill guarantees.
+
+- **Hero (D1)**: "A best friend at 2. / A head start by 5." — founder-drafted at the question
+  batch, shipped unchanged (Joanna: "no alternative beat its specificity"). Sub composes published
+  behaviour only. The tutor idea moved to Compare + PacePanel + the arc's closing line + the Home
+  metadata title (founder note on Q2: keep the tutor narrative alive off-hero).
+- **Growth arc (D2)**: every stage card traces to published copy — At 2 (LumiModes AI card +
+  loop step 2 + rhymes), At 3 (PacePanel fourth-why + "asks one back"), At 4 (AudioMoments
+  transcripts + Feelings "Grumpy" + PacePanel pick-up-tomorrow), By 5 (serve-and-return close +
+  the journal's "a child who expects to be heard" + the licensed soft frame). Hedge line
+  pre-empts "every child is different". Kheelu say line for the room founder-picked at spec
+  review: "From first words to big ideas. I'm there." (41 chars).
+- **New Home FAQ (D3)**: the question is the parents' feedback nearly verbatim; the answer closes
+  on checkable proof (the app's word counting, published in ParentAppSection).
+- **Mode-precise connectivity (D4, six surfaces)**: Home FAQ, /products/lumi FAQ, KheeluOrbit
+  train card, LumiModes AI card ("It runs on your home WiFi." mirrors Kheelu mode's "It works
+  offline."), llms.txt bullet, DOES-grid "Offline adventures". pricing.md checked — already
+  mode-precise, untouched.
+- **/safety dedup (D7)**: the accordion's near-duplicate of the flagship answer became "Will Lumi
+  replace time with me?" — the dependence anxiety no page answered; every sentence composes
+  published facts (one-thing-together-daily, quiet hours, grown-up holds the keys). Home's
+  AI-toy-safety answer now opens with the flagship's verdict ("Not all of them are") so the two
+  pages agree in substance.
+- **Legal ship-date (D8)**: /privacy and /terms now render the published 1 September 2026 date
+  from `SHIP_DATE_TEXT` with an explicit change-notification promise; the hold promise
+  strengthened deliberately ("your ₹4,999 hold stays exactly as it is") — counsel review was
+  founder-waived 2026-07-31, recorded for the next counsel pass.
+- **Journal (D9)**: "in 10 home languages" → "in up to 10" (ceiling restored); the flagship
+  opener's band aligned to 2 to 5 ("second and fifth birthday" — the author's observation, not a
+  cited figure; slug untouched, it is linked from Home); "favorite" → "favourite" (en-IN,
+  founder-approved). The WHO/AAP "aged 3 to 6" sleep citation is deliberately NOT touched.
+- **Metadata (D10)**: Home title founder-picked ("Lumi: the screen-free AI toy with a tutor
+  inside, ages 2 to 5 | Kheelona"); root default title verb "learns" → "grows" so one growth verb
+  runs through hero, root title, and Home FAQ 3.
+- **Price normalization (D11)**: FinaleCTA lede = `CAP_LINE + PRICE_HOLD_LINE` exactly; the hold
+  sentence became a constant (it had three hand-typed copies).
+- **Languages as outcome (D6)**: "A child who can wonder in their own words wonders more" is
+  published verbatim (/playos moat); the bilingual-retention clause is the linked article's own
+  thesis; the link targets the journal page that ranks #1 in India for the query.

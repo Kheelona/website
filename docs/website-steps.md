@@ -588,3 +588,47 @@ missed.
 of this session and 2.31s at the end. A control build with the round's hero changes reverted measured
 **2.31s** — identical. The delta was environment drift, not the change. When a perf number moves,
 build the control before believing the story.
+
+### 8.24 V6 GROWTH-ARC CONTENT ROUND (2026-07-31, spec BUILD-V6.md — founder-approved as written)
+
+Spec + verbatim copy: `docs/revamp-2026-07/BUILD-V6.md` (plan: `PLAN-V6.md`). The round exists
+because parents who saw the live site asked "what will a kid who buys this at 2 GET at 5?" and the
+site had no answer, and because the tutor hero confused readers. Chief-content-writer persona:
+Joanna Wiebe / conversion method (customer language, benefit-led, objections answered head-on).
+
+**8.24-1 AN OFFLINE CLAIM NAMES ITS MODE.** Founder-licensed fact (2026-07-31): open conversation
+(AI mode) runs on home WiFi; Kheelu-mode stories and lessons and Bluetooth music work offline. No
+surface may state a blanket "works offline" or "no internet needed" — the old flat "No" in the
+internet FAQ was factually wrong and a post-purchase complaint in waiting. The precise admission
+("For open conversation, yes…") is deliberately the FIRST clause: an honest yes converts better
+than a broad claim a parent later catches. This also made the /playos "WiFi operated" chip
+consistent instead of contradictory (inventory inconsistency #2, closed).
+
+**8.24-2 THE OUTCOME ANSWER LIVES IN ONE PLACE AND DERIVES FROM `LUMI_AGES`.** The year-by-year
+answer ("At 2 … By 5") is data in `src/lib/growth-arc.ts`, rendered by `organisms/GrowthArc`
+(Home room `id="growth"`) and echoed once, verbatim, after `/products/lumi`'s PacePanel. The band
+endpoints parse from `LUMI_AGES` via `lumiAgeEndpoints()` — the hero H1, the arc eyebrow, the
+kickers, and the PacePanel echo all render from it, and `growth-arc.test.ts` fails if the kickers
+drift from the constant. Outcome claims in the arc trace to published facts plus the founder-licensed
+SOFT school frame ("walks into their first classroom with them") — no skill guarantees, ever.
+The old hero's tutor idea lives on in exactly four places (Compare's display line, PacePanel,
+the arc's closing line, the Home metadata title); adding a fifth is a review flag.
+
+**8.24-3 A REPEATED FACT REPEATS VERBATIM.** Three paraphrases of one price read like three offers.
+Price/cap/hold facts render only from `CAP_LINE`, `PRICE_CAPTION`, and `PRICE_HOLD_LINE` (new);
+the FinaleCTA lede is exactly `CAP_LINE + PRICE_HOLD_LINE`. `LANGUAGES_LINE` now DERIVES from
+`LUMI_LANGUAGES` (one source; `test/config-copy.test.ts` guards both). Paraphrasing any of these
+in new copy is a review flag.
+
+**8.24-4 REGISTRY ADDITIONS.** `GrowthArc` joins the shared-organism registry (compose it, do not
+hand-roll year-stage cards). Its cards are STATIC: tilt only, no press/lift (8.23-1 corollary).
+
+**8.24-5 HARNESS NOTES (from re-building the §8.23 harness this round).** (a) Lazy images need
+DWELL, not just scroll: a fast scroll pass loaded 8/19 story JPGs; ~400ms per 0.8-viewport step
+loads all. (b) Await only VISIBLE images — lazy img tags inside display:none containers never fire
+load/error and burn the whole decode cap; filter by checkVisibility(). (c) The Tally iframe NEVER
+paints in the beyond-viewport region of full-page captures (Chromium behaviour for cross-origin
+iframes) — judge the reserve form from an in-viewport clip, never from a full-page shot.
+(d) Pages taller than ~16384 CSS px hit Chrome's texture cap; capture at a reduced
+deviceScaleFactor so nothing clips. Harness: session scratchpad `shot.mjs` (§8.23 records the
+recipe if the scratchpad is gone).
