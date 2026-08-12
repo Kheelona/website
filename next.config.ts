@@ -28,6 +28,20 @@ const nextConfig: NextConfig = {
          product slugs never contain a dot; asset filenames always do. */
       { source: "/product/:slug([^.]+)", destination: "/products/lumi", permanent: true },
       { source: "/shop", destination: "/products/lumi", permanent: true },
+      /* Wix listing pages. `/category/all-products` was still taking real
+         landings; the catch-all covers the sibling category slugs we cannot
+         enumerate. Same `[^.]+` guard as `/product/` above — there is no
+         public/category/ today, but a future asset folder must not be able to
+         disappear behind this line (§8.21-b). */
+      { source: "/category/all-products", destination: "/products/lumi", permanent: true },
+      { source: "/category/:slug([^.]+)", destination: "/products/lumi", permanent: true },
+      /* The Wix theme published an accessibility statement, and two weeks of
+         Ahrefs data say people still land on it: 19 entrances, 10.8% of ALL
+         site entries, second only to the home page, every one of them hitting a
+         404. Founder's call on the destination (2026-08-12): the product page,
+         so the traffic lands somewhere that converts. If a real statement is
+         ever written, it replaces this line. */
+      { source: "/accessibility-statement", destination: "/products/lumi", permanent: true },
       { source: "/blog", destination: "/stories", permanent: true },
       { source: "/blog/:slug*", destination: "/stories", permanent: true },
       { source: "/about", destination: "/team", permanent: true },

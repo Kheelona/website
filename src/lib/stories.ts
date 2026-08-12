@@ -122,3 +122,59 @@ export const STORIES: Story[] = [...CORE, ...EXPANSION];
 export function getStory(slug: string) {
   return STORIES.find((s) => s.slug === slug);
 }
+
+/** The journal in reading order: grouped by theme, original order kept inside
+ *  each group, themes in the order they first appear. Pure derivation of
+ *  STORIES, so adding an article cannot make it drift. */
+const BY_THEME: Story[] = (() => {
+  const themes = [...new Set(STORIES.map((s) => s.theme))];
+  return themes.flatMap((theme) => STORIES.filter((s) => s.theme === theme));
+})();
+
+/** The three articles to offer at the foot of a piece.
+ *
+ *  WHY THIS EXISTS (2026-08-12). Every article was a dead end. Fifteen of the
+ *  nineteen had exactly ONE incoming internal link, all of them from /stories,
+ *  and no article linked to any other — so crawl equity pooled on Home and
+ *  never reached the pages the journal is written to rank. Ahrefs flagged it as
+ *  "only one dofollow incoming internal link"; a crawl of the live sitemap
+ *  confirmed the shape exactly.
+ *
+ *  It is a RING over the theme-sorted journal: each article offers the one
+ *  before it and the next two after it, wrapping at the ends. That one decision
+ *  buys three properties that matter more than they look:
+ *
+ *  1. **Even coverage, by construction.** If everyone offers three, everyone is
+ *     offered by exactly three. No article can be starved, which is the whole
+ *     defect. The obvious design — "same theme first, then fill" — was written
+ *     first and FAILED here: articles in the four large themes filled all three
+ *     slots from their own theme and never reached the fill, so "Safety" and
+ *     "Languages at home", which hold one article each, ended up with ZERO
+ *     incoming links. The guard in test/internal-links.test.ts caught it.
+ *  2. **Theme relevance, without theme prisons.** Neighbours in a theme-sorted
+ *     list are nearly always same-theme, so a reader who finished a screen-time
+ *     piece is offered more screen-time pieces. Reaching BACKWARDS by one is
+ *     what makes that hold at the edges: an article at the end of its theme
+ *     group would otherwise look only forwards, into the next theme, and get no
+ *     same-theme offer at all. With the backward step, every article in a theme
+ *     of two or more always has at least one true neighbour. The crossings that
+ *     remain are the feature that stops the journal fragmenting into six
+ *     islands a crawler cannot get between.
+ *  3. **One connected cycle.** Every article is reachable from every other by
+ *     following the block, so a crawler that lands anywhere can walk the lot.
+ *
+ *  Deliberately no randomness. `Math.random` here would hand a different link
+ *  graph to every build, so the internal linking a crawler saw last week would
+ *  not be the one it sees today, and the guard could not prove anything. */
+export function getRelatedStories(slug: string, count = 3): Story[] {
+  const index = BY_THEME.findIndex((s) => s.slug === slug);
+  if (index === -1) return [];
+
+  const n = BY_THEME.length;
+  const wanted = Math.min(count, n - 1);
+  /* One step back, then forward. Every offset is used by every article, so each
+     article is offered by exactly `wanted` others: the coverage guarantee is
+     arithmetic, not a heuristic that happens to work on today's nineteen. */
+  const offsets = [-1, ...Array.from({ length: wanted - 1 }, (_, i) => i + 1)];
+  return offsets.slice(0, wanted).map((offset) => BY_THEME[(index + offset + n) % n]);
+}

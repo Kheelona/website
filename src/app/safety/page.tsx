@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Image from "next/image";
 import { Room } from "@/components/atoms/Room";
 import { RoomsTrack } from "@/components/atoms/RoomsTrack";
@@ -12,14 +11,14 @@ import { Reveal } from "@/components/molecules/Reveal";
 import { Button } from "@/components/atoms/Button";
 import { Faq, type FaqEntry } from "@/components/molecules/Faq";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
-import { graph, faqPage, breadcrumbs } from "@/lib/seo";
+import { graph, faqPage, breadcrumbs, pageMeta } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Are AI toys safe? How Lumi by Kheelona is built to be",
+export const metadata = pageMeta({
+  title: "Are AI toys safe? How Lumi is built to be",
   description:
-    "Wake-word mic, on-device first thinking, a closed library instead of the open internet, and a parent app that shows you every word. How Lumi answers the questions the AI-toy investigations raised.",
-  alternates: { canonical: "/safety" },
-};
+    "How Lumi answers the questions the AI-toy investigations raised: wake-word mic, on-device thinking, no open internet, and a parent app that shows every word.",
+  path: "/safety",
+});
 
 /* Revamp M4 (theme B): /safety rebuilt on the room grammar, and rewritten
    question-led per copy-v2 /SAFETY + research.md (the flagship term is "are

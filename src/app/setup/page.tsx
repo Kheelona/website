@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { Room } from "@/components/atoms/Room";
 import { RoomsTrack } from "@/components/atoms/RoomsTrack";
 import { SectionHeading } from "@/components/molecules/SectionHeading";
@@ -8,14 +7,14 @@ import { Reveal } from "@/components/molecules/Reveal";
 import { PhoneFrame } from "@/components/molecules/PhoneFrame";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { SETUP_STEPS } from "@/lib/setup-steps";
-import { graph, setupHowTo, breadcrumbs } from "@/lib/seo";
+import { graph, setupHowTo, breadcrumbs, pageMeta } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "Setup: day one with Lumi",
   description:
     "How simple day one will be: charge Lumi, open the parent app, set your languages and topics, and let your child say hello.",
-  alternates: { canonical: "/setup" },
-};
+  path: "/setup",
+});
 
 /* Revamp M4 (theme B): hero on the backdrop + rooms, narrated by the
    persistent KheeluGuide (the old per-section KheeluSays bubble is gone).

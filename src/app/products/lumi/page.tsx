@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { ColorwayPicker } from "./_components/ColorwayPicker";
 import { PacePanel } from "./_components/PacePanel";
@@ -18,19 +17,21 @@ import { KheelonaPlusBand } from "@/components/molecules/KheelonaPlusBand";
 import { FootnotesRow, V3_FOOTNOTES, Footnote } from "@/components/molecules/FootnotesRow";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { LumiModes } from "@/components/organisms/LumiModes";
-import { graph, faqPage, breadcrumbs, LUMI_PRODUCT } from "@/lib/seo";
+import { graph, faqPage, breadcrumbs, LUMI_PRODUCT, pageMeta } from "@/lib/seo";
 import { ParentQuotes } from "@/components/organisms/ParentQuotes";
 import { PREORDER_HREF, RESERVE_LABEL, PRICE_CAPTION, LAUNCH_PRICE, LATER_PRICE } from "@/config/site";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   /* V4 CMO pass (keywords-v3.md): "talking toy" is the head term the India
      SERP actually trades in — the old title said "talking plush friend",
-     which no parent types. */
-  title: "Meet Lumi by Kheelona: the talking toy that teaches, ages 2 to 5",
+     which no parent types. "by Kheelona" dropped 2026-08-12: the `· Kheelona`
+     template appends the brand already, and printing it twice was the only
+     reason this ran 75 characters. */
+  title: "Meet Lumi: the talking toy that teaches, ages 2 to 5",
   description:
-    "Lumi is a screen-free talking toy for ages 2 to 5. It listens, answers, then asks the next question, and slips learning into the play. Reserve at ₹4,999, no payment now.",
-  alternates: { canonical: "/products/lumi" },
-};
+    "A screen-free talking toy for ages 2 to 5. Lumi listens, answers, then asks the next question, slipping learning into play. Reserve at ₹4,999, no payment now.",
+  path: "/products/lumi",
+});
 
 /* Revamp M3 (theme B): the Lumi page on the room grammar. Copy: copy-v2
    /products/lumi (provenance-tagged there); guide say lines GATED:kheelu-line.

@@ -7,9 +7,10 @@ import { RoomsTrack } from "@/components/atoms/RoomsTrack";
 import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { PageHero } from "@/components/templates/PageHero";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
-import { STORIES, getStory } from "@/lib/stories";
+import { ReadNext } from "@/components/organisms/ReadNext";
+import { STORIES, getStory, getRelatedStories } from "@/lib/stories";
 import { JOURNAL_REVIEWED } from "@/config/site";
-import { graph, breadcrumbs, SITE_URL } from "@/lib/seo";
+import { graph, breadcrumbs, SITE_URL, pageMeta } from "@/lib/seo";
 
 export function generateStaticParams() {
   return STORIES.map((s) => ({ slug: s.slug }));
@@ -22,11 +23,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const story = getStory((await params).slug);
   if (!story) return {};
-  return {
+  return pageMeta({
     title: story.title,
     description: story.description,
-    alternates: { canonical: `/stories/${story.slug}` },
-  };
+    path: `/stories/${story.slug}`,
+  });
 }
 
 /* Revamp M4 (theme B): the article reads inside one white room. No guide
@@ -146,6 +147,14 @@ export default async function StoryPage({
               </p>
             </div>
           </article>
+        </Room>
+
+        {/* Structural internal linking (2026-08-12). Cool, not cream: the
+            article room above ends on a cream Kheelu box, and cream on cream
+            would read as one continuous panel. No `say` line — every Kheelu
+            line is founder-gated and this change should not open that gate. */}
+        <Room fill="cool">
+          <ReadNext stories={getRelatedStories(story.slug)} />
         </Room>
 
         <Room

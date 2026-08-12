@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Room } from "@/components/atoms/Room";
@@ -12,16 +11,16 @@ import { Reveal } from "@/components/molecules/Reveal";
 import { PromiseMark } from "@/components/molecules/PromiseMark";
 import { ArchitectureStack, type ArchLayer } from "@/components/organisms/ArchitectureStack";
 import { RecognitionStrip } from "@/components/organisms/RecognitionStrip";
-import { graph, faqPage, breadcrumbs } from "@/lib/seo";
+import { graph, faqPage, breadcrumbs, pageMeta } from "@/lib/seo";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { LUMI_AGES, PLATFORM_AGES } from "@/config/site";
 
-export const metadata: Metadata = {
-  title: "PlayOS by Kheelona: one platform for childhood, ages 2 to 14",
+export const metadata = pageMeta({
+  title: "PlayOS: one platform for childhood, ages 2 to 14",
   description:
-    "PlayOS is the platform under every Kheelona friend: a child-only voice brain with safety on both doors, up to 10 home languages, and one memory that travels across ages 2 to 14. Lumi is the first body it lives in.",
-  alternates: { canonical: "/playos" },
-};
+    "The platform under every Kheelona friend: a child-only voice brain, safety on both doors, up to 10 home languages, and one memory that travels from age 2 to 14.",
+  path: "/playos",
+});
 
 /* V4 rebuild (D6, team feedback 2026-07-30): this page now speaks to the VCs
    the founders are reaching out to — the vision, the moat, and the depth of
