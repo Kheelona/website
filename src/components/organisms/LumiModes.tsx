@@ -73,7 +73,7 @@ export function LumiModes({
                 <p className="font-display text-[17px] font-extrabold text-ink-head">
                   {m.short}
                 </p>
-                <p className="mt-0.5 text-[13px] font-bold uppercase tracking-wide text-ink-muted">
+                <p className="mt-0.5 text-[13px] font-bold uppercase tracking-wide text-orange-ink">
                   {m.mode}
                 </p>
               </li>
@@ -103,7 +103,7 @@ export function LumiModes({
               title={m.heading}
               titleClassName="mb-1 font-display text-[22px] font-extrabold text-ink-head"
             >
-              <p className="mb-3 text-[13px] font-bold uppercase tracking-wide text-ink-muted">
+              <p className="mb-3 text-[13px] font-bold uppercase tracking-wide text-orange-ink">
                 {m.mode}
               </p>
               <p className="text-[16px]">{m.body}</p>

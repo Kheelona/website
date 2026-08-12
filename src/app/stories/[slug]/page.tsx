@@ -87,7 +87,7 @@ export default async function StoryPage({
             title={story.title}
             titleClassName="mb-3"
           />
-          <p className="text-[13px] font-semibold uppercase tracking-wide text-ink-muted">
+          <p className="text-[13px] font-semibold uppercase tracking-wide text-orange-ink">
             <span className="font-medium normal-case tracking-normal">
               By {story.author}
             </span>

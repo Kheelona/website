@@ -105,7 +105,7 @@ export function ArchitectureStack({
           aria-hidden="true"
           className="h-[2px] w-full rounded-full bg-gradient-to-r from-blue/50 via-blue/20 to-blue/50 sm:w-auto sm:min-w-6 sm:flex-1"
         />
-        <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-ink-muted sm:shrink-0">
+        <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-orange-ink sm:shrink-0">
           What we build underneath
         </p>
       </div>

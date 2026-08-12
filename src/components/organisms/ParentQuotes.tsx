@@ -68,7 +68,7 @@ export function ParentQuotes({
                 <p className="font-display text-[16px] font-extrabold text-ink-head">
                   {q.who}
                 </p>
-                <p className="text-[13px] font-semibold uppercase tracking-wide text-ink-muted">
+                <p className="text-[13px] font-semibold uppercase tracking-wide text-orange-ink">
                   {q.meta}
                 </p>
               </Card>

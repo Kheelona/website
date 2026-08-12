@@ -40,11 +40,15 @@ export function RecognitionStrip({
   const content = (
     <>
       <Reveal className="flex flex-wrap items-center gap-x-6 gap-y-4">
-          {/* R11: the muted inline variant of the shared kicker (audit: this
-              was the one hand-rolled copy of Eyebrow's classes) */}
-          <Eyebrow color="text-ink-muted" className="mb-0">
-            {label}
-          </Eyebrow>
+          {/* The shared kicker, inline (mb-0) but otherwise stock. The muted
+              override this used to carry was the LIVE contrast failure on
+              /playos: ink-muted #727272 measures 4.37:1 on the cool wash
+              #eaf6fc, against 4.5:1. It also broke §8.24-7, which has said
+              since 2026-07-31 that every 12 to 13px uppercase label is
+              orange-ink. Passing no colour is the fix, because Eyebrow already
+              defaults to orange-ink — 4.83:1 on cool, and it clears 4.5:1 on
+              all four washes, which is the whole reason that token exists. */}
+          <Eyebrow className="mb-0">{label}</Eyebrow>
           <ul className="flex flex-wrap items-center gap-3">
             {ENTRIES.map((e) => (
               <li

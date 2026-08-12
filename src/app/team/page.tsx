@@ -197,7 +197,7 @@ export default function TeamPage() {
                           <LinkedInIcon />
                         </a>
                       </div>
-                      <p className="mt-1 text-[13px] font-bold uppercase tracking-[0.05em] text-ink-muted">
+                      <p className="mt-1 text-[13px] font-bold uppercase tracking-[0.05em] text-orange-ink">
                         {f.role} <span className="font-semibold">· {f.tag}</span>
                       </p>
                       <p className="mt-3 max-w-[68ch] text-[16px] leading-relaxed">

@@ -145,7 +145,7 @@ export default function StoriesPage() {
                         {s.title}
                       </h3>
                       <p className="mb-3 text-[15px] text-ink-muted">{s.description}</p>
-                      <p className="mt-auto text-[13px] font-semibold uppercase tracking-wide text-ink-muted">
+                      <p className="mt-auto text-[13px] font-semibold uppercase tracking-wide text-orange-ink">
                         {s.minutes} minute read
                       </p>
                     </div>

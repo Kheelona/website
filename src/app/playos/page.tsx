@@ -271,7 +271,12 @@ export default function PlayOSPage() {
             <RecognitionStrip bare />
           </Reveal>
           <Reveal className="mt-8">
-            <p className="text-[16px] text-ink-muted">
+            {/* `ink` not `ink-muted`: this room is the cool wash, where muted
+                measures 4.37:1 and fails AA. There is no compliant muted ink
+                for a tinted wash (the palette is ink / ink-head / ink-muted),
+                so the B2B aside loses a little de-emphasis and keeps its
+                readers. Same call V6 made on /products/lumi. */}
+            <p className="text-[16px] text-ink">
               Building on PlayOS, or looking deeper?{" "}
               <a
                 href="https://kheelona.ai"

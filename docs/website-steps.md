@@ -661,3 +661,34 @@ names — renders in `orange-ink` (#b54a0d, the only orange clearing 4.5:1 on ev
 call, 2026-07-31. It replaces the interim dark-ink fix applied when `ink-muted` was caught failing
 contrast on tinted washes (4.31 to 4.37:1): dark ink passed but introduced a second visual language
 for the same kind of label. `ink-muted` remains banned on any tinted wash at that size.
+
+**8.24-7a THE NINE CALL SITES THAT ESCAPED IT (2026-08-12), AND THE TWO THAT WERE LIVE FAILURES.**
+§8.24-7 was applied in V6 to the labels the round touched, and nine others kept `ink-muted`. Two of
+them were failing WCAG AA on kheelona.com: the `RecognitionStrip` "Recognised by" label and the
+kheelona.ai partner line, both on /playos's `cool` room at **4.37:1**. Four things to carry forward:
+
+- **The axe route list is ALL 11 HTML ROUTES, not four.** V6's sweep covered `/`, `/products/lumi`,
+  `/safety`, `/setup`. **`/playos` was never in it**, which is the whole reason a serious failure sat
+  live through three "axe zero" rounds. A sweep that names its routes must name all of them.
+- **`ink-muted` fails on `sun` too, not just `cool`.** Measured: white 4.81, cream 4.53, cool 4.37,
+  sun 4.32. The earlier note said "tinted washes" without naming `sun`. `orange-ink` clears all four
+  (5.32 / 5.01 / 4.83 / 4.77), which is exactly why it can be the one label colour.
+- **A class-string guard is not enough on its own.** `RecognitionStrip` passed
+  `color="text-ink-muted"` into `Eyebrow`, whose `text-[13px] … uppercase` cluster lives in
+  `atoms/Eyebrow.tsx` — so the offending classes and the offending colour never appeared in the same
+  string, and the obvious grep could not see the one site that was actually broken.
+  `test/kicker-language.test.ts` therefore has **two** rules: className token sets, AND any
+  `Eyebrow`/`eyebrowColor` handed `ink-muted`. Both were mutation-tested by reintroducing the real bug
+  and watching them go red. `test/contrast-tokens.test.ts` holds the ratio matrix, reading the inks and
+  `cream`/`cool` from `globals.css` and `sun` from `Room.tsx`'s `FILLS` map, because `sun` is a raw
+  arbitrary value and `white` is not a token at all.
+- **On a tinted wash there is no compliant *muted* ink.** The palette is ink / ink-head / ink-muted, so
+  body copy that needs to sit quietly on `cool` or `sun` uses `ink` and gives up the de-emphasis. That
+  is the V6 precedent from /products/lumi, applied again to /playos's partner line.
+
+For the record on scope: this was reviewed by an independent development QA (which found both guard
+designs above broken as first specified) and a marketing QA (verdict APPROVE, full scope: eyebrows are
+already `orange-ink` site-wide, so the change makes nine stragglers match rather than introducing a
+colour, and `orange-ink` small text cannot compete with the `action` CTA fill). **A text-colour change
+has no SEO or AEO effect, and accessibility is not a direct Google ranking factor** — the reason to fix
+it is that it is a real failure on a page parents read.

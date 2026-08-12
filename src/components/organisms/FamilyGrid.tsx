@@ -89,7 +89,7 @@ function FamilyCardInner({ member: m }: { member: FamilyMember }) {
             {m.name}
           </h3>
           {!m.here && (
-            <span className="rounded-full bg-cream px-2.5 py-1 text-[12px] font-bold uppercase tracking-wide text-ink-muted">
+            <span className="rounded-full bg-cream px-2.5 py-1 text-[12px] font-bold uppercase tracking-wide text-orange-ink">
               Coming soon
             </span>
           )}
