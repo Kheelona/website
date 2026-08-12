@@ -324,3 +324,30 @@ kicker change was colour only. Two provenance notes worth keeping:
   JavaScript (§8.24-6).
 - Small uppercase labels are `orange-ink` everywhere (§8.24-7), founder call. This is a token
   decision, not a copy one; no label text moved.
+
+## SEO keyword round (2026-08-12) — agency keywords, founder-arbitrated
+
+An external SEO agency mapped keywords to five pages. Every placement is a rewording of already
+published facts; **no new claim entered the site**. Three keywords collided with standing laws and
+the founder ruled on each before anything was written:
+
+- **"learning toys for 5 6 year olds"** (mapped to /products/lumi) conflicts with Lumi's locked
+  band (`LUMI_AGES`, 2 to 5). Founder: weave via the family arc. The ages FAQ now says the family
+  that follows "brings learning toys for 5 and 6 year olds onward" — the phrase describes the
+  published pipeline, never Lumi.
+- **"Best learning toys for 3-year-olds"** collides with the no-hype law. Founder: "best" may live
+  in a parents'-voice FAQ question only; the answer makes no best claim (new /products/lumi FAQ).
+- **"unique birthday gift for daughter"** is gendered on a deliberately neutral site. Founder:
+  neutralised to "a unique birthday gift" (new /products/lumi FAQ; "unique" is grounded in the one
+  published mechanism — the toy changes as the child grows — not puffery).
+
+Placements: Home FAQ 1 now reads "screen-free toy … interactive AI toy" (was "screen-free talking
+toy"); Home FAQ 8 opener carries "safe toy"; **"smart toy" was deliberately NOT added to Home** —
+the compare table already serves it seven times as the category Lumi is contrasted against, and
+claiming it for Lumi would undercut that contrast. /playos: "smart toy" (ArchitectureStack lede),
+"developmental toys" (voice-model lede), "AI educational toy" (Own-the-years moat card, naming
+Lumi). /safety: "how it is built" → "how a safe toy is built" (four-rules lede) plus a new
+checklist FAQ carrying "smart toys for toddlers" and "educational toys for kids" (restates the
+journal's what-to-look-for criteria). /team: body is manifesto copy and was left untouched;
+"smart toys for toddlers" went to the title (61 chars with suffix) and "AI educational toy" to the
+description (159). FAQ additions mirror into FAQPage schema automatically (same arrays).

@@ -152,7 +152,9 @@ const MOAT = [
   },
   {
     title: "Own the years",
-    body: `One friend across ages ${PLATFORM_AGES}: the toy, then the speaker, then books that answer back. The memory travels, so families stay.`,
+    /* SEO round 2026-08-12: "AI educational toy" names Lumi, the published
+       first body — the speaker and books keep their own plain names. */
+    body: `One friend across ages ${PLATFORM_AGES}: the AI educational toy, then the speaker, then books that answer back. The memory travels, so families stay.`,
   },
 ] as const;
 
@@ -238,7 +240,7 @@ export default function PlayOSPage() {
             <SectionHeading
               title="Above the water, a toy. Below it, a platform."
               titleClassName="mb-3 max-w-[22ch]"
-              lede="Tap a layer to open it. The toy your child hugs is the smallest part of what we build."
+              lede="Tap a layer to open it. The smart toy your child hugs is the smallest part of what we build."
               ledeClassName="mb-10 max-w-[58ch]"
             />
           </Reveal>
@@ -253,7 +255,7 @@ export default function PlayOSPage() {
             <SectionHeading
               title="The brain keeps growing."
               titleClassName="mb-3 max-w-[20ch]"
-              lede="Kheelona trains its own child-safe voice model, made for toys instead of borrowed from chatbots. It learns only from conversations families separately opt into, every family can withdraw with one tap, and nothing is ever sold. Each consented conversation makes every friend a little smarter."
+              lede="Kheelona trains its own child-safe voice model, made for developmental toys instead of borrowed from chatbots. It learns only from conversations families separately opt into, every family can withdraw with one tap, and nothing is ever sold. Each consented conversation makes every friend a little smarter."
               ledeClassName="mb-8 max-w-[62ch]"
             />
             <p className="mb-8 max-w-[58ch] text-[16px] text-ink">

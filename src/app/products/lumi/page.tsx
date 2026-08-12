@@ -72,7 +72,15 @@ const FAQ_ITEMS: FaqEntry[] = [
   /* V6 D4b (founder-licensed fact): mode-precise. */
   { q: "Does Lumi need the internet?", a: "Only for open conversation: AI mode runs on your home WiFi. Kheelu-mode stories and lessons work offline, and Bluetooth music needs only a paired phone. New content and updates download when you choose." },
   { q: "What languages does Lumi speak?", a: "English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish, and French, with up to ten at launch. Lumi switches mid-sentence, in the languages you speak at home." },
-  { q: "What ages is Lumi for?", a: "Ages 2 to 5. Lumi meets your child where they are, and the family of friends grows with them to 14." },
+  /* SEO round 2026-08-12: the "5 6 year olds" keyword hangs off the family
+     arc at the founder's direction — Lumi's own band stays 2 to 5, and the
+     phrase describes the published pipeline (Kheelu Speaker, ages 5 to 14),
+     never Lumi itself. */
+  { q: "What ages is Lumi for?", a: "Ages 2 to 5. Lumi meets your child where they are, and the family that follows brings learning toys for 5 and 6 year olds onward, growing with them to 14." },
+  /* SEO round 2026-08-12, founder decision: "best" lives in the parents'-voice
+     QUESTION only — the answer makes no best claim, it says what to look for
+     and where Lumi fits. It also carries "AI educational toy" for this page. */
+  { q: "What are the best learning toys for 3-year-olds?", a: "Look for a toy that answers back. At 3, children learn through back-and-forth conversation: questions, stories they can interrupt, words that build on yesterday's words. Lumi is an AI educational toy built around exactly that loop, and it grows with your child from 2 to 5." },
   { q: "Can I read the conversations?", a: "Yes. The full log stays private to you, in the parent app." },
   { q: "Do you sell our data?", a: "No. Never sold, never used to sell your child anything. That is the whole point." },
   { q: "What if my child breaks it?", a: "Lumi is built for small hands and rough days. Warranty details land closer to launch." },
@@ -84,6 +92,12 @@ const FAQ_ITEMS: FaqEntry[] = [
   { q: "Does Lumi need a subscription?", a: "Every Lumi includes 6 months of Kheelona+, the stories, lessons, languages, and the parent app. Lumi's smart features are yours for life, Kheelona+ pricing is announced soon, and nothing renews without you." },
   { q: "What is Kheelona+?", a: "The content and the controls: stories, lessons, language packs, and the parent app that shows you the learning. It is included free for the first 6 months with every Lumi." },
   { q: "Why reserve now?", a: "The first 500 units are ₹4,999. After launch it is ₹9,999. There is no payment today." },
+  /* SEO round 2026-08-12, founder decision: the agency's gendered gift keyword
+     is NEUTRALISED — the site says "your child" everywhere, so the phrase here
+     is "a unique birthday gift", never "for daughter". "Unique" is grounded in
+     one specific, published mechanism (it changes as the child grows), not
+     puffery. */
+  { q: "Is Lumi a good birthday gift?", a: "It is a unique birthday gift in one specific way: it keeps changing. Lumi learns your child's words and grows with them, so the toy at 4 is not the toy they unwrapped at 2. Reserving now holds the launch price of ₹4,999." },
 ];
 
 const JSON_LD = graph(

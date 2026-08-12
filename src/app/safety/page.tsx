@@ -121,6 +121,11 @@ const SAFETY_FAQ: FaqEntry[] = [
   { q: "Will Lumi replace time with me?", a: "No, and it is not built to. Lumi is for the moments your hands are full, not the ones they are not. The parent app gives you one simple thing to do together each day, quiet hours are yours to set, and the grown-up holds the keys, always." },
   { q: "Does Lumi reduce screen time?", a: "That is the point. Lumi has no screen at all. It is a toy that helps you cut screen time: your child talks, listens, and imagines instead of watching." },
   { q: "Can Lumi reach the open internet?", a: "No. Lumi cannot browse or search. Answers come from a closed library built for children, so there are no random videos, no rabbit holes, and no strangers." },
+  /* SEO round 2026-08-12: the checklist restates the published what-to-look-for
+     criteria (the journal's safe-AI-toy piece and the ANSWERS mechanisms above)
+     — nothing here is a new claim. Carries "smart toys for toddlers" and
+     "educational toys for kids" in one parents'-voice entry. */
+  { q: "What should I look for in smart toys for toddlers?", a: "Five things: a microphone that sleeps until a wake word, answers from a closed library instead of the open internet, a conversation log you can read, voice data that stays in your region and is never sold, and replies graded for the age. The same checklist works for educational toys for kids at any age." },
   /* Status-exact, never upgraded: mirrors the STANDARDS chips above. */
   /* The standards FAQ entry was REMOVED 2026-07-31 (founder: no certificate
      received yet, keep it off the FAQ; the status-honest standards room below
@@ -198,7 +203,7 @@ export default function SafetyPage() {
               level="minor"
               title="Careful with their words."
               titleClassName="mb-3"
-              lede="Four rules govern every word Lumi hears and says. They are not settings. They are how it is built."
+              lede="Four rules govern every word Lumi hears and says. They are not settings. They are how a safe toy is built."
               ledeClassName="mb-10 max-w-[58ch]"
             />
           </Reveal>

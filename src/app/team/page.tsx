@@ -11,9 +11,14 @@ import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { graph, breadcrumbs, pageMeta } from "@/lib/seo";
 
 export const metadata = pageMeta({
-  title: "Team: the parents who build",
+  /* SEO round 2026-08-12: /team's body is manifesto copy (the beliefs, the
+     bios) and stuffing product keywords into it would damage it, so this
+     page's two keywords live in the metadata instead — "smart toys for
+     toddlers" in the title (61 chars with suffix, under the 65 guard),
+     "AI educational toy" in the description (159, under 160). */
+  title: "Team: the parents building smart toys for toddlers",
   description:
-    "The people behind Lumi: a CTO with 14 patents filed, a hardware chief who built at Intel, a marketing head who keeps the story honest, and a CEO who owns trust.",
+    "The people behind Lumi, the AI educational toy: a CTO with 14 patents, an Intel hardware chief, a marketing head who keeps it honest, and a CEO who owns trust.",
   path: "/team",
 });
 

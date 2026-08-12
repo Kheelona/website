@@ -54,7 +54,12 @@ export const metadata = pageMeta({
 const HOME_FAQ: FaqEntry[] = [
   {
     q: "What is Lumi?",
-    a: "Lumi is a screen-free talking toy for children aged 2 to 5. Your child speaks to it and it answers, tells stories, sings, and asks questions back. It has no screen at all, it cannot reach the open internet, and every conversation is readable by you in the parent app.",
+    /* SEO round 2026-08-12 (agency keywords, founder-directed): this answer
+       carries "screen-free toy" and "interactive AI toy" exactly; the third
+       Home keyword, "smart toy", is deliberately NOT written here — the
+       compare table already serves it seven times as the category Lumi is
+       contrasted against, and calling Lumi a smart toy would undercut that. */
+    a: "Lumi is a screen-free toy that talks with children aged 2 to 5: your child speaks to it and it answers, tells stories, sings, and asks questions back. It is an interactive AI toy with no screen at all, it cannot reach the open internet, and every conversation is readable by you in the parent app.",
   },
   /* V6 D3: the parents' own question from the feedback that drove this round,
      kept nearly verbatim — the FAQ that mirrors the reader's exact objection
@@ -90,7 +95,7 @@ const HOME_FAQ: FaqEntry[] = [
      so the two pages agree in substance and differ only in length. */
   {
     q: "Is an AI toy safe for a small child?",
-    a: "Not all of them are, and the difference is in how they are built. Lumi wakes to a word and the microphone is off the rest of the time, the first thinking happens on the toy, answers come from a closed library rather than the open internet, and you can read or delete every conversation.",
+    a: "Not all of them are, and what makes a safe toy is how it is built. Lumi wakes to a word and the microphone is off the rest of the time, the first thinking happens on the toy, answers come from a closed library rather than the open internet, and you can read or delete every conversation.",
   },
 ];
 
