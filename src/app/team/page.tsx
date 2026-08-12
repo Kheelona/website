@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Image from "next/image";
 import { Room } from "@/components/atoms/Room";
 import { RoomsTrack } from "@/components/atoms/RoomsTrack";
@@ -9,14 +8,14 @@ import { Reveal } from "@/components/molecules/Reveal";
 import { TiltCard } from "@/components/molecules/TiltCard";
 import { RecognitionStrip } from "@/components/organisms/RecognitionStrip";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
-import { graph, breadcrumbs } from "@/lib/seo";
+import { graph, breadcrumbs, pageMeta } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "Team: the parents who build",
   description:
-    "Meet the people behind Kheelona and Lumi, the screen-free talking AI toy: a CTO with 14 patents filed, a hardware chief who built at Intel, a marketing head who keeps the story honest, and a CEO who owns the trust.",
-  alternates: { canonical: "/team" },
-};
+    "The people behind Lumi: a CTO with 14 patents filed, a hardware chief who built at Intel, a marketing head who keeps the story honest, and a CEO who owns trust.",
+  path: "/team",
+});
 
 /* R7 full-parity rebuild from kheelona.ai/team (founder-published source:
    its content/site.ts TEAM object). Bios adapted to parent voice; facts

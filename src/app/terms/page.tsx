@@ -1,13 +1,13 @@
-import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import { LegalDoc, type LegalSection } from "@/components/templates/LegalDoc";
 import { LAUNCH_PRICE, LATER_PRICE, SHIP_DATE_TEXT } from "@/config/site";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "Terms",
   description:
     "The terms of the Lumi pre-order reservation: what the price hold means, what you are committing to (nothing), and how the list works.",
-  alternates: { canonical: "/terms" },
-};
+  path: "/terms",
+});
 
 /* TODO(counsel-review): plain-language draft per prompt §5.2. This page MUST
    be reviewed by counsel before launch (launch checklist gate). */

@@ -1,13 +1,13 @@
-import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import { LegalDoc, type LegalSection } from "@/components/templates/LegalDoc";
 import { CONTACT_EMAIL, SHIP_DATE_TEXT } from "@/config/site";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "Privacy",
   description:
     "What Kheelona collects when you join the Lumi pre-order list, what we do with it, and the promises we make about your child's data.",
-  alternates: { canonical: "/privacy" },
-};
+  path: "/privacy",
+});
 
 /* TODO(counsel-review): plain-language draft per prompt §5.2. This page MUST
    be reviewed by counsel before launch (launch checklist gate). */

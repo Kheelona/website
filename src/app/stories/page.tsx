@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Room } from "@/components/atoms/Room";
@@ -9,15 +8,15 @@ import { Reveal } from "@/components/molecules/Reveal";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { STORIES } from "@/lib/stories";
 import { PRESS_LIFT } from "@/lib/interactions";
-import { graph, breadcrumbs, SITE_URL } from "@/lib/seo";
+import { graph, breadcrumbs, SITE_URL, pageMeta } from "@/lib/seo";
 import { JOURNAL_REVIEWED } from "@/config/site";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "Stories: raising curious kids",
   description:
     "Honest reads for parents who want more than a screen: brain development, screen-free living, talking toys, and how to judge AI toys for kids.",
-  alternates: { canonical: "/stories" },
-};
+  path: "/stories",
+});
 
 /* Revamp M4 (theme B): the journal on the room grammar, one room per theme.
    Copy: copy-v2 /STORIES. Cards stay tilt-free, because the whole card is

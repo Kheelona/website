@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { Room } from "@/components/atoms/Room";
 import { RoomsTrack } from "@/components/atoms/RoomsTrack";
@@ -8,7 +7,7 @@ import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { AudioMoments } from "@/components/molecules/AudioMoments";
 import { FootnotesRow, Footnote, V3_FOOTNOTES } from "@/components/molecules/FootnotesRow";
 import { Faq, type FaqEntry } from "@/components/molecules/Faq";
-import { graph, faqPage, breadcrumbs, LUMI_PRODUCT } from "@/lib/seo";
+import { graph, faqPage, breadcrumbs, LUMI_PRODUCT, pageMeta } from "@/lib/seo";
 import { AUDIO_MOMENTS } from "@/lib/audio-moments";
 import { RecognitionStrip } from "@/components/organisms/RecognitionStrip";
 import { ParentQuotes } from "@/components/organisms/ParentQuotes";
@@ -33,13 +32,19 @@ import {
   ParentAppSection,
 } from "@/features/home";
 
-export const metadata: Metadata = {
-  title:
-    "Lumi: the screen-free AI toy with a tutor inside, ages 2 to 5 | Kheelona",
+export const metadata = pageMeta({
+  /* 72 characters, and deliberately over Google's ~60-character display budget
+     (founder, 2026-08-12). It is one of exactly four places the tutor narrative
+     is allowed to live (V6), and it carries the head keywords; Google reads the
+     whole title and only clips the visible tail, so the cost is a few pixels of
+     click-through, not rank. The separator is the same dot every other route
+     uses. Home writes its own suffix because the root layout's `%s · Kheelona`
+     template applies to CHILD segments, and this page is the root segment. */
+  title: "Lumi: the screen-free AI toy with a tutor inside, ages 2 to 5 · Kheelona",
   description:
     "A best friend at 2, a head start by 5. The screen-free toy that grows with your child, in the languages you speak at home. Reserve at ₹4,999, no payment now.",
-  alternates: { canonical: "/" },
-};
+  path: "/",
+});
 
 /* The questions parents actually type, answered on the page a search or an
    answer engine lands on first. Straight from the AEO question bank in

@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { Room } from "@/components/atoms/Room";
 import { RoomsTrack } from "@/components/atoms/RoomsTrack";
@@ -8,15 +7,15 @@ import { PageHero } from "@/components/templates/PageHero";
 import { Card } from "@/components/molecules/Card";
 import { Reveal } from "@/components/molecules/Reveal";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
-import { graph, breadcrumbs, SITE_URL } from "@/lib/seo";
+import { graph, breadcrumbs, SITE_URL, pageMeta } from "@/lib/seo";
 import { PREORDER_HREF, RESERVE_LABEL, CONTACT_EMAIL } from "@/config/site";
 
-export const metadata: Metadata = {
-  title: "Contact Kheelona: how to reach the team behind Lumi",
+export const metadata = pageMeta({
+  title: "Contact: how to reach the team behind Lumi",
   description:
-    "How to reach Kheelona about a Lumi reservation, a partnership, or a question about safety and privacy. We are a small team in Bengaluru and we answer our own messages.",
-  alternates: { canonical: "/contact" },
-};
+    "How to reach Kheelona about a Lumi reservation, a partnership, or a safety question. We are a small team in Bengaluru and we answer our own messages.",
+  path: "/contact",
+});
 
 /* /contact (2026-07-28, founder-requested: the legacy site had this route and
    it must keep working).

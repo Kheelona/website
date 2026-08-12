@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { LAUNCH_PRICE, LATER_PRICE, LUMI_AGES, PLATFORM_AGES, CONTACT_EMAIL, SHIP_DATE_ISO } from "@/config/site";
 
 /** Structured data builders (V3 SEO/AEO/GEO pass, 2026-07-28).
@@ -192,6 +193,35 @@ export const LUMI_PRODUCT = {
     description: `${LAUNCH_PRICE} for the first 500 units, ${LATER_PRICE} after launch. No payment is taken at pre-order.`,
   },
 } as const;
+
+/** One source for a route's title, description, canonical and `og:url`.
+ *
+ *  Why this exists (2026-08-12): Next does NOT derive `og:url` from
+ *  `alternates.canonical`. Every page set the canonical and none set the og
+ *  url, so all 29 URLs shipped incomplete Open Graph markup — the whole of
+ *  Ahrefs' "Open Graph tags incomplete" warning, and the reason a shared link
+ *  had no canonical identity of its own. Taking both from ONE `path` argument
+ *  makes it impossible for the canonical and the og url to drift apart, which
+ *  is the registry law (§8.19) applied to metadata.
+ *
+ *  `path` is root-relative ("/", "/products/lumi"); `metadataBase` in the root
+ *  layout resolves it to the apex, which is the canonical host. */
+export function pageMeta({
+  title,
+  description,
+  path,
+}: {
+  title: string;
+  description: string;
+  path: string;
+}): Metadata {
+  return {
+    title,
+    description,
+    alternates: { canonical: path },
+    openGraph: { url: path },
+  };
+}
 
 /** Wraps any set of nodes in one graph with the org and site attached, so every
  *  page contributes to one entity rather than repeating a standalone island. */
