@@ -77,8 +77,11 @@ export default function RefundPage() {
       lede="You can change your mind. This page explains exactly how, and what happens to your money."
       sections={SECTIONS}
       guide="curious"
-      /* GATED:kheelu-line — founder sign-off before merge to master */
-      say="Changed your mind? That is allowed."
+      /* Founder-approved 2026-08-22, with the contraction: Kheelu's quoted
+         speech is the ONE sanctioned contraction zone on this site (his
+         published card voice), and the de-contracted draft read stiffer than
+         he does anywhere else. 33 characters. */
+      say="Changed your mind? That's allowed."
     />
   );
 }

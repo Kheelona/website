@@ -115,16 +115,18 @@ decision depends on. Flagged once for the record, since the founder is a Charter
 their call: reverse charge is unusual on a B2C goods sale, where the seller normally collects under
 forward charge.
 
-Two things still open, neither blocking the store opening: **the two Kheelu lines below need sign-off
-before merge**, and **the real post-dispatch returns and warranty terms must land before the first
-dispatch**, which `/refund` currently and honestly says do not exist yet.
+The Kheelu lines were approved the same day too (see below), so **one thing remains open and it does
+not block the store opening**: the real post-dispatch returns and warranty terms must land before the
+first dispatch, which `/refund` currently and honestly says do not exist yet.
 
-## Kheelu lines added this round, awaiting sign-off
+## Kheelu lines added this round, APPROVED 2026-08-22
 
-Both carry the `GATED:kheelu-line` marker, both under 48 characters:
+- `/refund` — "Changed your mind? That's allowed." (34)
+- `/shipping` — "I'll help pack. Mostly by sitting in the box." (45)
 
-- `/refund` — "Changed your mind? That is allowed."
-- `/shipping` — "I will help pack. Mostly by sitting in the box."
+The founder chose the contracted versions over the drafted ones. The drafts had avoided contractions
+out of habit, but Kheelu's quoted speech is the one place on this site where they are sanctioned, so
+the drafts were stiffer than his own voice. No `GATED:kheelu-line` markers remain from this round.
 
 ## What I would look at next
 

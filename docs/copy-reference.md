@@ -409,10 +409,15 @@ unchanged because it is still exactly true.
   charged" in those words.** A parent staring at a broken payment form assumes the worst, and they are
   right to.
 
-### Kheelu lines added, awaiting founder sign-off (`GATED:kheelu-line`, both under 48 characters)
+### Kheelu lines added, FOUNDER-APPROVED 2026-08-22 (both under the 48-character dock limit)
 
-- `/refund` — "Changed your mind? That is allowed."
-- `/shipping` — "I will help pack. Mostly by sitting in the box."
+- `/refund` — "Changed your mind? That's allowed." (34)
+- `/shipping` — "I'll help pack. Mostly by sitting in the box." (45)
+
+The founder chose the **contracted** wording over the drafts, and was right to: Kheelu's quoted speech
+is the ONE sanctioned contraction zone on this site (his founder-published card voice), and the
+de-contracted drafts read stiffer than he does anywhere else. Worth remembering for the next line
+written for him: the site's no-contractions rule does not reach inside his speech bubble.
 
 ### Two facts founder-answered after the first build (2026-08-22)
 

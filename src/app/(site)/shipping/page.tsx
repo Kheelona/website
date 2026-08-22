@@ -70,8 +70,9 @@ export default function ShippingPage() {
       lede="Where Lumi goes, when it leaves, and what it costs to get to you. Which is nothing extra."
       sections={SECTIONS}
       guide="joy"
-      /* GATED:kheelu-line — founder sign-off before merge to master */
-      say="I will help pack. Mostly by sitting in the box."
+      /* Founder-approved 2026-08-22, same contraction exemption as /refund.
+         44 characters, inside the 48-character dock limit. */
+      say="I'll help pack. Mostly by sitting in the box."
     />
   );
 }

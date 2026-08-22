@@ -80,6 +80,10 @@ warranty terms for after dispatch do not exist yet, because nothing has shipped.
 that in plain words rather than inventing a window, and it must be replaced with the real terms before
 the first Lumi leaves.
 
+**Approved 2026-08-22, nothing further needed:** delivery is included (0f), prices are GST-inclusive
+(0g), and both new Kheelu lines are signed off in their contracted form: `/refund` "Changed your mind?
+That's allowed." and `/shipping` "I'll help pack. Mostly by sitting in the box."
+
 **What is already decided and needs nothing from you:** the ₹499 refundable token, the ₹4,500 balance
 by payment link before dispatch, the 30 September deadline, no unit cap, WhatsApp-only support on
 +91 91875 46483, one Lumi per order, four form fields, and refunds by request within 5 to 7 working

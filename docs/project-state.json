@@ -276,10 +276,11 @@
     {
       "id": "kheelu-lines-store-round-2026-08-22",
       "desc": "Two new Kheelu speech lines need founder sign-off before merge, per the standing GATED:kheelu-line law: /refund \"Changed your mind? That is allowed.\" and /shipping \"I will help pack. Mostly by sitting in the box.\" Both are under the 48-character limit and dock bottom-right.",
-      "status": "open",
+      "status": "resolved",
       "owner": "founder",
       "impact": "Merge gate only. Every other line on the site was signed off the same way.",
-      "see": "docs/checkpoints/preorder-store-2026-08-22.md"
+      "see": "docs/checkpoints/preorder-store-2026-08-22.md",
+      "resolution": "2026-08-22: founder approved both, choosing the contracted wording. Live in the code: /refund \"Changed your mind? That's allowed.\" (34) and /shipping \"I'll help pack. Mostly by sitting in the box.\" (45). Kheelu's quoted speech is the one sanctioned contraction zone, so the de-contracted drafts were stiffer than his voice anywhere else on the site."
     }
   ],
   "last_handoff": {
