@@ -10,7 +10,8 @@
 
 
 The build transplants THIS document verbatim (M2–M4). Provenance tags: **[seed]** =
-`docs/wireframes/2026-07/copy.json` (founder-picked wireframe round, CMO + editor pass) ·
+`docs/wireframes/2026-07/copy.json` (founder-picked wireframe round, CMO + editor pass; **that kit
+was deleted on 2026-08-23** and lives in git history) ·
 **[fact]** = already published on the live site or kheelona.ai (sanctioned) · **[NEW]** = written
 this round from `research.md` · **[GATED:x]** = must not ship until the named gate clears.
 

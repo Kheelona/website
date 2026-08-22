@@ -55,4 +55,19 @@ describe("retired promises stay retired", () => {
       expect(text, `${file} still publishes ${pattern} — ${why}`).not.toMatch(pattern);
     }
   });
+
+  /* Added 2026-08-23, because this scan was scoped to `src/` and the README's
+     OPENING SENTENCE still described the offer as "no payment now" for a day
+     after the store went live. It is the first thing a person reads on GitHub.
+     Only the front door is checked, not the whole file: the bullets further down
+     are dated history and legitimately say what shipped in July. */
+  it("keeps the README's front door honest, not only the app", () => {
+    const readme = readFileSync("README.md", "utf8");
+    const cut = readme.indexOf("### Step 1");
+    expect(cut, "the README's resume protocol moved; re-point this scan").toBeGreaterThan(0);
+    const frontDoor = readme.slice(0, cut);
+    for (const [pattern, why] of RETIRED) {
+      expect(frontDoor, `README's lead still publishes ${pattern} — ${why}`).not.toMatch(pattern);
+    }
+  });
 });

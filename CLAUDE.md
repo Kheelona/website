@@ -130,7 +130,9 @@ repo root. That old app is preserved at the tag **`pre-revamp-2026-07`** and its
   as-is** (FOUNDER-TODO V3-a). Do not re-raise it and do not remove them.
 - **The spec that built this**: `docs/revamp-2026-07/BUILD-V4.md` (the 2026-07-30 team-feedback
   round; wins over BUILD-V3, which wins over `copy-v2.md` and older copy laws). Status and the restart guide: `docs/revamp-2026-07/WORKING.md` — **read it first on any resume,
-  and do not delete it** (an older note said to remove it after founder approval; it is now the
+  and do not delete it** (it is 143 lines since 2026-08-23; the 340 lines of superseded rounds moved
+  to `WORKING-history-2026-07.md` beside it, which is evidence and NOT law — it still says ages 3 to
+  10 under a heading that says *Locked decisions*) (an older note said to remove it after founder approval; it is now the
   site's operating record).
 - **Locked product facts**: Lumi is ages **2 to 5**, the platform arc is **2 to 14** (both "3 to 6"
   and "3 to 10" are dead — render ages from `LUMI_AGES`/`PLATFORM_AGES`). The .com line-up is the
@@ -276,19 +278,25 @@ shortly" state instead of crashing.
 
 ## Docs map
 - `docs/standards/` — BINDING production standards: `PROJECT_STRUCTURE.md`, `COMPONENT_GUIDELINES.md`, and `STRUCTURE-MAP.md` (old→new path translation for the `src/` reorg). See the "Production structure & standards" section above.
-- `docs/project-state.json` — machine-readable status, always current
+- `docs/project-state.json` — machine-readable status, always current. **Live state only since
+  2026-08-23**: 28 closed round records and 17 settled blockers moved verbatim to
+  `docs/checkpoints/closed-rounds.md`, which is the file to search before re-asking the founder
+  anything. The file went from 80K to 28K, and it is step 1 of the resume protocol.
 - `docs/website-steps.md` — blueprint (law; if reality diverges, update it first)
 - `docs/qa-report.md` — sprint logs, Lighthouse, AI-detection verification of all 14 articles
 - `docs/copy-reference.md` — copy provenance + sanctioned deviations
 - `docs/design-review-2026-07-10.md` — R4 panel findings, every item dispositioned (FIXED/FOUNDER/DEFERRED/REJECTED); §8.13 in website-steps.md is the matching spec. 3D QA gotcha: hidden tabs freeze rAF, so the canvas looks dead in background automation tabs — verify with a visible window
 - `docs/stories-image-prompts.md` — HISTORICAL since 2026-07-31: all 19 journal articles are photographed; the doc keeps the style block for any future article's hero prompt
-- **`docs/store-go-live.md`** — THE RUNBOOK for taking the store live once the founder's keys exist.
-  Read it before touching any of that sequence; it is written for a session with no memory of building
-  the store, and it is where the never-yet-run test payment is specified step by step.
+- **`docs/store-go-live.md`** — the runbook for taking the store live, **already executed** on
+  2026-08-22. Kept for the day a key has to be rotated or re-issued, and because it records what the
+  real payment actually proved. It is written for a session with no memory of building the store.
 - `docs/preorder-events.md` — how to run a ₹99 event price: create the tier row, generate the signed
   link with `npm run event-link`, print the QR, and read the event's conversion afterwards.
-- `docs/checkpoints/` — per-phase snapshots. **Latest: `preorder-store-2026-08-22.md`** (the store
-  round). Before it: `go-live-2026-07-28.md` (the launch: the
+- `docs/checkpoints/` — per-phase snapshots. **Latest: `one-tap-and-cleanup-2026-08-23.md`** (one-tap
+  CTAs, the free-text age field, and the cleanup: what was deleted and what was deliberately kept).
+  Before it: `preorder-store-2026-08-22.md` (the store
+  round). Also here: **`closed-rounds.md`**, the 28 pre-store round records and 17 settled blockers
+  that used to bloat `project-state.json`. Before it: `go-live-2026-07-28.md` (the launch: the
   sequence, the three real findings, the live-setup gotchas, and the decisions not to re-litigate).
   Before it: `repo-root-move-2026-07-28.md` (why the app sits at the repo root, and the redirect
   that blanked every product image)
