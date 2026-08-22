@@ -55,6 +55,18 @@ function p(text: string): string {
   return `<p style="margin:0 0 14px;font-size:16px">${text}</p>`;
 }
 
+/** The name to greet someone by.
+ *
+ *  People type their own name in lower case constantly, and the first real
+ *  receipt this store ever sent opened with "Thank you, shweta." Capitalising
+ *  the first letter fixes that; the REST of the name is left exactly as typed,
+ *  because title-casing is where this kind of helper starts mangling
+ *  d'Souza, van der Berg and every name that is not a English first name. */
+function greetingName(fullName: string): string {
+  const first = fullName.trim().split(/\s+/)[0] ?? "";
+  return first.charAt(0).toUpperCase() + first.slice(1);
+}
+
 export type AckInput = {
   order: Pick<PreorderRow, "order_ref" | "parent_name" | "amount_paise" | "address">;
   /** Present when the order still has no delivery address. */
@@ -71,7 +83,7 @@ export type AckInput = {
 export function preorderAckEmail(input: AckInput): Email {
   const { order } = input;
   const paid = formatInr(order.amount_paise);
-  const firstName = order.parent_name.trim().split(/\s+/)[0];
+  const firstName = greetingName(order.parent_name);
   const needsAddress = !order.address;
 
   const addressBlock = needsAddress

@@ -124,3 +124,25 @@ describe("the internal alert", () => {
     expect(email.text).toContain("utm_source");
   });
 });
+
+/* The first real receipt this store sent opened "Thank you, shweta." — she had
+   typed her own name in lower case, which people do constantly. */
+describe("greeting a name as typed", () => {
+  it("capitalises a lower-case first name", () => {
+    const email = preorderAckEmail({ order: { ...order, parent_name: "shweta kiran" } });
+    expect(email.html).toContain("Thank you, Shweta.");
+    expect(email.text).toContain("Thank you, Shweta.");
+  });
+
+  it("leaves the rest of the name alone, because title-casing mangles real names", () => {
+    for (const [typed, greeting] of [
+      ["priya menon", "Priya"],
+      ["Priya", "Priya"],
+      ["d'Souza Fernandes", "D'Souza"],
+      ["  aarav  ", "Aarav"],
+    ] as const) {
+      const email = preorderAckEmail({ order: { ...order, parent_name: typed } });
+      expect(email.text, typed).toContain(`Thank you, ${greeting}.`);
+    }
+  });
+});
