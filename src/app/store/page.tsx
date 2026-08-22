@@ -71,10 +71,12 @@ export default function StorePage() {
           {SHIP_DATE_TEXT}, and refundable in full until it does.
         </p>
 
-        <PreorderForm tier={tier.id} amountLabel={formatInr(tier.amountPaise)} />
+        <div className="max-w-[520px]">
+          <PreorderForm tier={tier.id} amountLabel={formatInr(tier.amountPaise)} />
+        </div>
       </div>
 
-      <aside className="md:pt-2">
+      <aside className="md:sticky md:top-6 md:self-start md:pt-2">
         <OrderSummary amountLabel={formatInr(tier.amountPaise)} tierLabel={tier.label} />
       </aside>
     </div>

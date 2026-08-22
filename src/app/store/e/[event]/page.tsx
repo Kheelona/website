@@ -94,10 +94,12 @@ export default async function EventPage({
           in full until it does.
         </p>
 
-        <PreorderForm tier={result.tier.id} signature={sig} amountLabel={amountLabel} />
+        <div className="max-w-[520px]">
+          <PreorderForm tier={result.tier.id} signature={sig} amountLabel={amountLabel} />
+        </div>
       </div>
 
-      <aside className="md:pt-2">
+      <aside className="md:sticky md:top-6 md:self-start md:pt-2">
         <OrderSummary amountLabel={amountLabel} tierLabel={result.tier.label} />
       </aside>
     </div>

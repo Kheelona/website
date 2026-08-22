@@ -1,15 +1,9 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "@/styles/globals.css";
-import { Navbar } from "@/components/organisms/Navbar";
-import { Footer } from "@/components/organisms/Footer";
-import { RevealObserver } from "@/components/molecules/RevealObserver";
-import { SiteBackdrop } from "@/components/atoms/SiteBackdrop";
-import { KheeluGuide } from "@/components/organisms/KheeluGuide";
 import { Analytics } from "@vercel/analytics/next";
 import { GoogleAnalyticsGate } from "@/components/molecules/GoogleAnalyticsGate";
 import { AHREFS_ANALYTICS_KEY } from "@/config/site";
-import { graph } from "@/lib/seo";
 
 const glory = localFont({
   // Upright faces only: italics are banned site-wide (R5 typography rule,
@@ -48,11 +42,12 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image" },
 };
 
-/* The entity graph moved to lib/seo.ts in the V3 SEO pass: every page now
-   emits the same Organization and WebSite nodes by @id, so an answer engine
-   builds ONE picture of the company (with the founders' credentials, which is
-   our strongest E-E-A-T signal) instead of a thin island per page. */
-const ORG_JSON_LD = graph();
+/* 2026-08-22 (§8.25-z): the marketing chrome and the Organization graph moved
+   OUT of this file into components/templates/SiteChrome, rendered by the
+   (site) route group. This layout is now only what BOTH kinds of page share:
+   the html element, the fonts, and the three measurement tags. The store gets
+   its own chrome, and no longer inherits a navbar whose CTA points at an
+   anchor it does not have. */
 
 export default function RootLayout({
   children,
@@ -83,19 +78,7 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_JSON_LD) }}
-        />
-        {/* Revamp M1: one warm CSS sky behind every route (theme B) */}
-        <SiteBackdrop />
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
-        {/* Revamp M1: the persistent narrator; its mobile dock ABSORBS the
-            old StickyMobileCTA (same hide-at-#reserve contract) */}
-        <KheeluGuide />
-        <RevealObserver />
+        {children}
         {/* Vercel Web Analytics: page views and visitors, cookieless, no
             cross-site tracking and no fingerprinting. Last element in the body
             so its script never competes with the hero image, which owns mobile

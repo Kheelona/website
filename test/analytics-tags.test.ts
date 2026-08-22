@@ -15,7 +15,7 @@ import { describe, expect, it } from "vitest";
 
 const ROOT = process.cwd();
 const LAYOUT = readFileSync(join(ROOT, "src/app/layout.tsx"), "utf8");
-const PRIVACY = readFileSync(join(ROOT, "src/app/privacy/page.tsx"), "utf8");
+const PRIVACY = readFileSync(join(ROOT, "src/app/(site)/privacy/page.tsx"), "utf8");
 
 describe("analytics tags and their privacy disclosure stay in step", () => {
   it("mounts all three tools in the root layout", () => {

@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import { sign, verify, signAddressToken, verifyAddressToken } from "./signing";
 import { verifyCheckoutSignature, verifyWebhookSignature } from "./razorpay";
 import { newOrderRef, isOrderRef, ORDER_REF_PATTERN } from "./order-ref";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 
 /**
  * The signature checks, against FIXED vectors.
@@ -103,6 +105,22 @@ describe("our own signed links", () => {
     const forBlr = sign(SIGNING_SECRET, "event-link", "blr-aug");
     expect(verify(SIGNING_SECRET, "event-link", "blr-aug", forBlr)).toBe(true);
     expect(verify(SIGNING_SECRET, "event-link", "del-sep", forBlr)).toBe(false);
+  });
+});
+
+/* The CLI that prints event links re-implements sign() outside the app, because
+   it runs as a plain node script with no bundler. Three details have to match or
+   every printed QR code is worthless: the purpose label, base64url, and the
+   16-character truncation. A structural check is worth more here than nothing,
+   and the real proof is the recorded vector above: running
+   `STORE_SIGNING_SECRET=s3cret npm run event-link -- blr-aug` prints exactly
+   ieW9NcWgHmASN60o. */
+describe("the event-link CLI stays in step with the server", () => {
+  it("signs with the same label, encoding and length", () => {
+    const cli = readFileSync(join(process.cwd(), "tools/store/event-link.mjs"), "utf8");
+    expect(cli).toContain("`event-link:${tierId}`");
+    expect(cli).toContain('digest("base64url")');
+    expect(cli).toContain(".slice(0, 16)");
   });
 });
 

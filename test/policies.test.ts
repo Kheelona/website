@@ -33,7 +33,7 @@ const POLICY_ROUTES = ["/refund", "/shipping", "/terms", "/privacy"] as const;
 
 describe("the policy layer a merchant has to publish", () => {
   it.each(POLICY_ROUTES)("%s is a real page", (route) => {
-    expect(existsSync(join(ROOT, "src/app", route, "page.tsx"))).toBe(true);
+    expect(existsSync(join(ROOT, "src/app/(site)", route, "page.tsx"))).toBe(true);
   });
 
   /* The failure this catches: a future cleanup pass sees two legacy-looking
@@ -67,7 +67,7 @@ describe("the policy layer a merchant has to publish", () => {
 
   it("renders that one section on every policy page, rather than four copies", () => {
     for (const route of POLICY_ROUTES) {
-      const src = readFileSync(join(ROOT, "src/app", route, "page.tsx"), "utf8");
+      const src = readFileSync(join(ROOT, "src/app/(site)", route, "page.tsx"), "utf8");
       expect(src, `${route} does not render SELLER_SECTION`).toContain("SELLER_SECTION");
       // and never hardcodes what the section already says
       expect(src, `${route} hardcodes the GSTIN`).not.toContain(GSTIN);
