@@ -20,7 +20,11 @@
      ambient mirrors, but no live surface uses it. */
   --color-orange-cta: #c25210;
   /* R9: the small-text orange (13px sans kickers). Darkened until 4.5:1
-     holds on EVERY wash: white 5.3, cream 5.0, cool 4.8, sun 4.8. */
+     holds on EVERY wash — recomputed for the v3 washes (CS3, 2026-08-23):
+     white 5.32, cream 5.01, cool 4.67, sun 4.65. A documented v3 EXTENSION:
+     v3 ships no small-text orange, and its own note that white text is safe
+     on brand orange is wrong (2.88:1), so this token and the ink-label law
+     survive the migration on arithmetic. */
   --color-orange-ink: #b54a0d;
   --color-yellow: #f1a23b;
   --color-blue: #29a0d7;
@@ -31,30 +35,46 @@
      (above) is DEPRECATED: it survives only under the legacy teal wash
      (SafetyStrip, safety hero) until those sections retire in M2/M4, then
      leaves with them (M5 cleanup). */
-  /* Small-text blue: the darkened #29a0d7 that holds 4.5:1 on every wash
-     (white 5.7, cream 5.3, cool 5.1, sun 5.0). The blue twin of orange-ink. */
+  /* Small-text blue: the darkened #29a0d7 that holds 4.5:1 on every wash —
+     recomputed for the v3 washes: white 5.65, cream 5.32, cool 4.96,
+     sun 4.94. The blue twin of orange-ink, and the same kind of v3 extension. */
   --color-blue-ink: #1b6e96;
   /* Semantic action slots (revamp): new/refactored components reference these
      for text-carrying colour, so a future contrast ruling flips ONE mapping.
      V4 flipped exactly that mapping: action = brand orange, labels in ink. */
   --color-action: var(--color-orange);
   --color-action-ink: var(--color-orange-ink);
-  --color-ink: #272727;
-  --color-ink-head: #1c1c1c;
-  --color-ink-muted: #727272;
-  --color-line: #cfcfcf;
-  --color-line-soft: #e2e2e2;
-  --color-cream: #fff7ee;
-  --color-cool: #eaf6fc;
-  /* The third wash, a real token at last (CS3 Phase 0, 2026-08-23). It lived
-     as a raw literal in Room.tsx and Section.tsx since the revamp, which made
-     it the one wash a palette change could silently miss. */
-  --color-sun: #fdf1e2;
+  /* CS3 Phase A (2026-08-23): the v3 ink ramp and surfaces, adopted whole.
+     Sources: Design/Kheelona-Design-System-v3/tokens/kheelona.css — ink-head
+     takes --kh-ink, ink takes --kh-ink-2 (warm stone), ink-muted takes
+     --kh-ink-3, line takes --kh-line, cream takes --kh-cream, cool takes
+     --kh-blue-tint, sun takes --kh-yellow-tint. Every pairing recomputed:
+     ink 10.27:1 on white and ≥8.99 on every tint; ink-head 5.99 on the
+     action orange (the D1 button law survives); ink-muted 4.80 white /
+     4.52 cream (the <4.6 canary still holds) and still FAILS cool (4.21)
+     and sun (4.20), so the §8.24-7 kicker ban stands unchanged. */
+  --color-ink: #44403c;
+  --color-ink-head: #1b1b1b;
+  --color-ink-muted: #78716c;
+  --color-line: #e7e5e4;
+  /* Aliased to line in Phase A; the ~31 line-soft call sites merge into
+     `line` during Phase B, then this token is deleted. */
+  --color-line-soft: #e7e5e4;
+  --color-cream: #f9f8f6;
+  --color-cool: #e2f3fa;
+  /* The third wash, a real token since Phase 0; yellow-tint is its lineal
+     successor (sun was always "Sunshine Yellow at 15%", composited). */
+  --color-sun: #fceeda;
+  /* No v3 equivalent; kept as a documented extension (founder item F3):
+     the footer's ground and the apple-icon plate. White on it: 17.26:1. */
   --color-footer-cocoa: #2a1608;
 
   --font-display: var(--font-glory);
   --font-sans: var(--font-instrument-sans);
-  /* --font-accent (Instrument Serif) retired 2026-07-24: two fonts only. */
+  /* The v3 editorial accent (CS3, founder decision #11 — reinstated after the
+     2026-07-24 retirement): Instrument Serif ITALIC, for editorial section
+     titles and pull-quotes only, one per composition. Never body copy. */
+  --font-editorial: var(--font-instrument-serif);
 
   --shadow-cta: 0 4px 4px rgb(0 0 0 / 0.25);
   /* Theme-B room panels (revamp): warm-tinted shadows, never pure black */
@@ -64,9 +84,13 @@
   --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-calm: cubic-bezier(0.2, 0.8, 0.2, 1);
 
-  --radius-card: 22px;
-  --radius-card-lg: 28px;
-  --radius-room: 28px;
+  /* CS3 Phase A: all three snap to v3's --kh-radius-lg (24px) — v3's scale
+     is 8/16/24/pill and 22/28 sit between its steps. The three NAMES stay
+     (tests and call sites reference the vars); Phase B may collapse them
+     into one if JONY's per-page pass finds no reason to keep three. */
+  --radius-card: 24px;
+  --radius-card-lg: 24px;
+  --radius-room: 24px;
 
   /* Radix accordion height animation (ui/Faq.tsx) */
   --animate-accordion-down: accordion-down 0.24s var(--ease-calm);

@@ -21,11 +21,15 @@ export function Navbar() {
         className="mx-auto flex h-[72px] w-full max-w-[1200px] items-center justify-between px-6"
       >
         <Link href="/" aria-label="Kheelona home" className="shrink-0">
+          {/* The v3 wordmark (CS3, 2026-08-23): lowercase sticker lettering,
+              served as the SVG copied verbatim from the design system. A
+              local SVG through next/image ships unoptimized and static,
+              which is exactly right for a 27KB vector. */}
           <Image
-            src="/brand/logo-wordmark.png"
+            src="/brand/kheelona-wordmark.svg"
             alt="Kheelona"
-            width={150}
-            height={43}
+            width={152}
+            height={50}
             priority
             className="h-[34px] w-auto"
           />

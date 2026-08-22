@@ -58,10 +58,13 @@ const AA = 4.5;
 
 describe("ink-on-wash contrast, as arithmetic rather than prose", () => {
   it("resolves every token it claims to read", () => {
-    expect(INKS["ink-muted"]).toBe("#727272");
+    /* Pinned to the v3 values since CS3 Phase A (2026-08-23): ink-muted is
+       --kh-ink-3, cool is --kh-blue-tint, sun is --kh-yellow-tint. orange-ink
+       is a site extension and did not move. */
+    expect(INKS["ink-muted"]).toBe("#78716c");
     expect(INKS["orange-ink"]).toBe("#b54a0d");
-    expect(WASHES.cool).toBe("#eaf6fc");
-    expect(WASHES.sun).toBe("#fdf1e2");
+    expect(WASHES.cool).toBe("#e2f3fa");
+    expect(WASHES.sun).toBe("#fceeda");
   });
 
   /* The four inks that are safe anywhere. `orange-ink` being in this list is the
