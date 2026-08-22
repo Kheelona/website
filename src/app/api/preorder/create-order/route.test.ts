@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fakeClient, fakeEnv, firstArg, type RecordedCall } from "../../../../../test/helpers/fake-supabase";
-import { TOKEN_AMOUNT_PAISE } from "@/config/site";
+import { TOKEN_AMOUNT_PAISE, FULL_AMOUNT_PAISE, PREORDER_CAP_UNITS } from "@/config/site";
 import { resetRateLimits } from "@/lib/store/rate-limit";
 
 /**
@@ -80,6 +80,40 @@ describe("POST /api/preorder/create-order", () => {
     });
     expect(firstArg(calls, "preorders", "insert")).toMatchObject({
       amount_paise: TOKEN_AMOUNT_PAISE,
+    });
+  });
+
+  /* THE test's twin (§8.26): the full tier is priced from config exactly the
+     same way, and a full order can never be asked for a balance. */
+  it("prices a full-tier order from config too, and marks it as owing nothing", async () => {
+    results["preorders.select"] = { count: PREORDER_CAP_UNITS };
+    const response = await post({ ...goodBody, tier: "full", amountPaise: 100, amount: 1, price: 1 });
+    expect(response.status).toBe(200);
+
+    expect(createRazorpayOrder.mock.calls[0][1]).toMatchObject({
+      amountPaise: FULL_AMOUNT_PAISE,
+    });
+    expect(firstArg(calls, "preorders", "insert")).toMatchObject({
+      tier: "full",
+      amount_paise: FULL_AMOUNT_PAISE,
+      balance_status: "none",
+    });
+  });
+
+  it("refuses the launch tier once the cap is reached, before any charge", async () => {
+    results["preorders.select"] = { count: PREORDER_CAP_UNITS };
+    const response = await post(goodBody);
+    expect(response.status).toBe(409);
+    expect((await response.json()) as { error: string }).toMatchObject({
+      error: "cap-reached",
+    });
+    expect(createRazorpayOrder).not.toHaveBeenCalled();
+  });
+
+  it("keeps token orders owing the balance", async () => {
+    await post(goodBody);
+    expect(firstArg(calls, "preorders", "insert")).toMatchObject({
+      balance_status: "due",
     });
   });
 

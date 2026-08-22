@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import {
   LAUNCH_PRICE,
-  LATER_PRICE,
+  FULL_PRICE,
+  CAP_UNITS_TEXT,
   LAUNCH_AMOUNT_PAISE,
   TOKEN_PRICE,
   BALANCE_PRICE,
-  PREORDER_DEADLINE_TEXT,
-  PREORDER_DEADLINE_ISO,
   LUMI_AGES,
   PLATFORM_AGES,
   CONTACT_EMAIL,
@@ -216,19 +215,21 @@ export const LUMI_PRODUCT = {
     "@type": "Offer",
     /* Derived from the paise constant, not scraped out of the display string
        with a regex (2026-08-22): the money now has one numeric source and a
-       schema price is a number, so it should read the number. */
+       schema price is a number, so it should read the number.
+
+       No priceValidUntil since 2026-08-23: the offer is bounded by a unit
+       count, not a date, and schema.org has no way to say that. A lapsed
+       validity date would make Google drop the Offer on a day nothing about
+       the offer changed, so the honest markup is a price with the unit terms
+       stated in prose. The manual sell-out sweep (FOUNDER-TODO) updates this
+       price the day the capped units are gone. */
     price: LAUNCH_AMOUNT_PAISE / 100,
     priceCurrency: "INR",
     availability: "https://schema.org/PreOrder",
     availabilityStarts: SHIP_DATE_ISO,
-    /* The pre-order price is real but time-boxed, and priceValidUntil is how
-       you say that to a machine. Google drops an Offer whose stated validity
-       has lapsed, which is the correct behaviour here: after the deadline the
-       price genuinely is not ₹4,999 any more. */
-    priceValidUntil: PREORDER_DEADLINE_ISO,
     url: `${SITE_URL}/products/lumi`,
     eligibleRegion: { "@type": "Country", name: "India" },
-    description: `${LAUNCH_PRICE} for pre-orders placed before ${PREORDER_DEADLINE_TEXT}, ${LATER_PRICE} after that. A refundable ${TOKEN_PRICE} reserves one, with the ${BALANCE_PRICE} balance due before dispatch.`,
+    description: `${LAUNCH_PRICE} for the ${CAP_UNITS_TEXT}, ${FULL_PRICE} once they are gone. A refundable ${TOKEN_PRICE} reserves one of the ${CAP_UNITS_TEXT}, with the ${BALANCE_PRICE} balance due before dispatch.`,
   },
 } as const;
 

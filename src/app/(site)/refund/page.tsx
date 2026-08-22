@@ -11,7 +11,7 @@ import {
 export const metadata = pageMeta({
   title: "Refunds and cancellation",
   description:
-    "The ₹499 you pay to pre-order Lumi is fully refundable until your Lumi is dispatched. How to ask for it back, and how long it takes.",
+    "Everything you pay to pre-order Lumi is fully refundable until your Lumi is dispatched. How to ask for it back, and how long it takes.",
   path: "/refund",
 });
 
@@ -26,7 +26,10 @@ const SECTIONS: readonly LegalSection[] = [
   {
     h: "The short version",
     ps: [
-      `The ${TOKEN_PRICE} you pay to pre-order is fully refundable at any time before your Lumi is dispatched. Ask us and you get it back. There is no fee, no deduction, and no reason you have to give.`,
+      /* One promise, both order shapes (§8.26): the ₹499 token while the
+         capped units last, or the whole price for a full-payment pre-order.
+         Founder-confirmed 2026-08-23: the same promise covers every rupee. */
+      `Everything you have paid to pre-order is fully refundable at any time before your Lumi is dispatched: the ${TOKEN_PRICE} token, or the whole price if you paid in full. Ask us and you get it back. There is no fee, no deduction, and no reason you have to give.`,
     ],
   },
   {
@@ -40,8 +43,10 @@ const SECTIONS: readonly LegalSection[] = [
     h: "If you decide not to pay the balance",
     ps: [
       /* The honest version of a dunning policy: a parent who goes quiet has
-         cancelled, and pretending otherwise would let us sit on their money. */
-      "That is a cancellation, and it is treated exactly like one. We will ask you twice over two weeks, and if we do not hear from you we release the unit and refund your token. Nothing is charged automatically, ever.",
+         cancelled, and pretending otherwise would let us sit on their money.
+         Token pre-orders only, by definition: a full-payment order has no
+         balance to go quiet on. */
+      "This applies to token pre-orders, where a balance is still due. Not paying it is a cancellation, and it is treated exactly like one: we will ask you twice over two weeks, and if we do not hear from you we release the unit and refund your token. Nothing is charged automatically, ever.",
     ],
   },
   {

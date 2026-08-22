@@ -22,7 +22,8 @@ import {
   PRICE_CAPTION,
   TOKEN_PRICE,
   BALANCE_PRICE,
-  PREORDER_DEADLINE_TEXT,
+  CAP_UNITS_TEXT,
+  FULL_PRICE,
   LAUNCH_PRICE,
   SHIP_DATE_TEXT,
   LUMI_AGES,
@@ -75,7 +76,7 @@ const HOME_FAQ: FaqEntry[] = [
   },
   {
     q: "How much does Lumi cost in India?",
-    a: `₹4,999 if you pre-order before ${PREORDER_DEADLINE_TEXT}, and ₹9,999 after that. A refundable ${TOKEN_PRICE} reserves your Lumi now, and the ${BALANCE_PRICE} balance is due only when it is ready to ship. Every Lumi includes 6 months of Kheelona+.`,
+    a: `${LAUNCH_PRICE} for the ${CAP_UNITS_TEXT}, and ${FULL_PRICE} once they are gone. A refundable ${TOKEN_PRICE} reserves your Lumi now, and the ${BALANCE_PRICE} balance is due only when it is ready to ship. Every Lumi includes 6 months of Kheelona+.`,
   },
   {
     q: "What ages is Lumi for?",

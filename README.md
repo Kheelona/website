@@ -1,9 +1,10 @@
 # kheelona.com
 
 > The consumer home of Kheelona. Its one job: turn parents into paid pre-orders for Lumi. A ₹499
-> refundable token holds one at ₹4,999 (₹9,999 after 30 September 2026), the ₹4,500 balance falls due
-> before dispatch, and the payment happens on store.kheelona.com, which this same repo serves. Built
-> with Next.js (App Router) + TypeScript, deployed on Vercel.
+> refundable token holds one of the first 500 units at ₹4,999, with the ₹4,500 balance due before
+> dispatch; once those units are gone, a pre-order is ₹7,999 paid in full. Payment happens on
+> store.kheelona.com, which this same repo serves. Built with Next.js (App Router) + TypeScript,
+> deployed on Vercel.
 
 ## For AI: How to Resume This Project
 

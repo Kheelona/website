@@ -55,32 +55,32 @@ export function formatInr(paise: number): string {
   return `₹${new Intl.NumberFormat("en-IN").format(Math.round(paise / 100))}`;
 }
 
-/** The pre-order price, held until PREORDER_DEADLINE. */
+/** The pre-order price, held for the first PREORDER_CAP_UNITS units. */
 export const LAUNCH_AMOUNT_PAISE = 499_900;
-/** General sale, from the day after the deadline. */
-export const LATER_AMOUNT_PAISE = 999_900;
-/** The token that reserves a unit. Refundable until dispatch. */
+/** The launch price, once the capped units are gone: paid in full, upfront.
+ *  Founder 2026-08-23: after the cap, there is no token and no balance. */
+export const FULL_AMOUNT_PAISE = 799_900;
+/** The token that reserves a capped unit. Refundable until dispatch. */
 export const TOKEN_AMOUNT_PAISE = 49_900;
 /** What is left to pay when the unit is ready. Derived, never typed twice:
  *  a token change must move the balance in the same breath. */
 export const BALANCE_AMOUNT_PAISE = LAUNCH_AMOUNT_PAISE - TOKEN_AMOUNT_PAISE;
 
 export const LAUNCH_PRICE = formatInr(LAUNCH_AMOUNT_PAISE);
-export const LATER_PRICE = formatInr(LATER_AMOUNT_PAISE);
+export const FULL_PRICE = formatInr(FULL_AMOUNT_PAISE);
 export const TOKEN_PRICE = formatInr(TOKEN_AMOUNT_PAISE);
 export const BALANCE_PRICE = formatInr(BALANCE_AMOUNT_PAISE);
 
-/** The pre-order window. Founder 2026-08-22: there is NO unit cap, so the
- *  deadline is the whole of the urgency and it has to be real. After it the
- *  store stops taking tokens and offers the general-sale waitlist. */
-export const PREORDER_DEADLINE_TEXT = "30 September 2026";
-export const PREORDER_DEADLINE_ISO = "2026-09-30";
-
-/** True while the token flow may run. Date-only comparison, so the deadline
- *  day itself is inside the window. */
-export function isPreorderOpen(now: Date = new Date()): boolean {
-  return now.toISOString().slice(0, 10) <= PREORDER_DEADLINE_ISO;
-}
+/** The whole of the urgency, since 2026-08-23 (founder: the 30 September date
+ *  deadline is retired ENTIRELY). ₹4,999 holds while fewer than this many
+ *  launch-priced orders are paid; the switch is decided on the server from a
+ *  live Supabase count (`lib/store/mode.ts`) and the count itself is never
+ *  published — pages and APIs carry only which MODE the store is in. A refund
+ *  reopens a slot, deliberately: the paid queue is the truth (§8.25-ee), so
+ *  the cap counts it rather than keeping a second opinion. */
+export const PREORDER_CAP_UNITS = 500;
+/** The offer term as prose, derived so copy can never drift from the gate. */
+export const CAP_UNITS_TEXT = `first ${PREORDER_CAP_UNITS} units`;
 
 /** The one CTA verb (R9 law), founder-chosen 2026-08-22. No number on the
  *  button: the amount is settled in the panel beside it, so this label never
@@ -96,11 +96,10 @@ export const PRICE_CAPTION = `${TOKEN_PRICE} now, ${BALANCE_PRICE} on dispatch. 
  *  question a price with no tax note always raises. */
 export const TAX_LINE = "All prices include GST.";
 
-/** The hero and finale offer line: exactly what CAP_LINE used to do, with the
- *  retired cap replaced by the real deadline. Two clauses, no paraphrase
- *  anywhere else — V6 D11 holds: three wordings of one price read as three
- *  offers, so this string and PRICE_CAPTION are the only two allowed. */
-export const PREORDER_OFFER_LINE = `${TOKEN_PRICE} reserves yours at ${LAUNCH_PRICE}. ${LATER_PRICE} after ${PREORDER_DEADLINE_TEXT}.`;
+/** The hero and finale offer line. Two clauses, no paraphrase anywhere else —
+ *  V6 D11 holds: three wordings of one price read as three offers, so this
+ *  string and PRICE_CAPTION are the only two allowed. */
+export const PREORDER_OFFER_LINE = `${TOKEN_PRICE} reserves one of the ${CAP_UNITS_TEXT} at ${LAUNCH_PRICE}. ${FULL_PRICE} once they are gone.`;
 /** The hold promise (V6 D11): one sentence, one source. Still exactly true of
  *  a paid reservation, so it survives the money change unchanged. */
 export const PRICE_HOLD_LINE = "We hold the price, you hold your place.";
@@ -121,10 +120,10 @@ export const KHEELONA_PLUS_LINE =
 /** Short form, for the finale's small print. */
 export const KHEELONA_PLUS_SHORT = "Every Lumi includes 6 months of Kheelona+.";
 
-/** Ship date (founder, 2026-08-22: moved from 1 September). Render from these,
+/** Ship date (founder, 2026-08-23: moved from 1 October). Render from these,
  *  never inline, so a logistics change is a one-file edit. */
-export const SHIP_DATE_TEXT = "1 October 2026";
-export const SHIP_DATE_ISO = "2026-10-01";
+export const SHIP_DATE_TEXT = "20 October 2026";
+export const SHIP_DATE_ISO = "2026-10-20";
 
 /** The announced languages (founder, 2026-07-31 — "they are final"). Eight
  *  named today; the published ceiling stays "up to 10", so two more can land
@@ -145,11 +144,11 @@ export const LANGUAGES_LINE = `${LUMI_LANGUAGES.slice(0, -1).join(", ")}, and ${
 }`;
 
 /** WhatsApp share (V3, India's native referral loop — no backend). "Rs" not
- *  "₹" in the payload: the rupee sign garbles in some WhatsApp clients. The
- *  2026-08-22 rewrite drops the retired cap and the retired "no payment now",
- *  and leads with the token, which is the easy number to pass along. */
+ *  "₹" in the payload: the rupee sign garbles in some WhatsApp clients. Leads
+ *  with the token, which is the easy number to pass along, and carries the
+ *  unit-cap urgency (2026-08-23: the date deadline is gone). */
 export const WHATSAPP_SHARE_HREF = `https://wa.me/?text=${encodeURIComponent(
-  `A screen-free talking friend that teaches, for ages ${LUMI_AGES}. Pre-order for Rs ${TOKEN_AMOUNT_PAISE / 100}, fully refundable, before ${PREORDER_DEADLINE_TEXT}: ${STORE_URL}`,
+  `A screen-free talking friend that teaches, for ages ${LUMI_AGES}. Rs ${TOKEN_AMOUNT_PAISE / 100} reserves one of the ${CAP_UNITS_TEXT} at Rs ${LAUNCH_AMOUNT_PAISE / 100}, fully refundable: ${STORE_URL}`,
 )}`;
 export const WHATSAPP_SHARE_LABEL = "Know a parent who needs this? Share Lumi on WhatsApp";
 

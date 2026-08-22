@@ -1,9 +1,9 @@
 import {
   LAUNCH_PRICE,
-  LATER_PRICE,
+  FULL_PRICE,
+  CAP_UNITS_TEXT,
   TOKEN_PRICE,
   BALANCE_PRICE,
-  PREORDER_DEADLINE_TEXT,
   STORE_URL,
   TAX_LINE,
   LUMI_AGES,
@@ -31,10 +31,10 @@ Market: India. Currency: INR. Stage: pre-order, taking a refundable token.
 
 ## Lumi (the talking toy, ages ${LUMI_AGES})
 
-- Pre-order price: ${LAUNCH_PRICE}, for pre-orders placed before ${PREORDER_DEADLINE_TEXT}
-- Price after that: ${LATER_PRICE}
-- Paid at pre-order: ${TOKEN_PRICE}, adjusted against the price, and fully refundable until dispatch
-- Balance: ${BALANCE_PRICE}, due by payment link when your unit is ready to dispatch
+- Pre-order price: ${LAUNCH_PRICE}, for the ${CAP_UNITS_TEXT}
+- Price once they are gone: ${FULL_PRICE}, paid in full at pre-order
+- Paid at pre-order while the ${CAP_UNITS_TEXT} last: ${TOKEN_PRICE}, adjusted against the price, and fully refundable until dispatch
+- Balance on a ${TOKEN_PRICE} reservation: ${BALANCE_PRICE}, due by payment link when your unit is ready to dispatch
 - Taxes: ${TAX_LINE} The published price is what a buyer pays.
 - Delivery: included, anywhere in India. No charge is added at any step.
 - Included with every Lumi: 6 months of Kheelona+

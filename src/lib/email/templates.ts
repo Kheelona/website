@@ -88,7 +88,7 @@ function greetingName(fullName: string): string {
 }
 
 export type AckInput = {
-  order: Pick<PreorderRow, "order_ref" | "parent_name" | "amount_paise" | "address">;
+  order: Pick<PreorderRow, "order_ref" | "parent_name" | "amount_paise" | "address" | "tier">;
   /** Present when the order still has no delivery address. */
   addressUrl?: string;
 };
@@ -105,6 +105,10 @@ export function preorderAckEmail(input: AckInput): Email {
   const paid = formatInr(order.amount_paise);
   const firstName = greetingName(order.parent_name);
   const needsAddress = !order.address;
+  /* Branched on the ROW's tier, never on the store's current mode (§8.26): a
+     full-payment order owes nothing and must never be promised a balance link,
+     while a token order's email stays byte-for-byte what it always was. */
+  const paidInFull = order.tier === "full";
 
   const addressBlock = needsAddress
     ? p(
@@ -123,11 +127,19 @@ export function preorderAckEmail(input: AckInput): Email {
      <div style="border:1px solid ${RULE};border-radius:12px;padding:16px;margin:0 0 18px">
        <p style="margin:0 0 8px;font-size:15px"><strong>Order</strong> ${order.order_ref}</p>
        <p style="margin:0 0 8px;font-size:15px"><strong>Paid today</strong> ${paid}</p>
-       <p style="margin:0 0 8px;font-size:15px"><strong>Due on dispatch</strong> ${BALANCE_PRICE}, of the ${LAUNCH_PRICE} price</p>
+       <p style="margin:0 0 8px;font-size:15px"><strong>Due on dispatch</strong> ${paidInFull ? "Nothing. You have paid in full" : `${BALANCE_PRICE}, of the ${LAUNCH_PRICE} price`}</p>
        <p style="margin:0;font-size:15px"><strong>Ships from</strong> ${SHIP_DATE_TEXT}</p>
      </div>
      ${addressBlock}
-     ${p(`When your Lumi is ready to leave for you, we send a payment link for the ${BALANCE_PRICE} balance on WhatsApp and by email. Nothing is charged automatically, and we do not keep your card.`)}
+     ${
+       paidInFull
+         ? p(
+             `That was the whole price. There is nothing more to pay and no link to wait for, nothing is charged automatically, and we do not keep your card.`,
+           )
+         : p(
+             `When your Lumi is ready to leave for you, we send a payment link for the ${BALANCE_PRICE} balance on WhatsApp and by email. Nothing is charged automatically, and we do not keep your card.`,
+           )
+     }
      ${p(`Changed your mind? Message us any time before your Lumi is dispatched and we refund the ${paid} in full. No fee, and no reason needed.`)}
      ${p(`<span style="color:${MUTED}">${KHEELONA_PLUS_SHORT}</span>`)}`,
   );
@@ -139,14 +151,18 @@ export function preorderAckEmail(input: AckInput): Email {
     "",
     `Order: ${order.order_ref}`,
     `Paid today: ${paid}`,
-    `Due on dispatch: ${BALANCE_PRICE}, of the ${LAUNCH_PRICE} price`,
+    paidInFull
+      ? "Due on dispatch: Nothing. You have paid in full."
+      : `Due on dispatch: ${BALANCE_PRICE}, of the ${LAUNCH_PRICE} price`,
     `Ships from: ${SHIP_DATE_TEXT}`,
     "",
     needsAddress
       ? `One thing left: we do not have your delivery address yet. Add it here: ${input.addressUrl}`
       : "We have your delivery address. You can change it any time before dispatch.",
     "",
-    `When your Lumi is ready to leave for you, we send a payment link for the ${BALANCE_PRICE} balance on WhatsApp and by email. Nothing is charged automatically.`,
+    paidInFull
+      ? "That was the whole price. There is nothing more to pay and no link to wait for, and nothing is charged automatically."
+      : `When your Lumi is ready to leave for you, we send a payment link for the ${BALANCE_PRICE} balance on WhatsApp and by email. Nothing is charged automatically.`,
     "",
     `Changed your mind? Message us any time before your Lumi is dispatched and we refund the ${paid} in full.`,
     "",

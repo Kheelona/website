@@ -24,11 +24,11 @@ import {
   PREORDER_LABEL,
   PRICE_CAPTION,
   LAUNCH_PRICE,
-  LATER_PRICE,
+  FULL_PRICE,
+  CAP_UNITS_TEXT,
   SHIP_DATE_TEXT,
   TOKEN_PRICE,
   BALANCE_PRICE,
-  PREORDER_DEADLINE_TEXT,
 } from "@/config/site";
 
 export const metadata = pageMeta({
@@ -95,19 +95,19 @@ const FAQ_ITEMS: FaqEntry[] = [
   { q: "Do you sell our data?", a: "No. Never sold, never used to sell your child anything. That is the whole point." },
   { q: "What if my child breaks it?", a: "Lumi is built for small hands and rough days. Warranty details land closer to launch." },
   { q: "When will Lumi ship?", a: `Shipping starts ${SHIP_DATE_TEXT}. Pre-orders are served first, in the order they were placed.` },
-  { q: "How much does Lumi cost?", a: `${LAUNCH_PRICE} if you pre-order before ${PREORDER_DEADLINE_TEXT}, and ${LATER_PRICE} after that. A refundable ${TOKEN_PRICE} reserves yours, and the ${BALANCE_PRICE} balance is due only when it ships.` },
+  { q: "How much does Lumi cost?", a: `${LAUNCH_PRICE} for the ${CAP_UNITS_TEXT}, and ${FULL_PRICE} once they are gone. A refundable ${TOKEN_PRICE} reserves yours, and the ${BALANCE_PRICE} balance is due only when it ships.` },
   { q: "Do I have to pay anything now?", a: "No. Reserving holds your price and your place, and it does not commit you to buy. You can leave the list anytime." },
   { q: "What is PlayOS?", a: "The platform Lumi runs on. It gives each character a voice and a personality, and keeps every answer right for your child's age." },
   { q: "Can Lumi play music?", a: "Yes. Pair a phone over Bluetooth and Lumi becomes the speaker in the room, for your playlist, rhymes, or an audiobook. That is one of its three modes, alongside conversation and Kheelu mode stories." },
   { q: "Does Lumi need a subscription?", a: "Every Lumi includes 6 months of Kheelona+, the stories, lessons, languages, and the parent app. Lumi's smart features are yours for life, Kheelona+ pricing is announced soon, and nothing renews without you." },
   { q: "What is Kheelona+?", a: "The content and the controls: stories, lessons, language packs, and the parent app that shows you the learning. It is included free for the first 6 months with every Lumi." },
-  { q: "Why pre-order now?", a: `The price is ${LAUNCH_PRICE} until ${PREORDER_DEADLINE_TEXT} and ${LATER_PRICE} after that. The ${TOKEN_PRICE} you pay today is fully refundable until we ship.` },
+  { q: "Why pre-order now?", a: `The price is ${LAUNCH_PRICE} for the ${CAP_UNITS_TEXT} and ${FULL_PRICE} once they are gone. The ${TOKEN_PRICE} you pay today is fully refundable until we ship.` },
   /* SEO round 2026-08-12, founder decision: the agency's gendered gift keyword
      is NEUTRALISED — the site says "your child" everywhere, so the phrase here
      is "a unique birthday gift", never "for daughter". "Unique" is grounded in
      one specific, published mechanism (it changes as the child grows), not
      puffery. */
-  { q: "Is Lumi a good birthday gift?", a: "It is a unique birthday gift in one specific way: it keeps changing. Lumi learns your child's words and grows with them, so the toy at 4 is not the toy they unwrapped at 2. Reserving now holds the launch price of ₹4,999." },
+  { q: "Is Lumi a good birthday gift?", a: `It is a unique birthday gift in one specific way: it keeps changing. Lumi learns your child's words and grows with them, so the toy at 4 is not the toy they unwrapped at 2. Reserving now holds the ${LAUNCH_PRICE} price.` },
 ];
 
 const JSON_LD = graph(
@@ -314,7 +314,7 @@ export default function LumiPage() {
               level="minor"
               title={`${TOKEN_PRICE} today. ${BALANCE_PRICE} when it ships.`}
               titleClassName="mb-3 max-w-[20ch]"
-              lede={`Pre-order at ${LAUNCH_PRICE} before ${PREORDER_DEADLINE_TEXT}. Fully refundable until we ship, and Lumi stays a friend for years.`}
+              lede={`Pre-order at ${LAUNCH_PRICE} while the ${CAP_UNITS_TEXT} last. Fully refundable until we ship, and Lumi stays a friend for years.`}
               ledeClassName="mb-7 max-w-[46ch]"
             />
             <Button href={PREORDER_HREF}>{PREORDER_LABEL}</Button>
