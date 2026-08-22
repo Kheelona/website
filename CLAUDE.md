@@ -44,7 +44,7 @@ zero. **Always refund the whole token.**
 The signed address link was exercised from that same receipt and the address saved, so **EVERY route in
 the store has production evidence** and nothing about the payment or fulfilment path is unproven.
 
-**🟡 STILL OPEN** (see FOUNDER-TODO section 0): DMARC tightens to `p=quarantine` on **5 September 2026** (scheduled agent + dated item);
+**🟡 STILL OPEN** (see the OPEN half of `FOUNDER-TODO.md`, rewritten 2026-08-23): DMARC tightens to `p=quarantine` on **5 September 2026** (scheduled agent + dated item);
 Resend's `send` SPF and MX are absent so bounce feedback is blind; and a trivial Supabase query takes
 250 to 975ms, suggesting the project is not in an Indian region.
 
@@ -127,7 +127,8 @@ repo root. That old app is preserved at the tag **`pre-revamp-2026-07`** and its
   wrongly conclude it is missing.
 - **Live testimonials are drafted words on named people** (Shweta, Priyamvada, Gaurav, "Pilot
   parent"). Raised with the founder when the site went public; **their decision is to leave them
-  as-is** (FOUNDER-TODO V3-a). Do not re-raise it and do not remove them.
+  as-is** (`FOUNDER-TODO.md`, the Testimonials row under "Facts you settled"). Do not re-raise it and
+  do not remove them.
 - **The spec that built this**: `docs/revamp-2026-07/BUILD-V4.md` (the 2026-07-30 team-feedback
   round; wins over BUILD-V3, which wins over `copy-v2.md` and older copy laws). Status and the restart guide: `docs/revamp-2026-07/WORKING.md` — **read it first on any resume,
   and do not delete it** (it is 143 lines since 2026-08-23; the 340 lines of superseded rounds moved
@@ -248,7 +249,8 @@ Rules for any change:
   `docs/preorder-events.md`)
 - Deploy target: Vercel, project Root Directory = **repo root** (the app moved out of
   `site/` on 2026-07-28; paths in older docs and checkpoints that say `site/...` now mean
-  the repo root). Env vars + DNS are still founder-gated, FOUNDER-TODO #2.
+  the repo root). Env vars and DNS were founder-gated and are **DONE** since 2026-07-28; any NEW
+  variable still has to be added in the dashboard by the founder, never by the CLI.
 
 ## Env
 Root `.env` (gitignored, DUMMY values until the founder fills them) and `.env.example`, which

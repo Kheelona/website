@@ -51,7 +51,7 @@ The live 3D mascot in the site hero (`public/models/kheelona-mascot.glb`) was pr
 
 **UI-automation gotchas** (if driving Tripo again): file inputs re-render after each upload, so find them by slot label text, not index; uploads from a localhost page require the postMessage relay trick (PNA blocks https→localhost fetch); popups need a real on-page button click for user activation.
 
-**Status**: founder judgment pending (FOUNDER-TODO #9) — the model is a stylized approximation; if rejected, the site falls back cleanly because the static render stays mounted until the GLB loads.
+**Status**: judged and final (v3). The 3D journey is dormant, so this is a record rather than a pending decision — the model is a stylized approximation; if rejected, the site falls back cleanly because the static render stays mounted until the GLB loads.
 
 ## Tripo3D v2 runs (2026-07-07): Janus fix + Lumi plush
 

@@ -428,7 +428,7 @@ written for him: the site's no-contractions rule does not reach inside his speec
   wording, rendered from config in five places. The founder also confirmed GST is paid out of the
   collected amount **under reverse charge**, and that half is deliberately **not published**: it is
   internal accounting, it would confuse a parent reading a policy page, and no customer decision
-  depends on it. Recorded in FOUNDER-TODO 0g instead.
+  depends on it. Recorded in FOUNDER-TODO instead, under "Delivery and tax".
 
 Together these answer the question a price with no tax note always raises, which is why they sit in the
 price clause rather than in a footnote: "₹4,999 is the whole cost of a Lumi arriving at your door."

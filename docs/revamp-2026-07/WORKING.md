@@ -129,9 +129,9 @@ consistency sweep.
 lands), real testimonial words (their standing decision), and the final specs including the WAKE WORD
 (three pages promise these "before Lumi ships").
 
-**THE FOUNDER'S FULL OPEN QUEUE IS ONE SECTION**: `FOUNDER-TODO.md` → "📋 THE ONLY THINGS STILL
-WAITING ON YOU" (audited 2026-07-31, twelve items, none blocking). Read it before proposing work, and
-do not resurrect anything outside it — the rest of that file is closed history. One cross-dependency
+**THE FOUNDER'S FULL OPEN QUEUE IS ONE HALF OF ONE FILE**: `FOUNDER-TODO.md` → everything under
+**⏳ OPEN** (rewritten and re-audited 2026-08-23; none of it blocks the site). Read it before
+proposing work, and do not resurrect anything from the **✅ CLOSED** half, which is the record. One cross-dependency
 worth knowing: **R5-a, the new logo, now also owns the favicon and app icons** (built from the current
 mark in `public/brand/logo-mark.png`), so a logo swap is one pass across navbar + icons + og.png +
 the schema logo.

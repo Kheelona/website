@@ -131,7 +131,7 @@ to fake, and both times it failed by timing out rather than by returning a confi
 
 ## One new founder item
 
-GA4 cross-domain measurement (FOUNDER-TODO section 0). Every pre-order button now crosses from
+GA4 cross-domain measurement, **done by the founder within the hour** and recorded in FOUNDER-TODO. Every pre-order button now crosses from
 `kheelona.com` to `store.kheelona.com`, where before only the finale did. Without both hosts listed
 under **Configure your domains**, GA4 counts that hop as a new session from a referral: the store looks
 like it gets traffic from your own site, and the marketing pages get no credit for the conversion.

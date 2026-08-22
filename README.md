@@ -15,7 +15,8 @@ You are resuming an in-progress website. Follow these steps exactly.
 >
 > - **First thing on any store question →** `curl -s https://kheelona.com/api/health`
 > - **Before touching store code →** `docs/website-steps.md` §8.25
-> - **What is still open →** `FOUNDER-TODO.md` section 0 (all dated or operational, no defects)
+> - **What is still open →** the **⏳ OPEN** half of `FOUNDER-TODO.md` (dated, or facts only the
+>   founder has, no defects)
 > - **The build and launch record →** `docs/checkpoints/preorder-store-2026-08-22.md` and
 >   `docs/store-go-live.md`
 > - **To verify →** `npm test` (769), `npx tsc --noEmit`, `npx next build`, and `npm run qa:sweep`
@@ -34,11 +35,12 @@ Read `docs/project-state.json`:
 
 1. **`docs/revamp-2026-07/WORKING.md`** — start at "COLD-RESTART: START HERE". It carries the
    commands, the repository state, the full milestone table, and the one open action.
-2. **`docs/project-state.json`** — `current_phase`, `blockers` (the open one is the Vercel Root
-   Directory), and `last_handoff.next_action`.
-3. **`FOUNDER-TODO.md`** — go straight to **"📋 THE ONLY THINGS STILL WAITING ON YOU"** (audited
-   2026-07-31): the whole live queue in one section, twelve items, none blocking. Everything else on
-   that page is closed history kept for provenance. Never re-ask what is settled here.
+2. **`docs/project-state.json`** — `current_phase`, the open `blockers` (five, all dated or founder
+   facts), and `last_handoff.next_action`. Closed history lives in
+   `docs/checkpoints/closed-rounds.md`, not in that file.
+3. **`FOUNDER-TODO.md`** — rewritten 2026-08-23 and split in two: **⏳ OPEN** is the whole live
+   queue, and **✅ CLOSED** is one or two lines per finished item. Nothing in either half blocks the
+   site. Never re-ask what is settled there.
 4. **`docs/revamp-2026-07/BUILD-V6.md`** — the spec that built the current copy, with every
    published sentence verbatim in §2. It is a record, not a queue, and it wins over BUILD-V5 →
    BUILD-V4 → BUILD-V3 → `copy-v2.md` and older copy laws, in that order.
@@ -91,7 +93,7 @@ Say where the project stands and what is next. Do NOT re-ask questions from comp
 kheelona-com-website/
 ├── CLAUDE.md                              ← Session entry point (founder identity, gates, commands).
 ├── README.md                              ← This file. Resume protocol + status.
-├── FOUNDER-TODO.md                        ← Everything waiting on the founder (section 0 is the live queue).
+├── FOUNDER-TODO.md                        ← Split in two: ⏳ OPEN is the live queue, ✅ CLOSED is the record.
 ├── website-builder-prompt-final-kheelona.md  ← Master build spec (Brand Bible, phases, sprints).
 ├── kheelona homepage website content.pdf  ← Highest source of truth (Home copy, verbatim).
 ├── .env                                   ← Gitignored. The store's six real secrets live here and in Vercel.
