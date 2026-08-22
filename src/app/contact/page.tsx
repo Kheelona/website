@@ -8,7 +8,7 @@ import { Card } from "@/components/molecules/Card";
 import { Reveal } from "@/components/molecules/Reveal";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { graph, breadcrumbs, SITE_URL, pageMeta } from "@/lib/seo";
-import { PREORDER_HREF, RESERVE_LABEL, CONTACT_EMAIL } from "@/config/site";
+import { PREORDER_HREF, PREORDER_LABEL, CONTACT_EMAIL } from "@/config/site";
 
 export const metadata = pageMeta({
   title: "Contact: how to reach the team behind Lumi",
@@ -32,7 +32,7 @@ const ROUTES = [
   {
     title: "Reserving Lumi",
     body: "Join the pre-order list. You pay nothing, and we write to you about your reservation on WhatsApp, with your consent.",
-    cta: { label: RESERVE_LABEL, href: PREORDER_HREF },
+    cta: { label: PREORDER_LABEL, href: PREORDER_HREF },
   },
   {
     title: "Already on the list",

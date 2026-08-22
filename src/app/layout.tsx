@@ -35,12 +35,12 @@ export const metadata: Metadata = {
     template: "%s · Kheelona",
   },
   description:
-    "Lumi is a screen-free talking friend for ages 2 to 5. It listens first, then talks back, tells stories, and slips learning into the play, in up to 10 languages you speak at home. Reserve at ₹4,999. No payment now.",
+    "Lumi is a screen-free talking friend for ages 2 to 5. It listens first, then talks back, tells stories, and slips learning into the play, in up to 10 languages you speak at home. Pre-order at ₹4,999 with a refundable ₹499.",
   openGraph: {
     siteName: "Kheelona",
     type: "website",
     /* GEO: India-first, and stated. "AI toy India" style queries reward an
-       explicit locale, and the offer (₹, WhatsApp, first 500 units) is only
+       explicit locale, and the offer (₹, WhatsApp, the refundable token) is only
        true here. */
     locale: "en_IN",
     images: [{ url: "/og.png", width: 1200, height: 630 }],

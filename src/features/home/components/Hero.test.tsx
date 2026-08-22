@@ -24,16 +24,16 @@ describe("Hero (V6, the growth-arc round)", () => {
     expect(art).toHaveAttribute("src", "/hero/kheelu-lumi.png");
   });
 
-  it("offers exactly ONE button, and the cap line rides under it (team items 7 and 10)", () => {
+  it("offers exactly ONE button, and the offer line rides under it (team items 7 and 10)", () => {
     render(<Hero />);
     expect(
-      screen.getByRole("link", { name: /Reserve Lumi at ₹4,999/i }),
+      screen.getByRole("link", { name: "Pre-order Lumi" }),
     ).toHaveAttribute("href", "#reserve");
     expect(screen.queryByRole("link", { name: "Meet Kheelu" })).toBeNull();
     /* Promoted, not buried: the chip carries the whole offer line and must be
        lifted OFF the warm backdrop. V5-5 moved it from bg-yellow/15 (nearly the
        same value as the page behind it) to a white card with a keyline. */
-    const cap = screen.getByText(/First 500 units at ₹4,999/i);
+    const cap = screen.getByText(/₹499 reserves yours at ₹4,999/i);
     expect(cap.className).toContain("bg-white");
     expect(cap.className).toMatch(/border|shadow/);
   });

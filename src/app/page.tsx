@@ -18,8 +18,11 @@ import { HowItWorksLoop, type LoopStep } from "@/components/organisms/HowItWorks
 import { GrowthArc } from "@/components/organisms/GrowthArc";
 import {
   PREORDER_HREF,
-  RESERVE_LABEL,
+  PREORDER_LABEL,
   PRICE_CAPTION,
+  TOKEN_PRICE,
+  BALANCE_PRICE,
+  PREORDER_DEADLINE_TEXT,
   LUMI_AGES,
 } from "@/config/site";
 import {
@@ -42,7 +45,7 @@ export const metadata = pageMeta({
      template applies to CHILD segments, and this page is the root segment. */
   title: "Lumi: the screen-free AI toy with a tutor inside, ages 2 to 5 · Kheelona",
   description:
-    "A best friend at 2, a head start by 5. The screen-free toy that grows with your child, in the languages you speak at home. Reserve at ₹4,999, no payment now.",
+    "A best friend at 2, a head start by 5. The screen-free toy that grows with your child, in the languages you speak at home. Pre-order at ₹4,999, ₹499 refundable.",
   path: "/",
 });
 
@@ -70,7 +73,7 @@ const HOME_FAQ: FaqEntry[] = [
   },
   {
     q: "How much does Lumi cost in India?",
-    a: "₹4,999 for the first 500 units if you reserve now, and ₹9,999 after launch. You pay nothing today: reserving holds the price and your place in line without committing you to buy. Every Lumi includes 6 months of Kheelona+.",
+    a: `₹4,999 if you pre-order before ${PREORDER_DEADLINE_TEXT}, and ₹9,999 after that. A refundable ${TOKEN_PRICE} reserves your Lumi now, and the ${BALANCE_PRICE} balance is due only when it is ready to ship. Every Lumi includes 6 months of Kheelona+.`,
   },
   {
     q: "What ages is Lumi for?",
@@ -196,7 +199,7 @@ export default function HomePage() {
           </Reveal>
           {/* the strongest fold carries the ask (Apple-tier rule) */}
           <Reveal className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
-            <Button href={PREORDER_HREF}>{RESERVE_LABEL}</Button>
+            <Button href={PREORDER_HREF}>{PREORDER_LABEL}</Button>
             <p className="text-[15px] text-ink-muted">{PRICE_CAPTION}</p>
           </Reveal>
         </Room>

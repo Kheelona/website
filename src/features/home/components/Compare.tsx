@@ -4,7 +4,7 @@ import { Button } from "@/components/atoms/Button";
 import { Reveal } from "@/components/molecules/Reveal";
 import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { CompareTable } from "@/components/molecules/CompareTable";
-import { PREORDER_HREF, RESERVE_LABEL, PRICE_CAPTION } from "@/config/site";
+import { PREORDER_HREF, PREORDER_LABEL, PRICE_CAPTION } from "@/config/site";
 
 /** The honest-comparison moment (kept by founder brief pointer 6; table
  *  wording went parent-first in M2). `bare` renders content-only for the
@@ -31,7 +31,7 @@ export function Compare({ bare = false }: { bare?: boolean }) {
         <p className="mb-6 max-w-[42ch] font-display text-[19px] font-bold text-ink-head">
           A tutor runs out of time and patience. Lumi does not.
         </p>
-        <Button href={PREORDER_HREF}>{RESERVE_LABEL}</Button>
+        <Button href={PREORDER_HREF}>{PREORDER_LABEL}</Button>
         <p className="mt-4 text-[15px] text-ink-muted">{PRICE_CAPTION}</p>
       </Reveal>
     </>

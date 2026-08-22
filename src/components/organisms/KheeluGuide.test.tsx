@@ -28,9 +28,9 @@ describe("KheeluGuide", () => {
     vi.useRealTimers();
   });
 
-  it("docks a reserve link on mobile pointing at the finale anchor", () => {
+  it("docks a pre-order link on mobile pointing at the finale anchor", () => {
     render(<KheeluGuide />);
-    expect(screen.getByRole("link", { name: /Reserve at ₹4,999/ })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Pre-order Lumi" })).toHaveAttribute(
       "href",
       "#reserve",
     );

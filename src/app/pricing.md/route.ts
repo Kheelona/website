@@ -1,6 +1,10 @@
 import {
   LAUNCH_PRICE,
   LATER_PRICE,
+  TOKEN_PRICE,
+  BALANCE_PRICE,
+  PREORDER_DEADLINE_TEXT,
+  STORE_URL,
   LUMI_AGES,
   PLATFORM_AGES,
   LANGUAGES_LINE,
@@ -22,16 +26,17 @@ export const dynamic = "force-static";
 
 const BODY = `# Pricing: Lumi by Kheelona
 
-Market: India. Currency: INR. Stage: pre-order, no payment taken.
+Market: India. Currency: INR. Stage: pre-order, taking a refundable token.
 
 ## Lumi (the talking toy, ages ${LUMI_AGES})
 
-- Pre-order price: ${LAUNCH_PRICE} for the first 500 units
-- Price after launch: ${LATER_PRICE}
-- Payment taken at pre-order: none. Reserving holds the price and your place, and does not commit you to buy.
+- Pre-order price: ${LAUNCH_PRICE}, for pre-orders placed before ${PREORDER_DEADLINE_TEXT}
+- Price after that: ${LATER_PRICE}
+- Paid at pre-order: ${TOKEN_PRICE}, adjusted against the price, and fully refundable until dispatch
+- Balance: ${BALANCE_PRICE}, due by payment link when your unit is ready to dispatch
 - Included with every Lumi: 6 months of Kheelona+
-- Shipping starts ${SHIP_DATE_TEXT}. Everyone on the list is served first, in reservation order.
-- Where to reserve: https://kheelona.com/#reserve
+- Shipping starts ${SHIP_DATE_TEXT}. Pre-orders are served first, in the order they were placed.
+- Where to pre-order: ${STORE_URL}
 
 ## Kheelona+ (the content and the controls)
 

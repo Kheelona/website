@@ -1,4 +1,15 @@
-import { LAUNCH_PRICE, LATER_PRICE, LUMI_AGES, PLATFORM_AGES, LANGUAGES_LINE, SHIP_DATE_TEXT } from "@/config/site";
+import {
+  LAUNCH_PRICE,
+  LATER_PRICE,
+  TOKEN_PRICE,
+  BALANCE_PRICE,
+  PREORDER_DEADLINE_TEXT,
+  STORE_URL,
+  LUMI_AGES,
+  PLATFORM_AGES,
+  LANGUAGES_LINE,
+  SHIP_DATE_TEXT,
+} from "@/config/site";
 
 /** `/llms.txt` (V3 AEO plumbing).
  *
@@ -49,13 +60,14 @@ const BODY = `# Kheelona
 - One prompt sets how the toy speaks to your family: language, culture, values.
 
 ## Price and availability
-- Pre-order: ${LAUNCH_PRICE} for the first 500 units. ${LATER_PRICE} after launch.
-- No payment is taken at pre-order. Reserving holds the price and the place, and does not commit anyone to buy.
+- Pre-order: ${LAUNCH_PRICE} for pre-orders placed before ${PREORDER_DEADLINE_TEXT}. ${LATER_PRICE} after that.
+- A refundable ${TOKEN_PRICE} token reserves a unit. It is adjusted against the price, and the ${BALANCE_PRICE} balance is due by payment link before dispatch. The token is refundable at any time before dispatch.
 - Every Lumi includes 6 months of Kheelona+ (stories, lessons, language packs, parent app). Lumi's smart features are lifetime; Kheelona+ pricing is announced soon. Nothing renews without the parent.
-- Shipping starts ${SHIP_DATE_TEXT}. Everyone on the list is served first, in reservation order.
+- Shipping starts ${SHIP_DATE_TEXT}. Pre-orders are served first, in the order they were placed.
 
 ## Pages
-- https://kheelona.com/ : what Lumi is, what it teaches, and how to reserve
+- https://kheelona.com/ : what Lumi is, what it teaches, and how to pre-order
+- ${STORE_URL} : the pre-order store, where the token is paid
 - https://kheelona.com/products/lumi : the product in detail, plus the questions parents ask
 - https://kheelona.com/safety : are AI toys safe, and how this one is built
 - https://kheelona.com/playos : the platform behind every Kheelona friend
@@ -64,6 +76,7 @@ const BODY = `# Kheelona
 - https://kheelona.com/stories : the journal, for parents
 - https://kheelona.com/contact : how to reach us
 - https://kheelona.com/privacy and https://kheelona.com/terms : the fine print
+- https://kheelona.com/refund and https://kheelona.com/shipping : refunds, cancellation, and delivery
 
 ## Machine-readable
 - https://kheelona.com/pricing.md : prices, what is included, and what is not yet announced

@@ -1,7 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Navbar } from "./Navbar";
-import { NAV_LINKS, RESERVE_LABEL_SHORT } from "@/config/site";
+import { NAV_LINKS, PREORDER_LABEL } from "@/config/site";
 
 describe("Navbar", () => {
   it("renders the logo, the primary nav links, and the reserve CTA", () => {
@@ -13,7 +13,7 @@ describe("Navbar", () => {
       expect(link).toHaveAttribute("href", l.href);
     }
     expect(
-      screen.getByRole("link", { name: RESERVE_LABEL_SHORT }),
+      screen.getByRole("link", { name: PREORDER_LABEL }),
     ).toHaveAttribute("href", "#reserve");
   });
 

@@ -10,7 +10,7 @@ import {
   kheeluPoseSrc,
   type KheeluPose,
 } from "@/lib/kheelu-poses";
-import { PREORDER_HREF, RESERVE_LABEL_SHORT } from "@/config/site";
+import { PREORDER_HREF, PREORDER_LABEL } from "@/config/site";
 import { PRESS } from "@/lib/interactions";
 
 /** The persistent Kheelu guide (revamp M1, theme B's signature device).
@@ -273,7 +273,7 @@ export function KheeluGuide({ defaultPose = "hero-wink" }: { defaultPose?: Kheel
               href={PREORDER_HREF}
               className={`shrink-0 rounded-full bg-action px-4 py-3 text-[14px] font-bold leading-none text-ink-head shadow-cta ${PRESS}`}
             >
-              {RESERVE_LABEL_SHORT}
+              {PREORDER_LABEL}
             </a>
           </div>
         </div>

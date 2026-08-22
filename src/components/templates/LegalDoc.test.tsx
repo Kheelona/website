@@ -33,7 +33,7 @@ describe("LegalDoc", () => {
   it("appends the mandatory reserve finale (#reserve on every page)", () => {
     const { container } = render(<LegalDoc title="Terms" lede="Read me." sections={SECTIONS} />);
     expect(
-      screen.getByRole("heading", { name: /Reserve Lumi before the price goes up/i }),
+      screen.getByRole("heading", { name: /Pre-order Lumi before the price goes up/i }),
     ).toBeInTheDocument();
     expect(container.querySelector("#reserve")).toBeInTheDocument();
   });
