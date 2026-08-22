@@ -95,9 +95,9 @@ tummy. Sources + the unused Playbox speaker render staged in
 live on every social share, invisible to voice-lint because it is pixels. Rebuilt at exact
 1200×630 via a styled HTML card screenshotted in Chrome (Glory + Instrument Sans from Google
 Fonts): V4 hero copy, correct `ages 2 to 5`, the D1 brand-orange/ink pill, Kheelu + the v2 plush.
-Old card archived at `Design/product-images/generated-2026-07/og-2026-07-old.png` (off the web
-root — it carries the stale claim). LESSON: image assets carry claims too; check og/posters when
-copy laws change.
+The old card was archived at `Design/product-images/generated-2026-07/og-2026-07-old.png`, off the
+web root because it carries the stale claim, and **deleted on 2026-08-23** in the repo cleanup (it is
+in git history). LESSON: image assets carry claims too; check og/posters when copy laws change.
 
 **Local gotcha, cost 20 minutes: `next start`'s image optimizer cache survives rebuilds.**
 `.next/cache/images/` kept serving the OLD optimized variants for the same-named replaced files
