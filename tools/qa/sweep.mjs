@@ -12,7 +12,7 @@
  *    node tools/qa/sweep.mjs
  *
  *  Exits 1 if anything fails, so it can gate a release. */
-import { openPage, loadSettled } from "./lib/browser.mjs";
+import { openPage, loadSettled, looksLocal } from "./lib/browser.mjs";
 import { axeSourcePath } from "./lib/resolve.mjs";
 import { readFileSync } from "node:fs";
 
@@ -54,7 +54,7 @@ const axe = readFileSync(axeSourcePath(), "utf8");
 let failures = 0;
 
 for (const width of WIDTHS) {
-  const { browser, page } = await openPage({ width });
+  const { browser, page } = await openPage({ width, local: looksLocal(BASE) });
   for (const url of ROUTES) {
     let line = `${String(width).padStart(4)}px  ${url.padEnd(58)}`;
     try {

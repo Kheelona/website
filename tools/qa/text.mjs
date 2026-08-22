@@ -7,14 +7,14 @@
  *  it once reported "Meet Lumi" on the store's 404 and sent a chase after a bug
  *  that did not exist. It is also the honest way to run the voice lint, since
  *  copy is assembled from constants and split across JSX nodes. */
-import { openPage, loadSettled } from "./lib/browser.mjs";
+import { openPage, loadSettled, looksLocal } from "./lib/browser.mjs";
 
 const [url] = process.argv.slice(2);
 if (!url) {
   console.error("usage: node tools/qa/text.mjs <url>");
   process.exit(1);
 }
-const { browser, page } = await openPage({ width: 1280 });
+const { browser, page } = await openPage({ width: 1280, local: looksLocal(url) });
 const response = await loadSettled(page, url, { settleMs: 800 });
 const text = await page.evaluate(() => document.body.innerText);
 const links = await page.evaluate(() =>

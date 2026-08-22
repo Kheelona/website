@@ -3,7 +3,7 @@
  *  Usage: node tools/qa/axe-run.mjs <url> [width]
  *  Exits 1 when anything is found, so it can gate a script. */
 import { readFileSync } from "node:fs";
-import { openPage, loadSettled } from "./lib/browser.mjs";
+import { openPage, loadSettled, looksLocal } from "./lib/browser.mjs";
 import { axeSourcePath } from "./lib/resolve.mjs";
 
 const [url, widthArg] = process.argv.slice(2);
@@ -12,7 +12,7 @@ if (!url) {
   process.exit(1);
 }
 const width = Number(widthArg) || 1280;
-const { browser, page } = await openPage({ width });
+const { browser, page } = await openPage({ width, local: looksLocal(url) });
 await loadSettled(page, url);
 await page.evaluate(readFileSync(axeSourcePath(), "utf8"));
 const violations = await page.evaluate(async () => {
