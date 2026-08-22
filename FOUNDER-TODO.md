@@ -96,6 +96,21 @@ from the `send.` subdomain precisely so the root's reputation is never at risk.
       passes, but **without the MX you are blind to bounces and complaints** — you will not know when
       a customer's receipt fails to arrive.
 
+#### ✅ The store is fully verified (2026-08-22)
+
+A real ₹499 UPI pre-order (`KH-YPJ8-GHVT`) proved the whole path on live keys, and was refunded after:
+the payment captured, **all three webhook deliveries returned 200** (so the secret matches), the
+idempotency guard held under the real race (`payment.captured` and `order.paid` one second apart, exactly
+**one** receipt sent), both emails were correct, and the signed address link from that receipt was then
+used to save a delivery address. Razorpay fees were **₹0.00**, because UPI is zero-MDR in India, so
+verifying the whole thing cost nothing. **Nothing about the payment or fulfilment path is unproven.**
+
+Two lessons from that single transaction, both worth keeping: the receipt greeted "Thank you, shweta"
+because the code used the typed name verbatim (fixed, and found only by reading the sent PDF while every
+test passed); and the refund was issued at ₹489 rather than ₹499, which on a real customer would
+contradict both the receipt and `/refund` for no reason, since fees were zero. **Always refund the whole
+token.**
+
 #### The first real payment
 
 No card payment has ever gone through this code, and the keys are live, so the first one is real money.

@@ -83,11 +83,14 @@ path is now proven, not inferred:**
    the ₹10 is moot here, but **a partial refund on a real customer would contradict published policy.**
    Refund the full token amount, always.
 
-### Still not covered by that test
+### The address step, also proven (2026-08-22)
 
-- **The address step from the email link.** The test order never added a delivery address, so the signed
-  `/thanks?ref=…&t=…` path from a real email is still unexercised. The link in that receipt is live and
-  valid for 30 days if you want to prove it.
+The founder opened the signed link from that same receipt email and saved a delivery address, which
+appears on the `KH-YPJ8-GHVT` row. So the signed-token authorisation, the address form's validation and
+the write are all proven in production too. **Every route in the store now has production evidence.**
+
+### Still not covered
+
 - **The balance run.** Collecting ₹4,500 by payment link before dispatch is a manual process with no
   tooling. `balance_status` on every row tracks it: `due` → `link_sent` → `paid`.
 

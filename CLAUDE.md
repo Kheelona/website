@@ -36,9 +36,10 @@ typed because title-casing mangles real names) — **found only by reading the s
 test passed**; and the refund was issued at ₹489 rather than ₹499, which on a real customer would
 contradict both the receipt and `/refund`, and cost nothing to get right since fees were zero.
 
-**🟡 STILL OPEN** (see FOUNDER-TODO section 0): the signed address link from a real receipt has never
-been exercised, so dispatch data collection is the one customer-facing path with no production
-evidence; DMARC tightens to `p=quarantine` on **5 September 2026** (scheduled agent + dated item);
+The signed address link was exercised from that same receipt and the address saved, so **EVERY route in
+the store has production evidence** and nothing about the payment or fulfilment path is unproven.
+
+**🟡 STILL OPEN** (see FOUNDER-TODO section 0): DMARC tightens to `p=quarantine` on **5 September 2026** (scheduled agent + dated item);
 Resend's `send` SPF and MX are absent so bounce feedback is blind; and a trivial Supabase query takes
 250 to 975ms, suggesting the project is not in an Indian region.
 

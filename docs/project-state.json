@@ -2,7 +2,7 @@
   "project_name": "kheelona.com",
   "created_at": "2026-07-06",
   "last_updated": "2026-08-22",
-  "current_phase": "THE PAID PRE-ORDER STORE IS LIVE (2026-08-22). main carries it, store.kheelona.com serves it, and /api/health returns {ok:true, store:ready, razorpay:LIVE, email:MISSING}. Rollback tag v6-live-2026-08-22 = the last pre-store commit (0fb02fe). VERIFIED against production by driving it: all six env vars readable, Supabase writes, live Razorpay order creation (KH-8FP8-PWDA / order_TStGXH3YHKnudP), amount decided server-side, signed address token, 422 validation, webhook 400 on a bad signature, store host serving /store with noindex, the paid copy live on the marketing site, and all four policy pages 200. FULLY VERIFIED WITH A REAL PAYMENT on 2026-08-22 at 23:29: ₹499 UPI order KH-YPJ8-GHVT, three webhook deliveries ALL 200 (proving the secret matches), idempotency proven under the real race (captured and order.paid one second apart, exactly ONE receipt sent), both emails correct, Razorpay fees ₹0.00 because UPI is zero-MDR. Two findings from it: the greeting used the name verbatim (\"Thank you, shweta\") which is fixed, and the refund was issued at ₹489 not ₹499, which would contradict published policy on a real customer. STILL UNTESTED: the signed address link from a real receipt email. Also open: delete the test row KH-8FP8-PWDA, and check the Supabase region (a trivial query takes 250-720ms). NEXT: docs/store-go-live.md, the '⚑ WHERE THIS ACTUALLY GOT TO' block at the top.",
+  "current_phase": "THE PAID PRE-ORDER STORE IS LIVE (2026-08-22). main carries it, store.kheelona.com serves it, and /api/health returns {ok:true, store:ready, razorpay:LIVE, email:MISSING}. Rollback tag v6-live-2026-08-22 = the last pre-store commit (0fb02fe). VERIFIED against production by driving it: all six env vars readable, Supabase writes, live Razorpay order creation (KH-8FP8-PWDA / order_TStGXH3YHKnudP), amount decided server-side, signed address token, 422 validation, webhook 400 on a bad signature, store host serving /store with noindex, the paid copy live on the marketing site, and all four policy pages 200. FULLY VERIFIED WITH A REAL PAYMENT on 2026-08-22 at 23:29: ₹499 UPI order KH-YPJ8-GHVT, three webhook deliveries ALL 200 (proving the secret matches), idempotency proven under the real race (captured and order.paid one second apart, exactly ONE receipt sent), both emails correct, Razorpay fees ₹0.00 because UPI is zero-MDR. Two findings from it: the greeting used the name verbatim (\"Thank you, shweta\") which is fixed, and the refund was issued at ₹489 not ₹499, which would contradict published policy on a real customer. The signed address link was then exercised from that same receipt and the address saved, so EVERY route in the store now has production evidence and nothing about the payment or fulfilment path is unproven. Also open: delete the test row KH-8FP8-PWDA, and check the Supabase region (a trivial query takes 250-720ms). NEXT: docs/store-go-live.md, the '⚑ WHERE THIS ACTUALLY GOT TO' block at the top.",
   "current_sprint": "store-live",
   "phase_status": {
     "phase_0_kickoff": {
@@ -338,10 +338,11 @@
     {
       "id": "address-link-untested-2026-08-22",
       "desc": "The signed /thanks?ref=…&t=… address path has never been exercised from a real acknowledgement email. The test order never added a delivery address, and dispatch cannot happen without one.",
-      "status": "open",
+      "status": "resolved",
       "owner": "founder",
       "impact": "Low but real: it is the one customer-facing path with no production evidence. The link in the KH-YPJ8-GHVT receipt stays valid for 30 days and can prove it.",
-      "see": "docs/store-go-live.md"
+      "see": "docs/store-go-live.md",
+      "resolution": "2026-08-22: the founder opened the signed link from the real receipt email and saved a delivery address, which is visible on the KH-YPJ8-GHVT row in Supabase. The signed-token authorisation, the address form and the write are all proven in production. That was the last route in the store with no production evidence."
     }
   ],
   "last_handoff": {
