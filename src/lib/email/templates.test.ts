@@ -1,7 +1,14 @@
 import { describe, expect, it } from "vitest";
 import { preorderAckEmail, internalAlertEmail } from "./templates";
 import type { PreorderRow } from "@/lib/store/db";
-import { GSTIN, LEGAL_ENTITY, SHIP_DATE_TEXT, BALANCE_PRICE } from "@/config/site";
+import {
+  GSTIN,
+  LEGAL_ENTITY,
+  SHIP_DATE_TEXT,
+  BALANCE_PRICE,
+  FULL_PRICE,
+  FULL_AMOUNT_PAISE,
+} from "@/config/site";
 
 /**
  * The acknowledgement email is the only part of this purchase a parent still has
@@ -102,6 +109,43 @@ describe("the acknowledgement email", () => {
 
   it("leaves the recipient for the sender to fill, so a template cannot leak one", () => {
     expect(email.to).toBe("");
+  });
+});
+
+describe("the acknowledgement for a full-payment order (§8.26)", () => {
+  const fullOrder: PreorderRow = {
+    ...order,
+    tier: "full",
+    amount_paise: FULL_AMOUNT_PAISE,
+    balance_status: "none",
+  };
+  const email = preorderAckEmail({
+    order: fullOrder,
+    addressUrl: "https://store.kheelona.com/thanks?x=1",
+  });
+
+  it("never mentions a balance or a payment link to come", () => {
+    for (const part of [email.html, email.text]) {
+      expect(part).not.toContain(BALANCE_PRICE);
+      expect(part).not.toMatch(/balance/i);
+      expect(part).not.toMatch(/payment link/i);
+    }
+  });
+
+  it("says the whole price is paid, and keeps the refund promise on all of it", () => {
+    for (const part of [email.html, email.text]) {
+      expect(part).toContain(FULL_PRICE);
+      expect(part).toMatch(/paid in full/i);
+      expect(part).toMatch(/refund/i);
+    }
+  });
+
+  it("branches on the ROW's tier, so a token receipt is untouched by the flip", () => {
+    /* The token email is asserted line-by-line above; this pins that the fork
+       is the order's own tier, not any global state. */
+    const tokenAgain = preorderAckEmail({ order, addressUrl: "https://x.example/t" });
+    expect(tokenAgain.html).toContain(BALANCE_PRICE);
+    expect(tokenAgain.text).toContain(BALANCE_PRICE);
   });
 });
 

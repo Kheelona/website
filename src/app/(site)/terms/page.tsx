@@ -3,10 +3,10 @@ import { LegalDoc, type LegalSection } from "@/components/templates/LegalDoc";
 import { SELLER_SECTION } from "@/lib/legal";
 import {
   LAUNCH_PRICE,
-  LATER_PRICE,
+  FULL_PRICE,
+  CAP_UNITS_TEXT,
   TOKEN_PRICE,
   BALANCE_PRICE,
-  PREORDER_DEADLINE_TEXT,
   SHIP_DATE_TEXT,
   SUPPORT_WHATSAPP_DISPLAY,
   TAX_LINE,
@@ -29,14 +29,15 @@ const SECTIONS: readonly LegalSection[] = [
   {
     h: "What a pre-order is",
     ps: [
-      `A pre-order reserves one Lumi for you at ${LAUNCH_PRICE} and puts you in the queue at the point you joined it. You pay ${TOKEN_PRICE} today.`,
+      `A pre-order reserves one Lumi for you and puts you in the queue at the point you joined it. While the ${CAP_UNITS_TEXT} last, you pay ${TOKEN_PRICE} today and your Lumi is held at the ${LAUNCH_PRICE} price.`,
       `That ${TOKEN_PRICE} is part of the price, not on top of it. The remaining ${BALANCE_PRICE} is due when your Lumi is ready to be dispatched to you, by a payment link we send. Nothing is ever charged automatically, and we do not keep your card.`,
+      `Once the ${CAP_UNITS_TEXT} have all been reserved, a pre-order is ${FULL_PRICE}, paid in full when you place it. There is no token and no balance: nothing more is due before dispatch, and the same refund promise below applies to every rupee of it.`,
     ],
   },
   {
-    h: "The price and the date",
+    h: `The price and the ${CAP_UNITS_TEXT}`,
     ps: [
-      `${LAUNCH_PRICE} is the price for pre-orders placed on or before ${PREORDER_DEADLINE_TEXT}. After that the price is ${LATER_PRICE}. Your price is fixed on the day you pre-order, and it does not move afterwards, in either direction.`,
+      `${LAUNCH_PRICE} is the price for the ${CAP_UNITS_TEXT}, counted by paid pre-orders. Once they are gone, the price is ${FULL_PRICE}. Your price is fixed on the day you pre-order, and it does not move afterwards, in either direction.`,
       `Shipping starts ${SHIP_DATE_TEXT}, and pre-orders are served in the order they were placed.`,
       /* Founder-confirmed 2026-08-22. Stated in the price clause rather than a
          footnote: "does this include tax and delivery" is the question a price
@@ -56,7 +57,7 @@ const SECTIONS: readonly LegalSection[] = [
     ps: [
       /* The refund promise is stated here and detailed on /refund. Both pages
          must say the same thing: "before dispatch, in full, no reason". */
-      "You can cancel at any time before your Lumi is dispatched and we refund the whole token. No fee, no deduction, and you do not have to tell us why. The full detail, including how long a refund takes to reach you, is on the Refunds page.",
+      "You can cancel at any time before your Lumi is dispatched and we refund everything you have paid us: the whole token, or the whole price if you paid in full. No fee, no deduction, and you do not have to tell us why. The full detail, including how long a refund takes to reach you, is on the Refunds page.",
     ],
   },
   {

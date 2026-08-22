@@ -5,9 +5,12 @@ import { Analytics } from "@vercel/analytics/next";
 import { GoogleAnalyticsGate } from "@/components/molecules/GoogleAnalyticsGate";
 import { AHREFS_ANALYTICS_KEY } from "@/config/site";
 
+/* All three faces are subsets of the v3 design system's TTFs
+   (Design/Kheelona-Design-System-v3/fonts, SIL OFL — licences alongside the
+   woff2 files) since CS3 Phase A, 2026-08-23. Glory and Instrument Sans stay
+   upright-only; the serif ships ITALIC ONLY, because that is its entire v3
+   role. */
 const glory = localFont({
-  // Upright faces only: italics are banned site-wide (R5 typography rule,
-  // founder 2026-07-10), so italic font files would be dead preloaded bytes.
   src: [{ path: "./fonts/Glory.woff2", weight: "100 900", style: "normal" }],
   variable: "--font-glory",
   display: "swap",
@@ -19,17 +22,26 @@ const instrumentSans = localFont({
   display: "swap",
 });
 
-// Instrument Serif retired 2026-07-24 (founder revamp decision: two fonts
-// only — Glory + Instrument Sans). Human quotes now use the display face.
+/* Instrument Serif, REINSTATED by founder order 2026-08-23 (decision #11,
+   migration-to-new-dsx.md), reversing the 2026-07-24 retirement and the
+   zero-italics law with it — but only this far: v3's editorial accent is
+   italic serif for section titles and pull-quotes, used sparingly, one per
+   composition (v3 guidelines/typography.md §1). Body copy and UI never
+   take italics; JONY specs each placement page by page in Phase B. */
+const instrumentSerif = localFont({
+  src: [{ path: "./fonts/InstrumentSerifItalic.woff2", weight: "400", style: "italic" }],
+  variable: "--font-instrument-serif",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://kheelona.com"),
   title: {
-    default: "Lumi by Kheelona: the screen-free friend that grows with your child, ages 2 to 5",
+    default: "Lumi by Kheelona: the screen-free friend that grows with your child, ages 3+",
     template: "%s · Kheelona",
   },
   description:
-    "Lumi is a screen-free talking friend for ages 2 to 5. It listens first, then talks back, tells stories, and slips learning into the play, in up to 10 languages you speak at home. Pre-order at ₹4,999 with a refundable ₹499.",
+    "Lumi is a screen-free talking friend for ages 3+. It listens first, then talks back, tells stories, and slips learning into the play, in up to 10 languages you speak at home. Pre-order at ₹4,999 with a refundable ₹499.",
   openGraph: {
     siteName: "Kheelona",
     type: "website",
@@ -56,7 +68,7 @@ export default function RootLayout({
     <html
       lang="en-IN"
       suppressHydrationWarning
-      className={`${glory.variable} ${instrumentSans.variable}`}
+      className={`${glory.variable} ${instrumentSans.variable} ${instrumentSerif.variable}`}
     >
       <head>
         {/* Marks JS availability before first paint so reveal styles only apply

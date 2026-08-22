@@ -1,6 +1,6 @@
 import { storeEnv } from "@/lib/store/env";
 import { db } from "@/lib/store/db";
-import { resolveTier, tierRefusalMessage } from "@/lib/store/tiers";
+import { resolveTier, tierRefusalMessage, FULL_TIER } from "@/lib/store/tiers";
 import { createRazorpayOrder } from "@/lib/store/razorpay";
 import { newOrderRef } from "@/lib/store/order-ref";
 import { signAddressToken, ADDRESS_TOKEN_TTL_MS } from "@/lib/store/signing";
@@ -79,6 +79,11 @@ export async function POST(request: Request) {
       order_ref: orderRef,
       tier: tierResult.tier.id,
       amount_paise: tierResult.tier.amountPaise,
+      /* A full-payment order never owes a balance, and 'none' is what keeps it
+         out of the balance-due ops query — by data, not by a human remembering
+         to filter (§8.26). Token and event orders keep the due→link_sent→paid
+         lifecycle. */
+      balance_status: tierResult.tier.id === FULL_TIER ? "none" : "due",
       parent_name: contact.parentName,
       // stored normalised: one shape in the table means one shape in a WhatsApp
       // export, and a support search that actually finds people

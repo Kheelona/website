@@ -42,12 +42,17 @@ const ROUTES = [
 const WIDTHS = [390, 1280];
 
 /** Phrases that must never appear in published text again (§8.25-f), and the
- *  voice laws that apply to every rendered page. */
+ *  voice laws that apply to every rendered page. Mirrors the RETIRED list in
+ *  test/preorder-copy.test.ts — inverted with it on 2026-08-23 (§8.26): the
+ *  500-unit cap is BACK as the offer term, and the date-deadline era strings
+ *  took its place on this list. */
 const FORBIDDEN = [
   [/—/, "em-dash (en-dash only, inside number ranges)"],
   [/no payment/i, "retired: ₹499 is charged now"],
-  [/first 500/i, "retired: there is no unit cap"],
   [/pay nothing/i, "retired: ₹499 is charged now"],
+  [/30 September/i, "retired: the date deadline died 2026-08-23, urgency is the 500-unit cap"],
+  [/₹9,999/, "retired: the post-cap price is ₹7,999"],
+  [/1 October 2026/, "retired: the ship date is 20 October 2026"],
 ];
 
 const axe = readFileSync(axeSourcePath(), "utf8");

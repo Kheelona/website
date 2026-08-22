@@ -21,7 +21,7 @@ export function Family() {
           ledeClassName="mb-2 max-w-[58ch]"
         />
         <p className="mb-10 font-display text-[18px] font-bold text-ink-head">
-          Starts talking at 2. Still teaching at 14.
+          Starts talking at 3. Still teaching for years.
         </p>
       </Reveal>
       <FamilyGrid />

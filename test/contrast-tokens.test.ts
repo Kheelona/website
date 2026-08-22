@@ -12,28 +12,19 @@ import { describe, expect, it } from "vitest";
  * someone lightens a wash or darkens an ink, the test says which pairs changed
  * side rather than leaving it to the next axe sweep to notice, or not.
  *
- * WHERE THE VALUES COME FROM, and why it is two files. The inks plus `cream` and
- * `cool` are real `--color-*` tokens in globals.css. `sun` is NOT — it is a raw
- * arbitrary value `bg-[#fdf1e2]` in the `FILLS` map in `atoms/Room.tsx`, and
- * `white` is Tailwind's own default and not a token at all. Reading `sun` from
- * Room.tsx rather than hardcoding it is what stops this test from disagreeing
- * with what the rooms actually paint.
+ * WHERE THE VALUES COME FROM. Every wash except `white` is a real `--color-*`
+ * token in globals.css since CS3 Phase 0 (2026-08-23) promoted `sun` from a
+ * raw `bg-[#fdf1e2]` literal in Room.tsx to `--color-sun` — the literal was
+ * the one wash a palette change could silently miss. `white` is Tailwind's
+ * own default and not a token at all.
  */
 
 const ROOT = process.cwd();
 const CSS = readFileSync(join(ROOT, "src/styles/globals.css"), "utf8");
-const ROOM = readFileSync(join(ROOT, "src/components/atoms/Room.tsx"), "utf8");
 
 function token(name: string): string {
   const m = CSS.match(new RegExp(`--color-${name}:\\s*(#[0-9a-fA-F]{6})`));
   if (!m) throw new Error(`--color-${name} not found in globals.css`);
-  return m[1].toLowerCase();
-}
-
-/** `sun` lives only as an arbitrary Tailwind value in Room's FILLS map. */
-function roomFill(name: string): string {
-  const m = ROOM.match(new RegExp(`${name}:\\s*"bg-\\[(#[0-9a-fA-F]{6})\\]"`));
-  if (!m) throw new Error(`FILLS.${name} not found as an arbitrary value in Room.tsx`);
   return m[1].toLowerCase();
 }
 
@@ -60,17 +51,20 @@ const WASHES = {
   white: "#ffffff", // Tailwind default, via FILLS.white = "bg-white"
   cream: token("cream"),
   cool: token("cool"),
-  sun: roomFill("sun"),
+  sun: token("sun"),
 };
 
 const AA = 4.5;
 
 describe("ink-on-wash contrast, as arithmetic rather than prose", () => {
   it("resolves every token it claims to read", () => {
-    expect(INKS["ink-muted"]).toBe("#727272");
+    /* Pinned to the v3 values since CS3 Phase A (2026-08-23): ink-muted is
+       --kh-ink-3, cool is --kh-blue-tint, sun is --kh-yellow-tint. orange-ink
+       is a site extension and did not move. */
+    expect(INKS["ink-muted"]).toBe("#78716c");
     expect(INKS["orange-ink"]).toBe("#b54a0d");
-    expect(WASHES.cool).toBe("#eaf6fc");
-    expect(WASHES.sun).toBe("#fdf1e2");
+    expect(WASHES.cool).toBe("#e2f3fa");
+    expect(WASHES.sun).toBe("#fceeda");
   });
 
   /* The four inks that are safe anywhere. `orange-ink` being in this list is the

@@ -12,7 +12,7 @@ describe("FinaleCTA", () => {
     // wording, one source, no drift between the price surfaces.
     expect(
       screen.getByText(
-        "₹499 reserves yours at ₹4,999. ₹9,999 after 30 September 2026. We hold the price, you hold your place.",
+        "₹499 reserves one of the first 500 units at ₹4,999. ₹7,999 once they are gone. We hold the price, you hold your place.",
       ),
     ).toBeInTheDocument();
     expect(container.querySelector("#reserve")).toBeInTheDocument();
@@ -34,7 +34,7 @@ describe("FinaleCTA", () => {
     render(<FinaleCTA />);
     expect(screen.getByText("Fully refundable")).toBeInTheDocument();
     expect(screen.getByText("₹499 now, ₹4,500 later")).toBeInTheDocument();
-    expect(screen.getByText("Ships 1 October 2026")).toBeInTheDocument();
+    expect(screen.getByText("Ships 20 October 2026")).toBeInTheDocument();
     // the retired free-list promise must never come back on a paid page
     expect(screen.queryByText(/No payment/i)).toBeNull();
   });

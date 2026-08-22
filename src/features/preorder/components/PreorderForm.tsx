@@ -41,11 +41,18 @@ export function PreorderForm({
   tier,
   signature,
   amountLabel,
+  mode = "token",
 }: {
   tier: string;
   signature?: string;
   /** What the parent is about to pay, already formatted by the server. */
   amountLabel: string;
+  /** Display only, decided by the server with the tier (§8.26): "token" keeps
+   *  the token-and-balance caption, "full" says the payment is the whole
+   *  price. No amount crosses the client boundary because of this prop — it
+   *  changes sentences, never numbers. Event pages always pass "token": an
+   *  event token is a token, whatever the public mode is. */
+  mode?: "token" | "full";
 }) {
   const [errors, setErrors] = useState<FieldErrors<ContactInput>>({});
   const [state, setState] = useState<"idle" | "working" | "paying">("idle");
@@ -166,7 +173,11 @@ export function PreorderForm({
         inputMode="tel"
         required
         autoComplete="tel"
-        hint="Where we send your confirmation, and the balance link before dispatch."
+        hint={
+          mode === "token"
+            ? "Where we send your confirmation, and the balance link before dispatch."
+            : "Where we send your confirmation, and updates before dispatch."
+        }
         error={errors.phone}
       />
       <TextField
@@ -218,15 +229,28 @@ export function PreorderForm({
           busy && "cursor-wait opacity-70",
         )}
       >
-        {state === "idle" ? `Pay ${amountLabel} and reserve` : null}
+        {state === "idle"
+          ? `Pay ${amountLabel} and ${mode === "token" ? "reserve" : "pre-order"}`
+          : null}
         {state === "working" ? "Setting up your payment…" : null}
         {state === "paying" ? "Opening the payment window…" : null}
       </button>
 
       <p className="text-[14px] leading-[1.55] text-ink-muted">
-        {amountLabel} today, {BALANCE_PRICE} when your Lumi is ready to ship, for
-        the {LAUNCH_PRICE} price. Refundable in full until we dispatch it. We
-        never see your card details, and nothing is ever charged automatically.
+        {mode === "token" ? (
+          <>
+            {amountLabel} today, {BALANCE_PRICE} when your Lumi is ready to
+            ship, for the {LAUNCH_PRICE} price. Refundable in full until we
+            dispatch it. We never see your card details, and nothing is ever
+            charged automatically.
+          </>
+        ) : (
+          <>
+            {amountLabel} today, and nothing more to pay before dispatch.
+            Refundable in full until we dispatch it. We never see your card
+            details, and nothing is ever charged automatically.
+          </>
+        )}
       </p>
       <p className="text-[14px] text-ink-muted">
         Rather do this over a message?{" "}

@@ -16,11 +16,12 @@ describe("FamilyGrid", () => {
     }
   });
 
-  it("carries an age chip per body so the row reads as an arc to 14", () => {
+  it("carries an age chip per body so the row still reads as an arc", () => {
+    /* Open-ended "N+" chips since the 3+ repositioning (2026-08-23): no
+       published ceiling anywhere, and two of the three share "3+". */
     render(<FamilyGrid />);
-    expect(screen.getByText("Ages 2 to 5")).toBeInTheDocument();
-    expect(screen.getByText("Ages 5 to 14")).toBeInTheDocument();
-    expect(screen.getByText("Ages 2 to 14")).toBeInTheDocument();
+    expect(screen.getAllByText("Ages 3+").length).toBe(2);
+    expect(screen.getByText("Ages 5+")).toBeInTheDocument();
   });
 
   it("links only Lumi, and links the whole card", () => {

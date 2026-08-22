@@ -14,6 +14,22 @@ anything that turns out wrong gets corrected here rather than argued twice.
 
 # ⏳ OPEN
 
+## The 2026-08-23 restructure (500-unit cap), waiting on you
+
+- [ ] **⚠ BEFORE you merge `demo-website` to main: run migration 0002 in Supabase.** Paste
+      `supabase/migrations/0002_full_tier_balance.sql` into the SQL editor and run it. It is additive
+      (widens one CHECK constraint, touches no row) and safe to run any time BEFORE the deploy — but
+      the new code writes `balance_status='none'` for full-price orders, and without the migration
+      that insert fails. Order of operations: run 0002 → merge → Vercel deploys → check
+      `curl -s https://kheelona.com/api/health` shows `"preorder":"token"`.
+
+- [ ] **STANDING, for the day the 500th unit sells: the sell-out copy sweep.** The store flips to
+      ₹7,999 full-payment BY ITSELF (server-side, per request). The static marketing pages cannot flip
+      themselves: Home, /products/lumi, /terms, llms.txt, pricing.md and the JSON-LD price will still
+      read "₹499 reserves one of the first 500 units". The trigger is `/api/health` reporting
+      `"preorder":"full"` (or the internal order alert). The day that happens, ask for the sell-out
+      sweep and it is a one-session edit (§8.26-g).
+
 ## Dated, and the only items with a clock on them
 
 - [ ] **📅 5 September 2026: tighten DMARC to `p=quarantine`.** The two-week observation window ends

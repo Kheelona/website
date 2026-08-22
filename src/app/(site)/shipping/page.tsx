@@ -5,6 +5,7 @@ import {
   TOKEN_PRICE,
   BALANCE_PRICE,
   LAUNCH_PRICE,
+  CAP_UNITS_TEXT,
   SHIP_DATE_TEXT,
   SUPPORT_WHATSAPP_DISPLAY,
   TAX_LINE,
@@ -42,8 +43,8 @@ const SECTIONS: readonly LegalSection[] = [
   {
     h: "The balance, before dispatch",
     ps: [
-      `You pay ${TOKEN_PRICE} to pre-order. The remaining ${BALANCE_PRICE} of the ${LAUNCH_PRICE} price is due when your Lumi is ready to leave for you, and we send you a payment link on WhatsApp and by email when that moment comes.`,
-      "Your Lumi is dispatched once the balance is paid. Nothing is ever charged automatically, and we never hold a card on file.",
+      `On a token pre-order, you pay ${TOKEN_PRICE} to reserve and the remaining ${BALANCE_PRICE} of the ${LAUNCH_PRICE} price is due when your Lumi is ready to leave for you, by a payment link we send on WhatsApp and by email. If you pre-ordered after the ${CAP_UNITS_TEXT} were gone, you have already paid the whole price and nothing more is due.`,
+      "A token pre-order is dispatched once its balance is paid; a paid-in-full pre-order just ships. Nothing is ever charged automatically, and we never hold a card on file.",
     ],
   },
   {

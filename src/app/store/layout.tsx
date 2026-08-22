@@ -37,10 +37,10 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
         <div className="mx-auto flex h-[72px] w-full max-w-[1100px] items-center justify-between px-6">
           <a href="https://kheelona.com" aria-label="Kheelona home" className="shrink-0">
             <Image
-              src="/brand/logo-wordmark.png"
+              src="/brand/kheelona-wordmark.svg"
               alt="Kheelona"
-              width={150}
-              height={43}
+              width={152}
+              height={50}
               priority
               className="h-[32px] w-auto"
             />

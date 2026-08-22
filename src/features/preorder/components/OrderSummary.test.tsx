@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { OrderSummary } from "./OrderSummary";
-import { BALANCE_PRICE, LAUNCH_PRICE, SHIP_DATE_TEXT } from "@/config/site";
+import { BALANCE_PRICE, LAUNCH_PRICE, FULL_PRICE, SHIP_DATE_TEXT } from "@/config/site";
 
 describe("OrderSummary", () => {
   it("answers what leaves the account today, and what leaves it later", () => {
@@ -27,5 +27,15 @@ describe("OrderSummary", () => {
     expect(screen.getByText("Bangalore expo price")).toBeInTheDocument();
     // and the full price is still stated, so the deal is legible as a deal
     expect(screen.getAllByText(new RegExp(LAUNCH_PRICE)).length).toBeGreaterThan(0);
+  });
+
+  it("says the whole price is paid in the full-payment shape, with no balance line (§8.26)", () => {
+    render(<OrderSummary amountLabel={FULL_PRICE} tierLabel="Launch price" mode="full" />);
+    expect(screen.getByText(`${FULL_PRICE} today`)).toBeInTheDocument();
+    expect(screen.getByText("Nothing due on dispatch")).toBeInTheDocument();
+    expect(screen.queryByText(`${BALANCE_PRICE} on dispatch`)).toBeNull();
+    // the refund and nothing-automatic promises survive the shape change
+    expect(screen.getByText("Refundable in full")).toBeInTheDocument();
+    expect(screen.getByText(/nothing automatic/i)).toBeInTheDocument();
   });
 });

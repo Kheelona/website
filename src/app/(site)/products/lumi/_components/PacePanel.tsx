@@ -1,7 +1,7 @@
 import { Reveal } from "@/components/molecules/Reveal";
 import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { Shape } from "@/components/atoms/Shapes";
-import { lumiAgeEndpoints } from "@/lib/growth-arc";
+import { HERO_PROMISE } from "@/lib/growth-arc";
 
 /** "School teaches the class. Lumi teaches one child." (founder call,
  *  2026-07-28.)
@@ -32,7 +32,7 @@ const CONTRAST = [
   },
   {
     kind: "flower5" as const,
-    tint: "bg-[#fdf1e2]",
+    tint: "bg-sun",
     color: "#EF762F",
     label: "Lumi",
     heading: "One lesson, one child.",
@@ -42,7 +42,6 @@ const CONTRAST = [
 ] as const;
 
 export function PacePanel() {
-  const [ageStart, ageEnd] = lumiAgeEndpoints();
   return (
     <div>
       <Reveal>
@@ -96,15 +95,16 @@ export function PacePanel() {
         </p>
       </Reveal>
       {/* V6 D5: the pace argument extended from days to years, closing on the
-          hero promise verbatim — one promise, said identically on both pages. */}
+          hero promise verbatim — one promise, said identically on both pages,
+          rendered from the same HERO_PROMISE source since the 3+ re-anchor. */}
       <Reveal className="mt-10">
         <p className="max-w-[58ch] text-[16px] text-ink">
           The memory that picks up where your child stopped tomorrow keeps
-          picking up for years. First words at {ageStart} become stories,
-          numbers, and questions by {ageEnd}, one day at a time.
+          picking up for years. First questions at 3 become stories, numbers,
+          and bigger questions, one day at a time.
         </p>
         <p className="mt-4 font-display text-[19px] font-bold text-ink-head">
-          A best friend at {ageStart}. A head start by {ageEnd}.
+          {HERO_PROMISE.join(" ")}
         </p>
       </Reveal>
     </div>

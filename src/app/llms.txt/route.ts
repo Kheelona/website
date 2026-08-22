@@ -1,13 +1,12 @@
 import {
   LAUNCH_PRICE,
-  LATER_PRICE,
+  FULL_PRICE,
+  CAP_UNITS_TEXT,
   TOKEN_PRICE,
   BALANCE_PRICE,
-  PREORDER_DEADLINE_TEXT,
   STORE_URL,
   TAX_LINE,
   LUMI_AGES,
-  PLATFORM_AGES,
   LANGUAGES_LINE,
   SHIP_DATE_TEXT,
 } from "@/config/site";
@@ -39,7 +38,7 @@ const BODY = `# Kheelona
 
 ## What Lumi is
 - A screen-free plush toy that talks with a child and answers back. No screen, ever.
-- Ages ${LUMI_AGES}. The wider family of friends spans ages ${PLATFORM_AGES}: the Kheelu Speaker (5 to 14) and AI books are in development.
+- Ages ${LUMI_AGES}. The wider family of friends that follows, the Kheelu Speaker and AI books, is in development and grows with the child.
 - Speaks the languages spoken at home: ${LANGUAGES_LINE}, with up to 10 at launch. Switches mid-sentence.
 - Runs on PlayOS, Kheelona's own platform: a small language model built only for children, not shrunk from adult AI.
 - Three modes, one toy: AI mode (open conversation), Kheelu mode (pre-loaded stories and lessons a child can interrupt, question, and be quizzed on, offline), and Bluetooth mode (pair a phone and Lumi is the speaker for your own playlist or audiobook).
@@ -61,8 +60,8 @@ const BODY = `# Kheelona
 - One prompt sets how the toy speaks to your family: language, culture, values.
 
 ## Price and availability
-- Pre-order: ${LAUNCH_PRICE} for pre-orders placed before ${PREORDER_DEADLINE_TEXT}. ${LATER_PRICE} after that.
-- A refundable ${TOKEN_PRICE} token reserves a unit. It is adjusted against the price, and the ${BALANCE_PRICE} balance is due by payment link before dispatch. The token is refundable at any time before dispatch.
+- Pre-order: ${LAUNCH_PRICE} for the ${CAP_UNITS_TEXT}. ${FULL_PRICE} once they are gone, paid in full at pre-order.
+- While the ${CAP_UNITS_TEXT} last, a refundable ${TOKEN_PRICE} token reserves a unit. It is adjusted against the price, and the ${BALANCE_PRICE} balance is due by payment link before dispatch. Every payment is refundable in full at any time before dispatch.
 - Every Lumi includes 6 months of Kheelona+ (stories, lessons, language packs, parent app). Lumi's smart features are lifetime; Kheelona+ pricing is announced soon. Nothing renews without the parent.
 - ${TAX_LINE} Delivery is included anywhere in India, so the published price is the total cost.
 - Shipping starts ${SHIP_DATE_TEXT}. Pre-orders are served first, in the order they were placed.

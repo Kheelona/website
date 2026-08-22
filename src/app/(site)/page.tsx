@@ -22,7 +22,8 @@ import {
   PRICE_CAPTION,
   TOKEN_PRICE,
   BALANCE_PRICE,
-  PREORDER_DEADLINE_TEXT,
+  CAP_UNITS_TEXT,
+  FULL_PRICE,
   LAUNCH_PRICE,
   SHIP_DATE_TEXT,
   LUMI_AGES,
@@ -45,9 +46,9 @@ export const metadata = pageMeta({
      click-through, not rank. The separator is the same dot every other route
      uses. Home writes its own suffix because the root layout's `%s · Kheelona`
      template applies to CHILD segments, and this page is the root segment. */
-  title: "Lumi: the screen-free AI toy with a tutor inside, ages 2 to 5 · Kheelona",
+  title: "Lumi: the screen-free AI toy with a tutor inside, ages 3+ · Kheelona",
   description:
-    "A best friend at 2, a head start by 5. The screen-free toy that grows with your child, in the languages you speak at home. Pre-order at ₹4,999, ₹499 refundable.",
+    "A best friend at 3, a head start for school. The screen-free toy that grows with your child, in your home languages. Pre-order at ₹4,999, ₹499 refundable.",
   path: "/",
 });
 
@@ -64,22 +65,22 @@ const HOME_FAQ: FaqEntry[] = [
        Home keyword, "smart toy", is deliberately NOT written here — the
        compare table already serves it seven times as the category Lumi is
        contrasted against, and calling Lumi a smart toy would undercut that. */
-    a: "Lumi is a screen-free toy that talks with children aged 2 to 5: your child speaks to it and it answers, tells stories, sings, and asks questions back. It is an interactive AI toy with no screen at all, it cannot reach the open internet, and every conversation is readable by you in the parent app.",
+    a: "Lumi is a screen-free toy that talks with children aged 3 and up: your child speaks to it and it answers, tells stories, sings, and asks questions back. It is an interactive AI toy with no screen at all, it cannot reach the open internet, and every conversation is readable by you in the parent app.",
   },
   /* V6 D3: the parents' own question from the feedback that drove this round,
      kept nearly verbatim — the FAQ that mirrors the reader's exact objection
      is the one they open. */
   {
     q: "What will my child actually get out of Lumi?",
-    a: "A friend at 2, and a head start by 5. Lumi answers your child's questions, remembers the words they know, and builds on them the next day: stories, numbers, thinking games, and the languages you speak at home. The parent app counts the new words, so you see the growth, not just the play.",
+    a: "A friend at 3, and a head start for school. Lumi answers your child's questions, remembers the words they know, and builds on them the next day: stories, numbers, thinking games, and the languages you speak at home. The parent app counts the new words, so you see the growth, not just the play.",
   },
   {
     q: "How much does Lumi cost in India?",
-    a: `₹4,999 if you pre-order before ${PREORDER_DEADLINE_TEXT}, and ₹9,999 after that. A refundable ${TOKEN_PRICE} reserves your Lumi now, and the ${BALANCE_PRICE} balance is due only when it is ready to ship. Every Lumi includes 6 months of Kheelona+.`,
+    a: `${LAUNCH_PRICE} for the ${CAP_UNITS_TEXT}, and ${FULL_PRICE} once they are gone. A refundable ${TOKEN_PRICE} reserves your Lumi now, and the ${BALANCE_PRICE} balance is due only when it is ready to ship. Every Lumi includes 6 months of Kheelona+.`,
   },
   {
     q: "What ages is Lumi for?",
-    a: "Ages 2 to 5. Lumi meets a two-year-old where they are and grows with them, and the wider family of Kheelona friends carries on to age 14 with the Kheelu Speaker and AI books.",
+    a: "Ages 3+. Lumi meets your child where they are and grows with them, and the wider family of Kheelona friends that follows, the Kheelu Speaker and AI books, keeps growing alongside.",
   },
   {
     q: "Which languages does Lumi speak?",
@@ -256,7 +257,7 @@ export default function HomePage() {
         >
           <Reveal>
             <SectionHeading
-              eyebrow={`From ${LUMI_AGES}`}
+              eyebrow={`Ages ${LUMI_AGES}`}
               title="What your child gets, year by year."
               titleClassName="mb-3"
               lede="Lumi remembers what your child knows and asks the next question. Here is how the same friend meets them at every age."

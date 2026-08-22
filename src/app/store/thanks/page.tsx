@@ -3,6 +3,7 @@ import { storeEnv } from "@/lib/store/env";
 import { db } from "@/lib/store/db";
 import { verifyAddressToken } from "@/lib/store/signing";
 import { isOrderRef } from "@/lib/store/order-ref";
+import { FULL_TIER } from "@/lib/store/mode";
 import { AddressForm } from "@/features/preorder";
 import {
   formatInr,
@@ -80,10 +81,17 @@ export default async function ThanksPage({
         )}
       </p>
 
+      {/* Every line derives from the ORDER ROW, never from the store's current
+          mode: a token holder revisiting after the cap flips must still read
+          exactly what they agreed to (§8.26). */}
       <dl className="mb-9 grid gap-3 rounded-(--radius-card) border border-line-soft bg-white p-5">
         <Row label="Order number" value={order.order_ref} />
         <Row label="Paid today" value={formatInr(order.amount_paise)} />
-        <Row label="Due on dispatch" value={`${BALANCE_PRICE}, of the ${LAUNCH_PRICE} price`} />
+        {order.tier === FULL_TIER ? (
+          <Row label="Due on dispatch" value="Nothing. You have paid in full" />
+        ) : (
+          <Row label="Due on dispatch" value={`${BALANCE_PRICE}, of the ${LAUNCH_PRICE} price`} />
+        )}
         <Row label="Ships from" value={SHIP_DATE_TEXT} />
       </dl>
 

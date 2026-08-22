@@ -1,14 +1,12 @@
 import type { Metadata } from "next";
 import {
   LAUNCH_PRICE,
-  LATER_PRICE,
+  FULL_PRICE,
+  CAP_UNITS_TEXT,
   LAUNCH_AMOUNT_PAISE,
   TOKEN_PRICE,
   BALANCE_PRICE,
-  PREORDER_DEADLINE_TEXT,
-  PREORDER_DEADLINE_ISO,
   LUMI_AGES,
-  PLATFORM_AGES,
   CONTACT_EMAIL,
   SHIP_DATE_ISO,
   LEGAL_ENTITY,
@@ -80,7 +78,7 @@ export const ORGANIZATION = {
   logo: `${SITE_URL}/brand/logo-mark.png`,
   image: `${SITE_URL}/og.png`,
   description:
-    "Kheelona makes screen-free talking friends for children. Lumi, the first one, is a plush toy for ages 2 to 5 that holds a real conversation, tells stories a child can question, and comes with a parent app that shows every word.",
+    "Kheelona makes screen-free talking friends for children. Lumi, the first one, is a plush toy for ages 3+ that holds a real conversation, tells stories a child can question, and comes with a parent app that shows every word.",
   foundingDate: "2025",
   founders: FOUNDERS,
   address: {
@@ -206,29 +204,32 @@ export const LUMI_PRODUCT = {
   category: "Screen-free AI toy",
   audience: {
     "@type": "PeopleAudience",
-    suggestedMinAge: 2,
-    suggestedMaxAge: 5,
+    /* Ages 3+ since 2026-08-23 (founder decision #8): a minimum with no
+       maximum, because the published range has no ceiling any more. */
+    suggestedMinAge: 3,
     audienceType: "Children",
   },
-  description: `A screen-free talking friend for children aged ${LUMI_AGES} that holds a real conversation in up to 10 home languages, carries stories and lessons they can be quizzed on, plays your music over Bluetooth, and comes with a parent app that shows you everything. Part of a family of friends spanning ages ${PLATFORM_AGES}.`,
+  description: `A screen-free talking friend for children aged ${LUMI_AGES} that holds a real conversation in up to 10 home languages, carries stories and lessons they can be quizzed on, plays your music over Bluetooth, and comes with a parent app that shows you everything. Part of a growing family of friends.`,
   image: `${SITE_URL}/product/lumi-blue-2.png`,
   offers: {
     "@type": "Offer",
     /* Derived from the paise constant, not scraped out of the display string
        with a regex (2026-08-22): the money now has one numeric source and a
-       schema price is a number, so it should read the number. */
+       schema price is a number, so it should read the number.
+
+       No priceValidUntil since 2026-08-23: the offer is bounded by a unit
+       count, not a date, and schema.org has no way to say that. A lapsed
+       validity date would make Google drop the Offer on a day nothing about
+       the offer changed, so the honest markup is a price with the unit terms
+       stated in prose. The manual sell-out sweep (FOUNDER-TODO) updates this
+       price the day the capped units are gone. */
     price: LAUNCH_AMOUNT_PAISE / 100,
     priceCurrency: "INR",
     availability: "https://schema.org/PreOrder",
     availabilityStarts: SHIP_DATE_ISO,
-    /* The pre-order price is real but time-boxed, and priceValidUntil is how
-       you say that to a machine. Google drops an Offer whose stated validity
-       has lapsed, which is the correct behaviour here: after the deadline the
-       price genuinely is not ₹4,999 any more. */
-    priceValidUntil: PREORDER_DEADLINE_ISO,
     url: `${SITE_URL}/products/lumi`,
     eligibleRegion: { "@type": "Country", name: "India" },
-    description: `${LAUNCH_PRICE} for pre-orders placed before ${PREORDER_DEADLINE_TEXT}, ${LATER_PRICE} after that. A refundable ${TOKEN_PRICE} reserves one, with the ${BALANCE_PRICE} balance due before dispatch.`,
+    description: `${LAUNCH_PRICE} for the ${CAP_UNITS_TEXT}, ${FULL_PRICE} once they are gone. A refundable ${TOKEN_PRICE} reserves one of the ${CAP_UNITS_TEXT}, with the ${BALANCE_PRICE} balance due before dispatch.`,
   },
 } as const;
 

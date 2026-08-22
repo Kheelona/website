@@ -11,7 +11,7 @@ const WASHES: Record<Wash, string> = {
   white: "bg-white",
   cream: "bg-cream",
   cool: "bg-cool",
-  sun: "bg-[#fdf1e2]",
+  sun: "bg-sun",
 };
 
 /** Full-bleed section with an A-concept wash. Curved joins between washes are

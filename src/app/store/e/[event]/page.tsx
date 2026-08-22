@@ -95,12 +95,14 @@ export default async function EventPage({
         </p>
 
         <div className="max-w-[520px]">
-          <PreorderForm tier={result.tier.id} signature={sig} amountLabel={amountLabel} />
+          {/* Always the token shape, whatever the public mode is: an event
+              token is a token, with the same balance-before-dispatch terms. */}
+          <PreorderForm tier={result.tier.id} signature={sig} amountLabel={amountLabel} mode="token" />
         </div>
       </div>
 
       <aside className="md:sticky md:top-6 md:self-start md:pt-2">
-        <OrderSummary amountLabel={amountLabel} tierLabel={result.tier.label} />
+        <OrderSummary amountLabel={amountLabel} tierLabel={result.tier.label} mode="token" />
       </aside>
     </div>
   );

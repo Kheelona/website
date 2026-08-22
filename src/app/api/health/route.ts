@@ -1,5 +1,6 @@
 import { storeEnv, razorpayMode, missingStoreEnv } from "@/lib/store/env";
 import { db } from "@/lib/store/db";
+import { preorderMode } from "@/lib/store/mode";
 import { json } from "@/lib/store/http";
 
 /** Store health, and the reason a daily cron exists (§8.25-k).
@@ -34,9 +35,15 @@ export async function GET() {
     return json(503, { ok: false, store: "database-unreachable" });
   }
 
+  /* The MODE, never the count (§8.26, founder: no public counter). This field
+     is the phone-checkable trigger for the sell-out copy sweep: the day it
+     says "full", the static marketing pages are a manual task away from true. */
+  const preorder = await preorderMode(env);
+
   return json(200, {
     ok: true,
     store: "ready",
+    preorder,
     razorpay: razorpayMode(env.razorpayKeyId),
     email: env.resendApiKey ? "configured" : "missing",
     dbMs: Date.now() - started,

@@ -1,34 +1,31 @@
-import { LUMI_AGES } from "@/config/site";
-
-/** The LUMI_AGES endpoints ("2 to 5" → ["2", "5"]). The hero H1, the arc
- *  eyebrow, and the stage kickers all render from these, so the band is a
- *  one-constant edit (BUILD-V6 §3.1). */
-export function lumiAgeEndpoints(): [string, string] {
-  const [start, end] = LUMI_AGES.split(" to ");
-  return [start!, end!];
-}
-
-const [AGE_START, AGE_END] = lumiAgeEndpoints();
+/** The outcome promise, in its two halves (the hero renders them as two
+ *  coloured lines, PacePanel joins them into one sentence). ONE source since
+ *  the 2026-08-23 repositioning: the V6 law that the promise is said
+ *  identically on both pages is now enforced by construction rather than by
+ *  two files agreeing. Founder decision #8 (migration-to-new-dsx.md): the
+ *  site says "3+" everywhere, so the promise anchors at 3 and points at
+ *  school instead of naming a ceiling. */
+export const HERO_PROMISE: readonly [string, string] = [
+  "A best friend at 3.",
+  "A head start for school.",
+];
 
 export type GrowthStage = {
-  /** "At 2 years" … "By 5 years" — the year marker, rendered as the card
-   *  kicker. The unit is spelled out (founder, 2026-07-31): a standalone
-   *  "AT 2" label has no sentence around it to say 2 of what. */
+  /** "At 3 years" … "Every year after" — the year marker, rendered as the
+   *  card kicker. The unit is spelled out (founder, 2026-07-31): a standalone
+   *  "AT 3" label has no sentence around it to say 3 of what. */
   kicker: string;
   title: string;
   body: string;
 };
 
-/** The year-by-year answer to "what will a kid who gets Lumi at 2 have at 5"
- *  (the parent feedback that drove BUILD-V6). Every claim traces to published
- *  copy; the By-5 card carries the founder-licensed soft school frame. Copy is
- *  spec-verbatim (BUILD-V6 D2) — do not edit here without a spec change. */
+/** The year-by-year answer to "what will a kid who gets Lumi at 3 have by
+ *  school" (the parent feedback that drove BUILD-V6, re-anchored at 3 by the
+ *  founder's ages-3+ decision of 2026-08-23 — that decision IS the spec change
+ *  BUILD-V6 D2 requires). Every claim traces to published copy; the 5-years
+ *  card carries the founder-licensed soft school frame, and the last card is
+ *  deliberately open-ended because the published age range now is. */
 export const GROWTH_ARC: readonly GrowthStage[] = [
-  {
-    kicker: `At ${AGE_START} years`,
-    title: "Naming the world.",
-    body: "Your child points, names, and repeats. Lumi answers in short words they already own, sings the rhymes you grew up with, and starts remembering which words they know.",
-  },
   {
     kicker: "At 3 years",
     title: "Asking why, and why again.",
@@ -40,9 +37,14 @@ export const GROWTH_ARC: readonly GrowthStage[] = [
     body: "Thinking games, counting the apples a squirrel ran off with, naming a big feeling instead of hiding it. Lumi remembers where your child stopped yesterday and starts one small step further.",
   },
   {
-    kicker: `By ${AGE_END} years`,
+    kicker: "At 5 years",
     title: "Words, numbers, confidence.",
-    body: "Three years of serve and return add up: the words, the numbers, and the confidence of a child who expects to be heard. All of it walks into their first classroom with them.",
+    body: "Serve and return, day after day, adds up: the words, the numbers, and the confidence of a child who expects to be heard. All of it walks into their first classroom with them.",
+  },
+  {
+    kicker: "Every year after",
+    title: "Growing right alongside.",
+    body: "The questions grow up, and Lumi grows with them: longer stories, bigger ideas, the next language. It remembers the child it met at 3, and keeps starting one small step further.",
   },
 ];
 

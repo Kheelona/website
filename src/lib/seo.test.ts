@@ -22,7 +22,7 @@ describe("structured data", () => {
   it("never leaks a gated fact (Kheelona+ price, certifications) and carries the published ship date", () => {
     /* The ship date became a PUBLISHED fact on 2026-07-31 (founder), so the
        old no-ship-date guard flipped into a positive assertion. */
-    expect(everything).toMatch(/"availabilityStarts":"2026-10-01"/);
+    expect(everything).toMatch(/"availabilityStarts":"2026-10-20"/);
     expect(everything).not.toMatch(/shipDate|deliveryDate/);
     /* Certification is gated for the PRODUCT, not for a person's career. The
        risk is a schema property asserting Lumi is certified, so test for the
@@ -46,27 +46,36 @@ describe("structured data", () => {
       .replace(/https?:\/\/[^"]+/g, "")
       .replace(identifiers, "");
     const numbers = withoutUrls.match(/\d{4,}/g) ?? [];
-    for (const n of numbers) expect(["4999", "9999", "2025", "2026"]).toContain(n);
+    /* "9999" left this list on 2026-08-23 with the ₹9,999 price itself; the
+       ₹7,999 in the offer description never reaches here because its comma
+       breaks the digit run, and the schema price NUMBER stays 4999. */
+    for (const n of numbers) expect(["4999", "2025", "2026"]).toContain(n);
   });
 
   it("makes no claim about what happens if Kheelona+ lapses (gate V3-b)", () => {
     expect(everything).not.toMatch(/lapse|expire|without a subscription|still works/i);
   });
 
-  it("keeps the offer at pre-order, priced as a number, inside a real window", () => {
+  it("keeps the offer at pre-order, priced as a number, with no validity date", () => {
     expect(LUMI_PRODUCT.offers.availability).toBe("https://schema.org/PreOrder");
     expect(LUMI_PRODUCT.offers.priceCurrency).toBe("INR");
     // a schema price is a number, and it comes from the paise constant
     expect(LUMI_PRODUCT.offers.price).toBe(4999);
-    /* The pre-order price is time-boxed, so the offer says so: without this,
-       schema keeps advertising ₹4,999 after the day it stops being true. */
-    expect(LUMI_PRODUCT.offers.priceValidUntil).toBe("2026-09-30");
+    /* Inverted 2026-08-23 (§8.26): the offer is bounded by a UNIT COUNT now,
+       which schema.org cannot express. A priceValidUntil would make Google
+       drop the offer on a day nothing changed, so its ABSENCE is the correct
+       markup and this guards against it creeping back. The unit terms live in
+       the offer's prose description instead. */
+    expect("priceValidUntil" in LUMI_PRODUCT.offers).toBe(false);
   });
 
   it("states Lumi's real age band, not the retired ones", () => {
-    expect(LUMI_PRODUCT.audience.suggestedMinAge).toBe(2);
-    expect(LUMI_PRODUCT.audience.suggestedMaxAge).toBe(5);
-    expect(everything).not.toMatch(/3 to 10|3 to 6/);
+    /* Ages 3+ since 2026-08-23 (founder decision #8): a minimum with NO
+       maximum, because the published range has no ceiling. "2 to 5" and
+       "2 to 14" joined the dead-ranges list the day they were replaced. */
+    expect(LUMI_PRODUCT.audience.suggestedMinAge).toBe(3);
+    expect("suggestedMaxAge" in LUMI_PRODUCT.audience).toBe(false);
+    expect(everything).not.toMatch(/3 to 10|3 to 6|2 to 5|2 to 14/);
   });
 
   it("carries the founders as entities: our strongest E-E-A-T signal", () => {
