@@ -67,9 +67,10 @@ browser, so it looks fine, while `finance@kheelona.com` fills up with Razorpay f
 
 - [ ] **Delete the test row.** `delete from preorders where order_ref = 'KH-8FP8-PWDA';` — it is
       `status='created'` and would otherwise look like a real abandoned lead.
-- [ ] **Check the Supabase region** (Settings → General). A trivial query is taking 250 to 720ms, which
-      suggests it is not in India. Each order makes two or three round trips. Nearly free to change now,
-      a data migration later.
+- Supabase region: RAISED AND CLOSED (founder, 2026-08-22). A trivial query takes 250 to 975ms, which
+  suggests the project is not in an Indian region, but the project cannot be moved. Not actionable, so
+  it is recorded here rather than left as an open item. Worth remembering only as the explanation if
+  checkout ever feels slow: each order makes two or three round trips.
 
 #### 📧 Email authentication (done 2026-08-22) and the one dated follow-up
 
