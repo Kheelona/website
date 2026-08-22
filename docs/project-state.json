@@ -330,10 +330,11 @@
     {
       "id": "resend-spf-mx-optional-2026-08-22",
       "desc": "send.kheelona.com is verified on DKIM alone; Resend's SPF TXT and MX records are not published. Mail sends and DMARC passes via DKIM alignment, but the missing MX means Resend never receives bounce and complaint feedback.",
-      "status": "open",
+      "status": "resolved",
       "owner": "founder",
       "impact": "Hardening, not blocking. Without the MX nobody learns when a customer's receipt bounces.",
-      "see": "Resend → Domains → send.kheelona.com → Records"
+      "see": "Resend → Domains → send.kheelona.com → Records",
+      "resolution": "2026-08-22: both records are live and Resend-verified, at send.send.kheelona.com (NOT send.kheelona.com — the Resend domain is already send.kheelona.com, so its sending records sit at \"send\" relative to that; the doubled label is correct and Claude's first instruction was wrong). Bounce and complaint feedback now reaches Resend. Resend's \"Enable Receiving\" toggle should stay OFF: it is the inbound-email feature, needs an MX at send.kheelona.com, and the store only sends."
     },
     {
       "id": "address-link-untested-2026-08-22",

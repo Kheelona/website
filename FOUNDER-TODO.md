@@ -92,10 +92,21 @@ from the `send.` subdomain precisely so the root's reputation is never at risk.
       `p=quarantine`, keeping `rua` and `fo`. Never add a second DMARC or SPF record, and do not jump
       to `p=reject`. A scheduled agent will remind you:
       https://claude.ai/code/routines/trig_01T644UQuKPds5T1iV5abvqD
-- [ ] **Optional hardening: add Resend's `send` SPF and MX records** (Resend → Domains →
-      send.kheelona.com → Records). The domain is verified on DKIM alone, so mail sends and DMARC
-      passes, but **without the MX you are blind to bounces and complaints** — you will not know when
-      a customer's receipt fails to arrive.
+- [x] ~~Add Resend's SPF and MX records~~ **DONE 2026-08-22**, verified in DNS: SPF
+      `v=spf1 include:amazonses.com ~all` and MX `10 feedback-smtp.ap-northeast-1.amazonses.com`, both
+      at **`send.send.kheelona.com`**. Bounce and complaint feedback now reaches Resend, so a receipt
+      that fails to arrive will be visible instead of silent.
+
+      **THE NAMING TRAP, so nobody re-diagnoses it:** the Resend domain is `send.kheelona.com`, and
+      Resend's sending records live at `send` RELATIVE TO THAT, which makes the real hostname
+      `send.send.kheelona.com`. The doubled label looks like a typo and is correct. Claude's first
+      instruction said to use `send`, which was wrong; Resend's own "Auto configure" for Cloudflare
+      gets it right.
+
+      **"Enable Receiving" should stay OFF.** It is Resend's INBOUND email feature and would need an MX
+      at `send.kheelona.com` pointing at `inbound-smtp…amazonaws.com`. The store only sends, and replies
+      to receipts already go to hello@kheelona.com through the reply-to header. If that row ever shows
+      Pending again, the fix is to turn the toggle off, not to add the record.
 
 #### ✅ The store is fully verified (2026-08-22)
 
