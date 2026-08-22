@@ -19,8 +19,8 @@ merges to `main` manually at the ⛳ checkpoints.
 | Step 0 — setup (this file, CLAUDE.md pointer) | ✅ done (`7a44db7`) |
 | CS1 — commercial restructure (500-unit cap, ₹7,999 full mode, ship 20 Oct) | **✅ BUILT + GATED (`d23970f`) — ⛳ waiting on founder: run migration 0002 in Supabase, then merge to main.** Laws recorded as §8.26 in website-steps.md; FOUNDER-TODO carries the merge order-of-operations and the standing sell-out sweep item. |
 | CS2 — Ages 3+ repositioning | **✅ BUILT + GATED — ⛳ founder approves the new copy on the preview before merge.** The lines that need your eye: hero "A best friend at 3. / A head start for school." (one source, `HERO_PROMISE`, also closes PacePanel); GrowthArc re-anchored 3 → 4 → 5 → "Every year after: Growing right alongside."; home pipeline line "Starts talking at 3. Still teaching for years."; family chips Lumi 3+ / Kheelu Speaker 5+ / AI books 3+; Compare row "Yes, for years with the family"; playos "many bodies as they grow". Schema audience = min 3, no max; "2 to 5"/"2 to 14" joined the dead-ranges guard. AAP/WHO citations in two journal articles keep their quoted ranges (they cite the health bodies, not us). SEO keyword placement continues per page in Phase B. NOTE for CS3: the rebuilt og.png must carry ages 3+ (the old one's pixels are now stale). |
-| CS3 — DS v3 Phase 0 + Phase A (tokens, fonts incl. serif, logo, guard tests) | pending |
-| CS4 — Kheelu redesign (Foxy-Deer art) | pending |
+| CS3 — DS v3 Phase 0 + Phase A (tokens, fonts incl. serif, logo, guard tests) | **✅ BUILT + GATED (`d6d3e73` + `6fc6a63`) — ⛳ founder reviews the before/after shots + the preview, then merges.** What changed at a glance: v3 ink ramp + surfaces (cream/cool/sun now the v3 tints, subtle cooling), radii snap to 24px, token gate reads v3 and FAILS-HARD when missing (18 mappings), fonts re-subset from v3 TTFs (identical coverage), Instrument Serif ITALIC added as `--font-editorial` (placements come per page in Phase B — nothing renders it yet), navbar/store wordmark now the v3 SVG, full favicon set + logo-mark.png + og.png regenerated from the v3 mark/template (og carries ages 3+ and the new mascot). Contrast recomputed everywhere; ZERO assertions inverted; ink-muted kicker ban survives. line-soft aliased (merge in B); orange-deep kept until its ~8 accent call-sites drain in B; BEAT_WASHES intermediates flagged for B. |
+| CS4 — Kheelu redesign (Foxy-Deer art) | **Mostly pre-existing, pending inventory**: the live hero art and guide avatar are already on-model with v3's Foxy-Deer (the character clearly descends from the current Kheelu art). Remaining: per-surface comparison against v3's poses/reference sheets, swap only where off-model, founder judges each. The dormant 3D journey still holds the old-design GLBs (new Tripo run, founder-driven, out of scope). |
 | Phase B — per-page LEX/JONY/RIA/MARA refinement | pending |
 | Final — cross-page audit, v3 gap docs, old-system deletion (founder approval) | pending |
 
@@ -100,6 +100,9 @@ merges to `main` manually at the ⛳ checkpoints.
 | 2026-08-23 | CS1 | `qa:text` on /, /terms | PASS — rendered offer copy reads the new ladder verbatim |
 | 2026-08-23 | CS2 | `npm test` + `tsc` + `npm run build` | PASS — suite green (count in project-state `tests.count`) |
 | 2026-08-23 | CS2 | `qa:sweep` + `qa:text` on /, /playos, /products/lumi | PASS — **after killing a stale 3456 server that was serving the CS1 build**; first text read showed old copy and would have been a false verify. Lesson re-learned: `lsof -tiTCP:3456` before trusting any local render. |
+| 2026-08-23 | CS3 P0 | suite + build | PASS — zero visual change proven by unchanged sun value |
+| 2026-08-23 | CS3 PA | suite + tsc + build (token gate v3, 18 mappings) | PASS — no contrast assertion inverted at the v3 values |
+| 2026-08-23 | CS3 PA | `qa:sweep` (fresh server) + before/after shots home/lumi/safety ×390/1280 | PASS — shots in the session scratchpad `reskin-shots/`, side-by-sides sent to the founder |
 
 ## Open questions / waiting on founder
 
