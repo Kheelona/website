@@ -6,6 +6,11 @@
 
 You are resuming an in-progress website. Follow these steps exactly.
 
+> **2026-08-22:** paid pre-orders are built on branch **`preorder-store`** and are NOT live. The site
+> still serves V6. Start with `docs/checkpoints/preorder-store-2026-08-22.md`, then
+> `docs/website-steps.md` §8.25, then **FOUNDER-TODO.md section 0**, which is the only thing standing
+> between the store and its first real order.
+
 ### Step 1: Read the state file
 Read `docs/project-state.json`:
 - `current_phase`, `current_sprint`, `phase_status`, `sprint_status`

@@ -1,11 +1,33 @@
 # kheelona.com — session entry point
 
-Pre-order marketing site for **Lumi**, Kheelona's screen-free talking AI toy for ages 2 to 5 (India-first). One job: convert parents into the Tally pre-order list at ₹4,999 (₹9,999 after launch, no payment now).
+Pre-order marketing site for **Lumi**, Kheelona's screen-free talking AI toy for ages 2 to 5
+(India-first). One job: turn parents into paid pre-orders. A **₹499 refundable token** holds a Lumi at
+**₹4,999** (₹9,999 after 30 September 2026), the **₹4,500 balance** falls due before dispatch, and the
+payment happens on **store.kheelona.com**, which this same repo serves.
 
-## ⚠ STATE OF PLAY (2026-07-31, V5 live · V6 on demo-website) — read this first
-**THE SITE IS LIVE AT https://kheelona.com AND SERVES V5. It is indexed and taking pre-orders, so
+## ⚠ STATE OF PLAY (2026-08-22, V6 live · PAID PRE-ORDERS on `preorder-store`) — read this first
+**THE SITE IS LIVE AT https://kheelona.com AND SERVES V6. It is indexed and taking pre-orders, so
 every change you make from here touches a live commercial site.** Latest checkpoint, read it before
-touching anything: `docs/checkpoints/v5-merge-2026-07-31.md` (before it: `v4-merge-2026-07-31.md`, `go-live-2026-07-28.md`).
+touching anything: `docs/checkpoints/preorder-store-2026-08-22.md` (before it:
+`v6-content-2026-07-31.md`, `v5-merge-2026-07-31.md`, `go-live-2026-07-28.md`).
+
+**💳 PAID PRE-ORDERS ARE BUILT AND WAITING ON THE FOUNDER'S DASHBOARDS (branch `preorder-store`, NOT
+merged, NOT live).** The pre-order stopped being a free Tally list: a parent pays a **₹499 refundable
+token** that holds a Lumi at **₹4,999**, the **₹4,500 balance** falls due by payment link before
+dispatch, and it all happens on **store.kheelona.com**, which is THIS repo served through a host
+rewrite in `src/proxy.ts` (Next 16's new name for middleware). Orders live in Supabase, the receipt
+goes through Resend, events sell the same reservation at ₹99 behind a signed QR link with a cap and an
+expiry. **Ship date moved to 1 October 2026** and the price deadline is **30 September 2026**; there is
+**no unit cap any more**, so "first 500 units" is dead everywhere and the deadline is the whole of the
+urgency. Every law is `docs/website-steps.md` **§8.25**; read it before touching the store. The five
+that bite hardest: **the client never sends a price** (§8.25-c-i), **paid is decided twice through one
+idempotent `markPaid`** (§8.25-p), **the webhook verifies the RAW body and releases its event claim on
+failure** (§8.25-m), **an address is authorised only by its signed token** (§8.25-n), and **the finale
+is the ONLY outbound link to the store** (§8.25-b). What is left is founder dashboard work only,
+listed as **FOUNDER-TODO.md section 0**: Razorpay keys and webhook, a Supabase project plus
+`supabase/migrations/0001_preorders.sql`, `STORE_SIGNING_SECRET`, Resend DNS (optional to start), and
+`store.kheelona.com` added to the existing Vercel project. **With no keys the store renders
+"pre-orders open here shortly" and takes no money**, so the branch is safe to merge and deploy first.
 
 **V6 (the growth-arc CONTENT round + its design-handoff items) is MERGED TO `main` AND LIVE**
 (founder instruction 2026-07-31: "make it live on demo and main both"; rollback tag
@@ -81,8 +103,14 @@ repo root. That old app is preserved at the tag **`pre-revamp-2026-07`** and its
 - **Locked product facts**: Lumi is ages **2 to 5**, the platform arc is **2 to 14** (both "3 to 6"
   and "3 to 10" are dead — render ages from `LUMI_AGES`/`PLATFORM_AGES`). The .com line-up is the
   pipeline Lumi → Kheelu Speaker → AI books. Lumi has **three modes**: AI mode, Kheelu mode,
-  Bluetooth mode. **Shipping starts 1 September 2026** (founder 2026-07-31 — render from
-  `SHIP_DATE_TEXT`/`SHIP_DATE_ISO`, never inline). **Eight languages are named and final**
+  Bluetooth mode. **Shipping starts 1 October 2026** (founder 2026-08-22, moved from
+  1 September — render from `SHIP_DATE_TEXT`/`SHIP_DATE_ISO`, never inline). **The price is ₹4,999 for
+  pre-orders placed before 30 September 2026 and ₹9,999 after** (`PREORDER_DEADLINE_TEXT`), a **₹499
+  refundable token** reserves one (`TOKEN_PRICE`) and the **₹4,500 balance** is due before dispatch
+  (`BALANCE_PRICE`, derived). **THERE IS NO UNIT CAP**: "first 500 units" is retired everywhere and
+  `test/preorder-copy.test.ts` fails if it comes back. Support is **WhatsApp only** on
+  +91 91875 46483, and every visible label must say so. Seller of record: **Kheelona Robotics Private
+  Limited**, GSTIN 29AAMCK1530E1ZN, Jayanagar Bengaluru 560041 (`lib/legal.ts`). **Eight languages are named and final**
   (English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish, French — render from
   `LUMI_LANGUAGES`/`LANGUAGES_LINE`); the published ceiling stays "up to 10". **Kheelona+** may
   only ever be described per `KHEELONA_PLUS_LINE`: 6 months included, **Lumi's smart features are
@@ -140,6 +168,11 @@ The app is now a **`src/`-based atomic-design** Next.js project. Two standards i
   below predate the reorg; translate through this).
 
 Rules for any change:
+0. **Two chromes since 2026-08-22 (§8.25-z).** Marketing routes live in the `(site)` route group and
+   get `SiteChrome` (navbar, footer, mascot, Organization schema). `/store/*` gets its own minimal
+   chrome and is `noindex`. The ROOT layout is only what both share: the html element, the fonts, the
+   three measurement tags. A new marketing page goes inside `(site)`; a route group is not a path
+   segment, so URLs are unaffected.
 1. New UI: search the catalog first (Storybook + `docs/standards`); reuse/extend/compose
    before creating. Place by scope: generic → `src/components/{atoms|molecules|organisms|templates}`;
    one route → that route's `_components/`; one feature → `src/features/<f>/` (imported via its
@@ -159,7 +192,10 @@ Rules for any change:
 - **Voice-lint**: zero em-dashes (en-dash only inside number ranges), no hype, rarely lead with "AI", exact names (PlayOS, Lumi, **Kheelu** = the brand mascot, Lori, Lua, Robu, Kheelona Magic Box), second person present tense. ONE exemption: Kheelu's quoted speech (KheeluSays bubbles) may use contractions — his founder-published card voice (copy-reference.md R9).
 - **Brand law (founder, 2026-07-10)**: the plush = **Lumi, the product** — a rotating SKU whose look changes post-launch (core/AI stays); NEVER publish the rotation strategy on-site. The orange character = **Kheelu**, the permanent mascot and site narrator. The product owns the hero; Kheelu narrates (all speech lines founder-approved before shipping — pattern: list them in the plan).
 - **Never invent claims**: testimonials, certifications, specs, ship date, contact email → flagged placeholders + blockers only.
-- **Accessibility 90+ outranks any styling preference** (spec §3). Lighthouse gates: A11y/BP/SEO 90+ everywhere, Perf 90+ desktop.
+- **Accessibility 90+ outranks any styling preference** (spec §3). Lighthouse gates: A11y/BP/SEO 90+
+  everywhere, Perf 90+ desktop. **ONE SANCTIONED EXCEPTION**: the store is `noindex`, so its SEO score
+  is ~66 by design and that is correct, not a regression (§8.25-aa). Its a11y, best-practices and perf
+  are held to the normal gate and currently measure 100 / 96 / 100.
 
 @AGENTS.md
 
@@ -167,15 +203,29 @@ Rules for any change:
 - Dev: `npm run dev` (port 3000)
 - Prod: `npx next build && npx next start -p 3456` (local prod URL the founder uses: http://localhost:3456). If a replaced `public/` image serves stale through `/_next/image`, `rm -rf .next/cache/images` — the optimizer cache survives rebuilds (qa-report 2026-07-31). Check `lsof -iTCP:3456` for stale servers from old sessions.
 - Test: `npm test` (Vitest; a test per component) · Storybook: `npm run storybook` / `npm run build-storybook`
+- **Store, locally**: the host rewrite needs a store hostname, so
+  `curl -H "Host: store.kheelona.com" localhost:3456/` or open `http://store.localhost:3456`.
+  Headless Chrome here does NOT resolve `localhost` (use `127.0.0.1`) and Lighthouse hits an HSTS
+  interstitial on `kheelona.com` (use `store.localhost`) — §8.25-bb.
+- Event links: `STORE_SIGNING_SECRET=… npm run event-link -- <tier-id>` (runbook:
+  `docs/preorder-events.md`)
 - Deploy target: Vercel, project Root Directory = **repo root** (the app moved out of
   `site/` on 2026-07-28; paths in older docs and checkpoints that say `site/...` now mean
   the repo root). Env vars + DNS are still founder-gated, FOUNDER-TODO #2.
 
 ## Env
-Root `.env` (gitignored, DUMMY values until founder fills them): `TRIPO_API_KEY` (unused — mascot pipeline went through the Tripo web UI instead, see `design-concepts/README.md`), `NEXT_PUBLIC_TALLY_FORM_URL` (`.env.example` mirrors it). Since V4-a the form URL DEFAULTS to the public
-`TALLY_FORM_URL` constant in `config/site.ts` (same public-identifier rationale as the GA4 ID), so
-the real form renders on preview and localhost too; a valid env value overrides, a DUMMY one falls
-through to the constant, and the placeholder card survives only if the constant is ever blanked.
+Root `.env` (gitignored, DUMMY values until the founder fills them) and `.env.example`, which
+documents every variable. `TRIPO_API_KEY` is unused (the mascot pipeline went through the Tripo web
+UI, see `design-concepts/README.md`); `NEXT_PUBLIC_TALLY_FORM_URL` is retired with the Tally form.
+
+**THE STORE'S SIX VARIABLES ARE REAL SECRETS** and none may ever take a `NEXT_PUBLIC_` name:
+`RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET`, `SUPABASE_URL`,
+`SUPABASE_SERVICE_ROLE_KEY`, `STORE_SIGNING_SECRET` (plus optional `RESEND_API_KEY`, `EMAIL_FROM`,
+`ORDER_ALERT_EMAIL`). This repo hardcodes three PUBLIC identifiers in `config/site.ts` with comments
+explaining why that is safe; those comments are correct and are **not** a precedent for a payment key
+(§8.25-y, guarded by `test/store-secrets.test.ts`). All six are read in exactly one place,
+`lib/store/env.ts`, which returns null when any is missing so the store renders an honest "opening
+shortly" state instead of crashing.
 - **Analytics needs NO env var** (three tools; laws in §8.21-c, c-i, c-ii). **Ahrefs** is a raw
   `<script async>` in the layout's `<head>` and is deliberately NOT host-gated, because Ahrefs
   verifies by fetching the page and looking for the tag. **Adding or removing any measurement

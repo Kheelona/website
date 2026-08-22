@@ -19,9 +19,68 @@ Rollback tag if ever needed: `v5-live-2026-07-31`. Records: `BUILD-V6.md` (spec)
 
 ---
 
-## 📋 THE ONLY THINGS STILL WAITING ON YOU (audited 2026-07-31, everything else on this page is closed)
+## 📋 THE ONLY THINGS STILL WAITING ON YOU (audited 2026-08-22, everything else on this page is closed)
 
-Nothing here blocks the site. It is live, converting, and correct as it stands.
+The marketing site is live, converting, and correct as it stands. **THE STORE IS NOT LIVE**, and
+section 0 below is the only thing standing between it and its first real pre-order. Everything from
+section A onwards is the older queue, unchanged, and none of it blocks anything.
+
+---
+
+### 0. THE STORE IS BUILT AND WAITING ON FOUR DASHBOARDS (2026-08-22)
+
+`store.kheelona.com` is finished, tested and verified end to end against test keys. It is deployable
+right now: with no keys it renders "pre-orders open here shortly" and takes no money, so nothing
+breaks by shipping it before you finish this list. Each item is a dashboard action only you can do
+(same rule as Vercel: Claude never touches your accounts).
+
+**0a. Razorpay.** Settings → API Keys → generate. Then Settings → Webhooks → add
+`https://store.kheelona.com/api/razorpay/webhook`, subscribed to **order.paid** and
+**payment.captured**, and set a webhook secret. Three values:
+`RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET`.
+Use the **test** keys (`rzp_test_…`) first: `/api/health` reports which mode is live, so you can check
+from your phone that the store is not quietly taking fake money, or quietly taking real money on a
+preview.
+
+**0b. Supabase.** Create a project (free tier is plenty: this stores text). SQL editor → paste
+`supabase/migrations/0001_preorders.sql` → run. Then Project Settings → API for
+`SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`. That second one can read every order, so it is a real
+secret: Vercel environment variables only.
+
+**0c. Resend, for the confirmation email.** Add the domain `send.kheelona.com` and put the three DNS
+records it gives you into your DNS. A subdomain keeps kheelona.com's own deliverability separate from
+anything transactional. Then `RESEND_API_KEY`. **This one is optional to start**: without it an order
+is still recorded and the failure is logged, so the store works and the first customers just do not
+get a branded receipt.
+
+**0d. One secret of our own.** `STORE_SIGNING_SECRET` — run `openssl rand -base64 48` and paste the
+output. It signs event links and the address links in emails. Changing it later invalidates every
+address link already sent, so set it once.
+
+**0e. Vercel.** Add `store.kheelona.com` as a domain on the existing project (no second project, no
+second deploy: the same app serves both hosts), and add the variables above. The daily cron in
+`vercel.json` is already there; it exists because Supabase pauses a free project after a quiet week
+and the request that wakes it would otherwise be somebody's first pre-order.
+
+**0f. One product answer I could not make for you.** **Is delivery included in ₹4,999, or charged on
+top?** `/shipping` currently says included, everywhere in India, because that is the assumption that
+cannot surprise a parent at the balance step. If it is wrong, say so and it is a one-file edit.
+
+**0g. Two things for your CA, neither blocking.** First, **GST on the ₹499**: my working assumption is
+that an advance for goods carries no GST at receipt and the tax invoice comes at dispatch on the full
+₹4,999, so the store issues no tax invoice for the token. Please confirm. Second, **the returns and
+warranty terms for after dispatch do not exist yet**, because nothing has shipped. `/refund` says so
+in those words rather than inventing a window, and it must be replaced with the real terms before the
+first Lumi leaves.
+
+**What is already decided and needs nothing from you:** the ₹499 refundable token, the ₹4,500 balance
+by payment link before dispatch, the 30 September deadline, no unit cap, WhatsApp-only support on
++91 91875 46483, one Lumi per order, four form fields, and refunds by request within 5 to 7 working
+days. All of it is live in the code and written into the policy pages.
+
+---
+
+### The older queue (nothing here blocks anything)
 
 **A. Facts only you have** — each is a one-file edit the moment you say the word:
 1. **The Kheelona+ price.** The last gated commercial fact. Every surface says "pricing announced soon"; a ₹ amount stays forbidden until you set it.

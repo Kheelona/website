@@ -351,3 +351,71 @@ checklist FAQ carrying "smart toys for toddlers" and "educational toys for kids"
 journal's what-to-look-for criteria). /team: body is manifesto copy and was left untouched;
 "smart toys for toddlers" went to the title (61 chars with suffix) and "AI educational toy" to the
 description (159). FAQ additions mirror into FAQPage schema automatically (same arrays).
+
+---
+
+## STORE ROUND (2026-08-22): the promise changed, so the copy did
+
+Every line below is NEW or REWRITTEN because the site started taking money. Provenance matters more
+than usual here: this is the copy a payment dispute would be read against.
+
+### Retired, and forbidden to resurrect
+
+| Retired line | Why it had to go | What replaced it |
+| --- | --- | --- |
+| "No payment now" (19 places, 15 files) | ₹499 is charged now | `PRICE_CAPTION`: "₹499 now, ₹4,500 on dispatch. Fully refundable until we ship." |
+| `CAP_LINE` "First 500 units at ₹4,999…" | Founder removed the unit cap | `PREORDER_OFFER_LINE`: "₹499 reserves yours at ₹4,999. ₹9,999 after 30 September 2026." |
+| `RESERVE_LABEL` / `RESERVE_LABEL_SHORT` | Founder chose one label, no number | `PREORDER_LABEL`: "Pre-order Lumi" |
+| "You pay nothing today, and nothing renews without you." | First half became false | "Nothing renews without you, ever." (the half that mattered: the fear is a silent renewal, not the first ₹499) |
+| "Reserve Lumi before the price goes up." | Verb changed | "Pre-order Lumi before the price goes up." |
+
+`test/preorder-copy.test.ts` scans every published file, comments stripped, and fails if any of these
+phrasings returns. It caught three the manual sweep missed.
+
+### Sanctioned price surfaces, and there are only two
+
+Verbatim repetition builds trust; three paraphrases of one price read as three offers (V6 D11). So:
+
+1. **`PREORDER_OFFER_LINE`** — the hero card and the finale lede. Nothing else.
+2. **`PRICE_CAPTION`** — under a button.
+
+Plus `PRICE_HOLD_LINE` ("We hold the price, you hold your place."), which survives the money change
+unchanged because it is still exactly true.
+
+### New copy, and who authored it
+
+- **`/refund` and `/shipping`** — drafted by Claude, in the site's voice, marked
+  `TODO(counsel-review)` like `/terms` and `/privacy` before them. Two sections are deliberately
+  status-honest rather than complete, in the same pattern the safety page uses for certification:
+  there are **no post-dispatch returns terms** (nothing has shipped) and **no transit-time promise**
+  (we have not shipped one unit). Inventing "3 to 5 working days" would be the exact class of claim
+  this site refuses to make.
+- **`/terms`** — rewritten from describing a free list into a contract: what the ₹499 buys, what is
+  owed and when, one Lumi per order, Indian law and Bengaluru jurisdiction. The clause worth keeping
+  deliberate: *"What cannot change without your say: your price, and your money."*
+- **`/privacy`** — rewritten around the payment stack, naming Razorpay, Supabase, Resend and Vercel,
+  and admitting the thing a privacy page is tempted to hide: we must keep the order record for tax
+  accounts even after a refund.
+- **The seller of record** (`lib/legal.ts`) — founder-supplied from the GST certificate, verbatim.
+  This is the first phone number the site has ever published, and it is WhatsApp-only, so every
+  visible label says "WhatsApp" and the schema carries `contactOption: "WhatsApp"`.
+- **The acknowledgement email** (`lib/email/templates.ts`) — Claude, answering in order the four
+  questions a person has after paying a stranger online: did it work, what did I pay for, what do I
+  owe and when, how do I undo this. The refund promise is in the email and not only on a policy page,
+  because the email is what they still have in six weeks.
+- **The store page** — Claude. The lede states the token, the full price, the ship date and the refund
+  in one sentence, before the form, because on mobile the summary panel sits below it.
+- **Error and failure copy** — Claude. One rule throughout: **every failure path says "nothing was
+  charged" in those words.** A parent staring at a broken payment form assumes the worst, and they are
+  right to.
+
+### Kheelu lines added, awaiting founder sign-off (`GATED:kheelu-line`, both under 48 characters)
+
+- `/refund` — "Changed your mind? That is allowed."
+- `/shipping` — "I will help pack. Mostly by sitting in the box."
+
+### Voice compliance
+
+Zero em-dashes and no hype, verified on the RENDERED text of six pages (store, refund, shipping,
+terms, privacy, contact) rather than on the source, plus both email templates. Machine routes
+(`llms.txt`, `pricing.md`) are in the sweep, as §8.24 requires.
