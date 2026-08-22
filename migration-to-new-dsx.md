@@ -14,6 +14,13 @@ merges to `main` manually at the ⛳ checkpoints.
 
 ## Status dashboard
 
+**🟢 CS1 + CS2 + CS3 ARE MERGED TO MAIN AND LIVE (2026-08-23, merge `275ef01`).** The founder
+ran migration 0002 first, verified the preview, and ordered the merge. Production verified:
+`/api/health` → `"preorder":"token"`; live home serves the 3+ hero, the two-line offer card
+and the v3 re-skin; the live store serves the token-mode first-500 offer with the 20 October
+date. Rollback: tag `pre-v3-migration-2026-08-23` = `b27fd25` (pushed). One founder tweak
+landed post-preview: the hero offer card breaks between its two clauses (`PREORDER_OFFER_LINES`).
+
 | Change-set | State |
 |---|---|
 | Step 0 — setup (this file, CLAUDE.md pointer) | ✅ done (`7a44db7`) |

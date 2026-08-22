@@ -14,14 +14,12 @@ anything that turns out wrong gets corrected here rather than argued twice.
 
 # ⏳ OPEN
 
-## The 2026-08-23 restructure (500-unit cap), waiting on you
+## The 2026-08-23 restructure (500-unit cap)
 
-- [ ] **⚠ BEFORE you merge `demo-website` to main: run migration 0002 in Supabase.** Paste
-      `supabase/migrations/0002_full_tier_balance.sql` into the SQL editor and run it. It is additive
-      (widens one CHECK constraint, touches no row) and safe to run any time BEFORE the deploy — but
-      the new code writes `balance_status='none'` for full-price orders, and without the migration
-      that insert fails. Order of operations: run 0002 → merge → Vercel deploys → check
-      `curl -s https://kheelona.com/api/health` shows `"preorder":"token"`.
+- [x] **DONE 2026-08-23: migration 0002 run in Supabase** (you ran it, "Success. No rows
+      returned"), then the engagement merged to main at your order and deployed. Production
+      verified the same night: `/api/health` reports `"preorder":"token"`, and the live home
+      and store pages serve the first-500 offer, ages 3+, and the 20 October ship date.
 
 - [ ] **STANDING, for the day the 500th unit sells: the sell-out copy sweep.** The store flips to
       ₹7,999 full-payment BY ITSELF (server-side, per request). The static marketing pages cannot flip
