@@ -2,8 +2,10 @@
  *  ONE friend inside many bodies, Lumi first. This replaced the old
  *  Lori/Lua/Robu lineup on kheelona.com — those characters stay published on
  *  kheelona.ai, and their renders stay in `public/products/` untouched for
- *  parity, but .com now tells the age-arc story instead: Lumi at 2, the Kheelu
- *  Speaker through the school years, AI books across the whole range.
+ *  parity, but .com now tells the age-arc story instead: Lumi at 3, the Kheelu
+ *  Speaker through the school years, AI books across the whole range. Ages
+ *  are open-ended "N+" since 2026-08-23 (founder decision #8: no published
+ *  ceiling anywhere).
  *
  *  ONE source for the Home pipeline room and /playos so the lineup can never
  *  drift (the setup-steps lesson, R9). Tints brand-4 only. `img: null` renders
@@ -23,7 +25,7 @@ export type FamilyMember = {
 export const FAMILY: readonly FamilyMember[] = [
   {
     name: "Lumi",
-    ages: "2 to 5",
+    ages: "3+",
     note: "Here first. The friend who listens.",
     img: "/product/lumi-blue-2.png",
     alt: "Lumi, the sky blue talking plush toy with a speaker in its tummy, wearing its striped party hat",
@@ -34,7 +36,7 @@ export const FAMILY: readonly FamilyMember[] = [
   },
   {
     name: "Kheelu Speaker",
-    ages: "5 to 14",
+    ages: "5+",
     note: "The same friend, grown up a little. For the school years.",
     /* V3-c CLEARED 2026-07-31: founder-generated render, house cutout
        pipeline (Vision, tight crop). Source staged in
@@ -47,7 +49,7 @@ export const FAMILY: readonly FamilyMember[] = [
   },
   {
     name: "AI books",
-    ages: "2 to 14",
+    ages: "3+",
     note: "Stories that answer back. Read, ask, and be asked.",
     img: "/products/ai-book.png",
     alt: "A Kheelona AI book: a sturdy white talking book with a carry handle, pastel page tabs, and a glowing speaker in its cover",

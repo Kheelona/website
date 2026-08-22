@@ -1,21 +1,21 @@
 import { LUMI_AGES } from "@/config/site";
-import {
-  GROWTH_ARC,
-  GROWTH_HEDGE,
-  GROWTH_CLOSING,
-  lumiAgeEndpoints,
-} from "./growth-arc";
+import { GROWTH_ARC, GROWTH_HEDGE, GROWTH_CLOSING, HERO_PROMISE } from "./growth-arc";
 
-describe("growth-arc data (BUILD-V6 D2)", () => {
-  it("parses the LUMI_AGES endpoints", () => {
-    expect(lumiAgeEndpoints()).toEqual(["2", "5"]);
+describe("growth-arc data (BUILD-V6 D2, re-anchored at 3+ on 2026-08-23)", () => {
+  it("anchors the arc at the published entry age, with an open end", () => {
+    /* Founder decision #8: the site says "3+" with no ceiling, so the arc
+       starts at the entry age and its last stage is deliberately unnumbered.
+       If LUMI_AGES ever changes shape again, this is the test that asks the
+       arc to move with it. */
+    expect(LUMI_AGES).toBe("3+");
+    expect(GROWTH_ARC[0]!.kicker).toBe("At 3 years");
+    expect(GROWTH_ARC.at(-1)!.kicker).toBe("Every year after");
   });
 
-  it("cannot drift from LUMI_AGES: first kicker starts the band, last ends it", () => {
-    const [start, end] = lumiAgeEndpoints();
-    expect(LUMI_AGES).toBe(`${start} to ${end}`);
-    expect(GROWTH_ARC[0]!.kicker).toBe(`At ${start} years`);
-    expect(GROWTH_ARC.at(-1)!.kicker).toBe(`By ${end} years`);
+  it("keeps the hero promise anchored at the same entry age", () => {
+    /* One promise, two pages (V6 law), one source since the re-anchor: the
+       hero renders the halves, PacePanel joins them. */
+    expect(HERO_PROMISE).toEqual(["A best friend at 3.", "A head start for school."]);
   });
 
   it("ships four stages, a hedge, and the tutor re-homing line", () => {

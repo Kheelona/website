@@ -2,7 +2,7 @@ import { Button } from "@/components/atoms/Button";
 import { Reveal } from "@/components/molecules/Reveal";
 import { HeroStage } from "./HeroStage";
 import { PREORDER_HREF, PREORDER_LABEL, PREORDER_OFFER_LINE, LUMI_AGES } from "@/config/site";
-import { lumiAgeEndpoints } from "@/lib/growth-arc";
+import { HERO_PROMISE } from "@/lib/growth-arc";
 
 /** Revamp M2 hero (theme B + founder brief pointer 2): minimal copy on the
  *  left, the Kheelu-talks-to-Lumi stage on the right. Sits directly on the
@@ -15,7 +15,7 @@ import { lumiAgeEndpoints } from "@/lib/growth-arc";
  *  audio room, the trust room, and the parents room). LCP law lives in
  *  HeroStage. */
 export function Hero() {
-  const [ageStart, ageEnd] = lumiAgeEndpoints();
+  const [promiseNow, promiseLater] = HERO_PROMISE;
   return (
     <section
       data-guide="hero-wink"
@@ -27,20 +27,22 @@ export function Hero() {
           <span className="mb-5 inline-block rounded-full bg-orange/15 px-4 py-2 text-sm font-bold uppercase tracking-[0.08em] text-ink-head">
             For ages {LUMI_AGES}
           </span>
-          {/* V6 hero (BUILD-V6 D1, founder-approved): the outcome arc. It
-              answers the feedback that drove this round ("what will a kid who
-              gets this at 2 GET at 5") in the first two lines of the site.
-              The tutor claim moved out of the hero (it confused readers) and
+          {/* V6 hero (BUILD-V6 D1), re-anchored 2026-08-23 by founder decision
+              #8 (ages 3+): the outcome arc still answers "what does my kid end
+              up with", but the far end is school rather than a named age,
+              because the published range no longer has a ceiling. The promise
+              renders from HERO_PROMISE, which PacePanel also renders — one
+              promise, said identically on both pages, now by construction.
+              The tutor claim stays out of the hero (it confused readers) and
               lives in Compare, PacePanel, the growth room's closing line, and
-              the metadata title (BUILD-V6 §1). Ages render from LUMI_AGES via
-              lumiAgeEndpoints. The 5-second test still holds: what it is
-              (a friend that gives a head start), who it is for (2 to 5), the
-              offer (cap card), the risk (none, no payment). Two lines per
-              sentence is still the rhythm, paired with the two-colour
-              treatment; `text-balance` keeps the pairs even. */}
+              the metadata title (BUILD-V6 §1). The 5-second test still holds:
+              what it is (a friend that gives a head start), who it is for
+              (3+ chip above), the offer (offer card), the risk (refundable).
+              Two lines per sentence is still the rhythm, paired with the
+              two-colour treatment; `text-balance` keeps the pairs even. */}
           <h1 className="mb-5 text-balance font-display text-[clamp(38px,4.8vw,60px)] font-extrabold leading-[1.06] text-ink-head">
-            A best friend at {ageStart}.{" "}
-            <span className="block text-action-ink">A head start by {ageEnd}.</span>
+            {promiseNow}{" "}
+            <span className="block text-action-ink">{promiseLater}</span>
           </h1>
           <p className="mb-7 max-w-[42ch] text-[clamp(17px,1.5vw,20px)] text-ink">
             Lumi listens, remembers, and grows with your child. Stories,

@@ -3,7 +3,7 @@ import { Card } from "@/components/molecules/Card";
 import { GROWTH_ARC, GROWTH_HEDGE, GROWTH_CLOSING } from "@/lib/growth-arc";
 
 /** The year-by-year growth room (BUILD-V6 D2) — the direct answer to the
- *  parent feedback "what will a kid who gets this at 2 have at 5". Four
+ *  parent feedback "what will a kid who gets this end up with". Four
  *  static stage cards (registry Card, tilt default, NO press/lift — a card
  *  that does nothing when tapped must not pretend otherwise, V5-1), then the
  *  honest hedge, then the display line that re-homes the old tutor hero. */

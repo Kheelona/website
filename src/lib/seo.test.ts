@@ -70,9 +70,12 @@ describe("structured data", () => {
   });
 
   it("states Lumi's real age band, not the retired ones", () => {
-    expect(LUMI_PRODUCT.audience.suggestedMinAge).toBe(2);
-    expect(LUMI_PRODUCT.audience.suggestedMaxAge).toBe(5);
-    expect(everything).not.toMatch(/3 to 10|3 to 6/);
+    /* Ages 3+ since 2026-08-23 (founder decision #8): a minimum with NO
+       maximum, because the published range has no ceiling. "2 to 5" and
+       "2 to 14" joined the dead-ranges list the day they were replaced. */
+    expect(LUMI_PRODUCT.audience.suggestedMinAge).toBe(3);
+    expect("suggestedMaxAge" in LUMI_PRODUCT.audience).toBe(false);
+    expect(everything).not.toMatch(/3 to 10|3 to 6|2 to 5|2 to 14/);
   });
 
   it("carries the founders as entities: our strongest E-E-A-T signal", () => {

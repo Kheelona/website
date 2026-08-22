@@ -8,7 +8,7 @@ describe("Family (Home pipeline room)", () => {
       screen.getByRole("heading", { name: "One friend inside. More friends on the way." }),
     ).toBeInTheDocument();
     expect(
-      screen.getByText("Starts talking at 2. Still teaching at 14."),
+      screen.getByText("Starts talking at 3. Still teaching for years."),
     ).toBeInTheDocument();
   });
 

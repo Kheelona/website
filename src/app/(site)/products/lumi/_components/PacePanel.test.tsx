@@ -29,11 +29,13 @@ describe("PacePanel", () => {
     render(<PacePanel />);
     expect(
       screen.getByText(
-        /The memory that picks up where your child stopped tomorrow keeps picking up for years\. First words at 2 become stories, numbers, and questions by 5, one day at a time\./,
+        /The memory that picks up where your child stopped tomorrow keeps picking up for years\. First questions at 3 become stories, numbers, and bigger questions, one day at a time\./,
       ),
     ).toBeInTheDocument();
+    /* Rendered from HERO_PROMISE — the same source the hero renders, so the
+       verbatim law holds by construction now. */
     expect(
-      screen.getByText("A best friend at 2. A head start by 5."),
+      screen.getByText("A best friend at 3. A head start for school."),
     ).toBeInTheDocument();
   });
 

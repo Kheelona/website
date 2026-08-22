@@ -8,7 +8,7 @@ describe("Hero (V6, the growth-arc round)", () => {
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: /A best friend at 2[\s\S]*A head start by 5/i,
+        name: /A best friend at 3[\s\S]*A head start for school/i,
       }),
     ).toBeInTheDocument();
     expect(
@@ -41,7 +41,7 @@ describe("Hero (V6, the growth-arc round)", () => {
 
   it("carries Lumi's own age band", () => {
     render(<Hero />);
-    expect(screen.getByText("For ages 2 to 5")).toBeInTheDocument();
+    expect(screen.getByText("For ages 3+")).toBeInTheDocument();
   });
 
   it("renders no floating fact bubbles (team items 2 to 4)", () => {

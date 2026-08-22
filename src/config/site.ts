@@ -104,11 +104,12 @@ export const PREORDER_OFFER_LINE = `${TOKEN_PRICE} reserves one of the ${CAP_UNI
  *  a paid reservation, so it survives the money change unchanged. */
 export const PRICE_HOLD_LINE = "We hold the price, you hold your place.";
 
-/* V3 (founder 2026-07-27, from the YC application): Lumi's own age band and
-   the platform arc it grows into. These replace the retired "3 to 10" law —
-   render age copy from here so the two can never drift again. */
-export const LUMI_AGES = "2 to 5";
-export const PLATFORM_AGES = "2 to 14";
+/* Founder decision #8, 2026-08-23 (migration-to-new-dsx.md): the site says
+   "3+" EVERYWHERE. The "2 to 5" band and the "2 to 14" platform arc are both
+   retired — no published ceiling anywhere, and PLATFORM_AGES is gone rather
+   than renamed so a stale import fails loudly. Render age copy from here,
+   never inline; the chip format is "Ages 3+". */
+export const LUMI_AGES = "3+";
 
 /** The ONLY sanctioned Kheelona+ wording (V3; updated 2026-07-31 when the
  *  founder cleared HALF of gate V3-b): Lumi's smart features are LIFETIME —

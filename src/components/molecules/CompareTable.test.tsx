@@ -57,9 +57,9 @@ describe("CompareTable", () => {
     ).toContain("hidden");
   });
 
-  it("carries the age arc as the growth verdict (V3)", () => {
+  it("carries the age arc as the growth verdict (V3, open-ended since 3+)", () => {
     render(<CompareTable />);
-    expect(screen.getAllByText("Yes, 2 to 14 with the family").length).toBe(2);
+    expect(screen.getAllByText("Yes, for years with the family").length).toBe(2);
   });
 
   it("answers the languages row with the published number in both views", () => {

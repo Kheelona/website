@@ -7,7 +7,6 @@ import {
   STORE_URL,
   TAX_LINE,
   LUMI_AGES,
-  PLATFORM_AGES,
   LANGUAGES_LINE,
   SHIP_DATE_TEXT,
 } from "@/config/site";
@@ -39,7 +38,7 @@ const BODY = `# Kheelona
 
 ## What Lumi is
 - A screen-free plush toy that talks with a child and answers back. No screen, ever.
-- Ages ${LUMI_AGES}. The wider family of friends spans ages ${PLATFORM_AGES}: the Kheelu Speaker (5 to 14) and AI books are in development.
+- Ages ${LUMI_AGES}. The wider family of friends that follows, the Kheelu Speaker and AI books, is in development and grows with the child.
 - Speaks the languages spoken at home: ${LANGUAGES_LINE}, with up to 10 at launch. Switches mid-sentence.
 - Runs on PlayOS, Kheelona's own platform: a small language model built only for children, not shrunk from adult AI.
 - Three modes, one toy: AI mode (open conversation), Kheelu mode (pre-loaded stories and lessons a child can interrupt, question, and be quizzed on, offline), and Bluetooth mode (pair a phone and Lumi is the speaker for your own playlist or audiobook).

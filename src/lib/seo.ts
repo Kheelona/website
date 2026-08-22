@@ -7,7 +7,6 @@ import {
   TOKEN_PRICE,
   BALANCE_PRICE,
   LUMI_AGES,
-  PLATFORM_AGES,
   CONTACT_EMAIL,
   SHIP_DATE_ISO,
   LEGAL_ENTITY,
@@ -79,7 +78,7 @@ export const ORGANIZATION = {
   logo: `${SITE_URL}/brand/logo-mark.png`,
   image: `${SITE_URL}/og.png`,
   description:
-    "Kheelona makes screen-free talking friends for children. Lumi, the first one, is a plush toy for ages 2 to 5 that holds a real conversation, tells stories a child can question, and comes with a parent app that shows every word.",
+    "Kheelona makes screen-free talking friends for children. Lumi, the first one, is a plush toy for ages 3+ that holds a real conversation, tells stories a child can question, and comes with a parent app that shows every word.",
   foundingDate: "2025",
   founders: FOUNDERS,
   address: {
@@ -205,11 +204,12 @@ export const LUMI_PRODUCT = {
   category: "Screen-free AI toy",
   audience: {
     "@type": "PeopleAudience",
-    suggestedMinAge: 2,
-    suggestedMaxAge: 5,
+    /* Ages 3+ since 2026-08-23 (founder decision #8): a minimum with no
+       maximum, because the published range has no ceiling any more. */
+    suggestedMinAge: 3,
     audienceType: "Children",
   },
-  description: `A screen-free talking friend for children aged ${LUMI_AGES} that holds a real conversation in up to 10 home languages, carries stories and lessons they can be quizzed on, plays your music over Bluetooth, and comes with a parent app that shows you everything. Part of a family of friends spanning ages ${PLATFORM_AGES}.`,
+  description: `A screen-free talking friend for children aged ${LUMI_AGES} that holds a real conversation in up to 10 home languages, carries stories and lessons they can be quizzed on, plays your music over Bluetooth, and comes with a parent app that shows you everything. Part of a growing family of friends.`,
   image: `${SITE_URL}/product/lumi-blue-2.png`,
   offers: {
     "@type": "Offer",

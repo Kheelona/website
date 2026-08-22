@@ -7,7 +7,6 @@ import {
   STORE_URL,
   TAX_LINE,
   LUMI_AGES,
-  PLATFORM_AGES,
   LANGUAGES_LINE,
   SHIP_DATE_TEXT,
 } from "@/config/site";
@@ -50,8 +49,8 @@ Market: India. Currency: INR. Stage: pre-order, taking a refundable token.
 
 ## Also in the family (not yet purchasable)
 
-- Kheelu Speaker, ages 5 to 14: in development, price not announced
-- AI books, ages ${PLATFORM_AGES}: in development, price not announced
+- Kheelu Speaker, ages 5+: in development, price not announced
+- AI books: in development, price not announced
 
 ## What you get for the price
 

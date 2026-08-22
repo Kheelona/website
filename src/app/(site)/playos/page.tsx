@@ -13,12 +13,12 @@ import { ArchitectureStack, type ArchLayer } from "@/components/organisms/Archit
 import { RecognitionStrip } from "@/components/organisms/RecognitionStrip";
 import { graph, faqPage, breadcrumbs, pageMeta } from "@/lib/seo";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
-import { LUMI_AGES, PLATFORM_AGES } from "@/config/site";
+import { LUMI_AGES } from "@/config/site";
 
 export const metadata = pageMeta({
-  title: "PlayOS: one platform for childhood, ages 2 to 14",
+  title: "PlayOS: one platform for childhood, ages 3+",
   description:
-    "The platform under every Kheelona friend: a child-only voice brain, safety on both doors, up to 10 home languages, and one memory that travels from age 2 to 14.",
+    "The platform under every Kheelona friend: a child-only voice brain, safety on both doors, up to 10 home languages, and one memory that travels from age 3.",
   path: "/playos",
 });
 
@@ -154,7 +154,7 @@ const MOAT = [
     title: "Own the years",
     /* SEO round 2026-08-12: "AI educational toy" names Lumi, the published
        first body — the speaker and books keep their own plain names. */
-    body: `One friend across ages ${PLATFORM_AGES}: the AI educational toy, then the speaker, then books that answer back. The memory travels, so families stay.`,
+    body: "One friend from age 3 up: the AI educational toy, then the speaker, then books that answer back. The memory travels, so families stay.",
   },
 ] as const;
 
@@ -198,7 +198,7 @@ export default function PlayOSPage() {
           eyebrow="PlayOS"
           title="The operating system for childhood."
           titleClassName="mb-5"
-          lede={`PlayOS is the platform under every Kheelona friend: one safe voice brain, one memory of your child, many bodies across ages ${PLATFORM_AGES}. Lumi is the first body. It will not be the last.`}
+          lede="PlayOS is the platform under every Kheelona friend: one safe voice brain, one memory of your child, many bodies as they grow. Lumi is the first body. It will not be the last."
         />
       </PageHero>
 
