@@ -1214,3 +1214,51 @@ build does not have), and the store screenshot spent 45 seconds trying to reach 
 `store.kheelona.com` on a port nothing serves. Any explicit port now counts as local; production URLs
 carry none. Second time this harness has been wrong about which host to fake, and both times the tell
 was a timeout rather than a wrong answer, which is the good kind of failure.
+
+## Post-deploy verification on LIVE production (2026-08-23)
+
+Ran after `main` was pushed and Vercel had rebuilt. The deploy was confirmed by polling the served
+HTML rather than by watching a dashboard: Home went from 1 store CTA and 5 anchor CTAs to 6 and 0.
+
+**A real browser walk, through the extension.** Home → tapped the hero CTA → landed on
+`store.kheelona.com` in one hop. Then `/products/lumi` → tapped the NAVBAR CTA → same, one hop. The
+store page rendered with the whole offer above the form and the age field present as
+`textbox "Your child's age" type="text"` in the live accessibility tree, which is the free-text change
+confirmed in production rather than in a test.
+
+**The one-tap change also proved the GA4 fix, by accident.** Both hops arrived carrying a linker
+parameter:
+
+```
+store.kheelona.com/?_gl=1*hpz0eg*_ga*MTM2ODYyMDIxOS4xNzg1MTg5MjY3*_ga_7LMKSFEXZ9*…
+```
+
+A different `_gl` value on each hop. That is the gtag stitching the two hosts into one session, which
+is exactly what the founder's Configure-your-domains entry was for, and it is better evidence than the
+dashboard screenshot: the parameter only appears if the destination host is on the list.
+
+**What the extension could not tell me, and did not pretend to.** Its first two screenshots showed the
+Home hero art as a blur and the /products/lumi plush as blank, because a hidden tab defers image
+painting and freezes reveals (§8.23). The 404's plush painted fine in the same session, which is the
+tell that this is timing rather than a defect. Visual and a11y evidence came from the headless harness,
+per the standing rule.
+
+| Gate, against https://kheelona.com and https://store.kheelona.com | Result |
+| --- | --- |
+| `qa:sweep` (axe + voice lint, 15 routes × 390/1280) | **30/30 clean**, exit 0 |
+| CTA audit in the live DOM, 14 routes at 390px | every route carries store CTAs, **zero** anchor CTAs, `id="reserve"` present on all 14 |
+| Console errors | none |
+| Home image payload at 390px | **60 KB across 6 requests**, largest being the hero at 36 KB |
+
+### A false alarm I raised on myself, worth recording
+
+The first CTA audit reported Home's largest image as `dashboard.png&w=3840`, which read as a 3840px
+asset being served to a phone and a violation of the hero-owns-LCP law. It was neither. The script read
+`currentSrc || src`, and `currentSrc` was **empty because the image is below the fold and never
+fetched** — so it fell back to the `src` attribute, which Next deliberately sets to the largest srcset
+candidate for browsers without srcset support. Measuring actual transferred bytes settled it: that
+image is not requested at all on a phone, and the hero is correctly the largest thing downloaded.
+
+Recording it because the fix I nearly reached for (adding a `sizes` attribute that was already there
+and correct at `280px`) would have been a change made to satisfy a bad measurement. **Measure the
+bytes, not the attribute.**
