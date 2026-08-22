@@ -1,5 +1,11 @@
 # kheelona.com — session entry point
 
+**🚧 DESIGN-SYSTEM v3 MIGRATION IN PROGRESS (since 2026-08-23): read `migration-to-new-dsx.md`
+FIRST, every session, before anything else.** It carries the founder decisions of 2026-08-23
+that SUPERSEDE several facts below (the 500-unit cap is BACK, ship date is 20 October 2026,
+ages are "3+", the zero-italics law is reversed, Foxy-Deer is Kheelu's new design). Remove
+this block only when that file's completion box is ticked.
+
 Pre-order marketing site for **Lumi**, Kheelona's screen-free talking AI toy for ages 2 to 5
 (India-first). One job: turn parents into paid pre-orders. A **₹499 refundable token** holds a Lumi at
 **₹4,999** (₹9,999 after 30 September 2026), the **₹4,500 balance** falls due before dispatch, and the
