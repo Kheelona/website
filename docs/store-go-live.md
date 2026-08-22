@@ -33,6 +33,67 @@ Worth moving to Pro before real orders arrive rather than after a suspension.
 
 ---
 
+## ⚑ WHERE THIS ACTUALLY GOT TO (2026-08-22, ~22:30)
+
+**THE STORE IS LIVE ON kheelona.com AND store.kheelona.com, ON LIVE RAZORPAY KEYS.** Merged to main,
+deployed, and `/api/health` returns:
+
+```
+{"ok":true,"store":"ready","razorpay":"live","email":"missing","dbMs":248-718}
+```
+
+### Verified against production, by driving it
+
+| Check | Result |
+| --- | --- |
+| All six env vars readable | ✅ `store: ready` |
+| Razorpay mode | ⚠️ **`live`** — any payment from here is real money |
+| Supabase write + live Razorpay API auth | ✅ create-order returned `KH-8FP8-PWDA` / `order_TStGXH3YHKnudP` |
+| Amount decided server-side | ✅ 49900 paise, from our tier table |
+| Signed address token issued | ✅ |
+| Server-side validation | ✅ 422 with all five field messages |
+| Webhook rejects a bad signature | ✅ 400, nothing written |
+| store.kheelona.com serves the store | ✅ `x-matched-path: /store`, `noindex` |
+| Marketing site on the paid copy | ✅ "first 500 units" and "No payment now" gone |
+| /refund /shipping /terms /privacy | ✅ all 200 |
+
+### NOT verified, and each one matters
+
+1. **NO EMAILS ARE BEING SENT.** `email: "missing"` means `RESEND_API_KEY` is unset, so a parent who
+   pre-orders right now gets **no confirmation and no address link**, and **the founder gets no new-order
+   alert**. The order is still recorded correctly, so nothing is lost, but from the buyer's side it looks
+   like paying ₹499 into silence. **This is the most urgent gap on a live store.**
+2. **The webhook secret is unproven.** A probe signed with the value in local `.env` returns 400, so
+   Vercel holds a different string. That is fine *if* Vercel's value matches Razorpay's, and **nothing
+   short of a real delivery proves that**. If they disagree, every webhook fails, payments are recorded
+   only via the browser callback, and `finance@kheelona.com` starts collecting Razorpay failure alerts.
+   **To prove it without a payment:** set the SAME string in Razorpay (Webhooks → Edit → Secret) and in
+   Vercel, put it in `.env`, redeploy, then re-run the signed probe in step 4 and expect **200**.
+3. **No card payment has ever gone through this code.** Live keys mean the first one is real money. See
+   the recommendation below.
+4. **Database latency is 250 to 720ms** for a trivial count, which suggests the Supabase project is not
+   in an Indian region. Each pre-order makes two or three round trips. Checking Settings → General →
+   Region is worth doing while the tables are still nearly empty.
+
+### Clean up this test row
+
+```sql
+delete from preorders where order_ref = 'KH-8FP8-PWDA';
+-- or: delete from preorders where email = 'zz-test-delete-me@kheelona.com';
+```
+
+It is `status = 'created'`, so it would otherwise sit in the abandoned-payment list and be mistaken for
+a real lead.
+
+### The recommended next move
+
+Add `RESEND_API_KEY` first, then place **one real pre-order yourself with your own card** and check the
+five rows in step 4's table, then refund it from the Razorpay dashboard. That single transaction proves
+the card flow, the webhook secret, and both emails at once, and it costs about ₹12 in gateway fees
+Razorpay does not return on a refund.
+
+---
+
 ## Step 0 — where the values go
 
 Nine variables. Six are required; three are optional and the store works without them.

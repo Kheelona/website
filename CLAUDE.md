@@ -5,33 +5,40 @@ Pre-order marketing site for **Lumi**, Kheelona's screen-free talking AI toy for
 **₹4,999** (₹9,999 after 30 September 2026), the **₹4,500 balance** falls due before dispatch, and the
 payment happens on **store.kheelona.com**, which this same repo serves.
 
-## ⚠ STATE OF PLAY (2026-08-22, V6 live · PAID PRE-ORDERS on `preorder-store`) — read this first
+## ⚠ STATE OF PLAY (2026-08-22 — **THE PAID STORE IS LIVE ON LIVE KEYS**) — read this first
 **THE SITE IS LIVE AT https://kheelona.com AND SERVES V6. It is indexed and taking pre-orders, so
 every change you make from here touches a live commercial site.** Latest checkpoint, read it before
 touching anything: `docs/checkpoints/preorder-store-2026-08-22.md` (before it:
 `v6-content-2026-07-31.md`, `v5-merge-2026-07-31.md`, `go-live-2026-07-28.md`).
 
-**💳 PAID PRE-ORDERS ARE BUILT AND WAITING ON THE FOUNDER'S DASHBOARDS (branch `preorder-store`, NOT
-merged, NOT live).** The pre-order stopped being a free Tally list: a parent pays a **₹499 refundable
-token** that holds a Lumi at **₹4,999**, the **₹4,500 balance** falls due by payment link before
-dispatch, and it all happens on **store.kheelona.com**, which is THIS repo served through a host
-rewrite in `src/proxy.ts` (Next 16's new name for middleware). Orders live in Supabase, the receipt
-goes through Resend, events sell the same reservation at ₹99 behind a signed QR link with a cap and an
-expiry. **Ship date moved to 1 October 2026** and the price deadline is **30 September 2026**; there is
-**no unit cap any more**, so "first 500 units" is dead everywhere and the deadline is the whole of the
-urgency. Every law is `docs/website-steps.md` **§8.25**; read it before touching the store. The five
-that bite hardest: **the client never sends a price** (§8.25-c-i), **paid is decided twice through one
-idempotent `markPaid`** (§8.25-p), **the webhook verifies the RAW body and releases its event claim on
-failure** (§8.25-m), **an address is authorised only by its signed token** (§8.25-n), and **the finale
-is the ONLY outbound link to the store** (§8.25-b). What is left is founder dashboard work only,
-listed as **FOUNDER-TODO.md section 0**: Razorpay keys and webhook, a Supabase project plus
-`supabase/migrations/0001_preorders.sql`, `STORE_SIGNING_SECRET`, Resend DNS (optional to start), and
-`store.kheelona.com` added to the existing Vercel project. **With no keys the store renders
-"pre-orders open here shortly" and takes no money**, so the branch is safe to merge and deploy first.
-**⇒ WHEN THE FOUNDER SAYS THE KEYS ARE IN, FOLLOW `docs/store-go-live.md`** — the step-by-step runbook,
-written for a session with no memory of this one, covering the local checks, **the test-mode payment end
-to end (NEVER RUN, and the one gate that cannot be skipped)**, the idempotency and tamper proofs, the
-merge with a rollback tag, the live smoke checks, and the first-order watch.
+**💳 PAID PRE-ORDERS ARE LIVE.** kheelona.com sells a **₹499 refundable token** that holds a Lumi at
+**₹4,999**, the **₹4,500 balance** falls due by payment link before dispatch, and payment happens on
+**store.kheelona.com**, which THIS repo serves through a host rewrite in `src/proxy.ts` (Next 16's name
+for middleware). Orders go to Supabase, receipts through Resend, events sell at ₹99 behind a signed QR
+link with a cap and an expiry. Ship date **1 October 2026**, price deadline **30 September 2026**, and
+**no unit cap** ("first 500 units" and "No payment now" are retired everywhere; `test/preorder-copy.test.ts`
+fails if either returns). Rollback tag **`v6-live-2026-08-22`** = the last pre-store commit.
+
+**`/api/health` IS THE FIRST THING TO CHECK** on any store question. It reports readiness, which Razorpay
+mode is live, whether email is configured, database latency, and — when unconfigured — the **names** of the
+missing env vars. As of 2026-08-22 it returns `{ok:true, store:ready, razorpay:LIVE, email:MISSING}`.
+
+**🔴 THREE THINGS ARE OPEN AND THE FIRST IS URGENT** (detail: **FOUNDER-TODO.md section 0** and the
+"⚑ WHERE THIS ACTUALLY GOT TO" block at the top of **`docs/store-go-live.md`**):
+1. **`RESEND_API_KEY` is unset, so nobody gets an email.** A parent who pre-orders pays ₹499 and receives
+   no confirmation, no order number and no link to give their delivery address; the founder gets no alert.
+   The order is recorded correctly, so nothing is lost, but it reads as paying into silence.
+2. **The webhook secret is unproven.** A probe signed with the local `.env` value returns 400, so Vercel
+   holds a different string; whether it matches Razorpay's own copy is unknown until a real delivery.
+   If they disagree the webhook is silently dead while the browser callback keeps working.
+3. **No card payment has ever run through this code, and the keys are LIVE**, so the first one is real
+   money. Recommended: the founder pre-orders once with their own card, verifies, then refunds.
+
+Store laws are `docs/website-steps.md` **§8.25** — read before touching any of it. The five that bite:
+**the client never sends a price** (§8.25-c-i), **paid is decided twice through one idempotent
+`markPaid`** (§8.25-p), **the webhook verifies the RAW body and releases its event claim on failure**
+(§8.25-m), **an address is authorised only by its signed token** (§8.25-n), and **the finale is the ONLY
+outbound link to the store** (§8.25-b).
 
 **V6 (the growth-arc CONTENT round + its design-handoff items) is MERGED TO `main` AND LIVE**
 (founder instruction 2026-07-31: "make it live on demo and main both"; rollback tag

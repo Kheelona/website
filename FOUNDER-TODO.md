@@ -27,58 +27,56 @@ section A onwards is the older queue, unchanged, and none of it blocks anything.
 
 ---
 
-### 0. THE STORE IS BUILT AND WAITING ON YOUR DASHBOARDS (2026-08-22)
+### 0. THE STORE IS LIVE (2026-08-22) — two things left, one of them urgent
 
-`store.kheelona.com` is finished, tested and verified end to end against test values. Branch
-**`preorder-store`**, 8 commits, **not merged and not live**. It is deployable right now: with no keys
-it renders "pre-orders open here shortly" and takes no money, so **nothing breaks by shipping it before
-you finish this list.**
+`store.kheelona.com` and the paid copy on kheelona.com are **live, on LIVE Razorpay keys**. Merged,
+deployed, and verified against production: the server chain creates real Razorpay orders and writes to
+Supabase, the amount is decided server-side, validation and webhook signature rejection both behave.
+Rollback tag: **`v6-live-2026-08-22`** (the last pre-store commit).
 
-Each item is a dashboard action only you can do (same standing rule as Vercel: Claude never touches
-your accounts). Tick them in any order.
+- [x] ~~Razorpay key id and secret~~ — done, and they are **live** keys
+- [x] ~~Webhook created~~ — `store.kheelona.com/api/razorpay/webhook`, Enabled, `order.paid` + `payment.captured`
+- [x] ~~Supabase project, migration, service key~~ — done, tables exist with RLS on
+- [x] ~~`STORE_SIGNING_SECRET`~~ — done
+- [x] ~~`store.kheelona.com` domain + DNS~~ — done, Valid Configuration on Production
 
-#### The six values the store cannot run without
+#### 🔴 URGENT: nobody is getting an email
 
-- [ ] **`RAZORPAY_KEY_ID`** and **`RAZORPAY_KEY_SECRET`** — Razorpay → Settings → API Keys → Generate.
-      **Use the test keys (`rzp_test_…`) first.** The secret is shown once.
-- [ ] **`RAZORPAY_WEBHOOK_SECRET`** — Razorpay → Settings → Webhooks → Add. URL:
-      `https://store.kheelona.com/api/razorpay/webhook` (or
-      `https://website-hdn2.vercel.app/api/razorpay/webhook` while testing, which also works).
-      Subscribe to **`order.paid`** and **`payment.captured`**. The secret is whatever you type there.
-- [ ] **`SUPABASE_URL`** and **`SUPABASE_SERVICE_ROLE_KEY`** — create a project (the free tier is
-      plenty: this stores text), then Project Settings → API. **Also run the migration**: SQL editor →
-      paste all of `supabase/migrations/0001_preorders.sql` → Run. The service_role key can read every
-      order, so it belongs in Vercel's environment variables and nowhere else.
-- [ ] **`STORE_SIGNING_SECRET`** — run `openssl rand -base64 48` and paste the output. It signs event
-      links and the address links in emails. Changing it later invalidates every address link already
-      sent, so set it once.
+`/api/health` says `email: "missing"` — `RESEND_API_KEY` is not set. A parent who pre-orders right now
+pays ₹499 and **receives nothing**: no confirmation, no order number, no link to add their delivery
+address. **You get no new-order alert either.** The order is recorded correctly, so nothing is lost, but
+from the buyer's side it looks like paying into silence, and the address you need to ship to never gets
+collected.
 
-#### Then, in Vercel
+- [ ] **Resend → add the domain `send.kheelona.com`**, put its three DNS records in your DNS, create an
+      API key, add `RESEND_API_KEY` in Vercel, redeploy. Then `/api/health` should say
+      `email: "configured"`.
 
-- [ ] Add all six as **Environment Variables** on the existing project.
-- [x] ~~Add **`store.kheelona.com`** as a domain on that same project, and the DNS record.~~
-      **DONE 2026-08-22**, verified: Valid Configuration on Production, and the host answers 200. Until
-      the merge it serves the marketing home page, which is exactly what Razorpay's liveness check
-      needs. (If a later check ever says the domain is unreachable from this laptop, that is a stale
-      local resolver, not the domain: `curl -sI --resolve store.kheelona.com:443:216.198.79.65
-      https://store.kheelona.com/` proves it.)
-- [ ] **Consider moving off the Hobby plan.** The daily health cron fits Hobby, but Vercel reserves
-      Hobby for non-commercial use and this project is about to take payments. Better to upgrade before
-      real orders than after a suspension.
+#### 🟠 Prove the webhook secret, before a customer does it for you
 
-#### Optional, and the store works without it
+A probe signed with the value in the local `.env` came back 400, so Vercel holds a different string.
+That is fine **if** Vercel's value matches the one you typed into Razorpay — and only a real delivery
+proves that. If they disagree, every webhook fails silently: payments still get recorded through the
+browser, so it looks fine, while `finance@kheelona.com` fills up with Razorpay failure alerts.
 
-- [ ] **`RESEND_API_KEY`** — add the domain `send.kheelona.com` in Resend and put its three DNS records
-      in your DNS, then create a key. A subdomain keeps kheelona.com's own deliverability separate from
-      anything transactional. **Without this an order is still recorded and the failure is logged**; the
-      only cost is that the earliest customers get no branded receipt.
+- [ ] **Make them provably identical.** Razorpay → Webhooks → Edit → retype the Secret. Vercel → set
+      `RAZORPAY_WEBHOOK_SECRET` to the same string. Tell me the string (or use the one in `.env`) and I
+      can prove it with a signed probe expecting a 200, with no payment involved.
 
-#### When you are done, tell me: "store keys are in"
+#### 🟡 Two smaller things
 
-I will then work through **`docs/store-go-live.md`**, which is written step by step and does not rely on
-remembering this conversation. It covers the local verification, the **test-mode payment end to end
-(never run yet, and the one gate that cannot be skipped)**, the idempotency and tamper proofs, the merge
-with a rollback tag, the live smoke checks, and what to watch on the first real order.
+- [ ] **Delete the test row.** `delete from preorders where order_ref = 'KH-8FP8-PWDA';` — it is
+      `status='created'` and would otherwise look like a real abandoned lead.
+- [ ] **Check the Supabase region** (Settings → General). A trivial query is taking 250 to 720ms, which
+      suggests it is not in India. Each order makes two or three round trips. Nearly free to change now,
+      a data migration later.
+
+#### The first real payment
+
+No card payment has ever gone through this code, and the keys are live, so the first one is real money.
+Recommended: add the Resend key, then **pre-order once yourself with your own card**, check it end to
+end against `docs/store-go-live.md` step 4, and refund it from the dashboard. About ₹12 in gateway fees
+Razorpay does not return, and it proves the card flow, the webhook secret and both emails in one go.
 
 #### Answered, nothing further needed
 
