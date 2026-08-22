@@ -846,3 +846,35 @@ in the RSC flight payload, not the DOM. Same trap as counting anything the JSON-
 not resolve in this headless Chrome** (use `127.0.0.1`, or `--host-resolver-rules` for a named host),
 and **Lighthouse hits an HSTS interstitial on `kheelona.com`** because the real domain is HSTS, so use
 `store.localhost` for the store's audit.
+
+**8.25-cc THE QA HARNESS LIVES IN THE REPO, NOT IN A SCRATCHPAD.** §8.23 told each session to
+re-create the headless harness from the docs if the scratchpad was gone, and the scratchpad is always
+gone: it is session-scoped. That cost the same twenty minutes every round, and worse, each rebuild
+re-learned the same traps by hitting them. It is now `tools/qa/`:
+
+- `npm run qa:sweep` — axe (WCAG 2.0/2.1 A+AA) **plus** the voice lint across **every HTML route** at
+  390px and 1280px. **The route list lives in the script**, which is the direct answer to §8.24-7a's
+  most expensive lesson: a sweep that named four routes while the site had eleven let a real WCAG
+  failure sit live through three "axe zero" rounds. Currently 30/30 clean.
+- `npm run qa:text -- <url>` — the rendered text and every link. **Reach for this instead of grepping
+  HTML** (§8.25-bb).
+- `npm run qa:shot -- <url> <out.png> [width] [--full]` and `npm run qa:axe -- <url> [width]`.
+
+`tools/qa/lib/resolve.mjs` locates puppeteer-core, axe-core and Chrome by searching the project's
+`node_modules` and every npx cache entry, so **no cache hash is ever hardcoded again** (the old
+scripts embedded one, and it changes). puppeteer-core and axe-core are deliberately NOT dependencies:
+they are ~400MB of browser tooling for a dev-only harness and Vercel would install them on every
+production build. `tools/qa/lib/browser.mjs` bakes in the four behaviours that are otherwise
+re-derived each time: never the extension, third-party requests aborted (the Ahrefs tag never resolves
+offline, so `networkidle0` hangs forever), reveals forced with a settle, and named hosts mapped to
+127.0.0.1.
+
+**8.25-dd THE GO-LIVE SEQUENCE IS A DOCUMENT, NOT A MEMORY.** `docs/store-go-live.md` takes the store
+from "the founder's keys exist" to "the first real order landed", written for a session that did not
+build it: every command copy-pasteable, every check with a stated pass condition. It exists because the
+riskiest moment in this whole round is the one that happens after a conversation ends. It contains the
+**test-mode payment end to end, which has never been run**, plus the two proofs that matter more than
+the happy path (re-deliver a webhook and expect no second email; POST a bad signature and expect 400
+with nothing written), the merge with a rollback tag created BEFORE the merge, and the fastest safe
+stop: **remove `RAZORPAY_KEY_ID` in Vercel and redeploy**, which returns the store to "opening shortly"
+and takes no money while every marketing page keeps working.

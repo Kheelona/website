@@ -27,67 +27,76 @@ section A onwards is the older queue, unchanged, and none of it blocks anything.
 
 ---
 
-### 0. THE STORE IS BUILT AND WAITING ON FOUR DASHBOARDS (2026-08-22)
+### 0. THE STORE IS BUILT AND WAITING ON YOUR DASHBOARDS (2026-08-22)
 
-`store.kheelona.com` is finished, tested and verified end to end against test keys. It is deployable
-right now: with no keys it renders "pre-orders open here shortly" and takes no money, so nothing
-breaks by shipping it before you finish this list. Each item is a dashboard action only you can do
-(same rule as Vercel: Claude never touches your accounts).
+`store.kheelona.com` is finished, tested and verified end to end against test values. Branch
+**`preorder-store`**, 8 commits, **not merged and not live**. It is deployable right now: with no keys
+it renders "pre-orders open here shortly" and takes no money, so **nothing breaks by shipping it before
+you finish this list.**
 
-**0a. Razorpay.** Settings → API Keys → generate. Then Settings → Webhooks → add
-`https://store.kheelona.com/api/razorpay/webhook`, subscribed to **order.paid** and
-**payment.captured**, and set a webhook secret. Three values:
-`RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET`.
-Use the **test** keys (`rzp_test_…`) first: `/api/health` reports which mode is live, so you can check
-from your phone that the store is not quietly taking fake money, or quietly taking real money on a
-preview.
+Each item is a dashboard action only you can do (same standing rule as Vercel: Claude never touches
+your accounts). Tick them in any order.
 
-**0b. Supabase.** Create a project (free tier is plenty: this stores text). SQL editor → paste
-`supabase/migrations/0001_preorders.sql` → run. Then Project Settings → API for
-`SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`. That second one can read every order, so it is a real
-secret: Vercel environment variables only.
+#### The six values the store cannot run without
 
-**0c. Resend, for the confirmation email.** Add the domain `send.kheelona.com` and put the three DNS
-records it gives you into your DNS. A subdomain keeps kheelona.com's own deliverability separate from
-anything transactional. Then `RESEND_API_KEY`. **This one is optional to start**: without it an order
-is still recorded and the failure is logged, so the store works and the first customers just do not
-get a branded receipt.
+- [ ] **`RAZORPAY_KEY_ID`** and **`RAZORPAY_KEY_SECRET`** — Razorpay → Settings → API Keys → Generate.
+      **Use the test keys (`rzp_test_…`) first.** The secret is shown once.
+- [ ] **`RAZORPAY_WEBHOOK_SECRET`** — Razorpay → Settings → Webhooks → Add. URL:
+      `https://store.kheelona.com/api/razorpay/webhook` (or
+      `https://website-hdn2.vercel.app/api/razorpay/webhook` while testing, which also works).
+      Subscribe to **`order.paid`** and **`payment.captured`**. The secret is whatever you type there.
+- [ ] **`SUPABASE_URL`** and **`SUPABASE_SERVICE_ROLE_KEY`** — create a project (the free tier is
+      plenty: this stores text), then Project Settings → API. **Also run the migration**: SQL editor →
+      paste all of `supabase/migrations/0001_preorders.sql` → Run. The service_role key can read every
+      order, so it belongs in Vercel's environment variables and nowhere else.
+- [ ] **`STORE_SIGNING_SECRET`** — run `openssl rand -base64 48` and paste the output. It signs event
+      links and the address links in emails. Changing it later invalidates every address link already
+      sent, so set it once.
 
-**0d. One secret of our own.** `STORE_SIGNING_SECRET` — run `openssl rand -base64 48` and paste the
-output. It signs event links and the address links in emails. Changing it later invalidates every
-address link already sent, so set it once.
+#### Then, in Vercel
 
-**0e. Vercel.** Add `store.kheelona.com` as a domain on the existing project (no second project, no
-second deploy: the same app serves both hosts), and add the variables above. The daily cron in
-`vercel.json` is already there; it exists because Supabase pauses a free project after a quiet week
-and the request that wakes it would otherwise be somebody's first pre-order.
+- [ ] Add all six as **Environment Variables** on the existing project.
+- [ ] Add **`store.kheelona.com`** as a **domain on that same project** — not a new project, not a
+      second deploy. One app serves both hosts. Add the DNS record Vercel asks for.
 
-**0f. ANSWERED 2026-08-22: delivery is included.** Anywhere in India, no charge at any step. Now
-published as a settled fact on `/shipping`, in `/terms`, in the store's summary panel, and in both
-machine routes, rather than as a flagged assumption.
+#### Optional, and the store works without it
 
-**0g. ANSWERED 2026-08-22: prices are GST-inclusive**, and GST is paid out of the collected amount
-under reverse charge. **Only the customer-facing half of that is published**: `TAX_LINE` ("All prices
-include GST.") appears in the price clause of `/terms`, on `/shipping`, in the store's summary panel,
-and in `pricing.md` and `llms.txt`. The reverse-charge mechanism is internal accounting and is
-deliberately NOT on any page: it would confuse a parent and it is not a fact they need. One note for
-the record, since you are the CA and this is your call either way: reverse charge is unusual on a B2C
-goods sale, where the seller normally collects under forward charge, so it is worth a second look
-before the first return is filed. Nothing on the site depends on the answer.
+- [ ] **`RESEND_API_KEY`** — add the domain `send.kheelona.com` in Resend and put its three DNS records
+      in your DNS, then create a key. A subdomain keeps kheelona.com's own deliverability separate from
+      anything transactional. **Without this an order is still recorded and the failure is logged**; the
+      only cost is that the earliest customers get no branded receipt.
 
-**0h. STILL OPEN, and blocking the first dispatch rather than the store opening.** The returns and
-warranty terms for after dispatch do not exist yet, because nothing has shipped. `/refund` says exactly
-that in plain words rather than inventing a window, and it must be replaced with the real terms before
-the first Lumi leaves.
+#### When you are done, tell me: "store keys are in"
 
-**Approved 2026-08-22, nothing further needed:** delivery is included (0f), prices are GST-inclusive
-(0g), and both new Kheelu lines are signed off in their contracted form: `/refund` "Changed your mind?
-That's allowed." and `/shipping` "I'll help pack. Mostly by sitting in the box."
+I will then work through **`docs/store-go-live.md`**, which is written step by step and does not rely on
+remembering this conversation. It covers the local verification, the **test-mode payment end to end
+(never run yet, and the one gate that cannot be skipped)**, the idempotency and tamper proofs, the merge
+with a rollback tag, the live smoke checks, and what to watch on the first real order.
 
-**What is already decided and needs nothing from you:** the ₹499 refundable token, the ₹4,500 balance
-by payment link before dispatch, the 30 September deadline, no unit cap, WhatsApp-only support on
-+91 91875 46483, one Lumi per order, four form fields, and refunds by request within 5 to 7 working
-days. All of it is live in the code and written into the policy pages.
+#### Answered, nothing further needed
+
+- ✅ **Delivery is included** in ₹4,999, anywhere in India. Published on `/shipping`, in the `/terms`
+  price clause, in the store's summary panel and in both machine routes.
+- ✅ **Prices are GST-inclusive** (`TAX_LINE`, rendered from config in five places). You also confirmed
+  GST is paid from the collected amount **under reverse charge**; that half is deliberately not
+  published, being internal accounting no customer decision depends on. One note for the record, since
+  it is your call: reverse charge is unusual on a B2C goods sale, where the seller normally collects
+  under forward charge.
+- ✅ **Both Kheelu lines**, in their contracted form: `/refund` "Changed your mind? That's allowed." and
+  `/shipping` "I'll help pack. Mostly by sitting in the box."
+
+#### Still open, and it blocks the first DISPATCH rather than the store opening
+
+- [ ] **The post-dispatch returns and warranty terms do not exist yet**, because nothing has shipped.
+      `/refund` says exactly that in plain words rather than inventing a window. They must be written
+      before the first Lumi leaves.
+
+#### Already decided, needing nothing from you
+
+The ₹499 refundable token, the ₹4,500 balance by payment link before dispatch, the 30 September 2026
+deadline, no unit cap, shipping from 1 October 2026, WhatsApp-only support on +91 91875 46483, one Lumi
+per order, four form fields, and refunds by request within 5 to 7 working days. All of it is live in the
+code and written into the policy pages.
 
 ---
 

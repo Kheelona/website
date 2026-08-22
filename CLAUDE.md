@@ -28,6 +28,10 @@ listed as **FOUNDER-TODO.md section 0**: Razorpay keys and webhook, a Supabase p
 `supabase/migrations/0001_preorders.sql`, `STORE_SIGNING_SECRET`, Resend DNS (optional to start), and
 `store.kheelona.com` added to the existing Vercel project. **With no keys the store renders
 "pre-orders open here shortly" and takes no money**, so the branch is safe to merge and deploy first.
+**⇒ WHEN THE FOUNDER SAYS THE KEYS ARE IN, FOLLOW `docs/store-go-live.md`** — the step-by-step runbook,
+written for a session with no memory of this one, covering the local checks, **the test-mode payment end
+to end (NEVER RUN, and the one gate that cannot be skipped)**, the idempotency and tamper proofs, the
+merge with a rollback tag, the live smoke checks, and the first-order watch.
 
 **V6 (the growth-arc CONTENT round + its design-handoff items) is MERGED TO `main` AND LIVE**
 (founder instruction 2026-07-31: "make it live on demo and main both"; rollback tag
@@ -136,9 +140,12 @@ repo root. That old app is preserved at the tag **`pre-revamp-2026-07`** and its
   `.reveal-in` before running it**, and build a control before believing a perf story.
 - **Visual reviews run headless, not through the extension.** Its window is locked ~390px and its tab
   runs hidden, which freezes IntersectionObserver reveals and defers image/media painting — a
-  screenshot from it is not evidence. The harness lives in the session scratchpad (`shot.mjs`
-  sections/clip/probe, `audit.mjs`, `iframe-measure.mjs`, `axe-run.mjs`, `lcp-probe.mjs`) and drives
-  Chrome via the puppeteer-core in the npx cache; re-create it from §8.23 if the scratchpad is gone.
+  screenshot from it is not evidence. **THE HARNESS IS IN THE REPO SINCE 2026-08-22 (`tools/qa/`), so
+  stop re-creating it in a scratchpad**: `npm run qa:sweep` runs axe + the voice lint over all 15 HTML
+  routes at 390 and 1280 (clean 30/30), and `qa:shot` / `qa:text` / `qa:axe` drive one route.
+  `tools/qa/lib/resolve.mjs` finds puppeteer-core, axe-core and Chrome by itself, so no cache hash is
+  ever hardcoded again. **Reach for `qa:text` whenever you want to know what a page SAYS** — grepping
+  HTML source also searches the RSC payload and finds strings that are not on the page (§8.25-bb).
 
 ## Who you work for
 **Apoorva Sahu** (apoorva@geekyants.work) — Founder & CEO of Kheelona (kheelona.com + sister site kheelona.ai), also a Director at GeekyAnts. Full authority on brand, product, and copy; defer to them on brand calls. Co-founders: Aman Soni (CTO, 14 patents filed), Kashyap C.R (Chief Hardware Officer, built at Intel — his published kheelona.ai bio names Thunderbolt 4/5, mirrored on /team). Team also includes Ria Mangala Rewari (Head of Marketing, not a co-founder; added R10).
@@ -247,7 +254,13 @@ shortly" state instead of crashing.
 - `docs/copy-reference.md` — copy provenance + sanctioned deviations
 - `docs/design-review-2026-07-10.md` — R4 panel findings, every item dispositioned (FIXED/FOUNDER/DEFERRED/REJECTED); §8.13 in website-steps.md is the matching spec. 3D QA gotcha: hidden tabs freeze rAF, so the canvas looks dead in background automation tabs — verify with a visible window
 - `docs/stories-image-prompts.md` — HISTORICAL since 2026-07-31: all 19 journal articles are photographed; the doc keeps the style block for any future article's hero prompt
-- `docs/checkpoints/` — per-phase snapshots. **Latest: `go-live-2026-07-28.md`** (the launch: the
+- **`docs/store-go-live.md`** — THE RUNBOOK for taking the store live once the founder's keys exist.
+  Read it before touching any of that sequence; it is written for a session with no memory of building
+  the store, and it is where the never-yet-run test payment is specified step by step.
+- `docs/preorder-events.md` — how to run a ₹99 event price: create the tier row, generate the signed
+  link with `npm run event-link`, print the QR, and read the event's conversion afterwards.
+- `docs/checkpoints/` — per-phase snapshots. **Latest: `preorder-store-2026-08-22.md`** (the store
+  round). Before it: `go-live-2026-07-28.md` (the launch: the
   sequence, the three real findings, the live-setup gotchas, and the decisions not to re-litigate).
   Before it: `repo-root-move-2026-07-28.md` (why the app sits at the repo root, and the redirect
   that blanked every product image)

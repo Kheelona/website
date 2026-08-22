@@ -38,12 +38,23 @@ through one idempotent `markPaid` (§8.25-p) · the webhook verifies the RAW bod
 event claim on failure (§8.25-m) · an address is authorised only by its signed token (§8.25-n) · the
 finale is the ONLY outbound link to the store (§8.25-b).
 
-**Nothing is pending from Claude.** What remains is founder dashboard work: Razorpay keys and
-webhook, a Supabase project plus `supabase/migrations/0001_preorders.sql`, `STORE_SIGNING_SECRET`,
-Resend DNS (optional to start), and `store.kheelona.com` added to the existing Vercel project. With
-no keys the store renders "pre-orders open here shortly" and takes no money, so the branch is safe to
-merge and deploy before any of that. **A test-mode payment end to end has NOT been run** and must be,
-before the store takes real money.
+**Nothing is pending from Claude.** What remains is founder dashboard work, as a tickable list in
+**FOUNDER-TODO.md section 0**: Razorpay keys and webhook, a Supabase project plus
+`supabase/migrations/0001_preorders.sql`, `STORE_SIGNING_SECRET`, Resend DNS (optional to start), and
+`store.kheelona.com` added to the existing Vercel project. With no keys the store renders "pre-orders
+open here shortly" and takes no money, so the branch is safe to merge and deploy before any of that.
+
+**⇒ THE MOMENT THE FOUNDER SAYS THE KEYS ARE IN, WORK THROUGH `docs/store-go-live.md`.** It is written
+for a session with no memory of building this: every command is copy-pasteable and every check has a
+stated pass condition. It covers the local verification, **the test-mode payment end to end, which has
+NEVER been run and is the one gate that cannot be skipped**, the idempotency and tamper proofs, the
+merge with a rollback tag created before the merge, the live smoke checks, and the first-order watch.
+
+**The QA harness now lives in the repo**, not in a session scratchpad that dies with the session:
+`npm run qa:sweep` runs axe plus the voice lint across all 15 HTML routes at 390px and 1280px
+(currently clean, 30/30), and `qa:shot` / `qa:text` / `qa:axe` drive one route each. `qa:text` is the
+one to reach for when checking what a page SAYS, because grepping HTML source also searches the RSC
+payload and reports strings that are not on the page.
 
 **Three lessons from this round that generalise.** Look at the page: the first store screenshot showed
 a dead `#reserve` CTA on the checkout that no passing test could see. Grepping HTML source lies,
