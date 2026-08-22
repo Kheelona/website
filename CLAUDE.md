@@ -21,7 +21,7 @@ fails if either returns). Rollback tag **`v6-live-2026-08-22`** = the last pre-s
 
 **`/api/health` IS THE FIRST THING TO CHECK** on any store question. It reports readiness, which Razorpay
 mode is live, whether email is configured, database latency, and — when unconfigured — the **names** of the
-missing env vars. As of 2026-08-22 it returns `{ok:true, store:ready, razorpay:LIVE, email:MISSING}`.
+missing env vars. It currently returns `{ok:true, store:ready, razorpay:LIVE, email:configured}`.
 
 **✅ THE PAYMENT PATH IS PROVEN WITH A REAL TRANSACTION** (2026-08-22 23:29, ₹499 UPI, order
 KH-YPJ8-GHVT, refunded after). Three webhook deliveries all returned **200**, which proves the secret

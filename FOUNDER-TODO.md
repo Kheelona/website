@@ -40,28 +40,18 @@ Rollback tag: **`v6-live-2026-08-22`** (the last pre-store commit).
 - [x] ~~`STORE_SIGNING_SECRET`~~ — done
 - [x] ~~`store.kheelona.com` domain + DNS~~ — done, Valid Configuration on Production
 
-#### 🔴 URGENT: nobody is getting an email
+#### ✅ Email — done and verified (2026-08-22)
 
-`/api/health` says `email: "missing"` — `RESEND_API_KEY` is not set. A parent who pre-orders right now
-pays ₹499 and **receives nothing**: no confirmation, no order number, no link to add their delivery
-address. **You get no new-order alert either.** The order is recorded correctly, so nothing is lost, but
-from the buyer's side it looks like paying into silence, and the address you need to ship to never gets
-collected.
+`RESEND_API_KEY` is in Vercel and `/api/health` reports `email: "configured"`. A real receipt and a real
+internal alert both arrived and read correctly. Root SPF, 2048-bit Google Workspace DKIM and DMARC were
+also set up the same night, and `send.kheelona.com` is Resend-verified with its SPF and bounce-feedback
+MX in place. Google Workspace mail was never touched.
 
-- [ ] **Resend → add the domain `send.kheelona.com`**, put its three DNS records in your DNS, create an
-      API key, add `RESEND_API_KEY` in Vercel, redeploy. Then `/api/health` should say
-      `email: "configured"`.
+#### ✅ The webhook secret — proven (2026-08-22)
 
-#### 🟠 Prove the webhook secret, before a customer does it for you
-
-A probe signed with the value in the local `.env` came back 400, so Vercel holds a different string.
-That is fine **if** Vercel's value matches the one you typed into Razorpay — and only a real delivery
-proves that. If they disagree, every webhook fails silently: payments still get recorded through the
-browser, so it looks fine, while `finance@kheelona.com` fills up with Razorpay failure alerts.
-
-- [ ] **Make them provably identical.** Razorpay → Webhooks → Edit → retype the Secret. Vercel → set
-      `RAZORPAY_WEBHOOK_SECRET` to the same string. Tell me the string (or use the one in `.env`) and I
-      can prove it with a signed probe expecting a 200, with no payment involved.
+A real payment produced three webhook deliveries, **all 200**. The secret matches between Razorpay and
+Vercel. It also proved the idempotency guard under the real race: `payment.captured` and `order.paid`
+arrived one second apart and exactly **one** receipt was sent.
 
 #### 🟡 Two smaller things
 
