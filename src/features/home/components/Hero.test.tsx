@@ -33,10 +33,15 @@ describe("Hero (V6, the growth-arc round)", () => {
     expect(screen.queryByRole("link", { name: "Meet Kheelu" })).toBeNull();
     /* Promoted, not buried: the chip carries the whole offer line and must be
        lifted OFF the warm backdrop. V5-5 moved it from bg-yellow/15 (nearly the
-       same value as the page behind it) to a white card with a keyline. */
-    const cap = screen.getByText(/₹499 reserves one of the first 500 units at ₹4,999/i);
+       same value as the page behind it) to a white card with a keyline. Since
+       2026-08-23 each clause is its own line (founder), so the styled card is
+       the parent of the matched clause. */
+    const clause = screen.getByText(/₹499 reserves one of the first 500 units at ₹4,999/i);
+    expect(clause.className).toContain("block");
+    const cap = clause.closest("p")!;
     expect(cap.className).toContain("bg-white");
     expect(cap.className).toMatch(/border|shadow/);
+    expect(cap.textContent).toContain("₹7,999 once they are gone.");
   });
 
   it("carries Lumi's own age band", () => {

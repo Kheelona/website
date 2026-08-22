@@ -1,7 +1,7 @@
 import { Button } from "@/components/atoms/Button";
 import { Reveal } from "@/components/molecules/Reveal";
 import { HeroStage } from "./HeroStage";
-import { PREORDER_HREF, PREORDER_LABEL, PREORDER_OFFER_LINE, LUMI_AGES } from "@/config/site";
+import { PREORDER_HREF, PREORDER_LABEL, PREORDER_OFFER_LINES, LUMI_AGES } from "@/config/site";
 import { HERO_PROMISE } from "@/lib/growth-arc";
 
 /** Revamp M2 hero (theme B + founder brief pointer 2): minimal copy on the
@@ -56,8 +56,15 @@ export function Hero() {
               which is what the team meant by "not clearly visible", and what
               V4's chip only half-fixed. White card + a keyline lifts it off the
               wash without adding another colour to the palette. */}
+          {/* One clause per line (founder, 2026-08-23): the ₹499 hook reads
+              first, the ₹7,999 consequence under it, instead of one wrapped
+              sentence deciding its own break point. */}
           <p className="mt-4 inline-block max-w-[46ch] rounded-2xl border border-line-soft bg-white px-4 py-3 text-[16px] font-semibold text-ink-head shadow-(--shadow-room-sm)">
-            {PREORDER_OFFER_LINE}
+            {PREORDER_OFFER_LINES.map((line) => (
+              <span key={line} className="block">
+                {line}
+              </span>
+            ))}
           </p>
           {/* V5-5: "Your guide is waiting in the corner. Give Kheelu a poke."
               was REMOVED here. It became literally untrue the moment the guide

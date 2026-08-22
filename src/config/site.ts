@@ -98,8 +98,15 @@ export const TAX_LINE = "All prices include GST.";
 
 /** The hero and finale offer line. Two clauses, no paraphrase anywhere else —
  *  V6 D11 holds: three wordings of one price read as three offers, so this
- *  string and PRICE_CAPTION are the only two allowed. */
-export const PREORDER_OFFER_LINE = `${TOKEN_PRICE} reserves one of the ${CAP_UNITS_TEXT} at ${LAUNCH_PRICE}. ${FULL_PRICE} once they are gone.`;
+ *  string and PRICE_CAPTION are the only two allowed. The clauses are exported
+ *  separately because the founder wants the hero card to break between them
+ *  (2026-08-23); everything else renders the joined sentence. One source
+ *  either way: the joined line IS the pair, so they cannot drift. */
+export const PREORDER_OFFER_LINES = [
+  `${TOKEN_PRICE} reserves one of the ${CAP_UNITS_TEXT} at ${LAUNCH_PRICE}.`,
+  `${FULL_PRICE} once they are gone.`,
+] as const;
+export const PREORDER_OFFER_LINE = PREORDER_OFFER_LINES.join(" ");
 /** The hold promise (V6 D11): one sentence, one source. Still exactly true of
  *  a paid reservation, so it survives the money change unchanged. */
 export const PRICE_HOLD_LINE = "We hold the price, you hold your place.";
