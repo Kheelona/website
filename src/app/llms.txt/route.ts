@@ -5,6 +5,7 @@ import {
   BALANCE_PRICE,
   PREORDER_DEADLINE_TEXT,
   STORE_URL,
+  TAX_LINE,
   LUMI_AGES,
   PLATFORM_AGES,
   LANGUAGES_LINE,
@@ -63,6 +64,7 @@ const BODY = `# Kheelona
 - Pre-order: ${LAUNCH_PRICE} for pre-orders placed before ${PREORDER_DEADLINE_TEXT}. ${LATER_PRICE} after that.
 - A refundable ${TOKEN_PRICE} token reserves a unit. It is adjusted against the price, and the ${BALANCE_PRICE} balance is due by payment link before dispatch. The token is refundable at any time before dispatch.
 - Every Lumi includes 6 months of Kheelona+ (stories, lessons, language packs, parent app). Lumi's smart features are lifetime; Kheelona+ pricing is announced soon. Nothing renews without the parent.
+- ${TAX_LINE} Delivery is included anywhere in India, so the published price is the total cost.
 - Shipping starts ${SHIP_DATE_TEXT}. Pre-orders are served first, in the order they were placed.
 
 ## Pages

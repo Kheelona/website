@@ -7,6 +7,7 @@ import {
   LAUNCH_PRICE,
   SHIP_DATE_TEXT,
   SUPPORT_WHATSAPP_DISPLAY,
+  TAX_LINE,
 } from "@/config/site";
 
 export const metadata = pageMeta({
@@ -17,11 +18,11 @@ export const metadata = pageMeta({
 });
 
 /* TODO(counsel-review): plain-language draft, same gate as /terms.
-   FOUNDER ASSUMPTION (2026-08-22, flagged in FOUNDER-TODO): delivery anywhere
-   in India is INCLUDED in the price. If a delivery charge is ever added, this
-   page and the store's price panel change in the same commit, because a
-   surprise charge at the balance step is the single fastest way to lose a
-   parent who has already paid us. */
+   FOUNDER-CONFIRMED 2026-08-22: delivery anywhere in India is INCLUDED, and
+   every published price is GST-inclusive. Both are now settled facts rather
+   than assumptions. If a delivery charge is ever added, this page and the
+   store's price panel change in the SAME commit: a surprise charge at the
+   balance step is the fastest way to lose a parent who has already paid us. */
 
 const SECTIONS: readonly LegalSection[] = [
   {
@@ -34,7 +35,7 @@ const SECTIONS: readonly LegalSection[] = [
   {
     h: "Where we deliver",
     ps: [
-      "Anywhere in India, to the address you give us. Delivery is included in the price, so the amounts on this site are the amounts you pay.",
+      `Anywhere in India, to the address you give us. Delivery is included. ${TAX_LINE} So the amount you see is the amount you pay, with nothing added at the door and nothing to settle with the courier.`,
       "We do not ship outside India yet. If you are abroad and want one, message us and we will tell you honestly whether we can help.",
     ],
   },

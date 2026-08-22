@@ -107,10 +107,17 @@ DNS (optional to start), one `STORE_SIGNING_SECRET`, and `store.kheelona.com` ad
 Vercel project. **With no keys the store renders "pre-orders open here shortly" and takes no money**,
 so this branch is safe to merge and deploy before any of it is done.
 
-Two answers wanted, neither blocking: whether delivery is included in ₹4,999 (assumed yes, stated on
-`/shipping`), and the CA's view on GST for the token (assumed none at receipt, tax invoice at dispatch).
-One thing that must land before the first dispatch: the real post-dispatch returns and warranty terms,
-which `/refund` currently and honestly says do not exist yet.
+**Both open product answers came back the same day.** Delivery **is** included, anywhere in India, and
+prices **are** GST-inclusive, with GST paid from the collected amount under reverse charge. The first
+two are now published as settled facts (a new `TAX_LINE` constant renders in five places); the
+reverse-charge mechanism is deliberately not on any page, being internal accounting that no customer
+decision depends on. Flagged once for the record, since the founder is a Chartered Accountant and it is
+their call: reverse charge is unusual on a B2C goods sale, where the seller normally collects under
+forward charge.
+
+Two things still open, neither blocking the store opening: **the two Kheelu lines below need sign-off
+before merge**, and **the real post-dispatch returns and warranty terms must land before the first
+dispatch**, which `/refund` currently and honestly says do not exist yet.
 
 ## Kheelu lines added this round, awaiting sign-off
 

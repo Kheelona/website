@@ -6,6 +6,7 @@ import {
   SHIP_DATE_TEXT,
   PREORDER_DEADLINE_TEXT,
   KHEELONA_PLUS_SHORT,
+  TAX_LINE,
 } from "@/config/site";
 
 /** What a parent is agreeing to, on the page where they agree to it (§8.25-u).
@@ -55,7 +56,8 @@ export function OrderSummary({ amountLabel, tierLabel }: { amountLabel: string; 
       </ul>
       <p className="mt-5 border-t border-line-soft pt-4 text-[14px] leading-[1.55] text-ink-muted">
         {KHEELONA_PLUS_SHORT} The price is {LAUNCH_PRICE} for pre-orders placed
-        before {PREORDER_DEADLINE_TEXT}, and {LATER_PRICE} after that.
+        before {PREORDER_DEADLINE_TEXT}, and {LATER_PRICE} after that.{" "}
+        {TAX_LINE} Delivery in India is included.
       </p>
     </div>
   );

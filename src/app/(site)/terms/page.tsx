@@ -9,6 +9,7 @@ import {
   PREORDER_DEADLINE_TEXT,
   SHIP_DATE_TEXT,
   SUPPORT_WHATSAPP_DISPLAY,
+  TAX_LINE,
 } from "@/config/site";
 
 export const metadata = pageMeta({
@@ -37,6 +38,11 @@ const SECTIONS: readonly LegalSection[] = [
     ps: [
       `${LAUNCH_PRICE} is the price for pre-orders placed on or before ${PREORDER_DEADLINE_TEXT}. After that the price is ${LATER_PRICE}. Your price is fixed on the day you pre-order, and it does not move afterwards, in either direction.`,
       `Shipping starts ${SHIP_DATE_TEXT}, and pre-orders are served in the order they were placed.`,
+      /* Founder-confirmed 2026-08-22. Stated in the price clause rather than a
+         footnote: "does this include tax and delivery" is the question a price
+         with no such line always raises, and answering it here is cheaper than
+         answering it one WhatsApp message at a time. */
+      `${TAX_LINE} Delivery anywhere in India is included too, so ${LAUNCH_PRICE} is the whole cost of a Lumi arriving at your door.`,
     ],
   },
   {

@@ -5,6 +5,7 @@ import {
   BALANCE_PRICE,
   PREORDER_DEADLINE_TEXT,
   STORE_URL,
+  TAX_LINE,
   LUMI_AGES,
   PLATFORM_AGES,
   LANGUAGES_LINE,
@@ -34,6 +35,8 @@ Market: India. Currency: INR. Stage: pre-order, taking a refundable token.
 - Price after that: ${LATER_PRICE}
 - Paid at pre-order: ${TOKEN_PRICE}, adjusted against the price, and fully refundable until dispatch
 - Balance: ${BALANCE_PRICE}, due by payment link when your unit is ready to dispatch
+- Taxes: ${TAX_LINE} The published price is what a buyer pays.
+- Delivery: included, anywhere in India. No charge is added at any step.
 - Included with every Lumi: 6 months of Kheelona+
 - Shipping starts ${SHIP_DATE_TEXT}. Pre-orders are served first, in the order they were placed.
 - Where to pre-order: ${STORE_URL}

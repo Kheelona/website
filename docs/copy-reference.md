@@ -414,6 +414,20 @@ unchanged because it is still exactly true.
 - `/refund` — "Changed your mind? That is allowed."
 - `/shipping` — "I will help pack. Mostly by sitting in the box."
 
+### Two facts founder-answered after the first build (2026-08-22)
+
+- **Delivery is included**, anywhere in India. Published on `/shipping`, in the `/terms` price clause,
+  in the store's summary panel and in both machine routes. It was a flagged assumption for a few
+  hours; it is now a settled fact and the flag is gone.
+- **Prices are GST-inclusive**, and the new `TAX_LINE` ("All prices include GST.") is the one sanctioned
+  wording, rendered from config in five places. The founder also confirmed GST is paid out of the
+  collected amount **under reverse charge**, and that half is deliberately **not published**: it is
+  internal accounting, it would confuse a parent reading a policy page, and no customer decision
+  depends on it. Recorded in FOUNDER-TODO 0g instead.
+
+Together these answer the question a price with no tax note always raises, which is why they sit in the
+price clause rather than in a footnote: "₹4,999 is the whole cost of a Lumi arriving at your door."
+
 ### Voice compliance
 
 Zero em-dashes and no hype, verified on the RENDERED text of six pages (store, refund, shipping,

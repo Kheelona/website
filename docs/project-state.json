@@ -258,18 +258,28 @@
     {
       "id": "delivery-charge-2026-08-22",
       "desc": "Is delivery included in ₹4,999 or charged on top? /shipping states it is included, anywhere in India, as the assumption that cannot surprise a parent at the balance step.",
-      "status": "open",
+      "status": "resolved",
       "owner": "founder",
       "impact": "One-file edit either way. Wrong only if delivery is actually charged, in which case the store's price panel changes in the same commit.",
-      "see": "FOUNDER-TODO.md 0f"
+      "see": "FOUNDER-TODO.md 0f",
+      "resolution": "2026-08-22: founder confirmed delivery IS included, anywhere in India. Published as a settled fact on /shipping, /terms, the store summary and both machine routes."
     },
     {
       "id": "post-dispatch-returns-2026-08-22",
-      "desc": "There are no returns or warranty terms for after dispatch, because nothing has shipped. /refund says so in plain words rather than inventing a window, and it must be replaced with the real terms before the first Lumi is dispatched. Also for the CA: GST treatment of the ₹499 advance (working assumption is none at receipt, tax invoice at dispatch on ₹4,999).",
+      "desc": "There are no returns or warranty terms for after dispatch, because nothing has shipped. /refund says so in plain words rather than inventing a window, and it must be replaced with the real terms before the first Lumi is dispatched.",
       "status": "open",
       "owner": "founder",
       "impact": "Not blocking the store opening. Blocking the first dispatch.",
-      "see": "FOUNDER-TODO.md 0g"
+      "see": "FOUNDER-TODO.md 0g",
+      "note": "GST is ANSWERED (2026-08-22): prices are GST-inclusive and GST is paid from the collected amount under reverse charge. Only the customer-facing half is published (TAX_LINE); the mechanism is internal. Flagged once for the founder, who is a CA: reverse charge is unusual on a B2C goods sale."
+    },
+    {
+      "id": "kheelu-lines-store-round-2026-08-22",
+      "desc": "Two new Kheelu speech lines need founder sign-off before merge, per the standing GATED:kheelu-line law: /refund \"Changed your mind? That is allowed.\" and /shipping \"I will help pack. Mostly by sitting in the box.\" Both are under the 48-character limit and dock bottom-right.",
+      "status": "open",
+      "owner": "founder",
+      "impact": "Merge gate only. Every other line on the site was signed off the same way.",
+      "see": "docs/checkpoints/preorder-store-2026-08-22.md"
     }
   ],
   "last_handoff": {

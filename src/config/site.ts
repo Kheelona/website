@@ -83,6 +83,12 @@ export const PREORDER_LABEL = "Pre-order Lumi";
 
 /** The standard reassurance caption under a pre-order button. */
 export const PRICE_CAPTION = `${TOKEN_PRICE} now, ${BALANCE_PRICE} on dispatch. Fully refundable until we ship.`;
+/** Taxes, founder-confirmed 2026-08-22: every price published on this site is
+ *  GST-inclusive, so the number a parent reads is the number they pay. Indian
+ *  packaged-goods practice expects that said out loud, and it removes the one
+ *  question a price with no tax note always raises. */
+export const TAX_LINE = "All prices include GST.";
+
 /** The hero and finale offer line: exactly what CAP_LINE used to do, with the
  *  retired cap replaced by the real deadline. Two clauses, no paraphrase
  *  anywhere else — V6 D11 holds: three wordings of one price read as three

@@ -62,16 +62,23 @@ second deploy: the same app serves both hosts), and add the variables above. The
 `vercel.json` is already there; it exists because Supabase pauses a free project after a quiet week
 and the request that wakes it would otherwise be somebody's first pre-order.
 
-**0f. One product answer I could not make for you.** **Is delivery included in ₹4,999, or charged on
-top?** `/shipping` currently says included, everywhere in India, because that is the assumption that
-cannot surprise a parent at the balance step. If it is wrong, say so and it is a one-file edit.
+**0f. ANSWERED 2026-08-22: delivery is included.** Anywhere in India, no charge at any step. Now
+published as a settled fact on `/shipping`, in `/terms`, in the store's summary panel, and in both
+machine routes, rather than as a flagged assumption.
 
-**0g. Two things for your CA, neither blocking.** First, **GST on the ₹499**: my working assumption is
-that an advance for goods carries no GST at receipt and the tax invoice comes at dispatch on the full
-₹4,999, so the store issues no tax invoice for the token. Please confirm. Second, **the returns and
-warranty terms for after dispatch do not exist yet**, because nothing has shipped. `/refund` says so
-in those words rather than inventing a window, and it must be replaced with the real terms before the
-first Lumi leaves.
+**0g. ANSWERED 2026-08-22: prices are GST-inclusive**, and GST is paid out of the collected amount
+under reverse charge. **Only the customer-facing half of that is published**: `TAX_LINE` ("All prices
+include GST.") appears in the price clause of `/terms`, on `/shipping`, in the store's summary panel,
+and in `pricing.md` and `llms.txt`. The reverse-charge mechanism is internal accounting and is
+deliberately NOT on any page: it would confuse a parent and it is not a fact they need. One note for
+the record, since you are the CA and this is your call either way: reverse charge is unusual on a B2C
+goods sale, where the seller normally collects under forward charge, so it is worth a second look
+before the first return is filed. Nothing on the site depends on the answer.
+
+**0h. STILL OPEN, and blocking the first dispatch rather than the store opening.** The returns and
+warranty terms for after dispatch do not exist yet, because nothing has shipped. `/refund` says exactly
+that in plain words rather than inventing a window, and it must be replaced with the real terms before
+the first Lumi leaves.
 
 **What is already decided and needs nothing from you:** the ₹499 refundable token, the ₹4,500 balance
 by payment link before dispatch, the 30 September deadline, no unit cap, WhatsApp-only support on
