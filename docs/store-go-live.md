@@ -57,23 +57,39 @@ deployed, and `/api/health` returns:
 | Marketing site on the paid copy | ✅ "first 500 units" and "No payment now" gone |
 | /refund /shipping /terms /privacy | ✅ all 200 |
 
-### NOT verified, and each one matters
+### ✅ FULLY VERIFIED WITH A REAL PAYMENT (2026-08-22, 23:29 IST)
 
-1. **NO EMAILS ARE BEING SENT.** `email: "missing"` means `RESEND_API_KEY` is unset, so a parent who
-   pre-orders right now gets **no confirmation and no address link**, and **the founder gets no new-order
-   alert**. The order is still recorded correctly, so nothing is lost, but from the buyer's side it looks
-   like paying ₹499 into silence. **This is the most urgent gap on a live store.**
-2. **The webhook secret is unproven.** A probe signed with the value in local `.env` returns 400, so
-   Vercel holds a different string. That is fine *if* Vercel's value matches Razorpay's, and **nothing
-   short of a real delivery proves that**. If they disagree, every webhook fails, payments are recorded
-   only via the browser callback, and `finance@kheelona.com` starts collecting Razorpay failure alerts.
-   **To prove it without a payment:** set the SAME string in Razorpay (Webhooks → Edit → Secret) and in
-   Vercel, put it in `.env`, redeploy, then re-run the signed probe in step 4 and expect **200**.
-3. **No card payment has ever gone through this code.** Live keys mean the first one is real money. See
-   the recommendation below.
-4. **Database latency is 250 to 720ms** for a trivial count, which suggests the Supabase project is not
-   in an Indian region. Each pre-order makes two or three round trips. Checking Settings → General →
-   Region is worth doing while the tables are still nearly empty.
+A real ₹499 pre-order was placed by a colleague on live keys, order **KH-YPJ8-GHVT** /
+`pay_TSuFkByRtMghiM` / `order_TSuFQjjtUuQaeP`, paid by UPI, then refunded. **Every part of the payment
+path is now proven, not inferred:**
+
+| Proof | Evidence |
+| --- | --- |
+| Card/UPI flow completes | ₹499 Captured in Razorpay |
+| **Webhook secret matches** | all three deliveries returned **200** (a mismatch is a 400) |
+| **Idempotency works under the real race** | `payment.captured` 23:29:01 and `order.paid` 23:29:02 both arrived; the first marked it paid and emailed, the second found no unpaid row and returned 200 with **no second email**. Exactly one receipt reached the customer. |
+| Non-payment events ignored safely | `payment.authorized` recorded, acted on by nothing, 200 |
+| Receipt email correct | order ref, ₹499 paid, ₹4,500 of ₹4,999, ships 1 October 2026, refund promise, Kheelona+, full seller block with GSTIN, "messages, not calls". From `hello@send.kheelona.com`, replies to `hello@kheelona.com` |
+| Internal alert email | arrived |
+| Razorpay fees | **₹0.00** — UPI is zero-MDR in India, so verification cost nothing |
+
+**Two things this transaction taught, both now fixed or noted:**
+
+1. **The greeting used the name verbatim**, so the first real receipt opened "Thank you, shweta." Fixed:
+   the first letter is capitalised and the rest left as typed, because title-casing mangles d'Souza and
+   van der Berg. Only reading the actual sent PDF found this — every test passed and the data was right.
+2. **The refund was issued at ₹489, not ₹499.** Fees were ₹0.00 so a full refund cost nothing, and both
+   the receipt and `/refund` promise "in full, no fee, no deduction". It was the founder's own account so
+   the ₹10 is moot here, but **a partial refund on a real customer would contradict published policy.**
+   Refund the full token amount, always.
+
+### Still not covered by that test
+
+- **The address step from the email link.** The test order never added a delivery address, so the signed
+  `/thanks?ref=…&t=…` path from a real email is still unexercised. The link in that receipt is live and
+  valid for 30 days if you want to prove it.
+- **The balance run.** Collecting ₹4,500 by payment link before dispatch is a manual process with no
+  tooling. `balance_status` on every row tracks it: `due` → `link_sent` → `paid`.
 
 ### Clean up this test row
 

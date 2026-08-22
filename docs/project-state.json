@@ -2,7 +2,7 @@
   "project_name": "kheelona.com",
   "created_at": "2026-07-06",
   "last_updated": "2026-08-22",
-  "current_phase": "THE PAID PRE-ORDER STORE IS LIVE (2026-08-22). main carries it, store.kheelona.com serves it, and /api/health returns {ok:true, store:ready, razorpay:LIVE, email:MISSING}. Rollback tag v6-live-2026-08-22 = the last pre-store commit (0fb02fe). VERIFIED against production by driving it: all six env vars readable, Supabase writes, live Razorpay order creation (KH-8FP8-PWDA / order_TStGXH3YHKnudP), amount decided server-side, signed address token, 422 validation, webhook 400 on a bad signature, store host serving /store with noindex, the paid copy live on the marketing site, and all four policy pages 200. THREE THINGS NOT VERIFIED AND ONE IS URGENT: (1) RESEND_API_KEY is unset, so a paying parent receives NO confirmation and no address link, and the founder gets NO alert — most urgent item on the site; (2) the webhook secret in Vercel differs from the local .env copy and is unproven against Razorpay's own value, which only a real delivery or a matched-secret probe can settle; (3) no card payment has ever run through this code and the keys are LIVE, so the first one is real money. Also open: delete the test row KH-8FP8-PWDA, and check the Supabase region (a trivial query takes 250-720ms). NEXT: docs/store-go-live.md, the '⚑ WHERE THIS ACTUALLY GOT TO' block at the top.",
+  "current_phase": "THE PAID PRE-ORDER STORE IS LIVE (2026-08-22). main carries it, store.kheelona.com serves it, and /api/health returns {ok:true, store:ready, razorpay:LIVE, email:MISSING}. Rollback tag v6-live-2026-08-22 = the last pre-store commit (0fb02fe). VERIFIED against production by driving it: all six env vars readable, Supabase writes, live Razorpay order creation (KH-8FP8-PWDA / order_TStGXH3YHKnudP), amount decided server-side, signed address token, 422 validation, webhook 400 on a bad signature, store host serving /store with noindex, the paid copy live on the marketing site, and all four policy pages 200. FULLY VERIFIED WITH A REAL PAYMENT on 2026-08-22 at 23:29: ₹499 UPI order KH-YPJ8-GHVT, three webhook deliveries ALL 200 (proving the secret matches), idempotency proven under the real race (captured and order.paid one second apart, exactly ONE receipt sent), both emails correct, Razorpay fees ₹0.00 because UPI is zero-MDR. Two findings from it: the greeting used the name verbatim (\"Thank you, shweta\") which is fixed, and the refund was issued at ₹489 not ₹499, which would contradict published policy on a real customer. STILL UNTESTED: the signed address link from a real receipt email. Also open: delete the test row KH-8FP8-PWDA, and check the Supabase region (a trivial query takes 250-720ms). NEXT: docs/store-go-live.md, the '⚑ WHERE THIS ACTUALLY GOT TO' block at the top.",
   "current_sprint": "store-live",
   "phase_status": {
     "phase_0_kickoff": {
@@ -295,18 +295,20 @@
     {
       "id": "webhook-secret-unproven-2026-08-22",
       "desc": "A webhook probe signed with the local .env value returns 400, so Vercel holds a different string. Whether Vercel's value matches the one typed into Razorpay is unproven, and only a real delivery or a deliberately matched secret can settle it.",
-      "status": "open",
+      "status": "resolved",
       "owner": "founder",
       "impact": "If they disagree, every webhook fails signature verification. Payments are still recorded via the verified browser callback, so it LOOKS fine, while the guaranteed path is dead and finance@kheelona.com collects Razorpay failure alerts. Fix: set the same string in Razorpay's Edit form and in Vercel, then a signed probe should return 200.",
-      "see": "docs/store-go-live.md step 4"
+      "see": "docs/store-go-live.md step 4",
+      "resolution": "2026-08-22 23:29: a real ₹499 payment delivered three webhooks, ALL 200, proving the secret matches between Razorpay and Vercel. It also proved idempotency under the real race: payment.captured and order.paid arrived one second apart, and exactly one receipt was sent."
     },
     {
       "id": "no-card-payment-verified-2026-08-22",
       "desc": "No card payment has ever gone through this code, and the keys are LIVE. Recommended: add the Resend key, place one real pre-order with the founder's own card, verify the five checks in the runbook, then refund it (about ₹12 in non-refunded gateway fees).",
-      "status": "open",
+      "status": "resolved",
       "owner": "founder",
       "impact": "The card flow, the webhook secret and both emails are all proven by that single transaction.",
-      "see": "docs/store-go-live.md step 4"
+      "see": "docs/store-go-live.md step 4",
+      "resolution": "2026-08-22 23:29: real ₹499 UPI pre-order KH-YPJ8-GHVT / pay_TSuFkByRtMghiM placed and refunded. Receipt and internal alert both correct. Razorpay fees were ₹0.00 (UPI is zero-MDR), so it cost nothing. Two findings: the greeting used the name verbatim (\"Thank you, shweta\") which is now fixed, and the refund was issued at ₹489 rather than ₹499, which would contradict published policy on a real customer."
     },
     {
       "id": "test-row-cleanup-2026-08-22",
@@ -332,6 +334,14 @@
       "owner": "founder",
       "impact": "Hardening, not blocking. Without the MX nobody learns when a customer's receipt bounces.",
       "see": "Resend → Domains → send.kheelona.com → Records"
+    },
+    {
+      "id": "address-link-untested-2026-08-22",
+      "desc": "The signed /thanks?ref=…&t=… address path has never been exercised from a real acknowledgement email. The test order never added a delivery address, and dispatch cannot happen without one.",
+      "status": "open",
+      "owner": "founder",
+      "impact": "Low but real: it is the one customer-facing path with no production evidence. The link in the KH-YPJ8-GHVT receipt stays valid for 30 days and can prove it.",
+      "see": "docs/store-go-live.md"
     }
   ],
   "last_handoff": {

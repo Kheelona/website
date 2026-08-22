@@ -23,16 +23,24 @@ fails if either returns). Rollback tag **`v6-live-2026-08-22`** = the last pre-s
 mode is live, whether email is configured, database latency, and — when unconfigured — the **names** of the
 missing env vars. As of 2026-08-22 it returns `{ok:true, store:ready, razorpay:LIVE, email:MISSING}`.
 
-**🔴 THREE THINGS ARE OPEN AND THE FIRST IS URGENT** (detail: **FOUNDER-TODO.md section 0** and the
-"⚑ WHERE THIS ACTUALLY GOT TO" block at the top of **`docs/store-go-live.md`**):
-1. **`RESEND_API_KEY` is unset, so nobody gets an email.** A parent who pre-orders pays ₹499 and receives
-   no confirmation, no order number and no link to give their delivery address; the founder gets no alert.
-   The order is recorded correctly, so nothing is lost, but it reads as paying into silence.
-2. **The webhook secret is unproven.** A probe signed with the local `.env` value returns 400, so Vercel
-   holds a different string; whether it matches Razorpay's own copy is unknown until a real delivery.
-   If they disagree the webhook is silently dead while the browser callback keeps working.
-3. **No card payment has ever run through this code, and the keys are LIVE**, so the first one is real
-   money. Recommended: the founder pre-orders once with their own card, verifies, then refunds.
+**✅ THE PAYMENT PATH IS PROVEN WITH A REAL TRANSACTION** (2026-08-22 23:29, ₹499 UPI, order
+KH-YPJ8-GHVT, refunded after). Three webhook deliveries all returned **200**, which proves the secret
+matches between Razorpay and Vercel, and **idempotency was proven under the real race**:
+`payment.captured` and `order.paid` arrived one second apart and exactly ONE receipt was sent. Both
+emails were correct. Razorpay fees were ₹0.00, because UPI is zero-MDR in India, so verifying cost
+nothing. Detail: the "⚑ WHERE THIS ACTUALLY GOT TO" block in **`docs/store-go-live.md`**.
+
+**Two lessons from that one transaction, worth more than the test itself:** the greeting used the
+name verbatim, so the first real receipt opened "Thank you, shweta" (now capitalised, rest left as
+typed because title-casing mangles real names) — **found only by reading the sent PDF, while every
+test passed**; and the refund was issued at ₹489 rather than ₹499, which on a real customer would
+contradict both the receipt and `/refund`, and cost nothing to get right since fees were zero.
+
+**🟡 STILL OPEN** (see FOUNDER-TODO section 0): the signed address link from a real receipt has never
+been exercised, so dispatch data collection is the one customer-facing path with no production
+evidence; DMARC tightens to `p=quarantine` on **5 September 2026** (scheduled agent + dated item);
+Resend's `send` SPF and MX are absent so bounce feedback is blind; and a trivial Supabase query takes
+250 to 975ms, suggesting the project is not in an Indian region.
 
 Store laws are `docs/website-steps.md` **§8.25** — read before touching any of it. The five that bite:
 **the client never sends a price** (§8.25-c-i), **paid is decided twice through one idempotent
