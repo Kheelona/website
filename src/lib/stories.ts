@@ -40,7 +40,7 @@ const CORE: Story[] = [
       { p: "Every answered question teaches two things at once: the fact, and the deeper lesson that asking is worth it. Children who keep asking keep learning. That is the whole engine." },
       { h: "Feelings are the fast lane", p: "There is a second finding hiding in the first. Children learn fastest from exchanges that feel good. A child who feels heard stays in the conversation. A child who feels rushed leaves it. Understanding the heart is not the soft part of learning. It is the mechanism." },
       { p: "So the years that matter most do not ask for a classroom at home. They ask for talk. At dinner, in the car, at bedtime, and yes, in play." },
-      { p: "That is the belief Lumi is built on: a talking toy that keeps the conversation going when your hands are full, in the languages you speak at home. If that sounds like your house, you can hold a place in line. No payment, no pressure." },
+      { p: "That is the belief Lumi is built on: a talking toy that keeps the conversation going when your hands are full, in the languages you speak at home. If that sounds like your house, you can hold a place in line for a refundable ₹499." },
     ],
   },
   {

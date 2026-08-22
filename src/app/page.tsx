@@ -23,6 +23,8 @@ import {
   TOKEN_PRICE,
   BALANCE_PRICE,
   PREORDER_DEADLINE_TEXT,
+  LAUNCH_PRICE,
+  SHIP_DATE_TEXT,
   LUMI_AGES,
 } from "@/config/site";
 import {
@@ -85,7 +87,7 @@ const HOME_FAQ: FaqEntry[] = [
   },
   {
     q: "When does Lumi ship?",
-    a: "Shipping starts 1 September 2026. Reserving now holds the launch price of ₹4,999 and your place in line, and you pay nothing today.",
+    a: `Shipping starts ${SHIP_DATE_TEXT}. Pre-ordering now holds the ${LAUNCH_PRICE} price and your place in line for a refundable ${TOKEN_PRICE}, and pre-orders are served first.`,
   },
   /* V6 D4a (founder-licensed fact): mode-precise. The old flat "No" was a
      post-purchase complaint in waiting — a precise admission converts better

@@ -41,4 +41,22 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
     expect(PRIVACY).toMatch(/does set cookies/);
     expect(PRIVACY).toMatch(/block all three/);
   });
+
+  /* Extended 2026-08-22 (§8.25-e). The standing rule was written for
+     measurement tags, but its reason is broader: a third party that touches a
+     visitor and a sentence naming it ship together. Taking payments added three
+     such parties at once, and they touch far more than a page view — a name, an
+     email, a delivery address, a payment. If any of them is swapped out, this
+     fails until /privacy is edited too. */
+  it("names every processor that touches a parent's details", () => {
+    for (const name of ["Razorpay", "Supabase", "Resend", "Vercel"]) {
+      expect(PRIVACY, `${name} is not disclosed on /privacy`).toContain(name);
+    }
+  });
+
+  it("says plainly that we never receive the payment details", () => {
+    expect(PRIVACY).toMatch(/never to us|never see your payment/i);
+    // and that Razorpay's own form sets cookies, which ours do not
+    expect(PRIVACY).toMatch(/sets its own cookies/);
+  });
 });
