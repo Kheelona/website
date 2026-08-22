@@ -286,10 +286,11 @@
     {
       "id": "resend-key-missing-2026-08-22",
       "desc": "RESEND_API_KEY is unset on a LIVE store, so /api/health reports email:missing. A parent who pre-orders receives no confirmation, no order number and no link to add their delivery address, and the founder receives no new-order alert. The order itself is recorded correctly.",
-      "status": "open",
+      "status": "resolved",
       "owner": "founder",
       "impact": "URGENT. Not data loss, but a paying customer gets silence, and the delivery address never gets collected. Fix: Resend domain send.kheelona.com + three DNS records + RESEND_API_KEY in Vercel.",
-      "see": "FOUNDER-TODO.md section 0"
+      "see": "FOUNDER-TODO.md section 0",
+      "resolution": "2026-08-22: Resend domain send.kheelona.com VERIFIED (Tokyo region, DKIM), RESEND_API_KEY in Vercel, /api/health reports email:configured. Root SPF/DKIM/DMARC also set up the same night."
     },
     {
       "id": "webhook-secret-unproven-2026-08-22",
@@ -314,6 +315,23 @@
       "owner": "founder",
       "impact": "Cosmetic, but it pollutes the abandoned-payment list the founder is meant to follow up.",
       "see": "FOUNDER-TODO.md section 0"
+    },
+    {
+      "id": "dmarc-tighten-2026-09-05",
+      "desc": "Tighten the root DMARC from p=none to p=quarantine after the two-week observation window that began 2026-08-22. Read the aggregate reports at dmarc@kheelona.com first and confirm Google Workspace and Resend both pass. Edit the existing _dmarc TXT in Cloudflare; never add a second DMARC or SPF record; do not jump to p=reject.",
+      "status": "open",
+      "owner": "founder",
+      "due": "2026-09-05",
+      "impact": "Until then the DMARC record reports but enforces nothing, so kheelona.com can still be spoofed. Tightening too early, without reading the reports, risks quarantining legitimate mail.",
+      "see": "FOUNDER-TODO.md section 0; scheduled agent https://claude.ai/code/routines/trig_01T644UQuKPds5T1iV5abvqD"
+    },
+    {
+      "id": "resend-spf-mx-optional-2026-08-22",
+      "desc": "send.kheelona.com is verified on DKIM alone; Resend's SPF TXT and MX records are not published. Mail sends and DMARC passes via DKIM alignment, but the missing MX means Resend never receives bounce and complaint feedback.",
+      "status": "open",
+      "owner": "founder",
+      "impact": "Hardening, not blocking. Without the MX nobody learns when a customer's receipt bounces.",
+      "see": "Resend → Domains → send.kheelona.com → Records"
     }
   ],
   "last_handoff": {

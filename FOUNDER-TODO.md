@@ -71,6 +71,31 @@ browser, so it looks fine, while `finance@kheelona.com` fills up with Razorpay f
       suggests it is not in India. Each order makes two or three round trips. Nearly free to change now,
       a data migration later.
 
+#### 📧 Email authentication (done 2026-08-22) and the one dated follow-up
+
+Set up for the first time on the day the store went live, and verified from DNS:
+
+| Record | Value | State |
+| --- | --- | --- |
+| Root SPF | `v=spf1 include:_spf.google.com ~all` | ✅ one lookup, softfail |
+| Root DKIM | selector `google`, 2048-bit | ✅ Workspace signing active |
+| Root DMARC | `v=DMARC1; p=none; rua=mailto:dmarc@kheelona.com; fo=1;` | ✅ reporting, not yet enforcing |
+| `send.kheelona.com` | Resend, Tokyo region | ✅ **Verified** (DKIM only) |
+
+Google Workspace mail is untouched: the root MX still points at `smtp.google.com`, and Resend sends
+from the `send.` subdomain precisely so the root's reputation is never at risk.
+
+- [ ] **📅 5 SEPTEMBER 2026: tighten DMARC to `p=quarantine`.** The two-week observation window ends
+      then. **Read the reports at `dmarc@kheelona.com` FIRST** and confirm Google Workspace and Resend
+      are both passing; only then edit the existing `_dmarc` TXT in Cloudflare and change `p=none` to
+      `p=quarantine`, keeping `rua` and `fo`. Never add a second DMARC or SPF record, and do not jump
+      to `p=reject`. A scheduled agent will remind you:
+      https://claude.ai/code/routines/trig_01T644UQuKPds5T1iV5abvqD
+- [ ] **Optional hardening: add Resend's `send` SPF and MX records** (Resend → Domains →
+      send.kheelona.com → Records). The domain is verified on DKIM alone, so mail sends and DMARC
+      passes, but **without the MX you are blind to bounces and complaints** — you will not know when
+      a customer's receipt fails to arrive.
+
 #### The first real payment
 
 No card payment has ever gone through this code, and the keys are live, so the first one is real money.
