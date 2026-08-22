@@ -123,6 +123,28 @@ test passed); and the refund was issued at ₹489 rather than ₹499, which on a
 contradict both the receipt and `/refund` for no reason, since fees were zero. **Always refund the whole
 token.**
 
+#### Fixed after the first refund (2026-08-23)
+
+Reading the code after your ₹499 refund turned up a real bug, now fixed: **a refunded order stayed in
+the dispatch queue.** The queue is `status = 'paid'`, and the webhook only ever acted on payments, so
+someone who cancelled and got their money back would still have been shipped a Lumi and invoiced
+₹4,500. The only thing preventing it was remembering to run an `update` by hand — which is exactly what
+I asked you to do for Shweta's order, and exactly why it needed fixing.
+
+Now `refund.processed` removes the order automatically. Two deliberate limits: a **partial** refund does
+NOT cancel an order (your ₹489-of-₹499 is precisely why — a ₹10 goodwill refund must not silently kill a
+live pre-order), and `refund.created` is ignored because it is only the instruction, not the money
+moving. Also added: `payment.failed` now marks a row `failed`, which separates "the card was declined"
+from "never came back" in your follow-up list.
+
+**You can still run that `update` for Shweta's row**, since her refund happened before this shipped:
+
+```sql
+update preorders set status = 'refunded' where order_ref = 'KH-YPJ8-GHVT';
+```
+
+Every refund from here handles itself.
+
 #### The first real payment
 
 No card payment has ever gone through this code, and the keys are live, so the first one is real money.

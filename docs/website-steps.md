@@ -878,3 +878,31 @@ the happy path (re-deliver a webhook and expect no second email; POST a bad sign
 with nothing written), the merge with a rollback tag created BEFORE the merge, and the fastest safe
 stop: **remove `RAZORPAY_KEY_ID` in Vercel and redeploy**, which returns the store to "opening shortly"
 and takes no money while every marketing page keeps working.
+
+**8.25-ee A PAID ORDER MUST BE ABLE TO BECOME UNPAID.** The dispatch queue is literally
+`where status = 'paid'` (the partial index in `0001_preorders.sql` says so), and the webhook originally
+acted only on paid events. So a refunded order kept `status='paid'` and stayed in the queue: a Lumi
+shipped to somebody who cancelled, followed by an invoice for ₹4,500. The only thing preventing that was
+a human remembering to run an UPDATE by hand, every time, forever, which is not a control.
+
+`refund.processed` now removes the order from the queue. Three details that matter:
+
+- **`refund.processed`, never `refund.created`.** The latter is only the instruction; acting on it would
+  clear an order before the money has left our account.
+- **A PARTIAL refund is not a cancellation.** The first refund this store ever issued was ₹489 of ₹499,
+  so this is not hypothetical: if any refund cleared the order, a ₹10 goodwill refund would silently
+  cancel a live pre-order. Only a refund covering the full amount marks it `refunded`; anything less is
+  logged loudly and left for a human, because there is no honest automatic answer to "they got some of
+  it back".
+- **`payment.failed` marks the row `failed`, but only while it is still `created`.** It separates "tried
+  to pay us and the card was declined" from "filled the form and never came back", which are two
+  different follow-up conversations, and the status guard means it can never contradict a real payment.
+
+**8.25-ff ORPHANED PAYMENTS ARE RECOVERABLE, BECAUSE OUR REFERENCE TRAVELS WITH THE ORDER.**
+`create-order` writes our row, then creates the gateway order, then attaches its id (§8.25-l). If that
+last write fails, a real payment arrives for a gateway order id we have no row for, and the money is
+unattributable — the one failure in this flow with no clean recovery. But the same function puts our
+`order_ref` in the Razorpay order's **`receipt`** and in **`notes.order_ref`**, and Razorpay hands both
+back in the webhook. `markPaid` therefore falls back to matching on our own reference before giving up,
+and logs loudly when it rescues one. Keep sending both: `receipt` and `notes` are cheap, and they are the
+only thread back to the customer if the id linkage breaks.

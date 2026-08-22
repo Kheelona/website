@@ -1,7 +1,7 @@
 import { storeEnv } from "@/lib/store/env";
 import { db } from "@/lib/store/db";
 import { verifyWebhookSignature } from "@/lib/store/razorpay";
-import { markPaid, notifyPaid } from "@/lib/store/fulfil";
+import { markPaid, notifyPaid, markRefunded, markFailed } from "@/lib/store/fulfil";
 import { json } from "@/lib/store/http";
 
 /** The Razorpay webhook: the guaranteed path to a paid order (§8.25-m).
@@ -25,6 +25,11 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const PAID_EVENTS = new Set(["order.paid", "payment.captured"]);
+/** A refund that has actually reached the customer's account. `refund.created`
+ *  is only the instruction, so acting on it would clear an order before the money
+ *  has moved. */
+const REFUND_EVENTS = new Set(["refund.processed"]);
+const FAILED_EVENTS = new Set(["payment.failed"]);
 
 export async function POST(request: Request) {
   const env = storeEnv();
@@ -66,6 +71,26 @@ export async function POST(request: Request) {
   }
 
   try {
+    /* A refund takes the order OUT of the dispatch queue. Until this existed the
+       queue (status='paid') still contained people who had cancelled and been
+       repaid, and the only thing preventing a shipment to them was somebody
+       remembering to run an UPDATE by hand (§8.25-ee). */
+    if (REFUND_EVENTS.has(event.event)) {
+      const refund = event.payload?.refund?.entity;
+      if (!refund?.payment_id) return json(200, { ok: true, note: "refund without a payment id" });
+      const outcome = await markRefunded(env, {
+        paymentId: refund.payment_id,
+        refundedPaise: refund.amount ?? 0,
+      });
+      return json(200, { ok: true, note: outcome });
+    }
+
+    if (FAILED_EVENTS.has(event.event)) {
+      const failedOrderId = event.payload?.payment?.entity?.order_id;
+      if (failedOrderId) await markFailed(env, failedOrderId);
+      return json(200, { ok: true, note: "failed" });
+    }
+
     if (!PAID_EVENTS.has(event.event)) {
       /* Recorded for the audit trail, acted on by nothing. Razorpay sends more
          event types than we subscribe to, and silence is correct. */
@@ -79,6 +104,14 @@ export async function POST(request: Request) {
     const result = await markPaid(env, {
       rzpOrderId,
       paymentId: event.payload?.payment?.entity?.id ?? null,
+      /* Our own reference, which we set as the Razorpay order's receipt and in
+         its notes. It is the fallback that rescues a payment whose gateway order
+         id never made it onto our row. */
+      orderRef:
+        event.payload?.order?.entity?.notes?.order_ref ??
+        event.payload?.order?.entity?.receipt ??
+        event.payload?.payment?.entity?.notes?.order_ref ??
+        null,
     });
 
     if (result.outcome === "paid") {
@@ -105,8 +138,9 @@ type RazorpayWebhook = {
   id?: string;
   event: string;
   payload?: {
-    payment?: { entity?: { id?: string; order_id?: string } };
-    order?: { entity?: { id?: string } };
+    payment?: { entity?: { id?: string; order_id?: string; notes?: { order_ref?: string } } };
+    order?: { entity?: { id?: string; receipt?: string; notes?: { order_ref?: string } } };
+    refund?: { entity?: { id?: string; payment_id?: string; amount?: number } };
   };
 };
 

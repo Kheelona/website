@@ -28,7 +28,7 @@ export type MarkPaidResult =
 
 export async function markPaid(
   env: StoreEnv,
-  input: { rzpOrderId: string; paymentId: string | null },
+  input: { rzpOrderId: string; paymentId: string | null; orderRef?: string | null },
 ): Promise<MarkPaidResult> {
   const { data, error } = await db(env)
     .from("preorders")
@@ -53,7 +53,96 @@ export async function markPaid(
     .select("id", { count: "exact", head: true })
     .eq("rzp_order_id", input.rzpOrderId);
 
-  return (count ?? 0) > 0 ? { outcome: "already" } : { outcome: "unknown" };
+  if ((count ?? 0) > 0) return { outcome: "already" };
+
+  /* ORPHAN RECOVERY. create-order writes our row, THEN creates the gateway order,
+     THEN attaches its id. If that last update fails, a real payment arrives for an
+     order id we have no row for, and the money is unattributable — the one failure
+     in this flow with no clean recovery. But we also put our own reference in the
+     Razorpay order as `receipt` and in `notes.order_ref`, and Razorpay hands it
+     back in the webhook. So try that before giving up. */
+  if (input.orderRef) {
+    const { data: byRef, error: refError } = await db(env)
+      .from("preorders")
+      .update({
+        status: "paid",
+        paid_at: new Date().toISOString(),
+        rzp_payment_id: input.paymentId,
+        rzp_order_id: input.rzpOrderId,
+      })
+      .eq("order_ref", input.orderRef)
+      .neq("status", "paid")
+      .select("*")
+      .maybeSingle();
+    if (refError) throw refError;
+    if (byRef) {
+      console.warn(
+        `[fulfil] recovered ${input.orderRef} by its reference: the gateway order id was never attached to the row`,
+      );
+      return { outcome: "paid", order: byRef as PreorderRow };
+    }
+  }
+
+  return { outcome: "unknown" };
+}
+
+/** A refund landed. Take the order OUT of the dispatch queue (§8.25-ee).
+ *
+ *  Found by reading the code after the first real refund: the webhook acted only
+ *  on paid events, so a refunded order kept `status = 'paid'` — and the dispatch
+ *  queue IS `where status = 'paid'`. A parent who cancelled and got their money
+ *  back would still be shipped a Lumi and then invoiced ₹4,500 for it. The only
+ *  thing standing between that and a customer was someone remembering to run an
+ *  UPDATE by hand, every time, forever.
+ *
+ *  PARTIAL REFUNDS ARE DELIBERATELY NOT TREATED AS CANCELLATIONS. The very first
+ *  refund this store issued was ₹489 of ₹499, so this is not hypothetical: if any
+ *  refund cleared the order, a ₹10 goodwill refund would silently cancel a live
+ *  pre-order. Only a refund covering the full amount does that; anything less is
+ *  logged loudly and left for a human, because there is no honest automatic
+ *  answer to "they got some of it back". */
+export async function markRefunded(
+  env: StoreEnv,
+  input: { paymentId: string; refundedPaise: number },
+): Promise<"refunded" | "partial" | "unknown"> {
+  const client = db(env);
+  const { data: order } = await client
+    .from("preorders")
+    .select("order_ref, amount_paise, status")
+    .eq("rzp_payment_id", input.paymentId)
+    .maybeSingle();
+
+  if (!order) {
+    console.error("[refund] no order matches payment", input.paymentId);
+    return "unknown";
+  }
+
+  if (input.refundedPaise < order.amount_paise) {
+    console.warn(
+      `[refund] PARTIAL refund on ${order.order_ref}: ${input.refundedPaise} of ${order.amount_paise} paise. Left as ${order.status} for a human to decide.`,
+    );
+    return "partial";
+  }
+
+  await client
+    .from("preorders")
+    .update({ status: "refunded" })
+    .eq("order_ref", order.order_ref);
+
+  console.warn(`[refund] ${order.order_ref} refunded in full and removed from the dispatch queue`);
+  return "refunded";
+}
+
+/** A payment attempt failed. Worth recording: it separates "tried to pay us and
+ *  the card was declined" from "filled the form and never came back", and those
+ *  are two different follow-up conversations. Only ever moves a row that is still
+ *  `created`, so it can never contradict a payment that actually succeeded. */
+export async function markFailed(env: StoreEnv, rzpOrderId: string): Promise<void> {
+  await db(env)
+    .from("preorders")
+    .update({ status: "failed" })
+    .eq("rzp_order_id", rzpOrderId)
+    .eq("status", "created");
 }
 
 /** The link that lets a parent add their address weeks later, from their inbox. */
