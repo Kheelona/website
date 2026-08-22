@@ -46,6 +46,10 @@
   --color-line-soft: #e2e2e2;
   --color-cream: #fff7ee;
   --color-cool: #eaf6fc;
+  /* The third wash, a real token at last (CS3 Phase 0, 2026-08-23). It lived
+     as a raw literal in Room.tsx and Section.tsx since the revamp, which made
+     it the one wash a palette change could silently miss. */
+  --color-sun: #fdf1e2;
   --color-footer-cocoa: #2a1608;
 
   --font-display: var(--font-glory);

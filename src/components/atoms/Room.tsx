@@ -13,7 +13,7 @@ const FILLS: Record<RoomFill, string> = {
   white: "bg-white",
   cream: "bg-cream",
   cool: "bg-cool",
-  sun: "bg-[#fdf1e2]",
+  sun: "bg-sun",
 };
 
 /** One room panel. `guide` + `say` feed the persistent KheeluGuide via

@@ -32,7 +32,7 @@ const CONTRAST = [
   },
   {
     kind: "flower5" as const,
-    tint: "bg-[#fdf1e2]",
+    tint: "bg-sun",
     color: "#EF762F",
     label: "Lumi",
     heading: "One lesson, one child.",

@@ -12,28 +12,19 @@ import { describe, expect, it } from "vitest";
  * someone lightens a wash or darkens an ink, the test says which pairs changed
  * side rather than leaving it to the next axe sweep to notice, or not.
  *
- * WHERE THE VALUES COME FROM, and why it is two files. The inks plus `cream` and
- * `cool` are real `--color-*` tokens in globals.css. `sun` is NOT — it is a raw
- * arbitrary value `bg-[#fdf1e2]` in the `FILLS` map in `atoms/Room.tsx`, and
- * `white` is Tailwind's own default and not a token at all. Reading `sun` from
- * Room.tsx rather than hardcoding it is what stops this test from disagreeing
- * with what the rooms actually paint.
+ * WHERE THE VALUES COME FROM. Every wash except `white` is a real `--color-*`
+ * token in globals.css since CS3 Phase 0 (2026-08-23) promoted `sun` from a
+ * raw `bg-[#fdf1e2]` literal in Room.tsx to `--color-sun` — the literal was
+ * the one wash a palette change could silently miss. `white` is Tailwind's
+ * own default and not a token at all.
  */
 
 const ROOT = process.cwd();
 const CSS = readFileSync(join(ROOT, "src/styles/globals.css"), "utf8");
-const ROOM = readFileSync(join(ROOT, "src/components/atoms/Room.tsx"), "utf8");
 
 function token(name: string): string {
   const m = CSS.match(new RegExp(`--color-${name}:\\s*(#[0-9a-fA-F]{6})`));
   if (!m) throw new Error(`--color-${name} not found in globals.css`);
-  return m[1].toLowerCase();
-}
-
-/** `sun` lives only as an arbitrary Tailwind value in Room's FILLS map. */
-function roomFill(name: string): string {
-  const m = ROOM.match(new RegExp(`${name}:\\s*"bg-\\[(#[0-9a-fA-F]{6})\\]"`));
-  if (!m) throw new Error(`FILLS.${name} not found as an arbitrary value in Room.tsx`);
   return m[1].toLowerCase();
 }
 
@@ -60,7 +51,7 @@ const WASHES = {
   white: "#ffffff", // Tailwind default, via FILLS.white = "bg-white"
   cream: token("cream"),
   cool: token("cool"),
-  sun: roomFill("sun"),
+  sun: token("sun"),
 };
 
 const AA = 4.5;

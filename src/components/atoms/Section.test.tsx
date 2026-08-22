@@ -18,7 +18,7 @@ describe("Section", () => {
   it("no longer offers the retired orange wash (V4: the finale is white)", () => {
     render(<Section wash="sun">copy</Section>);
     const el = screen.getByText("copy").closest("section")!;
-    expect(el.className).toContain("bg-[#fdf1e2]");
+    expect(el.className).toContain("bg-sun");
     expect(el.className).not.toContain("orange-cta");
   });
 

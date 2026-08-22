@@ -12,7 +12,7 @@ describe("Room", () => {
   it("offers the four calm fills and no conversion orange (retired in V4)", () => {
     render(<Room fill="sun">copy</Room>);
     const el = screen.getByText("copy").closest("section")!;
-    expect(el.className).toContain("bg-[#fdf1e2]");
+    expect(el.className).toContain("bg-sun");
     expect(el.className).not.toContain("bg-action");
     expect(el.className).not.toContain("text-white");
   });
