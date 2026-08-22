@@ -1,0 +1,29 @@
+<!doctype html>
+<!-- @dsCard group="Templates" name="Story 1080×1920" subtitle="Instagram/WhatsApp story artboard" viewport="1080x1920" -->
+<html><head><meta charset="utf-8"><title>Story 1080x1920</title>
+<link rel="stylesheet" href="../tokens/kheelona.css">
+<style>
+  html, body { margin: 0; padding: 0; }
+  .board { width: 1080px; height: 1920px; position: relative; overflow: hidden; background: var(--kh-blue); }
+  .sky { position: absolute; inset: 0; background: linear-gradient(180deg, var(--kh-blue) 0%, #56B8E2 60%, var(--kh-yellow-tint) 100%); }
+  .shape { position: absolute; opacity: .18; }
+  .content { position: absolute; inset: 96px 84px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+  .logo { width: 300px; }
+  .headline { font-family: var(--kh-font-display); font-weight: 700; font-size: 100px; letter-spacing: -0.01em; line-height: 1.12; color: #fff; margin: 72px 0 0; }
+  .sub { font-family: var(--kh-font-text); font-size: 34px; letter-spacing: 0.01em; line-height: 1.3; color: #fff; opacity: .95; margin: 32px 0 0; max-width: 720px; }
+  .mascot { width: 720px; margin-top: auto; }
+  .cta { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); font-family: var(--kh-font-display); font-weight: 600; font-size: 32px; color: var(--kh-ink); background: #fff; border-radius: 999px; padding: 22px 56px; box-shadow: var(--kh-shadow); white-space: nowrap; }
+</style></head>
+<body><div class="board">
+  <div class="sky"></div>
+  <img class="shape" src="../assets/shapes/flower-3.svg" style="width:220px; top:340px; left:-70px; filter: brightness(0) invert(1);">
+  <img class="shape" src="../assets/shapes/triangle-5.svg" style="width:170px; top:180px; right:-40px; filter: brightness(0) invert(1);">
+  <img class="shape" src="../assets/shapes/polygon.svg" style="width:150px; bottom:560px; right:60px; filter: brightness(0) invert(1);">
+  <div class="content">
+    <img class="logo" src="../assets/logo/kheelona-wordmark-white.svg" alt="Kheelona">
+    <h1 class="headline">Big questions welcome.</h1>
+    <p class="sub">Every "why?" gets a warm, clever answer — in your language, at your child's pace.</p>
+    <img class="mascot" src="../assets/mascot/poses/superman-flying.png" alt="">
+    <div class="cta">Swipe up to say hello</div>
+  </div>
+</div></body></html>

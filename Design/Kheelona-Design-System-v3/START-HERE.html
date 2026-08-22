@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kheelona Design System v3 — Start Here</title>
+<link rel="icon" href="assets/logo/kheelona-mark.svg">
+<link rel="stylesheet" href="tokens/kheelona.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--kh-cream);
+    color: var(--kh-ink-2);
+    font-family: var(--kh-font-text);
+    font-size: 16px;
+    letter-spacing: var(--kh-body-tracking);
+    line-height: var(--kh-body-leading);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+  /* Tactile grain over the whole page — brand "noise texture" usage */
+  body::after {
+    content: ""; position: fixed; inset: 0; z-index: 9999; pointer-events: none;
+    background-image: url("assets/textures/noise-fine.png");
+    background-size: 320px;
+    opacity: 0.035; mix-blend-mode: multiply;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--kh-font-display); font-weight: 700;
+    letter-spacing: var(--kh-heading-tracking); line-height: var(--kh-heading-leading);
+    color: var(--kh-ink); margin: 0;
+  }
+  a { color: inherit; }
+  .wrap { max-width: 1140px; margin: 0 auto; padding: 0 32px; }
+
+  /* ---------- eyebrow: Instrument Serif italic, one per section ---------- */
+  .eyebrow {
+    font-family: var(--kh-font-editorial); font-style: italic;
+    font-size: 26px; color: var(--kh-blue); margin: 0 0 6px;
+  }
+  section { padding: 76px 0; position: relative; }
+  section > .wrap > header { margin-bottom: 34px; max-width: 62ch; }
+  section > .wrap > header h2 { font-size: 40px; }
+  section > .wrap > header p { margin: 12px 0 0; color: var(--kh-ink-3); font-size: 16px; }
+
+  /* ================= HERO ================= */
+  .hero {
+    position: relative; overflow: hidden; padding: 0;
+    background:
+      radial-gradient(120% 90% at 78% 8%, #FCEEDA 0%, rgba(252,238,218,0) 58%),
+      linear-gradient(168deg, #FFFFFF 0%, #FDF7EC 46%, #FCEEDA 100%);
+    border-bottom: 1px solid var(--kh-line);
+  }
+  .hero-inner {
+    max-width: 1140px; margin: 0 auto; padding: 60px 32px 0;
+    display: grid; grid-template-columns: minmax(0,1fr) 380px; gap: 24px; align-items: end;
+  }
+  .hero-copy { padding-bottom: 76px; }
+  .hero img.wordmark { width: 232px; display: block; margin-bottom: 40px; }
+  .hero h1 {
+    font-size: clamp(46px, 6.2vw, 78px); line-height: 1.06; margin: 0 0 20px;
+    max-width: 15ch;
+  }
+  .hero h1 em {
+    font-family: var(--kh-font-editorial); font-style: italic; font-weight: 400;
+    color: var(--kh-blue);
+  }
+  .hero .lede { font-size: 19px; max-width: 52ch; color: var(--kh-ink-2); margin: 0 0 32px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 34px; }
+  .badge {
+    font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+    padding: 7px 14px; border-radius: var(--kh-radius-pill);
+    background: var(--kh-white); border: 1px solid var(--kh-line); color: var(--kh-ink-3);
+  }
+  .badge.blue { background: var(--kh-blue-tint); border-color: transparent; color: #14607f; }
+  .cta-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 9px; text-decoration: none;
+    font-family: var(--kh-font-display); font-weight: 600; font-size: 16px;
+    padding: 14px 28px; border-radius: var(--kh-radius-pill);
+    background: var(--kh-orange); color: #fff; box-shadow: var(--kh-shadow);
+    transition: transform .18s cubic-bezier(.34,1.56,.64,1), box-shadow .18s ease;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 10px rgba(0,0,0,.22); }
+  .btn.ghost { background: var(--kh-white); color: var(--kh-ink); border: 1px solid var(--kh-line); box-shadow: none; }
+  .btn.ghost:hover { border-color: var(--kh-blue); color: var(--kh-blue); }
+  .hero-mascot { position: relative; }
+  .hero-mascot img { width: 100%; display: block; filter: drop-shadow(0 14px 22px rgba(27,27,27,.16)); }
+  /* decorative shape cluster bleeding off the corner, low alpha */
+  .hero .deco { position: absolute; pointer-events: none; user-select: none; }
+  .hero .deco svg, .hero .deco img { display: block; width: 100%; height: auto; }
+  .d1 { width: 300px; top: -70px; left: -78px; color: var(--kh-yellow); opacity: .16; }
+  .d2 { width: 144px; top: 18px; left: 52%; color: var(--kh-blue); opacity: .13; }
+  .d3 { width: 210px; bottom: -66px; right: 32%; color: var(--kh-orange); opacity: .10; }
+
+  /* ================= directory map ================= */
+  .map { display: grid; grid-template-columns: repeat(auto-fit, minmax(252px, 1fr)); gap: 14px; }
+  .map a {
+    display: block; text-decoration: none; padding: 22px 22px 20px;
+    background: var(--kh-white); border: 1px solid var(--kh-line);
+    border-radius: var(--kh-radius-md);
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  }
+  .map a:hover { transform: translateY(-3px); box-shadow: var(--kh-shadow-soft); border-color: transparent; }
+  .map .dir {
+    font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 13px;
+    color: var(--kh-blue); font-weight: 600; margin-bottom: 9px; display: block;
+  }
+  .map h3 { font-size: 19px; margin-bottom: 6px; }
+  .map p { margin: 0; font-size: 14px; color: var(--kh-ink-3); }
+  .map .count {
+    display: inline-block; margin-top: 12px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .07em; color: var(--kh-ink-3);
+    background: var(--kh-cream); padding: 4px 10px; border-radius: var(--kh-radius-pill);
+  }
+
+  /* ================= palette ================= */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fit, minmax(168px,1fr)); gap: 12px; }
+  .sw { border-radius: var(--kh-radius-md); overflow: hidden; border: 1px solid var(--kh-line); background: var(--kh-white); }
+  .sw .chip { height: 96px; position: relative; }
+  .sw .chip span {
+    position: absolute; right: 10px; bottom: 8px; font-size: 11px; font-weight: 700;
+    letter-spacing: .06em; color: rgba(255,255,255,.92);
+  }
+  .sw .meta { padding: 12px 14px 14px; }
+  .sw .name { font-family: var(--kh-font-display); font-weight: 600; font-size: 15px; color: var(--kh-ink); }
+  .sw .tok { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 11.5px; color: var(--kh-ink-3); margin-top: 3px; }
+  .sw .pct { font-size: 11px; color: var(--kh-blue); font-weight: 700; margin-top: 6px; letter-spacing: .05em; }
+  .ratio { margin-top: 20px; display: flex; height: 34px; border-radius: var(--kh-radius-pill); overflow: hidden; border: 1px solid var(--kh-line); }
+  .ratio div { display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: rgba(255,255,255,.95); }
+
+  /* ================= type ================= */
+  .specimens { display: grid; gap: 12px; }
+  .spec { background: var(--kh-white); border: 1px solid var(--kh-line); border-radius: var(--kh-radius-md); padding: 26px 28px; }
+  .spec .tag {
+    font-size: 11px; text-transform: uppercase; letter-spacing: .08em; font-weight: 700;
+    color: var(--kh-ink-3); margin-bottom: 14px;
+  }
+  .spec .sample-glory { font-family: var(--kh-font-display); font-weight: 700; font-size: 44px; letter-spacing: -.01em; line-height: 1.2; color: var(--kh-ink); }
+  .spec .sample-sans { font-family: var(--kh-font-text); font-size: 18px; letter-spacing: .01em; line-height: 1.3; color: var(--kh-ink-2); max-width: 66ch; }
+  .spec .sample-serif { font-family: var(--kh-font-editorial); font-style: italic; font-size: 36px; color: var(--kh-ink); }
+  .spec .specs { margin-top: 14px; font-size: 13px; color: var(--kh-ink-3); font-family: ui-monospace,'SF Mono',Menlo,monospace; }
+
+  /* ================= card / template grids ================= */
+  .grp { margin-bottom: 30px; }
+  .grp h3 {
+    font-size: 13px; text-transform: uppercase; letter-spacing: .1em; color: var(--kh-ink-3);
+    font-family: var(--kh-font-text); font-weight: 700; margin-bottom: 12px;
+    padding-bottom: 9px; border-bottom: 1px solid var(--kh-line);
+  }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(258px,1fr)); gap: 10px; }
+  .tile {
+    display: flex; flex-direction: column; gap: 4px; text-decoration: none;
+    padding: 15px 17px; border-radius: var(--kh-radius-sm);
+    background: var(--kh-white); border: 1px solid var(--kh-line);
+    transition: border-color .16s ease, transform .16s ease, box-shadow .16s ease;
+  }
+  .tile:hover { border-color: var(--kh-blue); transform: translateY(-2px); box-shadow: var(--kh-shadow-soft); }
+  .tile .t { font-family: var(--kh-font-display); font-weight: 600; font-size: 16px; color: var(--kh-ink); }
+  .tile .s { font-size: 13px; color: var(--kh-ink-3); line-height: 1.35; }
+  .tile .v { font-family: ui-monospace,'SF Mono',Menlo,monospace; font-size: 11px; color: var(--kh-blue); margin-top: 3px; }
+
+  /* ================= notice ================= */
+  .notice {
+    background: var(--kh-blue-tint); border-radius: var(--kh-radius-md);
+    padding: 26px 30px; border-left: 5px solid var(--kh-blue);
+  }
+  .notice h3 { font-size: 20px; margin-bottom: 10px; }
+  .notice p { margin: 0 0 10px; font-size: 15px; color: #1c5266; max-width: 76ch; }
+  .notice p:last-child { margin-bottom: 0; }
+  .notice code { font-family: ui-monospace,'SF Mono',Menlo,monospace; font-size: 13px; background: rgba(255,255,255,.72); padding: 2px 6px; border-radius: 4px; }
+
+  .rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(248px,1fr)); gap: 12px; counter-reset: r; }
+  .rule {
+    background: var(--kh-white); border: 1px solid var(--kh-line); border-radius: var(--kh-radius-md);
+    padding: 22px 24px; position: relative;
+  }
+  .rule::before {
+    counter-increment: r; content: counter(r);
+    font-family: var(--kh-font-display); font-weight: 700; font-size: 13px;
+    width: 26px; height: 26px; border-radius: 50%; background: var(--kh-orange); color: #fff;
+    display: flex; align-items: center; justify-content: center; margin-bottom: 12px;
+  }
+  .rule h4 { font-size: 17px; margin-bottom: 6px; }
+  .rule p { margin: 0; font-size: 14px; color: var(--kh-ink-3); }
+
+  /* ================= footer ================= */
+  footer {
+    background: var(--kh-ink); color: #C8C3BE; padding: 54px 0 46px; margin-top: 20px;
+    position: relative; overflow: hidden;
+  }
+  footer .wrap { position: relative; z-index: 1; }
+  footer img.wm { width: 168px; margin-bottom: 22px; }
+  footer h4 { color: #fff; font-size: 15px; margin-bottom: 8px; }
+  footer p { font-size: 13.5px; margin: 0 0 8px; max-width: 74ch; line-height: 1.5; }
+  footer a { color: var(--kh-yellow); }
+  .fcols { display: grid; grid-template-columns: repeat(auto-fit, minmax(238px,1fr)); gap: 28px; margin-top: 26px;
+           border-top: 1px solid rgba(255,255,255,.13); padding-top: 26px; }
+
+  /* ---------- entrance choreography: one orchestrated load ---------- */
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal { opacity: 0; transform: translateY(16px); animation: rise .72s cubic-bezier(.22,.9,.3,1) forwards; }
+    @keyframes rise { to { opacity: 1; transform: none; } }
+    .hero-mascot img { opacity: 0; transform: translateY(26px) scale(.97); animation: rise .9s cubic-bezier(.22,.9,.3,1) .28s forwards; }
+  }
+  @media (max-width: 880px) {
+    .hero-inner { grid-template-columns: 1fr; padding-top: 44px; }
+    .hero-mascot { max-width: 300px; margin: 0 auto; }
+    .hero-copy { padding-bottom: 34px; }
+    .wrap { padding: 0 22px; }
+    section { padding: 56px 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================ HERO ============================ -->
+<header class="hero">
+  <div class="deco d1"><svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67.064 67.064" fill="none"> <path d="M 33.532 0 C 28.161 0 23.808 4.354 23.808 9.724 L 23.808 10.056 L 23.574 9.821 C 19.776 6.024 13.619 6.024 9.821 9.821 C 6.024 13.619 6.024 19.776 9.821 23.574 L 10.056 23.808 L 9.724 23.808 C 4.354 23.808 0 28.161 0 33.532 C 0 38.903 4.354 43.256 9.724 43.256 L 10.056 43.256 L 9.821 43.491 C 6.024 47.288 6.024 53.445 9.821 57.243 C 13.619 61.04 19.776 61.04 23.574 57.243 L 23.808 57.009 L 23.808 57.34 C 23.808 62.71 28.161 67.064 33.532 67.064 C 38.903 67.064 43.256 62.71 43.256 57.34 L 43.256 57.009 L 43.491 57.243 C 47.288 61.04 53.445 61.04 57.243 57.243 C 61.04 53.445 61.04 47.288 57.243 43.491 L 57.009 43.256 L 57.34 43.256 C 62.71 43.256 67.064 38.903 67.064 33.532 C 67.064 28.161 62.71 23.808 57.34 23.808 L 57.009 23.808 L 57.243 23.574 C 61.04 19.776 61.04 13.619 57.243 9.821 C 53.445 6.024 47.288 6.024 43.491 9.821 L 43.256 10.056 L 43.256 9.724 C 43.256 4.354 38.903 0 33.532 0 Z" fill="currentColor" fill-rule="nonzero"></path> </svg></div>
+  <div class="deco d2"><svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70.365 64.736" fill="none"> <path d="M 19.146 16.542 C 24.514 7.119 27.198 2.408 30.748 0.902 C 33.583 -0.301 36.782 -0.301 39.617 0.902 C 43.166 2.408 45.85 7.119 51.218 16.542 L 62.828 36.921 C 68.141 46.246 70.797 51.263 70.308 55.085 C 69.917 58.138 68.673 60.551 66.233 62.409 C 63.178 64.736 57.481 64.736 46.792 64.736 L 23.573 64.736 C 12.884 64.736 7.187 64.736 4.132 62.409 C 1.692 60.551 0.448 58.138 0.057 55.085 C -0.432 51.263 2.224 46.246 7.537 36.921 L 19.146 16.542 Z" fill="currentColor" fill-rule="nonzero"></path> </svg></div>
+  <div class="deco d3"><svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67.064 67.064" fill="none"> <path d="M 57.413 27.133 C 63.381 28.482 67.064 30.566 67.064 33.532 C 67.064 36.498 63.381 38.582 57.413 39.931 C 61.907 44.083 64.055 47.73 62.572 50.298 C 61.089 52.867 56.857 52.83 51.014 51.014 C 52.831 56.857 52.867 61.089 50.298 62.572 C 47.73 64.055 44.083 61.907 39.931 57.413 C 38.582 63.381 36.498 67.064 33.532 67.064 C 30.566 67.064 28.482 63.381 27.133 57.413 C 22.981 61.907 19.335 64.055 16.766 62.572 C 14.198 61.089 14.234 56.857 16.05 51.014 C 10.208 52.83 5.976 52.867 4.493 50.298 C 3.01 47.73 5.157 44.083 9.651 39.931 C 3.683 38.582 0 36.498 0 33.532 C 0 30.566 3.683 28.482 9.651 27.133 C 5.157 22.981 3.01 19.335 4.493 16.766 C 5.976 14.198 10.208 14.234 16.05 16.05 C 14.234 10.207 14.198 5.975 16.766 4.492 C 19.335 3.01 22.981 5.157 27.133 9.651 C 28.482 3.683 30.566 0 33.532 0 C 36.498 0 38.582 3.683 39.931 9.651 C 44.083 5.157 47.73 3.009 50.298 4.492 C 52.867 5.975 52.831 10.207 51.014 16.05 C 56.857 14.234 61.089 14.198 62.572 16.766 C 64.055 19.335 61.907 22.981 57.413 27.133 Z" fill="currentColor" fill-rule="nonzero"></path> </svg></div>
+
+  <div class="hero-inner">
+    <div class="hero-copy">
+      <img class="wordmark reveal" style="animation-delay:.02s" src="assets/logo/kheelona-wordmark.svg" alt="Kheelona">
+      <h1 class="reveal" style="animation-delay:.08s">The whole brand, <em>in one folder.</em></h1>
+      <p class="lede reveal" style="animation-delay:.14s">
+        Design System v3.0 — tokens, fonts, the full asset library, written guidelines,
+        and starter templates for anything that carries the Kheelona name.
+        Everything here is offline and self-contained. No install, no account, no build step.
+      </p>
+      <div class="badges reveal" style="animation-delay:.2s">
+        <span class="badge blue">Brand v3.0 · August 2026</span>
+        <span class="badge">38 image assets</span>
+        <span class="badge">6 fonts</span>
+        <span class="badge">22 reference cards</span>
+        <span class="badge">6 templates</span>
+      </div>
+      <div class="cta-row reveal" style="animation-delay:.26s">
+        <a class="btn" href="#cards">Browse the reference cards</a>
+        <a class="btn ghost" href="BRAND.md">Read the brand book</a>
+      </div>
+    </div>
+    <div class="hero-mascot">
+      <img src="assets/mascot/poses/peeking-waving.png" alt="Kheelona's Foxy-Deer mascot, peeking and waving">
+    </div>
+  </div>
+</header>
+
+<!-- ============================ FIRST FIVE MINUTES ============================ -->
+<section>
+  <div class="wrap">
+    <header>
+      <p class="eyebrow">Start here</p>
+      <h2>Your first five minutes</h2>
+      <p>If you only do one thing, open the reference cards below — they are the visual
+         summary of the entire brand book, and they render in any browser.</p>
+    </header>
+    <div class="rules">
+      <div class="rule">
+        <h4>Read <code>BRAND.md</code></h4>
+        <p>Purpose, vision, positioning, audiences, and the twelve personality sliders that define how Kheelona behaves.</p>
+      </div>
+      <div class="rule">
+        <h4>Wire in the tokens</h4>
+        <p>Link <code>tokens/kheelona.css</code> first in anything you build. It loads the fonts and exposes every brand value as a CSS variable.</p>
+      </div>
+      <div class="rule">
+        <h4>Start from a template</h4>
+        <p>Six ready artboards at true pixel size. Duplicate one, swap the copy and the mascot, keep the token wiring intact.</p>
+      </div>
+      <div class="rule">
+        <h4>Check the guidelines</h4>
+        <p>Five short documents — logo, color, typography, mascot, voice — covering the rules that are easy to get wrong.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ WHAT'S INSIDE ============================ -->
+<section style="background:var(--kh-white); border-top:1px solid var(--kh-line); border-bottom:1px solid var(--kh-line);">
+  <div class="wrap">
+    <header>
+      <p class="eyebrow">The map</p>
+      <h2>What's inside</h2>
+      <p>Every folder, what it holds, and when you'd reach for it.</p>
+    </header>
+    <div class="map">
+      <a href="BRAND.md">
+        <span class="dir">BRAND.md</span>
+        <h3>The brand book</h3>
+        <p>Purpose, vision, mission, positioning, audiences, tone of voice, personality sliders.</p>
+        <span class="count">Read first</span>
+      </a>
+      <a href="tokens/kheelona.css">
+        <span class="dir">tokens/</span>
+        <h3>Design tokens</h3>
+        <p>CSS custom properties with <code>@font-face</code> wiring, plus a W3C-style JSON token file.</p>
+        <span class="count">CSS + JSON</span>
+      </a>
+      <a href="fonts/README.md">
+        <span class="dir">fonts/</span>
+        <h3>Typefaces</h3>
+        <p>Glory, Instrument Sans, Instrument Serif — variable TTFs with their OFL licences.</p>
+        <span class="count">6 TTF + 3 licences</span>
+      </a>
+      <a href="assets/MANIFEST.md">
+        <span class="dir">assets/</span>
+        <h3>Asset library</h3>
+        <p>Logos, the Foxy-Deer mascot, decorative shapes and noise textures. The manifest lists every file with its resolution.</p>
+        <span class="count">38 images</span>
+      </a>
+      <a href="guidelines/logo.md">
+        <span class="dir">guidelines/</span>
+        <h3>Written guidelines</h3>
+        <p>Logo · color · typography · mascot · voice. The rules behind the reference cards.</p>
+        <span class="count">5 documents</span>
+      </a>
+      <a href="#cards">
+        <span class="dir">preview/</span>
+        <h3>Reference cards</h3>
+        <p>The brand book rendered as browsable HTML cards — the fastest way to absorb the system.</p>
+        <span class="count">22 cards</span>
+      </a>
+      <a href="#templates">
+        <span class="dir">templates/</span>
+        <h3>Starter templates</h3>
+        <p>Social, story, OG banner, A4 poster, A5 flyer, content card — true pixel size, token-wired.</p>
+        <span class="count">6 artboards</span>
+      </a>
+      <a href="SKILL.md">
+        <span class="dir">SKILL.md</span>
+        <h3>For AI assistants</h3>
+        <p>Drop-in instructions so Claude or another assistant designs on-brand without being re-taught each time.</p>
+        <span class="count">Non-negotiables</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ PALETTE ============================ -->
+<section>
+  <div class="wrap">
+    <header>
+      <p class="eyebrow">Color</p>
+      <h2>Warm first, tech second</h2>
+      <p>Yellow and White are the canvas, Sky Blue carries structure, Deep Orange is punctuation.
+         Teal and Purple are seasoning — never primary surfaces.</p>
+    </header>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:#F1A23B"><span>#F1A23B</span></div>
+        <div class="meta"><div class="name">Golden Yellow</div><div class="tok">--kh-yellow</div><div class="pct">30% · canvas</div></div></div>
+      <div class="sw"><div class="chip" style="background:#FFFFFF;border-bottom:1px solid var(--kh-line)"><span style="color:var(--kh-ink-3)">#FFFFFF</span></div>
+        <div class="meta"><div class="name">White</div><div class="tok">--kh-white</div><div class="pct">30% · canvas</div></div></div>
+      <div class="sw"><div class="chip" style="background:#29A0D7"><span>#29A0D7</span></div>
+        <div class="meta"><div class="name">Sky Blue</div><div class="tok">--kh-blue</div><div class="pct">20% · structure</div></div></div>
+      <div class="sw"><div class="chip" style="background:#EF762F"><span>#EF762F</span></div>
+        <div class="meta"><div class="name">Deep Orange</div><div class="tok">--kh-orange</div><div class="pct">10% · accent</div></div></div>
+      <div class="sw"><div class="chip" style="background:#1ABC9C"><span>#1ABC9C</span></div>
+        <div class="meta"><div class="name">Teal</div><div class="tok">--kh-teal</div><div class="pct">5% · seasoning</div></div></div>
+      <div class="sw"><div class="chip" style="background:#8B5BFF"><span>#8B5BFF</span></div>
+        <div class="meta"><div class="name">Purple</div><div class="tok">--kh-purple</div><div class="pct">5% · seasoning</div></div></div>
+    </div>
+    <div class="ratio" title="Usage ratio 30/30/20/10/5/5">
+      <div style="flex:30;background:#F1A23B">30%</div>
+      <div style="flex:30;background:#FFFFFF;color:var(--kh-ink-3)">30%</div>
+      <div style="flex:20;background:#29A0D7">20%</div>
+      <div style="flex:10;background:#EF762F">10%</div>
+      <div style="flex:5;background:#1ABC9C"></div>
+      <div style="flex:5;background:#8B5BFF"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ TYPE ============================ -->
+<section style="background:var(--kh-white); border-top:1px solid var(--kh-line); border-bottom:1px solid var(--kh-line);">
+  <div class="wrap">
+    <header>
+      <p class="eyebrow">Typography</p>
+      <h2>Glory carries the feeling. Instrument Sans carries the information.</h2>
+      <p>If the three specimens below render in their real typefaces, the bundled fonts are working correctly.</p>
+    </header>
+    <div class="specimens">
+      <div class="spec">
+        <div class="tag">Primary · Glory · headings &amp; display</div>
+        <div class="sample-glory">Toys that develop brain.</div>
+        <div class="specs">letter-spacing −1% · line-height 120% · var(--kh-font-display)</div>
+      </div>
+      <div class="spec">
+        <div class="tag">Secondary · Instrument Sans · body &amp; UI</div>
+        <div class="sample-sans">Aman and Apoorva realised the $100B toy industry was stuck in the past, selling
+          plastic while the world moved to AI. Now we aren't just making smart toys — we're building
+          how toys will feel from here on.</div>
+        <div class="specs">letter-spacing +1% · line-height 130% · var(--kh-font-text)</div>
+      </div>
+      <div class="spec">
+        <div class="tag">Editorial accent · Instrument Serif · one per composition</div>
+        <div class="sample-serif">Brand Purpose</div>
+        <div class="specs">italic only · titles and pull-quotes · var(--kh-font-editorial)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ CARDS ============================ -->
+<section id="cards">
+  <div class="wrap">
+    <header>
+      <p class="eyebrow">Reference</p>
+      <h2>The brand book, as browsable cards</h2>
+      <p>Twenty-two self-contained HTML cards. Click any one to open it — they work straight from the
+         folder, with no server.</p>
+    </header>
+
+    <div class="grp"><h3>Brand</h3><div class="tiles">
+      <a class="tile" href="preview/01-brand-snapshot.html"><span class="t">Brand snapshot</span><span class="s">Purpose, vision, mission, positioning, audiences</span><span class="v">720×460</span></a>
+      <a class="tile" href="preview/02-personality-sliders.html"><span class="t">Personality sliders</span><span class="s">12 axes, scored 0–10</span><span class="v">720×540</span></a>
+    </div></div>
+
+    <div class="grp"><h3>Voice</h3><div class="tiles">
+      <a class="tile" href="preview/03-voice-principles.html"><span class="t">Voice principles</span><span class="s">8 principles: how we sound / what we avoid</span><span class="v">780×560</span></a>
+      <a class="tile" href="preview/04-voice-cheatsheet.html"><span class="t">Voice cheat-sheet</span><span class="s">The one-line voice + eight contrasts</span><span class="v">720×300</span></a>
+    </div></div>
+
+    <div class="grp"><h3>Logo</h3><div class="tiles">
+      <a class="tile" href="preview/05-logo-wordmark.html"><span class="t">Primary wordmark</span><span class="s">Full-color vector + symbolism</span><span class="v">720×340</span></a>
+      <a class="tile" href="preview/06-logo-variants.html"><span class="t">Logo on backgrounds</span><span class="s">Full color on light · white on brand colors</span><span class="v">720×340</span></a>
+      <a class="tile" href="preview/07-logo-mark.html"><span class="t">K-mark</span><span class="s">Standalone mark for avatars, badges, app icon</span><span class="v">560×300</span></a>
+      <a class="tile" href="preview/08-logo-specs.html"><span class="t">Construction &amp; specs</span><span class="s">Clear space, ratio, outline, shadow</span><span class="v">720×360</span></a>
+      <a class="tile" href="preview/09-logo-donts.html"><span class="t">Logo don'ts</span><span class="s">Five ways to never treat the logo</span><span class="v">720×260</span></a>
+    </div></div>
+
+    <div class="grp"><h3>Colors</h3><div class="tiles">
+      <a class="tile" href="preview/10-colors-primary.html"><span class="t">Primary colors</span><span class="s">Orange · Yellow · Sky Blue · White</span><span class="v">720×280</span></a>
+      <a class="tile" href="preview/11-colors-secondary.html"><span class="t">Secondary &amp; accent colors</span><span class="s">Teal · Purple — the magical spark (5% each)</span><span class="v">720×250</span></a>
+      <a class="tile" href="preview/12-colors-usage.html"><span class="t">Usage ratio</span><span class="s">30 / 30 / 20 / 10 / 5 / 5 — warm-first, tech-second</span><span class="v">720×300</span></a>
+    </div></div>
+
+    <div class="grp"><h3>Type</h3><div class="tiles">
+      <a class="tile" href="preview/13-type-glory.html"><span class="t">Glory — primary</span><span class="s">Geometric, rounded, friendly &amp; bouncy</span><span class="v">720×360</span></a>
+      <a class="tile" href="preview/14-type-instrument-sans.html"><span class="t">Instrument Sans — secondary</span><span class="s">Precision neo-grotesque for body &amp; UI</span><span class="v">720×360</span></a>
+      <a class="tile" href="preview/15-type-instrument-serif.html"><span class="t">Instrument Serif — editorial</span><span class="s">Italic accents for section titles</span><span class="v">720×240</span></a>
+      <a class="tile" href="preview/16-type-styles.html"><span class="t">Heading &amp; paragraph styles</span><span class="s">Glory −1% / 120% · Instrument Sans +1% / 130%</span><span class="v">720×400</span></a>
+    </div></div>
+
+    <div class="grp"><h3>Mascot</h3><div class="tiles">
+      <a class="tile" href="preview/17-mascot.html"><span class="t">The Foxy-Deer</span><span class="s">Character design &amp; meaning</span><span class="v">720×400</span></a>
+      <a class="tile" href="preview/18-mascot-poses.html"><span class="t">Pose library</span><span class="s">17 transparent renders, emotion-mapped</span><span class="v">780×480</span></a>
+      <a class="tile" href="preview/19-mascot-activities.html"><span class="t">Activity scenes</span><span class="s">Painting, chilling, cycling</span><span class="v">780×300</span></a>
+      <a class="tile" href="preview/20-mascot-reference.html"><span class="t">On-model reference</span><span class="s">Turnaround &amp; close-ups — for commissioning art</span><span class="v">720×320</span></a>
+    </div></div>
+
+    <div class="grp"><h3>Shapes &amp; textures</h3><div class="tiles">
+      <a class="tile" href="preview/21-shapes.html"><span class="t">Decorative shapes</span><span class="s">7 currentColor SVGs, recolor via CSS</span><span class="v">720×280</span></a>
+      <a class="tile" href="preview/22-textures.html"><span class="t">Noise textures</span><span class="s">Tactile grain overlays</span><span class="v">560×240</span></a>
+    </div></div>
+  </div>
+</section>
+
+<!-- ============================ TEMPLATES ============================ -->
+<section id="templates" style="background:var(--kh-white); border-top:1px solid var(--kh-line); border-bottom:1px solid var(--kh-line);">
+  <div class="wrap">
+    <header>
+      <p class="eyebrow">Make something</p>
+      <h2>Starter templates</h2>
+      <p>Each one is a standalone HTML artboard at true pixel size. Duplicate it, replace the copy and
+         imagery, keep the token wiring — then screenshot it to PNG at exactly the right dimensions.</p>
+    </header>
+    <div class="tiles">
+      <a class="tile" href="templates/social-square-1080.html"><span class="t">Social square</span><span class="s">Instagram / LinkedIn post artboard</span><span class="v">1080×1080</span></a>
+      <a class="tile" href="templates/social-story-1080x1920.html"><span class="t">Story</span><span class="s">Instagram / WhatsApp story artboard</span><span class="v">1080×1920</span></a>
+      <a class="tile" href="templates/banner-og-1200x630.html"><span class="t">OG banner</span><span class="s">Link preview / ad banner artboard</span><span class="v">1200×630</span></a>
+      <a class="tile" href="templates/poster-a4.html"><span class="t">Poster A4</span><span class="s">Print poster artboard @ 96 dpi</span><span class="v">794×1123</span></a>
+      <a class="tile" href="templates/flyer-a5.html"><span class="t">Flyer A5</span><span class="s">Pamphlet front artboard @ 96 dpi</span><span class="v">559×794</span></a>
+      <a class="tile" href="templates/content-card.html"><span class="t">Content card</span><span class="s">Announcement / blog / quote card</span><span class="v">640×800</span></a>
+    </div>
+
+    <div class="notice" style="margin-top:26px">
+      <h3>Exporting a template to PNG</h3>
+      <p>Open the artboard in a browser and screenshot it, or render it exactly at size from the
+         command line with headless Chrome — replace the dimensions with the artboard's:</p>
+      <p><code>chrome --headless=new --screenshot=out.png --window-size=1080,1080 --hide-scrollbars social-square-1080.html</code></p>
+      <p>On macOS the binary lives at
+         <code>/Applications/Google Chrome.app/Contents/MacOS/Google Chrome</code>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ HONEST NOTES ============================ -->
+<section>
+  <div class="wrap">
+    <header>
+      <p class="eyebrow">Before you build</p>
+      <h2>Three things to know</h2>
+    </header>
+    <div class="rules">
+      <div class="rule">
+        <h4>Some mascot art is thumbnail-sized</h4>
+        <p>Nine poses are print-grade at 2000&nbsp;px or more; eight exist only at around 256&nbsp;px because
+           that's all the source file ever contained. Check the table in <code>assets/MANIFEST.md</code>
+           before committing a pose to print.</p>
+      </div>
+      <div class="rule">
+        <h4>The logo SVGs are reconstructions</h4>
+        <p>They were rebuilt from the source vector geometry and verified against the reference render.
+           For print-critical work, request a one-time official SVG or EPS export.</p>
+      </div>
+      <div class="rule">
+        <h4>The fonts are licensed, not owned</h4>
+        <p>All three families are SIL Open Font License 1.1. Keep the <code>OFL-*.txt</code> files
+           alongside the TTFs in any copy you pass on, and never sell the fonts by themselves.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ FOOTER ============================ -->
+<footer>
+  <div class="wrap">
+    <img class="wm" src="assets/logo/kheelona-wordmark-white.svg" alt="Kheelona">
+    <p>Safe, conversational AI tutors for kids aged 2–5 — AI-powered physical toys blending
+       robotics, content, and play.</p>
+    <div class="fcols">
+      <div>
+        <h4>Version</h4>
+        <p>Brand Guidelines v3.0, August 2026.<br>Generated from the master Figma source.</p>
+      </div>
+      <div>
+        <h4>Golden rule</h4>
+        <p>Never invent brand values. If a color, font, or spec isn't in
+           <a href="tokens/kheelona.css">tokens/kheelona.css</a>, it isn't brand.</p>
+      </div>
+      <div>
+        <h4>Questions</h4>
+        <p>Start with <a href="BRAND.md">BRAND.md</a>, then the relevant file in
+           <a href="guidelines/logo.md">guidelines/</a>. Asset provenance lives in
+           <a href="assets/MANIFEST.md">assets/MANIFEST.md</a>.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

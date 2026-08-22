@@ -13,7 +13,7 @@ The ones that will mislead you fastest:
 - **Branch `revamp/kheelu-tour`** is deleted, and its history is inside `main`.
 - **`docs/wireframes/2026-07/`** was deleted on 2026-08-23, a month and four rounds after the founder
   picked a direction. It is in git history.
-- **Test counts** in the hundreds. It is 769 as of 2026-08-23.
+- **Test counts** in the hundreds. The current number is `tests.count` in `docs/project-state.json`.
 
 For what is actually true, read `WORKING.md`, then `docs/project-state.json`, then
 `docs/website-steps.md`. Per-round detail lives in `docs/checkpoints/`, and the round-by-round

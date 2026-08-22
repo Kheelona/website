@@ -1,0 +1,22 @@
+<!doctype html>
+<!-- @dsCard group="Logo" name="Logo don'ts" subtitle="Five ways to never treat the logo" viewport="720x260" -->
+<html><head><meta charset="utf-8"><title>Logo don'ts</title>
+<link rel="stylesheet" href="_card.css">
+<style>
+  .g { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .d { background: #FEF2F2; border-radius: 12px; padding: 12px; text-align: center; }
+  .d .demo { height: 64px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .d img { width: 86px; }
+  .d .t { font-size: 12px; font-weight: 700; color: #991B1B; margin-top: 8px; }
+  .x { position: relative; }
+  .x::after { content: '✕'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #991B1B; font-size: 30px; font-weight: 700; opacity: .75; }
+</style></head>
+<body><div class="card">
+  <div class="g">
+    <div class="d"><div class="demo x"><img src="../assets/logo/kheelona-wordmark.svg" style="transform: scaleX(1.6);"></div><div class="t">Stretch or compress</div></div>
+    <div class="d"><div class="demo x"><img src="../assets/logo/kheelona-wordmark.svg" style="filter: hue-rotate(120deg);"></div><div class="t">Change colours</div></div>
+    <div class="d"><div class="demo x"><img src="../assets/logo/kheelona-wordmark.svg" style="filter: drop-shadow(0 0 2px #1B1B1B) drop-shadow(0 0 1px #1B1B1B);"></div><div class="t">Add strokes</div></div>
+    <div class="d"><div class="demo x" style="background: repeating-linear-gradient(45deg, #8B5BFF, #8B5BFF 8px, #1ABC9C 8px, #1ABC9C 16px); border-radius: 8px;"><img src="../assets/logo/kheelona-wordmark.svg"></div><div class="t">Clashing backgrounds</div></div>
+    <div class="d"><div class="demo x"><img src="../assets/logo/kheelona-wordmark.svg" style="transform: rotate(-14deg);"></div><div class="t">Tilt</div></div>
+  </div>
+</div></body></html>

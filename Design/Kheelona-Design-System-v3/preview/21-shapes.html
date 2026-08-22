@@ -1,0 +1,23 @@
+<!doctype html>
+<!-- @dsCard group="Shapes" name="Decorative shapes" subtitle="7 currentColor SVGs, recolor via CSS" viewport="720x280" -->
+<html><head><meta charset="utf-8"><title>Decorative shapes</title>
+<link rel="stylesheet" href="_card.css">
+<style>
+  .g { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
+  .s { aspect-ratio: 1; border-radius: 12px; background: var(--kh-cream); display: flex; align-items: center; justify-content: center; }
+  .s img { width: 54%; }
+  .t { text-align: center; font-size: 10.5px; color: var(--kh-ink-3); margin-top: 5px; }
+  .tint { filter: none; }
+</style></head>
+<body><div class="card">
+  <div class="g">
+    <div><div class="s"><img src="../assets/shapes/flower-3.svg" style="filter: invert(58%) sepia(65%) saturate(2593%) hue-rotate(346deg) brightness(97%) contrast(93%);"></div><div class="t">flower-3</div></div>
+    <div><div class="s"><img src="../assets/shapes/flower-4.svg" style="filter: invert(67%) sepia(52%) saturate(1066%) hue-rotate(340deg) brightness(99%) contrast(92%);"></div><div class="t">flower-4</div></div>
+    <div><div class="s"><img src="../assets/shapes/flower-5.svg" style="filter: invert(56%) sepia(83%) saturate(1273%) hue-rotate(164deg) brightness(93%) contrast(87%);"></div><div class="t">flower-5</div></div>
+    <div><div class="s"><img src="../assets/shapes/flower-13.svg" style="filter: invert(62%) sepia(23%) saturate(6392%) hue-rotate(129deg) brightness(96%) contrast(83%);"></div><div class="t">flower-13</div></div>
+    <div><div class="s"><img src="../assets/shapes/polygon.svg" style="filter: invert(44%) sepia(93%) saturate(3128%) hue-rotate(236deg) brightness(101%) contrast(101%);"></div><div class="t">polygon</div></div>
+    <div><div class="s"><img src="../assets/shapes/squircle.svg" style="filter: invert(58%) sepia(65%) saturate(2593%) hue-rotate(346deg) brightness(97%) contrast(93%);"></div><div class="t">squircle</div></div>
+    <div><div class="s"><img src="../assets/shapes/triangle-5.svg" style="filter: invert(56%) sepia(83%) saturate(1273%) hue-rotate(164deg) brightness(93%) contrast(87%);"></div><div class="t">triangle-5</div></div>
+  </div>
+  <p class="note">SVGs use fill="currentColor" — inline them and set CSS color, or use filters on &lt;img&gt;. Background decoration at 12–15% alpha; always subordinate to content.</p>
+</div></body></html>

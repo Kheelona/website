@@ -23,7 +23,7 @@ through a host rewrite in `src/proxy.ts`. Orders go to Supabase, receipts throug
 **1 October 2026**, price deadline **30 September 2026**, and **no unit cap**.
 
 Merged to `main` and deployed the same day it was built. Rollback tag **`v6-live-2026-08-22`** points at
-`0fb02fe`, the last pre-store commit. 622 tests.
+`0fb02fe`, the last pre-store commit.
 
 **IT IS FULLY VERIFIED WITH A REAL PAYMENT.** A real ₹499 UPI pre-order (`KH-YPJ8-GHVT`) was placed on
 live keys and refunded afterwards. All three webhook deliveries returned 200, which proves the secret
@@ -98,7 +98,7 @@ Three founder items, all shipped and verified (`docs/checkpoints/one-tap-and-cle
 
 **V6 IS LIVE on https://kheelona.com** (`main` = `demo-website` = `29d2fdd`, trees identical;
 rollback tag **`v5-live-2026-07-31`**). Work on `main`; keep `demo-website` in sync by merging.
-Verify locally: `npm test` (**769**) · `npx tsc --noEmit` · `npm run build` (token-check 17) ·
+Verify locally: `npm test` (expected count: `tests.count` in `docs/project-state.json`) · `npx tsc --noEmit` · `npm run build` (token-check 17) ·
 `npx next start -p 3456` (check `lsof` first; `rm -rf .next/cache/images` if a replaced image
 serves stale).
 

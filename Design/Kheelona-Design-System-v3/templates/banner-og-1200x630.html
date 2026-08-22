@@ -1,0 +1,28 @@
+<!doctype html>
+<!-- @dsCard group="Templates" name="OG banner 1200×630" subtitle="Link preview / ad banner artboard" viewport="1200x630" -->
+<html><head><meta charset="utf-8"><title>OG banner 1200x630</title>
+<link rel="stylesheet" href="../tokens/kheelona.css">
+<style>
+  html, body { margin: 0; padding: 0; }
+  .board { width: 1200px; height: 630px; position: relative; overflow: hidden; background: #fff; display: flex; }
+  .left { flex: 1.25; padding: 64px 0 64px 72px; display: flex; flex-direction: column; justify-content: center; position: relative; z-index: 2; }
+  .right { flex: 1; position: relative; }
+  .blob { position: absolute; right: -160px; top: -160px; width: 760px; height: 950px; background: var(--kh-yellow); border-radius: 50% 0 0 50% / 40% 0 0 40%; }
+  .logo { width: 200px; margin-bottom: 40px; }
+  .headline { font-family: var(--kh-font-display); font-weight: 700; font-size: 58px; letter-spacing: -0.01em; line-height: 1.15; color: var(--kh-ink); margin: 0; max-width: 560px; }
+  .sub { font-family: var(--kh-font-text); font-size: 24px; letter-spacing: 0.01em; line-height: 1.3; color: var(--kh-ink-2); margin: 22px 0 0; max-width: 520px; }
+  .mascot { position: absolute; bottom: 0; right: 40px; width: 400px; z-index: 2; }
+  .shape { position: absolute; opacity: .22; }
+</style></head>
+<body><div class="board">
+  <div class="left">
+    <img class="logo" src="../assets/logo/kheelona-wordmark.svg" alt="Kheelona">
+    <h1 class="headline">The toy that grows a sharper mind.</h1>
+    <p class="sub">Safe, conversational AI tutors for ages 2–5 — built from robotics, great content, and play.</p>
+  </div>
+  <div class="right">
+    <div class="blob"></div>
+    <img class="shape" src="../assets/shapes/flower-4.svg" style="width:120px; top:60px; right:400px; filter: brightness(0) invert(1);">
+    <img class="mascot" src="../assets/mascot/poses/sitting-eyes-open.png" alt="">
+  </div>
+</div></body></html>

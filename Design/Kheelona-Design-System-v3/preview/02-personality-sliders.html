@@ -1,0 +1,25 @@
+<!doctype html>
+<!-- @dsCard group="Brand" name="Personality sliders" subtitle="12 axes, scored 0–10" viewport="720x540" -->
+<html><head><meta charset="utf-8"><title>Personality sliders</title>
+<link rel="stylesheet" href="_card.css">
+<style>
+  .sl { display: grid; grid-template-columns: 128px 1fr 128px; gap: 10px; align-items: center; font-size: 12px; }
+  .sl .a { text-align: right; color: var(--kh-ink-3); } .sl .b { color: var(--kh-ink); font-weight: 600; }
+  .track { position: relative; height: 8px; background: var(--kh-line); border-radius: 999px; }
+  .dot { position: absolute; top: 50%; transform: translate(-50%,-50%); width: 16px; height: 16px; border-radius: 50%; background: var(--kh-orange); border: 3px solid #fff; box-shadow: var(--kh-shadow); }
+</style></head>
+<body><div class="card" style="gap:11px;">
+  <div class="sl"><span class="a">Formal</span><div class="track"><div class="dot" style="left:80%"></div></div><span class="b">Casual · 8</span></div>
+  <div class="sl"><span class="a">Academic/Serious</span><div class="track"><div class="dot" style="left:90%"></div></div><span class="b">Playful · 9</span></div>
+  <div class="sl"><span class="a">Pure Entertainment</span><div class="track"><div class="dot" style="left:60%"></div></div><span class="b">Brain Development · 6</span></div>
+  <div class="sl"><span class="a">Sophisticated</span><div class="track"><div class="dot" style="left:60%"></div></div><span class="b">Childlike · 6</span></div>
+  <div class="sl"><span class="a">Risk-Tolerant</span><div class="track"><div class="dot" style="left:100%; background: var(--kh-blue);"></div></div><span class="b">Protective · 10</span></div>
+  <div class="sl"><span class="a">Clinical</span><div class="track"><div class="dot" style="left:90%"></div></div><span class="b">Empathetic/Warm · 9</span></div>
+  <div class="sl"><span class="a">Complex/Detailed</span><div class="track"><div class="dot" style="left:90%"></div></div><span class="b">Simple/Accessible · 9</span></div>
+  <div class="sl"><span class="a">Direct/Action</span><div class="track"><div class="dot" style="left:50%"></div></div><span class="b">Storytelling · 5</span></div>
+  <div class="sl"><span class="a">Heritage/Classic</span><div class="track"><div class="dot" style="left:80%"></div></div><span class="b">Modern/Futuristic · 8</span></div>
+  <div class="sl"><span class="a">Standard</span><div class="track"><div class="dot" style="left:80%"></div></div><span class="b">Premium · 8</span></div>
+  <div class="sl"><span class="a">Cute</span><div class="track"><div class="dot" style="left:70%"></div></div><span class="b">Cool · 7</span></div>
+  <div class="sl"><span class="a">Brand-led</span><div class="track"><div class="dot" style="left:80%"></div></div><span class="b">Character-led · 8</span></div>
+  <p class="note">Maximally protective (10/10). Strongly playful, warm, simple, character-led. Balanced between direct action and storytelling.</p>
+</div></body></html>

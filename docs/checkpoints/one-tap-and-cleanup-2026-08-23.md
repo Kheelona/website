@@ -99,7 +99,7 @@ Each of these was in a document a session or a visitor reads first:
 2. **`WORKING.md`'s cold-restart header** said "PAID PRE-ORDERS ON A BRANCH". They are live.
 3. **A mangled duplicate heading** in the same file (`### V6, which is what is actually live---`
    followed by the same heading again), left by a botched edit in the previous session.
-4. **A test count of 279** in the verify command of that same block. It is 769.
+4. **A test count of 279** in the verify command of that same block. It was 770 by the end of the round.
 5. **`sprint_status.S9`** in `project-state.json` still read "blocked on tally-form-url (founder)", and
    **S14** "blocked on founder Vercel auth". Tally is retired and the site has been live since July.
 6. **The docs map** still called `store-go-live.md` the runbook "for taking the store live once the

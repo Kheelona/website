@@ -1,0 +1,20 @@
+/* Shared chrome for preview cards. The card name is shown OUTSIDE the card
+   by the Design System pane, so cards render only the artifact itself. */
+@import url('../tokens/kheelona.css');
+
+html, body {
+  margin: 0; padding: 0;
+  background: #FFFFFF;
+  font-family: var(--kh-font-text);
+  color: var(--kh-ink-2);
+  letter-spacing: var(--kh-body-tracking);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+.card { padding: 24px; display: flex; flex-direction: column; gap: 16px; min-height: 100%; box-sizing: border-box; }
+.row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.col { display: flex; flex-direction: column; gap: 12px; }
+.note { font-size: 13px; color: var(--kh-ink-3); line-height: var(--kh-body-leading); margin: 0; }
+.label { font-size: 11px; color: var(--kh-ink-3); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; font-family: var(--kh-font-text); }
+.mono { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 12px; color: var(--kh-ink-3); }
+.h { font-family: var(--kh-font-display); font-weight: 700; letter-spacing: var(--kh-heading-tracking); line-height: var(--kh-heading-leading); color: var(--kh-ink); }

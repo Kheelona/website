@@ -1200,7 +1200,7 @@ and leave the plain-text half exactly as typed, with tests naming the awkward ca
 
 | Gate | Result |
 | --- | --- |
-| `npm test` | **769 passing, 90 files** (622 in 89 before; `test/preorder-cta.test.ts` sweeps every source file, so it alone adds ~144 cases) |
+| `npm test` | **770 passing, 90 files** (622 in 89 before; `test/preorder-cta.test.ts` sweeps every source file, so it alone adds ~144 cases) |
 | `npx tsc --noEmit` | clean, checked on its own exit code and not through a pipe |
 | `npx next build` | exit 0, no error lines |
 | `qa:sweep` (axe + voice, 15 routes × 390/1280) | 30/30 clean, exit 0 |
