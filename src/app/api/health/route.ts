@@ -1,4 +1,4 @@
-import { storeEnv, razorpayMode } from "@/lib/store/env";
+import { storeEnv, razorpayMode, missingStoreEnv } from "@/lib/store/env";
 import { db } from "@/lib/store/db";
 import { json } from "@/lib/store/http";
 
@@ -18,7 +18,11 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   const env = storeEnv();
-  if (!env) return json(503, { ok: false, store: "not-configured" });
+  if (!env) {
+    /* Names, never values. Turns "why is the store off" into one request
+       instead of a paste-and-redeploy guessing loop. */
+    return json(503, { ok: false, store: "not-configured", missing: missingStoreEnv() });
+  }
 
   const started = Date.now();
   const { error } = await db(env)

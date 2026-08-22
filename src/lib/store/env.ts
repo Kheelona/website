@@ -40,6 +40,26 @@ function real(value: string | undefined): string | null {
   return v;
 }
 
+/** Which required variables are absent, BY NAME. Never values.
+ *
+ *  Added during go-live (2026-08-22): `/api/health` reported "not-configured"
+ *  without saying which of six values was missing, which turns switching the
+ *  store on into paste-redeploy-guess. The names are already public in
+ *  `.env.example` and in the runbook, so listing them leaks nothing that a
+ *  reader of this repo does not already know, and it converts a guessing loop
+ *  into a single request. */
+export function missingStoreEnv(): string[] {
+  const required: [string, string | undefined][] = [
+    ["RAZORPAY_KEY_ID", process.env.RAZORPAY_KEY_ID],
+    ["RAZORPAY_KEY_SECRET", process.env.RAZORPAY_KEY_SECRET],
+    ["RAZORPAY_WEBHOOK_SECRET", process.env.RAZORPAY_WEBHOOK_SECRET],
+    ["SUPABASE_URL", process.env.SUPABASE_URL],
+    ["SUPABASE_SERVICE_ROLE_KEY", process.env.SUPABASE_SERVICE_ROLE_KEY],
+    ["STORE_SIGNING_SECRET", process.env.STORE_SIGNING_SECRET],
+  ];
+  return required.filter(([, value]) => real(value) === null).map(([name]) => name);
+}
+
 /** The required set, or null when any of it is missing. */
 export function storeEnv(): StoreEnv | null {
   const razorpayKeyId = real(process.env.RAZORPAY_KEY_ID);
