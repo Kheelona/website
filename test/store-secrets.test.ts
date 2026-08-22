@@ -49,10 +49,15 @@ describe("store secrets stay secret", () => {
 
   /* Every secret must be read in exactly one place. Scattered process.env reads
      are how a route ends up quietly working without the guard that decides
-     whether the store is configured at all. */
+     whether the store is configured at all.
+     TESTS ARE EXEMPT, narrowly: a test for the env reader has to set and clear
+     the very variables it reads, and this rule fired on exactly that during
+     go-live. The two rules that matter for a leak — no NEXT_PUBLIC_ name, and
+     nothing in a "use client" file — still apply to every file including tests. */
   it("reads every secret only in lib/store/env.ts", () => {
     for (const file of sourceFiles) {
       if (file === "src/lib/store/env.ts") continue;
+      if (/\.test\.tsx?$/.test(file)) continue;
       const text = readFileSync(join(ROOT, file), "utf8");
       for (const name of SECRET_NAMES) {
         expect(text, `${file} reads ${name} directly instead of via storeEnv()`).not.toContain(
