@@ -57,14 +57,22 @@ arrived one second apart and exactly **one** receipt was sent.
 
 - [ ] **Delete the test row.** `delete from preorders where order_ref = 'KH-8FP8-PWDA';` — it is
       `status='created'` and would otherwise look like a real abandoned lead.
-- [ ] **GA4: tell it the two domains are one site.** New on 2026-08-23, because every pre-order button
-      now crosses from `kheelona.com` to `store.kheelona.com` in one tap instead of only the finale
-      doing it. Without cross-domain measurement GA4 counts that hop as a **new session from a referral**,
-      so the store looks like it gets traffic from your own site and the marketing pages get no credit
-      for the conversion. Nothing breaks and no data is lost either way; the attribution is simply
-      wrong. Fix: GA4 → Admin → Data streams → the web stream → **Configure tag settings** →
-      **Configure your domains** → add `kheelona.com` and `store.kheelona.com`. Two minutes, no code,
-      and it needs no deploy. The tag already fires on both hosts (`GA4_HOSTS`).
+- [x] ~~**GA4: tell it the two domains are one site.**~~ **DONE 2026-08-23**, minutes after the one-tap
+      change, and verified on screen: the Google tag `G-7LMKSFEXZ9` (stream `kheelona.com`, ID
+      15336032355, tag quality "Excellent", data flowing) now carries a Cross-domain Linking
+      Configuration with **two rows, both `Exactly matches`: `kheelona.com` and `store.kheelona.com`**.
+
+      Why it was needed: every pre-order button now crosses hosts in one tap, where before only the
+      finale did. Without this GA4 counts that hop as a new session from a referral, so the store looks
+      like it gets its traffic from your own site and the marketing pages get no credit for the
+      conversion. It also stops the store link being logged as an **outbound click** by enhanced
+      measurement, which would have inflated that metric from the day the change shipped.
+
+      **The path, in case it ever has to be redone:** Admin → Data streams → click the EXISTING
+      `kheelona.com` row (never "Add stream", which offers to create a second web stream and would
+      split the data) → Google tag → **Configure tag settings** → Settings → **Configure your
+      domains**. No code, no deploy. If a third host is ever added, it goes in this list and in
+      `GA4_HOSTS` in `src/config/site.ts` on the same day.
 - Supabase region: RAISED AND CLOSED (founder, 2026-08-22). A trivial query takes 250 to 975ms, which
   suggests the project is not in an Indian region, but the project cannot be moved. Not actionable, so
   it is recorded here rather than left as an open item. Worth remembering only as the explanation if
