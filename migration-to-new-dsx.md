@@ -16,8 +16,8 @@ merges to `main` manually at the ⛳ checkpoints.
 
 | Change-set | State |
 |---|---|
-| Step 0 — setup (this file, CLAUDE.md pointer) | **IN PROGRESS** |
-| CS1 — commercial restructure (500-unit cap, ₹7,999 full mode, ship 20 Oct) | pending |
+| Step 0 — setup (this file, CLAUDE.md pointer) | ✅ done (`7a44db7`) |
+| CS1 — commercial restructure (500-unit cap, ₹7,999 full mode, ship 20 Oct) | **✅ BUILT + GATED (`d23970f`) — ⛳ waiting on founder: run migration 0002 in Supabase, then merge to main.** Laws recorded as §8.26 in website-steps.md; FOUNDER-TODO carries the merge order-of-operations and the standing sell-out sweep item. |
 | CS2 — Ages 3+ repositioning + SEO keywords | pending |
 | CS3 — DS v3 Phase 0 + Phase A (tokens, fonts incl. serif, logo, guard tests) | pending |
 | CS4 — Kheelu redesign (Foxy-Deer art) | pending |
@@ -93,7 +93,11 @@ merges to `main` manually at the ⛳ checkpoints.
 
 | Date | Change-set | Gate | Result |
 |---|---|---|---|
-| — | — | — | (append every RIA run: tests/build/qa:sweep/qa:shot, PASS/FAIL + notes) |
+| 2026-08-23 | CS1 | `npm test` | PASS — 790 tests, 92 files, exit 0 (count lives in project-state `tests.count`) |
+| 2026-08-23 | CS1 | `npx tsc --noEmit` | PASS |
+| 2026-08-23 | CS1 | `npm run build` (token gate + next build) | PASS |
+| 2026-08-23 | CS1 | `npm run qa:sweep` (16 routes × 390/1280) | PASS — clean axe + voice after the lint list inverted with the test (§8.26-h) |
+| 2026-08-23 | CS1 | `qa:text` on /, /terms | PASS — rendered offer copy reads the new ladder verbatim |
 
 ## Open questions / waiting on founder
 

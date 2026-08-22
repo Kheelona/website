@@ -67,3 +67,15 @@ from preorders where tier = 'blr-sep-expo' and status = 'paid';
 
 That is your event's conversion, and it is the number worth carrying into the
 decision about the next one.
+
+## Events and the 500-unit cap (2026-08-23, §8.26)
+
+The public store's cap gate does not touch event links: a signed ₹99 QR keeps
+working in either mode, contained by its own cap and expiry, and the event page
+always renders the token-shaped form and summary — an event token is a token.
+
+Two interactions to know. Paid event orders COUNT toward the 500 (they consume
+real first-batch units at the held price). And keeping an event live after the
+public flip to ₹7,999 is a decision, not an accident: that QR re-opens the
+₹4,999 ladder for whoever holds it, which may be exactly the point of the event
+or may be a leak, so decide per event.

@@ -935,3 +935,62 @@ unattributable — the one failure in this flow with no clean recovery. But the 
 back in the webhook. `markPaid` therefore falls back to matching on our own reference before giving up,
 and logs loudly when it rescues one. Keep sending both: `receipt` and `notes` are cheap, and they are the
 only thread back to the customer if the id linkage breaks.
+
+## 8.26 The unit cap (2026-08-23, founder-directed): ₹4,999 first 500, then ₹7,999 paid in full
+
+The commercial model changed once, whole, on 2026-08-23: the 30 September date deadline was retired
+ENTIRELY (₹9,999 with it), the ship date moved to 20 October 2026, and the urgency became a real unit
+count. These laws sit ON TOP of §8.25; where they touch the same ground, this section wins.
+
+**8.26-a THE CAP IS A LIVE COUNT OF THE PAID QUEUE, NOT A SECOND OPINION.** `lib/store/mode.ts` decides
+the mode per request: `token` while fewer than `PREORDER_CAP_UNITS` paid, non-full-tier orders exist,
+`full` after. `status='paid'` is the same predicate as the dispatch queue (§8.25-ee), so a refund
+reopens a slot BY CONSTRUCTION — the founder chose live-count over a ratchet precisely because it needs
+no new state and cannot disagree with the queue. `tier != 'full'` keeps post-cap orders from consuming
+capped units. A missing count reads as 0: the failure direction offers the LOWER price, which costs
+margin and never overcharges a parent.
+
+**8.26-b THE COUNT NEVER LEAVES `mode.ts` (founder: NO PUBLIC COUNTER).** Only the MODE is exported,
+and only `tiers.ts`, the store page and `/api/health` may import it. Anything that renders an EXISTING
+order (thanks, receipts, the balance run) derives from the order ROW — its own `tier` and
+`amount_paise` — so a mode flip can never rewrite what a customer already agreed to. The mode test
+asserts the module's export surface, so a count-shaped export fails CI before a page can leak it.
+
+**8.26-c BOTH FLIP DIRECTIONS ARE GATED AT THE PRICE CHOKE POINT.** `resolveTier` refuses `launch` in
+full mode (`cap-reached`) and refuses `full` in token mode (`not-yet`). The second refusal is not
+pedantry: after a refund reopens a slot, a stale full-mode page would otherwise charge ₹3,000 too much.
+A raced submit is answered with refresh-the-page words, never a silent re-price — the price a parent
+SAW is the only price they may be charged (§8.25-c-i).
+
+**8.26-d OVERSHOOT IS TOLERATED, DELIBERATELY.** The count is read at order-creation; there are no
+locks. Two concurrent checkouts at 499 can both get ₹4,999, and a Razorpay order created before the
+flip can be paid after it — `markPaid` must NEVER re-check the cap, because refusing recorded money
+violates §8.25-p and creates orphans (§8.25-ff). Worst case is single-digit extra units at ₹4,999,
+which is cheaper than the shared-state infrastructure §8.25-j avoids.
+
+**8.26-e A FULL-PAYMENT ORDER OWES NOTHING, BY DATA.** Post-cap orders pay `FULL_AMOUNT_PAISE` upfront
+through the same route and are written with `balance_status='none'` (migration 0002 widened the CHECK),
+which keeps them out of the balance-due ops query forever — no human filter to forget. Token and event
+orders keep due → link_sent → paid. The refund promise covers every rupee of a full payment too
+(founder-confirmed): /terms, /refund, the order summary and the receipt all say so.
+
+**8.26-f AN EVENT TOKEN IS A TOKEN, WHATEVER THE PUBLIC MODE IS.** The signed branch of `resolveTier`
+is untouched by the cap gate: a live ₹99 QR keeps working after the 500th unit sells, contained by its
+own cap and expiry (§8.25-g). Event pages always render the token-shaped form and summary. Paid event
+orders DO count toward the 500 (they consume real first-batch units). The id `full` is reserved before
+the signed branch runs, so no dashboard row can ever shadow the public full tier.
+
+**8.26-g STATIC MARKETING PAGES CANNOT FLIP THEMSELVES.** Home, /products/lumi, the legal pages,
+llms.txt, pricing.md and the JSON-LD are static by design and phrase the offer so it stays true in both
+modes where possible — but "₹499 reserves one of the first 500 units" goes stale the day the 500th
+sells. The switch that protects money is fully server-side; the marketing sweep at sell-out is a NAMED
+MANUAL TASK (FOUNDER-TODO), triggered by `/api/health`'s `preorder` field flipping to `full`. The
+JSON-LD offer carries NO `priceValidUntil` any more: a unit-bounded offer has no honest validity date,
+and a lapsed one would make Google drop the offer on a day nothing changed.
+
+**8.26-h THE INVERSE LIST INVERTED ONCE, AND THE LINT MIRRORS THE TEST.** "first 500 units" left the
+RETIRED list (test/preorder-copy.test.ts) and became LOAD-BEARING: the money test now REQUIRES it in
+the offer line and bans month names from it. "30 September", "₹9,999" and "1 October 2026" took its
+place — the old ship date banned by literal text because §8.25-f's worst find was a hardcoded date no
+config change could reach. `tools/qa/sweep.mjs` carries the same list for rendered pages; the two lists
+change together or the sweep lies.
