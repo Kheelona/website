@@ -715,10 +715,23 @@ apex `/store/*` **308s to the store host** (one page, one URL); `store.kheelona.
 store renders. A second repo was considered and rejected: the design system would have drifted from
 the brand inside a month.
 
-**8.25-b THE FINALE IS THE ONLY OUTBOUND LINK TO THE STORE.** Every other CTA on the marketing site
-anchors to `#reserve` first, so a parent always reads the price, the refund promise and the ship date
-before a payment form can open. `FinaleCTA.test.tsx` asserts it. A second outbound store link
-anywhere is a review flag, and measured on the live HTML the count is exactly one per page.
+**8.25-b EVERY PRE-ORDER CTA REACHES THE STORE IN ONE TAP** (founder call, 2026-08-23; this REPLACES
+the anchor-first law below, which held from 2026-08-22 to 2026-08-23). `PREORDER_HREF` is the absolute
+store URL, so the navbar, the hero, Compare, the Kheelu dock and the finale all go to the same place
+in one tap. `test/preorder-cta.test.ts` fails if any `href` points at `#reserve` again.
+
+The law it replaces: the finale was the ONLY outbound link, and every other CTA anchored to `#reserve`
+first, so a parent always read the price, the refund promise and the ship date before a payment form
+could open. That reason was sound and it is why the reversal is safe rather than a trade: **the store
+page carries all three itself, above its own form** ("₹499 holds one at ₹4,999 ... Ships 1 October
+2026, and refundable in full until it does", then `OrderSummary`), so the second tap bought no extra
+honesty and cost completions on the one action this site exists for. Measured on a 390px render before
+the change was accepted. The consequence is that **the store page is now the first thing many parents
+read about the offer**, so its own copy carries the whole weight: weakening that paragraph is now a
+conversion change, not a wording change.
+
+`id="reserve"` stays on every page. It is layout, not a route: `LegalDoc` appends the finale, and the
+mobile guide dock hides itself while that section is on screen.
 
 **8.25-c MONEY HAS ONE SOURCE, IN PAISE.** Four integers in `config/site.ts`
 (`LAUNCH_AMOUNT_PAISE`, `LATER_AMOUNT_PAISE`, `TOKEN_AMOUNT_PAISE`, and `BALANCE_AMOUNT_PAISE` which
@@ -761,7 +774,23 @@ generator: `npm run event-link -- <id>`.
 
 **8.25-h VALIDATION IS ONE IMPLEMENTATION, RUN TWICE.** `features/preorder/lib/validate.ts` runs in the
 browser as a courtesy and in the route handler as the only one that counts. Two implementations drift
-until the form accepts what the server rejects with no explanation.
+until the form accepts what the server rejects with no explanation. The same rule covers lengths:
+`CHILD_AGE_MAX` is named once and the route handler truncates at that number, because a form that
+accepts 25 characters and a server that stores 20 is a server quietly editing a customer's answer.
+
+**8.25-h-i THE CHILD'S AGE IS A BLANK, NOT A PICKER** (founder call, 2026-08-23). It was a six-option
+dropdown ("Under 2" through "6 or older"). A parent whose child is two and a half, or who is buying
+for two children, had no honest option to pick, and the picker cost a tap and a scroll on a phone for
+a fact we read only when planning production. Validation is deliberately permissive, for the same
+reason the email check is: the job is to notice an empty field, not to argue with how somebody writes
+an age. "2.5", "nearly 4", "2 and 5" and "18 months" all pass, and there is a test naming each.
+
+One consequence, and it is the reason this is a law and not a diff: **the field became free text that
+we render into HTML.** `lib/email/templates.ts` now escapes every customer-typed value on the way into
+the HTML half of both emails (name, age, address, the UTM blob) and leaves the plain-text half exactly
+as typed. The audience is one parent plus us, so this is a correctness fix rather than a scripting one:
+a bare `&` in "Sneha & Raj" is invalid HTML some clients mangle, and one `<` swallows the rest of a
+receipt.
 
 **8.25-i EMAIL TEMPLATES LIVE IN THE REPO, AND A FAILED EMAIL NEVER FAILS A PAYMENT.** Templates are
 plain functions (`lib/email/templates.ts`) so the voice lint can read them, the prices are the same

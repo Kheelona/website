@@ -27,10 +27,12 @@ export const metadata: Metadata = {
   description: "That page is not here. Find Lumi, the journal, or the way home.",
 };
 
-/* Revamp M4 (theme B): the 404 joins the room grammar. It also gains the
-   finale, which closes a real gap: PREORDER_HREF is "#reserve", so the navbar
-   and the guide dock both pointed at an anchor this page did not have.
-   Copy: copy-v2 NOT-FOUND. */
+/* Revamp M4 (theme B): the 404 joins the room grammar, finale included, by
+   the standing law that every page ends in one. It closed a real gap at the
+   time: PREORDER_HREF was "#reserve" then, so the navbar and the guide dock
+   both pointed at an anchor this page did not have. Since 2026-08-23 both go
+   straight to the store, so the finale is here to argue the case, not to
+   rescue a broken link. Copy: copy-v2 NOT-FOUND. */
 export default function NotFound() {
   /* Wrapped explicitly: a root-level not-found.tsx sits OUTSIDE the (site)
      route group, so it would render with no navbar, no footer and no way out

@@ -18,11 +18,11 @@ describe("FinaleCTA", () => {
     expect(container.querySelector("#reserve")).toBeInTheDocument();
   });
 
-  /* §8.25-b: this is the ONE outbound link to the store on the whole marketing
-     site. Every other CTA anchors to #reserve first, so a parent reads the
-     price, the refund promise and the ship date before a payment form opens.
-     If a second outbound store link ever appears, that law has been broken. */
-  it("hands off to the store, and is the only place that does", () => {
+  /* §8.25-b as revised 2026-08-23: every CTA on the site now goes straight to
+     the store, so this is no longer the only way out. It is still the one that
+     argues the case first, and it still hands off to the same absolute URL —
+     test/preorder-cta.test.ts holds the rest of the site to it. */
+  it("hands off to the store", () => {
     render(<FinaleCTA />);
     expect(screen.getByRole("link", { name: PREORDER_LABEL })).toHaveAttribute(
       "href",

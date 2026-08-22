@@ -4,7 +4,7 @@ import {
   validateContact,
   validateAddress,
   hasErrors,
-  CHILD_AGE_OPTIONS,
+  CHILD_AGE_MAX,
 } from "./validate";
 
 const goodContact = {
@@ -48,12 +48,27 @@ describe("contact validation", () => {
     expect(errors.accepted).toBeTruthy();
   });
 
-  it("catches an unticked age rather than guessing one", () => {
+  /* Free text since 2026-08-23. The dropdown it replaced rejected "2.5" and
+     "2 and 5", which are true answers a parent actually has, and the field is
+     only ever read by a human planning production. So the bar is: something was
+     typed, and it is short enough to store. */
+  it("takes an age however a parent writes it, and only insists it is there", () => {
     expect(validateContact({ ...goodContact, childAge: "" }).childAge).toBeTruthy();
-    expect(validateContact({ ...goodContact, childAge: "7" }).childAge).toBeTruthy();
-    for (const age of CHILD_AGE_OPTIONS) {
-      expect(validateContact({ ...goodContact, childAge: age }).childAge).toBeUndefined();
+    expect(validateContact({ ...goodContact, childAge: "   " }).childAge).toBeTruthy();
+    for (const age of ["2", "2.5", "3 years", "nearly 4", "2 and 5", "18 months", "7"]) {
+      expect(
+        validateContact({ ...goodContact, childAge: age }).childAge,
+        `rejected "${age}", which is a real answer`,
+      ).toBeUndefined();
     }
+  });
+
+  it("refuses an age longer than the column, rather than letting the server trim it", () => {
+    const tooLong = "x".repeat(CHILD_AGE_MAX + 1);
+    expect(validateContact({ ...goodContact, childAge: tooLong }).childAge).toBeTruthy();
+    expect(
+      validateContact({ ...goodContact, childAge: "x".repeat(CHILD_AGE_MAX) }).childAge,
+    ).toBeUndefined();
   });
 
   it("catches a missing at-sign and a missing dot, but allows a long domain", () => {

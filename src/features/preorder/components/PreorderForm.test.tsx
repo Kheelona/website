@@ -15,6 +15,8 @@ function fill(overrides: Partial<Record<string, string>> = {}) {
     "Your name": "Priya Menon",
     "WhatsApp number": "9187546483",
     Email: "priya@example.com",
+    // free text since 2026-08-23: the dropdown could not take this answer
+    "Your child's age": "2.5",
     ...overrides,
   };
 }
@@ -23,7 +25,6 @@ async function completeForm(user: ReturnType<typeof userEvent.setup>) {
   for (const [label, value] of Object.entries(fill())) {
     await user.type(screen.getByLabelText(label, { exact: false }), value as string);
   }
-  await user.selectOptions(screen.getByLabelText("Your child's age", { exact: false }), "3");
   await user.click(screen.getByRole("checkbox"));
 }
 

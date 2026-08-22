@@ -458,3 +458,32 @@ right — the practice has to match it. **Always refund the whole token.**
 **No customer-facing copy was added for refunds becoming automatic** (§8.25-ee). `/refund` already
 promised the money back before dispatch with no fee and no reason needed; the fix made the system keep
 that promise without a human remembering to. A promise that was already true does not need new words.
+
+---
+
+## ONE TAP TO THE STORE, AND A BLANK FOR THE AGE (2026-08-23, founder)
+
+**No copy changed for the one-tap CTA.** `PREORDER_HREF` moved from `#reserve` to the absolute store
+URL, so the same button label now reaches the payment page in one tap instead of two. Every visible
+word is untouched, including the finale's own handoff line ("Pre-ordering opens our store, where
+Razorpay takes the payment securely"), which is still the right sentence in the one place a parent has
+just read the whole argument.
+
+What this DID change is where the offer has to be readable. The store page is now the first thing many
+parents read about the price, so its opening paragraph carries weight it did not carry before:
+
+> A screen-free talking friend for ages 2 to 5. ₹499 holds one at ₹4,999 and holds your place in the
+> queue. Ships 1 October 2026, and refundable in full until it does.
+
+Price, ship date, refund promise, all above the first field on a 390px phone, verified on a render.
+That sentence is why the anchor-first law could be retired without costing a parent anything (§8.25-b).
+
+**The child's age field.** The label is unchanged ("Your child's age"). The six-option dropdown became
+a blank, so the hint had to say that the blank is genuinely free:
+
+> Lumi is built for ages 2 to 5. A number is fine, and so is "nearly 3".
+
+Ages render from `LUMI_AGES`, per standing law; the old hint hardcoded "2 to 5". Two error messages
+replace the picker's one, both written for a tired parent rather than about a rule: "Tell us your
+child's age, so we send you the right thing." and, past 20 characters, "Just the age is enough, like
+3, or 2 and 5 for two children."

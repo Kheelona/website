@@ -55,6 +55,26 @@ function p(text: string): string {
   return `<p style="margin:0 0 14px;font-size:16px">${text}</p>`;
 }
 
+/** Anything a customer typed, on its way into HTML.
+ *
+ *  Four values in these two emails come from a form: the parent's name, the
+ *  child's age (free text since 2026-08-23, so no longer one of six known
+ *  strings), the delivery address, and the UTM blob the browser sent. The
+ *  audience is that one parent plus us, so this is not much of a scripting
+ *  worry. It is a correctness one, and it is the kind that only shows up on a
+ *  real customer: a bare `&` in "Sneha & Raj" is invalid HTML that some clients
+ *  mangle, and one stray `<` in any of these swallows the rest of the receipt.
+ *  Escaped once at the boundary rather than trusting the next edit to remember.
+ *  The plain-text half of each email is left exactly as typed, which is what
+ *  plain text is for. */
+function esc(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
 /** The name to greet someone by.
  *
  *  People type their own name in lower case constantly, and the first real
@@ -99,7 +119,7 @@ export function preorderAckEmail(input: AckInput): Email {
   const html = layout(
     `<p style="margin:0 0 6px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#b54a0d;font-weight:700">Pre-order confirmed</p>
      <h1 style="margin:0 0 18px;font-size:26px;line-height:1.2">Your Lumi is reserved.</h1>
-     ${p(`Thank you, ${firstName}. We have your ${paid}, and your place in the queue is held from the moment you paid.`)}
+     ${p(`Thank you, ${esc(firstName)}. We have your ${paid}, and your place in the queue is held from the moment you paid.`)}
      <div style="border:1px solid ${RULE};border-radius:12px;padding:16px;margin:0 0 18px">
        <p style="margin:0 0 8px;font-size:15px"><strong>Order</strong> ${order.order_ref}</p>
        <p style="margin:0 0 8px;font-size:15px"><strong>Paid today</strong> ${paid}</p>
@@ -164,11 +184,11 @@ export function internalAlertEmail(order: PreorderRow): Email {
   ];
 
   const html = layout(
-    `<h1 style="margin:0 0 18px;font-size:22px">New pre-order: ${order.parent_name}</h1>
+    `<h1 style="margin:0 0 18px;font-size:22px">New pre-order: ${esc(order.parent_name)}</h1>
      ${rows
        .map(
          ([k, v]) =>
-           `<p style="margin:0 0 6px;font-size:15px"><strong>${k}:</strong> ${v}</p>`,
+           `<p style="margin:0 0 6px;font-size:15px"><strong>${k}:</strong> ${esc(v)}</p>`,
        )
        .join("")}
      <p style="margin:18px 0 0;font-size:14px;color:${MUTED}">Store: ${STORE_URL}</p>`,

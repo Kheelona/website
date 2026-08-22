@@ -40,9 +40,9 @@ unconfigured — the NAMES of the missing environment variables.
 **Store laws: `docs/website-steps.md` §8.25.** Read before touching any of it. The seven that bite:
 the client never sends a price (§8.25-c-i) · paid is decided twice through one idempotent `markPaid`
 (§8.25-p) · the webhook verifies the RAW body and releases its event claim on failure (§8.25-m) · an
-address is authorised only by its signed token (§8.25-n) · the finale is the ONLY outbound link to the
-store (§8.25-b) · **a paid order must be able to become unpaid, and a PARTIAL refund is not a
-cancellation** (§8.25-ee) · an orphaned payment is recoverable through `receipt`/`notes.order_ref`
+address is authorised only by its signed token (§8.25-n) · every pre-order CTA reaches the store in ONE
+tap, so the store page carries the whole offer itself (§8.25-b, inverted 2026-08-23) · **a paid order
+must be able to become unpaid, and a PARTIAL refund is not a cancellation** (§8.25-ee) · an orphaned payment is recoverable through `receipt`/`notes.order_ref`
 (§8.25-ff).
 
 **Nothing is pending from Claude.** What remains is dated or operational: DMARC tightens to

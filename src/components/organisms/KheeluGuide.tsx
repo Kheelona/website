@@ -79,9 +79,9 @@ export function KheeluGuide({ defaultPose = "hero-wink" }: { defaultPose?: Kheel
     return () => io.disconnect();
   }, [pathname, defaultPose]);
 
-  /* Hide the mobile dock while the #reserve form is on screen (inherited
-     StickyMobileCTA contract: a CTA pointing at the form you are reading is
-     noise). Desktop Kheelu stays. */
+  /* Hide the mobile dock while the #reserve finale is on screen (inherited
+     StickyMobileCTA contract: a second pre-order button floating over the one
+     you are already reading is noise). Desktop Kheelu stays. */
   useEffect(() => {
     const reserve = document.getElementById("reserve");
     setReserveVisible(false);

@@ -1158,3 +1158,59 @@ the founder's own card, but on a customer that is a published promise broken.
 routes at 390px and 1280px and works against production. It shipped with a bug caught within the hour by
 running the runbook's own step: it faked DNS for real hostnames, so a production sweep returned 30
 `CONNECTION_REFUSED`. Mapping is now derived from the target.
+
+---
+
+# 2026-08-23 — one tap to the store, and a blank for the age
+
+Two founder changes on a live commercial site, plus a repo cleanup. Both changes are small; one of them
+inverts a law written the day before, so the verification is about whether the reason behind that law
+still gets served.
+
+## Change 1: every pre-order CTA goes straight to the store
+
+`PREORDER_HREF` moved from `#reserve` to the absolute store URL. Verified by counting hrefs in the
+**served HTML** of all 13 marketing routes, not by reading the source:
+
+| Route | CTAs to the store | CTAs to `#reserve` | `id="reserve"` present |
+| --- | --- | --- | --- |
+| `/` | 6 | 0 | 1 |
+| `/products/lumi` | 5 | 0 | 1 |
+| every other route, and the 404 | 3 to 4 | 0 | 1 |
+
+The interesting question was not whether the links changed but whether retiring the anchor-first law
+costs a parent the price, the refund promise or the ship date. It does not: the store page states all
+three above its own first field, checked on a real 390px render, and `OrderSummary` restates them in
+full below the button. That render is the evidence the change was accepted on.
+
+## Change 2: the child's age is a blank
+
+The dropdown is gone from the DOM (`<select>` count on the store page: 0; `<input>` count: 5). The new
+control keeps everything the atom guarantees: a real `<label>`, `aria-describedby` on the hint,
+`maxLength` matching the server's cap, and the 17px control size that stops iOS zooming the viewport
+mid-payment.
+
+**One thing this change dragged in.** Free text is text we render into email HTML, and the templates
+escaped nothing. Not a scripting hole worth the name (audience: one parent plus us) but a real
+correctness one: a bare `&` in "Sneha & Raj" is invalid HTML that some clients mangle, and one `<`
+swallows the rest of a receipt. Both emails now escape every customer-typed value on the way into HTML
+and leave the plain-text half exactly as typed, with tests naming the awkward cases.
+
+## Gates
+
+| Gate | Result |
+| --- | --- |
+| `npm test` | **769 passing, 90 files** (622 in 89 before; `test/preorder-cta.test.ts` sweeps every source file, so it alone adds ~144 cases) |
+| `npx tsc --noEmit` | clean, checked on its own exit code and not through a pipe |
+| `npx next build` | exit 0, no error lines |
+| `qa:sweep` (axe + voice, 15 routes × 390/1280) | 30/30 clean, exit 0 |
+| Rendered store page, 390px and 1280px | read, not assumed |
+
+## A harness bug this round exposed
+
+`looksLocal()` treated port **3456** as the marker of a local server, because that is the port the
+runbook names. Verifying this round needed a second server on 3457 (the store needs env the plain local
+build does not have), and the store screenshot spent 45 seconds trying to reach the real
+`store.kheelona.com` on a port nothing serves. Any explicit port now counts as local; production URLs
+carry none. Second time this harness has been wrong about which host to fake, and both times the tell
+was a timeout rather than a wrong answer, which is the good kind of failure.

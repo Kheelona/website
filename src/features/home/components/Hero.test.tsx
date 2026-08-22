@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { Hero } from "./Hero";
+import { STORE_URL } from "@/config/site";
 
 describe("Hero (V6, the growth-arc round)", () => {
   it("renders the two-line outcome-arc H1 (BUILD-V6 D1, founder-approved)", () => {
@@ -28,7 +29,7 @@ describe("Hero (V6, the growth-arc round)", () => {
     render(<Hero />);
     expect(
       screen.getByRole("link", { name: "Pre-order Lumi" }),
-    ).toHaveAttribute("href", "#reserve");
+    ).toHaveAttribute("href", STORE_URL);
     expect(screen.queryByRole("link", { name: "Meet Kheelu" })).toBeNull();
     /* Promoted, not buried: the chip carries the whole offer line and must be
        lifted OFF the warm backdrop. V5-5 moved it from bg-yellow/15 (nearly the

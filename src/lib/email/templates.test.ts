@@ -125,6 +125,39 @@ describe("the internal alert", () => {
   });
 });
 
+/* Four values in these emails are typed by a customer, and one of them became
+   free text on 2026-08-23 when the age dropdown went away. An unescaped `&` is
+   invalid HTML that some clients mangle, and a single `<` swallows the rest of
+   the receipt, so both emails escape on the way into HTML and leave the plain
+   text exactly as typed. */
+describe("customer text in HTML", () => {
+  const awkward = {
+    ...order,
+    parent_name: "Sneha & Raj <family>",
+    child_age: '2 & 5 <"twins">',
+  };
+
+  it("escapes the name and the age in the alert, and keeps the text raw", () => {
+    const email = internalAlertEmail(awkward);
+    expect(email.html).toContain("Sneha &amp; Raj &lt;family&gt;");
+    expect(email.html).toContain("2 &amp; 5 &lt;&quot;twins&quot;&gt;");
+    expect(email.html).not.toContain("<family>");
+    expect(email.text).toContain("Sneha & Raj <family>");
+  });
+
+  /* The receipt greets by first name only, so the character has to be IN that
+     first word for this to bite. It can be: people type all sorts into a name
+     field, including the ampersand for a couple. */
+  it("escapes the greeting in the receipt", () => {
+    const email = preorderAckEmail({
+      order: { ...order, parent_name: "S&R<b> Menon" },
+    });
+    expect(email.html).toContain("Thank you, S&amp;R&lt;b&gt;.");
+    expect(email.html).not.toContain("<b>");
+    expect(email.text).toContain("Thank you, S&R<b>.");
+  });
+});
+
 /* The first real receipt this store sent opened "Thank you, shweta." — she had
    typed her own name in lower case, which people do constantly. */
 describe("greeting a name as typed", () => {

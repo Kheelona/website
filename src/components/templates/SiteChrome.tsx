@@ -17,8 +17,8 @@ const ORG_JSON_LD = graph();
  *  SECOND kind of page. Before the extraction the store inherited all of it and
  *  the result was visibly wrong in one screenshot: two headers stacked, two
  *  footers, the guide floating over a payment form, and a navbar CTA pointing at
- *  `#reserve`, an anchor that does not exist on the store. A dead CTA on the one
- *  page that takes money.
+ *  `#reserve`, an anchor the store had no page for. A dead CTA on the one page
+ *  that takes money.
  *
  *  Two consumers, which is why this is a component and not just a route group's
  *  layout: `(site)/layout.tsx` wraps every marketing route, and the root

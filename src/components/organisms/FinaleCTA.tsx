@@ -46,10 +46,12 @@ const REASSURANCES = [
  *
  *  2026-08-22 (§8.25): the Tally iframe is gone. Pre-orders are paid now, and
  *  payment lives on store.kheelona.com, so this room's job changed from
- *  "hold the form" to "settle the decision, then hand over cleanly". It is the
- *  ONLY place on the marketing site that links out to the store: every other
- *  CTA anchors here first, so a parent always reads the price, the refund
- *  promise and the ship date before a payment form can open.
+ *  "hold the form" to "settle the decision, then hand over cleanly".
+ *
+ *  2026-08-23 (founder call, §8.25-b revised): every CTA on the site now goes
+ *  straight to the store, so this is no longer the only way out. It is still the
+ *  one that argues the case first, and it keeps id="reserve" because the mobile
+ *  guide hides against that anchor and LegalDoc appends it to every legal page.
  *
  *  `variant="full"` (Home, Lumi): big headline. `variant="compact"`: the ask at
  *  interior scale. */

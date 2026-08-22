@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { Compare } from "./Compare";
+import { STORE_URL } from "@/config/site";
 
 describe("Compare", () => {
   it("renders the section heading and honest lede", () => {
@@ -24,7 +25,7 @@ describe("Compare", () => {
     render(<Compare />);
     expect(
       screen.getByRole("link", { name: "Pre-order Lumi" }),
-    ).toHaveAttribute("href", "#reserve");
+    ).toHaveAttribute("href", STORE_URL);
     expect(
       screen.getByText(/₹499 now, ₹4,500 on dispatch\. Fully refundable until we ship\./i),
     ).toBeInTheDocument();

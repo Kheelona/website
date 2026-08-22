@@ -57,6 +57,14 @@ arrived one second apart and exactly **one** receipt was sent.
 
 - [ ] **Delete the test row.** `delete from preorders where order_ref = 'KH-8FP8-PWDA';` — it is
       `status='created'` and would otherwise look like a real abandoned lead.
+- [ ] **GA4: tell it the two domains are one site.** New on 2026-08-23, because every pre-order button
+      now crosses from `kheelona.com` to `store.kheelona.com` in one tap instead of only the finale
+      doing it. Without cross-domain measurement GA4 counts that hop as a **new session from a referral**,
+      so the store looks like it gets traffic from your own site and the marketing pages get no credit
+      for the conversion. Nothing breaks and no data is lost either way; the attribution is simply
+      wrong. Fix: GA4 → Admin → Data streams → the web stream → **Configure tag settings** →
+      **Configure your domains** → add `kheelona.com` and `store.kheelona.com`. Two minutes, no code,
+      and it needs no deploy. The tag already fires on both hosts (`GA4_HOSTS`).
 - Supabase region: RAISED AND CLOSED (founder, 2026-08-22). A trivial query takes 250 to 975ms, which
   suggests the project is not in an Indian region, but the project cannot be moved. Not actionable, so
   it is recorded here rather than left as an open item. Worth remembering only as the explanation if

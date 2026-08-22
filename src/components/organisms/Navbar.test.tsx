@@ -1,7 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Navbar } from "./Navbar";
-import { NAV_LINKS, PREORDER_LABEL } from "@/config/site";
+import { NAV_LINKS, PREORDER_LABEL, STORE_URL } from "@/config/site";
 
 describe("Navbar", () => {
   it("renders the logo, the primary nav links, and the reserve CTA", () => {
@@ -14,7 +14,7 @@ describe("Navbar", () => {
     }
     expect(
       screen.getByRole("link", { name: PREORDER_LABEL }),
-    ).toHaveAttribute("href", "#reserve");
+    ).toHaveAttribute("href", STORE_URL);
   });
 
   it("opens the mobile sheet with the nav links when the menu is tapped", async () => {

@@ -3,9 +3,9 @@ import { SUPPORT_WHATSAPP_HREF } from "@/config/site";
 /** The store's own 404 (§8.25-z).
  *
  *  Without this, `notFound()` from a store page would find the root not-found,
- *  which wears the full marketing chrome: a navbar whose CTA points at
- *  `#reserve`, an anchor the store host has no page for. A dead end inside a
- *  dead end.
+ *  which wears the full marketing chrome: five ways back into the marketing
+ *  site, a mascot, and a footer of policies, on the host that takes money. A
+ *  dead end dressed as a home page.
  *
  *  It is reached by an expired or wrong address link as well as a mistyped URL,
  *  which is why it offers a person rather than only a link home: someone here

@@ -3,5 +3,5 @@
 export { PreorderForm } from "./components/PreorderForm";
 export { AddressForm } from "./components/AddressForm";
 export { OrderSummary } from "./components/OrderSummary";
-export { CHILD_AGE_OPTIONS } from "./lib/validate";
+export { CHILD_AGE_MAX } from "./lib/validate";
 export type { AddressInput, ContactInput } from "./lib/validate";

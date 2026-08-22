@@ -10,6 +10,7 @@ import {
   validateContact,
   normalisePhone,
   hasErrors,
+  CHILD_AGE_MAX,
 } from "@/features/preorder/lib/validate";
 
 /** Start a pre-order (§8.25-l).
@@ -63,7 +64,7 @@ export async function POST(request: Request) {
     parentName: str(body.parentName, 80).trim(),
     phone: str(body.phone, 20),
     email: str(body.email, 160).trim().toLowerCase(),
-    childAge: str(body.childAge, 20),
+    childAge: str(body.childAge, CHILD_AGE_MAX),
     accepted: body.accepted === true,
   };
   const errors = validateContact(contact);

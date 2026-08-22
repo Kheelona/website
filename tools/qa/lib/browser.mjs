@@ -26,11 +26,16 @@ const HOST_MAP = "MAP store.kheelona.com 127.0.0.1,MAP kheelona.com 127.0.0.1,MA
 const LOCAL_HOSTS = new Set(["127.0.0.1", "localhost", "store.localhost"]);
 
 /** Is this target a local dev server? Decides whether to fake DNS for the
- *  kheelona hostnames. A real https:// origin must always resolve for real. */
+ *  kheelona hostnames. A real https:// origin must always resolve for real.
+ *
+ *  ANY explicit port means local. It used to name 3456, which is the port the
+ *  runbook uses, and that silently broke the moment a second server was needed
+ *  on 3457: the store shot spent 45 seconds trying to reach the real
+ *  store.kheelona.com on a port nothing serves. Production URLs carry no port. */
 export function looksLocal(url) {
   try {
     const { hostname, port } = new URL(url);
-    return LOCAL_HOSTS.has(hostname) || hostname.endsWith(".localhost") || port === "3456";
+    return LOCAL_HOSTS.has(hostname) || hostname.endsWith(".localhost") || port !== "";
   } catch {
     return false;
   }

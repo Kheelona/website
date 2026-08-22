@@ -11,8 +11,10 @@ import { INDIAN_STATES } from "./india";
  *  Messages are written to be read by a tired parent on a phone, so each one
  *  says what to do rather than what went wrong. */
 
-export const CHILD_AGE_OPTIONS = ["Under 2", "2", "3", "4", "5", "6 or older"] as const;
-export type ChildAge = (typeof CHILD_AGE_OPTIONS)[number];
+/** The longest age answer we store. Named here because the route handler caps
+ *  the incoming string at the same number, and two different numbers would mean
+ *  the server silently trimming something the form accepted. */
+export const CHILD_AGE_MAX = 20;
 
 export type ContactInput = {
   parentName: string;
@@ -68,8 +70,18 @@ export function validateContact(input: ContactInput): FieldErrors<ContactInput> 
     errors.email = "We need an email address, so we can send your confirmation.";
   }
 
-  if (!(CHILD_AGE_OPTIONS as readonly string[]).includes(input.childAge)) {
-    errors.childAge = "Pick your child's age, so we send you the right thing.";
+  /* Free text since 2026-08-23 (founder call). This was a six-option dropdown,
+     and a dropdown was the wrong control for it: a parent whose child is two and
+     a half, or who is buying for two children, had no honest option to pick, and
+     the picker cost a tap and a scroll on a phone for a fact we use only to plan
+     production. Whatever they type is more use to us than the nearest option.
+     Permissive for the same reason as the email check above: the job here is to
+     notice an empty field, not to argue with how somebody writes an age. */
+  const age = input.childAge.trim();
+  if (age.length < 1) {
+    errors.childAge = "Tell us your child's age, so we send you the right thing.";
+  } else if (age.length > CHILD_AGE_MAX) {
+    errors.childAge = "Just the age is enough, like 3, or 2 and 5 for two children.";
   }
 
   if (!input.accepted) {

@@ -1,21 +1,28 @@
 /** Site-wide constants.
  *
  *  Since 2026-08-22 the pre-order is a PAID reservation: a refundable token
- *  taken through Razorpay on store.kheelona.com (§8.25). Every page still ends
- *  in FinaleCTA (id="reserve"), so in-page CTAs anchor within the current page
- *  and the finale carries the one jump to the store. That order is deliberate:
- *  a parent reads the price, the refund promise and the ship date before a
- *  payment form ever opens.
+ *  taken through Razorpay on store.kheelona.com (§8.25).
+ *
+ *  Since 2026-08-23 every pre-order CTA goes STRAIGHT to the store, in one tap
+ *  (founder call, §8.25-b). CTAs used to anchor to the finale first so that a
+ *  parent read the price, the refund promise and the ship date before a payment
+ *  form could open. The store page carries all three itself, above its own form,
+ *  so the second tap bought no extra honesty and cost completions. Every page
+ *  still ends in FinaleCTA (id="reserve"): the mobile guide hides against that
+ *  anchor and LegalDoc appends it, so the id is layout, not a route.
  *
  *  MONEY LAW: amounts live here once, in PAISE, and every rupee string is
  *  derived from them. A price change is one integer. Nothing anywhere else may
  *  hardcode a rupee amount, and nothing may hardcode a paise amount that a
  *  payment request could read (test/preorder-money.test.ts guards both). */
-export const PREORDER_HREF = "#reserve";
 
 /** The store host. Same repo, reached through the host rewrite in src/proxy.ts
  *  (§8.25-a), so the design system and the brand laws stay in one place. */
 export const STORE_URL = "https://store.kheelona.com";
+
+/** Where every "Pre-order Lumi" button goes. One tap from anywhere on the site
+ *  to the page that takes the payment. */
+export const PREORDER_HREF = STORE_URL;
 
 export const NAV_LINKS = [
   { label: "Meet Lumi", href: "/products/lumi" },

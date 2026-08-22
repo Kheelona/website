@@ -1,5 +1,6 @@
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import { KheeluGuide } from "./KheeluGuide";
+import { STORE_URL } from "@/config/site";
 
 describe("KheeluGuide", () => {
   it("is a labelled aside with exactly one desktop tab stop (the poke button)", () => {
@@ -28,11 +29,11 @@ describe("KheeluGuide", () => {
     vi.useRealTimers();
   });
 
-  it("docks a pre-order link on mobile pointing at the finale anchor", () => {
+  it("docks a pre-order link on mobile going straight to the store", () => {
     render(<KheeluGuide />);
     expect(screen.getByRole("link", { name: "Pre-order Lumi" })).toHaveAttribute(
       "href",
-      "#reserve",
+      STORE_URL,
     );
   });
 

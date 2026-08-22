@@ -2,19 +2,20 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { TextField, SelectField, ChoiceField } from "@/components/atoms/Field";
+import { TextField, ChoiceField } from "@/components/atoms/Field";
 import { cn } from "@/lib/cn";
 import { PRESS_LIFT } from "@/lib/interactions";
 import {
   TOKEN_PRICE,
   BALANCE_PRICE,
   LAUNCH_PRICE,
+  LUMI_AGES,
   SUPPORT_WHATSAPP_HREF,
 } from "@/config/site";
 import {
   validateContact,
   hasErrors,
-  CHILD_AGE_OPTIONS,
+  CHILD_AGE_MAX,
   type ContactInput,
   type FieldErrors,
 } from "../lib/validate";
@@ -177,12 +178,14 @@ export function PreorderForm({
         autoComplete="email"
         error={errors.email}
       />
-      <SelectField
+      {/* A blank, not a picker, since 2026-08-23 (founder call). Ages render
+          from LUMI_AGES per standing law, never inline. */}
+      <TextField
         label="Your child's age"
         name="childAge"
         required
-        options={CHILD_AGE_OPTIONS}
-        hint="Lumi is built for 2 to 5, and this tells us what to send you."
+        maxLength={CHILD_AGE_MAX}
+        hint={`Lumi is built for ages ${LUMI_AGES}. A number is fine, and so is "nearly 3".`}
         error={errors.childAge}
       />
 
