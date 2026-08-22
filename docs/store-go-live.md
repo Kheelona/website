@@ -4,8 +4,32 @@
 memory of building the store can take it from "keys exist" to "first real order landed" without
 guessing. Every command is copy-pasteable and every check has a stated pass condition.
 
-Current state: branch **`preorder-store`**, built and verified against test-shaped values, **not
-merged, not live**. The marketing site on kheelona.com is unaffected until step 5.
+Current state: branch **`preorder-store`**, built and verified against test-shaped values, pushed to
+GitHub, **not merged, not live**. The marketing site on kheelona.com is unaffected until step 5.
+
+**DONE 2026-08-22:** `store.kheelona.com` is in DNS and added to the Vercel `website` project
+(Production, Valid Configuration), and it answers **200**. Until the merge it serves the marketing home
+page, because `main` has no `proxy.ts` yet — which is fine, and is what Razorpay's liveness check needs.
+
+**A LOCAL-RESOLVER TRAP, so nobody re-diagnoses it:** `dig +short store.kheelona.com` returns the
+record while `curl https://store.kheelona.com/` fails with `000` and `getaddrinfo` throws. That is this
+machine's resolver being stale, NOT the domain being down. Confirm with the IP forced:
+
+```
+curl -sI --resolve store.kheelona.com:443:216.198.79.65 https://store.kheelona.com/
+```
+
+A 200 there means the host is live for the rest of the world.
+
+**⚠ THE MERGE IS GATED ON THE KEYS BEING IN VERCEL, not on DNS.** With the domain live but no Razorpay
+or Supabase values set, merging would replace today's working free-list form with the store's honest
+"pre-orders open here shortly" state, so every CTA would reach a page that cannot take an order. That is
+a downgrade for as long as it lasts. Order: keys into Vercel first, then merge, then the store works
+from the first second.
+
+**⚠ VERCEL PLAN.** The project is on **Hobby**. The daily `/api/health` cron fits Hobby's limits, but
+Vercel's fair-use terms reserve Hobby for non-commercial projects, and this is about to take payments.
+Worth moving to Pro before real orders arrive rather than after a suspension.
 
 ---
 

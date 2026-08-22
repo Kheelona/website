@@ -56,8 +56,15 @@ your accounts). Tick them in any order.
 #### Then, in Vercel
 
 - [ ] Add all six as **Environment Variables** on the existing project.
-- [ ] Add **`store.kheelona.com`** as a **domain on that same project** — not a new project, not a
-      second deploy. One app serves both hosts. Add the DNS record Vercel asks for.
+- [x] ~~Add **`store.kheelona.com`** as a domain on that same project, and the DNS record.~~
+      **DONE 2026-08-22**, verified: Valid Configuration on Production, and the host answers 200. Until
+      the merge it serves the marketing home page, which is exactly what Razorpay's liveness check
+      needs. (If a later check ever says the domain is unreachable from this laptop, that is a stale
+      local resolver, not the domain: `curl -sI --resolve store.kheelona.com:443:216.198.79.65
+      https://store.kheelona.com/` proves it.)
+- [ ] **Consider moving off the Hobby plan.** The daily health cron fits Hobby, but Vercel reserves
+      Hobby for non-commercial use and this project is about to take payments. Better to upgrade before
+      real orders than after a suspension.
 
 #### Optional, and the store works without it
 
