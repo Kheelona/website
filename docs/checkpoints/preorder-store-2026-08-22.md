@@ -1,7 +1,36 @@
 # Checkpoint: paid pre-orders and the store (2026-08-22)
 
-Branch `preorder-store`, four commits, **not merged and not live**. The marketing site on
-kheelona.com is untouched in production until this branch merges.
+**MERGED, DEPLOYED, AND VERIFIED WITH A REAL PAYMENT, all on the day it was built.** This document was
+written while the work was still on a branch, so the sections below describe the build; the outcome is
+recorded here at the top and in `docs/store-go-live.md`.
+
+- `main` carries the store. Rollback tag **`v6-live-2026-08-22`** = `0fb02fe`, the last pre-store commit.
+- `store.kheelona.com` is live on **live Razorpay keys**. `/api/health` returns
+  `{ok:true, store:ready, razorpay:live, email:configured}`.
+- **A real ₹499 UPI pre-order (`KH-YPJ8-GHVT`) proved the whole path** and was refunded afterwards:
+  three webhook deliveries all 200 (the secret matches), the idempotency guard held under the real race
+  (`payment.captured` and `order.paid` one second apart, exactly ONE receipt sent), both emails correct,
+  and the signed address link from that receipt then used to save a delivery address. Razorpay fees were
+  ₹0.00, because UPI is zero-MDR in India.
+- **Three defects were found AFTER launch and fixed the same night**, none of which any test caught:
+  the receipt greeted a customer as "shweta" (the typed name used verbatim); **a refunded order stayed
+  in the dispatch queue**, because the webhook only acted on payments, so somebody who cancelled would
+  have been shipped a Lumi and invoiced ₹4,500; and an orphaned payment had no recovery path even though
+  our own reference was already travelling in the Razorpay order's `receipt` and `notes`. Laws §8.25-ee
+  and §8.25-ff.
+- Email authentication was set up the same night, from nothing: root SPF, 2048-bit Google Workspace
+  DKIM, DMARC reporting to `dmarc@kheelona.com`, and Resend verified on `send.kheelona.com` with its
+  SPF and bounce-feedback MX at `send.send.kheelona.com` (the doubled label is correct, see below).
+  Google Workspace mail was never touched: the root MX still points at `smtp.google.com`.
+
+## The two traps most likely to waste someone's time later
+
+**`send.send.kheelona.com` is not a typo.** The Resend domain is `send.kheelona.com`, and Resend's
+sending records sit at `send` *relative to that*, so the real hostname carries the label twice. Claude's
+first instruction said to use `send` and was wrong; Resend's own Cloudflare auto-configure gets it right.
+
+**`webhook_events.order_ref` holds the RAZORPAY order id** (`order_TSuF…`), not our `KH-` reference.
+Misleading column name, not worth a migration on a live table, but it will confuse the next reader.
 
 ## What changed, in one paragraph
 

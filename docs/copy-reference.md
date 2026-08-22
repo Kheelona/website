@@ -438,3 +438,23 @@ price clause rather than in a footnote: "₹4,999 is the whole cost of a Lumi ar
 Zero em-dashes and no hype, verified on the RENDERED text of six pages (store, refund, shipping,
 terms, privacy, contact) rather than on the source, plus both email templates. Machine routes
 (`llms.txt`, `pricing.md`) are in the sweep, as §8.24 requires.
+
+
+---
+
+## POST-LAUNCH COPY FIXES (2026-08-22 → 23)
+
+**The receipt greeting.** The first real receipt this store sent opened "Thank you, shweta." — the
+parent's typed name, used verbatim. Now the first letter is capitalised and the rest is left exactly as
+typed, because title-casing is where a helper like this starts mangling d'Souza and van der Berg.
+Found by reading the actual sent PDF while every test passed and the data was correct: it read like a
+machine wrote it, on the one message a parent keeps.
+
+**A promise we broke once, on our own card.** The first refund was issued at ₹489 of ₹499, while the
+receipt says "we refund the ₹499 **in full**. **No fee**" and `/refund` says "no fee, no deduction".
+Razorpay's fees were ₹0.00, so there was nothing to deduct. No copy changed, because the copy was
+right — the practice has to match it. **Always refund the whole token.**
+
+**No customer-facing copy was added for refunds becoming automatic** (§8.25-ee). `/refund` already
+promised the money back before dispatch with no fee and no reason needed; the fix made the system keep
+that promise without a human remembering to. A promise that was already true does not need new words.

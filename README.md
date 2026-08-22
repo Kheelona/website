@@ -6,17 +6,18 @@
 
 You are resuming an in-progress website. Follow these steps exactly.
 
-> **2026-08-22:** paid pre-orders are built on branch **`preorder-store`** and are NOT live. The site
-> still serves V6.
+> **2026-08-23 — THE PAID STORE IS LIVE AND VERIFIED.** kheelona.com sells a ₹499 refundable token
+> holding a Lumi at ₹4,999; payment happens on store.kheelona.com, served by this same repo. Proven
+> with a real ₹499 order that was refunded afterwards.
 >
-> - **If the founder has said the keys are in →** work through **`docs/store-go-live.md`**, start to
->   finish. It includes the test-mode payment that has never been run.
-> - **Otherwise →** **FOUNDER-TODO.md section 0** is the tickable checklist of what is waiting on them,
->   and nothing in it blocks deploying the branch.
-> - **Before touching store code →** `docs/website-steps.md` §8.25, then
->   `docs/checkpoints/preorder-store-2026-08-22.md`.
-> - **To verify anything →** `npm test` (610), `npx next build`, and `npm run qa:sweep` against a
->   running `npx next start -p 3456`.
+> - **First thing on any store question →** `curl -s https://kheelona.com/api/health`
+> - **Before touching store code →** `docs/website-steps.md` §8.25
+> - **What is still open →** `FOUNDER-TODO.md` section 0 (all dated or operational, no defects)
+> - **The build and launch record →** `docs/checkpoints/preorder-store-2026-08-22.md` and
+>   `docs/store-go-live.md`
+> - **To verify →** `npm test` (622), `npx next build`, and `npm run qa:sweep`
+>   (add `SWEEP_BASE=https://kheelona.com SWEEP_STORE=https://store.kheelona.com` for production)
+> - **Do not re-test the payment path.** A real customer already proved it.
 
 ### Step 1: Read the state file
 Read `docs/project-state.json`:

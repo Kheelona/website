@@ -4,8 +4,9 @@
 memory of building the store can take it from "keys exist" to "first real order landed" without
 guessing. Every command is copy-pasteable and every check has a stated pass condition.
 
-Current state: branch **`preorder-store`**, built and verified against test-shaped values, pushed to
-GitHub, **not merged, not live**. The marketing site on kheelona.com is unaffected until step 5.
+**This runbook has been executed. The store is live and verified** — see the block immediately below.
+Steps 0 to 7 are kept as the record of what was done and as the procedure to follow if any of it ever
+has to be redone (new keys, a new environment, a rebuilt Supabase project).
 
 **DONE 2026-08-22:** `store.kheelona.com` is in DNS and added to the Vercel `website` project
 (Production, Valid Configuration), and it answers **200**. Until the merge it serves the marketing home

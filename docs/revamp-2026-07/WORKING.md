@@ -15,53 +15,66 @@ here in full so nothing depends on conversation memory.
 
 ## ⏭ COLD-RESTART: START HERE (last updated 2026-08-22 — **V6 LIVE · PAID PRE-ORDERS ON A BRANCH**)
 
-### The store round (2026-08-22), read this before anything else
+### 💳 THE PAID STORE IS LIVE (2026-08-22), read this before anything else
 
-**Paid pre-orders are BUILT on branch `preorder-store`. They are NOT merged and NOT live.** The site
-on kheelona.com still serves V6 exactly as described below, and merging this branch is what changes
-that. Read `docs/checkpoints/preorder-store-2026-08-22.md` first, then
-`docs/website-steps.md` **§8.25**, then **FOUNDER-TODO.md section 0**.
+**kheelona.com sells a ₹499 refundable token that holds a Lumi at ₹4,999**, with the ₹4,500 balance due
+by payment link before dispatch. Payment happens on **store.kheelona.com**, which is THIS repo served
+through a host rewrite in `src/proxy.ts`. Orders go to Supabase, receipts through Resend. Ship date
+**1 October 2026**, price deadline **30 September 2026**, and **no unit cap**.
 
-**The offer, and it replaces the free list everywhere:** a **₹499 refundable token** holds a Lumi at
-**₹4,999**, the **₹4,500 balance** falls due by payment link before dispatch, the price deadline is
-**30 September 2026** (₹9,999 after), shipping starts **1 October 2026**, and **there is no unit cap**
-any more. Payment happens on **store.kheelona.com**, which is THIS repo served through a host rewrite
-in `src/proxy.ts`. Orders go to Supabase, receipts through Resend, and events sell the same
-reservation at ₹99 behind a signed QR link with a cap and an expiry.
+Merged to `main` and deployed the same day it was built. Rollback tag **`v6-live-2026-08-22`** points at
+`0fb02fe`, the last pre-store commit. 622 tests.
 
-Verify locally: `npm test` (**606**) · `npx tsc --noEmit` · `npx next build` (token-check 17) ·
-`npx next start -p 3456`. For the store you need a store hostname:
-`curl -H "Host: store.kheelona.com" localhost:3456/`, or open `http://store.localhost:3456`.
+**IT IS FULLY VERIFIED WITH A REAL PAYMENT.** A real ₹499 UPI pre-order (`KH-YPJ8-GHVT`) was placed on
+live keys and refunded afterwards. All three webhook deliveries returned 200, which proves the secret
+matches; the idempotency guard held under the real race (`payment.captured` and `order.paid` arrived one
+second apart and exactly ONE receipt was sent); both emails were correct; and the signed address link
+from that receipt was then used to save a delivery address. Razorpay fees were ₹0.00, because UPI is
+zero-MDR in India, so verifying the whole thing cost nothing. **Do not re-test what a real customer
+already proved** — read `docs/store-go-live.md`, the "⚑ WHERE THIS ACTUALLY GOT TO" block.
 
-**Five laws that bite hardest.** The client never sends a price (§8.25-c-i) · paid is decided twice
-through one idempotent `markPaid` (§8.25-p) · the webhook verifies the RAW body and releases its
-event claim on failure (§8.25-m) · an address is authorised only by its signed token (§8.25-n) · the
-finale is the ONLY outbound link to the store (§8.25-b).
+**FIRST THING TO RUN on any store question: `curl -s https://kheelona.com/api/health`.** It reports
+readiness, which Razorpay mode is live, whether email is configured, database latency, and — when
+unconfigured — the NAMES of the missing environment variables.
 
-**Nothing is pending from Claude.** What remains is founder dashboard work, as a tickable list in
-**FOUNDER-TODO.md section 0**: Razorpay keys and webhook, a Supabase project plus
-`supabase/migrations/0001_preorders.sql`, `STORE_SIGNING_SECRET`, Resend DNS (optional to start), and
-`store.kheelona.com` added to the existing Vercel project. With no keys the store renders "pre-orders
-open here shortly" and takes no money, so the branch is safe to merge and deploy before any of that.
+**Store laws: `docs/website-steps.md` §8.25.** Read before touching any of it. The seven that bite:
+the client never sends a price (§8.25-c-i) · paid is decided twice through one idempotent `markPaid`
+(§8.25-p) · the webhook verifies the RAW body and releases its event claim on failure (§8.25-m) · an
+address is authorised only by its signed token (§8.25-n) · the finale is the ONLY outbound link to the
+store (§8.25-b) · **a paid order must be able to become unpaid, and a PARTIAL refund is not a
+cancellation** (§8.25-ee) · an orphaned payment is recoverable through `receipt`/`notes.order_ref`
+(§8.25-ff).
 
-**⇒ THE MOMENT THE FOUNDER SAYS THE KEYS ARE IN, WORK THROUGH `docs/store-go-live.md`.** It is written
-for a session with no memory of building this: every command is copy-pasteable and every check has a
-stated pass condition. It covers the local verification, **the test-mode payment end to end, which has
-NEVER been run and is the one gate that cannot be skipped**, the idempotency and tamper proofs, the
-merge with a rollback tag created before the merge, the live smoke checks, and the first-order watch.
+**Nothing is pending from Claude.** What remains is dated or operational: DMARC tightens to
+`p=quarantine` on **5 September 2026** (scheduled agent plus a dated item in FOUNDER-TODO), the
+post-dispatch returns and warranty terms must be written before the first Lumi ships (`/refund`
+honestly says they do not exist yet), the ₹4,500 balance run is manual and tracked by `balance_status`,
+and nothing chases the `status='created'` rows, which are people who filled the form and did not pay,
+with a working phone and email.
 
-**The QA harness now lives in the repo**, not in a session scratchpad that dies with the session:
-`npm run qa:sweep` runs axe plus the voice lint across all 15 HTML routes at 390px and 1280px
-(currently clean, 30/30), and `qa:shot` / `qa:text` / `qa:axe` drive one route each. `qa:text` is the
-one to reach for when checking what a page SAYS, because grepping HTML source also searches the RSC
-payload and reports strings that are not on the page.
+**The QA harness lives in the repo** (`tools/qa/`), not in a session scratchpad that dies with the
+session: `npm run qa:sweep` runs axe plus the voice lint across all 15 HTML routes at 390px and 1280px
+and works against production too (`SWEEP_BASE=https://kheelona.com`). Reach for `npm run qa:text` when
+you want to know what a page SAYS, because grepping HTML source also searches the RSC payload and finds
+strings that are not on the page.
 
-**Three lessons from this round that generalise.** Look at the page: the first store screenshot showed
-a dead `#reserve` CTA on the checkout that no passing test could see. Grepping HTML source lies,
-because the RSC flight payload is in it (§8.25-bb). And an inverse-law test (assert the retired phrase
-is ABSENT everywhere) found three survivors a careful manual sweep had missed.
+**Six process lessons from this round, each of which cost real time:**
+1. **LOOK AT THE PAGE.** The first store screenshot showed the checkout wearing the marketing navbar,
+   whose CTA pointed at a `#reserve` anchor the store host has no page for. A dead CTA on the money
+   page, with every test green.
+2. **Grepping HTML source lies** — the RSC flight payload is in it (§8.25-bb).
+3. **An inverse-law test** (assert the retired phrase is ABSENT everywhere) found three survivors a
+   careful manual sweep had missed, one a hardcoded ship date the config change could never reach.
+4. **A check you have not run is not a check.** The QA harness shipped green locally and could not
+   reach production at all, which is the one job the runbook gives it.
+5. **A gate that prints is not a gate.** A merge to production went out with a red suite because the
+   command displayed the test summary instead of blocking on it.
+6. **Read the actual artefact.** The first real receipt greeted a customer as "shweta", and the refund
+   went out ₹10 short of a promise published on `/refund`. Both were invisible to the test suite.
 
 ---
+
+### V6, which is what is actually live---
 
 ### V6, which is what is actually live
 

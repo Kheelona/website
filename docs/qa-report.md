@@ -1097,3 +1097,64 @@ verified against fixed vectors, the routes against a fake database, and every fa
 the real server. **A test-mode payment end to end is still required before this takes real money**,
 and it needs the preview deploy plus a Razorpay test webhook pointed at
 `/api/razorpay/webhook` — the plan's Phase 5, and FOUNDER-TODO section 0.
+
+---
+
+# STORE VERIFIED IN PRODUCTION (2026-08-22 → 23)
+
+The store round's QA above was run against a local build. This is what a real payment proved, and what
+it exposed that no test could.
+
+## Verified with a real transaction
+
+A real ₹499 UPI pre-order, `KH-YPJ8-GHVT` / `pay_TSuFkByRtMghiM` / `order_TSuFQjjtUuQaeP`, on **live**
+keys, refunded afterwards. Razorpay fees were **₹0.00** because UPI is zero-MDR in India, so verifying
+an entire payment system cost nothing.
+
+| Claim | Evidence |
+| --- | --- |
+| Payment captures | ₹499 Captured |
+| **Webhook secret matches** | three deliveries, **all 200** (a mismatch is a 400) |
+| **Idempotency under the real race** | `payment.captured` 23:29:01 and `order.paid` 23:29:02, both paid events for one order. First marked it paid and emailed; second found no unpaid row and returned 200. **Exactly one receipt reached the customer.** |
+| Non-payment events safe | `payment.authorized` recorded, acted on by nothing |
+| Receipt correct | order ref, ₹499, ₹4,500 of ₹4,999, ship date, refund promise, seller block, GSTIN |
+| Internal alert | arrived |
+| **Signed address link** | opened from the real receipt email, address saved to the row |
+| Email auth | root SPF + 2048-bit DKIM + DMARC; Resend verified; Google Workspace untouched |
+
+## Three defects found AFTER launch, with 622 tests green
+
+This is the part worth remembering. Every one came from looking at a real artefact.
+
+1. **The receipt greeted a customer as "shweta".** The typed name was used verbatim. Found by reading
+   the sent PDF; the template was correct, the data was correct, and it simply read like a machine wrote
+   it, on the one message a parent keeps.
+2. **A refunded order stayed in the dispatch queue.** The webhook acted only on payment events, and the
+   queue *is* `where status = 'paid'`, so somebody who cancelled and was repaid would still have been
+   shipped a Lumi and invoiced ₹4,500. The only safeguard was a human remembering to run an `UPDATE`,
+   every time, forever. Found by re-reading the payment lifecycle after watching a real refund happen
+   (§8.25-ee). A **partial** refund deliberately does not cancel an order, because the first refund this
+   store issued was ₹489 of ₹499 — under a naive rule, a ₹10 goodwill refund would kill a live order.
+3. **An orphaned payment had no recovery path**, although our `order_ref` was already travelling in the
+   Razorpay order's `receipt` and `notes`. Nothing read it (§8.25-ff).
+
+And a policy slip worth its own line: the refund went out at **₹489 of ₹499**, while both the receipt
+and `/refund` promise "in full, no fee, no deduction". Fees were zero, so there was no reason. It was
+the founder's own card, but on a customer that is a published promise broken.
+
+## Two process failures on my side, recorded rather than smoothed over
+
+- **A merge to production went out with a red suite**, because the command printed the test summary
+  instead of gating on it. A gate that prints is not a gate. (The failure was benign: the secrets guard
+  catching a test that legitimately sets the env var it tests.)
+- **The rollback tag first landed on the very merge it was meant to escape**, because `main` already
+  carried a store merge from the GitHub side and `git tag -f` was pointed at HEAD. Corrected to
+  `0fb02fe` and force-pushed. A rollback point that restores what you are fleeing is worse than none,
+  because it gets trusted.
+
+## Harness notes
+
+`tools/qa/` is in the repo now, so no session re-derives it. `npm run qa:sweep` covers all 15 HTML
+routes at 390px and 1280px and works against production. It shipped with a bug caught within the hour by
+running the runbook's own step: it faked DNS for real hostnames, so a production sweep returned 30
+`CONNECTION_REFUSED`. Mapping is now derived from the target.

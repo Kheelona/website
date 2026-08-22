@@ -30,11 +30,16 @@ matches between Razorpay and Vercel, and **idempotency was proven under the real
 emails were correct. Razorpay fees were ₹0.00, because UPI is zero-MDR in India, so verifying cost
 nothing. Detail: the "⚑ WHERE THIS ACTUALLY GOT TO" block in **`docs/store-go-live.md`**.
 
-**Two lessons from that one transaction, worth more than the test itself:** the greeting used the
-name verbatim, so the first real receipt opened "Thank you, shweta" (now capitalised, rest left as
-typed because title-casing mangles real names) — **found only by reading the sent PDF, while every
-test passed**; and the refund was issued at ₹489 rather than ₹499, which on a real customer would
-contradict both the receipt and `/refund`, and cost nothing to get right since fees were zero.
+**THREE DEFECTS WERE FOUND AFTER LAUNCH AND FIXED THE SAME NIGHT, none caught by a green 622-test
+suite.** Each came from looking at a real artefact rather than at code. (1) The first receipt greeted a
+customer as "shweta", because the typed name was used verbatim — found by reading the sent PDF. (2) **A
+refunded order stayed in the dispatch queue**: the webhook acted only on payment events, and the queue
+IS `where status='paid'`, so a cancelled customer would have been shipped a Lumi and invoiced ₹4,500,
+with nothing but a human's memory preventing it (§8.25-ee). Found by re-reading the payment lifecycle
+after watching a real refund. (3) An orphaned payment had no recovery path even though our reference
+already travelled in the Razorpay order (§8.25-ff). Also: the first refund went out at ₹489 of ₹499,
+which on a real customer would contradict both the receipt and `/refund` for no reason, since fees were
+zero. **Always refund the whole token.**
 
 The signed address link was exercised from that same receipt and the address saved, so **EVERY route in
 the store has production evidence** and nothing about the payment or fulfilment path is unproven.
@@ -43,11 +48,17 @@ the store has production evidence** and nothing about the payment or fulfilment 
 Resend's `send` SPF and MX are absent so bounce feedback is blind; and a trivial Supabase query takes
 250 to 975ms, suggesting the project is not in an Indian region.
 
-Store laws are `docs/website-steps.md` **§8.25** — read before touching any of it. The five that bite:
+Store laws are `docs/website-steps.md` **§8.25** — read before touching any of it. The seven that bite:
 **the client never sends a price** (§8.25-c-i), **paid is decided twice through one idempotent
 `markPaid`** (§8.25-p), **the webhook verifies the RAW body and releases its event claim on failure**
-(§8.25-m), **an address is authorised only by its signed token** (§8.25-n), and **the finale is the ONLY
-outbound link to the store** (§8.25-b).
+(§8.25-m), **an address is authorised only by its signed token** (§8.25-n), **the finale is the ONLY
+outbound link to the store** (§8.25-b), **a paid order must be able to become unpaid and a PARTIAL
+refund is NOT a cancellation** (§8.25-ee), and **an orphaned payment is recoverable through the Razorpay
+order's `receipt`/`notes.order_ref`** (§8.25-ff).
+
+**Two traps that will otherwise waste an hour.** `send.send.kheelona.com` is **not a typo**: the Resend
+domain is `send.kheelona.com` and its sending records sit at `send` relative to that, so the label
+appears twice. And `webhook_events.order_ref` holds the **Razorpay** order id, not our `KH-` reference.
 
 **V6 (the growth-arc CONTENT round + its design-handoff items) is MERGED TO `main` AND LIVE**
 (founder instruction 2026-07-31: "make it live on demo and main both"; rollback tag
