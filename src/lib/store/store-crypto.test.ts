@@ -176,3 +176,37 @@ describe("order references", () => {
     }
   });
 });
+
+/* Go-live ergonomics, guarded: /api/health must name what is missing so
+   switching the store on is one request rather than a redeploy loop. Names
+   only, and never a value: the names are already public in .env.example. */
+describe("missingStoreEnv", () => {
+  const KEYS = [
+    "RAZORPAY_KEY_ID",
+    "RAZORPAY_KEY_SECRET",
+    "RAZORPAY_WEBHOOK_SECRET",
+    "SUPABASE_URL",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "STORE_SIGNING_SECRET",
+  ] as const;
+
+  it("names every required variable when nothing is set", async () => {
+    const saved = Object.fromEntries(KEYS.map((k) => [k, process.env[k]]));
+    for (const k of KEYS) delete process.env[k];
+    const { missingStoreEnv } = await import("./env");
+    expect(missingStoreEnv().sort()).toEqual([...KEYS].sort());
+    for (const [k, v] of Object.entries(saved)) if (v !== undefined) process.env[k] = v;
+  });
+
+  it("names only the one that is actually absent, and treats DUMMY as absent", async () => {
+    const saved = Object.fromEntries(KEYS.map((k) => [k, process.env[k]]));
+    for (const k of KEYS) process.env[k] = "real-looking-value";
+    process.env.STORE_SIGNING_SECRET = "DUMMY";
+    const { missingStoreEnv } = await import("./env");
+    expect(missingStoreEnv()).toEqual(["STORE_SIGNING_SECRET"]);
+    for (const k of KEYS) {
+      if (saved[k] === undefined) delete process.env[k];
+      else process.env[k] = saved[k];
+    }
+  });
+});
