@@ -1,7 +1,7 @@
 import { Button } from "@/components/atoms/Button";
 import { Reveal } from "@/components/molecules/Reveal";
 import { HeroStage } from "./HeroStage";
-import { PREORDER_HREF, RESERVE_LABEL, CAP_LINE, LUMI_AGES } from "@/config/site";
+import { PREORDER_HREF, PREORDER_LABEL, PREORDER_OFFER_LINE, LUMI_AGES } from "@/config/site";
 import { lumiAgeEndpoints } from "@/lib/growth-arc";
 
 /** Revamp M2 hero (theme B + founder brief pointer 2): minimal copy on the
@@ -47,7 +47,7 @@ export function Hero() {
             numbers, and the languages you speak at home, at their pace.
           </p>
           <div className="flex flex-wrap items-center gap-3">
-            <Button href={PREORDER_HREF}>{RESERVE_LABEL}</Button>
+            <Button href={PREORDER_HREF}>{PREORDER_LABEL}</Button>
           </div>
           {/* V5-5: `bg-yellow/15` on the warm backdrop was nearly the same
               value as the page behind it, so the offer still did not read —
@@ -55,7 +55,7 @@ export function Hero() {
               V4's chip only half-fixed. White card + a keyline lifts it off the
               wash without adding another colour to the palette. */}
           <p className="mt-4 inline-block max-w-[46ch] rounded-2xl border border-line-soft bg-white px-4 py-3 text-[16px] font-semibold text-ink-head shadow-(--shadow-room-sm)">
-            {CAP_LINE}
+            {PREORDER_OFFER_LINE}
           </p>
           {/* V5-5: "Your guide is waiting in the corner. Give Kheelu a poke."
               was REMOVED here. It became literally untrue the moment the guide

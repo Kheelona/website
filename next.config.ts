@@ -46,11 +46,12 @@ const nextConfig: NextConfig = {
       { source: "/blog/:slug*", destination: "/stories", permanent: true },
       { source: "/about", destination: "/team", permanent: true },
       { source: "/community", destination: "/stories", permanent: true },
-      /* The old store had refund and shipping policies. There is nothing to
-         refund or ship yet: pre-orders take no payment, so the reservation
-         terms are the honest destination. */
-      { source: "/refund", destination: "/terms", permanent: true },
-      { source: "/shipping", destination: "/terms", permanent: true },
+      /* /refund and /shipping USED to 301 here, because pre-orders took no
+         payment and there was nothing to refund or ship. Both are real pages
+         since 2026-08-22 (§8.25-d) and the redirects were removed in the same
+         commit. Do not restore them: a merchant that 301s its refund policy to
+         its terms is the shape Razorpay's review rejects, and the legacy Wix
+         inbound links now land on the real answer. */
       /* Account routes from the Wix store have no equivalent here. */
       { source: "/login", destination: "/", permanent: true },
       { source: "/signup", destination: "/", permanent: true },

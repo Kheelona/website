@@ -1,8 +1,21 @@
-/** Site-wide constants. The pre-order flow is Tally-backed (blueprint §8.6);
- *  every page ends with FinaleCTA (id="reserve"), so CTAs anchor within the
- *  current page. Until the founder provides NEXT_PUBLIC_TALLY_FORM_URL the
- *  panel renders a flagged placeholder. */
+/** Site-wide constants.
+ *
+ *  Since 2026-08-22 the pre-order is a PAID reservation: a refundable token
+ *  taken through Razorpay on store.kheelona.com (§8.25). Every page still ends
+ *  in FinaleCTA (id="reserve"), so in-page CTAs anchor within the current page
+ *  and the finale carries the one jump to the store. That order is deliberate:
+ *  a parent reads the price, the refund promise and the ship date before a
+ *  payment form ever opens.
+ *
+ *  MONEY LAW: amounts live here once, in PAISE, and every rupee string is
+ *  derived from them. A price change is one integer. Nothing anywhere else may
+ *  hardcode a rupee amount, and nothing may hardcode a paise amount that a
+ *  payment request could read (test/preorder-money.test.ts guards both). */
 export const PREORDER_HREF = "#reserve";
+
+/** The store host. Same repo, reached through the host rewrite in src/proxy.ts
+ *  (§8.25-a), so the design system and the brand laws stay in one place. */
+export const STORE_URL = "https://store.kheelona.com";
 
 export const NAV_LINKS = [
   { label: "Meet Lumi", href: "/products/lumi" },
@@ -19,27 +32,70 @@ export const FOOTER_LINKS = [
   { label: "Contact", href: "/contact" },
   { label: "Privacy", href: "/privacy" },
   { label: "Terms", href: "/terms" },
+  /* Real pages since 2026-08-22. They were 301s to /terms while nothing could
+     be refunded or shipped; money changes that, and Razorpay's own review
+     looks for both by name. */
+  { label: "Refunds", href: "/refund" },
+  { label: "Shipping", href: "/shipping" },
   { label: "Setup", href: "/setup" },
 ] as const;
 
-export const LAUNCH_PRICE = "₹4,999";
-export const LATER_PRICE = "₹9,999";
+/* ── Money ──────────────────────────────────────────────────────────────── */
 
-/* R11 consistency audit: the price strings above were imported by ONE file
-   while ~30 call sites hardcoded the rupee values, and the reserve wording
-   drifted per page. These are load-bearing marketing claims — they live
-   here once. A price change is now a one-file edit. */
+/** Indian rupee formatting, one implementation. Intl gives the lakh grouping
+ *  correctly, which a naive toLocaleString on the wrong locale does not. */
+export function formatInr(paise: number): string {
+  return `₹${new Intl.NumberFormat("en-IN").format(Math.round(paise / 100))}`;
+}
 
-/** The one CTA verb (R9 law), long form — section CTAs. */
-export const RESERVE_LABEL = `Reserve Lumi at ${LAUNCH_PRICE}`;
-/** Short form — navbar + sticky bar, where width is tight. */
-export const RESERVE_LABEL_SHORT = `Reserve at ${LAUNCH_PRICE}`;
-/** The standard reassurance caption under a reserve button. */
-export const PRICE_CAPTION = `${LATER_PRICE} after launch. No payment now.`;
-/** The launch-cap line (R9, founder-supplied real number). */
-export const CAP_LINE = `First 500 units at ${LAUNCH_PRICE}. ${LATER_PRICE} after launch. No payment now.`;
-/** The hold promise (V6 D11): one sentence, one source. It closes the finale
- *  lede and the Tally placeholder card — paraphrases of it kept drifting. */
+/** The pre-order price, held until PREORDER_DEADLINE. */
+export const LAUNCH_AMOUNT_PAISE = 499_900;
+/** General sale, from the day after the deadline. */
+export const LATER_AMOUNT_PAISE = 999_900;
+/** The token that reserves a unit. Refundable until dispatch. */
+export const TOKEN_AMOUNT_PAISE = 49_900;
+/** What is left to pay when the unit is ready. Derived, never typed twice:
+ *  a token change must move the balance in the same breath. */
+export const BALANCE_AMOUNT_PAISE = LAUNCH_AMOUNT_PAISE - TOKEN_AMOUNT_PAISE;
+
+export const LAUNCH_PRICE = formatInr(LAUNCH_AMOUNT_PAISE);
+export const LATER_PRICE = formatInr(LATER_AMOUNT_PAISE);
+export const TOKEN_PRICE = formatInr(TOKEN_AMOUNT_PAISE);
+export const BALANCE_PRICE = formatInr(BALANCE_AMOUNT_PAISE);
+
+/** The pre-order window. Founder 2026-08-22: there is NO unit cap, so the
+ *  deadline is the whole of the urgency and it has to be real. After it the
+ *  store stops taking tokens and offers the general-sale waitlist. */
+export const PREORDER_DEADLINE_TEXT = "30 September 2026";
+export const PREORDER_DEADLINE_ISO = "2026-09-30";
+
+/** True while the token flow may run. Date-only comparison, so the deadline
+ *  day itself is inside the window. */
+export function isPreorderOpen(now: Date = new Date()): boolean {
+  return now.toISOString().slice(0, 10) <= PREORDER_DEADLINE_ISO;
+}
+
+/** The one CTA verb (R9 law), founder-chosen 2026-08-22. No number on the
+ *  button: the amount is settled in the panel beside it, so this label never
+ *  needs editing when a price moves, and it reads the same in a 15px navbar
+ *  as it does in a hero. */
+export const PREORDER_LABEL = "Pre-order Lumi";
+
+/** The standard reassurance caption under a pre-order button. */
+export const PRICE_CAPTION = `${TOKEN_PRICE} now, ${BALANCE_PRICE} on dispatch. Fully refundable until we ship.`;
+/** Taxes, founder-confirmed 2026-08-22: every price published on this site is
+ *  GST-inclusive, so the number a parent reads is the number they pay. Indian
+ *  packaged-goods practice expects that said out loud, and it removes the one
+ *  question a price with no tax note always raises. */
+export const TAX_LINE = "All prices include GST.";
+
+/** The hero and finale offer line: exactly what CAP_LINE used to do, with the
+ *  retired cap replaced by the real deadline. Two clauses, no paraphrase
+ *  anywhere else — V6 D11 holds: three wordings of one price read as three
+ *  offers, so this string and PRICE_CAPTION are the only two allowed. */
+export const PREORDER_OFFER_LINE = `${TOKEN_PRICE} reserves yours at ${LAUNCH_PRICE}. ${LATER_PRICE} after ${PREORDER_DEADLINE_TEXT}.`;
+/** The hold promise (V6 D11): one sentence, one source. Still exactly true of
+ *  a paid reservation, so it survives the money change unchanged. */
 export const PRICE_HOLD_LINE = "We hold the price, you hold your place.";
 
 /* V3 (founder 2026-07-27, from the YC application): Lumi's own age band and
@@ -58,10 +114,10 @@ export const KHEELONA_PLUS_LINE =
 /** Short form, for the finale's small print. */
 export const KHEELONA_PLUS_SHORT = "Every Lumi includes 6 months of Kheelona+.";
 
-/** Ship date (founder, 2026-07-31): the gate is CLEARED. Render from these,
+/** Ship date (founder, 2026-08-22: moved from 1 September). Render from these,
  *  never inline, so a logistics change is a one-file edit. */
-export const SHIP_DATE_TEXT = "1 September 2026";
-export const SHIP_DATE_ISO = "2026-09-01";
+export const SHIP_DATE_TEXT = "1 October 2026";
+export const SHIP_DATE_ISO = "2026-10-01";
 
 /** The announced languages (founder, 2026-07-31 — "they are final"). Eight
  *  named today; the published ceiling stays "up to 10", so two more can land
@@ -82,9 +138,11 @@ export const LANGUAGES_LINE = `${LUMI_LANGUAGES.slice(0, -1).join(", ")}, and ${
 }`;
 
 /** WhatsApp share (V3, India's native referral loop — no backend). "Rs" not
- *  "₹" in the payload: the rupee sign garbles in some WhatsApp clients. */
+ *  "₹" in the payload: the rupee sign garbles in some WhatsApp clients. The
+ *  2026-08-22 rewrite drops the retired cap and the retired "no payment now",
+ *  and leads with the token, which is the easy number to pass along. */
 export const WHATSAPP_SHARE_HREF = `https://wa.me/?text=${encodeURIComponent(
-  `A screen-free talking friend that teaches, for ages ${LUMI_AGES}. First 500 units at Rs 4,999, no payment now: https://kheelona.com`,
+  `A screen-free talking friend that teaches, for ages ${LUMI_AGES}. Pre-order for Rs ${TOKEN_AMOUNT_PAISE / 100}, fully refundable, before ${PREORDER_DEADLINE_TEXT}: ${STORE_URL}`,
 )}`;
 export const WHATSAPP_SHARE_LABEL = "Know a parent who needs this? Share Lumi on WhatsApp";
 
@@ -94,52 +152,58 @@ export const WHATSAPP_SHARE_LABEL = "Know a parent who needs this? Share Lumi on
  *  those would be invented. Update this when the journal is next reviewed. */
 export const JOURNAL_REVIEWED = "July 2026";
 
-/** The contact email. Founder-confirmed 2026-07-28 as a monitored inbox.
- *
- *  The old Wix site published this address beside "+91 98765 43210" — the
- *  canonical fake Indian phone number — so the email was confirmed separately
- *  before use and the phone number was NOT carried over. If a phone line ever
- *  becomes real, it needs the same confirmation. */
+/** The contact email. Founder-confirmed 2026-07-28 as a monitored inbox. */
 export const CONTACT_EMAIL: string | null = "hello@kheelona.com";
 
-/** The Tally pre-order form (the founder's; 5 fields as of 2026-07-31:
- *  parent name, kid's age, city, WhatsApp number, WhatsApp consent).
- *
- *  Hardcoded for the same reason as the GA4 ID below: it is a public
- *  identifier the live site prints in every reserve panel, and hardcoding it
- *  lets the PREVIEW and local builds render the real form — the founder asked
- *  to review the form on the demo site (2026-07-31). NEXT_PUBLIC_TALLY_FORM_URL
- *  still overrides when set, so the production env config keeps working
- *  unchanged. Submissions from preview/local are REAL submissions in Tally;
- *  delete test entries there. */
-export const TALLY_FORM_URL = "https://tally.so/r/Y5XW7J";
+/* ── Seller of record ───────────────────────────────────────────────────── */
+
+/** Founder-supplied 2026-08-22 from the GST registration certificate
+ *  (REG-06, approved 26/11/2025). A page that takes money has to say who is
+ *  taking it: this block prints on /contact, /refund, /shipping, the store
+ *  footer and every acknowledgement email, and Razorpay's activation review
+ *  looks for exactly these details. */
+export const LEGAL_ENTITY = "Kheelona Robotics Private Limited";
+export const GSTIN = "29AAMCK1530E1ZN";
+export const REGISTERED_ADDRESS = {
+  line1: "5th Floor, No 51 (Old Site No 1)",
+  line2: "Kokarya Business Synergy Center, 5th Main, 5th Block Jayanagar",
+  city: "Bengaluru",
+  state: "Karnataka",
+  pincode: "560041",
+  country: "India",
+} as const;
+export const REGISTERED_ADDRESS_LINE = `${REGISTERED_ADDRESS.line1}, ${REGISTERED_ADDRESS.line2}, ${REGISTERED_ADDRESS.city} ${REGISTERED_ADDRESS.pincode}, ${REGISTERED_ADDRESS.state}, ${REGISTERED_ADDRESS.country}`;
+
+/** Support line, founder-supplied 2026-08-22. WhatsApp ONLY, and every visible
+ *  label must say so: the number does not answer calls, and a support channel
+ *  that does not answer is worse than none. This is the first phone number this
+ *  site has ever published — the one on the legacy Wix site was the canonical
+ *  fake Indian number and was deliberately never carried over. */
+export const SUPPORT_WHATSAPP_DISPLAY = "+91 91875 46483";
+export const SUPPORT_WHATSAPP_HREF = "https://wa.me/919187546483";
+export const SUPPORT_WHATSAPP_LABEL = `WhatsApp ${SUPPORT_WHATSAPP_DISPLAY}`;
+
+/* ── Measurement ────────────────────────────────────────────────────────── */
 
 /** GA4, wired 2026-07-28 (founder's property: stream "kheelona.com",
  *  https://kheelona.com, stream id 15336032355, enhanced measurement ON).
  *
  *  Hardcoded on purpose. A measurement ID is a public client-side identifier,
- *  not a secret — Google's own snippet ships it in the page — and the env var
- *  this replaces (`NEXT_PUBLIC_GA4_MEASUREMENT_ID`) was never read by anything,
- *  so keeping it would have added a founder gate for no security gain.
+ *  not a secret — Google's own snippet ships it in the page.
  *
  *  GA4_HOSTS is the reason this is safe to hardcode: the tag loads ONLY on
- *  these hostnames. Without that, every localhost run and every preview deploy
- *  would report into the founder's real property, and analytics you cannot
- *  trust is worse than none. Add a host here when a new production domain goes
- *  live, not when a preview URL changes. */
+ *  these hostnames, so localhost and preview deploys never pollute the real
+ *  property. store.kheelona.com joined the list on 2026-08-22 — the standing
+ *  law is that this list moves whenever the production hosts move, and the
+ *  store is where the purchase event now fires. */
 export const GA4_MEASUREMENT_ID = "G-7LMKSFEXZ9";
-export const GA4_HOSTS = ["kheelona.com", "www.kheelona.com"] as const;
+export const GA4_HOSTS = ["kheelona.com", "www.kheelona.com", "store.kheelona.com"] as const;
 
 /** Ahrefs Web Analytics, added 2026-07-30 at the founder's request.
  *
- *  A public site key, like the GA4 measurement ID above — it identifies the
- *  property, it does not authorise anything, and Ahrefs' own instructions have
- *  you paste it into public HTML.
- *
- *  Unlike GA4 this one is NOT host-gated, and that is a deliberate trade. Ahrefs
- *  verifies an installation by fetching the page and looking for the tag, so a
- *  client-side gate would leave the script out of the HTML source and the
- *  "Recheck installation" button would keep failing. The cost is that local and
- *  preview page views reach the property. If that noise ever matters, the fix is
- *  the GA4_HOSTS pattern plus re-verifying by another method. */
+ *  A public site key, like the GA4 measurement ID above. Unlike GA4 this one is
+ *  NOT host-gated, and that is a deliberate trade: Ahrefs verifies an install
+ *  by fetching the page and looking for the tag, so a client-side gate would
+ *  leave the script out of the HTML source and verification would keep
+ *  failing. The cost is that local and preview page views reach the property. */
 export const AHREFS_ANALYTICS_KEY = "N7vd/jLtIIlHqzFqu57UBg";

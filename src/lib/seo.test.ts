@@ -22,7 +22,7 @@ describe("structured data", () => {
   it("never leaks a gated fact (Kheelona+ price, certifications) and carries the published ship date", () => {
     /* The ship date became a PUBLISHED fact on 2026-07-31 (founder), so the
        old no-ship-date guard flipped into a positive assertion. */
-    expect(everything).toMatch(/"availabilityStarts":"2026-09-01"/);
+    expect(everything).toMatch(/"availabilityStarts":"2026-10-01"/);
     expect(everything).not.toMatch(/shipDate|deliveryDate/);
     /* Certification is gated for the PRODUCT, not for a person's career. The
        risk is a schema property asserting Lumi is certified, so test for the
@@ -35,8 +35,16 @@ describe("structured data", () => {
        the film's upload date 2026). A new number appearing here means someone
        put an unpublished figure into schema, which is the failure mode this
        whole test exists to catch. URLs are stripped first: a LinkedIn slug like
-       aman-soni-6b17b6223 is an address, not a figure. */
-    const withoutUrls = everything.replace(/https?:\/\/[^"]+/g, "");
+       aman-soni-6b17b6223 is an address, not a figure.
+       Since 2026-08-22 the graph also carries the seller of record: GSTIN,
+       pincode, street number and the WhatsApp support number. Those are
+       IDENTIFIERS, not figures, so they are stripped rather than allow-listed.
+       Allow-listing them would blunt the guard permanently: a stray "1530"
+       inside a future price claim would then pass. */
+    const identifiers = /"(taxID|telephone|postalCode|streetAddress)":"[^"]*"/g;
+    const withoutUrls = everything
+      .replace(/https?:\/\/[^"]+/g, "")
+      .replace(identifiers, "");
     const numbers = withoutUrls.match(/\d{4,}/g) ?? [];
     for (const n of numbers) expect(["4999", "9999", "2025", "2026"]).toContain(n);
   });
@@ -45,10 +53,14 @@ describe("structured data", () => {
     expect(everything).not.toMatch(/lapse|expire|without a subscription|still works/i);
   });
 
-  it("keeps the offer at pre-order with no payment claim", () => {
+  it("keeps the offer at pre-order, priced as a number, inside a real window", () => {
     expect(LUMI_PRODUCT.offers.availability).toBe("https://schema.org/PreOrder");
     expect(LUMI_PRODUCT.offers.priceCurrency).toBe("INR");
-    expect(LUMI_PRODUCT.offers.price).toBe("4999");
+    // a schema price is a number, and it comes from the paise constant
+    expect(LUMI_PRODUCT.offers.price).toBe(4999);
+    /* The pre-order price is time-boxed, so the offer says so: without this,
+       schema keeps advertising ₹4,999 after the day it stops being true. */
+    expect(LUMI_PRODUCT.offers.priceValidUntil).toBe("2026-09-30");
   });
 
   it("states Lumi's real age band, not the retired ones", () => {

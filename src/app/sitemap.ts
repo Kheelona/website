@@ -15,6 +15,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/contact", priority: 0.4 },
     { path: "/privacy", priority: 0.3 },
     { path: "/terms", priority: 0.3 },
+    /* Policy pages carry real weight now that money changes hands: a parent
+       looks for the refund terms before paying, and Razorpay's review looks
+       for them too. */
+    { path: "/refund", priority: 0.3 },
+    { path: "/shipping", priority: 0.3 },
   ];
   return [
     ...pages.map((p) => ({

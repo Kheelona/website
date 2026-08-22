@@ -6,6 +6,7 @@ import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { PageHero } from "@/components/templates/PageHero";
 import { Button } from "@/components/atoms/Button";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
+import { SiteChrome } from "@/components/templates/SiteChrome";
 
 /* The 404 says so in its title (2026-08-12). It used to inherit the root
    layout's default title, so every broken URL served a page called "Lumi by
@@ -31,8 +32,11 @@ export const metadata: Metadata = {
    and the guide dock both pointed at an anchor this page did not have.
    Copy: copy-v2 NOT-FOUND. */
 export default function NotFound() {
+  /* Wrapped explicitly: a root-level not-found.tsx sits OUTSIDE the (site)
+     route group, so it would render with no navbar, no footer and no way out
+     (§8.25-z). */
   return (
-    <>
+    <SiteChrome>
       <PageHero
         ratio="md:grid-cols-[1.1fr_0.9fr]"
         guide="curious"
@@ -76,6 +80,6 @@ export default function NotFound() {
           <FinaleCTA bare variant="compact" />
         </Room>
       </RoomsTrack>
-    </>
+    </SiteChrome>
   );
 }

@@ -2,7 +2,7 @@ import {
   LANGUAGES_LINE,
   LUMI_LANGUAGES,
   PRICE_HOLD_LINE,
-  CAP_LINE,
+  PREORDER_OFFER_LINE,
 } from "@/config/site";
 
 describe("config copy constants (BUILD-V6)", () => {
@@ -17,7 +17,7 @@ describe("config copy constants (BUILD-V6)", () => {
 
   it("PRICE_HOLD_LINE is the one sanctioned hold sentence", () => {
     expect(PRICE_HOLD_LINE).toBe("We hold the price, you hold your place.");
-    // the finale lede is CAP_LINE + hold line; neither may contain the other
-    expect(CAP_LINE).not.toContain(PRICE_HOLD_LINE);
+    // the finale lede is the offer line + hold line; neither may contain the other
+    expect(PREORDER_OFFER_LINE).not.toContain(PRICE_HOLD_LINE);
   });
 });

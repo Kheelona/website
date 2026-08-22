@@ -117,3 +117,29 @@ such code first appears — creating empty folders now would be cargo-culting.
 
 `docs/checkpoints/*` are dated historical snapshots and are left as-is; their path
 references reflect the pre-reorg tree. Use this map to translate them.
+
+---
+
+## 2026-08-22: the `(site)` route group, and the store
+
+The store gave this app a second kind of page, so the marketing chrome stopped belonging in the root
+layout (§8.25-z). Nothing about a URL changed: a route group in parentheses is not a path segment.
+
+| Was | Now |
+| --- | --- |
+| `src/app/page.tsx` | `src/app/(site)/page.tsx` |
+| `src/app/contact/…` and every other marketing route | `src/app/(site)/contact/…` |
+| Navbar, Footer, KheeluGuide, SiteBackdrop, RevealObserver, Organization JSON-LD inside `src/app/layout.tsx` | `src/components/templates/SiteChrome.tsx`, rendered by `src/app/(site)/layout.tsx` |
+
+Translate paths in older docs and checkpoints through that table: a doc saying
+`src/app/products/lumi/page.tsx` means `src/app/(site)/products/lumi/page.tsx` if it is dated before
+2026-08-22.
+
+**What stayed at the root**, because it is shared by both kinds of page or is a special file that must
+live there: `layout.tsx` (html element, fonts, the three measurement tags), `not-found.tsx` (which
+wraps itself in `SiteChrome`, since a root not-found sits outside the group), `robots.ts`,
+`sitemap.ts`, `llms.txt/`, `pricing.md/`, the icons, `fonts/`, `api/`, and `store/`.
+
+**New top-level directories:** `supabase/` (the schema migration and its README) and `tools/store/`
+(the event-link generator). `src/lib/store/` holds the server-side store modules and
+`src/features/preorder/` the UI feature, both per the existing placement rules.

@@ -13,7 +13,57 @@ here in full so nothing depends on conversation memory.
 
 ---
 
-## ⏭ COLD-RESTART: START HERE (last updated 2026-07-31 — **V6 MERGED AND LIVE**)
+## ⏭ COLD-RESTART: START HERE (last updated 2026-08-22 — **V6 LIVE · PAID PRE-ORDERS ON A BRANCH**)
+
+### The store round (2026-08-22), read this before anything else
+
+**Paid pre-orders are BUILT on branch `preorder-store`. They are NOT merged and NOT live.** The site
+on kheelona.com still serves V6 exactly as described below, and merging this branch is what changes
+that. Read `docs/checkpoints/preorder-store-2026-08-22.md` first, then
+`docs/website-steps.md` **§8.25**, then **FOUNDER-TODO.md section 0**.
+
+**The offer, and it replaces the free list everywhere:** a **₹499 refundable token** holds a Lumi at
+**₹4,999**, the **₹4,500 balance** falls due by payment link before dispatch, the price deadline is
+**30 September 2026** (₹9,999 after), shipping starts **1 October 2026**, and **there is no unit cap**
+any more. Payment happens on **store.kheelona.com**, which is THIS repo served through a host rewrite
+in `src/proxy.ts`. Orders go to Supabase, receipts through Resend, and events sell the same
+reservation at ₹99 behind a signed QR link with a cap and an expiry.
+
+Verify locally: `npm test` (**606**) · `npx tsc --noEmit` · `npx next build` (token-check 17) ·
+`npx next start -p 3456`. For the store you need a store hostname:
+`curl -H "Host: store.kheelona.com" localhost:3456/`, or open `http://store.localhost:3456`.
+
+**Five laws that bite hardest.** The client never sends a price (§8.25-c-i) · paid is decided twice
+through one idempotent `markPaid` (§8.25-p) · the webhook verifies the RAW body and releases its
+event claim on failure (§8.25-m) · an address is authorised only by its signed token (§8.25-n) · the
+finale is the ONLY outbound link to the store (§8.25-b).
+
+**Nothing is pending from Claude.** What remains is founder dashboard work, as a tickable list in
+**FOUNDER-TODO.md section 0**: Razorpay keys and webhook, a Supabase project plus
+`supabase/migrations/0001_preorders.sql`, `STORE_SIGNING_SECRET`, Resend DNS (optional to start), and
+`store.kheelona.com` added to the existing Vercel project. With no keys the store renders "pre-orders
+open here shortly" and takes no money, so the branch is safe to merge and deploy before any of that.
+
+**⇒ THE MOMENT THE FOUNDER SAYS THE KEYS ARE IN, WORK THROUGH `docs/store-go-live.md`.** It is written
+for a session with no memory of building this: every command is copy-pasteable and every check has a
+stated pass condition. It covers the local verification, **the test-mode payment end to end, which has
+NEVER been run and is the one gate that cannot be skipped**, the idempotency and tamper proofs, the
+merge with a rollback tag created before the merge, the live smoke checks, and the first-order watch.
+
+**The QA harness now lives in the repo**, not in a session scratchpad that dies with the session:
+`npm run qa:sweep` runs axe plus the voice lint across all 15 HTML routes at 390px and 1280px
+(currently clean, 30/30), and `qa:shot` / `qa:text` / `qa:axe` drive one route each. `qa:text` is the
+one to reach for when checking what a page SAYS, because grepping HTML source also searches the RSC
+payload and reports strings that are not on the page.
+
+**Three lessons from this round that generalise.** Look at the page: the first store screenshot showed
+a dead `#reserve` CTA on the checkout that no passing test could see. Grepping HTML source lies,
+because the RSC flight payload is in it (§8.25-bb). And an inverse-law test (assert the retired phrase
+is ABSENT everywhere) found three survivors a careful manual sweep had missed.
+
+---
+
+### V6, which is what is actually live
 
 **V6 IS LIVE on https://kheelona.com** (`main` = `demo-website` = `29d2fdd`, trees identical;
 rollback tag **`v5-live-2026-07-31`**). Work on `main`; keep `demo-website` in sync by merging.

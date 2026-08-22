@@ -22,7 +22,7 @@ describe("KheelonaPlusBand", () => {
   it("promises no surprise renewal, the thing the category gets wrong", () => {
     render(<KheelonaPlusBand />);
     expect(
-      screen.getByText("You pay nothing today, and nothing renews without you."),
+      screen.getByText("Nothing renews without you, ever."),
     ).toBeInTheDocument();
   });
 

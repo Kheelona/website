@@ -19,9 +19,95 @@ Rollback tag if ever needed: `v5-live-2026-07-31`. Records: `BUILD-V6.md` (spec)
 
 ---
 
-## 📋 THE ONLY THINGS STILL WAITING ON YOU (audited 2026-07-31, everything else on this page is closed)
+## 📋 THE ONLY THINGS STILL WAITING ON YOU (audited 2026-08-22, everything else on this page is closed)
 
-Nothing here blocks the site. It is live, converting, and correct as it stands.
+The marketing site is live, converting, and correct as it stands. **THE STORE IS NOT LIVE**, and
+section 0 below is the only thing standing between it and its first real pre-order. Everything from
+section A onwards is the older queue, unchanged, and none of it blocks anything.
+
+---
+
+### 0. THE STORE IS BUILT AND WAITING ON YOUR DASHBOARDS (2026-08-22)
+
+`store.kheelona.com` is finished, tested and verified end to end against test values. Branch
+**`preorder-store`**, 8 commits, **not merged and not live**. It is deployable right now: with no keys
+it renders "pre-orders open here shortly" and takes no money, so **nothing breaks by shipping it before
+you finish this list.**
+
+Each item is a dashboard action only you can do (same standing rule as Vercel: Claude never touches
+your accounts). Tick them in any order.
+
+#### The six values the store cannot run without
+
+- [ ] **`RAZORPAY_KEY_ID`** and **`RAZORPAY_KEY_SECRET`** — Razorpay → Settings → API Keys → Generate.
+      **Use the test keys (`rzp_test_…`) first.** The secret is shown once.
+- [ ] **`RAZORPAY_WEBHOOK_SECRET`** — Razorpay → Settings → Webhooks → Add. URL:
+      `https://store.kheelona.com/api/razorpay/webhook` (or
+      `https://website-hdn2.vercel.app/api/razorpay/webhook` while testing, which also works).
+      Subscribe to **`order.paid`** and **`payment.captured`**. The secret is whatever you type there.
+- [ ] **`SUPABASE_URL`** and **`SUPABASE_SERVICE_ROLE_KEY`** — create a project (the free tier is
+      plenty: this stores text), then Project Settings → API. **Also run the migration**: SQL editor →
+      paste all of `supabase/migrations/0001_preorders.sql` → Run. The service_role key can read every
+      order, so it belongs in Vercel's environment variables and nowhere else.
+- [ ] **`STORE_SIGNING_SECRET`** — run `openssl rand -base64 48` and paste the output. It signs event
+      links and the address links in emails. Changing it later invalidates every address link already
+      sent, so set it once.
+
+#### Then, in Vercel
+
+- [ ] Add all six as **Environment Variables** on the existing project.
+- [x] ~~Add **`store.kheelona.com`** as a domain on that same project, and the DNS record.~~
+      **DONE 2026-08-22**, verified: Valid Configuration on Production, and the host answers 200. Until
+      the merge it serves the marketing home page, which is exactly what Razorpay's liveness check
+      needs. (If a later check ever says the domain is unreachable from this laptop, that is a stale
+      local resolver, not the domain: `curl -sI --resolve store.kheelona.com:443:216.198.79.65
+      https://store.kheelona.com/` proves it.)
+- [ ] **Consider moving off the Hobby plan.** The daily health cron fits Hobby, but Vercel reserves
+      Hobby for non-commercial use and this project is about to take payments. Better to upgrade before
+      real orders than after a suspension.
+
+#### Optional, and the store works without it
+
+- [ ] **`RESEND_API_KEY`** — add the domain `send.kheelona.com` in Resend and put its three DNS records
+      in your DNS, then create a key. A subdomain keeps kheelona.com's own deliverability separate from
+      anything transactional. **Without this an order is still recorded and the failure is logged**; the
+      only cost is that the earliest customers get no branded receipt.
+
+#### When you are done, tell me: "store keys are in"
+
+I will then work through **`docs/store-go-live.md`**, which is written step by step and does not rely on
+remembering this conversation. It covers the local verification, the **test-mode payment end to end
+(never run yet, and the one gate that cannot be skipped)**, the idempotency and tamper proofs, the merge
+with a rollback tag, the live smoke checks, and what to watch on the first real order.
+
+#### Answered, nothing further needed
+
+- ✅ **Delivery is included** in ₹4,999, anywhere in India. Published on `/shipping`, in the `/terms`
+  price clause, in the store's summary panel and in both machine routes.
+- ✅ **Prices are GST-inclusive** (`TAX_LINE`, rendered from config in five places). You also confirmed
+  GST is paid from the collected amount **under reverse charge**; that half is deliberately not
+  published, being internal accounting no customer decision depends on. One note for the record, since
+  it is your call: reverse charge is unusual on a B2C goods sale, where the seller normally collects
+  under forward charge.
+- ✅ **Both Kheelu lines**, in their contracted form: `/refund` "Changed your mind? That's allowed." and
+  `/shipping` "I'll help pack. Mostly by sitting in the box."
+
+#### Still open, and it blocks the first DISPATCH rather than the store opening
+
+- [ ] **The post-dispatch returns and warranty terms do not exist yet**, because nothing has shipped.
+      `/refund` says exactly that in plain words rather than inventing a window. They must be written
+      before the first Lumi leaves.
+
+#### Already decided, needing nothing from you
+
+The ₹499 refundable token, the ₹4,500 balance by payment link before dispatch, the 30 September 2026
+deadline, no unit cap, shipping from 1 October 2026, WhatsApp-only support on +91 91875 46483, one Lumi
+per order, four form fields, and refunds by request within 5 to 7 working days. All of it is live in the
+code and written into the policy pages.
+
+---
+
+### The older queue (nothing here blocks anything)
 
 **A. Facts only you have** — each is a one-file edit the moment you say the word:
 1. **The Kheelona+ price.** The last gated commercial fact. Every surface says "pricing announced soon"; a ₹ amount stays forbidden until you set it.

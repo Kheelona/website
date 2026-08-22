@@ -29,25 +29,27 @@ const DESCRIPTION_CAP = 160;
 
 /** Root-segment pages do NOT receive their own layout's title template, so they
  *  write the brand themselves and must not have the suffix added twice here. */
-const ROOT_SEGMENT = new Set(["src/app/page.tsx"]);
+const ROOT_SEGMENT = new Set(["src/app/(site)/page.tsx"]);
 
 /** Home is over the cap on purpose (founder, 2026-08-12): its title is one of
  *  exactly four sanctioned homes for the tutor narrative and carries the head
  *  keywords, and truncation costs click-through rather than rank. Recorded as a
  *  decision rather than left as a silent gap. */
-const TITLE_EXEMPT = new Set(["src/app/page.tsx"]);
+const TITLE_EXEMPT = new Set(["src/app/(site)/page.tsx"]);
 
 const PAGES = [
-  "src/app/page.tsx",
-  "src/app/products/lumi/page.tsx",
-  "src/app/playos/page.tsx",
-  "src/app/safety/page.tsx",
-  "src/app/setup/page.tsx",
-  "src/app/team/page.tsx",
-  "src/app/stories/page.tsx",
-  "src/app/contact/page.tsx",
-  "src/app/privacy/page.tsx",
-  "src/app/terms/page.tsx",
+  "src/app/(site)/page.tsx",
+  "src/app/(site)/products/lumi/page.tsx",
+  "src/app/(site)/playos/page.tsx",
+  "src/app/(site)/safety/page.tsx",
+  "src/app/(site)/setup/page.tsx",
+  "src/app/(site)/team/page.tsx",
+  "src/app/(site)/stories/page.tsx",
+  "src/app/(site)/contact/page.tsx",
+  "src/app/(site)/privacy/page.tsx",
+  "src/app/(site)/terms/page.tsx",
+  "src/app/(site)/refund/page.tsx",
+  "src/app/(site)/shipping/page.tsx",
 ];
 
 /** Pulls the first `title:` / `description:` string literal out of a page's

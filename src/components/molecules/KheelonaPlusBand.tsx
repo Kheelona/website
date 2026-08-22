@@ -39,8 +39,11 @@ export function KheelonaPlusBand({
       </p>
       <div>
         <p className="mb-3 max-w-[58ch] text-[17px]">{KHEELONA_PLUS_LINE}</p>
+        {/* 2026-08-22: "You pay nothing today" led this line for a year and is
+            now false. The half that mattered is the half that survives — a
+            parent's real fear here is a silent renewal, not the first ₹499. */}
         <p className="max-w-[58ch] font-display text-[17px] font-bold text-ink-head">
-          You pay nothing today, and nothing renews without you.
+          Nothing renews without you, ever.
         </p>
       </div>
     </div>

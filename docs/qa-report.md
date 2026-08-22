@@ -999,3 +999,101 @@ three URLs 200 with the right content types, and the rendered marks eyeballed at
 invisible to every automated check we run. When a project is scaffolded from a template, audit the
 template's assets (favicon, OG image, `robots`, manifest, placeholder copy) explicitly — status codes
 will never tell you they are wrong.
+
+---
+
+# STORE ROUND QA (2026-08-22) — branch `preorder-store`
+
+Everything below was measured against a local production build (`npx next build && npx next start
+-p 3456`) with test-shaped store keys in the environment, driving the real server. Nothing here is
+inferred from code.
+
+## Automated
+
+| Gate | Result |
+| --- | --- |
+| `npm test` | **606 passed**, 89 files (was 331 before this round) |
+| `npx next build` | clean; 5 API routes, 4 store routes, Proxy registered |
+| `npx tsc --noEmit` | clean |
+| Voice lint (rendered text, 6 pages + 2 email templates) | 0 em-dashes, 0 hype terms |
+
+New guard suites, and what each one exists to catch: `preorder-money` (a token and balance that do not
+add up is now a billing bug), `preorder-copy` (the retired promises returning), `policies` (someone
+"restoring" the /refund redirect), `store-host` (the rewrite mapping in both directions),
+`store-secrets` (a payment key treated like the three public identifiers), `store-crypto` (signature
+verification, against FIXED vectors computed independently — a test that calls createHmac to check
+createHmac passes just as happily after someone switches to sha1), and three API route suites using a
+fake Supabase client.
+
+## Lighthouse, devtools throttling, desktop preset
+
+| Page | Perf | A11y | Best practices | SEO |
+| --- | --- | --- | --- | --- |
+| store (`store.localhost:3456`) | 100 | 100 | 96 | **66** |
+| `/refund` | 100 | 100 | 96 | 100 |
+| `/` | 100 | 100 | 96 | 100 |
+
+**The store's SEO 66 is correct and is not a regression.** The only failing audit is `is-crawlable`,
+i.e. the deliberate `noindex` on a checkout (§8.25-aa). Best-practices 96 on all three is the
+pre-existing `/_vercel/insights/script.js` 404, which only happens off Vercel.
+
+## axe (WCAG 2.0/2.1 A + AA), reveals forced with a 1.5s settle
+
+Zero violations on: the store at **390px and 1280px**, `/refund` at 390 and 1280, `/shipping` at 390
+and 1280, `/terms` at 390, `/privacy` at 390 and 1280, `/` at 390.
+
+## Behaviour, driven against the running server
+
+| Probe | Result |
+| --- | --- |
+| store host root | 200, rewritten to `/store`, `x-robots-tag: noindex, nofollow` |
+| apex `/store` | **308** to `https://store.kheelona.com/` |
+| `store.kheelona.com/store` (doubled prefix) | **404** |
+| a marketing route on the store host | **404** |
+| store host, unmatched URL | 404 **in store chrome**, offering a person and an order number |
+| apex, unmatched URL | 404 in marketing chrome, unchanged |
+| `/api/health`, no keys | 503 `not-configured` |
+| `/api/health`, keys + unreachable database | 503 `database-unreachable` |
+| webhook, bad signature | **400**, and nothing written |
+| webhook, valid signature + broken database | **500**, asking for a retry |
+| `create-order`, no keys | 503 with a kind sentence, not a stack trace |
+| `create-order`, invalid input | 422 with all five field messages |
+| `create-order`, valid + broken database | 500, "not your fault" |
+| `/thanks` with no token, and with a forged token | **404 both times** (a prober learns nothing) |
+| unsigned event link | "That link will not work" plus the ₹499 route |
+| outbound store links on the marketing home | **exactly 1** (§8.25-b) |
+
+## Three defects found and fixed in this round
+
+1. **The store inherited the marketing chrome**, including a navbar CTA pointing at `#reserve`, an
+   anchor the store host has no page for: a dead CTA on the page that takes money. Found in the FIRST
+   screenshot, invisible to every test that was passing at the time. Fixed with the `(site)` route
+   group and `SiteChrome`.
+2. **Unmatched store URLs fell back to the root 404**, serving the store's 404 in marketing chrome.
+   Fixed with a catch-all inside `/store`.
+3. **Three retired promises survived the manual sweep**, found by `test/preorder-copy.test.ts`. One
+   was a hardcoded "1 September 2026" in a Home FAQ answer, which the config-driven ship-date change
+   could never have reached.
+
+## Harness notes for the next session (§8.25-bb)
+
+- **Grepping HTML source lies.** A grep said the store 404 contained "Meet Lumi"; the string was in
+  the RSC flight payload, not the DOM. Ask Chrome for `document.body.innerText`
+  (`scratchpad/text.mjs`).
+- **`localhost` does not resolve in this headless Chrome.** Use `127.0.0.1`, or
+  `--host-resolver-rules=MAP store.kheelona.com 127.0.0.1` for a named host.
+- **Lighthouse hits an HSTS interstitial on `kheelona.com`**, because the real domain is HSTS. Use
+  `store.localhost:3456` for the store audit.
+- **The Ahrefs tag never resolves offline**, so `waitUntil: "networkidle0"` hangs forever. Abort
+  third-party requests and wait on `domcontentloaded`.
+- Route tests must call `resetRateLimits()` in `beforeEach`, or a later test fails for an earlier
+  test's reasons.
+
+## Not verified, and why
+
+**No real payment has been taken.** There is no Razorpay account, no Supabase project and no Resend
+key in this environment, all three being founder-gated by standing rule. The signature layer is
+verified against fixed vectors, the routes against a fake database, and every failure path by driving
+the real server. **A test-mode payment end to end is still required before this takes real money**,
+and it needs the preview deploy plus a Razorpay test webhook pointed at
+`/api/razorpay/webhook` — the plan's Phase 5, and FOUNDER-TODO section 0.

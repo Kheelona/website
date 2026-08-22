@@ -20,13 +20,13 @@ describe("Compare", () => {
     ).toBeInTheDocument();
   });
 
-  it("offers the reserve CTA with the launch-price caption", () => {
+  it("offers the pre-order CTA with the token-price caption", () => {
     render(<Compare />);
     expect(
-      screen.getByRole("link", { name: /Reserve Lumi at ₹4,999/i }),
+      screen.getByRole("link", { name: "Pre-order Lumi" }),
     ).toHaveAttribute("href", "#reserve");
     expect(
-      screen.getByText(/₹9,999 after launch\. No payment now\./i),
+      screen.getByText(/₹499 now, ₹4,500 on dispatch\. Fully refundable until we ship\./i),
     ).toBeInTheDocument();
   });
 });

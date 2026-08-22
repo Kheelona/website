@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Menu } from "lucide-react";
-import { NAV_LINKS, PREORDER_HREF, RESERVE_LABEL_SHORT } from "@/config/site";
+import { NAV_LINKS, PREORDER_HREF, PREORDER_LABEL } from "@/config/site";
 import { Button } from "@/components/atoms/Button";
 import { Sheet } from "@/components/molecules/Sheet";
 import { PRESS_TINT } from "@/lib/interactions";
@@ -53,7 +53,7 @@ export function Navbar() {
               responsibility out of shared components */}
           <div className="hidden sm:block">
             <Button href={PREORDER_HREF} className="px-5 py-3 text-[15px]">
-              {RESERVE_LABEL_SHORT}
+              {PREORDER_LABEL}
             </Button>
           </div>
           <div className="lg:hidden">
@@ -85,7 +85,7 @@ export function Navbar() {
                 ))}
                 <li className="px-3 pb-2 pt-3">
                   <Button href={PREORDER_HREF} className="w-full">
-                    {RESERVE_LABEL_SHORT}
+                    {PREORDER_LABEL}
                   </Button>
                 </li>
               </ul>

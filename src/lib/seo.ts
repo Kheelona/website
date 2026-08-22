@@ -1,5 +1,21 @@
 import type { Metadata } from "next";
-import { LAUNCH_PRICE, LATER_PRICE, LUMI_AGES, PLATFORM_AGES, CONTACT_EMAIL, SHIP_DATE_ISO } from "@/config/site";
+import {
+  LAUNCH_PRICE,
+  LATER_PRICE,
+  LAUNCH_AMOUNT_PAISE,
+  TOKEN_PRICE,
+  BALANCE_PRICE,
+  PREORDER_DEADLINE_TEXT,
+  PREORDER_DEADLINE_ISO,
+  LUMI_AGES,
+  PLATFORM_AGES,
+  CONTACT_EMAIL,
+  SHIP_DATE_ISO,
+  LEGAL_ENTITY,
+  GSTIN,
+  REGISTERED_ADDRESS,
+  SUPPORT_WHATSAPP_DISPLAY,
+} from "@/config/site";
 
 /** Structured data builders (V3 SEO/AEO/GEO pass, 2026-07-28).
  *
@@ -56,7 +72,10 @@ export const ORGANIZATION = {
   "@type": "Organization",
   "@id": `${SITE_URL}/#organization`,
   name: "Kheelona",
-  legalName: "Kheelona Robotics Pvt Ltd",
+  legalName: LEGAL_ENTITY,
+  /* Published from the GST certificate 2026-08-22. schema.org has no GSTIN
+     property; taxID is the standard place for a national tax registration. */
+  taxID: GSTIN,
   url: SITE_URL,
   logo: `${SITE_URL}/brand/logo-mark.png`,
   image: `${SITE_URL}/og.png`,
@@ -66,8 +85,13 @@ export const ORGANIZATION = {
   founders: FOUNDERS,
   address: {
     "@type": "PostalAddress",
-    addressLocality: "Bengaluru",
-    addressRegion: "Karnataka",
+    /* Full registered address since 2026-08-22: a merchant taking payment has
+       to publish where it is, and the same block prints on /contact, /refund
+       and /shipping. */
+    streetAddress: `${REGISTERED_ADDRESS.line1}, ${REGISTERED_ADDRESS.line2}`,
+    addressLocality: REGISTERED_ADDRESS.city,
+    addressRegion: REGISTERED_ADDRESS.state,
+    postalCode: REGISTERED_ADDRESS.pincode,
     addressCountry: "IN",
   },
   areaServed: { "@type": "Country", name: "India" },
@@ -79,15 +103,21 @@ export const ORGANIZATION = {
     "Indian language voice technology",
   ],
   sameAs: ["https://kheelona.ai"],
-  /* Only listed because the inbox is confirmed monitored (2026-07-28). Schema
-     must never promise a channel that does not answer. No telephone: the number
-     on the legacy site was a placeholder. */
+  /* Only listed because both channels are confirmed answered. Schema must never
+     promise a channel that does not answer, which is why this site published no
+     telephone for its first year: the number on the legacy Wix site was the
+     canonical fake Indian number.
+     The number below is real (founder, 2026-08-22) but takes WhatsApp ONLY, and
+     `contactOption` is the honest way to say that in schema. Every visible label
+     on the site says "WhatsApp" for the same reason. */
   ...(CONTACT_EMAIL
     ? {
         contactPoint: {
           "@type": "ContactPoint",
           email: CONTACT_EMAIL,
+          telephone: SUPPORT_WHATSAPP_DISPLAY,
           contactType: "customer support",
+          contactOption: "WhatsApp",
           areaServed: "IN",
           availableLanguage: ["English", "Hindi"],
         },
@@ -184,13 +214,21 @@ export const LUMI_PRODUCT = {
   image: `${SITE_URL}/product/lumi-blue-2.png`,
   offers: {
     "@type": "Offer",
-    price: LAUNCH_PRICE.replace(/[^0-9]/g, ""),
+    /* Derived from the paise constant, not scraped out of the display string
+       with a regex (2026-08-22): the money now has one numeric source and a
+       schema price is a number, so it should read the number. */
+    price: LAUNCH_AMOUNT_PAISE / 100,
     priceCurrency: "INR",
     availability: "https://schema.org/PreOrder",
     availabilityStarts: SHIP_DATE_ISO,
+    /* The pre-order price is real but time-boxed, and priceValidUntil is how
+       you say that to a machine. Google drops an Offer whose stated validity
+       has lapsed, which is the correct behaviour here: after the deadline the
+       price genuinely is not ₹4,999 any more. */
+    priceValidUntil: PREORDER_DEADLINE_ISO,
     url: `${SITE_URL}/products/lumi`,
     eligibleRegion: { "@type": "Country", name: "India" },
-    description: `${LAUNCH_PRICE} for the first 500 units, ${LATER_PRICE} after launch. No payment is taken at pre-order.`,
+    description: `${LAUNCH_PRICE} for pre-orders placed before ${PREORDER_DEADLINE_TEXT}, ${LATER_PRICE} after that. A refundable ${TOKEN_PRICE} reserves one, with the ${BALANCE_PRICE} balance due before dispatch.`,
   },
 } as const;
 

@@ -692,3 +692,189 @@ already `orange-ink` site-wide, so the change makes nine stragglers match rather
 colour, and `orange-ink` small text cannot compete with the `action` CTA fill). **A text-colour change
 has no SEO or AEO effect, and accessibility is not a direct Google ranking factor** — the reason to fix
 it is that it is a real failure on a page parents read.
+
+---
+
+# §8.25 THE PRE-ORDER STORE (2026-08-22)
+
+The site started charging money. That is the largest change since it went live, and it is bigger than
+it looks: for a year "No payment now" was the central promise, urgency came entirely from "first 500
+units", and the whole pre-order was a Tally iframe. This round retired all three and gave the repo its
+first backend, first database, first secrets and first proxy.
+
+Everything below is a law, not a note. Violating one is a review flag.
+
+**8.25-a THE STORE IS A HOST REWRITE, NOT A SECOND APP.** `store.kheelona.com` is served by this repo:
+`src/proxy.ts` (Next 16 renamed middleware to `proxy.ts`, see
+`node_modules/next/dist/docs/01-app/01-getting-started/16-proxy.md`) rewrites the store host onto
+internal `/store/*` routes. The decisions live in `lib/store/host.ts` as a PURE FUNCTION so they are
+unit tested rather than verified by deploying and clicking. Three rules the tests hold:
+apex `/store/*` **308s to the store host** (one page, one URL); `store.kheelona.com/store/*` **404s**
+(a doubled prefix must not quietly serve a real page from a third address); the matcher excludes
+`/api`, `/_next` and any path containing a dot, because rewriting a file request breaks the assets the
+store renders. A second repo was considered and rejected: the design system would have drifted from
+the brand inside a month.
+
+**8.25-b THE FINALE IS THE ONLY OUTBOUND LINK TO THE STORE.** Every other CTA on the marketing site
+anchors to `#reserve` first, so a parent always reads the price, the refund promise and the ship date
+before a payment form can open. `FinaleCTA.test.tsx` asserts it. A second outbound store link
+anywhere is a review flag, and measured on the live HTML the count is exactly one per page.
+
+**8.25-c MONEY HAS ONE SOURCE, IN PAISE.** Four integers in `config/site.ts`
+(`LAUNCH_AMOUNT_PAISE`, `LATER_AMOUNT_PAISE`, `TOKEN_AMOUNT_PAISE`, and `BALANCE_AMOUNT_PAISE` which
+is **derived**), and every rupee string comes from `formatInr`. Razorpay speaks paise integers, so
+storing anything else means converting twice and rounding somewhere. `test/preorder-money.test.ts`
+holds token + balance = price. This mattered less when nothing was charged: a disagreeing pair of
+numbers was a copy bug, and is now a billing bug.
+
+**8.25-c-i THE CLIENT NEVER SENDS A PRICE.** The request says which TIER; the server reads the amount
+from its own table (`lib/store/tiers.ts`). A request carrying `amountPaise: 100` is charged ₹499, and
+there is a test for exactly that in `create-order/route.test.ts`. Every other mistake in the payment
+path can be corrected afterwards. A client-supplied price cannot be un-charged.
+
+**8.25-d THE POLICY LAYER IS REQUIRED, AND /refund AND /shipping ARE REAL PAGES.** They were 301s to
+`/terms` with a comment saying there was nothing to refund or ship because pre-orders took no payment.
+That comment was true and is now the shape a payment gateway's review rejects. `test/policies.test.ts`
+asserts the pages exist, are in the footer and the sitemap, and are **NOT** redirected: a future
+tidy-up pass would otherwise see two legacy-looking entries in `next.config.ts` and "restore" them,
+silently un-publishing the refund policy. The seller of record (`lib/legal.ts`: Kheelona Robotics
+Private Limited, GSTIN, registered address, WhatsApp-only support) is ONE shared section rendered by
+all four policy pages plus /contact plus the store footer plus both emails, and the guard fails any
+page that hardcodes a copy of it.
+
+**8.25-e THE DISCLOSURE LAW NOW COVERS PROCESSORS, NOT JUST TAGS.** §8.21-c said a measurement tool and
+the sentence describing it ship in the same commit. Its reason is broader, so
+`test/analytics-tags.test.ts` now also requires /privacy to name **Razorpay, Supabase, Resend and
+Vercel**. They touch far more than a page view: a name, an email, a delivery address, a payment.
+
+**8.25-f THE RETIRED PROMISES STAY RETIRED.** `test/preorder-copy.test.ts` scans every published file,
+comments stripped, for "no payment", "first 500", "pay nothing" and "tally". It found three the manual
+sweep missed, one of them a **hardcoded "1 September 2026"** in a Home FAQ answer that the
+config-driven ship-date change could never have reached.
+
+**8.25-g AN EVENT PRICE IS SIGNED, CAPPED AND DATED, AND NEEDS ALL THREE.** Signing stops anyone
+minting a ₹99 link by guessing a slug. The cap and the expiry contain the leak signing cannot prevent,
+because a printed QR code can be photographed and forwarded. The honest model is: unguessable, and
+worthless once the event is over or the allocation is gone. Tier rows live in `event_tiers` so a booth
+on Saturday needs a dashboard insert, not a Friday deploy. Runbook: `docs/preorder-events.md`;
+generator: `npm run event-link -- <id>`.
+
+**8.25-h VALIDATION IS ONE IMPLEMENTATION, RUN TWICE.** `features/preorder/lib/validate.ts` runs in the
+browser as a courtesy and in the route handler as the only one that counts. Two implementations drift
+until the form accepts what the server rejects with no explanation.
+
+**8.25-i EMAIL TEMPLATES LIVE IN THE REPO, AND A FAILED EMAIL NEVER FAILS A PAYMENT.** Templates are
+plain functions (`lib/email/templates.ts`) so the voice lint can read them, the prices are the same
+constants the site renders, and a change to what we promise arrives as a reviewable diff. `sendEmail`
+never throws: by the time it runs the money has moved and the row says so, and a 500 there would make
+Razorpay retry a webhook for a payment recorded perfectly.
+
+**8.25-j THE THROTTLE IS HONEST ABOUT WHAT IT IS.** In-memory, per serverless instance, defeatable by
+anyone spread across cold starts. It exists for the ordinary case (a script or a stuck retry loop
+filling the table) and it costs nothing. A real limiter needs shared state we have no reason to run
+yet, and `rate-limit.ts` carries the note explaining that rather than implying more safety than it
+has. Route tests must call `resetRateLimits()` in `beforeEach`, or a later test fails for the
+previous test's reasons.
+
+**8.25-k THE SUPABASE FREE TIER PAUSES AFTER A QUIET WEEK.** `/api/health` runs a trivial query that
+touches Postgres, and a daily Vercel cron (`vercel.json`) hits it. Without that, the request that wakes
+the project is a parent's first pre-order, and it fails while it wakes.
+
+**8.25-l THE ROW IS WRITTEN BEFORE THE GATEWAY IS CALLED.** If the gateway then fails we hold a lead
+with a working phone and email, which is exactly who to follow up. The other order leaves a Razorpay
+order that can be paid with no local record of who paid it, which is the one failure here with no clean
+recovery. Rows left at `status='created'` are the abandoned-payment list, and they are the reason the
+form asks for contact details BEFORE the pay button.
+
+**8.25-m THE WEBHOOK IS VERIFIED AGAINST THE RAW BODY, CLAIMS ITS EVENT ID, AND RELEASES THE CLAIM ON
+FAILURE.** Re-serialising the parsed JSON changes the bytes, the HMAC stops matching, and the tempting
+2am fix is to stop checking; handlers must read `await request.text()`. The event id in
+`webhook_events` is the idempotency guard (its primary key makes a duplicate claim fail, and the retry
+then returns 200 without emailing twice). If processing fails after claiming, the claim is DELETED and
+the handler answers 500 so Razorpay retries: a swallowed failure there is a paid order nobody ever
+hears about.
+
+**8.25-n AN ADDRESS IS AUTHORISED BY A SIGNED TOKEN, AND ONLY THAT.** There are no accounts, so the
+token bound to one order reference with an expiry is the whole authorisation. Wrong order, bad
+signature and expired all return the SAME message, so a caller cannot learn which order references
+exist. This is the one route where getting authorisation slightly wrong is a safety problem rather
+than a billing one: it holds a family's home address.
+
+**8.25-o FORM ATOMS: THE A11Y IS THE COMPONENT.** `atoms/Field.tsx` exists because the catalog had no
+form until the store. Real `<label>` tied by id (placeholder-as-label is the most common way a form
+becomes unusable), `aria-describedby` covering **both** hint and error, `aria-invalid` plus a written
+sentence, and controls at 17px because **iOS Safari zooms the whole viewport when a focused input is
+under 16px**, which mid-payment reads as the page breaking. There is no red in this palette and
+inventing one is forbidden (§8.2), so errors use `orange-ink` and the wording carries the weight.
+
+**8.25-p PAID IS DECIDED TWICE, ON PURPOSE, THROUGH ONE FUNCTION.** The browser callback confirms fast
+(signature verified) so a parent sees "reserved" in the same second; the webhook confirms for certain,
+because a browser can be closed or offline at the moment it matters. Both go through `markPaid`, whose
+idempotency is a single Postgres statement (`.neq("status","paid")`), so whichever arrives second does
+nothing and nobody is emailed twice.
+
+**8.25-q THE CHECKOUT SCRIPT LOADS ON THE FIRST SUBMIT, NEVER ON PAGE LOAD.** Nobody who bounces should
+pay for a payment library, and the standing LCP law is that the product image stays the largest and
+earliest thing on the page.
+
+**8.25-y A PAYMENT KEY IS NOT A PUBLIC IDENTIFIER.** This repo deliberately hardcodes three public
+identifiers (GA4 measurement id, Ahrefs site key, and the retired Tally URL) with comments explaining
+why that is safe. Those comments are correct and they are a precedent that must not be followed one
+step further. `test/store-secrets.test.ts` asserts no secret is read through a `NEXT_PUBLIC_` name, no
+secret is read outside `lib/store/env.ts`, no `"use client"` file reads one, and `.env.example`
+documents every one with no values committed.
+
+**8.25-z TWO KINDS OF PAGE MEANS TWO CHROMES, AND A ROUTE GROUP IS HOW.** Marketing chrome moved to
+`components/templates/SiteChrome.tsx`, rendered by the `(site)` route group; the root layout keeps only
+what both kinds share (the html element, the fonts, the three tags). **Found by looking at the page,
+not by reasoning**: the first store screenshot had two headers, two footers, the mascot over a payment
+form, and a navbar CTA pointing at `#reserve`, an anchor the store does not have. `SiteChrome` is a
+component and not only a layout because a root-level `not-found.tsx` sits OUTSIDE the group and would
+render with no chrome at all. A catch-all inside `/store` is also required: an unmatched store URL was
+falling back to the ROOT not-found and serving the store's 404 in marketing chrome.
+
+**8.25-aa THE STORE IS NOINDEX, AND ITS SEO SCORE IS SUPPOSED TO BE LOW.** Measured on the real server:
+store **perf 100 / a11y 100 / best 96 / seo 66**, and the 66 is the noindex directive and nothing else.
+The standing "SEO 90+ everywhere" gate does not apply to a checkout: an SEO score measures how findable
+a page is, and this page must not be findable, or a thin transactional page competes with
+/products/lumi. `/refund` and `/` measure 100 / 100 / 96 / 100 for comparison.
+
+**8.25-bb MEASUREMENT: GREPPING HTML SOURCE FINDS STRINGS THAT ARE NOT ON THE PAGE.** A grep said the
+store 404 still contained "Meet Lumi", which sent a chase after a bug that did not exist: the string was
+in the RSC flight payload, not the DOM. Same trap as counting anything the JSON-LD also contains
+(§8.24). Ask Chrome for `document.body.innerText` instead. Two more harness notes: **`localhost` does
+not resolve in this headless Chrome** (use `127.0.0.1`, or `--host-resolver-rules` for a named host),
+and **Lighthouse hits an HSTS interstitial on `kheelona.com`** because the real domain is HSTS, so use
+`store.localhost` for the store's audit.
+
+**8.25-cc THE QA HARNESS LIVES IN THE REPO, NOT IN A SCRATCHPAD.** §8.23 told each session to
+re-create the headless harness from the docs if the scratchpad was gone, and the scratchpad is always
+gone: it is session-scoped. That cost the same twenty minutes every round, and worse, each rebuild
+re-learned the same traps by hitting them. It is now `tools/qa/`:
+
+- `npm run qa:sweep` — axe (WCAG 2.0/2.1 A+AA) **plus** the voice lint across **every HTML route** at
+  390px and 1280px. **The route list lives in the script**, which is the direct answer to §8.24-7a's
+  most expensive lesson: a sweep that named four routes while the site had eleven let a real WCAG
+  failure sit live through three "axe zero" rounds. Currently 30/30 clean.
+- `npm run qa:text -- <url>` — the rendered text and every link. **Reach for this instead of grepping
+  HTML** (§8.25-bb).
+- `npm run qa:shot -- <url> <out.png> [width] [--full]` and `npm run qa:axe -- <url> [width]`.
+
+`tools/qa/lib/resolve.mjs` locates puppeteer-core, axe-core and Chrome by searching the project's
+`node_modules` and every npx cache entry, so **no cache hash is ever hardcoded again** (the old
+scripts embedded one, and it changes). puppeteer-core and axe-core are deliberately NOT dependencies:
+they are ~400MB of browser tooling for a dev-only harness and Vercel would install them on every
+production build. `tools/qa/lib/browser.mjs` bakes in the four behaviours that are otherwise
+re-derived each time: never the extension, third-party requests aborted (the Ahrefs tag never resolves
+offline, so `networkidle0` hangs forever), reveals forced with a settle, and named hosts mapped to
+127.0.0.1.
+
+**8.25-dd THE GO-LIVE SEQUENCE IS A DOCUMENT, NOT A MEMORY.** `docs/store-go-live.md` takes the store
+from "the founder's keys exist" to "the first real order landed", written for a session that did not
+build it: every command copy-pasteable, every check with a stated pass condition. It exists because the
+riskiest moment in this whole round is the one that happens after a conversation ends. It contains the
+**test-mode payment end to end, which has never been run**, plus the two proofs that matter more than
+the happy path (re-deliver a webhook and expect no second email; POST a bad signature and expect 400
+with nothing written), the merge with a rollback tag created BEFORE the merge, and the fastest safe
+stop: **remove `RAZORPAY_KEY_ID` in Vercel and redeploy**, which returns the store to "opening shortly"
+and takes no money while every marketing page keeps working.
