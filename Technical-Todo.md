@@ -2,183 +2,214 @@
 
 **Nothing on this page blocks the site.** kheelona.com is live, indexed, and taking paid pre-orders.
 
-Created **2026-08-23** at the founder's instruction, merging what used to be two lists: the
-founder-gated queue from `FOUNDER-TODO.md` (now a pointer) and the engineering items that were
-scattered across `docs/design-review-2026-07-10.md` and `docs/qa-report.md`. One list, one place to
-look.
+Created **2026-08-23**, merging the founder-gated queue that was `FOUNDER-TODO.md` (now a pointer)
+with the engineering items scattered across `docs/design-review-2026-07-10.md` and
+`docs/qa-report.md`. One list, one place to look.
 
-**Two rules carried over from the old file, because they are what made it worth keeping:** a
-decision recorded here is not re-asked, and anything that turns out wrong gets corrected here rather
-than argued twice.
+**🔍 Every item below was verified against the code, the config and the live site on 2026-08-23**,
+not carried forward on trust. Two turned out to be already done or not real and are recorded at the
+bottom rather than deleted; one was re-rated once the design system was consulted. What each check
+was is stated on the item, so the next review can repeat it instead of re-deriving it.
 
-**Where the settled decisions went:** the old `✅ CLOSED` half — testimonials, the waived counsel
-review, the ship-date history, the GST note, the store launch record — is now in
-`docs/checkpoints/closed-rounds.md`. **Search that file before re-asking the founder anything.**
+**Two rules carried over, because they are what made the old file worth keeping:** a decision
+recorded here is not re-asked, and anything that turns out wrong gets corrected here rather than
+argued twice.
 
-**Who owns what:** 🧑 needs the founder (a fact, an account, a decision, or money). 🤖 is mine to do
-on request.
+**Settled decisions are NOT here.** They are in `docs/checkpoints/closed-rounds.md` — testimonials,
+the waived counsel review, the ship-date history, the GST note, the store launch record. **Search
+that file before re-asking the founder anything.**
+
+**Legend.** 🧑 needs the founder (a fact, an account, a decision, or money) · 🤖 mine to do on
+request. Priority is about consequence if it is never done, not about effort.
 
 ---
 
-## 📅 Dated. The only items with a clock on them
+# 🔴 CRITICAL
 
-- [ ] 🧑 **31 August 2026: close the Ideabaaz page.** In Supabase:
+**None.** Verified 2026-08-23: `/api/health` green on both hosts, all 15 routes 200, all seven
+security headers live, the live pages carry no console errors or failed requests of their own, and
+`npm audit` reports nothing in `next` itself.
+
+# 🟠 HIGH — but neither is actionable today, and that is deliberate
+
+- [ ] 🤖 **Flip the CSP from Report-Only to enforcing** (§8.28-a, owned by `security-review.md`).
+      **Time-gated on purpose: do not do this before roughly 2026-08-26.** It needs a few days of
+      real traffic first, read from the `[csp] blocked=… directive=…` lines that `/api/csp-report`
+      writes to the Vercel log. `npm run qa:payment` already proves Razorpay's checkout sheet opens
+      with zero violations, but GA4 is the one third party a local probe must never be pointed at
+      (§8.28-g), so production Report-Only is the only thing that can clear it. Flipping early is the
+      single way this engagement could break checkout. Then: `CSP_PHASE` in
+      `src/lib/security-headers.ts` and the phase assertion in `test/security-headers.test.ts`.
+
+- [ ] 🧑 **Post-dispatch returns and warranty terms, before the first Lumi ships.** They do not
+      exist, because nothing has shipped, and `/refund` says exactly that rather than inventing a
+      window. **The one open item that will actually block a step**, and the step is October.
+      *Verified 2026-08-23: `/refund` still states the pre-dispatch-only promise honestly.*
+
+# 🟡 MEDIUM — every one needs a founder decision or a date, none needs code today
+
+- [ ] 🧑 **📅 31 August 2026: close the Ideabaaz page.** In Supabase:
       `update event_tiers set active = false where id = 'ideabaaz';`
       The `expires_on` backstop kills it anyway from ~05:30 IST on 1 September, so nothing breaks if
       this slips a night (§8.25-g-i). Afterwards, the conversion readout:
       `select count(*), sum(amount_paise) / 100 as rupees from preorders where tier = 'ideabaaz' and status = 'paid';`
-      Remember these bookings each consume a first-500 unit at ₹4,999, and each still owes ₹4,900
-      before dispatch.
+      Each of those bookings consumes a first-500 unit at ₹4,999 and still owes ₹4,900 before
+      dispatch. *Verified 2026-08-23: the page is live at ₹99 and resolving its tier.*
 
-- [ ] 🧑 **5 September 2026: tighten DMARC to `p=quarantine`.** The two-week observation window ends
-      then. **Read the reports at `dmarc@kheelona.com` FIRST** and confirm Google Workspace and
+- [ ] 🧑 **📅 5 September 2026: tighten DMARC to `p=quarantine`.** The two-week observation window
+      ends then. **Read the reports at `dmarc@kheelona.com` FIRST** and confirm Google Workspace and
       Resend are both passing; only then edit the existing `_dmarc` TXT record in Cloudflare,
       changing `p=none` to `p=quarantine` and keeping `rua` and `fo`. Never add a second DMARC or SPF
-      record, and do not jump straight to `p=reject`. A scheduled agent will remind you:
+      record, and never jump straight to `p=reject`. A scheduled agent will remind you:
       https://claude.ai/code/routines/trig_01T644UQuKPds5T1iV5abvqD
 
-- [ ] 🧑 **Before shipment: the two DPDP lines on `/privacy`.** India's DPDP Act 2023 expects a
-      stated **retention period** and a designated **grievance contact** for data requests.
-      `/privacy` has neither today: it says tax records are kept without saying for how long, and it
-      gives WhatsApp and an email without naming anyone as the person answering. Founder decision
-      2026-08-23: leave both until before shipment, which is reasonable while nothing has shipped.
-      Wording is counsel's (the page is already counsel-gated). Finding **F-12** in
-      `security-review.md`.
+- [ ] 🧑 **📅 Before shipment: the two DPDP lines on `/privacy`** (F-12). India's DPDP Act 2023
+      expects a stated **retention period** and a designated **grievance contact**. Founder decision
+      2026-08-23: leave both until before shipment, reasonable while nothing has shipped and no
+      product data is collected. Wording is counsel's; the page is already counsel-gated.
+      *Verified 2026-08-23 on the live page: zero mentions of retention, "how long", grievance or
+      officer. The gap is real and unchanged.*
 
-- [ ] 🧑 **Before the first Lumi ships: the post-dispatch returns and warranty terms.** They do not
-      exist, because nothing has shipped, and `/refund` says exactly that rather than inventing a
-      window. **This is the one open item that will actually block a step.**
+- [ ] 🧑 **Which page owns the shared beats.** Cutting the Home ↔ Meet Lumi duplication needs a call
+      on which page owns each beat; then it is a short job. Open since V5, when the two pages measured
+      60% the same. *Verified 2026-08-23 by component: **LumiModes**, **AudioMoments** and **Faq** all
+      still render on both `/` and `/products/lumi`.* Medium rather than low because near-duplicate
+      pages compete with each other in search, and `/products/lumi` is the page a year of SEO went
+      into.
 
-## 🔁 Standing, triggered by an event rather than a date
-
-- [ ] 🤖 **The sell-out copy sweep, the day the 500th unit sells.** The store flips to ₹7,999
-      full-payment BY ITSELF (server-side, per request). The static marketing pages cannot flip
-      themselves: Home, `/products/lumi`, `/terms`, `llms.txt`, `pricing.md` and the JSON-LD price
-      will still read "₹499 reserves one of the first 500 units". The trigger is `/api/health`
-      reporting `"preorder":"full"`, or the internal order alert. The day it happens, ask for the
-      sweep: it is a one-session edit (§8.26-g).
-
-## 🔐 Open in the security engagement
-
-Owned by `security-review.md`, which stays until sign-off. **Pointer, not a copy** — do not maintain
-the same item in two files.
-
-- [ ] 🤖 **Flip the CSP from Report-Only to enforcing.** After a few days of real traffic, read the
-      `[csp] blocked=… directive=…` lines in the Vercel logs; if clean, flip `CSP_PHASE` in
-      `src/lib/security-headers.ts` to `"enforce"` and update the phase assertion in
-      `test/security-headers.test.ts`. GA4 is the one third party the local payment probe cannot test
-      without putting QA traffic in the founder's property, which is exactly what Report-Only covers.
+# 🟢 LOW — facts, assets, confirmations and polish
 
 ## 🧑 Facts only the founder has. Each is a one-file edit on the word
 
-- [ ] **The Kheelona+ ₹ price.** The last gated commercial fact on the site. Every surface says
-      "pricing announced soon" and a ₹ amount stays forbidden until it is set.
+*All four gates verified still in place in code on 2026-08-23.*
+
+- [ ] **The Kheelona+ ₹ price.** The last gated commercial fact. Every surface says "pricing
+      announced soon" and a ₹ amount stays forbidden until it is set.
 - [ ] **Toy-safety certificates**, exact names and numbers when testing completes. Reinstates the
       standards FAQ and lets a badge appear. No badge appears before it is earned.
 - [ ] **Final specs**: battery life, size and weight, materials, **the wake word**, charger details.
-      Three pages currently promise these "before Lumi ships" (`/safety`, `/products/lumi`, `/setup`).
-- [ ] **Is there a camera in Lumi? Yes or no** (the surviving half of REV-b). Still gated in code:
-      `products/lumi/page.tsx` carries a comment saying the camera question is absent until it is
-      answered. If the answer is no, that is a one-line trust differentiator on a screen-free toy for
-      young children, and worth saying out loud rather than leaving unsaid.
+      *All three pages still carry the "before Lumi ships" promise: `/safety`, `/products/lumi`,
+      `/setup`.*
+- [ ] **Is there a camera in Lumi? Yes or no** (the surviving half of REV-b). *The gate comment is
+      still at `src/app/(site)/products/lumi/page.tsx:82`.* If the answer is no, that is a one-line
+      trust differentiator on a screen-free toy for young children, and worth saying out loud.
 
 ## 🧑 Two rows in Supabase
 
 - [ ] Delete my probe: `delete from preorders where order_ref = 'KH-8FP8-PWDA';`
       And close out Shweta's, whose refund predates the automatic handling:
       `update preorders set status = 'refunded' where order_ref = 'KH-YPJ8-GHVT';`
-
-## 🧑 One content decision
-
-- [ ] **Which page owns the shared beats.** Home and Meet Lumi still both carry the modes, the pilot
-      quotes, the audio demos and a near-identical FAQ. Cutting the duplication needs a call on which
-      page owns each. Then it is a short job. Open since V5.
+      *Not verifiable from here: I hold no production database credentials, by design.*
 
 ## 🧑 Two one-line confirmations
 
-- [ ] **Ria reads her /team card once** (R10-a). Her bio and quote were drafted from her public
-      profile and founder-approved, but she has not read them herself.
+- [ ] **Ria reads her /team card once** (R10-a). Drafted from her public profile and
+      founder-approved, but she has not read it herself. *Not verifiable from here.*
 - [ ] **One de-contracted line** (R11-b). The no-contractions rule overrode the published
-      kheelona.ai phrasing on `/safety`: "Nothing stays that you cannot delete." Say the word and the
-      contraction goes back as a sanctioned exception.
+      kheelona.ai phrasing on `/safety`. *Verified live 2026-08-23: the page still reads "Nothing
+      stays that you cannot delete."* Say the word and the contraction goes back as a sanctioned
+      exception.
 
 ## 🧑 Assets, whenever. The site is complete without all of these
 
 - [ ] **Real photography** (R9-a) — still the single strongest conversion lever anyone has named: the
       plush in a child's hands, a fabric macro, a breathing-motion loop, and where the mic and button
-      sit. Drop them in `~/Downloads`.
-- [ ] **Real testimonial quotes or faces.** The standing decision is to keep the drafted
-      placeholders (see `closed-rounds.md`, and do not re-raise it); real ones swap in cleanly
-      whenever.
+      sit. Drop them in `~/Downloads`. *Verified: no new photography has landed since 2026-08-01.*
+- [ ] **Real testimonial quotes or faces.** *Verified: still the four drafted attributions (Shweta,
+      Priyamvada, Gaurav, "Pilot parent").* The standing decision is to keep them — see
+      `closed-rounds.md`, and **do not re-raise it**; real ones swap in cleanly whenever.
 
 ## 🧑 Off-site, where I have no access
 
 - [ ] **The Play Store listing still shows ₹2,999** (V3-h). It competes with the live pricing in
       Google's index for the brand's own name. The web half is done: the old Wix URLs are 301'd.
-      (This is also the last live item from `qa-report.md`'s "Not done" block.)
-- [ ] **Search Console verification and sitemap submission** for anything new — needs founder account
-      access. The domain property and the 24-page sitemap are already done; this is for future
-      additions.
-- [ ] **Investor "backed by" band on /team.** Names and logos when ready. Note the row is labelled
-      "Recognised by" everywhere today, because NVIDIA Inception and nasscom are recognition
-      programmes rather than backers.
+- [ ] **Investor "backed by" band on /team.** Names and logos when ready. The row is labelled
+      "Recognised by" today because NVIDIA Inception and nasscom are recognition programmes rather
+      than backers — `RecognitionStrip` takes a `label` prop, so switching it is one word.
 
-## 🛠 Engineering, deferred. All five predate the v3 migration
+## 🤖 Engineering polish, all four from the R4 panel of 2026-07-10
 
-These come from the R4 design panel (`docs/design-review-2026-07-10.md`, 2026-07-10) and were
-dispositioned DEFERRED there. **The 2026-08-23 v3 migration replaced the entire design system**, so
-each needs a look before it is worked: some may be resolved, moot, or wrong now.
+*Verified 2026-08-23 that the surfaces still exist (`BrandShape`, `BEAT_WASHES`, the canopy, the
+corridor fade), so none is moot — but all four are pre-v3 judgements about a design system that was
+replaced on 2026-08-23, so each needs looking at with fresh eyes before it is worked, and none is
+worth churning a live commercial site for on its own.*
 
-- [ ] 🤖 **Neutral audit in the shape dressing** (Design #7). PlayOS clouds were retinted white
-      because cream read as gray under the cool sky; the wider neutral audit was left for the next
-      dressing pass. *Verify still applicable under v3 tokens.*
-- [ ] 🤖 **Canopy placement retune across the wash seam** (Design #5). The corridor fade partly
-      addressed it; the retune needs an unhurried composition pass at three widths.
-      *Verify still applicable.*
-- [ ] 🤖 **Dead zones after the hero and before the journal** (Design #9, UX #9). Pacing interacts
-      with beat mapping, so it was scheduled to happen alongside the safety-reorder decision (now
-      R4-a, parked below) so beats are retuned once rather than twice. *Still coupled to R4-a.*
-- [ ] 🤖 **Journal cards should use each article's hero art** (Design #14). Blocked at the time on
-      seven missing journal heroes; **all 19 articles are photographed since V4**, so this one is
-      probably now doable and is the most likely of the five to be worth doing.
-- [ ] 🤖 **Consolidate six body-copy sizes** (UI #11). Judged a worthwhile token consolidation but a
-      10+ file sweep, deferred as unnecessary risk late in that cycle. *Verify against the v3 type
-      scale first — it may already be resolved or may need redoing differently.*
+- [ ] **Neutral audit in the shape dressing** (Design #7). PlayOS clouds were retinted white because
+      cream read as gray under the cool sky; the wider audit was left for the next dressing pass.
+- [ ] **Canopy placement retune across the wash seam** (Design #5). Needs an unhurried composition
+      pass at three widths.
+- [ ] **Dead zones after the hero and before the journal** (Design #9, UX #9). Still coupled to
+      R4-a below, so that beats are retuned once rather than twice.
+- [ ] **Consolidate the body-copy sizes** (UI #11). **Re-rated from MEDIUM to LOW on 2026-08-23**,
+      and this is the interesting one. It is now eight distinct sizes across 149 usages (12, 13, 14,
+      15, 16, 17, 18, 19px), not the six R4 counted, which looks like drift away from v3's scale
+      (body 16 / caption 13 / lead 24). It is not: `Design/Kheelona-Design-System-v3/guidelines/site-extensions.md:27`
+      records a **sanctioned extension** — "fluid type scale, `clamp()` steps anchored to v3's px
+      scale", because v3's scale is fixed px and responsive surfaces need steps between its anchors.
+      So this is cosmetic consolidation, not design-authority non-compliance, and the token gate
+      deliberately checks colour only. A 10+ file sweep on a live payment site for no user-visible
+      change is the definition of unnecessary risk, which is exactly why R4 deferred it.
 
 ## 🅿️ Parked, and fine to leave parked
 
-- [ ] 🧑 **Three R4 design calls** from the 2026-07-10 panel, each a yes or no: reorder Home so safety
-      answers earlier than ~85% scroll depth (R4-a) · reuse the price band on Home after the compare
-      table (R4-c) · a founder-credibility strip before the closing CTA (R4-e).
+- [ ] 🧑 **Three R4 design calls**, each a yes or no: reorder Home so safety answers earlier than
+      ~85% scroll depth (R4-a) · reuse the price band on Home after the compare table (R4-c) · a
+      founder-credibility strip before the closing CTA (R4-e).
 - [ ] 🧑 **Backlinks** (V3-i), parked at the founder's instruction. A new domain ranks on authority it
       does not have yet; the realistic first wave is directory and listing submissions plus any press
-      from Elevate and NVIDIA Inception. Say the word and I produce the kit and tracker. (The
-      `directory-submissions` skill is installed and ready.)
+      from Elevate and NVIDIA Inception. The `directory-submissions` skill is installed and ready.
 - [ ] 🧑 **Two optional Ahrefs buttons** (V4-d): keyword volumes need a plan upgrade, and connecting
       Search Console inside the Ahrefs project would surface real query impressions. The strategy
       depends on neither. Worth knowing: kheelona.com already ranks **#1 in India for "raising
       bilingual child in india"**.
-- [ ] 🧑 **The Ahrefs tag is deliberately not host-restricted**, unlike GA4, because Ahrefs verifies
-      by fetching the page. So local and preview page views appear in the Ahrefs numbers. Say the
-      word and I restrict it and verify another way.
+
+## 🔁 Standing, triggered by an event rather than a date
+
+- [ ] 🤖 **The sell-out copy sweep, the day the 500th unit sells.** The store flips to ₹7,999
+      full-payment BY ITSELF, server-side, per request. The static marketing pages cannot: Home,
+      `/products/lumi`, `/terms`, `llms.txt`, `pricing.md` and the JSON-LD price will still read
+      "₹499 reserves one of the first 500 units". Trigger: `/api/health` reporting
+      `"preorder":"full"`, or the internal order alert. Then ask for the sweep — a one-session edit
+      (§8.26-g). *Verified 2026-08-23: health reports `token`, so not triggered.*
 
 ---
 
-## Recovering anything removed in the 2026-08-23 cleanup
+# ✅ Closed or corrected by the 2026-08-23 review
 
-Deleted deliberately, all recoverable from git history, listed so nobody wonders where they went:
+- **Journal cards should use each article's hero art** (R4 Design #14) — **DONE, and had been for a
+  while.** It was deferred in July because seven journal heroes did not exist. V4 shot all of them.
+  Verified: 19 of 19 articles carry `hero` + `heroAlt` (4 in `stories.ts`, 15 in
+  `stories-expansion.ts`), 19 files sit in `public/stories/`, and the live `/stories` index renders
+  them through the image optimizer at `src/app/(site)/stories/page.tsx:115`. Closed.
 
-| Removed | Why | Recover from |
-|---|---|---|
-| `docs/revamp-2026-07/PLAN-V6.md` | A 618-line step-by-step build plan, fully executed on 2026-07-31. Its 60 unticked boxes were executed steps, not open work. The spec (`BUILD-V6.md`) and the checkpoint survive. | the cleanup commit's parent |
-| `docs/revamp-2026-07/HANDOFF-design-v6.md` | A design micro-polish list the file itself records as implemented the same day it was written. | same |
-| `docs/revamp-2026-07/QA-V6-note.md` | An independent content review whose four blockers were all fixed. Compressed to one line in `docs/qa-report.md` before removal. | same |
-| `src/components/vendor/animate-ui/backgrounds/hero-glow.tsx` | The only source file in the tree with no importer. | same |
-| `public/brand/kheelona-wordmark-white.svg` | Unreferenced, and not an input or output of `tools/brand/render-icons.mjs`, which reads the colour wordmark. A dark-background variant if one is ever wanted again. | same |
+- **"Search Console verification and sitemap submission"** — **not a real item, removed.** The domain
+  property is verified and the 24-page sitemap is processed and matches the 24 URLs the site emits
+  (`closed-rounds.md`, launch row). What I had written was "for anything new", which is a description
+  of routine operations rather than an open task.
+
+- **"The Ahrefs tag is deliberately not host-restricted"** — **a recorded trade-off, not a todo.** It
+  is ungated on purpose, because Ahrefs verifies an install by fetching the page, and the cost is
+  that local and preview page views reach the property (§8.21-c). Verified still ungated in
+  `src/app/layout.tsx`. The standing offer remains: say the word and I restrict it and verify another
+  way. Moved here so the list stops implying someone forgot to do something.
+
+---
+
+## Recovering anything removed in the 2026-08-23 doc cleanup
+
+Deleted deliberately, all recoverable from git history:
+
+| Removed | Why |
+|---|---|
+| `docs/revamp-2026-07/PLAN-V6.md` | A 618-line step-by-step build plan, fully executed 2026-07-31. Its 60 unticked boxes were executed steps, not open work. The spec `BUILD-V6.md` and the checkpoint survive. |
+| `docs/revamp-2026-07/HANDOFF-design-v6.md` | A design micro-polish list the file itself records as implemented the same day. |
+| `docs/revamp-2026-07/QA-V6-note.md` | An independent content review whose four blockers were all fixed. Compressed to a paragraph in `docs/qa-report.md`'s V6 section first. |
+| `src/components/vendor/animate-ui/backgrounds/hero-glow.tsx` (+ test, story) | The only source file with no importer. Its registry row had gone stale claiming "Used on: Home hero" and naming a kill switch at a path the `src/` reorg deleted. |
+| `public/brand/kheelona-wordmark-white.svg` | Unreferenced, and not an input or output of `tools/brand/render-icons.mjs`, which reads the colour wordmark. |
 
 **Approved for deletion but deliberately NOT deleted:** `public/products/lori.png`, `lua.png` and
-`robu.png`. The founder approved removing them, but `src/lib/family.ts:3-5` states in code that those
-characters "stay published on kheelona.ai, and their renders stay in `public/products/` untouched for
-**parity**", and the 2026-08-23 cleanup round recorded keeping them for that same reason. A decision
-recorded is not silently reversed, so they stay and this is the flag. Three PNGs. Say the word and
-they go, and I will correct `family.ts` in the same commit so the code stops claiming otherwise.
+`robu.png`. `src/lib/family.ts:3-5` states in code that those characters "stay published on
+kheelona.ai, and their renders stay in `public/products/` untouched for **parity**", and the earlier
+2026-08-23 cleanup round recorded keeping them for that same reason. A decision recorded is not
+silently reversed, so they stay and this is the flag. Three PNGs. Say the word and they go, and
+`family.ts` gets corrected in the same commit so the code stops claiming otherwise.
