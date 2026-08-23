@@ -21,10 +21,16 @@ The centralized, reusable database of externally-sourced components. Rules:
 | getStrictContext | `animate-ui/lib/get-strict-context.tsx` | `lib-get-strict-context` | none | tilt internals | — |
 | Slot (motion) | `animate-ui/primitives/slot.tsx` | `primitives-animate-slot` | cn import | tilt internals | — |
 | Tilt / TiltContent | `animate-ui/primitives/tilt.tsx` | `primitives-effects-tilt` | import paths | via `ui/TiltCard` on every card surface | transform-only; gating in TiltCard (hover+fine pointer+motion-ok). Kill: render plain div in `ui/TiltCard.tsx` |
-| HeroGlowBackground | `animate-ui/backgrounds/hero-glow.tsx` | `components-backgrounds-bubble` (calm rebuild) | goo/blur filters removed, 3 warm brand blobs, 30-70s loops, no :root injection, reduced-motion static | Home hero | compositor-only transforms. Kill: remove mount in `sections/home/Hero.tsx` |
 | Ripple press effect | grafted into `ui/Button.tsx` (credited) | `primitives-buttons-ripple` | rebuilt for our Link pill: span ripples on pointerdown, brand white ripple, no whileHover scale (we have lift), reduced-motion off | every CTA | 600ms span per press. Kill: `ripple={false}` default in Button |
 
 ## Decisions log
+
+- **HeroGlowBackground removed 2026-08-23** (doc-cleanup round). It was vendored for the Home hero,
+  but the mount went with a later hero rewrite and nothing has imported it since: only its own test
+  and story referenced it. Its index row had gone stale in a way worth noting, because it is how dead
+  vendored code hides — the row still said "Used on: Home hero" and named a kill switch in
+  `sections/home/Hero.tsx`, a path the `src/` reorg deleted. Recoverable from git history if the
+  calm-glow treatment is ever wanted again.
 
 - **Animate UI = primary registry** (founder 2026-07-10): rides our existing `motion` dep; a11y/perf-first philosophy; Radix-compatible.
 - Bubble background's goo filter deemed off-brand + GPU-heavy → calm rebuild vendored instead (kept the blob/drift concept).

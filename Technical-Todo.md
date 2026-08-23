@@ -174,5 +174,11 @@ Deleted deliberately, all recoverable from git history, listed so nobody wonders
 | `docs/revamp-2026-07/HANDOFF-design-v6.md` | A design micro-polish list the file itself records as implemented the same day it was written. | same |
 | `docs/revamp-2026-07/QA-V6-note.md` | An independent content review whose four blockers were all fixed. Compressed to one line in `docs/qa-report.md` before removal. | same |
 | `src/components/vendor/animate-ui/backgrounds/hero-glow.tsx` | The only source file in the tree with no importer. | same |
-| `public/brand/kheelona-wordmark-white.svg` | Unreferenced. A dark-background wordmark variant, if one is ever wanted again. | same |
-| `public/products/lori.png`, `lua.png`, `robu.png` | The pre-V3 line-up characters. The published line-up is Lumi → Kheelu Speaker → AI books. | same |
+| `public/brand/kheelona-wordmark-white.svg` | Unreferenced, and not an input or output of `tools/brand/render-icons.mjs`, which reads the colour wordmark. A dark-background variant if one is ever wanted again. | same |
+
+**Approved for deletion but deliberately NOT deleted:** `public/products/lori.png`, `lua.png` and
+`robu.png`. The founder approved removing them, but `src/lib/family.ts:3-5` states in code that those
+characters "stay published on kheelona.ai, and their renders stay in `public/products/` untouched for
+**parity**", and the 2026-08-23 cleanup round recorded keeping them for that same reason. A decision
+recorded is not silently reversed, so they stay and this is the flag. Three PNGs. Say the word and
+they go, and I will correct `family.ts` in the same commit so the code stops claiming otherwise.
