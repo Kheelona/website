@@ -104,6 +104,11 @@ export async function POST(request: Request) {
     const result = await markPaid(env, {
       rzpOrderId,
       paymentId: event.payload?.payment?.entity?.id ?? null,
+      /* What the gateway says it actually captured, so an order cannot be
+         marked paid by less than its own amount (F-06). Absent on events that
+         carry no payment entity, and then the check simply does not apply. */
+      paidPaise:
+        event.payload?.payment?.entity?.amount ?? event.payload?.order?.entity?.amount_paid ?? null,
       /* Our own reference, which we set as the Razorpay order's receipt and in
          its notes. It is the fallback that rescues a payment whose gateway order
          id never made it onto our row. */
@@ -124,6 +129,12 @@ export async function POST(request: Request) {
          to investigate: this is the one line in the store worth an alert. */
       console.error("[webhook] paid an order id we do not have", rzpOrderId);
     }
+    if (result.outcome === "short-paid") {
+      /* 200, not 500: a retry would deliver the same short amount forever. The
+         order stays unpaid and out of the dispatch queue, which is the truth,
+         and markPaid has already said so loudly in the log (F-06). */
+      console.error("[webhook] refused a short payment on", rzpOrderId);
+    }
     return json(200, { ok: true, note: result.outcome });
   } catch (error) {
     /* Release the claim so the retry can do the work. Without this, one
@@ -138,8 +149,17 @@ type RazorpayWebhook = {
   id?: string;
   event: string;
   payload?: {
-    payment?: { entity?: { id?: string; order_id?: string; notes?: { order_ref?: string } } };
-    order?: { entity?: { id?: string; receipt?: string; notes?: { order_ref?: string } } };
+    payment?: {
+      entity?: { id?: string; order_id?: string; amount?: number; notes?: { order_ref?: string } };
+    };
+    order?: {
+      entity?: {
+        id?: string;
+        receipt?: string;
+        amount_paid?: number;
+        notes?: { order_ref?: string };
+      };
+    };
     refund?: { entity?: { id?: string; payment_id?: string; amount?: number } };
   };
 };

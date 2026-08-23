@@ -24,13 +24,30 @@ import type { StoreEnv } from "./env";
 export type MarkPaidResult =
   | { outcome: "paid"; order: PreorderRow }
   | { outcome: "already" }
+  /** The gateway captured less than the order asked for. Not marked paid, and
+   *  loud in the log, because there is no honest automatic answer (F-06). */
+  | { outcome: "short-paid" }
   | { outcome: "unknown" };
 
 export async function markPaid(
   env: StoreEnv,
-  input: { rzpOrderId: string; paymentId: string | null; orderRef?: string | null },
+  input: {
+    rzpOrderId: string;
+    paymentId: string | null;
+    orderRef?: string | null;
+    /** What the gateway says it captured, when the event carries it. Null from
+     *  the browser callback, which is told nothing about amounts. */
+    paidPaise?: number | null;
+  },
 ): Promise<MarkPaidResult> {
-  const { data, error } = await db(env)
+  /* F-06. An order cannot be paid by less than its own amount. Today nothing
+     can produce that: the amount is set server-side when the gateway order is
+     created and Razorpay enforces it, and partial payments are not enabled. So
+     this is insurance against that staying true by way of a dashboard setting
+     nobody is watching, and it is one comparison. Expressed as a condition on
+     the UPDATE so the statement stays atomic, which is what makes this function
+     idempotent under a real race. */
+  let update = db(env)
     .from("preorders")
     .update({
       status: "paid",
@@ -38,22 +55,44 @@ export async function markPaid(
       rzp_payment_id: input.paymentId,
     })
     .eq("rzp_order_id", input.rzpOrderId)
-    .neq("status", "paid")
-    .select("*")
-    .maybeSingle();
+    .neq("status", "paid");
+
+  if (typeof input.paidPaise === "number") {
+    update = update.lte("amount_paise", input.paidPaise);
+  }
+
+  const { data, error } = await update.select("*").maybeSingle();
 
   if (error) throw error;
   if (data) return { outcome: "paid", order: data as PreorderRow };
 
-  /* No row updated means one of two very different things, and the difference
-     matters: already paid (fine, the other path won) or no such order (worth
-     shouting about, because it is money we cannot attribute). */
-  const { count } = await db(env)
+  /* No row updated means one of three very different things, and the difference
+     matters: already paid (fine, the other path won), short paid (never, but if
+     ever then a human decides), or no such order (worth shouting about, because
+     it is money we cannot attribute). */
+  const { data: existing } = await db(env)
     .from("preorders")
-    .select("id", { count: "exact", head: true })
-    .eq("rzp_order_id", input.rzpOrderId);
+    .select("status, amount_paise")
+    .eq("rzp_order_id", input.rzpOrderId)
+    .maybeSingle();
 
-  if ((count ?? 0) > 0) return { outcome: "already" };
+  if (existing) {
+    const row = existing as { status: string; amount_paise: number };
+    if (
+      row.status !== "paid" &&
+      typeof input.paidPaise === "number" &&
+      input.paidPaise < row.amount_paise
+    ) {
+      console.error(
+        `[fulfil] SHORT PAYMENT on ${input.rzpOrderId}: captured ${input.paidPaise} of ${row.amount_paise} paise. NOT marked paid, and nothing dispatched. A human has to decide.`,
+      );
+      return { outcome: "short-paid" };
+    }
+    /* Either it is already paid, or a race we have not modelled got here first.
+       "already" is the conservative answer in both cases: no second email, and
+       no claim about money we have not checked. */
+    return { outcome: "already" };
+  }
 
   /* ORPHAN RECOVERY. create-order writes our row, THEN creates the gateway order,
      THEN attaches its id. If that last update fails, a real payment arrives for an
@@ -62,7 +101,7 @@ export async function markPaid(
      Razorpay order as `receipt` and in `notes.order_ref`, and Razorpay hands it
      back in the webhook. So try that before giving up. */
   if (input.orderRef) {
-    const { data: byRef, error: refError } = await db(env)
+    let recover = db(env)
       .from("preorders")
       .update({
         status: "paid",
@@ -71,9 +110,15 @@ export async function markPaid(
         rzp_order_id: input.rzpOrderId,
       })
       .eq("order_ref", input.orderRef)
-      .neq("status", "paid")
-      .select("*")
-      .maybeSingle();
+      .neq("status", "paid");
+
+    /* The same amount guard as above: a recovered orphan is still an order that
+       may not be paid by less than it asked for. */
+    if (typeof input.paidPaise === "number") {
+      recover = recover.lte("amount_paise", input.paidPaise);
+    }
+
+    const { data: byRef, error: refError } = await recover.select("*").maybeSingle();
     if (refError) throw refError;
     if (byRef) {
       console.warn(

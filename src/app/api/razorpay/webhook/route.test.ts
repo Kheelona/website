@@ -100,6 +100,38 @@ describe("POST /api/razorpay/webhook", () => {
     expect(notifyPaid).toHaveBeenCalledWith(fakeEnv, order);
   });
 
+  /* F-06. The handler's job here is only to hand the captured amount on;
+     refusing a short one is markPaid's, and fulfil.test.ts owns that. */
+  it("passes the captured amount through, so an order cannot be paid by less", async () => {
+    markPaid.mockResolvedValue({ outcome: "paid", order });
+    await deliver({
+      event: "payment.captured",
+      payload: { payment: { entity: { id: "pay_xyz", order_id: "order_abc", amount: 49_900 } } },
+    });
+    expect(markPaid.mock.calls[0][1]).toMatchObject({ paidPaise: 49_900 });
+  });
+
+  it("falls back to the order's amount_paid when there is no payment entity", async () => {
+    markPaid.mockResolvedValue({ outcome: "paid", order });
+    await deliver({
+      event: "order.paid",
+      payload: { order: { entity: { id: "order_abc", amount_paid: 799_900 } } },
+    });
+    expect(markPaid.mock.calls[0][1]).toMatchObject({ paidPaise: 799_900 });
+  });
+
+  it("answers 200 on a refused short payment, since a retry would repeat it", async () => {
+    markPaid.mockResolvedValue({ outcome: "short-paid" });
+    const response = await deliver({
+      event: "payment.captured",
+      payload: { payment: { entity: { id: "pay_xyz", order_id: "order_abc", amount: 100 } } },
+    });
+    expect(response.status).toBe(200);
+    expect(await response.json()).toMatchObject({ note: "short-paid" });
+    /* Nothing is sent to a customer for money we refused to record. */
+    expect(notifyPaid).not.toHaveBeenCalled();
+  });
+
   it("finds the order id in an order.paid payload too, not only a payment one", async () => {
     await deliver({ event: "order.paid", payload: { order: { entity: { id: "order_zzz" } } } });
     expect(markPaid.mock.calls[0][1]).toMatchObject({
