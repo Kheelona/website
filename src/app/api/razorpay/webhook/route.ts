@@ -61,7 +61,18 @@ export async function POST(request: Request) {
 
   const { error: claimError } = await client
     .from("webhook_events")
-    .insert({ id: eventId, event_type: event.event, order_ref: rzpOrderId, payload: event });
+    .insert({
+      id: eventId,
+      event_type: event.event,
+      order_ref: rzpOrderId,
+      /* A SUMMARY, not the whole event (F-05). This used to store the delivery
+         verbatim and keep it forever, which meant a second copy of the payer's
+         email, phone and card metadata accumulating in our database for every
+         payment, none of which idempotency or reconciliation needs. Razorpay
+         keeps the full event on their side; what we need is enough to match a
+         row to a payment afterwards. */
+      payload: summarise(event),
+    });
 
   if (claimError) {
     // 23505 is unique_violation: we have already handled this delivery.
@@ -168,4 +179,29 @@ type RazorpayWebhook = {
  *  detail a webhook handler gets wrong once and then never again. */
 function extractOrderId(event: RazorpayWebhook): string | null {
   return event.payload?.payment?.entity?.order_id ?? event.payload?.order?.entity?.id ?? null;
+}
+
+/** What is worth keeping from a delivery, and nothing else (F-05).
+ *
+ *  Ids and amounts, so a row can be reconciled against the gateway months
+ *  later. Deliberately NOT the payer's email or phone, which we already hold on
+ *  the order itself, and NOT the card block, which we have no use for at all.
+ *  An allow-list rather than a deny-list, so a new field Razorpay adds one day
+ *  does not quietly start being stored. */
+function summarise(event: RazorpayWebhook): Record<string, unknown> {
+  const payment = event.payload?.payment?.entity;
+  const order = event.payload?.order?.entity;
+  const refund = event.payload?.refund?.entity;
+
+  const summary: Record<string, unknown> = { event: event.event };
+  if (payment) {
+    summary.payment = { id: payment.id, order_id: payment.order_id, amount: payment.amount };
+  }
+  if (order) {
+    summary.order = { id: order.id, receipt: order.receipt, amount_paid: order.amount_paid };
+  }
+  if (refund) {
+    summary.refund = { id: refund.id, payment_id: refund.payment_id, amount: refund.amount };
+  }
+  return summary;
 }

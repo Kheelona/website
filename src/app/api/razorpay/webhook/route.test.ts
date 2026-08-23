@@ -157,6 +157,37 @@ describe("POST /api/razorpay/webhook", () => {
     expect(notifyPaid).not.toHaveBeenCalled();
   });
 
+  /* F-05. The claim row is an idempotency key with enough beside it to
+     reconcile, and not a second copy of Razorpay's event log. */
+  it("stores ids and amounts from a delivery, and none of the payer's details", async () => {
+    markPaid.mockResolvedValue({ outcome: "paid", order });
+    await deliver({
+      event: "payment.captured",
+      payload: {
+        payment: {
+          entity: {
+            id: "pay_xyz",
+            order_id: "order_abc",
+            amount: 49_900,
+            email: "priya@example.com",
+            contact: "+919000000000",
+            card: { last4: "1111", network: "Visa", issuer: "HDFC" },
+            notes: { order_ref: "KH-A2B3-C4D5" },
+          },
+        },
+      },
+    });
+
+    const written = calls.find((c) => c.table === "webhook_events" && c.method === "insert");
+    const stored = JSON.stringify((written?.args[0] as { payload?: unknown })?.payload);
+
+    expect(stored).toContain("pay_xyz");
+    expect(stored).toContain("49900");
+    for (const leaked of ["priya@example.com", "919000000000", "1111", "Visa", "HDFC"]) {
+      expect(stored, `${leaked} was stored`).not.toContain(leaked);
+    }
+  });
+
   it("records events it does not act on, without acting on them", async () => {
     const response = await deliver({ event: "payment.failed", payload: {} });
     expect(response.status).toBe(200);
