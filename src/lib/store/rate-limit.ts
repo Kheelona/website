@@ -41,11 +41,34 @@ export function rateLimit(
   return { allowed: true, retryAfterSeconds: 0 };
 }
 
-/** The caller's address, as well as a proxy can tell us. Vercel sets
- *  x-forwarded-for; the first entry is the client. */
+/** The caller's address, as well as a proxy can tell us (F-14).
+ *
+ *  THIS USED TO READ THE FIRST ENTRY OF `x-forwarded-for`, which is the classic
+ *  version of this bug. That header is a chain, each proxy APPENDS to it, and
+ *  anyone may send one: a client that sets `x-forwarded-for: 1.2.3.4` puts its
+ *  own value at the left, so keying on the leftmost entry meant every throttle
+ *  in the store could be stepped around by varying one header per request. A
+ *  rate limit keyed on a value the caller chooses is not a rate limit.
+ *
+ *  So, in order of how much we trust them: `x-real-ip`, which the platform sets
+ *  itself and a client cannot prepend to; then Vercel's own forwarded header;
+ *  then the RIGHTMOST entry of `x-forwarded-for`, which is the hop added by the
+ *  proxy nearest to us rather than whatever the caller claimed. When there is no
+ *  proxy at all, as locally, rightmost and leftmost are the same value. */
 export function clientKey(request: Request): string {
-  const forwarded = request.headers.get("x-forwarded-for");
-  return forwarded?.split(",")[0]?.trim() || "unknown";
+  const direct = request.headers.get("x-real-ip")?.trim();
+  if (direct) return direct;
+
+  for (const header of ["x-vercel-forwarded-for", "x-forwarded-for"]) {
+    const chain = request.headers.get(header);
+    if (!chain) continue;
+    const hops = chain.split(",").map((hop) => hop.trim()).filter(Boolean);
+    if (hops.length) return hops[hops.length - 1];
+  }
+
+  /* No address at all means every anonymous caller shares one bucket, which is
+     the strict direction: it throttles sooner, never later. */
+  return "unknown";
 }
 
 /** Test-only: windows are process state, and one test must not leak into another. */
