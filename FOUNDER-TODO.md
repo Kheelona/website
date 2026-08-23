@@ -57,6 +57,27 @@ anything that turns out wrong gets corrected here rather than argued twice.
       exist, because nothing has shipped, and `/refund` says exactly that rather than inventing a
       window. This is the one open item that will actually block a step.
 
+- [ ] **📅 Before shipment (your call, 2026-08-23): the two DPDP lines on `/privacy`.** India's DPDP
+      Act 2023 expects a stated **retention period** and a designated **grievance contact** for data
+      requests. `/privacy` has neither today: it says tax records are kept without saying for how
+      long, and it gives WhatsApp and an email without naming anyone as the person answering. You
+      decided to leave both until before shipment, which is reasonable while nothing has shipped.
+      Wording is counsel's, not mine (the page is already counsel-gated). Finding F-12 in
+      `security-review.md`.
+
+- [ ] **🔒 `admin.kheelona.com` serves a certificate that does not cover it, and it blocks an HSTS
+      decision.** Found 2026-08-23 (F-15). That name resolves to Firebase Hosting
+      (`singular-arcana-479108-v5.web.app`), redirects HTTP to HTTPS, and then presents a
+      `CN=firebaseapp.com` certificate with no matching name, so a browser shows a full warning
+      interstitial. Two things follow. **One:** an admin surface reachable only by clicking through a
+      TLS warning teaches whoever uses it to click through TLS warnings, which is how a session gets
+      intercepted. Either finish the Firebase custom-domain certificate or delete the DNS record if
+      it is unused. **Two:** it is why HSTS `includeSubDomains` is NOT enabled yet even though you
+      said yes. Turning it on would make that warning un-clickable-through for two years per browser,
+      hard-blocking the panel. Fix or remove the subdomain, tell me, and the header is a one-line
+      change. Not my repo and not my DNS, so it is yours either way. I did not probe the host beyond
+      reading its certificate.
+
 - [ ] **Two rows in Supabase.** Delete my probe: `delete from preorders where order_ref =
       'KH-8FP8-PWDA';`. And close out Shweta's, whose refund predates the automatic handling:
       `update preorders set status = 'refunded' where order_ref = 'KH-YPJ8-GHVT';`

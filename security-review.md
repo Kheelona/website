@@ -15,8 +15,14 @@ F-14 the rate-limit key.
 Also closed by the founder on the same day: **F-04**, with a Vercel Firewall rate-limit rule on the
 pre-order POSTs.
 
-**Still open:** F-09 (HSTS scope, a decision), F-12 (DPDP wording, counsel's), and flipping the CSP
-from Report-Only to enforcing once its reports have been read. See sections 5a and 5b.
+**Still open, three things:** **F-15**, found on 2026-08-23 while checking F-09's blast radius —
+`admin.kheelona.com` presents a certificate that does not cover it, so an admin surface is reachable
+only by clicking through a TLS warning. It is not this repo and not my DNS, and it **blocks F-09**:
+the founder approved HSTS `includeSubDomains`, and enabling it would hard-block that panel for two
+years per browser, so it is deliberately not enabled yet. **F-12** (the DPDP retention period and
+grievance contact) is deferred to before shipment by founder decision and now lives as a dated item
+in `FOUNDER-TODO.md`. And the CSP still has to be flipped from Report-Only to enforcing once its
+reports have been read. See sections 5a and 5b.
 
 This file is the engagement's memory. It is written so a session with no other context can pick the
 work up: the architecture, every finding with its status, what was fixed and by which test, gate
@@ -194,6 +200,7 @@ bundle or in git history, and no unauthenticated path writes to `preorders`.**
 | F-09 | LOW | transport | HSTS has no `includeSubDomains` and no `preload` | HUMAN (decision) | **ESCALATED** |
 | F-10 | LOW | XSS hardening | JSON-LD is injected with `dangerouslySetInnerHTML` and no `<` escaping | KAI | **FIXED** `86818a3` |
 | F-14 | MEDIUM | API abuse | Every throttle keyed on the first entry of `x-forwarded-for`, which the caller supplies | KAI | **FIXED** `36d3836` |
+| F-15 | MEDIUM | transport / admin surface | `admin.kheelona.com` presents a certificate that does not cover it, so it is reachable only through a browser TLS warning | HUMAN | **ESCALATED** — and it blocks F-09 |
 | F-11 | INFO | event pricing | The Ideabaaz page publishes its own tier signature | — | ACCEPTED (documented §8.25-g-i) |
 | F-12 | INFO | privacy / DPDP | No retention period and no grievance contact designated on `/privacy` | HUMAN + counsel | ESCALATED |
 | F-13 | INFO | event pricing | An event link's `sig=` is reported to analytics as part of the page URL | — | ACCEPTED, same model as F-11; the CSP report route strips query strings from what it logs |
@@ -349,11 +356,39 @@ working.
 
 Set `poweredByHeader: false` in `next.config.ts`.
 
-### F-09 · LOW · HSTS lacks `includeSubDomains` and `preload`
+### F-09 · LOW · HSTS lacks `includeSubDomains` and `preload` · APPROVED BUT BLOCKED BY F-15
 
-`max-age=63072000` is present on both hosts. Adding `includeSubDomains` binds **every** subdomain of
-kheelona.com to HTTPS in every browser that has seen the header, so it is a founder decision, not a
-silent hardening. Recommended after confirming no subdomain ever needs plain HTTP.
+`max-age=63072000` is present on both hosts. The founder said yes to `includeSubDomains` on
+2026-08-23. **It was not enabled, because checking first turned up F-15.**
+
+The check that mattered: `includeSubDomains` binds every subdomain, and this domain has four, two of
+which are nothing to do with this repo. `www` and `store` are fine. `api.kheelona.com` is fine: it
+redirects HTTP to HTTPS and its certificate validates. **`admin.kheelona.com` does not** (see F-15),
+and HSTS makes a certificate warning impossible to click through, so enabling this would hard-block
+that panel for two years per browser. Enabling it would have been doing what was asked and breaking
+something at the same time.
+
+Sequence: fix or remove `admin.kheelona.com`, then this is a one-line change to
+`securityHeaders()` plus a line in `test/security-headers.test.ts`.
+
+`preload` is deliberately still out of scope and needs its own decision: it means submission to
+hstspreload.org, and removal from that list takes months.
+
+### F-15 · MEDIUM · `admin.kheelona.com` has a certificate that does not cover it
+
+Found while checking F-09's blast radius. `admin.kheelona.com` resolves to Firebase Hosting
+(`singular-arcana-479108-v5.web.app`), redirects HTTP to HTTPS, and then presents a certificate whose
+subject is `CN=firebaseapp.com` with no name matching the host, so `curl` refuses it and a browser
+shows a full warning interstitial.
+
+**Why it is a MEDIUM and not cosmetic.** It is named `admin`, so it is guessable, and whoever uses it
+has to click through a TLS warning every time. That is the habit that makes a session interception
+work, and on an admin panel the thing being intercepted is administrative access. Separately, a
+warning page is indistinguishable from the warning an actual interception would produce.
+
+**Not this repo, and not my DNS.** Fix the Firebase custom-domain certificate, or delete the record
+if the panel is unused. **I did not probe the host beyond reading its certificate** — no requests to
+its application, no login surface touched, nothing enumerated.
 
 ### F-10 · LOW · JSON-LD injection hygiene
 
@@ -508,11 +543,17 @@ production database write, hosting configuration, or legal wording.
    so Razorpay's retries and the daily health cron are both outside the rule, which is the one thing
    that would have cost money to get wrong. F-04 CLOSED. The rule was deliberately NOT load-tested
    against production.
-5. **Decide on HSTS `includeSubDomains`** (F-09). It binds every subdomain of kheelona.com to HTTPS
-   in every browser that has seen the header. Say yes and I will add it to the header block; say no
-   and I will record why.
-6. **Counsel, when convenient** (F-12): `/privacy` states no retention period and designates no
-   grievance contact, both of which India's DPDP Act expects. Wording is yours and counsel's.
+5. **HSTS `includeSubDomains`** (F-09): **you said yes, and I have NOT enabled it.** Checking the
+   blast radius first turned up F-15: `admin.kheelona.com` presents a certificate that does not cover
+   it, and `includeSubDomains` would make that warning un-clickable-through for two years per
+   browser, hard-blocking the panel. Fix or delete that subdomain, tell me, and the header is a
+   one-line change.
+6. ~~**Counsel, when convenient**~~ **DEFERRED TO BEFORE SHIPMENT by founder decision, 2026-08-23**
+   (F-12). `/privacy` states no retention period and designates no grievance contact, both of which
+   India's DPDP Act expects. Reasonable to hold while nothing has shipped and no product data is
+   being collected. Now a dated item in `FOUNDER-TODO.md` under "Dated", covering BOTH halves so
+   neither gets lost: the retention period you named, and the grievance contact, which is the part
+   the Act is stricter about. Say so if you meant to defer only the retention line.
 7. **GA4, your call:** the property holds page URLs containing address tokens from before this fix.
    After the rotation in step 2 they are inert. If you would rather they were gone, that is a
    retention or deletion action in the GA4 admin, and it is yours to take.
