@@ -209,7 +209,7 @@ export default function TeamPage() {
                         {f.bio}
                       </p>
                       <p
-                        className={`mt-4 max-w-[62ch] border-l-[3px] pl-4 font-display text-[19px] leading-[1.4] text-ink-head ${f.quoteBorder}`}
+                        className={`mt-4 max-w-[62ch] border-l-[3px] pl-4 font-editorial text-[20px] italic leading-[1.45] text-ink-head ${f.quoteBorder}`}
                       >
                         {f.quote}
                       </p>

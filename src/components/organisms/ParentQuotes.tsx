@@ -62,7 +62,12 @@ export function ParentQuotes({
                 >
                   &ldquo;
                 </p>
-                <p className="mb-4 font-display text-[20px] leading-[1.4] text-ink-head">
+                {/* The v3 editorial accent's first placement (CS3 Phase B,
+                    founder decision #11): pull-quotes are exactly its job,
+                    and human quotes are where serif lived before the 2026-07
+                    retirement. Always `font-editorial italic` together — the
+                    shipped face is the italic subset only. */}
+                <p className="mb-4 font-editorial text-[21px] italic leading-[1.45] text-ink-head">
                   {q.text}
                 </p>
                 <p className="font-display text-[16px] font-extrabold text-ink-head">
