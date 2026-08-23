@@ -1,15 +1,20 @@
 # Security review and hardening: kheelona.com + store.kheelona.com
 
-**Status: eight findings fixed and gated, four escalated to the founder, no CRITICAL or HIGH open.
-The CSP's second step (enforcing) waits on a few days of real Report-Only traffic.**
-Branch: `security-hardening` (cut from `main` at `05872e0`). Nothing on this branch may be merged
-by anyone but the founder. Opened 2026-08-23.
+**Status: MERGED AND LIVE. Nine findings closed, no CRITICAL or HIGH open. Three items are with the
+founder and one is a deliberate second step.**
+Opened and shipped 2026-08-23. Merge `b7be77e` (`--no-ff`, revertable with `git revert -m 1
+b7be77e`); rollback tag **`pre-security-hardening-2026-08-23` = `05872e0`**, cut before the merge.
+The `security-hardening` branch is merged and work continues on `main`.
 
-**Fixed:** F-01 the order credential in the `/thanks` URL · F-02 the Next patch · F-03 the security
-headers (CSP in Report-Only) · F-05 the stored webhook payload · F-06 the payment amount guard ·
-F-07 the health throttle · F-08 the framework header · F-10 JSON-LD escaping · F-14 the rate-limit
-key. **With the founder:** the signing-secret rotation, the payload prune, F-04 (edge rate
-limiting), F-09 (HSTS scope), F-12 (DPDP wording). See section 5a.
+**Closed:** F-01 the order credential in the `/thanks` URL (code fix **plus** the founder's secret
+rotation, both confirmed on production) · F-02 the Next patch · F-03 the security headers, phase one
+· F-05 the stored webhook payload (new rows by code, old rows pruned by the founder) · F-06 the
+payment amount guard · F-07 the health throttle · F-08 the framework header · F-10 JSON-LD escaping ·
+F-14 the rate-limit key.
+
+**Still open, all of it either the founder's or deliberately staged:** F-04 (an edge rate-limit
+rule), F-09 (HSTS scope), F-12 (DPDP wording, counsel's), and flipping the CSP from Report-Only to
+enforcing once its reports have been read. See sections 5a and 5b.
 
 This file is the engagement's memory. It is written so a session with no other context can pick the
 work up: the architecture, every finding with its status, what was fixed and by which test, gate
@@ -84,9 +89,10 @@ The count never leaves that module.
 - **Supabase Postgres** (`preorders`, `webhook_events`, `event_tiers`; `supabase/migrations/`).
   Accessed only by route handlers holding the service-role key.
 - **Razorpay** — payments. **Resend** — email. **Vercel** — hosting. All four named on `/privacy`.
-- PII held: parent name, phone, email, child's age (free text), delivery address, UTM blob, plus the
-  full Razorpay event payload in `webhook_events.payload`. **No card number, PAN, or CVV anywhere**
-  (verified by reading every write path; see F-05 for the payload nuance).
+- PII held: parent name, phone, email, child's age (free text), delivery address, UTM blob. **No card
+  number, PAN, or CVV anywhere** (verified by reading every write path). `webhook_events.payload` used
+  to hold the whole Razorpay event, including the payer's email, phone and card metadata; since F-05
+  it holds an allow-listed summary, and the old rows were pruned.
 
 ### 1.4 Secrets
 
@@ -179,7 +185,7 @@ bundle or in git history, and no unauthenticated path writes to `preorders`.**
 | F-02 | HIGH | dependencies | Next.js 16.2.10 carries 9 advisories, 4 HIGH, all fixed in 16.2.11 | KAI | **FIXED** `120271f` (16.2.12) |
 | F-03 | MEDIUM (HIGH on the payment page) | headers / skimming | No CSP, no frame-ancestors, no nosniff, no Referrer-Policy, no Permissions-Policy on either host | KAI | **FIXED, PHASE 1 OF 2** `02e1f2a` (CSP Report-Only; enforcing is a second deploy) |
 | F-04 | MEDIUM | API abuse | Rate limiting is per-instance in-memory, so it does not bound abuse on serverless | HUMAN (WAF) | **ESCALATED** — belongs at the edge, see below |
-| F-05 | MEDIUM | data protection | `webhook_events.payload` keeps the entire Razorpay event forever | KAI + HUMAN (prune) | **FIXED for new rows** `8df8977` · pruning ESCALATED |
+| F-05 | MEDIUM | data protection | `webhook_events.payload` keeps the entire Razorpay event forever | KAI + HUMAN | **CLOSED** `8df8977` for new rows, founder pruned the old ones (count now 0) |
 | F-06 | LOW-MEDIUM | payment integrity | `markPaid` never compares the captured amount to the order's amount | KAI | **FIXED** `5a668f0` |
 | F-07 | LOW | API abuse / disclosure | `/api/health` is public, unthrottled, and does two DB counts per call | KAI | **FIXED** `2c2c210` |
 | F-08 | LOW | hygiene | `x-powered-by: Next.js` advertises the framework | KAI | **FIXED** `02e1f2a` (with F-03) |
@@ -480,7 +486,10 @@ production database write, hosting configuration, or legal wording.
    every `/thanks` link already emailed stops working, and any printed event QR carrying a `sig=`
    stops working. The Ideabaaz page is unaffected, because it signs its own tier per request. With
    the store one day old this costs almost nothing; in a month it will not be cheap.
-3. **Prune the old webhook payloads** (Supabase SQL editor). New rows are already summaries:
+3. ~~**Prune the old webhook payloads**~~ **DONE 2026-08-23.** Founder ran it in the Supabase SQL
+   editor; `select count(*) from public.webhook_events where payload ? 'payload'` now returns **0**,
+   so no row holds a full Razorpay event any more. F-05 is fully closed: new rows are summaries by
+   code, old rows are pruned. The statement, kept for reference and safe to re-run:
    ```sql
    update public.webhook_events
       set payload = jsonb_build_object('event', event_type, 'pruned', true)
