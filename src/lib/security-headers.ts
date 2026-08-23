@@ -129,9 +129,31 @@ export function contentSecurityPolicy(dev = false): string {
 
 export type HeaderPair = { key: string; value: string };
 
+/** HSTS, with subdomains (F-09, founder-approved 2026-08-23).
+ *
+ *  The platform already sent `max-age=63072000` on its own. What this adds is
+ *  `includeSubDomains`, which is the half that matters: without it, a subdomain
+ *  served over plain HTTP is a place to put a page that looks like ours and
+ *  reads cookies scoped to the parent domain.
+ *
+ *  IT WAS CHECKED BEFORE IT WAS ENABLED, and the check found something. This
+ *  domain has four subdomains, two of them nothing to do with this repo, and
+ *  `admin.kheelona.com` was serving a Firebase default certificate that did not
+ *  cover it, so it was reachable only by clicking through a TLS warning (F-15).
+ *  Since HSTS makes a certificate warning impossible to click through, turning
+ *  this on then would have hard-blocked that panel for two years per browser.
+ *  It was fixed first. All five hosts now present certificates that validate:
+ *  the apex, www, store, api and admin.
+ *
+ *  `preload` is deliberately NOT here. That means submission to a list baked
+ *  into browser binaries, and coming back off it takes months. It needs its own
+ *  decision, not a ride along with this one. */
+const HSTS = "max-age=63072000; includeSubDomains";
+
 /** Everything sent on every HTML response. */
 export function securityHeaders(dev = false): HeaderPair[] {
   return [
+    { key: "Strict-Transport-Security", value: HSTS },
     {
       key: CSP_PHASE === "enforce" ? "Content-Security-Policy" : "Content-Security-Policy-Report-Only",
       value: contentSecurityPolicy(dev),

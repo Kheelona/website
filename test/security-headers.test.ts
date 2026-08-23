@@ -112,6 +112,24 @@ describe("the content security policy", () => {
 });
 
 describe("the rest of the security headers", () => {
+  /* F-09. The platform sent max-age on its own; includeSubDomains is the half
+     that matters, because a subdomain reachable over plain HTTP is a place to
+     serve something that looks like us. Enabled only after F-15 was fixed:
+     admin.kheelona.com had a certificate that did not cover it, and HSTS makes
+     a certificate warning impossible to click through. */
+  it("binds every subdomain to HTTPS, for two years", () => {
+    const hsts = byKey("Strict-Transport-Security")!;
+    expect(hsts).toContain("includeSubDomains");
+    expect(Number(/max-age=(\d+)/.exec(hsts)![1])).toBeGreaterThanOrEqual(31_536_000);
+  });
+
+  it("does not claim a preload entry nobody submitted", () => {
+    /* preload means a list compiled into browser binaries, and removal from it
+       takes months. It is a separate decision, not a ride along with the one
+       above. Asserted so it cannot be added absent-mindedly. */
+    expect(byKey("Strict-Transport-Security")).not.toContain("preload");
+  });
+
   it("stops content-type sniffing", () => {
     expect(byKey("X-Content-Type-Options")).toBe("nosniff");
   });
