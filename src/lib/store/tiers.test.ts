@@ -103,6 +103,40 @@ describe("resolveTier under the unit cap", () => {
     expect(calls.filter((c) => c.table === "preorders")).toEqual([]);
   });
 
+  it("honours expires_on inclusively: sells on the last day, refuses after", async () => {
+    /* The Ideabaaz page (2026-08-23) leans on this as its backstop: the
+       founder closes by hand on 31 August, and this boundary is what catches
+       the day the hand slips. */
+    results["event_tiers.select"] = {
+      data: {
+        id: "ideabaaz",
+        label: "Ideabaaz exclusive price",
+        amount_paise: 9_900,
+        cap: null,
+        expires_on: "2026-08-31",
+        active: true,
+      },
+    };
+    const signed = sign(env.signingSecret, "event-link", "ideabaaz");
+
+    const lastDay = await resolveTier(
+      env,
+      { tier: "ideabaaz", signature: signed },
+      new Date("2026-08-31T18:00:00Z"),
+    );
+    expect(lastDay).toEqual({
+      ok: true,
+      tier: { id: "ideabaaz", amountPaise: 9_900, label: "Ideabaaz exclusive price" },
+    });
+
+    const morningAfter = await resolveTier(
+      env,
+      { tier: "ideabaaz", signature: signed },
+      new Date("2026-09-01T00:30:00Z"),
+    );
+    expect(morningAfter).toEqual({ ok: false, reason: "expired" });
+  });
+
   it("explains both mode refusals in refresh-the-page words", () => {
     expect(tierRefusalMessage("cap-reached")).toContain("₹7,999");
     expect(tierRefusalMessage("cap-reached")).toContain("Refresh");

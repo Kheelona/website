@@ -42,6 +42,7 @@ export function PreorderForm({
   signature,
   amountLabel,
   mode = "token",
+  balanceLabel = BALANCE_PRICE,
 }: {
   tier: string;
   signature?: string;
@@ -53,6 +54,11 @@ export function PreorderForm({
    *  changes sentences, never numbers. Event pages always pass "token": an
    *  event token is a token, whatever the public mode is. */
   mode?: "token" | "full";
+  /** The balance the caption states, formatted by the server. Defaults to the
+   *  public ₹4,500; event pages pass ₹4,999 minus the token actually paid, so
+   *  a ₹99 booking honestly reads ₹4,900 (2026-08-23). A label, not a charge:
+   *  the server still prices the order from the tier alone. */
+  balanceLabel?: string;
 }) {
   const [errors, setErrors] = useState<FieldErrors<ContactInput>>({});
   const [state, setState] = useState<"idle" | "working" | "paying">("idle");
@@ -239,7 +245,7 @@ export function PreorderForm({
       <p className="text-[14px] leading-[1.55] text-ink-muted">
         {mode === "token" ? (
           <>
-            {amountLabel} today, {BALANCE_PRICE} when your Lumi is ready to
+            {amountLabel} today, {balanceLabel} when your Lumi is ready to
             ship, for the {LAUNCH_PRICE} price. Refundable in full until we
             dispatch it. We never see your card details, and nothing is ever
             charged automatically.

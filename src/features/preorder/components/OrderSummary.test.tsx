@@ -29,6 +29,16 @@ describe("OrderSummary", () => {
     expect(screen.getAllByText(new RegExp(LAUNCH_PRICE)).length).toBeGreaterThan(0);
   });
 
+  it("derives the balance for an event token, so ₹99 today reads ₹4,900 on dispatch", () => {
+    /* 2026-08-23, the Ideabaaz page: the balance is what the ₹4,999 price
+       still needs after THIS token, not the public ₹4,500. */
+    render(
+      <OrderSummary amountLabel="₹99" tierLabel="Ideabaaz exclusive price" balanceLabel="₹4,900" />,
+    );
+    expect(screen.getByText("₹4,900 on dispatch")).toBeInTheDocument();
+    expect(screen.queryByText(`${BALANCE_PRICE} on dispatch`)).toBeNull();
+  });
+
   it("says the whole price is paid in the full-payment shape, with no balance line (§8.26)", () => {
     render(<OrderSummary amountLabel={FULL_PRICE} tierLabel="Launch price" mode="full" />);
     expect(screen.getByText(`${FULL_PRICE} today`)).toBeInTheDocument();

@@ -37,6 +37,11 @@ const ROUTES = [
   `${BASE}/shipping`,
   `${BASE}/nope-404`,
   `${STORE}/`,
+  /* The public Ideabaaz partner page (2026-08-23). Locally, without store keys
+     or with the tier closed, it renders its ended state, which is itself a
+     page the voice and axe laws apply to; against production before 31 Aug
+     2026 it renders the live ₹99 offer. */
+  `${STORE}/ideabaaz`,
 ];
 
 const WIDTHS = [390, 1280];

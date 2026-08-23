@@ -183,4 +183,20 @@ describe("PreorderForm", () => {
       "https://kheelona.com/refund",
     );
   });
+
+  it("captions the derived balance when an event page passes one (2026-08-23)", () => {
+    /* A ₹99 Ideabaaz booking owes ₹4,900, and the caption under the pay button
+       is one of the places a parent reads that promise. The caption text spans
+       interpolation nodes, so the assertion reads the rendered text whole. */
+    const { container } = render(
+      <PreorderForm tier="ideabaaz" signature="sig" amountLabel="₹99" balanceLabel="₹4,900" />,
+    );
+    expect(container.textContent).toMatch(/₹4,900 when your Lumi is ready to ship/);
+    expect(container.textContent).not.toContain("₹4,500");
+  });
+
+  it("keeps the public ₹4,500 caption when no balance is passed", () => {
+    const { container } = render(<PreorderForm tier="launch" amountLabel="₹499" />);
+    expect(container.textContent).toMatch(/₹4,500 when your Lumi is ready to ship/);
+  });
 });

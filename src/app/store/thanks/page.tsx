@@ -7,7 +7,7 @@ import { FULL_TIER } from "@/lib/store/mode";
 import { AddressForm } from "@/features/preorder";
 import {
   formatInr,
-  BALANCE_PRICE,
+  LAUNCH_AMOUNT_PAISE,
   LAUNCH_PRICE,
   SHIP_DATE_TEXT,
   SUPPORT_WHATSAPP_HREF,
@@ -90,7 +90,12 @@ export default async function ThanksPage({
         {order.tier === FULL_TIER ? (
           <Row label="Due on dispatch" value="Nothing. You have paid in full" />
         ) : (
-          <Row label="Due on dispatch" value={`${BALANCE_PRICE}, of the ${LAUNCH_PRICE} price`} />
+          /* Derived from the row, not the public constant: a ₹99 event token
+             owes ₹4,900, and a ₹499 token keeps reading ₹4,500 to the byte. */
+          <Row
+            label="Due on dispatch"
+            value={`${formatInr(Math.max(0, LAUNCH_AMOUNT_PAISE - order.amount_paise))}, of the ${LAUNCH_PRICE} price`}
+          />
         )}
         <Row label="Ships from" value={SHIP_DATE_TEXT} />
       </dl>

@@ -1,0 +1,72 @@
+#!/usr/bin/env node
+/** A minimal Supabase REST stand-in, for local visual QA of store pages.
+ *
+ *  The store's happy paths need two answers a DUMMY .env cannot give: the
+ *  `event_tiers` row a partner page resolves, and the paid-orders count the
+ *  mode gate reads. This serves exactly those, so `npx next start` with
+ *  SUPABASE_URL=http://127.0.0.1:54321 renders the real pages for qa:shot /
+ *  qa:axe / qa:text instead of their not-configured states. Read-only by
+ *  construction: any write hits the 404 branch, so a stray create-order in a
+ *  local session cannot invent an order that looks real.
+ *
+ *  Usage:
+ *    node tools/qa/supabase-stub.mjs &          # port 54321
+ *    STUB_PAID_COUNT=500 ... # flips the public store to full mode
+ *
+ *  Then start the app with the stub env (all six store vars set; Razorpay
+ *  values stay fake, which is fine for rendering — checkout would fail at the
+ *  payment sheet, which local QA never opens).
+ */
+import { createServer } from "node:http";
+
+const PORT = Number(process.env.STUB_PORT ?? 54321);
+const PAID_COUNT = Number(process.env.STUB_PAID_COUNT ?? 12);
+
+/** The tiers local QA needs to exist. Expiry far out: the stub tests the
+ *  page, not the calendar — tiers.test.ts owns the expiry boundary. */
+const EVENT_TIERS = [
+  {
+    id: "ideabaaz",
+    label: "Ideabaaz exclusive price",
+    amount_paise: 9_900,
+    cap: null,
+    expires_on: "2099-01-01",
+    active: true,
+  },
+  {
+    id: "blr-oct-expo",
+    label: "Bangalore expo price",
+    amount_paise: 9_900,
+    cap: 100,
+    expires_on: "2099-01-01",
+    active: true,
+  },
+];
+
+createServer((req, res) => {
+  const url = new URL(req.url ?? "/", `http://127.0.0.1:${PORT}`);
+  const method = req.method ?? "GET";
+  res.setHeader("content-type", "application/json");
+
+  if (url.pathname === "/rest/v1/event_tiers" && (method === "GET" || method === "HEAD")) {
+    const id = url.searchParams.get("id")?.replace(/^eq\./, "");
+    const rows = EVENT_TIERS.filter(
+      (tier) => (id ? tier.id === id : true) && tier.active,
+    );
+    res.end(JSON.stringify(rows));
+    return;
+  }
+
+  if (url.pathname === "/rest/v1/preorders" && (method === "GET" || method === "HEAD")) {
+    /* Only ever asked for a head-count (the mode gate and event caps); the
+       answer travels in content-range, exactly as PostgREST sends it. */
+    res.setHeader("content-range", `0-0/${PAID_COUNT}`);
+    res.end(JSON.stringify([]));
+    return;
+  }
+
+  res.statusCode = 404;
+  res.end(JSON.stringify({ message: `stub: no route for ${method} ${url.pathname}` }));
+}).listen(PORT, () => {
+  console.log(`supabase stub on http://127.0.0.1:${PORT} (paid count ${PAID_COUNT})`);
+});

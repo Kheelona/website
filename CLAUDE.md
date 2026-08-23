@@ -43,7 +43,10 @@ order still in the dispatch queue (`status='paid'` IS the queue, §8.25-ee — a
 NOT a cancellation), and an unrecoverable orphaned payment (§8.25-ff). **Always refund the whole
 token.**
 
-**🟡 STILL OPEN** (the ⏳ OPEN half of `FOUNDER-TODO.md` is the queue): DMARC tightens to
+**🟡 STILL OPEN** (the ⏳ OPEN half of `FOUNDER-TODO.md` is the queue): the **Ideabaaz partner page**
+`store.kheelona.com/ideabaaz` (₹99 public event tier, §8.25-g-i, checkpoint
+`ideabaaz-event-page-2026-08-23.md`) needs its tier row inserted before 26 Aug and closes 31 Aug —
+both dated founder items; DMARC tightens to
 `p=quarantine` on **5 September 2026** (scheduled agent + dated item); a trivial Supabase query takes
 250–975ms, suggesting the project is not in an Indian region (raised, closed as not actionable); and
 the standing **sell-out copy sweep** the day health first reports `preorder:"full"` (§8.26-g).

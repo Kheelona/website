@@ -48,8 +48,11 @@ price beside it in words: a parent should know it is ₹99 before they scan.
 ## During the event
 
 The page shows the label and the ₹99 amount, and the summary panel still states
-the full ₹4,999 price and the ₹4,500 balance. That is deliberate: an event price
-that hides what happens next is the fastest way to a refund request.
+the full ₹4,999 price and the balance it still needs — derived from THIS token,
+so a ₹99 booking reads ₹4,900, never the public ₹4,500 (2026-08-23; the receipt
+and the thanks page derive the same way, from the order row). That is
+deliberate: an event price that hides what happens next is the fastest way to a
+refund request.
 
 If the link stops working, the page says which of the three reasons it was and
 offers the ₹499 price instead, so nobody is left stuck at a stall. You can lift a
@@ -67,6 +70,29 @@ from preorders where tier = 'blr-oct-expo' and status = 'paid';
 
 That is your event's conversion, and it is the number worth carrying into the
 decision about the next one.
+
+## A public partner page (the /ideabaaz pattern, §8.25-g-i)
+
+Sometimes the audience hears a URL from a stage instead of scanning a QR. For
+that, a dedicated route (`src/app/store/<partner>/page.tsx`, reached as
+`store.kheelona.com/<partner>`) signs its own tier server-side and renders the
+same form — plus the partner's logo chip and the struck-through public price.
+First use: `/ideabaaz` for Ideabaaz Startup Fest (₹99, expires 2026-08-31,
+capless by founder decision, closed by hand after the fest).
+
+What changes against a QR link: the URL is public, so signing no longer
+contains anything — the expiry, any cap, and your manual close are the whole
+containment. What does not change: the tier is still a dashboard row (create it
+the same way as above), the amount is still read server-side, and the page still
+needs no `?sig=` because it computes its own. Prefer a QR link for a stall;
+prefer a page when the URL itself is the handout. To close one early, set
+`active=false` — the page then renders its "has ended" state, which points at
+the regular store.
+
+One trap: with the local DUMMY `.env` the page can only render its not-open
+state. To see the live ₹99 page locally, run `node tools/qa/supabase-stub.mjs`
+and start the server with the stub's env (the stub's header comment carries the
+exact incantation).
 
 ## Events and the 500-unit cap (2026-08-23, §8.26)
 

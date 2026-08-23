@@ -1,6 +1,6 @@
 import {
   LAUNCH_PRICE,
-  BALANCE_PRICE,
+  LAUNCH_AMOUNT_PAISE,
   SHIP_DATE_TEXT,
   STORE_URL,
   LEGAL_ENTITY,
@@ -109,6 +109,11 @@ export function preorderAckEmail(input: AckInput): Email {
      full-payment order owes nothing and must never be promised a balance link,
      while a token order's email stays byte-for-byte what it always was. */
   const paidInFull = order.tier === "full";
+  /* The balance is what the ₹4,999 price still needs AFTER this order's own
+     token, derived from the row: ₹499 orders keep reading ₹4,500 to the byte,
+     and a ₹99 event token honestly reads ₹4,900 rather than parroting the
+     public figure (2026-08-23, the Ideabaaz page). */
+  const balanceDue = formatInr(Math.max(0, LAUNCH_AMOUNT_PAISE - order.amount_paise));
 
   const addressBlock = needsAddress
     ? p(
@@ -127,7 +132,7 @@ export function preorderAckEmail(input: AckInput): Email {
      <div style="border:1px solid ${RULE};border-radius:12px;padding:16px;margin:0 0 18px">
        <p style="margin:0 0 8px;font-size:15px"><strong>Order</strong> ${order.order_ref}</p>
        <p style="margin:0 0 8px;font-size:15px"><strong>Paid today</strong> ${paid}</p>
-       <p style="margin:0 0 8px;font-size:15px"><strong>Due on dispatch</strong> ${paidInFull ? "Nothing. You have paid in full" : `${BALANCE_PRICE}, of the ${LAUNCH_PRICE} price`}</p>
+       <p style="margin:0 0 8px;font-size:15px"><strong>Due on dispatch</strong> ${paidInFull ? "Nothing. You have paid in full" : `${balanceDue}, of the ${LAUNCH_PRICE} price`}</p>
        <p style="margin:0;font-size:15px"><strong>Ships from</strong> ${SHIP_DATE_TEXT}</p>
      </div>
      ${addressBlock}
@@ -137,7 +142,7 @@ export function preorderAckEmail(input: AckInput): Email {
              `That was the whole price. There is nothing more to pay and no link to wait for, nothing is charged automatically, and we do not keep your card.`,
            )
          : p(
-             `When your Lumi is ready to leave for you, we send a payment link for the ${BALANCE_PRICE} balance on WhatsApp and by email. Nothing is charged automatically, and we do not keep your card.`,
+             `When your Lumi is ready to leave for you, we send a payment link for the ${balanceDue} balance on WhatsApp and by email. Nothing is charged automatically, and we do not keep your card.`,
            )
      }
      ${p(`Changed your mind? Message us any time before your Lumi is dispatched and we refund the ${paid} in full. No fee, and no reason needed.`)}
@@ -153,7 +158,7 @@ export function preorderAckEmail(input: AckInput): Email {
     `Paid today: ${paid}`,
     paidInFull
       ? "Due on dispatch: Nothing. You have paid in full."
-      : `Due on dispatch: ${BALANCE_PRICE}, of the ${LAUNCH_PRICE} price`,
+      : `Due on dispatch: ${balanceDue}, of the ${LAUNCH_PRICE} price`,
     `Ships from: ${SHIP_DATE_TEXT}`,
     "",
     needsAddress
@@ -162,7 +167,7 @@ export function preorderAckEmail(input: AckInput): Email {
     "",
     paidInFull
       ? "That was the whole price. There is nothing more to pay and no link to wait for, and nothing is charged automatically."
-      : `When your Lumi is ready to leave for you, we send a payment link for the ${BALANCE_PRICE} balance on WhatsApp and by email. Nothing is charged automatically.`,
+      : `When your Lumi is ready to leave for you, we send a payment link for the ${balanceDue} balance on WhatsApp and by email. Nothing is charged automatically.`,
     "",
     `Changed your mind? Message us any time before your Lumi is dispatched and we refund the ${paid} in full.`,
     "",

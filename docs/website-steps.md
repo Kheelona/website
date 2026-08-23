@@ -772,6 +772,20 @@ worthless once the event is over or the allocation is gone. Tier rows live in `e
 on Saturday needs a dashboard insert, not a Friday deploy. Runbook: `docs/preorder-events.md`;
 generator: `npm run event-link -- <id>`.
 
+**8.25-g-i A PUBLIC PARTNER PAGE MAY SIGN ITS OWN TIER, EYES OPEN** (founder, 2026-08-23; first use:
+`/store/ideabaaz` for Ideabaaz Startup Fest). When a partner needs a URL people can hear on a stage
+rather than scan, the route signs the tier server-side (`sign(secret, "event-link", id)`) and hands
+the signature to the same form — the order path, §8.25-c-i and the amount-from-`event_tiers` rule are
+untouched, and the page can only ever change sentences. What is deliberately given up is
+unguessability: the page is exactly as public as a QR photographed into a group chat, which §8.25-g's
+model already tolerates, so the containment must come from the OTHER two legs (expiry and/or cap,
+plus the founder's manual close) and the decision to run capless is the founder's per event, not a
+default. Such a page is never linked from the site, states the derived balance (the launch price
+minus ITS token, so ₹99 honestly owes ₹4,900 — `balanceLabel`, threaded from the page, with the
+receipt, thanks page and summary all deriving from the order row), and renders an honest ended state
+in place of a refusal. Local QA of the live state needs `tools/qa/supabase-stub.mjs`, because a DUMMY
+env can only ever show the not-open state.
+
 **8.25-h VALIDATION IS ONE IMPLEMENTATION, RUN TWICE.** `features/preorder/lib/validate.ts` runs in the
 browser as a courtesy and in the route handler as the only one that counts. Two implementations drift
 until the form accepts what the server rejects with no explanation. The same rule covers lengths:

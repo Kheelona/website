@@ -149,6 +149,30 @@ describe("the acknowledgement for a full-payment order (§8.26)", () => {
   });
 });
 
+describe("the acknowledgement for an event token (2026-08-23, the Ideabaaz page)", () => {
+  const eventOrder: PreorderRow = { ...order, tier: "ideabaaz", amount_paise: 9_900 };
+  const email = preorderAckEmail({
+    order: eventOrder,
+    addressUrl: "https://store.kheelona.com/thanks?x=1",
+  });
+
+  it("derives the balance from the row: ₹99 paid, ₹4,900 still due", () => {
+    for (const part of [email.html, email.text]) {
+      expect(part).toContain("₹99");
+      expect(part).toContain("₹4,900");
+      /* The public ₹4,500 belongs to ₹499 orders alone; parroting it here
+         would promise a ₹4,599 total nobody agreed to. */
+      expect(part).not.toContain(BALANCE_PRICE);
+    }
+  });
+
+  it("keeps the ₹499 receipt at ₹4,500 to the byte", () => {
+    const token = preorderAckEmail({ order, addressUrl: "https://x.example/t" });
+    expect(token.html).toContain(`${BALANCE_PRICE}, of the`);
+    expect(token.text).toContain(`${BALANCE_PRICE}, of the`);
+  });
+});
+
 describe("the internal alert", () => {
   const email = internalAlertEmail(order);
 

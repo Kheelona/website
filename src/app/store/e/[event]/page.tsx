@@ -5,6 +5,7 @@ import { resolveTier, tierRefusalMessage } from "@/lib/store/tiers";
 import { PreorderForm, OrderSummary } from "@/features/preorder";
 import {
   formatInr,
+  LAUNCH_AMOUNT_PAISE,
   LAUNCH_PRICE,
   SHIP_DATE_TEXT,
   LUMI_AGES,
@@ -64,6 +65,9 @@ export default async function EventPage({
   }
 
   const amountLabel = formatInr(result.tier.amountPaise);
+  /* What the ₹4,999 price still needs after THIS token, so a ₹99 event booking
+     honestly reads ₹4,900 rather than the public ₹4,500 (2026-08-23). */
+  const balanceLabel = formatInr(Math.max(0, LAUNCH_AMOUNT_PAISE - result.tier.amountPaise));
 
   return (
     <div className="mx-auto grid w-full max-w-[1100px] gap-10 px-6 py-10 md:grid-cols-[1fr_420px] md:py-14">
@@ -97,12 +101,23 @@ export default async function EventPage({
         <div className="max-w-[520px]">
           {/* Always the token shape, whatever the public mode is: an event
               token is a token, with the same balance-before-dispatch terms. */}
-          <PreorderForm tier={result.tier.id} signature={sig} amountLabel={amountLabel} mode="token" />
+          <PreorderForm
+            tier={result.tier.id}
+            signature={sig}
+            amountLabel={amountLabel}
+            mode="token"
+            balanceLabel={balanceLabel}
+          />
         </div>
       </div>
 
       <aside className="md:sticky md:top-6 md:self-start md:pt-2">
-        <OrderSummary amountLabel={amountLabel} tierLabel={result.tier.label} mode="token" />
+        <OrderSummary
+          amountLabel={amountLabel}
+          tierLabel={result.tier.label}
+          mode="token"
+          balanceLabel={balanceLabel}
+        />
       </aside>
     </div>
   );

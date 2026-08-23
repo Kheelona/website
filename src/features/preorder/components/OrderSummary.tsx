@@ -25,17 +25,24 @@ export function OrderSummary({
   amountLabel,
   tierLabel,
   mode = "token",
+  balanceLabel = BALANCE_PRICE,
 }: {
   amountLabel: string;
   tierLabel: string;
   mode?: "token" | "full";
+  /** What is still owed before dispatch, already formatted by the server.
+   *  Defaults to the public ₹4,500; event pages pass the derived figure
+   *  (₹4,999 minus the token actually paid), so a ₹99 booking honestly reads
+   *  ₹4,900 (2026-08-23, the Ideabaaz page). Like `amountLabel`, this is a
+   *  label decided server-side — it changes sentences, never charges. */
+  balanceLabel?: string;
 }) {
   const lines =
     mode === "token"
       ? [
           { head: `${amountLabel} today`, note: tierLabel, mark: 0 },
           {
-            head: `${BALANCE_PRICE} on dispatch`,
+            head: `${balanceLabel} on dispatch`,
             note: `The rest of the ${LAUNCH_PRICE} price, by a link we send you. Never automatic.`,
             mark: 1,
           },

@@ -30,6 +30,22 @@ anything that turns out wrong gets corrected here rather than argued twice.
 
 ## Dated, and the only items with a clock on them
 
+- [ ] **📅 Before 26 August 2026: insert the Ideabaaz tier row in Supabase** (the page is deployed
+      and shows "has ended" until the row exists). SQL editor, one statement:
+      `insert into event_tiers (id, label, amount_paise, cap, expires_on) values ('ideabaaz',
+      'Ideabaaz exclusive price', 9900, null, '2026-08-31');` Then open
+      https://store.kheelona.com/ideabaaz and check three things: ₹499 struck through, ₹99 on the
+      button, ₹4,900 on dispatch. **Recommended before the fest, your call:** one real ₹99 booking,
+      refunded in full after — the event-tier flavour of the payment path has never taken live money,
+      and the receipt is the only place the ₹4,900 wording meets a real customer.
+
+- [ ] **📅 31 August 2026: close the Ideabaaz page.** In Supabase: `update event_tiers set active =
+      false where id = 'ideabaaz';` The `expires_on` backstop kills it anyway from ~05:30 IST on
+      1 September, so nothing breaks if this slips a night (§8.25-g-i). Afterwards, the conversion
+      readout: `select count(*), sum(amount_paise) / 100 as rupees from preorders where tier =
+      'ideabaaz' and status = 'paid';` Remember these bookings each consume a first-500 unit at
+      ₹4,999, and each still owes ₹4,900 before dispatch.
+
 - [ ] **📅 5 September 2026: tighten DMARC to `p=quarantine`.** The two-week observation window ends
       then. **Read the reports at `dmarc@kheelona.com` FIRST** and confirm Google Workspace and Resend
       are both passing; only then edit the existing `_dmarc` TXT record in Cloudflare, changing
