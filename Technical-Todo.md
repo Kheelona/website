@@ -46,7 +46,7 @@ security headers live, the live pages carry no console errors or failed requests
       window. **The one open item that will actually block a step**, and the step is October.
       *Verified 2026-08-23: `/refund` still states the pre-dispatch-only promise honestly.*
 
-# 🟡 MEDIUM — every one needs a founder decision or a date, none needs code today
+# 🟡 MEDIUM — all three are dated or founder-deferred; none needs code today
 
 - [ ] 🧑 **📅 31 August 2026: close the Ideabaaz page.** In Supabase:
       `update event_tiers set active = false where id = 'ideabaaz';`
@@ -69,13 +69,6 @@ security headers live, the live pages carry no console errors or failed requests
       product data is collected. Wording is counsel's; the page is already counsel-gated.
       *Verified 2026-08-23 on the live page: zero mentions of retention, "how long", grievance or
       officer. The gap is real and unchanged.*
-
-- [ ] 🧑 **Which page owns the shared beats.** Cutting the Home ↔ Meet Lumi duplication needs a call
-      on which page owns each beat; then it is a short job. Open since V5, when the two pages measured
-      60% the same. *Verified 2026-08-23 by component: **LumiModes**, **AudioMoments** and **Faq** all
-      still render on both `/` and `/products/lumi`.* Medium rather than low because near-duplicate
-      pages compete with each other in search, and `/products/lumi` is the page a year of SEO went
-      into.
 
 # 🟢 LOW — facts, assets, confirmations and polish
 
@@ -149,6 +142,29 @@ worth churning a live commercial site for on its own.*
       So this is cosmetic consolidation, not design-authority non-compliance, and the token gate
       deliberately checks colour only. A 10+ file sweep on a live payment site for no user-visible
       change is the definition of unnecessary risk, which is exactly why R4 deferred it.
+
+## 🧑 Home ↔ Meet Lumi overlap — re-rated MEDIUM to LOW on 2026-08-23
+
+- [ ] **Which page owns the shared beats.** Open since V5, when the two pages measured ~60% the same.
+      **That premise is stale and the rating was wrong: V6 restructured Home around the growth arc and
+      the pages have diverged.** Home now owns the growth arc, the compare table, the price and 8 FAQ
+      questions; Meet Lumi owns the audio demos, what is in the box, the parent app and 19 FAQ
+      questions. What is genuinely still shared: three components (`LumiModes`, `AudioMoments`, `Faq`)
+      and one identical testimonial quote, which beside a CTA is legitimate social proof rather than
+      duplication.
+
+      **The FAQ overlap is deliberate, which is what dropped this to LOW.** Exactly ONE question is
+      shared verbatim ("What ages is Lumi for?"). The near-duplicates are worded differently on
+      purpose, and the code says so: Meet Lumi's ages answer carries "learning toys for 5 and 6 year
+      olds onward" as an SEO keyword decision (2026-08-12), and the internet answer has a comment
+      recording that both pages "agree in substance and differ only in length" by design (V6 D7).
+      Verified 2026-08-23: the substance of both overlapping answers does agree today.
+
+      **The one real residual risk**, if this is ever picked up: the two FAQ lists are hardcoded in
+      two page files, so they CAN drift, and §8.24-1 is the precedent — the offline claim was once
+      wrong on one page and right on the other. Single-sourcing them would fight the deliberate
+      per-page wording, so the honest options are to leave it, or to add a test asserting the
+      overlapping answers agree in substance rather than in text. Neither needs a founder decision.
 
 ## 🅿️ Parked, and fine to leave parked
 
