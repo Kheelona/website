@@ -1,5 +1,6 @@
 /** Brand shape path strings (verbatim). flower5/flower13/squircle come from
- *  Design/design-system/assets/shapes/ (viewBox 0 0 67.064 67.064); the R7
+ *  Design/Kheelona-Design-System-v3/assets/shapes/ (byte-identical to the old
+ *  system's set; viewBox 0 0 67.064 67.064); the R7
  *  additions come from the kheelona.ai kit (kh-assets/shapes/, founder repo)
  *  and carry their own viewBoxes -- fine for the 3D consumer, which
  *  normalizes by bounding box (lib/three/shape-geometry.ts). The DOM <Shape>

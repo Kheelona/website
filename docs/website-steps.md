@@ -142,7 +142,7 @@ Mechanisms introduced this cycle:
 - **Hidden-tab caveat for 3D QA**: R3F boots on requestAnimationFrame, which Chrome freezes in hidden/occluded tabs. A backgrounded automation tab shows an inert 300x150 canvas and no `scene-3d` class — that is browser throttling, not a site bug. Verify 3D with a visible window.
 - **AmbientStage** (`src/components/three/AmbientStage.tsx`): lighter per-route scene for interiors — static camera + pointer parallax, corridor-clamped shape field, wash colors measured from the page's own `[data-wash]` sections (`src/lib/three/ambient.ts`), per-route dressing in `src/lib/three/ambient-configs.ts` with `enabled:false` kill switch. No GLBs on interiors. Shared shell extracted from ThreeStage (`StageShell.tsx`, `backdrop.tsx`); `StageGate` takes `stage: "journey" | "ambient"`.
 - **Mobile perf contract**: `lite` tier arms the 3D stage on first user signal (scroll/pointer) then idle, keeping three.js out of the Lighthouse trace; fonts are WOFF2 (unused Glory-Italic removed); AVIF enabled in `next.config.ts`; `LaunchVideo` uses `preload="none"`.
-- **Token drift gate**: `tools/tokens/check-tokens.mjs` compares `Design/design-system/colors_and_type.css` ↔ `src/styles/globals.css` `@theme` ↔ `src/features/ambient-stage/lib/tokens.ts` and fails the site build on drift (curated wash intermediates whitelisted). [paths updated for the 2026-07-12 src/ reorg]
+- **Token drift gate**: `tools/tokens/check-tokens.mjs` compares `Design/Kheelona-Design-System-v3/tokens/kheelona.css` ↔ `src/styles/globals.css` `@theme` ↔ `src/features/ambient-stage/lib/tokens.ts` and fails the site build on drift, and fails HARD when the v3 CSS is missing (repointed in CS3, 2026-08-23; curated wash intermediates whitelisted). [paths updated for the 2026-07-12 src/ reorg]
 - **Review loop**: design panel note lives at `docs/design-review-2026-07-10.md`; approval loop capped at 3 iterations before founder escalation.
 
 ## 8.14 R5 calm pass (2026-07-10, founder-directed)
@@ -994,3 +994,12 @@ the offer line and bans month names from it. "30 September", "₹9,999" and "1 O
 place — the old ship date banned by literal text because §8.25-f's worst find was a hardcoded date no
 config change could reach. `tools/qa/sweep.mjs` carries the same list for rendered pages; the two lists
 change together or the sweep lies.
+
+## 8.27 Design authority note (2026-08-23)
+
+Every `Design/design-system/...` path in the sections ABOVE this line describes the build
+as it happened and stays as history. The design authority since CS3 of the v3 migration is
+**`Design/Kheelona-Design-System-v3/`** (`tokens/kheelona.css` is canonical; the site's
+extensions and the two v3 errata live in its `guidelines/site-extensions.md`). The old
+folder is reference-only and is deleted at the engagement's close, with founder approval —
+the token gate no longer reads it, so its deletion can no longer silently disable anything.

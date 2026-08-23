@@ -7,7 +7,10 @@
 @source not "../**/*.stories.tsx";
 @source not "../**/*.test.tsx";
 
-/* Kheelona design tokens, mapped from Design/design-system/colors_and_type.css.
+/* Kheelona design tokens, mapped from
+   Design/Kheelona-Design-System-v3/tokens/kheelona.css (the authority since
+   CS3, 2026-08-23; site extensions documented in that system's
+   guidelines/site-extensions.md).
    Do not invent values; if a token is missing, flag it (blueprint §8.2). */
 @theme {
   --color-orange: #ef762f;
