@@ -12,9 +12,11 @@ rotation, both confirmed on production) · F-02 the Next patch · F-03 the secur
 payment amount guard · F-07 the health throttle · F-08 the framework header · F-10 JSON-LD escaping ·
 F-14 the rate-limit key.
 
-**Still open, all of it either the founder's or deliberately staged:** F-04 (an edge rate-limit
-rule), F-09 (HSTS scope), F-12 (DPDP wording, counsel's), and flipping the CSP from Report-Only to
-enforcing once its reports have been read. See sections 5a and 5b.
+Also closed by the founder on the same day: **F-04**, with a Vercel Firewall rate-limit rule on the
+pre-order POSTs.
+
+**Still open:** F-09 (HSTS scope, a decision), F-12 (DPDP wording, counsel's), and flipping the CSP
+from Report-Only to enforcing once its reports have been read. See sections 5a and 5b.
 
 This file is the engagement's memory. It is written so a session with no other context can pick the
 work up: the architecture, every finding with its status, what was fixed and by which test, gate
@@ -184,7 +186,7 @@ bundle or in git history, and no unauthenticated path writes to `preorders`.**
 | F-01 | HIGH | payment / privacy | The address token, which is the only authorisation on an order, is sent to third-party analytics inside the URL | KAI + HUMAN | **CLOSED** `84ae07e` + founder rotation, both confirmed on production |
 | F-02 | HIGH | dependencies | Next.js 16.2.10 carries 9 advisories, 4 HIGH, all fixed in 16.2.11 | KAI | **FIXED** `120271f` (16.2.12) |
 | F-03 | MEDIUM (HIGH on the payment page) | headers / skimming | No CSP, no frame-ancestors, no nosniff, no Referrer-Policy, no Permissions-Policy on either host | KAI | **FIXED, PHASE 1 OF 2** `02e1f2a` (CSP Report-Only; enforcing is a second deploy) |
-| F-04 | MEDIUM | API abuse | Rate limiting is per-instance in-memory, so it does not bound abuse on serverless | HUMAN (WAF) | **ESCALATED** — belongs at the edge, see below |
+| F-04 | MEDIUM | API abuse | Rate limiting is per-instance in-memory, so it does not bound abuse on serverless | HUMAN (WAF) | **CLOSED** — founder published a Vercel Firewall rule, 2026-08-23 |
 | F-05 | MEDIUM | data protection | `webhook_events.payload` keeps the entire Razorpay event forever | KAI + HUMAN | **CLOSED** `8df8977` for new rows, founder pruned the old ones (count now 0) |
 | F-06 | LOW-MEDIUM | payment integrity | `markPaid` never compares the captured amount to the order's amount | KAI | **FIXED** `5a668f0` |
 | F-07 | LOW | API abuse / disclosure | `/api/health` is public, unthrottled, and does two DB counts per call | KAI | **FIXED** `2c2c210` |
@@ -497,8 +499,15 @@ production database write, hosting configuration, or legal wording.
       and payload ? 'payload';
    ```
    (The `payload ? 'payload'` test matches only the old full-event shape, so re-running it is safe.)
-4. **Decide on a Vercel Firewall rate-limit rule** for the three store POST routes (F-04). This is
-   the real fix for abuse bounding, and it is at your layer, not in the code.
+4. ~~**Decide on a Vercel Firewall rate-limit rule**~~ **DONE 2026-08-23.** Founder published rule
+   `store-post-throttle`: Request Path starts with `/api/preorder/` AND Method equals POST → fixed
+   window, 20 requests per 60 seconds keyed on IP → 429. Worth recording: **the Rate Limit action is
+   available on the Hobby plan** (the IP-bypass list is what needs Pro). Verified afterwards: a
+   legitimate POST to `/api/preorder/create-order` still reaches the app and gets OUR 422 validation
+   answer rather than a firewall refusal, and `/api/razorpay/webhook` still answers (405 to a GET),
+   so Razorpay's retries and the daily health cron are both outside the rule, which is the one thing
+   that would have cost money to get wrong. F-04 CLOSED. The rule was deliberately NOT load-tested
+   against production.
 5. **Decide on HSTS `includeSubDomains`** (F-09). It binds every subdomain of kheelona.com to HTTPS
    in every browser that has seen the header. Say yes and I will add it to the header block; say no
    and I will record why.
