@@ -15,7 +15,8 @@
     "qa:sweep": "node tools/qa/sweep.mjs",
     "qa:shot": "node tools/qa/shot.mjs",
     "qa:text": "node tools/qa/text.mjs",
-    "qa:axe": "node tools/qa/axe-run.mjs"
+    "qa:axe": "node tools/qa/axe-run.mjs",
+    "qa:payment": "node tools/qa/payment-probe.mjs"
   },
   "dependencies": {
     "@next/third-parties": "^16.2.12",
