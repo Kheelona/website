@@ -18,7 +18,7 @@ paste this into the SQL editor with your own values:
 
 ```sql
 insert into event_tiers (id, label, amount_paise, cap, expires_on)
-values ('blr-sep-expo', 'Bangalore expo price', 9900, 100, '2026-09-30');
+values ('blr-oct-expo', 'Bangalore expo price', 9900, 100, '2026-10-15');
 ```
 
 - `id` is lowercase letters, numbers and hyphens. It appears in the URL.
@@ -33,10 +33,10 @@ values ('blr-sep-expo', 'Bangalore expo price', 9900, 100, '2026-09-30');
 **2. Generate the link:**
 
 ```
-STORE_SIGNING_SECRET=<the deployment's value> npm run event-link -- blr-sep-expo
+STORE_SIGNING_SECRET=<the deployment's value> npm run event-link -- blr-oct-expo
 ```
 
-It prints `https://store.kheelona.com/e/blr-sep-expo?sig=...`. The secret must be
+It prints `https://store.kheelona.com/e/blr-oct-expo?sig=...`. The secret must be
 the same one the deployment uses, or the link will not verify. If you rotate
 `STORE_SIGNING_SECRET`, every printed QR code stops working, so do not rotate it
 during an event.
@@ -62,7 +62,7 @@ rows in `preorders` with `tier` set to the event id, so:
 
 ```sql
 select count(*), sum(amount_paise) / 100 as rupees
-from preorders where tier = 'blr-sep-expo' and status = 'paid';
+from preorders where tier = 'blr-oct-expo' and status = 'paid';
 ```
 
 That is your event's conversion, and it is the number worth carrying into the

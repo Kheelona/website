@@ -28,9 +28,10 @@ or Supabase values set, merging would replace today's working free-list form wit
 a downgrade for as long as it lasts. Order: keys into Vercel first, then merge, then the store works
 from the first second.
 
-**⚠ VERCEL PLAN.** The project is on **Hobby**. The daily `/api/health` cron fits Hobby's limits, but
-Vercel's fair-use terms reserve Hobby for non-commercial projects, and this is about to take payments.
-Worth moving to Pro before real orders arrive rather than after a suspension.
+**⚠ VERCEL PLAN.** The project was on **Hobby** when this runbook was written (2026-08-22), and
+Vercel's fair-use terms reserve Hobby for non-commercial projects — this one takes payments. If the
+plan has not been upgraded to Pro since, it is worth doing before a suspension does it for you
+(founder dashboard; status unverified as of the 2026-08-23 doc audit).
 
 ---
 
@@ -140,7 +141,7 @@ They go in **two** places, and both matter:
 Sanity check before going further:
 
 ```
-npm test                 # expect 610 passed
+npm test                 # expect the count in docs/project-state.json tests.count, all passed
 npx tsc --noEmit         # expect silence
 npx next build           # expect "Compiled successfully"
 ```
@@ -202,18 +203,20 @@ curl -s localhost:3456/api/health
 Then the store page itself:
 
 ```
-curl -s -H "Host: store.kheelona.com" localhost:3456/ | grep -c "Pay ₹499 and reserve"
+curl -s -H "Host: store.kheelona.com" localhost:3456/ | grep -c "Pay ₹"
 ```
 
 **Pass:** `1`. If it prints 0 and the page says "pre-orders open here shortly", the keys are not being
-read.
+read. (Since §8.26 the button reads "Pay ₹499 and reserve" in token mode or "Pay ₹7,999 and
+pre-order" in full mode — which one you see depends on the live paid count, so match on the prefix.)
 
 ---
 
 ## Step 4 — the test payment, end to end
 
-**This has never been run. It is the one gate that cannot be skipped.** It needs a deployed URL,
-because a webhook cannot reach localhost.
+**This was run for real on 2026-08-22 (the ⚑ block above) — on a KEY ROTATION it must be run
+again, and it is the one gate that cannot be skipped.** It needs a deployed URL, because a webhook
+cannot reach localhost.
 
 1. Push the branch and let Vercel build the preview (`website-hdn2.vercel.app`). Confirm the preview's
    environment has the **test** keys.
@@ -231,7 +234,7 @@ because a webhook cannot reach localhost.
 | --- | --- |
 | The browser lands on `/thanks` | Heading reads "Your Lumi is reserved." (not "We are confirming it now") |
 | The database | `select order_ref, status, amount_paise, rzp_payment_id from preorders order by id desc limit 1;` → `status = 'paid'`, `amount_paise = 49900` |
-| The parent's email | Arrives, names the order reference, says ₹4,500 on dispatch and 1 October 2026, carries the address link |
+| The parent's email | Arrives, names the order reference, carries the ship date from `SHIP_DATE_TEXT` (20 October 2026 as of 2026-08-23) and the address link; a token order says ₹4,500 on dispatch, a full-payment order says paid in full |
 | The internal alert | Arrives at `ORDER_ALERT_EMAIL` with the number and the address flag |
 | The address step | Saving it returns "We have your address." and `select address from preorders …` is populated |
 
@@ -300,7 +303,9 @@ than one. To count what a reader can actually click:
 node tools/qa/text.mjs https://kheelona.com/ | grep -c "https://store.kheelona.com"
 ```
 
-**Pass:** exactly 1, the finale button (§8.25-b).
+**Pass:** ≥ 1. (Written when §8.25-b made the finale the ONLY outbound link; that law inverted on
+2026-08-23 — every pre-order CTA now goes straight to the store, so several matches are correct and
+ZERO is the failure.)
 
 Then the full sweep against production:
 

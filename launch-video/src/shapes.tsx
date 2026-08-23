@@ -1,6 +1,6 @@
 import React from "react";
 
-// Brand shape primitives from Design/design-system/assets/shapes/ (paths verbatim).
+// Brand shape primitives from the old design system's shapes (byte-identical set now at Design/Kheelona-Design-System-v3/assets/shapes/) (paths verbatim).
 // Rendered inline so fill is controllable (originals use fill="currentColor").
 
 const PATHS = {

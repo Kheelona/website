@@ -1,7 +1,7 @@
 # REVAMP WORKING FILE — theme B "Kheelu's Tour" → production site
 
 **This is the brief-mandated working file for the 2026-07-24 revamp** (founder brief:
-`Websit prompt based on B + inputs - 24-Jul.pdf`, repo root). Keep it current at every step;
+`Websit prompt based on B + inputs - 24-Jul.pdf`, removed from the tree at the 2026-08-23 doc audit — git history keeps it). Keep it current at every step;
 cold restart = read this file top to bottom, then `docs/project-state.json`. **Do NOT delete this file.** The original instruction was to
 delete it once the founder approved the finished revamp. That approval effectively happened when the
 site went live on 2026-07-28, but by then this had become the site's operating record and the entry
@@ -13,17 +13,22 @@ here in full so nothing depends on conversation memory.
 
 ---
 
-## ⏭ COLD-RESTART: START HERE (last updated 2026-08-23 — **V6 LIVE · PAID PRE-ORDERS LIVE AND PROVEN**)
+## ⏭ COLD-RESTART: START HERE (last updated 2026-08-23 — **SUPERSEDED AS THE ENTRY POINT**)
 
-### 💳 THE PAID STORE IS LIVE (2026-08-22), read this before anything else
+**The entry-point duty moved on 2026-08-23**: a cold restart now starts at **`CLAUDE.md`'s banner →
+`docs/project-state.json` → `docs/checkpoints/v3-migration-2026-08-23.md` +
+`docs/checkpoints/migration-to-new-dsx.md`**. That engagement changed the commercial facts below:
+the offer is now **₹4,999 for the FIRST 500 UNITS then ₹7,999 paid in full** (§8.26 — the date
+deadline is gone), ages are **3+**, the ship date is **20 October 2026**, the design authority is
+`Design/Kheelona-Design-System-v3/`, and the rollback tag is **`pre-v3-migration-2026-08-23`** =
+`b27fd25`. This file remains the revamp-era operating record and the store-launch lessons below are
+still true; read anything below that states a price, an age or a date as PRE-MIGRATION history.
 
-**kheelona.com sells a ₹499 refundable token that holds a Lumi at ₹4,999**, with the ₹4,500 balance due
-by payment link before dispatch. Payment happens on **store.kheelona.com**, which is THIS repo served
-through a host rewrite in `src/proxy.ts`. Orders go to Supabase, receipts through Resend. Ship date
-**1 October 2026**, price deadline **30 September 2026**, and **no unit cap**.
+### 💳 THE PAID STORE WENT LIVE 2026-08-22 (the plumbing is all still current)
 
-Merged to `main` and deployed the same day it was built. Rollback tag **`v6-live-2026-08-22`** points at
-`0fb02fe`, the last pre-store commit.
+**kheelona.com sells a ₹499 refundable token**, with the balance due by payment link before dispatch
+on token orders. Payment happens on **store.kheelona.com**, which is THIS repo served through a host
+rewrite in `src/proxy.ts`. Orders go to Supabase, receipts through Resend.
 
 **IT IS FULLY VERIFIED WITH A REAL PAYMENT.** A real ₹499 UPI pre-order (`KH-YPJ8-GHVT`) was placed on
 live keys and refunded afterwards. All three webhook deliveries returned 200, which proves the secret
@@ -37,7 +42,8 @@ already proved** — read `docs/store-go-live.md`, the "⚑ WHERE THIS ACTUALLY 
 readiness, which Razorpay mode is live, whether email is configured, database latency, and — when
 unconfigured — the NAMES of the missing environment variables.
 
-**Store laws: `docs/website-steps.md` §8.25.** Read before touching any of it. The seven that bite:
+**Store laws: `docs/website-steps.md` §8.25 AND §8.26** (the unit-cap laws, added 2026-08-23, win
+where they overlap). The ones from §8.25 that bite:
 the client never sends a price (§8.25-c-i) · paid is decided twice through one idempotent `markPaid`
 (§8.25-p) · the webhook verifies the RAW body and releases its event claim on failure (§8.25-m) · an
 address is authorised only by its signed token (§8.25-n) · every pre-order CTA reaches the store in ONE
@@ -94,22 +100,25 @@ Three founder items, all shipped and verified (`docs/checkpoints/one-tap-and-cle
 
 ---
 
-### V6, which is what is actually live
+### The V6 content round (2026-07-31) — the last pre-migration state of the site
 
-**V6 IS LIVE on https://kheelona.com** (`main` = `demo-website` = `29d2fdd`, trees identical;
-rollback tag **`v5-live-2026-07-31`**). Work on `main`; keep `demo-website` in sync by merging.
-Verify locally: `npm test` (expected count: `tests.count` in `docs/project-state.json`) · `npx tsc --noEmit` · `npm run build` (token-check 17) ·
-`npx next start -p 3456` (check `lsof` first; `rm -rf .next/cache/images` if a replaced image
-serves stale).
+**V6 was the live site from 2026-07-31 until the 2026-08-23 migration re-anchored its hero and ages**
+(round-era rollback tag `v5-live-2026-07-31`; the current tag is `pre-v3-migration-2026-08-23`).
+Work on `main`; keep `demo-website` in sync by merging. Verify locally: `npm test` (expected count:
+`tests.count` in `docs/project-state.json`) · `npx tsc --noEmit` · `npm run build` (token-check, 16
+mappings against v3) · `npx next start -p 3456` (check `lsof` first; `rm -rf .next/cache/images` if
+a replaced image serves stale).
 
 **What V6 is** — the growth-arc CONTENT round, spec `BUILD-V6.md`, plan `PLAN-V6.md`, laws §8.24,
 QA `QA-V6-note.md` (independent; it REJECTED the first pass), checkpoint
 `docs/checkpoints/v6-content-2026-07-31.md`, design record `HANDOFF-design-v6.md` (all items closed).
-It exists because parents said the site never answered *"what will a kid who buys this at 2 get when
-they are 5?"*. Shipped: the outcome hero "A best friend at 2. / A head start by 5.", the Home
-`#growth` room (`lib/growth-arc.ts` + `organisms/GrowthArc`, kickers **At 2 years … By 5 years**
-derived from `LUMI_AGES`), the new FAQ "What will my child actually get out of Lumi?", and the
-consistency sweep.
+It exists because parents said the site never answered *"what will a kid who buys this get by
+school?"*. Shipped then: the outcome hero "A best friend at 2. / A head start by 5.", the Home
+`#growth` room (`lib/growth-arc.ts` + `organisms/GrowthArc`), the new FAQ "What will my child
+actually get out of Lumi?", and the consistency sweep. **The 2026-08-23 migration re-anchored all of
+it at ages 3+** (hero "A best friend at 3. / A head start for school." from `HERO_PROMISE`, arc
+3 → 4 → 5 → "Every year after") — the STRUCTURE below is V6's lasting contribution, the numbers are
+not.
 
 **The four things a newcomer most needs to know from this round:**
 1. **Connectivity is MODE-PRECISE everywhere (§8.24-1).** AI mode needs home WiFi; Kheelu-mode
@@ -131,10 +140,9 @@ lands), real testimonial words (their standing decision), and the final specs in
 
 **THE FOUNDER'S FULL OPEN QUEUE IS ONE HALF OF ONE FILE**: `FOUNDER-TODO.md` → everything under
 **⏳ OPEN** (rewritten and re-audited 2026-08-23; none of it blocks the site). Read it before
-proposing work, and do not resurrect anything from the **✅ CLOSED** half, which is the record. One cross-dependency
-worth knowing: **R5-a, the new logo, now also owns the favicon and app icons** (built from the current
-mark in `public/brand/logo-mark.png`), so a logo swap is one pass across navbar + icons + og.png +
-the schema logo.
+proposing work, and do not resurrect anything from the **✅ CLOSED** half, which is the record.
+(R5-a, the new logo, CLOSED 2026-08-23: the v3 wordmark and mark now own the navbar, icons, og.png
+and schema logo in one pass — the pipeline is `tools/brand/render-icons.mjs`.)
 
 Everything else is the historical record of earlier rounds, and it is no longer in this file:
 `WORKING-history-2026-07.md` beside it holds the three superseded cold-restart blocks and the theme-B

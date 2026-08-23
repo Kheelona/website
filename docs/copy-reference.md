@@ -1,5 +1,14 @@
 # Copy Reference (Phase 5 compile)
 
+> **⚠ PROVENANCE RECORD, NOT CURRENT STATE (banner added at the 2026-08-23 doc audit).** Sections
+> below describe copy AS IT SHIPPED in their round; several systems they name are since retired —
+> the Tally form and `TallyEmbed` (our own paid form since 2026-08-22), `StagedIntro` (folded into
+> the hero, R10), the `LaunchVideo` component (V4), and the `orange-deep` token (drained to
+> `orange-ink`, 2026-08-23). `site/...` paths predate the `src/` reorg — translate through
+> `docs/standards/STRUCTURE-MAP.md`. The live copy laws are CLAUDE.md + `docs/website-steps.md`
+> §8.22–§8.27, and the current hero/ages/offer come from the 2026-08-23 migration
+> (`docs/checkpoints/migration-to-new-dsx.md`).
+
 The source of truth for all rendered copy is the component/page code itself; this file records provenance, deviations, and where each page's copy lives. All copy passed voice-lint §1.7 (zero em-dashes; en-dash unused; no hype; exact names; second person present tense) and was audited by an independent copywriter review (2026-07-06, grade B+ → fixes applied, see `docs/checkpoints/executive-review-round-1.md`).
 
 ## Home `/` — VERBATIM from `kheelona homepage website content.pdf`

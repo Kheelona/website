@@ -34,23 +34,28 @@ surface.
 | 4 | Kicker treatment consistency | **IMPLEMENTED.** Founder chose one language: every small uppercase label is `orange-ink`. The pace-panel and chat-demo labels moved off dark ink accordingly. Law: §8.24-7. |
 | 5 | Link states + internal crawl | **VERIFIED.** The two in-copy story links on Home carry byte-identical class strings (hover, underline offset, focus ring). The crawl that had never been run is now run: **34 unique internal hrefs across 11 pages, all 200.** |
 
-## Laws that bind any future work here
+## The laws as they stood on 2026-07-31 (SUPERSEDED IN PART — current law is CLAUDE.md + §8.26/§8.27)
+
+> Two of these reversed in the 2026-08-23 migration: **italics are now allowed** as the v3
+> editorial serif accent (founder decision #11), and **the Tally form is long retired** (our own
+> paid form since 2026-08-22). Everything else below still binds.
 
 `docs/website-steps.md` §8.23 (interaction contract; axe with reveals forced **plus a ~1.5s
 settle**, §8.24-5e) and §8.24 (mode-precise connectivity, one-source facts, the GrowthArc
 registry, **§8.24-6 disclosure content ships in the markup**, **§8.24-7 one kicker language**).
-CTAs stay brand orange `#EF762F` with ink labels — no white text on the action fill. Zero italics,
-all text left-aligned, tilt never wraps a whole-card link, the plush stays the hero's largest
-element (mobile LCP). Visual reviews run through the headless harness, never the Chrome extension
-(§8.23 method note).
+CTAs stay brand orange `#EF762F` with ink labels — no white text on the action fill. Zero italics
+(as of then), all text left-aligned, tilt never wraps a whole-card link, the plush stays the
+hero's largest element (mobile LCP). Visual reviews run through the headless harness, never the
+Chrome extension (§8.23 method note).
 
-## Do not touch
+## Do not touch (as of 2026-07-31)
 
-The growth-room copy and its data module (`lib/growth-arc.ts`), every connectivity sentence
-(§8.24-1), the tutor's four homes (§8.24-2), the testimonial quotes (settled founder decision),
-the Tally form and its measured iframe heights, anything gated (Kheelona+ price, certifications,
-wake word, specs). `ArchitectureStack` keeps its Radix accordion on purpose — a layered diagram
-with roving arrow keys is the one place the JavaScript earns itself.
+The growth-room copy and its data module (`lib/growth-arc.ts` — since re-anchored at 3+ by the
+migration), every connectivity sentence (§8.24-1), the tutor's four homes (§8.24-2), the
+testimonial quotes (settled founder decision), the Tally form and its measured iframe heights
+(retired 2026-08-22), anything gated (Kheelona+ price, certifications, wake word, specs).
+`ArchitectureStack` keeps its Radix accordion on purpose — a layered diagram with roving arrow
+keys is the one place the JavaScript earns itself.
 
 ## Evidence
 

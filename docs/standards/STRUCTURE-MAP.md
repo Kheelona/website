@@ -45,7 +45,7 @@ feature UI is colocated; multi-route UI is a global organism.
 | `components/ui/KheeluSays.tsx` | `src/components/molecules/KheeluSays.tsx` | molecule (narrator device) |
 | `components/ui/Faq.tsx` | `src/components/molecules/Faq.tsx` | molecule (Radix accordion) |
 | `components/ui/CompareTable.tsx` | `src/components/molecules/CompareTable.tsx` | molecule |
-| `components/ui/TallyEmbed.tsx` | `src/components/molecules/TallyEmbed.tsx` | molecule |
+| `components/ui/TallyEmbed.tsx` | `src/components/molecules/TallyEmbed.tsx` (retired 2026-08-22 with the Tally form; no longer in the tree) | molecule |
 | `components/ui/Reveal.tsx` | `src/components/molecules/Reveal.tsx` | molecule |
 | `components/ui/RevealObserver.tsx` | `src/components/molecules/RevealObserver.tsx` | molecule (scroll-reveal effect) |
 | `components/ui/Sheet.tsx` | `src/components/molecules/Sheet.tsx` | molecule (Radix dialog drawer) |

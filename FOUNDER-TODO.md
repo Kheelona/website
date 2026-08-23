@@ -56,7 +56,7 @@ anything that turns out wrong gets corrected here rather than argued twice.
 - [ ] **Is there a camera in Lumi? Yes or no** (the surviving half of REV-b). Still gated in code:
       `products/lumi/page.tsx` carries a comment saying the camera question is absent until you answer
       it. If the answer is no, that is a one-line trust differentiator on a screen-free toy for
-      two-year-olds, and worth saying out loud rather than leaving unsaid.
+      young children, and worth saying out loud rather than leaving unsaid.
 
 ## One content decision
 
@@ -129,7 +129,7 @@ anything that turns out wrong gets corrected here rather than argued twice.
 | One promise broken once, on your own card | The first refund went out at ₹489 of ₹499, while the receipt and `/refund` both say "in full, no fee". Fees were ₹0.00, so there was nothing to deduct. No copy changed, because the copy was right. **Always refund the whole token.** A partial refund deliberately does NOT cancel an order, which is exactly why. |
 | Supabase region | Raised and closed by you. A trivial query takes 250 to 975ms, suggesting the project is not in an Indian region, but it cannot be moved. Recorded as the explanation if checkout ever feels slow: each order makes two or three round trips. |
 | Delivery and tax | **Delivery is included** in ₹4,999, anywhere in India. **Prices are GST-inclusive**, and you confirmed GST is paid under **reverse charge** (deliberately not published, being internal accounting no customer decision depends on). One note for the record, since it is your call: reverse charge is unusual on a B2C goods sale. |
-| The commercial model, all settled | ₹499 refundable token · ₹4,500 balance by payment link before dispatch · ₹4,999 until **30 September 2026**, ₹9,999 after · **no unit cap** · shipping from **1 October 2026** · WhatsApp-only support on +91 91875 46483 · one Lumi per order · four form fields · refunds by request in 5 to 7 working days. All live in code and in the policy pages. |
+| The commercial model | **RESTRUCTURED 2026-08-23 (§8.26) — the live model is:** ₹499 refundable token holds one of the **first 500 units** at ₹4,999 (₹4,500 balance by payment link before dispatch); once they are gone, ₹7,999 **paid in full**; live Supabase count, no public counter, a refund reopens a slot · shipping from **20 October 2026** · WhatsApp-only support on +91 91875 46483 · one Lumi per order · refunds of everything paid, by request, in 5 to 7 working days. (The 2026-08-22 model this row first recorded — 30 Sep deadline, ₹9,999 after, no cap, ship 1 Oct — lasted one day.) All live in code and in the policy pages. |
 
 ## Launch (2026-07-28)
 
@@ -156,7 +156,7 @@ anything that turns out wrong gets corrected here rather than argued twice.
 
 | Settled | Answer |
 |---|---|
-| Ship date | **1 October 2026** (moved from 1 September on 2026-08-22). Rendered everywhere from `SHIP_DATE_*`. |
+| Ship date | **20 October 2026** (1 September → 1 October on 2026-08-22 → 20 October on 2026-08-23). Rendered everywhere from `SHIP_DATE_*`. |
 | Languages | **Eight, named and final**: English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish, French. Published ceiling stays "up to 10" so two more slot in with no copy change. |
 | Kheelona+ | 6 months included, **smart features are yours for life**, pricing "announced soon". The ₹ amount is still yours to set. |
 | Certifications | None yet, so the standards FAQ is removed. The status-honest standards room stays. Reinstate when the first certificate lands. |

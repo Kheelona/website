@@ -1,7 +1,7 @@
 import { loadFont } from "@remotion/fonts";
 import { staticFile } from "remotion";
 
-// Brand fonts (variable TTFs copied from Design/design-system/fonts/)
+// Brand fonts (variable TTFs copied from the old design system's fonts/ (folder deleted 2026-08-23; same families ship in Design/Kheelona-Design-System-v3/fonts/))
 export const fontsReady = Promise.all([
   loadFont({
     family: "Glory",

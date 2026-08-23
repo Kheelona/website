@@ -4,7 +4,7 @@ One day, one engagement, three commercial-and-design change-sets built, merged a
 production-verified, plus the Phase B refinement pass. The founder's master prompt set
 four roles (LEX/JONY/MARA/RIA) and two workstreams: replace the design system with
 `Design/Kheelona-Design-System-v3/` and refresh every commercial fact. Twelve founder
-decisions were taken live and recorded in `migration-to-new-dsx.md` — that file is the
+decisions were taken live and recorded in `docs/checkpoints/migration-to-new-dsx.md` — that file is the
 engagement's tracker and stays the read-first pointer until the close-out below happens.
 
 ## What is live (merge `275ef01` + the Phase B fast-forward `1e3b36e`)
@@ -65,7 +65,7 @@ engagement's tracker and stays the read-first pointer until the close-out below 
 1. Founder approval to DELETE `Design/design-system/` (the last gate; nothing reads it —
    the token gate now fails hard on v3 instead, so deletion disables nothing silently).
 2. On approval: delete the folder, drop the `_adherence.oxlintrc.json` stale allowlist
-   with it, final suite + sweep, mark `migration-to-new-dsx.md` COMPLETE, remove the
+   with it, final suite + sweep, mark `docs/checkpoints/migration-to-new-dsx.md` COMPLETE, remove the
    CLAUDE.md read-first banner, and fold the engagement's facts into CLAUDE.md's STATE
    OF PLAY.
 3. Standing operational item (FOUNDER-TODO): the manual marketing-copy sweep the day

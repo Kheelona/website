@@ -1,4 +1,5 @@
-// Kheelona brand tokens, from Design/design-system/colors_and_type.css. Do not invent values.
+// Kheelona brand tokens, copied 2026-07 from the old design system (deleted 2026-08-23; the
+// authority is now Design/Kheelona-Design-System-v3/tokens/kheelona.css — brand hexes identical).
 export const C = {
   orange: '#EF762F',
   orangeDeep: '#D85F1B',

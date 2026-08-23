@@ -1,7 +1,7 @@
 # kheelona.com — session entry point
 
 **🟢 THE v3 MIGRATION IS COMPLETE AND LIVE (2026-08-23, one day, merge `275ef01` onward).**
-The record: `migration-to-new-dsx.md` (the twelve founder decisions, dashboard, QA log, keyword
+The record: `docs/checkpoints/migration-to-new-dsx.md` (the twelve founder decisions, dashboard, QA log, keyword
 map) + `docs/checkpoints/v3-migration-2026-08-23.md`. New laws: **§8.26** (the unit-cap offer)
 and **§8.27** (design authority = `Design/Kheelona-Design-System-v3/`; the old system is DELETED,
 history keeps it at `pre-v3-migration-2026-08-23` = `b27fd25`, also the rollback tag). Facts in
@@ -14,97 +14,66 @@ the **first 500 units** at **₹4,999** (decided per request from the live paid 
 gone, a pre-order is **₹7,999 paid in full**), the **₹4,500 balance** on token orders falls due
 before dispatch, and the payment happens on **store.kheelona.com**, which this same repo serves.
 
-## ⚠ STATE OF PLAY (2026-08-22 — **THE PAID STORE IS LIVE ON LIVE KEYS**) — read this first
-**THE SITE IS LIVE AT https://kheelona.com AND SERVES V6. It is indexed and taking pre-orders, so
-every change you make from here touches a live commercial site.** Latest checkpoint, read it before
-touching anything: `docs/checkpoints/preorder-store-2026-08-22.md` (before it:
-`v6-content-2026-07-31.md`, `v5-merge-2026-07-31.md`, `go-live-2026-07-28.md`).
+## ⚠ STATE OF PLAY (2026-08-23 — **THE v3-MIGRATED SITE IS LIVE, ON LIVE KEYS**) — read this first
+**THE SITE IS LIVE AT https://kheelona.com, indexed, and taking PAID pre-orders — every change from
+here touches a live commercial site.** Latest checkpoint, read it before touching anything:
+**`docs/checkpoints/v3-migration-2026-08-23.md`** (the whole 2026-08-23 engagement; the full tracker
+is `docs/checkpoints/migration-to-new-dsx.md`). Before it: `one-tap-and-cleanup-2026-08-23.md`,
+`preorder-store-2026-08-22.md`, `v6-content-2026-07-31.md`, `go-live-2026-07-28.md`.
 
-**💳 PAID PRE-ORDERS ARE LIVE.** kheelona.com sells a **₹499 refundable token** that holds a Lumi at
-**₹4,999**, the **₹4,500 balance** falls due by payment link before dispatch, and payment happens on
-**store.kheelona.com**, which THIS repo serves through a host rewrite in `src/proxy.ts` (Next 16's name
-for middleware). Orders go to Supabase, receipts through Resend, events sell at ₹99 behind a signed QR
-link with a cap and an expiry. Ship date **1 October 2026**, price deadline **30 September 2026**, and
-**no unit cap** ("first 500 units" and "No payment now" are retired everywhere; `test/preorder-copy.test.ts`
-fails if either returns). Rollback tag **`v6-live-2026-08-22`** = the last pre-store commit.
+**💳 THE OFFER (§8.26, unit-bounded since 2026-08-23).** A **₹499 refundable token** holds one of the
+**first 500 units** at **₹4,999** (₹4,500 balance by payment link before dispatch); once they are
+gone, a pre-order is **₹7,999 paid in full**. The mode is decided SERVER-SIDE per request from the
+live paid count in `lib/store/mode.ts` — the count is never published, a refund reopens a slot, and
+"30 September", "₹9,999" and "1 October 2026" are the banned phrases now (`test/preorder-copy.test.ts`
+inverted once). Payment happens on **store.kheelona.com**, THIS repo through the host rewrite in
+`src/proxy.ts`; orders in Supabase, receipts via Resend, events at ₹99 behind signed QR links.
+Ship date **20 October 2026**. Rollback tag **`pre-v3-migration-2026-08-23`** = `b27fd25`.
 
-**`/api/health` IS THE FIRST THING TO CHECK** on any store question. It reports readiness, which Razorpay
-mode is live, whether email is configured, database latency, and — when unconfigured — the **names** of the
-missing env vars. It currently returns `{ok:true, store:ready, razorpay:LIVE, email:configured}`.
+**`/api/health` IS THE FIRST THING TO CHECK** on any store question: readiness, the offer MODE
+(`preorder: token|full` — its flip to `full` triggers the manual sell-out copy sweep in
+FOUNDER-TODO), Razorpay mode, email, db latency, and the NAMES of any missing env vars.
 
-**✅ THE PAYMENT PATH IS PROVEN WITH A REAL TRANSACTION** (2026-08-22 23:29, ₹499 UPI, order
-KH-YPJ8-GHVT, refunded after). Three webhook deliveries all returned **200**, which proves the secret
-matches between Razorpay and Vercel, and **idempotency was proven under the real race**:
-`payment.captured` and `order.paid` arrived one second apart and exactly ONE receipt was sent. Both
-emails were correct. Razorpay fees were ₹0.00, because UPI is zero-MDR in India, so verifying cost
-nothing. Detail: the "⚑ WHERE THIS ACTUALLY GOT TO" block in **`docs/store-go-live.md`**.
+**✅ THE PAYMENT PATH IS PROVEN WITH A REAL TRANSACTION** (2026-08-22, ₹499 UPI, KH-YPJ8-GHVT,
+refunded after): webhooks 200, idempotency held under the real race (exactly ONE receipt), the signed
+address link exercised. **Do not re-test it.** Detail: `docs/store-go-live.md` "⚑ WHERE THIS ACTUALLY
+GOT TO". **The launch's lasting lesson: three defects shipped past a fully green suite and were found
+only by looking at real artefacts** — a receipt greeting "shweta" (read the sent PDF), a refunded
+order still in the dispatch queue (`status='paid'` IS the queue, §8.25-ee — and a PARTIAL refund is
+NOT a cancellation), and an unrecoverable orphaned payment (§8.25-ff). **Always refund the whole
+token.**
 
-**THREE DEFECTS WERE FOUND AFTER LAUNCH AND FIXED THE SAME NIGHT, none caught by a green 622-test
-suite.** Each came from looking at a real artefact rather than at code. (1) The first receipt greeted a
-customer as "shweta", because the typed name was used verbatim — found by reading the sent PDF. (2) **A
-refunded order stayed in the dispatch queue**: the webhook acted only on payment events, and the queue
-IS `where status='paid'`, so a cancelled customer would have been shipped a Lumi and invoiced ₹4,500,
-with nothing but a human's memory preventing it (§8.25-ee). Found by re-reading the payment lifecycle
-after watching a real refund. (3) An orphaned payment had no recovery path even though our reference
-already travelled in the Razorpay order (§8.25-ff). Also: the first refund went out at ₹489 of ₹499,
-which on a real customer would contradict both the receipt and `/refund` for no reason, since fees were
-zero. **Always refund the whole token.**
+**🟡 STILL OPEN** (the ⏳ OPEN half of `FOUNDER-TODO.md` is the queue): DMARC tightens to
+`p=quarantine` on **5 September 2026** (scheduled agent + dated item); a trivial Supabase query takes
+250–975ms, suggesting the project is not in an Indian region (raised, closed as not actionable); and
+the standing **sell-out copy sweep** the day health first reports `preorder:"full"` (§8.26-g).
 
-The signed address link was exercised from that same receipt and the address saved, so **EVERY route in
-the store has production evidence** and nothing about the payment or fulfilment path is unproven.
-
-**🟡 STILL OPEN** (see the OPEN half of `FOUNDER-TODO.md`, rewritten 2026-08-23): DMARC tightens to `p=quarantine` on **5 September 2026** (scheduled agent + dated item);
-Resend's `send` SPF and MX are absent so bounce feedback is blind; and a trivial Supabase query takes
-250 to 975ms, suggesting the project is not in an Indian region.
-
-Store laws are `docs/website-steps.md` **§8.25** — read before touching any of it. The seven that bite:
-**the client never sends a price** (§8.25-c-i), **paid is decided twice through one idempotent
-`markPaid`** (§8.25-p), **the webhook verifies the RAW body and releases its event claim on failure**
-(§8.25-m), **an address is authorised only by its signed token** (§8.25-n), **every pre-order CTA
-reaches the store in ONE tap, so the store page carries the whole offer itself** (§8.25-b, inverted on
-the founder's call 2026-08-23), **a paid order must be able to become unpaid and a PARTIAL
-refund is NOT a cancellation** (§8.25-ee), and **an orphaned payment is recoverable through the Razorpay
-order's `receipt`/`notes.order_ref`** (§8.25-ff).
+Store laws are `docs/website-steps.md` **§8.25 + §8.26** — read both before touching any of it. The
+ones that bite: **the client never sends a price** (§8.25-c-i), **the cap is a live count of the paid
+queue and never leaves `mode.ts`** (§8.26-a/b), **both flip directions are gated — a stale page is
+refused with words, never re-priced** (§8.26-c), **paid is decided twice through one idempotent
+`markPaid`, which never re-checks the cap** (§8.25-p, §8.26-d), **the webhook verifies the RAW body
+and releases its claim on failure** (§8.25-m), **an address is authorised only by its signed token**
+(§8.25-n), **every pre-order CTA reaches the store in ONE tap** (§8.25-b), **a full-payment order
+owes nothing, by data** (§8.26-e), and **an event token is a token in either mode** (§8.26-f).
 
 **Two traps that will otherwise waste an hour.** `send.send.kheelona.com` is **not a typo**: the Resend
 domain is `send.kheelona.com` and its sending records sit at `send` relative to that, so the label
 appears twice. And `webhook_events.order_ref` holds the **Razorpay** order id, not our `KH-` reference.
 
-**V6 (the growth-arc CONTENT round + its design-handoff items) is MERGED TO `main` AND LIVE**
-(founder instruction 2026-07-31: "make it live on demo and main both"; rollback tag
-`v5-live-2026-07-31`). The independent content QA REJECTED the first pass (4 real blockers, worst:
-/privacy described the retired six-field Tally form) and APPROVED after fixes (`QA-V6-note.md` +
-addendum). Then the founder ordered the design-handoff list built rather than handed over: **the
-FAQ is now native `<details>`** (it was serving 1 of 8 answers to any reader without JavaScript —
-§8.24-6) and **every small uppercase label is `orange-ink`** (§8.24-7). Checkpoint:
-`docs/checkpoints/v6-content-2026-07-31.md`; handoff record `HANDOFF-design-v6.md` (all five items
-closed). Spec:
-`docs/revamp-2026-07/BUILD-V6.md` (approved as written); plan `PLAN-V6.md`; laws §8.24; QA
-`docs/qa-report.md` "V6"; provenance `copy-reference.md` "V6". What it is: the outcome-arc hero
-("A best friend at 2. / A head start by 5."), the year-by-year `GrowthArc` room answering the
-parents' "what does my kid have at 5" feedback, the founder-licensed mode-precise connectivity law
-(AI mode = home WiFi; Kheelu-mode stories + Bluetooth music work offline — NO blanket offline
-claim anywhere, §8.24-1), the consistency sweep (legal ship-date, /safety dedup, journal band and
-ceiling, price wording via the new `PRICE_HOLD_LINE`), and four pre-existing /products/lumi
-contrast failures fixed (axe needs a ~1.5s settle after forcing reveals, §8.24-5e). The tutor
-narrative lives in exactly four places (Compare, PacePanel, the arc's closing line, the Home meta
-title) — adding a fifth is a review flag.
-
-**V5 (the end-to-end design/UX review round) MERGED TO `main` AND LIVE on 2026-07-31** (`740845a`,
-rollback tag `v4-live-2026-07-31`): one interaction contract so touch surfaces actually answer, the
-reserve form's measured white-space fix plus a reassurance strip, /safety's fourfold repetition cut,
-the brand shapes given one job as `PromiseMark`, and hero craft (Kheelu no longer appears twice, cap
-chip readable, art scaled). Spec: `docs/revamp-2026-07/BUILD-V5.md`; laws §8.23; checkpoint:
-`docs/checkpoints/v5-merge-2026-07-31.md`.
-
-**V4 (the team-feedback round) MERGED TO `main` on 2026-07-31 at the founder's order** — the tutor
-hero, brand-orange CTAs with ink labels (the R5 white-label law is RETIRED), the real-audio room,
-the How-It-Works loop, white finales, the VC-voiced /playos with the ArchitectureStack, 19
-photographed journal articles, Lumi v2 art with the speaker tummy, and the family pipeline renders
-(V3-c closed). The merge order also closed **V3-d: every Kheelu line shipped as reviewed**. The
-/a /b /c wireframe drafts were STRIPPED from the production tree in the merge commit (preview-only
-artifacts; the next main → demo-website sync retires them there too, history keeps them). Rollback:
-tag `v3-live-2026-07-31`.
+**The 2026-07-31 rounds (V4 → V5 → V6), compressed — all long since live, all superseded in part by
+the 2026-08-23 migration; the checkpoints carry the detail.** V6 (growth-arc content; checkpoint
+`v6-content-2026-07-31.md`, spec `BUILD-V6.md`, laws §8.24): shipped the outcome-arc hero — re-anchored
+to "at 3 / for school" by the migration — the `GrowthArc` room, the mode-precise connectivity law
+(AI mode = home WiFi; Kheelu-mode stories + Bluetooth work offline — NO blanket offline claim,
+§8.24-1), the native-`<details>` FAQ (§8.24-6), orange-ink kickers (§8.24-7), and the rule that the
+tutor narrative lives in exactly four places (Compare, PacePanel, the arc's closing line, the Home
+meta title) — a fifth is a review flag. V5 (design/UX; `BUILD-V5.md`, §8.23): the one interaction
+contract in `lib/interactions.ts`, `PromiseMark`, hero craft. V4 (team feedback; `BUILD-V4.md`,
+§8.22): brand-orange CTAs with ink labels, the real-audio room, white finales, the VC-voiced /playos,
+19 photographed journal articles. Round-era rollback tags: `v5-live-2026-07-31`,
+`v4-live-2026-07-31`, `v3-live-2026-07-31`, then `v6-live-2026-08-22` (pre-store) and
+`pre-v3-migration-2026-08-23` (pre-migration, the current one).
 
 **The new site is MERGED TO `main` and is the only site.** The 2026-07 revamp (theme B
 "Kheelu's Tour") plus the V3 repositioning (founder's YC application: 40% fun, 20% brain
@@ -120,14 +89,11 @@ repo root. That old app is preserved at the tag **`pre-revamp-2026-07`** and its
   (sitemap, canonicals, robots, WhatsApp share, every JSON-LD `@id`) is apex. It was briefly the
   other way round, which would have made Search Console report 24 redirects instead of 24 pages.
   **If the canonical host ever changes, `GA4_HOSTS` must change with it** — that list covering both
-  hosts is the only reason GA4 survived this switch. **The pre-order form works everywhere**
-  (V4-a, 2026-07-31: the founder cut Tally `Y5XW7J` to 5 fields — parent name, kid's age, city,
-  WhatsApp number, WhatsApp consent — and the URL is now the hardcoded public `TALLY_FORM_URL` in
-  `config/site.ts`, so the preview and local builds render the REAL form; a valid
-  `NEXT_PUBLIC_TALLY_FORM_URL` still overrides. Preview/local submissions are REAL Tally entries —
-  delete test rows there. Iframe re-measured at 827px → `h-[900px]`, guard test ≥860).
-  Both analytics tools verified on the real domain.
-  Treat every change from here as a change to a live commercial site: it takes real reservations.
+  hosts is the only reason GA4 survived this switch. **The pre-order form is OUR OWN since
+  2026-08-22** (`src/features/preorder/`, paying through Razorpay on the store host; the Tally era
+  and everything about its iframe is closed history — see `closed-rounds.md`). Analytics verified on
+  the real domain. Treat every change from here as a change to a live commercial site: it takes real
+  money.
 - **Vercel is the founder's** — never run the Vercel CLI. Push to GitHub and hand over any dashboard
   change. Same shape as the Gemini gate.
 - **Verifying Vercel Web Analytics**: it loads from a per-project **obfuscated path**
@@ -138,12 +104,12 @@ repo root. That old app is preserved at the tag **`pre-revamp-2026-07`** and its
   parent"). Raised with the founder when the site went public; **their decision is to leave them
   as-is** (`FOUNDER-TODO.md`, the Testimonials row under "Facts you settled"). Do not re-raise it and
   do not remove them.
-- **The spec that built this**: `docs/revamp-2026-07/BUILD-V4.md` (the 2026-07-30 team-feedback
-  round; wins over BUILD-V3, which wins over `copy-v2.md` and older copy laws). Status and the restart guide: `docs/revamp-2026-07/WORKING.md` — **read it first on any resume,
-  and do not delete it** (it is 143 lines since 2026-08-23; the 340 lines of superseded rounds moved
-  to `WORKING-history-2026-07.md` beside it, which is evidence and NOT law — it still says ages 3 to
-  10 under a heading that says *Locked decisions*) (an older note said to remove it after founder approval; it is now the
-  site's operating record).
+- **Spec precedence**: the 2026-08-23 migration record (`docs/checkpoints/migration-to-new-dsx.md`,
+  §8.26/§8.27) wins over `BUILD-V6.md`, which wins over BUILD-V5 → BUILD-V4 → BUILD-V3 →
+  `copy-v2.md` and older copy laws. On any resume: this file's banner → `docs/project-state.json` →
+  the latest checkpoint. `docs/revamp-2026-07/WORKING.md` is the revamp-era operating record
+  (kept, not deleted; its sibling `WORKING-history-2026-07.md` is evidence, NOT law — it still says
+  ages 3 to 10 under a heading that says *Locked decisions*).
 - **Locked product facts (as revised by the 2026-08-23 migration)**: Lumi is ages **3+** — no
   published ceiling anywhere; `PLATFORM_AGES` is deleted and every age renders from `LUMI_AGES`
   ("2 to 5", "2 to 14", "3 to 6" and "3 to 10" are ALL dead ranges, guarded in `seo.test`). The .com
@@ -196,17 +162,18 @@ repo root. That old app is preserved at the tag **`pre-revamp-2026-07`** and its
 1. Read `docs/project-state.json` (`current_phase`, `last_handoff`, `blockers`).
 2. Follow the "For AI: How to Resume" table in `README.md`.
 3. Founder-gated items live in `FOUNDER-TODO.md` — never re-ask what's already settled there or in
-   checkpoints. **The live queue is its "📋 THE ONLY THINGS STILL WAITING ON YOU" section** (audited
-   2026-07-31); everything above and below that section is closed history. Nothing in it blocks the
-   site. The two highest-value items are the Kheelona+ ₹ amount and real photography.
+   checkpoints. **The live queue is its ⏳ OPEN half** (the ✅ CLOSED half is one or two lines per
+   finished item). Nothing in it blocks the site. The two highest-value items are the Kheelona+ ₹
+   amount and real photography.
 
 ## Source-of-truth precedence
 1. `kheelona homepage website content.pdf` — Home copy, verbatim (Rs. → ₹ is the one sanctioned deviation).
 2. `website-builder-prompt-final-kheelona.md` — master build spec (Brand Bible §1, voice rules §1.7, keyword map §3.1).
 3. `Design/Kheelona-Design-System-v3/` — tokens/fonts/logo/guidelines, THE design authority since
-   2026-08-23 (`tokens/kheelona.css` is canonical; the build gate reads it). The OLD system
-   `Design/design-system/` stays in the repo, reference-only, until the migration's final audit and
-   the founder approve its deletion. Em-dashes stay banned regardless of any DS doc (Brand Bible wins).
+   2026-08-23 (`tokens/kheelona.css` is canonical, the build gate reads it and fails hard without
+   it; the site's extensions + two v3 errata live in its `guidelines/site-extensions.md`). The OLD
+   system `Design/design-system/` was DELETED with founder approval at the migration's close —
+   git history keeps it. Em-dashes stay banned regardless of any DS doc (Brand Bible wins).
 
 ## Production structure & standards (BINDING LAW, 2026-07-12)
 The app is now a **`src/`-based atomic-design** Next.js project. Two standards in
@@ -231,8 +198,9 @@ Rules for any change:
    `index.ts` barrel).
 2. Token-driven only; prices/CTA labels from `@/config/site`; the shared molecules
    (SectionHeading/Card/StepList/PageHero/CheckList/LegalDoc, plus V3's AnswerBlock/
-   FootnotesRow/KheelonaPlusBand/FamilyGrid/LumiModes — §8.19 + §8.21) are the registry. Age copy comes
-   from LUMI_AGES/PLATFORM_AGES and subscription copy from KHEELONA_PLUS_LINE, never inline.
+   FootnotesRow/KheelonaPlusBand/FamilyGrid/LumiModes — §8.19 + §8.21) are the registry. Age copy
+   comes from `LUMI_AGES` ("3+"; `PLATFORM_AGES` is deleted) and subscription copy from
+   KHEELONA_PLUS_LINE, never inline.
 3. Every new/changed component ships a colocated `X.stories.tsx` + `X.test.tsx`
    (`npm test`, `npm run storybook`). Node ≥ 24 (`.nvmrc`). Storybook/Vitest are
    dev-only and MUST never affect `next build`.
@@ -299,7 +267,7 @@ shortly" state instead of crashing.
   `docs/checkpoints/closed-rounds.md`, which is the file to search before re-asking the founder
   anything. The file went from 80K to 28K, and it is step 1 of the resume protocol.
 - `docs/website-steps.md` — blueprint (law; if reality diverges, update it first)
-- `docs/qa-report.md` — sprint logs, Lighthouse, AI-detection verification of all 14 articles
+- `docs/qa-report.md` — sprint logs, Lighthouse, AI-detection verification of all 19 articles
 - `docs/copy-reference.md` — copy provenance + sanctioned deviations
 - `docs/design-review-2026-07-10.md` — R4 panel findings, every item dispositioned (FIXED/FOUNDER/DEFERRED/REJECTED); §8.13 in website-steps.md is the matching spec. 3D QA gotcha: hidden tabs freeze rAF, so the canvas looks dead in background automation tabs — verify with a visible window
 - `docs/stories-image-prompts.md` — HISTORICAL since 2026-07-31: all 19 journal articles are photographed; the doc keeps the style block for any future article's hero prompt
@@ -308,14 +276,14 @@ shortly" state instead of crashing.
   real payment actually proved. It is written for a session with no memory of building the store.
 - `docs/preorder-events.md` — how to run a ₹99 event price: create the tier row, generate the signed
   link with `npm run event-link`, print the QR, and read the event's conversion afterwards.
-- `docs/checkpoints/` — per-phase snapshots. **Latest: `one-tap-and-cleanup-2026-08-23.md`** (one-tap
-  CTAs, the free-text age field, and the cleanup: what was deleted and what was deliberately kept).
-  Before it: `preorder-store-2026-08-22.md` (the store
-  round). Also here: **`closed-rounds.md`**, the 28 pre-store round records and 17 settled blockers
-  that used to bloat `project-state.json`. Before it: `go-live-2026-07-28.md` (the launch: the
-  sequence, the three real findings, the live-setup gotchas, and the decisions not to re-litigate).
-  Before it: `repo-root-move-2026-07-28.md` (why the app sits at the repo root, and the redirect
-  that blanked every product image)
+- `docs/checkpoints/` — per-phase snapshots. **Latest: `v3-migration-2026-08-23.md`** (the whole
+  2026-08-23 engagement: the unit-cap store, ages 3+, the v3 re-skin, and its gotchas), with the
+  full engagement tracker beside it as **`docs/checkpoints/migration-to-new-dsx.md`** (the twelve founder decisions,
+  dashboard, QA log, SEO keyword map). Before them: `one-tap-and-cleanup-2026-08-23.md`,
+  `preorder-store-2026-08-22.md` (the store round), `go-live-2026-07-28.md` (the launch),
+  `repo-root-move-2026-07-28.md` (why the app sits at the repo root). Also here:
+  **`closed-rounds.md`**, the 28 pre-store round records and 17 settled blockers that used to bloat
+  `project-state.json` — search it before re-asking the founder anything
 - `design-concepts/README.md` — 3 archived concepts, mascot cutout pipeline, Tripo3D 2D→3D pipeline (v2 runs incl. Janus fix + Lumi plush), engineering gotchas (overflow-x clip, scroll-snap wheel trap)
 - `AGENTS.md` — Next.js 16 breaking-changes warning (read `node_modules/next/dist/docs/` before writing Next code)
 - `tools/cutout/` — offline background removal (Swift + Apple Vision; compile with `swiftc -O main.swift -o cutout`). Every mascot/product cutout and video asset goes through it; never ship art with baked backgrounds. For thin pale details the Vision mask drops (hat ribbons), use `keycut.swift` (region-grow color-key; hybrid mode takes a Vision `--no-crop` alpha for the body: `keycut in.png out.png 24 vision-nocrop.png`).
@@ -323,7 +291,10 @@ shortly" state instead of crashing.
 - **Styling laws that still bind** (violating one is a review flag): italics ONLY as the v3
   editorial accent (founder decision #11, 2026-08-23, reversing the old zero-italics law:
   Instrument Serif ITALIC via `--font-editorial`, for editorial section titles and pull-quotes,
-  one per composition, specced per page — never body copy or UI); all text left-aligned; **CTAs are brand orange `#EF762F` via the `action` token with `ink-head` labels — NO white text on the action fill anywhere** (V4 D1, §8.22-a; white measures 2.9:1 and the R5 white-label law is retired; `orange-cta #C25210` survives only as a dormant token; token-check is 17 mappings); the finale is a WHITE room on every route (D5); serif ONLY in human quotes; 13px sans kickers in `orange-ink #b54a0d`, the only orange passing 4.5:1 on every wash; one CTA verb and one destination (every "Pre-order Lumi" button goes straight to `STORE_URL`, §8.25-b); every page ends with `FinaleCTA` (`id="reserve"`, which the mobile guide hides against and `LegalDoc` appends); Kheelu say lines ≤ 48 characters and the guide docks bottom-RIGHT (§8.22-d); **tilt never wraps a whole-card link** (`molecules/TiltCard.tsx`, §8.18 — pointer-tracked transforms drop clicks); **the priority plush image must stay the hero's LARGEST element** (it owns mobile LCP; two live regressions taught this, qa-report R11); nav tab is "PlayOS" and /playos is the VC-voiced platform page (V4 D6 — vision, moat, ArchitectureStack; still no per-unit pricing, kheelona.ai stays the only partner CTA); mobile perf verifies record BOTH Lighthouse throttling methods (simulate amplifies a headless artifact — judge by devtools numbers).
+  one per composition, specced per page — never body copy or UI); all text left-aligned; **CTAs are brand orange `#EF762F` via the `action` token with `ink-head` labels — NO white text on the action fill anywhere** (V4 D1, §8.22-a; white measures 2.9:1 and the R5 white-label law is retired; `orange-cta #C25210` survives only as a dormant token; token-check is 16 mappings against v3); the finale is a WHITE room on every route (D5); serif ONLY in human quotes; 13px sans kickers in `orange-ink #b54a0d`, the only orange passing 4.5:1 on every wash; one CTA verb and one destination (every "Pre-order Lumi" button goes straight to `STORE_URL`, §8.25-b); every page ends with `FinaleCTA` (`id="reserve"`, which the mobile guide hides against and `LegalDoc` appends); Kheelu say lines ≤ 48 characters and the guide docks bottom-RIGHT (§8.22-d); **tilt never wraps a whole-card link** (`molecules/TiltCard.tsx`, §8.18 — pointer-tracked transforms drop clicks); **the priority plush image must stay the hero's LARGEST element** (it owns mobile LCP; two live regressions taught this, qa-report R11); nav tab is "PlayOS" and /playos is the VC-voiced platform page (V4 D6 — vision, moat, ArchitectureStack; still no per-unit pricing, kheelona.ai stays the only partner CTA); mobile perf verifies record BOTH Lighthouse throttling methods (simulate amplifies a headless artifact — judge by devtools numbers).
 - **Registry law** (§8.19 + §8.21 + §8.22-h): new sections compose the shared molecules — `SectionHeading`/`Card`/`StepList`/`PageHero`/`CheckList`/`LegalDoc` plus V3's `AnswerBlock`/`FootnotesRow`/`KheelonaPlusBand`/`FamilyGrid`/`LumiModes` plus V4's `AudioMoments` (data ONLY from `lib/audio-moments.ts`)/`HowItWorksLoop`/`ArchitectureStack` — and take prices, CTA labels, ages and subscription copy from `@/config/site`. Hand-rolling those shapes is a review flag.
-- **Retired in V3-5, do not resurrect or cite**: `MascotScene`, `KheeluSays`, `HeroConversation`, `KheeluIntro`, `WhyWeExist`, `Feelings`, `MeetLumi`, `WhatLumiDoes`, `HowItWorks`, `SafetyCallout`, `SafetyStrip`, `StickyMobileCTA`, `CurveDivider`, `Beat`, and the `teal-deep` token. **Retired in V4** (team feedback): `Statement`, `LaunchVideo` (component only — the film files stay in `public/video/`), `LearningRoom`, `BrainRoom`, the hero fact bubbles, the orange Room fill/Section wash, and the launch film's VideoObject in Home's JSON-LD. Older §8.x entries and checkpoints still name them because they describe what shipped at the time. Plan + architecture: `docs/redesign-plan-2026-07.md`. `public/video/launch.{mp4,jpg}` = the "Two friends" film (source `launch-video/src/FilmTwoFriendsVeo.tsx`).
+- **Retired in V3-5, do not resurrect or cite**: `MascotScene`, `KheeluSays`, `HeroConversation`, `KheeluIntro`, `WhyWeExist`, `Feelings`, `MeetLumi`, `WhatLumiDoes`, `HowItWorks`, `SafetyCallout`, `SafetyStrip`, `StickyMobileCTA`, `CurveDivider`, `Beat`, and the `teal-deep` token. **Retired in the v3
+  migration (2026-08-23)**: the `line-soft` and `orange-deep` tokens (merged into `line` and
+  `orange-ink`), `PLATFORM_AGES`, `isPreorderOpen`/`PREORDER_DEADLINE_*`, and the old
+  `Design/design-system/` folder itself. **Retired in V4** (team feedback): `Statement`, `LaunchVideo` (component only — the film files stay in `public/video/`), `LearningRoom`, `BrainRoom`, the hero fact bubbles, the orange Room fill/Section wash, and the launch film's VideoObject in Home's JSON-LD. Older §8.x entries and checkpoints still name them because they describe what shipped at the time. Plan + architecture: `docs/redesign-plan-2026-07.md`. `public/video/launch.{mp4,jpg}` = the "Two friends" film (source `launch-video/src/FilmTwoFriendsVeo.tsx`).
 - `gemini-handoff/` — founder generation kit (refs + seeds + prompts); product renders staged in `Design/product-images/generated-2026-07/`
