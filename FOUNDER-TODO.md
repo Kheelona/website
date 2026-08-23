@@ -66,25 +66,17 @@ anything that turns out wrong gets corrected here rather than argued twice.
       Wording is counsel's, not mine (the page is already counsel-gated). Finding F-12 in
       `security-review.md`.
 
-- [ ] **🔒 `admin.kheelona.com` serves a certificate that does not cover it, and it blocks an HSTS
-      decision.** Found 2026-08-23 (F-15). That name resolves to Firebase Hosting
-      (`singular-arcana-479108-v5.web.app`), redirects HTTP to HTTPS, and then presents a
-      `CN=firebaseapp.com` certificate with no matching name, so a browser shows a full warning
-      interstitial. Two things follow. **One:** an admin surface reachable only by clicking through a
-      TLS warning teaches whoever uses it to click through TLS warnings, which is how a session gets
-      intercepted. Either finish the Firebase custom-domain certificate or delete the DNS record if
-      it is unused. **Two:** it is why HSTS `includeSubDomains` is NOT enabled yet even though you
-      said yes. Turning it on would make that warning un-clickable-through for two years per browser,
-      hard-blocking the panel. Not my repo and not my DNS, so it is yours either way. I did not probe
-      the host beyond reading its certificate.
-      **IN PROGRESS, same evening:** you added the custom domain in the Firebase project
-      `kheelona-backend-server`, site `singular-arcana-479108-v5`. The ownership TXT
-      (`hosting-site=singular-arcana-479108-v5`) is on the name and the console reads **Minting
-      certificate**, so Firebase has accepted the DNS and is issuing. The earlier "Error when
-      creating domain" was it refusing a duplicate, not a failure. Nothing more to do: do not re-add
-      it, do not touch the `admin` CNAME or TXT, and do not turn Cloudflare's proxy on for it.
-      `curl -sSI https://admin.kheelona.com/ | head -1` stops failing once it lands. Tell me then and
-      I ship the one-line HSTS change, closing F-15 and F-09 together.
+- [x] **DONE 2026-08-23: `admin.kheelona.com`'s certificate, and the HSTS line it was blocking.**
+      Found while checking what HSTS `includeSubDomains` would bind (F-15). That name pointed at
+      Firebase Hosting by CNAME but had never been added as a custom domain inside Firebase, so it
+      served a `CN=firebaseapp.com` certificate that did not cover it: a surface named `admin`
+      reachable only by clicking through a TLS warning, which is the habit that makes a session
+      interception work. You added the custom domain in `kheelona-backend-server`; the certificate is
+      now `CN=admin.kheelona.com` from Google Trust Services and strict HTTPS returns 200. HSTS
+      `includeSubDomains` shipped straight after (F-09, `eebb298`), verified as exactly ONE header in
+      production. All five hosts validate and no other subdomain resolves. `preload` is deliberately
+      still out: it means a list compiled into browsers and removal takes months, so ask for it
+      separately if you ever want it.
 
 - [ ] **Two rows in Supabase.** Delete my probe: `delete from preorders where order_ref =
       'KH-8FP8-PWDA';`. And close out Shweta's, whose refund predates the automatic handling:
