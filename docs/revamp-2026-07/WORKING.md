@@ -109,9 +109,13 @@ Work on `main`; keep `demo-website` in sync by merging. Verify locally: `npm tes
 mappings against v3) · `npx next start -p 3456` (check `lsof` first; `rm -rf .next/cache/images` if
 a replaced image serves stale).
 
-**What V6 is** — the growth-arc CONTENT round, spec `BUILD-V6.md`, plan `PLAN-V6.md`, laws §8.24,
-QA `QA-V6-note.md` (independent; it REJECTED the first pass), checkpoint
-`docs/checkpoints/v6-content-2026-07-31.md`, design record `HANDOFF-design-v6.md` (all items closed).
+**What V6 is** — the growth-arc CONTENT round, spec `BUILD-V6.md`, laws §8.24, checkpoint
+`docs/checkpoints/v6-content-2026-07-31.md`. **Three of this round's files were deleted in the
+2026-08-23 doc cleanup, all fully-done work**: the task-by-task plan `PLAN-V6.md`, the design record
+`HANDOFF-design-v6.md` (every item closed the day it was written), and the independent QA note
+`QA-V6-note.md` (it REJECTED the first pass over four blockers, all fixed) — whose verdict and two
+best catches are now compressed into `docs/qa-report.md`'s V6 section. Git history keeps all three;
+`Technical-Todo.md` names the recovery point.
 It exists because parents said the site never answered *"what will a kid who buys this get by
 school?"*. Shipped then: the outcome hero "A best friend at 2. / A head start by 5.", the Home
 `#growth` room (`lib/growth-arc.ts` + `organisms/GrowthArc`), the new FAQ "What will my child

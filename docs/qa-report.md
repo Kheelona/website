@@ -897,7 +897,19 @@ sitemap submission (needs founder account access); backlinks and directory submi
 
 ## V6 growth-arc content round (2026-07-31) — build + QA
 
-Spec `BUILD-V6.md` (founder-approved as written), plan `PLAN-V6.md`, built as 14 tasks on
+**The independent content review, compressed here on 2026-08-23 when its note was deleted**
+(`docs/revamp-2026-07/QA-V6-note.md`, recoverable from git history): **VERDICT REJECT**, four
+blockers, all line-edits and all fixed the same day, after which it passed. It reviewed all 12
+routes plus 6 of the 19 journal articles in full, every FAQ and Product JSON-LD block, and the live
+form's field list read-only. Its two most valuable catches are the reason it existed: the internet
+FAQ flatly claimed Lumi plays offline (AI mode needs home WiFi — now the mode-precise law §8.24-1),
+and **/privacy described a form that no longer existed**, telling parents to reply to emails they
+were never sent, which is what a DPDP complaint is made of. Its standing praise, worth keeping as a
+bar: cross-page fact discipline was "the best I have seen on a pre-order site", and the blockers
+were exactly where that discipline had not reached.
+
+Spec `BUILD-V6.md` (founder-approved as written), plan `PLAN-V6.md` (a 618-line task-by-task plan,
+fully executed and deleted on 2026-08-23; git history keeps it), built as 14 tasks on
 `demo-website`. **276 tests green** (269 → 276: config-copy guard, growth-arc data guard, GrowthArc
 organism, PacePanel echo, Hero rewrite, FinaleCTA lede), tsc clean, build green (token-check 17).
 
