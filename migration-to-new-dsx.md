@@ -1,9 +1,10 @@
 # Migration to Design System v3 — the engagement record
 
-**READ THIS FIRST, EVERY SESSION, until the migration is marked complete.** (CLAUDE.md
-points here; that pointer and this rule are removed only when the DONE box at the bottom
-is ticked.) Context can be cleared at any time — this file must always be enough to
-resume cold. Update it after EVERY change-set, QA run, and review verdict.
+**✅ COMPLETE, 2026-08-23 — one day end to end.** Everything below is the finished
+record: the twelve founder decisions, the dashboard, the QA log, the SEO keyword map.
+The read-first mandate is lifted (CLAUDE.md's banner now summarizes the outcome); this
+file stays as the engagement's paper trail, alongside
+`docs/checkpoints/v3-migration-2026-08-23.md`.
 
 The full approved plan lives at
 `~/.claude/plans/kheelona-com-claude-glittery-waffle.md`; this file is the living
@@ -143,9 +144,9 @@ metadata and comparative lines only, never implying an under-3 product.
 
 ## Completion
 
-- [ ] All change-sets merged to main by the founder
-- [ ] MARA final cross-page audit PASSED
-- [ ] RIA full-site regression PASSED
-- [ ] v3 gap-proposal docs written into v3
-- [ ] Old design system deleted (founder-approved)
-- [ ] CLAUDE.md standing instruction removed; this file marked COMPLETE
+- [x] All change-sets merged to main (founder-verified preview → founder-ordered merge `275ef01`; Phase B and the audit fast-forwarded after, under the founder's "move ahead" grant)
+- [x] MARA final cross-page audit PASSED (sweep clean every route × both widths; production Lighthouse home 99/100/100/100, lumi 99/100/100/100, store 98/100/100/66-by-design)
+- [x] RIA full-site regression PASSED (792 tests / 92 files, tsc, build, token gate at every commit)
+- [x] v3 gap-proposal docs written into v3 (`guidelines/site-extensions.md`)
+- [x] Old design system deleted (founder approved 2026-08-23; history keeps it, and the rollback tag `pre-v3-migration-2026-08-23` predates the whole engagement)
+- [x] CLAUDE.md standing instruction replaced with the outcome banner; this file marked COMPLETE

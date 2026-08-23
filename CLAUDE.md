@@ -1,15 +1,18 @@
 # kheelona.com — session entry point
 
-**🚧 DESIGN-SYSTEM v3 MIGRATION IN PROGRESS (since 2026-08-23): read `migration-to-new-dsx.md`
-FIRST, every session, before anything else.** It carries the founder decisions of 2026-08-23
-that SUPERSEDE several facts below (the 500-unit cap is BACK, ship date is 20 October 2026,
-ages are "3+", the zero-italics law is reversed, Foxy-Deer is Kheelu's new design). Remove
-this block only when that file's completion box is ticked.
+**🟢 THE v3 MIGRATION IS COMPLETE AND LIVE (2026-08-23, one day, merge `275ef01` onward).**
+The record: `migration-to-new-dsx.md` (the twelve founder decisions, dashboard, QA log, keyword
+map) + `docs/checkpoints/v3-migration-2026-08-23.md`. New laws: **§8.26** (the unit-cap offer)
+and **§8.27** (design authority = `Design/Kheelona-Design-System-v3/`; the old system is DELETED,
+history keeps it at `pre-v3-migration-2026-08-23` = `b27fd25`, also the rollback tag). Facts in
+sections below that still say ages 2 to 5 / 30 September / ₹9,999 / 1 October / zero italics are
+PRE-MIGRATION history — the paragraph above each usually says so, and this block wins.
 
-Pre-order marketing site for **Lumi**, Kheelona's screen-free talking AI toy for ages 2 to 5
-(India-first). One job: turn parents into paid pre-orders. A **₹499 refundable token** holds a Lumi at
-**₹4,999** (₹9,999 after 30 September 2026), the **₹4,500 balance** falls due before dispatch, and the
-payment happens on **store.kheelona.com**, which this same repo serves.
+Pre-order marketing site for **Lumi**, Kheelona's screen-free talking AI toy for ages 3+
+(India-first). One job: turn parents into paid pre-orders. A **₹499 refundable token** holds one of
+the **first 500 units** at **₹4,999** (decided per request from the live paid count — once they are
+gone, a pre-order is **₹7,999 paid in full**), the **₹4,500 balance** on token orders falls due
+before dispatch, and the payment happens on **store.kheelona.com**, which this same repo serves.
 
 ## ⚠ STATE OF PLAY (2026-08-22 — **THE PAID STORE IS LIVE ON LIVE KEYS**) — read this first
 **THE SITE IS LIVE AT https://kheelona.com AND SERVES V6. It is indexed and taking pre-orders, so
@@ -141,15 +144,17 @@ repo root. That old app is preserved at the tag **`pre-revamp-2026-07`** and its
   to `WORKING-history-2026-07.md` beside it, which is evidence and NOT law — it still says ages 3 to
   10 under a heading that says *Locked decisions*) (an older note said to remove it after founder approval; it is now the
   site's operating record).
-- **Locked product facts**: Lumi is ages **2 to 5**, the platform arc is **2 to 14** (both "3 to 6"
-  and "3 to 10" are dead — render ages from `LUMI_AGES`/`PLATFORM_AGES`). The .com line-up is the
-  pipeline Lumi → Kheelu Speaker → AI books. Lumi has **three modes**: AI mode, Kheelu mode,
-  Bluetooth mode. **Shipping starts 1 October 2026** (founder 2026-08-22, moved from
-  1 September — render from `SHIP_DATE_TEXT`/`SHIP_DATE_ISO`, never inline). **The price is ₹4,999 for
-  pre-orders placed before 30 September 2026 and ₹9,999 after** (`PREORDER_DEADLINE_TEXT`), a **₹499
-  refundable token** reserves one (`TOKEN_PRICE`) and the **₹4,500 balance** is due before dispatch
-  (`BALANCE_PRICE`, derived). **THERE IS NO UNIT CAP**: "first 500 units" is retired everywhere and
-  `test/preorder-copy.test.ts` fails if it comes back. Support is **WhatsApp only** on
+- **Locked product facts (as revised by the 2026-08-23 migration)**: Lumi is ages **3+** — no
+  published ceiling anywhere; `PLATFORM_AGES` is deleted and every age renders from `LUMI_AGES`
+  ("2 to 5", "2 to 14", "3 to 6" and "3 to 10" are ALL dead ranges, guarded in `seo.test`). The .com
+  line-up is the pipeline Lumi → Kheelu Speaker → AI books (chips 3+/5+/3+). Lumi has **three
+  modes**: AI mode, Kheelu mode, Bluetooth mode. **Shipping starts 20 October 2026** (render from
+  `SHIP_DATE_TEXT`/`SHIP_DATE_ISO`, never inline). **The offer is UNIT-BOUNDED (§8.26)**: ₹4,999 for
+  the **first 500 units** (a ₹499 refundable token + ₹4,500 balance before dispatch), then
+  **₹7,999 paid in full** — the mode is decided server-side per request from the live paid count in
+  `lib/store/mode.ts`, the count is NEVER published, a refund reopens a slot, and "30 September",
+  "₹9,999" and "1 October 2026" are the banned phrases now (`test/preorder-copy.test.ts` inverted
+  once, 2026-08-23). Support is **WhatsApp only** on
   +91 91875 46483, and every visible label must say so. Seller of record: **Kheelona Robotics Private
   Limited**, GSTIN 29AAMCK1530E1ZN, Jayanagar Bengaluru 560041 (`lib/legal.ts`). **Eight languages are named and final**
   (English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish, French — render from
