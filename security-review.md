@@ -175,7 +175,7 @@ bundle or in git history, and no unauthenticated path writes to `preorders`.**
 
 | id | severity | surface | title | owner | status |
 |---|---|---|---|---|---|
-| F-01 | HIGH | payment / privacy | The address token, which is the only authorisation on an order, is sent to third-party analytics inside the URL | KAI (+ HUMAN for rotation) | **FIXED** `84ae07e` · rotation ESCALATED |
+| F-01 | HIGH | payment / privacy | The address token, which is the only authorisation on an order, is sent to third-party analytics inside the URL | KAI + HUMAN | **CLOSED** `84ae07e` + founder rotation, both confirmed on production |
 | F-02 | HIGH | dependencies | Next.js 16.2.10 carries 9 advisories, 4 HIGH, all fixed in 16.2.11 | KAI | **FIXED** `120271f` (16.2.12) |
 | F-03 | MEDIUM (HIGH on the payment page) | headers / skimming | No CSP, no frame-ancestors, no nosniff, no Referrer-Policy, no Permissions-Policy on either host | KAI | **FIXED, PHASE 1 OF 2** `02e1f2a` (CSP Report-Only; enforcing is a second deploy) |
 | F-04 | MEDIUM | API abuse | Rate limiting is per-instance in-memory, so it does not bound abuse on serverless | HUMAN (WAF) | **ESCALATED** — belongs at the edge, see below |
@@ -424,7 +424,8 @@ existing 806 tests already live) and no live-gateway dynamic test runs at all.
 | GATE 2 — F-05, the payload summary | 2026-08-23 | **PASS → APPROVED-FOR-MERGE** (`8df8977`). 872/872, tsc 0, build 0. A delivery carrying an email, a phone and a full card block is stored with its ids and amount and none of those five values. |
 | GATE 2 — the payment probe | 2026-08-23 | **PASS** (`d969005`). `npm run qa:payment` clean: the sandbox order is created, Razorpay's sheet opens, **zero policy violations**, a signed webhook is accepted and a forged one refused. Control run done first: with Razorpay removed from `script-src` the probe failed and named both blocked scripts, so the assertion is not vacuous. |
 | GATE 3 — post-deploy verify | 2026-08-23 | **PASS.** Founder approved section 5a and asked for the merge; merged as `b7be77e` (`--no-ff`, so one revertable commit), rollback tag **`pre-security-hardening-2026-08-23` = `05872e0`** cut BEFORE the merge. Gates re-run on the merge result: 872/872 (exit 0), tsc 0, build 0. Live within ~60s. Verified read-only on production, no real order touched: all six headers present on both hosts and `x-powered-by` gone; a **synthetic** tokened `/thanks` URL answers `303` to a query-less `/thanks` with `Secure; HttpOnly; SameSite=lax; Path=/thanks; Max-Age=7200` and `private, no-store`; a bare `/thanks` renders "We need your link again" at 200 rather than a 404; `/api/health` still `ok:true, store:"ready", preorder:"token"` for the cron; all 12 marketing routes and all 3 store routes 200; the live store screenshotted at 390 with the form, the CTA and the whole ₹499 / ₹4,500 / ₹4,999 story intact. `demo-website` synced by merging main in. |
-| GATE 4 — engagement sign-off | — | **No CRITICAL or HIGH open.** Everything remaining is either the founder's (F-04, F-09, F-12, the rotation and the prune) or the CSP's second, deliberate step. |
+| GATE 3 — the rotation | 2026-08-23 | **PASS.** Founder rotated `STORE_SIGNING_SECRET` and redeployed. Health `ready` on both hosts, nothing else clobbered, the build serving normally. Decisive proof: the `Add it here` link in `KH-YPJ8-GHVT`'s acknowledgement email, whose token was minted under the OLD secret, now lands on "We need your link again". F-01 CLOSED, including the tokens already sitting in the analytics properties. |
+| GATE 4 — engagement sign-off | — | **No CRITICAL or HIGH open, and both HIGHs are now fully closed.** Everything remaining is either the founder's (F-04, F-09, F-12, the payload prune) or the CSP's second, deliberate step. |
 
 ### NADIA's re-audit of the fixes themselves (2026-08-23)
 
@@ -465,15 +466,15 @@ production database write, hosting configuration, or legal wording.
 1. ~~**Merge `security-hardening` into `main`.**~~ **DONE 2026-08-23**, founder-approved after
    reviewing this section: merge `b7be77e`, live in about a minute, GATE 3 passed (see the gate log).
    Rollback: `git revert -m 1 b7be77e`, or the tag `pre-security-hardening-2026-08-23`.
-2. ~~**Rotate `STORE_SIGNING_SECRET`**~~ **DONE 2026-08-23** by the founder, with a redeploy.
-   Verified afterwards: health `ready` on both hosts with `razorpay:"live"` and `email:"configured"`,
-   so nothing else was clobbered; the redeployed build serves the proxy claim, all 15 routes, all six
-   headers and the working order form. **One confirmation still outstanding and it needs the
-   founder's inbox:** open the `/thanks` link from the 2026-08-22 ₹499 proof order's email. It must
-   now say "We need your link again". If it still shows the order, the redeploy did not pick up the
-   new value. (I cannot run that one: I never held the production signing secret, so I cannot mint a
-   token under the old one to watch it fail. Rejecting a synthetic token proves the check runs, not
-   that the value changed.)
+2. ~~**Rotate `STORE_SIGNING_SECRET`**~~ **DONE AND CONFIRMED 2026-08-23.** The founder rotated the
+   value and redeployed. Verified from outside: health `ready` on both hosts with `razorpay:"live"`
+   and `email:"configured"`, so no neighbouring variable was clobbered, and the redeployed build
+   serves the proxy claim, all 15 routes, all six headers and a working order form.
+   **The decisive test passed too, and only the founder could run it:** the `Add it here` link in the
+   acknowledgement email for `KH-YPJ8-GHVT` (2026-08-22, the ₹499 proof order) now lands on
+   "We need your link again". That link's token was minted under the OLD secret, so its death is
+   proof the running deployment is using the new one. **F-01 is therefore fully closed:** the tokens
+   sitting in GA4 and Ahrefs from before the fix are now inert, not merely unreachable.
    This is what makes F-01 fully closed rather than merely stopped: the address tokens already sent
    to GA4 stay valid for their thirty days otherwise. **What it breaks, so it is not a surprise:**
    every `/thanks` link already emailed stops working, and any printed event QR carrying a `sig=`
