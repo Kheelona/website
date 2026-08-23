@@ -157,11 +157,17 @@ repo root. That old app is preserved at the tag **`pre-revamp-2026-07`** and its
   shipping iframe, a brand mark needs a job (`PromiseMark`), one idea one statement per page, the
   same character never doubles at illustration scale, **axe is blind to un-revealed rooms — force
   `.reveal-in` before running it**, and build a control before believing a perf story.
+- **Security laws are §8.28** (2026-08-23): the header set and the CSP's two-phase rollout, an
+  order's credential never travelling in a URL, the payment amount guard, the rate-limit key, the
+  JSON-LD boundary, the dependency floor, and two verification laws (build the control; never point a
+  probe at a measurement host). The open engagement's record is `security-review.md`. Also:
+  **`npm run qa:payment`** drives the real Razorpay SANDBOX in a browser and is what must be green
+  before the CSP is ever flipped to enforcing.
 - **Visual reviews run headless, not through the extension.** Its window is locked ~390px and its tab
   runs hidden, which freezes IntersectionObserver reveals and defers image/media painting — a
   screenshot from it is not evidence. **THE HARNESS IS IN THE REPO SINCE 2026-08-22 (`tools/qa/`), so
-  stop re-creating it in a scratchpad**: `npm run qa:sweep` runs axe + the voice lint over all 15 HTML
-  routes at 390 and 1280 (clean 30/30), and `qa:shot` / `qa:text` / `qa:axe` drive one route.
+  stop re-creating it in a scratchpad**: `npm run qa:sweep` runs axe + the voice lint over all 17 HTML
+  routes at 390 and 1280 (clean 34/34), and `qa:shot` / `qa:text` / `qa:axe` drive one route.
   `tools/qa/lib/resolve.mjs` finds puppeteer-core, axe-core and Chrome by itself, so no cache hash is
   ever hardcoded again. **Reach for `qa:text` whenever you want to know what a page SAYS** — grepping
   HTML source also searches the RSC payload and finds strings that are not on the page (§8.25-bb).
@@ -235,7 +241,8 @@ Rules for any change:
 ## Commands (app code lives in `src/`)
 - Dev: `npm run dev` (port 3000)
 - Prod: `npx next build && npx next start -p 3456` (local prod URL the founder uses: http://localhost:3456). If a replaced `public/` image serves stale through `/_next/image`, `rm -rf .next/cache/images` — the optimizer cache survives rebuilds (qa-report 2026-07-31). Check `lsof -iTCP:3456` for stale servers from old sessions.
-- Test: `npm test` (Vitest; a test per component) · Storybook: `npm run storybook` / `npm run build-storybook`
+- Test: `npm test` (Vitest; a test per component) · Payment path: `npm run qa:payment` (sandbox keys
+  in a gitignored `.env.local`, plus `STUB_WRITABLE=1 node tools/qa/supabase-stub.mjs`) · Storybook: `npm run storybook` / `npm run build-storybook`
 - **Store, locally**: the host rewrite needs a store hostname, so
   `curl -H "Host: store.kheelona.com" localhost:3456/` or open `http://store.localhost:3456`.
   Headless Chrome here does NOT resolve `localhost` (use `127.0.0.1`) and Lighthouse hits an HSTS

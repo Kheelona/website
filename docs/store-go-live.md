@@ -71,7 +71,7 @@ path is now proven, not inferred:**
 | **Webhook secret matches** | all three deliveries returned **200** (a mismatch is a 400) |
 | **Idempotency works under the real race** | `payment.captured` 23:29:01 and `order.paid` 23:29:02 both arrived; the first marked it paid and emailed, the second found no unpaid row and returned 200 with **no second email**. Exactly one receipt reached the customer. |
 | Non-payment events ignored safely | `payment.authorized` recorded, acted on by nothing, 200 |
-| Receipt email correct | order ref, ₹499 paid, ₹4,500 of ₹4,999, ships 1 October 2026, refund promise, Kheelona+, full seller block with GSTIN, "messages, not calls". From `hello@send.kheelona.com`, replies to `hello@kheelona.com` |
+| Receipt email correct | order ref, ₹499 paid, ₹4,500 of ₹4,999, ships 20 October 2026 (this row was written when the date was 1 October; the ship date moved on 2026-08-23 and renders from SHIP_DATE_TEXT), refund promise, Kheelona+, full seller block with GSTIN, "messages, not calls". From `hello@send.kheelona.com`, replies to `hello@kheelona.com` |
 | Internal alert email | arrived |
 | Razorpay fees | **₹0.00** — UPI is zero-MDR in India, so verification cost nothing |
 
@@ -369,3 +369,16 @@ row to `status='refunded'` so the queue and any future count stay honest.
 - **Nothing chases an abandoned payment.** See step 7.
 - **The balance run** (₹4,500 by payment link before dispatch) is a manual process with no tooling
   yet. `balance_status` exists on every row to track it: `due` → `link_sent` → `paid`.
+
+## The confirmation link changed shape (2026-08-23, §8.28-b)
+
+A receipt's "Add it here" link is still `…/thanks?ref=KH-…&t=<token>` and still works exactly as it
+always did for a customer. What changed is what happens on arrival: `src/proxy.ts` consumes the token
+into an HttpOnly cookie and 303s the browser to a clean `/thanks`, because that page carries three
+measurement tags and every one of them reports the URL it loaded on. So if you are debugging and see
+a 303 with a `Set-Cookie` where you expected a rendered page, that is correct.
+
+Two consequences for anyone operating this. A bare `/thanks` with no cookie is now a real page saying
+"We need your link again" rather than a 404, so it appears in `qa:sweep`. And rotating
+`STORE_SIGNING_SECRET` invalidates every address link already emailed — the runbook step for that is
+`security-review.md` section 5b.

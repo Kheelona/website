@@ -898,7 +898,8 @@ re-learned the same traps by hitting them. It is now `tools/qa/`:
 - `npm run qa:sweep` — axe (WCAG 2.0/2.1 A+AA) **plus** the voice lint across **every HTML route** at
   390px and 1280px. **The route list lives in the script**, which is the direct answer to §8.24-7a's
   most expensive lesson: a sweep that named four routes while the site had eleven let a real WCAG
-  failure sit live through three "axe zero" rounds. Currently 30/30 clean.
+  failure sit live through three "axe zero" rounds. Currently 34/34 clean (17 routes: the 2026-08-23
+  security round added the store's /thanks, whose no-cookie state is now a real page rather than a 404).
 - `npm run qa:text -- <url>` — the rendered text and every link. **Reach for this instead of grepping
   HTML** (§8.25-bb).
 - `npm run qa:shot -- <url> <out.png> [width] [--full]` and `npm run qa:axe -- <url> [width]`.
@@ -1017,3 +1018,106 @@ as it happened and stays as history. The design authority since CS3 of the v3 mi
 extensions and the two v3 errata live in its `guidelines/site-extensions.md`). The old
 folder is reference-only and is deleted at the engagement's close, with founder approval —
 the token gate no longer reads it, so its deletion can no longer silently disable anything.
+
+---
+
+# §8.28 SECURITY HARDENING (2026-08-23)
+
+The laws from the security engagement. Full record, findings register and gate log:
+**`security-review.md`** at the repo root, which CLAUDE.md's banner tells every session to read
+until sign-off. This section is the law; that file is the reasoning.
+
+## 8.28-a Every HTML response carries the header set, and the CSP ships in two phases
+
+`src/lib/security-headers.ts` is the only place headers are declared, wired through
+`next.config.ts`'s `headers()`. One policy for BOTH hosts, deliberately: host-matched headers work,
+but "the checkout got the marketing policy" is a failure mode worth designing out. The set is HSTS
+with `includeSubDomains`, the CSP, `frame-ancestors 'none'` plus `X-Frame-Options: DENY`, `nosniff`,
+`Referrer-Policy`, `Permissions-Policy`, and `Reporting-Endpoints`.
+
+**`CSP_PHASE` is a two-step rollout and flipping it is a deliberate commit**, made only after
+reading the `[csp] blocked=…` lines that `/api/csp-report` writes to the platform log from real
+traffic. A wrong CSP on a live checkout looks to a parent exactly like a broken checkout.
+`test/security-headers.test.ts` asserts which phase is live, so the flip cannot be a side effect.
+
+**The compromise, stated so nobody "fixes" it in ignorance:** `script-src` carries `'unsafe-inline'`,
+because Next's inline bootstrap differs per page and the alternative is a per-request nonce, which
+forces every page dynamic and costs this site 31 prerendered pages and its LCP law. What survives is
+the part that matters against skimming: an injected `<script src>` from an unknown origin is still
+refused, and `connect-src`, `img-src` and `form-action` leave a script that does run nowhere to send
+what it steals. Tightening further means moving the measurement tags out of the root layout so the
+store alone can take a nonce, which is a structural change and a founder decision.
+
+**`preload` on HSTS is deliberately absent.** It means a list compiled into browser binaries and
+removal takes months. It needs its own decision.
+
+## 8.28-b An order's credential never travels in a URL
+
+The address token is the ONLY authorisation an order has: it reads a family's confirmation and
+changes where their Lumi is delivered, for thirty days. It used to arrive as `/thanks?ref=&t=`, and
+that page inherits three measurement tags, every one of which reports the URL it loaded on — so
+`gtag` was copying each paid order's credential into the analytics property as `page_location`.
+
+`src/proxy.ts` now claims it on arrival into an HttpOnly, Secure, SameSite=Lax cookie scoped to
+`/thanks`, and 303s to a clean path (`src/lib/store/thanks-session.ts`). The redirect is 303 with
+`private, no-store`, because a cached redirect would hand one customer's cookie to the next. Nothing
+about the model moved: same signed, expiring, purpose-labelled token, same `verifyAddressToken`, and
+`/api/preorder/address` still takes it in the POST body (§8.25-n intact).
+
+**The general law: no page that carries a measurement tag may be reachable at a URL containing a
+credential.** An event link's `sig=` is the one accepted exception, on the §8.25-g reasoning that a
+printed QR is already semi-public — and even there, the CSP report route strips query strings before
+logging.
+
+## 8.28-c An order may not be marked paid by less than its own amount
+
+`markPaid` compares the captured amount, and the comparison is a condition on the atomic UPDATE
+rather than a read before it, because that single statement is what makes the function idempotent
+when the browser callback and the webhook race. A short payment returns `short-paid`, is logged
+loudly, stays out of the dispatch queue, and sends the customer nothing; the webhook answers 200,
+because a retry would deliver the same short amount forever. The browser callback passes no amount
+and takes no guard: its trustworthiness is its verified signature.
+
+Nothing can produce a short payment today. The point is that the safety now lives in our data rather
+than in a gateway dashboard setting nobody is watching.
+
+## 8.28-d A rate limit keyed on a value the caller supplies is not a rate limit
+
+Every throttle in the store keyed on the FIRST entry of `x-forwarded-for`, which is a chain each
+proxy appends to and anyone may send. One varying header per request and every limit evaporated.
+`clientKey` now prefers `x-real-ip`, then Vercel's own forwarded header, then the RIGHTMOST hop.
+
+The in-app limiter is still in-memory and per instance, and that is honest rather than fixed: real
+bounding belongs at the edge, and lives there now as a Vercel Firewall rule on `/api/preorder/`
+POSTs. **That rule must never widen to `/api/`** — Razorpay's webhook retries and the daily health
+cron both sit outside it on purpose, and throttling either costs money.
+
+## 8.28-e Serialised data going into a script element is escaped at the boundary
+
+`jsonLd()` in `src/lib/seo.ts` is the only way JSON-LD reaches a page. Every value is ours today, so
+there is nothing to inject; the escaping is so that stays true the first time a value arrives from
+somewhere else. A test fails if any page reintroduces a raw `JSON.stringify` inside an `__html`.
+
+## 8.28-f A version bumped for an advisory gets a floor, or it slips back
+
+`test/dependency-floor.test.ts` asserts the declared AND installed version of `next` stays at or
+above the release that fixed nine advisories, with those advisories written out. A lockfile refresh
+or a merge would otherwise re-open them silently. It compares numerically, because `"16.2.9" >
+"16.2.12"` as strings is exactly the bug that would make such a guard pass while the hole stayed
+open. Raising a floor is normal; lowering one means arguing it out loud.
+
+## 8.28-g Two verification laws, both learned the hard way this round
+
+**Build the control before believing a security assertion.** `npm run qa:payment` claims the CSP does
+not disturb Razorpay Checkout. That claim was only worth having after removing Razorpay from
+`script-src` and watching the probe fail — which also surfaced a second Razorpay host
+(`cdn.razorpay.com/static/cx/razorpay-risk-detection/bundle.js`) that nothing in this repo mentions.
+Same shape as §8.23's "build a control before believing a perf story".
+
+**A probe may never be pointed at a measurement host.** `openPage` in `tools/qa/lib/browser.mjs`
+aborts all third-party requests and takes an `allow` list for the ones under test. Allowing GA4 or
+Ahrefs through would put QA traffic in the founder's real properties. It is also why GA4's
+compatibility with the policy is left to production Report-Only rather than tested locally.
+
+**And the trap that cost an hour:** `openPage` aborting third parties is why the Razorpay sheet
+first looked broken. It was our own harness, not the policy. Check the harness before the finding.

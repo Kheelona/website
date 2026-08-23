@@ -20,7 +20,8 @@ You are resuming an in-progress website. Follow these steps exactly.
 >   founder has, no defects)
 > - **The build and launch record →** `docs/checkpoints/preorder-store-2026-08-22.md` and
 >   `docs/store-go-live.md`
-> - **To verify →** `npm test`, `npx tsc --noEmit`, `npx next build`, and `npm run qa:sweep`
+> - **To verify →** `npm test`, `npx tsc --noEmit`, `npx next build`, `npm run qa:sweep`, and for
+>   anything touching the money path `npm run qa:payment` (real Razorpay SANDBOX, in a browser)
 >   (the expected test count is `tests.count` in `docs/project-state.json`, kept in that one place)
 >   (add `SWEEP_BASE=https://kheelona.com SWEEP_STORE=https://store.kheelona.com` for production)
 > - **Do not re-test the payment path.** A real customer already proved it.
@@ -94,7 +95,7 @@ Say where the project stands and what is next. Do NOT re-ask questions from comp
 - **Working agreement**: work on `main`; `demo-website` is the Vercel preview branch
   (https://website-hdn2.vercel.app), synced by MERGING main into it, never force-push. Vercel and
   all external dashboards are the founder's.
-- **Getting started (developers)**: `npm install && npm run dev` (Node 18+). Production: `npm run build && npm start`. Env: copy `.env.example` → `.env.local`. Deploy: Vercel, Root Directory = repo root.
+- **Getting started (developers)**: `npm install && npm run dev`. **Node ≥ 24** — `.nvmrc` pins 24 and `AGENTS.md` and the standards both require it; this line said Node 18+ until 2026-08-23, which was simply wrong. Production: `npm run build && npm start` (the build runs the token gate first and fails hard without the v3 design system). Env: copy `.env.example` → `.env` (or `.env.local`, which Next loads at higher precedence — the store's six secrets are documented in `.env.example` and read in exactly one place, `src/lib/store/env.ts`; a missing one makes the store render an honest "opening shortly" state rather than crash). Local store URLs need a store hostname: `http://store.localhost:3456`. Deploy: Vercel, Root Directory = repo root.
 - **Locked decisions**: tokens from `Design/Kheelona-Design-System-v3/tokens/kheelona.css` (THE design authority since 2026-08-23) mapped into `src/styles/globals.css` `@theme` (drift fails the build via `tools/tokens/check-tokens.mjs`, which also fails hard if the v3 CSS is missing); the pre-order is **paid, on our own form** in `src/features/preorder/` (the Tally embed and its adapter were retired on 2026-08-22); ₹ site-wide, from the paise integers in `src/config/site.ts`; accessibility 90+ outranks any styling preference.
 
 ## Project Structure

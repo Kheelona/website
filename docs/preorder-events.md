@@ -105,3 +105,16 @@ real first-batch units at the held price). And keeping an event live after the
 public flip to ₹7,999 is a decision, not an accident: that QR re-opens the
 ₹4,999 ladder for whoever holds it, which may be exactly the point of the event
 or may be a leak, so decide per event.
+
+## The confirmation link changed shape (2026-08-23, §8.28-b)
+
+A receipt's "Add it here" link is still `…/thanks?ref=KH-…&t=<token>` and still works exactly as it
+always did for a customer. What changed is what happens on arrival: `src/proxy.ts` consumes the token
+into an HttpOnly cookie and 303s the browser to a clean `/thanks`, because that page carries three
+measurement tags and every one of them reports the URL it loaded on. So if you are debugging and see
+a 303 with a `Set-Cookie` where you expected a rendered page, that is correct.
+
+Two consequences for anyone operating this. A bare `/thanks` with no cookie is now a real page saying
+"We need your link again" rather than a 404, so it appears in `qa:sweep`. And rotating
+`STORE_SIGNING_SECRET` invalidates every address link already emailed — the runbook step for that is
+`security-review.md` section 5b.

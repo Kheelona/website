@@ -1274,3 +1274,45 @@ image is not requested at all on a phone, and the hero is correctly the largest 
 Recording it because the fix I nearly reached for (adding a `sizes` attribute that was already there
 and correct at `280px`) would have been a change made to satisfy a bad measurement. **Measure the
 bytes, not the attribute.**
+
+---
+
+## Security hardening round (2026-08-23) — the evidence
+
+Laws §8.28. Full findings register, gate log and reasoning: **`security-review.md`**. This section is
+only what was verified and how, which is this file's job.
+
+**Fifteen findings, no CRITICAL, twelve closed the same day**, both HIGHs with production
+confirmation. What the suite grew to: **869 tests, 100 files** (from 806 — new files for
+`thanks-session`, the `/thanks` page, `fulfil` and `rate-limit` and the health route, all four of
+which had never had a test, plus the header contract and the dependency floor; minus hero-glow's
+three when it was deleted in the doc cleanup).
+
+| Gate | Result |
+|---|---|
+| `npm test` | 869/869, judged on exit code |
+| `npx tsc --noEmit` | 0 |
+| `npm run build` | 0, token gate green |
+| `qa:sweep` (axe + voice, **17** routes × 390/1280) | **34/34 clean**, exit 0 |
+| `npm run qa:payment` (NEW) | clean: real sandbox order created, Razorpay's sheet opened, **zero CSP violations**, a signed webhook accepted and a forged one refused |
+| CSP violation probe, all 16 routes in a real browser | **zero resource violations**; the only console line is Chrome noting `upgrade-insecure-requests` is inert in report-only mode, which is expected |
+| Production, read-only | all seven headers on both hosts · `x-powered-by` gone · a synthetic tokened `/thanks` 303s to a clean path with `Secure; HttpOnly; SameSite=lax` and `private, no-store` · exactly ONE `Strict-Transport-Security` header carrying `includeSubDomains` · health green · 15/15 routes 200 |
+
+**Two things this round proves about method, both worth more than the findings.**
+
+**A paired test must fail before it passes.** Every fix shipped with one, and each was demonstrated
+failing by reverting only the file under test — not assumed. The F-01 test, for instance, fails
+against the pre-fix `host.ts` because the same input used to rewrite straight through with the token
+intact.
+
+**Build the control before believing a security assertion** (§8.28-g, and the same lesson as §8.23's
+perf control). `qa:payment` asserting "no CSP violations" is worthless until you have watched it fail:
+removing Razorpay from `script-src` made it fail correctly and named a second Razorpay host
+(`cdn.razorpay.com/static/cx/razorpay-risk-detection/bundle.js`) that nothing in this repo mentions.
+
+**What was deliberately NOT tested, and why.** No load testing, fuzzing or malicious payload ever
+touched production. GA4's compatibility with the CSP is left to production Report-Only rather than a
+local probe, because allowing a measurement host through `openPage` would put QA traffic in the
+founder's real property (§8.28-g). And the rotation of `STORE_SIGNING_SECRET` could not be verified by
+me at all: never holding the production secret means I cannot mint an old-secret token and watch it
+fail, so the decisive check was the founder opening an old confirmation email and seeing it dead.

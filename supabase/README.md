@@ -28,3 +28,21 @@ anyone remembering to.
 
 Insert a row in `event_tiers` from the dashboard, then generate its signed link
 with `npm run event-link -- <id>`. See `docs/preorder-events.md`.
+
+## `webhook_events.payload` holds a summary, not the event (2026-08-23, F-05)
+
+The column used to store each Razorpay delivery verbatim and keep it forever, which meant a second
+copy of the payer's email, phone and card metadata (network, last4, issuer) accumulating in a table
+whose only job is to say "this event id has been handled". None of it was needed for idempotency or
+reconciliation.
+
+It now holds an allow-listed summary: the event type, plus the ids and amounts from the payment,
+order and refund entities. An allow-list rather than a deny-list, so a field Razorpay adds next year
+does not quietly start being kept. Razorpay retains the full event on their side, which is where a
+real forensic question should be asked from. The pre-existing rows were pruned by the founder on
+2026-08-23; `select count(*) from public.webhook_events where payload ? 'payload'` returns 0.
+
+To be explicit, since it is the question a reviewer asks: **no PAN and no CVV has ever been stored
+here or anywhere else in this repo.** Last four and network are not PAN, and keeping them was
+permitted — they were simply not needed.
+
