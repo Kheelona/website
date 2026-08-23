@@ -465,8 +465,15 @@ production database write, hosting configuration, or legal wording.
 1. ~~**Merge `security-hardening` into `main`.**~~ **DONE 2026-08-23**, founder-approved after
    reviewing this section: merge `b7be77e`, live in about a minute, GATE 3 passed (see the gate log).
    Rollback: `git revert -m 1 b7be77e`, or the tag `pre-security-hardening-2026-08-23`.
-2. **Rotate `STORE_SIGNING_SECRET`** in the Vercel dashboard. **← THIS IS THE NEXT STEP.**
-   The exact procedure is in section 5b below.
+2. ~~**Rotate `STORE_SIGNING_SECRET`**~~ **DONE 2026-08-23** by the founder, with a redeploy.
+   Verified afterwards: health `ready` on both hosts with `razorpay:"live"` and `email:"configured"`,
+   so nothing else was clobbered; the redeployed build serves the proxy claim, all 15 routes, all six
+   headers and the working order form. **One confirmation still outstanding and it needs the
+   founder's inbox:** open the `/thanks` link from the 2026-08-22 ₹499 proof order's email. It must
+   now say "We need your link again". If it still shows the order, the redeploy did not pick up the
+   new value. (I cannot run that one: I never held the production signing secret, so I cannot mint a
+   token under the old one to watch it fail. Rejecting a synthetic token proves the check runs, not
+   that the value changed.)
    This is what makes F-01 fully closed rather than merely stopped: the address tokens already sent
    to GA4 stay valid for their thirty days otherwise. **What it breaks, so it is not a surprise:**
    every `/thanks` link already emailed stops working, and any printed event QR carrying a `sig=`
