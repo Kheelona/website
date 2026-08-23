@@ -216,7 +216,7 @@ export default function PlayOSPage() {
           <div className="grid gap-5 sm:grid-cols-2">
             {MOAT.map((m, i) => (
               <Reveal key={m.title} delay={i * 0.05}>
-                <Card className="h-full border border-line-soft bg-cream">
+                <Card className="h-full border border-line bg-cream">
                   <PromiseMark index={i} className="mb-3" />
                   <h3 className="mb-2 font-display text-[21px] font-extrabold text-ink-head">
                     {m.title}

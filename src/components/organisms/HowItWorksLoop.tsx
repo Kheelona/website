@@ -34,7 +34,7 @@ export function HowItWorksLoop({
         {steps.map((s, i) => (
           <li key={s.title} className="contents">
             <div
-              className="loop-step relative rounded-(--radius-card) border border-line-soft bg-white p-6"
+              className="loop-step relative rounded-(--radius-card) border border-line bg-white p-6"
               style={{ "--loop-delay": `${i * 2.5}s` } as React.CSSProperties}
             >
               {/* the walking glow: opacity-only, decorative, motion-gated */}

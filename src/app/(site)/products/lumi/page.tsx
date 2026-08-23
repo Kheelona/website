@@ -64,7 +64,7 @@ const HOW_IT_ANSWERS = [
   { n: "01", title: "Your child says the wake word.", body: "Until then, the microphone is off. Lumi starts listening only when it is invited to.", color: "text-blue-ink" },
   { n: "02", title: "The device thinks first.", body: "Speech is processed on the toy before anything goes anywhere. Low latency. No long waits. No sending everything to a distant server.", color: "text-blue-ink" },
   { n: "03", title: "The feeling gets read.", body: "PlayOS hears more than words. Curious, Grumpy, Sad, Silly, Joy: the answer meets the mood.", color: "text-orange-ink" },
-  { n: "04", title: "The right response comes back.", body: "Every reply passes through an age-graded safety layer before it is spoken. On-device and cloud filters work together. No open internet. No surprises.", color: "text-orange-deep" },
+  { n: "04", title: "The right response comes back.", body: "Every reply passes through an age-graded safety layer before it is spoken. On-device and cloud filters work together. No open internet. No surprises.", color: "text-orange-ink" },
 ] as const;
 
 const APP_FEATURES = [
@@ -227,7 +227,7 @@ export default function LumiPage() {
             {DOES.map((d, i) => (
               <Reveal key={d.h} delay={i * 0.04}>
                 <Card
-                  className="h-full border border-line-soft bg-cream p-7"
+                  className="h-full border border-line bg-cream p-7"
                   title={d.h}
                   titleClassName="mb-2 font-display text-[22px] font-extrabold text-ink-head"
                 >
@@ -340,7 +340,7 @@ export default function LumiPage() {
           <Reveal className="mx-auto max-w-[820px]">
             <Faq items={FAQ_ITEMS} />
           </Reveal>
-          <FootnotesRow items={V3_FOOTNOTES} className="mx-auto mt-10 max-w-[820px] border-t border-line-soft pt-6" />
+          <FootnotesRow items={V3_FOOTNOTES} className="mx-auto mt-10 max-w-[820px] border-t border-line pt-6" />
         </Room>
 
         <Room

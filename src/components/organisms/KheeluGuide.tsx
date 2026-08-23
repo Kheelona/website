@@ -213,9 +213,9 @@ export function KheeluGuide({ defaultPose = "hero-wink" }: { defaultPose?: Kheel
             <div
               aria-hidden="true"
               key={line}
-              className="kheelu-guide-bubble relative mb-3 w-max max-w-[220px] rounded-(--radius-card) border border-line-soft bg-white px-4 py-2.5 shadow-(--shadow-room-sm)"
+              className="kheelu-guide-bubble relative mb-3 w-max max-w-[220px] rounded-(--radius-card) border border-line bg-white px-4 py-2.5 shadow-(--shadow-room-sm)"
             >
-              <span className="absolute -bottom-[7px] right-7 h-3.5 w-3.5 rotate-45 border-b border-r border-line-soft bg-white" />
+              <span className="absolute -bottom-[7px] right-7 h-3.5 w-3.5 rotate-45 border-b border-r border-line bg-white" />
               <p className="font-display text-[15px] font-bold leading-snug text-ink-head">
                 {line}
               </p>
@@ -253,7 +253,7 @@ export function KheeluGuide({ defaultPose = "hero-wink" }: { defaultPose?: Kheel
 
       {/* Mobile: the dock (absorbs StickyMobileCTA — one fixed bottom bar) */}
       {!reserveVisible && (
-        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line-soft bg-white/95 backdrop-blur-sm md:hidden">
+        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-white/95 backdrop-blur-sm md:hidden">
           <div className="flex items-center gap-3 px-4 py-2.5">
             <Image
               src={kheeluPoseSrc(pose)}

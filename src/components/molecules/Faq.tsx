@@ -34,7 +34,7 @@ export function Faq({
   name?: string;
 }) {
   return (
-    <div className="divide-y divide-line-soft overflow-hidden rounded-(--radius-card) bg-white">
+    <div className="divide-y divide-line overflow-hidden rounded-(--radius-card) bg-white">
       {items.map((item, i) => (
         <details
           key={item.q}
@@ -43,7 +43,7 @@ export function Faq({
           className="faq-disclosure group"
         >
           <summary
-            className={`flex cursor-pointer list-none items-center justify-between gap-4 px-6 py-5 text-ink-head transition-colors hover:text-orange-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-inset [&::-webkit-details-marker]:hidden ${PRESS_TINT}`}
+            className={`flex cursor-pointer list-none items-center justify-between gap-4 px-6 py-5 text-ink-head transition-colors hover:text-orange-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-inset [&::-webkit-details-marker]:hidden ${PRESS_TINT}`}
           >
             <h3 className="font-display text-[20px] font-bold">{item.q}</h3>
             <Plus

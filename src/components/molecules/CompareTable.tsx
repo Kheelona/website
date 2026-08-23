@@ -33,7 +33,7 @@ export function CompareTable() {
         {ROWS.map(([claim, ...values]) => (
           <li
             key={claim}
-            className="rounded-(--radius-card) border border-line-soft bg-cream p-5"
+            className="rounded-(--radius-card) border border-line bg-cream p-5"
           >
             <p className="mb-3 font-display text-[17px] font-extrabold leading-snug text-ink-head">
               {claim}

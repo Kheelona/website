@@ -108,7 +108,7 @@ export function AudioMoments({
         return (
           <li
             key={m.id}
-            className="rounded-(--radius-card) border border-line-soft bg-white p-5 sm:p-6"
+            className="rounded-(--radius-card) border border-line bg-white p-5 sm:p-6"
           >
             <div className="flex items-center gap-4">
               {!broken.has(m.id) && (

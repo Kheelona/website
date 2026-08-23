@@ -29,12 +29,12 @@ export function KheelonaPlusBand({
   return (
     <div
       className={cn(
-        "items-center gap-8 rounded-(--radius-card-lg) border border-line-soft bg-white p-7 md:flex md:p-9",
+        "items-center gap-8 rounded-(--radius-card-lg) border border-line bg-white p-7 md:flex md:p-9",
         className,
       )}
     >
       <p className="mb-4 shrink-0 font-display text-[26px] font-extrabold leading-[1.15] text-ink-head md:mb-0">
-        Kheelona<span className="text-orange-deep">+</span>
+        Kheelona<span className="text-orange-ink">+</span>
         {footnote ? <Footnote n={footnote} id="fn-kheelona-plus" /> : null}
       </p>
       <div>

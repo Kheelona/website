@@ -53,7 +53,7 @@ export function RecognitionStrip({
             {ENTRIES.map((e) => (
               <li
                 key={e.name}
-                className="flex h-14 items-center gap-3 rounded-(--radius-card) border border-line-soft bg-white px-5"
+                className="flex h-14 items-center gap-3 rounded-(--radius-card) border border-line bg-white px-5"
               >
                 {"logo" in e && e.logo ? (
                   <Image

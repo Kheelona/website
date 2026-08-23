@@ -19,7 +19,7 @@ export type Step = {
 export function StepList({
   items,
   as: Tag = "h3",
-  numberColor = "text-orange-deep",
+  numberColor = "text-orange-ink",
   columns = "md:grid-cols-[90px_1fr_1.4fr]",
   rowClassName = "items-start gap-5 py-8 md:gap-7",
   titleClassName = "font-display text-[24px] font-extrabold leading-tight text-ink-head",

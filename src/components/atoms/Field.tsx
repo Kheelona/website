@@ -88,7 +88,7 @@ type AriaProps = {
 };
 
 function borderFor(invalid: boolean): string {
-  return invalid ? "border-orange-deep" : "border-line";
+  return invalid ? "border-orange-ink" : "border-line";
 }
 
 export function TextField({
@@ -202,7 +202,7 @@ export function ChoiceField({
              a tick box that needs aim is a tick box people mis-tap. */
           className={cn(
             "mt-0.5 h-5 w-5 shrink-0 rounded border-2 accent-orange",
-            error ? "border-orange-deep" : "border-line",
+            error ? "border-orange-ink" : "border-line",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2",
           )}
         />

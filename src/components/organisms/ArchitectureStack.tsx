@@ -43,7 +43,7 @@ export function ArchitectureStack({
       key={layer.id}
       value={layer.id}
       className={cn(
-        "overflow-hidden rounded-(--radius-card) border border-line-soft",
+        "overflow-hidden rounded-(--radius-card) border border-line",
         LIFT_WHEN_CLOSED,
         layer.tint,
       )}
@@ -73,7 +73,7 @@ export function ArchitectureStack({
           {layer.chips.map((chip) => (
             <li
               key={chip}
-              className="rounded-full border border-line-soft bg-white px-3.5 py-1.5 text-[14px] font-medium text-ink-head"
+              className="rounded-full border border-line bg-white px-3.5 py-1.5 text-[14px] font-medium text-ink-head"
             >
               {chip}
             </li>

@@ -59,7 +59,7 @@ export function Hero() {
           {/* One clause per line (founder, 2026-08-23): the ₹499 hook reads
               first, the ₹7,999 consequence under it, instead of one wrapped
               sentence deciding its own break point. */}
-          <p className="mt-4 inline-block max-w-[46ch] rounded-2xl border border-line-soft bg-white px-4 py-3 text-[16px] font-semibold text-ink-head shadow-(--shadow-room-sm)">
+          <p className="mt-4 inline-block max-w-[46ch] rounded-2xl border border-line bg-white px-4 py-3 text-[16px] font-semibold text-ink-head shadow-(--shadow-room-sm)">
             {PREORDER_OFFER_LINES.map((line) => (
               <span key={line} className="block">
                 {line}

@@ -43,7 +43,7 @@ export function TrustRoom() {
       <div className="grid gap-5 sm:grid-cols-2">
         {POINTS.map((p, i) => (
           <Reveal key={p.h} delay={i * 0.06}>
-            <Card className="h-full border border-line-soft bg-white p-7">
+            <Card className="h-full border border-line bg-white p-7">
               <PromiseMark index={i} className="mb-4" />
               <h3 className="mb-2 font-display text-[22px] font-extrabold text-ink-head">
                 {p.h}

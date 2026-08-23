@@ -171,7 +171,7 @@ export default function TeamPage() {
               <Reveal key={f.id} delay={i * 0.06}>
                 <TiltCard
                   maxTilt={2}
-                  className={`rounded-(--radius-card) border border-line-soft border-t-4 bg-cream p-7 ${f.border}`}
+                  className={`rounded-(--radius-card) border border-line border-t-4 bg-cream p-7 ${f.border}`}
                 >
                   <div className="flex flex-wrap items-start gap-7">
                     <div className={`shrink-0 rounded-2xl p-2 ${f.tint}`}>

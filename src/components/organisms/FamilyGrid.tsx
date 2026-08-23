@@ -27,7 +27,7 @@ export function FamilyGrid({ className }: { className?: string }) {
         // the arc: a hairline behind the cards, aligned with the age chips.
         // Pure CSS, no JS, no animation (BUILD-V3 §5, pipeline row).
         "relative grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3",
-        "md:before:absolute md:before:left-[8%] md:before:right-[8%] md:before:top-[38px] md:before:h-px md:before:bg-line-soft md:before:content-['']",
+        "md:before:absolute md:before:left-[8%] md:before:right-[8%] md:before:top-[38px] md:before:h-px md:before:bg-line md:before:content-['']",
         className,
       )}
     >
@@ -37,12 +37,12 @@ export function FamilyGrid({ className }: { className?: string }) {
             <Link
               href="/products/lumi"
               aria-label={`Lumi: meet the friend who listens and reserve at ${LAUNCH_PRICE}`}
-              className={`block h-full overflow-hidden rounded-(--radius-card) border border-line-soft bg-white ${PRESS_LIFT} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2`}
+              className={`block h-full overflow-hidden rounded-(--radius-card) border border-line bg-white ${PRESS_LIFT} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2`}
             >
               <FamilyCardInner member={m} />
             </Link>
           ) : (
-            <div className="h-full overflow-hidden rounded-(--radius-card) border border-line-soft bg-white">
+            <div className="h-full overflow-hidden rounded-(--radius-card) border border-line bg-white">
               <FamilyCardInner member={m} />
             </div>
           )}

@@ -70,7 +70,7 @@ export function OrderSummary({
         ];
 
   return (
-    <div className="rounded-(--radius-card-lg) border border-line-soft bg-white p-6 md:p-7">
+    <div className="rounded-(--radius-card-lg) border border-line bg-white p-6 md:p-7">
       <h2 className="mb-5 font-display text-[22px] font-extrabold text-ink-head">
         What you are agreeing to
       </h2>
@@ -87,7 +87,7 @@ export function OrderSummary({
           </li>
         ))}
       </ul>
-      <p className="mt-5 border-t border-line-soft pt-4 text-[14px] leading-[1.55] text-ink-muted">
+      <p className="mt-5 border-t border-line pt-4 text-[14px] leading-[1.55] text-ink-muted">
         {KHEELONA_PLUS_SHORT}{" "}
         {mode === "token"
           ? `The price is ${LAUNCH_PRICE} for the ${CAP_UNITS_TEXT}, and ${FULL_PRICE} once they are gone.`

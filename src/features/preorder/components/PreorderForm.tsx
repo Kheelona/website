@@ -213,7 +213,7 @@ export function PreorderForm({
            charged, in those words. */
         <p
           role="alert"
-          className="rounded-(--radius-card) border border-orange-deep bg-cream px-4 py-3 text-[15px] font-medium text-ink"
+          className="rounded-(--radius-card) border border-orange-ink bg-cream px-4 py-3 text-[15px] font-medium text-ink"
         >
           {failure}
         </p>

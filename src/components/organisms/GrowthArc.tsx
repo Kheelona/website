@@ -13,7 +13,7 @@ export function GrowthArc() {
       <div className="grid gap-5 md:grid-cols-2">
         {GROWTH_ARC.map((s, i) => (
           <Reveal key={s.kicker} delay={i * 0.08}>
-            <Card className="border border-line-soft">
+            <Card className="border border-line">
               <p className="mb-2 text-[13px] font-bold uppercase tracking-[0.08em] text-orange-ink">
                 {s.kicker}
               </p>

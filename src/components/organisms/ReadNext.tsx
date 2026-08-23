@@ -39,7 +39,7 @@ export function ReadNext({ stories }: { stories: readonly Story[] }) {
               href={`/stories/${story.slug}`}
               className={`group block h-full rounded-(--radius-card) ${PRESS_LIFT} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2`}
             >
-              <Card interactive className="h-full border border-line-soft bg-white p-6">
+              <Card interactive className="h-full border border-line bg-white p-6">
                 <Eyebrow className="mb-2">{story.theme}</Eyebrow>
                 <h3 className="mb-2 font-display text-[20px] font-extrabold leading-tight text-ink-head">
                   {story.title}

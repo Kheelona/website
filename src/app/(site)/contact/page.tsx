@@ -113,7 +113,7 @@ export default function ContactPage() {
             {ROUTES.map((r, i) => (
               <Reveal key={r.title} delay={i * 0.05}>
                 <Card
-                  className="h-full border border-line-soft bg-cream"
+                  className="h-full border border-line bg-cream"
                   title={r.title}
                   titleClassName="mb-2 font-display text-[22px] font-extrabold text-ink-head"
                 >

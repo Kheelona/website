@@ -60,9 +60,6 @@ const MAP = [
   ["kh-ink-2", "color-ink", "ink"],
   ["kh-ink-3", "color-ink-muted", null],
   ["kh-line", "color-line", null],
-  // line-soft is ALIASED to kh-line for Phase A; the row dies with the token
-  // when Phase B merges its call sites into `line`.
-  ["kh-line", "color-line-soft", null],
   ["kh-cream", "color-cream", "cream"],
   ["kh-blue-tint", "color-cool", "cool"],
   ["kh-yellow-tint", "color-sun", "sun"],
@@ -98,8 +95,6 @@ const SITE_THEME = [
   // Small-text blue, recomputed on the v3 washes: white 5.65, cream 5.32,
   // cool 4.96, sun 4.94 — the blue twin of orange-ink.
   ["color-blue-ink", "#1b6e96"],
-  // Retired in v3; kept while its accent call sites drain in Phase B.
-  ["color-orange-deep", "#d85f1b"],
 ];
 
 let failed = false;

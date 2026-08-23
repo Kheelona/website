@@ -84,7 +84,7 @@ export default async function ThanksPage({
       {/* Every line derives from the ORDER ROW, never from the store's current
           mode: a token holder revisiting after the cap flips must still read
           exactly what they agreed to (§8.26). */}
-      <dl className="mb-9 grid gap-3 rounded-(--radius-card) border border-line-soft bg-white p-5">
+      <dl className="mb-9 grid gap-3 rounded-(--radius-card) border border-line bg-white p-5">
         <Row label="Order number" value={order.order_ref} />
         <Row label="Paid today" value={formatInr(order.amount_paise)} />
         {order.tier === FULL_TIER ? (

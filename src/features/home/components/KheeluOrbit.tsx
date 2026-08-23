@@ -39,7 +39,7 @@ export function KheeluOrbit({ className }: { className?: string }) {
             className="orbit-seat"
             style={{ "--a": `${i * 60 - 90}deg` } as React.CSSProperties}
           >
-            <div className="orbit-card rounded-(--radius-card) border border-line-soft bg-white p-4 shadow-(--shadow-room-sm)">
+            <div className="orbit-card rounded-(--radius-card) border border-line bg-white p-4 shadow-(--shadow-room-sm)">
               <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-action-ink">
                 {m.label}
               </p>

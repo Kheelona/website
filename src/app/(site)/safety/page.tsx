@@ -236,7 +236,7 @@ export default function SafetyPage() {
           <div className="grid gap-5 sm:grid-cols-2">
             {VOICE_RULES.map((c, i) => (
               <Reveal key={c.title} delay={i * 0.05}>
-                <Card className="h-full border border-line-soft bg-white">
+                <Card className="h-full border border-line bg-white">
                   <PromiseMark index={i} className="mb-3" />
                   <h3 className="mb-2 font-display text-[22px] font-extrabold text-ink-head">
                     {c.title}
@@ -305,7 +305,7 @@ export default function SafetyPage() {
               {STANDARDS.map((s) => (
                 <li
                   key={s.name}
-                  className="flex items-center gap-3 rounded-full border border-line-soft bg-cream px-5 py-2.5"
+                  className="flex items-center gap-3 rounded-full border border-line bg-cream px-5 py-2.5"
                 >
                   <span className="text-[16px] font-semibold text-ink-head">{s.name}</span>
                   <span

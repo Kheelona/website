@@ -56,7 +56,7 @@ export function PacePanel() {
       <div className="grid gap-5 md:grid-cols-2">
         {CONTRAST.map((c, i) => (
           <Reveal key={c.label} delay={i * 0.08}>
-            <div className={`h-full rounded-(--radius-card) border border-line-soft p-7 ${c.tint}`}>
+            <div className={`h-full rounded-(--radius-card) border border-line p-7 ${c.tint}`}>
               {/* V6: ink-muted measured 4.31 to 4.37:1 on these two card
                   tints and had to go. Founder call at the handoff review —
                   one kicker language site-wide, so small uppercase labels are

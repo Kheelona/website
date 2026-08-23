@@ -4,8 +4,9 @@
  *  (tools/tokens/check-tokens.mjs) fails on drift for the mapped rows. */
 export const TOKENS = {
   orange: "#EF762F",
-  /* Retired in v3 (no --kh-orange-deep). Kept while its ~8 accent call sites
-     drain to orange-ink in Phase B, then deleted with them. */
+  /* Retired in v3 and gone from @theme (Phase B drained its accents to
+     orange-ink). Survives ONLY here, as the dormant journey's sunset lerp in
+     backdrop.tsx — same dormant-mirror status as blueSoft and tealDeep. */
   orangeDeep: "#D85F1B",
   yellow: "#F1A23B",
   blue: "#29A0D7",

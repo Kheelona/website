@@ -49,7 +49,7 @@ export function ParentAppSection({
             {CHIPS.map((c) => (
               <li
                 key={c}
-                className="rounded-full border border-line-soft bg-white px-4 py-2 text-[15px] font-medium text-ink-head"
+                className="rounded-full border border-line bg-white px-4 py-2 text-[15px] font-medium text-ink-head"
               >
                 {c}
               </li>

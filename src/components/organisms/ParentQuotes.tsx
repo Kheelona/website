@@ -55,7 +55,7 @@ export function ParentQuotes({
       <div className={count === 2 ? "grid gap-5 md:grid-cols-2" : "grid gap-5 md:grid-cols-3"}>
           {QUOTES.slice(0, count).map((q, i) => (
             <Reveal key={q.who} delay={i * 0.06}>
-              <Card className="border border-line-soft bg-cream">
+              <Card className="border border-line bg-cream">
                 <p
                   aria-hidden="true"
                   className="mb-2 font-display text-4xl font-extrabold leading-none text-orange"

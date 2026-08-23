@@ -11,7 +11,9 @@
    Do not invent values; if a token is missing, flag it (blueprint §8.2). */
 @theme {
   --color-orange: #ef762f;
-  --color-orange-deep: #d85f1b;
+  /* orange-deep #d85f1b DELETED in CS3 Phase B (retired in v3): its ~10 text
+     and border accents drained to orange-ink, which is darker and legal on
+     every wash. The dormant ambient stage keeps a JS-only mirror. */
   /* V4 (founder decision D1, 2026-07-30): CTAs are BRAND orange #EF762F with
      dark ink labels (ink-head on #EF762F measures 5.9:1). The R5 white-label
      law is RETIRED with it — white on #EF762F is 2.9:1 and fails at every
@@ -56,10 +58,9 @@
   --color-ink: #44403c;
   --color-ink-head: #1b1b1b;
   --color-ink-muted: #78716c;
+  /* line-soft DELETED in CS3 Phase B: v3 has one hairline, and the alias
+     period ended when all 43 call sites merged into `line`. */
   --color-line: #e7e5e4;
-  /* Aliased to line in Phase A; the ~31 line-soft call sites merge into
-     `line` during Phase B, then this token is deleted. */
-  --color-line-soft: #e7e5e4;
   --color-cream: #f9f8f6;
   --color-cool: #e2f3fa;
   /* The third wash, a real token since Phase 0; yellow-tint is its lineal

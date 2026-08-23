@@ -58,7 +58,7 @@ export function LumiModes({
 }) {
   if (variant === "strip") {
     return (
-      <div className={cn("border-t border-line-soft pt-8", className)}>
+      <div className={cn("border-t border-line pt-8", className)}>
         <Reveal>
           <p className="mb-5 max-w-[52ch] font-display text-[19px] font-bold text-ink-head">
             One toy, three modes. Your child picks the one they are in the mood
@@ -68,7 +68,7 @@ export function LumiModes({
             {LUMI_MODES.map((m) => (
               <li
                 key={m.mode}
-                className="rounded-(--radius-card) border border-line-soft bg-white px-5 py-4"
+                className="rounded-(--radius-card) border border-line bg-white px-5 py-4"
               >
                 <p className="font-display text-[17px] font-extrabold text-ink-head">
                   {m.short}
@@ -99,7 +99,7 @@ export function LumiModes({
         {LUMI_MODES.map((m, i) => (
           <Reveal as="li" key={m.mode} delay={i * 0.05}>
             <Card
-              className="h-full border border-line-soft bg-white"
+              className="h-full border border-line bg-white"
               title={m.heading}
               titleClassName="mb-1 font-display text-[22px] font-extrabold text-ink-head"
             >

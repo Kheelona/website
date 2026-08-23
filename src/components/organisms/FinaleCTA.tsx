@@ -94,7 +94,7 @@ export function FinaleCTA({
         {REASSURANCES.map((r, i) => (
           <div
             key={r.head}
-            className="rounded-(--radius-card) border border-line-soft bg-white p-5"
+            className="rounded-(--radius-card) border border-line bg-white p-5"
           >
             <PromiseMark index={i} size="w-7" className="mb-2.5" />
             <p className="font-display text-[17px] font-extrabold leading-snug text-ink-head">

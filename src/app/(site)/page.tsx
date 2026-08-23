@@ -339,7 +339,7 @@ export default function HomePage() {
           <Journal bare />
           {/* The page's small print, Apple-style: the two claims that invite a
               follow-up question get their answer here rather than nowhere. */}
-          <FootnotesRow items={V3_FOOTNOTES} className="mt-12 border-t border-line-soft pt-6" />
+          <FootnotesRow items={V3_FOOTNOTES} className="mt-12 border-t border-line pt-6" />
         </Room>
 
         <Room

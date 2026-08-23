@@ -32,7 +32,7 @@ export function ChatDemo({
       role="log"
       aria-label="A sample conversation between a child and Lumi"
       className={cn(
-        "flex flex-col gap-2.5 rounded-(--radius-card-lg) border border-line-soft bg-white/75 p-5",
+        "flex flex-col gap-2.5 rounded-(--radius-card-lg) border border-line bg-white/75 p-5",
         className,
       )}
     >

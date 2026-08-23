@@ -31,7 +31,7 @@ export function FeelingsGallery({
               <button
                 type="button"
                 className={cn(
-                  `group block h-full w-full cursor-pointer rounded-(--radius-card) border border-line-soft p-5 text-left ${PRESS_LIFT} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2`,
+                  `group block h-full w-full cursor-pointer rounded-(--radius-card) border border-line p-5 text-left ${PRESS_LIFT} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2`,
                   f.card,
                 )}
               >
@@ -61,7 +61,7 @@ export function FeelingsGallery({
               <Dialog.Overlay className="feelings-dialog-overlay fixed inset-0 z-50 bg-ink-head/45" />
               <Dialog.Content
                 className={cn(
-                  "feelings-dialog fixed left-1/2 top-1/2 z-50 w-[min(92vw,440px)] -translate-x-1/2 -translate-y-1/2 rounded-(--radius-card-lg) border border-line-soft p-8 shadow-(--shadow-room)",
+                  "feelings-dialog fixed left-1/2 top-1/2 z-50 w-[min(92vw,440px)] -translate-x-1/2 -translate-y-1/2 rounded-(--radius-card-lg) border border-line p-8 shadow-(--shadow-room)",
                   f.card,
                   "bg-white",
                 )}

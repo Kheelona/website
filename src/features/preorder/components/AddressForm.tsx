@@ -88,7 +88,7 @@ export function AddressForm({
 
   if (state === "saved") {
     return (
-      <div className="rounded-(--radius-card) border border-line-soft bg-white p-6">
+      <div className="rounded-(--radius-card) border border-line bg-white p-6">
         <p className="font-display text-[20px] font-extrabold text-ink-head">
           We have your address.
         </p>
@@ -165,7 +165,7 @@ export function AddressForm({
       {failure ? (
         <p
           role="alert"
-          className="rounded-(--radius-card) border border-orange-deep bg-cream px-4 py-3 text-[15px] font-medium text-ink"
+          className="rounded-(--radius-card) border border-orange-ink bg-cream px-4 py-3 text-[15px] font-medium text-ink"
         >
           {failure}
         </p>

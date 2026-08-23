@@ -99,7 +99,7 @@ export function ColorwayPicker({ className }: { className?: string }) {
               `flex cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-[14px] font-bold text-ink-head ${PRESS_TINT} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2`,
               c.id === active
                 ? "border-ink-head bg-white shadow-(--shadow-room-sm)"
-                : "border-line-soft bg-white/70",
+                : "border-line bg-white/70",
             )}
           >
             <span
