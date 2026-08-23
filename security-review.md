@@ -423,7 +423,7 @@ existing 806 tests already live) and no live-gateway dynamic test runs at all.
 | GATE 2 — F-14, the rate-limit key | 2026-08-23 | **PASS → APPROVED-FOR-MERGE** (`36d3836`). 872/872, tsc 0, build 0. Four of eight new cases fail before the change. |
 | GATE 2 — F-05, the payload summary | 2026-08-23 | **PASS → APPROVED-FOR-MERGE** (`8df8977`). 872/872, tsc 0, build 0. A delivery carrying an email, a phone and a full card block is stored with its ids and amount and none of those five values. |
 | GATE 2 — the payment probe | 2026-08-23 | **PASS** (`d969005`). `npm run qa:payment` clean: the sandbox order is created, Razorpay's sheet opens, **zero policy violations**, a signed webhook is accepted and a forged one refused. Control run done first: with Razorpay removed from `script-src` the probe failed and named both blocked scripts, so the assertion is not vacuous. |
-| GATE 3 — post-deploy verify | — | pending the founder's merge. Plan: re-read both hosts' headers; confirm a synthetic tokened `/thanks` URL 303s to a clean path with `Secure; HttpOnly; SameSite=lax`; confirm `/api/health` still answers for the cron; watch the `[csp]` log lines. All read-only, no real order touched. |
+| GATE 3 — post-deploy verify | 2026-08-23 | **PASS.** Founder approved section 5a and asked for the merge; merged as `b7be77e` (`--no-ff`, so one revertable commit), rollback tag **`pre-security-hardening-2026-08-23` = `05872e0`** cut BEFORE the merge. Gates re-run on the merge result: 872/872 (exit 0), tsc 0, build 0. Live within ~60s. Verified read-only on production, no real order touched: all six headers present on both hosts and `x-powered-by` gone; a **synthetic** tokened `/thanks` URL answers `303` to a query-less `/thanks` with `Secure; HttpOnly; SameSite=lax; Path=/thanks; Max-Age=7200` and `private, no-store`; a bare `/thanks` renders "We need your link again" at 200 rather than a 404; `/api/health` still `ok:true, store:"ready", preorder:"token"` for the cron; all 12 marketing routes and all 3 store routes 200; the live store screenshotted at 390 with the form, the CTA and the whole ₹499 / ₹4,500 / ₹4,999 story intact. `demo-website` synced by merging main in. |
 | GATE 4 — engagement sign-off | — | **No CRITICAL or HIGH open.** Everything remaining is either the founder's (F-04, F-09, F-12, the rotation and the prune) or the CSP's second, deliberate step. |
 
 ### NADIA's re-audit of the fixes themselves (2026-08-23)
@@ -462,9 +462,11 @@ to confirm the CSP does not disturb the Razorpay checkout sheet before the polic
 In the order it matters. Nothing on this list is something I may do: each one is a secret, a
 production database write, hosting configuration, or legal wording.
 
-1. **Merge `security-hardening` into `main`.** Ten commits: eight fixes with their paired tests, the
-   payment probe, and this record. Deploying is the ordinary git push; every gate is green.
-2. **Rotate `STORE_SIGNING_SECRET`** in the Vercel dashboard, right after the deploy is live.
+1. ~~**Merge `security-hardening` into `main`.**~~ **DONE 2026-08-23**, founder-approved after
+   reviewing this section: merge `b7be77e`, live in about a minute, GATE 3 passed (see the gate log).
+   Rollback: `git revert -m 1 b7be77e`, or the tag `pre-security-hardening-2026-08-23`.
+2. **Rotate `STORE_SIGNING_SECRET`** in the Vercel dashboard. **← THIS IS THE NEXT STEP.**
+   The exact procedure is in section 5b below.
    This is what makes F-01 fully closed rather than merely stopped: the address tokens already sent
    to GA4 stay valid for their thirty days otherwise. **What it breaks, so it is not a surprise:**
    every `/thanks` link already emailed stops working, and any printed event QR carrying a `sig=`
@@ -492,6 +494,64 @@ production database write, hosting configuration, or legal wording.
    Report-Only, I read the reports (they land in the Vercel logs as `[csp] blocked=… directive=…`)
    and flip the policy to enforcing as one small commit. Enforcing without reading them first is the
    one way this work could break your checkout.
+
+## 5b. How to rotate `STORE_SIGNING_SECRET` (step 2 above)
+
+**Why this and not just the code fix.** The code fix stopped new tokens reaching the analytics
+tools. It cannot reach back into GA4 and Ahrefs, where page URLs containing address tokens from
+before today already sit. Those tokens stay valid for thirty days from when each was minted, and
+each one opens one order's confirmation and can change its delivery address. Rotating the secret is
+what makes them all worthless in one step, because every token is an HMAC under it.
+
+**One value, two uses** (`src/lib/store/signing.ts`): address tokens and event-link signatures.
+Both die on rotation. That is the whole cost, and it is spelled out below.
+
+### The five steps
+
+1. **Generate a new value, locally, and never paste it back into this chat or into any file in the
+   repo.** In this session, prefix with `!` to run it here, or use any terminal:
+
+   ```
+   openssl rand -base64 48
+   ```
+
+   Any long random string is fine. It is never typed by a human again, so length costs nothing.
+
+2. **Replace it in Vercel.** Project → **Settings** → **Environment Variables** → find
+   `STORE_SIGNING_SECRET` → Edit → paste the new value → Save. Keep it on the same environments it
+   is on today (Production at minimum). It must NOT be renamed and must never gain a
+   `NEXT_PUBLIC_` prefix; `test/store-secrets.test.ts` fails the build if that ever happens.
+
+3. **Redeploy, or nothing changes.** This is the step that gets skipped: on Vercel an environment
+   variable is applied when a deployment is created, so editing it does not affect the running
+   deployment. Go to **Deployments**, find the current Production one, open the **⋯** menu and choose
+   **Redeploy**. Build cache on or off makes no difference here.
+
+4. **Check it took.** `curl -s https://kheelona.com/api/health` should still answer
+   `{"ok":true,"store":"ready",…}`. That proves all six secrets are present and none is a
+   placeholder. If it says `not-configured`, it will name exactly which variable is missing.
+
+5. **Tell me it is done** and I will re-verify the live behaviour: a `/thanks` link minted under the
+   old secret must now land on "We need your link again", and a freshly minted one must work.
+
+### What breaks the moment you redeploy, and what does not
+
+| | |
+|---|---|
+| **Breaks** | Every `/thanks` link already emailed. A parent clicking one sees "We need your link again", which offers WhatsApp. |
+| **Breaks** | Any printed event QR carrying a `sig=`. **None exists today:** the Ideabaaz tier row is not inserted yet and `blr-oct-expo` is only a local QA fixture. |
+| **Safe** | The Ideabaaz page. It signs its own tier server-side on every request, so it re-signs under the new secret automatically. |
+| **Safe** | Payments, orders, receipts, refunds, the webhook, the dispatch queue. None of them touch this secret. |
+| **Safe** | Addresses already saved. This is about the link, not the data. |
+
+**Cost today: as close to nothing as it will ever be.** The store is one day old and its only real
+order was the ₹499 proof, which was refunded. Every week from here adds orders whose links would
+break, so this is the cheap moment.
+
+**If a real customer is ever stranded by it:** the flow already handles that in words a parent can
+act on. Both the confirmation page and the acknowledgement email say to message WhatsApp, and
+support adds the address by hand. There is no tool today for re-minting a single address link; say
+the word and I will add `npm run address-link -- KH-XXXX-XXXX` for the day it is needed.
 
 ## 6. Open questions for the founder
 
