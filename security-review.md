@@ -168,18 +168,28 @@ bundle or in git history, and no unauthenticated path writes to `preorders`.**
 
 | id | severity | surface | title | owner | status |
 |---|---|---|---|---|---|
-| F-01 | HIGH | payment / privacy | The address token, which is the only authorisation on an order, is sent to third-party analytics inside the URL | KAI (+ HUMAN for rotation) | OPEN |
-| F-02 | HIGH | dependencies | Next.js 16.2.10 carries 9 advisories, 4 HIGH, all fixed in 16.2.11 | KAI | OPEN |
-| F-03 | MEDIUM (HIGH on the payment page) | headers / skimming | No CSP, no frame-ancestors, no nosniff, no Referrer-Policy, no Permissions-Policy on either host | KAI | OPEN |
+| F-01 | HIGH | payment / privacy | The address token, which is the only authorisation on an order, is sent to third-party analytics inside the URL | KAI (+ HUMAN for rotation) | **FIXED** `84ae07e` · rotation ESCALATED |
+| F-02 | HIGH | dependencies | Next.js 16.2.10 carries 9 advisories, 4 HIGH, all fixed in 16.2.11 | KAI | **FIXED** `120271f` (16.2.12) |
+| F-03 | MEDIUM (HIGH on the payment page) | headers / skimming | No CSP, no frame-ancestors, no nosniff, no Referrer-Policy, no Permissions-Policy on either host | KAI | **FIXED, PHASE 1 OF 2** `02e1f2a` (CSP Report-Only; enforcing is a second deploy) |
 | F-04 | MEDIUM | API abuse | Rate limiting is per-instance in-memory, so it does not bound abuse on serverless | KAI | OPEN |
 | F-05 | MEDIUM | data protection | `webhook_events.payload` keeps the entire Razorpay event forever | KAI + HUMAN (migration) | OPEN |
-| F-06 | LOW-MEDIUM | payment integrity | `markPaid` never compares the captured amount to the order's amount | KAI | OPEN |
+| F-06 | LOW-MEDIUM | payment integrity | `markPaid` never compares the captured amount to the order's amount | KAI | **FIXED** `5a668f0` |
 | F-07 | LOW | API abuse / disclosure | `/api/health` is public, unthrottled, and does two DB counts per call | KAI | OPEN |
-| F-08 | LOW | hygiene | `x-powered-by: Next.js` advertises the framework | KAI | OPEN |
+| F-08 | LOW | hygiene | `x-powered-by: Next.js` advertises the framework | KAI | **FIXED** `02e1f2a` (with F-03) |
 | F-09 | LOW | transport | HSTS has no `includeSubDomains` and no `preload` | HUMAN (decision) | OPEN |
 | F-10 | LOW | XSS hardening | JSON-LD is injected with `dangerouslySetInnerHTML` and no `<` escaping | KAI | OPEN |
 | F-11 | INFO | event pricing | The Ideabaaz page publishes its own tier signature | — | ACCEPTED (documented §8.25-g-i) |
 | F-12 | INFO | privacy / DPDP | No retention period and no grievance contact designated on `/privacy` | HUMAN + counsel | ESCALATED |
+| F-13 | INFO | event pricing | An event link's `sig=` is reported to analytics as part of the page URL | — | ACCEPTED, same model as F-11; the CSP report route strips query strings from what it logs |
+
+### Founder decisions taken during the engagement (2026-08-23)
+
+| question | decision |
+|---|---|
+| Dynamic test environment | **Local only, with Razorpay TEST keys** the founder supplied. They live in a gitignored `.env.local` beside the read-only Supabase stub in `tools/qa/`. Never in Vercel, never committed, never a live key. |
+| CSP rollout | **Report-Only first, then enforce** as a second deliberate deploy. |
+| `STORE_SIGNING_SECRET` rotation | **Rotate right after the F-01 fix ships.** Founder-executed. Cheapest now, while the store is one day old. |
+| Next.js version | **Patch to the latest 16.2.x**, not the 16.3.x that `npm audit fix --force` proposes. |
 
 ### F-01 · HIGH · The address token travels to Google Analytics and Ahrefs in the URL
 
@@ -382,12 +392,20 @@ existing 806 tests already live) and no live-gateway dynamic test runs at all.
 |---|---|---|
 | GATE 0 — discovery complete | 2026-08-23 | **PASS.** Architecture, money path, secrets locations and script inventory mapped (sections 1.1–1.7). No testing beyond read-only recon was performed. |
 | GATE 1 — triage complete | 2026-08-23 | **PASS.** Twelve findings, each with severity, owner and a fix-or-escalate decision; order of work in section 4. |
-| GATE 2 — pre-merge, per fix | — | not started |
-| GATE 3 — post-deploy verify | — | not started |
-| GATE 4 — engagement sign-off | — | not started |
+| GATE 2 — F-01, the /thanks credential | 2026-08-23 | **PASS → APPROVED-FOR-MERGE** (`84ae07e`). Paired test fails before / passes after, proven by reverting `host.ts` alone. 823/823, tsc 0, build 0, `qa:sweep` 34/34, and all three page states driven live against the local stub: 303 to a query-less `/thanks`, `Secure; HttpOnly; SameSite=lax; Path=/thanks`, `private, no-store`. |
+| GATE 2 — F-02, the Next patch | 2026-08-23 | **PASS → APPROVED-FOR-MERGE** (`120271f`). 826/826, tsc 0, build 0, `qa:sweep` 34/34, host routing and the F-01 claim re-driven on 16.2.12. `npm audit` no longer reports any advisory in `next` itself. |
+| GATE 2 — F-03, the headers | 2026-08-23 | **PASS → APPROVED-FOR-MERGE** (`02e1f2a`). 844/844, tsc 0, build 0, `qa:sweep` 34/34. All 16 routes loaded in a real browser produce **zero** resource violations under the policy; the only console line is Chrome noting `upgrade-insecure-requests` is inert in report-only mode. Collector round-tripped a report and stripped the query string from the logged URL. |
+| GATE 2 — F-06, the amount guard | 2026-08-23 | **PASS → APPROVED-FOR-MERGE** (`5a668f0`). 854/854, tsc 0, build 0. Four of the seven new `fulfil.test.ts` cases fail before the change. |
+| GATE 3 — post-deploy verify | — | pending the founder's merge |
+| GATE 4 — engagement sign-off | — | F-04, F-05, F-07, F-10 still open |
 
-Baseline before any change (to be re-run as the regression baseline at the first fix): `npm test`
-was last green at 806/806 on `main@05872e0`.
+Baseline before any change: `npm test` was green at 806/806 on `main@05872e0`. The count rises with
+each fix's paired tests; per the standing trap, it is only honest with new files staged.
+
+**Not yet covered by any automated regression, and known:** an end-to-end sandbox payment run. The
+existing money-path tests (137 across 12 files) are unit and integration level. With the founder's
+test keys now available, building that run is RIA's next piece of work, and it is also the only way
+to confirm the CSP does not disturb the Razorpay checkout sheet before the policy starts enforcing.
 
 ---
 
