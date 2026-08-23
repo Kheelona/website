@@ -51,13 +51,14 @@ order still in the dispatch queue (`status='paid'` IS the queue, §8.25-ee — a
 NOT a cancellation), and an unrecoverable orphaned payment (§8.25-ff). **Always refund the whole
 token.**
 
-**🟡 STILL OPEN** (`Technical-Todo.md` is THE queue since 2026-08-23: one list, founder items and engineering items together, each tagged with who owns it): the **Ideabaaz partner page**
-`store.kheelona.com/ideabaaz` (₹99 public event tier, §8.25-g-i, checkpoint
-`ideabaaz-event-page-2026-08-23.md`) needs its tier row inserted before 26 Aug and closes 31 Aug —
-both dated founder items; DMARC tightens to
-`p=quarantine` on **5 September 2026** (scheduled agent + dated item); a trivial Supabase query takes
-250–975ms, suggesting the project is not in an Indian region (raised, closed as not actionable); and
-the standing **sell-out copy sweep** the day health first reports `preorder:"full"` (§8.26-g).
+**🟡 STILL OPEN** (`Technical-Todo.md` is THE queue since 2026-08-23: ONE list, founder items and
+engineering items together, each tagged with who owns it; settled decisions live in
+`docs/checkpoints/closed-rounds.md` and `FOUNDER-TODO.md` is now only a pointer at both). Mine: one
+item, flipping the CSP from Report-Only to enforcing (§8.28-a, `security-review.md`). Dated and the
+founder's: close the **Ideabaaz** tier on **31 Aug** (the page is LIVE at ₹99 since 2026-08-23),
+DMARC to `p=quarantine` on **5 Sep**, the two DPDP lines on `/privacy` **before shipment**, and the
+returns and warranty terms before the first Lumi ships. Standing: the **sell-out copy sweep** the day
+health first reports `preorder:"full"` (§8.26-g).
 
 Store laws are `docs/website-steps.md` **§8.25 + §8.26** — read both before touching any of it. The
 ones that bite: **the client never sends a price** (§8.25-c-i), **the cap is a live count of the paid
@@ -281,6 +282,11 @@ shortly" state instead of crashing.
   collect is stated on /privacy, which is counsel-gated.
 
 ## Docs map
+- **`Technical-Todo.md`** (repo root) — THE open-items list since 2026-08-23. One list, founder-gated
+  and engineering, tagged by owner. `FOUNDER-TODO.md` is a pointer; settled decisions are in
+  `docs/checkpoints/closed-rounds.md`, which is the file to search before re-asking anything.
+- **`security-review.md`** (repo root) — the open security engagement: architecture map, findings
+  register, gate log, and what is waiting on the founder. Read at session start until sign-off.
 - `docs/standards/` — BINDING production standards: `PROJECT_STRUCTURE.md`, `COMPONENT_GUIDELINES.md`, and `STRUCTURE-MAP.md` (old→new path translation for the `src/` reorg). See the "Production structure & standards" section above.
 - `docs/project-state.json` — machine-readable status, always current. **Live state only since
   2026-08-23**: 28 closed round records and 17 settled blockers moved verbatim to
