@@ -61,6 +61,44 @@ describe("store host routing", () => {
     });
   });
 
+  /* F-01. The confirmation link is the one URL on this host that carries a
+     credential, and the page it points at loads three measurement tags, each of
+     which reports the URL it loaded on. So the token must never survive as far
+     as a rendered page: it is claimed here and the browser is sent to a clean
+     path. Before this behaviour existed the same input rewrote straight through
+     with `t=` intact, which is what put thirty-day order credentials into an
+     analytics property. */
+  it("claims the confirmation token out of the URL instead of rendering it", () => {
+    const token = "1790000000000.AbCdEfGh12345678";
+    const route = routeForHost(
+      "store.kheelona.com",
+      "/thanks",
+      `?ref=KH-A2B3-C4D5&t=${token}`,
+    );
+    expect(route).toEqual({
+      kind: "claim",
+      path: "/thanks",
+      session: `KH-A2B3-C4D5.${token}`,
+    });
+    /* The whole point: nothing that reaches a page still holds the token. */
+    expect(JSON.stringify(route)).not.toContain("?");
+    if (route.kind === "claim") expect(route.path).not.toContain("t=");
+  });
+
+  it("does not claim a malformed link: it falls through to the honest page", () => {
+    /* A wrong reference or a token that is not the shape we mint must not be
+       written into a Set-Cookie header. The ordinary rewrite renders the
+       page's "we need your link again" state, which reveals nothing. */
+    for (const search of [
+      "?ref=KH-A2B3-C4D5",
+      "?t=1790000000000.AbCdEfGh12345678",
+      "?ref=nope&t=1790000000000.AbCdEfGh12345678",
+      "?ref=KH-A2B3-C4D5&t=garbage",
+    ]) {
+      expect(routeForHost("store.kheelona.com", "/thanks", search).kind, search).toBe("rewrite");
+    }
+  });
+
   it("leaves every marketing route alone", () => {
     for (const path of ["/", "/products/lumi", "/refund", "/stories/how-children-learn-by-talking"]) {
       expect(routeForHost("kheelona.com", path), path).toEqual({ kind: "pass" });

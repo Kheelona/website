@@ -1,9 +1,27 @@
 import type { NextConfig } from "next";
+import { securityHeaders } from "./src/lib/security-headers";
 
 const nextConfig: NextConfig = {
   images: {
     // AVIF preferred, WebP fallback (AVIF is opt-in on this Next build).
     formats: ["image/avif", "image/webp"],
+  },
+  /* Nothing gains from telling the world which framework serves this (F-08). */
+  poweredByHeader: false,
+  async headers() {
+    /* One policy for every HTML response on both hosts (F-03). The reasoning,
+       including why script-src carries 'unsafe-inline' and what that does and
+       does not cost, is in src/lib/security-headers.ts. The CSP ships
+       Report-Only first and is flipped to enforcing in a separate deploy, once
+       real traffic has said what it would have broken. */
+    return [
+      {
+        /* Everything except Next's own build output, which is same-origin
+           static files that no policy here protects. */
+        source: "/((?!_next/static|_next/image).*)",
+        headers: securityHeaders(process.env.NODE_ENV === "development"),
+      },
+    ];
   },
   async redirects() {
     return [

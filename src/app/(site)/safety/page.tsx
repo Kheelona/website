@@ -11,7 +11,7 @@ import { Reveal } from "@/components/molecules/Reveal";
 import { Button } from "@/components/atoms/Button";
 import { Faq, type FaqEntry } from "@/components/molecules/Faq";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
-import { graph, faqPage, breadcrumbs, pageMeta } from "@/lib/seo";
+import { graph, faqPage, breadcrumbs, pageMeta, jsonLd } from "@/lib/seo";
 
 export const metadata = pageMeta({
   title: "Are AI toys safe? How Lumi is built to be",
@@ -145,7 +145,7 @@ export default function SafetyPage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(SAFETY_JSON_LD) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(SAFETY_JSON_LD) }}
       />
 
       <PageHero

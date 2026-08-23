@@ -42,6 +42,11 @@ const ROUTES = [
      page the voice and axe laws apply to; against production before 31 Aug
      2026 it renders the live ₹99 offer. */
   `${STORE}/ideabaaz`,
+  /* The confirmation page's no-cookie state (F-01, 2026-08-23). It used to 404
+     without a token in the URL; now that the token arrives in a cookie, a bare
+     /thanks is a real page telling a parent how to get back in, so the voice
+     and axe laws apply to it like any other. */
+  `${STORE}/thanks`,
 ];
 
 const WIDTHS = [390, 1280];

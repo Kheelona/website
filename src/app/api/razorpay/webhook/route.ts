@@ -61,7 +61,18 @@ export async function POST(request: Request) {
 
   const { error: claimError } = await client
     .from("webhook_events")
-    .insert({ id: eventId, event_type: event.event, order_ref: rzpOrderId, payload: event });
+    .insert({
+      id: eventId,
+      event_type: event.event,
+      order_ref: rzpOrderId,
+      /* A SUMMARY, not the whole event (F-05). This used to store the delivery
+         verbatim and keep it forever, which meant a second copy of the payer's
+         email, phone and card metadata accumulating in our database for every
+         payment, none of which idempotency or reconciliation needs. Razorpay
+         keeps the full event on their side; what we need is enough to match a
+         row to a payment afterwards. */
+      payload: summarise(event),
+    });
 
   if (claimError) {
     // 23505 is unique_violation: we have already handled this delivery.
@@ -104,6 +115,11 @@ export async function POST(request: Request) {
     const result = await markPaid(env, {
       rzpOrderId,
       paymentId: event.payload?.payment?.entity?.id ?? null,
+      /* What the gateway says it actually captured, so an order cannot be
+         marked paid by less than its own amount (F-06). Absent on events that
+         carry no payment entity, and then the check simply does not apply. */
+      paidPaise:
+        event.payload?.payment?.entity?.amount ?? event.payload?.order?.entity?.amount_paid ?? null,
       /* Our own reference, which we set as the Razorpay order's receipt and in
          its notes. It is the fallback that rescues a payment whose gateway order
          id never made it onto our row. */
@@ -124,6 +140,12 @@ export async function POST(request: Request) {
          to investigate: this is the one line in the store worth an alert. */
       console.error("[webhook] paid an order id we do not have", rzpOrderId);
     }
+    if (result.outcome === "short-paid") {
+      /* 200, not 500: a retry would deliver the same short amount forever. The
+         order stays unpaid and out of the dispatch queue, which is the truth,
+         and markPaid has already said so loudly in the log (F-06). */
+      console.error("[webhook] refused a short payment on", rzpOrderId);
+    }
     return json(200, { ok: true, note: result.outcome });
   } catch (error) {
     /* Release the claim so the retry can do the work. Without this, one
@@ -138,8 +160,17 @@ type RazorpayWebhook = {
   id?: string;
   event: string;
   payload?: {
-    payment?: { entity?: { id?: string; order_id?: string; notes?: { order_ref?: string } } };
-    order?: { entity?: { id?: string; receipt?: string; notes?: { order_ref?: string } } };
+    payment?: {
+      entity?: { id?: string; order_id?: string; amount?: number; notes?: { order_ref?: string } };
+    };
+    order?: {
+      entity?: {
+        id?: string;
+        receipt?: string;
+        amount_paid?: number;
+        notes?: { order_ref?: string };
+      };
+    };
     refund?: { entity?: { id?: string; payment_id?: string; amount?: number } };
   };
 };
@@ -148,4 +179,29 @@ type RazorpayWebhook = {
  *  detail a webhook handler gets wrong once and then never again. */
 function extractOrderId(event: RazorpayWebhook): string | null {
   return event.payload?.payment?.entity?.order_id ?? event.payload?.order?.entity?.id ?? null;
+}
+
+/** What is worth keeping from a delivery, and nothing else (F-05).
+ *
+ *  Ids and amounts, so a row can be reconciled against the gateway months
+ *  later. Deliberately NOT the payer's email or phone, which we already hold on
+ *  the order itself, and NOT the card block, which we have no use for at all.
+ *  An allow-list rather than a deny-list, so a new field Razorpay adds one day
+ *  does not quietly start being stored. */
+function summarise(event: RazorpayWebhook): Record<string, unknown> {
+  const payment = event.payload?.payment?.entity;
+  const order = event.payload?.order?.entity;
+  const refund = event.payload?.refund?.entity;
+
+  const summary: Record<string, unknown> = { event: event.event };
+  if (payment) {
+    summary.payment = { id: payment.id, order_id: payment.order_id, amount: payment.amount };
+  }
+  if (order) {
+    summary.order = { id: order.id, receipt: order.receipt, amount_paid: order.amount_paid };
+  }
+  if (refund) {
+    summary.refund = { id: refund.id, payment_id: refund.payment_id, amount: refund.amount };
+  }
+  return summary;
 }

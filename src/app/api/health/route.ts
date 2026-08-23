@@ -1,6 +1,7 @@
 import { storeEnv, razorpayMode, missingStoreEnv } from "@/lib/store/env";
 import { db } from "@/lib/store/db";
 import { preorderMode } from "@/lib/store/mode";
+import { rateLimit, clientKey } from "@/lib/store/rate-limit";
 import { json } from "@/lib/store/http";
 
 /** Store health, and the reason a daily cron exists (§8.25-k).
@@ -17,7 +18,20 @@ import { json } from "@/lib/store/http";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+/** Generous: a person refreshing this on a phone, plus the daily cron, plus any
+ *  uptime checker, should never meet it. A script counting our database for us
+ *  should (F-07). */
+const CHECKS_PER_MINUTE = 20;
+
+export async function GET(request: Request) {
+  /* This is the only public endpoint that touches Postgres twice per call, and
+     it was unthrottled. Nothing here is secret and nothing here writes, so the
+     risk was small: an anonymous caller running our database bill up, and a
+     free way to watch our operational state change. Cheap to close. */
+  if (!rateLimit(`health:${clientKey(request)}`, CHECKS_PER_MINUTE).allowed) {
+    return json(429, { ok: false, store: "rate-limited" });
+  }
+
   const env = storeEnv();
   if (!env) {
     /* Names, never values. Turns "why is the store off" into one request

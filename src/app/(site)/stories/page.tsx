@@ -8,7 +8,7 @@ import { Reveal } from "@/components/molecules/Reveal";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { STORIES } from "@/lib/stories";
 import { PRESS_LIFT } from "@/lib/interactions";
-import { graph, breadcrumbs, SITE_URL, pageMeta } from "@/lib/seo";
+import { graph, breadcrumbs, SITE_URL, pageMeta, jsonLd } from "@/lib/seo";
 import { JOURNAL_REVIEWED } from "@/config/site";
 
 export const metadata = pageMeta({
@@ -68,7 +68,7 @@ export default function StoriesPage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(JOURNAL_JSON_LD) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(JOURNAL_JSON_LD) }}
       />
       <PageHero
         guide="curious"

@@ -10,7 +10,7 @@ import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { ReadNext } from "@/components/organisms/ReadNext";
 import { STORIES, getStory, getRelatedStories } from "@/lib/stories";
 import { JOURNAL_REVIEWED } from "@/config/site";
-import { graph, breadcrumbs, SITE_URL, pageMeta } from "@/lib/seo";
+import { graph, breadcrumbs, SITE_URL, pageMeta, jsonLd } from "@/lib/seo";
 
 export function generateStaticParams() {
   return STORIES.map((s) => ({ slug: s.slug }));
@@ -47,7 +47,7 @@ export default async function StoryPage({
      a named author from /team (founder assignment), which is the E-E-A-T win
      the Organization byline was holding a place for. Month precision on the
      date on purpose: per-article days would be invented. */
-  const jsonLd = graph(
+  const articleGraph = graph(
     {
       "@type": "BlogPosting",
       headline: story.title,
@@ -73,7 +73,7 @@ export default async function StoryPage({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(articleGraph) }}
       />
 
       <PageHero>

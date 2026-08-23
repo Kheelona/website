@@ -8,6 +8,14 @@ history keeps it at `pre-v3-migration-2026-08-23` = `b27fd25`, also the rollback
 sections below that still say ages 2 to 5 / 30 September / ₹9,999 / 1 October / zero italics are
 PRE-MIGRATION history — the paragraph above each usually says so, and this block wins.
 
+**🔒 A SECURITY REVIEW IS OPEN (from 2026-08-23, branch `security-hardening`). READ
+`security-review.md` AT THE START OF EVERY SESSION until it is signed off.** It holds the
+architecture map, the findings register with live status, the fixes and their tests, the gate log,
+and what is waiting on the founder. Its rules bind while it is open: no active testing against
+production, no real charges or refunds, no customer values copied anywhere, and secrets, gateway
+config, prod DB, DNS/TLS and legal wording are ESCALATE-ONLY. Remove this block when the engagement
+closes.
+
 Pre-order marketing site for **Lumi**, Kheelona's screen-free talking AI toy for ages 3+
 (India-first). One job: turn parents into paid pre-orders. A **₹499 refundable token** holds one of
 the **first 500 units** at **₹4,999** (decided per request from the live paid count — once they are

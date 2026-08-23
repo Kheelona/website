@@ -8,7 +8,7 @@ import { Reveal } from "@/components/molecules/Reveal";
 import { TiltCard } from "@/components/molecules/TiltCard";
 import { RecognitionStrip } from "@/components/organisms/RecognitionStrip";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
-import { graph, breadcrumbs, pageMeta } from "@/lib/seo";
+import { graph, breadcrumbs, pageMeta, jsonLd } from "@/lib/seo";
 
 export const metadata = pageMeta({
   /* SEO round 2026-08-12: /team's body is manifesto copy (the beliefs, the
@@ -122,7 +122,7 @@ export default function TeamPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(
+          __html: jsonLd(
             graph(
               { "@type": "AboutPage", name: "The people who build Kheelona", url: "https://kheelona.com/team" },
               breadcrumbs([{ name: "Team", path: "/team" }]),

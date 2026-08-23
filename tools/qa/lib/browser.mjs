@@ -41,7 +41,20 @@ export function looksLocal(url) {
   }
 }
 
-export async function openPage({ width = 1280, height = 900, scale = 1, local = true } = {}) {
+/** Open a page. `allow` names third-party host suffixes to let through, and
+ *  defaults to none, which is what behaviour 2 above is about.
+ *
+ *  Pass it ONLY when the third party is the thing under test. The payment probe
+ *  passes Razorpay, because a payment sheet that cannot load is the finding.
+ *  Do not pass a measurement host: those tags report to the founder's real
+ *  properties, and a QA run has no business appearing in them. */
+export async function openPage({
+  width = 1280,
+  height = 900,
+  scale = 1,
+  local = true,
+  allow = [],
+} = {}) {
   const puppeteer = await import(puppeteerPath());
   const browser = await puppeteer.default.launch({
     executablePath: chromePath(),
@@ -54,7 +67,10 @@ export async function openPage({ width = 1280, height = 900, scale = 1, local = 
   await page.setRequestInterception(true);
   page.on("request", (request) => {
     const url = new URL(request.url());
-    const ours = LOCAL_HOSTS.has(url.hostname) || url.hostname.endsWith("kheelona.com");
+    const ours =
+      LOCAL_HOSTS.has(url.hostname) ||
+      url.hostname.endsWith("kheelona.com") ||
+      allow.some((suffix) => url.hostname === suffix || url.hostname.endsWith(`.${suffix}`));
     if (ours || url.protocol === "data:" || url.protocol === "blob:") request.continue();
     else request.abort();
   });

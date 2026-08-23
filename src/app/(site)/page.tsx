@@ -7,7 +7,7 @@ import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { AudioMoments } from "@/components/molecules/AudioMoments";
 import { FootnotesRow, Footnote, V3_FOOTNOTES } from "@/components/molecules/FootnotesRow";
 import { Faq, type FaqEntry } from "@/components/molecules/Faq";
-import { graph, faqPage, breadcrumbs, LUMI_PRODUCT, pageMeta } from "@/lib/seo";
+import { graph, faqPage, breadcrumbs, LUMI_PRODUCT, pageMeta, jsonLd } from "@/lib/seo";
 import { AUDIO_MOMENTS } from "@/lib/audio-moments";
 import { RecognitionStrip } from "@/components/organisms/RecognitionStrip";
 import { ParentQuotes } from "@/components/organisms/ParentQuotes";
@@ -146,7 +146,7 @@ export default function HomePage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(HOME_JSON_LD) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(HOME_JSON_LD) }}
       />
       <Hero />
       <RoomsTrack>

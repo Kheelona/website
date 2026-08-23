@@ -1,4 +1,5 @@
 import { STORE_URL } from "@/config/site";
+import { THANKS_PATH, formatThanksSession } from "./thanks-session";
 
 /** Host routing for store.kheelona.com (§8.25-a).
  *
@@ -22,6 +23,9 @@ import { STORE_URL } from "@/config/site";
 export type HostRoute =
   | { kind: "rewrite"; path: string }
   | { kind: "redirect"; url: string }
+  /** Take the confirmation credential out of the URL and into a cookie, then
+   *  send the browser to the clean path (F-01, see thanks-session.ts). */
+  | { kind: "claim"; path: string; session: string }
   | { kind: "pass" };
 
 /** Hosts that serve the store. `store.localhost` is here so the rewrite can be
@@ -39,6 +43,16 @@ export function routeForHost(host: string, pathname: string, search = ""): HostR
        silently serving the home page from a URL nobody should link to. */
     if (pathname === "/store" || pathname.startsWith("/store/")) {
       return { kind: "rewrite", path: "/404-store-path" };
+    }
+    /* The one URL on this host that carries a credential. It is consumed on
+       arrival rather than rendered: the page that would render it loads three
+       analytics tags, and every one of them reports the URL it was loaded on
+       (F-01). Anything malformed falls through to the ordinary rewrite, where
+       the page answers with its "open your link again" state. */
+    if (pathname === THANKS_PATH && search) {
+      const params = new URLSearchParams(search);
+      const session = formatThanksSession(params.get("ref") ?? "", params.get("t") ?? "");
+      if (session) return { kind: "claim", path: THANKS_PATH, session };
     }
     const suffix = pathname === "/" ? "" : pathname;
     return { kind: "rewrite", path: `/store${suffix}${search}` };

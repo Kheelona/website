@@ -7,8 +7,11 @@ import {
   faqPage,
   setupHowTo,
   graph,
+  jsonLd,
   SITE_URL,
 } from "./seo";
+import { execFileSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { SETUP_STEPS } from "./setup-steps";
 
 /** These tests guard the two rules that make schema safe here: it may only
@@ -116,5 +119,45 @@ describe("structured data", () => {
   it("points the video schema at assets that exist", () => {
     expect(LAUNCH_VIDEO.contentUrl).toBe(`${SITE_URL}/video/launch.mp4`);
     expect(LAUNCH_VIDEO.thumbnailUrl).toBe(`${SITE_URL}/video/launch-poster.jpg`);
+  });
+});
+
+/** F-10. Structured data goes into the page through dangerouslySetInnerHTML,
+ *  which is the standard way and is safe only while nothing in the data can end
+ *  a script element. Every value is ours today; the escaping is so that stays
+ *  true the day one of them is not. */
+describe("json-ld serialisation", () => {
+  it("lets nothing close the script element it sits in", () => {
+    const serialised = jsonLd({ name: "</script><script>alert(1)</script>" });
+    expect(serialised).not.toContain("<");
+    expect(serialised).not.toContain(">");
+    expect(serialised).toContain("u003c");
+  });
+
+  it("escapes the ampersand too, so an entity cannot be smuggled in", () => {
+    expect(jsonLd({ name: "Sneha & Raj" })).not.toContain("&");
+  });
+
+  it("changes nothing about the data a parser reads back", () => {
+    /* A unicode escape is the character it names, so Google receives exactly
+       what it received before. This is the assertion that makes the escaping
+       safe to apply to every page at once. */
+    const value = { name: "Kheelu <3 & > you", nested: [{ a: 1 }, "</script>"] };
+    expect(JSON.parse(jsonLd(value))).toEqual(value);
+  });
+
+  it("is what every page actually uses, with no raw stringify left behind", () => {
+    /* The failure this catches: one page keeps JSON.stringify and quietly stays
+       the exception. Read as text, like the other repo-level guards. */
+    const files = execFileSync("git", ["ls-files", "src/app", "src/components"], {
+      encoding: "utf8",
+    })
+      .split("\n")
+      .filter((file) => file.endsWith(".tsx") && !file.includes(".test."));
+
+    const offenders = files.filter((file) =>
+      readFileSync(file, "utf8").includes("__html: JSON.stringify"),
+    );
+    expect(offenders).toEqual([]);
   });
 });

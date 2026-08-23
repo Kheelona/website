@@ -17,7 +17,7 @@ import { KheelonaPlusBand } from "@/components/molecules/KheelonaPlusBand";
 import { FootnotesRow, V3_FOOTNOTES, Footnote } from "@/components/molecules/FootnotesRow";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { LumiModes } from "@/components/organisms/LumiModes";
-import { graph, faqPage, breadcrumbs, LUMI_PRODUCT, pageMeta } from "@/lib/seo";
+import { graph, faqPage, breadcrumbs, LUMI_PRODUCT, pageMeta, jsonLd } from "@/lib/seo";
 import { ParentQuotes } from "@/components/organisms/ParentQuotes";
 import {
   PREORDER_HREF,
@@ -125,7 +125,7 @@ export default function LumiPage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(JSON_LD) }}
       />
 
       {/* Hero on the backdrop sky (no wash), greeted through the guide */}
