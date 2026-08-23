@@ -302,7 +302,9 @@ shortly" state instead of crashing.
   real payment actually proved. It is written for a session with no memory of building the store.
 - `docs/preorder-events.md` — how to run a ₹99 event price: create the tier row, generate the signed
   link with `npm run event-link`, print the QR, and read the event's conversion afterwards.
-- `docs/checkpoints/` — per-phase snapshots. **Latest: `v3-migration-2026-08-23.md`** (the whole
+- `docs/checkpoints/` — per-phase snapshots. **Latest: `security-and-docs-2026-08-23.md`** (the
+  security engagement and the doc/cleanup round; the security detail stays live in
+  `security-review.md`). Then `ideabaaz-event-page-2026-08-23.md`, then `v3-migration-2026-08-23.md` (the whole
   2026-08-23 engagement: the unit-cap store, ages 3+, the v3 re-skin, and its gotchas), with the
   full engagement tracker beside it as **`docs/checkpoints/migration-to-new-dsx.md`** (the twelve founder decisions,
   dashboard, QA log, SEO keyword map). Before them: `one-tap-and-cleanup-2026-08-23.md`,
