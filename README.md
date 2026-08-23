@@ -16,7 +16,7 @@ You are resuming an in-progress website. Follow these steps exactly.
 >
 > - **First thing on any store question →** `curl -s https://kheelona.com/api/health`
 > - **Before touching store code →** `docs/website-steps.md` §8.25 AND §8.26 (the unit-cap laws)
-> - **What is still open →** the **⏳ OPEN** half of `FOUNDER-TODO.md` (dated, or facts only the
+> - **What is still open →** `Technical-Todo.md` (dated, or facts only the
 >   founder has, no defects)
 > - **The build and launch record →** `docs/checkpoints/preorder-store-2026-08-22.md` and
 >   `docs/store-go-live.md`
@@ -40,9 +40,13 @@ Read `docs/project-state.json`:
 2. **`docs/project-state.json`** — `current_phase`, the open `blockers` (all dated or founder
    facts), and `last_handoff.next_action`. Closed history lives in
    `docs/checkpoints/closed-rounds.md`, not in that file.
-3. **`FOUNDER-TODO.md`** — split in two: **⏳ OPEN** is the whole live queue, and **✅ CLOSED** is
-   one or two lines per finished item. Nothing in either half blocks the site. Never re-ask what is
-   settled there.
+3. **`Technical-Todo.md`** — THE single open-items list since 2026-08-23, founder-gated and
+   engineering items in one place, each tagged with who owns it. Nothing on it blocks the site.
+   Settled decisions are NOT there: they live in `docs/checkpoints/closed-rounds.md`, and **that is
+   the file to search before re-asking the founder anything**. `FOUNDER-TODO.md` is now a pointer at
+   both, kept because 82 references across the repo name it.
+   **`security-review.md`** is the open security engagement, and CLAUDE.md's banner says to read it
+   at the start of every session until it is signed off.
 4. **`docs/checkpoints/v3-migration-2026-08-23.md` + `docs/checkpoints/migration-to-new-dsx.md`** —
    the newest round's record and its full tracker (the twelve founder decisions, QA log, SEO keyword
    map). Spec precedence behind them: `BUILD-V6.md` → BUILD-V5 → BUILD-V4 → BUILD-V3 → `copy-v2.md`
@@ -98,7 +102,9 @@ Say where the project stands and what is next. Do NOT re-ask questions from comp
 kheelona-com-website/
 ├── CLAUDE.md                              ← Session entry point (founder identity, gates, commands).
 ├── README.md                              ← This file. Resume protocol + status.
-├── FOUNDER-TODO.md                        ← Split in two: ⏳ OPEN is the live queue, ✅ CLOSED is the record.
+├── Technical-Todo.md                      ← THE open-items list (founder + engineering, tagged by owner).
+├── FOUNDER-TODO.md                        ← A pointer to the two files above. Kept: 82 references name it.
+├── security-review.md                     ← The open security engagement. Read at session start until sign-off.
 ├── website-builder-prompt-final-kheelona.md  ← Master build spec (Brand Bible, phases, sprints).
 ├── kheelona homepage website content.pdf  ← Highest source of truth (Home copy, verbatim).
 ├── .env                                   ← Gitignored. Six store secrets documented in .env.example; REAL

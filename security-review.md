@@ -25,7 +25,7 @@ hard block).
 **Two things left. Only one is mine:** flipping the CSP from Report-Only to enforcing, after reading
 the `[csp] blocked=…` lines from a few days of real traffic. The other is **F-12**, the DPDP
 retention period and grievance contact on `/privacy`, deferred to before shipment by founder
-decision and now a dated item in `FOUNDER-TODO.md`. Sections 5a and 5b.
+decision and now a dated item in `Technical-Todo.md`. Sections 5a and 5b.
 
 This file is the engagement's memory. It is written so a session with no other context can pick the
 work up: the architecture, every finding with its status, what was fixed and by which test, gate
@@ -556,7 +556,7 @@ production database write, hosting configuration, or legal wording.
 6. ~~**Counsel, when convenient**~~ **DEFERRED TO BEFORE SHIPMENT by founder decision, 2026-08-23**
    (F-12). `/privacy` states no retention period and designates no grievance contact, both of which
    India's DPDP Act expects. Reasonable to hold while nothing has shipped and no product data is
-   being collected. Now a dated item in `FOUNDER-TODO.md` under "Dated", covering BOTH halves so
+   being collected. Now a dated item in `Technical-Todo.md` under "Dated", covering BOTH halves so
    neither gets lost: the retention period you named, and the grievance contact, which is the part
    the Act is stricter about. Say so if you meant to defer only the retention line.
 7. ~~**GA4, your call**~~ **DONE 2026-08-23.** Event and user data retention both confirmed at 14

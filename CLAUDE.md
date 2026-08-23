@@ -40,7 +40,7 @@ Ship date **20 October 2026**. Rollback tag **`pre-v3-migration-2026-08-23`** = 
 
 **`/api/health` IS THE FIRST THING TO CHECK** on any store question: readiness, the offer MODE
 (`preorder: token|full` — its flip to `full` triggers the manual sell-out copy sweep in
-FOUNDER-TODO), Razorpay mode, email, db latency, and the NAMES of any missing env vars.
+Technical-Todo), Razorpay mode, email, db latency, and the NAMES of any missing env vars.
 
 **✅ THE PAYMENT PATH IS PROVEN WITH A REAL TRANSACTION** (2026-08-22, ₹499 UPI, KH-YPJ8-GHVT,
 refunded after): webhooks 200, idempotency held under the real race (exactly ONE receipt), the signed
@@ -51,7 +51,7 @@ order still in the dispatch queue (`status='paid'` IS the queue, §8.25-ee — a
 NOT a cancellation), and an unrecoverable orphaned payment (§8.25-ff). **Always refund the whole
 token.**
 
-**🟡 STILL OPEN** (the ⏳ OPEN half of `FOUNDER-TODO.md` is the queue): the **Ideabaaz partner page**
+**🟡 STILL OPEN** (`Technical-Todo.md` is THE queue since 2026-08-23: one list, founder items and engineering items together, each tagged with who owns it): the **Ideabaaz partner page**
 `store.kheelona.com/ideabaaz` (₹99 public event tier, §8.25-g-i, checkpoint
 `ideabaaz-event-page-2026-08-23.md`) needs its tier row inserted before 26 Aug and closes 31 Aug —
 both dated founder items; DMARC tightens to
@@ -113,7 +113,7 @@ repo root. That old app is preserved at the tag **`pre-revamp-2026-07`** and its
   wrongly conclude it is missing.
 - **Live testimonials are drafted words on named people** (Shweta, Priyamvada, Gaurav, "Pilot
   parent"). Raised with the founder when the site went public; **their decision is to leave them
-  as-is** (`FOUNDER-TODO.md`, the Testimonials row under "Facts you settled"). Do not re-raise it and
+  as-is** (`docs/checkpoints/closed-rounds.md`, the Testimonials row in the archived FOUNDER-TODO block). Do not re-raise it and
   do not remove them.
 - **Spec precedence**: the 2026-08-23 migration record (`docs/checkpoints/migration-to-new-dsx.md`,
   §8.26/§8.27) wins over `BUILD-V6.md`, which wins over BUILD-V5 → BUILD-V4 → BUILD-V3 →
@@ -172,7 +172,9 @@ repo root. That old app is preserved at the tag **`pre-revamp-2026-07`** and its
 ## Resume protocol
 1. Read `docs/project-state.json` (`current_phase`, `last_handoff`, `blockers`).
 2. Follow the "For AI: How to Resume" table in `README.md`.
-3. Founder-gated items live in `FOUNDER-TODO.md` — never re-ask what's already settled there or in
+3. Open items ALL live in `Technical-Todo.md` (one list since 2026-08-23; `FOUNDER-TODO.md` is now
+   just a pointer, kept because 82 references name it). Settled decisions live in
+   `docs/checkpoints/closed-rounds.md` — never re-ask what's already settled there or in
    checkpoints. **The live queue is its ⏳ OPEN half** (the ✅ CLOSED half is one or two lines per
    finished item). Nothing in it blocks the site. The two highest-value items are the Kheelona+ ₹
    amount and real photography.
