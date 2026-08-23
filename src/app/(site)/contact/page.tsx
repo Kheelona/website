@@ -7,7 +7,7 @@ import { PageHero } from "@/components/templates/PageHero";
 import { Card } from "@/components/molecules/Card";
 import { Reveal } from "@/components/molecules/Reveal";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
-import { graph, breadcrumbs, SITE_URL, pageMeta } from "@/lib/seo";
+import { graph, breadcrumbs, SITE_URL, pageMeta, jsonLd } from "@/lib/seo";
 import {
   PREORDER_HREF,
   PREORDER_LABEL,
@@ -83,7 +83,7 @@ export default function ContactPage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(CONTACT_JSON_LD) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(CONTACT_JSON_LD) }}
       />
 
       <PageHero guide="curious" say="Ask us anything. A person reads it.">

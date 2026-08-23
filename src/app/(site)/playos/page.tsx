@@ -11,7 +11,7 @@ import { Reveal } from "@/components/molecules/Reveal";
 import { PromiseMark } from "@/components/molecules/PromiseMark";
 import { ArchitectureStack, type ArchLayer } from "@/components/organisms/ArchitectureStack";
 import { RecognitionStrip } from "@/components/organisms/RecognitionStrip";
-import { graph, faqPage, breadcrumbs, pageMeta } from "@/lib/seo";
+import { graph, faqPage, breadcrumbs, pageMeta, jsonLd } from "@/lib/seo";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { LUMI_AGES } from "@/config/site";
 
@@ -173,7 +173,7 @@ export default function PlayOSPage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(JSON_LD) }}
       />
 
       <PageHero

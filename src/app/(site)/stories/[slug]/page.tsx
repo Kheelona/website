@@ -10,7 +10,7 @@ import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { ReadNext } from "@/components/organisms/ReadNext";
 import { STORIES, getStory, getRelatedStories } from "@/lib/stories";
 import { JOURNAL_REVIEWED } from "@/config/site";
-import { graph, breadcrumbs, SITE_URL, pageMeta } from "@/lib/seo";
+import { graph, breadcrumbs, SITE_URL, pageMeta, jsonLd } from "@/lib/seo";
 
 export function generateStaticParams() {
   return STORIES.map((s) => ({ slug: s.slug }));
@@ -73,7 +73,7 @@ export default async function StoryPage({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(jsonLd) }}
       />
 
       <PageHero>

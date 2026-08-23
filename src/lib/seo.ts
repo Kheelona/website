@@ -270,3 +270,29 @@ export function graph(...nodes: readonly object[]) {
     "@graph": [ORGANIZATION, WEBSITE, ...nodes],
   };
 }
+
+/** JSON-LD as text, safe to put inside a script element (F-10).
+ *
+ *  Ten pages inject their structured data with `dangerouslySetInnerHTML`, which
+ *  is the standard way to do this and is fine as long as the serialised JSON can
+ *  never contain the four characters that end a script element. Every value on
+ *  this site is a constant we wrote, so there is nothing to inject today. The
+ *  hole is that "today" is a property of the current content rather than of the
+ *  code: the first time an article title, a testimonial, or a product field is
+ *  fed in from anywhere else, `</script>` inside it would close the element and
+ *  everything after it would be markup.
+ *
+ *  So the escaping happens here, once, at the boundary, instead of depending on
+ *  the next edit to remember. A JSON parser reads a unicode escape as the
+ *  character it names, so this changes nothing about the data Google receives.
+ *
+ *  Built from a character code rather than written as an escape sequence,
+ *  because the whole point is to be legible about which characters leave. */
+const BACKSLASH = String.fromCharCode(92);
+
+export function jsonLd(value: unknown): string {
+  return JSON.stringify(value).replace(
+    /[<>&]/g,
+    (character) => `${BACKSLASH}u${character.charCodeAt(0).toString(16).padStart(4, "0")}`,
+  );
+}

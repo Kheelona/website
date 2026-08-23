@@ -3,7 +3,7 @@ import { Footer } from "@/components/organisms/Footer";
 import { RevealObserver } from "@/components/molecules/RevealObserver";
 import { SiteBackdrop } from "@/components/atoms/SiteBackdrop";
 import { KheeluGuide } from "@/components/organisms/KheeluGuide";
-import { graph } from "@/lib/seo";
+import { graph, jsonLd } from "@/lib/seo";
 
 /* The entity graph moved to lib/seo.ts in the V3 SEO pass: every marketing page
    emits the same Organization and WebSite nodes by @id, so an answer engine
@@ -29,7 +29,7 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_JSON_LD) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(ORG_JSON_LD) }}
       />
       {/* Revamp M1: one warm CSS sky behind every route (theme B) */}
       <SiteBackdrop />
