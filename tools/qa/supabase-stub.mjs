@@ -58,8 +58,39 @@ createServer((req, res) => {
   }
 
   if (url.pathname === "/rest/v1/preorders" && (method === "GET" || method === "HEAD")) {
-    /* Only ever asked for a head-count (the mode gate and event caps); the
-       answer travels in content-range, exactly as PostgREST sends it. */
+    /* HEAD is a head-count (the mode gate and event caps); the answer travels
+       in content-range, exactly as PostgREST sends it. */
+    const orderRef = url.searchParams.get("order_ref")?.replace(/^eq\./, "");
+    if (method === "GET" && orderRef) {
+      /* A single order, for the confirmation page. Deliberately fake values:
+         this stub renders pages, and no real customer's row belongs in a local
+         QA fixture. */
+      res.end(
+        JSON.stringify([
+          {
+            id: 1,
+            order_ref: orderRef,
+            tier: process.env.STUB_TIER ?? "launch",
+            amount_paise: Number(process.env.STUB_AMOUNT_PAISE ?? 49_900),
+            status: process.env.STUB_STATUS ?? "paid",
+            parent_name: "Test Parent",
+            phone: "9000000000",
+            email: "test@example.com",
+            child_age: "3",
+            wa_consent: true,
+            terms_accepted_at: "2026-08-23T00:00:00Z",
+            address: null,
+            rzp_order_id: "order_stub",
+            rzp_payment_id: "pay_stub",
+            balance_status: "due",
+            utm: null,
+            created_at: "2026-08-23T00:00:00Z",
+            paid_at: "2026-08-23T00:00:00Z",
+          },
+        ]),
+      );
+      return;
+    }
     res.setHeader("content-range", `0-0/${PAID_COUNT}`);
     res.end(JSON.stringify([]));
     return;

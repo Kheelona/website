@@ -1,8 +1,9 @@
+import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { storeEnv } from "@/lib/store/env";
 import { db } from "@/lib/store/db";
 import { verifyAddressToken } from "@/lib/store/signing";
-import { isOrderRef } from "@/lib/store/order-ref";
+import { THANKS_COOKIE, parseThanksSession } from "@/lib/store/thanks-session";
 import { FULL_TIER } from "@/lib/store/mode";
 import { AddressForm } from "@/features/preorder";
 import {
@@ -25,6 +26,17 @@ import type { PreorderRow } from "@/lib/store/db";
  *  reading this is the person who paid. Without that rule, a reference visible
  *  in a screenshot would show a stranger a family's delivery address.
  *
+ *  THE TOKEN ARRIVES IN A COOKIE, NOT IN THE URL (F-01, 2026-08-23). It reaches
+ *  this host once as `?ref=&t=`, and `src/proxy.ts` consumes that on arrival:
+ *  the value moves into an HttpOnly cookie and the browser lands here on a
+ *  clean `/thanks`. The reason is this page's own furniture. It inherits three
+ *  measurement tags from the root layout, and each of them reports the URL it
+ *  loaded on, so a token in the query string was a thirty-day credential for
+ *  one family's order being written into an analytics property. See
+ *  lib/store/thanks-session.ts. Nothing else about the model moved: same
+ *  signed token, same verification, and /api/preorder/address still takes it in
+ *  the POST body.
+ *
  *  It reads the order rather than trusting the URL, so it can tell the truth
  *  about a payment that Razorpay has confirmed to the browser but whose webhook
  *  has not landed yet. That gap is usually a second or two and occasionally
@@ -32,24 +44,25 @@ import type { PreorderRow } from "@/lib/store/db";
  *  something it has not checked. */
 export const dynamic = "force-dynamic";
 
-export default async function ThanksPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ ref?: string; t?: string }>;
-}) {
-  const { ref, t } = await searchParams;
+export default async function ThanksPage() {
   const env = storeEnv();
+  const session = parseThanksSession((await cookies()).get(THANKS_COOKIE)?.value);
 
-  if (!env || !ref || !t || !isOrderRef(ref) || !verifyAddressToken(env.signingSecret, ref, t)) {
-    /* A 404 rather than an explanation. A bad or expired token must not confirm
-       that a given order reference exists. */
-    notFound();
+  if (
+    !env ||
+    !session ||
+    !verifyAddressToken(env.signingSecret, session.orderRef, session.token)
+  ) {
+    /* No reference in the URL any more, so there is nothing here to confirm or
+       deny: a plain page that says how to get back in beats the old 404, which
+       a parent whose cookie had aged out could reach after paying us. */
+    return <LinkNeeded />;
   }
 
   const { data } = await db(env)
     .from("preorders")
     .select("*")
-    .eq("order_ref", ref)
+    .eq("order_ref", session.orderRef)
     .maybeSingle();
 
   if (!data) notFound();
@@ -109,7 +122,7 @@ export default async function ThanksPage({
           : "One last thing, and it takes under a minute. If you would rather do it later, the link in your email brings you straight back here."}
       </p>
 
-      <AddressForm orderRef={order.order_ref} token={t} existing={order.address} />
+      <AddressForm orderRef={order.order_ref} token={session.token} existing={order.address} />
 
       <p className="mt-10 text-[15px] text-ink-muted">
         Anything at all, message us on WhatsApp at{" "}
@@ -120,6 +133,37 @@ export default async function ThanksPage({
           {SUPPORT_WHATSAPP_DISPLAY}
         </a>
         , quoting {order.order_ref}.
+      </p>
+    </div>
+  );
+}
+
+/** What a person sees at a bare /thanks: a stale link, a cookie that has aged
+ *  out, or simply somebody who typed the URL. It promises nothing about whether
+ *  any order exists, and it always offers a human. */
+function LinkNeeded() {
+  return (
+    <div className="mx-auto w-full max-w-[680px] px-6 py-10 md:py-14">
+      <p className="mb-2 text-[13px] font-bold uppercase tracking-[0.08em] text-orange-ink">
+        Your pre-order is safe
+      </p>
+      <h1 className="mb-4 max-w-[24ch] font-display text-[clamp(30px,4vw,42px)] font-extrabold leading-[1.08] text-ink-head">
+        We need your link again.
+      </h1>
+      <p className="mb-6 max-w-[52ch] text-[17px] leading-[1.6] text-ink">
+        This page opens from the link in your confirmation email, and that link
+        has either expired or was opened somewhere else. Open the most recent
+        email from us and tap it again, and you will land back here.
+      </p>
+      <p className="max-w-[52ch] text-[16px] leading-[1.6] text-ink">
+        Cannot find the email? Message us on WhatsApp at{" "}
+        <a
+          href={SUPPORT_WHATSAPP_HREF}
+          className="rounded font-semibold text-ink-head underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
+        >
+          {SUPPORT_WHATSAPP_DISPLAY}
+        </a>{" "}
+        and a person will pull up your order and add your address for you.
       </p>
     </div>
   );
