@@ -1,8 +1,15 @@
 # Security review and hardening: kheelona.com + store.kheelona.com
 
-**Status: PHASE 0 COMPLETE (GATE 0 passed). Awaiting the founder's go-ahead before any fix lands.**
+**Status: eight findings fixed and gated, four escalated to the founder, no CRITICAL or HIGH open.
+The CSP's second step (enforcing) waits on a few days of real Report-Only traffic.**
 Branch: `security-hardening` (cut from `main` at `05872e0`). Nothing on this branch may be merged
 by anyone but the founder. Opened 2026-08-23.
+
+**Fixed:** F-01 the order credential in the `/thanks` URL · F-02 the Next patch · F-03 the security
+headers (CSP in Report-Only) · F-05 the stored webhook payload · F-06 the payment amount guard ·
+F-07 the health throttle · F-08 the framework header · F-10 JSON-LD escaping · F-14 the rate-limit
+key. **With the founder:** the signing-secret rotation, the payload prune, F-04 (edge rate
+limiting), F-09 (HSTS scope), F-12 (DPDP wording). See section 5a.
 
 This file is the engagement's memory. It is written so a session with no other context can pick the
 work up: the architecture, every finding with its status, what was fixed and by which test, gate
@@ -171,13 +178,14 @@ bundle or in git history, and no unauthenticated path writes to `preorders`.**
 | F-01 | HIGH | payment / privacy | The address token, which is the only authorisation on an order, is sent to third-party analytics inside the URL | KAI (+ HUMAN for rotation) | **FIXED** `84ae07e` · rotation ESCALATED |
 | F-02 | HIGH | dependencies | Next.js 16.2.10 carries 9 advisories, 4 HIGH, all fixed in 16.2.11 | KAI | **FIXED** `120271f` (16.2.12) |
 | F-03 | MEDIUM (HIGH on the payment page) | headers / skimming | No CSP, no frame-ancestors, no nosniff, no Referrer-Policy, no Permissions-Policy on either host | KAI | **FIXED, PHASE 1 OF 2** `02e1f2a` (CSP Report-Only; enforcing is a second deploy) |
-| F-04 | MEDIUM | API abuse | Rate limiting is per-instance in-memory, so it does not bound abuse on serverless | KAI | OPEN |
-| F-05 | MEDIUM | data protection | `webhook_events.payload` keeps the entire Razorpay event forever | KAI + HUMAN (migration) | OPEN |
+| F-04 | MEDIUM | API abuse | Rate limiting is per-instance in-memory, so it does not bound abuse on serverless | HUMAN (WAF) | **ESCALATED** — belongs at the edge, see below |
+| F-05 | MEDIUM | data protection | `webhook_events.payload` keeps the entire Razorpay event forever | KAI + HUMAN (prune) | **FIXED for new rows** `8df8977` · pruning ESCALATED |
 | F-06 | LOW-MEDIUM | payment integrity | `markPaid` never compares the captured amount to the order's amount | KAI | **FIXED** `5a668f0` |
-| F-07 | LOW | API abuse / disclosure | `/api/health` is public, unthrottled, and does two DB counts per call | KAI | OPEN |
+| F-07 | LOW | API abuse / disclosure | `/api/health` is public, unthrottled, and does two DB counts per call | KAI | **FIXED** `2c2c210` |
 | F-08 | LOW | hygiene | `x-powered-by: Next.js` advertises the framework | KAI | **FIXED** `02e1f2a` (with F-03) |
-| F-09 | LOW | transport | HSTS has no `includeSubDomains` and no `preload` | HUMAN (decision) | OPEN |
-| F-10 | LOW | XSS hardening | JSON-LD is injected with `dangerouslySetInnerHTML` and no `<` escaping | KAI | OPEN |
+| F-09 | LOW | transport | HSTS has no `includeSubDomains` and no `preload` | HUMAN (decision) | **ESCALATED** |
+| F-10 | LOW | XSS hardening | JSON-LD is injected with `dangerouslySetInnerHTML` and no `<` escaping | KAI | **FIXED** `86818a3` |
+| F-14 | MEDIUM | API abuse | Every throttle keyed on the first entry of `x-forwarded-for`, which the caller supplies | KAI | **FIXED** `36d3836` |
 | F-11 | INFO | event pricing | The Ideabaaz page publishes its own tier signature | — | ACCEPTED (documented §8.25-g-i) |
 | F-12 | INFO | privacy / DPDP | No retention period and no grievance contact designated on `/privacy` | HUMAN + counsel | ESCALATED |
 | F-13 | INFO | event pricing | An event link's `sig=` is reported to analytics as part of the page URL | — | ACCEPTED, same model as F-11; the CSP report route strips query strings from what it logs |
@@ -276,16 +284,25 @@ available for `checkout.razorpay.com/v1/checkout.js`**, which Razorpay updates i
 publishing hashes. Same for gtag and Ahrefs. That is an accepted limitation to be recorded, with
 the CSP allowlist standing in for integrity pinning.
 
-### F-04 · MEDIUM · Rate limiting does not bound abuse
+### F-04 · MEDIUM · Rate limiting does not bound abuse · ESCALATED, with a reason
 
 `src/lib/store/rate-limit.ts` is an in-memory fixed window, and says so in its own comment: it is
 per serverless instance, so a caller spread across cold starts exceeds it. What that costs us is
 junk `preorders` rows carrying plausible PII and real Razorpay order objects, created for free.
-Not a path to money loss.
+Not a path to money loss. (Its **key** was separately broken and is fixed: F-14.)
 
-Options: a Postgres-backed counter (no new infrastructure, one table, one upsert, at the cost of a
-round trip on the hot path) or Upstash (new infrastructure **and** a new env var, so partly
-escalate). Recommendation: Postgres, behind the payment regression.
+**Not fixed in code, deliberately.** The obvious in-app fix is a Postgres counter, and it is the
+wrong one here: this project's own open note says a trivial Supabase query takes 250 to 975ms,
+because the project is not in an Indian region. Putting another round trip of that size in front of
+`create-order` would add half a second to the moment a parent taps pay, on the one path where
+latency costs real money, to slow down an abuser who has other options anyway. Upstash would avoid
+the latency but means new infrastructure and a new secret, which is escalate-only regardless.
+
+**The recommendation, for the founder:** a Vercel Firewall rate-limit rule on the three store POST
+routes (`/api/preorder/create-order`, `/api/preorder/confirm`, `/api/preorder/address`), which is
+the right layer, costs no latency, and sees every request rather than one instance's share. WAF
+configuration is on the escalate list, so it is the founder's to set. Until then the in-app limiter
+is what there is, and it is now at least keyed on something a caller cannot choose.
 
 ### F-05 · MEDIUM · The whole Razorpay event payload is stored forever
 
@@ -296,8 +313,13 @@ the blast radius of any database exposure and works against DPDP minimisation. T
 **last4 and network are not PAN and storing them is permitted**; the point is that they are not
 needed.
 
-Fix: reduce what is written (event type, ids, amount, status), and/or prune payloads older than N
-days. The code change is ours; **running the migration on production is the founder's**.
+**Fixed for every new delivery** (`8df8977`): the claim row now stores an allow-listed summary, the
+event type plus the ids and amounts from the payment, order and refund entities. An allow-list, so a
+field Razorpay adds next year does not quietly start being kept. Razorpay retains the full event on
+their side, which is where a forensic question should be asked from anyway.
+
+**Still with the founder**, because it writes to the production database: existing rows keep their
+full payloads. The statement is in the founder action list below.
 
 ### F-06 · LOW-MEDIUM · `markPaid` does not check the captured amount
 
@@ -396,8 +418,34 @@ existing 806 tests already live) and no live-gateway dynamic test runs at all.
 | GATE 2 — F-02, the Next patch | 2026-08-23 | **PASS → APPROVED-FOR-MERGE** (`120271f`). 826/826, tsc 0, build 0, `qa:sweep` 34/34, host routing and the F-01 claim re-driven on 16.2.12. `npm audit` no longer reports any advisory in `next` itself. |
 | GATE 2 — F-03, the headers | 2026-08-23 | **PASS → APPROVED-FOR-MERGE** (`02e1f2a`). 844/844, tsc 0, build 0, `qa:sweep` 34/34. All 16 routes loaded in a real browser produce **zero** resource violations under the policy; the only console line is Chrome noting `upgrade-insecure-requests` is inert in report-only mode. Collector round-tripped a report and stripped the query string from the logged URL. |
 | GATE 2 — F-06, the amount guard | 2026-08-23 | **PASS → APPROVED-FOR-MERGE** (`5a668f0`). 854/854, tsc 0, build 0. Four of the seven new `fulfil.test.ts` cases fail before the change. |
-| GATE 3 — post-deploy verify | — | pending the founder's merge |
-| GATE 4 — engagement sign-off | — | F-04, F-05, F-07, F-10 still open |
+| GATE 2 — F-07, the health throttle | 2026-08-23 | **PASS → APPROVED-FOR-MERGE** (`2c2c210`). 863/863, tsc 0, build 0, and the throttle driven live: twenty 200s then 429, with no further database calls once it trips. |
+| GATE 2 — F-10, JSON-LD escaping | 2026-08-23 | **PASS → APPROVED-FOR-MERGE** (`86818a3`). 863/863, tsc 0, build 0. Both `ld+json` blocks on a real `/products/lumi` response still parse and contain no bare angle bracket. |
+| GATE 2 — F-14, the rate-limit key | 2026-08-23 | **PASS → APPROVED-FOR-MERGE** (`36d3836`). 872/872, tsc 0, build 0. Four of eight new cases fail before the change. |
+| GATE 2 — F-05, the payload summary | 2026-08-23 | **PASS → APPROVED-FOR-MERGE** (`8df8977`). 872/872, tsc 0, build 0. A delivery carrying an email, a phone and a full card block is stored with its ids and amount and none of those five values. |
+| GATE 2 — the payment probe | 2026-08-23 | **PASS** (`d969005`). `npm run qa:payment` clean: the sandbox order is created, Razorpay's sheet opens, **zero policy violations**, a signed webhook is accepted and a forged one refused. Control run done first: with Razorpay removed from `script-src` the probe failed and named both blocked scripts, so the assertion is not vacuous. |
+| GATE 3 — post-deploy verify | — | pending the founder's merge. Plan: re-read both hosts' headers; confirm a synthetic tokened `/thanks` URL 303s to a clean path with `Secure; HttpOnly; SameSite=lax`; confirm `/api/health` still answers for the cron; watch the `[csp]` log lines. All read-only, no real order touched. |
+| GATE 4 — engagement sign-off | — | **No CRITICAL or HIGH open.** Everything remaining is either the founder's (F-04, F-09, F-12, the rotation and the prune) or the CSP's second, deliberate step. |
+
+### NADIA's re-audit of the fixes themselves (2026-08-23)
+
+Every change was re-read for new surface, because a fix that opens something is the worst outcome
+of an engagement like this.
+
+- **New public endpoint**, `/api/csp-report`: unauthenticated POST by necessity. Bounded at 30 a
+  minute per caller, body capped, no database access, three allow-listed fields logged with control
+  characters stripped and query strings removed. It cannot cost us anything.
+- **New cookie**, `kh_order`: HttpOnly, Secure off only on a literal localhost host, SameSite=Lax,
+  scoped to `/thanks`, two hours. It carries a credential the browser already had. Its redirect is
+  303 with `private, no-store`, so no cache can hand one customer's cookie to another.
+- **`clientKey` now prefers `x-real-ip`**, which the platform sets. Worth stating plainly: on a
+  deployment where no proxy sets that header, a client could send it. This app is served by Vercel,
+  which does, and the fallback chain is safe in either case.
+- **The JSON-LD change alters output on ten pages**: verified by parsing the real responses, not by
+  reading the diff.
+- **The writable Supabase stub is local tooling only**, off unless `STUB_WRITABLE=1`, and cannot
+  reach a real database: its URL is the loopback address.
+- **`.env.local` holding the test keys is gitignored** and confirmed absent from `git status` after
+  every commit in this branch.
 
 Baseline before any change: `npm test` was green at 806/806 on `main@05872e0`. The count rises with
 each fix's paired tests; per the standing trap, it is only honest with new files staged.
@@ -408,6 +456,42 @@ test keys now available, building that run is RIA's next piece of work, and it i
 to confirm the CSP does not disturb the Razorpay checkout sheet before the policy starts enforcing.
 
 ---
+
+## 5a. What the founder has to do (nothing here may be auto-executed)
+
+In the order it matters. Nothing on this list is something I may do: each one is a secret, a
+production database write, hosting configuration, or legal wording.
+
+1. **Merge `security-hardening` into `main`.** Ten commits: eight fixes with their paired tests, the
+   payment probe, and this record. Deploying is the ordinary git push; every gate is green.
+2. **Rotate `STORE_SIGNING_SECRET`** in the Vercel dashboard, right after the deploy is live.
+   This is what makes F-01 fully closed rather than merely stopped: the address tokens already sent
+   to GA4 stay valid for their thirty days otherwise. **What it breaks, so it is not a surprise:**
+   every `/thanks` link already emailed stops working, and any printed event QR carrying a `sig=`
+   stops working. The Ideabaaz page is unaffected, because it signs its own tier per request. With
+   the store one day old this costs almost nothing; in a month it will not be cheap.
+3. **Prune the old webhook payloads** (Supabase SQL editor). New rows are already summaries:
+   ```sql
+   update public.webhook_events
+      set payload = jsonb_build_object('event', event_type, 'pruned', true)
+    where payload is not null
+      and payload ? 'payload';
+   ```
+   (The `payload ? 'payload'` test matches only the old full-event shape, so re-running it is safe.)
+4. **Decide on a Vercel Firewall rate-limit rule** for the three store POST routes (F-04). This is
+   the real fix for abuse bounding, and it is at your layer, not in the code.
+5. **Decide on HSTS `includeSubDomains`** (F-09). It binds every subdomain of kheelona.com to HTTPS
+   in every browser that has seen the header. Say yes and I will add it to the header block; say no
+   and I will record why.
+6. **Counsel, when convenient** (F-12): `/privacy` states no retention period and designates no
+   grievance contact, both of which India's DPDP Act expects. Wording is yours and counsel's.
+7. **GA4, your call:** the property holds page URLs containing address tokens from before this fix.
+   After the rotation in step 2 they are inert. If you would rather they were gone, that is a
+   retention or deletion action in the GA4 admin, and it is yours to take.
+8. **Come back to me in a few days** for the CSP's second half. Once real traffic has run under
+   Report-Only, I read the reports (they land in the Vercel logs as `[csp] blocked=… directive=…`)
+   and flip the policy to enforcing as one small commit. Enforcing without reading them first is the
+   one way this work could break your checkout.
 
 ## 6. Open questions for the founder
 
