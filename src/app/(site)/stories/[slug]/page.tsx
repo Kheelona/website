@@ -47,7 +47,7 @@ export default async function StoryPage({
      a named author from /team (founder assignment), which is the E-E-A-T win
      the Organization byline was holding a place for. Month precision on the
      date on purpose: per-article days would be invented. */
-  const jsonLd = graph(
+  const articleGraph = graph(
     {
       "@type": "BlogPosting",
       headline: story.title,
@@ -73,7 +73,7 @@ export default async function StoryPage({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: jsonLd(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(articleGraph) }}
       />
 
       <PageHero>
