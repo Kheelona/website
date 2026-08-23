@@ -167,7 +167,7 @@ R5 overshot the calm; founder wants tasteful 3D life back, sourced from polished
 - **Vendor registry law**: external components live under `src/components/vendor/<source>/`, copied source pinned to a commit, header comment records source+license+brand modifications, and `src/components/vendor/README.md` is the index (the founder's "centralized reusable database"). Animate UI license verified: MIT + Commons Clause — commercial use inside a product is explicitly permitted; reselling components is barred.
 - **cn() upgraded** to clsx+tailwind-merge (vendored code assumes a merging cn; the R4 class-conflict foot-gun is closed). `lucide-react` is the icon family (hamburger/close/plus/check swapped; matches the DS iconography card).
 - **Presence dial**: BrandShape baseOpacity 0.9 (ghost floor near copy stays 0.04); ambient densities home 11 / interiors 9-10 / legal 4; DOM hero shapes opacity-40.
-- **Hero glow** (`vendor/animate-ui/backgrounds/hero-glow.tsx`): the Bubble background rebuilt calm — no goo/blur filters (compositor-only transforms), 3 warm brand blobs on 38-66s loops, reduced-motion renders static. Mounted section-local in the Home hero only.
+- **Hero glow** — **REMOVED 2026-08-23**, and this entry stays only as the record of what R6 built. The mount went with a later hero rewrite and the component sat unimported until the doc-cleanup round deleted it; git history has it if the calm-glow treatment is ever wanted again. What it was (`vendor/animate-ui/backgrounds/hero-glow.tsx`): the Bubble background rebuilt calm — no goo/blur filters (compositor-only transforms), 3 warm brand blobs on 38-66s loops, reduced-motion renders static. Mounted section-local in the Home hero only.
 - **TiltCard** (`ui/TiltCard.tsx` over vendored `primitives/tilt.tsx`): 5° pointer perspective on every card surface (feelings, journal, stories, team, product features+feelings, safety rules, playos principles). Renders a plain div unless `(hover:hover) and (pointer:fine) and (prefers-reduced-motion: no-preference)`. Tables never tilt.
 - **Storybook pop entrances**: `data-reveal` CSS now settles from `perspective(700px) translateY rotateX(5deg) scale(0.98)` on the bouncy brand ease. Contracts unchanged: "rise" stays opacity-safe for LCP, no-JS fully visible, reduced-motion none.
 - **CTA ripple**: press ripple grafted into `ui/Button.tsx` (adapted from Animate UI's ripple primitive, credited; CSS keyframe `--animate-ripple`); skipped under reduced motion. White-label fills and WCAG rules untouched.
@@ -591,7 +591,7 @@ build the control before believing the story.
 
 ### 8.24 V6 GROWTH-ARC CONTENT ROUND (2026-07-31, spec BUILD-V6.md — founder-approved as written)
 
-Spec + verbatim copy: `docs/revamp-2026-07/BUILD-V6.md` (plan: `PLAN-V6.md`). The round exists
+Spec + verbatim copy: `docs/revamp-2026-07/BUILD-V6.md` (its task-by-task plan `PLAN-V6.md` was deleted on 2026-08-23, fully executed; git history keeps it). The round exists
 because parents who saw the live site asked "what will a kid who buys this at 2 GET at 5?" and the
 site had no answer, and because the tutor hero confused readers. Chief-content-writer persona:
 Joanna Wiebe / conversion method (customer language, benefit-led, objections answered head-on).
