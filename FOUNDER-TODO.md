@@ -30,14 +30,15 @@ anything that turns out wrong gets corrected here rather than argued twice.
 
 ## Dated, and the only items with a clock on them
 
-- [ ] **📅 Before 26 August 2026: insert the Ideabaaz tier row in Supabase** (the page is deployed
-      and shows "has ended" until the row exists). SQL editor, one statement:
-      `insert into event_tiers (id, label, amount_paise, cap, expires_on) values ('ideabaaz',
-      'Ideabaaz exclusive price', 9900, null, '2026-08-31');` Then open
-      https://store.kheelona.com/ideabaaz and check three things: ₹499 struck through, ₹99 on the
-      button, ₹4,900 on dispatch. **Recommended before the fest, your call:** one real ₹99 booking,
-      refunded in full after — the event-tier flavour of the payment path has never taken live money,
-      and the receipt is the only place the ₹4,900 wording meets a real customer.
+- [x] **DONE 2026-08-23: the Ideabaaz tier row is in, and the page is LIVE at the ₹99 price.** You
+      ran the insert; verified on production the same evening. All three checks pass: ₹499 struck
+      through in a real `<s>` (with `aria-hidden`, so a screen reader hears the sr-only sentence
+      instead), "Pay ₹99 and reserve" on the button, and ₹4,900 on dispatch in both the caption and
+      the summary card, with **zero** mentions of ₹4,500 anywhere on the page. The page is still
+      `noindex, nofollow` and carries the new security headers. **Recommended before the fest, still
+      your call:** one real ₹99 booking, refunded in full after — the event-tier flavour of the
+      payment path has never taken live money, and the receipt is the only place the ₹4,900 wording
+      meets a real customer. The 31 August close is the next dated item below.
 
 - [ ] **📅 31 August 2026: close the Ideabaaz page.** In Supabase: `update event_tiers set active =
       false where id = 'ideabaaz';` The `expires_on` backstop kills it anyway from ~05:30 IST on
