@@ -554,9 +554,12 @@ production database write, hosting configuration, or legal wording.
    being collected. Now a dated item in `FOUNDER-TODO.md` under "Dated", covering BOTH halves so
    neither gets lost: the retention period you named, and the grievance contact, which is the part
    the Act is stricter about. Say so if you meant to defer only the retention line.
-7. **GA4, your call:** the property holds page URLs containing address tokens from before this fix.
-   After the rotation in step 2 they are inert. If you would rather they were gone, that is a
-   retention or deletion action in the GA4 admin, and it is yours to take.
+7. ~~**GA4, your call**~~ **DONE 2026-08-23.** Event and user data retention both confirmed at 14
+   months, which bounds how long any URL-bearing event lives. The founder declined the deletion
+   request, on my recommendation: the tokens are already inert after the rotation, and deleting the
+   `page_location` parameter for 22-23 August would also wipe legitimate launch-window URLs that the
+   Ideabaaz push will want. **Ahrefs received those URLs too and has no deletion tool** — nothing to
+   do there beyond the rotation, which is what made them useless.
 8. **Come back to me in a few days** for the CSP's second half. Once real traffic has run under
    Report-Only, I read the reports (they land in the Vercel logs as `[csp] blocked=… directive=…`)
    and flip the policy to enforcing as one small commit. Enforcing without reading them first is the
