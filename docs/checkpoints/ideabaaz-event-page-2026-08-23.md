@@ -51,6 +51,16 @@ Against the stub: `qa:text` shows the full coherent money story (₹99 / ₹4,90
 ₹4,500), axe 0 violations at 1280, full-page shots at 390 + 1280 reviewed. Ended state exercised
 by killing the stub; not-open state covered by the sweep.
 
+## Deployed and production-verified (same day, commit `afc9a05` on both branches)
+
+Vercel picked the push up in under a minute. Verified live: `/api/health` green
+(`preorder:"token"`, razorpay live, email configured), and
+https://store.kheelona.com/ideabaaz serving HTTP 200 with the ended state — which is CORRECT
+until the founder inserts the tier row (the founder confirmed the same view from their own
+browser). The page reads the row per request (`force-dynamic`), so the ₹99 offer appears on
+refresh the moment the INSERT runs, no deploy involved. Production re-verification of the live
+offer state happens after that insert.
+
 ## Known characteristic, accepted
 
 A transient Supabase failure renders the same "has ended" words as a real close (resolveTier
