@@ -79,11 +79,12 @@ anything that turns out wrong gets corrected here rather than argued twice.
       sit. Drop them in `~/Downloads`.
 - [ ] **Real testimonial quotes or faces.** Your standing decision is to keep the drafted
       placeholders; real ones swap in cleanly whenever.
-- [ ] **The new logo** (R5-a). You said you would upload it later. Now slightly bigger than it was:
-      the favicon and app icons were built from the current mark, so a new logo means one pass across
-      the navbar, the icons, the share image and the schema logo together.
-- [ ] **og.png refresh** with the whisper hero artwork. Optional. The current card is accurate, just
-      older art.
+- [x] **The new logo (R5-a): DONE 2026-08-23 by the v3 migration.** The v3 wordmark SVG is in the
+      navbar and store chrome, and the mark regenerated the favicon set, app icons, schema logo and
+      og.png in one pass — exactly the one-pass law this item predicted. Pipeline for next time:
+      `tools/brand/render-icons.mjs`.
+- [x] **og.png refresh: DONE 2026-08-23.** Rebuilt from the v3 OG template with the live hero
+      promise, ages 3+, and the mascot.
 
 ## Off-site, where I have no access
 

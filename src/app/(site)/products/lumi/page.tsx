@@ -38,8 +38,12 @@ export const metadata = pageMeta({
      template appends the brand already, and printing it twice was the only
      reason this ran 75 characters. */
   title: "Meet Lumi: the talking toy that teaches, ages 3+",
+  /* SEO (CS3 Phase B): the page's primary keyword, "AI educational toy", now
+     sits in the description per the agency placement rules — the body already
+     carries all four assigned phrases once each, and the title stays the
+     brand sentence. 157 chars, under the 160 guard. */
   description:
-    "A screen-free talking toy for ages 3+. Lumi listens, answers, then asks the next question, slipping learning into play. ₹499 reserves yours at ₹4,999.",
+    "A screen-free AI educational toy for ages 3+. Lumi listens, answers, then asks the next question, slipping learning into play. ₹499 reserves yours at ₹4,999.",
   path: "/products/lumi",
 });
 

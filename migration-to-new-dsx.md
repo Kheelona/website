@@ -27,7 +27,7 @@ landed post-preview: the hero offer card breaks between its two clauses (`PREORD
 | CS1 — commercial restructure (500-unit cap, ₹7,999 full mode, ship 20 Oct) | **✅ BUILT + GATED (`d23970f`) — ⛳ waiting on founder: run migration 0002 in Supabase, then merge to main.** Laws recorded as §8.26 in website-steps.md; FOUNDER-TODO carries the merge order-of-operations and the standing sell-out sweep item. |
 | CS2 — Ages 3+ repositioning | **✅ BUILT + GATED — ⛳ founder approves the new copy on the preview before merge.** The lines that need your eye: hero "A best friend at 3. / A head start for school." (one source, `HERO_PROMISE`, also closes PacePanel); GrowthArc re-anchored 3 → 4 → 5 → "Every year after: Growing right alongside."; home pipeline line "Starts talking at 3. Still teaching for years."; family chips Lumi 3+ / Kheelu Speaker 5+ / AI books 3+; Compare row "Yes, for years with the family"; playos "many bodies as they grow". Schema audience = min 3, no max; "2 to 5"/"2 to 14" joined the dead-ranges guard. AAP/WHO citations in two journal articles keep their quoted ranges (they cite the health bodies, not us). SEO keyword placement continues per page in Phase B. NOTE for CS3: the rebuilt og.png must carry ages 3+ (the old one's pixels are now stale). |
 | CS3 — DS v3 Phase 0 + Phase A (tokens, fonts incl. serif, logo, guard tests) | **✅ BUILT + GATED (`d6d3e73` + `6fc6a63`) — ⛳ founder reviews the before/after shots + the preview, then merges.** What changed at a glance: v3 ink ramp + surfaces (cream/cool/sun now the v3 tints, subtle cooling), radii snap to 24px, token gate reads v3 and FAILS-HARD when missing (18 mappings), fonts re-subset from v3 TTFs (identical coverage), Instrument Serif ITALIC added as `--font-editorial` (placements come per page in Phase B — nothing renders it yet), navbar/store wordmark now the v3 SVG, full favicon set + logo-mark.png + og.png regenerated from the v3 mark/template (og carries ages 3+ and the new mascot). Contrast recomputed everywhere; ZERO assertions inverted; ink-muted kicker ban survives. line-soft aliased (merge in B); orange-deep kept until its ~8 accent call-sites drain in B; BEAT_WASHES intermediates flagged for B. |
-| CS4 — Kheelu redesign (Foxy-Deer art) | **Mostly pre-existing, pending inventory**: the live hero art and guide avatar are already on-model with v3's Foxy-Deer (the character clearly descends from the current Kheelu art). Remaining: per-surface comparison against v3's poses/reference sheets, swap only where off-model, founder judges each. The dormant 3D journey still holds the old-design GLBs (new Tripo run, founder-driven, out of scope). |
+| CS4 — Kheelu redesign (Foxy-Deer art) | **✅ CLOSED BY INVENTORY (2026-08-23).** Every live 2D Kheelu surface was compared against v3's character sheet and found ON-MODEL — the site's art IS the Foxy-Deer: the 7 guide poses in `public/mascot/` (bliss/joy/sad/hero-wink/curious/silly/grumpy: fox body + tail, antlers, blue round glasses, orange K-mark tee, acorn-patch shorts, brown sneakers), the hero whisper art `public/hero/kheelu-lumi.png`, and the og.png mascot (rendered from a v3 pose directly). v3 mascot laws verified: no surface flips a render (no `scale-x-[-1]` anywhere), no doubling (the V5 `[data-hero-has-kheelu]` law still holds), faces unobstructed. THE ONE OFF-MODEL ASSET: the dormant 3D journey's `public/models/kheelona-mascot.glb` still wears the pre-Foxy-Deer design — flagged, founder-driven Tripo re-run required before `<StageGate stage="journey" />` is ever re-enabled, out of this engagement's scope. |
 | Phase B — per-page LEX/JONY/RIA/MARA refinement | pending |
 | Final — cross-page audit, v3 gap docs, old-system deletion (founder approval) | pending |
 
@@ -95,6 +95,31 @@ landed post-preview: the hero offer card breaks between its two clauses (`PREORD
   approves every line before shipping.
 - Voice: no hype, no exclamation marks, no em-dashes (en-dash inside number ranges),
   second person present tense, rarely lead with "AI".
+
+## SEO keyword placement map (the agency brief, audited in SERVED HTML 2026-08-23)
+
+Audited with scripts stripped first (§8.25-bb: JSON-LD and the RSC payload report false
+positives; and `qa:text` UNDER-counts here because closed `<details>` answers are not in
+innerText — the markup is what crawlers read). Density is healthy everywhere: every page
+sits under 1% per phrase, far from the 2.5% ceiling.
+
+| Page | Keyword | Where it lives |
+|---|---|---|
+| / | screen-free toy | meta description + FAQ |
+| / | safe toy | body (trust room) |
+| / | interactive AI toy | FAQ answer |
+| / | smart toy(s) | ×7 across FAQ/compare copy (0.35%) |
+| /products/lumi | AI educational toy | **meta description (added Phase B)** + FAQ |
+| /products/lumi | best learning toys for 3-year-olds | FAQ question, verbatim |
+| /products/lumi | learning toys for 5 and 6 year olds | ages FAQ (family-arc frame, kept through the 3+ pass) |
+| /products/lumi | unique birthday gift | birthday FAQ |
+| /playos | smart toy · developmental toys · AI educational toy | body, one each in 648 words |
+| /safety | safe toy · smart toys for toddlers · educational toys for kids | body/FAQ, one each |
+| /team | smart toys for toddlers | title (2026-08-12 decision: the manifesto body stays clean) |
+| /team | AI educational toy | meta description (same decision) |
+
+"smart toys for toddlers" stays LOW-CLAIM everywhere per the founder's resolved decision:
+metadata and comparative lines only, never implying an under-3 product.
 
 ## QA log
 
