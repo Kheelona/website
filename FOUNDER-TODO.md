@@ -75,9 +75,16 @@ anything that turns out wrong gets corrected here rather than argued twice.
       intercepted. Either finish the Firebase custom-domain certificate or delete the DNS record if
       it is unused. **Two:** it is why HSTS `includeSubDomains` is NOT enabled yet even though you
       said yes. Turning it on would make that warning un-clickable-through for two years per browser,
-      hard-blocking the panel. Fix or remove the subdomain, tell me, and the header is a one-line
-      change. Not my repo and not my DNS, so it is yours either way. I did not probe the host beyond
-      reading its certificate.
+      hard-blocking the panel. Not my repo and not my DNS, so it is yours either way. I did not probe
+      the host beyond reading its certificate.
+      **IN PROGRESS, same evening:** you added the custom domain in the Firebase project
+      `kheelona-backend-server`, site `singular-arcana-479108-v5`. The ownership TXT
+      (`hosting-site=singular-arcana-479108-v5`) is on the name and the console reads **Minting
+      certificate**, so Firebase has accepted the DNS and is issuing. The earlier "Error when
+      creating domain" was it refusing a duplicate, not a failure. Nothing more to do: do not re-add
+      it, do not touch the `admin` CNAME or TXT, and do not turn Cloudflare's proxy on for it.
+      `curl -sSI https://admin.kheelona.com/ | head -1` stops failing once it lands. Tell me then and
+      I ship the one-line HSTS change, closing F-15 and F-09 together.
 
 - [ ] **Two rows in Supabase.** Delete my probe: `delete from preorders where order_ref =
       'KH-8FP8-PWDA';`. And close out Shweta's, whose refund predates the automatic handling:
