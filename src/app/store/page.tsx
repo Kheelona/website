@@ -5,12 +5,8 @@ import { preorderMode } from "@/lib/store/mode";
 import { PreorderForm, OrderSummary } from "@/features/preorder";
 import {
   formatInr,
-  LAUNCH_PRICE,
   FULL_PRICE,
   TOKEN_PRICE,
-  CAP_UNITS_TEXT,
-  SHIP_DATE_TEXT,
-  LUMI_AGES,
   SUPPORT_WHATSAPP_HREF,
 } from "@/config/site";
 
@@ -29,7 +25,18 @@ import {
  *      founder had finished with Razorpay.
  *
  *  Rendered on the server, form and all, so the price a parent reads is in the
- *  HTML rather than assembled by a script that might not run. */
+ *  HTML rather than assembled by a script that might not run.
+ *
+ *  NO PROSE PARAGRAPH, BY FOUNDER DECISION (2026-08-24). This page used to
+ *  carry a mode-aware paragraph under the heading ("A screen-free talking
+ *  friend for ages 3+. ₹499 holds one of the first 500 units at ₹4,999 ...").
+ *  It was removed with its twin on /store/ideabaaz. Do not restore it as a
+ *  fix: §8.25-b used to cite it by name as the reason one-tap CTAs are safe,
+ *  and that section now records where the three facts live instead — the price
+ *  in the h1, the refund promise in PreorderForm's line under the submit
+ *  button, and all four including the ship date in OrderSummary. On a phone
+ *  OrderSummary stacks BELOW the form, so the ship date is now first read
+ *  after it rather than before. That is the known cost of this decision. */
 export const dynamic = "force-dynamic";
 
 export default async function StorePage() {
@@ -66,25 +73,6 @@ export default async function StorePage() {
             className="h-[120px] w-auto shrink-0 md:h-[180px]"
           />
         </div>
-
-        <p className="mb-8 max-w-[52ch] text-[17px] leading-[1.6] text-ink">
-          {mode === "token" ? (
-            <>
-              A screen-free talking friend for ages {LUMI_AGES}. {TOKEN_PRICE}{" "}
-              holds one of the {CAP_UNITS_TEXT} at {LAUNCH_PRICE} and holds your
-              place in the queue. Ships {SHIP_DATE_TEXT}, and refundable in full
-              until it does.
-            </>
-          ) : (
-            <>
-              A screen-free talking friend for ages {LUMI_AGES}. The{" "}
-              {CAP_UNITS_TEXT} at {LAUNCH_PRICE} have all been reserved, so Lumi
-              is now {FULL_PRICE}, paid once, with nothing more due before
-              dispatch. Ships {SHIP_DATE_TEXT}, and refundable in full until it
-              does.
-            </>
-          )}
-        </p>
 
         <div className="max-w-[520px]">
           <PreorderForm

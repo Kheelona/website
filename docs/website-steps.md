@@ -725,13 +725,26 @@ in one tap. `test/preorder-cta.test.ts` fails if any `href` points at `#reserve`
 
 The law it replaces: the finale was the ONLY outbound link, and every other CTA anchored to `#reserve`
 first, so a parent always read the price, the refund promise and the ship date before a payment form
-could open. That reason was sound and it is why the reversal is safe rather than a trade: **the store
-page carries all three itself, above its own form** ("₹499 holds one at ₹4,999 ... Ships 1 October
-2026, and refundable in full until it does", then `OrderSummary`), so the second tap bought no extra
-honesty and cost completions on the one action this site exists for. Measured on a 390px render before
-the change was accepted. The consequence is that **the store page is now the first thing many parents
-read about the offer**, so its own copy carries the whole weight: weakening that paragraph is now a
-conversion change, not a wording change.
+could open. That reason was sound, and the reversal was accepted because **the store page carried all
+three itself, above its own form** — a prose paragraph ("₹499 holds one at ₹4,999 ... refundable in
+full until it does"), then `OrderSummary`. Measured on a 390px render before the change was accepted.
+
+**⚠ THAT PARAGRAPH WAS REMOVED ON 2026-08-24 (founder decision), on `/store` and `/store/ideabaaz`
+both.** This section quoted it by name, so the quotation above is history, not a description of the
+page. One-tap CTAs are unchanged and still correct; what changed is WHERE the three facts are read:
+
+| Fact | Where it lives now |
+|---|---|
+| The price | the `h1` ("Reserve Lumi for ₹499.") and `OrderSummary` |
+| The refund promise | `PreorderForm`'s line directly under the submit button, and `OrderSummary` |
+| The ship date | `OrderSummary` ONLY |
+
+**The known cost, stated rather than discovered later.** `OrderSummary` is an `aside` that sits beside
+the form on desktop but stacks BELOW it on a phone, so on mobile the ship date is now first read after
+the form rather than before it. Above the form a phone shows the kicker, the price heading and the
+plush. Nothing became untrue and no fact left the page — but **the store page is still the first thing
+many parents read about the offer**, so this remains a conversion surface: a change to the `h1`,
+`PreorderForm`'s reassurance line or `OrderSummary` is a conversion change, not a wording change.
 
 `id="reserve"` stays on every page. It is layout, not a route: `LegalDoc` appends the finale, and the
 mobile guide dock hides itself while that section is on screen.
