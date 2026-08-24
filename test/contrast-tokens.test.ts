@@ -96,6 +96,45 @@ describe("ink-on-wash contrast, as arithmetic rather than prose", () => {
     expect(contrast(INKS["ink-muted"], WASHES.cream)).toBeLessThan(4.6);
   });
 
+  /* §8.29 (founder decision, 2026-08-24). The action fill's label went back to
+     WHITE, reversing V4 D1. White on #EF762F is 2.88:1 and fails AA at every
+     size — the large-text floor is 3:1, and it does not even reach that.
+
+     This is asserted rather than hidden, in the same spirit as the ink-muted
+     ban above: the number is pinned, so if anyone ever darkens `action` the
+     test tells them the pair changed side instead of leaving it to a sweep to
+     notice, or not. The founder was shown this ratio and the passing
+     alternative before choosing. Changing this test means reversing a founder
+     decision, not fixing a bug. */
+  describe("the action fill's label, a knowingly accepted AA failure", () => {
+    /* --color-action is an indirection (var(--color-orange)), which is the
+       whole point of the slot: a contrast ruling flips ONE mapping. So resolve
+       it the way the browser does rather than pattern-matching a hex that is
+       not there. */
+    const ACTION_POINTS_AT = CSS.match(/--color-action:\s*var\(--color-([a-z-]+)\)/)![1];
+    const ACTION = token(ACTION_POINTS_AT);
+
+    it("still points at brand orange, so the trade is the one that was agreed", () => {
+      expect(ACTION_POINTS_AT).toBe("orange");
+      expect(ACTION).toBe("#ef762f");
+    });
+
+    it("carries white at 2.88:1, below AA and below even the 3:1 large-text floor", () => {
+      const ratio = contrast("#ffffff", ACTION);
+      expect(ratio).toBeCloseTo(2.88, 2);
+      expect(ratio).toBeLessThan(3);
+    });
+
+    it("records what was given up: ink-head on the same fill cleared AA at 5.99:1", () => {
+      expect(contrast(INKS["ink-head"], ACTION)).toBeCloseTo(5.99, 2);
+    });
+
+    it("records the passing alternative, if the decision is ever revisited", () => {
+      /* orange-cta stays defined for exactly this: white clears AA on it. */
+      expect(contrast("#ffffff", token("orange-cta"))).toBeGreaterThanOrEqual(AA);
+    });
+  });
+
   it("computes a known ratio correctly, so the maths itself is not the bug", () => {
     // Black on white is exactly 21:1 by definition.
     expect(contrast("#000000", "#ffffff")).toBeCloseTo(21, 5);

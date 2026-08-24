@@ -17,19 +17,27 @@
   /* orange-deep #d85f1b DELETED in CS3 Phase B (retired in v3): its ~10 text
      and border accents drained to orange-ink, which is darker and legal on
      every wash. The dormant ambient stage keeps a JS-only mirror. */
-  /* V4 (founder decision D1, 2026-07-30): CTAs are BRAND orange #EF762F with
-     dark ink labels (ink-head on #EF762F measures 5.9:1). The R5 white-label
-     law is RETIRED with it — white on #EF762F is 2.9:1 and fails at every
-     size, so no live surface may put white text on the action fill.
-     orange-cta stays DEFINED for the dormant 3D-scene CSS and the parked
-     ambient mirrors, but no live surface uses it. */
+  /* §8.29 (founder decision, 2026-08-24, SUPERSEDES V4 D1 and restores the R5
+     white-label law): CTAs are BRAND orange #EF762F with WHITE labels, which
+     is what .kh-button in the v3 design system has always specified.
+     THE HONEST NUMBER: white on #EF762F is 2.88:1 and fails WCAG AA at every
+     size, since even the large-text floor is 3:1. This is a KNOWN, ACCEPTED
+     deviation, not an oversight — the founder was shown the ratio and the
+     passing alternative (orange-cta #C25210 carries white at 4.66:1) and chose
+     brand orange. Do not "fix" it without reversing that decision first.
+     Recorded in docs/website-steps.md §8.29 and in the v3 site-extensions
+     errata; asserted as arithmetic in test/contrast-tokens.test.ts; printed on
+     every qa:sweep run. orange-cta stays DEFINED for the dormant 3D-scene CSS
+     and the parked ambient mirrors, and is the value to reach for if the
+     contrast decision is ever revisited. */
   --color-orange-cta: #c25210;
   /* R9: the small-text orange (13px sans kickers). Darkened until 4.5:1
      holds on EVERY wash — recomputed for the v3 washes (CS3, 2026-08-23):
      white 5.32, cream 5.01, cool 4.67, sun 4.65. A documented v3 EXTENSION:
-     v3 ships no small-text orange, and its own note that white text is safe
-     on brand orange is wrong (2.88:1), so this token and the ink-label law
-     survive the migration on arithmetic. */
+     v3 ships no small-text orange, so this token survives the migration on
+     arithmetic. It is UNAFFECTED by §8.29: that decision governs labels ON an
+     orange fill, while this is orange TEXT on a light wash, where 4.5:1 still
+     holds and is still required. */
   --color-orange-ink: #b54a0d;
   --color-yellow: #f1a23b;
   --color-blue: #29a0d7;
@@ -46,7 +54,13 @@
   --color-blue-ink: #1b6e96;
   /* Semantic action slots (revamp): new/refactored components reference these
      for text-carrying colour, so a future contrast ruling flips ONE mapping.
-     V4 flipped exactly that mapping: action = brand orange, labels in ink. */
+     V4 flipped exactly that mapping to ink labels; §8.29 flipped the labels
+     back to white on 2026-08-24 while LEAVING THE FILL ALONE, so action still
+     points at brand orange and the token gate's mappings are untouched. The
+     label colour is plain `text-white` at the call sites rather than a token,
+     deliberately: a second ink-ish name beside action-ink invites exactly the
+     mix-up these two slots exist to prevent. The law is enforced instead by
+     test/action-label.test.ts, which fails any bg-action carrying text-ink-head. */
   --color-action: var(--color-orange);
   --color-action-ink: var(--color-orange-ink);
   /* CS3 Phase A (2026-08-23): the v3 ink ramp and surfaces, adopted whole.
@@ -55,7 +69,8 @@
      --kh-ink-3, line takes --kh-line, cream takes --kh-cream, cool takes
      --kh-blue-tint, sun takes --kh-yellow-tint. Every pairing recomputed:
      ink 10.27:1 on white and ≥8.99 on every tint; ink-head 5.99 on the
-     action orange (the D1 button law survives); ink-muted 4.80 white /
+     action orange (recorded because it is what §8.29 traded away, and what a
+     reversal would restore); ink-muted 4.80 white /
      4.52 cream (the <4.6 canary still holds) and still FAILS cool (4.21)
      and sun (4.20), so the §8.24-7 kicker ban stands unchanged. */
   --color-ink: #44403c;

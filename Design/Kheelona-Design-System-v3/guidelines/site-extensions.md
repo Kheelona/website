@@ -2,18 +2,39 @@
 
 **Added 2026-08-23 under the migration's gap protocol** (the master prompt requires every
 gap found during migration to be documented IN v3). This file records what kheelona.com
-carries ON TOP of v3, and the two places v3's own guidance is corrected by arithmetic.
-It adds no brand values and changes none — per the README, brand-value changes need a
-fresh export from the source deck.
+carries ON TOP of v3, plus the two places v3's own guidance is corrected or knowingly
+departed from. It adds no brand values and changes none — per the README, brand-value
+changes need a fresh export from the source deck.
 
 ## Errata
 
-1. **White text is NOT safe on Deep Orange.** `guidelines/color.md` §6 says white is safe
-   on `--kh-orange` at ≥18px bold; it computes to **2.88:1**, which fails WCAG AA at
-   every size (the large-text threshold is 3:1). White on Teal computes ≈2.4:1 and fails
-   too. The `.kh-button` helper in `tokens/kheelona.css` (white on orange) inherits this
-   defect. The site's rule stands instead: **ink `#1B1B1B` labels on orange fills**
-   (5.99:1). Carry this fix into the next deck export.
+1. **White on Deep Orange is 2.88:1, and the founder has accepted it (2026-08-24).**
+   `guidelines/color.md` §6 says white is safe on `--kh-orange` at ≥18px bold. It is not:
+   it computes to **2.88:1**, which fails WCAG AA at every size, since even the large-text
+   threshold is 3:1. That arithmetic is unchanged and stays recorded here.
+
+   What changed is the decision on top of it. From 2026-08-24 the site's rule is the deck's
+   rule: **white `#FFFFFF` labels on Deep Orange `#EF762F` fills**, exactly as the
+   `.kh-button` helper in `tokens/kheelona.css` has always specified. This was put to the
+   founder with both the ratio and the alternative (darkening the fill to `#C25210`, which
+   carries white at 4.66:1 and passes), and the founder chose to keep brand orange and take
+   the 2.88:1. It applies to every solid orange surface: buttons, the nav pill, the guide
+   dock chip, the compare table's brand column, and the store's submit buttons.
+
+   So this is no longer an erratum against the deck. It is a **known, accepted accessibility
+   deviation**, recorded in `docs/website-steps.md` §8.29, asserted as arithmetic in
+   `test/contrast-tokens.test.ts`, and printed on every `npm run qa:sweep` run. Anyone
+   proposing to "fix" the contrast is reversing a founder decision, not correcting an
+   oversight.
+
+   **Still a real erratum:** white on Teal computes ≈2.4:1 and fails. Teal is not in the
+   live web palette, so nothing on kheelona.com relies on it, but carry the correction into
+   the next deck export.
+
+   **The pale-tint rule is untouched.** `bg-orange/15` chips and the `--kh-*-tint` washes are
+   light surfaces and keep ink text. White on a tint is invisible, and none of the above
+   applies to them.
+
 2. **BRAND.md says ages 2–5.** The founder repositioned to **ages 3+** on 2026-08-23
    (no published ceiling anywhere). The site renders "3+"; the deck needs a refresh.
 

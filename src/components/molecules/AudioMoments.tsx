@@ -119,7 +119,7 @@ export function AudioMoments({
                   aria-label={
                     isPlaying ? `Pause: ${m.chip}` : `Play: ${m.chip}`
                   }
-                  className="grid h-12 w-12 shrink-0 cursor-pointer place-items-center rounded-full bg-action text-ink-head shadow-cta transition-transform duration-150 ease-(--ease-bounce) active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
+                  className="grid h-12 w-12 shrink-0 cursor-pointer place-items-center rounded-full bg-action text-white shadow-cta transition-transform duration-150 ease-(--ease-bounce) active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
                 >
                   {isPlaying ? (
                     <Pause className="h-5 w-5" fill="currentColor" aria-hidden="true" />

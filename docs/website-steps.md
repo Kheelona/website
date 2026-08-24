@@ -487,11 +487,14 @@ Two consequences that are law, not preference:
 ### 8.22 V4 TEAM-FEEDBACK ROUND (2026-07-30, spec BUILD-V4.md — every law here is founder-decided)
 
 **8.22-a THE ACTION COLOUR IS BRAND ORANGE WITH INK LABELS (D1, supersedes R5's white-label law).**
-`--color-action` points at `--color-orange` (#EF762F) and every label on it is `text-ink-head`
-(measured 5.9:1). White on #EF762F is 2.9:1 and fails WCAG at every size, so **no live surface may
-put white text on the action fill** — that includes buttons, the nav pill, the guide dock chip, and
-CompareTable's brand column. The white keyline on buttons retired with the white labels. `orange-cta`
-(#C25210) stays DEFINED for the dormant 3D-scene CSS and ambient mirrors but has zero live usages.
+**⚠ SUPERSEDED BY §8.29 ON 2026-08-24 — the labels are WHITE again. Kept as the record of what was
+traded away, and of the arithmetic, which has not changed.** `--color-action` points at
+`--color-orange` (#EF762F) and every label on it is `text-ink-head` (measured 5.9:1). White on
+#EF762F is 2.9:1 and fails WCAG at every size, so **no live surface may put white text on the action
+fill** — that includes buttons, the nav pill, the guide dock chip, and CompareTable's brand column.
+The white keyline on buttons retired with the white labels (**that half of D1 survives §8.29**).
+`orange-cta` (#C25210) stays DEFINED for the dormant 3D-scene CSS and ambient mirrors but has zero
+live usages.
 
 **8.22-b THE FINALE IS A WHITE ROOM ON EVERY ROUTE (D5).** The orange Room fill and Section wash are
 retired; `id="reserve"` and the every-page-ends-with-FinaleCTA contract are unchanged. The plush
@@ -1121,3 +1124,64 @@ compatibility with the policy is left to production Report-Only rather than test
 
 **And the trap that cost an hour:** `openPage` aborting third parties is why the Razorpay sheet
 first looked broken. It was our own harness, not the policy. Check the harness before the finding.
+
+---
+
+# §8.29 THE ACTION FILL TAKES WHITE LABELS AGAIN (2026-08-24, founder-decided)
+
+Supersedes **§8.22-a** (V4 D1) and restores the R5 white-label law that D1 retired. One decision,
+taken with the arithmetic in front of it.
+
+## 8.29-a WHITE ON BRAND ORANGE, AND THE NUMBER SAID OUT LOUD
+
+`--color-action` still points at `--color-orange` (**#EF762F, unchanged** — the fill did not move, so
+the token gate's mappings are untouched), and **every label on it is `text-white`**. That includes
+buttons (both filled variants), the nav pill, the guide dock chip, CompareTable's brand column, the
+`AudioMoments` play button, and the store's two submit buttons.
+
+**White on #EF762F is 2.88:1. It fails WCAG AA at every size — it does not even reach the 3:1
+large-text floor.** This is written here in full because the one way this decision goes wrong is
+somebody finding the contrast later, assuming an oversight, and "fixing" it.
+
+It is not an oversight. The founder was shown the ratio and the passing alternative — `orange-cta`
+**#C25210**, which carries white at 4.66:1 and is still DEFINED in `globals.css` for exactly this
+purpose — and chose to keep brand orange. The reasoning is brand fidelity: `.kh-button` in
+`Design/Kheelona-Design-System-v3/tokens/kheelona.css` has always specified white on orange, and the
+site now matches its own design system.
+
+**This overrides, for this one pair only, the standing gate that accessibility outranks styling
+preference.** Nothing else about that gate moves: every other pairing on the site still has to clear
+4.5:1, and `orange-ink` #B54A0D (orange TEXT on a light wash) is untouched, because §8.29 governs
+labels ON a fill, not orange type on paper.
+
+## 8.29-b THE PALE TINTS ARE NOT ORANGE FILLS
+
+`bg-orange/15` chips (`Hero`, `/team`, `/playos`) and the `--kh-*-tint` washes are light surfaces and
+**keep ink text**. White on a 15% tint is invisible. "White on orange" means the solid brand fill and
+nothing else.
+
+## 8.29-c THE LABEL COLOUR IS `text-white`, NOT A NEW TOKEN, AND A TEST HOLDS THE LINE
+
+A `--color-action-label` token was considered and rejected: `--color-action-ink` already exists and
+means the opposite thing (orange type on a light wash, which must still clear 4.5:1). A second
+ink-ish name beside it is the exact mix-up those slots exist to prevent, and on a live payment site
+that mistake lands on a checkout button.
+
+The rule is enforced instead by **`test/action-label.test.ts`**, which has two rules because one is
+not enough: no class string may hold `bg-action` with an ink label, AND no call site may pass an ink
+label into the `Button` atom through `className` — the composition blind spot that let a live WCAG
+failure survive in `RecognitionStrip` for weeks (§8.24-7a). It strips comments before scanning, and
+it was proven to go red before it was trusted (§8.28-g).
+
+## 8.29-d THE ACCEPTED FAILURE STAYS VISIBLE, IT IS NOT SILENCED
+
+`npm run qa:sweep` does **not** disable axe's `color-contrast` rule. Disabling it would blind the
+sweep to every future contrast bug, and leaving it permanently red would train everyone to ignore the
+gate — both are worse than the problem. Instead the sweep classifies: nodes reporting exactly
+`fgColor #ffffff` on `bgColor #ef762f` are counted as **accepted** and printed on every run as
+`(accepted: n white-on-orange, §8.29)`, with a summary line at the end. **Any other contrast pair,
+including white on any other orange, still fails the sweep.**
+
+The ratio itself is pinned as arithmetic in `test/contrast-tokens.test.ts`, alongside what was given
+up (ink-head on the same fill, 5.99:1) and the passing alternative, so a future session can reverse
+this in one informed step rather than re-deriving it.

@@ -1,5 +1,46 @@
 # QA Report (sprint log)
 
+## White CTA labels (§8.29) + the Ideabaaz paragraph · 2026-08-24 · branch `white-cta-labels`
+
+**Scope**: every label on a solid orange fill flipped to white across twelve surfaces, and the
+descriptive paragraph removed from `/store/ideabaaz`. Founder-directed.
+
+**The number this round is about.** White on brand orange `#EF762F` is **2.88:1** and fails WCAG AA
+at every size, since even the large-text floor is 3:1. The founder was shown that ratio and the
+passing alternative (`orange-cta` `#C25210`, white at 4.66:1) and chose to keep brand orange, so the
+site matches `.kh-button` in the v3 deck. **Accepted, not overlooked** — recorded in §8.29, in the v3
+site-extensions errata, as arithmetic in `test/contrast-tokens.test.ts`, and printed on every sweep.
+
+**Verified** (local prod, `next start -p 3456`, fresh build, store on `store.localhost:3456`):
+- **878 tests / 100 files** (from 869/99: +4 `action-label`, +4 contrast arithmetic, +1 from
+  splitting FinaleCTA's D5 assertion). `tsc` 0. `build` 0. **token-check still 16 mappings** — the
+  fill did not move, only the label.
+- **eslint identical to `main`**: 37 problems (28 errors, 9 warnings) before and after, so the round
+  introduced none. That baseline is pre-existing.
+- **`qa:sweep` clean 34/34** over 17 routes at 390 and 1280, with **79 accepted** white-on-orange
+  nodes printed rather than silenced.
+- **`qa:payment` clean** — the money path exercised in a browser on sandbox keys, because both store
+  submit buttons changed.
+- **Lighthouse a11y measured, not assumed: 96** on Home, `/products/lumi` and the store (recorded
+  baseline 100). `color-contrast` is the ONLY failing audit on all three. **Still above the 90 gate.**
+
+**Two controls, because a gate that cannot fail is not a gate (§8.28-g).**
+1. `test/action-label.test.ts` was proven red by putting an ink label back on the fill, then green on
+   restore, and it names the offending `file:line`.
+2. The sweep's accepted-violation filter was proven **narrow**: with a non-white label on the same
+   orange fill, **every route failed** while the genuine white-on-orange nodes were still counted
+   separately. Disabling axe's `color-contrast` rule outright would have passed too, and would have
+   blinded the sweep to every future contrast bug.
+
+**A trap that cost a re-run, and it is the repo's own.** The first control looked like it half-worked
+(10 failures, Home inexplicably "ok"). The cause was `kill %2` in a fresh shell, which addresses a job
+that does not exist there, so a stale server kept serving a stale build. **`lsof -tiTCP:3456` before
+trusting any local render** — the second control, run with explicit PIDs, was unambiguous.
+
+**Flagged, not acted on.** `/store` carries a paragraph nearly identical to the one removed from
+`/store/ideabaaz`. The founder named only the Ideabaaz page, and on `/store` that paragraph is the
+page's only prose, so removing it is a separate decision.
+
 ## V4 team-feedback round · 2026-07-30 · branch demo-website · spec BUILD-V4.md
 
 **Scope**: brand-orange CTA system + white finale (D1/D5), Home rebuilt around real audio + the

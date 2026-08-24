@@ -7,11 +7,7 @@ import { PreorderForm, OrderSummary } from "@/features/preorder";
 import {
   formatInr,
   LAUNCH_AMOUNT_PAISE,
-  LAUNCH_PRICE,
   TOKEN_PRICE,
-  CAP_UNITS_TEXT,
-  SHIP_DATE_TEXT,
-  LUMI_AGES,
   SUPPORT_WHATSAPP_HREF,
 } from "@/config/site";
 
@@ -105,13 +101,6 @@ export default async function IdeabaazPage() {
           />
         </div>
 
-        <p className="mb-8 max-w-[52ch] text-[17px] leading-[1.6] text-ink">
-          A screen-free talking friend for ages {LUMI_AGES}. {amountLabel} today
-          holds one of the {CAP_UNITS_TEXT} at {LAUNCH_PRICE} and holds your
-          place in the queue. Ships {SHIP_DATE_TEXT}, and refundable in full
-          until it does.
-        </p>
-
         <div className="max-w-[520px]">
           {/* Always the token shape, whatever the public mode is: an event
               token is a token, with the same balance-before-dispatch terms. */}
@@ -171,7 +160,7 @@ function Ended({
       <p className="mb-6 text-[17px] leading-[1.6] text-ink">{message}</p>
       <a
         href="/"
-        className="inline-flex items-center justify-center rounded-full bg-action px-7 py-4 text-[17px] font-bold text-ink-head shadow-cta focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
+        className="inline-flex items-center justify-center rounded-full bg-action px-7 py-4 text-[17px] font-bold text-white shadow-cta focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
       >
         Pre-order at the usual price
       </a>
