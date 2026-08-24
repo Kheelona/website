@@ -487,6 +487,14 @@ parents read about the price, so its opening paragraph carries weight it did not
 Price, ship date, refund promise, all above the first field on a 390px phone, verified on a render.
 That sentence is why the anchor-first law could be retired without costing a parent anything (§8.25-b).
 
+**⚠ SUPERSEDED 2026-08-24: that paragraph was REMOVED**, from `/store` and `/store/ideabaaz` both, at
+the founder's request. The quotation above is provenance and stays as written — note it still says
+"ages 2 to 5" and "1 October 2026", both of which the 2026-08-23 migration had already retired, which
+is exactly what a provenance record is for. One-tap CTAs are unchanged and still correct; **§8.25-b
+now records where the three facts are read instead** (price in the `h1` and `OrderSummary`, refund
+promise under the submit button, ship date in `OrderSummary` alone, which stacks BELOW the form on a
+phone). Round record: `docs/checkpoints/white-cta-labels-2026-08-24.md`.
+
 **The child's age field.** The label is unchanged ("Your child's age"). The six-option dropdown became
 a blank, so the hint had to say that the blank is genuinely free:
 

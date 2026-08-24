@@ -48,8 +48,10 @@ Read `docs/project-state.json`:
    both, kept because 82 references across the repo name it.
    **`security-review.md`** is the open security engagement, and CLAUDE.md's banner says to read it
    at the start of every session until it is signed off.
-4. **`docs/checkpoints/v3-migration-2026-08-23.md` + `docs/checkpoints/migration-to-new-dsx.md`** —
-   the newest round's record and its full tracker (the twelve founder decisions, QA log, SEO keyword
+4. **`docs/checkpoints/white-cta-labels-2026-08-24.md`** — the newest round's record (§8.29, the
+   white CTA labels and the two store paragraphs). Behind it,
+   **`docs/checkpoints/v3-migration-2026-08-23.md` + `docs/checkpoints/migration-to-new-dsx.md`** —
+   the v3 migration's record and its full tracker (the twelve founder decisions, QA log, SEO keyword
    map). Spec precedence behind them: `BUILD-V6.md` → BUILD-V5 → BUILD-V4 → BUILD-V3 → `copy-v2.md`
    (all records now, not queues; V6's ages and hero were re-anchored by the migration).
 5. **Before changing any code**: `docs/standards/` (`PROJECT_STRUCTURE.md`,
@@ -66,14 +68,26 @@ Master build spec: `website-builder-prompt-final-kheelona.md` (Brand Bible §1, 
 Say where the project stands and what is next. Do NOT re-ask questions from completed phases, and do NOT re-ask anything already settled in the Brand Bible.
 
 ## Current Status (keep this section current)
-- **🟢 CURRENT STATE — THE v3-MIGRATED SITE IS LIVE (2026-08-23).** One engagement, one day: the
+- **🎨 NEWEST ROUND — WHITE CTA LABELS (§8.29, 2026-08-24, LIVE).** Every label on a solid orange
+  fill is `text-white` across twelve surfaces, and the descriptive paragraph is gone from BOTH
+  `/store` and `/store/ideabaaz`. **The accepted cost, decided by the founder with the arithmetic in
+  front of them: white on `#EF762F` is 2.88:1 and fails WCAG AA at every size**; the passing
+  alternative (`orange-cta #C25210`, 4.66:1) was declined to keep brand orange and match
+  `.kh-button` in the v3 deck. Lighthouse a11y measured **96** (was 100), `color-contrast` the only
+  failing audit, still above the 90 gate. `qa:sweep` prints these as `accepted:` rather than
+  silencing them; any other contrast pair still fails it. §8.25-b was corrected in the same round,
+  because it justified one-tap CTAs by quoting a paragraph that no longer exists. Rollback tag
+  **`pre-white-cta-labels-2026-08-24`** = `fbbbe17`. Record:
+  `docs/checkpoints/white-cta-labels-2026-08-24.md`.
+- **🟢 THE v3-MIGRATED SITE IS LIVE (2026-08-23).** One engagement, one day: the
   **unit-cap offer** (₹4,999 for the first 500 units by live Supabase count, then ₹7,999 paid in
   full — §8.26; the 30 September deadline and ₹9,999 are gone), **ages 3+ everywhere** (hero
   "A best friend at 3. / A head start for school."), the **v3 design system** as sole authority
   (§8.27; old system deleted, token gate fail-hard, 16 mappings), the v3 wordmark/icons/og, the
   editorial serif on pull-quotes, ship date **20 October 2026**. Production-verified: `/api/health`
   reports the offer MODE (`preorder: token|full`); Lighthouse desktop home/lumi 99/100/100/100,
-  store 98/100/100/66-by-design. Rollback tag **`pre-v3-migration-2026-08-23`** = `b27fd25`.
+  store 98/100/100/66-by-design (**the a11y 100 became 96 on 2026-08-24 with §8.29** — see the row
+  above; the SEO 66 on the store is `noindex` by design, §8.25-aa). Rollback tag **`pre-v3-migration-2026-08-23`** = `b27fd25`.
   Record: `docs/checkpoints/v3-migration-2026-08-23.md` + `docs/checkpoints/migration-to-new-dsx.md`.
   Test count: `tests.count` in `docs/project-state.json`, kept in that one place.
 - **💳 THE PAID STORE (live since 2026-08-22, proven with a real ₹499 UPI order the same night)**:

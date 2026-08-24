@@ -22,12 +22,22 @@ the **first 500 units** at **₹4,999** (decided per request from the live paid 
 gone, a pre-order is **₹7,999 paid in full**), the **₹4,500 balance** on token orders falls due
 before dispatch, and the payment happens on **store.kheelona.com**, which this same repo serves.
 
-## ⚠ STATE OF PLAY (2026-08-23 — **THE v3-MIGRATED SITE IS LIVE, ON LIVE KEYS**) — read this first
+## ⚠ STATE OF PLAY (2026-08-24 — **LIVE, ON LIVE KEYS, WITH WHITE CTA LABELS**) — read this first
 **THE SITE IS LIVE AT https://kheelona.com, indexed, and taking PAID pre-orders — every change from
 here touches a live commercial site.** Latest checkpoint, read it before touching anything:
-**`docs/checkpoints/v3-migration-2026-08-23.md`** (the whole 2026-08-23 engagement; the full tracker
-is `docs/checkpoints/migration-to-new-dsx.md`). Before it: `one-tap-and-cleanup-2026-08-23.md`,
+**`docs/checkpoints/white-cta-labels-2026-08-24.md`** (§8.29: every label on a solid orange fill is
+WHITE, at a knowingly accepted 2.88:1, plus the two store paragraphs removed). Before it:
+`security-and-docs-2026-08-23.md`, `ideabaaz-event-page-2026-08-23.md` and
+**`v3-migration-2026-08-23.md`** (the whole 2026-08-23 engagement; full tracker
+`docs/checkpoints/migration-to-new-dsx.md`), then `one-tap-and-cleanup-2026-08-23.md`,
 `preorder-store-2026-08-22.md`, `v6-content-2026-07-31.md`, `go-live-2026-07-28.md`.
+
+**🎨 THE CTA CONTRAST IS A DECISION, NOT A BUG (§8.29, founder 2026-08-24).** Every CTA ships at
+**2.88:1** (white on `#EF762F`), which fails WCAG AA at every size. The founder was shown the ratio
+and the passing alternative (`orange-cta #C25210`, white at 4.66:1) and chose brand orange, matching
+`.kh-button` in the v3 deck. Lighthouse a11y measured **96** afterwards, still above the 90 gate.
+`qa:sweep` PRINTS these as `accepted:` rather than silencing them, and any OTHER contrast pair still
+fails it. **Do not "fix" this** — reversing it is one mapping and a founder conversation.
 
 **💳 THE OFFER (§8.26, unit-bounded since 2026-08-23).** A **₹499 refundable token** holds one of the
 **first 500 units** at **₹4,999** (₹4,500 balance by payment link before dispatch); once they are
@@ -302,9 +312,11 @@ shortly" state instead of crashing.
   real payment actually proved. It is written for a session with no memory of building the store.
 - `docs/preorder-events.md` — how to run a ₹99 event price: create the tier row, generate the signed
   link with `npm run event-link`, print the QR, and read the event's conversion afterwards.
-- `docs/checkpoints/` — per-phase snapshots. **Latest: `security-and-docs-2026-08-23.md`** (the
+- `docs/checkpoints/` — per-phase snapshots. **Latest: `white-cta-labels-2026-08-24.md`** (§8.29,
+  the white CTA labels and the two store paragraphs; rollback tag
+  `pre-white-cta-labels-2026-08-24` = `fbbbe17`). Then `security-and-docs-2026-08-23.md` (the
   security engagement and the doc/cleanup round; the security detail stays live in
-  `security-review.md`). Then `ideabaaz-event-page-2026-08-23.md`, then `v3-migration-2026-08-23.md` (the whole
+  `security-review.md`), then `ideabaaz-event-page-2026-08-23.md`, then `v3-migration-2026-08-23.md` (the whole
   2026-08-23 engagement: the unit-cap store, ages 3+, the v3 re-skin, and its gotchas), with the
   full engagement tracker beside it as **`docs/checkpoints/migration-to-new-dsx.md`** (the twelve founder decisions,
   dashboard, QA log, SEO keyword map). Before them: `one-tap-and-cleanup-2026-08-23.md`,

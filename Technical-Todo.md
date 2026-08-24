@@ -190,6 +190,27 @@ worth churning a live commercial site for on its own.*
 
 ---
 
+# ✅ Recorded 2026-08-24 — a DECISION, not open work
+
+- **The CTA contrast is 2.88:1, and that is deliberate (§8.29).** Every label on a solid orange fill
+  is white as of 2026-08-24, which fails WCAG AA at every size. **Do not open this as a defect and do
+  not re-raise it with the founder.** They were shown the ratio and the passing alternative
+  (`orange-cta #C25210`, white at 4.66:1) and chose to keep brand orange so the site matches
+  `.kh-button` in the v3 design system. Lighthouse a11y measured **96** afterwards, down from 100,
+  `color-contrast` the only failing audit, **still above the 90 gate**. `test/action-label.test.ts`
+  enforces it, `test/contrast-tokens.test.ts` pins the arithmetic, and `qa:sweep` prints the accepted
+  nodes on every run while still failing any OTHER contrast pair. Reversing it is one mapping in
+  `globals.css` plus a founder conversation. Record:
+  `docs/checkpoints/white-cta-labels-2026-08-24.md`.
+
+- **The store's descriptive paragraph is gone from `/store` and `/store/ideabaaz`**, by founder
+  request. Not a regression: `OrderSummary` carries every fact. §8.25-b was corrected in the same
+  commit, because it justified the one-tap CTA law by quoting that paragraph. The one consequence
+  worth knowing: on a phone `OrderSummary` stacks below the form, so **the ship date is now first
+  read after the form** rather than before it.
+
+---
+
 # ✅ Closed or corrected by the 2026-08-23 review
 
 - **Journal cards should use each article's hero art** (R4 Design #14) — **DONE, and had been for a
