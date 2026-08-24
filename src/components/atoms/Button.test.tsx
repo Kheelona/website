@@ -10,12 +10,16 @@ describe("Button", () => {
     expect(link).toHaveAttribute("href", "/reserve");
   });
 
-  it("primary variant carries the brand action fill and dark ink label (V4 D1)", () => {
+  it("primary variant carries the brand action fill and a WHITE label (§8.29)", () => {
     render(<Button href="#">Go</Button>);
     const link = screen.getByRole("link");
     expect(link.className).toContain("bg-action");
-    expect(link.className).toContain("text-ink-head");
-    // D1: the white keyline left with the white label
+    /* Founder decision 2026-08-24, reversing V4 D1: white on #EF762F, knowingly
+       at 2.88:1. The arithmetic and the acceptance live in
+       test/contrast-tokens.test.ts; this only pins what the atom renders. */
+    expect(link.className).toContain("text-white");
+    expect(link.className).not.toContain("text-ink-head");
+    // the white keyline stays retired: V4 removed it, and §8.29 does not undo that
     expect(link.className).not.toContain("border-white");
   });
 

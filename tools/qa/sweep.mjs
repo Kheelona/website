@@ -65,8 +65,13 @@ const FORBIDDEN = [
   [/1 October 2026/, "retired: the ship date is 20 October 2026"],
 ];
 
+/** The one contrast pair the founder has accepted (§8.29, 2026-08-24): white
+ *  on brand orange, 2.88:1. Lower-case, because that is how axe reports it. */
+const ACCEPTED_ACTION_FILL = "#ef762f";
+
 const axe = readFileSync(axeSourcePath(), "utf8");
 let failures = 0;
+let acceptedTotal = 0;
 
 for (const width of WIDTHS) {
   const { browser, page } = await openPage({ width, local: looksLocal(BASE) });
@@ -84,12 +89,44 @@ for (const width of WIDTHS) {
       }
 
       await page.evaluate(axe);
-      const violations = await page.evaluate(async () => {
+      const { violations, accepted } = await page.evaluate(async (fill) => {
         const r = await window.axe.run(document, {
           runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"] },
         });
-        return r.violations.map((v) => `${v.id} (${v.nodes.length})`);
-      });
+
+        /* §8.29: white labels on the orange action fill are 2.88:1 and fail AA.
+           That is a FOUNDER DECISION taken with the ratio in front of it, not a
+           defect, so those nodes are counted separately instead of failing the
+           sweep — and they are still PRINTED on every run, because an accepted
+           risk that stops being visible stops being accepted and starts being
+           forgotten.
+
+           The match is deliberately narrow: this exact foreground on this exact
+           background. EVERY OTHER contrast pair, including white on any other
+           orange and any future regression, still fails. Disabling the rule
+           outright would have been the easy version and would have blinded the
+           sweep to the next real one. */
+        const isAcceptedNode = (node) =>
+          (node.any ?? []).some(
+            (check) =>
+              check.id === "color-contrast" &&
+              check.data?.fgColor?.toLowerCase() === "#ffffff" &&
+              check.data?.bgColor?.toLowerCase() === fill,
+          );
+
+        const real = [];
+        let acceptedCount = 0;
+        for (const v of r.violations) {
+          if (v.id !== "color-contrast") {
+            real.push(`${v.id} (${v.nodes.length})`);
+            continue;
+          }
+          const unexpected = v.nodes.filter((n) => !isAcceptedNode(n));
+          acceptedCount += v.nodes.length - unexpected.length;
+          if (unexpected.length) real.push(`color-contrast (${unexpected.length})`);
+        }
+        return { violations: real, accepted: acceptedCount };
+      }, ACCEPTED_ACTION_FILL);
 
       const text = await page.evaluate(() => document.body.innerText);
       const voice = FORBIDDEN.filter(([pattern]) => pattern.test(text)).map(([, why]) => why);
@@ -99,6 +136,10 @@ for (const width of WIDTHS) {
         line += `FAIL axe:[${violations.join(", ")}] voice:[${voice.join(", ")}]`;
       } else {
         line += "ok";
+      }
+      if (accepted) {
+        acceptedTotal += accepted;
+        line += `  (accepted: ${accepted} white-on-orange, §8.29)`;
       }
     } catch (error) {
       failures += 1;
@@ -110,4 +151,10 @@ for (const width of WIDTHS) {
 }
 
 console.log(failures ? `\n${failures} failure(s)` : "\nclean: axe and voice, every route, both widths");
+if (acceptedTotal) {
+  console.log(
+    `${acceptedTotal} accepted contrast violation(s): white on the orange action fill, ` +
+      `2.88:1, founder decision 2026-08-24 (docs/website-steps.md §8.29). Not counted as failures.`,
+  );
+}
 process.exit(failures ? 1 : 0);

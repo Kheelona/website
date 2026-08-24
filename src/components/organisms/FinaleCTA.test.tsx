@@ -46,11 +46,27 @@ describe("FinaleCTA", () => {
     expect(compact.querySelectorAll("img").length).toBe(0);
   });
 
-  it("sets the finale in ink on a white shell, never white-on-orange (V4 D5)", () => {
+  it("sets the finale room in ink on a white shell (V4 D5)", () => {
     const { container } = render(<FinaleCTA />);
     const heading = container.querySelector("h2")!;
     expect(heading.className).toContain("text-ink-head");
-    expect(container.innerHTML).not.toContain("text-white");
     expect(container.querySelector("section")?.className).toContain("bg-white");
+  });
+
+  /* D5 is about the ROOM, not the button in it. This used to assert that the
+     finale's markup contained no `text-white` at all, which worked only while
+     the CTA carried an ink label. §8.29 made every action fill white-labelled
+     (2026-08-24), so that blanket assertion would now fail on the button it was
+     never aimed at. Narrowed to what D5 actually decided: the shell and its
+     copy stay ink-on-white, and any white text inside must sit on the orange
+     fill. */
+  it("keeps every white label on the action fill, never on the white shell (D5 + §8.29)", () => {
+    const { container } = render(<FinaleCTA />);
+    for (const el of container.querySelectorAll('[class*="text-white"]')) {
+      expect(
+        el.className.includes("bg-action") || el.className.includes("bg-ink-head"),
+        `white text on a non-action surface: ${el.className}`,
+      ).toBe(true);
+    }
   });
 });

@@ -9,8 +9,9 @@ import { AUDIO_MOMENTS } from "@/lib/audio-moments";
 /* V4 a11y gate at the unit level: axe-core over every surface this round
    introduced or repainted. This is the fast tripwire; the full-page axe pass
    in a real browser stays part of the pre-merge checklist (colour contrast
-   needs painted pixels, so axe's contrast rule is OFF here — the D1 maths,
-   ink-head on #EF762F at 5.9:1, is asserted in the buttons' own tests). */
+   needs painted pixels, so axe's contrast rule is OFF here — the action-fill
+   maths, white on #EF762F at 2.88:1 and knowingly accepted since §8.29, is
+   asserted in test/contrast-tokens.test.ts). */
 async function expectNoViolations(container: HTMLElement) {
   const results = await axe.run(container, {
     rules: { "color-contrast": { enabled: false } },

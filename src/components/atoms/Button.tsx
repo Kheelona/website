@@ -6,21 +6,29 @@ import { cn } from "@/lib/cn";
 
 type Variant = "primary" | "ghost" | "onDark";
 
-/* V4 (founder decision D1, 2026-07-30, supersedes R5): the fill is BRAND
-   orange #EF762F via the semantic action token, the label is dark ink
-   (ink-head on #EF762F measures 5.9:1 -- the team's colour and the a11y-100
-   gate hold at once; white on #EF762F is 2.9:1 and fails at every size).
-   The white keyline is gone by the same feedback item. Hover still lifts
-   with shadow/transform instead of a fill change so contrast never dips. */
+/* §8.29 (founder decision, 2026-08-24, supersedes V4 D1 and restores R5): the
+   fill is BRAND orange #EF762F via the semantic action token, and the label is
+   WHITE -- which is what .kh-button in the v3 design system specifies.
+   THE HONEST NUMBER: white on #EF762F is 2.88:1 and fails WCAG AA at every
+   size (the large-text floor is 3:1). That is a KNOWN, ACCEPTED deviation. The
+   founder was shown the ratio and the passing alternative (orange-cta #C25210
+   carries white at 4.66:1) and chose to keep brand orange. Do not raise the
+   contrast here without reversing that decision first: docs/website-steps.md
+   §8.29, and test/action-label.test.ts fails any bg-action carrying ink labels.
+   The white keyline stays gone (a V4 item the reversal does not touch). Hover
+   still lifts with shadow/transform rather than a fill change, so the ratio
+   never drops BELOW the accepted one. */
 const VARIANTS: Record<Variant, string> = {
   primary:
-    "bg-action text-ink-head shadow-cta hover:-translate-y-0.5 hover:shadow-[0_6px_10px_rgb(0_0_0/0.28)]",
+    "bg-action text-white shadow-cta hover:-translate-y-0.5 hover:shadow-[0_6px_10px_rgb(0_0_0/0.28)]",
+  // ghost is ink-on-transparent over a light wash, so §8.29 does not reach it;
+  // its inverted hover (ink fill, white label) is 15.7:1 and stays as it is
   ghost:
     "bg-transparent text-ink-head border-2 border-ink-head hover:bg-ink-head hover:text-white",
   // the same action fill reads correctly on the cocoa footer; the variant
   // survives for call sites that want a darker hover shadow on dark ground
   onDark:
-    "bg-action text-ink-head shadow-cta hover:-translate-y-0.5 hover:shadow-[0_6px_10px_rgb(0_0_0/0.4)]",
+    "bg-action text-white shadow-cta hover:-translate-y-0.5 hover:shadow-[0_6px_10px_rgb(0_0_0/0.4)]",
 };
 
 type Ripple = { id: number; x: number; y: number };

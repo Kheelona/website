@@ -271,7 +271,7 @@ export function KheeluGuide({ defaultPose = "hero-wink" }: { defaultPose?: Kheel
             </p>
             <a
               href={PREORDER_HREF}
-              className={`shrink-0 rounded-full bg-action px-4 py-3 text-[14px] font-bold leading-none text-ink-head shadow-cta ${PRESS}`}
+              className={`shrink-0 rounded-full bg-action px-4 py-3 text-[14px] font-bold leading-none text-white shadow-cta ${PRESS}`}
             >
               {PREORDER_LABEL}
             </a>
