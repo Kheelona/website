@@ -4,47 +4,38 @@ import { useRef, useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/cn";
 import { PRESS_TINT } from "@/lib/interactions";
+import { LUMI_ART } from "@/lib/lumi-art";
 
-/** The colorway picker (revamp M3, from wireframe B's lhero): three product
- *  colours, a real radiogroup (B's span-buttons fixed). All three plush
- *  images stay mounted and pre-decoded; picking flips visibility classes, so
- *  there is no decode flash and no CLS. Blue is the priority image (page
- *  LCP). Swatch fills are the PRODUCT's pastel fabric colours (product
- *  representation, like a photo — not design-system palette entries). */
+/** The colorway picker (revamp M3, from wireframe B's lhero): a real
+ *  radiogroup (B's span-buttons fixed). All plush images stay mounted and
+ *  pre-decoded; picking flips visibility classes, so there is no decode flash
+ *  and no CLS. The first colourway is the priority image (page LCP). Swatch
+ *  fills are the PRODUCT's fabric colours sampled from the render (product
+ *  representation, like a photo — not design-system palette entries).
+ *
+ *  2026-08-25: ONE colourway. The plush changed from the blue dino to the
+ *  cream rabbit and only one colour exists so far, so Blue/Green/Pink went
+ *  with it. The founder chose to KEEP the picker rather than remove it, so a
+ *  second colourway is a row in this array and nothing else — the keyboard
+ *  handling, the priority rule and the mounted-and-hidden trick all already
+ *  generalise. `move()` is a no-op with one entry, deliberately left in place
+ *  for the same reason. */
 const COLORWAYS = [
   {
-    id: "blue",
-    label: "Blue",
-    swatch: "#8fd0ef",
-    img: "/product/lumi-blue-2.png",
-    alt: "Lumi Blue, the sky blue talking plush toy, wearing its striped party hat",
-    w: 1234,
-    h: 1600,
-  },
-  {
-    id: "green",
-    label: "Green",
-    swatch: "#bfe6c2",
-    img: "/product/lumi-green-2.png",
-    alt: "Lumi Green, the pastel green Lumi plush with a striped party hat",
-    w: 1239,
-    h: 1600,
-  },
-  {
-    id: "pink",
-    label: "Pink",
-    swatch: "#f4c7d8",
-    img: "/product/lumi-pink-2.png",
-    alt: "Lumi Pink, the soft pink Lumi plush with a striped party hat",
-    w: 1239,
-    h: 1600,
+    id: "cream",
+    label: "Cream",
+    swatch: "#f0e2d2",
+    img: LUMI_ART.src,
+    alt: LUMI_ART.alt,
+    w: LUMI_ART.width,
+    h: LUMI_ART.height,
   },
 ] as const;
 
 type ColorwayId = (typeof COLORWAYS)[number]["id"];
 
 export function ColorwayPicker({ className }: { className?: string }) {
-  const [active, setActive] = useState<ColorwayId>("blue");
+  const [active, setActive] = useState<ColorwayId>(COLORWAYS[0].id);
   const refs = useRef<Partial<Record<ColorwayId, HTMLButtonElement | null>>>({});
 
   const move = (dir: 1 | -1) => {
@@ -57,14 +48,14 @@ export function ColorwayPicker({ className }: { className?: string }) {
   return (
     <div className={cn("flex flex-col items-center", className)}>
       <div className="relative flex h-[380px] items-end justify-center md:h-[440px]">
-        {COLORWAYS.map((c) => (
+        {COLORWAYS.map((c, i) => (
           <Image
             key={c.id}
             src={c.img}
             alt={c.alt}
             width={c.w}
             height={c.h}
-            priority={c.id === "blue"}
+            priority={i === 0}
             sizes="(max-width: 768px) 70vw, 380px"
             className={cn("h-full w-auto object-contain", c.id === active ? "block" : "hidden")}
           />

@@ -4,7 +4,7 @@ import { PageHero } from "./PageHero";
 describe("PageHero", () => {
   it("renders the left copy column and the right media", () => {
     render(
-      <PageHero media={<img src="/product/lumi-blue-2.png" alt="The Lumi plush" />}>
+      <PageHero media={<img src="/product/lumi.png" alt="The Lumi plush" />}>
         <h1>Meet Lumi</h1>
         <p>A screen-free friend.</p>
       </PageHero>,
@@ -37,7 +37,7 @@ describe("PageHero", () => {
 
   it("keeps the hero out of the opacity-hidden reveal variants (LCP law)", () => {
     const { container } = render(
-      <PageHero media={<img src="/product/lumi-blue-2.png" alt="The Lumi plush" />}>
+      <PageHero media={<img src="/product/lumi.png" alt="The Lumi plush" />}>
         <h1>Fast paint</h1>
       </PageHero>,
     );

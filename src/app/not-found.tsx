@@ -7,6 +7,7 @@ import { PageHero } from "@/components/templates/PageHero";
 import { Button } from "@/components/atoms/Button";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { SiteChrome } from "@/components/templates/SiteChrome";
+import { LUMI_ART, lumiAlt } from "@/lib/lumi-art";
 
 /* The 404 says so in its title (2026-08-12). It used to inherit the root
    layout's default title, so every broken URL served a page called "Lumi by
@@ -44,10 +45,10 @@ export default function NotFound() {
         guide="curious"
         media={
           <Image
-            src="/product/lumi-blue-2.png"
-            alt="Lumi, the sky blue talking plush toy, waiting patiently"
-            width={1234}
-            height={1600}
+            src={LUMI_ART.src}
+            alt={lumiAlt("waiting patiently")}
+            width={LUMI_ART.width}
+            height={LUMI_ART.height}
             sizes="(max-width: 768px) 60vw, 300px"
             priority
             className="h-auto w-full max-w-[260px]"
