@@ -1260,3 +1260,63 @@ alone, **the flag came off with it** — leaving it would have silenced the guid
 `HeroStage.test.tsx` asserts its absence, so restoring a Kheelu-bearing composite without restoring
 the flag turns the suite red. **A behavioural flag that describes an asset is part of that asset's
 swap, not separate from it.**
+
+---
+
+# §8.31 THE CREAM PLUSH HAS NO GROUND, AND THIS IS A KNOWN OPEN PROBLEM (2026-08-25)
+
+**A brand-orange hero panel was built, shipped, and REVERTED at the founder's request the same day**
+(`fd6f640`, reverted by `5f8400b`). The code is gone; the measurements are kept here because they were
+expensive to get and they constrain whatever is tried next.
+
+## 8.31-a THE PROBLEM IS REAL AND UNFIXED
+
+The rabbit Lumi is cream and the site's wash is cream. Measured on the live render, the plush's edges
+sit at **1.06–1.13:1** against the ground behind them. The blue dino it replaced measured **3.76:1**:
+it carried its own contrast for free, and the swap silently spent that.
+
+**The hero currently ships with this problem.** It is a deliberate founder call to accept it for now,
+not an oversight. Anyone who notices the toy is hard to see against the background has noticed
+correctly.
+
+## 8.31-b WCAG CONTRAST RATIO IS A TEXT METRIC. DO NOT JUDGE AN OBJECT BY IT
+
+The finding worth keeping, because the obvious reading of the numbers is wrong. WCAG's ratio is
+**luminance-only**, designed for whether a reader can resolve letter shapes. What separates a
+*photographed object* from its ground is perceptual distance across lightness **and hue and
+saturation**. In CIE Lab:
+
+| | luminance contrast | ΔE (perceptual) |
+|---|---|---|
+| cream rabbit on the cream wash (today) | 1.36:1 | **14.3** |
+| the old blue dino on the cream wash | 1.59:1 | **31.4** |
+| cream rabbit on brand orange `#EF762F` | 1.99:1 | **67.4** |
+
+Brand orange scores badly by ratio and superbly by ΔE, because the fur is desaturated and the ground
+is saturated. **Judging a product-on-ground decision by contrast ratio alone rejects the best option
+and pushes toward a dark tone the brand does not want.**
+
+## 8.31-c A PALE TINT MAKES IT WORSE, SO "A BIT DARKER" IS NOT AVAILABLE CHEAPLY
+
+Every palette token composited at **15–35% over cream lands at roughly the fur's own luminance** and
+drops separation to ~1.03–1.07 — *below* the untreated baseline. The intuitive fix is
+counter-productive. Anything that works has to be a full-strength tone.
+
+## 8.31-d WHATEVER IS TRIED NEXT MUST BE BOUNDED TO THE ART COLUMN
+
+A radial glow was built first and rejected **on the render**: sized large enough to help, it reached
+into the copy column and put ink body text on deep orange. Any future treatment needs horizontal
+insets and a check that it overlaps zero text at 390, 768, 1024, 1280 and 1600 — and, if it ever
+carries a label, §8.29 starts applying to it.
+
+Also verified while the panel existed, and worth not re-deriving: **a solid background-colour div is
+not an LCP candidate** (observed with a `PerformanceObserver`, not assumed — the plush stayed the only
+LCP entry at both widths), and a label-free `aria-hidden` fill **adds no contrast nodes**, so
+`qa:sweep` held at 34/34 with 79 accepted.
+
+## 8.31-e OPTIONS ALREADY RENDERED AND MEASURED
+
+If this is picked up again, these were built and looked at rather than imagined: brand orange flat
+(ΔE 67.4), `orange-ink #B54A0D` (~4.0:1 luminance), `blue-ink #1B6E96` (~4.2:1, the strongest
+numerically because cream against blue is the complementary pairing), a soft-vignetted orange, and
+the footer cocoa `#2A1608` (~12:1, crisp but dark for a toy brand).
