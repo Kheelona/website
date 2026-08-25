@@ -106,6 +106,40 @@ matched the file.** That gap is how `og.png` shipped a retired age band on every
 three copy rounds — *pixels carry claims, and the voice lint cannot read them*. `lumi-art.test.ts`
 now reads the PNG IHDR and asserts both.
 
+## 7b. The orange hero panel (§8.31), added the same day
+
+The founder said the cream toy was hard to see on the cream background. Measured: **1.06–1.13:1** at
+the plush's edges, against **3.76:1** for the blue dino it replaced. Real problem, quantified.
+
+The fix is a bounded **brand orange `#EF762F`** panel behind the product. The founder chose brand
+orange over deeper alternatives, and **the arithmetic says they were right**, which is the finding
+worth keeping:
+
+| | luminance contrast | ΔE (perceptual) |
+|---|---|---|
+| rabbit on the cream wash (the problem) | 1.36:1 | 14.3 |
+| the old blue dino on cream | 1.59:1 | 31.4 |
+| **rabbit on brand orange** | **1.99:1** | **67.4** |
+
+WCAG's ratio is a **luminance-only text metric**. What separates a photographed object from its
+ground is perceptual distance including hue and saturation. Judging this by contrast ratio alone
+would have rejected the best option and reached for a dark tone the brand does not want. I had
+framed brand orange as "accept less" when presenting the options; that framing was wrong and is
+corrected here.
+
+**Also ruled out by measurement:** a *pale* orange tint makes it **worse**. Every token at 15–35%
+over cream lands at roughly the fur's own luminance and drops to ~1.03–1.07, below the untreated
+baseline.
+
+**A radial glow was built first and rejected on the render**: sized large enough to work, it reached
+into the copy column and put ink body text on deep orange. The shipped panel is inset-bounded and
+verified to overlap **zero** text elements at 390, 768, 1024, 1280 and 1600.
+
+Gates after the panel: 888 tests, tsc 0, build 0, `qa:sweep` **34/34 clean with 79 accepted,
+unchanged** (a label-free fill contributes no contrast nodes). Lighthouse mobile devtools **98**
+(from 99, inside the documented ±1 noise), desktop 100, **CLS 0**, and the plush is still the only
+observed LCP entry at both widths.
+
 ## 8. Not done, deliberately
 
 - **`og.png`** — checked: **Kheelu only, no product**. Needed no change.

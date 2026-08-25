@@ -17,6 +17,29 @@ describe("HeroStage (Lumi alone, 2026-08-25)", () => {
     expect(art).toHaveAttribute("height", String(LUMI_ART.height));
   });
 
+  /* §8.31: the cream plush needs a ground or it reads as an outline on the
+     cream wash. The panel is decorative and nothing reads on it, so it must
+     stay aria-hidden and stay label-free — the moment text goes in here, the
+     §8.29 white-on-orange law starts applying to it. */
+  it("grounds the plush on an orange panel that is decorative and label-free", () => {
+    const { container } = render(<HeroStage />);
+    const panel = container.querySelector("[data-hero-panel]");
+    expect(panel).not.toBeNull();
+    expect(panel).toHaveAttribute("aria-hidden", "true");
+    expect(panel!.className).toContain("bg-orange");
+    expect(panel!.textContent).toBe("");
+  });
+
+  /* The panel is bounded to this column ON PURPOSE. A radial glow was tried
+     first and reached into the copy column, putting ink body text on deep
+     orange. Horizontal insets are the guard; going wider needs a re-check. */
+  it("keeps the panel inset-bounded rather than free-floating", () => {
+    const { container } = render(<HeroStage />);
+    const cls = container.querySelector("[data-hero-panel]")!.className;
+    expect(cls).toMatch(/inset-x/);
+    expect(cls).not.toMatch(/w-screen|left-1\/2/);
+  });
+
   it("carries no fact bubbles (V4: the team asked for them off)", () => {
     render(<HeroStage />);
     expect(document.querySelectorAll(".hero-bubble").length).toBe(0);

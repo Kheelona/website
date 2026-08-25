@@ -1260,3 +1260,62 @@ alone, **the flag came off with it** — leaving it would have silenced the guid
 `HeroStage.test.tsx` asserts its absence, so restoring a Kheelu-bearing composite without restoring
 the flag turns the suite red. **A behavioural flag that describes an asset is part of that asset's
 swap, not separate from it.**
+
+---
+
+# §8.31 THE PRODUCT NEEDS A GROUND, AND LUMINANCE IS THE WRONG METRIC FOR IT (2026-08-25, founder-directed)
+
+## 8.31-a THE CREAM PLUSH GETS A BRAND-ORANGE PANEL
+
+The rabbit Lumi is cream. The site's wash is cream. Measured on the live render, the plush's edges
+sat at **1.06–1.13:1** against the ground behind them, so the product read as an outline with no
+substance. The blue dino it replaced had never needed help: it carried its own contrast.
+
+The founder's fix is a **bounded panel in BRAND ORANGE `#EF762F`** behind the product in the hero,
+`bg-orange`, `rounded-[44px]`, in `HeroStage.tsx`.
+
+## 8.31-b WCAG CONTRAST RATIO IS A TEXT METRIC. DO NOT JUDGE AN OBJECT BY IT
+
+This is the part worth keeping, because the obvious reading of the numbers is wrong.
+
+Brand orange gives the plush only **1.99:1** of luminance contrast, and a naive read says that fails.
+But WCAG's ratio is a **luminance-only** formula designed for whether a reader can resolve letter
+shapes. What separates a *photographed object* from its ground is perceptual distance across
+lightness **and hue and saturation**. In CIE Lab:
+
+| | luminance contrast | ΔE (perceptual) |
+|---|---|---|
+| cream rabbit on the cream wash (the problem) | 1.36:1 | **14.3** |
+| the old blue dino on the cream wash | 1.59:1 | **31.4** |
+| cream rabbit on brand orange | 1.99:1 | **67.4** |
+
+**Brand orange gives the product more than twice the separation the hero has ever had**, because the
+fur is desaturated and the ground is highly saturated. Judging this by contrast ratio alone would
+have rejected the best option and reached for a dark tone the brand does not want.
+
+**A trap this rules out:** a *pale* orange tint makes things WORSE, not better. Every token at
+15–35% over cream lands at roughly the fur's own luminance and drops the ratio to ~1.03–1.07, below
+the untreated baseline. "A bit darker" cannot be satisfied by a light wash of colour.
+
+## 8.31-c THE PANEL IS BOUNDED TO ITS COLUMN, AND THAT IS A CONSTRAINT NOT A STYLE
+
+A radial glow was built first. Sized large enough to work it **reached into the copy column and put
+ink body text on deep orange** — caught on the render, not in review. The shipped panel is held by
+horizontal insets (`-inset-x-5 md:-inset-x-2 lg:inset-x-0`), verified to overlap **zero** text
+elements at 390, 768, 1024, 1280 and 1600. `HeroStage.test.tsx` asserts the insets are still there.
+**Anything that widens this element has to re-check the copy it can now reach.**
+
+## 8.31-d A DECORATIVE FILL IS NOT AN ACTION FILL
+
+The panel is `bg-orange`, `aria-hidden`, and **carries no text**. §8.29's white-on-orange label law
+therefore has nothing to say about it, and §8.29-b's pale-tint carve-out does not apply either: this
+is a full fill by design. `qa:sweep` stayed at **34/34 clean with 79 accepted**, unchanged, because a
+label-free fill contributes no contrast nodes. `HeroStage.test.tsx` asserts the panel stays
+label-free, because the moment copy goes in there §8.29 starts applying to it.
+
+## 8.31-e A SOLID BACKGROUND COLOUR IS NOT AN LCP CANDIDATE, BUT VERIFY IT
+
+A large solid-colour div behind the priority image looks like it could steal the LCP. It cannot —
+background-colour paints are not LCP candidates — but the LCP law has been re-learned live twice, so
+this was **observed with a `PerformanceObserver`** rather than reasoned about: the plush image is
+still the only LCP entry at both 390 and 1280.
