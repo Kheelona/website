@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { storeEnv } from "@/lib/store/env";
 import { resolveTier, tierRefusalMessage } from "@/lib/store/tiers";
 import { PreorderForm, OrderSummary } from "@/features/preorder";
+import { LUMI_ART } from "@/lib/lumi-art";
 import {
   formatInr,
   LAUNCH_AMOUNT_PAISE,
@@ -82,10 +83,10 @@ export default async function EventPage({
             </h1>
           </div>
           <Image
-            src="/product/lumi-blue-2.png"
-            alt="Lumi, the sky blue talking plush with a speaker in its tummy and a striped party hat"
-            width={1234}
-            height={1600}
+            src={LUMI_ART.src}
+            alt={LUMI_ART.alt}
+            width={LUMI_ART.width}
+            height={LUMI_ART.height}
             priority
             sizes="(max-width: 768px) 30vw, 200px"
             className="h-[120px] w-auto shrink-0 md:h-[180px]"

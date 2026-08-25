@@ -12,6 +12,7 @@ import { Button } from "@/components/atoms/Button";
 import { Faq, type FaqEntry } from "@/components/molecules/Faq";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { graph, faqPage, breadcrumbs, pageMeta, jsonLd } from "@/lib/seo";
+import { LUMI_ART, lumiAlt } from "@/lib/lumi-art";
 
 export const metadata = pageMeta({
   title: "Are AI toys safe? How Lumi is built to be",
@@ -34,7 +35,7 @@ const WORD_RULES = [
   { title: "Listening starts with the wake word.", body: "Lumi listens only after your child says the wake word. The rest of the time, the microphone is off. Not muted. Off." },
   { title: "Filters live on the device.", body: "The first safety checks happen on the toy itself, before anything travels anywhere." },
   { title: "Every answer is age-graded.", body: "Replies pass through a safety layer tuned to your child's age. On-device and cloud filters work together." },
-  { title: "There is no open internet.", body: "Lumi cannot browse, search, or stumble. No random videos, no rabbit holes, no strangers. Ever." },
+  { title: "There is no open internet.", body: "Lumi cannot browse, search, or stumble. No random videos, no endless detours, no strangers. Ever." },
 ] as const;
 
 const VOICE_RULES = [
@@ -120,7 +121,7 @@ const SAFETY_FAQ: FaqEntry[] = [
      page answered — built entirely from published facts. */
   { q: "Will Lumi replace time with me?", a: "No, and it is not built to. Lumi is for the moments your hands are full, not the ones they are not. The parent app gives you one simple thing to do together each day, quiet hours are yours to set, and the grown-up holds the keys, always." },
   { q: "Does Lumi reduce screen time?", a: "That is the point. Lumi has no screen at all. It is a toy that helps you cut screen time: your child talks, listens, and imagines instead of watching." },
-  { q: "Can Lumi reach the open internet?", a: "No. Lumi cannot browse or search. Answers come from a closed library built for children, so there are no random videos, no rabbit holes, and no strangers." },
+  { q: "Can Lumi reach the open internet?", a: "No. Lumi cannot browse or search. Answers come from a closed library built for children, so there are no random videos, no endless detours, and no strangers." },
   /* SEO round 2026-08-12: the checklist restates the published what-to-look-for
      criteria (the journal's safe-AI-toy piece and the ANSWERS mechanisms above)
      — nothing here is a new claim. Carries "smart toys for toddlers" and
@@ -155,10 +156,10 @@ export default function SafetyPage() {
         say="No jokes on this page. Parents read this twice."
         media={
           <Image
-            src="/product/lumi-blue-2.png"
-            alt="Lumi, the sky blue talking plush toy, sitting calmly"
-            width={1234}
-            height={1600}
+            src={LUMI_ART.src}
+            alt={lumiAlt("sitting calmly")}
+            width={LUMI_ART.width}
+            height={LUMI_ART.height}
             sizes="(max-width: 768px) 60vw, 300px"
             priority
             className="h-auto w-full max-w-[300px]"

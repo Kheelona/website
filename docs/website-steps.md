@@ -1198,3 +1198,65 @@ including white on any other orange, still fails the sweep.**
 The ratio itself is pinned as arithmetic in `test/contrast-tokens.test.ts`, alongside what was given
 up (ink-head on the same fill, 5.99:1) and the passing alternative, so a future session can reverse
 this in one informed step rather than re-deriving it.
+
+---
+
+# §8.30 THE PRODUCT ARTWORK HAS ONE SOURCE (2026-08-25, the dino to rabbit swap)
+
+## 8.30-a `LUMI_ART` IS THE ONLY PLACE THE PLUSH IS DESCRIBED
+
+Before this round the same asset was described **independently at ten call sites**: a hard-coded
+`src`, a hard-coded `width`/`height` pair, and a differently-worded `alt` at each. Changing what the
+product looked like was therefore a ten-file job with ten chances to leave one behind, and nine alt
+strings still said "sky blue" and "striped party hat" long after neither was true of anything.
+
+**Lumi is a ROTATING SKU** (brand law, founder 2026-07-10): its look is *expected* to change again.
+So the artwork gets the treatment prices, CTA labels and ages already have — one source, never
+inlined. `src/lib/lumi-art.ts` exports `LUMI_ART` (path, real pixel dimensions, the one description)
+and `lumiAlt(clause)` for contextual variants. **Hand-coding a Lumi `src`, `width`, `height` or alt
+anywhere else is a review flag**, guarded by `test/lumi-art.test.ts`.
+
+**The rotation is still never published on-site** (§8.22 brand law). The new Lumi simply appears; no
+page explains that it replaced anything.
+
+## 8.30-b A `width`/`height` PAIR IS A CLAIM ABOUT A FILE, SO TEST IT AGAINST THE FILE
+
+Next computes the layout box from those numbers before the image loads, so a stale pair is a CLS bug
+rather than a cosmetic one. `test/lumi-art.test.ts` reads the PNG's IHDR chunk (no dependency: width
+and height are big-endian uint32 at byte offsets 16 and 20) and fails if they drift, and it asserts
+the file **exists** at all.
+
+Until this round **nothing in the repo asserted that an image referenced by code existed, or that its
+declared dimensions were real.** That gap is how `og.png` shipped a retired age band ("ages 3 to 6")
+live on every social share through three copy rounds: **pixels carry claims, and the voice lint
+cannot read them.**
+
+## 8.30-c A CUTOUT HEURISTIC TUNED TO ONE PRODUCT COLOUR IS NOT SAFE ON THE NEXT
+
+`tools/cutout` erases any pixel with `8 <= alpha < 240` where `min(r,g,b) > 170 && max-min < 24`. That
+pass exists to kill neutral halo fringes and it worked well on a **blue** plush. Cream fur measures
+**(236,225,213): min 213, spread 23** — inside the erase window. Run blind on the rabbit it would
+have eaten the product's own edge.
+
+So: **read the halo rule against the new product's actual pixel values before reaching for the
+pipeline.** When a supplied cutout only needs its matte tightened, threshold the alpha directly
+(`>= 250 -> 255`, `< 16 -> 0`, keep the anti-aliased band) rather than re-segmenting finished work.
+**Verify by compositing over a dark plate and LOOKING** — `sips -g hasAlpha` is not proof, which
+`logo-mark.png` proved by reporting alpha while carrying a baked white plate.
+
+## 8.30-d A GUARD IS SCOPED TO THE CLAIM, NOT TO THE WORDS
+
+`test/lumi-art.test.ts` first searched for `sky blue` and flagged three innocent lines, because
+**"Why is the sky blue?" is the child's question and one of the site's strongest copy lines**. A
+guard that cries wolf on the product's best writing gets deleted, not obeyed. It is now scoped to *a
+plush described as* sky blue. Same family as §8.29-c's lesson that a guard must strip comments before
+scanning, and it was proven red before it was trusted (§8.28-g).
+
+## 8.30-e AN ARTWORK FLAG AND ITS ARTWORK TRAVEL TOGETHER
+
+`data-hero-has-kheelu` makes `KheeluGuide` suppress the corner guide while the hero is on screen,
+because two Kheelus in one viewport was the craft flaw V5-5 fixed. When the hero artwork became Lumi
+alone, **the flag came off with it** — leaving it would have silenced the guide for no reason.
+`HeroStage.test.tsx` asserts its absence, so restoring a Kheelu-bearing composite without restoring
+the flag turns the suite red. **A behavioural flag that describes an asset is part of that asset's
+swap, not separate from it.**

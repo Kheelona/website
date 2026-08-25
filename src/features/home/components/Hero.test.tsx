@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { Hero } from "./Hero";
 import { STORE_URL } from "@/config/site";
+import { LUMI_ART } from "@/lib/lumi-art";
 
 describe("Hero (V6, the growth-arc round)", () => {
   it("renders the two-line outcome-arc H1 (BUILD-V6 D1, founder-approved)", () => {
@@ -18,11 +19,12 @@ describe("Hero (V6, the growth-arc round)", () => {
     ).toBeInTheDocument();
   });
 
-  it("keeps the priority hero artwork as the LCP element (REV-a final art)", () => {
+  it("keeps the priority Lumi artwork as the LCP element", () => {
     render(<Hero />);
-    const art = screen.getByAltText(/kneeling to whisper a secret to Lumi/i);
+    const art = screen.getByAltText(LUMI_ART.alt);
     expect(art).toBeInTheDocument();
-    expect(art).toHaveAttribute("src", "/hero/kheelu-lumi.png");
+    expect(art).toHaveAttribute("src", LUMI_ART.src);
+    expect(art).toHaveAttribute("data-priority", "true");
   });
 
   it("offers exactly ONE button, and the offer line rides under it (team items 7 and 10)", () => {

@@ -12,7 +12,8 @@ const meta = {
       </div>
     ),
     media: (
-      <img src="/product/lumi-blue-2.png" alt="The Lumi plush" width={320} height={320} />
+      {/* Real aspect: the asset is portrait, and a square box squashed it. */}
+      <img src="/product/lumi.png" alt="The Lumi plush" width={261} height={320} />
     ),
   },
   parameters: { nextjs: { appDirectory: true } },

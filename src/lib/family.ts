@@ -10,6 +10,8 @@
  *  ONE source for the Home pipeline room and /playos so the lineup can never
  *  drift (the setup-steps lesson, R9). Tints brand-4 only. `img: null` renders
  *  the calm placeholder until the founder's Gemini art lands (gate V3-c). */
+import { LUMI_ART } from "./lumi-art";
+
 export type FamilyMember = {
   name: string;
   ages: string;
@@ -27,10 +29,10 @@ export const FAMILY: readonly FamilyMember[] = [
     name: "Lumi",
     ages: "3+",
     note: "Here first. The friend who listens.",
-    img: "/product/lumi-blue-2.png",
-    alt: "Lumi, the sky blue talking plush toy with a speaker in its tummy, wearing its striped party hat",
-    w: 1234,
-    h: 1600,
+    img: LUMI_ART.src,
+    alt: LUMI_ART.alt,
+    w: LUMI_ART.width,
+    h: LUMI_ART.height,
     tint: "bg-blue/15",
     here: true,
   },

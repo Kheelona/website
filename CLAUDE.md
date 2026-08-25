@@ -22,10 +22,26 @@ the **first 500 units** at **₹4,999** (decided per request from the live paid 
 gone, a pre-order is **₹7,999 paid in full**), the **₹4,500 balance** on token orders falls due
 before dispatch, and the payment happens on **store.kheelona.com**, which this same repo serves.
 
-## ⚠ STATE OF PLAY (2026-08-24 — **LIVE, ON LIVE KEYS, WITH WHITE CTA LABELS**) — read this first
+## ⚠ STATE OF PLAY (2026-08-25 — **LIVE, AND LUMI IS NOW THE CREAM RABBIT**) — read this first
 **THE SITE IS LIVE AT https://kheelona.com, indexed, and taking PAID pre-orders — every change from
-here touches a live commercial site.** Latest checkpoint, read it before touching anything:
-**`docs/checkpoints/white-cta-labels-2026-08-24.md`** (§8.29: every label on a solid orange fill is
+here touches a live commercial site.**
+
+**🐰 THE PRODUCT ART CHANGED ON 2026-08-25: the blue dino plush is now a CREAM RABBIT, one
+colourway.** Checkpoint: **`docs/checkpoints/lumi-rabbit-art-2026-08-25.md`**. Three things bind
+from it. (1) **`src/lib/lumi-art.ts` is the ONE source for the product artwork** — path, real pixel
+dimensions and the single description; ten call sites read `LUMI_ART`/`lumiAlt()` and none inlines an
+`src`, a `width`/`height` or an alt. Lumi is a rotating SKU, so the next art change is that file plus
+a PNG; hand-coding any of it again is a review flag, guarded by `test/lumi-art.test.ts`.
+(2) **The Home hero shows LUMI ALONE, and that is INTERIM.** The old hero was one baked render with
+Kheelu and the dino together and could not be half-swapped. `gemini-handoff/hero-2026-08/` is the
+founder kit to regenerate the whisper composite; its README carries the three code steps for
+installing it, including **restoring `data-hero-has-kheelu`**, which is OFF today on purpose so the
+corner guide greets normally with Kheelu absent from the artwork. (3) **Never run `tools/cutout`
+blind on a pale product**: its neutral-halo pass erases pixels where `min(rgb)>170 && max-min<24`,
+and cream fur is (236,225,213) — spread 23 — so it eats the plush's own edge. That rule was written
+for a blue product.
+
+Before it: **`docs/checkpoints/white-cta-labels-2026-08-24.md`** (§8.29: every label on a solid orange fill is
 WHITE, at a knowingly accepted 2.88:1, plus the two store paragraphs removed). Before it:
 `security-and-docs-2026-08-23.md`, `ideabaaz-event-page-2026-08-23.md` and
 **`v3-migration-2026-08-23.md`** (the whole 2026-08-23 engagement; full tracker

@@ -131,7 +131,7 @@ export default function LumiPage() {
       {/* Hero on the backdrop sky (no wash), greeted through the guide */}
       <section
         data-guide="hero-wink"
-        data-say="This is Lumi. I picked the colours myself."
+        data-say="This is Lumi. Go on, say hello."
         className="relative overflow-x-clip"
       >
         <div className="mx-auto grid w-full max-w-[1180px] items-center gap-8 px-[clamp(20px,5vw,64px)] py-10 md:grid-cols-[1fr_1fr] md:py-14">

@@ -14,6 +14,7 @@ import {
   REGISTERED_ADDRESS,
   SUPPORT_WHATSAPP_DISPLAY,
 } from "@/config/site";
+import { LUMI_ART } from "./lumi-art";
 
 /** Structured data builders (V3 SEO/AEO/GEO pass, 2026-07-28).
  *
@@ -210,7 +211,7 @@ export const LUMI_PRODUCT = {
     audienceType: "Children",
   },
   description: `A screen-free talking friend for children aged ${LUMI_AGES} that holds a real conversation in up to 10 home languages, carries stories and lessons they can be quizzed on, plays your music over Bluetooth, and comes with a parent app that shows you everything. Part of a growing family of friends.`,
-  image: `${SITE_URL}/product/lumi-blue-2.png`,
+  image: `${SITE_URL}${LUMI_ART.src}`,
   offers: {
     "@type": "Offer",
     /* Derived from the paise constant, not scraped out of the display string
