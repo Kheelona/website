@@ -1620,3 +1620,21 @@ redeploy?" into one curl instead of waiting for a customer to buy something. Wor
 that question had already cost two cycles in one week, for the reason recorded in
 `project-security-engagement-2026-08`: **a Vercel variable only applies to deployments created after
 it changes**, so adding or rotating one without a redeploy silently keeps the old value.
+
+**q-i. A COLOCATED ROUTE TEST IS `<dir>/route.test.ts`, AND A NAME-GLOB WILL MISS IT** (near miss,
+2026-09-02). Checking whether `/api/health` already had a test, `find -name "*health*test*"` returned
+nothing, so the file was written with `cat >`. It existed: `src/app/api/health/route.test.ts`, where
+only the DIRECTORY carries the word health and the filename is the same `route.test.ts` every route
+uses. The redirect destroyed five tests, two of which guarded real laws — that `/api/health` never
+publishes the paid-order count (§8.26) and that it throttles a looping caller (F-07) — and the
+replacement mocked `rate-limit` out entirely, which would have made the throttle tests unwritable.
+
+**What caught it was arithmetic.** The suite came out at 946 when the change should have produced
+951, and the five-test gap was exactly the destroyed tests. A green suite hid it completely; only the
+count disagreed. **A test count that does not reconcile is a finding, not noise** — the same lesson
+as "a gate that prints is not a gate".
+
+Three habits that would each have prevented it: glob on the PATH (`find … -path "*health*"`) rather
+than the filename, since colocated tests are named after their route file and not their feature;
+`ls` the directory or check `git ls-files` before writing; and never use `cat >` on a path not
+confirmed absent — the tools that refuse to overwrite an unread file exist for this.
