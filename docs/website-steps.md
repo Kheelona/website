@@ -1608,7 +1608,7 @@ order, the answer was unavailable and no amount of log-reading would have produc
 answer "did it work", only "did it break".** Where the two outcomes need different responses, success
 has to say so. It is one line per paid order, at a volume where that costs nothing.
 
-Every branch now logs `[meta-capi] SENT|SKIPPED|REJECTED|FAILED <event_id>`, so one search returns
+Every branch now logs `[meta-capi] SENT|SKIPPED|REJECTED|UNCONFIRMED|FAILED <event_id>`, so one search returns
 every outcome and each line can be matched to an order and to the browser event beside it. The
 success line carries `events_received` (the only field that actually proves Meta took the event) and
 `fbtrace_id` (what Meta support asks for). The skip line names `META_CAPI_TOKEN`, so the cause is in
@@ -1638,3 +1638,47 @@ Three habits that would each have prevented it: glob on the PATH (`find … -pat
 than the filename, since colocated tests are named after their route file and not their feature;
 `ls` the directory or check `git ls-files` before writing; and never use `cat >` on a path not
 confirmed absent — the tools that refuse to overwrite an unread file exist for this.
+
+**r. THE OPT-OUT MUST NOT OVERSTATE ITSELF (2026-09-02).** `/privacy` told the reader their browser
+could block all four measurement tools. That became false the day the Conversions API shipped: the
+server-side Purchase is sent by us, from our own server, and no ad blocker, private window or cookie
+setting can reach it. **A parent would have acted on that sentence** — installed a blocker, pre-ordered,
+and believed nothing reached Meta — which makes it worse than a merely inaccurate line. The page now
+says which tools blocking does stop, names the gap in plain words, and points at the control that does
+work (personalised-advertising settings inside Facebook or Instagram) plus deletion on request.
+Generalised: **an opt-out we describe has to be one that works, and where it only half works, the half
+that does not is the part that must be written down.**
+
+Two other statements went with it. The page said the fields sent were "determined by Meta's own
+measurement script rather than chosen by us field by field" — true of the browser script, false of
+`meta-capi.ts`, which names seven fields — **and a test was pinning that sentence, so the suite was
+enforcing a false claim about our own code**. And the client IP and user agent, the only two things
+that leave in readable form and both personal data under DPDP, were disclosed nowhere. Both fixed.
+
+**s. AN IDEMPOTENCY GUARD MUST BE AN ALLOW-LIST, NOT A NEGATION (2026-09-02).** `markPaid` guarded its
+UPDATE with `.neq("status", "paid")`. It reads as "not already paid" and is correct about the case it
+was written for, but the statuses are `created | paid | failed | refunded | cancelled`, and **both
+`refunded` and `cancelled` satisfy a negation of `paid`**. A webhook retry arriving after a refund
+would flip the row back, putting a refunded customer BACK IN THE DISPATCH QUEUE — `status='paid'` IS
+the queue — plus a second receipt and a duplicate Purchase. That is §8.25-ee re-entered from the
+opposite direction: the refund handler shut the front door, this was the back one. `cancelled` is the
+worse half, because it is only ever set by hand, so a human's decision could be undone by a retry.
+
+Now `.in("status", ["created","failed"])` on both the main UPDATE and orphan recovery. `failed` stays
+payable because a parent whose first attempt failed and who then pays is a wanted flow.
+
+**Three things this taught, all of them about the fix rather than the bug:**
+
+1. **Branch order is part of the fix.** The first version of the plan checked "not payable" before
+   "already paid", and `paid` is not in the allow-list — so it would have logged an error and returned
+   the alarm outcome on **every successful order**, because two paths reach `markPaid` and the second
+   lands in that branch by design. The alarm would have been buried in false ones on day one. Caught
+   by an independent review of the plan, not by the tests, which is what plan review is for.
+2. **A 200 plus a log line is not an alarm.** The webhook answers 200 here deliberately, since a retry
+   delivers the same event forever and a 5xx would churn the claim row. So `alertNotPayable` emails
+   `env.alertEmail` — **internal only, never `notifyPaid`**, which would send the refunded customer a
+   receipt telling them their order is live again.
+3. **A refused write changes what an old log line means.** With the allow-list, orphan recovery of a
+   refunded row matched nothing and fell through to `"unknown"`, whose handler logs "paid an order id
+   we do not have" — about an order we do have. The branch now re-reads by reference and returns
+   `not-payable`, because a log that sends a human to the wrong place is worse than no log.

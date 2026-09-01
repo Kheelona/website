@@ -22,12 +22,31 @@ import { reportPurchaseToMeta } from "./meta-capi";
  *  is one atomic statement in Postgres rather than a read-then-write we would
  *  have to reason about under a race. */
 
+/** The only states an order may become paid FROM. Deliberately an allow-list.
+ *
+ *  It used to be `.neq("status", "paid")`, which reads as "not already paid" and
+ *  is right about the case it was written for and wrong about two others:
+ *  `refunded` and `cancelled` both satisfy it. So a webhook retry arriving after
+ *  a refund would flip the row back to paid, put a refunded customer BACK IN THE
+ *  DISPATCH QUEUE (`status='paid'` IS the queue, §8.25-ee), send them a second
+ *  receipt and report a second Purchase to Meta. That is the same failure §8.25-ee
+ *  closed, re-entered from the opposite direction: the refund handler shut the
+ *  front door and this was the back one. `cancelled` is the worse half, because
+ *  it is only ever set by hand, so a human's decision could be undone by a retry.
+ *
+ *  `failed` stays payable: a parent whose first attempt failed and who then pays
+ *  is a normal, wanted flow. */
+const PAYABLE_STATUSES = ["created", "failed"] as const;
+
 export type MarkPaidResult =
   | { outcome: "paid"; order: PreorderRow }
   | { outcome: "already" }
   /** The gateway captured less than the order asked for. Not marked paid, and
    *  loud in the log, because there is no honest automatic answer (F-06). */
   | { outcome: "short-paid" }
+  /** Real money arrived for an order that has been refunded or cancelled. Never
+   *  resurrected, always shouted about: a human has to decide what happened. */
+  | { outcome: "not-payable"; status: string }
   | { outcome: "unknown" };
 
 export async function markPaid(
@@ -56,7 +75,7 @@ export async function markPaid(
       rzp_payment_id: input.paymentId,
     })
     .eq("rzp_order_id", input.rzpOrderId)
-    .neq("status", "paid");
+    .in("status", PAYABLE_STATUSES);
 
   if (typeof input.paidPaise === "number") {
     update = update.lte("amount_paise", input.paidPaise);
@@ -79,19 +98,32 @@ export async function markPaid(
 
   if (existing) {
     const row = existing as { status: string; amount_paise: number };
-    if (
-      row.status !== "paid" &&
-      typeof input.paidPaise === "number" &&
-      input.paidPaise < row.amount_paise
-    ) {
+
+    /* ORDER MATTERS HERE, and getting it wrong is worse than the bug being
+       fixed. `paid` is checked FIRST because it is the ordinary case: two paths
+       reach markPaid for every successful order, and the second one lands here
+       by design. If the not-payable check came first, `paid` is absent from
+       PAYABLE_STATUSES, so every healthy order would log an error and return
+       the alarm outcome — and the one case worth alarming about would be
+       invisible inside a stream of false ones. */
+    if (row.status === "paid") return { outcome: "already" };
+
+    if (!(PAYABLE_STATUSES as readonly string[]).includes(row.status)) {
+      console.error(
+        `[fulfil] NOT PAYABLE: ${input.rzpOrderId} is '${row.status}' and real money arrived for it. NOT resurrected, nothing dispatched, no email sent. A human has to decide whether this is a refund that was reversed or a payment that should be returned.`,
+      );
+      return { outcome: "not-payable", status: row.status };
+    }
+
+    if (typeof input.paidPaise === "number" && input.paidPaise < row.amount_paise) {
       console.error(
         `[fulfil] SHORT PAYMENT on ${input.rzpOrderId}: captured ${input.paidPaise} of ${row.amount_paise} paise. NOT marked paid, and nothing dispatched. A human has to decide.`,
       );
       return { outcome: "short-paid" };
     }
-    /* Either it is already paid, or a race we have not modelled got here first.
-       "already" is the conservative answer in both cases: no second email, and
-       no claim about money we have not checked. */
+
+    /* A race we have not modelled got here first. "already" is the conservative
+       answer: no second email, and no claim about money we have not checked. */
     return { outcome: "already" };
   }
 
@@ -111,7 +143,7 @@ export async function markPaid(
         rzp_order_id: input.rzpOrderId,
       })
       .eq("order_ref", input.orderRef)
-      .neq("status", "paid");
+      .in("status", PAYABLE_STATUSES);
 
     /* The same amount guard as above: a recovered orphan is still an order that
        may not be paid by less than it asked for. */
@@ -121,6 +153,31 @@ export async function markPaid(
 
     const { data: byRef, error: refError } = await recover.select("*").maybeSingle();
     if (refError) throw refError;
+
+    if (!byRef) {
+      /* The UPDATE matched nothing, and with the allow-list that now has two
+         very different meanings: no such reference, or a reference we know
+         whose order is refunded or cancelled. Without this lookup the second
+         case falls through to "unknown", and the webhook logs "paid an order id
+         we do not have" about an order we very much do have — a log line that
+         sends a human looking in the wrong place. */
+      const { data: refRow } = await db(env)
+        .from("preorders")
+        .select("status")
+        .eq("order_ref", input.orderRef)
+        .maybeSingle();
+
+      if (refRow) {
+        const status = (refRow as { status: string }).status;
+        if (status !== "paid" && !(PAYABLE_STATUSES as readonly string[]).includes(status)) {
+          console.error(
+            `[fulfil] NOT PAYABLE: ${input.orderRef} is '${status}' and real money arrived for it, matched by reference. NOT resurrected.`,
+          );
+          return { outcome: "not-payable", status };
+        }
+      }
+    }
+
     if (byRef) {
       console.warn(
         `[fulfil] recovered ${input.orderRef} by its reference: the gateway order id was never attached to the row`,
@@ -130,6 +187,46 @@ export async function markPaid(
   }
 
   return { outcome: "unknown" };
+}
+
+/** Tell a human that real money arrived for an order somebody already took out
+ *  of the queue (§8.30-s).
+ *
+ *  INTERNAL ONLY, and that is the whole care in this function. It must never
+ *  reach the customer: they have been refunded or cancelled, and a receipt would
+ *  tell them their order is live again. So it does not go near `notifyPaid`, and
+ *  it sends to `env.alertEmail` and nowhere else.
+ *
+ *  It exists because the webhook answers 200 here on purpose — a retry would
+ *  deliver the same event forever — and a 200 plus a log line is not a signal
+ *  anybody sees. §8.30-q's own lesson was that a log answers "did it break", not
+ *  "did anyone notice". This is money against a refunded order; somebody has to
+ *  look.
+ *
+ *  Never throws, for the same reason as `notifyPaid`: the caller is a webhook. */
+export async function alertNotPayable(
+  env: StoreEnv,
+  rzpOrderId: string,
+  status: string,
+): Promise<void> {
+  try {
+    await sendEmail(env, {
+      to: env.alertEmail,
+      subject: `Payment arrived for a ${status} order (${rzpOrderId})`,
+      text: [
+        `Razorpay reported a payment for gateway order ${rzpOrderId}, but our record for it is '${status}'.`,
+        "",
+        "Nothing was changed: the order was NOT marked paid, nothing was dispatched, and no email went to the customer.",
+        "",
+        "Somebody needs to decide whether this is a refund that was reversed, or a payment that should be returned.",
+      ].join("\n"),
+      html: `<p>Razorpay reported a payment for gateway order <strong>${rzpOrderId}</strong>, but our record for it is <strong>${status}</strong>.</p>
+<p>Nothing was changed: the order was NOT marked paid, nothing was dispatched, and no email went to the customer.</p>
+<p>Somebody needs to decide whether this is a refund that was reversed, or a payment that should be returned.</p>`,
+    });
+  } catch (error) {
+    console.error(`[fulfil] could not send the not-payable alert for ${rzpOrderId}`, error);
+  }
 }
 
 /** A refund landed. Take the order OUT of the dispatch queue (§8.25-ee).

@@ -65,7 +65,7 @@ describe("markPaid", () => {
     results["preorders.update"] = { data: row };
     await markPaid(env, { rzpOrderId: "order_abc", paymentId: "pay_1", paidPaise: 49_900 });
     expect(filters()).toContain("lte:amount_paise");
-    expect(filters()).toContain("neq:status");
+    expect(filters()).toContain("in:status");
   });
 
   it("refuses to mark an order paid when the gateway captured less", async () => {
@@ -149,6 +149,101 @@ describe("markPaid", () => {
  *  them can escape. By the time this runs the money has moved and the row says
  *  so, and a throw here would fail a webhook Razorpay then retries for a
  *  payment recorded perfectly. */
+/* ── The payable allow-list (§8.30-s) ─────────────────────────────────────
+ *
+ *  `.neq("status","paid")` reads as "not already paid" and was right about the
+ *  case it was written for and wrong about two others: `refunded` and
+ *  `cancelled` both satisfy it. A webhook retry after a refund would flip the
+ *  row back to paid and put a refunded customer BACK IN THE DISPATCH QUEUE. */
+describe("markPaid and the payable allow-list", () => {
+  beforeEach(() => {
+    calls = [];
+    results = {};
+    vi.restoreAllMocks();
+    vi.spyOn(console, "error").mockImplementation(() => {});
+  });
+
+  it("builds the UPDATE from an allow-list, naming the payable states", async () => {
+    results["preorders.update"] = { data: row };
+    await markPaid(env, { rzpOrderId: "order_abc", paymentId: "pay_1" });
+    const inCall = calls.find((c) => c.method === "in");
+    expect(inCall?.args[0]).toBe("status");
+    expect(inCall?.args[1]).toEqual(["created", "failed"]);
+  });
+
+  it.each([["refunded"], ["cancelled"]])(
+    "refuses to resurrect a %s order, and says so",
+    async (status) => {
+      results["preorders.update"] = { data: null };
+      results["preorders.select"] = { data: { status, amount_paise: 49_900 } };
+
+      const result = await markPaid(env, {
+        rzpOrderId: "order_abc",
+        paymentId: "pay_1",
+        paidPaise: 49_900,
+      });
+
+      expect(result).toEqual({ outcome: "not-payable", status });
+      expect(console.error).toHaveBeenCalled();
+    },
+  );
+
+  /* THE REGRESSION THE PLAN REVIEW CAUGHT. `paid` is not in the allow-list, so
+     a not-payable check placed before the already-paid check would fire on
+     EVERY successful order: two paths reach markPaid and the second one lands
+     in exactly this branch. That would bury the real alarm in false ones. */
+  it("still answers 'already' for an order that is simply paid, not an alarm", async () => {
+    results["preorders.update"] = { data: null };
+    results["preorders.select"] = { data: { status: "paid", amount_paise: 49_900 } };
+
+    const result = await markPaid(env, {
+      rzpOrderId: "order_abc",
+      paymentId: "pay_1",
+      paidPaise: 49_900,
+    });
+
+    expect(result).toEqual({ outcome: "already" });
+    expect(console.error).not.toHaveBeenCalled();
+  });
+
+  it.each([["created"], ["failed"]])(
+    "still pays a %s order, so the happy path does not regress",
+    async (status) => {
+      results["preorders.update"] = { data: { ...row, status } };
+      const result = await markPaid(env, {
+        rzpOrderId: "order_abc",
+        paymentId: "pay_1",
+        paidPaise: 49_900,
+      });
+      expect(result.outcome).toBe("paid");
+    },
+  );
+
+  it("keeps short payment distinguishable from not-payable", async () => {
+    results["preorders.update"] = { data: null };
+    results["preorders.select"] = { data: { status: "created", amount_paise: 49_900 } };
+    const result = await markPaid(env, {
+      rzpOrderId: "order_abc",
+      paymentId: "pay_1",
+      paidPaise: 40_000,
+    });
+    expect(result.outcome).toBe("short-paid");
+  });
+
+  it("guards orphan recovery with the same allow-list", async () => {
+    results["preorders.update"] = { data: null };
+    results["preorders.select"] = { data: null };
+    await markPaid(env, {
+      rzpOrderId: "order_orphan",
+      paymentId: "pay_1",
+      orderRef: "KH-A2B3-C4D5",
+    });
+    const inCalls = calls.filter((c) => c.method === "in");
+    expect(inCalls.length).toBeGreaterThanOrEqual(2);
+    for (const c of inCalls) expect(c.args[1]).toEqual(["created", "failed"]);
+  });
+});
+
 describe("notifyPaid", () => {
   beforeEach(() => {
     calls = [];

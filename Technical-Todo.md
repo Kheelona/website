@@ -203,6 +203,26 @@ security headers live, the live pages carry no console errors or failed requests
       main store, which serves ₹499. So there may be a bad row worth deleting. Worth knowing which
       link it was.
 
+- [ ] 🤖 **Razorpay does not guarantee webhook ORDER, and `markRefunded` depends on it** (found by
+      review 2026-09-02, not fixed, not urgent). `markRefunded` looks the order up by
+      `rzp_payment_id`, which only `markPaid` ever sets. If `refund.processed` were delivered BEFORE
+      `payment.captured`, the refund finds no row and returns `"unknown"`, the row stays `created`,
+      and the later capture marks it paid and payable — straight into the dispatch queue. The
+      2026-09-02 allow-list (§8.30-s) does **not** help here, because the row never became
+      `refunded`. This is the same §8.25-ee failure from a third direction. Unlikely (Razorpay sends
+      capture first in practice, and a refund cannot precede a payment by much) but not impossible,
+      and the fix is probably to have `markRefunded` fall back to the payment's order id and to record
+      a refund against a row it cannot yet match.
+
+- [ ] 🤖 **`after()` from `next/server` was considered and rejected for the webhook** (2026-09-02).
+      A review suggested moving `notifyPaid` off the webhook response path. It should NOT be done the
+      obvious way: `after()` throws outside a request scope, and in the webhook that throw lands
+      inside the handler's own `try`, which **deletes the `webhook_events` claim** and returns 500.
+      Worse, once the response is sent there is no retry path, so a killed invocation loses the
+      receipt and the Meta Purchase silently. Current worst case is one `Promise.allSettled` of three
+      parallel calls bounded by a 5s timeout, which is acceptable. Revisit only with a real latency
+      complaint from Razorpay.
+
 ## 🤖 QA harness
 
 - [ ] **`qa:sweep`'s default `SWEEP_STORE` aims at production DNS, and two routes time out because

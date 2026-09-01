@@ -1,7 +1,7 @@
 import { storeEnv } from "@/lib/store/env";
 import { db } from "@/lib/store/db";
 import { verifyWebhookSignature } from "@/lib/store/razorpay";
-import { markPaid, notifyPaid, markRefunded, markFailed } from "@/lib/store/fulfil";
+import { markPaid, notifyPaid, markRefunded, markFailed, alertNotPayable } from "@/lib/store/fulfil";
 import { json } from "@/lib/store/http";
 
 /** The Razorpay webhook: the guaranteed path to a paid order (§8.25-m).
@@ -139,6 +139,19 @@ export async function POST(request: Request) {
       /* Money for an order we have no record of. Nothing to retry, everything
          to investigate: this is the one line in the store worth an alert. */
       console.error("[webhook] paid an order id we do not have", rzpOrderId);
+    }
+    if (result.outcome === "not-payable") {
+      /* Money for an order somebody already took out of the queue. 200, not
+         500: a retry delivers the same event against the same refused row
+         forever, and a 5xx would make Razorpay hammer us and churn the claim
+         row. But a log line is not a signal on its own (§8.30-q), and this is
+         real money against a refunded or cancelled order, so it also raises an
+         internal alert. Never notifyPaid, which would mail the CUSTOMER a
+         receipt for an order we are refusing. */
+      console.error(
+        `[webhook] refused to resurrect ${rzpOrderId}: the order is '${result.status}'`,
+      );
+      await alertNotPayable(env, rzpOrderId, result.status);
     }
     if (result.outcome === "short-paid") {
       /* 200, not 500: a retry would deliver the same short amount forever. The

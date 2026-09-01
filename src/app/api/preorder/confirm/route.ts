@@ -44,6 +44,14 @@ export async function POST(request: Request) {
   try {
     const result = await markPaid(env, { rzpOrderId: orderId, paymentId });
     if (result.outcome === "paid") await notifyPaid(env, result.order);
+    /* A browser callback arriving for an order that was refunded or cancelled.
+       The webhook path raises the alert; here it is enough not to act on it,
+       and above all not to send a receipt. The browser discards this response. */
+    if (result.outcome === "not-payable") {
+      console.error(
+        `[confirm] refused to resurrect ${orderId}: the order is '${result.status}'`,
+      );
+    }
     return json(200, { ok: true, outcome: result.outcome });
   } catch (error) {
     /* The payment is real and Razorpay knows it, so the webhook will finish the
