@@ -134,6 +134,23 @@ security headers live, the live pages carry no console errors or failed requests
       "Recognised by" today because NVIDIA Inception and nasscom are recognition programmes rather
       than backers — `RecognitionStrip` takes a `label` prop, so switching it is one word.
 
+## 🧑 Vercel bot protection is challenging EVERYTHING, including /api/health
+
+- [ ] 🧑 **Decide whether Vercel's Attack Challenge Mode should stay on** (observed 2026-09-01, while
+      trying to verify the Meta Pixel on production). Every request to `https://kheelona.com/`,
+      including **`/api/health`**, returns **HTTP 403** with a `Vercel Security Checkpoint`
+      interstitial and an `x-vercel-mitigated: challenge` header. Real visitors in a real browser
+      solve the JavaScript challenge and get through, so the site is not down. But three things
+      follow, and none is obvious from the dashboard:
+      **(1)** `/api/health` is unreachable to anything scripted, and `CLAUDE.md` tells every session
+      to check it FIRST on any store question. A future session will read a challenge page as an
+      outage. **(2)** No automated verification of production is possible at all, which is why the
+      pixel could only be proven locally on 2026-09-01. **(3)** Ahrefs verifies its tag by FETCHING
+      the page (which is the entire reason that tag is not host-gated, §8.21-c-i), and a challenged
+      fetch cannot see it, so Ahrefs verification and any uptime monitor are likely failing quietly
+      too. If this was switched on deliberately, an allowlist for `/api/health` is the smallest fix;
+      if it switched itself on in response to traffic, it is worth knowing that it did.
+
 ## 🤖 QA harness
 
 - [ ] **`qa:sweep`'s default `SWEEP_STORE` aims at production DNS, and two routes time out because

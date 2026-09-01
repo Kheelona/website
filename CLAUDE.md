@@ -85,6 +85,12 @@ inverted once). Payment happens on **store.kheelona.com**, THIS repo through the
 `src/proxy.ts`; orders in Supabase, receipts via Resend, events at ₹99 behind signed QR links.
 Ship date **20 October 2026**. Rollback tag **`pre-v3-migration-2026-08-23`** = `b27fd25`.
 
+**⚠ 2026-09-01: `/api/health` CURRENTLY RETURNS A `Vercel Security Checkpoint` 403 TO ANYTHING
+SCRIPTED.** Attack Challenge Mode is on for the whole domain (`x-vercel-mitigated: challenge`), so
+curl and headless Chrome both get an interstitial, not the app. **That is not an outage** — a real
+browser solves the challenge — but it means no automated production check works right now, and it is
+why the Meta Pixel could only be verified locally. Founder item in `Technical-Todo.md`.
+
 **`/api/health` IS THE FIRST THING TO CHECK** on any store question: readiness, the offer MODE
 (`preorder: token|full` — its flip to `full` triggers the manual sell-out copy sweep in
 Technical-Todo), Razorpay mode, email, db latency, and the NAMES of any missing env vars.
