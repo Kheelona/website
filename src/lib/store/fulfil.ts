@@ -219,15 +219,28 @@ export function addressUrlFor(env: StoreEnv, order: PreorderRow): string {
  *  Reporting it from either call site instead would mean earning both again,
  *  twice, and forgetting one of them the day a third caller appears. */
 export async function notifyPaid(env: StoreEnv, order: PreorderRow): Promise<void> {
-  const ack = preorderAckEmail({
-    order,
-    addressUrl: order.address ? undefined : addressUrlFor(env, order),
-  });
-  const alert = internalAlertEmail(order);
+  /* THE NEVER-THROW RULE IS THIS TRY, not the comment above it (2026-09-02).
+     `allSettled` only covers the three async calls; the three lines before it
+     run synchronously and unguarded, and §8.30-l leans on this function not
+     throwing. Nothing reachable throws today, because the columns those
+     templates read are `not null` in the schema, but that is a fact about the
+     schema rather than a property of this function. */
+  try {
+    const ack = preorderAckEmail({
+      order,
+      addressUrl: order.address ? undefined : addressUrlFor(env, order),
+    });
+    const alert = internalAlertEmail(order);
 
-  await Promise.allSettled([
-    sendEmail(env, { ...ack, to: order.email }),
-    sendEmail(env, { ...alert, to: env.alertEmail }),
-    reportPurchaseToMeta(env, order),
-  ]);
+    await Promise.allSettled([
+      sendEmail(env, { ...ack, to: order.email }),
+      sendEmail(env, { ...alert, to: env.alertEmail }),
+      reportPurchaseToMeta(env, order),
+    ]);
+  } catch (error) {
+    /* By here the money has moved and the row says so. Swallowing is correct:
+       a throw would fail a webhook Razorpay then retries for a payment recorded
+       perfectly. */
+    console.error(`[fulfil] notifyPaid failed for ${order.order_ref}`, error);
+  }
 }

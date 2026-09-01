@@ -240,8 +240,24 @@ export async function reportPurchaseToMeta(
       events_received?: number;
       fbtrace_id?: string;
     };
+
+    /* A 2xx IS NOT PROOF ON ITS OWN (2026-09-02). A proxy interstitial or an
+       HTML error page can answer 200 with a body that has no events_received,
+       and the first version of this logged that as SENT — reintroducing exactly
+       the ambiguity §8.30-q exists to remove. Only the number proves Meta took
+       the event, so a 2xx without one is reported as UNCONFIRMED and returned
+       as a failure. Nothing downstream branches on the return value
+       (notifyPaid discards it), so the cost of the stricter reading is a log
+       line that tells the truth. */
+    if (typeof body.events_received !== "number") {
+      console.error(
+        `[meta-capi] UNCONFIRMED ${eid}: HTTP ${response.status} but no events_received in the response`,
+      );
+      return "failed";
+    }
+
     console.info(
-      `[meta-capi] SENT ${eid} events_received=${body.events_received ?? "?"} fbtrace_id=${body.fbtrace_id ?? "?"}`,
+      `[meta-capi] SENT ${eid} events_received=${body.events_received} fbtrace_id=${body.fbtrace_id ?? "?"}`,
     );
     return "sent";
   } catch (error) {

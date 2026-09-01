@@ -190,11 +190,28 @@ describe("reportPurchaseToMeta logging", () => {
     const info = vi.spyOn(console, "info").mockImplementation(() => {});
     vi.stubGlobal(
       "fetch",
-      vi.fn(async () => new Response("{}", { status: 200 })),
+      vi.fn(async () =>
+        new Response(JSON.stringify({ events_received: 1 }), {
+          status: 200,
+          headers: { "content-type": "application/json" },
+        }),
+      ),
     );
 
     await reportPurchaseToMeta(env("EAAsecretvalue"), order());
     expect(info.mock.calls[0][0] as string).not.toContain("EAAsecretvalue");
+  });
+
+  /* A 2xx with no events_received is not a confirmed send (§8.30-q). Logging it
+     as SENT would put back the ambiguity the whole logging change removed. */
+  it("reports a 2xx with no events_received as UNCONFIRMED, not SENT", async () => {
+    const error = vi.spyOn(console, "error").mockImplementation(() => {});
+    const info = vi.spyOn(console, "info").mockImplementation(() => {});
+    vi.stubGlobal("fetch", vi.fn(async () => new Response("<html>proxy</html>", { status: 200 })));
+
+    await expect(reportPurchaseToMeta(env("TOKEN"), order())).resolves.toBe("failed");
+    expect(error.mock.calls[0][0] as string).toContain("UNCONFIRMED");
+    expect(info).not.toHaveBeenCalled();
   });
 
   it("reports a rejection rather than swallowing it, and still does not throw", async () => {

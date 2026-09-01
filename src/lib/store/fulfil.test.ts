@@ -18,7 +18,14 @@ let results: Record<string, { data?: unknown; error?: unknown; count?: number }>
 
 vi.mock("@/lib/store/db", () => ({ db: () => fakeClient(results, calls) }));
 
-const { markPaid } = await import("./fulfil");
+/* notifyPaid's three downstream calls, mocked so the CONTRACT is what is
+   tested: that all three are attempted and that no failure escapes. */
+const sendEmail = vi.hoisted(() => vi.fn());
+const reportPurchaseToMeta = vi.hoisted(() => vi.fn());
+vi.mock("@/lib/email/send", () => ({ sendEmail }));
+vi.mock("./meta-capi", () => ({ reportPurchaseToMeta }));
+
+const { markPaid, notifyPaid, markRefunded } = await import("./fulfil");
 const env = fakeEnv as StoreEnv;
 
 const row = {
@@ -33,7 +40,7 @@ const row = {
 
 /** The filters the UPDATE was built with, as name/value pairs. */
 function filters() {
-  return calls.filter((c) => ["eq", "neq", "lte"].includes(c.method)).map((c) => `${c.method}:${c.args[0]}`);
+  return calls.filter((c) => ["eq", "neq", "lte", "in"].includes(c.method)).map((c) => `${c.method}:${c.args[0]}`);
 }
 
 describe("markPaid", () => {
@@ -125,5 +132,106 @@ describe("markPaid", () => {
 
     expect(result).toEqual({ outcome: "paid", order: row });
     expect(filters().filter((f) => f === "lte:amount_paise")).toHaveLength(2);
+  });
+});
+
+/* ── notifyPaid ───────────────────────────────────────────────────────────
+ *
+ *  WHY THESE EXIST. Until 2026-09-02 this function had NO tests, and the
+ *  omission was provable rather than theoretical: commenting out the
+ *  `reportPurchaseToMeta(env, order)` line left all 950 tests passing. That is
+ *  the single line that reports a sale to Meta, and §8.30-l leans on this
+ *  function's placement for its exactly-once and never-throw guarantees while
+ *  nothing pinned either.
+ *
+ *  The emails and the Meta call are mocked because what is under test is this
+ *  function's CONTRACT: that all three are attempted, and that no failure among
+ *  them can escape. By the time this runs the money has moved and the row says
+ *  so, and a throw here would fail a webhook Razorpay then retries for a
+ *  payment recorded perfectly. */
+describe("notifyPaid", () => {
+  beforeEach(() => {
+    calls = [];
+    results = {};
+    vi.clearAllMocks();
+    sendEmail.mockResolvedValue(undefined);
+    reportPurchaseToMeta.mockResolvedValue("sent");
+  });
+
+  const paidOrder = { ...row, status: "paid", child_age: "4", phone: "+919187546483" };
+
+  it("reports the sale to Meta, exactly once, with the paid order", async () => {
+    await notifyPaid(env, paidOrder as never);
+    expect(reportPurchaseToMeta).toHaveBeenCalledTimes(1);
+    expect(reportPurchaseToMeta).toHaveBeenCalledWith(env, paidOrder);
+  });
+
+  it("sends the parent's acknowledgement and the internal alert", async () => {
+    await notifyPaid(env, paidOrder as never);
+    expect(sendEmail).toHaveBeenCalledTimes(2);
+    const recipients = sendEmail.mock.calls.map((c) => (c[1] as { to: string }).to);
+    expect(recipients).toContain(paidOrder.email);
+    expect(recipients).toContain(env.alertEmail);
+  });
+
+  /* The never-throw contract, from three directions. Each of these is a real
+     outage shape: Meta down, Resend down, both. */
+  it("does not throw when the Meta report fails, and still sends both emails", async () => {
+    reportPurchaseToMeta.mockRejectedValue(new Error("graph.facebook.com unreachable"));
+    await expect(notifyPaid(env, paidOrder as never)).resolves.toBeUndefined();
+    expect(sendEmail).toHaveBeenCalledTimes(2);
+  });
+
+  it("does not throw when an email fails, and still reports to Meta", async () => {
+    sendEmail.mockRejectedValue(new Error("resend down"));
+    await expect(notifyPaid(env, paidOrder as never)).resolves.toBeUndefined();
+    expect(reportPurchaseToMeta).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not throw when everything downstream fails at once", async () => {
+    sendEmail.mockRejectedValue(new Error("resend down"));
+    reportPurchaseToMeta.mockRejectedValue(new Error("meta down"));
+    await expect(notifyPaid(env, paidOrder as never)).resolves.toBeUndefined();
+  });
+});
+
+/* ── markRefunded (§8.25-ee) ──────────────────────────────────────────────
+ *
+ *  Also untested until now, and it carries the law that a PARTIAL refund is not
+ *  a cancellation. That is not hypothetical: the first refund this store ever
+ *  issued was ₹489 of ₹499, so a rule of "any refund clears the order" would
+ *  have silently cancelled a live pre-order. */
+describe("markRefunded", () => {
+  beforeEach(() => {
+    calls = [];
+    results = {};
+  });
+
+  it("takes a fully refunded order out of the dispatch queue", async () => {
+    results["preorders.select"] = {
+      data: { order_ref: "KH-A2B3-C4D5", amount_paise: 49_900, status: "paid" },
+    };
+    await expect(markRefunded(env, { paymentId: "pay_1", refundedPaise: 49_900 })).resolves.toBe(
+      "refunded",
+    );
+    const update = calls.find((c) => c.method === "update");
+    expect(update?.args[0]).toMatchObject({ status: "refunded" });
+  });
+
+  it("leaves a PARTIAL refund alone, because there is no honest automatic answer", async () => {
+    results["preorders.select"] = {
+      data: { order_ref: "KH-A2B3-C4D5", amount_paise: 49_900, status: "paid" },
+    };
+    await expect(markRefunded(env, { paymentId: "pay_1", refundedPaise: 48_900 })).resolves.toBe(
+      "partial",
+    );
+    expect(calls.find((c) => c.method === "update")).toBeUndefined();
+  });
+
+  it("says so when no order matches the payment, rather than guessing", async () => {
+    results["preorders.select"] = { data: null };
+    await expect(markRefunded(env, { paymentId: "pay_unknown", refundedPaise: 100 })).resolves.toBe(
+      "unknown",
+    );
   });
 });

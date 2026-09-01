@@ -27,7 +27,7 @@ const SECTIONS: readonly LegalSection[] = [
          happen again: the form is now ours, in this repo, so there is no excuse
          for the two to drift. */
       "Your name, your WhatsApp number, your email address, and your child's age, before you pay. Your delivery address, after you pay.",
-      "That is the whole list. We ask your child's age because Lumi is built for a narrow band of ages and we want to send you the right thing. We do not ask for your child's name, their school, their photograph, or anything else about them.",
+      "That is everything we ask you for. Your browser also tells us where you arrived from and what device you are on, which every website receives and which we keep with your order so we know which of our own pages and advertisements are working. We ask your child's age because Lumi is built for a narrow band of ages and we want to send you the right thing. We do not ask for your child's name, their school, their photograph, or anything else about them.",
     ],
   },
   {
@@ -52,7 +52,7 @@ const SECTIONS: readonly LegalSection[] = [
   {
     h: "Where it lives, and who else touches it",
     ps: [
-      "Your order is stored in a database run by Supabase, and only the Kheelona team can read it. Our confirmation emails are delivered by Resend. This website is hosted by Vercel. Those three, plus Razorpay for the payment, are everyone who touches your details, and each one is doing a job we could not do ourselves.",
+      "Your order is stored in a database run by Supabase, and only the Kheelona team can read it. Our confirmation emails are delivered by Resend. This website is hosted by Vercel. Those three, plus Razorpay for the payment, are everyone who holds your details, and each one is doing a job we could not do ourselves. Meta is sent a coded version of some of them when you pre-order, which is explained in full below.",
       "If you have paid us, we have to keep the order record for our tax accounts, even after a refund, because Indian tax law requires it of any company. We delete everything we are not required to keep, on request.",
     ],
   },
@@ -78,8 +78,26 @@ const SECTIONS: readonly LegalSection[] = [
          the plainest honest description of a hash for a parent reading this;
          what it must not claim is that nothing was sent. */
       "The Meta Pixel is the exception. When you use our order forms, details you enter can be included with what it reports, always as a one-way code and never in readable form. A one-way code lets Meta check whether you match somebody they already know; it is not the details themselves. That is how we can tell that the person who pre-ordered is the person who saw our advertisement.",
-      "Which details are included is determined by Meta's own measurement script rather than chosen by us field by field. We never use any of it to profile your child, we never sell it, and we never trade it.",
-      "If you would rather not be counted, your browser can block all four. Private browsing, an ad blocker, or turning off third party cookies all work, and none of them stop the site or the store from working. You can also turn off personalised advertising inside your own Facebook or Instagram settings.",
+      /* REWRITTEN 2026-09-02. The previous sentence said the fields were
+         "determined by Meta's own measurement script rather than chosen by us
+         field by field". True of the script in your browser, and false of our
+         own server, which chooses seven fields by name in lib/store/meta-capi.ts.
+         A test used to PIN that sentence, so the suite was enforcing a false
+         claim about our own code. Both halves are now stated separately,
+         because they really are two different things. */
+      "Two things are happening there, and they are worth separating. Meta's script in your browser reads what it recognises on our forms, and we do not choose that field by field. Our own server separately sends a small, fixed set when an order completes: coded forms of your email, your phone number and your first name, along with your network address and which browser you are using, which are the two it needs in readable form to match a sale to an advertisement.",
+      "We never use any of it to profile your child, we never sell it, and we never trade it.",
+      /* REWRITTEN 2026-09-02, and this was the worst of the four. The retired
+         sentence told the reader their browser could block every one of the
+         four tools, which offered an opt-out that does not work: the server
+         half of the Meta reporting is sent by us when an order completes, and
+         no ad blocker can reach it. Telling a parent to block and letting them
+         believe nothing was sent is the one thing a privacy page must not do.
+         (The exact retired wording is pinned as banned in
+         test/analytics-tags.test.ts, so it is deliberately not quoted here —
+         the same trap caught the previous rewrite on 2026-09-01.) */
+      "If you would rather not be counted, your browser can block the three that only run in your browser, and most of the fourth. Private browsing, an ad blocker, or turning off third party cookies all work, and none of them stop the site or the store from working.",
+      "Be aware of the one gap, because we would rather you heard it from us: the report our server sends to Meta when a pre-order completes is sent by us, not by your browser, so blocking cannot prevent it. What you can do instead is turn off personalised advertising inside your own Facebook or Instagram settings, and you can ask us to delete your details at any time, which is explained further down.",
     ],
   },
   {

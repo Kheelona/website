@@ -59,9 +59,24 @@ describe("GET /api/health", () => {
 
   it("never publishes the paid-order count, only the mode", async () => {
     const body = await (await check()).json();
-    expect(JSON.stringify(body)).not.toContain("12");
+
+    /* Asserted on STRUCTURE, not on a substring of the whole JSON. The old
+       version was `JSON.stringify(body).not.toContain("12")` against a fixture
+       count of 12, and the body also carries `dbMs` — so a database round trip
+       of 12, 120, 123 or 1200 ms failed the test with no bug present, and a
+       count of 500 would have passed it. A guard that fails randomly gets
+       muted, and a guard that only catches one literal was never guarding. */
     expect(body).not.toHaveProperty("count");
     expect(body).not.toHaveProperty("sold");
+    expect(body).not.toHaveProperty("remaining");
+
+    /* Nothing but the MODE may describe the queue: no value in the body may be
+       the count itself. `dbMs` is excluded because it is a timing, not a fact
+       about orders. */
+    const { dbMs: _dbMs, ...rest } = body as Record<string, unknown>;
+    expect(Object.values(rest)).not.toContain(12);
+    expect(JSON.stringify(rest)).not.toContain("12");
+    expect(body.preorder).toBe("token");
   });
 
   it("names the missing variables when the store is not configured, never values", async () => {

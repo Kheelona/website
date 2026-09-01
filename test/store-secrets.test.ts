@@ -76,7 +76,7 @@ describe("store secrets stay secret", () => {
       const text = readFileSync(join(ROOT, file), "utf8");
       if (!text.startsWith('"use client"')) continue;
       expect(text, `${file} is a client component and reads process.env`).not.toMatch(
-        /process\.env\.(RAZORPAY|SUPABASE|STORE_SIGNING|RESEND)/,
+        /process\.env\.(RAZORPAY|SUPABASE|STORE_SIGNING|RESEND|META_CAPI)/,
       );
     }
   });

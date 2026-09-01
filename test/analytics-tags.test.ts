@@ -1,6 +1,8 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import { purchasePayload } from "@/lib/store/meta-capi";
+import type { PreorderRow } from "@/lib/store/db";
 
 /**
  * Four measurement tools now run on this site, and each one carries a promise
@@ -19,6 +21,31 @@ import { describe, expect, it } from "vitest";
 const ROOT = process.cwd();
 const LAYOUT = readFileSync(join(ROOT, "src/app/layout.tsx"), "utf8");
 const PRIVACY = readFileSync(join(ROOT, "src/app/(site)/privacy/page.tsx"), "utf8");
+
+/** A fully populated order, so the key allow-list sees every field the payload
+ *  can carry. A sparser fixture would let a new key hide behind an absent
+ *  value. */
+const SAMPLE_ORDER = {
+  id: 1,
+  order_ref: "KH-A2B3-C4D5",
+  tier: "launch",
+  amount_paise: 49_900,
+  status: "paid",
+  parent_name: "Test Parent",
+  phone: "+919187546483",
+  email: "parent@example.com",
+  child_age: "4",
+  wa_consent: true,
+  terms_accepted_at: null,
+  address: { line1: "1 Road", line2: "", city: "Bengaluru", state: "KA", pincode: "560041" },
+  rzp_order_id: "order_x",
+  rzp_payment_id: "pay_x",
+  balance_status: "due",
+  utm: null,
+  fb_attrib: { fbp: "fb.1.1.1", fbc: "fb.1.1.CLICK", ip: "203.0.113.9", ua: "UA/1" },
+  created_at: "2026-09-02T00:00:00.000Z",
+  paid_at: "2026-09-02T10:00:00.000Z",
+} as PreorderRow;
 
 describe("analytics tags and their privacy disclosure stay in step", () => {
   it("mounts all four tools in the root layout", () => {
@@ -48,7 +75,20 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
   it("still tells the reader which tools set cookies and how to refuse them", () => {
     expect(PRIVACY).toMatch(/set no cookies/);
     expect(PRIVACY).toMatch(/does set cookies/);
-    expect(PRIVACY).toMatch(/block all four/);
+    /* Was `block all four` until 2026-09-02. That sentence became false the day
+       the Conversions API shipped, because the server half is sent by us and no
+       ad blocker can reach it. The refusal advice must still be here, but it may
+       not overstate what refusing achieves. */
+    expect(PRIVACY).toMatch(/your browser can block the three that only run in your browser/);
+  });
+
+  /* THE OPT-OUT MUST NOT OVERSTATE ITSELF (§8.30-r). Telling a parent to install
+     an ad blocker and letting them believe nothing reached Meta is the single
+     worst thing this page could do, because they would act on it and be wrong.
+     The page has to name the gap. */
+  it("admits that blocking cannot stop the server-side report", () => {
+    expect(PRIVACY).toMatch(/sent by us, not by your browser, so blocking cannot prevent it/);
+    expect(PRIVACY).not.toContain("your browser can block all four");
   });
 
   /* The Meta Pixel is the first tool here that exists to advertise to the
@@ -80,15 +120,46 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
      meta-capi.ts sends em, ph or fn, /privacy has to say so. Losing the
      disclosure while keeping the code is the failure mode, and it is silent. */
   it("discloses the hashed contact details the Conversions API sends", () => {
-    const capi = readFileSync(join(ROOT, "src/lib/store/meta-capi.ts"), "utf8");
-    const sendsIdentifiers =
-      capi.includes("user_data.em") || capi.includes("user_data.ph") || capi.includes("user_data.fn");
+    /* UNCONDITIONAL SINCE 2026-09-02. This assertion used to sit behind
+       `if (sendsIdentifiers)`, where that flag was a GREP OF THE SOURCE IT
+       GUARDS for the literals `user_data.em` / `.ph` / `.fn`. Rewriting
+       meta-capi.ts to `Object.assign(user_data, { em, ph, fn })` would have
+       disabled the guard silently: zero assertions, green test, disclosure
+       requirement gone. A guard whose trigger is a string match on the code it
+       guards fails OPEN, which is the worst way for a guard to fail. The
+       payload check below now establishes that identifiers are sent, and the
+       disclosure is required no matter how the code is spelled. */
+    expect(PRIVACY, "CAPI sends hashed contact details but /privacy does not disclose it")
+      .toMatch(/one-way code/);
+    expect(PRIVACY).toMatch(/never in readable form/);
+  });
 
-    if (sendsIdentifiers) {
-      expect(PRIVACY, "CAPI sends hashed contact details but /privacy does not disclose it")
-        .toMatch(/one-way code/);
-      expect(PRIVACY).toMatch(/never in readable form/);
-    }
+  /* BEHAVIOUR, NOT SPELLING. Asserted against the payload the code actually
+     builds, as a KEY ALLOW-LIST rather than a search for values.
+     Why a key list and not a value search: every identifier is hashed on the
+     way in, so a future mistake would look exactly like the correct code
+     (`user_data.db = hashed(order.child_age)`), and a check for the raw age or
+     a raw address would sail straight past a SHA-256. A key list catches a
+     hashed addition, a plaintext addition, and a widening of custom_data. */
+  it("sends Meta these fields and no others", () => {
+    const payload = purchasePayload(SAMPLE_ORDER, "TOKEN");
+    const event = payload.data[0] as Record<string, unknown>;
+
+    expect(Object.keys(event.user_data as object).sort()).toEqual([
+      "client_ip_address",
+      "client_user_agent",
+      "em",
+      "fbc",
+      "fbp",
+      "fn",
+      "ph",
+    ]);
+    expect(Object.keys(event.custom_data as object).sort()).toEqual([
+      "content_category",
+      "currency",
+      "order_id",
+      "value",
+    ]);
   });
 
   it("no longer claims nothing is ever sent, which the Conversions API made untrue", () => {
@@ -109,6 +180,10 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
      keep it that way. They are not about the wording any more, they are about
      never widening the one half of this we decide. */
   it("keeps our own server payload narrow: no address, no child's age", () => {
+    /* Kept as a SOURCE grep deliberately, alongside the key allow-list above.
+       The two catch different mistakes: the allow-list catches a new key, and
+       this catches somebody reading `order.child_age` or `order.address` at all
+       inside the Meta module, which is the step before it becomes a key. */
     const capi = readFileSync(join(ROOT, "src/lib/store/meta-capi.ts"), "utf8");
     expect(capi, "the child's age must never be put in OUR payload").not.toMatch(/child_age/);
     expect(capi, "the delivery address must never be put in OUR payload").not.toMatch(/order\.address/);
@@ -127,7 +202,21 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
      and that Meta's script decides which. */
   it("still discloses that form details can reach Meta, and who decides which", () => {
     expect(PRIVACY).toMatch(/details you enter can be included/);
-    expect(PRIVACY).toMatch(/determined by Meta's own measurement script/);
+    /* The old assertion pinned "determined by Meta's own measurement script
+       rather than chosen by us field by field", which is true of the browser
+       script and FALSE of our server, which picks seven fields by name. The
+       suite was enforcing a false claim about our own code. The page now states
+       the two halves separately, and this pins both. */
+    expect(PRIVACY).toMatch(/Meta's script in your browser reads what it recognises/);
+    expect(PRIVACY).toMatch(/Our own server separately sends a small, fixed set/);
+  });
+
+  /* The IP and the user agent are the only things that leave in READABLE form,
+     and they are personal data under DPDP. The page must say so, not merely
+     avoid denying it. */
+  it("discloses the two fields that are NOT hashed", () => {
+    expect(PRIVACY).toMatch(/your network address and which browser you are using/);
+    expect(PRIVACY).toMatch(/in readable form to match a sale to an advertisement/);
   });
 
   /* Extended 2026-08-22 (§8.25-e). The standing rule was written for

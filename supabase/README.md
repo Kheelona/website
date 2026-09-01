@@ -8,7 +8,13 @@ key. See `migrations/0001_preorders.sql` for the reasoning inline.
 
 1. Create a project at supabase.com (free tier is enough: this stores text, and
    a pre-order is a few hundred bytes).
-2. Open the SQL editor, paste `migrations/0001_preorders.sql`, run it.
+2. Open the SQL editor and run **every file in `migrations/` in filename order**
+   (`0001_preorders.sql`, then `0002_…`, then `0003_…`, and so on). Do not stop at
+   the first one. This line used to name `0001` alone, which by 2026-09-02 meant a
+   rebuilt database silently missed two later migrations: without `0002` a
+   full-payment order violates the `balance_status` CHECK, and without `0003`
+   every pre-order returns 500 because `create-order` inserts a column that is not
+   there. Every file is written to be safe to re-run.
 3. Project Settings → API. Copy the **Project URL** and the **service_role**
    key into Vercel as `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`.
 
