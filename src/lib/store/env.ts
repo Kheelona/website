@@ -27,6 +27,16 @@ export type StoreEnv = {
    *  the order is still recorded. Losing an email must never lose an order. */
   resendApiKey: string | null;
   emailFrom: string;
+  /** Optional: the Meta Conversions API token (§8.30-l). Without it the
+   *  server-side Purchase is skipped and the browser pixel carries on alone,
+   *  which is exactly the state the store shipped in. A REAL SECRET, so it may
+   *  never take a `NEXT_PUBLIC_` name — unlike the pixel ID itself, which is
+   *  public and hardcoded in config/site.ts. */
+  metaCapiToken: string | null;
+  /** Optional, development only: Meta's Test Events code. Set it locally to
+   *  watch server events arrive in Events Manager; it must never be set in
+   *  production, where it would divert real conversions into the test stream. */
+  metaCapiTestCode: string | null;
 };
 
 /** A value counts as missing if it is absent, empty, or still a placeholder.
@@ -90,6 +100,8 @@ export function storeEnv(): StoreEnv | null {
     alertEmail: real(process.env.ORDER_ALERT_EMAIL) ?? "hello@kheelona.com",
     resendApiKey: real(process.env.RESEND_API_KEY),
     emailFrom: real(process.env.EMAIL_FROM) ?? "Kheelona <hello@send.kheelona.com>",
+    metaCapiToken: real(process.env.META_CAPI_TOKEN),
+    metaCapiTestCode: real(process.env.META_CAPI_TEST_CODE),
   };
 }
 

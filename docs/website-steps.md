@@ -1437,3 +1437,63 @@ event that looks mysteriously rare in Events Manager. `whenFbqReady` polls for t
 queues, so nothing needs to wait for fbevents.js itself), gives up after a bounded timeout so a
 gate-shut host does not poll forever, and returns a canceller for React cleanup. Events fired from a
 user interaction do not need it. **Calling `fbTrack` directly from a mount effect is a review flag.**
+
+**l. THE CONVERSIONS API: Purchase, sent from our own server (added 2026-09-02).**
+Ad blockers, Safari ITP and iOS ATT drop a large share of browser-fired events, and Purchase is the
+one that matters, because it is what ad delivery optimises against. So the browser keeps firing and
+the server fires too, and Meta collapses the pair.
+
+*De-duplication is what makes this safe to add at all.* Meta merges a browser event and a server
+event when `event_name` and `event_id` match within 48 hours. Both sides call
+`purchaseEventId(orderRef)` in `lib/fbq.ts` — `purchase_KH-XXXX-XXXX` — and neither tells the other
+anything: no shared state, no handoff, no ordering requirement. If the browser event is blocked, the
+server event stands alone and the conversion is still counted exactly once. **That function must stay
+pure and must not change shape casually**: changing it while events are in flight splits one
+conversion into two for every order inside the window.
+
+*There is NO public endpoint, and this is the deliberate departure from the guide this came from.*
+That guide proposed an `/api/capi` route that accepts an event and forwards it to Meta. That is an
+unauthenticated way for anyone on the internet to write fake purchases into the ad account, and it
+would have had the browser POST the customer's email and phone to us in the clear to be hashed. The
+same document argued for the webhook on the grounds that it "can't be spoofed", and then proposed the
+spoofable thing. **Sending from fulfilment instead means the only thing that can report a purchase is
+a purchase Razorpay confirmed, and the PII never moves**: it is already in our database, and only its
+SHA-256 leaves.
+
+*It is sent from `notifyPaid`, not from the call sites, and that placement IS the guarantee.*
+`notifyPaid` is reached from exactly two places, the webhook and the browser confirm route, and both
+reach it only behind `markPaid` returning `"paid"` — a single atomic UPDATE that wins exactly once
+under the real race the launch already proved. So the server Purchase inherits exactly-once from the
+receipt email, for free, and inherits that function's never-throw rule too. **Never throw here**: an
+exception would fail a webhook Razorpay then retries, for a payment recorded perfectly.
+
+*Match quality needed data a webhook does not have, and that is the only reason there is a schema
+change.* Razorpay calls the webhook, so it carries none of the customer's own request. `_fbp`, `_fbc`,
+the client IP and the user agent are therefore captured in `create-order` and stored on the order in
+one nullable JSONB column, `preorders.fb_attrib`, mirroring how `utm` was already done. **All of it is
+read server-side from the request the browser already sent** — `_fbp` and `_fbc` are ordinary
+first-party cookies on the store host and `create-order` is a same-host POST, so nothing was added to
+the client and the client gained no new say in any of it. The IP comes from `clientKey`, the
+F-14-hardened extraction, never the caller-suppliable first hop of `x-forwarded-for`.
+
+*`META_CAPI_TOKEN` is a REAL SECRET and is OPTIONAL.* Optional because the store must work before the
+founder has pasted every dashboard value in: absent, the server Purchase is skipped and the browser
+pixel carries on alone, which is the state the store shipped in for a day. A real secret because it
+can write conversions into the ad account, so it may never take a `NEXT_PUBLIC_` name —
+`test/store-secrets.test.ts` now guards it alongside the payment keys. **This is the exact opposite of
+the pixel ID**, which is public and hardcoded (§8.30-c), and the two must not be confused.
+`META_CAPI_TEST_CODE` is development-only: set in production it diverts real conversions into Meta's
+test stream, where they do not count.
+
+*Not done, deliberately:* refunds. Meta has no standard refund event; correcting a counted conversion
+needs Conversions Adjustments. `markRefunded` is the hook when that is wanted.
+
+**m. WHAT AUTOMATIC ADVANCED MATCHING DOES TO THE PRIVACY PAGE (flagged 2026-09-02).** Meta turns
+Automatic Advanced Matching ON BY DEFAULT for a new dataset. It scrapes form fields on the page and
+sends hashed identifiers with browser events. **On this site that silently falsifies /privacy**, which
+promises that none of the measurement tools "is ever sent your name, your address, your phone number,
+your email, or your child's age" — a promise written for a page where a parent types exactly those
+things and then pays. This is not a code setting and cannot be fixed in this repo: it is a toggle in
+Events Manager, and it is a founder decision, on a children's product under DPDP. Either it is off and
+the page is true, or it stays on and §8.30-g's wording has to be opened again. **Whoever reads this
+next: check the dataset's Settings before assuming the privacy page is accurate.**

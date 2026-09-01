@@ -26,6 +26,22 @@ export function fbTrack(
   window.fbq?.("track", event, params, eventId ? { eventID: eventId } : undefined);
 }
 
+/** The de-duplication key for a Purchase, derived from the order reference.
+ *
+ *  ISOMORPHIC ON PURPOSE, and that is the whole design. Meta collapses a
+ *  browser event and a Conversions API event into a single conversion when
+ *  `event_name` and `eventID` match within 48 hours. Deriving the id from
+ *  something both sides already hold means the browser and the Razorpay webhook
+ *  can each compute it alone, with no shared state, no handoff, and no way for
+ *  one side to be running a stale version of the other's value.
+ *
+ *  So this function must stay pure and must never change shape casually:
+ *  changing it while events are in flight would split one conversion into two
+ *  for every order in the 48-hour window. */
+export function purchaseEventId(orderRef: string): string {
+  return `purchase_${orderRef}`;
+}
+
 /** Run `cb` once `window.fbq` exists, and return a canceller for React cleanup.
  *
  *  WHY THIS IS NEEDED, and it is not obvious. `fbTrack` no-ops when the pixel is

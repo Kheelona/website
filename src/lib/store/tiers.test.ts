@@ -143,4 +143,37 @@ describe("resolveTier under the unit cap", () => {
     expect(tierRefusalMessage("not-yet")).toContain("₹499");
     expect(tierRefusalMessage("not-yet")).toContain("Refresh");
   });
+
+  /* Reported 2026-09-02: a live button read "Pay ₹0 and reserve". The amount is
+     the one field taken straight from a hand-edited Supabase row, and nothing
+     validated it, so a 0 or a null produced a payable form for nothing — which
+     Razorpay then refuses, leaving a parent on a payment page with a dead
+     button and no explanation. */
+  it.each([
+    ["zero", 0],
+    ["negative", -100],
+    ["null", null],
+    ["missing", undefined],
+  ])("refuses an event tier whose amount is %s, rather than offering a ₹0 button", async (_label, amount) => {
+    results["event_tiers.select"] = {
+      data: { id: "broken", label: "Misconfigured", amount_paise: amount, cap: null, expires_on: null, active: true },
+    };
+    const result = await resolveTier(env, {
+      tier: "broken",
+      signature: sign(env.signingSecret, "event-link", "broken"),
+    });
+    expect(result).toEqual({ ok: false, reason: "unknown" });
+  });
+
+  it("still accepts the smallest real charge, so the guard is not over-tight", async () => {
+    results["event_tiers.select"] = {
+      data: { id: "tiny", label: "Tiny", amount_paise: 100, cap: null, expires_on: null, active: true },
+    };
+    const result = await resolveTier(env, {
+      tier: "tiny",
+      signature: sign(env.signingSecret, "event-link", "tiny"),
+    });
+    expect(result).toEqual({ ok: true, tier: { id: "tiny", amountPaise: 100, label: "Tiny" } });
+  });
+
 });

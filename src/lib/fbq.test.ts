@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { fbTrack, whenFbqReady } from "./fbq";
+import { fbTrack, purchaseEventId, whenFbqReady } from "./fbq";
 
 /** The pixel is absent far more often than it is present: localhost, previews,
  *  every test, and the first moments of a production page load. So what these
@@ -82,5 +82,19 @@ describe("whenFbqReady", () => {
     window.fbq = vi.fn();
     vi.advanceTimersByTime(5000);
     expect(cb).not.toHaveBeenCalled();
+  });
+});
+
+describe("purchaseEventId", () => {
+  /* The contract that makes Conversions API de-duplication possible: the
+     browser and the Razorpay webhook each derive this alone, from the one
+     thing they both hold. */
+  it("derives a stable id from the order reference", () => {
+    expect(purchaseEventId("KH-KZYJ-PEHT")).toBe("purchase_KH-KZYJ-PEHT");
+  });
+
+  it("is pure, so both sides always agree", () => {
+    expect(purchaseEventId("KH-AAAA-BBBB")).toBe(purchaseEventId("KH-AAAA-BBBB"));
+    expect(purchaseEventId("KH-AAAA-BBBB")).not.toBe(purchaseEventId("KH-AAAA-BBBC"));
   });
 });

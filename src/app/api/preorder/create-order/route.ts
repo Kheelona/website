@@ -6,6 +6,7 @@ import { newOrderRef } from "@/lib/store/order-ref";
 import { signAddressToken, ADDRESS_TOKEN_TTL_MS } from "@/lib/store/signing";
 import { rateLimit, clientKey } from "@/lib/store/rate-limit";
 import { json, str, NOT_CONFIGURED } from "@/lib/store/http";
+import { readFbAttrib } from "@/lib/store/meta-capi";
 import {
   validateContact,
   normalisePhone,
@@ -96,6 +97,12 @@ export async function POST(request: Request) {
       wa_consent: true,
       terms_accepted_at: new Date().toISOString(),
       utm: readUtm(body.utm),
+      /* Meta attribution, captured HERE and nowhere else (§8.30-l). This is the
+         only moment we hold both the order and the customer's own request: the
+         Razorpay webhook that later reports the purchase server-side is called
+         by Razorpay, so it has none of this. Read entirely from the request the
+         browser already sent, so the client gained no new say in it. */
+      fb_attrib: readFbAttrib(request),
     })
     .select("id, order_ref")
     .single();

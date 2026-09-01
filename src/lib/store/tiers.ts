@@ -104,6 +104,22 @@ export async function resolveTier(
     if ((count ?? 0) >= tier.cap) return { ok: false, reason: "full" };
   }
 
+  /* THE AMOUNT MUST BE A REAL CHARGE (added 2026-09-02, after "Pay ₹0 and
+     reserve" was reported on a live button).
+     Everything above this line validates whether the tier APPLIES. Nothing
+     validated what it costs, and the amount is the one field read straight out
+     of a hand-edited Supabase row. A zero or a null there rendered a button
+     reading "Pay ₹0 and reserve" and would then have asked Razorpay to take
+     ₹0, which it refuses — so the parent's real failure was a dead button on a
+     payment page, with no explanation.
+     Refused as "unknown" rather than given its own reason, deliberately: a
+     misconfigured tier is not a state to explain to a parent at a stall, it is
+     a link that does not work, and the existing message already sends them to
+     the normal price. The fix belongs in the row, not in the copy. */
+  if (typeof tier.amount_paise !== "number" || tier.amount_paise <= 0) {
+    return { ok: false, reason: "unknown" };
+  }
+
   return {
     ok: true,
     tier: { id: tier.id, amountPaise: tier.amount_paise, label: tier.label },

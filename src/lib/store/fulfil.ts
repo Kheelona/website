@@ -4,6 +4,7 @@ import { sendEmail } from "@/lib/email/send";
 import { preorderAckEmail, internalAlertEmail } from "@/lib/email/templates";
 import { STORE_URL } from "@/config/site";
 import type { StoreEnv } from "./env";
+import { reportPurchaseToMeta } from "./meta-capi";
 
 /** Marking a pre-order paid, once (§8.25-p).
  *
@@ -200,10 +201,23 @@ export function addressUrlFor(env: StoreEnv, order: PreorderRow): string {
   return `${STORE_URL}/thanks?ref=${order.order_ref}&t=${token}`;
 }
 
-/** Both emails. Never throws, never blocks the caller's success: by this point
- *  the money has moved and the row says so, and an email is a courtesy we can
- *  retry by hand. A 500 here would make Razorpay retry a webhook for a payment
- *  that was recorded perfectly. */
+/** Everything that happens once, off the critical path, when an order becomes
+ *  paid: both emails, and the server-side Purchase to Meta.
+ *
+ *  Never throws, never blocks the caller's success: by this point the money has
+ *  moved and the row says so, and an email is a courtesy we can retry by hand. A
+ *  500 here would make Razorpay retry a webhook for a payment that was recorded
+ *  perfectly.
+ *
+ *  THE META REPORT LIVES HERE RATHER THAN AT THE CALL SITES, and that is the
+ *  reason it is safe (§8.30-l). This function is reached from exactly two
+ *  places, the webhook and the browser confirm route, and both reach it only
+ *  behind `markPaid` returning "paid" — which is a single atomic UPDATE and so
+ *  wins exactly once under the real race the launch already proved. So the
+ *  server Purchase inherits the same exactly-once guarantee as the receipt
+ *  email, for free, and it inherits this function's never-throw rule too.
+ *  Reporting it from either call site instead would mean earning both again,
+ *  twice, and forgetting one of them the day a third caller appears. */
 export async function notifyPaid(env: StoreEnv, order: PreorderRow): Promise<void> {
   const ack = preorderAckEmail({
     order,
@@ -214,5 +228,6 @@ export async function notifyPaid(env: StoreEnv, order: PreorderRow): Promise<voi
   await Promise.allSettled([
     sendEmail(env, { ...ack, to: order.email }),
     sendEmail(env, { ...alert, to: env.alertEmail }),
+    reportPurchaseToMeta(env, order),
   ]);
 }

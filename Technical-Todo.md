@@ -151,6 +151,34 @@ security headers live, the live pages carry no console errors or failed requests
       too. If this was switched on deliberately, an allowlist for `/api/health` is the smallest fix;
       if it switched itself on in response to traffic, it is worth knowing that it did.
 
+## 🧑 Meta advertising, opened 2026-09-02
+
+- [ ] 🧑 **⚠ Automatic Advanced Matching makes `/privacy` untrue right now (§8.30-m).** Meta turns it
+      ON BY DEFAULT for a new dataset, and it scrapes form fields and sends hashed identifiers with
+      browser events. An external reviewer observed it logging a first name off our pre-order form.
+      The live privacy page promises that none of the measurement tools "is ever sent your name, your
+      address, your phone number, your email, or your child's age" — written for a page where a
+      parent types exactly those things and then pays, on a children's product, under DPDP.
+      **Two ways out, and one of them is two clicks:** switch AAM off in Events Manager → dataset →
+      Settings, and the page is true again; or leave it on and ask for §8.30-g to be rewritten a
+      second time. Not fixable in this repo either way. **This outranks everything else on the Meta
+      list.**
+
+- [ ] 🧑 **Generate `META_CAPI_TOKEN` and add it to Vercel.** Events Manager → dataset → Settings →
+      Conversions API → Generate access token. Vercel: Production + Preview, **Secret**, and **no
+      `NEXT_PUBLIC_` prefix** (`test/store-secrets.test.ts` fails the build if that ever appears).
+      **Then redeploy** — a Vercel variable only applies to deployments created after it changes, so
+      without that the running deployment keeps the absent value and the server Purchase stays
+      silently off. The code shipped 2026-09-02 and is a no-op until the token lands, by design.
+      Afterwards, confirm in Events Manager that a real order produces **one** Purchase and not two:
+      that is the de-duplication working (§8.30-l).
+
+- [ ] 🧑 **Where was "Pay ₹0 and reserve" seen?** Reported by the reviewer on the store. The guard is
+      in (`resolveTier` now refuses a non-positive amount), but the only way to reach that state is a
+      signed **event-tier** link whose `event_tiers` row has `amount_paise` of 0 or NULL — never the
+      main store, which serves ₹499. So there may be a bad row worth deleting. Worth knowing which
+      link it was.
+
 ## 🤖 QA harness
 
 - [ ] **`qa:sweep`'s default `SWEEP_STORE` aims at production DNS, and two routes time out because

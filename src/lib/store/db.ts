@@ -37,6 +37,11 @@ export type PreorderRow = {
   rzp_payment_id: string | null;
   balance_status: "due" | "link_sent" | "paid";
   utm: Record<string, string> | null;
+  /** Meta attribution captured at order time (§8.30-l): the _fbp and _fbc
+   *  cookies, the client IP and the user agent. Nullable, because the column
+   *  was added on 2026-09-02 and every order before that has none, and because
+   *  a visitor with the pixel blocked legitimately has nothing to store. */
+  fb_attrib: Record<string, string> | null;
   created_at: string;
   paid_at: string | null;
 };

@@ -27,7 +27,7 @@
  *  revenue that a refund could take back. Refunds are not reported either;
  *  correcting for them needs the Conversions API, which is why fbTrack already
  *  carries an eventId slot. */
-import { fbTrack } from "@/lib/fbq";
+import { fbTrack, purchaseEventId } from "@/lib/fbq";
 
 type Params = Record<string, string | number | undefined>;
 
@@ -61,12 +61,23 @@ export const preorderAnalytics = {
       value: valuePaise / 100,
       tier,
     });
-    fbTrack("Purchase", {
-      currency: "INR",
-      value: valuePaise / 100,
-      content_category: tier,
-      order_id: orderRef,
-    });
+    fbTrack(
+      "Purchase",
+      {
+        currency: "INR",
+        value: valuePaise / 100,
+        content_category: tier,
+        order_id: orderRef,
+      },
+      /* The de-duplication key, sent from 2026-09-02 ahead of the Conversions
+         API that will need it. Meta collapses a browser event and a server
+         event into one when event_name and eventID match within 48 hours, and
+         the point of deriving it from the order reference is that BOTH sides
+         can compute it independently, with no shared state and nothing to pass
+         between them. Harmless while only the browser sends: an eventID on its
+         own just makes the event idempotent. */
+      purchaseEventId(orderRef),
+    );
   },
   /** The delivery address landed, which is what unblocks dispatch. */
   addressSaved: (orderRef: string) => track("preorder_address_saved", { transaction_id: orderRef }),

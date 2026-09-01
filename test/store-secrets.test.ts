@@ -29,6 +29,10 @@ const SECRET_NAMES = [
   "SUPABASE_SERVICE_ROLE_KEY",
   "STORE_SIGNING_SECRET",
   "RESEND_API_KEY",
+  /* Added 2026-09-02 with the Conversions API (§8.30-l). Unlike the Meta PIXEL
+     id, which is public and hardcoded in config/site.ts, this token can write
+     events into the ad account and must never reach a browser bundle. */
+  "META_CAPI_TOKEN",
 ] as const;
 
 const sourceFiles = execFileSync("git", ["ls-files", "src/**/*.ts", "src/**/*.tsx", "src/*.ts"], {
