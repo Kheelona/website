@@ -153,16 +153,16 @@ security headers live, the live pages carry no console errors or failed requests
 
 ## 🧑 Meta advertising, opened 2026-09-02
 
-- [ ] 🧑 **⚠ Automatic Advanced Matching makes `/privacy` untrue right now (§8.30-m).** Meta turns it
-      ON BY DEFAULT for a new dataset, and it scrapes form fields and sends hashed identifiers with
-      browser events. An external reviewer observed it logging a first name off our pre-order form.
-      The live privacy page promises that none of the measurement tools "is ever sent your name, your
-      address, your phone number, your email, or your child's age" — written for a page where a
-      parent types exactly those things and then pays, on a children's product, under DPDP.
-      **Two ways out, and one of them is two clicks:** switch AAM off in Events Manager → dataset →
-      Settings, and the page is true again; or leave it on and ask for §8.30-g to be rewritten a
-      second time. Not fixable in this repo either way. **This outranks everything else on the Meta
-      list.**
+- [x] ✅ **Automatic Advanced Matching: DECIDED 2026-09-02, kept ON with all fields. Not open work.**
+      Recommended off twice; the founder chose to keep it, and chose the full field set over the
+      narrower one offered. **Do not re-raise it.** The consequence was handled the same day: AAM
+      scrapes whatever Meta's script recognises, including city, state and pincode from the address
+      form on `/thanks`, so `/privacy` stopped promising that the delivery address is never sent and
+      stopped promising that nothing about the child is ever sent. Both sentences are now BANNED by
+      `test/analytics-tags.test.ts` so they cannot be restored while AAM is on. The replacement
+      wording is category-level at the founder's direction and discloses that form details can reach
+      Meta and that Meta's script decides which. Law: §8.30-o. **What is still ours to hold is our own
+      payload**: the same test fails if `child_age` or `order.address` ever enters `meta-capi.ts`.
 
 - [ ] 🧑 **Generate `META_CAPI_TOKEN` and add it to Vercel.** Events Manager → dataset → Settings →
       Conversions API → Generate access token. Vercel: Production + Preview, **Secret**, and **no

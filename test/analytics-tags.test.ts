@@ -87,7 +87,7 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
     if (sendsIdentifiers) {
       expect(PRIVACY, "CAPI sends hashed contact details but /privacy does not disclose it")
         .toMatch(/one-way code/);
-      expect(PRIVACY).toMatch(/your email address, your phone number and your first name/);
+      expect(PRIVACY).toMatch(/never in readable form/);
     }
   });
 
@@ -97,17 +97,37 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
     expect(PRIVACY).not.toContain("None of these fields is ever sent to an advertiser");
   });
 
-  /* The two promises that must SURVIVE every rewrite. The child is the whole
-     reason this page is written the way it is, and the address is the one field
-     that could identify a home. Neither is in the CAPI payload, and if either
-     ever is, this failing is the cheapest possible warning. */
-  it("still promises the child and the address are never sent, and still means it", () => {
-    expect(PRIVACY).toMatch(/Nothing about your child is ever sent/);
-    expect(PRIVACY).toMatch(/delivery address is never sent/);
+  /* OUR SERVER STAYS NARROW EVEN THOUGH META'S SCRIPT DOES NOT (founder decision
+     2026-09-02, §8.30-o). Automatic Advanced Matching is deliberately left ON,
+     and it scrapes whatever form fields Meta's own script recognises, which on
+     /thanks includes the city, state and pincode of a delivery address. That is
+     why /privacy no longer promises the address is never sent: it could not
+     honestly.
 
+     What we still control absolutely is our OWN Conversions API payload, and it
+     sends email, phone and first name and nothing else. These two assertions
+     keep it that way. They are not about the wording any more, they are about
+     never widening the one half of this we decide. */
+  it("keeps our own server payload narrow: no address, no child's age", () => {
     const capi = readFileSync(join(ROOT, "src/lib/store/meta-capi.ts"), "utf8");
-    expect(capi, "the child's age must never reach Meta").not.toMatch(/child_age/);
-    expect(capi, "the delivery address must never reach Meta").not.toMatch(/order\.address/);
+    expect(capi, "the child's age must never be put in OUR payload").not.toMatch(/child_age/);
+    expect(capi, "the delivery address must never be put in OUR payload").not.toMatch(/order\.address/);
+  });
+
+  /* The page must not claim something Automatic Advanced Matching can falsify.
+     These two sentences were true until AAM was left on, and restoring either
+     would put a false promise back on a page a parent reads before paying. */
+  it("no longer promises what AAM can contradict", () => {
+    expect(PRIVACY).not.toContain("delivery address is never sent");
+    expect(PRIVACY).not.toContain("Nothing about your child is ever sent");
+  });
+
+  /* Category-level wording is a legitimate drafting choice; silence is not.
+     Whatever the fields, the page has to say that form details can reach Meta
+     and that Meta's script decides which. */
+  it("still discloses that form details can reach Meta, and who decides which", () => {
+    expect(PRIVACY).toMatch(/details you enter can be included/);
+    expect(PRIVACY).toMatch(/determined by Meta's own measurement script/);
   });
 
   /* Extended 2026-08-22 (§8.25-e). The standing rule was written for

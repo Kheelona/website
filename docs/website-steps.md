@@ -1526,3 +1526,36 @@ Automatic Advanced Matching (§8.30-m) scrapes whatever form fields Meta's own s
 is not a set this repo controls or can accurately describe, and the store's form carries a child's age
 field. A disclosure that has to say "and possibly other things Meta's script picks up" is worse than
 one that names three fields exactly.
+
+**o. AUTOMATIC ADVANCED MATCHING STAYS ON, AND THE PAGE STOPPED PROMISING WHAT IT CANNOT KEEP
+(founder decision, 2026-09-02).** Recommended twice that AAM be switched off (§8.30-m, §8.30-n); the
+founder chose to keep it, and to keep every detected field rather than the narrower subset offered.
+**That decision is made. Do not re-raise it.** What follows is the consequence, which is the part
+that had to be handled.
+
+AAM is Meta's own script scanning our forms and sending what it recognises: `em`, `ph`, `fn`, `ln`,
+and also `ct`, `st`, `zp` from an address. The store has two forms, and the second one is the reason
+this matters: the address form on `/thanks` carries city, state and pincode. So **the promise "your
+delivery address is never sent" could no longer be made**, and neither could "nothing about your
+child is ever sent", because what the script picks up is not a set this repo chooses.
+
+*The wording is category-level, at the founder's direction ("keep it vague, think like a lawyer"),
+and that is a legitimate drafting choice rather than a dodge:* "the details you enter on our forms"
+is accurate, it does not need amending every time a field changes, and it is how privacy notices are
+normally written. **The line that was NOT crossed: nothing on the page denies something that
+happens.** It was worth saying once to the founder and is worth recording here, because the instinct
+is a reasonable one from contract law and inverts in this domain — DPDP §5 wants notice in clear and
+plain language, itemised, so a vaguer notice is a WEAKER position, not a safer one. Specificity is
+what evidences that notice was given. The page remains counsel-gated, and this is the version counsel
+is asked to sign.
+
+*What is still promised, and is still true:* everything leaves as a one-way code and never in
+readable form, none of it is used to profile the child, and none of it is sold or traded. The page
+also now names who decides — Meta's script, not us — which is the honest answer to "which details".
+
+*What the tests changed to.* They no longer assert the two retired promises, and they now BAN them,
+so neither can be restored while AAM is on. The code-level guards stay and are the half we still
+control absolutely: `test/analytics-tags.test.ts` greps `meta-capi.ts` and fails if `child_age` or
+`order.address` ever enters **our own** Conversions API payload, which sends email, phone and first
+name and nothing else. **AAM widening what Meta's script takes is a dashboard setting; widening what
+our server sends is a code review, and only the second one is ours to hold.**

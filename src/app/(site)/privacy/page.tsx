@@ -46,7 +46,7 @@ const SECTIONS: readonly LegalSection[] = [
          claim. What stays true, and is the part a parent cares about, is that
          the FIELDS on the form are never sent to an advertiser: the pixel is
          told that a pre-order happened and what it cost, never who made it. */
-      "None of it is ever used to profile your child. When you pre-order, a one-way code made from your email, your phone number and your first name goes to Meta so we can tell whether our advertising worked, and that is explained in full below. Your delivery address, your child's age, and the details themselves stay with us.",
+      "None of it is ever used to profile your child. When you pre-order, one-way codes derived from the details you enter are shared with Meta so we can tell whether our advertising worked, and that is explained further below. The details themselves are never shared in readable form.",
     ],
   },
   {
@@ -77,8 +77,8 @@ const SECTIONS: readonly LegalSection[] = [
          name so Meta can match a sale to an advertisement. "One-way code" is
          the plainest honest description of a hash for a parent reading this;
          what it must not claim is that nothing was sent. */
-      "The Meta Pixel is the exception, and only at the moment you actually pre-order. Then we send Meta a one-way code made from your email address, your phone number and your first name. A one-way code lets Meta check whether you match somebody they already know, and it cannot be turned back into your details, which we never send. It is how we can tell that the person who pre-ordered is the person who saw our advertisement.",
-      "Your delivery address is never sent. Nothing about your child is ever sent, measured, or advertised against.",
+      "The Meta Pixel is the exception. When you use our order forms, details you enter can be included with what it reports, always as a one-way code and never in readable form. A one-way code lets Meta check whether you match somebody they already know; it is not the details themselves. That is how we can tell that the person who pre-ordered is the person who saw our advertisement.",
+      "Which details are included is determined by Meta's own measurement script rather than chosen by us field by field. We never use any of it to profile your child, we never sell it, and we never trade it.",
       "If you would rather not be counted, your browser can block all four. Private browsing, an ad blocker, or turning off third party cookies all work, and none of them stop the site or the store from working. You can also turn off personalised advertising inside your own Facebook or Instagram settings.",
     ],
   },
@@ -92,7 +92,7 @@ const SECTIONS: readonly LegalSection[] = [
          quietly dropped. (The retired wording is pinned as banned in
          test/analytics-tags.test.ts, so it is deliberately not quoted here.) */
       "We never sell your data. We never sell your child's data. We never trade what you typed into the pre-order form, and we never hand it to anyone who is not helping us deliver Lumi to you.",
-      "We do advertise on Facebook and Instagram, and the Meta Pixel described above is how we measure that. When you pre-order, it is sent a one-way code made from your email, your phone number and your first name, so a sale can be matched to an advertisement. It is never sent your delivery address, never anything about your child, and never any of those details in readable form.",
+      "We do advertise on Facebook and Instagram, and the Meta Pixel described above is how we measure that. Details you enter on our forms can be included with what it reports, as one-way codes and never in readable form, so a sale can be matched to an advertisement. We do not use any of it to profile your child.",
     ],
   },
   {
