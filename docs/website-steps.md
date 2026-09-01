@@ -1559,3 +1559,40 @@ control absolutely: `test/analytics-tags.test.ts` greps `meta-capi.ts` and fails
 `order.address` ever enters **our own** Conversions API payload, which sends email, phone and first
 name and nothing else. **AAM widening what Meta's script takes is a dashboard setting; widening what
 our server sends is a code review, and only the second one is ours to hold.**
+
+**p. "PURCHASE FIRES ON /thanks AND NEEDS A RE-FIRE GUARD" IS FALSE, AND HAS BEEN RAISED THREE
+TIMES (settled 2026-09-02).** Twice by an external reviewer and once more after the first correction.
+It will be raised a fourth time unless the reason it looks true is written down, so here it is.
+
+*The claim.* `/thanks` is designed to be revisited — the acknowledgement email links back to it so a
+parent can finish their delivery address later — therefore every return visit and every refresh fires
+a duplicate `Purchase`, and Meta's `event_id` de-duplication only covers 48 hours, so a return after
+two days counts a second conversion.
+
+*Why it is false.* There are exactly two Purchase call sites in this repo:
+`features/preorder/components/PreorderForm.tsx` (inside Razorpay's `onPaid`) and
+`lib/store/fulfil.ts` (`reportPurchaseToMeta` inside `notifyPaid`). **`PreorderForm` does not render
+on `/thanks`** — that page renders `AddressForm`, whose only analytics call is `addressSaved`. A
+return visit therefore reaches no Purchase at all, at any interval, and the 48-hour window never
+becomes relevant because there is no second event to de-duplicate. The server half is protected from
+a different direction: `notifyPaid` is reached only behind `markPaid` returning `"paid"`, one atomic
+UPDATE that wins exactly once, which is the same mechanism that guarantees one receipt email.
+
+*WHY IT LOOKS TRUE, which is the part worth keeping.* The reviewer's evidence was that `Purchase`,
+`eventID` and `thanks` all appear **in the same built JavaScript chunk**. They do. Next groups routes
+into shared chunks, so co-location in a chunk says nothing about what calls what. **Grep the source,
+not the bundle.** This is the same family of error as §8.25-bb, where grepping HTML found strings that
+were only in the RSC payload and not on the page.
+
+*Settled.* No guard was added, and it was deliberately NOT recorded as a known limitation either: a
+documented limitation that does not exist is more expensive than an undocumented one that does,
+because it gets re-raised every quarter until somebody "fixes" it. A pointer to this section now sits
+in the header comment of `src/app/store/thanks/page.tsx`, which is where the next person will look.
+
+*One real follow-up survives.* If Events Manager ever shows TWO Purchases for a single order, that is
+not this — it means the browser and server `event_id` values are not matching, and both should read
+`purchase_<order_ref>` from `purchaseEventId()` in `lib/fbq.ts`.
+
+*Also settled the same day:* preview deployments have never sent pixel events, and the cause is **our
+hostname gate** (§8.30-b), not Meta's domain allow list. It will not change if that allow list is
+edited, and production is the only place to test.

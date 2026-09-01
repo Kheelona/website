@@ -173,6 +173,24 @@ security headers live, the live pages carry no console errors or failed requests
       Afterwards, confirm in Events Manager that a real order produces **one** Purchase and not two:
       that is the de-duplication working (§8.30-l).
 
+- [x] ✅ **"Purchase needs a re-fire guard on /thanks": FALSE, raised three times, settled 2026-09-02.**
+      No guard was added, and it is deliberately **not** in any known-limitations list, because a
+      documented limitation that does not exist gets re-raised every quarter until somebody "fixes"
+      it. Purchase fires from Razorpay's success handler in `PreorderForm.tsx`, which never renders on
+      `/thanks`; that page renders `AddressForm`, whose only analytics call is `addressSaved`. **Why
+      it keeps looking true:** `Purchase`, `eventID` and `thanks` sit in the same built JS chunk,
+      because Next groups routes into shared chunks — co-location is not a call site. Grep the source,
+      not the bundle. Full reasoning and the refutation are §8.30-p, with a pointer in the header
+      comment of `src/app/store/thanks/page.tsx`.
+
+- [ ] 🧑 **On the first real pre-order, check Events Manager shows ONE Purchase, not two.** This is the
+      one genuine open question from the Meta work, and it answers two things at once: whether
+      browser/server de-duplication is matching, and whether `META_CAPI_TOKEN` actually took — an
+      absent token looks identical to a working one from outside, so a customer buying something is
+      the only external proof. **Two Purchases means the `event_id` values are not matching**; both
+      sides should read `purchase_<order_ref>` from `purchaseEventId()` in `src/lib/fbq.ts`. Bring it
+      back to me if so.
+
 - [ ] 🧑 **Where was "Pay ₹0 and reserve" seen?** Reported by the reviewer on the store. The guard is
       in (`resolveTier` now refuses a non-positive amount), but the only way to reach that state is a
       signed **event-tier** link whose `event_tiers` row has `amount_paise` of 0 or NULL — never the

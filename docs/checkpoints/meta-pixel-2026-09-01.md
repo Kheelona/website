@@ -183,3 +183,46 @@ cleanup. Law: §8.30-k. Events fired from user interaction are unaffected.
 
 Gates: `npm test` **912/912** (104 files), build clean with the Lumi page still static,
 `qa:sweep` clean 34/34.
+
+---
+
+# Third pass, 2026-09-02: the Conversions API, and two founder calls
+
+## Shipped
+
+- **Conversions API** for Purchase, from `notifyPaid` (§8.30-l). No public endpoint — the guide asked
+  for `/api/capi`, which would have let anyone write fake purchases into the ad account and would
+  have had the browser POST the customer's email and phone in the clear to be hashed.
+- **`preorders.fb_attrib`**, one nullable JSONB column (founder ran the migration), holding `_fbp`,
+  `_fbc`, client IP and user agent. All captured server-side from the request the browser already
+  sends, so no client change at all.
+- **`META_CAPI_TOKEN`**, optional in `env.ts`, guarded as a real secret. Verified after build that
+  neither the token nor the CAPI code reaches `.next/static`.
+- **The ₹0 tier guard**: `resolveTier` returned `amount_paise` unvalidated, so a bad Supabase row
+  rendered a live "Pay ₹0 and reserve" button — and Razorpay refuses a zero order, so the parent got
+  a dead button with no explanation.
+
+## Two founder decisions, both recorded so they are not re-litigated
+
+**Automatic Advanced Matching stays ON, all fields** (§8.30-o), recommended off twice. The
+consequence was handled the same day: AAM scrapes city, state and pincode from the address form on
+`/thanks`, so `/privacy` stopped promising the delivery address is never sent. Wording is
+category-level at the founder's direction; the line held was that nothing on the page denies
+something that happens. Noted once, and worth keeping: under DPDP a vaguer notice is the weaker
+position, because clear itemised notice is what evidences notice was given.
+
+**The privacy page was rewritten twice in two days**, and the second time was our own doing (§8.30-n):
+the Conversions API sends hashed email, phone and first name, while the page still promised no tool is
+ever sent those. §8.21-c was written for adding or removing a TOOL; here the tool did not change, its
+PAYLOAD did, and the disclosure went stale with nothing failing. The rule is now generalised, and
+enforced against the code rather than the prose.
+
+## The lesson worth carrying
+
+**Three of the external review's claims were false about this codebase**, and checking rather than
+complying was most of the work: Purchase does not fire on `/thanks`, `/contact` has no form, and
+`NEXT_PUBLIC_META_PIXEL_ID` does not exist. The reviewer's evidence for the first was that `Purchase`,
+`eventID` and `thanks` appear in the same built JS chunk — which is Next grouping routes, not a call
+site. **Grep the source, not the bundle** (§8.30-p). Same family as §8.25-bb.
+
+Gates across the round: **943/943** tests, build clean, `qa:sweep` clean 34/34.

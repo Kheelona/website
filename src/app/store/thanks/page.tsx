@@ -37,6 +37,19 @@ import type { PreorderRow } from "@/lib/store/db";
  *  signed token, same verification, and /api/preorder/address still takes it in
  *  the POST body.
  *
+ *  ⚑ NO META `Purchase` FIRES ON THIS PAGE, AND IT KEEPS BEING REPORTED THAT ONE
+ *  DOES (three times by 2026-09-02, twice by the same reviewer). Purchase fires
+ *  from Razorpay's success handler in `features/preorder/components/PreorderForm.tsx`,
+ *  which never renders here — this page renders `AddressForm`, whose only
+ *  analytics call is `addressSaved`. So a parent returning from the email link,
+ *  at any interval, cannot produce a second conversion, and the re-fire guard
+ *  that keeps getting proposed would be dead code on a page that fires nothing.
+ *
+ *  WHY IT LOOKS TRUE, which is the useful half: `Purchase`, `eventID` and
+ *  `thanks` all appear in the SAME built JavaScript chunk, because Next groups
+ *  routes into shared chunks. Co-location in a chunk is not a call site.
+ *  Grep the source, not the bundle (§8.30-p).
+ *
  *  It reads the order rather than trusting the URL, so it can tell the truth
  *  about a payment that Razorpay has confirmed to the browser but whose webhook
  *  has not landed yet. That gap is usually a second or two and occasionally
