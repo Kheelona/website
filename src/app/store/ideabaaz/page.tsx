@@ -14,6 +14,22 @@ import {
 
 /** The Ideabaaz Startup Fest page (§8.25-g, public-partner form).
  *
+ *  ⚑ CLOSED SINCE 31 AUGUST 2026 (founder, 2026-09-01). The tier's `expires_on`
+ *  has passed, so `resolveTier` returns nothing and every visit now renders the
+ *  ended state below: "the Ideabaaz exclusive has ended", with a link to the
+ *  usual price. That is the whole of the closure, and it needed no code change
+ *  to happen, which was the point of dating the tier in the first place.
+ *
+ *  THE ROUTE STAYS, deliberately. Printed QR codes from the fest point here and
+ *  cannot be recalled, and an honest ended page is a better answer to a late
+ *  scan than a 404. The live-price branch below is therefore unreachable for
+ *  this tier and is kept only because the same shape serves any future event
+ *  page; the generic machinery it rides on is covered by tiers.test.ts.
+ *
+ *  The `event_tiers` row itself is untouched: production data is the founder's,
+ *  and expiry already does the job. Deactivating the row is optional belt and
+ *  braces, not a requirement.
+ *
  *  A QR at a stall carries its signature in the URL; a partner page IS the
  *  link, so it signs its own tier here on the server and hands the signature
  *  to the form. That is a deliberate downgrade the founder chose with eyes

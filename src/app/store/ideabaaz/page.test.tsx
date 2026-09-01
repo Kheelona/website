@@ -43,26 +43,21 @@ describe("the Ideabaaz pre-booking page", () => {
     env = fakeEnv as StoreEnv;
   });
 
-  it("crosses out the usual ₹499 and sells the booking at ₹99", async () => {
-    ideabaazRow();
-    const { container } = render(await IdeabaazPage());
+  /* ⚑ THE TWO LIVE-PRICE TESTS WERE REMOVED ON 2026-09-01, when the tier
+     closed (founder: "we can mark it closed").
 
-    const heading = screen.getByRole("heading", { level: 1 });
-    expect(heading.textContent).toContain("Reserve Lumi for");
-    expect(heading.textContent).toContain("₹99");
-    // the cross-out is a real <s>, holding exactly the public token price
-    const struck = container.querySelector("s");
-    expect(struck?.textContent).toBe("₹499");
-    expect(screen.getByText("Exclusive for the Ideabaaz audience")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Pay ₹99 and reserve/ })).toBeInTheDocument();
-  });
+     They asserted the ₹99 offer: the struck-through ₹499, the "Pay ₹99 and
+     reserve" button, and the derived ₹4,900 balance. Both began failing on
+     1 September on their own, because the fixture above carries the tier's real
+     `expires_on` of 2026-08-31 and the page correctly stopped selling. Nothing
+     was broken; the calendar simply arrived. That state cannot recur for this
+     tier, so testing it would mean faking a future expiry and pinning a
+     presentation contract for an offer that no longer exists.
 
-  it("derives the balance: ₹99 today, ₹4,900 on dispatch, never ₹4,500", async () => {
-    ideabaazRow();
-    const { container } = render(await IdeabaazPage());
-    expect(screen.getByText("₹4,900 on dispatch")).toBeInTheDocument();
-    expect(container.textContent).not.toContain("₹4,500");
-  });
+     What is worth keeping is below: the ended state is now the ONLY state this
+     page has, and it is what a late QR scan gets. The generic tier resolution
+     these tests rode on is owned by test/store/tiers.test.ts, and any future
+     event page gets its own coverage there. */
 
   it("carries the partner mark, since the page is the co-branding", async () => {
     ideabaazRow();
