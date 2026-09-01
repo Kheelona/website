@@ -235,7 +235,15 @@ worth churning a live commercial site for on its own.*
       `/products/lumi`, `/terms`, `llms.txt`, `pricing.md` and the JSON-LD price will still read
       "₹499 reserves one of the first 500 units". Trigger: `/api/health` reporting
       `"preorder":"full"`, or the internal order alert. Then ask for the sweep — a one-session edit
-      (§8.26-g). *Verified 2026-08-23: health reports `token`, so not triggered.*
+      (§8.26-g). *Verified 2026-09-01: health reports `token`, so not triggered.*
+      **⚑ ADDED 2026-09-01, and this one is invisible on the page, so it is the easiest to miss:
+      `src/app/(site)/products/lumi/_components/ViewContentTracker.tsx` reports the headline unit
+      price to Meta as its `value`, read from `LAUNCH_AMOUNT_PAISE` (₹4,999). Change it to
+      `FULL_AMOUNT_PAISE`.** The founder chose to send a value knowing it would need this manual
+      follow-up (§8.30-j). Nothing breaks if it is missed — but every ViewContent from that day on
+      under-reports the product by ₹3,000, which quietly skews any value-based audience or report
+      built on it. The component's own header comment and `ViewContentTracker.test.tsx` both point
+      back here.
 
 ---
 

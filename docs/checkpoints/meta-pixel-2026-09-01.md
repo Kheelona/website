@@ -129,3 +129,57 @@ axe and voice at 390 and 1280.
 produces (`setState` synchronously within an effect), because it copies that component's shape on
 purpose — the effect is how the host is read without forcing every page dynamic. Lint was already
 red on `main` with 29 errors and is not part of the build gate.
+
+---
+
+# Second pass, same day: ViewContent
+
+The founder worked through a longer guide (Parts B to D) and asked what was left. Most of it was
+already done or should not be done; the assessment is §8.30-j. One thing was a real gap.
+
+## Added
+
+`ViewContent` on `/products/lumi`, via a route-local client component,
+`_components/ViewContentTracker.tsx`. **The page stays statically prerendered** — verified in the
+build output (`○ /products/lumi`), which was the main risk worth checking.
+
+## The value: a decision with a known expiry
+
+Offered four paths. Recommended no value at all, on the grounds that value-based optimisation and
+value-based lookalikes need hundreds of conversions before Meta will use them, and the founder is
+spending ₹100 to ₹192 a day. **The founder chose to send the headline unit price** (₹4,999, from
+`LAUNCH_AMOUNT_PAISE`) and to change it manually when the price moves. That is a reasonable call and
+it is now recorded properly rather than left as a loose constant.
+
+What makes it safe rather than a time bomb is that it rides an existing trigger. The standing
+sell-out copy sweep (§8.26-g) already fires the day `/api/health` first reports `preorder:"full"`,
+and this file is now named in that checklist, in the component's own header, and in a test that
+asserts both pointers still exist. If it is missed, nothing breaks — ViewContent simply
+under-reports the product by ₹3,000 from that day.
+
+Note that Purchase reports something different on purpose (the amount collected), so a ₹4,999
+ViewContent beside a ₹499 Purchase is correct and not a defect.
+
+## The bug that was nearly shipped
+
+`fbTrack` no-ops when the pixel is absent, which is right for localhost and previews. But the pixel
+is gated behind a hostname check that runs in an effect and only then loads `afterInteractive`, so on
+a real production host the ordering is: page mounts, component effects run, and only afterwards does
+`fbq` exist. **A `ViewContent` fired straight from a mount effect would have been dropped most of the
+time** — silently, with the only symptom being an event that looks mysteriously rare in Events
+Manager. Fixed before shipping with `whenFbqReady`: it polls for the queueing stub, gives up on a
+bounded timeout so a gate-shut host does not poll forever, and returns a canceller for React
+cleanup. Law: §8.30-k. Events fired from user interaction are unaffected.
+
+## Three things deliberately NOT added
+
+- **`InitiateCheckout` on pre-order CTAs.** It already fires when the Razorpay sheet opens, so this
+  would double-count one person as two, misuse an event that means "checkout started" for a link
+  click, and hardcode an amount that is wrong in two of the three price modes.
+- **`Lead` on `/contact`.** That page has no form, only WhatsApp and mailto links. Firing Lead on the
+  support WhatsApp button would fill the signal with existing customers chasing their own orders.
+- **A `Purchase` on `/thanks`.** Ours fires in the Razorpay success handler with a server-supplied
+  amount, so it is correct in every mode and structurally cannot re-fire on refresh.
+
+Gates: `npm test` **912/912** (104 files), build clean with the Lumi page still static,
+`qa:sweep` clean 34/34.

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ColorwayPicker } from "./_components/ColorwayPicker";
 import { PacePanel } from "./_components/PacePanel";
+import { ViewContentTracker } from "./_components/ViewContentTracker";
 import { Room } from "@/components/atoms/Room";
 import { RoomsTrack } from "@/components/atoms/RoomsTrack";
 import { Button } from "@/components/atoms/Button";
@@ -127,6 +128,10 @@ export default function LumiPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLd(JSON_LD) }}
       />
+
+      {/* Meta ViewContent, the top of the advertising funnel (§8.30-j). Renders
+          nothing, and no-ops entirely off the production hosts. */}
+      <ViewContentTracker />
 
       {/* Hero on the backdrop sky (no wash), greeted through the guide */}
       <section

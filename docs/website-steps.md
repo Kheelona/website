@@ -1395,3 +1395,45 @@ pixel. Result on 2026-09-01: on `kheelona.com` the queue held exactly
 `["init:1045085251085243","track:PageView"]`, one further `track:PageView` appeared after a
 client-side navigation and no more (the `useRef` guard against the classic double-count works), and
 on both `127.0.0.1` and `store.localhost` there was no tag, no `fbq`, and no facebook request at all.
+
+**j. ViewContent, and a value with an expiry date (added 2026-09-01, founder-decided).**
+`/products/lumi` reports a Meta `ViewContent` through a route-local client component,
+`_components/ViewContentTracker.tsx`. It is the top of the advertising funnel: the readers of that
+page are the retargeting audience worth spending on, and the gap between ViewContent and
+InitiateCheckout is where interest stops turning into intent.
+
+*The value.* It carries `value` = the HEADLINE unit price (₹4,999, read from `LAUNCH_AMOUNT_PAISE`,
+never retyped) and `currency: "INR"`. That is deliberately NOT what Purchase reports, which is the
+amount actually collected (§8.30-f): a browsing event answers "what does Lumi cost", a purchase event
+answers "what was taken". **The two are therefore not comparable as a ratio, and a ViewContent value
+of ₹4,999 beside a Purchase value of ₹499 is correct, not a bug.**
+
+*The known staleness, accepted knowingly.* The founder was shown that this figure goes WRONG the day
+the 500-unit cap fills and the price becomes ₹7,999, and chose to send a value anyway, on the basis
+that it is a one-line manual change. A client component cannot read the live mode, because the paid
+count never leaves the server (§8.26-a/b), and deriving it there would make a statically prerendered
+page dynamic, which costs LCP on the strongest marketing page on the site. **What keeps this from
+being a silent time bomb is that it rides an existing trigger**: the standing sell-out copy sweep
+(§8.26-g). The component's header comment says what to change, `Technical-Todo.md` names the file in
+the sweep checklist, and `ViewContentTracker.test.tsx` asserts that both pointers still exist. Nothing
+breaks if it is missed; ViewContent simply under-reports the product by ₹3,000 from that day on.
+
+*Deliberately NOT added, and each omission is a decision.* **`InitiateCheckout` on pre-order CTAs**
+(a common guide's advice) would be actively harmful: it already fires when the Razorpay sheet opens,
+so adding it to CTA clicks double-counts one person as two, it misuses an event that means "checkout
+started" for what is a link click, and any hardcoded amount is wrong in two of the three price modes.
+**`Lead` on /contact** has nothing to attach to: that page has no form, only WhatsApp and mailto
+links, and firing Lead on the support WhatsApp button would fill the signal with existing customers
+chasing their own orders. **A `Purchase` on `/thanks`** is wrong for this codebase for the reasons in
+§8.30-e.
+
+**k. AN EVENT FIRED AT MOUNT MUST WAIT FOR `fbq` (`whenFbqReady` in `lib/fbq.ts`).** This is the
+subtle one, and it was nearly shipped as a bug. `fbTrack` no-ops when the pixel is absent, which is
+right for localhost and previews — but the pixel is gated behind a hostname check that runs in an
+effect and only then loads `afterInteractive`, so on a REAL production host the ordering is: page
+mounts, component effects run, and only afterwards does `fbq` appear. An event fired straight from a
+mount effect is therefore dropped on the floor most of the time, silently, and the only symptom is an
+event that looks mysteriously rare in Events Manager. `whenFbqReady` polls for the stub (the stub
+queues, so nothing needs to wait for fbevents.js itself), gives up after a bounded timeout so a
+gate-shut host does not poll forever, and returns a canceller for React cleanup. Events fired from a
+user interaction do not need it. **Calling `fbTrack` directly from a mount effect is a review flag.**
