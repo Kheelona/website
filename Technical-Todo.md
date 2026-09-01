@@ -40,6 +40,14 @@ security headers live, the live pages carry no console errors or failed requests
       (§8.28-g), so production Report-Only is the only thing that can clear it. Flipping early is the
       single way this engagement could break checkout. Then: `CSP_PHASE` in
       `src/lib/security-headers.ts` and the phase assertion in `test/security-headers.test.ts`.
+      **⚑ RESET 2026-09-01 by the Meta Pixel.** Three origins joined the policy that day
+      (`connect.facebook.net` in `script-src` and `connect-src`, `www.facebook.com` in `connect-src`
+      and `img-src`), so the observation window starts again: the reports read before that date say
+      nothing about whether the pixel is happy. Read a few more days of production Report-Only,
+      specifically for `blocked=…facebook…` lines, before flipping. The same law as GA4 applies to
+      why a local probe cannot settle it: **never point a probe at a measurement host** (§8.28-g),
+      which is why the 2026-09-01 verification asserted only that the browser *attempted* the
+      fbevents.js request and let the harness abort it.
 
 - [ ] 🧑 **Post-dispatch returns and warranty terms, before the first Lumi ships.** They do not
       exist, because nothing has shipped, and `/refund` says exactly that rather than inventing a
@@ -48,13 +56,19 @@ security headers live, the live pages carry no console errors or failed requests
 
 # 🟡 MEDIUM — all three are dated or founder-deferred; none needs code today
 
-- [ ] 🧑 **📅 31 August 2026: close the Ideabaaz page.** In Supabase:
-      `update event_tiers set active = false where id = 'ideabaaz';`
-      The `expires_on` backstop kills it anyway from ~05:30 IST on 1 September, so nothing breaks if
-      this slips a night (§8.25-g-i). Afterwards, the conversion readout:
+- [x] ✅ **📅 31 August 2026: close the Ideabaaz page. CLOSED 2026-09-01 (founder: "we can mark it
+      closed").** It closed itself: the `expires_on` backstop fired from ~05:30 IST on 1 September
+      exactly as designed (§8.25-g-i), so every visit now renders the ended state with a link to the
+      usual price. **The route was deliberately KEPT** rather than deleted or redirected, because
+      printed fest QR codes point at it and an honest ended page beats a 404 for a late scan.
+      The two tests that asserted the live ₹99 offer were removed the same day, with the reason
+      recorded in `src/app/store/ideabaaz/page.test.tsx`; they had started failing on their own when
+      the date passed, which is how the closure was noticed.
+      **STILL OPEN FOR THE FOUNDER, both optional:** the belt-and-braces
+      `update event_tiers set active = false where id = 'ideabaaz';` (expiry already does the job,
+      and production data is yours, not Claude's), and the conversion readout
       `select count(*), sum(amount_paise) / 100 as rupees from preorders where tier = 'ideabaaz' and status = 'paid';`
-      Each of those bookings consumes a first-500 unit at ₹4,999 and still owes ₹4,900 before
-      dispatch. *Verified 2026-08-23: the page is live at ₹99 and resolving its tier.*
+      Each such booking consumed a first-500 unit at ₹4,999 and still owes ₹4,900 before dispatch.
 
 - [ ] 🧑 **📅 5 September 2026: tighten DMARC to `p=quarantine`.** The two-week observation window
       ends then. **Read the reports at `dmarc@kheelona.com` FIRST** and confirm Google Workspace and
@@ -119,6 +133,24 @@ security headers live, the live pages carry no console errors or failed requests
 - [ ] **Investor "backed by" band on /team.** Names and logos when ready. The row is labelled
       "Recognised by" today because NVIDIA Inception and nasscom are recognition programmes rather
       than backers — `RecognitionStrip` takes a `label` prop, so switching it is one word.
+
+## 🤖 QA harness
+
+- [ ] **`qa:sweep`'s default `SWEEP_STORE` aims at production DNS, and two routes time out because
+      of it** (found 2026-09-01). The default is `http://store.kheelona.com:3456`, and although
+      `tools/qa/lib/browser.mjs` maps that name to 127.0.0.1 for local targets, the mapping does not
+      take for the `store.` subdomain in this Chrome: `http://kheelona.com:3456/` resolves locally
+      and loads, `http://store.kheelona.com:3456/` reports `ERR_TIMED_OUT`, and a wildcard
+      `MAP *.kheelona.com` rule does not fix it either, so the rule syntax is not the cause.
+      **The workaround is real and works today: `SWEEP_STORE=http://store.localhost:3456 npm run qa:sweep`
+      is clean 34/34.** Two reasons to actually fix the default rather than remember the workaround.
+      First, a session that runs the bare command sees two failures and may waste an hour deciding
+      whether it broke the store, which is exactly what happened on 2026-09-01. Second, and more
+      seriously, `store.kheelona.com` resolves to Vercel's production IPs, so the default quietly
+      aims an automated sweep at live infrastructure while `security-review.md` is open with **no
+      active testing against production** as one of its standing rules. Changing the default to
+      `store.localhost` is a one-line edit in `tools/qa/sweep.mjs`; it was left alone on 2026-09-01
+      only because that round was a pixel change and this is not its scope.
 
 ## 🤖 Engineering polish, all four from the R4 panel of 2026-07-10
 

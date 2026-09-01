@@ -213,6 +213,26 @@ export const SUPPORT_WHATSAPP_LABEL = `WhatsApp ${SUPPORT_WHATSAPP_DISPLAY}`;
 export const GA4_MEASUREMENT_ID = "G-7LMKSFEXZ9";
 export const GA4_HOSTS = ["kheelona.com", "www.kheelona.com", "store.kheelona.com"] as const;
 
+/** Meta Pixel, wired 2026-09-01 at the founder's request, for Facebook and
+ *  Instagram advertising (Business Manager portfolio 1804686660128463, domain
+ *  kheelona.com verified there by DNS TXT).
+ *
+ *  Hardcoded for the same reason as the GA4 ID above, and the reasoning is
+ *  stronger here, not weaker: Meta's own snippet calls `fbq('init', …)` in the
+ *  page, so every site running a pixel publishes its ID in plain view. An env
+ *  var would buy nothing and cost the Vercel redeploy trap (a variable only
+ *  applies to deployments created after it changes). Note also that a
+ *  `NEXT_PUBLIC_` name CANNOT be a Vercel "Secret": the value is inlined into
+ *  the browser bundle at build time, which is exactly what the dashboard
+ *  refuses.
+ *
+ *  META_PIXEL_HOSTS is deliberately the same list as GA4_HOSTS rather than a
+ *  second copy. The gate matters more for this tool than for GA4: preview and
+ *  localhost traffic does not merely dirty a report, it feeds the audiences and
+ *  the conversion signal Meta optimises real ad spend against. */
+export const META_PIXEL_ID = "1045085251085243";
+export const META_PIXEL_HOSTS = GA4_HOSTS;
+
 /** Ahrefs Web Analytics, added 2026-07-30 at the founder's request.
  *
  *  A public site key, like the GA4 measurement ID above. Unlike GA4 this one is

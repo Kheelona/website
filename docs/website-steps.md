@@ -1320,3 +1320,78 @@ If this is picked up again, these were built and looked at rather than imagined:
 (ΔE 67.4), `orange-ink #B54A0D` (~4.0:1 luminance), `blue-ink #1B6E96` (~4.2:1, the strongest
 numerically because cream against blue is the complementary pairing), a soft-vignetted orange, and
 the footer cocoa `#2A1608` (~12:1, crisp but dark for a toy brand).
+
+# §8.30 THE META PIXEL, AND WHAT IT COST THE PRIVACY PAGE (2026-09-01, founder-requested)
+
+The founder set up Meta Business Manager (portfolio `1804686660128463`) and asked for the pixel so
+that Facebook and Instagram advertising can be measured and optimised. Pixel `1045085251085243`.
+The domain `kheelona.com` was verified in Business Manager by **DNS TXT before this round started**,
+so no `facebook-domain-verification` meta tag exists in this codebase and none is needed. If someone
+later adds one, they have taken the wrong path: check the Domains screen first.
+
+**a. It is a FOURTH measurement tool, and §8.21-c binds it.** `MetaPixel` mounts last in the body of
+`src/app/layout.tsx`, beside `<Analytics />` and `<GoogleAnalyticsGate />`, for the same LCP reason
+(§8.19). `test/analytics-tags.test.ts` counts four now, not three.
+
+**b. IT IS HOST-GATED, and the stake is higher than GA4's.** `META_PIXEL_HOSTS` is deliberately the
+same list as `GA4_HOSTS` (a reference, not a copy, asserted by a test) and the gate runs in an
+effect so the statically prerendered pages stay static. GA4's gate protects the cleanliness of a
+report. This one protects an ad budget: a page view from a preview deploy joins a retargeting
+audience and feeds the conversion signal Meta optimises delivery against.
+
+**c. THE ID IS HARDCODED, and a `NEXT_PUBLIC_` env var is the wrong answer twice over.** Meta's own
+snippet prints the ID in the page, so there is nothing to protect. Worse, a `NEXT_PUBLIC_` name
+CANNOT be a Vercel "Secret" — the value is inlined into the client bundle at build time, which is
+what the dashboard refuses with *"Remove the public framework prefix to keep this value private"* —
+and an env var re-introduces the trap that a Vercel variable only applies to deployments created
+after it changes. Same precedent as `GA4_MEASUREMENT_ID`, and `NEXT_PUBLIC_GA4_MEASUREMENT_ID` is
+already retired for the same reason.
+
+**d. NO `<noscript>` FALLBACK.** The copy-paste snippet ships a tracking `<img>` for visitors without
+JavaScript. It cannot be host-gated, because gating needs the JavaScript it exists to replace, so it
+would report every preview and local load into the real ad account. It is omitted on purpose;
+re-adding it is a review flag.
+
+**e. ONE FUNNEL, DEFINED ONCE.** `InitiateCheckout` and `Purchase` fire from
+`src/features/preorder/lib/analytics.ts`, beside their GA4 twins, never from their own call sites.
+The failure this rules out is the two tools drifting so that Meta and GA4 disagree about how many
+people paid and nobody can say which is lying. `Purchase` fires inside Razorpay's success handler,
+so it runs once per payment and needs no de-duplication: a parent returning to `/thanks` weeks later
+from the email link never reaches that code.
+
+**f. VALUE IS WHAT WAS ACTUALLY COLLECTED** (founder, 2026-09-01): ₹499 for a token order, ₹7,999 for
+a full one, ₹99 at an event — never the ₹4,999 headline. The ₹4,500 balance lands weeks later by
+payment link and is never reported, so ROAS reads low on token orders rather than counting revenue a
+refund could take back. Refunds are not reported either. Both gaps close with the Conversions API,
+which is why `fbTrack` already carries an unused `eventId` slot: Meta deduplicates a server-side copy
+of an event by matching `eventID`, and the slot means adding it later touches no call site. The
+amount always comes from the server's create-order response, never from the client (§8.25-c-i).
+
+**g. /privacy WAS REWRITTEN, NOT EXTENDED, AND THAT WAS THE REAL WORK.** The page carried three
+promises the pixel makes untrue: that the tools *"do not follow you to other sites"*, that none of
+the data *is used to advertise to you*, and that *we do not run advertising with it*. A tool that
+sets `_fbp`, follows a visitor across sites, and exists to advertise to them cannot be added under
+those sentences. So the measurement section now says in plain words that the fourth tool is
+different, that Meta receives the page viewed and whether a pre-order happened and for how much, and
+that personalised advertising can be turned off in Facebook's own settings. The two contradicting
+sentences elsewhere were narrowed to what is still true — the form FIELDS never reach an advertiser,
+and nothing about the child is measured or advertised against — rather than quietly deleted.
+`test/analytics-tags.test.ts` pins the retired wording as banned, so restoring it while the pixel is
+mounted fails the suite. The page keeps its standing counsel-review TODO.
+
+**h. THE CSP TOOK THREE ORIGINS, AND THE ENFORCE FLIP RESETS.** `connect.facebook.net` in
+`script-src` and `connect-src`; `www.facebook.com` in `connect-src` **and** `img-src`, because
+fbevents.js beacons as an image in some browsers and a fetch in others and a gap in one directive
+loses events in one browser only, which is the hardest kind of gap to notice. Exact origins, not a
+`*.facebook.com` wildcard: unlike a payment provider whose subdomains move under us, these are the
+documented endpoints. The Report-Only observation window for §8.28-a **starts again from
+2026-09-01** — reports read before that say nothing about the pixel.
+
+**i. HOW IT WAS VERIFIED, given that a probe may never touch a measurement host (§8.28-g).** The
+harness aborts third-party requests by default, and that default was KEPT: the check asserts the
+page *attempted* `connect.facebook.net/en_US/fbevents.js` and reads the calls sitting in the `fbq`
+stub's own queue, so the gate is proven open without a single event reaching the founder's real
+pixel. Result on 2026-09-01: on `kheelona.com` the queue held exactly
+`["init:1045085251085243","track:PageView"]`, one further `track:PageView` appeared after a
+client-side navigation and no more (the `useRef` guard against the classic double-count works), and
+on both `127.0.0.1` and `store.localhost` there was no tag, no `fbq`, and no facebook request at all.

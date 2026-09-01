@@ -69,6 +69,15 @@ const SOURCES = {
   razorpay: ["https://*.razorpay.com", "https://*.rzp.io"],
   /** Google Pay renders inside Razorpay's flow on Android. */
   googlePay: "https://pay.google.com",
+  /** Meta Pixel (2026-09-01). The library loads from connect.facebook.net, and
+   *  fbevents.js reports to www.facebook.com/tr — historically as an image
+   *  beacon and now usually as a fetch, so www.facebook.com has to appear in
+   *  BOTH img-src and connect-src or events go missing in one browser and not
+   *  another. Exact origins, not a *.facebook.com wildcard: unlike a payment
+   *  provider whose subdomains move under us, these two are the documented
+   *  endpoints and there is no reason to admit the rest of the estate. */
+  metaPixelScript: "https://connect.facebook.net",
+  metaPixelCollect: "https://www.facebook.com",
 } as const;
 
 function directive(name: string, ...values: (string | readonly string[])[]): string {
@@ -101,10 +110,19 @@ export function contentSecurityPolicy(dev = false): string {
       SOURCES.ahrefs,
       SOURCES.googleTag,
       SOURCES.razorpay,
+      SOURCES.metaPixelScript,
     ),
     /* next/font emits an inline @font-face block, and React inlines styles. */
     directive("style-src", "'self'", "'unsafe-inline'"),
-    directive("img-src", "'self'", "data:", "blob:", SOURCES.googleCollect, SOURCES.razorpay),
+    directive(
+      "img-src",
+      "'self'",
+      "data:",
+      "blob:",
+      SOURCES.googleCollect,
+      SOURCES.razorpay,
+      SOURCES.metaPixelCollect,
+    ),
     directive("font-src", "'self'", "data:"),
     directive("media-src", "'self'"),
     directive("worker-src", "'self'", "blob:"),
@@ -117,6 +135,8 @@ export function contentSecurityPolicy(dev = false): string {
       SOURCES.googleCollect,
       SOURCES.vercel,
       SOURCES.razorpay,
+      SOURCES.metaPixelScript,
+      SOURCES.metaPixelCollect,
     ),
     directive("manifest-src", "'self'"),
     "upgrade-insecure-requests",

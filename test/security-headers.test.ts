@@ -81,9 +81,18 @@ describe("the content security policy", () => {
       "https://analytics.ahrefs.com",
       "https://www.googletagmanager.com",
       "https://*.razorpay.com",
+      "https://connect.facebook.net",
+      "https://www.facebook.com",
     ]) {
       expect(policy, `${host} is not allowed anywhere`).toContain(host);
     }
+    /* The pixel beacons to www.facebook.com as an image in some browsers and a
+       fetch in others, so it has to be in BOTH directives or events go missing
+       in one and not the other, which is the hardest kind of gap to notice. */
+    expect(directive("img-src")).toContain("https://www.facebook.com");
+    expect(directive("connect-src")).toContain("https://www.facebook.com");
+    /* Exact origins, not a wildcard across Meta's whole estate. */
+    expect(policy).not.toContain("*.facebook.com");
     /* A bare * or https: in script-src would make the whole exercise theatre. */
     const scripts = directive("script-src")!;
     expect(scripts).not.toMatch(/(^| )\*( |$)/);

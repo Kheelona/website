@@ -22,7 +22,28 @@ the **first 500 units** at **₹4,999** (decided per request from the live paid 
 gone, a pre-order is **₹7,999 paid in full**), the **₹4,500 balance** on token orders falls due
 before dispatch, and the payment happens on **store.kheelona.com**, which this same repo serves.
 
-## ⚠ STATE OF PLAY (2026-08-25 — **LIVE, AND LUMI IS NOW THE CREAM RABBIT**) — read this first
+## ⚠ STATE OF PLAY (2026-09-01 — **LIVE, WITH A META PIXEL, AND LUMI IS THE CREAM RABBIT**) — read this first
+
+**📣 A META PIXEL RUNS ON THIS SITE SINCE 2026-09-01** (founder request, for Facebook and Instagram
+advertising). Pixel `1045085251085243`; law **§8.30**; checkpoint
+`docs/checkpoints/meta-pixel-2026-09-01.md`. Four things bind. (1) It is a **fourth measurement
+tool**, so §8.21-c applies: touching it means touching `/privacy` in the SAME commit, and
+`test/analytics-tags.test.ts` now counts four. (2) **The ID is hardcoded in `config/site.ts`, and a
+`NEXT_PUBLIC_` env var is the wrong answer** — Vercel refuses it as a Secret because the value is
+inlined into the client bundle, and this repo already retired `NEXT_PUBLIC_GA4_MEASUREMENT_ID` for
+the same reason. (3) **`/privacy` no longer promises what it used to.** The pixel sets `_fbp`,
+follows visitors across sites and exists to advertise to them, so three sentences were rewritten and
+the retired wording is now **pinned as banned by a test** — do not restore it. (4) **The §8.28-a CSP
+enforce flip RESETS from 2026-09-01**: three facebook origins joined the policy, so Report-Only
+reports read before that date say nothing about the pixel. Also closed that day: the **Ideabaaz**
+page, which expired on its own and keeps its honest ended state because printed QR codes point at
+it.
+
+**⚠ `qa:sweep`'s default store URL aims at PRODUCTION DNS.** `store.kheelona.com` resolves to
+Vercel's IPs and the harness's local host-mapping does not take for that subdomain, so the bare
+command reports two `ERR_TIMED_OUT` failures that are not real. Run
+**`SWEEP_STORE=http://store.localhost:3456 npm run qa:sweep`** — that is clean 34/34.
+
 **THE SITE IS LIVE AT https://kheelona.com, indexed, and taking PAID pre-orders — every change from
 here touches a live commercial site.**
 
@@ -294,7 +315,8 @@ explaining why that is safe; those comments are correct and are **not** a preced
 (§8.25-y, guarded by `test/store-secrets.test.ts`). All six are read in exactly one place,
 `lib/store/env.ts`, which returns null when any is missing so the store renders an honest "opening
 shortly" state instead of crashing.
-- **Analytics needs NO env var** (three tools; laws in §8.21-c, c-i, c-ii). **Ahrefs** is a raw
+- **Analytics needs NO env var** (FOUR tools since 2026-09-01; laws in §8.21-c, c-i, c-ii, and
+  **§8.30** for the Meta Pixel, which is hardcoded and host-gated exactly like GA4). **Ahrefs** is a raw
   `<script async>` in the layout's `<head>` and is deliberately NOT host-gated, because Ahrefs
   verifies by fetching the page and looking for the tag. **Adding or removing any measurement
   tool means changing /privacy in the SAME commit** — `test/analytics-tags.test.ts` enforces it. Vercel Web Analytics =

@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "@/styles/globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { GoogleAnalyticsGate } from "@/components/molecules/GoogleAnalyticsGate";
+import { MetaPixel } from "@/components/molecules/MetaPixel";
 import { AHREFS_ANALYTICS_KEY } from "@/config/site";
 
 /* All three faces are subsets of the v3 design system's TTFs
@@ -100,6 +101,12 @@ export default function RootLayout({
         {/* GA4 (gtag.js), manual install, production hosts only — see the
             component for why the host gate exists and why it is not GTM. */}
         <GoogleAnalyticsGate />
+        {/* Meta Pixel (2026-09-01), for Facebook and Instagram advertising.
+            Production hosts only, like GA4, and last in the body for the same
+            LCP reason. Unlike the three tools above it, this one sets a cookie
+            (_fbp) and follows a visitor to other sites, which is its purpose
+            and is why /privacy had to be rewritten rather than extended. */}
+        <MetaPixel />
       </body>
     </html>
   );

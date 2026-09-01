@@ -41,7 +41,12 @@ const SECTIONS: readonly LegalSection[] = [
     h: "Why we ask for each thing",
     ps: [
       `Your WhatsApp number and your email are how we tell you about your own order: the confirmation, the balance payment link, and any change to the ${SHIP_DATE_TEXT} ship date. Your address is how your Lumi reaches you. Your child's age helps us plan production for the right ages.`,
-      "None of it is ever used to profile your child, and none of it is used to advertise to you.",
+      /* Narrowed 2026-09-01. The old sentence said none of this is used to
+         advertise to you, which the Meta Pixel makes untrue as a blanket
+         claim. What stays true, and is the part a parent cares about, is that
+         the FIELDS on the form are never sent to an advertiser: the pixel is
+         told that a pre-order happened and what it cost, never who made it. */
+      "None of it is ever used to profile your child. None of these fields is ever sent to an advertiser: where advertising is concerned, the most that leaves this site is that somebody pre-ordered and what they paid, never who they are.",
     ],
   },
   {
@@ -54,18 +59,31 @@ const SECTIONS: readonly LegalSection[] = [
   {
     /* Added with Vercel Web Analytics (2026-07-28). The page promises plain
        words about what we collect, so measuring visits has to be stated here
-       rather than left implicit. */
+       rather than left implicit.
+       REWRITTEN 2026-09-01 for the Meta Pixel, and rewritten rather than
+       extended on purpose. The three tools before it could honestly be
+       described in one breath as counting visits without following anyone. The
+       Meta Pixel does follow you, to other sites, so that we can advertise to
+       you, and saying so plainly is the whole point of this page. */
     h: "How we measure visits",
     ps: [
-      "We count page views and visits so we can see which parts of this site actually help you decide. Three tools do it, on this site and on our store. Vercel Web Analytics and Ahrefs Web Analytics set no cookies and do not follow you to other sites. Google Analytics does set cookies, in your browser, to tell a returning visit from a new one.",
-      "What these tools record is the page you looked at, your country, your browser, and where the visit came from. None of them ever sees your name, your address, or anything else you typed into the pre-order form.",
-      "If you would rather not be counted, your browser can block all three. Private browsing, an ad blocker, or turning off third party cookies all work, and none of them stop the site or the store from working.",
+      "We count page views and visits so we can see which parts of this site actually help you decide. Four tools do it, on this site and on our store. Vercel Web Analytics and Ahrefs Web Analytics set no cookies and do not follow you to other sites. Google Analytics does set cookies, in your browser, to tell a returning visit from a new one.",
+      "The fourth is different, and we would rather say so than bury it. The Meta Pixel, from the company that runs Facebook, Instagram and WhatsApp, sets a cookie and does follow you to other sites. It is how we know whether an advertisement we paid for actually brought somebody here, and it is how you may later see a Kheelona advertisement on Facebook or Instagram. Meta receives the page you looked at, and whether you pre-ordered and for how much.",
+      "What these tools record is the page you looked at, your country, your browser, and where the visit came from. None of them is ever sent your name, your address, your phone number, your email, or your child's age. Nothing about your child is measured or advertised against, ever.",
+      "If you would rather not be counted, your browser can block all four. Private browsing, an ad blocker, or turning off third party cookies all work, and none of them stop the site or the store from working. You can also turn off personalised advertising inside your own Facebook or Instagram settings.",
     ],
   },
   {
     h: "What we never do",
     ps: [
-      "We never sell your data. We never sell your child's data. We do not run ads with it, trade it, or share it with anyone who is not helping us deliver Lumi to you.",
+      /* Amended 2026-09-01 with the Meta Pixel. The old blanket line about not
+         running advertising off this data could no longer stand, so it is
+         replaced by the narrower thing that is actually true, and the
+         advertising we DO run is stated in the sentence after it rather than
+         quietly dropped. (The retired wording is pinned as banned in
+         test/analytics-tags.test.ts, so it is deliberately not quoted here.) */
+      "We never sell your data. We never sell your child's data. We never trade what you typed into the pre-order form, and we never hand it to anyone who is not helping us deliver Lumi to you.",
+      "We do advertise on Facebook and Instagram, and the Meta Pixel described above is how we measure that. It works from your visit to this website, not from your order details, and never from anything about your child.",
     ],
   },
   {
