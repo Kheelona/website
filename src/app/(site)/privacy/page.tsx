@@ -46,7 +46,7 @@ const SECTIONS: readonly LegalSection[] = [
          claim. What stays true, and is the part a parent cares about, is that
          the FIELDS on the form are never sent to an advertiser: the pixel is
          told that a pre-order happened and what it cost, never who made it. */
-      "None of it is ever used to profile your child. None of these fields is ever sent to an advertiser: where advertising is concerned, the most that leaves this site is that somebody pre-ordered and what they paid, never who they are.",
+      "None of it is ever used to profile your child. When you pre-order, a one-way code made from your email, your phone number and your first name goes to Meta so we can tell whether our advertising worked, and that is explained in full below. Your delivery address, your child's age, and the details themselves stay with us.",
     ],
   },
   {
@@ -69,7 +69,16 @@ const SECTIONS: readonly LegalSection[] = [
     ps: [
       "We count page views and visits so we can see which parts of this site actually help you decide. Four tools do it, on this site and on our store. Vercel Web Analytics and Ahrefs Web Analytics set no cookies and do not follow you to other sites. Google Analytics does set cookies, in your browser, to tell a returning visit from a new one.",
       "The fourth is different, and we would rather say so than bury it. The Meta Pixel, from the company that runs Facebook, Instagram and WhatsApp, sets a cookie and does follow you to other sites. It is how we know whether an advertisement we paid for actually brought somebody here, and it is how you may later see a Kheelona advertisement on Facebook or Instagram. Meta receives the page you looked at, and whether you pre-ordered and for how much.",
-      "What these tools record is the page you looked at, your country, your browser, and where the visit came from. None of them is ever sent your name, your address, your phone number, your email, or your child's age. Nothing about your child is measured or advertised against, ever.",
+      "What these tools record is the page you looked at, your country, your browser, and where the visit came from. Three of the four are never given anything more than that.",
+      /* Added 2026-09-02 with the Conversions API (§8.30-l/n). The previous
+         version of this paragraph promised that no tool is ever sent a name,
+         phone number or email, and the Conversions API made that untrue the day
+         it shipped: it sends a SHA-256 of the email, the phone and the first
+         name so Meta can match a sale to an advertisement. "One-way code" is
+         the plainest honest description of a hash for a parent reading this;
+         what it must not claim is that nothing was sent. */
+      "The Meta Pixel is the exception, and only at the moment you actually pre-order. Then we send Meta a one-way code made from your email address, your phone number and your first name. A one-way code lets Meta check whether you match somebody they already know, and it cannot be turned back into your details, which we never send. It is how we can tell that the person who pre-ordered is the person who saw our advertisement.",
+      "Your delivery address is never sent. Nothing about your child is ever sent, measured, or advertised against.",
       "If you would rather not be counted, your browser can block all four. Private browsing, an ad blocker, or turning off third party cookies all work, and none of them stop the site or the store from working. You can also turn off personalised advertising inside your own Facebook or Instagram settings.",
     ],
   },
@@ -83,7 +92,7 @@ const SECTIONS: readonly LegalSection[] = [
          quietly dropped. (The retired wording is pinned as banned in
          test/analytics-tags.test.ts, so it is deliberately not quoted here.) */
       "We never sell your data. We never sell your child's data. We never trade what you typed into the pre-order form, and we never hand it to anyone who is not helping us deliver Lumi to you.",
-      "We do advertise on Facebook and Instagram, and the Meta Pixel described above is how we measure that. It works from your visit to this website, not from your order details, and never from anything about your child.",
+      "We do advertise on Facebook and Instagram, and the Meta Pixel described above is how we measure that. When you pre-order, it is sent a one-way code made from your email, your phone number and your first name, so a sale can be matched to an advertisement. It is never sent your delivery address, never anything about your child, and never any of those details in readable form.",
     ],
   },
   {

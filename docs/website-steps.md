@@ -1497,3 +1497,32 @@ things and then pays. This is not a code setting and cannot be fixed in this rep
 Events Manager, and it is a founder decision, on a children's product under DPDP. Either it is off and
 the page is true, or it stays on and §8.30-g's wording has to be opened again. **Whoever reads this
 next: check the dataset's Settings before assuming the privacy page is accurate.**
+
+**n. THE PRIVACY PAGE BROKE A SECOND TIME, FROM OUR OWN CODE (2026-09-02, founder chose to
+disclose).** §8.30-g rewrote /privacy for the browser pixel. One day later the Conversions API
+(§8.30-l) made part of that rewrite untrue, and **not because of anything Meta did**: the server event
+sends a SHA-256 of the parent's email, phone and first name, while the page still promised that no
+measurement tool "is ever sent your name, your address, your phone number, your email, or your child's
+age". The code and the sentence shipped a day apart and contradicted each other, which is exactly the
+failure §8.21-c exists to prevent, arriving by a route that rule did not cover: the tool did not
+change, its PAYLOAD did.
+
+*The founder chose to keep the matching and disclose it* (offered against the alternative of stripping
+`em`/`ph`/`fn` and keeping the original promise). The page now says, in the plainest true words
+available, that at the moment of pre-order Meta is sent a **one-way code** made from the email, phone
+and first name; that the code lets Meta check for a match but cannot be turned back into the details;
+and that the details themselves are never sent. "One-way code" is deliberate: a parent does not know
+what a hash is, and the sentence must not imply nothing was sent.
+
+*Two promises survive untouched and are now enforced against the CODE, not just the page*:
+**the delivery address and anything about the child are never sent.** `test/analytics-tags.test.ts`
+greps `meta-capi.ts` for `child_age` and `order.address` and fails if either appears, and it also
+fails if `meta-capi.ts` sends `em`/`ph`/`fn` while /privacy lacks the disclosure. **That is the
+generalised rule this round earned: when a third party's PAYLOAD changes, the disclosure is part of
+the change, exactly as it is when a tool is added or removed.**
+
+*AAM should still be off even under this option.* The wording describes what WE deliberately send.
+Automatic Advanced Matching (§8.30-m) scrapes whatever form fields Meta's own script recognises, which
+is not a set this repo controls or can accurately describe, and the store's form carries a child's age
+field. A disclosure that has to say "and possibly other things Meta's script picks up" is worse than
+one that names three fields exactly.

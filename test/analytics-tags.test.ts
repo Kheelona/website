@@ -70,6 +70,46 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
     expect(PRIVACY).not.toContain("Three tools do it");
   });
 
+  /* THE CONVERSIONS API SENDS HASHED CONTACT DETAILS (§8.30-l), and that broke
+     the page a second time on 2026-09-02: it had promised that no tool is ever
+     sent a name, phone number or email, which stopped being true the day the
+     server-side Purchase shipped. The founder chose to keep the matching and
+     disclose it (option B).
+
+     So this is the pairing rule applied to a payload rather than to a tag: if
+     meta-capi.ts sends em, ph or fn, /privacy has to say so. Losing the
+     disclosure while keeping the code is the failure mode, and it is silent. */
+  it("discloses the hashed contact details the Conversions API sends", () => {
+    const capi = readFileSync(join(ROOT, "src/lib/store/meta-capi.ts"), "utf8");
+    const sendsIdentifiers =
+      capi.includes("user_data.em") || capi.includes("user_data.ph") || capi.includes("user_data.fn");
+
+    if (sendsIdentifiers) {
+      expect(PRIVACY, "CAPI sends hashed contact details but /privacy does not disclose it")
+        .toMatch(/one-way code/);
+      expect(PRIVACY).toMatch(/your email address, your phone number and your first name/);
+    }
+  });
+
+  it("no longer claims nothing is ever sent, which the Conversions API made untrue", () => {
+    expect(PRIVACY).not.toContain("None of them is ever sent your name");
+    expect(PRIVACY).not.toContain("It works from your visit to this website, not from your order details");
+    expect(PRIVACY).not.toContain("None of these fields is ever sent to an advertiser");
+  });
+
+  /* The two promises that must SURVIVE every rewrite. The child is the whole
+     reason this page is written the way it is, and the address is the one field
+     that could identify a home. Neither is in the CAPI payload, and if either
+     ever is, this failing is the cheapest possible warning. */
+  it("still promises the child and the address are never sent, and still means it", () => {
+    expect(PRIVACY).toMatch(/Nothing about your child is ever sent/);
+    expect(PRIVACY).toMatch(/delivery address is never sent/);
+
+    const capi = readFileSync(join(ROOT, "src/lib/store/meta-capi.ts"), "utf8");
+    expect(capi, "the child's age must never reach Meta").not.toMatch(/child_age/);
+    expect(capi, "the delivery address must never reach Meta").not.toMatch(/order\.address/);
+  });
+
   /* Extended 2026-08-22 (§8.25-e). The standing rule was written for
      measurement tags, but its reason is broader: a third party that touches a
      visitor and a sentence naming it ship together. Taking payments added three
