@@ -190,6 +190,12 @@ security headers live, the live pages carry no console errors or failed requests
       the only external proof. **Two Purchases means the `event_id` values are not matching**; both
       sides should read `purchase_<order_ref>` from `purchaseEventId()` in `src/lib/fbq.ts`. Bring it
       back to me if so.
+      **Easier since 2026-09-02:** `/api/health` now reports `capi: "configured" | "missing"`
+      (presence only, never the value), so whether the token took is one curl rather than a wait —
+      `curl -s https://kheelona.com/api/health`. And every server send now logs
+      `[meta-capi] SENT|SKIPPED|REJECTED|FAILED <event_id>` in the Vercel log, with
+      `events_received` and `fbtrace_id` on the success line. Before this, success and "token
+      missing" were both silent, which is why the first real order could not be answered (§8.30-q).
 
 - [ ] 🧑 **Where was "Pay ₹0 and reserve" seen?** Reported by the reviewer on the store. The guard is
       in (`resolveTier` now refuses a non-positive amount), but the only way to reach that state is a

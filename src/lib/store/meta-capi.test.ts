@@ -1,8 +1,9 @@
 import { createHash } from "node:crypto";
-import { describe, expect, it } from "vitest";
-import { purchasePayload, readFbAttrib } from "./meta-capi";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { purchasePayload, readFbAttrib, reportPurchaseToMeta } from "./meta-capi";
 import { purchaseEventId } from "@/lib/fbq";
 import type { PreorderRow } from "./db";
+import type { StoreEnv } from "./env";
 
 const sha = (v: string) => createHash("sha256").update(v).digest("hex");
 
@@ -137,5 +138,83 @@ describe("readFbAttrib", () => {
   it("caps what a browser can push into the column", () => {
     const attrib = readFbAttrib(req({ cookie: `_fbp=${"x".repeat(5000)}` }));
     expect(attrib!.fbp!.length).toBeLessThanOrEqual(256);
+  });
+});
+
+describe("reportPurchaseToMeta logging", () => {
+  /* WHY THESE EXIST. The first version logged only failures, so "sent" and
+     "skipped" were both silent — and the very first time anyone asked whether a
+     real order's server event had landed (KH-G7RD-96ZK, 2026-09-02), the log
+     could not tell those two apart. Silence covered two outcomes that need
+     different responses. These pin that every outcome now says which it was. */
+  const env = (token: string | null) =>
+    ({ metaCapiToken: token, metaCapiTestCode: null }) as unknown as StoreEnv;
+
+  afterEach(() => vi.restoreAllMocks());
+
+  it("says so when there is no token, instead of failing silently", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const result = await reportPurchaseToMeta(env(null), order());
+
+    expect(result).toBe("skipped");
+    const line = warn.mock.calls[0][0] as string;
+    expect(line).toContain("SKIPPED");
+    expect(line).toContain("purchase_KH-KZYJ-PEHT");
+    // the CAUSE is in the line, so nobody has to infer it from an absence
+    expect(line).toContain("META_CAPI_TOKEN");
+  });
+
+  it("logs the proof of success: events_received and fbtrace_id", async () => {
+    const info = vi.spyOn(console, "info").mockImplementation(() => {});
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () =>
+        new Response(JSON.stringify({ events_received: 1, fbtrace_id: "AbC123" }), {
+          status: 200,
+          headers: { "content-type": "application/json" },
+        }),
+      ),
+    );
+
+    const result = await reportPurchaseToMeta(env("TOKEN"), order());
+
+    expect(result).toBe("sent");
+    const line = info.mock.calls[0][0] as string;
+    expect(line).toContain("SENT");
+    expect(line).toContain("purchase_KH-KZYJ-PEHT");
+    expect(line).toContain("events_received=1");
+    expect(line).toContain("fbtrace_id=AbC123");
+  });
+
+  it("never writes the token into a log line", async () => {
+    const info = vi.spyOn(console, "info").mockImplementation(() => {});
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response("{}", { status: 200 })),
+    );
+
+    await reportPurchaseToMeta(env("EAAsecretvalue"), order());
+    expect(info.mock.calls[0][0] as string).not.toContain("EAAsecretvalue");
+  });
+
+  it("reports a rejection rather than swallowing it, and still does not throw", async () => {
+    const error = vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response('{"error":{"message":"bad field"}}', { status: 400 })),
+    );
+
+    await expect(reportPurchaseToMeta(env("TOKEN"), order())).resolves.toBe("failed");
+    expect(error.mock.calls[0][0] as string).toContain("REJECTED");
+  });
+
+  /* The payment path must survive Meta being down. notifyPaid runs after the
+     money has moved, and an exception there would fail a webhook Razorpay then
+     retries for an order recorded perfectly. */
+  it("never throws when the network does", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.stubGlobal("fetch", vi.fn(async () => { throw new Error("ECONNRESET"); }));
+
+    await expect(reportPurchaseToMeta(env("TOKEN"), order())).resolves.toBe("failed");
   });
 });

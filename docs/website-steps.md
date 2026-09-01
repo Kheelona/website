@@ -1596,3 +1596,27 @@ not this — it means the browser and server `event_id` values are not matching,
 *Also settled the same day:* preview deployments have never sent pixel events, and the cause is **our
 hostname gate** (§8.30-b), not Meta's domain allow list. It will not change if that allow list is
 edited, and production is the only place to test.
+
+**q. EVERY CAPI OUTCOME LOGS, AND `/api/health` REPORTS THE TOKEN'S PRESENCE (2026-09-02, after the
+first real order).** The Conversions API shipped logging only failures, on the reasonable-sounding
+ground that silence means fine. **It does not.** `"sent"` and `"skipped"` were both silent, so the
+Vercel log could not distinguish *Meta accepted the event* from *the token was never configured* —
+which is the only distinction anyone asks about afterwards. The first time it was asked, about a real
+order, the answer was unavailable and no amount of log-reading would have produced it.
+
+*The rule this earned, which generalises past this file:* **a log that only fires on failure cannot
+answer "did it work", only "did it break".** Where the two outcomes need different responses, success
+has to say so. It is one line per paid order, at a volume where that costs nothing.
+
+Every branch now logs `[meta-capi] SENT|SKIPPED|REJECTED|FAILED <event_id>`, so one search returns
+every outcome and each line can be matched to an order and to the browser event beside it. The
+success line carries `events_received` (the only field that actually proves Meta took the event) and
+`fbtrace_id` (what Meta support asks for). The skip line names `META_CAPI_TOKEN`, so the cause is in
+the line rather than inferred from an absence. Tests assert the token never appears in any of them.
+
+*`/api/health` gained `capi: "configured" | "missing"`* — **presence only, never the value**, exactly
+as `email` already did for Resend. This turns "did the environment variable actually land after the
+redeploy?" into one curl instead of waiting for a customer to buy something. Worth having because
+that question had already cost two cycles in one week, for the reason recorded in
+`project-security-engagement-2026-08`: **a Vercel variable only applies to deployments created after
+it changes**, so adding or rotating one without a redeploy silently keeps the old value.

@@ -60,6 +60,15 @@ export async function GET(request: Request) {
     preorder,
     razorpay: razorpayMode(env.razorpayKeyId),
     email: env.resendApiKey ? "configured" : "missing",
+    /* PRESENCE ONLY, never the value (added 2026-09-02). The Conversions API
+       token is optional, so a missing one and a working one look identical from
+       outside: the store behaves the same and, until this, the only way to tell
+       was to wait for a customer to buy something and then read Events Manager.
+       That question cost two cycles in one week, because a Vercel variable only
+       applies to deployments created AFTER it changes, so a rotation without a
+       redeploy silently keeps the old value. This turns it into one curl.
+       Same shape as `email` above, and for the same reason. */
+    capi: env.metaCapiToken ? "configured" : "missing",
     dbMs: Date.now() - started,
   });
 }

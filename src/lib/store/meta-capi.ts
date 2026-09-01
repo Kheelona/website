@@ -183,12 +183,30 @@ export function purchasePayload(
  *
  *  Skipped entirely when no token is configured, which is the same "readiness,
  *  not crashing" rule the rest of the store follows: the store must work before
- *  the founder has pasted every dashboard value in. */
+ *  the founder has pasted every dashboard value in.
+ *
+ *  EVERY OUTCOME LOGS, INCLUDING SUCCESS (added 2026-09-02, after the first real
+ *  order). The first version logged only failures, on the reasonable-sounding
+ *  ground that silence means fine. It does not: "sent" and "skipped" were BOTH
+ *  silent, so the log could not distinguish Meta accepting the event from the
+ *  token never having been configured — which is the only question anyone
+ *  actually asks afterwards, and the first time it was asked the answer was
+ *  unavailable. A success line costs one log entry per order and turns that into
+ *  a search. It carries `events_received` and Meta's `fbtrace_id`, which are what
+ *  Meta support asks for, and the event id, so a line can be matched to an order
+ *  and to the browser event beside it. */
 export async function reportPurchaseToMeta(
   env: StoreEnv,
   order: PreorderRow,
 ): Promise<"sent" | "skipped" | "failed"> {
-  if (!env.metaCapiToken) return "skipped";
+  const eid = purchaseEventId(order.order_ref);
+
+  if (!env.metaCapiToken) {
+    console.warn(
+      `[meta-capi] SKIPPED ${eid}: META_CAPI_TOKEN is not configured, so only the browser event was sent`,
+    );
+    return "skipped";
+  }
 
   try {
     const response = await fetch(
@@ -210,14 +228,24 @@ export async function reportPurchaseToMeta(
          — but the order reference is all we add of our own. */
       const detail = await response.text().catch(() => "");
       console.error(
-        `[meta-capi] Purchase rejected for ${order.order_ref}: ${response.status} ${detail.slice(0, 400)}`,
+        `[meta-capi] REJECTED ${eid}: ${response.status} ${detail.slice(0, 400)}`,
       );
       return "failed";
     }
 
+    /* Meta answers 200 with {events_received, messages, fbtrace_id}. events_received
+       is the only thing that actually proves it took the event, and fbtrace_id is
+       what Meta support asks for, so both go in the line. */
+    const body = (await response.json().catch(() => ({}))) as {
+      events_received?: number;
+      fbtrace_id?: string;
+    };
+    console.info(
+      `[meta-capi] SENT ${eid} events_received=${body.events_received ?? "?"} fbtrace_id=${body.fbtrace_id ?? "?"}`,
+    );
     return "sent";
   } catch (error) {
-    console.error(`[meta-capi] Purchase failed to send for ${order.order_ref}`, error);
+    console.error(`[meta-capi] FAILED ${eid}`, error);
     return "failed";
   }
 }
