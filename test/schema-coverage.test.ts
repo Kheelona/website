@@ -20,10 +20,27 @@ import { describe, expect, it } from "vitest";
 const ROOT = process.cwd();
 const DIR = join(ROOT, "supabase/migrations");
 
+/** The migrations as SQL, with comments stripped.
+ *
+ *  BOTH HALVES MATTER, and the first version of this test had neither. It
+ *  searched the raw concatenated text for the column name as a plain substring,
+ *  so `dispatch` was "found" by the words "dispatch queue" inside a comment, and
+ *  `payment_id` was "found" inside `rzp_payment_id`. A guard that answers yes to
+ *  a column nobody declared is not a guard: the outage it exists to prevent
+ *  (a hand-added column, a rebuild, every pre-order 500ing) would sail past it
+ *  under any of those names. */
 const sql = readdirSync(DIR)
   .filter((f) => f.endsWith(".sql"))
   .map((f) => readFileSync(join(DIR, f), "utf8"))
-  .join("\n");
+  .join("\n")
+  .replace(/--[^\n]*/g, " ");
+
+/** Word-boundary match, so `payment_id` does not match inside `rzp_payment_id`.
+ *  Underscore is a word character, which is exactly what makes `\b` correct
+ *  here: there is no boundary between `rzp_` and `payment_id`. */
+function declaredInSql(column: string): boolean {
+  return new RegExp(`\\b${column}\\b`).test(sql);
+}
 
 /** The columns PreorderRow declares, read from the type rather than retyped, so
  *  this cannot drift from what the code believes the row contains. */
@@ -35,7 +52,7 @@ function declaredColumns(): string[] {
 
 describe("the schema in this repo can rebuild the database", () => {
   it("has a migration for every column PreorderRow declares", () => {
-    const missing = declaredColumns().filter((c) => !sql.includes(c));
+    const missing = declaredColumns().filter((c) => !declaredInSql(c));
     expect(missing, `columns with no migration: ${missing.join(", ")}`).toEqual([]);
   });
 
@@ -44,6 +61,17 @@ describe("the schema in this repo can rebuild the database", () => {
     expect(columns.length).toBeGreaterThan(10);
     expect(columns).toContain("fb_attrib");
     expect(columns).toContain("order_ref");
+  });
+
+  /* The two false-positive shapes the first version of this test let through,
+     pinned so the matching cannot quietly regress to a substring search. */
+  it("does not accept a column name that only appears inside a comment", () => {
+    expect(declaredInSql("dispatch"), "matched the words 'dispatch queue' in a comment").toBe(false);
+  });
+
+  it("does not accept a column name that is a substring of another column", () => {
+    expect(declaredInSql("payment_id"), "matched inside rzp_payment_id").toBe(false);
+    expect(declaredInSql("rzp_payment_id")).toBe(true);
   });
 
   /* The runbook is half the mechanism: a complete set of migrations that nobody

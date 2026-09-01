@@ -25,7 +25,7 @@ const reportPurchaseToMeta = vi.hoisted(() => vi.fn());
 vi.mock("@/lib/email/send", () => ({ sendEmail }));
 vi.mock("./meta-capi", () => ({ reportPurchaseToMeta }));
 
-const { markPaid, notifyPaid, markRefunded } = await import("./fulfil");
+const { markPaid, notifyPaid, markRefunded, alertNotPayable } = await import("./fulfil");
 const env = fakeEnv as StoreEnv;
 
 const row = {
@@ -230,6 +230,24 @@ describe("markPaid and the payable allow-list", () => {
     expect(result.outcome).toBe("short-paid");
   });
 
+  /* F6: the re-read added so orphan recovery of a refunded row does not fall
+     through to "unknown", whose handler logs "paid an order id we do not have"
+     about an order we very much do have. Deleting that block used to leave the
+     suite green. */
+  it("refuses a refunded order matched by REFERENCE, not just by gateway id", async () => {
+    results["preorders.update"] = { data: null };
+    /* No row for the gateway id, then the reference lookup finds a refunded one. */
+    results["preorders.select"] = { data: { status: "refunded" } };
+
+    const result = await markPaid(env, {
+      rzpOrderId: "order_orphan",
+      paymentId: "pay_1",
+      orderRef: "KH-A2B3-C4D5",
+    });
+
+    expect(result).toEqual({ outcome: "not-payable", status: "refunded" });
+  });
+
   it("guards orphan recovery with the same allow-list", async () => {
     results["preorders.update"] = { data: null };
     results["preorders.select"] = { data: null };
@@ -283,6 +301,15 @@ describe("notifyPaid", () => {
     expect(reportPurchaseToMeta).toHaveBeenCalledTimes(1);
   });
 
+  /* F7: the three cases above are all ASYNC rejections, which Promise.allSettled
+     already absorbed before the try/catch was added. The genuinely new behaviour
+     is catching a SYNCHRONOUS throw from building the templates, which is what
+     the try is actually for. Removing it used to leave the suite green. */
+  it("does not throw when building the email itself throws", async () => {
+    const broken = { ...paidOrder, order_ref: null } as unknown as Parameters<typeof notifyPaid>[1];
+    await expect(notifyPaid(env, broken)).resolves.toBeUndefined();
+  });
+
   it("does not throw when everything downstream fails at once", async () => {
     sendEmail.mockRejectedValue(new Error("resend down"));
     reportPurchaseToMeta.mockRejectedValue(new Error("meta down"));
@@ -328,5 +355,49 @@ describe("markRefunded", () => {
     await expect(markRefunded(env, { paymentId: "pay_unknown", refundedPaise: 100 })).resolves.toBe(
       "unknown",
     );
+  });
+});
+
+/* ── alertNotPayable (§8.30-s) ────────────────────────────────────────────
+ *
+ *  The alarm channel added when the allow-list shipped, and it shipped with no
+ *  tests: changing `to: env.alertEmail` to any other address left the whole
+ *  suite green. Its docstring says "INTERNAL ONLY, and that is the whole care in
+ *  this function" — so that is what these pin. */
+describe("alertNotPayable", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.restoreAllMocks();
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    sendEmail.mockResolvedValue(undefined);
+  });
+
+  it("goes to the internal address and NOWHERE else", async () => {
+    await alertNotPayable(env, "order_abc", "refunded");
+    expect(sendEmail).toHaveBeenCalledTimes(1);
+    expect((sendEmail.mock.calls[0][1] as { to: string }).to).toBe(env.alertEmail);
+  });
+
+  /* The harm this whole change exists to prevent: telling a refunded customer
+     their order is live again. */
+  it("never addresses a customer", async () => {
+    await alertNotPayable(env, "order_abc", "refunded");
+    const sent = JSON.stringify(sendEmail.mock.calls[0][1]);
+    expect(sent).not.toContain("parent@example.com");
+    expect(sent).not.toContain("@gmail");
+  });
+
+  it("names the order and the status, so the mail is actionable on its own", async () => {
+    await alertNotPayable(env, "order_abc", "cancelled");
+    const mail = sendEmail.mock.calls[0][1] as { subject: string; text: string };
+    expect(mail.subject).toContain("cancelled");
+    expect(mail.subject).toContain("order_abc");
+    expect(mail.text).toContain("NOT marked paid");
+  });
+
+  /* The caller is a webhook, inside a try whose catch releases the claim. */
+  it("does not throw when the mail fails", async () => {
+    sendEmail.mockRejectedValue(new Error("resend down"));
+    await expect(alertNotPayable(env, "order_abc", "refunded")).resolves.toBeUndefined();
   });
 });

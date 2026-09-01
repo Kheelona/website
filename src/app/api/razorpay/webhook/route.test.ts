@@ -19,10 +19,11 @@ const markPaid = vi.hoisted(() => vi.fn());
 const notifyPaid = vi.hoisted(() => vi.fn());
 const markRefunded = vi.hoisted(() => vi.fn());
 const markFailed = vi.hoisted(() => vi.fn());
+const alertNotPayable = vi.hoisted(() => vi.fn());
 
 vi.mock("@/lib/store/env", () => ({ storeEnv }));
 vi.mock("@/lib/store/db", () => ({ db: () => fakeClient(results, calls) }));
-vi.mock("@/lib/store/fulfil", () => ({ markPaid, notifyPaid, markRefunded, markFailed }));
+vi.mock("@/lib/store/fulfil", () => ({ markPaid, notifyPaid, markRefunded, markFailed, alertNotPayable }));
 
 const { POST } = await import("./route");
 
@@ -346,5 +347,48 @@ describe("orphan recovery", () => {
   it("passes null when Razorpay gives us nothing to recover from", async () => {
     await deliver(paidEvent, { eventId: "evt_orphan_none" });
     expect(markPaid.mock.calls[0][1].orderRef).toBeNull();
+  });
+});
+
+/* ── not-payable at the webhook (§8.30-s) ─────────────────────────────────
+ *
+ *  WHY THESE EXIST. The commit that added `not-payable` shipped with none of
+ *  this pinned: deleting the alert call, or making the route call notifyPaid on
+ *  a refused order, both left the whole suite green. The single harm that fix
+ *  exists to prevent is mailing a refunded customer a receipt telling them their
+ *  order is live again, and nothing was stopping a future refactor doing exactly
+ *  that. */
+describe("a payment arriving for a refunded or cancelled order", () => {
+  beforeEach(() => {
+    calls = [];
+    results = {};
+    vi.clearAllMocks();
+    storeEnv.mockReturnValue(fakeEnv);
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    markPaid.mockResolvedValue({ outcome: "not-payable", status: "refunded" });
+  });
+
+  const paidEvent = {
+    event: "payment.captured",
+    payload: { payment: { entity: { id: "pay_1", order_id: "order_abc", amount: 49_900 } } },
+  };
+
+  it("NEVER sends the customer a receipt for an order we are refusing", async () => {
+    await deliver(paidEvent);
+    expect(notifyPaid).not.toHaveBeenCalled();
+  });
+
+  it("raises an internal alert, because a 200 and a log line are not a signal", async () => {
+    await deliver(paidEvent);
+    expect(alertNotPayable).toHaveBeenCalledTimes(1);
+    expect(alertNotPayable).toHaveBeenCalledWith(fakeEnv, "order_abc", "refunded");
+  });
+
+  /* 200 on purpose: a retry delivers the same event against the same refused row
+     forever, and a 5xx would make Razorpay hammer us and churn the claim row. */
+  it("answers 200 and names the outcome, rather than inviting a retry storm", async () => {
+    const response = await deliver(paidEvent);
+    expect(response.status).toBe(200);
+    expect(await response.json()).toMatchObject({ note: "not-payable" });
   });
 });

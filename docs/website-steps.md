@@ -869,7 +869,9 @@ inventing one is forbidden (§8.2), so errors use `orange-ink` and the wording c
 **8.25-p PAID IS DECIDED TWICE, ON PURPOSE, THROUGH ONE FUNCTION.** The browser callback confirms fast
 (signature verified) so a parent sees "reserved" in the same second; the webhook confirms for certain,
 because a browser can be closed or offline at the moment it matters. Both go through `markPaid`, whose
-idempotency is a single Postgres statement (`.neq("status","paid")`), so whichever arrives second does
+idempotency is a single Postgres statement (`.in("status", ["created","failed"])` since 2026-09-02, an
+allow-list; it was `.neq("status","paid")`, which also admitted `refunded` and `cancelled` and could
+resurrect a refunded order into the dispatch queue, see §8.30-s), so whichever arrives second does
 nothing and nobody is emailed twice.
 
 **8.25-q THE CHECKOUT SCRIPT LOADS ON THE FIRST SUBMIT, NEVER ON PAGE LOAD.** Nobody who bounces should
@@ -1682,3 +1684,36 @@ payable because a parent whose first attempt failed and who then pays is a wante
    refunded row matched nothing and fell through to `"unknown"`, whose handler logs "paid an order id
    we do not have" — about an order we do have. The branch now re-reads by reference and returns
    `not-payable`, because a log that sends a human to the wrong place is worse than no log.
+
+**s-i. WHAT THE SENIOR REVIEW OF §8.30-s FOUND, AND WHY IT IS WORTH KEEPING (2026-09-02).** The
+allow-list fix was correct and the branch order was correct. Three things around it were not, and the
+shape of all three recurs.
+
+**A commit message claimed a doc edit that did not happen.** The message said §8.25-p's stated
+mechanism had been updated with the code. It had not: the replacement matched `.neq("status", "paid")`
+**with a space** and §8.25-p wrote it without one, so the law went on documenting the retired guard —
+and `CLAUDE.md` tells every session to read §8.25 before touching store code. The module header of
+`fulfil.ts` had the same stale sentence, twenty lines above the constant that replaced it. **A
+find-and-replace across prose is not a doc update until it is grepped afterwards**, and a commit
+message is a claim like any other.
+
+**The privacy rewrite introduced a new false sentence and pinned it with a test.** It said the network
+address and the browser "are the two it needs in readable form". `fbp` and `fbc` are sent verbatim as
+well, so four of the seven `user_data` fields are unhashed. **The copy now names categories and does
+not count**: a category stays honest at any payload size, a number stops being true the moment a field
+is added. A test accounts for every unhashed key against the built payload instead, so the page and
+the payload cannot drift apart silently.
+
+**Four of the new behaviours were invisible to the suite.** Deleting the `alertNotPayable` call, the
+orphan-recovery re-read, or the `notifyPaid` try/catch each left 973/973 green, as did making the
+webhook call `notifyPaid` on a refused order — which is the single harm the change exists to prevent.
+**A green suite says nothing about code no test executes**, and the only way to know which is which is
+to break it on purpose. Every fix in the follow-up was verified by mutation: revert the allow-list,
+delete the alert, rethrow from the catch. If a mutation does not turn a test red, the test is
+decoration.
+
+**And the guard added the same day was itself too weak**: `schema-coverage` searched the concatenated
+migration text for a column name as a plain substring, so `dispatch` was satisfied by the words
+"dispatch queue" inside a comment and `payment_id` by `rzp_payment_id`. Comments are stripped and
+matching is word-bounded now, with both false-positive shapes pinned as tests. **A guard that answers
+yes to a column nobody declared is not a guard.**

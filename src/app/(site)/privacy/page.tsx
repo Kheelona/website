@@ -27,7 +27,7 @@ const SECTIONS: readonly LegalSection[] = [
          happen again: the form is now ours, in this repo, so there is no excuse
          for the two to drift. */
       "Your name, your WhatsApp number, your email address, and your child's age, before you pay. Your delivery address, after you pay.",
-      "That is everything we ask you for. Your browser also tells us where you arrived from and what device you are on, which every website receives and which we keep with your order so we know which of our own pages and advertisements are working. We ask your child's age because Lumi is built for a narrow band of ages and we want to send you the right thing. We do not ask for your child's name, their school, their photograph, or anything else about them.",
+      "That is everything we ask you for. Your browser also tells us where you arrived from, what device you are on, and your network address, and if you have a Meta cookie on your device we read the identifier in it. Every website receives the first of those, and we keep all of them with your order so we know which of our own pages and advertisements are working. We ask your child's age because Lumi is built for a narrow band of ages and we want to send you the right thing. We do not ask for your child's name, their school, their photograph, or anything else about them.",
     ],
   },
   {
@@ -85,7 +85,15 @@ const SECTIONS: readonly LegalSection[] = [
          A test used to PIN that sentence, so the suite was enforcing a false
          claim about our own code. Both halves are now stated separately,
          because they really are two different things. */
-      "Two things are happening there, and they are worth separating. Meta's script in your browser reads what it recognises on our forms, and we do not choose that field by field. Our own server separately sends a small, fixed set when an order completes: coded forms of your email, your phone number and your first name, along with your network address and which browser you are using, which are the two it needs in readable form to match a sale to an advertisement.",
+      /* CORRECTED 2026-09-02, hours after the sentence it replaces. That one said
+         the network address and the browser "are the two it needs in readable
+         form", and a senior review counted the payload: `fbp` and `fbc`, the
+         identifiers from Meta's own cookie, are also sent exactly as they are.
+         The count was wrong, and a test had already pinned it, which is the
+         same failure this whole rewrite existed to remove. It no longer counts:
+         a category is honest at any payload size, and a number stops being true
+         the moment a field is added. */
+      "Two things are happening there, and they are worth separating. Meta's script in your browser reads what it recognises on our forms, and we do not choose that field by field. Our own server separately sends a small, fixed set when an order completes: coded forms of your email, your phone number and your first name, together with your network address, which browser you are using, and the identifiers already stored in Meta's own cookie on your device. Those last ones are not coded, because recognising a returning visitor is exactly what they are for.",
       "We never use any of it to profile your child, we never sell it, and we never trade it.",
       /* REWRITTEN 2026-09-02, and this was the worst of the four. The retired
          sentence told the reader their browser could block every one of the

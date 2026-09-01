@@ -17,10 +17,15 @@ import { reportPurchaseToMeta } from "./meta-capi";
  *     browser can be closed, backgrounded or offline at the moment it matters.
  *
  *  Neither is trusted to be the only one, and neither may act twice. The
- *  idempotency is in the UPDATE itself: `.neq("status", "paid")` means the second
- *  path to arrive matches no row, gets `already`, and sends no second email. That
- *  is one atomic statement in Postgres rather than a read-then-write we would
- *  have to reason about under a race. */
+ *  idempotency is in the UPDATE itself: `.in("status", PAYABLE_STATUSES)` means
+ *  the second path to arrive matches no row, gets `already`, and sends no second
+ *  email. That is one atomic statement in Postgres rather than a read-then-write
+ *  we would have to reason about under a race.
+ *
+ *  It was `.neq("status", "paid")` until 2026-09-02, and the allow-list that
+ *  replaced it is not a tidy-up: a negation of `paid` also admits `refunded` and
+ *  `cancelled`, so a webhook retry could put a refunded customer back in the
+ *  dispatch queue (§8.30-s). See PAYABLE_STATUSES below. */
 
 /** The only states an order may become paid FROM. Deliberately an allow-list.
  *

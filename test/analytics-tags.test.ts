@@ -214,9 +214,26 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
   /* The IP and the user agent are the only things that leave in READABLE form,
      and they are personal data under DPDP. The page must say so, not merely
      avoid denying it. */
-  it("discloses the two fields that are NOT hashed", () => {
-    expect(PRIVACY).toMatch(/your network address and which browser you are using/);
-    expect(PRIVACY).toMatch(/in readable form to match a sale to an advertisement/);
+  /* WITHOUT COUNTING THEM. The first version of this asserted the page called
+     the network address and the browser "the two" readable fields, which was
+     wrong — `fbp` and `fbc` go verbatim as well — and pinning a count meant the
+     suite enforced the error, which is the exact failure this file exists to
+     prevent. The page names the categories; the key allow-list above is what
+     pins the payload. A number in the copy is a review flag. */
+  it("discloses the fields that are NOT hashed, without stating a count", () => {
+    expect(PRIVACY).toMatch(/your network address/);
+    expect(PRIVACY).toMatch(/identifiers already stored in Meta's own cookie/);
+    expect(PRIVACY).toMatch(/Those last ones are not coded/);
+    expect(PRIVACY).not.toContain("which are the two it needs in readable form");
+  });
+
+  /* Every unhashed key in the payload must be describable from the page. If a
+     new raw field is added, this fails and points at the sentence to update. */
+  it("the page accounts for every field the payload sends unhashed", () => {
+    const ud = (purchasePayload(SAMPLE_ORDER, "TOKEN").data[0] as Record<string, unknown>)
+      .user_data as Record<string, string>;
+    const unhashed = Object.keys(ud).filter((k) => !["em", "ph", "fn"].includes(k));
+    expect(unhashed.sort()).toEqual(["client_ip_address", "client_user_agent", "fbc", "fbp"]);
   });
 
   /* Extended 2026-08-22 (§8.25-e). The standing rule was written for
