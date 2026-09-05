@@ -58,3 +58,8 @@ next-env.d.ts
 # Team feedback round 2026-07-30: committed as docs/revamp-2026-07/team-feedback-2026-07-30.pdf;
 # the root originals (PDF + DOCX the founder dropped in) stay untracked working files.
 /Website prompt based on B + inputs - 24-Jul.*
+
+# The founder's investor materials. Untracked working-tree content that must
+# never enter this PUBLIC repo — it was pushed by accident on 2026-09-06 and
+# the history had to be rewritten to remove it.
+pitch-deck/
