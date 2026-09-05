@@ -1,3 +1,4 @@
+import { STORIES } from "./stories";
 import {
   ORGANIZATION,
   WEBSITE,
@@ -12,6 +13,7 @@ import {
   pageMeta,
   OG_IMAGE,
   SITE_URL,
+  authorRef,
 } from "./seo";
 import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
@@ -102,6 +104,47 @@ describe("structured data", () => {
     // credentials must be the published ones, not inflated
     expect(JSON.stringify(ORGANIZATION.founder)).toMatch(/14 patents/);
     expect(JSON.stringify(ORGANIZATION.founder)).toMatch(/Thunderbolt 4 and 5 compliance at Intel/);
+  });
+
+  /* §8.35-d/e (2026-09-05): one author entity behind every byline, and
+     corroboration the company does not own. */
+  it("gives every founder a stable @id on the team page", () => {
+    for (const f of ORGANIZATION.founder) {
+      expect(f["@id"]).toMatch(new RegExp(`^${SITE_URL}/team#[a-z-]+$`));
+    }
+    expect(new Set(ORGANIZATION.founder.map((f) => f["@id"])).size).toBe(3);
+  });
+
+  it("resolves every journal byline to an entity with an @id, and refuses a stranger", () => {
+    for (const story of STORIES) {
+      const ref = authorRef(story.author);
+      expect(ref["@id"], story.slug).toMatch(new RegExp(`^${SITE_URL}/team#`));
+      const known = [...ORGANIZATION.founder, ...ORGANIZATION.employee].map((p) => p["@id"]);
+      expect(known, `${story.author} is not on /team`).toContain(ref["@id"]);
+    }
+    expect(() => authorRef("Nobody Here")).toThrow(/No author entity/);
+  });
+
+  it("names Ria as an employee, not a founder, because that is what /team says", () => {
+    expect(ORGANIZATION.employee.map((p) => p.name)).toEqual(["Ria Mangala Rewari"]);
+    expect(ORGANIZATION.founder.map((f) => f.name)).not.toContain("Ria Mangala Rewari");
+  });
+
+  it("corroborates the entity with profiles we do not host, all https and unique", () => {
+    const same = ORGANIZATION.sameAs as readonly string[];
+    expect(same.length).toBeGreaterThanOrEqual(5);
+    expect(new Set(same).size).toBe(same.length);
+    for (const url of same) expect(url).toMatch(/^https:\/\//);
+    expect(same.filter((u) => !u.includes("kheelona.")).length).toBeGreaterThanOrEqual(3);
+    // app listings identify the app, not the company: they belong in llms.txt
+    expect(same.join(" ")).not.toMatch(/apps\.apple\.com|details\?id=/);
+  });
+
+  it("states only the memberships the page states", () => {
+    expect(ORGANIZATION.memberOf.map((m) => m.name)).toEqual([
+      "NVIDIA Inception Program",
+      "nasscom startups",
+    ]);
   });
 
   it("declares the company as Indian, for geo queries", () => {

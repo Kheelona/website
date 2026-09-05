@@ -34,7 +34,7 @@ commit). Developer handoff: `docs/seo/handoff-2026-09-05.md`. Rollback tag `pre-
 
 - [x] C1 · the false "reserve a spot on the list. It is free" line in `src/lib/stories.ts` + banned-idea pattern (shipped 2026-09-05)
 - [x] A2/A3/A4 · real `published`/`updated` dates from git, derived read time, `og:type article`, sitemap `lastModified` for stories, `JOURNAL_REVIEWED` deleted (shipped 2026-09-05)
-- [ ] B1/B2/B3 · `sameAs` (five founder-confirmed profiles), Person `@id`s for the three founders + Ria as `employee`, article authors by `@id`, `memberOf` NVIDIA Inception + nasscom
+- [x] B1/B2/B3 · `sameAs` (five founder-confirmed profiles), Person `@id`s for the three founders + Ria as `employee`, article authors by `@id`, `memberOf` NVIDIA Inception + nasscom (shipped 2026-09-05)
 - [ ] A1/A5/B4 · redirects `/post/:slug*`, `/terms-conditions`, `/for-the-parents`; BreadcrumbList on the four policy pages; `llms.txt` + `pricing.md` refresh
 - [ ] C2 · `RichParagraph` + `SourcesList` molecules, `sources` on `Story`, BlogPosting `citation`, inline-link test
 - [ ] C3 · six articles expanded with verified sources (one commit each)

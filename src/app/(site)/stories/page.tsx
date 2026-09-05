@@ -8,7 +8,7 @@ import { Reveal } from "@/components/molecules/Reveal";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { STORIES, readingMinutes, formatStoryDate, latestUpdated } from "@/lib/stories";
 import { PRESS_LIFT } from "@/lib/interactions";
-import { pageGraph, breadcrumbs, SITE_URL, pageMeta, jsonLd } from "@/lib/seo";
+import { pageGraph, breadcrumbs, SITE_URL, pageMeta, jsonLd, authorRef } from "@/lib/seo";
 
 export const metadata = pageMeta({
   title: "Stories: raising curious kids",
@@ -53,7 +53,7 @@ const JOURNAL_JSON_LD = pageGraph(
       headline: s.title,
       description: s.description,
       url: `${SITE_URL}/stories/${s.slug}`,
-      author: { "@type": "Person", name: s.author, url: `${SITE_URL}/team` },
+      author: authorRef(s.author),
       datePublished: s.published,
       dateModified: s.updated,
       ...(s.hero ? { image: `${SITE_URL}${s.hero}` } : {}),

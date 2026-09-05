@@ -16,7 +16,7 @@ import {
   wordCount,
   formatStoryDate,
 } from "@/lib/stories";
-import { pageGraph, breadcrumbs, SITE_URL, pageMeta, jsonLd } from "@/lib/seo";
+import { pageGraph, breadcrumbs, SITE_URL, pageMeta, jsonLd, authorRef } from "@/lib/seo";
 
 /* An unknown slug is a ROUTING 404, not a thrown one (§8.34-a).
  *
@@ -91,7 +91,7 @@ export default async function StoryPage({
       wordCount: wordCount(story),
       timeRequired: `PT${readingMinutes(story)}M`,
       inLanguage: "en-IN",
-      author: { "@type": "Person", name: story.author, url: `${SITE_URL}/team` },
+      author: authorRef(story.author),
       publisher: { "@id": `${SITE_URL}/#organization` },
       isPartOf: { "@id": `${SITE_URL}/stories#blog` },
       mainEntityOfPage: `${SITE_URL}/stories/${story.slug}`,

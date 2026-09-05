@@ -39,11 +39,20 @@ export const SITE_URL = "https://kheelona.com";
  *  forward. Root-relative; `metadataBase` in the root layout resolves it. */
 export const OG_IMAGE = "/og.png";
 
+const TEAM_URL = `${SITE_URL}/team`;
+
 /** The founders, as entities. Their credentials are the site's best E-E-A-T
- *  signal and every one of them is published on /team. */
+ *  signal and every one of them is published on /team.
+ *
+ *  Each carries a stable `@id` since 2026-09-05 (§8.35-d): a fragment on the
+ *  page where the person is described. Every journal byline now REFERENCES
+ *  that `@id` instead of repeating a bare name, so an answer engine sees one
+ *  author entity with a bio and a LinkedIn profile behind nineteen articles,
+ *  not nineteen strings that happen to match. */
 const FOUNDERS = [
   {
     "@type": "Person",
+    "@id": `${TEAM_URL}#apoorva-sahu`,
     name: "Apoorva Sahu",
     jobTitle: "Co-founder and CEO",
     description:
@@ -53,6 +62,7 @@ const FOUNDERS = [
   },
   {
     "@type": "Person",
+    "@id": `${TEAM_URL}#aman-soni`,
     name: "Aman Soni",
     jobTitle: "Co-founder and CTO",
     description:
@@ -62,6 +72,7 @@ const FOUNDERS = [
   },
   {
     "@type": "Person",
+    "@id": `${TEAM_URL}#kashyap-c-r`,
     name: "Kashyap C.R",
     jobTitle: "Co-founder and Chief Hardware Officer",
     description:
@@ -70,6 +81,35 @@ const FOUNDERS = [
     sameAs: ["https://www.linkedin.com/in/kashyap-c-r-7ba18177/"],
   },
 ] as const;
+
+/** Ria writes six of the nineteen journal pieces and is on /team, so she is an
+ *  entity too: `employee`, not `founder`, because that is what the page says.
+ *  Bio sentence is the published /team card, shortened, nothing added. */
+const RIA = {
+  "@type": "Person",
+  "@id": `${TEAM_URL}#ria-mangala-rewari`,
+  name: "Ria Mangala Rewari",
+  jobTitle: "Head of Marketing",
+  description:
+    "Co-founded and ran a marketing agency for seven years, and has trained more than 1,000 students and entrepreneurs in digital marketing.",
+  url: TEAM_URL,
+  sameAs: ["https://www.linkedin.com/in/ria-mangala/"],
+} as const;
+
+/** Byline name → entity `@id`. Every `Story.author` must resolve here
+ *  (pinned in seo.test); an article by someone not on /team is a review flag,
+ *  because the E-E-A-T claim behind the byline would have nothing behind it. */
+export const AUTHORS: Readonly<Record<string, string>> = Object.fromEntries(
+  [...FOUNDERS, RIA].map((person) => [person.name, person["@id"]]),
+);
+
+/** The author node a BlogPosting carries: a reference, never a second copy.
+ *  The full Person lives once, inside the Organization on the same page. */
+export function authorRef(name: string) {
+  const id = AUTHORS[name];
+  if (!id) throw new Error(`No author entity for "${name}": add them to /team and lib/seo first`);
+  return { "@id": id };
+}
 
 /** The company as an entity. Entity recognition is what lets an answer engine
  *  say "Kheelona, an Indian company that makes…" instead of guessing. */
@@ -91,6 +131,7 @@ export const ORGANIZATION = {
      Ahrefs flagged it four times per page on all 31 (2026-09-03). Same value,
      current property name. */
   founder: FOUNDERS,
+  employee: [RIA],
   address: {
     "@type": "PostalAddress",
     /* Full registered address since 2026-08-22: a merchant taking payment has
@@ -110,7 +151,27 @@ export const ORGANIZATION = {
     "early childhood learning",
     "Indian language voice technology",
   ],
-  sameAs: ["https://kheelona.ai"],
+  /* Entity corroboration (2026-09-05, §8.35-e). Until this round the only
+     `sameAs` was kheelona.ai, a domain we also own, which gives an answer
+     engine nothing independent to confirm that "Kheelona" is one company.
+     These five were confirmed by the founder on 2026-09-05. The two app-store
+     listings identify the APP, not the company, so they live in llms.txt and
+     not here. Add a profile only when the founder confirms it is official. */
+  sameAs: [
+    "https://www.linkedin.com/company/kheelona/",
+    "https://www.instagram.com/kheelona/",
+    "https://www.facebook.com/kheelona/",
+    "https://play.google.com/store/apps/developer?id=Kheelona.com",
+    "https://kheelona.ai",
+  ],
+  /* Restates the visible "Recognised by" strip, for the two entries that are
+     membership programmes by definition. Karnataka Elevate and Founders Inc
+     stay visible-only until the founder names the relationship (award? grant?
+     investor?), because schema must never say more than the page does. */
+  memberOf: [
+    { "@type": "Organization", name: "NVIDIA Inception Program" },
+    { "@type": "Organization", name: "nasscom startups" },
+  ],
   /* Only listed because both channels are confirmed answered. Schema must never
      promise a channel that does not answer, which is why this site published no
      telephone for its first year: the number on the legacy Wix site was the

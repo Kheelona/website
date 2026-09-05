@@ -70,4 +70,13 @@ IndexNow, anything parked by the founder (CTA contrast, pixel, backlinks beyond 
   `article:published_time/modified_time/author`; `JOURNAL_REVIEWED` deleted (not renamed). Tests: new
   `src/lib/stories.test.ts` (9), `seo.test` +1 → **1122 tests / 112 files**. Gates: tsc 0, suite green,
   build (see next line). Next: commit 3 (B1/B2/B3 entity graph).
+- 2026-09-05 · commit 3 (B1, B2, B3) · `ORGANIZATION.sameAs` = LinkedIn company, Instagram, Facebook, Play
+  developer page, kheelona.ai (founder-confirmed; the two app listings go to llms.txt, they identify the
+  app). Founders carry `@id` `https://kheelona.com/team#<slug>`; Ria Mangala Rewari is
+  `ORGANIZATION.employee` with her own `@id` and LinkedIn; `AUTHORS` + `authorRef()` in `lib/seo`, and
+  every BlogPosting/Blog `author` is now an `@id` reference to the entity on the same page (throws for a
+  name not on /team). `memberOf` NVIDIA Inception Program + nasscom startups; Karnataka Elevate and
+  Founders Inc stay visible-only. Tests: seo.test +5. Lesson: `tsc --noEmit` exits 0 on a syntax error
+  in `*.test.ts` (tests are outside its include), so a vitest transform error is the only parse check
+  those files get. Next: commit 4 (A1 redirects, A5 breadcrumbs, B4 llms/pricing).
 
