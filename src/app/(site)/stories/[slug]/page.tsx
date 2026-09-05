@@ -12,6 +12,22 @@ import { STORIES, getStory, getRelatedStories } from "@/lib/stories";
 import { JOURNAL_REVIEWED } from "@/config/site";
 import { pageGraph, breadcrumbs, SITE_URL, pageMeta, jsonLd } from "@/lib/seo";
 
+/* An unknown slug is a ROUTING 404, not a thrown one (§8.34-a).
+ *
+ *  This one line is the difference between a 404 that renders and a 404 that
+ *  does not. `notFound()` thrown from a page component takes Next's error path
+ *  (`getErrorRSCPayload` in app-render), which abandons the server render and
+ *  emits `<html id="__next_error__">` with an empty body and NO stylesheet —
+ *  the visitor gets a blank white page until JavaScript loads, and a permanent
+ *  blank one if it never does. A path that matches no route at all takes the
+ *  normal render path instead and streams the full marketing 404.
+ *
+ *  With `dynamicParams = false`, every slug outside generateStaticParams stops
+ *  at the router, so /stories/<anything-else> now serves the real 404 page.
+ *  Measured, not reasoned about: before this, `curl /stories/no-such-slug`
+ *  returned 404 with 0 stylesheets and 0 characters of body text. */
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return STORIES.map((s) => ({ slug: s.slug }));
 }
@@ -39,6 +55,9 @@ export default async function StoryPage({
   params: Promise<{ slug: string }>;
 }) {
   const story = getStory((await params).slug);
+  /* Unreachable since dynamicParams = false: only prerendered slugs get here.
+     Kept because TypeScript needs the narrowing, and because it is the correct
+     behaviour if that export is ever removed. */
   if (!story) notFound();
 
   /* BlogPosting, not bare Article: it places the piece inside the journal as a
