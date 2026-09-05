@@ -105,4 +105,10 @@ IndexNow, anything parked by the founder (CTA contrast, pixel, backlinks beyond 
   paragraphs/source labels: no em-dash, no exclamation mark, no contraction, no raw URL (+4 tests → **1154 / 115**; the commit 5 tree re-measures at 1150 with the JSON reporter, so the 1144 written there was a mis-read, and `test/stories-parse` counting one test per `*.stories.tsx` file explains why molecule stories move the total).
   `tools/seo/replace-story.py` is the session's block-replacement helper. Next: 6b
   (`how-much-screen-time-for-a-3-to-6-year-old`).
+- 2026-09-05 · commit 6b (C3, 2 of 6) · `how-much-screen-time-for-a-3-to-6-year-old` 315 → 712 body words:
+  61-word direct answer (WHO, IAP, under-two none), age-by-age table in prose, "what the hour replaces" now
+  backed by Romeo et al. 2018 (36 children aged 4 to 6, conversational turns not word volume, Broca's
+  area), the AAP's content and bedtime guidance, a 6pm section; five sources incl. the IAP full-text PDF.
+  QuillBot detector: **0% AI-generated**. Suite green, count unchanged (1154). Next: 6c
+  (`what-to-look-for-in-a-safe-ai-toy`).
 

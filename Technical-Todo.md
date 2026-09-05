@@ -37,7 +37,7 @@ commit). Developer handoff: `docs/seo/handoff-2026-09-05.md`. Rollback tag `pre-
 - [x] B1/B2/B3 · `sameAs` (five founder-confirmed profiles), Person `@id`s for the three founders + Ria as `employee`, article authors by `@id`, `memberOf` NVIDIA Inception + nasscom (shipped 2026-09-05)
 - [x] A1/A5/B4 · redirects `/post/:slug*`, `/terms-conditions`, `/for-the-parents`; BreadcrumbList on the four policy pages; `llms.txt` + `pricing.md` refresh (shipped 2026-09-05)
 - [x] C2 · `RichParagraph` + `SourcesList` molecules, `sources` on `Story`, BlogPosting `citation`, inline-link test (shipped 2026-09-05)
-- [ ] C3 · six articles expanded with verified sources (one commit each): [x] screen-time-rules-parents-swear-by · [ ] how-much-screen-time-for-a-3-to-6-year-old · [ ] what-to-look-for-in-a-safe-ai-toy · [ ] should-kids-use-ai · [ ] raising-a-bilingual-child-in-india · [ ] a-toy-that-talks-vs-a-toy-that-listens
+- [ ] C3 · six articles expanded with verified sources (one commit each): [x] screen-time-rules-parents-swear-by · [x] how-much-screen-time-for-a-3-to-6-year-old · [ ] what-to-look-for-in-a-safe-ai-toy · [ ] should-kids-use-ai · [ ] raising-a-bilingual-child-in-india · [ ] a-toy-that-talks-vs-a-toy-that-listens
 - [ ] §8.35 laws, outreach drafts file, production verification, CLAUDE.md banner closed
 
 ## 🧑 Founder (from the handoff, section F)
