@@ -8,8 +8,14 @@ import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { PageHero } from "@/components/templates/PageHero";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { ReadNext } from "@/components/organisms/ReadNext";
-import { STORIES, getStory, getRelatedStories } from "@/lib/stories";
-import { JOURNAL_REVIEWED } from "@/config/site";
+import {
+  STORIES,
+  getStory,
+  getRelatedStories,
+  readingMinutes,
+  wordCount,
+  formatStoryDate,
+} from "@/lib/stories";
 import { pageGraph, breadcrumbs, SITE_URL, pageMeta, jsonLd } from "@/lib/seo";
 
 /* An unknown slug is a ROUTING 404, not a thrown one (§8.34-a).
@@ -43,6 +49,11 @@ export async function generateMetadata({
     title: story.title,
     description: story.description,
     path: `/stories/${story.slug}`,
+    article: {
+      publishedTime: story.published,
+      modifiedTime: story.updated,
+      authors: [story.author],
+    },
   });
 }
 
@@ -64,22 +75,28 @@ export default async function StoryPage({
      publication, which is what an answer engine looks for when deciding whether
      a page is editorial or an ad. V3-f CLEARED 2026-07-31: every piece carries
      a named author from /team (founder assignment), which is the E-E-A-T win
-     the Organization byline was holding a place for. Month precision on the
-     date on purpose: per-article days would be invented. */
+     the Organization byline was holding a place for.
+     Dates since 2026-09-05 (§8.35-a): `datePublished` and `dateModified` are the
+     article's own, taken from git history. Before that every piece shared one
+     hardcoded `dateModified: "2026-07-01"` and had no publication date at all,
+     on the theory that per-article days "would be invented" — they were not,
+     the commits had them. `timeRequired` is derived from the word count
+     (§8.35-b); the typed 4 to 6 minutes it replaced overstated 300-word reads. */
   const articleGraph = pageGraph(
     {
       "@type": "BlogPosting",
       headline: story.title,
       description: story.description,
       articleSection: story.theme,
-      wordCount: story.paragraphs.reduce((n, b) => n + b.p.split(/\s+/).length, 0),
-      timeRequired: `PT${story.minutes}M`,
+      wordCount: wordCount(story),
+      timeRequired: `PT${readingMinutes(story)}M`,
       inLanguage: "en-IN",
       author: { "@type": "Person", name: story.author, url: `${SITE_URL}/team` },
       publisher: { "@id": `${SITE_URL}/#organization` },
       isPartOf: { "@id": `${SITE_URL}/stories#blog` },
       mainEntityOfPage: `${SITE_URL}/stories/${story.slug}`,
-      dateModified: "2026-07-01",
+      datePublished: story.published,
+      dateModified: story.updated,
       ...(story.hero && { image: `${SITE_URL}${story.hero}` }),
     },
     breadcrumbs([
@@ -111,11 +128,19 @@ export default async function StoryPage({
               By {story.author}
             </span>
             <span aria-hidden="true"> · </span>
-            {story.minutes} minute read
+            {readingMinutes(story)} minute read
             <span aria-hidden="true"> · </span>
             <span className="font-medium normal-case tracking-normal">
-              Reviewed {JOURNAL_REVIEWED}
+              Published <time dateTime={story.published}>{formatStoryDate(story.published)}</time>
             </span>
+            {story.updated !== story.published && (
+              <>
+                <span aria-hidden="true"> · </span>
+                <span className="font-medium normal-case tracking-normal">
+                  Updated <time dateTime={story.updated}>{formatStoryDate(story.updated)}</time>
+                </span>
+              </>
+            )}
           </p>
         </div>
       </PageHero>

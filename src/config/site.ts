@@ -160,11 +160,10 @@ export const WHATSAPP_SHARE_HREF = `https://wa.me/?text=${encodeURIComponent(
 )}`;
 export const WHATSAPP_SHARE_LABEL = "Know a parent who needs this? Share Kheelu on WhatsApp";
 
-/** V3 (AEO): journal freshness. Answer engines weight recency, and the honest
- *  signal we have is the month the whole journal was written and verified
- *  (documented in docs/qa-report.md). NOT per-article publication dates —
- *  those would be invented. Update this when the journal is next reviewed. */
-export const JOURNAL_REVIEWED = "July 2026";
+/* `JOURNAL_REVIEWED` ("July 2026", the one freshness token every article shared)
+   was DELETED on 2026-09-05, not renamed, so a stale import fails the build
+   (the PLATFORM_AGES convention). Each article now carries its own `published`
+   and `updated` dates in lib/stories, taken from git history (§8.35-a). */
 
 /** The contact email. Founder-confirmed 2026-07-28 as a monitored inbox. */
 export const CONTACT_EMAIL: string | null = "hello@kheelona.com";

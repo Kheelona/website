@@ -21,7 +21,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/refund", priority: 0.3 },
     { path: "/shipping", priority: 0.3 },
   ];
-  /* NO `lastModified`, deliberately (2026-09-05).
+  /* `lastModified` ONLY where a real per-page date exists (§8.35-a).
+   *
+   *  Journal articles carry it since 2026-09-05: each has `published` and
+   *  `updated` dates taken from git history, so `lastmod` says exactly what it
+   *  should, the day that article last changed in a way a reader can see. The
+   *  twelve marketing routes still carry NO lastModified, for the reason
+   *  recorded below. When one of them gains a real, tracked date, it joins.
+   *
+   *  Why the field was removed in the first place (2026-09-05, earlier the same day):
    *
    *  Every entry used to carry `new Date()`, evaluated at build time. That told
    *  Google all 31 URLs — including nineteen journal articles nobody had
@@ -33,10 +41,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
    *  it, and we lose the ability to say "this page really did change" on the day
    *  it matters — the sell-out copy sweep, or a price move.
    *
-   *  Omitting the field is explicitly better than guessing it. We have no
-   *  trustworthy per-page modification date: articles carry month precision at
-   *  best (JOURNAL_REVIEWED), and the marketing routes have none at all. When a
-   *  real per-page timestamp exists, it goes here and not before. */
+   *  Omitting the field is explicitly better than guessing it. At the time there
+   *  was no trustworthy per-page date: articles carried month precision at best
+   *  (the since-deleted JOURNAL_REVIEWED) and the marketing routes none at all.
+   *  The rule stands: a real per-page timestamp goes here, and nothing else. */
   return [
     ...pages.map((p) => ({
       url: `${BASE}${p.path}`,
@@ -44,6 +52,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
     ...STORIES.map((s) => ({
       url: `${BASE}/stories/${s.slug}`,
+      lastModified: s.updated,
       priority: 0.6,
     })),
   ];

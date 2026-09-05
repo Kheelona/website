@@ -282,4 +282,24 @@ describe("page metadata carries a complete Open Graph card", () => {
     expect(tw.card).toBe("summary_large_image");
     expect(tw.images).toEqual([OG_IMAGE]);
   });
+
+  /* §8.35 (2026-09-05): the journal declares itself article, with the dates
+     and author the BlogPosting carries. Nothing else may: a marketing route
+     that passed `article` would be lying about what it is. */
+  it("turns a journal page into an article card without losing the four fields", () => {
+    const art = pageMeta({
+      title: "T",
+      description: "D",
+      path: "/stories/x",
+      article: { publishedTime: "2026-07-28", modifiedTime: "2026-09-05", authors: ["Aman Soni"] },
+    });
+    const og = art.openGraph as Record<string, unknown>;
+    expect(og.type).toBe("article");
+    expect(og.publishedTime).toBe("2026-07-28");
+    expect(og.modifiedTime).toBe("2026-09-05");
+    expect(og.authors).toEqual(["Aman Soni"]);
+    expect(og.siteName).toBe("Kheelona");
+    expect(og.locale).toBe("en_IN");
+    expect(og.images).toEqual([{ url: OG_IMAGE, width: 1200, height: 630 }]);
+  });
 });

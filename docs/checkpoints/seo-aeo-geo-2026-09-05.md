@@ -60,3 +60,14 @@ IndexNow, anything parked by the founder (CTA contrast, pixel, backlinks beyond 
   red first: the first draft used `[^.]` and MISSED, because the false claim crossed a full stop; the
   lesson is that a banned-idea pattern must be allowed to span a sentence boundary. Gates: suite green.
   Next: commit 2 (A2/A3 dates and read time).
+- 2026-09-05 · commit 2 (A2, A3, A4) · `Story` gains `published`/`updated` (ISO, from `git log`: 14 pieces
+  2026-07-28, 5 on 2026-07-30; `updated` 2026-09-05 where the rename touched the body, 2026-07-31 for the
+  seven it did not); the hand-set `minutes` is DELETED and `readingMinutes()` derives it (200 wpm, floor
+  1); `wordCount()`, `formatStoryDate()`, `latestUpdated()` in `lib/stories`. BlogPosting carries
+  `datePublished`/`dateModified`/derived `timeRequired`; the byline reads "Published 28 July 2026 ·
+  Updated 5 September 2026"; the /stories lede derives "Last updated"; `sitemap.ts` emits `lastModified`
+  for the 19 stories only; `pageMeta()` takes an optional `article` and emits `og:type article` +
+  `article:published_time/modified_time/author`; `JOURNAL_REVIEWED` deleted (not renamed). Tests: new
+  `src/lib/stories.test.ts` (9), `seo.test` +1 → **1122 tests / 112 files**. Gates: tsc 0, suite green,
+  build (see next line). Next: commit 3 (B1/B2/B3 entity graph).
+

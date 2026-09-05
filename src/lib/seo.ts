@@ -276,10 +276,15 @@ export function pageMeta({
   title,
   description,
   path,
+  article,
 }: {
   title: string;
   description: string;
   path: string;
+  /** Journal pieces only (2026-09-05, §8.35): declares the page an article to
+   *  every share and citation tool, with the dates and author the BlogPosting
+   *  already carries. Marketing routes leave it out and stay `website`. */
+  article?: { publishedTime: string; modifiedTime: string; authors: readonly string[] };
 }): Metadata {
   return {
     title,
@@ -309,10 +314,17 @@ export function pageMeta({
       url: path,
       title,
       description,
-      type: "website",
       siteName: "Kheelona",
       locale: "en_IN",
       images: [{ url: OG_IMAGE, width: 1200, height: 630 }],
+      ...(article
+        ? {
+            type: "article",
+            publishedTime: article.publishedTime,
+            modifiedTime: article.modifiedTime,
+            authors: [...article.authors],
+          }
+        : { type: "website" }),
     },
     twitter: {
       card: "summary_large_image",

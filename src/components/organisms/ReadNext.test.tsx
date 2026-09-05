@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { ReadNext } from "./ReadNext";
-import { STORIES, getRelatedStories, getStory } from "@/lib/stories";
+import { STORIES, getRelatedStories, getStory, readingMinutes } from "@/lib/stories";
 
 describe("ReadNext", () => {
   const stories = getRelatedStories("how-much-screen-time-for-a-3-to-6-year-old");
@@ -25,7 +25,7 @@ describe("ReadNext", () => {
        theme, which is the block working as intended. */
     expect(screen.getAllByText(stories[0].theme).length).toBeGreaterThan(0);
     expect(
-      screen.getAllByText(`${stories[0].minutes} minute read`).length,
+      screen.getAllByText(`${readingMinutes(stories[0])} minute read`).length,
     ).toBeGreaterThan(0);
   });
 

@@ -8,9 +8,18 @@ export type Story = {
   title: string;
   description: string;
   theme: string;
-  /** Byline (V3-f cleared 2026-07-31): one of the four people on /team. */
+  /** Byline (V3-f cleared 2026-07-31): one of the four people on /team. Every
+   *  author resolves to a Person entity in `lib/seo` (§8.35-d). */
   author: string;
-  minutes: number;
+  /** ISO date the article first went live. FROM GIT, never invented (§8.35-a):
+   *  `git log --diff-filter=A` on the article's block. Fourteen pieces landed
+   *  with the site on 2026-07-28, five on 2026-07-30. */
+  published: string;
+  /** ISO date of the last SUBSTANTIVE edit a reader can see (§8.35-a): a
+   *  rewrite, a rename in the body, a new source. Not a typo, not a build.
+   *  Feeds `dateModified`, the visible byline and the sitemap `lastmod`. The
+   *  2026-07-31 clearance and the 2026-09-05 rename both count. */
+  updated: string;
   pose: "curious" | "silly" | "joy" | "bliss" | "grumpy" | "sad";
   tint: string;
   /** optional illustrated header, path under /public */
@@ -35,7 +44,8 @@ const CORE: Story[] = [
       "A short, warm read on the window when a child's brain grows fastest, and what actually fills it.",
     theme: "How children grow",
     author: "Apoorva Sahu",
-    minutes: 4,
+    published: "2026-07-28",
+    updated: "2026-09-05",
     pose: "curious",
     tint: "bg-blue/15",
     hero: "/stories/why-three-to-six-are-the-years-that-matter-most.jpg",
@@ -60,7 +70,8 @@ const CORE: Story[] = [
       "What a rich, language-filled childhood actually looks like, without a single screen.",
     theme: "Screen-free living",
     author: "Ria Mangala Rewari",
-    minutes: 4,
+    published: "2026-07-28",
+    updated: "2026-09-05",
     pose: "silly",
     tint: "bg-yellow/15",
     hero: "/stories/screen-free-does-not-mean-silent.jpg",
@@ -83,7 +94,8 @@ const CORE: Story[] = [
       "The back and forth of conversation is the oldest learning technology in the world. Here is how it works.",
     theme: "How children grow",
     author: "Ria Mangala Rewari",
-    minutes: 5,
+    published: "2026-07-28",
+    updated: "2026-09-05",
     pose: "joy",
     tint: "bg-orange/15",
     hero: "/stories/how-children-learn-by-talking.jpg",
@@ -106,7 +118,8 @@ const CORE: Story[] = [
       "A parent's plain-words checklist for judging AI toys, including ours.",
     theme: "Safety",
     author: "Aman Soni",
-    minutes: 5,
+    published: "2026-07-28",
+    updated: "2026-09-05",
     pose: "bliss",
     tint: "bg-blue/15",
     hero: "/stories/what-to-look-for-in-a-safe-ai-toy.jpg",
@@ -131,6 +144,39 @@ export const STORIES: Story[] = [...CORE, ...EXPANSION];
 
 export function getStory(slug: string) {
   return STORIES.find((s) => s.slug === slug);
+}
+
+/** Words a reader actually reads: headings and paragraphs, nothing else. */
+export function wordCount(story: Pick<Story, "paragraphs">): number {
+  return story.paragraphs.reduce(
+    (n, block) => n + block.p.split(/\s+/).filter(Boolean).length + (block.h ? block.h.split(/\s+/).length : 0),
+    0,
+  );
+}
+
+/** Read time DERIVED from the words, never typed (§8.35-b). The journal used
+ *  to carry a hand-set `minutes` per article that said 4 to 6 on bodies of 200
+ *  to 430 words, and the schema `timeRequired` repeated it. 200 words a minute
+ *  is the usual adult reading pace for plain prose; the floor is one minute. */
+export function readingMinutes(story: Pick<Story, "paragraphs">): number {
+  return Math.max(1, Math.round(wordCount(story) / 200));
+}
+
+/** "28 July 2026" from "2026-07-28". UTC so the day never shifts with the
+ *  build machine's timezone; en-IN for the day-month-year order this site uses. */
+export function formatStoryDate(iso: string): string {
+  return new Intl.DateTimeFormat("en-IN", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(`${iso}T00:00:00Z`));
+}
+
+/** The journal's freshness line: the most recent `updated` across the journal,
+ *  derived from the data so the /stories lede cannot go stale on its own. */
+export function latestUpdated(stories: readonly Story[] = STORIES): string {
+  return stories.map((s) => s.updated).sort().at(-1) ?? "";
 }
 
 /** The journal in reading order: grouped by theme, original order kept inside

@@ -4,7 +4,7 @@ import { Eyebrow } from "@/components/atoms/Eyebrow";
 import { Reveal } from "@/components/molecules/Reveal";
 import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { PRESS_LIFT } from "@/lib/interactions";
-import type { Story } from "@/lib/stories";
+import { readingMinutes, type Story } from "@/lib/stories";
 
 /** Three more reads at the foot of an article.
  *
@@ -45,7 +45,7 @@ export function ReadNext({ stories }: { stories: readonly Story[] }) {
                   {story.title}
                 </h3>
                 <p className="text-[15px] text-ink-muted">
-                  {story.minutes} minute read
+                  {readingMinutes(story)} minute read
                 </p>
               </Card>
             </Link>

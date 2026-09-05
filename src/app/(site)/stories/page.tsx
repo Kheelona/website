@@ -6,10 +6,9 @@ import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { PageHero } from "@/components/templates/PageHero";
 import { Reveal } from "@/components/molecules/Reveal";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
-import { STORIES } from "@/lib/stories";
+import { STORIES, readingMinutes, formatStoryDate, latestUpdated } from "@/lib/stories";
 import { PRESS_LIFT } from "@/lib/interactions";
 import { pageGraph, breadcrumbs, SITE_URL, pageMeta, jsonLd } from "@/lib/seo";
-import { JOURNAL_REVIEWED } from "@/config/site";
 
 export const metadata = pageMeta({
   title: "Stories: raising curious kids",
@@ -55,6 +54,8 @@ const JOURNAL_JSON_LD = pageGraph(
       description: s.description,
       url: `${SITE_URL}/stories/${s.slug}`,
       author: { "@type": "Person", name: s.author, url: `${SITE_URL}/team` },
+      datePublished: s.published,
+      dateModified: s.updated,
       ...(s.hero ? { image: `${SITE_URL}${s.hero}` } : {}),
     })),
   },
@@ -80,7 +81,7 @@ export default function StoriesPage() {
           eyebrow="The journal"
           title="Raising curious kids."
           titleClassName="mb-4"
-          lede={`Plain answers to the questions parents actually ask. No jargon, no scare stories. Reviewed ${JOURNAL_REVIEWED}.`}
+          lede={`Plain answers to the questions parents actually ask. No jargon, no scare stories. Last updated ${formatStoryDate(latestUpdated())}.`}
         />
       </PageHero>
 
@@ -146,7 +147,7 @@ export default function StoriesPage() {
                       </h3>
                       <p className="mb-3 text-[15px] text-ink-muted">{s.description}</p>
                       <p className="mt-auto text-[13px] font-semibold uppercase tracking-wide text-orange-ink">
-                        {s.minutes} minute read
+                        {readingMinutes(s)} minute read
                       </p>
                     </div>
                   </Link>
