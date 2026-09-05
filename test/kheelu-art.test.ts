@@ -1,9 +1,9 @@
 import { readFileSync, existsSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { join } from "node:path";
-import { LUMI_ART, lumiAlt } from "@/lib/lumi-art";
+import { KHEELU_ART, kheeluAlt } from "@/lib/kheelu-art";
 
-/** Guards the Lumi product artwork (2026-08-25, the blue dino to cream rabbit
+/** Guards the Kheelu product artwork (2026-08-25, the blue dino to cream rabbit
  *  swap).
  *
  *  Two of these close a real gap the repo did not have before: NOTHING
@@ -34,7 +34,7 @@ function stripComments(src: string): string {
   return src.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
 }
 
-const SELF = "test/lumi-art.test.ts";
+const SELF = "test/kheelu-art.test.ts";
 const sourceFiles = execFileSync("git", ["ls-files", "src", "test"], {
   cwd: REPO,
   encoding: "utf8",
@@ -48,37 +48,37 @@ const SCAN = sourceFiles.map((f) => ({
   src: stripComments(readFileSync(join(REPO, f), "utf8")),
 }));
 
-describe("LUMI_ART is the one source for the product artwork", () => {
+describe("KHEELU_ART is the one source for the product artwork", () => {
   it("points at a file that actually exists in public/", () => {
-    const path = join(REPO, "public", LUMI_ART.src);
+    const path = join(REPO, "public", KHEELU_ART.src);
     expect(existsSync(path)).toBe(true);
   });
 
   it("declares the shipped file's REAL pixel dimensions", () => {
     /* A stale pair is a CLS bug, not a cosmetic one: Next computes the layout
        box from these numbers before the image has loaded. */
-    const { width, height } = pngSize(join(REPO, "public", LUMI_ART.src));
+    const { width, height } = pngSize(join(REPO, "public", KHEELU_ART.src));
     expect({ width, height }).toEqual({
-      width: LUMI_ART.width,
-      height: LUMI_ART.height,
+      width: KHEELU_ART.width,
+      height: KHEELU_ART.height,
     });
   });
 
   it("keeps the asset path dot-bearing, so the /product redirect cannot eat it", () => {
-    /* next.config.ts redirects `/product/:slug([^.]+)` to /products/lumi, and
+    /* next.config.ts redirects `/product/:slug([^.]+)` to /products/kheelu, and
        redirects match BEFORE public/ is served. A dot-free path here would
        308 into the image optimizer, return 400, and blank the image live —
        which is exactly what happened on 2026-07-28. */
-    expect(LUMI_ART.src.startsWith("/product/")).toBe(true);
-    expect(LUMI_ART.src).toMatch(/\.[a-z0-9]+$/i);
+    expect(KHEELU_ART.src.startsWith("/product/")).toBe(true);
+    expect(KHEELU_ART.src).toMatch(/\.[a-z0-9]+$/i);
   });
 
   it("composes a contextual alt without restating the description", () => {
-    expect(lumiAlt("sitting calmly")).toBe(
-      "Lumi, the cream talking plush rabbit, sitting calmly",
+    expect(kheeluAlt("sitting calmly")).toBe(
+      "Kheelu, the cream talking plush rabbit, sitting calmly",
     );
     /* Alt text is not a sentence; a trailing stop is announced as a pause. */
-    expect(lumiAlt("sitting calmly").endsWith(".")).toBe(false);
+    expect(kheeluAlt("sitting calmly").endsWith(".")).toBe(false);
   });
 });
 

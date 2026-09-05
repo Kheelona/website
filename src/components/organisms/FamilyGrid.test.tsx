@@ -4,7 +4,7 @@ import { FamilyGrid } from "./FamilyGrid";
 describe("FamilyGrid", () => {
   it("shows the three pipeline bodies from the single family source", () => {
     render(<FamilyGrid />);
-    for (const name of ["Lumi", "Kheelu Speaker", "AI books"]) {
+    for (const name of ["Kheelu", "Kheelu Speaker", "AI books"]) {
       expect(screen.getByRole("heading", { name })).toBeInTheDocument();
     }
   });
@@ -24,11 +24,11 @@ describe("FamilyGrid", () => {
     expect(screen.getByText("Ages 5+")).toBeInTheDocument();
   });
 
-  it("links only Lumi, and links the whole card", () => {
+  it("links only Kheelu, and links the whole card", () => {
     render(<FamilyGrid />);
     const links = screen.getAllByRole("link");
     expect(links.length).toBe(1);
-    expect(links[0]).toHaveAttribute("href", "/products/lumi");
+    expect(links[0]).toHaveAttribute("href", "/products/kheelu");
   });
 
   it("marks the not-yet bodies as coming soon", () => {

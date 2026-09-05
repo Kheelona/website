@@ -9,7 +9,7 @@ describe("actors", () => {
   it("module loads without throwing", () => {
     expect(mod).toBeDefined();
     expect(mod.MascotModel).toBeDefined();
-    expect(mod.LumiModel).toBeDefined();
+    expect(mod.KheeluModel).toBeDefined();
     expect(mod.BrandShape).toBeDefined();
     expect(mod.ShapeField).toBeDefined();
   });

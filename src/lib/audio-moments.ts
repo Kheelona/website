@@ -1,4 +1,4 @@
-/** The four real Lumi audio moments (team feedback 2026-07-30, BUILD-V4 §3 F3).
+/** The four real Kheelu audio moments (team feedback 2026-07-30, BUILD-V4 §3 F3).
  *
  *  Transcripts are the team's words VERBATIM with two punctuation-only edits
  *  for the voice-lint law (recorded in BUILD-V4 D8): the em-dash in the
@@ -54,10 +54,10 @@ export const AUDIO_MOMENTS: readonly AudioMomentData[] = [
   },
 ] as const;
 
-/** The compact pair for /products/lumi's Kheelu-mode room (BUILD-V4 §4.1):
+/** The compact pair for /products/kheelu's Story-mode room (BUILD-V4 §4.1):
  *  one thinking game, one numbers game — the two clearest "lesson in play"
  *  moments, without repeating the whole Home grid. */
-export const LUMI_PAGE_MOMENTS: readonly AudioMomentData[] = [
+export const KHEELU_PAGE_MOMENTS: readonly AudioMomentData[] = [
   AUDIO_MOMENTS[0],
   AUDIO_MOMENTS[3],
 ];

@@ -11,7 +11,7 @@ import { StageShell } from "./StageShell";
 import { Sun, WashBackdrop } from "./backdrop";
 import {
   BrandShape,
-  LumiModel,
+  KheeluModel,
   MascotModel,
   ShapeField,
   SPACING,
@@ -109,9 +109,9 @@ function World({ tier, onReady }: { tier: Tier; onReady: () => void }) {
               the world contributes the grove itself: low flowers in the five
               feeling colors standing in the cool light. */}
 
-          {/* place 5: Lumi's home. The DOM product photo hands off to the
+          {/* place 5: Kheelu's home. The DOM product photo hands off to the
               plush turning live on its mound (data-scene-hide). */}
-          <LumiModel position={[-1.05, 0, P(5) - 0.6]} height={1.7} fadeByDistance />
+          <KheeluModel position={[-1.05, 0, P(5) - 0.6]} height={1.7} fadeByDistance />
 
           {/* place 10 (the sunset finale) needs no 3D cast: the finale section
               keeps its own opaque orange (white text + the conversion moment

@@ -13,7 +13,7 @@ import { ArchitectureStack, type ArchLayer } from "@/components/organisms/Archit
 import { RecognitionStrip } from "@/components/organisms/RecognitionStrip";
 import { pageGraph, faqPage, breadcrumbs, pageMeta, jsonLd } from "@/lib/seo";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
-import { LUMI_AGES } from "@/config/site";
+import { KHEELU_AGES } from "@/config/site";
 
 export const metadata = pageMeta({
   title: "PlayOS: one platform for childhood, ages 3+",
@@ -34,7 +34,7 @@ export const metadata = pageMeta({
    length of this page" was a direct item). */
 
 /* The stack, straight from the team's diagram. One deviation, recorded in
-   copy-reference: the diagram's "Age 3+" chip renders from LUMI_AGES —
+   copy-reference: the diagram's "Age 3+" chip renders from KHEELU_AGES —
    ages are locked site-wide to the constants (V3 §1.5). */
 const ARCH_ABOVE: readonly ArchLayer[] = [
   {
@@ -51,7 +51,7 @@ const ARCH_ABOVE: readonly ArchLayer[] = [
          mode-precise connectivity law (§8.24-1); aligned so the chip cannot
          read as "dead without WiFi". */
       "AI mode on home WiFi",
-      `Ages ${LUMI_AGES}`,
+      `Ages ${KHEELU_AGES}`,
       "Multi-language",
     ],
     tint: "bg-white",
@@ -152,7 +152,7 @@ const MOAT = [
   },
   {
     title: "Own the years",
-    /* SEO round 2026-08-12: "AI educational toy" names Lumi, the published
+    /* SEO round 2026-08-12: "AI educational toy" names Kheelu, the published
        first body — the speaker and books keep their own plain names. */
     body: "One friend from age 3 up: the AI educational toy, then the speaker, then books that answer back. The memory travels, so families stay.",
   },
@@ -198,7 +198,7 @@ export default function PlayOSPage() {
           eyebrow="PlayOS"
           title="The operating system for childhood."
           titleClassName="mb-5"
-          lede="PlayOS is the platform under every Kheelona friend: one safe voice brain, one memory of your child, many bodies as they grow. Lumi is the first body. It will not be the last."
+          lede="PlayOS is the platform under every Kheelona friend: one safe voice brain, one memory of your child, many bodies as they grow. Kheelu is the first body. It will not be the last."
         />
       </PageHero>
 
@@ -277,7 +277,7 @@ export default function PlayOSPage() {
                 measures 4.37:1 and fails AA. There is no compliant muted ink
                 for a tinted wash (the palette is ink / ink-head / ink-muted),
                 so the B2B aside loses a little de-emphasis and keeps its
-                readers. Same call V6 made on /products/lumi. */}
+                readers. Same call V6 made on /products/kheelu. */}
             <p className="text-[16px] text-ink">
               Building on PlayOS, or looking deeper?{" "}
               <a
@@ -310,8 +310,8 @@ export default function PlayOSPage() {
             />
           </Reveal>
           <Reveal className="flex flex-wrap gap-3">
-            <Button href="/products/lumi" variant="ghost">
-              Meet Lumi, the first friend
+            <Button href="/products/kheelu" variant="ghost">
+              Meet Kheelu, the first friend
             </Button>
             <Button href="/safety" variant="ghost">
               Read how safety is built in
@@ -324,7 +324,7 @@ export default function PlayOSPage() {
           id="reserve"
           guide="silly"
           /* GATED:kheelu-line */
-          say="Save your spot. I'll mind Lumi till launch."
+          say="Save your spot. I'll mind Kheelu till launch."
           reveal="pop"
           className="overflow-x-clip"
         >

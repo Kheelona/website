@@ -6,9 +6,9 @@ describe("TiltCard", () => {
   // reduced-motion — the tilt must stay OFF and render a plain wrapper.
   it("renders its children on a plain div when the device cannot tilt", () => {
     const { container } = render(
-      <TiltCard className="card-surface">Reserve your Lumi</TiltCard>,
+      <TiltCard className="card-surface">Reserve your Kheelu</TiltCard>,
     );
-    expect(screen.getByText("Reserve your Lumi")).toBeInTheDocument();
+    expect(screen.getByText("Reserve your Kheelu")).toBeInTheDocument();
 
     const root = container.firstElementChild as HTMLElement;
     expect(root.tagName).toBe("DIV");

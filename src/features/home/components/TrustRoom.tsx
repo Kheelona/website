@@ -17,8 +17,8 @@ const POINTS = [
     b: "Your child's voice and words are never sold, and never used to sell them anything. That is a promise, not a setting you have to go find.",
   },
   {
-    h: "Lumi thinks on the device.",
-    b: "The first thinking happens on Lumi itself, before anything is sent anywhere.",
+    h: "Kheelu thinks on the device.",
+    b: "The first thinking happens on Kheelu itself, before anything is sent anywhere.",
   },
   {
     h: "You hold the keys.",
@@ -26,7 +26,7 @@ const POINTS = [
   },
   {
     h: "No open internet.",
-    b: "Lumi answers from a library you can see, not the open web. It wakes to a word, and the mic is off the rest of the time.",
+    b: "Kheelu answers from a library you can see, not the open web. It wakes to a word, and the mic is off the rest of the time.",
   },
 ] as const;
 

@@ -133,7 +133,7 @@ export async function resolveTier(
 export function tierRefusalMessage(reason: Exclude<TierResult, { ok: true }>["reason"]): string {
   switch (reason) {
     case "cap-reached":
-      return `The ${CAP_UNITS_TEXT} have all been reserved, and Lumi is now ${FULL_PRICE}. Refresh this page and it will show the current price.`;
+      return `The ${CAP_UNITS_TEXT} have all been reserved, and Kheelu is now ${FULL_PRICE}. Refresh this page and it will show the current price.`;
     case "not-yet":
       return `Good news: one of the ${CAP_UNITS_TEXT} has opened up again. Refresh this page and reserve it for ${TOKEN_PRICE}.`;
     case "expired":

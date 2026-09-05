@@ -1,11 +1,11 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { ColorwayPicker } from "./ColorwayPicker";
-import { LUMI_ART } from "@/lib/lumi-art";
+import { KHEELU_ART } from "@/lib/kheelu-art";
 
 describe("ColorwayPicker (one colourway since 2026-08-25)", () => {
   it("is a labelled radiogroup with the one colourway selected", () => {
     render(<ColorwayPicker />);
-    expect(screen.getByRole("radiogroup", { name: "Pick Lumi's colour" })).toBeInTheDocument();
+    expect(screen.getByRole("radiogroup", { name: "Pick Kheelu's colour" })).toBeInTheDocument();
     const radios = screen.getAllByRole("radio");
     expect(radios.length).toBe(1);
     expect(screen.getByRole("radio", { name: /Cream/ })).toHaveAttribute("aria-checked", "true");
@@ -17,7 +17,7 @@ describe("ColorwayPicker (one colourway since 2026-08-25)", () => {
     expect(images.length).toBe(1);
     const visible = images.filter((img) => img.className.includes("block"));
     expect(visible.length).toBe(1);
-    expect(visible[0]?.getAttribute("src")).toBe(LUMI_ART.src);
+    expect(visible[0]?.getAttribute("src")).toBe(KHEELU_ART.src);
     expect(visible[0]).toHaveAttribute("data-priority", "true");
   });
 

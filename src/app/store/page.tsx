@@ -3,7 +3,7 @@ import { storeEnv } from "@/lib/store/env";
 import { launchTier, fullTier } from "@/lib/store/tiers";
 import { preorderMode } from "@/lib/store/mode";
 import { PreorderForm, OrderSummary } from "@/features/preorder";
-import { LUMI_ART } from "@/lib/lumi-art";
+import { KHEELU_ART } from "@/lib/kheelu-art";
 import {
   formatInr,
   FULL_PRICE,
@@ -57,18 +57,18 @@ export default async function StorePage() {
             </p>
             <h1 className="max-w-[20ch] font-display text-[clamp(30px,4vw,44px)] font-extrabold leading-[1.08] text-ink-head">
               {mode === "token"
-                ? `Reserve Lumi for ${TOKEN_PRICE}.`
-                : `Pre-order Lumi for ${FULL_PRICE}.`}
+                ? `Reserve Kheelu for ${TOKEN_PRICE}.`
+                : `Pre-order Kheelu for ${FULL_PRICE}.`}
             </h1>
           </div>
           {/* Small on purpose: the form is what this page is for, and a full
               hero plush would push it below the fold on a phone. The image is
               here to reassure, not to sell again. */}
           <Image
-            src={LUMI_ART.src}
-            alt={LUMI_ART.alt}
-            width={LUMI_ART.width}
-            height={LUMI_ART.height}
+            src={KHEELU_ART.src}
+            alt={KHEELU_ART.alt}
+            width={KHEELU_ART.width}
+            height={KHEELU_ART.height}
             priority
             sizes="(max-width: 768px) 30vw, 200px"
             className="h-[120px] w-auto shrink-0 md:h-[180px]"

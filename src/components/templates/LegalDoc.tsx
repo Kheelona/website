@@ -68,7 +68,7 @@ export function LegalDoc({
           fill="white"
           id="reserve"
           guide="silly"
-          say="Save your spot. I'll mind Lumi till launch."
+          say="Save your spot. I'll mind Kheelu till launch."
           reveal="pop"
           className="overflow-x-clip"
         >

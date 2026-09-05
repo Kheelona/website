@@ -3,7 +3,7 @@ import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { Shape } from "@/components/atoms/Shapes";
 import { HERO_PROMISE } from "@/lib/growth-arc";
 
-/** "School teaches the class. Lumi teaches one child." (founder call,
+/** "School teaches the class. Kheelu teaches one child." (founder call,
  *  2026-07-28.)
  *
  *  Why this fold exists: our comparison table argues against other toys, which
@@ -15,7 +15,7 @@ import { HERO_PROMISE } from "@/lib/growth-arc";
  *  loyal to their schools and often to a tutor they trust; a fold that attacks
  *  either loses the room. So the left side is stated as a fact of arithmetic
  *  (one teacher, thirty children) with no blame in it, and the right side is
- *  what Lumi adds. The word "replace" appears nowhere.
+ *  what Kheelu adds. The word "replace" appears nowhere.
  *
  *  Drawn with the brand shape primitives rather than a stock classroom photo:
  *  a photo of a real classroom would either be a stock lie or a school we have
@@ -34,9 +34,9 @@ const CONTRAST = [
     kind: "flower5" as const,
     tint: "bg-sun",
     color: "#EF762F",
-    label: "Lumi",
+    label: "Kheelu",
     heading: "One lesson, one child.",
-    body: "Lumi answers the fourth why with the same patience as the first, remembers where your child stopped, and picks up there tomorrow.",
+    body: "Kheelu answers the fourth why with the same patience as the first, remembers where your child stopped, and picks up there tomorrow.",
     seats: 1,
   },
 ] as const;
@@ -47,9 +47,9 @@ export function PacePanel() {
       <Reveal>
         <SectionHeading
           eyebrow="Their own pace"
-          title="School teaches the class. Lumi teaches your child."
+          title="School teaches the class. Kheelu teaches your child."
           titleClassName="mb-4 max-w-[24ch]"
-          lede="Nothing here is a criticism of teachers, and Lumi does not replace anyone. It is arithmetic: one adult cannot move at thirty paces at once. Lumi only ever has one child to keep up with."
+          lede="Nothing here is a criticism of teachers, and Kheelu does not replace anyone. It is arithmetic: one adult cannot move at thirty paces at once. Kheelu only ever has one child to keep up with."
           ledeClassName="mb-10 max-w-[58ch]"
         />
       </Reveal>

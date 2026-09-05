@@ -4,7 +4,7 @@ import { Button } from "./Button";
 const meta = {
   title: "Atoms/Button",
   component: Button,
-  args: { href: "#", children: "Reserve Lumi" },
+  args: { href: "#", children: "Reserve Kheelu" },
   argTypes: {
     variant: { control: "inline-radio", options: ["primary", "ghost", "onDark"] },
     size: { control: "inline-radio", options: ["md", "lg"] },

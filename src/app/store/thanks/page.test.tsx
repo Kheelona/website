@@ -63,7 +63,7 @@ describe("the confirmation page", () => {
     paidOrder();
     render(await ThanksPage());
 
-    expect(screen.getByRole("heading", { name: "Your Lumi is reserved." })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Your Kheelu is reserved." })).toBeInTheDocument();
     expect(screen.getByText("₹499")).toBeInTheDocument();
     expect(screen.getByText("₹4,500, of the ₹4,999 price")).toBeInTheDocument();
     /* The reference the query came from is the one inside the signed cookie,

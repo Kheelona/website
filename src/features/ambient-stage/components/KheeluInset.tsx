@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
-import { LumiModel } from "@/features/ambient-stage/components/actors";
+import { KheeluModel } from "@/features/ambient-stage/components/actors";
 import { stageStore } from "@/features/ambient-stage/lib/store";
 
 /** Mounts (and fires) only after the suspended model above it has resolved,
@@ -12,9 +12,9 @@ function Ready({ onReady }: { onReady?: () => void }) {
   return null;
 }
 
-/** The product page's live Lumi: a small self-contained scene (no journey,
+/** The product page's live Kheelu: a small self-contained scene (no journey,
  *  no wash handoff), the plush swaying gently on a warm spot. */
-export default function LumiInset({ onReady }: { onReady?: () => void }) {
+export default function KheeluInset({ onReady }: { onReady?: () => void }) {
   useEffect(() => {
     const onPointer = (e: PointerEvent) => {
       stageStore.setState({
@@ -42,7 +42,7 @@ export default function LumiInset({ onReady }: { onReady?: () => void }) {
       <directionalLight position={[-3, 2, -2]} intensity={0.45} color="#3aa4e5" />
       <directionalLight position={[0, 1.5, -3]} intensity={0.6} color="#ffd9b0" />
       <Suspense fallback={null}>
-        <LumiModel position={[0, 0, 0]} height={1.6} />
+        <KheeluModel position={[0, 0, 0]} height={1.6} />
         <Ready onReady={onReady} />
       </Suspense>
     </Canvas>

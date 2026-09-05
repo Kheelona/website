@@ -18,9 +18,9 @@ describe("SectionHeading", () => {
   });
 
   it("renders as an h1 when as='h1'", () => {
-    render(<SectionHeading as="h1" title="Meet Lumi" />);
+    render(<SectionHeading as="h1" title="Meet Kheelu" />);
     expect(
-      screen.getByRole("heading", { level: 1, name: "Meet Lumi" }),
+      screen.getByRole("heading", { level: 1, name: "Meet Kheelu" }),
     ).toBeInTheDocument();
   });
 

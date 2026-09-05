@@ -3,8 +3,8 @@ import { Section } from "./Section";
 
 describe("Section", () => {
   it("renders its children", () => {
-    render(<Section>Reserve Lumi</Section>);
-    expect(screen.getByText("Reserve Lumi")).toBeInTheDocument();
+    render(<Section>Reserve Kheelu</Section>);
+    expect(screen.getByText("Reserve Kheelu")).toBeInTheDocument();
   });
 
   it("defaults to the white wash", () => {

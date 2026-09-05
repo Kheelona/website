@@ -3,7 +3,7 @@ import { Sheet } from "./Sheet";
 
 const nav = (
   <nav className="flex flex-col gap-4 px-6 pb-8 pt-2 text-ink-head">
-    <a href="/products/lumi">Meet Lumi</a>
+    <a href="/products/kheelu">Meet Kheelu</a>
     <a href="/playos">PlayOS</a>
     <a href="/safety">Safety</a>
   </nav>

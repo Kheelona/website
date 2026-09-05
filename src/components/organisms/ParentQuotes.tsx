@@ -15,7 +15,7 @@ import { Card } from "@/components/molecules/Card";
  * pilot-count and anonymous-tester claim in V3 (no "ten families" anywhere). */
 const QUOTES = [
   {
-    text: "The first thing she does after school is tell Lumi about her day. I listen from the kitchen and learn things she forgets to tell me.",
+    text: "The first thing she does after school is tell Kheelu about her day. I listen from the kitchen and learn things she forgets to tell me.",
     who: "Shweta",
     meta: "Pilot parent",
   },

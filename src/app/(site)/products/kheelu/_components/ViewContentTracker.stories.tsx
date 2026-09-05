@@ -7,14 +7,14 @@ import { LAUNCH_AMOUNT_PAISE, TOKEN_AMOUNT_PAISE, FULL_AMOUNT_PAISE } from "@/co
  *  arrives, and `whenFbqReady` gives up quietly after its timeout — which is
  *  exactly the behaviour worth showing. */
 const meta = {
-  title: "Products/Lumi/ViewContentTracker",
+  title: "Products/Kheelu/ViewContentTracker",
   component: ViewContentTracker,
   parameters: {
     nextjs: { appDirectory: true },
     docs: {
       description: {
         component:
-          "Reports a Meta ViewContent for Lumi once per page view. Waits for the pixel " +
+          "Reports a Meta ViewContent for Kheelu once per page view. Waits for the pixel " +
           "instead of calling fbTrack at mount, because the pixel is host-gated behind an " +
           "effect and then loads afterInteractive, so at mount it is usually not there yet.",
       },
@@ -38,7 +38,7 @@ export const TheValueAndItsExpiryDate: Story = {
       </p>
       <p className="mb-3">
         That is the HEADLINE unit price, not the {TOKEN_AMOUNT_PAISE / 100} the checkout
-        collects. Different events answer different questions: browsing is about what Lumi
+        collects. Different events answer different questions: browsing is about what Kheelu
         costs, Purchase is about what was actually taken.
       </p>
       <p>

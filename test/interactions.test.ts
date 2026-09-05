@@ -83,7 +83,7 @@ describe("the interaction contract", () => {
       "src/features/home/components/Journal.tsx",
       "src/components/organisms/FamilyGrid.tsx",
       "src/components/organisms/FeelingsGallery.tsx",
-      "src/app/(site)/products/lumi/_components/ColorwayPicker.tsx",
+      "src/app/(site)/products/kheelu/_components/ColorwayPicker.tsx",
       "src/components/molecules/Faq.tsx",
       "src/components/organisms/ArchitectureStack.tsx",
     ];

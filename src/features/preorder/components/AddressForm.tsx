@@ -14,7 +14,7 @@ import {
 } from "../lib/validate";
 import { preorderAnalytics } from "../lib/analytics";
 
-/** Where the Lumi goes (§8.25-t).
+/** Where the Kheelu goes (§8.25-t).
  *
  *  Shown after payment, and reachable weeks later from the link in the
  *  acknowledgement email, which is the same component either way. The parent has

@@ -15,7 +15,7 @@ import { validateAddress, hasErrors } from "@/features/preorder/lib/validate";
  *  AUTHORISATION IS THE SIGNED TOKEN, and nothing else. There are no accounts
  *  here, so the token is what proves the person editing this order is the person
  *  who paid for it. It is bound to one order reference and it expires, so a
- *  forwarded email cannot be used to point somebody else's Lumi at a new house
+ *  forwarded email cannot be used to point somebody else's Kheelu at a new house
  *  forever. An address is a family's home: this is the one route where getting
  *  authorisation slightly wrong is a safety problem, not a billing one. */
 export const runtime = "nodejs";

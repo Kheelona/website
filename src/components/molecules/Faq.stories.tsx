@@ -1,19 +1,19 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { Faq } from "./Faq";
-import { LUMI_AGES } from "@/config/site";
+import { KHEELU_AGES } from "@/config/site";
 
 const items = [
   {
-    q: "Is Lumi screen-free?",
-    a: "Yes. Lumi never shows a screen — it listens and talks, nothing to watch.",
+    q: "Is Kheelu screen-free?",
+    a: "Yes. Kheelu never shows a screen — it listens and talks, nothing to watch.",
   },
   {
-    q: "What ages is Lumi for?",
-    a: `Lumi is built for children ages ${LUMI_AGES}.`,
+    q: "What ages is Kheelu for?",
+    a: `Kheelu is built for children ages ${KHEELU_AGES}.`,
   },
   {
     q: "Can the parent see conversations?",
-    a: "Yes. You see everything Lumi and your child talk about.",
+    a: "Yes. You see everything Kheelu and your child talk about.",
   },
 ];
 

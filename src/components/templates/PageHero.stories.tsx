@@ -7,13 +7,13 @@ const meta = {
   args: {
     children: (
       <div>
-        <h1 className="font-display text-4xl font-extrabold">Meet Lumi</h1>
+        <h1 className="font-display text-4xl font-extrabold">Meet Kheelu</h1>
         <p className="mt-4">A screen-free friend who listens and talks back.</p>
       </div>
     ),
     media: (
       {/* Real aspect: the asset is portrait, and a square box squashed it. */}
-      <img src="/product/lumi.png" alt="The Lumi plush" width={261} height={320} />
+      <img src="/product/lumi.png" alt="The Kheelu plush" width={261} height={320} />
     ),
   },
   parameters: { nextjs: { appDirectory: true } },

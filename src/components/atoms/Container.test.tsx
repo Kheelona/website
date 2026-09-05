@@ -3,8 +3,8 @@ import { Container } from "./Container";
 
 describe("Container", () => {
   it("renders its children", () => {
-    render(<Container>Reserve Lumi</Container>);
-    expect(screen.getByText("Reserve Lumi")).toBeInTheDocument();
+    render(<Container>Reserve Kheelu</Container>);
+    expect(screen.getByText("Reserve Kheelu")).toBeInTheDocument();
   });
 
   it("marks itself data-content so the 3D stage can avoid the copy column", () => {

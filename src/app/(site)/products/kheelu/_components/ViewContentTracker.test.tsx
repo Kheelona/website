@@ -16,7 +16,7 @@ describe("ViewContentTracker", () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it("reports ViewContent for Lumi when the pixel is present", () => {
+  it("reports ViewContent for Kheelu when the pixel is present", () => {
     const fbq = vi.fn();
     window.fbq = fbq;
     render(<ViewContentTracker />);
@@ -25,7 +25,7 @@ describe("ViewContentTracker", () => {
       "track",
       "ViewContent",
       {
-        content_name: "Lumi",
+        content_name: "Kheelu",
         content_ids: ["lumi"],
         content_type: "product",
         value: 4999,
@@ -53,7 +53,7 @@ describe("ViewContentTracker", () => {
      is an event that looks rare in Events Manager. Pinned as source, because the
      bug is an ABSENCE of waiting and there is nothing to observe at runtime. */
   it("waits for the pixel rather than calling fbTrack straight from mount", () => {
-    const src = readFileSync(join(process.cwd(), "src/app/(site)/products/lumi/_components/ViewContentTracker.tsx"), "utf8");
+    const src = readFileSync(join(process.cwd(), "src/app/(site)/products/kheelu/_components/ViewContentTracker.tsx"), "utf8");
     expect(src).toContain("whenFbqReady");
   });
 
@@ -82,7 +82,7 @@ describe("ViewContentTracker", () => {
      has to come here, and this test then tells them what to change. */
   it("carries a pointer to the sweep that has to update it", () => {
     const src = readFileSync(
-      join(process.cwd(), "src/app/(site)/products/lumi/_components/ViewContentTracker.tsx"),
+      join(process.cwd(), "src/app/(site)/products/kheelu/_components/ViewContentTracker.tsx"),
       "utf8",
     );
     expect(src).toContain("FULL_AMOUNT_PAISE");

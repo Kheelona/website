@@ -31,35 +31,53 @@ const nextConfig: NextConfig = {
         destination: "/stories/why-three-to-six-are-the-years-that-matter-most",
         permanent: true,
       },
+      /* THE RENAME (2026-09-05). Lumi became Kheelu; the page moved once and
+         the old address keeps working permanently.
+
+         308, not 301, because that is what Next emits for `permanent: true`,
+         and unlike 301 it guarantees the method and body survive. Query strings
+         pass through untouched, so campaign parameters on any live ad, QR code
+         or WhatsApp share still arrive attributed.
+
+         Every legacy redirect below now points STRAIGHT at /products/kheelu
+         rather than chaining through /products/lumi. A two-hop redirect costs a
+         round trip, dilutes what it forwards, and is the standard way a rename
+         quietly degrades the equity it was supposed to carry.
+
+         This line is permanent. There is no date at which removing it is safe:
+         printed QR codes, old WhatsApp forwards and two weeks of Ahrefs-recorded
+         inbound links all point at the old path. */
+      { source: "/products/lumi", destination: "/products/kheelu", permanent: true },
+
       /* Legacy Wix-site URLs (2026-07-28). This site replaces the old
          kheelona.com store, whose pages are still in Google's index — including
          product pages quoting the retired ₹2,999 price. 301s move the link
          equity here and stop the old prices competing with the real ones, which
          was the biggest active SEO liability on the list (V3-h). Every source
          below existed on the previous site. */
-      { source: "/product-page/:slug*", destination: "/products/lumi", permanent: true },
+      { source: "/product-page/:slug*", destination: "/products/kheelu", permanent: true },
       /* `[^.]+` instead of `:slug*` on purpose, and it must stay: redirects are
          matched BEFORE public/ files, and our own plush renders live in
          public/product/. A plain `/product/:slug*` 308s lumi-blue-2.png to the
          product page, which makes the image optimizer 400 and blanks the hero
          (caught locally 2026-07-28, before it reached a customer). Legacy Wix
          product slugs never contain a dot; asset filenames always do. */
-      { source: "/product/:slug([^.]+)", destination: "/products/lumi", permanent: true },
-      { source: "/shop", destination: "/products/lumi", permanent: true },
+      { source: "/product/:slug([^.]+)", destination: "/products/kheelu", permanent: true },
+      { source: "/shop", destination: "/products/kheelu", permanent: true },
       /* Wix listing pages. `/category/all-products` was still taking real
          landings; the catch-all covers the sibling category slugs we cannot
          enumerate. Same `[^.]+` guard as `/product/` above — there is no
          public/category/ today, but a future asset folder must not be able to
          disappear behind this line (§8.21-b). */
-      { source: "/category/all-products", destination: "/products/lumi", permanent: true },
-      { source: "/category/:slug([^.]+)", destination: "/products/lumi", permanent: true },
+      { source: "/category/all-products", destination: "/products/kheelu", permanent: true },
+      { source: "/category/:slug([^.]+)", destination: "/products/kheelu", permanent: true },
       /* The Wix theme published an accessibility statement, and two weeks of
          Ahrefs data say people still land on it: 19 entrances, 10.8% of ALL
          site entries, second only to the home page, every one of them hitting a
          404. Founder's call on the destination (2026-08-12): the product page,
          so the traffic lands somewhere that converts. If a real statement is
          ever written, it replaces this line. */
-      { source: "/accessibility-statement", destination: "/products/lumi", permanent: true },
+      { source: "/accessibility-statement", destination: "/products/kheelu", permanent: true },
       /* Three URLs people actually typed, each 404ing, all three found in the
          Ahrefs Web Analytics export for the fortnight to 2026-09-05.
          `/lumi` is the product's name without its path — the single most
@@ -68,8 +86,8 @@ const nextConfig: NextConfig = {
          live on the product page. `/sitemap` is what people type when they mean
          the .xml. None is a legacy Wix route; they are all just what humans
          guess, which is why they belong here rather than in the block above. */
-      { source: "/lumi", destination: "/products/lumi", permanent: true },
-      { source: "/faq", destination: "/products/lumi#faq", permanent: true },
+      { source: "/lumi", destination: "/products/kheelu", permanent: true },
+      { source: "/faq", destination: "/products/kheelu#faq", permanent: true },
       { source: "/sitemap", destination: "/sitemap.xml", permanent: true },
       { source: "/blog", destination: "/stories", permanent: true },
       { source: "/blog/:slug*", destination: "/stories", permanent: true },
@@ -85,8 +103,8 @@ const nextConfig: NextConfig = {
       { source: "/login", destination: "/", permanent: true },
       { source: "/signup", destination: "/", permanent: true },
       { source: "/account/:path*", destination: "/", permanent: true },
-      { source: "/cart", destination: "/products/lumi", permanent: true },
-      { source: "/checkout/:path*", destination: "/products/lumi", permanent: true },
+      { source: "/cart", destination: "/products/kheelu", permanent: true },
+      { source: "/checkout/:path*", destination: "/products/kheelu", permanent: true },
     ];
   },
 };

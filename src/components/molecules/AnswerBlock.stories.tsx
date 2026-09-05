@@ -7,7 +7,7 @@ const meta = {
   args: {
     question: "Are AI toys safe for children?",
     answer:
-      "Not all of them. Independent testers found toys that talked about things no child should hear. Lumi works the other way: the microphone wakes to a word, the first thinking happens on the device, answers come from a closed library, and you can read or delete every conversation.",
+      "Not all of them. Independent testers found toys that talked about things no child should hear. Kheelu works the other way: the microphone wakes to a word, the first thinking happens on the device, answers come from a closed library, and you can read or delete every conversation.",
   },
   argTypes: {
     as: { control: "inline-radio", options: ["h2", "h3"] },

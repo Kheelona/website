@@ -5,7 +5,7 @@ describe("ChatDemo", () => {
   it("renders the full moon exchange as an accessible log", () => {
     render(<ChatDemo />);
     const log = screen.getByRole("log", {
-      name: /A sample conversation between a child and Lumi/i,
+      name: /A sample conversation between a child and Kheelu/i,
     });
     expect(log).toBeInTheDocument();
     expect(screen.getByText(/why is the moon following us/i)).toBeInTheDocument();
@@ -15,7 +15,7 @@ describe("ChatDemo", () => {
   it("labels both speakers", () => {
     render(<ChatDemo />);
     expect(screen.getAllByText("Your child").length).toBe(2);
-    expect(screen.getAllByText("Lumi").length).toBe(2);
+    expect(screen.getAllByText("Kheelu").length).toBe(2);
   });
 
   it("keeps every bubble painted in the SSR base state (no opacity hiding)", () => {
@@ -29,11 +29,11 @@ describe("ChatDemo", () => {
     });
   });
 
-  it("renders a custom exchange in order (the V3 Kheelu-mode demo)", () => {
+  it("renders a custom exchange in order (the V3 Story-mode demo)", () => {
     const script = [
-      { who: "lumi" as const, text: "Why do you think the hare lost?" },
+      { who: "kheelu" as const, text: "Why do you think the hare lost?" },
       { who: "child" as const, text: "He went to sleep!" },
-      { who: "lumi" as const, text: "If you were the hare, what would you do?" },
+      { who: "kheelu" as const, text: "If you were the hare, what would you do?" },
     ];
     const { container } = render(<ChatDemo turns={script} />);
     const bubbles = Array.from(container.querySelectorAll(".chat-demo-bubble"));

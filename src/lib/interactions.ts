@@ -3,7 +3,7 @@
  *  WHY THIS FILE EXISTS. The review counted **two** `active:` states in the
  *  whole codebase, and `TiltCard` — the only card interaction — renders a plain
  *  div unless the device has a fine hover pointer. So on touch, which is where
- *  the primary customer is, 40 Home cards, 27 Lumi cards, 19 story cards, the
+ *  the primary customer is, 40 Home cards, 27 Kheelu cards, 19 story cards, the
  *  feelings, the modes, the colorway swatches and every accordion row answered
  *  a tap with nothing at all. Hover coverage per route read 19 · 6 · 3 · 0 · 0
  *  · 0: two pages felt alive and the rest felt dead. That is not a styling

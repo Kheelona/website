@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { ColorwayPicker } from "./ColorwayPicker";
 
 const meta = {
-  title: "Lumi/ColorwayPicker",
+  title: "Kheelu/ColorwayPicker",
   component: ColorwayPicker,
   parameters: { nextjs: { appDirectory: true } },
 } satisfies Meta<typeof ColorwayPicker>;

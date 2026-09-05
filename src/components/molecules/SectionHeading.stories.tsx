@@ -7,7 +7,7 @@ const meta = {
   args: {
     eyebrow: "Screen-free by design",
     title: "A friend who listens, not a screen that glows",
-    lede: "Lumi holds a real conversation with your child. No apps, no ads, no open internet.",
+    lede: "Kheelu holds a real conversation with your child. No apps, no ads, no open internet.",
   },
   argTypes: {
     as: { control: "inline-radio", options: ["h1", "h2", "h3"] },

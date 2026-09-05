@@ -10,13 +10,13 @@ describe("ParentAppSection", () => {
     expect(screen.getByText("Conversation log")).toBeInTheDocument();
     expect(
       screen.getByRole("link", { name: /See what the app shows you/i }),
-    ).toHaveAttribute("href", "/products/lumi");
+    ).toHaveAttribute("href", "/products/kheelu");
   });
 
   it("hides the Kheelu narrator bubble by default", () => {
     render(<ParentAppSection />);
     expect(
-      screen.queryByText(/Lumi and I keep no secrets from grown-ups/i),
+      screen.queryByText(/Kheelu and I keep no secrets from grown-ups/i),
     ).not.toBeInTheDocument();
   });
 

@@ -6,7 +6,7 @@ import { CONTACT_EMAIL, SUPPORT_WHATSAPP_DISPLAY, SHIP_DATE_TEXT } from "@/confi
 export const metadata = pageMeta({
   title: "Privacy",
   description:
-    "What Kheelona collects when you pre-order Lumi, who processes it, what we never do with it, and the promises we make about your child's data.",
+    "What Kheelona collects when you pre-order Kheelu, who processes it, what we never do with it, and the promises we make about your child's data.",
   path: "/privacy",
 });
 
@@ -27,7 +27,7 @@ const SECTIONS: readonly LegalSection[] = [
          happen again: the form is now ours, in this repo, so there is no excuse
          for the two to drift. */
       "Your name, your WhatsApp number, your email address, and your child's age, before you pay. Your delivery address, after you pay.",
-      "That is everything we ask you for. Your browser also tells us where you arrived from, what device you are on, and your network address, and if you have a Meta cookie on your device we read the identifier in it. Every website receives the first of those, and we keep all of them with your order so we know which of our own pages and advertisements are working. We ask your child's age because Lumi is built for a narrow band of ages and we want to send you the right thing. We do not ask for your child's name, their school, their photograph, or anything else about them.",
+      "That is everything we ask you for. Your browser also tells us where you arrived from, what device you are on, and your network address, and if you have a Meta cookie on your device we read the identifier in it. Every website receives the first of those, and we keep all of them with your order so we know which of our own pages and advertisements are working. We ask your child's age because Kheelu is built for a narrow band of ages and we want to send you the right thing. We do not ask for your child's name, their school, their photograph, or anything else about them.",
     ],
   },
   {
@@ -40,7 +40,7 @@ const SECTIONS: readonly LegalSection[] = [
   {
     h: "Why we ask for each thing",
     ps: [
-      `Your WhatsApp number and your email are how we tell you about your own order: the confirmation, the balance payment link, and any change to the ${SHIP_DATE_TEXT} ship date. Your address is how your Lumi reaches you. Your child's age helps us plan production for the right ages.`,
+      `Your WhatsApp number and your email are how we tell you about your own order: the confirmation, the balance payment link, and any change to the ${SHIP_DATE_TEXT} ship date. Your address is how your Kheelu reaches you. Your child's age helps us plan production for the right ages.`,
       /* Narrowed 2026-09-01. The old sentence said none of this is used to
          advertise to you, which the Meta Pixel makes untrue as a blanket
          claim. What stays true, and is the part a parent cares about, is that
@@ -117,7 +117,7 @@ const SECTIONS: readonly LegalSection[] = [
          advertising we DO run is stated in the sentence after it rather than
          quietly dropped. (The retired wording is pinned as banned in
          test/analytics-tags.test.ts, so it is deliberately not quoted here.) */
-      "We never sell your data. We never sell your child's data. We never trade what you typed into the pre-order form, and we never hand it to anyone who is not helping us deliver Lumi to you.",
+      "We never sell your data. We never sell your child's data. We never trade what you typed into the pre-order form, and we never hand it to anyone who is not helping us deliver Kheelu to you.",
       "We do advertise on Facebook and Instagram, and the Meta Pixel described above is how we measure that. Details you enter on our forms can be included with what it reports, as one-way codes and never in readable form, so a sale can be matched to an advertisement. We do not use any of it to profile your child.",
     ],
   },
@@ -128,10 +128,10 @@ const SECTIONS: readonly LegalSection[] = [
     ],
   },
   {
-    h: "When Lumi ships",
+    h: "When Kheelu ships",
     ps: [
       "The product itself follows stricter rules, explained in plain words on our Safety page: conversations stay in your region, nothing is collected without parent consent, any conversation can be deleted in one tap, and your child's voice data is never sold.",
-      "A full product privacy policy will be published here before Lumi ships.",
+      "A full product privacy policy will be published here before Kheelu ships.",
     ],
   },
   SELLER_SECTION,

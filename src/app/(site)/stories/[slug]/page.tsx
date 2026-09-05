@@ -126,7 +126,7 @@ export default async function StoryPage({
               </div>
             ))}
             {/* The age caveat, where the piece is about a child younger than
-                Lumi's band. Placed directly under the closing paragraph on
+                Kheelu's band. Placed directly under the closing paragraph on
                 purpose: that paragraph is the invitation, and this qualifies it
                 in the same breath rather than three screens earlier. */}
             {story.ageNote && (
@@ -139,10 +139,10 @@ export default async function StoryPage({
                 </p>
                 <p className="text-[16.5px] leading-[1.65]">{story.ageNote}</p>
                 <Link
-                  href="/products/lumi#faq"
+                  href="/products/kheelu#faq"
                   className="mt-3 inline-block font-semibold text-ink-head underline"
                 >
-                  Read Lumi&rsquo;s age guidance and product details
+                  Read Kheelu&rsquo;s age guidance and product details
                 </Link>
               </aside>
             )}
@@ -174,8 +174,8 @@ export default async function StoryPage({
                   Safety page
                 </Link>
                 , or meet the friend behind it on the{" "}
-                <Link href="/products/lumi" className="font-semibold text-ink-head underline">
-                  Lumi page
+                <Link href="/products/kheelu" className="font-semibold text-ink-head underline">
+                  Kheelu page
                 </Link>
                 .
               </p>
@@ -196,7 +196,7 @@ export default async function StoryPage({
           id="reserve"
           guide="silly"
           /* GATED:kheelu-line */
-          say="Save your spot. I'll mind Lumi till launch."
+          say="Save your spot. I'll mind Kheelu till launch."
           reveal="pop"
           className="overflow-x-clip"
         >

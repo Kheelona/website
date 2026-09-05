@@ -6,7 +6,7 @@ import {
   LAUNCH_AMOUNT_PAISE,
   TOKEN_PRICE,
   BALANCE_PRICE,
-  LUMI_AGES,
+  KHEELU_AGES,
   CONTACT_EMAIL,
   SHIP_DATE_ISO,
   LEGAL_ENTITY,
@@ -14,7 +14,7 @@ import {
   REGISTERED_ADDRESS,
   SUPPORT_WHATSAPP_DISPLAY,
 } from "@/config/site";
-import { LUMI_ART } from "./lumi-art";
+import { KHEELU_ART } from "./kheelu-art";
 
 /** Structured data builders (V3 SEO/AEO/GEO pass, 2026-07-28).
  *
@@ -79,7 +79,7 @@ export const ORGANIZATION = {
   logo: `${SITE_URL}/brand/logo-mark.png`,
   image: `${SITE_URL}/og.png`,
   description:
-    "Kheelona makes screen-free talking friends for children. Lumi, the first one, is a plush toy for ages 3+ that holds a real conversation, tells stories a child can question, and comes with a parent app that shows every word.",
+    "Kheelona makes screen-free talking friends for children. Kheelu, the first one, is a plush toy for ages 3+ that holds a real conversation, tells stories a child can question, and comes with a parent app that shows every word.",
   foundingDate: "2025",
   founders: FOUNDERS,
   address: {
@@ -163,11 +163,11 @@ export function faqPage(items: readonly { q: string; a: string }[]) {
 export function setupHowTo(steps: readonly { title: string; body: string }[]) {
   return {
     "@type": "HowTo",
-    name: "How to set up Lumi on day one",
+    name: "How to set up Kheelu on day one",
     description:
-      "Day one with Lumi takes minutes: charge it, set your languages and topics in the parent app, teach your child the wake word, and let them talk.",
+      "Day one with Kheelu takes minutes: charge it, set your languages and topics in the parent app, teach your child the wake word, and let them talk.",
     totalTime: "PT15M",
-    supply: [{ "@type": "HowToSupply", name: "Lumi and its charger" }],
+    supply: [{ "@type": "HowToSupply", name: "Kheelu and its charger" }],
     tool: [{ "@type": "HowToTool", name: "The Kheelona parent app on a phone" }],
     step: steps.map((s, i) => ({
       "@type": "HowToStep",
@@ -183,9 +183,9 @@ export function setupHowTo(steps: readonly { title: string; body: string }[]) {
  *  real asset with a real poster. */
 export const LAUNCH_VIDEO = {
   "@type": "VideoObject",
-  name: "Two friends meet: Lumi by Kheelona",
+  name: "Two friends meet: Kheelu by Kheelona",
   description:
-    "A short film in which a child meets Lumi, the screen-free talking friend, for the first time.",
+    "A short film in which a child meets Kheelu, the screen-free talking friend, for the first time.",
   thumbnailUrl: `${SITE_URL}/video/launch-poster.jpg`,
   contentUrl: `${SITE_URL}/video/launch.mp4`,
   uploadDate: "2026-07-08",
@@ -196,10 +196,19 @@ export const LAUNCH_VIDEO = {
  *  constants, and `availability` stays PreOrder until the founder says
  *  otherwise. The ship date became a published fact on 2026-07-31
  *  (availabilityStarts below). */
-export const LUMI_PRODUCT = {
+export const KHEELU_PRODUCT = {
   "@type": "Product",
+  /* THE @id DELIBERATELY STILL SAYS `lumi`, AND MUST. It is an opaque stable
+     identifier, not a link: it is how every consumer that already knows this
+     product recognises it as the SAME product after the 2026-09-05 rename
+     rather than a new one. Changing it would discard whatever entity history
+     Google, Bing and the answer engines have accumulated against it, which is
+     the one thing a rename is supposed to preserve.
+     The navigable address is `offers.url` and the canonical below; those moved.
+     Never surface this string in the UI, and never "fix" it to match the route.
+     Pinned by src/lib/seo.test.ts. */
   "@id": `${SITE_URL}/products/lumi#product`,
-  name: "Lumi by Kheelona",
+  name: "Kheelu by Kheelona",
   brand: { "@type": "Brand", name: "Kheelona" },
   manufacturer: { "@id": `${SITE_URL}/#organization` },
   category: "Screen-free AI toy",
@@ -210,8 +219,8 @@ export const LUMI_PRODUCT = {
     suggestedMinAge: 3,
     audienceType: "Children",
   },
-  description: `A screen-free talking friend for children aged ${LUMI_AGES} that holds a real conversation in up to 10 home languages, carries stories and lessons they can be quizzed on, plays your music over Bluetooth, and comes with a parent app that shows you everything. Part of a growing family of friends.`,
-  image: `${SITE_URL}${LUMI_ART.src}`,
+  description: `A screen-free talking friend for children aged ${KHEELU_AGES} that holds a real conversation in up to 10 home languages, carries stories and lessons they can be quizzed on, plays your music over Bluetooth, and comes with a parent app that shows you everything. Part of a growing family of friends.`,
+  image: `${SITE_URL}${KHEELU_ART.src}`,
   offers: {
     "@type": "Offer",
     /* Derived from the paise constant, not scraped out of the display string
@@ -228,7 +237,7 @@ export const LUMI_PRODUCT = {
     priceCurrency: "INR",
     availability: "https://schema.org/PreOrder",
     availabilityStarts: SHIP_DATE_ISO,
-    url: `${SITE_URL}/products/lumi`,
+    url: `${SITE_URL}/products/kheelu`,
     eligibleRegion: { "@type": "Country", name: "India" },
     description: `${LAUNCH_PRICE} for the ${CAP_UNITS_TEXT}, ${FULL_PRICE} once they are gone. A refundable ${TOKEN_PRICE} reserves one of the ${CAP_UNITS_TEXT}, with the ${BALANCE_PRICE} balance due before dispatch.`,
   },
@@ -244,7 +253,7 @@ export const LUMI_PRODUCT = {
  *  makes it impossible for the canonical and the og url to drift apart, which
  *  is the registry law (§8.19) applied to metadata.
  *
- *  `path` is root-relative ("/", "/products/lumi"); `metadataBase` in the root
+ *  `path` is root-relative ("/", "/products/kheelu"); `metadataBase` in the root
  *  layout resolves it to the apex, which is the canonical host. */
 export function pageMeta({
   title,

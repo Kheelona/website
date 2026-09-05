@@ -3,7 +3,7 @@ import { HowItWorksLoop, type LoopStep } from "./HowItWorksLoop";
 
 const STEPS: readonly LoopStep[] = [
   { title: "Talk and play", label: "Step 1", body: "Your child asks questions." },
-  { title: "Lumi remembers", label: "Step 2 · Adaptive memory", body: "Lumi keeps track." },
+  { title: "Kheelu remembers", label: "Step 2 · Adaptive memory", body: "Kheelu keeps track." },
   { title: "Knowledge that sticks", label: "Step 3 · Real-world learning", body: "Ideas arrive in play." },
 ];
 

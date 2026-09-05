@@ -7,7 +7,7 @@ const meta = {
   args: {
     title: "In the box",
     children:
-      "One Lumi plush, a charging base, and a quick-start card for parents.",
+      "One Kheelu plush, a charging base, and a quick-start card for parents.",
   },
   argTypes: {
     tilt: { control: "boolean" },

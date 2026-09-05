@@ -4,14 +4,14 @@ import { PageHero } from "./PageHero";
 describe("PageHero", () => {
   it("renders the left copy column and the right media", () => {
     render(
-      <PageHero media={<img src="/product/lumi.png" alt="The Lumi plush" />}>
-        <h1>Meet Lumi</h1>
+      <PageHero media={<img src="/product/lumi.png" alt="The Kheelu plush" />}>
+        <h1>Meet Kheelu</h1>
         <p>A screen-free friend.</p>
       </PageHero>,
     );
-    expect(screen.getByRole("heading", { name: "Meet Lumi" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Meet Kheelu" })).toBeInTheDocument();
     expect(screen.getByText("A screen-free friend.")).toBeInTheDocument();
-    expect(screen.getByRole("img", { name: "The Lumi plush" })).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "The Kheelu plush" })).toBeInTheDocument();
   });
 
   it("renders copy-only when no media is supplied", () => {
@@ -37,7 +37,7 @@ describe("PageHero", () => {
 
   it("keeps the hero out of the opacity-hidden reveal variants (LCP law)", () => {
     const { container } = render(
-      <PageHero media={<img src="/product/lumi.png" alt="The Lumi plush" />}>
+      <PageHero media={<img src="/product/lumi.png" alt="The Kheelu plush" />}>
         <h1>Fast paint</h1>
       </PageHero>,
     );

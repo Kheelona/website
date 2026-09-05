@@ -6,7 +6,7 @@ import { cn } from "@/lib/cn";
 import { Eyebrow } from "@/components/atoms/Eyebrow";
 import type { AudioMomentData } from "@/lib/audio-moments";
 
-/** Real Lumi audio, playable in place (V4, team feedback 2026-07-30).
+/** Real Kheelu audio, playable in place (V4, team feedback 2026-07-30).
  *
  *  One card = the play control, a kicker chip naming what the exchange
  *  teaches, and the transcript in a speech bubble. The transcript IS the

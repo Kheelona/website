@@ -2,15 +2,15 @@ import { render, screen } from "@testing-library/react";
 import { PacePanel } from "./PacePanel";
 
 describe("PacePanel", () => {
-  it("frames the comparison as school plus Lumi, not school versus Lumi", () => {
+  it("frames the comparison as school plus Kheelu, not school versus Kheelu", () => {
     render(<PacePanel />);
     expect(
-      screen.getByRole("heading", { name: "School teaches the class. Lumi teaches your child." }),
+      screen.getByRole("heading", { name: "School teaches the class. Kheelu teaches your child." }),
     ).toBeInTheDocument();
     expect(screen.getByText(/Nothing here is a criticism of teachers/)).toBeInTheDocument();
   });
 
-  it("never claims Lumi replaces a teacher or a tutor", () => {
+  it("never claims Kheelu replaces a teacher or a tutor", () => {
     const { container } = render(<PacePanel />);
     expect(container.textContent).not.toMatch(/replaces? (a )?(teacher|tutor|school)/i);
     expect(container.textContent).not.toMatch(/better than (a )?(teacher|school)/i);

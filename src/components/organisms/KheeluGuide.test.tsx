@@ -31,7 +31,7 @@ describe("KheeluGuide", () => {
 
   it("docks a pre-order link on mobile going straight to the store", () => {
     render(<KheeluGuide />);
-    expect(screen.getByRole("link", { name: "Pre-order Lumi" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Pre-order Kheelu" })).toHaveAttribute(
       "href",
       STORE_URL,
     );

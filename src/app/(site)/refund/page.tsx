@@ -11,7 +11,7 @@ import {
 export const metadata = pageMeta({
   title: "Refunds and cancellation",
   description:
-    "Everything you pay to pre-order Lumi is fully refundable until your Lumi is dispatched. How to ask for it back, and how long it takes.",
+    "Everything you pay to pre-order Kheelu is fully refundable until your Kheelu is dispatched. How to ask for it back, and how long it takes.",
   path: "/refund",
 });
 
@@ -20,7 +20,7 @@ export const metadata = pageMeta({
    FOUNDER GATE: the post-dispatch returns and warranty terms are NOT written
    yet, because nothing has shipped. The section below says so honestly rather
    than inventing a window. It must be replaced with the real terms before the
-   first Lumi is dispatched (FOUNDER-TODO). */
+   first Kheelu is dispatched (FOUNDER-TODO). */
 
 const SECTIONS: readonly LegalSection[] = [
   {
@@ -29,7 +29,7 @@ const SECTIONS: readonly LegalSection[] = [
       /* One promise, both order shapes (§8.26): the ₹499 token while the
          capped units last, or the whole price for a full-payment pre-order.
          Founder-confirmed 2026-08-23: the same promise covers every rupee. */
-      `Everything you have paid to pre-order is fully refundable at any time before your Lumi is dispatched: the ${TOKEN_PRICE} token, or the whole price if you paid in full. Ask us and you get it back. There is no fee, no deduction, and no reason you have to give.`,
+      `Everything you have paid to pre-order is fully refundable at any time before your Kheelu is dispatched: the ${TOKEN_PRICE} token, or the whole price if you paid in full. Ask us and you get it back. There is no fee, no deduction, and no reason you have to give.`,
     ],
   },
   {
@@ -52,18 +52,18 @@ const SECTIONS: readonly LegalSection[] = [
   {
     h: "If we cannot deliver",
     ps: [
-      `If we cannot supply your Lumi, for any reason, you get back everything you have paid us. Not a credit, not a voucher, the money. If the ship date moves from ${SHIP_DATE_TEXT} you hear it from us first, and you can cancel for a full refund at that point even if you were happy to wait before.`,
+      `If we cannot supply your Kheelu, for any reason, you get back everything you have paid us. Not a credit, not a voucher, the money. If the ship date moves from ${SHIP_DATE_TEXT} you hear it from us first, and you can cancel for a full refund at that point even if you were happy to wait before.`,
     ],
   },
   {
-    h: "After your Lumi is dispatched",
+    h: "After your Kheelu is dispatched",
     ps: [
       /* Status-honest, in the pattern the safety page already uses for
          certification: say what does not exist yet rather than implying it
          does. Inventing a returns window here would be the exact kind of
          claim this site refuses to make. */
-      "Once your Lumi is on its way to you, the pre-order is complete and delivery, returns, and warranty terms take over. Those are not written yet, because nothing has shipped yet. We will publish them on this page and send them to you before your Lumi is dispatched, so you will have read them before they apply to you.",
-      "A damaged or faulty Lumi is our problem to fix, whatever those terms end up saying. Message us and we will make it right.",
+      "Once your Kheelu is on its way to you, the pre-order is complete and delivery, returns, and warranty terms take over. Those are not written yet, because nothing has shipped yet. We will publish them on this page and send them to you before your Kheelu is dispatched, so you will have read them before they apply to you.",
+      "A damaged or faulty Kheelu is our problem to fix, whatever those terms end up saying. Message us and we will make it right.",
     ],
   },
   {

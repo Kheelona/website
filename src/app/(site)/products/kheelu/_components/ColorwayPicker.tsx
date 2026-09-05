@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/cn";
 import { PRESS_TINT } from "@/lib/interactions";
-import { LUMI_ART } from "@/lib/lumi-art";
+import { KHEELU_ART } from "@/lib/kheelu-art";
 
 /** The colorway picker (revamp M3, from wireframe B's lhero): a real
  *  radiogroup (B's span-buttons fixed). All plush images stay mounted and
@@ -25,10 +25,10 @@ const COLORWAYS = [
     id: "cream",
     label: "Cream",
     swatch: "#f0e2d2",
-    img: LUMI_ART.src,
-    alt: LUMI_ART.alt,
-    w: LUMI_ART.width,
-    h: LUMI_ART.height,
+    img: KHEELU_ART.src,
+    alt: KHEELU_ART.alt,
+    w: KHEELU_ART.width,
+    h: KHEELU_ART.height,
   },
 ] as const;
 
@@ -63,7 +63,7 @@ export function ColorwayPicker({ className }: { className?: string }) {
       </div>
       <div
         role="radiogroup"
-        aria-label="Pick Lumi's colour"
+        aria-label="Pick Kheelu's colour"
         className="mt-5 flex items-center gap-3"
         onKeyDown={(e) => {
           if (e.key === "ArrowRight" || e.key === "ArrowDown") {

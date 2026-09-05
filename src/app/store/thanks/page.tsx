@@ -88,7 +88,7 @@ export default async function ThanksPage() {
         {paid ? "Pre-order confirmed" : "Confirming your payment"}
       </p>
       <h1 className="mb-4 max-w-[24ch] font-display text-[clamp(30px,4vw,42px)] font-extrabold leading-[1.08] text-ink-head">
-        {paid ? "Your Lumi is reserved." : "Thank you. We are confirming it now."}
+        {paid ? "Your Kheelu is reserved." : "Thank you. We are confirming it now."}
       </h1>
 
       <p className="mb-6 max-w-[52ch] text-[17px] leading-[1.6] text-ink">
@@ -131,7 +131,7 @@ export default async function ThanksPage() {
       </h2>
       <p className="mb-6 max-w-[52ch] text-[16px] leading-[1.6] text-ink">
         {order.address
-          ? "This is where your Lumi will go. Change it any time before dispatch."
+          ? "This is where your Kheelu will go. Change it any time before dispatch."
           : "One last thing, and it takes under a minute. If you would rather do it later, the link in your email brings you straight back here."}
       </p>
 

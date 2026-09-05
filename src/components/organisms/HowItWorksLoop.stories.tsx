@@ -19,9 +19,9 @@ export const Home: Story = {
         body: "Your child asks questions, plays word games, and listens to stories that talk back, in their own language.",
       },
       {
-        title: "Lumi remembers",
+        title: "Kheelu remembers",
         label: "Step 2 · Adaptive memory",
-        body: "Lumi keeps track of the words your child knows, what they love, and the pace they learn at.",
+        body: "Kheelu keeps track of the words your child knows, what they love, and the pace they learn at.",
       },
       {
         title: "Knowledge that sticks",

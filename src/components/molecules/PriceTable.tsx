@@ -20,7 +20,7 @@ import {
  *  what it is.
  *
  *  It is also the most extractable shape we can hand an answer engine for
- *  "how much does Lumi cost in India", which for this site is not a footnote:
+ *  "how much does Kheelu cost in India", which for this site is not a footnote:
  *  ChatGPT sent 66 to 74 visitors in the fortnight to 2026-09-05, against
  *  Google's 75.
  *
@@ -49,7 +49,7 @@ export function PriceTable({ className }: { className?: string }) {
       <div className="overflow-x-auto">
         <table className="w-full border-collapse text-left text-[16.5px]">
           <caption className="sr-only">
-            Lumi pre-order price, deposit and dispatch in India
+            Kheelu pre-order price, deposit and dispatch in India
           </caption>
           <tbody>
             {rows.map((row) => (

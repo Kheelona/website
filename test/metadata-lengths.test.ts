@@ -50,7 +50,7 @@ const TITLE_EXEMPT = new Set(["src/app/(site)/page.tsx"]);
 
 const PAGES = [
   "src/app/(site)/page.tsx",
-  "src/app/(site)/products/lumi/page.tsx",
+  "src/app/(site)/products/kheelu/page.tsx",
   "src/app/(site)/playos/page.tsx",
   "src/app/(site)/safety/page.tsx",
   "src/app/(site)/setup/page.tsx",

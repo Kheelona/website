@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { StepList, type Step } from "./StepList";
 
 const setupSteps: Step[] = [
-  { title: "Open the Magic Box", body: "Everything Lumi needs is already inside." },
-  { title: "Say hello", body: "Lumi wakes up and learns your child's name." },
+  { title: "Open the Magic Box", body: "Everything Kheelu needs is already inside." },
+  { title: "Say hello", body: "Kheelu wakes up and learns your child's name." },
   { title: "Start playing", body: "Stories, songs, and gentle back-and-forth begin." },
 ];
 

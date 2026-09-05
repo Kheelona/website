@@ -4,7 +4,7 @@ import { storeEnv } from "@/lib/store/env";
 import { sign } from "@/lib/store/signing";
 import { resolveTier } from "@/lib/store/tiers";
 import { PreorderForm, OrderSummary } from "@/features/preorder";
-import { LUMI_ART } from "@/lib/lumi-art";
+import { KHEELU_ART } from "@/lib/kheelu-art";
 import {
   formatInr,
   LAUNCH_AMOUNT_PAISE,
@@ -70,8 +70,8 @@ export default async function IdeabaazPage() {
       <Ended
         message={
           result.reason === "full"
-            ? "The Ideabaaz allocation has all gone. You can still pre-order Lumi at the usual price."
-            : "This price was for the Ideabaaz Startup Fest window, which has closed. You can still pre-order Lumi at the usual price."
+            ? "The Ideabaaz allocation has all gone. You can still pre-order Kheelu at the usual price."
+            : "This price was for the Ideabaaz Startup Fest window, which has closed. You can still pre-order Kheelu at the usual price."
         }
       />
     );
@@ -92,7 +92,7 @@ export default async function IdeabaazPage() {
               Exclusive for the Ideabaaz audience
             </p>
             <h1 className="max-w-[22ch] font-display text-[clamp(30px,4vw,44px)] font-extrabold leading-[1.08] text-ink-head">
-              Reserve Lumi for{" "}
+              Reserve Kheelu for{" "}
               <s aria-hidden="true" className="font-bold text-ink-muted decoration-[0.09em]">
                 {TOKEN_PRICE}
               </s>{" "}
@@ -108,10 +108,10 @@ export default async function IdeabaazPage() {
             </p>
           </div>
           <Image
-            src={LUMI_ART.src}
-            alt={LUMI_ART.alt}
-            width={LUMI_ART.width}
-            height={LUMI_ART.height}
+            src={KHEELU_ART.src}
+            alt={KHEELU_ART.alt}
+            width={KHEELU_ART.width}
+            height={KHEELU_ART.height}
             priority
             sizes="(max-width: 768px) 30vw, 200px"
             className="h-[120px] w-auto shrink-0 md:h-[180px]"

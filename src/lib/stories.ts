@@ -17,9 +17,9 @@ export type Story = {
   hero?: string;
   /** An age caveat, shown as an aside under the article.
    *
-   *  Only for pieces whose SUBJECT is a child younger than Lumi's band, where
+   *  Only for pieces whose SUBJECT is a child younger than Kheelu's band, where
    *  the closing invitation would otherwise read as "buy this for your
-   *  two-year-old". Lumi is 3+, and an article about two-year-olds that ends on
+   *  two-year-old". Kheelu is 3+, and an article about two-year-olds that ends on
    *  a pre-order link and never says so is selling past its own audience.
    *  Flagged by the agency audit 2026-09-05 on the two pieces that do it. */
   ageNote?: string;
@@ -43,14 +43,14 @@ const CORE: Story[] = [
       "A father with his daughter on his shoulders, both pointing at kites drifting over evening rooftops",
     paragraphs: [
       /* V6 D9b: the author's own observation (not a cited band), aligned to
-         LUMI_AGES; spelling normalized to en-IN. Slug deliberately unchanged. */
+         KHEELU_AGES; spelling normalized to en-IN. Slug deliberately unchanged. */
       { p: "Somewhere between the second and fifth birthday, your child becomes a person. Not a smaller version of one. The real thing: opinions, jokes, fears, favourite dinosaurs." },
       { p: "The science under that everyday miracle is simple to say and hard to overstate. In these years, a child's brain builds connections faster than it ever will again. What they hear, what they feel, and who they talk to shape everything that follows." },
       { h: "The window is not about flashcards", p: "It is tempting to fill the window with drills and apps, and the toy aisle is glad to help. But brain development toys and worksheets are not what the research keeps pointing at. It keeps pointing at conversation. Back and forth exchanges. Someone who answers the fourth why is the sky blue with the same patience as the first." },
       { p: "Every answered question teaches two things at once: the fact, and the deeper lesson that asking is worth it. Children who keep asking keep learning. That is the whole engine." },
       { h: "Feelings are the fast lane", p: "There is a second finding hiding in the first. Children learn fastest from exchanges that feel good. A child who feels heard stays in the conversation. A child who feels rushed leaves it. Understanding the heart is not the soft part of learning. It is the mechanism." },
       { p: "So the years that matter most do not ask for a classroom at home. They ask for talk. At dinner, in the car, at bedtime, and yes, in play." },
-      { p: "That is the belief Lumi is built on: a talking toy that keeps the conversation going when your hands are full, in the languages you speak at home. If that sounds like your house, you can hold a place in line for a refundable ₹499." },
+      { p: "That is the belief Kheelu is built on: a talking toy that keeps the conversation going when your hands are full, in the languages you speak at home. If that sounds like your house, you can hold a place in line for a refundable ₹499." },
     ],
   },
   {
@@ -73,7 +73,7 @@ const CORE: Story[] = [
       { p: "This is also where interactive toys earn their place, or fail to. A toy that beeps and plays jingles is a screen without the picture. A toy that listens and talks back is something else: another turn in the conversation." },
       { h: "Boredom is not the enemy", p: "One more secret from screen-free homes: a bored child invents. The floor becomes lava. The sofa becomes a ship. Boredom is where imagination clocks in for work." },
       { p: "So screen-free does not mean silent, and it does not mean joyless. It means the sound in your home is your child thinking out loud." },
-      { p: `We are building Lumi for exactly that home: a screen-free friend that listens first and talks back, ready when you need one more voice. If you want one, pre-orders are open, and a refundable ${TOKEN_PRICE} holds your place.` },
+      { p: `We are building Kheelu for exactly that home: a screen-free friend that listens first and talks back, ready when you need one more voice. If you want one, pre-orders are open, and a refundable ${TOKEN_PRICE} holds your place.` },
     ],
   },
   {
@@ -95,7 +95,7 @@ const CORE: Story[] = [
       { h: "Why talking beats watching", p: "A video can show your child a volcano. But it cannot pause when their eyes go wide, ask what they think happens next, and wait. The waiting matters. Children learn to think in the space a listener gives them." },
       { h: "The mother tongue advantage", p: "The loop works best in the languages you speak at home. A child who can wonder in their own words wonders more. That is why a voice toy for kids should speak your language, not just English." },
       { p: "Vocabulary is the visible result. The invisible one is bigger: a child who expects to be heard. That expectation walks into every classroom with them." },
-      { p: "You cannot be available for every loop, and you should not have to be. That is the gap Lumi lives in: a cognitive development toy that keeps serve and return going, in up to 10 home languages, with you watching the whole exchange in the parent app." },
+      { p: "You cannot be available for every loop, and you should not have to be. That is the gap Kheelu lives in: a cognitive development toy that keeps serve and return going, in up to 10 home languages, with you watching the whole exchange in the parent app." },
       { p: "If a house full of good questions sounds right to you, reserve a spot on the list. It is free, and it holds the launch price." },
     ],
   },
@@ -119,7 +119,7 @@ const CORE: Story[] = [
       { h: "Three: can you read everything?", p: "You would not leave your child with a babysitter who refuses to tell you what happened all afternoon. The same bar applies to a talking toy. Every conversation should be readable, and deletable, by you." },
       { h: "Four: where does the voice go?", p: "Ask where recordings live, who can see them, and whether they are ever sold. Vague answers are answers." },
       { h: "Five: is it built for your child's age?", p: "A toy sold for small children should filter every response for the age of the child holding it. Age-graded safety is the difference between a children's product and a gadget with a cute shell." },
-      { p: "That is the bar we hold Lumi to: wake-word listening, no open internet, a full conversation log in the parent app, voice data that stays in your region and is never sold, and an age-graded safety layer on every reply." },
+      { p: "That is the bar we hold Kheelu to: wake-word listening, no open internet, a full conversation log in the parent app, voice data that stays in your region and is never sold, and an age-graded safety layer on every reply." },
       { p: "Hold us to it too. Read the Safety page, ask us the hard questions, and if the answers earn your trust, pre-orders are open." },
     ],
   },

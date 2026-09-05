@@ -72,7 +72,7 @@ export function Button({
         "relative inline-flex items-center justify-center overflow-hidden whitespace-nowrap rounded-full leading-none",
         // ...but BELOW sm it must wrap (M4 mobile pass): a room's content box
         // is only ~290px wide on a 390px phone, so a long ghost label like
-        // "See the parent app on the Lumi page" ran off the screen and widened
+        // "See the parent app on the Kheelu page" ran off the screen and widened
         // the layout viewport. The 640px band that wanted nowrap is untouched.
         "max-sm:whitespace-normal max-sm:text-center max-sm:leading-tight",
         // R11: the shared brand focus ring (audit: only 4 card links had one;

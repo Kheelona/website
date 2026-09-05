@@ -23,7 +23,7 @@ export const metadata = pageMeta({
    the link (hard rule, §8.18).
    V4-c (founder ask, 2026-07-31): cards LEAD WITH THE STORY'S OWN HERO —
    12 of 19 articles now carry editorial photography, and a page of repeating
-   mascot poses read as "generic Lumi image" to the team. The hero sits as a
+   mascot poses read as "generic Kheelu image" to the team. The hero sits as a
    16:9 top band (the journal's native crop); the 7 articles still without
    art keep the pose-on-tint treatment in the same band, so the grid stays
    even and the remaining prompts (docs/stories-image-prompts.md) slot in
@@ -162,7 +162,7 @@ export default function StoriesPage() {
           id="reserve"
           guide="silly"
           /* GATED:kheelu-line */
-          say="Save your spot. I'll mind Lumi till launch."
+          say="Save your spot. I'll mind Kheelu till launch."
           reveal="pop"
           className="overflow-x-clip"
         >

@@ -13,7 +13,9 @@ import { Card } from "@/components/molecules/Card";
  *  single-trick gadget, which is exactly what the shelf is full of.
  *
  *  All three are already-published behaviour: the conversation is the spine of
- *  the site, Kheelu mode came from the founder's YC application, and Bluetooth
+ *  the site, Story mode came from the founder's YC application (where it was
+ *  called "Kheelu mode", renamed 2026-09-05 when the product itself took the
+ *  name Kheelu and the label became circular), and Bluetooth
  *  playback was already a card in the what-it-does grid (this section absorbed
  *  it, so it is stated once, properly).
  *
@@ -24,35 +26,35 @@ import { Card } from "@/components/molecules/Card";
  *  Naming: the parent verb leads because it is what scans; the founder's
  *  product term sits under it as a label. "AI mode" as a small label does not
  *  break the rule about rarely leading with AI. */
-export const LUMI_MODES = [
+export const KHEELU_MODES = [
   {
     mode: "AI mode",
     heading: "Talk about anything.",
-    /* V6 D4d: the closing WiFi sentence mirrors Kheelu mode's "It works
+    /* V6 D4d: the closing WiFi sentence mirrors Story mode's "It works
        offline." — the contrast is legible at a glance (founder-licensed). */
-    body: "Your child asks why the sky is blue, and Lumi answers in words they already own, then asks one back. This is the mode they will use most, and the one that grows their vocabulary without anyone calling it a lesson. It runs on your home WiFi.",
+    body: "Your child asks why the sky is blue, and Kheelu answers in words they already own, then asks one back. This is the mode they will use most, and the one that grows their vocabulary without anyone calling it a lesson. It runs on your home WiFi.",
     short: "Talk about anything",
   },
   {
-    mode: "Kheelu mode",
+    mode: "Story mode",
     heading: "Learn inside a story.",
-    body: "Stories and lessons your child can interrupt, question, and be quizzed on. Lumi reads, your child asks why, and Lumi asks one back. It works offline.",
+    body: "Stories and lessons your child can interrupt, question, and be quizzed on. Kheelu reads, your child asks why, and Kheelu asks one back. It works offline.",
     short: "Learn inside a story",
   },
   {
     mode: "Bluetooth mode",
     heading: "Play your own music.",
-    body: "Pair a phone and Lumi becomes the speaker in the room. Your playlist, the rhymes you grew up with, an audiobook for a long car ride.",
+    body: "Pair a phone and Kheelu becomes the speaker in the room. Your playlist, the rhymes you grew up with, an audiobook for a long car ride.",
     short: "Play your own music",
   },
 ] as const;
 
-export function LumiModes({
+export function KheeluModes({
   variant = "cards",
   className,
 }: {
-  /** "cards" is the full section (/products/lumi); "strip" is the compact
-   *  one-line row Home appends to the day-with-Lumi room. */
+  /** "cards" is the full section (/products/kheelu); "strip" is the compact
+   *  one-line row Home appends to the day-with-Kheelu room. */
   variant?: "cards" | "strip";
   className?: string;
 }) {
@@ -65,7 +67,7 @@ export function LumiModes({
             for.
           </p>
           <ul className="grid gap-3 sm:grid-cols-3">
-            {LUMI_MODES.map((m) => (
+            {KHEELU_MODES.map((m) => (
               <li
                 key={m.mode}
                 className="rounded-(--radius-card) border border-line bg-white px-5 py-4"
@@ -91,12 +93,12 @@ export function LumiModes({
           eyebrow="One toy, three modes"
           title="Talk with it. Learn with it. Play music through it."
           titleClassName="mb-3 max-w-[24ch]"
-          lede="Lumi is not a single trick. The same friend holds a conversation, tells stories that ask questions back, and turns into the speaker for your playlist."
+          lede="Kheelu is not a single trick. The same friend holds a conversation, tells stories that ask questions back, and turns into the speaker for your playlist."
           ledeClassName="mb-10 max-w-[58ch]"
         />
       </Reveal>
       <ul className="grid gap-5 md:grid-cols-3">
-        {LUMI_MODES.map((m, i) => (
+        {KHEELU_MODES.map((m, i) => (
           <Reveal as="li" key={m.mode} delay={i * 0.05}>
             <Card
               className="h-full border border-line bg-white"

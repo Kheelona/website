@@ -239,7 +239,7 @@ export async function alertNotPayable(
  *  Found by reading the code after the first real refund: the webhook acted only
  *  on paid events, so a refunded order kept `status = 'paid'` — and the dispatch
  *  queue IS `where status = 'paid'`. A parent who cancelled and got their money
- *  back would still be shipped a Lumi and then invoiced ₹4,500 for it. The only
+ *  back would still be shipped a Kheelu and then invoiced ₹4,500 for it. The only
  *  thing standing between that and a customer was someone remembering to run an
  *  UPDATE by hand, every time, forever.
  *

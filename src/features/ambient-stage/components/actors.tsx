@@ -126,9 +126,9 @@ export function MascotModel({
 }
 
 /* -------------------------------------------------------------- the plush --
-   Lumi at its home place: a slow, calm turn; leans a little toward the
+   Kheelu at its home place: a slow, calm turn; leans a little toward the
    pointer, like it noticed you. */
-export function LumiModel({
+export function KheeluModel({
   position = [0, 0, 0] as [number, number, number],
   height = 1.55,
   fadeByDistance = false,
@@ -137,7 +137,7 @@ export function LumiModel({
   height?: number;
   /** journey use: fade out while the camera is in transit between beats so
    *  the plush never crosses a neighboring section's copy (the inset canvas
-   *  on /products/lumi keeps it always-on) */
+   *  on /products/kheelu keeps it always-on) */
   fadeByDistance?: boolean;
 }) {
   const { scene: model } = useGLTF("/models/lumi-plush.glb");
@@ -176,7 +176,7 @@ export function LumiModel({
     });
     mats.current = found;
     return () => {
-      // the GLB scene is cached by useGLTF and shared with LumiInset:
+      // the GLB scene is cached by useGLTF and shared with KheeluInset:
       // leave the materials the way the inset expects them
       for (const m of found) {
         m.opacity = 1;

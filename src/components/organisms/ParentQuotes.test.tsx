@@ -17,7 +17,7 @@ describe("ParentQuotes", () => {
     expect(heading.textContent).not.toMatch(/\bten\b|\b10\b|\b15\b|families test/i);
   });
 
-  it("renders two cards when asked (the Lumi page variant)", () => {
+  it("renders two cards when asked (the Kheelu page variant)", () => {
     render(<ParentQuotes bare count={2} />);
     expect(screen.getByText("Shweta")).toBeInTheDocument();
     expect(screen.queryByText("Gaurav")).toBeNull();

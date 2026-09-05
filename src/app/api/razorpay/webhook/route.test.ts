@@ -227,7 +227,7 @@ describe("POST /api/razorpay/webhook", () => {
 
 /**
  * The dispatch queue is literally `where status = 'paid'`, so an order that was
- * refunded and left as paid is a Lumi shipped to someone who cancelled, plus an
+ * refunded and left as paid is a Kheelu shipped to someone who cancelled, plus an
  * invoice for ₹4,500. Before this handler existed, the only thing preventing that
  * was somebody remembering to run an UPDATE by hand every single time.
  */

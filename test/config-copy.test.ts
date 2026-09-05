@@ -1,13 +1,13 @@
 import {
   LANGUAGES_LINE,
-  LUMI_LANGUAGES,
+  KHEELU_LANGUAGES,
   PRICE_HOLD_LINE,
   PREORDER_OFFER_LINE,
 } from "@/config/site";
 
 describe("config copy constants (BUILD-V6)", () => {
-  it("derives LANGUAGES_LINE from LUMI_LANGUAGES so the list has one source", () => {
-    const expected = `${LUMI_LANGUAGES.slice(0, -1).join(", ")}, and ${LUMI_LANGUAGES.at(-1)}`;
+  it("derives LANGUAGES_LINE from KHEELU_LANGUAGES so the list has one source", () => {
+    const expected = `${KHEELU_LANGUAGES.slice(0, -1).join(", ")}, and ${KHEELU_LANGUAGES.at(-1)}`;
     expect(LANGUAGES_LINE).toBe(expected);
     // the exact published string must not drift while deriving it
     expect(LANGUAGES_LINE).toBe(

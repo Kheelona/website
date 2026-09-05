@@ -27,11 +27,11 @@ import {
 const REASSURANCES = [
   {
     head: "Fully refundable",
-    note: `Ask for your ${TOKEN_PRICE} back any time before your Lumi is dispatched.`,
+    note: `Ask for your ${TOKEN_PRICE} back any time before your Kheelu is dispatched.`,
   },
   {
     head: `${TOKEN_PRICE} now, ${BALANCE_PRICE} later`,
-    note: "The balance is due only when your Lumi is ready to leave for you.",
+    note: "The balance is due only when your Kheelu is ready to leave for you.",
   },
   {
     head: `Ships ${SHIP_DATE_TEXT}`,
@@ -53,7 +53,7 @@ const REASSURANCES = [
  *  one that argues the case first, and it keeps id="reserve" because the mobile
  *  guide hides against that anchor and LegalDoc appends it to every legal page.
  *
- *  `variant="full"` (Home, Lumi): big headline. `variant="compact"`: the ask at
+ *  `variant="full"` (Home, Kheelu): big headline. `variant="compact"`: the ask at
  *  interior scale. */
 export function FinaleCTA({
   variant = "full",
@@ -77,7 +77,7 @@ export function FinaleCTA({
               : "mb-4 max-w-[22ch] font-display text-[clamp(28px,3vw,40px)] font-extrabold leading-[1.1] text-ink-head"
           }
         >
-          Pre-order Lumi before the price goes up.
+          Pre-order Kheelu before the price goes up.
         </h2>
         {/* V6 D11: exactly the offer line + the hold promise. Repetition builds
             trust only when it is verbatim — three paraphrases of one price

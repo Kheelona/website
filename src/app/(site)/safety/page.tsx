@@ -12,12 +12,12 @@ import { Button } from "@/components/atoms/Button";
 import { Faq, type FaqEntry } from "@/components/molecules/Faq";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { pageGraph, faqPage, breadcrumbs, pageMeta, jsonLd } from "@/lib/seo";
-import { LUMI_ART, lumiAlt } from "@/lib/lumi-art";
+import { KHEELU_ART, kheeluAlt } from "@/lib/kheelu-art";
 
 export const metadata = pageMeta({
-  title: "Are AI toys safe? How Lumi is built to be",
+  title: "Are AI toys safe? How Kheelu is built to be",
   description:
-    "How Lumi answers the questions the AI-toy investigations raised: wake-word mic, on-device thinking, no open internet, and a parent app that shows every word.",
+    "How Kheelu answers the questions the AI-toy investigations raised: wake-word mic, on-device thinking, no open internet, and a parent app that shows every word.",
   path: "/safety",
 });
 
@@ -28,14 +28,14 @@ export const metadata = pageMeta({
    mechanisms). Every mechanism cited here is already published; nothing new
    is claimed. Toy-safety standards and certifications stay PENDING (§1.9),
    shown as "in progress" honestly, and no badge appears before it is earned.
-   V3: age copy is per-answer ("tuned to your child's age") with Lumi's own band,
+   V3: age copy is per-answer ("tuned to your child's age") with Kheelu's own band,
    2 to 5, where a number is needed. The retired teal wash went with the palette. */
 
 const WORD_RULES = [
-  { title: "Listening starts with the wake word.", body: "Lumi listens only after your child says the wake word. The rest of the time, the microphone is off. Not muted. Off." },
+  { title: "Listening starts with the wake word.", body: "Kheelu listens only after your child says the wake word. The rest of the time, the microphone is off. Not muted. Off." },
   { title: "Filters live on the device.", body: "The first safety checks happen on the toy itself, before anything travels anywhere." },
   { title: "Every answer is age-graded.", body: "Replies pass through a safety layer tuned to your child's age. On-device and cloud filters work together." },
-  { title: "There is no open internet.", body: "Lumi cannot browse, search, or stumble. No random videos, no endless detours, no strangers. Ever." },
+  { title: "There is no open internet.", body: "Kheelu cannot browse, search, or stumble. No random videos, no endless detours, no strangers. Ever." },
 ] as const;
 
 const VOICE_RULES = [
@@ -79,19 +79,19 @@ const ANSWERS = {
        engines quote 40 to 60 words, so length was costing us the citation. The
        independent-testing context moved into the page body where it belongs; the
        mechanisms and the closing challenge — the strongest line here — stay. */
-    a: "Not all of them, and the difference is in the mechanisms. Lumi's mic wakes to a word and is off otherwise. The first thinking happens on the device. Replies come from a closed library, never the open internet. Every conversation is readable and deletable by you. You do not have to trust a badge. You can check.",
+    a: "Not all of them, and the difference is in the mechanisms. Kheelu's mic wakes to a word and is off otherwise. The first thinking happens on the device. Replies come from a closed library, never the open internet. Every conversation is readable and deletable by you. You do not have to trust a badge. You can check.",
   },
   listening: {
-    q: "Is Lumi always listening?",
-    a: "No. Lumi listens only after your child says the wake word. The rest of the time the microphone is off, not muted. Off. Nothing is recorded before the wake word, and every conversation after it is readable in the parent app, where you can delete any of it.",
+    q: "Is Kheelu always listening?",
+    a: "No. Kheelu listens only after your child says the wake word. The rest of the time the microphone is off, not muted. Off. Nothing is recorded before the wake word, and every conversation after it is readable in the parent app, where you can delete any of it.",
   },
   voice: {
     q: "Where does my child's voice go?",
     a: "Almost nowhere. The first thinking happens on the toy. What travels goes to Kheelona's own voice brain, stays in your region, and is never sold. Nothing is collected without your consent, and any conversation can be deleted in one tap from the parent app.",
   },
   wrong: {
-    q: "Could Lumi say something wrong?",
-    a: "Every reply passes an age-graded safety layer before it is spoken, on the device and in the cloud, and Lumi cannot reach the open internet to find something it should not. We attack our own safety layer before every release. If something still slips, one tap from you stops everything.",
+    q: "Could Kheelu say something wrong?",
+    a: "Every reply passes an age-graded safety layer before it is spoken, on the device and in the cloud, and Kheelu cannot reach the open internet to find something it should not. We attack our own safety layer before every release. If something still slips, one tap from you stops everything.",
   },
   delete: {
     q: "Can I delete everything?",
@@ -107,7 +107,7 @@ const ANSWERS = {
    structured data behind. */
 const GATED_UNDER_FIVE = {
   q: "Is an AI toy OK for a three-year-old?",
-  a: "Child-development groups say to be careful with AI toys, and we agree with most of what they ask for. They want toys that cannot reach the open internet. Lumi cannot. They want parents to see every conversation. You do. They want no ads and no data selling. There are none. And they want toys that do not pretend to be alive. Lumi is a toy that listens and answers, and the grown-up holds the keys.",
+  a: "Child-development groups say to be careful with AI toys, and we agree with most of what they ask for. They want toys that cannot reach the open internet. Kheelu cannot. They want parents to see every conversation. You do. They want no ads and no data selling. There are none. And they want toys that do not pretend to be alive. Kheelu is a toy that listens and answers, and the grown-up holds the keys.",
 } as const;
 
 /* Safety FAQ: question-led for answer engines (CMO review); answers reuse
@@ -119,9 +119,9 @@ const SAFETY_FAQ: FaqEntry[] = [
   /* V6 D7: the old first entry near-duplicated the flagship AnswerBlock (the
      padding §8.23-4 warns against). Replaced with the dependence anxiety no
      page answered — built entirely from published facts. */
-  { q: "Will Lumi replace time with me?", a: "No, and it is not built to. Lumi is for the moments your hands are full, not the ones they are not. The parent app gives you one simple thing to do together each day, quiet hours are yours to set, and the grown-up holds the keys, always." },
-  { q: "Does Lumi reduce screen time?", a: "That is the point. Lumi has no screen at all. It is a toy that helps you cut screen time: your child talks, listens, and imagines instead of watching." },
-  { q: "Can Lumi reach the open internet?", a: "No. Lumi cannot browse or search. Answers come from a closed library built for children, so there are no random videos, no endless detours, and no strangers." },
+  { q: "Will Kheelu replace time with me?", a: "No, and it is not built to. Kheelu is for the moments your hands are full, not the ones they are not. The parent app gives you one simple thing to do together each day, quiet hours are yours to set, and the grown-up holds the keys, always." },
+  { q: "Does Kheelu reduce screen time?", a: "That is the point. Kheelu has no screen at all. It is a toy that helps you cut screen time: your child talks, listens, and imagines instead of watching." },
+  { q: "Can Kheelu reach the open internet?", a: "No. Kheelu cannot browse or search. Answers come from a closed library built for children, so there are no random videos, no endless detours, and no strangers." },
   /* SEO round 2026-08-12: the checklist restates the published what-to-look-for
      criteria (the journal's safe-AI-toy piece and the ANSWERS mechanisms above)
      — nothing here is a new claim. Carries "smart toys for toddlers" and
@@ -156,10 +156,10 @@ export default function SafetyPage() {
         say="No jokes on this page. Parents read this twice."
         media={
           <Image
-            src={LUMI_ART.src}
-            alt={lumiAlt("sitting calmly")}
-            width={LUMI_ART.width}
-            height={LUMI_ART.height}
+            src={KHEELU_ART.src}
+            alt={kheeluAlt("sitting calmly")}
+            width={KHEELU_ART.width}
+            height={KHEELU_ART.height}
             sizes="(max-width: 768px) 60vw, 300px"
             priority
             className="h-auto w-full max-w-[300px]"
@@ -204,7 +204,7 @@ export default function SafetyPage() {
               level="minor"
               title="Careful with their words."
               titleClassName="mb-3"
-              lede="Four rules govern every word Lumi hears and says. They are not settings. They are how a safe toy is built."
+              lede="Four rules govern every word Kheelu hears and says. They are not settings. They are how a safe toy is built."
               ledeClassName="mb-10 max-w-[58ch]"
             />
           </Reveal>
@@ -290,14 +290,14 @@ export default function SafetyPage() {
             <SectionHeading
               title="Safe in their hands."
               titleClassName="mb-4"
-              lede="Lumi is designed for small hands and big feelings. We are completing formal toy-safety testing now. The exact materials, standards, and certificates will be listed here, in full, before Lumi ships."
+              lede="Kheelu is designed for small hands and big feelings. We are completing formal toy-safety testing now. The exact materials, standards, and certificates will be listed here, in full, before Kheelu ships."
               ledeClassName="mb-10 max-w-[62ch]"
             />
             <SectionHeading
               level="minor"
               title="The standards we build against."
               titleClassName="mb-3"
-              lede="These are the children's privacy frameworks Lumi is designed for, and where our certifications stand today. No badge appears here before it is earned."
+              lede="These are the children's privacy frameworks Kheelu is designed for, and where our certifications stand today. No badge appears here before it is earned."
               ledeClassName="mb-8 max-w-[58ch] text-[17px]"
             />
           </Reveal>
@@ -328,12 +328,12 @@ export default function SafetyPage() {
             <SectionHeading
               title="The grown-up holds the keys."
               titleClassName="mb-4"
-              lede="Lumi never decides what is right for your family. You do. The parent app is where you turn the keys:"
+              lede="Kheelu never decides what is right for your family. You do. The parent app is where you turn the keys:"
               ledeClassName="mb-6 max-w-[54ch]"
             />
             <CheckList items={PARENT_KEYS} className="mb-8 space-y-3" />
-            <Button href="/products/lumi" variant="ghost">
-              See the parent app on the Lumi page
+            <Button href="/products/kheelu" variant="ghost">
+              See the parent app on the Kheelu page
             </Button>
           </Reveal>
         </Room>
@@ -358,7 +358,7 @@ export default function SafetyPage() {
           id="reserve"
           guide="silly"
           /* GATED:kheelu-line */
-          say="Save your spot. I'll mind Lumi till launch."
+          say="Save your spot. I'll mind Kheelu till launch."
           reveal="pop"
           className="overflow-x-clip"
         >

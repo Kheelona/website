@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { CheckList } from "./CheckList";
-import { LUMI_AGES } from "@/config/site";
+import { KHEELU_AGES } from "@/config/site";
 
 const meta = {
   title: "Molecules/CheckList",
@@ -20,4 +20,4 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
-export const SingleItem: Story = { args: { items: [`Made for ages ${LUMI_AGES}`] } };
+export const SingleItem: Story = { args: { items: [`Made for ages ${KHEELU_AGES}`] } };

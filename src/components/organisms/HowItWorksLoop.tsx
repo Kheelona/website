@@ -3,7 +3,7 @@ import { cn } from "@/lib/cn";
 export type LoopStep = {
   title: string;
   /** Small label under the title: the step number + the team's product term
-   *  (the LumiModes convention — the parent verb leads, the term follows). */
+   *  (the KheeluModes convention — the parent verb leads, the term follows). */
   label: string;
   body: string;
 };

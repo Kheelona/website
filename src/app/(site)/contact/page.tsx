@@ -21,9 +21,9 @@ import {
 } from "@/config/site";
 
 export const metadata = pageMeta({
-  title: "Contact: how to reach the team behind Lumi",
+  title: "Contact: how to reach the team behind Kheelu",
   description:
-    "How to reach Kheelona about a Lumi pre-order, a partnership, or a safety question. We are a small team in Bengaluru and we answer our own messages.",
+    "How to reach Kheelona about a Kheelu pre-order, a partnership, or a safety question. We are a small team in Bengaluru and we answer our own messages.",
   path: "/contact",
 });
 
@@ -40,7 +40,7 @@ export const metadata = pageMeta({
 
 const ROUTES = [
   {
-    title: "Pre-ordering Lumi",
+    title: "Pre-ordering Kheelu",
     body: `A refundable ${TOKEN_PRICE} reserves one. We write to you on WhatsApp and by email about your own order, and nothing else.`,
     cta: { label: PREORDER_LABEL, href: PREORDER_HREF },
   },
@@ -193,7 +193,7 @@ export default function ContactPage() {
           fill="white"
           id="reserve"
           guide="silly"
-          say="Save your spot. I'll mind Lumi till launch."
+          say="Save your spot. I'll mind Kheelu till launch."
           reveal="pop"
           className="overflow-x-clip"
         >

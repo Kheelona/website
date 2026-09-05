@@ -18,7 +18,7 @@ export const metadata = pageMeta({
      "AI educational toy" in the description (159, under 160). */
   title: "Team: the parents building smart toys for toddlers",
   description:
-    "The people behind Lumi, the AI educational toy: a CTO with 14 patents, an Intel hardware chief, a marketing head who keeps it honest, and a CEO who owns trust.",
+    "The people behind Kheelu, the AI educational toy: a CTO with 14 patents, an Intel hardware chief, a marketing head keeping it honest, and a CEO who owns trust.",
   path: "/team",
 });
 
@@ -55,7 +55,7 @@ const FOUNDERS = [
     border: "border-t-blue",
     quoteBorder: "border-l-blue",
     linkedin: "https://www.linkedin.com/in/kashyap-c-r-7ba18177/",
-    bio: "Kashyap makes Lumi something small hands reach for. Over a decade, including years at Intel leading Thunderbolt 4 and 5 compliance, he took hardware from a blank page to certified products on real shelves. He owns the hardware and the power: the Kheelona Magic Box, the battery that lasts, and the unglamorous work of making it safe to hug.",
+    bio: "Kashyap makes Kheelu something small hands reach for. Over a decade, including years at Intel leading Thunderbolt 4 and 5 compliance, he took hardware from a blank page to certified products on real shelves. He owns the hardware and the power: the Kheelona Magic Box, the battery that lasts, and the unglamorous work of making it safe to hug.",
     quote:
       "Anyone can build a demo. Shipping a safe, certified toy by the thousand is a different sport. I have played it for ten years.",
   },
@@ -77,7 +77,7 @@ const FOUNDERS = [
     border: "border-t-blue",
     quoteBorder: "border-l-blue",
     linkedin: "https://www.linkedin.com/in/ria-mangala/",
-    bio: "Ria owns how Kheelona speaks to the world. She co-founded a marketing agency and ran it for seven years, and has trained more than 1,000 students and entrepreneurs in digital marketing. She owns the story: where Lumi shows up, how it speaks, and why it never overpromises.",
+    bio: "Ria owns how Kheelona speaks to the world. She co-founded a marketing agency and ran it for seven years, and has trained more than 1,000 students and entrepreneurs in digital marketing. She owns the story: where Kheelu shows up, how it speaks, and why it never overpromises.",
     quote:
       "Most brands do not have a marketing problem. They have a clarity problem. My job is to keep this one clear and honest.",
   },
@@ -135,7 +135,7 @@ export default function TeamPage() {
       <PageHero
         guide="silly"
         /* GATED:kheelu-line — founder sign-off before merge to master */
-        say="My people. They made me, then Lumi."
+        say="My people. They made me, then Kheelu."
       >
         <SectionHeading
           as="h1"
@@ -256,7 +256,7 @@ export default function TeamPage() {
           id="reserve"
           guide="silly"
           /* GATED:kheelu-line */
-          say="Save your spot. I'll mind Lumi till launch."
+          say="Save your spot. I'll mind Kheelu till launch."
           reveal="pop"
           className="overflow-x-clip"
         >

@@ -84,7 +84,7 @@ export async function startCheckout(input: StartCheckoutInput): Promise<boolean>
     amount: input.amountPaise,
     currency: "INR",
     name: "Kheelona",
-    description: `Lumi pre-order ${input.orderRef}`,
+    description: `Kheelu pre-order ${input.orderRef}`,
     prefill: input.prefill,
     notes: { order_ref: input.orderRef },
     /* Brand orange. The label inside Razorpay's own UI is theirs, so the V4

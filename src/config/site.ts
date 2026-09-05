@@ -20,12 +20,12 @@
  *  (§8.25-a), so the design system and the brand laws stay in one place. */
 export const STORE_URL = "https://store.kheelona.com";
 
-/** Where every "Pre-order Lumi" button goes. One tap from anywhere on the site
+/** Where every "Pre-order Kheelu" button goes. One tap from anywhere on the site
  *  to the page that takes the payment. */
 export const PREORDER_HREF = STORE_URL;
 
 export const NAV_LINKS = [
-  { label: "Meet Lumi", href: "/products/lumi" },
+  { label: "Meet Kheelu", href: "/products/kheelu" },
   // R11 (founder): the tab is the platform's name — the page and Home both
   // say PlayOS, so the nav saying "How it works" read as a different place
   { label: "PlayOS", href: "/playos" },
@@ -86,7 +86,7 @@ export const CAP_UNITS_TEXT = `first ${PREORDER_CAP_UNITS} units`;
  *  button: the amount is settled in the panel beside it, so this label never
  *  needs editing when a price moves, and it reads the same in a 15px navbar
  *  as it does in a hero. */
-export const PREORDER_LABEL = "Pre-order Lumi";
+export const PREORDER_LABEL = "Pre-order Kheelu";
 
 /** The standard reassurance caption under a pre-order button. */
 export const PRICE_CAPTION = `${TOKEN_PRICE} now, ${BALANCE_PRICE} on dispatch. Fully refundable until we ship.`;
@@ -116,17 +116,17 @@ export const PRICE_HOLD_LINE = "We hold the price, you hold your place.";
    retired — no published ceiling anywhere, and PLATFORM_AGES is gone rather
    than renamed so a stale import fails loudly. Render age copy from here,
    never inline; the chip format is "Ages 3+". */
-export const LUMI_AGES = "3+";
+export const KHEELU_AGES = "3+";
 
 /** The ONLY sanctioned Kheelona+ wording (V3; updated 2026-07-31 when the
- *  founder cleared HALF of gate V3-b): Lumi's smart features are LIFETIME —
+ *  founder cleared HALF of gate V3-b): Kheelu's smart features are LIFETIME —
  *  that is the post-lapse answer — and pricing stays deliberately open-ended
  *  as "announced soon" (founder: no details yet). STILL GATED: any ₹ amount
  *  for Kheelona+. */
 export const KHEELONA_PLUS_LINE =
-  "Every Lumi includes 6 months of Kheelona+, the stories, lessons, languages, and the parent app. Lumi's smart features are yours for life, and Kheelona+ pricing is announced soon.";
+  "Every Kheelu includes 6 months of Kheelona+, the stories, lessons, languages, and the parent app. Kheelu's smart features are yours for life, and Kheelona+ pricing is announced soon.";
 /** Short form, for the finale's small print. */
-export const KHEELONA_PLUS_SHORT = "Every Lumi includes 6 months of Kheelona+.";
+export const KHEELONA_PLUS_SHORT = "Every Kheelu includes 6 months of Kheelona+.";
 
 /** Ship date (founder, 2026-08-23: moved from 1 October). Render from these,
  *  never inline, so a logistics change is a one-file edit. */
@@ -137,7 +137,7 @@ export const SHIP_DATE_ISO = "2026-10-20";
  *  named today; the published ceiling stays "up to 10", so two more can land
  *  without any copy change. Render the list from here (AEO: the named list is
  *  the strongest answer content this product has). */
-export const LUMI_LANGUAGES = [
+export const KHEELU_LANGUAGES = [
   "English",
   "Hindi",
   "Bengali",
@@ -147,8 +147,8 @@ export const LUMI_LANGUAGES = [
   "Spanish",
   "French",
 ] as const;
-export const LANGUAGES_LINE = `${LUMI_LANGUAGES.slice(0, -1).join(", ")}, and ${
-  LUMI_LANGUAGES[LUMI_LANGUAGES.length - 1]
+export const LANGUAGES_LINE = `${KHEELU_LANGUAGES.slice(0, -1).join(", ")}, and ${
+  KHEELU_LANGUAGES[KHEELU_LANGUAGES.length - 1]
 }`;
 
 /** WhatsApp share (V3, India's native referral loop — no backend). "Rs" not
@@ -156,9 +156,9 @@ export const LANGUAGES_LINE = `${LUMI_LANGUAGES.slice(0, -1).join(", ")}, and ${
  *  with the token, which is the easy number to pass along, and carries the
  *  unit-cap urgency (2026-08-23: the date deadline is gone). */
 export const WHATSAPP_SHARE_HREF = `https://wa.me/?text=${encodeURIComponent(
-  `A screen-free talking friend that teaches, for ages ${LUMI_AGES}. Rs ${TOKEN_AMOUNT_PAISE / 100} reserves one of the ${CAP_UNITS_TEXT} at Rs ${LAUNCH_AMOUNT_PAISE / 100}, fully refundable: ${STORE_URL}`,
+  `A screen-free talking friend that teaches, for ages ${KHEELU_AGES}. Rs ${TOKEN_AMOUNT_PAISE / 100} reserves one of the ${CAP_UNITS_TEXT} at Rs ${LAUNCH_AMOUNT_PAISE / 100}, fully refundable: ${STORE_URL}`,
 )}`;
-export const WHATSAPP_SHARE_LABEL = "Know a parent who needs this? Share Lumi on WhatsApp";
+export const WHATSAPP_SHARE_LABEL = "Know a parent who needs this? Share Kheelu on WhatsApp";
 
 /** V3 (AEO): journal freshness. Answer engines weight recency, and the honest
  *  signal we have is the month the whole journal was written and verified

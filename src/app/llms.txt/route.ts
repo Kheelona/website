@@ -6,7 +6,7 @@ import {
   BALANCE_PRICE,
   STORE_URL,
   TAX_LINE,
-  LUMI_AGES,
+  KHEELU_AGES,
   LANGUAGES_LINE,
   SHIP_DATE_TEXT,
 } from "@/config/site";
@@ -31,27 +31,27 @@ export const dynamic = "force-static";
 
 const BODY = `# Kheelona
 
-> Kheelona makes screen-free talking friends for children. Lumi, the first one,
-> is a plush toy for ages ${LUMI_AGES} that holds a real conversation, tells
+> Kheelona makes screen-free talking friends for children. Kheelu, the first one,
+> is a plush toy for ages ${KHEELU_AGES} that holds a real conversation, tells
 > stories your child can question and be quizzed on, and slips learning into
 > the play. India-first, pre-order stage.
 
-## What Lumi is
+## What Kheelu is
 - A screen-free plush toy that talks with a child and answers back. No screen, ever.
-- Ages ${LUMI_AGES}. The wider family of friends that follows, the Kheelu Speaker and AI books, is in development and grows with the child.
+- Ages ${KHEELU_AGES}. The wider family of friends that follows, the Kheelu Speaker and AI books, is in development and grows with the child.
 - Speaks the languages spoken at home: ${LANGUAGES_LINE}, with up to 10 at launch. Switches mid-sentence.
 - Runs on PlayOS, Kheelona's own platform: a small language model built only for children, not shrunk from adult AI.
-- Three modes, one toy: AI mode (open conversation), Kheelu mode (pre-loaded stories and lessons a child can interrupt, question, and be quizzed on, offline), and Bluetooth mode (pair a phone and Lumi is the speaker for your own playlist or audiobook).
-- Connectivity: AI mode (open conversation) runs on home WiFi. Kheelu-mode stories and lessons work offline, and Bluetooth music needs only a paired phone.
+- Three modes, one toy: AI mode (open conversation), Story mode (pre-loaded stories and lessons a child can interrupt, question, and be quizzed on, offline), and Bluetooth mode (pair a phone and Kheelu is the speaker for your own playlist or audiobook).
+- Connectivity: AI mode (open conversation) runs on home WiFi. Story-mode stories and lessons work offline, and Bluetooth music needs only a paired phone.
 
 ## Safety, in mechanisms rather than badges
 - The microphone wakes to a word and is off the rest of the time.
 - The first thinking happens on the device before anything travels.
-- Answers come from a closed library. Lumi cannot browse or search the open internet.
+- Answers come from a closed library. Kheelu cannot browse or search the open internet.
 - Every reply passes an age-graded safety layer, on the device and in the cloud.
 - Parents read the full conversation log and can delete any conversation in one tap.
 - Conversations stay in the family's region. Children's voice data is never sold.
-- Toy-safety certifications are in progress and will be published in full before Lumi ships. No badge is claimed before it is earned.
+- Toy-safety certifications are in progress and will be published in full before Kheelu ships. No badge is claimed before it is earned.
 
 ## The parent app
 - A daily summary, the full word-for-word conversation log, and topic controls.
@@ -62,14 +62,14 @@ const BODY = `# Kheelona
 ## Price and availability
 - Pre-order: ${LAUNCH_PRICE} for the ${CAP_UNITS_TEXT}. ${FULL_PRICE} once they are gone, paid in full at pre-order.
 - While the ${CAP_UNITS_TEXT} last, a refundable ${TOKEN_PRICE} token reserves a unit. It is adjusted against the price, and the ${BALANCE_PRICE} balance is due by payment link before dispatch. Every payment is refundable in full at any time before dispatch.
-- Every Lumi includes 6 months of Kheelona+ (stories, lessons, language packs, parent app). Lumi's smart features are lifetime; Kheelona+ pricing is announced soon. Nothing renews without the parent.
+- Every Kheelu includes 6 months of Kheelona+ (stories, lessons, language packs, parent app). Kheelu's smart features are lifetime; Kheelona+ pricing is announced soon. Nothing renews without the parent.
 - ${TAX_LINE} Delivery is included anywhere in India, so the published price is the total cost.
 - Shipping starts ${SHIP_DATE_TEXT}. Pre-orders are served first, in the order they were placed.
 
 ## Pages
-- https://kheelona.com/ : what Lumi is, what it teaches, and how to pre-order
+- https://kheelona.com/ : what Kheelu is, what it teaches, and how to pre-order
 - ${STORE_URL} : the pre-order store, where the token is paid
-- https://kheelona.com/products/lumi : the product in detail, plus the questions parents ask
+- https://kheelona.com/products/kheelu : the product in detail, plus the questions parents ask
 - https://kheelona.com/safety : are AI toys safe, and how this one is built
 - https://kheelona.com/playos : the platform behind every Kheelona friend
 - https://kheelona.com/setup : day one

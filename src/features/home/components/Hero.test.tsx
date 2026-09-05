@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { Hero } from "./Hero";
 import { STORE_URL } from "@/config/site";
-import { LUMI_ART } from "@/lib/lumi-art";
+import { KHEELU_ART } from "@/lib/kheelu-art";
 
 describe("Hero (V6, the growth-arc round)", () => {
   it("renders the two-line outcome-arc H1 (BUILD-V6 D1, founder-approved)", () => {
@@ -14,23 +14,23 @@ describe("Hero (V6, the growth-arc round)", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        /Lumi listens, remembers, and grows with your child\. Stories, numbers, and the languages you speak at home, at their pace\./,
+        /Kheelu listens, remembers, and grows with your child\. Stories, numbers, and the languages you speak at home, at their pace\./,
       ),
     ).toBeInTheDocument();
   });
 
-  it("keeps the priority Lumi artwork as the LCP element", () => {
+  it("keeps the priority Kheelu artwork as the LCP element", () => {
     render(<Hero />);
-    const art = screen.getByAltText(LUMI_ART.alt);
+    const art = screen.getByAltText(KHEELU_ART.alt);
     expect(art).toBeInTheDocument();
-    expect(art).toHaveAttribute("src", LUMI_ART.src);
+    expect(art).toHaveAttribute("src", KHEELU_ART.src);
     expect(art).toHaveAttribute("data-priority", "true");
   });
 
   it("offers exactly ONE button, and the offer line rides under it (team items 7 and 10)", () => {
     render(<Hero />);
     expect(
-      screen.getByRole("link", { name: "Pre-order Lumi" }),
+      screen.getByRole("link", { name: "Pre-order Kheelu" }),
     ).toHaveAttribute("href", STORE_URL);
     expect(screen.queryByRole("link", { name: "Meet Kheelu" })).toBeNull();
     /* Promoted, not buried: the chip carries the whole offer line and must be
@@ -46,7 +46,7 @@ describe("Hero (V6, the growth-arc round)", () => {
     expect(cap.textContent).toContain("₹7,999 once they are gone.");
   });
 
-  it("carries Lumi's own age band", () => {
+  it("carries Kheelu's own age band", () => {
     render(<Hero />);
     expect(screen.getByText("For ages 3+")).toBeInTheDocument();
   });

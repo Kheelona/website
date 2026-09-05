@@ -1,7 +1,7 @@
 import {
   ORGANIZATION,
   WEBSITE,
-  LUMI_PRODUCT,
+  KHEELU_PRODUCT,
   LAUNCH_VIDEO,
   breadcrumbs,
   faqPage,
@@ -20,7 +20,7 @@ import { SETUP_STEPS } from "./setup-steps";
  *  the easiest place for an invented claim to hide, because nobody reads it. */
 describe("structured data", () => {
   const everything = JSON.stringify(
-    pageGraph(LUMI_PRODUCT, LAUNCH_VIDEO, faqPage([{ q: "q", a: "a" }]), setupHowTo(SETUP_STEPS), breadcrumbs([])),
+    pageGraph(KHEELU_PRODUCT, LAUNCH_VIDEO, faqPage([{ q: "q", a: "a" }]), setupHowTo(SETUP_STEPS), breadcrumbs([])),
   );
 
   it("never leaks a gated fact (Kheelona+ price, certifications) and carries the published ship date", () => {
@@ -29,13 +29,13 @@ describe("structured data", () => {
     expect(everything).toMatch(/"availabilityStarts":"2026-10-20"/);
     expect(everything).not.toMatch(/shipDate|deliveryDate/);
     /* Certification is gated for the PRODUCT, not for a person's career. The
-       risk is a schema property asserting Lumi is certified, so test for the
+       risk is a schema property asserting Kheelu is certified, so test for the
        properties and the badge names — Kashyap's bio legitimately says he has
        taken hardware to certification, which is his history, not our claim. */
     expect(everything).not.toMatch(/hasCertification|"certification"|ISO 27001|COPPA/i);
-    expect(JSON.stringify(LUMI_PRODUCT)).not.toMatch(/certif/i);
+    expect(JSON.stringify(KHEELU_PRODUCT)).not.toMatch(/certif/i);
     /* Any 4-digit-or-longer number in the graph must be one we can point at:
-       Lumi's two published prices, or a year we actually state (founded 2025,
+       Kheelu's two published prices, or a year we actually state (founded 2025,
        the film's upload date 2026). A new number appearing here means someone
        put an unpublished figure into schema, which is the failure mode this
        whole test exists to catch. URLs are stripped first: a LinkedIn slug like
@@ -60,25 +60,37 @@ describe("structured data", () => {
     expect(everything).not.toMatch(/lapse|expire|without a subscription|still works/i);
   });
 
+  /* The rename's load-bearing detail (2026-09-05). Lumi became Kheelu: the
+     route, the canonical and offers.url all moved to /products/kheelu, and the
+     Product @id deliberately did NOT. It is an opaque identifier that tells a
+     consumer this is the same product it already knows, so moving it would
+     throw away exactly the continuity the redirect exists to preserve. This
+     fails the day someone tidies it to match the route. */
+  it("keeps the product @id on the pre-rename URL, and the navigable url on the new one", () => {
+    expect(KHEELU_PRODUCT["@id"]).toBe(`${SITE_URL}/products/lumi#product`);
+    expect(KHEELU_PRODUCT.offers.url).toBe(`${SITE_URL}/products/kheelu`);
+    expect(KHEELU_PRODUCT.name).toBe("Kheelu by Kheelona");
+  });
+
   it("keeps the offer at pre-order, priced as a number, with no validity date", () => {
-    expect(LUMI_PRODUCT.offers.availability).toBe("https://schema.org/PreOrder");
-    expect(LUMI_PRODUCT.offers.priceCurrency).toBe("INR");
+    expect(KHEELU_PRODUCT.offers.availability).toBe("https://schema.org/PreOrder");
+    expect(KHEELU_PRODUCT.offers.priceCurrency).toBe("INR");
     // a schema price is a number, and it comes from the paise constant
-    expect(LUMI_PRODUCT.offers.price).toBe(4999);
+    expect(KHEELU_PRODUCT.offers.price).toBe(4999);
     /* Inverted 2026-08-23 (§8.26): the offer is bounded by a UNIT COUNT now,
        which schema.org cannot express. A priceValidUntil would make Google
        drop the offer on a day nothing changed, so its ABSENCE is the correct
        markup and this guards against it creeping back. The unit terms live in
        the offer's prose description instead. */
-    expect("priceValidUntil" in LUMI_PRODUCT.offers).toBe(false);
+    expect("priceValidUntil" in KHEELU_PRODUCT.offers).toBe(false);
   });
 
-  it("states Lumi's real age band, not the retired ones", () => {
+  it("states Kheelu's real age band, not the retired ones", () => {
     /* Ages 3+ since 2026-08-23 (founder decision #8): a minimum with NO
        maximum, because the published range has no ceiling. "2 to 5" and
        "2 to 14" joined the dead-ranges list the day they were replaced. */
-    expect(LUMI_PRODUCT.audience.suggestedMinAge).toBe(3);
-    expect("suggestedMaxAge" in LUMI_PRODUCT.audience).toBe(false);
+    expect(KHEELU_PRODUCT.audience.suggestedMinAge).toBe(3);
+    expect("suggestedMaxAge" in KHEELU_PRODUCT.audience).toBe(false);
     expect(everything).not.toMatch(/3 to 10|3 to 6|2 to 5|2 to 14/);
   });
 

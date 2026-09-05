@@ -6,7 +6,7 @@ const BASE = "https://kheelona.com";
 export default function sitemap(): MetadataRoute.Sitemap {
   const pages = [
     { path: "", priority: 1.0 },
-    { path: "/products/lumi", priority: 0.9 },
+    { path: "/products/kheelu", priority: 0.9 },
     { path: "/playos", priority: 0.8 },
     { path: "/safety", priority: 0.8 },
     { path: "/team", priority: 0.6 },

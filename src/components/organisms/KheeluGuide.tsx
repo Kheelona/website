@@ -95,7 +95,7 @@ export function KheeluGuide({ defaultPose = "hero-wink" }: { defaultPose?: Kheel
   }, [pathname]);
 
   /* V5-5: hold the DESKTOP guide back while hero art that already contains
-     Kheelu is on screen. REV-a's final artwork is Kheelu whispering to Lumi, so
+     Kheelu is on screen. REV-a's final artwork is Kheelu whispering to Kheelu, so
      the corner guide put the same character on screen twice in the first
      impression — a craft flaw the M2 notes predicted and the final art locked
      in rather than removed. He fades in once the art has scrolled away, which

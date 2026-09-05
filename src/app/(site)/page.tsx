@@ -7,13 +7,13 @@ import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { AudioMoments } from "@/components/molecules/AudioMoments";
 import { FootnotesRow, Footnote, V3_FOOTNOTES } from "@/components/molecules/FootnotesRow";
 import { Faq, type FaqEntry } from "@/components/molecules/Faq";
-import { pageGraph, faqPage, breadcrumbs, LUMI_PRODUCT, pageMeta, jsonLd } from "@/lib/seo";
+import { pageGraph, faqPage, breadcrumbs, KHEELU_PRODUCT, pageMeta, jsonLd } from "@/lib/seo";
 import { AUDIO_MOMENTS } from "@/lib/audio-moments";
 import { RecognitionStrip } from "@/components/organisms/RecognitionStrip";
 import { ParentQuotes } from "@/components/organisms/ParentQuotes";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { FeelingsGallery } from "@/components/organisms/FeelingsGallery";
-import { LumiModes } from "@/components/organisms/LumiModes";
+import { KheeluModes } from "@/components/organisms/KheeluModes";
 import { HowItWorksLoop, type LoopStep } from "@/components/organisms/HowItWorksLoop";
 import { GrowthArc } from "@/components/organisms/GrowthArc";
 import {
@@ -26,7 +26,7 @@ import {
   FULL_PRICE,
   LAUNCH_PRICE,
   SHIP_DATE_TEXT,
-  LUMI_AGES,
+  KHEELU_AGES,
 } from "@/config/site";
 import {
   Hero,
@@ -55,7 +55,7 @@ export const metadata = pageMeta({
      Found live 2026-09-05. Every route now writes the bare title and lets the
      template add the brand exactly once, so there is no root-segment special
      case left to get wrong. */
-  title: "Lumi: the screen-free AI toy with a tutor inside, ages 3+",
+  title: "Kheelu: the screen-free AI toy with a tutor inside, ages 3+",
   description:
     "A best friend at 3, a head start for school. The screen-free toy that grows with your child, in your home languages. Pre-order at ₹4,999, ₹499 refundable.",
   path: "/",
@@ -68,62 +68,62 @@ export const metadata = pageMeta({
    40 to 60 words, self-contained enough to be quoted on its own. */
 const HOME_FAQ: FaqEntry[] = [
   {
-    q: "What is Lumi?",
+    q: "What is Kheelu?",
     /* SEO round 2026-08-12 (agency keywords, founder-directed): this answer
        carries "screen-free toy" and "interactive AI toy" exactly; the third
        Home keyword, "smart toy", is deliberately NOT written here — the
-       compare table already serves it seven times as the category Lumi is
-       contrasted against, and calling Lumi a smart toy would undercut that. */
-    a: "Lumi is a screen-free toy that talks with children aged 3 and up: your child speaks to it and it answers, tells stories, sings, and asks questions back. It is an interactive AI toy with no screen at all, it cannot reach the open internet, and every conversation is readable by you in the parent app.",
+       compare table already serves it seven times as the category Kheelu is
+       contrasted against, and calling Kheelu a smart toy would undercut that. */
+    a: "Kheelu is a screen-free toy that talks with children aged 3 and up: your child speaks to it and it answers, tells stories, sings, and asks questions back. It is an interactive AI toy with no screen at all, it cannot reach the open internet, and every conversation is readable by you in the parent app.",
   },
   /* V6 D3: the parents' own question from the feedback that drove this round,
      kept nearly verbatim — the FAQ that mirrors the reader's exact objection
      is the one they open. */
   {
-    q: "What will my child actually get out of Lumi?",
-    a: "A friend at 3, and a head start for school. Lumi answers your child's questions, remembers the words they know, and builds on them the next day: stories, numbers, thinking games, and the languages you speak at home. The parent app counts the new words, so you see the growth, not just the play.",
+    q: "What will my child actually get out of Kheelu?",
+    a: "A friend at 3, and a head start for school. Kheelu answers your child's questions, remembers the words they know, and builds on them the next day: stories, numbers, thinking games, and the languages you speak at home. The parent app counts the new words, so you see the growth, not just the play.",
   },
   {
-    q: "How much does Lumi cost in India?",
-    a: `${LAUNCH_PRICE} for the ${CAP_UNITS_TEXT}, and ${FULL_PRICE} once they are gone. A refundable ${TOKEN_PRICE} reserves your Lumi now, and the ${BALANCE_PRICE} balance is due only when it is ready to ship. Every Lumi includes 6 months of Kheelona+.`,
+    q: "How much does Kheelu cost in India?",
+    a: `${LAUNCH_PRICE} for the ${CAP_UNITS_TEXT}, and ${FULL_PRICE} once they are gone. A refundable ${TOKEN_PRICE} reserves your Kheelu now, and the ${BALANCE_PRICE} balance is due only when it is ready to ship. Every Kheelu includes 6 months of Kheelona+.`,
   },
   {
-    q: "What ages is Lumi for?",
-    a: "Ages 3+. Lumi meets your child where they are and grows with them, and the wider family of Kheelona friends that follows, the Kheelu Speaker and AI books, keeps growing alongside.",
+    q: "What ages is Kheelu for?",
+    a: "Ages 3+. Kheelu meets your child where they are and grows with them, and the wider family of Kheelona friends that follows, the Kheelu Speaker and AI books, keeps growing alongside.",
   },
   {
-    q: "Which languages does Lumi speak?",
-    a: "English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish, and French, with up to ten languages at launch. Lumi can switch mid-sentence, in the languages you speak at home.",
+    q: "Which languages does Kheelu speak?",
+    a: "English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish, and French, with up to ten languages at launch. Kheelu can switch mid-sentence, in the languages you speak at home.",
   },
   {
-    q: "When does Lumi ship?",
+    q: "When does Kheelu ship?",
     a: `Shipping starts ${SHIP_DATE_TEXT}. Pre-ordering now holds the ${LAUNCH_PRICE} price and your place in line for a refundable ${TOKEN_PRICE}, and pre-orders are served first.`,
   },
   /* V6 D4a (founder-licensed fact): mode-precise. The old flat "No" was a
      post-purchase complaint in waiting — a precise admission converts better
      than a broad claim. */
   {
-    q: "Does Lumi need the internet to work?",
-    a: "For open conversation, yes: AI mode runs on your home WiFi. For everything else, no: Kheelu-mode stories and lessons play offline, and Bluetooth music needs only a paired phone. On a train or anywhere without a signal, your child still has stories to interrupt, question, and be quizzed on.",
+    q: "Does Kheelu need the internet to work?",
+    a: "For open conversation, yes: AI mode runs on your home WiFi. For everything else, no: Story-mode stories and lessons play offline, and Bluetooth music needs only a paired phone. On a train or anywhere without a signal, your child still has stories to interrupt, question, and be quizzed on.",
   },
   /* V6 D7: opens with the same honest verdict as the /safety flagship answer,
      so the two pages agree in substance and differ only in length. */
   {
     q: "Is an AI toy safe for a small child?",
-    a: "Not all of them are, and what makes a safe toy is how it is built. Lumi wakes to a word and the microphone is off the rest of the time, the first thinking happens on the toy, answers come from a closed library rather than the open internet, and you can read or delete every conversation.",
+    a: "Not all of them are, and what makes a safe toy is how it is built. Kheelu wakes to a word and the microphone is off the rest of the time, the first thinking happens on the toy, answers come from a closed library rather than the open internet, and you can read or delete every conversation.",
   },
 ];
 
 /* V4 (D7): the VideoObject left this graph with the film — schema mirrors
    visible content only, and the film is no longer on the page. */
 const HOME_JSON_LD = pageGraph(
-  LUMI_PRODUCT,
+  KHEELU_PRODUCT,
   faqPage(HOME_FAQ),
   breadcrumbs([]),
 );
 
 /* The team's How-It-Works sequence (BUILD-V4 §3 F4), typos mended, with the
-   LumiModes naming convention: the parent verb leads, the term follows. */
+   KheeluModes naming convention: the parent verb leads, the term follows. */
 const LOOP_STEPS: readonly LoopStep[] = [
   {
     title: "Talk and play",
@@ -131,9 +131,9 @@ const LOOP_STEPS: readonly LoopStep[] = [
     body: "Your child asks questions, plays word games, and listens to stories that talk back, in their own language.",
   },
   {
-    title: "Lumi remembers",
+    title: "Kheelu remembers",
     label: "Step 2 · Adaptive memory",
-    body: "Lumi keeps track of the words your child knows, what they love, and the pace they learn at.",
+    body: "Kheelu keeps track of the words your child knows, what they love, and the pace they learn at.",
   },
   {
     title: "Knowledge that sticks",
@@ -163,7 +163,7 @@ export default function HomePage() {
           <RecognitionStrip bare />
         </Room>
 
-        {/* Hear it (the concept, demonstrated): real Lumi audio replaces the
+        {/* Hear it (the concept, demonstrated): real Kheelu audio replaces the
             old statement room — the team asked for the product's own voice
             where the manifesto used to be. */}
         <Room
@@ -178,7 +178,7 @@ export default function HomePage() {
               eyebrow="Hear it for yourself"
               title="Play, learn, together."
               titleClassName="mb-3"
-              lede="Lumi teaches in the way your child likes. Press play and listen in."
+              lede="Kheelu teaches in the way your child likes. Press play and listen in."
               ledeClassName="mb-10 max-w-[58ch]"
             />
           </Reveal>
@@ -266,10 +266,10 @@ export default function HomePage() {
         >
           <Reveal>
             <SectionHeading
-              eyebrow={`Ages ${LUMI_AGES}`}
+              eyebrow={`Ages ${KHEELU_AGES}`}
               title="What your child gets, year by year."
               titleClassName="mb-3"
-              lede="Lumi remembers what your child knows and asks the next question. Here is how the same friend meets them at every age."
+              lede="Kheelu remembers what your child knows and asks the next question. Here is how the same friend meets them at every age."
               ledeClassName="mb-10 max-w-[58ch]"
             />
           </Reveal>
@@ -280,15 +280,15 @@ export default function HomePage() {
         <Room fill="sun" id="warm" guide="bliss" say="That was the careful part. Now the fun." reveal="pop">
           <Reveal>
             <SectionHeading
-              title="Here is what a day with Lumi feels like."
+              title="Here is what a day with Kheelu feels like."
               titleClassName="mb-6 max-w-[22ch]"
             />
           </Reveal>
           <KheeluOrbit />
           {/* Founder call 2026-07-28: name the three modes where a parent is
-              already enjoying the day-with-Lumi picture. One toy that talks,
+              already enjoying the day-with-Kheelu picture. One toy that talks,
               teaches and plays music is a different purchase from a gadget. */}
-          <LumiModes variant="strip" className="mt-12" />
+          <KheeluModes variant="strip" className="mt-12" />
         </Room>
 
         <Room fill="cool" id="trust" guide="curious" say="This bit is for you, not the kids." reveal="right">
@@ -297,7 +297,7 @@ export default function HomePage() {
 
         <Room
           fill="white"
-          id="lumi"
+          id="kheelu"
           guide="joy"
           say="The Speaker is my cousin. Better at maths."
           reveal="left"
@@ -311,7 +311,7 @@ export default function HomePage() {
               eyebrow="Meet the feelings"
               title="Learning starts with feeling understood."
               titleClassName="max-w-[18ch]"
-              lede="Kheelu acts out the five feelings Lumi knows. Feeling comes first, and the learning follows."
+              lede="Kheelu acts out the five feelings Kheelu knows. Feeling comes first, and the learning follows."
               ledeClassName="mb-10 mt-4 max-w-[62ch]"
             />
           </Reveal>
@@ -335,7 +335,7 @@ export default function HomePage() {
             <SectionHeading
               title="Questions parents ask first."
               titleClassName="mb-3"
-              lede="Straight answers, in plain words. The longer versions live on the Lumi and Safety pages."
+              lede="Straight answers, in plain words. The longer versions live on the Kheelu and Safety pages."
               ledeClassName="mb-10 max-w-[58ch]"
             />
           </Reveal>
@@ -355,7 +355,7 @@ export default function HomePage() {
           fill="white"
           id="reserve"
           guide="silly"
-          say="Save your spot. I'll mind Lumi till launch."
+          say="Save your spot. I'll mind Kheelu till launch."
           reveal="pop"
           className="overflow-x-clip"
         >

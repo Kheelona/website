@@ -1,8 +1,8 @@
 /** The product pipeline (V3, founder 2026-07-27 from the YC application):
- *  ONE friend inside many bodies, Lumi first. This replaced the old
+ *  ONE friend inside many bodies, Kheelu first. This replaced the old
  *  Lori/Lua/Robu lineup on kheelona.com — those characters stay published on
  *  kheelona.ai, and their renders stay in `public/products/` untouched for
- *  parity, but .com now tells the age-arc story instead: Lumi at 3, the Kheelu
+ *  parity, but .com now tells the age-arc story instead: Kheelu at 3, the Kheelu
  *  Speaker through the school years, AI books across the whole range. Ages
  *  are open-ended "N+" since 2026-08-23 (founder decision #8: no published
  *  ceiling anywhere).
@@ -10,7 +10,7 @@
  *  ONE source for the Home pipeline room and /playos so the lineup can never
  *  drift (the setup-steps lesson, R9). Tints brand-4 only. `img: null` renders
  *  the calm placeholder until the founder's Gemini art lands (gate V3-c). */
-import { LUMI_ART } from "./lumi-art";
+import { KHEELU_ART } from "./kheelu-art";
 
 export type FamilyMember = {
   name: string;
@@ -26,13 +26,13 @@ export type FamilyMember = {
 
 export const FAMILY: readonly FamilyMember[] = [
   {
-    name: "Lumi",
+    name: "Kheelu",
     ages: "3+",
     note: "Here first. The friend who listens.",
-    img: LUMI_ART.src,
-    alt: LUMI_ART.alt,
-    w: LUMI_ART.width,
-    h: LUMI_ART.height,
+    img: KHEELU_ART.src,
+    alt: KHEELU_ART.alt,
+    w: KHEELU_ART.width,
+    h: KHEELU_ART.height,
     tint: "bg-blue/15",
     here: true,
   },

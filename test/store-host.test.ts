@@ -100,7 +100,7 @@ describe("store host routing", () => {
   });
 
   it("leaves every marketing route alone", () => {
-    for (const path of ["/", "/products/lumi", "/refund", "/stories/how-children-learn-by-talking"]) {
+    for (const path of ["/", "/products/kheelu", "/refund", "/stories/how-children-learn-by-talking"]) {
       expect(routeForHost("kheelona.com", path), path).toEqual({ kind: "pass" });
     }
   });
@@ -109,8 +109,8 @@ describe("store host routing", () => {
      duplicate content, and it would also mean a parent could read the old
      reservation copy on a domain that takes payments. */
   it("does not serve marketing pages on the store host", () => {
-    const route = routeForHost("store.kheelona.com", "/products/lumi");
-    expect(route).toEqual({ kind: "rewrite", path: "/store/products/lumi" });
+    const route = routeForHost("store.kheelona.com", "/products/kheelu");
+    expect(route).toEqual({ kind: "rewrite", path: "/store/products/kheelu" });
     // which is not a route that exists, so it 404s. Asserted here so the
     // intention is on the record rather than an accident of file layout.
   });

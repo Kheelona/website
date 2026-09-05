@@ -14,7 +14,7 @@ export function Compare({ bare = false }: { bare?: boolean }) {
     <>
       <Reveal>
         <SectionHeading
-          title="How Lumi compares."
+          title="How Kheelu compares."
           titleClassName="mb-2"
           lede="A simple, honest look at what is out there."
           ledeClassName="mb-10"
@@ -29,7 +29,7 @@ export function Compare({ bare = false }: { bare?: boolean }) {
             pays for tutoring, without attacking tutors (the Khanmigo lesson —
             position as always-available, not as cheaper) */}
         <p className="mb-6 max-w-[42ch] font-display text-[19px] font-bold text-ink-head">
-          A tutor runs out of time and patience. Lumi does not.
+          A tutor runs out of time and patience. Kheelu does not.
         </p>
         <Button href={PREORDER_HREF}>{PREORDER_LABEL}</Button>
         <p className="mt-4 text-[15px] text-ink-muted">{PRICE_CAPTION}</p>

@@ -191,12 +191,12 @@ describe("PreorderForm", () => {
     const { container } = render(
       <PreorderForm tier="ideabaaz" signature="sig" amountLabel="₹99" balanceLabel="₹4,900" />,
     );
-    expect(container.textContent).toMatch(/₹4,900 when your Lumi is ready to ship/);
+    expect(container.textContent).toMatch(/₹4,900 when your Kheelu is ready to ship/);
     expect(container.textContent).not.toContain("₹4,500");
   });
 
   it("keeps the public ₹4,500 caption when no balance is passed", () => {
     const { container } = render(<PreorderForm tier="launch" amountLabel="₹499" />);
-    expect(container.textContent).toMatch(/₹4,500 when your Lumi is ready to ship/);
+    expect(container.textContent).toMatch(/₹4,500 when your Kheelu is ready to ship/);
   });
 });

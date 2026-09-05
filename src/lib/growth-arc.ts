@@ -19,7 +19,7 @@ export type GrowthStage = {
   body: string;
 };
 
-/** The year-by-year answer to "what will a kid who gets Lumi at 3 have by
+/** The year-by-year answer to "what will a kid who gets Kheelu at 3 have by
  *  school" (the parent feedback that drove BUILD-V6, re-anchored at 3 by the
  *  founder's ages-3+ decision of 2026-08-23 — that decision IS the spec change
  *  BUILD-V6 D2 requires). Every claim traces to published copy; the 5-years
@@ -29,12 +29,12 @@ export const GROWTH_ARC: readonly GrowthStage[] = [
   {
     kicker: "At 3 years",
     title: "Asking why, and why again.",
-    body: "Why is the sky blue? Lumi answers the fourth why with the same patience as the first, then asks one back. Every answered why teaches your child that asking is worth it.",
+    body: "Why is the sky blue? Kheelu answers the fourth why with the same patience as the first, then asks one back. Every answered why teaches your child that asking is worth it.",
   },
   {
     kicker: "At 4 years",
     title: "Playing with ideas.",
-    body: "Thinking games, counting the apples a squirrel ran off with, naming a big feeling instead of hiding it. Lumi remembers where your child stopped yesterday and starts one small step further.",
+    body: "Thinking games, counting the apples a squirrel ran off with, naming a big feeling instead of hiding it. Kheelu remembers where your child stopped yesterday and starts one small step further.",
   },
   {
     kicker: "At 5 years",
@@ -44,13 +44,13 @@ export const GROWTH_ARC: readonly GrowthStage[] = [
   {
     kicker: "Every year after",
     title: "Growing right alongside.",
-    body: "The questions grow up, and Lumi grows with them: longer stories, bigger ideas, the next language. It remembers the child it met at 3, and keeps starting one small step further.",
+    body: "The questions grow up, and Kheelu grows with them: longer stories, bigger ideas, the next language. It remembers the child it met at 3, and keeps starting one small step further.",
   },
 ];
 
 /** Pre-empts the skeptical parent's "every child is different". */
 export const GROWTH_HEDGE =
-  "Every child grows at their own pace. Lumi follows theirs.";
+  "Every child grows at their own pace. Kheelu follows theirs.";
 
 /** The old hero's idea, de-confused and re-homed (BUILD-V6 §1). */
 export const GROWTH_CLOSING =

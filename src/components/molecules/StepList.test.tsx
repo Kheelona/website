@@ -3,7 +3,7 @@ import { StepList, type Step } from "./StepList";
 
 const steps: Step[] = [
   { title: "Open the box", body: "Everything is inside." },
-  { title: "Say hello", body: "Lumi wakes up." },
+  { title: "Say hello", body: "Kheelu wakes up." },
 ];
 
 describe("StepList", () => {
@@ -29,7 +29,7 @@ describe("StepList", () => {
     expect(
       screen.getByRole("heading", { level: 2, name: "Open the box" }),
     ).toBeInTheDocument();
-    expect(screen.getByText("Lumi wakes up.")).toBeInTheDocument();
+    expect(screen.getByText("Kheelu wakes up.")).toBeInTheDocument();
   });
 
   it("keeps body-less statements out of the heading outline", () => {

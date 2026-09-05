@@ -48,7 +48,7 @@ export function OrderSummary({
           },
           {
             head: "Refundable in full",
-            note: "Ask any time before we dispatch your Lumi, and no reason needed.",
+            note: "Ask any time before we dispatch your Kheelu, and no reason needed.",
             mark: 2,
           },
           {
@@ -66,7 +66,7 @@ export function OrderSummary({
           },
           {
             head: "Refundable in full",
-            note: "Ask any time before we dispatch your Lumi, and no reason needed.",
+            note: "Ask any time before we dispatch your Kheelu, and no reason needed.",
             mark: 2,
           },
           {

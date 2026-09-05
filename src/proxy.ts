@@ -16,7 +16,7 @@ import { THANKS_COOKIE, THANKS_COOKIE_MAX_AGE_SECONDS } from "@/lib/store/thanks
  *
  *  That header: the store is `noindex`. It is a transactional endpoint, not a
  *  content property, and letting it into the index would put a thin checkout page
- *  in competition with /products/lumi, which is the page a year of SEO work went
+ *  in competition with /products/kheelu, which is the page a year of SEO work went
  *  into. The store's job is to convert traffic the marketing site already earned. */
 export function proxy(request: NextRequest) {
   const host = request.headers.get("host") ?? "";

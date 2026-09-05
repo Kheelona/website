@@ -12,14 +12,14 @@ describe("Family (Home pipeline room)", () => {
     ).toBeInTheDocument();
   });
 
-  it("shows the three pipeline bodies with Lumi as the only link", () => {
+  it("shows the three pipeline bodies with Kheelu as the only link", () => {
     render(<Family />);
-    for (const name of ["Lumi", "Kheelu Speaker", "AI books"]) {
+    for (const name of ["Kheelu", "Kheelu Speaker", "AI books"]) {
       expect(screen.getByRole("heading", { name })).toBeInTheDocument();
     }
     const links = screen.getAllByRole("link");
     expect(links.length).toBe(1);
-    expect(links[0]).toHaveAttribute("href", "/products/lumi");
+    expect(links[0]).toHaveAttribute("href", "/products/kheelu");
   });
 
   it("marks the two unbuilt bodies as coming soon", () => {

@@ -4,8 +4,8 @@ import { Button } from "./Button";
 
 describe("Button", () => {
   it("renders as a crawlable link with its label and href", () => {
-    render(<Button href="/reserve">Reserve Lumi</Button>);
-    const link = screen.getByRole("link", { name: "Reserve Lumi" });
+    render(<Button href="/reserve">Reserve Kheelu</Button>);
+    const link = screen.getByRole("link", { name: "Reserve Kheelu" });
     expect(link).toBeInTheDocument();
     expect(link).toHaveAttribute("href", "/reserve");
   });
@@ -35,7 +35,7 @@ describe("Button", () => {
   });
 
   it("holds one line from sm up but wraps below it, so long labels stay on screen", () => {
-    render(<Button href="#">See the parent app on the Lumi page</Button>);
+    render(<Button href="#">See the parent app on the Kheelu page</Button>);
     const cls = screen.getByRole("link").className;
     expect(cls).toContain("whitespace-nowrap");
     expect(cls).toContain("max-sm:whitespace-normal");

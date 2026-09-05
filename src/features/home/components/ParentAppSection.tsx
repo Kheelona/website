@@ -58,7 +58,7 @@ export function ParentAppSection({
           {/* R11 audit: orange-deep is ~3.9:1 on the cream wash; orange-ink
               was minted for non-white washes (4.5:1 everywhere) */}
           <Link
-            href="/products/lumi"
+            href="/products/kheelu"
             className="inline-flex items-center gap-1.5 rounded font-bold text-orange-ink underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
           >
             See what the app shows you

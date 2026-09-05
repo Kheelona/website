@@ -6,7 +6,7 @@ import { FamilyGrid } from "@/components/organisms/FamilyGrid";
  *
  *  This is the story the YC application tells and the category cannot answer:
  *  one friend, many bodies, and the child's memory carries across all of them.
- *  Lumi is the body you can reserve today; the Kheelu Speaker and AI books show
+ *  Kheelu is the body you can reserve today; the Kheelu Speaker and AI books show
  *  the arc that makes the purchase outlast the toy — the gap every shelf-mate
  *  leaves open (benchmarks-v3.md). Cards live in the shared FamilyGrid, which
  *  /playos also renders, so the lineup can never drift. */
@@ -17,7 +17,7 @@ export function Family() {
         <SectionHeading
           title="One friend inside. More friends on the way."
           titleClassName="mb-4 max-w-[20ch]"
-          lede="The same friend lives inside everything we make, and it remembers your child across all of it. Lumi is here first. The Kheelu Speaker and AI books follow."
+          lede="The same friend lives inside everything we make, and it remembers your child across all of it. Kheelu is here first. The Kheelu Speaker and AI books follow."
           ledeClassName="mb-2 max-w-[58ch]"
         />
         <p className="mb-10 font-display text-[18px] font-bold text-ink-head">

@@ -18,7 +18,7 @@ import { KHEELONA_PLUS_LINE } from "@/config/site";
  *  Composition mirrors the /playos one-prompt band, deliberately: parents meet
  *  the same shape for "here is a thing you should know" on every page.
  *  `footnote` mounts the small-print marker on pages that render FootnotesRow
- *  (Home and /products/lumi). */
+ *  (Home and /products/kheelu). */
 export function KheelonaPlusBand({
   footnote,
   className,

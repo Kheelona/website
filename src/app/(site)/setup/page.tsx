@@ -10,9 +10,9 @@ import { SETUP_STEPS } from "@/lib/setup-steps";
 import { pageGraph, setupHowTo, breadcrumbs, pageMeta, jsonLd } from "@/lib/seo";
 
 export const metadata = pageMeta({
-  title: "Setup: day one with Lumi",
+  title: "Setup: day one with Kheelu",
   description:
-    "How simple day one will be: charge Lumi, open the parent app, set your languages and topics, and let your child say hello.",
+    "How simple day one will be: charge Kheelu, open the parent app, set your languages and topics, and let your child say hello.",
   path: "/setup",
 });
 
@@ -51,7 +51,7 @@ export default function SetupPage() {
           eyebrow="Day one"
           title="Day one takes minutes."
           titleClassName="mb-5"
-          lede="Four steps, no manual required. Lumi is made for homes, not IT departments."
+          lede="Four steps, no manual required. Kheelu is made for homes, not IT departments."
           ledeClassName="max-w-[56ch]"
         />
       </PageHero>
@@ -64,7 +64,7 @@ export default function SetupPage() {
             {/* TODO(claims-specs): add wake word + charger details when final. */}
             <p className="max-w-[62ch] text-[16px] text-ink-muted">
               The exact wake word and charger details will be published here
-              with the final specs, before Lumi ships.
+              with the final specs, before Kheelu ships.
             </p>
           </Reveal>
         </Room>
@@ -74,7 +74,7 @@ export default function SetupPage() {
           id="reserve"
           guide="silly"
           /* GATED:kheelu-line */
-          say="Save your spot. I'll mind Lumi till launch."
+          say="Save your spot. I'll mind Kheelu till launch."
           reveal="pop"
           className="overflow-x-clip"
         >

@@ -12,12 +12,12 @@ import { KHEELU_POSES, kheeluPoseSrc } from "@/lib/kheelu-poses";
  *  desktop (no CLS). All behaviours here are already published product
  *  facts — no new claims. */
 const MOMENTS = [
-  { label: "Morning", text: "Why is the sky blue? Lumi answers, then asks one back." },
+  { label: "Morning", text: "Why is the sky blue? Kheelu answers, then asks one back." },
   { label: "After playschool", text: "A new story, made to order." },
   { label: "Counting time", text: "Numbers and rhymes that feel like a game." },
   { label: "Evening", text: "Songs you grew up with, and new ones too." },
   /* V6 D4c: mode-precise (founder-licensed fact — AI mode needs home WiFi). */
-  { label: "On the train", text: "No signal? Kheelu-mode stories still play." },
+  { label: "On the train", text: "No signal? Story-mode stories still play." },
   { label: "Bedtime", text: "One last story, lights low." },
 ] as const;
 

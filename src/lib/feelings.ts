@@ -20,7 +20,7 @@ export const FEELINGS: readonly Feeling[] = [
     name: "Curious",
     line: "Asks why. Chases ideas. Wants to know what is around the corner.",
     detail:
-      "When your child asks why, Lumi answers in words they understand, then wonders with them. One why becomes three, and that is the point.",
+      "When your child asks why, Kheelu answers in words they understand, then wonders with them. One why becomes three, and that is the point.",
     pose: "curious",
     card: "bg-blue/15",
     tick: "bg-blue",
@@ -30,7 +30,7 @@ export const FEELINGS: readonly Feeling[] = [
     name: "Grumpy",
     line: "Names the hard feeling instead of hiding it.",
     detail:
-      "Lumi does not scold and does not rush. It listens until the storm has room to pass, and helps your child put a name to it.",
+      "Kheelu does not scold and does not rush. It listens until the storm has room to pass, and helps your child put a name to it.",
     pose: "grumpy",
     card: "bg-orange/15",
     tick: "bg-orange",
@@ -40,7 +40,7 @@ export const FEELINGS: readonly Feeling[] = [
     name: "Sad",
     line: "Sits with you. Does not rush past. Makes space for the hard moments.",
     detail:
-      "Some days are heavy. Lumi stays close, keeps its voice low, and lets your child take their time.",
+      "Some days are heavy. Kheelu stays close, keeps its voice low, and lets your child take their time.",
     pose: "bliss",
     card: "bg-blue/15",
     tick: "bg-blue",
@@ -60,7 +60,7 @@ export const FEELINGS: readonly Feeling[] = [
     name: "Joy",
     line: "Celebrates the small wins out loud.",
     detail:
-      "Small wins feel big when a friend cheers. Lumi remembers what your child is proud of.",
+      "Small wins feel big when a friend cheers. Kheelu remembers what your child is proud of.",
     pose: "joy",
     card: "bg-orange/15",
     tick: "bg-orange",

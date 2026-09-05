@@ -6,7 +6,7 @@ import {
   BALANCE_PRICE,
   STORE_URL,
   TAX_LINE,
-  LUMI_AGES,
+  KHEELU_AGES,
   LANGUAGES_LINE,
   SHIP_DATE_TEXT,
 } from "@/config/site";
@@ -24,11 +24,11 @@ import {
  *  amount. */
 export const dynamic = "force-static";
 
-const BODY = `# Pricing: Lumi by Kheelona
+const BODY = `# Pricing: Kheelu by Kheelona
 
 Market: India. Currency: INR. Stage: pre-order, taking a refundable token.
 
-## Lumi (the talking toy, ages ${LUMI_AGES})
+## Kheelu (the talking toy, ages ${KHEELU_AGES})
 
 - Pre-order price: ${LAUNCH_PRICE}, for the ${CAP_UNITS_TEXT}
 - Price once they are gone: ${FULL_PRICE}, paid in full at pre-order
@@ -36,15 +36,15 @@ Market: India. Currency: INR. Stage: pre-order, taking a refundable token.
 - Balance on a ${TOKEN_PRICE} reservation: ${BALANCE_PRICE}, due by payment link when your unit is ready to dispatch
 - Taxes: ${TAX_LINE} The published price is what a buyer pays.
 - Delivery: included, anywhere in India. No charge is added at any step.
-- Included with every Lumi: 6 months of Kheelona+
+- Included with every Kheelu: 6 months of Kheelona+
 - Shipping starts ${SHIP_DATE_TEXT}. Pre-orders are served first, in the order they were placed.
 - Where to pre-order: ${STORE_URL}
 
 ## Kheelona+ (the content and the controls)
 
 - What it is: stories, lessons, language packs, and the parent app that shows you every conversation
-- Included free for the first 6 months with every Lumi
-- Pricing after the included months: announced soon. Lumi's smart features are yours for life.
+- Included free for the first 6 months with every Kheelu
+- Pricing after the included months: announced soon. Kheelu's smart features are yours for life.
 - Renewal: nothing renews without the parent
 
 ## Also in the family (not yet purchasable)
@@ -54,12 +54,12 @@ Market: India. Currency: INR. Stage: pre-order, taking a refundable token.
 
 ## What you get for the price
 
-- Three modes in one toy: AI mode (open conversation), Kheelu mode (stories and lessons that quiz back, offline), Bluetooth mode (pair a phone and Lumi is the speaker)
-- Languages: ${LANGUAGES_LINE}, with up to 10 at launch. Lumi switches mid-sentence.
+- Three modes in one toy: AI mode (open conversation), Story mode (stories and lessons that quiz back, offline), Bluetooth mode (pair a phone and Kheelu is the speaker)
+- Languages: ${LANGUAGES_LINE}, with up to 10 at launch. Kheelu switches mid-sentence.
 - No screen, and no access to the open internet
 - A parent app with the full conversation log, topic controls, quiet hours, and one-tap deletion
 
-Last updated: July 2026. Canonical page: https://kheelona.com/products/lumi
+Last updated: July 2026. Canonical page: https://kheelona.com/products/kheelu
 `;
 
 export function GET() {

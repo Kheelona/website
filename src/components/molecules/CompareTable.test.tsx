@@ -2,11 +2,11 @@ import { render, screen } from "@testing-library/react";
 import { CompareTable } from "./CompareTable";
 
 describe("CompareTable", () => {
-  it("renders the comparison grid with the Lumi column", () => {
+  it("renders the comparison grid with the Kheelu column", () => {
     render(<CompareTable />);
     expect(screen.getByRole("table")).toBeInTheDocument();
     expect(
-      screen.getByRole("columnheader", { name: "Lumi" }),
+      screen.getByRole("columnheader", { name: "Kheelu" }),
     ).toBeInTheDocument();
   });
 
@@ -44,7 +44,7 @@ describe("CompareTable", () => {
     expect(stack!.querySelectorAll("li").length).toBe(6);
     // each card names every column, so nothing compared against is off-screen
     const first = stack!.querySelector("li")!;
-    for (const col of ["Lumi", "Smart toys", "Phone or TV", "Ordinary toys"]) {
+    for (const col of ["Kheelu", "Smart toys", "Phone or TV", "Ordinary toys"]) {
       expect(first.textContent).toContain(col);
     }
   });

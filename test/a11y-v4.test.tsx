@@ -35,7 +35,7 @@ describe("V4 a11y (axe-core)", () => {
       <HowItWorksLoop
         steps={[
           { title: "Talk and play", label: "Step 1", body: "Questions and games." },
-          { title: "Lumi remembers", label: "Step 2 · Adaptive memory", body: "Vocabulary and pace." },
+          { title: "Kheelu remembers", label: "Step 2 · Adaptive memory", body: "Vocabulary and pace." },
           { title: "Knowledge that sticks", label: "Step 3 · Real-world learning", body: "Ideas in conversation." },
         ]}
         repeatNote="Then it begins again."

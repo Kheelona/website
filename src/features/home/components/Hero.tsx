@@ -1,11 +1,11 @@
 import { Button } from "@/components/atoms/Button";
 import { Reveal } from "@/components/molecules/Reveal";
 import { HeroStage } from "./HeroStage";
-import { PREORDER_HREF, PREORDER_LABEL, PREORDER_OFFER_LINES, LUMI_AGES } from "@/config/site";
+import { PREORDER_HREF, PREORDER_LABEL, PREORDER_OFFER_LINES, KHEELU_AGES } from "@/config/site";
 import { HERO_PROMISE } from "@/lib/growth-arc";
 
 /** Revamp M2 hero (theme B + founder brief pointer 2): minimal copy on the
- *  left, the Kheelu-talks-to-Lumi stage on the right. Sits directly on the
+ *  left, the Kheelu-talks-to-Kheelu stage on the right. Sits directly on the
  *  SiteBackdrop (no wash) so the page opens INSIDE the world. The hero
  *  greets through the persistent guide via data-say (GATED:kheelu-line).
  *  V4 (team feedback 2026-07-30, founder decision D2): the tutor positioning
@@ -25,7 +25,7 @@ export function Hero() {
       <div className="mx-auto grid w-full max-w-[1180px] items-center gap-8 px-[clamp(20px,5vw,64px)] py-8 md:min-h-[560px] md:grid-cols-[1.02fr_0.98fr] md:py-10">
         <Reveal mode="rise" className="py-4 md:py-10">
           <span className="mb-5 inline-block rounded-full bg-orange/15 px-4 py-2 text-sm font-bold uppercase tracking-[0.08em] text-ink-head">
-            For ages {LUMI_AGES}
+            For ages {KHEELU_AGES}
           </span>
           {/* V6 hero (BUILD-V6 D1), re-anchored 2026-08-23 by founder decision
               #8 (ages 3+): the outcome arc still answers "what does my kid end
@@ -45,7 +45,7 @@ export function Hero() {
             <span className="block text-action-ink">{promiseLater}</span>
           </h1>
           <p className="mb-7 max-w-[42ch] text-[clamp(17px,1.5vw,20px)] text-ink">
-            Lumi listens, remembers, and grows with your child. Stories,
+            Kheelu listens, remembers, and grows with your child. Stories,
             numbers, and the languages you speak at home, at their pace.
           </p>
           <div className="flex flex-wrap items-center gap-3">

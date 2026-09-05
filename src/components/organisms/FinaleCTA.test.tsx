@@ -6,7 +6,7 @@ describe("FinaleCTA", () => {
   it("renders the pre-order headline and the price ask inside a #reserve section", () => {
     const { container } = render(<FinaleCTA />);
     expect(
-      screen.getByRole("heading", { name: /Pre-order Lumi before the price goes up/i }),
+      screen.getByRole("heading", { name: /Pre-order Kheelu before the price goes up/i }),
     ).toBeInTheDocument();
     // V6 D11: the lede is exactly the offer line + the hold promise — one
     // wording, one source, no drift between the price surfaces.

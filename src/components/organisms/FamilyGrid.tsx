@@ -18,7 +18,7 @@ import { LAUNCH_PRICE } from "@/config/site";
  *  products. Members without art yet (gate V3-c) render a calm placeholder
  *  instead of a stand-in render that could be mistaken for the real product.
  *
- *  Lumi's card is a whole-card link, so it carries NO tilt (hard rule, §8.18:
+ *  Kheelu's card is a whole-card link, so it carries NO tilt (hard rule, §8.18:
  *  a surface that moves under the cursor drops clicks). */
 export function FamilyGrid({ className }: { className?: string }) {
   return (
@@ -35,8 +35,8 @@ export function FamilyGrid({ className }: { className?: string }) {
         <Reveal as="li" key={m.name} delay={i * 0.06} className="relative">
           {m.here ? (
             <Link
-              href="/products/lumi"
-              aria-label={`Lumi: meet the friend who listens and reserve at ${LAUNCH_PRICE}`}
+              href="/products/kheelu"
+              aria-label={`Kheelu: meet the friend who listens and reserve at ${LAUNCH_PRICE}`}
               className={`block h-full overflow-hidden rounded-(--radius-card) border border-line bg-white ${PRESS_LIFT} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2`}
             >
               <FamilyCardInner member={m} />

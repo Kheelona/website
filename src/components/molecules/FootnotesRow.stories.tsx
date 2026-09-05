@@ -18,8 +18,8 @@ export const WithMarkerInCopy: Story = {
   render: (args) => (
     <div className="space-y-8">
       <p className="text-[17px]">
-        Lumi talks in up to 10 home languages
-        <Footnote n={1} id="fn-languages" />, and every Lumi includes 6 months of Kheelona+
+        Kheelu talks in up to 10 home languages
+        <Footnote n={1} id="fn-languages" />, and every Kheelu includes 6 months of Kheelona+
         <Footnote n={2} id="fn-kheelona-plus" />.
       </p>
       <FootnotesRow {...args} />

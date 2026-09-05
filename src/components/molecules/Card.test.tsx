@@ -3,11 +3,11 @@ import { Card } from "./Card";
 
 describe("Card", () => {
   it("renders its title as a heading and its children", () => {
-    render(<Card title="In the box">One Lumi plush.</Card>);
+    render(<Card title="In the box">One Kheelu plush.</Card>);
     expect(
       screen.getByRole("heading", { name: "In the box" }),
     ).toBeInTheDocument();
-    expect(screen.getByText("One Lumi plush.")).toBeInTheDocument();
+    expect(screen.getByText("One Kheelu plush.")).toBeInTheDocument();
   });
 
   it("omits the heading when no title is given", () => {

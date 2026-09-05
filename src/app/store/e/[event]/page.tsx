@@ -3,13 +3,13 @@ import { notFound } from "next/navigation";
 import { storeEnv } from "@/lib/store/env";
 import { resolveTier, tierRefusalMessage } from "@/lib/store/tiers";
 import { PreorderForm, OrderSummary } from "@/features/preorder";
-import { LUMI_ART } from "@/lib/lumi-art";
+import { KHEELU_ART } from "@/lib/kheelu-art";
 import {
   formatInr,
   LAUNCH_AMOUNT_PAISE,
   LAUNCH_PRICE,
   SHIP_DATE_TEXT,
-  LUMI_AGES,
+  KHEELU_AGES,
   SUPPORT_WHATSAPP_HREF,
 } from "@/config/site";
 
@@ -79,14 +79,14 @@ export default async function EventPage({
               {result.tier.label}
             </p>
             <h1 className="max-w-[20ch] font-display text-[clamp(30px,4vw,44px)] font-extrabold leading-[1.08] text-ink-head">
-              Reserve Lumi for {amountLabel}.
+              Reserve Kheelu for {amountLabel}.
             </h1>
           </div>
           <Image
-            src={LUMI_ART.src}
-            alt={LUMI_ART.alt}
-            width={LUMI_ART.width}
-            height={LUMI_ART.height}
+            src={KHEELU_ART.src}
+            alt={KHEELU_ART.alt}
+            width={KHEELU_ART.width}
+            height={KHEELU_ART.height}
             priority
             sizes="(max-width: 768px) 30vw, 200px"
             className="h-[120px] w-auto shrink-0 md:h-[180px]"
@@ -94,7 +94,7 @@ export default async function EventPage({
         </div>
 
         <p className="mb-8 max-w-[52ch] text-[17px] leading-[1.6] text-ink">
-          A screen-free talking friend for ages {LUMI_AGES}. {amountLabel} today
+          A screen-free talking friend for ages {KHEELU_AGES}. {amountLabel} today
           holds one at {LAUNCH_PRICE}, ships {SHIP_DATE_TEXT}, and is refundable
           in full until it does.
         </p>

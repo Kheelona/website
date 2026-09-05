@@ -10,7 +10,7 @@ import { signAddressToken, ADDRESS_TOKEN_TTL_MS } from "./signing";
  * The hand-off that keeps an order's credential out of the URL (F-01).
  *
  * An address token authorises reading one family's confirmation and changing
- * where their Lumi is delivered, for thirty days. It used to ride in the query
+ * where their Kheelu is delivered, for thirty days. It used to ride in the query
  * string of a page that loads three analytics tags, each of which reports the
  * URL it loaded on. This module is the boundary that fixed that, so what it
  * accepts and refuses is worth pinning: a value that reaches a Set-Cookie

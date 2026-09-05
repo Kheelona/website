@@ -64,6 +64,7 @@ const RETIRED: readonly [RegExp, string][] = [
    *
    *   /products/lumi  "Do I have to pay anything now?" -> "No."   (also in JSON-LD)
    *   /products/lumi  "Reserving now does not commit you to buy."
+   *   (that route is /products/kheelu since the 2026-09-05 rename)
    *   3 articles      "the pre-order list is open, and joining costs nothing"
    *   4 articles      "the pre-order list is open"
    *

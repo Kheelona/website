@@ -53,7 +53,7 @@ export function FootnotesRow({
   );
 }
 
-/** The two site-wide notes (V3). Home and /products/lumi mount these; no other
+/** The two site-wide notes (V3). Home and /products/kheelu mount these; no other
  *  page has a claim that needs one. Adding a third means a new claim — check it
  *  against the never-invent-claims law first. */
 export const V3_FOOTNOTES: readonly FootnoteItem[] = [
@@ -65,6 +65,6 @@ export const V3_FOOTNOTES: readonly FootnoteItem[] = [
   },
   {
     id: "fn-kheelona-plus",
-    text: "Kheelona+: included free for 6 months with every Lumi; pricing after that is announced soon. Lumi's smart features are yours for life, and nothing renews without you.",
+    text: "Kheelona+: included free for 6 months with every Kheelu; pricing after that is announced soon. Kheelu's smart features are yours for life, and nothing renews without you.",
   },
 ];

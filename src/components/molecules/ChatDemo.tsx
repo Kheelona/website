@@ -5,19 +5,19 @@ import { cn } from "@/lib/cn";
  *  choreography: the BASE state is the finished conversation, so no-JS,
  *  crawlers, reduced-motion, and phones all see it at rest; bubbles animate
  *  in (staggered) only for motion-friendly desktop visitors
- *  (.chat-demo-bubble in globals.css). Lumi's quoted toy speech keeps its
+ *  (.chat-demo-bubble in globals.css). Kheelu's quoted toy speech keeps its
  *  natural contractions — same exemption class as Kheelu lines. */
-export type ChatTurn = { who: "child" | "lumi"; text: string };
+export type ChatTurn = { who: "child" | "kheelu"; text: string };
 
 /** The founder-picked moon exchange (wireframe copy.json). */
 export const MOON_EXCHANGE: readonly ChatTurn[] = [
-  { who: "child", text: "Lumi, why is the moon following us?" },
+  { who: "child", text: "Kheelu, why is the moon following us?" },
   {
-    who: "lumi",
+    who: "kheelu",
     text: "It looks that way, doesn't it? The moon is very far away. Where are you off to?",
   },
   { who: "child", text: "To grandma's house!" },
-  { who: "lumi", text: "Then the moon gets to meet her too." },
+  { who: "kheelu", text: "Then the moon gets to meet her too." },
 ] as const;
 
 export function ChatDemo({
@@ -30,7 +30,7 @@ export function ChatDemo({
   return (
     <div
       role="log"
-      aria-label="A sample conversation between a child and Lumi"
+      aria-label="A sample conversation between a child and Kheelu"
       className={cn(
         "flex flex-col gap-2.5 rounded-(--radius-card-lg) border border-line bg-white/75 p-5",
         className,
@@ -49,7 +49,7 @@ export function ChatDemo({
               the one kicker language for small uppercase labels (founder call
               at the handoff review). */}
           <p className="mb-0.5 text-[12px] font-bold uppercase tracking-wider text-orange-ink">
-            {t.who === "child" ? "Your child" : "Lumi"}
+            {t.who === "child" ? "Your child" : "Kheelu"}
           </p>
           <p className="text-[16px] leading-snug text-ink">{t.text}</p>
         </div>

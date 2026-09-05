@@ -9,7 +9,7 @@ import {
   TOKEN_PRICE,
   BALANCE_PRICE,
   LAUNCH_PRICE,
-  LUMI_AGES,
+  KHEELU_AGES,
   SUPPORT_WHATSAPP_HREF,
 } from "@/config/site";
 import {
@@ -196,13 +196,13 @@ export function PreorderForm({
         error={errors.email}
       />
       {/* A blank, not a picker, since 2026-08-23 (founder call). Ages render
-          from LUMI_AGES per standing law, never inline. */}
+          from KHEELU_AGES per standing law, never inline. */}
       <TextField
         label="Your child's age"
         name="childAge"
         required
         maxLength={CHILD_AGE_MAX}
-        hint={`Lumi is built for ages ${LUMI_AGES}. A number is fine, and so is "nearly 3".`}
+        hint={`Kheelu is built for ages ${KHEELU_AGES}. A number is fine, and so is "nearly 3".`}
         error={errors.childAge}
       />
 
@@ -245,7 +245,7 @@ export function PreorderForm({
       <p className="text-[14px] leading-[1.55] text-ink-muted">
         {mode === "token" ? (
           <>
-            {amountLabel} today, {balanceLabel} when your Lumi is ready to
+            {amountLabel} today, {balanceLabel} when your Kheelu is ready to
             ship, for the {LAUNCH_PRICE} price. Refundable in full until we
             dispatch it. We never see your card details, and nothing is ever
             charged automatically.

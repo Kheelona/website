@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { fbTrack, whenFbqReady } from "@/lib/fbq";
 import { LAUNCH_AMOUNT_PAISE } from "@/config/site";
 
-/** Reports a Meta `ViewContent` for Lumi, once per page view (§8.30-j).
+/** Reports a Meta `ViewContent` for Kheelu, once per page view (§8.30-j).
  *
  *  This is the top of the advertising funnel: the people who read the product
  *  page are the retargeting audience worth spending on, and the gap between
@@ -12,7 +12,7 @@ import { LAUNCH_AMOUNT_PAISE } from "@/config/site";
  *  intent. It renders nothing.
  *
  *  ⚑ THE VALUE IS THE HEADLINE UNIT PRICE, AND IT IS DELIBERATELY STALE-ABLE
- *  (founder, 2026-09-01). It reports what Lumi costs, ₹4,999, not what the
+ *  (founder, 2026-09-01). It reports what Kheelu costs, ₹4,999, not what the
  *  checkout collects (a ₹499 token) — the two answer different questions, and
  *  for a browsing event the product's own price is the honest one.
  *
@@ -49,7 +49,7 @@ export function ViewContentTracker() {
 
     return whenFbqReady(() =>
       fbTrack("ViewContent", {
-        content_name: "Lumi",
+        content_name: "Kheelu",
         content_ids: ["lumi"],
         content_type: "product",
         value: LAUNCH_AMOUNT_PAISE / 100,

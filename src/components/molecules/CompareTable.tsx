@@ -1,16 +1,16 @@
 /** The honest comparison table. Revamp M2 (founder brief pointer 6): same
  *  verdicts, parent words instead of technical ones, the growth row now carrying
  *  the V3 age arc (2 to 14 with the family),
- *  "Static toys" renamed for humans. The Lumi column fills with the semantic
+ *  "Static toys" renamed for humans. The Kheelu column fills with the semantic
  *  action token (white 4.66:1); raw brand orange stays decorative-only.
  *
  *  M4 mobile pass: below `sm` the table becomes a STACK, one card per claim.
  *  A 640px-wide table inside a phone-width room could only ever be a sideways
- *  scroll with no affordance: parents saw the claims and Lumi's column with
+ *  scroll with no affordance: parents saw the claims and Kheelu's column with
  *  "Yes, up to 10" sliced mid-word, and the three toys being compared against
  *  sat off-screen entirely. Both views read from ROWS, so a verdict can never
  *  disagree with itself, and only one is ever in the DOM's a11y tree. */
-const COLUMNS = ["Lumi", "Smart toys", "Phone or TV", "Ordinary toys"] as const;
+const COLUMNS = ["Kheelu", "Smart toys", "Phone or TV", "Ordinary toys"] as const;
 
 const ROWS = [
   ["No screen, ever", "Yes", "Varies", "No", "Yes"],
@@ -18,7 +18,7 @@ const ROWS = [
   ["Speaks the languages of your home", "Yes, up to 10", "Rarely", "Varies", "No"],
   ["Cannot wander the internet", "Yes", "Rarely", "No", "Yes"],
   ["You can read every conversation", "Yes", "Partial", "Partial", "No"],
-  /* V3: the row that carries the pipeline story (Lumi from 3, the Kheelu
+  /* V3: the row that carries the pipeline story (Kheelu from 3, the Kheelu
      Speaker onward, books across) — the age arc IS the differentiator the
      category cannot match (benchmarks-v3.md: MyWonder's clearest gap). No
      published ceiling since the 3+ repositioning (2026-08-23). */
@@ -28,7 +28,7 @@ const ROWS = [
 export function CompareTable() {
   return (
     <>
-      {/* Phones: one card per claim, Lumi's answer first and loudest */}
+      {/* Phones: one card per claim, Kheelu's answer first and loudest */}
       <ul className="flex flex-col gap-4 sm:hidden">
         {ROWS.map(([claim, ...values]) => (
           <li

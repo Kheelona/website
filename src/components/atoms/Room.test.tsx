@@ -3,8 +3,8 @@ import { Room } from "./Room";
 
 describe("Room", () => {
   it("renders its children in a white panel by default", () => {
-    render(<Room>Reserve Lumi</Room>);
-    const el = screen.getByText("Reserve Lumi").closest("section")!;
+    render(<Room>Reserve Kheelu</Room>);
+    const el = screen.getByText("Reserve Kheelu").closest("section")!;
     expect(el.className).toContain("bg-white");
     expect(el.className).toContain("rounded-(--radius-room)");
   });
