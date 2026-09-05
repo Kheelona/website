@@ -21,11 +21,7 @@ import { THANKS_PATH, formatThanksSession } from "./thanks-session";
  *  rather than booting a server. */
 
 export type HostRoute =
-  /** `status` is set only when the proxy already knows the path is not a page
-   *  (§8.34-a). Next cannot supply a 404 that renders: a thrown `notFound()`
-   *  answers with an empty document, so the status is attached to the rewrite
-   *  here and the page itself just renders. */
-  | { kind: "rewrite"; path: string; status?: number }
+  | { kind: "rewrite"; path: string }
   | { kind: "redirect"; url: string }
   /** Take the confirmation credential out of the URL and into a cookie, then
    *  send the browser to the clean path (F-01, see thanks-session.ts). */
@@ -40,28 +36,6 @@ export function isStoreHost(host: string): boolean {
   return name === "store.kheelona.com" || name === "store.localhost";
 }
 
-/** Every page that exists on the store host, written the way a visitor types
- *  it. Anything else is a 404, and the proxy has to know that BEFORE Next
- *  resolves the route (§8.34-a).
- *
- *  This duplicates what the folders under `src/app/store/` already say, which
- *  is a real cost on the host that takes money: get it wrong in the tightening
- *  direction and a live checkout page 404s. `test/store-host.test.ts` walks
- *  those folders and fails if a page exists that this list does not admit, so
- *  the drift is caught by the suite rather than by a customer. */
-const STORE_PAGES: readonly RegExp[] = [
-  /^\/$/,
-  /^\/thanks$/,
-  /^\/ideabaaz$/,
-  /^\/e\/[^/]+$/,
-];
-
-/** Exported for the guard test, which is the only thing keeping the list above
- *  honest. */
-export function isStorePage(pathname: string): boolean {
-  return STORE_PAGES.some((route) => route.test(pathname));
-}
-
 export function routeForHost(host: string, pathname: string, search = ""): HostRoute {
   if (isStoreHost(host)) {
     /* The one URL on this host that carries a credential. It is consumed on
@@ -74,17 +48,19 @@ export function routeForHost(host: string, pathname: string, search = ""): HostR
       const session = formatThanksSession(params.get("ref") ?? "", params.get("t") ?? "");
       if (session) return { kind: "claim", path: THANKS_PATH, session };
     }
-    /* The rewrite target does not change for a missing page — the catch-all
-       under /store renders the store's own 404 inside the store chrome. What
-       changes is the status, which only this function is in a position to
-       know. That also covers the doubled-prefix trap: /store and /store/thanks
-       are not store pages, so they 404 here rather than quietly serving the
-       home page from a URL nobody should link to. */
+    /* Everything else, real page or not, rewrites the same way. A path with no
+       page behind it lands on the /store catch-all, which renders the store's
+       own not-found inside the store chrome — including the doubled-prefix
+       trap, where /store becomes /store/store and matches nothing.
+
+       It answers 200 rather than 404, and that is a Vercel constraint rather
+       than a preference (§8.34-f): a middleware rewrite carrying a 4xx status
+       has its DESTINATION discarded at the edge, and Vercel serves its own
+       /404 — which on this host is the marketing site's. Chrome that fits the
+       host beat a status nothing reads, on a host that is noindex, nofollow
+       and absent from the sitemap. */
     const suffix = pathname === "/" ? "" : pathname;
-    const path = `/store${suffix}${search}`;
-    return isStorePage(pathname)
-      ? { kind: "rewrite", path }
-      : { kind: "rewrite", path, status: 404 };
+    return { kind: "rewrite", path: `/store${suffix}${search}` };
   }
 
   if (pathname === "/store" || pathname.startsWith("/store/")) {

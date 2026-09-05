@@ -102,10 +102,9 @@ any screenshot of the home page.*
       misleading today — but "try again in a minute" is the right thing to say for an outage and we
       cannot say it. Wants the `error` half of the Supabase response read, on the payment path, so
       it is its own commit.
-- [ ] **`STORE_PAGES` in `lib/store/host.ts` now restates the store's route folders.** Adding a
-      store page means adding it there too. `test/store-host.test.ts` walks `src/app/store/` and
-      fails if they disagree, so this is a note rather than a risk — but the failure it prevents is
-      a live checkout page returning 404, which is worth knowing about before the test tells you.
+- [x] **WITHDRAWN 2026-09-06: `STORE_PAGES` is gone.** It existed only to tell the proxy which
+      paths deserved a 404 status, and §8.34-f killed that: Vercel discards a rewrite's destination
+      when it carries a 4xx. `routeForHost` is now simpler than before this round started.
 
 ## 🤖 Standing, now that floors exist for eight packages
 
@@ -206,7 +205,13 @@ pushed on `main` but **NOT deployed** — everything below assumes the founder h
 
 ## 🧑 One redirect chain, and it lives in Vercel rather than this repo
 
-- [ ] **`http://www.kheelona.com` takes two hops to reach the apex.** Re-verified 2026-09-06:
+- [x] **CLOSED 2026-09-06 as platform behaviour, not a defect.** Vercel's Domains panel already
+      reads `www.kheelona.com ↳ 308 kheelona.com`, which is the correct setting; there is nothing
+      to change. The second hop is Vercel's HTTPS upgrade, which runs at the edge before any
+      routing rule is consulted, so no dashboard setting and nothing in this repo can reach it.
+      `http://kheelona.com` looks like one hop only because the upgrade does not change the host.
+      Affects only someone hand-typing `http://www`; search engines follow chains. **Do not re-open.**
+      The measurements, kept because they are the evidence:
 
       | Request | Answer |
       |---|---|

@@ -2056,3 +2056,35 @@ and aggregates with nothing.
 The doc stays the source of truth: `test/utm.test.ts` parses its parameter table and fails if the
 tool disagrees, and asserts the doc's worked example is byte-for-byte what the tool emits. A doc and
 a tool that can drift will.
+
+## 8.34-f VERCEL DISCARDS A REWRITE'S DESTINATION IF IT CARRIES A 4xx — AND `next start` DOES NOT
+
+**This one cost a deploy to learn, and §8.34-a above was written believing the opposite.**
+
+`NextResponse.rewrite(url, { status: 404 })` behaves differently in the two places it runs:
+
+| | destination | status |
+|---|---|---|
+| `npx next start` (local) | **honoured** | 404 |
+| Vercel edge (production) | **discarded** | 404 |
+
+On Vercel the edge sees the 4xx and serves its own `/404` route instead, which is the ROOT
+not-found — the marketing site's. So the store's dead ends shipped wearing the marketing navbar on
+the payment host, which is the exact thing §8.25-z exists to prevent. The tell is in the response:
+`x-matched-path: /404` rather than the rewritten path, while `x-robots-tag` proves the proxy ran.
+
+So on Vercel you may have **the right chrome or the right status, not both**, for a URL whose
+missing-ness only the router knows. The store takes the chrome and answers 200: it is `noindex,
+nofollow`, absent from the sitemap, and never crawled for ranking, so nothing measurable reads that
+status — while a person who cannot reach a paid order sees the page written for them.
+
+**The general law, which is the part worth carrying: `next start` is not the deployment target.**
+A local probe settles what Next does; it settles nothing about what Vercel's edge does with the
+result. Anything that depends on proxy/middleware response semantics — status overrides, header
+rewriting, redirect chains — is only verified in production, and this repo cannot deploy (Vercel is
+the founder's). So either design so the two agree, or state plainly that the check is pending a
+deploy. It is the same shape as §8.28-g "build a control before believing a perf story", and I
+made exactly the mistake that law was written about.
+
+Corollary: **`x-matched-path` on a Vercel response tells you which route actually served it**, and
+is the fastest way to tell a rewrite that worked from one that was thrown away.

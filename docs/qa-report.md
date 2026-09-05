@@ -1594,3 +1594,32 @@ Every guard proven red before being trusted (§8.28-g): `dynamicParams` removed 
 (2 assertions red), `/ideabaaz` dropped from `STORE_PAGES` (`"/ideabaaz exists but the proxy would
 404 it"`), a real `notFound()` call appended to a store file (red) alongside a commented mention
 (correctly green), and a source added to the UTM tool but not the doc (red).
+
+## Addendum, same day: the deploy corrected the round
+
+The store fix was verified under `npx next start` and shipped. Production then said something the
+local server never would:
+
+```
+$ curl -sD- https://store.kheelona.com/typo-page
+HTTP/2 404
+x-matched-path: /404              <- Vercel served its OWN 404 route
+x-robots-tag: noindex, nofollow   <- so the proxy DID run; the rewrite was thrown away
+```
+
+`NextResponse.rewrite(url, { status: 404 })` honours the destination under `next start` and **does
+not** on Vercel's edge, which discards it on a 4xx and serves the root not-found — the marketing
+404, on the payment host. The round shipped the one outcome it had explicitly rejected.
+
+The signal that something was wrong was in the very first production check and nearly missed: all
+four fixed routes returned **1084 characters of body text**, while locally the store's 404 was 644
+and only the marketing one was 1084. **Identical numbers where the pages differ is the tell.** It
+was worth measuring body length rather than just `css=0/1`, because `css=1` alone looked like
+success.
+
+Fixed by dropping the status (200, store chrome) and removing `STORE_PAGES` with it. Gates after:
+1112 tests / 111 files, tsc 0, build 0, `qa:sweep` clean 34/34 with 79 accepted, `qa:payment` clean.
+
+**§8.34-f: `next start` is not the deployment target.** A local probe settles what Next does and
+nothing about what Vercel's edge does with the result. Same shape as §8.28-g, which is a law this
+repo already had.

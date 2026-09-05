@@ -10,12 +10,17 @@ path and answers with an empty `<html id="__next_error__">` document: no stylesh
 `/thanks` for a person who had PAID us. A routing-level 404 renders fine, which is why
 `kheelona.com/typo` was always OK. **So: on any route reachable by mistyping a URL, do not throw** —
 use `dynamicParams = false`, or render the page and let the proxy carry the status.
-(2) **`NextResponse.rewrite(url, { status: 404 })` works** and is the only way to get a 404 that BOTH
-renders and carries the right code. `src/proxy.ts` does this for the store.
-(3) **`STORE_PAGES` in `lib/store/host.ts` now lists the store's real pages, and adding a store page
-means adding it there** — the tightening direction 404s a live checkout page.
-`test/store-host.test.ts` walks `src/app/store/` and fails if they disagree, so the suite catches it,
-but know it before the test tells you. (4) **`/404-store-path` is DELETED** — it rendered the
+(2) **🔴 `NextResponse.rewrite(url, {status})` BEHAVES DIFFERENTLY ON VERCEL THAN UNDER
+`next start` (§8.34-f).** Locally the destination is honoured with the status; **on Vercel's edge a
+4xx makes it DISCARD the destination and serve its own `/404`**, which is the marketing 404 — it
+shipped that way for one deploy. The tell is `x-matched-path: /404` in the response. So the store's
+dead ends render at **200** with the store's own chrome, which is the half a person sees; the host is
+`noindex, nofollow` and not in the sitemap, so nothing reads the status. **The general law: `next
+start` is NOT the deployment target — anything resting on proxy response semantics is unverified
+until it is deployed, and this repo cannot deploy.**
+(3) **`STORE_PAGES` never existed after all** — it was added for that status and removed with it, so
+`routeForHost` is now SIMPLER than before this round: the claim branch, then one rewrite.
+(4) **`/404-store-path` is DELETED** — it rendered the
 marketing 404 on the payment host, and the catch-all already covers the doubled prefix. Also new:
 **`npm run utm`** builds campaign links to `docs/utm-conventions.md` or refuses; and
 `create-order` was already recording `utm_` values onto the order row, which nothing had documented.

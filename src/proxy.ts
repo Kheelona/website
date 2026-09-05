@@ -52,15 +52,13 @@ export function proxy(request: NextRequest) {
   }
 
   if (route.kind === "rewrite") {
-    /* A rewrite normally answers with whatever status the rewritten route
-       produces, which for a missing store page would be 200. `status` overrides
-       it, and that is the only way this app can serve a 404 that also RENDERS:
-       Next's own 404, thrown by `notFound()`, answers with an empty document
-       (§8.34-a). Verified by curl, not assumed. */
-    const response = NextResponse.rewrite(
-      new URL(route.path, request.url),
-      route.status === undefined ? undefined : { status: route.status },
-    );
+    /* No status override here, deliberately, and it cost a deploy to learn
+       (§8.34-f). `NextResponse.rewrite(url, { status: 404 })` works under
+       `next start` — 404 AND the rewritten page — but on Vercel the edge sees
+       the 4xx, discards the destination and serves its own /404, which on the
+       store host is the MARKETING 404. So the store's dead ends render at 200
+       and wear the right chrome, which is the half that a person notices. */
+    const response = NextResponse.rewrite(new URL(route.path, request.url));
     response.headers.set("x-robots-tag", "noindex, nofollow");
     return response;
   }
