@@ -29,6 +29,18 @@ request. Priority is about consequence if it is never done, not about effort.
 *Record: `docs/checkpoints/dependency-sweep-2026-09-05.md`. Both manifests now read
 `npm audit: found 0 vulnerabilities`. Rollback tag `pre-dependency-bump-2026-09-05` = `a03871f`.*
 
+## 🧑 Take the preview deployment down in Vercel (branch is already gone)
+
+- [ ] **`website-hdn2.vercel.app` still answers 200** and still serves a 37-commit-old build that
+      says "Lumi", carries the doubled-brand title `… · Kheelona · Kheelona`, and has no
+      `x-robots-tag`. It is a publicly reachable, indexable duplicate of a live commercial site, and
+      Ahrefs recorded real sessions on it.
+      The `demo-website` branch was deleted on 2026-09-05 at your request, and that was NOT enough:
+      Vercel keeps serving the last deployment for a project alias. **Removing the project or the
+      alias in the Vercel dashboard is the step that actually closes it, and Vercel is yours.**
+      Nothing is at risk in deleting it — the branch is archived as the tag
+      `archived-demo-website-2026-09-05` and every commit was already in `main`.
+
 ## 🅿️ PARKED BY THE FOUNDER (2026-09-05): the mascot names itself on the home page
 
 **Decision: leave it. Do not re-raise it.** Recorded here with the full diagnosis so that whoever

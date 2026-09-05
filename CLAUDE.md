@@ -209,9 +209,19 @@ development, 40% education) replaced the legacy Wix-backed commerce app that use
 repo root. That old app is preserved at the tag **`pre-revamp-2026-07`** and its URLs are 301'd in
 `next.config.ts`. The `revamp/kheelu-tour` branch is deleted; its history is inside `main`.
 
-- **Work on `main`.** `demo-website` exists only as the Vercel preview branch
-  (https://website-hdn2.vercel.app) and additionally carries the `/a` `/b` `/c` wireframe drafts.
-  Keep it in sync by MERGING main into it, never force-push.
+- **Work on `main`.** `demo-website` IS DELETED (2026-09-05, founder's call) and the sync obligation
+  with it. It had drifted 37 commits behind and was serving a publicly indexable duplicate that still
+  said "Lumi", still had the doubled-brand title, and never received the §8.32-a `INDEXABLE_HOSTS`
+  noindex fix. Nothing was lost: every commit on it was already an ancestor of `main`, and it is
+  archived as the tag `archived-demo-website-2026-09-05` (restore with
+  `git branch demo-website archived-demo-website-2026-09-05`).
+  **The `/a` `/b` `/c` wireframe drafts this line used to promise DID NOT EXIST** on that branch or
+  on `main` when it was checked — the claim was stale, and is recorded here rather than deleted so
+  nobody goes looking for them again.
+  **⚠ DELETING THE BRANCH DID NOT TAKE THE URL DOWN.** `website-hdn2.vercel.app` still answered 200
+  afterwards, because Vercel keeps serving the last deployment for a project alias. Removing it is a
+  DASHBOARD action and therefore the founder's (same gate as every Vercel change); it is in
+  `Technical-Todo.md` until done.
 - **🟢 THE SITE IS LIVE TO CUSTOMERS** at **https://kheelona.com** (2026-07-28). The apex is the
   canonical host and `www` 308s to it — settled deliberately, because every URL the code emits
   (sitemap, canonicals, robots, WhatsApp share, every JSON-LD `@id`) is apex. It was briefly the
