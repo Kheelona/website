@@ -29,16 +29,39 @@ request. Priority is about consequence if it is never done, not about effort.
 *Record: `docs/checkpoints/dependency-sweep-2026-09-05.md`. Both manifests now read
 `npm audit: found 0 vulnerabilities`. Rollback tag `pre-dependency-bump-2026-09-05` = `a03871f`.*
 
-## 🧑 A naming collision that IS visible to visitors, and I previously said was not
+## 🅿️ PARKED BY THE FOUNDER (2026-09-05): the mascot names itself on the home page
 
-- [ ] **On the home page the mascot says "Hi, I'm Kheelu" while the hero product is also Kheelu.**
-      `src/features/home/components/Hero.tsx:22`. A Foxy-Deer introduces itself by the same name as
-      the cream rabbit beside it. The rename checkpoint claimed the mascot's name reached users only
-      through two `aria-label`s — that was wrong, and the art-reconciliation item was rated
-      non-urgent on the strength of it. Say lines are founder-approved copy, so this is your call:
-      either the mascot stops naming itself, or the two become one character in the artwork.
-      (`/products/kheelu` says "This is Kheelu. Go on, say hello." pointing AT the product, which
-      now reads correctly and needs no change.)
+**Decision: leave it. Do not re-raise it.** Recorded here with the full diagnosis so that whoever
+picks it up later starts from the answer rather than re-deriving it.
+
+- [ ] **`src/features/home/components/Hero.tsx:22` says `"Hi, I'm Kheelu. Come in, I'll show you
+      around."`** — the Foxy-Deer mascot introducing itself by the name the cream rabbit beside it
+      now carries.
+
+**It is ONE stale line, not an art problem.** That is the part worth keeping. Before the 2026-09-05
+rename the line was correct: the mascot was Kheelu and the product was Lumi. The product took the
+name and this line never moved with it. The rest of the site already treats them as two characters,
+in **thirteen** places:
+
+| Says the mascot IS Kheelu | Says the mascot is NOT Kheelu |
+|---|---|
+| `Hero.tsx:22` | `team/page.tsx:138` "They made me, **then Kheelu**" |
+| | "I'll **mind Kheelu** till launch" — 11 pages, incl. `LegalDoc.tsx:71` |
+| | `products/kheelu/page.tsx:147` "**This is** Kheelu. Go on, say hello." |
+
+So the cheapest fix, whenever it is wanted, is deleting three words: `"Come in, I'll show you
+around."` That alone makes the site consistent with all thirteen and needs no brand decision. The
+alternative, if the narrator should have an identity, is giving the mascot its own name — every
+other line already refers to Kheelu in the third person, so they all keep working unchanged.
+
+**What would be expensive, and is NOT the recommended route:** truly merging them. That means
+rewriting the thirteen lines AND reconciling the artwork, and the artwork actively fights it. Noted
+because "share the name" was the original instinct and it is the option that looks cheapest and
+is not.
+
+*Also corrected here: an earlier note in this file and in CLAUDE.md claimed the mascot's name reached
+users only through two `aria-label`s. That was wrong — it is spoken in the hero bubble, visible in
+any screenshot of the home page.*
 
 ## 🧑 The store's 404 page has never been styled
 

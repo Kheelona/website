@@ -18,10 +18,14 @@ Name every package. (5) `test/dependency-floor.test.ts` now floors TRANSITIVES b
 `package-lock.json` and checking **every** copy — the bug it was blind to was
 `node_modules/next/node_modules/postcss@8.4.31` sitting under a hoisted 8.5.16.
 
-**⚠ AND A CORRECTION TO THE RENAME RECORD BELOW: the Kheelu naming collision IS visible to
-visitors.** `Hero.tsx:22` has the mascot say "Hi, I'm Kheelu" beside a differently-drawn product
-also called Kheelu. The banner below claims the mascot's name reaches users only through two
-`aria-label`s. That is wrong. Founder item in `Technical-Todo.md`.
+**⚠ A CORRECTION TO THE RENAME RECORD BELOW, AND A FOUNDER DECISION.** `Hero.tsx:22` has the mascot
+say "Hi, I'm Kheelu" beside a differently-drawn product also called Kheelu, so the banner below is
+WRONG where it claims the mascot's name reaches users only through two `aria-label`s — it is spoken
+in the hero bubble. **The founder parked it on 2026-09-05: leave it, do not re-raise it.** The
+diagnosis is in `Technical-Todo.md` and the short version is that it is ONE stale line, not an art
+problem: thirteen other places ("I'll mind Kheelu till launch" on 11 pages, "They made me, then
+Kheelu", "This is Kheelu") already treat mascot and product as two characters, so the fix whenever
+it is wanted is deleting three words from that one line.
 
 **🔴 THE PRODUCT IS CALLED **KHEELU**, NOT LUMI, SINCE 2026-09-05. THIS BLOCK WINS OVER EVERY
 "Lumi" BELOW.** Founder decision. The product took the mascot's name, so the two are now ONE
