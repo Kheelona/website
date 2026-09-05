@@ -128,6 +128,17 @@ const TRANSITIVE_FLOORS: {
       "because three-stdlib declares ^0.6.9, which 0.6.11 satisfies. A flat floor is correct " +
       "here even though a second copy exists at 0.8.3, because 0.8.3 is numerically above it.",
   },
+  {
+    name: "browserslist",
+    min: "4.28.7",
+    why:
+      "GHSA-c83g-rgw3-j3cx HIGH, unbounded memory growth with no cache eviction; " +
+      "GHSA-73wf-gq98-2v4g HIGH, uncaught crash / prototype write via an untrusted " +
+      "browserslist-stats.json. Dev-only, via @babel/helper-compilation-targets. Worth knowing: " +
+      "updating it also moves caniuse-lite and baseline-browser-mapping, which ARE next's own " +
+      "dependencies and set browser targets, so it is the one 'dev-only' fix that can change " +
+      "build output.",
+  },
 ];
 
 /** Packages that must not be in the tree at all, because no version of them is safe.
