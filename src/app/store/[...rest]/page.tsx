@@ -1,16 +1,22 @@
-import { notFound } from "next/navigation";
+import { NotFoundPanel } from "../_components/NotFoundPanel";
 
-/** Catch-all inside the store segment (§8.25-z).
+/** Every store URL that is not a store page (§8.25-z, §8.34-a).
  *
- *  Found in verification, not by reasoning: a mistyped URL on the store host is
- *  rewritten to `/store/<whatever>`, which matched no route, so Next fell back
- *  to the ROOT not-found and served the store's 404 wearing the full marketing
- *  chrome, navbar CTA and all. Someone who cannot reach their paid order was
- *  being shown the marketing site's navigation.
+ *  A mistyped URL on the store host is rewritten to `/store/<whatever>`, and
+ *  before this route existed it matched nothing, so Next fell back to the ROOT
+ *  not-found and served the store's 404 wearing the full marketing chrome.
+ *  Someone who could not reach their paid order was shown the marketing site's
+ *  navigation.
  *
- *  This catches those paths so `store/not-found.tsx` renders inside the store
- *  layout instead. Static and dynamic segments still win over a catch-all, so
- *  /thanks and /e/[event] are untouched. */
+ *  It RENDERS rather than calling `notFound()`, which is the 2026-09-06 change.
+ *  A thrown 404 takes Next's error path and answers with an empty
+ *  `<html id="__next_error__">` document — no stylesheet, no text — so this
+ *  page was a blank screen until JavaScript hydrated. The 404 status now comes
+ *  from `src/proxy.ts`, which knows the path is not a store page before Next
+ *  ever resolves the route.
+ *
+ *  Static and dynamic segments still win over a catch-all, so /thanks and
+ *  /e/[event] are untouched. */
 export default function StoreCatchAll() {
-  notFound();
+  return <NotFoundPanel />;
 }

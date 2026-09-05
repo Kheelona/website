@@ -1,41 +1,18 @@
-import { SUPPORT_WHATSAPP_HREF } from "@/config/site";
+import { NotFoundPanel } from "./_components/NotFoundPanel";
 
-/** The store's own 404 (§8.25-z).
+/** The store's own 404 boundary (§8.25-z).
  *
  *  Without this, `notFound()` from a store page would find the root not-found,
  *  which wears the full marketing chrome: five ways back into the marketing
  *  site, a mascot, and a footer of policies, on the host that takes money. A
  *  dead end dressed as a home page.
  *
- *  It is reached by an expired or wrong address link as well as a mistyped URL,
- *  which is why it offers a person rather than only a link home: someone here
- *  may have paid us and be unable to reach their own order. */
+ *  Since 2026-09-06 nothing under `src/app/store/` throws `notFound()` any
+ *  more, because a thrown 404 never server-renders (§8.34-a) — the pages that
+ *  used to throw render `NotFoundPanel` instead, and the proxy supplies the
+ *  404 status. This file stays as the boundary of last resort: if a future
+ *  change reintroduces a throw, it lands here wearing the right chrome rather
+ *  than the marketing site's. A test keeps that from happening quietly. */
 export default function StoreNotFound() {
-  return (
-    <div className="mx-auto w-full max-w-[640px] px-6 py-16 md:py-24">
-      <h1 className="mb-4 font-display text-[clamp(28px,4vw,38px)] font-extrabold leading-[1.1] text-ink-head">
-        That page is not here.
-      </h1>
-      <p className="mb-6 max-w-[46ch] text-[17px] leading-[1.6] text-ink">
-        The link may have expired, or it may never have been ours. If you were
-        trying to reach an order you have already placed, we can open it for you.
-      </p>
-      <a
-        href="/"
-        className="inline-flex items-center justify-center rounded-full bg-action px-7 py-4 text-[17px] font-bold text-white shadow-cta focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
-      >
-        Go to the pre-order page
-      </a>
-      <p className="mt-4 text-[14px] text-ink-muted">
-        Or{" "}
-        <a
-          href={SUPPORT_WHATSAPP_HREF}
-          className="rounded font-semibold text-ink-head underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
-        >
-          message us on WhatsApp
-        </a>{" "}
-        with your order number and a person will find it.
-      </p>
-    </div>
-  );
+  return <NotFoundPanel />;
 }

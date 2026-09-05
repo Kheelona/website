@@ -1,5 +1,4 @@
 import { cookies } from "next/headers";
-import { notFound } from "next/navigation";
 import { storeEnv } from "@/lib/store/env";
 import { db } from "@/lib/store/db";
 import { verifyAddressToken } from "@/lib/store/signing";
@@ -15,6 +14,7 @@ import {
   SUPPORT_WHATSAPP_DISPLAY,
 } from "@/config/site";
 import type { PreorderRow } from "@/lib/store/db";
+import { NotFoundPanel } from "../_components/NotFoundPanel";
 
 /** The confirmation, and the address step (§8.25-x).
  *
@@ -78,7 +78,23 @@ export default async function ThanksPage() {
     .eq("order_ref", session.orderRef)
     .maybeSingle();
 
-  if (!data) notFound();
+  /* A valid signed link whose order will not load. It reaches here two ways:
+     the row is genuinely gone, or the query failed (maybeSingle returns a null
+     `data` for both). Either way the reader has PAID us, so this renders a
+     page instead of throwing: a thrown 404 answers with an empty document that
+     stays blank until JavaScript hydrates (§8.34-a), and blank is the worst
+     thing to show someone looking for money they have already sent.
+     Distinguishing "no row" from "query failed" is worth doing and is logged
+     in Technical-Todo.md; it does not change what this reader is told. */
+  if (!data) {
+    return (
+      <NotFoundPanel
+        title="We cannot open that order right now."
+        body="Your link is fine. The order behind it did not load, which is ours to sort out and not yours."
+        cta={false}
+      />
+    );
+  }
   const order = data as PreorderRow;
   const paid = order.status === "paid";
 

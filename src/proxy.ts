@@ -52,7 +52,15 @@ export function proxy(request: NextRequest) {
   }
 
   if (route.kind === "rewrite") {
-    const response = NextResponse.rewrite(new URL(route.path, request.url));
+    /* A rewrite normally answers with whatever status the rewritten route
+       produces, which for a missing store page would be 200. `status` overrides
+       it, and that is the only way this app can serve a 404 that also RENDERS:
+       Next's own 404, thrown by `notFound()`, answers with an empty document
+       (§8.34-a). Verified by curl, not assumed. */
+    const response = NextResponse.rewrite(
+      new URL(route.path, request.url),
+      route.status === undefined ? undefined : { status: route.status },
+    );
     response.headers.set("x-robots-tag", "noindex, nofollow");
     return response;
   }

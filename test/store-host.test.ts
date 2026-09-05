@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { routeForHost, isStoreHost } from "@/lib/store/host";
+import { readdirSync } from "node:fs";
+import { join } from "node:path";
+import { routeForHost, isStoreHost, isStorePage } from "@/lib/store/host";
 import { STORE_URL } from "@/config/site";
 
 /**
@@ -25,6 +27,44 @@ describe("store host routing", () => {
     expect(routeForHost("store.kheelona.com", "/")).toEqual({ kind: "rewrite", path: "/store" });
   });
 
+  /* THE GUARD THAT MAKES THE PAGE LIST SAFE (§8.34-c).
+     `STORE_PAGES` restates what the folders under src/app/store/ already say,
+     on the host that takes money: tighten it by mistake and a live checkout
+     page 404s. So the folders are the source of truth and this walks them.
+     Adding src/app/store/<x>/page.tsx without adding <x> to the list fails
+     here, not in production. */
+  it("admits every page that actually exists under src/app/store", () => {
+    const dir = join(process.cwd(), "src/app/store");
+    const urls = readdirSync(dir, { withFileTypes: true, recursive: true })
+      .filter((e) => e.name === "page.tsx")
+      .map((e) => join(e.parentPath ?? dir, e.name))
+      .map((f) => f.slice(dir.length).replace(/\/page\.tsx$/, "") || "/")
+      /* Component folders are not routes, and the catch-all IS the 404. */
+      .filter((u) => !u.includes("/_") && !u.includes("[..."))
+      /* A dynamic segment stands for any value a visitor could type. */
+      .map((u) => u.replace(/\[[^\]]+\]/g, "sample-value"));
+
+    expect(urls, "no store pages found — the walk is broken, not the list").not.toHaveLength(0);
+    expect(urls).toContain("/thanks");
+    expect(urls).toContain("/e/sample-value");
+    for (const url of urls) {
+      expect(isStorePage(url), `${url} exists but the proxy would 404 it`).toBe(true);
+      expect(routeForHost("store.kheelona.com", url), url).not.toHaveProperty("status");
+    }
+  });
+
+  /* The other direction: a URL that is not a page must carry the status, or it
+     renders the store 404 under a 200 and becomes a soft 404. */
+  it("marks a URL that is not a store page with a 404 status", () => {
+    for (const path of ["/typo", "/products/kheelu", "/thanks/extra", "/e"]) {
+      expect(routeForHost("store.kheelona.com", path), path).toEqual({
+        kind: "rewrite",
+        path: `/store${path}`,
+        status: 404,
+      });
+    }
+  });
+
   it("maps store paths through, query string intact", () => {
     expect(routeForHost("store.kheelona.com", "/thanks", "?ref=KH-A2B3-C4D5")).toEqual({
       kind: "rewrite",
@@ -40,13 +80,20 @@ describe("store host routing", () => {
      the store home page, or that URL gets linked and indexed as a third
      address for the same page. */
   it("refuses a doubled /store prefix instead of serving the page twice", () => {
+    /* Answered by the ordinary catch-all now rather than a route of its own:
+       /store is simply not in STORE_PAGES, so it takes the 404 status and the
+       rewrite lands on /store/store, which no page matches. The dedicated
+       /404-store-path route it used to use was deleted on 2026-09-06 — it
+       rendered the MARKETING 404 on the payment host, and rendered it blank. */
     expect(routeForHost("store.kheelona.com", "/store")).toEqual({
       kind: "rewrite",
-      path: "/404-store-path",
+      path: "/store/store",
+      status: 404,
     });
     expect(routeForHost("store.kheelona.com", "/store/thanks")).toEqual({
       kind: "rewrite",
-      path: "/404-store-path",
+      path: "/store/store/thanks",
+      status: 404,
     });
   });
 
@@ -110,8 +157,13 @@ describe("store host routing", () => {
      reservation copy on a domain that takes payments. */
   it("does not serve marketing pages on the store host", () => {
     const route = routeForHost("store.kheelona.com", "/products/kheelu");
-    expect(route).toEqual({ kind: "rewrite", path: "/store/products/kheelu" });
-    // which is not a route that exists, so it 404s. Asserted here so the
-    // intention is on the record rather than an accident of file layout.
+    expect(route).toEqual({
+      kind: "rewrite",
+      path: "/store/products/kheelu",
+      status: 404,
+    });
+    // The 404 is now stated rather than left to an accident of file layout:
+    // before 2026-09-06 this relied on no such route existing, and answered
+    // with an empty document when it did not.
   });
 });

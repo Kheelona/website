@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { notFound } from "next/navigation";
 import { storeEnv } from "@/lib/store/env";
 import { resolveTier, tierRefusalMessage } from "@/lib/store/tiers";
 import { PreorderForm, OrderSummary } from "@/features/preorder";
@@ -12,6 +11,7 @@ import {
   KHEELU_AGES,
   SUPPORT_WHATSAPP_HREF,
 } from "@/config/site";
+import { NotFoundPanel } from "../../_components/NotFoundPanel";
 
 /** Event pricing, behind a signed link (§8.25-g).
  *
@@ -35,7 +35,11 @@ export default async function EventPage({
 }) {
   const [{ event }, { sig }] = await Promise.all([params, searchParams]);
   const env = storeEnv();
-  if (!env) notFound();
+  /* Renders rather than throws, for the same reason as everywhere else on this
+     host (§8.34-a): a thrown 404 answers with an empty document. This branch is
+     a deployment misconfiguration rather than a visitor mistake, and a QR code
+     at a stall is exactly where a blank screen is least recoverable. */
+  if (!env) return <NotFoundPanel />;
 
   const result = await resolveTier(env, { tier: event, signature: sig ?? null });
 
