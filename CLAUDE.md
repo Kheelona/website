@@ -1,16 +1,19 @@
 # kheelona.com — session entry point
 
-**🔵 AN SEO / AEO / GEO ROUND IS OPEN (2026-09-05). READ `docs/checkpoints/seo-aeo-geo-2026-09-05.md`
-FIRST: its "Running record" is appended in EVERY commit of the round, so it is the resume point if the
-context is compressed.** Rollback tag `pre-seo-round-2026-09-05` = `5e7d2a1`. Developer handoff with
-live status per item: `docs/seo/handoff-2026-09-05.md`. Founder decisions this round: a push to `main`
-auto-deploys; article expansions are written and shipped directly under the voice laws (QuillBot
-humanise pass, then re-lint); official profiles for `sameAs` were supplied; **documentation is kept
-current in the same commit as each change, never deferred to a final docs commit.** What the round
-does: real git-derived dates and derived read times on the journal, sources and inline links in
-articles, six articles expanded with verified citations, `sameAs` + Person `@id`s, three legacy
-redirects, breadcrumbs on the policy pages. Laws land as **§8.35**. Remove this block when the round
-closes.
+**🟢 THE SEO / AEO / GEO ROUND SHIPPED AND IS VERIFIED ON PRODUCTION (2026-09-05).** Record with a
+per-commit running record: `docs/checkpoints/seo-aeo-geo-2026-09-05.md`; laws **§8.35**; developer
+handoff with per-item status: `docs/seo/handoff-2026-09-05.md`; human-facing drafts (nothing sent):
+`docs/seo/outreach-drafts-2026-09-05.md`; rollback tag `pre-seo-round-2026-09-05` = `5e7d2a1`. What
+changed: every article carries git-derived `published`/`updated` dates and a DERIVED read time (the typed
+`minutes` field is gone, `JOURNAL_REVIEWED` is deleted); paragraphs may carry `[label](url)` links and a
+`sources` array renders under the article AND becomes BlogPosting `citation`; six articles were expanded
+to 700 to 860 sourced words (WHO 2019, IAP 2022, AAP 2016, Common Sense Media 2026, Fairplay 2025, DPDP
+§9, Byers-Heinlein 2013, Romeo 2018, NEP 2020); `Organization.sameAs` lists five founder-confirmed
+profiles, founders and Ria carry Person `@id`s that every byline references (Google's Rich Results Test
+resolves them); three Wix 404s redirect; policy pages carry breadcrumbs; `llms.txt`/`pricing.md` are dated.
+**Still the founder's:** Search Console "Request indexing" for the ten never-crawled URLs (incl. /safety,
+/playos), `admin.`/`api.` subdomains noindex, Play Store text, profile back-links, and the **2026-10-03
+re-measure** (baseline in the checkpoint). Push to `main` auto-deploys since this round (founder).
 
 **🟢 EVERY 404 RENDERS ON THE SERVER NOW (2026-09-06). DEPLOYED AND VERIFIED ON PRODUCTION.** Record:
 `docs/checkpoints/blank-404s-2026-09-06.md`; laws **§8.34**; rollback tag

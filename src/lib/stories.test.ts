@@ -4,6 +4,7 @@ import {
   formatStoryDate,
   latestUpdated,
   readingMinutes,
+  schemaDate,
   wordCount,
 } from "./stories";
 
@@ -36,6 +37,13 @@ describe("journal dates are real, ordered and machine-readable", () => {
     const newest = [...STORIES.map((s) => s.updated)].sort().at(-1);
     expect(latestUpdated()).toBe(newest);
     expect(latestUpdated([])).toBe("");
+  });
+
+  it("emits schema and Open Graph dates with a timezone, as Google's validator asks", () => {
+    /* Rich Results Test, 2026-09-05: "Datetime property datePublished is missing a
+       timezone (optional)" on every article. Start of the day, Indian time. */
+    expect(schemaDate("2026-07-28")).toBe("2026-07-28T00:00:00+05:30");
+    expect(schemaDate("2026-09-05")).toMatch(/^\d{4}-\d{2}-\d{2}T00:00:00\+05:30$/);
   });
 
   it("formats dates the way the site writes them, whatever the build machine's timezone", () => {
@@ -105,6 +113,22 @@ describe("every article keeps the brand voice", () => {
 
   it("uses no contractions in body copy", () => {
     for (const { where, text } of texts) expect(text, where).not.toMatch(CONTRACTIONS);
+  });
+
+  it("never labels a link 'here' or another word that says nothing", () => {
+    /* Lighthouse SEO 92 on the first expanded article (2026-09-05): the
+       link-text audit failed on a single "here". An engine reads the label as
+       the description of the target; make it say where it goes. */
+    const GENERIC = /^(here|this|that|link|read more|click here|more|that read is here|learn more)$/i;
+    for (const s of STORIES) {
+      for (const block of s.paragraphs) {
+        for (const m of block.p.matchAll(/\[([^\]]+)\]\([^)\s]+\)/g)) {
+          /* One-word labels are fine when the word IS the destination ("Kheelu",
+             "Fairplay"); only the words that describe nothing are refused. */
+          expect(m[1].trim(), `${s.slug}: link labelled "${m[1]}"`).not.toMatch(GENERIC);
+        }
+      }
+    }
   });
 
   it("does not leave a raw link address in the prose", () => {

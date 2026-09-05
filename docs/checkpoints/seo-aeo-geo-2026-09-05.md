@@ -157,4 +157,34 @@ IndexNow, anything parked by the founder (CTA contrast, pixel, backlinks beyond 
   sanity: founder + Ria `@id`s, five `sameAs`, two `memberOf`, BlogPosting dates/PT4M/846 words/author by
   `@id`/5 citations, og:image on Home, BreadcrumbList on /privacy. Then push to `main` (auto-deploys) and
   run the production verification script from the scratchpad; the result is the next line.
+- 2026-09-05 · pushed `main` at 677bf01; Vercel had it live in ~60 s (sitemap `lastmod` count 19).
+  **Production verification** (scratchpad `verify-production.sh`, 31 pages re-captured and diffed against
+  the morning baseline): every page's head or JSON-LD changed as intended (Organization graph on all 31;
+  articles also gained dates, og:type article, citation); sitemap 19 `lastmod`; llms.txt "Last updated:
+  2026-09-05"; pricing.md "2026-08-23"; `should-kids-use-ai` carries `datePublished`/`dateModified`,
+  `author` by `@id`, 5 citations, `og:type article`; home Organization `sameAs` = the five URLs,
+  `employee` Ria, `memberOf` two, one Organization node; /privacy BreadcrumbList; the three redirects
+  308 to their targets; the false "It is free" line is gone from production; robots.txt byte-identical
+  to the baseline; `/api/health` ok with `razorpay:live`. Blog on /stories: 19 posts, all dated, all
+  authors by `@id`. **Google Rich Results Test on the live article: 3 valid items (Article, Breadcrumbs,
+  Organization), and the `author` `@id` RESOLVED to the full Person node with jobTitle, bio and LinkedIn,**
+  which is the entity linking this round exists for. Its four non-critical notes were all one thing,
+  the dates lack a timezone: fixed in commit 8 (`schemaDate()` emits `T00:00:00+05:30`, data keeps the
+  bare date). Ahrefs Site Audit re-crawl could not be triggered through the extension (click permission
+  denied on app.ahrefs.com); it crawls on its own schedule and the founder can press New crawl.
+  Lighthouse on production: see the closing line.
+- 2026-09-05 · **Lighthouse on production** (CLI 13.4.1, headless; mobile = devtools throttling): Home
+  desktop **99 / 96 / 73 / 100**, Home mobile **98 / 96 / 73 / 100**; `should-kids-use-ai` desktop
+  **93 / 96 / 73 / 92**, mobile **99 / 96 / 73 / 92** (perf / a11y / BP / SEO). BP 73 is the sanctioned
+  Meta Pixel exception (§8.34-h: 74 ± variance, `third-party-cookies` + the Report-Only CSP notes). The
+  article's SEO 92 was ONE audit, `link-text`, on a single link labelled "here" that the expansion
+  introduced. Commit 8 renames all four generic anchors across the expanded articles to say where they
+  go, and `src/lib/stories.test.ts` now refuses a one-word or generic link label. Re-measure after the
+  deploy: the SEO gate is 90+, so 92 already passed, but the fix is the right one regardless.
+- 2026-09-05 · commit 8 (close) · `schemaDate()` gives BlogPosting, Blog and `article:*_time` a timezone
+  (`T00:00:00+05:30`; data keeps the bare date); four generic link labels renamed to say where they go;
+  `stories.test` refuses a generic label (one-word labels that ARE the destination, "Kheelu", "Fairplay",
+  stay allowed after the first draft of the guard rejected them). CLAUDE.md banner closed, handoff items
+  moved to "verified on production", Technical-Todo engineering items all ticked, project-state closed.
+  **1156 tests / 115 files**, tsc 0, build 0. Pushed; production re-check follows as the last line.
 

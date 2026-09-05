@@ -17,6 +17,7 @@ import {
   readingMinutes,
   wordCount,
   formatStoryDate,
+  schemaDate,
 } from "@/lib/stories";
 import { pageGraph, breadcrumbs, SITE_URL, pageMeta, jsonLd, authorRef } from "@/lib/seo";
 
@@ -52,8 +53,8 @@ export async function generateMetadata({
     description: story.description,
     path: `/stories/${story.slug}`,
     article: {
-      publishedTime: story.published,
-      modifiedTime: story.updated,
+      publishedTime: schemaDate(story.published),
+      modifiedTime: schemaDate(story.updated),
       authors: [story.author],
     },
   });
@@ -97,8 +98,8 @@ export default async function StoryPage({
       publisher: { "@id": `${SITE_URL}/#organization` },
       isPartOf: { "@id": `${SITE_URL}/stories#blog` },
       mainEntityOfPage: `${SITE_URL}/stories/${story.slug}`,
-      datePublished: story.published,
-      dateModified: story.updated,
+      datePublished: schemaDate(story.published),
+      dateModified: schemaDate(story.updated),
       ...(story.hero && { image: `${SITE_URL}${story.hero}` }),
       /* The same array SourcesList renders (§8.35-c): what the reader can
          click is what the crawler is told, by construction. */

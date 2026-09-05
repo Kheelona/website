@@ -185,6 +185,16 @@ export function readingMinutes(story: Pick<Story, "paragraphs">): number {
   return Math.max(1, Math.round(wordCount(story) / 200));
 }
 
+/** The ISO date as schema.org and Open Graph want it: a full datetime with a
+ *  timezone. Google's Rich Results Test flagged the bare "2026-07-28" on every
+ *  article as "missing a timezone" (non-critical, 2026-09-05). The articles were
+ *  committed on Indian time and we know the day, not the minute, so the honest
+ *  precision is the start of that day in IST. The data keeps the bare date;
+ *  only the emitted markup carries the time. */
+export function schemaDate(iso: string): string {
+  return `${iso}T00:00:00+05:30`;
+}
+
 /** "28 July 2026" from "2026-07-28". UTC so the day never shifts with the
  *  build machine's timezone; en-IN for the day-month-year order this site uses. */
 export function formatStoryDate(iso: string): string {

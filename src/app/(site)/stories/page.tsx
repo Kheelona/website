@@ -6,7 +6,7 @@ import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { PageHero } from "@/components/templates/PageHero";
 import { Reveal } from "@/components/molecules/Reveal";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
-import { STORIES, readingMinutes, formatStoryDate, latestUpdated } from "@/lib/stories";
+import { STORIES, readingMinutes, formatStoryDate, latestUpdated, schemaDate } from "@/lib/stories";
 import { PRESS_LIFT } from "@/lib/interactions";
 import { pageGraph, breadcrumbs, SITE_URL, pageMeta, jsonLd, authorRef } from "@/lib/seo";
 
@@ -54,8 +54,8 @@ const JOURNAL_JSON_LD = pageGraph(
       description: s.description,
       url: `${SITE_URL}/stories/${s.slug}`,
       author: authorRef(s.author),
-      datePublished: s.published,
-      dateModified: s.updated,
+      datePublished: schemaDate(s.published),
+      dateModified: schemaDate(s.updated),
       ...(s.hero ? { image: `${SITE_URL}${s.hero}` } : {}),
     })),
   },

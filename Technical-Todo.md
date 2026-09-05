@@ -24,7 +24,7 @@ request. Priority is about consequence if it is never done, not about effort.
 
 ---
 
-# 🔵 SEO / AEO / GEO ROUND (opened 2026-09-05, LIVE RECORD)
+# 🔵 SEO / AEO / GEO ROUND (opened and shipped 2026-09-05; the founder items below stay open)
 
 *Record: `docs/checkpoints/seo-aeo-geo-2026-09-05.md` (baseline + running record, appended every
 commit). Developer handoff: `docs/seo/handoff-2026-09-05.md`. Rollback tag `pre-seo-round-2026-09-05`
@@ -38,7 +38,7 @@ commit). Developer handoff: `docs/seo/handoff-2026-09-05.md`. Rollback tag `pre-
 - [x] A1/A5/B4 · redirects `/post/:slug*`, `/terms-conditions`, `/for-the-parents`; BreadcrumbList on the four policy pages; `llms.txt` + `pricing.md` refresh (shipped 2026-09-05)
 - [x] C2 · `RichParagraph` + `SourcesList` molecules, `sources` on `Story`, BlogPosting `citation`, inline-link test (shipped 2026-09-05)
 - [x] C3 · six articles expanded with verified sources (one commit each, all shipped 2026-09-05): [x] screen-time-rules-parents-swear-by · [x] how-much-screen-time-for-a-3-to-6-year-old · [x] what-to-look-for-in-a-safe-ai-toy · [x] should-kids-use-ai · [x] raising-a-bilingual-child-in-india · [x] a-toy-that-talks-vs-a-toy-that-listens
-- [ ] §8.35 laws, outreach drafts file, production verification, CLAUDE.md banner closed
+- [x] §8.35 laws, outreach drafts file, production verification (2026-09-05, all promises hold on kheelona.com), CLAUDE.md banner closed
 
 ## 🧑 Founder (from the handoff, section F)
 
