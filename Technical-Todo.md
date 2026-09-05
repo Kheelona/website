@@ -293,7 +293,13 @@ security headers live, the live pages carry no console errors or failed requests
       "Recognised by" today because NVIDIA Inception and nasscom are recognition programmes rather
       than backers — `RecognitionStrip` takes a `label` prop, so switching it is one word.
 
-## 🧑 Vercel bot protection is challenging EVERYTHING, including /api/health
+## ✅ CLOSED 2026-09-05: Vercel bot protection no longer blocks scripted checks
+
+*Verified: plain curl with a browser User-Agent got real JSON from `/api/health`, and fetched every
+marketing page, the sitemap and the store. The entire post-deploy verification ran this way. If the
+403 ever returns it is a Vercel Firewall setting, not an outage — a real browser still works.*
+
+### The original item, kept for context
 
 - [ ] 🧑 **Decide whether Vercel's Attack Challenge Mode should stay on** (observed 2026-09-01, while
       trying to verify the Meta Pixel on production). Every request to `https://kheelona.com/`,

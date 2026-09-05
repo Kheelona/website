@@ -148,11 +148,15 @@ inverted once). Payment happens on **store.kheelona.com**, THIS repo through the
 `src/proxy.ts`; orders in Supabase, receipts via Resend, events at ₹99 behind signed QR links.
 Ship date **20 October 2026**. Rollback tag **`pre-v3-migration-2026-08-23`** = `b27fd25`.
 
-**⚠ 2026-09-01: `/api/health` CURRENTLY RETURNS A `Vercel Security Checkpoint` 403 TO ANYTHING
-SCRIPTED.** Attack Challenge Mode is on for the whole domain (`x-vercel-mitigated: challenge`), so
-curl and headless Chrome both get an interstitial, not the app. **That is not an outage** — a real
-browser solves the challenge — but it means no automated production check works right now, and it is
-why the Meta Pixel could only be verified locally. Founder item in `Technical-Todo.md`.
+**✅ RESOLVED 2026-09-05: SCRIPTED PRODUCTION CHECKS WORK AGAIN.** From 2026-09-01 this block warned
+that `/api/health` returned a `Vercel Security Checkpoint` 403 to anything scripted, because Attack
+Challenge Mode was on for the whole domain — no automated production check was possible, and it is
+why the Meta Pixel could only be verified locally. That is no longer true. On 2026-09-05 plain `curl`
+with an ordinary browser User-Agent got real JSON back:
+`{"ok":true,"store":"ready","preorder":"token","razorpay":"live","email":"configured","capi":"configured"}`,
+and the same UA fetched every marketing page, the sitemap and the store. **The whole 2026-09-05
+post-deploy verification was done this way.** Keep the history here rather than deleting it: if the
+403 returns, it is a Vercel Firewall setting and not a site outage, and a real browser still works.
 
 **`/api/health` IS THE FIRST THING TO CHECK** on any store question: readiness, the offer MODE
 (`preorder: token|full` — its flip to `full` triggers the manual sell-out copy sweep in
