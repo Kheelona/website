@@ -111,4 +111,13 @@ IndexNow, anything parked by the founder (CTA contrast, pixel, backlinks beyond 
   area), the AAP's content and bedtime guidance, a 6pm section; five sources incl. the IAP full-text PDF.
   QuillBot detector: **0% AI-generated**. Suite green, count unchanged (1154). Next: 6c
   (`what-to-look-for-in-a-safe-ai-toy`).
+- 2026-09-05 · commit 6c (C3, 3 of 6) · `what-to-look-for-in-a-safe-ai-toy` 292 → 860 body words. Faces the
+  consensus Perplexity repeats: Fairplay's 20 Nov 2025 advisory (150+ signatories, do not buy AI toys) and
+  Common Sense Media's 22 Jan 2026 assessment (none for 5 and under, extreme caution 6 to 12, >25% of
+  logged replies inappropriate, voice/transcript/behaviour data collected, attachment by design), then
+  "we mostly agree" in the words the founder already licensed on /safety, then the five checks, with
+  India's DPDP Act 2023 §9 (verifiable parental consent; no tracking, behavioural monitoring or targeted
+  ads at children) under check four. Kheelu is measured against the list using only published
+  mechanisms; the camera question stays open (Technical-Todo) and is asked generically. Five sources.
+  QuillBot detector: **0% AI-generated**. Suite green. Next: 6d (`should-kids-use-ai`).
 
