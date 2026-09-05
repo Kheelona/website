@@ -44,9 +44,11 @@ request. Priority is about consequence if it is never done, not about effort.
       The branch is archived as the tag `archived-demo-website-2026-09-05` if the preview is ever
       wanted back.
 
-## 🅿️ PARKED BY THE FOUNDER (2026-09-05): the mascot names itself on the home page
+## 🅿️ PARKED BY THE FOUNDER (2026-09-05, **re-confirmed 2026-09-06**): the mascot names itself on the home page
 
-**Decision: leave it. Do not re-raise it.** Recorded here with the full diagnosis so that whoever
+**Decision: leave it. Do not re-raise it.** Put to the founder a second time on 2026-09-06, with the
+two options priced (delete three words / give the mascot its own name). Answer was the same: keep it
+parked. **That is now two explicit decisions; treat it as settled.** Recorded here with the full diagnosis so that whoever
 picks it up later starts from the answer rather than re-deriving it.
 
 - [ ] **`src/features/home/components/Hero.tsx:22` says `"Hi, I'm Kheelu. Come in, I'll show you
@@ -78,13 +80,32 @@ is not.
 users only through two `aria-label`s. That was wrong — it is spoken in the hero bubble, visible in
 any screenshot of the home page.*
 
-## 🧑 The store's 404 page has never been styled
+## ✅ CLOSED 2026-09-06: the store's 404 (and three others) never rendered at all
 
-- [ ] **`404-store-path` ships with zero stylesheet links** — verified 0 before and 0 after the
-      dependency work, while the marketing 404 has 1. It is what a visitor sees if they hit
-      `store.kheelona.com/store`. Pre-existing and unrelated to the bump; found because the
-      emitted-HTML diff noticed Next had removed a now-pointless preload for a stylesheet the page
-      never applied. Small, and it is a `src/` change so it wants its own commit.
+- [x] **It was not "unstyled" — it was blank.** Four routes answered with an empty
+      `<html id="__next_error__">` document: no stylesheet, no text, no `lang`. The content
+      appeared only after JavaScript hydrated, and not at all without it. Verified on production.
+      Not only the store: `kheelona.com/stories/<unknown-slug>`, a public marketing URL pattern,
+      did the same, and so did `/thanks` when a **validly signed link** pointed at an order that
+      would not load — a person who had paid us, looking for their own order.
+      Cause is Next's: a thrown `notFound()` takes the error path and answers with a
+      client-rendered shell; a routing-level 404 does not (§8.34-a).
+      Fixed two ways: `dynamicParams = false` on the stories route, and on the store the pages
+      render while `src/proxy.ts` supplies the 404 via `NextResponse.rewrite(url, {status})`.
+      Record: `docs/checkpoints/blank-404s-2026-09-06.md`.
+
+## 🤖 Two follow-ons from that fix, neither urgent
+
+- [ ] **`/thanks` cannot tell a missing order from a failed query.** `maybeSingle()` returns a null
+      `data` for both, so a transient Supabase outage and a deleted order render the same page. The
+      copy was written to be honest under both readings ("Your link is fine"), so nothing is
+      misleading today — but "try again in a minute" is the right thing to say for an outage and we
+      cannot say it. Wants the `error` half of the Supabase response read, on the payment path, so
+      it is its own commit.
+- [ ] **`STORE_PAGES` in `lib/store/host.ts` now restates the store's route folders.** Adding a
+      store page means adding it there too. `test/store-host.test.ts` walks `src/app/store/` and
+      fails if they disagree, so this is a note rather than a risk — but the failure it prevents is
+      a live checkout page returning 404, which is worth knowing about before the test tells you.
 
 ## 🤖 Standing, now that floors exist for eight packages
 
@@ -128,15 +149,19 @@ pushed on `main` but **NOT deployed** — everything below assumes the founder h
       gap flagged during the agency audit as genuinely unverifiable: the domain does not yet have
       enough real traffic for CrUX. Nothing to fix, and no lab score substitutes for it. It will
       populate on its own as traffic grows.
-- [ ] **The property overview shows "Review snippets: 4 valid".** This site publishes no `Review` or
-      `aggregateRating` schema anywhere, deliberately (the never-invent-a-review law), so 4 valid
-      review snippets is unexplained. Most likely legacy Wix markup still in the index. Worth
-      confirming it is historical rather than something live emitting review markup we did not
-      write.
-      *(Related and NOT a defect: `/products/kheelu`'s two "non-critical issues" are
-      `Missing field 'aggregateRating' (optional)` and `Missing field 'review' (optional)`. Both are
-      optional and both are deliberately absent. Adding them to clear the warning would break the
-      brand law.)*
+- [x] **RESOLVED 2026-09-06: "Review snippets: 4 valid" is legacy Wix, and decaying.** Read from
+      the report rather than inferred. All four rows are the same URL,
+      `https://kheelona.com/contact`, item name **"Lumi - AI-Powered Talking Toy"**, **last
+      detected 27 July 2026** — the day *before* the current site went live on 28 July. "AI-Powered"
+      is a hype phrase the voice lint bans and has never been in this codebase. The report's own
+      trend steps 15 → 12 → 7 → 4, which is what dropping out of the index looks like.
+      Confirmed live that `/contact` emits `Organization`, `WebSite`, `ContactPage` and
+      `BreadcrumbList` and contains no `Review`, no `aggregateRating`, and neither "Lumi" nor
+      "AI-Powered". **Nothing to fix; it clears itself.**
+      *(Still not a defect, and still deliberate: `/products/kheelu`'s two "non-critical issues" are
+      `Missing field 'aggregateRating' (optional)` and `Missing field 'review' (optional)`. Adding
+      them to clear the warning would break the never-invent-a-review law.)*
+
 - [ ] **Keep the `/products/lumi` history alongside the new route** when comparing organic
       performance. They are one page; a report that drops the old URL will read as a collapse that
       did not happen.
@@ -149,7 +174,7 @@ pushed on `main` but **NOT deployed** — everything below assumes the founder h
       as broken today and this is not urgent. It does need settling **before
       `gemini-handoff/hero-2026-08/` is used**, because that kit composes the two together.
 
-## 🧑 Specifications, still blocked (agency D08)
+## 🧑 Specifications, still blocked (agency D08) — re-asked 2026-09-06, still nothing signed off
 
 - [ ] **Dimensions, weight, battery runtime WITH test conditions, charging, materials and cleaning,
       box contents, warranty.** Open as `TODO(claims-specs)` since July. The product page says we
@@ -157,22 +182,49 @@ pushed on `main` but **NOT deployed** — everything below assumes the founder h
       the numbers exist they render in a table; a buying-critical fact that is still undecided shows
       the literal words "Not yet announced" rather than being hidden. **No placeholder, no invented
       number, and no empty table shell.**
+      *Asked again on 2026-09-06; the founder's answer was that none are final yet. Nothing to build
+      until numbers exist — the component would have no data to render and the law above forbids
+      shipping the shell empty. Battery runtime needs its TEST CONDITIONS alongside the number, or
+      the claim is not verifiable.*
 
-## 🧑 Tag campaigns before ad spend scales
+## 🧑 Tag campaigns before ad spend scales — the tooling is done, the adoption is yours
 
-- [ ] **Adopt `docs/utm-conventions.md`.** The Ahrefs export for the fortnight to 2026-09-05 shows
-      `utm_campaign` and `utm_term` at **100% "Direct / None"** and five tagged visits in total,
-      while a Meta Pixel has been running since 2026-09-01 for paid social. An untagged click is
-      untagged forever: this is cheap now and unrecoverable later. Not in the agency handoff, which
-      deferred analytics.
+- [x] **`npm run utm` exists (2026-09-06)** and builds a link to `docs/utm-conventions.md` or
+      refuses and names the rule. It catches the two mistakes that are silent rather than loud:
+      casing drift (`Paid_Social` and `paid_social` are two rows in every analytics tool that
+      exists) and a value from outside the vocabulary, which reports cleanly and aggregates with
+      nothing. `test/utm.test.ts` parses the doc's table so the tool and the doc cannot drift.
+      Found while writing it, and previously recorded nowhere: **`create-order` already copies the
+      landing URL's `utm_` values onto the order row**, so a paid pre-order can be traced to the ad
+      that caused it and not merely to the visit. That half has worked all along; it has simply had
+      nothing to record.
+- [ ] 🧑 **Use it before Meta spend scales.** Every ad, bio link and printed QR gets a tagged
+      destination:
+      `npm run utm -- --source=instagram --medium=paid_social --campaign=2026-10-launch --path=/products/kheelu --content=rabbit-hero-a`
+      An untagged click is untagged forever — this is cheap now and unrecoverable later. Printed QR
+      codes especially: those cannot be changed after they go to print.
 
 ## 🧑 One redirect chain, and it lives in Vercel rather than this repo
 
-- [ ] **`http://www.kheelona.com` takes two hops to reach the apex**:
-      `http://www` → 308 → `https://www` → 308 → `https://kheelona.com`. Found in Ahrefs Site Audit
-      (crawl 2026-09-03), the only chain on the site. It affects only someone typing `http://www`
-      by hand, so the value is low, but Vercel's domain settings can usually collapse it to one hop.
-      Nothing in this repo can fix it.
+- [ ] **`http://www.kheelona.com` takes two hops to reach the apex.** Re-verified 2026-09-06:
+
+      | Request | Answer |
+      |---|---|
+      | `http://www.kheelona.com/` | 308 → `https://www.kheelona.com/` |
+      | `https://www.kheelona.com/` | 308 → `https://kheelona.com/` |
+      | `http://kheelona.com/` | 308 → `https://kheelona.com/` — **one hop, already correct** |
+
+      So it is www-specific, and it affects only someone typing `http://www` by hand. The value is
+      low and it is listed here for completeness, not urgency.
+      **Nothing in this repo can fix it.** Vercel's edge performs the protocol upgrade before the
+      request ever reaches `next.config.ts` or `src/proxy.ts`, so no redirect we write is consulted.
+      Where to look: Vercel → the project → Settings → Domains → `www.kheelona.com`, which should be
+      set to redirect to `kheelona.com` (307/308) rather than serving. If it already is, the second
+      hop is Vercel's own HTTPS upgrade and **the chain is not removable** — in which case close
+      this item as "platform behaviour" rather than leaving it open.
+      Verify either way with:
+      `curl -s -o /dev/null -w '%{http_code} -> %{redirect_url}\n' http://www.kheelona.com/`
+      One hop looks like `308 -> https://kheelona.com/`.
 
 ## 🤖 Worth doing, not urgent
 

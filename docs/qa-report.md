@@ -1504,3 +1504,93 @@ Every guard was proven red before it was trusted (§8.28-g). The restructured fl
 assertions on the un-bumped tree — including, decisively,
 `node_modules/next/node_modules/postcss@8.4.31`, the nested copy the previous structure could never
 have seen. The story-parse guard was proven by reverting the fix and watching it fail.
+
+---
+
+# 2026-09-06 — the blank-404 round
+
+Record: `docs/checkpoints/blank-404s-2026-09-06.md`. Laws §8.34 a–e. Rollback tag
+`pre-blank-404-fix-2026-09-06` = `95ad817`.
+
+## What the gate found before any code moved
+
+The open item said "the store's 404 page has never been styled". It was blank, not unstyled, and it
+was not only the store. Four routes answered a 404 with an empty `<html id="__next_error__">`
+document — no stylesheet, no text, no `lang` — and rendered only after JavaScript hydrated. Measured
+on production with a browser UA, not inferred:
+
+| URL | Status | Stylesheets | Server-rendered text |
+|---|---|---|---|
+| `store.kheelona.com/<typo>` | 404 | 0 | none |
+| `store.kheelona.com/store` | 404 | 0 | none |
+| `kheelona.com/stories/<unknown-slug>` | 404 | 0 | none |
+| `/thanks`, valid signed link, order will not load | 404 | 0 | none |
+| *control:* `kheelona.com/<typo>` | 404 | 1 | full |
+
+The control row is the diagnosis: a thrown `notFound()` takes Next's error path, a routing-level 404
+does not.
+
+## Gate results
+
+| Gate | Before | After |
+|---|---|---|
+| Vitest | 1084 pass, 108 files | **1115 pass, 111 files** |
+| `tsc --noEmit` | 0 | **0** |
+| `npm run build` | 0 | **0** |
+| `qa:sweep` | clean 34/34, 79 accepted | **clean 34/34, 79 accepted** |
+| `qa:payment` | clean | **clean**, incl. forged-webhook refusal |
+| Lighthouse home | 100/96/96/100 | **100/96/96/100** |
+| Lighthouse product | 100/96/96/100 | **100/96/96/100** |
+| Lighthouse store | 99/96/96/66 | **100/96/96/66** |
+| `npm audit`, both manifests | 0 | **0** |
+
+Emitted-output diffs, which are the actual gate: server-answer matrix changed **exactly four rows**,
+all `css=0` → `css=1`, with statuses, redirect destinations, `x-robots-tag` and all six security
+headers byte-identical; generated CSS byte-identical at 60164; **bundle digest identical**, proving
+nothing that ships to the browser moved; prerendered head diff is removals only and the only removal
+is the deleted `/404-store-path`; route manifest unchanged at 21 redirects / 1 headers / 3 rewrites.
+
+`qa:sweep` holding at exactly 79 accepted is the load-bearing number — a different count would mean
+the rendered DOM had moved on one of the 17 routes.
+
+## Three experiments run before choosing a fix
+
+Because the store case is a trilemma and reasoning about Next's render path is not evidence:
+
+| Approach | Status | SSR body | Chrome |
+|---|---|---|---|
+| `notFound()` (before) | 404 ✓ | none ✗ | store, client-only |
+| `dynamicParams = false` | 404 ✓ | full ✓ | **marketing ✗** on the payment host |
+| `loading.tsx` Suspense boundary | **200 ✗** | chrome only | store ✓ |
+| render + `rewrite(url, {status:404})` | 404 ✓ | full ✓ | store ✓ |
+
+Only the last gets all three, and it was probed with a disposable build before any design was built
+on it. The second is exactly right for `/stories/[slug]`, where marketing chrome IS the correct
+chrome.
+
+## One mistake I made, again in the verification tool
+
+Re-driving the signed claim path, the first attempt returned **200 instead of the expected 303**, and
+the reflex was to suspect the change I had just made to `src/proxy.ts`. The change was fine. My probe
+minted the token with the full 43-character HMAC, while `sign()` truncates to 16 — so it failed
+`TOKEN_SHAPE` and fell through to the ordinary rewrite, which is the documented behaviour for a
+malformed link. Re-minted correctly, every attribute matched: 303, `Location: /thanks` with the query
+stripped, `kh_order` HttpOnly SameSite=lax Max-Age 7200, `cache-control: private, no-store`.
+
+Third round running in which a verification tool was the broken thing, after the capture script that
+double-counted JSON-LD via the RSC payload and the esbuild invocation that reported 68 broken
+stories. **Suspect the probe before the code.**
+
+## A guard that found something good
+
+The first UTM guard banned `utm_` anywhere in `src/` and flagged two payment files. Both were
+**reading** UTM values off the landing URL to record which campaign produced an order — the opposite
+of the violation, and a capability documented nowhere. A detector that matches a name matches both
+directions (§8.34-d); it now matches a query string being built, and both directions are asserted.
+
+## Paired-test discipline
+
+Every guard proven red before being trusted (§8.28-g): `dynamicParams` removed from the stories route
+(2 assertions red), `/ideabaaz` dropped from `STORE_PAGES` (`"/ideabaaz exists but the proxy would
+404 it"`), a real `notFound()` call appended to a store file (red) alongside a commented mention
+(correctly green), and a source added to the UTM tool but not the doc (red).

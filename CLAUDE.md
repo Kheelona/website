@@ -1,5 +1,25 @@
 # kheelona.com — session entry point
 
+**🟢 EVERY 404 RENDERS ON THE SERVER NOW (2026-09-06). PUSHED, NOT DEPLOYED.** Record:
+`docs/checkpoints/blank-404s-2026-09-06.md`; laws **§8.34**; rollback tag
+`pre-blank-404-fix-2026-09-06` = `95ad817`. Commits `9dac303` → `58f2821` → `1f4d26a`.
+
+Four things bind. (1) **A thrown `notFound()` NEVER server-renders in Next 16** — it takes the error
+path and answers with an empty `<html id="__next_error__">` document: no stylesheet, no text, no
+`lang`. Four routes did this in production, including `kheelona.com/stories/<unknown-slug>` and
+`/thanks` for a person who had PAID us. A routing-level 404 renders fine, which is why
+`kheelona.com/typo` was always OK. **So: on any route reachable by mistyping a URL, do not throw** —
+use `dynamicParams = false`, or render the page and let the proxy carry the status.
+(2) **`NextResponse.rewrite(url, { status: 404 })` works** and is the only way to get a 404 that BOTH
+renders and carries the right code. `src/proxy.ts` does this for the store.
+(3) **`STORE_PAGES` in `lib/store/host.ts` now lists the store's real pages, and adding a store page
+means adding it there** — the tightening direction 404s a live checkout page.
+`test/store-host.test.ts` walks `src/app/store/` and fails if they disagree, so the suite catches it,
+but know it before the test tells you. (4) **`/404-store-path` is DELETED** — it rendered the
+marketing 404 on the payment host, and the catch-all already covers the doubled prefix. Also new:
+**`npm run utm`** builds campaign links to `docs/utm-conventions.md` or refuses; and
+`create-order` was already recording `utm_` values onto the order row, which nothing had documented.
+
 **🟢 DEPENDENCIES ARE CLEAN ON BOTH MANIFESTS (2026-09-05).** `npm audit` reads **0** for the site
 and 0 for `launch-video/`, from 38 open Dependabot alerts. Record:
 `docs/checkpoints/dependency-sweep-2026-09-05.md`; rollback tag `pre-dependency-bump-2026-09-05` =

@@ -1959,3 +1959,100 @@ cannot be repaired by the obvious lockfile-only command — it has to be install
 
 And `.github/dependabot.yml` would not have helped: it configures version-update PRs, not security
 alerts, which come from the dependency graph and cannot be filtered by config.
+
+---
+
+# §8.34 A 404 THAT DOES NOT RENDER (2026-09-06)
+
+*Record: `docs/checkpoints/blank-404s-2026-09-06.md`. Rollback tag
+`pre-blank-404-fix-2026-09-06` = `95ad817`.*
+
+## 8.34-a A THROWN `notFound()` NEVER SERVER-RENDERS
+
+Every 404 in this app reached by calling `notFound()` was answering with an empty document:
+
+```html
+<html id="__next_error__"><head>…</head><body></body></html>
+```
+
+No stylesheet, no text, no `lang`, no font variables. The content appeared only once JavaScript had
+downloaded and hydrated, and never at all without it. Four routes did this in production, and one of
+them was a public marketing URL pattern: `kheelona.com/stories/<unknown-slug>`.
+
+**The cause is Next's, not this app's.** `notFound()` throws; `app-render` catches the throw and
+builds its reply with `getErrorRSCPayload`, described in Next's own source as "the data necessary to
+render `<AppRouter />` when an error state is triggered" — a client-rendered shell. A URL that simply
+matches **no route** never enters that path and renders normally, which is exactly why
+`kheelona.com/typo` was always fine while `kheelona.com/stories/typo` was not. 16.3.4 was the latest
+release when this was found; there is nothing upstream to wait for.
+
+So: **on any route a visitor can reach by mistyping a URL, do not throw.** There are two ways not to.
+
+**Let the router refuse it.** A dynamic segment with `generateStaticParams` gets
+`export const dynamicParams = false`, and an unlisted param stops at the router instead of reaching
+the page. One line, no trade-off, and it is what `/stories/[slug]` now does.
+
+**Or render the page and attach the status elsewhere.** `NextResponse.rewrite(url, { status: 404 })`
+works — verified by curl, 404 with a full server-rendered body — so the page can be an ordinary page
+while the proxy supplies the status. That is the only route to a 404 that both renders AND carries
+the right code, and it is what the store now does.
+
+`test/not-found-ssr.test.ts` holds both halves: every route that lists its params must refuse the
+ones it did not list, and no file under `src/app/store/` may call `notFound()`.
+
+## 8.34-b THE STORE'S DEAD ENDS ARE ONE COMPONENT
+
+`NotFoundPanel` renders in four places — the `not-found.tsx` boundary, the `[...rest]` catch-all,
+`/thanks` when the order behind a valid link will not load, and `/e/[event]` when the store is
+unconfigured. They were four separate dead ends before, three of which rendered nothing.
+
+The `/thanks` case is the one that mattered most and was found by reading the file rather than by
+any report: `if (!data) notFound()` fired for a **validly signed link whose order row would not
+load**, so a person who had paid us, looking for their own order, got the blank page. It renders a
+panel now, with WhatsApp and **no "buy again" button** — sending someone who already paid back to
+the buying page is the wrong offer, which is why `cta` is a prop.
+
+A latent bug found alongside it and deliberately NOT fixed in the same commit: `maybeSingle()`
+returns a null `data` both when the row is missing and when the query failed, so a transient
+Supabase outage and a deleted order are indistinguishable here. Logged in `Technical-Todo.md`. The
+copy was written to be honest under both readings ("Your link is fine").
+
+`/404-store-path` was **deleted rather than fixed**. It rendered the MARKETING 404 on the payment
+host — the exact thing the catch-all was added to prevent — and the catch-all already covers the
+doubled `/store` prefix it existed for.
+
+## 8.34-c DUPLICATED ROUTING KNOWLEDGE NEEDS A GUARD THAT WALKS THE FILESYSTEM
+
+`STORE_PAGES` in `lib/store/host.ts` restates what the folders under `src/app/store/` already say,
+which is a real cost on the host that takes money. **The dangerous direction is tightening**: a list
+missing a page 404s a live checkout page, and no visitor would report it.
+
+So the folders are the source of truth and the test walks them. `store-host.test.ts` reads
+`src/app/store/`, turns each `page.tsx` into the URL a visitor would type (substituting a sample
+value for a dynamic segment, skipping `_` folders and the catch-all), and asserts the proxy admits
+every one. Proven red by dropping `/ideabaaz` from the list.
+
+The same shape applies to any list that mirrors the filesystem: **write the guard from the
+filesystem, not from the list**, or the guard just restates the bug.
+
+## 8.34-d A DETECTOR THAT MATCHES A NAME MATCHES BOTH DIRECTIONS
+
+The first UTM guard banned `utm_` anywhere in `src/`, and flagged two payment files. Both were
+**reading** UTM values off the landing URL to record which campaign produced an order — the opposite
+of the violation, and a capability nothing had documented.
+
+A guard against writing must match writing: a query string being built (`[?&]utm_…=`) or
+`searchParams.set("utm_…`, not the substring. The corrected test asserts both directions and the
+capture behaviour now has a test of its own so it cannot be deleted by accident.
+
+## 8.34-e A DOC IS NOT A MECHANISM
+
+`docs/utm-conventions.md` had been the whole of campaign tagging since it was written, and a doc
+enforces nothing. `npm run utm` builds a link to the scheme or refuses and names the rule; the two
+mistakes it exists to stop are both silent — casing drift, which splits one campaign into two rows
+in every analytics tool that exists, and a value from outside the vocabulary, which reports cleanly
+and aggregates with nothing.
+
+The doc stays the source of truth: `test/utm.test.ts` parses its parameter table and fails if the
+tool disagrees, and asserts the doc's worked example is byte-for-byte what the tool emits. A doc and
+a tool that can drift will.
