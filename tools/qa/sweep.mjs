@@ -63,6 +63,7 @@ const FORBIDDEN = [
   [/30 September/i, "retired: the date deadline died 2026-08-23, urgency is the 500-unit cap"],
   [/₹9,999/, "retired: the post-cap price is ₹7,999"],
   [/1 October 2026/, "retired: the ship date is 20 October 2026"],
+  [/(reserv\w*|spot|place)[\s\S]{0,60}\b(is|it is|it's) free\b/i, "retired: reserving costs a refundable ₹499, nothing about it is free (C1, 2026-09-05)"],
 ];
 
 /** The one contrast pair the founder has accepted (§8.29, 2026-08-24): white

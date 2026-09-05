@@ -85,6 +85,16 @@ const RETIRED: readonly [RegExp, string][] = [
     /does not commit you to buy|no commitment/i,
     "a paid token IS a commitment that we refund on request; say refundable, not uncommitted",
   ],
+  /* 2026-09-05 (SEO round, C1): a journal article closed with "reserve a spot on
+     the list. It is free, and it holds the launch price" — a false price, live,
+     on a page written to be quoted. The idea banned is "reserving is free". The
+     Kheelona+ line ("included free for 6 months") never mentions reserving, so
+     it does not match. `[\\s\\S]{0,60}` rather than `[^.]` because the false
+     claim crossed a full stop ("...the list. It is free"). Proven red first. */
+  [
+    /(reserv\w*|spot|place)[\s\S]{0,60}\b(is|it is|it's) free\b/i,
+    "reserving costs a refundable ₹499 (TOKEN_PRICE); nothing about a reservation is free",
+  ],
 ];
 
 describe("retired promises stay retired", () => {

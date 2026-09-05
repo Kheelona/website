@@ -32,7 +32,7 @@ commit). Developer handoff: `docs/seo/handoff-2026-09-05.md`. Rollback tag `pre-
 
 ## 🤖 Engineering (ticked in the commit that ships each)
 
-- [ ] C1 · the false "reserve a spot on the list. It is free" line in `src/lib/stories.ts` + banned-idea pattern
+- [x] C1 · the false "reserve a spot on the list. It is free" line in `src/lib/stories.ts` + banned-idea pattern (shipped 2026-09-05)
 - [ ] A2/A3 · real `published`/`updated` dates from git, derived read time, `og:type article`, sitemap `lastModified` for stories, `JOURNAL_REVIEWED` retired
 - [ ] B1/B2/B3 · `sameAs` (five founder-confirmed profiles), Person `@id`s for the three founders + Ria as `employee`, article authors by `@id`, `memberOf` NVIDIA Inception + nasscom
 - [ ] A1/A5/B4 · redirects `/post/:slug*`, `/terms-conditions`, `/for-the-parents`; BreadcrumbList on the four policy pages; `llms.txt` + `pricing.md` refresh

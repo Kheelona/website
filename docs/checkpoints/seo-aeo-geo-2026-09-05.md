@@ -53,3 +53,10 @@ IndexNow, anything parked by the founder (CTA contrast, pixel, backlinks beyond 
   baseline (31 heads + JSON-LD, sitemap, llms.txt, pricing.md, robots) saved to the scratchpad; this
   checkpoint, the handoff skeleton, Technical-Todo items, CLAUDE.md banner, project-state. Next: commit 1
   (the false "it is free" line + banned-idea pattern).
+- 2026-09-05 · commit 1 (C1) · `src/lib/stories.ts` "reserve a spot on the list. It is free, and it holds
+  the launch price" → "pre-orders are open, and a refundable ₹499 holds your place" (via `TOKEN_PRICE`).
+  New banned-idea pattern `/(reserv\w*|spot|place)[\s\S]{0,60}\b(is|it is|it's) free\b/i` in
+  `test/preorder-copy.test.ts` AND `tools/qa/sweep.mjs` (§8.26-h: the two lists move together). Proven
+  red first: the first draft used `[^.]` and MISSED, because the false claim crossed a full stop; the
+  lesson is that a banned-idea pattern must be allowed to span a sentence boundary. Gates: suite green.
+  Next: commit 2 (A2/A3 dates and read time).

@@ -96,7 +96,7 @@ const CORE: Story[] = [
       { h: "The mother tongue advantage", p: "The loop works best in the languages you speak at home. A child who can wonder in their own words wonders more. That is why a voice toy for kids should speak your language, not just English." },
       { p: "Vocabulary is the visible result. The invisible one is bigger: a child who expects to be heard. That expectation walks into every classroom with them." },
       { p: "You cannot be available for every loop, and you should not have to be. That is the gap Kheelu lives in: a cognitive development toy that keeps serve and return going, in up to 10 home languages, with you watching the whole exchange in the parent app." },
-      { p: "If a house full of good questions sounds right to you, reserve a spot on the list. It is free, and it holds the launch price." },
+      { p: `If a house full of good questions sounds right to you, pre-orders are open, and a refundable ${TOKEN_PRICE} holds your place.` },
     ],
   },
   {
