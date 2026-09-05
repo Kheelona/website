@@ -218,10 +218,13 @@ repo root. That old app is preserved at the tag **`pre-revamp-2026-07`** and its
   **The `/a` `/b` `/c` wireframe drafts this line used to promise DID NOT EXIST** on that branch or
   on `main` when it was checked — the claim was stale, and is recorded here rather than deleted so
   nobody goes looking for them again.
-  **⚠ DELETING THE BRANCH DID NOT TAKE THE URL DOWN.** `website-hdn2.vercel.app` still answered 200
-  afterwards, because Vercel keeps serving the last deployment for a project alias. Removing it is a
-  DASHBOARD action and therefore the founder's (same gate as every Vercel change); it is in
-  `Technical-Todo.md` until done.
+  **IT TOOK TWO STEPS, AND ONLY THE SECOND ONE WORKED.** Deleting the branch left
+  `website-hdn2.vercel.app` still answering 200, because Vercel keeps serving the last deployment for
+  a project alias. The founder deleted the Vercel project `website-demo-pre-launch` the same day and
+  the host now returns 404 `DEPLOYMENT_NOT_FOUND` (verified, with a control check that the real hosts
+  still answer 200). A 404 is a better ending than a noindex header: anything indexed from that host
+  drops out on its own. **The general lesson: a preview host is not retired by anything in this
+  repo — the deployment has to go, and that is a dashboard action.**
 - **🟢 THE SITE IS LIVE TO CUSTOMERS** at **https://kheelona.com** (2026-07-28). The apex is the
   canonical host and `www` 308s to it — settled deliberately, because every URL the code emits
   (sitemap, canonicals, robots, WhatsApp share, every JSON-LD `@id`) is apex. It was briefly the
