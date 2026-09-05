@@ -4,7 +4,8 @@
  *
  *  Use this instead of grepping HTML (§8.25-bb). A Next page's source carries
  *  the RSC flight payload, so a grep finds strings that are not on the page:
- *  it once reported "Meet Lumi" on the store's 404 and sent a chase after a bug
+ *  it once reported "Meet Lumi" (the product's name before the 2026-09-05
+ *  rename) on the store's 404 and sent a chase after a bug
  *  that did not exist. It is also the honest way to run the voice lint, since
  *  copy is assembled from constants and split across JSX nodes. */
 import { openPage, loadSettled, looksLocal } from "./lib/browser.mjs";

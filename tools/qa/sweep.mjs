@@ -23,7 +23,7 @@ const STORE = process.env.SWEEP_STORE ?? "http://store.kheelona.com:3456";
  *  template; the rest are named individually so none can be forgotten. */
 const ROUTES = [
   `${BASE}/`,
-  `${BASE}/products/lumi`,
+  `${BASE}/products/kheelu`,
   `${BASE}/playos`,
   `${BASE}/safety`,
   `${BASE}/setup`,
