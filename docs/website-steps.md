@@ -2088,3 +2088,34 @@ made exactly the mistake that law was written about.
 
 Corollary: **`x-matched-path` on a Vercel response tells you which route actually served it**, and
 is the fastest way to tell a rewrite that worked from one that was thrown away.
+
+## 8.34-g A HOST-GATED TAG MEANS A LOCAL LIGHTHOUSE SCORE IS NOT THIS SITE'S SCORE
+
+Every measurement tool here is host-gated: GA4 and the Meta Pixel fire only on `GA4_HOSTS`, and
+Vercel Analytics only in production. So a local Lighthouse run scores a page **missing three of its
+four tags**, and this repo had only ever run it locally.
+
+Measured on production for the first time on 2026-09-06: **best-practices 74, against a gate of
+90** — and 96 locally on the same build. Attributed with a control (§8.28-g), by re-running against
+production with facebook blocked:
+
+| Run | Perf | A11y | BP | SEO |
+|---|---|---|---|---|
+| live, all tags | 100 | 96 | **74** | 100 |
+| facebook blocked | 99 | 96 | **96** | 100 |
+| facebook + googletagmanager blocked | 98 | 96 | **96** | 100 |
+
+The Meta Pixel costs 22 points; GA4 costs none. Seven are recoverable (the console/inspector audits,
+caused by CSP Report-Only violations); the rest is `third-party-cookies`, weight 5 of 27, which is
+the pixel's `fr` cookie and has no configuration that passes. **Best-practices cannot reach 90 while
+the pixel runs.** Like §8.29's contrast, that is a decision to state and hold, not a bug to chase.
+
+**The rule: run Lighthouse against production, and re-run it after adding any third party.** A tool
+you add behind a host gate is invisible to every check you run locally — which is how 22 points went
+missing for five days.
+
+Corollary, and the more urgent half: **Lighthouse's `errors-in-console` audit reads CSP Report-Only
+violations off the console**, which makes it a far faster way to read what a Report-Only policy is
+catching than waiting on `/api/csp-report` in the Vercel log. It found three the day it was pointed
+at production: the Meta Pixel needs `www.facebook.com` in `frame-src` and `form-action`, and GA4
+needs `www.googletagmanager.com` in `img-src`. **Enforcing the policy as it stands would break both.**

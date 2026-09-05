@@ -246,7 +246,57 @@ pushed on `main` but **NOT deployed** — everything below assumes the founder h
 security headers live, the live pages carry no console errors or failed requests of their own, and
 `npm audit` reports nothing in `next` itself. [2026-09-05: that phrasing was always slightly off — `next` never had an advisory of its own, it was flagged via postcss and sharp. Both manifests now read 0.]
 
+# 🔴 MEASURED 2026-09-06: PRODUCTION FAILS ITS OWN BEST-PRACTICES GATE, AND THE META PIXEL IS WHY
+
+- [ ] 🧑 **Lighthouse best-practices on production is 74. The gate is 90.** It has been since the
+      Meta Pixel landed on 2026-09-01 and nobody saw it, because **Lighthouse had only ever been run
+      locally, where the pixel is host-gated OFF** (§8.30). Local still reads 96; production reads
+      74. Same page, same build.
+
+      Attributed with a control rather than guessed — Lighthouse on production with facebook blocked:
+
+      | Run | Perf | A11y | **BP** | SEO |
+      |---|---|---|---|---|
+      | live, all tags | 100 | 96 | **74** | 100 |
+      | facebook blocked | 99 | 96 | **96** | 100 |
+      | facebook + googletagmanager blocked | 98 | 96 | **96** | 100 |
+
+      **The Meta Pixel alone costs 22 points. GA4 costs zero.** It splits in two:
+
+      - **7 points are recoverable**: `errors-in-console` and `inspector-issues`, both caused by the
+        CSP Report-Only violations above. Adding the three origins clears them and gets BP to **81**.
+      - **The other ~19 are not**: `third-party-cookies` (weight 5 of 27) is the pixel's `fr` cookie
+        from `facebook.com/tr/`. Lighthouse penalises third-party cookies outright now. **There is no
+        configuration that keeps the pixel and passes this audit.**
+
+      So **best-practices cannot reach 90 on production while the Meta Pixel runs.** That is a
+      decision, not a bug, and it needs the same treatment §8.29 gave the CTA contrast: either
+      accept it explicitly and write the number down so nobody "fixes" it, or drop the pixel.
+      **Founder's call.** Nothing else on the site regressed — perf, a11y and SEO are unchanged, and
+      a11y 96 still clears its gate comfortably.
+
+      *Method note for whoever repeats this: run Lighthouse against **production**, not localhost.
+      Every measurement tool on this site is host-gated, so a local score is a score for a page that
+      is missing three of its four tags (§8.34-f is the same lesson in a different place).*
+
 # 🟠 HIGH — but neither is actionable today, and that is deliberate
+
+**🔴 READ THIS BEFORE FLIPPING — the reports have now been read, and the policy is NOT ready
+(2026-09-06).** Lighthouse against **production** surfaced the Report-Only violations directly,
+which is faster than waiting on the Vercel log and is the first time anyone has looked. Three
+things are being refused today and **would break if the policy were enforced as it stands**:
+
+| Refused | Directive that refuses it | Whose |
+|---|---|---|
+| frame `https://www.facebook.com/` | `frame-src` | Meta Pixel |
+| send form data to `https://www.facebook.com/tr/` | `form-action` | Meta Pixel |
+| load image `https://www.googletagmanager.com/a?…` | `img-src` | GA4 |
+
+`www.facebook.com` is in `connect-src` and `img-src` but not `frame-src` or `form-action`, and
+`www.googletagmanager.com` is in `script-src` and `connect-src` but not `img-src`. **Flipping now
+would silently break Meta Pixel event delivery and part of GA4.** The three additions are the
+prerequisite, and they are safe to make in Report-Only at any time — but `form-action` widening on
+a payment host is a security judgement, so it is the founder's call, not mine.
 
 - [ ] 🤖 **Flip the CSP from Report-Only to enforcing** (§8.28-a, owned by `security-review.md`).
       **Time-gated on purpose: do not do this before roughly 2026-08-26.** It needs a few days of
