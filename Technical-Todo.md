@@ -24,6 +24,39 @@ request. Priority is about consequence if it is never done, not about effort.
 
 ---
 
+# 🟠 FROM THE DEPENDENCY SWEEP (2026-09-05)
+
+*Record: `docs/checkpoints/dependency-sweep-2026-09-05.md`. Both manifests now read
+`npm audit: found 0 vulnerabilities`. Rollback tag `pre-dependency-bump-2026-09-05` = `a03871f`.*
+
+## 🧑 A naming collision that IS visible to visitors, and I previously said was not
+
+- [ ] **On the home page the mascot says "Hi, I'm Kheelu" while the hero product is also Kheelu.**
+      `src/features/home/components/Hero.tsx:22`. A Foxy-Deer introduces itself by the same name as
+      the cream rabbit beside it. The rename checkpoint claimed the mascot's name reached users only
+      through two `aria-label`s — that was wrong, and the art-reconciliation item was rated
+      non-urgent on the strength of it. Say lines are founder-approved copy, so this is your call:
+      either the mascot stops naming itself, or the two become one character in the artwork.
+      (`/products/kheelu` says "This is Kheelu. Go on, say hello." pointing AT the product, which
+      now reads correctly and needs no change.)
+
+## 🧑 The store's 404 page has never been styled
+
+- [ ] **`404-store-path` ships with zero stylesheet links** — verified 0 before and 0 after the
+      dependency work, while the marketing 404 has 1. It is what a visitor sees if they hit
+      `store.kheelona.com/store`. Pre-existing and unrelated to the bump; found because the
+      emitted-HTML diff noticed Next had removed a now-pointless preload for a stylesheet the page
+      never applied. Small, and it is a `src/` change so it wants its own commit.
+
+## 🤖 Standing, now that floors exist for eight packages
+
+- [ ] **Raising a floor is normal; lowering one re-opens an advisory.** `test/dependency-floor.test.ts`
+      now floors `next`, `eslint-config-next`, `@storybook/nextjs-vite`, `postcss`, `sharp`, `nanoid`,
+      `js-yaml`, `browserslist`, `brace-expansion` (per-major) and `fflate`, and bans `image-size`
+      outright. If a future bump needs to go under one, the argument gets made in that file.
+
+---
+
 # 🟠 FROM THE AGENCY AUDIT ROUND (2026-09-05)
 
 *Record: `docs/checkpoints/agency-audit-2026-09-05.md`. Laws §8.32. The code is committed and
@@ -85,7 +118,7 @@ pushed on `main` but **NOT deployed** — everything below assumes the founder h
 
 **None.** Verified 2026-08-23: `/api/health` green on both hosts, all 15 routes 200, all seven
 security headers live, the live pages carry no console errors or failed requests of their own, and
-`npm audit` reports nothing in `next` itself.
+`npm audit` reports nothing in `next` itself. [2026-09-05: that phrasing was always slightly off — `next` never had an advisory of its own, it was flagged via postcss and sharp. Both manifests now read 0.]
 
 # 🟠 HIGH — but neither is actionable today, and that is deliberate
 

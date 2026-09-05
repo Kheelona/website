@@ -1429,3 +1429,78 @@ measurement rather than a claim.
 **It also caught its own bug:** the first version grepped the HTML for `application/ld+json` and
 double-counted, because a Next page's source carries the RSC flight payload (§8.25-bb). Parsing the
 real `<script>` elements was the fix. A verification tool is code, and it gets the same scepticism.
+
+---
+
+# 2026-09-05 — the dependency sweep (38 Dependabot alerts to zero)
+
+Record: `docs/checkpoints/dependency-sweep-2026-09-05.md`. Laws §8.33. Rollback tag
+`pre-dependency-bump-2026-09-05` = `a03871f`.
+
+## Gates
+
+| Gate | Before | After |
+|---|---|---|
+| Vitest | 1002 pass, 107 files | **1084 pass, 108 files** |
+| `tsc --noEmit` | 0 | **0** |
+| `npm run build` | 0 | **0** |
+| `qa:sweep` | clean 34/34, 79 accepted | **clean 34/34, 79 accepted** |
+| `qa:payment` | clean | **clean, zero CSP violations** |
+| Lighthouse home | 99 / 96 / 96 / 100 | **100 / 96 / 96 / 100** |
+| Lighthouse product | 99 / 96 / 96 / 100 | **100 / 96 / 96 / 100** |
+| Lighthouse store | 90 / 96 / 96 / 66 | **99 / 96 / 96 / 66** |
+| `npm audit`, site | 11 groups | **0** |
+| `npm audit`, launch-video | 8 groups | **0** |
+
+The store's perf moving 90 → 99 is the framework bump paying for itself. The accepted-violation count
+holding at exactly 79 says the §8.29 decision was neither widened nor quietly "fixed" while the
+dependency tree moved under it.
+
+## Why the suite was the weakest evidence, and what replaced it
+
+`test/setup.ts` mocks every Next surface the components touch, so **1084 green tests could not have
+detected a Next regression**. The gate was therefore built on artefact diffs, all captured before
+touching anything:
+
+- **Route surface**: `routes-manifest.json` identical — 21 redirects, 1 headers entry, rewrites
+  unchanged.
+- **Normalized head markup** across all 14 prerendered pages, with content hashes normalized. Found
+  exactly one change (below).
+- **Generated CSS**: byte-identical at 60164 bytes through every commit, which also covers
+  autoprefixing when `caniuse-lite` moved with `browserslist`.
+- **Bundle identity**: `find .next/static -type f | sed 's#.*/##' | sort | shasum`. Chunk filenames
+  are content hashes, so an identical sorted digest is an identical build. Held across commits 2, 3
+  and 4 — the proof the dev-chain lifts and Storybook reached nothing that ships.
+- **Production dependency tree**: `npm ls --omit=dev --all` identical across the Storybook bump.
+- **Full proxy matrix by curl**, including the signed-claim path: 303, `Location: /thanks` with the
+  query stripped, `Set-Cookie: kh_order=…; Path=/thanks; Max-Age=7200; Secure; HttpOnly;
+  SameSite=lax`, `cache-control: private, no-store`. Compared attribute by attribute, because
+  `src/proxy.ts` has no adapter test and this is the path a paid customer's credential travels.
+- **LCP element by name**, not just the score: still the plush `<img>` on home and product.
+- **Local boot**: screenshots at 1280 and 390 of home, product and the store checkout.
+
+## The one emitted-output change, and why it was not a regression
+
+The store's 404 page lost a `<link rel=preload as=style>`. Investigated rather than accepted:
+`404-store-path.html` carries **0** stylesheet links before AND after, while the marketing 404 has 1.
+So Next removed a preload for a stylesheet the page never applied. The unstyled store 404 is a real
+pre-existing defect, logged for the founder, and deliberately not fixed inside a dependency commit —
+nothing in `src/` may move there, or the revert stops being atomic.
+
+## Two mistakes I made during this round, both caught by tooling rather than review
+
+1. **A false-positive sweep of my own making.** Checking whether other stories had the same syntax
+   error, I ran `esbuild --loader=tsx <file>`, which is stdin-only syntax, and got "BROKEN" for all
+   68 files. I nearly reported 68 broken stories. The correct form is `--loader:.tsx=tsx`, and the
+   real answer was **one**. A verification tool is code, and it earns the same scepticism as code —
+   the same lesson as the capture script that double-counted JSON-LD via the RSC payload (§8.25-bb).
+2. **The fix for a comment-syntax bug contained a comment-syntax bug.** The replacement block comment
+   included the glob `**/` followed by `*.stories.tsx`, whose `*/` closed the comment early and broke
+   the file a second way. The new parse guard caught it immediately. §8.33-e.
+
+## Paired-test discipline
+
+Every guard was proven red before it was trusted (§8.28-g). The restructured floor test failed 13
+assertions on the un-bumped tree — including, decisively,
+`node_modules/next/node_modules/postcss@8.4.31`, the nested copy the previous structure could never
+have seen. The story-parse guard was proven by reverting the fix and watching it fail.

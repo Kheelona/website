@@ -1,5 +1,28 @@
 # kheelona.com — session entry point
 
+**🟢 DEPENDENCIES ARE CLEAN ON BOTH MANIFESTS (2026-09-05).** `npm audit` reads **0** for the site
+and 0 for `launch-video/`, from 38 open Dependabot alerts. Record:
+`docs/checkpoints/dependency-sweep-2026-09-05.md`; rollback tag `pre-dependency-bump-2026-09-05` =
+`a03871f`. **PUSHED, NOT DEPLOYED.**
+
+Five things bind. (1) **Next is 16.3.4**, a minor bump the founder approved because 16.2.12 turned
+out to be the LAST 16.2.x release — `next` never had an advisory of its own, it was flagged via
+`postcss` and `sharp`. (2) **`--save-exact` IS MANDATORY**: `save-prefix` is `^` and there is no
+`.npmrc`, so a plain `npm install next@X` silently turns the exact pin into a caret. A test asserts
+both framework pins are exact strings, and `eslint-config-next` must move in lockstep with `next`.
+(3) **ZERO `overrides`, deliberately** — `next@16.2.12` pinned `postcss` at exactly 8.4.31 and
+declared `sharp ^0.34.5`, which the patched 0.35.x does not satisfy, so an override would ship a
+combination the framework never tested. Do not add one "for consistency". (4) **NEVER run a bare
+`npm install`**: it would move 23 packages including `@supabase/supabase-js` on the payment path.
+Name every package. (5) `test/dependency-floor.test.ts` now floors TRANSITIVES by walking
+`package-lock.json` and checking **every** copy — the bug it was blind to was
+`node_modules/next/node_modules/postcss@8.4.31` sitting under a hoisted 8.5.16.
+
+**⚠ AND A CORRECTION TO THE RENAME RECORD BELOW: the Kheelu naming collision IS visible to
+visitors.** `Hero.tsx:22` has the mascot say "Hi, I'm Kheelu" beside a differently-drawn product
+also called Kheelu. The banner below claims the mascot's name reaches users only through two
+`aria-label`s. That is wrong. Founder item in `Technical-Todo.md`.
+
 **🔴 THE PRODUCT IS CALLED **KHEELU**, NOT LUMI, SINCE 2026-09-05. THIS BLOCK WINS OVER EVERY
 "Lumi" BELOW.** Founder decision. The product took the mascot's name, so the two are now ONE
 character; `Kheelu mode` became **Story mode** because "Kheelu has a Kheelu mode" is circular.

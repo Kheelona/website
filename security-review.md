@@ -194,6 +194,7 @@ bundle or in git history, and no unauthenticated path writes to `preorders`.**
 |---|---|---|---|---|---|
 | F-01 | HIGH | payment / privacy | The address token, which is the only authorisation on an order, is sent to third-party analytics inside the URL | KAI + HUMAN | **CLOSED** `84ae07e` + founder rotation, both confirmed on production |
 | F-02 | HIGH | dependencies | Next.js 16.2.10 carries 9 advisories, 4 HIGH, all fixed in 16.2.11 | KAI | **FIXED** `120271f` (16.2.12) |
+| F-02b | HIGH | dependencies | The 16.2.x line ENDED at 16.2.12. The accepted postcss/sharp residual could only clear via a minor. | KAI | **FIXED** `0e91ea8` (16.3.4), founder-approved 2026-09-05 |
 | F-03 | MEDIUM (HIGH on the payment page) | headers / skimming | No CSP, no frame-ancestors, no nosniff, no Referrer-Policy, no Permissions-Policy on either host | KAI | **FIXED, PHASE 1 OF 2** `02e1f2a` (CSP Report-Only; enforcing is a second deploy) |
 | F-04 | MEDIUM | API abuse | Rate limiting is per-instance in-memory, so it does not bound abuse on serverless | HUMAN (WAF) | **CLOSED** — founder published a Vercel Firewall rule, 2026-08-23 |
 | F-05 | MEDIUM | data protection | `webhook_events.payload` keeps the entire Razorpay event forever | KAI + HUMAN | **CLOSED** `8df8977` for new rows, founder pruned the old ones (count now 0) |
@@ -278,6 +279,12 @@ which lowers several of them, but the proxy-bypass and rewrite-SSRF entries land
 range. **Not** the `16.3.2` that `npm audit fix --force` suggests: a minor bump on a live payment
 site is a separate decision with its own regression risk. Requires the full gate set plus RIA's
 payment regression.
+
+> **SUPERSEDED 2026-09-05, and by arithmetic rather than by argument.** 16.2.12 turned out to be
+> the LAST 16.2.x release ever published, so "patch inside 16.2.x" stopped being an option that
+> exists. The founder approved 16.3.4 on 2026-09-05 and it ran the full gate set including
+> `qa:payment`. Record: `docs/checkpoints/dependency-sweep-2026-09-05.md`. The reasoning above is
+> kept because it was right for its date; it is not current guidance.
 
 ### F-03 · MEDIUM overall, HIGH on the payment page · No security headers
 

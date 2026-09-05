@@ -1849,3 +1849,113 @@ for months, because a share card is not something a test or a Lighthouse run eve
 
 `pageMeta` now returns the complete card and the four dropped fields are pinned. **The general rule:
 when a helper returns a metadata sub-object, it owns that whole sub-object.**
+
+---
+
+# §8.33 THE DEPENDENCY SWEEP (2026-09-05)
+
+Full record: `docs/checkpoints/dependency-sweep-2026-09-05.md`. 38 Dependabot alerts to zero on both
+manifests. Rollback tag `pre-dependency-bump-2026-09-05` = `a03871f`.
+
+## 8.33-a A FLOOR CHECKS EVERY COPY, OR IT LIES
+
+`test/dependency-floor.test.ts` read the hoisted `node_modules/<name>` only. So it would have read
+`postcss@8.5.16` and never seen `node_modules/next/node_modules/postcss@8.4.31` — the copy that was
+actually vulnerable and the whole reason the framework had to move. **One vulnerable copy is enough.**
+
+Transitive floors now walk `package-lock.json`, which is committed, needs no install, and is the same
+artefact Dependabot reads, and assert **every** path ending in `node_modules/<name>`.
+
+Two sub-mechanisms, each earned by a real package:
+
+- **Per-major floors.** `brace-expansion` was patched separately on its 1.x and 5.x lines, and a flat
+  floor is arithmetically impossible: `atLeast("1.1.18", "5.0.9")` is false, so flooring at 5.0.9
+  fails the legitimate 1.x copy and flooring at 1.1.18 waves a vulnerable 5.0.7 through. A copy on a
+  major line with no recorded floor fails loudly rather than passing by omission.
+- **A floor can be an ABSENCE.** `image-size`'s vulnerable range is literally `*` — there is no
+  patched version at any number. "No version of this is ever safe" is not expressible as a minimum,
+  so the assertion is that it is not in the tree at all.
+
+## 8.33-b `--save-exact` OR THE PIN IS GONE
+
+`npm config get save-prefix` is `^`, `save-exact` is `false`, and this repo has no `.npmrc`. So
+`npm install next@16.3.4` writes `"^16.3.4"` and **silently converts a deliberate exact pin into a
+range** — which is exactly the drift the floor test exists to prevent, arriving through the command
+meant to fix it. Every pin-preserving install carries `--save-exact`, and a test asserts `next` and
+`eslint-config-next` are exact strings.
+
+**And never a bare `npm install`.** On the day of this sweep it would have moved 23 packages,
+including `@supabase/supabase-js` on the payment path and `lucide-react` across 17 minors of icon
+geometry. Name every package; read the lockfile diff as a reconciliation and treat an unlisted mover
+as a stop. (`fastq` moved unlisted here; it was chased down as dev-only, absent from the production
+tree, in range, no advisory — and named in the commit rather than waved through.)
+
+## 8.33-c AN OVERRIDE THAT FIGHTS A PARENT'S OWN PIN IS WORSE THAN THE BUMP IT AVOIDS
+
+`next@16.2.12` declared `"postcss": "8.4.31"` — an **exact** pin, not a forgotten caret — and
+`"sharp": "^0.34.5"`, which the patched `>=0.35.0` does not satisfy. Overriding either would have
+shipped a combination the framework's maintainers never tested, on the CSS pipeline and the image
+optimizer of a site that takes money. `next@16.3.4` declares both patched versions itself.
+
+**The general rule: prefer the upgrade that upstream already tested.** Reach for `overrides` only
+when no parent will ever move, and record the argument when you do. This sweep used none, and that
+absence is written into `CLAUDE.md` so nobody adds one for tidiness.
+
+Corollary: the dev-chain stragglers needed nothing at all. Every one was already satisfiable inside
+its parent's declared range; the lockfile had simply not been refreshed. An override there would pin
+a version the tree reaches on its own and keep pinning it after the parent moves on — a stale floor
+wearing a fix's clothes.
+
+## 8.33-d A GREEN SUITE CANNOT VALIDATE A FRAMEWORK BUMP
+
+`test/setup.ts` mocks `next/link`, `next/image`, `next/navigation`, `next/dynamic`, `motion/react`
+and the whole 3D stack. **The suite could not fail from a Next upgrade no matter what it broke** —
+green is the null result here, not evidence. Two of the repo's own guards make the same mistake in
+miniature: the LCP assertions check `data-priority`, an attribute the mock invents, and
+`store-host.test.ts` covers `routeForHost` as a pure function while `src/proxy.ts` — the 303 and the
+HttpOnly cookie on the paid-order path — has no adapter test at all.
+
+So the gate for a dependency bump is **before/after diffs of what the build emits and what the server
+answers**: the route manifest, normalized head markup across every prerendered page, the generated
+CSS, the sorted content-hash digest of `.next/static`, the full proxy matrix by curl with the cookie
+compared attribute by attribute, and `qa:payment`. All of it captured BEFORE touching anything,
+because a baseline cannot be taken retroactively.
+
+Two corollaries proved useful here. **A dev-only change should be provable, not asserted**: the
+Storybook bump was shown harmless by an identical production dependency tree AND a byte-identical
+bundle AND the absence of any production import. And **build a control before believing a perf
+story** (§8.28-g) applies to regressions too — the store's local perf of 90 was confirmed
+pre-existing by rebuilding the previous commit, not argued away.
+
+## 8.33-e NOTHING IN THIS REPO PARSES A STORY FILE
+
+`PageHero.stories.tsx` carried fourteen TypeScript syntax errors — a JSX comment in expression
+position, valid only as a JSX child — for an unknown length of time. `tsconfig.json` excludes
+`*.stories.tsx`, so neither `tsc --noEmit` nor `next build` reads one; Vitest loads only the stories
+a test imports; and Storybook 10.5.0's indexer tolerated it. The 10.6.0 upgrade **revealed** it as a
+hard build failure rather than causing it.
+
+A story is the component catalog this repo requires for every component (COMPONENT_GUIDELINES §2),
+and **a catalog entry that cannot parse is not in the catalog** — the same outcome as never writing
+it. `test/stories-parse.test.ts` parses all 68 with the TypeScript compiler already in
+devDependencies, and asserts it found the files first, because a glob that stops matching would make
+it pass vacuously over an empty list.
+
+A footnote worth keeping: the first attempt to fix that comment introduced the same class of bug, a
+block comment containing the glob `**/` followed by `*.stories.tsx`, which closed the comment early.
+**When writing about comment syntax, use line comments.**
+
+## 8.33-f COUNT THE MANIFESTS BEFORE COUNTING THE ALERTS
+
+"38 alerts, 33 high" was two numbers wearing one hat: 18 belonged to the website and 20 to
+`launch-video/`, a private, `tsconfig`-excluded Remotion project with no `node_modules` in the
+checkout and no part of `next build`. They were fixed on a separate branch and merged separately, so
+a regression on the live site would not have 1200 lines of unrelated lockfile churn in the same
+revert.
+
+Also learned there: **`npm update --package-lock-only` is a silent no-op** on npm 11.6.2. The same
+command without the flag reports 11 changes; with it, "up to date". A project with no `node_modules`
+cannot be repaired by the obvious lockfile-only command — it has to be installed.
+
+And `.github/dependabot.yml` would not have helped: it configures version-update PRs, not security
+alerts, which come from the dependency graph and cannot be filtered by config.
