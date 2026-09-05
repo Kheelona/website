@@ -42,16 +42,18 @@ commit). Developer handoff: `docs/seo/handoff-2026-09-05.md`. Rollback tag `pre-
 
 ## 🧑 Founder (from the handoff, section F)
 
-- [ ] **Search Console → Request indexing** for the ten "Discovered, currently not indexed" URLs
-      (`/safety`, `/playos`, `/team`, `/privacy`, `/terms`, `/products/lumi`, four articles; list in the
-      checkpoint). The agent will ask before clicking; it is a submit action.
-- [ ] **`admin.kheelona.com` is crawlable** (200, robots.txt *allows* Googlebot and Bingbot by name, no
-      noindex) and **`api.kheelona.com`** is in Google's crawl report. Both need `X-Robots-Tag: noindex`
-      and admin a `Disallow: /`. Outside this repo.
-- [ ] **Play Store listing** still says "App to Manage Lumi toy" (and Technical-Todo already records the
-      ₹2,999). Off-site facts must match the site or an engine quotes the wrong one.
+- [x] **Search Console → Request indexing** for the ten "Discovered, currently not indexed" URLs: done
+      2026-09-05 evening with the founder's go-ahead, all ten confirmed "Indexing requested". Re-check
+      Indexing → Pages in two weeks; the count should fall from 10.
+- [x] **`admin.kheelona.com`** now `Disallow: /` + `X-Robots-Tag: noindex, nofollow` + meta robots
+      (admin-dashboard `d0bf58a`, deployed via its GitHub Action, verified live 2026-09-05).
+- [ ] **`api.kheelona.com`**: noindex middleware + `/robots.txt` committed on backend-service `dev-apu`
+      (`68db567`, 1864 unit tests green). **Deploy is the founder's**: the production API runs from
+      `dev-apu` under PM2 on the GCP instance; `git pull` + `pm2 restart kheelona` per that repo's
+      `.claude/CLAUDE.md`. Verify with `curl -sI https://api.kheelona.com/ | grep -i x-robots-tag`.
+- [x] **Play Store listing** text: founder decided 2026-09-05 to leave it. Recorded, not re-raised.
 - [ ] **Profile back-links**: put `https://kheelona.com` on the LinkedIn company page, Instagram bio and
-      Facebook page.
+      Facebook page. (Founder: "will do", 2026-09-05.)
 - [ ] **Optional upgrade of B3**: name the relationship with Karnataka Elevate and Founders Inc (award,
       grant, investor) and they can join the schema; until then they stay visible-only.
 - [ ] 📅 **2026-10-03 re-measure**: GSC Generative AI impressions (168), indexed count (37), the ten URLs,

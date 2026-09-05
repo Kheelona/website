@@ -196,4 +196,17 @@ IndexNow, anything parked by the founder (CTA contrast, pixel, backlinks beyond 
   2026-10-03 re-measure against the baseline at the top of this file.
 - 2026-09-05 · Lighthouse (desktop, production, after commit 8) on `should-kids-use-ai`: **SEO 100, a11y
   96**, `link-text` audit score 1. The 92 is closed.
+- 2026-09-05 (evening) · **Founder go-ahead received; three follow-ups executed.** (1) Search Console
+  "Request indexing" clicked for all ten never-crawled URLs (`/safety`, `/playos`, `/team`, `/privacy`,
+  `/terms`, `/products/lumi`, and the four articles); each confirmed "Indexing requested · URL was added to
+  a priority crawl queue". `/products/lumi` inspected as still "on Google" from its 31 Aug crawl, so the
+  request also makes Google re-fetch it and register the 308. Watch Indexing → Pages over the next two
+  weeks; the "Discovered, currently not indexed" count should fall from 10. (2) `admin.kheelona.com`:
+  fixed at the source in the `admin-dashboard` repo (`d0bf58a` on `main`, deployed by its GitHub Action
+  to Firebase Hosting in ~30 s): robots.txt `Disallow: /`, `X-Robots-Tag: noindex, nofollow` on every
+  response, meta robots in index.html; verified live. (3) `api.kheelona.com`: `noindex` middleware +
+  `GET /robots.txt` on `backend-service` branch `dev-apu` (`68db567`, 2 new unit tests, full suite 1864
+  green); **not yet live**, because the production API runs from `dev-apu` under PM2 on the GCP instance
+  and that deploy is the founder's (`git pull` + `pm2 restart kheelona`, per that repo's runbook).
+  Play Store text: founder chose to ignore it. Profile back-links: founder will do.
 
