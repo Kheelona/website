@@ -5,3 +5,7 @@ dist
 
 # Ignore the output video from Git but not videos you import into src/.
 out
+
+# `remotion bundle` writes here. Added 2026-09-05 after a verification run left
+# an untracked 40MB bundle sitting in git status.
+build
