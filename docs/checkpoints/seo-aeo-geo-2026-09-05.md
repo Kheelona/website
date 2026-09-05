@@ -127,4 +127,12 @@ IndexNow, anything parked by the founder (CTA contrast, pixel, backlinks beyond 
   measures Kheelu against it with published mechanisms only ("whether that is enough is your call"). Five
   sources. QuillBot detector: **0% AI-generated**. Suite green. Next: 6e
   (`raising-a-bilingual-child-in-india`, adds the `LANGUAGES_LINE` import to the expansion file).
+- 2026-09-05 · commit 6e (C3, 5 of 6) · `raising-a-bilingual-child-in-india` 292 → 751 body words (the article
+  that already ranks #1 in India). 57-word direct answer; Byers-Heinlein and Lew-Williams 2013 (no higher
+  rate of delay or disorder, conceptual vocabulary matches, code-mixing normal, two-year-olds adjust to
+  the listener) linked and quoted in substance; NEP 2020 para 4.11 via the PIB release (home language as
+  medium until at least Grade 5, preferably 8); Harvard serve and return. The languages line renders from
+  `LANGUAGES_LINE` (import added to `stories-expansion.ts`), never inline. Three sources. QuillBot
+  detector: **0% AI-generated**. Suite green. Next: 6f (`a-toy-that-talks-vs-a-toy-that-listens`, the
+  category comparison; drops the unverifiable "India's bestselling talking toy" claim).
 

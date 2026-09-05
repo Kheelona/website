@@ -1,5 +1,5 @@
 import type { Story } from "./stories";
-import { TOKEN_PRICE } from "@/config/site";
+import { TOKEN_PRICE, LANGUAGES_LINE } from "@/config/site";
 
 /** Journal expansion (2026-07-06): 10 articles from live keyword research
  *  (Google autocomplete, India locale; question-form clusters). Useful-first,
@@ -188,7 +188,7 @@ export const EXPANSION: Story[] = [
     slug: "raising-a-bilingual-child-in-india",
     title: "Raising a bilingual child in India",
     description:
-      "English will come. The mother tongue is the one at risk. Why home languages matter for thinking, and how families keep them alive.",
+      "Does a bilingual home confuse a young child? What the research says about two languages, why the mother tongue is the one at risk, and what keeps it alive.",
     theme: "Languages at home",
     author: "Ria Mangala Rewari",
     published: "2026-07-28",
@@ -199,12 +199,20 @@ export const EXPANSION: Story[] = [
     heroAlt:
       "A grandmother braids her granddaughter's hair on a sunlit courtyard step, both mid-song, a plate of jasmine beside them",
     paragraphs: [
-      { p: "There is a moment many Indian parents know: your child answers your Kannada in English, and something in you notes it, half proud, half strangely sad." },
-      { p: "The pride makes sense. English opens doors here, and every parent knows which exams and interviews wait down the road. But the quiet math many families do, that home language time is time stolen from English, has the research exactly backwards." },
-      { h: "The mother tongue is the foundation, not the competitor", p: "Concepts learned in the mother tongue transfer. A child who understands big and small, before and after, why and because in Tamil does not relearn those ideas in English. They relabel them, which is far faster. Strong first languages consistently travel with stronger later languages, not weaker ones." },
-      { p: "And in most Indian homes, English has school, screens, and half the world working for it already. It does not need your kitchen too. The language that needs your kitchen is the one only your family can pass on." },
-      { h: "What keeps a home language alive", p: "Children keep languages that are useful and loved, and drop languages that are neither. So give the language living jobs: the funny relatives, the food words, the songs, the one grandparent whose stories only exist in it. Speak it without apology, and when your child answers in English, answer back warmly in your language without making it a correction. The war is lost in the moment the language becomes homework." },
-      { p: "We are building for exactly these houses. Kheelu speaks up to ten languages so the friend can meet your family where it lives, not drag it toward English. But with or without any toy, the principle holds: the mother tongue is not in the way of your child's future. It is under it." },
+      { p: "Raising a bilingual child in India does not confuse them, delay their speech or cost them English. Children who grow up with two languages know about as many words in total as children with one, mixing languages is a normal stage, and the mother tongue is the foundation the second language is built on, not its competitor." },
+      { p: "There is a moment many Indian parents know: your child answers your Kannada in English, and something in you notes it, half proud, half strangely sad. The pride makes sense. English opens doors here, and every parent knows which exams and interviews wait down the road. But the quiet maths many families do, that home language time is time stolen from English, has the research exactly backwards." },
+      { h: "Does a second language confuse or delay a young child?", p: "No. A [2013 review of the research](https://pmc.ncbi.nlm.nih.gov/articles/PMC6168212/) on bilingual children, written for parents and teachers by two developmental psychologists, is blunt about it: bilingual children are not more likely than monolingual children to have difficulties with language, to show delays in learning, or to be diagnosed with a language disorder. They may know fewer words in each language on its own, which is what a worried parent notices. Add the two lists together and the total matches a child growing up with one language. A child who says paani at home and water at school has two words for one idea, and that is a gain, not a gap." },
+      { h: "Is mixing the two languages a problem?", p: "It is a stage, and a clever one. The same review notes that even two-year-olds adjust which language they use to the person they are speaking to. Mixing inside a sentence, the paani-in-the-glass kind, is a child using everything they have, and it fades as each language fills out. Correcting it teaches a child that one of their languages is wrong. Answering warmly in your own language teaches them that both are welcome." },
+      { h: "Why is the mother tongue the one at risk?", p: "In most Indian homes, English has school, screens and half the world working for it already. It does not need your kitchen too. The language that needs your kitchen is the one only your family can pass on. Concepts learned in the mother tongue transfer: a child who understands big and small, before and after, why and because in Tamil does not relearn those ideas in English. They relabel them, which is far faster. That is why India's own [National Education Policy 2020](https://www.pib.gov.in/PressReleasePage.aspx?PRID=1847061&reg=48&lang=2) asks schools, wherever possible, to teach in the home language or mother tongue until at least Grade 5 and preferably until Grade 8. The policy rests on the same idea: children learn best in a language they already understand." },
+      { h: "What keeps a home language alive?", p: "Children keep languages that are useful and loved, and drop languages that are neither. So give the language living jobs: the funny relatives, the food words, the songs, the one grandparent whose stories only exist in it. Speak it without apology. When your child answers in English, answer back in your language without making it a correction. Read in it, even if you have to hunt for the books. Let it carry the good moments, not only the instructions. The war is lost in the moment the language becomes homework." },
+      { p: "One more thing helps more than any rule: conversation, in whichever language is flowing. Researchers at Harvard describe how children learn as [serve and return](https://developingchild.harvard.edu/key-concept/serve-and-return/), a child offering a word or a question and an adult returning it. The loop works in Bengali exactly as well as in English, and a child who gets more turns gets more language." },
+      { h: "Who speaks what, day to day?", p: "Families make this work in several shapes, and none of them is the rule. Some pick one language per parent. Some keep one language for home and let school carry English. Some let the grandparents own the mother tongue. What the shapes share is a pattern a child can predict and warmth a child can feel. Pick the one your household can actually keep, and change it when life changes." },
+      { p: `We are building for exactly these houses. [Kheelu](/products/kheelu) speaks ${LANGUAGES_LINE}, with up to ten languages at launch, so the friend can meet your family where it lives rather than drag it toward English. But with or without any toy, the principle holds: the mother tongue is not in the way of your child's future. It is under it.` },
+    ],
+    sources: [
+      { label: "Byers-Heinlein and Lew-Williams: Bilingualism in the early years, what the science says (LEARNing Landscapes, 2013, via PubMed Central)", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC6168212/" },
+      { label: "Government of India, Press Information Bureau: Education in mother tongue under the National Education Policy 2020, paragraph 4.11 (2022)", url: "https://www.pib.gov.in/PressReleasePage.aspx?PRID=1847061&reg=48&lang=2" },
+      { label: "Harvard University, Center on the Developing Child: Serve and return", url: "https://developingchild.harvard.edu/key-concept/serve-and-return/" },
     ],
   },
   {
