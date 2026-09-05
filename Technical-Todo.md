@@ -104,8 +104,11 @@ pushed on `main` but **NOT deployed** — everything below assumes the founder h
 
 - [ ] **Take `main` live.** Commits `c5cca99` + `500bccb`. Rollback tag
       `pre-kheelu-rename-2026-09-05` = `63f6e70` restores `/products/lumi` as the live route.
+- [x] **Ahrefs re-crawled 2026-09-05 after the deploy and confirms the fixes**: Incomplete Open
+      Graph tags 31 → **0**, the schema.org validation error gone from the issue list, warnings
+      45 → 13, Health Score still 100 with 0 errors. Independent of our own curl checks.
 - [ ] **Submit the sitemap and inspect `/products/kheelu`** in GSC after the deploy. The sitemap no
-      longer lists `/products/lumi` at all, by design.
+      longer lists `/products/lumi` at all, by design. *(Founder-only: I have no GSC access.)*
 - [ ] **Keep the `/products/lumi` history alongside the new route** when comparing organic
       performance. They are one page; a report that drops the old URL will read as a collapse that
       did not happen.

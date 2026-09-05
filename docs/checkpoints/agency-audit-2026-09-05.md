@@ -184,6 +184,40 @@ guards are different jobs, and this repo only had the first.
 
 ---
 
+## Confirmed by a post-deploy Ahrefs crawl (2026-09-05, 19:00 IST)
+
+Triggered from the dashboard after the site went live, because the scheduled weekly crawl was not due
+until 10 September and the 3 September one describes the pre-change site. **This is independent
+third-party confirmation across all 31 pages, not our own measurement repeated.**
+
+| Ahrefs metric | 3 Sep crawl | 5 Sep crawl |
+|---|---|---|
+| Incomplete Open Graph tags | **31** | **0** (delta −31) |
+| Basic OG implementation | Incomplete 31 | **Complete 31** |
+| `og:type` distribution | **Missing 31** | **website 31** |
+| Structured data schema.org validation error | **31** | **absent from the issue list** |
+| Total issues | 91 | **70** |
+| Warnings | 45 | **13** |
+| Health Score / Errors | 100 / 0 | **100 / 0** |
+| Title too long | 3 | **2** |
+
+All nine Open Graph tags now report "Set" on every page: `og:title`, `og:type`, `og:image`,
+`og:url`, `og:description`, `og:image:width`, `og:image:height`, `og:locale`, `og:site_name`. Twitter
+cards read Complete 31, "summary with large image" 31.
+
+**What remains, all known and none of it new:** the three accepted short meta descriptions and two
+long titles (founder-recorded editorial decisions, §8.32 notes); one nofollow and one noindex page,
+which are the store by design (§8.25-aa); the single `http://www` → `https://www` → apex redirect
+chain, which is Vercel domain configuration rather than anything in this repo; one slow page; and 31
+"changed pages not submitted to IndexNow", which is informational because this site does not use
+IndexNow. "Meta description changed ×8" and "Title tag changed ×4" are the rename itself showing up
+in a diff against the pre-rename crawl.
+
+Crawl credits used: the account showed 4,936 remaining, so the quota concern raised before triggering
+it was unfounded — worth knowing next time.
+
+---
+
 ## New laws
 
 **§8.31 (crawl hosts).** Only `INDEXABLE_HOSTS` may be indexed; every other host serving this app
