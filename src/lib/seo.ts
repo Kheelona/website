@@ -13,6 +13,7 @@ import {
   GSTIN,
   REGISTERED_ADDRESS,
   SUPPORT_WHATSAPP_DISPLAY,
+  SUPPORT_WHATSAPP_HREF,
 } from "@/config/site";
 import { KHEELU_ART } from "./kheelu-art";
 
@@ -32,6 +33,11 @@ import { KHEELU_ART } from "./kheelu-art";
  *     kheelona.ai. */
 
 export const SITE_URL = "https://kheelona.com";
+
+/** The social preview image. One source, because a page that loses it shares
+ *  with a blank card and nobody notices until someone looks at a WhatsApp
+ *  forward. Root-relative; `metadataBase` in the root layout resolves it. */
+export const OG_IMAGE = "/og.png";
 
 /** The founders, as entities. Their credentials are the site's best E-E-A-T
  *  signal and every one of them is published on /team. */
@@ -77,11 +83,14 @@ export const ORGANIZATION = {
   taxID: GSTIN,
   url: SITE_URL,
   logo: `${SITE_URL}/brand/logo-mark.png`,
-  image: `${SITE_URL}/og.png`,
+  image: `${SITE_URL}${OG_IMAGE}`,
   description:
     "Kheelona makes screen-free talking friends for children. Kheelu, the first one, is a plush toy for ages 3+ that holds a real conversation, tells stories a child can question, and comes with a parent app that shows every word.",
   foundingDate: "2025",
-  founders: FOUNDERS,
+  /* `founder`, not `founders`: the plural is deprecated and superseded, and
+     Ahrefs flagged it four times per page on all 31 (2026-09-03). Same value,
+     current property name. */
+  founder: FOUNDERS,
   address: {
     "@type": "PostalAddress",
     /* Full registered address since 2026-08-22: a merchant taking payment has
@@ -107,8 +116,8 @@ export const ORGANIZATION = {
      telephone for its first year: the number on the legacy Wix site was the
      canonical fake Indian number.
      The number below is real (founder, 2026-08-22) but takes WhatsApp ONLY, and
-     `contactOption` is the honest way to say that in schema. Every visible label
-     on the site says "WhatsApp" for the same reason. */
+     the `url` below is how that is said in schema. Every visible label on the
+     site says "WhatsApp" for the same reason. */
   ...(CONTACT_EMAIL
     ? {
         contactPoint: {
@@ -116,7 +125,15 @@ export const ORGANIZATION = {
           email: CONTACT_EMAIL,
           telephone: SUPPORT_WHATSAPP_DISPLAY,
           contactType: "customer support",
-          contactOption: "WhatsApp",
+          /* NOT `contactOption: "WhatsApp"`. That shipped for two weeks and was
+             a schema.org VALIDATION ERROR on all 31 pages (Ahrefs, 2026-09-03):
+             `contactOption` takes a ContactPointOption, an enumeration whose
+             only members are HearingImpairedSupported and TollFree. "WhatsApp"
+             is not one, so the value was simply invalid — the old comment here
+             called it "the honest way to say that in schema" and was wrong.
+             The honest AND valid way is the url: it names the exact channel,
+             a parser can follow it, and a human can click it. */
+          url: SUPPORT_WHATSAPP_HREF,
           areaServed: "IN",
           availableLanguage: ["English", "Hindi"],
         },
@@ -268,7 +285,41 @@ export function pageMeta({
     title,
     description,
     alternates: { canonical: path },
-    openGraph: { url: path },
+    /* THE WHOLE OPEN GRAPH OBJECT, not just the url, and that is the fix.
+     *
+     * Next merges metadata SHALLOWLY: a page's `openGraph` REPLACES the root
+     * layout's, it does not merge into it. This function used to return
+     * `openGraph: { url: path }`, which silently deleted the four fields the
+     * layout sets — `type`, `siteName`, `locale` and `images` — from every
+     * single page that calls it.
+     *
+     * Ahrefs Site Audit, crawl of 2026-09-03: "Open Graph tags incomplete" on
+     * 31 of 31 pages, `og:type` missing on all 31. Confirmed in the served HTML:
+     * only og:title, og:description and og:url were present anywhere.
+     *
+     * The expensive half is `og:image`. Every WhatsApp, Facebook and LinkedIn
+     * share of this site rendered with NO preview image, on a product whose
+     * India referral loop is a WhatsApp share (WHATSAPP_SHARE_HREF). og.png
+     * existed and was declared; no page ever carried it.
+     *
+     * Repeating the fields here rather than hoping for a merge is the only
+     * thing that actually works, and `src/lib/seo.test.ts` pins all four so a
+     * future edit cannot quietly drop them again. */
+    openGraph: {
+      url: path,
+      title,
+      description,
+      type: "website",
+      siteName: "Kheelona",
+      locale: "en_IN",
+      images: [{ url: OG_IMAGE, width: 1200, height: 630 }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [OG_IMAGE],
+    },
   };
 }
 

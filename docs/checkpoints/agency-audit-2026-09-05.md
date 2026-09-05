@@ -125,6 +125,65 @@ Analytics, not Site Explorer or Site Audit. Indexing coverage and field CWV rema
 
 ---
 
+## Ahrefs Site Audit, read from the dashboard (crawl of 2026-09-03)
+
+The Web Analytics export carries no crawl data, so this came from the Site Audit
+dashboard directly. Health Score **100**, **0 errors**, 45 warnings, 46 notices, 118 URLs.
+
+It independently confirmed two fixes from this round before they deployed: the crawl records the
+home title as `... ages 3+ · Kheelona · Kheelona`, and the structured-data panel lists
+`Organization` and `WebSite` **twice each** on the same page.
+
+It also found **three real defects that neither the agency handoff nor the source review caught**,
+all now fixed.
+
+### Open Graph was incomplete on 31 of 31 pages
+
+`og:type` missing everywhere — and on inspection so were `og:site_name`, `og:locale` and, most
+expensively, **`og:image`**.
+
+Cause: **Next merges metadata shallowly.** A page's `openGraph` REPLACES the root layout's rather
+than merging into it, and `pageMeta()` returned `openGraph: { url: path }`. So every page that used
+the helper — which is every marketing page — deleted the four fields the layout had set.
+
+The cost was not theoretical. `og.png` existed and was declared in the layout, and **no page ever
+carried it**: every WhatsApp, Facebook and LinkedIn share of this site rendered with a blank preview
+card, on a product whose India referral loop is a WhatsApp share (`WHATSAPP_SHARE_HREF`). `pageMeta`
+now returns the complete card, and four assertions pin the fields that were being dropped.
+
+A side effect worth noting: `og:title` no longer carries the brand suffix, because `pageMeta` sets
+it explicitly rather than inheriting the template. That is an improvement, not a loss — the brand is
+carried by `og:site_name`, which is what a share card renders it from.
+
+### `contactOption: "WhatsApp"` was an invalid value, on every page
+
+The one schema.org **error** in the crawl, ×31. `contactOption` takes a `ContactPointOption`, an
+enumeration with exactly two members: `HearingImpairedSupported` and `TollFree`. "WhatsApp" is
+neither. The code comment claiming it was "the honest way to say that in schema" was simply wrong.
+Replaced with `url: SUPPORT_WHATSAPP_HREF`, which is valid, names the exact channel, and is
+followable by a parser and clickable by a person.
+
+### `founders` is deprecated, superseded by `founder`
+
+Four warnings per page, ×31. Same value, current property name.
+
+**Why the suite missed all three:** it asserted what the schema *says* — no gated facts, no invented
+numbers, the right age band — and never whether schema.org *accepts* it. Content guards and validity
+guards are different jobs, and this repo only had the first.
+
+### Read and deliberately not actioned
+
+- **"Title too long" ×3 and "Meta description too short" ×3.** These land on copy already recorded as
+  founder decisions: `STORY_TITLE_CAP = 80` exists because a story's title is also its H1 and its
+  card label, and Home is over budget on purpose (2026-08-12). Ahrefs' thresholds are soft; the
+  decisions are explicit. Churning approved editorial to satisfy a linter would be the wrong trade.
+- **"Redirect chain" ×1** — `http://www.kheelona.com` → `https://www.kheelona.com` → `https://kheelona.com`.
+  Two hops, and it is Vercel domain configuration rather than anything in this repo. Only affects
+  someone typing `http://www`. Logged for the founder; low value.
+- **"Noindex page" ×1 / "Nofollow page" ×1** — the store, correct by design (§8.25-aa).
+
+---
+
 ## New laws
 
 **§8.31 (crawl hosts).** Only `INDEXABLE_HOSTS` may be indexed; every other host serving this app

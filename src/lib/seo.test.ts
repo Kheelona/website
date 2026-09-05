@@ -9,6 +9,8 @@ import {
   pageGraph,
   siteEntityGraph,
   jsonLd,
+  pageMeta,
+  OG_IMAGE,
   SITE_URL,
 } from "./seo";
 import { execFileSync } from "node:child_process";
@@ -95,11 +97,11 @@ describe("structured data", () => {
   });
 
   it("carries the founders as entities: our strongest E-E-A-T signal", () => {
-    const names = ORGANIZATION.founders.map((f) => f.name);
+    const names = ORGANIZATION.founder.map((f) => f.name);
     expect(names).toEqual(["Apoorva Sahu", "Aman Soni", "Kashyap C.R"]);
     // credentials must be the published ones, not inflated
-    expect(JSON.stringify(ORGANIZATION.founders)).toMatch(/14 patents/);
-    expect(JSON.stringify(ORGANIZATION.founders)).toMatch(/Thunderbolt 4 and 5 compliance at Intel/);
+    expect(JSON.stringify(ORGANIZATION.founder)).toMatch(/14 patents/);
+    expect(JSON.stringify(ORGANIZATION.founder)).toMatch(/Thunderbolt 4 and 5 compliance at Intel/);
   });
 
   it("declares the company as Indian, for geo queries", () => {
@@ -128,6 +130,24 @@ describe("structured data", () => {
     const types = JSON.stringify(g);
     expect(types).not.toMatch(/"@type":"Organization"/);
     expect(types).not.toMatch(/"@type":"WebSite"/);
+  });
+
+  /* Ahrefs Site Audit, crawl 2026-09-03: one schema.org validation ERROR and
+     four WARNINGS on all 31 pages, both inside ORGANIZATION, which every page
+     carries. Neither was visible to any test here, because the suite checked
+     what the schema SAYS and never whether schema.org accepts it. */
+  it("uses `founder`, not the deprecated `founders`", () => {
+    expect("founders" in ORGANIZATION).toBe(false);
+    expect(ORGANIZATION.founder).toHaveLength(3);
+  });
+
+  it("puts no invalid ContactPointOption on the contact point", () => {
+    const contact = ORGANIZATION.contactPoint;
+    /* `contactOption` accepts only HearingImpairedSupported and TollFree.
+       "WhatsApp" was neither, so it was an outright validation error. The
+       channel is named by url instead, which is valid and more useful. */
+    expect(contact && "contactOption" in contact).toBe(false);
+    expect(contact?.url).toBe("https://wa.me/919187546483");
   });
 
   it("numbers breadcrumbs from Home", () => {
@@ -221,5 +241,45 @@ describe("json-ld serialisation", () => {
       /\b(ORGANIZATION|WEBSITE)\b/.test(readFileSync(file, "utf8")),
     );
     expect(offenders).toEqual([]);
+  });
+});
+
+/** Open Graph completeness (Ahrefs Site Audit, crawl 2026-09-03).
+ *
+ *  "Open Graph tags incomplete" on 31 of 31 pages, `og:type` missing on all 31.
+ *  Cause: Next merges metadata SHALLOWLY, so a page's `openGraph` replaces the
+ *  root layout's rather than merging into it, and `pageMeta` returned only
+ *  `{ url }`. Every page therefore lost type, siteName, locale AND images.
+ *
+ *  og:image is the expensive one: every WhatsApp, Facebook and LinkedIn share
+ *  of this site rendered with no preview card, on a product whose India
+ *  referral loop is a WhatsApp share. */
+describe("page metadata carries a complete Open Graph card", () => {
+  const meta = pageMeta({
+    title: "T",
+    description: "D",
+    path: "/products/kheelu",
+  });
+
+  it("keeps the four fields a page used to delete by overwriting", () => {
+    const og = meta.openGraph as Record<string, unknown>;
+    expect(og.type).toBe("website");
+    expect(og.siteName).toBe("Kheelona");
+    expect(og.locale).toBe("en_IN");
+    expect(og.images).toEqual([{ url: OG_IMAGE, width: 1200, height: 630 }]);
+  });
+
+  it("still sets the canonical and og:url from the one path argument", () => {
+    expect(meta.alternates?.canonical).toBe("/products/kheelu");
+    expect((meta.openGraph as Record<string, unknown>).url).toBe("/products/kheelu");
+  });
+
+  it("gives the share card its own title, description and image", () => {
+    const og = meta.openGraph as Record<string, unknown>;
+    const tw = meta.twitter as Record<string, unknown>;
+    expect(og.title).toBe("T");
+    expect(og.description).toBe("D");
+    expect(tw.card).toBe("summary_large_image");
+    expect(tw.images).toEqual([OG_IMAGE]);
   });
 });

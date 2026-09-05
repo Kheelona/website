@@ -64,6 +64,14 @@ pushed on `main` but **NOT deployed** — everything below assumes the founder h
       untagged forever: this is cheap now and unrecoverable later. Not in the agency handoff, which
       deferred analytics.
 
+## 🧑 One redirect chain, and it lives in Vercel rather than this repo
+
+- [ ] **`http://www.kheelona.com` takes two hops to reach the apex**:
+      `http://www` → 308 → `https://www` → 308 → `https://kheelona.com`. Found in Ahrefs Site Audit
+      (crawl 2026-09-03), the only chain on the site. It affects only someone typing `http://www`
+      by hand, so the value is low, but Vercel's domain settings can usually collapse it to one hop.
+      Nothing in this repo can fix it.
+
 ## 🤖 Worth doing, not urgent
 
 - [ ] **Ahrefs Site Audit and Search Console were not consulted this round.** Indexing coverage and

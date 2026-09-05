@@ -1821,3 +1821,31 @@ the reason the agency's proposed category-label titles were declined.
 — that `KHEELU_ART.alt` does not contain "Kheelu", used as a proxy for "the mascot is not in this
 picture". **The product is called Kheelu now, so its own alt text names it** and that proxy can only
 fail. The test asserts the invariant directly instead: one image, and it is the product art.
+
+## 8.32-h SCHEMA CONTENT GUARDS ARE NOT SCHEMA VALIDITY GUARDS
+
+`src/lib/seo.test.ts` was thorough about what the structured data SAYS: no gated fact, no invented
+number, the right age band, no certification claim. It had nothing at all to say about whether
+schema.org accepts it. So `contactOption: "WhatsApp"` — not a member of the two-value
+`ContactPointOption` enumeration, and therefore an outright validation ERROR — sat on all 31 pages
+with a code comment calling it "the honest way to say that in schema", alongside four deprecation
+warnings per page for `founders` instead of `founder`. Found only by reading Ahrefs Site Audit
+(crawl 2026-09-03).
+
+**Two different jobs, and this repo only had one.** Content guards live in tests; validity is a
+crawler's answer. Read Site Audit's structured-data panel after any schema change.
+
+## 8.32-i NEXT MERGES METADATA SHALLOWLY, SO A PAGE'S `openGraph` DELETES THE LAYOUT'S
+
+`pageMeta()` returned `openGraph: { url: path }`, on the assumption it would merge with the root
+layout's `openGraph`. It does not: the child's object REPLACES the parent's. Every marketing page
+therefore shipped without `og:type`, `og:site_name`, `og:locale` **or `og:image`** — 31 of 31,
+confirmed in the served HTML.
+
+`og:image` is the one that cost something real. `og.png` existed, the layout declared it, and no
+page ever carried it, so **every WhatsApp, Facebook and LinkedIn share of this site rendered with a
+blank preview card** — on a product whose India referral loop is a WhatsApp share. Nobody noticed
+for months, because a share card is not something a test or a Lighthouse run ever looks at.
+
+`pageMeta` now returns the complete card and the four dropped fields are pinned. **The general rule:
+when a helper returns a metadata sub-object, it owns that whole sub-object.**
