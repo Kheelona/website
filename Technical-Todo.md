@@ -252,7 +252,7 @@ security headers live, the live pages carry no console errors or failed requests
       number is written down so nobody chases it — reversing it is one decision and a component
       deletion. Do not re-raise. The measurement that produced it:
 
-- [x] **Lighthouse best-practices on production is 74, ~81 with the CSP fix. The gate is 90.** It has been since the
+- [x] **Lighthouse best-practices on production is 74, and 78 once the CSP is enforced. The gate is 90.** It has been since the
       Meta Pixel landed on 2026-09-01 and nobody saw it, because **Lighthouse had only ever been run
       locally, where the pixel is host-gated OFF** (§8.30). Local still reads 96; production reads
       74. Same page, same build.
@@ -267,8 +267,12 @@ security headers live, the live pages carry no console errors or failed requests
 
       **The Meta Pixel alone costs 22 points. GA4 costs zero.** It splits in two:
 
-      - **7 points are recoverable**: `errors-in-console` and `inspector-issues`, both caused by the
-        CSP Report-Only violations above. Adding the three origins clears them and gets BP to **81**.
+      - **4 points are recoverable, and the CSP origins did NOT deliver them.** Measured after
+        deploying: the three origins cleared three real violations and moved the score **not at
+        all**, because a Lighthouse audit is pass/fail and each audit still had one item left.
+        `errors-in-console` keeps a Chrome warning that `upgrade-insecure-requests` is ignored in a
+        report-only policy, which clears when the CSP is **enforced** — worth +1 weight, 74 → **78**.
+        `inspector-issues` keeps the cookie itself and stays failing while the pixel runs.
       - **The other ~19 are not**: `third-party-cookies` (weight 5 of 27) is the pixel's `fr` cookie
         from `facebook.com/tr/`. Lighthouse penalises third-party cookies outright now. **There is no
         configuration that keeps the pixel and passes this audit.**

@@ -1623,3 +1623,33 @@ Fixed by dropping the status (200, store chrome) and removing `STORE_PAGES` with
 **§8.34-f: `next start` is not the deployment target.** A local probe settles what Next does and
 nothing about what Vercel's edge does with the result. Same shape as §8.28-g, which is a law this
 repo already had.
+
+## 2026-09-06, after the CSP deploy: the fix worked and the score did not move
+
+Predicted 81, measured **74**. Worth writing down because the prediction method was wrong, not the
+fix.
+
+The three CSP additions are live and confirmed in the production header, and all three refusals are
+gone from the console. But best-practices stayed at 74, because **a Lighthouse audit is pass/fail**:
+
+| Audit | Items before | Items now | Score |
+|---|---|---|---|
+| `errors-in-console` (w1) | 4 (3 CSP refusals + 1 report-only warning) | **1** | still 0 |
+| `inspector-issues` (w1) | 2 (1 CSP + 1 cookie) | **1** | still 0 |
+| `third-party-cookies` (w5) | 1 | 1 | still 0 |
+
+Clearing three of four items in an audit buys nothing. **When forecasting a Lighthouse score, count
+audits that go green, not items removed.**
+
+What is actually left, and what each depends on:
+
+- `errors-in-console` — one message: Chrome warning that `upgrade-insecure-requests` is ignored in a
+  report-only policy. A Report-Only artefact. **It clears when the CSP is enforced**, so the flip is
+  worth +1 weight: 74 → **78**.
+- `inspector-issues` and `third-party-cookies` — both the pixel's `fr` cookie. Stuck while it runs.
+
+So the accepted number in §8.34-h is **74 now, 78 after the flip**, not 81. Corrected there, in
+`CLAUDE.md` and in `Technical-Todo.md`.
+
+Perf on production read 98 / 99 / 100 across three consecutive runs — network variance on a live
+measurement, not a regression. **Judge a production Lighthouse perf score on more than one run.**

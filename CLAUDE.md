@@ -391,7 +391,7 @@ Rules for any change:
 - **Brand law (founder, 2026-07-10)**: the plush = **Lumi, the product** — a rotating SKU whose look changes post-launch (core/AI stays); NEVER publish the rotation strategy on-site. The orange character = **Kheelu**, the permanent mascot and site narrator. The product owns the hero; Kheelu narrates (all speech lines founder-approved before shipping — pattern: list them in the plan).
 - **Never invent claims**: testimonials, certifications, specs, ship date, contact email → flagged placeholders + blockers only.
 - **⚠ TWO SANCTIONED LIGHTHOUSE EXCEPTIONS, BOTH FOUNDER DECISIONS — do not "fix" either.**
-  (1) **Production best-practices is 74, ~81 with the CSP additions, against a gate of 90** (§8.34-h,
+  (1) **Production best-practices is 74, and 78 after the CSP is ENFORCED, against a gate of 90** (§8.34-h,
   founder 2026-09-06). The whole gap is the Meta Pixel's third-party cookie: production with facebook
   blocked measures 96, and GA4 costs zero. `third-party-cookies` is weight 5 of 27 and no
   configuration passes it, so **BP cannot reach 90 while the pixel runs**. It costs nothing in search

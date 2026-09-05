@@ -2122,17 +2122,22 @@ needs `www.googletagmanager.com` in `img-src`. **Enforcing the policy as it stan
 
 ## 8.34-h THE PRODUCTION BEST-PRACTICES SCORE IS A DECISION, NOT A BUG (founder, 2026-09-06)
 
-**Lighthouse best-practices on production is 74, and ~81 once the CSP additions below land. The gate
-elsewhere in this document says 90. This is the sanctioned exception, and it is the second one after
-§8.29.**
+**Lighthouse best-practices on production is 74, and 78 once the CSP is flipped to enforcing. The
+gate elsewhere in this document says 90. This is the sanctioned exception, and it is the second one
+after §8.29.**
 
 The founder was shown the measurement, the attribution and the alternative, and chose to keep the
 Meta Pixel. What was shown:
 
 - The whole gap is the pixel. Production with facebook blocked reads **96**; blocking
   `googletagmanager` as well changes nothing. GA4 costs zero points.
-- **Seven points are recoverable** (`errors-in-console`, `inspector-issues`) and were, by adding the
-  three CSP origins.
+- **Four points are recoverable, and not by the CSP origins.** This was predicted wrong first time
+  and measured after: adding the three origins cleared three real violations and moved the score
+  **not at all**, because a Lighthouse audit is pass/fail and each of those two audits still had one
+  item left. `errors-in-console` keeps a Chrome warning that `upgrade-insecure-requests` is ignored
+  in a report-only policy — a Report-Only artefact that clears when the CSP is **enforced**, worth
+  +1 weight, i.e. 74 → **78**. `inspector-issues` keeps the third-party cookie itself and stays
+  failing while the pixel runs.
 - **The rest is not.** `third-party-cookies` carries weight 5 of 27 and fires on the pixel's `fr`
   cookie from `facebook.com/tr/`. No configuration passes it. Best-practices cannot reach 90 while
   the pixel runs.
@@ -2147,6 +2152,11 @@ Meta Pixel. What was shown:
 **So do not "fix" this**, and do not raise the gate's failure as a defect. Like §8.29's 2.88:1, the
 number is written down precisely so nobody spends a day on it. Reversing it is one decision and a
 component deletion.
+
+**A LIGHTHOUSE AUDIT IS PASS/FAIL, so clearing most of its items buys nothing.** Recorded because
+the first estimate here said 81 on the assumption that fixing the CSP violations would clear both
+audits. It cleared three of four items in one and one of two in the other, and the score stayed at
+74. When forecasting a Lighthouse score, count *audits that go green*, never items removed.
 
 **Three CSP origins came out of the same measurement** and are now in the policy, pinned by
 `test/security-headers.test.ts`: `www.facebook.com` in `frame-src` (the pixel's cookie-matching
