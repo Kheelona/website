@@ -246,6 +246,49 @@ pushed on `main` but **NOT deployed** — everything below assumes the founder h
 security headers live, the live pages carry no console errors or failed requests of their own, and
 `npm audit` reports nothing in `next` itself. [2026-09-05: that phrasing was always slightly off — `next` never had an advisory of its own, it was flagged via postcss and sharp. Both manifests now read 0.]
 
+# 🧑 OPEN AND UNDECIDED: SHOULD THE GITHUB REPO BE PRIVATE? (raised 2026-09-06)
+
+- [ ] 🧑 **`github.com/Kheelona/website` is PUBLIC. The founder has not decided whether to change
+      that.** Two things put it on the list.
+
+      **The immediate one, and it is my fault.** On 2026-09-06 `git add -A` swept the founder's
+      untracked `pitch-deck/` into a commit — 197 files, 103MB, the pre-seed investor deck, the
+      financial model, assumptions, speaker notes and tough-questions doc — and pushed it. It was
+      public for about ten minutes. The four commits were rewritten with `git filter-branch` and
+      force-pushed; `pitch-deck/` is now in `.gitignore` and every restored file was verified
+      byte-for-byte on disk. **No credentials were involved** — a pattern scan over the exposed text
+      found none, and `system/env.md` is a toolchain note.
+      Residual exposure: the removed commits stay reachable by SHA until GitHub garbage-collects
+      (`9dac303`, `58f2821`, `1f4d26a`, `e80ac30`). Only GitHub Support can purge them, and going
+      private makes that moot. Repo had **0 forks, 0 stars** at the time.
+      **Going private stops future access; it cannot undo what was copied in those ten minutes.**
+
+      **The stronger reason, which stands on its own.** `security-review.md` is a live findings
+      register and architecture map for a site that takes payments, and `docs/website-steps.md`
+      §8.25/§8.26 publish the store's signing scheme, rate-limit keying and idempotency design.
+      Nothing there is a secret and the design is meant to hold when known — but this is a marketing
+      site, not an open-source project, so there is no upside to publishing it. Verified clean while
+      checking: **432 commits scanned, `.env.local` never committed**, and the only `rzp_live_` /
+      `sk_live` matches are prose in comments explaining the prefixes.
+
+      **If yes:** Settings → General → Danger Zone → Change repository visibility → Private.
+      Vercel keeps deploying — the Hobby plan supports private repos through the GitHub app — and
+      nothing in this repo changes.
+
+## 🤖 The rule that came out of it, and it binds
+
+- [ ] **NEVER `git add -A` or `git add .` in this repo.** It routinely has untracked founder work in
+      the tree that is not meant for a public repo. Stage by name (`git add src test docs …`) or use
+      `git add -u` for tracked files only, and **read `git status --short` before every commit,
+      accounting for every `??` line**. An untracked directory you did not create is a stop, not
+      something to sweep in.
+      Second trap from the recovery: **`git filter-branch` checks out the rewritten HEAD, so it
+      DELETES the removed files from the working tree.** Branch a safety ref first, restore with
+      `git checkout <ref> -- <path>` then `git rm -r --cached <path>`, and verify byte-for-byte with
+      `git cat-file blob` + `cmp` before dropping the safety branch.
+
+---
+
 # 🔴 MEASURED 2026-09-06: PRODUCTION FAILS ITS OWN BEST-PRACTICES GATE, AND THE META PIXEL IS WHY
 
 - [x] **DECIDED 2026-09-06 by the founder: keep the pixel, accept the score (§8.34-h).** The

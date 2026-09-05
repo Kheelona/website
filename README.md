@@ -19,9 +19,15 @@ You are resuming an in-progress website. Follow these steps exactly.
 > - **Before touching store code →** `docs/website-steps.md` §8.25 AND §8.26 (the unit-cap laws)
 > - **What is still open →** `Technical-Todo.md` (dated, or facts only the
 >   founder has, no defects)
-> - **Why a 404 must never be thrown on a route a visitor can mistype →**
+> - **Why a 404 must never be thrown, and why `next start` is not the deployment target →**
 >   `docs/checkpoints/blank-404s-2026-09-06.md` (laws §8.34) — four routes served a BLANK
->   page in production, including one on the payment path
+>   page in production, including one on the payment path, and the fix behaved differently on
+>   Vercel than locally
+> - **Run Lighthouse against PRODUCTION, not localhost →** §8.34-g. Every measurement tag is
+>   host-gated, so a local run scores a page missing three of its four tags and reads 96 where
+>   production reads 74. Best-practices 74 is a founder decision (§8.34-h), not a defect.
+> - **NEVER `git add -A` in this repo →** it has untracked founder work in the tree and the
+>   GitHub repo is PUBLIC. Stage by name; account for every `??` line.
 > - **The 2026-09-05 agency audit + the Lumi → Kheelu rename →**
 >   `docs/checkpoints/agency-audit-2026-09-05.md` (laws §8.32)
 > - **The build and launch record →** `docs/checkpoints/preorder-store-2026-08-22.md` and

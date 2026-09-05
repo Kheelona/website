@@ -1,8 +1,12 @@
 # kheelona.com — session entry point
 
-**🟢 EVERY 404 RENDERS ON THE SERVER NOW (2026-09-06). PUSHED, NOT DEPLOYED.** Record:
+**🟢 EVERY 404 RENDERS ON THE SERVER NOW (2026-09-06). DEPLOYED AND VERIFIED ON PRODUCTION.** Record:
 `docs/checkpoints/blank-404s-2026-09-06.md`; laws **§8.34**; rollback tag
-`pre-blank-404-fix-2026-09-06` = `95ad817`. Commits `9dac303` → `58f2821` → `1f4d26a`.
+`pre-blank-404-fix-2026-09-06` = `95ad817`. Commits `9dd97bd` (stories) → `0c331ab` (store) →
+`128dcca` (UTM) → `42d2b5d` (docs) → `a3166ac` (the Vercel correction) → `f88e436` + `d20ca56` +
+`5da52ec` (Lighthouse and CSP). **The first four were REWRITTEN — the SHAs in this round's earliest
+commit messages (`9dac303`, `58f2821`, `1f4d26a`, `e80ac30`) no longer exist on `main`;** see the
+public-repo note above for why.
 
 Four things bind. (1) **A thrown `notFound()` NEVER server-renders in Next 16** — it takes the error
 path and answers with an empty `<html id="__next_error__">` document: no stylesheet, no text, no
@@ -25,10 +29,24 @@ marketing 404 on the payment host, and the catch-all already covers the doubled 
 **`npm run utm`** builds campaign links to `docs/utm-conventions.md` or refuses; and
 `create-order` was already recording `utm_` values onto the order row, which nothing had documented.
 
+**⚠ THE GITHUB REPO IS PUBLIC, AND THE FOUNDER HAS NOT YET DECIDED WHETHER TO CHANGE THAT
+(raised 2026-09-06).** Two reasons it came up. (1) `pitch-deck/` was pushed to it by accident on
+2026-09-06 — `git add -A` swept in 197 untracked files including the pre-seed investor deck and
+financial model. History was rewritten and force-pushed within ~10 minutes; the files are intact on
+disk and `pitch-deck/` is now in `.gitignore`. **NEVER `git add -A` here — stage by name and account
+for every `??` line.** The four removed SHAs stay reachable on GitHub until it garbage-collects
+(`9dac303`, `58f2821`, `1f4d26a`, `e80ac30`); only GitHub Support can purge them, and going private
+makes that moot. (2) The stronger reason: **`security-review.md` is a live findings register and
+architecture map for a site that takes payments**, and `docs/website-steps.md` §8.25/§8.26 publish
+the store's signing, rate-limit and idempotency design. No credentials are exposed — all 432 commits
+scanned, `.env.local` never committed, and the `rzp_live_`/`sk_live` hits are prose in comments — and
+the design is meant to hold when known. But this is a marketing site, not an open-source project, so
+there is no upside to publishing it. Vercel's Hobby plan deploys private repos fine.
+
 **🟢 DEPENDENCIES ARE CLEAN ON BOTH MANIFESTS (2026-09-05).** `npm audit` reads **0** for the site
 and 0 for `launch-video/`, from 38 open Dependabot alerts. Record:
 `docs/checkpoints/dependency-sweep-2026-09-05.md`; rollback tag `pre-dependency-bump-2026-09-05` =
-`a03871f`. **PUSHED, NOT DEPLOYED.**
+`a03871f`. **DEPLOYED 2026-09-05.**
 
 Five things bind. (1) **Next is 16.3.4**, a minor bump the founder approved because 16.2.12 turned
 out to be the LAST 16.2.x release — `next` never had an advisory of its own, it was flagged via
@@ -57,8 +75,8 @@ it is wanted is deleting three words from that one line.
 character; `Kheelu mode` became **Story mode** because "Kheelu has a Kheelu mode" is circular.
 **Kheelona, PlayOS, Kheelona+ and the Kheelu Speaker are untouched.** Record:
 `docs/checkpoints/agency-audit-2026-09-05.md`; laws **§8.32**; commits `c5cca99` (correctness) → `500bccb` (rename) → `1d93609` (docs) → `0830317` (QA harness) → `584e724` (Site Audit fixes);
-rollback tag `pre-kheelu-rename-2026-09-05` = `63f6e70`. **NOT YET DEPLOYED — the founder takes it
-live manually.**
+rollback tag `pre-kheelu-rename-2026-09-05` = `63f6e70`. **DEPLOYED 2026-09-05 and verified three
+ways (curl, Ahrefs, GSC).**
 
 Five things bind. (1) The route is **`/products/kheelu`**; `/products/lumi` 308s to it permanently
 and every legacy redirect points STRAIGHT there, never chaining. (2) **The Product `@id` is STILL
@@ -108,7 +126,7 @@ the **first 500 units** at **₹4,999** (decided per request from the live paid 
 gone, a pre-order is **₹7,999 paid in full**), the **₹4,500 balance** on token orders falls due
 before dispatch, and the payment happens on **store.kheelona.com**, which this same repo serves.
 
-## ⚠ STATE OF PLAY (2026-09-05 — **LIVE; THE PRODUCT IS NOW KHEELU, AND THAT COMMIT IS PUSHED BUT NOT DEPLOYED**) — read this first
+## ⚠ STATE OF PLAY (2026-09-06 — **EVERYTHING BELOW IS LIVE AND VERIFIED ON PRODUCTION**) — read this first
 
 **📣 A META PIXEL RUNS ON THIS SITE SINCE 2026-09-01** (founder request, for Facebook and Instagram
 advertising). Pixel `1045085251085243`; law **§8.30**; checkpoint
