@@ -24,6 +24,41 @@ request. Priority is about consequence if it is never done, not about effort.
 
 ---
 
+# 🔵 SEO / AEO / GEO ROUND (opened 2026-09-05, LIVE RECORD)
+
+*Record: `docs/checkpoints/seo-aeo-geo-2026-09-05.md` (baseline + running record, appended every
+commit). Developer handoff: `docs/seo/handoff-2026-09-05.md`. Rollback tag `pre-seo-round-2026-09-05`
+= `5e7d2a1`. Push to `main` auto-deploys (founder, 2026-09-05).*
+
+## 🤖 Engineering (ticked in the commit that ships each)
+
+- [ ] C1 · the false "reserve a spot on the list. It is free" line in `src/lib/stories.ts` + banned-idea pattern
+- [ ] A2/A3 · real `published`/`updated` dates from git, derived read time, `og:type article`, sitemap `lastModified` for stories, `JOURNAL_REVIEWED` retired
+- [ ] B1/B2/B3 · `sameAs` (five founder-confirmed profiles), Person `@id`s for the three founders + Ria as `employee`, article authors by `@id`, `memberOf` NVIDIA Inception + nasscom
+- [ ] A1/A5/B4 · redirects `/post/:slug*`, `/terms-conditions`, `/for-the-parents`; BreadcrumbList on the four policy pages; `llms.txt` + `pricing.md` refresh
+- [ ] C2 · `RichParagraph` + `SourcesList` molecules, `sources` on `Story`, BlogPosting `citation`, inline-link test
+- [ ] C3 · six articles expanded with verified sources (one commit each)
+- [ ] §8.35 laws, outreach drafts file, production verification, CLAUDE.md banner closed
+
+## 🧑 Founder (from the handoff, section F)
+
+- [ ] **Search Console → Request indexing** for the ten "Discovered, currently not indexed" URLs
+      (`/safety`, `/playos`, `/team`, `/privacy`, `/terms`, `/products/lumi`, four articles; list in the
+      checkpoint). The agent will ask before clicking; it is a submit action.
+- [ ] **`admin.kheelona.com` is crawlable** (200, robots.txt *allows* Googlebot and Bingbot by name, no
+      noindex) and **`api.kheelona.com`** is in Google's crawl report. Both need `X-Robots-Tag: noindex`
+      and admin a `Disallow: /`. Outside this repo.
+- [ ] **Play Store listing** still says "App to Manage Lumi toy" (and Technical-Todo already records the
+      ₹2,999). Off-site facts must match the site or an engine quotes the wrong one.
+- [ ] **Profile back-links**: put `https://kheelona.com` on the LinkedIn company page, Instagram bio and
+      Facebook page.
+- [ ] **Optional upgrade of B3**: name the relationship with Karnataka Elevate and Founders Inc (award,
+      grant, investor) and they can join the schema; until then they stay visible-only.
+- [ ] 📅 **2026-10-03 re-measure**: GSC Generative AI impressions (168), indexed count (37), the ten URLs,
+      Ahrefs AI responses (2), the two Perplexity prompts recorded in the checkpoint.
+
+---
+
 # 🟠 FROM THE DEPENDENCY SWEEP (2026-09-05)
 
 *Record: `docs/checkpoints/dependency-sweep-2026-09-05.md`. Both manifests now read

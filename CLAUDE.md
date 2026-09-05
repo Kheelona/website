@@ -1,5 +1,17 @@
 # kheelona.com — session entry point
 
+**🔵 AN SEO / AEO / GEO ROUND IS OPEN (2026-09-05). READ `docs/checkpoints/seo-aeo-geo-2026-09-05.md`
+FIRST: its "Running record" is appended in EVERY commit of the round, so it is the resume point if the
+context is compressed.** Rollback tag `pre-seo-round-2026-09-05` = `5e7d2a1`. Developer handoff with
+live status per item: `docs/seo/handoff-2026-09-05.md`. Founder decisions this round: a push to `main`
+auto-deploys; article expansions are written and shipped directly under the voice laws (QuillBot
+humanise pass, then re-lint); official profiles for `sameAs` were supplied; **documentation is kept
+current in the same commit as each change, never deferred to a final docs commit.** What the round
+does: real git-derived dates and derived read times on the journal, sources and inline links in
+articles, six articles expanded with verified citations, `sameAs` + Person `@id`s, three legacy
+redirects, breadcrumbs on the policy pages. Laws land as **§8.35**. Remove this block when the round
+closes.
+
 **🟢 EVERY 404 RENDERS ON THE SERVER NOW (2026-09-06). DEPLOYED AND VERIFIED ON PRODUCTION.** Record:
 `docs/checkpoints/blank-404s-2026-09-06.md`; laws **§8.34**; rollback tag
 `pre-blank-404-fix-2026-09-06` = `95ad817`. Commits `9dd97bd` (stories) → `0c331ab` (store) →
