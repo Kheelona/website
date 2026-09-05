@@ -120,4 +120,11 @@ IndexNow, anything parked by the founder (CTA contrast, pixel, backlinks beyond 
   ads at children) under check four. Kheelu is measured against the list using only published
   mechanisms; the camera question stays open (Technical-Todo) and is asked generically. Five sources.
   QuillBot detector: **0% AI-generated**. Suite green. Next: 6d (`should-kids-use-ai`).
+- 2026-09-05 · commit 6d (C3, 4 of 6) · `should-kids-use-ai` 341 → 846 body words. Keeps the founder's
+  honest "no, not that AI" opening (60-word direct answer), grounds it in Common Sense Media (Jan 2026)
+  and Fairplay (Nov 2025), turns the fear into five design choices, brings in the AAP co-viewing guidance
+  and Harvard's serve-and-return as what children actually need, restates the five-question test, and
+  measures Kheelu against it with published mechanisms only ("whether that is enough is your call"). Five
+  sources. QuillBot detector: **0% AI-generated**. Suite green. Next: 6e
+  (`raising-a-bilingual-child-in-india`, adds the `LANGUAGES_LINE` import to the expansion file).
 
