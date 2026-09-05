@@ -96,8 +96,16 @@ export function contentSecurityPolicy(dev = false): string {
        a phishing overlay waiting to happen, and no page here needs embedding. */
     directive("frame-ancestors", "'none'"),
     /* Razorpay is allowed a form target because some bank and UPI flows post
-       out of the checkout. Everything else must post back to us. */
-    directive("form-action", "'self'", SOURCES.razorpay),
+       out of the checkout. Everything else must post back to us.
+
+       www.facebook.com joined on 2026-09-06 and it is the loosest thing in
+       this policy, so it is written down rather than slipped in: fbevents.js
+       falls back to a form POST to /tr when fetch is unavailable, and
+       production Report-Only was refusing it. Allowing a form target on a
+       payment host weakens exactly the control this directive exists for, and
+       the founder took that trade knowingly to keep the pixel working
+       (§8.34-h). If the Meta Pixel is ever removed, REMOVE THIS with it. */
+    directive("form-action", "'self'", SOURCES.razorpay, SOURCES.metaPixelCollect),
     directive(
       "script-src",
       "'self'",
@@ -120,13 +128,21 @@ export function contentSecurityPolicy(dev = false): string {
       "data:",
       "blob:",
       SOURCES.googleCollect,
+      /* GA4 fetches a no-JS/beacon image from the tag host itself, not from
+         google-analytics.com. It was in script-src and connect-src but not
+         here, and production Report-Only was refusing it (2026-09-06). */
+      SOURCES.googleTag,
       SOURCES.razorpay,
       SOURCES.metaPixelCollect,
     ),
     directive("font-src", "'self'", "data:"),
     directive("media-src", "'self'"),
     directive("worker-src", "'self'", "blob:"),
-    directive("frame-src", "'self'", SOURCES.razorpay, SOURCES.googlePay),
+    /* www.facebook.com added 2026-09-06: the pixel opens a hidden facebook.com
+       frame for cookie-matching, which production Report-Only was refusing.
+       frame-ancestors above still forbids anyone framing US, which is the
+       direction that matters for a checkout. */
+    directive("frame-src", "'self'", SOURCES.razorpay, SOURCES.googlePay, SOURCES.metaPixelCollect),
     directive(
       "connect-src",
       "'self'",

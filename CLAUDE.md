@@ -390,6 +390,14 @@ Rules for any change:
 - **Voice-lint**: zero em-dashes (en-dash only inside number ranges), no hype, rarely lead with "AI", exact names (PlayOS, Lumi, **Kheelu** = the brand mascot, Lori, Lua, Robu, Kheelona Magic Box), second person present tense. ONE exemption: Kheelu's quoted speech (KheeluSays bubbles) may use contractions — his founder-published card voice (copy-reference.md R9).
 - **Brand law (founder, 2026-07-10)**: the plush = **Lumi, the product** — a rotating SKU whose look changes post-launch (core/AI stays); NEVER publish the rotation strategy on-site. The orange character = **Kheelu**, the permanent mascot and site narrator. The product owns the hero; Kheelu narrates (all speech lines founder-approved before shipping — pattern: list them in the plan).
 - **Never invent claims**: testimonials, certifications, specs, ship date, contact email → flagged placeholders + blockers only.
+- **⚠ TWO SANCTIONED LIGHTHOUSE EXCEPTIONS, BOTH FOUNDER DECISIONS — do not "fix" either.**
+  (1) **Production best-practices is 74, ~81 with the CSP additions, against a gate of 90** (§8.34-h,
+  founder 2026-09-06). The whole gap is the Meta Pixel's third-party cookie: production with facebook
+  blocked measures 96, and GA4 costs zero. `third-party-cookies` is weight 5 of 27 and no
+  configuration passes it, so **BP cannot reach 90 while the pixel runs**. It costs nothing in search
+  — only Performance feeds ranking and that is 100. (2) The store's SEO ~66, because it is noindex
+  (§8.25-aa). **And measure on PRODUCTION**: every measurement tag is host-gated, so a local run
+  scores a page missing three of its four tags and reads a misleading 96 (§8.34-g).
 - **Accessibility 90+ outranks any styling preference** (spec §3). Lighthouse gates: A11y/BP/SEO 90+
   everywhere, Perf 90+ desktop. **ONE SANCTIONED EXCEPTION**: the store is `noindex`, so its SEO score
   is ~66 by design and that is correct, not a regression (§8.25-aa). Its a11y, best-practices and perf

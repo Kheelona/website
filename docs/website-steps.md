@@ -2119,3 +2119,42 @@ violations off the console**, which makes it a far faster way to read what a Rep
 catching than waiting on `/api/csp-report` in the Vercel log. It found three the day it was pointed
 at production: the Meta Pixel needs `www.facebook.com` in `frame-src` and `form-action`, and GA4
 needs `www.googletagmanager.com` in `img-src`. **Enforcing the policy as it stands would break both.**
+
+## 8.34-h THE PRODUCTION BEST-PRACTICES SCORE IS A DECISION, NOT A BUG (founder, 2026-09-06)
+
+**Lighthouse best-practices on production is 74, and ~81 once the CSP additions below land. The gate
+elsewhere in this document says 90. This is the sanctioned exception, and it is the second one after
+§8.29.**
+
+The founder was shown the measurement, the attribution and the alternative, and chose to keep the
+Meta Pixel. What was shown:
+
+- The whole gap is the pixel. Production with facebook blocked reads **96**; blocking
+  `googletagmanager` as well changes nothing. GA4 costs zero points.
+- **Seven points are recoverable** (`errors-in-console`, `inspector-issues`) and were, by adding the
+  three CSP origins.
+- **The rest is not.** `third-party-cookies` carries weight 5 of 27 and fires on the pixel's `fr`
+  cookie from `facebook.com/tr/`. No configuration passes it. Best-practices cannot reach 90 while
+  the pixel runs.
+- **It costs nothing in search.** Only the Performance category feeds Google's page-experience
+  signals, and that reads 100 on production. Best-practices is a lab quality bar, not a ranking
+  factor. Accessibility (96), SEO (100) and Performance (100) all still clear their gates.
+- The alternative was removing the browser pixel, which keeps server-side Purchase via CAPI but
+  loses PageView, ViewContent, InitiateCheckout and Lead — the events Meta optimises delivery and
+  builds audiences on — and weakens Purchase matching, because CAPI reads the `_fbp` cookie the
+  browser pixel sets. Declined, ahead of ad spend.
+
+**So do not "fix" this**, and do not raise the gate's failure as a defect. Like §8.29's 2.88:1, the
+number is written down precisely so nobody spends a day on it. Reversing it is one decision and a
+component deletion.
+
+**Three CSP origins came out of the same measurement** and are now in the policy, pinned by
+`test/security-headers.test.ts`: `www.facebook.com` in `frame-src` (the pixel's cookie-matching
+frame) and in `form-action` (fbevents.js falls back to a form POST to `/tr`), and
+`www.googletagmanager.com` in `img-src` (GA4 beacons from the tag host, not from
+google-analytics.com). Without them, **enforcing the CSP would have silently broken the pixel and
+part of GA4** — which is what the Report-Only phase existed to discover, and nobody had read it.
+
+`form-action` is the loosest of the three and the comment in `security-headers.ts` says so: allowing
+a form target on a payment host weakens exactly the control that directive exists for. It is there
+for the pixel and for nothing else. **If the Meta Pixel goes, all three go with it.**

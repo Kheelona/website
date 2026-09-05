@@ -91,6 +91,24 @@ describe("the content security policy", () => {
        in one and not the other, which is the hardest kind of gap to notice. */
     expect(directive("img-src")).toContain("https://www.facebook.com");
     expect(directive("connect-src")).toContain("https://www.facebook.com");
+
+    /* Added 2026-09-06, after production Report-Only was READ for the first
+       time (§8.34-g): three refusals that would have broken the pixel and GA4
+       the moment the policy was enforced. Pinned here so the flip cannot
+       silently regress them, and so removing the Meta Pixel forces a decision
+       about each rather than leaving a widened policy behind. */
+    expect(
+      directive("frame-src"),
+      "the pixel opens a hidden facebook.com frame for cookie matching",
+    ).toContain("https://www.facebook.com");
+    expect(
+      directive("form-action"),
+      "fbevents.js falls back to a form POST to /tr when fetch is unavailable",
+    ).toContain("https://www.facebook.com");
+    expect(
+      directive("img-src"),
+      "GA4 fetches its beacon image from the TAG host, not google-analytics.com",
+    ).toContain("https://www.googletagmanager.com");
     /* Exact origins, not a wildcard across Meta's whole estate. */
     expect(policy).not.toContain("*.facebook.com");
     /* A bare * or https: in script-src would make the whole exercise theatre. */

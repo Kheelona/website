@@ -248,7 +248,11 @@ security headers live, the live pages carry no console errors or failed requests
 
 # 🔴 MEASURED 2026-09-06: PRODUCTION FAILS ITS OWN BEST-PRACTICES GATE, AND THE META PIXEL IS WHY
 
-- [ ] 🧑 **Lighthouse best-practices on production is 74. The gate is 90.** It has been since the
+- [x] **DECIDED 2026-09-06 by the founder: keep the pixel, accept the score (§8.34-h).** The
+      number is written down so nobody chases it — reversing it is one decision and a component
+      deletion. Do not re-raise. The measurement that produced it:
+
+- [x] **Lighthouse best-practices on production is 74, ~81 with the CSP fix. The gate is 90.** It has been since the
       Meta Pixel landed on 2026-09-01 and nobody saw it, because **Lighthouse had only ever been run
       locally, where the pixel is host-gated OFF** (§8.30). Local still reads 96; production reads
       74. Same page, same build.
@@ -281,8 +285,15 @@ security headers live, the live pages carry no console errors or failed requests
 
 # 🟠 HIGH — but neither is actionable today, and that is deliberate
 
-**🔴 READ THIS BEFORE FLIPPING — the reports have now been read, and the policy is NOT ready
-(2026-09-06).** Lighthouse against **production** surfaced the Report-Only violations directly,
+**✅ THE PREREQUISITE IS DONE (2026-09-06): the three origins are in the policy.** Founder approved
+adding them, they are pinned by `test/security-headers.test.ts`, and `form-action` carries a comment
+saying it is the loosest line in the policy and goes if the pixel goes. **The flip itself is still
+open and still needs a few days of production Report-Only with the corrected policy** — the reports
+read before 2026-09-06 were reports against a policy that was refusing things we need.
+
+**How the reports were read, because it is much faster than the Vercel log:** Lighthouse's
+`errors-in-console` audit against **production** surfaces Report-Only violations directly (§8.34-g).
+That is what found these three. What it found (2026-09-06, now fixed): Lighthouse against **production** surfaced the Report-Only violations directly,
 which is faster than waiting on the Vercel log and is the first time anyone has looked. Three
 things are being refused today and **would break if the policy were enforced as it stands**:
 
@@ -293,10 +304,8 @@ things are being refused today and **would break if the policy were enforced as 
 | load image `https://www.googletagmanager.com/a?…` | `img-src` | GA4 |
 
 `www.facebook.com` is in `connect-src` and `img-src` but not `frame-src` or `form-action`, and
-`www.googletagmanager.com` is in `script-src` and `connect-src` but not `img-src`. **Flipping now
-would silently break Meta Pixel event delivery and part of GA4.** The three additions are the
-prerequisite, and they are safe to make in Report-Only at any time — but `form-action` widening on
-a payment host is a security judgement, so it is the founder's call, not mine.
+`www.googletagmanager.com` is in `script-src` and `connect-src` but not `img-src`. **Flipping before this fix would have silently broken Meta Pixel event delivery and part of GA4** —
+which is precisely what the Report-Only phase exists to catch, and nobody had looked until now.
 
 - [ ] 🤖 **Flip the CSP from Report-Only to enforcing** (§8.28-a, owned by `security-review.md`).
       **Time-gated on purpose: do not do this before roughly 2026-08-26.** It needs a few days of
