@@ -1357,3 +1357,75 @@ local probe, because allowing a measurement host through `openPage` would put QA
 founder's real property (§8.28-g). And the rotation of `STORE_SIGNING_SECRET` could not be verified by
 me at all: never holding the production secret means I cannot mint an old-secret token and watch it
 fail, so the decisive check was the founder opening an old confirmation email and seeing it dead.
+
+---
+
+# 2026-09-05 — the agency-audit round, the Kheelu rename, and Ahrefs Site Audit
+
+Record: `docs/checkpoints/agency-audit-2026-09-05.md`. Laws §8.32. Commits `c5cca99` → `500bccb` →
+`1d93609` → `0830317` → `584e724`. Rollback tag `pre-kheelu-rename-2026-09-05` = `63f6e70`.
+
+## Gates, before and after
+
+| Gate | Before | After |
+|---|---|---|
+| Vitest | 985 pass, 106 files | **1002 pass, 107 files** |
+| `npx tsc --noEmit` | clean | **clean** |
+| `qa:sweep` (17 routes × 2 widths) | clean 34/34, 79 accepted | **clean 34/34, 79 accepted** |
+| Lighthouse desktop, home | 99 / 96 / 96 / 100 | **99 / 96 / 96 / 100** |
+| Lighthouse desktop, product | 99 / 96 / 96 / 100 | **99 / 96 / 96 / 100** |
+| Lighthouse desktop, `/safety` | — | **97 / 96 / 96 / 100** |
+| Lighthouse desktop, store | 90 / 96 / 96 / 66 | **90 / 96 / 96 / 66** (SEO by design, §8.25-aa) |
+
+The accepted-violation count staying at exactly 79 is the useful number: it says the §8.29
+white-on-orange decision was neither widened nor quietly "fixed" while eleven pages changed.
+
+## The store's perf 90 is not a regression, and here is the control
+
+`CLAUDE.md` records the store at perf 100. Local measurement said 90, three runs, Speed Index 4.2s,
+LCP 1.0s, TBT 0ms. **Built the control rather than believing the story** (§8.28-g): a detached
+checkout of `63f6e70`, rebuilt and re-measured, gives **90 with the identical 4.2s Speed Index**. The
+100 on record was measured on production behind Vercel's CDN; localhost is 90 either way, and nothing
+in this round moved it.
+
+A first attempt at the control used a git worktree with a symlinked `node_modules` and failed:
+Turbopack rejects a symlink pointing outside the project root
+(`Symlink [project]/node_modules is invalid, it points out of the filesystem root`). A detached
+checkout in place, after committing the work, is the cheap way to build a control in this repo.
+
+## Two defects this round introduced, both caught by the gates
+
+1. **`PriceTable` first shipped `text-ink-muted` on the sun wash: 4.19:1, fails AA**, and NOT the
+   §8.29 accepted pair — that exemption covers white on the orange action fill only. `qa:sweep`
+   failed 2/34 on the first run and named the seven nodes. Fixed to `text-ink` (≥8.99:1 on every
+   tint) before commit.
+2. **Host-gating `noindex` initially covered loopback**, so Lighthouse hit `127.0.0.1`, saw noindex
+   and scored SEO **69 instead of 100** — a gate manufacturing its own failure. Loopback is now on
+   `INDEXABLE_HOSTS`, because no crawler can reach it and the measurement fidelity is worth more
+   (§8.32-a).
+
+## Every guard added or corrected was proven red first
+
+Per §8.28-g, and it mattered three times this round. The corrected `metadata-lengths` guard was run
+against the original doubled title and failed on both assertions. The widened `preorder-copy`
+patterns were run against the original "joining costs nothing" and failed. Neither was trusted on
+inspection.
+
+## What only a crawler could tell us
+
+Three defects were invisible to the whole local toolchain — tests, tsc, axe, voice lint, Lighthouse —
+and came from reading Ahrefs Site Audit: Open Graph incomplete on 31 of 31 pages (including a missing
+`og:image` on every share), one schema.org validation error per page, four deprecation warnings per
+page. **A share card and a schema validator are things no gate in this repo looks at.** Read Site
+Audit's Social tags and structured-data panels after any metadata or schema change.
+
+## Verification method worth reusing
+
+A small capture script (`capture.py`, scratchpad) pulled title, canonical, `og:url`, robots, h1
+count, JSON-LD script count and every `@type` for all 16 routes, plus redirect codes, hop counts and
+sitemap shape, into a diffable text file. Before/after diffs made "nothing else moved" a
+measurement rather than a claim.
+
+**It also caught its own bug:** the first version grepped the HTML for `application/ld+json` and
+double-counted, because a Next page's source carries the RSC flight payload (§8.25-bb). Parsing the
+real `<script>` elements was the fix. A verification tool is code, and it gets the same scepticism.

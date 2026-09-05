@@ -1,6 +1,6 @@
 # Agency audit round, and the Lumi → Kheelu rename (2026-09-05)
 
-**Commits:** `c5cca99` (correctness) then `500bccb` (rename).
+**Commits:** `c5cca99` (correctness) → `500bccb` (rename) → `1d93609` (docs) → `0830317` (QA harness) → `584e724` (Site Audit fixes)
 **Rollback tag:** `pre-kheelu-rename-2026-09-05` = `63f6e70`.
 **Status:** merged to `main`, pushed, **NOT deployed**. The founder takes it live manually.
 
@@ -211,7 +211,7 @@ pattern must be shown to fail on the original copy before it is trusted.
 
 | Gate | Before | After |
 |---|---|---|
-| Vitest | 985 pass | **997 pass** |
+| Vitest | 985 pass | **1002 pass** |
 | `qa:sweep` | clean 34/34, 79 accepted | **clean 34/34, 79 accepted** |
 | Lighthouse home (desktop) | 99/96/96/100 | **98/96/96/100** |
 | Lighthouse product | 99/96/96/100 | **99/96/96/100** |
@@ -220,6 +220,10 @@ pattern must be shown to fail on the original copy before it is trusted.
 | Sitemap `lastmod` | 31 entries, 1 distinct | **0 (omitted)** |
 | Internal links reaching a redirect | — | **0**, crawled across all 31 routes |
 | Redirect hops | — | **1** for every legacy route |
+| `og:image` on a page | **absent, all 31** | **present, all 31** |
+| `og:type` / `og:site_name` / `og:locale` | **absent, all 31** | **present, all 31** |
+| schema.org validation errors | **1 × 31 pages** | **0** |
+| schema.org deprecation warnings | **4 × 31 pages** | **0** |
 
 Store perf of 90 is **not a regression**: a control build of `63f6e70` measures 90 with the same
 4.2s Speed Index. The 100 recorded in `CLAUDE.md` was measured on production behind Vercel's CDN;

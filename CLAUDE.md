@@ -4,7 +4,7 @@
 "Lumi" BELOW.** Founder decision. The product took the mascot's name, so the two are now ONE
 character; `Kheelu mode` became **Story mode** because "Kheelu has a Kheelu mode" is circular.
 **Kheelona, PlayOS, Kheelona+ and the Kheelu Speaker are untouched.** Record:
-`docs/checkpoints/agency-audit-2026-09-05.md`; laws **§8.32**; commits `c5cca99` + `500bccb`;
+`docs/checkpoints/agency-audit-2026-09-05.md`; laws **§8.32**; commits `c5cca99` (correctness) → `500bccb` (rename) → `1d93609` (docs) → `0830317` (QA harness) → `584e724` (Site Audit fixes);
 rollback tag `pre-kheelu-rename-2026-09-05` = `63f6e70`. **NOT YET DEPLOYED — the founder takes it
 live manually.**
 
@@ -18,6 +18,16 @@ pinned by test). (3) **Asset filenames did NOT change**: `/product/lumi.png`, `/
 (5) **Prose in the sections below and in `docs/checkpoints/` still says "Lumi" where it describes
 history, deliberately** — those records are accurate about their own date. Read "Lumi" as "Kheelu,
 before it was renamed".
+
+**📣 READ FROM AHREFS SITE AUDIT (crawl 2026-09-03), and fixed in `584e724`: EVERY PAGE WAS
+SHARING WITH A BLANK PREVIEW CARD.** `pageMeta()` returned `openGraph: { url }`, and **Next merges
+metadata SHALLOWLY** — a page's `openGraph` REPLACES the layout's rather than merging — so all 31
+pages lost `og:type`, `og:site_name`, `og:locale` and **`og:image`**. `og.png` existed and was
+declared; no page ever carried it, on a product whose referral loop is a WhatsApp share. Also fixed:
+`contactOption: "WhatsApp"` was an outright schema.org validation ERROR (the enum has only
+`HearingImpairedSupported` and `TollFree`) and `founders` is deprecated for `founder` — one error
+and four warnings on every page. **The suite checked what schema SAYS, never whether schema.org
+ACCEPTS it** (§8.32-h, §8.32-i). A helper that returns a metadata sub-object owns all of it.
 
 **⚠ THE ART IS NOT RECONCILED, and it is the founder's call.** Kheelu is a CREAM RABBIT in the hero
 (`KHEELU_ART`) and a FOXY-DEER in the corner guide (`KHEELU_POSES`). Users never see either named —

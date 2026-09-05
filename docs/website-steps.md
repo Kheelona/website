@@ -1722,7 +1722,7 @@ yes to a column nobody declared is not a guard.**
 
 # §8.32 THE AGENCY AUDIT ROUND, AND THE LUMI → KHEELU RENAME (2026-09-05)
 
-Full record: `docs/checkpoints/agency-audit-2026-09-05.md`. Commits `c5cca99` then `500bccb`;
+Full record: `docs/checkpoints/agency-audit-2026-09-05.md`. Commits `c5cca99` (correctness) → `500bccb` (rename) → `1d93609` (docs) → `0830317` (QA harness) → `584e724` (Site Audit fixes);
 rollback tag `pre-kheelu-rename-2026-09-05` = `63f6e70`.
 
 ## 8.32-a ONLY `INDEXABLE_HOSTS` MAY BE INDEXED
