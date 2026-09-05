@@ -135,4 +135,14 @@ IndexNow, anything parked by the founder (CTA contrast, pixel, backlinks beyond 
   `LANGUAGES_LINE` (import added to `stories-expansion.ts`), never inline. Three sources. QuillBot
   detector: **0% AI-generated**. Suite green. Next: 6f (`a-toy-that-talks-vs-a-toy-that-listens`, the
   category comparison; drops the unverifiable "India's bestselling talking toy" claim).
+- 2026-09-05 · commit 6f (C3, 6 of 6) · `a-toy-that-talks-vs-a-toy-that-listens` 314 → 746 body words. The
+  comparison piece: a 53-word direct answer, serve and return (Harvard) and Romeo et al. 2018 as the
+  mechanism, then a category-by-category map as H2 blocks (apps and tablets, smart speakers, repeat and
+  phrase toys, AI companion toys with the Common Sense Media finding, Kheelu), and the five-question
+  checklist. No competitor is named. The old description's "India's bestselling talking toy" claim, which
+  nothing could verify, is gone. Connectivity stated per §8.24-1 (WiFi for open conversation, Story mode
+  and Bluetooth offline); languages from `LANGUAGES_LINE`. Four sources. QuillBot detector: **not scored**, the free plan
+  allows five scans a day and the five earlier articles used them ("No more scans left today"); re-run
+  tomorrow or on a paid plan if the founder wants the sixth number, it is a heuristic either way. Next: commit 7 (close the round: §8.35 laws, outreach drafts,
+  production verification after the push, CLAUDE.md banner).
 
