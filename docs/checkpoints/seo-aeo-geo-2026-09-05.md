@@ -187,4 +187,13 @@ IndexNow, anything parked by the founder (CTA contrast, pixel, backlinks beyond 
   stay allowed after the first draft of the guard rejected them). CLAUDE.md banner closed, handoff items
   moved to "verified on production", Technical-Todo engineering items all ticked, project-state closed.
   **1156 tests / 115 files**, tsc 0, build 0. Pushed; production re-check follows as the last line.
+- 2026-09-05 · **ROUND CLOSED, verified on production at e28d9ab** (live ~30 s after the push). The article
+  carries `datePublished 2026-07-28T00:00:00+05:30`, `dateModified 2026-09-05T00:00:00+05:30` and the same
+  in `article:published_time`; the Blog on /stories dates all 19 posts with the timezone; no link labelled
+  "here" remains. **Google Rich Results Test, re-run on the live article: 3 valid items (Article,
+  Breadcrumbs, Organization) with ZERO non-critical notes.** Lighthouse on the live article after the
+  fix: see the line below. What is left is the founder's list in the handoff (section F) and the
+  2026-10-03 re-measure against the baseline at the top of this file.
+- 2026-09-05 · Lighthouse (desktop, production, after commit 8) on `should-kids-use-ai`: **SEO 100, a11y
+  96**, `link-text` audit score 1. The 92 is closed.
 
