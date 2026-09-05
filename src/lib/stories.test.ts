@@ -49,6 +49,10 @@ describe("read time is derived from the words, never typed", () => {
     expect(wordCount({ paragraphs: [{ h: "Two words", p: "one two three" }, { p: "four" }] })).toBe(6);
   });
 
+  it("counts a link by its label, never its address", () => {
+    expect(wordCount({ paragraphs: [{ p: "see [the WHO guideline](https://www.ncbi.nlm.nih.gov/books/NBK541169/) here" }] })).toBe(5);
+  });
+
   it("rounds at 200 words a minute with a one-minute floor", () => {
     const words = (n: number) => ({ paragraphs: [{ p: Array(n).fill("w").join(" ") }] });
     expect(readingMinutes(words(50))).toBe(1);

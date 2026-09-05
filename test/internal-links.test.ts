@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { STORIES, getRelatedStories } from "@/lib/stories";
+import { linksIn } from "@/components/molecules/RichParagraph";
+import sitemap from "@/app/sitemap";
 
 /**
  * The finding this file exists to keep closed.
@@ -65,3 +67,38 @@ describe("the journal is not a set of dead ends", () => {
     expect(Math.max(...counts)).toBeLessThanOrEqual(average * 2);
   });
 });
+
+/** SEO round C2 (2026-09-05): paragraphs may carry `[label](url)` links. An
+ *  internal one must land on a real page, or the journal grows dead ends of a
+ *  new kind. External ones must be https and real documents (the sources). */
+describe("inline links in article bodies land somewhere real", () => {
+  const routes = new Set(
+    sitemap().map((entry) => new URL(String(entry.url)).pathname.replace(/\/$/, "") || "/"),
+  );
+
+  const inline = STORIES.flatMap((story) =>
+    story.paragraphs.flatMap((block) => linksIn(block.p).map((link) => ({ slug: story.slug, ...link }))),
+  );
+
+  it("points every internal link at a page in the sitemap", () => {
+    for (const link of inline.filter((l) => l.href.startsWith("/"))) {
+      const path = link.href.split("#")[0].replace(/\/$/, "") || "/";
+      expect(routes.has(path), `${link.slug} links to ${link.href}, which is not a page`).toBe(true);
+    }
+  });
+
+  it("uses https for every external link and every source", () => {
+    for (const link of inline.filter((l) => !l.href.startsWith("/"))) {
+      expect(link.href, `${link.slug}: ${link.href}`).toMatch(/^https:\/\//);
+    }
+    for (const story of STORIES) {
+      for (const source of story.sources ?? []) {
+        expect(source.url, `${story.slug}: ${source.label}`).toMatch(/^https:\/\//);
+        expect(source.label.trim().length, `${story.slug}: empty source label`).toBeGreaterThan(8);
+      }
+      const urls = (story.sources ?? []).map((s) => s.url);
+      expect(new Set(urls).size, `${story.slug} repeats a source`).toBe(urls.length);
+    }
+  });
+});
+

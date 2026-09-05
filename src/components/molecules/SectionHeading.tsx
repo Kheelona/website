@@ -31,8 +31,12 @@ export function SectionHeading({
   titleClassName = "mb-3",
   ledeClassName,
   className,
+  id,
 }: {
   as?: "h1" | "h2" | "h3";
+  /** Lands on the heading element, so a region can `aria-labelledby` it
+   *  (SourcesList, 2026-09-05). */
+  id?: string;
   /** Defaults from the tag: h1 → hero, h2 → section, h3 → nested. */
   level?: keyof typeof TITLE_SIZES;
   eyebrow?: React.ReactNode;
@@ -52,6 +56,7 @@ export function SectionHeading({
     <div className={className}>
       {eyebrow ? <Eyebrow color={eyebrowColor}>{eyebrow}</Eyebrow> : null}
       <Tag
+        id={id}
         className={cn(
           "font-display font-extrabold leading-[1.08]",
           size,

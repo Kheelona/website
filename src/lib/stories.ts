@@ -33,7 +33,15 @@ export type Story = {
    *  Flagged by the agency audit 2026-09-05 on the two pieces that do it. */
   ageNote?: string;
   heroAlt?: string;
+  /** Body blocks. `p` may carry `[label](url)` links (RichParagraph, §8.35-c):
+   *  root-relative for our own pages, https for a source. Nothing else is
+   *  markup, so every copy law keeps reading the paragraph as prose. */
   paragraphs: { h?: string; p: string }[];
+  /** The documents the piece leans on, rendered under it AND emitted as the
+   *  BlogPosting `citation` from this one array (§8.35-c). Real, linkable
+   *  guidelines, papers and advisories only; a claim that cannot be sourced
+   *  is not written. */
+  sources?: readonly { label: string; url: string }[];
 };
 
 const CORE: Story[] = [
@@ -148,8 +156,13 @@ export function getStory(slug: string) {
 
 /** Words a reader actually reads: headings and paragraphs, nothing else. */
 export function wordCount(story: Pick<Story, "paragraphs">): number {
+  /* `[label](url)` counts as its label: the address is not read aloud. */
+  const prose = (text: string) => text.replace(/\[([^\]]+)\]\([^)\s]+\)/g, "$1");
   return story.paragraphs.reduce(
-    (n, block) => n + block.p.split(/\s+/).filter(Boolean).length + (block.h ? block.h.split(/\s+/).length : 0),
+    (n, block) =>
+      n +
+      prose(block.p).split(/\s+/).filter(Boolean).length +
+      (block.h ? block.h.split(/\s+/).length : 0),
     0,
   );
 }

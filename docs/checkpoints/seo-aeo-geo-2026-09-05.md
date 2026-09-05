@@ -88,4 +88,12 @@ IndexNow, anything parked by the founder (CTA contrast, pixel, backlinks beyond 
   landed. New `test/machine-files.test.ts` (5): ISO dates, only real slugs linked, every `sameAs` URL
   present in llms.txt, no em-dash, content types. **1132 tests / 113 files.** tsc 0. Build: see next
   line. Next: commit 5 (C2 RichParagraph + SourcesList + `sources` + `citation`).
+- 2026-09-05 · commit 5 (C2) · `molecules/RichParagraph` (parses `[label](url)`; root-relative via
+  `next/link`, https via `<a target=_blank rel="noopener noreferrer">`; nothing else is markup; `mailto:`,
+  `javascript:` and `//host` stay literal) and `molecules/SourcesList` (labelled `<section>`, `<h2>`
+  Sources, ordered list, host shown), each with story + test. `Story.sources?` and BlogPosting
+  `citation` (CreativeWork name+url) from the SAME array (§8.35-c). `wordCount` counts a link by its
+  label. `SectionHeading` gains an `id` prop. `test/internal-links` now also checks every inline internal
+  link is a sitemap page, every external link and source is https, labels are real, no duplicate
+  sources. The RichParagraph test caught a real hole in the first regex: `//host` parsed as internal; root-relative now means exactly one leading slash. **1144 tests / 115 files**, tsc 0. Next: commit 6 (C3, six articles, one commit each).
 

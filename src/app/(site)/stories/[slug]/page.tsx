@@ -8,6 +8,8 @@ import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { PageHero } from "@/components/templates/PageHero";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { ReadNext } from "@/components/organisms/ReadNext";
+import { RichParagraph } from "@/components/molecules/RichParagraph";
+import { SourcesList } from "@/components/molecules/SourcesList";
 import {
   STORIES,
   getStory,
@@ -98,6 +100,15 @@ export default async function StoryPage({
       datePublished: story.published,
       dateModified: story.updated,
       ...(story.hero && { image: `${SITE_URL}${story.hero}` }),
+      /* The same array SourcesList renders (§8.35-c): what the reader can
+         click is what the crawler is told, by construction. */
+      ...(story.sources?.length && {
+        citation: story.sources.map((source) => ({
+          "@type": "CreativeWork",
+          name: source.label,
+          url: source.url,
+        })),
+      }),
     },
     breadcrumbs([
       { name: "Stories", path: "/stories" },
@@ -166,9 +177,10 @@ export default async function StoryPage({
                     {block.h}
                   </h2>
                 )}
-                <p className="mb-5 text-[18px] leading-[1.7]">{block.p}</p>
+                <RichParagraph text={block.p} className="mb-5 text-[18px] leading-[1.7]" />
               </div>
             ))}
+            <SourcesList sources={story.sources ?? []} />
             {/* The age caveat, where the piece is about a child younger than
                 Kheelu's band. Placed directly under the closing paragraph on
                 purpose: that paragraph is the invitation, and this qualifies it

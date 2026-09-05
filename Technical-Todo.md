@@ -36,7 +36,7 @@ commit). Developer handoff: `docs/seo/handoff-2026-09-05.md`. Rollback tag `pre-
 - [x] A2/A3/A4 · real `published`/`updated` dates from git, derived read time, `og:type article`, sitemap `lastModified` for stories, `JOURNAL_REVIEWED` deleted (shipped 2026-09-05)
 - [x] B1/B2/B3 · `sameAs` (five founder-confirmed profiles), Person `@id`s for the three founders + Ria as `employee`, article authors by `@id`, `memberOf` NVIDIA Inception + nasscom (shipped 2026-09-05)
 - [x] A1/A5/B4 · redirects `/post/:slug*`, `/terms-conditions`, `/for-the-parents`; BreadcrumbList on the four policy pages; `llms.txt` + `pricing.md` refresh (shipped 2026-09-05)
-- [ ] C2 · `RichParagraph` + `SourcesList` molecules, `sources` on `Story`, BlogPosting `citation`, inline-link test
+- [x] C2 · `RichParagraph` + `SourcesList` molecules, `sources` on `Story`, BlogPosting `citation`, inline-link test (shipped 2026-09-05)
 - [ ] C3 · six articles expanded with verified sources (one commit each)
 - [ ] §8.35 laws, outreach drafts file, production verification, CLAUDE.md banner closed
 
