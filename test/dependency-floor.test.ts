@@ -94,6 +94,40 @@ const TRANSITIVE_FLOORS: {
       "zero (<3.3.18). 3.3.16 IS NOT ENOUGH and is the easy mistake here, because 3.3.16 is the " +
       "number postcss@8.5.23 declares in its range. Reached only through postcss.",
   },
+  {
+    name: "js-yaml",
+    min: "4.3.1",
+    why:
+      "GHSA-5p4m-2wfm-xmqj HIGH, quadratic CPU consumption resolving !!omap; CVE-2026-59870's " +
+      "fix was not backported to 4.0.0-4.3.0. Dev-only, via @eslint/eslintrc. Floored at the " +
+      "patch line rather than the version we happen to resolve, so routine patch drift upward " +
+      "does not need an edit here.",
+  },
+  {
+    name: "brace-expansion",
+    /* PER-MAJOR, and it has to be. Each advisory was fixed twice, once per release
+       line, and a flat floor is arithmetically impossible: atLeast("1.1.18","5.0.9")
+       is false, so flooring at 5.0.9 would fail the legitimate 1.x copy, while
+       flooring at 1.1.18 would wave a vulnerable 5.0.7 straight through. */
+    min: { 1: "1.1.18", 5: "5.0.9" },
+    why:
+      "GHSA-3jxr-9vmj-r5cp HIGH exponential-time expansion of consecutive non-expanding {} " +
+      "groups; GHSA-mh99-v99m-4gvg HIGH unbounded expansion length causing OOM; " +
+      "GHSA-rgw5-rvv9-x895 HIGH unbounded intermediate arrays bypassing the CVE-2026-14257 " +
+      "mitigation. Dev-only: the 1.x copy via minimatch@3 under eslint, the 5.x copy via " +
+      "minimatch@10 under Storybook's docgen plugin and typescript-eslint.",
+  },
+  {
+    name: "fflate",
+    min: "0.6.11",
+    why:
+      "GHSA-px8p-9vwx-vf98 moderate, unzipSync can enter an infinite loop on a malformed ZIP64 " +
+      "archive. The only one of this round's advisories reached through a RUNTIME dependency: " +
+      "three-stdlib, under @react-three/drei. unzipSync is not on any path this app calls (the " +
+      "sole consumer is SVGLoader in the dormant journey geometry), and no override was needed " +
+      "because three-stdlib declares ^0.6.9, which 0.6.11 satisfies. A flat floor is correct " +
+      "here even though a second copy exists at 0.8.3, because 0.8.3 is numerically above it.",
+  },
 ];
 
 /** Packages that must not be in the tree at all, because no version of them is safe.
