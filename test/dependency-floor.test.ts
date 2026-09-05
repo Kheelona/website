@@ -24,6 +24,10 @@ import { describe, expect, it } from "vitest";
  * checks one of two copies is a floor that lies. TRANSITIVE_FLOORS therefore
  * walks `package-lock.json` — which is committed, needs no install, and is the
  * same artefact Dependabot reads — and asserts every matching path.
+ *
+ * A FLOOR CAN ALSO BE AN ABSENCE. `image-size` has no patched version at any
+ * number (its vulnerable range is literally `*`), so the only honest assertion
+ * is that it is not in the tree at all.
  */
 
 const FLOORS: { name: string; min: string; why: string }[] = [
@@ -51,6 +55,17 @@ const FLOORS: { name: string; min: string; why: string }[] = [
       "as `next` because @next/eslint-plugin-next ships inside it and lints against one " +
       "framework version's rules. Recording it here is what stops a future bump moving one and " +
       "not the other, which is a drift nothing else in the suite would notice.",
+  },
+  {
+    name: "@storybook/nextjs-vite",
+    min: "10.6.0",
+    why:
+      "10.5.x reaches image-size through vite-plugin-storybook-nextjs@3.3.0, and image-size has " +
+      "NO patched version at any number (see BANNED below). 10.6.0 absorbed that plugin into the " +
+      "Storybook monorepo and swapped image-size for probe-image-size. So this floor is not " +
+      "about a fix in Storybook itself: it is the only route by which an unfixable dependency " +
+      "leaves the tree, and a reader who finds `^10.6.0` in package.json deserves to find out " +
+      "why here rather than guess. Dev-only; it cannot reach next build.",
   },
 ];
 
@@ -141,10 +156,20 @@ const TRANSITIVE_FLOORS: {
   },
 ];
 
-/** Packages that must not be in the tree at all, because no version of them is safe.
- *  Empty today; the mechanism exists because a floor cannot express "no version of
- *  this is ever acceptable", and one such package is arriving in this round. */
-const BANNED: { name: string; why: string }[] = [];
+/** Packages that must not be in the tree at all, because no version of them is safe. */
+const BANNED: { name: string; why: string }[] = [
+  {
+    name: "image-size",
+    why:
+      "GHSA-w3rx-r6r6-pgpr and GHSA-5p2g-fcmc-qvqq, both HIGH, both denial of service through " +
+      "infinite loops in the ICNS and JXL/HEIF parsers. npm audit reports the vulnerable range " +
+      "as `*`: there is NO patched version at any number, so a version floor cannot express " +
+      "this and an absence assertion is the only honest guard. It arrived through " +
+      "vite-plugin-storybook-nextjs@3.3.0; Storybook 10.6.0 absorbed that package and replaced " +
+      "image-size with probe-image-size. This is what stops a future Storybook or plugin change " +
+      "quietly reintroducing it.",
+  },
+];
 
 /** Compare two x.y.z strings numerically. Enough for the exact pins this repo uses. */
 function atLeast(actual: string, minimum: string): boolean {
