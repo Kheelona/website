@@ -10,7 +10,7 @@ import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { ReadNext } from "@/components/organisms/ReadNext";
 import { STORIES, getStory, getRelatedStories } from "@/lib/stories";
 import { JOURNAL_REVIEWED } from "@/config/site";
-import { graph, breadcrumbs, SITE_URL, pageMeta, jsonLd } from "@/lib/seo";
+import { pageGraph, breadcrumbs, SITE_URL, pageMeta, jsonLd } from "@/lib/seo";
 
 export function generateStaticParams() {
   return STORIES.map((s) => ({ slug: s.slug }));
@@ -47,7 +47,7 @@ export default async function StoryPage({
      a named author from /team (founder assignment), which is the E-E-A-T win
      the Organization byline was holding a place for. Month precision on the
      date on purpose: per-article days would be invented. */
-  const articleGraph = graph(
+  const articleGraph = pageGraph(
     {
       "@type": "BlogPosting",
       headline: story.title,
@@ -125,6 +125,28 @@ export default async function StoryPage({
                 <p className="mb-5 text-[18px] leading-[1.7]">{block.p}</p>
               </div>
             ))}
+            {/* The age caveat, where the piece is about a child younger than
+                Lumi's band. Placed directly under the closing paragraph on
+                purpose: that paragraph is the invitation, and this qualifies it
+                in the same breath rather than three screens earlier. */}
+            {story.ageNote && (
+              <aside
+                aria-label="Product age information"
+                className="mt-8 rounded-(--radius-card) border border-line bg-orange/15 p-5"
+              >
+                <p className="mb-2 text-[13px] font-semibold uppercase tracking-wide text-orange-ink">
+                  Before you pre-order
+                </p>
+                <p className="text-[16.5px] leading-[1.65]">{story.ageNote}</p>
+                <Link
+                  href="/products/lumi#faq"
+                  className="mt-3 inline-block font-semibold text-ink-head underline"
+                >
+                  Read Lumi&rsquo;s age guidance and product details
+                </Link>
+              </aside>
+            )}
+
             <div className="mt-10 flex items-center gap-5 rounded-(--radius-card) bg-cream p-6">
               <Image
                 src={`/mascot/mascot-${story.pose}.png`}
@@ -134,10 +156,22 @@ export default async function StoryPage({
                 sizes="90px"
                 className="h-[86px] w-auto"
               />
+              {/* /safety joined this block on 2026-09-05. Two reasons, and the
+                  second is the stronger one. The agency asked for a contextual
+                  safety link on the safe-AI-toy piece; but /safety has the
+                  lowest exit rate on the whole site (12.9%, Ahrefs to
+                  2026-09-05), so it is the page that answers the objection an
+                  article leaves a parent holding. Every article gets it, not
+                  just the one, which also deepens a journal that shipped as
+                  nineteen dead-end leaves (test/internal-links.test.ts). */}
               <p className="text-[16px]">
                 More reads like this on the{" "}
                 <Link href="/stories" className="font-semibold text-ink-head underline">
                   journal
+                </Link>
+                , the mechanisms behind the promises on the{" "}
+                <Link href="/safety" className="font-semibold text-ink-head underline">
+                  Safety page
                 </Link>
                 , or meet the friend behind it on the{" "}
                 <Link href="/products/lumi" className="font-semibold text-ink-head underline">

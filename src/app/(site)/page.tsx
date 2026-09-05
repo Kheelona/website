@@ -7,7 +7,7 @@ import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { AudioMoments } from "@/components/molecules/AudioMoments";
 import { FootnotesRow, Footnote, V3_FOOTNOTES } from "@/components/molecules/FootnotesRow";
 import { Faq, type FaqEntry } from "@/components/molecules/Faq";
-import { graph, faqPage, breadcrumbs, LUMI_PRODUCT, pageMeta, jsonLd } from "@/lib/seo";
+import { pageGraph, faqPage, breadcrumbs, LUMI_PRODUCT, pageMeta, jsonLd } from "@/lib/seo";
 import { AUDIO_MOMENTS } from "@/lib/audio-moments";
 import { RecognitionStrip } from "@/components/organisms/RecognitionStrip";
 import { ParentQuotes } from "@/components/organisms/ParentQuotes";
@@ -39,14 +39,23 @@ import {
 } from "@/features/home";
 
 export const metadata = pageMeta({
-  /* 72 characters, and deliberately over Google's ~60-character display budget
-     (founder, 2026-08-12). It is one of exactly four places the tutor narrative
-     is allowed to live (V6), and it carries the head keywords; Google reads the
-     whole title and only clips the visible tail, so the cost is a few pixels of
-     click-through, not rank. The separator is the same dot every other route
-     uses. Home writes its own suffix because the root layout's `%s · Kheelona`
-     template applies to CHILD segments, and this page is the root segment. */
-  title: "Lumi: the screen-free AI toy with a tutor inside, ages 3+ · Kheelona",
+  /* 72 characters rendered, and deliberately over Google's ~60-character display
+     budget (founder, 2026-08-12). It is one of exactly four places the tutor
+     narrative is allowed to live (V6), and it carries the head keywords; Google
+     reads the whole title and only clips the visible tail, so the cost is a few
+     pixels of click-through, not rank.
+
+     NO HAND-WRITTEN BRAND SUFFIX. This line used to end "· Kheelona" on the
+     theory that the root layout's `%s · Kheelona` template applies only to child
+     segments and Home is the root segment. That is true of `app/page.tsx` — but
+     this page is `app/(site)/page.tsx`, and a route group IS a segment for
+     metadata even though it is not one in the URL. So the template applied, and
+     production served `... ages 3+ · Kheelona · Kheelona` for months.
+
+     Found live 2026-09-05. Every route now writes the bare title and lets the
+     template add the brand exactly once, so there is no root-segment special
+     case left to get wrong. */
+  title: "Lumi: the screen-free AI toy with a tutor inside, ages 3+",
   description:
     "A best friend at 3, a head start for school. The screen-free toy that grows with your child, in your home languages. Pre-order at ₹4,999, ₹499 refundable.",
   path: "/",
@@ -107,7 +116,7 @@ const HOME_FAQ: FaqEntry[] = [
 
 /* V4 (D7): the VideoObject left this graph with the film — schema mirrors
    visible content only, and the film is no longer on the page. */
-const HOME_JSON_LD = graph(
+const HOME_JSON_LD = pageGraph(
   LUMI_PRODUCT,
   faqPage(HOME_FAQ),
   breadcrumbs([]),

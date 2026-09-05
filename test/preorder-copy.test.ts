@@ -54,6 +54,36 @@ const RETIRED: readonly [RegExp, string][] = [
   ],
   [/₹9,999|Rs 9,999|999_900/, "the post-cap price is ₹7,999 (FULL_PRICE)"],
   [/1 October 2026|2026-10-01/, "the ship date is 20 October 2026 (SHIP_DATE_TEXT/ISO)"],
+  /* ADDED 2026-09-05, and the reason is uncomfortable.
+   *
+   * Everything above this line was written on 2026-08-22 to stop exactly one
+   * thing coming back: the promise that a pre-order is free. It then let EIGHT
+   * live instances of that promise through, for two weeks, on a site taking
+   * money — because it matched the literal string "no payment" and the site had
+   * said it eight other ways:
+   *
+   *   /products/lumi  "Do I have to pay anything now?" -> "No."   (also in JSON-LD)
+   *   /products/lumi  "Reserving now does not commit you to buy."
+   *   3 articles      "the pre-order list is open, and joining costs nothing"
+   *   4 articles      "the pre-order list is open"
+   *
+   * A banned-phrase list that bans one phrasing of an idea is not a guard, it
+   * is a spell-checker. These patterns ban the IDEA: that reserving is free,
+   * that it is a list rather than a purchase, and that it carries no commitment.
+   * Found by the agency audit (one instance) and the source sweep it triggered
+   * (the other seven). */
+  [
+    /costs nothing|joining costs nothing|free to join/i,
+    "reserving costs a refundable ₹499 (TOKEN_PRICE); say the amount and say it comes back",
+  ],
+  [
+    /pre-?order list|waitlist|the list is open|join the list|leave the list/i,
+    "there is no list: pre-orders are open and a paid token holds a unit",
+  ],
+  [
+    /does not commit you to buy|no commitment/i,
+    "a paid token IS a commitment that we refund on request; say refundable, not uncommitted",
+  ],
 ];
 
 describe("retired promises stay retired", () => {

@@ -197,6 +197,54 @@ export const SUPPORT_WHATSAPP_DISPLAY = "+91 91875 46483";
 export const SUPPORT_WHATSAPP_HREF = "https://wa.me/919187546483";
 export const SUPPORT_WHATSAPP_LABEL = `WhatsApp ${SUPPORT_WHATSAPP_DISPLAY}`;
 
+/* ── Crawl ──────────────────────────────────────────────────────────────── */
+
+/** The ONLY hosts allowed into a search index. Anything else that serves this
+ *  app gets `x-robots-tag: noindex, nofollow` from the proxy.
+ *
+ *  Why this exists (2026-09-05): the Vercel preview branch at
+ *  website-hdn2.vercel.app was serving the complete marketing site with no
+ *  robots directive of any kind — same copy, same titles, same prices, on a host
+ *  we do not canonicalise to. A full duplicate of a commercial site, reachable
+ *  and indexable, is the one SEO self-inflicted wound that is genuinely hard to
+ *  undo once it is in the index. Ahrefs had already recorded real sessions on
+ *  it, so it was being found.
+ *
+ *  Deliberately NOT the same list as GA4_HOSTS. That list is "where measurement
+ *  is real" and includes store.kheelona.com; this one is "where indexing is
+ *  wanted" and must not, because the store is noindex by design (§8.25-aa). Two
+ *  questions, two lists, even though they overlap today.
+ *
+ *  A new production host goes in BOTH lists, and the guard test says so.
+ *
+ *  LOOPBACK IS ON THE LIST, and that is not a hole. The thing being prevented is
+ *  a PUBLICLY REACHABLE duplicate of this site getting indexed; no crawler can
+ *  reach 127.0.0.1 or localhost, so noindex there protects nothing. What it does
+ *  cost is real: the local production check is how Lighthouse SEO is measured
+ *  before a deploy, and serving noindex to it scored the home page 69 instead of
+ *  100 — a gate reporting a failure it had itself manufactured. Measurement
+ *  fidelity is the whole reason the local prod server exists.
+ *
+ *  Note the asymmetry with GA4_HOSTS, which deliberately EXCLUDES localhost:
+ *  there, local traffic pollutes a real report, so the local case is the one to
+ *  block. Here local traffic is inert and the local case is the one to allow.
+ *  Same shape of list, opposite reasoning, which is exactly why they are two
+ *  lists and not one. */
+export const INDEXABLE_HOSTS = [
+  "kheelona.com",
+  "www.kheelona.com",
+  "localhost",
+  "127.0.0.1",
+] as const;
+
+/** Whether a request's Host header may be indexed. Port-tolerant, because a
+ *  local prod check is `store.localhost:3456`, and case-tolerant because Host
+ *  is not case-normalised by every proxy. */
+export function isIndexableHost(host: string): boolean {
+  const name = host.split(":")[0].toLowerCase();
+  return (INDEXABLE_HOSTS as readonly string[]).includes(name);
+}
+
 /* ── Measurement ────────────────────────────────────────────────────────── */
 
 /** GA4, wired 2026-07-28 (founder's property: stream "kheelona.com",

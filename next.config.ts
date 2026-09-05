@@ -60,6 +60,17 @@ const nextConfig: NextConfig = {
          so the traffic lands somewhere that converts. If a real statement is
          ever written, it replaces this line. */
       { source: "/accessibility-statement", destination: "/products/lumi", permanent: true },
+      /* Three URLs people actually typed, each 404ing, all three found in the
+         Ahrefs Web Analytics export for the fortnight to 2026-09-05.
+         `/lumi` is the product's name without its path — the single most
+         guessable URL this site has, and it was the only one of the three with
+         no handler at all. `/faq` is where a parent looks for the answers that
+         live on the product page. `/sitemap` is what people type when they mean
+         the .xml. None is a legacy Wix route; they are all just what humans
+         guess, which is why they belong here rather than in the block above. */
+      { source: "/lumi", destination: "/products/lumi", permanent: true },
+      { source: "/faq", destination: "/products/lumi#faq", permanent: true },
+      { source: "/sitemap", destination: "/sitemap.xml", permanent: true },
       { source: "/blog", destination: "/stories", permanent: true },
       { source: "/blog/:slug*", destination: "/stories", permanent: true },
       { source: "/about", destination: "/team", permanent: true },

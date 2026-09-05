@@ -6,7 +6,8 @@ import {
   breadcrumbs,
   faqPage,
   setupHowTo,
-  graph,
+  pageGraph,
+  siteEntityGraph,
   jsonLd,
   SITE_URL,
 } from "./seo";
@@ -19,7 +20,7 @@ import { SETUP_STEPS } from "./setup-steps";
  *  the easiest place for an invented claim to hide, because nobody reads it. */
 describe("structured data", () => {
   const everything = JSON.stringify(
-    graph(LUMI_PRODUCT, LAUNCH_VIDEO, faqPage([{ q: "q", a: "a" }]), setupHowTo(SETUP_STEPS), breadcrumbs([])),
+    pageGraph(LUMI_PRODUCT, LAUNCH_VIDEO, faqPage([{ q: "q", a: "a" }]), setupHowTo(SETUP_STEPS), breadcrumbs([])),
   );
 
   it("never leaks a gated fact (Kheelona+ price, certifications) and carries the published ship date", () => {
@@ -96,10 +97,25 @@ describe("structured data", () => {
     expect(WEBSITE.inLanguage).toBe("en-IN");
   });
 
-  it("binds every page to one entity by @id, not a per-page island", () => {
-    const g = graph({ "@type": "AboutPage" }) as { "@graph": { "@id"?: string }[] };
+  it("declares the two entities exactly once, in the site graph", () => {
+    const g = siteEntityGraph() as { "@graph": { "@id"?: string }[] };
+    expect(g["@graph"]).toHaveLength(2);
     expect(g["@graph"][0]["@id"]).toBe(`${SITE_URL}/#organization`);
     expect(g["@graph"][1]["@id"]).toBe(`${SITE_URL}/#website`);
+  });
+
+  /* The regression this pins. Until 2026-09-05 one function served both
+     callers, so SiteChrome and the page each emitted an Organization and a
+     WebSite: two ld+json scripts per page, both declaring the same two @ids.
+     A page graph that quietly re-declares the publisher is the failure, and it
+     is invisible unless something counts. */
+  it("keeps the publisher OUT of a page graph, so it is never declared twice", () => {
+    const g = pageGraph({ "@type": "AboutPage" }) as { "@graph": { "@type"?: string }[] };
+    expect(g["@graph"]).toHaveLength(1);
+    expect(g["@graph"][0]["@type"]).toBe("AboutPage");
+    const types = JSON.stringify(g);
+    expect(types).not.toMatch(/"@type":"Organization"/);
+    expect(types).not.toMatch(/"@type":"WebSite"/);
   });
 
   it("numbers breadcrumbs from Home", () => {
@@ -157,6 +173,40 @@ describe("json-ld serialisation", () => {
 
     const offenders = files.filter((file) =>
       readFileSync(file, "utf8").includes("__html: JSON.stringify"),
+    );
+    expect(offenders).toEqual([]);
+  });
+
+  /* The structural half of the de-duplication (2026-09-05).
+   *
+   * `siteEntityGraph()` publishes Organization and WebSite. It is correct
+   * exactly once per rendered page, and SiteChrome is the one component that
+   * renders once per marketing page. Any second caller — a page that wants "the
+   * full graph", a new template, a store layout — puts the publisher on the page
+   * twice again, which is the bug this pair of functions was split to make
+   * impossible. So the call site is pinned, not just the return value. */
+  it("lets only SiteChrome publish the entity graph", () => {
+    const files = execFileSync("git", ["ls-files", "src/app", "src/components", "src/features"], {
+      encoding: "utf8",
+    })
+      .split("\n")
+      .filter((file) => /\.tsx?$/.test(file) && !file.includes(".test.") && !file.includes(".stories."));
+
+    const callers = files.filter((file) =>
+      /\bsiteEntityGraph\s*\(/.test(readFileSync(file, "utf8")),
+    );
+    expect(callers).toEqual(["src/components/templates/SiteChrome.tsx"]);
+  });
+
+  /* And the other direction: a page graph must never carry the publisher, so no
+   * page may hand Organization or WebSite to pageGraph() by hand either. */
+  it("keeps ORGANIZATION and WEBSITE out of every page module", () => {
+    const files = execFileSync("git", ["ls-files", "src/app"], { encoding: "utf8" })
+      .split("\n")
+      .filter((file) => /\.tsx?$/.test(file) && !file.includes(".test."));
+
+    const offenders = files.filter((file) =>
+      /\b(ORGANIZATION|WEBSITE)\b/.test(readFileSync(file, "utf8")),
     );
     expect(offenders).toEqual([]);
   });

@@ -9,6 +9,7 @@ import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { Card } from "@/components/molecules/Card";
 import { StepList } from "@/components/molecules/StepList";
 import { CheckList } from "@/components/molecules/CheckList";
+import { PriceTable } from "@/components/molecules/PriceTable";
 import { Reveal } from "@/components/molecules/Reveal";
 import { ChatDemo } from "@/components/molecules/ChatDemo";
 import { AudioMoments } from "@/components/molecules/AudioMoments";
@@ -18,7 +19,7 @@ import { KheelonaPlusBand } from "@/components/molecules/KheelonaPlusBand";
 import { FootnotesRow, V3_FOOTNOTES, Footnote } from "@/components/molecules/FootnotesRow";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { LumiModes } from "@/components/organisms/LumiModes";
-import { graph, faqPage, breadcrumbs, LUMI_PRODUCT, pageMeta, jsonLd } from "@/lib/seo";
+import { pageGraph, faqPage, breadcrumbs, LUMI_PRODUCT, pageMeta, jsonLd } from "@/lib/seo";
 import { ParentQuotes } from "@/components/organisms/ParentQuotes";
 import {
   PREORDER_HREF,
@@ -101,7 +102,14 @@ const FAQ_ITEMS: FaqEntry[] = [
   { q: "What if my child breaks it?", a: "Lumi is built for small hands and rough days. Warranty details land closer to launch." },
   { q: "When will Lumi ship?", a: `Shipping starts ${SHIP_DATE_TEXT}. Pre-orders are served first, in the order they were placed.` },
   { q: "How much does Lumi cost?", a: `${LAUNCH_PRICE} for the ${CAP_UNITS_TEXT}, and ${FULL_PRICE} once they are gone. A refundable ${TOKEN_PRICE} reserves yours, and the ${BALANCE_PRICE} balance is due only when it ships.` },
-  { q: "Do I have to pay anything now?", a: "No. Reserving holds your price and your place, and it does not commit you to buy. You can leave the list anytime." },
+  /* CORRECTED 2026-09-05. This answer said "No. Reserving holds your price and
+     your place, and it does not commit you to buy. You can leave the list
+     anytime." That was true of the free Tally list and became false on
+     2026-08-22, when the store started taking a real ₹499 through Razorpay. It
+     shipped for two weeks as visible copy AND inside the FAQPage JSON-LD, so
+     answer engines were being told the pre-order is free.
+     The retired wording is pinned as banned in test/preorder-copy.test.ts. */
+  { q: "Do I have to pay anything now?", a: `Yes. A refundable ${TOKEN_PRICE} reserves your Lumi and holds the ${LAUNCH_PRICE} price. The ${BALANCE_PRICE} balance is due only when your Lumi is ready to ship, and the ${TOKEN_PRICE} comes back in full if you ask before we dispatch.` },
   { q: "What is PlayOS?", a: "The platform Lumi runs on. It gives each character a voice and a personality, and keeps every answer right for your child's age." },
   { q: "Can Lumi play music?", a: "Yes. Pair a phone over Bluetooth and Lumi becomes the speaker in the room, for your playlist, rhymes, or an audiobook. That is one of its three modes, alongside conversation and Kheelu mode stories." },
   { q: "Does Lumi need a subscription?", a: "Every Lumi includes 6 months of Kheelona+, the stories, lessons, languages, and the parent app. Lumi's smart features are yours for life, Kheelona+ pricing is announced soon, and nothing renews without you." },
@@ -115,7 +123,7 @@ const FAQ_ITEMS: FaqEntry[] = [
   { q: "Is Lumi a good birthday gift?", a: `It is a unique birthday gift in one specific way: it keeps changing. Lumi learns your child's words and grows with them, so the toy at 5 is not the toy they unwrapped at 3. Reserving now holds the ${LAUNCH_PRICE} price.` },
 ];
 
-const JSON_LD = graph(
+const JSON_LD = pageGraph(
   LUMI_PRODUCT,
   faqPage(FAQ_ITEMS),
   breadcrumbs([{ name: "Meet Lumi", path: "/products/lumi" }]),
@@ -175,7 +183,7 @@ export default function LumiPage() {
           </div>
         </Room>
 
-        <Room fill="cool" guide="curious" say="Four steps, and every one of them careful." reveal="right">
+        <Room fill="cool" id="how-it-works" guide="curious" say="Four steps, and every one of them careful." reveal="right">
           <Reveal>
             <SectionHeading
               title="From question to answer, in four steps."
@@ -305,10 +313,13 @@ export default function LumiPage() {
               ]}
             />
             {/* TODO(claims-specs): full specs pending from founder. */}
+            {/* Second half corrected 2026-09-05: it read "Reserving now does
+                not commit you to buy", which was written for the free list and
+                reads as "this costs nothing" beside a paid button. */}
             <p className="max-w-[62ch] text-[16.5px] text-ink-muted">
               We publish the full specs, battery, size, materials, and the wake
-              word, before Lumi ships. Reserving now does not commit you to
-              buy.
+              word, before Lumi ships. The {TOKEN_PRICE} you pay to reserve is
+              refundable until we dispatch.
             </p>
           </Reveal>
         </Room>
@@ -317,7 +328,7 @@ export default function LumiPage() {
           <ParentQuotes bare count={2} eyebrow="From the pilot" title="The first families are already talking." />
         </Room>
 
-        <Room fill="sun" guide="joy" say="Told you she was worth it." reveal="pop">
+        <Room fill="sun" id="price" guide="joy" say="Told you she was worth it." reveal="pop">
           <Reveal>
             <SectionHeading
               level="minor"
@@ -326,11 +337,15 @@ export default function LumiPage() {
               lede={`Pre-order at ${LAUNCH_PRICE} while the ${CAP_UNITS_TEXT} last. Fully refundable until we ship, and Lumi stays a friend for years.`}
               ledeClassName="mb-7 max-w-[46ch]"
             />
+            {/* The same offer as a table, under the same heading. The prose
+                above is the pitch; this is the reference a parent checks
+                against the payment screen (agency audit D06). */}
+            <PriceTable className="mb-8" />
             <Button href={PREORDER_HREF}>{PREORDER_LABEL}</Button>
           </Reveal>
         </Room>
 
-        <Room fill="cream" reveal="right">
+        <Room fill="cream" id="faq" reveal="right">
           <Reveal>
             <SectionHeading
               title="Questions parents ask."

@@ -1,4 +1,5 @@
 import type { Story } from "./stories";
+import { TOKEN_PRICE } from "@/config/site";
 
 /** Journal expansion (2026-07-06): 10 articles from live keyword research
  *  (Google autocomplete, India locale; question-form clusters). Useful-first,
@@ -259,7 +260,7 @@ export const EXPANSION: Story[] = [
       { h: "What to look for instead", p: "If you are weighing AI tutoring for a child under five, look for four things. Voice first, because conversation is the skill being built. No screen, because the display adds nothing a small child needs. A pace set by the child, not by a lesson plan. And a full record you can read, because you should never wonder what a tutor said to your child." },
       { p: "Notice that none of those four is about a syllabus. At this age the syllabus is the conversation itself: words, numbers, feelings, and the endless why. A child who is heard keeps asking, and a child who keeps asking keeps learning." },
       { p: "There is one more honest answer to the question in the title: no, a three-year-old does not need an AI tutor. Children have grown up brilliantly for millennia without one. What a good one offers is more of the thing that already works, conversation, in the hours your own patience runs out." },
-      { p: "That is the job we are building Lumi for: a screen-free friend that answers, asks one back, and moves at your child's pace, in the languages you speak at home. If that sounds like the tutor you were actually searching for, the pre-order list is open and costs nothing." },
+      { p: `That is the job we are building Lumi for: a screen-free friend that answers, asks one back, and moves at your child's pace, in the languages you speak at home. If that sounds like the tutor you were actually searching for, pre-orders are open, and the ${TOKEN_PRICE} that holds your place is refundable until we ship.` },
     ],
   },
   {
@@ -282,7 +283,7 @@ export const EXPANSION: Story[] = [
       { h: "What listening actually does", p: "Language researchers describe learning to talk as a game of serve and return. The child serves a sound or a question, someone returns it with meaning and a new serve. It is the return that builds vocabulary, logic, and confidence. A toy that only repeats never returns the serve." },
       { p: "So when a toy calls itself interactive, put one question to it: can it answer something it has never heard before? A button toy cannot. A repeat toy cannot. Only a toy that understands speech and forms a reply can, and until recently that did not exist at toy prices." },
       { h: "A short checklist", p: "If you are choosing a talking toy for a child under five: does it reply, or just repeat. Does it ask questions back. Does it speak your home language. Can you read afterwards what it said. And does it work without a screen in the room." },
-      { p: "We are building Lumi to pass that checklist: a plush friend that listens, answers, then asks the next question, in up to 10 home languages, with every word readable in the parent app. If your house has a bored cactus in it, the pre-order list is open." },
+      { p: "We are building Lumi to pass that checklist: a plush friend that listens, answers, then asks the next question, in up to 10 home languages, with every word readable in the parent app. If your house has a bored cactus in it, pre-orders are open." },
     ],
   },
   {
@@ -306,11 +307,13 @@ export const EXPANSION: Story[] = [
       { h: "20-20-20", p: "Every 20 minutes, look at something 20 feet away for 20 seconds. This one is about eyes, not development, and it is sensible for anyone who reads on a screen, including you." },
       { h: "The rules nobody can source", p: "You will also meet the 3-3-3 rule and the 7-7-7 rule, which mean something different in every post that mentions them. When a rule has no stable meaning, treat it as a costume that folklore wears. You do not need it. The principles underneath every good rule fit in one sentence: less is better under five, together beats alone, and conversation is the thing screens quietly eat." },
       { p: "So pick the rule your family can actually keep. A rule kept loosely for a year beats a strict one abandoned by Thursday." },
-      { p: "And if the hardest part is what fills the quiet after the screen goes off, that is the exact gap we built Lumi for: a screen-free friend that talks, tells stories, and asks your child questions back. The pre-order list is open, and joining costs nothing." },
+      { p: `And if the hardest part is what fills the quiet after the screen goes off, that is the exact gap we built Lumi for: a screen-free friend that talks, tells stories, and asks your child questions back. Pre-orders are open, and the ${TOKEN_PRICE} that holds your place comes back in full if you change your mind.` },
     ],
   },
   {
     slug: "talking-toys-and-late-talkers",
+    ageNote:
+      "Lumi is built for children aged 3 and above. It is a toy that takes turns, not a treatment for speech delay. If you have concerns about your child's speech, a speech and language therapist is the right first call.",
     title: "Late talker? What helps a child find their words",
     description:
       "The waiting is hard, the advice is noisy, and the toys promise miracles. What actually moves the needle for a quiet two-year-old.",
@@ -329,11 +332,13 @@ export const EXPANSION: Story[] = [
       { h: "Two myths worth dropping", p: "The first myth: a second home language causes speech delay. Speech researchers consistently find that it does not. A bilingual child may split their words across two languages for a while, and the total is what counts. Keep both languages. They are a gift, not a burden. The second myth: talking toys teach talking. A toy that repeats or plays phrases gives a child nothing to answer. If a toy joins the effort at all, it earns its place only by taking turns, answering, and asking something back." },
       { h: "What helps at home", p: "Narrate what you are doing in short sentences. Pause longer than feels natural, because a beginner needs time to load a word. Offer choices out loud, the red cup or the blue cup, so an answer is worth attempting. Sing, because melody carries words into memory. And switch off the background TV, which quietly eats the turns a room produces." },
       { p: "None of this needs a programme or a purchase. It needs turns, and anyone who loves the child can supply them." },
-      { p: "Where a talking friend can honestly help is in adding turns when yours run out, and doing it in your home language. That is what we are building Lumi to do, with every exchange staying readable by you. The pre-order list is open if you want one more voice in the room." },
+      { p: "Where a talking friend can honestly help is in adding turns when yours run out, and doing it in your home language. That is what we are building Lumi to do, with every exchange staying readable by you. Pre-orders are open if you want one more voice in the room." },
     ],
   },
   {
     slug: "brain-development-toys-for-a-2-year-old",
+    ageNote:
+      "Lumi is built for children aged 3 and above, so it is not the toy for a two-year-old today. The thinking above applies at any age, and Lumi is there when your child turns 3.",
     title: "Brain development toys for a two-year-old: read this before the label",
     description:
       "Every box in the toy aisle promises cognitive growth. What a two-year-old brain actually builds with, and how to shop for it.",
@@ -352,7 +357,7 @@ export const EXPANSION: Story[] = [
       { h: "The ingredient no box lists", p: "The strongest finding in early development is that brains grow through serve and return, the loop where a child acts or asks and a person responds. No object on the shelf outranks a person on the floor. The same cups are twice the toy when someone counts the stack, asks which is biggest, and cheers the crash." },
       { p: "So the honest shopping rule for a two-year-old: fewer toys that perform, more toys that wait for the child to act. Check the safety mark, skip the promises, and spend the difference on time on the carpet." },
       { p: "Where does a talking toy fit that rule? Only if it responds rather than performs. A toy that answers a question and asks one back is doing the serve and return job. A toy that sings at the ceiling is furniture with batteries." },
-      { p: "That is the bar we hold Lumi to: it listens, answers, remembers, and moves at your child's pace, with no screen anywhere. If a friend on the carpet sounds better than another performing box, the pre-order list is open." },
+      { p: "That is the bar we hold Lumi to: it listens, answers, remembers, and moves at your child's pace, with no screen anywhere. If a friend on the carpet sounds better than another performing box, pre-orders are open." },
     ],
   },
 ];

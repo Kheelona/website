@@ -11,7 +11,7 @@ import { Reveal } from "@/components/molecules/Reveal";
 import { Button } from "@/components/atoms/Button";
 import { Faq, type FaqEntry } from "@/components/molecules/Faq";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
-import { graph, faqPage, breadcrumbs, pageMeta, jsonLd } from "@/lib/seo";
+import { pageGraph, faqPage, breadcrumbs, pageMeta, jsonLd } from "@/lib/seo";
 import { LUMI_ART, lumiAlt } from "@/lib/lumi-art";
 
 export const metadata = pageMeta({
@@ -133,7 +133,7 @@ const SAFETY_FAQ: FaqEntry[] = [
      stays). Reinstate when the first certificate lands. */
 ];
 
-const SAFETY_JSON_LD = graph(
+const SAFETY_JSON_LD = pageGraph(
   faqPage([
     ...Object.values(ANSWERS).map((x) => ({ q: x.q, a: x.a })),
     ...SAFETY_FAQ,

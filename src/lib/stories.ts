@@ -1,3 +1,5 @@
+import { TOKEN_PRICE } from "@/config/site";
+
 /** The journal (prompt §5.2 Stories): useful before we sell. Four seed pieces,
  *  keyword-mapped, voice-linted, each ending on a soft invite (never a hard sell). */
 
@@ -13,6 +15,14 @@ export type Story = {
   tint: string;
   /** optional illustrated header, path under /public */
   hero?: string;
+  /** An age caveat, shown as an aside under the article.
+   *
+   *  Only for pieces whose SUBJECT is a child younger than Lumi's band, where
+   *  the closing invitation would otherwise read as "buy this for your
+   *  two-year-old". Lumi is 3+, and an article about two-year-olds that ends on
+   *  a pre-order link and never says so is selling past its own audience.
+   *  Flagged by the agency audit 2026-09-05 on the two pieces that do it. */
+  ageNote?: string;
   heroAlt?: string;
   paragraphs: { h?: string; p: string }[];
 };
@@ -63,7 +73,7 @@ const CORE: Story[] = [
       { p: "This is also where interactive toys earn their place, or fail to. A toy that beeps and plays jingles is a screen without the picture. A toy that listens and talks back is something else: another turn in the conversation." },
       { h: "Boredom is not the enemy", p: "One more secret from screen-free homes: a bored child invents. The floor becomes lava. The sofa becomes a ship. Boredom is where imagination clocks in for work." },
       { p: "So screen-free does not mean silent, and it does not mean joyless. It means the sound in your home is your child thinking out loud." },
-      { p: "We are building Lumi for exactly that home: a screen-free friend that listens first and talks back, ready when you need one more voice. If you want one, the pre-order list is open, and joining costs nothing." },
+      { p: `We are building Lumi for exactly that home: a screen-free friend that listens first and talks back, ready when you need one more voice. If you want one, pre-orders are open, and a refundable ${TOKEN_PRICE} holds your place.` },
     ],
   },
   {
@@ -110,7 +120,7 @@ const CORE: Story[] = [
       { h: "Four: where does the voice go?", p: "Ask where recordings live, who can see them, and whether they are ever sold. Vague answers are answers." },
       { h: "Five: is it built for your child's age?", p: "A toy sold for small children should filter every response for the age of the child holding it. Age-graded safety is the difference between a children's product and a gadget with a cute shell." },
       { p: "That is the bar we hold Lumi to: wake-word listening, no open internet, a full conversation log in the parent app, voice data that stays in your region and is never sold, and an age-graded safety layer on every reply." },
-      { p: "Hold us to it too. Read the Safety page, ask us the hard questions, and if the answers earn your trust, the pre-order list is open." },
+      { p: "Hold us to it too. Read the Safety page, ask us the hard questions, and if the answers earn your trust, pre-orders are open." },
     ],
   },
 ];

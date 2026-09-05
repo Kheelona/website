@@ -3,13 +3,13 @@ import { Footer } from "@/components/organisms/Footer";
 import { RevealObserver } from "@/components/molecules/RevealObserver";
 import { SiteBackdrop } from "@/components/atoms/SiteBackdrop";
 import { KheeluGuide } from "@/components/organisms/KheeluGuide";
-import { graph, jsonLd } from "@/lib/seo";
+import { siteEntityGraph, jsonLd } from "@/lib/seo";
 
 /* The entity graph moved to lib/seo.ts in the V3 SEO pass: every marketing page
    emits the same Organization and WebSite nodes by @id, so an answer engine
    builds ONE picture of the company (with the founders' credentials, our
    strongest E-E-A-T signal) instead of a thin island per page. */
-const ORG_JSON_LD = graph();
+const ORG_JSON_LD = siteEntityGraph();
 
 /** Everything that makes a page part of the marketing site (§8.25-z).
  *

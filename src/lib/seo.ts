@@ -263,12 +263,41 @@ export function pageMeta({
   };
 }
 
-/** Wraps any set of nodes in one graph with the org and site attached, so every
- *  page contributes to one entity rather than repeating a standalone island. */
-export function graph(...nodes: readonly object[]) {
+/** The entity graph: who publishes this site. Emitted ONCE per page, by
+ *  `SiteChrome`, which every marketing route renders exactly once.
+ *
+ *  This used to be `graph(...nodes)`, which prepended the two entities to
+ *  whatever a page passed in — and SiteChrome called it too. The result shipped
+ *  live for months: two `<script type="application/ld+json">` elements per page,
+ *  each declaring its own `Organization` and `WebSite` under the same `@id`.
+ *  Verified on the production HTML 2026-09-05, on all nine pages that built a
+ *  graph of their own.
+ *
+ *  Duplicate nodes under one `@id` are not fatal — a consumer reconciles them —
+ *  but they are the sort of thing that makes an answer engine trust a page less,
+ *  and this site's whole organic position rests on being cleanly parseable.
+ *  Splitting the two callers apart makes the duplication unrepresentable.
+ *
+ *  `graph()` is DELETED rather than renamed, so a stale call is a build error
+ *  rather than a silent second Organization (the `PLATFORM_AGES` convention). */
+export function siteEntityGraph() {
   return {
     "@context": "https://schema.org",
-    "@graph": [ORGANIZATION, WEBSITE, ...nodes],
+    "@graph": [ORGANIZATION, WEBSITE],
+  };
+}
+
+/** A page's own nodes: Product, FAQPage, BreadcrumbList, BlogPosting, HowTo.
+ *
+ *  No Organization and no WebSite — SiteChrome already published both, and a
+ *  node here that needs to point at the publisher does it by `@id` reference
+ *  (`{ "@id": "https://kheelona.com/#organization" }`), which is what the
+ *  existing `publisher` and `manufacturer` fields already do. That is the whole
+ *  point of `@id`: say the entity once, refer to it everywhere else. */
+export function pageGraph(...nodes: readonly object[]) {
+  return {
+    "@context": "https://schema.org",
+    "@graph": [...nodes],
   };
 }
 

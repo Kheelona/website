@@ -11,7 +11,7 @@ import { Reveal } from "@/components/molecules/Reveal";
 import { PromiseMark } from "@/components/molecules/PromiseMark";
 import { ArchitectureStack, type ArchLayer } from "@/components/organisms/ArchitectureStack";
 import { RecognitionStrip } from "@/components/organisms/RecognitionStrip";
-import { graph, faqPage, breadcrumbs, pageMeta, jsonLd } from "@/lib/seo";
+import { pageGraph, faqPage, breadcrumbs, pageMeta, jsonLd } from "@/lib/seo";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { LUMI_AGES } from "@/config/site";
 
@@ -163,7 +163,7 @@ const MOAT = [
 const APP_ANSWER =
   "Everything the toy said and heard. The parent app gives you a summary of the day, the full conversation log word for word, and topic filters that decide what is open and what waits. It counts the new words your child learned and gives you one simple thing to do together each day. One app covers every Kheelona friend.";
 
-const JSON_LD = graph(
+const JSON_LD = pageGraph(
   faqPage([{ q: "What can you see in the parent app?", a: APP_ANSWER }]),
   breadcrumbs([{ name: "PlayOS", path: "/playos" }]),
 );

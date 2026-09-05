@@ -27,9 +27,20 @@ const SUFFIX = " · Kheelona";
 const TITLE_CAP = 65; // ~60 of content plus the dot separator
 const DESCRIPTION_CAP = 160;
 
-/** Root-segment pages do NOT receive their own layout's title template, so they
- *  write the brand themselves and must not have the suffix added twice here. */
-const ROOT_SEGMENT = new Set(["src/app/(site)/page.tsx"]);
+/* There is no root-segment exception, and the absence is the point.
+ *
+ * This file used to carry `ROOT_SEGMENT = new Set(["src/app/(site)/page.tsx"])`
+ * on the theory that Next's `%s · Kheelona` template skips the segment that
+ * defines it. That is true of `app/page.tsx`. It is NOT true here: Home lives at
+ * `app/(site)/page.tsx`, and a route group is a segment for metadata even though
+ * it never appears in the URL. So the template applied, Home shipped
+ * "... ages 3+ · Kheelona · Kheelona" to production, and this guard — which
+ * exists specifically to catch a doubled brand — waved it through, because the
+ * exception told it the suffix was already counted.
+ *
+ * A guard that models the framework wrongly is worse than no guard: it reports
+ * green over exactly the bug it was written for. Every page is now treated the
+ * same way, which is also what the code does. */
 
 /** Home is over the cap on purpose (founder, 2026-08-12): its title is one of
  *  exactly four sanctioned homes for the tutor narrative and carries the head
@@ -75,7 +86,7 @@ describe("search-result metadata stays inside what Google displays", () => {
 
   it.each(PAGES)("%s has a title that fits", (file) => {
     const { title } = readMeta(file);
-    const rendered = ROOT_SEGMENT.has(file) ? title! : title! + SUFFIX;
+    const rendered = title! + SUFFIX;
     if (TITLE_EXEMPT.has(file)) {
       expect(rendered.length).toBeLessThanOrEqual(80);
       return;
@@ -88,10 +99,21 @@ describe("search-result metadata stays inside what Google displays", () => {
     expect(description!.length).toBeLessThanOrEqual(DESCRIPTION_CAP);
   });
 
+  /* The upstream half of the same rule. Appending the brand by hand is what
+     produced the doubled title, so no page source may contain it at all: the
+     template is the single place the brand is added. */
+  it("never writes the brand into a page's own title string", () => {
+    for (const file of PAGES) {
+      const { title } = readMeta(file);
+      expect(title, `${file} writes the brand by hand; the template adds it`)
+        .not.toContain("Kheelona");
+    }
+  });
+
   it("never prints the brand twice in one title", () => {
     for (const file of PAGES) {
       const { title } = readMeta(file);
-      const rendered = ROOT_SEGMENT.has(file) ? title! : title! + SUFFIX;
+      const rendered = title! + SUFFIX;
       const brandCount = rendered.split("Kheelona").length - 1;
       expect(brandCount, `${file}: "${rendered}"`).toBeLessThanOrEqual(1);
     }

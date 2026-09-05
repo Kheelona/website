@@ -8,7 +8,7 @@ import { Reveal } from "@/components/molecules/Reveal";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { STORIES } from "@/lib/stories";
 import { PRESS_LIFT } from "@/lib/interactions";
-import { graph, breadcrumbs, SITE_URL, pageMeta, jsonLd } from "@/lib/seo";
+import { pageGraph, breadcrumbs, SITE_URL, pageMeta, jsonLd } from "@/lib/seo";
 import { JOURNAL_REVIEWED } from "@/config/site";
 
 export const metadata = pageMeta({
@@ -39,7 +39,7 @@ const ROOM_CYCLE = [
 ] as const;
 const REVEALS = ["left", "right"] as const;
 
-const JOURNAL_JSON_LD = graph(
+const JOURNAL_JSON_LD = pageGraph(
   {
     "@type": "Blog",
     "@id": `${SITE_URL}/stories#blog`,

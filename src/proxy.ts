@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { routeForHost, isStoreHost } from "@/lib/store/host";
+import { isIndexableHost } from "@/config/site";
 import { THANKS_COOKIE, THANKS_COOKIE_MAX_AGE_SECONDS } from "@/lib/store/thanks-session";
 
 /** Host routing (§8.25-a).
@@ -56,7 +57,19 @@ export function proxy(request: NextRequest) {
     return response;
   }
 
-  return NextResponse.next();
+  /* Marketing routes on the canonical hosts pass through untouched. Anything
+     else serving this same app — the Vercel preview branch, a *.vercel.app
+     deployment URL, a local prod check — is a byte-identical duplicate of a
+     live commercial site, so it says noindex on the way out (2026-09-05).
+
+     A header rather than a <meta> tag on purpose: this app serves static,
+     prerendered and dynamic routes, and only a header covers all three from one
+     place without threading the request host into every page's metadata. */
+  const response = NextResponse.next();
+  if (!isIndexableHost(host)) {
+    response.headers.set("x-robots-tag", "noindex, nofollow");
+  }
+  return response;
 }
 
 export const config = {

@@ -7,7 +7,7 @@ import { PageHero } from "@/components/templates/PageHero";
 import { Card } from "@/components/molecules/Card";
 import { Reveal } from "@/components/molecules/Reveal";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
-import { graph, breadcrumbs, SITE_URL, pageMeta, jsonLd } from "@/lib/seo";
+import { pageGraph, breadcrumbs, SITE_URL, pageMeta, jsonLd } from "@/lib/seo";
 import {
   PREORDER_HREF,
   PREORDER_LABEL,
@@ -66,7 +66,7 @@ const ROUTES = [
   },
 ] as const;
 
-const CONTACT_JSON_LD = graph(
+const CONTACT_JSON_LD = pageGraph(
   {
     "@type": "ContactPage",
     name: "Contact Kheelona",
