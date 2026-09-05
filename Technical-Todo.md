@@ -107,8 +107,36 @@ pushed on `main` but **NOT deployed** — everything below assumes the founder h
 - [x] **Ahrefs re-crawled 2026-09-05 after the deploy and confirms the fixes**: Incomplete Open
       Graph tags 31 → **0**, the schema.org validation error gone from the issue list, warnings
       45 → 13, Health Score still 100 with 0 errors. Independent of our own curl checks.
-- [ ] **Submit the sitemap and inspect `/products/kheelu`** in GSC after the deploy. The sitemap no
-      longer lists `/products/lumi` at all, by design. *(Founder-only: I have no GSC access.)*
+- [x] **GSC checked 2026-09-05, 19:15 IST.** Sitemap **Success**, read 5 Sept, 31 pages discovered.
+      **`/products/kheelu` is INDEXED** — "URL is on Google", crawled 5 Sept 18:41 as Googlebot
+      smartphone, discovery via sitemap, user-declared canonical read correctly. Google's parsed
+      schema confirms the rename design end to end: `name: Kheelu by Kheelona`, `id` still
+      `.../products/lumi#product` (the stable identifier, §8.32-b), `offers.url`
+      `.../products/kheelu`, `founder` not `founders`, `contactPoint.url` with no `contactOption`.
+- [ ] **`/products/lumi`: Google has NOT re-crawled it yet**, so the 308 is not registered. Last
+      crawl **31 Aug 2026**, before the deploy; Google-selected canonical is still itself. Indexing
+      was **requested on 2026-09-05** to pull it into the priority crawl queue. Nothing is wrong —
+      it consolidates once Google re-fetches. **Re-inspect in a few days**; the tell is the crawl
+      date moving past 5 Sept and the canonical switching to `/products/kheelu`.
+      Also noted: its only referring page is a legacy Wix URL
+      `www.kheelona.com/product/bd99df2b-…`, which our `/product/:slug([^.]+)` rule already
+      redirects.
+
+## 🅿️ Two GSC observations, neither urgent
+
+- [ ] **Core Web Vitals report reads "No data"** on both mobile and desktop. This is the field-CWV
+      gap flagged during the agency audit as genuinely unverifiable: the domain does not yet have
+      enough real traffic for CrUX. Nothing to fix, and no lab score substitutes for it. It will
+      populate on its own as traffic grows.
+- [ ] **The property overview shows "Review snippets: 4 valid".** This site publishes no `Review` or
+      `aggregateRating` schema anywhere, deliberately (the never-invent-a-review law), so 4 valid
+      review snippets is unexplained. Most likely legacy Wix markup still in the index. Worth
+      confirming it is historical rather than something live emitting review markup we did not
+      write.
+      *(Related and NOT a defect: `/products/kheelu`'s two "non-critical issues" are
+      `Missing field 'aggregateRating' (optional)` and `Missing field 'review' (optional)`. Both are
+      optional and both are deliberately absent. Adding them to clear the warning would break the
+      brand law.)*
 - [ ] **Keep the `/products/lumi` history alongside the new route** when comparing organic
       performance. They are one page; a report that drops the old URL will read as a collapse that
       did not happen.
