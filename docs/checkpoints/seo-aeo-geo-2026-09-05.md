@@ -96,4 +96,13 @@ IndexNow, anything parked by the founder (CTA contrast, pixel, backlinks beyond 
   label. `SectionHeading` gains an `id` prop. `test/internal-links` now also checks every inline internal
   link is a sitemap page, every external link and source is https, labels are real, no duplicate
   sources. The RichParagraph test caught a real hole in the first regex: `//host` parsed as internal; root-relative now means exactly one leading slash. **1144 tests / 115 files**, tsc 0. Next: commit 6 (C3, six articles, one commit each).
+- 2026-09-05 · commit 6a (C3, article 1 of 6) · `screen-time-rules-parents-swear-by` expanded 339 → 809 body
+  words: a 56-word direct answer first, six question-shaped H2s, inline links to the WHO 2019 guideline,
+  IAP 2022, AAP 2016 and Tisseron's site, a four-entry Sources list (rendered + `citation`), question-led
+  160-char description, `updated: 2026-09-05`. QuillBot AI Detector (model v7.1.0) on the plain text:
+  **0% AI-generated, 100% human-written**, so no humaniser pass was needed; recorded as a heuristic, not a
+  gate. New voice guard in `src/lib/stories.test.ts` over every article's title/description/headings/
+  paragraphs/source labels: no em-dash, no exclamation mark, no contraction, no raw URL (+4 tests → **1154 / 115**; the commit 5 tree re-measures at 1150 with the JSON reporter, so the 1144 written there was a mis-read, and `test/stories-parse` counting one test per `*.stories.tsx` file explains why molecule stories move the total).
+  `tools/seo/replace-story.py` is the session's block-replacement helper. Next: 6b
+  (`how-much-screen-time-for-a-3-to-6-year-old`).
 

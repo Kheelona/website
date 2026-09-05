@@ -75,3 +75,39 @@ describe("read time is derived from the words, never typed", () => {
     for (const s of STORIES) expect("minutes" in s, s.slug).toBe(false);
   });
 });
+
+/** The voice laws, applied to the journal's DATA (SEO round C3, 2026-09-05).
+ *  `qa:sweep` lints one rendered article as a stand-in for nineteen; this
+ *  reads every title, description, heading and paragraph so an expansion
+ *  cannot ship an em-dash, a contraction or an exclamation mark. Link syntax
+ *  is stripped first so a URL cannot trip the rules. */
+describe("every article keeps the brand voice", () => {
+  const CONTRACTIONS =
+    /\b(don't|doesn't|can't|won't|isn't|aren't|wasn't|weren't|it's|that's|there's|here's|what's|we're|you're|they're|I'm|I'll|we'll|you'll|we've|you've|I've|didn't|couldn't|shouldn't|wouldn't|hasn't|haven't|let's)\b/i;
+  const prose = (t: string) => t.replace(/\[([^\]]+)\]\([^)\s]+\)/g, "$1");
+  const texts = STORIES.flatMap((s) => [
+    { where: `${s.slug} title`, text: s.title },
+    { where: `${s.slug} description`, text: s.description },
+    ...s.paragraphs.flatMap((b, i) => [
+      ...(b.h ? [{ where: `${s.slug} h#${i}`, text: b.h }] : []),
+      { where: `${s.slug} p#${i}`, text: prose(b.p) },
+    ]),
+    ...(s.sources ?? []).map((src) => ({ where: `${s.slug} source`, text: src.label })),
+  ]);
+
+  it("uses no em-dash anywhere (en-dash only inside number ranges)", () => {
+    for (const { where, text } of texts) expect(text, where).not.toMatch(/—/);
+  });
+
+  it("uses no exclamation mark", () => {
+    for (const { where, text } of texts) expect(text, where).not.toMatch(/!/);
+  });
+
+  it("uses no contractions in body copy", () => {
+    for (const { where, text } of texts) expect(text, where).not.toMatch(CONTRACTIONS);
+  });
+
+  it("does not leave a raw link address in the prose", () => {
+    for (const { where, text } of texts) expect(text, where).not.toMatch(/\]\(|https?:\/\//);
+  });
+});
