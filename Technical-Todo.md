@@ -24,6 +24,55 @@ request. Priority is about consequence if it is never done, not about effort.
 
 ---
 
+# 🟠 FROM THE AGENCY AUDIT ROUND (2026-09-05)
+
+*Record: `docs/checkpoints/agency-audit-2026-09-05.md`. Laws §8.32. The code is committed and
+pushed on `main` but **NOT deployed** — everything below assumes the founder has taken it live.*
+
+## 🧑 Deploy, then do these three in Search Console
+
+- [ ] **Take `main` live.** Commits `c5cca99` + `500bccb`. Rollback tag
+      `pre-kheelu-rename-2026-09-05` = `63f6e70` restores `/products/lumi` as the live route.
+- [ ] **Submit the sitemap and inspect `/products/kheelu`** in GSC after the deploy. The sitemap no
+      longer lists `/products/lumi` at all, by design.
+- [ ] **Keep the `/products/lumi` history alongside the new route** when comparing organic
+      performance. They are one page; a report that drops the old URL will read as a collapse that
+      did not happen.
+
+## 🧑 Reconcile the artwork, now that one name covers two drawings
+
+- [ ] **Kheelu is a cream rabbit in the hero and a Foxy-Deer in the corner guide.** The rename made
+      the product and the mascot one character, and the art did not follow. Users never see either
+      one named — the mascot's name reaches them only through two `aria-label`s — so nothing reads
+      as broken today and this is not urgent. It does need settling **before
+      `gemini-handoff/hero-2026-08/` is used**, because that kit composes the two together.
+
+## 🧑 Specifications, still blocked (agency D08)
+
+- [ ] **Dimensions, weight, battery runtime WITH test conditions, charging, materials and cleaning,
+      box contents, warranty.** Open as `TODO(claims-specs)` since July. The product page says we
+      publish full specs before Kheelu ships, which stays honest while nothing is signed off. When
+      the numbers exist they render in a table; a buying-critical fact that is still undecided shows
+      the literal words "Not yet announced" rather than being hidden. **No placeholder, no invented
+      number, and no empty table shell.**
+
+## 🧑 Tag campaigns before ad spend scales
+
+- [ ] **Adopt `docs/utm-conventions.md`.** The Ahrefs export for the fortnight to 2026-09-05 shows
+      `utm_campaign` and `utm_term` at **100% "Direct / None"** and five tagged visits in total,
+      while a Meta Pixel has been running since 2026-09-01 for paid social. An untagged click is
+      untagged forever: this is cheap now and unrecoverable later. Not in the agency handoff, which
+      deferred analytics.
+
+## 🤖 Worth doing, not urgent
+
+- [ ] **Ahrefs Site Audit and Search Console were not consulted this round.** Indexing coverage and
+      field Core Web Vitals are genuinely unverified, and no file in the Ahrefs Web Analytics export
+      can settle them — it carries no keyword, backlink, ranking or CWV data. Needs a browse of the
+      dashboard rather than an export.
+
+---
+
 # 🔴 CRITICAL
 
 **None.** Verified 2026-08-23: `/api/health` green on both hosts, all 15 routes 200, all seven
@@ -264,7 +313,7 @@ worth churning a live commercial site for on its own.*
       deliberately checks colour only. A 10+ file sweep on a live payment site for no user-visible
       change is the definition of unnecessary risk, which is exactly why R4 deferred it.
 
-## 🧑 Home ↔ Meet Lumi overlap — re-rated MEDIUM to LOW on 2026-08-23
+## 🧑 Home ↔ Meet Kheelu overlap — re-rated MEDIUM to LOW on 2026-08-23
 
 - [ ] **Which page owns the shared beats.** Open since V5, when the two pages measured ~60% the same.
       **That premise is stale and the rating was wrong: V6 restructured Home around the growth arc and

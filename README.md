@@ -1,6 +1,7 @@
 # kheelona.com
 
-> The consumer home of Kheelona. Its one job: turn parents into paid pre-orders for Lumi. A ₹499
+> The consumer home of Kheelona. Its one job: turn parents into paid pre-orders for Kheelu (called
+> Lumi until the 2026-09-05 rename; the old URL still redirects). A ₹499
 > refundable token holds one of the first 500 units at ₹4,999, with the ₹4,500 balance due before
 > dispatch; once those units are gone, a pre-order is ₹7,999 paid in full. Payment happens on
 > store.kheelona.com, which this same repo serves. Built with Next.js (App Router) + TypeScript,
@@ -11,13 +12,15 @@
 You are resuming an in-progress website. Follow these steps exactly.
 
 > **2026-08-23 — THE PAID STORE IS LIVE AND VERIFIED.** kheelona.com sells a ₹499 refundable token
-> holding a Lumi at ₹4,999; payment happens on store.kheelona.com, served by this same repo. Proven
+> holding a Kheelu at ₹4,999; payment happens on store.kheelona.com, served by this same repo. Proven
 > with a real ₹499 order that was refunded afterwards.
 >
 > - **First thing on any store question →** `curl -s https://kheelona.com/api/health`
 > - **Before touching store code →** `docs/website-steps.md` §8.25 AND §8.26 (the unit-cap laws)
 > - **What is still open →** `Technical-Todo.md` (dated, or facts only the
 >   founder has, no defects)
+> - **The 2026-09-05 agency audit + the Lumi → Kheelu rename →**
+>   `docs/checkpoints/agency-audit-2026-09-05.md` (laws §8.32)
 > - **The build and launch record →** `docs/checkpoints/preorder-store-2026-08-22.md` and
 >   `docs/store-go-live.md`
 > - **To verify →** `npm test`, `npx tsc --noEmit`, `npx next build`, `npm run qa:sweep`, and for

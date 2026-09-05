@@ -1,5 +1,29 @@
 # kheelona.com — session entry point
 
+**🔴 THE PRODUCT IS CALLED **KHEELU**, NOT LUMI, SINCE 2026-09-05. THIS BLOCK WINS OVER EVERY
+"Lumi" BELOW.** Founder decision. The product took the mascot's name, so the two are now ONE
+character; `Kheelu mode` became **Story mode** because "Kheelu has a Kheelu mode" is circular.
+**Kheelona, PlayOS, Kheelona+ and the Kheelu Speaker are untouched.** Record:
+`docs/checkpoints/agency-audit-2026-09-05.md`; laws **§8.32**; commits `c5cca99` + `500bccb`;
+rollback tag `pre-kheelu-rename-2026-09-05` = `63f6e70`. **NOT YET DEPLOYED — the founder takes it
+live manually.**
+
+Five things bind. (1) The route is **`/products/kheelu`**; `/products/lumi` 308s to it permanently
+and every legacy redirect points STRAIGHT there, never chaining. (2) **The Product `@id` is STILL
+`https://kheelona.com/products/lumi#product` and must stay** — it is an opaque stable identifier, not
+a link, and moving it throws away the entity continuity the redirect exists to preserve (§8.32-b,
+pinned by test). (3) **Asset filenames did NOT change**: `/product/lumi.png`, `/audio/lumi-demo-*`,
+`/models/lumi-plush.glb`. (4) Identifiers are `KHEELU_ART`/`kheeluAlt()` in `src/lib/kheelu-art.ts`,
+`KHEELU_AGES`, `KHEELU_LANGUAGES`, `KHEELU_PRODUCT`, `KHEELU_MODES`, `KheeluModes`, `KheeluInset`.
+(5) **Prose in the sections below and in `docs/checkpoints/` still says "Lumi" where it describes
+history, deliberately** — those records are accurate about their own date. Read "Lumi" as "Kheelu,
+before it was renamed".
+
+**⚠ THE ART IS NOT RECONCILED, and it is the founder's call.** Kheelu is a CREAM RABBIT in the hero
+(`KHEELU_ART`) and a FOXY-DEER in the corner guide (`KHEELU_POSES`). Users never see either named —
+the mascot's name reaches them only through two `aria-label`s — so nothing reads as broken today.
+Resolve it before `gemini-handoff/hero-2026-08/` is used.
+
 **🟢 THE v3 MIGRATION IS COMPLETE AND LIVE (2026-08-23, one day, merge `275ef01` onward).**
 The record: `docs/checkpoints/migration-to-new-dsx.md` (the twelve founder decisions, dashboard, QA log, keyword
 map) + `docs/checkpoints/v3-migration-2026-08-23.md`. New laws: **§8.26** (the unit-cap offer)
@@ -16,13 +40,13 @@ production, no real charges or refunds, no customer values copied anywhere, and 
 config, prod DB, DNS/TLS and legal wording are ESCALATE-ONLY. Remove this block when the engagement
 closes.
 
-Pre-order marketing site for **Lumi**, Kheelona's screen-free talking AI toy for ages 3+
+Pre-order marketing site for **Kheelu** (called Lumi until 2026-09-05), Kheelona's screen-free talking AI toy for ages 3+
 (India-first). One job: turn parents into paid pre-orders. A **₹499 refundable token** holds one of
 the **first 500 units** at **₹4,999** (decided per request from the live paid count — once they are
 gone, a pre-order is **₹7,999 paid in full**), the **₹4,500 balance** on token orders falls due
 before dispatch, and the payment happens on **store.kheelona.com**, which this same repo serves.
 
-## ⚠ STATE OF PLAY (2026-09-01 — **LIVE, WITH A META PIXEL, AND LUMI IS THE CREAM RABBIT**) — read this first
+## ⚠ STATE OF PLAY (2026-09-05 — **LIVE; THE PRODUCT IS NOW KHEELU, AND THAT COMMIT IS PUSHED BUT NOT DEPLOYED**) — read this first
 
 **📣 A META PIXEL RUNS ON THIS SITE SINCE 2026-09-01** (founder request, for Facebook and Instagram
 advertising). Pixel `1045085251085243`; law **§8.30**; checkpoint
@@ -49,10 +73,10 @@ here touches a live commercial site.**
 
 **🐰 THE PRODUCT ART CHANGED ON 2026-08-25: the blue dino plush is now a CREAM RABBIT, one
 colourway.** Checkpoint: **`docs/checkpoints/lumi-rabbit-art-2026-08-25.md`**. Three things bind
-from it. (1) **`src/lib/lumi-art.ts` is the ONE source for the product artwork** — path, real pixel
-dimensions and the single description; ten call sites read `LUMI_ART`/`lumiAlt()` and none inlines an
+from it. (1) **`src/lib/kheelu-art.ts` is the ONE source for the product artwork** (was `lumi-art.ts`) — path, real pixel
+dimensions and the single description; ten call sites read `KHEELU_ART`/`kheeluAlt()` and none inlines an
 `src`, a `width`/`height` or an alt. Lumi is a rotating SKU, so the next art change is that file plus
-a PNG; hand-coding any of it again is a review flag, guarded by `test/lumi-art.test.ts`.
+a PNG; hand-coding any of it again is a review flag, guarded by `test/kheelu-art.test.ts`.
 (2) **The Home hero shows LUMI ALONE, and that is INTERIM.** The old hero was one baked render with
 Kheelu and the dino together and could not be half-swapped. `gemini-handoff/hero-2026-08/` is the
 founder kit to regenerate the whisper composite; its README carries the three code steps for
@@ -62,7 +86,9 @@ blind on a pale product**: its neutral-halo pass erases pixels where `min(rgb)>1
 and cream fur is (236,225,213) — spread 23 — so it eats the plush's own edge. That rule was written
 for a blue product.
 
-Before it: **`docs/checkpoints/white-cta-labels-2026-08-24.md`** (§8.29: every label on a solid orange fill is
+Before it: **`docs/checkpoints/agency-audit-2026-09-05.md`** (the agency handoff reviewed item by
+item, the eight false payment claims, three gates that were green over their own bug, and the
+Lumi → Kheelu rename; laws §8.32). Before it: **`docs/checkpoints/white-cta-labels-2026-08-24.md`** (§8.29: every label on a solid orange fill is
 WHITE, at a knowingly accepted 2.88:1, plus the two store paragraphs removed). Before it:
 `security-and-docs-2026-08-23.md`, `ideabaaz-event-page-2026-08-23.md` and
 **`v3-migration-2026-08-23.md`** (the whole 2026-08-23 engagement; full tracker
@@ -175,11 +201,11 @@ repo root. That old app is preserved at the tag **`pre-revamp-2026-07`** and its
   the latest checkpoint. `docs/revamp-2026-07/WORKING.md` is the revamp-era operating record
   (kept, not deleted; its sibling `WORKING-history-2026-07.md` is evidence, NOT law — it still says
   ages 3 to 10 under a heading that says *Locked decisions*).
-- **Locked product facts (as revised by the 2026-08-23 migration)**: Lumi is ages **3+** — no
-  published ceiling anywhere; `PLATFORM_AGES` is deleted and every age renders from `LUMI_AGES`
+- **Locked product facts (as revised by the 2026-08-23 migration, and the 2026-09-05 rename)**: the product is **Kheelu** (was Lumi) and is ages **3+** — no
+  published ceiling anywhere; `PLATFORM_AGES` is deleted and every age renders from `KHEELU_AGES`
   ("2 to 5", "2 to 14", "3 to 6" and "3 to 10" are ALL dead ranges, guarded in `seo.test`). The .com
-  line-up is the pipeline Lumi → Kheelu Speaker → AI books (chips 3+/5+/3+). Lumi has **three
-  modes**: AI mode, Kheelu mode, Bluetooth mode. **Shipping starts 20 October 2026** (render from
+  line-up is the pipeline Kheelu → Kheelu Speaker → AI books (chips 3+/5+/3+). Kheelu has **three
+  modes**: AI mode, **Story mode** (renamed from "Kheelu mode" 2026-09-05), Bluetooth mode. **Shipping starts 20 October 2026** (render from
   `SHIP_DATE_TEXT`/`SHIP_DATE_ISO`, never inline). **The offer is UNIT-BOUNDED (§8.26)**: ₹4,999 for
   the **first 500 units** (a ₹499 refundable token + ₹4,500 balance before dispatch), then
   **₹7,999 paid in full** — the mode is decided server-side per request from the live paid count in
@@ -189,7 +215,7 @@ repo root. That old app is preserved at the tag **`pre-revamp-2026-07`** and its
   +91 91875 46483, and every visible label must say so. Seller of record: **Kheelona Robotics Private
   Limited**, GSTIN 29AAMCK1530E1ZN, Jayanagar Bengaluru 560041 (`lib/legal.ts`). **Eight languages are named and final**
   (English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish, French — render from
-  `LUMI_LANGUAGES`/`LANGUAGES_LINE`); the published ceiling stays "up to 10". **Kheelona+** may
+  `KHEELU_LANGUAGES`/`LANGUAGES_LINE`); the published ceiling stays "up to 10". **Kheelona+** may
   only ever be described per `KHEELONA_PLUS_LINE`: 6 months included, **Lumi's smart features are
   lifetime** (the sanctioned post-lapse answer since 2026-07-31), pricing "announced soon" — a ₹
   amount for it is STILL gated. Certifications: none received; the safety-standards FAQ is
@@ -354,9 +380,13 @@ shortly" state instead of crashing.
 - **`docs/store-go-live.md`** — the runbook for taking the store live, **already executed** on
   2026-08-22. Kept for the day a key has to be rotated or re-issued, and because it records what the
   real payment actually proved. It is written for a session with no memory of building the store.
+- **`docs/utm-conventions.md`** — the campaign tagging scheme (2026-09-05). Written because the
+  Ahrefs export showed 100% of campaign/term values as "Direct / None" while a Meta Pixel runs for
+  paid social: an untagged click is untagged forever, so this lands BEFORE ad spend scales.
 - `docs/preorder-events.md` — how to run a ₹99 event price: create the tier row, generate the signed
   link with `npm run event-link`, print the QR, and read the event's conversion afterwards.
-- `docs/checkpoints/` — per-phase snapshots. **Latest: `white-cta-labels-2026-08-24.md`** (§8.29,
+- `docs/checkpoints/` — per-phase snapshots. **Latest: `agency-audit-2026-09-05.md`** (the agency
+  audit round + the Kheelu rename; §8.32). Then `white-cta-labels-2026-08-24.md` (§8.29,
   the white CTA labels and the two store paragraphs; rollback tag
   `pre-white-cta-labels-2026-08-24` = `fbbbe17`). Then `security-and-docs-2026-08-23.md` (the
   security engagement and the doc/cleanup round; the security detail stays live in

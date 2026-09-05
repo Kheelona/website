@@ -1717,3 +1717,107 @@ migration text for a column name as a plain substring, so `dispatch` was satisfi
 "dispatch queue" inside a comment and `payment_id` by `rzp_payment_id`. Comments are stripped and
 matching is word-bounded now, with both false-positive shapes pinned as tests. **A guard that answers
 yes to a column nobody declared is not a guard.**
+
+---
+
+# §8.32 THE AGENCY AUDIT ROUND, AND THE LUMI → KHEELU RENAME (2026-09-05)
+
+Full record: `docs/checkpoints/agency-audit-2026-09-05.md`. Commits `c5cca99` then `500bccb`;
+rollback tag `pre-kheelu-rename-2026-09-05` = `63f6e70`.
+
+## 8.32-a ONLY `INDEXABLE_HOSTS` MAY BE INDEXED
+
+`website-hdn2.vercel.app` served a complete, byte-identical, fully indexable duplicate of this
+commercial site with **no robots directive of any kind**, and Ahrefs had recorded real sessions on
+it. A public duplicate in the index is the one SEO self-inflicted wound that is genuinely hard to
+undo.
+
+`config/site.ts` now carries `INDEXABLE_HOSTS` + `isIndexableHost()`, and `src/proxy.ts` puts
+`x-robots-tag: noindex, nofollow` on every response from any other host. A header rather than a
+`<meta>`, because this app serves static, prerendered and dynamic routes and only a header covers
+all three from one place.
+
+**It is deliberately NOT the same list as `GA4_HOSTS`, and the asymmetry is the point.** `GA4_HOSTS`
+answers *where is measurement real* and includes `store.kheelona.com`; `INDEXABLE_HOSTS` answers
+*where is indexing wanted* and must exclude it, because the store is `noindex` by design (§8.25-aa).
+A new production host goes in **both**.
+
+**Loopback IS indexable, and that is not a hole.** No crawler can reach `127.0.0.1`, so noindex
+there protects nothing — while costing real measurement: serving it scored the local Lighthouse SEO
+**69 instead of 100**, a gate manufacturing its own failure. `GA4_HOSTS` excludes localhost for the
+opposite and equally correct reason: local traffic there pollutes a real report. Same shape of list,
+opposite reasoning.
+
+## 8.32-b A RENAMED PRODUCT KEEPS ITS `@id`, AND ITS ASSET FILENAMES
+
+`KHEELU_PRODUCT["@id"]` is still `https://kheelona.com/products/lumi#product` **and must stay**. An
+`@id` is an opaque stable identifier, not a link: it is how a consumer that already knows this
+product recognises it as the *same* product rather than a new listing. Moving it discards exactly
+the entity continuity the redirect exists to preserve. The navigable address — `offers.url`, the
+canonical, `og:url` — is what moved. **Never surface the `@id` in the UI and never "fix" it to match
+the route**; `src/lib/seo.test.ts` pins it.
+
+The same principle covers assets: `/product/lumi.png`, the four audio demos and the plush GLB keep
+their filenames. Renaming a product does not require breaking image URLs, and keeping them protects
+the `/_next/image` cache.
+
+**Every legacy redirect points STRAIGHT at the new route.** Chaining `/shop → /products/lumi →
+/products/kheelu` costs a round trip and dilutes what it forwards, which is the standard way a
+rename quietly degrades the equity it was meant to carry. One hop, verified.
+
+## 8.32-c A GUARD MAY NOT BAN ONE PHRASING OF AN IDEA
+
+The inverse of §8.30-d, and more expensive. `test/preorder-copy.test.ts` was written on 2026-08-22
+for exactly one purpose — stop "a pre-order is free" coming back — and then let **eight live
+instances** through for two weeks on a site taking real money, because it matched the literal string
+`no payment` and the site had said the same thing eight other ways: *"Do I have to pay anything now?
+No."*, *"does not commit you to buy"*, *"joining costs nothing"*, *"the pre-order list is open"*.
+
+**A banned-phrase list that bans a wording is a spell-checker, not a guard.** Patterns must cover the
+CLAIM. And per §8.28-g every new pattern is proven red against the original copy before it is
+trusted — all three added this round were.
+
+## 8.32-d A ROUTE GROUP IS A METADATA SEGMENT
+
+Next's `%s · Kheelona` title template does not apply to the segment that defines it. Home is
+`app/(site)/page.tsx`, **not** `app/page.tsx`, and a route group *is* a segment for metadata even
+though it never appears in the URL. So the template applied, production served
+`... ages 3+ · Kheelona · Kheelona` for months, and `test/metadata-lengths.test.ts` — written
+specifically to catch a doubled brand — waved it through because a `ROOT_SEGMENT` exception told it
+the suffix was already counted.
+
+**A guard that models the framework wrongly is worse than no guard: it reports green over exactly
+the bug it exists for.** The exception is deleted, every route writes a bare title, and no page
+source may contain the brand at all.
+
+## 8.32-e ONE PUBLISHER PER PAGE
+
+`graph()` prepended `Organization` and `WebSite` to whatever it was given — and `SiteChrome` called
+it too, so all eleven marketing pages shipped two `ld+json` scripts each declaring the same two
+`@id`s. Split into `siteEntityGraph()` (SiteChrome only, pinned to that one call site) and
+`pageGraph()` (page nodes only; the publisher is referenced by `@id`, which is what `@id` is for).
+`graph()` is **deleted rather than renamed**, so a stale call is a build error rather than a silent
+second `Organization` — the `PLATFORM_AGES` convention.
+
+## 8.32-f MEASURE THE TRAFFIC BEFORE BELIEVING IT
+
+The Ahrefs export that opened this round showed **Mountain View as the #1 city, 121 visitors, ahead
+of Bengaluru's 94**, plus 96 visitors on OS "Unknown" at 94.5% bounce and 772s, and 42 on GNU/Linux
+at 97.6% bounce and **0s**. Roughly a quarter to a third of "visitors" are machines.
+
+Two conclusions that would otherwise have been wrong: `/privacy` is not a surprisingly popular parent
+destination, it is a compliance scanner; and home's 72% bounce is inflated, because bots land on `/`.
+`ExitPages` says the content works — `/safety` exits at 12.9%. **Segment before drawing a
+behavioural conclusion, and check the city and OS columns first.**
+
+Also settled: **AI search is ~47% of search traffic** (ChatGPT 66–74 against Google's 75, at 394s
+average duration). Question-shaped titles and `/llms.txt` are load-bearing, not decorative, and are
+the reason the agency's proposed category-label titles were declined.
+
+## 8.32-g ERRATUM TO §8.30-e
+
+§8.30-e still holds: the flag and its artwork travel together, and `HeroStage.test.tsx` still asserts
+`data-hero-has-kheelu` is absent. What died in the rename is the *second* assertion it used to carry
+— that `KHEELU_ART.alt` does not contain "Kheelu", used as a proxy for "the mascot is not in this
+picture". **The product is called Kheelu now, so its own alt text names it** and that proxy can only
+fail. The test asserts the invariant directly instead: one image, and it is the product art.
