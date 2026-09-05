@@ -12,6 +12,7 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "event-link": "node tools/store/event-link.mjs",
+    "utm": "node tools/utm/build-link.mjs",
     "qa:sweep": "node tools/qa/sweep.mjs",
     "qa:shot": "node tools/qa/shot.mjs",
     "qa:text": "node tools/qa/text.mjs",

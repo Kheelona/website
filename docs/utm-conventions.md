@@ -55,6 +55,36 @@ Printed QR at an event
 https://kheelona.com/products/kheelu?utm_source=qr&utm_medium=print&utm_campaign=2026-09-ideabaaz
 ```
 
+## Building a link
+
+`npm run utm` builds a URL to this scheme, or refuses and says why. Use it rather
+than typing parameters by hand — the two mistakes that matter are both silent.
+
+```text
+npm run utm -- --source=instagram --medium=paid_social \
+               --campaign=2026-10-launch --path=/products/kheelu \
+               --content=rabbit-hero-a
+```
+
+It refuses an unknown source or medium, a campaign without the `yyyy-mm` prefix,
+any uppercase, a `utm_term` outside paid search, and a path that is already
+tagged. Every refusal names the rule it is enforcing.
+
+The vocabulary in the table above is the source of truth: `test/utm.test.ts`
+parses this file and fails if the tool and the doc ever disagree, so adding a
+source here without adding it to the tool (or the reverse) breaks the suite
+rather than shipping a value that reports cleanly and aggregates with nothing.
+The same test asserts the worked example below is exactly what the tool emits.
+
+## What the site already captures
+
+`create-order` copies the landing URL's `utm_` values onto the order row, so a
+paid pre-order can be traced back to the ad that caused it — not just the visit.
+That is the half that makes tagging worth doing, and it already works; it has
+simply had nothing to record, because nothing has been tagged. A test asserts
+this keeps working, and a companion test asserts no internal link is ever
+tagged, since rule 2 is the one whose breach destroys the data silently.
+
 ## What survives a redirect
 
 Next returns 308 for `permanent: true` and **preserves the query string**, so a UTM on
