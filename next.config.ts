@@ -78,6 +78,14 @@ const nextConfig: NextConfig = {
          so the traffic lands somewhere that converts. If a real statement is
          ever written, it replaces this line. */
       { source: "/accessibility-statement", destination: "/products/kheelu", permanent: true },
+      /* Three more Wix paths, from Search Console's "Not found (404)" report read on
+         2026-09-05 (SEO round, A1): four `/post/<slug>` blog posts, `/terms-conditions`
+         and `/for-the-parents`, all last crawled in March and still being re-fetched.
+         Each 404 Google keeps re-crawling is crawl budget not spent on the ten pages
+         it had never fetched at all. One hop each, to the closest live page. */
+      { source: "/post/:slug*", destination: "/stories", permanent: true },
+      { source: "/terms-conditions", destination: "/terms", permanent: true },
+      { source: "/for-the-parents", destination: "/stories", permanent: true },
       /* Three URLs people actually typed, each 404ing, all three found in the
          Ahrefs Web Analytics export for the fortnight to 2026-09-05.
          `/lumi` is the product's name without its path — the single most

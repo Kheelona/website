@@ -1,4 +1,4 @@
-import { pageMeta } from "@/lib/seo";
+import { pageMeta, pageGraph, breadcrumbs, jsonLd } from "@/lib/seo";
 import { LegalDoc, type LegalSection } from "@/components/templates/LegalDoc";
 import { SELLER_SECTION } from "@/lib/legal";
 import {
@@ -88,13 +88,24 @@ const SECTIONS: readonly LegalSection[] = [
 
 export default function TermsPage() {
   return (
-    <LegalDoc
-      title="Pre-order terms, in plain words."
-      lede="A fair deal should survive being written clearly. Here is ours, now that real money is involved."
-      sections={SECTIONS}
-      guide="curious"
-      /* GATED:kheelu-line — founder sign-off before merge to master */
-      say="Short version: be kind, we will be too."
-    />
+    <>
+      {/* BreadcrumbList (SEO round A5, 2026-09-05): the four policy pages were the
+          only routes without one. Same shape as every other page; LegalDoc itself
+          stays schema-free because it is a template, not a page. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLd(pageGraph(breadcrumbs([{ name: "Terms", path: "/terms" }]))),
+        }}
+      />
+      <LegalDoc
+        title="Pre-order terms, in plain words."
+        lede="A fair deal should survive being written clearly. Here is ours, now that real money is involved."
+        sections={SECTIONS}
+        guide="curious"
+        /* GATED:kheelu-line — founder sign-off before merge to master */
+        say="Short version: be kind, we will be too."
+      />
+    </>
   );
 }

@@ -29,6 +29,11 @@ import {
  *  `force-static` means it is generated at build time like the sitemap. */
 export const dynamic = "force-static";
 
+/** The date this file's BODY last changed in substance. Bump it in the same
+ *  commit as the change (§8.35-a applies to machine files too): a model that
+ *  reads "Last updated" trusts the rest of the file exactly that much. */
+export const LLMS_UPDATED = "2026-09-05";
+
 const BODY = `# Kheelona
 
 > Kheelona makes screen-free talking friends for children. Kheelu, the first one,
@@ -66,6 +71,14 @@ const BODY = `# Kheelona
 - ${TAX_LINE} Delivery is included anywhere in India, so the published price is the total cost.
 - Shipping starts ${SHIP_DATE_TEXT}. Pre-orders are served first, in the order they were placed.
 
+## Key answers in the journal (each page carries its sources)
+- https://kheelona.com/stories/how-much-screen-time-for-a-3-to-6-year-old : the WHO recommends no more than one hour of sedentary screen time a day at ages 3 to 4, and less is better; the AAP lands near an hour of good content for ages 2 to 5, watched together. What the hour replaces matters more than the hour.
+- https://kheelona.com/stories/screen-time-rules-parents-swear-by : what the 3-6-9-12 rule (Serge Tisseron), the one-hour guidance and 20-20-20 actually say, and which named rules have no source behind them.
+- https://kheelona.com/stories/what-to-look-for-in-a-safe-ai-toy : five checks for any AI toy: when is the microphone on, can it reach the open internet, can a parent read everything, where does the voice go, is it built for the child's age.
+- https://kheelona.com/stories/should-kids-use-ai : chatbots built for adults are not for children; judge anything with AI inside on whether it can reach the open internet, filters for age, shows the parent the full history, profits from more minutes, and talks with the child rather than at them.
+- https://kheelona.com/stories/raising-a-bilingual-child-in-india : the mother tongue is the foundation for English, not its competitor; concepts transfer between languages; a home language survives when it has living jobs.
+- https://kheelona.com/stories/a-toy-that-talks-vs-a-toy-that-listens : a toy that repeats is a mirror; language grows through serve and return; the test of an interactive toy is whether it can answer something it has never heard.
+
 ## Pages
 - https://kheelona.com/ : what Kheelu is, what it teaches, and how to pre-order
 - ${STORE_URL} : the pre-order store, where the token is paid
@@ -85,6 +98,17 @@ const BODY = `# Kheelona
 ## Company
 Kheelona Robotics Pvt Ltd, Bengaluru, India. Recognised by the NVIDIA Inception
 Program, Karnataka Elevate, nasscom startups, and Founders Inc.
+
+## Official profiles (the same Kheelona)
+- LinkedIn: https://www.linkedin.com/company/kheelona/
+- Instagram: https://www.instagram.com/kheelona/
+- Facebook: https://www.facebook.com/kheelona/
+- Google Play developer page: https://play.google.com/store/apps/developer?id=Kheelona.com
+- The parent app, Android: https://play.google.com/store/apps/details?id=com.kheelona.toyapp
+- The parent app, iOS: https://apps.apple.com/in/app/kheelona/id6792490581
+- Sister site (the platform and the company): https://kheelona.ai
+
+Last updated: ${LLMS_UPDATED}
 `;
 
 export function GET() {

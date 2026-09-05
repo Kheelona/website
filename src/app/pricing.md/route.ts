@@ -24,6 +24,12 @@ import {
  *  amount. */
 export const dynamic = "force-static";
 
+/** The date the PRICES in this file last changed: 2026-08-23 is the day the
+ *  first-500-units offer and the full-payment tier landed (§8.26). The old line
+ *  said "July 2026", which was wrong for a month. Bump this in the commit that
+ *  moves a price (the sell-out sweep, §8.26-g, is the next one). */
+export const PRICING_UPDATED = "2026-08-23";
+
 const BODY = `# Pricing: Kheelu by Kheelona
 
 Market: India. Currency: INR. Stage: pre-order, taking a refundable token.
@@ -59,7 +65,7 @@ Market: India. Currency: INR. Stage: pre-order, taking a refundable token.
 - No screen, and no access to the open internet
 - A parent app with the full conversation log, topic controls, quiet hours, and one-tap deletion
 
-Last updated: July 2026. Canonical page: https://kheelona.com/products/kheelu
+Last updated: ${PRICING_UPDATED}. Canonical page: https://kheelona.com/products/kheelu
 `;
 
 export function GET() {

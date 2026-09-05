@@ -1,4 +1,4 @@
-import { pageMeta } from "@/lib/seo";
+import { pageMeta, pageGraph, breadcrumbs, jsonLd } from "@/lib/seo";
 import { LegalDoc, type LegalSection } from "@/components/templates/LegalDoc";
 import { SELLER_SECTION } from "@/lib/legal";
 import {
@@ -77,16 +77,27 @@ const SECTIONS: readonly LegalSection[] = [
 
 export default function RefundPage() {
   return (
-    <LegalDoc
-      title="Refunds, in plain words."
-      lede="You can change your mind. This page explains exactly how, and what happens to your money."
-      sections={SECTIONS}
-      guide="curious"
-      /* Founder-approved 2026-08-22, with the contraction: Kheelu's quoted
-         speech is the ONE sanctioned contraction zone on this site (his
-         published card voice), and the de-contracted draft read stiffer than
-         he does anywhere else. 33 characters. */
-      say="Changed your mind? That's allowed."
-    />
+    <>
+      {/* BreadcrumbList (SEO round A5, 2026-09-05): the four policy pages were the
+          only routes without one. Same shape as every other page; LegalDoc itself
+          stays schema-free because it is a template, not a page. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLd(pageGraph(breadcrumbs([{ name: "Refunds and cancellation", path: "/refund" }]))),
+        }}
+      />
+      <LegalDoc
+        title="Refunds, in plain words."
+        lede="You can change your mind. This page explains exactly how, and what happens to your money."
+        sections={SECTIONS}
+        guide="curious"
+        /* Founder-approved 2026-08-22, with the contraction: Kheelu's quoted
+           speech is the ONE sanctioned contraction zone on this site (his
+           published card voice), and the de-contracted draft read stiffer than
+           he does anywhere else. 33 characters. */
+        say="Changed your mind? That's allowed."
+      />
+    </>
   );
 }

@@ -1,4 +1,4 @@
-import { pageMeta } from "@/lib/seo";
+import { pageMeta, pageGraph, breadcrumbs, jsonLd } from "@/lib/seo";
 import { LegalDoc, type LegalSection } from "@/components/templates/LegalDoc";
 import { SELLER_SECTION } from "@/lib/legal";
 import {
@@ -66,14 +66,25 @@ const SECTIONS: readonly LegalSection[] = [
 
 export default function ShippingPage() {
   return (
-    <LegalDoc
-      title="Shipping, in plain words."
-      lede="Where Kheelu goes, when it leaves, and what it costs to get to you. Which is nothing extra."
-      sections={SECTIONS}
-      guide="joy"
-      /* Founder-approved 2026-08-22, same contraction exemption as /refund.
-         44 characters, inside the 48-character dock limit. */
-      say="I'll help pack. Mostly by sitting in the box."
-    />
+    <>
+      {/* BreadcrumbList (SEO round A5, 2026-09-05): the four policy pages were the
+          only routes without one. Same shape as every other page; LegalDoc itself
+          stays schema-free because it is a template, not a page. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLd(pageGraph(breadcrumbs([{ name: "Shipping and delivery", path: "/shipping" }]))),
+        }}
+      />
+      <LegalDoc
+        title="Shipping, in plain words."
+        lede="Where Kheelu goes, when it leaves, and what it costs to get to you. Which is nothing extra."
+        sections={SECTIONS}
+        guide="joy"
+        /* Founder-approved 2026-08-22, same contraction exemption as /refund.
+           44 characters, inside the 48-character dock limit. */
+        say="I'll help pack. Mostly by sitting in the box."
+      />
+    </>
   );
 }

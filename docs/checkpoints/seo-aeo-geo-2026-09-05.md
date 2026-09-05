@@ -79,4 +79,13 @@ IndexNow, anything parked by the founder (CTA contrast, pixel, backlinks beyond 
   Founders Inc stay visible-only. Tests: seo.test +5. Lesson: `tsc --noEmit` exits 0 on a syntax error
   in `*.test.ts` (tests are outside its include), so a vitest transform error is the only parse check
   those files get. Next: commit 4 (A1 redirects, A5 breadcrumbs, B4 llms/pricing).
+- 2026-09-05 · commit 4 (A1, A5, B4) · `next.config.ts`: `/post/:slug*` → `/stories`, `/terms-conditions` →
+  `/terms`, `/for-the-parents` → `/stories` (308, one hop; from GSC's 404 report). BreadcrumbList on
+  `/privacy`, `/terms`, `/refund`, `/shipping` (the only routes without one). `llms.txt`: "Key answers in
+  the journal" (six articles, restating visible copy only), "Official profiles" (five sameAs URLs + the
+  two app listings), `Last updated: 2026-09-05` via `LLMS_UPDATED`. `pricing.md`: `Last updated` was
+  "July 2026" and wrong for a month; now `PRICING_UPDATED = 2026-08-23`, the day the unit-cap offer
+  landed. New `test/machine-files.test.ts` (5): ISO dates, only real slugs linked, every `sameAs` URL
+  present in llms.txt, no em-dash, content types. **1132 tests / 113 files.** tsc 0. Build: see next
+  line. Next: commit 5 (C2 RichParagraph + SourcesList + `sources` + `citation`).
 
