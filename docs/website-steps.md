@@ -2168,3 +2168,87 @@ part of GA4** — which is what the Report-Only phase existed to discover, and n
 `form-action` is the loosest of the three and the comment in `security-headers.ts` says so: allowing
 a form target on a payment host weakens exactly the control that directive exists for. It is there
 for the pixel and for nothing else. **If the Meta Pixel goes, all three go with it.**
+
+# §8.35 A JOURNAL AN ANSWER ENGINE CAN CITE (2026-09-05)
+
+The SEO / AEO / GEO round. Record: `docs/checkpoints/seo-aeo-geo-2026-09-05.md`; developer handoff
+with per-item status: `docs/seo/handoff-2026-09-05.md`; rollback tag `pre-seo-round-2026-09-05`.
+The baseline that motivated it: 10 URLs discovered by Google and never crawled (including `/safety`
+and `/playos`), a journal of ~290-word undated articles with no sources, Ahrefs reporting two AI
+responses across every platform, and Perplexity recommending four competitors and never Kheelona.
+
+## 8.35-a DATES COME FROM GIT, NEVER FROM A GUESS, AND `updated` MOVES ONLY WHEN A READER COULD TELL
+
+Every `Story` carries `published` and `updated` (ISO). `published` is the first commit that added
+the article (`git log --diff-filter=A` on its block): fourteen pieces on 2026-07-28, five on
+2026-07-30. `updated` is the last commit that changed something a reader can see: a rewrite, a
+rename in the body, a new source. Not a typo, not a build, not a deploy. The old code carried one
+hardcoded `dateModified: "2026-07-01"` on all nineteen and no `datePublished` at all, on the theory
+that per-article days "would be invented". They were not; the commits had them. The same rule
+applies to the machine files: `llms.txt` and `pricing.md` each carry a `*_UPDATED` constant that is
+bumped in the commit that changes the body, and a test pins the ISO shape. **A `lastmod` in the
+sitemap exists only where such a date exists**: the 19 stories carry it, the 12 marketing routes do
+not, and the reason is written in `src/app/sitemap.ts`.
+
+## 8.35-b READ TIME IS DERIVED, NEVER TYPED
+
+`readingMinutes()` in `lib/stories` divides the word count by 200 and floors at one. The hand-set
+`minutes` field said 4 to 6 on bodies of 200 to 430 words, and `timeRequired` repeated it to every
+crawler. A page that misstates itself in a checkable way is a page an engine trusts less. Adding a
+typed number back is a review flag.
+
+## 8.35-c SOURCES ARE DATA, AND ONE ARRAY FEEDS BOTH THE READER AND THE CRAWLER
+
+`Story.sources` is rendered by `SourcesList` under the article AND emitted as BlogPosting `citation`
+from the same array, so what a parent can click is what the engine is told, by construction. Every
+entry is a real, linkable document (a guideline, a paper, a published advisory) checked before it is
+written; a claim that cannot be sourced is not written. Paragraphs may carry `[label](url)` links via
+`RichParagraph`; root-relative means exactly one leading slash (`//host` is protocol-relative and
+stays literal), external links are https and open with `noopener noreferrer`, and nothing else is
+markup, so every copy law keeps reading the paragraph as prose. `test/internal-links` proves every
+internal link lands on a sitemap page and every source is https, real and unique.
+
+## 8.35-d EVERY BYLINE RESOLVES TO AN ENTITY
+
+The three founders carry stable `@id`s (`https://kheelona.com/team#<slug>`) inside the
+Organization; Ria Mangala Rewari is `employee` with her own `@id`, because that is what `/team`
+says. A BlogPosting `author` is an `@id` reference to that entity, never a repeated name string,
+and `authorRef()` throws for a name not on `/team`. E-E-A-T is per author: nineteen matching
+strings are not one entity with a bio and a LinkedIn profile.
+
+## 8.35-e `sameAs` LISTS ONLY PROFILES THE FOUNDER CONFIRMED, AND NEVER THE APP LISTINGS
+
+Entity corroboration needs sources we do not host. `Organization.sameAs` carries the LinkedIn
+company page, Instagram, Facebook and the Play Store developer page (all confirmed by the founder
+on 2026-09-05) plus kheelona.ai. The two app-store listings identify the parent app, not the
+company; they live in `llms.txt`. `memberOf` states the two recognitions that are memberships by
+definition (NVIDIA Inception Program, nasscom startups); Karnataka Elevate and Founders Inc stay
+visible-only until the founder names the relationship, because schema may never say more than the
+page does (§8.32-h still governs validity).
+
+## 8.35-f A BANNED-IDEA PATTERN MUST BE ALLOWED TO SPAN A SENTENCE
+
+"reserve a spot on the list. It is free" survived three banned-phrase sweeps because none banned
+the idea, and the first pattern written for it MISSED, because the false claim crosses a full stop
+and a `[^.]` window cannot. Prove a new pattern red against the original copy before trusting it
+(§8.32-c), and let it span sentence boundaries. Also learned this round: `tsc --noEmit` exits 0 on a
+syntax error in `*.test.ts` (tests are outside its include), so a vitest transform error is the only
+parse check those files get.
+
+## 8.35-g THE JOURNAL'S VOICE IS GUARDED AT THE DATA, NOT ONE RENDERED PAGE
+
+`qa:sweep` lints one article route as a stand-in for nineteen. `src/lib/stories.test.ts` now reads
+every title, description, heading, paragraph (links stripped) and source label for em-dashes,
+exclamation marks, contractions and raw URLs. The six expanded articles were also run through
+QuillBot's AI Detector (v7.1.0) and each read 0% AI-generated; that is recorded as a heuristic the
+founder asked for, not as a gate, because a detector's opinion is not a copy law.
+
+## 8.35-h WHAT THE ROUND DELIBERATELY DID NOT DO
+
+No head-term keyword work (Keyword Planner shows no volume for the category in India and the domain
+is DR 0). No page naming a competitor (category-level comparison inside an existing article; naming
+Miko or MyWonder needs verified specs and a founder call). No `aggregateRating`/`review` (never-invent
+law). No IndexNow (Bing-only, P2). Nothing the founder had parked. The off-site half (admin/api
+subdomains crawlable, Play Store text, profile back-links, request indexing in Search Console) is a
+founder list in the handoff, and every human-facing draft sits in `docs/seo/outreach-drafts-2026-09-05.md`,
+which nothing sends.

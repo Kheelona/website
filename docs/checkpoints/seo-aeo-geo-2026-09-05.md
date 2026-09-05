@@ -145,4 +145,16 @@ IndexNow, anything parked by the founder (CTA contrast, pixel, backlinks beyond 
   allows five scans a day and the five earlier articles used them ("No more scans left today"); re-run
   tomorrow or on a paid plan if the founder wants the sixth number, it is a heuristic either way. Next: commit 7 (close the round: §8.35 laws, outreach drafts,
   production verification after the push, CLAUDE.md banner).
+- 2026-09-05 · commit 7 (close the code half) · §8.35 a–h appended to `docs/website-steps.md`;
+  `docs/seo/outreach-drafts-2026-09-05.md` written (directory and LinkedIn copy, Play Store rewrite, two
+  founder pitches, an expert-comment offer, one disclosed community reply, and what is deliberately not
+  drafted; nothing sent). Local gates on the full tree: `tsc` 0 · `npm run build` 0 (all 31 routes
+  prerendered) · suite **1154 / 115** · `qa:text` on the six expanded articles and the C1 article: 0
+  em-dashes, 0 exclamation marks, Sources heading rendered on all six, bylines read "4 MINUTE READ ·
+  Published … · Updated 5 September 2026", the /stories lede derives "Last updated 5 September 2026",
+  local sitemap has 19 `lastmod`, llms.txt ends "Last updated: 2026-09-05", the three redirects 308 to
+  the right targets. `qa:sweep` (SWEEP_STORE=http://store.localhost:3456): **clean 34/34, 79 accepted** (§8.29). Built JSON-LD
+  sanity: founder + Ria `@id`s, five `sameAs`, two `memberOf`, BlogPosting dates/PT4M/846 words/author by
+  `@id`/5 citations, og:image on Home, BreadcrumbList on /privacy. Then push to `main` (auto-deploys) and
+  run the production verification script from the scratchpad; the result is the next line.
 
