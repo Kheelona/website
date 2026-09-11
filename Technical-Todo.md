@@ -61,7 +61,13 @@ phrasing at all. The demand for this category lives in answer engines, not in Go
       could not locate it: ruled out `kheelona.ai/privacy`, `/privacy-policy`, `www.kheelona.com/privacy`
       and `app.kheelona.com/privacy`. It is the source of the "limited beta" claim in the AI answer,
       and it names `legals@kheelona.com`, which the site does not use.
-- [ ] **Re-link Ahrefs' Google account.** Broken since 20 August; the dashboard has been three weeks
+- [x] ✅ **Re-link Ahrefs' Google account — DONE by the founder 2026-09-11, verified two ways: the
+      red banner is gone from GSC Insights, and Settings → Ownership verification → Google Search
+      Console now reads "Website verified via Google Search Console." with no error text. The chart
+      still ends 20 August because Ahrefs backfills on its own schedule, not on reconnect; worth a
+      second look if it has not caught up within ~48 hours. Lesson: ownership verification going
+      green did NOT fix this and was not evidence about it — two separate integrations, one Google
+      account, only the second carries data.** Original diagnosis below.** Broken since 20 August; the dashboard has been three weeks
       stale and said nothing. **Re-checked 2026-09-11 after ownership verification went green: still
       broken, because they are different things.** Ownership verification only proves you own the
       site so Ahrefs will crawl it. The data pull fails with *"Website not found. Your website needs

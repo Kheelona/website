@@ -399,3 +399,22 @@ careless install once moved 23 packages including `@supabase/supabase-js` on the
 folding a dependency change into an SEO round is how that discipline erodes. It is queued in
 `Technical-Todo.md` with the exact command, as a two-minute job with its own verification.
 
+### Ahrefs' Google link, fixed the same evening
+
+The founder re-linked it after the diagnosis, and it was verified rather than assumed:
+
+- Dashboard → GSC Insights: the **red banner is gone** (it had read "The linked Google Account
+  doesn't allow access to the required data" on every load since 20 August).
+- Settings → Ownership verification → Google Search Console: **"Website verified via Google Search
+  Console."**, `connect@kheelona.com`, **no error text**. The same panel twenty minutes earlier read
+  "Website not found. Your website needs to be verified in the Google Search Console of a Google
+  Account that's connected with your workspace."
+
+Data has not backfilled yet — the chart still ends 20 August — because Ahrefs refetches on its own
+schedule rather than on reconnect. The connection was the broken thing and it is fixed.
+
+**The law (§8.36-d, extended): ownership verification and the data integration are two different
+things sharing one Google account, and the first going green is not evidence about the second.**
+The founder's first fix was ownership verification, which showed a clean green banner while the data
+pull stayed broken. Only opening the integration's own "Show details" gave the real error, and it
+named a different failure entirely.

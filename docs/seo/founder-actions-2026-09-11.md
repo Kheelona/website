@@ -95,7 +95,7 @@ mailbox nobody reads.
 
 ---
 
-## 3. Re-link Ahrefs' Google account · 2 minutes · **checked again after you verified ownership, still broken**
+## 3. ~~Re-link Ahrefs' Google account~~ · ✅ **FIXED by the founder, 2026-09-11, verified**
 
 Ahrefs' GSC Insights tab reads *"The linked Google Account doesn't allow access to the required
 data"*, and its Search Console data **stops on 20 August 2026**. Three weeks of the project
@@ -124,6 +124,26 @@ to you.
 
 **How to verify it worked:** the red banner disappears and the chart runs to within two or three
 days of today instead of stopping on 20 August.
+
+### ✅ Done, and verified two ways (2026-09-11)
+
+The founder re-linked it. Checked immediately afterwards:
+
+- **Dashboard → GSC Insights: the red banner is gone.** It had read *"The linked Google Account
+  doesn't allow access to the required data"* on every load for three weeks.
+- **Settings → Ownership verification → Google Search Console** now reads **"Website verified via
+  Google Search Console."** with `connect@kheelona.com` linked and **no error text**. The same panel
+  twenty minutes earlier carried *"Website not found. Your website needs to be verified in the Google
+  Search Console of a Google Account that's connected with your workspace."*
+
+**One thing still to expect, and it is not a fault.** The chart still ends on **20 August**
+(53 clicks / 635 impressions) because Ahrefs backfills Search Console data on its own schedule rather
+than on reconnect. The connection is what was broken and the connection is fixed. If the chart has
+not caught up within about 48 hours, that is worth a second look; until then it is just lag.
+
+**The lesson worth keeping:** ownership verification going green did NOT fix this and is not
+evidence about it. They are two separate integrations sharing one Google account, and only the
+second one carries the data.
 
 ---
 
