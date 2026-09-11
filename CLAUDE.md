@@ -1,5 +1,37 @@
 # kheelona.com — session entry point
 
+**🟣 …AND ITS FOLLOW-THROUGH LANDED 2026-09-12. All of the below is live and verified on
+production.** Same records: `docs/checkpoints/seo-aeo-geo-2026-09-11.md` §7–9, laws **§8.36 a–h**,
+founder actions `docs/seo/founder-actions-2026-09-11.md`, app stores
+`docs/seo/app-store-listings-2026-09-12.md`.
+
+**Six things closed, and three of them were my own errors.** (1) **`/privacy-policy` now 308s to
+`/privacy`.** Perplexity was citing `www.kheelona.com/privacy-policy` and quoting a dead Wix
+"Privacy Policy (Beta)" off it — the source of its "limited beta" claim about a company taking
+payments since August. The page was long gone; **the bug was that a 404 does not correct a stale
+index** (§8.36-g). `/terms-conditions` had been redirected in the previous round and its sibling had
+not. (2) **The sitemap was complete (35/35, verified against every route, all canonical 200s) but
+Google had not re-read it since 5 September** — resubmitted, now 35 discovered. (3) **DMARC is
+`p=none; sp=quarantine`**, NOT the `p=quarantine` the queue asked for: the founder's own aggregate
+reports showed **65% of apex mail failing** because IKP EDEN relays it, so tightening the apex would
+have spammed his incubator correspondence. Settled, do not re-raise. (4) **`api.kheelona.com` is
+noindexed**, and **Cloudflare APPENDS to `robots.txt` rather than overriding it** (§8.36-h) — which
+also means **never flip the apex to Proxied**, because Cloudflare's managed block disallows GPTBot,
+ClaudeBot, Google-Extended and CCBot, every one of which our robots.txt deliberately allows.
+(5) Ahrefs' Google link re-authorised. (6) App store handoff written for **both** stores; the first
+pass covered only Play, which was a gap.
+
+**Two items are parked with a DATED TRIGGER: the DPDP lines on `/privacy` and the returns/warranty
+terms are LOW until 5 October 2026, then HIGH.** A banner at the top of `Technical-Todo.md` says so.
+Founder decision 2026-09-12, on the reasoning that shipping is 20 October and counsel lead time, not
+the deadline, is the constraint.
+
+**The method lesson from the whole day, worth more than any single fix: I was wrong three times and
+each time a proxy had stood in for a measurement.** `site:` is not an indexing report. `dig TXT` does
+not prove a Search Console property is unverified. Correct SPF and DKIM do not prove DMARC is safe to
+tighten. **Go to the authoritative instrument — Search Console, the aggregate reports, the citing
+source's own link — before concluding anything.**
+
 **🟣 SEO / AEO / GEO ROUND TWO SHIPPED 2026-09-11.** Record: `docs/checkpoints/seo-aeo-geo-2026-09-11.md`;
 laws **§8.36**; handoff `docs/seo/handoff-2026-09-11.md`; founder drafts (nothing sent)
 `docs/seo/founder-actions-2026-09-11.md`; rollback tag `pre-seo-round-2026-09-11` = `233a63f`.
