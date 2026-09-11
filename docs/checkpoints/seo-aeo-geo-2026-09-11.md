@@ -446,3 +446,51 @@ a company taking real payments since 2026-08-22 is "currently in a limited beta 
 Fixed in `next.config.ts` with a 308 to `/privacy`, pinned by a test in
 `test/redirects-vs-assets.test.ts` that treats the two legacy legal URLs as a pair. 1179 tests pass.
 
+---
+
+## 8. Sitemap audit (2026-09-12, on request)
+
+Audited the live `https://kheelona.com/sitemap.xml` against what the app actually serves, rather
+than against what it was assumed to contain.
+
+**Coverage: complete. 35 of 35, nothing missing, nothing extra.**
+
+| Check | Result |
+|---|---|
+| Entries | 35 (35 unique, **0 duplicates**) |
+| Expected pages | 35 = 13 marketing routes + 22 journal articles |
+| Routes missing from the sitemap | **none** |
+| URLs in the sitemap that are not routes | **none** |
+| All URLs return a canonical 200 (no redirects, no 404s) | **yes, all 35** |
+| Every page self-canonicalises to its sitemap URL | **yes, all 35** |
+| Anything in the sitemap carrying `noindex` | **none** |
+| `robots.txt` declares the sitemap | yes |
+| `/store/*` correctly excluded | yes, it is `noindex` by design (§8.25-aa) |
+
+**The one real finding, and it was actionable.** Search Console showed the sitemap submitted on
+5 September, **last read 5 September, 31 pages discovered** — against 35 in the file. Google had not
+re-read it since this round added four URLs. Resubmitted; it now reads **submitted 12 Sept, last read
+12 Sept, Success, 35 discovered pages.**
+
+**The law worth keeping: shipping a sitemap change is not the same as Google reading it.** Google
+re-fetches on its own schedule, which on a low-authority domain can be a week. After any round that
+adds URLs, resubmit the sitemap in Search Console and confirm the discovered-pages count matches the
+file. A correct sitemap nobody has re-read is a correct sitemap nobody has read.
+
+### Two things deliberately NOT added
+
+**`lastmod` on the 13 marketing routes.** Only the 22 articles carry it, because only they have real
+per-page dates (§8.35-a). Adding hand-maintained dates to the marketing routes would recreate exactly
+the failure `src/app/sitemap.ts` already documents: every entry once carried `new Date()`, telling
+Google that all 31 URLs changed on every deploy, which discredits the field rather than weakening it.
+Deriving them from git at build time is the clean version, but Vercel builds from a shallow clone, so
+it would emit nothing in the one place it matters. **A `lastmod` that cannot be trusted is worse than
+no `lastmod`**, and the current arrangement is the honest one. Revisit only if a marketing route
+gains a genuinely tracked date.
+
+**`/llms.txt` and `/pricing.md`.** Both serve 200 and are allowed in `robots.txt`, which is what they
+need. They are not HTML pages: `llms.txt` is fetched by convention at its well-known path, and
+listing `pricing.md` invites Google to index raw markdown that would compete with `/products/kheelu`
+for pricing queries and read badly as a search result. Discovery is not their problem, so the sitemap
+is not their fix.
+
