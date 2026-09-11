@@ -16,6 +16,7 @@ import {
   SUPPORT_WHATSAPP_HREF,
 } from "@/config/site";
 import { KHEELU_ART } from "./kheelu-art";
+import { productProperties } from "./product-facts";
 
 /** Structured data builders (V3 SEO/AEO/GEO pass, 2026-07-28).
  *
@@ -287,6 +288,18 @@ export const KHEELU_PRODUCT = {
      Pinned by src/lib/seo.test.ts. */
   "@id": `${SITE_URL}/products/lumi#product`,
   name: "Kheelu by Kheelona",
+  /* THE RENAME, STATED IN THE GRAPH (2026-09-11, §8.36-a).
+     Measured on Perplexity on 2026-09-11, six days after the rename: asked what
+     Kheelona makes, it answered "its flagship product is a talking robot
+     companion called Lumi". Seven of its ten citations were third-party
+     profiles — the Play Store listing, YNOS, F6S, LinkedIn, Internshala — and
+     every one of them still says Lumi. The site was right and was outvoted.
+     `alternateName` is the one field that lets a retrieval model reconcile the
+     two names into ONE product instead of guessing which is current, and it
+     pairs with the `@id` above, which deliberately still reads `lumi` for
+     exactly the same continuity reason (§8.32-b). Remove this only when the
+     off-site profiles have been corrected and stayed corrected. */
+  alternateName: "Lumi",
   brand: { "@type": "Brand", name: "Kheelona" },
   manufacturer: { "@id": `${SITE_URL}/#organization` },
   category: "Screen-free AI toy",
@@ -299,6 +312,13 @@ export const KHEELU_PRODUCT = {
   },
   description: `A screen-free talking friend for children aged ${KHEELU_AGES} that holds a real conversation in up to 10 home languages, carries stories and lessons they can be quizzed on, plays your music over Bluetooth, and comes with a parent app that shows you everything. Part of a growing family of friends.`,
   image: `${SITE_URL}${KHEELU_ART.src}`,
+  /* The published specification, as structured properties (§8.36-a).
+     One array, shared with the visible table on /ai-toys-for-kids-in-india, so
+     a machine and a parent are told the same things. `productProperties()`
+     drops the rows whose honest answer is "not announced yet" — an unannounced
+     spec is the absence of a fact, not a fact. See src/lib/product-facts.ts. */
+  additionalProperty: productProperties(),
+  isFamilyFriendly: true,
   offers: {
     "@type": "Offer",
     /* Derived from the paise constant, not scraped out of the display string

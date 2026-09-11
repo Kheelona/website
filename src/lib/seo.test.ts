@@ -346,3 +346,50 @@ describe("page metadata carries a complete Open Graph card", () => {
     expect(og.images).toEqual([{ url: OG_IMAGE, width: 1200, height: 630 }]);
   });
 });
+
+/* §8.36-a (2026-09-11): the rename, and the specification, in the graph.
+ *
+ *  Both exist because of one measurement. Perplexity, asked about Kheelona six
+ *  days after the rename, answered that the flagship product is "Lumi" and
+ *  sourced it from the Play Store, YNOS, F6S, LinkedIn and Internshala. The
+ *  site cannot edit those; it can state the reconciliation in a field built for
+ *  it, and publish its specs in the shape retrieval models actually lift. */
+describe("the Product answers the stale web", () => {
+  it("names Lumi as the former name, so one product does not read as two", () => {
+    expect(KHEELU_PRODUCT.alternateName).toBe("Lumi");
+    /* And the current name is still the current name. */
+    expect(KHEELU_PRODUCT.name).toBe("Kheelu by Kheelona");
+  });
+
+  it("keeps the @id on lumi, which is the same continuity argument", () => {
+    /* Pinned already elsewhere in this file; restated here so that anyone
+       "tidying up" the alternateName above sees why the @id matches it. */
+    expect(KHEELU_PRODUCT["@id"]).toBe("https://kheelona.com/products/lumi#product");
+  });
+
+  it("carries the published specification as PropertyValue nodes", () => {
+    const props = KHEELU_PRODUCT.additionalProperty;
+    expect(Array.isArray(props)).toBe(true);
+    expect(props.length).toBeGreaterThan(8);
+    for (const p of props) {
+      expect(p["@type"]).toBe("PropertyValue");
+      expect(p.name.length).toBeGreaterThan(0);
+      expect(p.value.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("never states a spec it has not announced", () => {
+    const text = KHEELU_PRODUCT.additionalProperty
+      .map((p) => `${p.name} ${p.value}`)
+      .join(" ");
+    /* The three gaps. A number appearing here means someone answered a
+       competitor's spec row with a guess. */
+    expect(text).not.toMatch(/battery/i);
+    expect(text).not.toMatch(/warrant/i);
+    expect(text).not.toMatch(/made in|built in|manufactured in/i);
+  });
+
+  it("declares itself family friendly", () => {
+    expect(KHEELU_PRODUCT.isFamilyFriendly).toBe(true);
+  });
+});
