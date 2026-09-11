@@ -423,4 +423,132 @@ export const EXPANSION: Story[] = [
       { p: "That is the bar we hold Kheelu to: it listens, answers, remembers, and moves at your child's pace, with no screen anywhere. If a friend on the carpet sounds better than another performing box, pre-orders are open." },
     ],
   },
+
+  /* ── The 2026-09-11 round: three pieces, one per channel ────────────────
+     Written against measured demand rather than instinct, because the
+     nineteen pieces above were not: sixteen of them are indexed and have
+     earned zero impressions in three months. Each of these three owns a
+     query or a format nothing else on this site owns, and the questions in
+     the middle one deliberately share not one question with the FAQ on
+     /ai-toys-for-kids-in-india. See docs/checkpoints/seo-aeo-geo-2026-09-11.md. */
+
+  /* SEO. Target: "learning toys for 3 year olds" and "educational toys for 3
+     year olds", the only two terms in the tested set with real Indian volume
+     (1k to 10k a month each, Keyword Planner, 2026-09-11). High competition and
+     a DR 0 domain mean this is a long bet, and it is written as one: no page on
+     this site reaches for the term today, and the angle (skill by skill) is not
+     covered by what-actually-builds-a-sharp-brain, which is about conversation
+     alone. */
+  {
+    slug: "learning-toys-for-a-three-year-old",
+    title: "Learning toys for a three-year-old, skill by skill",
+    description:
+      "What a three-year-old is actually working on, and which kind of toy serves each part of it. A practical guide, without the word educational doing all the work.",
+    theme: "How children grow",
+    author: "Ria Mangala Rewari",
+    published: "2026-09-11",
+    updated: "2026-09-11",
+    pose: "curious",
+    tint: "bg-yellow/15",
+    paragraphs: [
+      { p: "Walk down any toy aisle in India and roughly half the boxes say educational. It is the least useful word on the shelf, because it describes the packaging rather than the toy. A shape sorter is educational. So is a tablet loaded with phonics videos. They are not remotely the same purchase." },
+      { p: "A more useful question is: what is my three-year-old actually working on right now, and does this toy get in the way of it or out of the way of it. Here is the honest version of that list." },
+      { h: "Language, which is the big one", p: "Between three and four a child's vocabulary roughly doubles, and the engine driving it is not exposure to words. It is turns. Researchers at MIT found that the number of conversational turns a child takes predicts language-related brain activity better than the sheer number of words they hear, and that the effect held regardless of family income or parental education. Turns, not volume." },
+      { p: "So the test for a language toy is whether it creates a turn. A book you read together creates dozens. A puppet creates as many as you have patience for. A toy that plays a recorded sentence when a button is pressed creates none, however many words that sentence contains." },
+      { h: "Turn-taking itself, which is a skill", p: "Waiting, listening, and going second are not personality traits at three. They are skills, and they are practised. Simple board games with two rules, card matching, catch, and anything with an obvious go-then-wait rhythm all serve this directly. The Harvard Center on the Developing Child calls the underlying loop serve and return, and it is the same loop whether the returning is done by a parent, a sibling or a game." },
+      { h: "Pretend play, which does more than it looks like", p: "A cardboard kitchen, a doctor set, a box of mismatched figures. Pretend play is where a child rehearses other people's points of view, which is the foundation of both empathy and narrative. It is also the category most damaged by over-specification. A toy kitchen with twelve licensed characters and a sound chip tells the child what the story is. A wooden crate lets them decide." },
+      { h: "Hands, which need less help than the boxes suggest", p: "Threading, stacking, playdough, chunky crayons, tongs and a bowl of pompoms. Fine motor work at three is well served by cheap, dull-looking objects, and almost never improved by a screen. This is the part of the list where the ₹200 option is genuinely as good as the ₹2,000 one." },
+      { h: "Numbers and letters, which are smaller than the marketing", p: "Counting real things beats counting pictures of things, and both beat an app that counts for them. Three-year-olds benefit from number sense, meaning more and fewer and one-to-one matching, far more than from reciting to twenty. Almost any toy with countable parts does this. Very few toys sold specifically for it do it better." },
+      { h: "What about screens", p: "The published guidance is consistent and it is worth knowing before you shop. The World Health Organization recommends no more than one hour of sedentary screen time a day for children aged three and four, and says less is better. The American Academy of Pediatrics lands in a similar place for the years before five, with the strong caveat that it should be good content watched alongside an adult. The Indian Academy of Pediatrics published its own guidance in 2022, adapted for Indian households." },
+      { p: "None of those bodies says a screen is poison. What they consistently point at is the cost of what the screen replaces, which at three is almost always conversation and movement." },
+      { h: "A short buying rule", p: "Prefer toys that wait for your child to act over toys that perform at them. Prefer open ends over scripts. Prefer anything that produces a turn. And be suspicious of any box where the word educational is doing work that the toy inside is not." },
+      { p: "That rule is the whole reason [Kheelu](/products/kheelu) is built the way it is: it answers, then asks, and it has no screen anywhere. If you want the same rule applied to every AI toy on the market rather than just ours, the [guide to choosing one](/ai-toys-for-kids-in-india) sets out the five checks." },
+    ],
+    sources: [
+      { label: "Romeo and colleagues: Beyond the 30-Million-Word Gap, children's conversational exposure and language-related brain function (Psychological Science, 2018)", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC5945324/" },
+      { label: "Harvard University, Center on the Developing Child: Serve and return", url: "https://developingchild.harvard.edu/key-concept/serve-and-return/" },
+      { label: "World Health Organization: Guidelines on physical activity, sedentary behaviour and sleep for children under 5 years of age (2019)", url: "https://www.ncbi.nlm.nih.gov/books/NBK541169/" },
+      { label: "American Academy of Pediatrics: Media and Young Minds, policy statement (Pediatrics, 2016)", url: "https://publications.aap.org/pediatrics/article/138/5/e20162591/60503/Media-and-Young-Minds" },
+      { label: "Indian Academy of Pediatrics: Guidelines on screen time and digital wellness in infants, children and adolescents (Indian Pediatrics, 2022)", url: "https://pubmed.ncbi.nlm.nih.gov/34969943/" },
+    ],
+  },
+
+  /* AEO. A format this journal does not have: short answers, question-shaped
+     headings, each answerable on its own. Answer engines retrieve passages, not
+     pages, so a piece made of self-contained 50-word answers gives them twelve
+     retrievable units instead of one essay. Every question here is one a parent
+     actually asks and most brands avoid, and NONE of them duplicates the FAQ on
+     /ai-toys-for-kids-in-india, which was checked question by question. */
+  {
+    slug: "questions-parents-ask-about-ai-toys",
+    title: "The hard questions parents ask about AI toys",
+    description:
+      "Twelve questions parents actually ask before buying a talking toy, answered straight, including the ones where the honest answer is uncomfortable for us.",
+    theme: "AI and childhood",
+    author: "Aman Soni",
+    published: "2026-09-11",
+    updated: "2026-09-11",
+    pose: "bliss",
+    tint: "bg-blue/15",
+    paragraphs: [
+      { p: "We build one of these, so treat every answer below as coming from an interested party. We have tried to write them the way we would want them written if we were the ones deciding, which means the uncomfortable ones are here too." },
+      { h: "Will it replace talking to my child?", p: "It should not, and any maker who suggests it will is selling you something worse than a toy. The research on early language points at conversational turns with people. A talking toy adds turns to the hours when you cannot be in the room. It does not substitute for the hours when you can." },
+      { h: "What happens if my child asks it something upsetting?", p: "Ask the maker this exact question and listen for a mechanism rather than a reassurance. The answer should describe an age filter applied to every reply, and a defined behaviour for questions the toy will not handle. For Kheelu that behaviour is to say it does not know and move on, rather than improvise." },
+      { h: "Does it record everything my child says?", p: "It depends entirely on when the microphone is live. A toy that wakes to a word is not listening between wakes. A toy that is always on is recording a bedroom. Ask which one you are buying, and ask what is stored afterwards and for how long." },
+      { h: "Can my child get too attached to it?", p: "Children form attachments to soft toys with no electronics at all, so some attachment is ordinary and not a defect. The thing worth watching is a toy designed to increase it, because a product that profits from more minutes has a reason to make leaving it hard. Ask whether the business model rewards time spent." },
+      { h: "What if it gives a wrong answer?", p: "It will sometimes, and a maker who claims otherwise is not being straight with you. What matters is the size of the blast radius. A toy answering from a closed library of prepared material gets small things wrong. A toy wired to the open internet can get large things wrong." },
+      { h: "Will it stop my child playing with other toys?", p: "Not in our experience of watching children with prototypes, and not in the way parents usually fear. A talking toy competes with other talking things, which at three normally means a screen. It does not compete with blocks. If anything it tends to get carried to the blocks." },
+      { h: "Does it work if we speak two languages at home?", p: "This is the question with the most variation between products, so check it carefully. Some toys offer languages one at a time, set in an app. Others follow the child mid-sentence, which is how bilingual households actually speak. Kheelu does the second, in eight languages at launch." },
+      { h: "What happens to the data if the company shuts down?", p: "Ask. Very few makers publish an answer and it is a fair question to a pre-launch company in particular. What you want to hear is that conversation data is deletable by you at any time, that it is not sold under any circumstance, and that deletion means deletion rather than deactivation." },
+      { h: "Can other children use it?", p: "Physically, yes. The question is whether the toy keeps separate profiles or blends every child it meets into one history. For a shared cousin-heavy Indian household this matters more than it does elsewhere, and it is worth asking before the first family gathering rather than after." },
+      { h: "Do I have to keep paying for it?", p: "Read this term more carefully than the price. Some toys become ornaments when a subscription lapses. Kheelu includes six months of Kheelona+ and its core smart features are lifetime, so it keeps talking whether or not you renew. Other makers answer differently, and the answer is usually not on the box." },
+      { h: "What if we have no internet for a week?", p: "Ask what survives. Anything that depends on a live model needs a connection. Stored stories, music and offline activities do not. Kheelu keeps Story mode and Bluetooth music with no signal at all, and open conversation needs home WiFi." },
+      { h: "How do I know it is off when it says it is off?", p: "Honestly, you cannot verify this from the sofa, and nobody selling you one can prove it either. What you can do is prefer a physical indicator over a software claim, read the privacy policy for what is collected rather than the marketing for what is promised, and treat any maker who will not answer plainly as having answered." },
+      { p: "If those are the questions you are asking, the [five checks to apply to any AI toy](/ai-toys-for-kids-in-india) is the shorter version, and the [Safety page](/safety) is where our own mechanisms are written out. Ask us anything that is not answered in either." },
+    ],
+    sources: [
+      { label: "Common Sense Media, Youth AI Safety Institute: AI Toys risk assessment (January 2026)", url: "https://institute.commonsensemedia.org/risk-assessments/ai-toys" },
+      { label: "Fairplay: AI toys are not safe for kids, advisory signed by more than 150 experts and organisations (20 November 2025)", url: "https://fairplayforkids.org/ai-toys-unsafe-for-kids-this-holiday-season-advisory-warns/" },
+      { label: "Romeo and colleagues: Beyond the 30-Million-Word Gap, children's conversational exposure and language-related brain function (Psychological Science, 2018)", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC5945324/" },
+      { label: "Section 9 of the Digital Personal Data Protection Act, 2023: processing of personal data of children (Indian Kanoon)", url: "https://indiankanoon.org/doc/98869575/" },
+    ],
+  },
+
+  /* GEO. Definitional and jurisdictional writing is what retrieval models reach
+     for when a question has no settled answer, and "what does Indian law require
+     of a toy that listens to a child" currently has none that a parent can read.
+     It is also the piece most likely to be cited by something other than a toy
+     blog, which is the point: entity authority comes from being useful outside
+     your own category. No competitor is named anywhere in it. */
+  {
+    slug: "ai-toys-and-indias-data-law",
+    title: "What India's data law asks of a toy that listens",
+    description:
+      "India's data law in plain words, for parents buying a talking toy: what it asks of a company handling a child's data, what it leaves out, what you can demand.",
+    theme: "Safety",
+    author: "Apoorva Sahu",
+    published: "2026-09-11",
+    updated: "2026-09-11",
+    pose: "curious",
+    tint: "bg-orange/15",
+    paragraphs: [
+      { p: "India passed the [Digital Personal Data Protection Act](https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf) in 2023. Most coverage of it was written for companies. Almost none was written for the parent standing in front of a toy that talks, which is a shame, because the part of the law that covers children is short, specific and unusually easy to read." },
+      { p: "Here is what it actually says, and what it does not." },
+      { h: "A child is anyone under eighteen", p: "The Act sets the line at eighteen, which is higher than many parents expect and higher than the equivalent line in several other countries. Everything below applies to a three-year-old and a sixteen-year-old alike." },
+      { h: "Consent has to come from you, and be verifiable", p: "[Section 9](https://indiankanoon.org/doc/98869575/) requires verifiable consent from a parent or guardian before a company processes a child's personal data. Verifiable is the operative word. A tick box that anyone in the house could tick is not obviously consent from you, and a company that relies on one is relying on an interpretation rather than a practice." },
+      { h: "Tracking a child is not allowed", p: "The same section prohibits tracking, behavioural monitoring and targeted advertising directed at children. This is the clause with the sharpest teeth for this category, because it rules out the business model that funds most free consumer software. If a toy is cheap and the company has no other visible revenue, this is the question to ask." },
+      { h: "Anything likely to harm a child is not allowed", p: "The Act also bars processing that is likely to cause a detrimental effect on a child's wellbeing. It does not define that phrase, which cuts both ways: it gives regulators room, and it gives companies room. Treat it as a signal of intent rather than a bright line you can hold anyone to today." },
+      { h: "What the law does not do", p: "Three honest gaps, because a guide that only lists protections is not useful. The Act says nothing about the physical safety of a toy, which is a separate certification regime entirely. It does not require conversation logs to be readable by a parent, so a company showing you every word your child said is going beyond the law rather than meeting it. And enforcement is still building out, which means in practice the strongest protection a parent has in 2026 is choosing carefully rather than complaining afterwards." },
+      { h: "What you can reasonably ask for", p: "Four questions, all of which a compliant company should answer without hesitating. How do you obtain and record my consent. Where is my child's voice data stored, and in which country. Do you track my child or show them advertising of any kind. How do I delete everything, and does deleting mean deleting." },
+      { p: "A vague answer to any of those is itself an answer. So is a privacy policy written so that nobody could follow it, which is common in this category and worth treating as a result rather than an inconvenience." },
+      { h: "Where we stand", p: "We are a company selling a toy that listens to children, so the questions above point at us too. Our answers: consent is asked for from the parent account, not the child; voice data stays in your region; we do not track your child, profile them or advertise to them, and we do not sell their data under any circumstance; and the full conversation log is readable and deletable by you in the parent app, which the law does not require of us." },
+      { p: "Those mechanisms are set out in more detail on the [Safety page](/safety) and in the [privacy policy](/privacy). If any of it reads as less than clear, that is a fault worth telling us about." },
+    ],
+    sources: [
+      { label: "The Digital Personal Data Protection Act, 2023: official text (Government of India, PDF)", url: "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf" },
+      { label: "Section 9 of the Digital Personal Data Protection Act, 2023: processing of personal data of children (Indian Kanoon)", url: "https://indiankanoon.org/doc/98869575/" },
+      { label: "Common Sense Media, Youth AI Safety Institute: AI Toys risk assessment (January 2026)", url: "https://institute.commonsensemedia.org/risk-assessments/ai-toys" },
+      { label: "Fairplay: AI toys are not safe for kids, advisory signed by more than 150 experts and organisations (20 November 2025)", url: "https://fairplayforkids.org/ai-toys-unsafe-for-kids-this-holiday-season-advisory-warns/" },
+    ],
+  },
 ];
