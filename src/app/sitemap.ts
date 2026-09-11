@@ -9,6 +9,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/products/kheelu", priority: 0.9 },
     { path: "/playos", priority: 0.8 },
     { path: "/safety", priority: 0.8 },
+    /* The buyer's guide (2026-09-11). Priority matches /safety: it is a
+       commercial answer page, not a journal piece. */
+    { path: "/ai-toys-for-kids-in-india", priority: 0.8 },
     { path: "/team", priority: 0.6 },
     { path: "/stories", priority: 0.7 },
     { path: "/setup", priority: 0.5 },

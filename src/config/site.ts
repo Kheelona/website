@@ -36,6 +36,11 @@ export const NAV_LINKS = [
 
 export const FOOTER_LINKS = [
   ...NAV_LINKS,
+  /* The buyer's guide (2026-09-11, §8.36-b). Footer rather than nav
+     deliberately: the nav stays five tabs (founder, R11), and this page's job
+     is to be found by an answer engine and by a parent already reading, not to
+     compete for a tab with the product itself. */
+  { label: "Choosing an AI toy", href: "/ai-toys-for-kids-in-india" },
   { label: "Contact", href: "/contact" },
   { label: "Privacy", href: "/privacy" },
   { label: "Terms", href: "/terms" },

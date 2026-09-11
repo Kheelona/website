@@ -84,7 +84,7 @@ const APP_FEATURES = [
    Subscription and camera questions are GATED (REV-b) and absent until the
    founder confirms the facts. */
 const FAQ_ITEMS: FaqEntry[] = [
-  { q: "Is Kheelu safe for my child?", a: "Kheelu wakes to a word, thinks on the device first, and answers from a closed library. There is a safety check on every reply, and you can read or delete anything." },
+  { q: "Is Kheelu safe for my child?", a: "Kheelu wakes to a word, thinks on the device first, and answers from a closed library. There is a safety check on every reply, and you can read or delete anything. The five checks worth applying to any AI toy, including this one, are set out in our guide to choosing one." },
   /* V6 D4b (founder-licensed fact): mode-precise. */
   { q: "Does Kheelu need the internet?", a: "Only for open conversation: AI mode runs on your home WiFi. Story-mode stories and lessons work offline, and Bluetooth music needs only a paired phone. New content and updates download when you choose." },
   { q: "What languages does Kheelu speak?", a: "English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish, and French, with up to ten at launch. Kheelu switches mid-sentence, in the languages you speak at home." },
@@ -110,6 +110,13 @@ const FAQ_ITEMS: FaqEntry[] = [
      answer engines were being told the pre-order is free.
      The retired wording is pinned as banned in test/preorder-copy.test.ts. */
   { q: "Do I have to pay anything now?", a: `Yes. A refundable ${TOKEN_PRICE} reserves your Kheelu and holds the ${LAUNCH_PRICE} price. The ${BALANCE_PRICE} balance is due only when your Kheelu is ready to ship, and the ${TOKEN_PRICE} comes back in full if you ask before we dispatch.` },
+  /* THE RENAME, ANSWERED IN VISIBLE COPY (2026-09-11, §8.36-a).
+     Not housekeeping: a parent who met this product as Lumi in the Play Store,
+     on LinkedIn or in a directory listing needs to know they are in the right
+     place, and as of 2026-09-11 every one of those still says Lumi. It sits in
+     the FAQ because FAQPage schema may only ever describe visible copy, and
+     this is the answer an engine most needs to be able to quote. */
+  { q: "Is Kheelu the same as Lumi?", a: "Yes. Kheelu is the same toy. It was called Lumi until September 2026, when it took the name of the character who narrates this site. Nothing else changed: same product, same price, same ship date. Older listings and articles still say Lumi, and they are describing this." },
   { q: "What is PlayOS?", a: "The platform Kheelu runs on. It gives each character a voice and a personality, and keeps every answer right for your child's age." },
   { q: "Can Kheelu play music?", a: "Yes. Pair a phone over Bluetooth and Kheelu becomes the speaker in the room, for your playlist, rhymes, or an audiobook. That is one of its three modes, alongside conversation and Story mode stories." },
   { q: "Does Kheelu need a subscription?", a: "Every Kheelu includes 6 months of Kheelona+, the stories, lessons, languages, and the parent app. Kheelu's smart features are yours for life, Kheelona+ pricing is announced soon, and nothing renews without you." },

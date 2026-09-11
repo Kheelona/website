@@ -4,6 +4,15 @@
  *  "Static toys" renamed for humans. The Kheelu column fills with the semantic
  *  action token (white 4.66:1); raw brand orange stays decorative-only.
  *
+ *  PLACE THIS ON WHITE OR CREAM ONLY (2026-09-11). The "No" cells are greyed
+ *  with `text-ink-muted`, which measures 4.21:1 on the cool wash and 4.20:1 on
+ *  sun. Both are under AA and both are already banned by
+ *  `test/contrast-tokens.test.ts`; on white it is 4.80:1 and on cream 4.52:1.
+ *  This went unnoticed for as long as it did because the component was written
+ *  and then never rendered on any route, so no sweep had ever seen it. Its
+ *  first placement, on /ai-toys-for-kids-in-india, put it on a cool room and
+ *  `qa:sweep` failed it the same minute.
+ *
  *  M4 mobile pass: below `sm` the table becomes a STACK, one card per claim.
  *  A 640px-wide table inside a phone-width room could only ever be a sideways
  *  scroll with no affordance: parents saw the claims and Kheelu's column with
