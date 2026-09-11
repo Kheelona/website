@@ -561,8 +561,11 @@ which is precisely what the Report-Only phase exists to catch, and nobody had lo
 
 ## 🧑 Off-site, where I have no access
 
-- [ ] **The Play Store listing still shows ₹2,999** (V3-h). It competes with the live pricing in
-      Google's index for the brand's own name. The web half is done: the old Wix URLs are 301'd.
+- [x] ✅ **The Play Store ₹2,999 is GONE** (V3-h). Re-checked on the live listing 2026-09-12: zero
+      hits for "2,999", "4,999" or "7,999", and the app's own offer reads `"price":"0"` because the
+      app is free. Closed as stale. **The Play Store listing still has a real problem, but it is a
+      different one** — "Lumi" appears 7 times and "Kheelu" zero, inside a `SoftwareApplication`
+      JSON-LD block. That is tracked in the 2026-09-11 round with replacement text drafted.
 - [ ] **Investor "backed by" band on /team.** Names and logos when ready. The row is labelled
       "Recognised by" today because NVIDIA Inception and nasscom are recognition programmes rather
       than backers — `RecognitionStrip` takes a `label` prop, so switching it is one word.
@@ -603,7 +606,11 @@ marketing page, the sitemap and the store. The entire post-deploy verification r
       Meta and that Meta's script decides which. Law: §8.30-o. **What is still ours to hold is our own
       payload**: the same test fails if `child_age` or `order.address` ever enters `meta-capi.ts`.
 
-- [ ] 🧑 **Generate `META_CAPI_TOKEN` and add it to Vercel.** Events Manager → dataset → Settings →
+- [x] ✅ **DONE — `META_CAPI_TOKEN` is live.** Verified 2026-09-12: `/api/health` reads
+      `"capi":"configured"`, so the token landed and the deployment that carries it is the running
+      one. The follow-up check below (one Purchase, not two, on the first real order) stays open.
+      Original instructions kept for the day it has to be rotated.
+- [x] 🧑 ~~**Generate `META_CAPI_TOKEN` and add it to Vercel.**~~ Events Manager → dataset → Settings →
       Conversions API → Generate access token. Vercel: Production + Preview, **Secret**, and **no
       `NEXT_PUBLIC_` prefix** (`test/store-secrets.test.ts` fails the build if that ever appears).
       **Then redeploy** — a Vercel variable only applies to deployments created after it changes, so
