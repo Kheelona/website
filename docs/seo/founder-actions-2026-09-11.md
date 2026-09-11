@@ -1,0 +1,152 @@
+# Founder actions — 2026-09-11
+
+**Nothing in this file has been sent, posted or published, and nothing will be by an agent.** These
+are drafts for you to paste, edit or discard. Evidence for every one is in
+`docs/checkpoints/seo-aeo-geo-2026-09-11.md`.
+
+Ordered by what they are worth, not by effort.
+
+---
+
+## 1. The Play Store listing · 10 minutes · **the highest-value thing on this page**
+
+**Why this is first.** Asked "What is Kheelona?" on 2026-09-11, Perplexity answered that the
+flagship product is "a talking robot companion called **Lumi**", aged "2 to 8", in "limited beta".
+Seven of its ten citations were third-party profiles, and the first was the Play Store listing.
+
+Read directly, that listing contains **"Lumi" seven times and "Kheelu" zero**. The description
+"App to Manage Lumi toy" is carried in `og:description`, `twitter:description`, `itemprop=description`
+**and inside a `SoftwareApplication` JSON-LD block**. That is a machine-readable statement, on a
+Google-owned domain, that this company's product is called Lumi. It outranks our own site in every
+model's view of the world, and it will keep doing so until it changes.
+
+You decided on 2026-09-05 to leave this. That decision was made before this evidence existed.
+
+### Short description (80 character limit)
+
+> Read every word your child says to Kheelu, and choose what it can talk about.
+
+*(76 characters. Replaces "App to Manage Lumi toy".)*
+
+### Full description
+
+> Kheelona's parent app is where you see everything Kheelu says and hears.
+>
+> Kheelu is a screen-free plush toy for children aged 3 and up. It holds a real conversation,
+> tells stories your child can interrupt and be quizzed on, and speaks the languages you speak at
+> home. This app is the parent's side of it.
+>
+> What you can do here
+>
+> Read the full conversation log, word for word, and delete any of it in one tap.
+> See a daily summary of what your child talked about and asked.
+> Choose which topics are open and which wait.
+> Set quiet hours and pick the languages for your home.
+> Track the new words your child has learned.
+>
+> How Kheelu works
+>
+> The microphone wakes to a word and is off the rest of the time. The first thinking happens on the
+> device. Answers come from a closed library, so Kheelu cannot browse or search the open internet,
+> and every reply passes an age-graded safety check. Conversations stay in your region and are never
+> sold or used to advertise to your child.
+>
+> Three modes: AI mode for open conversation on home WiFi, Story mode for stories and lessons that
+> work offline, and Bluetooth mode so Kheelu becomes the speaker for your own playlist.
+>
+> Kheelu was called Lumi until September 2026. It is the same toy.
+>
+> Kheelona Robotics Private Limited, Bengaluru. kheelona.com
+
+### Three other fields on the same screen
+
+| Field | Now | Change to | Why |
+|---|---|---|---|
+| App name | `kheelona` | `Kheelona: Kheelu parent app` (27 chars) | Store search matches on the name, and "Kheelu" currently appears nowhere in the listing. **Lower confidence than the rest** — renaming an app can disturb store ranking, so this one is genuinely your call. |
+| Privacy policy URL | `https://www.kheelona.com/privacy` | `https://kheelona.com/privacy` | The `www` host 308s to the apex. One wasted redirect hop on the most trust-bearing outbound link Google holds about this company. Thirty seconds, no downside. |
+| Developer phone | `+91 98965 97969` | see below | The site publishes WhatsApp-only **+91 91875 46483** and says so on every support surface. Two numbers for one company is an entity-consistency problem and, more practically, a parent who rings the Play number reaches something the site has never promised to answer. Either point Play at the WhatsApp number, or tell me and I will make the site acknowledge a second line. |
+
+**How to verify it worked:** after Google recrawls, `curl -s "https://play.google.com/store/apps/details?id=com.kheelona.toyapp&hl=en_IN" | grep -c -i lumi` should fall from 7 to at most 1 (the "was called Lumi" sentence). Then re-run the Perplexity prompt in section 6.
+
+---
+
+## 2. Take down the "Beta" privacy policy · **you said this one is old**
+
+Perplexity cites a page titled **"Kheelona Robotics Privacy Policy (Beta)"**, quoting *"In this
+beta, you'll need to email us for such requests"*, the address `legals@kheelona.com`, and a named
+Grievance Officer. It is the source of the "limited beta" claim in the AI answer about this company,
+which is actively costing money: it tells a reading parent you are not really selling yet.
+
+None of it is on the live page. `kheelona.com/privacy` has no "beta", no `legals@`, no Grievance
+Officer, and uses `hello@kheelona.com` eleven times. **I could not find where it lives.** Checked and
+ruled out: `kheelona.ai/privacy`, `kheelona.ai/privacy-policy`, `www.kheelona.com/privacy`,
+`app.kheelona.com/privacy`.
+
+Likely candidates, in order: a Google Doc or Notion page linked from an old app submission; a page on
+a host that has since been retired but is still in Perplexity's index; or a file on the backend.
+
+**What to do:** find it, then either 301 it to `https://kheelona.com/privacy` or delete it outright.
+A 301 is better if anything links to it. If it turns out to be gone already, nothing needs doing and
+the citation will decay on its own.
+
+**Also worth deciding:** `legals@kheelona.com` either is or is not a real address. If it is, the site
+should say so somewhere; if it is not, the AI answer is currently telling parents to write to a
+mailbox nobody reads.
+
+---
+
+## 3. Re-authorise Ahrefs' Google connection · 2 minutes
+
+Ahrefs' GSC Insights tab reads *"The linked Google Account doesn't allow access to the required
+data"*, and its Search Console data **stops on 20 August 2026**. Three weeks of the project dashboard
+have been stale and nothing said so.
+
+Ahrefs → the Kheelona project → Settings → reconnect the Google account, choosing the one that can
+open `sc-domain:kheelona.com`.
+
+---
+
+## 4. Profile back-links and descriptions · carried over from 2026-09-05
+
+Still open from the last round, and now with a measured reason. LinkedIn's description
+("India's First Robotic brand focusing on Tiny Explorers") is one of the sources feeding the word
+**robot** into every AI description of a plush toy.
+
+| Where | Do | Draft |
+|---|---|---|
+| LinkedIn company page | Add `https://kheelona.com` as the website, and replace the tagline | "Screen-free talking toys for children aged 3 and up. Kheelu holds a real conversation in the languages you speak at home, with no screen anywhere." |
+| Instagram bio | Add `https://kheelona.com` | "Kheelu. A screen-free talking friend for ages 3+. Pre-orders open, ships 20 October 2026." |
+| Facebook page | Add `https://kheelona.com` | Same as Instagram. |
+| YNOS profile | Correct the founder list | Three co-founders: Apoorva Sahu, Aman Soni, Kashyap C.R. Currently lists two. |
+| F6S profile | Replace "Lumi" with "Kheelu" | The description there still names the product Lumi and is cited by Perplexity. |
+
+---
+
+## 5. Two things I am NOT recommending, and why
+
+**Do not buy links or submit to paid directories.** Referring domains read 328 against a Domain
+Rating of 0, which is the signature of a lot of low-value inbound. Adding more of it will not move
+DR and could attract exactly the scrutiny a children's brand cannot afford.
+
+**Do not chase "best AI toy in India" in Google.** Keyword Planner, India, twelve months: that
+phrasing and every variant of it returns **no data**. The demand for that question is real but it
+currently lives in answer engines, not in Google's query stream. That is what this round built for.
+
+---
+
+## 6. The measurement, so it can be repeated for free
+
+Ahrefs' Brand Radar AI visibility is paywalled on the Basic plan, and Search Console offers no AI
+Mode data for this property. Both instruments the last round named are unavailable. These two prompts
+cost nothing and are the replacement. Run them in a logged-out or private window.
+
+1. **`best AI toy for a 4 year old in India`** — record which products are named, in order, and which
+   domains are cited. Baseline 2026-09-11: YUMI, Pookie by Scoobies, Miko Mini, AIVY, Mirana.
+   Kheelona absent. Citations included two roundup sites (`bestreviewsonline.in`, `keyirobot`) and
+   four vendors' own product pages.
+2. **`What is Kheelona and what is the Kheelu AI toy?`** — record the product name, the age range,
+   whether it says plush or robot, and whether it says beta. Baseline 2026-09-11: "Lumi", "2 to 8",
+   "robot", "limited beta", two founders. All five wrong.
+
+**Success at the 2026-10-03 re-measure looks like:** prompt 2 says Kheelu, plush, 3+, taking
+pre-orders. Prompt 1 is a longer game and naming Kheelona at all would be a good result.

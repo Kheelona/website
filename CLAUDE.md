@@ -1,5 +1,33 @@
 # kheelona.com — session entry point
 
+**🟣 SEO / AEO / GEO ROUND TWO SHIPPED 2026-09-11.** Record: `docs/checkpoints/seo-aeo-geo-2026-09-11.md`;
+laws **§8.36**; handoff `docs/seo/handoff-2026-09-11.md`; founder drafts (nothing sent)
+`docs/seo/founder-actions-2026-09-11.md`; rollback tag `pre-seo-round-2026-09-11` = `233a63f`.
+
+**The finding: the site has been right about the rename since 2026-09-05 and was OUTVOTED by the web
+around it.** Perplexity still answers that the flagship product is "a talking robot companion called
+**Lumi**", aged "2 to 8", in "limited beta", founded by two people. All five wrong, and seven of its
+ten citations are stale third-party profiles — the loudest being the **Play Store listing, where
+"Lumi" appears 7 times and "Kheelu" 0, inside a `SoftwareApplication` JSON-LD block on a Google-owned
+domain.** So: `Product.alternateName: "Lumi"`, an "Is Kheelu the same as Lumi?" FAQ in visible copy,
+and a "facts commonly wrong elsewhere" section in `llms.txt`. The off-site half is the founder's and
+is worth more than all of it.
+
+**Four things bind.** (1) **INDEXING IS NOT THE PROBLEM AND NEVER WAS** — 37 indexed against a 31-URL
+sitemap; 16 of 19 journal articles are indexed and earn **zero** impressions; the homepage takes 87%
+of all impressions and earns them for a **name collision** (~1,050 of 2,280 impressions are "Lumi"
+queries, many Romanian and Portuguese, for another company's product). Net that out and Indian
+category visibility is zero. Do not propose "get them indexed" again. (2) **NOBODY IN INDIA SEARCHES
+GOOGLE FOR THIS CATEGORY** — Keyword Planner: every "AI toy" phrasing returns no data, while
+"learning/educational toys for 3 year olds" run 1k–10k a month. The demand is in answer engines,
+which is why `/ai-toys-for-kids-in-india` is written for retrieval and says so in its own header.
+(3) **`src/lib/product-facts.ts` is the ONE source for the specification**, feeding both `SpecTable`
+and `Product.additionalProperty`; every value must already be published elsewhere on the site, and
+**battery life, warranty and manufacturing origin are deliberately absent** with tests that fail if a
+number ever appears in them. (4) **`site:` IS NOT AN INDEXING REPORT** (§8.36-f) and `dig TXT` does
+not prove a GSC property is unverified (domain properties verify by CNAME too) — both were wrong
+conclusions in this round, both recorded rather than hidden.
+
 **🟢 THE SEO / AEO / GEO ROUND SHIPPED AND IS VERIFIED ON PRODUCTION (2026-09-05).** Record with a
 per-commit running record: `docs/checkpoints/seo-aeo-geo-2026-09-05.md`; laws **§8.35**; developer
 handoff with per-item status: `docs/seo/handoff-2026-09-05.md`; human-facing drafts (nothing sent):

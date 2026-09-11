@@ -24,6 +24,55 @@ request. Priority is about consequence if it is never done, not about effort.
 
 ---
 
+# 🟣 SEO / AEO / GEO ROUND TWO (opened and shipped 2026-09-11)
+
+*Record: `docs/checkpoints/seo-aeo-geo-2026-09-11.md`. Handoff: `docs/seo/handoff-2026-09-11.md`.
+Founder drafts, none sent: `docs/seo/founder-actions-2026-09-11.md`. Laws **§8.36**. Rollback tag
+`pre-seo-round-2026-09-11` = `233a63f`.*
+
+**What this round found.** The site has been right about the Kheelu rename since 2026-09-05 and was
+outvoted by the web around it: Perplexity still answers "Lumi", "2 to 8", "robot", "limited beta",
+two founders, and seven of its ten sources are stale third-party profiles. Separately, indexing is
+NOT the problem and never was (37 indexed against a 31-URL sitemap) — 16 of 19 journal articles are
+indexed and earn zero impressions, and Keyword Planner shows no Indian search volume for any "AI toy"
+phrasing at all. The demand for this category lives in answer engines, not in Google's query stream.
+
+## 🤖 Engineering (all shipped 2026-09-11)
+
+- [x] A1/A2 · `Product.alternateName: "Lumi"`, `isFamilyFriendly`, and the published spec as
+      `additionalProperty` from the new one-source `src/lib/product-facts.ts` (`7a38300`)
+- [x] A3/A4 · `llms.txt` "facts commonly wrong elsewhere", and "Is Kheelu the same as Lumi?" as
+      visible FAQ copy on the product page (`2a7a96d`, `0eb985a`)
+- [x] B1/B2 · `/ai-toys-for-kids-in-india` and the `SpecTable` molecule; sitemap, footer and
+      `qa:sweep` route list updated (`2a7a96d`)
+- [x] C1/C2/C3 · three articles, one per channel, chosen from measured demand (`0eb985a`)
+- [x] D · the `CompareTable` contrast bug the gate caught on its first ever render (`2a7a96d`)
+- [x] §8.36 laws, handoff, founder drafts, records (`commit 4`)
+
+## 🧑 Founder (drafts are all written; see `docs/seo/founder-actions-2026-09-11.md`)
+
+- [ ] 🔴 **Play Store listing.** Reopened with your go-ahead on 2026-09-11 after evidence that it is
+      the single loudest source feeding "Lumi" into AI answers: the word appears 7 times and "Kheelu"
+      0, inside a `SoftwareApplication` JSON-LD block on a Google-owned domain. Full replacement text
+      for the short and long descriptions is drafted, plus three smaller fields (app name — lower
+      confidence, your call; privacy URL, which currently wastes a redirect hop on `www`; and the
+      developer phone, which is a different number from the site's WhatsApp-only line).
+- [ ] 🔴 **Find and remove the "Beta" privacy policy.** You said it is old and should come down. I
+      could not locate it: ruled out `kheelona.ai/privacy`, `/privacy-policy`, `www.kheelona.com/privacy`
+      and `app.kheelona.com/privacy`. It is the source of the "limited beta" claim in the AI answer,
+      and it names `legals@kheelona.com`, which the site does not use.
+- [ ] **Re-authorise Ahrefs' Google connection.** Broken since 20 August; the project dashboard has
+      been three weeks stale and said nothing.
+- [ ] **Profile back-links and descriptions** (carried from the last round, now with a measured
+      reason): LinkedIn, Instagram, Facebook, plus corrections to YNOS (two founders listed, should
+      be three) and F6S (still says Lumi). Drafts written.
+- [ ] 📅 **2026-10-03 re-measure.** Two of the four instruments the last round named are gone: Ahrefs
+      Brand Radar AI visibility is paywalled and Search Console has no AI Mode data for this
+      property. The replacement is two Perplexity prompts run by hand, with their full baseline
+      answers recorded in the checkpoint. Free, repeatable, and cannot be switched off.
+
+---
+
 # 🔵 SEO / AEO / GEO ROUND (opened and shipped 2026-09-05; the founder items below stay open)
 
 *Record: `docs/checkpoints/seo-aeo-geo-2026-09-05.md` (baseline + running record, appended every

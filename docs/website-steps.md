@@ -2252,3 +2252,94 @@ law). No IndexNow (Bing-only, P2). Nothing the founder had parked. The off-site 
 subdomains crawlable, Play Store text, profile back-links, request indexing in Search Console) is a
 founder list in the handoff, and every human-facing draft sits in `docs/seo/outreach-drafts-2026-09-05.md`,
 which nothing sends.
+
+---
+
+# §8.36 THE SITE IS NOT THE ONLY SOURCE ABOUT THE SITE (2026-09-11)
+
+*Record: `docs/checkpoints/seo-aeo-geo-2026-09-11.md`. Handoff: `docs/seo/handoff-2026-09-11.md`.
+Founder drafts, none sent: `docs/seo/founder-actions-2026-09-11.md`. Rollback tag
+`pre-seo-round-2026-09-11` = `233a63f`.*
+
+**The finding this round exists to answer.** Six days after the Kheelu rename shipped and was
+verified three ways, Perplexity still answered that Kheelona's flagship product is "a talking robot
+companion called **Lumi**", aged "2 to 8", in "limited beta", founded by two people. All five wrong.
+Seven of its ten citations were third-party profiles: the Play Store listing, YNOS, F6S, LinkedIn,
+Internshala. **The site was right and was outvoted by the web around it.**
+
+## a. A rename is not finished when the site is correct
+
+A rename has two halves and only one of them is in this repo. Ship the second half deliberately:
+
+- **State the reconciliation in the graph.** `Product.alternateName` carries the old name, beside the
+  `@id` that already preserves it (§8.32-b). A model reading both can resolve one product; a model
+  reading neither guesses.
+- **State it in visible copy**, as the question a person would ask ("Is Kheelu the same as Lumi?"),
+  which also makes it quotable through `FAQPage`.
+- **State it in `llms.txt`**, in a section that names the facts other sources get wrong.
+- **Then fix the sources**, which is founder work and is worth more than all the code.
+
+The Play Store listing is the sharpest case: "Lumi" appears seven times and "Kheelu" zero, inside a
+`SoftwareApplication` JSON-LD block **on a Google-owned domain**. No amount of on-site correctness
+outranks that.
+
+## b. Warm prose does not get lifted into a comparison
+
+Every competitor snippet an answer engine lifted for "best AI toy for a 4 year old in India" was
+spec-dense: a price, an age, a language count, a battery life, in one scannable line. Four of the
+eleven citations were vendors' **own** product pages, so a brand page is eligible to be the answer.
+This site's copy is warmer and better written and gave a retrieval model nothing to put in a row.
+
+So: **`src/lib/product-facts.ts` is the one source for the specification**, rendered by `SpecTable`
+and emitted as `Product.additionalProperty` from the same constant. The registry law (§8.19) applied
+to specs: the page a parent reads and the graph a machine reads cannot disagree.
+
+**Every value must already be published elsewhere on this site.** The never-invent gate does not
+relax because a competitor's table has a row we do not. Battery life, warranty terms and country of
+manufacture are therefore ABSENT, they stay visible answering "not announced yet", and
+`productProperties()` filters them out of schema, because an unannounced spec is the absence of a
+fact rather than a fact. A test fails if a number ever appears in a pending row.
+
+## c. A component that is not rendered is not covered by any gate
+
+`CompareTable` had a test, a story, and a contrast bug: its greyed "No" cells are `text-ink-muted`,
+4.21:1 on the cool wash and 4.20:1 on sun, both already banned by `test/contrast-tokens.test.ts`. It
+survived because **it had never been rendered on any route**, so no sweep had ever loaded it. Its
+first placement failed `qa:sweep` within a minute.
+
+**The law: the sweep checks pages, not exports.** An unused component is unverified however many
+tests it has, and the moment it is first placed is the moment to run the sweep, not after.
+
+## d. Measure the answer engines directly, because the paid instruments keep going dark
+
+The 2026-09-05 round set a re-measure against four instruments. By 2026-09-11 two were unavailable:
+Ahrefs Brand Radar's AI visibility is paywalled on the Basic plan, and Search Console offers no AI
+Mode search type for this property. Ahrefs' own Google link had also been broken since 20 August and
+nothing said so.
+
+**So the tracked GEO instrument is two prompts run by hand in a logged-out window**, recorded in the
+checkpoint with their full baseline answers. They cost nothing, they cannot be switched off, and they
+measure the thing that actually matters rather than a vendor's proxy for it.
+
+## e. Know which channel a page is for, and say so
+
+Keyword Planner, India, twelve months: **every "AI toy" phrasing returns no data**, while
+"educational/learning toys for 3 year olds" run 1k to 10k a month each and "toys that talk back"
+100 to 1k. Parents are not searching Google for this category; they are asking answer engines, which
+is measured in the checkpoint.
+
+A page written for retrieval and a page written to rank are different pages, and the file header
+should say which it is. `/ai-toys-for-kids-in-india` is aimed at retrieval and says so in its own
+comment. Pretending a page is an SEO play when its term has no volume is what produced nineteen
+journal articles of which sixteen earn zero impressions.
+
+## f. `site:` is not an indexing report
+
+`site:kheelona.com/stories` returned 10 results and was used to conclude that only 9 of 19 articles
+were indexed. URL Inspection says otherwise, and Search Console reports 37 indexed against a 31-URL
+sitemap. The operator truncates hard enough on a small site to invent a crisis. **When Search Console
+is available it is the only source; when it is not, the honest answer is "unknown".**
+
+The related trap, from the same session: a Search Console domain property is verified by DNS TXT **or
+by a CNAME at a random hostname**, so `dig TXT` finding nothing proves nothing. An account without
+permission and a property without verification look identical from outside.

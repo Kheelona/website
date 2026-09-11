@@ -321,4 +321,24 @@ All twelve marketing routes, `llms.txt`, `pricing.md`, `sitemap.xml` and `robots
 
 *(appended per commit from here)*
 
-- **commit 0 — this file.** Baseline only. No site change.
+- **commit 0 — `80fb405`.** Baseline only, no site change. Two wrong conclusions recorded rather
+  than quietly fixed: "Search Console verification lapsed" (it had not; domain properties verify by
+  CNAME too, so `dig TXT` proves nothing) and "9 of 19 articles indexed" (`site:` undercounts; URL
+  Inspection and GSC both say indexed). §8.36-f.
+- **commit 1 — `7a38300`.** `Product.alternateName: "Lumi"`, `isFamilyFriendly`, and the published
+  specification as `additionalProperty`, from the new one-source `src/lib/product-facts.ts` which
+  also feeds the new `SpecTable` molecule. Three specs deliberately absent (battery, warranty,
+  manufacturing origin) with tests that fail if a number ever appears in them. §8.36-a/b.
+- **commit 2 — `2a7a96d`.** `/ai-toys-for-kids-in-india`, the buyer's guide: five numbered checks,
+  the spec table, the category comparison, what Kheelu cannot claim yet, 7 FAQs. Plus the "Is Kheelu
+  the same as Lumi?" FAQ on the product page and the "facts commonly wrong elsewhere" section in
+  `llms.txt`. **The gate earned its keep here**: `CompareTable` had never been rendered on any route,
+  and its first placement on a cool room failed four contrast nodes that `test/contrast-tokens.test.ts`
+  had banned all along. Moved to cream. §8.36-c.
+- **commit 3 — `0eb985a`.** Three articles, one per channel, chosen from Keyword Planner and the
+  Perplexity measurements rather than instinct: `learning-toys-for-a-three-year-old` (SEO, the only
+  terms with real Indian volume), `questions-parents-ask-about-ai-toys` (AEO, twelve self-contained
+  answers, zero question overlap with the guide), `ai-toys-and-indias-data-law` (GEO, definitional
+  and jurisdictional). Every citation already verified in this repo. §8.36-e.
+- **commit 4 — this one.** The laws (§8.36), the developer handoff, the founder drafts that nothing
+  sends, and the queue and state files.
