@@ -144,7 +144,19 @@ commit). Developer handoff: `docs/seo/handoff-2026-09-05.md`. Rollback tag `pre-
       Indexing → Pages in two weeks; the count should fall from 10.
 - [x] **`admin.kheelona.com`** now `Disallow: /` + `X-Robots-Tag: noindex, nofollow` + meta robots
       (admin-dashboard `d0bf58a`, deployed via its GitHub Action, verified live 2026-09-05).
-- [ ] **`api.kheelona.com`**: noindex middleware + `/robots.txt` committed on backend-service `dev-apu`
+- [x] ✅ **`api.kheelona.com` noindex — DEPLOYED by the founder 2026-09-12 and verified.**
+      `x-robots-tag: noindex, nofollow` confirmed live on 200, 404 and 401 responses (it was absent
+      the same morning). **One follow-up is with the backend team**: they reported the `/robots.txt`
+      half as inert because Cloudflare showed its own content, but **Cloudflare APPENDS rather than
+      overrides**, so the origin's `Disallow: /` is live at the bottom of the served file. That
+      leaves `Allow: /` and `Disallow: /` both present for `*`. Google's least-restrictive tie-break
+      keeps the crawl open, so the noindex is still read, but other crawlers resolve it differently
+      and a live `Disallow` is precisely what stops a `noindex` being seen. Asked them to remove the
+      `Disallow` from the origin route. **Also checked, because it would have been serious:
+      Cloudflare's managed block disallows GPTBot, ClaudeBot, Google-Extended and CCBot, all of which
+      our own robots.txt deliberately allows — it does not reach `kheelona.com` because only `api` is
+      proxied. See §8.36-h: never flip the apex to Proxied without re-checking robots.txt.**
+- [x] ~~**`api.kheelona.com`**: noindex middleware + `/robots.txt` committed on backend-service `dev-apu`
       (`68db567`, 1864 unit tests green). **Deploy is the founder's**: the production API runs from
       `dev-apu` under PM2 on the GCP instance; `git pull` + `pm2 restart kheelona` per that repo's
       `.claude/CLAUDE.md`. Verify with `curl -sI https://api.kheelona.com/ | grep -i x-robots-tag`.

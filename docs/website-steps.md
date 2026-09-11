@@ -2364,3 +2364,30 @@ legacy URLs in pairs and families, never one at a time.
 The URL was sitting in the Perplexity thread's own links the whole time. Guessing paths found
 nothing in five attempts; reading the citation found it in one.
 
+## h. Cloudflare APPENDS to robots.txt, and proxying the apex would reverse the AI policy
+
+Two findings from the `api.kheelona.com` noindex deploy (2026-09-12), both worth keeping.
+
+**Cloudflare does not override an origin's `robots.txt`. It prepends its own managed block and
+appends the origin's.** The backend team reported the origin file as inert because they saw
+Cloudflare's content at the top; the origin's content is at the bottom of the same response. The
+served file therefore carried two `User-agent: *` groups, Cloudflare's `Allow: /` and the origin's
+`Disallow: /`. Google merges same-agent groups and applies the least restrictive rule when two are
+equally specific, so `Allow` wins and the crawl stays open — but that is a **tie-break, not an
+absence**, and other crawlers resolve it differently. **Read the whole file before concluding an
+edge provider replaced it.**
+
+**The de-indexing law, which the same incident illustrates: `Disallow` and `noindex` together are
+self-defeating.** A URL blocked in `robots.txt` is never fetched, so the `noindex` header is never
+read, and the URL can still be indexed from external links. To remove something from an index you
+must **keep it crawlable and serve `noindex`**. Never pair them.
+
+**And the standing rule: `kheelona.com` must stay DNS-only in Cloudflare unless someone re-checks
+`robots.txt` immediately afterwards.** Only `api` is proxied today; the apex, `www` and `store` are
+grey-cloud and served straight from Vercel, which is the only reason our own `robots.txt` survives.
+Cloudflare's managed block **disallows GPTBot, ClaudeBot, Google-Extended, CCBot, Applebot-Extended
+and meta-externalagent**. Our robots.txt deliberately **allows** every one of those (§AEO plumbing),
+because being quotable by answer engines is this product's distribution channel. **Flipping the apex
+to Proxied would silently invert that policy, and nothing in this repo would fail.** Verified clean
+on 2026-09-12: `kheelona.com/robots.txt` has zero Cloudflare managed content and still allows GPTBot.
+
