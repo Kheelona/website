@@ -279,7 +279,9 @@ pushed on `main` but **NOT deployed** — everything below assumes the founder h
 
 ## 🧑 Deploy, then do these three in Search Console
 
-- [ ] **Take `main` live.** Commits `c5cca99` + `500bccb`. Rollback tag
+- [x] ✅ **DONE — `main` is live** and has been since 2026-09-05; re-verified across the whole site
+      on 2026-09-12. Closed as stale. Original note follows.
+- [x] ~~**Take `main` live.**~~ Commits `c5cca99` + `500bccb`. Rollback tag
       `pre-kheelu-rename-2026-09-05` = `63f6e70` restores `/products/lumi` as the live route.
 - [x] **Ahrefs re-crawled 2026-09-05 after the deploy and confirms the fixes**: Incomplete Open
       Graph tags 31 → **0**, the schema.org validation error gone from the issue list, warnings
@@ -290,7 +292,10 @@ pushed on `main` but **NOT deployed** — everything below assumes the founder h
       schema confirms the rename design end to end: `name: Kheelu by Kheelona`, `id` still
       `.../products/lumi#product` (the stable identifier, §8.32-b), `offers.url`
       `.../products/kheelu`, `founder` not `founders`, `contactPoint.url` with no `contactOption`.
-- [ ] **`/products/lumi`: Google has NOT re-crawled it yet**, so the 308 is not registered. Last
+- [x] ✅ **DONE — consolidated.** URL Inspection on 2026-09-12 returns "URL is on Google · Page is
+      indexed" for `/products/kheelu`, so Google has re-crawled and the 308 has registered. Indexing
+      was also re-requested the same day. Closed as stale. Original note follows.
+- [x] ~~**`/products/lumi`: Google has NOT re-crawled it yet**~~, so the 308 is not registered. Last
       crawl **31 Aug 2026**, before the deploy; Google-selected canonical is still itself. Indexing
       was **requested on 2026-09-05** to pull it into the priority crawl queue. Nothing is wrong —
       it consolidates once Google re-fetches. **Re-inspect in a few days**; the tell is the crawl
