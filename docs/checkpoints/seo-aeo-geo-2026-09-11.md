@@ -494,3 +494,25 @@ listing `pricing.md` invites Google to index raw markdown that would compete wit
 for pricing queries and read badly as a search result. Discovery is not their problem, so the sitemap
 is not their fix.
 
+---
+
+## 9. App store handoff, and two dated items parked (2026-09-12)
+
+**`docs/seo/app-store-listings-2026-09-12.md`** is the developer-facing handoff, written to stand
+alone. **The first pass covered only Google Play, which was a gap**: the Apple listing was read on
+2026-09-12 and also says "Lumi", carries **no Support URL at all**, and points its privacy link at
+the `www` host. Apple's **Promotional Text needs no new build**, so it is the fastest fix available
+on either store. Apple's 4+ age rating is its lowest tier and is explicitly marked do-not-touch, so
+nobody "fixes" it to match Play's 3+.
+
+Every field carries a character count **verified against the store limit in code, not asserted**.
+That caught two of my own errors before the document went out: the Apple Promotional Text was 171
+characters against a 170 limit, and a Play count was off by one.
+
+**Two items re-rated LOW with a dated trigger (founder, 2026-09-12):** the DPDP lines on `/privacy`
+and the returns/warranty terms both move to **HIGH on 5 October**, a fortnight before the 20 October
+ship date. A dated-trigger banner now sits at the top of `Technical-Todo.md` so a session opening on
+or after that date raises them first. The reasoning: shipping is five weeks out, the site is honest
+in the meantime (`/refund` states the pre-dispatch-only promise rather than inventing a window), and
+counsel lead time rather than the deadline is the real constraint.
+

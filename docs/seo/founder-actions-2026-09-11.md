@@ -8,7 +8,20 @@ Ordered by what they are worth, not by effort.
 
 ---
 
-## 1. The Play Store listing · 10 minutes · **the highest-value thing on this page**
+## 1. Both app store listings · **the highest-value thing on this page**
+
+> **📄 Hand this to the app developer: `docs/seo/app-store-listings-2026-09-12.md`.** It is written
+> to stand alone for someone who has not read any of this, covers **Google Play AND the Apple App
+> Store**, and every field is copy-and-paste ready with its character count verified against the
+> store's limit. Two decisions are flagged as the founder's rather than the developer's: whether to
+> rename the app, and which phone number is public.
+>
+> Added for Apple on 2026-09-12, none of it in the original draft below: the description there also
+> says "Lumi"; **Promotional Text can be updated with no new build**, which is the fastest possible
+> win; the **Support URL is missing entirely**; and the 4+ age rating is Apple's lowest tier, so it
+> is correct and must not be "fixed" to match Play's 3+.
+
+
 
 **Why this is first.** Asked "What is Kheelona?" on 2026-09-11, Perplexity answered that the
 flagship product is "a talking robot companion called **Lumi**", aged "2 to 8", in "limited beta".

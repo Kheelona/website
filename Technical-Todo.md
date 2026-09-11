@@ -24,6 +24,21 @@ request. Priority is about consequence if it is never done, not about effort.
 
 ---
 
+# 📅 DATED TRIGGER — 5 OCTOBER 2026
+
+**On 5 October, two items below move from LOW to HIGH.** Both are pre-shipment legal work, both are
+parked deliberately, and both have a fortnight of slack built in before the **20 October** ship date.
+
+| Item | Why it is LOW today | Why it becomes HIGH on 5 Oct |
+|---|---|---|
+| **Returns and warranty terms** | Nothing has shipped, and `/refund` states the pre-dispatch-only promise honestly rather than inventing a window | `/refund` and `/products/kheelu` both promise these terms are coming. Shipping without them makes two live pages wrong at once. |
+| **The two DPDP lines on `/privacy`** | No product data is collected yet. Founder decision 2026-08-23. | Counsel lead time is the constraint, not the deadline. Retention period + grievance contact are what the DPDP Act expects. |
+
+**Founder decision, 2026-09-12:** both parked as LOW until 5 October. If a session opens on or after
+that date, raise them first.
+
+---
+
 # 🟣 SEO / AEO / GEO ROUND TWO (opened and shipped 2026-09-11)
 
 *Record: `docs/checkpoints/seo-aeo-geo-2026-09-11.md`. Handoff: `docs/seo/handoff-2026-09-11.md`.
@@ -51,6 +66,14 @@ phrasing at all. The demand for this category lives in answer engines, not in Go
 
 ## 🧑 Founder (drafts are all written; see `docs/seo/founder-actions-2026-09-11.md`)
 
+- [ ] 🔴 **App store listings, BOTH of them.** Developer-ready handoff:
+      **`docs/seo/app-store-listings-2026-09-12.md`** — stands alone, covers Google Play and Apple,
+      every field copy-paste ready with character counts verified against each store's limit.
+      Apple was missed in the first pass and is now included: its description also says "Lumi", its
+      **Promotional Text needs no new build** (fastest win available), its **Support URL is missing
+      entirely**, and its 4+ rating is Apple's lowest tier so it must NOT be changed to match Play's
+      3+. Two questions are the founder's, not the developer's: rename the app or not, and which
+      phone number is public. Original Play-only note follows.
 - [ ] 🔴 **Play Store listing.** Reopened with your go-ahead on 2026-09-11 after evidence that it is
       the single loudest source feeding "Lumi" into AI answers: the word appears 7 times and "Kheelu"
       0, inside a `SoftwareApplication` JSON-LD block on a Google-owned domain. Full replacement text
@@ -482,9 +505,15 @@ which is precisely what the Report-Only phase exists to catch, and nobody had lo
       which is why the 2026-09-01 verification asserted only that the browser *attempted* the
       fbevents.js request and let the harness abort it.
 
-- [ ] 🧑 **Post-dispatch returns and warranty terms, before the first Lumi ships.** They do not
-      exist, because nothing has shipped, and `/refund` says exactly that rather than inventing a
-      window. **The one open item that will actually block a step**, and the step is October.
+- [ ] 🧑 🟢 **LOW until 5 October 2026, then 🔴 HIGH. Post-dispatch returns and warranty terms,
+      before the first Kheelu ships.** They do not exist, because nothing has shipped, and `/refund`
+      says exactly that rather than inventing a window. **The one open item that will actually block
+      a step**, and the step is 20 October.
+      **Re-rated 2026-09-12 (founder): parked as LOW because shipping is 20 October and the site is
+      honest in the meantime. It flips to HIGH on 5 October**, which leaves a fortnight to draft,
+      have counsel look at it, and ship the page. Do not let it sit past that date: `/refund` and
+      `/products/kheelu` both currently promise these terms are coming, so the first dispatch
+      without them makes two live pages wrong at once.
       *Verified 2026-08-23: `/refund` still states the pre-dispatch-only promise honestly.*
 
 # 🟡 MEDIUM — all three are dated or founder-deferred; none needs code today
@@ -539,10 +568,16 @@ which is precisely what the Report-Only phase exists to catch, and nobody had lo
       it is safe to tighten DMARC. Only the aggregate reports show who is really sending as you** —
       the DNS here looked perfect and 65% of real mail was failing.
 
-- [ ] 🧑 **📅 Before shipment: the two DPDP lines on `/privacy`** (F-12). India's DPDP Act 2023
-      expects a stated **retention period** and a designated **grievance contact**. Founder decision
-      2026-08-23: leave both until before shipment, reasonable while nothing has shipped and no
-      product data is collected. Wording is counsel's; the page is already counsel-gated.
+- [ ] 🧑 🟢 **LOW until 5 October 2026, then 🔴 HIGH. 📅 The two DPDP lines on `/privacy`** (F-12).
+      India's DPDP Act 2023 expects a stated **retention period** and a designated **grievance
+      contact**. Founder decision 2026-08-23: leave both until before shipment, reasonable while
+      nothing has shipped and no product data is collected. Wording is counsel's; the page is
+      already counsel-gated.
+      **Re-rated 2026-09-12 (founder): LOW now, flips to HIGH on 5 October**, a fortnight before the
+      20 October ship date, because counsel lead time is the real constraint rather than the
+      deadline. Note the added reason to get it right: an AI answer about this company was quoting a
+      dead Wix "Privacy Policy (Beta)" as recently as this week, so `/privacy` is a page that gets
+      read by machines as well as regulators.
       *Verified 2026-08-23 on the live page: zero mentions of retention, "how long", grievance or
       officer. The gap is real and unchanged.*
 
