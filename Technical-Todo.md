@@ -503,12 +503,41 @@ which is precisely what the Report-Only phase exists to catch, and nobody had lo
       `select count(*), sum(amount_paise) / 100 as rupees from preorders where tier = 'ideabaaz' and status = 'paid';`
       Each such booking consumed a first-500 unit at ₹4,999 and still owes ₹4,900 before dispatch.
 
-- [ ] 🧑 **📅 5 September 2026: tighten DMARC to `p=quarantine`.** The two-week observation window
-      ends then. **Read the reports at `dmarc@kheelona.com` FIRST** and confirm Google Workspace and
-      Resend are both passing; only then edit the existing `_dmarc` TXT record in Cloudflare,
-      changing `p=none` to `p=quarantine` and keeping `rua` and `fo`. Never add a second DMARC or SPF
-      record, and never jump straight to `p=reject`. A scheduled agent will remind you:
-      https://claude.ai/code/routines/trig_01T644UQuKPds5T1iV5abvqD
+- [x] ✅ **DMARC — DONE 2026-09-12, and NOT the way it was originally written. Settled; do not re-raise.**
+
+      Live and verified: `v=DMARC1; p=none; sp=quarantine; rua=mailto:dmarc@kheelona.com; fo=1;`
+      (exactly one record, `send.kheelona.com` correctly inherits `sp=`).
+
+      **The original plan was to flip the apex to `p=quarantine`. That would have been wrong, and
+      the founder's own DMARC aggregate reports are what proved it.** The report for 10 September
+      2026 shows 20 messages with `From: @kheelona.com`: **7 pass, 13 fail (65%)**. The 13 are
+      signed by `ikpknowledgepark.com` and `ikpeden-com.20251104.gappssmtp.com` and were delivered
+      only because Google honoured ARC (`local_policy`, `comment: arc=pass`). That is IKP EDEN, the
+      founder's incubator: replying to their **group address** makes IKP's Google Workspace
+      redistribute the message, which strips SPF alignment and breaks the DKIM signature. Flipping
+      the apex would have started filing those replies into recipients' spam on any receiver that
+      does not honour ARC.
+
+      **Why `sp=quarantine` instead, and why it is the right permanent answer.** The two mail
+      streams live on different domains: payment receipts go from `hello@send.kheelona.com` (Resend,
+      aligned on BOTH SPF via `send.send.kheelona.com` → `include:amazonses.com` and DKIM via
+      `resend._domainkey.send.kheelona.com`), while everything human goes from `@kheelona.com`.
+      `sp=` governs the first and `p=` the second. So the forgeable thing that actually costs money —
+      a fake "your order is confirmed" to a parent who just paid — is now shut, at **zero** risk to
+      any legitimate mail, including tools nobody has inventoried.
+
+      **The apex stays at `p=none`, deliberately and indefinitely.** Two founder inputs decided it:
+      the IKP mail is legitimate and **outside the founder's control** (IKP owns that group, Kheelona
+      owns neither the mailbox nor the setting), and the founder was **"not sure"** whether any other
+      tool sends as `@kheelona.com`. Under the founder's own rule — *"I don't want important email to
+      go in spam"* — those two facts make tightening the apex a net loss. Residual risk, stated
+      plainly: `@kheelona.com` can still be forged, judged only on SPF softfail and other spam
+      signals. That was equally true before and is the smaller of the two exposures.
+
+      **Reopen only if** IKP changes email systems or the cohort ends, at which point re-read a fresh
+      aggregate report before touching anything. **The lesson: DNS alignment alone does not tell you
+      it is safe to tighten DMARC. Only the aggregate reports show who is really sending as you** —
+      the DNS here looked perfect and 65% of real mail was failing.
 
 - [ ] 🧑 **📅 Before shipment: the two DPDP lines on `/privacy`** (F-12). India's DPDP Act 2023
       expects a stated **retention period** and a designated **grievance contact**. Founder decision
