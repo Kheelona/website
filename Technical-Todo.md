@@ -66,6 +66,13 @@ phrasing at all. The demand for this category lives in answer engines, not in Go
 - [ ] **Profile back-links and descriptions** (carried from the last round, now with a measured
       reason): LinkedIn, Instagram, Facebook, plus corrections to YNOS (two founders listed, should
       be three) and F6S (still says Lumi). Drafts written.
+- [ ] 🤖 **`npm audit` reads 2 moderate on the site manifest** (found 2026-09-11, not fixed in that
+      round on purpose). Both are `@vitest/mocker` / `vitest`, GHSA-82fw-gwwq-j7x9, a path traversal
+      in the test mocker. **Dev-only: vitest never reaches a production build**, and the fix is a
+      patch inside the pinned major. One command, then the suite verifies it:
+      `npm install vitest@4.1.11 && npm test` (expect 1176 pass). Left out of the SEO round because
+      dependency changes in this repo get their own deliberate pass — a careless install once moved
+      23 packages including `@supabase/supabase-js` on the payment path. `launch-video` still reads 0.
 - [ ] 📅 **2026-10-03 re-measure.** Two of the four instruments the last round named are gone: Ahrefs
       Brand Radar AI visibility is paywalled and Search Console has no AI Mode data for this
       property. The replacement is two Perplexity prompts run by hand, with their full baseline

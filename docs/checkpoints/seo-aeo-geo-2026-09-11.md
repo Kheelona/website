@@ -342,3 +342,60 @@ All twelve marketing routes, `llms.txt`, `pricing.md`, `sitemap.xml` and `robots
   and jurisdictional). Every citation already verified in this repo. §8.36-e.
 - **commit 4 — this one.** The laws (§8.36), the developer handoff, the founder drafts that nothing
   sends, and the queue and state files.
+
+---
+
+## 7. Production verification (2026-09-11, after deploy)
+
+Deployed from `b5c795c`, live ~60 seconds after the push. Every acceptance check in the handoff was
+**run**, not asserted. One of my own numbers was wrong and was corrected before shipping: the guide
+emits 9 `Question` nodes, not the 10 I first wrote (7 FAQs + 2 answer blocks, because the shared
+question moved into `ANSWERS`).
+
+| Check | Expected | Actual |
+|---|---|---|
+| `/ai-toys-for-kids-in-india` | 200 | **200** |
+| `Product.alternateName` | `"Lumi"` | **present** |
+| `PropertyValue` nodes on `/products/kheelu` | 14 | **14** |
+| `llms.txt` corrections | 6 bullets, dated 2026-09-11 | **6, dated** |
+| `Question` nodes on the guide | 9 | **9** |
+| Three new articles | 200 each | **200, 200, 200** |
+| `sitemap.xml` | 35 URLs | **35** |
+
+**Google Rich Results Test on `/products/kheelu`: 4 valid items, ZERO errors** — Product snippets,
+Merchant listings, Breadcrumbs, Organization. The non-critical warnings on the two Product items are
+the standard missing-`review`/`sku`/`gtin` set, which this product deliberately does not have.
+FAQPage is not reported because Google retired FAQ rich results for most sites; the markup is still
+read by answer engines, which is who it was for.
+
+**Lighthouse, production, desktop, on the new route:** performance **91**, accessibility **96**,
+SEO **100**, best-practices **74**. All three gates cleared, and 74 is exactly the sanctioned §8.34-h
+figure — the whole gap is the Meta Pixel's third-party cookie, and no configuration passes it while
+the pixel runs.
+
+**`qa:sweep`: clean on axe and voice, 18 routes, both widths.** `npm test`: 1176 pass.
+
+### Indexing requested, five URLs, all confirmed
+
+Not the sixteen that were already indexed — submitting those is a no-op, and saying so is the point
+of section 3. Each returned **"Indexing requested. URL was added to a priority crawl queue."**
+
+`/ai-toys-for-kids-in-india` · `/products/kheelu` · `/stories/ai-toys-and-indias-data-law` ·
+`/stories/questions-parents-ask-about-ai-toys` · `/stories/learning-toys-for-a-three-year-old`
+
+**A good correction while doing it: `/products/kheelu` now reads "URL is on Google · Page is
+indexed".** The Pages report had it in "Crawled – currently not indexed", which was already stale by
+the time it was read. The rename has consolidated. It was still worth the request, because the page
+changed materially today.
+
+### One thing found and deliberately not fixed
+
+`npm audit` reads **2 moderate** on the site manifest, both in `@vitest/mocker` / `vitest`
+(GHSA-82fw-gwwq-j7x9, path traversal in the test mocker). `launch-video` still reads 0.
+
+**Dev-only — vitest never reaches a production build** — and the fix is a patch inside the pinned
+major, `4.1.10 → 4.1.11`. It was left alone anyway. This repo's dependency laws exist because a
+careless install once moved 23 packages including `@supabase/supabase-js` on the payment path, and
+folding a dependency change into an SEO round is how that discipline erodes. It is queued in
+`Technical-Todo.md` with the exact command, as a two-minute job with its own verification.
+
