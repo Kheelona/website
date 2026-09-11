@@ -156,6 +156,17 @@ commit). Developer handoff: `docs/seo/handoff-2026-09-05.md`. Rollback tag `pre-
       Cloudflare's managed block disallows GPTBot, ClaudeBot, Google-Extended and CCBot, all of which
       our own robots.txt deliberately allows — it does not reach `kheelona.com` because only `api` is
       proxied. See §8.36-h: never flip the apex to Proxied without re-checking robots.txt.**
+      **FULLY CLOSED 2026-09-12.** The backend team re-verified my correction empirically rather than
+      accepting it, put the fix through their QA gate (which caught three problems in their own plan,
+      including that an `Allow: /` of ours would have risked shadowing Cloudflare's `*` group and the
+      `Content-Signal: ai-train=no` it carries), settled on **comments-only with no directives**, and
+      proved the tests with a mutation ledger. The origin fix was confirmed independently from here by
+      bypassing Cloudflare entirely (`--resolve` to the origin IP, and port 5001 direct): zero
+      directive lines. The founder purged the edge cache. Final state verified on production:
+      `cf-cache-status: MISS`, **exactly one `User-agent: *` group, zero `Disallow` for it**,
+      Cloudflare's `Content-Signal` intact, and `x-robots-tag: noindex, nofollow` live on 200/404/401.
+      Control re-checked at the same time: `kheelona.com/robots.txt` still carries no Cloudflare
+      managed block and still allows GPTBot.
 - [x] ~~**`api.kheelona.com`**: noindex middleware + `/robots.txt` committed on backend-service `dev-apu`
       (`68db567`, 1864 unit tests green). **Deploy is the founder's**: the production API runs from
       `dev-apu` under PM2 on the GCP instance; `git pull` + `pm2 restart kheelona` per that repo's
