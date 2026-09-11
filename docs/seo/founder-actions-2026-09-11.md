@@ -95,14 +95,35 @@ mailbox nobody reads.
 
 ---
 
-## 3. Re-authorise Ahrefs' Google connection · 2 minutes
+## 3. Re-link Ahrefs' Google account · 2 minutes · **checked again after you verified ownership, still broken**
 
 Ahrefs' GSC Insights tab reads *"The linked Google Account doesn't allow access to the required
-data"*, and its Search Console data **stops on 20 August 2026**. Three weeks of the project dashboard
-have been stale and nothing said so.
+data"*, and its Search Console data **stops on 20 August 2026**. Three weeks of the project
+dashboard have been stale and nothing said so.
 
-Ahrefs → the Kheelona project → Settings → reconnect the Google account, choosing the one that can
-open `sc-domain:kheelona.com`.
+**Ownership verification is a different thing and does not fix this.** The project's Settings →
+Ownership verification page is green and says *"Website verified via Google Search Console"* with
+`connect@kheelona.com` linked. That only proves you own the site so Ahrefs will crawl it. The data
+pull is separate, and re-checked on 2026-09-11 after that page went green it still fails.
+
+**The exact error**, from Dashboard → GSC Insights → the red banner → **Show details**:
+
+> Website not found. Your website needs to be verified in the Google Search Console of a Google
+> Account that's connected with your workspace.
+
+**The likely cause, and why the fix is a re-link rather than anything else.** `connect@kheelona.com`
+could not open `sc-domain:kheelona.com` at the start of 2026-09-11 — the property sat under a
+**"Not verified"** heading on that account until you granted access mid-session. Ahrefs is still
+holding the OAuth token it was given *before* that, so its cached view of which properties that
+account can read does not include this one. Nothing about the token refreshes on its own.
+
+**What to do:** Ahrefs → Dashboard → GSC Insights → the red banner → **Show details** → **Unlink**,
+then link `connect@kheelona.com` again and complete Google's consent screen. That forces a fresh
+property list. I did not do this myself: it is an OAuth grant on your Google account and it belongs
+to you.
+
+**How to verify it worked:** the red banner disappears and the chart runs to within two or three
+days of today instead of stopping on 20 August.
 
 ---
 

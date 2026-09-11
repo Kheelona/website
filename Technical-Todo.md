@@ -61,8 +61,15 @@ phrasing at all. The demand for this category lives in answer engines, not in Go
       could not locate it: ruled out `kheelona.ai/privacy`, `/privacy-policy`, `www.kheelona.com/privacy`
       and `app.kheelona.com/privacy`. It is the source of the "limited beta" claim in the AI answer,
       and it names `legals@kheelona.com`, which the site does not use.
-- [ ] **Re-authorise Ahrefs' Google connection.** Broken since 20 August; the project dashboard has
-      been three weeks stale and said nothing.
+- [ ] **Re-link Ahrefs' Google account.** Broken since 20 August; the dashboard has been three weeks
+      stale and said nothing. **Re-checked 2026-09-11 after ownership verification went green: still
+      broken, because they are different things.** Ownership verification only proves you own the
+      site so Ahrefs will crawl it. The data pull fails with *"Website not found. Your website needs
+      to be verified in the Google Search Console of a Google Account that's connected with your
+      workspace."* Cause: `connect@kheelona.com` could not open `sc-domain:kheelona.com` until access
+      was granted mid-session on 2026-09-11, and Ahrefs still holds the OAuth token issued before
+      that. Fix: Dashboard → GSC Insights → Show details → **Unlink**, then link again. Founder's,
+      because it is an OAuth grant on their Google account.
 - [ ] **Profile back-links and descriptions** (carried from the last round, now with a measured
       reason): LinkedIn, Instagram, Facebook, plus corrections to YNOS (two founders listed, should
       be three) and F6S (still says Lumi). Drafts written.
