@@ -57,10 +57,15 @@ phrasing at all. The demand for this category lives in answer engines, not in Go
       for the short and long descriptions is drafted, plus three smaller fields (app name — lower
       confidence, your call; privacy URL, which currently wastes a redirect hop on `www`; and the
       developer phone, which is a different number from the site's WhatsApp-only line).
-- [ ] 🔴 **Find and remove the "Beta" privacy policy.** You said it is old and should come down. I
-      could not locate it: ruled out `kheelona.ai/privacy`, `/privacy-policy`, `www.kheelona.com/privacy`
-      and `app.kheelona.com/privacy`. It is the source of the "limited beta" claim in the AI answer,
-      and it names `legals@kheelona.com`, which the site does not use.
+- [x] ✅ **The "Beta" privacy policy — FOUND, and it was an engineering bug, not a founder task.**
+      Perplexity cited `https://www.kheelona.com/privacy-policy`, a Wix-era page whose "Limited Beta
+      Launch" wording is where the AI's "limited beta" claim came from. The document is gone and was
+      never in this repo (no commit on any branch has that wording; absent from `pre-revamp-2026-07`).
+      What was broken was ours: **`/privacy-policy` had no redirect and answered 404**, while its
+      sibling `/terms-conditions` got one on 2026-09-05. A 404 does not correct a stale index, it
+      leaves the crawler holding the last thing it saw. Fixed with a 308 to `/privacy` and a test
+      that pins the two legacy legal URLs as a pair. **Method note: reading the citation URL straight
+      out of the Perplexity thread found it in one query, after path-guessing had failed five times.**
 - [x] ✅ **Re-link Ahrefs' Google account — DONE by the founder 2026-09-11, verified two ways: the
       red banner is gone from GSC Insights, and Settings → Ownership verification → Google Search
       Console now reads "Website verified via Google Search Console." with no error text. The chart

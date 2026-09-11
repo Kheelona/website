@@ -70,30 +70,29 @@ You decided on 2026-09-05 to leave this. That decision was made before this evid
 
 ---
 
-## 2. Take down the "Beta" privacy policy · **you said this one is old**
+## 2. ~~Take down the "Beta" privacy policy~~ · ✅ **FOUND AND FIXED IN CODE — nothing for you to do**
 
-Perplexity cites a page titled **"Kheelona Robotics Privacy Policy (Beta)"**, quoting *"In this
-beta, you'll need to email us for such requests"*, the address `legals@kheelona.com`, and a named
-Grievance Officer. It is the source of the "limited beta" claim in the AI answer about this company,
-which is actively costing money: it tells a reading parent you are not really selling yet.
+I said I could not find where this lived. I found it, and it turned out not to be your job at all.
 
-None of it is on the live page. `kheelona.com/privacy` has no "beta", no `legals@`, no Grievance
-Officer, and uses `hello@kheelona.com` eleven times. **I could not find where it lives.** Checked and
-ruled out: `kheelona.ai/privacy`, `kheelona.ai/privacy-policy`, `www.kheelona.com/privacy`,
-`app.kheelona.com/privacy`.
+**What it was.** Perplexity cited **`https://www.kheelona.com/privacy-policy`** and quoted a page
+titled *"Kheelona Robotics Privacy Policy (Beta)"* off it, naming `legals@kheelona.com`, a Grievance
+Officer, and a *"Limited Beta Launch"*. That citation is where its claim that this company is
+"currently in a limited beta launch phase" came from.
 
-Likely candidates, in order: a Google Doc or Notion page linked from an old app submission; a page on
-a host that has since been retired but is still in Perplexity's index; or a file on the backend.
+**Why I missed it first time.** I tested `kheelona.com/privacy`, `kheelona.ai/privacy`,
+`kheelona.ai/privacy-policy`, `www.kheelona.com/privacy` and `app.kheelona.com/privacy`. The real
+path was **`/privacy-policy`**, a spelling I never tried. Reading the citation URL out of the
+Perplexity thread took one query and would have found it immediately; guessing paths did not.
 
-**What to do:** find it, then either 301 it to `https://kheelona.com/privacy` or delete it outright.
-A 301 is better if anything links to it. If it turns out to be gone already, nothing needs doing and
-the citation will decay on its own.
+**Where the document is now: gone.** It was a Wix-era page and has never existed in this repo — no
+commit on any branch has ever contained that wording, and it is absent from the `pre-revamp-2026-07`
+tag. Nothing to take down.
 
-**Also worth deciding:** `legals@kheelona.com` either is or is not a real address. If it is, the site
-should say so somewhere; if it is not, the AI answer is currently telling parents to write to a
-mailbox nobody reads.
-
----
+**What was actually broken, and it was ours.** `/privacy-policy` had **no redirect**, so it answered
+404. Its sibling `/terms-conditions` got one on 2026-09-05 and this did not. **A 404 does not
+correct a stale index — it leaves the crawler holding the last thing it saw**, which is exactly what
+happened. Fixed with a 308 to `/privacy`, pinned by a test that now treats the two legacy legal URLs
+as a pair so they cannot be split again.
 
 ## 3. ~~Re-link Ahrefs' Google account~~ · ✅ **FIXED by the founder, 2026-09-11, verified**
 

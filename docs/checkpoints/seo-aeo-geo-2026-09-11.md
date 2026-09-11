@@ -418,3 +418,31 @@ things sharing one Google account, and the first going green is not evidence abo
 The founder's first fix was ownership verification, which showed a clean green banner while the data
 pull stayed broken. Only opening the integration's own "Show details" gave the real error, and it
 named a different failure entirely.
+
+### The "Beta" privacy policy, found — and it was our 404, not a page to take down
+
+Section 4d recorded this as unlocated. It is now located, and the diagnosis was wrong in an
+instructive way.
+
+**The citation URL is `https://www.kheelona.com/privacy-policy`.** Read straight out of the
+Perplexity thread's own links in one query, after five rounds of path-guessing
+(`/privacy`, `kheelona.ai/privacy`, `kheelona.ai/privacy-policy`, `www.kheelona.com/privacy`,
+`app.kheelona.com/privacy`) had all missed it. **Ask the source what it cited before guessing where
+it lives.**
+
+**The document is gone and was never ours.** `git log --all -S` finds that wording in no commit on
+any branch, and it is absent from the `pre-revamp-2026-07` tag, so it belonged to the Wix site that
+predates this repo entirely. There was nothing for the founder to take down.
+
+**What was actually broken was in this repo.** `/privacy-policy` had no redirect and answered 404,
+while its sibling `/terms-conditions` received one in the 2026-09-05 round. The pair was split and
+nobody noticed.
+
+**§8.36-g, the law this produces: a 404 does not correct a stale index.** It leaves the crawler
+holding the last thing it saw, indefinitely. A retired URL that an answer engine still cites needs a
+**301/308 to the page that supersedes it**, not silence. The cost here was an AI telling parents that
+a company taking real payments since 2026-08-22 is "currently in a limited beta launch phase".
+
+Fixed in `next.config.ts` with a 308 to `/privacy`, pinned by a test in
+`test/redirects-vs-assets.test.ts` that treats the two legacy legal URLs as a pair. 1179 tests pass.
+

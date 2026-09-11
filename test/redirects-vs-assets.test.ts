@@ -46,3 +46,39 @@ describe("redirects never shadow public/ assets", () => {
     expect(CONFIG).toContain('source: "/product/:slug([^.]+)"');
   });
 });
+
+/* §8.36-a (2026-09-11): the legacy legal URLs travel as a PAIR.
+ *
+ *  Wix served `/terms-conditions` and `/privacy-policy`. The 2026-09-05 round
+ *  redirected the first and missed the second, and the miss was not free:
+ *  Perplexity was still citing `www.kheelona.com/privacy-policy` as a live
+ *  source and quoting a Wix-era "Privacy Policy (Beta)" off it, which is where
+ *  its claim that this company is in "limited beta" came from — on a site that
+ *  has taken real payments since 2026-08-22.
+ *
+ *  A 404 does not correct a stale index. It leaves the crawler holding the last
+ *  thing it saw. This test exists so the pair cannot be split again. */
+describe("the legacy legal URLs are redirected as a pair", () => {
+  const pairs = [
+    ["/terms-conditions", "/terms"],
+    ["/privacy-policy", "/privacy"],
+  ] as const;
+
+  it.each(pairs)("redirects %s to %s", (source, destination) => {
+    const line = CONFIG.match(
+      new RegExp(`source:\\s*"${source}"[^}]*destination:\\s*"([^"]+)"`),
+    );
+    expect(line, `no redirect declared for ${source}`).not.toBeNull();
+    expect(line![1]).toBe(destination);
+  });
+
+  it("sends both permanently, so the stale citation is actually replaced", () => {
+    for (const [source] of pairs) {
+      const block = CONFIG.match(
+        new RegExp(`source:\\s*"${source}"[^}]*permanent:\\s*(true|false)`),
+      );
+      expect(block, `no permanent flag on ${source}`).not.toBeNull();
+      expect(block![1]).toBe("true");
+    }
+  });
+});

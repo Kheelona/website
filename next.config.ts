@@ -85,6 +85,27 @@ const nextConfig: NextConfig = {
          it had never fetched at all. One hop each, to the closest live page. */
       { source: "/post/:slug*", destination: "/stories", permanent: true },
       { source: "/terms-conditions", destination: "/terms", permanent: true },
+      /* THE SIBLING THAT WAS MISSED, AND WHAT IT COST (2026-09-11, §8.36-a).
+         `/terms-conditions` got its redirect on 2026-09-05 and `/privacy-policy`
+         did not, so the legacy Wix privacy URL has been answering 404 ever
+         since the migration. It was not an empty 404.
+
+         Perplexity, asked what Kheelona is, cited
+         `https://www.kheelona.com/privacy-policy` as a live source and quoted a
+         page titled "Kheelona Robotics Privacy Policy (Beta)" from it: a
+         Wix-era document naming `legals@kheelona.com`, a Grievance Officer, and
+         a "Limited Beta Launch". That is where the AI's claim that this company
+         is "currently in a limited beta launch phase" comes from, on a site
+         that has been taking real payments since 2026-08-22.
+
+         The document is long gone and was never in this repo (checked: no
+         commit in any branch has ever contained that wording, and it is absent
+         from the pre-revamp tag). A 404 does not correct a stale index though,
+         it just leaves the crawler holding the last thing it saw. A 308 to the
+         real policy does.
+
+         Never delete this. Stale citations outlive the pages they point at. */
+      { source: "/privacy-policy", destination: "/privacy", permanent: true },
       { source: "/for-the-parents", destination: "/stories", permanent: true },
       /* Three URLs people actually typed, each 404ing, all three found in the
          Ahrefs Web Analytics export for the fortnight to 2026-09-05.

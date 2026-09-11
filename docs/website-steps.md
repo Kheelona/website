@@ -2343,3 +2343,24 @@ is available it is the only source; when it is not, the honest answer is "unknow
 The related trap, from the same session: a Search Console domain property is verified by DNS TXT **or
 by a CNAME at a random hostname**, so `dig TXT` finding nothing proves nothing. An account without
 permission and a property without verification look identical from outside.
+
+## g. A 404 does not correct a stale index
+
+Perplexity cited `https://www.kheelona.com/privacy-policy` as a live source and quoted a Wix-era
+"Privacy Policy (Beta)" off it, which is where its claim that this company is in "limited beta" came
+from — on a site that has taken real payments since 2026-08-22. The page had been gone for months.
+It answered 404, and the 404 changed nothing: **a crawler that gets a 404 keeps the last content it
+saw rather than forgetting it.**
+
+`/terms-conditions` had been redirected in the previous round and `/privacy-policy` had not, so the
+pair was split and nobody noticed. The fix is a **301/308 to the page that supersedes it**, which
+gives the index something to replace the stale copy with. A test now pins both legacy legal URLs
+together.
+
+**The general rule: a retired URL that anything still cites needs a redirect, not silence.** Audit
+legacy URLs in pairs and families, never one at a time.
+
+**And the method that found it, after five wrong guesses: ask the citing source what it cited.**
+The URL was sitting in the Perplexity thread's own links the whole time. Guessing paths found
+nothing in five attempts; reading the citation found it in one.
+
