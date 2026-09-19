@@ -50,10 +50,11 @@ is complete with no refusals, and the recorder **loads on `store.kheelona.com/` 
 negative check alone. **`window.posthog` is undefined and that is CORRECT** for an ES-module install;
 checking it would read as "not running" while everything runs.
 
-Still open: the **§8.28-a CSP enforce clock RESET AGAIN** (second time; the pixel caused the first),
-and **`npm audit` now reads 2 moderate that are NOT PostHog's** — a pre-existing dev-only
-`@vitest/mocker` advisory published since the 2026-09-05 sweep, queued rather than ridden along, so
-the "dependencies are clean on both manifests" note further down is **stale** until it is done.
+Still open: the **§8.28-a CSP enforce clock RESET AGAIN** (second time; the pixel caused the first).
+**`npm audit` is back to 0** — the 2 moderate that appeared during this round were a pre-existing
+dev-only `@vitest/mocker` advisory (GHSA-82fw-gwwq-j7x9), NOT PostHog's, and `vitest` was bumped
+`4.1.10 → 4.1.11` as its own change on 2026-09-19. Nothing outside the vitest family moved, so the
+"dependencies are clean on both manifests" note further down is accurate again.
 
 **🎬 THE VIDEO CAROUSEL SHIPPED 2026-09-19, AND ITS LIBRARY IS DELIBERATELY EMPTY.** Record:
 `docs/checkpoints/video-section-2026-09-19.md`; laws **§8.37 a–h**; rulebook

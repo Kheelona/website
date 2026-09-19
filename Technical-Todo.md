@@ -78,11 +78,12 @@ host-gated to `POSTHOG_HOSTS` — **a Vercel secret was offered and correctly de
       page missing its host-gated tags). Perf gate is 90+ desktop. Best-practices should NOT move:
       PostHog's cookie is first-party on our own domain, so it does not feed the
       `third-party-cookies` audit that already holds BP at an accepted 74 (§8.34-h).
-- [ ] 🟠 **Bump `vitest` for GHSA-82fw-gwwq-j7x9** (`@vitest/mocker`, path traversal via a redirect
-      mock, 2 moderate). **Pre-existing and dev-only** — it is not PostHog's, it was published since
-      the 2026-09-05 sweep and `npm install` merely re-surfaced it. Deliberately not ridden along in
-      an unrelated round. `npm audit` reads 2 until this is done, so the "clean on both manifests"
-      claim in `CLAUDE.md` is stale until then.
+- [x] 🟠 **Bump `vitest` for GHSA-82fw-gwwq-j7x9 — DONE 2026-09-19** (founder's call to do it now,
+      as its own change). `4.1.10 → 4.1.11`, the first patch above the affected `2.1.0 - 4.1.10`
+      range. Caret style kept, because only the two framework pins are exact here and a test enforces
+      that. **Nothing outside the vitest family moved** (verified by diffing the lockfile's packages
+      map, not by trusting the installer). `npm audit` reads **0** again; 1268 tests still pass on
+      the new runner.
 - [ ] 🟡 **Re-check the `fflate` exemption whenever posthog-js moves.** It is excused because
       `unzipSync` is unreachable from PostHog's code, not because the advisory is wrong. The guard
       fails on its own if the exempt copy ever satisfies the floor, but a widened `fflate` range
