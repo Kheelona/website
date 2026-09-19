@@ -338,22 +338,41 @@ export const POSTHOG_ASSET_HOST = "https://us-assets.i.posthog.com";
  *  deploy spends the founder's PostHog quota on our own QA runs. */
 export const POSTHOG_HOSTS = GA4_HOSTS;
 
-/** Routes where session replay MUST NOT run, matched as a path prefix.
+/** Routes where session replay MUST NOT run, matched as a path prefix AND
+ *  EXPRESSED AS THE BROWSER SEES THEM.
  *
- *  `/store/thanks` is the confirmation page, and it renders a parent's email,
- *  their order number and their delivery address back to them AS TEXT. Its own
- *  source comment has warned since 2026-08-22 that a screenshot of it "would
- *  show a stranger a family's delivery address" — and a session recording is a
- *  continuous screenshot.
+ *  The confirmation page renders a parent's email, their order number and their
+ *  delivery address back to them AS TEXT. Its own source has warned since
+ *  2026-08-22 that a screenshot of it "would show a stranger a family's delivery
+ *  address" — and a session recording is a continuous screenshot. Masking inputs
+ *  does not help: `maskAllInputs` covers what a parent TYPES, and this page's
+ *  exposure is what we PRINT.
  *
- *  Masking inputs does not help here: `maskAllInputs` covers what a parent
- *  TYPES, and this page's exposure is what we PRINT. The nodes carry `ph-mask`
- *  as defence in depth, but a whole-route stop is the control that cannot be
- *  undone by someone later adding an unmarked row to the summary.
+ *  🔴 `/thanks` IS THE ENTRY THAT MATTERS, AND THE FIRST VERSION OF THIS LIST
+ *  GOT IT WRONG. It listed only `/store/thanks`, which is the internal ROUTE
+ *  FILE path — `src/app/store/thanks/page.tsx`. It is not, and never is, the
+ *  path the browser reports:
  *
- *  Everything else still records, including the pre-order form and the
- *  checkout hand-off, which is where the funnel value actually is. */
-export const POSTHOG_REPLAY_DENY_PATHS = ["/store/thanks"] as const;
+ *    - `store.kheelona.com/thanks` is REWRITTEN to `/store/thanks` by
+ *      `src/proxy.ts`. A rewrite is invisible to the browser, so
+ *      `location.pathname` stays `/thanks`.
+ *    - `kheelona.com/store/thanks` 308-REDIRECTS to the store host, so the apex
+ *      never renders it either.
+ *
+ *  So the confirmation page is only ever shown at `/thanks`, the deny list never
+ *  matched, and session replay ran on it in production. Caught by loading the
+ *  real store host in a browser after deploying; no unit test could have seen
+ *  it, because the tests and the deny list shared the same wrong assumption.
+ *  The guard in PostHogGate.test.tsx now DERIVES the browser path from
+ *  `routeForHost` instead of restating it.
+ *
+ *  `/store/thanks` is kept as well. It costs nothing, and it covers the page
+ *  being rendered directly by a test, a story, or any future routing change
+ *  that stops redirecting the apex.
+ *
+ *  Everything else still records, including the pre-order form and the checkout
+ *  hand-off, which is where the funnel value actually is. */
+export const POSTHOG_REPLAY_DENY_PATHS = ["/thanks", "/store/thanks"] as const;
 
 /** Should PostHog load on this hostname? Case-insensitive because hostnames
  *  are, port-free because `location.hostname` already excludes the port. */

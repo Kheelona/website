@@ -10,6 +10,7 @@ import {
   shouldLoadPostHog,
 } from "@/config/site";
 import { phCapture, phSetReplay, registerPostHog, resetPostHogForTests } from "@/lib/posthog";
+import { routeForHost } from "@/lib/store/host";
 
 /** PostHog is the fifth measurement tool and by some distance the widest:
  *  autocapture records every click sitewide, session replay records the screen,
@@ -56,6 +57,39 @@ describe("shouldLoadPostHog", () => {
 describe("replayAllowedOnPath", () => {
   it("never records the confirmation page", () => {
     expect(replayAllowedOnPath("/store/thanks")).toBe(false);
+  });
+
+  /* 🔴 THE REGRESSION TEST FOR A BUG THAT REACHED PRODUCTION (2026-09-19).
+     The deny list first held ONLY `/store/thanks`, which is the route FILE path
+     and is never what the browser reports. `store.kheelona.com/thanks` is
+     REWRITTEN to it, and a rewrite is invisible to the browser, so
+     `usePathname()` returns `/thanks`. The deny list therefore never matched and
+     session replay recorded the confirmation page live.
+
+     No unit test could have caught it, because the tests restated the same wrong
+     assumption the code made. So this one DERIVES the browser path from the
+     router rather than asserting a literal: whatever `routeForHost` rewrites to
+     the confirmation page, the SOURCE path of that rewrite is what a visitor's
+     address bar shows, and that is what has to be denied. If the store's routing
+     ever changes shape, this fails instead of silently going quiet. */
+  it("denies the path the BROWSER shows on the store host, not the route file path", () => {
+    const route = routeForHost("store.kheelona.com", "/thanks");
+    expect(route.kind, "the store host should rewrite /thanks").toBe("rewrite");
+    expect(route.kind === "rewrite" && route.path).toBe("/store/thanks");
+
+    /* The rewrite SOURCE — what location.pathname actually is — must be denied. */
+    expect(
+      replayAllowedOnPath("/thanks"),
+      "session replay would record the confirmation page: a rewrite does not change the browser path",
+    ).toBe(false);
+  });
+
+  /* The apex never renders the confirmation page at all; it bounces to the store
+     host, where the path becomes /thanks. Pinned so that if the redirect is ever
+     removed, somebody has to think about replay again. */
+  it("documents that the apex only ever redirects the confirmation page away", () => {
+    const route = routeForHost("kheelona.com", "/store/thanks");
+    expect(route.kind).toBe("redirect");
   });
 
   it("never records anything nested under it", () => {
