@@ -4,11 +4,9 @@ import { RoomsTrack } from "@/components/atoms/RoomsTrack";
 import { Button } from "@/components/atoms/Button";
 import { Reveal } from "@/components/molecules/Reveal";
 import { SectionHeading } from "@/components/molecules/SectionHeading";
-import { AudioMoments } from "@/components/molecules/AudioMoments";
 import { FootnotesRow, Footnote, V3_FOOTNOTES } from "@/components/molecules/FootnotesRow";
 import { Faq, type FaqEntry } from "@/components/molecules/Faq";
 import { pageGraph, faqPage, breadcrumbs, KHEELU_PRODUCT, pageMeta, jsonLd } from "@/lib/seo";
-import { AUDIO_MOMENTS } from "@/lib/audio-moments";
 import { VIDEO_MOMENTS, hasVideoMoments } from "@/lib/video-moments";
 import { RecognitionStrip } from "@/components/organisms/RecognitionStrip";
 import { ParentQuotes } from "@/components/organisms/ParentQuotes";
@@ -165,29 +163,62 @@ export default function HomePage() {
           <RecognitionStrip bare />
         </Room>
 
-        {/* Hear it (the concept, demonstrated): real Kheelu audio replaces the
-            old statement room — the team asked for the product's own voice
-            where the manifesto used to be. */}
+        {/* Real families on film (§8.37), in the slot the audio demos held.
+            Founder, 2026-09-19: the audio room was a stand-in created because
+            no real user video existed, and it goes now that this does.
+
+            THE ROOM SURVIVES THE SWAP, and that is the point of the shape
+            below. Three things in here have nothing to do with the media: the
+            languages line carries Home's ONLY footnote-1 marker (delete it and
+            the note at the page bottom is orphaned), the bilingual paragraph
+            carries Home's ONLY internal link to the article that already ranks
+            first in India for that query, and the CTA is here because the
+            strongest fold carries the ask. All three stay, whatever the media
+            above them is doing.
+
+            TWO HEADINGS, because the library is empty and a heading that
+            promises films above no films is a lie the page tells by itself
+            (§8.37-d). With three or more videos the room is the video room.
+            Until then it is honest about what it actually holds, which is the
+            language story, and the swap needs no deploy. */}
         <Room
           fill="cream"
           id="learning"
           guide="joy"
-          say="Go on, press play. That's my best friend."
+          /* Founder-approved 2026-09-19. Omitted entirely in the empty state
+             rather than replaced with an unapproved line: every mascot speech
+             line is approved before it ships, and "press play" is false when
+             there is nothing to press. */
+          say={hasVideoMoments() ? "Real homes, real kids. Press play." : undefined}
           reveal="left"
         >
           <Reveal>
-            <SectionHeading
-              eyebrow="Hear it for yourself"
-              title="Play, learn, together."
-              titleClassName="mb-3"
-              lede="Kheelu teaches in the way your child likes. Press play and listen in."
-              ledeClassName="mb-10 max-w-[58ch]"
-            />
+            {hasVideoMoments() ? (
+              <SectionHeading
+                eyebrow="See it for yourself"
+                title="Watch a child meet Kheelu."
+                titleClassName="mb-3"
+                lede="Real children in real homes. Press play on any of them."
+                ledeClassName="mb-10 max-w-[58ch]"
+              />
+            ) : (
+              /* No lede in this state, deliberately: the languages line two
+                 blocks down already says "in the languages you speak at home",
+                 and a lede saying the same thing in different words reads as
+                 the page repeating itself. The title carries it. */
+              <SectionHeading
+                eyebrow="Their own words"
+                title="The language your child thinks in."
+                titleClassName="mb-8"
+              />
+            )}
           </Reveal>
-          <Reveal>
-            <AudioMoments moments={AUDIO_MOMENTS} />
-          </Reveal>
-          <Reveal className="mt-7">
+          {hasVideoMoments() && (
+            <Reveal>
+              <VideoMoments moments={VIDEO_MOMENTS} />
+            </Reveal>
+          )}
+          <Reveal className={hasVideoMoments() ? "mt-7" : ""}>
             <p className="text-[16px] text-ink-muted">
               In the languages you speak at home, up to ten of them.
               <Footnote n={1} id="fn-languages" />
@@ -327,39 +358,6 @@ export default function HomePage() {
         <Room fill="white" guide="curious" say="We did the homework so you don't have to." reveal="right">
           <Compare bare />
         </Room>
-
-        {/* Real families on film (§8.37), placed DIRECTLY above the written
-            quotes on purpose. Those four quotes are still drafted
-            attributions on named people, and the founder's standing decision
-            is to keep them (closed-rounds.md). Footage of a real child is the
-            evidence they are standing in for, so it reads first and the words
-            below it become the caption rather than the claim.
-
-            The whole room disappears when the library is short. No heading
-            with an empty shelf under it: a section that announces real
-            families and then shows none is worse than no section. */}
-        {hasVideoMoments() && (
-          <Room
-            fill="cream"
-            id="parent-films"
-            guide="joy"
-            say="Real homes, real kids. Press play."
-            reveal="pop"
-          >
-            <Reveal>
-              <SectionHeading
-                eyebrow="See it for yourself"
-                title="Watch a child meet Kheelu."
-                titleClassName="mb-3"
-                lede="Real children in real homes. Press play on any of them."
-                ledeClassName="mb-10 max-w-[58ch]"
-              />
-            </Reveal>
-            <Reveal>
-              <VideoMoments moments={VIDEO_MOMENTS} />
-            </Reveal>
-          </Room>
-        )}
 
         <Room fill="white" id="parent-voices" guide="joy" say="Real families, real words." reveal="left">
           <ParentQuotes bare />

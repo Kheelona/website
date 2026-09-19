@@ -244,3 +244,58 @@ Laws written as **§8.37 a-h**.
   48-character limit, and deliberately distinct from the neighbouring room's "Real families, real
   words."
 
+### Commit 4 — the audio demos removed, the video section in their slot
+
+Founder decision the same day: the "Hear it for yourself / Play, learn, together" room was a
+stand-in built because no real user video existed, and it goes now that a home for real video
+exists. The founder was shown the argument for keeping the demos on `/products/kheelu` (the only
+place a parent could hear what Kheelu actually says) and chose full removal. **Settled.**
+
+Deleted: `AudioMoments` (+ story + test), `src/lib/audio-moments.ts`, the four MP3s in
+`public/audio/`, the `.audio-eq` rules and the `eq-bounce` keyframes.
+
+**The room survived the swap, and that was the whole design problem.** Home's `learning` room held
+three things unrelated to the media, each of which would have broken something on the way out: the
+languages line carries Home's ONLY `fn-languages` marker (delete it and the note at the page bottom
+is orphaned), the bilingual paragraph is Home's ONLY internal link to an article that already ranks
+first in India, and the CTA is there under the strongest-fold rule. All three stay.
+
+**Two headings, because the library is empty.** A heading promising films above no films is a lie
+the page tells by itself, so the room is the video room at three or more videos and an honest
+language heading until then, switching with no deploy. The say line is **omitted entirely** in the
+empty state rather than substituted, because every mascot line is founder approved and "press play"
+is false with nothing to press. `"Real homes, real kids. Press play."` was approved for the
+populated state.
+
+A copy flaw caught by looking at the render rather than the diff: the interim lede said "Kheelu
+speaks the languages you speak at home" directly above a line reading "In the languages you speak at
+home, up to ten of them." The lede is gone; the title carries it.
+
+**Three findings, none of which was a bug in the new code.**
+
+1. **The guard tests enumerate through `git ls-files`, which reports the INDEX.** A `git stash`/`pop`
+   moved the deletions from staged to unstaged and eleven tests across seven files failed, every one
+   reading a file that was not on disk. `git add -u` and all 1256 passed. Stage deletions before
+   running the suite.
+2. **A deletion moves parameterised counts in files nobody edited.** 1268 → 1256 reconciles exactly:
+   AudioMoments' own 6, `preorder-copy` −2, `preorder-cta` −2 and `stories-parse` −1 as the deleted
+   files left those `it.each` globs, and `redirects-vs-assets` −1 because `public/audio/` stopped
+   existing as a directory for §8.21-b to guard.
+3. **`qa:sweep` is 36 route/width combinations, not the 34 quoted throughout the docs.**
+   `/ai-toys-for-kids-in-india` joined the route list on 2026-09-11 and the prose never caught up.
+
+**The a11y gate moved rather than disappeared:** `test/a11y-v4.test.tsx` ran axe over `AudioMoments`
+and now runs it over `VideoMoments`.
+
+### Gates, all green, all run this time
+
+| Gate | Result |
+|---|---|
+| `npx tsc --noEmit` | 0 |
+| `npx eslint` on every touched file | 0 (repo-wide errors are pre-existing: 40 problems at HEAD, 39 after) |
+| `npx next build` | 0 |
+| `npm test` | **1256 passed / 119 files** |
+| `qa:sweep` (36 combos) | **clean**, 90 accepted white-on-orange (§8.29), **zero `video-caption`** |
+
+Laws: **§8.37-i** added, and §8.22-e/f/h and §8.29-a corrected where they named `AudioMoments`.
+

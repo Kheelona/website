@@ -81,9 +81,32 @@ probe against production worked. (5) **`tools/qa/` screenshots are SERVER-RENDER
 (§8.37-f): `loadSettled` never waits for React and `openPage`'s interception breaks the dev HMR
 socket. A `qa:shot` proves what the server sent, never what a click does.
 
-**Waiting on the founder:** the video files themselves (see the rulebook), approval of the Kheelu say
-line `"Real homes, real kids. Press play."`, and — **recommended before the first video lands** —
-the repo-visibility decision, because footage of real children in a public git repo is permanent.
+**🔇 AND THE AUDIO DEMOS ARE GONE FROM THE SITE (founder, 2026-09-19, §8.37-i).** The "Hear it for
+yourself / Play, learn, together" room was a stand-in built because no real user video existed, so
+the video section took its slot on Home AND on `/products/kheelu`. `AudioMoments`,
+`lib/audio-moments.ts`, the four MP3s, the `.audio-eq` CSS and `eq-bounce` are all DELETED. Founder
+was shown the case for keeping them on the product page and chose removal; **settled, do not
+re-raise.** Three things in Home's `learning` room had nothing to do with the media and all three
+STAY: the languages line (Home's only `fn-languages` marker — delete it and the footnote is
+orphaned), the bilingual paragraph (Home's only link to the article ranking first in India), and the
+CTA. **The room carries TWO headings** because the library is empty: the video heading at three or
+more videos, and "Their own words / The language your child thinks in." until then, because a
+heading promising films above no films is a lie the page tells itself. The say line is **omitted**
+in the empty state rather than replaced with an unapproved one. On `/products/kheelu` the Story-mode
+heading and lede STAY (real product copy about one of the three modes) and the room is stacked now.
+
+**🔴 TWO TRAPS FROM THAT REMOVAL.** (1) **This repo's guard tests enumerate through `git ls-files`,
+which reports the INDEX**, so an UNSTAGED deletion fails eleven tests across seven files that all
+look like broken code and are not. Stage deletions before running the suite; `git stash` alone
+causes it. (2) **A deletion moves parameterised counts in files nobody edited**: 1268 → 1256 is
+AudioMoments' own 6, then `preorder-copy` −2, `preorder-cta` −2, `stories-parse` −1 as the files left
+those globs, and `redirects-vs-assets` −1 because `public/audio/` stopped existing as a directory to
+guard. Also corrected: **`qa:sweep` is 36 route/width combinations, not the 34 these docs quote.**
+
+**Waiting on the founder:** the video files themselves (see the rulebook) and — **recommended before
+the first video lands** — the repo-visibility decision, because footage of real children in a public
+git repo is permanent. The say line `"Real homes, real kids. Press play."` is APPROVED
+(founder, 2026-09-19).
 
 
 **🟣 …AND ITS FOLLOW-THROUGH LANDED 2026-09-12. All of the below is live and verified on
@@ -672,7 +695,7 @@ shortly" state instead of crashing.
   editorial accent (founder decision #11, 2026-08-23, reversing the old zero-italics law:
   Instrument Serif ITALIC via `--font-editorial`, for editorial section titles and pull-quotes,
   one per composition, specced per page — never body copy or UI); all text left-aligned; **CTAs are brand orange `#EF762F` via the `action` token with WHITE labels — every label on a solid orange fill is `text-white`** (founder 2026-08-24, **§8.29**, which SUPERSEDES V4 D1/§8.22-a and restores the R5 white-label law; the fill did not move, so token-check is still 16 mappings against v3). **The accepted cost, stated so nobody "fixes" it: white on `#EF762F` is 2.88:1 and fails WCAG AA at every size.** The founder chose it over the passing alternative (`orange-cta #C25210`, white at 4.66:1, still defined and dormant) to match `.kh-button` in the v3 design system. It is guarded by `test/action-label.test.ts`, pinned as arithmetic in `test/contrast-tokens.test.ts`, and printed on every `qa:sweep` run rather than silenced. Pale `bg-orange/15` tints are NOT fills and keep ink text (§8.29-b); the finale is a WHITE room on every route (D5); serif ONLY in human quotes; 13px sans kickers in `orange-ink #b54a0d`, the only orange passing 4.5:1 on every wash; one CTA verb and one destination (every "Pre-order Lumi" button goes straight to `STORE_URL`, §8.25-b); every page ends with `FinaleCTA` (`id="reserve"`, which the mobile guide hides against and `LegalDoc` appends); Kheelu say lines ≤ 48 characters and the guide docks bottom-RIGHT (§8.22-d); **tilt never wraps a whole-card link** (`molecules/TiltCard.tsx`, §8.18 — pointer-tracked transforms drop clicks); **the priority plush image must stay the hero's LARGEST element** (it owns mobile LCP; two live regressions taught this, qa-report R11); nav tab is "PlayOS" and /playos is the VC-voiced platform page (V4 D6 — vision, moat, ArchitectureStack; still no per-unit pricing, kheelona.ai stays the only partner CTA); mobile perf verifies record BOTH Lighthouse throttling methods (simulate amplifies a headless artifact — judge by devtools numbers).
-- **Registry law** (§8.19 + §8.21 + §8.22-h): new sections compose the shared molecules — `SectionHeading`/`Card`/`StepList`/`PageHero`/`CheckList`/`LegalDoc` plus V3's `AnswerBlock`/`FootnotesRow`/`KheelonaPlusBand`/`FamilyGrid`/`LumiModes` plus V4's `AudioMoments` (data ONLY from `lib/audio-moments.ts`)/`HowItWorksLoop`/`ArchitectureStack` — and take prices, CTA labels, ages and subscription copy from `@/config/site`. Hand-rolling those shapes is a review flag.
+- **Registry law** (§8.19 + §8.21 + §8.22-h): new sections compose the shared molecules — `SectionHeading`/`Card`/`StepList`/`PageHero`/`CheckList`/`LegalDoc` plus V3's `AnswerBlock`/`FootnotesRow`/`KheelonaPlusBand`/`FamilyGrid`/`LumiModes` plus V4's `HowItWorksLoop`/`ArchitectureStack` plus `VideoMoments` (data ONLY from `lib/video-moments.ts`; `AudioMoments` and `lib/audio-moments.ts` were DELETED 2026-09-19, §8.37-i) — and take prices, CTA labels, ages and subscription copy from `@/config/site`. Hand-rolling those shapes is a review flag.
 - **Retired in V3-5, do not resurrect or cite**: `MascotScene`, `KheeluSays`, `HeroConversation`, `KheeluIntro`, `WhyWeExist`, `Feelings`, `MeetLumi`, `WhatLumiDoes`, `HowItWorks`, `SafetyCallout`, `SafetyStrip`, `StickyMobileCTA`, `CurveDivider`, `Beat`, and the `teal-deep` token. **Retired in the v3
   migration (2026-08-23)**: the `line-soft` and `orange-deep` tokens (merged into `line` and
   `orange-ink`), `PLATFORM_AGES`, `isPreorderOpen`/`PREORDER_DEADLINE_*`, and the old

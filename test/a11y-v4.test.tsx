@@ -1,10 +1,10 @@
 import { render } from "@testing-library/react";
 import axe from "axe-core";
-import { AudioMoments } from "@/components/molecules/AudioMoments";
+import { VideoMoments } from "@/components/organisms/VideoMoments";
 import { HowItWorksLoop } from "@/components/organisms/HowItWorksLoop";
 import { ArchitectureStack } from "@/components/organisms/ArchitectureStack";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
-import { AUDIO_MOMENTS } from "@/lib/audio-moments";
+import { VIDEO_ASPECT, type VideoMoment } from "@/lib/video-moments";
 
 /* V4 a11y gate at the unit level: axe-core over every surface this round
    introduced or repainted. This is the fast tripwire; the full-page axe pass
@@ -24,9 +24,28 @@ async function expectNoViolations(container: HTMLElement) {
   ).toEqual([]);
 }
 
+/* Three rows is the minimum the carousel renders at all. Paths are fictional:
+   axe reads the markup, and a file that does not resolve exercises the same
+   tree a real one would. */
+const VIDEO_A11Y_FIXTURES: readonly VideoMoment[] = ["one", "two", "three"].map((id) => ({
+  id,
+  chip: `A parent in city ${id}`,
+  label: `What happens in clip ${id}.`,
+  alt: `A child holding the cream Kheelu plush, clip ${id}.`,
+  src: `/video/moments/${id}.mp4`,
+  poster: `/video/moments/${id}.jpg`,
+  width: VIDEO_ASPECT.width,
+  height: VIDEO_ASPECT.height,
+  hasOpenCaptions: true,
+  consentOnFile: true,
+}));
+
 describe("V4 a11y (axe-core)", () => {
-  it("AudioMoments: labelled controls, list semantics, visible transcripts", async () => {
-    const { container } = render(<AudioMoments moments={AUDIO_MOMENTS} />);
+  /* AudioMoments held this slot until 2026-09-19, when the audio demos were
+     removed from the site (§8.37). VideoMoments took the surface, so it takes
+     the gate: same round, same tripwire. */
+  it("VideoMoments: labelled tiles, list semantics, one motion control", async () => {
+    const { container } = render(<VideoMoments moments={VIDEO_A11Y_FIXTURES} />);
     await expectNoViolations(container);
   });
 

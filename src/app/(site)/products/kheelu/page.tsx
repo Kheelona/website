@@ -12,8 +12,8 @@ import { CheckList } from "@/components/molecules/CheckList";
 import { PriceTable } from "@/components/molecules/PriceTable";
 import { Reveal } from "@/components/molecules/Reveal";
 import { ChatDemo } from "@/components/molecules/ChatDemo";
-import { AudioMoments } from "@/components/molecules/AudioMoments";
-import { KHEELU_PAGE_MOMENTS } from "@/lib/audio-moments";
+import { VideoMoments } from "@/components/organisms/VideoMoments";
+import { VIDEO_MOMENTS, hasVideoMoments } from "@/lib/video-moments";
 import { Faq, type FaqEntry } from "@/components/molecules/Faq";
 import { KheelonaPlusBand } from "@/components/molecules/KheelonaPlusBand";
 import { FootnotesRow, V3_FOOTNOTES, Footnote } from "@/components/molecules/FootnotesRow";
@@ -213,25 +213,37 @@ export default function KheeluPage() {
           </Reveal>
         </Room>
 
-        {/* V4: the education fold now PLAYS instead of typing — the two
-            clearest lesson-in-play clips from the Home audio room (one data
-            source, lib/audio-moments). The "new things after launch" room
-            folded into this lede — each fact once, per the slim mandate. */}
+        {/* Story mode, with real families on film beneath it (§8.37).
+            Founder, 2026-09-19: the audio demos that used to fill the right
+            column are gone from the site entirely, and the same video section
+            Home carries comes here.
+
+            THE HEADING AND LEDE STAY. They are not placeholder: Story mode is
+            one of Kheelu's three named modes and this is the only place the
+            site explains what it actually contains. The audio was the
+            ILLUSTRATION beside that copy, and the video replaces the
+            illustration, not the explanation.
+
+            STACKED, not the old two columns. Three vertical tiles in a half
+            width column are unreadable, and with an empty library a two column
+            grid would leave a hole where the audio used to be. Full width
+            works in both states. */}
         <Room fill="white" id="story-mode" guide="curious" say="The games here are secretly lessons." reveal="left">
-          <div className="grid items-start gap-10 md:grid-cols-[1fr_1.05fr]">
-            <Reveal>
-              <SectionHeading
-                eyebrow="Story mode"
-                title="Stories that ask questions back."
-                titleClassName="mb-4 max-w-[18ch]"
-                lede="Story mode fills Kheelu with stories and lessons your child can interrupt, question, and be quizzed on, offline. New packs and seasonal sets arrive over time, and school learning modules are on the way."
-                ledeClassName="max-w-[52ch]"
-              />
-            </Reveal>
+          <Reveal>
+            <SectionHeading
+              eyebrow="Story mode"
+              title="Stories that ask questions back."
+              titleClassName="mb-4 max-w-[18ch]"
+              lede="Story mode fills Kheelu with stories and lessons your child can interrupt, question, and be quizzed on, offline. New packs and seasonal sets arrive over time, and school learning modules are on the way."
+              /* the gap is for the carousel; without one it is dead space */
+              ledeClassName={hasVideoMoments() ? "mb-10 max-w-[52ch]" : "max-w-[52ch]"}
+            />
+          </Reveal>
+          {hasVideoMoments() && (
             <Reveal delay={0.08}>
-              <AudioMoments moments={KHEELU_PAGE_MOMENTS} className="md:grid-cols-1" />
+              <VideoMoments moments={VIDEO_MOMENTS} />
             </Reveal>
-          </div>
+          )}
         </Room>
 
         {/* Founder call 2026-07-28: move the comparison to what a parent

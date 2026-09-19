@@ -515,8 +515,15 @@ in place and rejoin the sign-off queue.
 exclamation marks and contractions inside `lib/audio-moments.ts` transcripts are sanctioned because
 the text is exactly what the audio says (two punctuation-only edits recorded in BUILD-V4 D8). The
 voice-lint QA allowlist covers them explicitly.
+**SUPERSEDED 2026-09-19 (§8.37-i): `lib/audio-moments.ts` is deleted and there are no audio
+transcripts left on the site.** The exemption itself still stands for `ChatDemo` and for any future
+quoted toy speech; only its audio half is moot.
 
-**8.22-f A MISSING AUDIO FILE MUST FOLD TO TRANSCRIPT-ONLY.** Learned live: a 404'd mp3 can hang at
+**8.22-f A MISSING AUDIO FILE MUST FOLD TO TRANSCRIPT-ONLY.** *(The audio demos were removed on
+2026-09-19, §8.37-i. The LAW survives its subject and is the reason `VideoMoments` degrades the way
+it does: a media file that will not load must fold to the copy beside it, never to a broken control.
+`VideoMoments` inherits exactly this, including the rule that a dead tile loses its button rather
+than keeping a disabled one.)* Learned live: a 404'd mp3 can hang at
 `NETWORK_LOADING` forever without firing `error`, leaving a phantom playing state. `AudioMoments`
 therefore treats "no data after 4s" as broken (cleared by `onPlaying`/`onLoadedData`), pauses the
 element, and hides only the control — the transcript is the content, and it never disappears.
@@ -527,8 +534,9 @@ by the V4 probe: the ArchitectureStack waterline forced /playos to 439px on a 32
 of fixed-width text fragments must stack below `sm`. The V4 QA probe (iframe at 320/390 measuring
 `scrollWidth`) is the cheap tripwire; run it on every layout change.
 
-**8.22-h REGISTRY ADDITIONS**: `AudioMoments` (+ `lib/audio-moments.ts`, one data source for Home and
-/products/lumi), `HowItWorksLoop` (zero-JS CSS cycle — the walking glow is an opacity-only overlay),
+**8.22-h REGISTRY ADDITIONS**: ~~`AudioMoments` (+ `lib/audio-moments.ts`, one data source for Home and
+/products/lumi)~~ **— REMOVED FROM THE SITE 2026-09-19 (§8.37-i); `VideoMoments` (+
+`lib/video-moments.ts`) holds that slot on both pages now** — `HowItWorksLoop` (zero-JS CSS cycle — the walking glow is an opacity-only overlay),
 `ArchitectureStack` (composed on the same vendored Radix accordion as Faq; hover lifts, only tap
 opens). Retired with their rooms: `Statement`, `LaunchVideo` (component only — the film files stay in
 public/video/), `LearningRoom`, `BrainRoom`. The Home VideoObject left the JSON-LD with the film (D7).
@@ -1152,7 +1160,8 @@ taken with the arithmetic in front of it.
 `--color-action` still points at `--color-orange` (**#EF762F, unchanged** — the fill did not move, so
 the token gate's mappings are untouched), and **every label on it is `text-white`**. That includes
 buttons (both filled variants), the nav pill, the guide dock chip, CompareTable's brand column, the
-`AudioMoments` play button, and the store's two submit buttons.
+the store's two submit buttons, and (since 2026-09-19) `VideoMoments`'
+play badge, which is white-on-orange at 55% opacity over the tile's own still.
 
 **White on #EF762F is 2.88:1. It fails WCAG AA at every size — it does not even reach the 3:1
 large-text floor.** This is written here in full because the one way this decision goes wrong is
@@ -2477,8 +2486,8 @@ To allow this host in development, add it to "allowedDevOrigins" in next.config.
 ```
 
 **Two controls are what found it, and both were necessary.** First, `AudioMoments` — shipped and
-working for months — was equally inert on the same page, which meant the fault could not be the new
-component. Second, the same probe against **production** returned `hydrated: true` and a working
+working for months, and still on the page at that moment; it was removed later the same day by
+§8.37-i — was equally inert, which meant the fault could not be the new component. Second, the same probe against **production** returned `hydrated: true` and a working
 `AudioMoments`, which meant the probe was sound. Only then was the dev server the remaining suspect.
 
 **So: use `http://localhost:<port>` for anything that tests client behaviour on a dev server.** Note
@@ -2677,3 +2686,64 @@ so a change in the store's routing fails it rather than silencing it.
 The wider lesson, and the reason the post-deploy checklist is not ceremony: **this was found within a
 minute of the first production check, on a round where every local gate was green and the checkpoint
 was already written.**
+
+## §8.37-i · The audio demos are GONE from the site, and the video section took their slot (2026-09-19)
+
+Founder decision, same day as the carousel shipped: the "Hear it for yourself / Play, learn,
+together" room on Home was **a stand-in built because no real user video existed**, and it goes now
+that a place for real video exists. `AudioMoments`, `lib/audio-moments.ts`, the four MP3s in
+`public/audio/`, the `.audio-eq` CSS and the `eq-bounce` keyframes are all deleted. The founder was
+shown the argument for keeping the demos on `/products/kheelu` (they were the only place a parent
+could hear what Kheelu actually says) and chose removal anyway. **Settled; do not re-raise.**
+
+**The room survived the swap, and that is the load-bearing part.** Home's `learning` room held three
+things that had nothing to do with the media, and all three stay:
+
+| Kept | Why it could not just be deleted |
+|---|---|
+| the languages line | It carries Home's **only** `fn-languages` footnote marker. Delete it and the note still renders at the page bottom, orphaned. |
+| the bilingual paragraph | Home's **only** internal link to `/stories/raising-a-bilingual-child-in-india`, which already ranks **first in India** for that query. |
+| the CTA + price caption | It is there under the "strongest fold carries the ask" rule. |
+
+**TWO HEADINGS, because the library is empty.** With three or more videos the room is the video room
+("See it for yourself / Watch a child meet Kheelu."). Below that it is honest about what it actually
+holds, which is the language story ("Their own words / The language your child thinks in."). **A
+heading that promises films above no films is a lie the page tells by itself**, and the swap needs no
+deploy. The Kheelu say line is conditional for the same reason and is **omitted entirely** in the
+empty state rather than replaced with an unapproved line: every mascot speech line is founder
+approved before it ships, and "press play" is false when there is nothing to press.
+
+**On `/products/kheelu` the Story-mode heading and lede STAY.** They are not placeholder copy: Story
+mode is one of Kheelu's three named modes and that lede is the only place the site says what it
+contains. The audio was the *illustration* beside that copy, so the video replaces the illustration,
+not the explanation. The room is stacked now rather than two columns, because three vertical tiles
+in a half width column are unreadable and an empty library would otherwise leave a visible hole.
+*(Assumption flagged to the founder, who said "same copy as home page will come here": if the Home
+heading is meant to replace the Story-mode heading outright, that is a two line change.)*
+
+**What the removal taught about counting.** 1268 → 1256 is **−12**, and every one reconciles:
+`AudioMoments.test.tsx` −6, then `preorder-copy` −2, `preorder-cta` −2 and `stories-parse` −1 as the
+deleted component, story and lib files left those `it.each` globs, and **`redirects-vs-assets` −1
+because `public/audio/` no longer exists as a directory to guard** (§8.21-b iterates real `public/`
+directories). A deletion changes parameterised counts in places nobody edited; chase the arithmetic
+rather than accepting a green suite.
+
+**The a11y gate moved rather than disappeared.** `test/a11y-v4.test.tsx` ran axe over `AudioMoments`;
+it now runs axe over `VideoMoments`. A round that removes a surface and leaves its gate behind is a
+round that quietly loses coverage.
+
+**🔴 AND ONE TRAP THAT COST TEN MINUTES AND WILL COST THEM AGAIN: THIS REPO'S GUARD TESTS ENUMERATE
+THROUGH `git ls-files`, SO AN UNSTAGED DELETION FAILS THEM.** After `git stash`/`pop` moved the
+deletions from staged back to unstaged, eleven tests failed across seven files, every one of them
+reading `src/components/molecules/AudioMoments.tsx` or `src/lib/audio-moments.ts` — files that were
+not on disk. `test/preorder-copy`, `test/preorder-cta`, `test/store-secrets`, `test/utm`,
+`test/kheelu-art`, `test/stories-parse` and `src/lib/seo.test.ts` all build their file list from
+`git ls-files`, which reports the INDEX, not the working tree. `git add -u` and all 1256 passed.
+
+**The rule: when a round deletes a source file, stage the deletion before running the suite.** The
+failure looks like broken code and is nothing of the kind, and `git stash` is enough to cause it.
+
+**Also corrected here: `qa:sweep` is 36 route/width combinations now, not the 34 quoted throughout
+these documents.** `/ai-toys-for-kids-in-india` joined the route list in the 2026-09-11 round and the
+prose was never updated. Verified clean 36/36 on 2026-09-19 with 90 accepted white-on-orange nodes
+and **zero `video-caption` violations**, which is the check §8.37-a exists for.

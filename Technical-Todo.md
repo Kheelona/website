@@ -141,16 +141,19 @@ own the moment a third video lands.
 - [ ] 🔴 **The videos themselves.** Follow `docs/video-conventions.md`. Per video: written consent
       first, then a vertical 1080x1920 H.264 export under 4MB with **subtitles burned in**, a poster
       JPG, and a 3-second silent animated WebP. Three is the minimum before anything appears.
-- [ ] 🔴 **Approve the Kheelu say line** for the new room: `"Real homes, real kids. Press play."`
-      (33 characters). Every mascot speech line is founder-approved before shipping. It is
-      deliberately distinct from the neighbouring room's "Real families, real words."
+- [x] ✅ **Kheelu say line APPROVED 2026-09-19**: `"Real homes, real kids. Press play."` It is used
+      only when the library has three or more videos; in the empty state the room carries no say line
+      at all, rather than an unapproved substitute.
 - [ ] 🟠 **Repo visibility, now with a sharper reason.** Footage of real children in a PUBLIC git
       repo is permanent and clonable, and consent to publish on the site is not consent to that.
       **Recommended: go private before the first video lands.** This is the same item already open
       below; it is cross-referenced here because the video round changes its weight.
-- [ ] **Confirm the store placement.** The brief said "just below the pre-order form"; it is below
-      the whole grid instead, so a phone still reads the refund promise, the balance due and the
-      ship date before any video. Desktop is identical. Say the word and it moves.
+- [ ] **Confirm two placements.** (1) On the **store**, the section is below the whole grid rather
+      than under the form, so a phone still reads the refund promise, the balance due and the ship
+      date before any video; desktop is identical either way. (2) On **`/products/kheelu`**, the
+      Story-mode heading and lede were KEPT and the carousel sits beneath them, because that lede is
+      the only place the site explains Story mode. If "same copy as home page" meant the Home
+      heading should replace it outright, that is a two line change.
 
 ## 🤖 Held, not skipped
 
