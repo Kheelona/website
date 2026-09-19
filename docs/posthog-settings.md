@@ -60,6 +60,42 @@ lost. It is also the cheapest option and it keeps `/privacy`'s promises simple a
 question the anonymous data cannot answer, and the cost of answering it is a `/privacy` rewrite plus a
 real order becoming linkable to a browsing history held in the US.
 
+## 5. Replay Vision — DECLINED 2026-09-19, with a trigger to revisit
+
+PostHog offers **Replay Vision**: AI scanners that watch each new session recording and emit
+queryable events (dead-end pages, a frustration score, session outcome, a summary). The founder was
+shown the costs and **chose to skip it** on 2026-09-19. Do not re-propose it without the trigger
+below.
+
+**What it costs**, so nobody has to look it up again: 1 credit = **$0.01**, an "observation" is **one
+scanner watching one recording**, and the **first 500 observations a month are free** (free plan also
+carries ~2,500 credits/month; orgs default to a 15,000-credit ≈ $150 monthly budget cap). Price per
+observation varies **up to 7×** by model, and sampling is available.
+
+**The multiplier is the part that surprises.** Four scanners means **four observations per
+recording**, so 500 free observations is roughly **125 recordings a month**, not 500.
+
+**Three reasons it was declined, in order of weight:**
+
+1. **Volume.** PostHog's own example shows 412 sessions in 7 days. This site is nowhere near that.
+   Below that scale, watching the recordings yourself is not just cheaper, it is *better* — you learn
+   things no scanner was told to look for.
+2. **`/privacy` does not cover it.** The page says PostHog records a parent's screen with typed
+   values masked and holds it in the US. It does **not** say those recordings are fed to an AI model.
+   That is a different processing purpose, and §8.21-c means the disclosure ships in the same commit.
+   On a children's-product site with DPDP wording already pending counsel, that is real work and a
+   real question for them — not a toggle.
+3. **It wants the setup wizard**, which was already declined once this round for the same reason: it
+   reads the codebase and writes its own integration, and it does not know this repo's laws.
+
+**The trigger to revisit:** when ad traffic makes watching every recording impractical. At that
+point, the order is — write the `/privacy` paragraph first, then set up scanners **with sampling**
+(a 10% rate gives a representative slice at a tenth of the cost), then switch on.
+
+**The use case worth coming back for** is the Classifier's `blocked_by_error` session outcome: a
+checkout that fails twice and is abandoned is exactly the thing that should page somebody
+automatically, and it is the one scanner that would pay for itself on a site taking payments.
+
 ## 5. Two things to look at once there is data
 
 - **Does replay actually get watched?** If nobody opens a recording in a month, it is costing money

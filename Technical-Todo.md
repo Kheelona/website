@@ -103,6 +103,13 @@ host-gated to `POSTHOG_HOSTS` — **a Vercel secret was offered and correctly de
       names no period so shortening needs no copy change.
       **NOTE: the exact menu labels in that doc are unconfirmed** — this machine's browser is not
       logged in to PostHog and nobody should log in on Claude's behalf. The links are real.
+- [x] **Replay Vision — DECLINED 2026-09-19, do not re-propose without the trigger.** AI scanners
+      over session recordings. Costs real money (1 credit = $0.01, one scanner × one recording = one
+      observation, first 500/month free — so four scanners means ~125 recordings, not 500). Declined
+      on volume (too little traffic for it to beat watching them yourself), on disclosure (`/privacy`
+      says nothing about recordings being fed to an AI, and §8.21-c would require it), and because it
+      ships via the same wizard already declined this round. Full reasoning and the revisit trigger:
+      `docs/posthog-settings.md` §5.
 - [ ] 🟡 **This interacts with the parked DPDP work above.** Nothing changes the 5 October trigger,
       but when counsel does look at `/privacy`, session replay and US storage are new facts to put in
       front of them, and they were not in scope when that item was written.
