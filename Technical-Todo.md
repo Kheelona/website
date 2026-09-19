@@ -142,7 +142,11 @@ own the moment a third video lands.
 
 ## 🤖 Held, not skipped
 
-- [ ] **`npx next build` and `npm run qa:sweep` were not run at the end of this round**, because a
+- [x] **`npx next build` and `npm run qa:sweep` — DONE 2026-09-19**, at the close of the PostHog
+      round, because a push to `main` deploys both rounds together. Both clean: token-check ok
+      (16 mappings), 44 static pages, and axe + voice clean on every route at both widths with
+      only the accepted §8.29 contrast pair. Original note kept below for its reasoning.
+  - ~~[ ]~~ **`npx next build` and `npm run qa:sweep` were not run at the end of this round**, because a
       second session's in-progress PostHog work was in the same working tree and a build from there
       measures a mixture of two rounds. Run both once the two rounds are sequenced. Expect
       `qa:sweep` to stay clean with **zero `video-caption` violations**; if one appears, a `<video>`
@@ -164,7 +168,6 @@ indexed and earn zero impressions, and Keyword Planner shows no Indian search vo
 phrasing at all. The demand for this category lives in answer engines, not in Google's query stream.
 
 ## 🤖 Engineering (all shipped 2026-09-11)
-
 - [x] A1/A2 · `Product.alternateName: "Lumi"`, `isFamilyFriendly`, and the published spec as
       `additionalProperty` from the new one-source `src/lib/product-facts.ts` (`7a38300`)
 - [x] A3/A4 · `llms.txt` "facts commonly wrong elsewhere", and "Is Kheelu the same as Lumi?" as
