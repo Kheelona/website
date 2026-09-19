@@ -264,6 +264,30 @@ export function VideoMoments({
     const observer =
       typeof ResizeObserver === "function" ? new ResizeObserver(centre) : null;
     observer?.observe(track);
+    /* AND on the track's own scroll, because ResizeObserver cannot see what
+       actually moves it. The reveal is a TRANSFORM: it changes no border-box
+       size, so the observer never fires, and the re-snap it triggers went
+       uncorrected on roughly one cold production load in four while passing
+       six of six locally. Production simply settles later, with four
+       measurement scripts and real network latency in the way.
+
+       Correcting from the scroll event catches the drift whatever caused it.
+       It cannot fight our own smooth scrolling, because every control sets
+       `engaged` first, and it cannot loop on itself: the correction is skipped
+       unless the position is genuinely wrong by more than a pixel. */
+    const correct = () => {
+      if (engagedRef.current) return;
+      const tiles = Array.from(track.children) as HTMLElement[];
+      const tile = tiles[target];
+      const first = tiles[0];
+      if (!tile || !first) return;
+      const wanted = Math.max(
+        0,
+        tile.offsetLeft - first.offsetLeft - (track.clientWidth - tile.clientWidth) / 2,
+      );
+      if (Math.abs(track.scrollLeft - wanted) > 1) track.scrollLeft = wanted;
+    };
+    track.addEventListener("scroll", correct, { passive: true });
     /* Anything the visitor does deliberately ends the correction, so we never
        yank the track back under someone who is already using it. */
     const engage = () => {
@@ -275,6 +299,7 @@ export function VideoMoments({
     return () => {
       cancelAnimationFrame(frame);
       observer?.disconnect();
+      track.removeEventListener("scroll", correct);
       for (const event of ["pointerdown", "wheel", "touchstart", "keydown"] as const) {
         track.removeEventListener(event, engage);
       }

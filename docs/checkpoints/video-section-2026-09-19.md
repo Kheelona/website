@@ -530,3 +530,29 @@ decided by a race between layout and a browser heuristic.
 
 Gates: tsc 0, eslint clean, `next build` 0, **1267 tests / 119 files**, `qa:sweep` clean 36/36.
 
+### Commit 11 — ResizeObserver cannot see the thing that actually moved it
+
+The previous fix passed **6/6 locally and still failed 1 in 4 on production**. That gap is the whole
+finding.
+
+**The reveal is a TRANSFORM.** A transform changes no border-box size, so `ResizeObserver` never
+fires, so the correction never ran at the exact moment the snap engine re-chose. Locally the layout
+settles fast enough that the mount-time centring is the last word; production has four measurement
+scripts and real latency, so the re-snap lands later and wins.
+
+**The fix corrects from the track's own `scroll` event**, which every cause of drift necessarily
+triggers, whatever it was. It is safe on both sides: it cannot fight our own smooth scrolling
+because every control sets `engaged` first, and it cannot loop on itself because the correction is
+skipped unless the position is wrong by more than a pixel.
+
+Verified two ways. **Ten cold loads with the network throttled** to 1.2Mbps and 150ms latency, to
+make the layout settle as late as production does: 10/10 centred. And explicitly that it does **not
+fight the visitor**: Next moves to `a-parent-speaks` and stays, Next again to
+`a-story-in-two-languages`, dot 6 to `counting-out-loud`, nothing dragged back.
+
+**The lesson, which is the one worth keeping from this whole round:** *"it passes locally" and "it
+passes on production" are different claims, and for anything decided by a race, local is the weaker
+instrument.* Throttling the network is how you make a local run tell the truth about a slow one.
+
+Gates: tsc 0, eslint clean, `next build` 0, **1267 tests / 119 files**, `qa:sweep` clean 36/36.
+
