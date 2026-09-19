@@ -504,3 +504,29 @@ geometry beside it is what said "the track moved", which is a different bug with
 
 Gates: tsc 0, eslint clean, `next build` 0, **1267 tests / 119 files**, `qa:sweep` clean 36/36.
 
+### Commit 10 — once was not enough: the centre had to HOLD, not just be set
+
+Setting the resting centre on mount fixed three of the four cases and left one: a cold desktop load
+drifted on roughly one run in three. Caught only because the production check ran the same case
+three times instead of once.
+
+**Why.** Posters and fonts land AFTER mount. Every reflow is another opportunity for
+`scroll-snap-type: mandatory` to choose a tile, and a single `requestAnimationFrame` at mount is
+over long before the layout stops moving.
+
+**The fix** re-applies the centring from a `ResizeObserver` on the track while the layout is still
+settling, and the visitor's first deliberate act (`pointerdown`, `wheel`, `touchstart`, `keydown`,
+or any control) switches it off permanently, so the track is never yanked back under someone already
+using it.
+
+Verified with **24 cold loads** in six freshly launched browsers per case, with the image optimizer
+cache cleared and disk cache disabled: desktop and mobile, bare URL and deep link, the montage
+centred every single time.
+
+**The reusable part, and it is the round's fifth instance of the same lesson:** the previous
+verification ran each case ONCE and reported success. A one-in-three flake passes a single run two
+times out of three. **Repeat the check before believing it**, especially for anything whose value is
+decided by a race between layout and a browser heuristic.
+
+Gates: tsc 0, eslint clean, `next build` 0, **1267 tests / 119 files**, `qa:sweep` clean 36/36.
+

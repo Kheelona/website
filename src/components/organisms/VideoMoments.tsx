@@ -115,6 +115,9 @@ export function VideoMoments({
 
   const trackRef = useRef<HTMLUListElement>(null);
   const tileRefs = useRef(new Map<string, HTMLLIElement>());
+  /** Set the moment the visitor does anything deliberate. Stops the resting
+   *  centre being re-applied under someone who is already using the row. */
+  const engagedRef = useRef(false);
 
   /** Which tile is geometrically centred. Null until the observer first
    *  reports, which is one frame in a browser and forever in jsdom, so the
@@ -179,7 +182,10 @@ export function VideoMoments({
   /** Any deliberate act by the visitor ends the rotation. The Pause control is
    *  how it comes back, so "manual override" means exactly that rather than a
    *  carousel that starts moving again the moment you look away. */
-  const takeOver = useCallback(() => setMotionOverride(false), []);
+  const takeOver = useCallback(() => {
+    engagedRef.current = true;
+    setMotionOverride(false);
+  }, []);
 
   /* Which tile is centred. The band is 2% of the track's width at its middle,
      so exactly one tile is inside it at any width and no breakpoint is ever
@@ -222,32 +228,57 @@ export function VideoMoments({
     return () => observer.disconnect();
   }, [moments]);
 
-  /* ESTABLISH THE RESTING CENTRE ONCE, and do not leave it to the snap engine.
+  /* HOLD THE RESTING CENTRE UNTIL THE LAYOUT STOPS MOVING.
    *
    *  `scroll-snap-type: x mandatory` re-snaps whenever layout changes, and the
-   *  room this lives in reveals with a transform. Measured on production: a
-   *  deep link to #learning settled with tile 2 centred on two runs out of
-   *  three, with the geometry and `aria-current` agreeing — the track really
-   *  had scrolled, so this was never an observer bug. The founder's
+   *  room this lives in reveals with a transform. Measured on production: the
+   *  snap engine settled on the wrong tile, with the geometry and
+   *  `aria-current` agreeing, so the track really had scrolled. The founder's
    *  instruction is that a specific film holds the centre, and "scrollLeft 0
-   *  happens to centre index 1 on a three-up" is a coincidence of arithmetic,
-   *  not an instruction anyone gave the browser.
+   *  happens to centre index 1 on a three-up" is a coincidence of arithmetic
+   *  rather than an instruction anyone gave the browser.
    *
-   *  So say it. Instant, not smooth: this is the starting position, not a
-   *  movement the visitor should watch. Once per list, before any interaction. */
+   *  Setting it once on mount was not enough, and that took a second
+   *  production round to see: one cold load in three still drifted, because
+   *  posters and fonts land AFTER mount and every reflow is another chance for
+   *  the snap engine to choose. So a ResizeObserver re-applies it while the
+   *  layout is still moving, and the visitor's first deliberate act switches
+   *  it off for good. Instant, never smooth: this is a starting position, not
+   *  a movement anyone should watch. */
   useEffect(() => {
     const track = trackRef.current;
     if (!track || !carousel) return;
     const target = Math.min(Math.max(centreIndex, 0), moments.length - 1);
-    const settle = requestAnimationFrame(() => {
+
+    const centre = () => {
+      if (engagedRef.current) return;
       const tiles = Array.from(track.children) as HTMLElement[];
       const tile = tiles[target];
       const first = tiles[0];
       if (!tile || !first) return;
       const offset = tile.offsetLeft - first.offsetLeft;
       track.scrollLeft = Math.max(0, offset - (track.clientWidth - tile.clientWidth) / 2);
-    });
-    return () => cancelAnimationFrame(settle);
+    };
+
+    const frame = requestAnimationFrame(centre);
+    const observer =
+      typeof ResizeObserver === "function" ? new ResizeObserver(centre) : null;
+    observer?.observe(track);
+    /* Anything the visitor does deliberately ends the correction, so we never
+       yank the track back under someone who is already using it. */
+    const engage = () => {
+      engagedRef.current = true;
+    };
+    for (const event of ["pointerdown", "wheel", "touchstart", "keydown"] as const) {
+      track.addEventListener(event, engage, { passive: true });
+    }
+    return () => {
+      cancelAnimationFrame(frame);
+      observer?.disconnect();
+      for (const event of ["pointerdown", "wheel", "touchstart", "keydown"] as const) {
+        track.removeEventListener(event, engage);
+      }
+    };
   }, [carousel, centreIndex, moments]);
 
   /* The advance itself. Suspended while a pointer or focus is inside the
