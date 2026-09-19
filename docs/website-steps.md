@@ -2449,9 +2449,14 @@ stops everything that moves (WCAG 2.2.2). It is three-valued — `motionOverride
 so the OS preference is the default, a visitor can start it deliberately even with reduced motion
 set, and pressing Pause is never undone by a media query re-evaluating.
 
-The centred tile comes from ONE IntersectionObserver with a 2% band at the track's horizontal
-middle. **No breakpoint is ever consulted**: the same rule gives the middle of three on a desktop
-and the leading tile on a phone.
+The centred tile is REPORTED by one IntersectionObserver with a 2% band at the track's horizontal
+middle. **No breakpoint is ever consulted**: the same rule reads the middle of three on a desktop
+and the middle of one on a phone.
+
+**Reporting is not the same as deciding, and §8.37-k is the whole story of learning that.** Which
+tile RESTS in the middle is instructed explicitly on mount and defended until the visitor engages;
+the observer only says which one is there. Reading this section alone will send you to patch the
+observer for a problem it did not cause.
 
 The silent loop is an animated WebP in a plain `<img>`, never `next/image` (the optimizer re-encodes
 it to a still) and never a muted `<video>` (§8.37-a). `<picture>` carries the reduced-motion
@@ -2459,9 +2464,13 @@ fallback as a media query, so it is correct before any script runs.
 
 ## §8.37-d · An empty library renders NOTHING, and no one may seed it
 
-`VIDEO_MOMENTS` is empty until the founder supplies files. Below three rows the component returns
-`null` and both pages omit the whole room, so an empty library costs a visitor nothing and shows
-them no placeholder.
+`VIDEO_MOMENTS` was empty until the founder supplied files (the first landed 2026-09-19; there are
+seven). An EMPTY list returns `null` and both pages omit the whole room, so an empty library costs
+a visitor nothing and shows them no placeholder.
+
+**SUPERSEDED IN PART BY §8.37-j:** this section originally said "below three rows" rather than
+"empty", because the section used to hide itself under three videos. It does not any more. One or
+two render as a centred static row; only zero renders nothing.
 
 **Never seed it with stock footage, a frame of the launch film, or a reconstruction.** The
 never-invent law is stricter about social proof than about copy, because a fake parent is a lie
@@ -2791,3 +2800,57 @@ technically small and visibly wrong. It shipped that way for exactly one screens
    "motion is welcome" leaked into every later test in the file and failed two of them. The file now
    restores the `test/setup.ts` defaults by hand in `afterEach`, rather than calling
    `unstubAllGlobals`, which would strip the setup's own stubs for APIs jsdom does not implement.
+
+
+## §8.37-k · 🔴 THE RESTING CENTRE: THREE FIXES, AND ONLY THE THIRD ONE WAS THE BUG (2026-09-19)
+
+Founder instruction: a specific film holds the middle tile. It took three attempts to make that
+true, and the value of this section is the two wrong turns, not the final patch.
+
+**The symptom.** On production the centred film differed between `https://kheelona.com/` and
+`https://kheelona.com/#learning`, and between runs of the same URL.
+
+**Attempt 1, wrong: patch the observer.** The handler took the last intersecting entry, so a
+neighbour clipping the 2% band for one animation frame could latch. Plausible, and a real
+imperfection, so it was fixed (greatest overlap wins, self-correcting because leaving fires too) and
+the fix was kept. **It was not the cause.**
+
+**What proved it was not the cause: a second instrument.** Measuring the geometric centre from
+bounding boxes ALONGSIDE `aria-current` showed them **agreeing** in every case. The observer was
+reporting correctly; the track really had scrolled. **Two instruments agreeing is what rules a
+theory out. Reading only the one you suspect will let you patch it forever.**
+
+**Attempt 2, closer: instruct the resting position.** `scroll-snap-type: x mandatory` re-snaps on
+every reflow, and nothing had ever told the browser which tile should rest in the middle. **"scrollLeft 0
+happens to centre index 1 on a three-up" is a coincidence of arithmetic, not an instruction.** So the
+track now centres `centreIndex` on mount. Three of four cases fixed; a cold desktop load still
+drifted about one run in three.
+
+**Attempt 3, the actual fix: it has to HOLD, and ResizeObserver cannot see what moves it.** Posters
+and fonts land after mount, and **the room reveals with a TRANSFORM, which changes no border-box
+size, so `ResizeObserver` never fires at the moment the snap engine re-chooses.** Correcting from
+the track's own `scroll` event catches every cause. Safe both ways: it cannot fight our own smooth
+scrolling, because every control sets `engaged` first, and it cannot loop, because the correction is
+skipped unless the position is wrong by more than a pixel.
+
+### The four method lessons, which outlive this component
+
+1. **Repeat a check before believing it.** Attempt 2's verification ran each case ONCE and reported
+   success. A one-in-three flake passes a single run two times in three.
+2. **"Passes locally" and "passes on production" are different claims**, and for anything decided by
+   a race, local is the weaker instrument. Attempt 3's predecessor passed 6/6 locally and failed 1
+   in 4 live: production carries four measurement scripts and real latency, so layout settles later.
+   **Throttle the network to make a local run tell the truth about a slow one** (1.2Mbps / 150ms
+   reproduced it, then proved the fix 10/10).
+3. **A gate that loads the page one way proves the page loads that way.** Every unit test, the whole
+   `qa:sweep` and the first production check used the bare URL, and all passed while the deep link
+   was broken. The instruction held on the home page and was violated on the link to it.
+4. **`ResizeObserver` observes SIZE.** Transforms, scroll-snap and anything else that moves content
+   without resizing it are invisible to it. When correcting a position, listen to the thing that
+   changes the position.
+
+### The standing rule
+
+**Anything whose value is decided by a race between layout and a browser heuristic is unverified
+until it has been checked repeatedly, on production, and under throttling.** One green run is not a
+result.

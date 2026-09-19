@@ -1,7 +1,8 @@
 # Video section: three-up carousel of real families (2026-09-19)
 
-**Status: IN PROGRESS.** This file is the running record, appended at every commit, per the
-living-documentation law (founder, 2026-09-05).
+**Status: CLOSED AND LIVE ON PRODUCTION.** Seven films, verified 20/20 on production. This file is
+the running record, appended at every commit, per the living-documentation law (founder,
+2026-09-05).
 
 Rollback tag **`pre-video-section-2026-09-19` = `818132f`**.
 Baseline gates before any change: **1179 tests / 116 files**, `tsc` 0, `qa:sweep` clean 34/34.
@@ -382,7 +383,7 @@ Gates: tsc 0, eslint clean, `next build` 0, **1263 tests / 119 files**, `qa:swee
 
 ### Commit 7 — seven videos, the carousel is live, and two real defects found by looking
 
-The library is now **7 of a permitted 12, 22.36MB of a permitted ~48MB**. `a-parent-speaks` was
+The library is now **7 of a permitted 12, 21.89MB of a permitted ~48MB**. `a-parent-speaks` was
 REPLACED with the founder's v02 reframe (same id, new file) and five new films were added.
 
 **Order, and it is a founder instruction rather than a preference.** The montage is the central video
@@ -556,3 +557,64 @@ instrument.* Throttling the network is how you make a local run tell the truth a
 
 Gates: tsc 0, eslint clean, `next build` 0, **1267 tests / 119 files**, `qa:sweep` clean 36/36.
 
+
+---
+
+# CLOSED — what shipped, and what to read first
+
+**Live on `kheelona.com`, `/products/kheelu` and `store.kheelona.com`.** Seven films, 21.89MB of a
+permitted ~48MB, 7 of a permitted 12. Final production verification: **20/20** across desktop and
+mobile, bare URL and deep link, five cold loads each, with the montage centred every time, **zero
+`<video>` elements at rest**, and seven tiles.
+
+**Final gates:** `tsc` 0 · eslint clean on every touched file · `next build` 0 · **1267 tests / 119
+files** · `qa:sweep` clean **36/36** with seven real videos and **zero `video-caption` violations**.
+
+| | |
+|---|---|
+| Laws | `docs/website-steps.md` **§8.37 a–k** |
+| Rulebook for adding a video | `docs/video-conventions.md` |
+| One source for the list | `src/lib/video-moments.ts` |
+| Component | `src/components/organisms/VideoMoments.tsx` |
+| Rollback | `pre-video-section-2026-09-19` = `818132f` |
+
+## If you read only one thing
+
+**§8.37-k.** The resting centre took three attempts and the first two fixed things that were not
+broken. The IntersectionObserver was patched twice for a bug it did not cause. What settled it was
+measuring the geometry beside `aria-current` and finding them **agreeing** — two instruments
+agreeing is what rules a theory out.
+
+## The five method lessons, in the order they were learned
+
+1. **`next dev` on `127.0.0.1` does not hydrate**, and it looks exactly like a dead component. Two
+   controls found it: a long-shipped component was equally inert, and the same probe against
+   production worked. (§8.37-e)
+2. **`tools/qa/` screenshots prove what the server sent, and nothing about any click.** (§8.37-f)
+3. **A count that does not reconcile is a finding.** Three times this round the arithmetic was off
+   and three times the explanation was real: `it.each` globs picking up new files, a deleted
+   directory removing a guard case, and carousel dots being counted as tiles.
+4. **Repeat a check before believing it.** A one-in-three flake passes a single run two times in
+   three, which is precisely how a broken deep link shipped after a "verified" deploy.
+5. **"Passes locally" and "passes on production" are different claims.** 6/6 locally, 1-in-4 failing
+   live. Throttling to 1.2Mbps / 150ms made the local run tell the truth, then proved the fix 10/10.
+
+## Open, and both the founder's
+
+- 🟠 **Re-export the films without em dashes in the captions.** Ship-now decision 2026-09-19. The
+  Brand Bible ban is site-wide and nothing in code reaches a pixel. **Poster frames were chosen
+  em-dash-free**, so every thumbnail reads cleanly today and only the played films do not. Swapping
+  any file is one command and the ids do not change.
+- **More videos.** The library holds five more before the cap, and `docs/video-conventions.md` was
+  corrected by the first two uploads so it now matches reality.
+
+## Closed this round, do not re-raise
+
+- **The repo stays PUBLIC** (founder, 2026-09-19), decided with the consequences stated in full.
+- **The audio demos are gone from the site**, including from `/products/kheelu`, where the case for
+  keeping them was put and declined.
+- **The play badge stays centred.** It was moved below centre once, landed on the speaker's mouth
+  instead of her eyes, and was moved back: a talking head fills the whole middle band, so no
+  vertical position clears a centred face.
+- **The montage is centred at every width**, so the "first on mobile vs central on desktop"
+  trade-off no longer exists.

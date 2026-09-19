@@ -116,14 +116,16 @@ host-gated to `POSTHOG_HOSTS` — **a Vercel secret was offered and correctly de
 
 ---
 
-# 🎬 THE VIDEO CAROUSEL (shipped 2026-09-19, library empty by design)
+# 🎬 THE VIDEO SECTION (shipped 2026-09-19, SEVEN films live)
 
 *Record: `docs/checkpoints/video-section-2026-09-19.md`. Rulebook: `docs/video-conventions.md`.
 Laws **§8.37 a-h**. Rollback tag `pre-video-section-2026-09-19` = `818132f`.*
 
-**Nothing renders on the live site yet, and that is the designed state.** `VIDEO_MOMENTS` is empty,
-so `VideoMoments` returns `null` and both pages omit the room entirely. The section appears on its
-own the moment a third video lands.
+**Seven films are live** on Home, `/products/kheelu` and the store. 21.89MB of a permitted ~48MB,
+7 of a permitted 12. `first-conversations` holds the centre tile and `a-parent-speaks` sits to its
+right, by founder instruction, pinned by a test because the failure would be silent.
+
+Verified on production 20/20: desktop and mobile, bare URL and deep link, five cold loads each.
 
 ## 🤖 Engineering (all shipped 2026-09-19)
 
@@ -134,7 +136,12 @@ own the moment a third video lands.
 - [x] Wired into Home above `parent-voices`, and into the store below the whole grid
 - [x] `docs/video-conventions.md` + `test/video-assets.test.ts` (validator proven against fixtures
       before being applied to the empty list)
-- [x] §8.37 laws, checkpoint, banner
+- [x] §8.37 laws (now a-k), checkpoint, banner
+- [x] The audio demos removed from the site entirely (§8.37-i, founder decision)
+- [x] Treatment by count: 0 nothing / 1-2 static centred row / 3+ carousel (§8.37-j)
+- [x] The resting centre instructed and defended, after three attempts and two wrong
+      diagnoses (§8.37-k). **Read that section before touching the IntersectionObserver:
+      it was patched twice for a bug it did not cause.**
 
 ## 🧑 Founder
 

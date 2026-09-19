@@ -56,80 +56,64 @@ dev-only `@vitest/mocker` advisory (GHSA-82fw-gwwq-j7x9), NOT PostHog's, and `vi
 `4.1.10 → 4.1.11` as its own change on 2026-09-19. Nothing outside the vitest family moved, so the
 "dependencies are clean on both manifests" note further down is accurate again.
 
-**🎬 THE VIDEO CAROUSEL SHIPPED 2026-09-19, AND ITS LIBRARY IS DELIBERATELY EMPTY.** Record:
-`docs/checkpoints/video-section-2026-09-19.md`; laws **§8.37 a–h**; rulebook
+**🎬 THE VIDEO SECTION IS LIVE WITH SEVEN REAL FILMS (2026-09-19).** Record:
+`docs/checkpoints/video-section-2026-09-19.md`; laws **§8.37 a–k**; rulebook
 `docs/video-conventions.md`; rollback tag `pre-video-section-2026-09-19` = `818132f`.
-Three videos at a time on **Home** (directly above `parent-voices`) and on **store.kheelona.com**
-(below the whole grid, not under the form), advancing and looping. Self-hosted vertical MP4,
-subtitles burned in, code-managed list.
+Real children and real parents, on **Home** (the `learning` room), **`/products/kheelu`** (the
+`story-mode` room) and **store.kheelona.com**. Library: **7 of a permitted 12, 21.89MB of ~48MB.**
 
-**Five things bind.** (1) **THERE IS NO `<video>` ELEMENT ON THE PAGE UNTIL SOMEBODY PRESSES PLAY**
-(§8.37-a). axe-core's `video-caption` is `selector: 'video'`, impact **critical**, with no matcher,
-so any `<video>` at rest puts a critical violation on Home AND the checkout page and ends the clean
-34/34. A test pins it. (2) **The captions are burned into the FILE**, which satisfies WCAG 1.2.2 on
-its own — axe simply cannot read them, so this is a detection problem, not an accessibility one
-(§8.37-b). The obligation lives outside the code: a file without burned-in subtitles is a regression
-no test can see. (3) **`VIDEO_MOMENTS` IS EMPTY AND NOTHING RENDERS.** Below three rows the
-component returns `null` and both pages omit the room. **Never seed it** with stock footage or a
-frame of the launch film: the never-invent law is stricter about social proof, because a fake parent
-is a lie about a person (§8.37-d). `hasOpenCaptions` and `consentOnFile` are literal `true` types per
-row, so a row cannot omit either claim. (4) **🔴 `next dev` on `127.0.0.1` DOES NOT HYDRATE** and it
-looks exactly like a broken component (§8.37-e) — Next 16 blocks cross-origin dev requests and
-`127.0.0.1` is not the dev server's own origin. **Use `http://localhost:<port>` for anything testing
-client behaviour.** Two controls found it: a long-shipped component was equally inert, and the same
-probe against production worked. (5) **`tools/qa/` screenshots are SERVER-RENDER evidence only**
-(§8.37-f): `loadSettled` never waits for React and `openPage`'s interception breaks the dev HMR
-socket. A `qa:shot` proves what the server sent, never what a click does.
+**Ordering is a FOUNDER INSTRUCTION and is pinned by a test.** `first-conversations` (the montage)
+holds the **centre tile**, `a-parent-speaks` sits **to its right**. `VIDEO_CENTRE_INDEX` /
+`VIDEO_CENTRE_ID` exist because the failure is silent: appending rows is safe, **inserting one near
+the top moves the montage off centre and nothing would look broken.**
 
-**🔇 AND THE AUDIO DEMOS ARE GONE FROM THE SITE (founder, 2026-09-19, §8.37-i).** The "Hear it for
-yourself / Play, learn, together" room was a stand-in built because no real user video existed, so
-the video section took its slot on Home AND on `/products/kheelu`. `AudioMoments`,
-`lib/audio-moments.ts`, the four MP3s, the `.audio-eq` CSS and `eq-bounce` are all DELETED. Founder
-was shown the case for keeping them on the product page and chose removal; **settled, do not
-re-raise.** Three things in Home's `learning` room had nothing to do with the media and all three
-STAY: the languages line (Home's only `fn-languages` marker — delete it and the footnote is
-orphaned), the bilingual paragraph (Home's only link to the article ranking first in India), and the
-CTA. **The room carries TWO headings** because the library is empty: the video heading at three or
-more videos, and "Their own words / The language your child thinks in." until then, because a
-heading promising films above no films is a lie the page tells itself. The say line is **omitted**
-in the empty state rather than replaced with an unapproved one. On `/products/kheelu` the Story-mode
-heading and lede STAY (real product copy about one of the three modes) and the room is stacked now.
+**Six things bind.** (1) **THERE IS NO `<video>` ELEMENT ON THE PAGE UNTIL SOMEBODY PRESSES PLAY**
+(§8.37-a). axe-core's `video-caption` is `selector: 'video'`, impact **critical**, no matcher, so any
+`<video>` at rest puts a critical violation on Home AND the checkout page. A test pins it.
+(2) **Captions are burned into the FILE**, which satisfies WCAG 1.2.2 on its own; axe cannot read
+them, so this is detection, not accessibility (§8.37-b). **A file without burned-in subtitles is a
+regression no test can see.** (3) **THE COUNT PICKS A TREATMENT** (§8.37-j): 0 renders nothing, 1–2
+render a centred static row with no carousel chrome and **no motion at all**, 3+ is the carousel.
+`hasVideoMoments()` means "any"; `isVideoCarousel()` is the threshold. (4) **The resting centre is
+INSTRUCTED, not inherited** (§8.37-k) — it is set on mount and defended from the track's `scroll`
+event until the visitor engages. Read §8.37-k before touching the observer: **it was patched twice
+for a bug it did not cause.** (5) **Never seed the list** with stock footage or a frame of the launch
+film: the never-invent law is stricter about social proof, because a fake parent is a lie about a
+person. `hasOpenCaptions` and `consentOnFile` are literal `true` types, so a row cannot omit either.
+(6) **`videoLede()` is single-sourced** — "Press play on any of them" over ONE film shipped for
+exactly one screenshot.
 
-**🔴 TWO TRAPS FROM THAT REMOVAL.** (1) **This repo's guard tests enumerate through `git ls-files`,
-which reports the INDEX**, so an UNSTAGED deletion fails eleven tests across seven files that all
-look like broken code and are not. Stage deletions before running the suite; `git stash` alone
-causes it. (2) **A deletion moves parameterised counts in files nobody edited**: 1268 → 1256 is
-AudioMoments' own 6, then `preorder-copy` −2, `preorder-cta` −2, `stories-parse` −1 as the files left
-those globs, and `redirects-vs-assets` −1 because `public/audio/` stopped existing as a directory to
-guard. Also corrected: **`qa:sweep` is 36 route/width combinations, not the 34 these docs quote.**
+**🔴 FOUR VERIFICATION LAWS EARNED THE HARD WAY THIS ROUND, and they are general.**
+(a) **`next dev` on `127.0.0.1` DOES NOT HYDRATE** and looks exactly like a dead component (Next 16
+blocks cross-origin dev requests) — **use `http://localhost:<port>` for client behaviour** (§8.37-e).
+(b) **`tools/qa/` screenshots are SERVER-RENDER evidence only**: `loadSettled` never waits for React
+(§8.37-f). (c) **Repeat a check before believing it** — a one-in-three flake passes a single run two
+times in three, and that is exactly how a broken deep link shipped. (d) **"Passes locally" and
+"passes on production" are different claims**; throttle the network (1.2Mbps / 150ms) to make a local
+run tell the truth about a slow one. **`ResizeObserver` observes SIZE and is blind to transforms.**
 
-**🎥 THE FIRST REAL VIDEO IS LIVE IN THE REPO (2026-09-19): `first-conversations`**, a 38s montage of
-three children in three homes with the cream Kheelu, subtitles burned in. 41MB source encoded to
-**3.00MB** at native 1080x1920 CRF 32. Verified hydrated: 0 `<video>` at rest, one unmuted video on
-play, `qa:sweep` clean 36/36 with real content and **zero `video-caption` violations**.
+**🔇 THE AUDIO DEMOS ARE GONE FROM THE SITE (founder, 2026-09-19, §8.37-i).** The "Hear it for
+yourself" room was a stand-in built because no real user video existed. `AudioMoments`,
+`lib/audio-moments.ts`, the four MP3s, `.audio-eq` and `eq-bounce` are all DELETED; the case for
+keeping them on the product page was put and declined. **Settled, do not re-raise.** Home's
+`learning` room KEEPS three things that were never about the media and would each have broken
+something: the languages line (its only `fn-languages` marker, or the footnote is orphaned), the
+bilingual paragraph (its only link to the article ranking first in India), and the CTA. The room
+carries a **second heading for the empty state**, because a heading promising films above no films is
+a lie the page tells itself.
 
-**⚠ THE 3-VIDEO MINIMUM IS GONE (§8.37-j).** `VIDEO_MIN_TO_SHOW` hid the section below three videos;
-the first real upload showed that holding back real footage because only one clip arrived is worse
-than showing it well. **The count now picks a TREATMENT**: 0 renders nothing, **1 or 2 render a
-centred static row with NO carousel chrome and no motion at all** (nothing to pause means the absent
-Pause control is correct, not missing), 3+ is the carousel. `hasVideoMoments()` now means "any", and
-`isVideoCarousel()` is the threshold. **`videoLede()` is single-sourced** because "Press play on any
-of them" over ONE film shipped for exactly one screenshot.
+**🔴 TWO TRAPS FROM THAT REMOVAL.** (1) **The guard tests enumerate through `git ls-files`, which
+reports the INDEX**, so an UNSTAGED deletion fails eleven tests across seven files that all look
+like broken code. Stage deletions before running the suite. (2) **A deletion moves parameterised
+counts in files nobody edited** — reconcile the arithmetic rather than accepting a green suite.
+Also corrected: **`qa:sweep` is 36 route/width combinations, not the 34 these docs long quoted.**
 
-**Three rulebook corrections from doing it for real:** a subtitle-free poster frame **does not exist**
-on continuous dialogue (prefer a short complete line over a fragment) · **keep native 1080x1920**,
-because 720x1280 CRF 28 measured both LARGER and softer than 1080 CRF 32, and you judge on the
-**subtitle band** · this machine's **ffmpeg has no `libwebp`**, so the loop goes through `img2webp`,
-and `ffprobe` reporting `0,0` for an animated WebP is an ffprobe limitation (use `webpinfo`).
-**Also: `vi.stubGlobal` is NOT undone by `restoreAllMocks`** and leaked "motion is welcome" across a
-whole test file.
-
-**Waiting on the founder:** more videos (see the rulebook) · the **repo-visibility decision**, now
-urgent because real footage of real children is in the repo · two non-blocking notes on the first
-file, a burned-in **"sound on" badge** from a social export that does nothing here, and a child's
-**first name** spoken and captioned in it. The say line `"Real homes, real kids. Press play."` is
-APPROVED (founder, 2026-09-19).
-
+**Waiting on the founder:** 🟠 **re-export the films without em dashes in the captions** (ship-now
+decision 2026-09-19; the Brand Bible ban is site-wide and nothing in code reaches a pixel — poster
+frames were chosen em-dash-free, so thumbnails read cleanly and only the played films do not) ·
+more videos · the **repo-visibility decision is CLOSED: it stays PUBLIC** (founder, 2026-09-19),
+with real footage of real children permanently in that history, recorded in `Technical-Todo.md` as a
+known position rather than an oversight.
 
 **🟣 …AND ITS FOLLOW-THROUGH LANDED 2026-09-12. All of the below is live and verified on
 production.** Same records: `docs/checkpoints/seo-aeo-geo-2026-09-11.md` §7–9, laws **§8.36 a–h**,
