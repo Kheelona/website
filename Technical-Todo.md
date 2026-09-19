@@ -96,12 +96,13 @@ host-gated to `POSTHOG_HOSTS` — **a Vercel secret was offered and correctly de
       for one marketing site, and PostHog and GA4 overlap heavily. What would have to move first:
       the GA4 property's history since 2026-07-28, the purchase/`transaction_id` reports built on
       it, and `GA4_HOSTS`, which `POSTHOG_HOSTS` and `META_PIXEL_HOSTS` both reference.
-- [ ] 🟡 **Session replay is on, and it is worth knowing what that means in practice.** Recordings of
-      real parents using the site are held by PostHog **in the United States** for the retention
-      period set in the project settings. `/privacy` states all of this. Two things are worth a
-      deliberate look in the PostHog dashboard rather than left at defaults: **the retention period**,
-      and whether **replay sampling** should be less than 100% once traffic grows, since it bills per
-      recording.
+- [ ] 🟠 **Apply the two PostHog dashboard settings — `docs/posthog-settings.md` has the links and
+      the reasoning.** Founder decided 2026-09-19: **retention down to 30 days, sampling stays at
+      100%.** Both are dashboard-only; no deploy can set them. Retention is the one that matters,
+      because a recording nobody will watch again is liability with no remaining value, and `/privacy`
+      names no period so shortening needs no copy change.
+      **NOTE: the exact menu labels in that doc are unconfirmed** — this machine's browser is not
+      logged in to PostHog and nobody should log in on Claude's behalf. The links are real.
 - [ ] 🟡 **This interacts with the parked DPDP work above.** Nothing changes the 5 October trigger,
       but when counsel does look at `/privacy`, session replay and US storage are new facts to put in
       front of them, and they were not in scope when that item was written.

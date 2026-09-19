@@ -254,8 +254,9 @@
       "raised": "2026-09-19",
       "owner": "claude",
       "severity": "low",
-      "status": "open",
-      "summary": "npm audit reads 2 moderate (GHSA-82fw-gwwq-j7x9, @vitest/mocker path traversal via a redirect mock). PRE-EXISTING AND DEV-ONLY - not PostHog's; vitest did not move in the install, the advisory was published since the 2026-09-05 sweep. Deliberately not ridden along in an unrelated round. The 'dependencies are clean on both manifests' claim is stale until done."
+      "status": "closed",
+      "summary": "CLOSED 2026-09-19. vitest 4.1.10 -> 4.1.11, the first patch above the affected 2.1.0-4.1.10 range, done as its own change. Nothing outside the vitest family moved. npm audit reads 0 on both manifests again.",
+      "closed": "2026-09-19"
     },
     {
       "id": "posthog-vs-ga4-overlap",
@@ -271,7 +272,15 @@
       "owner": "founder",
       "severity": "low",
       "status": "open",
-      "summary": "Session replay records real parents and PostHog holds the recordings in the UNITED STATES for the retention period set in project settings; /privacy states this. Two dashboard settings deserve a deliberate look rather than their defaults: the retention period, and whether replay sampling should drop below 100% as traffic grows, since it bills per recording. Also a new fact to put in front of counsel when the parked 5-October DPDP item is picked up."
+      "summary": "DECIDED 2026-09-19: retention down to 30 days, sampling stays at 100%. Both are DASHBOARD-ONLY and still need the founder to apply them; docs/posthog-settings.md carries the links and the reasoning. Also records the anonymous-identity decision (identified_only, no identify() call) so it is not re-asked."
+    },
+    {
+      "id": "posthog-identity-anonymous",
+      "raised": "2026-09-19",
+      "owner": "founder",
+      "severity": "low",
+      "status": "settled",
+      "summary": "SETTLED 2026-09-19, do not re-ask: PostHog stays fully anonymous. person_profiles is identified_only and nothing calls identify(), so no person profile exists and no order is linked to a browsing identity. Funnels work on the anonymous distinct id, so nothing asked for is lost. Revisit only for a specific question the anonymous data cannot answer; the cost would be a /privacy rewrite plus a real order becoming linkable to US-held history."
     }
   ],
   "last_handoff": {
