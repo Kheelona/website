@@ -150,11 +150,14 @@ own the moment a third video lands.
       how to play", and "A must-buy toy — Kheelu." Swapping any file is one command and the ids do
       not change. **Poster frames were already chosen to avoid em dashes**, so the thumbnails read
       cleanly today and only the played films do not.
-- [ ] 🟢 **Decide whether the montage should be first on a phone.** It is index 1, which makes it
-      the CENTRE tile on a three-up desktop exactly as instructed, and therefore the SECOND tile on
-      a phone. With 60% of traffic on phones, moving it to index 0 would make it first on mobile and
-      leftmost on desktop. The two cannot both hold; the instruction named the centre, so that is
-      what shipped.
+- [x] ✅ **RESOLVED 2026-09-19: the montage is centred at EVERY width.** This was raised as a
+      trade-off (index 1 makes it the centre tile on a three-up desktop and therefore the SECOND
+      tile on a phone), and it stopped being a trade-off once the resting scroll position was made
+      explicit rather than left to the snap engine. The track now centres the pinned film on mount,
+      so a phone shows the montage first with a peek on both sides, which also signals that the row
+      swipes in both directions. Verified deterministic over 16 loads: desktop and mobile, bare URL
+      and deep link.
+
 - [ ] 🔴 **More videos.** Follow `docs/video-conventions.md`, which was corrected by the first
       upload. At two it stays a centred static row; at **three it becomes the carousel** with
       arrows, dots and the silent loop on the centred tile.

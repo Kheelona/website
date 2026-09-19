@@ -471,3 +471,36 @@ the central video") was satisfied on the home page and violated on the link to i
 
 Gates: tsc 0, eslint clean, `next build` 0, **1267 tests / 119 files**, `qa:sweep` clean 36/36.
 
+### Commit 9 — the resting centre was never actually instructed, only coincidental
+
+The commit before this fixed the wrong thing, and the way that became clear is worth keeping.
+
+After shipping the observer change, production read `first-conversations` centred on the deep link
+and `a-parent-speaks` centred on the bare URL. Measuring BOTH `aria-current` and the geometric
+centre from bounding boxes showed them **agreeing** in every case. That killed the observer theory
+outright: the track had genuinely scrolled. `scroll-snap-type: x mandatory` re-snaps whenever layout
+changes, the room reveals with a transform, and the snap engine settled on a different tile on two
+runs out of three. Non-deterministic, and nothing in the code had ever told the browser otherwise.
+
+**"scrollLeft 0 happens to centre index 1 on a three-up" is a coincidence of arithmetic, not an
+instruction.** The founder asked for a specific film in the middle; the code was relying on a
+default. Now `VideoMoments` centres `centreIndex` (defaulting to the pinned `VIDEO_CENTRE_INDEX`, so
+all three pages inherit it) on mount, instantly, before any interaction.
+
+Verified deterministic over **16 loads**: desktop and mobile, bare URL and deep link, four runs each,
+`first-conversations` centred every time.
+
+**It also dissolved the mobile trade-off rather than accepting it.** The open question was that
+"central" is a three-up idea, so a phone would show the montage second. Centring explicitly means a
+phone now opens on the montage with a peek on BOTH sides, which additionally signals that the row
+swipes in two directions. The `Technical-Todo` item is closed rather than carried.
+
+**The observer change from commit 8 was kept.** It was not the cause here, but "last intersecting
+entry wins" is still wrong under a 2% band, and the test that pins it stands.
+
+**The method note, and it is this round's fourth of the same shape:** two instruments disagreeing is
+information. Reading only `aria-current` would have produced another observer patch. Reading the DOM
+geometry beside it is what said "the track moved", which is a different bug with a different fix.
+
+Gates: tsc 0, eslint clean, `next build` 0, **1267 tests / 119 files**, `qa:sweep` clean 36/36.
+

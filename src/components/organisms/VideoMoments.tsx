@@ -16,6 +16,7 @@ import { PRESS } from "@/lib/interactions";
 import {
   VIDEO_MOMENTS,
   isVideoCarousel,
+  VIDEO_CENTRE_INDEX,
   type VideoMoment,
 } from "@/lib/video-moments";
 
@@ -96,9 +97,14 @@ function useMotionWelcome(): boolean {
 
 export function VideoMoments({
   moments = VIDEO_MOMENTS,
+  centreIndex = VIDEO_CENTRE_INDEX,
   className,
 }: {
   moments?: readonly VideoMoment[];
+  /** Which tile must hold the middle of the track when the section is first
+   *  seen. Defaults to the live list's pinned centre, so every page gets the
+   *  founder's ordering without repeating it at three call sites. */
+  centreIndex?: number;
   className?: string;
 }) {
   /* One or two videos are a row, not a carousel (§8.37-j). Carousel chrome
@@ -215,6 +221,34 @@ export function VideoMoments({
     tileRefs.current.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
   }, [moments]);
+
+  /* ESTABLISH THE RESTING CENTRE ONCE, and do not leave it to the snap engine.
+   *
+   *  `scroll-snap-type: x mandatory` re-snaps whenever layout changes, and the
+   *  room this lives in reveals with a transform. Measured on production: a
+   *  deep link to #learning settled with tile 2 centred on two runs out of
+   *  three, with the geometry and `aria-current` agreeing — the track really
+   *  had scrolled, so this was never an observer bug. The founder's
+   *  instruction is that a specific film holds the centre, and "scrollLeft 0
+   *  happens to centre index 1 on a three-up" is a coincidence of arithmetic,
+   *  not an instruction anyone gave the browser.
+   *
+   *  So say it. Instant, not smooth: this is the starting position, not a
+   *  movement the visitor should watch. Once per list, before any interaction. */
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track || !carousel) return;
+    const target = Math.min(Math.max(centreIndex, 0), moments.length - 1);
+    const settle = requestAnimationFrame(() => {
+      const tiles = Array.from(track.children) as HTMLElement[];
+      const tile = tiles[target];
+      const first = tiles[0];
+      if (!tile || !first) return;
+      const offset = tile.offsetLeft - first.offsetLeft;
+      track.scrollLeft = Math.max(0, offset - (track.clientWidth - tile.clientWidth) / 2);
+    });
+    return () => cancelAnimationFrame(settle);
+  }, [carousel, centreIndex, moments]);
 
   /* The advance itself. Suspended while a pointer or focus is inside the
      section, while a video is open, and while the tab is in the background. */
