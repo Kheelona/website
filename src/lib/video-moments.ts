@@ -100,6 +100,25 @@ export const VIDEO_DIR = "/video/moments";
  *    } */
 export const VIDEO_MOMENTS: readonly VideoMoment[] = [
   {
+    id: "a-mother-joins-in",
+    chip: "A mother joins in",
+    label:
+      "Arha's mother asks the questions, and Kheelu answers her by name.",
+    alt: "A girl and her mother on a sofa with the cream Kheelu plush.",
+    src: `${VIDEO_DIR}/a-mother-joins-in.mp4`,
+    poster: `${VIDEO_DIR}/a-mother-joins-in.jpg`,
+    preview: `${VIDEO_DIR}/a-mother-joins-in.webp`,
+    width: VIDEO_ASPECT.width,
+    height: VIDEO_ASPECT.height,
+    hasOpenCaptions: true,
+    consentOnFile: true,
+  },
+  /* ── THE CENTRE SLOT. Index 1 is the middle tile of the three visible at
+     rest on a desktop, and the founder's instruction (2026-09-19) is that the
+     montage is the central video. Appending rows is safe; INSERTING one above
+     this line silently moves it out of the centre, so a test pins the index.
+     The parent testimonial sits directly to its right, also by instruction. ── */
+  {
     id: "first-conversations",
     chip: "Real homes",
     label:
@@ -121,6 +140,62 @@ export const VIDEO_MOMENTS: readonly VideoMoment[] = [
     src: `${VIDEO_DIR}/a-parent-speaks.mp4`,
     poster: `${VIDEO_DIR}/a-parent-speaks.jpg`,
     preview: `${VIDEO_DIR}/a-parent-speaks.webp`,
+    width: VIDEO_ASPECT.width,
+    height: VIDEO_ASPECT.height,
+    hasOpenCaptions: true,
+    consentOnFile: true,
+  },
+  {
+    id: "a-story-in-two-languages",
+    chip: "Two languages",
+    label:
+      "Arha would rather speak English today, so the story follows her.",
+    alt: "A girl on a sofa beside the cream Kheelu plush.",
+    src: `${VIDEO_DIR}/a-story-in-two-languages.mp4`,
+    poster: `${VIDEO_DIR}/a-story-in-two-languages.jpg`,
+    preview: `${VIDEO_DIR}/a-story-in-two-languages.webp`,
+    width: VIDEO_ASPECT.width,
+    height: VIDEO_ASPECT.height,
+    hasOpenCaptions: true,
+    consentOnFile: true,
+  },
+  {
+    id: "a-father-speaks",
+    chip: "A father's view",
+    label:
+      "Siddhant's father on what play away from a screen looks like.",
+    alt: "A father seated at home, speaking to camera.",
+    src: `${VIDEO_DIR}/a-father-speaks.mp4`,
+    poster: `${VIDEO_DIR}/a-father-speaks.jpg`,
+    preview: `${VIDEO_DIR}/a-father-speaks.webp`,
+    width: VIDEO_ASPECT.width,
+    height: VIDEO_ASPECT.height,
+    hasOpenCaptions: true,
+    consentOnFile: true,
+  },
+  {
+    id: "counting-out-loud",
+    chip: "Counting out loud",
+    label:
+      "Three bricks and two more, worked out on the floor with Kheelu.",
+    alt: "A boy on the floor with Lego bricks and the cream Kheelu plush.",
+    src: `${VIDEO_DIR}/counting-out-loud.mp4`,
+    poster: `${VIDEO_DIR}/counting-out-loud.jpg`,
+    preview: `${VIDEO_DIR}/counting-out-loud.webp`,
+    width: VIDEO_ASPECT.width,
+    height: VIDEO_ASPECT.height,
+    hasOpenCaptions: true,
+    consentOnFile: true,
+  },
+  {
+    id: "learning-by-asking",
+    chip: "Learning by asking",
+    label:
+      "Kheelu asks her to explain carrom, and thanks her for the reminder.",
+    alt: "A young girl on a playmat holding the cream Kheelu plush.",
+    src: `${VIDEO_DIR}/learning-by-asking.mp4`,
+    poster: `${VIDEO_DIR}/learning-by-asking.jpg`,
+    preview: `${VIDEO_DIR}/learning-by-asking.webp`,
     width: VIDEO_ASPECT.width,
     height: VIDEO_ASPECT.height,
     hasOpenCaptions: true,
@@ -161,6 +236,20 @@ export function videoLede(
     ? "Real children in real homes. Press play on any of them."
     : "Real children in real homes. Press play.";
 }
+
+/** The video that must hold the centre tile at rest, and the one to its right.
+ *
+ *  Founder instruction, 2026-09-19: the montage is the central video and the
+ *  parent testimonial sits to its right. On a desktop three tiles are visible
+ *  at rest, so "centre" is index 1 and "its right" is index 2. On a phone one
+ *  tile shows at a time, so the same order simply makes the montage second.
+ *
+ *  Pinned as constants rather than left as a comment because the failure mode
+ *  is silent: appending rows is harmless, but INSERTING one near the top moves
+ *  the montage out of the centre and nothing would look broken. */
+export const VIDEO_CENTRE_INDEX = 1;
+export const VIDEO_CENTRE_ID = "first-conversations";
+export const VIDEO_RIGHT_OF_CENTRE_ID = "a-parent-speaks";
 
 /** Is there anything at all to show? */
 export function hasVideoMoments(

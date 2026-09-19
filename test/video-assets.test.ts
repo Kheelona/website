@@ -8,6 +8,9 @@ import {
   VIDEO_MAX_COUNT,
   VIDEO_DIR,
   videoLede,
+  VIDEO_CENTRE_INDEX,
+  VIDEO_CENTRE_ID,
+  VIDEO_RIGHT_OF_CENTRE_ID,
   type VideoMoment,
 } from "@/lib/video-moments";
 
@@ -240,5 +243,25 @@ describe("the section's lede agrees with how many films are under it", () => {
     const live = videoLede();
     expect(live.startsWith("Real children in real homes.")).toBe(true);
     expect(live.includes("any of them")).toBe(VIDEO_MOMENTS.length > 1);
+  });
+});
+
+describe("the centre slot is held, because losing it would be silent", () => {
+  it("puts the montage in the centre tile at rest", () => {
+    // Founder instruction 2026-09-19. Three tiles show at rest on a desktop,
+    // so "central" is index 1. Appending rows is safe; inserting one above it
+    // is what this catches, and nothing on the page would look broken.
+    expect(VIDEO_MOMENTS[VIDEO_CENTRE_INDEX]?.id).toBe(VIDEO_CENTRE_ID);
+  });
+
+  it("puts the parent testimonial directly to its right", () => {
+    expect(VIDEO_MOMENTS[VIDEO_CENTRE_INDEX + 1]?.id).toBe(VIDEO_RIGHT_OF_CENTRE_ID);
+  });
+
+  it("has enough videos for a centre to exist at all", () => {
+    // With fewer than three there is no carousel and no middle tile, so the
+    // two assertions above would be vacuously true. This is what stops them
+    // passing for the wrong reason.
+    expect(VIDEO_MOMENTS.length).toBeGreaterThanOrEqual(3);
   });
 });

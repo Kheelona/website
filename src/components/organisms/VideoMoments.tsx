@@ -133,6 +133,16 @@ export function VideoMoments({
   const ids = useMemo(() => moments.map((m) => m.id), [moments]);
 
 
+  /** Scroll so tile `index` sits in the MIDDLE of the track.
+   *
+   *  Centring, not left-aligning, and a real defect is why. Left-aligning
+   *  tile N puts N at the edge, which on a three-up desktop makes N+1 the
+   *  centred one: pressing Next moved the centre from 1 to 3 and silently
+   *  skipped a video. The relationship between "leftmost" and "centre"
+   *  depends on how many tiles fit, which is exactly the thing this component
+   *  refuses to know. Centring is the same instruction at every width, so the
+   *  dots, the arrows and `aria-current` all agree on a phone and on a
+   *  desktop without a breakpoint between them. */
   const scrollToIndex = useCallback((index: number) => {
     const track = trackRef.current;
     if (!track) return;
@@ -140,10 +150,9 @@ export function VideoMoments({
     const target = tiles[index];
     const first = tiles[0];
     if (!target || !first) return;
-    track.scrollTo({
-      left: target.offsetLeft - first.offsetLeft,
-      behavior: "smooth",
-    });
+    const offset = target.offsetLeft - first.offsetLeft;
+    const centred = offset - (track.clientWidth - target.clientWidth) / 2;
+    track.scrollTo({ left: Math.max(0, centred), behavior: "smooth" });
   }, []);
 
   /** One step on, wrapping at the end. The end is read from the track's own
@@ -153,12 +162,12 @@ export function VideoMoments({
     const track = trackRef.current;
     if (!track) return;
     const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 2;
-    if (atEnd) {
+    const current = centreId ? ids.indexOf(centreId) : 0;
+    if (atEnd || current >= ids.length - 1) {
       scrollToIndex(0);
       return;
     }
-    const current = centreId ? ids.indexOf(centreId) : 0;
-    scrollToIndex(Math.min(current + 1, ids.length - 1));
+    scrollToIndex(current + 1);
   }, [centreId, ids, scrollToIndex]);
 
   /** Any deliberate act by the visitor ends the rotation. The Pause control is
@@ -238,7 +247,7 @@ export function VideoMoments({
               className={cn(
                 "shrink-0",
                 carousel
-                  ? "w-[82%] snap-start sm:w-[46%] lg:w-[31.5%]"
+                  ? "w-[82%] snap-center sm:w-[46%] lg:w-[31.5%]"
                   : moments.length === 1
                     ? "w-full max-w-[360px]"
                     : "w-[82%] sm:w-[46%] lg:w-[31.5%]",

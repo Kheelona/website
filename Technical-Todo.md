@@ -141,6 +141,20 @@ own the moment a third video lands.
 - [x] ✅ **First video landed 2026-09-19**: `first-conversations`, a 38s montage of three children
       in three homes, 41MB source encoded to 3.00MB. It is LIVE in the repo and renders as a single
       centred film. **The three-video minimum is gone (§8.37-j)** — the count picks a treatment now.
+- [ ] 🟠 **Re-export the films without em dashes in the captions.** Founder decision 2026-09-19 was
+      to ship now and fix later, so this is a real queue item rather than a note. The Brand Bible
+      bans em dashes site-wide and calls it non-negotiable; nothing in this repo can reach a pixel,
+      so only a re-export fixes it. Known instances include "one more — so that there is play away
+      from the screen", "three little Lego bricks, and then you get two more — how many", "I don't
+      want to talk in Kannada — I want to talk English", "Carrom board is fun — but I do not know
+      how to play", and "A must-buy toy — Kheelu." Swapping any file is one command and the ids do
+      not change. **Poster frames were already chosen to avoid em dashes**, so the thumbnails read
+      cleanly today and only the played films do not.
+- [ ] 🟢 **Decide whether the montage should be first on a phone.** It is index 1, which makes it
+      the CENTRE tile on a three-up desktop exactly as instructed, and therefore the SECOND tile on
+      a phone. With 60% of traffic on phones, moving it to index 0 would make it first on mobile and
+      leftmost on desktop. The two cannot both hold; the instruction named the centre, so that is
+      what shipped.
 - [ ] 🔴 **More videos.** Follow `docs/video-conventions.md`, which was corrected by the first
       upload. At two it stays a centred static row; at **three it becomes the carousel** with
       arrows, dots and the silent loop on the centred tile.

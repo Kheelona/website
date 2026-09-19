@@ -90,7 +90,7 @@ describe("VideoMoments", () => {
 
   it("two videos are still a static row, not a carousel", () => {
     const { container } = render(<VideoMoments moments={[moment("a"), moment("b")]} />);
-    expect(container.querySelectorAll("li")).toHaveLength(2);
+    expect(container.querySelectorAll("[data-video-id]")).toHaveLength(2);
     expect(screen.queryByRole("button", { name: /carousel/i })).toBeNull();
     // and the track does not snap-scroll, because there is nothing to scroll to
     expect(container.querySelector("ul")?.className).not.toContain("snap-x");
@@ -125,7 +125,11 @@ describe("VideoMoments", () => {
     if (VIDEO_MOMENTS.length === 0) {
       expect(container).toBeEmptyDOMElement();
     } else {
-      expect(container.querySelectorAll("li")).toHaveLength(VIDEO_MOMENTS.length);
+      // scoped to real tiles, not every <li>: once the carousel appears its
+      // dots are list items too, so a bare "li" count reads double.
+      expect(container.querySelectorAll("[data-video-id]")).toHaveLength(
+        VIDEO_MOMENTS.length,
+      );
       // the contract that matters, whatever the count: no <video> at rest
       expect(container.querySelectorAll("video")).toHaveLength(0);
     }

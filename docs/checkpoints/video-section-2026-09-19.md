@@ -380,3 +380,67 @@ rather than churned, and raised with the founder as their call.
 
 Gates: tsc 0, eslint clean, `next build` 0, **1263 tests / 119 files**, `qa:sweep` clean 36/36.
 
+### Commit 7 — seven videos, the carousel is live, and two real defects found by looking
+
+The library is now **7 of a permitted 12, 22.36MB of a permitted ~48MB**. `a-parent-speaks` was
+REPLACED with the founder's v02 reframe (same id, new file) and five new films were added.
+
+**Order, and it is a founder instruction rather than a preference.** The montage is the central video
+and the parent testimonial sits to its right:
+
+| # | id | why here |
+|---|---|---|
+| 0 | `a-mother-joins-in` | a parent in the loop, left of centre |
+| **1** | **`first-conversations`** | **THE CENTRE TILE at rest (founder, 2026-09-19)** |
+| 2 | `a-parent-speaks` | directly to its right (founder) |
+| 3 | `a-story-in-two-languages` | |
+| 4 | `a-father-speaks` | |
+| 5 | `counting-out-loud` | Siddhant himself, straight after his father |
+| 6 | `learning-by-asking` | |
+
+**The centre slot is pinned by a test, not a comment**, via `VIDEO_CENTRE_INDEX`/`VIDEO_CENTRE_ID`.
+The failure mode is silent: appending rows is harmless, but INSERTING one near the top moves the
+montage out of the centre and nothing on the page would look broken.
+
+**🔴 DEFECT FOUND BY MEASURING, NOT BY LOOKING: "Next" was skipping a video.** The centre went
+1 → 3 → 5. `scrollToIndex` left-aligned the target, and left-aligning tile N makes tile N+1 the
+centred one on a three-up desktop, so each press advanced the centre by two. **The relationship
+between "leftmost" and "centre" depends on how many tiles fit, which is exactly the thing this
+component refuses to know.** Fixed by having `scrollToIndex` CENTRE its target and by snapping on
+`snap-center`: one instruction that means the same at every width. Verified by driving the control
+and reading `aria-current`: desktop now **1 → 2 → 3 → 4 → 5**, mobile **0 → 1 → 2 → 3 → 4**.
+This is the same lesson as §8.37-c, arrived at from the opposite direction.
+
+**A test that counted the wrong thing.** `querySelectorAll("li")` returned 14 for 7 videos: once the
+carousel appears its dots are list items too. Scoped to `[data-video-id]`. It had been passing only
+because there had never been carousel chrome on the page.
+
+**The stale poster was the documented `/_next/image` trap.** A replaced `public/` image served the
+old bytes through the optimizer; `rm -rf .next/cache/images` fixed it. Worth knowing that this bites
+on POSTERS specifically, because swapping a poster while keeping the filename is exactly the
+workflow the rulebook encourages.
+
+**Poster frames were chosen to avoid em dashes** where a clean caption existed, so every thumbnail
+on the page reads cleanly even though the captions inside the films do not. Nikita's poster moved
+from t=2 to t=8 for two reasons: the reframe puts her eyes above the play badge at that moment, and
+the caption there is "I stay in Yelahanka, Bengaluru", which is local credibility on an India-first
+product.
+
+**Encoding, measured per file rather than assumed.** The reframe needed CRF 36 to fit the 4MB budget
+(it is zoomed, so more detail per pixel); the five new films fit at CRF 32. The loop for
+`a-father-speaks` and `a-mother-joins-in` needed 10fps at 480x854 to come under 400KB.
+
+### 🧑 Two things for the founder
+
+1. **Em dashes are burned into every new film's captions** ("one more — so that there is play away
+   from the screen"). Founder decision 2026-09-19: **ship now, re-export later.** Recorded as a
+   dated exception rather than an oversight, and queued in `Technical-Todo.md`.
+2. **On a phone the montage is SECOND, not first.** "Central" is a three-up desktop idea; a phone
+   shows one tile, so the same order puts `a-mother-joins-in` first and the montage next to it.
+   With 60% of traffic on phones this is worth a deliberate look. Moving the montage to index 0
+   would make it first on mobile and leftmost (not central) on desktop: the two cannot both hold,
+   and the instruction named the centre.
+
+Gates: tsc 0, eslint clean, `next build` 0, **1266 tests / 119 files**, `qa:sweep` clean 36/36 with
+seven real videos and **zero `video-caption` violations**.
+
