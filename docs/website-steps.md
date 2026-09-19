@@ -2747,3 +2747,47 @@ failure looks like broken code and is nothing of the kind, and `git stash` is en
 these documents.** `/ai-toys-for-kids-in-india` joined the route list in the 2026-09-11 round and the
 prose was never updated. Verified clean 36/36 on 2026-09-19 with 90 accepted white-on-orange nodes
 and **zero `video-caption` violations**, which is the check §8.37-a exists for.
+
+## §8.37-j · The count picks a TREATMENT, and the first real upload is what taught it (2026-09-19)
+
+`VIDEO_MIN_TO_SHOW = 3` meant the section did not render below three videos, on the reasoning that
+one tile in a three-across row reads as two things that failed to load. **The reasoning was right
+about the layout and wrong about the conclusion**, and the first real file is what exposed it:
+hiding real footage of real children because only one clip had arrived is a worse answer than
+showing it well.
+
+So `VIDEO_MIN_FOR_CAROUSEL = 3` now picks a treatment and nothing is hidden except nothing:
+
+| Videos | Treatment |
+|---|---|
+| 0 | `VideoMoments` returns `null`; both pages omit the room. Unchanged, and still the point. |
+| 1 or 2 | A **centred static row**. No arrows, dots, rotation or silent loop. A lone film gets a wider tile (`max-w-[360px]`) so it reads as one film rather than a gap. |
+| 3+ | The carousel, exactly as designed. |
+
+**The static state has NO motion, deliberately.** Carousel chrome over a set that cannot advance is
+furniture pretending to be a control, and an auto-running loop with no Pause beside it fails
+WCAG 2.2.2. `rotating` is therefore `carousel && (motionOverride ?? motionWelcome)`: the absent
+control is correct rather than missing, and a test asserts it stays that way with the OS reporting
+that motion is welcome.
+
+**`videoLede()` is single-sourced for the same class of bug.** Three pages render this section, and
+"Press play on any of them" over ONE film is a plural promise that survives every review by being
+technically small and visibly wrong. It shipped that way for exactly one screenshot.
+
+### What the first real file taught about the rulebook
+
+1. **A subtitle-free poster frame may not exist.** The step said to pick one; on a montage of
+   continuous dialogue, every frame sampled across 38 seconds carried a caption. The rule is now to
+   prefer a **short complete line** over a mid-sentence fragment, which is the thing that actually
+   reads as a loading fault.
+2. **Keep the native 1080x1920.** Measured, not assumed: 720x1280 at CRF 28 came out both LARGER
+   (2.69MB) and visibly softer on caption text than 1080x1920 at CRF 32 (3.00MB, from a 41MB
+   source). **Compare the subtitle band, not the whole frame** — it is the first thing to fall apart
+   and the only thing a viewer must be able to read.
+3. **This machine's ffmpeg has no `libwebp` encoder.** The animated loop goes through frames plus
+   `img2webp`. `ffprobe` reports `0,0` for an animated WebP; use `webpinfo`, which reports
+   `Animation: 1` and `Loop count : 0`.
+4. **`vi.stubGlobal` is not undone by `restoreAllMocks`.** A test that stubbed `matchMedia` to
+   "motion is welcome" leaked into every later test in the file and failed two of them. The file now
+   restores the `test/setup.ts` defaults by hand in `afterEach`, rather than calling
+   `unstubAllGlobals`, which would strip the setup's own stubs for APIs jsdom does not implement.

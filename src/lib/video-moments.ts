@@ -7,10 +7,11 @@
  *  cannot learn that from prose. Footage of a real child asking Kheelu a real
  *  question is the only thing on this site that answers it.
  *
- *  THE LIST IS EMPTY UNTIL THE FOUNDER SUPPLIES FILES, AND THAT IS CORRECT.
- *  `VideoMoments` renders nothing at all when this array is empty, and both
- *  pages omit the section entirely, so an empty library costs a visitor
- *  nothing and shows them no placeholder. Never seed this with stock footage,
+ *  AN EMPTY LIST RENDERS NOTHING, AND THAT IS CORRECT. `VideoMoments` returns
+ *  null when this array is empty and both pages omit the section entirely, so
+ *  an empty library costs a visitor nothing and shows them no placeholder.
+ *  One or two videos render as a centred static row rather than a carousel
+ *  (§8.37-j); three or more earn the carousel chrome. Never seed this with stock footage,
  *  a demo clip, or a frame of the launch film to "show the design" — the
  *  never-invent law covers social proof more strictly than it covers copy,
  *  because a fake parent is a lie about a person rather than about a product.
@@ -97,19 +98,67 @@ export const VIDEO_DIR = "/video/moments";
  *      hasOpenCaptions: true,
  *      consentOnFile: true,
  *    } */
-export const VIDEO_MOMENTS: readonly VideoMoment[] = [];
+export const VIDEO_MOMENTS: readonly VideoMoment[] = [
+  {
+    id: "first-conversations",
+    chip: "Real homes",
+    label:
+      "Children asking Kheelu their own questions, in their own languages.",
+    alt: "Children at home, talking to the cream Kheelu plush.",
+    src: `${VIDEO_DIR}/first-conversations.mp4`,
+    poster: `${VIDEO_DIR}/first-conversations.jpg`,
+    preview: `${VIDEO_DIR}/first-conversations.webp`,
+    width: VIDEO_ASPECT.width,
+    height: VIDEO_ASPECT.height,
+    hasOpenCaptions: true,
+    consentOnFile: true,
+  },
+];
 
-/** Whether the section has enough to be worth showing.
+/** How many videos it takes before the section is a CAROUSEL rather than a
+ *  plain row.
  *
- *  Three, not one, and the reason is honesty rather than layout: the design
- *  shows three at a time and advances through a set. One video in a
- *  three-across row reads as two things that failed to load, and a carousel
- *  that cannot advance is a carousel that is lying about having more. Below
- *  three, both pages leave the section out entirely. */
-export const VIDEO_MIN_TO_SHOW = 3;
+ *  This was `VIDEO_MIN_TO_SHOW = 3` and it meant the section did not render at
+ *  all below three, on the reasoning that one tile in a three-across row reads
+ *  as two things that failed to load. That reasoning was right about the
+ *  LAYOUT and wrong about the CONCLUSION, and the first real video is what
+ *  showed it: hiding real footage of real children because only one had
+ *  arrived is a worse answer than showing it well (2026-09-19, §8.37-j).
+ *
+ *  So the count now picks a TREATMENT, and nothing is ever hidden:
+ *    - 0 videos: the section does not render. Still true, still the point.
+ *    - 1 or 2: a centred, static row. No arrows, no dots, no rotation and no
+ *      silent loop, because carousel chrome over a set that cannot advance is
+ *      furniture pretending to be a control. A single tile is allowed to be
+ *      wider, so it reads as one film rather than a gap where two others
+ *      should be.
+ *    - 3 or more: the carousel, exactly as designed. */
+export const VIDEO_MIN_FOR_CAROUSEL = 3;
 
+/** The section's lede, which has to agree with how many films are under it.
+ *
+ *  Single-sourced because three pages render this section and "Press play on
+ *  any of them" over ONE film is the kind of plural promise that survives
+ *  every review by being technically small and visibly wrong. It shipped that
+ *  way for exactly one screenshot. */
+export function videoLede(
+  moments: readonly VideoMoment[] = VIDEO_MOMENTS,
+): string {
+  return moments.length > 1
+    ? "Real children in real homes. Press play on any of them."
+    : "Real children in real homes. Press play.";
+}
+
+/** Is there anything at all to show? */
 export function hasVideoMoments(
   moments: readonly VideoMoment[] = VIDEO_MOMENTS,
 ): boolean {
-  return moments.length >= VIDEO_MIN_TO_SHOW;
+  return moments.length > 0;
+}
+
+/** Enough to advance through, so the carousel chrome earns its place. */
+export function isVideoCarousel(
+  moments: readonly VideoMoment[] = VIDEO_MOMENTS,
+): boolean {
+  return moments.length >= VIDEO_MIN_FOR_CAROUSEL;
 }

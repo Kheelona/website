@@ -5,7 +5,7 @@ import { preorderMode } from "@/lib/store/mode";
 import { PreorderForm, OrderSummary } from "@/features/preorder";
 import { KHEELU_ART } from "@/lib/kheelu-art";
 import { VideoMoments } from "@/components/organisms/VideoMoments";
-import { VIDEO_MOMENTS, hasVideoMoments } from "@/lib/video-moments";
+import { VIDEO_MOMENTS, hasVideoMoments, videoLede } from "@/lib/video-moments";
 import {
   formatInr,
   FULL_PRICE,
@@ -116,7 +116,7 @@ export default async function StorePage() {
           Families already using Kheelu.
         </h2>
         <p className="mb-8 max-w-[52ch] text-[16px] leading-relaxed text-ink">
-          Real children in real homes. Press play on any of them.
+          {videoLede()}
         </p>
         <VideoMoments moments={VIDEO_MOMENTS} />
       </section>

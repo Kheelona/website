@@ -39,15 +39,38 @@ this paragraph and say so in the checkpoint.
 WCAG 1.2.2, because the player ships no caption track. A video without them on screen is an
 accessibility regression that no test can see, which is exactly why it is first on this list.
 
-Roughly 30 seconds of 1080x1920 H.264 fits 4MB at about 1100kbps. If it does not fit, shorten it
-rather than raising the bitrate ceiling: the budget is set against a parent on mobile data in India,
-not against a disk.
+**The settings that were measured rather than guessed** (2026-09-19, a 38s montage arriving at 41MB):
+
+```
+ffmpeg -y -i <source>.mp4 -c:v libx264 -crf 32 -preset veryslow \
+  -profile:v high -pix_fmt yuv420p -movflags +faststart \
+  -c:a aac -b:a 80k public/video/moments/<id>.mp4
+```
+
+That produced **3.00MB from 41MB** with subtitles still crisp. Two things were checked and are worth
+not re-deriving: **keep the native 1080x1920** — a 720x1280 encode at CRF 28 came out both *larger*
+(2.69MB) and visibly softer on the caption text — and **compare the subtitle band, not the whole
+frame**, because that is the first thing to fall apart and the only thing a viewer must be able to
+read. `-movflags +faststart` matters: without it the moov atom sits at the end and playback waits
+for the whole file.
+
+If a clip will not fit 4MB, shorten it rather than raising the ceiling. The budget is set against a
+parent on mobile data in India, not against a disk.
 
 ### 2. Export the poster
 
-One still, **1080x1920**, `.jpg`. Pick a frame with a face in it and with the subtitles NOT showing,
-because this is what a visitor sees before pressing play and a frozen half-sentence reads as a
-loading fault.
+One still, **1080x1920**, `.jpg`. Pick a frame with a face in it, the plush visible, and a subtitle
+that is a **short complete line** rather than a fragment.
+
+*Corrected 2026-09-19, on the first real upload.* This step used to say "with the subtitles NOT
+showing". On a montage of continuous dialogue **no such frame exists** — every frame sampled across
+38 seconds carried a caption. Chasing one wastes time, and a mid-sentence fragment is the thing
+actually worth avoiding, because that is what reads as a loading fault.
+
+```
+ffmpeg -y -ss <seconds> -i public/video/moments/<id>.mp4 -vframes 1 -q:v 3 \
+  public/video/moments/<id>.jpg
+```
 
 ### 3. Export the silent loop
 
@@ -56,7 +79,21 @@ in the centre plays this, and it is what makes the row feel alive without puttin
 page.
 
 Keep it under about 400KB. If it will not compress, drop the frame rate to 12fps before dropping
-resolution.
+resolution. Real numbers: 36 frames at 540x960 lands around 300KB.
+
+**`ffmpeg` on this machine has NO `libwebp` encoder**, so `-c:v libwebp` fails with
+`Unknown encoder`. Go through frames and `img2webp` (from Homebrew's `webp`) instead:
+
+```
+ffmpeg -y -ss <start> -t 3 -i public/video/moments/<id>.mp4 \
+  -vf "fps=12,scale=540:960" /tmp/frames/f_%03d.png
+img2webp -loop 0 -lossy -q 55 -d 83 /tmp/frames/f_*.png \
+  -o public/video/moments/<id>.webp
+```
+
+Verify it really is animated: `webpinfo <file>.webp` should say `Animation: 1` and
+`Loop count : 0`. Note `ffprobe` reports `0,0` for an animated WebP and that is an ffprobe
+limitation, not a broken file.
 
 **This one is optional.** A row with no `preview` simply stays still, which is a fine way to publish
 a video today and add its loop later.
@@ -128,11 +165,32 @@ Fix that before shipping; do not add it to the sweep's accepted list.
 
 ---
 
-## What the section does with fewer than three videos
+## What the section does at each count (§8.37-j)
 
-Nothing. `VideoMoments` renders `null`, and both pages leave the whole room out. This is deliberate:
-a heading that announces real families above an empty shelf is worse than no heading. So videos can
-land one at a time and the section appears on its own when the third arrives.
+The count picks a **treatment**, and nothing is ever hidden except nothing:
+
+| Videos | What renders |
+|---|---|
+| 0 | The section does not render, and both pages omit the room. A heading above an empty shelf is worse than no heading. |
+| 1 or 2 | A centred, static row. No arrows, no dots, no rotation, no silent loop. A lone film gets a wider tile so it reads as one film rather than a gap where two others should be. |
+| 3 or more | The carousel. |
+
+*This replaced a rule that hid the section below three videos. The first real upload is what showed
+it was wrong: holding back real footage of real children because only one clip had arrived is a
+worse answer than showing it well.*
+
+**The lede follows the count too**, from `videoLede()` in `src/lib/video-moments.ts`, because "Press
+play on any of them" over a single film is a plural promise. Do not hardcode that sentence on a page.
+
+## Two things to check on the source export
+
+- **A burned-in "sound on" badge.** Reels exported for Instagram or TikTok often carry a small grey
+  speaker chip in a corner. Our player has native controls with its own volume, so that badge is a
+  foreign UI element that does nothing when tapped. It is cosmetic, not blocking, but a clean
+  re-export is better. *(The first upload has one.)*
+- **A child's name spoken or captioned in the video.** A first name is acceptable under the label
+  rule, and consent covers publication, but it is worth a deliberate look rather than a surprise
+  after launch. *(The first upload contains one, in a caption.)*
 
 ## What never goes in
 

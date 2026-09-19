@@ -299,3 +299,44 @@ and now runs it over `VideoMoments`.
 
 Laws: **§8.37-i** added, and §8.22-e/f/h and §8.29-a corrected where they named `AudioMoments`.
 
+### Commit 5 — the first real video, and what it changed
+
+Source: `kheelu-montage-reel_38s_9x16_1080x1920_v03-nocards_final.mp4`, 41MB, 37.9s, 1080x1920 H.264
++ AAC. A montage of **three children in three homes** with the cream Kheelu, subtitles burned in and
+a "Kheelu" speaker chip on the toy's lines. Exactly the content the section was built for.
+
+Shipped as `first-conversations`: **3.00MB** mp4 (CRF 32, veryslow, faststart, 80k AAC), a 1080x1920
+poster at t=4s, and a 540x960 / 36-frame silent loop at 0.30MB.
+
+**Two rulebook steps were wrong and are corrected, both found by doing the work rather than reading
+it.** The poster step said to pick a frame with no subtitle showing; on continuous dialogue no such
+frame exists, so the rule is now "a short complete line, never a fragment". And the encode: measured
+side by side, **720x1280 at CRF 28 was both larger and softer** than native 1080x1920 at CRF 32, so
+the rulebook now says keep native resolution and judge on the subtitle band, which is the first
+thing to fall apart.
+
+**The 3-video minimum was wrong and is replaced (§8.37-j).** `VIDEO_MIN_TO_SHOW = 3` hid the section
+below three videos. Holding back real footage because only one clip had arrived is a worse answer
+than showing it well, so the count now picks a TREATMENT: 0 renders nothing, 1 or 2 render a centred
+static row with no carousel chrome and no motion at all, 3+ is the carousel. The static state has no
+Pause control because it has nothing to pause, which is correct rather than missing, and a test holds
+that line with the OS reporting motion is welcome.
+
+**A plural promise over a single film, caught in a screenshot.** The lede read "Press play on any of
+them" above one video. Three pages render this section, so the sentence is now `videoLede()` in the
+lib and is pinned by tests.
+
+**Verified hydrated, in a real browser, against the production build:** 0 `<video>` at rest, 1 tile,
+no carousel chrome, no silent loop; on play, one unmuted video playing `first-conversations.mp4`,
+37.9s duration. `qa:sweep` clean 36/36 with the real file in place and **zero `video-caption`
+violations**, which is the first time §8.37-a has been tested against real content.
+
+**Two things for the founder, neither blocking.** The export carries a burned-in grey **"sound on"
+badge** top-right, a social-platform convention that does nothing here because the player has native
+controls; a clean re-export would remove it and swapping the file is one command. And a child's
+**first name is spoken and captioned** ("You are so smart, Arha."); consent covers publication and a
+first name is within the label rule, but it deserved a deliberate look rather than a surprise.
+
+Gates: tsc 0, eslint clean on every touched file, `next build` 0, **1263 tests / 119 files**,
+`qa:sweep` clean 36/36.
+

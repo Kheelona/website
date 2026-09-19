@@ -7,6 +7,7 @@ import {
   VIDEO_MAX_BYTES,
   VIDEO_MAX_COUNT,
   VIDEO_DIR,
+  videoLede,
   type VideoMoment,
 } from "@/lib/video-moments";
 
@@ -218,5 +219,26 @@ describe("the rulebook exists and agrees with the code", () => {
     expect(text).toContain(`${VIDEO_ASPECT.width}x${VIDEO_ASPECT.height}`);
     expect(text).toContain(`${VIDEO_MAX_BYTES / 1024 / 1024}MB`);
     expect(text).toContain(`${VIDEO_MAX_COUNT} videos`);
+  });
+});
+
+describe("the section's lede agrees with how many films are under it", () => {
+  const one = [fixture()];
+  const two = [fixture(), fixture({ id: "second" })];
+
+  it("says nothing plural over a single film", () => {
+    expect(videoLede(one)).toBe("Real children in real homes. Press play.");
+    expect(videoLede(one)).not.toMatch(/any of them/);
+  });
+
+  it("invites a choice once there is one to make", () => {
+    expect(videoLede(two)).toMatch(/any of them/);
+  });
+
+  it("is what the live list would render, whatever the count", () => {
+    // guards the real call the pages make, not just the fixtures
+    const live = videoLede();
+    expect(live.startsWith("Real children in real homes.")).toBe(true);
+    expect(live.includes("any of them")).toBe(VIDEO_MOMENTS.length > 1);
   });
 });

@@ -15,7 +15,7 @@ import { Eyebrow } from "@/components/atoms/Eyebrow";
 import { PRESS } from "@/lib/interactions";
 import {
   VIDEO_MOMENTS,
-  VIDEO_MIN_TO_SHOW,
+  isVideoCarousel,
   type VideoMoment,
 } from "@/lib/video-moments";
 
@@ -101,6 +101,12 @@ export function VideoMoments({
   moments?: readonly VideoMoment[];
   className?: string;
 }) {
+  /* One or two videos are a row, not a carousel (§8.37-j). Carousel chrome
+     over a set that cannot advance is furniture pretending to be a control,
+     and an auto-running loop with no Pause beside it fails WCAG 2.2.2, so the
+     static state has no motion at all rather than motion without a switch. */
+  const carousel = isVideoCarousel(moments);
+
   const trackRef = useRef<HTMLUListElement>(null);
   const tileRefs = useRef(new Map<string, HTMLLIElement>());
 
@@ -119,12 +125,13 @@ export function VideoMoments({
   const [motionOverride, setMotionOverride] = useState<boolean | null>(null);
   const motionWelcome = useMotionWelcome();
   /** Both the auto-advance AND the centred tile's silent loop. */
-  const rotating = motionOverride ?? motionWelcome;
+  const rotating = carousel && (motionOverride ?? motionWelcome);
   /** Set once a pointer is over the section or focus is inside it. Suspends
    *  the advance without turning the visitor's Pause preference off. */
   const [held, setHeld] = useState(false);
 
   const ids = useMemo(() => moments.map((m) => m.id), [moments]);
+
 
   const scrollToIndex = useCallback((index: number) => {
     const track = trackRef.current;
@@ -193,7 +200,7 @@ export function VideoMoments({
     setPlayingId((current) => (current === id ? null : current));
   }, []);
 
-  if (moments.length < VIDEO_MIN_TO_SHOW) return null;
+  if (moments.length === 0) return null;
 
   return (
     <div
@@ -205,7 +212,12 @@ export function VideoMoments({
     >
       <ul
         ref={trackRef}
-        className="video-track flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 md:gap-5"
+        className={cn(
+          "flex gap-4 md:gap-5",
+          carousel
+            ? "video-track snap-x snap-mandatory overflow-x-auto pb-2"
+            : "flex-wrap justify-center",
+        )}
       >
         {moments.map((m) => {
           const isPlaying = playingId === m.id;
@@ -223,7 +235,14 @@ export function VideoMoments({
                 if (el) tileRefs.current.set(m.id, el);
                 else tileRefs.current.delete(m.id);
               }}
-              className="w-[82%] shrink-0 snap-start sm:w-[46%] lg:w-[31.5%]"
+              className={cn(
+                "shrink-0",
+                carousel
+                  ? "w-[82%] snap-start sm:w-[46%] lg:w-[31.5%]"
+                  : moments.length === 1
+                    ? "w-full max-w-[360px]"
+                    : "w-[82%] sm:w-[46%] lg:w-[31.5%]",
+              )}
             >
               <div
                 className="relative overflow-hidden rounded-(--radius-card) border border-line bg-ink-head"
@@ -268,6 +287,7 @@ export function VideoMoments({
         })}
       </ul>
 
+      {carousel && (
       <Controls
         moments={moments}
         centreId={centreId}
@@ -287,6 +307,7 @@ export function VideoMoments({
         }}
         onToggleMotion={() => setMotionOverride(!rotating)}
       />
+      )}
     </div>
   );
 }

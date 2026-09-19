@@ -7,7 +7,7 @@ import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { FootnotesRow, Footnote, V3_FOOTNOTES } from "@/components/molecules/FootnotesRow";
 import { Faq, type FaqEntry } from "@/components/molecules/Faq";
 import { pageGraph, faqPage, breadcrumbs, KHEELU_PRODUCT, pageMeta, jsonLd } from "@/lib/seo";
-import { VIDEO_MOMENTS, hasVideoMoments } from "@/lib/video-moments";
+import { VIDEO_MOMENTS, hasVideoMoments, videoLede } from "@/lib/video-moments";
 import { RecognitionStrip } from "@/components/organisms/RecognitionStrip";
 import { ParentQuotes } from "@/components/organisms/ParentQuotes";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
@@ -198,7 +198,7 @@ export default function HomePage() {
                 eyebrow="See it for yourself"
                 title="Watch a child meet Kheelu."
                 titleClassName="mb-3"
-                lede="Real children in real homes. Press play on any of them."
+                lede={videoLede()}
                 ledeClassName="mb-10 max-w-[58ch]"
               />
             ) : (

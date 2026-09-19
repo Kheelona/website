@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { VideoMoments } from "./VideoMoments";
 import {
   VIDEO_MOMENTS,
-  VIDEO_MIN_TO_SHOW,
+  VIDEO_MIN_FOR_CAROUSEL,
   VIDEO_ASPECT,
   type VideoMoment,
 } from "@/lib/video-moments";
@@ -34,25 +34,101 @@ beforeEach(() => {
   Element.prototype.scrollTo = vi.fn() as unknown as typeof Element.prototype.scrollTo;
 });
 
-afterEach(() => vi.restoreAllMocks());
+/* `vi.stubGlobal` is NOT undone by restoreAllMocks, and several tests below
+   stub matchMedia or IntersectionObserver. Without this the first test that
+   says "motion is welcome" silently makes every later test in the file think
+   so too, which is exactly how two of them failed once. Restoring the
+   test/setup.ts defaults by hand rather than calling unstubAllGlobals, because
+   that would strip the setup's own stubs and jsdom implements neither API. */
+afterEach(() => {
+  vi.restoreAllMocks();
+  vi.stubGlobal("matchMedia", (query: string) => ({
+    matches: false,
+    media: query,
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+  }));
+  vi.stubGlobal(
+    "IntersectionObserver",
+    class {
+      observe = vi.fn();
+      unobserve = vi.fn();
+      disconnect = vi.fn();
+      takeRecords = () => [];
+      root = null;
+      rootMargin = "";
+      thresholds = [];
+    },
+  );
+});
 
 describe("VideoMoments", () => {
-  it("renders nothing below the minimum, so a half-stocked library shows no section", () => {
-    const { container } = render(<VideoMoments moments={[moment("only")]} />);
-    expect(container).toBeEmptyDOMElement();
-  });
-
   it("renders nothing for an empty library", () => {
     const { container } = render(<VideoMoments moments={[]} />);
     expect(container).toBeEmptyDOMElement();
   });
 
-  it("the live VIDEO_MOMENTS list is still empty, so nothing ships on the site yet", () => {
-    // Not a style assertion: it records that no real footage has landed. When
-    // the founder adds rows this flips, and the assets test covers them.
-    expect(VIDEO_MOMENTS.length).toBeLessThan(VIDEO_MIN_TO_SHOW);
+  /* ── Treatment by count (§8.37-j) ─────────────────────────────────────── */
+
+  it("shows a single video rather than hiding it, with no carousel chrome", () => {
+    render(<VideoMoments moments={[moment("only")]} />);
+    // the film itself is there
+    expect(screen.getByRole("button", { name: /Play: Chip only/i })).toBeInTheDocument();
+    // and nothing that pretends it can advance
+    expect(screen.queryByRole("button", { name: /next video/i })).toBeNull();
+    expect(screen.queryByRole("button", { name: /previous video/i })).toBeNull();
+    expect(screen.queryByRole("button", { name: /show video/i })).toBeNull();
+    expect(screen.queryByRole("button", { name: /carousel/i })).toBeNull();
+  });
+
+  it("gives a lone film a wider tile, so it reads as one film and not a gap", () => {
+    const { container } = render(<VideoMoments moments={[moment("only")]} />);
+    const tile = container.querySelector("li");
+    expect(tile?.className).toContain("max-w-[360px]");
+    expect(tile?.className).not.toContain("lg:w-[31.5%]");
+  });
+
+  it("two videos are still a static row, not a carousel", () => {
+    const { container } = render(<VideoMoments moments={[moment("a"), moment("b")]} />);
+    expect(container.querySelectorAll("li")).toHaveLength(2);
+    expect(screen.queryByRole("button", { name: /carousel/i })).toBeNull();
+    // and the track does not snap-scroll, because there is nothing to scroll to
+    expect(container.querySelector("ul")?.className).not.toContain("snap-x");
+  });
+
+  it("runs NO motion in the static state, so WCAG 2.2.2 needs no Pause control", () => {
+    // motion is welcome as far as the OS is concerned...
+    vi.stubGlobal("matchMedia", (query: string) => ({
+      matches: true,
+      media: query,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    }));
+    const { container } = render(<VideoMoments moments={[moment("a"), moment("b")]} />);
+    // ...and still nothing moves, so the absent control is correct rather than missing
+    expect(container.querySelector("picture")).toBeNull();
+    expect(screen.queryByRole("button", { name: /carousel/i })).toBeNull();
+  });
+
+  it("becomes a carousel at the threshold, and not before", () => {
+    const below = Array.from({ length: VIDEO_MIN_FOR_CAROUSEL - 1 }, (_, i) => moment(`b${i}`));
+    const at = Array.from({ length: VIDEO_MIN_FOR_CAROUSEL }, (_, i) => moment(`a${i}`));
+    const { unmount } = render(<VideoMoments moments={below} />);
+    expect(screen.queryByRole("button", { name: /next video/i })).toBeNull();
+    unmount();
+    render(<VideoMoments moments={at} />);
+    expect(screen.getByRole("button", { name: /next video/i })).toBeInTheDocument();
+  });
+
+  it("the live VIDEO_MOMENTS list renders whatever it holds", () => {
     const { container } = render(<VideoMoments />);
-    expect(container).toBeEmptyDOMElement();
+    if (VIDEO_MOMENTS.length === 0) {
+      expect(container).toBeEmptyDOMElement();
+    } else {
+      expect(container.querySelectorAll("li")).toHaveLength(VIDEO_MOMENTS.length);
+      // the contract that matters, whatever the count: no <video> at rest
+      expect(container.querySelectorAll("video")).toHaveLength(0);
+    }
   });
 
   it("renders one tile per moment, with its chip and label", () => {

@@ -103,10 +103,32 @@ AudioMoments' own 6, then `preorder-copy` −2, `preorder-cta` −2, `stories-pa
 those globs, and `redirects-vs-assets` −1 because `public/audio/` stopped existing as a directory to
 guard. Also corrected: **`qa:sweep` is 36 route/width combinations, not the 34 these docs quote.**
 
-**Waiting on the founder:** the video files themselves (see the rulebook) and — **recommended before
-the first video lands** — the repo-visibility decision, because footage of real children in a public
-git repo is permanent. The say line `"Real homes, real kids. Press play."` is APPROVED
-(founder, 2026-09-19).
+**🎥 THE FIRST REAL VIDEO IS LIVE IN THE REPO (2026-09-19): `first-conversations`**, a 38s montage of
+three children in three homes with the cream Kheelu, subtitles burned in. 41MB source encoded to
+**3.00MB** at native 1080x1920 CRF 32. Verified hydrated: 0 `<video>` at rest, one unmuted video on
+play, `qa:sweep` clean 36/36 with real content and **zero `video-caption` violations**.
+
+**⚠ THE 3-VIDEO MINIMUM IS GONE (§8.37-j).** `VIDEO_MIN_TO_SHOW` hid the section below three videos;
+the first real upload showed that holding back real footage because only one clip arrived is worse
+than showing it well. **The count now picks a TREATMENT**: 0 renders nothing, **1 or 2 render a
+centred static row with NO carousel chrome and no motion at all** (nothing to pause means the absent
+Pause control is correct, not missing), 3+ is the carousel. `hasVideoMoments()` now means "any", and
+`isVideoCarousel()` is the threshold. **`videoLede()` is single-sourced** because "Press play on any
+of them" over ONE film shipped for exactly one screenshot.
+
+**Three rulebook corrections from doing it for real:** a subtitle-free poster frame **does not exist**
+on continuous dialogue (prefer a short complete line over a fragment) · **keep native 1080x1920**,
+because 720x1280 CRF 28 measured both LARGER and softer than 1080 CRF 32, and you judge on the
+**subtitle band** · this machine's **ffmpeg has no `libwebp`**, so the loop goes through `img2webp`,
+and `ffprobe` reporting `0,0` for an animated WebP is an ffprobe limitation (use `webpinfo`).
+**Also: `vi.stubGlobal` is NOT undone by `restoreAllMocks`** and leaked "motion is welcome" across a
+whole test file.
+
+**Waiting on the founder:** more videos (see the rulebook) · the **repo-visibility decision**, now
+urgent because real footage of real children is in the repo · two non-blocking notes on the first
+file, a burned-in **"sound on" badge** from a social export that does nothing here, and a child's
+**first name** spoken and captioned in it. The say line `"Real homes, real kids. Press play."` is
+APPROVED (founder, 2026-09-19).
 
 
 **🟣 …AND ITS FOLLOW-THROUGH LANDED 2026-09-12. All of the below is live and verified on

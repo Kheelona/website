@@ -138,9 +138,18 @@ own the moment a third video lands.
 
 ## 🧑 Founder
 
-- [ ] 🔴 **The videos themselves.** Follow `docs/video-conventions.md`. Per video: written consent
-      first, then a vertical 1080x1920 H.264 export under 4MB with **subtitles burned in**, a poster
-      JPG, and a 3-second silent animated WebP. Three is the minimum before anything appears.
+- [x] ✅ **First video landed 2026-09-19**: `first-conversations`, a 38s montage of three children
+      in three homes, 41MB source encoded to 3.00MB. It is LIVE in the repo and renders as a single
+      centred film. **The three-video minimum is gone (§8.37-j)** — the count picks a treatment now.
+- [ ] 🔴 **More videos.** Follow `docs/video-conventions.md`, which was corrected by the first
+      upload. At two it stays a centred static row; at **three it becomes the carousel** with
+      arrows, dots and the silent loop on the centred tile.
+- [ ] 🟢 **Two non-blocking notes on the first file.** It carries a burned-in grey **"sound on"
+      badge** top-right from a social-platform export, which does nothing here because the player
+      has native controls; a clean re-export removes it and swapping the file is one command. And a
+      child's **first name is spoken and captioned** in it ("You are so smart, Arha."). Consent
+      covers publication and a first name is within the label rule, but it is flagged once so it is
+      a decision rather than a surprise.
 - [x] ✅ **Kheelu say line APPROVED 2026-09-19**: `"Real homes, real kids. Press play."` It is used
       only when the library has three or more videos; in the empty state the room carries no say line
       at all, rather than an unapproved substitute.
