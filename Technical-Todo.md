@@ -61,12 +61,15 @@ host-gated to `POSTHOG_HOSTS` — **a Vercel secret was offered and correctly de
 
 ## 🤖 Mine, and NONE of it is verifiable from this repo
 
-- [ ] 🔴 **Confirm on PRODUCTION that PostHog actually works, once this deploys.** Nothing below was
-      checkable locally, because every tag is host-gated and this repo cannot deploy. Four things to
-      check, in order: (1) events arrive in project 617632; (2) **session replay actually starts** —
-      this is the one most likely to be broken, because it depends on `us-assets.i.posthog.com`
-      being allowed in `script-src`, and the failure is silent (§8.38-b); (3) replay does **not**
-      run on `/store/thanks`; (4) autocapture produces nothing from that page's order summary.
+- [x] 🔴 **Confirm on PRODUCTION that PostHog actually works — DONE 2026-09-19, and it found a
+      live privacy defect.** Events reach project 617632 (`/s/` → 200), session replay starts
+      (`posthog-recorder.js` → 200, the check flagged as the likeliest silent failure), error
+      tracking runs, and the CSP is complete with no refusals. **Replay was recording
+      `/thanks` — the deny list held the route file path `/store/thanks`, which a rewrite means the
+      browser never reports.** Fixed in `34578f7`, verified with its control: the recorder loads on
+      `store.kheelona.com/` and does not load on `store.kheelona.com/thanks`. Only check 4
+      (autocapture on the paid order summary) is unverified in production, because reaching that view
+      needs a real paid order; it is covered by test.
 - [ ] 🔴 **Read the production CSP reports before the §8.28-a enforce flip, and note that the clock
       RESET AGAIN on 2026-09-19.** Two PostHog origins joined the policy, so any Report-Only report
       read before that date says nothing about them. This is the second reset; the Meta Pixel caused
