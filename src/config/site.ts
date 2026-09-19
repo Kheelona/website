@@ -318,9 +318,16 @@ export const POSTHOG_KEY = "phc_ute69SyrVALLjx3bW8xUNVqiALe7RRNbJp9KuZDd9726";
  *  (session recorder, error tracking, surveys, toolbar) come from
  *  `us-assets.i.posthog.com`. BOTH are in the CSP — see security-headers.ts.
  *
- *  Note this is the ingestion host, NOT `us.posthog.com`, which is the
- *  dashboard the founder logs into. Pointing the SDK at the dashboard host is
- *  the classic first-try mistake and fails silently. */
+ *  Note this is the ingestion host, NOT `us.posthog.com`, which is the dashboard
+ *  the founder logs into. Pointing the SDK at the dashboard host is the classic
+ *  first-try mistake and fails silently.
+ *
+ *  THE ASSET HOST IS NOT CONFIGURED ANYWHERE — it is derived. Read out of the
+ *  SDK's own request router rather than its docs: `endpointFor("assets", …)`
+ *  builds `https://${region}-assets.i.posthog.com`, so setting `api_host` to
+ *  the US ingestion host is what produces `us-assets.i.posthog.com`. This
+ *  constant exists so the CSP and the gate name the same origin, and so that
+ *  changing region is one edit and not a hunt. */
 export const POSTHOG_API_HOST = "https://us.i.posthog.com";
 export const POSTHOG_ASSET_HOST = "https://us-assets.i.posthog.com";
 

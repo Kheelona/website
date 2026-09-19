@@ -78,6 +78,24 @@ const SOURCES = {
    *  endpoints and there is no reason to admit the rest of the estate. */
   metaPixelScript: "https://connect.facebook.net",
   metaPixelCollect: "https://www.facebook.com",
+  /** PostHog (2026-09-19). TWO origins, and the split is not cosmetic: events
+   *  are ingested at `us.i.posthog.com`, while the lazily-fetched bundles — the
+   *  session recorder, error tracking, surveys, the toolbar — are fetched from
+   *  `us-assets.i.posthog.com`.
+   *
+   *  The asset origin is NOT configured in the SDK; it is derived. Read out of
+   *  posthog-js's own request router rather than its docs: `endpointFor` builds
+   *  `https://${region}-assets.i.posthog.com` for the assets target from the
+   *  region implied by `api_host`. So the assets origin must be in `script-src`
+   *  (the recorder is a script) AND in `connect-src` (the SDK also fetches its
+   *  remote config from there as JSON). Miss the first and session replay never
+   *  starts, with no error that names the cause.
+   *
+   *  Exact origins, not a `*.posthog.com` wildcard, for the same reason the Meta
+   *  entries above are exact: these are the two documented endpoints and there
+   *  is no reason to admit the rest of the estate. */
+  posthogIngest: "https://us.i.posthog.com",
+  posthogAssets: "https://us-assets.i.posthog.com",
 } as const;
 
 function directive(name: string, ...values: (string | readonly string[])[]): string {
@@ -119,6 +137,7 @@ export function contentSecurityPolicy(dev = false): string {
       SOURCES.googleTag,
       SOURCES.razorpay,
       SOURCES.metaPixelScript,
+      SOURCES.posthogAssets,
     ),
     /* next/font emits an inline @font-face block, and React inlines styles. */
     directive("style-src", "'self'", "'unsafe-inline'"),
@@ -153,6 +172,8 @@ export function contentSecurityPolicy(dev = false): string {
       SOURCES.razorpay,
       SOURCES.metaPixelScript,
       SOURCES.metaPixelCollect,
+      SOURCES.posthogIngest,
+      SOURCES.posthogAssets,
     ),
     directive("manifest-src", "'self'"),
     "upgrade-insecure-requests",

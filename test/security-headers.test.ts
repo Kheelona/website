@@ -83,6 +83,8 @@ describe("the content security policy", () => {
       "https://*.razorpay.com",
       "https://connect.facebook.net",
       "https://www.facebook.com",
+      "https://us.i.posthog.com",
+      "https://us-assets.i.posthog.com",
     ]) {
       expect(policy, `${host} is not allowed anywhere`).toContain(host);
     }
@@ -109,8 +111,37 @@ describe("the content security policy", () => {
       directive("img-src"),
       "GA4 fetches its beacon image from the TAG host, not google-analytics.com",
     ).toContain("https://www.googletagmanager.com");
-    /* Exact origins, not a wildcard across Meta's whole estate. */
+    /* PostHog, 2026-09-19. The asset origin has to be in BOTH script-src and
+       connect-src, and this is the pairing most likely to be got wrong because
+       nothing configures it: posthog-js DERIVES `us-assets.i.posthog.com` from
+       api_host inside its own request router. Missing it from script-src means
+       session replay never starts, and the browser reports a CSP refusal for a
+       URL that appears nowhere in this repo. Missing it from connect-src means
+       the SDK cannot read its remote config. */
+    expect(
+      directive("script-src"),
+      "the session recorder and error-tracking bundles are scripts from the asset host",
+    ).toContain("https://us-assets.i.posthog.com");
+    expect(
+      directive("connect-src"),
+      "the SDK fetches its remote config from the asset host as JSON",
+    ).toContain("https://us-assets.i.posthog.com");
+    expect(
+      directive("connect-src"),
+      "every event, and every session-replay payload, is posted to the ingestion host",
+    ).toContain("https://us.i.posthog.com");
+    /* Session replay compresses its payloads in a Worker created from a blob.
+       `worker-src` already allows it for other reasons, which is why no change
+       was needed — pinned so a future tidy-up of that directive cannot silently
+       break replay. */
+    expect(
+      directive("worker-src"),
+      "session replay compresses payloads in a blob Worker",
+    ).toContain("blob:");
+
+    /* Exact origins, not a wildcard across Meta's or PostHog's whole estate. */
     expect(policy).not.toContain("*.facebook.com");
+    expect(policy).not.toContain("*.posthog.com");
     /* A bare * or https: in script-src would make the whole exercise theatre. */
     const scripts = directive("script-src")!;
     expect(scripts).not.toMatch(/(^| )\*( |$)/);

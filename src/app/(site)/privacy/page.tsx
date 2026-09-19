@@ -67,9 +67,24 @@ const SECTIONS: readonly LegalSection[] = [
        you, and saying so plainly is the whole point of this page. */
     h: "How we measure visits",
     ps: [
-      "We count page views and visits so we can see which parts of this site actually help you decide. Four tools do it, on this site and on our store. Vercel Web Analytics and Ahrefs Web Analytics set no cookies and do not follow you to other sites. Google Analytics does set cookies, in your browser, to tell a returning visit from a new one.",
+      "We count page views and visits so we can see which parts of this site actually help you decide. Five tools do it, on this site and on our store. Vercel Web Analytics and Ahrefs Web Analytics set no cookies and do not follow you to other sites. Google Analytics and PostHog do set cookies, in your browser, to tell a returning visit from a new one.",
       "The fourth is different, and we would rather say so than bury it. The Meta Pixel, from the company that runs Facebook, Instagram and WhatsApp, sets a cookie and does follow you to other sites. It is how we know whether an advertisement we paid for actually brought somebody here, and it is how you may later see a Kheelona advertisement on Facebook or Instagram. Meta receives the page you looked at, and whether you pre-ordered and for how much.",
-      "What these tools record is the page you looked at, your country, your browser, and where the visit came from. Three of the four are never given anything more than that.",
+      /* Added 2026-09-19 with PostHog (§8.37). It gets its own paragraph rather
+         than a place in the list above, because it is a different KIND of tool
+         from the other four. It does not follow anyone between sites and it is
+         never used to advertise — on those axes it is milder than the Meta
+         Pixel. But it records every tap and a replay of the screen, so on THIS
+         site it sees more than the other four together, and a parent deserves
+         that said in the specific rather than filed under "analytics".
+
+         The three concrete promises here are the ones that must stay true:
+         typed values are masked before the recording leaves the browser, the
+         confirmation page is not recorded at all, and the data is stored in the
+         United States. Each is pinned in test/analytics-tags.test.ts, and the
+         second is enforced by POSTHOG_REPLAY_DENY_PATHS rather than by care. */
+      "PostHog is the most detailed of the five, so it is worth being specific. It records which buttons and links you tap, and it records a replay of your screen as you move through the site, which is how we find the places where the pre-order form confuses people. It also tells us when something breaks, so we hear about it before you have to. It does not follow you to other sites, and it is never used to advertise to you.",
+      "Two things about that replay, because a recording of your screen is a serious thing to run. Anything you type is hidden before the recording leaves your browser: it shows that a box was filled in, never what you put in it. And we switch recording off completely on the order confirmation page, because that page reads your delivery address back to you and we would rather it were never filmed at all than filmed carefully. PostHog stores what it collects on servers in the United States.",
+      "What these tools record is the page you looked at, your country, your browser, and where the visit came from. Vercel Web Analytics and Ahrefs Web Analytics are never given anything more than that.",
       /* Added 2026-09-02 with the Conversions API (§8.30-l/n). The previous
          version of this paragraph promised that no tool is ever sent a name,
          phone number or email, and the Conversions API made that untrue the day
@@ -104,7 +119,15 @@ const SECTIONS: readonly LegalSection[] = [
          (The exact retired wording is pinned as banned in
          test/analytics-tags.test.ts, so it is deliberately not quoted here —
          the same trap caught the previous rewrite on 2026-09-01.) */
-      "If you would rather not be counted, your browser can block the three that only run in your browser, and most of the fourth. Private browsing, an ad blocker, or turning off third party cookies all work, and none of them stop the site or the store from working.",
+      /* DE-COUNTED 2026-09-19. This said "the three that only run in your
+         browser, and most of the fourth", which PostHog made false — there are
+         now four browser-only tools. The count was pinned by a test, so the
+         suite would have gone on enforcing a false sentence, which is the exact
+         failure this file has already been burned by twice (the "two readable
+         fields" correction of 2026-09-02). A category is honest at any number
+         of tools; a count stops being true the moment one is added. The retired
+         wording is pinned as banned rather than quoted here. */
+      "If you would rather not be counted, your browser can block the tools that only run in your browser, and most of the Meta Pixel. Private browsing, an ad blocker, or turning off third party cookies all work, and none of them stop the site or the store from working.",
       "Be aware of the one gap, because we would rather you heard it from us: the report our server sends to Meta when a pre-order completes is sent by us, not by your browser, so blocking cannot prevent it. What you can do instead is turn off personalised advertising inside your own Facebook or Instagram settings, and you can ask us to delete your details at any time, which is explained further down.",
     ],
   },

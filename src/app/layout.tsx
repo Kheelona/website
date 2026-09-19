@@ -4,6 +4,7 @@ import "@/styles/globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { GoogleAnalyticsGate } from "@/components/molecules/GoogleAnalyticsGate";
 import { MetaPixel } from "@/components/molecules/MetaPixel";
+import { PostHogGate } from "@/components/molecules/PostHogGate";
 import { AHREFS_ANALYTICS_KEY } from "@/config/site";
 
 /* All three faces are subsets of the v3 design system's TTFs
@@ -107,6 +108,14 @@ export default function RootLayout({
             (_fbp) and follows a visitor to other sites, which is its purpose
             and is why /privacy had to be rewritten rather than extended. */}
         <MetaPixel />
+        {/* PostHog (2026-09-19), the fifth tool: product analytics, session
+            replay and error tracking, with autocapture on. Production hosts
+            only, and last in the body for the same LCP reason as the two above
+            it. The SDK is imported dynamically AFTER the host check, so on
+            localhost and previews it is never downloaded at all.
+            Session replay does not run on /store/thanks, which prints a
+            parent's address back to them; see the component. */}
+        <PostHogGate />
       </body>
     </html>
   );

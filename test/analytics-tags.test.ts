@@ -2,10 +2,11 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { purchasePayload } from "@/lib/store/meta-capi";
+import { replayAllowedOnPath } from "@/config/site";
 import type { PreorderRow } from "@/lib/store/db";
 
 /**
- * Four measurement tools now run on this site, and each one carries a promise
+ * Five measurement tools now run on this site, and each one carries a promise
  * on /privacy about whether it sets cookies. The standing rule from
  * website-steps §8.21-c is that a tool and the sentence describing it ship
  * together, so this guards the pairing: if someone adds or removes a tag
@@ -16,6 +17,14 @@ import type { PreorderRow } from "@/lib/store/db";
  * The Meta Pixel (2026-09-01) sets _fbp, and is the first tool here that
  * follows a visitor to other sites, which is why the tests below check that
  * /privacy says so in those words rather than merely naming it.
+ *
+ * PostHog (2026-09-19) sets a FIRST-PARTY cookie on our own domain and does not
+ * follow anyone between sites, so on that axis it is milder than the pixel. It
+ * is the widest tool here on a different axis: autocapture records every tap,
+ * session replay records the screen, and error tracking reports exceptions. The
+ * assertions below therefore pin what it does on THIS site, and in particular
+ * the three promises a parent could actually act on — typed values masked, the
+ * confirmation page never recorded, data held in the United States.
  */
 
 const ROOT = process.cwd();
@@ -48,11 +57,12 @@ const SAMPLE_ORDER = {
 } as PreorderRow;
 
 describe("analytics tags and their privacy disclosure stay in step", () => {
-  it("mounts all four tools in the root layout", () => {
+  it("mounts all five tools in the root layout", () => {
     expect(LAYOUT).toContain("analytics.ahrefs.com/analytics.js");
     expect(LAYOUT).toContain("<Analytics />"); // Vercel
     expect(LAYOUT).toContain("<GoogleAnalyticsGate />");
     expect(LAYOUT).toContain("<MetaPixel />");
+    expect(LAYOUT).toContain("<PostHogGate />");
   });
 
   it("keeps the Ahrefs tag in <head> and async, which is what its verifier needs", () => {
@@ -67,6 +77,7 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
       "Ahrefs Web Analytics",
       "Google Analytics",
       "Meta Pixel",
+      "PostHog",
     ]) {
       expect(PRIVACY, `${name} is not disclosed on /privacy`).toContain(name);
     }
@@ -74,12 +85,23 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
 
   it("still tells the reader which tools set cookies and how to refuse them", () => {
     expect(PRIVACY).toMatch(/set no cookies/);
-    expect(PRIVACY).toMatch(/does set cookies/);
+    /* Conjugation-tolerant since 2026-09-19. This pinned the literal "does set
+       cookies", which broke the moment PostHog joined GA4 and the sentence
+       became "Google Analytics and PostHog DO set cookies" — a test failing on
+       a verb agreement while the disclosure it guards got strictly better. What
+       matters is that the page still separates the tools that set cookies from
+       the ones that do not, so that is what is asserted. */
+    expect(PRIVACY).toMatch(/\bdo(es)? set cookies\b/);
     /* Was `block all four` until 2026-09-02. That sentence became false the day
        the Conversions API shipped, because the server half is sent by us and no
        ad blocker can reach it. The refusal advice must still be here, but it may
        not overstate what refusing achieves. */
-    expect(PRIVACY).toMatch(/your browser can block the three that only run in your browser/);
+    /* DE-COUNTED 2026-09-19 with PostHog. This pinned "the three that only run
+       in your browser", which stopped being true the moment a fourth
+       browser-only tool shipped — so the suite would have enforced a false
+       sentence, exactly the failure the 2026-09-02 correction was about. Both
+       retired counts are banned below. */
+    expect(PRIVACY).toMatch(/your browser can block the tools that only run in your browser/);
   });
 
   /* THE OPT-OUT MUST NOT OVERSTATE ITSELF (§8.30-r). Telling a parent to install
@@ -89,6 +111,10 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
   it("admits that blocking cannot stop the server-side report", () => {
     expect(PRIVACY).toMatch(/sent by us, not by your browser, so blocking cannot prevent it/);
     expect(PRIVACY).not.toContain("your browser can block all four");
+    expect(PRIVACY).not.toContain("block the three that only run in your browser");
+    /* Nor may the fix be to bump the number: the next tool would falsify it
+       again, silently, with a test holding it in place. */
+    expect(PRIVACY).not.toMatch(/block the (one|two|three|four|five|six) that only run/);
   });
 
   /* The Meta Pixel is the first tool here that exists to advertise to the
@@ -246,6 +272,50 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
     for (const name of ["Razorpay", "Supabase", "Resend", "Vercel"]) {
       expect(PRIVACY, `${name} is not disclosed on /privacy`).toContain(name);
     }
+  });
+
+  /* POSTHOG'S THREE ACTIONABLE PROMISES (§8.37). A parent reading this page can
+     do nothing about most of what it describes, but these three are concrete
+     claims about our own configuration, and each one is a thing we could break
+     in a single line without noticing. They are pinned here for the same reason
+     the Meta disclosures above are: the tag and the sentence ship together, and
+     the silent failure is keeping the tag while losing the sentence. */
+  it("states what PostHog records on this site, in the specific", () => {
+    expect(PRIVACY).toMatch(/which buttons and links you tap/);
+    expect(PRIVACY).toMatch(/replay of your screen/);
+  });
+
+  it("promises typed values are masked before the recording leaves the browser", () => {
+    expect(PRIVACY).toMatch(/hidden before the recording leaves your browser/);
+    expect(PRIVACY).toMatch(/never what you put in it/);
+  });
+
+  /* THE STRONGEST PROMISE ON THE PAGE, because it is the one enforced by data
+     rather than by care: POSTHOG_REPLAY_DENY_PATHS, checked by a pure predicate
+     that PostHogGate.test.tsx exercises directly. If the deny list is ever
+     emptied, that test fails too — but this one fails first and points at the
+     sentence that would have become a lie. */
+  it("promises the confirmation page is never recorded, and means it", () => {
+    expect(PRIVACY).toMatch(/switch recording off completely on the order confirmation page/);
+    expect(
+      replayAllowedOnPath("/store/thanks"),
+      "/privacy promises the confirmation page is not recorded, but the deny list no longer stops it",
+    ).toBe(false);
+  });
+
+  it("says where PostHog holds what it collects", () => {
+    expect(PRIVACY).toMatch(/servers in the United States/);
+  });
+
+  /* PostHog is first-party and is not an advertising tool, and the page says
+     so. If that ever changes — an ad integration, a reverse proxy sharing
+     identity, a cross-domain cookie — these two sentences become false and must
+     be rewritten rather than left standing. */
+  it("does not overstate PostHog's reach, and does not understate it either", () => {
+    expect(PRIVACY).toMatch(/It does not follow you to other sites, and it is never used to advertise to you/);
+    /* ...but it must not be filed away as harmless either. The page has to say
+       it is the most detailed of the five. */
+    expect(PRIVACY).toMatch(/most detailed of the five/);
   });
 
   it("says plainly that we never receive the payment details", () => {
