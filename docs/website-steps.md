@@ -2517,3 +2517,138 @@ founder's visibility decision stays open. That decision is ordinary housekeeping
 something else entirely for footage of real children. **Raised as a recommendation to go private
 before the first video lands.** The 12-video / ~48MB cap exists for the same reason; past it the
 honest answer is a CDN, which is a conversation and not an edit.
+
+# §8.38 POSTHOG: THE FIFTH MEASUREMENT TOOL (2026-09-19)
+
+Record: `docs/checkpoints/posthog-2026-09-19.md`. Rollback tag `pre-posthog-2026-09-19` = `9541c1c`.
+
+Project 617632, US cloud. Product analytics, session replay and error tracking, with autocapture
+**on** (four founder decisions, 2026-09-19). It is additive: GA4 stays, and no retirement was
+decided.
+
+## §8.38-a · A project API key is a public identifier, and a Vercel secret is the wrong home for it
+
+The founder offered to set a Vercel secret and it was declined. A PostHog `phc_…` **project API
+key** authorises writing events into the project it names and nothing else; PostHog's own snippet
+ships it in the page, exactly like `GA4_MEASUREMENT_ID` and `META_PIXEL_ID` beside it in
+`config/site.ts`.
+
+The other half is the trap this repo has now hit three times: **a `NEXT_PUBLIC_` name cannot be a
+Vercel "Secret"**, because the value is inlined into the browser bundle at build time, which is what
+the dashboard refuses. `NEXT_PUBLIC_GA4_MEASUREMENT_ID` was retired for it (§8.21-c-ii), the Meta
+Pixel repeated it (§8.30), and this is the third. **An env var would also carry the redeploy trap:
+a Vercel variable only applies to deployments created after it changes.**
+
+What protects the project is not secrecy of the key. It is `POSTHOG_HOSTS`.
+
+## §8.38-b · The asset origin is DERIVED, and it is the CSP entry most likely to be missed
+
+PostHog needs two origins, and only one of them is ever written in configuration:
+
+| Origin | Carries | Configured? |
+|---|---|---|
+| `us.i.posthog.com` | every event and every session-replay payload | yes, as `api_host` |
+| `us-assets.i.posthog.com` | the session recorder, error tracking, surveys, the toolbar | **no — derived** |
+
+Read out of posthog-js's own request router rather than its docs:
+
+```js
+case "assets": return `https://${this.region}-assets.i.posthog.com`
+```
+
+So setting `api_host` to the US ingestion host is what produces the asset host. It appears in no
+config file, which is exactly why it gets left out of a policy. **It must be in `script-src` AND
+`connect-src`** — the recorder is a script, and the SDK also fetches its remote config from there as
+JSON. Miss it in `script-src` and session replay simply never starts, with the browser refusing a
+URL that appears nowhere in the repo.
+
+`worker-src blob:` was already present for other reasons and replay needs it for its compression
+worker. It is now pinned by a test so a future tidy-up of that directive cannot silently break
+replay.
+
+## §8.38-c · `ui_host` is for deep links back to PostHog, NOT for assets
+
+It was set to the asset host in a first draft. The installed type says plainly: *"If using a reverse
+proxy for `api_host` then this should be the actual PostHog app URL."* The router confirms it —
+`endpointFor("ui", …)` resolves against `uiHost`, which is what PostHog builds person URLs, recording
+URLs and the tags on captured exceptions from.
+
+Pointing it at a CDN produces **dead links in the founder's dashboard with everything else working
+perfectly**. On a direct install it must not be set at all.
+
+## §8.38-d · Replay is started and stopped PER ROUTE, never configured once
+
+`/store/thanks` prints a parent's email, order number and delivery address back to them as text. The
+page's own source has warned since 2026-08-22 that a screenshot of it "would show a stranger a
+family's delivery address" — **and a session recording is a continuous screenshot.**
+
+Masking does not solve this. `maskAllInputs` covers what a parent **types**; the exposure here is
+what we **print**. So the route is denied wholesale via `POSTHOG_REPLAY_DENY_PATHS`.
+
+`disable_session_recording: true` at init, and the first allowed route turns the recorder on. The
+ordering is the point: **a denied route never had a recorder running to leak from.** Starting at init
+and stopping on arrival would record the confirmation page for however long the stop took.
+
+Only that one route is denied, deliberately. Excluding the whole store host would have gutted the
+reason to buy replay, because the pre-order form and the checkout hand-off are where a parent stalls.
+
+## §8.38-e · Deny the route, mark the container — never the field
+
+Replay is off on `/store/thanks`, but **autocapture still runs there**, and autocapture reports the
+text of whatever a person taps. So the page container carries `ph-no-capture`.
+
+The container, not the rows that happen to hold a detail today. A per-field list is correct on the
+day it is written and quietly wrong at the next edit, when somebody adds a row to the order summary
+without thinking about analytics. posthog-js's `io()` walks an element's ancestors, so everything
+inside is covered including what has not been written yet.
+
+**The class names are worth getting right, and two of the three are misleading.** `ph-no-capture`
+(and `ph-sensitive`) are what `io()` checks. `ph-no-autocapture` is something else — the default
+`css_selector_ignorelist`. And `ph-mask` appears **nowhere in the SDK**, correctly: it is our own
+selector handed to rrweb via `maskTextSelector`, not a name PostHog knows.
+
+## §8.38-f · Autocapture does not remove the need to define the funnel
+
+Autocapture produces a click event for the pre-order button. It cannot produce **a value in rupees,
+a tier, or an order reference**, and a funnel that cannot be set beside the GA4 and Meta ones is
+worth very little. PostHog therefore joins the same five bodies in
+`features/preorder/lib/analytics.ts`, reusing the GA4 event names verbatim.
+
+The guard asserts **behaviour, not spelling**: a grep for `phCapture` counts six and passes while one
+sits in the wrong function. `analytics.test.ts` fires each event and records what each tool received,
+checking both arrival and **payload identity between GA4 and PostHog**. Two tools that disagree about
+the value are worse than one — and paise-for-rupees would report a hundredfold ROAS while failing
+nothing.
+
+## §8.38-g · A count in user-facing copy is a review flag, and this is the third time
+
+`/privacy` told the reader their browser could block *"the three that only run in your browser"*.
+PostHog made that false, and **a test pinned the sentence**, so the suite would have gone on enforcing
+a false claim to a parent. Identical to the "two readable fields" correction of 2026-09-02.
+
+The number was **retired, not incremented**, and any future count is banned by regex. A category
+stays honest at any number of tools; a count stops being true the moment one is added.
+
+A second assertion had to become conjugation-tolerant: it pinned the literal `"does set cookies"`,
+which broke when the sentence correctly became "Google Analytics and PostHog **do** set cookies" — a
+test failing on verb agreement while the disclosure it guarded got strictly better. **Pin the claim,
+not the grammar.**
+
+## §8.38-h · An advisory exemption must be verified, narrow, and unable to rot
+
+posthog-js pins `fflate ^0.4.8` and ships **0.4.9**, below the 0.6.11 floor for GHSA-px8p-9vwx-vf98
+(`unzipSync` infinite loop on a malformed ZIP64 archive).
+
+**An override was the wrong fix**, for the reason this repo carries zero of them (§8.35-3): 0.6.11
+does not satisfy `^0.4.8`, so forcing it ships a combination PostHog has never tested.
+
+The right fix was to check whether the vulnerable function is reachable — **against the shipped code,
+not the advisory summary.** The only fflate identifiers in `posthog-js/dist` are `gzipSync`,
+`strToU8` and `strFromU8`. `unzipSync` appears in no posthog-js file, only inside fflate's own
+library. PostHog compresses outbound replay payloads; it never decompresses an untrusted archive.
+
+So `test/dependency-floor.test.ts` gained a **path-exact** exemption carrying that reasoning, and a
+guard that keeps it honest: it fails if the exempt path leaves the lockfile, if the exempt copy comes
+to satisfy the floor on its own, or if the stated reason is too short to be one. Path-exact because
+the same package arriving under a different parent must still fail. Both failure modes were
+mutation-tested — **an exemption nobody can prove still fails is just a hole with a comment on it.**

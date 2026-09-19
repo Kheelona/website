@@ -39,6 +39,71 @@ that date, raise them first.
 
 ---
 
+# 📊 POSTHOG, THE FIFTH MEASUREMENT TOOL (shipped 2026-09-19)
+
+*Record: `docs/checkpoints/posthog-2026-09-19.md`. Laws **§8.38 a-h**. Rollback tag
+`pre-posthog-2026-09-19` = `9541c1c`.*
+
+Project 617632, US cloud. Product analytics, session replay and error tracking, autocapture **on**.
+Additive: GA4 stays and no retirement was decided. The key is hardcoded in `config/site.ts` and
+host-gated to `POSTHOG_HOSTS` — **a Vercel secret was offered and correctly declined** (§8.38-a).
+
+## 🤖 Engineering (all shipped 2026-09-19)
+
+- [x] `posthog-js@1.434.2` (`--save-exact`), identifiers + replay deny list in `config/site.ts`
+- [x] `src/lib/posthog.ts` and `PostHogGate` (+ story + test), dynamic-imported after the host check
+      so localhost and previews download none of it
+- [x] Both CSP origins, with the derived asset host pinned in `script-src` AND `connect-src`
+- [x] `/privacy` rewritten in the same commit (§8.21-c), with the three actionable promises pinned
+- [x] The funnel sent to PostHog beside GA4 and Meta, with a payload-identity guard
+- [x] `/store/thanks` marked `ph-no-capture` at the container; replay denied for the route outright
+- [x] A verified, path-exact `fflate` floor exemption with an anti-rot guard
+
+## 🤖 Mine, and NONE of it is verifiable from this repo
+
+- [ ] 🔴 **Confirm on PRODUCTION that PostHog actually works, once this deploys.** Nothing below was
+      checkable locally, because every tag is host-gated and this repo cannot deploy. Four things to
+      check, in order: (1) events arrive in project 617632; (2) **session replay actually starts** —
+      this is the one most likely to be broken, because it depends on `us-assets.i.posthog.com`
+      being allowed in `script-src`, and the failure is silent (§8.38-b); (3) replay does **not**
+      run on `/store/thanks`; (4) autocapture produces nothing from that page's order summary.
+- [ ] 🔴 **Read the production CSP reports before the §8.28-a enforce flip, and note that the clock
+      RESET AGAIN on 2026-09-19.** Two PostHog origins joined the policy, so any Report-Only report
+      read before that date says nothing about them. This is the second reset; the Meta Pixel caused
+      the first on 2026-09-01.
+- [ ] 🟠 **Re-measure Lighthouse on production** (§8.34-g — a local run is misleading, it scores a
+      page missing its host-gated tags). Perf gate is 90+ desktop. Best-practices should NOT move:
+      PostHog's cookie is first-party on our own domain, so it does not feed the
+      `third-party-cookies` audit that already holds BP at an accepted 74 (§8.34-h).
+- [ ] 🟠 **Bump `vitest` for GHSA-82fw-gwwq-j7x9** (`@vitest/mocker`, path traversal via a redirect
+      mock, 2 moderate). **Pre-existing and dev-only** — it is not PostHog's, it was published since
+      the 2026-09-05 sweep and `npm install` merely re-surfaced it. Deliberately not ridden along in
+      an unrelated round. `npm audit` reads 2 until this is done, so the "clean on both manifests"
+      claim in `CLAUDE.md` is stale until then.
+- [ ] 🟡 **Re-check the `fflate` exemption whenever posthog-js moves.** It is excused because
+      `unzipSync` is unreachable from PostHog's code, not because the advisory is wrong. The guard
+      fails on its own if the exempt copy ever satisfies the floor, but a widened `fflate` range
+      upstream is the moment to delete the exemption rather than carry it.
+
+## 🧑 Founder
+
+- [ ] 🟠 **Decide whether PostHog replaces GA4, and when.** Answered "additive for now" on
+      2026-09-19, so this is a re-look rather than an open question. Five measurement tools is a lot
+      for one marketing site, and PostHog and GA4 overlap heavily. What would have to move first:
+      the GA4 property's history since 2026-07-28, the purchase/`transaction_id` reports built on
+      it, and `GA4_HOSTS`, which `POSTHOG_HOSTS` and `META_PIXEL_HOSTS` both reference.
+- [ ] 🟡 **Session replay is on, and it is worth knowing what that means in practice.** Recordings of
+      real parents using the site are held by PostHog **in the United States** for the retention
+      period set in the project settings. `/privacy` states all of this. Two things are worth a
+      deliberate look in the PostHog dashboard rather than left at defaults: **the retention period**,
+      and whether **replay sampling** should be less than 100% once traffic grows, since it bills per
+      recording.
+- [ ] 🟡 **This interacts with the parked DPDP work above.** Nothing changes the 5 October trigger,
+      but when counsel does look at `/privacy`, session replay and US storage are new facts to put in
+      front of them, and they were not in scope when that item was written.
+
+---
+
 # 🎬 THE VIDEO CAROUSEL (shipped 2026-09-19, library empty by design)
 
 *Record: `docs/checkpoints/video-section-2026-09-19.md`. Rulebook: `docs/video-conventions.md`.

@@ -1,5 +1,38 @@
 # kheelona.com — session entry point
 
+**📊 POSTHOG IS THE FIFTH MEASUREMENT TOOL SINCE 2026-09-19** (founder request; project 617632, US
+cloud). Record: `docs/checkpoints/posthog-2026-09-19.md`; laws **§8.38 a-h**; rollback tag
+`pre-posthog-2026-09-19` = `9541c1c`. Product analytics + **session replay** + error tracking, with
+**autocapture ON**, additive to GA4. Key hardcoded in `config/site.ts`, host-gated to `POSTHOG_HOSTS`
+(= `GA4_HOSTS`) — **a Vercel secret was offered and declined**, because a `NEXT_PUBLIC_` name cannot
+be one (third time, §8.38-a).
+
+**Six things bind.** (1) **SESSION REPLAY NEVER RUNS ON `/store/thanks`** (§8.38-d). That page prints
+a parent's email, order number and delivery address as TEXT, and a recording is a continuous
+screenshot. `disable_session_recording: true` at init and the first ALLOWED route turns it on, so a
+denied route never had a recorder to leak from. `/privacy` promises this and a test asserts the
+promise **and** the deny list together. Only that one route is denied — excluding the whole store host
+would gut the reason to have replay. (2) **Autocapture still runs there**, so the page container
+carries `ph-no-capture` (§8.38-e) — the CONTAINER, never the fields, because a per-field list is right
+today and wrong at the next edit. `ph-no-autocapture` is a different mechanism and `ph-mask` is OURS,
+handed to rrweb; only `ph-no-capture`/`ph-sensitive` are what posthog's `io()` walks ancestors for.
+(3) **`us-assets.i.posthog.com` IS DERIVED, NOT CONFIGURED** (§8.38-b) — it appears in no PostHog
+setting, must be in **both** `script-src` and `connect-src`, and missing it means replay silently
+never starts. (4) **`ui_host` is for deep links back to PostHog's dashboard, NOT assets** (§8.38-c);
+it was wrong in a first draft and must stay unset on a direct install. (5) **Autocapture does not
+replace the funnel** (§8.38-f): it cannot produce a value in rupees, a tier or an order reference, so
+PostHog fires from the same five bodies as GA4 and Meta, guarded by payload-IDENTITY, not by a grep.
+(6) **A count in user-facing copy is a review flag, and this was the third time** (§8.38-g): /privacy
+said a browser could block "the three that only run in your browser", a TEST PINNED IT, and PostHog
+made it false — so the number was retired rather than bumped, and any count is now banned by regex.
+
+**Nothing about this is verified on production yet** — every tag is host-gated and this repo cannot
+deploy. `Technical-Todo.md` carries the four post-deploy checks, and note the **§8.28-a CSP enforce
+clock RESET AGAIN** (second time; the pixel caused the first). Also: **`npm audit` now reads 2
+moderate, and they are NOT PostHog's** — a pre-existing dev-only `@vitest/mocker` advisory published
+since the 2026-09-05 sweep, queued rather than ridden along, so the "dependencies are clean on both
+manifests" note further down is stale until it is done.
+
 **🎬 THE VIDEO CAROUSEL SHIPPED 2026-09-19, AND ITS LIBRARY IS DELIBERATELY EMPTY.** Record:
 `docs/checkpoints/video-section-2026-09-19.md`; laws **§8.37 a–h**; rulebook
 `docs/video-conventions.md`; rollback tag `pre-video-section-2026-09-19` = `818132f`.
