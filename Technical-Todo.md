@@ -546,7 +546,28 @@ pushed on `main` but **NOT deployed** — everything below assumes the founder h
 security headers live, the live pages carry no console errors or failed requests of their own, and
 `npm audit` reports nothing in `next` itself. [2026-09-05: that phrasing was always slightly off — `next` never had an advisory of its own, it was flagged via postcss and sharp. Both manifests now read 0.]
 
-# 🧑 OPEN AND UNDECIDED: SHOULD THE GITHUB REPO BE PRIVATE? (raised 2026-09-06)
+# ✅ DECIDED 2026-09-19: THE GITHUB REPO STAYS PUBLIC
+
+**Founder decision, taken with the video round's consequences stated in full. Do not re-raise.**
+
+Asked immediately before the first real video was pushed, with three options on the table and the
+recommendation being to flip to private first. The founder chose to **push and keep the repo
+public**. Recorded here rather than argued twice, which is this file's standing rule.
+
+**What that means in practice, stated once so it is a known position rather than an oversight:**
+`public/video/moments/first-conversations.mp4` is a 3MB video of three real children, and it is now
+permanently in the git history of a public repository. It is downloadable by anyone, independent of
+the website, and a later visibility change would not retract copies already taken. Written parental
+consent is held for publication (founder, 2026-09-19); this records that distribution of the raw
+files in a public repo is a separate and deliberate choice on top of it.
+
+The same applies to every future video added under `docs/video-conventions.md`, whose "two gates"
+section still names the public repo. That paragraph stays accurate and is worth re-reading whenever
+a new file goes in.
+
+*Superseded: the item below, open since 2026-09-06.*
+
+# 🧑 ~~OPEN AND UNDECIDED: SHOULD THE GITHUB REPO BE PRIVATE?~~ (raised 2026-09-06, CLOSED 2026-09-19)
 
 - [ ] 🧑 **`github.com/Kheelona/website` is PUBLIC. The founder has not decided whether to change
       that.** Two things put it on the list.
