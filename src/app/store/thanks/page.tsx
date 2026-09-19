@@ -99,7 +99,24 @@ export default async function ThanksPage() {
   const paid = order.status === "paid";
 
   return (
-    <div className="mx-auto w-full max-w-[680px] px-6 py-10 md:py-14">
+    /* ph-no-capture / ph-mask cover THE WHOLE PAGE, not the individual lines
+       that happen to carry a detail today (§8.38).
+
+       Session replay is already switched off for this route wholesale
+       (POSTHOG_REPLAY_DENY_PATHS), but AUTOCAPTURE still runs here, and
+       autocapture reports the text of whatever a person taps. This page prints
+       an email address, an order number and a delivery address, so tapping any
+       of them would otherwise put it in an event.
+
+       Marking the container rather than the fields is the same judgement as
+       denying the route rather than masking its nodes: posthog-js walks an
+       element's ancestors looking for `ph-no-capture` (verified in the SDK's own
+       `io()`), so everything inside is covered — including the next row somebody
+       adds to the summary without thinking about analytics. A per-field list
+       would be correct today and quietly wrong at the next edit. */
+    <div
+      className="ph-no-capture ph-mask mx-auto w-full max-w-[680px] px-6 py-10 md:py-14"
+    >
       <p className="mb-2 text-[13px] font-bold uppercase tracking-[0.08em] text-orange-ink">
         {paid ? "Pre-order confirmed" : "Confirming your payment"}
       </p>

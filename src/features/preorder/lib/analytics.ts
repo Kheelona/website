@@ -1,4 +1,5 @@
-/** Funnel events for the pre-order, for GA4 and the Meta Pixel (§8.25-r).
+/** Funnel events for the pre-order, for GA4, the Meta Pixel and PostHog
+ *  (§8.25-r, extended §8.38).
  *
  *  Four events, each answering a question the founder will actually ask: how
  *  many people started, how many reached the payment sheet, how many paid, and
@@ -11,14 +12,21 @@
  *
  *  gtag may be absent: the tag only loads on the production hosts (GA4_HOSTS),
  *  so on localhost and previews every call here is a no-op by design. The same
- *  is true of fbq, on the same host list.
+ *  is true of fbq and of PostHog, on the same host list.
  *
  *  THE META PIXEL'S TWO MONEY EVENTS ARE FIRED FROM HERE, beside their GA4
  *  twins, rather than from their own call sites. One funnel, defined once: the
- *  failure this design rules out is the two tools drifting apart, so that Meta
- *  and GA4 disagree about how many people paid and nobody can say which is
- *  lying. Meta's names are fixed by Meta (InitiateCheckout, Purchase) and its
- *  value is in rupees, not paise.
+ *  failure this design rules out is the tools drifting apart, so that Meta and
+ *  GA4 disagree about how many people paid and nobody can say which is lying.
+ *  PostHog joined these same bodies on 2026-09-19 for exactly that reason, and
+ *  it is the tool most likely to have been left to autocapture instead:
+ *  autocapture WOULD produce a click event for the pre-order button, but it
+ *  cannot produce a value in rupees, a tier, or an order reference, and a funnel
+ *  that cannot be set beside the other two is worth very little. The GA4 event
+ *  names are reused verbatim so all three can be read side by side.
+ *
+ *  Meta's names are fixed by Meta (InitiateCheckout, Purchase) and its value is
+ *  in rupees, not paise.
  *
  *  VALUE IS WHAT WAS ACTUALLY COLLECTED (founder, 2026-09-01), not the ₹4,999
  *  headline: ₹499 for a token order, ₹7,999 for a full one, ₹99 at an event.
@@ -28,6 +36,7 @@
  *  correcting for them needs the Conversions API, which is why fbTrack already
  *  carries an eventId slot. */
 import { fbTrack, purchaseEventId } from "@/lib/fbq";
+import { phCapture } from "@/lib/posthog";
 
 type Params = Record<string, string | number | undefined>;
 
@@ -39,11 +48,15 @@ function track(event: string, params?: Params): void {
 
 export const preorderAnalytics = {
   /** The form was submitted and validated: real intent, before any gateway. */
-  start: (tier: string) => track("preorder_start", { tier }),
+  start: (tier: string) => {
+    track("preorder_start", { tier });
+    phCapture("preorder_start", { tier });
+  },
   /** Razorpay's sheet actually opened. */
   beginCheckout: (valuePaise: number, tier: string) => {
     track("begin_checkout", { currency: "INR", value: valuePaise / 100, tier });
     fbTrack("InitiateCheckout", { currency: "INR", value: valuePaise / 100, content_category: tier });
+    phCapture("begin_checkout", { currency: "INR", value: valuePaise / 100, tier });
   },
   /** Paid, and verified.
    *
@@ -78,9 +91,26 @@ export const preorderAnalytics = {
          own just makes the event idempotent. */
       purchaseEventId(orderRef),
     );
+    phCapture("purchase", {
+      transaction_id: orderRef,
+      currency: "INR",
+      value: valuePaise / 100,
+      tier,
+    });
   },
-  /** The delivery address landed, which is what unblocks dispatch. */
-  addressSaved: (orderRef: string) => track("preorder_address_saved", { transaction_id: orderRef }),
+  /** The delivery address landed, which is what unblocks dispatch.
+   *
+   *  Fires on /store/thanks, where autocapture is suppressed by `ph-no-capture`
+   *  on the page container. That suppression governs what a person TAPS; this is
+   *  an explicit call and still fires, as it should. It carries an order
+   *  reference and nothing else. */
+  addressSaved: (orderRef: string) => {
+    track("preorder_address_saved", { transaction_id: orderRef });
+    phCapture("preorder_address_saved", { transaction_id: orderRef });
+  },
   /** They opened the sheet and closed it. The most useful negative signal we get. */
-  dismissed: (tier: string) => track("preorder_dismissed", { tier }),
+  dismissed: (tier: string) => {
+    track("preorder_dismissed", { tier });
+    phCapture("preorder_dismissed", { tier });
+  },
 };

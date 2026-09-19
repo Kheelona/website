@@ -69,7 +69,7 @@ const SECTIONS: readonly LegalSection[] = [
     ps: [
       "We count page views and visits so we can see which parts of this site actually help you decide. Five tools do it, on this site and on our store. Vercel Web Analytics and Ahrefs Web Analytics set no cookies and do not follow you to other sites. Google Analytics and PostHog do set cookies, in your browser, to tell a returning visit from a new one.",
       "The fourth is different, and we would rather say so than bury it. The Meta Pixel, from the company that runs Facebook, Instagram and WhatsApp, sets a cookie and does follow you to other sites. It is how we know whether an advertisement we paid for actually brought somebody here, and it is how you may later see a Kheelona advertisement on Facebook or Instagram. Meta receives the page you looked at, and whether you pre-ordered and for how much.",
-      /* Added 2026-09-19 with PostHog (§8.37). It gets its own paragraph rather
+      /* Added 2026-09-19 with PostHog (§8.38). It gets its own paragraph rather
          than a place in the list above, because it is a different KIND of tool
          from the other four. It does not follow anyone between sites and it is
          never used to advertise — on those axes it is milder than the Meta

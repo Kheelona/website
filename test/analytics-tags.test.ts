@@ -274,7 +274,7 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
     }
   });
 
-  /* POSTHOG'S THREE ACTIONABLE PROMISES (§8.37). A parent reading this page can
+  /* POSTHOG'S THREE ACTIONABLE PROMISES (§8.38). A parent reading this page can
      do nothing about most of what it describes, but these three are concrete
      claims about our own configuration, and each one is a thing we could break
      in a single line without noticing. They are pinned here for the same reason
