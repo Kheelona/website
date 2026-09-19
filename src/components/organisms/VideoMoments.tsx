@@ -181,15 +181,36 @@ export function VideoMoments({
   useEffect(() => {
     const track = trackRef.current;
     if (!track || typeof IntersectionObserver !== "function") return;
+    /* Keep every tile's current overlap with the band, and pick the WINNER,
+       rather than trusting whichever entry happened to arrive last.
+
+       That distinction is not theoretical. The room this lives in reveals
+       with a transform, and a visitor deep-linking to #learning made the
+       observer fire mid-animation: a neighbouring tile clipped the band for
+       one frame, "last intersecting entry wins" latched onto it, and because
+       nothing scrolls afterwards nothing ever corrected it. The montage
+       stopped being the centre tile on exactly the URL that points at the
+       section. Choosing the greatest ratio is self-correcting, because
+       entering AND leaving both fire, so the tile that left reports 0. */
+    const ratios = new Map<string, number>();
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
           const id = (entry.target as HTMLElement).dataset.videoId;
-          if (id) setCentreId(id);
+          if (!id) continue;
+          ratios.set(id, entry.isIntersecting ? entry.intersectionRatio || 1e-6 : 0);
         }
+        let best: string | null = null;
+        let bestRatio = 0;
+        ratios.forEach((ratio, id) => {
+          if (ratio > bestRatio) {
+            bestRatio = ratio;
+            best = id;
+          }
+        });
+        if (best) setCentreId(best);
       },
-      { root: track, rootMargin: "0px -49% 0px -49%", threshold: 0 },
+      { root: track, rootMargin: "0px -49% 0px -49%", threshold: [0, 0.25, 0.5, 1] },
     );
     tileRefs.current.forEach((el) => observer.observe(el));
     return () => observer.disconnect();

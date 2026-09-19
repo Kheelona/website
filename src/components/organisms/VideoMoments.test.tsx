@@ -400,3 +400,47 @@ describe("VideoMoments", () => {
     expect((frame as HTMLElement).style.aspectRatio).toBe("1080 / 1920");
   });
 });
+
+describe("VideoMoments centre selection", () => {
+  it("picks the best-overlapping tile, not the last entry reported", () => {
+    // The deep-link bug: the room reveals with a transform, the observer fires
+    // mid-animation, a neighbour clips the band for one frame, and "last
+    // intersecting entry wins" latches onto it forever because nothing
+    // scrolls afterwards. Here tile THREE arrives last but barely overlaps.
+    let fire: ((e: unknown[]) => void) | null = null;
+    vi.stubGlobal(
+      "IntersectionObserver",
+      class {
+        constructor(cb: (e: unknown[]) => void) {
+          fire = cb;
+        }
+        observe = vi.fn();
+        unobserve = vi.fn();
+        disconnect = vi.fn();
+        takeRecords = () => [];
+        root = null;
+        rootMargin = "";
+        thresholds = [];
+      },
+    );
+    const { container } = render(<VideoMoments moments={THREE} />);
+    const tile = (id: string) => container.querySelector(`[data-video-id="${id}"]`);
+    act(() =>
+      fire?.([
+        { isIntersecting: true, intersectionRatio: 0.9, target: tile("two") },
+        { isIntersecting: true, intersectionRatio: 0.05, target: tile("three") },
+      ]),
+    );
+    expect(screen.getByRole("button", { name: "Show video 2 of 3" })).toHaveAttribute(
+      "aria-current",
+      "true",
+    );
+
+    // and when the animation settles, the loser reports 0 and the winner holds
+    act(() => fire?.([{ isIntersecting: false, intersectionRatio: 0, target: tile("three") }]));
+    expect(screen.getByRole("button", { name: "Show video 2 of 3" })).toHaveAttribute(
+      "aria-current",
+      "true",
+    );
+  });
+});

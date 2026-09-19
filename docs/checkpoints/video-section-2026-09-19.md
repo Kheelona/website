@@ -444,3 +444,30 @@ product.
 Gates: tsc 0, eslint clean, `next build` 0, **1266 tests / 119 files**, `qa:sweep` clean 36/36 with
 seven real videos and **zero `video-caption` violations**.
 
+### Commit 8 — the centre tile could latch onto the wrong film, and only on the deep link
+
+Found by post-deploy verification on production, not by any gate. The first probe read
+`aria-current` as **2** while a sweep across five widths measured the geometric centre as **1**.
+Both were right: the geometric measurement loaded `https://kheelona.com/`, the probe loaded
+**`https://kheelona.com/#learning`**.
+
+**The mechanism.** The room reveals with a transform. A visitor deep-linking to the section makes
+the observer fire mid-animation, a neighbouring tile clips the 2% centre band for a frame, and the
+handler's "last intersecting entry wins" latched onto it. Nothing scrolls afterwards, so **nothing
+ever corrected it**: the montage stopped being the centre tile on precisely the URL that points at
+the section, which is the URL any link to this content would use.
+
+**The fix** keeps every tile's current overlap and picks the greatest, which is self-correcting
+because entering and leaving both fire, so a tile that leaves reports 0. Thresholds widened to
+`[0, 0.25, 0.5, 1]` so the ratio carries information. Pinned by a test that feeds a large-ratio and
+a small-ratio entry in the wrong order.
+
+Verified on the exact failing URL, four consecutive loads: centre = 1 every time.
+
+**The lesson, and it is the round's third of the same shape:** a gate that loads the page one way
+proves the page loads that way. `qa:sweep`, every unit test and the production check all loaded the
+bare URL and all passed while a deep link was broken. The founder's instruction ("the montage is
+the central video") was satisfied on the home page and violated on the link to it.
+
+Gates: tsc 0, eslint clean, `next build` 0, **1267 tests / 119 files**, `qa:sweep` clean 36/36.
+
