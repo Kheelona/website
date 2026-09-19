@@ -371,6 +371,14 @@ function Tile({
       className={`group block h-full w-full cursor-pointer ${PRESS} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2`}
     >
       {media}
+      {/* CENTRED, and it was moved once and moved back. A talking-head
+          thumbnail puts the speaker's face across the whole middle band, so
+          lowering the badge to ~66% took it off her eyes and onto her mouth.
+          No vertical position clears a centred face; only a corner does, and
+          a corner badge reads less like "press this" than the convention
+          every video platform uses. Left centred deliberately, with the
+          overlap accepted and raised with the founder rather than fixed by
+          churn. Founder brief: soft, ~50% transparency. */}
       <span aria-hidden="true" className="absolute inset-0 grid place-items-center">
         {/* Soft by founder direction (2026-09-19): visible over any frame,
             never competing with the footage underneath it. */}

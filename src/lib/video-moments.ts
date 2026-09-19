@@ -113,6 +113,19 @@ export const VIDEO_MOMENTS: readonly VideoMoment[] = [
     hasOpenCaptions: true,
     consentOnFile: true,
   },
+  {
+    id: "a-parent-speaks",
+    chip: "In a parent's words",
+    label: "Nikita on what changed when the toy spoke back.",
+    alt: "A parent speaking to camera at home.",
+    src: `${VIDEO_DIR}/a-parent-speaks.mp4`,
+    poster: `${VIDEO_DIR}/a-parent-speaks.jpg`,
+    preview: `${VIDEO_DIR}/a-parent-speaks.webp`,
+    width: VIDEO_ASPECT.width,
+    height: VIDEO_ASPECT.height,
+    hasOpenCaptions: true,
+    consentOnFile: true,
+  },
 ];
 
 /** How many videos it takes before the section is a CAROUSEL rather than a

@@ -340,3 +340,43 @@ first name is within the label rule, but it deserved a deliberate look rather th
 Gates: tsc 0, eslint clean on every touched file, `next build` 0, **1263 tests / 119 files**,
 `qa:sweep` clean 36/36.
 
+### Commit 6 — the second video: a real parent testimonial
+
+`a-parent-speaks`. Source 44MB / 46.4s / 1080x1920, a named parent (Nikita Ravi) speaking to camera
+about her two children, subtitles burned in and no "sound on" badge in this export.
+
+**Encoded at CRF 34, not 32.** CRF 32 landed at **4.02MB, just over the 4MB budget**, and the guard
+test would have refused it. A talking head compresses better than a montage, so CRF 34 gives 3.27MB
+with the subtitle band still indistinguishable from source at 1:1. Checked by cropping the caption
+band from source and both candidates and stacking them, which is the §8.37-j method.
+
+**Two videos is still a static centred row**, per §8.37-j, and `videoLede()` flipped itself to the
+plural ("Press play on any of them") because there is now a choice to make. Verified in a hydrated
+browser: 0 `<video>` at rest, 2 tiles, no carousel chrome; playing the testimonial mounts one 46.4s
+video, and clicking the other tile SWAPS rather than adds. The one-at-a-time rule holds across real
+files.
+
+**The play badge was moved and moved back, and the reasoning is in the code.** On the testimonial
+thumbnail the centred badge sits over the speaker's eyes, which on a testimonial is the one thing
+worth not covering. Lowering it to ~66% took it off her eyes and onto her mouth: a talking head
+occupies the entire middle band, so **no vertical position clears a centred face** — only a corner
+does, and a corner badge reads less like "press this" than the convention every video platform uses.
+Reverted to centred, which is also what the founder specified (soft, ~50% transparency). Recorded
+rather than churned, and raised with the founder as their call.
+
+### 🧑 Three content notes on the testimonial, none blocking, all the founder's call
+
+1. **An em dash is burned into the video**: the closing caption reads "A must-buy toy — Kheelu."
+   The Brand Bible bans em dashes site-wide and that rule is described as non-negotiable. Nothing in
+   this repo can reach a pixel, so it is a re-export or nothing. Swapping the file is one command.
+2. **"Completely safe" is spoken as a claim.** "So I feel Kheelu is that toy which is completely
+   safe." It is prefaced with "I feel" and it is her own opinion in her own testimonial, which is
+   defensible. Flagged once because this site deliberately publishes no safety claim it has not
+   earned: the standards FAQ is removed until a certificate lands, and no badge appears before it is
+   earned. A parent's opinion is a different thing from our claim, and the distinction is worth
+   making deliberately rather than by default.
+3. **She names herself and both children** on camera. That is normal for a testimonial given with
+   consent, and the site's own label copy adds nothing beyond her first name.
+
+Gates: tsc 0, eslint clean, `next build` 0, **1263 tests / 119 files**, `qa:sweep` clean 36/36.
+
