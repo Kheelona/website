@@ -39,6 +39,52 @@ that date, raise them first.
 
 ---
 
+# 🎬 THE VIDEO CAROUSEL (shipped 2026-09-19, library empty by design)
+
+*Record: `docs/checkpoints/video-section-2026-09-19.md`. Rulebook: `docs/video-conventions.md`.
+Laws **§8.37 a-h**. Rollback tag `pre-video-section-2026-09-19` = `818132f`.*
+
+**Nothing renders on the live site yet, and that is the designed state.** `VIDEO_MOMENTS` is empty,
+so `VideoMoments` returns `null` and both pages omit the room entirely. The section appears on its
+own the moment a third video lands.
+
+## 🤖 Engineering (all shipped 2026-09-19)
+
+- [x] `src/lib/video-moments.ts`, the one source, with `hasOpenCaptions` and `consentOnFile` as
+      literal `true` types so a row cannot omit either claim
+- [x] `VideoMoments` organism (+ story + test): scroll-snap track, auto-advance with manual
+      override, geometric centre detection, one Pause control for all motion
+- [x] Wired into Home above `parent-voices`, and into the store below the whole grid
+- [x] `docs/video-conventions.md` + `test/video-assets.test.ts` (validator proven against fixtures
+      before being applied to the empty list)
+- [x] §8.37 laws, checkpoint, banner
+
+## 🧑 Founder
+
+- [ ] 🔴 **The videos themselves.** Follow `docs/video-conventions.md`. Per video: written consent
+      first, then a vertical 1080x1920 H.264 export under 4MB with **subtitles burned in**, a poster
+      JPG, and a 3-second silent animated WebP. Three is the minimum before anything appears.
+- [ ] 🔴 **Approve the Kheelu say line** for the new room: `"Real homes, real kids. Press play."`
+      (33 characters). Every mascot speech line is founder-approved before shipping. It is
+      deliberately distinct from the neighbouring room's "Real families, real words."
+- [ ] 🟠 **Repo visibility, now with a sharper reason.** Footage of real children in a PUBLIC git
+      repo is permanent and clonable, and consent to publish on the site is not consent to that.
+      **Recommended: go private before the first video lands.** This is the same item already open
+      below; it is cross-referenced here because the video round changes its weight.
+- [ ] **Confirm the store placement.** The brief said "just below the pre-order form"; it is below
+      the whole grid instead, so a phone still reads the refund promise, the balance due and the
+      ship date before any video. Desktop is identical. Say the word and it moves.
+
+## 🤖 Held, not skipped
+
+- [ ] **`npx next build` and `npm run qa:sweep` were not run at the end of this round**, because a
+      second session's in-progress PostHog work was in the same working tree and a build from there
+      measures a mixture of two rounds. Run both once the two rounds are sequenced. Expect
+      `qa:sweep` to stay clean with **zero `video-caption` violations**; if one appears, a `<video>`
+      has got onto the page at rest and §8.37-a has broken.
+
+---
+
 # 🟣 SEO / AEO / GEO ROUND TWO (opened and shipped 2026-09-11)
 
 *Record: `docs/checkpoints/seo-aeo-geo-2026-09-11.md`. Handoff: `docs/seo/handoff-2026-09-11.md`.

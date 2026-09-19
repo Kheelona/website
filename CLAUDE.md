@@ -1,5 +1,35 @@
 # kheelona.com — session entry point
 
+**🎬 THE VIDEO CAROUSEL SHIPPED 2026-09-19, AND ITS LIBRARY IS DELIBERATELY EMPTY.** Record:
+`docs/checkpoints/video-section-2026-09-19.md`; laws **§8.37 a–h**; rulebook
+`docs/video-conventions.md`; rollback tag `pre-video-section-2026-09-19` = `818132f`.
+Three videos at a time on **Home** (directly above `parent-voices`) and on **store.kheelona.com**
+(below the whole grid, not under the form), advancing and looping. Self-hosted vertical MP4,
+subtitles burned in, code-managed list.
+
+**Five things bind.** (1) **THERE IS NO `<video>` ELEMENT ON THE PAGE UNTIL SOMEBODY PRESSES PLAY**
+(§8.37-a). axe-core's `video-caption` is `selector: 'video'`, impact **critical**, with no matcher,
+so any `<video>` at rest puts a critical violation on Home AND the checkout page and ends the clean
+34/34. A test pins it. (2) **The captions are burned into the FILE**, which satisfies WCAG 1.2.2 on
+its own — axe simply cannot read them, so this is a detection problem, not an accessibility one
+(§8.37-b). The obligation lives outside the code: a file without burned-in subtitles is a regression
+no test can see. (3) **`VIDEO_MOMENTS` IS EMPTY AND NOTHING RENDERS.** Below three rows the
+component returns `null` and both pages omit the room. **Never seed it** with stock footage or a
+frame of the launch film: the never-invent law is stricter about social proof, because a fake parent
+is a lie about a person (§8.37-d). `hasOpenCaptions` and `consentOnFile` are literal `true` types per
+row, so a row cannot omit either claim. (4) **🔴 `next dev` on `127.0.0.1` DOES NOT HYDRATE** and it
+looks exactly like a broken component (§8.37-e) — Next 16 blocks cross-origin dev requests and
+`127.0.0.1` is not the dev server's own origin. **Use `http://localhost:<port>` for anything testing
+client behaviour.** Two controls found it: a long-shipped component was equally inert, and the same
+probe against production worked. (5) **`tools/qa/` screenshots are SERVER-RENDER evidence only**
+(§8.37-f): `loadSettled` never waits for React and `openPage`'s interception breaks the dev HMR
+socket. A `qa:shot` proves what the server sent, never what a click does.
+
+**Waiting on the founder:** the video files themselves (see the rulebook), approval of the Kheelu say
+line `"Real homes, real kids. Press play."`, and — **recommended before the first video lands** —
+the repo-visibility decision, because footage of real children in a public git repo is permanent.
+
+
 **🟣 …AND ITS FOLLOW-THROUGH LANDED 2026-09-12. All of the below is live and verified on
 production.** Same records: `docs/checkpoints/seo-aeo-geo-2026-09-11.md` §7–9, laws **§8.36 a–h**,
 founder actions `docs/seo/founder-actions-2026-09-11.md`, app stores
