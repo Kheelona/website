@@ -89,3 +89,47 @@ heading -> form -> order summary -> videos. Raised with the founder in the plan.
 
 ## Running record
 
+### Commit 1 — the carousel, its data source and its tests
+
+`src/lib/video-moments.ts` · `src/components/organisms/VideoMoments.tsx` (+ story + test) ·
+`src/styles/globals.css`.
+
+**The list ships EMPTY, and that is the deliverable.** No real footage exists yet, so
+`VIDEO_MOMENTS` is `[]`, `VideoMoments` returns `null` below three rows, and both pages will omit
+the section entirely. Seeding it with the launch film or stock footage to "show the design" is
+forbidden in the file header: the never-invent law is stricter about social proof than about copy,
+because a fake parent is a lie about a person.
+
+**Two promises are made per row, in the type.** `hasOpenCaptions: true` and `consentOnFile: true` are
+literal `true` rather than `boolean`, so a row that omits either fails to compile. They are the two
+things this section rests on and the two that would be quietest to forget at speed.
+
+**Three things the tests caught or pinned, in the order they happened:**
+
+1. **A broken file kept a DISABLED play button.** Its own test failed, and the test was right: a
+   disabled control still announces "Play: ..." to a screen reader, promising something that cannot
+   happen. Fixed by extracting `Tile`, which renders the bare still when broken. The card degrades to
+   copy, never to a dead control (the AudioMoments law).
+2. **`setRotating` inside an effect was a lint ERROR**, not a style note: reading a media query that
+   way is a cascading render. Replaced with `useSyncExternalStore`, which is what an external store
+   like `matchMedia` is for, with a `false` server snapshot so nothing moves before the client has
+   asked the platform.
+3. **The gate guard is now a test.** `puts NO video element in the DOM at rest` fails the moment
+   anybody puts a `<video>` back into a tile, and its comment names axe's rule and impact so the next
+   person does not have to rediscover why.
+
+**Motion is one switch, and it is three-valued.** `motionOverride` is `null` (follow the OS), `true`
+or `false` (the visitor said so). `rotating = motionOverride ?? motionWelcome` governs the advance
+AND the centred tile's silent loop, so the single Pause control stops everything that moves
+(WCAG 2.2.2), and someone who prefers reduced motion can still start it deliberately.
+
+**The centred tile is found geometrically**, by one IntersectionObserver with a 2% band at the
+track's horizontal middle. No breakpoint is ever consulted, so the same rule gives the middle of
+three on a desktop and the leading tile on a phone.
+
+Gates: tsc 0, eslint clean on every new file, 23/23 on the new suite.
+
+*Observed, not fixed, because it predates this round:* `AudioMoments.tsx:162` carries an unused
+`eslint-disable` for `jsx-a11y/media-has-caption`. The rule is not enabled in this config, so the
+directive warns. Mine were removed and their reasoning kept as plain comments.
+

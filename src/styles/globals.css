@@ -693,3 +693,29 @@ html:not(.js) [data-kheelu-guide] {
     transition: none;
   }
 }
+
+/* The video carousel's track (§8.37). Only two things, both of which Tailwind
+   has no utility for.
+
+   The scrollbar is hidden because the track is a carousel with its own arrows
+   and dots, and a permanent horizontal bar under a row of video tiles reads as
+   a rendering fault rather than as an affordance. Hiding it costs nothing in
+   reach: the track is still a native scroller, so swipe, trackpad, shift-wheel
+   and keyboard all keep working, and every position it can reach is also
+   reachable from a dot.
+
+   `scroll-behavior` is NOT set here. It is passed per call in
+   VideoMoments.tsx, so a visitor who asks for reduced motion gets no rotation
+   at all rather than an instant jump every six seconds. */
+.video-track {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.video-track::-webkit-scrollbar {
+  display: none;
+}
+
+/* A tile's own scroll never drags the page with it on iOS. */
+.video-track {
+  overscroll-behavior-x: contain;
+}
