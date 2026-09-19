@@ -9,6 +9,7 @@ import { FootnotesRow, Footnote, V3_FOOTNOTES } from "@/components/molecules/Foo
 import { Faq, type FaqEntry } from "@/components/molecules/Faq";
 import { pageGraph, faqPage, breadcrumbs, KHEELU_PRODUCT, pageMeta, jsonLd } from "@/lib/seo";
 import { AUDIO_MOMENTS } from "@/lib/audio-moments";
+import { VIDEO_MOMENTS, hasVideoMoments } from "@/lib/video-moments";
 import { RecognitionStrip } from "@/components/organisms/RecognitionStrip";
 import { ParentQuotes } from "@/components/organisms/ParentQuotes";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
@@ -16,6 +17,7 @@ import { FeelingsGallery } from "@/components/organisms/FeelingsGallery";
 import { KheeluModes } from "@/components/organisms/KheeluModes";
 import { HowItWorksLoop, type LoopStep } from "@/components/organisms/HowItWorksLoop";
 import { GrowthArc } from "@/components/organisms/GrowthArc";
+import { VideoMoments } from "@/components/organisms/VideoMoments";
 import {
   PREORDER_HREF,
   PREORDER_LABEL,
@@ -325,6 +327,39 @@ export default function HomePage() {
         <Room fill="white" guide="curious" say="We did the homework so you don't have to." reveal="right">
           <Compare bare />
         </Room>
+
+        {/* Real families on film (§8.37), placed DIRECTLY above the written
+            quotes on purpose. Those four quotes are still drafted
+            attributions on named people, and the founder's standing decision
+            is to keep them (closed-rounds.md). Footage of a real child is the
+            evidence they are standing in for, so it reads first and the words
+            below it become the caption rather than the claim.
+
+            The whole room disappears when the library is short. No heading
+            with an empty shelf under it: a section that announces real
+            families and then shows none is worse than no section. */}
+        {hasVideoMoments() && (
+          <Room
+            fill="cream"
+            id="parent-films"
+            guide="joy"
+            say="Real homes, real kids. Press play."
+            reveal="pop"
+          >
+            <Reveal>
+              <SectionHeading
+                eyebrow="See it for yourself"
+                title="Watch a child meet Kheelu."
+                titleClassName="mb-3"
+                lede="Real children in real homes. Press play on any of them."
+                ledeClassName="mb-10 max-w-[58ch]"
+              />
+            </Reveal>
+            <Reveal>
+              <VideoMoments moments={VIDEO_MOMENTS} />
+            </Reveal>
+          </Room>
+        )}
 
         <Room fill="white" id="parent-voices" guide="joy" say="Real families, real words." reveal="left">
           <ParentQuotes bare />

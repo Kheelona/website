@@ -133,3 +133,53 @@ Gates: tsc 0, eslint clean on every new file, 23/23 on the new suite.
 `eslint-disable` for `jsx-a11y/media-has-caption`. The rule is not enabled in this config, so the
 directive warns. Mine were removed and their reasoning kept as plain comments.
 
+### Commit 2 — wired into both pages, plus the rulebook and its guard
+
+`src/app/(site)/page.tsx` · `src/app/store/page.tsx` · `docs/video-conventions.md` ·
+`test/video-assets.test.ts`.
+
+**On Home the room sits DIRECTLY ABOVE `parent-voices`.** That room's Kheelu line already reads
+"Real families, real words", and the four quotes under it are still drafted attributions on named
+people that the founder has decided to keep (`closed-rounds.md`). Footage of a real child is the
+evidence those words are standing in for, so it now reads first and the quotes become the caption
+rather than the claim. The whole room is behind `hasVideoMoments()`, so a short library means no
+heading over an empty shelf.
+
+**On the store it sits below the WHOLE grid**, not under the form. Reasoning in the plan and in the
+code comment: that page's own header records that `OrderSummary` already stacks below the form on a
+phone, so the ship date is "first read after the form". A carousel between them would push the
+refund promise, the balance due and the ship date beneath it on the page that takes money. Flagged
+to the founder as a deviation from the literal brief; desktop is identical either way.
+
+**The guard test proves its own validator before trusting it.** `VIDEO_MOMENTS` is empty, so running
+the rules against it passes vacuously and would keep passing if every rule were deleted. So
+`test/video-assets.test.ts` exercises each rule in BOTH directions against fixtures first (bad id,
+wrong aspect, wrong path, empty label, banned dash, missing file) and only then applies the same
+function to the real list. It also parses `docs/video-conventions.md` and asserts the doc publishes
+the same numbers the code enforces, the way `test/utm.test.ts` does for UTM conventions.
+
+**A test count that did not reconcile turned out to be the guards working.** 1179 + 38 new should be
+1217; the suite read 1222. Chased rather than accepted, with a per-file diff against a worktree at
+the rollback tag. The five are `preorder-copy` +2, `preorder-cta` +2 and `stories-parse` +1: all three
+are `it.each` over globbed source files, and the new component, story and lib files fell into their
+globs and passed. The repo's standing copy and voice guards picked up the new code on their own,
+which is the system behaving exactly as designed.
+
+Gates: tsc 0, eslint clean, **1222 tests / 118 files**, all passing.
+
+### ⚠ A SECOND SESSION IS WORKING IN THIS REPO AT THE SAME TIME
+
+Discovered mid-round, on `main`: commit `3468edf` "Open the PostHog round with its running record"
+is not mine, and `package.json`, `package-lock.json` and `src/config/site.ts` carry uncommitted
+changes adding `posthog-js` and `POSTHOG_KEY`. A fifth measurement tool.
+
+Nothing of mine is affected and nothing of theirs was touched: every commit in this round was staged
+by name, which is the §8.34-era rule about never running `git add -A` here, earning its keep for a
+reason nobody anticipated. But two agents on one branch and one working tree is a real hazard, and
+**`npx next build` from here would build a mixed tree**, so that gate is deliberately NOT run until
+the founder says how to proceed. Raised with the founder rather than worked around.
+
+Worth noting for whoever reconciles the two rounds: PostHog is measurement tool number five, so
+§8.21-c binds it (touching a measurement tool means touching `/privacy` in the SAME commit) and
+`test/analytics-tags.test.ts` currently counts four.
+

@@ -4,6 +4,8 @@ import { launchTier, fullTier } from "@/lib/store/tiers";
 import { preorderMode } from "@/lib/store/mode";
 import { PreorderForm, OrderSummary } from "@/features/preorder";
 import { KHEELU_ART } from "@/lib/kheelu-art";
+import { VideoMoments } from "@/components/organisms/VideoMoments";
+import { VIDEO_MOMENTS, hasVideoMoments } from "@/lib/video-moments";
 import {
   formatInr,
   FULL_PRICE,
@@ -48,6 +50,7 @@ export default async function StorePage() {
   const tier = mode === "token" ? launchTier() : fullTier();
 
   return (
+    <>
     <div className="mx-auto grid w-full max-w-[1100px] gap-10 px-6 py-10 md:grid-cols-[1fr_420px] md:py-14">
       <div>
         <div className="mb-6 flex items-start gap-5">
@@ -92,6 +95,33 @@ export default async function StorePage() {
         />
       </aside>
     </div>
+
+    {/* Real families on film (§8.37).
+
+        BELOW THE WHOLE GRID, not under the form, and the reason is this
+        page's own mobile stacking. The header above records that removing
+        the prose paragraph left OrderSummary below the form on a phone, so
+        the ship date is already "first read after the form". Dropping a
+        video carousel between them would push the refund promise, the
+        balance due and the ship date beneath it, on the page that takes
+        money. Here the desktop result is what was asked for and the phone
+        order stays heading, form, summary, films.
+
+        Nothing in this section can reach the payment path: it takes no
+        props from the tier, renders no price, and mounts no <video> until
+        a visitor asks for one. */}
+    {hasVideoMoments() && (
+      <section className="mx-auto w-full max-w-[1100px] border-t border-line px-6 py-10 md:py-14">
+        <h2 className="mb-2 font-display text-[clamp(22px,2.6vw,30px)] font-extrabold leading-tight text-ink-head">
+          Families already using Kheelu.
+        </h2>
+        <p className="mb-8 max-w-[52ch] text-[16px] leading-relaxed text-ink">
+          Real children in real homes. Press play on any of them.
+        </p>
+        <VideoMoments moments={VIDEO_MOMENTS} />
+      </section>
+    )}
+    </>
   );
 }
 
