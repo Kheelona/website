@@ -183,3 +183,64 @@ Worth noting for whoever reconciles the two rounds: PostHog is measurement tool 
 §8.21-c binds it (touching a measurement tool means touching `/privacy` in the SAME commit) and
 `test/analytics-tags.test.ts` currently counts four.
 
+### Commit 3 — verified in a real browser, laws written, fixtures removed
+
+**The verification cost an hour and produced the round's most reusable finding.** Recorded as
+§8.37-e because it will cost the next person the same hour otherwise.
+
+Four throwaway fixtures were generated from `launch.mp4` (cropped to 9:16, three exports each: mp4,
+poster jpg, and a 3s silent animated webp via `img2webp`, since **this ffmpeg build has no `libwebp`
+encoder** — a gotcha now in the rulebook). Rows were added temporarily, never committed, and every
+asset was deleted afterwards. `public/video/` is back to `launch.mp4` + its poster.
+
+**The scare:** against `http://127.0.0.1:3007`, the carousel looked dead. No animated loop, no dot
+marked current, and pressing play did nothing. Three symptoms pointing at one conclusion.
+
+**It was none of them.** Next 16 blocks cross-origin dev requests and does not treat `127.0.0.1` as
+the dev server's own origin, so the client chunks never loaded and the page never hydrated. The dev
+server said so in its own log the whole time (`allowedDevOrigins`).
+
+**Two controls found it, and both were needed.** `AudioMoments`, shipped and working for months, was
+equally inert on the same page, so the fault could not be the new component. Then the same probe
+against **production** returned `hydrated: true` with a working `AudioMoments`, so the probe was
+sound. Only then was the dev server the remaining suspect. Guessing at the component would have
+"fixed" code that was never broken.
+
+**Verified on `http://localhost:3007`, hydrated, in a plain headless browser:**
+
+| Promise | Result |
+|---|---|
+| No `<video>` on the page at rest | `videos: 0` ✓ |
+| Exactly one silent loop, on the centred tile | `pictures: 1` ✓ |
+| The centred tile is the one marked current | dot 2 `aria-current="true"` ✓ |
+| Motion runs when the OS welcomes it | toggle reads "Pause the video carousel" ✓ |
+| Play mounts one video and stops the loop | `videos: 1`, `pictures: 0`, toggle flips to "Play" ✓ |
+| A second play replaces the first, never adds | `videos: 1`, src `demo-three.mp4` ✓ |
+
+Screenshots taken at 1280 and 390 after hydration. Mobile shows one tile with the next peeking,
+arrows hidden, dots and the pause control below, which is the approved design.
+
+**Also learned:** `tools/qa/` screenshots are server-render evidence only (§8.37-f). `loadSettled`
+waits for `domcontentloaded`, forces reveals, settles 1500ms, and never waits for React; `openPage`
+turns on request interception, which additionally breaks the dev HMR websocket. A `qa:shot` image
+proves what the server sent and how it is styled, and nothing about any click. `qa:sweep` is
+unaffected, because axe over server-rendered HTML is exactly its job and §8.37-a is a property of
+the page at rest.
+
+Laws written as **§8.37 a-h**.
+
+### What is NOT done, and why
+
+- **`npx next build` and `npm run qa:sweep` were NOT run.** Both would operate on a working tree
+  that now contains another session's in-progress PostHog work (`PostHogGate`, `lib/posthog.ts`,
+  edits to `layout.tsx`, `/privacy`, `security-headers.ts` and two test files). A build or sweep
+  from here measures a mixture of two rounds and would be evidence for neither. **Deliberately held
+  until the founder says how the two rounds should be sequenced.** Everything that can be gated
+  independently has been: `tsc` 0, eslint clean, and 38/38 on this round's own suites with the live
+  empty library restored.
+- **No video files exist yet**, so nothing renders on the live site. That is the designed state.
+- **The Kheelu say line `"Real homes, real kids. Press play."` needs founder approval**, per the
+  standing rule that every mascot speech line is approved before shipping. 33 characters, inside the
+  48-character limit, and deliberately distinct from the neighbouring room's "Real families, real
+  words."
+

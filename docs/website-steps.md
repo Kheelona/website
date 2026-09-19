@@ -2391,3 +2391,129 @@ because being quotable by answer engines is this product's distribution channel.
 to Proxied would silently invert that policy, and nothing in this repo would fail.** Verified clean
 on 2026-09-12: `kheelona.com/robots.txt` has zero Cloudflare managed content and still allows GPTBot.
 
+
+---
+
+# §8.37 REAL FAMILIES ON FILM: THE VIDEO CAROUSEL (2026-09-19)
+
+Record: `docs/checkpoints/video-section-2026-09-19.md`. Rulebook: `docs/video-conventions.md`.
+Rollback tag `pre-video-section-2026-09-19` = `818132f`.
+
+Three videos at a time on the home page and on `store.kheelona.com`, advancing and looping.
+Self-hosted, vertical, with subtitles burned into the file. The library ships **empty**.
+
+## §8.37-a · There is NO `<video>` element on the page until somebody presses play
+
+This is the law the whole component exists to keep, and it is not a performance preference.
+
+Read out of the installed axe-core 4.12.1, not recalled:
+
+```
+id: 'video-caption', impact: 'critical', selector: 'video', none: [ 'caption' ]
+```
+
+**No matcher.** Every `<video>` in the DOM fails that rule, whether it is muted, paused, silent or
+playing. `qa:sweep` runs axe with default rules over every route and filters exactly one accepted
+pair (§8.29). A tile holding a `<video>` at rest therefore puts a **critical** violation on the home
+page and on the page that takes money, and ends the clean 34/34.
+
+So a tile at rest is an image and a button, and the `<video>` mounts only when a visitor asks for
+one. `VideoMoments.test.tsx` pins it: *puts NO video element in the DOM at rest*.
+
+## §8.37-b · The captions are in the FILE, and that is a real answer, not a workaround
+
+Every video carries its subtitles burned into the frame. Open captions satisfy **WCAG 1.2.2** on
+their own; a `<track>` would print the same words twice. axe reports their absence because it cannot
+read a caption painted into a video, so §8.37-a is a **detection** problem and never an
+accessibility one. Stated plainly because the opposite reading — that the gate is being dodged — is
+the one a reviewer will reach for first.
+
+The obligation this creates sits outside the code: **a file without burned-in subtitles is an
+accessibility regression that no test can see.** It is the first item in `docs/video-conventions.md`
+for that reason, and `hasOpenCaptions: true` is a literal type per row so a row cannot omit the
+claim.
+
+## §8.37-c · Motion is ONE switch, and the centre tile is found geometrically
+
+`rotating` governs the auto-advance AND the centred tile's silent loop, so the single Pause control
+stops everything that moves (WCAG 2.2.2). It is three-valued — `motionOverride ?? motionWelcome` —
+so the OS preference is the default, a visitor can start it deliberately even with reduced motion
+set, and pressing Pause is never undone by a media query re-evaluating.
+
+The centred tile comes from ONE IntersectionObserver with a 2% band at the track's horizontal
+middle. **No breakpoint is ever consulted**: the same rule gives the middle of three on a desktop
+and the leading tile on a phone.
+
+The silent loop is an animated WebP in a plain `<img>`, never `next/image` (the optimizer re-encodes
+it to a still) and never a muted `<video>` (§8.37-a). `<picture>` carries the reduced-motion
+fallback as a media query, so it is correct before any script runs.
+
+## §8.37-d · An empty library renders NOTHING, and no one may seed it
+
+`VIDEO_MOMENTS` is empty until the founder supplies files. Below three rows the component returns
+`null` and both pages omit the whole room, so an empty library costs a visitor nothing and shows
+them no placeholder.
+
+**Never seed it with stock footage, a frame of the launch film, or a reconstruction.** The
+never-invent law is stricter about social proof than about copy, because a fake parent is a lie
+about a person rather than about a product. `consentOnFile: true` is a literal type per row; the
+signed consent lives with the founder and never enters this repo.
+
+## §8.37-e · 🔴 `next dev` on `127.0.0.1` DOES NOT HYDRATE, and it looks exactly like a broken component
+
+The most expensive hour of this round, and it will cost the next person the same unless it is
+written down.
+
+Verifying the carousel in headless Chrome against `http://127.0.0.1:3007` showed the component
+apparently dead: no animated loop, no dot marked current, and **pressing play did nothing**. Three
+symptoms, one apparent conclusion.
+
+It was none of them. **Next 16 blocks cross-origin dev requests, and the dev server does not count
+`127.0.0.1` as its own origin**, so the client chunks never load and the page never hydrates. The
+tell is in the dev server's own log:
+
+```
+To allow this host in development, add it to "allowedDevOrigins" in next.config.js
+```
+
+**Two controls are what found it, and both were necessary.** First, `AudioMoments` — shipped and
+working for months — was equally inert on the same page, which meant the fault could not be the new
+component. Second, the same probe against **production** returned `hydrated: true` and a working
+`AudioMoments`, which meant the probe was sound. Only then was the dev server the remaining suspect.
+
+**So: use `http://localhost:<port>` for anything that tests client behaviour on a dev server.** Note
+this sits in tension with the §8.25-bb note that headless Chrome here does not resolve `localhost` —
+that applies to the `tools/qa/` harness, whose `--host-resolver-rules` mapping is what breaks
+`localhost`. A plain browser resolves it fine. Two different tools, two different answers.
+
+## §8.37-f · `tools/qa/` screenshots are SERVER-RENDER evidence, and nothing more
+
+Related to the above and more general. `loadSettled` waits for `domcontentloaded`, force-adds
+`.reveal-in`, and settles for 1500ms. It never waits for React, and `openPage` turns on request
+interception, which also breaks the dev HMR websocket. **A `qa:shot` image proves what the server
+sent and how it is styled. It proves nothing about any click, any state, or any hydration.**
+
+For client behaviour, drive a plain puppeteer session (the resolver in `tools/qa/lib/resolve.mjs`
+still finds Chrome for you) and assert on the DOM after interacting, the way this round's probes
+did. `qa:sweep` is unaffected: axe on server-rendered HTML is exactly what it is for, and §8.37-a is
+a property of the page at rest.
+
+## §8.37-g · The rulebook is a checklist, and the guard proves itself first
+
+The founder chose a written checklist over a CLI (2026-09-19). `test/video-assets.test.ts` enforces
+the machine-checkable half: naming, aspect, file existence, the 4MB per-file budget and the
+12-video library cap, plus a parse of `docs/video-conventions.md` asserting the doc publishes the
+same numbers the code enforces (the `test/utm.test.ts` pattern).
+
+**Because the library is empty, every one of those rules passes vacuously and would keep passing if
+all of them were deleted.** So the test exercises each rule in BOTH directions against fixtures
+first, and only then applies the same function to the real list. A guard over an empty collection is
+not a guard until it has been proven against something.
+
+## §8.37-h · Video in a PUBLIC git repo is permanent, shared weight
+
+These files live in every clone forever, and `github.com/Kheelona/website` is public while the
+founder's visibility decision stays open. That decision is ordinary housekeeping for source code and
+something else entirely for footage of real children. **Raised as a recommendation to go private
+before the first video lands.** The 12-video / ~48MB cap exists for the same reason; past it the
+honest answer is a CDN, which is a conversation and not an edit.
