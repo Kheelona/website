@@ -77,6 +77,13 @@ const TRANSITIVE_FLOORS: {
   name: string;
   min: string | Record<number, string>;
   why: string;
+  /** Exact lockfile paths excused from the floor, each carrying the VERIFIED
+   *  reason the advisory's vulnerable function cannot be reached from that
+   *  copy. Deliberately path-exact rather than a package name or a glob: the
+   *  point is that a NEW copy of the same package arriving somewhere else still
+   *  fails. Every entry is checked against the lockfile below, so an exemption
+   *  that stops matching a real copy fails loudly instead of rotting. */
+  exempt?: { path: string; why: string }[];
 }[] = [
   {
     name: "postcss",
@@ -141,7 +148,24 @@ const TRANSITIVE_FLOORS: {
       "three-stdlib, under @react-three/drei. unzipSync is not on any path this app calls (the " +
       "sole consumer is SVGLoader in the dormant journey geometry), and no override was needed " +
       "because three-stdlib declares ^0.6.9, which 0.6.11 satisfies. A flat floor is correct " +
-      "here even though a second copy exists at 0.8.3, because 0.8.3 is numerically above it.",
+      "here even though a second copy exists at 0.8.3, because 0.8.3 is numerically above it. " +
+      "A THIRD copy arrived with posthog-js on 2026-09-19 and is exempted below.",
+    exempt: [
+      {
+        path: "node_modules/posthog-js/node_modules/fflate",
+        why:
+          "posthog-js 1.434.2 pins fflate ^0.4.8 and gets 0.4.9, below this floor. VERIFIED " +
+          "AGAINST THE SHIPPED CODE rather than assumed: the only fflate identifiers anywhere " +
+          "in posthog-js/dist are gzipSync, strToU8 and strFromU8. unzipSync appears nowhere " +
+          "in posthog-js's own code, only inside fflate's library files. PostHog uses fflate to " +
+          "COMPRESS outbound session-replay payloads; it never decompresses an untrusted " +
+          "archive, which is the entire attack surface of GHSA-px8p-9vwx-vf98. An npm override " +
+          "is the WRONG fix here for the same reason the repo carries zero of them (the " +
+          "postcss/sharp case): 0.6.11 does not satisfy posthog-js's ^0.4.8, so forcing it " +
+          "would ship a combination PostHog has never tested. Re-check when posthog-js widens " +
+          "its fflate range.",
+      },
+    ],
   },
   {
     name: "browserslist",
@@ -230,7 +254,14 @@ describe("security version floors", () => {
       const copies = lockedCopies(floor.name);
       expect(copies.length, `${floor.name} is not in the lockfile at all`).toBeGreaterThan(0);
 
+      const exempt = new Set((floor.exempt ?? []).map((e) => e.path));
+
       for (const copy of copies) {
+        /* An exemption is a recorded, verified judgement that the advisory's
+           vulnerable function is unreachable from THIS copy. It is keyed on the
+           exact path, so the same package arriving under a different parent is
+           still a failure. */
+        if (exempt.has(copy.path)) continue;
         if (typeof floor.min === "string") {
           expect(
             atLeast(copy.version, floor.min),
@@ -251,6 +282,42 @@ describe("security version floors", () => {
         ).toBe(true);
       }
     });
+  }
+
+  /* AN EXEMPTION MUST NOT OUTLIVE THE THING IT EXCUSES.
+     A floor exemption is the one place in this file where a copy is waved past
+     an advisory, so it is the one place that can quietly go wrong. Two ways it
+     rots, and this catches both: the dependency is upgraded and the exempt path
+     disappears (the exemption is now dead weight hiding nothing), or the nested
+     copy is hoisted to a new path (the exemption stops matching and the real
+     check resumes, which is fine, but the stale entry should still go).
+
+     It also refuses an exemption that is no longer NEEDED: once the exempt copy
+     satisfies the floor on its own, the excuse must be deleted rather than left
+     lying around to cover a future downgrade nobody looked at. */
+  for (const floor of TRANSITIVE_FLOORS) {
+    for (const ex of floor.exempt ?? []) {
+      it(`keeps the ${floor.name} exemption for ${ex.path} honest`, () => {
+        const copy = lockedCopies(floor.name).find((c) => c.path === ex.path);
+        expect(
+          copy,
+          `the ${floor.name} exemption names ${ex.path}, which is no longer in the lockfile. ` +
+            "Delete the exemption.",
+        ).toBeTruthy();
+
+        const min = typeof floor.min === "string"
+          ? floor.min
+          : floor.min[Number(copy!.version.split(".")[0])];
+        expect(
+          min && !atLeast(copy!.version, min),
+          `${ex.path} is ${copy!.version}, which now meets the ${floor.name} floor on its own. ` +
+            "Delete the exemption rather than leaving it to cover a future downgrade.",
+        ).toBe(true);
+
+        /* An exemption with no stated reason is just a hole. */
+        expect(ex.why.length, `${ex.path} is exempt with no recorded reason`).toBeGreaterThan(80);
+      });
+    }
   }
 
   for (const banned of BANNED) {

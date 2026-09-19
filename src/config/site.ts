@@ -293,3 +293,71 @@ export const META_PIXEL_HOSTS = GA4_HOSTS;
  *  leave the script out of the HTML source and verification would keep
  *  failing. The cost is that local and preview page views reach the property. */
 export const AHREFS_ANALYTICS_KEY = "N7vd/jLtIIlHqzFqu57UBg";
+
+/** PostHog, wired 2026-09-19 at the founder's request (project 617632, US
+ *  cloud). The fifth measurement tool on this site, and the widest: product
+ *  analytics, session replay and error tracking, with autocapture ON.
+ *
+ *  THE KEY IS HARDCODED, and the founder's offer of a Vercel secret was
+ *  declined on purpose. A PostHog *project API key* is a public client-side
+ *  identifier — PostHog's own snippet ships it in the page, exactly like the
+ *  GA4 measurement ID and the Meta Pixel ID above. It authorises writing events
+ *  into the project it names and nothing else; it cannot read data out.
+ *
+ *  The repo has paid for the other half of this twice (§8.30): a `NEXT_PUBLIC_`
+ *  name CANNOT be a Vercel "Secret", because the value is inlined into the
+ *  browser bundle at build time, which is exactly what the dashboard refuses.
+ *  `NEXT_PUBLIC_GA4_MEASUREMENT_ID` was retired for that reason. An env var here
+ *  would buy nothing and cost the Vercel redeploy trap, where a variable only
+ *  applies to deployments created after it changes.
+ *
+ *  The project's real protection is POSTHOG_HOSTS, not secrecy of the key. */
+export const POSTHOG_KEY = "phc_ute69SyrVALLjx3bW8xUNVqiALe7RRNbJp9KuZDd9726";
+
+/** US cloud. Ingestion goes to `us.i.posthog.com`; the lazily-fetched bundles
+ *  (session recorder, error tracking, surveys, toolbar) come from
+ *  `us-assets.i.posthog.com`. BOTH are in the CSP — see security-headers.ts.
+ *
+ *  Note this is the ingestion host, NOT `us.posthog.com`, which is the
+ *  dashboard the founder logs into. Pointing the SDK at the dashboard host is
+ *  the classic first-try mistake and fails silently. */
+export const POSTHOG_API_HOST = "https://us.i.posthog.com";
+export const POSTHOG_ASSET_HOST = "https://us-assets.i.posthog.com";
+
+/** Deliberately the same list as GA4_HOSTS, for the same reason META_PIXEL_HOSTS
+ *  is. The stake here sits between the other two: preview traffic would not
+ *  merely dirty a report (GA4) or feed an ad budget (Meta), but session replay
+ *  bills per recording and autocapture bills per event, so an ungated preview
+ *  deploy spends the founder's PostHog quota on our own QA runs. */
+export const POSTHOG_HOSTS = GA4_HOSTS;
+
+/** Routes where session replay MUST NOT run, matched as a path prefix.
+ *
+ *  `/store/thanks` is the confirmation page, and it renders a parent's email,
+ *  their order number and their delivery address back to them AS TEXT. Its own
+ *  source comment has warned since 2026-08-22 that a screenshot of it "would
+ *  show a stranger a family's delivery address" — and a session recording is a
+ *  continuous screenshot.
+ *
+ *  Masking inputs does not help here: `maskAllInputs` covers what a parent
+ *  TYPES, and this page's exposure is what we PRINT. The nodes carry `ph-mask`
+ *  as defence in depth, but a whole-route stop is the control that cannot be
+ *  undone by someone later adding an unmarked row to the summary.
+ *
+ *  Everything else still records, including the pre-order form and the
+ *  checkout hand-off, which is where the funnel value actually is. */
+export const POSTHOG_REPLAY_DENY_PATHS = ["/store/thanks"] as const;
+
+/** Should PostHog load on this hostname? Case-insensitive because hostnames
+ *  are, port-free because `location.hostname` already excludes the port. */
+export function shouldLoadPostHog(hostname: string): boolean {
+  return (POSTHOG_HOSTS as readonly string[]).includes(hostname.toLowerCase());
+}
+
+/** Should session replay run on this path? Prefix match, so the deny list
+ *  covers `/store/thanks` and anything nested under it. */
+export function replayAllowedOnPath(pathname: string): boolean {
+  return !POSTHOG_REPLAY_DENY_PATHS.some(
+    (p) => pathname === p || pathname.startsWith(`${p}/`),
+  );
+}
