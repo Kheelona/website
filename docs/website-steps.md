@@ -2652,3 +2652,28 @@ guard that keeps it honest: it fails if the exempt path leaves the lockfile, if 
 to satisfy the floor on its own, or if the stated reason is too short to be one. Path-exact because
 the same package arriving under a different parent must still fail. Both failure modes were
 mutation-tested — **an exemption nobody can prove still fails is just a hole with a comment on it.**
+
+## §8.38-i · A path in a config file is a claim about what a BROWSER will report
+
+Added 2026-09-19, after `POSTHOG_REPLAY_DENY_PATHS` shipped holding `/store/thanks` and session
+replay recorded the order confirmation page in production against an explicit `/privacy` promise.
+
+`/store/thanks` is the **route file** path. It is never what the browser shows:
+
+- `store.kheelona.com/thanks` is **rewritten** to it by `src/proxy.ts`, and a rewrite is invisible to
+  the browser — `location.pathname` stays `/thanks`.
+- `kheelona.com/store/thanks` is **308-redirected** away to the store host.
+
+`usePathname()` returns the browser path, so the list matched nothing.
+
+**The tests did not fail, because they restated the assumption the code was making.** Asserting
+`replayAllowedOnPath("/store/thanks") === false` is true and proves nothing, since no visitor is ever
+on that path. Two guards shared one blind spot and both stayed green.
+
+**So: anywhere a value is compared against `usePathname()`, derive it from the routing or check it
+against a real URL on the real host.** The guard now derives the browser path from `routeForHost`,
+so a change in the store's routing fails it rather than silencing it.
+
+The wider lesson, and the reason the post-deploy checklist is not ceremony: **this was found within a
+minute of the first production check, on a round where every local gate was green and the checkpoint
+was already written.**

@@ -26,12 +26,34 @@ PostHog fires from the same five bodies as GA4 and Meta, guarded by payload-IDEN
 said a browser could block "the three that only run in your browser", a TEST PINNED IT, and PostHog
 made it false — so the number was retired rather than bumped, and any count is now banned by regex.
 
-**Nothing about this is verified on production yet** — every tag is host-gated and this repo cannot
-deploy. `Technical-Todo.md` carries the four post-deploy checks, and note the **§8.28-a CSP enforce
-clock RESET AGAIN** (second time; the pixel caused the first). Also: **`npm audit` now reads 2
-moderate, and they are NOT PostHog's** — a pre-existing dev-only `@vitest/mocker` advisory published
-since the 2026-09-05 sweep, queued rather than ridden along, so the "dependencies are clean on both
-manifests" note further down is stale until it is done.
+**🔴 DEPLOYED AND VERIFIED ON PRODUCTION 2026-09-19 — AND THE FIRST PRODUCTION CHECK FOUND A LIVE
+PRIVACY DEFECT I HAD SHIPPED.** For about fifteen minutes, **session replay recorded the order
+confirmation page** while `/privacy` promised in as many words that it did not. `POSTHOG_REPLAY_DENY_PATHS`
+held **`/store/thanks`**, which is the ROUTE FILE path — and `store.kheelona.com/thanks` is *rewritten*
+to it, so the browser never reports it and `usePathname()` returns **`/thanks`**. The apex meanwhile
+308s `/store/thanks` away. The deny list matched nothing. Fixed in `34578f7`; list is now
+`["/thanks", "/store/thanks"]`.
+
+**Two things about that are worth more than the fix.** (1) **No test could have caught it, because
+the tests restated the same wrong assumption the code made** — asserting
+`replayAllowedOnPath("/store/thanks") === false` is true and proves nothing, since no visitor is ever
+on that path. Two guards, one blind spot, both green. The new guard **derives** the browser path from
+`routeForHost` instead of restating a literal. (2) **The general law (§8.38-i): a path in a config
+file is a claim about what a browser will report, and this repo rewrites paths.** Anything compared
+against `usePathname()` must be derived from the routing or checked against a real URL on the real
+host.
+
+**Verified on production, each with its control:** events arrive (`/s/` → 200), **session replay
+starts** (`posthog-recorder.js` → 200, the flagged silent-failure risk), error tracking runs, the CSP
+is complete with no refusals, and the recorder **loads on `store.kheelona.com/` but not on
+`/thanks`** — the control matters, because a fix that killed replay everywhere would have passed the
+negative check alone. **`window.posthog` is undefined and that is CORRECT** for an ES-module install;
+checking it would read as "not running" while everything runs.
+
+Still open: the **§8.28-a CSP enforce clock RESET AGAIN** (second time; the pixel caused the first),
+and **`npm audit` now reads 2 moderate that are NOT PostHog's** — a pre-existing dev-only
+`@vitest/mocker` advisory published since the 2026-09-05 sweep, queued rather than ridden along, so
+the "dependencies are clean on both manifests" note further down is **stale** until it is done.
 
 **🎬 THE VIDEO CAROUSEL SHIPPED 2026-09-19, AND ITS LIBRARY IS DELIBERATELY EMPTY.** Record:
 `docs/checkpoints/video-section-2026-09-19.md`; laws **§8.37 a–h**; rulebook
