@@ -210,3 +210,35 @@ Also verified live: the eight CTA placements render distinctly (`hero`, `navbar`
 | Order `KH-7QA4-D9QM`, name "ZZ DEPLOY CHECK (delete me)" | Supabase `preorders`, `status='created'` | No payment taken. Safe to delete. |
 | Razorpay order `order_TeFu2pvrUqqKT0` | Razorpay dashboard | Unpaid, expires on its own. |
 | Events tagged `utm_source=deploy-check` | PostHog | A handful of pageviews from the journey checks. |
+
+### Commit 3 — the paid-social fields, from an outside recommendation
+
+Law **§8.40-j**. The founder brought a tagging recommendation raised while wiring Meta into PostHog.
+Checked rather than taken or dismissed.
+
+**Its diagnosis was right, and this repo had already written the same rule.** The ads tag
+`utm_source={{site_source_name}}` — `an` / `fb` / `ig`, the placement in the source field — while
+`docs/utm-conventions.md` has specified `facebook` since 2026-09-05 and `npm run utm` refuses `an`
+outright. The ads were violating a convention that already existed.
+
+**Two of its five parameters would have arrived nowhere.** `utm_id` and `placement` are not `utm_`
+keys: our allowlist took five and dropped both, and posthog-js's built-in campaign list contains
+neither (it covers `utm_*` plus ~20 click ids). They would have read as perfectly tagged in Meta and
+produced no data — and `placement` is the valuable one, being how Audience Network is told from Feed.
+
+Now in `CAMPAIGN_KEYS` and in `custom_campaign_params` (additive: the SDK does
+`defaults.concat(custom)`). The key list is **single-sourced** — `create-order` and the pre-order form
+each kept their own copy, which is two places for it to drift.
+
+Three conflicts with the recommendation were reported back rather than absorbed: `{{campaign.name}}`
+will not satisfy `<yyyy-mm>-<slug>` (rename the campaigns, do not loosen the rule);
+`utm_term={{adset.name}}` contradicts "paid search only"; and `{{ad.name}}` carries spaces and
+capitals, which rule 1 exists to prevent.
+
+`docs/utm-conventions.md` gains a paid-social section, and `test/utm.test.ts` now **parses that
+section and fails if it recommends a parameter `CAMPAIGN_KEYS` discards** — mutation-tested, and it
+names the offender. That guard is the durable part: it catches this whole class of problem next time.
+
+Also fixed: the old guard grepped `create-order/route.ts` for the literal `utm_campaign` and broke the
+moment the key list moved, while the capture worked perfectly. **A literal in one file was standing in
+for the invariant.** It now asserts the invariant.

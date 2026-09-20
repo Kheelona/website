@@ -45,6 +45,56 @@ describe("campaignFromUrl", () => {
   });
 });
 
+/** PAID-SOCIAL FIELDS (§8.40-j, founder 2026-09-20).
+ *
+ *  Meta's ads were tagging `utm_source={{site_source_name}}`, which emits `an`,
+ *  `fb` and `ig` — three channels where there is one, none of them the
+ *  `facebook` this repo's own conventions doc has specified since 2026-09-05.
+ *  `npm run utm` already refused `an` outright.
+ *
+ *  Fixing the source alone would have thrown away the useful half. `placement`
+ *  is how the founder spotted that Audience Network was performing differently
+ *  from Feed, and neither `placement` nor `utm_id` is a `utm_` key: our
+ *  five-key allowlist dropped both, AND posthog-js's own campaign-parameter list
+ *  contains neither (read from the installed SDK). They would have arrived
+ *  nowhere at all while looking perfectly tagged in Meta. */
+describe("the paid-social fields", () => {
+  it("keeps the placement, which is how Audience Network is told from Feed", () => {
+    const url = new URL("https://kheelona.com/?utm_source=facebook&placement=audience_network");
+    expect(campaignFromUrl(url)).toEqual({
+      utm_source: "facebook",
+      placement: "audience_network",
+    });
+  });
+
+  it("keeps utm_id, so spend can be joined to sessions", () => {
+    const url = new URL("https://kheelona.com/?utm_source=facebook&utm_id=120248101035710340");
+    expect(campaignFromUrl(url)!.utm_id).toBe("120248101035710340");
+  });
+
+  it("survives the cookie round trip like every other field", () => {
+    const req = new Request("https://store.kheelona.com/", {
+      headers: {
+        cookie: `${CAMPAIGN_COOKIE}=${encodeURIComponent(
+          JSON.stringify({ utm_source: "facebook", placement: "feed", utm_id: "120248" }),
+        )}`,
+      },
+    });
+    expect(readCampaignCookie(req)).toEqual({
+      utm_source: "facebook",
+      placement: "feed",
+      utm_id: "120248",
+    });
+  });
+
+  /* Still an allowlist. Widening it for two named fields must not turn it into
+     "store whatever the query string says". */
+  it("still refuses anything not on the list", () => {
+    const url = new URL("https://kheelona.com/?utm_source=facebook&fbclid=x&anything=y");
+    expect(campaignFromUrl(url)).toEqual({ utm_source: "facebook" });
+  });
+});
+
 describe("readCampaignCookie", () => {
   const withCookie = (value: string) =>
     new Request("https://store.kheelona.com/api/preorder/create-order", {

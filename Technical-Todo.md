@@ -44,6 +44,20 @@ that date, raise them first.
 *Record: `docs/checkpoints/signup-analytics-2026-09-20.md`. Laws **§8.40 a-i**. Rollback tag
 `pre-signup-analytics-2026-09-20` = `6abeccb`.*
 
+## 🧑 Founder — RE-TAG THE META ADS (2026-09-20, §8.40-j)
+
+The code now keeps `utm_id` and `placement`, so the ad side is the remaining half.
+
+| Priority | Item | Why |
+|---|---|---|
+| **HIGH** | **Replace `utm_source={{site_source_name}}` with `utm_source=facebook`** and add `placement={{placement}}` | `{{site_source_name}}` emits `an`/`fb`/`ig`, splitting one paid channel into three, none named `facebook`, so spend cannot join to sessions. The exact block to paste is in `docs/utm-conventions.md` under "Paid social". |
+| **HIGH** | **Rename Meta campaigns to `<yyyy-mm>-<slug>`** (e.g. `2026-10-launch`) | `{{campaign.name}}` emits whatever Meta calls it, and the convention is enforced by `npm run utm` and a test. Renaming makes the variable conform on its own AND replaces `120248101035710340` with a readable name. Do not loosen the convention instead. |
+| MEDIUM | Rename ads to `rabbit-hero-a` form before using `{{ad.name}}` in `utm_content` | Rule 1 is lowercase and hyphens; `Rabbit Hero A` becomes two rows the moment anything URL-encodes it. |
+| MEDIUM | Leave `utm_term` EMPTY; do not put `{{adset.name}}` there | The convention reserves it for paid search. If the ad set matters, it belongs in `utm_content`. |
+| LOW | Historical data will be inconsistent across the change | Traffic before the re-tag stays `an`/`fb`/`ig`. Worth a note on any chart that spans the date rather than a silent step change. |
+
+---
+
 ## 🧑 Founder — 🔴 RUN THE SQL BEFORE ANYTHING IS DEPLOYED
 
 | Priority | Item | Why |

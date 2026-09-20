@@ -1,5 +1,5 @@
 import { storeEnv } from "@/lib/store/env";
-import { readCampaignCookie } from "@/lib/campaign";
+import { CAMPAIGN_KEYS, readCampaignCookie } from "@/lib/campaign";
 import { db } from "@/lib/store/db";
 import { resolveTier, tierRefusalMessage, FULL_TIER } from "@/lib/store/tiers";
 import { createRazorpayOrder } from "@/lib/store/razorpay";
@@ -201,7 +201,7 @@ function readUtm(value: unknown): Record<string, string> | null {
   if (!value || typeof value !== "object") return null;
   const source = value as Record<string, unknown>;
   const out: Record<string, string> = {};
-  for (const key of ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"]) {
+  for (const key of CAMPAIGN_KEYS) {
     const v = source[key];
     if (typeof v === "string" && v.trim()) out[key] = v.trim().slice(0, 120);
   }

@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import { CAMPAIGN_KEYS } from "@/lib/campaign";
 import { execFileSync } from "node:child_process";
 import { describe, expect, it } from "vitest";
 // @ts-expect-error -- a plain .mjs tool, deliberately outside the TS graph
@@ -124,10 +125,61 @@ describe("the site's own links stay clean", () => {
   });
 
   it("the store still records the campaign that produced an order", () => {
-    /* The other half of the story, and the reason tagging pays off at all:
-       create-order copies the landing URL's utm_ values onto the order, so a
-       paid pre-order can be traced back to the ad that caused it. */
+    /* The other half of the story, and the reason tagging pays off at all: a
+       paid pre-order must be traceable back to the ad that caused it.
+
+       REWRITTEN 2026-09-20. This used to grep create-order for the literal
+       "utm_campaign", which stopped being true when the key list was
+       single-sourced into lib/campaign.ts — the capture was working perfectly
+       and the guard failed. A literal in one file was standing in for the
+       invariant, so it now checks the invariant: the list still carries the
+       campaign, and the route still reads it off the request rather than
+       trusting the browser alone. */
+    expect([...CAMPAIGN_KEYS]).toContain("utm_campaign");
     const route = readFileSync("src/app/api/preorder/create-order/route.ts", "utf8");
-    expect(route).toContain("utm_campaign");
+    expect(route).toContain("readCampaignCookie");
+    expect(route).toContain("CAMPAIGN_KEYS");
+  });
+
+  /* The fields that are NOT utm_ keys, and so were dropped by everything until
+     2026-09-20 (§8.40-j). `placement` is how Audience Network is told from Feed,
+     which is the distinction that found a real spend problem. */
+  it("carries the paid-social fields Meta actually sends", () => {
+    expect([...CAMPAIGN_KEYS]).toContain("placement");
+    expect([...CAMPAIGN_KEYS]).toContain("utm_id");
+  });
+});
+
+/** THE DOC MUST NOT RECOMMEND A PARAMETER THE CODE THROWS AWAY (§8.40-j).
+ *
+ *  This is the guard for the failure that started the round: an outside
+ *  recommendation proposed `utm_id` and `placement`, both of which read as
+ *  perfectly tagged in Meta's UI and both of which our five-key allowlist
+ *  dropped on the floor — as did posthog-js, whose built-in campaign list
+ *  contains neither. A parameter this repo does not name is a parameter that
+ *  silently goes nowhere, so the paid-social block and `CAMPAIGN_KEYS` are
+ *  checked against each other rather than trusted to stay in step. */
+describe("the paid-social block and the code agree", () => {
+  const block = DOC.slice(DOC.indexOf("### What to put in the ad's URL parameters"));
+  const params = [...block.matchAll(/^([a-z_]+)=/gm)].map((m) => m[1]);
+
+  it("finds the documented parameters", () => {
+    expect(params.length).toBeGreaterThanOrEqual(6);
+    expect(params).toContain("placement");
+  });
+
+  it("recommends nothing the code would silently drop", () => {
+    const kept = new Set<string>(CAMPAIGN_KEYS);
+    const dropped = params.filter((p) => !kept.has(p));
+    expect(
+      dropped,
+      `docs/utm-conventions.md tells people to send these, and CAMPAIGN_KEYS discards them: ${dropped.join(", ")}`,
+    ).toEqual([]);
+  });
+
+  /* The value that caused it all must stay named as forbidden. */
+  it("still forbids the variable that split one channel into three", () => {
+    expect(DOC).toContain("{{site_source_name}}");
+    expect(DOC).toMatch(/Never `\{\{site_source_name\}\}`/);
   });
 });

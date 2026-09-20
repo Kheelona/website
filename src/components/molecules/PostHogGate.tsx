@@ -83,6 +83,24 @@ export function PostHogGate() {
            host, and confusing the two is the classic first-try mistake. */
         ui_host: POSTHOG_UI_HOST,
 
+        /* 🔴 THE TWO CAMPAIGN FIELDS POSTHOG DOES NOT KNOW ABOUT (§8.40-j,
+           2026-09-20). Its built-in list covers `utm_*` plus twenty click ids
+           (`gclid`, `fbclid`, `ttclid` and so on) and contains NEITHER
+           `utm_id` NOR `placement` — read out of the installed SDK, not its
+           docs. Meta's ads carry both, so without this they would be dropped
+           silently while looking perfectly tagged in Meta.
+
+           `placement` is the one that matters: it is how Audience Network is
+           told from Feed, and it is what found a real spend problem. It gets
+           its own field rather than being smuggled into `utm_source`, which is
+           exactly what went wrong before (`{{site_source_name}}` emitting
+           `an`/`fb`/`ig` and splitting one channel into three).
+
+           ADDITIVE, verified in the SDK: the param list is built as
+           `defaults.concat(custom_campaign_params)`, so naming these two keeps
+           every built-in one. */
+        custom_campaign_params: ["utm_id", "placement"],
+
         /* Autocapture ON (founder, 2026-09-19): clicks, changes and submits
            sitewide with no per-element code. Note what this does NOT do —
            posthog-js never sends the VALUE of an input via autocapture. What it

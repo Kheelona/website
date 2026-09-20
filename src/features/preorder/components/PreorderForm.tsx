@@ -22,6 +22,7 @@ import {
 import { startCheckout } from "../lib/checkout";
 import { preorderAnalytics } from "../lib/analytics";
 import { phDistinctId } from "@/lib/posthog";
+import { CAMPAIGN_KEYS } from "@/lib/campaign";
 
 /** The pre-order form (§8.25-s).
  *
@@ -344,7 +345,7 @@ function readUtm(): Record<string, string> {
   if (typeof window === "undefined") return {};
   const params = new URLSearchParams(window.location.search);
   const out: Record<string, string> = {};
-  for (const key of ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"]) {
+  for (const key of CAMPAIGN_KEYS) {
     const value = params.get(key);
     if (value) out[key] = value;
   }

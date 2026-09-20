@@ -28,9 +28,38 @@
 
 export const CAMPAIGN_COOKIE = "kh_utm";
 
-/** The five standard keys, matching the order row and `create-order` so a
- *  campaign means the same thing everywhere. */
-const KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"] as const;
+/** Every field a campaign may carry, and the ONE list the whole repo reads.
+ *
+ *  Exported because `create-order` and the pre-order form each used to keep
+ *  their own copy of the five standard keys, which is two more places for this
+ *  to drift than there should be.
+ *
+ *  THE LAST TWO ARE NOT `utm_` KEYS, AND THAT IS WHY THEY NEEDED ADDING
+ *  (§8.40-j, founder 2026-09-20). Meta's ads tagged
+ *  `utm_source={{site_source_name}}`, which emits `an` / `fb` / `ig` — three
+ *  channels where there is one, none of them the `facebook` that
+ *  `docs/utm-conventions.md` has specified since 2026-09-05. Correcting the
+ *  source alone would have thrown away the useful half: `placement` is how
+ *  Audience Network is told from Feed, and it is the field that found a real
+ *  problem. Neither it nor `utm_id` was on the old five-key list, and neither is
+ *  in posthog-js's own campaign-parameter list either (read from the installed
+ *  SDK), so both would have arrived NOWHERE while looking perfectly tagged in
+ *  Meta. `PostHogGate` passes them as `custom_campaign_params`, which the SDK
+ *  concatenates onto its defaults rather than replacing them. */
+export const CAMPAIGN_KEYS = [
+  "utm_source",
+  "utm_medium",
+  "utm_campaign",
+  "utm_content",
+  "utm_term",
+  /** Meta's campaign id, so ad spend can be joined to sessions. */
+  "utm_id",
+  /** Feed vs Reels vs Audience Network. Deliberately its own field rather than
+   *  smuggled into utm_source, which is what started this. */
+  "placement",
+] as const;
+
+const KEYS = CAMPAIGN_KEYS;
 
 /** Values are capped for the same reason `readUtm` caps them: a query string is
  *  attacker-supplied, and this one becomes a cookie AND a database row. */

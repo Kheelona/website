@@ -178,9 +178,12 @@ describe("POST /api/preorder/create-order", () => {
     expect(firstArg(calls, "preorders", "insert")).toBeTruthy();
   });
 
-  it("captures only the five standard UTM keys, and nothing a client invents", async () => {
+  it("captures only the campaign keys we know, and nothing a client invents", async () => {
     await post({
       ...goodBody,
+      /* Seven keys since 2026-09-20 (§8.40-j): the five utm_ ones plus utm_id
+         and placement, which Meta sends and which are not utm_ keys at all. It
+         is still an allowlist, which is what this asserts. */
       utm: { utm_source: "whatsapp", utm_medium: "share", note: "anything at all" },
     });
     expect(firstArg(calls, "preorders", "insert")!.utm).toEqual({

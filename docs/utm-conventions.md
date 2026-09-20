@@ -96,3 +96,70 @@ which is one reason the redirect is permanent rather than temporary.
 
 Ad-platform auto-tagging (Google's `gclid`, Meta's `fbclid`) is separate and already works; it does
 not replace UTMs, because it only reports inside that platform's own dashboard. The two coexist.
+
+---
+
+## Paid social, and why it is different (2026-09-20)
+
+**The links above are built by hand with `npm run utm`. Meta's are not.** They are configured once in
+the ad's URL parameters field, using Meta's dynamic variables, and Meta fills them in per impression.
+That is the whole reason this section exists: the builder cannot refuse what it never sees, so the
+rules have to be written where the person setting up the ad will read them.
+
+### What to put in the ad's URL parameters
+
+```
+utm_source=facebook
+utm_medium=paid_social
+utm_campaign={{campaign.name}}
+utm_content={{ad.name}}
+utm_id={{campaign.id}}
+placement={{placement}}
+```
+
+### 🔴 Never `{{site_source_name}}`
+
+It was in use until 2026-09-20 and it is the reason this section was written. It emits **`an`**,
+**`fb`** and **`ig`** — the *placement* in the *source* field. Three channels where there is one, none
+of them the `facebook` this document has specified since 2026-09-05, and `npm run utm` refuses all
+three outright. Spend will not join to sessions, because there is nothing called "facebook" to join
+to.
+
+The placement is genuinely worth knowing — it is how Audience Network is told from Feed, and that
+distinction found a real problem. It belongs in `placement`, its own field, not smuggled into the
+source.
+
+### `utm_campaign` still has to be `<yyyy-mm>-<slug>`
+
+`{{campaign.name}}` emits whatever the campaign is called in Meta, so **rename the campaigns
+themselves** to `2026-10-launch` form. Then the variable produces a conforming value on its own, and
+the readable name replaces `120248101035710340` in every report. Renaming is the fix; loosening the
+convention is not.
+
+The same applies to `{{ad.name}}`: rule 1 is lowercase and hyphens, so an ad called
+`Rabbit Hero A` becomes two different rows the moment anything URL-encodes it. Name ads
+`rabbit-hero-a`.
+
+### `utm_term` stays empty
+
+Paid search only, as the table above says. `{{adset.name}}` does not go here. If the ad set matters,
+it belongs in `utm_content` alongside the creative.
+
+### Instagram
+
+Meta-bought Instagram traffic is still `utm_source=facebook`, because the spend is one account and
+one join. `placement` is what separates `instagram_feed` from `facebook_feed`. The `instagram` source
+in the table above is for ORGANIC Instagram, which is a different channel with a different cost.
+
+### These two fields needed code, and that is the transferable lesson
+
+`utm_id` and `placement` are **not `utm_` keys**, so nothing picked them up by default. Our own
+allowlist dropped them, and posthog-js's built-in campaign-parameter list contains neither (it covers
+`utm_*` plus about twenty click ids). They would have arrived nowhere while looking perfectly tagged
+in the Meta UI.
+
+Both are now in `CAMPAIGN_KEYS` (`src/lib/campaign.ts`) and in `custom_campaign_params` on
+`PostHogGate`, which posthog-js concatenates onto its defaults. **Before adding a parameter to an ad,
+check it is in `CAMPAIGN_KEYS` — a parameter this repo does not name is a parameter that silently
+goes nowhere.** `test/utm.test.ts` pins this section's block against that list so the two cannot
+drift.

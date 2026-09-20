@@ -3111,3 +3111,39 @@ body and stores it with no column validation whatever, so it accepts any field a
 green payment probe says the code path works; it says nothing at all about the schema. This is
 §8.34-f in another costume: **the harness is not the deployment target.** Run the SQL first, then
 deploy.
+
+## §8.40-j · A tracking parameter nobody named goes nowhere, and looks perfectly tagged
+
+An outside recommendation (2026-09-20) correctly spotted that the Meta ads tagged
+`utm_source={{site_source_name}}`, which emits `an` / `fb` / `ig`: **the placement, in the source
+field.** Three channels where there is one, none of them the `facebook` that
+`docs/utm-conventions.md` had specified since 2026-09-05 — and `npm run utm` already refused all
+three outright. **The ads had been violating this repo's own written convention, and the convention
+was right first.**
+
+**But two of the five parameters it proposed would have arrived nowhere at all.** `utm_id` and
+`placement` are not `utm_` keys:
+
+- our own allowlist took exactly five keys and dropped both;
+- **posthog-js's built-in campaign list contains neither** — it covers `utm_*` plus about twenty
+  click ids (`gclid`, `fbclid`, `ttclid`, `li_fat_id` …), read from the installed SDK.
+
+So `placement={{placement}}` would have looked perfectly configured in Meta's UI, cost nothing to
+set, and produced no data anywhere — while being the *most valuable* field of the five, since it is
+how Audience Network is told from Feed and is what found a real spend problem.
+
+Both are now in `CAMPAIGN_KEYS` (`src/lib/campaign.ts`, the ONE list, which `create-order` and the
+pre-order form now read instead of each keeping a copy) and in `custom_campaign_params` on
+`PostHogGate` — additive, verified in the SDK as `defaults.concat(custom)`.
+
+**The law: before adding a parameter to an advertisement, check that something in this repo names
+it.** A tracking parameter is not a claim about a URL, it is a claim that every system downstream
+recognises the key. `test/utm.test.ts` now parses the doc's paid-social block and fails if it
+recommends any parameter `CAMPAIGN_KEYS` would discard, naming the offender — mutation-tested.
+
+Two corollaries worth keeping. **Rename the campaigns, do not loosen the convention**: `{{campaign.name}}`
+emits whatever Meta calls it, so naming Meta campaigns `2026-10-launch` makes the dynamic variable
+conform on its own *and* replaces `120248101035710340` with something readable. And **a guard that
+greps one file for a literal breaks when the truth moves**: `utm.test.ts` asserted
+`create-order/route.ts` contained the string `utm_campaign`, which failed the moment the key list was
+single-sourced, with the capture working perfectly. It now asserts the invariant instead.
