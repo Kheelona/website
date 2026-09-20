@@ -101,7 +101,18 @@ const SECTIONS: readonly LegalSection[] = [
          session-scoped, set by src/proxy.ts on a tagged landing and read back by
          create-order. It is still a cookie this site sets about a visitor, so it
          is stated rather than left to be discovered in devtools. */
-      "In the same way, if you reach us from one of our advertisements, we remember which advertisement brought you, so that we can tell which ones are worth paying for. That is kept in a small file on your own device, only for as long as your visit lasts, and it holds the name of the campaign and nothing about you.",
+/* 🔴 AMENDED 2026-09-20 (§8.41). This used to end "it holds the name of the
+         campaign and nothing about you". We now also keep the ad CLICK id, so
+         that a conversion still credits the right advertisement when a browser
+         blocks Meta's own pixel. A click id is not a campaign name, and Meta
+         can match it back to a person's account, so "nothing about you" stopped
+         being the whole truth the moment that shipped. The retired clause is
+         pinned as banned in test/analytics-tags.test.ts rather than quoted here.
+
+         What the new wording is careful about: it says what Meta can do with
+         the click and what we cannot, because the asymmetry is the honest part
+         and is the thing a parent would actually want to know. */
+      "In the same way, if you reach us from one of our advertisements, we remember which advertisement brought you, so that we can tell which ones are worth paying for. That is kept in a small file on your own device, only for as long as your visit lasts, and it holds which campaign and which click brought you here. Meta can match that click back to your account, which is how an advertisement gets credited with a sale. We cannot, and we never learn who you are on Meta.",
       "What these tools record is the page you looked at, your country, your browser, and where the visit came from. Vercel Web Analytics and Ahrefs Web Analytics are never given anything more than that.",
       /* Added 2026-09-02 with the Conversions API (§8.30-l/n). The previous
          version of this paragraph promised that no tool is ever sent a name,

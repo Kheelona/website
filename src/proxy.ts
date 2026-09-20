@@ -5,6 +5,7 @@ import { isIndexableHost } from "@/config/site";
 import { THANKS_COOKIE, THANKS_COOKIE_MAX_AGE_SECONDS } from "@/lib/store/thanks-session";
 import { trailingSlashRedirectPath } from "@/lib/trailing-slash";
 import { CAMPAIGN_COOKIE, campaignFromUrl, readCampaignCookie } from "@/lib/campaign";
+import { CLICK_ID_COOKIE, clickIdFromUrl, readClickIdCookie } from "@/lib/click-id";
 
 /** Host routing (§8.25-a).
  *
@@ -39,11 +40,14 @@ export function proxy(request: NextRequest) {
      redirect, because a tagged link to a trailing-slash URL would otherwise lose
      its campaign on the way to its own canonical form. */
   const remember = campaignToRemember(request);
+  /* And which advertisement it was clicked from (§8.41), kept separately
+     because it answers a different question and has a different lifetime. */
+  const rememberClick = clickToRemember(request);
 
   const stripped = trailingSlashRedirectPath(pathname);
   if (stripped) {
-    return remember(
-      NextResponse.redirect(new URL(`${stripped}${search}`, request.url), 308),
+    return rememberClick(
+      remember(NextResponse.redirect(new URL(`${stripped}${search}`, request.url), 308)),
     );
   }
 
@@ -86,7 +90,7 @@ export function proxy(request: NextRequest) {
        and wear the right chrome, which is the half that a person notices. */
     const response = NextResponse.rewrite(new URL(route.path, request.url));
     response.headers.set("x-robots-tag", "noindex, nofollow");
-    return remember(response);
+    return rememberClick(remember(response));
   }
 
   /* Marketing routes on the canonical hosts pass through untouched. Anything
@@ -101,7 +105,43 @@ export function proxy(request: NextRequest) {
   if (!isIndexableHost(host)) {
     response.headers.set("x-robots-tag", "noindex, nofollow");
   }
-  return remember(response);
+  return rememberClick(remember(response));
+}
+
+/** Decide once whether this visit's AD CLICK needs storing (§8.41, 2026-09-20).
+ *
+ *  Meta's `fbc` reaches the Conversions API only if Meta's own pixel set the
+ *  `_fbc` cookie, so a browser that blocks the pixel loses the click id and the
+ *  conversion matches worse — which is what Events Manager reports as "low
+ *  coverage of fbc". Captured HERE rather than in client JavaScript because the
+ *  proxy sees the landing request itself: nothing has to load, and the visitor
+ *  who blocked the pixel is exactly the one this is for.
+ *
+ *  🔴 WHAT GOES IN THE COOKIE IS THE RAW `fbclid`, NEVER A BUILT `fbc`
+ *  (see lib/click-id.ts). Storing a rebuilt value would leave two things that
+ *  both look like an `fbc` and a rule about which one wins; this way there is
+ *  one builder, called only when Meta's cookie is absent.
+ *
+ *  FIRST TOUCH WINS, as with the campaign: the visit that is ordering keeps the
+ *  click that started it, not whichever ad was clicked most recently. */
+function clickToRemember(request: NextRequest) {
+  const click = clickIdFromUrl(request.nextUrl, Date.now());
+  if (!click || readClickIdCookie(request)) return (r: NextResponse) => r;
+
+  return (response: NextResponse) => {
+    response.cookies.set(CLICK_ID_COOKIE, JSON.stringify(click), {
+      /* Only `create-order` reads it, server-side. Nothing in the browser needs
+         it, and Meta's own `_fbc` is a separate cookie we never touch. */
+      httpOnly: true,
+      domain: ".kheelona.com",
+      secure: true,
+      sameSite: "lax",
+      path: "/",
+      /* Session-scoped, matching the campaign cookie: attribution for THIS
+         visit is what the order needs. */
+    });
+    return response;
+  };
 }
 
 /** Decide once whether this visit's campaign needs storing, and hand back the

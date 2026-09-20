@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { buildFbc, looksLikeFbc, readClickIdCookie } from "@/lib/click-id";
 import type { StoreEnv } from "./env";
 import type { PreorderRow } from "./db";
 import { clientKey } from "./rate-limit";
@@ -95,9 +96,37 @@ export function readFbAttrib(request: Request): FbAttrib | null {
   };
 
   const ip = clientKey(request);
+
+  /* 🔴 THE CLICK ID, WITH ONE DECISION AND ONE RETURN PATH (§8.41, 2026-09-20).
+     Meta's own `_fbc` is canonical and wins whenever it is present. Ours is a
+     BACKSTOP for the case that produced Events Manager's "low coverage of fbc"
+     warning: a browser that blocks the pixel never gets an `_fbc` at all, so
+     before this the click id was simply lost.
+
+     `src/proxy.ts` stores the RAW `fbclid` rather than a built value, so this is
+     the only place in the codebase that constructs an `fbc` — there is no second
+     value lying around to be preferred by mistake. `buildFbc` returns null for
+     anything malformed, and a MISSING fbc is strictly safer than a broken one:
+     Meta falls back to its other signals, whereas a broken value is accepted
+     with a 200 and silently matches nobody. */
+  const metaFbc = read("_fbc");
+  /* The early warning, and the only defence against Meta silently changing the
+     format under us. Shape, never value: two different fbc VALUES in one request
+     are legitimate (a second ad click refreshes Meta's cookie while we still
+     hold the first), so comparing values would fire constantly and be ignored.
+     Meta's value is still USED — its cookie is canonical even in a shape we do
+     not recognise, and second-guessing it would be worse than saying so. */
+  if (metaFbc && !looksLikeFbc(metaFbc)) {
+    console.warn(
+      `[meta-capi] fbc SHAPE CHANGED: Meta sent "${metaFbc.slice(0, 40)}", which no longer matches the format lib/click-id.ts builds. Our fallback click ids may now be unmatchable (§8.41).`,
+    );
+  }
+  const remembered = metaFbc ? null : readClickIdCookie(request);
+  const ourFbc = remembered ? buildFbc(remembered) : null;
+
   const attrib: FbAttrib = {
     fbp: read("_fbp"),
-    fbc: read("_fbc"),
+    fbc: metaFbc ?? ourFbc ?? undefined,
     ip: ip === "unknown" ? undefined : ip,
     ua: request.headers.get("user-agent")?.slice(0, 400) ?? undefined,
   };

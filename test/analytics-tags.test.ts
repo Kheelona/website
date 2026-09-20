@@ -380,6 +380,17 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
     expect(PRIVACY).toMatch(/whether our advertising is worth what it costs/);
   });
 
+  /* 🔴 THE CLICK ID IS NOT A CAMPAIGN NAME (§8.41, 2026-09-20). The page said the
+     advertising cookie holds "the name of the campaign and nothing about you".
+     We now also keep the ad CLICK id, which Meta can match back to a person's
+     account — so "nothing about you" stopped being the whole truth the moment
+     that shipped. The retired clause is banned rather than quoted (§8.38-g). */
+  it("admits the advertising cookie holds the click, not just the campaign", () => {
+    expect(PRIVACY).toMatch(/which campaign and which click brought you here/);
+    expect(PRIVACY).toMatch(/Meta can match that click back to your account/);
+    expect(PRIVACY).not.toContain("the name of the campaign and nothing about you");
+  });
+
   it("says plainly that we never receive the payment details", () => {
     expect(PRIVACY).toMatch(/never to us|never see your payment/i);
     // and that Razorpay's own form sets cookies, which ours do not

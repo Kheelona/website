@@ -3,6 +3,7 @@ import { NextRequest } from "next/server";
 import { proxy } from "@/proxy";
 import { POSTHOG_PROXY_PATH } from "@/config/site";
 import { CAMPAIGN_COOKIE } from "@/lib/campaign";
+import { CLICK_ID_COOKIE } from "@/lib/click-id";
 
 /**
  * The behavioural half of §8.39's trailing-slash story. `trailing-slash.test.ts`
@@ -116,5 +117,71 @@ describe("the proxy remembers which campaign a visit arrived on", () => {
     const response = proxy(request("https://kheelona.com/team/?utm_source=meta"));
     expect(response.status).toBe(308);
     expect(cookieOf(response)).toContain(CAMPAIGN_COOKIE);
+  });
+});
+
+/** REMEMBERING THE AD CLICK AT THE EDGE (§8.41, 2026-09-20).
+ *
+ *  Same pass and same reasoning as the campaign cookie above: the proxy sees the
+ *  landing request itself, so nothing has to load, nothing races hydration, and
+ *  a visitor whose browser blocks Meta's pixel is still attributed. That last
+ *  case is the whole point — `_fbc` exists only if the pixel ran. */
+describe("the proxy remembers the ad click a visit arrived on", () => {
+  const cookieOf = (r: Response) => r.headers.get("set-cookie") ?? "";
+
+  it("stores the click id when someone lands from an advertisement", () => {
+    const cookie = cookieOf(proxy(request("https://kheelona.com/?fbclid=IwAR0abcDEF123")));
+    expect(cookie).toContain(`${CLICK_ID_COOKIE}=`);
+    expect(decodeURIComponent(cookie)).toContain("IwAR0abcDEF123");
+  });
+
+  /* 🔴 IT STORES THE RAW ID, NOT A BUILT fbc. If a reconstructed value ever
+     appears in this cookie there are two things that look like an `fbc` and a
+     rule about which wins, which is exactly what this design removes. */
+  it("stores the raw click id and never a built fbc value", () => {
+    const cookie = decodeURIComponent(cookieOf(proxy(request("https://kheelona.com/?fbclid=IwAR0abc"))));
+    expect(cookie).not.toContain("fb.1.");
+  });
+
+  it("scopes it to the whole domain so the store host receives it", () => {
+    const cookie = cookieOf(proxy(request("https://kheelona.com/?fbclid=IwAR0abc"))).toLowerCase();
+    expect(cookie).toContain("domain=.kheelona.com");
+    expect(cookie).toContain("httponly");
+    expect(cookie).toContain("samesite=lax");
+  });
+
+  /* The control. Without it the test above proves very little. */
+  it("sets nothing on an ordinary page with no click id", () => {
+    expect(cookieOf(proxy(request("https://kheelona.com/products/kheelu")))).not.toContain(
+      CLICK_ID_COOKIE,
+    );
+  });
+
+  /* A malformed id must produce NOTHING rather than a best effort: Meta accepts
+     a broken fbc with a 200 and silently matches nobody. */
+  it("sets nothing when the click id is not the shape of one", () => {
+    expect(cookieOf(proxy(request("https://kheelona.com/?fbclid=has%20spaces")))).not.toContain(
+      CLICK_ID_COOKIE,
+    );
+  });
+
+  /* First touch wins, as with the campaign: the visit that is ordering keeps
+     the click that started it, not whichever ad was clicked most recently. */
+  it("does not overwrite a click already remembered this visit", () => {
+    const req = new NextRequest(new URL("https://kheelona.com/?fbclid=second"), {
+      headers: {
+        host: "kheelona.com",
+        cookie: `${CLICK_ID_COOKIE}=${encodeURIComponent(JSON.stringify({ id: "first", ts: 1 }))}`,
+      },
+    });
+    expect(cookieOf(proxy(req))).not.toContain(CLICK_ID_COOKIE);
+  });
+
+  /* An ad link to a trailing-slash URL must not lose its click on the way to
+     the canonical form. */
+  it("still remembers it when the request is being redirected", () => {
+    const response = proxy(request("https://kheelona.com/team/?fbclid=IwAR0abc"));
+    expect(response.status).toBe(308);
+    expect(cookieOf(response)).toContain(CLICK_ID_COOKIE);
   });
 });

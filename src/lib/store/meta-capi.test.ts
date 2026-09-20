@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { CLICK_ID_COOKIE } from "@/lib/click-id";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { purchasePayload, readFbAttrib, reportPurchaseToMeta } from "./meta-capi";
 import { purchaseEventId } from "@/lib/fbq";
@@ -233,5 +234,91 @@ describe("reportPurchaseToMeta logging", () => {
     vi.stubGlobal("fetch", vi.fn(async () => { throw new Error("ECONNRESET"); }));
 
     await expect(reportPurchaseToMeta(env("TOKEN"), order())).resolves.toBe("failed");
+  });
+});
+
+/** THE CLICK ID FALLBACK (§8.41, 2026-09-20).
+ *
+ *  `fbc` reaches Meta only if Meta's own pixel set `_fbc`, so a browser that
+ *  blocks the pixel loses the click id and the conversion matches worse —
+ *  Events Manager reports it as "low coverage of fbc". `src/proxy.ts` now
+ *  remembers the raw `fbclid` at landing, and this is where it is used.
+ *
+ *  🔴 ONE DECISION, ONE RETURN PATH. Meta's own cookie is canonical and wins
+ *  whenever it is present; ours is consulted only when it is absent. Inverting
+ *  that must fail a test by name, which is what the second case below is for. */
+describe("readFbAttrib and the click id", () => {
+  const req = (cookie: string) =>
+    new Request("https://store.kheelona.com/api/preorder/create-order", {
+      headers: { cookie, "user-agent": "Mozilla/5.0" },
+    });
+
+  const ours = (id: string, ts = 1789902131589) =>
+    `${CLICK_ID_COOKIE}=${encodeURIComponent(JSON.stringify({ id, ts }))}`;
+
+  it("uses Meta's own _fbc when the pixel set one", () => {
+    expect(readFbAttrib(req("_fbc=fb.1.111.METAvalue"))!.fbc).toBe("fb.1.111.METAvalue");
+  });
+
+  /* THE POINT OF THE ROUND: the pixel was blocked, so `_fbc` does not exist,
+     and without this the click id is simply lost. */
+  it("builds one from our remembered click when the pixel set none", () => {
+    expect(readFbAttrib(req(ours("IwAR0abc")))!.fbc).toBe("fb.1.1789902131589.IwAR0abc");
+  });
+
+  /* Precedence, asserted where BOTH exist and differ — the only case that can
+     tell a correct implementation from an inverted one. */
+  it("prefers Meta's value over ours when both are present", () => {
+    const attrib = readFbAttrib(req(`_fbc=fb.1.111.METAvalue; ${ours("OURvalue")}`))!;
+    expect(attrib.fbc).toBe("fb.1.111.METAvalue");
+    expect(attrib.fbc).not.toContain("OURvalue");
+  });
+
+  it("sends no fbc at all when there is neither", () => {
+    expect(readFbAttrib(req("_fbp=fb.1.222.333"))?.fbc).toBeUndefined();
+  });
+
+  /* A malformed remembered click must produce nothing, never a best effort:
+     Meta accepts a broken fbc with a 200 and silently matches nobody. */
+  it("sends no fbc when our remembered click is not a click id", () => {
+    const bad = `${CLICK_ID_COOKIE}=${encodeURIComponent(JSON.stringify({ id: "has spaces", ts: 1 }))}`;
+    expect(readFbAttrib(req(bad))?.fbc).toBeUndefined();
+  });
+
+  /* Everything else it collects must be unaffected by the new branch. */
+  it("still collects _fbp and the user agent alongside", () => {
+    const attrib = readFbAttrib(req(`_fbp=fb.1.222.333; ${ours("IwAR0abc")}`))!;
+    expect(attrib.fbp).toBe("fb.1.222.333");
+    expect(attrib.ua).toBe("Mozilla/5.0");
+  });
+});
+
+/** THE FORMAT-DRIFT WARNING (§8.41). The one failure no test can prevent is Meta
+ *  changing the `fbc` format, after which our builder produces values accepted
+ *  with a 200 that match nobody, silently and forever. This turns that day into
+ *  a log line naming the cause. */
+describe("readFbAttrib warns when Meta's fbc stops looking like an fbc", () => {
+  const req = (cookie: string) =>
+    new Request("https://store.kheelona.com/api/preorder/create-order", { headers: { cookie } });
+
+  it("says nothing while the format is the one we build", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    readFbAttrib(req("_fbc=fb.1.1789902131589.IwAR0abc"));
+    expect(warn).not.toHaveBeenCalled();
+  });
+
+  it("logs once, naming the value, when the shape changes", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    readFbAttrib(req("_fbc=SOMETHING-NEW-FROM-META"));
+    expect(warn).toHaveBeenCalledTimes(1);
+    expect(String(warn.mock.calls[0][0])).toMatch(/fbc/i);
+  });
+
+  /* It must still USE Meta's value. The warning is an early warning, not a
+     rejection: Meta's own cookie is canonical even in a format we do not
+     recognise, and second-guessing it would be worse than logging. */
+  it("still sends Meta's value even while warning about it", () => {
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+    expect(readFbAttrib(req("_fbc=SOMETHING-NEW-FROM-META"))!.fbc).toBe("SOMETHING-NEW-FROM-META");
   });
 });
