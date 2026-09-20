@@ -213,3 +213,30 @@ connection method **"Multiple"** (browser plus server, deduplicated on `event_id
 **Not actionable yet:** Events Manager now recommends improving `fbp` coverage. That is an artefact of
 the only server events on this pixel being test payloads with no `fbp`; a real order carries it from
 `readFbAttrib`. Re-read after real traffic rather than acting on it.
+
+---
+
+## A display panel that reads like a fault and is not (and a hypothesis I got wrong)
+
+The new pixel's overview shows **"0 Websites — No websites found"** while the old one showed
+`kheelona.com +1 more`. **I guessed it was the date filter** — the screen defaulted to
+Aug 23 – Sep 19 while every event on this pixel is from Sep 20. **Tested it by switching the range to
+Today, and the panel still read "No websites found". The hypothesis was wrong.**
+
+The remaining explanation is that Meta derives that panel from a periodic aggregation which has not
+run for a pixel a few hours old, whereas the old one had weeks of history. **That is an inference,
+not something proven**, and it is written down as an inference deliberately.
+
+**What IS established is that nothing is being dropped:**
+
+- PageView **16 and climbing**, last received minutes ago, connection **Browser • Server**.
+- The allow list is `kheelona.com and subdomains`, and Meta **blocks** events from domains not on it.
+  Events are being accepted, so the domain is being recognised on them.
+
+**"No connected catalogs" is unrelated and normal.** A catalog is Meta's product feed for dynamic
+catalog ads; the store sells one product on Traffic campaigns, so there is nothing to feed. **The old
+pixel said exactly the same thing** — it appears in its overview beside the populated Websites line,
+which is what proves the two are independent.
+
+**Re-check the Websites panel after a day of real traffic.** If it is still empty then, it is worth a
+proper look; today it is simply too new to conclude from.
