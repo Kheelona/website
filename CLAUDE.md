@@ -1,6 +1,6 @@
 # kheelona.com — session entry point
 
-**🎯 THE META PIXEL MOVED TO `1051265191046395` (2026-09-20, ⚠ CODE READY — SEE THE GATE BELOW).**
+**🎯 THE META PIXEL MOVED TO `1051265191046395` — DEPLOYED AND VERIFIED ON PRODUCTION 2026-09-20.**
 Record: `docs/checkpoints/meta-pixel-migration-2026-09-20.md`; laws **§8.41 a-f**; rollback tags
 `pre-meta-clickid-2026-09-20` = `b1078de`, `pre-meta-pixel-migration-2026-09-20` = `06a93b8`.
 `1045085251085243` (retired) carried every event and both integrations but was **not assigned to the
@@ -32,9 +32,23 @@ silently matches nobody. (6) **The drift warning compares SHAPE, never value** �
 values in one request are legitimate (a second ad click refreshes Meta's cookie), so comparing values
 would fire constantly and be ignored.
 
-**🟠 WAITING ON THE FOUNDER:** delete `1045085251085243` (retired) after production verification, and
-**regenerate the CAPI token + Redeploy** — both tokens used this round are in a chat transcript and
-are business-scoped, so deleting the old pixel does NOT neutralise them.
+**Verified on production, each with its control.** Both hosts initialise the new id, checked in a real
+browser because **`curl` shows nothing and that is CORRECT** — the pixel is host-gated and mounts after
+hydration, so it never reaches the server HTML (the `window.posthog` shape again). The new pixel
+receives PageView over **Browser • Server**; the old one's last PageView **predates the deploy**, which
+is the control. Its banner claiming it is "currently receiving" is a **28-day window, not live
+status** — it reads like a contradiction and is not one.
+
+**Founder actions all DONE 2026-09-20:** the old pixel could not be deleted (Meta offers none for a
+pixel with history) so **every connection was removed instead**, which achieves the same thing; and the
+CAPI token was regenerated and redeployed.
+
+**🟠 ONE THING REMAINS UNPROVEN AND IT IS NOT A DEFECT: `capi: "configured"` means a token is PRESENT,
+not that it WORKS.** The validated token was replaced by one nobody has tested, which was the point of
+rotating it. **Only a real order settles it.** Success = Purchase on the new pixel with connection
+method **"Multiple"**; failure = **"Browser"** only plus `[meta-capi] REJECTED` in the Vercel log, fixed
+by one more token and no code change. Also ignore Events Manager's new "improve fbp coverage" prompt
+until real traffic: the only server events there are synthetic ones that carried no `fbp`.
 
 **📈 SIGNUPS ARE MEASURABLE IN POSTHOG — DEPLOYED AND VERIFIED ON PRODUCTION 2026-09-20.** Record:
 `docs/checkpoints/signup-analytics-2026-09-20.md`; laws **§8.40 a-j**; rollback tag
