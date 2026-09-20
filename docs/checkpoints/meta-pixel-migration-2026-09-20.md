@@ -244,3 +244,64 @@ which is what proves the two are independent.
 
 **Re-check the Websites panel after a day of real traffic.** If it is still empty then, it is worth a
 proper look; today it is simply too new to conclude from.
+
+---
+
+## Full installation check, 2026-09-20 ~23:20 IST (founder asked: "is the pixel properly installed?")
+
+Checked in the founder's own Chrome (real user agent, §8.41-g) and read-only in Events Manager.
+**Verdict: correctly installed on both hosts, correctly configured on Meta's side, no errors.**
+
+### The site half — all green
+
+| Check | Result |
+|---|---|
+| Pixels initialised, apex | exactly one: `1051265191046395` |
+| Pixels initialised, `store.kheelona.com` | exactly one: `1051265191046395` |
+| `fbevents.js` + `signals/config/<id>` | both load on both hosts |
+| `_fbp` / `_fbc` cookies | both set (`_fbc` written after arriving with an `fbclid`) |
+| fbq queue | drained to 0 |
+| Wire capture, store host | `www.facebook.com/tr/` · `ev=PageView` · `dl=store.kheelona.com` · 77 params |
+| `cd[...]` automatic params | **absent** — independent confirmation that "Automatic events" is off |
+| `ViewContent` on `/products/kheelu` | fires — `eventCount` is **2** on a clean load |
+| Old pixel id in production JS chunks | **zero** (control: the new id was found in one chunk) |
+
+The wire capture was taken with the send **blocked**, so the check added nothing to live data.
+
+### Meta's half — all green
+
+- **Diagnostics: "No errors at this time."**
+- Shared with ad account **Kheelona Meta `1195520716116929`** — the reason the migration happened.
+- Automatic events **Off**; "Automatically include more detailed page and product info" **Off**;
+  "Track events automatically without code" **Off**.
+- First-party cookies **On**. Automatic advanced matching **On**, all seven fields.
+- Traffic permissions allow list: **`kheelona.com` and subdomains**, added Sep 20.
+- Conversions API: **Business connected, Active**.
+
+### Two things recorded rather than resolved
+
+1. **The retired pixel `1045085251085243` shows `PageView … last received 1 hour ago`.** It is NOT our
+   code: production JS ships only the new id (proven with a control), and kheelona.ai — the obvious
+   suspect — carries **no pixel at all**. The timestamps match my own verification rounds almost
+   exactly (Purchase "5 hours ago" ≈ the 18:18 migration validation; PageView "1 hour ago" ≈ the 22:22
+   token-rotation verification), so the likely source is my own test traffic. **That is an inference
+   from timestamp correlation, not a finding** — Meta does not expose a per-event source here.
+   The actionable part is real: the business-level CAPI integration still lists **two** datasets
+   connected, the new pixel and the old one, which is how anything can still reach the old dataset at
+   all. Removing the old dataset from that integration is the last thread if "one thing everywhere"
+   is to be literally true.
+2. **The date filter could not be changed.** It reads `Aug 23 – Sep 19` and does not respond to
+   clicks, so the table's totals (PageView 16, Purchase 3) are for that labelled window. The activity
+   chart nonetheless plots **today**, Sunday, climbing 3 → 12 between 5 PM and 9 PM. The founder asked
+   for today's range in the previous session and it is still not applied; this is a Meta UI problem,
+   not a data problem. **"0 Websites / No websites found" also persists** — the old dataset lists
+   "kheelona.com +1 more" after weeks of history while this pixel is hours old, so "not enough history
+   yet" is the remaining explanation. **Stated as an inference**: the date-range hypothesis for this
+   same panel was tested and disproved earlier today.
+
+### Still unproven, unchanged, and not a defect
+
+**The rotated CAPI token has still never carried a real order.** `capi: "configured"` means present,
+not working. Success on the first real pre-order = Purchase with connection method **"Multiple"**;
+failure = **"Browser"** only plus `[meta-capi] REJECTED` in the Vercel log, fixed by one more token
+and no code change.

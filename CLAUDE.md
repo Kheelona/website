@@ -43,6 +43,29 @@ status** — it reads like a contradiction and is not one.
 pixel with history) so **every connection was removed instead**, which achieves the same thing; and the
 CAPI token was regenerated and redeployed.
 
+**✅ FULLY RE-VERIFIED 2026-09-20 ~23:20 IST, both hosts, in a real browser, plus every Meta-side
+setting: Diagnostics reads "No errors at this time."** One pixel initialises on the apex and on the
+store host, `ViewContent` fires on `/products/kheelu` (`eventCount` 2 vs 1 elsewhere), the allow list,
+advanced matching and first-party cookies are on, and all three "automatic" settings are off.
+**§8.41-h is the round's law and it is a verification law: the pixel sends through an `<img>` beacon**,
+so `performance.getEntriesByType('resource')`, the extension's network panel AND hooks on
+`fetch`/`sendBeacon`/XHR/`new Image()` all report ZERO while it works — only
+`HTMLImageElement.prototype.src` catches it. Also: **`fbq` de-duplicates a repeated `PageView` within
+one page load**, so re-firing one proves nothing; **`eventCount` is the cheap honest check**; and a
+hook probe must prove the page did not reload, or `captured: 0` is ambiguous. **An absence measured by
+the wrong instrument is not an absence — build the control first** (the same round's chunk grep read
+as "the old id is gone" until the control showed it had not found the NEW id either).
+
+**🟠 ONE LOOSE THREAD, not a defect and not our code: the retired pixel still shows a recent
+`PageView`.** Production JS ships only the new id (proven with a control) and kheelona.ai carries no
+pixel at all, so it is not the site; the timestamps line up with my own verification runs, **which is
+an inference from correlation, not a finding.** What IS actionable: the business-level Conversions API
+integration still lists **two** connected datasets, the new pixel and the old one. Removing the old
+one is the last step if "one thing everywhere" is to be literally true. Also still true: the Events
+Manager date filter does not respond to clicks (stuck at Aug 23 – Sep 19, though the chart plots
+today) and "0 Websites" persists, most likely because this pixel is hours old — **stated as an
+inference, because the date-range explanation for that same panel was tested and DISPROVED.**
+
 **🟠 ONE THING REMAINS UNPROVEN AND IT IS NOT A DEFECT: `capi: "configured"` means a token is PRESENT,
 not that it WORKS.** The validated token was replaced by one nobody has tested, which was the point of
 rotating it. **Only a real order settles it.** Success = Purchase on the new pixel with connection

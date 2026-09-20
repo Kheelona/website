@@ -3281,3 +3281,44 @@ filters `HeadlessChrome` as a bot and silently declines to send.
 **And the reporting lag is separate from delivery.** Events Manager's own note says events may take up
 to 30 minutes to appear, so "the overview has not moved" is not evidence that nothing was sent. Prove
 delivery in the browser; use the dashboard for confirmation later.
+
+## §8.41-h · The pixel sends through an `<img>` beacon, so most network instruments show nothing
+
+Verifying the migrated pixel in the founder's own Chrome, a second false negative appeared, from a
+different cause than §8.41-g. **Three instruments in a row reported no delivery while the pixel was
+working:**
+
+1. `performance.getEntriesByType('resource')` — **zero** `facebook.com/tr` entries.
+2. The browser extension's network panel — **zero** matching requests.
+3. A probe that hooked `fetch`, `sendBeacon`, `XMLHttpRequest` and `new Image()` — **zero** captures.
+
+**The transport is an `<img>` element created with `document.createElement('img')`, with its `src`
+assigned.** It is not `fetch`, not `sendBeacon`, not XHR, and not `new Image()`. Hooking
+`HTMLImageElement.prototype.src` is what finally caught it, on the store host:
+
+    endpoint www.facebook.com/tr/ · id 1051265191046395 · ev PageView · dl store.kheelona.com · 77 params
+
+**Four rules follow, and each one cost a wrong conclusion first.**
+
+1. **`fbq` DE-DUPLICATES a repeated `PageView` within one page load.** `fbq.getState().pixels[0].eventCount`
+   stays at 1 however many times `fbq('track','PageView')` is called for the same URL, so **a manual
+   re-fire is a no-op and proves nothing.** The real PageView fires at init, before any probe can be
+   installed. A URL change (`history.pushState`) does produce a fresh one — that is the way to
+   observe a live send.
+2. **Restore hooks AFTER the send, not in the same tick.** The pixel flushes asynchronously; an
+   install-fire-restore sequence in one statement restores the originals before the flush and
+   captures nothing.
+3. **A hook probe MUST prove the page did not reload**, or `captured: 0` is ambiguous between "nothing
+   fired" and "my instrument was wiped". Clicking what looked like an in-app link turned out to be a
+   full page load, which erased the hooks and read exactly like a dead pixel. Assert a marker
+   (`typeof window.__capt !== 'undefined'`) in the same result.
+4. **`eventCount` is the cheap, honest install check** and needs no interception at all: **1** on an
+   ordinary page (PageView), **2** on `/products/kheelu` (PageView + ViewContent). Reach for it
+   before building a probe.
+
+**The general law, and it is the third costume of §8.34-f / §8.38-i / §8.41-g: an absence measured by
+the wrong instrument is not an absence.** Before reporting that something does not fire, produce a
+control that the instrument can see a thing that DOES fire. The chunk grep in this same round found
+neither pixel id in production JS and read as "the old id is gone" — until the control showed it had
+not found the **new** id either, so it had proven nothing. Fixed, it found the new id in one chunk and
+the old id in **zero**.
