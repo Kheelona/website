@@ -1,6 +1,6 @@
 # kheelona.com — session entry point
 
-**🔀 POSTHOG NOW REPORTS THROUGH OUR OWN DOMAIN (built 2026-09-20, ⚠ NOT YET DEPLOYED).** Record:
+**🔀 POSTHOG NOW REPORTS THROUGH OUR OWN DOMAIN — DEPLOYED AND VERIFIED ON PRODUCTION 2026-09-20.** Record:
 `docs/checkpoints/posthog-reverse-proxy-2026-09-20.md`; laws **§8.39 a-g**; rollback tag
 `pre-posthog-proxy-2026-09-20` = `e097ad8`. Installation Health flagged a missing reverse proxy, and
 the founder took the trade **knowing it stops an ad blocker working on PostHog** — the tool that
@@ -29,12 +29,25 @@ already carried `'self'`, so the policy string is unchanged and **the §8.28-a e
 reset a third time** (§8.39-f). (6) **The 400 on `GET /ingest/e/` is CORRECT** — direct to PostHog
 answers 400 too. Without that control it reads as a broken proxy (§8.39-g).
 
-**Verified locally with a control for every claim:** `POST /e/` 200 both direct and proxied, the
-recorder byte-identical (131,370 bytes), 11 marketing routes plus both 404 shapes plus the store host
-unchanged, `qa:sweep` clean on every route at both widths, 1295 tests / 122 files, `tsc` 0.
-**Production is still owed two checks, and the first is the real risk: visitor COUNTRY must still
-resolve** (PostHog now reads the IP via `x-forwarded-for`; if that does not survive Vercel's edge the
-dashboard quietly goes wrong), and **replay must load on `store.kheelona.com/` but NOT on `/thanks`**.
+**Verified on production, each with its control:** `GET /e/` answers 400 on the apex, on the store
+host AND direct to PostHog (so the 400 is PostHog's); the recorder is byte-identical on both hosts;
+and in a real browser **the recorder LOADS on `store.kheelona.com/` and on the apex but NOT on
+`/thanks`, with ZERO direct `posthog.com` requests from any page** — the control matters, because a
+fix that killed replay everywhere would pass the negative check alone. Site unchanged: 16 routes 200,
+`/typo` 404, legacy 308s, store host 200, trailing slash still 308s **with UTM intact**,
+`/api/health` `store:ready preorder:token razorpay:live`. 1295 tests / 122 files, `tsc` 0.
+
+**One loose end, checked and FINE: `/ingest/array/<token>/config.js`** (the SDK's remote config) does
+not match `/^\/static\//`, so it falls through to the INGESTION host rather than the asset one.
+PostHog serves that path from **both** origins (200, same 1,207 bytes), so this is correct — recorded
+because the asymmetry reads like a bug later.
+
+**🟠 ONE CHECK IS STILL THE FOUNDER'S, and it needs the dashboard: VISITOR COUNTRY.** PostHog reads
+the IP via `x-forwarded-for` now; if that does not survive Vercel's edge every visitor collapses to
+one location and the dashboard quietly goes wrong. **A paired probe is already in the project with
+its control**: `proxy_geo_check` events `geocheck-direct` and `geocheck-proxy`, sent from one machine
+seconds apart, differing only in route. Same country on both = done; different = revert to
+`pre-posthog-proxy-2026-09-20`.
 
 **📊 POSTHOG IS THE FIFTH MEASUREMENT TOOL SINCE 2026-09-19** (founder request; project 617632, US
 cloud). Record: `docs/checkpoints/posthog-2026-09-19.md`; laws **§8.38 a-h**; rollback tag

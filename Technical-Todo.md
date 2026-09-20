@@ -39,7 +39,7 @@ that date, raise them first.
 
 ---
 
-# 🔀 THE POSTHOG REVERSE PROXY (built 2026-09-20, **NOT YET DEPLOYED**)
+# 🔀 THE POSTHOG REVERSE PROXY (🟢 DEPLOYED AND VERIFIED 2026-09-20)
 
 *Record: `docs/checkpoints/posthog-reverse-proxy-2026-09-20.md`. Laws **§8.39 a-g**. Rollback tag
 `pre-posthog-proxy-2026-09-20` = `e097ad8`.*
@@ -52,8 +52,8 @@ which is why `/privacy` was rewritten in the same round (§8.21-c, §8.39-a). Se
 
 | Priority | Item | Why |
 |---|---|---|
-| **HIGH** | **Confirm visitor COUNTRY still resolves on production** (PostHog → Web analytics → by country; it must not collapse to one location, and it should read India) | PostHog reads country from the request IP, which it now sees via `x-forwarded-for` instead of directly. If that does not survive Vercel's edge, **the dashboard quietly becomes wrong** — a fix for "some metrics may not be accurate" making them less accurate. This is the one thing local testing cannot reach. **If it breaks, revert to the rollback tag.** |
-| **HIGH** | **Confirm replay still records, WITH ITS CONTROL**: recorder loads on `store.kheelona.com/` and **NOT** on `/thanks` | A change that killed replay everywhere would pass the negative check on its own (§8.38). Both halves or neither. |
+| **HIGH** | **Confirm visitor COUNTRY still resolves.** A paired probe is ALREADY in the project with its control: filter `event = proxy_geo_check` and compare `geocheck-direct` (sent straight to PostHog) against `geocheck-proxy` (sent through `/ingest`). Both left one machine in Bengaluru seconds apart and differ only in route, so **same country = correct, different = broken.** | PostHog reads country from the request IP, which it now sees via `x-forwarded-for` instead of directly. If that does not survive Vercel's edge, **the dashboard quietly becomes wrong** — a fix for "some metrics may not be accurate" making them less accurate. It is read on PostHog's side of the request, so it is the one thing no check from this repo can reach. **If it is wrong, revert to `pre-posthog-proxy-2026-09-20`.** |
+| ~~HIGH~~ | ✅ **DONE 2026-09-20 (mine).** Replay verified in a real browser on production, with its control: recorder LOADS on `store.kheelona.com/` and on the apex, and does **NOT** load on `/thanks`. Zero direct `posthog.com` requests from any page. | Both halves checked, because a fix that killed replay everywhere would pass the negative check alone. |
 | MEDIUM | Re-read Installation Health; it should show **7 of 7** | PostHog detects the proxy from events arriving with a custom `api_host`. |
 | LOW | Glance at Vercel bandwidth after a week of real traffic | Every session-replay payload now flows through Vercel, and replay at 100% sampling is the heaviest thing PostHog sends. Nothing suggests a problem; it is simply unmeasured. |
 

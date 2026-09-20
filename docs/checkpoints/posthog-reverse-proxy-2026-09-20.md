@@ -1,6 +1,6 @@
 # PostHog: the reverse proxy (2026-09-20)
 
-**Status: BUILT AND LOCALLY VERIFIED. NOT YET DEPLOYED.**
+**Status: 🟢 DEPLOYED AND VERIFIED ON PRODUCTION 2026-09-20** (`4d693f8`, live ~70s after push).
 Rollback tag **`pre-posthog-proxy-2026-09-20` = `e097ad8`**.
 Baseline before the round: **1267 tests / 119 files**, `tsc` 0. After: **1295 / 122**, `tsc` 0.
 Laws: **§8.39 a-g**. Round record for the original install: `posthog-2026-09-19.md`.
@@ -102,23 +102,83 @@ things wrong in one day on 2026-09-12.
 Regression probe: 11 marketing routes 200, both 404 shapes still render, three legacy redirects still
 fire, store host serves at 200 including its dead ends, the apex still pushes `/store/thanks` to the
 store host, and all four machine files 200. `qa:sweep` **clean, axe and voice, every route, both
-widths** (90 accepted white-on-orange, §8.29). `npm test` 1295/122. `tsc` 0. `next build` passes.
+widths** (90 accepted white-on-orange, §8.29). `npm test` **1297 / 122** on the committed tree. `tsc` 0. `next build` passes.
 
-**One synthetic event was written to the founder's project** while proving the POST path:
-`$proxy_smoke_test`, `distinct_id: kheelona-proxy-check`. Filterable, and disclosed rather than left
-to be discovered.
+**The count reconciles to 30, and two of them confirmed an existing law rather than a problem.**
+Before the commit the suite read 1295; after it, 1297. `preorder-copy` and `preorder-cta` each gained
+one parameterised case, in files this round never touched, because they enumerate through
+**`git ls-files`, which reports the INDEX** (§8.37): `src/lib/trailing-slash.ts` was untracked at the
+first measurement and tracked at the second. Deltas: PostHogGate +6, analytics-tags +2, posthog-proxy
++7, proxy-trailing-slash +5, trailing-slash +5, store-host +3, preorder-copy +1, preorder-cta +1.
 
-## STILL THE FOUNDER'S — two production checks after deploy
+**Synthetic events written to the founder's project** while proving the POST path are listed at the
+end of this file, disclosed rather than left to be discovered.
 
-1. **Geography.** PostHog reads the visitor's country from the request IP, now via `x-forwarded-for`
-   rather than directly. If that does not survive Vercel's edge, every visitor collapses to one
-   location and **the Web analytics dashboard quietly becomes wrong** — a fix for "some metrics may
-   not be accurate" making them less accurate. This is the one risk local testing cannot reach.
-2. **Replay, with its control.** The recorder must load on `store.kheelona.com/` and **not** on
-   `/thanks`. A change that killed replay everywhere would pass the negative check alone (§8.38).
+## Production verification, 2026-09-20 — every claim with its control
 
-Installation Health should then read **7 of 7**; PostHog detects the proxy from events arriving with
+**Ingestion, and the store-host bug confirmed fixed on the real host:**
+
+| | Direct to PostHog | `kheelona.com` | `store.kheelona.com` |
+|---|---|---|---|
+| `GET /e/` | 400 | 400 | **400** |
+| `recorder.js` | 131,370 bytes | **identical** | **identical** |
+
+**Session replay, with the control that actually matters** (headless Chrome, real production URLs):
+
+| Page | `recorder.js` | Direct `posthog.com` requests |
+|---|---|---|
+| `store.kheelona.com/` | **LOADED** | 0 |
+| `store.kheelona.com/thanks` | **not loaded** | 0 |
+| `kheelona.com/` | **LOADED** | 0 |
+
+Both halves hold: replay runs, and the confirmation page is still never recorded. **Zero direct
+`posthog.com` requests from any page** — the install is now fully first-party, which is the whole
+object of the round.
+
+### A path outside `/static/` exists, and it is FINE — recorded so nobody "fixes" it
+
+The browser check turned up `/ingest/array/<token>/config.js`, the SDK's remote config. It does not
+match `/^\/static\//`, so `asset_host` does not apply and it falls through to `api_host` and on to
+the **ingestion** host. That was the one loose end in the two-prefix design.
+
+**PostHog serves that path from both origins** — `us.i.posthog.com/array/…/config.js` and
+`us-assets.i.posthog.com/array/…/config.js` both answer 200 with the same 1,207 bytes, and so does
+ours. No change needed. Written down because the asymmetry looks like a bug on a later read.
+
+### Site regression, on production
+
+16 marketing routes and machine files 200 · `/typo` still 404s · `/products/lumi` still 308s ·
+store host 200 on `/`, `/thanks`, `/ideabaaz` · trailing slash still 308s **with UTM parameters
+intact** · CSP still `content-security-policy-report-only`, policy unchanged, enforce clock not reset ·
+`/api/health` → `{"ok":true,"store":"ready","preorder":"token","razorpay":"live","email":"configured","capi":"configured"}`.
+
+## STILL THE FOUNDER'S — one check, and it needs the dashboard
+
+**Geography is the one thing no check here can reach**, because it is read off PostHog's side of the
+request. PostHog derives the visitor's country from the request IP, which it now sees through
+`x-forwarded-for` rather than directly. If that does not survive Vercel's edge, every visitor
+collapses to one location and **the Web analytics dashboard quietly becomes wrong** — a fix for "some
+metrics may not be accurate" making them less accurate.
+
+**A paired probe is already sitting in the project, with its control built in.** Two events were sent
+from the same machine, seconds apart, differing only in route:
+
+| `distinct_id` | Route | Expected `$geoip_country_name` |
+|---|---|---|
+| `geocheck-direct` | straight to `us.i.posthog.com` | India (Bengaluru, Airtel) |
+| `geocheck-proxy` | through `kheelona.com/ingest` | **must match the row above** |
+
+Open either in PostHog (Activity, or filter `event = proxy_geo_check`) and compare the geo properties.
+**Same country on both = `x-forwarded-for` survived and the round is complete. Different = revert to
+`pre-posthog-proxy-2026-09-20`.** Real visitor traffic answers the same question on its own within a
+few hours, under Web analytics → countries.
+
+Installation Health should now read **7 of 7**; PostHog detects the proxy from events arriving with
 a custom `api_host`.
+
+**Three synthetic events exist in the project from this round**, all disclosed rather than left to be
+found: one `$proxy_smoke_test` (`kheelona-proxy-check`) from the local proof, and the two
+`proxy_geo_check` rows above.
 
 ## Not done, on purpose
 

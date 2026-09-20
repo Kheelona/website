@@ -2948,6 +2948,20 @@ The two PostHog origins stay in the policy as rewrite destinations and in case a
 them directly. **Because the policy string does not change, the §8.28-a enforce clock does NOT reset
 for a third time.** Prune those origins only after production shows nothing requests them.
 
+## §8.39-h · Not every PostHog path lives under `/static/`, and that is fine
+
+The production browser check found `/ingest/array/<token>/config.js`, the SDK's remote config. It
+does **not** match `/^\/static\//`, so `asset_host` does not apply and it falls through to
+`api_host` and on to the **ingestion** host rather than the asset one. That was the single loose end
+in the two-prefix design and it is closed: **PostHog serves that path from both origins** —
+`us.i.posthog.com` and `us-assets.i.posthog.com` each answer 200 with the same 1,207 bytes, and so
+does ours.
+
+Recorded because the asymmetry reads like a bug on a later pass, and "tidying" it by routing `/array/`
+to the asset prefix would be a change with no benefit and a live install to break. **The general
+point: a browser found a path that neither the SDK's docs nor a code read had surfaced. Load the real
+thing before believing the route list is complete.**
+
 ## §8.39-g · Verify with the control, not the claim
 
 `next start` is not the deployment target (§8.34-f), but the external rewrite *was* exercisable
