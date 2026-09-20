@@ -207,7 +207,7 @@ Also verified live: the eight CTA placements render distinctly (`hero`, `navbar`
 
 | What | Where | Note |
 |---|---|---|
-| Order `KH-7QA4-D9QM`, name "ZZ DEPLOY CHECK (delete me)" | Supabase `preorders`, `status='created'` | No payment taken. Safe to delete. |
+| Order `KH-7QA4-D9QM`, name "ZZ DEPLOY CHECK (delete me)" | Supabase `preorders`, `status='created'` | No payment taken. **Deleted by the founder 2026-09-20**, with a guarded `delete … returning` that printed one row, so it is proven to have matched that order alone. |
 | Razorpay order `order_TeFu2pvrUqqKT0` | Razorpay dashboard | Unpaid, expires on its own. |
 | Events tagged `utm_source=deploy-check` | PostHog | A handful of pageviews from the journey checks. |
 
