@@ -122,3 +122,58 @@ a malformed value normally draws a warning there.
 PageView; a Purchase shows integration **"Multiple"** (the single best proof that pixel id, token and
 allow list are all correct together); and **the control — the old pixel stops receiving**, without
 which we would not know traffic had moved rather than doubled.
+
+---
+
+## 🟢 DEPLOYED AND VERIFIED ON PRODUCTION, 2026-09-20
+
+Commits `06a93b8` (click id) then `c2dc4dd` (migration).
+
+**The tag moved, proven in a real browser.** `curl` shows nothing and **that is correct** — the pixel
+is host-gated and mounted client-side after hydration, so it never appears in the server HTML. The
+same shape as the `window.posthog` lesson: the absence reads as failure while everything works.
+Headless Chrome on production:
+
+| Host | `fbq('init', …)` |
+|---|---|
+| `kheelona.com` | **1051265191046395** |
+| `store.kheelona.com` | **1051265191046395** |
+
+The old id appears nowhere in the served page or the built bundle.
+
+**Meta is receiving.** The new pixel went from "never received events" to:
+
+| Event | Status | Connection | Count |
+|---|---|---|---|
+| PageView | Active | **Browser • Server** | 4 |
+| Purchase | Active | Server | 3 |
+
+"Browser • Server" on PageView is the meaningful line: the browser tag is reaching the new pixel.
+
+**Founder's Meta settings, verified read-only after they were made** (the three the founder authorised
+me to click, and nothing else): "Automatic events" **Off**, "Automatically include more detailed page
+and product info" **Off**, allow list **`kheelona.com and subdomains`**. Unchanged and already correct:
+first-party cookies On, automatic advanced matching On with all parameters, "Track events
+automatically without code" Off, Conversions API connected.
+
+### 🔴 Synthetic data written while verifying, disclosed rather than left to be found
+
+**The 3 Purchase events above are mine**, not real orders. They were sent to prove the token
+authorises this pixel and that our built `fbc` is accepted — each with `test_event_code=TEST81201`, so
+they are test-stream events and do not feed ad optimisation, but they do appear in the overview count.
+The 4 PageViews are from the headless browser checks. **No real order has been placed since the
+cutover.** Ignore both when reading the first day's numbers.
+
+### One recommendation changed, and it is expected
+
+Events Manager now says "low coverage of **fbp**" where it previously said **fbc**. That is an artefact
+of the only server events on this pixel being my test payloads, which carried no `fbp`. It should
+resolve on the first real order, whose `fb_attrib` carries `_fbp` from `create-order`. **Do not act on
+it yet** — re-read it after real traffic.
+
+## Still the founder's
+
+1. **Delete `1045085251085243`.** The new pixel is proven receiving, so the gate on this is passed.
+2. **Regenerate the CAPI token and press Redeploy.** Both tokens used this round are in a chat
+   transcript and are **business-scoped**, so deleting the old pixel does not neutralise them. A Vercel
+   variable only applies to deployments created after it changes, so the Redeploy is not optional.
