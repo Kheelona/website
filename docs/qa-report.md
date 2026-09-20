@@ -18,6 +18,8 @@ site-extensions errata, as arithmetic in `test/contrast-tokens.test.ts`, and pri
 - **eslint identical to `main`**: 37 problems (28 errors, 9 warnings) before and after, so the round
   introduced none. That baseline is pre-existing.
 - **`qa:sweep` clean 34/34** over 17 routes at 390 and 1280, with **79 accepted** white-on-orange
+  (⚠ HISTORICAL: as of 2026-09-20 the sweep is **36/36 over 18 routes with 90 accepted**. Routes and
+  CTAs were added by the store and video rounds. The numbers below are accurate for their own date.)
   nodes printed rather than silenced.
 - **`qa:payment` clean** — the money path exercised in a browser on sandbox keys, because both store
   submit buttons changed.
@@ -1377,7 +1379,8 @@ Record: `docs/checkpoints/agency-audit-2026-09-05.md`. Laws §8.32. Commits `c5c
 | Lighthouse desktop, `/safety` | — | **97 / 96 / 96 / 100** |
 | Lighthouse desktop, store | 90 / 96 / 96 / 66 | **90 / 96 / 96 / 66** (SEO by design, §8.25-aa) |
 
-The accepted-violation count staying at exactly 79 is the useful number: it says the §8.29
+The accepted-violation count staying steady is the useful number (79 when this was written, **90 since
+2026-09-20** as CTAs were added): it says the §8.29
 white-on-orange decision was neither widened nor quietly "fixed" while eleven pages changed.
 
 ## The store's perf 90 is not a regression, and here is the control
