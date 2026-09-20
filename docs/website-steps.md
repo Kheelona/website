@@ -3322,3 +3322,49 @@ control that the instrument can see a thing that DOES fire. The chunk grep in th
 neither pixel id in production JS and read as "the old id is gone" — until the control showed it had
 not found the **new** id either, so it had proven nothing. Fixed, it found the new id in one chunk and
 the old id in **zero**.
+
+## §8.41-i · Meta mirrors browser events into the server channel, to EVERY connected dataset
+
+The pixel's own hourly export (Events Manager → Overview → export) reported, for `PageView`:
+
+    unix_time_start, event, browser_received_count, server_received_count, total_count
+    18:30 IST  PageView  2  2   4
+    21:30 IST  PageView  6  6  12
+    22:30 IST  PageView  9  7  16
+
+**`server_received_count` tracks `browser_received_count` almost one to one — and this application
+sends exactly one server-side event name, `Purchase`.** `src/lib/store/meta-capi.ts` contains a single
+`event_name`, and `reportPurchaseToMeta` has one call site, in `notifyPaid()`. So a server-side
+`PageView` cannot be ours, and a whole column of them is not a rounding error.
+
+**The source is Meta's own business-level Conversions API connection**, shown in Settings as
+"Conversions API • Web-only · Business connected · Active", carrying the note that the business
+"was opted in on September 20, 2026 … from Events Manager". It generates a server-side copy of each
+browser event. Two observations confirm mirroring rather than an independent server: its "last
+received" read **1 minute ago while pages were being loaded and 16 minutes ago once that stopped**,
+and the per-hour ratio stays near 1:1 as browser volume changes.
+
+**The consequence that matters: that connection lists DATASETS CONNECTED (2)** — the live pixel and
+the retired one. **That is why a retired pixel keeps receiving events after its own integrations are
+removed and its id is gone from every bundle.** Removing a pixel from the code does not remove it from
+a business-level CAPI connection, and nothing in this repo can.
+
+**Three rules.**
+
+1. **"Browser • Server" on an event row is not proof that YOUR server sent it.** Check what your code
+   actually sends before reading a server column as your own integration working.
+2. **A retired pixel is not retired until it is removed from the business CAPI connection**, however
+   thoroughly the code has moved on. Check that list, not just the pixel's own Integrations tab.
+3. **Prefer the CSV export to the dashboard.** The per-channel, per-hour counts answered in one file a
+   question the Overview had obscured for a whole round — the Overview shows a merged total and a
+   "Connection Method" label that reads as a property of the integration rather than a count.
+
+**It is harmless for de-duplication** (a mirrored copy carries the browser event's own id) and it is
+the explanation for the "improve fbp coverage through Conversions API" prompt: those mirrored copies
+are the "server" Meta is describing, not ours.
+
+**Method note, recorded because it corrected me.** The previous explanation for the retired pixel's
+recent events was that they were my own verification traffic, inferred from timestamps landing near my
+verification rounds. It was labelled as an inference rather than a finding, and that labelling is what
+made it cheap to replace when the export arrived. **Correlation between two things you did is the
+easiest false explanation to believe, because you were there for both.**

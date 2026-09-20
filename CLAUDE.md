@@ -56,15 +56,24 @@ hook probe must prove the page did not reload, or `captured: 0` is ambiguous. **
 the wrong instrument is not an absence — build the control first** (the same round's chunk grep read
 as "the old id is gone" until the control showed it had not found the NEW id either).
 
-**🟠 ONE LOOSE THREAD, not a defect and not our code: the retired pixel still shows a recent
-`PageView`.** Production JS ships only the new id (proven with a control) and kheelona.ai carries no
-pixel at all, so it is not the site; the timestamps line up with my own verification runs, **which is
-an inference from correlation, not a finding.** What IS actionable: the business-level Conversions API
-integration still lists **two** connected datasets, the new pixel and the old one. Removing the old
-one is the last step if "one thing everywhere" is to be literally true. Also still true: the Events
-Manager date filter does not respond to clicks (stuck at Aug 23 – Sep 19, though the chart plots
-today) and "0 Websites" persists, most likely because this pixel is hours old — **stated as an
-inference, because the date-range explanation for that same panel was tested and DISPROVED.**
+**🔴 EXPLAINED, AND IT REPLACES A WEAKER GUESS: META ITSELF IS SENDING SERVER-SIDE COPIES OF OUR
+BROWSER EVENTS, TO BOTH DATASETS (§8.41-i).** An hourly CSV export of the new pixel shows
+`server_received_count` tracking `browser_received_count` almost exactly — 2/2, 6/6, 9/7 across three
+hours — **and our server sends `Purchase` and nothing else** (`meta-capi.ts` has one `event_name`, and
+`reportPurchaseToMeta` is called only from `notifyPaid`). So the server PageViews are not ours.
+The source is the Settings card **"Conversions API • Web-only · Business connected · Active"**, which
+records that the business **"was opted in on September 20, 2026 by Apoorva Sahu from Events Manager"**
+and lists **Datasets connected (2): the new pixel AND the retired `1045085251085243`.** Its "last
+received" read *1 minute ago* while I was loading pages and *16 minutes ago* once I stopped — **server
+receipts start and stop with browser visits**, which is mirroring, not an independent server.
+
+**This is what keeps the retired pixel alive**, and it supersedes the earlier guess that its recent
+`PageView`s were my own verification traffic — that was timestamp correlation and it was the weaker
+explanation. **Removing the old dataset from that Conversions API connection is the one remaining
+step** for "one thing everywhere"; it is a founder settings change, not code. It also explains the
+"improve fbp coverage" prompt: the mirrored copies are the "server" Meta is complaining about.
+Harmless for dedup (a mirrored copy carries the browser event's own id), so **nothing is double
+counted and there is nothing to fix in this repo.**
 
 **🟠 ONE THING REMAINS UNPROVEN AND IT IS NOT A DEFECT: `capi: "configured"` means a token is PRESENT,
 not that it WORKS.** The validated token was replaced by one nobody has tested, which was the point of

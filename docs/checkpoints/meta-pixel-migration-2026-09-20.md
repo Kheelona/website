@@ -305,3 +305,24 @@ The wire capture was taken with the send **blocked**, so the check added nothing
 not working. Success on the first real pre-order = Purchase with connection method **"Multiple"**;
 failure = **"Browser"** only plus `[meta-capi] REJECTED` in the Vercel log, fixed by one more token
 and no code change.
+
+### 🔴 CORRECTION, same evening: the retired pixel's traffic is Meta mirroring, not my testing
+
+The founder set the date range to **Sep 18 – Sep 20** (PageView total moved 16 → **26**, so today's
+events do count) and exported the hourly CSV. It shows `server_received_count` tracking
+`browser_received_count` nearly 1:1 for `PageView` — 2/2 at 18:30, 6/6 at 21:30, 9/7 at 22:30 IST.
+
+**This application sends exactly one server-side event name, `Purchase`.** So those server PageViews
+are not ours. They come from Meta's own **"Conversions API • Web-only · Business connected · Active"**
+connection, opted in on Sep 20 from Events Manager, which lists **Datasets connected (2): the new
+pixel and the retired `1045085251085243`.** Its "last received" read 1 minute ago while pages were
+being loaded and 16 minutes ago after that stopped.
+
+**This replaces the explanation written a few hours earlier in this same file** (that the old pixel's
+recent events were my verification traffic). That was timestamp correlation, was labelled an
+inference, and is now superseded. Law **§8.41-i**.
+
+**Founder action, and it is the last one for "one thing everywhere":** remove
+`Kheelona Dataset 1045085251085243` from that Conversions API connection's dataset list. Nothing in
+this repo can do it, and no code change is involved. Harmless meanwhile — a mirrored copy carries the
+browser event's own id, so nothing double counts.
