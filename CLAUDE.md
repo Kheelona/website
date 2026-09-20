@@ -1,5 +1,41 @@
 # kheelona.com — session entry point
 
+**🎯 THE META PIXEL MOVED TO `1051265191046395` (2026-09-20, ⚠ CODE READY — SEE THE GATE BELOW).**
+Record: `docs/checkpoints/meta-pixel-migration-2026-09-20.md`; laws **§8.41 a-f**; rollback tags
+`pre-meta-clickid-2026-09-20` = `b1078de`, `pre-meta-pixel-migration-2026-09-20` = `06a93b8`.
+`1045085251085243` (retired) carried every event and both integrations but was **not assigned to the
+ad account**; this one was assigned and had never received an event. **Founder decision, for
+OWNERSHIP not performance** — ads and measurement on one account, one thing everywhere, losing the
+history explicitly accepted. The engineering recommendation (assign the old pixel instead, zero code)
+was put twice and declined. **Settled, do not re-raise.**
+
+**Six things bind.** (1) **Events Manager lists only the pixels the selected ad account can use**
+(§8.41-a) — the URL's `act=` parameter is why two screens disagreed about which pixel was real.
+**When a dashboard differs by screen, find the scope selector before concluding anything is broken.**
+(2) **A CAPI token can be BUSINESS-scoped, and ours is** (§8.41-c): both tokens posted successfully to
+BOTH pixels, so the production secret needed no change and the entire cutover-coordination plan was
+deleted. A CAPI token also **cannot read dataset metadata** (`(#100) Missing Permission`), so the only
+way to learn what one authorises is to POST a test event with a `test_event_code`. (3) **NOTHING
+FAILED WHEN THE PIXEL ID CHANGED** and that was the real defect (§8.41-d) — only a shape regex
+existed, so the id could drift from every doc while the build stayed green. `test/meta-pixel-id.test.ts`
+now requires CLAUDE.md and §8.30 to name the live id and **fails on a stale id sitting beside it
+unmarked**; `docs/checkpoints/` is exempt, because a checkpoint records what was true on its own date.
+(4) **A FRESH PIXEL'S DEFAULTS ARE NOT THE OLD PIXEL'S SETTINGS** (§8.41-e), and the one that mattered
+had a name one word from the one I checked: **"Automatic events" was ON** (Meta's AI adding standard
+events beside ours, no shared `event_id`, an inferred value rather than the amount collected) and so
+was **"Automatically include more detailed page and product info"**. Both turned off; the allow list
+restored. **Read a new asset's settings against the old one rather than trusting a default.**
+(5) **The click id cookie holds the RAW `fbclid`, never a built `fbc`** (§8.41-f) — one builder exists,
+called only when Meta's `_fbc` is absent, so there is no competing value to prefer by mistake. **A
+missing `fbc` is strictly safer than a malformed one**: Meta accepts a broken value with a 200 and
+silently matches nobody. (6) **The drift warning compares SHAPE, never value** — two different `fbc`
+values in one request are legitimate (a second ad click refreshes Meta's cookie), so comparing values
+would fire constantly and be ignored.
+
+**🟠 WAITING ON THE FOUNDER:** delete `1045085251085243` (retired) after production verification, and
+**regenerate the CAPI token + Redeploy** — both tokens used this round are in a chat transcript and
+are business-scoped, so deleting the old pixel does NOT neutralise them.
+
 **📈 SIGNUPS ARE MEASURABLE IN POSTHOG — DEPLOYED AND VERIFIED ON PRODUCTION 2026-09-20.** Record:
 `docs/checkpoints/signup-analytics-2026-09-20.md`; laws **§8.40 a-j**; rollback tag
 `pre-signup-analytics-2026-09-20` = `6abeccb`. Migration `0004_ph_distinct_id.sql` was run by the
@@ -431,7 +467,8 @@ before dispatch, and the payment happens on **store.kheelona.com**, which this s
 ## ⚠ STATE OF PLAY (2026-09-06 — **EVERYTHING BELOW IS LIVE AND VERIFIED ON PRODUCTION**) — read this first
 
 **📣 A META PIXEL RUNS ON THIS SITE SINCE 2026-09-01** (founder request, for Facebook and Instagram
-advertising). Pixel `1045085251085243`; law **§8.30**; checkpoint
+advertising). Pixel **`1051265191046395`** since 2026-09-20 (migrated from `1045085251085243` (retired),
+laws §8.41); law **§8.30**; checkpoint
 `docs/checkpoints/meta-pixel-2026-09-01.md`. Four things bind. (1) It is a **fourth measurement
 tool**, so §8.21-c applies: touching it means touching `/privacy` in the SAME commit, and
 `test/analytics-tags.test.ts` now counts four. (2) **The ID is hardcoded in `config/site.ts`, and a

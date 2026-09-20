@@ -10,6 +10,11 @@ interesting work was not the pixel at all. It was the privacy page.
 
 ## What shipped
 
+> ⚠ **HISTORICAL FROM 2026-09-20.** The pixel is now **`1051265191046395`** (§8.41). Every mention of
+> `1045085251085243` below was accurate on this file's own date and is left exactly as written:
+> a checkpoint records what was true when it was true, and editing that away would destroy the
+> only thing checkpoints are for.
+
 Pixel `1045085251085243`, Business Manager portfolio `1804686660128463`. Live on `kheelona.com`,
 `www.kheelona.com` and `store.kheelona.com`, and nowhere else.
 

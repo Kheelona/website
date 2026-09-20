@@ -78,6 +78,36 @@ The code now keeps `utm_id` and `placement`, so the ad side is the remaining hal
 
 ---
 
+# 🎯 META PIXEL MIGRATION + THE AD CLICK ID (2026-09-20)
+
+*Record: `docs/checkpoints/meta-pixel-migration-2026-09-20.md`. Laws **§8.41 a-f**. Rollback tags
+`pre-meta-clickid-2026-09-20` = `b1078de`, `pre-meta-pixel-migration-2026-09-20` = `06a93b8`.*
+
+The site now points at **`1051265191046395`** (the ad account's pixel) instead of
+`1045085251085243` (retired). Founder decision, taken for ownership rather than anything technical:
+ads and measurement on one account, one thing everywhere. **Settled, do not re-raise.**
+
+## 🧑 Founder
+
+| Priority | Item | Why |
+|---|---|---|
+| **HIGH** | **Delete `1045085251085243`** once production verification passes | Two pixels in the account IS the confusion this round was about; one is the cure. Do it AFTER the new pixel is proven receiving, because deleting removes the rollback. |
+| **HIGH** | **Regenerate the CAPI token and press Redeploy** | Both tokens shared during this round are in a chat transcript, and they are **business-scoped** — they can write events to any dataset in the portfolio, so deleting the old pixel does NOT neutralise them. Independent of the migration, so do it whenever. **A Vercel variable only applies to deployments created after it changes**, so the Redeploy is not optional. |
+| MEDIUM | Confirm Events Manager shows **one** pixel from the ad account, receiving real events | The single screen that proves the whole round landed. |
+| LOW | Aggregated Event Measurement (the 8-event iOS priority list) resets with a new pixel | Changes nothing while campaigns use a Traffic objective. Needs configuring before any Sales-objective campaign. |
+| LOW | Campaigns are all **Traffic** objective, so pixel conversions are not used for optimisation | Raised and the founder chose to leave it alone. Recorded so it is not mistaken for an oversight. |
+
+## 🧑 Founder — click-to-WhatsApp conversions, parked with the finding kept
+
+Meta recommends connecting chat conversions. **It is not possible on the current setup**: the account
+has the free **WhatsApp Business App** plus a **Test** WABA, and Conversions API for business messaging
+needs the WhatsApp Business **Platform** — so it would mean migrating +91 91875 46483 off the app five
+people use. **And there is probably a cheaper answer**: a click-to-WhatsApp parent still pre-orders on
+the website, so a tagged link sent in chat is already attributed by `kh_utm`/`kh_fbclid` with no
+migration at all.
+
+---
+
 # 🔀 THE POSTHOG REVERSE PROXY (🟢 DEPLOYED AND VERIFIED 2026-09-20)
 
 *Record: `docs/checkpoints/posthog-reverse-proxy-2026-09-20.md`. Laws **§8.39 a-g**. Rollback tag

@@ -269,6 +269,20 @@ export const GA4_HOSTS = ["kheelona.com", "www.kheelona.com", "store.kheelona.co
  *  Instagram advertising (Business Manager portfolio 1804686660128463, domain
  *  kheelona.com verified there by DNS TXT).
  *
+ *  🔴 MIGRATED 2026-09-20 FROM 1045085251085243 (retired), and the reason is
+ *  ownership rather than anything technical (§8.41). The portfolio held TWO
+ *  pixels: the old one carried every event and both integrations but was NOT
+ *  assigned to the ad account that runs the ads, while this one was assigned to
+ *  the ad account and had never received a single event. Events Manager lists
+ *  only the pixels the selected ad account can use, which is why the two screens
+ *  disagreed and why nobody could say which was "the real one".
+ *
+ *  The founder chose to move the site to the ad account's pixel so that ads and
+ *  measurement live on one account permanently and the team has one thing in
+ *  every place. Losing the old event history was explicitly accepted. The
+ *  alternative (assign the old pixel to the ad account, change no code) was put
+ *  twice and declined. **Settled; do not re-raise.**
+ *
  *  Hardcoded for the same reason as the GA4 ID above, and the reasoning is
  *  stronger here, not weaker: Meta's own snippet calls `fbq('init', …)` in the
  *  page, so every site running a pixel publishes its ID in plain view. An env
@@ -282,7 +296,7 @@ export const GA4_HOSTS = ["kheelona.com", "www.kheelona.com", "store.kheelona.co
  *  second copy. The gate matters more for this tool than for GA4: preview and
  *  localhost traffic does not merely dirty a report, it feeds the audiences and
  *  the conversion signal Meta optimises real ad spend against. */
-export const META_PIXEL_ID = "1045085251085243";
+export const META_PIXEL_ID = "1051265191046395";
 export const META_PIXEL_HOSTS = GA4_HOSTS;
 
 /** Ahrefs Web Analytics, added 2026-07-30 at the founder's request.

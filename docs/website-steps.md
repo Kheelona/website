@@ -1335,7 +1335,9 @@ the footer cocoa `#2A1608` (~12:1, crisp but dark for a toy brand).
 # §8.30 THE META PIXEL, AND WHAT IT COST THE PRIVACY PAGE (2026-09-01, founder-requested)
 
 The founder set up Meta Business Manager (portfolio `1804686660128463`) and asked for the pixel so
-that Facebook and Instagram advertising can be measured and optimised. Pixel `1045085251085243`.
+that Facebook and Instagram advertising can be measured and optimised. Pixel **`1051265191046395`**
+since 2026-09-20 (§8.41); it was `1045085251085243` (retired) from 2026-09-01 until then, and the
+paragraphs below that quote the old id are describing their own date.
 The domain `kheelona.com` was verified in Business Manager by **DNS TXT before this round started**,
 so no `facebook-domain-verification` meta tag exists in this codebase and none is needed. If someone
 later adds one, they have taken the wrong path: check the Domains screen first.
@@ -1403,7 +1405,7 @@ harness aborts third-party requests by default, and that default was KEPT: the c
 page *attempted* `connect.facebook.net/en_US/fbevents.js` and reads the calls sitting in the `fbq`
 stub's own queue, so the gate is proven open without a single event reaching the founder's real
 pixel. Result on 2026-09-01: on `kheelona.com` the queue held exactly
-`["init:1045085251085243","track:PageView"]`, one further `track:PageView` appeared after a
+`["init:1045085251085243","track:PageView"]` (the id of the day; see §8.41), one further `track:PageView` appeared after a
 client-side navigation and no more (the `useRef` guard against the classic double-count works), and
 on both `127.0.0.1` and `store.localhost` there was no tag, no `fbq`, and no facebook request at all.
 
@@ -3147,3 +3149,110 @@ conform on its own *and* replaces `120248101035710340` with something readable. 
 greps one file for a literal breaks when the truth moves**: `utm.test.ts` asserted
 `create-order/route.ts` contained the string `utm_campaign`, which failed the moment the key list was
 single-sourced, with the capture working perfectly. It now asserts the invariant instead.
+
+---
+
+# §8.41 · The pixel migration, and keeping the ad click id (2026-09-20)
+
+Two changes in one round. Rollback tags `pre-meta-clickid-2026-09-20` = `b1078de` and
+`pre-meta-pixel-migration-2026-09-20` = `06a93b8`. Record:
+`docs/checkpoints/meta-pixel-migration-2026-09-20.md`.
+
+## §8.41-a · Events Manager shows different pixels from different screens, and that is not a bug
+
+The portfolio held two pixels and nobody could say which was real, because each screen told a
+different story:
+
+| | `1045085251085243` | `1051265191046395` |
+|---|---|---|
+| Events | 1.6K / 28 days | 0, never received one |
+| Integrations | Pixel + Conversions API | none |
+| Assigned to ad account `1195520716116929` | **no** | **yes** |
+
+**Events Manager lists only the pixels the selected ad account can use.** Opened from the ad account
+it shows one; opened from the business portfolio it shows both. Confirmed from both directions: the
+empty pixel's Sharing panel named the ad account, the live one's listed none.
+
+**The general law: when a dashboard shows different things on different screens, find the scope
+selector before concluding anything is broken.** The URL's `act=` parameter was the whole answer.
+
+## §8.41-b · The migration was an OWNERSHIP decision, and it is recorded as one
+
+The engineering recommendation was the opposite: keep the configured pixel and assign it to the ad
+account — zero code, nothing to rebuild. **Put twice and declined.** The founder chose to move the
+site to the ad account's pixel so ads and measurement live on one account permanently and the team
+sees one thing in every place, and accepted losing the event history explicitly.
+
+When the data argument was withdrawn ("I am completely okay to lose old data"), the recommendation
+did not change but its REASON did, and the weaker reason was dropped rather than repeated: keeping
+the old pixel meant reconfiguring nothing, switching meant rebuilding the Conversions API, the allow
+list, advanced matching and first-party cookies. **Settled. Do not re-raise.**
+
+**And the part that actually solved the founder's stated problem was neither choice: deleting the
+loser.** Two pixels in an account IS the confusion; one is the cure, whichever one survives.
+
+## §8.41-c · A CAPI token can be BUSINESS-scoped, which changes the cutover entirely
+
+The plan assumed tokens are per-dataset and built an elaborate ordering around swapping the Vercel
+secret at the same moment as the deploy. **Verified against Meta instead of assumed: both supplied
+tokens posted successfully to BOTH pixels** (`events_received: 1`, via `test_event_code`, so nothing
+touched live data). They authorise the business.
+
+So the production token needed no change, there was no cutover window, and the whole coordination
+problem evaporated. **Check the scope of a credential before designing around it.**
+
+A CAPI token also **cannot read dataset metadata** — `GET /{pixel_id}` answers `(#100) Missing
+Permission`. That is normal and proves nothing. The only way to learn what a CAPI token authorises is
+to POST a test event with a `test_event_code`, which lands in the test stream and never in live data.
+
+## §8.41-d · Nothing failed when the pixel id changed, and that was the real defect
+
+`test/meta-pixel-id.test.ts` exists because of it. The only assertion anywhere was a shape regex, so
+the id could drift from every document describing it while the build stayed green — which is how
+someone ends up debugging against a number that stopped being true months ago.
+
+The guard requires `CLAUDE.md` and the §8.30 laws to name the live id, **and fails when a stale id
+sits beside it unmarked** — a retired one must say so. `docs/checkpoints/` is deliberately exempt:
+a checkpoint records what was true on its own date, and editing that away destroys the only thing
+checkpoints are for. Mutation-tested.
+
+## §8.41-e · The settings that bite on a fresh pixel are not the ones you expect
+
+A new pixel is not a blank copy of the old one. Checked rather than assumed, and two defaults were on
+that the old pixel never had:
+
+- **"Automatic events" — ON by default.** This is *not* the same setting as "Track events
+  automatically without code", which was already off. It lets Meta's AI **add and manage standard
+  events**, which would put AI-invented Purchases beside our explicit ones: no shared `event_id`, so
+  no deduplication, and a value Meta infers rather than the amount actually collected (§8.30-f).
+  **Turned off.**
+- **"Automatically include more detailed page and product info" — ON by default.** AI sending Meta
+  extra page data including reviews and pricing. **Turned off**, to match the behaviour `/privacy` was
+  written against.
+
+**The law: after creating any measurement asset, read its settings against the old one rather than
+trusting that a default is the default you had.** The setting that mattered here had a name one word
+away from the setting that did not.
+
+## §8.41-f · The click id, and why the cookie holds the raw `fbclid`
+
+`fbc` reaches the Conversions API only if Meta's pixel set `_fbc`, so a blocked pixel loses it.
+`src/proxy.ts` now remembers the raw `fbclid` at landing and `readFbAttrib` builds an `fbc` from it
+**only when Meta's cookie is absent**.
+
+**What is stored is the raw id, never a built value**, and that is the risk control rather than a
+convention: a rebuilt value would leave two things that both look like an `fbc` plus a rule about
+which wins, and rules get forgotten at the next edit. The raw input means exactly one builder exists,
+so there is no competing value to pick wrongly.
+
+**A missing `fbc` is strictly safer than a malformed one.** Meta accepts a broken value with a 200 and
+silently matches nobody; with none it falls back to its other signals. So a failed shape check
+produces nothing, never a best effort.
+
+**The drift warning compares SHAPE, never value.** Two different `fbc` values in one request are
+legitimate — a second ad click refreshes Meta's cookie while we still hold the first — so a
+value comparison would fire constantly and be ignored within a week.
+
+**A hypothesis was tested and disproved first, and it saved a wasted fix:** `_fbc` was suspected of
+being a cross-host casualty like §8.40-f. Measured in a real browser on production, it is scoped to
+`.kheelona.com` and DOES reach the store host. Low coverage was mostly low paid volume.
