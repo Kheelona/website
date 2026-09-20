@@ -331,6 +331,66 @@ export const POSTHOG_KEY = "phc_ute69SyrVALLjx3bW8xUNVqiALe7RRNbJp9KuZDd9726";
 export const POSTHOG_API_HOST = "https://us.i.posthog.com";
 export const POSTHOG_ASSET_HOST = "https://us-assets.i.posthog.com";
 
+/** 🔴 THE TWO HOSTS ABOVE ARE NOW REWRITE DESTINATIONS, NOT THE ADDRESSES THE
+ *  BROWSER CALLS (2026-09-20, §8.39). The browser calls the two paths below on
+ *  our own domain, and `next.config.ts` forwards them.
+ *
+ *  WHY. PostHog's Installation Health flags a missing reverse proxy, and the
+ *  founder took the trade knowingly: routing through our own domain is what
+ *  stops an ad blocker dropping these requests. That is also precisely why
+ *  `/privacy` had to be rewritten in the same commit (§8.21-c) — the page told
+ *  parents an ad blocker worked, and this makes that untrue for PostHog.
+ *
+ *  TWO PREFIXES, NOT ONE, AND THAT IS THE WHOLE DESIGN DECISION. PostHog's own
+ *  guide puts assets under the ingestion prefix (`/ingest/static/*`), which
+ *  needs two OVERLAPPING rewrite rules. Next's docs say `beforeFiles` rules keep
+ *  being evaluated after one matches
+ *  (…/05-config/01-next-config-js/rewrites.md), so which of two overlapping
+ *  rules wins is not something we should be betting the session recorder on: if
+ *  the catch-all won, the recorder would 404 and replay would SILENTLY never
+ *  start — the exact §8.38-b failure, one round later. Non-overlapping prefixes
+ *  make the question unaskable.
+ *
+ *  It also inverts §8.38-b in a good way. The asset origin used to be DERIVED
+ *  (`endpointFor` builds `${region}-assets.i.posthog.com` from `api_host`) and
+ *  that derivation was the trap. With a custom `api_host` the region becomes
+ *  "custom" and the derivation stops happening at all, so the asset path is now
+ *  CONFIGURED, via posthog-js's `asset_host` option — which the SDK applies to
+ *  any path matching /^\/static\//, read out of the installed bundle rather
+ *  than its docs.
+ *
+ *  Not `/ph` or `/a`: short generic prefixes are what blocker filter lists
+ *  grow toward, and these read as ours. */
+export const POSTHOG_PROXY_PATH = "/ingest";
+export const POSTHOG_ASSET_PROXY_PATH = "/ingest-assets";
+
+/** 🔴 §8.38-c INVERTS WITH THE PROXY: `ui_host` MUST now be set.
+ *
+ *  It was deliberately unset on the direct install, and that was right then. The
+ *  SDK derives it as `apiHost.replace(".i.posthog.com", ".posthog.com")` — a
+ *  replace that does nothing at all to "/ingest". Left unset, every deep link
+ *  PostHog builds back into its own dashboard (person URLs, RECORDING URLs, and
+ *  the tags attached to captured exceptions) would point at
+ *  `kheelona.com/ingest` and land nowhere. This is the dashboard host, which is
+ *  NOT the ingestion host. */
+export const POSTHOG_UI_HOST = "https://us.posthog.com";
+
+/** Is this a request we forward to PostHog rather than render?
+ *
+ *  Exported because three places need the same answer and must not each carry
+ *  their own spelling of it: `routeForHost` (so the store host never rewrites
+ *  one into `/store/...`), the trailing-slash redirect in `src/proxy.ts` (so
+ *  PostHog keeps the trailing slashes it ingests on), and the tests that hold
+ *  both honest.
+ *
+ *  Prefix-with-boundary, not `startsWith` alone: a real route named
+ *  `/ingestion-report` must not be mistaken for one of ours. */
+export function isPostHogProxyPath(pathname: string): boolean {
+  return [POSTHOG_PROXY_PATH, POSTHOG_ASSET_PROXY_PATH].some(
+    (p) => pathname === p || pathname.startsWith(`${p}/`),
+  );
+}
+
 /** Deliberately the same list as GA4_HOSTS, for the same reason META_PIXEL_HOSTS
  *  is. The stake here sits between the other two: preview traffic would not
  *  merely dirty a report (GA4) or feed an ad budget (Meta), but session replay

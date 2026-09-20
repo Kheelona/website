@@ -39,6 +39,38 @@ that date, raise them first.
 
 ---
 
+# 🔀 THE POSTHOG REVERSE PROXY (built 2026-09-20, **NOT YET DEPLOYED**)
+
+*Record: `docs/checkpoints/posthog-reverse-proxy-2026-09-20.md`. Laws **§8.39 a-g**. Rollback tag
+`pre-posthog-proxy-2026-09-20` = `e097ad8`.*
+
+PostHog's Installation Health flagged a missing reverse proxy (6 of 7). PostHog now reports through
+`kheelona.com/ingest`. **The founder took this knowing it stops an ad blocker working on PostHog**,
+which is why `/privacy` was rewritten in the same round (§8.21-c, §8.39-a). Settled, do not re-raise.
+
+## 🧑 Founder — TWO PRODUCTION CHECKS, and the first one is the real risk
+
+| Priority | Item | Why |
+|---|---|---|
+| **HIGH** | **Confirm visitor COUNTRY still resolves on production** (PostHog → Web analytics → by country; it must not collapse to one location, and it should read India) | PostHog reads country from the request IP, which it now sees via `x-forwarded-for` instead of directly. If that does not survive Vercel's edge, **the dashboard quietly becomes wrong** — a fix for "some metrics may not be accurate" making them less accurate. This is the one thing local testing cannot reach. **If it breaks, revert to the rollback tag.** |
+| **HIGH** | **Confirm replay still records, WITH ITS CONTROL**: recorder loads on `store.kheelona.com/` and **NOT** on `/thanks` | A change that killed replay everywhere would pass the negative check on its own (§8.38). Both halves or neither. |
+| MEDIUM | Re-read Installation Health; it should show **7 of 7** | PostHog detects the proxy from events arriving with a custom `api_host`. |
+| LOW | Glance at Vercel bandwidth after a week of real traffic | Every session-replay payload now flows through Vercel, and replay at 100% sampling is the heaviest thing PostHog sends. Nothing suggests a problem; it is simply unmeasured. |
+
+## 🤖 Mine, once production has spoken
+
+| Priority | Item | Why |
+|---|---|---|
+| LOW | Prune `us.i.posthog.com` / `us-assets.i.posthog.com` from the CSP **only if** production shows nothing requests them directly | They were left in deliberately: the policy string is unchanged, so **the §8.28-a enforce clock did not reset a third time** (§8.39-f). Removing them is a policy change and would reset it. |
+
+## 🅿️ Offered and declined, 2026-09-20 — do not re-raise
+
+An in-product "do not record me" control (PostHog's `opt_out_capturing`) was offered alongside the
+copy rewrite. The founder chose plain disclosure. `/privacy` still points at deletion on request,
+which covers PostHog.
+
+---
+
 # 📊 POSTHOG, THE FIFTH MEASUREMENT TOOL (shipped 2026-09-19)
 
 *Record: `docs/checkpoints/posthog-2026-09-19.md`. Laws **§8.38 a-h**. Rollback tag

@@ -3,6 +3,7 @@ import type { NextRequest } from "next/server";
 import { routeForHost, isStoreHost } from "@/lib/store/host";
 import { isIndexableHost } from "@/config/site";
 import { THANKS_COOKIE, THANKS_COOKIE_MAX_AGE_SECONDS } from "@/lib/store/thanks-session";
+import { trailingSlashRedirectPath } from "@/lib/trailing-slash";
 
 /** Host routing (§8.25-a).
  *
@@ -21,6 +22,22 @@ import { THANKS_COOKIE, THANKS_COOKIE_MAX_AGE_SECONDS } from "@/lib/store/thanks
 export function proxy(request: NextRequest) {
   const host = request.headers.get("host") ?? "";
   const { pathname, search } = request.nextUrl;
+
+  /* The trailing-slash redirect Next is no longer doing for us (2026-09-20,
+     §8.39). `next.config.ts` sets `skipTrailingSlashRedirect` so PostHog keeps
+     the trailing slashes it ingests on, and that flag is site-wide, so this
+     puts the behaviour back for every path except the proxied ones. Without it
+     `/team/` and `/team` would both answer 200 and one page would have two
+     URLs.
+
+     FIRST, before any host rule: a redirect that then had to be re-resolved
+     through `routeForHost` would be two round trips where one will do, and the
+     303 claim below sets a cookie scoped to an exact path. */
+  const stripped = trailingSlashRedirectPath(pathname);
+  if (stripped) {
+    return NextResponse.redirect(new URL(`${stripped}${search}`, request.url), 308);
+  }
+
   const route = routeForHost(host, pathname, search);
 
   if (route.kind === "redirect") {
@@ -82,8 +99,19 @@ export const config = {
   /* Everything except Next's own assets, the API (same handlers serve both
      hosts, and the store's fetches are same-origin either way), and any path
      with a dot in it, which is a file: /favicon.ico, /og.png, /llms.txt.
-     Rewriting a file request would break the very assets the store renders. */
-  matcher: ["/((?!_next/|api/|.*\\..*).*)"],
+     Rewriting a file request would break the very assets the store renders.
+
+     `ingest/` and `ingest-assets/` join that list on 2026-09-20 (§8.39): they
+     are the PostHog reverse proxy, forwarded by a rewrite in `next.config.ts`,
+     and they are the highest-volume paths on the site. Excluding them keeps
+     every analytics beacon from waking this function, and it stops the store
+     host's rule turning `/ingest/e/` into `/store/ingest/e/`.
+
+     🔴 THIS LIST IS A LITERAL AND CANNOT IMPORT THE CONSTANTS — Next requires a
+     statically analysable matcher. `test/posthog-proxy.test.ts` closes that gap
+     by running this very regex against the real request paths, derived from the
+     constants, so the two cannot drift apart silently (§8.38-i). */
+  matcher: ["/((?!_next/|api/|ingest/|ingest-assets/|.*\\..*).*)"],
 };
 
 /** Re-exported for the guard test, which asserts the store host never reaches a

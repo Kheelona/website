@@ -101,7 +101,13 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
        browser-only tool shipped — so the suite would have enforced a false
        sentence, exactly the failure the 2026-09-02 correction was about. Both
        retired counts are banned below. */
-    expect(PRIVACY).toMatch(/your browser can block the tools that only run in your browser/);
+    /* 🔴 RETIRED 2026-09-20 BY THE REVERSE PROXY (§8.39), and this is the third
+       time this one sentence has been falsified by our own deploy. "The tools
+       that only run in your browser" included PostHog, and PostHog now reports
+       through kheelona.com/ingest — first-party requests an ad blocker cannot
+       tell apart from the site itself. Defeating the blocker is the POINT of a
+       reverse proxy, so the sentence had to move rather than be softened. */
+    expect(PRIVACY).toMatch(/your browser can block the tools that load from another company/);
   });
 
   /* THE OPT-OUT MUST NOT OVERSTATE ITSELF (§8.30-r). Telling a parent to install
@@ -115,6 +121,30 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
     /* Nor may the fix be to bump the number: the next tool would falsify it
        again, silently, with a test holding it in place. */
     expect(PRIVACY).not.toMatch(/block the (one|two|three|four|five|six) that only run/);
+    /* Retired 2026-09-20: true until PostHog started reporting first-party. */
+    expect(PRIVACY).not.toContain("the tools that only run in your browser");
+  });
+
+  /* 🔴 THE PROXY IS A PRIVACY FACT, NOT A PLUMBING DETAIL (§8.39, §8.21-c).
+     Routing PostHog through our own domain exists to stop an ad blocker
+     dropping its requests, and PostHog is the tool that FILMS A PARENT'S
+     SCREEN. A page that offered blocking as the remedy has to say that the
+     remedy no longer reaches this one. The founder chose to state it plainly
+     rather than leave it implied (2026-09-20). */
+  it("admits that an ad blocker no longer reaches PostHog", () => {
+    expect(PRIVACY).toMatch(/PostHog now reports through our own address/);
+    expect(PRIVACY).toMatch(/an ad blocker usually cannot tell its requests apart/);
+  });
+
+  /* THE GAPS ARE NO LONGER COUNTED (§8.38-g, third occurrence). The page said
+     "the one gap" while the server-side Meta report was the only one. The proxy
+     made that a second gap, so a test pinning the word "one" would have gone on
+     enforcing a false sentence — the exact failure of 2026-09-02 and 2026-09-19.
+     A category is honest at any number; a count expires on the next change. */
+  it("names the gaps without counting them", () => {
+    expect(PRIVACY).toMatch(/Be aware of the gaps/);
+    expect(PRIVACY).not.toContain("Be aware of the one gap");
+    expect(PRIVACY).not.toMatch(/the (one|two|three|four) gaps?,/);
   });
 
   /* The Meta Pixel is the first tool here that exists to advertise to the

@@ -1,5 +1,11 @@
 import type { NextConfig } from "next";
 import { securityHeaders } from "./src/lib/security-headers";
+import {
+  POSTHOG_API_HOST,
+  POSTHOG_ASSET_HOST,
+  POSTHOG_ASSET_PROXY_PATH,
+  POSTHOG_PROXY_PATH,
+} from "./src/config/site";
 
 const nextConfig: NextConfig = {
   images: {
@@ -8,6 +14,57 @@ const nextConfig: NextConfig = {
   },
   /* Nothing gains from telling the world which framework serves this (F-08). */
   poweredByHeader: false,
+
+  /* 🔴 GLOBAL FLAG, NARROWED BACK IN `src/proxy.ts` (2026-09-20, §8.39).
+     PostHog ingests on `/e/`, `/s/` and `/i/`, all WITH a trailing slash — read
+     out of the installed SDK, not its docs. Next's default 308s those away, and
+     a redirect on a beacon fired during page unload is a lost event.
+
+     But this flag is SITE-WIDE, and switching it on alone would let
+     `kheelona.com/team/` and `/team` both answer 200 on a site in the middle of
+     an SEO and answer-engine programme. So `src/proxy.ts` performs the redirect
+     Next is no longer doing, for every path except PostHog's. Net observable
+     behaviour for a visitor and for a crawler is unchanged; this is exactly the
+     "maintain the trailing slash for some paths but not others" case the Next
+     docs describe for this flag. */
+  skipTrailingSlashRedirect: true,
+
+  async rewrites() {
+    /* THE REVERSE PROXY. PostHog's Installation Health flags a missing one, and
+       routing these requests through our own domain is what stops an ad blocker
+       dropping them. The founder took that trade on 2026-09-20 knowing it makes
+       an ad blocker ineffective against PostHog, which is why `/privacy` was
+       rewritten in the same round (§8.21-c).
+
+       `beforeFiles` so these never reach the filesystem or a dynamic route.
+       TWO NON-OVERLAPPING PREFIXES, which is the one design decision here: the
+       Next docs say `beforeFiles` rules keep being evaluated after a match, so
+       overlapping sources leave it undecided which destination wins. PostHog's
+       own guide nests assets under the ingestion prefix and would need exactly
+       that overlap; if the ingestion rule won a `/static/` path the recorder
+       would 404 and session replay would SILENTLY never start, which is §8.38-b
+       over again. Prefixes that cannot both match remove the question.
+
+       🔴 THIS CANNOT BE VERIFIED LOCALLY (§8.34-f): `next start` is not the
+       deployment target, and an external rewrite is resolved by Vercel's edge.
+       It is verified on production after deploy, WITH ITS CONTROL — the
+       recorder must load on store.kheelona.com/ and NOT on /thanks, because a
+       change that killed replay everywhere would pass the negative check alone.
+       The other production check is geography: PostHog reads the visitor's
+       country from the request IP, which it now sees via `x-forwarded-for`. */
+    return {
+      beforeFiles: [
+        {
+          source: `${POSTHOG_ASSET_PROXY_PATH}/:path*`,
+          destination: `${POSTHOG_ASSET_HOST}/:path*`,
+        },
+        {
+          source: `${POSTHOG_PROXY_PATH}/:path*`,
+          destination: `${POSTHOG_API_HOST}/:path*`,
+        },
+      ],
+    };
+  },
   async headers() {
     /* One policy for every HTML response on both hosts (F-03). The reasoning,
        including why script-src carries 'unsafe-inline' and what that does and

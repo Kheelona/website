@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import {
-  POSTHOG_API_HOST,
+  POSTHOG_ASSET_PROXY_PATH,
   POSTHOG_KEY,
+  POSTHOG_PROXY_PATH,
+  POSTHOG_UI_HOST,
   replayAllowedOnPath,
   shouldLoadPostHog,
 } from "@/config/site";
@@ -49,20 +51,37 @@ export function PostHogGate() {
       if (cancelled) return;
 
       posthog.init(POSTHOG_KEY, {
-        api_host: POSTHOG_API_HOST,
-        /* `ui_host` is deliberately NOT set. It was set to the asset host in a
-           first draft, which was wrong and was caught by reading the SDK rather
-           than the marketing docs: the router resolves `endpointFor("ui", …)`
-           against `uiHost`, so that value is what PostHog builds deep links back
-           to its own dashboard from (person URLs, recording URLs, and the tags
-           attached to captured exceptions). Pointing it at a CDN would have
-           silently produced dead links in the founder's inbox. It only needs
-           setting when `api_host` is a reverse proxy, and ours is not.
+        /* 🔴 OUR OWN DOMAIN, NOT POSTHOG'S (2026-09-20, §8.39). These three
+           values changed together and none of them makes sense alone.
 
-           The asset origin needs no configuration either: for region `us` the
-           router derives `https://us-assets.i.posthog.com` from `api_host`
-           itself. POSTHOG_ASSET_HOST exists so the CSP and this file name the
-           same origin, not because the SDK is told it. */
+           `api_host` is a same-origin PATH, forwarded to `us.i.posthog.com` by
+           a rewrite in `next.config.ts`. That is what makes the requests
+           first-party, which is what stops an ad blocker dropping them, which
+           is the entire point of the round. It is also why `/privacy` no longer
+           tells parents an ad blocker works on PostHog. */
+        api_host: POSTHOG_PROXY_PATH,
+
+        /* §8.38-b INVERTS: THE ASSET ORIGIN IS NOW CONFIGURED, NOT DERIVED, and
+           leaving this out is the silent failure this round had to design
+           around. Read out of the installed SDK: `endpointFor` derives
+           `https://${region}-assets.i.posthog.com` only while it recognises a
+           PostHog host in `api_host`. A path makes the region "custom", the
+           derivation stops, and every asset would be fetched from
+           `/ingest/...` instead. The recorder would 404 and SESSION REPLAY
+           WOULD SILENTLY NEVER START — the same failure as §8.38-b, one round
+           later. The SDK applies this option to any path matching /^\/static\//,
+           which is where all of its lazy bundles live. */
+        asset_host: POSTHOG_ASSET_PROXY_PATH,
+
+        /* §8.38-c INVERTS TOO: `ui_host` MUST be set now, and on a direct
+           install it had to be left unset. The SDK derives it as
+           `apiHost.replace(".i.posthog.com", ".posthog.com")`, a replace that
+           does precisely nothing to "/ingest". Unset, every deep link PostHog
+           builds back into its own dashboard — person URLs, RECORDING URLs, and
+           the tags on captured exceptions — would point at kheelona.com/ingest
+           and land nowhere. This is the dashboard host; it is NOT the ingestion
+           host, and confusing the two is the classic first-try mistake. */
+        ui_host: POSTHOG_UI_HOST,
 
         /* Autocapture ON (founder, 2026-09-19): clicks, changes and submits
            sitewide with no per-element code. Note what this does NOT do —

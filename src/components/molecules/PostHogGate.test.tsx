@@ -1,11 +1,16 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it, beforeEach } from "vitest";
 import {
   GA4_HOSTS,
   POSTHOG_API_HOST,
   POSTHOG_ASSET_HOST,
+  POSTHOG_ASSET_PROXY_PATH,
   POSTHOG_HOSTS,
   POSTHOG_KEY,
+  POSTHOG_PROXY_PATH,
   POSTHOG_REPLAY_DENY_PATHS,
+  POSTHOG_UI_HOST,
   replayAllowedOnPath,
   shouldLoadPostHog,
 } from "@/config/site";
@@ -194,5 +199,67 @@ describe("the posthog wrapper no-ops when the SDK never loaded", () => {
     phSetReplay(replayAllowedOnPath("/"));
 
     expect(log).toEqual(["start", "stop", "start"]);
+  });
+});
+
+/** THE REVERSE PROXY (2026-09-20, §8.39).
+ *
+ *  Three init values changed together and none of them makes sense alone, so
+ *  they are asserted together. The component's source is read rather than its
+ *  render, for the same reason `redirects-vs-assets.test.ts` reads the config as
+ *  text: these are static assignments, and the question is which constant is
+ *  bound to which option — which is exactly what a reviewer reads.
+ *
+ *  The expectations are DERIVED from the constants, never retyped, so changing a
+ *  prefix in one place cannot leave this quietly asserting the old one. */
+describe("the gate points the SDK at our own domain", () => {
+  const SOURCE = readFileSync(
+    join(process.cwd(), "src/components/molecules/PostHogGate.tsx"),
+    "utf8",
+  );
+
+  /* If `api_host` were still the PostHog host there would be no proxy at all,
+     and Installation Health would still be flagging it. */
+  it("ingests through the proxy path, not through posthog.com", () => {
+    expect(SOURCE).toMatch(/api_host:\s*POSTHOG_PROXY_PATH/);
+    expect(SOURCE).not.toMatch(/api_host:\s*POSTHOG_API_HOST/);
+  });
+
+  /* §8.38-b INVERTED. With a custom api_host the SDK's region becomes "custom"
+     and it stops deriving `us-assets.i.posthog.com` at all, so the asset path
+     has to be stated. Miss this and the recorder 404s and replay SILENTLY never
+     starts, which is the same failure shape as the original §8.38-b. */
+  it("states the asset path, because the SDK no longer derives it", () => {
+    expect(SOURCE).toMatch(/asset_host:\s*POSTHOG_ASSET_PROXY_PATH/);
+  });
+
+  /* §8.38-c INVERTED. It was right to leave `ui_host` unset on a direct
+     install. With a proxy the SDK would derive it from `api_host` — a
+     `.i.posthog.com` -> `.posthog.com` replace that does nothing to "/ingest" —
+     so every deep link back to the dashboard, INCLUDING RECORDING LINKS, would
+     point at kheelona.com/ingest and land nowhere. */
+  it("sets ui_host, which a direct install had to leave unset", () => {
+    expect(SOURCE).toMatch(/ui_host:\s*POSTHOG_UI_HOST/);
+  });
+
+  it("names the dashboard host, which is not the ingestion host", () => {
+    expect(POSTHOG_UI_HOST).toBe("https://us.posthog.com");
+    expect(POSTHOG_UI_HOST).not.toBe(POSTHOG_API_HOST);
+  });
+
+  /* The two PostHog hosts are now rewrite DESTINATIONS in next.config.ts. They
+     must stay exact, because that is the only place they are still named. */
+  it("keeps the rewrite destinations pointing at PostHog itself", () => {
+    expect(POSTHOG_API_HOST).toBe("https://us.i.posthog.com");
+    expect(POSTHOG_ASSET_HOST).toBe("https://us-assets.i.posthog.com");
+  });
+
+  /* A relative path, so the request is same-origin on whichever host the page
+     is served from. An absolute URL here would defeat the whole point. */
+  it("uses same-origin paths, not absolute URLs", () => {
+    for (const p of [POSTHOG_PROXY_PATH, POSTHOG_ASSET_PROXY_PATH]) {
+      expect(p.startsWith("/"), p).toBe(true);
+      expect(p).not.toMatch(/^https?:/);
+    }
   });
 });

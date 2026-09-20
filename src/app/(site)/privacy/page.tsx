@@ -127,8 +127,25 @@ const SECTIONS: readonly LegalSection[] = [
          fields" correction of 2026-09-02). A category is honest at any number
          of tools; a count stops being true the moment one is added. The retired
          wording is pinned as banned rather than quoted here. */
-      "If you would rather not be counted, your browser can block the tools that only run in your browser, and most of the Meta Pixel. Private browsing, an ad blocker, or turning off third party cookies all work, and none of them stop the site or the store from working.",
-      "Be aware of the one gap, because we would rather you heard it from us: the report our server sends to Meta when a pre-order completes is sent by us, not by your browser, so blocking cannot prevent it. What you can do instead is turn off personalised advertising inside your own Facebook or Instagram settings, and you can ask us to delete your details at any time, which is explained further down.",
+/* 🔴 REWRITTEN 2026-09-20 BY THE REVERSE PROXY (§8.39), and this is the
+         THIRD deploy to falsify this one sentence. It said "the tools that only
+         run in your browser", which included PostHog, and PostHog now reports
+         through kheelona.com/ingest. Those are first-party requests, which an
+         ad blocker cannot tell apart from the site itself, and defeating the
+         blocker is the entire POINT of a reverse proxy. So the promise is now
+         about where a tool loads FROM, which is the thing a blocker actually
+         keys on, rather than about where it runs. The retired wording is pinned
+         as banned in test/analytics-tags.test.ts rather than quoted here. */
+      "If you would rather not be counted, your browser can block the tools that load from another company's address, and most of the Meta Pixel. Private browsing, an ad blocker, or turning off third party cookies all help, and none of them stop the site or the store from working.",
+/* DE-COUNTED 2026-09-20, and that is the third count this page has had to
+         retire (§8.38-g). It said "the one gap" while the server-side Meta
+         report was the only one; the proxy made PostHog a second, so the word
+         "one" became false the moment this round shipped. A test would have
+         gone on holding it in place, which is precisely the 2026-09-02 and
+         2026-09-19 failures repeating. PostHog goes FIRST of the two: it is the
+         tool that records a parent's screen, so it is the one they would most
+         want to refuse. */
+      "Be aware of the gaps, because we would rather you heard them from us. PostHog now reports through our own address rather than its own, so an ad blocker usually cannot tell its requests apart from the site itself. The report our server sends to Meta when a pre-order completes is sent by us, not by your browser, so blocking cannot prevent it either. What you can do instead is turn off personalised advertising inside your own Facebook or Instagram settings, and you can ask us to delete your details at any time, which is explained further down.",
     ],
   },
   {

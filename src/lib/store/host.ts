@@ -1,4 +1,4 @@
-import { STORE_URL } from "@/config/site";
+import { STORE_URL, isPostHogProxyPath } from "@/config/site";
 import { THANKS_PATH, formatThanksSession } from "./thanks-session";
 
 /** Host routing for store.kheelona.com (§8.25-a).
@@ -37,6 +37,19 @@ export function isStoreHost(host: string): boolean {
 }
 
 export function routeForHost(host: string, pathname: string, search = ""): HostRoute {
+  /* The PostHog reverse proxy, before any host rule (2026-09-20, §8.39). These
+     paths are forwarded to PostHog by a rewrite in `next.config.ts`, and on the
+     store host the rule below would otherwise turn `/ingest/e/` into
+     `/store/ingest/e/` — a route that does not exist. Analytics would have gone
+     dark on the one host the pre-order funnel runs on, while the marketing host
+     looked perfectly healthy.
+
+     It is reachable because Next runs proxy at step 3 and `beforeFiles`
+     rewrites at step 4, so this function sees the request first. `src/proxy.ts`
+     also keeps these paths out of its matcher; this stays because that matcher
+     has to be a literal Next can analyse statically, so the two can drift. */
+  if (isPostHogProxyPath(pathname)) return { kind: "pass" };
+
   if (isStoreHost(host)) {
     /* The one URL on this host that carries a credential. It is consumed on
        arrival rather than rendered: the page that would render it loads three

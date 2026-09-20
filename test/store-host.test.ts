@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { routeForHost, isStoreHost } from "@/lib/store/host";
-import { STORE_URL } from "@/config/site";
+import { POSTHOG_ASSET_PROXY_PATH, POSTHOG_PROXY_PATH, STORE_URL } from "@/config/site";
 
 /**
  * The store lives on its own host but inside this app, so the mapping between
@@ -111,5 +111,55 @@ describe("store host routing", () => {
     // No such route exists, so it lands on the /store catch-all, which since
     // 2026-09-06 RENDERS the store's not-found rather than throwing one that
     // answers with an empty document.
+  });
+});
+
+/** THE POSTHOG REVERSE PROXY MUST SURVIVE THIS FUNCTION (2026-09-20).
+ *
+ *  Analytics stopped being an off-site concern the moment its requests started
+ *  going to our own domain. `/ingest/*` is now a path on BOTH hosts, and on the
+ *  store host every path is rewritten into `/store/...` — which would turn
+ *  `/ingest/e/` into `/store/ingest/e/`, a route that does not exist. PostHog
+ *  would have died silently on exactly the host the pre-order funnel runs on,
+ *  and the marketing host would have looked perfectly healthy.
+ *
+ *  Next's own routing order is what makes this reachable: proxy runs at step 3
+ *  and `beforeFiles` rewrites at step 4
+ *  (node_modules/next/dist/docs/01-app/03-api-reference/05-config/01-next-config-js/rewrites.md),
+ *  so this function sees the request BEFORE the rewrite that sends it to
+ *  PostHog. `src/proxy.ts` also excludes these paths from its matcher, so in
+ *  production this branch is belt to that braces — the guard stays because the
+ *  matcher is a literal Next cannot let us build from a constant, and a silent
+ *  analytics outage on the checkout host is not a failure anyone would notice. */
+describe("the PostHog proxy paths", () => {
+  const ingestPaths = [
+    `${POSTHOG_PROXY_PATH}/e/`,
+    `${POSTHOG_PROXY_PATH}/s/`,
+    `${POSTHOG_PROXY_PATH}/i/`,
+    `${POSTHOG_ASSET_PROXY_PATH}/static/recorder.js`,
+  ];
+
+  it("are never rewritten into the store on the store host", () => {
+    for (const path of ingestPaths) {
+      expect(
+        routeForHost("store.kheelona.com", path),
+        `${path} was routed into /store, so PostHog is dead on the checkout host`,
+      ).toEqual({ kind: "pass" });
+    }
+  });
+
+  it("pass through the apex untouched as well", () => {
+    for (const path of ingestPaths) {
+      expect(routeForHost("kheelona.com", path), path).toEqual({ kind: "pass" });
+    }
+  });
+
+  /* The guard must key on the proxy prefixes themselves, not on a substring
+     that a real store route could contain. */
+  it("does not accidentally exempt an ordinary store route", () => {
+    expect(routeForHost("store.kheelona.com", "/ingestion-report")).toEqual({
+      kind: "rewrite",
+      path: "/store/ingestion-report",
+    });
   });
 });

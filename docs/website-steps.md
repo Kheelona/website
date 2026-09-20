@@ -2854,3 +2854,118 @@ skipped unless the position is wrong by more than a pixel.
 **Anything whose value is decided by a race between layout and a browser heuristic is unverified
 until it has been checked repeatedly, on production, and under throttling.** One green run is not a
 result.
+
+---
+
+# §8.39 · The PostHog reverse proxy (2026-09-20)
+
+PostHog's Installation Health flagged a missing reverse proxy. The founder took the trade knowingly:
+PostHog's requests now go to `kheelona.com/ingest`, forwarded by a rewrite, so an ad blocker cannot
+tell them apart from the site itself. Rollback tag `pre-posthog-proxy-2026-09-20` = `e097ad8`.
+
+## §8.39-a · A reverse proxy is a PRIVACY change wearing a plumbing costume
+
+The whole purpose of the proxy, in PostHog's own words in the panel that asks for it, is to *"prevent
+ad blockers from blocking tracking"*. `/privacy` told parents in as many words that an ad blocker
+worked. **It therefore stopped being true for PostHog on the deploy that shipped this** — for the
+tool that films a parent's screen, which is the one they would most want to refuse.
+
+So this was never a config task, and it is not one next time either. §8.21-c already binds a
+measurement change to the same-commit `/privacy` edit; this extends it: **changing where a tool's
+requests GO is a change to what the page may promise about refusing it.** The test file had already
+written the trigger down before the round began (`test/analytics-tags.test.ts`: *"a reverse proxy
+sharing identity … these two sentences become false and must be rewritten"*), and reading that note
+is what found the obligation rather than tripping over it later.
+
+The count went with it. The page said "the **one** gap"; there are now two, so the number was retired
+rather than bumped — the third time (§8.38-g), and the rule holds: a category is honest at any number.
+
+## §8.39-b · Proxy runs BEFORE rewrites, so host routing sees analytics traffic first
+
+Next's routing order is headers → redirects → **proxy** → `beforeFiles` rewrites
+(`node_modules/next/dist/docs/01-app/03-api-reference/05-config/01-next-config-js/rewrites.md`).
+
+`src/proxy.ts` therefore saw `/ingest/e/` before the rewrite did, and on the store host
+`routeForHost` maps **every** path into `/store/...`. Unguarded, `/ingest/e/` became
+`/store/ingest/e/` and **PostHog would have died silently on the one host the pre-order funnel runs
+on, while the marketing host looked perfectly healthy.**
+
+Two guards, because they fail differently: the matcher excludes the paths (so a high-volume beacon
+never wakes the edge function at all), and `routeForHost` returns `pass` for them (because the matcher
+**must be a literal Next can analyse statically** and so cannot import the constants). The test runs
+the matcher's own regex against real request paths derived from the constants, rather than asserting
+the word "ingest" appears in it — §8.38-i, applied rather than restated.
+
+## §8.39-c · Two non-overlapping prefixes, because "which rule wins" is not worth betting the recorder on
+
+PostHog's guide nests assets under the ingestion prefix (`/ingest/static/*`), which needs two
+**overlapping** rewrite sources. The Next docs say `beforeFiles` rules *"continue until all
+`beforeFiles` have been checked"* rather than stopping at the first match, so which destination wins
+is not clearly specified. If the ingestion rule won a `/static/` path, the recorder would 404 and
+**session replay would silently never start** — §8.38-b, one round later, same failure shape.
+
+So: `/ingest` → ingestion, `/ingest-assets` → assets. Prefixes that cannot both match make the
+question unaskable. Guarded by a test that fails if either prefix ever becomes a prefix of the other.
+
+Watch the boundary: `"/ingest-assets".startsWith("/ingest")` is **true**, which caught the round's own
+test on its first run. `isPostHogProxyPath` matches `p` exactly or `${p}/`, never a bare prefix, so
+a real route called `/ingestion-report` is not mistaken for ours.
+
+## §8.39-d · §8.38-b and §8.38-c both INVERT under a proxy
+
+Read out of the installed SDK, not its docs. `endpointFor` derives
+`https://${region}-assets.i.posthog.com` **only while it recognises a PostHog host in `api_host`**
+(`region` is a regex test; anything else is `"custom"`).
+
+- **The asset origin stops being derived and must be CONFIGURED.** §8.38-b said it was derived and
+  that this was the trap; with a proxy the derivation does not happen at all. `asset_host` is the
+  option, applied by the SDK to any path matching `/^\/static\//`. Miss it and replay dies silently.
+- **`ui_host` must now be SET**, having been deliberately unset before. The SDK derives it as
+  `apiHost.replace(".i.posthog.com", ".posthog.com")`, which does nothing whatever to `"/ingest"`,
+  so every deep link back into the dashboard — person URLs, **recording URLs**, and the tags on
+  captured exceptions — would point at `kheelona.com/ingest` and land nowhere.
+
+**The general law: a law written for a direct install is not automatically true behind a proxy.
+Re-read the laws the change touches instead of assuming they still hold.**
+
+## §8.39-e · `skipTrailingSlashRedirect` is site-wide, so give the behaviour back
+
+PostHog ingests on `/e/`, `/s/` and `/i/`, **with** the trailing slash (in the SDK, not the docs). Next
+would 308 those away, and a redirect on a beacon fired during page unload is a lost event. The flag
+that stops it is global, and left alone it would let `/team/` and `/team` both answer 200 on a site
+whose SEO and answer-engine work depends on one URL per page.
+
+So `src/proxy.ts` performs the redirect Next no longer does, for every path except the proxied ones —
+the *"some paths but not others"* case the Next docs describe for the flag. The rule is a pure
+function (`src/lib/trailing-slash.ts`) so it is unit tested rather than deployed and clicked, and it
+**strips repeated slashes in one hop**, because `"/team//"` → `"/team/"` would redirect forever.
+**It must preserve the query string**: ads are running, and an untagged click is untagged forever.
+
+## §8.39-f · No CSP change, and that is a feature
+
+Both `script-src` and `connect-src` already carried `'self'`, so proxied requests need nothing new.
+The two PostHog origins stay in the policy as rewrite destinations and in case anything still reaches
+them directly. **Because the policy string does not change, the §8.28-a enforce clock does NOT reset
+for a third time.** Prune those origins only after production shows nothing requests them.
+
+## §8.39-g · Verify with the control, not the claim
+
+`next start` is not the deployment target (§8.34-f), but the external rewrite *was* exercisable
+locally and answered honestly when given a control:
+
+| Check | Direct to PostHog | Through `/ingest` |
+|---|---|---|
+| `GET /e/` | 400 | 400 |
+| `POST /e/` with an event body | 200 | 200 |
+| `recorder.js` | 131,370 bytes | **byte-identical** |
+
+**The 400 was the finding.** Alone it reads as a broken proxy; beside its control it is PostHog
+refusing a GET, faithfully relayed. Anything else would have been a wrong conclusion drawn from a
+proxy standing in for a measurement, which is the lesson of 2026-09-12.
+
+**Still production-only, and the reason is geography.** PostHog reads the visitor's country from the
+request IP, which it now sees through `x-forwarded-for` rather than directly. If that does not survive
+Vercel's edge, every visitor collapses to one location and **the Web Analytics dashboard quietly
+becomes wrong** — a fix for "some metrics may not be accurate" making them less accurate. Check
+country resolution on production, and check the recorder loads on `store.kheelona.com/` but **not** on
+`/thanks`: a change that killed replay everywhere would pass the negative check on its own.

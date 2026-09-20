@@ -1,5 +1,41 @@
 # kheelona.com — session entry point
 
+**🔀 POSTHOG NOW REPORTS THROUGH OUR OWN DOMAIN (built 2026-09-20, ⚠ NOT YET DEPLOYED).** Record:
+`docs/checkpoints/posthog-reverse-proxy-2026-09-20.md`; laws **§8.39 a-g**; rollback tag
+`pre-posthog-proxy-2026-09-20` = `e097ad8`. Installation Health flagged a missing reverse proxy, and
+the founder took the trade **knowing it stops an ad blocker working on PostHog** — the tool that
+films a parent's screen. So `/privacy` was rewritten in the same round and **the "one gap" count was
+retired, the third count this page has lost** (§8.21-c, §8.38-g, §8.39-a). Settled, do not re-raise;
+an in-product opt-out was offered and declined.
+
+**Six things bind.** (1) **`/ingest` → `us.i.posthog.com`, `/ingest-assets` → `us-assets.i.posthog.com`,
+and the two prefixes must never overlap** (§8.39-c). PostHog's own guide nests assets under the
+ingestion prefix, which needs two overlapping `beforeFiles` rules, and the Next docs say those keep
+being evaluated after a match — if the ingestion rule won a `/static/` path the recorder 404s and
+**replay silently never starts**, §8.38-b all over again. Note `"/ingest-assets".startsWith("/ingest")`
+is TRUE, which caught this round's own test. (2) **PROXY RUNS BEFORE REWRITES** (Next step 3 vs step
+4), so `src/proxy.ts` sees `/ingest/e/` first and the store host would have turned it into
+`/store/ingest/e/` — **PostHog dead on the checkout host while the marketing host looked healthy**.
+Guarded twice: the matcher excludes it, and `routeForHost` passes it. The matcher **must be a literal**
+Next can analyse statically, so a test runs its regex against real paths derived from the constants
+(§8.38-i). (3) **§8.38-b AND §8.38-c BOTH INVERT** (§8.39-d): a path makes the SDK's region "custom",
+so the asset origin stops being derived and **must be configured** via `asset_host`, and **`ui_host`
+must now be SET** or every dashboard deep link, **including recording links**, points at
+`kheelona.com/ingest`. A law written for a direct install is not automatically true behind a proxy.
+(4) **`skipTrailingSlashRedirect` is SITE-WIDE**, so `src/proxy.ts` performs the redirect Next no
+longer does for every non-proxied path, **query string included** — ads run and an untagged click is
+untagged forever (§8.39-e). (5) **THE CSP WAS NOT TOUCHED and that is deliberate**: both directives
+already carried `'self'`, so the policy string is unchanged and **the §8.28-a enforce clock did NOT
+reset a third time** (§8.39-f). (6) **The 400 on `GET /ingest/e/` is CORRECT** — direct to PostHog
+answers 400 too. Without that control it reads as a broken proxy (§8.39-g).
+
+**Verified locally with a control for every claim:** `POST /e/` 200 both direct and proxied, the
+recorder byte-identical (131,370 bytes), 11 marketing routes plus both 404 shapes plus the store host
+unchanged, `qa:sweep` clean on every route at both widths, 1295 tests / 122 files, `tsc` 0.
+**Production is still owed two checks, and the first is the real risk: visitor COUNTRY must still
+resolve** (PostHog now reads the IP via `x-forwarded-for`; if that does not survive Vercel's edge the
+dashboard quietly goes wrong), and **replay must load on `store.kheelona.com/` but NOT on `/thanks`**.
+
 **📊 POSTHOG IS THE FIFTH MEASUREMENT TOOL SINCE 2026-09-19** (founder request; project 617632, US
 cloud). Record: `docs/checkpoints/posthog-2026-09-19.md`; laws **§8.38 a-h**; rollback tag
 `pre-posthog-2026-09-19` = `9541c1c`. Product analytics + **session replay** + error tracking, with
