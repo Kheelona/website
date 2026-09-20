@@ -15,6 +15,19 @@ You are resuming an in-progress website. Follow these steps exactly.
 > holding a Kheelu at ₹4,999; payment happens on store.kheelona.com, served by this same repo. Proven
 > with a real ₹499 order that was refunded afterwards.
 >
+> - **🔴 THE TWO NEWEST ROUNDS, and the one lesson worth reading before anything else →**
+>   `docs/checkpoints/signup-analytics-2026-09-20.md` (laws §8.40 a-j) and
+>   `docs/checkpoints/posthog-reverse-proxy-2026-09-20.md` (laws §8.39). **I shipped a campaign
+>   mechanism that did nothing and whose unit tests passed, because they MOCKED the third-party
+>   getter I had wrong** — §8.38-i again, one round after that law was written. A mock cannot tell
+>   you where another library keeps its data; it was found only by dumping real browser storage on
+>   production. Second lesson from the same day: **migrations here are applied BY HAND in the
+>   Supabase dashboard, and `npm run qa:payment` cannot catch a missing column** because the stub
+>   validates none (§8.40-i).
+> - **Before adding a tracking parameter to an advertisement →** check it is in `CAMPAIGN_KEYS`
+>   (`src/lib/campaign.ts`). `utm_id` and `placement` are not `utm_` keys and were silently dropped by
+>   both our code and posthog-js until 2026-09-20 (§8.40-j). `docs/utm-conventions.md` has the
+>   paid-social block, and a test fails if that doc ever recommends a key the code discards.
 > - **First thing on any store question →** `curl -s https://kheelona.com/api/health`
 > - **Before touching store code →** `docs/website-steps.md` §8.25 AND §8.26 (the unit-cap laws)
 > - **What is still open →** `Technical-Todo.md` (dated, or facts only the

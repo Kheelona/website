@@ -1656,3 +1656,26 @@ So the accepted number in §8.34-h is **74 now, 78 after the flip**, not 81. Cor
 
 Perf on production read 98 / 99 / 100 across three consecutive runs — network variance on a live
 measurement, not a regression. **Judge a production Lighthouse perf score on more than one run.**
+
+---
+
+## 2026-09-20 — gate numbers at the close of the signup-analytics round
+
+Recorded because the numbers above are accurate for their own dates and drift silently otherwise.
+
+| Gate | Value | Note |
+|---|---|---|
+| `npm test` | **1361 tests / 124 files** | Reconcile deltas per file; a green total is not a green suite |
+| `npx tsc --noEmit` | 0 | |
+| `npx next build` | passes | includes the token-drift gate |
+| `qa:sweep` | **clean 36/36, 90 accepted** | 18 routes × 2 widths. **NOT** the 34/79 quoted earlier in this file |
+| `qa:payment` | clean 10/10 | real Razorpay sandbox, in a browser |
+
+**Two counting traps, both met this round.**
+
+1. **A parse error in a test file reads as "passed".** A bad edit left `PostHogGate.test.tsx`
+   unparseable and vitest reported **1320 passed** while that file never ran. The tell was the FILE
+   count (123 where 124 was expected). **Read both numbers.**
+2. **The guard suites enumerate through `git ls-files`, which reports the INDEX.** A new `src/**/*.ts`
+   file is invisible to the parameterised sweeps in `preorder-copy` and `preorder-cta` until it is
+   staged, so a round reads two tests lighter before its commit than after it. Stage, then count.

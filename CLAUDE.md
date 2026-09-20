@@ -1,15 +1,16 @@
 # kheelona.com — session entry point
 
-**📈 SIGNUPS ARE MEASURABLE IN POSTHOG (built 2026-09-20, ⚠ BUILT NOT DEPLOYED — A MIGRATION GATES
-IT).** Record: `docs/checkpoints/signup-analytics-2026-09-20.md`; laws **§8.40 a-i**; rollback tag
-`pre-signup-analytics-2026-09-20` = `6abeccb`.
+**📈 SIGNUPS ARE MEASURABLE IN POSTHOG — DEPLOYED AND VERIFIED ON PRODUCTION 2026-09-20.** Record:
+`docs/checkpoints/signup-analytics-2026-09-20.md`; laws **§8.40 a-j**; rollback tag
+`pre-signup-analytics-2026-09-20` = `6abeccb`. Migration `0004_ph_distinct_id.sql` was run by the
+founder and a live `create-order` POST answered 200, so PostgREST sees the column.
 
-**🔴 DO NOT DEPLOY UNTIL `supabase/migrations/0004_ph_distinct_id.sql` HAS BEEN RUN BY HAND** in the
-Supabase dashboard (§8.40-i). `create-order` inserts `ph_distinct_id` on every order; ship the code
-first and PostgREST answers PGRST204 and **every pre-order returns 500**. **`npm run qa:payment`
-passing does NOT clear this** — `tools/qa/supabase-stub.mjs` stores whatever it is sent and validates
-no columns, so it accepts any invented field forever. §8.34-f in another costume: the harness is not
-the deployment target.
+**THE MIGRATION LAW STANDS FOR NEXT TIME (§8.40-i).** Migrations here are applied BY HAND in the
+Supabase dashboard, so schema does not move with a push: ship code that inserts a new column before
+the SQL is run and PostgREST answers PGRST204 and **every pre-order returns 500**. **`npm run
+qa:payment` passing does NOT clear that** — `tools/qa/supabase-stub.mjs` stores whatever it is sent
+and validates no columns, so it accepts any invented field forever. §8.34-f in another costume: the
+harness is not the deployment target.
 
 **The brief was wrong three times and checking it is what shaped the round (§8.40-a).** There is no
 waitlist to instrument (deleted 2026-08-22, and a lint test bans the word); click data was never
@@ -38,6 +39,25 @@ that reads authoritative and is not is worse than one you derive. (6) **`data-ph
 on the eight pre-order CTAs** (§8.40-h) — §8.25-b makes every CTA share a label and a destination, so
 autocapture saw five identical clicks on the home page; only that attribute form is promoted to a
 top-level property.
+
+**(7) A TRACKING PARAMETER NOBODY NAMED GOES NOWHERE, AND LOOKS PERFECTLY TAGGED (§8.40-j).** The
+Meta ads tagged `utm_source={{site_source_name}}`, which emits `an`/`fb`/`ig` — the PLACEMENT in the
+SOURCE field, splitting one paid channel into three, none of them the `facebook` that
+`docs/utm-conventions.md` had specified since 2026-09-05 and that `npm run utm` already refused. But
+the two most useful parameters, **`utm_id` and `placement`, are not `utm_` keys**: our allowlist
+dropped both AND posthog-js's built-in campaign list contains neither, so they would have read as
+perfectly configured in Meta and produced no data anywhere. Both are now in **`CAMPAIGN_KEYS`
+(`src/lib/campaign.ts`, the ONE list — `create-order` and the form read it rather than keeping
+copies)** and in `custom_campaign_params` on the gate (additive: the SDK does
+`defaults.concat(custom)`). `test/utm.test.ts` parses the doc's paid-social block and **fails if it
+recommends a parameter `CAMPAIGN_KEYS` would discard**, naming the offender. **Before adding a
+parameter to an ad, check something in this repo names it.** Ad-set name is deliberately NOT captured
+and an `adset` key was offered to the founder; if it is wanted it is the same one-line change.
+
+**🟠 WAITING ON THE FOUNDER (the ad side, not the code):** re-tag the Meta ads to `utm_source=facebook`
++ `placement={{placement}}`, and rename Meta campaigns to `<yyyy-mm>-<slug>` so `{{campaign.name}}`
+conforms on its own. Until then paid traffic still arrives as `an`/`fb`/`ig`. A CMO-facing brief was
+written; the canonical version is `docs/utm-conventions.md` under "Paid social".
 
 **Gate before and after, both clean:** 1297 → **1335 tests / 123 files**, `tsc` 0, build passes,
 `qa:sweep` clean 36/36 with the accepted count unchanged at 90, `qa:payment` clean 10/10 on the real

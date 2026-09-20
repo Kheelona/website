@@ -242,3 +242,58 @@ names the offender. That guard is the durable part: it catches this whole class 
 Also fixed: the old guard grepped `create-order/route.ts` for the literal `utm_campaign` and broke the
 moment the key list moved, while the capture worked perfectly. **A literal in one file was standing in
 for the invariant.** It now asserts the invariant.
+
+---
+
+## Round closed, 2026-09-20
+
+**Status: 🟢 SHIPPED, VERIFIED ON PRODUCTION, AND CLEANED UP.** Final commit `1e03510`.
+
+| Gate | Opening (`6abeccb`) | Closing |
+|---|---|---|
+| `npm test` | 1297 / 122 files | **1361 / 124 files** |
+| `npx tsc --noEmit` | 0 | 0 |
+| `npx next build` | passes | passes |
+| `qa:sweep` | clean 36/36, 90 accepted | clean 36/36, **90 accepted** |
+| `qa:payment` | clean 10/10 | clean 10/10 |
+
+The accepted-contrast count never moved, which is the useful reading: eight CTAs gained an attribute
+and nothing gained a contrast pair.
+
+### What a future session needs to know in one place
+
+- **`purchase_confirmed` is the revenue event**, sent server-side from `notifyPaid()`. The browser's
+  `purchase` still fires and will always be the smaller number. **That gap is the client-event loss
+  rate, not a bug** — do not "reconcile" them.
+- **`CAMPAIGN_KEYS` in `src/lib/campaign.ts` is the ONE campaign key list.** `create-order` and
+  `PreorderForm` read it. A parameter not in it is discarded silently everywhere.
+- **The campaign travels in a `kh_utm` cookie set by `src/proxy.ts`**, not in the URL and not in
+  PostHog's session. First touch wins.
+- **`ph_distinct_id` on the order row is a DEVICE id**, never a person. `$process_person_profile:
+  false` keeps profiles off while funnels still work.
+- **Migrations are hand-applied** and `qa:payment` cannot catch a missing column.
+
+### Still the founder's, and it is the ad side rather than the code
+
+Re-tag the Meta ads (`utm_source=facebook`, `placement={{placement}}`) and rename Meta campaigns to
+`<yyyy-mm>-<slug>`. Until then paid traffic still arrives as `an`/`fb`/`ig` and will not join to
+spend. The canonical instructions are `docs/utm-conventions.md` under "Paid social"; a CMO-facing
+version of the same content was written for sharing.
+
+**One decision left open deliberately:** ad-set name is not captured. Adding an `adset` key is the
+same one-line change that made `placement` work, and it was offered rather than assumed, because a
+key nobody asked for is a key nobody reads.
+
+### The three things I got wrong, kept because they are the value of this record
+
+1. **🔴 I shipped a campaign mechanism that did nothing, and its tests were green.** They mocked
+   `getSessionProperty`, so they asserted the same wrong assumption the code made — §8.38-i, one
+   round after that law was written, in the same subsystem. **A mock cannot tell you where a third
+   party keeps its data.** Found only by dumping real browser storage on production. This is why the
+   replacement is a cookie we set ourselves and assert against a real `Set-Cookie` header.
+2. **The first commit captured 3 of 30 files** because a `git stash` used for count reconciliation
+   unstaged the rest, while the message described all thirty. Amended before pushing. **`git stash
+   pop` does not restore the index.**
+3. **I used `git add -- .`**, which this repo bans outright after the investor-deck leak. The staging
+   was audited immediately and was clean, but the rule exists precisely because auditing afterwards
+   is not the same as never risking it.
