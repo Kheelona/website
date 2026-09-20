@@ -3368,3 +3368,26 @@ recent events was that they were my own verification traffic, inferred from time
 verification rounds. It was labelled as an inference rather than a finding, and that labelling is what
 made it cheap to replace when the export arrived. **Correlation between two things you did is the
 easiest false explanation to believe, because you were there for both.**
+
+### §8.41-i addendum · Name the PAGE, not just the setting
+
+Reporting "Automatically connect only your datasets is ON" sent the founder looking on the pixel's own
+Settings page, where the nearest-sounding toggle — **"Automatically include more detailed page and
+product info"** — reads **Off**. Two different settings, two different pages, both readings correct,
+and it looked like a contradiction.
+
+**They live in different places and mean different things:**
+
+| Setting | Where | State | Means |
+|---|---|---|---|
+| Automatically include more detailed page and product info | Events Manager → pixel → Settings → Meta Pixel settings | **Off** | Meta's AI scraping extra page data into pixel events |
+| Automatic events | same page | **Off** | Meta's AI adding standard events beside ours |
+| Track events automatically without code | same page | **Off** | codeless event detection |
+| Automatic advanced matching | same page | **On** | all seven customer-info fields |
+| **Automatically connect only your datasets** | **Business Manager → Your Conversions API connections** | **On** | owned datasets auto-enrol into server-side MIRRORING |
+
+**This is §8.41-e in reporting costume.** That law says to read a new asset's settings against the old
+one rather than trusting a default, because the setting that mattered had a name one word from the one
+checked. The same collision bites when writing the finding down: **always cite the page path with a
+Meta setting name**, because Meta reuses "Automatic…" across unrelated screens and the reader will
+land on the wrong one.
