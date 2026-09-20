@@ -3256,3 +3256,28 @@ value comparison would fire constantly and be ignored within a week.
 **A hypothesis was tested and disproved first, and it saved a wasted fix:** `_fbc` was suspected of
 being a cross-host casualty like §8.40-f. Measured in a real browser on production, it is scoped to
 `.kheelona.com` and DOES reach the store host. Low coverage was mostly low paid volume.
+
+## §8.41-g · Headless Chrome CANNOT verify Meta pixel delivery — Meta filters it as a bot
+
+Checking whether the pixel actually sends, headless Chrome showed: `fbevents.js` loaded, the
+`signals/config/<id>` request made, `_fbp` set, `window.fbq` a function, the fbq queue drained to
+zero — **and not one request to `facebook.com/tr`.** Every sign of a working install and no delivery.
+
+**The only variable changed was the user agent.** With a normal desktop Chrome UA the same page
+produced `id=<pixel>&ev=PageView&dl=https%3A%2F%2Fstore.kheelona.com%2F` immediately. Meta's script
+filters `HeadlessChrome` as a bot and silently declines to send.
+
+**Two consequences, and the second one bit me.**
+
+1. **Always set a real user agent when verifying the Meta pixel in an automated browser.** Without it
+   the observation reports a failure that is not there — the reverse of the `window.posthog` trap,
+   where the check reported a failure while everything ran.
+2. **Headless visits never reach Meta at all**, so they cannot be counted as synthetic pollution
+   either. I had told the founder that some PageViews on the new pixel were mine from verification
+   runs. **That was wrong**: those runs were filtered, and the events were real human traffic. A
+   correction was issued rather than left standing, because a founder discounting real traffic as
+   test noise is worse than the original error.
+
+**And the reporting lag is separate from delivery.** Events Manager's own note says events may take up
+to 30 minutes to appear, so "the overview has not moved" is not evidence that nothing was sent. Prove
+delivery in the browser; use the dashboard for confirmation later.

@@ -158,6 +158,10 @@ automatically without code" Off, Conversions API connected.
 
 ### 🔴 Synthetic data written while verifying, disclosed rather than left to be found
 
+**CORRECTED 2026-09-20: the PageViews are NOT mine.** Headless Chrome is filtered as a bot by Meta's
+script and never reaches them (§8.41-g), so the verification runs contributed nothing. The PageView
+count is real human traffic and must not be discounted as test noise.
+
 **The 3 Purchase events above are mine**, not real orders. They were sent to prove the token
 authorises this pixel and that our built `fbc` is accepted — each with `test_event_code=TEST81201`, so
 they are test-stream events and do not feed ad optimisation, but they do appear in the overview count.
