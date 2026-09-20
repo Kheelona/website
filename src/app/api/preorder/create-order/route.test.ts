@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fakeClient, fakeEnv, firstArg, type RecordedCall } from "../../../../../test/helpers/fake-supabase";
 import { TOKEN_AMOUNT_PAISE, FULL_AMOUNT_PAISE, PREORDER_CAP_UNITS } from "@/config/site";
 import { resetRateLimits } from "@/lib/store/rate-limit";
+import { CAMPAIGN_COOKIE } from "@/lib/campaign";
 
 /**
  * The route that decides what a parent is charged.
@@ -31,15 +32,22 @@ const goodBody = {
   accepted: true,
 };
 
-function post(body: unknown, ip = "1.2.3.4") {
+function post(body: unknown, ip = "1.2.3.4", cookie?: string) {
   return POST(
     new Request("https://store.kheelona.com/api/preorder/create-order", {
       method: "POST",
-      headers: { "content-type": "application/json", "x-forwarded-for": ip },
+      headers: {
+        "content-type": "application/json",
+        "x-forwarded-for": ip,
+        ...(cookie ? { cookie } : {}),
+      },
       body: JSON.stringify(body),
     }),
   );
 }
+
+const campaignCookie = (c: Record<string, string>) =>
+  `${CAMPAIGN_COOKIE}=${encodeURIComponent(JSON.stringify(c))}`;
 
 describe("POST /api/preorder/create-order", () => {
   beforeEach(() => {
@@ -209,6 +217,33 @@ describe("POST /api/preorder/create-order", () => {
     const response = await post(goodBody);
     expect(response.status).toBe(200);
     expect(firstArg(calls, "preorders", "insert")!.ph_distinct_id).toBeNull();
+  });
+
+  /* 🔴 THE ATTRIBUTION FIX (§8.40-f). The browser sends whatever is in the store
+     URL, which on a real journey is nothing at all: the ad tagged kheelona.com
+     and the CTA that crossed hosts carried no query string. The cookie was set
+     by the proxy on the tagged landing, two pages and one host earlier, and it
+     is the only thing that still knows. */
+  it("prefers the campaign remembered at landing over the empty store URL", async () => {
+    await post({ ...goodBody, utm: {} }, "1.2.3.4", campaignCookie({ utm_source: "meta", utm_campaign: "2026-09-launch" }));
+    expect(firstArg(calls, "preorders", "insert")!.utm).toEqual({
+      utm_source: "meta",
+      utm_campaign: "2026-09-launch",
+    });
+  });
+
+  /* An ad pointed straight at the store host has no cookie and a tagged URL, and
+     must still be attributed. */
+  it("falls back to what the browser sends when there is no cookie", async () => {
+    await post({ ...goodBody, utm: { utm_source: "whatsapp" } });
+    expect(firstArg(calls, "preorders", "insert")!.utm).toEqual({ utm_source: "whatsapp" });
+  });
+
+  /* The cookie wins, because the landing is where the campaign is true. A tag on
+     the store URL at that point is a later touch, not the one that paid. */
+  it("lets the remembered campaign win over a tag on the store URL", async () => {
+    await post({ ...goodBody, utm: { utm_source: "direct-guess" } }, "1.2.3.4", campaignCookie({ utm_source: "meta" }));
+    expect(firstArg(calls, "preorders", "insert")!.utm).toEqual({ utm_source: "meta" });
   });
 
   it("hands back an address token so the browser can reach its own receipt", async () => {

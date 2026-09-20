@@ -3042,24 +3042,43 @@ the purpose.**
 Storing an analytics identifier beside a name, email and phone is a privacy change whatever its
 technical shape, so `/privacy` moved in the same commit (§8.21-c).
 
-## §8.40-f · Ask PostHog for the campaign instead of building a second attribution system
+## §8.40-f · The campaign travels in a first-party cookie set at the edge
 
 `readUtm()` read `window.location.search` on **store.kheelona.com**, while ads tag `kheelona.com` and
 the CTA that crosses hosts carries no query string. So a tagged click recorded `utm = null` and the
 alert email said "direct" — the whole reason "do the ads work?" was unanswerable.
 
-Link forwarding would fix only the shortest journey: `ad → / → /products/kheelu → store` has dropped
-the parameters by the second page. PostHog already solves this properly and was simply not being
-asked. Its cookie is set on `.kheelona.com` (`cross_subdomain_cookie` resolves true for this domain,
-verified in the SDK), so the **session** still knows the campaign after two hops and a change of host.
+**`src/proxy.ts` now writes a `kh_utm` cookie** when a request arrives carrying `utm_*`: first-party,
+`.kheelona.com`, HttpOnly, SameSite=Lax, session-scoped. `create-order` prefers it over anything the
+browser sends, validating it exactly as hard as the request body, and falls back to the URL for an ad
+pointed straight at the store host. It is set at the EDGE rather than by client JavaScript because
+the proxy sees the tagged landing request itself: nothing has to load, nothing races hydration, and a
+visitor who blocks analytics is still attributed. **First touch wins** — an existing cookie is never
+overwritten, so the last tagged page before checkout cannot claim the sale.
 
-`getSessionProperty(k)` is `sessionPersistence.props[k]`, so the keys are the RAW `utm_*` names — the
-`$session_entry_utm_*` form exists only once PostHog builds event properties, and reading that name
-would have returned undefined forever with everything else working. **Read the SDK, not the docs.**
+### 🔴 THE FIRST VERSION OF THIS DID NOT WORK, AND THE TESTS SAID IT DID
 
-No new cookie means no new privacy surface; reading rather than writing means
-`docs/utm-conventions.md` rule 2 is untouched. The URL fallback stays for an ad pointed straight at
-the store host.
+The first fix read the campaign back out of PostHog's own session, reasoning that its cookie is
+already set on `.kheelona.com` and so already survives the hop. **The reasoning was right and the API
+was wrong.** PostHog stores the session's ENTRY URL as `$client_session_props.props.u` (shape
+`{r, u}`) and derives `utm_*` from it only when it builds event properties. `getSessionProperty(k)`
+returns `sessionPersistence.props[k]`, **a different bucket that never holds campaign data at all**.
+So `phCampaign()` returned `{}` on every real page and `readUtm()` silently fell through to the old
+broken behaviour.
+
+**The unit tests were green because they MOCKED `getSessionProperty` to return the values — they
+restated the same wrong assumption the code was making.** That is §8.38-i exactly, one round after
+that law was written, and in the same subsystem.
+
+It was caught by **dumping real browser storage on production** and finding the session store held
+only SDK debug props. Two further traps on the way there: `window.posthog` is `undefined` for this
+ES-module install and reads as "not running" while everything runs (already recorded, and walked into
+again), and the first storage probe searched for `utm_source` as a key when it was sitting inside a
+URL string.
+
+**The general law: a mock cannot tell you where a third party keeps its data.** When code reads
+another library's storage, the test must run against the real thing, or the mechanism must be one we
+own end to end. This one is now ours: a cookie we set, asserted against a real `Set-Cookie` header.
 
 ## §8.40-g · Derive abandonment from a funnel; do not fire it on unload
 

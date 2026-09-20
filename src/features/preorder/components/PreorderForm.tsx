@@ -21,7 +21,7 @@ import {
 } from "../lib/validate";
 import { startCheckout } from "../lib/checkout";
 import { preorderAnalytics } from "../lib/analytics";
-import { phCampaign, phDistinctId } from "@/lib/posthog";
+import { phDistinctId } from "@/lib/posthog";
 
 /** The pre-order form (§8.25-s).
  *
@@ -325,30 +325,23 @@ type CreateOrderResponse = {
   errors?: FieldErrors<ContactInput>;
 };
 
-/** The campaign that produced this order. Not a field, not a question, not a
- *  cookie of ours.
+/** The campaign carried by the store URL, which on most real journeys is
+ *  nothing at all.
  *
- *  🔴 POSTHOG'S SESSION FIRST, THE URL ONLY AS A FALLBACK (§8.40, 2026-09-20),
- *  and that order is the whole fix. This function used to read the URL alone,
- *  which quietly meant it almost never found anything: ads tag `kheelona.com`,
- *  but this form runs on `store.kheelona.com`, and the pre-order CTA that
- *  crosses between them carries no query string. So a tagged click recorded
- *  `utm = null` and the internal alert email said "direct" — which is exactly
- *  why "do the ads work?" could not be answered.
+ *  🔴 THE CROSS-HOST CASE IS HANDLED ON THE SERVER, NOT HERE (§8.40-f). Ads tag
+ *  `kheelona.com` and the CTA that crosses to `store.kheelona.com` carries no
+ *  query string, so this function finds a campaign only when an ad pointed
+ *  straight at the store host. `create-order` PREFERS the `kh_utm` cookie that
+ *  `src/proxy.ts` set on the tagged landing, and falls back to what this sends.
  *
- *  PostHog already solves this and we were not asking it. Its cookie is set on
- *  `.kheelona.com` (`cross_subdomain_cookie` resolves true for this domain), so
- *  the SESSION still knows the campaign after two internal hops and a change of
- *  host, long after the URL has forgotten it.
- *
- *  The URL fallback stays for the cases the session cannot serve: an ad pointed
- *  straight at the store host, and any visitor whose browser kept PostHog from
- *  loading at all. */
+ *  A first version of the fix read the campaign back out of PostHog's session
+ *  here instead. It did not work and was removed rather than left looking as if
+ *  it did: PostHog keeps the entry URL in `$client_session_props` and derives
+ *  `utm_*` from it only when building event properties, while
+ *  `getSessionProperty()` reads a bucket that never holds campaign data. The
+ *  tests passed because they mocked that getter (§8.38-i). */
 function readUtm(): Record<string, string> {
   if (typeof window === "undefined") return {};
-  const fromSession = phCampaign();
-  if (Object.keys(fromSession).length) return fromSession;
-
   const params = new URLSearchParams(window.location.search);
   const out: Record<string, string> = {};
   for (const key of ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"]) {

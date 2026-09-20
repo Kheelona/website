@@ -1,4 +1,5 @@
 import { storeEnv } from "@/lib/store/env";
+import { readCampaignCookie } from "@/lib/campaign";
 import { db } from "@/lib/store/db";
 import { resolveTier, tierRefusalMessage, FULL_TIER } from "@/lib/store/tiers";
 import { createRazorpayOrder } from "@/lib/store/razorpay";
@@ -96,7 +97,14 @@ export async function POST(request: Request) {
          "they agreed" and "they agreed, on this date, to this version". */
       wa_consent: true,
       terms_accepted_at: new Date().toISOString(),
-      utm: readUtm(body.utm),
+      /* The campaign REMEMBERED AT LANDING wins over whatever the store URL
+         carried (§8.40-f). On a real journey the store URL carries nothing: the
+         ad tagged kheelona.com and the CTA that crossed hosts dropped the query
+         string, which is why every tagged click used to record null here. The
+         cookie was set by the proxy on the tagged landing and is the only thing
+         that still knows. The body stays as the fallback, for an ad pointed
+         straight at the store host. */
+      utm: readCampaignCookie(request) ?? readUtm(body.utm),
       /* Meta attribution, captured HERE and nowhere else (§8.30-l). This is the
          only moment we hold both the order and the customer's own request: the
          Razorpay webhook that later reports the purchase server-side is called

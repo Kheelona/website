@@ -26,12 +26,13 @@ mandatory** — posthog-node queues with `flushAt` 20 / `flushInterval` 5000ms a
 returns long before either fires (§8.40-d), which would reintroduce the exact silent loss one layer
 down. Pinned by a test. (3) **Stitched AND anonymous are not opposites** (§8.40-e): the order carries
 PostHog's anonymous DEVICE id, `$process_person_profile: false` keeps person profiles off, and funnels
-key on distinct_id anyway. Falls back to `order_ref` rather than dropping a sale. (4) **The campaign
-is read from PostHog's SESSION, not the URL** (§8.40-f) — `readUtm()` read
-`window.location.search` on the store host while ads tag the apex, so it found nothing and the alert
-email said "direct". `getSessionProperty(k)` is `sessionPersistence.props[k]`, so the keys are the RAW
-`utm_*` names, NOT `$session_entry_utm_*`, which would have returned undefined forever with everything
-else working. (5) **Abandonment is DERIVED, never fired on unload** (§8.40-g): `preorder_form_started`
+key on distinct_id anyway. Falls back to `order_ref` rather than dropping a sale. (4) **The campaign travels in a
+first-party `kh_utm` COOKIE set by `src/proxy.ts`** at the edge (§8.40-f), read back by `create-order`,
+first-touch-wins. 🔴 **The first version of this read PostHog's session and DID NOTHING**: PostHog keeps
+the entry URL in `$client_session_props` and derives `utm_*` only when building event properties, while
+`getSessionProperty()` reads a bucket with no campaign data in it — **and the tests passed because they
+MOCKED that getter**, which is §8.38-i one round after it was written. Caught by dumping real browser
+storage on production. **A mock cannot tell you where a third party keeps its data.** (5) **Abandonment is DERIVED, never fired on unload** (§8.40-g): `preorder_form_started`
 via one `onChange` on the `<form>`, because `pagehide` is unreliable on mobile Safari and a number
 that reads authoritative and is not is worse than one you derive. (6) **`data-ph-capture-attribute-cta`
 on the eight pre-order CTAs** (§8.40-h) — §8.25-b makes every CTA share a label and a destination, so

@@ -4,6 +4,7 @@ import { routeForHost, isStoreHost } from "@/lib/store/host";
 import { isIndexableHost } from "@/config/site";
 import { THANKS_COOKIE, THANKS_COOKIE_MAX_AGE_SECONDS } from "@/lib/store/thanks-session";
 import { trailingSlashRedirectPath } from "@/lib/trailing-slash";
+import { CAMPAIGN_COOKIE, campaignFromUrl, readCampaignCookie } from "@/lib/campaign";
 
 /** Host routing (§8.25-a).
  *
@@ -33,9 +34,17 @@ export function proxy(request: NextRequest) {
      FIRST, before any host rule: a redirect that then had to be re-resolved
      through `routeForHost` would be two round trips where one will do, and the
      303 claim below sets a cookie scoped to an exact path. */
+  /* Remember which advertisement paid for this visit (§8.40-f, 2026-09-20).
+     Applied to whatever response this function ends up returning, including a
+     redirect, because a tagged link to a trailing-slash URL would otherwise lose
+     its campaign on the way to its own canonical form. */
+  const remember = campaignToRemember(request);
+
   const stripped = trailingSlashRedirectPath(pathname);
   if (stripped) {
-    return NextResponse.redirect(new URL(`${stripped}${search}`, request.url), 308);
+    return remember(
+      NextResponse.redirect(new URL(`${stripped}${search}`, request.url), 308),
+    );
   }
 
   const route = routeForHost(host, pathname, search);
@@ -77,7 +86,7 @@ export function proxy(request: NextRequest) {
        and wear the right chrome, which is the half that a person notices. */
     const response = NextResponse.rewrite(new URL(route.path, request.url));
     response.headers.set("x-robots-tag", "noindex, nofollow");
-    return response;
+    return remember(response);
   }
 
   /* Marketing routes on the canonical hosts pass through untouched. Anything
@@ -92,7 +101,47 @@ export function proxy(request: NextRequest) {
   if (!isIndexableHost(host)) {
     response.headers.set("x-robots-tag", "noindex, nofollow");
   }
-  return response;
+  return remember(response);
+}
+
+/** Decide once whether this visit's campaign needs storing, and hand back the
+ *  function that writes it onto whichever response we return (§8.40-f).
+ *
+ *  WHY THE EDGE AND NOT THE BROWSER. The proxy sees the tagged landing request
+ *  itself, so nothing has to load, nothing races hydration, and a visitor who
+ *  blocks analytics is still attributed. The alternative this replaces read the
+ *  campaign back out of PostHog's session and did not work at all: PostHog keeps
+ *  the entry URL in `$client_session_props` and derives `utm_*` from it only
+ *  when building event properties, while `getSessionProperty()` reads a bucket
+ *  that never holds campaign data. Found by dumping real browser storage on
+ *  production, after tests that mocked the getter had passed (§8.38-i).
+ *
+ *  FIRST TOUCH WINS. An existing cookie is never overwritten: a visitor who
+ *  arrives on one ad and later follows another tagged link should be credited to
+ *  the visit that is actually ordering, and never to whichever page happened to
+ *  be last before checkout. */
+function campaignToRemember(request: NextRequest) {
+  const campaign = campaignFromUrl(request.nextUrl);
+  if (!campaign || readCampaignCookie(request)) return (r: NextResponse) => r;
+
+  return (response: NextResponse) => {
+    response.cookies.set(CAMPAIGN_COOKIE, JSON.stringify(campaign), {
+      /* Nothing in the browser reads this; only create-order does, server-side.
+         It is attribution and never a credential, but HttpOnly costs nothing
+         and keeps it away from every script on the page. */
+      httpOnly: true,
+      /* The point of the whole mechanism: readable on store.kheelona.com, where
+         the order is actually placed and where the URL carries no campaign. */
+      domain: ".kheelona.com",
+      secure: true,
+      sameSite: "lax",
+      path: "/",
+      /* Session-scoped, deliberately. Attribution for THIS visit is what the
+         order needs, and a dated cookie would be a longer-lived tracker than
+         the job requires. */
+    });
+    return response;
+  };
 }
 
 export const config = {

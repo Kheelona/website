@@ -291,10 +291,18 @@ describe("the form reports that somebody started filling it in", () => {
     expect(body.phDistinctId).toBe("0199-device");
   });
 
-  /* 🔴 THE ATTRIBUTION FIX ITSELF. The store URL carries no campaign, because
-     the CTA that crossed from kheelona.com dropped it. The session still knows,
-     and that is the only reason the order row can record it. */
-  it("takes the campaign from PostHog's session when the URL has none", async () => {
+  /* 🔴 THE CROSS-HOST CASE IS NOT TESTED HERE ANY MORE, AND THAT IS THE POINT.
+     A first version read the campaign out of PostHog's session in this
+     component, and this test asserted it worked — against a MOCKED
+     `getSessionProperty`, which is why it passed while the real thing returned
+     nothing (§8.38-i). The mechanism now lives where it can be verified against
+     a real response: `src/proxy.ts` sets a first-party cookie on the tagged
+     landing (`test/proxy-trailing-slash.test.ts`) and `create-order` prefers it
+     over anything the browser sends (`route.test.ts`).
+
+     What is left for the form is the honest remainder: an ad pointed straight at
+     the store host, where the campaign really is in the URL. */
+  it("sends the campaign when the store URL genuinely carries one", async () => {
     const fetchMock = vi.fn(
       async () =>
         new Response(
@@ -309,14 +317,9 @@ describe("the form reports that somebody started filling it in", () => {
         ),
     );
     vi.stubGlobal("fetch", fetchMock);
-    const session: Record<string, string> = { utm_source: "meta", utm_campaign: "2026-09-launch" };
-    registerPostHog({
-      capture: () => {},
-      startSessionRecording: () => {},
-      stopSessionRecording: () => {},
-      get_distinct_id: () => "0199-device",
-      getSessionProperty: (k: string) => session[k],
-    } as never);
+    const url = new URL(window.location.href);
+    url.search = "?utm_source=meta&utm_campaign=2026-09-launch";
+    window.history.replaceState({}, "", url);
 
     const user = userEvent.setup();
     render(<PreorderForm tier="launch" />);
@@ -325,7 +328,7 @@ describe("the form reports that somebody started filling it in", () => {
 
     await waitFor(() => expect(fetchMock).toHaveBeenCalled());
     const body = JSON.parse((fetchMock.mock.calls[0][1] as RequestInit).body as string);
-    expect(window.location.search).toBe("");
     expect(body.utm).toEqual({ utm_source: "meta", utm_campaign: "2026-09-launch" });
+    window.history.replaceState({}, "", url.pathname);
   });
 });

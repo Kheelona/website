@@ -128,3 +128,51 @@ the dashboard, PostgREST answers PGRST204 and **every pre-order returns 500**. �
 shape as §8.34-f: the harness is not the deployment target.
 
 **Deploy order is not negotiable: run the SQL, confirm it, then push.**
+
+### Commit 2 — the campaign mechanism, replaced after production said it did not work
+
+**🔴 I shipped a mechanism that did nothing, and the tests passed because they mocked the thing I had
+wrong.** Recorded in full because the failure is more useful than the fix.
+
+Commit 1's Phase 3 read the campaign back out of PostHog's session, on the reasoning that PostHog's
+cookie is set on `.kheelona.com` and therefore already survives the apex to store hop. **The
+reasoning was right. The API was wrong.** PostHog stores the session's ENTRY URL as
+`$client_session_props.props.u` (shape `{r, u}`) and derives `utm_*` from it only when it builds
+event properties. `getSessionProperty(k)` returns `sessionPersistence.props[k]` — a different bucket
+that holds no campaign data at all. So `phCampaign()` returned `{}` on every real page load and
+`readUtm()` fell straight through to the old, broken URL read.
+
+**The unit tests were green because they MOCKED `getSessionProperty` to return the values.** They
+asserted the same wrong assumption the code was making, which is §8.38-i precisely — one round after
+that law was written, in the same subsystem. A mock cannot tell you where a third party keeps its
+data.
+
+It surfaced only because the deploy verification went looking for the campaign in a real browser on
+production and found the session store holding nothing but SDK debug properties. Two more traps on
+the way: `window.posthog` is `undefined` for this ES-module install and reads as "not running" while
+everything runs (already recorded from the previous round, and walked into again), and the first
+storage probe grepped for `utm_source` as a key when it was sitting inside a URL string.
+
+#### What replaced it
+
+A mechanism this repo owns end to end, which is the actual lesson. `src/proxy.ts` sets a **first-party
+`kh_utm` cookie** on any request carrying `utm_*`: `.kheelona.com`, HttpOnly, SameSite=Lax,
+session-scoped, **first touch wins**. `create-order` prefers it over anything the browser sends and
+validates it as hard as the request body. Set at the edge rather than in client JavaScript because
+the proxy sees the tagged landing itself: nothing loads, nothing races hydration, and a visitor who
+blocks analytics is still attributed.
+
+`phCampaign()` and its tests are **deleted rather than left looking as though they work**.
+`get_distinct_id()` stays, and was re-verified against the real localStorage dump rather than the
+types: `distinct_id` genuinely lives in `persistence.props`, so stitching was never affected.
+
+`/privacy` gains a sentence for the cookie, in the same commit as the cookie.
+
+#### Gate, third run
+
+**1353 tests / 124 files**, `tsc` 0, build passes, `qa:sweep` clean 36/36 with 90 accepted,
+`qa:payment` clean 10/10.
+
+One near miss worth recording: a bad string edit left `PostHogGate.test.tsx` unparseable, and vitest
+reported **"1320 passed"** with the file silently not running. **A passing total is not a passing
+suite — read the file count too** (124, not 123).

@@ -363,6 +363,17 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
     expect(PRIVACY).toMatch(/identifier for a browser, not a profile of a person/);
   });
 
+  /* 🔴 A COOKIE OF OUR OWN, ADDED 2026-09-20 (§8.40-f). `kh_utm` is set by
+     src/proxy.ts when somebody lands on a tagged link and is read back when they
+     order, which is how a sale is credited to the advertisement that produced
+     it. It is first-party and session-scoped, and it is still a cookie this site
+     sets about a visitor, so the page says so rather than leaving it to be found
+     in devtools. */
+  it("says we remember which advertisement brought you", () => {
+    expect(PRIVACY).toMatch(/we remember which advertisement brought you/);
+    expect(PRIVACY).toMatch(/only for as long as your visit lasts/);
+  });
+
   /* The reason must be stated too. "We store an id" invites the question this
      sentence should answer without being asked. */
   it("says why it is stored, in the plainest terms", () => {

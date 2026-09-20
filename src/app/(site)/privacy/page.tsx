@@ -97,6 +97,11 @@ const SECTIONS: readonly LegalSection[] = [
          no number appears here: this is the fourth count this page has had to
          avoid (§8.38-g). */
       "When you pre-order, we store alongside your order the anonymous identifier PostHog has already given your browser. It is what lets us see that a visit turned into an order, which is how we tell whether our advertising is worth what it costs. It is an identifier for a browser, not a profile of a person: it carries no name of its own, and we do not ask PostHog to build a profile from it.",
+      /* Added 2026-09-20 with the kh_utm cookie (§8.40-f). First-party,
+         session-scoped, set by src/proxy.ts on a tagged landing and read back by
+         create-order. It is still a cookie this site sets about a visitor, so it
+         is stated rather than left to be discovered in devtools. */
+      "In the same way, if you reach us from one of our advertisements, we remember which advertisement brought you, so that we can tell which ones are worth paying for. That is kept in a small file on your own device, only for as long as your visit lasts, and it holds the name of the campaign and nothing about you.",
       "What these tools record is the page you looked at, your country, your browser, and where the visit came from. Vercel Web Analytics and Ahrefs Web Analytics are never given anything more than that.",
       /* Added 2026-09-02 with the Conversions API (§8.30-l/n). The previous
          version of this paragraph promised that no tool is ever sent a name,
