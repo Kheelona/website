@@ -103,6 +103,12 @@ export async function POST(request: Request) {
          by Razorpay, so it has none of this. Read entirely from the request the
          browser already sent, so the client gained no new say in it. */
       fb_attrib: readFbAttrib(request),
+      /* PostHog's device id, so the SERVER-sent purchase_confirmed event can
+         join this person's funnel (§8.40). Same reasoning as fb_attrib above,
+         from the other direction: the webhook knows the payment is real but has
+         no idea whose browser it belongs to, and this is the last moment anyone
+         does. */
+      ph_distinct_id: readPhDistinctId(body.phDistinctId),
     })
     .select("id, order_ref")
     .single();
@@ -164,6 +170,25 @@ export async function POST(request: Request) {
 /** UTM parameters, captured silently rather than asked for. Only the five
  *  standard keys, only short values: this is a marketing breadcrumb, not a
  *  place for a client to store whatever it likes in our database. */
+/** PostHog's anonymous device id, captured in the browser (§8.40, 2026-09-20).
+ *
+ *  It is what lets the SERVER-sent `purchase_confirmed` event join the same
+ *  person's funnel: the Razorpay webhook is the only place a payment is known to
+ *  be real, and it has neither a session nor a cookie to infer identity from, so
+ *  if this is not stored at order time it cannot be recovered afterwards.
+ *
+ *  Validated for the same reason `readUtm` below is: the client is not trusted
+ *  to put arbitrary strings in our database. A device id is a short opaque
+ *  token, so anything long, empty or not a string is refused outright rather
+ *  than truncated — a half-stored id would stitch the event to the wrong person,
+ *  which is worse than not stitching it at all. */
+function readPhDistinctId(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  const id = value.trim();
+  if (!id || id.length > 100) return null;
+  return id;
+}
+
 function readUtm(value: unknown): Record<string, string> | null {
   if (!value || typeof value !== "object") return null;
   const source = value as Record<string, unknown>;

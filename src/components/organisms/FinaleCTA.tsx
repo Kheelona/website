@@ -108,7 +108,7 @@ export function FinaleCTA({
         {/* V3: the deal on the subscription, said before the ask and not
             after the purchase (gate V3-b keeps the price out) */}
         <p className="mb-5 text-[15px] font-medium text-ink">{KHEELONA_PLUS_SHORT}</p>
-        <Button href={STORE_URL}>{PREORDER_LABEL}</Button>
+        <Button href={STORE_URL} track="finale">{PREORDER_LABEL}</Button>
         {/* Leaving the domain is a real moment of doubt for a parent about to
             pay, so it is named rather than sprung on them. Razorpay is worth
             naming too: in India it is a trust signal, not jargon. */}

@@ -5,6 +5,7 @@ import { preorderAckEmail, internalAlertEmail } from "@/lib/email/templates";
 import { STORE_URL } from "@/config/site";
 import type { StoreEnv } from "./env";
 import { reportPurchaseToMeta } from "./meta-capi";
+import { reportPurchaseToPostHog } from "./posthog-server";
 
 /** Marking a pre-order paid, once (§8.25-p).
  *
@@ -338,6 +339,15 @@ export async function notifyPaid(env: StoreEnv, order: PreorderRow): Promise<voi
       sendEmail(env, { ...ack, to: order.email }),
       sendEmail(env, { ...alert, to: env.alertEmail }),
       reportPurchaseToMeta(env, order),
+      /* PostHog, from the SERVER (§8.40, 2026-09-20). The browser sends
+         `purchase` from Razorpay's onPaid callback, which a parent who pays and
+         closes the tab never reaches — so before this line Meta was the only
+         tool that could not miss a sale, and PostHog's revenue was short by a
+         rate nobody measured. It belongs HERE, beside its Meta sibling, for the
+         reason given above this function: the webhook is the one place that
+         knows a payment is real, and a second call site would mean earning the
+         never-throw rule twice and forgetting it once. */
+      reportPurchaseToPostHog(order),
     ]);
   } catch (error) {
     /* By here the money has moved and the row says so. Swallowing is correct:

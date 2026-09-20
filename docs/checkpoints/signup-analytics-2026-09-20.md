@@ -68,3 +68,63 @@ left to mislead the next reader.
 Also corrected: `docs/project-state.json` still pinned `tests.count: 1267 / files: 119` from the video
 round, stale by 30 tests and 3 files after the PostHog proxy round (`4d693f8`). The living-documentation
 law says that file moves in the same commit as the change; it did not, and this is the catch-up.
+
+### Commit 1 — the whole change, and the gate after
+
+Laws **§8.40 a-i**. One commit, because §8.21-c binds the measurement change to its `/privacy`
+sentence and the rest of it is not separable without leaving the funnel half-wired.
+
+| Gate | Before (`6abeccb`) | After |
+|---|---|---|
+| `npm test` | 1297 / 122 files | **1335 / 123 files** |
+| `npx tsc --noEmit` | 0 | **0** |
+| `npx next build` | passes | **passes** |
+| `qa:sweep`, 36 combos | clean, 90 accepted | **clean, 90 accepted** |
+| `qa:payment`, real sandbox | clean 10/10 | **clean 10/10** |
+
+The accepted-contrast count is unchanged at 90, which is the useful part: eight CTAs gained an
+attribute and none of them gained a contrast pair.
+
+#### What shipped
+
+1. **`purchase_confirmed`, sent by the server** (`src/lib/store/posthog-server.ts`), from
+   `notifyPaid()` beside `reportPurchaseToMeta`. The browser event stays; this one cannot be missed.
+   Named differently on purpose (§8.40-c) because PostHog's only dedup key is a `uuid` the SDK
+   requires to be a real UUID, and the gap between the two counts is itself the loss rate nobody
+   could measure before.
+2. **Stitching** via `ph_distinct_id` on the order row, with `$process_person_profile: false` so the
+   visitor stays anonymous while funnels still work. Falls back to `order_ref` rather than dropping
+   the sale.
+3. **Campaign read from PostHog's session**, not the URL (§8.40-f). This is the fix for
+   "do the ads work?".
+4. **`preorder_form_started`**, one `onChange` on the `<form>`, fired once per mount.
+5. **`data-ph-capture-attribute-cta`** on the eight pre-order CTAs, so autocapture can tell the hero
+   from the navbar from the finale.
+6. **`/privacy`** carries the stitching disclosure, in the same commit.
+
+#### Verification notes
+
+`posthog-node@5.52.4` added with `--save-exact`; the lockfile diff was read rather than trusted —
+**one package added, nothing moved, `npm audit` 0.**
+
+Four SDK facts were read out of the installed code rather than its docs, and two of them would have
+failed silently: `getSessionProperty` reads `sessionPersistence.props[k]`, so campaign keys are the
+raw `utm_*` names and **not** `$session_entry_utm_*`; `uuid` must be a real UUID; `flush()` is
+required before a serverless function returns; and `data-ph-capture-attribute-*` is promoted to a
+top-level property while a plain `data-` attribute is not.
+
+**Mutation-tested rather than trusted**, because the form wiring was written before its tests and
+tests-after prove less: dropping the `onChange`, firing on every change instead of once, dropping the
+device id, and reverting the campaign to URL-first each failed with the intended message, and the
+restored file passed. The server module's two critical guards (the flush, and the event name) were
+mutation-tested the same way.
+
+#### 🔴 The one thing no gate here can clear
+
+**`qa:payment` passing does not mean production is safe.** `tools/qa/supabase-stub.mjs` parses the
+body and stores it with **no column validation at all**, so it accepts `ph_distinct_id` and would
+accept any invented field. Real Supabase will not: until `0004_ph_distinct_id.sql` is run by hand in
+the dashboard, PostgREST answers PGRST204 and **every pre-order returns 500**. §8.40-i, and the same
+shape as §8.34-f: the harness is not the deployment target.
+
+**Deploy order is not negotiable: run the SQL, confirm it, then push.**

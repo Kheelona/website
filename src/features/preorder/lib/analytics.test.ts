@@ -40,8 +40,17 @@ beforeEach(() => {
 });
 
 describe("every funnel event reaches GA4 and PostHog alike", () => {
-  /** The five moments, and the one call that produces each. */
+  /** The six moments, and the one call that produces each. */
   const EVENTS: { name: string; fire: () => void; ga: string }[] = [
+    /* Added 2026-09-20 (§8.40). The FIRST signal a real human is here: before
+       it, nothing fired until validation passed on submit, so a parent who typed
+       their name and left was invisible. It is what makes abandonment a funnel
+       step rather than a guess. */
+    {
+      name: "formStarted",
+      fire: () => preorderAnalytics.formStarted("launch"),
+      ga: "preorder_form_started",
+    },
     { name: "start", fire: () => preorderAnalytics.start("launch"), ga: "preorder_start" },
     {
       name: "beginCheckout",

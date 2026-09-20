@@ -22,8 +22,10 @@ vi.mock("@/lib/store/db", () => ({ db: () => fakeClient(results, calls) }));
    tested: that all three are attempted and that no failure escapes. */
 const sendEmail = vi.hoisted(() => vi.fn());
 const reportPurchaseToMeta = vi.hoisted(() => vi.fn());
+const reportPurchaseToPostHog = vi.hoisted(() => vi.fn());
 vi.mock("@/lib/email/send", () => ({ sendEmail }));
 vi.mock("./meta-capi", () => ({ reportPurchaseToMeta }));
+vi.mock("./posthog-server", () => ({ reportPurchaseToPostHog }));
 
 const { markPaid, notifyPaid, markRefunded, alertNotPayable } = await import("./fulfil");
 const env = fakeEnv as StoreEnv;
@@ -269,6 +271,7 @@ describe("notifyPaid", () => {
     vi.clearAllMocks();
     sendEmail.mockResolvedValue(undefined);
     reportPurchaseToMeta.mockResolvedValue("sent");
+    reportPurchaseToPostHog.mockResolvedValue("sent");
   });
 
   const paidOrder = { ...row, status: "paid", child_age: "4", phone: "+919187546483" };
@@ -277,6 +280,28 @@ describe("notifyPaid", () => {
     await notifyPaid(env, paidOrder as never);
     expect(reportPurchaseToMeta).toHaveBeenCalledTimes(1);
     expect(reportPurchaseToMeta).toHaveBeenCalledWith(env, paidOrder);
+  });
+
+  /* 🔴 THE REASON THIS ROUND EXISTS (§8.40). The browser's `purchase` event runs
+     in Razorpay's onPaid callback, which a parent who pays and closes the tab
+     never reaches. Before this, Meta was the ONLY tool that could not miss a
+     sale: Supabase had the row, the CAPI had the event, and PostHog and GA4 had
+     nothing. This is the call that closes that hole, so it is asserted the same
+     way its Meta sibling is. */
+  it("reports the sale to PostHog from the server, exactly once", async () => {
+    await notifyPaid(env, paidOrder as never);
+    expect(reportPurchaseToPostHog).toHaveBeenCalledTimes(1);
+    expect(reportPurchaseToPostHog).toHaveBeenCalledWith(paidOrder);
+  });
+
+  /* The never-throw contract, extended to the new caller. PostHog being down
+     must not fail a webhook for a payment that completed perfectly, and must not
+     take the parent's receipt down with it. */
+  it("does not throw when the PostHog report fails, and still does everything else", async () => {
+    reportPurchaseToPostHog.mockRejectedValue(new Error("us.i.posthog.com unreachable"));
+    await expect(notifyPaid(env, paidOrder as never)).resolves.toBeUndefined();
+    expect(sendEmail).toHaveBeenCalledTimes(2);
+    expect(reportPurchaseToMeta).toHaveBeenCalledTimes(1);
   });
 
   it("sends the parent's acknowledgement and the internal alert", async () => {

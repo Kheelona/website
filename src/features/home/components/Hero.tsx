@@ -49,7 +49,7 @@ export function Hero() {
             numbers, and the languages you speak at home, at their pace.
           </p>
           <div className="flex flex-wrap items-center gap-3">
-            <Button href={PREORDER_HREF}>{PREORDER_LABEL}</Button>
+            <Button href={PREORDER_HREF} track="hero">{PREORDER_LABEL}</Button>
           </div>
           {/* V5-5: `bg-yellow/15` on the warm backdrop was nearly the same
               value as the page behind it, so the offer still did not read —

@@ -47,6 +47,25 @@ function track(event: string, params?: Params): void {
 }
 
 export const preorderAnalytics = {
+  /** The FIRST sign a real person is filling this in, fired on the first change
+   *  to any field (§8.40, 2026-09-20).
+   *
+   *  It exists because nothing used to fire until validation passed on submit,
+   *  so a parent who typed their name and left was invisible: the earliest
+   *  record of them was a `status='created'` row, which only exists for people
+   *  who got all the way to the pay button. Abandonment is now the drop between
+   *  this and `preorder_start`, sliceable by campaign like any other funnel.
+   *
+   *  NO `pagehide` COUNTERPART, deliberately. An explicit "abandoned" event
+   *  would have to fire on unload, which is genuinely unreliable on mobile
+   *  Safari — it would under-report by an unknown amount while reading as a
+   *  hard number, and a figure that looks authoritative and is not is worse
+   *  than deriving it. */
+  formStarted: (tier: string) => {
+    track("preorder_form_started", { tier });
+    phCapture("preorder_form_started", { tier });
+  },
+
   /** The form was submitted and validated: real intent, before any gateway. */
   start: (tier: string) => {
     track("preorder_start", { tier });

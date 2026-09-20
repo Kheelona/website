@@ -39,6 +39,30 @@ that date, raise them first.
 
 ---
 
+# 📈 SIGNUPS MEASURABLE IN POSTHOG (built 2026-09-20, ⚠ NOT DEPLOYED)
+
+*Record: `docs/checkpoints/signup-analytics-2026-09-20.md`. Laws **§8.40 a-i**. Rollback tag
+`pre-signup-analytics-2026-09-20` = `6abeccb`.*
+
+## 🧑 Founder — 🔴 RUN THE SQL BEFORE ANYTHING IS DEPLOYED
+
+| Priority | Item | Why |
+|---|---|---|
+| **BLOCKER** | **Paste `supabase/migrations/0004_ph_distinct_id.sql` into the Supabase SQL editor and run it. Confirm before the code is pushed.** | `create-order` inserts `ph_distinct_id` on every order. If the code ships first, PostgREST answers PGRST204 and **EVERY PRE-ORDER RETURNS 500** — the store stops taking money. `0003_fb_attrib.sql`'s own header records this repo nearly doing it once already. **`npm run qa:payment` passing does NOT clear this**: the stub stores whatever it is sent and validates no columns (§8.40-i). Idempotent and safe to re-run. |
+| HIGH | After deploy, confirm `purchase_confirmed` appears in PostHog for a real order, carrying `utm_source` | It is the event that cannot be missed, and the one to build dashboards on. |
+| MEDIUM | Build the funnel on `preorder_form_started → preorder_start → purchase_confirmed`, broken down by `utm_campaign` | This is cost per signup and "do the ads work", which is what the round was for. |
+| MEDIUM | Break autocaptured CTA clicks down by the `cta` property (`hero`, `navbar`, `finale`, `compare`, `product-top`, `product-foot`, `home-arc`, `navbar-mobile`) | Answers "what do people tap". Every CTA shared a label and a destination before this, so they were indistinguishable. |
+| LOW | Expect `purchase` and `purchase_confirmed` NOT to match | By design (§8.40-c). The gap is the client-event loss rate, which is worth watching rather than explaining away. |
+
+## 🤖 Mine, after production speaks
+
+| Priority | Item | Why |
+|---|---|---|
+| MEDIUM | Measure the `purchase` vs `purchase_confirmed` gap once real orders land | It is the first measurement of how much revenue the client-only event was losing. If it is large, GA4 deserves the same server-side treatment via the Measurement Protocol. |
+| LOW | Lighthouse on production after deploy | Best-practices is an accepted 74 and a11y an accepted 96; a new console error costs ~4 points. The new code adds one listener and no new origin, so nothing is expected to move. |
+
+---
+
 # 🔀 THE POSTHOG REVERSE PROXY (🟢 DEPLOYED AND VERIFIED 2026-09-20)
 
 *Record: `docs/checkpoints/posthog-reverse-proxy-2026-09-20.md`. Laws **§8.39 a-g**. Rollback tag

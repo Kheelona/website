@@ -31,7 +31,7 @@ export function Compare({ bare = false }: { bare?: boolean }) {
         <p className="mb-6 max-w-[42ch] font-display text-[19px] font-bold text-ink-head">
           A tutor runs out of time and patience. Kheelu does not.
         </p>
-        <Button href={PREORDER_HREF}>{PREORDER_LABEL}</Button>
+        <Button href={PREORDER_HREF} track="compare">{PREORDER_LABEL}</Button>
         <p className="mt-4 text-[15px] text-ink-muted">{PRICE_CAPTION}</p>
       </Reveal>
     </>

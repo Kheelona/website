@@ -84,6 +84,19 @@ const SECTIONS: readonly LegalSection[] = [
          second is enforced by POSTHOG_REPLAY_DENY_PATHS rather than by care. */
       "PostHog is the most detailed of the five, so it is worth being specific. It records which buttons and links you tap, and it records a replay of your screen as you move through the site, which is how we find the places where the pre-order form confuses people. It also tells us when something breaks, so we hear about it before you have to. It does not follow you to other sites, and it is never used to advertise to you.",
       "Two things about that replay, because a recording of your screen is a serious thing to run. Anything you type is hidden before the recording leaves your browser: it shows that a box was filled in, never what you put in it. And we switch recording off completely on the order confirmation page, because that page reads your delivery address back to you and we would rather it were never filmed at all than filmed carefully. PostHog stores what it collects on servers in the United States.",
+      /* 🔴 ADDED 2026-09-20 WITH STITCHING (§8.40, §8.21-c). The founder reversed
+         the 2026-09-19 anonymity default with the cost in view: an order row now
+         carries PostHog's device id beside a parent's name, email and phone, so
+         a visit can be joined to the sale it produced. That is a thing a parent
+         can only know because this paragraph exists.
+
+         What it must NOT claim is more than is true in either direction. No
+         person profile is created (`$process_person_profile: false` on the
+         server event, pinned in posthog-server.test.ts) and nothing calls
+         `identify()` anywhere, so "not a profile of a person" is accurate. And
+         no number appears here: this is the fourth count this page has had to
+         avoid (§8.38-g). */
+      "When you pre-order, we store alongside your order the anonymous identifier PostHog has already given your browser. It is what lets us see that a visit turned into an order, which is how we tell whether our advertising is worth what it costs. It is an identifier for a browser, not a profile of a person: it carries no name of its own, and we do not ask PostHog to build a profile from it.",
       "What these tools record is the page you looked at, your country, your browser, and where the visit came from. Vercel Web Analytics and Ahrefs Web Analytics are never given anything more than that.",
       /* Added 2026-09-02 with the Conversions API (§8.30-l/n). The previous
          version of this paragraph promised that no tool is ever sent a name,

@@ -44,12 +44,29 @@ export function Button({
   variant = "primary",
   size = "md",
   className,
+  track,
   children,
 }: {
   href: string;
   variant?: Variant;
   size?: "md" | "lg";
   className?: string;
+  /** Which CTA this is, for PostHog (§8.40, 2026-09-20). OPT-IN, and only for
+   *  the buttons that mean money.
+   *
+   *  Every pre-order CTA carries the same label and the same href by law
+   *  (§8.25-b: one verb, one destination), which is right for a parent and
+   *  useless for analytics — autocapture saw five identical "Pre-order Kheelu"
+   *  clicks on the home page and could not say which one anybody tapped.
+   *
+   *  `data-ph-capture-attribute-cta` rather than a plain `data-` attribute
+   *  because posthog-js promotes it to a TOP-LEVEL event property, so a funnel
+   *  can be broken down by it; an ordinary attribute only reaches the nested
+   *  `$elements` array as `attr__…`. Read out of the installed SDK.
+   *
+   *  It is never rendered and never announced: it changes no label and no
+   *  accessible name, which Button.test.tsx pins. */
+  track?: string;
   children: React.ReactNode;
 }) {
   const [ripples, setRipples] = useState<Ripple[]>([]);
@@ -66,6 +83,7 @@ export function Button({
     <Link
       href={href}
       onPointerDown={onPointerDown}
+      data-ph-capture-attribute-cta={track}
       className={cn(
         // nowrap: a pill label that wraps to two lines crowds whatever sits
         // beside it (seen with the navbar CTA in the 640-1023px band)

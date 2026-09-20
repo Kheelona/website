@@ -23,6 +23,13 @@ type PostHogLike = {
   capture: (event: string, properties?: Record<string, unknown>) => void;
   startSessionRecording: () => void;
   stopSessionRecording: () => void;
+  /** Both added 2026-09-20 (§8.40), and both names were read out of the
+   *  INSTALLED SDK rather than its docs: `get_distinct_id()` is
+   *  `get_property("distinct_id")`, and `getSessionProperty(k)` is
+   *  `sessionPersistence.props[k]`. The casing really is inconsistent in
+   *  posthog-js; matching it is not a typo. */
+  get_distinct_id: () => string;
+  getSessionProperty: (property: string) => unknown;
 };
 
 let instance: PostHogLike | null = null;
@@ -67,4 +74,65 @@ export function phSetReplay(allowed: boolean): void {
   if (typeof window === "undefined" || !instance) return;
   if (allowed) instance.startSessionRecording();
   else instance.stopSessionRecording();
+}
+
+/** The five campaign keys, and only these. Same list the order row and
+ *  `create-order` already agree on, so a campaign means the same thing in
+ *  PostHog and in the database. */
+const CAMPAIGN_KEYS = [
+  "utm_source",
+  "utm_medium",
+  "utm_campaign",
+  "utm_content",
+  "utm_term",
+] as const;
+
+/** PostHog's anonymous device id, or null when PostHog is not here.
+ *
+ *  Sent with a pre-order so the SERVER-sent `purchase_confirmed` event can join
+ *  the same person's funnel. It is a device id, not a person: nothing calls
+ *  `identify()` anywhere in this repo, and the server event sets
+ *  `$process_person_profile: false`, so no person profile is created.
+ *
+ *  Null is an ordinary answer, not an error: on localhost, in every preview, in
+ *  every test and for a visitor whose browser blocked the SDK there is no id,
+ *  and the order must still go through. */
+export function phDistinctId(): string | null {
+  if (typeof window === "undefined" || !instance) return null;
+  try {
+    return instance.get_distinct_id() || null;
+  } catch {
+    /* Reading a property before the SDK finished loading throws rather than
+       returning undefined. A pre-order is not lost over an analytics read. */
+    return null;
+  }
+}
+
+/** The campaign THIS SESSION ARRIVED WITH, which is not the same thing as the
+ *  campaign in the current URL (§8.40).
+ *
+ *  This is the fix for the attribution hole that made "do the ads work?"
+ *  unanswerable. Ads tag `kheelona.com`; a parent then reads a page or two and
+ *  crosses to `store.kheelona.com`, where the URL carries nothing at all and
+ *  `window.location.search` has nothing left to read. PostHog's own cookie is
+ *  set on `.kheelona.com` — `cross_subdomain_cookie` resolves true for this
+ *  domain, verified in the SDK, which takes the last two hostname labels and
+ *  checks them against a blocklist — so the SESSION still knows the campaign
+ *  long after the URL forgot it.
+ *
+ *  Reading what PostHog already stores, rather than forwarding tags on links or
+ *  minting a cookie of our own: no new cookie means no new privacy surface, and
+ *  no tagged link means `docs/utm-conventions.md` rule 2 stays intact. */
+export function phCampaign(): Record<string, string> {
+  if (typeof window === "undefined" || !instance) return {};
+  const out: Record<string, string> = {};
+  for (const key of CAMPAIGN_KEYS) {
+    try {
+      const value = instance.getSessionProperty(key);
+      if (typeof value === "string" && value.trim()) out[key] = value.trim();
+    } catch {
+      /* One unreadable key must not cost the other four. */
+    }
+  }
+  return out;
 }

@@ -49,3 +49,48 @@ describe("Button", () => {
     expect(link.querySelector('[aria-hidden="true"]')).toBeTruthy();
   });
 });
+
+/** TELLING ONE CTA FROM ANOTHER IN POSTHOG (§8.40, 2026-09-20).
+ *
+ *  Every pre-order CTA on this site renders the SAME label and the SAME href, by
+ *  law (§8.25-b: one verb, one destination). That is right for a visitor and
+ *  useless for analytics: the home page alone carries five of them, so
+ *  autocapture recorded five indistinguishable clicks on "Pre-order Kheelu" and
+ *  the founder could not see which one people actually tap.
+ *
+ *  `data-ph-capture-attribute-<name>` is the mechanism, read out of the
+ *  installed SDK rather than its docs: posthog-js promotes it to a TOP-LEVEL
+ *  event property, where an ordinary attribute would only appear nested inside
+ *  `$elements` as `attr__data-attr` and be far harder to break a funnel down by. */
+describe("Button placement tracking", () => {
+  it("promotes the placement to a top-level PostHog property", () => {
+    render(
+      <Button href="https://store.kheelona.com" track="hero">
+        Pre-order Kheelu
+      </Button>,
+    );
+    expect(screen.getByRole("link")).toHaveAttribute("data-ph-capture-attribute-cta", "hero");
+  });
+
+  /* Opt-in. Most buttons on the site are navigation, and tagging all of them
+     would bury the handful that mean money. */
+  it("adds nothing at all when no placement is given", () => {
+    render(<Button href="/team">Meet the team</Button>);
+    expect(screen.getByRole("link").getAttributeNames()).not.toContain(
+      "data-ph-capture-attribute-cta",
+    );
+  });
+
+  /* It must not become a visible label or an accessible name: this is a
+     measurement hook, and qa:sweep runs axe over the rendered markup. */
+  it("does not change what the button says or announces", () => {
+    render(
+      <Button href="https://store.kheelona.com" track="navbar">
+        Pre-order Kheelu
+      </Button>,
+    );
+    const link = screen.getByRole("link");
+    expect(link).toHaveAccessibleName("Pre-order Kheelu");
+    expect(link.textContent).toBe("Pre-order Kheelu");
+  });
+});

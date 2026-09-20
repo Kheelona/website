@@ -1,5 +1,47 @@
 # kheelona.com — session entry point
 
+**📈 SIGNUPS ARE MEASURABLE IN POSTHOG (built 2026-09-20, ⚠ BUILT NOT DEPLOYED — A MIGRATION GATES
+IT).** Record: `docs/checkpoints/signup-analytics-2026-09-20.md`; laws **§8.40 a-i**; rollback tag
+`pre-signup-analytics-2026-09-20` = `6abeccb`.
+
+**🔴 DO NOT DEPLOY UNTIL `supabase/migrations/0004_ph_distinct_id.sql` HAS BEEN RUN BY HAND** in the
+Supabase dashboard (§8.40-i). `create-order` inserts `ph_distinct_id` on every order; ship the code
+first and PostgREST answers PGRST204 and **every pre-order returns 500**. **`npm run qa:payment`
+passing does NOT clear this** — `tools/qa/supabase-stub.mjs` stores whatever it is sent and validates
+no columns, so it accepts any invented field forever. §8.34-f in another costume: the harness is not
+the deployment target.
+
+**The brief was wrong three times and checking it is what shaped the round (§8.40-a).** There is no
+waitlist to instrument (deleted 2026-08-22, and a lint test bans the word); click data was never
+missing (autocapture sitewide since 2026-09-19); signups already reached PostHog. **The real defect
+was narrower and worse: `purchase` fired ONLY from Razorpay's client `onPaid` callback**, so a parent
+who paid and closed the tab was recorded in Supabase and sent to Meta's CAPI while PostHog and GA4
+heard nothing — **Meta was the only tool that could not miss a sale.**
+
+**Six things bind.** (1) **`purchase_confirmed` is sent by the SERVER** from `notifyPaid()` beside
+`reportPurchaseToMeta`, and is **deliberately not named `purchase`** (§8.40-c): PostHog's only dedup
+key is a `uuid` the SDK requires to be a real UUID, and **the gap between the two counts IS the
+client-event loss rate**. Build dashboards on `purchase_confirmed`. (2) **`await client.flush()` is
+mandatory** — posthog-node queues with `flushAt` 20 / `flushInterval` 5000ms and a serverless function
+returns long before either fires (§8.40-d), which would reintroduce the exact silent loss one layer
+down. Pinned by a test. (3) **Stitched AND anonymous are not opposites** (§8.40-e): the order carries
+PostHog's anonymous DEVICE id, `$process_person_profile: false` keeps person profiles off, and funnels
+key on distinct_id anyway. Falls back to `order_ref` rather than dropping a sale. (4) **The campaign
+is read from PostHog's SESSION, not the URL** (§8.40-f) — `readUtm()` read
+`window.location.search` on the store host while ads tag the apex, so it found nothing and the alert
+email said "direct". `getSessionProperty(k)` is `sessionPersistence.props[k]`, so the keys are the RAW
+`utm_*` names, NOT `$session_entry_utm_*`, which would have returned undefined forever with everything
+else working. (5) **Abandonment is DERIVED, never fired on unload** (§8.40-g): `preorder_form_started`
+via one `onChange` on the `<form>`, because `pagehide` is unreliable on mobile Safari and a number
+that reads authoritative and is not is worse than one you derive. (6) **`data-ph-capture-attribute-cta`
+on the eight pre-order CTAs** (§8.40-h) — §8.25-b makes every CTA share a label and a destination, so
+autocapture saw five identical clicks on the home page; only that attribute form is promoted to a
+top-level property.
+
+**Gate before and after, both clean:** 1297 → **1335 tests / 123 files**, `tsc` 0, build passes,
+`qa:sweep` clean 36/36 with the accepted count unchanged at 90, `qa:payment` clean 10/10 on the real
+sandbox. `posthog-node@5.52.4` added `--save-exact`: one package, nothing moved, `npm audit` 0.
+
 **🔀 POSTHOG NOW REPORTS THROUGH OUR OWN DOMAIN — DEPLOYED AND VERIFIED ON PRODUCTION 2026-09-20.** Record:
 `docs/checkpoints/posthog-reverse-proxy-2026-09-20.md`; laws **§8.39 a-g**; rollback tag
 `pre-posthog-proxy-2026-09-20` = `e097ad8`. Installation Health flagged a missing reverse proxy, and

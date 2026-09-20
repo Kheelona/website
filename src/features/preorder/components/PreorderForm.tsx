@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { TextField, ChoiceField } from "@/components/atoms/Field";
 import { cn } from "@/lib/cn";
@@ -21,6 +21,7 @@ import {
 } from "../lib/validate";
 import { startCheckout } from "../lib/checkout";
 import { preorderAnalytics } from "../lib/analytics";
+import { phCampaign, phDistinctId } from "@/lib/posthog";
 
 /** The pre-order form (§8.25-s).
  *
@@ -64,6 +65,21 @@ export function PreorderForm({
   const [state, setState] = useState<"idle" | "working" | "paying">("idle");
   const [failure, setFailure] = useState<string | null>(null);
 
+  /* Fired once per mount, on the first change to any field (§8.40). A ref
+     rather than state on purpose: this must not re-render the form a parent is
+     typing into, and it must survive StrictMode's double-invoke in development
+     the same way ViewContentTracker's does.
+
+     `onChange` on the <form>, not a handler per field: change events bubble, so
+     one listener covers every field there is now and every field anyone adds
+     later. A per-field list would be right today and wrong at the next edit. */
+  const started = useRef(false);
+  function onFirstChange() {
+    if (started.current) return;
+    started.current = true;
+    preorderAnalytics.formStarted(tier);
+  }
+
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setFailure(null);
@@ -97,7 +113,17 @@ export function PreorderForm({
       const response = await fetch("/api/preorder/create-order", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ ...contact, tier, signature, utm: readUtm() }),
+        body: JSON.stringify({
+          ...contact,
+          tier,
+          signature,
+          utm: readUtm(),
+          /* So the SERVER-sent purchase_confirmed event can join this person's
+             funnel (§8.40). The webhook knows a payment is real but has no idea
+             whose browser it came from, and this is the last moment anyone
+             does. Null when PostHog is absent, which the server accepts. */
+          phDistinctId: phDistinctId(),
+        }),
       });
       const data = (await response.json()) as CreateOrderResponse;
 
@@ -163,7 +189,7 @@ export function PreorderForm({
   const busy = state !== "idle";
 
   return (
-    <form onSubmit={onSubmit} noValidate className="grid gap-5">
+    <form onSubmit={onSubmit} onChange={onFirstChange} noValidate className="grid gap-5">
       <TextField
         label="Your name"
         name="parentName"
@@ -299,10 +325,30 @@ type CreateOrderResponse = {
   errors?: FieldErrors<ContactInput>;
 };
 
-/** UTMs from the URL, passed through so attribution survives the redirect to
- *  the payment sheet and back. Not a field, not a question, not a cookie. */
+/** The campaign that produced this order. Not a field, not a question, not a
+ *  cookie of ours.
+ *
+ *  🔴 POSTHOG'S SESSION FIRST, THE URL ONLY AS A FALLBACK (§8.40, 2026-09-20),
+ *  and that order is the whole fix. This function used to read the URL alone,
+ *  which quietly meant it almost never found anything: ads tag `kheelona.com`,
+ *  but this form runs on `store.kheelona.com`, and the pre-order CTA that
+ *  crosses between them carries no query string. So a tagged click recorded
+ *  `utm = null` and the internal alert email said "direct" — which is exactly
+ *  why "do the ads work?" could not be answered.
+ *
+ *  PostHog already solves this and we were not asking it. Its cookie is set on
+ *  `.kheelona.com` (`cross_subdomain_cookie` resolves true for this domain), so
+ *  the SESSION still knows the campaign after two internal hops and a change of
+ *  host, long after the URL has forgotten it.
+ *
+ *  The URL fallback stays for the cases the session cannot serve: an ad pointed
+ *  straight at the store host, and any visitor whose browser kept PostHog from
+ *  loading at all. */
 function readUtm(): Record<string, string> {
   if (typeof window === "undefined") return {};
+  const fromSession = phCampaign();
+  if (Object.keys(fromSession).length) return fromSession;
+
   const params = new URLSearchParams(window.location.search);
   const out: Record<string, string> = {};
   for (const key of ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"]) {

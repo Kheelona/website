@@ -14,7 +14,14 @@ import {
   replayAllowedOnPath,
   shouldLoadPostHog,
 } from "@/config/site";
-import { phCapture, phSetReplay, registerPostHog, resetPostHogForTests } from "@/lib/posthog";
+import {
+  phCampaign,
+  phCapture,
+  phDistinctId,
+  phSetReplay,
+  registerPostHog,
+  resetPostHogForTests,
+} from "@/lib/posthog";
 import { routeForHost } from "@/lib/store/host";
 
 /** PostHog is the fifth measurement tool and by some distance the widest:
@@ -261,5 +268,75 @@ describe("the gate points the SDK at our own domain", () => {
       expect(p.startsWith("/"), p).toBe(true);
       expect(p).not.toMatch(/^https?:/);
     }
+  });
+});
+
+/** READING BACK FROM POSTHOG (§8.40, 2026-09-20).
+ *
+ *  Two things the ORDER needs from the browser that the webhook can never work
+ *  out for itself: which person's funnel the sale belongs to, and which campaign
+ *  brought them. Both are read here and passed through create-order.
+ *
+ *  Both method names were read out of the installed SDK rather than its docs
+ *  (the §8.38 lesson, where three drafts were wrong): `get_distinct_id()` is
+ *  `get_property("distinct_id")`, and `getSessionProperty(k)` is
+ *  `sessionPersistence.props[k]` — so the campaign keys are the RAW `utm_*`
+ *  names, not the `$session_entry_utm_*` form that only appears once PostHog
+ *  builds event properties. Getting that wrong would have returned undefined
+ *  forever, silently, with everything else working. */
+describe("reading the device id and the campaign back out of PostHog", () => {
+  beforeEach(() => resetPostHogForTests());
+
+  function register(over: Partial<Record<string, unknown>> = {}, distinctId = "dev-1") {
+    registerPostHog({
+      capture: () => {},
+      startSessionRecording: () => {},
+      stopSessionRecording: () => {},
+      get_distinct_id: () => distinctId,
+      getSessionProperty: (k: string) => over[k],
+    } as never);
+  }
+
+  it("returns null for the device id when PostHog never loaded", () => {
+    expect(phDistinctId()).toBeNull();
+  });
+
+  it("returns the anonymous device id once PostHog is up", () => {
+    register({}, "0199a2f1-aaaa-7bbb");
+    expect(phDistinctId()).toBe("0199a2f1-aaaa-7bbb");
+  });
+
+  it("returns an empty campaign rather than throwing when PostHog never loaded", () => {
+    expect(phCampaign()).toEqual({});
+  });
+
+  /* 🔴 THE POINT OF THE WHOLE PHASE. An ad tags kheelona.com, the parent reads a
+     page or two, then crosses to store.kheelona.com where the URL carries
+     nothing. PostHog's cookie is set on `.kheelona.com` (cross_subdomain_cookie
+     resolves true for this domain, verified in the SDK), so the SESSION still
+     knows the campaign when the URL has long forgotten it. That is what makes
+     this readable at all. */
+  it("reads the campaign the session entered with, not the current URL", () => {
+    register({ utm_source: "meta", utm_medium: "paid-social", utm_campaign: "2026-09-launch" });
+    expect(phCampaign()).toEqual({
+      utm_source: "meta",
+      utm_medium: "paid-social",
+      utm_campaign: "2026-09-launch",
+    });
+  });
+
+  it("takes only the five standard keys, so PostHog cannot widen our order rows", () => {
+    register({ utm_source: "meta", gclid: "abc", $session_id: "s1", referrer: "x" });
+    expect(phCampaign()).toEqual({ utm_source: "meta" });
+  });
+
+  it("omits a key rather than sending an empty one", () => {
+    register({ utm_source: "meta", utm_medium: "", utm_campaign: "   " });
+    expect(phCampaign()).toEqual({ utm_source: "meta" });
+  });
+
+  it("ignores a non-string value rather than passing it on", () => {
+    register({ utm_source: 42, utm_medium: "email" });
+    expect(phCampaign()).toEqual({ utm_medium: "email" });
   });
 });

@@ -181,6 +181,36 @@ describe("POST /api/preorder/create-order", () => {
     });
   });
 
+  /* Stitching (§8.40, founder 2026-09-20). The browser's own PostHog device id
+     rides along with the order so the SERVER-sent purchase_confirmed event can
+     join the same person's funnel. The webhook has no session and no cookie, so
+     if it is not stored here it cannot be recovered later. */
+  it("stores PostHog's device id so the server event can join the funnel", async () => {
+    await post({ ...goodBody, phDistinctId: "0199a2f1-aaaa-7bbb-8ccc-1234567890ab" });
+    expect(firstArg(calls, "preorders", "insert")!.ph_distinct_id).toBe(
+      "0199a2f1-aaaa-7bbb-8ccc-1234567890ab",
+    );
+  });
+
+  /* The client is not trusted to put arbitrary strings in our database, exactly
+     as readUtm() already refuses anything but five short keys. A device id is a
+     short opaque token; anything longer is either a bug or someone pushing. */
+  it("refuses a device id that is not one, rather than storing whatever arrives", async () => {
+    for (const bad of [{ nope: 1 }, 12345, "x".repeat(200), "", "  "]) {
+      calls.length = 0;
+      await post({ ...goodBody, phDistinctId: bad });
+      expect(firstArg(calls, "preorders", "insert")!.ph_distinct_id, String(bad)).toBeNull();
+    }
+  });
+
+  /* A visitor with PostHog blocked, or an older browser, must still be able to
+     pay. Losing the sale to protect the funnel would invert the whole point. */
+  it("takes the order when there is no device id at all", async () => {
+    const response = await post(goodBody);
+    expect(response.status).toBe(200);
+    expect(firstArg(calls, "preorders", "insert")!.ph_distinct_id).toBeNull();
+  });
+
   it("hands back an address token so the browser can reach its own receipt", async () => {
     const body = (await (await post(goodBody)).json()) as { addressToken: string };
     expect(body.addressToken).toMatch(/^\d+\.[\w-]{16}$/);

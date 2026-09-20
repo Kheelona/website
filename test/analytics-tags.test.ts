@@ -348,6 +348,27 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
     expect(PRIVACY).toMatch(/most detailed of the five/);
   });
 
+  /* 🔴 STITCHING IS A PRIVACY CHANGE, NOT A SCHEMA ONE (§8.40, founder
+     2026-09-20). Storing PostHog's device id on the order row puts an analytics
+     identifier next to a parent's name, email and phone in OUR database, which
+     is a thing they can only know if the page says it. The 2026-09-19 round
+     chose anonymity deliberately; the founder reversed that with the cost in
+     view, so the page has to carry the reversal.
+
+     Note what is NOT claimed: no person profile is created, and the page must
+     not imply one is. `$process_person_profile: false` on the server event is
+     what makes that sentence true, and posthog-server.test.ts pins it. */
+  it("admits that an order is stored with the analytics identifier", () => {
+    expect(PRIVACY).toMatch(/identifier PostHog has already given your browser/);
+    expect(PRIVACY).toMatch(/identifier for a browser, not a profile of a person/);
+  });
+
+  /* The reason must be stated too. "We store an id" invites the question this
+     sentence should answer without being asked. */
+  it("says why it is stored, in the plainest terms", () => {
+    expect(PRIVACY).toMatch(/whether our advertising is worth what it costs/);
+  });
+
   it("says plainly that we never receive the payment details", () => {
     expect(PRIVACY).toMatch(/never to us|never see your payment/i);
     // and that Razorpay's own form sets cookies, which ours do not

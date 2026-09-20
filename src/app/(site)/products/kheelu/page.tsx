@@ -164,7 +164,7 @@ export default function KheeluPage() {
               lede="A talking friend for ages 3+. No screen, ever. Kheelu listens, answers, then asks the next question."
               ledeClassName="mb-7 max-w-[58ch]"
             />
-            <Button href={PREORDER_HREF}>{PREORDER_LABEL}</Button>
+            <Button href={PREORDER_HREF} track="product-top">{PREORDER_LABEL}</Button>
             <p className="mt-4 text-[15px] text-ink-muted">{PRICE_CAPTION}</p>
           </Reveal>
           <Reveal mode="rise">
@@ -360,7 +360,7 @@ export default function KheeluPage() {
                 above is the pitch; this is the reference a parent checks
                 against the payment screen (agency audit D06). */}
             <PriceTable className="mb-8" />
-            <Button href={PREORDER_HREF}>{PREORDER_LABEL}</Button>
+            <Button href={PREORDER_HREF} track="product-foot">{PREORDER_LABEL}</Button>
           </Reveal>
         </Room>
 

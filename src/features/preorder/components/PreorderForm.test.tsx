@@ -2,6 +2,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { PreorderForm } from "./PreorderForm";
+import { registerPostHog, resetPostHogForTests } from "@/lib/posthog";
 
 const startCheckout = vi.hoisted(() => vi.fn());
 vi.mock("../lib/checkout", () => ({ startCheckout }));
@@ -198,5 +199,133 @@ describe("PreorderForm", () => {
   it("keeps the public ₹4,500 caption when no balance is passed", () => {
     const { container } = render(<PreorderForm tier="launch" amountLabel="₹499" />);
     expect(container.textContent).toMatch(/₹4,500 when your Kheelu is ready to ship/);
+  });
+});
+
+/** THE FIRST SIGNAL A REAL PERSON IS HERE (§8.40, 2026-09-20).
+ *
+ *  Before this, nothing fired until validation passed on submit, so a parent who
+ *  typed their name and left was invisible to every tool. These drive the real
+ *  component with real typing rather than calling the analytics body directly,
+ *  because the contract test in `lib/analytics.test.ts` proves the function
+ *  exists and proves nothing about whether the form ever calls it. */
+describe("the form reports that somebody started filling it in", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    startCheckout.mockResolvedValue(true);
+  });
+
+  it("fires preorder_form_started on the first keystroke", async () => {
+    const gtag = vi.fn();
+    vi.stubGlobal("gtag", gtag);
+    const user = userEvent.setup();
+    render(<PreorderForm tier="launch" />);
+
+    expect(gtag.mock.calls.map((c) => c[1])).not.toContain("preorder_form_started");
+    await user.type(screen.getByLabelText("Your name", { exact: false }), "P");
+    expect(gtag.mock.calls.map((c) => c[1])).toContain("preorder_form_started");
+  });
+
+  /* Once per mount, not once per keystroke. A parent typing a name, a number,
+     an email and an age would otherwise send dozens of identical events and
+     make the funnel's first step meaningless. */
+  it("fires exactly once however much is typed, and in whichever field", async () => {
+    const gtag = vi.fn();
+    vi.stubGlobal("gtag", gtag);
+    const user = userEvent.setup();
+    render(<PreorderForm tier="launch" />);
+
+    await user.type(screen.getByLabelText("Your name", { exact: false }), "Priya Menon");
+    await user.type(screen.getByLabelText("Email", { exact: false }), "priya@example.com");
+    await user.click(screen.getByRole("checkbox"));
+
+    const started = gtag.mock.calls.filter((c) => c[1] === "preorder_form_started");
+    expect(started).toHaveLength(1);
+    expect(started[0][2]).toEqual({ tier: "launch" });
+  });
+
+  /* The listener sits on the <form>, so it covers every field that exists now
+     and every field anyone adds later. Starting in the last field must count. */
+  it("counts a start that begins in a field other than the first", async () => {
+    const gtag = vi.fn();
+    vi.stubGlobal("gtag", gtag);
+    const user = userEvent.setup();
+    render(<PreorderForm tier="launch" />);
+
+    await user.type(screen.getByLabelText("Your child's age", { exact: false }), "3");
+    expect(gtag.mock.calls.map((c) => c[1])).toContain("preorder_form_started");
+  });
+
+  /* Stitching. The order has to carry the browser's PostHog device id or the
+     server-sent purchase_confirmed event has no funnel to join. */
+  it("sends PostHog's device id with the order", async () => {
+    const fetchMock = vi.fn(
+      async () =>
+        new Response(
+          JSON.stringify({
+            orderRef: "KH-A2B3-C4D5",
+            rzpOrderId: "order_x",
+            keyId: "rzp_test_x",
+            amountPaise: 49_900,
+            addressToken: "1.abcdefgh12345678",
+          }),
+          { status: 200, headers: { "content-type": "application/json" } },
+        ),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+    registerPostHog({
+      capture: () => {},
+      startSessionRecording: () => {},
+      stopSessionRecording: () => {},
+      get_distinct_id: () => "0199-device",
+      getSessionProperty: () => undefined,
+    } as never);
+
+    const user = userEvent.setup();
+    render(<PreorderForm tier="launch" />);
+    await completeForm(user);
+    await user.click(screen.getByRole("button", { name: /pre-?order|pay|reserve/i }));
+
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+    const body = JSON.parse((fetchMock.mock.calls[0][1] as RequestInit).body as string);
+    expect(body.phDistinctId).toBe("0199-device");
+  });
+
+  /* 🔴 THE ATTRIBUTION FIX ITSELF. The store URL carries no campaign, because
+     the CTA that crossed from kheelona.com dropped it. The session still knows,
+     and that is the only reason the order row can record it. */
+  it("takes the campaign from PostHog's session when the URL has none", async () => {
+    const fetchMock = vi.fn(
+      async () =>
+        new Response(
+          JSON.stringify({
+            orderRef: "KH-A2B3-C4D5",
+            rzpOrderId: "order_x",
+            keyId: "rzp_test_x",
+            amountPaise: 49_900,
+            addressToken: "1.abcdefgh12345678",
+          }),
+          { status: 200, headers: { "content-type": "application/json" } },
+        ),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+    const session: Record<string, string> = { utm_source: "meta", utm_campaign: "2026-09-launch" };
+    registerPostHog({
+      capture: () => {},
+      startSessionRecording: () => {},
+      stopSessionRecording: () => {},
+      get_distinct_id: () => "0199-device",
+      getSessionProperty: (k: string) => session[k],
+    } as never);
+
+    const user = userEvent.setup();
+    render(<PreorderForm tier="launch" />);
+    await completeForm(user);
+    await user.click(screen.getByRole("button", { name: /pre-?order|pay|reserve/i }));
+
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+    const body = JSON.parse((fetchMock.mock.calls[0][1] as RequestInit).body as string);
+    expect(window.location.search).toBe("");
+    expect(body.utm).toEqual({ utm_source: "meta", utm_campaign: "2026-09-launch" });
   });
 });

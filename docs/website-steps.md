@@ -2983,3 +2983,112 @@ Vercel's edge, every visitor collapses to one location and **the Web Analytics d
 becomes wrong** — a fix for "some metrics may not be accurate" making them less accurate. Check
 country resolution on production, and check the recorder loads on `store.kheelona.com/` but **not** on
 `/thanks`: a change that killed replay everywhere would pass the negative check on its own.
+
+---
+
+# §8.40 · Making the signup measurable (2026-09-20)
+
+The founder could not answer cost per signup, conversion rate, or whether the ads work. Rollback tag
+`pre-signup-analytics-2026-09-20` = `6abeccb`. Record:
+`docs/checkpoints/signup-analytics-2026-09-20.md`.
+
+## §8.40-a · Check the brief against the code before building any of it
+
+Three of the brief's premises were wrong, and each would have produced real work that solved nothing.
+There was no waitlist to instrument (deleted 2026-08-22, and a lint test bans the word). Click data
+was not missing (autocapture has run sitewide since 2026-09-19). Signups did already reach PostHog.
+
+Building to the brief would have shipped a duplicate of an existing mechanism and reversed a settled
+product decision, while leaving the actual defect untouched. **The founder describes a symptom; the
+repo says what is causing it. Reconcile the two before planning, and report the difference.**
+
+## §8.40-b · A client-side conversion event is a conversion event you will sometimes lose
+
+`purchase` fired only from Razorpay's `onPaid` callback. A parent who pays and closes the tab never
+runs it. The authoritative signal is the webhook, so Supabase had the row and `reportPurchaseToMeta`
+sent it onward while **PostHog and GA4 heard nothing — Meta was the only tool that could not miss a
+sale**, and nobody had measured the gap.
+
+**The law: anything you will count money with is sent from the server, from the place that knows the
+money moved.** The browser event stays for the funnel; the server event is the one to trust.
+
+## §8.40-c · A second sender needs a different event NAME, not a dedup scheme
+
+Sending `purchase` from both browser and server double-counts revenue unless PostHog de-duplicates.
+Its only dedup key is the event `uuid`, and the installed SDK's own types say it "must be a valid
+UUID" — `KH-XXXX-XXXX` is not one, and minting a shared UUID would be a second mechanism to get
+wrong. So the server event is **`purchase_confirmed`**. It is additive, it can never inflate a number
+the founder reads, and **the gap between the two counts IS the client-event loss rate** — the thing
+that was previously unmeasurable. Build dashboards on `purchase_confirmed`.
+
+## §8.40-d · posthog-node QUEUES, and a serverless function does not live long enough
+
+`flushAt` defaults to 20 and `flushInterval` to 5000ms. A request-scoped function returns long before
+either fires and the event dies with it — reintroducing, one layer down, the exact silent loss this
+round existed to remove. `await client.flush()` is mandatory; the SDK's own comment on it says it is
+"concurrent so a serverless handler waits for one round trip". Pinned by a test that fails when the
+flush is removed.
+
+## §8.40-e · Stitch with a device id, and person profiles stay off
+
+The server has no session, so the order row carries PostHog's anonymous **device** id, captured in the
+browser at order time. `$process_person_profile: false` on the server event means funnels work — they
+key on distinct_id — **without** creating a person profile. Anonymous and stitched are not opposites.
+
+Falling back to `order_ref` when no id was captured is deliberate: orders predating the column have
+none, and so does a visitor with PostHog blocked. **Losing the sale to protect the funnel would invert
+the purpose.**
+
+Storing an analytics identifier beside a name, email and phone is a privacy change whatever its
+technical shape, so `/privacy` moved in the same commit (§8.21-c).
+
+## §8.40-f · Ask PostHog for the campaign instead of building a second attribution system
+
+`readUtm()` read `window.location.search` on **store.kheelona.com**, while ads tag `kheelona.com` and
+the CTA that crosses hosts carries no query string. So a tagged click recorded `utm = null` and the
+alert email said "direct" — the whole reason "do the ads work?" was unanswerable.
+
+Link forwarding would fix only the shortest journey: `ad → / → /products/kheelu → store` has dropped
+the parameters by the second page. PostHog already solves this properly and was simply not being
+asked. Its cookie is set on `.kheelona.com` (`cross_subdomain_cookie` resolves true for this domain,
+verified in the SDK), so the **session** still knows the campaign after two hops and a change of host.
+
+`getSessionProperty(k)` is `sessionPersistence.props[k]`, so the keys are the RAW `utm_*` names — the
+`$session_entry_utm_*` form exists only once PostHog builds event properties, and reading that name
+would have returned undefined forever with everything else working. **Read the SDK, not the docs.**
+
+No new cookie means no new privacy surface; reading rather than writing means
+`docs/utm-conventions.md` rule 2 is untouched. The URL fallback stays for an ad pointed straight at
+the store host.
+
+## §8.40-g · Derive abandonment from a funnel; do not fire it on unload
+
+`preorder_form_started` fires on the first change to any field, via one `onChange` on the `<form>`
+(change events bubble, so one listener covers every field there is now and every field added later).
+Abandonment is the drop between it and `preorder_start`.
+
+**No `pagehide` counterpart.** It is genuinely unreliable on mobile Safari, so an explicit "abandoned"
+count would under-report by an unknown amount while reading as a hard number, and **a figure that
+looks authoritative and is not is worse than one you derive.**
+
+## §8.40-h · One verb and one destination makes a CTA unfindable in autocapture
+
+§8.25-b requires every pre-order CTA to share a label and a destination. Correct for a visitor, and it
+means autocapture saw five identical "Pre-order Kheelu" clicks on the home page with no way to tell
+which was tapped. `data-ph-capture-attribute-cta` is the fix, because posthog-js promotes it to a
+**top-level event property**; an ordinary `data-` attribute only reaches the nested `$elements` array
+as `attr__…` and is far harder to break a funnel down by. Opt-in, because tagging every button would
+bury the handful that mean money.
+
+## §8.40-i · 🔴 THE MIGRATION IS A DEPLOY GATE, AND THE PAYMENT PROBE CANNOT SEE IT
+
+Migrations here are applied **by hand in the Supabase dashboard**. `create-order` inserts
+`ph_distinct_id` on every order, so if the code ships before the SQL runs, PostgREST answers PGRST204
+and **every pre-order returns 500**. The header of `0003_fb_attrib.sql` records this repo coming
+within a rebuild of exactly that.
+
+**And `npm run qa:payment` passing does NOT clear it.** `tools/qa/supabase-stub.mjs` `JSON.parse`s the
+body and stores it with no column validation whatever, so it accepts any field and always will. A
+green payment probe says the code path works; it says nothing at all about the schema. This is
+§8.34-f in another costume: **the harness is not the deployment target.** Run the SQL first, then
+deploy.

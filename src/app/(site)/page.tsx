@@ -244,7 +244,7 @@ export default function HomePage() {
           </Reveal>
           {/* the strongest fold carries the ask (Apple-tier rule) */}
           <Reveal className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
-            <Button href={PREORDER_HREF}>{PREORDER_LABEL}</Button>
+            <Button href={PREORDER_HREF} track="home-arc">{PREORDER_LABEL}</Button>
             <p className="text-[15px] text-ink-muted">{PRICE_CAPTION}</p>
           </Reveal>
         </Room>

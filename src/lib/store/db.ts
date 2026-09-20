@@ -42,6 +42,17 @@ export type PreorderRow = {
    *  was added on 2026-09-02 and every order before that has none, and because
    *  a visitor with the pixel blocked legitimately has nothing to store. */
   fb_attrib: Record<string, string> | null;
+  /** PostHog's own anonymous device id, captured in the browser at order time
+   *  (§8.40, founder 2026-09-20). It is what lets the SERVER-sent
+   *  `purchase_confirmed` event join the same person's funnel as the form
+   *  events, which the webhook otherwise has no way to know.
+   *
+   *  Nullable, and every consumer must cope: the column arrived in migration
+   *  0004 so every order before it has none, a visitor with PostHog blocked
+   *  legitimately has none, and losing the sale to protect the funnel would
+   *  invert the point. It is a device id, never a person: the server event sets
+   *  `$process_person_profile: false` so no profile is created. */
+  ph_distinct_id: string | null;
   created_at: string;
   paid_at: string | null;
 };

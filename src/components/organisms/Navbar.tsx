@@ -56,7 +56,7 @@ export function Navbar() {
               conflicts (R6, clsx+twMerge), but wrappers keep display
               responsibility out of shared components */}
           <div className="hidden sm:block">
-            <Button href={PREORDER_HREF} className="px-5 py-3 text-[15px]">
+            <Button href={PREORDER_HREF} track="navbar" className="px-5 py-3 text-[15px]">
               {PREORDER_LABEL}
             </Button>
           </div>
@@ -88,7 +88,7 @@ export function Navbar() {
                   </li>
                 ))}
                 <li className="px-3 pb-2 pt-3">
-                  <Button href={PREORDER_HREF} className="w-full">
+                  <Button href={PREORDER_HREF} track="navbar-mobile" className="w-full">
                     {PREORDER_LABEL}
                   </Button>
                 </li>
