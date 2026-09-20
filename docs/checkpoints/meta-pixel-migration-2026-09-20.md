@@ -326,3 +326,47 @@ inference, and is now superseded. Law **§8.41-i**.
 `Kheelona Dataset 1045085251085243` from that Conversions API connection's dataset list. Nothing in
 this repo can do it, and no code change is involved. Harmless meanwhile — a mirrored copy carries the
 browser event's own id, so nothing double counts.
+
+### Founder closed it, 2026-09-20 23:32 IST — and the History confirmed the diagnosis independently
+
+Business Manager → **Your Conversions API connections → Manage Datasets**, exclusion toggle. Result:
+**Datasets connected 1** (`1051265191046395`, Owned, Yes) · **Datasets excluded 1**. History row:
+`Dataset excluded · Dataset ID 1045085251085243 · Apoorva Sahu · Today at 11:32 PM`.
+
+**The same History page corroborated §8.41-i without being asked to**: the row above it reads
+`Conversions API added · This business is using the Conversions API · Apoorva Sahu · Today at 5:52 PM`.
+**5:52 PM is why the hourly CSV's first `server_received_count` appears in the 18:30 bucket and not
+earlier** — the mirroring began when the business connected, 26 minutes before the migration deploy at
+18:18. Two instruments, recorded independently, agreeing on a cause. That is what the earlier
+timestamp-correlation guess never had.
+
+**One setting to remember: "Automatically connect only your datasets" is ON**, so a dataset owned by
+this business connects to the Conversions API by itself. The exclusion is explicit and survives that,
+but **a NEW pixel created in this portfolio will start mirroring the moment it exists** — worth
+knowing before anyone creates one "just to test".
+
+Nothing in this repo changed for any of it: our direct Conversions API calls carry their own token and
+do not depend on this business connection.
+
+#### Verification of the exclusion, 23:33–23:38 IST — structurally confirmed, behaviourally pending
+
+| Reading | Time | Result |
+|---|---|---|
+| Old pixel `PageView` last received (baseline) | 23:33 | "1 hour ago" |
+| Fresh traffic fired, apex + store host | 23:34 | new pixel, `eventCount` 1 |
+| Old pixel last received | 23:35 | "1 hour ago" — unchanged |
+| New pixel Settings → Datasets connected | 23:35 | **(1): `1051265191046395` only** |
+| Old pixel last received | 23:38 | "1 hour ago" — still unchanged |
+
+**Structurally confirmed:** the connection lists one dataset, read from the pixel's own Settings page
+rather than the Business Manager screen where the change was made — two independent screens agreeing.
+
+**Behaviourally NOT yet confirmed, and stated plainly rather than claimed:** the live pixel's own
+Conversions API card also sat frozen at "25 minutes ago" through this window, so it did not register
+the 23:34 traffic either. **When the instrument has not moved for the control, it cannot prove
+anything about the subject.** The honest check is tomorrow: the old pixel's "last received" should
+keep ageing (2 hours, 3 hours, …) and never reset. If it does reset, the exclusion did not hold.
+
+**Either way nothing in this repo is at risk.** The mirrored copies were always Meta's bonus; the
+browser pixel and our own Conversions API `Purchase` are what the funnel actually runs on, and both
+are unaffected by this setting.

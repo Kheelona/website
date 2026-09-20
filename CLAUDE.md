@@ -67,11 +67,15 @@ and lists **Datasets connected (2): the new pixel AND the retired `1045085251085
 received" read *1 minute ago* while I was loading pages and *16 minutes ago* once I stopped — **server
 receipts start and stop with browser visits**, which is mirroring, not an independent server.
 
-**This is what keeps the retired pixel alive**, and it supersedes the earlier guess that its recent
+**This is what kept the retired pixel alive**, and it supersedes the earlier guess that its recent
 `PageView`s were my own verification traffic — that was timestamp correlation and it was the weaker
-explanation. **Removing the old dataset from that Conversions API connection is the one remaining
-step** for "one thing everywhere"; it is a founder settings change, not code. It also explains the
-"improve fbp coverage" prompt: the mirrored copies are the "server" Meta is complaining about.
+explanation. **✅ CLOSED by the founder at 23:32 on 2026-09-20**: Business Manager → Your Conversions
+API connections → Manage Datasets → excluded `1045085251085243`. Datasets connected **1**, excluded
+**1**. The same History page then corroborated the diagnosis on its own — `Conversions API added …
+Today at 5:52 PM`, which is **why the CSV's first server count sits in the 18:30 bucket**, 26 minutes
+before the deploy. **Note "Automatically connect only your datasets" is ON**, so any NEW pixel in this
+portfolio starts mirroring the moment it exists. It also explains the "improve fbp coverage" prompt:
+the mirrored copies are the "server" Meta is complaining about.
 Harmless for dedup (a mirrored copy carries the browser event's own id), so **nothing is double
 counted and there is nothing to fix in this repo.**
 
