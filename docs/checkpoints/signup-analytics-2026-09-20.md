@@ -176,3 +176,37 @@ types: `distinct_id` genuinely lives in `persistence.props`, so stitching was ne
 One near miss worth recording: a bad string edit left `PostHogGate.test.tsx` unparseable, and vitest
 reported **"1320 passed"** with the file silently not running. **A passing total is not a passing
 suite — read the file count too** (124, not 123).
+
+### Deployed and verified on production, 2026-09-20
+
+`bada255` then `b6ca6f9`. Live ~60s and ~40s after each push.
+
+**The migration hazard, cleared with the instrument rather than the proxy.** The founder ran
+`0004_ph_distinct_id.sql` on the `main PRODUCTION` branch. Because PostgREST caches its schema, a
+freshly added column can still answer PGRST204, which would have meant every pre-order returning 500
+on a live store. A single `POST /api/preorder/create-order` against production answered **200**, so
+the column is visible and the payment path is intact. Note the shape of that check: **if the schema
+had been broken it would have created nothing**, because the insert fails; the synthetic row only
+exists in the good case.
+
+**The campaign, end to end, on the real hosts** — this is the claim the first mechanism never met:
+
+| Step | URL | Result |
+|---|---|---|
+| 1 | `kheelona.com/?utm_source=…&utm_campaign=…` | `Set-Cookie: kh_utm={…}; Domain=.kheelona.com; Secure; HttpOnly; SameSite=lax` |
+| 2 | `kheelona.com/products/kheelu` (clean URL) | cookie retained |
+| 3 | `store.kheelona.com/` (clean URL, **different host**) | **cookie sent** |
+| control | `kheelona.com/products/kheelu` untagged | no cookie set |
+
+Also verified live: the eight CTA placements render distinctly (`hero`, `navbar`, `compare`,
+`finale`, `home-arc` on the home page; `product-top`, `product-foot` on the product page), both
+`/privacy` sentences are published, and `/api/health` still reads
+`store:ready preorder:token razorpay:live`.
+
+**Synthetic data written to production during verification, disclosed rather than left to be found:**
+
+| What | Where | Note |
+|---|---|---|
+| Order `KH-7QA4-D9QM`, name "ZZ DEPLOY CHECK (delete me)" | Supabase `preorders`, `status='created'` | No payment taken. Safe to delete. |
+| Razorpay order `order_TeFu2pvrUqqKT0` | Razorpay dashboard | Unpaid, expires on its own. |
+| Events tagged `utm_source=deploy-check` | PostHog | A handful of pageviews from the journey checks. |
