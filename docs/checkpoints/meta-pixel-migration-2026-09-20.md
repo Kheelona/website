@@ -177,3 +177,39 @@ it yet** — re-read it after real traffic.
 2. **Regenerate the CAPI token and press Redeploy.** Both tokens used this round are in a chat
    transcript and are **business-scoped**, so deleting the old pixel does not neutralise them. A Vercel
    variable only applies to deployments created after it changes, so the Redeploy is not optional.
+
+---
+
+## Post-cutover verification, after the founder's token rotation and redeploy
+
+**Founder completed both outstanding actions.** `META_CAPI_TOKEN` updated in Vercel and a redeploy
+run (`Redeploy of BcuHVxLTj`, Ready). The old pixel could not be deleted — Meta offers no delete for a
+pixel with history — so **all its connections were disconnected instead**, which achieves the same
+outcome: nothing can send to it and no ad account can select it.
+
+| Check | Result |
+|---|---|
+| `fbq('init', …)` on both hosts | **1051265191046395** |
+| `/api/health` | `capi: "configured"` after the redeploy |
+| New pixel | PageView **Browser • Server**, Purchase Server |
+| Old pixel, last PageView | **5 hours ago — before the migration deployed 4 hours ago** |
+
+**The old dataset's "currently receiving event data" banner is a 28-day window, not live status.**
+Its event list tells the real story: last PageView 5 hours ago, i.e. before cutover. It has gone quiet.
+Worth recording because the banner reads like a contradiction and is not one.
+
+### 🔴 The one thing still unproven, stated plainly
+
+**`capi: "configured"` proves a token is PRESENT, not that it WORKS.** The token I validated against
+both pixels has been replaced by one I have never seen, which was the entire point of rotating it. Its
+validity is therefore unverified and **cannot be verified without a real order**.
+
+**What success looks like:** the first real pre-order produces a Purchase on the new pixel with
+connection method **"Multiple"** (browser plus server, deduplicated on `event_id`).
+
+**What failure looks like:** Purchase shows **"Browser"** only, and the Vercel runtime log carries
+`[meta-capi] REJECTED` with Meta's reason. The fix would be one more token, and no code change.
+
+**Not actionable yet:** Events Manager now recommends improving `fbp` coverage. That is an artefact of
+the only server events on this pixel being test payloads with no `fbp`; a real order carries it from
+`readFbAttrib`. Re-read after real traffic rather than acting on it.
