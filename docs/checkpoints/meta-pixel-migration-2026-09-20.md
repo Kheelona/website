@@ -1,7 +1,7 @@
 # Meta: pixel migration and the ad click id (2026-09-20)
 
 **Status: CODE READY, NOT YET PUSHED — gated on the founder's Meta settings.**
-Laws **§8.41 a-f**. Rollback tags `pre-meta-clickid-2026-09-20` = `b1078de` and
+Laws **§8.41 a-i**. Rollback tags `pre-meta-clickid-2026-09-20` = `b1078de` and
 `pre-meta-pixel-migration-2026-09-20` = `06a93b8`.
 
 ---

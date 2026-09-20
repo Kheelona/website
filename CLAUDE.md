@@ -1,7 +1,7 @@
 # kheelona.com — session entry point
 
 **🎯 THE META PIXEL MOVED TO `1051265191046395` — DEPLOYED AND VERIFIED ON PRODUCTION 2026-09-20.**
-Record: `docs/checkpoints/meta-pixel-migration-2026-09-20.md`; laws **§8.41 a-f**; rollback tags
+Record: `docs/checkpoints/meta-pixel-migration-2026-09-20.md`; laws **§8.41 a-i**; rollback tags
 `pre-meta-clickid-2026-09-20` = `b1078de`, `pre-meta-pixel-migration-2026-09-20` = `06a93b8`.
 `1045085251085243` (retired) carried every event and both integrations but was **not assigned to the
 ad account**; this one was assigned and had never received an event. **Founder decision, for
