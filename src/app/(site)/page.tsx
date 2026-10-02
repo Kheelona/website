@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   Check,
+  Play,
   MapPin,
   RotateCcw,
   MessageCircle,
@@ -28,6 +29,7 @@ import { FOUNDERS } from "@/lib/team";
 import {
   PREORDER_HREF,
   RESERVE_LABEL,
+  PRICE_CAPTION,
   TOKEN_PRICE,
   BALANCE_PRICE,
   CAP_UNITS_TEXT,
@@ -35,6 +37,7 @@ import {
   LAUNCH_PRICE,
   SHIP_DATE_TEXT,
   KHEELU_AGES,
+  KHEELU_LANGUAGES,
   KHEELONA_PLUS_LINE,
   TAX_LINE,
   SUPPORT_WHATSAPP_HREF,
@@ -84,6 +87,13 @@ const HOME_FAQ: FaqEntry[] = [
 
 const HOME_JSON_LD = pageGraph(KHEELU_PRODUCT, faqPage(HOME_FAQ), breadcrumbs([]));
 
+const TICKS = [
+  "No screen, ever",
+  `${KHEELU_LANGUAGES.length} home languages`,
+  "No open internet",
+  "Parents see everything",
+] as const;
+
 const STEPS = [
   { title: "Your child asks", body: "Any question, in their own words.", eg: "“Why do I have to sleep?”" },
   { title: "Kheelu answers", body: "In simple words, pitched at their age.", eg: "“Your body fixes itself while you rest.”" },
@@ -123,16 +133,35 @@ export default function HomePage() {
       <section className="pb-9 pt-5 min-[900px]:pb-14 min-[900px]:pt-[60px]">
         <div className="kh-wrap grid gap-[22px] min-[900px]:grid-cols-[1fr_1.05fr] min-[900px]:items-center min-[900px]:gap-14">
           <div className="flex flex-col gap-[18px] min-[900px]:order-1">
-            {/* Content doc v7: the hero says ONE thing. The refund promise is in
-                the trust strip below, and the four ticks that sat here are rows
-                of the comparison table further down. On a phone this whole hero
-                (photo, line, button) fits one screen. */}
-            <h1 className="kh-h1">Kheelu is an AI toy built to help your child&apos;s brain grow.</h1>
+            <span className="kh-pill">AI toy for growing minds · Ages {KHEELU_AGES}</span>
+            <h1 className="kh-h1">Screens make children watch. Kheelu makes them think.</h1>
+            <p className="kh-lead">
+              Kheelu is a screen-free AI toy that answers your child&apos;s questions, asks one
+              back, and helps their brain grow through real conversation.
+            </p>
             <div className="kh-cta-row">
               <Button href={PREORDER_HREF} track="hero">
                 {RESERVE_LABEL}
               </Button>
+              {hasVideoMoments() ? (
+                <Button href="#watch" variant="ghost">
+                  <Play className="h-[18px] w-[18px]" fill="currentColor" aria-hidden="true" />
+                  Watch a child meet Kheelu
+                </Button>
+              ) : null}
             </div>
+            <p className="kh-note">{PRICE_CAPTION} Ships {SHIP_DATE_TEXT}.</p>
+            <ul className="grid grid-cols-2 gap-2.5">
+              {TICKS.map((t) => (
+                <li
+                  key={t}
+                  className="flex items-center gap-2 rounded-xl border border-line bg-surface px-3 py-2.5 text-[14px] font-medium text-ink-head"
+                >
+                  <Check className="h-4 w-4 shrink-0 text-green" aria-hidden="true" />
+                  {t}
+                </li>
+              ))}
+            </ul>
           </div>
           {/* The mockup draws a photo of a child hugging Kheelu here. Until a
               consented still exists, the product art stands in on a warm tint
@@ -253,7 +282,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Content doc v7, screen 6: replaces the hero's four ticks. */}
+      {/* Content doc v7, screen 6. The hero keeps its four ticks too (founder,
+          2026-10-02: the one-line hero left empty space and lost the link to
+          the films), so they appear in both places. */}
       <section id="compare" className="kh-sec kh-alt">
         <div className="kh-wrap kh-stack-l">
           <div className="kh-stack max-w-[720px]">
