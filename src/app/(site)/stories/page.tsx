@@ -36,7 +36,6 @@ const ROOM_CYCLE = [
   { fill: "cream", card: "bg-white" },
   { fill: "cool", card: "bg-white" },
 ] as const;
-const REVEALS = ["left", "right"] as const;
 
 const JOURNAL_JSON_LD = pageGraph(
   {
@@ -72,9 +71,7 @@ export default function StoriesPage() {
         dangerouslySetInnerHTML={{ __html: jsonLd(JOURNAL_JSON_LD) }}
       />
       <PageHero
-        guide="curious"
         /* GATED:kheelu-line — founder sign-off before merge to master */
-        say="Bedtime reading, but for you."
       >
         <SectionHeading
           as="h1"
@@ -98,7 +95,6 @@ export default function StoriesPage() {
                observer hydrates, which measured a 4.3s LCP on throttled mobile
                (Lighthouse 85). Room.tsx already carries the rule — reveals are
                for BELOW-fold rooms — this makes the loop obey it. */
-            reveal={t === 0 ? "none" : REVEALS[t % REVEALS.length]}
           >
             <Reveal>
               <SectionHeading level="minor" title={theme} titleClassName="mb-7" />
@@ -161,13 +157,10 @@ export default function StoriesPage() {
         <Room
           fill="white"
           id="reserve"
-          guide="silly"
           /* GATED:kheelu-line */
-          say="Save your spot. I'll mind Kheelu till launch."
-          reveal="pop"
           className="overflow-x-clip"
         >
-          <FinaleCTA bare variant="compact" />
+          <FinaleCTA bare />
         </Room>
       </RoomsTrack>
     </>

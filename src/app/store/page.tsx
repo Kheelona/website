@@ -11,6 +11,7 @@ import {
   FULL_PRICE,
   TOKEN_PRICE,
   SUPPORT_WHATSAPP_HREF,
+  KHEELU_AGES,
 } from "@/config/site";
 
 /** store.kheelona.com (§8.25-w, mode-gated since §8.26).
@@ -51,49 +52,54 @@ export default async function StorePage() {
 
   return (
     <>
-    <div className="mx-auto grid w-full max-w-[1100px] gap-10 px-6 py-10 md:grid-cols-[1fr_420px] md:py-14">
+    {/* Redesign 2026-10: the mockup's single reserve column. The summary now
+        sits ABOVE the form, so on a phone the refund promise, the balance and
+        the ship date are read before a parent types anything, which undoes
+        the cost recorded in the header comment above. */}
+    <div className="mx-auto flex w-full max-w-[620px] flex-col gap-[22px] px-5 pb-16 pt-7 md:pt-12">
       <div>
-        <div className="mb-6 flex items-start gap-5">
-          <div>
-            <p className="mb-2 text-[13px] font-bold uppercase tracking-[0.08em] text-orange-ink">
-              Pre-order
-            </p>
-            <h1 className="max-w-[20ch] font-display text-[clamp(30px,4vw,44px)] font-extrabold leading-[1.08] text-ink-head">
-              {mode === "token"
-                ? `Reserve Kheelu for ${TOKEN_PRICE}.`
-                : `Pre-order Kheelu for ${FULL_PRICE}.`}
-            </h1>
-          </div>
-          {/* Small on purpose: the form is what this page is for, and a full
-              hero plush would push it below the fold on a phone. The image is
-              here to reassure, not to sell again. */}
+        <p className="kh-kicker mb-2">Pre-order</p>
+        <h1 className="kh-h2">
+          {mode === "token"
+            ? `Reserve Kheelu for ${TOKEN_PRICE}.`
+            : `Pre-order Kheelu for ${FULL_PRICE}.`}
+        </h1>
+      </div>
+
+      <div className="flex items-center gap-4 rounded-[22px] border border-line bg-surface p-[22px]">
+        {/* Small on purpose: the form is what this page is for. The image is
+            here to reassure, not to sell again. */}
+        <span className="flex h-24 w-24 shrink-0 items-center justify-center rounded-2xl bg-blush">
           <Image
             src={KHEELU_ART.src}
             alt={KHEELU_ART.alt}
             width={KHEELU_ART.width}
             height={KHEELU_ART.height}
             priority
-            sizes="(max-width: 768px) 30vw, 200px"
-            className="h-[120px] w-auto shrink-0 md:h-[180px]"
+            sizes="96px"
+            className="h-[84px] w-auto"
           />
-        </div>
-
-        <div className="max-w-[520px]">
-          <PreorderForm
-            tier={tier.id}
-            amountLabel={formatInr(tier.amountPaise)}
-            mode={mode}
-          />
+        </span>
+        <div className="flex flex-col gap-1">
+          <b className="text-[18px] text-ink-head">Kheelu, cream</b>
+          <span className="kh-note">The screen-free AI toy, ages {KHEELU_AGES}</span>
         </div>
       </div>
 
-      <aside className="md:sticky md:top-6 md:self-start md:pt-2">
-        <OrderSummary
+      <OrderSummary
+        amountLabel={formatInr(tier.amountPaise)}
+        tierLabel={tier.label}
+        mode={mode}
+      />
+
+      <div>
+        <h2 className="mb-4 font-display text-[22px] font-semibold text-ink-head">Your details</h2>
+        <PreorderForm
+          tier={tier.id}
           amountLabel={formatInr(tier.amountPaise)}
-          tierLabel={tier.label}
           mode={mode}
         />
-      </aside>
+      </div>
     </div>
 
     {/* Real families on film (§8.37).
@@ -111,14 +117,16 @@ export default async function StorePage() {
         props from the tier, renders no price, and mounts no <video> until
         a visitor asks for one. */}
     {hasVideoMoments() && (
-      <section className="mx-auto w-full max-w-[1100px] border-t border-line px-6 py-10 md:py-14">
-        <h2 className="mb-2 font-display text-[clamp(22px,2.6vw,30px)] font-extrabold leading-tight text-ink-head">
+      <section className="border-t border-line bg-surface py-[52px] md:py-[84px]">
+      <div className="kh-wrap">
+        <h2 className="mb-2 font-display text-[clamp(22px,2.6vw,30px)] font-semibold leading-tight text-ink-head">
           Families already using Kheelu.
         </h2>
         <p className="mb-8 max-w-[52ch] text-[16px] leading-relaxed text-ink">
           {videoLede()}
         </p>
         <VideoMoments moments={VIDEO_MOMENTS} />
+      </div>
       </section>
     )}
     </>
@@ -128,7 +136,7 @@ export default async function StorePage() {
 function NotConfiguredState() {
   return (
     <div className="mx-auto w-full max-w-[640px] px-6 py-16 md:py-24">
-      <h1 className="mb-4 font-display text-[clamp(30px,4vw,42px)] font-extrabold leading-[1.1] text-ink-head">
+      <h1 className="mb-4 font-display text-[clamp(30px,4vw,42px)] font-semibold leading-[1.1] text-ink-head">
         Pre-orders open here shortly.
       </h1>
       <p className="mb-6 text-[17px] leading-[1.6] text-ink">
@@ -137,7 +145,7 @@ function NotConfiguredState() {
       </p>
       <a
         href={SUPPORT_WHATSAPP_HREF}
-        className="inline-flex items-center justify-center rounded-full bg-action px-7 py-4 text-[17px] font-bold text-white shadow-cta focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
+        className="inline-flex items-center justify-center rounded-full min-h-[52px] bg-action px-6 text-[17px] font-semibold text-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
       >
         Message us on WhatsApp
       </a>

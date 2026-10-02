@@ -1,41 +1,27 @@
 import { render, screen } from "@testing-library/react";
 import { Room } from "./Room";
 
-describe("Room", () => {
-  it("renders its children in a white panel by default", () => {
+describe("Room (redesign 2026-10: a full-bleed band)", () => {
+  it("renders its children in the 1180px content column, on the surface band by default", () => {
     render(<Room>Reserve Kheelu</Room>);
-    const el = screen.getByText("Reserve Kheelu").closest("section")!;
-    expect(el.className).toContain("bg-white");
-    expect(el.className).toContain("rounded-(--radius-room)");
+    const column = screen.getByText("Reserve Kheelu");
+    expect(column.className).toContain("kh-wrap");
+    expect(column.closest("section")!.className).toContain("bg-surface");
   });
 
-  it("offers the four calm fills and no conversion orange (retired in V4)", () => {
+  it("maps every other fill to the cream page band, and never a conversion fill", () => {
     render(<Room fill="sun">copy</Room>);
     const el = screen.getByText("copy").closest("section")!;
-    expect(el.className).toContain("bg-sun");
+    expect(el.className).toContain("bg-bg");
     expect(el.className).not.toContain("bg-action");
-    expect(el.className).not.toContain("text-white");
   });
 
-  it("exposes guide pose and say line as data attributes for KheeluGuide", () => {
-    render(
-      <Room guide="curious" say="These folks vouch for us.">
-        copy
-      </Room>,
-    );
-    const el = screen.getByText("copy").closest("section")!;
-    expect(el).toHaveAttribute("data-guide", "curious");
-    expect(el).toHaveAttribute("data-say", "These folks vouch for us.");
-  });
-
-  it("opts into a directional reveal only when asked", () => {
-    render(<Room reveal="left">copy</Room>);
-    expect(screen.getByText("copy").closest("section")).toHaveAttribute("data-reveal", "left");
-  });
-
-  it("carries no reveal attribute by default (LCP-safe)", () => {
+  it("carries no mascot or reveal attributes any more", () => {
     render(<Room>copy</Room>);
-    expect(screen.getByText("copy").closest("section")).not.toHaveAttribute("data-reveal");
+    const el = screen.getByText("copy").closest("section")!;
+    expect(el).not.toHaveAttribute("data-say");
+    expect(el).not.toHaveAttribute("data-guide");
+    expect(el).not.toHaveAttribute("data-reveal");
   });
 
   it("forwards an id for anchor targets", () => {

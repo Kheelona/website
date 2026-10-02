@@ -89,7 +89,7 @@ export function AddressForm({
   if (state === "saved") {
     return (
       <div className="rounded-(--radius-card) border border-line bg-white p-6">
-        <p className="font-display text-[20px] font-extrabold text-ink-head">
+        <p className="font-display text-[20px] font-semibold text-ink-head">
           We have your address.
         </p>
         <p className="mt-2 max-w-[48ch] text-[16px] text-ink">
@@ -175,7 +175,7 @@ export function AddressForm({
         type="submit"
         disabled={state === "saving"}
         className={cn(
-          "inline-flex items-center justify-center rounded-full bg-action px-7 py-4 text-[17px] font-bold text-white shadow-cta",
+          "inline-flex items-center justify-center rounded-full min-h-[52px] bg-action px-6 text-[17px] font-semibold text-bg",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2",
           PRESS_LIFT,
           state === "saving" && "cursor-wait opacity-70",

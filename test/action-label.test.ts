@@ -59,7 +59,7 @@ const FILES = sourceFiles(join(ROOT, "src")).map((path) => ({
 /** The ink colours that must never label an orange fill. */
 const INK_LABELS = ["text-ink-head", "text-ink-muted", "text-ink "];
 
-describe("§8.29: labels on the action fill are white", () => {
+describe("labels on the action fill are the page colour, never ink", () => {
   it("finds source files to scan, so a silent empty pass is impossible", () => {
     expect(FILES.length).toBeGreaterThan(50);
     expect(FILES.some((f) => f.path.endsWith("components/atoms/Button.tsx"))).toBe(true);
@@ -96,13 +96,17 @@ describe("§8.29: labels on the action fill are white", () => {
   /* The positive half: the atom every CTA routes through actually says white.
      Rules A and B are both satisfied by deleting all the colours, so one
      assertion has to state what the right answer IS. */
-  it("keeps the white label on the Button atom's filled variants", () => {
+  /* Redesign 2026-10: the action fill is INK now (it was brand orange under
+     §8.29), so an ink label on it is invisible rather than merely low
+     contrast. Rules A and B above still hold for exactly that reason. The
+     label is the page colour (`text-bg`), 14:1 and up in both themes; see
+     test/contrast-tokens.test.ts. */
+  it("keeps a page-coloured label on the Button atom's action fill", () => {
     const button = FILES.find((f) => f.path.endsWith("components/atoms/Button.tsx"))!.src;
     const variants = button.match(/const VARIANTS[\s\S]*?\n};/)?.[0];
     expect(variants, "Button.tsx no longer declares a VARIANTS map").toBeTruthy();
     const filled = variants!.split("\n").filter((line) => line.includes("bg-action"));
-    // primary and onDark
-    expect(filled.length).toBe(2);
-    for (const line of filled) expect(line).toContain("text-white");
+    expect(filled.length).toBe(1);
+    for (const line of filled) expect(line).toMatch(/text-(bg|white)\b/);
   });
 });

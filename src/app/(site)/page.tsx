@@ -1,24 +1,34 @@
+import Image from "next/image";
 import Link from "next/link";
-import { Room } from "@/components/atoms/Room";
-import { RoomsTrack } from "@/components/atoms/RoomsTrack";
+import {
+  Check,
+  Play,
+  MapPin,
+  RotateCcw,
+  MessageCircle,
+  CalendarDays,
+  Mic,
+  WifiOff,
+  MessageSquareText,
+  ShieldCheck,
+  ArrowRight,
+} from "lucide-react";
 import { Button } from "@/components/atoms/Button";
-import { Reveal } from "@/components/molecules/Reveal";
-import { SectionHeading } from "@/components/molecules/SectionHeading";
-import { FootnotesRow, Footnote, V3_FOOTNOTES } from "@/components/molecules/FootnotesRow";
 import { Faq, type FaqEntry } from "@/components/molecules/Faq";
-import { pageGraph, faqPage, breadcrumbs, KHEELU_PRODUCT, pageMeta, jsonLd } from "@/lib/seo";
-import { VIDEO_MOMENTS, hasVideoMoments, videoLede } from "@/lib/video-moments";
-import { RecognitionStrip } from "@/components/organisms/RecognitionStrip";
+import { VideoWall } from "@/components/organisms/VideoWall";
 import { ParentQuotes } from "@/components/organisms/ParentQuotes";
+import { AgeTabs } from "@/components/organisms/AgeTabs";
+import { TwoReasons } from "@/components/organisms/TwoReasons";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
-import { FeelingsGallery } from "@/components/organisms/FeelingsGallery";
-import { KheeluModes } from "@/components/organisms/KheeluModes";
-import { HowItWorksLoop, type LoopStep } from "@/components/organisms/HowItWorksLoop";
-import { GrowthArc } from "@/components/organisms/GrowthArc";
-import { VideoMoments } from "@/components/organisms/VideoMoments";
+import { ComparisonTable } from "@/components/organisms/ComparisonTable";
+import { ViewContentTracker } from "@/components/molecules/ViewContentTracker";
+import { pageGraph, faqPage, breadcrumbs, KHEELU_PRODUCT, pageMeta, jsonLd } from "@/lib/seo";
+import { VIDEO_MOMENTS, hasVideoMoments } from "@/lib/video-moments";
+import { KHEELU_ART } from "@/lib/kheelu-art";
+import { FOUNDERS } from "@/lib/team";
 import {
   PREORDER_HREF,
-  PREORDER_LABEL,
+  RESERVE_LABEL,
   PRICE_CAPTION,
   TOKEN_PRICE,
   BALANCE_PRICE,
@@ -27,129 +37,83 @@ import {
   LAUNCH_PRICE,
   SHIP_DATE_TEXT,
   KHEELU_AGES,
+  KHEELU_LANGUAGES,
+  KHEELONA_PLUS_LINE,
+  TAX_LINE,
+  SUPPORT_WHATSAPP_HREF,
 } from "@/config/site";
-import {
-  Hero,
-  TrustRoom,
-  Family,
-  KheeluOrbit,
-  Compare,
-  Journal,
-  ParentAppSection,
-} from "@/features/home";
 
 export const metadata = pageMeta({
-  /* 72 characters rendered, and deliberately over Google's ~60-character display
-     budget (founder, 2026-08-12). It is one of exactly four places the tutor
-     narrative is allowed to live (V6), and it carries the head keywords; Google
-     reads the whole title and only clips the visible tail, so the cost is a few
-     pixels of click-through, not rank.
-
-     NO HAND-WRITTEN BRAND SUFFIX. This line used to end "· Kheelona" on the
-     theory that the root layout's `%s · Kheelona` template applies only to child
-     segments and Home is the root segment. That is true of `app/page.tsx` — but
-     this page is `app/(site)/page.tsx`, and a route group IS a segment for
-     metadata even though it is not one in the URL. So the template applied, and
-     production served `... ages 3+ · Kheelona · Kheelona` for months.
-
-     Found live 2026-09-05. Every route now writes the bare title and lets the
-     template add the brand exactly once, so there is no root-segment special
-     case left to get wrong. */
+  /* The bare title: the root layout's `%s · Kheelona` template adds the brand
+     exactly once (route groups are metadata segments, 2026-09-05). */
   title: "Kheelu: the screen-free AI toy with a tutor inside, ages 3+",
   description:
-    "A best friend at 3, a head start for school. The screen-free toy that grows with your child, in your home languages. Pre-order at ₹4,999, ₹499 refundable.",
+    "Screens make children watch. Kheelu makes them think: a screen-free AI toy that answers, asks back, and grows with your child. ₹499 reserves yours at ₹4,999.",
   path: "/",
 });
 
-/* The questions parents actually type, answered on the page a search or an
-   answer engine lands on first. Straight from the AEO question bank in
-   docs/revamp-2026-07/research.md: almost no authoritative answer exists for
-   these in India, which is the opening. Every answer restates published copy,
-   40 to 60 words, self-contained enough to be quoted on its own. */
+/* The mockup's six home questions, answered in the site's PUBLISHED words
+   (redesign 2026-10). Two of the mockup's questions are not here because no
+   published answer exists yet: whether Kheelu understands a 3-year-old first
+   time (needs a pilot number) and whether a child's voice trains the model
+   (needs the vendor terms read). They are in Technical-Todo.md. The full set
+   lives on /faq. Every answer is visible, so FAQPage may describe it. */
 const HOME_FAQ: FaqEntry[] = [
   {
     q: "What is Kheelu?",
-    /* SEO round 2026-08-12 (agency keywords, founder-directed): this answer
-       carries "screen-free toy" and "interactive AI toy" exactly; the third
-       Home keyword, "smart toy", is deliberately NOT written here — the
-       compare table already serves it seven times as the category Kheelu is
-       contrasted against, and calling Kheelu a smart toy would undercut that. */
     a: "Kheelu is a screen-free toy that talks with children aged 3 and up: your child speaks to it and it answers, tells stories, sings, and asks questions back. It is an interactive AI toy with no screen at all, it cannot reach the open internet, and every conversation is readable by you in the parent app.",
   },
-  /* V6 D3: the parents' own question from the feedback that drove this round,
-     kept nearly verbatim — the FAQ that mirrors the reader's exact objection
-     is the one they open. */
   {
-    q: "What will my child actually get out of Kheelu?",
-    a: "A friend at 3, and a head start for school. Kheelu answers your child's questions, remembers the words they know, and builds on them the next day: stories, numbers, thinking games, and the languages you speak at home. The parent app counts the new words, so you see the growth, not just the play.",
+    q: "Is an AI toy safe for a small child?",
+    a: "Not all of them are, and what makes a safe toy is how it is built. Kheelu wakes to a word and the microphone is off the rest of the time, the first thinking happens on the toy, answers come from a closed library rather than the open internet, and you can read or delete every conversation.",
   },
   {
-    q: "How much does Kheelu cost in India?",
-    a: `${LAUNCH_PRICE} for the ${CAP_UNITS_TEXT}, and ${FULL_PRICE} once they are gone. A refundable ${TOKEN_PRICE} reserves your Kheelu now, and the ${BALANCE_PRICE} balance is due only when it is ready to ship. Every Kheelu includes 6 months of Kheelona+.`,
+    q: "Is there a subscription?",
+    a: "Every Kheelu includes 6 months of Kheelona+, the stories, lessons, languages, and the parent app. Kheelu's smart features are yours for life, Kheelona+ pricing is announced soon, and nothing renews without you.",
   },
   {
-    q: "What ages is Kheelu for?",
-    a: "Ages 3+. Kheelu meets your child where they are and grows with them, and the wider family of Kheelona friends that follows, the Kheelu Speaker and AI books, keeps growing alongside.",
-  },
-  {
-    q: "Which languages does Kheelu speak?",
-    a: "English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish, and French, with up to ten languages at launch. Kheelu can switch mid-sentence, in the languages you speak at home.",
+    q: `Can I get my ${TOKEN_PRICE} back?`,
+    a: `Yes, in full, any time before we dispatch your Kheelu. The ${BALANCE_PRICE} balance is due only when your Kheelu is ready to ship.`,
   },
   {
     q: "When does Kheelu ship?",
     a: `Shipping starts ${SHIP_DATE_TEXT}. Pre-ordering now holds the ${LAUNCH_PRICE} price and your place in line for a refundable ${TOKEN_PRICE}, and pre-orders are served first.`,
   },
-  /* V6 D4a (founder-licensed fact): mode-precise. The old flat "No" was a
-     post-purchase complaint in waiting — a precise admission converts better
-     than a broad claim. */
   {
     q: "Does Kheelu need the internet to work?",
-    a: "For open conversation, yes: AI mode runs on your home WiFi. For everything else, no: Story-mode stories and lessons play offline, and Bluetooth music needs only a paired phone. On a train or anywhere without a signal, your child still has stories to interrupt, question, and be quizzed on.",
-  },
-  /* V6 D7: opens with the same honest verdict as the /safety flagship answer,
-     so the two pages agree in substance and differ only in length. */
-  {
-    q: "Is an AI toy safe for a small child?",
-    a: "Not all of them are, and what makes a safe toy is how it is built. Kheelu wakes to a word and the microphone is off the rest of the time, the first thinking happens on the toy, answers come from a closed library rather than the open internet, and you can read or delete every conversation.",
+    a: "For open conversation, yes: AI mode runs on your home WiFi. For everything else, no: Story-mode stories and lessons play offline, and Bluetooth music needs only a paired phone.",
   },
 ];
 
-/* V4 (D7): the VideoObject left this graph with the film — schema mirrors
-   visible content only, and the film is no longer on the page. */
-const HOME_JSON_LD = pageGraph(
-  KHEELU_PRODUCT,
-  faqPage(HOME_FAQ),
-  breadcrumbs([]),
-);
+const HOME_JSON_LD = pageGraph(KHEELU_PRODUCT, faqPage(HOME_FAQ), breadcrumbs([]));
 
-/* The team's How-It-Works sequence (BUILD-V4 §3 F4), typos mended, with the
-   KheeluModes naming convention: the parent verb leads, the term follows. */
-const LOOP_STEPS: readonly LoopStep[] = [
-  {
-    title: "Talk and play",
-    label: "Step 1",
-    body: "Your child asks questions, plays word games, and listens to stories that talk back, in their own language.",
-  },
-  {
-    title: "Kheelu remembers",
-    label: "Step 2 · Adaptive memory",
-    body: "Kheelu keeps track of the words your child knows, what they love, and the pace they learn at.",
-  },
-  {
-    title: "Knowledge that sticks",
-    label: "Step 3 · Real-world learning",
-    body: "New ideas arrive inside everyday conversation, not forced drills.",
-  },
-];
+const TICKS = [
+  "No screen, ever",
+  `${KHEELU_LANGUAGES.length} home languages`,
+  "No open internet",
+  "Parents see everything",
+] as const;
 
-/* V4 recomposition (team feedback 2026-07-30, BUILD-V4 §3): the argument now
-   runs claim → proof → HEAR IT (real audio) → how it works → the day → trust
-   → the age arc → feelings → the parent's view → comparison → proof → the
-   ask. Two team verdicts shaped it: "too much content, less value" (four
-   heavy rooms out, two lighter ones in) and "show, don't tell" (the audio IS
-   the concept section). Every say line is GATED:kheelu-line until founder
-   sign-off, and V4's §5.1 caps them at 48 characters for the right-corner
-   bubble. Copy provenance: BUILD-V4 §3. */
+const STEPS = [
+  { title: "Your child asks", body: "Any question, in their own words.", eg: "“Why do I have to sleep?”" },
+  { title: "Kheelu answers", body: "In simple words, pitched at their age.", eg: "“Your body fixes itself while you rest.”" },
+  { title: "Kheelu asks back", body: "A question keeps them thinking and talking.", eg: "“What do you dream about?”" },
+  /* The mockup's "Kheelu adapts" was flagged unconfirmed; this is the
+     published step-2 wording from the how-it-works loop. */
+  { title: "Kheelu remembers", body: "It keeps track of the words your child knows, what they love, and the pace they learn at." },
+] as const;
+
+/* The four things parents ask first (content doc v7, incorporated
+   2026-10-02). The mic wording follows the doc's Appendix B: the mic has to
+   listen for the wake word, so it is not described as "off" here. The wake
+   word itself is not published yet, so the card names it generically. */
+const SAFETY = [
+  { Icon: Mic, title: "It listens for one word", body: "Nothing is recorded or sent until your child says the wake word." },
+  { Icon: WifiOff, title: "It can't browse the internet", body: "It connects only to our own servers. No websites, no videos, no strangers." },
+  { Icon: MessageSquareText, title: "You can read every conversation", body: "Word for word, in the parent app. Delete anything with one tap." },
+  { Icon: ShieldCheck, title: "It says it's a toy", body: "Kheelu tells your child it's a toy, and it never asks them to keep a secret from you." },
+] as const;
+
 export default function HomePage() {
   return (
     <>
@@ -157,244 +121,343 @@ export default function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLd(HOME_JSON_LD) }}
       />
-      <Hero />
-      <RoomsTrack>
-        <Room fill="white" guide="curious" say="These folks vouch for us. Real ones." reveal="pop">
-          <RecognitionStrip bare />
-        </Room>
+      {/* Meta ViewContent on Home too (founder, 2026-10-02): since the
+          redesign Home carries the product, the price and the reserve CTA,
+          so a home visit is a product view. Same payload as /kheelu; it
+          renders nothing and no-ops off the production hosts. Note for
+          Ads Manager: ViewContent counts rise from this date, and are not
+          comparable with the weeks before it. */}
+      <ViewContentTracker />
 
-        {/* Real families on film (§8.37), in the slot the audio demos held.
-            Founder, 2026-09-19: the audio room was a stand-in created because
-            no real user video existed, and it goes now that this does.
-
-            THE ROOM SURVIVES THE SWAP, and that is the point of the shape
-            below. Three things in here have nothing to do with the media: the
-            languages line carries Home's ONLY footnote-1 marker (delete it and
-            the note at the page bottom is orphaned), the bilingual paragraph
-            carries Home's ONLY internal link to the article that already ranks
-            first in India for that query, and the CTA is here because the
-            strongest fold carries the ask. All three stay, whatever the media
-            above them is doing.
-
-            TWO HEADINGS, because the library is empty and a heading that
-            promises films above no films is a lie the page tells by itself
-            (§8.37-d). With three or more videos the room is the video room.
-            Until then it is honest about what it actually holds, which is the
-            language story, and the swap needs no deploy. */}
-        <Room
-          fill="cream"
-          id="learning"
-          guide="joy"
-          /* Founder-approved 2026-09-19. Omitted entirely in the empty state
-             rather than replaced with an unapproved line: every mascot speech
-             line is approved before it ships, and "press play" is false when
-             there is nothing to press. */
-          say={hasVideoMoments() ? "Real homes, real kids. Press play." : undefined}
-          reveal="left"
-        >
-          <Reveal>
-            {hasVideoMoments() ? (
-              <SectionHeading
-                eyebrow="See it for yourself"
-                title="Watch a child meet Kheelu."
-                titleClassName="mb-3"
-                lede={videoLede()}
-                ledeClassName="mb-10 max-w-[58ch]"
-              />
-            ) : (
-              /* No lede in this state, deliberately: the languages line two
-                 blocks down already says "in the languages you speak at home",
-                 and a lede saying the same thing in different words reads as
-                 the page repeating itself. The title carries it. */
-              <SectionHeading
-                eyebrow="Their own words"
-                title="The language your child thinks in."
-                titleClassName="mb-8"
-              />
-            )}
-          </Reveal>
-          {hasVideoMoments() && (
-            <Reveal>
-              <VideoMoments moments={VIDEO_MOMENTS} />
-            </Reveal>
-          )}
-          <Reveal className={hasVideoMoments() ? "mt-7" : ""}>
-            <p className="text-[16px] text-ink-muted">
-              In the languages you speak at home, up to ten of them.
-              <Footnote n={1} id="fn-languages" />
+      {/* Hero. The image owns LCP, so it is `priority` and nothing hides it. */}
+      <section className="pb-9 pt-5 min-[900px]:pb-14 min-[900px]:pt-[60px]">
+        <div className="kh-wrap grid gap-[22px] min-[900px]:grid-cols-[1fr_1.05fr] min-[900px]:items-center min-[900px]:gap-14">
+          <div className="flex flex-col gap-[18px] min-[900px]:order-1">
+            <span className="kh-pill">AI toy for growing minds · Ages {KHEELU_AGES}</span>
+            <h1 className="kh-h1">Screens make children watch. Kheelu makes them think.</h1>
+            <p className="kh-lead">
+              Kheelu is a screen-free AI toy that answers your child&apos;s questions, asks one
+              back, and helps their brain grow through real conversation.
             </p>
-          </Reveal>
-          {/* V6 D6: the first language line on the site that names what the
-              child GAINS rather than what the toy does — and it points the
-              bilingual-intent parent at the journal page that already ranks
-              first in India for exactly this worry. */}
-          <Reveal className="mt-4">
-            <p className="max-w-[64ch] text-[16px] text-ink-muted">
-              A child who can wonder in their own words wonders more, and a
-              child who plays in two languages keeps both. Why that matters for
-              years to come:{" "}
-              <Link
-                href="/stories/raising-a-bilingual-child-in-india"
-                className="rounded font-semibold text-ink-head underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
-              >
-                Raising a bilingual child in India
-              </Link>
-              .
+            <div className="kh-cta-row">
+              <Button href={PREORDER_HREF} track="hero">
+                {RESERVE_LABEL}
+              </Button>
+              {hasVideoMoments() ? (
+                <Button href="#watch" variant="ghost">
+                  <Play className="h-[18px] w-[18px]" fill="currentColor" aria-hidden="true" />
+                  Watch a child meet Kheelu
+                </Button>
+              ) : null}
+            </div>
+            <p className="kh-note">{PRICE_CAPTION} Ships {SHIP_DATE_TEXT}.</p>
+            <ul className="grid grid-cols-2 gap-2.5">
+              {TICKS.map((t) => (
+                <li
+                  key={t}
+                  className="flex items-center gap-2 rounded-xl border border-line bg-surface px-3 py-2.5 text-[14px] font-medium text-ink-head"
+                >
+                  <Check className="h-4 w-4 shrink-0 text-green" aria-hidden="true" />
+                  {t}
+                </li>
+              ))}
+            </ul>
+          </div>
+          {/* The mockup draws a photo of a child hugging Kheelu here. Until a
+              consented still exists, the product art stands in on a warm tint
+              (Technical-Todo.md). */}
+          <figure className="relative m-0 -order-1 flex h-[250px] items-center justify-center overflow-hidden rounded-3xl bg-blush min-[900px]:order-2 min-[900px]:h-[520px]">
+            <Image
+              src={KHEELU_ART.src}
+              alt={KHEELU_ART.alt}
+              width={KHEELU_ART.width}
+              height={KHEELU_ART.height}
+              sizes="(max-width: 900px) 60vw, 440px"
+              priority
+              className="h-[88%] w-auto object-contain"
+            />
+          </figure>
+        </div>
+      </section>
+
+      {/* Trust strip */}
+      <div className="border-y border-line bg-surface">
+        <ul className="kh-wrap grid grid-cols-2 gap-x-4 gap-y-1 py-3.5 min-[900px]:grid-cols-4 min-[900px]:py-4">
+          <li className="flex min-h-11 items-center gap-2.5 text-[14px] font-semibold text-ink-head">
+            <MapPin className="h-[18px] w-[18px] shrink-0 text-green" aria-hidden="true" />
+            Team based in Bengaluru
+          </li>
+          <li className="flex min-h-11 items-center gap-2.5 text-[14px] font-semibold text-ink-head">
+            <RotateCcw className="h-[18px] w-[18px] shrink-0 text-green" aria-hidden="true" />
+            Refundable until we ship
+          </li>
+          <li>
+            <a
+              href={SUPPORT_WHATSAPP_HREF}
+              className="flex min-h-11 items-center gap-2.5 text-[14px] font-semibold text-ink-head underline-offset-4 hover:underline"
+            >
+              <MessageCircle className="h-[18px] w-[18px] shrink-0 text-green" aria-hidden="true" />
+              A real person on WhatsApp
+            </a>
+          </li>
+          <li className="flex min-h-11 items-center gap-2.5 text-[14px] font-semibold text-ink-head">
+            <CalendarDays className="h-[18px] w-[18px] shrink-0 text-green" aria-hidden="true" />
+            Ships {SHIP_DATE_TEXT}
+          </li>
+        </ul>
+      </div>
+
+      {/* Real families on film (§8.37). Zero films renders nothing at all,
+          heading included: a heading promising films above no films is a lie
+          the page tells by itself (§8.37-d). */}
+      {hasVideoMoments() ? (
+        <section id="watch" className="kh-sec scroll-mt-20">
+          <div className="kh-wrap kh-stack-l">
+            <div className="kh-stack max-w-[720px]">
+              <h2 className="kh-h2">Watch a child meet Kheelu.</h2>
+              <p className="kh-lead">Filmed at home by families in our pilot.</p>
+            </div>
+            <VideoWall moments={VIDEO_MOMENTS} />
+          </div>
+        </section>
+      ) : null}
+
+      <section id="parent-voices" className="kh-sec kh-alt">
+        <div className="kh-wrap kh-stack-l">
+          <div className="kh-stack max-w-[720px]">
+            {/* The doc's lead (how many families, in which cities, since when)
+                waits on the pilot numbers, so the heading stands alone. */}
+            <h2 className="kh-h2">What pilot parents told us.</h2>
+          </div>
+          <ParentQuotes />
+        </div>
+      </section>
+
+      <section id="how-it-works" className="kh-sec">
+        <div className="kh-wrap kh-stack-l">
+          <div className="kh-stack max-w-[720px]">
+            <span className="kh-kicker">How it works</span>
+            <h2 className="kh-h2">How Kheelu helps the brain grow</h2>
+            <p className="kh-lead">
+              Scientists call it serve and return: your child speaks, someone answers, and your
+              child answers back. Every turn builds the brain&apos;s connections for language and
+              thinking. Kheelu adds more of these turns to your child&apos;s day.
             </p>
-          </Reveal>
-          {/* the strongest fold carries the ask (Apple-tier rule) */}
-          <Reveal className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
-            <Button href={PREORDER_HREF} track="home-arc">{PREORDER_LABEL}</Button>
-            <p className="text-[15px] text-ink-muted">{PRICE_CAPTION}</p>
-          </Reveal>
-        </Room>
+          </div>
+          <ol className="grid gap-3.5 min-[900px]:grid-cols-4">
+            {STEPS.map((s, i) => (
+              <li key={s.title} className="flex flex-col gap-2.5 rounded-[22px] bg-surface p-5">
+                <span className="kh-num" aria-hidden="true">
+                  {i + 1}
+                </span>
+                <h3 className="kh-h3">{s.title}</h3>
+                <p className="kh-body">{s.body}</p>
+                {"eg" in s ? (
+                  <p className="rounded-xl bg-soft px-3 py-2.5 text-[15px] italic leading-snug text-ink-head">
+                    {s.eg}
+                  </p>
+                ) : null}
+              </li>
+            ))}
+          </ol>
+          <div className="kh-two kh-top">
+            <div className="kh-stack">
+              <h3 className="kh-h3">What it looks like at each age</h3>
+              <AgeTabs />
+            </div>
+            <div className="kh-stack">
+              <h3 className="kh-h3">Why conversation?</h3>
+              <p className="kh-body">
+                Harvard&apos;s Center on the Developing Child describes back-and-forth exchanges as
+                a building block of early brain development. Our How it helps page explains what
+                the research found, and where it stops.
+              </p>
+              <div>
+                <Button href="/how" variant="ghost" size="sm">
+                  Read the research
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-        {/* How it works: the team's three-step sequence, drawn as the loop it
-            is. Serve-and-return survives as this room's closing science. */}
-        <Room
-          fill="white"
-          guide="curious"
-          say="Round and round we go. Cleverer every lap."
-          reveal="right"
-        >
-          <Reveal>
-            <SectionHeading
-              eyebrow="How it works"
-              title="A loop that learns your child."
-              titleClassName="mb-3"
-              lede="Three steps, then it repeats. Every round fits your child a little better."
-              ledeClassName="mb-10 max-w-[58ch]"
-            />
-          </Reveal>
-          <Reveal>
-            <HowItWorksLoop
-              steps={LOOP_STEPS}
-              repeatNote="Then it begins again, one level wiser."
-            />
-          </Reveal>
-          <Reveal className="mt-9">
-            <p className="max-w-[64ch] text-[16px] text-ink-muted">
-              Researchers call this serve and return, the back and forth that
-              builds language and thinking in the years the brain grows
-              fastest.{" "}
-              <Link
-                href="/stories/how-children-learn-by-talking"
-                className="rounded font-semibold text-ink-head underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
-              >
-                Read the science in the journal
-              </Link>
+      {/* Content doc v7, screen 6. The hero keeps its four ticks too (founder,
+          2026-10-02: the one-line hero left empty space and lost the link to
+          the films), so they appear in both places. */}
+      <section id="compare" className="kh-sec kh-alt">
+        <div className="kh-wrap kh-stack-l">
+          <div className="kh-stack max-w-[720px]">
+            <h2 className="kh-h2">Thinking of a smart speaker or a tablet instead?</h2>
+            <p className="kh-lead">
+              They all talk or play. This is how they differ for a child aged {KHEELU_AGES}.
             </p>
-          </Reveal>
-        </Room>
+          </div>
+          <ComparisonTable />
+        </div>
+      </section>
 
-        {/* The growth arc (V6 D2): what the loop above adds up to — the
-            year-by-year answer to "what does my child get by 5". Say line
-            founder-approved at the V6 spec review. */}
-        <Room
-          fill="cream"
-          id="growth"
-          guide="joy"
-          say="From first words to big ideas. I'm there."
-          reveal="left"
-        >
-          <Reveal>
-            <SectionHeading
-              eyebrow={`Ages ${KHEELU_AGES}`}
-              title="What your child gets, year by year."
-              titleClassName="mb-3"
-              lede="Kheelu remembers what your child knows and asks the next question. Here is how the same friend meets them at every age."
-              ledeClassName="mb-10 max-w-[58ch]"
-            />
-          </Reveal>
-          <GrowthArc />
-        </Room>
+      <section id="safety" className="kh-sec">
+        <div className="kh-wrap kh-stack-l">
+          <div className="kh-stack max-w-[720px]">
+            <span className="kh-kicker">Safety</span>
+            <h2 className="kh-h2">What Kheelu can and can&apos;t do</h2>
+            <p className="kh-lead">The four things parents ask us first.</p>
+          </div>
+          <div className="kh-grid2">
+            {SAFETY.map(({ Icon, title, body }) => (
+              <div key={title} className="kh-card">
+                <span className="kh-ic">
+                  <Icon className="h-5 w-5" aria-hidden="true" />
+                </span>
+                <h3 className="kh-h3">{title}</h3>
+                <p className="kh-body">{body}</p>
+              </div>
+            ))}
+          </div>
+          <div className="kh-stack">
+            <span className="text-[15px] font-bold text-ink-head">
+              Where your child&apos;s voice goes
+            </span>
+            <div className="kh-path">
+              <span className="kh-n">On the toy</span>
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              <span className="kh-n">Our own servers, in your region</span>
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              <span className="kh-n">Your app</span>
+            </div>
+            <p className="kh-note">Never sold. Story mode works fully offline.</p>
+          </div>
+          <div>
+            <Button href="/safety" variant="ghost">
+              See how safety works
+            </Button>
+          </div>
+        </div>
+      </section>
 
-        {/* Fun (40%): the day a child actually has */}
-        <Room fill="sun" id="warm" guide="bliss" say="That was the careful part. Now the fun." reveal="pop">
-          <Reveal>
-            <SectionHeading
-              title="Here is what a day with Kheelu feels like."
-              titleClassName="mb-6 max-w-[22ch]"
-            />
-          </Reveal>
-          <KheeluOrbit />
-          {/* Founder call 2026-07-28: name the three modes where a parent is
-              already enjoying the day-with-Kheelu picture. One toy that talks,
-              teaches and plays music is a different purchase from a gadget. */}
-          <KheeluModes variant="strip" className="mt-12" />
-        </Room>
+      <section className="kh-sec kh-alt">
+        <div className="kh-wrap kh-stack-l">
+          <div className="kh-stack max-w-[720px]">
+            <h2 className="kh-h2">Two more things to know</h2>
+          </div>
+          <TwoReasons />
+        </div>
+      </section>
 
-        <Room fill="cool" id="trust" guide="curious" say="This bit is for you, not the kids." reveal="right">
-          <TrustRoom />
-        </Room>
+      <section id="price" className="kh-sec">
+        <div className="kh-wrap grid gap-7 min-[900px]:grid-cols-2 min-[900px]:items-start min-[900px]:gap-14">
+          <div className="kh-stack">
+            <h2 className="kh-h2">
+              {TOKEN_PRICE} today. Nothing more until it ships.
+            </h2>
+            <dl className="kh-ptable">
+              <div className="kh-prow">
+                <dt>Launch price ({CAP_UNITS_TEXT})</dt>
+                <dd>{LAUNCH_PRICE}</dd>
+              </div>
+              <div className="kh-prow">
+                <dt>Pay today</dt>
+                <dd>{TOKEN_PRICE}</dd>
+              </div>
+              <div className="kh-prow">
+                <dt>Pay on dispatch</dt>
+                <dd>{BALANCE_PRICE}</dd>
+              </div>
+              <div className="kh-prow">
+                <dt>Once the first units are gone</dt>
+                <dd>{FULL_PRICE}</dd>
+              </div>
+              <div className="kh-prow">
+                <dt>Kheelona+</dt>
+                <dd>6 months included</dd>
+              </div>
+            </dl>
+            <p className="kh-note">{KHEELONA_PLUS_LINE}</p>
+          </div>
+          <div className="flex flex-col gap-[18px]">
+            <p className="kh-promise">
+              <Check className="h-5 w-5" aria-hidden="true" />
+              <span>
+                <b>Change your mind?</b> Get your {TOKEN_PRICE} back, in full, any time before we
+                ship.
+              </span>
+            </p>
+            <p className="kh-promise">
+              <Check className="h-5 w-5" aria-hidden="true" />
+              <span>
+                <b>No extras at checkout.</b> Delivery is included anywhere in India. {TAX_LINE}
+              </span>
+            </p>
+            <p className="kh-promise">
+              <Check className="h-5 w-5" aria-hidden="true" />
+              <span>
+                <b>First in line.</b> Pre-orders are served first, in the order they were placed.
+              </span>
+            </p>
+            <Button href={PREORDER_HREF} track="home-reserve" className="w-full">
+              {RESERVE_LABEL}
+            </Button>
+            <p className="kh-note text-center">
+              Reserving opens our store, where Razorpay takes the payment securely. It takes about
+              a minute.
+            </p>
+          </div>
+        </div>
+      </section>
 
-        <Room
-          fill="white"
-          id="kheelu"
-          guide="joy"
-          say="The Speaker is my cousin. Better at maths."
-          reveal="left"
-        >
-          <Family />
-        </Room>
+      <section id="team" className="kh-sec kh-alt">
+        <div className="kh-wrap kh-stack-l">
+          <div className="kh-stack max-w-[720px]">
+            <h2 className="kh-h2">Made by parents in Bengaluru</h2>
+            <p className="kh-lead">
+              You&apos;re trusting us near your child, so here&apos;s who we are.
+            </p>
+          </div>
+          <ul className="grid grid-cols-2 gap-4 min-[900px]:grid-cols-4 min-[900px]:gap-6">
+            {FOUNDERS.map((f) => (
+              <li key={f.id} className="flex flex-col gap-1.5">
+                <Image
+                  src={f.photo}
+                  alt={f.name}
+                  width={400}
+                  height={400}
+                  sizes="(max-width: 900px) 45vw, 260px"
+                  className="h-[140px] w-full rounded-[18px] bg-soft object-cover min-[900px]:h-[220px]"
+                />
+                <b className="text-[16px] text-ink-head">{f.name}</b>
+                <span className="text-[14px] leading-[1.45] text-ink-muted">{f.short}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="kh-cta-row">
+            <Button href={SUPPORT_WHATSAPP_HREF} variant="green">
+              <MessageCircle className="h-5 w-5" aria-hidden="true" />
+              Ask us on WhatsApp
+            </Button>
+            <Link href="/story" className="kh-textlink">
+              Our story
+            </Link>
+          </div>
+          <p className="text-[14px] leading-[1.6] text-ink-muted">
+            Supported by NVIDIA Inception, nasscom, Karnataka Elevate and Founders Inc.
+          </p>
+        </div>
+      </section>
 
-        <Room fill="cool" guide="silly" say="Five feelings. I can act them all out." reveal="right">
-          <Reveal>
-            <SectionHeading
-              eyebrow="Meet the feelings"
-              title="Learning starts with feeling understood."
-              titleClassName="max-w-[18ch]"
-              lede="Kheelu acts out the five feelings Kheelu knows. Feeling comes first, and the learning follows."
-              ledeClassName="mb-10 mt-4 max-w-[62ch]"
-            />
-          </Reveal>
-          <FeelingsGallery />
-        </Room>
+      <section id="questions" className="kh-sec">
+        <div className="kh-wrap kh-stack-l">
+          <h2 className="kh-h2">Questions parents ask</h2>
+          <Faq items={HOME_FAQ} />
+          <div>
+            <Link href="/faq" className="kh-textlink">
+              See all questions
+            </Link>
+          </div>
+        </div>
+      </section>
 
-        <Room fill="cream" id="parent-app" guide="bliss" say="You get to see everything. That's the deal." reveal="left">
-          <ParentAppSection bare />
-        </Room>
-
-        <Room fill="white" guide="curious" say="We did the homework so you don't have to." reveal="right">
-          <Compare bare />
-        </Room>
-
-        <Room fill="white" id="parent-voices" guide="joy" say="Real families, real words." reveal="left">
-          <ParentQuotes bare />
-        </Room>
-
-        <Room fill="cream" id="questions" guide="bliss" say="Ask me anything. That's literally my job." reveal="left">
-          <Reveal>
-            <SectionHeading
-              title="Questions parents ask first."
-              titleClassName="mb-3"
-              lede="Straight answers, in plain words. The longer versions live on the Kheelu and Safety pages."
-              ledeClassName="mb-10 max-w-[58ch]"
-            />
-          </Reveal>
-          <Reveal className="mx-auto max-w-[820px]">
-            <Faq items={HOME_FAQ} />
-          </Reveal>
-        </Room>
-
-        <Room fill="sun" id="journal" guide="curious" reveal="right">
-          <Journal bare />
-          {/* The page's small print, Apple-style: the two claims that invite a
-              follow-up question get their answer here rather than nowhere. */}
-          <FootnotesRow items={V3_FOOTNOTES} className="mt-12 border-t border-line pt-6" />
-        </Room>
-
-        <Room
-          fill="white"
-          id="reserve"
-          guide="silly"
-          say="Save your spot. I'll mind Kheelu till launch."
-          reveal="pop"
-          className="overflow-x-clip"
-        >
-          <FinaleCTA bare />
-        </Room>
-      </RoomsTrack>
+      <FinaleCTA />
     </>
   );
 }

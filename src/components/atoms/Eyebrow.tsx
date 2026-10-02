@@ -8,7 +8,7 @@ import { cn } from "@/lib/cn";
  *  4.5:1 on EVERY wash it sits on (white 5.3, cream 5.0, cool 4.8, sun
  *  4.8) — orange-deep and orange-cta only clear white. */
 export function Eyebrow({
-  color = "text-orange-ink",
+  color = "text-label",
   className,
   children,
 }: {
@@ -20,7 +20,7 @@ export function Eyebrow({
   return (
     <span
       className={cn(
-        "mb-3 block text-[13px] font-bold uppercase tracking-[0.1em]",
+        "mb-3 block text-[14px] font-semibold",
         color,
         className,
       )}

@@ -13,11 +13,12 @@ import { Eyebrow } from "@/components/atoms/Eyebrow";
  *  R11 law (website-steps §8.19): new sections use this component; a
  *  hand-rolled heading block is a review flag. */
 
+/* Redesign 2026-10: the mockup's scale (h1 36-68, h2 30-46, h3 21-25). */
 const TITLE_SIZES = {
-  hero: "text-[clamp(38px,4.5vw,58px)]",
-  section: "text-[clamp(32px,4vw,50px)]",
-  minor: "text-[clamp(28px,3.2vw,42px)]",
-  nested: "text-[clamp(21px,2.2vw,26px)]",
+  hero: "text-[clamp(36px,6vw,68px)] leading-[1.06]",
+  section: "text-[clamp(30px,4.4vw,46px)] leading-[1.1]",
+  minor: "text-[clamp(26px,3.4vw,38px)] leading-[1.12]",
+  nested: "text-[clamp(21px,2.4vw,25px)] leading-[1.2]",
 } as const;
 
 export function SectionHeading({
@@ -58,7 +59,7 @@ export function SectionHeading({
       <Tag
         id={id}
         className={cn(
-          "font-display font-extrabold leading-[1.08]",
+          "font-display font-semibold tracking-[-0.3px]",
           size,
           tone === "white" ? "text-white" : "text-ink-head",
           titleClassName,
@@ -69,8 +70,8 @@ export function SectionHeading({
       {lede ? (
         <p
           className={cn(
-            "text-[clamp(18px,1.6vw,21px)]",
-            tone === "white" && "text-white/90",
+            "text-[clamp(17px,1.7vw,20px)] leading-[1.55]",
+            tone === "white" ? "text-white/90" : "text-ink-muted",
             ledeClassName ?? "max-w-[58ch]",
           )}
         >

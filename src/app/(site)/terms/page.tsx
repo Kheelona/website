@@ -102,9 +102,7 @@ export default function TermsPage() {
         title="Pre-order terms, in plain words."
         lede="A fair deal should survive being written clearly. Here is ours, now that real money is involved."
         sections={SECTIONS}
-        guide="curious"
         /* GATED:kheelu-line — founder sign-off before merge to master */
-        say="Short version: be kind, we will be too."
       />
     </>
   );

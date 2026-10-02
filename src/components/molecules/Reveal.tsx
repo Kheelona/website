@@ -1,31 +1,23 @@
-/** Calm scroll-in reveal (concept A motion language), CSS-driven.
- *  Server component: SSR HTML is fully visible (no-JS users and crawlers see
- *  everything). The `html.js [data-reveal]` rules in globals.css hide-and-slide
- *  only once JS is known to be present; RevealObserver flips `.reveal-in`.
- *  `as` keeps list semantics valid (ul/ol must contain li directly). */
+/** Layout wrapper that used to carry the scroll-in reveal.
+ *
+ *  Redesign 2026-10: the mockup is still, so the reveal motion and its
+ *  observer were removed. The wrapper stays because ~25 call sites use it for
+ *  spacing and list semantics (`as="li"` keeps ul/ol valid). It renders plain
+ *  markup: nothing is hidden, ever, with or without JS. */
 export function Reveal({
   children,
-  delay = 0,
+  delay: _delay,
   className,
   as: Tag = "div",
-  mode = "rise",
+  mode: _mode,
 }: {
   children: React.ReactNode;
+  /** @deprecated No effect since the 2026-10 redesign. */
   delay?: number;
   className?: string;
   as?: "div" | "li";
-  /** "rise" never hides content (no opacity), so fast scrolling can never
-   *  land on a blank viewport; opt into "fade" only for small elements
-   *  inside an already-visible section. */
+  /** @deprecated No effect since the 2026-10 redesign. */
   mode?: "fade" | "rise";
 }) {
-  return (
-    <Tag
-      data-reveal={mode}
-      style={delay ? { transitionDelay: `${delay}s` } : undefined}
-      className={className}
-    >
-      {children}
-    </Tag>
-  );
+  return <Tag className={className}>{children}</Tag>;
 }

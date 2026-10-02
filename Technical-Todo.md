@@ -24,6 +24,53 @@ request. Priority is about consequence if it is never done, not about effort.
 
 ---
 
+# 🎨 THE PARENT-FIRST REDESIGN (branch `redesign-mockup-2026-10`, NOT DEPLOYED)
+
+Built from the approved mockup (claude.ai artifact S5n6a32vqjmqLpc4SDAmX1). New IA: `/`, `/how`,
+`/kheelu`, `/safety`, `/story`, `/faq`; `/products/kheelu`, `/team` and `/contact` 308 to the new
+paths and `/reserve` goes to the store. Tokens v4 (`Design/Kheelona-Design-System-v4/`), Fraunces +
+DM Sans, light and dark. The mascot guide, the 3D stage and the room backdrop are deleted.
+
+**The rule that shaped the copy:** a mockup line that is a placeholder or carries a "verify" flag
+ships ONLY if the site already publishes the same fact; otherwise the block is OMITTED, never shown
+with brackets (`test/redesign-routes.test.ts` fails on a bracketed placeholder in `src/`).
+
+**Content and copy items now live in `MARKETING-TODO.md`** (2026-10-02): every row of content doc v7,
+with its status on the redesign branch. The list below is the earlier, mockup-era version of the same
+facts and is kept for history.
+
+## 🧑 Founder — facts that switch omitted mockup blocks back on
+Each line names the block that is missing today and the one fact it needs.
+- **The wake word** → the mockup's "[wake word]" in the safety cards and the /kheelu spec row.
+- **A consented photo of a child with Kheelu** → the Home hero (product art stands in today).
+- **Pilot numbers** (families, weeks, cities, languages) and **one change made from pilot feedback**
+  → Home's stats row. Note the V3 ban on pilot counts; lifting it is a founder decision.
+- **A child-development advisor** (name, credentials) → the "Reviewed by" slot on Home, /how, /story.
+- **A grievance officer** (DPDP) → the footer line.
+- **The Kheelona+ monthly price** → the "then ₹X/month" cells (KHEELONA_PLUS_LINE is the gate).
+- **A late-delivery refund policy** ("if we're more than X weeks late") → a promise on Home, /story
+  and the FAQ. Only if the founders will commit to it.
+- **Warranty length** → the Home promise and the FAQ.
+- **Specs**: size, weight, battery hours, charger, what is in the box → /kheelu "In the box".
+- **Certificate dates** (BIS, toy lab, battery) → the /safety table rows.
+- **How Kheelu handles a mumbled question, a "big" question, and the "a toy, not a person" rule**
+  (the last is drafted copy on the old /safety that was never signed off) → /safety "hard moments".
+- **Whether a child's voice trains the model** (check the AI vendor's terms) → a FAQ answer.
+- **Two children on one Kheelu, gifting, Diwali delivery by city** → three FAQ answers.
+- **A founder-story paragraph in first person** → /story hero (the old /team "why" stands in).
+- **20-second language clips** → the language chips become buttons that play them again.
+
+## 🤖 Mine
+- **⚠ The day the store flips to full mode** (`/api/health` → `preorder:"full"`), every "Reserve
+  ₹499" label is false. They all render from `RESERVE_LABEL` / `RESERVE_SHORT_LABEL` in
+  `src/config/site.ts`, the home price block and the finale line: one edit, same day as the
+  existing sell-out copy sweep (§8.26-g).
+- `qa:payment` was NOT run on this branch (needs the sandbox keys and the Supabase stub). The
+  store's fields, validation and APIs are unchanged and their tests pass; run it before merging.
+- Delete `public/models/` (the 3D stage's GLBs) once the redesign is live. `public/mascot/` stays: the journal still uses the poses.
+
+---
+
 # 📅 DATED TRIGGER — 5 OCTOBER 2026
 
 **On 5 October, two items below move from LOW to HIGH.** Both are pre-shipment legal work, both are

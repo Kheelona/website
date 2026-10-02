@@ -72,7 +72,7 @@ export function KheeluModes({
                 key={m.mode}
                 className="rounded-(--radius-card) border border-line bg-white px-5 py-4"
               >
-                <p className="font-display text-[17px] font-extrabold text-ink-head">
+                <p className="font-display text-[17px] font-semibold text-ink-head">
                   {m.short}
                 </p>
                 <p className="mt-0.5 text-[13px] font-bold uppercase tracking-wide text-orange-ink">
@@ -103,7 +103,7 @@ export function KheeluModes({
             <Card
               className="h-full border border-line bg-white"
               title={m.heading}
-              titleClassName="mb-1 font-display text-[22px] font-extrabold text-ink-head"
+              titleClassName="mb-1 font-display text-[22px] font-semibold text-ink-head"
             >
               <p className="mb-3 text-[13px] font-bold uppercase tracking-wide text-orange-ink">
                 {m.mode}

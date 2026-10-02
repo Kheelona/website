@@ -1,18 +1,14 @@
-import Image from "next/image";
-import { Room } from "@/components/atoms/Room";
-import { RoomsTrack } from "@/components/atoms/RoomsTrack";
-import { SectionHeading } from "@/components/molecules/SectionHeading";
-import { AnswerBlock } from "@/components/molecules/AnswerBlock";
-import { PromiseMark } from "@/components/molecules/PromiseMark";
-import { PageHero } from "@/components/templates/PageHero";
-import { Card } from "@/components/molecules/Card";
-import { CheckList } from "@/components/molecules/CheckList";
-import { Reveal } from "@/components/molecules/Reveal";
+import {
+  Mic,
+  WifiOff,
+  ShieldCheck,
+  MessageSquareText,
+  MessageCircle,
+} from "lucide-react";
 import { Button } from "@/components/atoms/Button";
 import { Faq, type FaqEntry } from "@/components/molecules/Faq";
-import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { pageGraph, faqPage, breadcrumbs, pageMeta, jsonLd } from "@/lib/seo";
-import { KHEELU_ART, kheeluAlt } from "@/lib/kheelu-art";
+import { SUPPORT_WHATSAPP_HREF } from "@/config/site";
 
 export const metadata = pageMeta({
   title: "Are AI toys safe? How Kheelu is built to be",
@@ -21,40 +17,16 @@ export const metadata = pageMeta({
   path: "/safety",
 });
 
-/* Revamp M4 (theme B): /safety rebuilt on the room grammar, and rewritten
-   question-led per copy-v2 /SAFETY + research.md (the flagship term is "are
-   AI toys safe for kids", and honesty IS the citation strategy — the answers
-   acknowledge the real findings, name no competitor, then show the
-   mechanisms). Every mechanism cited here is already published; nothing new
-   is claimed. Toy-safety standards and certifications stay PENDING (§1.9),
-   shown as "in progress" honestly, and no badge appears before it is earned.
-   V3: age copy is per-answer ("tuned to your child's age") with Kheelu's own band,
-   2 to 5, where a number is needed. The retired teal wash went with the palette. */
+/* Redesign 2026-10: the mockup's safety page, built only from mechanisms
+   this page already published. Three of the mockup's blocks are absent on
+   purpose, each because no published fact backs it yet: how Kheelu handles a
+   mumbled question, how it answers a "big" question, and an independent
+   test. The "a toy, not a person" answer stays out too; it was drafted and
+   never signed off. All four are listed in Technical-Todo.md. */
 
-const WORD_RULES = [
-  { title: "Listening starts with the wake word.", body: "Kheelu listens only after your child says the wake word. The rest of the time, the microphone is off. Not muted. Off." },
-  { title: "Filters live on the device.", body: "The first safety checks happen on the toy itself, before anything travels anywhere." },
-  { title: "Every answer is age-graded.", body: "Replies pass through a safety layer tuned to your child's age. On-device and cloud filters work together." },
-  { title: "There is no open internet.", body: "Kheelu cannot browse, search, or stumble. No random videos, no endless detours, no strangers. Ever." },
-] as const;
-
-const VOICE_RULES = [
-  { title: "Region-pinned", body: "Your family's conversations stay in your region. They do not travel to another country to be processed." },
-  { title: "Parent-consented", body: "Nothing is collected without your say-so. If you have not said yes, it does not happen." },
-  { title: "Deletable in one tap", body: "Read any conversation in the parent app. Delete any of it, whenever you like." },
-  { title: "Never sold", body: "Your child's voice data is never sold, and never used to sell them anything." },
-] as const;
-
-/* V5-3 (2026-07-31 review): the four-step custody chain that used to sit here
-   was DELETED. It restated WORD_RULES above almost word for word — "Not muted.
-   Off." appeared in both, one section apart — so the page stated one promise
-   four times in a single fold: the answer block, the steps, the rules row, and
-   the closing display line. The mechanisms live in WORD_RULES; the data-custody
-   facts live in VOICE_RULES; each is now said once. Law: §8.23-4. */
-
-/* R7: standards, status-for-status as published on kheelona.ai/safety.
-   Never upgrade a status here (claims gate). */
+/* Status-honest (§1.9): never upgrade a status here (claims gate). */
 const STANDARDS = [
+  { name: "Toy-safety certification", status: "In progress" },
   { name: "COPPA (2026)", status: "Designed for" },
   { name: "GDPR-K", status: "Designed for" },
   { name: "India DPDP", status: "Designed for" },
@@ -68,10 +40,8 @@ const PARENT_KEYS = [
   "The log: every conversation, readable and deletable.",
 ] as const;
 
-/* The question-led answers (copy-v2 + research AEO bank). Each is 40 to 60
-   words, visible on the page, and assembled only from published mechanisms.
-   They live in one place because the FAQPage graph below must mirror the
-   visible copy exactly. */
+/* The questions, in plain words. They live in one place because the FAQPage
+   graph below must mirror the visible copy exactly, and all of it renders. */
 const ANSWERS = {
   flagship: {
     q: "Are AI toys safe for children?",
@@ -99,47 +69,83 @@ const ANSWERS = {
   },
 } as const;
 
-/* GATED:founder-signoff (copy-v2 /SAFETY) — the point-by-point reply to
-   child-development guidance on AI toys. Drafted, NOT approved: it renders on
-   the revamp preview so the founder can read it in place, and it comes out
-   before the merge to master unless they sign it off. It is deliberately kept
-   out of the schema graph, so pulling the block never leaves orphaned
-   structured data behind. */
-const GATED_UNDER_FIVE = {
-  q: "Is an AI toy OK for a three-year-old?",
-  a: "Child-development groups say to be careful with AI toys, and we agree with most of what they ask for. They want toys that cannot reach the open internet. Kheelu cannot. They want parents to see every conversation. You do. They want no ads and no data selling. There are none. And they want toys that do not pretend to be alive. Kheelu is a toy that listens and answers, and the grown-up holds the keys.",
-} as const;
-
-/* Safety FAQ: question-led for answer engines (CMO review); answers reuse
-   already-linted claims only. M4: the listening and voice-custody questions
-   moved UP into visible AnswerBlocks, so the accordion carries only what the
-   page does not already answer (a duplicate question in both places reads as
-   padding to a parent and to a crawler). */
 const SAFETY_FAQ: FaqEntry[] = [
   /* V6 D7: the old first entry near-duplicated the flagship AnswerBlock (the
      padding §8.23-4 warns against). Replaced with the dependence anxiety no
      page answered — built entirely from published facts. */
-  { q: "Will Kheelu replace time with me?", a: "No, and it is not built to. Kheelu is for the moments your hands are full, not the ones they are not. The parent app gives you one simple thing to do together each day, quiet hours are yours to set, and the grown-up holds the keys, always." },
-  { q: "Does Kheelu reduce screen time?", a: "That is the point. Kheelu has no screen at all. It is a toy that helps you cut screen time: your child talks, listens, and imagines instead of watching." },
-  { q: "Can Kheelu reach the open internet?", a: "No. Kheelu cannot browse or search. Answers come from a closed library built for children, so there are no random videos, no endless detours, and no strangers." },
+  {
+    q: "Will Kheelu replace time with me?",
+    a: "No, and it is not built to. Kheelu is for the moments your hands are full, not the ones they are not. The parent app gives you one simple thing to do together each day, quiet hours are yours to set, and the grown-up holds the keys, always.",
+  },
+  {
+    q: "Does Kheelu reduce screen time?",
+    a: "That is the point. Kheelu has no screen at all. It is a toy that helps you cut screen time: your child talks, listens, and imagines instead of watching.",
+  },
+  {
+    q: "Can Kheelu reach the open internet?",
+    a: "No. Kheelu cannot browse or search. Answers come from a closed library built for children, so there are no random videos, no endless detours, and no strangers.",
+  },
   /* SEO round 2026-08-12: the checklist restates the published what-to-look-for
      criteria (the journal's safe-AI-toy piece and the ANSWERS mechanisms above)
      — nothing here is a new claim. Carries "smart toys for toddlers" and
      "educational toys for kids" in one parents'-voice entry. */
-  { q: "What should I look for in smart toys for toddlers?", a: "Five things: a microphone that sleeps until a wake word, answers from a closed library instead of the open internet, a conversation log you can read, voice data that stays in your region and is never sold, and replies graded for the age. The same checklist works for educational toys for kids at any age." },
+  {
+    q: "What should I look for in smart toys for toddlers?",
+    a: "Five things: a microphone that sleeps until a wake word, answers from a closed library instead of the open internet, a conversation log you can read, voice data that stays in your region and is never sold, and replies graded for the age. The same checklist works for educational toys for kids at any age.",
+  },
   /* Status-exact, never upgraded: mirrors the STANDARDS chips above. */
   /* The standards FAQ entry was REMOVED 2026-07-31 (founder: no certificate
      received yet, keep it off the FAQ; the status-honest standards room below
      stays). Reinstate when the first certificate lands. */
 ];
 
+const ALL_QUESTIONS: FaqEntry[] = [
+  ...Object.values(ANSWERS).map((x) => ({ q: x.q, a: x.a })),
+  ...SAFETY_FAQ,
+];
+
 const SAFETY_JSON_LD = pageGraph(
-  faqPage([
-    ...Object.values(ANSWERS).map((x) => ({ q: x.q, a: x.a })),
-    ...SAFETY_FAQ,
-  ]),
+  faqPage(ALL_QUESTIONS),
   breadcrumbs([{ name: "Safety", path: "/safety" }]),
 );
+
+const RULES = [
+  {
+    Icon: Mic,
+    title: "It only listens when called",
+    body: "Kheelu listens only after your child says the wake word. The rest of the time, the microphone is off. Not muted. Off.",
+  },
+  {
+    Icon: WifiOff,
+    title: "It can't go on the internet",
+    body: "Kheelu cannot browse, search, or stumble. No random videos, no endless detours, no strangers. Ever.",
+  },
+  {
+    Icon: ShieldCheck,
+    title: "Answers are checked for age",
+    body: "Replies pass through a safety layer tuned to your child's age before Kheelu speaks. On-device and cloud filters work together.",
+  },
+  {
+    Icon: MessageSquareText,
+    title: "You can read everything",
+    body: "Every conversation is in the parent app, word for word. Delete anything with one tap.",
+  },
+] as const;
+
+const VOICE_PATH = [
+  {
+    title: "On the toy",
+    body: "Kheelu hears the wake word, and the first safety checks happen on the toy itself, before anything travels anywhere.",
+  },
+  {
+    title: "Our own servers, in your region",
+    body: "Open conversation uses your home WiFi and Kheelona's own voice brain. Your family's conversations stay in your region.",
+  },
+  {
+    title: "Back to you",
+    body: "The conversation appears in your app. It is never sold, and never used to sell your child anything.",
+  },
+] as const;
 
 export default function SafetyPage() {
   return (
@@ -149,222 +155,162 @@ export default function SafetyPage() {
         dangerouslySetInnerHTML={{ __html: jsonLd(SAFETY_JSON_LD) }}
       />
 
-      <PageHero
-        ratio="md:grid-cols-[1.2fr_0.8fr]"
-        guide="bliss"
-        /* GATED:kheelu-line — founder sign-off before merge to master */
-        say="No jokes on this page. Parents read this twice."
-        media={
-          <Image
-            src={KHEELU_ART.src}
-            alt={kheeluAlt("sitting calmly")}
-            width={KHEELU_ART.width}
-            height={KHEELU_ART.height}
-            sizes="(max-width: 768px) 60vw, 300px"
-            priority
-            className="h-auto w-full max-w-[300px]"
-          />
-        }
-      >
-        <SectionHeading
-          as="h1"
-          eyebrow="Safety"
-          title="Safe in their hands. Careful with their words."
-          titleClassName="mb-5 max-w-[16ch]"
-          lede="You are not buying a gadget. You are trusting a friend near your child. Here is everything that friend will and will not do, in plain words."
-          ledeClassName="max-w-[58ch]"
-        />
-      </PageHero>
+      <section className="kh-page-hero">
+        <div className="kh-wrap">
+          <div className="kh-stack max-w-[820px]">
+            <span className="kh-kicker">Safety</span>
+            <h1 className="kh-h1">How we keep Kheelu safe.</h1>
+            <p className="kh-lead">
+              This page lists what Kheelu does, what it doesn&apos;t do, and
+              what we&apos;re still working on.
+            </p>
+          </div>
+        </div>
+      </section>
 
-      <RoomsTrack>
-        {/* The flagship answer: acknowledge what testers found, then show the
-            mechanisms. No competitor is named. */}
-        <Room fill="white" reveal="left">
-          <Reveal>
-            <AnswerBlock
-              level="section"
-              id="are-ai-toys-safe"
-              question={ANSWERS.flagship.q}
-              answer={ANSWERS.flagship.a}
-            />
-          </Reveal>
-        </Room>
-
-        {/* The words */}
-        <Room fill="cool" reveal="right">
-          <Reveal className="mb-11">
-            <AnswerBlock
-              id="always-listening"
-              question={ANSWERS.listening.q}
-              answer={ANSWERS.listening.a}
-            />
-          </Reveal>
-          <Reveal>
-            <SectionHeading
-              level="minor"
-              title="Careful with their words."
-              titleClassName="mb-3"
-              lede="Four rules govern every word Kheelu hears and says. They are not settings. They are how a safe toy is built."
-              ledeClassName="mb-10 max-w-[58ch]"
-            />
-          </Reveal>
-          <div className="grid gap-5 sm:grid-cols-2">
-            {WORD_RULES.map((r, i) => (
-              <Reveal key={r.title} delay={i * 0.05}>
-                <Card
-                  className="bg-white p-8"
-                  title={r.title}
-                  titleClassName="mb-2 font-display text-[24px] font-extrabold text-ink-head"
-                >
-                  <p className="text-[16px]">{r.body}</p>
-                </Card>
-              </Reveal>
+      <section className="kh-sec kh-alt">
+        <div className="kh-wrap kh-stack-l">
+          <h2 className="kh-h2">The four basics</h2>
+          <div className="kh-grid2">
+            {RULES.map(({ Icon, title, body }) => (
+              <div key={title} className="kh-card">
+                <span className="kh-ic">
+                  <Icon className="h-5 w-5" aria-hidden="true" />
+                </span>
+                <h3 className="kh-h3">{title}</h3>
+                <p className="kh-body">{body}</p>
+              </div>
             ))}
           </div>
-        </Room>
+        </div>
+      </section>
 
-        {/* Where the voice goes: the custody chain */}
-        <Room fill="cream" reveal="left">
-          <Reveal className="mb-11">
-            <AnswerBlock
-              id="where-the-voice-goes"
-              question={ANSWERS.voice.q}
-              answer={ANSWERS.voice.a}
-            />
-          </Reveal>
-          {/* Data custody, as promises. Two columns, not four: at four the
-              titles wrapped mid-phrase ("Deletable / in one tap"). */}
-          <div className="grid gap-5 sm:grid-cols-2">
-            {VOICE_RULES.map((c, i) => (
-              <Reveal key={c.title} delay={i * 0.05}>
-                <Card className="h-full border border-line bg-white">
-                  <PromiseMark index={i} className="mb-3" />
-                  <h3 className="mb-2 font-display text-[22px] font-extrabold text-ink-head">
-                    {c.title}
-                  </h3>
-                  <p className="text-[15.5px]">{c.body}</p>
-                </Card>
-              </Reveal>
-            ))}
-          </div>
-          <Reveal>
-            {/* R11 voice-lint: "can't" de-contracted — the .ai line arrived
-                verbatim, but the contraction gate outranks the reference
-                (founder can revert on live read; copy-reference R11) */}
-            <p className="mt-10 max-w-[40ch] font-display text-[clamp(22px,2.4vw,28px)] font-extrabold leading-[1.25] text-ink-head">
+      <section className="kh-sec">
+        <div className="kh-wrap kh-two kh-top">
+          <h2 className="kh-h2">Where your child&apos;s voice goes</h2>
+          <div>
+            <ol>
+              {VOICE_PATH.map((m, i) => (
+                <li key={m.title} className="kh-moment">
+                  <span className="kh-num" aria-hidden="true">
+                    {i + 1}
+                  </span>
+                  <div>
+                    <b>{m.title}</b>
+                    <span className="kh-body">{m.body}</span>
+                  </div>
+                </li>
+              ))}
+            </ol>
+            <p className="kh-note mt-2">
               Nothing leaves without consent. Nothing stays that you cannot
               delete.
             </p>
-          </Reveal>
-        </Room>
-
-        {/* The two questions parents ask next */}
-        <Room fill="white" reveal="right">
-          <div className="grid gap-10 md:grid-cols-2">
-            <Reveal>
-              <AnswerBlock id="could-it-say-something-wrong" question={ANSWERS.wrong.q} answer={ANSWERS.wrong.a} />
-            </Reveal>
-            <Reveal delay={0.06}>
-              <AnswerBlock id="can-i-delete-everything" question={ANSWERS.delete.q} answer={ANSWERS.delete.a} />
-            </Reveal>
           </div>
-        </Room>
+        </div>
+      </section>
 
-        {/* GATED:founder-signoff — see the GATED_UNDER_FIVE note above. */}
-        <Room fill="sun" reveal="left">
-          <Reveal>
-            <AnswerBlock
-              id="ok-for-a-three-year-old"
-              question={GATED_UNDER_FIVE.q}
-              answer={GATED_UNDER_FIVE.a}
-            />
-          </Reveal>
-        </Room>
+      <section className="kh-sec kh-alt">
+        <div className="kh-wrap kh-stack-l">
+          <div className="kh-stack max-w-[720px]">
+            <h2 className="kh-h2">
+              Certificates: what&apos;s done and what&apos;s next
+            </h2>
+            <p className="kh-lead">
+              We are completing formal toy-safety testing now. No badge appears
+              here before it is earned.
+            </p>
+          </div>
+          <div
+            className="kh-tbl"
+            role="region"
+            aria-label="Certificates"
+            tabIndex={0}
+          >
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Standard</th>
+                  <th scope="col">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {STANDARDS.map((s) => (
+                  <tr key={s.name}>
+                    <td>{s.name}</td>
+                    <td>
+                      <span
+                        className={`kh-status ${s.status === "In progress" ? "kh-st-prog" : "kh-st-plan"}`}
+                      >
+                        {s.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
 
-        {/* Safe in their hands: the physical toy */}
-        <Room fill="white" reveal="right">
-          <Reveal>
-            {/* TODO(claims-certs): exact toy-safety standards and certificate
-                references pending from founder. No physical claims before
-                certification (copy-review verdict); launch gate needs the list. */}
-            <SectionHeading
-              title="Safe in their hands."
-              titleClassName="mb-4"
-              lede="Kheelu is designed for small hands and big feelings. We are completing formal toy-safety testing now. The exact materials, standards, and certificates will be listed here, in full, before Kheelu ships."
-              ledeClassName="mb-10 max-w-[62ch]"
-            />
-            <SectionHeading
-              level="minor"
-              title="The standards we build against."
-              titleClassName="mb-3"
-              lede="These are the children's privacy frameworks Kheelu is designed for, and where our certifications stand today. No badge appears here before it is earned."
-              ledeClassName="mb-8 max-w-[58ch] text-[17px]"
-            />
-          </Reveal>
-          <Reveal>
-            <ul className="flex flex-wrap gap-3">
-              {STANDARDS.map((s) => (
-                <li
-                  key={s.name}
-                  className="flex items-center gap-3 rounded-full border border-line bg-cream px-5 py-2.5"
-                >
-                  <span className="text-[16px] font-semibold text-ink-head">{s.name}</span>
-                  <span
-                    className={`rounded-full px-2.5 py-0.5 text-[12px] font-bold uppercase tracking-wide ${
-                      s.status === "In progress" ? "bg-yellow/25 text-ink-head" : "bg-blue/20 text-ink-head"
-                    }`}
-                  >
-                    {s.status}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </Reveal>
-        </Room>
+      <section className="kh-sec">
+        <div className="kh-wrap kh-two kh-top">
+          <h2 className="kh-h2">What if Kheelona ever shuts down?</h2>
+          <div className="kh-stack">
+            <p className="kh-lead">
+              We plan to be here for years. But you deserve a straight answer.
+            </p>
+            <p className="kh-body">
+              Story-mode stories and lessons play offline, and Bluetooth music
+              needs only a paired phone.
+            </p>
+          </div>
+        </div>
+      </section>
 
-        {/* The grown-up holds the keys */}
-        <Room fill="cool" reveal="left">
-          <Reveal>
-            <SectionHeading
-              title="The grown-up holds the keys."
-              titleClassName="mb-4"
-              lede="Kheelu never decides what is right for your family. You do. The parent app is where you turn the keys:"
-              ledeClassName="mb-6 max-w-[54ch]"
-            />
-            <CheckList items={PARENT_KEYS} className="mb-8 space-y-3" />
-            <Button href="/products/kheelu" variant="ghost">
-              See the parent app on the Kheelu page
+      <section className="kh-sec kh-alt">
+        <div className="kh-wrap kh-stack-l">
+          <div className="kh-stack max-w-[720px]">
+            <h2 className="kh-h2">What you control</h2>
+            <p className="kh-lead">
+              Kheelu never decides what is right for your family. You do.
+            </p>
+          </div>
+          <div className="kh-grid2">
+            {PARENT_KEYS.map((k) => {
+              const [title, ...rest] = k.split(": ");
+              return (
+                <div key={k} className="kh-card">
+                  <h3 className="kh-h3">{title}</h3>
+                  <p className="kh-body">
+                    {rest.join(": ").replace(/^./, (c) => c.toUpperCase())}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section id="questions" className="kh-sec">
+        <div className="kh-wrap kh-stack-l">
+          <h2 className="kh-h2">The questions we would ask too</h2>
+          <Faq items={ALL_QUESTIONS} name="safety-faq" />
+        </div>
+      </section>
+
+      <section className="kh-sec kh-alt">
+        <div className="kh-wrap">
+          <div className="kh-final">
+            <h2 className="kh-h2">Still have a safety question?</h2>
+            <p className="text-[17px]">A real person answers, on WhatsApp.</p>
+            <Button href={SUPPORT_WHATSAPP_HREF} variant="onDark">
+              <MessageCircle className="h-5 w-5" aria-hidden="true" />
+              Ask us on WhatsApp
             </Button>
-          </Reveal>
-        </Room>
-
-        {/* Safety questions (AEO) */}
-        <Room fill="cream" reveal="right">
-          <Reveal>
-            <SectionHeading
-              title="The questions we would ask too."
-              titleClassName="mb-3"
-              lede="Straight answers about AI toys and your child."
-              ledeClassName="mb-10 max-w-[58ch]"
-            />
-          </Reveal>
-          <Reveal className="mx-auto max-w-[820px]">
-            <Faq items={SAFETY_FAQ} />
-          </Reveal>
-        </Room>
-
-        <Room
-          fill="white"
-          id="reserve"
-          guide="silly"
-          /* GATED:kheelu-line */
-          say="Save your spot. I'll mind Kheelu till launch."
-          reveal="pop"
-          className="overflow-x-clip"
-        >
-          <FinaleCTA bare variant="compact" />
-        </Room>
-      </RoomsTrack>
+          </div>
+        </div>
+      </section>
     </>
   );
 }

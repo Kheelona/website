@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+import { Fraunces, DM_Sans } from "next/font/google";
 import "@/styles/globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { GoogleAnalyticsGate } from "@/components/molecules/GoogleAnalyticsGate";
@@ -7,32 +7,22 @@ import { MetaPixel } from "@/components/molecules/MetaPixel";
 import { PostHogGate } from "@/components/molecules/PostHogGate";
 import { AHREFS_ANALYTICS_KEY } from "@/config/site";
 
-/* All three faces are subsets of the v3 design system's TTFs
-   (Design/Kheelona-Design-System-v3/fonts, SIL OFL — licences alongside the
-   woff2 files) since CS3 Phase A, 2026-08-23. Glory and Instrument Sans stay
-   upright-only; the serif ships ITALIC ONLY, because that is its entire v3
-   role. */
-const glory = localFont({
-  src: [{ path: "./fonts/Glory.woff2", weight: "100 900", style: "normal" }],
-  variable: "--font-glory",
+/* Redesign 2026-10: the mockup's pair. Fraunces (serif) carries every
+   heading, DM Sans carries body and UI. next/font self-hosts both at build
+   time under /_next/static, so the CSP's font-src 'self' is unchanged and no
+   request ever reaches Google from a parent's browser. Both are SIL OFL. */
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  weight: ["400", "600"],
+  style: ["normal", "italic"],
+  variable: "--font-fraunces",
   display: "swap",
 });
 
-const instrumentSans = localFont({
-  src: [{ path: "./fonts/InstrumentSans.woff2", weight: "100 900", style: "normal" }],
-  variable: "--font-instrument-sans",
-  display: "swap",
-});
-
-/* Instrument Serif, REINSTATED by founder order 2026-08-23 (decision #11,
-   migration-to-new-dsx.md), reversing the 2026-07-24 retirement and the
-   zero-italics law with it — but only this far: v3's editorial accent is
-   italic serif for section titles and pull-quotes, used sparingly, one per
-   composition (v3 guidelines/typography.md §1). Body copy and UI never
-   take italics; JONY specs each placement page by page in Phase B. */
-const instrumentSerif = localFont({
-  src: [{ path: "./fonts/InstrumentSerifItalic.woff2", weight: "400", style: "italic" }],
-  variable: "--font-instrument-serif",
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-dm-sans",
   display: "swap",
 });
 
@@ -70,7 +60,7 @@ export default function RootLayout({
     <html
       lang="en-IN"
       suppressHydrationWarning
-      className={`${glory.variable} ${instrumentSans.variable} ${instrumentSerif.variable}`}
+      className={`${fraunces.variable} ${dmSans.variable}`}
     >
       <head>
         {/* Marks JS availability before first paint so reveal styles only apply

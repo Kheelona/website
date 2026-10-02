@@ -72,7 +72,7 @@ describe("structured data", () => {
      fails the day someone tidies it to match the route. */
   it("keeps the product @id on the pre-rename URL, and the navigable url on the new one", () => {
     expect(KHEELU_PRODUCT["@id"]).toBe(`${SITE_URL}/products/lumi#product`);
-    expect(KHEELU_PRODUCT.offers.url).toBe(`${SITE_URL}/products/kheelu`);
+    expect(KHEELU_PRODUCT.offers.url).toBe(`${SITE_URL}/kheelu`);
     expect(KHEELU_PRODUCT.name).toBe("Kheelu by Kheelona");
   });
 

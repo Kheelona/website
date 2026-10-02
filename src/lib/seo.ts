@@ -335,7 +335,7 @@ export const KHEELU_PRODUCT = {
     priceCurrency: "INR",
     availability: "https://schema.org/PreOrder",
     availabilityStarts: SHIP_DATE_ISO,
-    url: `${SITE_URL}/products/kheelu`,
+    url: `${SITE_URL}/kheelu`,
     eligibleRegion: { "@type": "Country", name: "India" },
     description: `${LAUNCH_PRICE} for the ${CAP_UNITS_TEXT}, ${FULL_PRICE} once they are gone. A refundable ${TOKEN_PRICE} reserves one of the ${CAP_UNITS_TEXT}, with the ${BALANCE_PRICE} balance due before dispatch.`,
   },
@@ -351,7 +351,7 @@ export const KHEELU_PRODUCT = {
  *  makes it impossible for the canonical and the og url to drift apart, which
  *  is the registry law (§8.19) applied to metadata.
  *
- *  `path` is root-relative ("/", "/products/kheelu"); `metadataBase` in the root
+ *  `path` is root-relative ("/", "/kheelu"); `metadataBase` in the root
  *  layout resolves it to the apex, which is the canonical host. */
 export function pageMeta({
   title,
