@@ -2,10 +2,9 @@ import Image from "next/image";
 import { MessagesSquare, BookOpen, Music } from "lucide-react";
 import { ViewContentTracker } from "@/components/molecules/ViewContentTracker";
 import { Button } from "@/components/atoms/Button";
-import { CompareTable } from "@/components/molecules/CompareTable";
+import { ComparisonTable } from "@/components/organisms/ComparisonTable";
 import { Faq, type FaqEntry } from "@/components/molecules/Faq";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
-import { KHEELU_MODES } from "@/components/organisms/KheeluModes";
 import { pageGraph, faqPage, breadcrumbs, KHEELU_PRODUCT, pageMeta, jsonLd } from "@/lib/seo";
 import { KHEELU_ART } from "@/lib/kheelu-art";
 import { KHEELU_FACTS } from "@/lib/product-facts";
@@ -87,7 +86,14 @@ const JSON_LD = pageGraph(
   breadcrumbs([{ name: "Meet Kheelu", path: "/kheelu" }]),
 );
 
-const MODE_ICONS = [MessagesSquare, BookOpen, Music] as const;
+/* Three ways to play, in the content doc's short lines (v7, incorporated
+   2026-10-02). Each line restates a published fact: AI mode on home WiFi,
+   Story mode offline, Bluetooth mode as a speaker. */
+const WAYS = [
+  { Icon: MessagesSquare, title: "Talk", body: "Your child asks anything. Kheelu answers and asks one back. Uses your home WiFi." },
+  { Icon: BookOpen, title: "Stories", body: "Stories your child can interrupt and ask about. Work offline, on trains and in cars." },
+  { Icon: Music, title: "Music", body: "Connect your phone over Bluetooth and play your own songs and rhymes." },
+] as const;
 
 /* The mockup's day, each line checked against what the site publishes:
    Story mode is offline, quiet hours exist, the log is readable. */
@@ -111,10 +117,10 @@ export default function KheeluPage() {
         <div className="kh-wrap kh-two">
           <div className="kh-stack">
             <span className="kh-kicker">Meet Kheelu</span>
-            <h1 className="kh-h1">A soft rabbit with an AI brain inside.</h1>
+            <h1 className="kh-h1">An AI toy that supports your child&apos;s brain development.</h1>
             <p className="kh-lead">
-              Kheelu talks, tells stories and plays music. It has no screen, and it grows with your
-              child from age {KHEELU_AGES.replace("+", "")}.
+              Kheelu is a soft, screen-free rabbit. It answers your child&apos;s questions, tells
+              stories and plays music, and helps their brain grow through conversation.
             </p>
             <div className="kh-cta-row">
               <Button href={PREORDER_HREF} track="product-top">
@@ -141,19 +147,15 @@ export default function KheeluPage() {
         <div className="kh-wrap kh-stack-l">
           <h2 className="kh-h2">Three ways to play</h2>
           <div className="kh-grid3">
-            {KHEELU_MODES.map((m, i) => {
-              const Icon = MODE_ICONS[i] ?? MessagesSquare;
-              return (
-                <div key={m.mode} className="kh-card">
-                  <span className="kh-ic">
-                    <Icon className="h-5 w-5" aria-hidden="true" />
-                  </span>
-                  <span className="kh-kicker">{m.mode}</span>
-                  <h3 className="kh-h3">{m.heading}</h3>
-                  <p className="kh-body">{m.body}</p>
-                </div>
-              );
-            })}
+            {WAYS.map(({ Icon, title, body }) => (
+              <div key={title} className="kh-card">
+                <span className="kh-ic">
+                  <Icon className="h-5 w-5" aria-hidden="true" />
+                </span>
+                <h3 className="kh-h3">{title}</h3>
+                <p className="kh-body">{body}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -228,10 +230,12 @@ export default function KheeluPage() {
       <section className="kh-sec kh-alt">
         <div className="kh-wrap kh-stack-l">
           <div className="kh-stack max-w-[720px]">
-            <h2 className="kh-h2">Kheelu compared</h2>
-            <p className="kh-lead">A simple, honest look at what is out there.</p>
+            <h2 className="kh-h2">How Kheelu compares</h2>
+            <p className="kh-lead">
+              They all talk or play. This is how they differ for a child aged {KHEELU_AGES}.
+            </p>
           </div>
-          <CompareTable />
+          <ComparisonTable />
         </div>
       </section>
 

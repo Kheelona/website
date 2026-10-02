@@ -17,7 +17,9 @@ export type FaqGroup = { title: string; items: readonly FaqEntry[] };
  *  /refund, /shipping). Questions the mockup asked that have no published
  *  answer yet are NOT here, and are listed in Technical-Todo.md: whether
  *  Kheelu understands a 3-year-old first time, whether a child's voice trains
- *  the model, two children sharing one Kheelu, gifting, and Diwali delivery.
+ *  the model, two children sharing one Kheelu, gifting, and a delivery
+ *  estimate by city. Content doc v7's wording for attachment, listening,
+ *  WiFi, Diwali and outside India was incorporated on 2026-10-02.
  *  Every answer renders, so the FAQPage graph may describe all of them. */
 export const FAQ_GROUPS: readonly FaqGroup[] = [
   {
@@ -40,8 +42,8 @@ export const FAQ_GROUPS: readonly FaqGroup[] = [
         a: "A friend at 3, and a head start for school. Kheelu answers your child's questions, remembers the words they know, and builds on them the next day: stories, numbers, thinking games, and the languages you speak at home. The parent app counts the new words, so you see the growth, not just the play.",
       },
       {
-        q: "Will Kheelu replace time with me?",
-        a: "No, and it is not built to. Kheelu is for the moments your hands are full, not the ones they are not. The parent app gives you one simple thing to do together each day, quiet hours are yours to set, and the grown-up holds the keys, always.",
+        q: "Will my child get too attached?",
+        a: "Kheelu is a toy and says so. It doesn't ask your child to keep secrets, and quiet hours mean it sleeps when you say. You can also see how long your child talks with it in the app.",
       },
       {
         q: "Is Kheelu the same as Lumi?",
@@ -53,8 +55,8 @@ export const FAQ_GROUPS: readonly FaqGroup[] = [
     title: "Safety and privacy",
     items: [
       {
-        q: "Is Kheelu always listening?",
-        a: "No. Kheelu listens only after your child says the wake word. The rest of the time the microphone is off, not muted. Off. Nothing is recorded before the wake word, and every conversation after it is readable in the parent app, where you can delete any of it.",
+        q: "Is it always listening?",
+        a: "No. It listens only for its wake word. Nothing is recorded or sent until your child says it.",
       },
       {
         q: "Where does my child's voice go?",
@@ -65,8 +67,8 @@ export const FAQ_GROUPS: readonly FaqGroup[] = [
         a: "No. Kheelu cannot browse or search. Answers come from a closed library built for children, so there are no random videos, no endless detours, and no strangers.",
       },
       {
-        q: "Does Kheelu need the internet to work?",
-        a: "For open conversation, yes: AI mode runs on your home WiFi. For everything else, no: Story-mode stories and lessons play offline, and Bluetooth music needs only a paired phone.",
+        q: "Does it need WiFi?",
+        a: "Only for open conversation. Stories work offline and music plays over Bluetooth.",
       },
     ],
   },
@@ -103,8 +105,12 @@ export const FAQ_GROUPS: readonly FaqGroup[] = [
         a: "Nothing extra. Delivery is included anywhere in India, and all prices include GST.",
       },
       {
-        q: "Can I buy Kheelu from outside India?",
-        a: "We do not ship outside India yet. If you are abroad and want one, message us and we will tell you honestly whether we can help.",
+        q: "Will it arrive before Diwali?",
+        a: `We start shipping on ${SHIP_DATE_TEXT}, in the order people reserved.`,
+      },
+      {
+        q: "Can I buy it from outside India?",
+        a: "Not yet. If you are abroad and want one, message us and we will tell you honestly whether we can help.",
       },
     ],
   },

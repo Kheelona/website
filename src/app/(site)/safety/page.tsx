@@ -1,4 +1,10 @@
-import { Mic, WifiOff, ShieldCheck, MessageSquareText, MessageCircle } from "lucide-react";
+import {
+  Mic,
+  WifiOff,
+  ShieldCheck,
+  MessageSquareText,
+  MessageCircle,
+} from "lucide-react";
 import { Button } from "@/components/atoms/Button";
 import { Faq, type FaqEntry } from "@/components/molecules/Faq";
 import { pageGraph, faqPage, breadcrumbs, pageMeta, jsonLd } from "@/lib/seo";
@@ -67,14 +73,26 @@ const SAFETY_FAQ: FaqEntry[] = [
   /* V6 D7: the old first entry near-duplicated the flagship AnswerBlock (the
      padding §8.23-4 warns against). Replaced with the dependence anxiety no
      page answered — built entirely from published facts. */
-  { q: "Will Kheelu replace time with me?", a: "No, and it is not built to. Kheelu is for the moments your hands are full, not the ones they are not. The parent app gives you one simple thing to do together each day, quiet hours are yours to set, and the grown-up holds the keys, always." },
-  { q: "Does Kheelu reduce screen time?", a: "That is the point. Kheelu has no screen at all. It is a toy that helps you cut screen time: your child talks, listens, and imagines instead of watching." },
-  { q: "Can Kheelu reach the open internet?", a: "No. Kheelu cannot browse or search. Answers come from a closed library built for children, so there are no random videos, no endless detours, and no strangers." },
+  {
+    q: "Will Kheelu replace time with me?",
+    a: "No, and it is not built to. Kheelu is for the moments your hands are full, not the ones they are not. The parent app gives you one simple thing to do together each day, quiet hours are yours to set, and the grown-up holds the keys, always.",
+  },
+  {
+    q: "Does Kheelu reduce screen time?",
+    a: "That is the point. Kheelu has no screen at all. It is a toy that helps you cut screen time: your child talks, listens, and imagines instead of watching.",
+  },
+  {
+    q: "Can Kheelu reach the open internet?",
+    a: "No. Kheelu cannot browse or search. Answers come from a closed library built for children, so there are no random videos, no endless detours, and no strangers.",
+  },
   /* SEO round 2026-08-12: the checklist restates the published what-to-look-for
      criteria (the journal's safe-AI-toy piece and the ANSWERS mechanisms above)
      — nothing here is a new claim. Carries "smart toys for toddlers" and
      "educational toys for kids" in one parents'-voice entry. */
-  { q: "What should I look for in smart toys for toddlers?", a: "Five things: a microphone that sleeps until a wake word, answers from a closed library instead of the open internet, a conversation log you can read, voice data that stays in your region and is never sold, and replies graded for the age. The same checklist works for educational toys for kids at any age." },
+  {
+    q: "What should I look for in smart toys for toddlers?",
+    a: "Five things: a microphone that sleeps until a wake word, answers from a closed library instead of the open internet, a conversation log you can read, voice data that stays in your region and is never sold, and replies graded for the age. The same checklist works for educational toys for kids at any age.",
+  },
   /* Status-exact, never upgraded: mirrors the STANDARDS chips above. */
   /* The standards FAQ entry was REMOVED 2026-07-31 (founder: no certificate
      received yet, keep it off the FAQ; the status-honest standards room below
@@ -92,16 +110,41 @@ const SAFETY_JSON_LD = pageGraph(
 );
 
 const RULES = [
-  { Icon: Mic, title: "It only listens when called", body: "Kheelu listens only after your child says the wake word. The rest of the time, the microphone is off. Not muted. Off." },
-  { Icon: WifiOff, title: "It can't go on the internet", body: "Kheelu cannot browse, search, or stumble. No random videos, no endless detours, no strangers. Ever." },
-  { Icon: ShieldCheck, title: "Answers are checked for age", body: "Replies pass through a safety layer tuned to your child's age before Kheelu speaks. On-device and cloud filters work together." },
-  { Icon: MessageSquareText, title: "You can read everything", body: "Every conversation is in the parent app, word for word. Delete anything with one tap." },
+  {
+    Icon: Mic,
+    title: "It only listens when called",
+    body: "Kheelu listens only after your child says the wake word. The rest of the time, the microphone is off. Not muted. Off.",
+  },
+  {
+    Icon: WifiOff,
+    title: "It can't go on the internet",
+    body: "Kheelu cannot browse, search, or stumble. No random videos, no endless detours, no strangers. Ever.",
+  },
+  {
+    Icon: ShieldCheck,
+    title: "Answers are checked for age",
+    body: "Replies pass through a safety layer tuned to your child's age before Kheelu speaks. On-device and cloud filters work together.",
+  },
+  {
+    Icon: MessageSquareText,
+    title: "You can read everything",
+    body: "Every conversation is in the parent app, word for word. Delete anything with one tap.",
+  },
 ] as const;
 
 const VOICE_PATH = [
-  { title: "On the toy", body: "Kheelu hears the wake word, and the first safety checks happen on the toy itself, before anything travels anywhere." },
-  { title: "Our own servers, in your region", body: "Open conversation uses your home WiFi and Kheelona's own voice brain. Your family's conversations stay in your region." },
-  { title: "Back to you", body: "The conversation appears in your app. It is never sold, and never used to sell your child anything." },
+  {
+    title: "On the toy",
+    body: "Kheelu hears the wake word, and the first safety checks happen on the toy itself, before anything travels anywhere.",
+  },
+  {
+    title: "Our own servers, in your region",
+    body: "Open conversation uses your home WiFi and Kheelona's own voice brain. Your family's conversations stay in your region.",
+  },
+  {
+    title: "Back to you",
+    body: "The conversation appears in your app. It is never sold, and never used to sell your child anything.",
+  },
 ] as const;
 
 export default function SafetyPage() {
@@ -115,27 +158,30 @@ export default function SafetyPage() {
       <section className="kh-page-hero">
         <div className="kh-wrap">
           <div className="kh-stack max-w-[820px]">
-          <span className="kh-kicker">Safety</span>
-          <h1 className="kh-h1">Built for small children. Checked by you.</h1>
-          <p className="kh-lead">
-            You&apos;re trusting a talking toy near your child. Here is exactly what Kheelu does
-            and doesn&apos;t do, in plain words.
-          </p>
+            <span className="kh-kicker">Safety</span>
+            <h1 className="kh-h1">How we keep Kheelu safe.</h1>
+            <p className="kh-lead">
+              This page lists what Kheelu does, what it doesn&apos;t do, and
+              what we&apos;re still working on.
+            </p>
           </div>
         </div>
       </section>
 
       <section className="kh-sec kh-alt">
-        <div className="kh-wrap kh-grid2">
-          {RULES.map(({ Icon, title, body }) => (
-            <div key={title} className="kh-card">
-              <span className="kh-ic">
-                <Icon className="h-5 w-5" aria-hidden="true" />
-              </span>
-              <h2 className="kh-h3">{title}</h2>
-              <p className="kh-body">{body}</p>
-            </div>
-          ))}
+        <div className="kh-wrap kh-stack-l">
+          <h2 className="kh-h2">The four basics</h2>
+          <div className="kh-grid2">
+            {RULES.map(({ Icon, title, body }) => (
+              <div key={title} className="kh-card">
+                <span className="kh-ic">
+                  <Icon className="h-5 w-5" aria-hidden="true" />
+                </span>
+                <h3 className="kh-h3">{title}</h3>
+                <p className="kh-body">{body}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -157,7 +203,8 @@ export default function SafetyPage() {
               ))}
             </ol>
             <p className="kh-note mt-2">
-              Nothing leaves without consent. Nothing stays that you cannot delete.
+              Nothing leaves without consent. Nothing stays that you cannot
+              delete.
             </p>
           </div>
         </div>
@@ -166,13 +213,20 @@ export default function SafetyPage() {
       <section className="kh-sec kh-alt">
         <div className="kh-wrap kh-stack-l">
           <div className="kh-stack max-w-[720px]">
-            <h2 className="kh-h2">Certificates: what&apos;s done and what&apos;s next</h2>
+            <h2 className="kh-h2">
+              Certificates: what&apos;s done and what&apos;s next
+            </h2>
             <p className="kh-lead">
-              We are completing formal toy-safety testing now. No badge appears here before it is
-              earned.
+              We are completing formal toy-safety testing now. No badge appears
+              here before it is earned.
             </p>
           </div>
-          <div className="kh-tbl" role="region" aria-label="Certificates" tabIndex={0}>
+          <div
+            className="kh-tbl"
+            role="region"
+            aria-label="Certificates"
+            tabIndex={0}
+          >
             <table>
               <thead>
                 <tr>
@@ -203,10 +257,12 @@ export default function SafetyPage() {
         <div className="kh-wrap kh-two kh-top">
           <h2 className="kh-h2">What if Kheelona ever shuts down?</h2>
           <div className="kh-stack">
-            <p className="kh-lead">We plan to be here for years. But you deserve a straight answer.</p>
+            <p className="kh-lead">
+              We plan to be here for years. But you deserve a straight answer.
+            </p>
             <p className="kh-body">
-              Story-mode stories and lessons play offline, and Bluetooth music needs only a paired
-              phone.
+              Story-mode stories and lessons play offline, and Bluetooth music
+              needs only a paired phone.
             </p>
           </div>
         </div>
@@ -215,7 +271,7 @@ export default function SafetyPage() {
       <section className="kh-sec kh-alt">
         <div className="kh-wrap kh-stack-l">
           <div className="kh-stack max-w-[720px]">
-            <h2 className="kh-h2">The parent holds the keys</h2>
+            <h2 className="kh-h2">What you control</h2>
             <p className="kh-lead">
               Kheelu never decides what is right for your family. You do.
             </p>

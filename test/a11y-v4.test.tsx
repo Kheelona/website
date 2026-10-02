@@ -5,6 +5,7 @@ import { VideoWall } from "@/components/organisms/VideoWall";
 import { AgeTabs } from "@/components/organisms/AgeTabs";
 import { TwoReasons } from "@/components/organisms/TwoReasons";
 import { ParentQuotes } from "@/components/organisms/ParentQuotes";
+import { ComparisonTable } from "@/components/organisms/ComparisonTable";
 import { ArchitectureStack } from "@/components/organisms/ArchitectureStack";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { VIDEO_ASPECT, type VideoMoment } from "@/lib/video-moments";
@@ -65,6 +66,11 @@ describe("V4 a11y (axe-core)", () => {
 
   it("TwoReasons: tab buttons, language list, switches with names", async () => {
     const { container } = render(<TwoReasons />);
+    await expectNoViolations(container);
+  });
+
+  it("ComparisonTable: chip group, row and column headers in both layouts", async () => {
+    const { container } = render(<ComparisonTable />);
     await expectNoViolations(container);
   });
 

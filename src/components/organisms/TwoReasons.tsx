@@ -53,10 +53,11 @@ export function TwoReasons() {
             card === 0 ? "flex" : "hidden",
           )}
         >
-          <h3 className="kh-h3">Speaks the way your family speaks</h3>
+          <h3 className="kh-h3">It talks in your family&apos;s languages</h3>
           <p className="kh-body">
-            Kheelu can switch mid-sentence, the way Indian families talk. Your child gets more
-            chances to use the languages you speak at home, including your parents&apos;.
+            Kheelu can switch languages mid-sentence, the way most of us do at home. So your child
+            keeps using the languages your family speaks, including the one their grandparents
+            speak.
           </p>
           <ul aria-label="Languages" className="flex flex-wrap gap-1.5">
             {KHEELU_LANGUAGES.map((l) => {
@@ -83,10 +84,10 @@ export function TwoReasons() {
             card === 1 ? "flex" : "hidden",
           )}
         >
-          <h3 className="kh-h3">See the learning, not just the play</h3>
+          <h3 className="kh-h3">You see what your child talked about</h3>
           <p className="kh-body">
-            The parent app shows what your child talked about, every conversation word for word,
-            and puts you in control.
+            The parent app shows today&apos;s topics, every conversation in full, and the settings
+            you control.
           </p>
           <AppMock />
         </article>
@@ -183,7 +184,7 @@ function AppMock() {
           <>
             <Switch label="Quiet hours (8 pm to 7 am)" initial />
             <Switch label="Hindi" initial />
-            <Switch label="Tricky questions wait for me" initial={false} />
+            <Switch label="Bedtime stories only after 7 pm" initial={false} />
           </>
         ) : null}
       </div>

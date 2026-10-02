@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { pageGraph, breadcrumbs, pageMeta, jsonLd } from "@/lib/seo";
-import { GROWTH_ARC, GROWTH_HEDGE } from "@/lib/growth-arc";
+import { GROWTH_ARC } from "@/lib/growth-arc";
 import { SHIP_DATE_TEXT } from "@/config/site";
 
 export const metadata = pageMeta({
@@ -50,10 +50,10 @@ export default function HowPage() {
         <div className="kh-wrap">
           <div className="kh-stack max-w-[820px]">
           <span className="kh-kicker">How it helps</span>
-          <h1 className="kh-h1">Built on how young brains actually grow.</h1>
+          <h1 className="kh-h1">How talking helps a young brain grow.</h1>
           <p className="kh-lead">
-            A child&apos;s brain grows fastest before school. What helps most isn&apos;t flashcards
-            or videos. It&apos;s conversation: lots of back-and-forth, every day.
+            A child&apos;s brain grows fastest in the years before school. In these years, everyday
+            back-and-forth conversation does a lot of the work.
           </p>
           </div>
         </div>
@@ -172,7 +172,7 @@ export default function HowPage() {
               </div>
             ))}
           </div>
-          <p className="kh-note">{GROWTH_HEDGE}</p>
+          <p className="kh-note">Every child grows at their own pace, and Kheelu adjusts to your child&apos;s.</p>
         </div>
       </section>
 

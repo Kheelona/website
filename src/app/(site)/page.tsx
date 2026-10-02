@@ -11,7 +11,6 @@ import {
   MessageSquareText,
   ShieldCheck,
   ArrowRight,
-  Play,
 } from "lucide-react";
 import { Button } from "@/components/atoms/Button";
 import { Faq, type FaqEntry } from "@/components/molecules/Faq";
@@ -20,15 +19,15 @@ import { ParentQuotes } from "@/components/organisms/ParentQuotes";
 import { AgeTabs } from "@/components/organisms/AgeTabs";
 import { TwoReasons } from "@/components/organisms/TwoReasons";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
+import { ComparisonTable } from "@/components/organisms/ComparisonTable";
 import { ViewContentTracker } from "@/components/molecules/ViewContentTracker";
 import { pageGraph, faqPage, breadcrumbs, KHEELU_PRODUCT, pageMeta, jsonLd } from "@/lib/seo";
-import { VIDEO_MOMENTS, hasVideoMoments, videoLede } from "@/lib/video-moments";
+import { VIDEO_MOMENTS, hasVideoMoments } from "@/lib/video-moments";
 import { KHEELU_ART } from "@/lib/kheelu-art";
 import { FOUNDERS } from "@/lib/team";
 import {
   PREORDER_HREF,
   RESERVE_LABEL,
-  PRICE_CAPTION,
   TOKEN_PRICE,
   BALANCE_PRICE,
   CAP_UNITS_TEXT,
@@ -36,7 +35,6 @@ import {
   LAUNCH_PRICE,
   SHIP_DATE_TEXT,
   KHEELU_AGES,
-  KHEELU_LANGUAGES,
   KHEELONA_PLUS_LINE,
   TAX_LINE,
   SUPPORT_WHATSAPP_HREF,
@@ -86,13 +84,6 @@ const HOME_FAQ: FaqEntry[] = [
 
 const HOME_JSON_LD = pageGraph(KHEELU_PRODUCT, faqPage(HOME_FAQ), breadcrumbs([]));
 
-const TICKS = [
-  "No screen, ever",
-  `${KHEELU_LANGUAGES.length} home languages`,
-  "No open internet",
-  "Parents see everything",
-] as const;
-
 const STEPS = [
   { title: "Your child asks", body: "Any question, in their own words.", eg: "“Why do I have to sleep?”" },
   { title: "Kheelu answers", body: "In simple words, pitched at their age.", eg: "“Your body fixes itself while you rest.”" },
@@ -102,14 +93,15 @@ const STEPS = [
   { title: "Kheelu remembers", body: "It keeps track of the words your child knows, what they love, and the pace they learn at." },
 ] as const;
 
-/* Safety in four cards. The mockup's fourth ("never pretends to be alive")
-   sits in copy that is still awaiting founder sign-off on /safety, so the
-   published never-sold promise takes its place. */
+/* The four things parents ask first (content doc v7, incorporated
+   2026-10-02). The mic wording follows the doc's Appendix B: the mic has to
+   listen for the wake word, so it is not described as "off" here. The wake
+   word itself is not published yet, so the card names it generically. */
 const SAFETY = [
-  { Icon: Mic, title: "It only listens when called", body: "The microphone turns on when your child says the wake word. The rest of the time it is off. Not muted. Off." },
-  { Icon: WifiOff, title: "It can't go on the internet", body: "Kheelu cannot browse or search. No random videos, no endless detours, no strangers." },
+  { Icon: Mic, title: "It listens for one word", body: "Nothing is recorded or sent until your child says the wake word." },
+  { Icon: WifiOff, title: "It can't browse the internet", body: "It connects only to our own servers. No websites, no videos, no strangers." },
   { Icon: MessageSquareText, title: "You can read every conversation", body: "Word for word, in the parent app. Delete anything with one tap." },
-  { Icon: ShieldCheck, title: "Your child's voice is never sold", body: "Never sold, and never used to sell your child anything." },
+  { Icon: ShieldCheck, title: "It says it's a toy", body: "Kheelu tells your child it's a toy, and it never asks them to keep a secret from you." },
 ] as const;
 
 export default function HomePage() {
@@ -131,35 +123,16 @@ export default function HomePage() {
       <section className="pb-9 pt-5 min-[900px]:pb-14 min-[900px]:pt-[60px]">
         <div className="kh-wrap grid gap-[22px] min-[900px]:grid-cols-[1fr_1.05fr] min-[900px]:items-center min-[900px]:gap-14">
           <div className="flex flex-col gap-[18px] min-[900px]:order-1">
-            <span className="kh-pill">AI toy for growing minds · Ages {KHEELU_AGES}</span>
-            <h1 className="kh-h1">Screens make children watch. Kheelu makes them think.</h1>
-            <p className="kh-lead">
-              Kheelu is a screen-free AI toy that answers your child&apos;s questions, asks one
-              back, and helps their brain grow through real conversation.
-            </p>
+            {/* Content doc v7: the hero says ONE thing. The refund promise is in
+                the trust strip below, and the four ticks that sat here are rows
+                of the comparison table further down. On a phone this whole hero
+                (photo, line, button) fits one screen. */}
+            <h1 className="kh-h1">Kheelu is an AI toy built to help your child&apos;s brain grow.</h1>
             <div className="kh-cta-row">
               <Button href={PREORDER_HREF} track="hero">
                 {RESERVE_LABEL}
               </Button>
-              {hasVideoMoments() ? (
-                <Button href="#watch" variant="ghost">
-                  <Play className="h-[18px] w-[18px]" fill="currentColor" aria-hidden="true" />
-                  Watch a child meet Kheelu
-                </Button>
-              ) : null}
             </div>
-            <p className="kh-note">{PRICE_CAPTION} Ships {SHIP_DATE_TEXT}.</p>
-            <ul className="grid grid-cols-2 gap-2.5">
-              {TICKS.map((t) => (
-                <li
-                  key={t}
-                  className="flex items-center gap-2 rounded-xl border border-line bg-surface px-3 py-2.5 text-[14px] font-medium text-ink-head"
-                >
-                  <Check className="h-4 w-4 shrink-0 text-green" aria-hidden="true" />
-                  {t}
-                </li>
-              ))}
-            </ul>
           </div>
           {/* The mockup draws a photo of a child hugging Kheelu here. Until a
               consented still exists, the product art stands in on a warm tint
@@ -213,7 +186,7 @@ export default function HomePage() {
           <div className="kh-wrap kh-stack-l">
             <div className="kh-stack max-w-[720px]">
               <h2 className="kh-h2">Watch a child meet Kheelu.</h2>
-              <p className="kh-lead">{videoLede()}</p>
+              <p className="kh-lead">Filmed at home by families in our pilot.</p>
             </div>
             <VideoWall moments={VIDEO_MOMENTS} />
           </div>
@@ -223,8 +196,9 @@ export default function HomePage() {
       <section id="parent-voices" className="kh-sec kh-alt">
         <div className="kh-wrap kh-stack-l">
           <div className="kh-stack max-w-[720px]">
-            <h2 className="kh-h2">The first families are already talking.</h2>
-            <p className="kh-lead">Words from parents in our pilot.</p>
+            {/* The doc's lead (how many families, in which cities, since when)
+                waits on the pilot numbers, so the heading stands alone. */}
+            <h2 className="kh-h2">What pilot parents told us.</h2>
           </div>
           <ParentQuotes />
         </div>
@@ -266,12 +240,12 @@ export default function HomePage() {
               <h3 className="kh-h3">Why conversation?</h3>
               <p className="kh-body">
                 Harvard&apos;s Center on the Developing Child describes back-and-forth exchanges as
-                a building block of early brain development. We explain what that research shows,
-                and what it doesn&apos;t, on one page.
+                a building block of early brain development. Our How it helps page explains what
+                the research found, and where it stops.
               </p>
               <div>
                 <Button href="/how" variant="ghost" size="sm">
-                  Read the science, simply
+                  Read the research
                 </Button>
               </div>
             </div>
@@ -279,14 +253,25 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="safety" className="kh-sec kh-alt">
+      {/* Content doc v7, screen 6: replaces the hero's four ticks. */}
+      <section id="compare" className="kh-sec kh-alt">
+        <div className="kh-wrap kh-stack-l">
+          <div className="kh-stack max-w-[720px]">
+            <h2 className="kh-h2">Thinking of a smart speaker or a tablet instead?</h2>
+            <p className="kh-lead">
+              They all talk or play. This is how they differ for a child aged {KHEELU_AGES}.
+            </p>
+          </div>
+          <ComparisonTable />
+        </div>
+      </section>
+
+      <section id="safety" className="kh-sec">
         <div className="kh-wrap kh-stack-l">
           <div className="kh-stack max-w-[720px]">
             <span className="kh-kicker">Safety</span>
-            <h2 className="kh-h2">Built for small children. Checked by you.</h2>
-            <p className="kh-lead">
-              Before anything else, here is exactly what Kheelu can and can&apos;t do.
-            </p>
+            <h2 className="kh-h2">What Kheelu can and can&apos;t do</h2>
+            <p className="kh-lead">The four things parents ask us first.</p>
           </div>
           <div className="kh-grid2">
             {SAFETY.map(({ Icon, title, body }) => (
@@ -314,23 +299,22 @@ export default function HomePage() {
           </div>
           <div>
             <Button href="/safety" variant="ghost">
-              See exactly how safety works
+              See how safety works
             </Button>
           </div>
         </div>
       </section>
 
-      <section className="kh-sec">
+      <section className="kh-sec kh-alt">
         <div className="kh-wrap kh-stack-l">
           <div className="kh-stack max-w-[720px]">
-            <span className="kh-kicker">Two more reasons</span>
-            <h2 className="kh-h2">Made for Indian homes. Made for parents.</h2>
+            <h2 className="kh-h2">Two more things to know</h2>
           </div>
           <TwoReasons />
         </div>
       </section>
 
-      <section id="price" className="kh-sec kh-alt">
+      <section id="price" className="kh-sec">
         <div className="kh-wrap grid gap-7 min-[900px]:grid-cols-2 min-[900px]:items-start min-[900px]:gap-14">
           <div className="kh-stack">
             <h2 className="kh-h2">
@@ -391,7 +375,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="team" className="kh-sec">
+      <section id="team" className="kh-sec kh-alt">
         <div className="kh-wrap kh-stack-l">
           <div className="kh-stack max-w-[720px]">
             <h2 className="kh-h2">Made by parents in Bengaluru</h2>
@@ -430,7 +414,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="questions" className="kh-sec kh-alt">
+      <section id="questions" className="kh-sec">
         <div className="kh-wrap kh-stack-l">
           <h2 className="kh-h2">Questions parents ask</h2>
           <Faq items={HOME_FAQ} />

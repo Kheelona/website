@@ -28,7 +28,7 @@ const QUOTES = [
   {
     text: "We wanted less screen time without a fight. This is the first thing that worked without one.",
     who: "Gaurav",
-    title: "Less screen time, no fight",
+    title: "Less screen time",
     meta: "Pilot parent",
   },
 ] as const;
