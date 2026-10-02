@@ -24,32 +24,29 @@ export const STORE_URL = "https://store.kheelona.com";
  *  to the page that takes the payment. */
 export const PREORDER_HREF = STORE_URL;
 
+/* Redesign 2026-10: the mockup's five tabs, in its order. Old URLs 308 to
+   these (next.config.ts): /products/kheelu → /kheelu, /team → /story. */
 export const NAV_LINKS = [
-  { label: "Meet Kheelu", href: "/products/kheelu" },
-  // R11 (founder): the tab is the platform's name — the page and Home both
-  // say PlayOS, so the nav saying "How it works" read as a different place
-  { label: "PlayOS", href: "/playos" },
+  { label: "How it helps", href: "/how" },
+  { label: "Meet Kheelu", href: "/kheelu" },
   { label: "Safety", href: "/safety" },
-  { label: "Stories", href: "/stories" },
-  { label: "Team", href: "/team" },
+  { label: "Our story", href: "/story" },
+  { label: "FAQ", href: "/faq" },
 ] as const;
 
 export const FOOTER_LINKS = [
   ...NAV_LINKS,
-  /* The buyer's guide (2026-09-11, §8.36-b). Footer rather than nav
-     deliberately: the nav stays five tabs (founder, R11), and this page's job
-     is to be found by an answer engine and by a parent already reading, not to
-     compete for a tab with the product itself. */
+  /* Pages the mockup does not draw but the site keeps: the journal and the
+     buyer's guide rank, PlayOS is the platform page, and Razorpay's review
+     looks for Refunds and Shipping by name (§8.36-b, §8.25). */
+  { label: "Journal", href: "/stories" },
+  { label: "PlayOS", href: "/playos" },
   { label: "Choosing an AI toy", href: "/ai-toys-for-kids-in-india" },
-  { label: "Contact", href: "/contact" },
-  { label: "Privacy", href: "/privacy" },
-  { label: "Terms", href: "/terms" },
-  /* Real pages since 2026-08-22. They were 301s to /terms while nothing could
-     be refunded or shipped; money changes that, and Razorpay's own review
-     looks for both by name. */
+  { label: "Setup", href: "/setup" },
   { label: "Refunds", href: "/refund" },
   { label: "Shipping", href: "/shipping" },
-  { label: "Setup", href: "/setup" },
+  { label: "Privacy", href: "/privacy" },
+  { label: "Terms", href: "/terms" },
 ] as const;
 
 /* ── Money ──────────────────────────────────────────────────────────────── */
@@ -92,6 +89,18 @@ export const CAP_UNITS_TEXT = `first ${PREORDER_CAP_UNITS} units`;
  *  needs editing when a price moves, and it reads the same in a 15px navbar
  *  as it does in a hero. */
 export const PREORDER_LABEL = "Pre-order Kheelu";
+
+/** The redesign's CTA wording (2026-10, the mockup): the price is IN the verb,
+ *  because the mockup's whole argument is "₹499 today, nothing more until it
+ *  ships". Every marketing CTA renders one of these two.
+ *
+ *  ⚠ TOKEN MODE ONLY. Once PREORDER_CAP_UNITS are paid the store flips to full
+ *  mode (src/lib/store/mode.ts) and charges FULL_PRICE upfront, and every one
+ *  of these labels becomes false. The store page reads the live mode and is
+ *  always right; these static labels are not. Flip them here, in one edit,
+ *  the day the cap is reached (Technical-Todo.md carries the reminder). */
+export const RESERVE_LABEL = `Reserve Kheelu for ${TOKEN_PRICE}`;
+export const RESERVE_SHORT_LABEL = `Reserve ${TOKEN_PRICE}`;
 
 /** The standard reassurance caption under a pre-order button. */
 export const PRICE_CAPTION = `${TOKEN_PRICE} now, ${BALANCE_PRICE} on dispatch. Fully refundable until we ship.`;

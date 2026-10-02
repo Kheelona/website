@@ -80,10 +80,6 @@ describe("the interaction contract", () => {
   it("is actually adopted: every clickable card surface composes it", () => {
     const shouldUse = [
       "src/app/(site)/stories/page.tsx",
-      "src/features/home/components/Journal.tsx",
-      "src/components/organisms/FamilyGrid.tsx",
-      "src/components/organisms/FeelingsGallery.tsx",
-      "src/app/(site)/products/kheelu/_components/ColorwayPicker.tsx",
       "src/components/molecules/Faq.tsx",
       "src/components/organisms/ArchitectureStack.tsx",
     ];

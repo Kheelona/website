@@ -23,14 +23,14 @@ export function NotFoundPanel({
 }) {
   return (
     <div className="mx-auto w-full max-w-[640px] px-6 py-16 md:py-24">
-      <h1 className="mb-4 font-display text-[clamp(28px,4vw,38px)] font-extrabold leading-[1.1] text-ink-head">
+      <h1 className="mb-4 font-display text-[clamp(28px,4vw,38px)] font-semibold leading-[1.1] text-ink-head">
         {title}
       </h1>
       <p className="mb-6 max-w-[46ch] text-[17px] leading-[1.6] text-ink">{body}</p>
       {cta ? (
         <a
           href="/"
-          className="inline-flex items-center justify-center rounded-full bg-action px-7 py-4 text-[17px] font-bold text-white shadow-cta focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
+          className="inline-flex items-center justify-center rounded-full min-h-[52px] bg-action px-6 text-[17px] font-semibold text-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
         >
           Go to the pre-order page
         </a>

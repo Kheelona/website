@@ -25,8 +25,8 @@ describe("Footer", () => {
     expect(link).toHaveAttribute("href", "https://kheelona.ai");
   });
 
-  it("signs the work with its provenance (V3)", () => {
+  it("signs the work with its provenance (redesign 2026-10)", () => {
     render(<Footer />);
-    expect(screen.getByText("Designed by parents in Bengaluru.")).toBeInTheDocument();
+    expect(screen.getByText("Made in Bengaluru.")).toBeInTheDocument();
   });
 });

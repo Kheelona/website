@@ -41,7 +41,7 @@ export function ReadNext({ stories }: { stories: readonly Story[] }) {
             >
               <Card interactive className="h-full border border-line bg-white p-6">
                 <Eyebrow className="mb-2">{story.theme}</Eyebrow>
-                <h3 className="mb-2 font-display text-[20px] font-extrabold leading-tight text-ink-head">
+                <h3 className="mb-2 font-display text-[20px] font-semibold leading-tight text-ink-head">
                   {story.title}
                 </h3>
                 <p className="text-[15px] text-ink-muted">

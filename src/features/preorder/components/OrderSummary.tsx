@@ -1,4 +1,4 @@
-import { PromiseMark } from "@/components/molecules/PromiseMark";
+import { Check } from "lucide-react";
 import {
   LAUNCH_PRICE,
   BALANCE_PRICE,
@@ -77,16 +77,16 @@ export function OrderSummary({
         ];
 
   return (
-    <div className="rounded-(--radius-card-lg) border border-line bg-white p-6 md:p-7">
-      <h2 className="mb-5 font-display text-[22px] font-extrabold text-ink-head">
+    <div className="rounded-[22px] border border-line bg-surface p-[22px]">
+      <h2 className="mb-4 font-display text-[22px] font-semibold text-ink-head">
         What you are agreeing to
       </h2>
       <ul className="grid gap-4">
         {lines.map((line) => (
           <li key={line.head} className="flex items-start gap-3">
-            <PromiseMark index={line.mark} size="w-6" className="mt-0.5 shrink-0" />
+            <Check className="mt-0.5 h-5 w-5 shrink-0 text-green" aria-hidden="true" />
             <div>
-              <p className="font-display text-[17px] font-extrabold leading-snug text-ink-head">
+              <p className="text-[16px] font-bold leading-snug text-ink-head">
                 {line.head}
               </p>
               <p className="mt-0.5 text-[14.5px] leading-snug text-ink-muted">{line.note}</p>

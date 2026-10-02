@@ -3,28 +3,32 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 /**
- * The palette's legal ink-on-wash pairs, in runnable form.
+ * The palette's text-on-surface pairs, in runnable form, for BOTH themes.
  *
- * This exists because a colour rule written only in prose gets applied unevenly.
- * §8.24-7 says `ink-muted` is banned on tinted washes at label size, and nine
- * call sites carried it anyway — one of them failing WCAG AA on the live site.
- * The matrix below is the arithmetic behind that rule, so it cannot rot: if
- * someone lightens a wash or darkens an ink, the test says which pairs changed
- * side rather than leaving it to the next axe sweep to notice, or not.
+ * A colour rule written only in prose gets applied unevenly, so the matrix
+ * below is the arithmetic: if someone lightens a surface or darkens an ink,
+ * this says which pair changed side rather than leaving it to the next axe
+ * sweep to notice, or not.
  *
- * WHERE THE VALUES COME FROM. Every wash except `white` is a real `--color-*`
- * token in globals.css since CS3 Phase 0 (2026-08-23) promoted `sun` from a
- * raw `bg-[#fdf1e2]` literal in Room.tsx to `--color-sun` — the literal was
- * the one wash a palette change could silently miss. `white` is Tailwind's
- * own default and not a token at all.
+ * Redesign 2026-10 (the parent-first mockup, tokens v4). Every text colour
+ * the site uses clears WCAG AA (4.5:1) on every surface it can sit on, in
+ * light AND dark. That retires §8.29's accepted 2.88:1 white-on-orange
+ * exception: the orange fill is gone, and primary buttons are ink with a
+ * page-coloured label (14:1 and up).
  */
 
 const ROOT = process.cwd();
 const CSS = readFileSync(join(ROOT, "src/styles/globals.css"), "utf8");
 
-function token(name: string): string {
-  const m = CSS.match(new RegExp(`--color-${name}:\\s*(#[0-9a-fA-F]{6})`));
-  if (!m) throw new Error(`--color-${name} not found in globals.css`);
+const THEME = CSS.slice(CSS.indexOf("@theme {"));
+const darkAt = CSS.indexOf(':root[data-theme="dark"] {');
+const DARK = CSS.slice(darkAt, CSS.indexOf("}", darkAt));
+const mqAt = CSS.indexOf("@media (prefers-color-scheme: dark)");
+const MEDIA_DARK = CSS.slice(mqAt, CSS.indexOf(':root[data-theme="dark"]', mqAt));
+
+function read(block: string, name: string): string {
+  const m = block.match(new RegExp(`--color-${name}:\\s*(#[0-9a-fA-F]{6})`));
+  if (!m) throw new Error(`--color-${name} not found`);
   return m[1].toLowerCase();
 }
 
@@ -39,106 +43,55 @@ function contrast(a: string, b: string): number {
   return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
 }
 
-const INKS = {
-  "ink-muted": token("ink-muted"),
-  "orange-ink": token("orange-ink"),
-  "blue-ink": token("blue-ink"),
-  ink: token("ink"),
-  "ink-head": token("ink-head"),
-};
-
-const WASHES = {
-  white: "#ffffff", // Tailwind default, via FILLS.white = "bg-white"
-  cream: token("cream"),
-  cool: token("cool"),
-  sun: token("sun"),
-};
-
 const AA = 4.5;
+const TEXTS = ["ink", "ink-muted", "label", "err", "green"] as const;
+const SURFACES = ["bg", "surface", "soft", "blush", "sage", "lav"] as const;
 
-describe("ink-on-wash contrast, as arithmetic rather than prose", () => {
-  it("resolves every token it claims to read", () => {
-    /* Pinned to the v3 values since CS3 Phase A (2026-08-23): ink-muted is
-       --kh-ink-3, cool is --kh-blue-tint, sun is --kh-yellow-tint. orange-ink
-       is a site extension and did not move. */
-    expect(INKS["ink-muted"]).toBe("#78716c");
-    expect(INKS["orange-ink"]).toBe("#b54a0d");
-    expect(WASHES.cool).toBe("#e2f3fa");
-    expect(WASHES.sun).toBe("#fceeda");
+/* `accent` and `on-accent` are not redefined in dark: the finale band and the
+   pill keep their fixed colours in both themes. */
+const light = (n: string) => read(THEME, n);
+const dark = (n: string) => {
+  try {
+    return read(DARK, n);
+  } catch {
+    return light(n);
+  }
+};
+
+describe.each([
+  ["light", light],
+  ["dark", dark],
+] as const)("%s theme: text on every surface clears AA", (_name, tok) => {
+  for (const text of TEXTS) {
+    for (const surface of SURFACES) {
+      it(`${text} on ${surface}`, () => {
+        expect(contrast(tok(text), tok(surface))).toBeGreaterThanOrEqual(AA);
+      });
+    }
+  }
+
+  it("the primary button: page colour on the ink fill", () => {
+    expect(contrast(tok("bg"), tok("ink-head"))).toBeGreaterThanOrEqual(AA);
+    // `text-white` on `bg-action` resolves to surface on ink
+    expect(contrast(tok("surface"), tok("ink-head"))).toBeGreaterThanOrEqual(AA);
   });
 
-  /* The four inks that are safe anywhere. `orange-ink` being in this list is the
-     entire reason §8.24-7 could pick one colour for every label on every wash. */
-  it.each(["orange-ink", "blue-ink", "ink", "ink-head"] as const)(
-    "%s clears AA on all four washes",
-    (ink) => {
-      for (const [wash, bg] of Object.entries(WASHES)) {
-        expect(
-          contrast(INKS[ink], bg),
-          `${ink} on ${wash} (${bg})`,
-        ).toBeGreaterThanOrEqual(AA);
-      }
-    },
-  );
-
-  /* The ban, asserted as a FAILURE. If a token edit ever made ink-muted legal on
-     a tinted wash, this test going red is the signal to revisit §8.24-7 rather
-     than to quietly keep a rule that no longer describes the palette. */
-  it("confirms ink-muted still fails AA on the two tinted washes the law bans", () => {
-    expect(contrast(INKS["ink-muted"], WASHES.cool)).toBeLessThan(AA);
-    expect(contrast(INKS["ink-muted"], WASHES.sun)).toBeLessThan(AA);
+  it("the WhatsApp button: on-green on green", () => {
+    expect(contrast(tok("on-green"), tok("green"))).toBeGreaterThanOrEqual(AA);
   });
 
-  it("records that ink-muted remains legal on white and cream, where it is still used", () => {
-    expect(contrast(INKS["ink-muted"], WASHES.white)).toBeGreaterThanOrEqual(AA);
-    /* cream clears by 0.03. Worth knowing before anyone warms that token up. */
-    expect(contrast(INKS["ink-muted"], WASHES.cream)).toBeGreaterThanOrEqual(AA);
-    expect(contrast(INKS["ink-muted"], WASHES.cream)).toBeLessThan(4.6);
+  it("the accent pill and finale: on-accent on accent", () => {
+    expect(contrast(tok("on-accent"), tok("accent"))).toBeGreaterThanOrEqual(AA);
   });
+});
 
-  /* §8.29 (founder decision, 2026-08-24). The action fill's label went back to
-     WHITE, reversing V4 D1. White on #EF762F is 2.88:1 and fails AA at every
-     size — the large-text floor is 3:1, and it does not even reach that.
-
-     This is asserted rather than hidden, in the same spirit as the ink-muted
-     ban above: the number is pinned, so if anyone ever darkens `action` the
-     test tells them the pair changed side instead of leaving it to a sweep to
-     notice, or not. The founder was shown this ratio and the passing
-     alternative before choosing. Changing this test means reversing a founder
-     decision, not fixing a bug. */
-  describe("the action fill's label, a knowingly accepted AA failure", () => {
-    /* --color-action is an indirection (var(--color-orange)), which is the
-       whole point of the slot: a contrast ruling flips ONE mapping. So resolve
-       it the way the browser does rather than pattern-matching a hex that is
-       not there. */
-    const ACTION_POINTS_AT = CSS.match(/--color-action:\s*var\(--color-([a-z-]+)\)/)![1];
-    const ACTION = token(ACTION_POINTS_AT);
-
-    it("still points at brand orange, so the trade is the one that was agreed", () => {
-      expect(ACTION_POINTS_AT).toBe("orange");
-      expect(ACTION).toBe("#ef762f");
-    });
-
-    it("carries white at 2.88:1, below AA and below even the 3:1 large-text floor", () => {
-      const ratio = contrast("#ffffff", ACTION);
-      expect(ratio).toBeCloseTo(2.88, 2);
-      expect(ratio).toBeLessThan(3);
-    });
-
-    it("records what was given up: ink-head on the same fill cleared AA at 5.99:1", () => {
-      expect(contrast(INKS["ink-head"], ACTION)).toBeCloseTo(5.99, 2);
-    });
-
-    it("records the passing alternative, if the decision is ever revisited", () => {
-      /* orange-cta stays defined for exactly this: white clears AA on it. */
-      expect(contrast("#ffffff", token("orange-cta"))).toBeGreaterThanOrEqual(AA);
-    });
-  });
-
-  it("computes a known ratio correctly, so the maths itself is not the bug", () => {
-    // Black on white is exactly 21:1 by definition.
-    expect(contrast("#000000", "#ffffff")).toBeCloseTo(21, 5);
-    // The live failure this whole change came from.
-    expect(contrast("#727272", "#eaf6fc")).toBeCloseTo(4.37, 2);
+describe("the two dark blocks agree", () => {
+  /* The dark palette is written twice (the OS preference and the forced
+     data-theme), because CSS cannot share one declaration block between a
+     media query and a selector. This keeps the copies identical. */
+  it("prefers-color-scheme and data-theme=dark carry the same values", () => {
+    const names = [...DARK.matchAll(/--color-([a-z-]+):/g)].map((m) => m[1]);
+    expect(names.length).toBeGreaterThan(10);
+    for (const n of names) expect(read(MEDIA_DARK, n), n).toBe(read(DARK, n));
   });
 });

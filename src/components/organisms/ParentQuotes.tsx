@@ -1,8 +1,7 @@
-import { Container } from "@/components/atoms/Container";
-import { Section } from "@/components/atoms/Section";
-import { SectionHeading } from "@/components/molecules/SectionHeading";
-import { Reveal } from "@/components/molecules/Reveal";
-import { Card } from "@/components/molecules/Card";
+"use client";
+
+import { useRef, useState } from "react";
+import { cn } from "@/lib/cn";
 
 /* PLACEHOLDER TESTIMONIALS — GATE V3-a (founder, 2026-07-27).
  *
@@ -17,77 +16,82 @@ const QUOTES = [
   {
     text: "The first thing she does after school is tell Kheelu about her day. I listen from the kitchen and learn things she forgets to tell me.",
     who: "Shweta",
+    title: "She tells Kheelu about her day",
     meta: "Pilot parent",
   },
   {
     text: "It sings the same rhymes my mother sang to me, and then it asks him questions about them. He answers before I can.",
     who: "Priyamvada",
+    title: "Rhymes across generations",
     meta: "Pilot parent",
   },
   {
     text: "We wanted less screen time without a fight. This is the first thing that worked without one.",
     who: "Gaurav",
+    title: "Less screen time, no fight",
     meta: "Pilot parent",
   },
 ] as const;
 
-export function ParentQuotes({
-  count = 3,
-  eyebrow = "From the pilot families",
-  title = "The first families are already talking.",
-  bare = false,
-}: {
-  count?: 2 | 3;
-  eyebrow?: string;
-  title?: string;
-  /** Revamp M2: content-only, for composition inside a Room. */
-  bare?: boolean;
-}) {
-  const content = (
-    <>
-      <Reveal>
-        <SectionHeading
-          eyebrow={eyebrow}
-          title={title}
-          titleClassName="mb-10 max-w-[20ch]"
-        />
-      </Reveal>
-      <div className={count === 2 ? "grid gap-5 md:grid-cols-2" : "grid gap-5 md:grid-cols-3"}>
-          {QUOTES.slice(0, count).map((q, i) => (
-            <Reveal key={q.who} delay={i * 0.06}>
-              <Card className="border border-line bg-cream">
-                <p
-                  aria-hidden="true"
-                  className="mb-2 font-display text-4xl font-extrabold leading-none text-orange"
-                >
-                  &ldquo;
-                </p>
-                {/* The v3 editorial accent's first placement (CS3 Phase B,
-                    founder decision #11): pull-quotes are exactly its job,
-                    and human quotes are where serif lived before the 2026-07
-                    retirement. Always `font-editorial italic` together — the
-                    shipped face is the italic subset only. */}
-                <p className="mb-4 font-editorial text-[21px] italic leading-[1.45] text-ink-head">
-                  {q.text}
-                </p>
-                <p className="font-display text-[16px] font-extrabold text-ink-head">
-                  {q.who}
-                </p>
-                <p className="text-[13px] font-semibold uppercase tracking-wide text-orange-ink">
-                  {q.meta}
-                </p>
-              </Card>
-            </Reveal>
-          ))}
-      </div>
-    </>
-  );
+/** Pilot parents' words (the mockup's testimonial row, redesign 2026-10):
+ *  a swipe row with dots on phones, three cards side by side on desktop.
+ *  The headline over each quote is drawn from the quote itself and claims
+ *  nothing more. The mockup's pilot statistics row is deliberately absent:
+ *  pilot counts were retired in V3 (see the note above). */
+export function ParentQuotes() {
+  const row = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
 
-  if (bare) return content;
+  const onScroll = () => {
+    const el = row.current;
+    const card = el?.firstElementChild as HTMLElement | null;
+    if (!el || !card) return;
+    const i = Math.round(el.scrollLeft / (card.offsetWidth + 14));
+    setActive(Math.max(0, Math.min(QUOTES.length - 1, i)));
+  };
 
   return (
-    <Section wash="white" id="parent-voices">
-      <Container className="pb-16 pt-6 md:pb-20 md:pt-8">{content}</Container>
-    </Section>
+    <div>
+      <div
+        ref={row}
+        onScroll={onScroll}
+        tabIndex={0}
+        aria-label="Pilot parent testimonials"
+        className="kh-snap"
+      >
+        {QUOTES.map((q) => (
+          <figure
+            key={q.who}
+            className="m-0 flex flex-col gap-3.5 rounded-3xl border border-line bg-bg p-6 min-[900px]:p-8"
+          >
+            <span
+              aria-hidden="true"
+              className="flex h-11 w-11 items-center justify-center rounded-full bg-accent font-display text-[20px] font-semibold text-on-accent"
+            >
+              {q.who[0]}
+            </span>
+            <h3 className="kh-h3">{q.title}</h3>
+            <blockquote className="m-0 grow font-display text-[20px] leading-[1.45] text-ink-head min-[900px]:text-[22px]">
+              &ldquo;{q.text}&rdquo;
+            </blockquote>
+            <figcaption className="flex flex-col gap-0.5 text-[14px] text-ink-muted">
+              <b className="text-[16px] text-ink-head">{q.who}</b>
+              <span>{q.meta}</span>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+      <div className="kh-dots mt-1.5 flex justify-center gap-2" aria-hidden="true">
+        {QUOTES.map((q, i) => (
+          <span
+            key={q.who}
+            className={cn(
+              "h-2 rounded-full transition-[width] duration-200",
+              i === active ? "w-[22px] bg-ink-head" : "w-2 bg-line",
+            )}
+          />
+        ))}
+      </div>
+    </div>
   );
 }

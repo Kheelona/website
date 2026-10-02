@@ -26,32 +26,36 @@ export type FaqEntry = { q: string; a: string };
  *  layered diagram where roving arrow keys earn the JavaScript. */
 export function Faq({
   items,
-  /** Shared across the list = exclusive open. One list per page today, so the
-   *  default is fine; pass a distinct name if a page ever renders two. */
   name = "faq",
+  openFirst = true,
 }: {
   items: FaqEntry[];
   name?: string;
+  /** The mockup opens the first question on Home and none on /faq. */
+  openFirst?: boolean;
 }) {
+  /* Redesign 2026-10 (the mockup's FAQ): one bordered card per question,
+     a + that turns into ×. Still native <details> with a shared `name`, so it
+     works without JavaScript and opens one answer at a time (§8.24-6). */
   return (
-    <div className="divide-y divide-line overflow-hidden rounded-(--radius-card) bg-white">
+    <div className="flex max-w-[820px] flex-col gap-2.5">
       {items.map((item, i) => (
         <details
           key={item.q}
           name={name}
-          open={i === 0}
-          className="faq-disclosure group"
+          open={openFirst && i === 0}
+          className="faq-disclosure group rounded-2xl border border-line bg-surface"
         >
           <summary
-            className={`flex cursor-pointer list-none items-center justify-between gap-4 px-6 py-5 text-ink-head transition-colors hover:text-orange-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-inset [&::-webkit-details-marker]:hidden ${PRESS_TINT}`}
+            className={`flex min-h-[58px] cursor-pointer list-none items-center justify-between gap-3 px-[18px] py-3.5 text-ink-head focus-visible:outline-3 focus-visible:outline-accent [&::-webkit-details-marker]:hidden ${PRESS_TINT}`}
           >
-            <h3 className="font-display text-[20px] font-bold">{item.q}</h3>
+            <h3 className="text-[17px] font-semibold leading-snug">{item.q}</h3>
             <Plus
               aria-hidden="true"
               className="h-5 w-5 shrink-0 transition-transform duration-200 group-open:rotate-45"
             />
           </summary>
-          <p className="px-6 pb-6 text-[16.5px] text-ink">{item.a}</p>
+          <p className="px-[18px] pb-[18px] text-[16px] leading-[1.6] text-ink-muted">{item.a}</p>
         </details>
       ))}
     </div>

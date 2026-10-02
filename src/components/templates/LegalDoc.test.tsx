@@ -33,7 +33,7 @@ describe("LegalDoc", () => {
   it("appends the mandatory reserve finale (#reserve on every page)", () => {
     const { container } = render(<LegalDoc title="Terms" lede="Read me." sections={SECTIONS} />);
     expect(
-      screen.getByRole("heading", { name: /Pre-order Kheelu before the price goes up/i }),
+      screen.getByRole("heading", { name: /Meet Kheelu on 20 October/i }),
     ).toBeInTheDocument();
     expect(container.querySelector("#reserve")).toBeInTheDocument();
   });
@@ -43,20 +43,5 @@ describe("LegalDoc", () => {
     expect(container.querySelector("[data-wash]")).toBeNull();
   });
 
-  it("carries the page's one quiet Kheelu line", () => {
-    const { container } = render(
-      <LegalDoc
-        title="Privacy"
-        lede="Read me."
-        sections={SECTIONS}
-        guide="bliss"
-        say="I'll wait here while you read the careful words."
-      />,
-    );
-    const hero = container.querySelector("[data-guide='bliss']");
-    expect(hero).toHaveAttribute(
-      "data-say",
-      "I'll wait here while you read the careful words.",
-    );
-  });
+
 });

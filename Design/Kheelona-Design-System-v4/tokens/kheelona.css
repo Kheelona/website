@@ -1,0 +1,45 @@
+/* Kheelona design tokens, v4 (redesign 2026-10).
+ *
+ * Source: the parent-first mockup approved for the site redesign
+ * (claude.ai artifact S5n6a32vqjmqLpc4SDAmX1). This file is CANONICAL:
+ * src/styles/globals.css mirrors it, and tools/tokens/check-tokens.mjs fails
+ * the site build when the two drift. Change a colour here first. */
+:root {
+  /* Light */
+  --kh-bg: #fbf6ee;
+  --kh-surface: #ffffff;
+  --kh-ink: #1e2340;
+  --kh-muted: #4a4f66;
+  --kh-line: #e8dfd0;
+  --kh-soft: #f3e6c8;
+  --kh-blush: #f7ddd3;
+  --kh-sage: #dde8da;
+  --kh-lav: #e4e6f2;
+  --kh-accent: #f2b441;
+  --kh-on-accent: #1e2340;
+  --kh-green: #2f6b4f;
+  --kh-on-green: #ffffff;
+  --kh-label: #8a5a12;
+  --kh-err: #a3321f;
+  --kh-ph-text: #5a5446;
+
+  /* Dark */
+  --kh-dark-bg: #171927;
+  --kh-dark-surface: #212438;
+  --kh-dark-ink: #f4efe6;
+  --kh-dark-muted: #bdb9cb;
+  --kh-dark-line: #34384f;
+  --kh-dark-soft: #3a3322;
+  --kh-dark-blush: #3d2a26;
+  --kh-dark-sage: #22342a;
+  --kh-dark-lav: #282c47;
+  --kh-dark-green: #7cc4a0;
+  --kh-dark-on-green: #10261b;
+  --kh-dark-label: #f2c46b;
+  --kh-dark-err: #ff9c87;
+  --kh-dark-ph-text: #cfc8b8;
+
+  /* Type */
+  --kh-serif: "Fraunces", Georgia, "Times New Roman", serif;
+  --kh-sans: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}

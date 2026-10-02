@@ -13,87 +13,58 @@
    guidelines/site-extensions.md).
    Do not invent values; if a token is missing, flag it (blueprint §8.2). */
 @theme {
-  --color-orange: #ef762f;
-  /* orange-deep #d85f1b DELETED in CS3 Phase B (retired in v3): its ~10 text
-     and border accents drained to orange-ink, which is darker and legal on
-     every wash. The dormant ambient stage keeps a JS-only mirror. */
-  /* §8.29 (founder decision, 2026-08-24, SUPERSEDES V4 D1 and restores the R5
-     white-label law): CTAs are BRAND orange #EF762F with WHITE labels, which
-     is what .kh-button in the v3 design system has always specified.
-     THE HONEST NUMBER: white on #EF762F is 2.88:1 and fails WCAG AA at every
-     size, since even the large-text floor is 3:1. This is a KNOWN, ACCEPTED
-     deviation, not an oversight — the founder was shown the ratio and the
-     passing alternative (orange-cta #C25210 carries white at 4.66:1) and chose
-     brand orange. Do not "fix" it without reversing that decision first.
-     Recorded in docs/website-steps.md §8.29 and in the v3 site-extensions
-     errata; asserted as arithmetic in test/contrast-tokens.test.ts; printed on
-     every qa:sweep run. orange-cta stays DEFINED for the dormant 3D-scene CSS
-     and the parked ambient mirrors, and is the value to reach for if the
-     contrast decision is ever revisited. */
-  --color-orange-cta: #c25210;
-  /* R9: the small-text orange (13px sans kickers). Darkened until 4.5:1
-     holds on EVERY wash — recomputed for the v3 washes (CS3, 2026-08-23):
-     white 5.32, cream 5.01, cool 4.67, sun 4.65. A documented v3 EXTENSION:
-     v3 ships no small-text orange, so this token survives the migration on
-     arithmetic. It is UNAFFECTED by §8.29: that decision governs labels ON an
-     orange fill, while this is orange TEXT on a light wash, where 4.5:1 still
-     holds and is still required. */
-  --color-orange-ink: #b54a0d;
-  --color-yellow: #f1a23b;
-  --color-blue: #29a0d7;
-  /* Revamp P2 (founder 2026-07-24, "brand colours only"): teal #1abc9c,
-     purple #8b5bff, and blue-soft #3aa4e5 are RETIRED from the web palette.
-     They remain dormant
-     ambient-stage mirrors, but no live surface may use them. teal-deep
-     (above) is DEPRECATED: it survives only under the legacy teal wash
-     (SafetyStrip, safety hero) until those sections retire in M2/M4, then
-     leaves with them (M5 cleanup). */
-  /* Small-text blue: the darkened #29a0d7 that holds 4.5:1 on every wash —
-     recomputed for the v3 washes: white 5.65, cream 5.32, cool 4.96,
-     sun 4.94. The blue twin of orange-ink, and the same kind of v3 extension. */
-  --color-blue-ink: #1b6e96;
-  /* Semantic action slots (revamp): new/refactored components reference these
-     for text-carrying colour, so a future contrast ruling flips ONE mapping.
-     V4 flipped exactly that mapping to ink labels; §8.29 flipped the labels
-     back to white on 2026-08-24 while LEAVING THE FILL ALONE, so action still
-     points at brand orange and the token gate's mappings are untouched. The
-     label colour is plain `text-white` at the call sites rather than a token,
-     deliberately: a second ink-ish name beside action-ink invites exactly the
-     mix-up these two slots exist to prevent. The law is enforced instead by
-     test/action-label.test.ts, which fails any bg-action carrying text-ink-head. */
-  --color-action: var(--color-orange);
-  --color-action-ink: var(--color-orange-ink);
-  /* CS3 Phase A (2026-08-23): the v3 ink ramp and surfaces, adopted whole.
-     Sources: Design/Kheelona-Design-System-v3/tokens/kheelona.css — ink-head
-     takes --kh-ink, ink takes --kh-ink-2 (warm stone), ink-muted takes
-     --kh-ink-3, line takes --kh-line, cream takes --kh-cream, cool takes
-     --kh-blue-tint, sun takes --kh-yellow-tint. Every pairing recomputed:
-     ink 10.27:1 on white and ≥8.99 on every tint; ink-head 5.99 on the
-     action orange (recorded because it is what §8.29 traded away, and what a
-     reversal would restore); ink-muted 4.80 white /
-     4.52 cream (the <4.6 canary still holds) and still FAILS cool (4.21)
-     and sun (4.20), so the §8.24-7 kicker ban stands unchanged. */
-  --color-ink: #44403c;
-  --color-ink-head: #1b1b1b;
-  --color-ink-muted: #78716c;
-  /* line-soft DELETED in CS3 Phase B: v3 has one hairline, and the alias
-     period ended when all 43 call sites merged into `line`. */
-  --color-line: #e7e5e4;
-  --color-cream: #f9f8f6;
-  --color-cool: #e2f3fa;
-  /* The third wash, a real token since Phase 0; yellow-tint is its lineal
-     successor (sun was always "Sunshine Yellow at 15%", composited). */
-  --color-sun: #fceeda;
-  /* No v3 equivalent; kept as a documented extension (founder item F3):
-     the footer's ground and the apple-icon plate. White on it: 17.26:1. */
-  --color-footer-cocoa: #2a1608;
+  /* Redesign 2026-10 (the parent-first mockup): the palette moved from the v3
+     orange/stone system to cream, ink and a warm accent. Canonical values live
+     in Design/Kheelona-Design-System-v4/tokens/kheelona.css and
+     tools/tokens/check-tokens.mjs fails the build on drift.
 
-  --font-display: var(--font-glory);
-  --font-sans: var(--font-instrument-sans);
-  /* The v3 editorial accent (CS3, founder decision #11 — reinstated after the
-     2026-07-24 retirement): Instrument Serif ITALIC, for editorial section
-     titles and pull-quotes only, one per composition. Never body copy. */
-  --font-editorial: var(--font-instrument-serif);
+     The legacy NAMES survive on purpose. Every page that was restyled rather
+     than rewritten (the journal, the legal pages, the store, PlayOS, setup)
+     already paints with ink / cream / line / cool / sun, so remapping the
+     values recolours all of them in one place. New components use the
+     mockup's own names (surface, accent, green, label, soft, blush, sage, lav).
+
+     DARK MODE: every value below is redefined under prefers-color-scheme at
+     the bottom of this file. Tailwind v4 utilities read these through var(),
+     so the override reaches every class without a `dark:` variant. */
+  --color-bg: #fbf6ee;
+  --color-surface: #ffffff;
+  --color-ink: #1e2340;
+  --color-ink-head: #1e2340;
+  --color-ink-muted: #4a4f66;
+  --color-line: #e8dfd0;
+  --color-soft: #f3e6c8;
+  --color-blush: #f7ddd3;
+  --color-sage: #dde8da;
+  --color-lav: #e4e6f2;
+  --color-accent: #f2b441;
+  --color-on-accent: #1e2340;
+  --color-green: #2f6b4f;
+  --color-on-green: #ffffff;
+  --color-label: #8a5a12;
+  --color-err: #a3321f;
+  --color-ph-text: #5a5446;
+
+  /* Legacy aliases, remapped. `white` is the card surface, so a restyled page
+     keeps its card/page contrast in dark mode too. */
+  --color-white: var(--color-surface);
+  --color-cream: var(--color-bg);
+  --color-cool: var(--color-lav);
+  --color-sun: var(--color-soft);
+  --color-orange: var(--color-accent);
+  --color-orange-ink: var(--color-label);
+  --color-yellow: var(--color-accent);
+  --color-blue: #4f78b8;
+  --color-blue-ink: var(--color-label);
+  /* Primary actions are ink-filled with a cream label (mockup .btn-primary). */
+  --color-action: var(--color-ink-head);
+  --color-action-ink: var(--color-label);
+  /* The footer stays ink in both themes. */
+  --color-footer-cocoa: #1e2340;
+
+  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-dm-sans);
+  --font-editorial: var(--font-fraunces);
 
   --shadow-cta: 0 4px 4px rgb(0 0 0 / 0.25);
   /* Theme-B room panels (revamp): warm-tinted shadows, never pure black */
@@ -173,11 +144,12 @@ html {
 }
 
 body {
-  background: #fff;
+  background: var(--color-bg);
   color: var(--color-ink);
   font-family: var(--font-sans);
-  font-size: 18px;
+  font-size: 17px;
   line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
   /* clip, never hidden: hidden makes body a scroll container and breaks wheel scrolling */
   overflow-x: clip;
 }
@@ -207,69 +179,6 @@ body {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
-  }
-}
-
-/* Scroll reveals: enhancement-only. Without JS (no .js on <html>) content is
-   fully visible; with JS, elements pop in as they enter the viewport.
-   R6 "storybook pop": a soft perspective settle on the bouncy brand ease --
-   elements stand up into the page instead of merely sliding. */
-@media (prefers-reduced-motion: no-preference) {
-  html.js [data-reveal="fade"] {
-    opacity: 0;
-    transform: perspective(700px) translateY(22px) rotateX(5deg) scale(0.98);
-    transition:
-      opacity 0.45s var(--ease-calm),
-      transform 0.55s var(--ease-bounce);
-  }
-  /* "rise" keeps content painted (LCP-safe): movement only, no opacity */
-  html.js [data-reveal="rise"] {
-    transform: perspective(700px) translateY(18px) scale(0.99);
-    transition: transform 0.55s var(--ease-bounce);
-  }
-  /* Theme-B room entrances (revamp M1): sections slide in from alternating
-     sides "like turning a corner". Below-fold rooms only — never the room
-     that owns the page's LCP.
-
-     PHONES SETTLE VERTICALLY INSTEAD (M4 mobile pass, hard rule): an X
-     translate on a 390px viewport pushes the room's box past the screen edge,
-     and mobile Chrome answers by widening the LAYOUT viewport to fit it. That
-     one detail caused every mobile symptom at once — the page panned sideways,
-     `position: fixed` elements (the guide dock, the backdrop) stretched to the
-     wider viewport so the dock's Reserve button fell off-screen, and copy
-     looked cropped on the right. Never animate X on an element that spans the
-     track width; sideways motion waits until the page gutter can absorb it.
-
-     The gate is 960px, not the md breakpoint: RoomsTrack's gutter is
-     clamp(20px, 5vw, 64px), so it only reaches the 46px of travel at 5vw =
-     46px, i.e. ~920px wide. Between 768 and 959 a tablet would overflow by the
-     same few dozen pixels for the same reason. */
-  html.js [data-reveal="left"],
-  html.js [data-reveal="right"] {
-    opacity: 0;
-    transform: translate3d(0, 18px, 0);
-    transition:
-      opacity 0.5s var(--ease-calm),
-      transform 0.6s var(--ease-bounce);
-  }
-  @media (min-width: 960px) {
-    html.js [data-reveal="left"] {
-      transform: translate3d(-46px, 10px, 0);
-    }
-    html.js [data-reveal="right"] {
-      transform: translate3d(46px, 10px, 0);
-    }
-  }
-  html.js [data-reveal="pop"] {
-    opacity: 0;
-    transform: scale(0.94);
-    transition:
-      opacity 0.45s var(--ease-calm),
-      transform 0.55s var(--ease-bounce);
-  }
-  html.js [data-reveal].reveal-in {
-    opacity: 1;
-    transform: none;
   }
 }
 
@@ -433,259 +342,6 @@ body {
   }
 }
 
-/* ================================================================
-   THE 3D STAGE (redesign, Direction 1 "Lumi's World" + D4 elements)
-   html.scene-3d is set only after the WebGL world has painted its
-   first frame (StageGate). The opaque section washes ARE the
-   fallback experience; once the world is live they hand off: DOM
-   washes fade to transparent and the scene's sky glides through the
-   same tokens. Orange keeps its own paint (white text + conversion
-   moment must never depend on the canvas); teal keeps a tint.
-   On webglcontextlost or reduced-motion mid-session the class is
-   removed and the flat washes fade straight back.
-   ================================================================ */
-html.scene-3d [data-wash] {
-  background-color: transparent;
-  transition: background-color 0.8s var(--ease-calm);
-}
-/* (The orange-wash keep-own-paint rule left with the orange wash itself:
-   V4's finale is white, so no wash carries white text any more.) */
-html.scene-3d [data-curve] {
-  opacity: 0;
-  transition: opacity 0.8s var(--ease-calm);
-}
-[data-wash] {
-  transition: background-color 0.8s var(--ease-calm);
-}
-[data-curve] {
-  transition: opacity 0.8s var(--ease-calm);
-}
-
-/* The hero's static mascot render stays mounted from first paint (it is the
-   LCP image); once the live model is in the world it yields the spot. Same
-   contract for any static art the live scene replaces (data-scene-hide:
-   layout preserved, only the pixels hand off). Desktop-width only: on narrow
-   viewports the journey camera frames the actors off-screen, so phones keep
-   the DOM art and the world stays an ambient sky behind it. */
-[data-hero-fallback],
-[data-scene-hide] {
-  transition: opacity 0.7s var(--ease-calm);
-}
-/* scene-3d-full is set only when the full-tier journey (the one with live
-   models) has mounted, so the DOM art can never fade without a model behind
-   it -- not at 900-1023px, and not when a lite-tier tablet rotates past
-   1024px mid-session (UI panel 2026-07-10 + re-review). */
-@media (min-width: 1024px) {
-  html.scene-3d-full [data-hero-fallback],
-  html.scene-3d-full [data-scene-hide] {
-    opacity: 0;
-    pointer-events: none;
-  }
-}
-
-/* Content floats above the fixed canvas */
-main {
-  position: relative;
-  z-index: 10;
-}
-
-/* ================================================================
-   THEME-B BACKDROP (revamp M1, atoms/SiteBackdrop.tsx)
-   One warm CSS sky behind every route. Gradient endpoints #fffdf9 /
-   #fceeda are curated intermediates around the cream token (same
-   sanctioned family as the old BEAT_WASHES sky stops).
-   ================================================================ */
-.site-backdrop-base {
-  background: radial-gradient(
-    130% 100% at 50% -18%,
-    #fffdf9,
-    var(--color-cream) 52%,
-    #fceeda 100%
-  );
-}
-.site-backdrop-tint-warm {
-  background: radial-gradient(circle at 12% 8%, rgb(241 162 59 / 0.1), transparent 60%);
-}
-.site-backdrop-tint-cool {
-  background: radial-gradient(circle at 88% 92%, rgb(41 160 215 / 0.1), transparent 60%);
-}
-.site-backdrop-blob {
-  background: radial-gradient(circle at center, rgb(241 162 59 / 0.14), transparent 62%);
-  filter: blur(60px);
-}
-@media (prefers-reduced-motion: no-preference) {
-  .site-backdrop-blob {
-    animation: backdrop-drift 32s ease-in-out infinite alternate;
-  }
-}
-@keyframes backdrop-drift {
-  from {
-    transform: translate3d(-4%, 2%, 0);
-  }
-  to {
-    transform: translate3d(5%, -4%, 0);
-  }
-}
-
-/* ================================================================
-   HERO BUBBLES + KHEELU ORBIT (revamp M2)
-   Hero fact chips: SSR-visible text, transform-only float, desktop +
-   motion only (they are display:none on phones — LCP law).
-   Orbit: static 2-col grid by default (phones, reduced motion, no-JS);
-   desktop + motion composes the ring. Cards counter-rotate to stay
-   upright; hover/focus pauses everything. DOM order = reading order.
-   ================================================================ */
-@media (prefers-reduced-motion: no-preference) and (min-width: 768px) {
-  .hero-bubble {
-    animation: hero-bubble-float 6s ease-in-out infinite;
-  }
-}
-@keyframes hero-bubble-float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-6px);
-  }
-}
-
-.kheelu-orbit .orbit-cards {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  margin-top: 16px;
-}
-@media (min-width: 768px) {
-  .kheelu-orbit {
-    position: relative;
-    height: 560px;
-    max-width: 620px;
-    margin-inline: auto;
-  }
-  .kheelu-orbit .kheelu-orbit-center {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-  }
-  .kheelu-orbit .orbit-cards {
-    position: absolute;
-    inset: 0;
-    display: block;
-    margin: 0;
-  }
-  .kheelu-orbit .orbit-seat {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: rotate(var(--a, 0deg)) translateX(var(--orbit-r, 225px))
-      rotate(calc(-1 * var(--a, 0deg)));
-  }
-  .kheelu-orbit .orbit-card {
-    width: 200px;
-    transform: translate(-50%, -50%);
-  }
-}
-@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
-  .kheelu-orbit .orbit-cards {
-    animation: orbit-spin 60s linear infinite;
-  }
-  .kheelu-orbit .orbit-card {
-    animation: orbit-unspin 60s linear infinite;
-  }
-  .kheelu-orbit:hover .orbit-cards,
-  .kheelu-orbit:hover .orbit-card,
-  .kheelu-orbit:focus-within .orbit-cards,
-  .kheelu-orbit:focus-within .orbit-card {
-    animation-play-state: paused;
-  }
-}
-@keyframes orbit-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-@keyframes orbit-unspin {
-  from {
-    transform: translate(-50%, -50%) rotate(0deg);
-  }
-  to {
-    transform: translate(-50%, -50%) rotate(-360deg);
-  }
-}
-
-/* ================================================================
-   KHEELU GUIDE (revamp M1, organisms/KheeluGuide.tsx)
-   The persistent narrator. Purely decorative motion; the whole
-   widget disappears without JS (it has nothing to say there).
-   ================================================================ */
-html:not(.js) [data-kheelu-guide] {
-  display: none;
-}
-.kheelu-guide-follow {
-  transform: translate3d(var(--gx, 0px), var(--gy, 0px), 0) rotate(var(--gr, 0deg));
-}
-@media (prefers-reduced-motion: no-preference) {
-  .kheelu-guide-idle {
-    animation: guide-bob 5.5s ease-in-out infinite;
-  }
-  .kheelu-guide-bubble {
-    animation: guide-bubble-in 0.3s var(--ease-bounce) both;
-  }
-  /* declared after -idle so a poke wins while both classes are present */
-  .kheelu-guide-poke {
-    animation: guide-poke 0.5s var(--ease-bounce);
-  }
-}
-@keyframes guide-bob {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-6px);
-  }
-}
-@keyframes guide-bubble-in {
-  from {
-    opacity: 0;
-    transform: translateY(6px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-@keyframes guide-poke {
-  0% {
-    transform: translateY(0);
-  }
-  30% {
-    transform: translateY(-14px) scale(1.04);
-  }
-  60% {
-    transform: translateY(2px);
-  }
-  100% {
-    transform: translateY(0);
-  }
-}
-
-/* (The D4 bookmark-ribbon chapter nav was removed here on founder feedback
-   2026-07-09: the colored tabs read as clutter against the world.) */
-@media (prefers-reduced-motion: reduce) {
-  [data-wash],
-  [data-curve],
-  [data-hero-fallback],
-  [data-scene-hide] {
-    transition: none;
-  }
-}
-
 /* The video carousel's track (§8.37). Only two things, both of which Tailwind
    has no utility for.
 
@@ -711,3 +367,160 @@ html:not(.js) [data-kheelu-guide] {
 .video-track {
   overscroll-behavior-x: contain;
 }
+
+/* ================================================================
+   Redesign 2026-10: dark theme
+   The mockup ships both themes. Follows the OS setting; a `data-theme`
+   attribute on <html> can force either one. The footer and the accent
+   finale are fixed-colour surfaces and do not flip.
+   ================================================================ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg: #171927;
+    --color-surface: #212438;
+    --color-ink: #f4efe6;
+    --color-ink-head: #f4efe6;
+    --color-ink-muted: #bdb9cb;
+    --color-line: #34384f;
+    --color-soft: #3a3322;
+    --color-blush: #3d2a26;
+    --color-sage: #22342a;
+    --color-lav: #282c47;
+    --color-green: #7cc4a0;
+    --color-on-green: #10261b;
+    --color-label: #f2c46b;
+    --color-err: #ff9c87;
+    --color-ph-text: #cfc8b8;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --color-bg: #171927;
+  --color-surface: #212438;
+  --color-ink: #f4efe6;
+  --color-ink-head: #f4efe6;
+  --color-ink-muted: #bdb9cb;
+  --color-line: #34384f;
+  --color-soft: #3a3322;
+  --color-blush: #3d2a26;
+  --color-sage: #22342a;
+  --color-lav: #282c47;
+  --color-green: #7cc4a0;
+  --color-on-green: #10261b;
+  --color-label: #f2c46b;
+  --color-err: #ff9c87;
+  --color-ph-text: #cfc8b8;
+  color-scheme: dark;
+}
+
+/* ================================================================
+   Redesign 2026-10: the mockup's component layer
+   Ported from the approved mockup (artifact S5n6a32vqjmqLpc4SDAmX1) with
+   a `kh-` prefix so nothing collides with Tailwind. The mockup's container
+   queries became viewport queries at the same breakpoints (600/700/900px).
+   In @layer components so a utility on the same element still wins.
+   ================================================================ */
+@layer components {
+  .kh-wrap { max-width: 1180px; margin: 0 auto; padding: 0 20px; }
+  @media (min-width: 900px) { .kh-wrap { padding: 0 48px; } }
+
+  .kh-h1, .kh-h2, .kh-h3 { font-family: var(--font-display); font-weight: 600; margin: 0; letter-spacing: -0.3px; color: var(--color-ink-head); }
+  .kh-h1 { font-size: clamp(36px, 5.2vw, 60px); line-height: 1.06; }
+  .kh-h2 { font-size: clamp(30px, 4.4vw, 46px); line-height: 1.1; }
+  .kh-h3 { font-size: clamp(21px, 2.4vw, 25px); line-height: 1.2; }
+  .kh-lead { font-size: clamp(17px, 1.7vw, 20px); line-height: 1.55; color: var(--color-ink-muted); max-width: 60ch; }
+  .kh-body { font-size: 16px; line-height: 1.6; color: var(--color-ink-muted); }
+  .kh-note { font-size: 14px; line-height: 1.5; color: var(--color-ink-muted); }
+  .kh-kicker { font-size: 14px; font-weight: 600; color: var(--color-label); }
+  .kh-textlink { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; font-size: 16px; text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 2px; text-decoration-color: var(--color-accent); }
+
+  .kh-sec { padding: 52px 0; background: var(--color-bg); }
+  .kh-sec.kh-alt { background: var(--color-surface); }
+  @media (min-width: 900px) { .kh-sec { padding: 84px 0; } }
+  .kh-stack { display: flex; flex-direction: column; gap: 16px; }
+  .kh-stack-l { display: flex; flex-direction: column; gap: 28px; }
+  .kh-two { display: grid; gap: 28px; }
+  @media (min-width: 900px) { .kh-two { grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; } .kh-two.kh-top { align-items: start; } }
+  .kh-grid2, .kh-grid3 { display: grid; gap: 16px; }
+  @media (min-width: 700px) { .kh-grid2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .kh-grid3 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+  .kh-card { background: var(--color-surface); border: 1px solid var(--color-line); border-radius: 22px; padding: 22px; display: flex; flex-direction: column; gap: 10px; }
+  .kh-alt .kh-card { background: var(--color-bg); }
+  .kh-ic { width: 44px; height: 44px; border-radius: 12px; background: var(--color-soft); display: flex; align-items: center; justify-content: center; color: var(--color-ink); flex-shrink: 0; }
+  .kh-num { font-family: var(--font-display); font-size: 18px; font-weight: 600; width: 40px; height: 40px; flex-shrink: 0; border-radius: 50%; background: var(--color-accent); color: var(--color-on-accent); display: flex; align-items: center; justify-content: center; }
+  .kh-pill { align-self: flex-start; display: inline-flex; background: var(--color-accent); color: var(--color-on-accent); font-size: 14px; font-weight: 700; padding: 7px 13px; border-radius: 999px; }
+  .kh-cta-row { display: flex; flex-direction: column; gap: 10px; }
+  @media (min-width: 600px) { .kh-cta-row { flex-direction: row; flex-wrap: wrap; align-items: center; } }
+
+  /* Page heroes on inner pages */
+  .kh-page-hero { padding: 32px 0 20px; }
+  @media (min-width: 900px) { .kh-page-hero { padding: 68px 0 36px; } }
+
+  /* A row of "moments": number or bold label, then a line of body */
+  .kh-moment { display: flex; gap: 14px; align-items: flex-start; padding: 16px 0; border-bottom: 1px solid var(--color-line); }
+  .kh-moment:last-child { border-bottom: 0; }
+  .kh-moment b { display: block; font-size: 17px; margin-bottom: 2px; color: var(--color-ink-head); }
+
+  /* Price/spec rows */
+  .kh-ptable { background: var(--color-surface); border: 1px solid var(--color-line); border-radius: 22px; padding: 4px 20px; }
+  .kh-prow { display: flex; justify-content: space-between; gap: 16px; padding: 15px 0; border-bottom: 1px solid var(--color-line); font-size: 16px; }
+  .kh-prow:last-child { border-bottom: 0; }
+  .kh-prow > :first-child { color: var(--color-ink-muted); }
+  .kh-prow > :last-child { font-weight: 700; text-align: right; }
+
+  /* Tables */
+  .kh-tbl { overflow-x: auto; border: 1px solid var(--color-line); border-radius: 18px; background: var(--color-surface); }
+  .kh-tbl table { width: 100%; border-collapse: collapse; font-size: 15px; min-width: 520px; }
+  .kh-tbl th, .kh-tbl td { text-align: left; padding: 14px 16px; border-bottom: 1px solid var(--color-line); vertical-align: top; }
+  .kh-tbl tr:last-child td { border-bottom: 0; }
+  .kh-tbl th { font-weight: 700; background: var(--color-bg); }
+  .kh-tbl td.kh-yes { font-weight: 700; color: var(--color-green); }
+  .kh-status { display: inline-flex; padding: 4px 10px; border-radius: 999px; font-size: 13px; font-weight: 700; white-space: nowrap; color: var(--color-ink); }
+  .kh-st-prog { background: var(--color-soft); }
+  .kh-st-plan { background: var(--color-lav); }
+
+  /* Tabs and segmented controls */
+  .kh-tabs { display: grid; gap: 8px; }
+  .kh-tab { min-height: 50px; border-radius: 14px; border: 1px solid var(--color-line); background: var(--color-surface); color: var(--color-ink); font-size: 15px; font-weight: 600; cursor: pointer; padding: 6px 8px; line-height: 1.2; text-align: center; }
+  .kh-tab[aria-selected="true"] { background: var(--color-ink); color: var(--color-bg); border-color: var(--color-ink); }
+  .kh-panel { background: var(--color-surface); border: 1px solid var(--color-line); border-radius: 22px; padding: 22px; display: flex; flex-direction: column; gap: 10px; min-height: 150px; }
+  .kh-alt .kh-panel { background: var(--color-bg); }
+  .kh-seg { display: inline-flex; background: var(--color-bg); border: 1px solid var(--color-line); border-radius: 999px; padding: 3px; }
+  .kh-seg button { border: 0; background: transparent; border-radius: 999px; padding: 0 12px; min-height: 40px; font-size: 14px; font-weight: 600; cursor: pointer; color: var(--color-ink-muted); }
+  .kh-seg button[aria-pressed="true"] { background: var(--color-ink); color: var(--color-bg); }
+
+  /* Testimonial cards: swipe row on phones, a 3-up grid on desktop */
+  .kh-snap { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 -20px; padding: 4px 20px 10px; scroll-padding-inline: 20px; scrollbar-width: none; }
+  .kh-snap::-webkit-scrollbar { display: none; }
+  .kh-snap > * { flex: 0 0 84%; scroll-snap-align: start; }
+  @media (min-width: 900px) { .kh-snap { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; overflow: visible; margin: 0; padding: 0; } }
+
+  /* FAQ rows (native details, the same element the Faq molecule renders) */
+  .kh-faq-group { font-family: var(--font-display); font-size: 22px; font-weight: 600; margin: 22px 0 4px; color: var(--color-ink-head); }
+
+  /* The accent finale. Fixed colours: it reads the same in both themes. */
+  .kh-final { border-radius: 32px; background: #f2b441; color: #1e2340; padding: 36px 24px; display: flex; flex-direction: column; gap: 14px; text-align: center; align-items: center; }
+  .kh-final h2 { max-width: 20ch; color: #1e2340; }
+  @media (min-width: 900px) { .kh-final { padding: 64px 48px; } }
+
+  .kh-promise { display: flex; gap: 12px; align-items: flex-start; font-size: 16px; line-height: 1.5; }
+  .kh-promise > svg { flex-shrink: 0; color: var(--color-green); margin-top: 2px; }
+  .kh-promise-card { font-family: var(--font-display); font-size: 22px; line-height: 1.3; padding: 18px 0; border-bottom: 1px solid var(--color-line); color: var(--color-ink-head); }
+  .kh-promise-card:last-child { border-bottom: 0; }
+  .kh-tl { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+  .kh-tl li { display: flex; gap: 14px; font-size: 15px; line-height: 1.5; }
+  .kh-tl b { min-width: 112px; color: var(--color-ink-head); }
+  .kh-path { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; }
+  .kh-path .kh-n { background: var(--color-surface); border: 1px solid var(--color-line); border-radius: 999px; padding: 8px 14px; }
+  .kh-alt .kh-path .kh-n { background: var(--color-bg); }
+  .kh-path > svg { color: var(--color-ink-muted); }
+  .kh-src { font-size: 14px; font-weight: 700; color: var(--color-label); }
+}
+
+/* Testimonial dots only make sense while the row swipes. */
+@media (min-width: 900px) { .kh-dots { display: none; } }
+
+/* The legacy room stack, restyled (2026-10): rooms are full-bleed sections
+   now, alternating surface and cream the way the mockup's sections do. */
+.kh-track > section:nth-child(odd) { background: var(--color-surface); }
+.kh-track > section:nth-child(even) { background: var(--color-bg); }

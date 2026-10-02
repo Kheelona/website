@@ -23,7 +23,9 @@ const STORE = process.env.SWEEP_STORE ?? "http://store.kheelona.com:3456";
  *  template; the rest are named individually so none can be forgotten. */
 const ROUTES = [
   `${BASE}/`,
-  `${BASE}/products/kheelu`,
+  `${BASE}/kheelu`,
+  `${BASE}/how`,
+  `${BASE}/faq`,
   `${BASE}/playos`,
   `${BASE}/safety`,
   /* The buyer's guide (2026-09-11). It carries the site's only spec table and
@@ -31,10 +33,9 @@ const ROUTES = [
      shapes to check here that exist nowhere else. */
   `${BASE}/ai-toys-for-kids-in-india`,
   `${BASE}/setup`,
-  `${BASE}/team`,
+  `${BASE}/story`,
   `${BASE}/stories`,
   `${BASE}/stories/how-children-learn-by-talking`,
-  `${BASE}/contact`,
   `${BASE}/privacy`,
   `${BASE}/terms`,
   `${BASE}/refund`,
@@ -70,8 +71,11 @@ const FORBIDDEN = [
   [/(reserv\w*|spot|place)[\s\S]{0,60}\b(is|it is|it's) free\b/i, "retired: reserving costs a refundable ₹499, nothing about it is free (C1, 2026-09-05)"],
 ];
 
-/** The one contrast pair the founder has accepted (§8.29, 2026-08-24): white
- *  on brand orange, 2.88:1. Lower-case, because that is how axe reports it. */
+/** The one contrast pair the founder accepted under §8.29 (white on brand
+ *  orange, 2.88:1). RETIRED by the 2026-10 redesign: the orange fill is gone
+ *  and every pair clears AA (test/contrast-tokens.test.ts), so this should
+ *  now match nothing and the accepted count should read 0. Kept so a
+ *  regression to the old fill is still reported rather than failing blind. */
 const ACCEPTED_ACTION_FILL = "#ef762f";
 
 const axe = readFileSync(axeSourcePath(), "utf8");

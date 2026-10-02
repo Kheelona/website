@@ -22,7 +22,7 @@ export function Card({
   maxTilt,
   className,
   title,
-  titleClassName = "mb-2 font-display text-[22px] font-extrabold text-ink-head",
+  titleClassName = "mb-2 font-display text-[22px] font-semibold text-ink-head",
   children,
 }: {
   tilt?: boolean;

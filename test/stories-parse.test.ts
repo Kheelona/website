@@ -41,7 +41,10 @@ describe("every Storybook story parses", () => {
   it("finds the story files at all", () => {
     /* If the glob ever stops matching, this test would pass vacuously over an
        empty list — the exact shape of a guard that reports green while blind. */
-    expect(stories.length).toBeGreaterThan(50);
+    /* 40, not 50, since the 2026-10 redesign deleted the mascot, the 3D
+       stage and the old home sections with their stories (47 remain). The
+       floor exists to catch a glob that matches nothing, not to count. */
+    expect(stories.length).toBeGreaterThan(40);
     expect(stories).toContain("src/components/templates/PageHero.stories.tsx");
   });
 

@@ -178,9 +178,7 @@ export default function PlayOSPage() {
 
       <PageHero
         ratio="md:grid-cols-[1.05fr_0.95fr]"
-        guide="curious"
         /* GATED:kheelu-line — founder sign-off before merge to master */
-        say="PlayOS is the part of me you can't hug."
         media={
           <Image
             src="/products/magic-box.png"
@@ -204,7 +202,7 @@ export default function PlayOSPage() {
 
       <RoomsTrack>
         {/* Why this wins */}
-        <Room fill="white" reveal="left">
+        <Room fill="white">
           <Reveal>
             <SectionHeading
               title="The moat, in plain words."
@@ -218,7 +216,7 @@ export default function PlayOSPage() {
               <Reveal key={m.title} delay={i * 0.05}>
                 <Card className="h-full border border-line bg-cream">
                   <PromiseMark index={i} className="mb-3" />
-                  <h3 className="mb-2 font-display text-[21px] font-extrabold text-ink-head">
+                  <h3 className="mb-2 font-display text-[21px] font-semibold text-ink-head">
                     {m.title}
                   </h3>
                   <p className="text-[15.5px]">{m.body}</p>
@@ -231,10 +229,7 @@ export default function PlayOSPage() {
         {/* The stack, openable (the team's iceberg, rebuilt as brand UI) */}
         <Room
           fill="cream"
-          guide="silly"
           /* GATED:kheelu-line (shortened per §5.1) */
-          say="My friends built this. I asked the first why."
-          reveal="right"
         >
           <Reveal>
             <SectionHeading
@@ -250,7 +245,7 @@ export default function PlayOSPage() {
         </Room>
 
         {/* The flywheel + the credibility */}
-        <Room fill="cool" reveal="left">
+        <Room fill="cool">
           <Reveal>
             <SectionHeading
               title="The brain keeps growing."
@@ -262,7 +257,7 @@ export default function PlayOSPage() {
               The brain has a builder: a CTO with 14 patents filed in his own
               name.{" "}
               <Link
-                href="/team"
+                href="/story"
                 className="rounded font-semibold text-ink-head underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
               >
                 Meet the team
@@ -292,7 +287,7 @@ export default function PlayOSPage() {
         </Room>
 
         {/* The parent bridge: the platform answers to the family */}
-        <Room fill="sun" id="parent-app" reveal="right">
+        <Room fill="sun" id="parent-app">
           <Reveal>
             <SectionHeading
               eyebrow="For the grown-ups"
@@ -310,7 +305,7 @@ export default function PlayOSPage() {
             />
           </Reveal>
           <Reveal className="flex flex-wrap gap-3">
-            <Button href="/products/kheelu" variant="ghost">
+            <Button href="/kheelu" variant="ghost">
               Meet Kheelu, the first friend
             </Button>
             <Button href="/safety" variant="ghost">
@@ -322,13 +317,10 @@ export default function PlayOSPage() {
         <Room
           fill="white"
           id="reserve"
-          guide="silly"
           /* GATED:kheelu-line */
-          say="Save your spot. I'll mind Kheelu till launch."
-          reveal="pop"
           className="overflow-x-clip"
         >
-          <FinaleCTA bare variant="compact" />
+          <FinaleCTA bare />
         </Room>
       </RoomsTrack>
     </>

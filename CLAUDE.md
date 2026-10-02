@@ -1,3 +1,12 @@
+**🎨 THE PARENT-FIRST REDESIGN IS ON BRANCH `redesign-mockup-2026-10` (2026-10-02, NOT MERGED, NOT
+DEPLOYED).** Built from the approved mockup; record and every omitted block in `Technical-Todo.md`
+("THE PARENT-FIRST REDESIGN"). On that branch these laws below are SUPERSEDED: the orange CTA and
+§8.29's 2.88:1 exception (fills are ink now, every pair clears AA in both themes,
+`test/contrast-tokens.test.ts`), the v3 token authority (now `Design/Kheelona-Design-System-v4/`),
+Glory/Instrument (now Fraunces + DM Sans), the mascot guide, rooms-as-panels and the 3D stage (all
+deleted), and the routes `/products/kheelu`, `/team`, `/contact` (308 to `/kheelu`, `/story`,
+`/story#talk`). The Product `@id` and the founders' `/team#…` `@id`s deliberately did NOT move.
+
 # kheelona.com — session entry point
 
 **🎯 THE META PIXEL MOVED TO `1051265191046395` — DEPLOYED AND VERIFIED ON PRODUCTION 2026-09-20.**
