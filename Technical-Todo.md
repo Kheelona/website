@@ -35,6 +35,10 @@ DM Sans, light and dark. The mascot guide, the 3D stage and the room backdrop ar
 ships ONLY if the site already publishes the same fact; otherwise the block is OMITTED, never shown
 with brackets (`test/redesign-routes.test.ts` fails on a bracketed placeholder in `src/`).
 
+**Content and copy items now live in `MARKETING-TODO.md`** (2026-10-02): every row of content doc v7,
+with its status on the redesign branch. The list below is the earlier, mockup-era version of the same
+facts and is kept for history.
+
 ## 🧑 Founder — facts that switch omitted mockup blocks back on
 Each line names the block that is missing today and the one fact it needs.
 - **The wake word** → the mockup's "[wake word]" in the safety cards and the /kheelu spec row.
