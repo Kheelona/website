@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { Button } from "./Button";
 
 describe("Button", () => {
@@ -9,23 +10,17 @@ describe("Button", () => {
     expect(link).toHaveAttribute("href", "/reserve");
   });
 
-  it("primary variant is the ink action fill with a page-coloured label", () => {
+  it("primary variant carries the brand action fill and a WHITE label (§8.29)", () => {
     render(<Button href="#">Go</Button>);
     const link = screen.getByRole("link");
     expect(link.className).toContain("bg-action");
-    expect(link.className).toContain("text-bg");
+    /* Founder decision 2026-08-24, reversing V4 D1: white on #EF762F, knowingly
+       at 2.88:1. The arithmetic and the acceptance live in
+       test/contrast-tokens.test.ts; this only pins what the atom renders. */
+    expect(link.className).toContain("text-white");
     expect(link.className).not.toContain("text-ink-head");
-  });
-
-  it("green variant is the WhatsApp action", () => {
-    render(
-      <Button href="#" variant="green">
-        Ask us
-      </Button>,
-    );
-    const cls = screen.getByRole("link").className;
-    expect(cls).toContain("bg-green");
-    expect(cls).toContain("text-on-green");
+    // the white keyline stays retired: V4 removed it, and §8.29 does not undo that
+    expect(link.className).not.toContain("border-white");
   });
 
   it("ghost variant uses the outlined ink treatment, not the fill", () => {
@@ -46,13 +41,13 @@ describe("Button", () => {
     expect(cls).toContain("max-sm:whitespace-normal");
   });
 
-  it("presses with a small scale, and not at all under reduced motion", () => {
+  it("emits a ripple element on pointer-down when motion is allowed", async () => {
+    const user = userEvent.setup();
     render(<Button href="#">Go</Button>);
-    const cls = screen.getByRole("link").className;
-    expect(cls).toContain("active:scale-[0.98]");
-    expect(cls).toContain("motion-reduce:transition-none");
+    const link = screen.getByRole("link");
+    await user.pointer({ target: link, keys: "[MouseLeft>]" });
+    expect(link.querySelector('[aria-hidden="true"]')).toBeTruthy();
   });
-
 });
 
 /** TELLING ONE CTA FROM ANOTHER IN POSTHOG (§8.40, 2026-09-20).

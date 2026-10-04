@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { RoomsTrack } from "./RoomsTrack";
 
 describe("RoomsTrack", () => {
-  it("stacks full-bleed rooms and hands their alternation to .kh-track", () => {
+  it("stacks children in the kit column", () => {
     render(
       <RoomsTrack>
         <section>one</section>
@@ -10,9 +10,9 @@ describe("RoomsTrack", () => {
       </RoomsTrack>,
     );
     const track = screen.getByText("one").parentElement!;
-    expect(track.className).toContain("kh-track");
-    // no column of its own: each Room owns its content width now
-    expect(track.className).not.toContain("max-w-");
+    expect(track.className).toContain("max-w-[1180px]");
+    expect(track.className).toContain("flex-col");
+    expect(track.className).toContain("gap-[34px]");
     expect(screen.getByText("two")).toBeInTheDocument();
   });
 });

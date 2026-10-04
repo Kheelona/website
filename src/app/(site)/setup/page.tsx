@@ -34,7 +34,9 @@ export default function SetupPage() {
       />
       <PageHero
         ratio="md:grid-cols-[1.15fr_0.85fr]"
+        guide="joy"
         /* GATED:kheelu-line — founder sign-off before merge to master */
+        say="Step three is my favourite. We say hello."
         media={
           <PhoneFrame
             src="/app/onboarding.png"
@@ -55,7 +57,7 @@ export default function SetupPage() {
       </PageHero>
 
       <RoomsTrack>
-        <Room fill="white">
+        <Room fill="white" reveal="left">
           {/* steps sit directly under the h1, so their titles are h2 */}
           <StepList items={SETUP_STEPS} as="h2" />
           <Reveal className="mt-8">
@@ -70,10 +72,13 @@ export default function SetupPage() {
         <Room
           fill="white"
           id="reserve"
+          guide="silly"
           /* GATED:kheelu-line */
+          say="Save your spot. I'll mind Kheelu till launch."
+          reveal="pop"
           className="overflow-x-clip"
         >
-          <FinaleCTA bare />
+          <FinaleCTA bare variant="compact" />
         </Room>
       </RoomsTrack>
     </>

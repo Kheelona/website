@@ -1,60 +1,60 @@
 import Link from "next/link";
-import {
-  FOOTER_LINKS,
-  CONTACT_EMAIL,
-  LEGAL_ENTITY,
-  REGISTERED_ADDRESS_LINE,
-  GSTIN,
-  SUPPORT_WHATSAPP_DISPLAY,
-  SUPPORT_WHATSAPP_HREF,
-} from "@/config/site";
+import { FOOTER_LINKS, CONTACT_EMAIL } from "@/config/site";
 
-/** The mockup's footer (redesign 2026-10): wordmark and provenance, the link
- *  grid, and the seller of record. Fixed ink in both themes.
- *
- *  The mockup also prints a grievance officer; that line waits until one is
- *  appointed (Technical-Todo.md, DPDP), rather than shipping a blank. */
 export function Footer() {
   return (
-    <footer className="bg-footer-cocoa pb-[calc(40px+env(safe-area-inset-bottom,0px))] pt-10 text-[15px] leading-[1.7] text-[#e9e4f0]">
-      <div className="kh-wrap grid gap-6 min-[900px]:grid-cols-[1.2fr_1fr_1.4fr]">
-        <div className="flex flex-col gap-2">
-          <span className="font-display text-[25px] font-semibold text-[#fbf6ee]">Kheelona</span>
-          <span>Made in Bengaluru.</span>
+    // relative z-20: the fixed stage canvas lives inside main (z-10) and
+    // covers the viewport, so without a higher stacking level the opaque
+    // WebGL sky paints over the footer whenever a scene is on
+    <footer className="relative z-20 bg-footer-cocoa py-11 text-[15px] text-white/85">
+      <div className="mx-auto w-full max-w-[1200px] px-6">
+        <div className="flex flex-wrap items-center justify-between gap-6">
+          <span className="font-display text-2xl font-extrabold text-white">
+            Kheelona
+          </span>
+          <nav aria-label="Footer">
+            <ul className="flex flex-wrap gap-x-5 gap-y-2">
+              {FOOTER_LINKS.map((l) => (
+                <li key={l.href}>
+                  <Link
+                    href={l.href}
+                    className="inline-block rounded py-1.5 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange"
+                  >
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
         </div>
-        <nav aria-label="Footer">
-          <ul className="grid grid-cols-2 gap-x-4 gap-y-0.5">
-            {FOOTER_LINKS.map((l) => (
-              <li key={l.href}>
-                <Link
-                  href={l.href}
-                  className="inline-flex min-h-9 items-center text-[#e9e4f0] underline-offset-4 hover:underline focus-visible:outline-3 focus-visible:outline-[#f2b441]"
-                >
-                  {l.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-        <div>
-          {LEGAL_ENTITY} · {REGISTERED_ADDRESS_LINE} · GSTIN {GSTIN}
-          <br />
-          <a href={SUPPORT_WHATSAPP_HREF} className="text-[#e9e4f0] underline underline-offset-4">
-            WhatsApp {SUPPORT_WHATSAPP_DISPLAY}
-          </a>
-          {CONTACT_EMAIL ? (
-            <>
+        <p className="mt-6 text-white/70">
+          Wake-word listening. No open internet. You see everything.
+        </p>
+        {/* V3 (Apple-tier pass): the provenance line. "Designed by Apple in
+            California" works because it is a fact stated plainly — this is
+            ours, and it is the answer to "who is behind this toy". */}
+        <p className="mt-2 text-white/70">Designed by parents in Bengaluru.</p>
+        <div className="mt-5 flex flex-wrap justify-between gap-4 border-t border-white/15 pt-5 text-white/60">
+          <span>
+            For partners and investors:{" "}
+            <a
+              href="https://kheelona.ai"
+              className="inline-block rounded py-1 text-white/80 underline transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange"
+            >
+              kheelona.ai
+            </a>
+          </span>          {CONTACT_EMAIL ? (
+            <span>
               {" · "}
-              <a href={`mailto:${CONTACT_EMAIL}`} className="text-[#e9e4f0] underline underline-offset-4">
+              <a
+                href={`mailto:${CONTACT_EMAIL}`}
+                className="inline-block rounded py-1 text-white/80 underline transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange"
+              >
                 {CONTACT_EMAIL}
               </a>
-            </>
+            </span>
           ) : null}
-          <br />
-          Partners and investors:{" "}
-          <a href="https://kheelona.ai" className="text-[#e9e4f0] underline underline-offset-4">
-            kheelona.ai
-          </a>
+  
         </div>
       </div>
     </footer>

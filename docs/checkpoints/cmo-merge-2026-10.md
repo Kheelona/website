@@ -67,3 +67,16 @@ measurement request blocked, then on production after the merge.
 Branch checked out tracking `origin/redesign-mockup-2026-10`; tag `pre-cmo-merge-2026-10` cut at
 `77552ff`. The branch's changed files were snapshotted outside the repo for reference before the
 tree is rebased onto main's design system in commit 1.
+
+### Commit 1 — the tree rebased onto main's design system
+
+`git checkout pre-cmo-merge-2026-10 -- .`, then every branch-only file removed except
+`MARKETING-TODO.md`, this checkpoint and the three content data files (`src/lib/{comparison,faq,team}.ts`).
+`git diff --name-status pre-cmo-merge-2026-10` now lists exactly those five additions, so every
+design-system file, every page, the store, the analytics layer and CLAUDE.md are byte-identical to
+main. The CMO's four commits stay in this branch's history as the reference for the content.
+
+| Gate | Result |
+|---|---|
+| `npx tsc --noEmit` | **0** |
+| `npm test` | **1403 passed / 126 files** = main's 1397 + 6. Reconciled, not accepted: `preorder-copy` and `preorder-cta` each enumerate every `src/` file through `git ls-files`, so the three new data files add one case to each. |

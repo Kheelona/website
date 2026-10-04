@@ -96,15 +96,14 @@ to be out of date as of September 2026.
 ## Pages
 - https://kheelona.com/ : what Kheelu is, what it teaches, and how to pre-order
 - ${STORE_URL} : the pre-order store, where the token is paid
-- https://kheelona.com/kheelu : the product in detail, plus the questions parents ask
-- https://kheelona.com/how : how conversation helps a young brain grow, what the research shows and does not, and where Kheelu fits
-- https://kheelona.com/faq : short answers to the questions parents ask, grouped by topic
+- https://kheelona.com/products/kheelu : the product in detail, plus the questions parents ask
 - https://kheelona.com/safety : are AI toys safe, and how this one is built
 - https://kheelona.com/ai-toys-for-kids-in-india : how to choose an AI toy for a 3 to 5 year old in India, the five checks to apply to any of them, and Kheelu's full published specification including the three things it has not announced
 - https://kheelona.com/playos : the platform behind every Kheelona friend
 - https://kheelona.com/setup : day one
-- https://kheelona.com/story : why we built Kheelu, the people who build it, and how to reach us
+- https://kheelona.com/team : the people who build it
 - https://kheelona.com/stories : the journal, for parents
+- https://kheelona.com/contact : how to reach us
 - https://kheelona.com/privacy and https://kheelona.com/terms : the fine print
 - https://kheelona.com/refund and https://kheelona.com/shipping : refunds, cancellation, and delivery
 

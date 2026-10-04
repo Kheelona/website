@@ -65,7 +65,7 @@ Market: India. Currency: INR. Stage: pre-order, taking a refundable token.
 - No screen, and no access to the open internet
 - A parent app with the full conversation log, topic controls, quiet hours, and one-tap deletion
 
-Last updated: ${PRICING_UPDATED}. Canonical page: https://kheelona.com/kheelu
+Last updated: ${PRICING_UPDATED}. Canonical page: https://kheelona.com/products/kheelu
 `;
 
 export function GET() {

@@ -1,12 +1,10 @@
 #!/usr/bin/env node
-/** Token drift gate (§8.13; repointed at v4 in the 2026-10 redesign).
- *
- *  The palette lives in two places by design:
- *  Design/Kheelona-Design-System-v4/tokens/kheelona.css (canonical) and
- *  src/styles/globals.css (the @theme block for light, the dark override for
- *  dark). This script fails the site build when any mapped value drifts.
- *
- *  The 3D mirror (ambient-stage/lib/tokens.ts) left with the stage itself.
+/** Token drift gate (§8.13, repointed at v3 in CS3 Phase A, 2026-08-23): the
+ *  palette lives in three places by design --
+ *  Design/Kheelona-Design-System-v3/tokens/kheelona.css (canonical),
+ *  src/styles/globals.css @theme (Tailwind v4), and
+ *  src/features/ambient-stage/lib/tokens.ts (the 3D mirror).
+ *  This script fails the site build when any mapped value drifts.
  *
  *  Run: node tools/tokens/check-tokens.mjs   (site build runs it automatically)
  */
@@ -16,89 +14,142 @@ import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
-/* FAIL-HARD when the canonical CSS is missing: deleting the design-system
- * folder must never silently disable the whole check (§8.26-h). */
-const DS_REL = "Design/Kheelona-Design-System-v4/tokens/kheelona.css";
-const DS_CSS = join(root, DS_REL);
+/* FAIL-HARD when the canonical CSS is missing (changed in CS3). The old gate
+ * warned-and-passed here, which meant deleting the design-system folder would
+ * silently disable the whole check — the exact failure §8.26-h's twin-list
+ * lesson warns about. v3 is tracked in git, so a build without it is a broken
+ * checkout, not a legitimate environment. */
+const DS_CSS = join(root, "Design/Kheelona-Design-System-v3/tokens/kheelona.css");
 if (!existsSync(DS_CSS)) {
-  console.error(`token-check: FAILED — ${DS_REL} is missing; the palette cannot be verified.`);
+  console.error(
+    "token-check: FAILED — Design/Kheelona-Design-System-v3/tokens/kheelona.css is missing. " +
+      "The v3 design system is tracked in git; a checkout without it cannot verify the palette.",
+  );
   process.exit(1);
 }
 
 const ds = readFileSync(DS_CSS, "utf8");
-const css = readFileSync(join(root, "src/styles/globals.css"), "utf8");
-
-/* The light values live in @theme; the dark ones in the
- * `:root[data-theme="dark"]` block (the prefers-color-scheme block repeats it,
- * and test/contrast-tokens.test.ts holds the two copies equal). */
-const themeBlock = css.slice(css.indexOf("@theme {"));
-const darkStart = css.indexOf(':root[data-theme="dark"] {');
-const darkBlock = darkStart >= 0 ? css.slice(darkStart, css.indexOf("}", darkStart)) : "";
+const theme = readFileSync(join(root, "src/styles/globals.css"), "utf8");
+const three = readFileSync(join(root, "src/features/ambient-stage/lib/tokens.ts"), "utf8");
 
 const cssVar = (src, name) => {
   const m = src.match(new RegExp(`--${name}\\s*:\\s*([^;]+);`));
   return m ? m[1].trim().toLowerCase() : null;
 };
+const tsHex = (name) => {
+  const m = three.match(new RegExp(`${name}\\s*:\\s*"(#[0-9a-fA-F]{6})"`));
+  return m ? m[1].toLowerCase() : null;
+};
 
-/** [v4 --kh-*, site --color-*] */
-const LIGHT = [
-  ["kh-bg", "color-bg"],
-  ["kh-surface", "color-surface"],
-  ["kh-ink", "color-ink"],
-  ["kh-ink", "color-ink-head"],
-  ["kh-muted", "color-ink-muted"],
-  ["kh-line", "color-line"],
-  ["kh-soft", "color-soft"],
-  ["kh-blush", "color-blush"],
-  ["kh-sage", "color-sage"],
-  ["kh-lav", "color-lav"],
-  ["kh-accent", "color-accent"],
-  ["kh-on-accent", "color-on-accent"],
-  ["kh-green", "color-green"],
-  ["kh-on-green", "color-on-green"],
-  ["kh-label", "color-label"],
-  ["kh-err", "color-err"],
-  ["kh-ph-text", "color-ph-text"],
+/** [v3 --kh-*, site --color-*, tokens.ts key | null]
+ *
+ *  The v3 names this reads are the August 2026 token set: the ink ramp is
+ *  kh-ink / kh-ink-2 / kh-ink-3, the surfaces are kh-cream / kh-line, and the
+ *  content tints are kh-*-tint. blue-soft, orange-deep, bg-warm/bg-cool and
+ *  ink-4 do not exist in v3 — their rows died with them (orangeDeep and
+ *  blueSoft survive only as dormant tokens.ts mirrors until Phase B). */
+const MAP = [
+  ["kh-orange", "color-orange", "orange"],
+  ["kh-yellow", "color-yellow", "yellow"],
+  ["kh-blue", "color-blue", "blue"],
+  // teal and purple stay retired from the live web palette (no @theme entry);
+  // the DS ↔ tokens.ts agreement is still checked for the dormant mirrors.
+  ["kh-teal", null, "teal"],
+  ["kh-purple", null, "purple"],
+  ["kh-ink", "color-ink-head", null],
+  ["kh-ink-2", "color-ink", "ink"],
+  ["kh-ink-3", "color-ink-muted", null],
+  ["kh-line", "color-line", null],
+  ["kh-cream", "color-cream", "cream"],
+  ["kh-blue-tint", "color-cool", "cool"],
+  ["kh-yellow-tint", "color-sun", "sun"],
+  ["kh-white", null, "white"],
 ];
 
-const DARK = [
-  ["kh-dark-bg", "color-bg"],
-  ["kh-dark-surface", "color-surface"],
-  ["kh-dark-ink", "color-ink"],
-  ["kh-dark-ink", "color-ink-head"],
-  ["kh-dark-muted", "color-ink-muted"],
-  ["kh-dark-line", "color-line"],
-  ["kh-dark-soft", "color-soft"],
-  ["kh-dark-blush", "color-blush"],
-  ["kh-dark-sage", "color-sage"],
-  ["kh-dark-lav", "color-lav"],
-  ["kh-dark-green", "color-green"],
-  ["kh-dark-on-green", "color-on-green"],
-  ["kh-dark-label", "color-label"],
-  ["kh-dark-err", "color-err"],
-  ["kh-dark-ph-text", "color-ph-text"],
+/* Sanctioned site-only values, NOT checked against v3 (documented extensions;
+ *  gap proposals live in migration-to-new-dsx.md and get filed into v3 at the
+ *  end of the engagement):
+ *  - color-orange-ink / color-blue-ink: the small-text orange and blue. v3
+ *    ships no ≥4.5:1 small-text brand colours, and its §6 note that white is
+ *    safe on brand orange computes to 2.88:1 — these two tokens are the
+ *    arithmetic the site keeps instead.
+ *  - color-action / color-action-ink: the one-line-flip indirection.
+ *  - color-footer-cocoa (site-only surface, F3) and color-orange-deep
+ *    (retired in v3; drains to orange-ink in Phase B, then deleted).
+ *  - TOKENS.orangeDeep / TOKENS.blueSoft: dormant mirrors, Phase B cleanup.
+ *  - BEAT_WASHES intermediates (#fff9f1, #fffdf9, #d9f4ec) — curated sky
+ *    stops, flagged for Phase B re-curation.
+ *  - The R5 white-label fills orange-cta / teal-deep: orange-cta survives as
+ *    a dormant token and must agree across globals.css / tokens.ts. */
+
+/** Site-internal invariants: [globals.css --color-*, tokens.ts key, value] */
+const SITE_MAP = [
+  ["color-orange-cta", "orangeCta", "#c25210"],
+  // R9 small-text orange, recomputed on the v3 washes (CS3): white 5.32,
+  // cream 5.01, cool 4.67, sun 4.65 — still the only orange legal everywhere.
+  ["color-orange-ink", "orangeInk", "#b54a0d"],
+];
+
+/** Site theme-only invariants (no ambient-stage mirror): [--color-*, value] */
+const SITE_THEME = [
+  // Small-text blue, recomputed on the v3 washes: white 5.65, cream 5.32,
+  // cool 4.96, sun 4.94 — the blue twin of orange-ink.
+  ["color-blue-ink", "#1b6e96"],
 ];
 
 let failed = false;
-function check(pairs, block, where) {
-  for (const [dsName, siteName] of pairs) {
-    const want = cssVar(ds, dsName);
-    if (!want) {
-      console.error(`token-check: --${dsName} missing from ${DS_REL}`);
-      failed = true;
-      continue;
-    }
-    const got = cssVar(block, siteName);
+for (const [dsName, themeName, threeKey] of MAP) {
+  const want = cssVar(ds, dsName);
+  if (!want) {
+    console.error(`token-check: --${dsName} missing from the design system CSS`);
+    failed = true;
+    continue;
+  }
+  if (themeName) {
+    const got = cssVar(theme, themeName);
     if (got !== want) {
       console.error(
-        `token-check: DRIFT --${siteName} in globals.css (${where}) is ${got}, design system --${dsName} is ${want}`,
+        `token-check: DRIFT --${themeName} in globals.css @theme is ${got}, design system --${dsName} is ${want}`,
+      );
+      failed = true;
+    }
+  }
+  if (threeKey) {
+    const got = tsHex(threeKey);
+    if (got !== want) {
+      console.error(
+        `token-check: DRIFT TOKENS.${threeKey} in ambient-stage/lib/tokens.ts is ${got}, design system --${dsName} is ${want}`,
       );
       failed = true;
     }
   }
 }
-check(LIGHT, themeBlock, "@theme");
-check(DARK, darkBlock, "dark theme");
 
-if (failed) process.exit(1);
-console.log(`token-check: OK — ${LIGHT.length} light and ${DARK.length} dark tokens match v4.`);
+for (const [themeName, want] of SITE_THEME) {
+  const got = cssVar(theme, themeName);
+  if (got !== want) {
+    console.error(`token-check: DRIFT --${themeName} in globals.css @theme is ${got}, sanctioned value is ${want}`);
+    failed = true;
+  }
+}
+
+for (const [themeName, threeKey, want] of SITE_MAP) {
+  const got = cssVar(theme, themeName);
+  if (got !== want) {
+    console.error(`token-check: DRIFT --${themeName} in globals.css @theme is ${got}, sanctioned value is ${want}`);
+    failed = true;
+  }
+  const ts = tsHex(threeKey);
+  if (ts !== want) {
+    console.error(`token-check: DRIFT TOKENS.${threeKey} in ambient-stage/lib/tokens.ts is ${ts}, sanctioned value is ${want}`);
+    failed = true;
+  }
+}
+
+if (failed) {
+  console.error(
+    "token-check: FAILED — sync the palette (canonical: Design/Kheelona-Design-System-v3/tokens/kheelona.css)",
+  );
+  process.exit(1);
+}
+console.log(`token-check: ok (${MAP.length + SITE_MAP.length + SITE_THEME.length} mappings)`);

@@ -25,11 +25,11 @@ import { cn } from "@/lib/cn";
  *  that holds 4.5:1 on every wash. It reads as attention rather than danger,
  *  which is why the wording carries the weight. */
 
-const LABEL = "mb-1.5 block text-[15px] font-semibold text-ink-head";
+const LABEL = "mb-1.5 block text-[15px] font-bold text-ink-head";
 const HINT = "mt-1.5 text-[14px] text-ink-muted";
-const ERROR = "mt-1.5 text-[14px] font-medium text-err";
+const ERROR = "mt-1.5 text-[14px] font-bold text-orange-ink";
 const CONTROL =
-  "min-h-[52px] w-full rounded-[14px] border bg-surface px-3.5 py-3 text-[16px] text-ink " +
+  "w-full rounded-(--radius-card) border bg-white px-4 py-3.5 text-[17px] text-ink " +
   "placeholder:text-ink-muted focus-visible:outline-none focus-visible:ring-2 " +
   "focus-visible:ring-orange focus-visible:ring-offset-2 " +
   /* 16px minimum on the control: iOS Safari zooms the whole viewport when a
@@ -88,7 +88,7 @@ type AriaProps = {
 };
 
 function borderFor(invalid: boolean): string {
-  return invalid ? "border-err" : "border-line";
+  return invalid ? "border-orange-ink" : "border-line";
 }
 
 export function TextField({
@@ -201,8 +201,8 @@ export function ChoiceField({
           /* 20px and a touch target of at least 44px via the label padding:
              a tick box that needs aim is a tick box people mis-tap. */
           className={cn(
-            "mt-0.5 h-[22px] w-[22px] shrink-0 rounded border-2 accent-ink",
-            error ? "border-err" : "border-line",
+            "mt-0.5 h-5 w-5 shrink-0 rounded border-2 accent-orange",
+            error ? "border-orange-ink" : "border-line",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2",
           )}
         />

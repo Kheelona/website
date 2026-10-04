@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import {
   LEGAL_ENTITY,
   GSTIN,
@@ -31,14 +32,18 @@ export const metadata: Metadata = {
 
 export default function StoreLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-dvh bg-bg">
-      <header className="border-b border-line bg-bg">
-        <div className="kh-wrap flex h-16 items-center justify-between">
-          <a
-            href="https://kheelona.com"
-            className="rounded font-display text-[25px] font-semibold tracking-[-0.2px] text-ink-head no-underline"
-          >
-            Kheelona
+    <div className="min-h-dvh bg-cream">
+      <header className="border-b border-line/40 bg-white">
+        <div className="mx-auto flex h-[72px] w-full max-w-[1100px] items-center justify-between px-6">
+          <a href="https://kheelona.com" aria-label="Kheelona home" className="shrink-0">
+            <Image
+              src="/brand/kheelona-wordmark.svg"
+              alt="Kheelona"
+              width={152}
+              height={50}
+              priority
+              className="h-[32px] w-auto"
+            />
           </a>
           <a
             href={SUPPORT_WHATSAPP_HREF}
@@ -51,7 +56,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
 
       <main>{children}</main>
 
-      <footer className="border-t border-line bg-surface">
+      <footer className="border-t border-line/40 bg-white">
         <div className="mx-auto w-full max-w-[1100px] px-6 py-10">
           <nav aria-label="Policies" className="flex flex-wrap gap-x-6 gap-y-2">
             {[
@@ -59,7 +64,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
               ["Refunds and cancellation", "/refund"],
               ["Shipping and delivery", "/shipping"],
               ["Privacy", "/privacy"],
-              ["Contact", "/story#talk"],
+              ["Contact", "/contact"],
             ].map(([label, path]) => (
               <a
                 key={path}

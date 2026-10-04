@@ -1,0 +1,33 @@
+import { render, screen } from "@testing-library/react";
+import { Compare } from "./Compare";
+import { STORE_URL } from "@/config/site";
+
+describe("Compare", () => {
+  it("renders the section heading and honest lede", () => {
+    render(<Compare />);
+    expect(
+      screen.getByRole("heading", { name: /How Kheelu compares/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/A simple, honest look at what is out there\./i),
+    ).toBeInTheDocument();
+  });
+
+  it("renders the comparison table with the Kheelu column", () => {
+    render(<Compare />);
+    expect(screen.getByRole("table")).toBeInTheDocument();
+    expect(
+      screen.getByRole("columnheader", { name: "Kheelu" }),
+    ).toBeInTheDocument();
+  });
+
+  it("offers the pre-order CTA with the token-price caption", () => {
+    render(<Compare />);
+    expect(
+      screen.getByRole("link", { name: "Pre-order Kheelu" }),
+    ).toHaveAttribute("href", STORE_URL);
+    expect(
+      screen.getByText(/₹499 now, ₹4,500 on dispatch\. Fully refundable until we ship\./i),
+    ).toBeInTheDocument();
+  });
+});

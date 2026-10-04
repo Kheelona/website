@@ -246,7 +246,7 @@ export function PreorderForm({
            charged, in those words. */
         <p
           role="alert"
-          className="rounded-[14px] border border-err bg-bg px-4 py-3 text-[15px] font-medium text-ink"
+          className="rounded-(--radius-card) border border-orange-ink bg-cream px-4 py-3 text-[15px] font-medium text-ink"
         >
           {failure}
         </p>
@@ -256,8 +256,8 @@ export function PreorderForm({
         type="submit"
         disabled={busy}
         className={cn(
-          "inline-flex min-h-[52px] w-full items-center justify-center rounded-full bg-action px-6 text-[17px] font-semibold text-bg",
-          "focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-accent",
+          "inline-flex items-center justify-center rounded-full bg-action px-7 py-4 text-[17px] font-bold text-white shadow-cta",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2",
           PRESS_LIFT,
           busy && "cursor-wait opacity-70",
         )}

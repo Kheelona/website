@@ -196,7 +196,7 @@ export default async function StoryPage({
                 </p>
                 <p className="text-[16.5px] leading-[1.65]">{story.ageNote}</p>
                 <Link
-                  href="/kheelu#faq"
+                  href="/products/kheelu#faq"
                   className="mt-3 inline-block font-semibold text-ink-head underline"
                 >
                   Read Kheelu&rsquo;s age guidance and product details
@@ -231,7 +231,7 @@ export default async function StoryPage({
                   Safety page
                 </Link>
                 , or meet the friend behind it on the{" "}
-                <Link href="/kheelu" className="font-semibold text-ink-head underline">
+                <Link href="/products/kheelu" className="font-semibold text-ink-head underline">
                   Kheelu page
                 </Link>
                 .
@@ -251,10 +251,13 @@ export default async function StoryPage({
         <Room
           fill="white"
           id="reserve"
+          guide="silly"
           /* GATED:kheelu-line */
+          say="Save your spot. I'll mind Kheelu till launch."
+          reveal="pop"
           className="overflow-x-clip"
         >
-          <FinaleCTA bare />
+          <FinaleCTA bare variant="compact" />
         </Room>
       </RoomsTrack>
     </>

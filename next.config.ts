@@ -5,7 +5,6 @@ import {
   POSTHOG_ASSET_HOST,
   POSTHOG_ASSET_PROXY_PATH,
   POSTHOG_PROXY_PATH,
-  STORE_URL,
 } from "./src/config/site";
 
 const nextConfig: NextConfig = {
@@ -105,19 +104,7 @@ const nextConfig: NextConfig = {
          This line is permanent. There is no date at which removing it is safe:
          printed QR codes, old WhatsApp forwards and two weeks of Ahrefs-recorded
          inbound links all point at the old path. */
-      { source: "/products/lumi", destination: "/kheelu", permanent: true },
-
-      /* THE REDESIGN (2026-10). The parent-first mockup moved three pages and
-         folded one into another. Same rules as the rename above: 308s, query
-         strings intact, and every legacy source above points STRAIGHT at the
-         new path rather than chaining through these. `/faq` used to redirect
-         to the product page's FAQ; it is a real page now, so that line went.
-         `/reserve` is the mockup's checkout path, and the checkout is the
-         store (§8.25-b), so it leaves the domain in one hop. */
-      { source: "/products/kheelu", destination: "/kheelu", permanent: true },
-      { source: "/team", destination: "/story", permanent: true },
-      { source: "/contact", destination: "/story#talk", permanent: true },
-      { source: "/reserve", destination: STORE_URL, permanent: false },
+      { source: "/products/lumi", destination: "/products/kheelu", permanent: true },
 
       /* Legacy Wix-site URLs (2026-07-28). This site replaces the old
          kheelona.com store, whose pages are still in Google's index — including
@@ -125,29 +112,29 @@ const nextConfig: NextConfig = {
          equity here and stop the old prices competing with the real ones, which
          was the biggest active SEO liability on the list (V3-h). Every source
          below existed on the previous site. */
-      { source: "/product-page/:slug*", destination: "/kheelu", permanent: true },
+      { source: "/product-page/:slug*", destination: "/products/kheelu", permanent: true },
       /* `[^.]+` instead of `:slug*` on purpose, and it must stay: redirects are
          matched BEFORE public/ files, and our own plush renders live in
          public/product/. A plain `/product/:slug*` 308s lumi-blue-2.png to the
          product page, which makes the image optimizer 400 and blanks the hero
          (caught locally 2026-07-28, before it reached a customer). Legacy Wix
          product slugs never contain a dot; asset filenames always do. */
-      { source: "/product/:slug([^.]+)", destination: "/kheelu", permanent: true },
-      { source: "/shop", destination: "/kheelu", permanent: true },
+      { source: "/product/:slug([^.]+)", destination: "/products/kheelu", permanent: true },
+      { source: "/shop", destination: "/products/kheelu", permanent: true },
       /* Wix listing pages. `/category/all-products` was still taking real
          landings; the catch-all covers the sibling category slugs we cannot
          enumerate. Same `[^.]+` guard as `/product/` above — there is no
          public/category/ today, but a future asset folder must not be able to
          disappear behind this line (§8.21-b). */
-      { source: "/category/all-products", destination: "/kheelu", permanent: true },
-      { source: "/category/:slug([^.]+)", destination: "/kheelu", permanent: true },
+      { source: "/category/all-products", destination: "/products/kheelu", permanent: true },
+      { source: "/category/:slug([^.]+)", destination: "/products/kheelu", permanent: true },
       /* The Wix theme published an accessibility statement, and two weeks of
          Ahrefs data say people still land on it: 19 entrances, 10.8% of ALL
          site entries, second only to the home page, every one of them hitting a
          404. Founder's call on the destination (2026-08-12): the product page,
          so the traffic lands somewhere that converts. If a real statement is
          ever written, it replaces this line. */
-      { source: "/accessibility-statement", destination: "/kheelu", permanent: true },
+      { source: "/accessibility-statement", destination: "/products/kheelu", permanent: true },
       /* Three more Wix paths, from Search Console's "Not found (404)" report read on
          2026-09-05 (SEO round, A1): four `/post/<slug>` blog posts, `/terms-conditions`
          and `/for-the-parents`, all last crawled in March and still being re-fetched.
@@ -185,11 +172,12 @@ const nextConfig: NextConfig = {
          live on the product page. `/sitemap` is what people type when they mean
          the .xml. None is a legacy Wix route; they are all just what humans
          guess, which is why they belong here rather than in the block above. */
-      { source: "/lumi", destination: "/kheelu", permanent: true },
+      { source: "/lumi", destination: "/products/kheelu", permanent: true },
+      { source: "/faq", destination: "/products/kheelu#faq", permanent: true },
       { source: "/sitemap", destination: "/sitemap.xml", permanent: true },
       { source: "/blog", destination: "/stories", permanent: true },
       { source: "/blog/:slug*", destination: "/stories", permanent: true },
-      { source: "/about", destination: "/story", permanent: true },
+      { source: "/about", destination: "/team", permanent: true },
       { source: "/community", destination: "/stories", permanent: true },
       /* /refund and /shipping USED to 301 here, because pre-orders took no
          payment and there was nothing to refund or ship. Both are real pages
@@ -201,8 +189,8 @@ const nextConfig: NextConfig = {
       { source: "/login", destination: "/", permanent: true },
       { source: "/signup", destination: "/", permanent: true },
       { source: "/account/:path*", destination: "/", permanent: true },
-      { source: "/cart", destination: "/kheelu", permanent: true },
-      { source: "/checkout/:path*", destination: "/kheelu", permanent: true },
+      { source: "/cart", destination: "/products/kheelu", permanent: true },
+      { source: "/checkout/:path*", destination: "/products/kheelu", permanent: true },
     ];
   },
 };

@@ -43,20 +43,20 @@ describe("SectionHeading", () => {
     render(<SectionHeading as="h1" title="Hero" />);
     expect(
       screen.getByRole("heading", { level: 1, name: "Hero" }).className,
-    ).toContain("clamp(36px,6vw,68px)");
+    ).toContain("clamp(38px,4.5vw,58px)");
   });
 
   it("drops an h3 to the nested step so it cannot compete with its h2", () => {
     render(<SectionHeading as="h3" title="Nested question" />);
     expect(
       screen.getByRole("heading", { level: 3, name: "Nested question" }).className,
-    ).toContain("clamp(21px,2.4vw,25px)");
+    ).toContain("clamp(21px,2.2vw,26px)");
   });
 
   it("still honours an explicit level over the tag default", () => {
     render(<SectionHeading as="h3" level="section" title="Loud h3" />);
     expect(
       screen.getByRole("heading", { level: 3, name: "Loud h3" }).className,
-    ).toContain("clamp(30px,4.4vw,46px)");
+    ).toContain("clamp(32px,4vw,50px)");
   });
 });

@@ -54,7 +54,7 @@ export function ArchitectureStack({
             className={`group flex w-full cursor-pointer items-center justify-between gap-4 px-5 py-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-inset sm:px-6 ${PRESS_TINT}`}
           >
             <span>
-              <span className="block font-display text-[19px] font-semibold text-ink-head">
+              <span className="block font-display text-[19px] font-extrabold text-ink-head">
                 {layer.name}
               </span>
               <span className="mt-0.5 block text-[14.5px] leading-snug text-ink">

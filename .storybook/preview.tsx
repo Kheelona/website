@@ -1,22 +1,27 @@
 import type { Preview } from "@storybook/nextjs-vite";
 import React from "react";
-import { Fraunces, DM_Sans } from "next/font/google";
+import localFont from "next/font/local";
 import "../src/styles/globals.css";
 
 // Mirror app/layout.tsx exactly so var(--font-*) resolve to the real faces and
-// stories render pixel-identical to the app (redesign 2026-10: Fraunces +
-// DM Sans, self-hosted by next/font at build time).
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  weight: ["400", "600"],
-  style: ["normal", "italic"],
-  variable: "--font-fraunces",
+// stories render pixel-identical to the app. The serif is the LOCAL italic
+// subset since CS3 — the old Google Fonts import here was fetching a face the
+// app had retired, on every `storybook dev`, for nothing.
+const glory = localFont({
+  src: [{ path: "../src/app/fonts/Glory.woff2", weight: "100 900", style: "normal" }],
+  variable: "--font-glory",
   display: "swap",
 });
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-dm-sans",
+const instrumentSans = localFont({
+  src: [{ path: "../src/app/fonts/InstrumentSans.woff2", weight: "100 900", style: "normal" }],
+  variable: "--font-instrument-sans",
+  display: "swap",
+});
+const instrumentSerif = localFont({
+  src: [
+    { path: "../src/app/fonts/InstrumentSerifItalic.woff2", weight: "400", style: "italic" },
+  ],
+  variable: "--font-instrument-serif",
   display: "swap",
 });
 
@@ -29,7 +34,7 @@ const preview: Preview = {
   decorators: [
     (Story) => (
       <div
-        className={`${fraunces.variable} ${dmSans.variable} js`}
+        className={`${glory.variable} ${instrumentSans.variable} ${instrumentSerif.variable} js`}
         style={{ fontFamily: "var(--font-sans)", color: "var(--color-ink)" }}
       >
         <Story />

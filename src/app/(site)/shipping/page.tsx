@@ -80,8 +80,10 @@ export default function ShippingPage() {
         title="Shipping, in plain words."
         lede="Where Kheelu goes, when it leaves, and what it costs to get to you. Which is nothing extra."
         sections={SECTIONS}
+        guide="joy"
         /* Founder-approved 2026-08-22, same contraction exemption as /refund.
            44 characters, inside the 48-character dock limit. */
+        say="I'll help pack. Mostly by sitting in the box."
       />
     </>
   );

@@ -7,9 +7,9 @@ describe("Eyebrow", () => {
     expect(screen.getByText("How it works")).toBeInTheDocument();
   });
 
-  it("defaults to the label colour, which clears 4.5:1 on every surface in both themes", () => {
+  it("defaults to the orange-ink color that passes 4.5:1 on every wash", () => {
     render(<Eyebrow>label</Eyebrow>);
-    expect(screen.getByText("label").className).toContain("text-label");
+    expect(screen.getByText("label").className).toContain("text-orange-ink");
   });
 
   it("applies a caller-supplied color instead of the default", () => {

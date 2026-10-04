@@ -42,6 +42,7 @@ export default function NotFound() {
     <SiteChrome>
       <PageHero
         ratio="md:grid-cols-[1.1fr_0.9fr]"
+        guide="curious"
         media={
           <Image
             src={KHEELU_ART.src}
@@ -63,7 +64,7 @@ export default function NotFound() {
         />
         <div className="flex flex-wrap gap-4">
           <Button href="/">Back to the start</Button>
-          <Button href="/kheelu" variant="ghost">
+          <Button href="/products/kheelu" variant="ghost">
             Meet Kheelu
           </Button>
         </div>
@@ -73,10 +74,13 @@ export default function NotFound() {
         <Room
           fill="white"
           id="reserve"
+          guide="silly"
           /* GATED:kheelu-line */
+          say="Save your spot. I'll mind Kheelu till launch."
+          reveal="pop"
           className="overflow-x-clip"
         >
-          <FinaleCTA bare />
+          <FinaleCTA bare variant="compact" />
         </Room>
       </RoomsTrack>
     </SiteChrome>

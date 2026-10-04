@@ -44,7 +44,7 @@ export function CompareTable() {
             key={claim}
             className="rounded-(--radius-card) border border-line bg-cream p-5"
           >
-            <p className="mb-3 font-display text-[17px] font-semibold leading-snug text-ink-head">
+            <p className="mb-3 font-display text-[17px] font-extrabold leading-snug text-ink-head">
               {claim}
             </p>
             <dl className="grid grid-cols-[1fr_auto] gap-x-4 gap-y-2 text-[15px]">

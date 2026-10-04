@@ -3,6 +3,7 @@ import { RoomsTrack } from "@/components/atoms/RoomsTrack";
 import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { PageHero } from "@/components/templates/PageHero";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
+import type { KheeluPose } from "@/lib/kheelu-poses";
 
 export type LegalSection = { readonly h: string; readonly ps: readonly string[] };
 
@@ -13,21 +14,26 @@ export type LegalSection = { readonly h: string; readonly ps: readonly string[] 
  *
  *  Revamp M4: on the theme-B room grammar. The hero opens on the backdrop and
  *  the prose sits in one white room, so the careful pages feel like the same
- *  house as the rest of the site. Redesign 2026-10: the mockup's bands. */
+ *  house as the rest of the site. `guide`/`say` give each page its one quiet
+ *  Kheelu line (GATED:kheelu-line). */
 export function LegalDoc({
   eyebrow = "The fine print, unfine",
   title,
   lede,
   sections,
+  guide,
+  say,
 }: {
   eyebrow?: string;
   title: string;
   lede: string;
   sections: readonly LegalSection[];
+  guide?: KheeluPose;
+  say?: string;
 }) {
   return (
     <>
-      <PageHero>
+      <PageHero guide={guide} say={say}>
         <div className="max-w-[760px]">
           <SectionHeading
             as="h1"
@@ -45,7 +51,7 @@ export function LegalDoc({
           <div className="max-w-[720px]">
             {sections.map((s) => (
               <div key={s.h}>
-                <h2 className="mb-3 mt-9 font-display text-[24px] font-semibold text-ink-head first:mt-0">
+                <h2 className="mb-3 mt-9 font-display text-[24px] font-extrabold text-ink-head first:mt-0">
                   {s.h}
                 </h2>
                 {s.ps.map((p, i) => (
@@ -61,9 +67,12 @@ export function LegalDoc({
         <Room
           fill="white"
           id="reserve"
+          guide="silly"
+          say="Save your spot. I'll mind Kheelu till launch."
+          reveal="pop"
           className="overflow-x-clip"
         >
-          <FinaleCTA bare />
+          <FinaleCTA bare variant="compact" />
         </Room>
       </RoomsTrack>
     </>

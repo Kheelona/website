@@ -120,7 +120,7 @@ export default async function ThanksPage() {
       <p className="mb-2 text-[13px] font-bold uppercase tracking-[0.08em] text-orange-ink">
         {paid ? "Pre-order confirmed" : "Confirming your payment"}
       </p>
-      <h1 className="mb-4 max-w-[24ch] font-display text-[clamp(30px,4vw,42px)] font-semibold leading-[1.08] text-ink-head">
+      <h1 className="mb-4 max-w-[24ch] font-display text-[clamp(30px,4vw,42px)] font-extrabold leading-[1.08] text-ink-head">
         {paid ? "Your Kheelu is reserved." : "Thank you. We are confirming it now."}
       </h1>
 
@@ -159,7 +159,7 @@ export default async function ThanksPage() {
         <Row label="Ships from" value={SHIP_DATE_TEXT} />
       </dl>
 
-      <h2 className="mb-3 font-display text-[24px] font-semibold text-ink-head">
+      <h2 className="mb-3 font-display text-[24px] font-extrabold text-ink-head">
         {order.address ? "Your delivery address" : "Where should it go?"}
       </h2>
       <p className="mb-6 max-w-[52ch] text-[16px] leading-[1.6] text-ink">
@@ -193,7 +193,7 @@ function LinkNeeded() {
       <p className="mb-2 text-[13px] font-bold uppercase tracking-[0.08em] text-orange-ink">
         Your pre-order is safe
       </p>
-      <h1 className="mb-4 max-w-[24ch] font-display text-[clamp(30px,4vw,42px)] font-semibold leading-[1.08] text-ink-head">
+      <h1 className="mb-4 max-w-[24ch] font-display text-[clamp(30px,4vw,42px)] font-extrabold leading-[1.08] text-ink-head">
         We need your link again.
       </h1>
       <p className="mb-6 max-w-[52ch] text-[17px] leading-[1.6] text-ink">
@@ -219,7 +219,7 @@ function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex flex-wrap items-baseline justify-between gap-x-4">
       <dt className="text-[15px] text-ink-muted">{label}</dt>
-      <dd className="font-display text-[17px] font-semibold text-ink-head">{value}</dd>
+      <dd className="font-display text-[17px] font-extrabold text-ink-head">{value}</dd>
     </div>
   );
 }

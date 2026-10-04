@@ -91,7 +91,7 @@ export default async function IdeabaazPage() {
             <p className="mb-2 text-[13px] font-bold uppercase tracking-[0.08em] text-orange-ink">
               Exclusive for the Ideabaaz audience
             </p>
-            <h1 className="max-w-[22ch] font-display text-[clamp(30px,4vw,44px)] font-semibold leading-[1.08] text-ink-head">
+            <h1 className="max-w-[22ch] font-display text-[clamp(30px,4vw,44px)] font-extrabold leading-[1.08] text-ink-head">
               Reserve Kheelu for{" "}
               <s aria-hidden="true" className="font-bold text-ink-muted decoration-[0.09em]">
                 {TOKEN_PRICE}
@@ -171,13 +171,13 @@ function Ended({
   return (
     <div className="mx-auto w-full max-w-[640px] px-6 py-16 md:py-24">
       <PartnerChip className="mb-6" />
-      <h1 className="mb-4 font-display text-[clamp(28px,4vw,38px)] font-semibold leading-[1.1] text-ink-head">
+      <h1 className="mb-4 font-display text-[clamp(28px,4vw,38px)] font-extrabold leading-[1.1] text-ink-head">
         {title}
       </h1>
       <p className="mb-6 text-[17px] leading-[1.6] text-ink">{message}</p>
       <a
         href="/"
-        className="inline-flex items-center justify-center rounded-full min-h-[52px] bg-action px-6 text-[17px] font-semibold text-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
+        className="inline-flex items-center justify-center rounded-full bg-action px-7 py-4 text-[17px] font-bold text-white shadow-cta focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
       >
         Pre-order at the usual price
       </a>

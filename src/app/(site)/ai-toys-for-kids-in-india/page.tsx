@@ -163,7 +163,9 @@ export default function AiToysGuidePage() {
 
       <PageHero
         ratio="md:grid-cols-[1.2fr_0.8fr]"
+        guide="curious"
         /* GATED:kheelu-line — founder sign-off before merge to master */
+        say="Ask the hard ones. We wrote this expecting them."
         media={
           <Image
             src={KHEELU_ART.src}
@@ -189,7 +191,7 @@ export default function AiToysGuidePage() {
       <RoomsTrack>
         {/* The definitional answer. Answer engines retrieve definitions, and
             this category does not have a settled one yet. */}
-        <Room fill="white">
+        <Room fill="white" reveal="left">
           <Reveal>
             <AnswerBlock
               level="section"
@@ -201,7 +203,7 @@ export default function AiToysGuidePage() {
         </Room>
 
         {/* The five checks: the commercial version of the journal piece. */}
-        <Room fill="cream">
+        <Room fill="cream" reveal="right">
           <Reveal className="mb-10">
             <SectionHeading
               as="h2"
@@ -229,7 +231,7 @@ export default function AiToysGuidePage() {
         </Room>
 
         {/* Kheelu's own answers, in the shape a comparison wants. */}
-        <Room fill="white">
+        <Room fill="white" reveal="left">
           <Reveal className="mb-10">
             <SectionHeading
               as="h2"
@@ -256,7 +258,7 @@ export default function AiToysGuidePage() {
             failures at 1280px on the first run, sitting alongside nine of the
             §8.29 white-on-orange pairs it correctly waved through. On cream the
             same ink measures 4.52:1 and clears. */}
-        <Room fill="cream">
+        <Room fill="cream" reveal="right">
           <Reveal className="mb-10">
             <SectionHeading
               as="h2"
@@ -284,7 +286,7 @@ export default function AiToysGuidePage() {
 
         {/* Honest limits. This is the section a rival buying guide does not
             have, and it is the one a careful parent reads twice. */}
-        <Room fill="white">
+        <Room fill="white" reveal="left">
           <Reveal>
             <AnswerBlock
               level="section"
@@ -303,7 +305,7 @@ export default function AiToysGuidePage() {
           </Reveal>
         </Room>
 
-        <Room fill="cool">
+        <Room fill="cool" reveal="right">
           <Reveal className="mb-10">
             <SectionHeading
               as="h2"

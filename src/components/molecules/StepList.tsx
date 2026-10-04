@@ -22,7 +22,7 @@ export function StepList({
   numberColor = "text-orange-ink",
   columns = "md:grid-cols-[90px_1fr_1.4fr]",
   rowClassName = "items-start gap-5 py-8 md:gap-7",
-  titleClassName = "font-display text-[24px] font-semibold leading-tight text-ink-head",
+  titleClassName = "font-display text-[24px] font-extrabold leading-tight text-ink-head",
   bodyClassName = "text-[16px]",
   className,
 }: {
@@ -49,7 +49,7 @@ export function StepList({
           <span
             aria-hidden="true"
             className={cn(
-              "font-display text-4xl font-semibold",
+              "font-display text-4xl font-extrabold",
               s.color ?? numberColor,
             )}
           >
