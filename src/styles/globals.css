@@ -189,9 +189,9 @@ body {
    IN @layer base ON PURPOSE (M4 mobile pass): `text-wrap` is a longhand of the
    same group as `white-space`, and unlayered CSS outranks every Tailwind
    utility no matter the specificity. Left unlayered, this `p` rule silently
-   beat `truncate` on the guide's mobile dock — the line wrapped to three rows
-   and the fixed bar grew to 86px, eating the screen. Base-layer rules lose to
-   utilities, which is what a caller expects. */
+   beat `truncate` on the (since retired) guide's mobile dock — the line
+   wrapped to three rows and the fixed bar grew to 86px, eating the screen.
+   Base-layer rules lose to utilities, which is what a caller expects. */
 @layer base {
   h1,
   h2,
@@ -615,63 +615,6 @@ main {
   }
   to {
     transform: translate(-50%, -50%) rotate(-360deg);
-  }
-}
-
-/* ================================================================
-   KHEELU GUIDE (revamp M1, organisms/KheeluGuide.tsx)
-   The persistent narrator. Purely decorative motion; the whole
-   widget disappears without JS (it has nothing to say there).
-   ================================================================ */
-html:not(.js) [data-kheelu-guide] {
-  display: none;
-}
-.kheelu-guide-follow {
-  transform: translate3d(var(--gx, 0px), var(--gy, 0px), 0) rotate(var(--gr, 0deg));
-}
-@media (prefers-reduced-motion: no-preference) {
-  .kheelu-guide-idle {
-    animation: guide-bob 5.5s ease-in-out infinite;
-  }
-  .kheelu-guide-bubble {
-    animation: guide-bubble-in 0.3s var(--ease-bounce) both;
-  }
-  /* declared after -idle so a poke wins while both classes are present */
-  .kheelu-guide-poke {
-    animation: guide-poke 0.5s var(--ease-bounce);
-  }
-}
-@keyframes guide-bob {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-6px);
-  }
-}
-@keyframes guide-bubble-in {
-  from {
-    opacity: 0;
-    transform: translateY(6px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-@keyframes guide-poke {
-  0% {
-    transform: translateY(0);
-  }
-  30% {
-    transform: translateY(-14px) scale(1.04);
-  }
-  60% {
-    transform: translateY(2px);
-  }
-  100% {
-    transform: translateY(0);
   }
 }
 

@@ -24,15 +24,16 @@ describe("PageHero", () => {
     expect(screen.queryByRole("img")).toBeNull();
   });
 
-  it("feeds the guide through data attributes, like Room", () => {
+  /* CMO merge (2026-10-04): the guide is retired, so the hero feeds nothing. */
+  it("no longer feeds a guide through data attributes", () => {
     const { container } = render(
-      <PageHero guide="curious" say="Come on in.">
-        <h1>Narrated</h1>
+      <PageHero>
+        <h1>Plain</h1>
       </PageHero>,
     );
     const section = container.querySelector("section");
-    expect(section).toHaveAttribute("data-guide", "curious");
-    expect(section).toHaveAttribute("data-say", "Come on in.");
+    expect(section).not.toHaveAttribute("data-guide");
+    expect(section).not.toHaveAttribute("data-say");
   });
 
   it("keeps the hero out of the opacity-hidden reveal variants (LCP law)", () => {

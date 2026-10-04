@@ -1,12 +1,12 @@
 import { render, screen } from "@testing-library/react";
-import { FinaleCTA } from "./FinaleCTA";
-import { PREORDER_LABEL, STORE_URL } from "@/config/site";
+import { FinaleCTA, FINALE_TITLE } from "./FinaleCTA";
+import { RESERVE_LABEL, STORE_URL } from "@/config/site";
 
 describe("FinaleCTA", () => {
-  it("renders the pre-order headline and the price ask inside a #reserve section", () => {
+  it("renders the ship-date headline and the price ask inside a #reserve section", () => {
     const { container } = render(<FinaleCTA />);
     expect(
-      screen.getByRole("heading", { name: /Pre-order Kheelu before the price goes up/i }),
+      screen.getByRole("heading", { name: "Kheelu ships from 20 October 2026." }),
     ).toBeInTheDocument();
     // V6 D11: the lede is exactly the offer line + the hold promise — one
     // wording, one source, no drift between the price surfaces.
@@ -24,10 +24,22 @@ describe("FinaleCTA", () => {
      test/preorder-cta.test.ts holds the rest of the site to it. */
   it("hands off to the store", () => {
     render(<FinaleCTA />);
-    expect(screen.getByRole("link", { name: PREORDER_LABEL })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: RESERVE_LABEL })).toHaveAttribute(
       "href",
       STORE_URL,
     );
+  });
+
+  /* CMO merge (2026-10-04): the mockup's "Meet Kheelu on 20 October." was
+     corrected, because shipping STARTS on that date; nobody reserving today is
+     promised delivery on it. A page may pass its own headline. */
+  it("never promises delivery on the ship date, and takes a page's own headline", () => {
+    expect(FINALE_TITLE).toMatch(/ships from/);
+    expect(FINALE_TITLE).not.toMatch(/meet kheelu on/i);
+    render(<FinaleCTA title="Give your child more conversations every day." />);
+    expect(
+      screen.getByRole("heading", { name: "Give your child more conversations every day." }),
+    ).toBeInTheDocument();
   });
 
   it("keeps the three reassurances a paid reservation needs", () => {

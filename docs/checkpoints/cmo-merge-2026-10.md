@@ -80,3 +80,41 @@ main. The CMO's four commits stay in this branch's history as the reference for 
 |---|---|
 | `npx tsc --noEmit` | **0** |
 | `npm test` | **1403 passed / 126 files** = main's 1397 + 6. Reconciled, not accepted: `preorder-copy` and `preorder-cta` each enumerate every `src/` file through `git ls-files`, so the three new data files add one case to each. |
+
+### Commit 2 — the shared pieces, and the guide retired for the reserve bar
+
+One commit, not two: the label rename and the guide removal touch the same page files, and splitting
+them would have committed half-edited pages.
+
+- **Config.** Nav = Meet Kheelu · How it helps · Safety · Stories · Our story (`/team`) · FAQ, on the
+  URLs the site already ranks for; PlayOS to the footer. `PREORDER_LABEL` is DELETED (a stale import
+  fails the build) for `RESERVE_LABEL` "Reserve Kheelu for ₹499" and `RESERVE_SHORT_LABEL` "Reserve
+  ₹499", both commented as token-mode-only and line one of the §8.26-g sell-out sweep.
+- **`CompareTable` takes `columns`/`rows`.** The branch's forked `ComparisonTable` is folded in; the
+  buyer's guide keeps the category table as the default. **One deliberate departure from the plan:**
+  no chip switcher on phones. The design system's existing phone layout (one card per claim, every
+  column visible) already solves the width problem the chips were for, so adding a second phone
+  pattern for one table would have been a fork of its own.
+- **`lib/comparison.ts`** derives its Indian-language list from `KHEELU_LANGUAGES` and drops the
+  monthly-fee row ("Talking is free for life", NOT founder-confirmed). "Camera: None" ships
+  (confirmed 2026-10-04).
+- **New:** `Tabs` (WAI-ARIA tabs on the v3 chip shape, `PRESS_TINT`, every panel kept in the DOM)
+  and `StickyReserveBar` (phones only, `track="sticky-bar"`, **hidden while `#reserve` OR the footer
+  is on screen**, re-armed per route). Both with a story and a test.
+- **Extended:** `Faq` `openFirst`; `FinaleCTA` `title` with the default **"Kheelu ships from 20
+  October 2026."** (the mockup's "Meet Kheelu on 20 October" promised delivery on the dispatch date);
+  `ParentQuotes` per-card headlines from content doc v7; Navbar `aria-current` and the short label;
+  Footer seller of record + WhatsApp "messages only", and NOT the mockup's "Made in Bengaluru".
+- **The guide is gone.** `KheeluGuide` + story + test deleted; 85 `guide=`/`say=` props stripped from
+  16 files; `Room`, `PageHero`, `LegalDoc` lose the props and the `data-guide`/`data-say` attributes;
+  the guide's CSS block removed; `SiteChrome` mounts `StickyReserveBar` in its place. Reveals and the
+  backdrop are untouched. The tests that asserted the attributes now assert their ABSENCE.
+
+| Gate | Result |
+|---|---|
+| `npx tsc --noEmit` | **0** |
+| `npm test` | **1427 / 127 files**, run with every change STAGED (the guard tests read the index). Reconciled from 1403: −5 (KheeluGuide.test) +26 (new direct cases: Tabs 6, StickyReserveBar 6, CompareTable 4, Footer 3, Faq 2, ParentQuotes 2, Navbar 2, FinaleCTA 1) +3 (`preorder-cta`, `preorder-copy`, `stories-parse` each gain two new files and lose the guide's) = **1427** |
+
+**Trap re-learned here, worth its line:** a `git stash` round-trip during reconciliation silently
+UN-staged the guide's deletions (`git stash pop` restores the tree, not the index), which would have
+skewed the parameterised counts. Re-staged by name before the counted run.

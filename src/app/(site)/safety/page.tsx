@@ -151,9 +151,7 @@ export default function SafetyPage() {
 
       <PageHero
         ratio="md:grid-cols-[1.2fr_0.8fr]"
-        guide="bliss"
         /* GATED:kheelu-line — founder sign-off before merge to master */
-        say="No jokes on this page. Parents read this twice."
         media={
           <Image
             src={KHEELU_ART.src}
@@ -356,9 +354,7 @@ export default function SafetyPage() {
         <Room
           fill="white"
           id="reserve"
-          guide="silly"
           /* GATED:kheelu-line */
-          say="Save your spot. I'll mind Kheelu till launch."
           reveal="pop"
           className="overflow-x-clip"
         >

@@ -8,7 +8,7 @@ import {
   BALANCE_PRICE,
   PREORDER_OFFER_LINE,
   PRICE_HOLD_LINE,
-  PREORDER_LABEL,
+  RESERVE_LABEL,
   KHEELONA_PLUS_SHORT,
   WHATSAPP_SHARE_HREF,
   WHATSAPP_SHARE_LABEL,
@@ -55,12 +55,22 @@ const REASSURANCES = [
  *
  *  `variant="full"` (Home, Kheelu): big headline. `variant="compact"`: the ask at
  *  interior scale. */
+/** The finale's headline (CMO merge, 2026-10-04). The mockup's "Meet Kheelu
+ *  on 20 October." was corrected rather than shipped: shipping STARTS on that
+ *  date, and a parent who reserves today is not promised delivery on it. The
+ *  price-urgency the old "before the price goes up" carried still lands in the
+ *  offer line underneath, verbatim (V6 D11). */
+export const FINALE_TITLE = `Kheelu ships from ${SHIP_DATE_TEXT}.`;
+
 export function FinaleCTA({
   variant = "full",
   bare = false,
   share = true,
+  title = FINALE_TITLE,
 }: {
   variant?: "full" | "compact";
+  /** A page-specific headline (the /how page closes on its own argument). */
+  title?: string;
   /** Revamp M2: content-only, for composition inside a Room (the Room then
    *  owns id="reserve"). */
   bare?: boolean;
@@ -77,7 +87,7 @@ export function FinaleCTA({
               : "mb-4 max-w-[22ch] font-display text-[clamp(28px,3vw,40px)] font-extrabold leading-[1.1] text-ink-head"
           }
         >
-          Pre-order Kheelu before the price goes up.
+          {title}
         </h2>
         {/* V6 D11: exactly the offer line + the hold promise. Repetition builds
             trust only when it is verbatim — three paraphrases of one price
@@ -108,12 +118,12 @@ export function FinaleCTA({
         {/* V3: the deal on the subscription, said before the ask and not
             after the purchase (gate V3-b keeps the price out) */}
         <p className="mb-5 text-[15px] font-medium text-ink">{KHEELONA_PLUS_SHORT}</p>
-        <Button href={STORE_URL} track="finale">{PREORDER_LABEL}</Button>
+        <Button href={STORE_URL} track="finale">{RESERVE_LABEL}</Button>
         {/* Leaving the domain is a real moment of doubt for a parent about to
             pay, so it is named rather than sprung on them. Razorpay is worth
             naming too: in India it is a trust signal, not jargon. */}
         <p className="mt-3 text-[15px] font-medium text-ink-muted">
-          Pre-ordering opens our store, where Razorpay takes the payment
+          Reserving opens our store, where Razorpay takes the payment
           securely. It takes about a minute.
         </p>
         {/* V3: the one growth loop a pre-launch site can honestly run —

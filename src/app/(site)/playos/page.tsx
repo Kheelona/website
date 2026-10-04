@@ -178,9 +178,7 @@ export default function PlayOSPage() {
 
       <PageHero
         ratio="md:grid-cols-[1.05fr_0.95fr]"
-        guide="curious"
         /* GATED:kheelu-line — founder sign-off before merge to master */
-        say="PlayOS is the part of me you can't hug."
         media={
           <Image
             src="/products/magic-box.png"
@@ -231,9 +229,7 @@ export default function PlayOSPage() {
         {/* The stack, openable (the team's iceberg, rebuilt as brand UI) */}
         <Room
           fill="cream"
-          guide="silly"
           /* GATED:kheelu-line (shortened per §5.1) */
-          say="My friends built this. I asked the first why."
           reveal="right"
         >
           <Reveal>
@@ -322,9 +318,7 @@ export default function PlayOSPage() {
         <Room
           fill="white"
           id="reserve"
-          guide="silly"
           /* GATED:kheelu-line */
-          say="Save your spot. I'll mind Kheelu till launch."
           reveal="pop"
           className="overflow-x-clip"
         >

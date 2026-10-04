@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { Footer } from "./Footer";
-import { FOOTER_LINKS } from "@/config/site";
+import { FOOTER_LINKS, GSTIN, LEGAL_ENTITY, SUPPORT_WHATSAPP_HREF } from "@/config/site";
 
 describe("Footer", () => {
   it("renders as a contentinfo landmark with the Kheelona wordmark", () => {
@@ -28,5 +28,25 @@ describe("Footer", () => {
   it("signs the work with its provenance (V3)", () => {
     render(<Footer />);
     expect(screen.getByText("Designed by parents in Bengaluru.")).toBeInTheDocument();
+  });
+
+  it("names the seller of record from the same constants the store prints", () => {
+    const { container } = render(<Footer />);
+    expect(container.textContent).toContain(LEGAL_ENTITY);
+    expect(container.textContent).toContain(`GSTIN ${GSTIN}`);
+  });
+
+  it("says the WhatsApp line takes messages only (support law)", () => {
+    const { container } = render(<Footer />);
+    expect(screen.getByRole("link", { name: "+91 91875 46483" })).toHaveAttribute(
+      "href",
+      SUPPORT_WHATSAPP_HREF,
+    );
+    expect(container.textContent).toMatch(/messages only/);
+  });
+
+  it("never claims where Kheelu is made (manufacture has never been published)", () => {
+    const { container } = render(<Footer />);
+    expect(container.textContent).not.toMatch(/Made in/);
   });
 });

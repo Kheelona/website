@@ -1,5 +1,13 @@
 import Link from "next/link";
-import { FOOTER_LINKS, CONTACT_EMAIL } from "@/config/site";
+import {
+  FOOTER_LINKS,
+  CONTACT_EMAIL,
+  LEGAL_ENTITY,
+  GSTIN,
+  REGISTERED_ADDRESS_LINE,
+  SUPPORT_WHATSAPP_DISPLAY,
+  SUPPORT_WHATSAPP_HREF,
+} from "@/config/site";
 
 export function Footer() {
   return (
@@ -34,6 +42,26 @@ export function Footer() {
             California" works because it is a fact stated plainly — this is
             ours, and it is the answer to "who is behind this toy". */}
         <p className="mt-2 text-white/70">Designed by parents in Bengaluru.</p>
+        {/* The seller of record on every marketing page (CMO merge,
+            2026-10-04, from the mockup's footer). Same constants the store
+            footer, /contact and the receipts print, so they cannot drift. The
+            mockup's "Made in Bengaluru." was NOT carried: where Kheelu is
+            manufactured has never been claimed (lib/product-facts.ts). */}
+        <p className="mt-5 max-w-[80ch] text-white/70">
+          {LEGAL_ENTITY}, {REGISTERED_ADDRESS_LINE}. GSTIN {GSTIN}.
+        </p>
+        <p className="mt-2 text-white/70">
+          WhatsApp{" "}
+          <a
+            href={SUPPORT_WHATSAPP_HREF}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block rounded py-1 text-white/80 underline transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange"
+          >
+            {SUPPORT_WHATSAPP_DISPLAY}
+          </a>
+          , messages only.
+        </p>
         <div className="mt-5 flex flex-wrap justify-between gap-4 border-t border-white/15 pt-5 text-white/60">
           <span>
             For partners and investors:{" "}

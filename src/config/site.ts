@@ -20,36 +20,42 @@
  *  (§8.25-a), so the design system and the brand laws stay in one place. */
 export const STORE_URL = "https://store.kheelona.com";
 
-/** Where every "Pre-order Kheelu" button goes. One tap from anywhere on the site
+/** Where every reserve button goes. One tap from anywhere on the site
  *  to the page that takes the payment. */
 export const PREORDER_HREF = STORE_URL;
 
+/* The CMO merge (2026-10-04, docs/checkpoints/cmo-merge-2026-10.md): the
+   mockup's sales-first tabs on the URLs the site already ranks for. Every
+   indexed URL stays where it is (founder decision 1): "Our story" is the
+   label, /team is still the page. PlayOS moves to the footer, which reverses
+   R11/V4 D6 by the founder's approval of the merge plan; FAQ joins because a
+   parent deciding to pay asks it first, and Stories stays because the journal
+   is what ranks. Six tabs, still one line at the lg breakpoint. */
 export const NAV_LINKS = [
   { label: "Meet Kheelu", href: "/products/kheelu" },
-  // R11 (founder): the tab is the platform's name — the page and Home both
-  // say PlayOS, so the nav saying "How it works" read as a different place
-  { label: "PlayOS", href: "/playos" },
+  { label: "How it helps", href: "/how" },
   { label: "Safety", href: "/safety" },
   { label: "Stories", href: "/stories" },
-  { label: "Team", href: "/team" },
+  { label: "Our story", href: "/team" },
+  { label: "FAQ", href: "/faq" },
 ] as const;
 
 export const FOOTER_LINKS = [
   ...NAV_LINKS,
+  { label: "PlayOS", href: "/playos" },
   /* The buyer's guide (2026-09-11, §8.36-b). Footer rather than nav
-     deliberately: the nav stays five tabs (founder, R11), and this page's job
-     is to be found by an answer engine and by a parent already reading, not to
-     compete for a tab with the product itself. */
+     deliberately: this page's job is to be found by an answer engine and by a
+     parent already reading, not to compete for a tab with the product. */
   { label: "Choosing an AI toy", href: "/ai-toys-for-kids-in-india" },
   { label: "Contact", href: "/contact" },
-  { label: "Privacy", href: "/privacy" },
-  { label: "Terms", href: "/terms" },
+  { label: "Setup", href: "/setup" },
   /* Real pages since 2026-08-22. They were 301s to /terms while nothing could
      be refunded or shipped; money changes that, and Razorpay's own review
      looks for both by name. */
   { label: "Refunds", href: "/refund" },
   { label: "Shipping", href: "/shipping" },
-  { label: "Setup", href: "/setup" },
+  { label: "Privacy", href: "/privacy" },
+  { label: "Terms", href: "/terms" },
 ] as const;
 
 /* ── Money ──────────────────────────────────────────────────────────────── */
@@ -87,11 +93,20 @@ export const PREORDER_CAP_UNITS = 500;
 /** The offer term as prose, derived so copy can never drift from the gate. */
 export const CAP_UNITS_TEXT = `first ${PREORDER_CAP_UNITS} units`;
 
-/** The one CTA verb (R9 law), founder-chosen 2026-08-22. No number on the
- *  button: the amount is settled in the panel beside it, so this label never
- *  needs editing when a price moves, and it reads the same in a 15px navbar
- *  as it does in a hero. */
-export const PREORDER_LABEL = "Pre-order Kheelu";
+/** The one CTA verb (R9 law), now with the price IN it: the CMO merge
+ *  (2026-10-04) adopted the mockup's "₹499 today, nothing more until it ships"
+ *  argument, and "Reserve" is the word the store's own button and heading
+ *  already use, so the hand-off reads as one sentence. `PREORDER_LABEL` was
+ *  DELETED rather than re-valued, so a stale import fails the build.
+ *
+ *  ⚠ TOKEN MODE ONLY. Once PREORDER_CAP_UNITS are paid the store flips to
+ *  full mode (lib/store/mode.ts) and charges FULL_PRICE upfront, and both
+ *  labels become false. The store page reads the live mode and is always
+ *  right; these static labels are not. They are line one of the §8.26-g
+ *  sell-out sweep, the day /api/health first reports `preorder: "full"`. */
+export const RESERVE_LABEL = `Reserve Kheelu for ${TOKEN_PRICE}`;
+/** The navbar and the mobile reserve bar, where the long form does not fit. */
+export const RESERVE_SHORT_LABEL = `Reserve ${TOKEN_PRICE}`;
 
 /** The standard reassurance caption under a pre-order button. */
 export const PRICE_CAPTION = `${TOKEN_PRICE} now, ${BALANCE_PRICE} on dispatch. Fully refundable until we ship.`;

@@ -23,7 +23,7 @@ import { pageGraph, faqPage, breadcrumbs, KHEELU_PRODUCT, pageMeta, jsonLd } fro
 import { ParentQuotes } from "@/components/organisms/ParentQuotes";
 import {
   PREORDER_HREF,
-  PREORDER_LABEL,
+  RESERVE_LABEL,
   PRICE_CAPTION,
   LAUNCH_PRICE,
   FULL_PRICE,
@@ -164,7 +164,7 @@ export default function KheeluPage() {
               lede="A talking friend for ages 3+. No screen, ever. Kheelu listens, answers, then asks the next question."
               ledeClassName="mb-7 max-w-[58ch]"
             />
-            <Button href={PREORDER_HREF} track="product-top">{PREORDER_LABEL}</Button>
+            <Button href={PREORDER_HREF} track="product-top">{RESERVE_LABEL}</Button>
             <p className="mt-4 text-[15px] text-ink-muted">{PRICE_CAPTION}</p>
           </Reveal>
           <Reveal mode="rise">
@@ -190,7 +190,7 @@ export default function KheeluPage() {
           </div>
         </Room>
 
-        <Room fill="cool" id="how-it-works" guide="curious" say="Four steps, and every one of them careful." reveal="right">
+        <Room fill="cool" id="how-it-works" reveal="right">
           <Reveal>
             <SectionHeading
               title="From question to answer, in four steps."
@@ -228,7 +228,7 @@ export default function KheeluPage() {
             width column are unreadable, and with an empty library a two column
             grid would leave a hole where the audio used to be. Full width
             works in both states. */}
-        <Room fill="white" id="story-mode" guide="curious" say="The games here are secretly lessons." reveal="left">
+        <Room fill="white" id="story-mode" reveal="left">
           <Reveal>
             <SectionHeading
               eyebrow="Story mode"
@@ -248,7 +248,7 @@ export default function KheeluPage() {
 
         {/* Founder call 2026-07-28: move the comparison to what a parent
             actually pays for — school and tuition — framed as addition. */}
-        <Room fill="cool" id="pace" guide="bliss" say="I only ever have one child to keep up with." reveal="right">
+        <Room fill="cool" id="pace" reveal="right">
           <PacePanel />
         </Room>
 
@@ -285,11 +285,11 @@ export default function KheeluPage() {
         {/* Founder call 2026-07-28: the three real modes replace the old
             personality chips (Companion / Storyteller / Teacher). A parent
             deciding on a pre-order asks what it does, not what it is like. */}
-        <Room fill="cool" id="modes" guide="joy" say="Three modes. I do the talking in all of them." reveal="left">
+        <Room fill="cool" id="modes" reveal="left">
           <KheeluModes />
         </Room>
 
-        <Room fill="cream" id="parent-app" guide="bliss" say="You get to see everything. That's the deal." reveal="left">
+        <Room fill="cream" id="parent-app" reveal="left">
           <Reveal>
             <SectionHeading
               title="You see every conversation. You decide what Kheelu does next."
@@ -347,7 +347,7 @@ export default function KheeluPage() {
           <ParentQuotes bare count={2} eyebrow="From the pilot" title="The first families are already talking." />
         </Room>
 
-        <Room fill="sun" id="price" guide="joy" say="Told you she was worth it." reveal="pop">
+        <Room fill="sun" id="price" reveal="pop">
           <Reveal>
             <SectionHeading
               level="minor"
@@ -360,7 +360,7 @@ export default function KheeluPage() {
                 above is the pitch; this is the reference a parent checks
                 against the payment screen (agency audit D06). */}
             <PriceTable className="mb-8" />
-            <Button href={PREORDER_HREF} track="product-foot">{PREORDER_LABEL}</Button>
+            <Button href={PREORDER_HREF} track="product-foot">{RESERVE_LABEL}</Button>
           </Reveal>
         </Room>
 
@@ -389,8 +389,6 @@ export default function KheeluPage() {
         <Room
           fill="white"
           id="reserve"
-          guide="silly"
-          say="Save your spot. I'll mind Kheelu till launch."
           reveal="pop"
           className="overflow-x-clip"
         >

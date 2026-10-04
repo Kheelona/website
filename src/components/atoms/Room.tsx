@@ -1,5 +1,4 @@
 import { cn } from "@/lib/cn";
-import type { KheeluPose } from "@/lib/kheelu-poses";
 
 export type RoomFill = "white" | "cream" | "cool" | "sun";
 export type RoomReveal = "left" | "right" | "pop" | "none";
@@ -16,24 +15,19 @@ const FILLS: Record<RoomFill, string> = {
   sun: "bg-sun",
 };
 
-/** One room panel. `guide` + `say` feed the persistent KheeluGuide via
- *  data attributes (say lines are founder-gated copy); `reveal` opts into a
+/** One room panel. `reveal` opts into a
  *  directional entrance handled by RevealObserver + globals.css. Reveals are
  *  transform/opacity only and must stay on BELOW-FOLD rooms (never the room
  *  that owns the page's LCP). */
 export function Room({
   fill = "white",
   id,
-  guide,
-  say,
   reveal = "none",
   className,
   children,
 }: {
   fill?: RoomFill;
   id?: string;
-  guide?: KheeluPose;
-  say?: string;
   reveal?: RoomReveal;
   className?: string;
   children: React.ReactNode;
@@ -41,8 +35,6 @@ export function Room({
   return (
     <section
       id={id}
-      data-guide={guide}
-      data-say={say}
       data-reveal={reveal === "none" ? undefined : reveal}
       className={cn(
         "relative rounded-(--radius-room) p-[clamp(30px,4.6vw,60px)] shadow-(--shadow-room)",

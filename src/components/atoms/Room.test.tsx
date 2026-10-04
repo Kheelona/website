@@ -17,15 +17,14 @@ describe("Room", () => {
     expect(el.className).not.toContain("text-white");
   });
 
-  it("exposes guide pose and say line as data attributes for KheeluGuide", () => {
-    render(
-      <Room guide="curious" say="These folks vouch for us.">
-        copy
-      </Room>,
-    );
+  /* CMO merge (2026-10-04): the founder retired the Kheelu guide, and with
+     it the data attributes rooms used to feed it. Nothing reads them now, so
+     nothing may write them. */
+  it("no longer feeds a guide: no data-guide or data-say", () => {
+    render(<Room id="x">copy</Room>);
     const el = screen.getByText("copy").closest("section")!;
-    expect(el).toHaveAttribute("data-guide", "curious");
-    expect(el).toHaveAttribute("data-say", "These folks vouch for us.");
+    expect(el).not.toHaveAttribute("data-guide");
+    expect(el).not.toHaveAttribute("data-say");
   });
 
   it("opts into a directional reveal only when asked", () => {

@@ -2,15 +2,24 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { Menu } from "lucide-react";
-import { NAV_LINKS, PREORDER_HREF, PREORDER_LABEL } from "@/config/site";
+import { NAV_LINKS, PREORDER_HREF, RESERVE_LABEL, RESERVE_SHORT_LABEL } from "@/config/site";
 import { Button } from "@/components/atoms/Button";
 import { Sheet } from "@/components/molecules/Sheet";
 import { PRESS_TINT } from "@/lib/interactions";
 
+/** A tab is current on its own page and on anything under it (a journal
+ *  article keeps "Stories" marked). Home is never a tab, so "/" never matches. */
+function isCurrent(pathname: string | null, href: string) {
+  if (!pathname) return false;
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
     // Opaque on purpose: at 95% + blur the compare table's saturated orange
@@ -43,7 +52,8 @@ export function Navbar() {
                   padding is invisible); shared brand focus ring */}
               <Link
                 href={l.href}
-                className="inline-block rounded py-2.5 text-[16px] font-medium text-ink transition-colors hover:text-orange focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
+                aria-current={isCurrent(pathname, l.href) ? "page" : undefined}
+                className="inline-block rounded py-2.5 text-[16px] font-medium text-ink transition-colors hover:text-orange aria-[current=page]:font-bold aria-[current=page]:text-ink-head focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
               >
                 {l.label}
               </Link>
@@ -56,8 +66,10 @@ export function Navbar() {
               conflicts (R6, clsx+twMerge), but wrappers keep display
               responsibility out of shared components */}
           <div className="hidden sm:block">
+            {/* The short form: six tabs and the long label do not share a
+                72px bar at lg (CMO merge, 2026-10-04). */}
             <Button href={PREORDER_HREF} track="navbar" className="px-5 py-3 text-[15px]">
-              {PREORDER_LABEL}
+              {RESERVE_SHORT_LABEL}
             </Button>
           </div>
           <div className="lg:hidden">
@@ -80,6 +92,7 @@ export function Navbar() {
                   <li key={l.href}>
                     <Link
                       href={l.href}
+                      aria-current={isCurrent(pathname, l.href) ? "page" : undefined}
                       onClick={() => setOpen(false)}
                       className={`block rounded-xl px-3 py-3 text-[17px] font-medium text-ink hover:bg-cream ${PRESS_TINT}`}
                     >
@@ -89,7 +102,7 @@ export function Navbar() {
                 ))}
                 <li className="px-3 pb-2 pt-3">
                   <Button href={PREORDER_HREF} track="navbar-mobile" className="w-full">
-                    {PREORDER_LABEL}
+                    {RESERVE_LABEL}
                   </Button>
                 </li>
               </ul>

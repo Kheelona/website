@@ -13,18 +13,25 @@ import { Card } from "@/components/molecules/Card";
  * are real; the words are not yet. Do not add a fourth, and do not restore the
  * old anonymous "Parent of a 4-year-old" set: the founder retired every
  * pilot-count and anonymous-tester claim in V3 (no "ten families" anywhere). */
+/* Each card leads with a short headline (CMO merge, 2026-10-04: content doc
+   v7). The headlines restate the quote beneath them and claim nothing it
+   does not, so they inherit the quotes' placeholder status rather than adding
+   to it. */
 const QUOTES = [
   {
+    title: "She tells Kheelu about her day",
     text: "The first thing she does after school is tell Kheelu about her day. I listen from the kitchen and learn things she forgets to tell me.",
     who: "Shweta",
     meta: "Pilot parent",
   },
   {
+    title: "Rhymes across generations",
     text: "It sings the same rhymes my mother sang to me, and then it asks him questions about them. He answers before I can.",
     who: "Priyamvada",
     meta: "Pilot parent",
   },
   {
+    title: "Less screen time",
     text: "We wanted less screen time without a fight. This is the first thing that worked without one.",
     who: "Gaurav",
     meta: "Pilot parent",
@@ -62,6 +69,9 @@ export function ParentQuotes({
                 >
                   &ldquo;
                 </p>
+                <h3 className="mb-2 font-display text-[19px] font-extrabold leading-snug text-ink-head">
+                  {q.title}
+                </h3>
                 {/* The v3 editorial accent's first placement (CS3 Phase B,
                     founder decision #11): pull-quotes are exactly its job,
                     and human quotes are where serif lived before the 2026-07

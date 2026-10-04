@@ -1,7 +1,7 @@
 import { Button } from "@/components/atoms/Button";
 import { Reveal } from "@/components/molecules/Reveal";
 import { HeroStage } from "./HeroStage";
-import { PREORDER_HREF, PREORDER_LABEL, PREORDER_OFFER_LINES, KHEELU_AGES } from "@/config/site";
+import { PREORDER_HREF, RESERVE_LABEL, PREORDER_OFFER_LINES, KHEELU_AGES } from "@/config/site";
 import { HERO_PROMISE } from "@/lib/growth-arc";
 
 /** Revamp M2 hero (theme B + founder brief pointer 2): minimal copy on the
@@ -17,11 +17,7 @@ import { HERO_PROMISE } from "@/lib/growth-arc";
 export function Hero() {
   const [promiseNow, promiseLater] = HERO_PROMISE;
   return (
-    <section
-      data-guide="hero-wink"
-      data-say="Hi, I'm Kheelu. Come in, I'll show you around."
-      className="relative overflow-x-clip"
-    >
+    <section className="relative overflow-x-clip">
       <div className="mx-auto grid w-full max-w-[1180px] items-center gap-8 px-[clamp(20px,5vw,64px)] py-8 md:min-h-[560px] md:grid-cols-[1.02fr_0.98fr] md:py-10">
         <Reveal mode="rise" className="py-4 md:py-10">
           <span className="mb-5 inline-block rounded-full bg-orange/15 px-4 py-2 text-sm font-bold uppercase tracking-[0.08em] text-ink-head">
@@ -49,7 +45,7 @@ export function Hero() {
             numbers, and the languages you speak at home, at their pace.
           </p>
           <div className="flex flex-wrap items-center gap-3">
-            <Button href={PREORDER_HREF} track="hero">{PREORDER_LABEL}</Button>
+            <Button href={PREORDER_HREF} track="hero">{RESERVE_LABEL}</Button>
           </div>
           {/* V5-5: `bg-yellow/15` on the warm backdrop was nearly the same
               value as the page behind it, so the offer still did not read —

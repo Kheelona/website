@@ -18,7 +18,7 @@ import { GrowthArc } from "@/components/organisms/GrowthArc";
 import { VideoMoments } from "@/components/organisms/VideoMoments";
 import {
   PREORDER_HREF,
-  PREORDER_LABEL,
+  RESERVE_LABEL,
   PRICE_CAPTION,
   TOKEN_PRICE,
   BALANCE_PRICE,
@@ -159,7 +159,7 @@ export default function HomePage() {
       />
       <Hero />
       <RoomsTrack>
-        <Room fill="white" guide="curious" say="These folks vouch for us. Real ones." reveal="pop">
+        <Room fill="white" reveal="pop">
           <RecognitionStrip bare />
         </Room>
 
@@ -184,12 +184,10 @@ export default function HomePage() {
         <Room
           fill="cream"
           id="learning"
-          guide="joy"
           /* Founder-approved 2026-09-19. Omitted entirely in the empty state
              rather than replaced with an unapproved line: every mascot speech
              line is approved before it ships, and "press play" is false when
              there is nothing to press. */
-          say={hasVideoMoments() ? "Real homes, real kids. Press play." : undefined}
           reveal="left"
         >
           <Reveal>
@@ -244,7 +242,7 @@ export default function HomePage() {
           </Reveal>
           {/* the strongest fold carries the ask (Apple-tier rule) */}
           <Reveal className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
-            <Button href={PREORDER_HREF} track="home-arc">{PREORDER_LABEL}</Button>
+            <Button href={PREORDER_HREF} track="home-arc">{RESERVE_LABEL}</Button>
             <p className="text-[15px] text-ink-muted">{PRICE_CAPTION}</p>
           </Reveal>
         </Room>
@@ -253,8 +251,6 @@ export default function HomePage() {
             is. Serve-and-return survives as this room's closing science. */}
         <Room
           fill="white"
-          guide="curious"
-          say="Round and round we go. Cleverer every lap."
           reveal="right"
         >
           <Reveal>
@@ -293,8 +289,6 @@ export default function HomePage() {
         <Room
           fill="cream"
           id="growth"
-          guide="joy"
-          say="From first words to big ideas. I'm there."
           reveal="left"
         >
           <Reveal>
@@ -310,7 +304,7 @@ export default function HomePage() {
         </Room>
 
         {/* Fun (40%): the day a child actually has */}
-        <Room fill="sun" id="warm" guide="bliss" say="That was the careful part. Now the fun." reveal="pop">
+        <Room fill="sun" id="warm" reveal="pop">
           <Reveal>
             <SectionHeading
               title="Here is what a day with Kheelu feels like."
@@ -324,21 +318,19 @@ export default function HomePage() {
           <KheeluModes variant="strip" className="mt-12" />
         </Room>
 
-        <Room fill="cool" id="trust" guide="curious" say="This bit is for you, not the kids." reveal="right">
+        <Room fill="cool" id="trust" reveal="right">
           <TrustRoom />
         </Room>
 
         <Room
           fill="white"
           id="kheelu"
-          guide="joy"
-          say="The Speaker is my cousin. Better at maths."
           reveal="left"
         >
           <Family />
         </Room>
 
-        <Room fill="cool" guide="silly" say="Five feelings. I can act them all out." reveal="right">
+        <Room fill="cool" reveal="right">
           <Reveal>
             <SectionHeading
               eyebrow="Meet the feelings"
@@ -351,19 +343,19 @@ export default function HomePage() {
           <FeelingsGallery />
         </Room>
 
-        <Room fill="cream" id="parent-app" guide="bliss" say="You get to see everything. That's the deal." reveal="left">
+        <Room fill="cream" id="parent-app" reveal="left">
           <ParentAppSection bare />
         </Room>
 
-        <Room fill="white" guide="curious" say="We did the homework so you don't have to." reveal="right">
+        <Room fill="white" reveal="right">
           <Compare bare />
         </Room>
 
-        <Room fill="white" id="parent-voices" guide="joy" say="Real families, real words." reveal="left">
+        <Room fill="white" id="parent-voices" reveal="left">
           <ParentQuotes bare />
         </Room>
 
-        <Room fill="cream" id="questions" guide="bliss" say="Ask me anything. That's literally my job." reveal="left">
+        <Room fill="cream" id="questions" reveal="left">
           <Reveal>
             <SectionHeading
               title="Questions parents ask first."
@@ -377,7 +369,7 @@ export default function HomePage() {
           </Reveal>
         </Room>
 
-        <Room fill="sun" id="journal" guide="curious" reveal="right">
+        <Room fill="sun" id="journal" reveal="right">
           <Journal bare />
           {/* The page's small print, Apple-style: the two claims that invite a
               follow-up question get their answer here rather than nowhere. */}
@@ -387,8 +379,6 @@ export default function HomePage() {
         <Room
           fill="white"
           id="reserve"
-          guide="silly"
-          say="Save your spot. I'll mind Kheelu till launch."
           reveal="pop"
           className="overflow-x-clip"
         >

@@ -30,7 +30,7 @@ describe("Hero (V6, the growth-arc round)", () => {
   it("offers exactly ONE button, and the offer line rides under it (team items 7 and 10)", () => {
     render(<Hero />);
     expect(
-      screen.getByRole("link", { name: "Pre-order Kheelu" }),
+      screen.getByRole("link", { name: "Reserve Kheelu for ₹499" }),
     ).toHaveAttribute("href", STORE_URL);
     expect(screen.queryByRole("link", { name: "Meet Kheelu" })).toBeNull();
     /* Promoted, not buried: the chip carries the whole offer line and must be
@@ -58,10 +58,11 @@ describe("Hero (V6, the growth-arc round)", () => {
     }
   });
 
-  it("greets through the guide via data attributes", () => {
+  /* CMO merge (2026-10-04): the guide is retired; the hero greets no one. */
+  it("feeds no guide", () => {
     const { container } = render(<Hero />);
     const section = container.querySelector("section")!;
-    expect(section).toHaveAttribute("data-guide", "hero-wink");
-    expect(section.getAttribute("data-say")).toMatch(/Kheelu/);
+    expect(section).not.toHaveAttribute("data-guide");
+    expect(section).not.toHaveAttribute("data-say");
   });
 });

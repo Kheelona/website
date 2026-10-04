@@ -133,9 +133,8 @@ export default function TeamPage() {
       {/* Manifesto hero (kheelona.ai framing, parent voice). Copy-only: the
           four founder photos below are this page's picture. */}
       <PageHero
-        guide="silly"
+
         /* GATED:kheelu-line — founder sign-off before merge to master */
-        say="My people. They made me, then Kheelu."
       >
         <SectionHeading
           as="h1"
@@ -254,9 +253,7 @@ export default function TeamPage() {
         <Room
           fill="white"
           id="reserve"
-          guide="silly"
           /* GATED:kheelu-line */
-          say="Save your spot. I'll mind Kheelu till launch."
           reveal="pop"
           className="overflow-x-clip"
         >

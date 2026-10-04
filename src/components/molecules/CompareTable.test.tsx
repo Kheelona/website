@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { CompareTable } from "./CompareTable";
+import { COMPARISON_COLUMNS, COMPARISON_ROWS } from "@/lib/comparison";
 
 describe("CompareTable", () => {
   it("renders the comparison grid with the Kheelu column", () => {
@@ -76,5 +77,44 @@ describe("CompareTable", () => {
       container.querySelectorAll("tbody tr"),
     ).map((tr) => tr.querySelectorAll("td")[0]!.textContent);
     expect(cardValues).toEqual(tableValues);
+  });
+
+  /* CMO merge (2026-10-04): the product-type comparison renders through this
+     same component, from lib/comparison.ts. */
+  describe("with the product-type comparison", () => {
+    it("draws every column head and every claim from lib/comparison", () => {
+      render(<CompareTable columns={COMPARISON_COLUMNS} rows={COMPARISON_ROWS} />);
+      for (const col of COMPARISON_COLUMNS) {
+        expect(screen.getByRole("columnheader", { name: col })).toBeInTheDocument();
+      }
+      for (const row of COMPARISON_ROWS) {
+        expect(screen.getByRole("rowheader", { name: row.label })).toBeInTheDocument();
+      }
+    });
+
+    it("says no camera, which the founder confirmed on 2026-10-04", () => {
+      render(<CompareTable columns={COMPARISON_COLUMNS} rows={COMPARISON_ROWS} />);
+      expect(screen.getByRole("rowheader", { name: "Camera in your home" })).toBeInTheDocument();
+    });
+
+    it("never claims talking is free for life (not confirmed)", () => {
+      const { container } = render(
+        <CompareTable columns={COMPARISON_COLUMNS} rows={COMPARISON_ROWS} />,
+      );
+      expect(container.textContent).not.toMatch(/free for life/i);
+    });
+
+    it("keeps the two views in agreement with custom rows too", () => {
+      const { container } = render(
+        <CompareTable columns={COMPARISON_COLUMNS} rows={COMPARISON_ROWS} />,
+      );
+      const cardValues = Array.from(container.querySelectorAll("ul.sm\\:hidden li")).map(
+        (li) => li.querySelectorAll("dd")[0]!.textContent,
+      );
+      const tableValues = Array.from(container.querySelectorAll("tbody tr")).map(
+        (tr) => tr.querySelectorAll("td")[0]!.textContent,
+      );
+      expect(cardValues).toEqual(tableValues);
+    });
   });
 });

@@ -163,9 +163,7 @@ export default function AiToysGuidePage() {
 
       <PageHero
         ratio="md:grid-cols-[1.2fr_0.8fr]"
-        guide="curious"
         /* GATED:kheelu-line — founder sign-off before merge to master */
-        say="Ask the hard ones. We wrote this expecting them."
         media={
           <Image
             src={KHEELU_ART.src}

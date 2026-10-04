@@ -29,9 +29,14 @@ export function Faq({
   /** Shared across the list = exclusive open. One list per page today, so the
    *  default is fine; pass a distinct name if a page ever renders two. */
   name = "faq",
+  /** The first answer starts open (the default since V6). The /faq page
+   *  passes false: four groups of questions read better as a scannable list
+   *  than with four answers already spilled open (CMO merge, 2026-10-04). */
+  openFirst = true,
 }: {
   items: FaqEntry[];
   name?: string;
+  openFirst?: boolean;
 }) {
   return (
     <div className="divide-y divide-line overflow-hidden rounded-(--radius-card) bg-white">
@@ -39,7 +44,7 @@ export function Faq({
         <details
           key={item.q}
           name={name}
-          open={i === 0}
+          open={openFirst && i === 0}
           className="faq-disclosure group"
         >
           <summary

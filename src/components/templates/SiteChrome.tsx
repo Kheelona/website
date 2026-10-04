@@ -2,7 +2,7 @@ import { Navbar } from "@/components/organisms/Navbar";
 import { Footer } from "@/components/organisms/Footer";
 import { RevealObserver } from "@/components/molecules/RevealObserver";
 import { SiteBackdrop } from "@/components/atoms/SiteBackdrop";
-import { KheeluGuide } from "@/components/organisms/KheeluGuide";
+import { StickyReserveBar } from "@/components/organisms/StickyReserveBar";
 import { siteEntityGraph, jsonLd } from "@/lib/seo";
 
 /* The entity graph moved to lib/seo.ts in the V3 SEO pass: every marketing page
@@ -16,7 +16,7 @@ const ORG_JSON_LD = siteEntityGraph();
  *  Extracted from the root layout on 2026-08-22, when the store gave this app a
  *  SECOND kind of page. Before the extraction the store inherited all of it and
  *  the result was visibly wrong in one screenshot: two headers stacked, two
- *  footers, the guide floating over a payment form, and a navbar CTA pointing at
+ *  footers, the mascot guide floating over a payment form, and a navbar CTA pointing at
  *  `#reserve`, an anchor the store had no page for. A dead CTA on the one page
  *  that takes money.
  *
@@ -36,9 +36,10 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
       <Navbar />
       <main>{children}</main>
       <Footer />
-      {/* Revamp M1: the persistent narrator; its mobile dock ABSORBS the old
-          StickyMobileCTA (same hide-at-#reserve contract) */}
-      <KheeluGuide />
+      {/* CMO merge (2026-10-04): the founder retired the Kheelu guide; its
+          mobile dock's job passes to this bar, hide-at-#reserve contract and
+          all. The reveals and the backdrop stay. */}
+      <StickyReserveBar />
       <RevealObserver />
     </>
   );

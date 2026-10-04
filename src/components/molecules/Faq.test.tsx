@@ -50,4 +50,14 @@ describe("Faq", () => {
     render(<Faq items={items} />);
     expect(screen.queryAllByRole("button")).toHaveLength(0);
   });
+
+  it("can start fully closed, for the /faq page's grouped lists", () => {
+    const { container } = render(<Faq items={items} openFirst={false} />);
+    expect(container.querySelectorAll("details[open]")).toHaveLength(0);
+  });
+
+  it("opens the first answer by default", () => {
+    const { container } = render(<Faq items={items} />);
+    expect(container.querySelectorAll("details[open]")).toHaveLength(1);
+  });
 });

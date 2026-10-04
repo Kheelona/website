@@ -72,9 +72,8 @@ export default function StoriesPage() {
         dangerouslySetInnerHTML={{ __html: jsonLd(JOURNAL_JSON_LD) }}
       />
       <PageHero
-        guide="curious"
+
         /* GATED:kheelu-line — founder sign-off before merge to master */
-        say="Bedtime reading, but for you."
       >
         <SectionHeading
           as="h1"
@@ -161,9 +160,7 @@ export default function StoriesPage() {
         <Room
           fill="white"
           id="reserve"
-          guide="silly"
           /* GATED:kheelu-line */
-          say="Save your spot. I'll mind Kheelu till launch."
           reveal="pop"
           className="overflow-x-clip"
         >

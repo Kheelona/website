@@ -24,7 +24,7 @@ describe("Compare", () => {
   it("offers the pre-order CTA with the token-price caption", () => {
     render(<Compare />);
     expect(
-      screen.getByRole("link", { name: "Pre-order Kheelu" }),
+      screen.getByRole("link", { name: "Reserve Kheelu for ₹499" }),
     ).toHaveAttribute("href", STORE_URL);
     expect(
       screen.getByText(/₹499 now, ₹4,500 on dispatch\. Fully refundable until we ship\./i),

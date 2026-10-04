@@ -42,7 +42,6 @@ export default function NotFound() {
     <SiteChrome>
       <PageHero
         ratio="md:grid-cols-[1.1fr_0.9fr]"
-        guide="curious"
         media={
           <Image
             src={KHEELU_ART.src}
@@ -74,9 +73,7 @@ export default function NotFound() {
         <Room
           fill="white"
           id="reserve"
-          guide="silly"
           /* GATED:kheelu-line */
-          say="Save your spot. I'll mind Kheelu till launch."
           reveal="pop"
           className="overflow-x-clip"
         >

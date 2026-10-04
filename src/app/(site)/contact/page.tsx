@@ -10,7 +10,7 @@ import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { pageGraph, breadcrumbs, SITE_URL, pageMeta, jsonLd } from "@/lib/seo";
 import {
   PREORDER_HREF,
-  PREORDER_LABEL,
+  RESERVE_LABEL,
   CONTACT_EMAIL,
   SUPPORT_WHATSAPP_DISPLAY,
   SUPPORT_WHATSAPP_HREF,
@@ -42,7 +42,7 @@ const ROUTES = [
   {
     title: "Pre-ordering Kheelu",
     body: `A refundable ${TOKEN_PRICE} reserves one. We write to you on WhatsApp and by email about your own order, and nothing else.`,
-    cta: { label: PREORDER_LABEL, href: PREORDER_HREF },
+    cta: { label: RESERVE_LABEL, href: PREORDER_HREF },
   },
   {
     title: "About an order you have placed",
@@ -86,7 +86,7 @@ export default function ContactPage() {
         dangerouslySetInnerHTML={{ __html: jsonLd(CONTACT_JSON_LD) }}
       />
 
-      <PageHero guide="curious" say="Ask us anything. A person reads it.">
+      <PageHero >
         <div className="max-w-[760px]">
           <SectionHeading
             as="h1"
@@ -192,8 +192,6 @@ export default function ContactPage() {
         <Room
           fill="white"
           id="reserve"
-          guide="silly"
-          say="Save your spot. I'll mind Kheelu till launch."
           reveal="pop"
           className="overflow-x-clip"
         >
