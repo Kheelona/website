@@ -1,11 +1,16 @@
 import Image from "next/image";
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { TextLink } from "@/components/molecules/TextLink";
 import { Button } from "@/components/atoms/Button";
 import { Reveal } from "@/components/molecules/Reveal";
 import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { FOUNDERS } from "@/lib/team";
 import { SUPPORT_WHATSAPP_HREF } from "@/config/site";
+
+/** The co-founders only (founder, 2026-10-04: Ria comes off this strip). She
+ *  stays on /team, where her card is also the anchor for the eight journal
+ *  bylines that cite her; Home names the three people who founded the
+ *  company, which matches what llms.txt and Organization.founder say. */
+export const HOME_TEAM = FOUNDERS.filter((f) => f.role.startsWith("Co-founder"));
 
 /** "Made by parents in Bengaluru" (CMO merge, 2026-10-04): the founders on
  *  Home, because a parent is trusting these people near their child. Each
@@ -24,8 +29,8 @@ export function TeamStrip() {
           ledeClassName="mb-10 max-w-[58ch]"
         />
       </Reveal>
-      <ul className="grid grid-cols-2 gap-5 lg:grid-cols-4">
-        {FOUNDERS.map((f, i) => (
+      <ul className="grid grid-cols-2 gap-5 lg:grid-cols-3">
+        {HOME_TEAM.map((f, i) => (
           <Reveal as="li" key={f.id} delay={i * 0.05} className="flex flex-col gap-1.5">
             <Image
               src={f.photo}
@@ -44,13 +49,7 @@ export function TeamStrip() {
         <Button href={SUPPORT_WHATSAPP_HREF} variant="ghost">
           Ask us on WhatsApp
         </Button>
-        <Link
-          href="/team"
-          className="inline-flex items-center gap-1.5 rounded font-bold text-orange-ink underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
-        >
-          Our story
-          <ArrowRight className="h-4 w-4" aria-hidden="true" />
-        </Link>
+        <TextLink href="/team">Our story</TextLink>
       </Reveal>
     </>
   );

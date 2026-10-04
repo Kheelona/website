@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { TextLink } from "@/components/molecules/TextLink";
 import Link from "next/link";
 import { Room } from "@/components/atoms/Room";
 import { RoomsTrack } from "@/components/atoms/RoomsTrack";
@@ -305,13 +306,9 @@ export default function PlayOSPage() {
               answer={APP_ANSWER}
             />
           </Reveal>
-          <Reveal className="flex flex-wrap gap-3">
-            <Button href="/products/kheelu" variant="ghost">
-              Meet Kheelu, the first friend
-            </Button>
-            <Button href="/safety" variant="ghost">
-              Read how safety is built in
-            </Button>
+          <Reveal className="flex flex-wrap gap-x-8 gap-y-4">
+            <TextLink href="/products/kheelu">Meet Kheelu, the first friend</TextLink>
+            <TextLink href="/safety">Read how safety is built in</TextLink>
           </Reveal>
         </Room>
 

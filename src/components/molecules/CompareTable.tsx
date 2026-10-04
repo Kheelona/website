@@ -1,8 +1,12 @@
 /** The honest comparison table. Revamp M2 (founder brief pointer 6): same
- *  verdicts, parent words instead of technical ones, the growth row now carrying
- *  the V3 age arc (2 to 14 with the family),
- *  "Static toys" renamed for humans. The Kheelu column fills with the semantic
- *  action token (white 4.66:1); raw brand orange stays decorative-only.
+ *  verdicts, parent words instead of technical ones, "Static toys" renamed for
+ *  humans.
+ *
+ *  THE KHEELU COLUMN IS A TINT IN A FRAME, NOT A FILL (founder, 2026-10-04).
+ *  It used to be a solid orange column with white text, which read as very
+ *  colourful and was hard to read (2.88:1 on every cell). It is now the soft
+ *  orange tint the hero chip uses, framed by a brand-orange border, with ink
+ *  text: the column still owns the eye, and every cell reads at full contrast.
  *
  *  PLACE THIS ON WHITE OR CREAM ONLY (2026-09-11). The "No" cells are greyed
  *  with `text-ink-muted`, which measures 4.21:1 on the cool wash and 4.20:1 on
@@ -63,7 +67,14 @@ export function CompareTable({
             </p>
             <dl className="grid grid-cols-[1fr_auto] gap-x-4 gap-y-2 text-[15px]">
               {columns.map((col, i) => (
-                <div key={col} className="col-span-2 grid grid-cols-subgrid items-baseline">
+                <div
+                  key={col}
+                  className={
+                    i === 0
+                      ? "col-span-2 -mx-2 grid grid-cols-subgrid items-baseline rounded-lg border-2 border-orange bg-orange/15 px-2 py-1.5"
+                      : "col-span-2 grid grid-cols-subgrid items-baseline"
+                  }
+                >
                   <dt
                     className={
                       i === 0
@@ -76,7 +87,7 @@ export function CompareTable({
                   <dd
                     className={
                       i === 0
-                        ? "text-right font-bold text-orange-ink"
+                        ? "text-right font-bold text-ink-head"
                         : "text-right text-ink-head/85"
                     }
                   >
@@ -103,7 +114,7 @@ export function CompareTable({
                   scope="col"
                   className={
                     i === 0
-                      ? "rounded-t-(--radius-card) bg-action p-4 text-left font-display text-lg font-bold text-white"
+                      ? "rounded-t-(--radius-card) border-2 border-b-0 border-orange bg-orange/15 p-4 text-left font-display text-lg font-bold text-ink-head"
                       : "p-4 text-left font-display text-lg font-bold text-ink-head"
                   }
                 >
@@ -122,7 +133,7 @@ export function CompareTable({
                   {label}
                 </th>
                 <td
-                  className={`bg-action p-4 text-left font-bold text-white ${i === rows.length - 1 ? "rounded-b-(--radius-card)" : ""}`}
+                  className={`border-x-2 border-orange bg-orange/15 p-4 text-left font-bold text-ink-head ${i === rows.length - 1 ? "rounded-b-(--radius-card) border-b-2" : ""}`}
                 >
                   {kheelu}
                 </td>

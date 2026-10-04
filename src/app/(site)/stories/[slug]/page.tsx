@@ -135,7 +135,7 @@ export default async function StoryPage({
             title={story.title}
             titleClassName="mb-3"
           />
-          <p className="text-[13px] font-semibold uppercase tracking-wide text-orange-ink">
+          <p className="text-[13px] font-semibold uppercase tracking-wide text-ink-head">
             <span className="font-medium normal-case tracking-normal">
               By {story.author}
             </span>
@@ -191,7 +191,7 @@ export default async function StoryPage({
                 aria-label="Product age information"
                 className="mt-8 rounded-(--radius-card) border border-line bg-orange/15 p-5"
               >
-                <p className="mb-2 text-[13px] font-semibold uppercase tracking-wide text-orange-ink">
+                <p className="mb-2 text-[13px] font-semibold uppercase tracking-wide text-ink-head">
                   Before you pre-order
                 </p>
                 <p className="text-[16.5px] leading-[1.65]">{story.ageNote}</p>

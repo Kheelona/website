@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { TextLink } from "@/components/molecules/TextLink";
 import { Room } from "@/components/atoms/Room";
 import { RoomsTrack } from "@/components/atoms/RoomsTrack";
 import { Reveal } from "@/components/molecules/Reveal";
@@ -208,12 +209,7 @@ export default function HomePage() {
           <Reveal className="mx-auto max-w-[820px]">
             <Faq items={HOME_FAQ} />
             <p className="mt-6">
-              <Link
-                href="/faq"
-                className="rounded font-bold text-orange-ink underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
-              >
-                See all questions
-              </Link>
+              <TextLink href="/faq">See all questions</TextLink>
             </p>
           </Reveal>
         </Room>

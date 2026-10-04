@@ -310,3 +310,42 @@ phase, the handoff and 1542 / 132.
 
 **Next:** push the branch (PR #16 and its preview update), founder review, then `--no-ff` merge and
 the production checks of section D.
+
+## Review round 1 (founder feedback on the preview, 2026-10-04)
+
+Five edits from the founder; three design questions answered in one batch: **one orange with ink
+text**, **the hero's second line in bright orange** (a narrow, accepted display exception), and
+**quiet links plus an orange outline** for secondary actions.
+
+### Commit 11 — one orange, quieter buttons, a readable comparison, Ria off Home's strip
+
+- **Ria** leaves Home's team strip (`HOME_TEAM` = the three co-founders, three columns). She stays
+  on /team: her card is the anchor for the EIGHT journal bylines that cite her Person `@id`.
+- **One orange (§8.42-i).** `#b54a0d` (orange-ink) is gone from every marketing page; `#EF762F` is
+  the only orange there. Small text that was dark orange is now ink: Eyebrow's words (with a short
+  brand-orange bar in front, so the kicker keeps its colour), the kickers and labels in GrowthArc,
+  KheeluModes, ParentQuotes, ArchitectureStack, ChatDemo, PacePanel, /how, /team and the journal
+  pages. Decoration goes bright orange: StepList numerals, the product page's 03/04, icons in the
+  trust strip and safety cards, the hero ticks, the Kheelona+ "+", and the hero's second line.
+  The family chips use the soft `bg-orange/15` tint the hero chip uses. The FAQ row hover is a cream
+  tint instead of an orange text colour. **Not touched, deliberately:** the store, the pre-order
+  form and `Field`'s error messages still use orange-ink. They are inside the analytics freeze, and
+  form errors have to stay readable; they are a post-merge follow-up.
+- **The comparison's Kheelu column** is a soft orange tint inside a brand-orange frame with ink
+  text, no longer solid orange with white text (founder point 3). The phone stack frames Kheelu's
+  row the same way. The accepted white-on-orange count drops accordingly.
+- **Black buttons (founder point 4).** One new molecule, `TextLink` (ink text, orange arrow, orange
+  underline; story + test), now carries the secondary actions: "Read the research", "See how
+  safety works", "See all stories", "Our story", "See all questions", "See what the app shows you",
+  "Every way to reach us", the /safety parent-app link and /playos's two. `Button`'s ghost variant
+  is a thin brand-orange outline with an ink label, kept only where a button shape earns it
+  ("Watch a child meet Kheelu", the WhatsApp buttons, the 404's second action). The selected age tab
+  is the orange tint with an orange edge, not a black fill. The colourway picker's selected ring is
+  orange.
+- **The sweep gains one narrow acceptance (§8.42-i):** brand orange as BOLD text of at least 24px,
+  counted separately and printed. Body-size orange text still FAILS the sweep, which is now the
+  guard that keeps small orange text from coming back.
+
+Gate: `tsc` 0; `npm test` **1550 / 133**. From 1542: +4 (TextLink) +1 (TeamStrip: three
+co-founders, no Ria) +3 (`preorder-copy`, `preorder-cta`, `stories-parse` each walk the new
+TextLink files) = **1550**.

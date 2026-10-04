@@ -22,7 +22,7 @@ export function GrowthArc({
         {GROWTH_ARC.map((s, i) => (
           <Reveal key={s.kicker} delay={i * 0.08}>
             <Card className="border border-line">
-              <p className="mb-2 text-[13px] font-bold uppercase tracking-[0.08em] text-orange-ink">
+              <p className="mb-2 text-[13px] font-bold uppercase tracking-[0.08em] text-ink-head">
                 {s.kicker}
               </p>
               <h3 className="mb-2 font-display text-[22px] font-extrabold text-ink-head">

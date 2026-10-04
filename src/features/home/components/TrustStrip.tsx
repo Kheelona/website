@@ -4,7 +4,7 @@ import { SHIP_DATE_TEXT, SUPPORT_WHATSAPP_HREF } from "@/config/site";
 
 const CHIP =
   "flex min-h-11 items-center gap-2.5 text-[15px] font-semibold text-ink-head";
-const ICON = "h-[18px] w-[18px] shrink-0 text-orange-ink";
+const ICON = "h-[18px] w-[18px] shrink-0 text-orange";
 
 /** The mockup's trust strip (CMO merge, 2026-10-04): four things a parent
  *  wants settled before scrolling on, each already published elsewhere on the

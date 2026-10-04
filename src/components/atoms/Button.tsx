@@ -21,10 +21,14 @@ type Variant = "primary" | "ghost" | "onDark";
 const VARIANTS: Record<Variant, string> = {
   primary:
     "bg-action text-white shadow-cta hover:-translate-y-0.5 hover:shadow-[0_6px_10px_rgb(0_0_0/0.28)]",
-  // ghost is ink-on-transparent over a light wash, so §8.29 does not reach it;
-  // its inverted hover (ink fill, white label) is 15.7:1 and stays as it is
+  // ghost: the secondary BUTTON (founder, 2026-10-04). It was a heavy black
+  // outline used in eleven places, which made every room read as two buttons.
+  // Now a thin brand-orange outline with an ink label (the label is what must
+  // pass, and ink on any wash does), and a pale orange tint on hover. Most
+  // secondary actions became TextLinks; this stays for the few that need a
+  // button shape. One orange: #EF762F, never the dark orange-ink.
   ghost:
-    "bg-transparent text-ink-head border-2 border-ink-head hover:bg-ink-head hover:text-white",
+    "bg-transparent text-ink-head border-2 border-orange hover:bg-orange/10",
   // the same action fill reads correctly on the cocoa footer; the variant
   // survives for call sites that want a darker hover shadow on dark ground
   onDark:

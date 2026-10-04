@@ -23,14 +23,18 @@ describe("Button", () => {
     expect(link.className).not.toContain("border-white");
   });
 
-  it("ghost variant uses the outlined ink treatment, not the fill", () => {
+  /* Founder, 2026-10-04: the secondary button is a thin brand-orange outline
+     with an ink label, no longer a black outline. */
+  it("ghost variant is an orange outline with an ink label, not the fill", () => {
     render(
       <Button href="#" variant="ghost">
         Go
       </Button>,
     );
     const link = screen.getByRole("link");
-    expect(link.className).toContain("border-ink-head");
+    expect(link.className).toContain("border-orange");
+    expect(link.className).toContain("text-ink-head");
+    expect(link.className).not.toContain("border-ink-head");
     expect(link.className).not.toContain("bg-action");
   });
 

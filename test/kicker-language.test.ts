@@ -3,7 +3,11 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 /**
- * §8.24-7: every 12 to 13px uppercase tracked label renders in `orange-ink`.
+ * §8.24-7: every 12 to 13px uppercase tracked label renders in a colour that
+ * passes 4.5:1 on every wash. Since ONE ORANGE (founder, 2026-10-04, §8.42-i)
+ * that is `ink-head` on the marketing pages (the brand-orange bar in Eyebrow
+ * carries the accent) and still `orange-ink` on the store, which is frozen
+ * until after the CMO merge.
  * `ink-muted` is banned at that size, because it measures 4.37:1 on the `cool`
  * wash and 4.32:1 on `sun` against a 4.5:1 requirement.
  *

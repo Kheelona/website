@@ -62,7 +62,7 @@ export function PacePanel() {
                   one kicker language site-wide, so small uppercase labels are
                   orange-ink (the guarded orange that clears 4.5:1 on every
                   wash), not dark ink. */}
-              <p className="mb-5 text-[13px] font-bold uppercase tracking-[0.1em] text-orange-ink">
+              <p className="mb-5 flex items-center gap-2.5 text-[13px] font-bold uppercase tracking-[0.1em] text-ink-head before:h-[3px] before:w-5 before:shrink-0 before:rounded-full before:bg-orange before:content-['']">
                 {c.label}
               </p>
               {/* the seats: many small marks for a room, one large for a child.

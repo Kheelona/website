@@ -52,7 +52,7 @@ export function Hero() {
               rhythm and two-colour treatment the V6 hero established. */}
           <h1 className="mb-5 text-balance font-display text-[clamp(38px,4.8vw,60px)] font-extrabold leading-[1.06] text-ink-head">
             Screens make children watch.{" "}
-            <span className="block text-action-ink">Kheelu makes them think.</span>
+            <span className="block text-orange">Kheelu makes them think.</span>
           </h1>
           <p className="mb-7 max-w-[46ch] text-[clamp(17px,1.5vw,20px)] text-ink">{HERO_LEAD}</p>
           <div className="flex flex-wrap items-center gap-3">
@@ -81,7 +81,7 @@ export function Hero() {
                 key={t}
                 className="flex items-center gap-2 rounded-xl border border-line bg-white px-3 py-2.5 text-[15px] font-semibold text-ink-head"
               >
-                <Check className="h-4 w-4 shrink-0 text-orange-ink" aria-hidden="true" />
+                <Check className="h-4 w-4 shrink-0 text-orange" aria-hidden="true" />
                 {t}
               </li>
             ))}

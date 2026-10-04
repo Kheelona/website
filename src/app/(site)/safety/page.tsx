@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { TextLink } from "@/components/molecules/TextLink";
 import { Room } from "@/components/atoms/Room";
 import { RoomsTrack } from "@/components/atoms/RoomsTrack";
 import { SectionHeading } from "@/components/molecules/SectionHeading";
@@ -342,9 +343,7 @@ export default function SafetyPage() {
               ledeClassName="mb-6 max-w-[54ch]"
             />
             <CheckList items={PARENT_KEYS} className="mb-8 space-y-3" />
-            <Button href="/products/kheelu#parent-app" variant="ghost">
-              See the parent app on the Kheelu page
-            </Button>
+            <TextLink href="/products/kheelu#parent-app">See the parent app on the Kheelu page</TextLink>
           </Reveal>
         </Room>
 

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import { TextLink } from "@/components/molecules/TextLink";
 import { Room } from "@/components/atoms/Room";
 import { RoomsTrack } from "@/components/atoms/RoomsTrack";
 import { Button } from "@/components/atoms/Button";
@@ -147,7 +147,7 @@ export default function TeamPage() {
                               <LinkedInIcon />
                             </a>
                           </div>
-                          <p className="mt-1 text-[13px] font-bold uppercase tracking-[0.05em] text-orange-ink">
+                          <p className="mt-1 text-[13px] font-bold uppercase tracking-[0.05em] text-ink-head">
                             {f.role} <span className="font-semibold">· {f.tag}</span>
                           </p>
                           <p className="mt-3 max-w-[68ch] text-[16px] leading-relaxed">{f.bio}</p>
@@ -217,12 +217,7 @@ export default function TeamPage() {
               <Button href={SUPPORT_WHATSAPP_HREF} variant="ghost">
                 Message us on WhatsApp
               </Button>
-              <Link
-                href="/contact"
-                className="rounded font-bold text-orange-ink underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
-              >
-                Every way to reach us
-              </Link>
+              <TextLink href="/contact">Every way to reach us</TextLink>
             </div>
             <p className="mt-8 max-w-[52ch] text-[clamp(19px,1.8vw,23px)]">
               If you have read this far, you care the way we care. Save your

@@ -118,7 +118,7 @@ export default function HowPage() {
             {RESEARCH.map((r, i) => (
               <Reveal key={r.source} delay={i * 0.05}>
                 <Card className="h-full border border-line bg-white p-7" tilt={false}>
-                  <p className="mb-3 text-[13px] font-bold uppercase tracking-[0.08em] text-orange-ink">
+                  <p className="mb-3 text-[13px] font-bold uppercase tracking-[0.08em] text-ink-head">
                     {r.source}
                   </p>
                   <p className="mb-5 text-[16.5px] leading-relaxed text-ink-head">{r.body}</p>

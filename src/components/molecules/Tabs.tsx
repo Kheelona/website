@@ -65,15 +65,16 @@ export function Tabs({
             aria-controls={`${id}-panel-${i}`}
             tabIndex={i === active ? 0 : -1}
             onClick={() => setActive(i)}
-            /* min-h-11: the 44px touch target. The selected tab is an ink
-               fill with a white label (15.7:1); the others sit on white with
-               ink text, like the parent-app chips. */
+            /* min-h-11: the 44px touch target. The selected tab is the soft
+               orange tint the hero chip uses, with a brand-orange edge and an
+               ink label (founder, 2026-10-04: no black fills); the others sit
+               on white with ink text, like the parent-app chips. */
             className={cn(
-              "min-h-11 rounded-full border px-5 text-[16px] font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2",
+              "min-h-11 rounded-full border-2 px-5 text-[16px] font-semibold text-ink-head focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2",
               PRESS_TINT,
               i === active
-                ? "border-ink-head bg-ink-head text-white"
-                : "border-line bg-white text-ink-head hover:border-ink-head",
+                ? "border-orange bg-orange/15"
+                : "border-line bg-white hover:border-orange/60",
             )}
           >
             {t.label}

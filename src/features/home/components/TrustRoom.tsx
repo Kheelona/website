@@ -1,5 +1,5 @@
 import { ArrowRight, MessageSquareText, Mic, ShieldCheck, WifiOff } from "lucide-react";
-import { Button } from "@/components/atoms/Button";
+import { TextLink } from "@/components/molecules/TextLink";
 import { Reveal } from "@/components/molecules/Reveal";
 import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { Card } from "@/components/molecules/Card";
@@ -57,7 +57,7 @@ export function TrustRoom() {
         {SAFETY_POINTS.map(({ Icon, h, b }, i) => (
           <Reveal key={h} delay={i * 0.06}>
             <Card className="h-full border border-line bg-white p-7">
-              <span className="mb-4 grid h-11 w-11 place-items-center rounded-full bg-orange/15 text-orange-ink">
+              <span className="mb-4 grid h-11 w-11 place-items-center rounded-full bg-orange/15 text-orange">
                 <Icon className="h-5 w-5" aria-hidden="true" />
               </span>
               <h3 className="mb-2 font-display text-[22px] font-extrabold text-ink-head">{h}</h3>
@@ -89,9 +89,7 @@ export function TrustRoom() {
         </p>
       </Reveal>
       <Reveal className="mt-8">
-        <Button href="/safety" variant="ghost">
-          See how safety works
-        </Button>
+        <TextLink href="/safety">See how safety works</TextLink>
       </Reveal>
     </div>
   );

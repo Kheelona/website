@@ -1,4 +1,5 @@
 import { Button } from "@/components/atoms/Button";
+import { TextLink } from "@/components/molecules/TextLink";
 import { Reveal } from "@/components/molecules/Reveal";
 import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { StepList, type Step } from "@/components/molecules/StepList";
@@ -79,9 +80,7 @@ export function HowItWorks() {
             Why conversation?
           </h3>
           <p className="mb-6 max-w-[58ch] text-[16px]">{WHY_CONVERSATION}</p>
-          <Button href="/how" variant="ghost">
-            Read the research
-          </Button>
+          <TextLink href="/how">Read the research</TextLink>
         </Reveal>
       </div>
       <Reveal className="mt-12 border-t border-line pt-8">

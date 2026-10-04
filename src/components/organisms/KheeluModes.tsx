@@ -75,7 +75,7 @@ export function KheeluModes({
                 <p className="font-display text-[17px] font-extrabold text-ink-head">
                   {m.short}
                 </p>
-                <p className="mt-0.5 text-[13px] font-bold uppercase tracking-wide text-orange-ink">
+                <p className="mt-0.5 text-[13px] font-bold uppercase tracking-wide text-ink-head">
                   {m.mode}
                 </p>
               </li>
@@ -105,7 +105,7 @@ export function KheeluModes({
               title={m.heading}
               titleClassName="mb-1 font-display text-[22px] font-extrabold text-ink-head"
             >
-              <p className="mb-3 text-[13px] font-bold uppercase tracking-wide text-orange-ink">
+              <p className="mb-3 text-[13px] font-bold uppercase tracking-wide text-ink-head">
                 {m.mode}
               </p>
               <p className="text-[16px]">{m.body}</p>

@@ -1,10 +1,10 @@
 import Image from "next/image";
+import { TextLink } from "@/components/molecules/TextLink";
 import Link from "next/link";
 import { PRESS_LIFT } from "@/lib/interactions";
 import { Container } from "@/components/atoms/Container";
 import { Section } from "@/components/atoms/Section";
 import { SectionHeading } from "@/components/molecules/SectionHeading";
-import { Button } from "@/components/atoms/Button";
 import { Reveal } from "@/components/molecules/Reveal";
 import { getStory } from "@/lib/stories";
 
@@ -81,9 +81,7 @@ export function Journal({ bare = false }: { bare?: boolean }) {
           ))}
         </div>
       <Reveal>
-        <Button href="/stories" variant="ghost">
-          See all stories
-        </Button>
+        <TextLink href="/stories">See all stories</TextLink>
       </Reveal>
     </>
   );

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { TextLink } from "@/components/molecules/TextLink";
 import { Reveal } from "@/components/molecules/Reveal";
 import { PhoneFrame } from "@/components/molecules/PhoneFrame";
 import { Footnote } from "@/components/molecules/FootnotesRow";
@@ -108,13 +108,9 @@ export function TwoReasons() {
               width={220}
             />
           </div>
-          <Link
-            href="/products/kheelu#parent-app"
-            className="mt-auto inline-flex items-center gap-1.5 self-start rounded font-bold text-orange-ink underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
-          >
+          <TextLink href="/products/kheelu#parent-app" className="mt-auto self-start">
             See what the app shows you
-            <ArrowRight className="h-4 w-4" aria-hidden="true" />
-          </Link>
+          </TextLink>
         </article>
       </Reveal>
     </div>

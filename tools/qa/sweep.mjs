@@ -77,9 +77,20 @@ const FORBIDDEN = [
  *  on brand orange, 2.88:1. Lower-case, because that is how axe reports it. */
 const ACCEPTED_ACTION_FILL = "#ef762f";
 
+/** The second, narrower acceptance (founder, 2026-10-04, ONE ORANGE): brand
+ *  orange as DISPLAY text only, bold and at least 24px. That covers the hero's
+ *  "Kheelu makes them think.", the decorative step numerals and the "+" of the
+ *  Kheelona+ wordmark: 2.88:1 against the 3:1 large-text floor, a near miss the
+ *  founder took to keep one orange. Brand orange as body-size text is NOT
+ *  accepted and still fails the sweep, which is the guard that keeps small
+ *  orange text from creeping back now that the darker orange-ink is gone from
+ *  the marketing pages. */
+const DISPLAY_MIN_PX = 24;
+
 const axe = readFileSync(axeSourcePath(), "utf8");
 let failures = 0;
 let acceptedTotal = 0;
+let displayTotal = 0;
 
 for (const width of WIDTHS) {
   const { browser, page } = await openPage({ width, local: looksLocal(BASE) });
@@ -97,7 +108,7 @@ for (const width of WIDTHS) {
       }
 
       await page.evaluate(axe);
-      const { violations, accepted } = await page.evaluate(async (fill) => {
+      const { violations, accepted, display } = await page.evaluate(async (fill, minPx) => {
         const r = await window.axe.run(document, {
           runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"] },
         });
@@ -122,19 +133,32 @@ for (const width of WIDTHS) {
               check.data?.bgColor?.toLowerCase() === fill,
           );
 
+        /* axe reports fontSize as "45pt (60px)" and fontWeight as "bold". */
+        const isDisplayOrange = (node) =>
+          (node.any ?? []).some((check) => {
+            if (check.id !== "color-contrast") return false;
+            if (check.data?.fgColor?.toLowerCase() !== fill) return false;
+            const px = Number(/\(([\d.]+)px\)/.exec(check.data?.fontSize ?? "")?.[1] ?? 0);
+            return px >= minPx && /bold|[7-9]00/.test(String(check.data?.fontWeight ?? ""));
+          });
+
         const real = [];
         let acceptedCount = 0;
+        let displayCount = 0;
         for (const v of r.violations) {
           if (v.id !== "color-contrast") {
             real.push(`${v.id} (${v.nodes.length})`);
             continue;
           }
-          const unexpected = v.nodes.filter((n) => !isAcceptedNode(n));
-          acceptedCount += v.nodes.length - unexpected.length;
-          if (unexpected.length) real.push(`color-contrast (${unexpected.length})`);
+          const fills = v.nodes.filter((n) => isAcceptedNode(n));
+          const display = v.nodes.filter((n) => !isAcceptedNode(n) && isDisplayOrange(n));
+          const unexpected = v.nodes.length - fills.length - display.length;
+          acceptedCount += fills.length;
+          displayCount += display.length;
+          if (unexpected) real.push(`color-contrast (${unexpected})`);
         }
-        return { violations: real, accepted: acceptedCount };
-      }, ACCEPTED_ACTION_FILL);
+        return { violations: real, accepted: acceptedCount, display: displayCount };
+      }, ACCEPTED_ACTION_FILL, DISPLAY_MIN_PX);
 
       const text = await page.evaluate(() => document.body.innerText);
       const voice = FORBIDDEN.filter(([pattern]) => pattern.test(text)).map(([, why]) => why);
@@ -148,6 +172,10 @@ for (const width of WIDTHS) {
       if (accepted) {
         acceptedTotal += accepted;
         line += `  (accepted: ${accepted} white-on-orange, §8.29)`;
+      }
+      if (display) {
+        displayTotal += display;
+        line += `  (accepted: ${display} display orange, §8.42-i)`;
       }
     } catch (error) {
       failures += 1;
@@ -163,6 +191,12 @@ if (acceptedTotal) {
   console.log(
     `${acceptedTotal} accepted contrast violation(s): white on the orange action fill, ` +
       `2.88:1, founder decision 2026-08-24 (docs/website-steps.md §8.29). Not counted as failures.`,
+  );
+}
+if (displayTotal) {
+  console.log(
+    `${displayTotal} accepted contrast violation(s): brand orange as bold display text >= ${DISPLAY_MIN_PX}px, ` +
+      `2.88:1, founder decision 2026-10-04 (docs/website-steps.md §8.42-i). Not counted as failures.`,
   );
 }
 process.exit(failures ? 1 : 0);

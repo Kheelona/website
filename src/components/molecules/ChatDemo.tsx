@@ -48,7 +48,7 @@ export function ChatDemo({
           {/* V6: ink-muted was 4.37:1 on the cool bubble tint. Now orange-ink,
               the one kicker language for small uppercase labels (founder call
               at the handoff review). */}
-          <p className="mb-0.5 text-[12px] font-bold uppercase tracking-wider text-orange-ink">
+          <p className="mb-0.5 text-[12px] font-bold uppercase tracking-wider text-ink-head">
             {t.who === "child" ? "Your child" : "Kheelu"}
           </p>
           <p className="text-[16px] leading-snug text-ink">{t.text}</p>

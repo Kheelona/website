@@ -34,7 +34,7 @@ export function KheelonaPlusBand({
       )}
     >
       <p className="mb-4 shrink-0 font-display text-[26px] font-extrabold leading-[1.15] text-ink-head md:mb-0">
-        Kheelona<span className="text-orange-ink">+</span>
+        Kheelona<span className="text-orange">+</span>
         {footnote ? <Footnote n={footnote} id="fn-kheelona-plus" /> : null}
       </p>
       <div>
