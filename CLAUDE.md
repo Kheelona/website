@@ -40,13 +40,22 @@ describes `main`; on the branch, these supersede it:**
   `CompareTable` takes `columns`/`rows` (the branch's forked `ComparisonTable` folded in);
   `lib/{comparison,faq,team}.ts` are the content sources.
 
+- **Review round 1 (2026-10-04): ONE ORANGE (§8.42-i).** `#b54a0d` is gone from the marketing pages:
+  small text is ink (the Eyebrow keeps an orange bar), brand orange is fills, tints, icons, numerals
+  and the hero's second line (bold display orange is a printed, accepted exception; body-size
+  orange text FAILS the sweep). Secondary actions are `TextLink`; the ghost button is an orange
+  outline; no black fills. The comparison's Kheelu column is a framed tint. Ria is off Home's team
+  strip (she stays on /team for her bylines). Every page was made consistent with Home; store copy
+  and the root layout metadata wait until after the merge (frozen).
+
 **🔴 TWO TRAPS FROM THIS ROUND.** (1) **Port 3456 is held by a `next-server` started 2026-09-20**, a
 stale build; this round served on **3460** (`SWEEP_BASE`/`SWEEP_STORE`/`PROBE_*` take the port). A
 first set of screenshots came from the stale server before `lsof` gave it away. (2) **Full-page
 screenshots over ~16k px TILE** (Chrome repeats the first segments at 2x); capture scrolled
 viewport chunks at 1x instead.
 
-**Gate at the round's close:** 1403 → **1542 tests / 132 files** (every delta reconciled in the
+**Gate after review round 1:** **1552 tests / 133 files**, `qa:sweep` clean 40/40 with 86 white-on-orange
+and 48 display-orange accepted. **Gate at the round's close (before review):** 1403 → **1542 tests / 132 files** (every delta reconciled in the
 checkpoint), `tsc` 0, build passes, `qa:sweep` **clean 40/40** with **113** accepted (was 90, the
 increase reconciled), `qa:payment` **clean 10/10**, and the analytics probe under the real
 hostnames with its control.

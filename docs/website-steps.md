@@ -3463,3 +3463,31 @@ claims test and the same words in a comment did not; a comment appended to `fbq.
 pixel id tripped the freeze; a renamed `cta` tripped the tracking test; and the analytics probe was
 run once on a host in no list, where nothing fired. A guard that has never failed has never been
 tested (§8.38-i, §8.41-h).
+
+## §8.42-i · One orange (founder, 2026-10-04)
+
+The site had two oranges: brand `#EF762F` and `orange-ink #b54a0d`, a darker twin minted because
+brand orange as small text is 2.88:1 and fails AA. The founder dropped the second one. **On the
+marketing pages `#EF762F` is now the only orange, and it never sets body-size text:**
+
+| Was orange-ink | Is now |
+|---|---|
+| Kickers, eyebrows, small labels, mode labels, journal categories, links | **ink** (`text-ink-head`); the Eyebrow carries a short brand-orange bar in front |
+| Step numerals, icons, the Kheelona+ "+", the hero's second line | **brand orange** (`text-orange`) |
+| Tinted chips (family "Coming soon") | `bg-orange/15` with ink text, the hero chip's treatment |
+| The comparison's Kheelu column (was a solid orange fill, white text) | an orange tint in a 2px brand-orange frame, ink text |
+
+**The accepted cost, stated so nobody "fixes" it:** brand orange as BOLD text of at least 24px
+(the hero line, the numerals, the "+") is 2.88:1 against the 3:1 large-text floor. The founder took
+that near miss to keep one orange. `qa:sweep` counts it separately ("display orange") and PRINTS
+it, exactly like §8.29's white-on-orange. **Brand orange as body-size text is not accepted and
+still fails the sweep**, which is the guard against small orange text creeping back.
+
+**The hierarchy of actions that came with it:** the solid orange `Button` is the one action that
+means money; the `ghost` variant is a thin brand-orange outline with an ink label, kept for the few
+secondary actions that need a button shape; everything else is `TextLink` (ink text, orange arrow,
+orange underline). No black fills: the selected tab is the orange tint.
+
+**Out of scope until after the merge:** the store, the pre-order form and `Field`'s error messages
+still use orange-ink. They are inside the analytics freeze, and a form error must stay readable;
+moving them is its own decision (Technical-Todo).
