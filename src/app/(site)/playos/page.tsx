@@ -14,12 +14,12 @@ import { ArchitectureStack, type ArchLayer } from "@/components/organisms/Archit
 import { RecognitionStrip } from "@/components/organisms/RecognitionStrip";
 import { pageGraph, faqPage, breadcrumbs, pageMeta, jsonLd } from "@/lib/seo";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
-import { KHEELU_AGES } from "@/config/site";
+import { KHEELU_AGES, KHEELU_LANGUAGES } from "@/config/site";
 
 export const metadata = pageMeta({
   title: "PlayOS: one platform for childhood, ages 3+",
   description:
-    "The platform under every Kheelona friend: a child-only voice brain, safety on both doors, up to 10 home languages, and one memory that travels from age 3.",
+    "The platform under every Kheelona friend: a child-only voice brain, safety on both doors, 8 languages today and up to 10 at launch, and memory from age 3.",
   path: "/playos",
 });
 
@@ -107,7 +107,7 @@ const ARCH_BELOW: readonly ArchLayer[] = [
   {
     id: "compute",
     name: "Physical compute",
-    blurb: "The brain on the toy itself, so answers come fast and work offline.",
+    blurb: "The brain on the toy itself, so answers come back fast. Story-mode stories and lessons play offline.",
     chips: [
       "ESP32 MCU",
       "Microphone array",
@@ -149,7 +149,7 @@ const MOAT = [
   },
   {
     title: "Own the languages",
-    body: "Up to 10 home languages, built for India first. A child who can wonder in their own words wonders more.",
+    body: `${KHEELU_LANGUAGES.length} languages today, up to 10 at launch, built for India first. A child who can wonder in their own words wonders more.`,
   },
   {
     title: "Own the years",
@@ -262,7 +262,7 @@ export default function PlayOSPage() {
                 href="/team"
                 className="rounded font-semibold text-ink-head underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
               >
-                Meet the team
+                Read our story
               </Link>
             </p>
           </Reveal>

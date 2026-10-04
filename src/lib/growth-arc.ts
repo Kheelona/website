@@ -1,14 +1,7 @@
-/** The outcome promise, in its two halves (the hero renders them as two
- *  coloured lines, PacePanel joins them into one sentence). ONE source since
- *  the 2026-08-23 repositioning: the V6 law that the promise is said
- *  identically on both pages is now enforced by construction rather than by
- *  two files agreeing. Founder decision #8 (migration-to-new-dsx.md): the
- *  site says "3+" everywhere, so the promise anchors at 3 and points at
- *  school instead of naming a ceiling. */
-export const HERO_PROMISE: readonly [string, string] = [
-  "A best friend at 3.",
-  "A head start for school.",
-];
+/* HERO_PROMISE ("A best friend at 3. A head start for school.") was DELETED
+   on 2026-10-04 (CMO merge): Home's hero now leads with "Screens make children
+   watch. Kheelu makes them think.", and PacePanel closes on GROWTH_CLOSING.
+   Deleted rather than kept unused, so a stale import fails the build. */
 
 export type GrowthStage = {
   /** "At 3 years" … "Every year after" — the year marker, rendered as the

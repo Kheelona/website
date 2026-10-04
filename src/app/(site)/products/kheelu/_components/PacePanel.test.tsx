@@ -25,18 +25,20 @@ describe("PacePanel", () => {
     ).toBeInTheDocument();
   });
 
-  it("extends the pace argument to years and closes on the hero promise verbatim (V6 D5)", () => {
+  it("extends the pace argument to years and closes on Home's line verbatim (V6 D5, CMO merge)", () => {
     render(<PacePanel />);
     expect(
       screen.getByText(
         /The memory that picks up where your child stopped tomorrow keeps picking up for years\. First questions at 3 become stories, numbers, and bigger questions, one day at a time\./,
       ),
     ).toBeInTheDocument();
-    /* Rendered from HERO_PROMISE — the same source the hero renders, so the
-       verbatim law holds by construction now. */
+    /* Rendered from GROWTH_CLOSING, the same source Home's how-it-works room
+       ends on, so the two pages say it identically by construction. The old
+       hero promise is retired with the CMO merge. */
     expect(
-      screen.getByText("A best friend at 3. A head start for school."),
+      screen.getByText("A best friend the whole way. A tutor whenever they need one."),
     ).toBeInTheDocument();
+    expect(screen.queryByText(/A head start for school/)).toBeNull();
   });
 
   it("draws the seats with decorative brand shapes, not a stock classroom photo", () => {

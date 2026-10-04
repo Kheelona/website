@@ -44,7 +44,7 @@ export const FAQ_GROUPS: readonly FaqGroup[] = [
       },
       {
         q: "What will my child actually get out of Kheelu?",
-        a: "A friend at 3, and a head start for school. Kheelu answers your child's questions, remembers the words they know, and builds on them the next day: stories, numbers, thinking games, and the languages you speak at home. The parent app counts the new words, so you see the growth, not just the play.",
+        a: "More of the back-and-forth conversation that helps a young brain grow. Kheelu answers your child's questions, asks one back, and remembers the words they know, so each day picks up where the last one stopped: stories, numbers, thinking games, and the languages you speak at home. The parent app counts the new words for you.",
       },
       {
         q: "Will my child get too attached?",
@@ -90,7 +90,7 @@ export const FAQ_GROUPS: readonly FaqGroup[] = [
       },
       {
         q: `Can I get my ${TOKEN_PRICE} back?`,
-        a: "Yes. Everything you pay to pre-order Kheelu is fully refundable until your Kheelu is dispatched. It usually reaches you in 5 to 7 working days once we start the refund.",
+        a: "Yes, in full, any time before we dispatch your Kheelu, and the same goes for anything else you have paid. It usually reaches you in 5 to 7 working days once we start the refund.",
       },
       {
         q: "What if it breaks?",

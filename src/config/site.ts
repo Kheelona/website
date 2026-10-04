@@ -176,7 +176,7 @@ export const LANGUAGES_LINE = `${KHEELU_LANGUAGES.slice(0, -1).join(", ")}, and 
  *  with the token, which is the easy number to pass along, and carries the
  *  unit-cap urgency (2026-08-23: the date deadline is gone). */
 export const WHATSAPP_SHARE_HREF = `https://wa.me/?text=${encodeURIComponent(
-  `A screen-free talking friend that teaches, for ages ${KHEELU_AGES}. Rs ${TOKEN_AMOUNT_PAISE / 100} reserves one of the ${CAP_UNITS_TEXT} at Rs ${LAUNCH_AMOUNT_PAISE / 100}, fully refundable: ${STORE_URL}`,
+  `Screens make children watch. Kheelu makes them think. A screen-free AI toy for ages ${KHEELU_AGES}. Rs ${TOKEN_AMOUNT_PAISE / 100} reserves one of the ${CAP_UNITS_TEXT} at Rs ${LAUNCH_AMOUNT_PAISE / 100}, fully refundable: ${STORE_URL}`,
 )}`;
 export const WHATSAPP_SHARE_LABEL = "Know a parent who needs this? Share Kheelu on WhatsApp";
 

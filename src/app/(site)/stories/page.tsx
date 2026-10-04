@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { KHEELU_ART } from "@/lib/kheelu-art";
 import Link from "next/link";
 import { Room } from "@/components/atoms/Room";
 import { RoomsTrack } from "@/components/atoms/RoomsTrack";
@@ -130,13 +131,17 @@ export default function StoriesPage() {
                       </div>
                     ) : (
                       <div className={`flex aspect-[16/9] w-full items-end justify-center overflow-hidden ${s.tint}`}>
+                        {/* The product, not the mascot drawing (CMO merge,
+                            2026-10-04): the guide that drawing belonged to is
+                            retired, and beside "the Kheelu page" a fox in a
+                            Kheelona tee read as if it were Kheelu. */}
                         <Image
-                          src={`/mascot/mascot-${s.pose}.png`}
+                          src={KHEELU_ART.src}
                           alt=""
-                          width={120}
-                          height={160}
-                          sizes="130px"
-                          className="h-[120px] w-auto translate-y-1"
+                          width={KHEELU_ART.width}
+                          height={KHEELU_ART.height}
+                          sizes="110px"
+                          className="h-[120px] w-auto translate-y-2"
                         />
                       </div>
                     )}

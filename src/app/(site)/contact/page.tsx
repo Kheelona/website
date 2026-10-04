@@ -23,7 +23,7 @@ import {
 export const metadata = pageMeta({
   title: "Contact: how to reach the team behind Kheelu",
   description:
-    "How to reach Kheelona about a Kheelu pre-order, a partnership, or a safety question. We are a small team in Bengaluru and we answer our own messages.",
+    "How to reach Kheelona about reserving Kheelu, a partnership, or a safety question. We are a small team in Bengaluru, and a real person answers.",
   path: "/contact",
 });
 
@@ -40,7 +40,7 @@ export const metadata = pageMeta({
 
 const ROUTES = [
   {
-    title: "Pre-ordering Kheelu",
+    title: "Reserving Kheelu",
     body: `A refundable ${TOKEN_PRICE} reserves one. We write to you on WhatsApp and by email about your own order, and nothing else.`,
     cta: { label: RESERVE_LABEL, href: PREORDER_HREF },
   },
@@ -149,7 +149,7 @@ export default function ContactPage() {
               level="minor"
               title="Where we are."
               titleClassName="mb-3"
-              lede="The toy is designed and built here, by parents who use it at home. This is also the company you are buying from, in full."
+              lede="Kheelu is designed here, by parents who use it at home. This is also the company you are buying from, in full."
               ledeClassName="max-w-[54ch]"
             />
             {/* The seller of record, published 2026-08-22 when the store began

@@ -12,7 +12,11 @@ import { SUPPORT_WHATSAPP_HREF } from "@/config/site";
  *  company, which matches what llms.txt and Organization.founder say. */
 export const HOME_TEAM = FOUNDERS.filter((f) => f.role.startsWith("Co-founder"));
 
-/** "Made by parents in Bengaluru" (CMO merge, 2026-10-04): the founders on
+/** "Designed by parents in Bengaluru" (CMO merge, 2026-10-04): the founders on
+ *  Home. The mockup said "Made by parents in Bengaluru"; "made ... in
+ *  Bengaluru" reads as where the toy is manufactured, which the site has never
+ *  claimed, so the heading matches the footer's "Designed by" (consistency
+ *  pass, 2026-10-04). It shows the founders on
  *  Home, because a parent is trusting these people near their child. Each
  *  one-liner is the `short` field of `lib/team.ts`, condensed from the bio
  *  /team already publishes and claiming nothing it does not. The full story
@@ -23,7 +27,7 @@ export function TeamStrip() {
       <Reveal>
         <SectionHeading
           eyebrow="Who we are"
-          title="Made by parents in Bengaluru."
+          title="Designed by parents in Bengaluru."
           titleClassName="mb-3"
           lede="You are trusting us near your child, so here is who we are."
           ledeClassName="mb-10 max-w-[58ch]"

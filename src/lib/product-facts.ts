@@ -67,14 +67,17 @@ export const KHEELU_FACTS: readonly ProductFact[] = [
   { name: "Screen", value: "None. There is no screen on the toy and none in the play." },
   {
     name: "Languages",
-    value: `${KHEELU_LANGUAGES.length} at launch (${LANGUAGES_LINE}), up to 10. Switches mid-sentence.`,
+    value: `${KHEELU_LANGUAGES.length} named today (${LANGUAGES_LINE}), up to 10 at launch. Switches mid-sentence.`,
   },
   { name: "Modes", value: "Three: AI mode for open conversation, Story mode for stories and lessons, Bluetooth mode as a speaker." },
   /* Swept 2026-10-04 (content doc v7 Appendix B): a toy that wakes to a
      word has to listen for it, so "off, not muted" was never accurate. The
      new value is published on Home and /safety. */
   { name: "Microphone", value: "Listens only for its wake word. Nothing is recorded or sent before it." },
-  { name: "Internet access", value: "None. Answers come from a closed library. Kheelu cannot browse or search." },
+  /* Renamed 2026-10-04 (consistency with Home): "Internet access: None"
+     contradicted AI mode, which runs on home WiFi. What Kheelu cannot do is
+     reach the OPEN internet; it connects only to Kheelona's own servers. */
+  { name: "Open internet", value: "No. Kheelu cannot browse or search. It connects only to our own servers, and answers come from a closed library." },
   {
     name: "Works offline",
     value: "Story-mode stories and lessons, and Bluetooth music with a paired phone. AI mode needs home WiFi.",

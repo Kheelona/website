@@ -1,7 +1,7 @@
 import { Reveal } from "@/components/molecules/Reveal";
 import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { Shape } from "@/components/atoms/Shapes";
-import { HERO_PROMISE } from "@/lib/growth-arc";
+import { GROWTH_CLOSING } from "@/lib/growth-arc";
 
 /** "School teaches the class. Kheelu teaches one child." (founder call,
  *  2026-07-28.)
@@ -94,9 +94,10 @@ export function PacePanel() {
           Every answer. Every day. At exactly the pace they set.
         </p>
       </Reveal>
-      {/* V6 D5: the pace argument extended from days to years, closing on the
-          hero promise verbatim — one promise, said identically on both pages,
-          rendered from the same HERO_PROMISE source since the 3+ re-anchor. */}
+      {/* V6 D5: the pace argument extended from days to years. It closed on
+          the old hero promise until the CMO merge; Home no longer says it, so
+          since 2026-10-04 it closes on GROWTH_CLOSING, the line Home's
+          how-it-works room ends on, word for word from one source. */}
       <Reveal className="mt-10">
         <p className="max-w-[58ch] text-[16px] text-ink">
           The memory that picks up where your child stopped tomorrow keeps
@@ -104,7 +105,7 @@ export function PacePanel() {
           and bigger questions, one day at a time.
         </p>
         <p className="mt-4 font-display text-[19px] font-bold text-ink-head">
-          {HERO_PROMISE.join(" ")}
+          {GROWTH_CLOSING}
         </p>
       </Reveal>
     </div>

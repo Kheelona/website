@@ -32,7 +32,7 @@ export const KHEELU_MODES = [
     heading: "Talk about anything.",
     /* V6 D4d: the closing WiFi sentence mirrors Story mode's "It works
        offline." — the contrast is legible at a glance (founder-licensed). */
-    body: "Your child asks why the sky is blue, and Kheelu answers in words they already own, then asks one back. This is the mode they will use most, and the one that grows their vocabulary without anyone calling it a lesson. It runs on your home WiFi.",
+    body: "Your child asks why the sky is blue, and Kheelu answers in words they already own, then asks one back. This is the mode they will use most: more of the back-and-forth conversation that helps language grow, without anyone calling it a lesson. It runs on your home WiFi.",
     short: "Talk about anything",
   },
   {

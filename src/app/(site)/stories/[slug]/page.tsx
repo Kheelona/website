@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { KHEELU_ART } from "@/lib/kheelu-art";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Room } from "@/components/atoms/Room";
@@ -192,7 +193,7 @@ export default async function StoryPage({
                 className="mt-8 rounded-(--radius-card) border border-line bg-orange/15 p-5"
               >
                 <p className="mb-2 text-[13px] font-semibold uppercase tracking-wide text-ink-head">
-                  Before you pre-order
+                  Before you reserve
                 </p>
                 <p className="text-[16.5px] leading-[1.65]">{story.ageNote}</p>
                 <Link
@@ -205,12 +206,14 @@ export default async function StoryPage({
             )}
 
             <div className="mt-10 flex items-center gap-5 rounded-(--radius-card) bg-cream p-6">
+              {/* The product, not the retired mascot drawing (CMO merge,
+                  2026-10-04): it sits beside "the Kheelu page" link. */}
               <Image
-                src={`/mascot/mascot-${story.pose}.png`}
+                src={KHEELU_ART.src}
                 alt=""
-                width={90}
-                height={120}
-                sizes="90px"
+                width={KHEELU_ART.width}
+                height={KHEELU_ART.height}
+                sizes="80px"
                 className="h-[86px] w-auto"
               />
               {/* /safety joined this block on 2026-09-05. Two reasons, and the
@@ -230,7 +233,7 @@ export default async function StoryPage({
                 <Link href="/safety" className="font-semibold text-ink-head underline">
                   Safety page
                 </Link>
-                , or meet the friend behind it on the{" "}
+                , or meet Kheelu itself on the{" "}
                 <Link href="/products/kheelu" className="font-semibold text-ink-head underline">
                   Kheelu page
                 </Link>

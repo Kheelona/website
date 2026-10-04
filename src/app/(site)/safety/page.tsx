@@ -41,9 +41,13 @@ export const metadata = pageMeta({
    wording, and test/claims-gated.test.ts keeps it retired. */
 const WORD_RULES = [
   { title: "It listens only for its wake word.", body: "Until your child says the wake word, nothing is recorded and nothing is sent. Kheelu starts talking only when it is invited to." },
-  { title: "Filters live on the device.", body: "The first safety checks happen on the toy itself, before anything travels anywhere." },
-  { title: "Answers are checked for age.", body: "Replies pass through a safety layer tuned to your child's age before Kheelu speaks. On-device and cloud filters work together." },
-  { title: "It cannot go on the internet.", body: "Kheelu cannot browse, search, or stumble. No random videos, no endless detours, no strangers. Ever." },
+  { title: "It cannot browse the internet.", body: "Kheelu cannot browse, search, or stumble. It connects only to our own servers. No random videos, no endless detours, no strangers. Ever." },
+  { title: "Answers are checked for age.", body: "Replies pass through a safety layer tuned to your child's age before Kheelu speaks. On-device and cloud filters work together, and the first checks happen on the toy itself." },
+  /* Founder-confirmed 2026-10-04, and one of Home's four safety facts, so the
+     page that goes deeper says it too (consistency pass). It replaced "Filters
+     live on the device", which the voice path below and the age rule above
+     both already say. */
+  { title: "It says it is a toy.", body: "Kheelu tells your child it is a toy, and it never asks them to keep a secret from you." },
 ] as const;
 
 /* Where the voice goes, in three stops (the mockup's path). Founder-confirmed
@@ -51,7 +55,7 @@ const WORD_RULES = [
 const VOICE_PATH = [
   { title: "On the toy", body: "Kheelu hears the wake word, and the first safety checks happen on the toy itself, before anything travels anywhere." },
   { title: "Our own servers, in India", body: "Open conversation uses your home WiFi and Kheelona's own servers in India. Nothing goes to another country to be processed." },
-  { title: "Back to you", body: "The conversation appears in your app, word for word. It is never sold, and never used to sell your child anything." },
+  { title: "Your app", body: "The conversation appears in your app, word for word. It is never sold, and never used to sell your child anything." },
 ] as const;
 
 const VOICE_RULES = [
@@ -189,7 +193,7 @@ export default function SafetyPage() {
           eyebrow="Safety"
           title="How we keep Kheelu safe."
           titleClassName="mb-5 max-w-[16ch]"
-          lede="You are trusting a friend near your child. This page lists what Kheelu does, what it does not do, and what we are still working on, in plain words."
+          lede="You are trusting Kheelu near your child. This page lists what Kheelu does, what it does not do, and what we are still working on, in plain words."
           ledeClassName="max-w-[58ch]"
         />
       </PageHero>

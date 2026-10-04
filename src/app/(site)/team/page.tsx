@@ -14,7 +14,7 @@ import { RecognitionStrip } from "@/components/organisms/RecognitionStrip";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { pageGraph, breadcrumbs, pageMeta, jsonLd } from "@/lib/seo";
 import { FOUNDERS, BELIEFS } from "@/lib/team";
-import { SUPPORT_WHATSAPP_HREF } from "@/config/site";
+import { SUPPORT_WHATSAPP_HREF, TOKEN_PRICE } from "@/config/site";
 
 export const metadata = pageMeta({
   /* CMO merge (2026-10-04): the mockup's "Our story" label, which is now
@@ -43,7 +43,7 @@ const CARD_TINT: Record<string, { tint: string; border: string; quoteBorder: str
 const PROMISES = [
   "You can read every conversation your child has with Kheelu.",
   "We never sell your child's data.",
-  "Your token comes back in full, any time before we ship.",
+  `Your ${TOKEN_PRICE} comes back in full, any time before we ship.`,
 ] as const;
 
 /* LinkedIn glyph from the kheelona.ai team page (lucide dropped brand
@@ -91,7 +91,7 @@ export default function TeamPage() {
         <p className="max-w-[58ch] text-[17px] text-ink-muted">
           We are parents who build. We watched our own children reach for
           screens and felt the same knot you feel. Between the four of us we
-          cover the four things a safe talking toy actually needs: a brain, a
+          cover the four things a safe AI toy actually needs: a brain, a
           body, a business, and a voice. And education runs in the family: the
           first school Apoorva attended was the one his family runs, and he has
           been enrolling friends into classrooms since he was a teenager.

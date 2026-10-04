@@ -37,9 +37,8 @@ export const HERO_LEAD =
  *    the mockup's small price caption alone would have buried it again.
  *  - HeroStage, unchanged. The priority plush image stays the hero's LARGEST
  *    element and owns the mobile LCP (two live regressions taught this).
- *  The outcome promise HERO_PROMISE leaves the hero; PacePanel still renders
- *  it on the Kheelu page, and the growth-arc closing line keeps the tutor
- *  idea on Home. */
+ *  The outcome promise HERO_PROMISE left the hero and was deleted; PacePanel
+ *  and Home's how-it-works room both close on GROWTH_CLOSING instead. */
 export function Hero() {
   return (
     <section className="relative overflow-x-clip">

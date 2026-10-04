@@ -34,7 +34,7 @@ const BODY = `# Pricing: Kheelu by Kheelona
 
 Market: India. Currency: INR. Stage: pre-order, taking a refundable token.
 
-## Kheelu (the talking toy, ages ${KHEELU_AGES})
+## Kheelu (the screen-free AI toy, ages ${KHEELU_AGES})
 
 - Pre-order price: ${LAUNCH_PRICE}, for the ${CAP_UNITS_TEXT}
 - Price once they are gone: ${FULL_PRICE}, paid in full at pre-order
@@ -44,7 +44,7 @@ Market: India. Currency: INR. Stage: pre-order, taking a refundable token.
 - Delivery: included, anywhere in India. No charge is added at any step.
 - Included with every Kheelu: 6 months of Kheelona+
 - Shipping starts ${SHIP_DATE_TEXT}. Pre-orders are served first, in the order they were placed.
-- Where to pre-order: ${STORE_URL}
+- Where to reserve: ${STORE_URL}
 
 ## Kheelona+ (the content and the controls)
 

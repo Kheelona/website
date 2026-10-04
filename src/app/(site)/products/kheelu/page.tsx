@@ -77,7 +77,7 @@ const HOW_IT_ANSWERS = [
   /* Microphone wording swept 2026-10-04 (content doc v7 Appendix B): the toy
      listens for its wake word, so "the microphone is off" was never accurate. */
   { n: "01", title: "Your child says the wake word.", body: "Until then, nothing is recorded and nothing is sent. Kheelu listens for that one word, and starts talking only when it is invited to.", color: "text-blue-ink" },
-  { n: "02", title: "The device thinks first.", body: "Speech is processed on the toy before anything goes anywhere. Low latency. No long waits. No sending everything to a distant server.", color: "text-blue-ink" },
+  { n: "02", title: "The device thinks first.", body: "Speech is processed on the toy first, so answers come back fast. Only what open conversation needs travels on, to our own servers in India.", color: "text-blue-ink" },
   { n: "03", title: "The feeling gets read.", body: "PlayOS hears more than words. Curious, Grumpy, Sad, Silly, Joy: the answer meets the mood.", color: "text-orange" },
   { n: "04", title: "The right response comes back.", body: "Every reply passes through an age-graded safety layer before it is spoken. On-device and cloud filters work together. No open internet. No surprises.", color: "text-orange" },
 ] as const;
@@ -130,7 +130,7 @@ const FAQ_ITEMS: FaqEntry[] = [
   { q: "Can Kheelu play music?", a: "Yes. Pair a phone over Bluetooth and Kheelu becomes the speaker in the room, for your playlist, rhymes, or an audiobook. That is one of its three modes, alongside conversation and Story mode stories." },
   { q: "Does Kheelu need a subscription?", a: "Every Kheelu includes 6 months of Kheelona+, the stories, lessons, languages, and the parent app. Kheelu's smart features are yours for life, Kheelona+ pricing is announced soon, and nothing renews without you." },
   { q: "What is Kheelona+?", a: "The content and the controls: stories, lessons, language packs, and the parent app that shows you the learning. It is included free for the first 6 months with every Kheelu." },
-  { q: "Why pre-order now?", a: `The price is ${LAUNCH_PRICE} for the ${CAP_UNITS_TEXT} and ${FULL_PRICE} once they are gone. The ${TOKEN_PRICE} you pay today is fully refundable until we ship.` },
+  { q: "Why reserve now?", a: `The price is ${LAUNCH_PRICE} for the ${CAP_UNITS_TEXT} and ${FULL_PRICE} once they are gone. The ${TOKEN_PRICE} you pay today is fully refundable until we ship.` },
   /* SEO round 2026-08-12, founder decision: the agency's gendered gift keyword
      is NEUTRALISED — the site says "your child" everywhere, so the phrase here
      is "a unique birthday gift", never "for daughter". "Unique" is grounded in
@@ -217,7 +217,7 @@ export default function KheeluPage() {
         <Room fill="cool" id="how-it-works" reveal="left">
           <Reveal>
             <SectionHeading
-              title="From question to answer, in four steps."
+              title="From wake word to answer, in four guarded steps."
               titleClassName="mb-3 max-w-[20ch]"
               lede="Every conversation walks the same guarded path."
               ledeClassName="mb-10 max-w-[58ch]"

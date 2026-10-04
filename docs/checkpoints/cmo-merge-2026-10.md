@@ -349,3 +349,53 @@ text**, **the hero's second line in bright orange** (a narrow, accepted display 
 Gate: `tsc` 0; `npm test` **1550 / 133**. From 1542: +4 (TextLink) +1 (TeamStrip: three
 co-founders, no Ria) +3 (`preorder-copy`, `preorder-cta`, `stories-parse` each walk the new
 TextLink files) = **1550**.
+
+### Commit 12 — every page consistent with Home (founder point 5)
+
+An audit of every other page against Home (the source of truth) found 9 high, 12 medium and some
+low items. Fixed in this commit:
+
+- **Claims:** /playos no longer says answers "work offline" (only Story mode and lessons do);
+  `llms.txt` and the data-law article say voice goes to "our own servers, in India"; a journal
+  answer that said Kheelu "keeps talking whether or not you renew" (the unconfirmed "free for life"
+  in other words) now uses the sanctioned Kheelona+ line, and the claims test bans the phrasing;
+  /contact says Kheelu is "designed here", not "designed and built here"; the spec row "Internet
+  access: None" (false: AI mode uses WiFi) is now "Open internet: No… connects only to our own
+  servers"; KheeluModes no longer claims AI mode "grows their vocabulary".
+- **No age ceiling:** the buyer's guide meta and `llms.txt` said "a 3 to 5 year old"; now "a child
+  aged 3 and up".
+- **The old hero promise is retired:** the /faq answer is research-anchored, PacePanel closes on
+  Home's `GROWTH_CLOSING`, and `HERO_PROMISE` is DELETED so a stale import fails.
+- **CTA verbs say "reserve":** "Why reserve now?", /contact's card and meta, "Before you reserve"
+  on journal pages, `llms.txt` and `pricing.md`.
+- **One product definition, Home's:** "a screen-free AI toy", in the Product and Organization
+  JSON-LD, `llms.txt`, `pricing.md`, and the WhatsApp share text (now opens with Home's line).
+- **Same facts, same words:** the /faq refund answer matches Home's; /team's promise says "₹499",
+  not "token"; languages read "8 named today, up to 10 at launch" (spec table, /playos, a journal
+  article, with /playos's body copy derived from config); /safety's basics now include Home's
+  "It says it is a toy." (replacing a basic the voice path already covered), say "It cannot browse
+  the internet." and end the voice path at "Your app"; the Kheelu page's four steps are "From wake
+  word to answer, in four guarded steps." and its server line names our own servers in India; the
+  buyer's guide says there are no independent reviews yet "only what our pilot families have told
+  us".
+- **The retired mascot leaves the journal:** article cards without a photo and every article's
+  closing box show the product, not the fox-in-a-tee drawing beside "the Kheelu page" link.
+- **Home's team heading is "Designed by parents in Bengaluru."**, matching the footer: the
+  mockup's "Made by parents in Bengaluru" read as a manufacture claim. Banned by the claims test.
+- Journal articles whose visible text changed had `updated` moved to 2026-10-04
+  (questions-parents-ask-about-ai-toys, ai-toys-and-indias-data-law).
+
+**Deferred, on purpose (all listed in Technical-Todo):** everything inside the analytics freeze:
+the store's copy ("Families already using Kheelu.", "Pre-order" titles and eyebrows, the event
+page's "talking friend") and the root layout's default title/description (`src/app/layout.tsx`
+holds every measurement tag). `/privacy`'s "your region" and "narrow band of ages" go to counsel.
+Two titles are SEO keyword placements and stay for the founder ("Meet Kheelu: the talking toy that
+teaches", "Our story: parents building smart toys for toddlers"). Kept as they are: the Kheelu
+page's "The feeling gets read" step (a published PlayOS capability) and the buyer's guide's
+category comparison (a different job from Home's product-type table).
+
+| Gate | Result |
+|---|---|
+| `npm test` | **1552 / 133** (+2: the two new claims patterns, each proven against good and bad wording) |
+| `npx next build` | passes |
+| `qa:sweep` on 3460 | **clean 40/40**. White-on-orange **86** (was 113: the comparison column is no longer a fill). Display orange **48** (the hero line, step numerals, the Kheelona+ "+"), the new narrow acceptance |

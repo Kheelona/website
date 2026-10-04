@@ -1,5 +1,6 @@
 import { KHEELU_AGES } from "@/config/site";
-import { GROWTH_ARC, GROWTH_HEDGE, GROWTH_CLOSING, HERO_PROMISE } from "./growth-arc";
+import { GROWTH_ARC, GROWTH_HEDGE, GROWTH_CLOSING } from "./growth-arc";
+import * as arc from "./growth-arc";
 
 describe("growth-arc data (BUILD-V6 D2, re-anchored at 3+ on 2026-08-23)", () => {
   it("anchors the arc at the published entry age, with an open end", () => {
@@ -12,10 +13,10 @@ describe("growth-arc data (BUILD-V6 D2, re-anchored at 3+ on 2026-08-23)", () =>
     expect(GROWTH_ARC.at(-1)!.kicker).toBe("Every year after");
   });
 
-  it("keeps the hero promise anchored at the same entry age", () => {
-    /* One promise, two pages (V6 law), one source since the re-anchor: the
-       hero renders the halves, PacePanel joins them. */
-    expect(HERO_PROMISE).toEqual(["A best friend at 3.", "A head start for school."]);
+  /* CMO merge (2026-10-04): the old hero promise is retired with the hero
+     that rendered it; deleted, not left unused, so a stale import fails. */
+  it("no longer exports the retired hero promise", () => {
+    expect("HERO_PROMISE" in arc).toBe(false);
   });
 
   it("ships four stages, a hedge, and the tutor re-homing line", () => {

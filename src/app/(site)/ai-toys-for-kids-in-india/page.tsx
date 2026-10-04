@@ -62,7 +62,7 @@ export const metadata = pageMeta({
      2026-09-11 carried a price, an age and a language count in the description;
      ours carried a sentence about warmth. 158 characters, under the 160 guard. */
   description:
-    "Five checks before you buy an AI toy for a 3 to 5 year old in India, and how Kheelu answers each one: no screen, wake-word mic, 8 languages, from ₹4,999.",
+    "Five checks before you buy an AI toy for a child aged 3 and up in India, and how Kheelu answers each one: no screen, wake-word mic, 8 languages, from ₹4,999.",
   path: "/ai-toys-for-kids-in-india",
 });
 
@@ -117,7 +117,7 @@ const ANSWERS = {
   },
   limits: {
     q: "What Kheelu cannot claim yet",
-    a: "Kheelu has not shipped. That means no toy-safety certificate has been issued to us, there are no reviews from families who have lived with one, and battery life and warranty terms are not published because they are not final. All three will be published here in full when they exist, and none of them will be claimed before they are earned.",
+    a: "Kheelu has not shipped. That means no toy-safety certificate has been issued to us, there are no independent reviews yet, only what our pilot families have told us, and battery life and warranty terms are not published because they are not final. All three will be published here in full when they exist, and none of them will be claimed before they are earned.",
   },
 } as const;
 

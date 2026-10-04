@@ -7,6 +7,7 @@ import {
   TOKEN_PRICE,
   BALANCE_PRICE,
   KHEELU_AGES,
+  KHEELU_LANGUAGES,
   CONTACT_EMAIL,
   SHIP_DATE_ISO,
   LEGAL_ENTITY,
@@ -126,7 +127,7 @@ export const ORGANIZATION = {
   logo: `${SITE_URL}/brand/logo-mark.png`,
   image: `${SITE_URL}${OG_IMAGE}`,
   description:
-    "Kheelona makes screen-free talking friends for children. Kheelu, the first one, is a plush toy for ages 3+ that holds a real conversation, tells stories a child can question, and comes with a parent app that shows every word.",
+    "Kheelona makes screen-free AI toys for children. Kheelu, the first one, is a plush AI toy for ages 3+ that answers a child's questions, asks one back, tells stories a child can question, and comes with a parent app that shows every word.",
   foundingDate: "2025",
   /* `founder`, not `founders`: the plural is deprecated and superseded, and
      Ahrefs flagged it four times per page on all 31 (2026-09-03). Same value,
@@ -310,7 +311,7 @@ export const KHEELU_PRODUCT = {
     suggestedMinAge: 3,
     audienceType: "Children",
   },
-  description: `A screen-free talking friend for children aged ${KHEELU_AGES} that holds a real conversation in up to 10 home languages, carries stories and lessons they can be quizzed on, plays your music over Bluetooth, and comes with a parent app that shows you everything. Part of a growing family of friends.`,
+  description: `A screen-free AI toy for children aged ${KHEELU_AGES} that answers their questions, then asks one back. It speaks ${KHEELU_LANGUAGES.length} languages today and up to 10 at launch, carries stories and lessons they can be quizzed on, plays your music over Bluetooth, and comes with a parent app that shows you every conversation.`,
   image: `${SITE_URL}${KHEELU_ART.src}`,
   /* The published specification, as structured properties (§8.36-a).
      One array, shared with the visible table on /ai-toys-for-kids-in-india, so

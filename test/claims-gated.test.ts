@@ -26,6 +26,8 @@ const BANNED: readonly [RegExp, string][] = [
   [/Made in (Bengaluru|India)/i, "manufacture origin has never been claimed (lib/product-facts.ts)"],
   [/how long your child talks/i, "usage time in the parent app is not a published feature"],
   [/Bedtime stories only after 7/i, "an unconfirmed parent-app control from the mockup's sample screens"],
+  [/whether or not you renew|keeps talking (even )?(if|without|after)/i, "NOT confirmed (2026-10-04): talking without Kheelona+ is 'free for life' in other words. Say 'smart features are yours for life' (KHEELONA_PLUS_LINE)."],
+  [/designed and built here|built in Bengaluru|Made by parents in Bengaluru/i, "manufacture origin has never been claimed; say 'designed' (consistency pass 2026-10-04)"],
 ];
 
 const ROOT = process.cwd();
