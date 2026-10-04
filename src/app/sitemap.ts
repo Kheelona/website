@@ -9,6 +9,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/products/kheelu", priority: 0.9 },
     { path: "/playos", priority: 0.8 },
     { path: "/safety", priority: 0.8 },
+    /* The two pages the CMO merge added (2026-10-04). Every other URL kept
+       its place: /products/kheelu, /team and /contact did not move. */
+    { path: "/how", priority: 0.7 },
+    { path: "/faq", priority: 0.7 },
     /* The buyer's guide (2026-09-11). Priority matches /safety: it is a
        commercial answer page, not a journal piece. */
     { path: "/ai-toys-for-kids-in-india", priority: 0.8 },

@@ -12,15 +12,20 @@ import {
 
 export type FaqGroup = { title: string; items: readonly FaqEntry[] };
 
-/** The /faq page (redesign 2026-10): the mockup's four groups, every answer
- *  taken from words the site already publishes (Home, /kheelu, /safety,
- *  /refund, /shipping). Questions the mockup asked that have no published
- *  answer yet are NOT here, and are listed in Technical-Todo.md: whether
- *  Kheelu understands a 3-year-old first time, whether a child's voice trains
- *  the model, two children sharing one Kheelu, gifting, and a delivery
- *  estimate by city. Content doc v7's wording for attachment, listening,
- *  WiFi, Diwali and outside India was incorporated on 2026-10-02.
- *  Every answer renders, so the FAQPage graph may describe all of them. */
+/** The /faq page (CMO merge, 2026-10-04): the mockup's four groups, every
+ *  answer taken from words the site already publishes (Home, /products/kheelu,
+ *  /safety, /refund, /shipping) or confirmed by the founder on 2026-10-04.
+ *  Questions the mockup asked that have no published answer yet are NOT here,
+ *  and are listed in MARKETING-TODO.md: whether Kheelu understands a 3-year-old
+ *  first time, whether a child's voice trains the model, two children sharing
+ *  one Kheelu, gifting, and a delivery estimate by city.
+ *
+ *  Changed from the branch: the attachment answer lost "you can also see how
+ *  long your child talks with it in the app" (usage time is not a published
+ *  feature) and its contraction; the Lumi answer is main's full one again,
+ *  because "older listings still say Lumi" is the sentence an answer engine
+ *  needs (§8.36-a); the voice answer names our own servers in India (founder,
+ *  2026-10-04). Every answer renders, so FAQPage may describe all of them. */
 export const FAQ_GROUPS: readonly FaqGroup[] = [
   {
     title: "About Kheelu",
@@ -43,11 +48,11 @@ export const FAQ_GROUPS: readonly FaqGroup[] = [
       },
       {
         q: "Will my child get too attached?",
-        a: "Kheelu is a toy and says so. It doesn't ask your child to keep secrets, and quiet hours mean it sleeps when you say. You can also see how long your child talks with it in the app.",
+        a: "Kheelu is a toy, and it tells your child so. It never asks your child to keep a secret from you, and quiet hours mean it sleeps when you say. You can read every conversation in the parent app.",
       },
       {
         q: "Is Kheelu the same as Lumi?",
-        a: "Yes. Kheelu is the same toy. It was called Lumi until September 2026, when it took the name of the character who narrates this site. Nothing else changed: same product, same price, same ship date.",
+        a: "Yes. Kheelu is the same toy. It was called Lumi until September 2026, when it was renamed Kheelu. Nothing else changed: same product, same price, same ship date. Older listings and articles still say Lumi, and they are describing this.",
       },
     ],
   },
@@ -60,7 +65,7 @@ export const FAQ_GROUPS: readonly FaqGroup[] = [
       },
       {
         q: "Where does my child's voice go?",
-        a: "Almost nowhere. The first thinking happens on the toy. What travels goes to Kheelona's own voice brain, stays in your region, and is never sold. Nothing is collected without your consent, and any conversation can be deleted in one tap from the parent app.",
+        a: "Almost nowhere. The first thinking happens on the toy. What travels goes to Kheelona's own servers in India, and is never sold. Nothing is collected without your consent, and any conversation can be deleted in one tap from the parent app.",
       },
       {
         q: "Can Kheelu reach the open internet?",
@@ -106,7 +111,7 @@ export const FAQ_GROUPS: readonly FaqGroup[] = [
       },
       {
         q: "Will it arrive before Diwali?",
-        a: `We start shipping on ${SHIP_DATE_TEXT}, in the order people reserved.`,
+        a: `We start shipping on ${SHIP_DATE_TEXT}, in the order people reserved, so reserving earlier puts you earlier in line. We message you before your Kheelu is dispatched.`,
       },
       {
         q: "Can I buy it from outside India?",

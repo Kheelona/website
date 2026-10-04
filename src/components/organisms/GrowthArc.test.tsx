@@ -23,4 +23,12 @@ describe("GrowthArc", () => {
     expect(screen.queryAllByRole("button")).toHaveLength(0);
     expect(screen.queryAllByRole("link")).toHaveLength(0);
   });
+
+  /* CMO merge (2026-10-04): /how renders the arc without the tutor line, so
+     the narrative stays in its four places (V6). */
+  it("can leave the tutor line out", () => {
+    render(<GrowthArc closing={false} />);
+    expect(screen.queryByText(GROWTH_CLOSING)).toBeNull();
+    expect(screen.getByText(GROWTH_HEDGE)).toBeInTheDocument();
+  });
 });

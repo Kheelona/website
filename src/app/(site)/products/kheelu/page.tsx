@@ -125,7 +125,7 @@ const FAQ_ITEMS: FaqEntry[] = [
      place, and as of 2026-09-11 every one of those still says Lumi. It sits in
      the FAQ because FAQPage schema may only ever describe visible copy, and
      this is the answer an engine most needs to be able to quote. */
-  { q: "Is Kheelu the same as Lumi?", a: "Yes. Kheelu is the same toy. It was called Lumi until September 2026, when it took the name of the character who narrates this site. Nothing else changed: same product, same price, same ship date. Older listings and articles still say Lumi, and they are describing this." },
+  { q: "Is Kheelu the same as Lumi?", a: "Yes. Kheelu is the same toy. It was called Lumi until September 2026, when it was renamed Kheelu. Nothing else changed: same product, same price, same ship date. Older listings and articles still say Lumi, and they are describing this." },
   { q: "What is PlayOS?", a: "The platform Kheelu runs on. It gives each character a voice and a personality, and keeps every answer right for your child's age." },
   { q: "Can Kheelu play music?", a: "Yes. Pair a phone over Bluetooth and Kheelu becomes the speaker in the room, for your playlist, rhymes, or an audiobook. That is one of its three modes, alongside conversation and Story mode stories." },
   { q: "Does Kheelu need a subscription?", a: "Every Kheelu includes 6 months of Kheelona+, the stories, lessons, languages, and the parent app. Kheelu's smart features are yours for life, Kheelona+ pricing is announced soon, and nothing renews without you." },

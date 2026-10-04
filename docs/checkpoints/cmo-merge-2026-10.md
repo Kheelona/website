@@ -215,3 +215,31 @@ Gate: `tsc` 0; `npm test` 1445 / 128.
   round; it is on the founder list rather than silently rewritten.
 
 Gate: `tsc` 0; `npm test` 1445 / 128.
+
+### Commit 7 — the two new pages, /how and /faq, and the machine files
+
+- **/how "How it helps"** (new): serve and return in three steps, the research (Harvard, worded as
+  the source words it, caring adult included; Romeo 2018 as the journal already summarises it),
+  **"What this research does not show"**, three no-toy tips, where Kheelu fits ("not a medical or
+  therapy device"), the full growth arc **without** its tutor line (`GrowthArc closing={false}`,
+  so the V6 narrative stays in four places), and a finale headed "Give your child more
+  conversations every day." **Not carried:** the mockup's promise to publish pilot results "good or
+  bad" (unsigned public commitment), and its "wait five seconds" (an invented number; the tip now
+  uses the journal's published "pause longer than feels natural").
+- **/faq** (new real page; its 308 to `/products/kheelu#faq` is removed from `next.config.ts`, the
+  only change to that file): four groups from `lib/faq.ts`, each its own closed `<details>` list,
+  FAQPage over every visible answer. Fixed from the branch: the attachment answer lost an
+  unpublished "see how long your child talks" and its contraction; the Lumi answer is main's full
+  one again ("older listings still say Lumi", §8.36-a); the voice answer names our own servers in
+  India; the Diwali answer states the order rule honestly.
+- **The Lumi answer no longer cites the narrator.** It said Kheelu "took the name of the character
+  who narrates this site"; with the guide retired that became false, so on /products/kheelu and
+  /faq it now reads "when it was renamed Kheelu".
+- **Sitemap** gains `/how` and `/faq` (0.7). **llms.txt** gains both pages, the "Our story" label,
+  and one line of the founder-confirmed facts (no camera; wake-word listening; own servers in
+  India; it says it is a toy). `LLMS_UPDATED` bumped to 2026-10-04 in the same commit.
+
+| Gate | Result |
+|---|---|
+| `npx tsc --noEmit` | **0** |
+| `npm test` | **1450 / 128**. From 1445: +1 (GrowthArc can omit the tutor line) +4 (`preorder-copy` and `preorder-cta` each walk the two new page files) = **1450** |

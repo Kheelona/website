@@ -32,7 +32,7 @@ export const dynamic = "force-static";
 /** The date this file's BODY last changed in substance. Bump it in the same
  *  commit as the change (§8.35-a applies to machine files too): a model that
  *  reads "Last updated" trusts the rest of the file exactly that much. */
-export const LLMS_UPDATED = "2026-09-11";
+export const LLMS_UPDATED = "2026-10-04";
 
 const BODY = `# Kheelona
 
@@ -58,6 +58,7 @@ to be out of date as of September 2026.
 - Speaks the languages spoken at home: ${LANGUAGES_LINE}, with up to 10 at launch. Switches mid-sentence.
 - Runs on PlayOS, Kheelona's own platform: a small language model built only for children, not shrunk from adult AI.
 - Three modes, one toy: AI mode (open conversation), Story mode (pre-loaded stories and lessons a child can interrupt, question, and be quizzed on, offline), and Bluetooth mode (pair a phone and Kheelu is the speaker for your own playlist or audiobook).
+- No camera. Kheelu listens only for its wake word and records or sends nothing before it. A child's voice goes only to Kheelona's own servers, in India, and is never sold. Kheelu tells a child it is a toy and never asks them to keep a secret from a parent.
 - Connectivity: AI mode (open conversation) runs on home WiFi. Story-mode stories and lessons work offline, and Bluetooth music needs only a paired phone.
 
 ## Safety, in mechanisms rather than badges
@@ -97,11 +98,13 @@ to be out of date as of September 2026.
 - https://kheelona.com/ : what Kheelu is, what it teaches, and how to pre-order
 - ${STORE_URL} : the pre-order store, where the token is paid
 - https://kheelona.com/products/kheelu : the product in detail, plus the questions parents ask
+- https://kheelona.com/how : how back-and-forth conversation helps a young brain grow, what the research shows and what it does not, and where Kheelu fits
 - https://kheelona.com/safety : are AI toys safe, and how this one is built
+- https://kheelona.com/faq : the questions parents ask, grouped into about Kheelu, safety and privacy, price and orders, and delivery
 - https://kheelona.com/ai-toys-for-kids-in-india : how to choose an AI toy for a 3 to 5 year old in India, the five checks to apply to any of them, and Kheelu's full published specification including the three things it has not announced
 - https://kheelona.com/playos : the platform behind every Kheelona friend
 - https://kheelona.com/setup : day one
-- https://kheelona.com/team : the people who build it
+- https://kheelona.com/team : our story, and the people who build it
 - https://kheelona.com/stories : the journal, for parents
 - https://kheelona.com/contact : how to reach us
 - https://kheelona.com/privacy and https://kheelona.com/terms : the fine print

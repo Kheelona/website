@@ -7,7 +7,15 @@ import { GROWTH_ARC, GROWTH_HEDGE, GROWTH_CLOSING } from "@/lib/growth-arc";
  *  static stage cards (registry Card, tilt default, NO press/lift — a card
  *  that does nothing when tapped must not pretend otherwise, V5-1), then the
  *  honest hedge, then the display line that re-homes the old tutor hero. */
-export function GrowthArc() {
+export function GrowthArc({
+  closing = true,
+}: {
+  /** The tutor line. The V6 law keeps the tutor narrative to four places, and
+   *  since the CMO merge (2026-10-04) Home's how-it-works room carries this
+   *  line, so the arc's only page, /how, renders the cards and the hedge
+   *  without it (a fifth place would be the review flag V6 warns about). */
+  closing?: boolean;
+} = {}) {
   return (
     <div>
       <div className="grid gap-5 md:grid-cols-2">
@@ -28,11 +36,13 @@ export function GrowthArc() {
       <Reveal className="mt-6">
         <p className="text-[15px] text-ink-muted">{GROWTH_HEDGE}</p>
       </Reveal>
-      <Reveal className="mt-8">
-        <p className="max-w-[46ch] font-display text-[19px] font-bold text-ink-head">
-          {GROWTH_CLOSING}
-        </p>
-      </Reveal>
+      {closing ? (
+        <Reveal className="mt-8">
+          <p className="max-w-[46ch] font-display text-[19px] font-bold text-ink-head">
+            {GROWTH_CLOSING}
+          </p>
+        </Reveal>
+      ) : null}
     </div>
   );
 }
