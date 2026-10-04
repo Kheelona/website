@@ -26,6 +26,9 @@ const ROUTES = [
   `${BASE}/products/kheelu`,
   `${BASE}/playos`,
   `${BASE}/safety`,
+  /* The two pages the CMO merge added (2026-10-04): 36 → 40 combinations. */
+  `${BASE}/how`,
+  `${BASE}/faq`,
   /* The buyer's guide (2026-09-11). It carries the site's only spec table and
      its only category comparison, so both the voice lint and axe have new
      shapes to check here that exist nowhere else. */

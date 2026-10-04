@@ -173,7 +173,7 @@ const nextConfig: NextConfig = {
          which is why they belong here rather than in the block above.
          `/faq` USED to 308 to /products/kheelu#faq on the same reasoning. Since
          the CMO merge (2026-10-04) it is a real page, so the redirect is gone:
-         a redirect source would shadow the page (test/redesign-routes.test.ts). */
+         a redirect source would shadow the page (test/cmo-merge-routes.test.ts). */
       { source: "/lumi", destination: "/products/kheelu", permanent: true },
       { source: "/sitemap", destination: "/sitemap.xml", permanent: true },
       { source: "/blog", destination: "/stories", permanent: true },

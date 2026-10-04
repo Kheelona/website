@@ -263,3 +263,21 @@ The first pass caught the pages being rebuilt; a grep across `src/` found four m
   journal article's "voice data stays in your region" is likewise true and untouched.
 
 Gate: `npm test` 1450 / 128.
+
+### Commit 9 — the guards, each proven against a control
+
+Four new test files, and every one was shown to FAIL on a planted violation before it was trusted
+(an absence measured by the wrong instrument is not an absence):
+
+| Test | Pins | Control that proved it |
+|---|---|---|
+| `test/cmo-merge-routes.test.ts` (26) | `/products/kheelu`, `/team`, `/contact` are pages and not redirect sources; `/how`, `/faq` are real pages; the mockup's `/kheelu` and `/story` were not built; `/products/lumi` still lands in one hop; every nav and footer link is a real page; the branch's placeholder and "verify" bans | — (structural; read from the config and the route tree) |
+| `test/claims-gated.test.ts` (15) | bans, comments stripped: "free for life", every "microphone is off" form, "Kheelu helps/grows… brain", the mockup's two efficacy lines, "Meet Kheelu on 20 October", "We plan to be here for years", "publish the results… good or bad", "Made in Bengaluru/India", "how long your child talks", "Bedtime stories only after 7"; and pins that the three CONFIRMED claims reached their pages | a temp file with "free for life" + "the microphone is off" failed 2 cases; the same words in a comment failed none |
+| `test/analytics-freeze.test.ts` (30) | the 13 frozen paths have no diff against `pre-cmo-merge-2026-10`; 15 config constants (pixel id, hosts, PostHog key/paths, replay deny list…) are line-identical; `next.config.ts` differs only by the `/faq` redirect. Skips, named, in a clone without the tag. **A round guard: retire after production verification.** | appending a comment to `lib/fbq.ts` and swapping the pixel id back to the retired one failed exactly those 2 cases |
+| `test/cta-tracking.test.ts` (17) | only the ten agreed `cta` values exist, each still emitted; every store-bound `Button` carries `track`; no raw anchor reaches the store; ViewContent mounted on Home and `/products/kheelu` and nowhere else | renaming `home-reserve` failed 2 cases |
+
+Also: `/how` and `/faq` joined `test/metadata-lengths.test.ts` and `qa:sweep` (36 → 40).
+
+| Gate | Result |
+|---|---|
+| `npm test` | **1542 / 132**. From 1450: +26 +15 +30 +17 (the four new files) +4 (metadata-lengths, two pages) = **1542** |

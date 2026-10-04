@@ -61,6 +61,9 @@ const PAGES = [
   "src/app/(site)/terms/page.tsx",
   "src/app/(site)/refund/page.tsx",
   "src/app/(site)/shipping/page.tsx",
+  /* The two pages the CMO merge added (2026-10-04). */
+  "src/app/(site)/how/page.tsx",
+  "src/app/(site)/faq/page.tsx",
 ];
 
 /** Pulls the first `title:` / `description:` string literal out of a page's
