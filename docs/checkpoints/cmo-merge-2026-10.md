@@ -155,3 +155,20 @@ footnote-1 marker and the bilingual-article link; the REAL parent-app screenshot
 |---|---|
 | `npx tsc --noEmit` | **0** |
 | `npm test` | **1445 / 128 files**, staged. From 1427: −16 (Family 3, KheeluOrbit 3, ParentAppSection 3, FeelingsGallery 4, HowItWorksLoop 3) +25 (TrustStrip 3, HowItWorks 5, AgeTabs 3, TwoReasons 5, PriceRoom 5, TeamStrip 4) +10 (Hero 6→9, Compare 3→5, TrustRoom 3→5, Journal 3→4, a11y-v4 4→6) −1 (parameterised: `preorder-copy` and `preorder-cta` each lose one net source file, `stories-parse` gains one) = **1445** |
+
+### Commit 4 — Meet Kheelu stays product-deep, on its own URL
+
+`/products/kheelu`, unchanged URL, Product `@id` and FAQ (all 18). The mockup's research-anchored
+hero ("An AI toy built for the conversations that help a young brain grow.") over the colourway
+picker; then the three modes (`KheeluModes` IS the mockup's "three ways to play", so no second,
+shorter list that could drift) → chat demo → the guarded four-step path with the page's only PlayOS
+link (step 01 swept: "nothing is recorded and nothing is sent", not "the microphone is off") →
+Story mode + films → **"When parents reach for Kheelu."** (the mockup's day; "quiet hours switch
+Kheelu off" became "keep Kheelu quiet", the published feature) → PacePanel → parent app +
+Kheelona+ band (the mockup's what's-included table says exactly that, so it is said once) → **the
+shared comparison** → **Specs (`SpecTable`, the same source as `additionalProperty`) beside what is
+in the box** → **the product family, moved here from Home** → PriceTable (`cta=product-foot`) → FAQ
+→ finale. The pilot quotes left this page; Home carries them (the V5-6 repetition lesson).
+
+Gate: `tsc` 0; `npm test` 1445 / 128 (unchanged: no test reads this page directly; the page-level
+CTA and ViewContent guards land with the guards commit).

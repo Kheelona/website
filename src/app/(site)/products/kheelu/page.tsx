@@ -9,6 +9,8 @@ import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { Card } from "@/components/molecules/Card";
 import { StepList } from "@/components/molecules/StepList";
 import { CheckList } from "@/components/molecules/CheckList";
+import { CompareTable } from "@/components/molecules/CompareTable";
+import { SpecTable } from "@/components/molecules/SpecTable";
 import { PriceTable } from "@/components/molecules/PriceTable";
 import { Reveal } from "@/components/molecules/Reveal";
 import { ChatDemo } from "@/components/molecules/ChatDemo";
@@ -20,7 +22,8 @@ import { FootnotesRow, V3_FOOTNOTES, Footnote } from "@/components/molecules/Foo
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { KheeluModes } from "@/components/organisms/KheeluModes";
 import { pageGraph, faqPage, breadcrumbs, KHEELU_PRODUCT, pageMeta, jsonLd } from "@/lib/seo";
-import { ParentQuotes } from "@/components/organisms/ParentQuotes";
+import { FamilyGrid } from "@/components/organisms/FamilyGrid";
+import { COMPARISON_COLUMNS, COMPARISON_ROWS } from "@/lib/comparison";
 import {
   PREORDER_HREF,
   RESERVE_LABEL,
@@ -31,6 +34,7 @@ import {
   SHIP_DATE_TEXT,
   TOKEN_PRICE,
   BALANCE_PRICE,
+  KHEELU_AGES,
 } from "@/config/site";
 
 export const metadata = pageMeta({
@@ -53,21 +57,26 @@ export const metadata = pageMeta({
    /products/kheelu (provenance-tagged there); guide say lines GATED:kheelu-line.
    Specs and charger details stay PENDING (TODO claims-specs); never invent. */
 
-/* copy-v2 does room [seed] */
-const DOES = [
-  { h: "Real conversation", b: "Kheelu listens, answers, and asks the next question." },
-  { h: "Stories on demand", b: "A new story whenever your child wants one." },
-  { h: "Lessons that feel like play", b: "Numbers, words, and why the sky is blue. Stories your child can be quizzed on." },
-  { h: "Songs and rhymes", b: "The ones you grew up with, and new ones too." },
-  /* V6 D4f: the last blanket offline claim, made mode-precise. */
-  { h: "Offline adventures", b: "Story-mode stories and your paired playlist travel anywhere, no signal needed." },
+/* "When parents reach for Kheelu" (CMO merge, 2026-10-04: the mockup's day),
+   replacing the old "a whole day of things to do" cards. Every line restates a
+   published fact: the conversation log, Story mode offline, home languages,
+   quiet hours. The mockup's bedtime line said quiet hours "switch Kheelu off";
+   the published feature is quiet hours, so it says that and no more. */
+const MOMENTS = [
+  { h: "While you cook", b: "Your child plays and talks with Kheelu instead of watching a screen." },
+  { h: "After playschool", b: "They tell Kheelu about their day. You can read it later, in the parent app." },
+  { h: "In the car or on a train", b: "Story-mode stories play with no signal at all." },
+  { h: "With grandparents", b: "Rhymes and stories in your family's language." },
+  { h: "At bedtime", b: "One last story, then quiet hours keep Kheelu quiet." },
 ] as const;
 
 const HOW_IT_ANSWERS = [
   /* V6 axe fix: text-blue measures 2.68:1 on the cool wash (the team page
      recorded the same finding) — the darkened blue-ink token is the numeral
      blue everywhere now. */
-  { n: "01", title: "Your child says the wake word.", body: "Until then, the microphone is off. Kheelu starts listening only when it is invited to.", color: "text-blue-ink" },
+  /* Microphone wording swept 2026-10-04 (content doc v7 Appendix B): the toy
+     listens for its wake word, so "the microphone is off" was never accurate. */
+  { n: "01", title: "Your child says the wake word.", body: "Until then, nothing is recorded and nothing is sent. Kheelu listens for that one word, and starts talking only when it is invited to.", color: "text-blue-ink" },
   { n: "02", title: "The device thinks first.", body: "Speech is processed on the toy before anything goes anywhere. Low latency. No long waits. No sending everything to a distant server.", color: "text-blue-ink" },
   { n: "03", title: "The feeling gets read.", body: "PlayOS hears more than words. Curious, Grumpy, Sad, Silly, Joy: the answer meets the mood.", color: "text-orange-ink" },
   { n: "04", title: "The right response comes back.", body: "Every reply passes through an age-graded safety layer before it is spoken. On-device and cloud filters work together. No open internet. No surprises.", color: "text-orange-ink" },
@@ -136,6 +145,16 @@ const JSON_LD = pageGraph(
   breadcrumbs([{ name: "Meet Kheelu", path: "/products/kheelu" }]),
 );
 
+/* THE CMO MERGE (2026-10-04, docs/checkpoints/cmo-merge-2026-10.md). This
+   page stays PRODUCT-deep while Home turned sales-first, and keeps its URL:
+   /products/kheelu is what Google, the ads and the answer engines already
+   cite. The mockup's hero, "three ways to play", "when parents reach for
+   Kheelu", the comparison and the specs join it; the chat demo, the guarded
+   four-step path (the page's only PlayOS link), Story mode with the films,
+   PacePanel (one of the four tutor-line places), the parent app, the box, the
+   product family (moved here from Home) and the full price table stay.
+   The pilot quotes left this page: Home carries them now, and the V5-6 lesson
+   was that the same component on both pages is what read as repetition. */
 export default function KheeluPage() {
   return (
     <>
@@ -148,20 +167,18 @@ export default function KheeluPage() {
           nothing, and no-ops entirely off the production hosts. */}
       <ViewContentTracker />
 
-      {/* Hero on the backdrop sky (no wash), greeted through the guide */}
-      <section
-        data-guide="hero-wink"
-        data-say="This is Kheelu. Go on, say hello."
-        className="relative overflow-x-clip"
-      >
+      {/* Hero on the backdrop sky (no wash). The headline is the mockup's,
+          research-anchored (founder decision 4, 2026-10-04): conversation is
+          what helps a young brain grow, and Kheelu is built for it. */}
+      <section className="relative overflow-x-clip">
         <div className="mx-auto grid w-full max-w-[1180px] items-center gap-8 px-[clamp(20px,5vw,64px)] py-10 md:grid-cols-[1fr_1fr] md:py-14">
           <Reveal mode="rise">
             <SectionHeading
               as="h1"
-              eyebrow="The talking friend"
-              title="Meet Kheelu. The friend who listens first."
+              eyebrow="Meet Kheelu"
+              title="An AI toy built for the conversations that help a young brain grow."
               titleClassName="mb-5"
-              lede="A talking friend for ages 3+. No screen, ever. Kheelu listens, answers, then asks the next question."
+              lede={`Kheelu is a soft, screen-free rabbit for ages ${KHEELU_AGES}. It answers your child's questions, tells stories, plays music, and then asks the next question back.`}
               ledeClassName="mb-7 max-w-[58ch]"
             />
             <Button href={PREORDER_HREF} track="product-top">{RESERVE_LABEL}</Button>
@@ -174,7 +191,14 @@ export default function KheeluPage() {
       </section>
 
       <RoomsTrack>
-        <Room fill="white" reveal="left">
+        {/* The mockup's "three ways to play" IS the three modes: KheeluModes
+            owns that copy on this site, so the room is the registry component
+            rather than a second, shorter list that could drift from it. */}
+        <Room fill="cool" id="modes" reveal="left">
+          <KheeluModes />
+        </Room>
+
+        <Room fill="white" reveal="right">
           <div className="grid items-center gap-10 md:grid-cols-[1fr_1.1fr]">
             <Reveal>
               <SectionHeading
@@ -190,7 +214,7 @@ export default function KheeluPage() {
           </div>
         </Room>
 
-        <Room fill="cool" id="how-it-works" reveal="right">
+        <Room fill="cool" id="how-it-works" reveal="left">
           <Reveal>
             <SectionHeading
               title="From question to answer, in four steps."
@@ -213,22 +237,10 @@ export default function KheeluPage() {
           </Reveal>
         </Room>
 
-        {/* Story mode, with real families on film beneath it (§8.37).
-            Founder, 2026-09-19: the audio demos that used to fill the right
-            column are gone from the site entirely, and the same video section
-            Home carries comes here.
-
-            THE HEADING AND LEDE STAY. They are not placeholder: Story mode is
-            one of Kheelu's three named modes and this is the only place the
-            site explains what it actually contains. The audio was the
-            ILLUSTRATION beside that copy, and the video replaces the
-            illustration, not the explanation.
-
-            STACKED, not the old two columns. Three vertical tiles in a half
-            width column are unreadable, and with an empty library a two column
-            grid would leave a hole where the audio used to be. Full width
-            works in both states. */}
-        <Room fill="white" id="story-mode" reveal="left">
+        {/* Story mode, with real families on film beneath it (§8.37). The
+            heading and lede are the only place the site explains what Story
+            mode contains; the films are the illustration, not the explanation. */}
+        <Room fill="white" id="story-mode" reveal="right">
           <Reveal>
             <SectionHeading
               eyebrow="Story mode"
@@ -246,24 +258,18 @@ export default function KheeluPage() {
           )}
         </Room>
 
-        {/* Founder call 2026-07-28: move the comparison to what a parent
-            actually pays for — school and tuition — framed as addition. */}
-        <Room fill="cool" id="pace" reveal="right">
-          <PacePanel />
-        </Room>
-
-        <Room fill="white" reveal="left">
+        <Room fill="cream" id="moments" reveal="left">
           <Reveal>
             <SectionHeading
-              title="One friend. A whole day of things to do."
+              title="When parents reach for Kheelu."
               titleClassName="mb-10 max-w-[20ch]"
             />
           </Reveal>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {DOES.map((d, i) => (
+            {MOMENTS.map((d, i) => (
               <Reveal key={d.h} delay={i * 0.04}>
                 <Card
-                  className="h-full border border-line bg-cream p-7"
+                  className="h-full border border-line bg-white p-7"
                   title={d.h}
                   titleClassName="mb-2 font-display text-[22px] font-extrabold text-ink-head"
                 >
@@ -274,19 +280,10 @@ export default function KheeluPage() {
           </div>
         </Room>
 
-        {/* V5-6 (2026-07-31 review): the five-feeling gallery used to repeat
-            here in full. Six components rendered on BOTH Home and this page, so
-            a visitor who read Home and clicked "Meet Kheelu" met the same audio
-            demos, the same feelings, the same modes and the same quotes — the
-            real root of "too much content, less value". Home owns the feelings
-            beat; this page keeps what only a product page can say: the modes,
-            the pace panel, the colourways, the box, and its own FAQ. */}
-
-        {/* Founder call 2026-07-28: the three real modes replace the old
-            personality chips (Companion / Storyteller / Teacher). A parent
-            deciding on a pre-order asks what it does, not what it is like. */}
-        <Room fill="cool" id="modes" reveal="left">
-          <KheeluModes />
+        {/* Founder call 2026-07-28: the comparison a parent actually pays for,
+            school and tuition, framed as addition. */}
+        <Room fill="cool" id="pace" reveal="right">
+          <PacePanel />
         </Room>
 
         <Room fill="cream" id="parent-app" reveal="left">
@@ -311,40 +308,74 @@ export default function KheeluPage() {
               </Reveal>
             ))}
           </div>
+          {/* "What is included, and what comes later" (the mockup's table) is
+              exactly what this band says, in the ONLY sanctioned Kheelona+
+              wording, so it says it once. */}
           <Reveal className="mt-8">
             <KheelonaPlusBand footnote={2} />
           </Reveal>
         </Room>
 
-        <Room fill="white" reveal="right">
+        <Room fill="white" id="compare" reveal="right">
           <Reveal>
             <SectionHeading
-              level="minor"
-              title="What is in the box."
-              titleClassName="mb-6"
+              title="How Kheelu compares."
+              titleClassName="mb-3"
+              lede={`They all talk or play. This is how they differ for a child aged ${KHEELU_AGES}.`}
+              ledeClassName="mb-10 max-w-[58ch]"
             />
-            <CheckList
-              className="mb-8"
-              items={[
-                "Kheelu, ready to talk.",
-                "A charger.",
-                "A quick-start card. Day one takes minutes.",
-              ]}
-            />
-            {/* TODO(claims-specs): full specs pending from founder. */}
-            {/* Second half corrected 2026-09-05: it read "Reserving now does
-                not commit you to buy", which was written for the free list and
-                reads as "this costs nothing" beside a paid button. */}
-            <p className="max-w-[62ch] text-[16.5px] text-ink-muted">
-              We publish the full specs, battery, size, materials, and the wake
-              word, before Kheelu ships. The {TOKEN_PRICE} you pay to reserve is
-              refundable until we dispatch.
-            </p>
+            <CompareTable columns={COMPARISON_COLUMNS} rows={COMPARISON_ROWS} />
+            <p className="mt-4 text-[15px] text-ink-muted">Based on typical products in each group.</p>
           </Reveal>
         </Room>
 
-        <Room fill="white" reveal="left">
-          <ParentQuotes bare count={2} eyebrow="From the pilot" title="The first families are already talking." />
+        {/* The specification (CMO merge: the mockup's "Specs"), from the ONE
+            source that also feeds Product.additionalProperty (§8.36), beside
+            what is in the box. Pending rows say so in words; nothing here is
+            typed twice. */}
+        <Room fill="white" id="specs" reveal="left">
+          <div className="grid gap-12 md:grid-cols-[1.2fr_1fr]">
+            <Reveal>
+              <SectionHeading level="minor" title="Specs." titleClassName="mb-6" />
+              <SpecTable />
+            </Reveal>
+            <Reveal>
+              <SectionHeading level="minor" title="What is in the box." titleClassName="mb-6" />
+              <CheckList
+                className="mb-8"
+                items={[
+                  "Kheelu, ready to talk.",
+                  "A charger.",
+                  "A quick-start card. Day one takes minutes.",
+                ]}
+              />
+              {/* TODO(claims-specs): full specs pending from founder. */}
+              <p className="max-w-[62ch] text-[16.5px] text-ink-muted">
+                We publish the full specs, battery, size, materials, and the wake
+                word, before Kheelu ships. The {TOKEN_PRICE} you pay to reserve is
+                refundable until we dispatch.
+              </p>
+            </Reveal>
+          </div>
+        </Room>
+
+        {/* Moved here from Home in the CMO merge: the line-up is product
+            information, and the pipeline is what makes the purchase outlast
+            the toy (benchmarks-v3.md). FamilyGrid is shared with /playos, so
+            the line-up cannot drift. */}
+        <Room fill="cream" id="family" reveal="right">
+          <Reveal>
+            <SectionHeading
+              title="One friend inside. More friends on the way."
+              titleClassName="mb-4 max-w-[20ch]"
+              lede="The same friend lives inside everything we make, and it remembers your child across all of it. Kheelu is here first. The Kheelu Speaker and AI books follow."
+              ledeClassName="mb-2 max-w-[58ch]"
+            />
+            <p className="mb-10 font-display text-[18px] font-bold text-ink-head">
+              Starts talking at 3. Still teaching for years.
+            </p>
+          </Reveal>
+          <FamilyGrid />
         </Room>
 
         <Room fill="sun" id="price" reveal="pop">
@@ -353,7 +384,7 @@ export default function KheeluPage() {
               level="minor"
               title={`${TOKEN_PRICE} today. ${BALANCE_PRICE} when it ships.`}
               titleClassName="mb-3 max-w-[20ch]"
-              lede={`Pre-order at ${LAUNCH_PRICE} while the ${CAP_UNITS_TEXT} last. Fully refundable until we ship, and Kheelu stays a friend for years.`}
+              lede={`Reserve at ${LAUNCH_PRICE} while the ${CAP_UNITS_TEXT} last. Fully refundable until we ship, and Kheelu stays a friend for years.`}
               ledeClassName="mb-7 max-w-[46ch]"
             />
             {/* The same offer as a table, under the same heading. The prose

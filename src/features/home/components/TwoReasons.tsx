@@ -73,7 +73,7 @@ export function TwoReasons() {
             {KHEELU_LANGUAGES.length} named today, up to 10 at launch.
             <Footnote n={1} id="fn-languages" />
           </p>
-          <p className="mt-auto max-w-[58ch] text-[15px] text-ink-muted">
+          <p className="max-w-[58ch] text-[15px] text-ink-muted">
             A child who plays in two languages keeps both. Why that matters for years to come:{" "}
             <Link href="/stories/raising-a-bilingual-child-in-india" className={LINK}>
               Raising a bilingual child in India
@@ -89,26 +89,24 @@ export function TwoReasons() {
             Open the app for a daily summary, the full conversation log, and one simple thing to do
             together each day. The new words your child learned are counted for you.
           </p>
-          <div className="mb-6 grid items-center gap-6 sm:grid-cols-[auto_1fr]">
-            {/* min-w-0: the frame's fixed px width must not set the grid
-                track's minimum and widen a 320px phone (M4 mobile pass). */}
-            <div className="flex min-w-0 justify-center">
-              <PhoneFrame
-                src="/app/dashboard.png"
-                alt="The Kheelona parent app dashboard showing a child's interests and conversation activity"
-                width={200}
-              />
-            </div>
-            <ul className="flex flex-wrap gap-2">
-              {APP_CHIPS.map((c) => (
-                <li
-                  key={c}
-                  className="rounded-full border border-line bg-cream px-4 py-2 text-[15px] font-medium text-ink-head"
-                >
-                  {c}
-                </li>
-              ))}
-            </ul>
+          <ul className="mb-6 flex flex-wrap gap-2">
+            {APP_CHIPS.map((c) => (
+              <li
+                key={c}
+                className="rounded-full border border-line bg-cream px-4 py-2 text-[15px] font-medium text-ink-head"
+              >
+                {c}
+              </li>
+            ))}
+          </ul>
+          {/* min-w-0: the frame's fixed px width must not set a flex item's
+              minimum and widen a 320px phone (M4 mobile pass). */}
+          <div className="mb-6 flex min-w-0 justify-center">
+            <PhoneFrame
+              src="/app/dashboard.png"
+              alt="The Kheelona parent app dashboard showing a child's interests and conversation activity"
+              width={220}
+            />
           </div>
           <Link
             href="/products/kheelu#parent-app"
