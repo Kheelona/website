@@ -75,7 +75,11 @@ const CHECKS = [
   {
     n: "01",
     title: "When is the microphone on?",
-    body: "The only good answer is: when your child invites it. Look for wake-word listening and a plain explanation of what happens the rest of the time. Off should mean off, not muted and waiting.",
+    /* Corrected 2026-10-04 (the microphone sweep, content doc v7 Appendix B):
+       the old last sentence, "Off should mean off, not muted and waiting", set
+       a bar no wake-word toy can meet, because a toy has to listen for its
+       word. The honest test is what happens BEFORE the word. */
+    body: "The only good answer is: when your child invites it. Look for wake-word listening and a plain explanation of what happens before the wake word. Nothing should be recorded or sent until your child says it.",
   },
   {
     n: "02",

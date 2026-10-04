@@ -62,7 +62,7 @@ to be out of date as of September 2026.
 - Connectivity: AI mode (open conversation) runs on home WiFi. Story-mode stories and lessons work offline, and Bluetooth music needs only a paired phone.
 
 ## Safety, in mechanisms rather than badges
-- The microphone wakes to a word and is off the rest of the time.
+- Kheelu listens only for its wake word. Nothing is recorded or sent until the wake word is said.
 - The first thinking happens on the device before anything travels.
 - Answers come from a closed library. Kheelu cannot browse or search the open internet.
 - Every reply passes an age-graded safety layer, on the device and in the cloud.

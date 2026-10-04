@@ -243,3 +243,23 @@ Gate: `tsc` 0; `npm test` 1445 / 128.
 |---|---|
 | `npx tsc --noEmit` | **0** |
 | `npm test` | **1450 / 128**. From 1445: +1 (GrowthArc can omit the tutor line) +4 (`preorder-copy` and `preorder-cta` each walk the two new page files) = **1450** |
+
+### Commit 8 — the microphone sweep reaches every page, and the spec table
+
+The first pass caught the pages being rebuilt; a grep across `src/` found four more:
+- **`llms.txt`**: "The microphone wakes to a word and is off the rest of the time." → listens only for
+  its wake word, nothing recorded or sent before it.
+- **The buyer's guide** (`/ai-toys-for-kids-in-india`) and the journal's **"what to look for in a
+  safe AI toy"** both told parents "Off should mean off, not muted and waiting". That is a bar no
+  wake-word toy can meet (it has to listen for its word), so the advice now asks what happens
+  BEFORE the wake word. The journal's own Kheelu line now says nothing is recorded or sent before
+  the wake word and that voice data stays on our own servers in India. That article's `updated`
+  date moves to 2026-10-04, because its visible text changed (§8.35-a).
+- **`lib/product-facts.ts`** feeds BOTH `SpecTable` and `Product.additionalProperty`: "Microphone"
+  and "Where the voice data goes" now state the confirmed facts. **This changes the Product JSON-LD
+  on every page that emits it**, deliberately.
+- **Left alone on purpose:** `/privacy` still says conversations "stay in your region". It is true
+  (India is the region), and the page is counsel-gated and outside this round's scope. The DPDP
+  journal article's "voice data stays in your region" is likewise true and untouched.
+
+Gate: `npm test` 1450 / 128.

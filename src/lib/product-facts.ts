@@ -70,14 +70,19 @@ export const KHEELU_FACTS: readonly ProductFact[] = [
     value: `${KHEELU_LANGUAGES.length} at launch (${LANGUAGES_LINE}), up to 10. Switches mid-sentence.`,
   },
   { name: "Modes", value: "Three: AI mode for open conversation, Story mode for stories and lessons, Bluetooth mode as a speaker." },
-  { name: "Microphone", value: "Wakes to a word. Off the rest of the time, not muted." },
+  /* Swept 2026-10-04 (content doc v7 Appendix B): a toy that wakes to a
+     word has to listen for it, so "off, not muted" was never accurate. The
+     new value is published on Home and /safety. */
+  { name: "Microphone", value: "Listens only for its wake word. Nothing is recorded or sent before it." },
   { name: "Internet access", value: "None. Answers come from a closed library. Kheelu cannot browse or search." },
   {
     name: "Works offline",
     value: "Story-mode stories and lessons, and Bluetooth music with a paired phone. AI mode needs home WiFi.",
   },
   { name: "Parent app", value: "Every conversation word for word, deletable in one tap, plus topic controls and quiet hours." },
-  { name: "Where the voice data goes", value: "Stays in your region. Never sold, never used to advertise to your child." },
+  /* Founder-confirmed 2026-10-04: Kheelona's own servers, in India. More
+     specific than "your region", which stays true and stays on /privacy. */
+  { name: "Where the voice data goes", value: "Kheelona's own servers, in India. Never sold, never used to advertise to your child." },
   { name: "Price", value: `${LAUNCH_PRICE} for the ${CAP_UNITS_TEXT}, then ${FULL_PRICE}.` },
   { name: "To reserve one", value: `${TOKEN_PRICE}, refundable in full any time before dispatch. ${BALANCE_PRICE} balance falls due before we ship.` },
   { name: "Delivery", value: `Included anywhere in India. ${TAX_LINE} The published price is the total cost.` },
