@@ -1,5 +1,56 @@
 # kheelona.com — session entry point
 
+**🛍️ THE CMO MERGE: SALES-FIRST CONTENT ON OUR OWN DESIGN SYSTEM — ON BRANCH `redesign-mockup-2026-10`
+(PR #16), BUILT AND VERIFIED LOCALLY 2026-10-04, AWAITING THE FOUNDER'S REVIEW ON THE VERCEL PREVIEW.
+NOT ON `main` YET.** Record: `docs/checkpoints/cmo-merge-2026-10.md`; laws **§8.42 a-h**; rollback tag
+`pre-cmo-merge-2026-10` = `77552ff`. The CMO's PR carried two things in one diff: sales-first content
+(KEPT, rebuilt on the shared components) and a v4 design-system swap (DROPPED: "we will still continue
+using our website Design System"). **While this banner says "awaiting review", everything below it
+describes `main`; on the branch, these supersede it:**
+
+- **Every indexed URL stayed** (founder decision 1). `/products/kheelu`, `/team` (nav label "Our
+  story"), `/contact` are pages; only **`/how`** and **`/faq`** are new, and `/faq` lost its old 308.
+  The mockup's `/kheelu` and `/story` were NOT built. `test/cmo-merge-routes.test.ts` pins this.
+- **THE KHEELU GUIDE IS RETIRED** (founder decision 2): `KheeluGuide`, all 48 `say=` lines and the
+  `guide`/`say` props are gone; **`StickyReserveBar`** (phones only, `cta=sticky-bar`) inherits the
+  dock's hide-at-`#reserve` contract. Reveals and the backdrop STAY. The brand-law lines below about a
+  narrator and founder-approved say lines no longer apply on the branch. The mascot drawings still
+  illustrate journal pages (`Story.pose`), so the art conflict is NOT fully settled.
+- **Claims (founder decision 3, 2026-10-04): CONFIRMED** no camera; it says it is a toy and never asks
+  a child for a secret; voice goes only to Kheelona's own servers, **in India**. **NOT confirmed:**
+  "talking is free for life". **Brain claims are research-anchored** (decision 4): conversation helps a
+  young brain grow, Kheelu gives a child more of it, never "Kheelu grows the brain".
+  `test/claims-gated.test.ts` bans the retired wording (comments exempt).
+- **"The microphone is off. Not muted. Off." IS RETIRED EVERYWHERE**, including the spec table that
+  feeds Product JSON-LD: a wake-word toy listens for its word. Say it listens only for its wake word
+  and records or sends nothing before it (content doc v7 Appendix B).
+- **The CTA label is "Reserve Kheelu for ₹499" / "Reserve ₹499"** (`RESERVE_LABEL`,
+  `RESERVE_SHORT_LABEL`); `PREORDER_LABEL` is DELETED. **Token-mode only: both are on the §8.26-g
+  sell-out sweep.** Nav: Meet Kheelu · How it helps · Safety · Stories · Our story · FAQ; PlayOS moved
+  to the footer (reverses R11/V4 D6, by the founder's approval of the plan).
+- **THE PIXEL AND POSTHOG WERE FROZEN** (founder requirement): the root layout, `fbq`/`posthog`/
+  `click-id`/`campaign`, `proxy.ts`, the CSP, `lib/store`, `app/api`, `app/store`, `features/preorder`
+  and 15 config constants are byte-identical to the tag, proven by `test/analytics-freeze.test.ts` (a
+  ROUND guard: retire it after production verification). **ViewContent now also fires on Home**
+  (founder request recorded on the branch); counts step up from the deploy date. Only two new PostHog
+  `cta` values: `home-reserve`, `sticky-bar` (`test/cta-tracking.test.ts`).
+- **Registry changes:** retired `HowItWorksLoop`, `FeelingsGallery`, `features/home/{Family,
+  KheeluOrbit,ParentAppSection}`, `lib/feelings.ts`, `lib/kheelu-poses.ts`; added `Tabs`,
+  `StickyReserveBar`, `features/home/{TrustStrip,HowItWorks,AgeTabs,TwoReasons,PriceRoom,TeamStrip}`;
+  `CompareTable` takes `columns`/`rows` (the branch's forked `ComparisonTable` folded in);
+  `lib/{comparison,faq,team}.ts` are the content sources.
+
+**🔴 TWO TRAPS FROM THIS ROUND.** (1) **Port 3456 is held by a `next-server` started 2026-09-20**, a
+stale build; this round served on **3460** (`SWEEP_BASE`/`SWEEP_STORE`/`PROBE_*` take the port). A
+first set of screenshots came from the stale server before `lsof` gave it away. (2) **Full-page
+screenshots over ~16k px TILE** (Chrome repeats the first segments at 2x); capture scrolled
+viewport chunks at 1x instead.
+
+**Gate at the round's close:** 1403 → **1542 tests / 132 files** (every delta reconciled in the
+checkpoint), `tsc` 0, build passes, `qa:sweep` **clean 40/40** with **113** accepted (was 90, the
+increase reconciled), `qa:payment` **clean 10/10**, and the analytics probe under the real
+hostnames with its control.
+
 **🎯 THE META PIXEL MOVED TO `1051265191046395` — DEPLOYED AND VERIFIED ON PRODUCTION 2026-09-20.**
 Record: `docs/checkpoints/meta-pixel-migration-2026-09-20.md`; laws **§8.41 a-i**; rollback tags
 `pre-meta-clickid-2026-09-20` = `b1078de`, `pre-meta-pixel-migration-2026-09-20` = `06a93b8`.

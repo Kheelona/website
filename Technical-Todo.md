@@ -39,6 +39,39 @@ that date, raise them first.
 
 ---
 
+# 🛍️ THE CMO MERGE (on branch `redesign-mockup-2026-10`, PR #16, built and verified locally 2026-10-04)
+
+*Record: `docs/checkpoints/cmo-merge-2026-10.md`. Laws **§8.42 a-h**. Rollback tag
+`pre-cmo-merge-2026-10` = `77552ff`. NOT on `main` until the founder approves the preview.*
+
+## 🧑 Founder — review, then merge
+
+| Priority | Item | Why |
+|---|---|---|
+| **HIGH** | **Review the Vercel preview of PR #16** (Vercel login needed): Home, `/products/kheelu`, `/safety`, `/team`, `/how`, `/faq`, at phone and desktop width | The merge decision is yours. **The preview will show NO pixel and NO PostHog, and that is correct**: `*.vercel.app` is in no host list. Analytics was verified locally under the real hostnames instead. |
+| **HIGH** | **Glance at the comparison's competitor cells** (`src/lib/comparison.ts`): "No, made for adults", "Often made for 5 and up", "Voice history only", "Many have video apps"… | Product TYPES only, no brand, footnoted "based on typical products". Still a comparative claim about other categories, written by the mockup; the founder should be comfortable with each cell. |
+| MEDIUM | Confirm three defaults taken in the plan: PlayOS moved from the nav to the footer; the finale reads "Kheelu ships from 20 October 2026."; the phone comparison is the design system's stacked cards, not the mockup's chip switcher | Each is easy to reverse. The stacked comparison is long on a phone (9 claims × 4 values); the chip switcher is the alternative if that bothers you on the preview. |
+| MEDIUM | `/contact` says "The toy is designed and built here". `lib/product-facts.ts` says manufacture origin has never been claimed | Predates this round, flagged rather than silently rewritten. The mockup's "Made in Bengaluru" was dropped for the same reason. |
+| LOW | Pilot quotes are still the drafted placeholders, now with card headlines (content doc v7) | Your standing decision; the headlines restate the quotes and add nothing. |
+
+## 🧑 Founder — after the merge deploys
+
+| Priority | Item | Why |
+|---|---|---|
+| **HIGH** | Search Console: **request indexing for `/how` and `/faq`, and resubmit the sitemap** | New pages are not read until asked (§8.36: shipping a sitemap change is not Google reading it). |
+| MEDIUM | PostHog: insights keyed on `cta` keep working (`hero`, `navbar`, `navbar-mobile`, `finale`, `product-top`, `product-foot`, `compare`, `home-arc`); **add `home-reserve` and `sticky-bar`**. Any insight filtering on the button TEXT "Pre-order Kheelu" must switch to `cta` | The label changed to "Reserve Kheelu for ₹499". |
+| MEDIUM | Meta: **ViewContent steps up from the deploy date** (Home now fires it). Annotate it in Ads Manager / Events Manager | Not comparable with the weeks before. |
+
+## 🤖 Mine
+
+| Priority | Item | Why |
+|---|---|---|
+| **HIGH** | After deploy: the production checks of the checkpoint's section D — pixel beacons via `HTMLImageElement.prototype.src`, `eventCount` 2 on Home and `/products/kheelu`, `/ingest` 200s, **the recorder loads on `store.kheelona.com/` and NOT on `/thanks`** (the one control the local probe could not run), Lighthouse on production, Rich Results Test | The probe blocked `/ingest` by design, so replay's control can only run live. |
+| MEDIUM | **Retire `test/analytics-freeze.test.ts`** once production confirms | A round guard; left in place it blocks every legitimate analytics change. |
+| LOW | **Pre-existing, found this round, NOT fixed:** `SectionHeading`'s `leading-[1.08]` is dropped by `cn()` (tailwind-merge treats the following `text-[clamp…]` size as also setting line-height), so every multi-line section heading on the site renders with loose leading | A shared-component change touching every page; deliberately kept out of a content merge. One-line fix (move the leading after the size, or use `text-[size]/[1.08]`) plus a visual pass. |
+
+---
+
 # 📈 SIGNUPS MEASURABLE IN POSTHOG (🟢 DEPLOYED AND VERIFIED 2026-09-20)
 
 *Record: `docs/checkpoints/signup-analytics-2026-09-20.md`. Laws **§8.40 a-i**. Rollback tag
@@ -1141,6 +1174,13 @@ worth churning a live commercial site for on its own.*
       under-reports the product by ₹3,000, which quietly skews any value-based audience or report
       built on it. The component's own header comment and `ViewContentTracker.test.tsx` both point
       back here.
+      **⚑ PATH MOVED 2026-10-04 (CMO merge):** the tracker now lives at
+      `src/components/molecules/ViewContentTracker.tsx` and is mounted on Home as well as
+      `/products/kheelu`. Same one-line change, now covering both pages.
+      **⚑ ADDED 2026-10-04, and this one is ON EVERY BUTTON:** `RESERVE_LABEL` ("Reserve Kheelu for
+      ₹499") and `RESERVE_SHORT_LABEL` ("Reserve ₹499") in `src/config/site.ts` become false the day
+      the store flips. Rewrite both in the same sweep (e.g. "Pre-order Kheelu for ₹7,999"), and the
+      phone reserve bar's "₹499 reserves Kheelu" line in `StickyReserveBar.tsx` with them.
 
 ---
 

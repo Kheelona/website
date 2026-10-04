@@ -1,7 +1,7 @@
 # The CMO's sales-first content, merged onto our own design system (2026-10-04)
 
-**Status: IN PROGRESS.** Running record, appended at every commit (living-documentation law,
-founder 2026-09-05). Branch **`redesign-mockup-2026-10`** (PR #16). Rollback tag
+**Status: BUILT AND VERIFIED LOCALLY 2026-10-04, AWAITING THE FOUNDER'S REVIEW OF THE VERCEL PREVIEW.
+NOT MERGED.** Running record, appended at every commit (living-documentation law, founder 2026-09-05). Branch **`redesign-mockup-2026-10`** (PR #16). Rollback tag
 **`pre-cmo-merge-2026-10` = `77552ff`** (main before any of this, and before the CMO branch).
 
 ---
@@ -281,3 +281,32 @@ Also: `/how` and `/faq` joined `test/metadata-lengths.test.ts` and `qa:sweep` (3
 | Gate | Result |
 |---|---|
 | `npm test` | **1542 / 132**. From 1450: +26 +15 +30 +17 (the four new files) +4 (metadata-lengths, two pages) = **1542** |
+
+### Verification on the finished branch (before docs and review)
+
+All against a fresh `next build` served on **port 3460**. **3456 is held by a `next-server`
+started 2026-09-20** (a stale build, the documented trap); it was left running, not killed, and
+nothing here was measured against it. A first set of screenshots WAS taken from it by mistake and
+discarded once `lsof` showed the start date.
+
+| Check | Result |
+|---|---|
+| `npx next build` | passes, token gate included; `/how` and `/faq` prerender static |
+| `qa:sweep` (`SWEEP_BASE=http://127.0.0.1:3460 SWEEP_STORE=http://store.localhost:3460`) | **clean, axe and voice, 40/40** (was 36). Accepted white-on-orange **113** (was 90): 43 at 390px + 70 at 1280px. The +23 = 8 from the two new pages (2 per page per width) + 15 from Home and the Kheelu page, whose desktop comparison now has 10 action-filled cells instead of 7 and whose Home gained two reserve buttons (`home-reserve`, `home-arc` moved). No OTHER contrast pair fails. |
+| `qa:payment` (sandbox keys; the Supabase stub already running since 2026-09-20 with `STUB_WRITABLE=1`, same file) | **clean 10/10**: four fields, create-order 200, real sandbox order, amount from our tier table (49900), address token minted, Checkout sheet opens, nothing refused by the CSP, no page errors, signed webhook 200, forged webhook 400 |
+| **Analytics probe**: the build under the real hostnames (`kheelona.com:3460`, `store.kheelona.com:3460` mapped to 127.0.0.1), fresh profile per route, every third-party request AND every same-origin `/ingest` request aborted, so nothing was delivered | On all 8 routes (Home, Kheelu, /how, /faq, /safety, /team, store, store /thanks): `fbq` queue holds `init 1051265191046395` and exactly one `PageView`, no other pixel; `fbevents.js` attempted; GA4 `G-7LMKSFEXZ9` attempted; PostHog made 5 requests, ALL to `/ingest`, **zero** to any `posthog.com` host. `ViewContent` = 1 on Home and the Kheelu page, 0 elsewhere. CTA values on the page: Home `navbar, hero, home-arc, compare, home-reserve, finale, sticky-bar`; Kheelu `navbar, product-top, product-foot, finale, sticky-bar`. |
+| **The probe's control**: same build at `http://127.0.0.1:3460/` (a host in no list) | nothing initialised, nothing attempted, zero `/ingest`: the gate and the instrument both behave, so the positive rows above mean something |
+| **Not verifiable locally, stated plainly** | The session RECORDER cannot load in the probe because `/ingest` (and so PostHog's remote config) is blocked by design; its control (loads on `store.kheelona.com/`, NOT on `/thanks`) is a production check after the merge, exactly as on 2026-09-19. The replay code is byte-identical to main (freeze test). |
+
+### Commit 10 — the records
+
+CLAUDE.md banner (what supersedes `main` on this branch, the two traps, the gate); **§8.42 a-h** in
+`docs/website-steps.md`; a "THE CMO MERGE" section at the top of `Technical-Todo.md` (the founder's
+review list, the post-deploy list, and mine, including retiring the freeze test and the pre-existing
+`SectionHeading` leading defect found this round); the sell-out sweep now names `RESERVE_LABEL`,
+`RESERVE_SHORT_LABEL`, the reserve bar's line and the tracker's new path; `MARKETING-TODO.md` marks
+the claims settled and lists what the merge changed from the branch; `project-state.json` carries the
+phase, the handoff and 1542 / 132.
+
+**Next:** push the branch (PR #16 and its preview update), founder review, then `--no-ff` merge and
+the production checks of section D.

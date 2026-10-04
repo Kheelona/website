@@ -9,10 +9,23 @@ revision than the mockup the redesign (PR #16) was built from. Each row below wa
 branch `redesign-mockup-2026-10` on **2026-10-02**. The working copy with comment threads is the
 "Content feedback check: redesign vs Final docs" doc on claude.ai.
 
+> **⚑ UPDATED 2026-10-04, THE CMO MERGE (`docs/checkpoints/cmo-merge-2026-10.md`).** The branch was
+> rebuilt on the site's own design system and its existing URLs, so read every "✅ done in PR #16"
+> below as "content kept"; the pages that carry it are `/products/kheelu` (not `/kheelu`) and
+> `/team` (not `/story`), and `/how` and `/faq` are new. The **Claims to settle** table at the
+> bottom is now settled (founder, 2026-10-04). The placeholder guard moved to
+> `test/cmo-merge-routes.test.ts`, and banned claims live in `test/claims-gated.test.ts`.
+> Also changed from the branch, each recorded in the checkpoint: the Harvard line quotes its source;
+> the /how pilot-results promise and "wait five seconds" were not carried; the shut-down answer says
+> what needs our servers rather than "we plan to be here for years"; the attachment FAQ lost "see how
+> long your child talks"; Home's parent-app card shows the real screenshot, not sample screens with
+> an unconfirmed "bedtime stories after 7 pm" control; the finale says "ships from 20 October", not
+> "Meet Kheelu on 20 October".
+
 **Rules that shape what ships:**
 
 - The site never shows a bracketed placeholder. A block that needs a fact the team has not supplied
-  stays hidden; `test/redesign-routes.test.ts` fails on a bracketed placeholder in `src/`.
+  stays hidden; `test/cmo-merge-routes.test.ts` fails on a bracketed placeholder in `src/`.
 - No smart speaker, tablet or robot toy brand is named anywhere, including alt text, ads and keywords.
 - Ages render as "3+". The site publishes no age ceiling (founder decision #8), so the docs' "3 to 7"
   is shown as 3+.
@@ -131,11 +144,12 @@ needed) · 🧑 open, needs a fact or a decision from the team · ⛔ not doing,
 
 | Claim | Where it still stands | Status |
 | --- | --- | --- |
-| The mic is "off, not muted" until the wake word (Appendix B retires it) | Fixed on the Home safety card and the FAQ page. Still in: Safety page cards, Home FAQ answer, `src/lib/product-facts.ts`, the buyer's guide, `llms.txt`, one journal article | 🧑 Approve the sweep to "Nothing is recorded or sent until your child says the wake word" |
-| Servers are in India; no third-party AI processes audio outside India | Not claimed; "in your region" is live | 🧑 |
-| Kheelu says it's a toy and never asks for a secret | Live on the Home safety card | 🧑 Confirm it is enforced in the product |
-| Talking, safety controls and the log are free for life | Live in the comparison table ("Talking is free for life") | 🧑 Policy decision |
-| Kheelu has no camera | Live in the comparison table | 🧑 Confirm |
+| The mic is "off, not muted" until the wake word (Appendix B retires it) | **Swept everywhere 2026-10-04**: Home, /safety, the Kheelu page's four steps, the buyer's guide, the safe-AI-toy journal article, `llms.txt`, and `lib/product-facts.ts` (so the Product JSON-LD too). `/privacy` untouched (counsel-gated). | ✅ Banned by `test/claims-gated.test.ts` |
+| Servers are in India; no third-party AI processes audio outside India | **Founder-confirmed 2026-10-04**: "our own servers, in India" on Home, /safety, /faq, the spec table and `llms.txt` | ✅ |
+| Kheelu says it's a toy and never asks for a secret | **Founder-confirmed 2026-10-04**: Home safety card, the attachment FAQ, `llms.txt` | ✅ |
+| Talking, safety controls and the log are free for life | **NOT confirmed (2026-10-04)**: the comparison's monthly-fee row is removed; only `KHEELONA_PLUS_LINE` ("smart features are yours for life") ships | ⛔ Banned by `test/claims-gated.test.ts` until confirmed |
+| Kheelu has no camera | **Founder-confirmed 2026-10-04**: comparison row "Camera in your home: None" | ✅ |
+| Brain claims ("helps your child's brain grow", "supports brain development") | **Research-anchored (founder, 2026-10-04)**: conversation helps a young brain grow, Kheelu gives a child more of it; never Kheelu's own effect | ✅ Banned wording pinned |
 
 ## Assets and facts the team owes (Appendix C)
 

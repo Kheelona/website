@@ -3391,3 +3391,75 @@ one rather than trusting a default, because the setting that mattered had a name
 checked. The same collision bites when writing the finding down: **always cite the page path with a
 Meta setting name**, because Meta reuses "Automatic…" across unrelated screens and the reader will
 land on the wrong one.
+
+---
+
+# §8.42 · The CMO merge (2026-10-04): sales-first content on our own design system
+
+Record: `docs/checkpoints/cmo-merge-2026-10.md`. Branch `redesign-mockup-2026-10` (PR #16). Rollback
+tag `pre-cmo-merge-2026-10` = `77552ff`.
+
+## §8.42-a · A mockup is two diffs in one; separate them before merging either
+
+The CMO's PR changed 227 files, and most of the size was a design-system swap (v4 tokens, new fonts,
+dark mode, ~60 hand-built classes, the 2.88:1 CTA decision "retired" with no founder decision behind
+it). The content was the part asked for. **The method that worked: rebase the branch's tree onto
+main (`git checkout <tag> -- .`), keep only the content data files, then rebuild each fold on the
+registry.** The original commits stay in the branch history as the reference. Trying to strip the
+design out of the branch file by file would have left hybrid components nobody owns.
+
+## §8.42-b · Keep the URL; change the label
+
+A nav label is free and a URL move is not: Google, the ads, QR codes and answer-engine citations all
+hold the old address, and `/products/kheelu` had already moved once on 2026-09-05. So "Our story"
+is a label on `/team`, and only genuinely new pages get new URLs. A URL move needs its own decision,
+never a tidy-up, and `test/cmo-merge-routes.test.ts` fails if an indexed page becomes a redirect.
+
+## §8.42-c · A retired component takes its contracts with it unless someone moves them
+
+The guide's mobile dock hid itself while `#reserve` was on screen (the StickyMobileCTA lesson of
+2026-07-10). The mockup's sticky bar replaced the dock and **lost that contract**, so the finale
+would have shown two reserve buttons. `StickyReserveBar` inherits it, re-armed per route, and also
+hides over the footer. **When you delete a component, list what it promised, not just what it
+drew.**
+
+## §8.42-d · A claim in a mockup is a question for the founder, not copy
+
+Every unpublished fact the mockup carried went to the founder as a yes/no before it shipped: no
+camera, says it is a toy, own servers in India (all three confirmed 2026-10-04), talking free for
+life (NOT confirmed, banned by `test/claims-gated.test.ts`). Efficacy is worded through the research
+("conversation helps a young brain grow; Kheelu gives a child more of it"), so Home cannot contradict
+/how's "we have not yet shown". Unsigned commitments ("we plan to be here for years", "we will
+publish the results, good or bad") and invented numbers ("wait five seconds") were not carried.
+
+## §8.42-e · Check a paraphrase against its source before it ships
+
+The mockup said Harvard calls serve and return "a building block of early brain development". The
+page says the exchanges "play a key role in shaping brain architecture" and defines them as being
+"between a young child and a caring adult". The adult is the honest half of the sentence, so the
+site now quotes the page, adult included. **A citation is a claim about another page; read that
+page.**
+
+## §8.42-f · Wording that was never accurate is retired everywhere, including the schema
+
+"The microphone is off. Not muted. Off." described a wake-word toy wrongly: it has to listen for its
+word. The sweep reached nine places, including the buyer's guide and a journal article that told
+parents to demand a bar Kheelu cannot meet, and `lib/product-facts.ts`, which feeds Product JSON-LD
+on every page. **When a fact changes, grep for it; a page rebuild only fixes the pages you rebuilt.**
+
+## §8.42-g · Freeze what you are not changing, and prove the freeze
+
+The founder's requirement was that the pixel and PostHog carry forward. They live almost entirely
+outside the pages, so that layer was frozen byte-identical to the tag and a test compares it (13
+paths, 15 config constants, `next.config.ts` allowed to lose only the `/faq` redirect). The pages
+touch analytics in exactly two ways, both now pinned: the PostHog `cta` values (only two new ones)
+and ViewContent's mount points. **A freeze is a round guard**: retire it once production confirms,
+or it blocks the next legitimate analytics change.
+
+## §8.42-h · Every guard is proven against a planted violation
+
+Each new test was shown to FAIL before it was trusted: "free for life" in a temp file tripped the
+claims test and the same words in a comment did not; a comment appended to `fbq.ts` and the retired
+pixel id tripped the freeze; a renamed `cta` tripped the tracking test; and the analytics probe was
+run once on a host in no list, where nothing fired. A guard that has never failed has never been
+tested (§8.38-i, §8.41-h).
