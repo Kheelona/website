@@ -172,3 +172,28 @@ in the box** → **the product family, moved here from Home** → PriceTable (`c
 
 Gate: `tsc` 0; `npm test` 1445 / 128 (unchanged: no test reads this page directly; the page-level
 CTA and ViewContent guards land with the guards commit).
+
+### Commit 5 — /safety: the mockup's structure, the answers kept visible
+
+"How we keep Kheelu safe." → the flagship answer (visible, AEO) → "The four basics." with the
+listening answer → where the voice goes (answer + the three stops + the four custody promises; the
+first renamed "Kept in India", founder-confirmed) → the two follow-up answers → "Certificates: what
+is done and what is next." (adds the already-published "Toy-safety certification: In progress") →
+"What if Kheelona ever shuts down?" → "What you control." → the safety FAQ → a WhatsApp band → the
+finale.
+
+- **The microphone sweep, completed for this page:** the flagship answer, the listening answer,
+  the first basic and the toddler checklist no longer say "off" or "Not muted. Off."; they say it
+  listens only for its wake word and records or sends nothing before it.
+- **"Our own servers, in India"** replaces "your region" and "Kheelona's own voice brain", per the
+  founder's confirmation.
+- **The drafted "Is an AI toy OK for a three-year-old?" answer is removed.** It was
+  GATED:founder-signoff from the day it was written, shipped to production unsigned, and the
+  mockup dropped it too. Its one new fact (it says it is a toy) is now confirmed and lives on Home.
+- **The shut-down answer is the true one, not the mockup's.** "We plan to be here for years" was a
+  promise nobody signed; the page now says AI mode needs our servers while Story mode and Bluetooth
+  do not, and stops there.
+- **Kept visible, deliberately unlike the mockup:** the answers stay AnswerBlocks rather than one
+  accordion, because this page ranks for "are AI toys safe" and engines quote what they can see.
+
+Gate: `tsc` 0; `npm test` 1445 / 128.

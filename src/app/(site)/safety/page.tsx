@@ -10,9 +10,11 @@ import { CheckList } from "@/components/molecules/CheckList";
 import { Reveal } from "@/components/molecules/Reveal";
 import { Button } from "@/components/atoms/Button";
 import { Faq, type FaqEntry } from "@/components/molecules/Faq";
+import { StepList } from "@/components/molecules/StepList";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { pageGraph, faqPage, breadcrumbs, pageMeta, jsonLd } from "@/lib/seo";
 import { KHEELU_ART, kheeluAlt } from "@/lib/kheelu-art";
+import { SUPPORT_WHATSAPP_HREF } from "@/config/site";
 
 export const metadata = pageMeta({
   title: "Are AI toys safe? How Kheelu is built to be",
@@ -31,15 +33,28 @@ export const metadata = pageMeta({
    V3: age copy is per-answer ("tuned to your child's age") with Kheelu's own band,
    2 to 5, where a number is needed. The retired teal wash went with the palette. */
 
+/* "The four basics" (CMO merge, 2026-10-04: the mockup's titles, the site's
+   published bodies). THE MICROPHONE SWEEP: the old first rule ended "the
+   microphone is off. Not muted. Off." A toy that wakes to a word has to
+   listen for that word, so content doc v7's Appendix B retires the "off"
+   wording, and test/claims-gated.test.ts keeps it retired. */
 const WORD_RULES = [
-  { title: "Listening starts with the wake word.", body: "Kheelu listens only after your child says the wake word. The rest of the time, the microphone is off. Not muted. Off." },
+  { title: "It listens only for its wake word.", body: "Until your child says the wake word, nothing is recorded and nothing is sent. Kheelu starts talking only when it is invited to." },
   { title: "Filters live on the device.", body: "The first safety checks happen on the toy itself, before anything travels anywhere." },
-  { title: "Every answer is age-graded.", body: "Replies pass through a safety layer tuned to your child's age. On-device and cloud filters work together." },
-  { title: "There is no open internet.", body: "Kheelu cannot browse, search, or stumble. No random videos, no endless detours, no strangers. Ever." },
+  { title: "Answers are checked for age.", body: "Replies pass through a safety layer tuned to your child's age before Kheelu speaks. On-device and cloud filters work together." },
+  { title: "It cannot go on the internet.", body: "Kheelu cannot browse, search, or stumble. No random videos, no endless detours, no strangers. Ever." },
+] as const;
+
+/* Where the voice goes, in three stops (the mockup's path). Founder-confirmed
+   2026-10-04: a child's voice goes only to Kheelona's own servers, in India. */
+const VOICE_PATH = [
+  { title: "On the toy", body: "Kheelu hears the wake word, and the first safety checks happen on the toy itself, before anything travels anywhere." },
+  { title: "Our own servers, in India", body: "Open conversation uses your home WiFi and Kheelona's own servers in India. Nothing goes to another country to be processed." },
+  { title: "Back to you", body: "The conversation appears in your app, word for word. It is never sold, and never used to sell your child anything." },
 ] as const;
 
 const VOICE_RULES = [
-  { title: "Region-pinned", body: "Your family's conversations stay in your region. They do not travel to another country to be processed." },
+  { title: "Kept in India", body: "Your family's conversations stay on our own servers in India. They do not travel to another country to be processed." },
   { title: "Parent-consented", body: "Nothing is collected without your say-so. If you have not said yes, it does not happen." },
   { title: "Deletable in one tap", body: "Read any conversation in the parent app. Delete any of it, whenever you like." },
   { title: "Never sold", body: "Your child's voice data is never sold, and never used to sell them anything." },
@@ -55,6 +70,9 @@ const VOICE_RULES = [
 /* R7: standards, status-for-status as published on kheelona.ai/safety.
    Never upgrade a status here (claims gate). */
 const STANDARDS = [
+  /* Already published as a status in lib/product-facts.ts (§8.36); the
+     mockup put it in the table, which is where a parent looks for it. */
+  { name: "Toy-safety certification", status: "In progress" },
   { name: "COPPA (2026)", status: "Designed for" },
   { name: "GDPR-K", status: "Designed for" },
   { name: "India DPDP", status: "Designed for" },
@@ -79,15 +97,15 @@ const ANSWERS = {
        engines quote 40 to 60 words, so length was costing us the citation. The
        independent-testing context moved into the page body where it belongs; the
        mechanisms and the closing challenge — the strongest line here — stay. */
-    a: "Not all of them, and the difference is in the mechanisms. Kheelu's mic wakes to a word and is off otherwise. The first thinking happens on the device. Replies come from a closed library, never the open internet. Every conversation is readable and deletable by you. You do not have to trust a badge. You can check.",
+    a: "Not all of them, and the difference is in the mechanisms. Kheelu listens only for its wake word and sends nothing before it. The first thinking happens on the device. Replies come from a closed library, never the open internet. Every conversation is readable and deletable by you. You do not have to trust a badge. You can check.",
   },
   listening: {
     q: "Is Kheelu always listening?",
-    a: "No. Kheelu listens only after your child says the wake word. The rest of the time the microphone is off, not muted. Off. Nothing is recorded before the wake word, and every conversation after it is readable in the parent app, where you can delete any of it.",
+    a: "No. Kheelu listens only for its wake word. Until your child says it, nothing is recorded and nothing is sent. Every conversation after the wake word is readable in the parent app, where you can delete any of it.",
   },
   voice: {
     q: "Where does my child's voice go?",
-    a: "Almost nowhere. The first thinking happens on the toy. What travels goes to Kheelona's own voice brain, stays in your region, and is never sold. Nothing is collected without your consent, and any conversation can be deleted in one tap from the parent app.",
+    a: "Almost nowhere. The first thinking happens on the toy. What travels goes to Kheelona's own servers in India, and is never sold. Nothing is collected without your consent, and any conversation can be deleted in one tap from the parent app.",
   },
   wrong: {
     q: "Could Kheelu say something wrong?",
@@ -99,16 +117,11 @@ const ANSWERS = {
   },
 } as const;
 
-/* GATED:founder-signoff (copy-v2 /SAFETY) — the point-by-point reply to
-   child-development guidance on AI toys. Drafted, NOT approved: it renders on
-   the revamp preview so the founder can read it in place, and it comes out
-   before the merge to master unless they sign it off. It is deliberately kept
-   out of the schema graph, so pulling the block never leaves orphaned
-   structured data behind. */
-const GATED_UNDER_FIVE = {
-  q: "Is an AI toy OK for a three-year-old?",
-  a: "Child-development groups say to be careful with AI toys, and we agree with most of what they ask for. They want toys that cannot reach the open internet. Kheelu cannot. They want parents to see every conversation. You do. They want no ads and no data selling. There are none. And they want toys that do not pretend to be alive. Kheelu is a toy that listens and answers, and the grown-up holds the keys.",
-} as const;
+/* The drafted "Is an AI toy OK for a three-year-old?" answer is GONE (CMO
+   merge, 2026-10-04). It was GATED:founder-signoff from the day it was
+   written, it shipped to production unsigned anyway, and the mockup dropped it
+   too. Its one new fact, that Kheelu says it is a toy, is now founder-
+   confirmed and lives on Home's safety cards instead. */
 
 /* Safety FAQ: question-led for answer engines (CMO review); answers reuse
    already-linted claims only. M4: the listening and voice-custody questions
@@ -126,7 +139,7 @@ const SAFETY_FAQ: FaqEntry[] = [
      criteria (the journal's safe-AI-toy piece and the ANSWERS mechanisms above)
      — nothing here is a new claim. Carries "smart toys for toddlers" and
      "educational toys for kids" in one parents'-voice entry. */
-  { q: "What should I look for in smart toys for toddlers?", a: "Five things: a microphone that sleeps until a wake word, answers from a closed library instead of the open internet, a conversation log you can read, voice data that stays in your region and is never sold, and replies graded for the age. The same checklist works for educational toys for kids at any age." },
+  { q: "What should I look for in smart toys for toddlers?", a: "Five things: a toy that listens only for a wake word, answers from a closed library instead of the open internet, a conversation log you can read, voice data that stays in your country and is never sold, and replies graded for the age. The same checklist works for educational toys for kids at any age." },
   /* Status-exact, never upgraded: mirrors the STANDARDS chips above. */
   /* The standards FAQ entry was REMOVED 2026-07-31 (founder: no certificate
      received yet, keep it off the FAQ; the status-honest standards room below
@@ -141,6 +154,13 @@ const SAFETY_JSON_LD = pageGraph(
   breadcrumbs([{ name: "Safety", path: "/safety" }]),
 );
 
+/* THE CMO MERGE (2026-10-04): the mockup's structure (the four basics, where
+   the voice goes, certificates, what if we shut down, what you control) on
+   the room grammar. One deliberate difference from the mockup: the answers
+   stay VISIBLE as AnswerBlocks rather than collapsing into one accordion,
+   because this page ranks for "are AI toys safe" and an answer engine quotes
+   what it can see (V5-3, §8.36). The page still ends in #reserve, and a
+   WhatsApp band for the parent who wants a person first sits just above it. */
 export default function SafetyPage() {
   return (
     <>
@@ -151,7 +171,6 @@ export default function SafetyPage() {
 
       <PageHero
         ratio="md:grid-cols-[1.2fr_0.8fr]"
-        /* GATED:kheelu-line — founder sign-off before merge to master */
         media={
           <Image
             src={KHEELU_ART.src}
@@ -167,15 +186,15 @@ export default function SafetyPage() {
         <SectionHeading
           as="h1"
           eyebrow="Safety"
-          title="Safe in their hands. Careful with their words."
+          title="How we keep Kheelu safe."
           titleClassName="mb-5 max-w-[16ch]"
-          lede="You are not buying a gadget. You are trusting a friend near your child. Here is everything that friend will and will not do, in plain words."
+          lede="You are trusting a friend near your child. This page lists what Kheelu does, what it does not do, and what we are still working on, in plain words."
           ledeClassName="max-w-[58ch]"
         />
       </PageHero>
 
       <RoomsTrack>
-        {/* The flagship answer: acknowledge what testers found, then show the
+        {/* The flagship answer: acknowledge the real findings, then show the
             mechanisms. No competitor is named. */}
         <Room fill="white" reveal="left">
           <Reveal>
@@ -188,8 +207,7 @@ export default function SafetyPage() {
           </Reveal>
         </Room>
 
-        {/* The words */}
-        <Room fill="cool" reveal="right">
+        <Room fill="cool" id="the-four-basics" reveal="right">
           <Reveal className="mb-11">
             <AnswerBlock
               id="always-listening"
@@ -200,7 +218,7 @@ export default function SafetyPage() {
           <Reveal>
             <SectionHeading
               level="minor"
-              title="Careful with their words."
+              title="The four basics."
               titleClassName="mb-3"
               lede="Four rules govern every word Kheelu hears and says. They are not settings. They are how a safe toy is built."
               ledeClassName="mb-10 max-w-[58ch]"
@@ -221,8 +239,8 @@ export default function SafetyPage() {
           </div>
         </Room>
 
-        {/* Where the voice goes: the custody chain */}
-        <Room fill="cream" reveal="left">
+        {/* Where the voice goes: the answer, the three stops, the promises */}
+        <Room fill="cream" id="where-the-voice-goes-room" reveal="left">
           <Reveal className="mb-11">
             <AnswerBlock
               id="where-the-voice-goes"
@@ -230,6 +248,7 @@ export default function SafetyPage() {
               answer={ANSWERS.voice.a}
             />
           </Reveal>
+          <StepList items={VOICE_PATH} className="mb-12" />
           {/* Data custody, as promises. Two columns, not four: at four the
               titles wrapped mid-phrase ("Deletable / in one tap"). */}
           <div className="grid gap-5 sm:grid-cols-2">
@@ -246,9 +265,6 @@ export default function SafetyPage() {
             ))}
           </div>
           <Reveal>
-            {/* R11 voice-lint: "can't" de-contracted — the .ai line arrived
-                verbatim, but the contraction gate outranks the reference
-                (founder can revert on live read; copy-reference R11) */}
             <p className="mt-10 max-w-[40ch] font-display text-[clamp(22px,2.4vw,28px)] font-extrabold leading-[1.25] text-ink-head">
               Nothing leaves without consent. Nothing stays that you cannot
               delete.
@@ -268,35 +284,17 @@ export default function SafetyPage() {
           </div>
         </Room>
 
-        {/* GATED:founder-signoff — see the GATED_UNDER_FIVE note above. */}
-        <Room fill="sun" reveal="left">
-          <Reveal>
-            <AnswerBlock
-              id="ok-for-a-three-year-old"
-              question={GATED_UNDER_FIVE.q}
-              answer={GATED_UNDER_FIVE.a}
-            />
-          </Reveal>
-        </Room>
-
-        {/* Safe in their hands: the physical toy */}
-        <Room fill="white" reveal="right">
+        {/* Certificates: status-honest, never upgraded (claims gate). */}
+        <Room fill="white" id="certificates" reveal="left">
           <Reveal>
             {/* TODO(claims-certs): exact toy-safety standards and certificate
                 references pending from founder. No physical claims before
-                certification (copy-review verdict); launch gate needs the list. */}
+                certification (copy-review verdict). */}
             <SectionHeading
-              title="Safe in their hands."
-              titleClassName="mb-4"
-              lede="Kheelu is designed for small hands and big feelings. We are completing formal toy-safety testing now. The exact materials, standards, and certificates will be listed here, in full, before Kheelu ships."
-              ledeClassName="mb-10 max-w-[62ch]"
-            />
-            <SectionHeading
-              level="minor"
-              title="The standards we build against."
-              titleClassName="mb-3"
-              lede="These are the children's privacy frameworks Kheelu is designed for, and where our certifications stand today. No badge appears here before it is earned."
-              ledeClassName="mb-8 max-w-[58ch] text-[17px]"
+              title="Certificates: what is done and what is next."
+              titleClassName="mb-4 max-w-[22ch]"
+              lede="Kheelu is designed for small hands and big feelings. We are completing formal toy-safety testing now, and the exact materials, standards, and certificates will be listed here, in full, before Kheelu ships. No badge appears here before it is earned."
+              ledeClassName="mb-8 max-w-[62ch]"
             />
           </Reveal>
           <Reveal>
@@ -320,17 +318,31 @@ export default function SafetyPage() {
           </Reveal>
         </Room>
 
-        {/* The grown-up holds the keys */}
-        <Room fill="cool" reveal="left">
+        {/* The mockup's shut-down question, answered with what is true today.
+            Its "We plan to be here for years" was a promise nobody signed, so
+            the answer says which parts need us and which do not, and stops. */}
+        <Room fill="sun" id="if-we-shut-down" reveal="right">
           <Reveal>
             <SectionHeading
-              title="The grown-up holds the keys."
+              level="minor"
+              title="What if Kheelona ever shuts down?"
+              titleClassName="mb-4"
+              lede="You deserve a straight answer. Open conversation in AI mode needs our servers. Story-mode stories and lessons play offline, and Bluetooth music needs only a paired phone."
+              ledeClassName="max-w-[60ch] text-ink"
+            />
+          </Reveal>
+        </Room>
+
+        <Room fill="cool" id="what-you-control" reveal="left">
+          <Reveal>
+            <SectionHeading
+              title="What you control."
               titleClassName="mb-4"
               lede="Kheelu never decides what is right for your family. You do. The parent app is where you turn the keys:"
               ledeClassName="mb-6 max-w-[54ch]"
             />
             <CheckList items={PARENT_KEYS} className="mb-8 space-y-3" />
-            <Button href="/products/kheelu" variant="ghost">
+            <Button href="/products/kheelu#parent-app" variant="ghost">
               See the parent app on the Kheelu page
             </Button>
           </Reveal>
@@ -351,13 +363,24 @@ export default function SafetyPage() {
           </Reveal>
         </Room>
 
-        <Room
-          fill="white"
-          id="reserve"
-          /* GATED:kheelu-line */
-          reveal="pop"
-          className="overflow-x-clip"
-        >
+        {/* The mockup's closing band: a person first, for the parent who
+            wants one before paying. The finale still follows it. */}
+        <Room fill="white" id="ask-a-person" reveal="left">
+          <Reveal>
+            <SectionHeading
+              level="minor"
+              title="Still have a safety question?"
+              titleClassName="mb-3"
+              lede="A real person answers, on WhatsApp."
+              ledeClassName="mb-6"
+            />
+            <Button href={SUPPORT_WHATSAPP_HREF} variant="ghost">
+              Ask us on WhatsApp
+            </Button>
+          </Reveal>
+        </Room>
+
+        <Room fill="white" id="reserve" reveal="pop" className="overflow-x-clip">
           <FinaleCTA bare variant="compact" />
         </Room>
       </RoomsTrack>
