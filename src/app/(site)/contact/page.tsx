@@ -93,7 +93,7 @@ export default function ContactPage() {
             eyebrow="Contact"
             title="Talk to us."
             titleClassName="mb-4"
-            lede="We are a small team in Bengaluru, and we answer our own messages. Here is the quickest route for each kind of question."
+            lede="We are a small team in Bengaluru, and a real person answers. Here is the quickest route for each kind of question."
             ledeClassName="max-w-[58ch]"
           />
         </div>

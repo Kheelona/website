@@ -1,107 +1,49 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Room } from "@/components/atoms/Room";
 import { RoomsTrack } from "@/components/atoms/RoomsTrack";
+import { Button } from "@/components/atoms/Button";
 import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { PageHero } from "@/components/templates/PageHero";
 import { StepList } from "@/components/molecules/StepList";
 import { Reveal } from "@/components/molecules/Reveal";
 import { TiltCard } from "@/components/molecules/TiltCard";
+import { Card } from "@/components/molecules/Card";
+import { PromiseMark } from "@/components/molecules/PromiseMark";
 import { RecognitionStrip } from "@/components/organisms/RecognitionStrip";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { pageGraph, breadcrumbs, pageMeta, jsonLd } from "@/lib/seo";
+import { FOUNDERS, BELIEFS } from "@/lib/team";
+import { SUPPORT_WHATSAPP_HREF } from "@/config/site";
 
 export const metadata = pageMeta({
-  /* SEO round 2026-08-12: /team's body is manifesto copy (the beliefs, the
-     bios) and stuffing product keywords into it would damage it, so this
-     page's two keywords live in the metadata instead — "smart toys for
-     toddlers" in the title (61 chars with suffix, under the 65 guard),
-     "AI educational toy" in the description (159, under 160). */
-  title: "Team: the parents building smart toys for toddlers",
+  /* CMO merge (2026-10-04): the mockup's "Our story" label, which is now
+     the nav tab, on the URL that stays /team. The SEO round's keyword
+     placement survives: "smart toys for toddlers" in the title (62 with the
+     suffix, under the 65 guard), "AI educational toy" in the description. */
+  title: "Our story: parents building smart toys for toddlers",
   description:
-    "The people behind Kheelu, the AI educational toy: a CTO with 14 patents, an Intel hardware chief, a marketing head keeping it honest, and a CEO who owns trust.",
+    "Why we built Kheelu, the AI educational toy, and who we are: a CTO with 14 patents, an Intel hardware chief, a marketing head, and a CEO who owns trust.",
   path: "/team",
 });
 
-/* R7 full-parity rebuild from kheelona.ai/team (founder-published source:
-   its content/site.ts TEAM object). Bios adapted to parent voice; facts
-   verbatim (14 patents, Intel + Thunderbolt 4/5 compliance, CA + 15 years
-   scaling). Pull-quotes verbatim. Colored text stays decorative-only:
-   names/titles are ink (contrast).
-   Revamp M4 (theme B): hero on the backdrop + rooms; the quotes moved from
-   Instrument Serif to the display face (two-font law, P2). */
+/* Card colours per person, by id, exactly as the old /team page had them.
+   Design lives here, beside the layout; the facts live in lib/team.ts, shared
+   with Home's team strip. */
+const CARD_TINT: Record<string, { tint: string; border: string; quoteBorder: string }> = {
+  aman: { tint: "bg-orange/15", border: "border-t-orange", quoteBorder: "border-l-orange" },
+  kashyap: { tint: "bg-blue/15", border: "border-t-blue", quoteBorder: "border-l-blue" },
+  ria: { tint: "bg-blue/15", border: "border-t-blue", quoteBorder: "border-l-blue" },
+  apoorva: { tint: "bg-yellow/15", border: "border-t-yellow", quoteBorder: "border-l-yellow" },
+};
 
-const FOUNDERS = [
-  {
-    id: "aman",
-    name: "Aman Soni",
-    role: "Co-founder and CTO",
-    tag: "The brain",
-    photo: "/team/aman.jpg",
-    tint: "bg-orange/15",
-    border: "border-t-orange",
-    quoteBorder: "border-l-orange",
-    linkedin: "https://www.linkedin.com/in/aman-soni-6b17b6223/",
-    bio: "Aman builds the part that thinks. He studied AI, shipped machine learning in production, and holds 14 patents filed in his own name. He owns the backend and the brain: the voice loop your child talks to, the safety filters, and the small language model we train ourselves.",
-    quote:
-      "A toy that listens has to think on the device, in real time, and never say the wrong thing. That is the hard problem. It is the only one I want to work on.",
-  },
-  {
-    id: "kashyap",
-    name: "Kashyap C.R",
-    role: "Co-founder and Chief Hardware Officer",
-    tag: "The body",
-    photo: "/team/kashyap.jpg",
-    tint: "bg-blue/15",
-    border: "border-t-blue",
-    quoteBorder: "border-l-blue",
-    linkedin: "https://www.linkedin.com/in/kashyap-c-r-7ba18177/",
-    bio: "Kashyap makes Kheelu something small hands reach for. Over a decade, including years at Intel leading Thunderbolt 4 and 5 compliance, he took hardware from a blank page to certified products on real shelves. He owns the hardware and the power: the Kheelona Magic Box, the battery that lasts, and the unglamorous work of making it safe to hug.",
-    quote:
-      "Anyone can build a demo. Shipping a safe, certified toy by the thousand is a different sport. I have played it for ten years.",
-  },
-  {
-    // R10 (founder 2026-07-11): Ria joins between Kashyap and Apoorva.
-    // Bio facts from her published profile; quote drafted from her own
-    // published line ("most businesses don't have a marketing problem, they
-    // have a clarity problem") — founder-approved via the R10 plan, Ria's
-    // personal sign-off flagged in FOUNDER-TODO. R11: the founder's source
-    // PNG had a BAKED checkerboard (fake transparency) — re-cut with
-    // tools/cutout (Vision) and composited on flat pale lavender #F1ECFB,
-    // matching the set (each photo bg echoes its card tint family).
-    id: "ria",
-    name: "Ria Mangala Rewari",
-    role: "Head of Marketing",
-    tag: "The voice",
-    photo: "/team/ria.jpg",
-    tint: "bg-blue/15",
-    border: "border-t-blue",
-    quoteBorder: "border-l-blue",
-    linkedin: "https://www.linkedin.com/in/ria-mangala/",
-    bio: "Ria owns how Kheelona speaks to the world. She co-founded a marketing agency and ran it for seven years, and has trained more than 1,000 students and entrepreneurs in digital marketing. She owns the story: where Kheelu shows up, how it speaks, and why it never overpromises.",
-    quote:
-      "Most brands do not have a marketing problem. They have a clarity problem. My job is to keep this one clear and honest.",
-  },
-  {
-    id: "apoorva",
-    name: "Apoorva Sahu",
-    role: "Co-founder and CEO",
-    tag: "The business and the trust",
-    photo: "/team/apoorva.jpg",
-    tint: "bg-yellow/15",
-    border: "border-t-yellow",
-    quoteBorder: "border-l-yellow",
-    linkedin: "https://www.linkedin.com/in/sahu-apoorva/",
-    bio: "Apoorva grew up inside education businesses: his family runs the pre-school where he was the first student, in 1994, and he helped run his father's coaching centre as a teenager. Fifteen years in finance and company-building later, he is a Chartered Accountant who learned to ship AI. He owns the frontend, the firmware, and the promise this brand makes to your family.",
-    quote:
-      "The hard part of AI for children is not the model. It is the trust. So we build that first, and everything else second.",
-  },
-] as const;
-
-const BELIEFS = [
-  "Screen-free is not nostalgia. It is the next product.",
-  "Safety is not a feature. It is the whole product.",
-  "A toy should be kept, not outgrown.",
-  "The parent holds the keys. Always.",
+/* The mockup's three promises, minus its automatic late refund, which is not
+   a published policy (/refund). Each line below is already published. They
+   are promises, so they carry the promise marks (§8.23-3). */
+const PROMISES = [
+  "You can read every conversation your child has with Kheelu.",
+  "We never sell your child's data.",
+  "Your token comes back in full, any time before we ship.",
 ] as const;
 
 /* LinkedIn glyph from the kheelona.ai team page (lucide dropped brand
@@ -114,6 +56,11 @@ function LinkedInIcon() {
   );
 }
 
+/* THE CMO MERGE (2026-10-04): the mockup's "Our story" page, built on the URL
+   Google already has (/team; the founders' schema @ids live here too). The
+   mockup's headline leads and main's manifesto line opens the lede, so the
+   page keeps its strongest sentence. Every card carries the element id its
+   Person @id points at, so `/team#apoorva-sahu` finally lands on the person. */
 export default function TeamPage() {
   return (
     <>
@@ -125,24 +72,21 @@ export default function TeamPage() {
           __html: jsonLd(
             pageGraph(
               { "@type": "AboutPage", name: "The people who build Kheelona", url: "https://kheelona.com/team" },
-              breadcrumbs([{ name: "Team", path: "/team" }]),
+              breadcrumbs([{ name: "Our story", path: "/team" }]),
             ),
           ),
         }}
       />
-      {/* Manifesto hero (kheelona.ai framing, parent voice). Copy-only: the
-          four founder photos below are this page's picture. */}
-      <PageHero
 
-        /* GATED:kheelu-line — founder sign-off before merge to master */
-      >
+      {/* Copy-only hero: the four founder photos below are this page's picture. */}
+      <PageHero>
         <SectionHeading
           as="h1"
-          eyebrow="Why we built Kheelona"
-          title="Every object a child holds is about to wake up."
+          eyebrow="Our story"
+          title="Why we built Kheelu."
           titleClassName="mb-5 max-w-[18ch]"
-          lede="The plush, the crib, the night-light. Within a few years each one will listen, answer, and remember the child who loves it. Someone has to build the mind that wakes them, and build it safely. That is the whole reason Kheelona exists."
-          ledeClassName="mb-4 max-w-[58ch]"
+          lede="Every object a child holds is about to wake up. The plush, the crib, the night-light: within a few years each one will listen, answer, and remember the child who loves it. Someone has to build the mind that wakes them, and build it safely. That is the whole reason Kheelona exists."
+          ledeClassName="mb-4 max-w-[60ch]"
         />
         <p className="max-w-[58ch] text-[17px] text-ink-muted">
           We are parents who build. We watched our own children reach for
@@ -156,7 +100,7 @@ export default function TeamPage() {
 
       <RoomsTrack>
         {/* Founder cards (full parity: photo, tag, bio, pull-quote, LinkedIn) */}
-        <Room fill="white" reveal="left">
+        <Room fill="white" id="the-team" reveal="left">
           <Reveal>
             <SectionHeading
               title="A brain, a body, a business, and a voice."
@@ -166,57 +110,59 @@ export default function TeamPage() {
             />
           </Reveal>
           <div className="flex flex-col gap-6">
-            {FOUNDERS.map((f, i) => (
-              <Reveal key={f.id} delay={i * 0.06}>
-                <TiltCard
-                  maxTilt={2}
-                  className={`rounded-(--radius-card) border border-line border-t-4 bg-cream p-7 ${f.border}`}
-                >
-                  <div className="flex flex-wrap items-start gap-7">
-                    <div className={`shrink-0 rounded-2xl p-2 ${f.tint}`}>
-                      <Image
-                        src={f.photo}
-                        alt={`${f.name}, ${f.role} at Kheelona`}
-                        width={480}
-                        height={480}
-                        sizes="160px"
-                        className="block h-[150px] w-[150px] rounded-xl object-cover"
-                      />
-                    </div>
-                    {/* the min-width keeps the bio beside the photo on real
-                        screens, but below sm it must yield: 280px does not fit
-                        a room's content box on a 320px phone (M4 mobile pass) */}
-                    <div className="flex-1 sm:min-w-[280px]">
-                      <div className="flex flex-wrap items-center gap-3">
-                        <h3 className="font-display text-[26px] font-extrabold text-ink-head">
-                          {f.name}
-                        </h3>
-                        <a
-                          href={f.linkedin}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          aria-label={`${f.name} on LinkedIn`}
-                          className="grid h-9 w-9 place-items-center rounded-lg border border-line text-ink-head transition-colors hover:bg-white"
-                        >
-                          <LinkedInIcon />
-                        </a>
+            {FOUNDERS.map((f, i) => {
+              const look = CARD_TINT[f.id]!;
+              return (
+                <Reveal key={f.id} delay={i * 0.06}>
+                  <div id={f.anchor} className="scroll-mt-24">
+                    <TiltCard
+                      maxTilt={2}
+                      className={`rounded-(--radius-card) border border-line border-t-4 bg-cream p-7 ${look.border}`}
+                    >
+                      <div className="flex flex-wrap items-start gap-7">
+                        <div className={`shrink-0 rounded-2xl p-2 ${look.tint}`}>
+                          <Image
+                            src={f.photo}
+                            alt={`${f.name}, ${f.role} at Kheelona`}
+                            width={480}
+                            height={480}
+                            sizes="160px"
+                            className="block h-[150px] w-[150px] rounded-xl object-cover"
+                          />
+                        </div>
+                        {/* the min-width keeps the bio beside the photo on real
+                            screens, but below sm it must yield (M4 mobile pass) */}
+                        <div className="flex-1 sm:min-w-[280px]">
+                          <div className="flex flex-wrap items-center gap-3">
+                            <h3 className="font-display text-[26px] font-extrabold text-ink-head">
+                              {f.name}
+                            </h3>
+                            <a
+                              href={f.linkedin}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label={`${f.name} on LinkedIn`}
+                              className="grid h-9 w-9 place-items-center rounded-lg border border-line text-ink-head transition-colors hover:bg-white"
+                            >
+                              <LinkedInIcon />
+                            </a>
+                          </div>
+                          <p className="mt-1 text-[13px] font-bold uppercase tracking-[0.05em] text-orange-ink">
+                            {f.role} <span className="font-semibold">· {f.tag}</span>
+                          </p>
+                          <p className="mt-3 max-w-[68ch] text-[16px] leading-relaxed">{f.bio}</p>
+                          <p
+                            className={`mt-4 max-w-[62ch] border-l-[3px] pl-4 font-editorial text-[20px] italic leading-[1.45] text-ink-head ${look.quoteBorder}`}
+                          >
+                            {f.quote}
+                          </p>
+                        </div>
                       </div>
-                      <p className="mt-1 text-[13px] font-bold uppercase tracking-[0.05em] text-orange-ink">
-                        {f.role} <span className="font-semibold">· {f.tag}</span>
-                      </p>
-                      <p className="mt-3 max-w-[68ch] text-[16px] leading-relaxed">
-                        {f.bio}
-                      </p>
-                      <p
-                        className={`mt-4 max-w-[62ch] border-l-[3px] pl-4 font-editorial text-[20px] italic leading-[1.45] text-ink-head ${f.quoteBorder}`}
-                      >
-                        {f.quote}
-                      </p>
-                    </div>
+                    </TiltCard>
                   </div>
-                </TiltCard>
-              </Reveal>
-            ))}
+                </Reveal>
+              );
+            })}
           </div>
         </Room>
 
@@ -224,8 +170,6 @@ export default function TeamPage() {
           <Reveal>
             <SectionHeading title="What we believe." titleClassName="mb-11" />
           </Reveal>
-          {/* orange-deep numerals: the normalized accent (design panel
-              re-review; text-blue washed out on the cool wash) */}
           <StepList
             items={BELIEFS.map((b) => ({ title: b }))}
             columns="md:grid-cols-[80px_1fr]"
@@ -234,29 +178,60 @@ export default function TeamPage() {
           />
         </Room>
 
-        {/* Recognition (these programs are founder-published on kheelona.ai) */}
-        <Room fill="white" reveal="left">
-          {/* V6 QA M1: "Backed by" over recognition programs is an investment
-              claim we cannot make — one truthful label site-wide. */}
+        <Room fill="cream" id="promises" reveal="left">
+          <Reveal>
+            <SectionHeading title="Three promises." titleClassName="mb-10" />
+          </Reveal>
+          <div className="grid gap-5 md:grid-cols-3">
+            {PROMISES.map((p, i) => (
+              <Reveal key={p} delay={i * 0.05}>
+                <Card className="h-full border border-line bg-white p-7" tilt={false}>
+                  <PromiseMark index={i} className="mb-3" />
+                  <p className="font-display text-[20px] font-extrabold leading-snug text-ink-head">
+                    {p}
+                  </p>
+                </Card>
+              </Reveal>
+            ))}
+          </div>
+        </Room>
+
+        {/* Recognition (founder-published programs). "Recognised by", never
+            "Backed by" or "Supported by": those read as investment claims. */}
+        <Room fill="white" reveal="right">
           <RecognitionStrip bare />
         </Room>
 
-        <Room fill="cream" reveal="right">
+        {/* The mockup's "Talk to us", kept short: the full routes, the address
+            and the seller of record live on /contact, which stays a page. */}
+        <Room fill="cream" id="talk" reveal="left">
           <Reveal>
-            <p className="max-w-[52ch] text-[clamp(19px,1.8vw,23px)]">
+            <SectionHeading
+              level="minor"
+              title="Talk to us."
+              titleClassName="mb-3"
+              lede="We are a small team in Bengaluru, and a real person answers."
+              ledeClassName="mb-6 max-w-[52ch]"
+            />
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
+              <Button href={SUPPORT_WHATSAPP_HREF} variant="ghost">
+                Message us on WhatsApp
+              </Button>
+              <Link
+                href="/contact"
+                className="rounded font-bold text-orange-ink underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
+              >
+                Every way to reach us
+              </Link>
+            </div>
+            <p className="mt-8 max-w-[52ch] text-[clamp(19px,1.8vw,23px)]">
               If you have read this far, you care the way we care. Save your
               place in line, and grow with us.
             </p>
           </Reveal>
         </Room>
 
-        <Room
-          fill="white"
-          id="reserve"
-          /* GATED:kheelu-line */
-          reveal="pop"
-          className="overflow-x-clip"
-        >
+        <Room fill="white" id="reserve" reveal="pop" className="overflow-x-clip">
           <FinaleCTA bare variant="compact" />
         </Room>
       </RoomsTrack>

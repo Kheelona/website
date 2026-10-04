@@ -1,5 +1,6 @@
-/** The people behind Kheelona, one source for Home's team strip and /story
- *  (moved out of the old /team page in the 2026-10 redesign).
+/** The people behind Kheelona, one source for Home's team strip and /team
+ *  (CMO merge, 2026-10-04: the data moved out of the /team page so Home can
+ *  show the same four people; /team kept its URL, labelled "Our story").
  *
  *  R7 full-parity rebuild from kheelona.ai/team (founder-published source).
  *  Bios adapted to parent voice; facts verbatim (14 patents, Intel +
@@ -7,10 +8,13 @@
  *  `short` is the one-line role the Home strip prints, condensed from `bio`
  *  and claiming nothing the bio does not. */
 
-/* CEO first, as the mockup orders them. */
+/* CEO first, as the mockup orders them (the old /team led with Aman). */
 export const FOUNDERS = [
   {
     id: "apoorva",
+    /** The element id on /team, equal to the fragment of this person's
+     *  schema `@id` in lib/seo.ts, so `/team#apoorva-sahu` lands on the card. */
+    anchor: "apoorva-sahu",
     short: "CEO. Grew up in his family's pre-school.",
     name: "Apoorva Sahu",
     role: "Co-founder and CEO",
@@ -23,6 +27,9 @@ export const FOUNDERS = [
   },
   {
     id: "aman",
+    /** The element id on /team, equal to the fragment of this person's
+     *  schema `@id` in lib/seo.ts, so `/team#aman-soni` lands on the card. */
+    anchor: "aman-soni",
     short: "CTO. Builds Kheelu's AI and safety filters.",
     name: "Aman Soni",
     role: "Co-founder and CTO",
@@ -35,6 +42,9 @@ export const FOUNDERS = [
   },
   {
     id: "kashyap",
+    /** The element id on /team, equal to the fragment of this person's
+     *  schema `@id` in lib/seo.ts, so `/team#kashyap-c-r` lands on the card. */
+    anchor: "kashyap-c-r",
     short: "Hardware. A decade taking devices to certified products.",
     name: "Kashyap C.R",
     role: "Co-founder and Chief Hardware Officer",
@@ -55,6 +65,9 @@ export const FOUNDERS = [
     // tools/cutout (Vision) and composited on flat pale lavender #F1ECFB,
     // matching the set (each photo bg echoes its card tint family).
     id: "ria",
+    /** The element id on /team, equal to the fragment of this person's
+     *  schema `@id` in lib/seo.ts, so `/team#ria-mangala-rewari` lands on the card. */
+    anchor: "ria-mangala-rewari",
     short: "Marketing. Co-founded and ran a marketing agency for seven years.",
     name: "Ria Mangala Rewari",
     role: "Head of Marketing",

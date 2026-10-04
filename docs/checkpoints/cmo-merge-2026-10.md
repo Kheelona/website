@@ -197,3 +197,21 @@ finale.
   accordion, because this page ranks for "are AI toys safe" and engines quote what they can see.
 
 Gate: `tsc` 0; `npm test` 1445 / 128.
+
+### Commit 6 — /team becomes "Our story" on its own URL; /contact stays a page
+
+- **/team:** the mockup's "Why we built Kheelu." leads, and main's manifesto line ("Every object a
+  child holds is about to wake up.") opens the lede, so the page keeps its strongest sentence. The
+  founder cards (CEO first, as the mockup orders them) now read from `lib/team.ts`, shared with
+  Home's team strip, and **each card carries the element id its Person `@id` points at**
+  (`/team#apoorva-sahu`…): those fragments resolved to nothing on the page before. Beliefs, the
+  mockup's **three promises** (with promise marks; its automatic late refund was dropped as
+  unpublished policy), the recognition strip, a short "Talk to us" that hands over to /contact.
+  Title: "Our story: parents building smart toys for toddlers" (keeps the SEO round's keyword).
+- **/contact** keeps its page (the store footer and Razorpay's review rely on it) and takes the
+  mockup's warmer line: "a real person answers".
+- **Flagged, not changed:** /contact's "The toy is designed and built here" sits uneasily beside
+  `lib/product-facts.ts`, which says manufacture origin has never been claimed. It predates this
+  round; it is on the founder list rather than silently rewritten.
+
+Gate: `tsc` 0; `npm test` 1445 / 128.
