@@ -1,7 +1,9 @@
 import { render } from "@testing-library/react";
 import axe from "axe-core";
 import { VideoMoments } from "@/components/organisms/VideoMoments";
-import { HowItWorksLoop } from "@/components/organisms/HowItWorksLoop";
+import { HowItWorks } from "@/features/home/components/HowItWorks";
+import { Tabs } from "@/components/molecules/Tabs";
+import { StickyReserveBar } from "@/components/organisms/StickyReserveBar";
 import { ArchitectureStack } from "@/components/organisms/ArchitectureStack";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { VIDEO_ASPECT, type VideoMoment } from "@/lib/video-moments";
@@ -49,17 +51,29 @@ describe("V4 a11y (axe-core)", () => {
     await expectNoViolations(container);
   });
 
-  it("HowItWorksLoop: readable list, decorative glow hidden", async () => {
+  /* CMO merge (2026-10-04): the three-step loop retired with Home's old
+     how-it-works room; the room that replaced it, the new tabs and the reserve
+     bar take its place in the gate. */
+  it("HowItWorks: ordered steps, tabs and the closing ask", async () => {
+    const { container } = render(<HowItWorks />);
+    await expectNoViolations(container);
+  });
+
+  it("Tabs: WAI-ARIA tablist with labelled panels", async () => {
     const { container } = render(
-      <HowItWorksLoop
-        steps={[
-          { title: "Talk and play", label: "Step 1", body: "Questions and games." },
-          { title: "Kheelu remembers", label: "Step 2 · Adaptive memory", body: "Vocabulary and pace." },
-          { title: "Knowledge that sticks", label: "Step 3 · Real-world learning", body: "Ideas in conversation." },
+      <Tabs
+        label="Ages"
+        items={[
+          { label: "Age 3", panel: <p>Asking why.</p> },
+          { label: "Age 4", panel: <p>Playing with ideas.</p> },
         ]}
-        repeatNote="Then it begins again."
       />,
     );
+    await expectNoViolations(container);
+  });
+
+  it("StickyReserveBar: one named link, nothing unlabelled", async () => {
+    const { container } = render(<StickyReserveBar />);
     await expectNoViolations(container);
   });
 

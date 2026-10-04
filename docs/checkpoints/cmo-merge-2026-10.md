@@ -118,3 +118,40 @@ them would have committed half-edited pages.
 **Trap re-learned here, worth its line:** a `git stash` round-trip during reconciliation silently
 UN-staged the guide's deletions (`git stash pop` restores the tree, not the index), which would have
 skewed the parameterised counts. Re-staged by name before the counted run.
+
+### Commit 3 — Home, sales-first, on the room grammar
+
+The CMO's order with main's proof kept in it: hero (the mockup's H1 and ticks, main's offer card
+and LCP stage) → trust strip + "Recognised by" logos → films (`VideoMoments`, `#watch`) → "What
+pilot parents told us." → how it works (four steps, age tabs, "Why conversation?", the tutor line,
+`cta=home-arc`) → the product-type comparison (`cta=compare`) → "What Kheelu can and cannot do." +
+the voice path → "Two more things to know." (languages in their own scripts carrying Home's ONLY
+footnote-1 marker and the bilingual-article link; the REAL parent-app screenshot) → the price
+(`PriceTable`, three promises, `cta=home-reserve`, Kheelona+ band) → the founders → eight FAQs +
+"See all questions" → the journal (now previewed with each article's own photo) → the finale.
+
+- **The Harvard line was checked against its source** (developingchild.harvard.edu, 2026-10-04):
+  the page says serve-and-return exchanges "play a key role in shaping brain architecture" and
+  defines them as being "between a young child and a caring adult". The mockup's "building block"
+  is not on that page, so Home now quotes the page's own claim AND its adult, and sends the reader
+  to `/how` for where the research stops.
+- **Microphone sweep starts here:** Home's safety FAQ now reads "listens only for its wake word and
+  records or sends nothing until it hears it", not "the microphone is off".
+- **Contraction-free:** the mockup's "can't", "it's" became "cannot", "it is" (voice law; Kheelu's
+  quoted speech is the only exemption).
+- **ViewContent on Home** (founder request recorded on the branch): `ViewContentTracker` moved to
+  molecules with the same payload. Counts step up from deploy.
+- **Retired with their stories and tests:** `features/home/{Family,KheeluOrbit,ParentAppSection}`,
+  `FeelingsGallery` + `lib/feelings.ts`, `HowItWorksLoop` (registry member; nothing else used it),
+  and `lib/kheelu-poses.ts` (its last users were the guide, the gallery and the orbit). Their CSS
+  went too (orbit keyframes, the feelings dialog). **Correction to the plan:** the mascot drawings
+  do NOT leave the site entirely; the journal pages still illustrate articles with
+  `/mascot/mascot-*.png` through `Story.pose`. Out of scope for this round, recorded so nobody
+  believes the art conflict is fully settled.
+- **A contrast catch before it shipped:** the voice-path note was `ink-muted` on the cool wash
+  (4.21:1, banned); it is `text-ink`.
+
+| Gate | Result |
+|---|---|
+| `npx tsc --noEmit` | **0** |
+| `npm test` | **1445 / 128 files**, staged. From 1427: −16 (Family 3, KheeluOrbit 3, ParentAppSection 3, FeelingsGallery 4, HowItWorksLoop 3) +25 (TrustStrip 3, HowItWorks 5, AgeTabs 3, TwoReasons 5, PriceRoom 5, TeamStrip 4) +10 (Hero 6→9, Compare 3→5, TrustRoom 3→5, Journal 3→4, a11y-v4 4→6) −1 (parameterised: `preorder-copy` and `preorder-cta` each lose one net source file, `stories-parse` gains one) = **1445** |

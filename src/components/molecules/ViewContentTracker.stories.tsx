@@ -7,7 +7,7 @@ import { LAUNCH_AMOUNT_PAISE, TOKEN_AMOUNT_PAISE, FULL_AMOUNT_PAISE } from "@/co
  *  arrives, and `whenFbqReady` gives up quietly after its timeout — which is
  *  exactly the behaviour worth showing. */
 const meta = {
-  title: "Products/Kheelu/ViewContentTracker",
+  title: "Molecules/ViewContentTracker",
   component: ViewContentTracker,
   parameters: {
     nextjs: { appDirectory: true },

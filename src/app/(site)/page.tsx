@@ -1,41 +1,37 @@
 import Link from "next/link";
 import { Room } from "@/components/atoms/Room";
 import { RoomsTrack } from "@/components/atoms/RoomsTrack";
-import { Button } from "@/components/atoms/Button";
 import { Reveal } from "@/components/molecules/Reveal";
 import { SectionHeading } from "@/components/molecules/SectionHeading";
-import { FootnotesRow, Footnote, V3_FOOTNOTES } from "@/components/molecules/FootnotesRow";
+import { FootnotesRow, V3_FOOTNOTES } from "@/components/molecules/FootnotesRow";
 import { Faq, type FaqEntry } from "@/components/molecules/Faq";
+import { ViewContentTracker } from "@/components/molecules/ViewContentTracker";
 import { pageGraph, faqPage, breadcrumbs, KHEELU_PRODUCT, pageMeta, jsonLd } from "@/lib/seo";
 import { VIDEO_MOMENTS, hasVideoMoments, videoLede } from "@/lib/video-moments";
 import { RecognitionStrip } from "@/components/organisms/RecognitionStrip";
 import { ParentQuotes } from "@/components/organisms/ParentQuotes";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
-import { FeelingsGallery } from "@/components/organisms/FeelingsGallery";
-import { KheeluModes } from "@/components/organisms/KheeluModes";
-import { HowItWorksLoop, type LoopStep } from "@/components/organisms/HowItWorksLoop";
-import { GrowthArc } from "@/components/organisms/GrowthArc";
 import { VideoMoments } from "@/components/organisms/VideoMoments";
 import {
-  PREORDER_HREF,
-  RESERVE_LABEL,
-  PRICE_CAPTION,
   TOKEN_PRICE,
   BALANCE_PRICE,
   CAP_UNITS_TEXT,
   FULL_PRICE,
   LAUNCH_PRICE,
   SHIP_DATE_TEXT,
-  KHEELU_AGES,
+  KHEELONA_PLUS_LINE,
+  LANGUAGES_LINE,
 } from "@/config/site";
 import {
   Hero,
-  TrustRoom,
-  Family,
-  KheeluOrbit,
+  TrustStrip,
+  HowItWorks,
   Compare,
+  TrustRoom,
+  TwoReasons,
+  PriceRoom,
+  TeamStrip,
   Journal,
-  ParentAppSection,
 } from "@/features/home";
 
 export const metadata = pageMeta({
@@ -43,113 +39,90 @@ export const metadata = pageMeta({
      budget (founder, 2026-08-12). It is one of exactly four places the tutor
      narrative is allowed to live (V6), and it carries the head keywords; Google
      reads the whole title and only clips the visible tail, so the cost is a few
-     pixels of click-through, not rank.
+     pixels of click-through, not rank. Unchanged by the CMO merge: the title is
+     what Google already shows for this URL.
 
-     NO HAND-WRITTEN BRAND SUFFIX. This line used to end "· Kheelona" on the
-     theory that the root layout's `%s · Kheelona` template applies only to child
-     segments and Home is the root segment. That is true of `app/page.tsx` — but
-     this page is `app/(site)/page.tsx`, and a route group IS a segment for
-     metadata even though it is not one in the URL. So the template applied, and
-     production served `... ages 3+ · Kheelona · Kheelona` for months.
-
-     Found live 2026-09-05. Every route now writes the bare title and lets the
-     template add the brand exactly once, so there is no root-segment special
-     case left to get wrong. */
+     NO HAND-WRITTEN BRAND SUFFIX: this page is `app/(site)/page.tsx`, and a
+     route group IS a metadata segment, so the root `%s · Kheelona` template
+     applies (found live 2026-09-05). */
   title: "Kheelu: the screen-free AI toy with a tutor inside, ages 3+",
+  /* CMO merge (2026-10-04): the mockup's opening line leads, the offer
+     closes. Under the 160 guard. */
   description:
-    "A best friend at 3, a head start for school. The screen-free toy that grows with your child, in your home languages. Pre-order at ₹4,999, ₹499 refundable.",
+    "Screens make children watch. Kheelu makes them think: a screen-free AI toy that answers, asks back, and grows with your child. ₹499 reserves yours at ₹4,999.",
   path: "/",
 });
 
 /* The questions parents actually type, answered on the page a search or an
-   answer engine lands on first. Straight from the AEO question bank in
-   docs/revamp-2026-07/research.md: almost no authoritative answer exists for
-   these in India, which is the opening. Every answer restates published copy,
-   40 to 60 words, self-contained enough to be quoted on its own. */
+   answer engine lands on first (AEO question bank, docs/revamp-2026-07/
+   research.md). Every answer restates published copy and is self-contained
+   enough to be quoted on its own.
+
+   CMO merge (2026-10-04): the mockup's questions merged with the old set.
+   Kept from main: what it is, safety, cost IN INDIA (the keyword that
+   matters), ship date, internet, languages. Added from the mockup:
+   subscription and the refund. Dropped from Home (still answered on the Kheelu
+   page and /faq): "what will my child get out of it" (the hero and the
+   how-it-works room answer it now) and "what ages" (the hero chip). */
 const HOME_FAQ: FaqEntry[] = [
   {
     q: "What is Kheelu?",
-    /* SEO round 2026-08-12 (agency keywords, founder-directed): this answer
-       carries "screen-free toy" and "interactive AI toy" exactly; the third
-       Home keyword, "smart toy", is deliberately NOT written here — the
-       compare table already serves it seven times as the category Kheelu is
-       contrasted against, and calling Kheelu a smart toy would undercut that. */
+    /* SEO round 2026-08-12: carries "screen-free toy" and "interactive AI toy"
+       exactly; "smart toy" is deliberately NOT written here, because the
+       comparison contrasts Kheelu against that category. */
     a: "Kheelu is a screen-free toy that talks with children aged 3 and up: your child speaks to it and it answers, tells stories, sings, and asks questions back. It is an interactive AI toy with no screen at all, it cannot reach the open internet, and every conversation is readable by you in the parent app.",
   },
-  /* V6 D3: the parents' own question from the feedback that drove this round,
-     kept nearly verbatim — the FAQ that mirrors the reader's exact objection
-     is the one they open. */
+  /* V6 D7: opens with the same honest verdict as the /safety flagship answer.
+     Microphone wording swept 2026-10-04 (content doc v7 Appendix B): the toy
+     listens for its wake word, so it is never described as "off". */
   {
-    q: "What will my child actually get out of Kheelu?",
-    a: "A friend at 3, and a head start for school. Kheelu answers your child's questions, remembers the words they know, and builds on them the next day: stories, numbers, thinking games, and the languages you speak at home. The parent app counts the new words, so you see the growth, not just the play.",
+    q: "Is an AI toy safe for a small child?",
+    a: "Not all of them are, and what makes a safe toy is how it is built. Kheelu listens only for its wake word and records or sends nothing until it hears it, the first thinking happens on the toy, answers come from a closed library rather than the open internet, and you can read or delete every conversation.",
   },
   {
     q: "How much does Kheelu cost in India?",
     a: `${LAUNCH_PRICE} for the ${CAP_UNITS_TEXT}, and ${FULL_PRICE} once they are gone. A refundable ${TOKEN_PRICE} reserves your Kheelu now, and the ${BALANCE_PRICE} balance is due only when it is ready to ship. Every Kheelu includes 6 months of Kheelona+.`,
   },
   {
-    q: "What ages is Kheelu for?",
-    a: "Ages 3+. Kheelu meets your child where they are and grows with them, and the wider family of Kheelona friends that follows, the Kheelu Speaker and AI books, keeps growing alongside.",
+    q: "Is there a subscription?",
+    a: `${KHEELONA_PLUS_LINE} Nothing renews without you.`,
   },
   {
-    q: "Which languages does Kheelu speak?",
-    a: "English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish, and French, with up to ten languages at launch. Kheelu can switch mid-sentence, in the languages you speak at home.",
+    q: `Can I get my ${TOKEN_PRICE} back?`,
+    a: `Yes, in full, any time before we dispatch your Kheelu. The ${BALANCE_PRICE} balance is due only when your Kheelu is ready to ship.`,
   },
   {
     q: "When does Kheelu ship?",
-    a: `Shipping starts ${SHIP_DATE_TEXT}. Pre-ordering now holds the ${LAUNCH_PRICE} price and your place in line for a refundable ${TOKEN_PRICE}, and pre-orders are served first.`,
+    a: `Shipping starts ${SHIP_DATE_TEXT}. Reserving now holds the ${LAUNCH_PRICE} price and your place in line for a refundable ${TOKEN_PRICE}, and pre-orders are served first.`,
   },
-  /* V6 D4a (founder-licensed fact): mode-precise. The old flat "No" was a
-     post-purchase complaint in waiting — a precise admission converts better
-     than a broad claim. */
+  /* V6 D4a (founder-licensed fact): mode-precise. */
   {
     q: "Does Kheelu need the internet to work?",
     a: "For open conversation, yes: AI mode runs on your home WiFi. For everything else, no: Story-mode stories and lessons play offline, and Bluetooth music needs only a paired phone. On a train or anywhere without a signal, your child still has stories to interrupt, question, and be quizzed on.",
   },
-  /* V6 D7: opens with the same honest verdict as the /safety flagship answer,
-     so the two pages agree in substance and differ only in length. */
   {
-    q: "Is an AI toy safe for a small child?",
-    a: "Not all of them are, and what makes a safe toy is how it is built. Kheelu wakes to a word and the microphone is off the rest of the time, the first thinking happens on the toy, answers come from a closed library rather than the open internet, and you can read or delete every conversation.",
+    q: "Which languages does Kheelu speak?",
+    a: `${LANGUAGES_LINE}, with up to ten languages at launch. Kheelu can switch mid-sentence, in the languages you speak at home.`,
   },
 ];
 
-/* V4 (D7): the VideoObject left this graph with the film — schema mirrors
-   visible content only, and the film is no longer on the page. */
-const HOME_JSON_LD = pageGraph(
-  KHEELU_PRODUCT,
-  faqPage(HOME_FAQ),
-  breadcrumbs([]),
-);
+const HOME_JSON_LD = pageGraph(KHEELU_PRODUCT, faqPage(HOME_FAQ), breadcrumbs([]));
 
-/* The team's How-It-Works sequence (BUILD-V4 §3 F4), typos mended, with the
-   KheeluModes naming convention: the parent verb leads, the term follows. */
-const LOOP_STEPS: readonly LoopStep[] = [
-  {
-    title: "Talk and play",
-    label: "Step 1",
-    body: "Your child asks questions, plays word games, and listens to stories that talk back, in their own language.",
-  },
-  {
-    title: "Kheelu remembers",
-    label: "Step 2 · Adaptive memory",
-    body: "Kheelu keeps track of the words your child knows, what they love, and the pace they learn at.",
-  },
-  {
-    title: "Knowledge that sticks",
-    label: "Step 3 · Real-world learning",
-    body: "New ideas arrive inside everyday conversation, not forced drills.",
-  },
-];
+/* THE CMO MERGE (2026-10-04, docs/checkpoints/cmo-merge-2026-10.md): the
+   mockup's sales-first order on the v3 room grammar. Claim → reassurance →
+   proof on film → parents → how it works → the comparison a parent is making
+   → safety → languages and the app → the price → who we are → questions →
+   reading → the ask.
 
-/* V4 recomposition (team feedback 2026-07-30, BUILD-V4 §3): the argument now
-   runs claim → proof → HEAR IT (real audio) → how it works → the day → trust
-   → the age arc → feelings → the parent's view → comparison → proof → the
-   ask. Two team verdicts shaped it: "too much content, less value" (four
-   heavy rooms out, two lighter ones in) and "show, don't tell" (the audio IS
-   the concept section). Every say line is GATED:kheelu-line until founder
-   sign-off, and V4's §5.1 caps them at 48 characters for the right-corner
-   bubble. Copy provenance: BUILD-V4 §3. */
+   Kept from main where the mockup dropped them, each for a reason: the
+   recognition logos (the trust strip's proof), the journal (Home's internal
+   links into what ranks), the footnotes (the two soft claims keep their
+   answers), and the tutor line (V6's four sanctioned places).
+
+   Moved to /products/kheelu: the product family. Retired: the day-with-
+   Kheelu orbit (the Kheelu page's "When parents reach for Kheelu" carries it),
+   the feelings gallery, and the four-card growth arc (age tabs here, all four
+   stages on /how). The Kheelu guide and every say line are retired with it. */
 export default function HomePage() {
   return (
     <>
@@ -157,41 +130,27 @@ export default function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLd(HOME_JSON_LD) }}
       />
+      {/* Meta ViewContent on Home too (founder, 2026-10-02, recorded on the
+          redesign branch): Home carries the product, the price and the reserve
+          CTA, so a home visit is a product view. Same payload as the Kheelu
+          page; it renders nothing and no-ops off the production hosts. */}
+      <ViewContentTracker />
       <Hero />
       <RoomsTrack>
         <Room fill="white" reveal="pop">
-          <RecognitionStrip bare />
+          <TrustStrip />
+          <div className="mt-8 border-t border-line pt-8">
+            <RecognitionStrip bare />
+          </div>
         </Room>
 
-        {/* Real families on film (§8.37), in the slot the audio demos held.
-            Founder, 2026-09-19: the audio room was a stand-in created because
-            no real user video existed, and it goes now that this does.
-
-            THE ROOM SURVIVES THE SWAP, and that is the point of the shape
-            below. Three things in here have nothing to do with the media: the
-            languages line carries Home's ONLY footnote-1 marker (delete it and
-            the note at the page bottom is orphaned), the bilingual paragraph
-            carries Home's ONLY internal link to the article that already ranks
-            first in India for that query, and the CTA is here because the
-            strongest fold carries the ask. All three stay, whatever the media
-            above them is doing.
-
-            TWO HEADINGS, because the library is empty and a heading that
-            promises films above no films is a lie the page tells by itself
-            (§8.37-d). With three or more videos the room is the video room.
-            Until then it is honest about what it actually holds, which is the
-            language story, and the swap needs no deploy. */}
-        <Room
-          fill="cream"
-          id="learning"
-          /* Founder-approved 2026-09-19. Omitted entirely in the empty state
-             rather than replaced with an unapproved line: every mascot speech
-             line is approved before it ships, and "press play" is false when
-             there is nothing to press. */
-          reveal="left"
-        >
-          <Reveal>
-            {hasVideoMoments() ? (
+        {/* Real families on film (§8.37). With no films the room renders
+            nothing at all: everything else it used to hold now lives in the
+            languages card below, so an empty room would be a heading over
+            nothing (§8.37-d). `#watch` is the hero's second button. */}
+        {hasVideoMoments() ? (
+          <Room fill="cream" id="watch" reveal="left" className="scroll-mt-24">
+            <Reveal>
               <SectionHeading
                 eyebrow="See it for yourself"
                 title="Watch a child meet Kheelu."
@@ -199,189 +158,74 @@ export default function HomePage() {
                 lede={videoLede()}
                 ledeClassName="mb-10 max-w-[58ch]"
               />
-            ) : (
-              /* No lede in this state, deliberately: the languages line two
-                 blocks down already says "in the languages you speak at home",
-                 and a lede saying the same thing in different words reads as
-                 the page repeating itself. The title carries it. */
-              <SectionHeading
-                eyebrow="Their own words"
-                title="The language your child thinks in."
-                titleClassName="mb-8"
-              />
-            )}
-          </Reveal>
-          {hasVideoMoments() && (
+            </Reveal>
             <Reveal>
               <VideoMoments moments={VIDEO_MOMENTS} />
             </Reveal>
-          )}
-          <Reveal className={hasVideoMoments() ? "mt-7" : ""}>
-            <p className="text-[16px] text-ink-muted">
-              In the languages you speak at home, up to ten of them.
-              <Footnote n={1} id="fn-languages" />
-            </p>
-          </Reveal>
-          {/* V6 D6: the first language line on the site that names what the
-              child GAINS rather than what the toy does — and it points the
-              bilingual-intent parent at the journal page that already ranks
-              first in India for exactly this worry. */}
-          <Reveal className="mt-4">
-            <p className="max-w-[64ch] text-[16px] text-ink-muted">
-              A child who can wonder in their own words wonders more, and a
-              child who plays in two languages keeps both. Why that matters for
-              years to come:{" "}
-              <Link
-                href="/stories/raising-a-bilingual-child-in-india"
-                className="rounded font-semibold text-ink-head underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
-              >
-                Raising a bilingual child in India
-              </Link>
-              .
-            </p>
-          </Reveal>
-          {/* the strongest fold carries the ask (Apple-tier rule) */}
-          <Reveal className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
-            <Button href={PREORDER_HREF} track="home-arc">{RESERVE_LABEL}</Button>
-            <p className="text-[15px] text-ink-muted">{PRICE_CAPTION}</p>
-          </Reveal>
+          </Room>
+        ) : null}
+
+        <Room fill="white" id="parent-voices" reveal="right">
+          <ParentQuotes bare title="What pilot parents told us." />
         </Room>
 
-        {/* How it works: the team's three-step sequence, drawn as the loop it
-            is. Serve-and-return survives as this room's closing science. */}
-        <Room
-          fill="white"
-          reveal="right"
-        >
-          <Reveal>
-            <SectionHeading
-              eyebrow="How it works"
-              title="A loop that learns your child."
-              titleClassName="mb-3"
-              lede="Three steps, then it repeats. Every round fits your child a little better."
-              ledeClassName="mb-10 max-w-[58ch]"
-            />
-          </Reveal>
-          <Reveal>
-            <HowItWorksLoop
-              steps={LOOP_STEPS}
-              repeatNote="Then it begins again, one level wiser."
-            />
-          </Reveal>
-          <Reveal className="mt-9">
-            <p className="max-w-[64ch] text-[16px] text-ink-muted">
-              Researchers call this serve and return, the back and forth that
-              builds language and thinking in the years the brain grows
-              fastest.{" "}
-              <Link
-                href="/stories/how-children-learn-by-talking"
-                className="rounded font-semibold text-ink-head underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
-              >
-                Read the science in the journal
-              </Link>
-            </p>
-          </Reveal>
+        <Room fill="cream" id="how-it-works" reveal="left">
+          <HowItWorks />
         </Room>
 
-        {/* The growth arc (V6 D2): what the loop above adds up to — the
-            year-by-year answer to "what does my child get by 5". Say line
-            founder-approved at the V6 spec review. */}
-        <Room
-          fill="cream"
-          id="growth"
-          reveal="left"
-        >
-          <Reveal>
-            <SectionHeading
-              eyebrow={`Ages ${KHEELU_AGES}`}
-              title="What your child gets, year by year."
-              titleClassName="mb-3"
-              lede="Kheelu remembers what your child knows and asks the next question. Here is how the same friend meets them at every age."
-              ledeClassName="mb-10 max-w-[58ch]"
-            />
-          </Reveal>
-          <GrowthArc />
-        </Room>
-
-        {/* Fun (40%): the day a child actually has */}
-        <Room fill="sun" id="warm" reveal="pop">
-          <Reveal>
-            <SectionHeading
-              title="Here is what a day with Kheelu feels like."
-              titleClassName="mb-6 max-w-[22ch]"
-            />
-          </Reveal>
-          <KheeluOrbit />
-          {/* Founder call 2026-07-28: name the three modes where a parent is
-              already enjoying the day-with-Kheelu picture. One toy that talks,
-              teaches and plays music is a different purchase from a gadget. */}
-          <KheeluModes variant="strip" className="mt-12" />
-        </Room>
-
-        <Room fill="cool" id="trust" reveal="right">
-          <TrustRoom />
-        </Room>
-
-        <Room
-          fill="white"
-          id="kheelu"
-          reveal="left"
-        >
-          <Family />
-        </Room>
-
-        <Room fill="cool" reveal="right">
-          <Reveal>
-            <SectionHeading
-              eyebrow="Meet the feelings"
-              title="Learning starts with feeling understood."
-              titleClassName="max-w-[18ch]"
-              lede="Kheelu acts out the five feelings Kheelu knows. Feeling comes first, and the learning follows."
-              ledeClassName="mb-10 mt-4 max-w-[62ch]"
-            />
-          </Reveal>
-          <FeelingsGallery />
-        </Room>
-
-        <Room fill="cream" id="parent-app" reveal="left">
-          <ParentAppSection bare />
-        </Room>
-
-        <Room fill="white" reveal="right">
+        <Room fill="white" id="compare" reveal="right">
           <Compare bare />
         </Room>
 
-        <Room fill="white" id="parent-voices" reveal="left">
-          <ParentQuotes bare />
+        <Room fill="cool" id="safety" reveal="left">
+          <TrustRoom />
         </Room>
 
-        <Room fill="cream" id="questions" reveal="left">
+        <Room fill="cream" id="two-more" reveal="right">
+          <Reveal>
+            <SectionHeading title="Two more things to know." titleClassName="mb-10" />
+          </Reveal>
+          <TwoReasons />
+        </Room>
+
+        <Room fill="white" id="price" reveal="pop">
+          <PriceRoom />
+        </Room>
+
+        <Room fill="cream" id="team" reveal="left">
+          <TeamStrip />
+        </Room>
+
+        <Room fill="white" id="questions" reveal="right">
           <Reveal>
             <SectionHeading
               title="Questions parents ask first."
               titleClassName="mb-3"
-              lede="Straight answers, in plain words. The longer versions live on the Kheelu and Safety pages."
+              lede="Straight answers, in plain words. The full list lives on the FAQ page."
               ledeClassName="mb-10 max-w-[58ch]"
             />
           </Reveal>
           <Reveal className="mx-auto max-w-[820px]">
             <Faq items={HOME_FAQ} />
+            <p className="mt-6">
+              <Link
+                href="/faq"
+                className="rounded font-bold text-orange-ink underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
+              >
+                See all questions
+              </Link>
+            </p>
           </Reveal>
         </Room>
 
         <Room fill="sun" id="journal" reveal="right">
           <Journal bare />
-          {/* The page's small print, Apple-style: the two claims that invite a
-              follow-up question get their answer here rather than nowhere. */}
+          {/* The page's small print: the two claims that invite a follow-up
+              question get their answer here rather than nowhere. */}
           <FootnotesRow items={V3_FOOTNOTES} className="mt-12 border-t border-line pt-6" />
         </Room>
 
-        <Room
-          fill="white"
-          id="reserve"
-          reveal="pop"
-          className="overflow-x-clip"
-        >
+        <Room fill="white" id="reserve" reveal="pop" className="overflow-x-clip">
           <FinaleCTA bare />
         </Room>
       </RoomsTrack>

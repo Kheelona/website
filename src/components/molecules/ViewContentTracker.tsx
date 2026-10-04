@@ -6,6 +6,15 @@ import { LAUNCH_AMOUNT_PAISE } from "@/config/site";
 
 /** Reports a Meta `ViewContent` for Kheelu, once per page view (§8.30-j).
  *
+ *  Mounted on `/products/kheelu` AND on Home since the CMO merge (2026-10-04),
+ *  per the founder request recorded on the redesign branch on 2026-10-02:
+ *  Home now carries the product, the price and the reserve CTA, so a home
+ *  visit is a product view. Moved from the product route's `_components` to
+ *  molecules for that reason (two routes, one component). The payload did not
+ *  change. ViewContent counts step up from the deploy date and are not
+ *  comparable with the weeks before it. Each page load fires once: Home and
+ *  the product page are separate loads, so nothing doubles within one.
+ *
  *  This is the top of the advertising funnel: the people who read the product
  *  page are the retargeting audience worth spending on, and the gap between
  *  ViewContent and InitiateCheckout is where interest stops turning into

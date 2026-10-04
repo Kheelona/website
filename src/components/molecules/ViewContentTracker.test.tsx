@@ -53,7 +53,7 @@ describe("ViewContentTracker", () => {
      is an event that looks rare in Events Manager. Pinned as source, because the
      bug is an ABSENCE of waiting and there is nothing to observe at runtime. */
   it("waits for the pixel rather than calling fbTrack straight from mount", () => {
-    const src = readFileSync(join(process.cwd(), "src/app/(site)/products/kheelu/_components/ViewContentTracker.tsx"), "utf8");
+    const src = readFileSync(join(process.cwd(), "src/components/molecules/ViewContentTracker.tsx"), "utf8");
     expect(src).toContain("whenFbqReady");
   });
 
@@ -82,7 +82,7 @@ describe("ViewContentTracker", () => {
      has to come here, and this test then tells them what to change. */
   it("carries a pointer to the sweep that has to update it", () => {
     const src = readFileSync(
-      join(process.cwd(), "src/app/(site)/products/kheelu/_components/ViewContentTracker.tsx"),
+      join(process.cwd(), "src/components/molecules/ViewContentTracker.tsx"),
       "utf8",
     );
     expect(src).toContain("FULL_AMOUNT_PAISE");

@@ -4,22 +4,43 @@ import { Button } from "@/components/atoms/Button";
 import { Reveal } from "@/components/molecules/Reveal";
 import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { CompareTable } from "@/components/molecules/CompareTable";
-import { PREORDER_HREF, RESERVE_LABEL, PRICE_CAPTION } from "@/config/site";
+import { PREORDER_HREF, RESERVE_LABEL, PRICE_CAPTION, KHEELU_AGES, SUPPORT_WHATSAPP_HREF } from "@/config/site";
+import { COMPARISON_COLUMNS, COMPARISON_ROWS } from "@/lib/comparison";
 
 /** The honest-comparison moment (kept by founder brief pointer 6; table
  *  wording went parent-first in M2). `bare` renders content-only for the
- *  Room grammar; the legacy Section shell remains for non-room routes. */
+ *  Room grammar; the legacy Section shell remains for non-room routes.
+ *
+ *  CMO merge (2026-10-04, content doc v7 screen 6): the comparison a parent
+ *  is actually making, against the product TYPES they might buy instead, from
+ *  `lib/comparison.ts` (no brand is named). The tutor line stays: it is one of
+ *  the four places that narrative is allowed (V6). */
 export function Compare({ bare = false }: { bare?: boolean }) {
   const content = (
     <>
       <Reveal>
         <SectionHeading
-          title="How Kheelu compares."
-          titleClassName="mb-2"
-          lede="A simple, honest look at what is out there."
-          ledeClassName="mb-10"
+          title="Thinking of a smart speaker or a tablet instead?"
+          titleClassName="mb-3 max-w-[22ch]"
+          lede={`They all talk or play. This is how they differ for a child aged ${KHEELU_AGES}.`}
+          ledeClassName="mb-10 max-w-[58ch]"
         />
-        <CompareTable />
+        <CompareTable columns={COMPARISON_COLUMNS} rows={COMPARISON_ROWS} />
+        {/* The doc asks for every cell to be date-stamped against current
+            products; until the team supplies checked figures, the table says
+            what it is based on and invites a correction instead. */}
+        <p className="mt-4 text-[15px] text-ink-muted">
+          Based on typical products in each group. See something out of date?{" "}
+          <a
+            href={SUPPORT_WHATSAPP_HREF}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded font-semibold text-ink-head underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
+          >
+            Tell us on WhatsApp
+          </a>
+          .
+        </p>
       </Reveal>
       {/* the table is the conviction peak; give it an action (UX panel
           2026-07-10). R9: reassurance trimmed — the full line lives at the

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ColorwayPicker } from "./_components/ColorwayPicker";
 import { PacePanel } from "./_components/PacePanel";
-import { ViewContentTracker } from "./_components/ViewContentTracker";
+import { ViewContentTracker } from "@/components/molecules/ViewContentTracker";
 import { Room } from "@/components/atoms/Room";
 import { RoomsTrack } from "@/components/atoms/RoomsTrack";
 import { Button } from "@/components/atoms/Button";

@@ -25,4 +25,11 @@ describe("Journal", () => {
       screen.getByRole("link", { name: /See all stories/i }),
     ).toHaveAttribute("href", "/stories");
   });
+
+  it("previews each article with its own photograph, not the mascot drawing", () => {
+    const { container } = render(<Journal />);
+    const srcs = Array.from(container.querySelectorAll("img")).map((i) => i.getAttribute("src"));
+    expect(srcs.every((s) => s?.includes("stories"))).toBe(true);
+    expect(srcs.some((s) => s?.includes("mascot"))).toBe(false);
+  });
 });
