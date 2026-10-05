@@ -62,15 +62,20 @@ that date, raise them first.
 | MEDIUM | PostHog: insights keyed on `cta` keep working (`hero`, `navbar`, `navbar-mobile`, `finale`, `product-top`, `product-foot`, `compare`, `home-arc`); **add `home-reserve` and `sticky-bar`**. Any insight filtering on the button TEXT "Pre-order Kheelu" must switch to `cta` | The label changed to "Reserve Kheelu for ₹499". |
 | MEDIUM | Meta: **ViewContent steps up from the deploy date** (Home now fires it). Annotate it in Ads Manager / Events Manager | Not comparable with the weeks before. |
 
-## 🤖 Deferred from review round 1, because they sit inside the analytics freeze (do right after the merge)
+## ✅ Round 1's deferred store and layout items: DONE in review round 2 (2026-10-04)
+
+Store copy ("Families already using Kheelu.", the "Pre-order" kicker and title, the store 404, the
+event page), the "Pre-order price" deposit label, the root layout's default title and description,
+and one orange on the store (kickers ink; form errors bold ink with an orange field border) all
+shipped in round 2, after the freeze was narrowed to the code that measures and charges.
+
+## 🧑 Still open from the reviews
 
 | Priority | Item | Why |
 |---|---|---|
-| **HIGH** | Store copy: "Families already using Kheelu." (`src/app/store/page.tsx`) → "Watch a child meet Kheelu."; the store title/eyebrow "Pre-order" → "Reserve" in token mode; `NotFoundPanel` "Go to the pre-order page"; the event page's "Pre-order at the usual price" and "A screen-free talking friend" | Kheelu has not shipped; Home calls them pilot families and uses "Reserve". The store files are byte-frozen this round. |
-| **HIGH** | Root layout default metadata (`src/app/layout.tsx`): "the screen-free friend…", "talking friend… Pre-order at ₹4,999" → Home's description | It is the link preview for every store page and the WhatsApp share. The file holds every measurement tag, so it is frozen this round. |
-| MEDIUM | One orange on the store: its kickers and `Field`'s error messages still use orange-ink (`#b54a0d`). **Decide the error colour first**: brand orange would make errors 2.88:1 | Founder point 2 asked for one orange everywhere; the money path was held back. |
-| 🧑 MEDIUM | `/privacy` says conversations "stay in your region" and Kheelu is "built for a narrow band of ages" | Both are true-ish but now worded differently from Home ("our own servers, in India", "ages 3+"). Counsel-gated. |
-| 🧑 LOW | Two titles are SEO keyword placements: "Meet Kheelu: the talking toy that teaches" and "Our story: parents building smart toys for toddlers" | Home now says "screen-free AI toy"; changing a title is a ranking decision, so it is yours. |
+| 🧑 MEDIUM | `/privacy` says conversations "stay in your region" and Kheelu is "built for a narrow band of ages" | True, but worded differently from Home ("our own servers, in India", "ages 3+"). Counsel-gated. |
+| 🧑 LOW | Two titles are SEO keyword placements: "Meet Kheelu: the talking toy that teaches" and "Our story: parents building smart toys for toddlers" | Home says "screen-free AI toy"; a title change is a ranking decision. |
+| 🧑 LOW | The sell-out sweep now also covers the store's "Reserve Kheelu" tab title | It is token-mode wording, like `RESERVE_LABEL`. |
 
 ## 🤖 Mine
 

@@ -44,9 +44,14 @@ describes `main`; on the branch, these supersede it:**
   small text is ink (the Eyebrow keeps an orange bar), brand orange is fills, tints, icons, numerals
   and the hero's second line (bold display orange is a printed, accepted exception; body-size
   orange text FAILS the sweep). Secondary actions are `TextLink`; the ghost button is an orange
-  outline; no black fills. The comparison's Kheelu column is a framed tint. Ria is off Home's team
-  strip (she stays on /team for her bylines). Every page was made consistent with Home; store copy
-  and the root layout metadata wait until after the merge (frozen).
+  outline; no black fills. The comparison's Kheelu column is a framed tint.
+- **Review round 2 (2026-10-04): EVERY PAGE SYNCED WITH HOME, FROM SHARED SOURCES.** Ria is off the
+  site entirely (her 8 bylines are Aman Soni's). `lib/safety.ts` (safety facts + voice path),
+  `lib/faq.ts` (every shared FAQ answer) and `lib/comparison.ts` (the one comparison) are read by
+  every page that says those things; **`test/faq-sync.test.ts` fails on a shared question answered
+  or worded differently**. The store and root metadata are synced too. **The analytics freeze was
+  NARROWED** to the code that measures and charges (line limits + pinned hooks), so store copy can
+  change; the probe, the payment sandbox and the sweep re-ran clean.
 
 **🔴 TWO TRAPS FROM THIS ROUND.** (1) **Port 3456 is held by a `next-server` started 2026-09-20**, a
 stale build; this round served on **3460** (`SWEEP_BASE`/`SWEEP_STORE`/`PROBE_*` take the port). A
@@ -54,7 +59,8 @@ first set of screenshots came from the stale server before `lsof` gave it away. 
 screenshots over ~16k px TILE** (Chrome repeats the first segments at 2x); capture scrolled
 viewport chunks at 1x instead.
 
-**Gate after review round 1:** **1552 tests / 133 files**, `qa:sweep` clean 40/40 with 86 white-on-orange
+**Gate after review round 2:** **1567 tests / 134 files**, sweep clean 40/40, payment sandbox clean,
+analytics probe unchanged. **After round 1:** **1552 tests / 133 files**, `qa:sweep` clean 40/40 with 86 white-on-orange
 and 48 display-orange accepted. **Gate at the round's close (before review):** 1403 → **1542 tests / 132 files** (every delta reconciled in the
 checkpoint), `tsc` 0, build passes, `qa:sweep` **clean 40/40** with **113** accepted (was 90, the
 increase reconciled), `qa:payment` **clean 10/10**, and the analytics probe under the real

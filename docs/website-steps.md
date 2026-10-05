@@ -3491,3 +3491,15 @@ orange underline). No black fills: the selected tab is the orange tint.
 **Out of scope until after the merge:** the store, the pre-order form and `Field`'s error messages
 still use orange-ink. They are inside the analytics freeze, and a form error must stay readable;
 moving them is its own decision (Technical-Todo).
+
+## §8.42-j · Sync is a structure, not a proofread (review round 2, 2026-10-04)
+
+The founder found pages out of sync after a page-by-page content pass had "fixed" them. The lasting
+fix was not more proofreading but **one source per fact**: `lib/safety.ts` (the safety facts and
+the voice path), `lib/faq.ts` (every question asked on more than one page, answered once) and
+`lib/comparison.ts` (the one comparison; `CompareTable` no longer has a private default). Pages
+COMPOSE these, so two pages cannot disagree, and `test/faq-sync.test.ts` fails if a page answers a
+shared question in its own words or rewords it. **When a fact appears on two pages, give it one
+home before you fix the wording.** And when the founder says "remove X", remove X everywhere they
+can see it: keeping Ria on /team for a technical reason (her bylines) was the wrong trade, and the
+right one was to ask who the bylines should name.
