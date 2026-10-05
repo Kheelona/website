@@ -399,3 +399,63 @@ category comparison (a different job from Home's product-type table).
 | `npm test` | **1552 / 133** (+2: the two new claims patterns, each proven against good and bad wording) |
 | `npx next build` | passes |
 | `qa:sweep` on 3460 | **clean 40/40**. White-on-orange **86** (was 113: the comparison column is no longer a fill). Display orange **48** (the hero line, step numerals, the Kheelona+ "+"), the new narrow acceptance |
+
+## Review round 2 (founder, 2026-10-04): "All pages are not in sync"
+
+The founder found Ria still on /team (kept there on purpose for her bylines, which was the wrong
+call: the instruction was to remove her) and asked for every page to be reviewed end to end and
+synced, every segment, not just one section.
+
+### Commit 15 — every page synced with Home, from shared sources
+
+**Method.** The rendered text of all 22 pages (marketing, store, 404s) was extracted from a fresh
+build and read against Home, then fixed at the SOURCE: wherever two pages said the same thing, the
+fix was one shared definition both read, so they cannot drift again.
+
+- **Ria is off the site.** /team cards and copy ("between the three of us… a brain, a body, and a
+  business"), the /team meta description, the Organization schema (no `employee` node), Home's
+  strip, and her photo file. Her eight journal bylines are now **Aman Soni** (founder's choice),
+  each article's `updated` moved to 2026-10-04. `seo.test` pins exactly three people.
+- **One source for safety facts: `src/lib/safety.ts`.** Home's four safety cards ARE /safety's
+  "four basics" now, and the voice path's stops and sentences are one list. /safety's basics used
+  to be a different four.
+- **One source for every shared FAQ: `src/lib/faq.ts` (`QA`, `HOME_FAQ`, `PRODUCT_FAQ`,
+  `FAQ_GROUPS`).** Cost, refund, ship date, internet, languages, ages, "what if it breaks", the
+  listening, voice and open-internet answers: each answered once. **`test/faq-sync.test.ts`**
+  fails on the same question answered two ways, AND on a shared question reworded on another page.
+- **One comparison.** The buyer's guide now shows Home's comparison; `CompareTable` lost its private
+  default table, so a call site must pass `lib/comparison.ts`.
+- **Page fixes from the read:** the finale's third card is Home's "First in line" (it repeated the
+  ship date in the headline above it); Meet Kheelu's step 03 is Home's "Kheelu answers, then asks
+  back" (it was the retired feelings cast) and its price heading is Home's; PlayOS says "the AI toy
+  your child hugs" and "Learning through talk" (not "smart toy" or "Cognitive development"); the
+  journal's product definitions are all "a screen-free AI toy" (no more "talking toy", "screen-free
+  friend", "cognitive development toy") and its closers say "a refundable ₹499 reserves one" (11
+  articles, dates bumped).
+- **The store, which round 1 deferred:** "Families already using Kheelu." → "Watch a child meet
+  Kheelu."; the kicker follows the mode ("Reserve" / "Pre-order"); the deposit is labelled
+  "Refundable deposit", not "Pre-order price" (also the Razorpay sheet's description); the tab title
+  is "Reserve Kheelu"; the store 404 says "Reserve Kheelu"; the event page says "Reserve at the usual
+  price" and "a screen-free AI toy"; store kickers are ink with the orange bar; form errors are bold
+  ink with a brand-orange field border (one orange; the words still carry the meaning).
+- **The root layout's default title and description** (every store page's link preview and the
+  WhatsApp share) now say what Home says.
+- **Left alone, deliberately:** the legal pages (counsel-gated; "pre-order" there is the precise
+  legal noun, token versus paid in full), and the two SEO keyword titles (founder's call).
+
+**The analytics freeze was NARROWED, and why.** Round 1 froze whole folders (the store pages and
+the pre-order components), which made the store's copy impossible to fix. It now freezes the code
+that measures and charges byte-for-byte (tag components, fbq/posthog/click-id/campaign, proxy, CSP,
+every API route, the pre-order logic, the store library), line-limits four files (tiers' display
+labels only; the root layout's title and description only; `next.config.ts` only the `/faq`
+redirect; the form components' className lines only), and pins the hooks explicitly (`/thanks`
+keeps `ph-no-capture`, the forms import `preorderAnalytics`, the form fires `onFirstChange`).
+
+| Gate | Result |
+|---|---|
+| `npm test` | **1567 / 134**. From 1552: +10 (faq-sync) +8 (the freeze test: 12 frozen paths, 2 line-limited labels, layout, next.config, 3 form components, 15 constants, 4 pinned hooks; was 30) −5 (CompareTable's default-table cases) +2 (`preorder-copy`, `preorder-cta` walk `lib/safety.ts`) = **1567** |
+| `npx next build` | passes |
+| `qa:sweep` | **clean 40/40**; 86 white-on-orange, 48 display orange (unchanged) |
+| `qa:payment` | **clean** on the sandbox |
+| analytics probe, real hostnames, delivery blocked | unchanged on all 8 routes: pixel `1051265191046395` + one PageView everywhere, ViewContent on Home and the Kheelu page only, GA4 attempted, PostHog only via `/ingest`, zero direct posthog.com, the same `cta` values. Control on 127.0.0.1: nothing fires |
+| rendered-text recheck, 18 pages | zero hits for Ria, "Pre-order price", "Families already", "talking friend", "pre-orders are open", "holds your place", the feelings step, "Made by parents", "cognitive development toy", "smart toy your child", "microphone is off", "your region", "3 to 5 year" |

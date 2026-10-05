@@ -47,7 +47,7 @@ export type TierResult =
     };
 
 export function launchTier(): ResolvedTier {
-  return { id: LAUNCH_TIER, amountPaise: TOKEN_AMOUNT_PAISE, label: "Pre-order price" };
+  return { id: LAUNCH_TIER, amountPaise: TOKEN_AMOUNT_PAISE, label: "Refundable deposit" };
 }
 
 export function fullTier(): ResolvedTier {

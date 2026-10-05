@@ -119,15 +119,18 @@ describe("structured data", () => {
     for (const story of STORIES) {
       const ref = authorRef(story.author);
       expect(ref["@id"], story.slug).toMatch(new RegExp(`^${SITE_URL}/team#`));
-      const known = [...ORGANIZATION.founder, ...ORGANIZATION.employee].map((p) => p["@id"]);
+      const known = ORGANIZATION.founder.map((p) => p["@id"]);
       expect(known, `${story.author} is not on /team`).toContain(ref["@id"]);
     }
     expect(() => authorRef("Nobody Here")).toThrow(/No author entity/);
   });
 
-  it("names Ria as an employee, not a founder, because that is what /team says", () => {
-    expect(ORGANIZATION.employee.map((p) => p.name)).toEqual(["Ria Mangala Rewari"]);
-    expect(ORGANIZATION.founder.map((f) => f.name)).not.toContain("Ria Mangala Rewari");
+  /* Founder, 2026-10-04: Ria is no longer on the site; the company's people
+     are its three co-founders, as /team and Home now show. */
+  it("names exactly the three co-founders, and no other person", () => {
+    expect(ORGANIZATION.founder.map((f) => f.name)).toEqual(["Apoorva Sahu", "Aman Soni", "Kashyap C.R"]);
+    expect("employee" in ORGANIZATION).toBe(false);
+    expect(JSON.stringify(ORGANIZATION)).not.toMatch(/Ria|ria-mangala/);
   });
 
   it("corroborates the entity with profiles we do not host, all https and unique", () => {

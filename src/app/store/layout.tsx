@@ -26,7 +26,7 @@ import {
  *  This route group sits under the root layout, so the fonts, the tokens and all
  *  three analytics tools are already in place. Nothing is duplicated here. */
 export const metadata: Metadata = {
-  title: "Pre-order Kheelu",
+  title: "Reserve Kheelu",
   robots: { index: false, follow: false },
 };
 

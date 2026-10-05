@@ -117,7 +117,7 @@ export default async function ThanksPage() {
     <div
       className="ph-no-capture ph-mask mx-auto w-full max-w-[680px] px-6 py-10 md:py-14"
     >
-      <p className="mb-2 text-[13px] font-bold uppercase tracking-[0.08em] text-orange-ink">
+      <p className="mb-2 flex items-center gap-2.5 text-[13px] font-bold uppercase tracking-[0.08em] text-ink-head before:h-[3px] before:w-5 before:shrink-0 before:rounded-full before:bg-orange before:content-['']">
         {paid ? "Pre-order confirmed" : "Confirming your payment"}
       </p>
       <h1 className="mb-4 max-w-[24ch] font-display text-[clamp(30px,4vw,42px)] font-extrabold leading-[1.08] text-ink-head">
@@ -190,7 +190,7 @@ export default async function ThanksPage() {
 function LinkNeeded() {
   return (
     <div className="mx-auto w-full max-w-[680px] px-6 py-10 md:py-14">
-      <p className="mb-2 text-[13px] font-bold uppercase tracking-[0.08em] text-orange-ink">
+      <p className="mb-2 flex items-center gap-2.5 text-[13px] font-bold uppercase tracking-[0.08em] text-ink-head before:h-[3px] before:w-5 before:shrink-0 before:rounded-full before:bg-orange before:content-['']">
         Your pre-order is safe
       </p>
       <h1 className="mb-4 max-w-[24ch] font-display text-[clamp(30px,4vw,42px)] font-extrabold leading-[1.08] text-ink-head">

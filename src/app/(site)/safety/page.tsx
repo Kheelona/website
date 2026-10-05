@@ -16,6 +16,8 @@ import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { pageGraph, faqPage, breadcrumbs, pageMeta, jsonLd } from "@/lib/seo";
 import { KHEELU_ART, kheeluAlt } from "@/lib/kheelu-art";
 import { SUPPORT_WHATSAPP_HREF } from "@/config/site";
+import { SAFETY_POINTS, VOICE_PATH } from "@/lib/safety";
+import { QA } from "@/lib/faq";
 
 export const metadata = pageMeta({
   title: "Are AI toys safe? How Kheelu is built to be",
@@ -34,29 +36,11 @@ export const metadata = pageMeta({
    V3: age copy is per-answer ("tuned to your child's age") with Kheelu's own band,
    2 to 5, where a number is needed. The retired teal wash went with the palette. */
 
-/* "The four basics" (CMO merge, 2026-10-04: the mockup's titles, the site's
-   published bodies). THE MICROPHONE SWEEP: the old first rule ended "the
-   microphone is off. Not muted. Off." A toy that wakes to a word has to
-   listen for that word, so content doc v7's Appendix B retires the "off"
-   wording, and test/claims-gated.test.ts keeps it retired. */
-const WORD_RULES = [
-  { title: "It listens only for its wake word.", body: "Until your child says the wake word, nothing is recorded and nothing is sent. Kheelu starts talking only when it is invited to." },
-  { title: "It cannot browse the internet.", body: "Kheelu cannot browse, search, or stumble. It connects only to our own servers. No random videos, no endless detours, no strangers. Ever." },
-  { title: "Answers are checked for age.", body: "Replies pass through a safety layer tuned to your child's age before Kheelu speaks. On-device and cloud filters work together, and the first checks happen on the toy itself." },
-  /* Founder-confirmed 2026-10-04, and one of Home's four safety facts, so the
-     page that goes deeper says it too (consistency pass). It replaced "Filters
-     live on the device", which the voice path below and the age rule above
-     both already say. */
-  { title: "It says it is a toy.", body: "Kheelu tells your child it is a toy, and it never asks them to keep a secret from you." },
-] as const;
-
-/* Where the voice goes, in three stops (the mockup's path). Founder-confirmed
-   2026-10-04: a child's voice goes only to Kheelona's own servers, in India. */
-const VOICE_PATH = [
-  { title: "On the toy", body: "Kheelu hears the wake word, and the first safety checks happen on the toy itself, before anything travels anywhere." },
-  { title: "Our own servers, in India", body: "Open conversation uses your home WiFi and Kheelona's own servers in India. Nothing goes to another country to be processed." },
-  { title: "Your app", body: "The conversation appears in your app, word for word. It is never sold, and never used to sell your child anything." },
-] as const;
+/* "The four basics" and the voice path come from lib/safety.ts, the same
+   source as Home's safety room (founder, 2026-10-04: every page in sync).
+   They used to be this page's own rules, worded differently, and they were
+   not even the same four as Home's. The age-graded safety layer is still
+   answered in full below ("Could Kheelu say something wrong?"). */
 
 const VOICE_RULES = [
   { title: "Kept in India", body: "Your family's conversations stay on our own servers in India. They do not travel to another country to be processed." },
@@ -66,10 +50,10 @@ const VOICE_RULES = [
 ] as const;
 
 /* V5-3 (2026-07-31 review): the four-step custody chain that used to sit here
-   was DELETED. It restated WORD_RULES above almost word for word — "Not muted.
+   was DELETED. It restated the four basics above almost word for word — "Not muted.
    Off." appeared in both, one section apart — so the page stated one promise
    four times in a single fold: the answer block, the steps, the rules row, and
-   the closing display line. The mechanisms live in WORD_RULES; the data-custody
+   the closing display line. The mechanisms live in the four basics; the data-custody
    facts live in VOICE_RULES; each is now said once. Law: §8.23-4. */
 
 /* R7: standards, status-for-status as published on kheelona.ai/safety.
@@ -104,14 +88,9 @@ const ANSWERS = {
        mechanisms and the closing challenge — the strongest line here — stay. */
     a: "Not all of them, and the difference is in the mechanisms. Kheelu listens only for its wake word and sends nothing before it. The first thinking happens on the device. Replies come from a closed library, never the open internet. Every conversation is readable and deletable by you. You do not have to trust a badge. You can check.",
   },
-  listening: {
-    q: "Is Kheelu always listening?",
-    a: "No. Kheelu listens only for its wake word. Until your child says it, nothing is recorded and nothing is sent. Every conversation after the wake word is readable in the parent app, where you can delete any of it.",
-  },
-  voice: {
-    q: "Where does my child's voice go?",
-    a: "Almost nowhere. The first thinking happens on the toy. What travels goes to Kheelona's own servers in India, and is never sold. Nothing is collected without your consent, and any conversation can be deleted in one tap from the parent app.",
-  },
+  /* Shared with /faq through lib/faq.ts, so both pages say it identically. */
+  listening: QA.alwaysListening,
+  voice: QA.voice,
   wrong: {
     q: "Could Kheelu say something wrong?",
     a: "Every reply passes an age-graded safety layer before it is spoken, on the device and in the cloud, and Kheelu cannot reach the open internet to find something it should not. We attack our own safety layer before every release. If something still slips, one tap from you stops everything.",
@@ -139,7 +118,7 @@ const SAFETY_FAQ: FaqEntry[] = [
      page answered — built entirely from published facts. */
   { q: "Will Kheelu replace time with me?", a: "No, and it is not built to. Kheelu is for the moments your hands are full, not the ones they are not. The parent app gives you one simple thing to do together each day, quiet hours are yours to set, and the grown-up holds the keys, always." },
   { q: "Does Kheelu reduce screen time?", a: "That is the point. Kheelu has no screen at all. It is a toy that helps you cut screen time: your child talks, listens, and imagines instead of watching." },
-  { q: "Can Kheelu reach the open internet?", a: "No. Kheelu cannot browse or search. Answers come from a closed library built for children, so there are no random videos, no endless detours, and no strangers." },
+  QA.openInternet,
   /* SEO round 2026-08-12: the checklist restates the published what-to-look-for
      criteria (the journal's safe-AI-toy piece and the ANSWERS mechanisms above)
      — nothing here is a new claim. Carries "smart toys for toddlers" and
@@ -225,16 +204,16 @@ export default function SafetyPage() {
               level="minor"
               title="The four basics."
               titleClassName="mb-3"
-              lede="Four rules govern every word Kheelu hears and says. They are not settings. They are how a safe toy is built."
+              lede="The same four things Home tells you first. They are not settings. They are how a safe toy is built."
               ledeClassName="mb-10 max-w-[58ch]"
             />
           </Reveal>
           <div className="grid gap-5 sm:grid-cols-2">
-            {WORD_RULES.map((r, i) => (
+            {SAFETY_POINTS.map((r, i) => (
               <Reveal key={r.title} delay={i * 0.05}>
                 <Card
                   className="bg-white p-8"
-                  title={r.title}
+                  title={`${r.title}.`}
                   titleClassName="mb-2 font-display text-[24px] font-extrabold text-ink-head"
                 >
                   <p className="text-[16px]">{r.body}</p>

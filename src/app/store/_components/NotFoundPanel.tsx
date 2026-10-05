@@ -32,7 +32,7 @@ export function NotFoundPanel({
           href="/"
           className="inline-flex items-center justify-center rounded-full bg-action px-7 py-4 text-[17px] font-bold text-white shadow-cta focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
         >
-          Go to the pre-order page
+          Reserve Kheelu
         </a>
       ) : null}
       {/* "Or" only reads as a second option when there is a first one. */}

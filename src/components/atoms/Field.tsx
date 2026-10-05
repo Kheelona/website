@@ -21,13 +21,14 @@ import { cn } from "@/lib/cn";
  *   - the brand focus ring, the same one every other control uses.
  *
  *  On the error colour: there is no red in this palette and inventing one is
- *  forbidden (§8.2), so errors use `orange-ink`, the darkened small-text orange
- *  that holds 4.5:1 on every wash. It reads as attention rather than danger,
- *  which is why the wording carries the weight. */
+ *  forbidden (§8.2). Errors used `orange-ink` until ONE ORANGE (founder,
+ *  2026-10-04, §8.42-i): the message is now bold ink, readable on every wash,
+ *  and the field it belongs to takes a brand-orange border, so the orange
+ *  marks WHERE and the words say WHAT. The wording still carries the weight. */
 
 const LABEL = "mb-1.5 block text-[15px] font-bold text-ink-head";
 const HINT = "mt-1.5 text-[14px] text-ink-muted";
-const ERROR = "mt-1.5 text-[14px] font-bold text-orange-ink";
+const ERROR = "mt-1.5 text-[14px] font-bold text-ink-head";
 const CONTROL =
   "w-full rounded-(--radius-card) border bg-white px-4 py-3.5 text-[17px] text-ink " +
   "placeholder:text-ink-muted focus-visible:outline-none focus-visible:ring-2 " +
@@ -88,7 +89,7 @@ type AriaProps = {
 };
 
 function borderFor(invalid: boolean): string {
-  return invalid ? "border-orange-ink" : "border-line";
+  return invalid ? "border-orange" : "border-line";
 }
 
 export function TextField({
@@ -202,7 +203,7 @@ export function ChoiceField({
              a tick box that needs aim is a tick box people mis-tap. */
           className={cn(
             "mt-0.5 h-5 w-5 shrink-0 rounded border-2 accent-orange",
-            error ? "border-orange-ink" : "border-line",
+            error ? "border-orange" : "border-line",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2",
           )}
         />

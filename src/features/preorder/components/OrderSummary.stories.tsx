@@ -4,7 +4,7 @@ import { OrderSummary } from "./OrderSummary";
 const meta = {
   title: "Features/Preorder/OrderSummary",
   component: OrderSummary,
-  args: { amountLabel: "₹499", tierLabel: "Pre-order price" },
+  args: { amountLabel: "₹499", tierLabel: "Refundable deposit" },
   parameters: { layout: "padded" },
 } satisfies Meta<typeof OrderSummary>;
 

@@ -55,8 +55,12 @@ export default async function StorePage() {
       <div>
         <div className="mb-6 flex items-start gap-5">
           <div>
-            <p className="mb-2 text-[13px] font-bold uppercase tracking-[0.08em] text-orange-ink">
-              Pre-order
+            {/* One orange (§8.42-i): ink words, the brand-orange bar in front.
+                The word follows the mode, like the heading under it: "Reserve"
+                while a token holds a capped unit, "Pre-order" once it is full
+                price paid upfront (sync pass, 2026-10-04). */}
+            <p className="mb-2 flex items-center gap-2.5 text-[13px] font-bold uppercase tracking-[0.08em] text-ink-head before:h-[3px] before:w-5 before:shrink-0 before:rounded-full before:bg-orange before:content-['']">
+              {mode === "token" ? "Reserve" : "Pre-order"}
             </p>
             <h1 className="max-w-[20ch] font-display text-[clamp(30px,4vw,44px)] font-extrabold leading-[1.08] text-ink-head">
               {mode === "token"
@@ -113,7 +117,7 @@ export default async function StorePage() {
     {hasVideoMoments() && (
       <section className="mx-auto w-full max-w-[1100px] border-t border-line px-6 py-10 md:py-14">
         <h2 className="mb-2 font-display text-[clamp(22px,2.6vw,30px)] font-extrabold leading-tight text-ink-head">
-          Families already using Kheelu.
+          Watch a child meet Kheelu.
         </h2>
         <p className="mb-8 max-w-[52ch] text-[16px] leading-relaxed text-ink">
           {videoLede()}

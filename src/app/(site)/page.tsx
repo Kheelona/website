@@ -5,7 +5,8 @@ import { RoomsTrack } from "@/components/atoms/RoomsTrack";
 import { Reveal } from "@/components/molecules/Reveal";
 import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { FootnotesRow, V3_FOOTNOTES } from "@/components/molecules/FootnotesRow";
-import { Faq, type FaqEntry } from "@/components/molecules/Faq";
+import { Faq } from "@/components/molecules/Faq";
+import { HOME_FAQ } from "@/lib/faq";
 import { ViewContentTracker } from "@/components/molecules/ViewContentTracker";
 import { pageGraph, faqPage, breadcrumbs, KHEELU_PRODUCT, pageMeta, jsonLd } from "@/lib/seo";
 import { VIDEO_MOMENTS, hasVideoMoments, videoLede } from "@/lib/video-moments";
@@ -13,16 +14,6 @@ import { RecognitionStrip } from "@/components/organisms/RecognitionStrip";
 import { ParentQuotes } from "@/components/organisms/ParentQuotes";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { VideoMoments } from "@/components/organisms/VideoMoments";
-import {
-  TOKEN_PRICE,
-  BALANCE_PRICE,
-  CAP_UNITS_TEXT,
-  FULL_PRICE,
-  LAUNCH_PRICE,
-  SHIP_DATE_TEXT,
-  KHEELONA_PLUS_LINE,
-  LANGUAGES_LINE,
-} from "@/config/site";
 import {
   Hero,
   TrustStrip,
@@ -54,59 +45,9 @@ export const metadata = pageMeta({
   path: "/",
 });
 
-/* The questions parents actually type, answered on the page a search or an
-   answer engine lands on first (AEO question bank, docs/revamp-2026-07/
-   research.md). Every answer restates published copy and is self-contained
-   enough to be quoted on its own.
-
-   CMO merge (2026-10-04): the mockup's questions merged with the old set.
-   Kept from main: what it is, safety, cost IN INDIA (the keyword that
-   matters), ship date, internet, languages. Added from the mockup:
-   subscription and the refund. Dropped from Home (still answered on the Kheelu
-   page and /faq): "what will my child get out of it" (the hero and the
-   how-it-works room answer it now) and "what ages" (the hero chip). */
-const HOME_FAQ: FaqEntry[] = [
-  {
-    q: "What is Kheelu?",
-    /* SEO round 2026-08-12: carries "screen-free toy" and "interactive AI toy"
-       exactly; "smart toy" is deliberately NOT written here, because the
-       comparison contrasts Kheelu against that category. */
-    a: "Kheelu is a screen-free toy that talks with children aged 3 and up: your child speaks to it and it answers, tells stories, sings, and asks questions back. It is an interactive AI toy with no screen at all, it cannot reach the open internet, and every conversation is readable by you in the parent app.",
-  },
-  /* V6 D7: opens with the same honest verdict as the /safety flagship answer.
-     Microphone wording swept 2026-10-04 (content doc v7 Appendix B): the toy
-     listens for its wake word, so it is never described as "off". */
-  {
-    q: "Is an AI toy safe for a small child?",
-    a: "Not all of them are, and what makes a safe toy is how it is built. Kheelu listens only for its wake word and records or sends nothing until it hears it, the first thinking happens on the toy, answers come from a closed library rather than the open internet, and you can read or delete every conversation.",
-  },
-  {
-    q: "How much does Kheelu cost in India?",
-    a: `${LAUNCH_PRICE} for the ${CAP_UNITS_TEXT}, and ${FULL_PRICE} once they are gone. A refundable ${TOKEN_PRICE} reserves your Kheelu now, and the ${BALANCE_PRICE} balance is due only when it is ready to ship. Every Kheelu includes 6 months of Kheelona+.`,
-  },
-  {
-    q: "Is there a subscription?",
-    a: `${KHEELONA_PLUS_LINE} Nothing renews without you.`,
-  },
-  {
-    q: `Can I get my ${TOKEN_PRICE} back?`,
-    a: `Yes, in full, any time before we dispatch your Kheelu. The ${BALANCE_PRICE} balance is due only when your Kheelu is ready to ship.`,
-  },
-  {
-    q: "When does Kheelu ship?",
-    a: `Shipping starts ${SHIP_DATE_TEXT}. Reserving now holds the ${LAUNCH_PRICE} price and your place in line for a refundable ${TOKEN_PRICE}, and pre-orders are served first.`,
-  },
-  /* V6 D4a (founder-licensed fact): mode-precise. */
-  {
-    q: "Does Kheelu need the internet to work?",
-    a: "For open conversation, yes: AI mode runs on your home WiFi. For everything else, no: Story-mode stories and lessons play offline, and Bluetooth music needs only a paired phone. On a train or anywhere without a signal, your child still has stories to interrupt, question, and be quizzed on.",
-  },
-  {
-    q: "Which languages does Kheelu speak?",
-    a: `${LANGUAGES_LINE}, with up to ten languages at launch. Kheelu can switch mid-sentence, in the languages you speak at home.`,
-  },
-];
-
+/* The eight questions parents ask first, from lib/faq.ts: every question the
+   site answers on more than one page is answered once there (founder,
+   2026-10-04: all pages in sync). */
 const HOME_JSON_LD = pageGraph(KHEELU_PRODUCT, faqPage(HOME_FAQ), breadcrumbs([]));
 
 /* THE CMO MERGE (2026-10-04, docs/checkpoints/cmo-merge-2026-10.md): the

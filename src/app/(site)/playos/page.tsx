@@ -45,7 +45,7 @@ const ARCH_ABOVE: readonly ArchLayer[] = [
       "The part your child hugs: a screen-free friend that talks, teaches, and keeps up.",
     chips: [
       "Screen free",
-      "Cognitive development",
+      "Learning through talk",
       "Educational",
       "Endless conversations",
       /* V6 QA N1: the team diagram's bare "WiFi operated" predates the
@@ -237,7 +237,7 @@ export default function PlayOSPage() {
             <SectionHeading
               title="Above the water, a toy. Below it, a platform."
               titleClassName="mb-3 max-w-[22ch]"
-              lede="Tap a layer to open it. The smart toy your child hugs is the smallest part of what we build."
+              lede="Tap a layer to open it. The AI toy your child hugs is the smallest part of what we build."
               ledeClassName="mb-10 max-w-[58ch]"
             />
           </Reveal>

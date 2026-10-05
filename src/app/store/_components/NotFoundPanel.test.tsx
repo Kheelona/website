@@ -11,14 +11,14 @@ describe("NotFoundPanel", () => {
       "href",
       SUPPORT_WHATSAPP_HREF,
     );
-    expect(screen.getByRole("link", { name: /pre-order page/i })).toHaveAttribute("href", "/");
+    expect(screen.getByRole("link", { name: /^Reserve Kheelu$/i })).toHaveAttribute("href", "/");
   });
 
   it("drops the pre-order button for a reader who has already paid", () => {
     /* Sending someone who paid us back to the buying page is the wrong offer,
        and it is the case the confirmation page hits. */
     render(<NotFoundPanel title="We cannot open that order right now." cta={false} />);
-    expect(screen.queryByRole("link", { name: /pre-order page/i })).toBeNull();
+    expect(screen.queryByRole("link", { name: /^Reserve Kheelu$/i })).toBeNull();
     expect(screen.getByRole("link", { name: /message us on whatsapp/i })).toBeInTheDocument();
   });
 

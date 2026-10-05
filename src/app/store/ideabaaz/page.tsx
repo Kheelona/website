@@ -88,7 +88,7 @@ export default async function IdeabaazPage() {
         <div className="mb-6 flex items-start gap-5">
           <div>
             <PartnerChip className="mb-5" />
-            <p className="mb-2 text-[13px] font-bold uppercase tracking-[0.08em] text-orange-ink">
+            <p className="mb-2 flex items-center gap-2.5 text-[13px] font-bold uppercase tracking-[0.08em] text-ink-head before:h-[3px] before:w-5 before:shrink-0 before:rounded-full before:bg-orange before:content-['']">
               Exclusive for the Ideabaaz audience
             </p>
             <h1 className="max-w-[22ch] font-display text-[clamp(30px,4vw,44px)] font-extrabold leading-[1.08] text-ink-head">

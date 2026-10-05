@@ -6,6 +6,7 @@ import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { AnswerBlock } from "@/components/molecules/AnswerBlock";
 import { SpecTable } from "@/components/molecules/SpecTable";
 import { CompareTable } from "@/components/molecules/CompareTable";
+import { COMPARISON_COLUMNS, COMPARISON_ROWS } from "@/lib/comparison";
 import { StepList } from "@/components/molecules/StepList";
 import { Reveal } from "@/components/molecules/Reveal";
 import { Faq, type FaqEntry } from "@/components/molecules/Faq";
@@ -265,18 +266,22 @@ export default function AiToysGuidePage() {
             <SectionHeading
               as="h2"
               level="section"
-              title="A talking toy, against the alternatives"
+              title="How Kheelu compares."
               titleClassName="mb-5 max-w-[22ch]"
               lede="Set against the other things a parent is actually choosing between, rather than against a named rival whose specifications we cannot check."
               ledeClassName="max-w-[60ch]"
             />
           </Reveal>
           <Reveal>
-            <CompareTable />
+            {/* The same comparison Home and the Kheelu page show, from
+                lib/comparison.ts (founder, 2026-10-04: every page in sync). */}
+            <CompareTable columns={COMPARISON_COLUMNS} rows={COMPARISON_ROWS} />
+            <p className="mt-4 text-[15px] text-ink">Based on typical products in each group.</p>
           </Reveal>
           <Reveal className="mt-10">
             <p className="max-w-[60ch] text-[17px] leading-[1.6] text-ink-head/90">
-              The distinction that matters most is the second row. A toy that
+              The distinction that matters most is the row about asking
+              questions back. A toy that
               repeats is a mirror, and a toy that answers is a conversation.{" "}
               <Link href="/stories/a-toy-that-talks-vs-a-toy-that-listens" className="font-semibold text-ink-head underline">
                 We wrote about why that difference is the whole thing

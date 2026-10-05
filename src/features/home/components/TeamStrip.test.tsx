@@ -30,12 +30,11 @@ describe("TeamStrip", () => {
     expect(container.textContent).not.toMatch(/backed by|supported by|invest/i);
   });
 
-  /* Founder, 2026-10-04: Ria comes off Home's strip and stays on /team, where
-     her card anchors the journal bylines that cite her. */
+  /* Founder, 2026-10-04: Ria is removed from the site, Home's strip included. */
   it("shows the three co-founders, and not Ria", () => {
     render(<TeamStrip />);
     expect(HOME_TEAM.map((f) => f.name)).toEqual(["Apoorva Sahu", "Aman Soni", "Kashyap C.R"]);
     expect(screen.queryByText("Ria Mangala Rewari")).toBeNull();
-    expect(FOUNDERS.some((f) => f.id === "ria")).toBe(true);
+    expect(FOUNDERS.some((f) => f.name.startsWith("Ria"))).toBe(false);
   });
 });

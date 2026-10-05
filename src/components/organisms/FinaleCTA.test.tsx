@@ -46,7 +46,9 @@ describe("FinaleCTA", () => {
     render(<FinaleCTA />);
     expect(screen.getByText("Fully refundable")).toBeInTheDocument();
     expect(screen.getByText("₹499 now, ₹4,500 later")).toBeInTheDocument();
-    expect(screen.getByText("Ships 20 October 2026")).toBeInTheDocument();
+    /* "First in line", Home's promise word for word (sync pass, 2026-10-04);
+       the date lives in the headline, so the card no longer repeats it. */
+    expect(screen.getByText("First in line")).toBeInTheDocument();
     // the retired free-list promise must never come back on a paid page
     expect(screen.queryByText(/No payment/i)).toBeNull();
   });

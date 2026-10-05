@@ -41,7 +41,7 @@ describe("resolveTier under the unit cap", () => {
     const result = await resolveTier(env, { tier: LAUNCH_TIER });
     expect(result).toEqual({
       ok: true,
-      tier: { id: LAUNCH_TIER, amountPaise: TOKEN_AMOUNT_PAISE, label: "Pre-order price" },
+      tier: { id: LAUNCH_TIER, amountPaise: TOKEN_AMOUNT_PAISE, label: "Refundable deposit" },
     });
   });
 

@@ -8,7 +8,10 @@
  *  `short` is the one-line role the Home strip prints, condensed from `bio`
  *  and claiming nothing the bio does not. */
 
-/* CEO first, as the mockup orders them (the old /team led with Aman). */
+/* CEO first, as the mockup orders them (the old /team led with Aman).
+   Ria Mangala Rewari was removed from the site on 2026-10-04 (founder): from
+   Home's strip, /team, the Organization schema, and the bylines of the eight
+   journal pieces she was credited with, which are now credited to Aman Soni. */
 export const FOUNDERS = [
   {
     id: "apoorva",
@@ -54,29 +57,6 @@ export const FOUNDERS = [
     bio: "Kashyap makes Kheelu something small hands reach for. Over a decade, including years at Intel leading Thunderbolt 4 and 5 compliance, he took hardware from a blank page to certified products on real shelves. He owns the hardware and the power: the Kheelona Magic Box, the battery that lasts, and the unglamorous work of making it safe to hug.",
     quote:
       "Anyone can build a demo. Shipping a safe, certified toy by the thousand is a different sport. I have played it for ten years.",
-  },
-  {
-    // R10 (founder 2026-07-11): Ria joins between Kashyap and Apoorva.
-    // Bio facts from her published profile; quote drafted from her own
-    // published line ("most businesses don't have a marketing problem, they
-    // have a clarity problem") — founder-approved via the R10 plan, Ria's
-    // personal sign-off flagged in FOUNDER-TODO. R11: the founder's source
-    // PNG had a BAKED checkerboard (fake transparency) — re-cut with
-    // tools/cutout (Vision) and composited on flat pale lavender #F1ECFB,
-    // matching the set (each photo bg echoes its card tint family).
-    id: "ria",
-    /** The element id on /team, equal to the fragment of this person's
-     *  schema `@id` in lib/seo.ts, so `/team#ria-mangala-rewari` lands on the card. */
-    anchor: "ria-mangala-rewari",
-    short: "Marketing. Co-founded and ran a marketing agency for seven years.",
-    name: "Ria Mangala Rewari",
-    role: "Head of Marketing",
-    tag: "The voice",
-    photo: "/team/ria.jpg",
-    linkedin: "https://www.linkedin.com/in/ria-mangala/",
-    bio: "Ria owns how Kheelona speaks to the world. She co-founded a marketing agency and ran it for seven years, and has trained more than 1,000 students and entrepreneurs in digital marketing. She owns the story: where Kheelu shows up, how it speaks, and why it never overpromises.",
-    quote:
-      "Most brands do not have a marketing problem. They have a clarity problem. My job is to keep this one clear and honest.",
   },
 ] as const;
 

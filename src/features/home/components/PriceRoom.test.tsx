@@ -12,7 +12,7 @@ describe("PriceRoom", () => {
 
   it("states the whole offer in the shared PriceTable", () => {
     render(<PriceRoom />);
-    expect(screen.getByRole("table", { name: /Kheelu pre-order price/ })).toBeInTheDocument();
+    expect(screen.getByRole("table", { name: /Kheelu price, deposit and dispatch/ })).toBeInTheDocument();
     expect(screen.getByRole("rowheader", { name: /Refundable deposit today/ })).toBeInTheDocument();
   });
 

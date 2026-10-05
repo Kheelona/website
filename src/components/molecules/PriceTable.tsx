@@ -49,7 +49,7 @@ export function PriceTable({ className }: { className?: string }) {
       <div className="overflow-x-auto">
         <table className="w-full border-collapse text-left text-[16.5px]">
           <caption className="sr-only">
-            Kheelu pre-order price, deposit and dispatch in India
+            Kheelu price, deposit and dispatch in India
           </caption>
           <tbody>
             {rows.map((row) => (

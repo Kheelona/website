@@ -11,9 +11,8 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
-
-/** The Home and Kheelu comparison (CMO merge, 2026-10-04). */
-export const ProductTypes: Story = {
+/** The site's one comparison (lib/comparison.ts), as Home, the Kheelu page and
+ *  the buyer's guide show it. */
+export const Default: Story = {
   args: { columns: COMPARISON_COLUMNS, rows: COMPARISON_ROWS },
 };

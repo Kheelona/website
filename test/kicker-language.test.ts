@@ -120,6 +120,8 @@ describe("§8.24-7: one kicker language", () => {
     const all = FILES.flatMap((f) => classAttributes(readFileSync(f, "utf8")));
     expect(all.length).toBeGreaterThan(200);
     expect(all.some((a) => a.includes("uppercase"))).toBe(true);
-    expect(all.some((a) => a.includes("text-orange-ink"))).toBe(true);
+    /* One orange (2026-10-04): kickers are ink now, so the extraction is
+       proven on an ink kicker rather than the retired orange-ink one. */
+    expect(all.some((a) => a.includes("uppercase") && a.includes("text-ink-head"))).toBe(true);
   });
 });

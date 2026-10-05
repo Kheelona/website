@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
-import { TrustRoom, SAFETY_POINTS, VOICE_PATH } from "./TrustRoom";
+import { TrustRoom } from "./TrustRoom";
+import { SAFETY_POINTS, VOICE_PATH } from "@/lib/safety";
 
 describe("TrustRoom (CMO merge, 2026-10-04)", () => {
   it("answers the four things parents ask first", () => {
@@ -8,7 +9,7 @@ describe("TrustRoom (CMO merge, 2026-10-04)", () => {
       screen.getByRole("heading", { level: 2, name: "What Kheelu can and cannot do." }),
     ).toBeInTheDocument();
     for (const p of SAFETY_POINTS) {
-      expect(screen.getByRole("heading", { level: 3, name: p.h })).toBeInTheDocument();
+      expect(screen.getByRole("heading", { level: 3, name: p.title })).toBeInTheDocument();
     }
   });
 
@@ -22,8 +23,8 @@ describe("TrustRoom (CMO merge, 2026-10-04)", () => {
 
   it("traces the voice to Kheelona's own servers in India (founder-confirmed)", () => {
     render(<TrustRoom />);
-    for (const stop of VOICE_PATH) expect(screen.getByText(stop)).toBeInTheDocument();
-    expect(VOICE_PATH[1]).toBe("Our own servers, in India");
+    for (const stop of VOICE_PATH) expect(screen.getByText(stop.title)).toBeInTheDocument();
+    expect(VOICE_PATH[1]!.title).toBe("Our own servers, in India");
   });
 
   it("keeps the data promise and the deep dive to /safety", () => {

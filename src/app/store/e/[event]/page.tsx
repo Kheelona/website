@@ -56,7 +56,7 @@ export default async function EventPage({
           href="/"
           className="inline-flex items-center justify-center rounded-full bg-action px-7 py-4 text-[17px] font-bold text-white shadow-cta focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
         >
-          Pre-order at the usual price
+          Reserve at the usual price
         </a>
         <p className="mt-4 text-[14px] text-ink-muted">
           Or{" "}
@@ -79,7 +79,7 @@ export default async function EventPage({
       <div>
         <div className="mb-6 flex items-start gap-5">
           <div>
-            <p className="mb-2 text-[13px] font-bold uppercase tracking-[0.08em] text-orange-ink">
+            <p className="mb-2 flex items-center gap-2.5 text-[13px] font-bold uppercase tracking-[0.08em] text-ink-head before:h-[3px] before:w-5 before:shrink-0 before:rounded-full before:bg-orange before:content-['']">
               {result.tier.label}
             </p>
             <h1 className="max-w-[20ch] font-display text-[clamp(30px,4vw,44px)] font-extrabold leading-[1.08] text-ink-head">
@@ -98,7 +98,7 @@ export default async function EventPage({
         </div>
 
         <p className="mb-8 max-w-[52ch] text-[17px] leading-[1.6] text-ink">
-          A screen-free talking friend for ages {KHEELU_AGES}. {amountLabel} today
+          A screen-free AI toy for ages {KHEELU_AGES}. {amountLabel} today
           holds one at {LAUNCH_PRICE}, ships {SHIP_DATE_TEXT}, and is refundable
           in full until it does.
         </p>

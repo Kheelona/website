@@ -76,12 +76,15 @@ describe("the confirmed claims reached their pages", () => {
     expect(read("src/lib/comparison.ts")).toMatch(/Camera in your home", values: \["None"/);
   });
 
-  it("it says it is a toy: Home's safety room says so", () => {
-    expect(read("src/features/home/components/TrustRoom.tsx")).toMatch(/It says it is a toy/);
+  /* Since the sync pass (2026-10-04) both pages read lib/safety.ts, so the
+     facts are pinned there and both pages are pinned to import it. */
+  it("it says it is a toy, and our own servers, in India: the shared safety facts say so", () => {
+    expect(read("src/lib/safety.ts")).toMatch(/It says it is a toy/);
+    expect(read("src/lib/safety.ts")).toMatch(/Our own servers, in India/);
   });
 
-  it("our own servers, in India: Home and /safety both say so", () => {
-    expect(read("src/features/home/components/TrustRoom.tsx")).toMatch(/Our own servers, in India/);
-    expect(read("src/app/(site)/safety/page.tsx")).toMatch(/Our own servers, in India/);
+  it("Home and /safety both read the shared safety facts", () => {
+    expect(read("src/features/home/components/TrustRoom.tsx")).toMatch(/from "@\/lib\/safety"/);
+    expect(read("src/app/(site)/safety/page.tsx")).toMatch(/from "@\/lib\/safety"/);
   });
 });

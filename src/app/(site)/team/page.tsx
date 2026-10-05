@@ -23,7 +23,7 @@ export const metadata = pageMeta({
      suffix, under the 65 guard), "AI educational toy" in the description. */
   title: "Our story: parents building smart toys for toddlers",
   description:
-    "Why we built Kheelu, the AI educational toy, and who we are: a CTO with 14 patents, an Intel hardware chief, a marketing head, and a CEO who owns trust.",
+    "Why we built Kheelu, the AI educational toy, and who we are: a CTO with 14 patents filed, an Intel hardware chief, and a CEO who owns the trust.",
   path: "/team",
 });
 
@@ -33,7 +33,6 @@ export const metadata = pageMeta({
 const CARD_TINT: Record<string, { tint: string; border: string; quoteBorder: string }> = {
   aman: { tint: "bg-orange/15", border: "border-t-orange", quoteBorder: "border-l-orange" },
   kashyap: { tint: "bg-blue/15", border: "border-t-blue", quoteBorder: "border-l-blue" },
-  ria: { tint: "bg-blue/15", border: "border-t-blue", quoteBorder: "border-l-blue" },
   apoorva: { tint: "bg-yellow/15", border: "border-t-yellow", quoteBorder: "border-l-yellow" },
 };
 
@@ -90,9 +89,9 @@ export default function TeamPage() {
         />
         <p className="max-w-[58ch] text-[17px] text-ink-muted">
           We are parents who build. We watched our own children reach for
-          screens and felt the same knot you feel. Between the four of us we
-          cover the four things a safe AI toy actually needs: a brain, a
-          body, a business, and a voice. And education runs in the family: the
+          screens and felt the same knot you feel. Between the three of us we
+          cover the three things a safe AI toy actually needs: a brain, a
+          body, and a business. And education runs in the family: the
           first school Apoorva attended was the one his family runs, and he has
           been enrolling friends into classrooms since he was a teenager.
         </p>
@@ -103,7 +102,7 @@ export default function TeamPage() {
         <Room fill="white" id="the-team" reveal="left">
           <Reveal>
             <SectionHeading
-              title="A brain, a body, a business, and a voice."
+              title="A brain, a body, and a business."
               titleClassName="mb-3"
               lede="You are trusting us near your child. You should know who we are."
               ledeClassName="mb-11 max-w-[58ch]"

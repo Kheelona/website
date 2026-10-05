@@ -33,8 +33,11 @@ const REASSURANCES = [
     head: `${TOKEN_PRICE} now, ${BALANCE_PRICE} later`,
     note: "The balance is due only when your Kheelu is ready to leave for you.",
   },
+  /* "First in line", Home's price-room promise word for word (founder,
+     2026-10-04: every page in sync). It used to read "Ships 20 October 2026",
+     which repeated the headline right above it. */
   {
-    head: `Ships ${SHIP_DATE_TEXT}`,
+    head: "First in line",
     note: "Pre-orders are served first, in the order they were placed.",
   },
 ] as const;

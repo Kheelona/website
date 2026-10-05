@@ -6,10 +6,9 @@ import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { FOUNDERS } from "@/lib/team";
 import { SUPPORT_WHATSAPP_HREF } from "@/config/site";
 
-/** The co-founders only (founder, 2026-10-04: Ria comes off this strip). She
- *  stays on /team, where her card is also the anchor for the eight journal
- *  bylines that cite her; Home names the three people who founded the
- *  company, which matches what llms.txt and Organization.founder say. */
+/** The co-founders (founder, 2026-10-04). Ria has left the site entirely, so
+ *  this is every person in lib/team.ts; the filter stays so that a future
+ *  non-founder hire does not land on Home without a decision. */
 export const HOME_TEAM = FOUNDERS.filter((f) => f.role.startsWith("Co-founder"));
 
 /** "Designed by parents in Bengaluru" (CMO merge, 2026-10-04): the founders on

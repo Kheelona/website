@@ -23,36 +23,21 @@
  *  "Yes, up to 10" sliced mid-word, and the three toys being compared against
  *  sat off-screen entirely. Both views read from `rows`, so a verdict can never
  *  disagree with itself, and only one is ever in the DOM's a11y tree. */
-/** One claim and its verdicts, in column order (Kheelu first). The CMO merge
- *  (2026-10-04) folded the branch's forked `ComparisonTable` in here: the Home
- *  and Kheelu comparison passes its own columns and rows from
- *  `lib/comparison.ts`, and the buyer's guide keeps the category table below
- *  as the default. One component, so both phone layouts are the same stack. */
+/** One claim and its verdicts, in column order (Kheelu first). The site has
+ *  ONE comparison, in lib/comparison.ts, shown on Home, /products/kheelu and
+ *  the buyer's guide (founder, 2026-10-04: every page in sync). This component
+ *  used to carry a second, private category table as its default; that table
+ *  is gone, so a call site must pass the shared data and cannot drift. */
 export type CompareRow = { label: string; values: readonly string[] };
 
-const DEFAULT_COLUMNS = ["Kheelu", "Smart toys", "Phone or TV", "Ordinary toys"] as const;
-
-const DEFAULT_ROWS: readonly CompareRow[] = [
-  { label: "No screen, ever", values: ["Yes", "Varies", "No", "Yes"] },
-  { label: "Talks with your child, not at them", values: ["Yes", "Limited", "No", "No"] },
-  { label: "Speaks the languages of your home", values: ["Yes, up to 10", "Rarely", "Varies", "No"] },
-  { label: "Cannot wander the internet", values: ["Yes", "Rarely", "No", "Yes"] },
-  { label: "You can read every conversation", values: ["Yes", "Partial", "Partial", "No"] },
-  /* V3: the row that carries the pipeline story (Kheelu from 3, the Kheelu
-     Speaker onward, books across) — the age arc IS the differentiator the
-     category cannot match (benchmarks-v3.md: MyWonder's clearest gap). No
-     published ceiling since the 3+ repositioning (2026-08-23). */
-  { label: "Grows with them", values: ["Yes, for years with the family", "Varies", "No", "Varies"] },
-];
-
 export function CompareTable({
-  columns = DEFAULT_COLUMNS,
-  rows = DEFAULT_ROWS,
+  columns,
+  rows,
 }: {
   /** Column heads, Kheelu first. Every row carries one value per column. */
-  columns?: readonly string[];
-  rows?: readonly CompareRow[];
-} = {}) {
+  columns: readonly string[];
+  rows: readonly CompareRow[];
+}) {
   return (
     <>
       {/* Phones: one card per claim, Kheelu's answer first and loudest */}

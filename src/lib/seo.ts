@@ -84,25 +84,12 @@ const FOUNDERS = [
   },
 ] as const;
 
-/** Ria writes six of the nineteen journal pieces and is on /team, so she is an
- *  entity too: `employee`, not `founder`, because that is what the page says.
- *  Bio sentence is the published /team card, shortened, nothing added. */
-const RIA = {
-  "@type": "Person",
-  "@id": `${TEAM_URL}#ria-mangala-rewari`,
-  name: "Ria Mangala Rewari",
-  jobTitle: "Head of Marketing",
-  description:
-    "Co-founded and ran a marketing agency for seven years, and has trained more than 1,000 students and entrepreneurs in digital marketing.",
-  url: TEAM_URL,
-  sameAs: ["https://www.linkedin.com/in/ria-mangala/"],
-} as const;
 
 /** Byline name → entity `@id`. Every `Story.author` must resolve here
  *  (pinned in seo.test); an article by someone not on /team is a review flag,
  *  because the E-E-A-T claim behind the byline would have nothing behind it. */
 export const AUTHORS: Readonly<Record<string, string>> = Object.fromEntries(
-  [...FOUNDERS, RIA].map((person) => [person.name, person["@id"]]),
+  FOUNDERS.map((person) => [person.name, person["@id"]]),
 );
 
 /** The author node a BlogPosting carries: a reference, never a second copy.
@@ -133,7 +120,6 @@ export const ORGANIZATION = {
      Ahrefs flagged it four times per page on all 31 (2026-09-03). Same value,
      current property name. */
   founder: FOUNDERS,
-  employee: [RIA],
   address: {
     "@type": "PostalAddress",
     /* Full registered address since 2026-08-22: a merchant taking payment has

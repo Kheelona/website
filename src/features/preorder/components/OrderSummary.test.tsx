@@ -4,20 +4,20 @@ import { BALANCE_PRICE, LAUNCH_PRICE, FULL_PRICE, SHIP_DATE_TEXT } from "@/confi
 
 describe("OrderSummary", () => {
   it("answers what leaves the account today, and what leaves it later", () => {
-    render(<OrderSummary amountLabel="₹499" tierLabel="Pre-order price" />);
+    render(<OrderSummary amountLabel="₹499" tierLabel="Refundable deposit" />);
     expect(screen.getByText("₹499 today")).toBeInTheDocument();
     expect(screen.getByText(`${BALANCE_PRICE} on dispatch`)).toBeInTheDocument();
     expect(screen.getByText(`Ships ${SHIP_DATE_TEXT}`)).toBeInTheDocument();
   });
 
   it("promises the refund on the page where the money moves", () => {
-    render(<OrderSummary amountLabel="₹499" tierLabel="Pre-order price" />);
+    render(<OrderSummary amountLabel="₹499" tierLabel="Refundable deposit" />);
     expect(screen.getByText("Refundable in full")).toBeInTheDocument();
     expect(screen.getByText(/no reason needed/i)).toBeInTheDocument();
   });
 
   it("promises nothing automatic, which is the fear a saved card creates", () => {
-    render(<OrderSummary amountLabel="₹499" tierLabel="Pre-order price" />);
+    render(<OrderSummary amountLabel="₹499" tierLabel="Refundable deposit" />);
     expect(screen.getByText(/Never automatic/i)).toBeInTheDocument();
   });
 
