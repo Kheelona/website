@@ -9,11 +9,14 @@
  * the dispatcher (src/lib/tracking/track.ts). test/guards/tracking-registry.test.ts proves this
  * file equal to the inventory, to architecture §8.2 and to the frozen server payload builders.
  */
+import { POSTHOG_REPLAY_DENY_PATHS } from "@/config/site";
 import { CAMPAIGN_KEYS } from "@/lib/campaign";
 import type { DestinationKey } from "./destinations";
 
 export type EventStatus = "existing" | "new";
 export type ParamValue = string | number | boolean | readonly string[];
+/** A row of the Gate A open items (wiki/site/gate-a-open-items.md), by its number (B9, B11). */
+export type DecisionRef = `B${number}`;
 
 /** A parameter added to an existing event after the tag, by a recorded decision. */
 export interface AddedParam {
@@ -21,6 +24,19 @@ export interface AddedParam {
   readonly value: string;
   readonly when: string;
   readonly status: "new";
+}
+
+/** A route an existing event now also fires on, same payload, by a recorded decision. */
+export interface AddedPlacement {
+  readonly route: string;
+  readonly decision: DecisionRef;
+  readonly status: "new";
+}
+
+/** Properties the SDK attaches itself because of one of its init options (inventory §6). */
+export interface SdkParams {
+  readonly option: string;
+  readonly names: readonly string[];
 }
 
 export interface TrackedEvent<Name extends string = string> {
@@ -35,8 +51,15 @@ export interface TrackedEvent<Name extends string = string> {
   readonly eventId?: string;
   /** Sent by the tool's own script or SDK, not by a call in our code. */
   readonly automatic?: true;
+  /** Properties the SDK adds from an init option, which tracking parity checks (parity row 14). */
+  readonly sdkParams?: SdkParams;
+  /** Browser paths where it must never fire (parity row 17). */
+  readonly neverOn?: readonly string[];
   readonly added?: readonly AddedParam[];
+  readonly addedPlacements?: readonly AddedPlacement[];
   readonly status: EventStatus;
+  /** The decision whose gate holds a new event back; the task that opens the gate removes it. */
+  readonly gated?: DecisionRef;
   /** What sends it. */
   readonly firedBy: string;
   readonly when: string;
@@ -55,6 +78,11 @@ export interface StampedProperty {
 const funnel = (call: string) => `preorderAnalytics.${call} (src/features/preorder/lib/analytics.ts)`;
 const POSTHOG_SDK = "PostHogGate (posthog-js)";
 const PROJECT_SETTING = "sent by posthog-js as the PostHog project settings enable it";
+/** posthog-js adds these to its built-in utm_* and click-id keys, read from the landing URL. */
+const CAMPAIGN_PARAMS = {
+  option: "custom_campaign_params",
+  names: ["utm_id", "placement"],
+} as const satisfies SdkParams;
 
 const EVENT_LIST = [
   /* ── Automatic pageviews ─────────────────────────────────────────────── */
@@ -91,10 +119,11 @@ const EVENT_LIST = [
     destinations: ["meta-pixel"],
     params: ["content_name", "content_ids", "content_type", "value", "currency"],
     fixed: { content_name: "Kheelu", content_ids: ["lumi"], content_type: "product", currency: "INR" },
+    addedPlacements: [{ route: "/", decision: "B9", status: "new" }],
     status: "existing",
     firedBy: "ViewContentTracker (waits for fbq with whenFbqReady)",
     when:
-      "once per load of /products/kheelu, and of / (B9: a new placement, same payload); " +
+      "once per load of /products/kheelu, and of / (addedPlacements, B9: same payload); " +
       "value is the offer headline in rupees (4999 in token mode)",
   },
 
@@ -228,15 +257,17 @@ const EVENT_LIST = [
     destinations: ["posthog-browser"],
     params: [],
     automatic: true,
+    sdkParams: CAMPAIGN_PARAMS,
     status: "existing",
     firedBy: `${POSTHOG_SDK}, capture_pageview "history_change"`,
-    when: "every page load and history change; campaign keys include utm_id and placement (custom_campaign_params)",
+    when: "every page load and history change",
   },
   {
     name: "$pageleave",
     destinations: ["posthog-browser"],
     params: [],
     automatic: true,
+    sdkParams: CAMPAIGN_PARAMS,
     status: "existing",
     firedBy: POSTHOG_SDK,
     when: "leaving a page",
@@ -246,6 +277,7 @@ const EVENT_LIST = [
     destinations: ["posthog-browser"],
     params: ["cta"],
     automatic: true,
+    sdkParams: CAMPAIGN_PARAMS,
     status: "existing",
     firedBy: POSTHOG_SDK,
     when: "taps and form changes outside ph-no-capture; cta is promoted from data-ph-capture-attribute-cta (cta.ts)",
@@ -295,6 +327,18 @@ const EVENT_LIST = [
     firedBy: POSTHOG_SDK,
     when: PROJECT_SETTING,
   },
+  {
+    name: "$snapshot",
+    destinations: ["posthog-browser"],
+    params: [],
+    automatic: true,
+    neverOn: POSTHOG_REPLAY_DENY_PATHS,
+    status: "existing",
+    firedBy: `${POSTHOG_SDK} session replay: disable_session_recording at init, then started per route`,
+    when:
+      "recording on every route replayAllowedOnPath allows (store / included), never on POSTHOG_REPLAY_DENY_PATHS; " +
+      "inputs and .ph-mask text masked",
+  },
 
   /* ── New checkout events (B11; wired only by task 6.2, gated) ────────── */
   {
@@ -302,6 +346,7 @@ const EVENT_LIST = [
     destinations: ["ga4", "posthog-browser"],
     params: ["tier"],
     status: "new",
+    gated: "B11",
     firedBy: "src/features/preorder/lib/checkout.ts, right after checkout.open() (task 6.2)",
     when: "the Razorpay payment window opens",
   },
@@ -310,6 +355,7 @@ const EVENT_LIST = [
     destinations: ["ga4", "posthog-browser"],
     params: ["tier", "reason_code", "reason"],
     status: "new",
+    gated: "B11",
     firedBy: 'checkout.on("payment.failed", …), registered before open() (task 6.2)',
     when: "a payment fails; reason_code and reason are Razorpay's error.code and error.reason, never free text",
   },
@@ -318,6 +364,7 @@ const EVENT_LIST = [
     destinations: ["ga4", "posthog-browser"],
     params: ["tier", "fields"],
     status: "new",
+    gated: "B11",
     firedBy: "PreorderForm, on a submit that fails validation (task 6.2)",
     when: "the form refuses a submit; fields are the comma-joined field names, never their values",
   },

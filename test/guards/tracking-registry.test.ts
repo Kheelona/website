@@ -25,9 +25,13 @@ import { EVENTS, STAMPED_PROPERTIES, type TrackedEvent } from "@/lib/tracking/ev
  *
  * - wiki/site/tracking-inventory.md, which records production at tag
  *   archive/pre-reset-2026-10-10: every destination (the 17 rows of "At a glance"), every
- *   public ID, every existing event and parameter, and the eight existing cta values.
- * - wiki/engineering/architecture.md §8.2-8.3: each destination's kind and gate, the new
- *   events (B11), the new cta values (incl. whatsapp-float, D050) and every status.
+ *   public ID, the exact set of existing (destination, event) pairs, every parameter (none
+ *   on an automatic event but cta on $autocapture), the dedup key, session replay and the
+ *   SDK's campaign properties (parity rows 14 and 17), and the eight existing cta values.
+ * - wiki/engineering/architecture.md §8.2-8.3: each destination's kind and gate, every name
+ *   of the event column (plain-text names only through ARCH_PLAIN_NAMES), the new events and
+ *   their gate (B11), the added Home placement (B9), the new cta values (incl.
+ *   whatsapp-float, D050) and every status.
  * - The frozen server payload builders (meta-capi.ts, posthog-server.ts), because the
  *   inventory states the server payloads in prose: the registry must list exactly the
  *   parameters those builders send.
@@ -216,10 +220,41 @@ const SNAPSHOT = table(section(INVENTORY, "## Live snapshot"), [
   "Hosts",
   "First / last seen (UTC)",
 ]);
+/** Names the live snapshot shows, setup tests excluded; the `$` ones are the PostHog SDK's. */
+const SNAPSHOT_SEEN = SNAPSHOT.filter((r) => !r[3].includes("setup tests")).flatMap((r) => code(r[0]));
+const SNAPSHOT_SDK_NAMES = SNAPSHOT_SEEN.filter((n) => n.startsWith("$"));
 /* The server payloads are prose in the inventory: read only the bullets that state them. */
 const CAPI_EVENT = bullet(section(INVENTORY, "## 5. "), "Event:");
 const POSTHOG_SERVER_EVENT = bullet(section(INVENTORY, "## 7. "), "Event:");
 const POSTHOG_SERVER_PAYLOAD = bullet(section(INVENTORY, "## 7. "), "Payload");
+const POSTHOG_INIT = table(section(INVENTORY, "## 6. "), ["Option", "Value", "Line"]);
+const REPLAY_DENY = bullet(section(INVENTORY, "## 6. "), "Session replay deny list:");
+const PARITY = table(section(INVENTORY, "## Parity checklist"), [
+  "#",
+  "Destination",
+  "Event / behaviour",
+  "Parameters that must match",
+  "Fired from (old)",
+  "How QA proves it",
+]);
+const parityRow = (n: string) => {
+  const row = PARITY.find((r) => r[0] === n);
+  if (!row) throw new Error(`Parity checklist row ${n} not found`);
+  return row;
+};
+
+/**
+ * The names architecture §8.2 writes outside code font, each mapped to its registry name. Any
+ * other plain-text name fails the guard, so nothing in the plan's event column is dropped unread.
+ */
+const ARCH_PLAIN_NAMES: Record<string, string> = {
+  /* Vercel WA and Ahrefs: their scripts' automatic pageviews (inventory §1-2). */
+  pageview: "pageview",
+  /* Session replay: posthog-js 1.434.2 sends recordings as `$snapshot` (read from the installed
+     SDK); the live snapshot cannot show it because it counts `events`, where recordings are not
+     stored (inventory §6 replay options and deny list; parity row 17). */
+  replay: "$snapshot",
+};
 
 /** Inventory literals that are deliberately NOT fixed in the registry, each with its reason. */
 const NOT_FIXED: Record<string, string> = {
@@ -294,13 +329,80 @@ describe("events.ts: existing events equal the inventory", () => {
     }
   });
 
-  it("PostHog SDK events equal those the live snapshot shows (setup tests excluded)", () => {
-    const seen = SNAPSHOT.filter((r) => !r[3].includes("setup tests")).flatMap((r) => code(r[0]));
-    const sdk = seen.filter((n) => n.startsWith("$"));
-    expect(sdk.length).toBeGreaterThan(0);
-    expect(sorted(eventsTo("posthog-browser").filter((e) => e.automatic).map((e) => e.name))).toEqual(sorted(sdk));
+  it("PostHog SDK events equal those the live snapshot shows (setup tests excluded), plus replay", () => {
+    expect(SNAPSHOT_SDK_NAMES.length).toBeGreaterThan(0);
+    expect(sorted(eventsTo("posthog-browser").filter((e) => e.automatic).map((e) => e.name))).toEqual(
+      sorted([...SNAPSHOT_SDK_NAMES, ARCH_PLAIN_NAMES.replay]),
+    );
     const registered = new Set<string>(EVENTS.map((e) => e.name));
-    for (const n of seen) expect(registered.has(n), `${n} is seen live but not registered`).toBe(true);
+    for (const n of SNAPSHOT_SEEN) expect(registered.has(n), `${n} is seen live but not registered`).toBe(true);
+  });
+
+  it("the existing events are exactly the inventory's, destination by destination (no more, no fewer)", () => {
+    const expectedPairs = new Set([
+      "vercel-web-analytics:pageview",
+      "ahrefs-web-analytics:pageview",
+      "ga4:page_view",
+      ...GA4_TABLE.flatMap(([e]) => [`ga4:${code(e)[0]}`, `posthog-browser:${code(e)[0]}`]),
+      ...META_TABLE.map(([e]) => `meta-pixel:${code(e)[0]}`),
+      `meta-capi:${code(CAPI_EVENT)[0]}`,
+      `posthog-server:${code(POSTHOG_SERVER_EVENT)[0]}`,
+      ...SNAPSHOT_SDK_NAMES.map((n) => `posthog-browser:${n}`),
+      `posthog-browser:${ARCH_PLAIN_NAMES.replay}`,
+    ]);
+    const registered = EVENTS.filter((e) => e.status === "existing").flatMap((e) =>
+      e.destinations.map((d) => `${d}:${e.name}`),
+    );
+    expect(sorted(registered)).toEqual(sorted([...expectedPairs]));
+  });
+
+  it("automatic events carry no parameter of their own, except cta on $autocapture", () => {
+    for (const e of EVENTS.filter((x) => x.automatic)) {
+      expect(e.params, e.name).toEqual(e.name === "$autocapture" ? ["cta"] : []);
+    }
+  });
+
+  it("only the events the inventory gives an eventID carry a dedup key (GA4 and PostHog send none)", () => {
+    expect(code(CAPI_EVENT)).toContain("event_id: purchase_<order ref>");
+    const withId = [
+      ...META_TABLE.filter(([, , eventId]) => plain(eventId) !== "none").map(([e]) => `meta-pixel:${code(e)[0]}`),
+      `meta-capi:${code(CAPI_EVENT)[0]}`,
+    ];
+    const registered = EVENTS.filter((e) => e.eventId).map((e) => `${e.destinations.join("+")}:${e.name}`);
+    expect(sorted(registered)).toEqual(sorted(withId));
+    expect(sorted(registered)).toEqual(["meta-capi:Purchase", "meta-pixel:Purchase"]);
+  });
+
+  it("session replay is registered as $snapshot: SDK, existing, never on the deny list (inventory §6, parity 17)", () => {
+    const [, destination, behaviour, mustMatch] = parityRow("17");
+    expect([plain(destination), plain(behaviour)]).toEqual(["PostHog", "session replay"]);
+    expect(POSTHOG_INIT.some(([option]) => code(option)[0] === "disable_session_recording")).toBe(true);
+    const deny = code(REPLAY_DENY).find((t) => t.startsWith("POSTHOG_REPLAY_DENY_PATHS = "));
+    expect(deny, "inventory §6 deny list").toBeDefined();
+    const replay = only(eventsTo("posthog-browser"), ARCH_PLAIN_NAMES.replay);
+    expect(replay).toMatchObject({ automatic: true, params: [], status: "existing" });
+    expect(replay.neverOn).toEqual(JSON.parse(deny!.slice("POSTHOG_REPLAY_DENY_PATHS = ".length)));
+    for (const path of code(mustMatch.split("never on")[1] ?? "")) expect(replay.neverOn).toContain(path);
+    expect(EVENTS.filter((e) => e.neverOn).map((e) => e.name)).toEqual([ARCH_PLAIN_NAMES.replay]);
+  });
+
+  it("campaign properties the SDK adds (custom_campaign_params) sit on the events parity row 14 checks", () => {
+    const option = POSTHOG_INIT.find(([o]) => code(o)[0] === "custom_campaign_params");
+    expect(option, "inventory §6 init option custom_campaign_params").toBeDefined();
+    const names = JSON.parse(code(withoutAsides(option![1]))[0]) as string[];
+    const [, destination, behaviour, mustMatch] = parityRow("14");
+    expect(plain(destination)).toBe("PostHog");
+    expect(mustMatch).toContain("campaign props");
+    for (const n of code(mustMatch)) expect(names, `parity row 14 names ${n}`).toContain(n);
+    for (const n of names) expect(CAMPAIGN_KEYS as readonly string[], `${n} is a campaign key`).toContain(n);
+    const checked = code(withoutAsides(behaviour));
+    expect(checked.length).toBeGreaterThan(0);
+    for (const e of EVENTS) {
+      const expected = e.destinations.includes("posthog-browser") && checked.includes(e.name)
+        ? { option: "custom_campaign_params", names }
+        : undefined;
+      expect(e.sdkParams, `${e.name} SDK campaign properties`).toEqual(expected);
+    }
   });
 
   it("registers no one-off setup-test event", () => {
@@ -432,14 +534,31 @@ const DESTINATION_LABELS: Record<string, DestinationKey> = {
   "PostHog server": "posthog-server",
 };
 
-type Pair = { name: string; destination: DestinationKey; status: "existing" | "new"; params: string[] };
+type Pair = {
+  name: string;
+  destination: DestinationKey;
+  status: "existing" | "new";
+  params: string[];
+  /** The decision gating a new row ("New (B11), task 6.2, gated"). */
+  gated?: string;
+  /** Placements a decision added ("also `/` (B9, new placement, …)" in Fired by). */
+  addedPlacements: { route: string; decision: string }[];
+};
+
+/** One name of the plan's event column: its code-font token, else a mapped plain name, else a failure. */
+function archName(item: string): string {
+  const token = code(item)[0];
+  if (token) return token;
+  const name = ARCH_PLAIN_NAMES[plain(item)];
+  if (!name) throw new Error(`Architecture §8.2 names "${plain(item)}" outside code font, with no registry mapping`);
+  return name;
+}
 
 /** One architecture row as (name, destination) pairs; "a / b" pairs names with destination groups. */
-function archPairs([event, destinations, params, , status]: string[]): Pair[] {
-  /* "replay" is session recording, not an event name, so only code-font names count. */
+function archPairs([event, destinations, params, firedBy, status]: string[]): Pair[] {
   const names = withoutAsides(event)
     .split(" / ")
-    .map((g) => (code(g).length > 0 ? code(g) : [plain(g)]));
+    .map((g) => g.split(",").map(archName));
   const groups = withoutAsides(destinations)
     .split(" / ")
     .map((g) => g.split(",").map((label) => plain(label)));
@@ -447,31 +566,63 @@ function archPairs([event, destinations, params, , status]: string[]): Pair[] {
     throw new Error(`Cannot pair names and destinations in: ${event} | ${destinations}`);
   }
   const state = plain(status).startsWith("New") ? "new" : "existing";
+  const gated = /\bgated\b/.test(plain(status)) ? /\((B\d+)\)/.exec(plain(status))?.[1] : undefined;
+  if (/\bgated\b/.test(plain(status)) && !gated) throw new Error(`No decision named in gated status: ${status}`);
+  const addedPlacements = [...firedBy.replace(/\*\*/g, "").matchAll(/also `([^`]+)` \((B\d+), new placement/g)].map(
+    (m) => ({ route: m[1], decision: m[2] }),
+  );
   return names.flatMap((group, i) =>
     group.flatMap((name) =>
       (groups[groups.length === 1 ? 0 : i] ?? []).map((label) => {
         const destination = DESTINATION_LABELS[label];
         if (!destination) throw new Error(`Unknown destination label "${label}" in architecture §8.2`);
-        return { name, destination, status: state, params: paramsOf(params).map((p) => p.name) } as Pair;
+        const ps = paramsOf(params).map((p) => p.name);
+        return { name, destination, status: state, params: ps, gated, addedPlacements } as Pair;
       }),
     ),
   );
 }
 
 describe("events.ts: architecture §8.2 and the new events", () => {
-  const pairs = ARCH_EVENTS.flatMap(archPairs);
+  const pairs = () => ARCH_EVENTS.flatMap(archPairs);
+  const planFor = (e: TrackedEvent) =>
+    pairs().filter((p) => p.name === e.name && e.destinations.includes(p.destination));
+
+  it("reads every name of the plan's event column (a plain-text name must be mapped, never dropped)", () => {
+    expect(() => archPairs(["`a`, b", "PostHog", "", "", "Existing"])).toThrow(/"b" outside code font/);
+    expect(pairs().map((p) => `${p.destination}:${p.name}`)).toContain(`posthog-browser:${ARCH_PLAIN_NAMES.replay}`);
+  });
 
   it("registers every (event, destination) pair of architecture §8.2 with its status", () => {
-    expect(pairs.length).toBeGreaterThan(0);
-    for (const p of pairs) {
+    expect(pairs().length).toBeGreaterThan(0);
+    for (const p of pairs()) {
       const hit = EVENTS.find((e) => e.name === p.name && e.destinations.includes(p.destination));
       expect(hit, `${p.name} → ${p.destination} is not registered`).toBeDefined();
       expect(hit?.status, `${p.name} → ${p.destination} status`).toBe(p.status);
     }
   });
 
+  it("marks gated exactly the events architecture's Status calls gated, with the decision (B11)", () => {
+    expect(pairs().filter((p) => p.gated).length).toBeGreaterThan(0);
+    for (const e of EVENTS) {
+      const decisions = [...new Set(planFor(e).map((p) => p.gated))];
+      expect(decisions.length, `${e.name}: one gate per event`).toBeLessThanOrEqual(1);
+      expect(e.gated, `${e.name} gated`).toBe(decisions[0]);
+    }
+  });
+
+  it("records each placement a decision added as data, as architecture's Fired by states it (B9)", () => {
+    expect(pairs().some((p) => p.addedPlacements.length > 0)).toBe(true);
+    for (const e of EVENTS) {
+      const planned = [...new Set(planFor(e).flatMap((p) => p.addedPlacements.map((a) => `${a.route} ${a.decision}`)))];
+      const registered = (e.addedPlacements ?? []).map((a) => `${a.route} ${a.decision}`);
+      expect(sorted(registered), `${e.name} added placements`).toEqual(sorted(planned));
+      for (const a of e.addedPlacements ?? []) expect(a.status, `${e.name} ${a.route}`).toBe("new");
+    }
+  });
+
   it("the new events are exactly architecture's new rows, with their destinations and parameters", () => {
-    const planned = pairs.filter((p) => p.status === "new");
+    const planned = pairs().filter((p) => p.status === "new");
     expect(planned.length).toBeGreaterThan(0);
     const registered = EVENTS.filter((e) => e.status === "new").flatMap((e) =>
       e.destinations.map((d) => `${d}:${e.name}`),
