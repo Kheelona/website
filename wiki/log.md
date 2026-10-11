@@ -537,3 +537,6 @@ Wave 1 (run wf_de7ff1a5-e8b): 1.3, 1.4, 1.5, 1.6 passed review (branches build/w
 
 ## [2026-10-12 16:20] deploy | Beta domains attached to branch `beta`
 Founder switched betawebsite.kheelona.com and betastore.kheelona.com to the `beta` branch in Vercel (Valid Configuration). The founder's beta setup is complete (D051: nothing else needed).
+
+## [2026-10-12 16:40] agent | Wave 1 run held by the founder (workflow wf_de7ff1a5-e8b stopped)
+Founder: "hold the build-wave" while changing the Chrome login. Stopped the workflow. Task 1.1's unfinished e2e harness committed as WIP `e7da91c` on build/w1-1.1 (unverified, unreviewed). 1.2's round-2 review was cut off (fix `7c8ebe8` committed). 1.3, 1.4, 1.5, 1.6 passed; 1.5b done. Resume per build-runbook §4 when the founder says go.

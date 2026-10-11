@@ -14,7 +14,8 @@ founder asked for the full website with animation on **betawebsite.kheelona.com*
 After the build: Phase 6 QA, push `beta`, founder runbook (architecture §15.4), **Gate B** on beta, merge to `main`.
 **Account:** switching again (founder, ~16:00 2026-10-12). **Branch:** `reset/website-v2`, not pushed.
 **RESUME FROM [build runbook](engineering/build-runbook.md) §4 "Wave 1 snapshot"**: 1.3, 1.4, 1.5, 1.5b, 1.6 passed;
-1.1 still building in its worktree (uncommitted files); 1.2 needs one re-review; then merge, wave close, wave 2.
+**Wave 1 run HELD by the founder (16:40, workflow stopped).** 1.1 unfinished (WIP commit `e7da91c`); 1.2 needs one re-review;
+then merge, wave close, wave 2. Restart only when the founder says so.
 **Incident 2026-10-12:** a push meant for `beta` landed on `main` (`24e92e3`, vercel.json only; production
 healthy; [lessons](engineering/lessons.md)). `beta` exists on GitHub (builds nothing yet); **beta domains attached to branch `beta`** (founder, done).
 **Done before wave 1:** dev tools pinned (Playwright 1.63.0, axe 4.12.1, Lighthouse 13.4.1, jscpd 5.3.2,
