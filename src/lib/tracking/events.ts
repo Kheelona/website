@@ -345,6 +345,17 @@ const EVENT_LIST = [
     when: PROJECT_SETTING,
   },
   {
+    /* Heatmaps are on in the project settings (inventory §6). PostHog keeps heatmap data apart
+       from `events`, so the live snapshot cannot show it. */
+    name: "$$heatmap",
+    destinations: ["posthog-browser"],
+    params: [],
+    automatic: true,
+    status: "existing",
+    firedBy: POSTHOG_SDK,
+    when: PROJECT_SETTING,
+  },
+  {
     name: "$snapshot",
     destinations: ["posthog-browser"],
     params: [],

@@ -244,6 +244,19 @@ const KH_UTM_CONTENTS = code(withoutAsides(CARRIERS.find(([carrier]) => code(car
 const SECTION9_KEYS = KH_UTM_CONTENTS.slice(1);
 const POSTHOG_INIT = table(section(INVENTORY, "## 6. "), ["Option", "Value", "Line"]);
 const REPLAY_DENY = bullet(section(INVENTORY, "## 6. "), "Session replay deny list:");
+const PROJECT_SETTINGS = bullet(section(INVENTORY, "## 6. "), "Project-level settings");
+/**
+ * Events posthog-js 1.434.2 sends because a project setting turns them on, keyed by the
+ * setting as inventory §6's project-settings bullet words it. The live snapshot counts
+ * `events`, which does not hold them, so they cannot be read from it: heatmap data is sent as
+ * `capture("$$heatmap", { $heatmap_data })` (read from the installed SDK) and the snapshot
+ * shows no `$$heatmap` while heatmaps are on.
+ */
+const SETTING_EVENTS: Record<string, string> = { "heatmaps on": "$$heatmap" };
+/** The setting-only events whose setting inventory §6 records as on. */
+const SETTING_EVENT_NAMES = Object.entries(SETTING_EVENTS)
+  .filter(([setting]) => plain(PROJECT_SETTINGS).includes(setting))
+  .map(([, name]) => name);
 const PARITY = table(section(INVENTORY, "## Parity checklist"), [
   "#",
   "Destination",
@@ -344,10 +357,10 @@ describe("events.ts: existing events equal the inventory", () => {
     }
   });
 
-  it("PostHog SDK events equal those the live snapshot shows (setup tests excluded), plus replay", () => {
+  it("PostHog SDK events equal the live snapshot's (setup tests excluded), plus replay and the setting-only ones", () => {
     expect(SNAPSHOT_SDK_NAMES.length).toBeGreaterThan(0);
     expect(sorted(eventsTo("posthog-browser").filter((e) => e.automatic).map((e) => e.name))).toEqual(
-      sorted([...SNAPSHOT_SDK_NAMES, ARCH_PLAIN_NAMES.replay]),
+      sorted([...SNAPSHOT_SDK_NAMES, ARCH_PLAIN_NAMES.replay, ...SETTING_EVENT_NAMES]),
     );
     const registered = new Set<string>(EVENTS.map((e) => e.name));
     for (const n of SNAPSHOT_SEEN) expect(registered.has(n), `${n} is seen live but not registered`).toBe(true);
@@ -364,6 +377,7 @@ describe("events.ts: existing events equal the inventory", () => {
       `posthog-server:${code(POSTHOG_SERVER_EVENT)[0]}`,
       ...SNAPSHOT_SDK_NAMES.map((n) => `posthog-browser:${n}`),
       `posthog-browser:${ARCH_PLAIN_NAMES.replay}`,
+      ...SETTING_EVENT_NAMES.map((n) => `posthog-browser:${n}`),
     ]);
     const registered = EVENTS.filter((e) => e.status === "existing").flatMap((e) =>
       e.destinations.map((d) => `${d}:${e.name}`),
@@ -399,6 +413,12 @@ describe("events.ts: existing events equal the inventory", () => {
     expect(replay.neverOn).toEqual(JSON.parse(deny!.slice("POSTHOG_REPLAY_DENY_PATHS = ".length)));
     for (const path of code(mustMatch.split("never on")[1] ?? "")) expect(replay.neverOn).toContain(path);
     expect(EVENTS.filter((e) => e.neverOn).map((e) => e.name)).toEqual([ARCH_PLAIN_NAMES.replay]);
+  });
+
+  it("heatmaps are registered as $$heatmap: SDK, existing, no parameters (inventory §6 project settings)", () => {
+    expect(SETTING_EVENT_NAMES, "inventory §6 records heatmaps on").toEqual(["$$heatmap"]);
+    const heatmap = only(eventsTo("posthog-browser"), "$$heatmap");
+    expect(heatmap).toMatchObject({ destinations: ["posthog-browser"], automatic: true, params: [], status: "existing" });
   });
 
   it("campaign properties the SDK adds (custom_campaign_params) sit on the events parity row 14 checks", () => {
