@@ -52,9 +52,8 @@ SETUP: you run in an isolated git worktree of ${REPO}.
 3. If your task runs the payment sandbox, copy ${REPO}/.env.local into your worktree (it is gitignored: never stage it, never print its values).
 4. Local-only files exist only in the main checkout and are never committed: ${REPO}/mockup/_work/** (for example the motion reference ${REPO}/mockup/_work/motion/motion.css and motion.js). Read them by absolute path; never copy them into your tree.
 
-RULES: change only the files your task Owns (and catalogue rows marked with your task id in wiki/engineering/components.md or assets.md). Follow the test-file rule before deleting or rewriting anything. Stage files BY NAME (never \`git add -A\` or \`git add .\`), commit on your branch with clear messages ending with the two lines:
+RULES: change only the files your task Owns (and catalogue rows marked with your task id in wiki/engineering/components.md or assets.md). Follow the test-file rule before deleting or rewriting anything. Stage files BY NAME (never \`git add -A\` or \`git add .\`), commit on your branch with clear messages ending with the line:
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
-Claude-Session: https://claude.ai/code/session_01PMNrTaQaTGk56upcVBjFyr
 Never push, never merge, never touch main, never run the Vercel CLI, never edit design-system/, never place a real order. Next.js 16.3.8 differs from your training data: read node_modules/next/dist/docs/ for any Next API you use.
 
 VERIFY: ${VERIFY_NOTE} Prove every guard you write red with a planted violation, then restore it.
@@ -83,12 +82,27 @@ function fixPrompt(t, b, review) {
 Findings to fix (all blocking ones; minor ones too unless a fix would leave your Owns list):
 ${JSON.stringify(review.issues, null, 1).slice(0, 12000)}
 
-Same rules as the build: only your Owns files, stage by name, commit with the two trailer lines (Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com> / Claude-Session: https://claude.ai/code/session_01PMNrTaQaTGk56upcVBjFyr), never push or merge, never edit design-system/. ${VERIFY_NOTE}
+Same rules as the build: only your Owns files, stage by name, commit with the trailer line Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>, never push or merge, never edit design-system/. ${VERIFY_NOTE}
 If a finding is wrong, say why in notes with evidence instead of changing code. Return the full structured report again (all acceptance items, current head).`
 }
 
+function finishPrompt(t) {
+  return `Finish Phase 5 task ${t.id} ("${t.title}") of the Kheelona.com website. An earlier builder started it and was stopped part-way. Work in the existing worktree ${t.resume.worktree_path} on branch ${t.resume.branch} (cd there first; do not create another worktree; node_modules is already present). Read what is already committed there (\`git log --oneline ${BASE}..HEAD\`, \`git diff --stat ${BASE}..HEAD\`; the last commit may be an unverified work-in-progress snapshot) before writing anything, keep what is right, fix what is not, and complete every acceptance item of section "### ${t.id}" of ${REPO}/wiki/engineering/tasks.md (with "How to read a task", the standard acceptance lists and "Guard-test ownership").
+${t.extra ? `\nNOTES FROM THE MAIN SESSION:\n${t.extra}\n` : ''}
+Same rules as any build task: only your Owns files, stage by name, commit with the trailer line Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>, never push or merge, never edit design-system/, never run npm install unless the task owns package.json and the main session approved the package. ${VERIFY_NOTE} Prove every guard you write red with a planted violation, then restore it.
+Return the full structured report (all acceptance items, current head).`
+}
+
 async function runTask(t) {
-  let b = await agent(buildPrompt(t), { label: `build:${t.id}`, phase: 'Build', schema: BUILD, agentType: 'builder', isolation: 'worktree' })
+  let b
+  if (t.resume && t.resume.stage === 'review') {
+    b = { task: t.id, worktree_path: t.resume.worktree_path, branch: t.resume.branch, head: t.resume.head || 'HEAD', commits: [], files_changed: [], verify: 'not recorded (resumed at review)', acceptance: [], blocked: [], notes: 'Resumed at review after the run was held; read the code and the commits instead of a builder report.' }
+  } else if (t.resume) {
+    b = await agent(finishPrompt(t), { label: `finish:${t.id}`, phase: 'Build', schema: BUILD, agentType: 'builder' })
+    if (b) b = { ...b, worktree_path: t.resume.worktree_path, branch: t.resume.branch }
+  } else {
+    b = await agent(buildPrompt(t), { label: `build:${t.id}`, phase: 'Build', schema: BUILD, agentType: 'builder', isolation: 'worktree' })
+  }
   if (!b) return { task: t.id, error: 'builder returned nothing' }
   const rounds = []
   for (let round = 1; round <= 3; round++) {
@@ -124,6 +138,7 @@ async function runShot(s) {
   return { name: s.name, ...r, check: v }
 }
 
+// Resume entries: { id, title, extra?, resume: { worktree_path, branch, head?, stage: 'finish' | 'review' } }
 const taskRuns = args.tasks.map(t => runTask(t))
 const shotRuns = args.screens ? SHOTS.map(s => runShot(s)) : []
 const results = await Promise.all(taskRuns.map(p => p.catch(e => ({ error: String(e) }))))
