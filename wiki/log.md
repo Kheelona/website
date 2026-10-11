@@ -519,3 +519,6 @@ Tasks 1.1-1.6 each in its own git worktree (branch build/w1-<id>, base 1806937),
 
 ## [2026-10-12 15:05] decision | D051: the beta runs without store integrations
 Founder: no Supabase, Razorpay or email on beta ("when we are doing final merge, we can directly use the main website details"); no PostHog filter (beta lives 1-2 days). New task 2.10 makes `storeEnv()` null on beta so betastore can never take a payment even if Preview has production keys. B4 checks and the beta test payment (test plan §6) dropped; store form and /thanks reviewed from local screenshots; residual risk (first completed payment through the restyled checkout is real) stated with mitigations. Runbook §15.4 rewritten: two Cloudflare CNAMEs (DNS only) + two Vercel Preview domains on branch `beta`.
+
+## [2026-10-12 15:20] deploy | Beta domains added in Vercel, but connected to Production
+Founder added betawebsite.kheelona.com and betastore.kheelona.com (Valid Configuration). Both are attached to the Production environment, so today they serve the live site (checked by curl: 200, `x-robots-tag: noindex, nofollow` because neither is in INDEXABLE_HOSTS; GA4 and Meta gated off by host lists). Asked the founder to switch each to Preview, Git branch `beta` (runbook §15.4 step 1).
