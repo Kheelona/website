@@ -108,7 +108,7 @@ to the CTA, from one content source (Phase 4; [D021](../decisions/D021-returns-p
 | Faulty or not as described | "You can have a replacement or a full refund" (Rule 7(4)); exchange line defaults to "No exchanges: return it and order again" | **Required by law**; wording approved by the founder with the legal pages (D029) | [D033](../decisions/D033-warranty-after-day-7.md) |
 | Refund after a return | Within 7 working days of the unit reaching us, if it is eligible for return | **Confirmed** | [D022](../decisions/D022-warranty-replacement-refund.md) |
 | Refund and cancellation before dispatch | The production terms (first two rows above) | No new ruling; unchanged | – |
-| Exchange | None stated | **Still open** (not yet asked; Rule 7(1)(a) asks for exchange information) | – |
+| Exchange | "No exchanges: return it within 7 days and order again" | **Decided 2026-10-11** ([D042](../decisions/D042-policy-display-answers.md)) | – |
 | Delivery, new orders | Deliveries start mid-November 2026, with the same ₹499 advance. One content value that every surface renders, never hand-typed (the date is owned on [facts](facts.md#ship-date)). Never a transit-time or replacement timeline | **Confirmed** | [D023](../decisions/D023-new-order-delivery.md) |
 | Delivery, production | Production keeps showing "20 October 2026" on the marketing pages, in checkout and in the receipt email until Gate B. Founder-accepted risk; do not re-raise | **Confirmed** (held) | [D023](../decisions/D023-new-order-delivery.md), [D011](../decisions/D011-production-held-until-gate-b.md) |
 | Delivery, existing token orders | Whether they still dispatch from 20 October; when and how the ₹4,500 balance link arrives | **Still open** (F12) | [D023](../decisions/D023-new-order-delivery.md) |
@@ -122,6 +122,16 @@ to the CTA, from one content source (Phase 4; [D021](../decisions/D021-returns-p
 | Legal pages sign-off | The founder approves privacy, terms, refund and shipping after an independent review against Indian law and practice | **Confirmed** | [D029](../decisions/D029-grievance-officer-legal-review.md) |
 | Speech and language disclaimer | On `/terms` and on Meet Kheelu (`/products/kheelu`); not on Home | **Confirmed** | [D025](../decisions/D025-speech-and-language.md) |
 | Country of origin, MRP, manufacturer or importer, other Legal Metrology declarations | India; MRP ₹7,999; manufacturer Kheelona Robotics Pvt Ltd at the registered address. Net quantity and month/year of manufacture stay placeholders until specs are final (F4) | **Confirmed** except the placeholders | [D034](../decisions/D034-origin-manufacturer-mrp.md) |
+
+### Founder answers of 2026-10-11 ([D042](../decisions/D042-policy-display-answers.md), [D041](../decisions/D041-gate-a-round-1.md))
+
+| Item | New-site wording or rule |
+|---|---|
+| Payment fees and chargebacks (Rule 7(1)(c)) | "No payment fees. Nothing recurring. Payments by Razorpay", with how to raise a chargeback with your bank |
+| Refund start before dispatch (ECOM-10) | "We start your refund within 2 working days of your request; your bank takes 5-7 working days" |
+| Consent (G6) | No banner at launch; tools named on /privacy; a consent gate before 13 May 2027 |
+| AI-made images (Terms) | The Terms page says the site may use AI-generated images (the DS photos and illustrations of children are AI-made; the seven films are real families, D040) |
+| Kheelona+ after 6 months | Not specified on the site (founder: "We might extend trial as well"); legal review L7's "say what stops" is not followed, risk recorded in D041 |
 
 ## Seller details (as published)
 

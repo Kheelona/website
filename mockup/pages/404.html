@@ -1,0 +1,40 @@
+<!--page {"title": "Page not found · Kheelona", "description": "We can't find that page. Meet Kheelu, the screen-free plush toy for ages 3 to 7, read our guides for parents, or talk to the team.", "url": "/404", "buybar": false, "active": "", "css": true} -->
+<!-- ============ Fold 1 · We can't find that page (EmptyState, composed: the component map names it for the 404 page) ============ -->
+<!-- Real build: answers with HTTP 404 and noindex at any unknown path; PostHog $pageview as live, no new event. -->
+<section class="kh-section kh-section--band mk-hero" aria-labelledby="nf-title">
+  <div class="kh-container">
+    <div class="kh-empty kh-tone-blue mk-404">
+      <span class="kh-empty__art" aria-hidden="true">{{icon:magnifying-glass}}</span>
+      <header class="kh-heading kh-heading--center">
+        <p class="kh-eyebrow">Page not found</p>
+        <h1 class="kh-heading__title" id="nf-title">We can’t find that page.</h1>
+        <p class="kh-heading__lead">The link may be old, or the address may have a typo. Where were you headed?</p>
+      </header>
+      <nav class="mk-404__nav" aria-label="Where to go next">
+        <ul class="kh-list mk-404__list">
+          <li><a class="kh-listitem kh-tone-sun" href="home.html"><span class="kh-listitem__icon" aria-hidden="true">{{icon:house}}</span><span class="kh-listitem__text"><span class="kh-listitem__title">Home</span><span class="kh-listitem__sub">What Kheelu is, on one page.</span></span><span class="kh-listitem__chev" aria-hidden="true">{{icon:caret-right}}</span></a></li>
+          <li><a class="kh-listitem kh-tone-chilli" href="meet-kheelu.html"><span class="kh-listitem__icon" aria-hidden="true">{{icon:heart}}</span><span class="kh-listitem__text"><span class="kh-listitem__title">Meet Kheelu</span><span class="kh-listitem__sub">The toy, its three modes and the price.</span></span><span class="kh-listitem__chev" aria-hidden="true">{{icon:caret-right}}</span></a></li>
+          <li><a class="kh-listitem kh-tone-blue" href="stories.html"><span class="kh-listitem__icon" aria-hidden="true">{{icon:book-open}}</span><span class="kh-listitem__text"><span class="kh-listitem__title">Stories</span><span class="kh-listitem__sub">Guides for parents of 3 to 7 year olds.</span></span><span class="kh-listitem__chev" aria-hidden="true">{{icon:caret-right}}</span></a></li>
+          <li><a class="kh-listitem kh-tone-sun" href="contact.html"><span class="kh-listitem__icon" aria-hidden="true">{{icon:chat-circle-dots}}</span><span class="kh-listitem__text"><span class="kh-listitem__title">Contact</span><span class="kh-listitem__sub">WhatsApp, call or email the team.</span></span><span class="kh-listitem__chev" aria-hidden="true">{{icon:caret-right}}</span></a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Fold 2 · Close (one chilli button on the page, below the four links on phones; page surface, so it stands apart from the band hero and footer) ============ -->
+<section class="kh-section" id="close" aria-labelledby="close-title">
+  <div class="kh-container">
+    <header class="kh-heading kh-heading--center">
+      <h2 class="kh-heading__title" id="close-title">Looking for <span class="kh-hand">Kheelu?</span></h2>
+    </header>
+    <div class="kh-section__actions kh-section__actions--center">
+      <a href="store.html" class="kh-btn kh-btn--cta kh-btn--l" data-ph-capture-attribute-cta="finale"><span>Pre-order Kheelu</span></a>
+    </div>
+    <div class="mk-beside mk-beside--center">
+      <p class="kh-body-s mk-price">Reserve yours for <span data-src="TOKEN_PRICE">₹499</span> today, refundable until dispatch, then pay <span data-src="BALANCE_PRICE">₹4,500</span> before delivery: <span data-src="LAUNCH_PRICE">₹4,999</span> in total (incl. GST).</p>
+      <ul class="kh-trustline mk-trust"><li><a href="shipping.html">{{icon:truck}}<span data-src="DELIVERY_TEXT">Deliveries start mid-November</span></a></li><li><a href="refund.html">{{icon:arrow-counter-clockwise}}7-day returns, no questions asked</a></li></ul>
+      <p class="kh-body-s mk-help">{{icon:whatsapp-logo}} Questions? <a href="https://wa.me/919187546483">WhatsApp</a> or <a href="tel:+919187546483" class="mk-nowrap">call +91 91875 46483</a></p>
+    </div>
+  </div>
+</section>

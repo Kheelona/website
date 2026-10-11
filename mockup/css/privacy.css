@@ -1,0 +1,95 @@
+/*
+ * Policy page composition (/privacy). Page-level layout only: every colour, space, radius and stroke is a
+ * DS token (design-system/project/tokens.css); type sizes are the DS type scale (kh-body, kh-body-l).
+ * The doc rules share their class names with /refund and /shipping (mockup/css/refund.css), so the shared
+ * mk-doc helper requested for mockup.css can replace this file's first half without touching the markup.
+ * /terms (mockup/css/terms.css) carries the same rules.
+ */
+
+/* ---------- Shared policy-page rules (same as refund.css) ---------- */
+
+/* Header: the quiet draft note (plain muted line, no icon: privacy.md fold 0) and the last-updated line. */
+.mk-draft { margin: 0 0 var(--space-4); color: var(--text-muted); }
+.mk-updated { margin: var(--space-4) 0 0; color: var(--text-muted); }
+
+/* The short version. */
+.mk-doc-summary .kh-section__head { margin-bottom: var(--space-6); }
+.mk-doc-summary .kh-trust__body a { color: var(--link); font-weight: 700; text-underline-offset: 3px; }
+
+/* The full policy: a jump list, then the numbered parts. */
+.mk-doc__grid { display: grid; gap: var(--space-7); }
+.mk-toc { gap: var(--space-2); padding-bottom: var(--space-3); }
+.mk-toc ol { margin: 0; padding: 0; list-style: none; }
+.mk-toc li + li { border-top: var(--stroke-hair) solid var(--border); }
+.mk-toc a { display: grid; grid-template-columns: 3.5ch minmax(0, 1fr); padding: var(--space-3) 0; color: var(--text); font-weight: 700; text-decoration: none; } /* DS footer-link row: 48 px tall */
+.mk-toc a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.mk-toc__n { color: var(--text-muted); font-weight: 800; }
+
+.mk-doc__body { min-width: 0; font-size: 16px; line-height: 24px; } /* kh-body on phones */
+.mk-doc__part { scroll-margin-top: var(--space-5); }
+.mk-doc__part + .mk-doc__part { margin-top: var(--space-6); padding-top: var(--space-6); border-top: var(--stroke-hair) solid var(--border); }
+.mk-doc__part h2 { margin: 0 0 var(--space-4); }
+.mk-doc__n { color: var(--text-muted); }
+.mk-doc__part p, .mk-doc__part ul, .mk-doc__part ol { max-width: var(--measure); margin: 0 0 var(--space-4); }
+.mk-doc__part > :last-child { margin-bottom: 0; }
+.mk-doc__part .kh-subtitle { margin: var(--space-6) 0 var(--space-2); }
+.mk-doc__part ul { padding-left: var(--space-5); }
+.mk-doc__part ul li + li { margin-top: var(--space-2); }
+.mk-doc a:not(.kh-btn) { color: var(--link); font-weight: 700; text-underline-offset: 3px; }
+.mk-doc__part .mk-placeholder { display: inline; }
+
+/* The answer-first lines (keyword map P1, RT1): the first thing under the heading, a step larger. */
+.mk-doc__part .mk-doc__answer { font-size: 18px; line-height: 28px; font-weight: 500; } /* kh-body-l size, kh-lead weight */
+
+/* The grievance and seller blocks read as cards, so a parent finds them fast. */
+.mk-doc__part .mk-doc__card { gap: var(--space-2); max-width: var(--measure); margin-bottom: var(--space-4); padding: var(--space-4) var(--space-5); border-radius: var(--radius-m); }
+.mk-doc__card p { margin: 0; }
+.mk-doc__part > .mk-doc__card:last-child { margin-bottom: 0; }
+
+/* Close: one tinted card, centred: the secondary button, the related pages, the help line. */
+.mk-doc-close { padding-top: 0; }
+.mk-doc-close .kh-card { align-items: center; gap: var(--space-4); padding: var(--space-6) var(--space-5); text-align: center; }
+.mk-doc-close .kh-section__actions { margin-top: 0; }
+.mk-also { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; column-gap: var(--space-4); margin: 0; color: var(--text-muted); } /* links spaced by the gap, no separators to strand on a wrap */
+.mk-also a { display: inline-flex; align-items: center; min-height: var(--tap-min); color: var(--link); font-weight: 800; text-underline-offset: 3px; }
+.mk-also__label { flex-basis: 100%; } /* phones: the label on its own line, the links in one row (no dot left dangling) */
+@media (min-width: 720px) { .mk-also__label { flex-basis: auto; } }
+.mk-doc-close .mk-help .kh-icon { font-size: var(--icon-m); vertical-align: -0.2em; }
+
+/* ---------- /privacy only ---------- */
+
+/* Measuring tools: one quiet block per tool, so seven tools read as a list, not a wall of text. */
+.mk-tools { display: grid; gap: var(--space-3); max-width: var(--measure); margin-bottom: var(--space-4); }
+.mk-tool { padding: var(--space-4) var(--space-5); border: var(--stroke-hair) solid var(--border); border-radius: var(--radius-m); background: var(--surface-raised); }
+.mk-doc__part .mk-tool .kh-subtitle { margin: 0 0 var(--space-2); }
+.mk-tool > :last-child { margin-bottom: 0; }
+
+/* Everyone who handles your data: one stacked row per recipient on phones, the DS table from 720 px. */
+.mk-doc__part .mk-recips { max-width: var(--measure); padding: 0; list-style: none; border: var(--stroke-hair) solid var(--border); border-radius: var(--radius-m); background: var(--surface-raised); }
+.mk-doc__part .mk-recips li { display: grid; gap: var(--space-1); margin: 0; padding: var(--space-3) var(--space-4); }
+.mk-doc__part .mk-recips li + li { border-top: var(--stroke-hair) solid var(--border); }
+.mk-doc__part .mk-recips p { margin: 0; }
+.mk-recips__k { color: var(--text-muted); font-weight: 700; }
+.mk-recips-table { display: none; margin-bottom: var(--space-4); }
+.mk-recips-table .kh-compare { min-width: 0; }
+.mk-recips-table .kh-compare th, .mk-recips-table .kh-compare td { vertical-align: top; }
+@media (min-width: 720px) {
+  .mk-doc__part .mk-recips { display: none; }
+  .mk-recips-table { display: block; }
+}
+
+/* ---------- Laptop (DS breakpoint 1024) ---------- */
+@media (min-width: 1024px) {
+  .mk-doc__grid { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--space-8); align-items: start; }
+  .mk-toc { position: sticky; top: var(--space-5); max-height: calc(100vh - var(--space-5) * 2); overflow-y: auto; }
+  .mk-doc__body { font-size: 18px; line-height: 28px; } /* kh-body-l on laptops */
+  .mk-doc__part .mk-doc__answer { font-size: 20px; line-height: 30px; }
+  .mk-doc__part + .mk-doc__part { margin-top: var(--space-7); padding-top: var(--space-7); }
+  .mk-doc-close .kh-card { max-width: calc(var(--content-max) * 2 / 3); margin-inline: auto; padding: var(--space-7); }
+}
+
+/* With a mouse, the long jump list uses compact rows so all of it fits a laptop screen beside the text;
+   touch screens (phones, tablets at any width) keep the 48 px rows. */
+@media (min-width: 1024px) and (pointer: fine) {
+  .mk-toc a { padding-block: var(--space-2); font-size: 14px; line-height: 20px; } /* kh-body-s size: 36 px rows */
+}

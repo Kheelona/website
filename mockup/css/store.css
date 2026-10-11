@@ -1,0 +1,89 @@
+/*
+ * Store (store.kheelona.com) mockup, Gate A (D043). Page composition only: every value is a DS token
+ * (design-system/project/tokens.css); components come from bundle.css; mk- helpers from mockup.css.
+ * The store chrome (header and footer) is shared with the confirmation page, which imports this file.
+ */
+
+/* ---------- Store chrome: the logo and a person to reach, no site nav (live store layout, by design) ----------
+   Header and footer line up with the content container: the same side padding as kh-section (space-4, then space-7). */
+.mk-store-head { padding-inline: var(--space-4); }
+.mk-store-head__in { display: flex; align-items: center; gap: var(--space-4); }
+.mk-store-head__help { margin: 0 0 0 auto; text-align: right; }
+
+.mk-store-foot { padding-inline: var(--space-4); border-top: var(--stroke-hair) solid var(--border); } /* the hairline parts the footer from a band section above it */
+.mk-store-foot__in { display: grid; gap: var(--space-5); align-items: start; }
+.mk-store-foot p, .mk-seller { margin: 0; max-width: var(--measure); color: var(--text-muted); }
+.mk-seller { font-style: normal; }
+.mk-seller strong { color: var(--text); }
+.mk-store-foot .kh-body-s a { color: var(--link); padding-block: var(--space-1); margin-block: calc(var(--space-1) * -1); } /* link box reaches 28 px without moving the line */
+.mk-store-foot .kh-footer__legal { max-width: none; }
+.mk-policy { display: flex; flex-wrap: wrap; gap: 0 var(--space-5); }
+.mk-policy a { display: inline-flex; align-items: center; min-height: var(--tap-min); color: var(--text); font-weight: 800; text-underline-offset: var(--space-1); }
+
+@media (min-width: 1024px) {
+  .mk-store-head, .mk-store-foot { padding-inline: var(--space-7); }
+  /* Seller, grievance officer and payments side by side; the policy links and the copyright span the width. */
+  .mk-store-foot__in { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: var(--space-7); }
+  .mk-store-foot__in > .mk-policy, .mk-store-foot__in > .kh-footer__legal { grid-column: 1 / -1; }
+}
+
+/* ---------- Shared text helpers for the two store pages ---------- */
+.mk-h2 { margin: 0 0 var(--space-4); }
+.mk-muted { margin: 0; color: var(--text-muted); }
+
+/* Review annotation (mockup only, never part of the site): dashed like a placeholder, in small type. */
+.mk-review-note { margin: 0; padding: var(--space-2) var(--space-3); border: var(--stroke-hair) dashed var(--border-strong); border-radius: var(--radius-s); color: var(--text-muted); }
+
+/* ---------- Store page layout: phone first; two columns from 900 px, summary and questions sticky (as live) ---------- */
+.mk-store { padding-top: var(--space-5); }
+.mk-store__grid { display: grid; gap: var(--space-7); align-items: start; }
+.mk-store__main, .mk-store__side { display: grid; gap: var(--space-6); min-width: 0; }
+
+/* Fold 1: eyebrow and H1 beside a small Kheelu (small on purpose, so the form stays high on a phone),
+   the price sentence and the compact trust line under both. */
+.mk-store-top { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--space-4); align-items: center; }
+.mk-store-top > .mk-store-top__price, .mk-store-top > .kh-trustline { grid-column: 1 / -1; }
+.mk-store-top__img { display: block; width: var(--space-9); height: auto; }
+.mk-store-top__price { margin: var(--space-4) 0 0; max-width: var(--measure); }
+.mk-store-top .kh-trustline { margin-top: var(--space-4); }
+
+/* Fold 2: the in-app browser note. */
+.mk-inapp { display: grid; gap: var(--space-2); }
+.mk-inapp .kh-alert { max-width: none; }
+.mk-inapp__action { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); margin-top: var(--space-3); }
+
+/* Fold 3: the form. Fields take the column's width; the +91 sits inside the phone field, before the digits. */
+.mk-form { display: grid; gap: var(--space-5); }
+.mk-form .kh-field { max-width: none; }
+.mk-tel { position: relative; display: grid; }
+.mk-tel .kh-field__input { padding-left: calc(var(--space-4) + var(--space-7) + var(--space-1)); }
+.mk-tel__cc { position: absolute; top: 50%; left: var(--space-4); padding-right: var(--space-3); border-right: var(--stroke-hair) solid var(--border-strong); transform: translateY(-50%); font-weight: 700; color: var(--text); pointer-events: none; }
+.mk-consent .kh-check__label a { color: var(--link); }
+.mk-pay-beside { margin-top: calc(var(--space-3) * -1); }
+.mk-pay-beside .mk-trust { row-gap: var(--space-4); }
+.mk-pay-beside .mk-help { margin-top: var(--space-2); }
+
+/* Fold 4: what you are agreeing to (no DS order-summary pattern, G-11: card, icon tile, label, body-s). */
+.mk-agree { gap: var(--space-5); }
+.mk-agree__list { display: grid; gap: var(--space-4); margin: 0; padding: 0; list-style: none; }
+.mk-agree__list li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-3); align-items: start; }
+.mk-agree__list .kh-label { margin: 0 0 var(--space-1); }
+.mk-agree__fine { padding-top: var(--space-4); border-top: var(--stroke-hair) solid var(--border); }
+
+/* Fold 5: the questions take the column's width. */
+.mk-faq .kh-faq { max-width: none; }
+
+@media (min-width: 720px) {
+  /* Kheelu sits beside the whole heading block: eyebrow and H1, price sentence, trust line. */
+  .mk-store-top__img { grid-column: 2; grid-row: 1 / span 3; width: var(--space-10); }
+  .mk-store-top > .mk-store-top__price, .mk-store-top > .kh-trustline { grid-column: 1; }
+  /* From 720 px the form sits on a white card, like the summary beside it. */
+  .mk-details { padding: var(--space-6); border: var(--stroke-hair) solid var(--border); border-radius: var(--radius-l); background: var(--surface-raised); }
+}
+@media (min-width: 900px) {
+  .mk-store__grid { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+  .mk-store__side { position: sticky; top: var(--space-5); }
+}
+@media (min-width: 1024px) {
+  .mk-store { padding-top: var(--space-7); }
+}

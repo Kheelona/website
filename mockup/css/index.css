@@ -1,0 +1,8 @@
+/* Review index (mockup only): a simple grid of page cards. DS tokens only. */
+.mk-review__grid { display: grid; gap: var(--space-4); margin: var(--space-4) 0 0; padding: 0; list-style: none; }
+.mk-review__grid .kh-card { display: grid; gap: var(--space-2); align-content: start; }
+.mk-review__grid .kh-card__title a { color: inherit; text-underline-offset: var(--space-1); }
+.mk-review__url { margin: 0; color: var(--text-muted); overflow-wrap: anywhere; }
+.mk-review__how { margin-top: var(--space-5); max-width: var(--measure); }
+@media (min-width: 720px) { .mk-review__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .mk-review__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }

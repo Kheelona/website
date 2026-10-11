@@ -1,0 +1,25 @@
+/* Team page (/team), Gate A mockup: page-only composition. DS tokens only (tokens.css); no literal colours or fonts.
+   The DS has no founder card (component map: CastCard is not for the public site), so each card is composed
+   from FeatureCard (.kh-card) and Avatar (.kh-avatar, initials until the real photo is allowed, B24). */
+
+/* Hero board: on phones it follows the words (DS 10-pages, phones). */
+.mk-hero .mk-team-board { margin-top: var(--space-6); }
+@media (min-width: 900px) { .mk-hero .mk-team-board { margin-top: 0; } }
+
+/* Fold 2: the answer-first block keeps a reading measure beside its heading. */
+.mk-team-answer { margin: 0; max-width: var(--measure); }
+.mk-team-answer a { color: var(--link); font-weight: 800; }
+@media (min-width: 900px) { .mk-team-who { align-items: start; } }
+
+/* Fold 3: founder cards. Avatar beside the name and role; the LinkedIn link is a full tap target (G-01). */
+.mk-founder { gap: var(--space-3); }
+.mk-founder__head { display: flex; align-items: center; gap: var(--space-4); }
+.mk-founder__who { display: grid; gap: var(--space-1); min-width: 0; }
+.mk-founder__role { margin: 0; color: var(--text-muted); }
+.mk-founder__photo, .mk-founder__bg { margin: 0; }
+.mk-founder__link { display: inline-flex; align-items: center; gap: var(--space-2); align-self: start; min-height: var(--tap-min); }
+
+/* Fold 4: four short paragraphs, then the founder's quote beside them on laptop. */
+.mk-team-why { margin-top: var(--space-5); max-width: var(--measure); }
+.mk-team-why p { margin: 0 0 var(--space-4); }
+.mk-team-why .kh-subtitle { margin: var(--space-5) 0 0; }

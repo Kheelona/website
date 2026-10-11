@@ -158,6 +158,13 @@ CP = `docs/checkpoints/`. Code references (`src/`, `package.json`, `tools/`, `ne
   200. `sips -g hasAlpha` is not proof of transparency; the iOS icon must be opaque. *docs/qa-report.md
   L1024-1058.*
 
+- **Check sideways scroll against `clientWidth`, never `innerWidth`.** In Playwright's phone emulation
+  (`isMobile: true`) a page that overflows widens the layout viewport, so `innerWidth` grows with the
+  overflow and `scrollWidth > innerWidth` stays false. Mockup v2 had a 4 px overflow at 360 px (a long
+  ghost link) that this hid; v3 briefly had 1,921 px. Also, an absolutely positioned child of a
+  horizontal scroller escapes it unless an ancestor inside the scroller is positioned (the film tiles'
+  hidden labels). *2026-10-11, mockup v3; `mockup/mockup.css` `.mk-film`.*
+
 ## 3. Routing and the store.kheelona.com host
 
 - **One deployment serves two hosts.** `routeForHost` in `src/lib/store/host.ts` (a pure, unit-tested

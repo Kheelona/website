@@ -1,0 +1,42 @@
+/*
+ * Store confirmation (store.kheelona.com/thanks) mockup, Gate A (D043). Page composition only, DS tokens only.
+ * The store header, footer and form helpers come from store.css.
+ */
+@import url("store.css");
+
+/* One column at every width (live max width 680 px: here the content width less four of the largest spaces). */
+.mk-thanks { padding-top: var(--space-5); }
+.mk-thanks__col { display: grid; gap: var(--space-7); width: 100%; max-width: calc(var(--content-max) - var(--space-10) * 4); margin-inline: auto; }
+
+/* Fold 1: say it worked, first. */
+.mk-thanks__eyebrow { display: inline-flex; align-items: center; gap: var(--space-2); }
+.mk-thanks__eyebrow .kh-icon { font-size: var(--icon-m); }
+.mk-thanks__lede { margin: 0; max-width: var(--measure); color: var(--text-muted); }
+
+/* Fold 2: the four facts a parent screenshots (no DS receipt pattern, G-11: card and a description list). */
+.mk-order { gap: var(--space-2); }
+.mk-order__rows { display: grid; margin: 0; }
+/* Phones: the label above its value, both left-aligned, so a long value never wraps against the right edge. */
+.mk-order__rows > div { display: grid; gap: var(--space-1); padding-block: var(--space-3); border-bottom: var(--stroke-hair) solid var(--border); }
+.mk-order__rows > div:last-child { padding-bottom: 0; border-bottom: 0; }
+.mk-order__rows dt { color: var(--text-muted); }
+.mk-order__rows dd { margin: 0; font-weight: 800; }
+
+/* Fold 3: the address step. */
+.mk-thanks__intro { margin: 0 0 var(--space-5); max-width: var(--measure); }
+.mk-addr__pair { display: grid; gap: var(--space-5); }
+
+/* Fold 5: help. */
+.mk-thanks__help { display: grid; gap: var(--space-4); }
+.mk-thanks__help .kh-body { max-width: var(--measure); }
+.mk-ghost-start { padding-inline: 0; }
+
+@media (min-width: 720px) {
+  .mk-order__rows > div { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--space-1) var(--space-4); }
+  .mk-order__rows dd { margin-left: auto; text-align: right; }
+  .mk-addr__pair { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .mk-addr .kh-btn--block { display: inline-flex; width: auto; justify-self: start; } /* full-width button on phones only */
+}
+@media (min-width: 1024px) {
+  .mk-thanks { padding-top: var(--space-7); }
+}

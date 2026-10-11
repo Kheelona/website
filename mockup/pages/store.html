@@ -1,0 +1,233 @@
+<!--page {"title": "Pre-order Kheelu · Kheelona", "description": "Pre-order Kheelu by Kheelona, a screen-free plush toy that talks, for ages 3 to 7. ₹4,999 (incl. GST); reserve yours today with a refundable ₹499.", "url": "https://store.kheelona.com/", "buybar": false, "active": "", "css": true, "chrome": false} -->
+<!-- Store (store.kheelona.com), Gate A mockup (D043). Copy: wiki/site/pages/store.md (token mode shown).
+     RESTYLE ONLY: field names, autocomplete, noValidate, the consent row, the pay button label and the payment flow
+     are the live ones (wt:src/features/preorder/components/PreorderForm.tsx:193-270). No site nav, no sticky bar:
+     the store keeps its own chrome (wt:src/app/store/layout.tsx). noindex, nofollow as live. -->
+
+<!-- ============ Fold 0 · Store header: whose store this is, and a person ============ -->
+<header class="kh-nav mk-store-head">
+  <div class="kh-container mk-store-head__in">
+  <a class="kh-logo-link" href="home.html" aria-label="Kheelona home"><img class="kh-logo" src="../design-system/project/assets/Logo/kheelona-logo.svg" alt="Kheelona" height="30"></a>
+  <p class="kh-body-s mk-help mk-store-head__help">Need help? <a href="https://wa.me/919187546483">WhatsApp</a> or <a href="tel:+919187546483">call</a></p>
+  </div>
+</header>
+
+<main id="main">
+<div class="kh-section mk-store">
+  <div class="kh-container mk-store__grid">
+    <div class="mk-store__main">
+
+      <!-- ============ Fold 1 · Heading and price (first phone screen) ============ -->
+      <section class="mk-store-top" aria-labelledby="store-title">
+        <header class="kh-heading mk-store-top__head">
+          <p class="kh-eyebrow">Ages 3 to 7</p>
+          <h1 class="kh-heading__title" id="store-title">Pre-order Kheelu.</h1>
+        </header>
+        <img class="mk-store-top__img" src="../design-system/project/assets/Kheelu/kheelu-front.webp" width="1080" height="1324" alt="Kheelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy.">
+        <p class="kh-body mk-store-top__price" id="store-price">Reserve yours for <span data-src="TOKEN_PRICE">₹499</span> today, refundable until dispatch, then pay <span data-src="BALANCE_PRICE">₹4,500</span> before delivery: <span data-src="LAUNCH_PRICE">₹4,999</span> in total (incl. GST).</p>
+        <ul class="kh-trustline mk-trust mk-store-top__trust">
+          <li><a href="shipping.html" target="_blank" rel="noopener">{{icon:truck}}<span data-src="DELIVERY_TEXT">Deliveries start mid-November</span><span class="kh-sr"> (opens in a new tab)</span></a></li>
+          <li><a href="refund.html" target="_blank" rel="noopener">{{icon:arrow-counter-clockwise}}7-day returns, no questions asked<span class="kh-sr"> (opens in a new tab)</span></a></li>
+        </ul>
+      </section>
+
+      <!-- ============ Fold 2 · In-app browser note (shown as an example; B12, G13) ============ -->
+      <div class="mk-inapp">
+        <div class="kh-alert" role="status">
+          <svg class="kh-icon kh-alert__icon" viewBox="0 0 256 256" aria-hidden="true" focusable="false"><path d="M108,84a16,16,0,1,1,16,16A16,16,0,0,1,108,84Zm128,44A108,108,0,1,1,128,20,108.12,108.12,0,0,1,236,128Zm-24,0a84,84,0,1,0-84,84A84.09,84.09,0,0,0,212,128Zm-72,36.68V132a20,20,0,0,0-20-20,12,12,0,0,0-4,23.32V168a20,20,0,0,0,20,20,12,12,0,0,0,4-23.32Z"></path></svg>
+          <div class="kh-alert__content">
+            <p class="kh-alert__title">Paying by UPI? Open this page in Chrome or Safari.</p>
+            <div class="kh-alert__body"><p>Do it first, so you don’t type your details twice. Copy the link and paste it into Chrome or Safari: <strong class="mk-nowrap">store.kheelona.com</strong></p></div>
+            <div class="mk-inapp__action">
+              <button type="button" class="kh-btn kh-btn--secondary kh-btn--s" data-copy="https://store.kheelona.com">{{icon:copy}}<span>Copy link</span></button>
+              <span class="kh-label-s" aria-live="polite" data-copied></span>
+            </div>
+          </div>
+        </div>
+        <p class="kh-caption mk-review-note"><strong>Gate A review note, not on the site.</strong> Example. On the real store this note appears only when the page opens inside the Instagram, Facebook or WhatsApp browser.</p>
+      </div>
+
+      <!-- ============ Fold 3 · Your details (the form) and what sits beside the pay button ============ -->
+      <section class="mk-details" id="details" aria-labelledby="details-title">
+        <h2 class="kh-title mk-h2" id="details-title">Your details</h2>
+        <!-- Live form: noValidate, one onChange on <form> (preorder_form_started), shared validators. The mockup's
+             submit opens the confirmation mockup in place of Razorpay's payment window. -->
+        <form class="mk-form" action="store-confirmation.html" method="get" novalidate>
+          <div class="kh-field">
+            <label class="kh-field__label" for="parentName">Your name</label>
+            <input class="kh-field__input" id="parentName" name="parentName" type="text" maxlength="80" autocomplete="name" required>
+          </div>
+          <div class="kh-field">
+            <label class="kh-field__label" for="phone">Indian WhatsApp number</label>
+            <!-- The +91 is decoration, not part of the value; the validator still accepts +91, 0 and spaces. -->
+            <div class="mk-tel"><span class="mk-tel__cc" aria-hidden="true">+91</span><input class="kh-field__input" id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required aria-describedby="phone-d"></div>
+            <span class="kh-field__hint" id="phone-d">For messages about your order, including the link to pay the balance before dispatch.</span>
+          </div>
+          <div class="kh-field">
+            <label class="kh-field__label" for="email">Email</label>
+            <input class="kh-field__input" id="email" name="email" type="email" inputmode="email" autocomplete="email" required aria-describedby="email-d">
+            <span class="kh-field__hint" id="email-d">We email your confirmation here.</span>
+          </div>
+          <div class="kh-field">
+            <label class="kh-field__label" for="childAge">Your child’s age</label>
+            <input class="kh-field__input" id="childAge" name="childAge" type="text" maxlength="20" required aria-describedby="childAge-d">
+            <span class="kh-field__hint" id="childAge-d">Kheelu is made for children aged 3 to 7. Just the number is fine, like 4.</span>
+          </div>
+          <div class="kh-check mk-consent">
+            <input type="checkbox" id="accepted" name="accepted" class="kh-check__input" required>
+            <label for="accepted" class="kh-check__label"><span class="kh-check__box" aria-hidden="true"><svg class="kh-icon kh-check__tick" viewBox="0 0 256 256" aria-hidden="true" focusable="false"><path d="M232.49,80.49l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,1,1,17-17L96,183,215.51,63.51a12,12,0,0,1,17,17Z"></path></svg><span class="kh-check__dash"></span></span><span class="kh-check__text"><span>I accept the <a href="terms.html" target="_blank" rel="noopener">pre-order terms<span class="kh-sr"> (opens in a new tab)</span></a> and the <a href="refund.html" target="_blank" rel="noopener">refund policy<span class="kh-sr"> (opens in a new tab)</span></a>, and I am happy to hear about my own order on WhatsApp.</span></span></label>
+          </div>
+          <!-- The store's own pay button (a plain <button>, no cta attribute, as live). Busy labels as live:
+               "Setting up your payment…", then "Opening the payment window…". Full mode: "Pay ₹7,999 and pre-order". -->
+          <button type="submit" class="kh-btn kh-btn--cta kh-btn--l kh-btn--block"><span>Pay <span data-src="TOKEN_PRICE">₹499</span> and reserve</span></button>
+          <div class="mk-beside mk-pay-beside">
+            <p class="kh-body-s mk-price">Reserve yours for <span data-src="TOKEN_PRICE">₹499</span> today, refundable until dispatch, then pay <span data-src="BALANCE_PRICE">₹4,500</span> before delivery: <span data-src="LAUNCH_PRICE">₹4,999</span> in total (incl. GST).</p>
+            <ul class="kh-trustline mk-trust">
+              <li><a href="refund.html" target="_blank" rel="noopener">{{icon:arrow-counter-clockwise}}7-day returns, no questions asked<span class="kh-sr"> (opens in a new tab)</span></a></li>
+              <li><a href="refund.html" target="_blank" rel="noopener">{{icon:shield-check}}6-month warranty<span class="kh-sr"> (opens in a new tab)</span></a></li>
+              <li><a href="terms.html" target="_blank" rel="noopener">{{icon:currency-inr}}UPI, card or net banking<span class="kh-sr"> (opens in a new tab)</span></a></li>
+              <li><a href="shipping.html" target="_blank" rel="noopener">{{icon:package}}Delivery included anywhere in India<span class="kh-sr"> (opens in a new tab)</span></a></li>
+            </ul>
+            <p class="kh-body-s mk-muted">The button opens Razorpay’s payment window. We never see your card details, and nothing is ever charged automatically.</p>
+            <p class="kh-body-s mk-help">{{icon:whatsapp-logo}} Rather talk to a person? <a href="https://wa.me/919187546483">WhatsApp</a> or <a href="tel:+919187546483" class="mk-nowrap">call +91 91875 46483</a></p>
+          </div>
+        </form>
+      </section>
+    </div>
+
+    <div class="mk-store__side">
+      <!-- ============ Fold 4 · What you are agreeing to (order summary; DS gap G-11: composed) ============ -->
+      <section class="kh-card mk-agree" aria-labelledby="agree-title">
+        <h2 class="kh-card__title" id="agree-title">What you are agreeing to</h2>
+        <ul class="mk-agree__list">
+          <li><span class="kh-listitem__icon">{{icon:currency-inr}}</span><div><p class="kh-label"><span data-src="TOKEN_PRICE">₹499</span> today</p><p class="kh-body-s mk-muted">A refundable advance, part of the <span data-src="LAUNCH_PRICE">₹4,999</span> price (incl. GST).</p></div></li>
+          <li><span class="kh-listitem__icon">{{icon:calendar-check}}</span><div><p class="kh-label"><span data-src="BALANCE_PRICE">₹4,500</span> before delivery</p><p class="kh-body-s mk-muted">The rest of the price, by a payment link we send on WhatsApp and by email. Never charged automatically.</p></div></li>
+          <li><span class="kh-listitem__icon">{{icon:arrow-counter-clockwise}}</span><div><p class="kh-label">Refundable in full</p><p class="kh-body-s mk-muted">Ask any time before we dispatch your Kheelu. No fee, and no reason needed.</p></div></li>
+          <li><span class="kh-listitem__icon">{{icon:truck}}</span><div><p class="kh-label"><span data-src="DELIVERY_TEXT">Deliveries start <span class="mk-nowrap">mid-November</span></span></p><p class="kh-body-s mk-muted">Pre-orders go out first, in the order they were placed.</p></div></li>
+        </ul>
+        <p class="kh-body-s mk-muted mk-agree__fine">Every Kheelu comes with 6 months of Kheelona+: stories, poems, jingles, languages and the parent app. The price is <span data-src="LAUNCH_PRICE">₹4,999</span> (incl. GST) for the first 500 units, and <span data-src="FULL_PRICE">₹7,999</span> (incl. GST) once they are gone. Delivery anywhere in India is included, and every order comes with a GST invoice.</p>
+      </section>
+
+      <!-- ============ Fold 5 · Questions before you pay (DS FAQ, all closed) ============ -->
+      <section class="mk-faq" aria-labelledby="faq-title">
+        <h2 class="kh-title mk-h2" id="faq-title">Questions before you pay</h2>
+        <div class="kh-faq">
+          <details class="kh-faq__item"><summary class="kh-faq__q"><span>What am I paying today?</span><span class="kh-faq__sign" aria-hidden="true">{{icon:plus}}</span></summary><div class="kh-faq__a"><p>A refundable <span data-src="TOKEN_PRICE">₹499</span> today reserves your Kheelu, and it is part of the <span data-src="LAUNCH_PRICE">₹4,999</span> price (incl. GST), not an extra fee. The remaining <span data-src="BALANCE_PRICE">₹4,500</span> is due before delivery, by a payment link we send on WhatsApp and by email. Nothing is ever charged automatically.</p></div></details>
+          <details class="kh-faq__item"><summary class="kh-faq__q"><span>What if I change my mind?</span><span class="kh-faq__sign" aria-hidden="true">{{icon:plus}}</span></summary><div class="kh-faq__a"><p>Until we dispatch your Kheelu, message us with your order number and you get all of your money back, with no fee and no reason needed. We start your refund within 2 working days of your request; your bank takes 5-7 working days. After delivery, you can still return it within 7 days, no questions asked.</p></div></details>
+          <details class="kh-faq__item"><summary class="kh-faq__q"><span>When will my Kheelu arrive?</span><span class="kh-faq__sign" aria-hidden="true">{{icon:plus}}</span></summary><div class="kh-faq__a"><p><span data-src="DELIVERY_TEXT">Deliveries start mid-November</span>. Pre-orders go out first, in the order they were placed, and we send you a tracking link when yours leaves us. Delivery anywhere in India is included, with nothing to pay at the door. We don’t ship outside India. A reserved Kheelu is dispatched once the balance is paid.</p></div></details>
+          <details class="kh-faq__item"><summary class="kh-faq__q"><span>How can I pay?</span><span class="kh-faq__sign" aria-hidden="true">{{icon:plus}}</span></summary><div class="kh-faq__a"><p>By UPI, debit or credit card, or net banking, in Razorpay’s payment window. There are no payment fees and nothing recurring. Your card number, UPI ID and bank details go to Razorpay, not to us, and every order comes with a GST invoice.</p></div></details>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Fold 6 · Films (below every money answer, never between the form and the summary; D040) ============ -->
+<section class="kh-section kh-section--band" aria-labelledby="ask-title">
+  <div class="kh-container">
+    <div class="kh-section__head">
+      <header class="kh-heading kh-heading--center">
+        <h2 class="kh-heading__title" id="ask-title">See Kheelu <span class="mk-nowrap"><span class="kh-hand">ask</span>,</span> in real homes.</h2>
+        <p class="kh-heading__lead">Real children in real homes. Press play on any of them.</p>
+      </header>
+    </div>
+    <div class="mk-films-wrap" data-reveal>
+      <ul class="mk-films" data-films aria-label="Seven films of families with Kheelu">
+        <li class="mk-film" data-video-id="learning-by-asking">
+          <p class="mk-film__meta"><span class="kh-chip">Learning by asking</span><span class="kh-label-s mk-film__time"><span class="kh-sr">Length </span>0:30</span></p>
+          <div class="mk-film__frame">
+            <img src="../public/video/moments/learning-by-asking.jpg" width="1080" height="1920" loading="lazy" alt="A young girl on a playmat holding the cream Kheelu plush.">
+            <button type="button" class="kh-iconbtn kh-iconbtn--primary kh-iconbtn--l mk-film__play" data-film="../public/video/moments/learning-by-asking.mp4" aria-label="Play: Learning by asking. Kheelu asks her to explain carrom, and thanks her for the reminder."><svg class="kh-icon" viewBox="0 0 256 256" aria-hidden="true" focusable="false"><path d="M234.49,111.07,90.41,22.94A20,20,0,0,0,60,39.87V216.13a20,20,0,0,0,30.41,16.93l144.08-88.13a19.82,19.82,0,0,0,0-33.86ZM84,208.85V47.15L216.16,128Z"></path></svg></button>
+          </div>
+          <p class="kh-body-s mk-film__caption">Kheelu asks her to explain carrom, and thanks her for the reminder.</p>
+        </li>
+        <li class="mk-film" data-video-id="first-conversations">
+          <p class="mk-film__meta"><span class="kh-chip">Real families</span><span class="kh-label-s mk-film__time"><span class="kh-sr">Length </span>0:38</span></p>
+          <div class="mk-film__frame">
+            <img src="../public/video/moments/first-conversations.jpg" width="1080" height="1920" loading="lazy" alt="Children talking to the cream Kheelu plush.">
+            <button type="button" class="kh-iconbtn kh-iconbtn--primary kh-iconbtn--l mk-film__play" data-film="../public/video/moments/first-conversations.mp4" aria-label="Play: Real families. Children asking Kheelu their own questions, in their own languages."><svg class="kh-icon" viewBox="0 0 256 256" aria-hidden="true" focusable="false"><path d="M234.49,111.07,90.41,22.94A20,20,0,0,0,60,39.87V216.13a20,20,0,0,0,30.41,16.93l144.08-88.13a19.82,19.82,0,0,0,0-33.86ZM84,208.85V47.15L216.16,128Z"></path></svg></button>
+          </div>
+          <p class="kh-body-s mk-film__caption">Children asking Kheelu their own questions, in their own languages.</p>
+        </li>
+        <li class="mk-film" data-video-id="a-parent-speaks">
+          <p class="mk-film__meta"><span class="kh-chip">In a parent’s words</span><span class="kh-label-s mk-film__time"><span class="kh-sr">Length </span>0:46</span></p>
+          <div class="mk-film__frame">
+            <img src="../public/video/moments/a-parent-speaks.jpg" width="1080" height="1920" loading="lazy" alt="A parent speaking to camera at home.">
+            <button type="button" class="kh-iconbtn kh-iconbtn--primary kh-iconbtn--l mk-film__play" data-film="../public/video/moments/a-parent-speaks.mp4" aria-label="Play: In a parent’s words. Nikita on what changed when the toy spoke back."><svg class="kh-icon" viewBox="0 0 256 256" aria-hidden="true" focusable="false"><path d="M234.49,111.07,90.41,22.94A20,20,0,0,0,60,39.87V216.13a20,20,0,0,0,30.41,16.93l144.08-88.13a19.82,19.82,0,0,0,0-33.86ZM84,208.85V47.15L216.16,128Z"></path></svg></button>
+          </div>
+          <p class="kh-body-s mk-film__caption">Nikita on what changed when the toy spoke back.</p>
+        </li>
+        <li class="mk-film" data-video-id="a-mother-joins-in">
+          <p class="mk-film__meta"><span class="kh-chip">A mother joins in</span><span class="kh-label-s mk-film__time"><span class="kh-sr">Length </span>0:28</span></p>
+          <div class="mk-film__frame">
+            <img src="../public/video/moments/a-mother-joins-in.jpg" width="1080" height="1920" loading="lazy" alt="A girl and her mother on a sofa with the cream Kheelu plush.">
+            <button type="button" class="kh-iconbtn kh-iconbtn--primary kh-iconbtn--l mk-film__play" data-film="../public/video/moments/a-mother-joins-in.mp4" aria-label="Play: A mother joins in. Arha’s mother asks the questions, and Kheelu answers her by name."><svg class="kh-icon" viewBox="0 0 256 256" aria-hidden="true" focusable="false"><path d="M234.49,111.07,90.41,22.94A20,20,0,0,0,60,39.87V216.13a20,20,0,0,0,30.41,16.93l144.08-88.13a19.82,19.82,0,0,0,0-33.86ZM84,208.85V47.15L216.16,128Z"></path></svg></button>
+          </div>
+          <p class="kh-body-s mk-film__caption">Arha’s mother asks the questions, and Kheelu answers her by name.</p>
+        </li>
+        <li class="mk-film" data-video-id="counting-out-loud">
+          <p class="mk-film__meta"><span class="kh-chip">Counting out loud</span><span class="kh-label-s mk-film__time"><span class="kh-sr">Length </span>0:31</span></p>
+          <div class="mk-film__frame">
+            <img src="../public/video/moments/counting-out-loud.jpg" width="1080" height="1920" loading="lazy" alt="A boy on the floor with Lego bricks and the cream Kheelu plush.">
+            <button type="button" class="kh-iconbtn kh-iconbtn--primary kh-iconbtn--l mk-film__play" data-film="../public/video/moments/counting-out-loud.mp4" aria-label="Play: Counting out loud. Three bricks and two more, worked out on the floor with Kheelu."><svg class="kh-icon" viewBox="0 0 256 256" aria-hidden="true" focusable="false"><path d="M234.49,111.07,90.41,22.94A20,20,0,0,0,60,39.87V216.13a20,20,0,0,0,30.41,16.93l144.08-88.13a19.82,19.82,0,0,0,0-33.86ZM84,208.85V47.15L216.16,128Z"></path></svg></button>
+          </div>
+          <p class="kh-body-s mk-film__caption">Three bricks and two more, worked out on the floor with Kheelu.</p>
+        </li>
+        <li class="mk-film" data-video-id="a-story-in-two-languages">
+          <p class="mk-film__meta"><span class="kh-chip">Two languages</span><span class="kh-label-s mk-film__time"><span class="kh-sr">Length </span>0:31</span></p>
+          <div class="mk-film__frame">
+            <img src="../public/video/moments/a-story-in-two-languages.jpg" width="1080" height="1920" loading="lazy" alt="A girl on a sofa beside the cream Kheelu plush.">
+            <button type="button" class="kh-iconbtn kh-iconbtn--primary kh-iconbtn--l mk-film__play" data-film="../public/video/moments/a-story-in-two-languages.mp4" aria-label="Play: Two languages. In AI mode, Arha switches to English, and Kheelu switches with her."><svg class="kh-icon" viewBox="0 0 256 256" aria-hidden="true" focusable="false"><path d="M234.49,111.07,90.41,22.94A20,20,0,0,0,60,39.87V216.13a20,20,0,0,0,30.41,16.93l144.08-88.13a19.82,19.82,0,0,0,0-33.86ZM84,208.85V47.15L216.16,128Z"></path></svg></button>
+          </div>
+          <p class="kh-body-s mk-film__caption">In AI mode, Arha switches to English, and Kheelu switches with her.</p>
+        </li>
+        <li class="mk-film" data-video-id="a-father-speaks">
+          <p class="mk-film__meta"><span class="kh-chip">A father’s view</span><span class="kh-label-s mk-film__time"><span class="kh-sr">Length </span>0:30</span></p>
+          <div class="mk-film__frame">
+            <img src="../public/video/moments/a-father-speaks.jpg" width="1080" height="1920" loading="lazy" alt="A father seated at home, speaking to camera.">
+            <button type="button" class="kh-iconbtn kh-iconbtn--primary kh-iconbtn--l mk-film__play" data-film="../public/video/moments/a-father-speaks.mp4" aria-label="Play: A father’s view. Siddhant’s father on what play away from a screen looks like."><svg class="kh-icon" viewBox="0 0 256 256" aria-hidden="true" focusable="false"><path d="M234.49,111.07,90.41,22.94A20,20,0,0,0,60,39.87V216.13a20,20,0,0,0,30.41,16.93l144.08-88.13a19.82,19.82,0,0,0,0-33.86ZM84,208.85V47.15L216.16,128Z"></path></svg></button>
+          </div>
+          <p class="kh-body-s mk-film__caption">Siddhant’s father on what play away from a screen looks like.</p>
+        </li>
+      </ul>
+      <p class="kh-body-s mk-films-proof">Kids doing the talking. Parents, in their own words.</p>
+      <div class="mk-films-ctrl">
+        <button type="button" class="kh-iconbtn kh-iconbtn--outline" aria-label="Previous video" data-films-prev><svg class="kh-icon" viewBox="0 0 256 256" aria-hidden="true" focusable="false"><path d="M168.49,199.51a12,12,0,0,1-17,17l-80-80a12,12,0,0,1,0-17l80-80a12,12,0,0,1,17,17L97,128Z"></path></svg></button>
+        <span class="kh-label-s" data-films-pos aria-live="polite">1 of 7</span>
+        <button type="button" class="kh-iconbtn kh-iconbtn--outline" aria-label="Next video" data-films-next><svg class="kh-icon" viewBox="0 0 256 256" aria-hidden="true" focusable="false"><path d="M184.49,136.49l-80,80a12,12,0,0,1-17-17L159,128,87.51,56.49a12,12,0,1,1,17-17l80,80A12,12,0,0,1,184.49,136.49Z"></path></svg></button>
+      </div>
+    </div>
+    <div class="kh-section__actions kh-section__actions--center">
+      <a href="#details" class="kh-btn kh-btn--ghost"><span>Back to your details</span>{{icon:caret-up}}</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ============ Fold 7 · Store footer: who is being paid, and how to reach a person ============ -->
+<footer class="kh-footer mk-store-foot">
+  <div class="kh-container mk-store-foot__in">
+    <nav class="mk-policy" aria-label="Policies">
+      <a href="terms.html" target="_blank" rel="noopener">Pre-order terms<span class="kh-sr"> (opens in a new tab)</span></a>
+      <a href="refund.html" target="_blank" rel="noopener">Refunds and cancellation<span class="kh-sr"> (opens in a new tab)</span></a>
+      <a href="shipping.html" target="_blank" rel="noopener">Shipping and delivery<span class="kh-sr"> (opens in a new tab)</span></a>
+      <a href="privacy.html" target="_blank" rel="noopener">Privacy<span class="kh-sr"> (opens in a new tab)</span></a>
+      <a href="contact.html" target="_blank" rel="noopener">Contact<span class="kh-sr"> (opens in a new tab)</span></a>
+    </nav>
+    <address class="kh-body-s mk-seller"><strong>Kheelona Robotics Private Limited</strong><br>5th Floor, No 51 (Old Site No 1), Kokarya Business Synergy Center, 5th Main, 5th Block Jayanagar, Bengaluru 560041, Karnataka, India<br>GSTIN 29AAMCK1530E1ZN<br><a href="tel:+919187546483" class="mk-nowrap">+91 91875 46483</a> (WhatsApp or call) · <a href="mailto:hello@kheelona.com">hello@kheelona.com</a></address>
+    <p class="kh-body-s">Grievance Officer: Aman Soni, Co-Founder and CTO, <a href="mailto:aman@kheelona.com">aman@kheelona.com</a>, <a href="tel:+919187546483" class="mk-nowrap">+91 91875 46483</a>. We acknowledge every complaint within 48 hours and resolve it within one month of receiving it.</p>
+    <p class="kh-body-s">No payment fees. Nothing recurring. Payments by Razorpay. <a href="refund.html#chargeback" target="_blank" rel="noopener">How to raise a chargeback with your bank<span class="kh-sr"> (opens in a new tab)</span></a></p>
+    <p class="kh-footer__legal">© 2026 Kheelona Robotics Private Limited</p>
+  </div>
+</footer>
+
+<script src="mockup.js" defer></script>
+<script>
+  /* Copy link (in-app browser note): copies the store address and says so. The address is printed in full, so the note works without this. */
+  document.querySelectorAll('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var say = b.parentElement.querySelector('[data-copied]');
+      if (navigator.clipboard) navigator.clipboard.writeText(b.getAttribute('data-copy')).then(function () { if (say) say.textContent = 'Link copied.'; }, function () {});
+    });
+  });
+</script>

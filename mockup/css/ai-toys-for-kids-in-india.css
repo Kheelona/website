@@ -1,0 +1,51 @@
+/*
+ * /ai-toys-for-kids-in-india page composition (Gate A mockup, D043). Page-level layout only: every space, radius
+ * and stroke is a DS token (design-system/project/tokens.css); components and type come from bundle.css.
+ */
+
+ol.kh-trust { margin: 0; padding: 0; list-style: none; }
+
+/* Hero board: the DS 1:1 board (Myra's face stays clear of the top edge); not wider than a phone on tablets. */
+@media (min-width: 720px) and (max-width: 899px) { .mk-gd-hero-art { width: min(100%, 480px); } }
+
+/* Fold 2: five checks as a numbered StepLoop list. They are checks, not a sequence, so the drawn arrows
+   between steps are left out; two columns from 720 px, all five in one row from 1200 px. */
+.mk-gd-checks .kh-step::after { content: none; }
+/* Phones: the numeral beside its check, so the five read as one short list. */
+@media (max-width: 719px) {
+  .mk-gd-checks { gap: var(--space-5); }
+  .mk-gd-checks .kh-step { grid-template-columns: 64px minmax(0, 1fr); column-gap: var(--space-4); row-gap: var(--space-1); }
+  .mk-gd-checks .kh-step__num { grid-row: span 2; margin-bottom: 0; }
+}
+@media (min-width: 720px) { .mk-gd-checks { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6) var(--space-7); } }
+@media (min-width: 1200px) { .mk-gd-checks { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--space-6); } }
+
+/* Fold 3: Kheelu's five answers; the last (languages) runs the full width from 720 px. */
+@media (min-width: 720px) { .mk-gd-answers .kh-trust__item:last-child { grid-column: 1 / -1; } }
+.mk-gd-pointer { max-width: var(--measure); margin: var(--space-6) 0 0; }
+.mk-gd-pointer + .kh-section__actions { margin-top: var(--space-4); }
+
+/* Fold 4: the words, then Kheelu alone on a block, whole and upright. */
+.mk-gd-plush-text { max-width: var(--measure); margin: var(--space-4) 0 0; }
+.mk-gd-plush-art { --kh-ratio: 4 / 3; }
+@media (min-width: 720px) and (max-width: 899px) { .mk-gd-plush-art { width: min(100%, 480px); } }
+@media (min-width: 900px) { .mk-gd-plush-art { --kh-ratio: 1 / 1; } }
+
+/* Fold 5: heading, then the questions; the photo sits under them on phones and by the heading on laptops. */
+.mk-gd-faq { display: grid; gap: var(--space-6); grid-template-areas: "head" "body" "photo"; }
+.mk-gd-faq__head { grid-area: head; }
+.mk-gd-faq__body { grid-area: body; min-width: 0; }
+.mk-gd-faq__photo { grid-area: photo; }
+@media (min-width: 720px) and (max-width: 899px) { .mk-gd-faq__photo { width: min(100%, 420px); } }
+@media (min-width: 900px) { .mk-gd-faq__photo { width: min(100%, 360px); } }
+@media (min-width: 900px) {
+  .mk-gd-faq { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); grid-template-rows: auto 1fr; column-gap: var(--space-7); row-gap: var(--space-6); grid-template-areas: "head body" "photo body"; align-items: start; }
+}
+.mk-gd-sources { margin-top: var(--space-5); color: var(--text-muted); }
+.mk-gd-sources p { margin: 0 0 var(--space-2); }
+
+/* Fold 6: the close as one quiet cream panel (the FAQ above is on the page cream, the footer below is the band). */
+.mk-gd-close { padding: var(--space-6) var(--space-5); }
+@media (min-width: 720px) { .mk-gd-cta.kh-btn--block { display: inline-flex; width: auto; } }
+@media (min-width: 720px) and (max-width: 899px) { .mk-gd-close-art { width: min(100%, 480px); } }
+@media (min-width: 1024px) { .mk-gd-close { padding: var(--space-7); } }

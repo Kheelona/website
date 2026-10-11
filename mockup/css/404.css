@@ -1,0 +1,9 @@
+/* Page not found (404), Gate A mockup: page-only composition. DS tokens only (tokens.css); no literal colours or fonts.
+   EmptyState (.kh-empty) composed with an h1 heading and a List of four full-width link rows (one tap target each). */
+.mk-404 { max-width: calc(var(--space-10) * 4); padding: 0; gap: var(--space-4); }
+/* The art circle is the cream band colour; on this band section it takes the page cream, as DS quiet panels do. */
+.kh-section--band .mk-404 .kh-empty__art { background: var(--surface); }
+.mk-404__nav { width: 100%; margin-top: var(--space-3); }
+.mk-404__list { margin: 0; padding: 0; list-style: none; text-align: left; }
+/* The DS row truncates long lines; these short helper lines wrap instead, so nothing is cut on a 360 px phone. */
+.mk-404__list .kh-listitem__title, .mk-404__list .kh-listitem__sub { white-space: normal; }

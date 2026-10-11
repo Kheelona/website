@@ -42,6 +42,8 @@ pages a task needs. Phase 0 pages cite legacy files at tag `archive/pre-reset-20
 - [content boundary](site/content-boundary.md): what the website may publish (EXTERNAL, for the ICP) vs what stays INTERNAL; the rule every page and agent follows.
 - [checkout](site/checkout.md): the journey from CTA tap to receipt, what must not change, and the brief's funnel mapped onto it (there is no cart).
 - [strategy](site/strategy.md): Phase 2: messaging hierarchy as the parent meets it, the journey and objections, the one CTA ("Pre-order Kheelu") with its placement and sticky bar, the URL plan (drop `/playos` and the under-3 article), each page's purpose and cluster, and the fix for each top PostHog issue.
+- [Gate A progress](site/gate-a-progress.md): every page mockup's copy/build/review/fix status, the app screenshots' state, and the resume plan (start here when resuming).
+- [Gate A open items](site/gate-a-open-items.md): the founder's 2026-10-11 answers and every remaining website item on a logged working default (founder may override), plus founder to-dos and the stale-page backlog.
 - [home copy](site/pages/home.md): Phase 3 homepage copy, nine folds phone-first, H1 options A-E, the D028 price sentence, sources per claim, open questions for Gate A.
 
 ## Design system (documents the DS in `design-system/`; never a copy)
@@ -54,6 +56,7 @@ pages a task needs. Phase 0 pages cite legacy files at tag `archive/pre-reset-20
 
 ## Engineering
 - [lessons](engineering/lessons.md): hard-won behaviour of this stack (Next 16, Vercel, store host, payments, tracking verification, SEO, QA, git).
+- [phase 4 kickoff](engineering/phase-4-kickoff.md): what the Architect starts from after Gate A: the approved sources, hard constraints, the seven architecture decisions to make, and what carries into Phase 5.
 - [artifacts](engineering/artifacts.md): every published Artifact (the Gate A mockup link), updated in place; check before publishing.
 - Architecture, structure, catalogues and dependency register: from Phase 4.
 
@@ -106,6 +109,14 @@ pages a task needs. Phase 0 pages cite legacy files at tag `archive/pre-reset-20
 - [D037](decisions/D037-delivery-date-in-schema.md) Product JSON-LD `availabilityStarts` 2026-11-15 (founder, F15).
 - [D038](decisions/D038-trust-content-rulings.md) trust content: proof-gated recognition and bios, no advisor, no demo, tagline kept with alternatives, no pilot promise, Kheelona+ after 6 months undecided, no-ads line kept.
 - [D039](decisions/D039-repo-and-setup-answers.md) raw files stay local; repo website set; Kheelona India unrelated; no Google Ads; no linked assets; security defaults; no YouTube yet.
+- [D040](decisions/D040-films-move-to-new-site.md) the seven parent films move to the new site; film 6 caption (AI mode); film 1 label kept; subtitles as they are; proof line instead of an endorsement disclosure (risk recorded).
+- [D041](decisions/D041-gate-a-round-1.md) Gate A round 1: Pre-order Kheelu, price (d), white on Chilli (exception), motion, URLs, crawlers, training clause kept, Kheelona+ unspecified, more children, box contents, friend allowed; new headline options; Gate A not yet approved.
+- [D047](decisions/D047-vercel-build-and-data-regions.md) Vercel build command not overridden (keep off); Supabase ap-southeast-2 until moved before launch; toy server and memory on GCP India.
+- [D046](decisions/D046-gate-a-approved.md) **Gate A approved** for the full page set, with final Home changes (store caption, equal phone sizes, Myra, guides fold); next Phase 4.
+- [D045](decisions/D045-hero-headline.md) Home hero: "Kheelu answers every why. Then it asks one back." (Hand on "asks one back."); picker removed.
+- [D044](decisions/D044-app-screens-on-the-site.md) real parent-app screens on the site: usage time confirmed, no games, 36-month retention (app to match), no 'seen only by you' banner, no AI summary, memory line, clean Hindi title; no Harvard logo.
+- [D043](decisions/D043-all-pages-as-mockups-before-build.md) every page gets a lightweight mockup; the founder reviews the full set; approval opens the build (Gate A widened); articles: template + 3; legal: full drafts; store mocked; one link with an index.
+- [D042](decisions/D042-policy-display-answers.md) no consent banner at launch (gate before May 2027), no exchanges, no payment fees, refunds start within 2 working days.
 
 ## Agents
 - [roster](agents/roster.md): the eight-role team, their outputs and skills, and the run history.

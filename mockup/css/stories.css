@@ -1,0 +1,161 @@
+/*
+ * Journal composition: the /stories hub and the /stories/* guides (Gate A mockup, D043).
+ * Page-level layout only. Every colour, space, radius and stroke is a DS token (design-system/project/tokens.css);
+ * type sizes are DS type styles (kh-body, kh-body-l, kh-display-l). The DS has no breadcrumb, article or
+ * footnote pattern (gaps G-11, G-18): these rules compose them from DS parts. The three guide pages import this
+ * file, so one set of rules serves the whole journal; a shared mk-article helper is requested for mockup.css.
+ */
+
+/* ---------- Hub · intro and topic jump links ---------- */
+.mk-written { margin: var(--space-4) 0 0; color: var(--text-muted); }
+.mk-topics { margin-top: var(--space-5); }
+.mk-topics__label { margin: 0 0 var(--space-3); color: var(--text-muted); }
+.mk-topics ul { display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-2); margin: 0; padding: 0; list-style: none; }
+.mk-topics .kh-tag { text-decoration: none; }
+.mk-topics .kh-tag::before { content: ""; position: absolute; inset: calc(var(--space-1) * -1) 0; } /* the DS tag's own 48 px tap area (button.kh-tag), on a link */
+.mk-topics .kh-tag:hover { background: var(--surface-band); }
+.mk-topics .kh-icon { color: var(--text-muted); }
+
+/* ---------- Hub · one band per topic ---------- */
+.mk-topic { scroll-margin-top: var(--space-4); }
+.mk-topic .kh-section__head { margin-bottom: var(--space-6); }
+.mk-topic__grid { display: grid; gap: var(--space-5); align-items: start; }
+
+/* The rewritten guide: a card with its photo; the whole card is one tap (the link is stretched over it). */
+.mk-guide { gap: var(--space-3); }
+.mk-guide .kh-photo { margin-bottom: var(--space-2); }
+.mk-guide .kh-card__title { font-size: 20px; line-height: 26px; } /* kh-subtitle: a card title, under the topic H2 */
+.mk-guide .kh-card__link { display: inline-flex; align-items: center; gap: var(--space-2); min-height: var(--tap-min); margin-top: var(--space-1); }
+.mk-guide .kh-card__link::after { content: ""; position: absolute; inset: 0; border-radius: var(--radius-l); } /* whole card taps */
+.mk-guide:hover .kh-card__link { text-decoration-thickness: 2px; }
+.mk-guide:focus-within { outline: var(--stroke-focus) solid var(--focus); outline-offset: 2px; }
+.mk-guide .kh-card__link:focus-visible { outline: none; }
+.mk-photo-myra img { object-position: 50% 52%; } /* 16:9 crop of a 4:5 photo: her face and the crayon hand stay in frame */
+
+/* The guides not yet rewritten: quiet rows, no link (they link once the build rewrites them). */
+.mk-guides { margin: 0; padding: 0; list-style: none; }
+.mk-guides .kh-listitem { align-items: flex-start; padding: var(--space-4) var(--space-5); }
+.mk-guides .kh-listitem__text { gap: var(--space-1); }
+.mk-guides .kh-listitem__title, .mk-guides .kh-listitem__sub { margin: 0; overflow: visible; white-space: normal; text-overflow: clip; }
+.mk-guides .kh-listitem__title { font-size: 16px; line-height: 24px; }
+.mk-later { display: inline-flex; align-items: center; gap: var(--space-1); margin: var(--space-1) 0 0; color: var(--text-muted); }
+.mk-later .kh-icon { font-size: var(--icon-s); }
+
+/* ---------- The journal close (hub and guides) ---------- */
+.mk-close .kh-section__actions { margin-top: var(--space-5); }
+.mk-close .mk-help { margin-top: var(--space-4); }
+.mk-close-art { display: none; --kh-ratio: 4 / 3; } /* the product board shows on wider screens only (copy: optional, beside the block) */
+
+/* ---------- Guide · head: breadcrumb, H1, dek, byline, photo ---------- */
+.mk-crumbs ol { display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--space-1); margin: 0 0 var(--space-3); padding: 0; list-style: none; font: 700 14px/20px var(--font-body); color: var(--text-muted); }
+.mk-crumbs li { display: inline-flex; align-items: center; gap: var(--space-1); }
+.mk-crumbs .kh-icon { font-size: var(--icon-s); }
+.mk-crumbs a { display: inline-flex; align-items: center; min-height: var(--tap-min); color: var(--text); text-decoration: underline; text-decoration-color: var(--border-strong); text-underline-offset: var(--space-1); }
+.mk-crumbs a:hover { text-decoration-color: var(--text); }
+.mk-byline { margin: var(--space-4) 0 0; color: var(--text-muted); }
+.mk-story-head .kh-photo { margin: 0; }
+
+/* ---------- Guide · body: one reading column ---------- */
+.mk-story-body { padding-top: var(--space-7); }
+.mk-col { max-width: calc(var(--content-max) * 7 / 12); margin-inline: auto; }
+.mk-prose { font-size: 16px; line-height: 24px; } /* kh-body on phones */
+.mk-prose p, .mk-prose ul, .mk-prose ol { margin: 0 0 var(--space-4); }
+.mk-prose > * > :last-child, .mk-prose .kh-card > :last-child { margin-bottom: 0; }
+.mk-prose a:not(.kh-btn):not(.mk-src) { color: var(--link); font-weight: 700; text-decoration-thickness: 2px; text-decoration-color: var(--sun-500); text-underline-offset: 3px; }
+.mk-prose a:not(.kh-btn):not(.mk-src):hover { text-decoration-color: var(--text); }
+.mk-prose > * + * { margin-top: var(--space-7); } /* every block of the column: the answer, each part, the photo, the sources */
+.mk-part h2 { margin: 0 0 var(--space-3); scroll-margin-top: var(--space-4); }
+.mk-part h3 { margin: var(--space-5) 0 var(--space-1); }
+.mk-part h2 + h3 { margin-top: 0; }
+.mk-part ul:not([class]) { padding-left: var(--space-5); }
+.mk-part ul:not([class]) li + li { margin-top: var(--space-2); }
+.mk-src { white-space: nowrap; }
+
+/* The answer comes first: one quiet panel. */
+.mk-answer { gap: var(--space-3); padding: var(--space-5); }
+.mk-answer h2 { margin: 0; }
+.mk-answer p { margin: 0; }
+.mk-disclaimer { margin: 0; color: var(--text-muted); font-style: italic; }
+
+/* A "Try this" line and short rules, set apart. */
+.mk-try { flex-direction: row; align-items: flex-start; gap: var(--space-3); margin-top: var(--space-5); padding: var(--space-4) var(--space-5); border-radius: var(--radius-m); }
+.mk-try .kh-icon { flex: none; margin-top: var(--space-1); font-size: var(--icon-m); }
+.mk-try p { margin: 0; }
+.mk-prose .mk-checks { display: grid; gap: var(--space-3); padding: 0; list-style: none; }
+.mk-checks li { display: flex; align-items: flex-start; gap: var(--space-3); }
+.mk-checks li + li { margin-top: 0; }
+.mk-checks .kh-icon { flex: none; margin-top: var(--space-1); font-size: var(--icon-m); color: var(--text); }
+
+/* Myth and question lead-ins: a bold line, then its answer. */
+.mk-lead { display: block; margin-bottom: var(--space-1); }
+
+/* The product facts on the safe-AI-toy guide: TrustList rows with kh-label lead-ins. */
+.mk-facts-list { margin: var(--space-5) 0; }
+.mk-facts-list .kh-trust__item { padding: var(--space-4); }
+.mk-facts-list .kh-trust__body { margin: 0; color: var(--text); font-size: 16px; line-height: 24px; } /* kh-body: facts read as a list, a step below the article text */
+.mk-facts-list .kh-label { display: block; margin-bottom: var(--space-1); }
+.mk-facts-list { grid-template-columns: minmax(0, 1fr); } /* one column inside the reading column; two from 1200 px, where the list widens */
+.mk-belly { justify-self: center; width: min(100%, calc(var(--space-9) * 2)); margin: var(--space-2) 0 0; }
+
+/* The six questions on the safe-AI-toy guide. */
+.mk-questions h3 { margin: var(--space-5) 0 var(--space-1); }
+.mk-questions h3:first-child { margin-top: var(--space-2); }
+
+/* Sources: the numbered notes the markers link to (G-18 composed, as on Home). */
+.mk-sources { margin-top: var(--space-7); padding-top: var(--space-6); border-top: var(--stroke-hair) solid var(--border); }
+.mk-sources h2 { margin: 0 0 var(--space-4); }
+.mk-notes { display: grid; gap: var(--space-3); margin: 0; padding: 0; list-style: none; color: var(--text-muted); }
+.mk-notes li { display: grid; grid-template-columns: 4ch minmax(0, 1fr); scroll-margin-top: var(--space-4); }
+.mk-notes li:target { color: var(--text); }
+.mk-notes__n { font-weight: 800; color: var(--text); }
+.mk-notes a, .mk-prose .mk-notes a:not(.mk-src) { color: var(--link); font-weight: 400; overflow-wrap: anywhere; text-decoration-color: var(--border-strong); }
+
+/* Related guides and "keep reading": DS list rows that wrap. */
+.mk-related .kh-section__head { margin-bottom: var(--space-5); }
+.mk-related .kh-list { margin: 0; padding: 0; list-style: none; }
+.mk-related .kh-listitem__title { overflow: visible; white-space: normal; text-overflow: clip; }
+.mk-related .kh-section__actions { margin-top: var(--space-5); }
+
+/* The late-talker guide: the plain line after the signs, the tips with their icons, and the keep-reading close. */
+.mk-gut { font-weight: 800; }
+.mk-prose .mk-tips { gap: var(--space-4); margin: 0 0 var(--space-4); padding: var(--space-5); list-style: none; }
+.mk-tips li { display: flex; align-items: flex-start; gap: var(--space-3); }
+.mk-tips .kh-icon { flex: none; margin-top: var(--space-1); font-size: var(--icon-m); }
+.mk-keep { padding-top: 0; }
+.mk-keep__card { gap: 0; padding: var(--space-5) var(--space-4); }
+.mk-keep .kh-btn { max-width: 100%; padding-block: var(--space-2); white-space: normal; text-align: center; } /* the copy's long label may wrap on a 360 px phone instead of pushing the page wider */
+
+/* ---------- Wider screens (the DS breakpoints: 720, 900, 1024) ---------- */
+@media (min-width: 720px) {
+  .mk-close .kh-btn--block, .mk-keep .kh-btn--block { display: inline-flex; width: auto; } /* full-width buttons on phones only (DS 10-pages) */
+  .mk-keep__card { padding: var(--space-7); }
+}
+@media (min-width: 900px) {
+  /* The hub intro centres on wider screens, as the DS centred heading does, so the line of chips sits under it. */
+  .mk-journal-intro .kh-heading { margin-inline: auto; text-align: center; justify-items: center; }
+  .mk-journal-intro .mk-written, .mk-journal-intro .mk-topics__label { text-align: center; }
+  .mk-journal-intro .mk-topics ul { justify-content: center; }
+  .mk-topic__grid { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-7); }
+  .mk-topic__grid > .mk-guides:only-child { grid-column: 1 / -1; }
+  .mk-guides--two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .mk-guides--two > .kh-listitem:nth-last-child(2):nth-child(odd) { border-bottom: 0; }
+  .mk-guides--two > .kh-listitem:nth-child(odd) { border-right: var(--stroke-hair) solid var(--border); }
+  .mk-close-art { display: block; }
+  .mk-story-head .kh-split { align-items: center; }
+  .mk-story-head .kh-photo:not(.kh-photo--wide) { justify-self: end; width: min(100%, calc(var(--space-10) * 3)); } /* a 4:5 photo stays inside a laptop screen */
+}
+@media (min-width: 1024px) {
+  .mk-story-head .kh-heading--hero .kh-heading__title { font-size: 56px; line-height: 58px; } /* kh-display-l: a guide title, not a selling hero */
+  .mk-prose { font-size: 18px; line-height: 28px; } /* kh-body-l on laptops */
+  .mk-sources { margin-top: var(--space-8); }
+  .mk-story-body { padding-top: var(--space-8); }
+}
+
+/* Related rows: the chevron at the end, muted. */
+.mk-related .kh-listitem > .kh-icon { flex: none; font-size: var(--icon-m); color: var(--text-muted); }
+@media (min-width: 1200px) {
+  /* Fold 5 of the safe-AI-toy guide: the nine facts widen past the reading column into two columns, the belly unit in the tenth cell. */
+  .mk-breakout .mk-facts-list { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-inline: calc(var(--space-10) * -1); }
+  .mk-breakout .mk-facts-list .kh-trust__item { padding: var(--space-5); }
+  .mk-breakout .mk-belly { align-self: center; width: calc(var(--space-10) + var(--space-6)); margin: 0; }
+}

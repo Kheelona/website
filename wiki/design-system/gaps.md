@@ -67,6 +67,8 @@ before build · **Low** = note for the build.
 | [G-15](#g-15) | "The web version on claude.ai wins": our checksummed copy can silently go stale | Low | Founder | G11 (freeze v11) | Open |
 | [G-16](#g-16) | `bundle.js` is a client-only React 18 global; the site needs server HTML on React 19 | Medium | Architect | – | Open |
 | [G-17](#g-17) | Kheelu's child-facing voice is specified for ages 3–6; the site's band is 3–7 | Low | Founder (DS owner) | – (returned to the orchestrator) | Open |
+| [G-18](#g-18) | No footnote or source-marker pattern (D026 needs a marker on every statistic) | Medium | Compose / DS owner | G15 | Open (composed in the mockup) |
+| [G-19](#g-19) | `.kh-chip` keeps the band colour on a band section, so a chip disappears there; the DS switches its quiet panels to the page cream on bands but leaves chips out | Low | Compose / DS owner | – | Composed (mockup v3) |
 
 ## Gaps
 
@@ -283,3 +285,18 @@ bare superscript, so the tap target meets 48 px), and ask the DS owner for a foo
 | ₹ glyph | Present in Nunito, Baloo 2 and Kalam | CoreText check |
 | Hero cta in the first phone screen | Yes at 360×640 (bottom at 572 px) on the DS sample | Headless Chrome |
 | The DS's allowed contrast pairs (`08-accessibility.md:9-23`) | All pass AA: ink on cream 14.57:1, ink on Sunshine 10.75:1, `ink-600` muted text 5.96–7.22:1 on cream, band and white | Computed from `tokens.css` hex, 2026-10-10 |
+
+### G-19
+
+**Chips on a band section.** `.kh-tone-*` sets `--tone-tint: var(--surface-band)` for every tone, and
+`.kh-chip` paints `var(--tone-tint, var(--surface-band))`, so on `.kh-section--band` the chip has the same
+colour as the band. The DS already handles this for its quiet panels (`bundle.css` `.kh-section--band
+:is(.kh-age, .kh-quote, …) { background: var(--surface) }`) but not for chips. **Composed in mockup v3**
+for the film chips only: `.kh-section--band .mk-film .kh-chip { background: var(--surface); }` (tokens
+only). Ask the DS owner to add `.kh-chip` to that rule.
+
+**Video (G-11, G-14) in mockup v3.** The films strip is composed from DS parts: `kh-chip` above each
+tile, a 9:16 frame at `--radius-l` on `--ink-900`, the DS `IconButton` (`kh-iconbtn--primary --l`, play
+icon) centred on the poster, `kh-iconbtn--outline` arrows, `kh-label-s` counter. Native `<video controls>`
+replaces the poster on tap (DS 08: captions burned in; audio never autoplays). No DS video component exists.
+

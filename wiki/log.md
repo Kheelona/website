@@ -435,3 +435,58 @@ safety longer). Bar hidden from 900 px per the DS. Checks: 360 × 590 holds the 
 and delivery line; no sideways scroll; axe only G2 (0 with `#ink`); DS checksums intact. Artifact v2
 at the same private link; curated screenshots in `mockup/screenshots/` (kept local, D039). Approval
 pack complete: `mockup/APPROVAL.md`. Phase 4 waits for the founder's explicit approval.
+
+## [2026-10-11 09:45] agent | Read-only sweep of every website question still open (general-purpose agent)
+- Found ~60 items across APPROVAL §3, home.md, open-questions sections B-D, claims, gaps, legal and policies, plus 19 stale-page inconsistencies. Filed as [Gate A open items](site/gate-a-open-items.md).
+
+## [2026-10-11 10:15] decision | Founder answered Gate A round 1 and follow-ups (D040, D041, D042)
+- Verbatim: [raw/feedback/2026-10-11-gate-a-answers.md](raw/feedback/2026-10-11-gate-a-answers.md).
+- D040: the seven parent films move to the new site; film 6 caption now names AI mode; film 1 label kept; subtitles ship as they are; a proof line replaces the endorsement disclosure (risk recorded).
+- D041: Pre-order Kheelu; price (d); white on Chilli kept as an accepted exception; motion, URLs and crawlers approved; training clause kept; Kheelona+ after 6 months left unspecified; more DS children, Myra allowed; box contents; first 500 once in the FAQ; "friend" allowed; grown-up nearby at 3. Headline rejected ("lacks a hook"): new options to pick from. **Gate A not approved yet**: the founder reviews the revised mockup first.
+- D042: no consent banner at launch; no exchanges; no payment fees; refunds start within 2 working days.
+- Remaining items run on logged working defaults ([Gate A open items](site/gate-a-open-items.md)); the founder may override.
+
+## [2026-10-11 10:20] agent | Headline workflow started (3 copywriters × angles → CMO + compliance judges → copywriter final)
+- Angles: storyteller, contrast/curiosity, parent's payoff. Output: five H1 options, films copy, find/replace edits for D041; the Copywriter updates home.md.
+
+## [2026-10-11 10:55] build | Mockup v3 published (same link): the seven films, more children, two overflow fixes
+- Fold 2 is now the films strip (variant a): tap to play with native controls, one at a time, pauses out of view, poster returns at the end; live labels kept for tracking ("Play: …", "Previous video", "Next video"); counter reads "1–3 of 7" where three show. Verified in Chrome (H.264) at 360, 390, 768, 1024, 1440: plays, focus moves to the film, a second tap stops the first, arrows disable at the ends.
+- Children: Advik (hero), Kabir's chalk frame moved to fold 3 and zoomed so the question sits just above him (founder's screenshot feedback), Ira in fold 4, Tara in the close (was a second Advik).
+- Fixed: hidden film labels escaped the strip (page 1,921 px wide on phones); a 4 px overflow at 360 px from a long ghost link, present since v2 and hidden by an `innerWidth`-based check ([lessons](engineering/lessons.md)). Now no sideways scroll at 320-1440.
+- Removed the `#ink` contrast preview (D041). Fold 2's `aria-labelledby` now points at a real id.
+
+## [2026-10-11 11:20] decision | D043: every page as a mockup before the build; scope answers
+- Founder: "create all other pages ... let me know once all pages are ready, i can review them all together. once all pages are approved in this light weight format, you can go-ahead and work on the full website." Scope: articles template + 3; legal full drafts; store mocked; one link with a page index.
+
+## [2026-10-11 11:30] build | Mockup system for many pages: partials, page bodies, build and check tools
+- `mockup/partials/` (nav, footer, buybar, drawer), `mockup/pages/<slug>.html`, `node mockup/build.mjs [slug…]`, `node mockup/tools/check.cjs <out> <slug…>`. Home moved to `mockup/home.html`; `mockup/index.html` is the review index. Links between pages use mockup file names. Sticky bar now shows from first paint on pages without a hero CTA (strategy §3.4).
+
+## [2026-10-11 11:35] agent | Two workflows started: app screenshots + Harvard logo rules; all-pages mockups
+- App screenshots from the founder's demo video (`mobileapp-live-demo-oct2026.mp4`, local only, never committed: it shows a personal inbox and a phone number): transcript, activity, privacy centre; names replaced with "Aarav", "Khelu" corrected to "Kheelu", activity filled with example content; each verified for leftover personal data.
+- All pages: 7 groups (product; safety + buyer's guide; stories hub + 3 articles; team, setup, contact, 404; privacy + terms; refund + shipping; store + confirmation), each copy → build → review (CMO, or a legal verifier) → fix, then a cross-page check.
+
+## [2026-10-11 12:20] build | Home: five headline options (picker), films copy, D041 copy edits
+- Headline workflow done (3 angles → CMO + compliance → copywriter). H1-1 "Shh. Your child is explaining the moon to Kheelu." shows by default; the "Headline" pill opens a sheet to try H1-1…H1-5 (mockup-only tool; `#h1-N` deep link). Films H2 "Kheelu asks. Watch them think.", lede "Real children, real families…" (not all films at home), proof line "Kids doing the talking. Parents, in their own words." Kheelona+ line keeps "6 months"; box contents; first 500 once in the FAQ; grown-up nearby at 3.
+
+## [2026-10-11 12:50] decision | D044: what the real app screens may show; no Harvard logo
+- Usage time confirmed; no games; 36-month retention (app to match); no "seen only by you" banner; no AI summary; memory line; clean Hindi title; share/favourite/download/recordings confirmed. Harvard and Center logos not allowed without written permission (Trademark Program FAQ Q10/Q17/Q19; the Center's Terms): plain-text citation stays.
+- App screens placed in Home: transcript + activity in fold 5 (replacing the DS illustrative screen), privacy centre in fold 6.
+
+## [2026-10-11 13:05] agent | Workflows stopped for quota; state recorded
+- All-pages workflow: copy and build done for all 17 pages; legal review and fixes done for refund/shipping; CMO review written for team/setup/contact/404 (fixes pending); other reviews, fixes and the cross-page check not run. Screens round 2: privacy done; transcript and activity pending.
+- Work files moved from the session scratchpad to `mockup/_work/` (local only, in `.git/info/exclude`, with the demo video). Resume plan: [site/gate-a-progress.md](site/gate-a-progress.md).
+
+## [2026-10-11 13:30] build | All-pages preview published (artifact v4, same link)
+- `mockup/_work/build_artifact_multi.py` builds the set: the review index as the main page, 18 pages beside it (95 files, ~31 MB). The index carries a status note (which pages are reviewed). Copy-page links fixed for the wiki lint (106 pages, every link resolves).
+
+## [2026-10-11 13:45] decision | D045: Home hero "Kheelu answers every why. Then it asks one back."
+- The founder rejected "Shh. Your child is explaining the moon to Kheelu." and chose from four new options. Fits the 360 × 590 first screen (CTA 432 px, price 508 px, delivery 584 px). Picker removed from Home; artifact republished (home and index only).
+
+## [2026-10-11 14:10] gate | D046: Gate A approved for the full set; final Home changes
+- Captions now "The Kheelona app is live on Apple’s App Store and the Google Play Store."; the Safety phone matches the parent-app phones; Myra replaces Tara at the close; new fold 7b "Guides for parents · How we can help, from 3 to 7." (screen time, talking and language, learning and play → Stories sections). Founder: "rest all is good to go ... then you can go on to building the webiste". Next: Phase 4 in a new session (other account).
+
+## [2026-10-11 14:25] decision | D047: Vercel build not overridden; Supabase ap-southeast-2 (moves before launch); toy backend on GCP India
+- C8 and C17 answered. /privacy must name the order-data location until Supabase moves to India.
+
+## [2026-10-11 14:35] decision | Phase 4 kickoff written; today's work committed locally
+- [engineering/phase-4-kickoff.md](engineering/phase-4-kickoff.md): approved sources, constraints, seven architecture decisions (components from mk- patterns, one content model with a placeholder guard, regions per D047, tracking registry, SEO/schema/robots/redirects, media pipeline, guardrails), Phase 5 carry-overs.

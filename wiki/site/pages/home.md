@@ -12,7 +12,9 @@ sources:
   - ../content-boundary.md, ../tracking-inventory.md (§6, the eight cta values)
   - ../../design-system/overview.md, ../../design-system/component-map.md, ../../design-system/gaps.md; design-system/project/01-writing.md, 03-cast.md:102-126, assets/Kheelu/README.md (read-only)
   - "src/lib/video-moments.ts:101-238 at tag archive/pre-reset-2026-10-10 (the seven consented films; working tree read 2026-10-11, same lines messaging.md cites)"
-  - "decisions D015-D039; binding here: D016-D028, D032-D038"
+  - "decisions D015-D041; binding here: D016-D028, D032-D038, D040, D041"
+  - ../../raw/feedback/2026-10-11-gate-a-answers.md (the founder's Gate A answers, round 1, verbatim)
+  - "Gate A round 2 inputs, 2026-10-11: 15 hero candidates, the CMO's ranking (measured in the mockup at 360/390/412 x 590 and 1366/1440 x 768) and the compliance check, relayed by the main session"
 ---
 
 # Home (`/`): page copy
@@ -31,7 +33,7 @@ sources:
   which also sets the Product JSON-LD `availabilityStarts` 2026-11-15 ([D037](../../decisions/D037-delivery-date-in-schema.md)).
 - **Token mode** = while ₹499 reservations are open; **full mode** = after the first 500 units, ₹7,999 paid
   in full. How the display follows the live mode is Gate A item G9.
-- `[PLACEHOLDER: …]` = a fact we do not have. One on this page; listed under [Placeholders](#placeholders).
+- `[PLACEHOLDER: …]` = a fact we do not have. None on this page since Gate A round 2; see [Placeholders](#placeholders).
 - `¹` = a source marker under [D026](../../decisions/D026-public-statistics.md), linking to the fold's
   Sources note. Home carries one marked line (fold 3).
 - Word counts exclude markers. Hyphenated words count as one.
@@ -47,7 +49,7 @@ sources:
 | Title (54 characters) | Kheelu by Kheelona: a screen-free plush toy that talks |
 | Meta description, token mode (150 characters) | Kheelu by Kheelona: a screen-free plush toy, ages 3 to 7, that answers your child, then asks back. ₹4,999`{price-source}` (incl. GST); reserve with a refundable ₹499`{price-source}`. |
 | Meta description, full mode (147 characters) | Kheelu by Kheelona: a screen-free plush toy, ages 3 to 7, that answers your child, then asks back. ₹7,999`{price-source}` (incl. GST), delivered anywhere in India. |
-| H1 (recommended) | Your child asks why. Kheelu asks back. |
+| H1 | The founder picks from five options in [Gate A round 2](#gate-a-round-2-2026-10-11); recommended H1-1 "Shh. Your child is explaining the moon to Kheelu." (round 1's A to E were all rejected, [D041](../../decisions/D041-gate-a-round-1.md)) |
 | CTA label, everywhere | Pre-order Kheelu ([strategy §3.1](../strategy.md#31-the-one-action-and-its-label-gate-a-g1); G1) |
 | Price sentence, token mode (18 words; option (d), OQ2) | Reserve yours for ₹499`{price-source}` today, refundable until dispatch, then pay ₹4,500`{price-source}` before delivery: ₹4,999`{price-source}` in total (incl. GST). |
 | Price sentence, full mode (8 words) | ₹7,999`{price-source}` (incl. GST), paid in full when you order. |
@@ -63,6 +65,161 @@ behaviour form ("answers your child, then asks a question back"): the full form 
 to 161 characters, over the 155 limit, and the CMO review exempts the H1 and the meta (S6).
 
 ---
+
+## Gate A round 2 (2026-10-11)
+
+The founder answered the Gate A pack on 2026-10-11 ([raw, verbatim](../../raw/feedback/2026-10-11-gate-a-answers.md);
+[D040](../../decisions/D040-films-move-to-new-site.md), [D041](../../decisions/D041-gate-a-round-1.md)). Gate A is
+**not approved yet**: the founder reviews the revised mockup first. This section holds the copy for that review;
+the folds below are updated to match.
+
+### Hero: five options for the founder
+
+**The brief (founder, verbatim):** "Think like a copy writter / story teller and try to write on this. I don't
+like the current one, it lacks a hook, which a parent might look for. Concept wise it's good, but taste is
+missing, give me few options to choose from." Rejected so far: "Your child asks why. Kheelu asks back." and round
+1's B to E (the old table in [fold 1](#fold-1--hero)).
+
+**How the five were chosen.** 15 candidates were written, ranked by the CMO (each swapped into the mockup and
+measured at 360, 390 and 412 × 590, the top five also at 1366 and 1440 × 768) and checked for compliance.
+Dropped: #3 (bedtime reads as a Story-mode question, which [D027](../../decisions/D027-story-mode-wording.md)
+rules out; failed), #10 (an unsourced comparison, and Kheelu's feelings as a selling point; failed), #13 (reads as a
+learning outcome within a day, legal review L7; failed), #14 (Kheelu "takes" the child's questions off the parent,
+the replacement framing [voice rule 8](../../brand/voice.md#voice-rules-from-the-positioning) rules out; failed),
+#8 (casts the answers as the child's pleasure, which undersells the child's thinking), #2 (the same overheard scene as
+H1-1; one is enough), #4 (the same idea as H1-2, done less well), #15 (on an AI toy page "wants to know what your
+child thinks" can read as data collection). Moved to other folds: #7 and #9 (below).
+
+**Rules every option follows.** The concept is kept: the H1 is the hook; the sub-line says what Kheelu is and the
+confirmed mechanism. Outcome first, "AI" nowhere in the H1 ([voice rule 1](../../brand/voice.md#voice-rules-from-the-positioning)).
+No fear, guilt, "best friend", "boosts", "adapts", "smart", tutor or lesson framing, and no brain claim
+([claims §3, §4, §8](../../product/claims.md#4-retired-or-banned-wording)). One `Hand` (Kalam) span of one to three
+words, ending **before** any punctuation (Kalam sets a visible gap before "?" and around quotes; CMO). Curly
+apostrophes throughout. The age chip ("Ages 3 to 7"), the button and the price sentence are unchanged.
+
+| ID | H1 (chars) | `Hand` on | Sub-line | Angle | The hook, for the founder | Fit at 360 × 590 (CMO, measured) | "Kheelu" in H1 |
+|---|---|---|---|---|---|---|---|
+| **H1-1 (recommended)** | Shh. Your child is explaining the moon to Kheelu. (49) | "explaining" | Sub A | Story: an overheard scene, outcome first | Every parent has stood in a doorway holding their breath while their child explains something with total confidence; this puts that moment first. | H1 3 lines at 360, 390, 412, 1366 and 1440 px; with Sub A the delivery line ends at 584 px, inside the first screen | Yes |
+| H1-2 | You know their whys. Now hear their becauses. (45) | "becauses" | Sub B | Contrast: recognition, then a payoff for the parent | You hear "why?" all day; the made-up word "becauses" is the small surprise, and the reward is hearing your child's own reasons. | H1 3 lines at every width; with Sub B the price sentence ends at 536 px and the delivery line at 612 px, below the first screen at 360 px | No (founder's OK needed, see below) |
+| H1-3 | Why? Why? Why? Kheelu has a question too. (41) | "a question too" (the three whys stay in Baloo 2) | Sub A | Recognition: the why years, then a twist | Every parent of a 3 to 7 year old knows the triple why; the turn is that the toy has a question of its own. | H1 3 lines at 360, 390 and 412 px; delivery line at 584 px with Sub A | Yes |
+| H1-4 | Your child has questions. Kheelu has follow-ups. (48) | "follow-ups" | Sub A | Wit: deadpan | A dry joke a working parent gets at once; "answers your child first" underneath shows it never dodges the question. | H1 3 lines at every width; delivery line at 584 px with Sub A | Yes |
+| H1-5 | Kids have the best theories. Kheelu asks to hear them. (54) | "theories" | Sub A | Delight: pride in the child's own ideas | Every parent has a favourite wild theory from their child, and here is a toy that asks to hear it. | H1 4 lines at 360 px only (3 from 390 px); price sentence inside the first screen; delivery line estimated about 628 px at 360 px (not measured with Sub A) | Yes |
+
+**The two sub-lines.**
+- **Sub A** (21 words; for H1s that name Kheelu): "A screen-free plush toy by Kheelona. It answers your child first, then
+  asks a question back, so they do the thinking." Measured at 3 lines, which lifts the delivery line inside 360 × 590,
+  as [strategy, in one screen](../strategy.md#in-one-screen) item 5 asks (the current build misses it at 612 px).
+  "First" keeps H1-3 and H1-4 from reading as a toy that dodges the question. Trade-off: the sub-line no longer
+  opens with "Kheelu by Kheelona" verbatim (H1 "Kheelu" + sub-line "by Kheelona"); the title and meta still carry it
+  verbatim, which meets [strategy §7](../strategy.md#7-search-and-ai-visibility-rules-the-pages-follow). Founder's OK needed.
+- **Sub B** (22 words; for H1-2, whose H1 has no "Kheelu"): "Kheelu by Kheelona is a screen-free plush toy. It
+  answers your child’s questions, then asks one back, so they do the thinking." It must open with the product name,
+  so it runs 4 lines at 360 px.
+
+**Recommendation: H1-1.** The CMO's first pick was H1-2 (8.5); H1-1 scored 8.5 once fixed. I break the tie for
+H1-1 on four measured or rule-based grounds: it names Kheelu, so it needs no exception to the keyword rule
+([keyword map §5.2](../../research/keyword-map.md#52-per-page)); with Sub A it is the only top option that also gets
+the delivery line onto the first phone screen; it shows a child thinking, which is the positioning's own creative rule
+([voice rule 16](../../brand/voice.md#voice-rules-from-the-positioning)); and the parent is in the room, which sits
+well with "a grown-up nearby" for 3-year-olds ([D041](../../decisions/D041-gate-a-round-1.md)). The scene is the one
+film 1 shows for real (Kheelu asks a girl to explain carrom). Swap if the founder prefers: "the moon" → "carrom"
+(true to film 1) or "rain" (a monsoon touch). **Second choice: H1-2**, if the founder accepts an H1 without
+"Kheelu" and the delivery line just below the first screen at 360 px.
+
+**Watch-outs, option by option** (compliance, non-blocking): H1-1 and H1-2: supporting art never shows a 3-year-old
+alone with the toy. H1-2: "hear" means in the room; the app shows conversations to read, never recordings
+([messaging #11](../../brand/messaging.md#proof-points)), and nothing extends "becauses" into a reasoning-skill gain
+(L7). H1-4: one follow-up per question is what is confirmed; "interview" stays out of the copy. H1-5: "asks to hear
+them" describes film 1; never claim it always asks for theories. "Kids" departs from the DS's "your child"
+(`01-writing.md` L19) but is not banned.
+
+**Hero art to match the choice (Builder):** H1-1 → `advik-02-whispering-to-kheelu` (alt: "A boy in a mustard
+shirt leaning close to whisper to Kheelu, on a cane chair by a tall window."). H1-2 and H1-3 →
+`myra-01-breakfast-why` (Myra may appear on her own, [D041](../../decisions/D041-gate-a-round-1.md); alt: "A little
+girl in a mustard floral frock at the breakfast table, asking Kheelu a question in the morning light."). H1-4 and
+H1-5 → the current sticker board or `advik-02`. The "It asks. They think." sticker may stay as the master line's home
+([D038](../../decisions/D038-trust-content-rulings.md)).
+
+**Lines kept for other places:** "Kheelu has answers. It wants your child’s, too." (candidate 7) for the "think less"
+objection on the product page or a fold-2 line; keep a closed-library fact within reach, never "ask it anything"
+([claims §1](../../product/claims.md#1-confirmed-by-the-founder), [§2](../../product/claims.md#2-published-product-behaviour-claims-live-not-re-confirmed)).
+"After Kheelu answers, it’s your child’s turn." (candidate 9) for how-it-works on the product page, never beside the
+Romeo 2018 finding.
+
+| Claim in the five options | Source |
+|---|---|
+| Answers first, then asks a question back (all sub-lines; "follow-ups", "a question too") | [D017](../../decisions/D017-live-behaviour-claims-confirmed.md); [claims §1](../../product/claims.md#1-confirmed-by-the-founder) |
+| "so they do the thinking" | [strategy, in one screen](../strategy.md#in-one-screen) item 2; [messaging, objection answers](../../brand/messaging.md#objection-answers) row 1 |
+| A child explaining something to Kheelu (H1-1); Kheelu asking to hear the child's idea (H1-5) | Film 1, "Kheelu asks her to explain carrom" (`src/lib/video-moments.ts:190-203` at the tag; [D040](../../decisions/D040-films-move-to-new-site.md)) |
+| Screen-free plush toy, by Kheelona | [facts, identity](../../product/facts.md#identity); [messaging, proof points](../../brand/messaging.md#proof-points) #1, #2 |
+| The why phase, "becauses", kids' theories | Scene-setting about children, not claims about the product; "becauses" echoes the positioning's creative note (a child pausing, then answering "because…", [voice rule 16](../../brand/voice.md#voice-rules-from-the-positioning)) |
+
+### Fold 2: the films (variant (a), chosen, D040)
+
+> **H2:** Kheelu asks. Watch them think.
+>
+> **Lede:** Real children in real homes. Press play on any of them.
+>
+> *(under the film strip)* **Proof line:** Kids doing the talking. Parents, in their own words.
+
+- **H2 accent:** `Hand` on "think" (full stop outside the span). The eyebrow stays "See it ask", so the fold reads
+  as set-up then payoff. The H2 keeps the round 1 idea (see Kheelu ask, in real homes: the lede still says "real
+  homes") and sharpens it with the payoff a parent is looking for. If H1-2 is chosen, "hear" appears in the hero
+  only; nothing here repeats it.
+- **Lede:** the live, founder-approved `videoLede()` text, verbatim (`src/lib/video-moments.ts:232-238` at the tag).
+- **Proof line:** the founder asked for "something like kids love it and parents approve it"
+  ([D040](../../decisions/D040-films-move-to-new-site.md)). It claims only what the films show: children talking with
+  Kheelu (films 1, 2, 5) and two parents speaking to camera (films 3, 7). It never says "approve" or "love", which
+  would claim every parent's verdict. "Doing the talking" echoes the hero's "so they do the thinking". "In their own
+  words" restates film 3's live, founder-approved chip "In a parent’s words" (`video-moments.ts:135-147`).
+  If the founder cannot confirm the two parent films were unscripted, use "Children doing the talking. Parents
+  having their say." (no authenticity claim).
+- No endorsement-disclosure line, by the founder's direction; the risk is recorded in D040.
+
+### Mockup edits for the founder's other answers (D041)
+
+Applied to `mockup/index.html` by the main session from the exact find/replace pairs returned with this round;
+the folds below now carry the same words.
+
+| # | Where | Change | Source |
+|---|---|---|---|
+| a1 | Fold 5 | The line "The parent app is part of Kheelona+, included for 6 months with every Kheelu." is removed | [D041](../../decisions/D041-gate-a-round-1.md) F7: "No need to specify things after 6 months … ignore this line of discussion at most places" |
+| a2 | Fold 9 | The Kheelona+ line keeps only its first sentence: "Every Kheelu comes with 6 months of Kheelona+: stories, poems, jingles, languages and the parent app." "Keep working for life, with no subscription needed" and "pricing will be announced soon" go: both discuss what happens after the six months. This is the page's one Kheelona+ mention, where the offer is listed | D041 F7; [D027](../../decisions/D027-story-mode-wording.md) (the sentence kept, verbatim) |
+| b | Fold 9, OfferCard | The placeholder becomes "In the box: Kheelu plush toy, charger and quick-start card" | D041 ("Kheelu plush toy, Charger, quick start card"); spelling "quick-start card" as on [facts, in the box](../../product/facts.md#in-the-box) |
+| c | Fold 8, price answer | "first 500 units" stated once; the MRP added once in D034's wording; the closing "After the first 500 …" sentence removed (a second mention). No badge, counter or strike-through | D041; [D034](../../decisions/D034-origin-manufacturer-mrp.md); [D028](../../decisions/D028-price-wording.md) (still leads with ₹4,999) |
+| d | Fold 8, age answer | Adds "For 3-year-olds, we advise having a grown-up nearby." | D041 ("Advise 'with a grown-up nearby' in age and safety answers") |
+
+**Why "6 months" stays in a2:** it is the founder's confirmed term (D027), and without a duration "Every Kheelu
+comes with Kheelona+" can read as included for good, which is unconfirmed ([claims §3](../../product/claims.md#3-not-confirmed-do-not-publish),
+"free for life", F7). The founder may still drop the duration (question 4 below). The legal review's L7 risk (the
+site should say what stops) is recorded in D041 and accepted by the founder.
+
+### Questions for the founder (round 2)
+
+1. **Which hero?** H1-1 to H1-5. **Recommend H1-1.**
+2. **Only if H1-2:** OK an H1 without "Kheelu" (keyword rule), with the delivery line just below the first phone
+   screen at 360 px? **Recommend yes if you love H1-2;** otherwise H1-1.
+3. **The short sub-line (Sub A)** for H1s that name Kheelu, so the delivery line fits on the first phone screen, though
+   "Kheelu by Kheelona" is then split across the H1 and the sub-line? **Recommend yes.**
+4. **Kheelona+ at the close:** (a) "Every Kheelu comes with 6 months of Kheelona+: …" or (b) "Every Kheelu comes with
+   Kheelona+ included: …" (no duration). **Recommend (a):** (b) can read as included for good.
+5. **Were the two parent films (3, 7) unscripted?** If yes, the proof line says "Parents, in their own words"; if not
+   sure, "Parents having their say". **Recommend** answering yes or no; the line changes in one place.
+6. **Were films 1 (playmat) and 5 (floor) shot at home?** The lede says "real homes". If not, the lede becomes "Real
+   children, real families. Press play on any of them." **Recommend** confirming; no change if yes.
+
+---
+
+
+### Hero chosen (2026-10-11, [D045](../../decisions/D045-hero-headline.md))
+
+**H1: "Kheelu answers every why. Then it asks one back."** (Hand: "asks one back."), with the short sub-line. It replaces H1-1 to H1-5 above; the mockup's headline picker is removed.
+
+### Founder answers after round 2 (2026-10-11, main session)
+- The parent films are the parents' own words: the proof line stays "Kids doing the talking. Parents, in their own words."
+- Not every film was shot at home: the lede becomes "Real children, real families. Press play on any of them.", film 2's chip "Real homes" becomes "Real families", and its alt text drops "at home" ("Children talking to the cream Kheelu plush.").
+- The Kheelona+ line at the close keeps "6 months of Kheelona+" (option a). The short hero sub-line is approved.
+- The founder picks the hero from H1-1 to H1-5 in the mockup (the "Headline" picker); H1-1 shows by default.
 
 ## Shared blocks (defined once, reused)
 
@@ -153,6 +310,10 @@ Sources: [strategy §4.4](../strategy.md#44-navigation), [§3.3](../strategy.md#
 
 **Fold job:** say what Kheelu is, who it is for and the one action, inside the first phone screen (360 × 590).
 
+> **Round 1 result ([D041](../../decisions/D041-gate-a-round-1.md)):** the founder rejected the H1 below and options
+> B to E ("it lacks a hook"). The H1 and sub-line are re-chosen from the five options in
+> [Gate A round 2](#gate-a-round-2-2026-10-11); everything else in this fold stands.
+
 **Copy (first screen, in this order):**
 
 > **Eyebrow (age chip):** Ages 3 to 7
@@ -230,19 +391,23 @@ product page's cluster ([keyword map §4.3](../../research/keyword-map.md#43-ove
 
 **Fold job:** let a parent see the mechanism working before reading any claim about it.
 
-Whether the seven consented parent films can be used is Gate A item **G3** (consent flags are in code; no
-consent record has been seen, and the burned-in captions still carry em dashes: [claims §5](../../product/claims.md#5-placeholder-content)).
-Two variants; the CTA and links are the same in both.
+**Chosen: variant (a), the seven films** ([D040](../../decisions/D040-films-move-to-new-site.md), founder
+2026-10-11). All seven move to the new site; the founder's 2026-09-19 consent statement stands (signed records stay
+with the founder); the burned-in subtitles ship as they are; no endorsement-disclosure line (risk recorded in D040).
+Variant (b) leaves Home and is kept for the product-page outline. The CTA and links below are unchanged.
 
-### Variant (a): with the films
+### Variant (a): with the films (CHOSEN, D040)
 
-**Copy:**
+**Copy** (Gate A round 2; the round 1 H2 was "See Kheelu ask, in real homes."):
 
-> **H2:** See Kheelu ask, in real homes.
+> **H2:** Kheelu asks. Watch them think.
 >
 > **Lede:** Real children in real homes. Press play on any of them.
+>
+> *(under the film strip)* **Proof line:** Kids doing the talking. Parents, in their own words.
 
-- **H2 accent:** `Hand` on "ask".
+- **H2 accent:** `Hand` on "think". Why the H2 and the proof line read this way, and the fallback proof line:
+  [Gate A round 2, fold 2](#fold-2-the-films-variant-a-chosen-d040).
 - **Films, phone order** (one tile at a time; this order keeps the founder's 2026-09-19 instruction that the
   montage holds index 1 and the parent film sits to its right on laptop). Chips and captions are the live,
   founder-approved labels, with one rewritten; alt texts are the live ones, verbatim.
@@ -254,19 +419,20 @@ Two variants; the CTA and links are the same in both.
 | 3 | `a-parent-speaks` | In a parent's words | Nikita on what changed when the toy spoke back. | A parent speaking to camera at home. | `:135-147` |
 | 4 | `a-mother-joins-in` | A mother joins in | Arha's mother asks the questions, and Kheelu answers her by name. | A girl and her mother on a sofa with the cream Kheelu plush. | `:102-115` |
 | 5 | `counting-out-loud` | Counting out loud | Three bricks and two more, worked out on the floor with Kheelu. | A boy on the floor with Lego bricks and the cream Kheelu plush. | `:176-189` |
-| 6 | `a-story-in-two-languages` | Two languages | A story in two languages, with Arha. (new caption, see below) | A girl on a sofa beside the cream Kheelu plush. | `:148-161` |
+| 6 | `a-story-in-two-languages` | Two languages | In AI mode, Arha switches to English, and Kheelu switches with her. (the founder's caption, D040) | A girl on a sofa beside the cream Kheelu plush. | `:148-161` |
 | 7 | `a-father-speaks` | A father's view | Siddhant's father on what play away from a screen looks like. | A father seated at home, speaking to camera. | `:162-175` |
 
 - **Why film 6 is rewritten:** the live caption "Arha would rather speak English today, so the story follows
   her" can read as Story mode responding to the child, which [D027](../../decisions/D027-story-mode-wording.md)
   says does not exist, and "follows her" sits close to the banned "adapts" family
-  ([claims §3](../../product/claims.md#3-not-confirmed-do-not-publish)). The new caption only restates the
-  film's own id and chip. Founder to confirm against the film (open question 3).
+  ([claims §3](../../product/claims.md#3-not-confirmed-do-not-publish)). The founder wrote the new caption
+  on 2026-10-11: it was AI mode that changed the language, not Story mode, so D027 holds
+  ([D040](../../decisions/D040-films-move-to-new-site.md)).
 - First names only, as live; no surnames, schools or places ([DS 08-accessibility](../../design-system/overview.md#accessibility-project08-accessibilitymd)).
   Captions are burned in; no autoplay audio.
 - Lede source: `videoLede()`, `src/lib/video-moments.ts:232-238` (seven films, so the plural form).
 
-### Variant (b): without the films
+### Variant (b): without the films (not on Home; kept for the product-page outline, D040)
 
 **Copy:**
 
@@ -303,7 +469,9 @@ Two variants; the CTA and links are the same in both.
 
 | Claim | Source |
 |---|---|
-| Film chips, captions, alt texts, lede | `src/lib/video-moments.ts` (lines in the table) at tag `archive/pre-reset-2026-10-10`; use is G3 ([claims §5](../../product/claims.md#5-placeholder-content); [messaging, proof points](../../brand/messaging.md#proof-points) #27) |
+| Film chips, captions, alt texts, lede | `src/lib/video-moments.ts` (lines in the table) at tag `archive/pre-reset-2026-10-10`; use decided by [D040](../../decisions/D040-films-move-to-new-site.md) ([claims §5](../../product/claims.md#5-placeholder-content)); film 6's caption is the founder's (D040) |
+| H2 "Kheelu asks. Watch them think." | Asking back: [D017](../../decisions/D017-live-behaviour-claims-confirmed.md); the thinking frame: [strategy, in one screen](../strategy.md#in-one-screen) item 2; shown in film 1 (`:190-203`) |
+| Proof line "Kids doing the talking. Parents, in their own words." | What the films show: children talking with Kheelu (films 1, 2, 5), parents speaking to camera (films 3, 7); "in their own words" restates film 3's live, founder-approved chip "In a parent’s words" (`:135-147`); [D040](../../decisions/D040-films-move-to-new-site.md) (claim only what the films show). Unscripted: founder to confirm (round 2, question 5) |
 | Answer first, then a question back | [D017](../../decisions/D017-live-behaviour-claims-confirmed.md); [claims §1](../../product/claims.md#1-confirmed-by-the-founder) |
 | Illustrative snippets allowed when labelled | DS `08-accessibility.md:65-69` via [DS overview](../../design-system/overview.md#accessibility-project08-accessibilitymd) |
 | "doing the thinking" | [strategy, in one screen](../strategy.md#in-one-screen) item 2 |
@@ -432,8 +600,6 @@ Two variants; the CTA and links are the same in both.
 > - You set your child's age in the app, and the age-graded safety layer follows it.
 > - Your child's conversations stay in your parent app for 36 months, then they're deleted automatically. You can delete any of them sooner, in one tap.
 >
-> The parent app is part of Kheelona+, included for 6 months with every Kheelu.
->
 > *Illustrative screen* (label on the app image)
 >
 > [See what the app shows you] → `/products/kheelu#app`
@@ -445,11 +611,12 @@ Two variants; the CTA and links are the same in both.
 - Not used: parent alerts and the daily summary (wait on counsel's DPDP reading, L6:
   [claims §2](../../product/claims.md#2-published-product-behaviour-claims-live-not-re-confirmed)); "remembers"
   (confirmed, but a second idea here).
-- **The Kheelona+ line in this fold** is plain text, not a link, so the fold keeps one next step ("See what the
-  app shows you"), and it puts the 6-month condition beside "You see every conversation" and the 36-month line
-  until F7 is decided (CMO review S10). It restates only the first clause of
-  [D027](../../decisions/D027-story-mode-wording.md)'s line; the full sanctioned line still appears once, at the
-  close. Nothing is said about what a parent keeps after the six months (F7, open question 5).
+- **No Kheelona+ line in this fold** (Gate A round 2, [D041](../../decisions/D041-gate-a-round-1.md) F7). The
+  round 1 draft had "The parent app is part of Kheelona+, included for 6 months with every Kheelu." here (CMO
+  review S10). The founder asked not to discuss what happens after the six months "at most places", so the page's
+  one Kheelona+ mention now sits at the close, where the offer is listed. The legal review's L7 risk (the parent
+  app is part of Kheelona+, so this fold's H2 and the 36-month line assume it stays available) is recorded in D041
+  and accepted by the founder.
 - **No CTA.**
 - **Images:** the DS phone frame (`kh-device`) with a weekly-report screen, labelled "Illustrative screen".
   Do not use `AppSummaryCard` as delivered: its "Today with Kheelu" framing implies a daily summary, which is
@@ -465,8 +632,6 @@ Two variants; the CTA and links are the same in both.
 | Weekly report on four thinking skills; new-word count | [D036](../../decisions/D036-launch-feature-claims.md) #1, #8; skill names: [messaging, hierarchy](../../brand/messaging.md#the-hierarchy) ("the model parents repeat", EXTERNAL as what the report covers) |
 | Parent sets the age; the age-graded safety layer follows it | [D036](../../decisions/D036-launch-feature-claims.md); wording from [claims §3](../../product/claims.md#3-not-confirmed-do-not-publish) ("say instead") |
 | 36 months, deleted automatically; delete sooner in one tap | [D020](../../decisions/D020-provider-terms-and-no-sale.md) item 7, verbatim line; [D017](../../decisions/D017-live-behaviour-claims-confirmed.md) |
-| Parent app is part of Kheelona+, included for 6 months with every Kheelu | [D027](../../decisions/D027-story-mode-wording.md) ("Every Kheelu comes with 6 months of Kheelona+: … and the parent app"); [facts, Kheelona+](../../product/facts.md#kheelona), [parent app](../../product/facts.md#parent-app) |
-
 ---
 
 ## Fold 6 · Safety you can check
@@ -594,10 +759,10 @@ Two variants; the CTA and links are the same in both.
 > That's exactly what Kheelu is designed against. Most AI gives answers. Kheelu answers your child, then asks a question back, so they do the thinking. It can't browse the internet, and when it doesn't know something, it says so instead of guessing. You can read every conversation in the parent app.
 >
 > **What ages is Kheelu for?**
-> Kheelu is made for children aged 3 to 7. It is not a toy for children under 3. When you set it up, you enter your child's age in the parent app, and every reply passes an age-graded safety layer set to that age. You can change it later.
+> Kheelu is made for children aged 3 to 7. It is not a toy for children under 3. For 3-year-olds, we advise having a grown-up nearby. When you set it up, you enter your child's age in the parent app, and every reply passes an age-graded safety layer set to that age. You can change it later.
 >
 > **How much is Kheelu, and how does the advance work?**
-> Kheelu is ₹4,999`{price-source}` (incl. GST) for the first 500 units`{price-source}`, with delivery anywhere in India included. A refundable ₹499`{price-source}` advance reserves yours today, and the remaining ₹4,500`{price-source}` is due before delivery. After the first 500, it is ₹7,999`{price-source}` (incl. GST), paid in full. You can pay by UPI, card or net banking, and you get a GST invoice.
+> Kheelu is ₹4,999`{price-source}` (incl. GST) for the first 500 units`{price-source}`, with delivery anywhere in India included. Its MRP is ₹7,999`{price-source}` (incl. of all taxes). A refundable ₹499`{price-source}` advance reserves yours today, and the remaining ₹4,500`{price-source}` is due before delivery. You can pay by UPI, card or net banking, and you get a GST invoice.
 >
 > **What if it isn't right for us?**
 > Return it within 7 days of delivery, no questions asked. Opened is fine: just send back everything that came in the box, undamaged. We arrange the pickup, free. Once it reaches us and qualifies for return, your refund is processed within 7 working days. Until we dispatch it, everything you've paid is refundable in full.
@@ -610,7 +775,7 @@ Two variants; the CTA and links are the same in both.
 >
 > [See all questions] → `/products/kheelu#faq`
 
-Word counts: 51 · 49 · 58 · 55 · 54 · 52.
+Word counts: 51 · 57 · 54 · 55 · 54 · 52 (age and price answers updated in Gate A round 2).
 
 **Full mode**, the price question becomes:
 
@@ -631,9 +796,13 @@ Word counts: 51 · 49 · 58 · 55 · 54 · 52.
   ([D025](../../decisions/D025-speech-and-language.md); [keyword map §5.1](../../research/keyword-map.md#5-placement-rules) rule 10).
 - The price answer is machine-read, so it leads with ₹4,999 (incl. GST) and gives the advance second
   ([D028](../../decisions/D028-price-wording.md)). It states the first-500 term once, as an offer term, never as a
-  count (open question 7).
-- The age answer makes no claim about how well Kheelu understands a 3-year-old and no claim about a grown-up
-  nearby: both wait on G5.
+  count, badge or counter ([D041](../../decisions/D041-gate-a-round-1.md)), and names the MRP once in
+  [D034](../../decisions/D034-origin-manufacturer-mrp.md)'s wording, with no strike-through (D034's copy note). The
+  round 1 closing sentence ("After the first 500, it is ₹7,999 (incl. GST), paid in full.") is gone: it was a second
+  mention of the term. The build renders the MRP from its own value if one is added; today it equals `FULL_PRICE`
+  ([pricing, MRP](../../product/pricing.md#tax-delivery-mrp)).
+- The age answer advises a grown-up nearby for 3-year-olds ([D041](../../decisions/D041-gate-a-round-1.md)). It
+  still makes no claim about how well Kheelu understands a 3-year-old (G5).
 - **No CTA:** the close follows directly. Link: suggested `faq-more` (new, optional).
 
 **Sources, fold 8**
@@ -641,8 +810,8 @@ Word counts: 51 · 49 · 58 · 55 · 54 · 52.
 | Answer | Source |
 |---|---|
 | Thinking less | [messaging, objection answers](../../brand/messaging.md#objection-answers) row 1 (EXTERNAL); [D017](../../decisions/D017-live-behaviour-claims-confirmed.md) (browse, read); [D036](../../decisions/D036-launch-feature-claims.md) #3 (says it doesn't know rather than guess) |
-| Ages | [facts, age](../../product/facts.md#age); [keyword map §7.1](../../research/keyword-map.md#7-geo-plan) ("3 to 7; not for under 3"); [D036](../../decisions/D036-launch-feature-claims.md) #6 and the age setting; [claims §2](../../product/claims.md#2-published-product-behaviour-claims-live-not-re-confirmed) (every reply passes the layer) |
-| Price and advance | [pricing](../../product/pricing.md) (amounts, first 500, full tier, delivery included); [D028](../../decisions/D028-price-wording.md); [D024](../../decisions/D024-payment-methods-gst.md) (methods, GST, invoice); [keyword map §6.2](../../research/keyword-map.md#6-question-bank-answer-first-drafts) B3 |
+| Ages | [facts, age](../../product/facts.md#age); [keyword map §7.1](../../research/keyword-map.md#7-geo-plan) ("3 to 7; not for under 3"); [D036](../../decisions/D036-launch-feature-claims.md) #6 and the age setting; [claims §2](../../product/claims.md#2-published-product-behaviour-claims-live-not-re-confirmed) (every reply passes the layer); [D041](../../decisions/D041-gate-a-round-1.md) (a grown-up nearby for 3-year-olds) |
+| Price and advance | [pricing](../../product/pricing.md) (amounts, first 500, delivery included); [D041](../../decisions/D041-gate-a-round-1.md) (first 500 once, no badge or counter); [D034](../../decisions/D034-origin-manufacturer-mrp.md) (MRP ₹7,999 incl. of all taxes); [D028](../../decisions/D028-price-wording.md); [D024](../../decisions/D024-payment-methods-gst.md) (methods, GST, invoice); [keyword map §6.2](../../research/keyword-map.md#6-question-bank-answer-first-drafts) B3 |
 | Returns | [D021](../../decisions/D021-returns-policy.md) (policy line; "of delivery" is D021's reading); [D022](../../decisions/D022-warranty-replacement-refund.md), [D033](../../decisions/D033-warranty-after-day-7.md) (pickup free, refund within 7 working days of reaching us); [policies](../../product/policies.md#status-at-a-glance) (refundable in full before dispatch) |
 | Delivery | [D023](../../decisions/D023-new-order-delivery.md); [facts, ship date](../../product/facts.md#ship-date) (served in order placed); [policies](../../product/policies.md#status-at-a-glance) (shipping: anywhere in India, included, nothing at the door, no shipping abroad, tracking link, reserved units dispatch once the balance is paid) |
 | Lumi | [facts, identity](../../product/facts.md#identity) (renamed 2026-09-05; EXTERNAL in this answer); [keyword map §6.1](../../research/keyword-map.md#6-question-bank-answer-first-drafts) B2 |
@@ -663,13 +832,13 @@ Word counts: 51 · 49 · 58 · 55 · 54 · 52.
 > - deposit / balance: ₹499`{price-source}` today, refundable · ₹4,500`{price-source}` before delivery
 > - shipDate: Deliveries start mid-November`{delivery-source}`
 > - perks:
->   - The plush toy, plus [PLACEHOLDER F4: the rest of the box (the live page lists a charger and a quick-start card; specs are not signed off)]
+>   - In the box: Kheelu plush toy, charger and quick-start card
 >   - Delivery anywhere in India, included
 >   - A GST invoice with every order
 > - cta: Pre-order Kheelu
 > - fine: Reserve yours for ₹499`{price-source}` today, refundable until dispatch, then pay ₹4,500`{price-source}` before delivery: ₹4,999`{price-source}` in total (incl. GST).
 >
-> Every Kheelu comes with 6 months of Kheelona+: stories, poems, jingles, languages and the parent app. Kheelu's smart features keep working for life, with no subscription needed. Kheelona+ pricing will be announced soon.
+> Every Kheelu comes with 6 months of Kheelona+: stories, poems, jingles, languages and the parent app.
 >
 > 7-day returns, no questions asked · 6-month warranty · UPI, card or net banking · Delivery included anywhere in India
 >
@@ -687,8 +856,13 @@ Word counts: 51 · 49 · 58 · 55 · 54 · 52.
 - **Full mode:** the OfferCard cannot show a paid-in-full offer (G-08, G9). Until G9 is decided, a composed
   block replaces it: price "₹7,999`{price-source}` (incl. GST)", the full-mode price sentence, the same perks,
   the Kheelona+ line, the button, the trust row and the help line.
-- **The Kheelona+ line** is [D027](../../decisions/D027-story-mode-wording.md)'s, verbatim, and appears once on
-  the page. Nothing is said about what happens after the six months (F7).
+- **The Kheelona+ line** is the first sentence of [D027](../../decisions/D027-story-mode-wording.md)'s line,
+  verbatim, and the page's only Kheelona+ mention. Its other two sentences ("Kheelu's smart features keep working
+  for life, with no subscription needed." and "Kheelona+ pricing will be announced soon.") are dropped: both discuss
+  what happens after the six months, which the founder asked to leave out ([D041](../../decisions/D041-gate-a-round-1.md),
+  F7). "6 months" stays so the line cannot read as included for good (round 2, question 4).
+- **Box contents** are the founder's list ([D041](../../decisions/D041-gate-a-round-1.md)). The charger's BIS
+  registration number belongs in the product page's declarations, not here.
 - **Order on phones:** the OfferCard comes first, then the board. With the board first, the price started
   about 430 px into the fold (CMO mockup pass, M6).
 - **Image:** `advik-03-studio-hug` (DS: "child-with-product cut-out, ads on colour blocks"). Alt: "A boy in a
@@ -701,10 +875,10 @@ Word counts: 51 · 49 · 58 · 55 · 54 · 52.
 | Claim | Source |
 |---|---|
 | Price, advance, balance, price sentence | [CTA block sources](#cta-block); [pricing](../../product/pricing.md) |
-| Box contents | [facts, in the box](../../product/facts.md#in-the-box) (EXTERNAL IF CONFIRMED, F4): placeholder |
+| In the box: Kheelu plush toy, charger and quick-start card | [D041](../../decisions/D041-gate-a-round-1.md) (founder, 2026-10-11); [facts, in the box](../../product/facts.md#in-the-box) (specs otherwise still F4) |
 | Delivery included anywhere in India | [pricing, tax, delivery, MRP](../../product/pricing.md#tax-delivery-mrp) |
 | GST invoice with every order | [D024](../../decisions/D024-payment-methods-gst.md) |
-| Kheelona+ line | [D027](../../decisions/D027-story-mode-wording.md); [facts, Kheelona+](../../product/facts.md#kheelona) |
+| Kheelona+ line (first sentence only) | [D027](../../decisions/D027-story-mode-wording.md); [D041](../../decisions/D041-gate-a-round-1.md) (F7: nothing about after the six months); [facts, Kheelona+](../../product/facts.md#kheelona) |
 | Trust row, help line | [CTA block sources](#cta-block) |
 
 ---
@@ -751,8 +925,8 @@ Primary cluster for `/`: **Kheelu by Kheelona** ([keyword map §4.1](../../resea
 |---|---|---|
 | Title ≤ 60 characters, primary near the start | Yes | 54 characters, primary first (a brand page, so brand first) |
 | Meta ≤ 155 characters: primary, one concrete fact, ₹4,999 (incl. GST) before the advance | Yes | 150 (token) / 147 (full); age band and the mechanism as facts |
-| One H1, carrying "Kheelu" | Yes | Recommended H1 and alternatives B, C, E. Alternative D does not carry it |
-| Primary in the first paragraph | Yes | Hero sub-line opens "Kheelu by Kheelona" |
+| One H1, carrying "Kheelu" | Yes, unless H1-2 is chosen | Round 2: H1-1, H1-3, H1-4 and H1-5 carry it; H1-2 does not (founder's OK needed, round 2 question 2) |
+| Primary in the first paragraph | Yes with Sub B; split with Sub A | Sub B (H1-2) opens "Kheelu by Kheelona". With Sub A, "Kheelu" is in the H1 and "by Kheelona" opens the sub-line; title and meta carry the primary verbatim, which meets [strategy §7](../strategy.md#7-search-and-ai-visibility-rules-the-pages-follow) (round 2 question 3) |
 | Primary in an answer-first block in the first ~100 words | Partly | The sub-line is word 12 of the page's main text; the answer-first block with the primary is fold 4 ("What is Kheelu?"), below the first ~100 words |
 | "3 to 7" once in the first screen | Yes | Age chip |
 | An H2 with the primary or a close variant ("What is Kheelu?") | Yes | Fold 4 H2 |
@@ -790,17 +964,21 @@ than repurposed (G10).
 
 ## Placeholders
 
-| Where | Placeholder | Needed |
-|---|---|---|
-| Fold 9, OfferCard perk 1 | `[PLACEHOLDER F4: the rest of the box (the live page lists a charger and a quick-start card; specs are not signed off)]` | Signed-off box contents ([facts, in the box](../../product/facts.md#in-the-box); F4) |
-
-No other claim on the page lacks a source.
+None. The one placeholder (the box contents in the OfferCard) was filled from the founder's list in Gate A round 2
+([D041](../../decisions/D041-gate-a-round-1.md)). No claim on the page lacks a source.
 
 ---
 
 ## Open questions
 
 Each with options and a recommendation. Gate A items are marked.
+
+**Status after the founder's round 1 answers (2026-10-11, [D040](../../decisions/D040-films-move-to-new-site.md),
+[D041](../../decisions/D041-gate-a-round-1.md)):** 1 all rejected; new options in
+[Gate A round 2](#gate-a-round-2-2026-10-11). 2 (d) chosen. 3 (a) chosen: the films, with the founder's film 6
+caption. 4 (a) kept. 5 the founder: say nothing about after the six months at most places (applied in folds 5 and
+9). 6 filled from the founder's box list. 7 (a), once in the price answer. 10 (a). 12 Myra may appear on her own.
+8, 9 and 11 are unchanged. The round 2 questions are listed in that section.
 
 1. **The hero H1 (Gate A, D038).** Options A to E in [fold 1](#fold-1--hero). **Recommend A**, "Your child asks
    why. Kheelu asks back."; B if A pushes the micro-line out of the first screen at 360 px.

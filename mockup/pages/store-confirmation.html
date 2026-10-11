@@ -1,0 +1,153 @@
+<!--page {"title": "Your Kheelu is reserved · Kheelona", "description": "Your Kheelu pre-order: order number, what you paid, what is still due and where to deliver it.", "url": "https://store.kheelona.com/thanks", "buybar": false, "active": "", "css": true, "chrome": false} -->
+<!-- Store confirmation (store.kheelona.com/thanks), Gate A mockup (D043). Copy: wiki/site/pages/store-confirmation.md.
+     The paid state of a token order with no address yet. RESTYLE ONLY: the page reads the order row and the signed token;
+     every amount comes from the order row, never the store's mode (wt:src/app/store/thanks/page.tsx:143-158).
+     Address fields, names and autocomplete as live (wt:src/features/preorder/components/AddressForm.tsx:117-163).
+     Session replay is off for /thanks, and the container carries ph-no-capture ph-mask, as live. -->
+
+<!-- ============ Store header (as on the store) ============ -->
+<header class="kh-nav mk-store-head">
+  <div class="kh-container mk-store-head__in">
+  <a class="kh-logo-link" href="home.html" aria-label="Kheelona home"><img class="kh-logo" src="../design-system/project/assets/Logo/kheelona-logo.svg" alt="Kheelona" height="30"></a>
+  <p class="kh-body-s mk-help mk-store-head__help">Need help? <a href="https://wa.me/919187546483">WhatsApp</a> or <a href="tel:+919187546483">call</a></p>
+  </div>
+</header>
+
+<main id="main">
+<div class="ph-no-capture ph-mask kh-section mk-thanks">
+  <div class="mk-thanks__col">
+
+    <!-- ============ Fold 1 · Confirmed ============ -->
+    <section aria-labelledby="thanks-title">
+      <header class="kh-heading">
+        <p class="kh-eyebrow mk-thanks__eyebrow">{{icon:check-circle}}Pre-order confirmed</p>
+        <h1 class="kh-heading__title" id="thanks-title">Your Kheelu is reserved.</h1>
+        <p class="kh-body-l mk-thanks__lede">We have your <span data-src="TOKEN_PRICE">₹499</span>, and your place in the queue is held from the moment you paid. Your confirmation is on its way to <span class="mk-placeholder">[PLACEHOLDER: the email given at checkout]</span>.</p>
+      </header>
+    </section>
+
+    <!-- ============ Fold 2 · Your order (every line from the order row) ============ -->
+    <section class="kh-card mk-order" aria-labelledby="order-title">
+      <h2 class="kh-card__title" id="order-title">Your order</h2>
+      <dl class="mk-order__rows">
+        <div><dt>Order number</dt><dd><span class="mk-placeholder">[PLACEHOLDER: order number, KH-XXXX-XXXX]</span></dd></div>
+        <div><dt>Paid today</dt><dd><span data-src="TOKEN_PRICE">₹499</span></dd></div>
+        <div><dt>Due before delivery</dt><dd><span data-src="BALANCE_PRICE">₹4,500</span>, of the <span data-src="LAUNCH_PRICE">₹4,999</span> price (incl. GST)</dd></div>
+        <div><dt>Delivery</dt><dd><span data-src="DELIVERY_TEXT">Deliveries start mid-November</span></dd></div>
+      </dl>
+    </section>
+
+    <!-- ============ Fold 3 · Where should it go? (the address step, no address yet) ============ -->
+    <section id="address" aria-labelledby="address-title">
+      <h2 class="kh-title mk-h2" id="address-title">Where should it go?</h2>
+      <p class="kh-body mk-thanks__intro">One last thing, and it takes under a minute. If you would rather do it later, the link in your email brings you straight back here.</p>
+      <!-- Live: noValidate, shared validators, fires preorder_address_saved; busy label "Saving…". -->
+      <form class="mk-form mk-addr" action="store-confirmation.html#address" method="get" novalidate>
+        <div class="kh-field">
+          <label class="kh-field__label" for="line1">Flat or house, and street</label>
+          <input class="kh-field__input" id="line1" name="line1" type="text" maxlength="120" autocomplete="address-line1" required>
+        </div>
+        <div class="kh-field">
+          <label class="kh-field__label" for="line2">Landmark or area (optional)</label>
+          <input class="kh-field__input" id="line2" name="line2" type="text" maxlength="120" autocomplete="address-line2">
+        </div>
+        <div class="mk-addr__pair">
+          <div class="kh-field">
+            <label class="kh-field__label" for="pincode">PIN code</label>
+            <input class="kh-field__input" id="pincode" name="pincode" type="text" inputmode="numeric" maxlength="6" autocomplete="postal-code" required>
+          </div>
+          <div class="kh-field">
+            <label class="kh-field__label" for="city">City or town</label>
+            <input class="kh-field__input" id="city" name="city" type="text" maxlength="60" autocomplete="address-level2" required>
+          </div>
+        </div>
+        <div class="kh-field">
+          <label class="kh-field__label" for="state">State</label>
+          <div class="kh-select">
+            <select class="kh-field__input kh-select__input" id="state" name="state" required>
+              <option value="" disabled selected>Choose your state</option>
+              <option>Andaman and Nicobar Islands</option>
+              <option>Andhra Pradesh</option>
+              <option>Arunachal Pradesh</option>
+              <option>Assam</option>
+              <option>Bihar</option>
+              <option>Chandigarh</option>
+              <option>Chhattisgarh</option>
+              <option>Dadra and Nagar Haveli and Daman and Diu</option>
+              <option>Delhi</option>
+              <option>Goa</option>
+              <option>Gujarat</option>
+              <option>Haryana</option>
+              <option>Himachal Pradesh</option>
+              <option>Jammu and Kashmir</option>
+              <option>Jharkhand</option>
+              <option>Karnataka</option>
+              <option>Kerala</option>
+              <option>Ladakh</option>
+              <option>Lakshadweep</option>
+              <option>Madhya Pradesh</option>
+              <option>Maharashtra</option>
+              <option>Manipur</option>
+              <option>Meghalaya</option>
+              <option>Mizoram</option>
+              <option>Nagaland</option>
+              <option>Odisha</option>
+              <option>Puducherry</option>
+              <option>Punjab</option>
+              <option>Rajasthan</option>
+              <option>Sikkim</option>
+              <option>Tamil Nadu</option>
+              <option>Telangana</option>
+              <option>Tripura</option>
+              <option>Uttar Pradesh</option>
+              <option>Uttarakhand</option>
+              <option>West Bengal</option>
+            </select>
+            <svg class="kh-icon kh-select__caret" viewBox="0 0 256 256" aria-hidden="true" focusable="false"><path d="M216.49,104.49l-80,80a12,12,0,0,1-17,0l-80-80a12,12,0,0,1,17-17L128,159l71.51-71.52a12,12,0,0,1,17,17Z"></path></svg>
+          </div>
+        </div>
+        <!-- An everyday action, so DS primary (Kheelu Blue): "Chilli means buying. Never use cta for Save" (Button README). -->
+        <button type="submit" class="kh-btn kh-btn--primary kh-btn--l kh-btn--block"><span>Save my address</span></button>
+        <p class="kh-body-s mk-muted">Your order is already safe. This can wait if you are in the middle of something, and the link in your email brings you straight back here.</p>
+      </form>
+    </section>
+
+    <!-- ============ Fold 4 · What happens next (DS StepLoop; step 2 before step 3: a reserved Kheelu ships once the balance is paid) ============ -->
+    <section aria-labelledby="next-title">
+      <h2 class="kh-title mk-h2" id="next-title">What happens next</h2>
+      <ol class="kh-steps mk-thanks__steps">
+        <li class="kh-step kh-tone-sun"><span class="kh-step__num" aria-hidden="true">1</span><h3 class="kh-step__title">Check your email</h3><p class="kh-step__body">Your confirmation has your order number and a link back to this page.</p></li>
+        <li class="kh-step kh-tone-blue"><span class="kh-step__num" aria-hidden="true">2</span><h3 class="kh-step__title">Pay the balance</h3><p class="kh-step__body">When your Kheelu is ready to leave us, we send a payment link for the <span data-src="BALANCE_PRICE">₹4,500</span> balance on WhatsApp and by email.</p></li>
+        <li class="kh-step kh-tone-chilli"><span class="kh-step__num" aria-hidden="true">3</span><h3 class="kh-step__title">Track your delivery</h3><p class="kh-step__body">When it is dispatched, we send you the courier and tracking details.</p></li>
+      </ol>
+    </section>
+
+    <!-- ============ Fold 5 · Help, and changing your mind ============ -->
+    <section aria-labelledby="help-title">
+      <h2 class="kh-title mk-h2" id="help-title">Need anything?</h2>
+      <div class="mk-thanks__help">
+        <p class="kh-body mk-help">{{icon:whatsapp-logo}} <a href="https://wa.me/919187546483">WhatsApp</a> or <a href="tel:+919187546483" class="mk-nowrap">call +91 91875 46483</a>, quoting your order number, or email <a href="mailto:hello@kheelona.com">hello@kheelona.com</a>.</p>
+        <p class="kh-body mk-muted">Changed your mind? Until we dispatch your Kheelu, message us with your order number and we refund everything you paid, with no fee and no reason needed. After delivery, you can still return it within 7 days, no questions asked. Nothing is ever charged automatically.</p>
+        <p class="mk-muted"><a href="refund.html" class="kh-btn kh-btn--ghost mk-ghost-start"><span>Refunds and returns</span>{{icon:arrow-right}}</a></p>
+      </div>
+    </section>
+  </div>
+</div>
+</main>
+
+<!-- ============ Store footer (as on the store) ============ -->
+<footer class="kh-footer mk-store-foot">
+  <div class="kh-container mk-store-foot__in">
+    <nav class="mk-policy" aria-label="Policies">
+      <a href="terms.html" target="_blank" rel="noopener">Pre-order terms<span class="kh-sr"> (opens in a new tab)</span></a>
+      <a href="refund.html" target="_blank" rel="noopener">Refunds and cancellation<span class="kh-sr"> (opens in a new tab)</span></a>
+      <a href="shipping.html" target="_blank" rel="noopener">Shipping and delivery<span class="kh-sr"> (opens in a new tab)</span></a>
+      <a href="privacy.html" target="_blank" rel="noopener">Privacy<span class="kh-sr"> (opens in a new tab)</span></a>
+      <a href="contact.html" target="_blank" rel="noopener">Contact<span class="kh-sr"> (opens in a new tab)</span></a>
+    </nav>
+    <address class="kh-body-s mk-seller"><strong>Kheelona Robotics Private Limited</strong><br>5th Floor, No 51 (Old Site No 1), Kokarya Business Synergy Center, 5th Main, 5th Block Jayanagar, Bengaluru 560041, Karnataka, India<br>GSTIN 29AAMCK1530E1ZN<br><a href="tel:+919187546483" class="mk-nowrap">+91 91875 46483</a> (WhatsApp or call) · <a href="mailto:hello@kheelona.com">hello@kheelona.com</a></address>
+    <p class="kh-body-s">Grievance Officer: Aman Soni, Co-Founder and CTO, <a href="mailto:aman@kheelona.com">aman@kheelona.com</a>, <a href="tel:+919187546483" class="mk-nowrap">+91 91875 46483</a>. We acknowledge every complaint within 48 hours and resolve it within one month of receiving it.</p>
+    <p class="kh-body-s">No payment fees. Nothing recurring. Payments by Razorpay. <a href="refund.html#chargeback" target="_blank" rel="noopener">How to raise a chargeback with your bank<span class="kh-sr"> (opens in a new tab)</span></a></p>
+    <p class="kh-footer__legal">© 2026 Kheelona Robotics Private Limited</p>
+  </div>
+</footer>

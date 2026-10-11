@@ -136,7 +136,7 @@ Claims that are not live (for example a weekly four-skills report) stay behind
 | Where Kheelu is made | See 3.1 below | | F3, answered | EXTERNAL: made in India; manufacturer Kheelona Robotics Pvt Ltd ([D034](../decisions/D034-origin-manufacturer-mrp.md)) |
 | "[1-year] warranty", "15-day returns" | Bracketed in the positioning; the founder decided different terms: 7-day returns ([D021](../decisions/D021-returns-policy.md)) and a 6-month warranty ([D022](../decisions/D022-warranty-replacement-refund.md)) | positioning docx objection table; [policies.md](policies.md) | F1, answered (D021, D022) | BANNED (wrong numbers); the decided terms are owned by [policies.md](policies.md) |
 | "Recordings kept for X days"; "voice is / is not used to train AI" | Was open in the positioning (2026-10-08). **Answered 2026-10-10** ([D020](../decisions/D020-provider-terms-and-no-sale.md)): transcripts kept 36 months, then deleted automatically; the outside providers never train on a child's voice | positioning docx objection table and "Decisions for the founders"; D020 | F5, answered | EXTERNAL only in D020's wording (section 1), scoped to the providers. Any "X days" form is BANNED. Any "not used to train AI" form is BANNED: Kheelona's own model trains by default ([D035](../decisions/D035-model-training-opt-out.md)) |
-| "See how long your child talks" (usage time in the app) | Not a published feature | `mid:test/claims-gated.test.ts:27` | F8 | EXTERNAL IF CONFIRMED (F8) |
+| "See how long your child talks" (usage time in the app) | **Confirmed for launch 2026-10-11** ([D044](../decisions/D044-app-screens-on-the-site.md)): the activity screen shows talking minutes per day and per chat | `mid:test/claims-gated.test.ts:27`; [D044](../decisions/D044-app-screens-on-the-site.md) | F8 | EXTERNAL (D044) |
 | "Bedtime stories only after 7" | Unconfirmed parent-app control | `mid:test/claims-gated.test.ts:28` | F8 | EXTERNAL IF CONFIRMED (F8) |
 | A weekly four-skills report for parents | In the positioning only, not live; **confirmed for launch 2026-10-11** | [positioning](../brand/positioning.md); [D036](../decisions/D036-launch-feature-claims.md) | F8, answered | EXTERNAL ([D036](../decisions/D036-launch-feature-claims.md)): what the report shows, never an outcome for the child |
 | The **"adapts" family**: "Kheelu adapts", "at your child's pace", "grows with your child" (live, `src/lib/growth-arc.ts:47`) and any synonym ("adjusts to your child", "personalises itself", "tailors itself", "levels up with them") | Not confirmed: F8 was answered for eight features ([D036](../decisions/D036-launch-feature-claims.md)) and adaptation is not one of them; the positioning drops "adapts"; R5 bans emotion reading on the same footing. **CTO ruling, 2026-10-11** ([rulings check](../qa/rulings-check-2026-10-11.md) 1d) | `mid:MARKETING-TODO.md:52`; positioning docx ("Other words to stop using"); D036 | F8, answered | BANNED as written. Describe only the confirmed mechanisms: a parent sets the child's age in the app and the age-graded safety layer follows it, and Kheelu remembers earlier conversations ([D036](../decisions/D036-launch-feature-claims.md)). [Messaging](../brand/messaging.md) and [voice](../brand/voice.md) link here |
@@ -295,7 +295,7 @@ listed here as fine until 2026-10-10; it implies a wake word and is now row 16.
 | Item | Status | Source | Site |
 |---|---|---|---|
 | **Three testimonials on named people** (Shweta, Priyamvada, Gaurav, labelled "Pilot parent") | **Drafted words, not spoken.** The names are real; the quotes are not. The founder decided on 2026-07-28 to "let it be as it is" on the current site. **Decided by the brief: they do not move to the new site** ([open questions](../open-questions.md) section E) | `src/components/organisms/ParentQuotes.tsx:7-31`; `docs/checkpoints/closed-rounds.md:153-156,316`; live `/` and `/products/kheelu` | BANNED for the new site ([D009](../decisions/D009-brief-readings.md)) |
-| Seven parent and child films | Real footage with burned-in captions; `consentOnFile: true` is a code flag per film. **No consent record was seen by this agent.** Captions still contain em dashes (founder to re-export). Use on the new site is [open questions](../open-questions.md) G3 | `src/lib/video-moments.ts:24,63,103-202`; `CLAUDE.md` video banner | EXTERNAL IF CONFIRMED (G3), once a consent record is seen and the captions are re-exported |
+| Seven parent and child films | **Moving to the new site** ([D040](../decisions/D040-films-move-to-new-site.md), founder 2026-10-11). Real footage with burned-in captions (em dashes ship as they are). Written consent held per the founder (2026-09-19); the signed records stay with the founder. Film 6 caption now names AI mode; no endorsement-disclosure line (risk recorded in D040) | `src/lib/video-moments.ts:24,63,103-202` at tag `archive/pre-reset-2026-10-10`; [D040](../decisions/D040-films-move-to-new-site.md) | EXTERNAL (D040) |
 | Pilot numbers, city and age per parent, written consent | Owed by the team | `mid:MARKETING-TODO.md:50,158` | EXTERNAL IF CONFIRMED (no ID yet): real data and written consent |
 | Content doc v7 brackets: "[₹X/month]", "[X] of 500 left", "[1-year] warranty", "Safety tests: [status]", "Reviewed by [advisor]" | Never shipped; the mid version hid any block needing them | `mid:MARKETING-TODO.md:27-28,47,64-67,82` | BANNED as brackets. "[1-year] warranty" is superseded by the 6-month warranty ([D022](../decisions/D022-warranty-replacement-refund.md), on [policies.md](policies.md)); "[X] of 500 left" is INTERNAL; the rest fill only through their IDs (₹X/month F7, safety tests F4, advisor F9) |
 
@@ -390,3 +390,16 @@ by [messaging](../brand/messaging.md). "Knowledge that sticks" is BANNED: it is 
 ([D038](../decisions/D038-trust-content-rulings.md)). The vocabulary-doubling line is BANNED: the
 independent check found no source ([source verification](../research/source-verification.md) C41,
 NOT-SUPPORTED; D026).
+
+## D044 additions (2026-10-11): what the real app screens may show
+
+| Claim | Status | Source |
+|---|---|---|
+| Talking time per day and per chat | EXTERNAL | [D044](../decisions/D044-app-screens-on-the-site.md) |
+| Save voice recordings (on/off; off keeps text only), download your child's data, share or favourite a conversation | EXTERNAL (launch features) | D044 |
+| Kheelu remembers earlier chats | EXTERNAL (D036; shown in the transcript screen) | D036, D044 |
+| Games | **NOT a launch feature: never claimed or shown** | D044 |
+| Per-chat AI summary ("What … explored") | Real, but **not shown on the site** until the DPDP s.9 reading | D044; [legal requirements](legal-requirements.md) |
+| "Chats are seen only by you" (the app's own banner) | **Not shown on the site** (contradicts the default training, D035) | D044 |
+| Chat retention | 36 months, fixed; the app's "[30 days]" must change before launch | D044, D020 |
+

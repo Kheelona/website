@@ -68,7 +68,7 @@ This is the order a parent meets it on the site.
 | **Who is behind it** | Parents in Bengaluru; the founders; the seller's legal details | [facts, company](../product/facts.md#company-facts-the-site-uses-as-proof); recognition and bios only once proof is filed ([D038](../decisions/D038-trust-content-rulings.md)) | `/team`, footer seller block |
 
 **Never on the site:** Kheelu as the subject of brain growth; "brain-development toy" as a label;
-"adapts" and its family; "safe" alone; emotion reading; "lessons"; wake-word lines; "friend"
+"adapts" and its family; "safe" alone; emotion reading; "lessons"; wake-word lines; "best friend" ("friend" itself is allowed since 2026-10-11, [D041](../decisions/D041-gate-a-round-1.md))
 (pending G5); a named advisor; pilot results or a promise to publish them; competitor names;
 scarcity counts, countdowns or "selling fast". The full list: [claims §4](../product/claims.md#4-retired-or-banned-wording)
 and [messaging, words to stop using](../brand/messaging.md#words-to-stop-using).

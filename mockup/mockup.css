@@ -35,18 +35,21 @@ body { margin: 0; }
 .mk-src { position: relative; padding-inline: var(--space-1); font-weight: 800; color: var(--text-muted); text-underline-offset: var(--space-1); }
 .mk-src::before { content: ""; position: absolute; inset: calc(var(--space-3) * -1) calc(var(--space-2) * -1); } /* 44 px tap area without moving the line */
 
-/* Sample exchange ("see it ask", no-films variant). */
-.mk-chat { display: grid; gap: var(--space-3); margin: 0; padding: 0; list-style: none; }
-.mk-chat__line { max-width: 85%; padding: var(--space-3) var(--space-4); border-radius: var(--radius-l); background: var(--surface-raised); border: var(--stroke-hair) solid var(--border); }
-.mk-chat__line--kheelu { justify-self: start; }
-.mk-chat__line--child { justify-self: end; background: var(--surface-band); }
-.mk-chat__who { display: block; margin-bottom: var(--space-1); }
-.mk-chat__note { margin: var(--space-3) 0 0; }
-
-/* Films strip: native scroll-snap, controls show position and stop at the ends (audit #10). */
-.mk-films { display: grid; grid-auto-flow: column; grid-auto-columns: 80%; gap: var(--space-4); overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: var(--space-2); }
+/* Films strip (fold 2): the seven parent films from the live site (D040). Native scroll-snap; the
+   controls show position and stop at the ends (audit #10). A film plays only on a tap, one at a time,
+   with native controls and its captions burned in; audio never autoplays (DS 08-accessibility). */
+.mk-films { display: grid; grid-auto-flow: column; grid-auto-columns: 80%; gap: var(--space-4); margin: 0; padding: 0 0 var(--space-2); list-style: none; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; }
 .mk-films > * { scroll-snap-align: start; }
-.mk-films-ctrl { display: flex; align-items: center; gap: var(--space-3); margin-top: var(--space-4); }
+.mk-film { position: relative; display: grid; gap: var(--space-2); align-content: start; min-width: 0; } /* keeps the hidden "Length" label inside the strip, so the page never scrolls sideways */
+.mk-film__meta { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); margin: 0; }
+.mk-film__time { color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.mk-film__frame { position: relative; aspect-ratio: 9 / 16; max-width: 100%; overflow: hidden; border-radius: var(--radius-l); background: var(--ink-900); }
+.mk-film__frame > img, .mk-film__frame > video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.mk-film__play { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); box-shadow: var(--shadow-lift); }
+.mk-film__play[hidden] { display: none; }
+.mk-film__caption { margin: 0; }
+.mk-films-ctrl { display: flex; align-items: center; justify-content: center; gap: var(--space-3); margin-top: var(--space-4); }
+.mk-films-ctrl [data-films-pos] { min-width: 6ch; text-align: center; font-variant-numeric: tabular-nums; }
 /* Disabled controls use the DS's own .kh-iconbtn[disabled] style. */
 
 /* The phone sticky buy bar (strategy §3.4). Hidden until the hero CTA leaves the screen;
@@ -77,19 +80,16 @@ dialog.kh-drawer[open] .kh-drawer__panel { animation: mk-drawer-in var(--duratio
 
 /* ---------- Laptop (the DS breakpoints: 720 and 1024) ---------- */
 @media (min-width: 720px) {
-  .mk-films { grid-auto-columns: calc((100% - var(--space-4) * 2) / 3); }
+  .mk-films { grid-auto-columns: calc((100% - var(--space-4) * 2) / 3); } /* three at rest; the montage in the centre, the parent film to its right (founder, 2026-09-19) */
   .mk-hero .kh-art { margin-top: 0; }
   .mk-hero .kh-btn--block { display: inline-flex; width: auto; } /* full-width CTA on phones only (DS 10-pages, CMO M4) */
 }
 @media (min-width: 900px) { .kh-buybar { display: none; } } /* DS: the bar is for screens narrower than 900 px */
 @media (min-width: 1024px) {
   .mk-hero { padding-top: var(--space-8); }
+  .mk-films-wrap { max-width: calc(var(--content-max) - var(--space-10) * 2); margin-inline: auto; } /* keeps a 9:16 film inside a laptop screen */
   .mk-nav-cta { display: inline-flex; }
 }
-
-/* Gate A decision G2 preview only (open the mockup with ?contrast=ink): the DS's own passing
-   alternative, ink labels on Chilli and Kheelu Blue fills (08-accessibility.md: needs the owner's OK). */
-.mk-ink .kh-btn--cta, .mk-ink .kh-btn--primary, .mk-ink .kh-sticker.kh-tone-chilli, .mk-ink .kh-sticker.kh-tone-blue { color: var(--ink-900); }
 
 /* ---------- Composition helpers for this page ---------- */
 ul.kh-trust { margin: 0; padding: 0; list-style: none; }
@@ -126,3 +126,32 @@ ul.kh-trust { margin: 0; padding: 0; list-style: none; }
 .kh-footer__legal a { display: inline-flex; align-items: center; min-height: var(--tap-min); color: var(--link); }
 /* The link box itself reaches 28 px (axe target-size) without moving the line. */
 .mk-trust a, .mk-help a { padding-block: var(--space-1); margin-block: calc(var(--space-1) * -1); }
+
+/* Kabir's imagination frame (fold 3): zoomed from the bottom so he fills the frame and the chalk
+   question sits just above his head (founder, 2026-10-11: "too much gap ... increase kid image size"). */
+.mk-imagine-zoom .kh-imagine__photo { transform: scale(1.32); transform-origin: 52% 100%; }
+
+/* A long ghost link may wrap on a 360 px phone instead of pushing the page 4 px wider (found 2026-10-11). */
+.kh-btn--ghost { max-width: 100%; white-space: normal; padding-block: var(--space-2); }
+/* Film chips on the cream band switch to the page cream, as the DS does for its quiet panels on a band (bundle.css .kh-section--band rule); the DS leaves .kh-chip out of that rule. */
+.kh-section--band .mk-film .kh-chip { background: var(--surface); }
+
+/* Gate A review tool (mockup only): the headline picker pill and sheet. Never part of the site. */
+.mk-review-pill { position: fixed; z-index: 60; top: calc(env(safe-area-inset-top, 0px) + var(--space-3)); right: calc(var(--space-4) + var(--tap-min) + var(--space-2)); min-height: 40px; padding: 0 var(--space-4); font-size: 14px; box-shadow: var(--shadow-lift); }
+.mk-review-pill[hidden] { display: none; }
+#mk-h1 .kh-radio__label { width: 100%; }
+#mk-h1 .kh-check__text strong { font: 800 18px/24px var(--font-display); }
+@media (min-width: 1024px) { .mk-review-pill { top: auto; right: auto; bottom: var(--space-5); left: var(--space-5); } }
+.mk-films-proof { margin: var(--space-4) 0 0; text-align: center; color: var(--text-muted); }
+
+/* Real parent-app screens (D044) in the DS Device frame, sized to the page instead of 390 x 844. */
+.mk-shots { margin: 0; display: grid; gap: var(--space-3); justify-items: center; }
+.mk-shots__row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); width: 100%; max-width: calc(var(--space-10) * 4.5); }
+.mk-shot.kh-device { width: 100%; height: auto; padding: var(--space-1); border-radius: calc(var(--radius-l) + var(--space-1)); }
+.mk-shot .kh-device__screen { height: auto; border-radius: var(--radius-l); }
+.mk-shot img { display: block; width: 100%; height: auto; }
+.mk-shots--one .mk-shot { max-width: calc(var(--space-10) * 2); }
+.mk-shots .kh-caption { text-align: center; max-width: var(--measure); }
+.mk-shots__row--one .mk-shot { grid-column: 1 / -1; justify-self: center; width: calc((100% - var(--space-4)) / 2); } /* same size as each parent-app phone (founder, 2026-10-11) */
+.mk-guides { margin: 0; padding: 0; list-style: none; }
+.mk-guides .kh-card { display: grid; gap: var(--space-3); align-content: start; }

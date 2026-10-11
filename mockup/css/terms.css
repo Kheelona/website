@@ -1,0 +1,98 @@
+/*
+ * Policy page composition (/terms). Page-level layout only: every colour, space, radius and stroke is a
+ * DS token (design-system/project/tokens.css); type sizes are the DS type scale (kh-body, kh-body-l).
+ * The doc rules are the same as /privacy (mockup/css/privacy.css) and share their class names with /refund
+ * and /shipping (mockup/css/refund.css), so the shared mk-doc helper requested for mockup.css can replace
+ * this file's first half without touching the markup.
+ */
+
+/* ---------- Shared policy-page rules (same as refund.css) ---------- */
+
+/* Header: the quiet draft note (plain muted line, no icon: privacy.md fold 0) and the last-updated line. */
+.mk-draft { margin: 0 0 var(--space-4); color: var(--text-muted); }
+.mk-updated { margin: var(--space-4) 0 0; color: var(--text-muted); }
+
+/* The short version. */
+.mk-doc-summary .kh-section__head { margin-bottom: var(--space-6); }
+.mk-doc-summary .kh-trust__body a { color: var(--link); font-weight: 700; text-underline-offset: 3px; }
+
+/* The full policy: a jump list, then the numbered parts. */
+.mk-doc__grid { display: grid; gap: var(--space-7); }
+.mk-toc { gap: var(--space-2); padding-bottom: var(--space-3); }
+.mk-toc ol { margin: 0; padding: 0; list-style: none; }
+.mk-toc li + li { border-top: var(--stroke-hair) solid var(--border); }
+.mk-toc a { display: grid; grid-template-columns: 3.5ch minmax(0, 1fr); padding: var(--space-3) 0; color: var(--text); font-weight: 700; text-decoration: none; } /* DS footer-link row: 48 px tall */
+.mk-toc a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.mk-toc__n { color: var(--text-muted); font-weight: 800; }
+
+.mk-doc__body { min-width: 0; font-size: 16px; line-height: 24px; } /* kh-body on phones */
+.mk-doc__part { scroll-margin-top: var(--space-5); }
+.mk-doc__part + .mk-doc__part { margin-top: var(--space-6); padding-top: var(--space-6); border-top: var(--stroke-hair) solid var(--border); }
+.mk-doc__part h2 { margin: 0 0 var(--space-4); }
+.mk-doc__n { color: var(--text-muted); }
+.mk-doc__part p, .mk-doc__part ul, .mk-doc__part ol { max-width: var(--measure); margin: 0 0 var(--space-4); }
+.mk-doc__part > :last-child { margin-bottom: 0; }
+.mk-doc__part .kh-subtitle { margin: var(--space-6) 0 var(--space-2); }
+.mk-doc__part ul { padding-left: var(--space-5); }
+.mk-doc__part ul li + li { margin-top: var(--space-2); }
+.mk-doc a:not(.kh-btn) { color: var(--link); font-weight: 700; text-underline-offset: 3px; }
+.mk-doc__part .mk-placeholder { display: inline; }
+
+/* The answer-first lines (keyword map P1, RT1): the first thing under the heading, a step larger. */
+.mk-doc__part .mk-doc__answer { font-size: 18px; line-height: 28px; font-weight: 500; } /* kh-body-l size, kh-lead weight */
+
+/* The grievance and seller blocks read as cards, so a parent finds them fast. */
+.mk-doc__part .mk-doc__card { gap: var(--space-2); max-width: var(--measure); margin-bottom: var(--space-4); padding: var(--space-4) var(--space-5); border-radius: var(--radius-m); }
+.mk-doc__card p { margin: 0; }
+.mk-doc__part > .mk-doc__card:last-child { margin-bottom: 0; }
+
+/* Close: one tinted card, centred: the secondary button, the related pages, the help line. */
+.mk-doc-close { padding-top: 0; }
+.mk-doc-close .kh-card { align-items: center; gap: var(--space-4); padding: var(--space-6) var(--space-5); text-align: center; }
+.mk-doc-close .kh-section__actions { margin-top: 0; }
+.mk-also { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; column-gap: var(--space-4); margin: 0; color: var(--text-muted); } /* links spaced by the gap, no separators to strand on a wrap */
+.mk-also a { display: inline-flex; align-items: center; min-height: var(--tap-min); color: var(--link); font-weight: 800; text-underline-offset: 3px; }
+.mk-also__label { flex-basis: 100%; } /* phones: the label on its own line, the links in one row (no dot left dangling) */
+@media (min-width: 720px) { .mk-also__label { flex-basis: auto; } }
+.mk-doc-close .mk-help .kh-icon { font-size: var(--icon-m); vertical-align: -0.2em; }
+
+/* ---------- /terms only ---------- */
+
+/* The short version: a numbered list in a cream panel (terms.md fold 2), a Sunshine circle per number. */
+.mk-short-panel { padding: var(--space-5); }
+.mk-short { display: grid; gap: var(--space-4); margin: 0; padding: 0; list-style: none; counter-reset: mk-short; }
+.mk-short li { position: relative; min-height: var(--space-6); padding-left: calc(var(--space-6) + var(--space-3)); counter-increment: mk-short; }
+.mk-short li::before { content: counter(mk-short); position: absolute; left: 0; top: 0; display: grid; place-items: center; width: var(--space-6); height: var(--space-6); border-radius: 50%; background: var(--sun-500); color: var(--ink-900); font: 800 16px/20px var(--font-display); }
+.mk-short strong { font-weight: 800; }
+
+/* On this page: the three parts as quiet group labels inside the jump list. */
+.mk-toc__group { margin: var(--space-3) 0 0; color: var(--text-muted); }
+.mk-toc ol + .mk-toc__group { margin-top: var(--space-4); padding-top: var(--space-3); border-top: var(--stroke-control) solid var(--border); }
+
+/* The three parts in the body: an eyebrow over the first section of each part, with the part's rule above it. */
+.mk-doc__group { margin: var(--space-7) 0 var(--space-4); padding-top: var(--space-6); border-top: var(--stroke-control) solid var(--border); color: var(--text-muted); }
+.mk-doc__body > .mk-doc__group:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+
+/* ---------- Tablet and laptop ---------- */
+@media (min-width: 720px) {
+  .mk-short-panel { padding: var(--space-6); }
+  .mk-short { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5) var(--space-7); }
+}
+@media (min-width: 1024px) {
+  .mk-doc__grid { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--space-8); align-items: start; }
+  .mk-toc { position: sticky; top: var(--space-5); max-height: calc(100vh - var(--space-5) * 2); overflow-y: auto; }
+  .mk-doc__body { font-size: 18px; line-height: 28px; } /* kh-body-l on laptops */
+  .mk-doc__part .mk-doc__answer { font-size: 20px; line-height: 30px; }
+  .mk-doc__part + .mk-doc__part { margin-top: var(--space-7); padding-top: var(--space-7); }
+  .mk-doc__group { margin-top: var(--space-8); padding-top: var(--space-7); }
+  .mk-doc-close .kh-card { max-width: calc(var(--content-max) * 2 / 3); margin-inline: auto; padding: var(--space-7); }
+}
+
+/* With a mouse, the long jump list uses compact rows so all of it fits a laptop screen beside the text;
+   touch screens (phones, tablets at any width) keep the 48 px rows. */
+@media (min-width: 1024px) and (pointer: fine) {
+  .mk-toc a { padding-block: var(--space-2); font-size: 14px; line-height: 20px; } /* kh-body-s size: 36 px rows */
+  .mk-toc { gap: 0; }
+  .mk-toc__group { margin: var(--space-3) 0 var(--space-1); }
+  .mk-toc ol + .mk-toc__group { margin-top: var(--space-3); padding-top: var(--space-3); }
+}

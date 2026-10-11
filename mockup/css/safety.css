@@ -1,0 +1,52 @@
+/*
+ * /safety page composition (Gate A mockup, D043). Page-level layout only: every space, radius and stroke is a
+ * DS token (design-system/project/tokens.css); components and type come from bundle.css. No colours or fonts.
+ */
+
+/* Ordered TrustList (the four facts keep the founder's order, D020). */
+ol.kh-trust { margin: 0; padding: 0; list-style: none; }
+
+/* Fold 2: the tummy unit beside the first fact; small on phones so the facts stay close. */
+.mk-sf-belly { width: min(100%, 200px); }
+@media (min-width: 900px) { .mk-sf-belly { width: min(100%, 300px); justify-self: center; } }
+
+/* Fold 3: five short "never" items. Phones one column; 720 two with the last one wide; laptop three then two. */
+@media (min-width: 720px) {
+  .mk-sf-never .kh-trust__item:last-child { grid-column: 1 / -1; }
+}
+@media (min-width: 1024px) {
+  .mk-sf-never { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .mk-sf-never .kh-trust__item { grid-column: span 2; }
+  .mk-sf-never .kh-trust__item:nth-child(n + 4) { grid-column: span 3; }
+}
+
+/* Fold 4: the list under the heading, the real screen in the DS phone frame beside it. */
+.kh-trust.mk-sf-controls { margin-top: var(--space-6); } /* beats mockup.css ul.kh-trust { margin: 0 } */
+.mk-sf-shot { display: grid; justify-items: center; gap: var(--space-3); margin: 0; }
+.mk-sf-shot .kh-device { width: min(100%, 272px); height: auto; }
+.mk-sf-shot .kh-device__screen img { display: block; width: 100%; height: auto; }
+.mk-sf-shot .kh-caption { max-width: 272px; margin: 0; text-align: center; color: var(--text-muted); }
+@media (min-width: 900px) { .mk-sf-shot .kh-device { width: 300px; } .mk-sf-shot .kh-caption { max-width: 300px; } }
+
+/* Folds 5 and 6: two short folds as quiet cards, side by side from 720 px. */
+.mk-sf-pair .kh-card { gap: var(--space-4); padding: var(--space-6) var(--space-5); }
+.mk-sf-pair .kh-card p { margin: 0; }
+.mk-sf-pair .kh-section__actions { margin-top: 0; }
+@media (min-width: 1024px) { .mk-sf-pair .kh-card { padding: var(--space-7); } }
+
+/* Fold 7: heading, then the questions; the photo sits under them on phones and by the heading on laptops. */
+.mk-sf-faq { display: grid; gap: var(--space-6); grid-template-areas: "head" "body" "photo"; }
+.mk-sf-faq__head { grid-area: head; }
+.mk-sf-faq__body { grid-area: body; min-width: 0; }
+.mk-sf-faq__photo { grid-area: photo; }
+@media (min-width: 900px) {
+  .mk-sf-faq { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); grid-template-rows: auto 1fr; column-gap: var(--space-7); row-gap: var(--space-6); grid-template-areas: "head body" "photo body"; align-items: start; }
+}
+.mk-sf-answer { margin: 0 0 var(--space-3); padding-left: var(--space-5); }
+.mk-sf-answer li + li { margin-top: var(--space-2); }
+.mk-sf-sources { margin-top: var(--space-5); color: var(--text-muted); }
+.mk-sf-sources p { margin: 0 0 var(--space-2); }
+
+/* Fold 8: the close. Full-width button on phones only (DS 10-pages), as on Home. */
+@media (min-width: 720px) { .mk-sf-cta.kh-btn--block { display: inline-flex; width: auto; } }
+@media (min-width: 720px) and (max-width: 899px) { .mk-sf-art { width: min(100%, 480px); } }

@@ -1,0 +1,39 @@
+/* Setup page (/setup), Gate A mockup: page-only composition. DS tokens only (tokens.css); no literal colours or fonts. */
+
+/* Hero: words only, kept to a reading measure. Left-aligned on phones for reading; centred from 900 px, where a
+   words-only hero would otherwise leave the right half of the screen empty (same rules as .kh-heading--center). */
+.mk-setup-hero .kh-heading__lead { max-width: var(--measure); }
+@media (min-width: 900px) { .mk-setup-hero { margin-inline: auto; text-align: center; justify-items: center; } }
+
+/* Fold 2: the 2.4 GHz tip sits under the checklist. */
+.mk-setup-tip { margin: var(--space-5) 0 0; max-width: var(--measure); font-weight: 700; }
+
+/* Fold 3: StepLoop with four steps (its maximum). The DS lays steps out in threes from 720 px, which would
+   leave step 4 alone on a row, so: two by two from 720 px (arrows only between the pair), four in a row from 1024 px. */
+@media (min-width: 720px) {
+  .mk-steps-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .mk-steps-4 .kh-step:nth-child(2n)::after { display: none; }
+}
+@media (min-width: 1024px) {
+  .mk-steps-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .mk-steps-4 .kh-step:nth-child(2n):not(:last-child)::after { display: block; }
+}
+
+/* Folds 4 to 6: short paragraphs under or beside their heading. */
+.mk-setup-copy { margin-top: var(--space-5); max-width: var(--measure); }
+.mk-setup-copy p { margin: 0 0 var(--space-4); }
+.mk-setup-copy p:last-child { margin-bottom: 0; }
+.mk-setup-split .mk-setup-copy { margin-top: 0; }
+@media (min-width: 900px) { .mk-setup-split { align-items: start; } }
+
+/* Fold 5: the belly unit crop is small (389 px), so it never grows past its own size. */
+.mk-setup-belly { width: 100%; max-width: calc(var(--space-10) * 3); justify-self: center; }
+
+/* Fold 6: the real app screen at phone size, with a hairline so its light screen reads on the cream band. */
+.mk-setup-shot { width: 100%; max-width: calc(var(--space-9) * 3); justify-self: center; }
+.mk-setup-shot img { border: var(--stroke-hair) solid var(--border); box-shadow: var(--shadow-lift); }
+
+/* Fold 7: the contact line and the product link, centred under the heading; each link keeps a full tap area (.mk-help). */
+.mk-setup-help { max-width: var(--measure); }
+.mk-setup-help a, .mk-setup-meet a { color: var(--link); }
+.mk-setup-meet { margin-top: var(--space-5); text-align: center; }

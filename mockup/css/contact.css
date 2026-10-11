@@ -1,0 +1,28 @@
+/* Contact page (/contact), Gate A mockup: page-only composition. DS tokens only (tokens.css); no literal colours or fonts. */
+
+/* Hero: the three ways to reach us, stacked full width under the words on phones, beside them on laptop. */
+.mk-contact-ways { display: grid; gap: var(--space-3); margin-top: var(--space-6); }
+.mk-contact-ways .kh-btn { min-width: 0; }
+@media (min-width: 900px) { .mk-contact-ways { margin-top: 0; } }
+.mk-hero .kh-heading__lead a { color: var(--link); font-weight: 800; }
+
+/* Fold 2: five route cards. One column on phones, two from 720 px (the fifth spans both), then three over two from 1024 px. */
+@media (min-width: 720px) {
+  .mk-routes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .mk-routes > :last-child { grid-column: 1 / -1; }
+}
+@media (min-width: 1024px) {
+  .mk-routes { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .mk-routes > * { grid-column: span 2; }
+  .mk-routes > :nth-child(n + 4) { grid-column: span 3; }
+}
+/* Card links: each a full tap target (DS gap G-01), pushed to the foot of the card. */
+.mk-card-links { display: flex; flex-wrap: wrap; gap: 0 var(--space-5); margin: auto 0 0; }
+.mk-card-links .kh-card__link { display: inline-flex; align-items: center; gap: var(--space-2); min-height: var(--tap-min); margin-top: 0; }
+
+/* Folds 3 and 4: heading and its sentence beside the block they introduce. */
+.mk-contact-text { margin: 0; max-width: var(--measure); color: var(--text); }
+@media (min-width: 900px) { .mk-contact-split { align-items: start; } }
+.mk-grievance p { margin: 0; }
+.mk-grievance a, .mk-seller a { color: var(--link); font-weight: 800; }
+.mk-seller address { display: grid; gap: var(--space-2); font-style: normal; }
