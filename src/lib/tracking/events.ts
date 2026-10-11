@@ -57,7 +57,10 @@ export interface TrackedEvent<Name extends string = string> {
   readonly added?: readonly AddedParam[];
   readonly addedPlacements?: readonly AddedPlacement[];
   readonly status: EventStatus;
-  /** The decision whose gate holds a new event back; the task that opens the gate removes it. */
+  /**
+   * The decision whose gate holds a new event back. When task 6.2 opens it, the main session edits
+   * architecture §8.2's Status cell in the same commit (tracking-registry.test.ts reads it).
+   */
   readonly gated?: DecisionRef;
   /** What sends it. */
   readonly firedBy: string;

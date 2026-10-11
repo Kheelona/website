@@ -40,6 +40,10 @@ import { EVENTS, STAMPED_PROPERTIES, type TrackedEvent } from "@/lib/tracking/ev
  * So it fails when a name, an ID or a parameter is edited, or a row goes missing, on either
  * side. When the inventory changes for a real reason (a founder decision), change the
  * registry in the same commit; never loosen this file to make it pass.
+ *
+ * The plan and the registry move together: when task 6.2 opens the B11 gate and drops
+ * `gated` from events.ts, the main session removes "gated" from architecture §8.2's Status
+ * cell for those rows in the same commit, or this guard turns red.
  */
 
 const ROOT = process.cwd();
