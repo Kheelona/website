@@ -2,6 +2,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { SELLER_SECTION } from "@/lib/legal";
+import { REDIRECTS } from "@/config/redirects";
 import {
   FOOTER_LINKS,
   LEGAL_ENTITY,
@@ -26,8 +27,8 @@ import {
  */
 
 const ROOT = process.cwd();
-const CONFIG = readFileSync(join(ROOT, "next.config.ts"), "utf8");
-const redirectSources = [...CONFIG.matchAll(/source:\s*"([^"]+)"/g)].map((m) => m[1]);
+/* The one redirect table since the reset (task 1.3); next.config.ts returns it whole. */
+const redirectSources = REDIRECTS.map((r) => r.source);
 
 const POLICY_ROUTES = ["/refund", "/shipping", "/terms", "/privacy"] as const;
 

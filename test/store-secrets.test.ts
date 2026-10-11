@@ -101,6 +101,25 @@ describe("store secrets stay secret", () => {
     expect(ignored).toMatch(/^\.env/m);
   });
 
+  /* QA review N5 (2026-10-12). Vercel exposes the beta's "Protection Bypass for
+     Automation" secret to every deployment as VERCEL_AUTOMATION_BYPASS_SECRET.
+     Read anywhere in src/ it could reach a response or a log; given a
+     NEXT_PUBLIC_ name, or passed through next.config.ts `env`, it would be
+     inlined into the browser bundle and anyone could walk past Vercel
+     Authentication. Only QA's own tooling holds it, sent only to the two beta
+     hosts. */
+  it("never reads Vercel's automation bypass secret, and never gives it a NEXT_PUBLIC_ name", () => {
+    const NAME = "VERCEL_AUTOMATION_BYPASS_SECRET";
+    for (const file of sourceFiles) {
+      const text = readFileSync(join(ROOT, file), "utf8");
+      expect(text, `${file} mentions ${NAME}`).not.toContain(NAME);
+    }
+    for (const file of ["next.config.ts", ".env.example", "vercel.json"]) {
+      const text = readFileSync(join(ROOT, file), "utf8");
+      expect(text, `${file} mentions ${NAME}`).not.toContain(NAME);
+    }
+  });
+
   it("keeps the daily cron that stops Supabase pausing the project", () => {
     const vercel = JSON.parse(readFileSync(join(ROOT, "vercel.json"), "utf8")) as {
       crons?: { path: string }[];
