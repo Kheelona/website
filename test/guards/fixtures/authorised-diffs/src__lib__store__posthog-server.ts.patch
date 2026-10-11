@@ -1,0 +1,19 @@
+diff --git a/src/lib/store/posthog-server.ts b/src/lib/store/posthog-server.ts
+index 11d42f0..bf8e9d2 100644
+--- a/src/lib/store/posthog-server.ts
++++ b/src/lib/store/posthog-server.ts
+@@ -1,5 +1,6 @@
+ import { PostHog } from "posthog-node";
+ import { POSTHOG_API_HOST, POSTHOG_KEY } from "@/config/site";
++import { SITE_ENV } from "@/config/env";
+ import type { PreorderRow } from "./db";
+ 
+ /** The paid order, reported to PostHog BY THE SERVER (§8.40, 2026-09-20).
+@@ -77,6 +78,7 @@ export function purchaseConfirmedEvent(order: PreorderRow): Event {
+          perfectly without a person profile; creating one would weld a billable
+          identity to a parent, which the 2026-09-19 round declined on purpose. */
+       $process_person_profile: false,
++      ...(SITE_ENV !== "production" ? { env: SITE_ENV } : {}),
+     },
+     /* When the money actually arrived, not when the webhook happened to be
+        processed. A retried webhook must not move the sale in time. */

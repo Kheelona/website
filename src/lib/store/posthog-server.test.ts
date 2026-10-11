@@ -165,3 +165,54 @@ describe("reportPurchaseToPostHog", () => {
     expect(POSTHOG_API_HOST).toBe("https://us.i.posthog.com");
   });
 });
+
+/** WHICH BUILD SOLD IT (D048, QA review N4).
+ *
+ *  `purchase_confirmed` is the conversion goal and the revenue source (D031),
+ *  and beta's Razorpay TEST payments go through the same webhook into the same
+ *  PostHog project. So every build that is not production stamps its name on
+ *  the event: `beta` on beta, and a marker on preview and local runs too, so a
+ *  sandbox order completed against a local server can never read as revenue.
+ *  Production's payload stays exactly the tag's (proved in test/env.test.ts). */
+describe("purchase_confirmed names the build that is not production", () => {
+  async function serverModuleUnder(value: string | undefined) {
+    vi.resetModules();
+    vi.stubEnv("KH_SITE_ENV", value);
+    return import("./posthog-server");
+  }
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.resetModules();
+  });
+
+  it("adds no env property in production", async () => {
+    const { purchaseConfirmedEvent: event } = await serverModuleUnder("production");
+    expect("env" in event(order()).properties).toBe(false);
+  });
+
+  it.each(["beta", "preview", "development"])("stamps env=%s on that build", async (value) => {
+    const { purchaseConfirmedEvent: event } = await serverModuleUnder(value);
+    expect(event(order()).properties.env).toBe(value);
+  });
+
+  it("stamps env=development on a local run with nothing set", async () => {
+    const { purchaseConfirmedEvent: event } = await serverModuleUnder(undefined);
+    expect(event(order()).properties.env).toBe("development");
+  });
+
+  /* The campaign is spread from the order row, so the stamp must win over a
+     stray `env` key there, or a tagged link could relabel a test sale. */
+  it("keeps the stamp when the order's campaign carries an env key of its own", async () => {
+    const { purchaseConfirmedEvent: event } = await serverModuleUnder("beta");
+    const utm = { utm_source: "meta", env: "production" } as unknown as PreorderRow["utm"];
+    expect(event(order({ utm })).properties.env).toBe("beta");
+  });
+
+  it("sends the stamped event from a beta build", async () => {
+    const { reportPurchaseToPostHog: report } = await serverModuleUnder("beta");
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+    await expect(report(order())).resolves.toBe("sent");
+    expect((captured.at(-1) as { properties: { env: string } }).properties.env).toBe("beta");
+  });
+});

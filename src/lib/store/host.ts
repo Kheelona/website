@@ -33,7 +33,7 @@ export type HostRoute =
  *  http://store.localhost:3000 hits the same dev server. */
 export function isStoreHost(host: string): boolean {
   const name = host.split(":")[0].toLowerCase();
-  return name === "store.kheelona.com" || name === "store.localhost";
+  return name === "store.kheelona.com" || name === "betastore.kheelona.com" || name === "store.localhost";
 }
 
 export function routeForHost(host: string, pathname: string, search = ""): HostRoute {

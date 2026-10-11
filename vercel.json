@@ -1,5 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "regions": ["bom1"],
   "crons": [
     {
       "path": "/api/health",
@@ -8,7 +9,8 @@
   ],
   "git": {
     "deploymentEnabled": {
-      "reset/*": false
+      "reset/*": false,
+      "beta": true
     }
   }
 }

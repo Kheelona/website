@@ -1,6 +1,8 @@
-import { readdirSync, readFileSync } from "node:fs";
+import { readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import { REDIRECTS, WWW_HOST } from "@/config/redirects";
+import { CANONICAL_ORIGIN } from "@/config/env";
 
 /**
  * Next.js matches redirects BEFORE it serves public/ files. So a legacy-URL
@@ -9,16 +11,21 @@ import { describe, expect, it } from "vitest";
  * of them. That happened with `/product/:slug*` vs `public/product/` on
  * 2026-07-28: the home hero plush (the mobile LCP element) went blank.
  *
- * This reads the config as text on purpose. Importing it would need a Next
- * runtime; the shape we care about is one line per redirect, and text keeps the
- * guard honest about what a reviewer actually sees in the file.
+ * Since the reset (task 1.3, ADR-012) the rules live in one table,
+ * `src/config/redirects.ts`, which `next.config.ts` returns whole
+ * (`test/guards/next-config.test.ts` proves that), so this reads the table.
  */
 
 // jsdom gives import.meta.url an http:// base, so resolve from the Vitest root.
 const ROOT = process.cwd();
-const CONFIG = readFileSync(join(ROOT, "next.config.ts"), "utf8");
 
-const sources = [...CONFIG.matchAll(/source:\s*"([^"]+)"/g)].map((m) => m[1]);
+/* The `www` catch-all moves EVERY path, files included, to the same path on the
+   apex: on www a file is not lost, it is one hop away at its canonical address
+   (asserted below). Every other rule is checked for shadowing. */
+const isWwwCatchAll = (r: (typeof REDIRECTS)[number]) =>
+  r.has?.some((h) => h.type === "host") === true && r.source === "/:path*";
+
+const sources = REDIRECTS.filter((r) => !isWwwCatchAll(r)).map((r) => r.source);
 
 const assetDirs = readdirSync(join(ROOT, "public"), { withFileTypes: true })
   .filter((e) => e.isDirectory())
@@ -43,7 +50,17 @@ describe("redirects never shadow public/ assets", () => {
   });
 
   it("keeps the dot-excluding pattern on the legacy product redirect", () => {
-    expect(CONFIG).toContain('source: "/product/:slug([^.]+)"');
+    expect(sources).toContain("/product/:slug([^.]+)");
+  });
+
+  /* A source whose FIRST segment is a pattern would cover every public/ folder
+     at once. Only the www catch-all may, and only on www. */
+  it("lets no rule but the www catch-all start with a pattern", () => {
+    expect(sources.filter((s) => /^\/[:(*]/.test(s))).toEqual([]);
+    const catchAlls = REDIRECTS.filter(isWwwCatchAll);
+    expect(catchAlls).toHaveLength(1);
+    expect(catchAlls[0].has).toEqual([{ type: "host", value: WWW_HOST.replace(/\./g, "\\.") }]);
+    expect(catchAlls[0].destination).toBe(`${CANONICAL_ORIGIN}/:path*`);
   });
 });
 
@@ -63,22 +80,19 @@ describe("the legacy legal URLs are redirected as a pair", () => {
     ["/terms-conditions", "/terms"],
     ["/privacy-policy", "/privacy"],
   ] as const;
+  const apexRule = (source: string) => REDIRECTS.find((r) => r.source === source && !r.has);
 
   it.each(pairs)("redirects %s to %s", (source, destination) => {
-    const line = CONFIG.match(
-      new RegExp(`source:\\s*"${source}"[^}]*destination:\\s*"([^"]+)"`),
-    );
-    expect(line, `no redirect declared for ${source}`).not.toBeNull();
-    expect(line![1]).toBe(destination);
+    const rule = apexRule(source);
+    expect(rule, `no redirect declared for ${source}`).toBeDefined();
+    expect(rule!.destination).toBe(destination);
   });
 
   it("sends both permanently, so the stale citation is actually replaced", () => {
     for (const [source] of pairs) {
-      const block = CONFIG.match(
-        new RegExp(`source:\\s*"${source}"[^}]*permanent:\\s*(true|false)`),
-      );
-      expect(block, `no permanent flag on ${source}`).not.toBeNull();
-      expect(block![1]).toBe("true");
+      const rule = apexRule(source);
+      expect(rule, `no permanent flag on ${source}`).toBeDefined();
+      expect(rule!.permanent).toBe(true);
     }
   });
 });

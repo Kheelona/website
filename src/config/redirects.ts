@@ -1,0 +1,201 @@
+/** The one redirect table (ADR-012, architecture §9.4, url-map §4).
+ *
+ *  `next.config.ts` returns it whole. Every rule is permanent: Next answers 308
+ *  for `permanent: true`, the permanent equivalent of the brief's 301 that also
+ *  keeps the method and body. Query strings pass through untouched, so campaign
+ *  parameters on any live ad, QR code or WhatsApp share still arrive attributed.
+ *
+ *  Next appends `(?:/)?$` to every source (next/dist/lib/redirect-status.js,
+ *  `modifyRouteRegex`), so `/lumi/` matches the `/lumi` rule and lands on the
+ *  target in the same single hop; no rule needs a trailing-slash twin.
+ *
+ *  Relative imports only: `next.config.ts` imports this file, and Next resolves
+ *  no `@/` alias in the config's own import graph (structure §2).
+ *
+ *  Proven by `test/guards/redirect-hops.test.ts` (one hop for every legacy
+ *  family on every host, with Next's own matcher and the real proxy) and
+ *  `test/redirects-vs-assets.test.ts` (no rule shadows a `public/` file). */
+
+import { CANONICAL_ORIGIN, HOSTS } from "./env";
+
+export type RedirectRule = {
+  source: string;
+  destination: string;
+  permanent: true;
+  has?: { type: "host"; value: string }[];
+};
+
+/** The apex rules: the 24 the site had at the reset (url-map §4b), unchanged and
+ *  in their order, then the reset's own (D041; url-map §4d). */
+const RULES: readonly RedirectRule[] = [
+  {
+    // intuitive short slug people will type/share (UX panel 2026-07-10)
+    source: "/stories/why-three-to-six-matters-most",
+    destination: "/stories/why-three-to-six-are-the-years-that-matter-most",
+    permanent: true,
+  },
+  /* THE RENAME (2026-09-05). Lumi became Kheelu; the page moved once and
+     the old address keeps working permanently.
+
+     308, not 301, because that is what Next emits for `permanent: true`,
+     and unlike 301 it guarantees the method and body survive. Query strings
+     pass through untouched, so campaign parameters on any live ad, QR code
+     or WhatsApp share still arrive attributed.
+
+     Every legacy redirect below now points STRAIGHT at /products/kheelu
+     rather than chaining through /products/lumi. A two-hop redirect costs a
+     round trip, dilutes what it forwards, and is the standard way a rename
+     quietly degrades the equity it was supposed to carry.
+
+     This line is permanent. There is no date at which removing it is safe:
+     printed QR codes, old WhatsApp forwards and two weeks of Ahrefs-recorded
+     inbound links all point at the old path. */
+  { source: "/products/lumi", destination: "/products/kheelu", permanent: true },
+
+  /* Legacy Wix-site URLs (2026-07-28). This site replaces the old
+     kheelona.com store, whose pages are still in Google's index — including
+     product pages quoting the retired ₹2,999 price. 301s move the link
+     equity here and stop the old prices competing with the real ones, which
+     was the biggest active SEO liability on the list (V3-h). Every source
+     below existed on the previous site. */
+  { source: "/product-page/:slug*", destination: "/products/kheelu", permanent: true },
+  /* `[^.]+` instead of `:slug*` on purpose, and it must stay: redirects are
+     matched BEFORE public/ files, and our own plush renders live in
+     public/product/. A plain `/product/:slug*` 308s lumi-blue-2.png to the
+     product page, which makes the image optimizer 400 and blanks the hero
+     (caught locally 2026-07-28, before it reached a customer). Legacy Wix
+     product slugs never contain a dot; asset filenames always do. */
+  { source: "/product/:slug([^.]+)", destination: "/products/kheelu", permanent: true },
+  { source: "/shop", destination: "/products/kheelu", permanent: true },
+  /* Wix listing pages. `/category/all-products` was still taking real
+     landings; the catch-all covers the sibling category slugs we cannot
+     enumerate. Same `[^.]+` guard as `/product/` above — there is no
+     public/category/ today, but a future asset folder must not be able to
+     disappear behind this line (§8.21-b). */
+  { source: "/category/all-products", destination: "/products/kheelu", permanent: true },
+  { source: "/category/:slug([^.]+)", destination: "/products/kheelu", permanent: true },
+  /* The Wix theme published an accessibility statement, and two weeks of
+     Ahrefs data say people still land on it: 19 entrances, 10.8% of ALL
+     site entries, second only to the home page, every one of them hitting a
+     404. Founder's call on the destination (2026-08-12): the product page,
+     so the traffic lands somewhere that converts. If a real statement is
+     ever written, it replaces this line. */
+  { source: "/accessibility-statement", destination: "/products/kheelu", permanent: true },
+  /* Three more Wix paths, from Search Console's "Not found (404)" report read on
+     2026-09-05 (SEO round, A1): four `/post/<slug>` blog posts, `/terms-conditions`
+     and `/for-the-parents`, all last crawled in March and still being re-fetched.
+     Each 404 Google keeps re-crawling is crawl budget not spent on the ten pages
+     it had never fetched at all. One hop each, to the closest live page. */
+  { source: "/post/:slug*", destination: "/stories", permanent: true },
+  { source: "/terms-conditions", destination: "/terms", permanent: true },
+  /* THE SIBLING THAT WAS MISSED, AND WHAT IT COST (2026-09-11, §8.36-a).
+     `/terms-conditions` got its redirect on 2026-09-05 and `/privacy-policy`
+     did not, so the legacy Wix privacy URL has been answering 404 ever
+     since the migration. It was not an empty 404.
+
+     Perplexity, asked what Kheelona is, cited
+     `https://www.kheelona.com/privacy-policy` as a live source and quoted a
+     page titled "Kheelona Robotics Privacy Policy (Beta)" from it: a
+     Wix-era document naming `legals@kheelona.com`, a Grievance Officer, and
+     a "Limited Beta Launch". That is where the AI's claim that this company
+     is "currently in a limited beta launch phase" comes from, on a site
+     that has been taking real payments since 2026-08-22.
+
+     The document is long gone and was never in this repo (checked: no
+     commit in any branch has ever contained that wording, and it is absent
+     from the pre-revamp tag). A 404 does not correct a stale index though,
+     it just leaves the crawler holding the last thing it saw. A 308 to the
+     real policy does.
+
+     Never delete this. Stale citations outlive the pages they point at. */
+  { source: "/privacy-policy", destination: "/privacy", permanent: true },
+  { source: "/for-the-parents", destination: "/stories", permanent: true },
+  /* Three URLs people actually typed, each 404ing, all three found in the
+     Ahrefs Web Analytics export for the fortnight to 2026-09-05.
+     `/lumi` is the product's name without its path — the single most
+     guessable URL this site has, and it was the only one of the three with
+     no handler at all. `/faq` is where a parent looks for the answers that
+     live on the product page. `/sitemap` is what people type when they mean
+     the .xml. None is a legacy Wix route; they are all just what humans
+     guess, which is why they belong here rather than in the block above. */
+  { source: "/lumi", destination: "/products/kheelu", permanent: true },
+  /* The product page must keep `id="faq"`, or this line changes in the same
+     commit (url-map §4c). */
+  { source: "/faq", destination: "/products/kheelu#faq", permanent: true },
+  { source: "/sitemap", destination: "/sitemap.xml", permanent: true },
+  { source: "/blog", destination: "/stories", permanent: true },
+  { source: "/blog/:slug*", destination: "/stories", permanent: true },
+  { source: "/about", destination: "/team", permanent: true },
+  { source: "/community", destination: "/stories", permanent: true },
+  /* /refund and /shipping USED to 301 here, because pre-orders took no
+     payment and there was nothing to refund or ship. Both are real pages
+     since 2026-08-22 (§8.25-d) and the redirects were removed in the same
+     commit. Do not restore them: a merchant that 301s its refund policy to
+     its terms is the shape Razorpay's review rejects, and the legacy Wix
+     inbound links now land on the real answer. */
+  /* Account routes from the Wix store have no equivalent here. */
+  { source: "/login", destination: "/", permanent: true },
+  { source: "/signup", destination: "/", permanent: true },
+  { source: "/account/:path*", destination: "/", permanent: true },
+  { source: "/cart", destination: "/products/kheelu", permanent: true },
+  { source: "/checkout/:path*", destination: "/products/kheelu", permanent: true },
+
+  /* ── The reset (2026-10) ─────────────────────────────────────────────── */
+
+  /* D041 (Gate A, G8/G5): the PlayOS page is dropped. Redirects run before the
+     filesystem, so this wins while the old page folder still exists; task 6.3
+     deletes it. */
+  { source: "/playos", destination: "/products/kheelu", permanent: true },
+  /* D041: the two-year-old article is dropped, to the three-year-old one. */
+  {
+    source: "/stories/brain-development-toys-for-a-2-year-old",
+    destination: "/stories/learning-toys-for-a-three-year-old",
+    permanent: true,
+  },
+  /* Guessable URLs that 404ed at the reset (url-map §4d; strategy §4.2): the
+     product's own name, the bare products folder, and the job pages people
+     tried (`/jobs` had two landings in PostHog, `/careers` one). `/pricing`
+     opens the offer card; `/pricing.md` (the machine file) is a different
+     path and is not matched. */
+  { source: "/kheelu", destination: "/products/kheelu", permanent: true },
+  { source: "/products", destination: "/products/kheelu", permanent: true },
+  { source: "/careers", destination: "/team", permanent: true },
+  { source: "/jobs", destination: "/team", permanent: true },
+  { source: "/pricing", destination: "/products/kheelu#offer", permanent: true },
+];
+
+/** The Wix site lived on `www`, so its old links do too. Today Vercel's domain
+ *  setting sends `www` to the apex before the app runs, which makes every
+ *  legacy `www` URL two hops (url-map §4c). Once the founder switches `www` to
+ *  serve this project (Gate B runbook), the rules below answer it in one. */
+export const WWW_HOST = `www.${HOSTS.production.marketing}`;
+
+/* `has` values are regular expressions to Next (`matchHas`), so the dots are
+   escaped: `www.kheelona.com` unescaped would also match `wwwXkheelonaYcom`. */
+const ON_WWW = [{ type: "host" as const, value: WWW_HOST.replace(/\./g, "\\.") }];
+
+/** A rule's `www` twin: same source, host-matched, absolute apex destination. */
+function wwwTwin(rule: RedirectRule): RedirectRule {
+  return { ...rule, destination: `${CANONICAL_ORIGIN}${rule.destination}`, has: ON_WWW };
+}
+
+export const REDIRECTS: readonly RedirectRule[] = [
+  /* Twins first, so on `www` a legacy URL goes straight to its apex target
+     instead of to the same target on `www` (which would cost a second hop). */
+  ...RULES.map(wwwTwin),
+  ...RULES,
+  /* The apex's `/store` redirect lives in the frozen `src/lib/store/host.ts`
+     and runs in the proxy, after these rules; on `www` the catch-all below
+     would send `/store/x` to the apex first, a second hop. So `www` goes to the
+     production store directly. */
+  {
+    source: "/store/:path*",
+    destination: `https://${HOSTS.production.store}/:path*`,
+    permanent: true,
+    has: ON_WWW,
+  },
+  /* Everything else on `www`, files included, to the same path on the apex.
+     `:path*` matches segment by segment and the trailing slash stays outside
+     it, so `/team/` lands on `/team` in this one hop too. */
+  { source: "/:path*", destination: `${CANONICAL_ORIGIN}/:path*`, permanent: true, has: ON_WWW },
+];
