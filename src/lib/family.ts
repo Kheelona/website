@@ -1,8 +1,8 @@
 /** The product pipeline (V3, founder 2026-07-27 from the YC application):
  *  ONE friend inside many bodies, Kheelu first. This replaced the old
  *  Lori/Lua/Robu lineup on kheelona.com — those characters stay published on
- *  kheelona.ai, and their renders stay in `public/products/` untouched for
- *  parity, but .com now tells the age-arc story instead: Kheelu at 3, the Kheelu
+ *  kheelona.ai, which serves its own copies of their renders (ours were
+ *  deleted in the 2026-10-10 reset clean-up), and .com tells the age-arc story instead: Kheelu at 3, the Kheelu
  *  Speaker through the school years, AI books across the whole range. Ages
  *  are open-ended "N+" since 2026-08-23 (founder decision #8: no published
  *  ceiling anywhere).

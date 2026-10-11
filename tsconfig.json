@@ -40,8 +40,6 @@
     "test",
     "launch-video",
     "tools",
-    "docs",
-    "design-concepts",
-    "3d-handoff"
+    "docs"
   ]
 }
