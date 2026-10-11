@@ -87,9 +87,11 @@ async function logoMark(asset, markShare) {
   return tagged(img.png({ compressionLevel: 9 }), `${header(MARK)} (sized in the square as ${APP_ICON})`).toBuffer();
 }
 
-/** An opaque PNG of a DS icon, flattened onto the DS app icon's ground. */
+/** An opaque PNG of a DS icon, flattened onto the DS app icon's ground. Saved as RGBA with every
+ *  alpha at 255: Turbopack's icon pipeline refuses RGB PNGs ("The PNG is not in RGBA format"), and an
+ *  all-255 alpha channel is still opaque for iOS (lessons §2). */
 function opaqueIcon(asset, source, ground) {
-  const img = sharp(asset(source)).flatten({ background: ground }).removeAlpha().png({ compressionLevel: 9 });
+  const img = sharp(asset(source)).flatten({ background: ground }).ensureAlpha(1).png({ compressionLevel: 9 });
   return tagged(img, `${header(source)} (flattened onto the ground of ${APP_ICON})`).toBuffer();
 }
 

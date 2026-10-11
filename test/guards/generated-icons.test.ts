@@ -183,7 +183,8 @@ function icoEntries(buf: Buffer) {
 
 async function expectOpaque(buf: Buffer, label: string) {
   const meta = await sharp(buf).metadata();
-  expect(meta.channels, `${label} has an alpha channel`).toBe(3);
+  // RGBA because Turbopack's icon pipeline refuses RGB PNGs; opacity is proven pixel by pixel below.
+  expect(meta.channels, `${label} is RGBA (Turbopack needs it)`).toBe(4);
   const { data } = await rgba(buf);
   for (let i = 3; i < data.length; i += 4) if (data[i] !== 255) throw new Error(`${label}: pixel ${(i - 3) / 4} is not opaque`);
 }
