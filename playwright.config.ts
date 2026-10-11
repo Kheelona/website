@@ -14,10 +14,17 @@ import { defineConfig } from "@playwright/test";
  *
  *   KH_PARITY_TARGET=mockup (or --calibrate)   compare the mockup with itself; no server started
  *   KH_E2E_TARGET=beta                         the beta hosts (task 7.2); no server started
+ *   KH_REUSE_SERVER=1                          use a server already listening on the port
+ *
+ * A server already on the port is NOT reused by default: `verify:e2e` builds first, and a stale
+ * `next start` keeps serving the old build (and `public/` as it was at build time), so the run
+ * would test the wrong thing (lessons §1). Playwright stops with "already used" instead; kill the
+ * listener by PID (`lsof -nP -iTCP:3456 -sTCP:LISTEN`) or opt in when iterating on one build.
  */
 
 const PORT = Number(process.env.KH_E2E_PORT ?? 3456);
 const STORYBOOK_PORT = Number(process.env.KH_STORYBOOK_PORT ?? 6007);
+const REUSE = process.env.KH_REUSE_SERVER === "1";
 const noServer =
   process.env.KH_NO_SERVER === "1" || process.env.KH_PARITY_TARGET === "mockup" || process.env.KH_E2E_TARGET === "beta";
 
@@ -50,7 +57,7 @@ export default defineConfig({
         {
           command: `npx next start -p ${PORT}`,
           url: `http://localhost:${PORT}/robots.txt`,
-          reuseExistingServer: !process.env.CI,
+          reuseExistingServer: REUSE,
           timeout: 120_000,
           stdout: "ignore",
           stderr: "pipe",
@@ -58,7 +65,7 @@ export default defineConfig({
         {
           command: `node test/e2e/support/static-server.mjs storybook-static ${STORYBOOK_PORT}`,
           url: `http://localhost:${STORYBOOK_PORT}/`,
-          reuseExistingServer: !process.env.CI,
+          reuseExistingServer: REUSE,
           timeout: 30_000,
         },
       ],
