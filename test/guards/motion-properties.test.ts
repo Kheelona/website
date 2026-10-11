@@ -19,8 +19,10 @@ import { buildComposeCss, collectComposeFiles } from "../../scripts/assets/build
  * - every transition, animation and smooth scroll is neutralised under `prefers-reduced-motion: reduce` (none, or
  *   an opacity fade: the DS keeps fades and drops movement, README.md:161) by a rule for the same selector that
  *   wins the cascade (later in site.css's import order and the compose manifest, unlayered over layered,
- *   !important over normal) over the last rule that moves it; rules under `prefers-reduced-motion: no-preference`
- *   never apply then and need none;
+ *   !important over normal) over each rule that moves it, and applies wherever that rule does: a switch-off
+ *   narrowed by another media feature (`and (min-width: 900px)`, a nested @media), an @supports, an @container or
+ *   any other condition the moving rule does not share counts for nothing; rules under
+ *   `prefers-reduced-motion: no-preference` never apply then and need none;
  * - a timing that names nothing counts as animating `all`: a transition with no property (transition-property
  *   starts as `all`), or an animation-duration in a rule with no animation-name while another rule names one;
  * - property names are read as the browser reads them: case-folded, escapes decoded, vendor prefix dropped, and
@@ -183,20 +185,55 @@ function arithmetic(expr: string): number | null {
 }
 
 type Ctx = "any" | "reduce" | "no-preference";
+/** Where a rule applies: its reduced-motion context and every other condition on it (each one must hold). */
+type Where = { ctx: Ctx; conditions: string[] };
+
+const REDUCE_FEATURES = new Set(["(prefers-reduced-motion:reduce)", "(prefers-reduced-motion)"]);
+const NO_PREFERENCE = "(prefers-reduced-motion:no-preference)";
 
 /**
- * What a media query list says about reduced motion. "reduce": it matches only under reduced motion. "no-preference":
- * it never matches under it. "any": anything else, including a `not` or `or` this reader does not trust either way.
+ * One media query as the media features that must all hold, whitespace removed (`(min-width:900px)`), with `only`
+ * and the `all` and `screen` media types dropped (motion only matters on a screen); a media type such as `print`
+ * stays as a condition. Null for a query this reader does not split: one with `not` or `or` outside parentheses.
  */
-function mediaContext(params: string): Ctx {
+function queryFeatures(query: string): string[] | null {
+  const toks = splitTop(query, " ");
+  if (toks.some((t) => t === "not" || t === "or")) return null;
+  let i = toks[0] === "only" ? 1 : 0;
+  const features: string[] = [];
+  if (toks[i] !== undefined && !toks[i].startsWith("(")) {
+    if (toks[i] !== "all" && toks[i] !== "screen") features.push(toks[i]);
+    i++;
+    if (i < toks.length && toks[i++] !== "and") return null;
+  }
+  for (; i < toks.length; i++) {
+    if (toks[i] === "and") continue;
+    if (!toks[i].startsWith("(")) return null;
+    features.push(toks[i].replace(/\s+/g, ""));
+  }
+  return features;
+}
+
+/**
+ * What a media query list says about reduced motion, and its other conditions. "reduce": every query has the
+ * feature `(prefers-reduced-motion: reduce)` or `(prefers-reduced-motion)` as one of the features it joins with
+ * `and`; the rest of the query (`(min-width:900px)`) stays a condition, so it only switches motion off where that
+ * also holds. "no-preference": it never matches under reduced motion. "any": everything else, including a `not` or
+ * `or` this reader does not trust either way, kept whole as one condition.
+ */
+function mediaWhere(params: string): Where {
   const p = params.toLowerCase().replace(/\s+/g, " ").trim();
-  if (!p.includes("prefers-reduced-motion")) return "any";
-  if (/^\(?\s*not \(\s*prefers-reduced-motion: ?reduce\s*\)\s*\)?$/.test(p)) return "no-preference";
-  if (/\b(not|or)\b/.test(p)) return "any";
-  const queries = splitTop(p, ",");
-  if (queries.every((q) => /\(\s*prefers-reduced-motion: ?no-preference\s*\)/.test(q))) return "no-preference";
-  if (queries.every((q) => /\(\s*prefers-reduced-motion(: ?reduce)?\s*\)/.test(q))) return "reduce";
-  return "any";
+  if (/^\(?\s*not \(\s*prefers-reduced-motion: ?reduce\s*\)\s*\)?$/.test(p)) return { ctx: "no-preference", conditions: [] };
+  const whole = [`media ${p.replace(/\s+/g, "")}`];
+  const queries = splitTop(p, ",").map(queryFeatures);
+  if (queries.length === 0 || queries.some((q) => q === null)) return { ctx: "any", conditions: whole };
+  const parsed = queries as string[][];
+  if (parsed.every((q) => q.includes(NO_PREFERENCE))) return { ctx: "no-preference", conditions: [] };
+  const reduce = parsed.every((q) => q.some((f) => REDUCE_FEATURES.has(f)));
+  const rests = parsed.map((q) => q.filter((f) => !REDUCE_FEATURES.has(f)));
+  if (rests.length === 1) return { ctx: reduce ? "reduce" : "any", conditions: rests[0].map((f) => `media ${f}`) };
+  if (reduce && rests.every((r) => r.length === 0)) return { ctx: "reduce", conditions: [] };
+  return { ctx: reduce ? "reduce" : "any", conditions: whole };
 }
 
 function ancestors(node: Node): Container[] {
@@ -207,15 +244,33 @@ function ancestors(node: Node): Container[] {
 const atRules = (node: Node) => ancestors(node).filter((p): p is AtRule => p.type === "atrule");
 const inKeyframes = (node: Node) => atRules(node).some((a) => /keyframes$/i.test(a.name));
 
-/** The reduced-motion context of a declaration container: its own @media (CSS nesting) and every enclosing one. */
-function contextOf(node: Container): Ctx {
-  const ctx = [node, ...ancestors(node)]
-    .filter((p): p is AtRule => p.type === "atrule" && (p as AtRule).name.toLowerCase() === "media")
-    .map((a) => mediaContext(a.params));
-  if (ctx.includes("no-preference")) return "no-preference"; // never applies under reduced motion
-  return ctx.includes("reduce") ? "reduce" : "any";
+/**
+ * Where a declaration container applies: from its own at-rule (CSS nesting) and every enclosing one. Each @media
+ * adds its features (mediaWhere); every other at-rule (@supports, @container, @scope, @starting-style, ...) adds
+ * itself whole, whitespace removed. @layer adds nothing: the cascade rank already reads it.
+ */
+function whereOf(node: Container): Where {
+  let reduce = false;
+  const conditions: string[] = [];
+  for (const p of [node, ...ancestors(node)]) {
+    if (p.type !== "atrule") continue;
+    const a = p as AtRule;
+    const name = a.name.toLowerCase();
+    if (name === "layer") continue;
+    if (name !== "media") {
+      conditions.push(`${name} ${a.params.replace(/\s+/g, "")}`);
+      continue;
+    }
+    const m = mediaWhere(a.params);
+    if (m.ctx === "no-preference") return { ctx: "no-preference", conditions: [] }; // never applies under reduced motion
+    reduce ||= m.ctx === "reduce";
+    conditions.push(...m.conditions);
+  }
+  return { ctx: reduce ? "reduce" : "any", conditions };
 }
-const inReducedMotion = (rule: Container) => contextOf(rule) === "reduce";
+const inReducedMotion = (rule: Container) => whereOf(rule).ctx === "reduce";
+/** A switch-off covers a moving rule when each of its conditions is also one of the moving rule's. */
+const covers = (off: string[], move: string[]) => off.every((c) => move.includes(c));
 
 /** The selectors a declaration container applies to, with CSS nesting resolved (`&`, or a descendant of the parent). */
 function selectorsOf(node: Container): string[] {
@@ -261,7 +316,7 @@ const SCROLL_DRIVEN = /^(animation-timeline|animation-range(-start|-end)?|scroll
 type Kind = "transition" | "animation" | "scroll";
 const kindOf = (prop: string): "transition" | "animation" => (prop.startsWith("transition") ? "transition" : "animation");
 type Decl = { prop: string; value: string; important: boolean };
-type Block = { file: string; selectors: string[]; ctx: Ctx; layered: boolean; decls: Decl[] };
+type Block = { file: string; selectors: string[]; ctx: Ctx; conditions: string[]; layered: boolean; decls: Decl[] };
 
 /** Every container of declarations (outside @keyframes) in document order, with its resolved selectors and context. */
 function blocksOf(file: string, root: Root): Block[] {
@@ -274,7 +329,7 @@ function blocksOf(file: string, root: Root): Block[] {
   return [...byContainer].map(([node, decls]) => ({
     file,
     selectors: selectorsOf(node),
-    ctx: contextOf(node),
+    ...whereOf(node),
     layered: [node, ...ancestors(node)].some((p) => p.type === "atrule" && (p as AtRule).name.toLowerCase() === "layer"),
     decls,
   }));
@@ -475,12 +530,13 @@ function analyseMotion(sheets: Sheet[], dsMotion: ReadonlyMap<string, string> = 
     splitTop(d.value, ",").some((item) => splitTop(item, " ").some((tok) => keyframes.has(tok)));
   const someBlockNamesAnAnimation = blocks.some((b) => b.decls.some(namesAnimation));
 
-  // Per selector, the cascade rank of the last rule that moves it and of the strongest reduced-motion rule that
-  // switches it off. A neutralising rule only counts when it outranks: later, unlayered over layered, !important.
-  const moving = new Map<string, Partial<Record<Kind, { rank: number; where: string }>>>();
-  const neutral = new Map<string, Partial<Record<Kind, number>>>();
+  // Every rule that moves a selector, and every reduced-motion rule that switches it off, with its cascade rank and
+  // its conditions. A switch-off only counts for a moving rule when it outranks it (later, unlayered over layered,
+  // !important) and applies wherever that rule does: each of its conditions is one of the moving rule's.
+  const moving: Array<{ selector: string; kind: Kind; rank: number; conditions: string[]; where: string }> = [];
+  const neutral: Array<{ selector: string; kind: Kind; rank: number; conditions: string[] }> = [];
 
-  blocks.forEach(({ file, selectors, ctx, layered, decls }, order) => {
+  blocks.forEach(({ file, selectors, ctx, conditions, layered, decls }, order) => {
     const reduced = ctx === "reduce";
     const rank = (important: boolean) => (important ? 2e9 : 0) + ((important ? layered : !layered) ? 1e9 : 0) + order;
     const where = `${file}: ${selectors.join(", ")}${reduced ? " (reduced motion)" : ""}`;
@@ -536,18 +592,13 @@ function analyseMotion(sheets: Sheet[], dsMotion: ReadonlyMap<string, string> = 
       }
 
       if (ctx === "any") {
-        const m = moving.get(selector) ?? {};
-        const move = (kind: Kind, important: boolean) => {
-          if (rank(important) > (m[kind]?.rank ?? -1)) m[kind] = { rank: rank(important), where: at };
-        };
+        const move = (kind: Kind, important: boolean) => moving.push({ selector, kind, rank: rank(important), conditions, where: at });
         for (const kind of ["transition", "animation"] as const) if (seen[kind].moves) move(kind, seen[kind].important);
         const smooth = scroll.filter((s) => s.value === "smooth");
         if (smooth.length > 0) move("scroll", smooth.some((s) => s.important));
-        moving.set(selector, m);
       }
       if (reduced) {
-        const n = neutral.get(selector) ?? {};
-        const keep = (kind: Kind, important: boolean) => { n[kind] = Math.max(rank(important), n[kind] ?? -1); };
+        const keep = (kind: Kind, important: boolean) => neutral.push({ selector, kind, rank: rank(important), conditions });
         const transitionOff = has("transition") || has("transition-property")
           ? seen.transition.animated.every((p) => p === "opacity")
           : has("transition-duration") && !nonZero("transition-duration");
@@ -555,21 +606,23 @@ function analyseMotion(sheets: Sheet[], dsMotion: ReadonlyMap<string, string> = 
         if ((has("animation") || has("animation-name")) && seen.animation.animated.every((p) => p === "opacity")) keep("animation", seen.animation.important);
         const auto = scroll.filter((s) => s.value === "auto");
         if (auto.length > 0) keep("scroll", auto.some((s) => s.important));
-        neutral.set(selector, n);
       }
     }
   });
 
-  for (const [selector, m] of moving) {
-    for (const kind of ["transition", "animation", "scroll"] as const) {
-      const last = m[kind];
-      if (!last) continue;
-      const off = neutral.get(selector)?.[kind];
-      if (off !== undefined && off > last.rank) continue;
-      const loses = off !== undefined ? " (a reduced-motion rule for it loses the cascade: it comes earlier, sits in a layer, or lacks !important)" : "";
-      findings.push(`${last.where}: ${kind} not neutralised under prefers-reduced-motion: reduce${loses}`);
-    }
+  const unswitched = new Set<string>();
+  for (const m of moving) {
+    const offs = neutral.filter((n) => n.selector === m.selector && n.kind === m.kind);
+    if (offs.some((n) => n.rank > m.rank && covers(n.conditions, m.conditions))) continue;
+    const narrower = [...new Set(offs.flatMap((n) => n.conditions.filter((c) => !m.conditions.includes(c))))];
+    const why = offs.some((n) => covers(n.conditions, m.conditions))
+      ? " (a reduced-motion rule for it loses the cascade: it comes earlier, sits in a layer, or lacks !important)"
+      : offs.length > 0
+        ? ` (a reduced-motion rule for it applies only under conditions this rule does not have: ${narrower.join("; ")})`
+        : "";
+    unswitched.add(`${m.where}: ${m.kind} not neutralised under prefers-reduced-motion: reduce${why}`);
   }
+  findings.push(...unswitched);
   if (longestDelay + longestDuration > FIVE_SECONDS) {
     findings.push(`the longest delay (${longestDelay} ms) and the longest duration (${longestDuration} ms) together run past 5 s (nothing moves for more than five seconds)`);
   }
@@ -641,7 +694,7 @@ async function tailwindMotionUtilities(sources: string): Promise<string[]> {
     '@import "tailwindcss/theme.css" layer(theme);',
     '@import "tailwindcss/utilities.css" layer(utilities) source(none);',
     '@import "./tailwind-theme.css";',
-    '@source not "../**/*.{test,stories}.tsx";',
+    '@source not "../**/*.{test,stories}.{ts,tsx}";',
     sources,
   ].join("\n");
   const out = await postcss([tailwindcss()]).process(css, { from: probeKey() });
@@ -781,6 +834,39 @@ describe("the motion analyser also catches motion written in other spellings and
     expect(ok(`@media (prefers-reduced-motion: no-preference) { ${move} }`)).toEqual([]);
     expect(ok(`@media not (prefers-reduced-motion: reduce) { ${move} }`)).toEqual([]);
     expect(ok(`@media (prefers-reduced-motion: no-preference) { .ks-x { transition: width var(--duration-base) var(--ease-standard); } }`).join("\n")).toMatch(/animates "width"/);
+  });
+
+  it("counts a switch-off only where it applies everywhere the moving rule does: no narrower media feature, @supports or @container", () => {
+    const move = ".ks-x { transition: transform var(--duration-base) var(--ease-standard); }";
+    const off = "transition: none;";
+    // Review plants (2026-10-11): each switch-off misses visitors the moving rule reaches (phones; browsers without
+    // the feature; narrow containers), so the motion runs on for them.
+    for (const narrowed of [
+      `@media (prefers-reduced-motion: reduce) and (min-width: 900px) { .ks-x { ${off} } }`,
+      `@media (prefers-reduced-motion: reduce) { @supports (display: grid) { .ks-x { ${off} } } }`,
+      `@media (prefers-reduced-motion: reduce) { @media (min-width: 900px) { .ks-x { ${off} } } }`,
+      `@media (prefers-reduced-motion: reduce) { @container (min-width: 20rem) { .ks-x { ${off} } } }`,
+      `@supports (display: nonsense) { @media (prefers-reduced-motion: reduce) { .ks-x { ${off} } } }`,
+      `@media print and (prefers-reduced-motion: reduce) { .ks-x { ${off} } }`,
+      `.ks-x { @media (prefers-reduced-motion: reduce) and (orientation: landscape) { ${off} } }`,
+    ]) expect(ok(`${move} ${narrowed}`).join("\n"), narrowed).toMatch(/\.ks-x: transition not neutralised/);
+  });
+
+  it("accepts a switch-off under the moving rule's own conditions, or fewer, and checks every moving rule, not only the last", () => {
+    const rows = "transition: grid-template-rows var(--duration-enter) var(--ease-standard);";
+    const faq = `@supports selector(::details-content) { .kh-faq__item::details-content { ${rows} } }`;
+    expect(ok(`${faq} @media (prefers-reduced-motion: reduce) { @supports selector(::details-content) { .kh-faq__item::details-content { transition: none; } } }`)).toEqual([]);
+    expect(ok(`${faq} @supports selector(::details-content) { @media (prefers-reduced-motion: reduce) { .kh-faq__item::details-content { transition: none; } } }`)).toEqual([]);
+    expect(ok(`${faq} ${REDUCED(".kh-faq__item::details-content")}`)).toEqual([]);
+    const wide = "@media (min-width: 900px) { .ks-x { transition: transform var(--duration-base) var(--ease-standard); } }";
+    expect(ok(`${wide} @media (prefers-reduced-motion: reduce) and (min-width: 900px) { .ks-x { transition: none; } }`)).toEqual([]);
+    expect(ok(`${wide} @media only screen and (prefers-reduced-motion: reduce) { .ks-x { transition: none; } }`)).toEqual([]);
+    expect(ok(`${wide} @media (prefers-reduced-motion: reduce) { @media (min-width:900px) { .ks-x { transition: none; } } }`)).toEqual([]);
+    // An unconditioned rule and a @supports one both move .ks-x; a switch-off inside that @supports covers only the second.
+    const both = `.ks-x { transition: transform var(--duration-base) var(--ease-standard); } @supports (display: grid) { .ks-x { transition: opacity var(--duration-base) var(--ease-standard); } }`;
+    const found = ok(`${both} @media (prefers-reduced-motion: reduce) { @supports (display: grid) { .ks-x { transition: none; } } }`).join("\n");
+    expect(found).toMatch(/\.ks-x: transition not neutralised.*applies only under conditions this rule does not have: supports \(display:grid\)/);
+    expect(ok(`${both} ${REDUCED(".ks-x")}`)).toEqual([]);
   });
 
   it("lets a reduced-motion rule win only where the cascade lets it: !important and cascade layers", () => {

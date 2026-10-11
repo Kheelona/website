@@ -69,7 +69,7 @@ describe("site.css source", () => {
       '@import "tailwindcss/utilities.css" layer(utilities) source(none)',
       '@import "./tailwind-theme.css"',
       '@source "../**/*.{ts,tsx}"',
-      '@source not "../**/*.{test,stories}.tsx"',
+      '@source not "../**/*.{test,stories}.{ts,tsx}"',
     ]);
   });
 
@@ -143,7 +143,9 @@ describe("site.css compiled through postcss.config.mjs", () => {
   it("finds class names only in src/ TypeScript: no automatic detection of wiki/, design-system/ or mockup/, no tests or stories", () => {
     const scanned = scannedFiles.filter((f) => !f.endsWith(".css"));
     expect(scanned.length).toBeGreaterThan(0);
-    expect(scanned.filter((f) => !/^src\/.+\.(ts|tsx)$/.test(f) || /\.(test|stories)\.tsx$/.test(f))).toEqual([]);
+    expect(scanned.filter((f) => !/^src\/.+\.(ts|tsx)$/.test(f) || /\.(test|stories)\.tsx?$/.test(f))).toEqual([]);
+    // src/ holds .test.ts files too (src/lib/seo.test.ts, fbq.test.ts): their strings must not add utilities either.
+    expect(scanned.some((f) => f.startsWith("src/lib/"))).toBe(true);
   });
 
   it("puts Tailwind's utilities inside the utilities layer", () => {

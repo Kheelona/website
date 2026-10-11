@@ -23,4 +23,4 @@
 @import "tailwindcss/utilities.css" layer(utilities) source(none);
 @import "./tailwind-theme.css";
 @source "../**/*.{ts,tsx}";
-@source not "../**/*.{test,stories}.tsx";
+@source not "../**/*.{test,stories}.{ts,tsx}";
