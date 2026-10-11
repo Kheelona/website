@@ -67,12 +67,12 @@ never stage them).
 | 2 | – | Next: 2.1-2.10 (2.10 = beta never takes a payment, D051) |
 | 3-10 | – | Per [tasks](tasks.md) |
 
-### Wave 1 snapshot (~16:00, 2026-10-12)
+### Wave 1 snapshot (16:30, 2026-10-12; run still active, 53 journal lines)
 
 | Task | Branch, head | State | What the new session does |
 |---|---|---|---|
-| 1.1 Toolchain, harness, guards | `build/w1-1.1` `200623d` + **26 uncommitted files** in `.claude/worktrees/wf_de7ff1a5-e8b-1` | Builder still working (first commit: configs, step runner, Vitest guards); not reviewed | If the run is dead: start a `builder` agent in that worktree to finish 1.1 from where the files are (commit the good work first, by name), then an adversarial review (same prompt shape as the workflow), fix, review |
-| 1.2 Visual layer and motion | `build/w1-1.2` `7c8ebe8` (+1 uncommitted file) | Round-1 review failed on the motion guard; fix committed (`7c8ebe8`); re-review not yet run | Run the review on `7c8ebe8`; fix if needed |
+| 1.1 Toolchain, harness, guards | `build/w1-1.1` `200623d` (configs, step runner, Vitest guards) + **26 uncommitted files** in `.claude/worktrees/wf_de7ff1a5-e8b-1`: `.github/` (CI), `playwright.config.ts`, `scripts/qa/`, `test/e2e/*.spec.ts` (13 specs) and `test/e2e/support/*` (11 files) | Builder still working on the e2e harness; not reviewed | If the run is dead: start a `builder` agent in that worktree (cd there; `node_modules` is present) to finish 1.1 against its acceptance 1-16, commit by name, then an adversarial review (prompt shape in `.claude/workflows/build-wave.js` `reviewPrompt`), fix, review |
+| 1.2 Visual layer and motion | `build/w1-1.2` `7c8ebe8` (the one uncommitted file, `src/styles/generated/compose.css`, is generated and gitignored by 1.1: never commit it) | Round-1 review failed on the motion guard (missed `transition: all` and unnamed timings); fix committed; **round-2 review running** | If the run is dead: run the review on `7c8ebe8`; fix if needed |
 | 1.3 Environments and beta | `build/w1-1.3` `db711ce` | **Passed** review round 1 | Merge. Minor: a www-only `/store/:path*` redirect beyond §9.4 (check) |
 | 1.4 Tracking registries | `build/w1-1.4` `8578501` | **Passed** after two fixes | Merge |
 | 1.5 Assets, icons, doodles, OG | `build/w1-1.5` `fe338c2` | **Passed** after one fix | Merge |
