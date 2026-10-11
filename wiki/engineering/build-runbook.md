@@ -92,4 +92,4 @@ task ids and titles from [tasks](tasks.md) "Wave 2" (2.1-2.10).
   check at merge); 1.6 noted `formatInr` in `site.ts` cannot produce "₹1,00,000" as the spec words it
   (minor, check the frozen helper's real output before 2.1).
 - **`beta` exists on GitHub** (2026-10-12, `24e92e3` = main + `vercel.json` with `"beta": false`, so Vercel builds nothing). When the new site is ready: merge `reset/website-v2` into a local `beta` (no force), flip `"beta": true` per architecture §15.3, push with `git push origin beta:refs/heads/beta`.
-- **Beta domains done** (2026-10-12): both attached to branch `beta`, Valid Configuration; they show nothing until the new site is pushed to `beta`.
+- **Beta domains done** (2026-10-12): both attached to branch `beta`, Valid Configuration; until the first `beta` deployment Vercel still serves the live site there (checked 16:25: 200, `x-robots-tag: noindex, nofollow`, no GA4 or Meta by host lists), harmless.
