@@ -7,14 +7,14 @@ sources: [log.md, open-questions.md]
 
 # Status (2026-10-12)
 
-**Phase:** **5, build, wave 1 of 10 running** (Gate A approved D046; Phase 4 plan done 2026-10-12). The
+**Phase:** **5, build, wave 1 of 10 nearly done** (Gate A approved D046; Phase 4 plan done 2026-10-12). The
 founder asked for the full website with animation on **betawebsite.kheelona.com** and
 **betastore.kheelona.com** before it goes live (D048). Plan: [tasks](engineering/tasks.md) (10 waves),
 [architecture](engineering/architecture.md), [QA review](qa/architecture-review-2026-10-12.md), [test plan](qa/test-plan.md).
 After the build: Phase 6 QA, push `beta`, founder runbook (architecture §15.4), **Gate B** on beta, merge to `main`.
-**Account:** apoorva@geekyants.work. **Branch:** `reset/website-v2`, not pushed. **Resume the build from
-[build runbook](engineering/build-runbook.md)** (workflow `build-wave` in `.claude/workflows/`; wave 1 run
-`wf_de7ff1a5-e8b`, branches `build/w1-*` in `.claude/worktrees/`; merge, wave close, then wave 2).
+**Account:** switching again (founder, ~16:00 2026-10-12). **Branch:** `reset/website-v2`, not pushed.
+**RESUME FROM [build runbook](engineering/build-runbook.md) §4 "Wave 1 snapshot"**: 1.3, 1.4, 1.5, 1.5b, 1.6 passed;
+1.1 still building in its worktree (uncommitted files); 1.2 needs one re-review; then merge, wave close, wave 2.
 **Done before wave 1:** dev tools pinned (Playwright 1.63.0, axe 4.12.1, Lighthouse 13.4.1, jscpd 5.3.2,
 subset-font 2.9.0); **security patch next 16.3.4 → 16.3.8, sharp → 0.35.5** (npm audit: next's own critical
 next/og RCE, high image SSRF, ISR cache poisoning; floors raised in test/dependency-floor.test.ts).

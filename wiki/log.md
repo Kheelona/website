@@ -528,3 +528,6 @@ New page engineering/build-runbook.md (how waves run, merge, close and resume; w
 
 ## [2026-10-12 15:45] build | Task 1.5b done: app screenshots round 2 reviewed and committed
 Main-session review against D044: transcript (no AI summary, first line fixed, Hindi title clear of "Activity") and activity (no Games, Chats 3, titles and times match). All three at 576 × 1209 in `src/assets/app/` and `mockup/assets/app/` (`6225df2`).
+
+## [2026-10-12 16:00] cleanup | Handoff snapshot before the account switch
+Wave 1 (run wf_de7ff1a5-e8b): 1.3, 1.4, 1.5, 1.6 passed review (branches build/w1-*, heads in build-runbook §4); 1.5b done on the main branch; 1.2 fix committed, re-review pending; 1.1 still building with uncommitted files in its worktree. Beta domains still attached to Production (founder to switch to Preview, branch beta). Next session: build-runbook §4 resume order.

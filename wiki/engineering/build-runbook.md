@@ -62,10 +62,28 @@ never stage them).
 
 | Wave | Run | State |
 |---|---|---|
-| 0 (prep) | – | Done 2026-10-12: plan committed (`b2ea409`); dev tools pinned and **security patch next 16.3.8, sharp 0.35.5** (`1806937`); D051 (`8423f87`) |
-| 1 | `wf_de7ff1a5-e8b` (base `1806937`) | **Running** (15:30): 1.3 passed review round 1; 1.5 and 1.6 passed after one fix; 1.4 in its third review; 1.2 in fix round 1; 1.1 still building. Screens (1.5b): **done**, reviewed against D044 and committed (`6225df2`, all three in `src/assets/app/`) |
+| 0 (prep) | – | Done 2026-10-12: plan committed (`b2ea409`); dev tools pinned and **security patch next 16.3.8, sharp 0.35.5** (`1806937`); D051 (`8423f87`); runbook (`242126b`) |
+| 1 | `wf_de7ff1a5-e8b` (base `1806937`), started 14:45 in the old account's session | Snapshot 2026-10-12 ~16:00 below. **The run may die with that session (account switch).** |
 | 2 | – | Next: 2.1-2.10 (2.10 = beta never takes a payment, D051) |
 | 3-10 | – | Per [tasks](tasks.md) |
+
+### Wave 1 snapshot (~16:00, 2026-10-12)
+
+| Task | Branch, head | State | What the new session does |
+|---|---|---|---|
+| 1.1 Toolchain, harness, guards | `build/w1-1.1` `200623d` + **26 uncommitted files** in `.claude/worktrees/wf_de7ff1a5-e8b-1` | Builder still working (first commit: configs, step runner, Vitest guards); not reviewed | If the run is dead: start a `builder` agent in that worktree to finish 1.1 from where the files are (commit the good work first, by name), then an adversarial review (same prompt shape as the workflow), fix, review |
+| 1.2 Visual layer and motion | `build/w1-1.2` `7c8ebe8` (+1 uncommitted file) | Round-1 review failed on the motion guard; fix committed (`7c8ebe8`); re-review not yet run | Run the review on `7c8ebe8`; fix if needed |
+| 1.3 Environments and beta | `build/w1-1.3` `db711ce` | **Passed** review round 1 | Merge. Minor: a www-only `/store/:path*` redirect beyond §9.4 (check) |
+| 1.4 Tracking registries | `build/w1-1.4` `8578501` | **Passed** after two fixes | Merge |
+| 1.5 Assets, icons, doodles, OG | `build/w1-1.5` `fe338c2` | **Passed** after one fix | Merge |
+| 1.5b App screenshots | on `reset/website-v2` `6225df2` | **Done** | – |
+| 1.6 Content contracts | `build/w1-1.6` `0d8bc4e` | **Passed** after one fix | Merge. Minor: `formatInr` wording vs the frozen helper (check before 2.1) |
+
+**Resume order for a fresh session:** (1) `git worktree list` and the table above (re-check heads with
+`git -C <worktree> log -1`); (2) finish 1.1 and re-review 1.2 in their worktrees (or, if this session's
+run is still alive, wait for its notification); (3) merge per §2 in id order; (4) wave close; (5) wave 2
+with `Workflow({name: "build-wave", args: {wave: 2, base: <merged head>, screens: false, tasks: [...]}})`,
+task ids and titles from [tasks](tasks.md) "Wave 2" (2.1-2.10).
 
 ## 5. Wave 1 follow-ups for the main session
 
