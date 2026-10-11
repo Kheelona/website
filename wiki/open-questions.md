@@ -163,6 +163,22 @@ leaks** (no internal material marked EXTERNAL). These need the founder's ruling:
 | R9 | **ANSWERED 2026-10-10: (a) parents of 3-7 year olds and family buying for them; nothing else** (founder). Was: Is the site for parents and family gift buyers only? (corporate HR gifting and preschools marked INTERNAL) | Follows from D013 |
 | R10 | **ANSWERED:** Kheelona+ line ([D027](decisions/D027-story-mode-wording.md)); price wording ([D028](decisions/D028-price-wording.md), 2026-10-11). Bing's AI says Kheelu is "priced at ₹499" with "a lifetime subscription to Kheelona+", most likely from our own wording ("₹499 reserves..." and the sanctioned "smart features are lifetime" line). May the new copy reword the price and the Kheelona+ line so machines cannot misread them? | `raw/research/geo/ai-answer-audit-2026-10-10.md` |
 
+## L. Legal actions from the Indian-law review (founder's; ask one at a time)
+
+From [legal requirements](product/legal-requirements.md) (65 verified rows; a check against the
+law's own text, not legal advice). The page owns the provisions; this list only tracks the asks.
+
+| ID | Action | Why / provision | When |
+|---|---|---|---|
+| L1 | **BIS licence and ISI mark for Kheelu (IS 15644, relevant IS 9873 parts): status?** Our records show no certificate. The review reads the Toys QCO as barring import, sale or dispatch of an unmarked toy; ask counsel whether paid pre-orders count as "exhibit for sale". Merges F4's certification part | Toys (Quality Control) Order para 3; BIS Act s.17(1). **BLOCKER** | Before the first dispatch (20 Oct) |
+| L2 | Grievance acknowledgement: publish **48 hours** (not 5 days) and "resolve within one month"; add a phone number that takes calls and a complaint reference number | E-Commerce Rules 4(4), 4(5); SPDI Rule 5(9). **BLOCKER** for publishing | Wording at Gate A |
+| L3 | Charger and battery BIS registration numbers (Compulsory Registration Order) and WPC radio approval for Wi-Fi/Bluetooth | Electronics CRO 2021; DoT/WPC ETA (official text not fetched) | Before the first dispatch |
+| L4 | Legal Metrology declarations on the listing and box, with ONE MRP of at least ₹7,999 (nothing may sell above the printed MRP, and the post-500 price is ₹7,999); merges F3 | Legal Metrology (Packaged Commodities) Rules | Before the first dispatch |
+| L5 | Returns completeness: exchange policy, who pays return shipping, and a refund option for faulty or not-as-described units beyond the 7-day replacement (merges the F1 remainder) | E-Commerce Rules 7(1)(a), 7(4) | Before the first dispatch |
+| L6 | A product privacy policy matching D018-D020 and the signed provider contracts, and a verifiable parental-consent step at setup; no tracking or behavioural monitoring of children (daily summaries and alerts need a reading) | DPDP Act s.9; DPDP Rules (duties from 13 May 2027, counsel to confirm the date) | Before the toy connects to servers |
+| L7 | Copy fixes the review requires (CTO will apply in the new copy): drop "free" from Kheelona+ and say what stops after 6 months; the store's "Pre-order price" row becomes "Refundable advance"; no learning-outcome claims; no "Families already using Kheelu" | CCPA misleading-ads and dark-pattern guidelines; ASCI | New site |
+| L8 | Dated duties: join the National Consumer Helpline before 1 January 2027; first dark-pattern self-audit in December 2026; five more E-Commerce duties from 1 January 2027 (Amendment Rules 2026) | E-Commerce (Amendment) Rules 2026; dark-pattern guidelines | Dec 2026 / Jan 2027 |
+
 ## E. Decided by the brief (no answer needed; recorded so nobody re-asks)
 
 - **The published age band is 3-7**, everywhere (brief 2, 9.3, 9.8). This overrides the 2026-08-23

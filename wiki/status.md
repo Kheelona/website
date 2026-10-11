@@ -1,40 +1,36 @@
 ---
 title: Status
 type: status
-updated: 2026-10-10
+updated: 2026-10-11
 sources: [log.md, open-questions.md]
 ---
 
-# Status (2026-10-10, 20:15 PDT)
+# Status (2026-10-11, 05:00 PDT)
 
-**Phase:** 1 (discovery) running. Phase 0 closed 18:59 (lint clean, DS 643/643).
-**Branch:** `reset/website-v2`, 6 local commits on production `77552ff`: `9059894` clean-up,
-`b163b5c` schema, `ef0a71f` wiki lint, `959ec91` wiki + DS (founder Q1: commit publicly),
-`1743f16` content boundary + vercel.json `reset/*` no-deploy rule. **PUSH FAILED** (HTTP 408 x3,
-see log 20:15); founder: keep local, retry later from another network (D014). Remote has only `main`. Production untouched.
+**Phase:** 1 (discovery) DONE and ingested. Next: Phase 2 strategy (`site/strategy.md`), then
+Phase 3 homepage copy → CMO review → `mockup/` → Gate A.
+**Branch:** `reset/website-v2`, local commits on production `77552ff`, **NOT pushed** (HTTP 408 x3;
+founder: retry later from another network, D014). Production untouched until Gate B (D011).
 
-**In flight:** source verification `wf_dc801a61-c52` (D026); Indian-law review `wf_49e24b92-a56`
-(D029). Rulings applied (D016-D029); fixes QUEUED: [rulings check](qa/rulings-check-2026-10-11.md). Phase 1 outputs DONE
-(posthog-audit, d2c-benchmarks, keyword-map, qa/baseline); critic 0 blockers / 6 major.
-**PostHog:** old claude.ai connector is dead (old account). Direct `posthog` server added (user
-config); loads after restart → `/mcp` → posthog → Authenticate. Then fix agent tool names (log 00:45).
-Uncommitted until ingest: brand/, product/, research/, qa/, raw/{posthog,research,qa} (~101 MB raw).
-**Founder decisions today:** Q1 commit wiki + DS publicly (D010); Q2 PR #16 closed, remote
-branches deleted (D012); Q3 production held until Gate B, review locally (D011); Q4 internal
-research never on the site, site = sales site for the ICP (D013, `site/content-boundary.md`);
-Q5 caches deleted, originals kept, pitch deck moved to the macOS Trash (D012); push the branch
-with Vercel builds off for `reset/*` (D014).
+**Nothing running.** All workflows finished and ingested: Phase 1, D013 classification, rulings
+applied, source verification (D026), Indian-law review (D029).
 
-**Founder asked: ask remaining questions ONE AT A TIME in chat.** Queue, in order:
-1. Rulings R1-R10 (section F). Answered: R7 (D016), R1 (D017), R2 -> wake-up button + light (D018), R3 -> outside
-   providers (D019): F5 closed (D020: providers, India, no training, no sale,
-   36-month retention). Apply all after the completion run. Closed: F1, F5, F6, all R1-R10 (D016-D028); F12 partly (D023).
-   F2 answered (D029; 48h open). Next: C13 (deadline 19 Oct), C11, raw-in-public-repo, F3, F4...
-2. Facts F1-F13, then checks C1-C16 ([open questions](open-questions.md)), one by one.
+**First tasks after the founder's restart (in order):**
+1. PostHog: `/mcp` (no argument) → **posthog** → Authenticate (log 00:45). Then point
+   `.claude/agents/posthog-analyst.md` and `search-visibility.md` at the new tool names, run the
+   human-session recomputes from the Phase 1 critic, then ask C13 (replays expire 19-23 Oct).
+2. Apply the queued fixes in [rulings check](qa/rulings-check-2026-10-11.md) (wake-word lines,
+   D028 one-sentence price line, benchmark price lines, Xu pairing, keyword-map placeholders).
+3. Continue questions ONE AT A TIME: **L1 BIS/ISI status (blocker; dispatch 20 Oct)**, L2 48-hour
+   wording, then C13, C11, raw-files-in-public-repo, F3/L4, F15-F17, L3, L5-L6, remaining F and C.
 
-**Next after Phase 1:** ingest (critic gaps, verifier), commit Phase 1 pages, then Phase 2
-strategy (`site/strategy.md`), Phase 3 homepage copy → CMO review → `mockup/` → Gate A.
-**Due:** shipping starts 20 Oct 2026; production held until Gate B by founder choice (D011).
+**Founder decisions so far:** D010-D029 + R1-R10 + R9 (see index). Key: commit wiki publicly;
+production held; sales site for the ICP only; founder alone signs off copy; brain wording;
+wake-up button + light; providers in India, no retention/training; 36-month retention; 7-day
+returns; 6-month warranty; mid-Nov delivery; UPI/cards/net banking incl. GST; speech rules;
+statistics only after source verification; Story mode/Kheelona+ lines; price wording.
+
 **Traps:** read legacy files at tag `archive/pre-reset-2026-10-10` (D008); never `git add -A`;
-DS deny rule must stay anchored `Edit(/design-system/**)` (D005); stage Phase 1 paths only after
-ingest.
+the DS deny rule stays anchored (D005); ~101 MB of raw screenshots/Lighthouse files are
+deliberately UNcommitted pending the founder's call (public repo, push size).
+**Due:** dispatch 20 Oct 2026 (held production shows 20 Oct; new orders mid-Nov, D023).

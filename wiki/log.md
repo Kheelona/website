@@ -297,3 +297,14 @@ worry, C28 "thinks in it too", C41 vocabulary doubling, C45 "learn fastest"), 2 
 (e.g. the Xu study is UC Irvine, not Harvard). 26 ready footnoted site lines; 13 supported but
 INTERNAL. Several LIVE lines fail (held until Gate B, D011). 95 excerpt files in
 `raw/research/sources/`. DS gap G-18 (no footnote pattern) logged; Gate A item G15.
+
+## [2026-10-11 05:00] agent | Indian-law review finished (`wf_49e24b92-a56`, 5/5): 65 verified requirements, 2 blockers
+[Legal requirements](product/legal-requirements.md), sourced from the official Gazette and
+ministry texts (E-Commerce Rules incl. the 2026 amendment, CPA 2019, CCPA misleading-ads and
+dark-pattern guidelines, ASCI, Legal Metrology, Toys QCO and BIS Act, Electronics CRO, CGST,
+DPDP Act and Rules, IT Act and SPDI Rules, CERT-In). Blockers: (1) the BIS licence and ISI mark
+for the toy before any sale or dispatch (our records show none; status asked as L1); (2) 48-hour
+grievance acknowledgement, not 5 days (L2). The final writer's input was truncated after DP-05:
+rows DATA-06 to DATA-31 keep an earlier pass's text (verified by the data lens's verifier, not
+re-read by the writer). WPC text could not be fetched. Founder actions L1-L8 added. The run's
+writer was restarted once (00:13 -> 02:58); total 5 h 54 min.

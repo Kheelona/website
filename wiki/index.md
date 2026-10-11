@@ -33,6 +33,7 @@ pages a task needs. Phase 0 pages cite legacy files at tag `archive/pre-reset-20
 - [claims](product/claims.md): the claims register: confirmed, unconfirmed, retired or banned wording (with live locations), placeholders, certifications, children's data.
 - [age-band review](product/age-band-review.md): 47 age statements and age-dependent claims checked against 3-7 and the under-3 rule.
 - [pricing](product/pricing.md): the single price source, how the token/full mode is decided, every surface that renders price text, the sell-out sweep.
+- [legal requirements](product/legal-requirements.md): what Indian law requires the site (and product) to publish: 65 verified rows, 2 blockers (BIS/ISI; 48-hour grievance acknowledgement); a check against the law's text, not legal advice. INTERNAL.
 - [policies](product/policies.md): refund, returns, warranty, shipping, payment methods, seller, grievance officer, origin, MRP: status per item against the E-Commerce Rules.
 
 ## Site
@@ -61,7 +62,6 @@ pages a task needs. Phase 0 pages cite legacy files at tag `archive/pre-reset-20
 - [QA baseline](qa/baseline-2026-10-10.md): Lighthouse medians on production (mobile and desktop), CWV, links, metadata, JSON-LD, axe, phone first-screen checks: what the new site must beat.
 - [rulings check](qa/rulings-check-2026-10-11.md): verification that D016-D029 reached every owner page; the queued fixes.
 - [source verification](research/source-verification.md): 45 public claims checked against ORIGINAL sources and re-checked (D026): 1 supported as is, 38 only reworded, 4 not supported, 2 unverifiable; 26 ready footnoted site lines. Excerpts in `raw/research/sources/`.
-- Pending: `product/legal-requirements.md` (D029).
 
 ## Decisions
 - [D001](decisions/D001-branch-and-archive.md) branch from production; archive production and the mid version as tags.
