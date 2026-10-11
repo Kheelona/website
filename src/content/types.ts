@@ -8,6 +8,7 @@
  */
 
 import type { StaticImageData } from "next/image";
+import type { PreorderMode } from "@/lib/store/mode";
 
 /* ── Text and modes ───────────────────────────────────────────────────────── */
 
@@ -21,8 +22,10 @@ import type { StaticImageData } from "next/image";
 export type RichTextString = string;
 
 /** The store's offer mode: token while the refundable advance reserves one of the
- *  capped units, then full (paid in full). Decided by the store, never the count. */
-export type OfferMode = "token" | "full";
+ *  capped units, then full (paid in full). Decided by the store, never the count:
+ *  the store's own union (a type-only import, erased at build), so a new tier
+ *  there cannot drift past the content. */
+export type OfferMode = PreorderMode;
 
 /** Anything that changes with the offer mode carries both versions. */
 export interface ModeVariant<T = RichTextString> {
@@ -44,10 +47,44 @@ export type IsoDate = `${number}-${number}-${number}`;
 /** The amounts a content string may name, as `{price:<key>}`. */
 export type PriceKey = "token" | "balance" | "headline" | "full" | "mrp";
 
+/** The phone buy bar's two lines: the amount line and the note under it. */
+export interface OfferSticky {
+  readonly big: RichTextString;
+  readonly small: RichTextString;
+}
+
+/** One row of the offer card's token-mode split: what is paid when ("Today,
+ *  refundable" with `token`, "Before delivery" with `balance`). */
+export interface OfferSplitRow {
+  readonly label: RichTextString;
+  readonly price: PriceKey;
+}
+
+/** Where an offer card sits: Home's close (fold 9) and the product page (fold 3).
+ *  Each lists its own perks; the product page's include Kheelona+. */
+export type OfferCardPlacement = "home" | "product";
+
+/**
+ * The offer card (DS OfferCard, `kh-offer`) for the current mode. Its amount is
+ * the offer's `prices.headline`, its fine print the offer's `sentence`, and its
+ * button the placement's CTA; `ui/OfferCard` takes the perks for its placement.
+ */
+export interface OfferCard {
+  /** The product line: "Kheelu". */
+  readonly product: string;
+  /** Beside the amount: "incl. GST". */
+  readonly priceNote: RichTextString;
+  /** Token mode only; absent in full mode, whose composed block has no split (G-08). */
+  readonly split?: readonly OfferSplitRow[];
+  /** The same in both modes. */
+  readonly perks: Readonly<Record<OfferCardPlacement, readonly IconText[]>>;
+}
+
 /**
  * The offer view model, built by src/lib/offer/offer.ts (task 2.1) from the live
- * store mode and the checkout's own amounts in src/config/site.ts. Every price on
- * a page, in JSON-LD and in machine files resolves through one of these.
+ * store mode, content/en-IN/offer.ts and the checkout's own amounts in
+ * src/config/site.ts. Every price on a page, in JSON-LD and in machine files
+ * resolves through one of these.
  */
 export interface Offer {
   readonly mode: OfferMode;
@@ -60,11 +97,32 @@ export interface Offer {
   /** The D028 price sentence for this mode (it may carry price tokens). */
   readonly sentence: RichTextString;
   /** The phone buy bar's two lines for this mode. */
-  readonly sticky: { readonly big: RichTextString; readonly small: RichTextString };
+  readonly sticky: OfferSticky;
+  /** The offer card for this mode. */
+  readonly card: OfferCard;
+  /** The Kheelona+ line under Home's card (D041 F7): "Every Kheelu comes with 6
+   *  months of Kheelona+: …". */
+  readonly plus: RichTextString;
   /** The visible delivery line, `DELIVERY_TEXT` (D023), for `{delivery}`. */
   readonly delivery: string;
   /** The schema date the delivery line stands for, `DELIVERY_SCHEMA_DATE` (D037). */
   readonly availabilityStarts: IsoDate;
+}
+
+/** The offer card as content/en-IN/offer.ts holds it: the split is written once
+ *  and the view model leaves it out in full mode. */
+export interface OfferCardCopy extends Omit<OfferCard, "priceNote" | "split"> {
+  readonly priceNote: Copy;
+  readonly split: readonly OfferSplitRow[];
+}
+
+/** The shape of content/en-IN/offer.ts, both modes (architecture §6.1): the
+ *  module ends with `satisfies OfferCopy`; src/lib/offer/offer.ts picks a mode. */
+export interface OfferCopy {
+  readonly sentence: ModeVariant;
+  readonly sticky: ModeVariant<OfferSticky>;
+  readonly card: OfferCardCopy;
+  readonly plus: RichTextString;
 }
 
 /* ── Placeholders ─────────────────────────────────────────────────────────── */
@@ -246,7 +304,11 @@ export interface FaqItem extends Answer {
   readonly id: string;
 }
 
-/** One of the parent films (D040). */
+/**
+ * One of the parent films (D040). No `loading` here, though architecture §6.1
+ * lists one: it changes with the page (Home loads its first three eagerly, the
+ * store loads all of them lazily), so the page decides it, not the film.
+ */
 export interface Film {
   /** Also the file name under /video/moments/. */
   readonly id: string;

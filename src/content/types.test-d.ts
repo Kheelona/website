@@ -7,6 +7,7 @@
  */
 import type { StaticImageData } from "next/image";
 import { placeholder as ph } from "@/lib/content/placeholder";
+import type { PreorderMode } from "@/lib/store/mode";
 import type {
   Answer,
   Article,
@@ -16,10 +17,14 @@ import type {
   FaqItem,
   Film,
   Gated,
+  IconText,
   ImageRef,
   LegalDoc,
   Meta,
   Offer,
+  OfferCard,
+  OfferCopy,
+  OfferMode,
   Placeholder,
   ProseBlock,
   SupportChat,
@@ -40,21 +45,86 @@ export const sentence = {
 // @ts-expect-error a mode variant needs both modes
 export const halfVariant = { token: "Reserve yours today." } satisfies Copy;
 
+/* ── The offer module, content/en-IN/offer.ts (Home fold 9, product fold 3) ── */
+
+/* Home's card: the delivery line first, then three perks (mockup/pages/home.html, fold 9). */
+const homePerks = [
+  { icon: "truck", text: "{delivery}" },
+  { icon: "package", text: "In the box: Kheelu plush toy, charger and quick-start card" },
+  { icon: "map-pin", text: "Delivery anywhere in India, included" },
+  { icon: "check-circle", text: "A GST invoice with every order" },
+] satisfies readonly IconText[];
+
+/* The product page's card lists five, Kheelona+ among them (mockup/pages/meet-kheelu.html, fold 3). */
+const productPerks = [
+  { icon: "package", text: "In the box: Kheelu plush toy, charger and quick-start card" },
+  { icon: "star", text: "6 months of Kheelona+ included: stories, poems, jingles, languages and the parent app" },
+  { icon: "map-pin", text: "Delivery anywhere in India, included" },
+  { icon: "truck", text: "{delivery}" },
+  { icon: "check-circle", text: "A GST invoice with every order" },
+] satisfies readonly IconText[];
+
+export const offerCopy = {
+  sentence: {
+    token:
+      "Reserve yours for {price:token} today, refundable until dispatch, then pay {price:balance} before delivery: {price:headline} in total (incl. GST).",
+    full: "{price:full} (incl. GST), paid in full when you order.",
+  },
+  sticky: {
+    token: { big: "{price:token} today", small: "refundable · {price:headline} total (incl. GST)" },
+    full: { big: "{price:full} (incl. GST)", small: "Paid in full · {delivery}" },
+  },
+  card: {
+    product: "Kheelu",
+    priceNote: "incl. GST",
+    split: [
+      { label: "Today, refundable", price: "token" },
+      { label: "Before delivery", price: "balance" },
+    ],
+    perks: { home: homePerks, product: productPerks },
+  },
+  plus: "Every Kheelu comes with 6 months of Kheelona+: stories, poems, jingles, languages and the parent app.",
+} satisfies OfferCopy;
+// @ts-expect-error the price sentence changes with the mode (D028), so it always carries both
+export const oneSentence: OfferCopy["sentence"] = "Reserve yours today.";
+// @ts-expect-error the sticky bar's lines change with the mode too
+export const oneSticky: OfferCopy["sticky"] = { big: "{price:token} today", small: "refundable" };
+
 /* ── Offer view model ── */
 
 export const offer = {
   mode: "token",
   headlinePaise: 499_900,
   prices: { token: "a", balance: "b", headline: "c", full: "d", mrp: "e" },
-  sentence: sentence.token,
-  sticky: { big: "{price:token} today", small: "refundable · {price:headline} total (incl. GST)" },
+  sentence: offerCopy.sentence.token,
+  sticky: offerCopy.sticky.token,
+  card: { product: "Kheelu", priceNote: "incl. GST", split: offerCopy.card.split, perks: offerCopy.card.perks },
+  plus: offerCopy.plus,
   delivery: "Deliveries start mid-November",
   availabilityStarts: "2026-11-15",
 } satisfies Offer;
+
+/* Full mode: the same perks, no split (G-08). */
+export const fullOffer = {
+  ...offer,
+  mode: "full",
+  headlinePaise: 799_900,
+  sentence: offerCopy.sentence.full,
+  sticky: offerCopy.sticky.full,
+  card: { product: "Kheelu", priceNote: "incl. GST", perks: offerCopy.card.perks },
+} satisfies Offer;
+
 // @ts-expect-error the offer has no such price
 export const unknownPrice: Offer["prices"] = { token: "a", balance: "b", headline: "c", full: "d", mrp: "e", tax: "f" };
 // @ts-expect-error there is no third mode
 export const thirdMode: Offer["mode"] = "sold-out";
+// @ts-expect-error a split row names one of the offer's five amounts, never a typed one
+export const unknownSplit: OfferCard["split"] = [{ label: "Today, refundable", price: "deposit" }];
+// @ts-expect-error each placement has its own perks list, the product page's included
+export const homeOnly: OfferCard["perks"] = { home: homePerks };
+
+/* The offer's mode is the store's own union, so a new store tier cannot drift past it. */
+export const storeMode: Equals<OfferMode, PreorderMode> = true;
 
 /* ── Meta ── */
 

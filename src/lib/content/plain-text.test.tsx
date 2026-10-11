@@ -17,6 +17,8 @@ const tokenOffer: Offer = {
   prices: { ...prices, headline: "₹4,999" },
   sentence: "",
   sticky: { big: "", small: "" },
+  card: { product: "Kheelu", priceNote: "incl. GST", perks: { home: [], product: [] } },
+  plus: "",
   delivery: "Deliveries start mid-November",
   availabilityStarts: "2026-11-15",
 };

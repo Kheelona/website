@@ -72,6 +72,13 @@ const KNOWN_TOKENS = [
   "[^n]",
 ].join(", ");
 
+/** A site path: a slash, then letters, digits and - . _ ~ / % ? = &, then an
+ *  optional #anchor. Never a second slash or a backslash after the first, which
+ *  browsers read as another site, and never a quote or markup. */
+const SITE_PATH = /^\/(?![/\\])[A-Za-z0-9._~/%?=&-]*(#[A-Za-z0-9_-]+)?$/;
+/** An in-page anchor, as the pages' section ids are written. */
+const ANCHOR = /^#[A-Za-z0-9_-]+$/;
+
 function isWrap(name: string): name is WrapKind {
   return (WRAPS as readonly string[]).includes(name);
 }
@@ -210,10 +217,18 @@ class Parser {
 
   private checkHref(href: string, open: number): void {
     if (href === "") this.fail("A link address is empty", open);
-    if (/^(\/(?!\/)|#.)/.test(href)) return;
+    if (href.startsWith("/")) {
+      const path = href.split(/[?#]/, 1)[0];
+      if (SITE_PATH.test(href) && !/\.html$/i.test(path)) return;
+      this.fail(`Link to a site path such as /refund, not "${href}"`, open);
+    }
+    if (href.startsWith("#")) {
+      if (ANCHOR.test(href)) return;
+      this.fail(`An in-page anchor is # then letters, digits, - or _, not "${href}"`, open);
+    }
     if (/^https:\/\/[^/\s]/.test(href) || /^(mailto|tel):./.test(href)) return;
     if (/^http:/i.test(href)) this.fail(`Use https:// for the link to ${href}`, open);
-    if (!/^[a-z][a-z0-9+.-]*:/i.test(href) && !href.startsWith("/")) {
+    if (!/^[a-z][a-z0-9+.-]*:/i.test(href)) {
       this.fail(`Link to a site path such as /refund, not "${href}"`, open);
     }
     this.fail(`Unsupported link address "${href}"; use /path, #anchor, https://, mailto: or tel:`, open);

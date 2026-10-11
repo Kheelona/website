@@ -13,6 +13,8 @@ const offer: Offer = {
   prices: { token: "₹499", balance: "₹4,500", headline: "₹4,999", full: "₹7,999", mrp: "₹7,999" },
   sentence: "Reserve yours for {price:token} today.",
   sticky: { big: "{price:token} today", small: "refundable" },
+  card: { product: "Kheelu", priceNote: "incl. GST", perks: { home: [], product: [] } },
+  plus: "Every Kheelu comes with 6 months of Kheelona+.",
   delivery: "Deliveries start mid-November",
   availabilityStarts: "2026-11-15",
 };
@@ -73,6 +75,17 @@ describe("each token of architecture §6.2", () => {
     expect(parseRichText(`[us](${href})`)).toEqual([
       { kind: "link", href, internal: false, children: [text("us")] },
     ]);
+  });
+
+  it.each([
+    ["/"],
+    ["/products/kheelu#faq"],
+    ["/stories/learning-toys-for-a-three-year-old"],
+    ["/store?utm_source=home&utm_medium=web"],
+    ["/og/home.jpg"],
+    ["/privacy#src-1"],
+  ])("accepts the site path %s", (href) => {
+    expect(parseRichText(`[it](${href})`)).toEqual([{ kind: "link", href, internal: true, children: [text("it")] }]);
   });
 
   it("keeps balanced parentheses inside a link's address", () => {
@@ -153,6 +166,13 @@ describe("what the parser refuses, with a message", () => {
     ["an empty accent", "{hand:}", /empty/i],
     ["a bracket that starts no link", "[label] (/safety)", /\[label\]\(href\)/],
     ["a page copied from the mockup", "[Refunds](refund.html)", /site path/i],
+    ["a site path that keeps the mockup's .html", "[Refunds](/refund.html)", /site path such as \/refund, not/i],
+    ["a backslash browsers read as another site", "[R](/\\evil.com)", /site path such as \/refund, not/i],
+    ["a second slash, another site", "[R](//evil.com)", /site path such as \/refund, not/i],
+    ["a quote in a site path", '[R](/a"x)', /site path such as \/refund, not/i],
+    ["markup in a site path", "[R](/a<b>)", /site path such as \/refund, not/i],
+    ["a quote in an anchor", '[R](#a"x)', /anchor/i],
+    ["an anchor with a second #", "[R](#a#b)", /anchor/i],
     ["plain http", "[it](http://example.org)", /use https:\/\/ for the link/i],
     ["a script address", "[it](javascript:alert(1))", /unsupported link address/i],
     ["spaces in an address", "[it](/a b)", /space/i],

@@ -13,16 +13,21 @@ import type { Placeholder } from "@/content/types";
  * they import from here.
  *
  * An id is an open-item id: a capital letter, then capitals and digits, optionally
- * in hyphenated groups, at least two characters (F4, F11, B24, C6, G-20, D047,
- * ARTICLE). In a token, the first word is the id when it has that shape and a note
- * follows; otherwise the whole body is the note. So a note without an id must not
- * begin with an all-capitals word ("the GST documents", not "GST documents").
+ * in hyphenated groups, with at least one digit (F4, F11, B24, C6, G-20, D047), or
+ * one of the few word ids in WORD_IDS (ARTICLE, task 2.1's article stubs). In a
+ * token, the first word is the id when it is one and a note follows; otherwise the
+ * whole body is the note. So "GST documents", "BIS number" and "HSN code" stay
+ * notes, as the mockups print them. A new word id is added to WORD_IDS, never
+ * guessed from capitals.
  */
 
 const ID = /^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*$/;
 
+/** Open-item ids that are words, not numbered items. */
+const WORD_IDS: readonly string[] = ["ARTICLE"];
+
 function isId(word: string): boolean {
-  return word.length >= 2 && ID.test(word);
+  return ID.test(word) && (/\d/.test(word) || WORD_IDS.includes(word));
 }
 
 /** The inline token, for messages that tell an author how to write one. */
@@ -32,7 +37,7 @@ export const PLACEHOLDER_TOKEN_HINT = "{ph:ID note}";
 export function placeholder(id: string | null, note: string): Placeholder {
   if (id !== null && !isId(id)) {
     throw new Error(
-      `Placeholder id "${id}" is not an open-item id (for example F4, B24, G-20); pass null when the copy page names none.`,
+      `Placeholder id "${id}" is not an open-item id (a numbered item such as F4, B24 or G-20, or ${WORD_IDS.join(", ")}); pass null when the copy page names none.`,
     );
   }
   const trimmed = note.trim();

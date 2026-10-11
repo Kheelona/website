@@ -1,3 +1,6 @@
+import { readdirSync, readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import {
   isPlaceholder,
@@ -36,6 +39,12 @@ describe("the data helper", () => {
   it("refuses an id that is not an open-item id, so a typo cannot hide the item", () => {
     for (const id of ["f4", "F 4", "4F", "A", "", "F4:"]) {
       expect(() => ph(id, "note"), id).toThrow(/id/i);
+    }
+  });
+
+  it("refuses an all-capitals word as an id: open items are numbered, ARTICLE aside", () => {
+    for (const id of ["GST", "BIS", "HSN", "CA"]) {
+      expect(() => ph(id, "note"), id).toThrow(/open-item id/i);
     }
   });
 
@@ -78,8 +87,13 @@ describe("the inline token body", () => {
     ["region", null, "region"],
     ["how long we keep them", null, "how long we keep them"],
     ["order number, KH-XXXX-XXXX", null, "order number, KH-XXXX-XXXX"],
+    ["D047 the founder’s ruling", "D047", "the founder’s ruling"],
     // a single capital is an English word, never an id
     ["A grown-up nearby", null, "A grown-up nearby"],
+    // an all-capitals word without a digit is part of the note (ARTICLE aside)
+    ["GST documents", null, "GST documents"],
+    ["BIS number", null, "BIS number"],
+    ["HSN code and the GST rate", null, "HSN code and the GST rate"],
   ])("reads %j as id %j with note %j", (body, id, note) => {
     const result = parsePlaceholderToken(body);
     expect(result.id).toBe(id);
@@ -99,5 +113,31 @@ describe("the inline token body", () => {
   it("refuses an empty body", () => {
     expect(() => parsePlaceholderToken("")).toThrow(/empty/i);
     expect(() => parsePlaceholderToken("  ")).toThrow(/empty/i);
+  });
+});
+
+/* Text parity with the approved mockups: every marker they print, written as the
+   inline token, renders back to exactly the same marker. A new note that the id
+   rule would misread fails here, in CI, and not on beta. */
+describe("every placeholder marker in the approved mockups", () => {
+  /* A string, not a URL object: under jsdom, URL is jsdom's and node refuses it. */
+  const mockup = join(dirname(fileURLToPath(import.meta.url)), "../../../mockup");
+  const files = readdirSync(mockup, { recursive: true, encoding: "utf8" }).filter((file) => file.endsWith(".html"));
+  const escaped = OPEN.replace(/[[\]]/g, "\\$&");
+  const markerPattern = new RegExp(`${escaped}[^\\]]*\\]`, "g");
+  const markers = [
+    ...new Set(files.flatMap((file) => readFileSync(join(mockup, file), "utf8").match(markerPattern) ?? [])),
+  ];
+  const markerParts = new RegExp(`^${escaped}(?: ([^:\\s]+))?: (.+)\\]$`, "s");
+
+  it("finds the mockups' markers", () => {
+    expect(markers.length).toBeGreaterThan(0);
+  });
+
+  it.each(markers.map((marker) => [marker]))("round-trips %s through the token", (marker) => {
+    const [, id, note] = markerParts.exec(marker) ?? [];
+    expect(note, marker).toBeDefined();
+    const body = id === undefined ? note : `${id} ${note}`;
+    expect(placeholderText(parsePlaceholderToken(body))).toBe(marker);
   });
 });
