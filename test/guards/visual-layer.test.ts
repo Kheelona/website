@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { join } from "node:path";
+import { join, relative, sep } from "node:path";
 import postcss, { type AtRule, type ChildNode, type Container, type Root } from "postcss";
 import { beforeAll, describe, expect, it } from "vitest";
 import postcssConfig from "../../postcss.config.mjs";
@@ -11,16 +11,28 @@ import { buildComposeCss } from "../../scripts/assets/build-compose-css.mjs";
  * The mockups the founder approved load tokens.css, bundle.css, then composition CSS, all unlayered. site.css
  * must ship that cascade: DS tokens (font-less), DS fonts, bundle.css as delivered, type steps, motion presets,
  * the composition manifest, and only then Tailwind's theme and utilities inside cascade layers, with no
- * preflight. Unlayered CSS beats any layer, so a utility can never restyle a DS class. site.css is compiled here
- * through the project's own PostCSS pipeline (postcss.config.mjs), the same one Next and Storybook run.
+ * preflight. Unlayered CSS beats any layer, so a utility can never restyle a DS class. Tailwind finds class names
+ * only where site.css's @source lines point (src/ TypeScript, tests and stories aside): `source(none)` turns off its
+ * automatic detection, which would otherwise scan the whole repository (wiki/, design-system/, mockup/, test/), so a
+ * wiki edit could change the shipped CSS. site.css is compiled here through the project's own PostCSS pipeline
+ * (postcss.config.mjs), the same one Next and Storybook run.
  */
 
 const ROOT = process.cwd();
 const SITE = join(ROOT, "src/styles/site.css");
 const siteCss = readFileSync(SITE, "utf8");
 
-async function compile(css: string): Promise<Root> {
-  const result = await postcss(postcssConfig.plugins).process(css, { from: SITE });
+/** Repo-relative paths of the files the last compile read (its dependency messages: imports and scanned sources). */
+let scannedFiles: string[] = [];
+
+/**
+ * Compiles `css` as site.css. @tailwindcss/postcss caches its compiler per `from` path and reuses it while the files
+ * it read keep their mtimes, so a second compile of different text under the same path would return the first
+ * result: each compile gets its own key (`site.css?<key>`), which postcss.config.mjs still treats as site.css.
+ */
+async function compile(css: string, key: string): Promise<Root> {
+  const result = await postcss(postcssConfig.plugins).process(css, { from: `${SITE}?visual-layer-${key}` });
+  scannedFiles = result.messages.filter((m) => m.type === "dependency").map((m) => relative(ROOT, m.file as string).split(sep).join("/"));
   return postcss.parse(result.css);
 }
 
@@ -54,7 +66,7 @@ describe("site.css source", () => {
       '@import "../motion/motion.css"',
       '@import "./generated/compose.css"',
       '@import "tailwindcss/theme.css" layer(theme)',
-      '@import "tailwindcss/utilities.css" layer(utilities)',
+      '@import "tailwindcss/utilities.css" layer(utilities) source(none)',
       '@import "./tailwind-theme.css"',
       '@source "../**/*.{ts,tsx}"',
       '@source not "../**/*.{test,stories}.tsx"',
@@ -72,8 +84,10 @@ describe("site.css compiled through postcss.config.mjs", () => {
   let probe: Root;
   beforeAll(async () => {
     buildComposeCss(); // the predev/prebuild step; compose.css is git-ignored, so a fresh clone has none yet
-    out = await compile(siteCss);
-    probe = await compile(`${siteCss}\n@source inline("p-[13px] bg-red-500 [color:red] p-(--space-3) p-5 flex lg:p-7");`);
+    out = await compile(siteCss, "site");
+    const siteScan = scannedFiles; // the probe below adds an inline source; keep what the real entry reads
+    probe = await compile(`${siteCss}\n@source inline("p-[13px] bg-red-500 [color:red] p-(--space-3) p-5 flex lg:p-7 bg-deep-sun");`, "probe");
+    scannedFiles = siteScan;
   }, 60_000);
 
   it("keeps the cascade order: tokens, fonts, bundle.css, type steps, motion, compose, then Tailwind's layers", () => {
@@ -89,7 +103,9 @@ describe("site.css compiled through postcss.config.mjs", () => {
       const first = postcss.parse(readFileSync(join(ROOT, "src", compose[0]), "utf8")).nodes.find((n) => n.type === "rule");
       if (first?.type === "rule") order.push(indexOf(out, ruleWith(first.selector))); // 6. compose.css (from wave 2 on)
     }
-    order.push(indexOf(out, (n) => n.type === "atrule" && (n as AtRule).name === "layer" && (n as AtRule).params === "theme" && !!(n as AtRule).nodes)); // 7.
+    // 7. Tailwind's layers: the first layered block (theme only appears when a utility reads a theme variable that
+    // @theme inline does not inline; utilities whenever src/ uses one).
+    order.push(indexOf(out, (n) => n.type === "atrule" && (n as AtRule).name === "layer" && ["theme", "utilities"].includes((n as AtRule).params) && !!(n as AtRule).nodes));
     for (const i of order) expect(i).toBeGreaterThanOrEqual(0);
     expect(order).toEqual([...order].sort((a, b) => a - b));
     expect(new Set(order).size).toBe(order.length);
@@ -118,9 +134,16 @@ describe("site.css compiled through postcss.config.mjs", () => {
     probe.walkRules((r) => { selectors.push(r.selector); });
     expect(selectors).toContain(".p-5");
     expect(selectors).toContain(".flex");
+    expect(selectors, "the probe's own candidates reach the compiler").toContain(".bg-deep-sun");
     for (const s of [".p-\\[13px\\]", ".bg-red-500", ".\\[color\\:red\\]", ".p-\\(--space-3\\)"]) expect(selectors, s).not.toContain(s);
     expect(probe.toString()).not.toMatch(/padding: 13px/);
     expect(selectors.filter((s) => /\\\[|\\\(/.test(s))).toEqual([]);
+  });
+
+  it("finds class names only in src/ TypeScript: no automatic detection of wiki/, design-system/ or mockup/, no tests or stories", () => {
+    const scanned = scannedFiles.filter((f) => !f.endsWith(".css"));
+    expect(scanned.length).toBeGreaterThan(0);
+    expect(scanned.filter((f) => !/^src\/.+\.(ts|tsx)$/.test(f) || /\.(test|stories)\.tsx$/.test(f))).toEqual([]);
   });
 
   it("puts Tailwind's utilities inside the utilities layer", () => {
