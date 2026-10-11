@@ -168,3 +168,18 @@ Could not apply**
   - The warranty remedy after the first 7 days (F1).
 - **Diwali (G2):** I had no source for the date, so the draft doesn't say whether mid-November is before or after Diwali.
 - **Git:** I ran three read-only git commands (status, diff, log) on this page by mistake. Nothing was written to git.
+
+## Applied 2026-10-11
+
+Every queued fix above was applied by the main session's fork on 2026-10-11, together with the
+founder's answers D030-D039:
+
+- **1a** five more live wake-word lines added to [claims §4.1](../product/claims.md#41-the-retired-microphone-wording) as rows 18-22 (`wt:`), and "wake-word" and "wake Kheelu up" added to the guard list.
+- **1b** the benchmark price lines (A3, A4, D2) now point to D028's one-sentence form on [messaging](../brand/messaging.md#confirmed-candidate-lines).
+- **1c** Xu 2022 carries the D027 guard on messaging, positioning and claims; "Kheelu is built around that" no longer follows the Xu clause; Xu is cited as verified ([source verification](../research/source-verification.md) C10).
+- **1d** CTO ruling: the "adapts" family ("adapts", "at your child's pace", "grows with your child", "at your child's level" and synonyms) is BANNED as written; only the confirmed mechanisms are described (the parent-set age and the age-graded layer; memory: [D036](../decisions/D036-launch-feature-claims.md)). Owner: [claims §3](../product/claims.md#3-not-confirmed-do-not-publish); messaging and voice link to it.
+- **1e** the Stories skill is reworded as asking back in conversation; SKM's "tells half a story" line is BANNED as written.
+- **2a-2f** keyword-map placeholders replaced (B7, B12, AI4, SV-10 closed), Gate A flags on the first-processing and age-graded rows, "Region-pinned" banned on claims, AI2 in D020's order with the full providers line, "of the unit reaching us", "₹4,999 (incl. GST)", the 76-questions figure marked not usable (C13, COULD-NOT-VERIFY) on positioning and audience.
+- **Section 3** stale references fixed (benchmarks R6 → D026; baseline's return-schema line; audience's PostHog link; positioning's benchmarks link).
+- **Copy corrections**: D028 one-sentence candidate on messaging; D023 delivery line paired with it; "within one month" (D032); "Wi-Fi" in drafts, with D027's line quoted as written.
+- The broken PostHog-audit anchors on [D2C benchmarks](../research/d2c-benchmarks.md) and [QA baseline](baseline-2026-10-10.md) point to the renamed headings.

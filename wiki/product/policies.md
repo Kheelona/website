@@ -32,6 +32,7 @@ sources:
   - wiki/decisions/D024-payment-methods-gst.md
   - wiki/decisions/D025-speech-and-language.md
   - wiki/decisions/D029-grievance-officer-legal-review.md
+  - "wiki/decisions/D032, D033, D034 (founder, 2026-10-11)"
   - "GET https://kheelona.com/{refund,shipping,terms,privacy,contact} and https://store.kheelona.com/ (browser UA, 2026-10-11 00:42-00:44 UTC)"
   - "https://www.legitquest.com/act/consumer-protection-e-commerce-rules-2020/91C8 (fetched 2026-10-11; re-read about 06:00 UTC the same day for Rules 4(4), 4(5), 4(10), 7(1) and 7(4); secondary source, official PDFs unreachable)"
 ---
@@ -74,17 +75,17 @@ What production says today. The new site's terms are in [Decided for the new sit
 | Cancellation | **Published** | `/refund`, `/terms` | Same as refund. Not paying the balance is treated as a cancellation: asked twice over two weeks, then the unit is released and the token refunded. If Kheelona cannot deliver or the ship date moves, a full refund is offered | `refund/page.tsx:49, 55`; `terms/page.tsx:69-70` |
 | Returns (after dispatch) | **Missing on production**, honest placeholder. **Decided** for the new site (D021) | `/refund` | "delivery, returns, and warranty terms … are not written yet, because nothing has shipped yet. We will publish them … before your Kheelu is dispatched." Also: "A damaged or faulty Kheelu is our problem to fix" | `refund/page.tsx:65-66` |
 | Exchange | **Missing**; **no ruling** for the new site either | Nowhere | No exchange policy or mention on any page (grep of `src/app`, 2026-10-11) | – |
-| Warranty | **Missing on production**, placeholder. **Decided** for the new site (D022), one point still open | `/products/kheelu` FAQ, spec table | "Warranty details land closer to launch." / "Terms land closer to launch." | `products/kheelu/page.tsx:102`; `product-facts.ts:88` |
+| Warranty | **Missing on production**, placeholder. **Decided** for the new site (D022, D033) | `/products/kheelu` FAQ, spec table | "Warranty details land closer to launch." / "Terms land closer to launch." | `products/kheelu/page.tsx:102`; `product-facts.ts:88` |
 | Shipping and delivery | **Published**. Production keeps "20 October 2026" until Gate B; new orders deliver from mid-November (D023) | `/shipping`, `/terms`, store summary | Shipping starts 20 October 2026; pre-orders first, in order placed. Anywhere in India; delivery included; nothing collected at the door; no shipping outside India. No transit-time promise (deliberately: "a real tracking link" instead). Token orders dispatch once the balance is paid. Address changeable until dispatch | `shipping/page.tsx:32-61` |
 | One unit per order | **Published** | `/terms` | One Kheelu per pre-order; more via WhatsApp | `terms/page.tsx:52` |
 | Payment methods | **Partial on production**; only UPI seen in a real order. **Confirmed** for the new site (D024): [below](#payment-methods) | `/privacy`, `/refund`, `FinaleCTA` | "Razorpay takes the payment securely"; "Your card number, your UPI ID, and your bank details go to them". No list of methods, no fees, no chargeback info | `privacy/page.tsx:36`; `refund/page.tsx:39`; `FinaleCTA.tsx:116` |
 | Seller details | **Published** | `/terms`, `/refund`, `/shipping`, `/privacy`, `/contact`, store footer, both emails | See below. One shared source (`SELLER_SECTION`) | `src/lib/legal.ts:18-24`; `site.ts:183-202` |
 | Customer care | **Published** | same | WhatsApp and email; values on [facts](facts.md#support-channel) | `site.ts:174, 200-202` |
 | Grievance officer | **Missing on production**. **Confirmed** for the new site (D029) | Nowhere | No name, designation or contact; flagged since 2026-08-23 for `/privacy` | `Technical-Todo.md:886-897` |
-| Complaint handling times | **Missing on production**. For the new site: resolution confirmed, acknowledgement **still open** (D029) | Nowhere | No acknowledgement or resolution time stated; no complaint ticket number | grep, 2026-10-11 |
-| Country of origin | **Missing** ([F3](../open-questions.md)), and `/contact` implies one: see the "designed and built here" row in [claims](claims.md#31-origin-designed-and-built-here) | – | Not stated | `product-facts.ts:42-46` |
+| Complaint handling times | **Missing on production**. **Decided** for the new site: 48 hours to acknowledge, one month to resolve (D032) | Nowhere | No acknowledgement or resolution time stated; no complaint ticket number | grep, 2026-10-11 |
+| Country of origin | **Missing on production. Decided: India** ([D034](../decisions/D034-origin-manufacturer-mrp.md)); `/contact`'s "designed and built here" row in [claims](claims.md#31-origin-designed-and-built-here) is now supported | – | Not stated | `product-facts.ts:42-46` |
 | Total price incl. taxes | **Published** (single figure). GST invoice **confirmed** for the new site (D024) | Store summary, `/terms`, `/shipping` | "All prices include GST." "Delivery in India is included." No tax breakup | [pricing](pricing.md#tax-delivery-mrp) |
-| MRP | **Missing** ([F3](../open-questions.md)) | Nowhere | No MRP is defined | [pricing](pricing.md#tax-delivery-mrp) |
+| MRP | **Missing on production. Decided: ₹7,999** incl. taxes ([D034](../decisions/D034-origin-manufacturer-mrp.md)) | Nowhere | No MRP is defined | [pricing](pricing.md#tax-delivery-mrp) |
 | Toy-safety certification (BIS/ISI) | **Status-honest placeholder** | `/products/kheelu`, spec table, AI-toys guide | "In progress … no badge is claimed before it is earned." Detail owned by [claims](claims.md) | `product-facts.ts:89-93`; `ai-toys…/page.tsx:116` |
 | Governing law | **Published** | `/terms` | Indian law; courts at Bengaluru | `terms/page.tsx:82` |
 | Data retention and deletion | **Partial on production**. Retention period **confirmed** for the new site (D020) | `/privacy` | Order record kept for tax accounts even after a refund; everything else deleted on request. No retention period stated | `privacy/page.tsx:56, 196` |
@@ -102,8 +103,9 @@ to the CTA, from one content source (Phase 4; [D021](../decisions/D021-returns-p
 |---|---|---|---|
 | Returns | Within 7 days of delivery, no questions asked. Opened is fine if there is no physical damage and every component comes back, including the box. "Of delivery" is the applied reading (a pre-order cannot start the clock at payment); the founder may correct it | **Confirmed** | [D021](../decisions/D021-returns-policy.md) |
 | Faulty on arrival | Replaced if reported within 7 days of receipt. No replacement timeline is published (it depends on where in India the parent is) | **Confirmed** | [D022](../decisions/D022-warranty-replacement-refund.md) |
-| Warranty | 6 months on manufacturing defects; not drops, water or misuse | **Confirmed**. **Still open:** the remedy for a defect found after the first 7 days (repair or replace); until then the copy says only "6-month warranty on manufacturing defects" (F1) | [D022](../decisions/D022-warranty-replacement-refund.md) |
-| Return pickup | We arrange it | **Confirmed**. **Still open:** who pays. Never write "free pickup" (F1) | [D022](../decisions/D022-warranty-replacement-refund.md) |
+| Warranty | 6 months on manufacturing defects; not drops, water or misuse. A defect found after the first 7 days: **repaired, or replaced if the repair fails** | **Confirmed** | [D022](../decisions/D022-warranty-replacement-refund.md), [D033](../decisions/D033-warranty-after-day-7.md) |
+| Return pickup | We arrange it, **free** (warranty claims, faulty units and accepted returns) | **Confirmed** | [D022](../decisions/D022-warranty-replacement-refund.md), [D033](../decisions/D033-warranty-after-day-7.md) |
+| Faulty or not as described | "You can have a replacement or a full refund" (Rule 7(4)); exchange line defaults to "No exchanges: return it and order again" | **Required by law**; wording approved by the founder with the legal pages (D029) | [D033](../decisions/D033-warranty-after-day-7.md) |
 | Refund after a return | Within 7 working days of the unit reaching us, if it is eligible for return | **Confirmed** | [D022](../decisions/D022-warranty-replacement-refund.md) |
 | Refund and cancellation before dispatch | The production terms (first two rows above) | No new ruling; unchanged | – |
 | Exchange | None stated | **Still open** (not yet asked; Rule 7(1)(a) asks for exchange information) | – |
@@ -112,14 +114,14 @@ to the CTA, from one content source (Phase 4; [D021](../decisions/D021-returns-p
 | Delivery, existing token orders | Whether they still dispatch from 20 October; when and how the ₹4,500 balance link arrives | **Still open** (F12) | [D023](../decisions/D023-new-order-delivery.md) |
 | Payment methods | UPI, debit and credit cards, net banking. Wallets, EMI and Pay Later are not offered, so the site never mentions them. No cash on delivery (production has no COD path; [below](#payment-methods)) | **Confirmed** | [D024](../decisions/D024-payment-methods-gst.md) |
 | GST | Prices include GST and every price says "incl. GST" where it appears; every buyer gets a GST invoice. Detail: [pricing](pricing.md#tax-delivery-mrp) | **Confirmed** | [D024](../decisions/D024-payment-methods-gst.md) |
-| Grievance officer | Aman Soni, Co-Founder and CTO, aman@kheelona.com. Where it is displayed is not decided (Rule 4(4) says "on its platform") | **Confirmed** | [D029](../decisions/D029-grievance-officer-legal-review.md) |
-| Complaint resolution time | Within 30 days (note under the rules table) | **Confirmed** | [D029](../decisions/D029-grievance-officer-legal-review.md) |
-| Complaint acknowledgement time | 5 days proposed; Rule 4(5) requires 48 hours. Nothing is published until the founder decides the wording | **Still open** (F2) | [D029](../decisions/D029-grievance-officer-legal-review.md) |
+| Grievance officer | Aman Soni, Co-Founder and CTO, aman@kheelona.com, +91 91875 46483 (takes calls, D032). Shown on /contact, /refund, /terms, /privacy and the store footer from one content value | **Confirmed** | [D029](../decisions/D029-grievance-officer-legal-review.md) |
+| Complaint resolution time | **Within one month** of receiving the complaint (the rule's words; replaces D029's "30 days") | **Confirmed** | [D032](../decisions/D032-grievance-block-and-call-line.md) |
+| Complaint acknowledgement time | **Within 48 hours** (Rule 4(5)); "5 days" is never published | **Confirmed** | [D032](../decisions/D032-grievance-block-and-call-line.md) |
 | Complaint ticket number | None stated | **Still open** (not yet asked; Rule 7(1)(f)) | – |
 | Data retention | Conversation transcripts kept 36 months, then deleted automatically; a parent can delete any sooner, in one tap. The same period goes on `/privacy` as the DPDP retention line. Owned on [facts](facts.md) | **Confirmed** | [D020](../decisions/D020-provider-terms-and-no-sale.md) |
 | Legal pages sign-off | The founder approves privacy, terms, refund and shipping after an independent review against Indian law and practice | **Confirmed** | [D029](../decisions/D029-grievance-officer-legal-review.md) |
 | Speech and language disclaimer | On `/terms` and on Meet Kheelu (`/products/kheelu`); not on Home | **Confirmed** | [D025](../decisions/D025-speech-and-language.md) |
-| Country of origin, MRP, manufacturer or importer, other Legal Metrology declarations | None stated | **Still open** (F3) | – |
+| Country of origin, MRP, manufacturer or importer, other Legal Metrology declarations | India; MRP ₹7,999; manufacturer Kheelona Robotics Pvt Ltd at the registered address. Net quantity and month/year of manufacture stay placeholders until specs are final (F4) | **Confirmed** except the placeholders | [D034](../decisions/D034-origin-manufacturer-mrp.md) |
 
 ## Seller details (as published)
 
@@ -168,7 +170,7 @@ load; amendments since 2020 were not checked. The independent review against the
 | Requirement | Rule (per source) | Production today (IDs are in [open questions](../open-questions.md)) | New site (rulings 2026-10-10/11) |
 |---|---|---|---|
 | Legal name, address, website, customer-care contacts | 4(2)(a)-(d) | **Met** on five pages, store footer and emails | **Confirmed**: unchanged |
-| Grievance officer's name, designation and contact displayed | 4(2)(d), 4(4) | **Not met** | **Confirmed**: Aman Soni, Co-Founder and CTO, aman@kheelona.com (D029). Where it is displayed: not decided |
+| Grievance officer's name, designation and contact displayed | 4(2)(d), 4(4) | **Not met** | **Confirmed**: Aman Soni, Co-Founder and CTO, aman@kheelona.com, +91 91875 46483 (D029, D032); displayed on /contact, /refund, /terms, /privacy and the store footer |
 | Acknowledge complaints in 48 hours, resolve in one month | 4(5) | **Not stated** | Resolve: **confirmed**, 30 days (note 1). Acknowledge: **still open**, 5 days proposed against the rule's 48 hours (F2) |
 | No pre-ticked consent | 4(9) | **Met** | **Confirmed**: checkout logic unchanged (brief 4.4) |
 | Refunds paid per RBI rules | 4(10) | Process stated ("5 to 7 working days once we start it"); start time not stated | After a return: **confirmed**, within 7 working days of the unit reaching us (D022). Before dispatch: production terms, no new ruling |
@@ -177,9 +179,9 @@ load; amendments since 2020 were not checked. The independent review against the
 | Total price as a single figure with breakup of charges and taxes | 7(1)(e) | **Partial**: single GST-inclusive figure, delivery included; no tax breakup | GST-inclusive single figure and a GST invoice with every order **confirmed** (D024). A breakup of charges and taxes on the site before purchase: **still open** (not yet asked) |
 | Complaint ticket number | 7(1)(f) | **Not met** (WhatsApp and email only) | **Still open** (not yet asked) |
 | No refusal to take back or refund goods that are defective or delivered late | 7(4) (note 2) | Before dispatch: full refund at any time, and if the ship date moves (cancellation row) | Returns 7 days, faulty replaced within 7 days, 6-month warranty (D021, D022). How a defect found after 7 days is handled: **still open** (F1) |
-| Country of origin | brief §9.7 (source places it at 6(5)(d), seller duties) | **Not met**; `/contact` implies one ([claims](claims.md#31-origin-designed-and-built-here)) | **Still open** (F3) |
-| MRP inclusive of all taxes | brief §9.7 | **Not met**: no MRP defined | **Still open** (F3) |
-| Declarations usually shown beside the MRP on an e-commerce listing: manufacturer or importer name and address, net quantity, month and year of manufacture, consumer-care contact | Legal Metrology (Packaged Commodities) Rules 2011, not the E-Commerce Rules; rule text **not fetched or checked** here (the D029 review covers it) | **Not checked**. Our documents: a consumer-care contact is published (seller block); no manufacturer or importer address, net quantity or manufacture date appears on any page (grep of `src/` at the tag, 2026-10-10). The Product JSON-LD names Kheelona's own organisation as `manufacturer` (`seo.ts:304`) | **Still open** (F3) |
+| Country of origin | brief §9.7 (source places it at 6(5)(d), seller duties) | **Not met**; `/contact` implies one ([claims](claims.md#31-origin-designed-and-built-here)) | **Confirmed: India** (D034) |
+| MRP inclusive of all taxes | brief §9.7 | **Not met**: no MRP defined | **Confirmed: ₹7,999** (D034) |
+| Declarations usually shown beside the MRP on an e-commerce listing: manufacturer or importer name and address, net quantity, month and year of manufacture, consumer-care contact | Legal Metrology (Packaged Commodities) Rules 2011, not the E-Commerce Rules; rule text **not fetched or checked** here (the D029 review covers it) | **Not checked**. Our documents: a consumer-care contact is published (seller block); no manufacturer or importer address, net quantity or manufacture date appears on any page (grep of `src/` at the tag, 2026-10-10). The Product JSON-LD names Kheelona's own organisation as `manufacturer` (`seo.ts:304`) | **Confirmed:** manufacturer Kheelona Robotics Pvt Ltd (D034); net quantity and manufacture date placeholders (F4) |
 
 **Note 1, "30 days" and "one month".** Rule 4(5) says the officer "redresses the complaint within
 one month from the date of receipt of the complaint". 30 days is the same or shorter in most months,

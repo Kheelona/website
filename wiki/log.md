@@ -308,3 +308,93 @@ grievance acknowledgement, not 5 days (L2). The final writer's input was truncat
 rows DATA-06 to DATA-31 keep an earlier pass's text (verified by the data lens's verifier, not
 re-read by the writer). WPC text could not be fetched. Founder actions L1-L8 added. The run's
 writer was restarted once (00:13 -> 02:58); total 5 h 54 min.
+
+## [2026-10-11 05:01] build | PostHog reachable again: the claude.ai connector now answers in the new account
+`project-get` through `mcp__claude_ai_PostHog__exec` returns project 617632 ("Default project",
+app URL https://kheelona.com, admin access, timezone UTC). The founder reconnected the claude.ai
+connector under the founder's new account, so the agent files keep their tool name
+(`mcp__claude_ai_PostHog__exec` in `posthog-analyst.md` and `search-visibility.md`); no edit
+needed. The direct `posthog` server added at 00:45 is still unauthenticated and unused.
+
+## [2026-10-11 05:02] agent | Human-session recomputes launched: posthog-analyst (writer) + an independent verifier
+Scope from the Phase 1 critic and [PostHog audit §12](research/posthog-audit.md#12-what-this-audit-could-not-see):
+scroll depth Q19/Q19b, web vitals Q20/Q39, CTA taps Q13/Q14/Q14b, outside-India share Q33, all in
+the human-session scope, same window 2026-09-19 to 2026-10-11 00:00 UTC.
+
+## [2026-10-11 05:08] decision | L1: the BIS licence for Kheelu is under application, not granted (founder)
+Recorded on [claims §6](product/claims.md#6-certifications) and [open questions](open-questions.md) L1.
+Under the [legal review](product/legal-requirements.md) (BIS-01) no unit may be dispatched before the
+grant, so the 20 Oct dispatch of existing token orders is the next question.
+
+## [2026-10-11 05:12] decision | D030: questions to the founder limited to the website draft; the 20 Oct dispatch question is out of scope (founder)
+[D030](decisions/D030-questions-scoped-to-the-website.md). Not asked from now on: operational parts of
+F12, L3, L8, L6's setup consent. L1's site consequence: no BIS/ISI claim until a licence number exists.
+
+## [2026-10-11 05:20] decision | D031: four PostHog settings approved; paid-ad replays expire (founder, C13)
+[D031](decisions/D031-posthog-settings-and-replays.md). Docs checked first: a retention change only
+reaches new recordings; only a manual JSON export keeps an existing one. Settings are applied after
+the recompute agents finish.
+
+## [2026-10-11 05:30] decision | Founder's answer round (all pending website questions): D032-D039
+At the founder's request, every pending website-scope question was asked in seven rounds before the
+founder slept. Recorded: [D032](decisions/D032-grievance-block-and-call-line.md) grievance 48 h / one
+month, WhatsApp takes calls; [D033](decisions/D033-warranty-after-day-7.md) repair-else-replace, free
+pickup; [D034](decisions/D034-origin-manufacturer-mrp.md) made in India, Kheelona Robotics, MRP ₹7,999;
+[D035](decisions/D035-model-training-opt-out.md) own-model training on voice + transcripts, opt-out,
+terms/privacy only (DPDP risk recorded); [D036](decisions/D036-launch-feature-claims.md) eight launch
+features, age set in app; [D037](decisions/D037-delivery-date-in-schema.md) `availabilityStarts`
+2026-11-15 (late-delivery refund risk recorded); [D038](decisions/D038-trust-content-rulings.md)
+trust content; [D039](decisions/D039-repo-and-setup-answers.md) repo and setup. Applied to
+[policies](product/policies.md), [claims](product/claims.md), [facts](product/facts.md),
+[pricing](product/pricing.md) and [open questions](open-questions.md). Still open from the founder:
+C17 (Supabase region), F7 (Kheelona+ after 6 months, Gate A), F11 proof files, section D checks.
+
+## [2026-10-11 05:40] agent | Human-session recomputes ingested: writer and verifier agree on every cell
+[PostHog audit](research/posthog-audit.md) updated by posthog-analyst (H0-H39 in
+`raw/posthog/2026-10-11-human-session-recomputes.json`); independent verifier W0-W6d in
+`raw/posthog/2026-10-11-recompute-verification.sql`. V9 and V12 reproduce exactly. No ranking or
+must-include changes; issue 5 strengthens (since tagging went live, 14 of 18 phone store taps came
+from the guide's bottom bar). Store phone median time 50 s → 34 s; store page phone LCP 3,284 ms
+(n 29). Follow-ups sent to the analyst: scroll-report coverage (W2c), 19 automated-looking US
+sessions (W5c), CTA figures without the one `/privacy` session, setup status after D031. Raw files
+scanned: no emails, IPs or person ids.
+
+## [2026-10-11 05:45] build | D031 applied in PostHog; repo website field set (C16)
+PostHog 617632: conversion goal on `purchase_confirmed`; revenue analytics INR on `value` (verified
+2 charges, ₹998); bots in the test-account filter; store URL authorised (details in
+[D031](decisions/D031-posthog-settings-and-replays.md)). GitHub `Kheelona/website` homepage set to
+https://kheelona.com (`gh repo edit`; confirmed by `gh repo view`).
+
+## [2026-10-11 06:25] agent | PostHog audit follow-ups applied (coverage, US automation, /privacy session, setup after D031)
+[PostHog audit](research/posthog-audit.md): scroll figures scoped to measured views (W2c: 373 of 607
+phone Home views reported scroll); 19 of 61 US sessions look automated (W5c, inference); phone
+store-link taps without the one `/privacy` session: 21 taps / 17 sessions, 14 from the guide's bar
+(H14h, new raw file `raw/posthog/2026-10-11-cta-without-privacy-session.json`, no emails stored);
+setup gaps closed by D031; the baseline insight Y9KjojeN has "filter test accounts" off and its own
+bot filter, so D031 does not change it (S5). Q21/Q41 human-session recompute stays a Phase 8
+prerequisite, with a re-read of PostHog's marketing-analytics suggestions.
+
+## [2026-10-11 06:55] build | Phase 2 strategy written: `site/strategy.md`
+[Strategy](site/strategy.md): one idea (Kheelu answers, then asks back, so the child does the
+thinking; D016 form for the promise); one CTA "Pre-order Kheelu" to the store everywhere incl. the
+phone sticky bar (G1 recommendation; the price sentence sits beside it, D028); the product page as
+the selling page and ad destination (audit issue 6); URL plan: keep everything, drop `/playos` and
+`/stories/brain-development-toys-for-a-2-year-old` (301s), no new pages in v1; fixes mapped to all
+10 PostHog issues; Gate A decisions listed (§9).
+
+## [2026-10-11 06:58] agent | Phase 3 started: Copywriter → `site/pages/home.md`; fork applying the rulings-check fixes
+Copywriter briefed with today's rulings restated (D028 one-sentence price, D032 call line, D035 no
+training on customer pages, D036 features, D038 no advisor/pilot/testimonials, the "adapts" family
+banned as a CTO ruling, Xu guard). Hero H1: a recommendation plus four alternatives incl. "It asks.
+They think." (D038). Fold 2 written in two variants pending G3 (films).
+
+## [2026-10-11 07:20] build | Rulings-check fixes applied; D030-D039 propagated to brand, keyword-map, benchmark and baseline pages
+Fork run: claims (wake-word rows 18-22, "Region-pinned" banned, the "adapts" family ruled BANNED as
+written (CTO, 1d), Xu guard, D019 Gate A flags), facts, messaging (D028 one-sentence candidate:
+"Reserve Kheelu for ₹499 today, refundable, and pay the remaining ₹4,500 of the ₹4,999 total (incl.
+GST) before delivery."; new candidate lines for D032-D038), voice, positioning (76-questions figure
+not usable), audience, keyword map (placeholders ruled; schema `availabilityStarts` 2026-11-15,
+`returnFees: FreeReturn`; P1 placeholder for how a parent opts out of training, D035), benchmarks
+(A3/A4/D2 price lines now D028; anchors fixed), QA baseline, age-band review; rulings check marked
+applied. Also banned as learning-outcome claims: "builds four thinking skills, at your child's level"
+and "Knowledge that sticks". Lint: 77 pages, every link resolves.

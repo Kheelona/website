@@ -1,7 +1,7 @@
 ---
 title: Index
 type: index
-updated: 2026-10-10
+updated: 2026-10-11
 sources: [raw/brief/kickoff-brief.md]
 ---
 
@@ -41,7 +41,8 @@ pages a task needs. Phase 0 pages cite legacy files at tag `archive/pre-reset-20
 - [tracking inventory](site/tracking-inventory.md): every tracking, ads and verification integration, its IDs, events, parameters, dedup and consent, plus the parity checklist. Blocks launch.
 - [content boundary](site/content-boundary.md): what the website may publish (EXTERNAL, for the ICP) vs what stays INTERNAL; the rule every page and agent follows.
 - [checkout](site/checkout.md): the journey from CTA tap to receipt, what must not change, and the brief's funnel mapped onto it (there is no cart).
-- `site/pages/`: page copy, from Phase 3.
+- [strategy](site/strategy.md): Phase 2: messaging hierarchy as the parent meets it, the journey and objections, the one CTA ("Pre-order Kheelu") with its placement and sticky bar, the URL plan (drop `/playos` and the under-3 article), each page's purpose and cluster, and the fix for each top PostHog issue.
+- `site/pages/`: page copy, from Phase 3 (`home.md` first).
 
 ## Design system (documents the DS in `design-system/`; never a copy)
 - [overview](design-system/overview.md): what DS v11 contains and the rules a page builder follows.
@@ -93,6 +94,16 @@ pages a task needs. Phase 0 pages cite legacy files at tag `archive/pre-reset-20
 - [D027](decisions/D027-story-mode-wording.md) Story mode = stories, poems and jingles; no "lessons"; no interrupt-and-ask feature (founder, R8).
 - [D028](decisions/D028-price-wording.md) price wording: ₹499 first next to the CTA with the ₹4,999 total in the same sentence; machine outputs lead with ₹4,999 (founder, R10).
 - [D029](decisions/D029-grievance-officer-legal-review.md) grievance officer Aman Soni; legal pages approved by the founder after an independent review against Indian law.
+- [D030](decisions/D030-questions-scoped-to-the-website.md) questions to the founder are limited to what the website draft needs; operational matters are not asked (founder).
+- [D031](decisions/D031-posthog-settings-and-replays.md) PostHog settings: conversion goal, revenue in INR, bots in the test filter, store URL authorised; paid-ad replays expire (founder, C13).
+- [D032](decisions/D032-grievance-block-and-call-line.md) grievance block: acknowledge in 48 hours, resolve in one month; +91 91875 46483 takes calls (founder, L2).
+- [D033](decisions/D033-warranty-after-day-7.md) a defect after day 7: repair, else replace; pickup free (founder, L5/F1).
+- [D034](decisions/D034-origin-manufacturer-mrp.md) made in India; manufacturer Kheelona Robotics Pvt Ltd; MRP ₹7,999 (founder, F3/L4).
+- [D035](decisions/D035-model-training-opt-out.md) Kheelona's own model trains on voice and transcripts by default, parents can opt out; disclosed on terms and privacy only; DPDP risk recorded (founder, F16).
+- [D036](decisions/D036-launch-feature-claims.md) eight features confirmed for launch; the parent sets the child's age in the app (founder, F8).
+- [D037](decisions/D037-delivery-date-in-schema.md) Product JSON-LD `availabilityStarts` 2026-11-15 (founder, F15).
+- [D038](decisions/D038-trust-content-rulings.md) trust content: proof-gated recognition and bios, no advisor, no demo, tagline kept with alternatives, no pilot promise, Kheelona+ after 6 months undecided, no-ads line kept.
+- [D039](decisions/D039-repo-and-setup-answers.md) raw files stay local; repo website set; Kheelona India unrelated; no Google Ads; no linked assets; security defaults; no YouTube yet.
 
 ## Agents
 - [roster](agents/roster.md): the eight-role team, their outputs and skills, and the run history.

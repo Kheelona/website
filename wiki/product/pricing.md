@@ -236,7 +236,7 @@ a read-only block that follows the live mode, is a Gate A decision:
 | GST accounting | An internal accounting note exists and is deliberately unpublished (founder decision); not restated here | `docs/checkpoints/closed-rounds.md:284` |
 | Tax invoice | **Every buyer gets a GST invoice** (founder, 2026-10-10, [D024](../decisions/D024-payment-methods-gst.md); F6 closed). This codebase does not generate it: the email is an acknowledgement, so the invoice is issued outside the repo; how and when is not documented | `templates.ts:96-185`; repo grep for "invoice", 2026-10-11 |
 | Delivery | **Included anywhere in India** (founder-confirmed 2026-08-22). New orders deliver from mid-November 2026 with the same ₹499 advance ([D023](../decisions/D023-new-order-delivery.md); terms on [policies](policies.md#decided-for-the-new-site)) | `closed-rounds.md:193-197`; `OrderSummary.tsx:102` |
-| MRP | **Not defined anywhere.** No MRP string in `src/`. The DS says never call a price MRP unless it is. MRP is asked in [open questions](../open-questions.md) F3; the disclosure check is on [policies](policies.md#check-against-the-e-commerce-rules-2020-brief-97) | repo grep, 2026-10-11; `design-system/project/07-selling.md:43` |
+| MRP | **₹7,999 incl. all taxes** ([D034](../decisions/D034-origin-manufacturer-mrp.md), founder 2026-10-11), equal to the full price after the first 500. Not yet in `src/` (production held, D011). The DS says never call a price MRP unless it is; this one is; the disclosure check is on [policies](policies.md#check-against-the-e-commerce-rules-2020-brief-97) | repo grep, 2026-10-11; `design-system/project/07-selling.md:43` |
 | Discounts / coupons | None. The only lower prices are signed event tiers | `tiers.ts` |
 | Product feed (Merchant Center, Meta catalog) | None found in the repo; Meta Events Manager shows "No connected catalogs" | `docs/checkpoints/meta-pixel-migration-2026-09-20.md:240-241` |
 
@@ -249,10 +249,10 @@ The `Offer` has price, currency, availability, start date, URL and region, but *
 For the new site the return and warranty terms now exist ([policies](policies.md#decided-for-the-new-site);
 [D021](../decisions/D021-returns-policy.md), [D022](../decisions/D022-warranty-replacement-refund.md)),
 so `hasMerchantReturnPolicy` and the warranty fields can render from the same content source as the
-page copy (D022). Two points stay open: who pays the return pickup (F1), and the exact date for
-`availabilityStarts`. Production's is `2026-10-20` from `SHIP_DATE_ISO`; the new orders' "mid-November"
-([D023](../decisions/D023-new-order-delivery.md)) is not an exact date, and none has been given, so
-the content model needs one from the founder rather than an invented day.
+page copy (D022). Both former open points are settled: return pickup is free ([D033](../decisions/D033-warranty-after-day-7.md)),
+and `availabilityStarts` on the new site is **2026-11-15** ([D037](../decisions/D037-delivery-date-in-schema.md)),
+rendered from the same content value as the page's "Deliveries start mid-November"
+([D023](../decisions/D023-new-order-delivery.md)). Production keeps `2026-10-20` from `SHIP_DATE_ISO` until Gate B.
 
 ## The new design system's price rules (for the reset)
 

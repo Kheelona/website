@@ -1,7 +1,7 @@
 ---
 title: Age-band review (3 to 7)
 type: product
-updated: 2026-10-10
+updated: 2026-10-11
 cites_at: archive/pre-reset-2026-10-10
 sources:
   - wiki/raw/brief/kickoff-brief.md (sections 2, 3, 9.3, 9.8; lines 17, 25, 58, 443, 497)
@@ -83,7 +83,7 @@ so they cannot drift.
 | 17 | Home FAQ "Is an AI toy safe for a small child?" (`page.tsx:112-113`) | Mechanisms only; "small child" undefined | Both | NEEDS SKM (G5) | Does not address the Common Sense Media advice (section 4). Also carries the retired microphone wording ([claims.md](claims.md#41-the-retired-microphone-wording), row 6) |
 | 18 | `/products/kheelu` title, meta, lede (`src/app/(site)/products/kheelu/page.tsx:42,48,164`) | "ages 3+"; "A talking friend for ages 3+" | Both | CHANGE | n/a |
 | 19 | `/products/kheelu` FAQ "What ages is Kheelu for?" (`page.tsx:95`) | "Ages 3+ … learning toys for 5 and 6 year olds onward" | Both | CHANGE | The "5 and 6 year olds" phrase is an SEO keyword placement (owner: [../site/url-map.md](../site/url-map.md) / the keyword map) |
-| 20 | `/products/kheelu` FAQ "best learning toys for 3-year-olds" (`page.tsx:99`) | "At 3, children learn through back-and-forth conversation … grows with your child from 3 up" | Both | OK at 3 to 7 | "From 3 up" reads as no ceiling; align to 3 to 7 in the rewrite |
+| 20 | `/products/kheelu` FAQ "best learning toys for 3-year-olds" (`page.tsx:99`) | "At 3, children learn through back-and-forth conversation … grows with your child from 3 up" | Both | OK at 3 to 7, except "grows with your child" | "From 3 up" reads as no ceiling; align to 3 to 7 in the rewrite. "Grows with your child" is BANNED (the "adapts" family, CTO ruling 2026-10-11, [claims §3](claims.md#3-not-confirmed-do-not-publish)) |
 | 21 | `/products/kheelu` "birthday gift" FAQ and PacePanel | "the toy at 5 is not the toy they unwrapped at 3"; "First questions at 3 become stories …" | Both | OK at 3 to 7 | n/a |
 | 22 | **`/safety` answer "Is an AI toy OK for a three-year-old?"** (`src/app/(site)/safety/page.tsx:101-111,273-282`) | Says child-development groups want what Kheelu does, and "we agree with most of what they ask for" | **Live, unsigned**: the code marks it `GATED:founder-signoff`, "comes out before the merge … unless they sign it off"; it shipped anyway. Mid removed it | **NEEDS SKM (G5)** | It answers the exact age question while leaving out the Common Sense Media advice (section 4). Do not carry it over; SKM writes a signed replacement |
 | 23 | `/safety` FAQ "What should I look for in smart toys for **toddlers**?" (`safety/page.tsx:129`) | Toddler checklist | Both | **CHANGE** | "Toddler" usually means a child of about 1 to 3, so it implies under-3 use. Use "young children" or "3 to 7 year olds". It was an SEO keyword placement (2026-08-12), so the keyword map owner should know. Founder call: [open questions](../open-questions.md) G5 |
@@ -155,6 +155,7 @@ the toys tested, and what a parent of a 3, 4 or 5 year old should do (for exampl
 - **NEEDS SKM** ([open questions](../open-questions.md) G5 unless noted): the Common Sense Media
   answer (rows 17, 22, 29, 37-39); the "grown-up nearby" condition (row 34); speech recognition at 3
   (row 35); the under-3 articles (rows 40, 41); the toy's age grading, warnings and battery safety
-  (rows 25, 31-33, F4); how a child's age is set (row 24, F8); the age-by-age activities for 3 to 7
-  (row 13, F9).
+  (rows 25, 31-33, F4); how a child's age is set (row 24: answered, a parent sets it in the app,
+  [D036](../decisions/D036-launch-feature-claims.md)); the age-by-age activities for 3 to 7 (row 13: there is no advisor, [D038](../decisions/D038-trust-content-rulings.md), so
+  only cited public sources).
 - **Do not carry over:** the unsigned "Is an AI toy OK for a three-year-old?" answer (row 22).

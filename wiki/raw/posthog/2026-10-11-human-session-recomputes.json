@@ -1,0 +1,1065 @@
+{
+  "meta": {
+    "project": "PostHog 617632 (US cloud), project timezone UTC",
+    "range": "2026-09-19 00:00 to 2026-10-11 00:00 UTC (the audit's window; data exists from 2026-09-19 10:52 UTC)",
+    "run_at": "2026-10-11 12:01-12:10 UTC (05:01-05:10 PDT), read-only, through the PostHog MCP execute-sql",
+    "purpose": "Human-session recomputes of Q19, Q19b, Q20, Q39, Q13, Q14, Q14b and Q33, which the 2026-10-10 correction run could not re-run because the connector was down. These supersede those queries' figures in research/posthog-audit.md; the 2026-10-10 raw files are unchanged.",
+    "human_filter": "sessions with >=1 $pageview, no event with $virt_is_bot = true, entry referrer (session.$entry_referring_domain) not localhost:3456 / 127.0.0.1:3456 / *.vercel.app. Applied as properties.$session_id IN (human_session_subquery). H0 shows this gives 802 sessions (414 paid, 388 not paid), the same set whether the bot flag is checked on the Q34 event subset or on every event.",
+    "human_session_subquery": "SELECT sid FROM (SELECT properties.$session_id AS sid, any(session.$entry_referring_domain) AS ref, max(properties.$virt_is_bot = true) AS is_bot, countIf(event = '$pageview') AS pvs FROM events WHERE timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND event IN ('$pageview','preorder_form_started','preorder_start','begin_checkout','purchase') AND properties.$session_id IS NOT NULL GROUP BY sid HAVING pvs > 0 AND is_bot = 0 AND NOT (coalesce(ref,'') IN ('localhost:3456','127.0.0.1:3456') OR coalesce(ref,'') LIKE '%vercel.app'))",
+    "paid_flag": "entry utm_medium = paid, or an entry fbclid with no entry utm_source (session.$entry_*), exactly as Q19b, Q33 and Q34",
+    "device": "as in the original queries: the event's properties.$device_type (Mobile = phone, Desktop = laptop) for H13-H20 and H39",
+    "caveat": "Test-account cohort 580233 has 0 members, so team traffic is included (about 48 sessions from 4 devices with 10+ sessions each, Q24). Aggregates only; no person-level data. Numeric strings parsed to numbers; null shown as null."
+  },
+  "queries": [
+    {
+      "id": "H0",
+      "what": "Human-session set check: the audit's definition (Q34 subquery) gives 802 sessions, 414 paid and 388 not paid, and checking the bot flag on every event instead of on the Q34 event subset gives the identical set",
+      "recomputes": "Q34 / V1 totals (definition check)",
+      "hogql": "SELECT countIf(h_a = 1) AS human_q34_scope, countIf(h_b = 1) AS human_bot_on_all_events, countIf(h_a = 1 AND h_b = 1) AS both, countIf(h_a = 1 AND paid = 1) AS paid_a, countIf(h_a = 1 AND paid = 0) AS notpaid_a, countIf(h_b = 1 AND paid = 1) AS paid_b, countIf(h_b = 1 AND paid = 0) AS notpaid_b FROM (SELECT properties.$session_id AS sid, countIf(event = '$pageview') AS pvs, max(if(event IN ('$pageview','preorder_form_started','preorder_start','begin_checkout','purchase') AND properties.$virt_is_bot = true, 1, 0)) AS bot_a, max(if(properties.$virt_is_bot = true, 1, 0)) AS bot_b, any(session.$entry_referring_domain) AS ref, if(coalesce(any(session.$entry_utm_medium),'') = 'paid' OR (coalesce(any(session.$entry_fbclid),'') != '' AND coalesce(any(session.$entry_utm_source),'') = ''), 1, 0) AS paid, if(pvs > 0 AND bot_a = 0 AND NOT (coalesce(ref,'') IN ('localhost:3456','127.0.0.1:3456') OR coalesce(ref,'') LIKE '%vercel.app'), 1, 0) AS h_a, if(pvs > 0 AND bot_b = 0 AND NOT (coalesce(ref,'') IN ('localhost:3456','127.0.0.1:3456') OR coalesce(ref,'') LIKE '%vercel.app'), 1, 0) AS h_b FROM events WHERE timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND properties.$session_id IS NOT NULL GROUP BY sid)",
+      "rows": [
+        {
+          "human_q34_scope": 802,
+          "human_bot_on_all_events": 802,
+          "both": 802,
+          "paid_a": 414,
+          "notpaid_a": 388,
+          "paid_b": 414,
+          "notpaid_b": 388
+        }
+      ],
+      "note": "Every H query below filters with properties.$session_id IN (the Q34 subquery, meta.human_session_subquery)."
+    },
+    {
+      "id": "H19",
+      "what": "Scroll depth and time on page for Home, the product page and the store, human sessions only (Q19 restricted to human sessions; percentages to one decimal)",
+      "recomputes": "Q19",
+      "hogql": "SELECT properties.$host AS host, properties.$prev_pageview_pathname AS page, properties.$device_type AS device, count() AS page_views_measured, round(quantile(0.5)(toFloat(properties.$prev_pageview_max_scroll_percentage))*100, 1) AS median_max_scroll_pct, round(100*countIf(toFloat(properties.$prev_pageview_max_scroll_percentage) >= 0.25)/count(), 1) AS pct_reach_25, round(100*countIf(toFloat(properties.$prev_pageview_max_scroll_percentage) >= 0.5)/count(), 1) AS pct_reach_50, round(100*countIf(toFloat(properties.$prev_pageview_max_scroll_percentage) >= 0.75)/count(), 1) AS pct_reach_75, round(100*countIf(toFloat(properties.$prev_pageview_max_scroll_percentage) >= 0.9)/count(), 1) AS pct_reach_90, round(quantile(0.5)(toFloat(properties.$prev_pageview_duration)), 1) AS median_time_on_page_s FROM events WHERE event IN ('$pageview','$pageleave') AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND properties.$prev_pageview_pathname IN ('/', '/products/kheelu') AND properties.$prev_pageview_max_scroll_percentage IS NOT NULL AND coalesce(properties.$virt_is_bot, false) = false AND properties.$device_type IN ('Mobile','Desktop') AND properties.$session_id IN (SELECT sid FROM (SELECT properties.$session_id AS sid, any(session.$entry_referring_domain) AS ref, max(properties.$virt_is_bot = true) AS is_bot, countIf(event = '$pageview') AS pvs FROM events WHERE timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND event IN ('$pageview','preorder_form_started','preorder_start','begin_checkout','purchase') AND properties.$session_id IS NOT NULL GROUP BY sid HAVING pvs > 0 AND is_bot = 0 AND NOT (coalesce(ref,'') IN ('localhost:3456','127.0.0.1:3456') OR coalesce(ref,'') LIKE '%vercel.app'))) GROUP BY host, page, device ORDER BY host, page, device",
+      "rows": [
+        {
+          "host": "kheelona.com",
+          "page": "/",
+          "device": "Desktop",
+          "page_views_measured": 132,
+          "median_max_scroll_pct": 14.7,
+          "pct_reach_25": 40.2,
+          "pct_reach_50": 28.0,
+          "pct_reach_75": 25.0,
+          "pct_reach_90": 22.0,
+          "median_time_on_page_s": 41.2
+        },
+        {
+          "host": "kheelona.com",
+          "page": "/",
+          "device": "Mobile",
+          "page_views_measured": 373,
+          "median_max_scroll_pct": 0.0,
+          "pct_reach_25": 9.7,
+          "pct_reach_50": 6.2,
+          "pct_reach_75": 3.8,
+          "pct_reach_90": 2.7,
+          "median_time_on_page_s": 9.2
+        },
+        {
+          "host": "kheelona.com",
+          "page": "/products/kheelu",
+          "device": "Desktop",
+          "page_views_measured": 29,
+          "median_max_scroll_pct": 2.4,
+          "pct_reach_25": 41.4,
+          "pct_reach_50": 24.1,
+          "pct_reach_75": 0.0,
+          "pct_reach_90": 0.0,
+          "median_time_on_page_s": 9.6
+        },
+        {
+          "host": "kheelona.com",
+          "page": "/products/kheelu",
+          "device": "Mobile",
+          "page_views_measured": 21,
+          "median_max_scroll_pct": 30.3,
+          "pct_reach_25": 57.1,
+          "pct_reach_50": 19.0,
+          "pct_reach_75": 9.5,
+          "pct_reach_90": 9.5,
+          "median_time_on_page_s": 32.5
+        },
+        {
+          "host": "store.kheelona.com",
+          "page": "/",
+          "device": "Desktop",
+          "page_views_measured": 22,
+          "median_max_scroll_pct": 69.0,
+          "pct_reach_25": 59.1,
+          "pct_reach_50": 54.5,
+          "pct_reach_75": 45.5,
+          "pct_reach_90": 36.4,
+          "median_time_on_page_s": 16.8
+        },
+        {
+          "host": "store.kheelona.com",
+          "page": "/",
+          "device": "Mobile",
+          "page_views_measured": 33,
+          "median_max_scroll_pct": 46.3,
+          "pct_reach_25": 60.6,
+          "pct_reach_50": 45.5,
+          "pct_reach_75": 36.4,
+          "pct_reach_90": 24.2,
+          "median_time_on_page_s": 34.3
+        }
+      ],
+      "note": "Reproduces V12: Home phone 373 views, 9.7% reach 25%; Home laptop 132; product page laptop 29 views, median 2.4%, 0% reach 90%; store phone 33; store laptop 22. Device is the event's $device_type, as in Q19 (Mobile = phone, Desktop = laptop)."
+    },
+    {
+      "id": "H19b",
+      "what": "Home scroll depth, paid (tagged or Meta click id) vs other traffic, human sessions only (Q19b restricted to human sessions)",
+      "recomputes": "Q19b",
+      "hogql": "SELECT properties.$device_type AS device, if(coalesce(session.$entry_utm_medium,'') = 'paid' OR (coalesce(session.$entry_fbclid,'') != '' AND coalesce(session.$entry_utm_source,'') = ''), 'paid or Meta click', 'other') AS traffic, count() AS page_views_measured, round(quantile(0.5)(toFloat(properties.$prev_pageview_max_scroll_percentage))*100, 1) AS median_max_scroll_pct, round(100*countIf(toFloat(properties.$prev_pageview_max_scroll_percentage) >= 0.25)/count(), 1) AS pct_reach_25, round(100*countIf(toFloat(properties.$prev_pageview_max_scroll_percentage) >= 0.5)/count(), 1) AS pct_reach_50, round(100*countIf(toFloat(properties.$prev_pageview_max_scroll_percentage) >= 0.9)/count(), 1) AS pct_reach_90, round(quantile(0.5)(toFloat(properties.$prev_pageview_duration)), 1) AS median_time_on_page_s FROM events WHERE event IN ('$pageview','$pageleave') AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND properties.$host = 'kheelona.com' AND properties.$prev_pageview_pathname = '/' AND properties.$prev_pageview_max_scroll_percentage IS NOT NULL AND coalesce(properties.$virt_is_bot, false) = false AND properties.$device_type IN ('Mobile','Desktop') AND properties.$session_id IN (SELECT sid FROM (SELECT properties.$session_id AS sid, any(session.$entry_referring_domain) AS ref, max(properties.$virt_is_bot = true) AS is_bot, countIf(event = '$pageview') AS pvs FROM events WHERE timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND event IN ('$pageview','preorder_form_started','preorder_start','begin_checkout','purchase') AND properties.$session_id IS NOT NULL GROUP BY sid HAVING pvs > 0 AND is_bot = 0 AND NOT (coalesce(ref,'') IN ('localhost:3456','127.0.0.1:3456') OR coalesce(ref,'') LIKE '%vercel.app'))) GROUP BY device, traffic ORDER BY device, traffic",
+      "rows": [
+        {
+          "device": "Desktop",
+          "traffic": "other",
+          "page_views_measured": 130,
+          "median_max_scroll_pct": 15.7,
+          "pct_reach_25": 40.8,
+          "pct_reach_50": 28.5,
+          "pct_reach_90": 22.3,
+          "median_time_on_page_s": 43.0
+        },
+        {
+          "device": "Desktop",
+          "traffic": "paid or Meta click",
+          "page_views_measured": 2,
+          "median_max_scroll_pct": 0.0,
+          "pct_reach_25": 0.0,
+          "pct_reach_50": 0.0,
+          "pct_reach_90": 0.0,
+          "median_time_on_page_s": 10.5
+        },
+        {
+          "device": "Mobile",
+          "traffic": "other",
+          "page_views_measured": 79,
+          "median_max_scroll_pct": 11.8,
+          "pct_reach_25": 34.2,
+          "pct_reach_50": 21.5,
+          "pct_reach_90": 8.9,
+          "median_time_on_page_s": 26.3
+        },
+        {
+          "device": "Mobile",
+          "traffic": "paid or Meta click",
+          "page_views_measured": 294,
+          "median_max_scroll_pct": 0.0,
+          "pct_reach_25": 3.1,
+          "pct_reach_50": 2.0,
+          "pct_reach_90": 1.0,
+          "median_time_on_page_s": 7.8
+        }
+      ],
+      "note": "Reproduces V12: phone paid 294 views, 3.1% reach 25%, median 7.8 s; phone not paid 79 views, 34.2% reach 25%. Paid flag is the audit's, read from the sessions table as in Q19b."
+    },
+    {
+      "id": "H20",
+      "what": "p75 web vitals per page and device, $web_vitals events inside human sessions (Q20 restricted to human sessions; pages with at least 5 samples across LCP, INP and CLS)",
+      "recomputes": "Q20",
+      "hogql": "SELECT properties.$host AS host, multiIf(properties.$pathname = '/', '/', properties.$pathname LIKE '/products/kheelu%', '/products/kheelu', properties.$pathname LIKE '/stories/%', '/stories/*', properties.$pathname) AS page, properties.$device_type AS device, countIf(properties.$web_vitals_LCP_value IS NOT NULL) AS lcp_n, round(quantileIf(0.75)(toFloat(properties.$web_vitals_LCP_value), properties.$web_vitals_LCP_value IS NOT NULL), 0) AS lcp_p75_ms, countIf(properties.$web_vitals_FCP_value IS NOT NULL) AS fcp_n, round(quantileIf(0.75)(toFloat(properties.$web_vitals_FCP_value), properties.$web_vitals_FCP_value IS NOT NULL), 0) AS fcp_p75_ms, countIf(properties.$web_vitals_INP_value IS NOT NULL) AS inp_n, round(quantileIf(0.75)(toFloat(properties.$web_vitals_INP_value), properties.$web_vitals_INP_value IS NOT NULL), 0) AS inp_p75_ms, countIf(properties.$web_vitals_CLS_value IS NOT NULL) AS cls_n, round(quantileIf(0.75)(toFloat(properties.$web_vitals_CLS_value), properties.$web_vitals_CLS_value IS NOT NULL), 3) AS cls_p75 FROM events WHERE event = '$web_vitals' AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND coalesce(properties.$virt_is_bot, false) = false AND properties.$device_type IN ('Mobile','Desktop') AND properties.$session_id IN (SELECT sid FROM (SELECT properties.$session_id AS sid, any(session.$entry_referring_domain) AS ref, max(properties.$virt_is_bot = true) AS is_bot, countIf(event = '$pageview') AS pvs FROM events WHERE timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND event IN ('$pageview','preorder_form_started','preorder_start','begin_checkout','purchase') AND properties.$session_id IS NOT NULL GROUP BY sid HAVING pvs > 0 AND is_bot = 0 AND NOT (coalesce(ref,'') IN ('localhost:3456','127.0.0.1:3456') OR coalesce(ref,'') LIKE '%vercel.app'))) GROUP BY host, page, device HAVING lcp_n + inp_n + cls_n >= 5 ORDER BY host, lcp_n DESC LIMIT 40",
+      "rows": [
+        {
+          "host": "kheelona.com",
+          "page": "/",
+          "device": "Mobile",
+          "lcp_n": 167,
+          "lcp_p75_ms": 2354.0,
+          "fcp_n": 333,
+          "fcp_p75_ms": 2308.0,
+          "inp_n": 38,
+          "inp_p75_ms": 546.0,
+          "cls_n": 131,
+          "cls_p75": 0.0
+        },
+        {
+          "host": "kheelona.com",
+          "page": "/",
+          "device": "Desktop",
+          "lcp_n": 84,
+          "lcp_p75_ms": 1563.0,
+          "fcp_n": 128,
+          "fcp_p75_ms": 1577.0,
+          "inp_n": 46,
+          "inp_p75_ms": 96.0,
+          "cls_n": 70,
+          "cls_p75": 0.007
+        },
+        {
+          "host": "kheelona.com",
+          "page": "/products/kheelu",
+          "device": "Desktop",
+          "lcp_n": 11,
+          "lcp_p75_ms": 2430.0,
+          "fcp_n": 14,
+          "fcp_p75_ms": 2018.0,
+          "inp_n": 13,
+          "inp_p75_ms": 104.0,
+          "cls_n": 17,
+          "cls_p75": 0.007
+        },
+        {
+          "host": "kheelona.com",
+          "page": "/products/kheelu",
+          "device": "Mobile",
+          "lcp_n": 10,
+          "lcp_p75_ms": 2075.0,
+          "fcp_n": 13,
+          "fcp_p75_ms": 2256.0,
+          "inp_n": 2,
+          "inp_p75_ms": 36.0,
+          "cls_n": 1,
+          "cls_p75": 0.0
+        },
+        {
+          "host": "kheelona.com",
+          "page": "/playos",
+          "device": "Desktop",
+          "lcp_n": 9,
+          "lcp_p75_ms": 1380.0,
+          "fcp_n": 5,
+          "fcp_p75_ms": 1992.0,
+          "inp_n": 4,
+          "inp_p75_ms": 62.0,
+          "cls_n": 5,
+          "cls_p75": 0.004
+        },
+        {
+          "host": "kheelona.com",
+          "page": "/playos",
+          "device": "Mobile",
+          "lcp_n": 4,
+          "lcp_p75_ms": 2680.0,
+          "fcp_n": 1,
+          "fcp_p75_ms": 2068.0,
+          "inp_n": 1,
+          "inp_p75_ms": 184.0,
+          "cls_n": 0,
+          "cls_p75": null
+        },
+        {
+          "host": "kheelona.com",
+          "page": "/team",
+          "device": "Desktop",
+          "lcp_n": 3,
+          "lcp_p75_ms": 1542.0,
+          "fcp_n": 1,
+          "fcp_p75_ms": 1484.0,
+          "inp_n": 8,
+          "inp_p75_ms": 80.0,
+          "cls_n": 5,
+          "cls_p75": 0.006
+        },
+        {
+          "host": "kheelona.com",
+          "page": "/team",
+          "device": "Mobile",
+          "lcp_n": 3,
+          "lcp_p75_ms": 3098.0,
+          "fcp_n": 3,
+          "fcp_p75_ms": 1635.0,
+          "inp_n": 4,
+          "inp_p75_ms": 148.0,
+          "cls_n": 1,
+          "cls_p75": 0.0
+        },
+        {
+          "host": "kheelona.com",
+          "page": "/safety",
+          "device": "Desktop",
+          "lcp_n": 1,
+          "lcp_p75_ms": 824.0,
+          "fcp_n": 0,
+          "fcp_p75_ms": null,
+          "inp_n": 3,
+          "inp_p75_ms": 132.0,
+          "cls_n": 2,
+          "cls_p75": 0.294
+        },
+        {
+          "host": "store.kheelona.com",
+          "page": "/",
+          "device": "Mobile",
+          "lcp_n": 29,
+          "lcp_p75_ms": 3284.0,
+          "fcp_n": 49,
+          "fcp_p75_ms": 3368.0,
+          "inp_n": 14,
+          "inp_p75_ms": 294.0,
+          "cls_n": 21,
+          "cls_p75": 0.0
+        },
+        {
+          "host": "store.kheelona.com",
+          "page": "/",
+          "device": "Desktop",
+          "lcp_n": 10,
+          "lcp_p75_ms": 2863.0,
+          "fcp_n": 20,
+          "fcp_p75_ms": 2842.0,
+          "inp_n": 4,
+          "inp_p75_ms": 64.0,
+          "cls_n": 10,
+          "cls_p75": 0.0
+        },
+        {
+          "host": "store.kheelona.com",
+          "page": "/thanks",
+          "device": "Mobile",
+          "lcp_n": 1,
+          "lcp_p75_ms": 3316.0,
+          "fcp_n": 4,
+          "fcp_p75_ms": 5132.0,
+          "inp_n": 4,
+          "inp_p75_ms": 60.0,
+          "cls_n": 2,
+          "cls_p75": 0.0
+        }
+      ],
+      "note": "n is events, not sessions. Each $web_vitals event carries only the metrics ready when it was sent, so the four n differ."
+    },
+    {
+      "id": "H39",
+      "what": "p75 web vitals per host and device, $web_vitals events inside human sessions (Q39 restricted to human sessions; all pages)",
+      "recomputes": "Q39",
+      "hogql": "SELECT properties.$host AS host, properties.$device_type AS device, countIf(properties.$web_vitals_LCP_value IS NOT NULL) AS lcp_n, round(quantileIf(0.75)(toFloat(properties.$web_vitals_LCP_value), properties.$web_vitals_LCP_value IS NOT NULL), 0) AS lcp_p75_ms, countIf(properties.$web_vitals_INP_value IS NOT NULL) AS inp_n, round(quantileIf(0.75)(toFloat(properties.$web_vitals_INP_value), properties.$web_vitals_INP_value IS NOT NULL), 0) AS inp_p75_ms, countIf(properties.$web_vitals_CLS_value IS NOT NULL) AS cls_n, round(quantileIf(0.75)(toFloat(properties.$web_vitals_CLS_value), properties.$web_vitals_CLS_value IS NOT NULL), 3) AS cls_p75, countIf(properties.$web_vitals_FCP_value IS NOT NULL) AS fcp_n, round(quantileIf(0.75)(toFloat(properties.$web_vitals_FCP_value), properties.$web_vitals_FCP_value IS NOT NULL), 0) AS fcp_p75_ms FROM events WHERE event = '$web_vitals' AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND coalesce(properties.$virt_is_bot, false) = false AND properties.$device_type IN ('Mobile','Desktop') AND properties.$session_id IN (SELECT sid FROM (SELECT properties.$session_id AS sid, any(session.$entry_referring_domain) AS ref, max(properties.$virt_is_bot = true) AS is_bot, countIf(event = '$pageview') AS pvs FROM events WHERE timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND event IN ('$pageview','preorder_form_started','preorder_start','begin_checkout','purchase') AND properties.$session_id IS NOT NULL GROUP BY sid HAVING pvs > 0 AND is_bot = 0 AND NOT (coalesce(ref,'') IN ('localhost:3456','127.0.0.1:3456') OR coalesce(ref,'') LIKE '%vercel.app'))) GROUP BY host, device ORDER BY host, device",
+      "rows": [
+        {
+          "host": "kheelona.com",
+          "device": "Desktop",
+          "lcp_n": 111,
+          "lcp_p75_ms": 1574.0,
+          "inp_n": 77,
+          "inp_p75_ms": 96.0,
+          "cls_n": 102,
+          "cls_p75": 0.007,
+          "fcp_n": 153,
+          "fcp_p75_ms": 1588.0
+        },
+        {
+          "host": "kheelona.com",
+          "device": "Mobile",
+          "lcp_n": 187,
+          "lcp_p75_ms": 2348.0,
+          "inp_n": 47,
+          "inp_p75_ms": 440.0,
+          "cls_n": 134,
+          "cls_p75": 0.0,
+          "fcp_n": 356,
+          "fcp_p75_ms": 2284.0
+        },
+        {
+          "host": "store.kheelona.com",
+          "device": "Desktop",
+          "lcp_n": 11,
+          "lcp_p75_ms": 2850.0,
+          "inp_n": 5,
+          "inp_p75_ms": 64.0,
+          "cls_n": 12,
+          "cls_p75": 0.0,
+          "fcp_n": 21,
+          "fcp_p75_ms": 2824.0
+        },
+        {
+          "host": "store.kheelona.com",
+          "device": "Mobile",
+          "lcp_n": 30,
+          "lcp_p75_ms": 3308.0,
+          "inp_n": 18,
+          "inp_p75_ms": 258.0,
+          "cls_n": 23,
+          "cls_p75": 0.0,
+          "fcp_n": 53,
+          "fcp_p75_ms": 3368.0
+        }
+      ],
+      "note": "Reproduces V9: store host, phone LCP p75 3,308 ms, n 30. The store host includes /thanks."
+    },
+    {
+      "id": "H13",
+      "what": "Autocaptured clicks that carry the cta attribute, by page and device, human sessions only (Q13 restricted to human sessions)",
+      "recomputes": "Q13",
+      "hogql": "SELECT properties.$host AS host, properties.$pathname AS path, coalesce(properties.cta,'') AS cta, properties.$device_type AS device, count() AS clicks, uniq(properties.$session_id) AS sessions FROM events WHERE event = '$autocapture' AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND properties.$event_type = 'click' AND coalesce(properties.cta,'') != '' AND properties.$session_id IN (SELECT sid FROM (SELECT properties.$session_id AS sid, any(session.$entry_referring_domain) AS ref, max(properties.$virt_is_bot = true) AS is_bot, countIf(event = '$pageview') AS pvs FROM events WHERE timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND event IN ('$pageview','preorder_form_started','preorder_start','begin_checkout','purchase') AND properties.$session_id IS NOT NULL GROUP BY sid HAVING pvs > 0 AND is_bot = 0 AND NOT (coalesce(ref,'') IN ('localhost:3456','127.0.0.1:3456') OR coalesce(ref,'') LIKE '%vercel.app'))) GROUP BY host, path, cta, device ORDER BY clicks DESC LIMIT 50",
+      "rows": [
+        {
+          "host": "kheelona.com",
+          "path": "/",
+          "cta": "navbar",
+          "device": "Desktop",
+          "clicks": 10,
+          "sessions": 10
+        },
+        {
+          "host": "kheelona.com",
+          "path": "/products/kheelu",
+          "cta": "product-top",
+          "device": "Desktop",
+          "clicks": 3,
+          "sessions": 2
+        },
+        {
+          "host": "kheelona.com",
+          "path": "/",
+          "cta": "finale",
+          "device": "Desktop",
+          "clicks": 3,
+          "sessions": 3
+        },
+        {
+          "host": "kheelona.com",
+          "path": "/",
+          "cta": "hero",
+          "device": "Desktop",
+          "clicks": 3,
+          "sessions": 2
+        },
+        {
+          "host": "kheelona.com",
+          "path": "/stories/how-children-learn-by-talking",
+          "cta": "finale",
+          "device": "Mobile",
+          "clicks": 2,
+          "sessions": 1
+        },
+        {
+          "host": "kheelona.com",
+          "path": "/",
+          "cta": "hero",
+          "device": "Mobile",
+          "clicks": 2,
+          "sessions": 2
+        },
+        {
+          "host": "kheelona.com",
+          "path": "/stories",
+          "cta": "finale",
+          "device": "Desktop",
+          "clicks": 1,
+          "sessions": 1
+        },
+        {
+          "host": "kheelona.com",
+          "path": "/safety",
+          "cta": "navbar",
+          "device": "Desktop",
+          "clicks": 1,
+          "sessions": 1
+        },
+        {
+          "host": "kheelona.com",
+          "path": "/playos",
+          "cta": "finale",
+          "device": "Desktop",
+          "clicks": 1,
+          "sessions": 1
+        }
+      ],
+      "note": "Identical to Q13: every tagged click was already in a human session."
+    },
+    {
+      "id": "H14",
+      "what": "All clicks on a link to store.kheelona.com from kheelona.com, split by whether the cta attribute was present, human sessions only (Q14 restricted to human sessions)",
+      "recomputes": "Q14",
+      "hogql": "SELECT properties.$device_type AS device, if(coalesce(properties.cta,'') = '', '(no cta attribute)', properties.cta) AS cta, count() AS clicks, uniq(properties.$session_id) AS sessions FROM events WHERE event = '$autocapture' AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND properties.$host = 'kheelona.com' AND elements_chain_href LIKE '%store.kheelona.com%' AND properties.$session_id IN (SELECT sid FROM (SELECT properties.$session_id AS sid, any(session.$entry_referring_domain) AS ref, max(properties.$virt_is_bot = true) AS is_bot, countIf(event = '$pageview') AS pvs FROM events WHERE timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND event IN ('$pageview','preorder_form_started','preorder_start','begin_checkout','purchase') AND properties.$session_id IS NOT NULL GROUP BY sid HAVING pvs > 0 AND is_bot = 0 AND NOT (coalesce(ref,'') IN ('localhost:3456','127.0.0.1:3456') OR coalesce(ref,'') LIKE '%vercel.app'))) GROUP BY ROLLUP(device, cta) ORDER BY device, clicks DESC",
+      "rows": [
+        {
+          "device": "Desktop",
+          "cta": "(subtotal)",
+          "clicks": 24,
+          "sessions": 19
+        },
+        {
+          "device": "Desktop",
+          "cta": "navbar",
+          "clicks": 11,
+          "sessions": 10
+        },
+        {
+          "device": "Desktop",
+          "cta": "finale",
+          "clicks": 5,
+          "sessions": 4
+        },
+        {
+          "device": "Desktop",
+          "cta": "hero",
+          "clicks": 3,
+          "sessions": 2
+        },
+        {
+          "device": "Desktop",
+          "cta": "product-top",
+          "clicks": 3,
+          "sessions": 2
+        },
+        {
+          "device": "Desktop",
+          "cta": "(no cta attribute)",
+          "clicks": 2,
+          "sessions": 2
+        },
+        {
+          "device": "Mobile",
+          "cta": "(subtotal)",
+          "clicks": 29,
+          "sessions": 18
+        },
+        {
+          "device": "Mobile",
+          "cta": "(no cta attribute)",
+          "clicks": 25,
+          "sessions": 15
+        },
+        {
+          "device": "Mobile",
+          "cta": "finale",
+          "clicks": 2,
+          "sessions": 1
+        },
+        {
+          "device": "Mobile",
+          "cta": "hero",
+          "clicks": 2,
+          "sessions": 2
+        },
+        {
+          "device": "(all)",
+          "cta": null,
+          "clicks": 53,
+          "sessions": 37
+        }
+      ],
+      "note": "Identical to Q14 and V13. ROLLUP rows: null cta within a device is shown as (subtotal), null device as (all), as in the 2026-10-10 file."
+    },
+    {
+      "id": "H14b",
+      "what": "Where the untagged store-link clicks sit (container classes in the element chain), human sessions only (Q14b restricted to human sessions)",
+      "recomputes": "Q14b",
+      "hogql": "SELECT properties.$device_type AS device, properties.$pathname AS path, position(elements_chain, 'md:hidden') > 0 AS in_md_hidden_bar, position(elements_chain, 'fixed') > 0 AS in_fixed_container, position(elements_chain, 'text-[14px]') > 0 AS small_pill, count() AS clicks FROM events WHERE event = '$autocapture' AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND properties.$host = 'kheelona.com' AND elements_chain_href LIKE '%store.kheelona.com%' AND coalesce(properties.cta,'') = '' AND properties.$session_id IN (SELECT sid FROM (SELECT properties.$session_id AS sid, any(session.$entry_referring_domain) AS ref, max(properties.$virt_is_bot = true) AS is_bot, countIf(event = '$pageview') AS pvs FROM events WHERE timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND event IN ('$pageview','preorder_form_started','preorder_start','begin_checkout','purchase') AND properties.$session_id IS NOT NULL GROUP BY sid HAVING pvs > 0 AND is_bot = 0 AND NOT (coalesce(ref,'') IN ('localhost:3456','127.0.0.1:3456') OR coalesce(ref,'') LIKE '%vercel.app'))) GROUP BY device, path, in_md_hidden_bar, in_fixed_container, small_pill ORDER BY clicks DESC",
+      "rows": [
+        {
+          "device": "Mobile",
+          "path": "/",
+          "in_md_hidden_bar": 1,
+          "in_fixed_container": 1,
+          "small_pill": 1,
+          "clicks": 9
+        },
+        {
+          "device": "Mobile",
+          "path": "/privacy",
+          "in_md_hidden_bar": 0,
+          "in_fixed_container": 1,
+          "small_pill": 0,
+          "clicks": 8
+        },
+        {
+          "device": "Mobile",
+          "path": "/products/kheelu",
+          "in_md_hidden_bar": 1,
+          "in_fixed_container": 1,
+          "small_pill": 1,
+          "clicks": 5
+        },
+        {
+          "device": "Mobile",
+          "path": "/",
+          "in_md_hidden_bar": 0,
+          "in_fixed_container": 0,
+          "small_pill": 0,
+          "clicks": 3
+        },
+        {
+          "device": "Desktop",
+          "path": "/team",
+          "in_md_hidden_bar": 0,
+          "in_fixed_container": 0,
+          "small_pill": 0,
+          "clicks": 1
+        },
+        {
+          "device": "Desktop",
+          "path": "/",
+          "in_md_hidden_bar": 0,
+          "in_fixed_container": 0,
+          "small_pill": 0,
+          "clicks": 1
+        }
+      ],
+      "note": "Identical to Q14b. The md:hidden fixed bar is the Kheelu guide's phone dock (KheeluGuide.tsx lines 255-279 at archive/pre-reset-2026-10-10). The 8 /privacy clicks are not a sticky bar: see H14e and H14f."
+    },
+    {
+      "id": "H14c",
+      "what": "Store-link taps from kheelona.com by container (guide phone bar, other fixed, not fixed), tag status and page, with sessions; human sessions only",
+      "recomputes": "new (sessions behind the Q14b containers)",
+      "hogql": "SELECT properties.$device_type AS device, multiIf(position(elements_chain, 'md:hidden') > 0 AND position(elements_chain, 'fixed') > 0, 'guide phone bottom bar (md:hidden + fixed)', position(elements_chain, 'fixed') > 0, 'other fixed container', 'not fixed') AS container, if(coalesce(properties.cta,'') = '', 'untagged', 'tagged') AS tagged, properties.$pathname AS path, count() AS clicks, uniq(properties.$session_id) AS sessions FROM events WHERE event = '$autocapture' AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND properties.$host = 'kheelona.com' AND elements_chain_href LIKE '%store.kheelona.com%' AND properties.$session_id IN (SELECT sid FROM (SELECT properties.$session_id AS sid, any(session.$entry_referring_domain) AS ref, max(properties.$virt_is_bot = true) AS is_bot, countIf(event = '$pageview') AS pvs FROM events WHERE timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND event IN ('$pageview','preorder_form_started','preorder_start','begin_checkout','purchase') AND properties.$session_id IS NOT NULL GROUP BY sid HAVING pvs > 0 AND is_bot = 0 AND NOT (coalesce(ref,'') IN ('localhost:3456','127.0.0.1:3456') OR coalesce(ref,'') LIKE '%vercel.app'))) GROUP BY ROLLUP(device, container, tagged, path) ORDER BY device, container, tagged, path",
+      "rows": [
+        {
+          "device": "Desktop",
+          "container": null,
+          "tagged": null,
+          "path": null,
+          "clicks": 24,
+          "sessions": 19
+        },
+        {
+          "device": "Desktop",
+          "container": "not fixed",
+          "tagged": null,
+          "path": null,
+          "clicks": 24,
+          "sessions": 19
+        },
+        {
+          "device": "Desktop",
+          "container": "not fixed",
+          "tagged": "tagged",
+          "path": "/",
+          "clicks": 16,
+          "sessions": 15
+        },
+        {
+          "device": "Desktop",
+          "container": "not fixed",
+          "tagged": "tagged",
+          "path": "/playos",
+          "clicks": 1,
+          "sessions": 1
+        },
+        {
+          "device": "Desktop",
+          "container": "not fixed",
+          "tagged": "tagged",
+          "path": "/products/kheelu",
+          "clicks": 3,
+          "sessions": 2
+        },
+        {
+          "device": "Desktop",
+          "container": "not fixed",
+          "tagged": "tagged",
+          "path": "/safety",
+          "clicks": 1,
+          "sessions": 1
+        },
+        {
+          "device": "Desktop",
+          "container": "not fixed",
+          "tagged": "tagged",
+          "path": "/stories",
+          "clicks": 1,
+          "sessions": 1
+        },
+        {
+          "device": "Desktop",
+          "container": "not fixed",
+          "tagged": "tagged",
+          "path": null,
+          "clicks": 22,
+          "sessions": 17
+        },
+        {
+          "device": "Desktop",
+          "container": "not fixed",
+          "tagged": "untagged",
+          "path": "/",
+          "clicks": 1,
+          "sessions": 1
+        },
+        {
+          "device": "Desktop",
+          "container": "not fixed",
+          "tagged": "untagged",
+          "path": "/team",
+          "clicks": 1,
+          "sessions": 1
+        },
+        {
+          "device": "Desktop",
+          "container": "not fixed",
+          "tagged": "untagged",
+          "path": null,
+          "clicks": 2,
+          "sessions": 2
+        },
+        {
+          "device": "Mobile",
+          "container": null,
+          "tagged": null,
+          "path": null,
+          "clicks": 29,
+          "sessions": 18
+        },
+        {
+          "device": "Mobile",
+          "container": "guide phone bottom bar (md:hidden + fixed)",
+          "tagged": null,
+          "path": null,
+          "clicks": 14,
+          "sessions": 11
+        },
+        {
+          "device": "Mobile",
+          "container": "guide phone bottom bar (md:hidden + fixed)",
+          "tagged": "untagged",
+          "path": "/",
+          "clicks": 9,
+          "sessions": 7
+        },
+        {
+          "device": "Mobile",
+          "container": "guide phone bottom bar (md:hidden + fixed)",
+          "tagged": "untagged",
+          "path": "/products/kheelu",
+          "clicks": 5,
+          "sessions": 4
+        },
+        {
+          "device": "Mobile",
+          "container": "guide phone bottom bar (md:hidden + fixed)",
+          "tagged": "untagged",
+          "path": null,
+          "clicks": 14,
+          "sessions": 11
+        },
+        {
+          "device": "Mobile",
+          "container": "not fixed",
+          "tagged": null,
+          "path": null,
+          "clicks": 7,
+          "sessions": 6
+        },
+        {
+          "device": "Mobile",
+          "container": "not fixed",
+          "tagged": "tagged",
+          "path": "/",
+          "clicks": 2,
+          "sessions": 2
+        },
+        {
+          "device": "Mobile",
+          "container": "not fixed",
+          "tagged": "tagged",
+          "path": "/stories/how-children-learn-by-talking",
+          "clicks": 2,
+          "sessions": 1
+        },
+        {
+          "device": "Mobile",
+          "container": "not fixed",
+          "tagged": "tagged",
+          "path": null,
+          "clicks": 4,
+          "sessions": 3
+        },
+        {
+          "device": "Mobile",
+          "container": "not fixed",
+          "tagged": "untagged",
+          "path": "/",
+          "clicks": 3,
+          "sessions": 3
+        },
+        {
+          "device": "Mobile",
+          "container": "not fixed",
+          "tagged": "untagged",
+          "path": null,
+          "clicks": 3,
+          "sessions": 3
+        },
+        {
+          "device": "Mobile",
+          "container": "other fixed container",
+          "tagged": null,
+          "path": null,
+          "clicks": 8,
+          "sessions": 1
+        },
+        {
+          "device": "Mobile",
+          "container": "other fixed container",
+          "tagged": "untagged",
+          "path": "/privacy",
+          "clicks": 8,
+          "sessions": 1
+        },
+        {
+          "device": "Mobile",
+          "container": "other fixed container",
+          "tagged": "untagged",
+          "path": null,
+          "clicks": 8,
+          "sessions": 1
+        },
+        {
+          "device": null,
+          "container": null,
+          "tagged": null,
+          "path": null,
+          "clicks": 53,
+          "sessions": 37
+        }
+      ],
+      "note": "ROLLUP output as returned: empty or null fields are rollup totals. Guide phone bar: 14 taps in 11 sessions. Other fixed container: 8 taps, all from 1 session, on /privacy."
+    },
+    {
+      "id": "H14d",
+      "what": "Per device: store-link taps from fixed elements, untagged taps and guide-bar taps, each with sessions; human sessions only",
+      "recomputes": "new (session counts for the fixed and guide-bar taps)",
+      "hogql": "SELECT properties.$device_type AS device, countIf(position(elements_chain, 'fixed') > 0) AS fixed_clicks, uniqIf(properties.$session_id, position(elements_chain, 'fixed') > 0) AS fixed_sessions, countIf(position(elements_chain, 'fixed') > 0 AND coalesce(properties.cta,'') = '') AS fixed_untagged_clicks, countIf(coalesce(properties.cta,'') = '') AS untagged_clicks, uniqIf(properties.$session_id, coalesce(properties.cta,'') = '') AS untagged_sessions, countIf(position(elements_chain, 'md:hidden') > 0 AND position(elements_chain, 'fixed') > 0) AS guide_bar_clicks, uniqIf(properties.$session_id, position(elements_chain, 'md:hidden') > 0 AND position(elements_chain, 'fixed') > 0) AS guide_bar_sessions, countIf(properties.$event_type = 'click') AS event_type_click, count() AS clicks, uniq(properties.$session_id) AS sessions FROM events WHERE event = '$autocapture' AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND properties.$host = 'kheelona.com' AND elements_chain_href LIKE '%store.kheelona.com%' AND properties.$session_id IN (SELECT sid FROM (SELECT properties.$session_id AS sid, any(session.$entry_referring_domain) AS ref, max(properties.$virt_is_bot = true) AS is_bot, countIf(event = '$pageview') AS pvs FROM events WHERE timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND event IN ('$pageview','preorder_form_started','preorder_start','begin_checkout','purchase') AND properties.$session_id IS NOT NULL GROUP BY sid HAVING pvs > 0 AND is_bot = 0 AND NOT (coalesce(ref,'') IN ('localhost:3456','127.0.0.1:3456') OR coalesce(ref,'') LIKE '%vercel.app'))) GROUP BY device ORDER BY device",
+      "rows": [
+        {
+          "device": "Desktop",
+          "fixed_clicks": 0,
+          "fixed_sessions": 0,
+          "fixed_untagged_clicks": 0,
+          "untagged_clicks": 2,
+          "untagged_sessions": 2,
+          "guide_bar_clicks": 0,
+          "guide_bar_sessions": 0,
+          "event_type_click": 24,
+          "clicks": 24,
+          "sessions": 19
+        },
+        {
+          "device": "Mobile",
+          "fixed_clicks": 22,
+          "fixed_sessions": 12,
+          "fixed_untagged_clicks": 22,
+          "untagged_clicks": 25,
+          "untagged_sessions": 15,
+          "guide_bar_clicks": 14,
+          "guide_bar_sessions": 11,
+          "event_type_click": 29,
+          "clicks": 29,
+          "sessions": 18
+        }
+      ],
+      "note": "Every store-link autocapture is a click ($event_type = 'click'), so Q14 (no event-type filter) and V13 (click filter) count the same taps."
+    },
+    {
+      "id": "H14e",
+      "what": "Element structure of the 8 untagged store-link taps on /privacy (classes and position only; attributes, ids and the link stripped)",
+      "recomputes": "new (what the Q14b /privacy fixed container is)",
+      "hogql": "SELECT replaceRegexpAll(elements_chain, '(attr__[a-z_-]+|attr_id|href)=\"[^\"]*\"', '') AS chain_structure_only, count() AS clicks, uniq(properties.$session_id) AS sessions FROM events WHERE event = '$autocapture' AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND properties.$host = 'kheelona.com' AND properties.$pathname = '/privacy' AND elements_chain_href LIKE '%store.kheelona.com%' AND coalesce(properties.cta,'') = '' GROUP BY chain_structure_only ORDER BY clicks DESC LIMIT 3",
+      "rows": [
+        {
+          "chain_structure_only": "a.active:scale-[0.96].bg-action.duration-150.ease-(--ease-bounce).focus-visible:outline-none.focus-visible:ring-2.focus-visible:ring-offset-2.focus-visible:ring-orange.font-bold.hover:-translate-y-0.5.hover:shadow-[0_6px_10px_rgb(0_0_0/0.28)].inline-flex.items-center.justify-center.max-sm:leading-tight.max-sm:text-center.max-sm:whitespace-normal.overflow-hidden.px-7.py-4.relative.rounded-full.shadow-cta.text-[17px].text-white.transition-[transform,box-shadow,background-color].w-full.whitespace-nowrap:nth-child=\"1\"nth-of-type=\"1\"text=\"Pre-order Kheelu\";li.pb-2.pt-3.px-3:nth-child=\"6\"nth-of-type=\"6\";ul.flex.flex-col.gap-1.pb-8.pt-2.px-6:nth-child=\"3\"nth-of-type=\"1\";div.bg-white.data-[state=open]:animate-(--animate-sheet-in).fixed.flex.flex-col.inset-y-0.overflow-y-auto.right-0.shadow-[-12px_0_40px_rgba(28,28,28,0.14)].w-[min(88vw,360px)].z-50:nth-child=\"24\"nth-of-type=\"4\";body:nth-child=\"2\"nth-of-type=\"1\"",
+          "clicks": 8,
+          "sessions": 1
+        }
+      ],
+      "note": "The element is the full-width 'Pre-order Kheelu' button inside the phone menu's slide-in sheet (Navbar.tsx line 91 at archive/pre-reset-2026-10-10, which carries track=\"navbar-mobile\"). Earlier exploratory runs that returned the raw chain are not recorded: the link carried a Google Analytics linker parameter (_gl) holding a client id, which stays out of the wiki."
+    },
+    {
+      "id": "H14f",
+      "what": "When the phone-menu taps happened against the first click that carried any cta value, and whether the tapped element carried the cta attribute",
+      "recomputes": "new",
+      "hogql": "SELECT minIf(timestamp, coalesce(properties.cta,'') != '') AS first_click_with_any_cta, countIf(sheet = 1) AS phone_menu_store_taps, uniqIf(properties.$session_id, sheet = 1) AS phone_menu_sessions, minIf(timestamp, sheet = 1) AS first_phone_menu_tap, maxIf(timestamp, sheet = 1) AS last_phone_menu_tap, countIf(sheet = 1 AND position(elements_chain, 'data-ph-capture-attribute-cta') > 0) AS phone_menu_taps_with_cta_attr FROM (SELECT timestamp, properties, elements_chain, if(properties.$host = 'kheelona.com' AND elements_chain_href LIKE '%store.kheelona.com%' AND position(elements_chain, 'animate-sheet-in') > 0, 1, 0) AS sheet FROM events WHERE event = '$autocapture' AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00'))",
+      "rows": [
+        {
+          "first_click_with_any_cta": "2026-09-20T17:35:32.935000Z",
+          "phone_menu_store_taps": 8,
+          "phone_menu_sessions": 1,
+          "first_phone_menu_tap": "2026-09-20T05:23:07.337000Z",
+          "last_phone_menu_tap": "2026-09-20T05:23:10.199000Z",
+          "phone_menu_taps_with_cta_attr": 0
+        }
+      ],
+      "note": "All 8 phone-menu taps came from one session within 3 s, about 12 hours before any click carried a cta value. The cta attribute entered the code in commit bada255 (2026-09-20 15:42 IST = 10:12 UTC; git log -S 'data-ph-capture-attribute-cta' archive/pre-reset-2026-10-10); the first tagged click arrived 17:35 UTC, so tagging was live from about then."
+    },
+    {
+      "id": "H14g",
+      "what": "Store-link taps from kheelona.com before and after the first tagged click (2026-09-20 17:35:32 UTC), by container and tag status; human sessions only",
+      "recomputes": "new (which untagged taps predate tagging)",
+      "hogql": "SELECT properties.$device_type AS device, if(timestamp < toDateTime('2026-09-20 17:35:32'), 'before first tagged click', 'after') AS period, multiIf(position(elements_chain, 'md:hidden') > 0 AND position(elements_chain, 'fixed') > 0, 'guide phone bottom bar', position(elements_chain, 'animate-sheet-in') > 0, 'phone menu sheet', position(elements_chain, 'fixed') > 0, 'other fixed', 'in page') AS container, if(coalesce(properties.cta,'') = '', 'untagged', 'tagged') AS tagged, count() AS clicks, uniq(properties.$session_id) AS sessions FROM events WHERE event = '$autocapture' AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND properties.$host = 'kheelona.com' AND elements_chain_href LIKE '%store.kheelona.com%' AND properties.$session_id IN (SELECT sid FROM (SELECT properties.$session_id AS sid, any(session.$entry_referring_domain) AS ref, max(properties.$virt_is_bot = true) AS is_bot, countIf(event = '$pageview') AS pvs FROM events WHERE timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND event IN ('$pageview','preorder_form_started','preorder_start','begin_checkout','purchase') AND properties.$session_id IS NOT NULL GROUP BY sid HAVING pvs > 0 AND is_bot = 0 AND NOT (coalesce(ref,'') IN ('localhost:3456','127.0.0.1:3456') OR coalesce(ref,'') LIKE '%vercel.app'))) GROUP BY device, period, container, tagged ORDER BY device, period, container, tagged",
+      "rows": [
+        {
+          "device": "Desktop",
+          "period": "after",
+          "container": "in page",
+          "tagged": "tagged",
+          "clicks": 22,
+          "sessions": 17
+        },
+        {
+          "device": "Desktop",
+          "period": "before first tagged click",
+          "container": "in page",
+          "tagged": "untagged",
+          "clicks": 2,
+          "sessions": 2
+        },
+        {
+          "device": "Mobile",
+          "period": "after",
+          "container": "guide phone bottom bar",
+          "tagged": "untagged",
+          "clicks": 14,
+          "sessions": 11
+        },
+        {
+          "device": "Mobile",
+          "period": "after",
+          "container": "in page",
+          "tagged": "tagged",
+          "clicks": 4,
+          "sessions": 3
+        },
+        {
+          "device": "Mobile",
+          "period": "before first tagged click",
+          "container": "in page",
+          "tagged": "untagged",
+          "clicks": 3,
+          "sessions": 3
+        },
+        {
+          "device": "Mobile",
+          "period": "before first tagged click",
+          "container": "phone menu sheet",
+          "tagged": "untagged",
+          "clicks": 8,
+          "sessions": 1
+        }
+      ],
+      "note": "Since tagging went live: phone 18 taps, 14 through the guide's bar (untagged) and 4 tagged; laptop 22 taps, all tagged. Every other untagged tap predates tagging."
+    },
+    {
+      "id": "H33",
+      "what": "Human sessions by GeoIP country of the first pageview, with shares of all and of non-paid sessions (top 12)",
+      "recomputes": "Q33",
+      "hogql": "SELECT cc, count() AS sessions, round(100*count()/sum(count()) OVER (), 1) AS pct_of_all, countIf(paid = 0) AS non_paid, round(100*countIf(paid = 0)/sum(countIf(paid = 0)) OVER (), 1) AS pct_of_non_paid, countIf(paid = 1) AS paid_sessions FROM (SELECT properties.$session_id AS sid, argMinIf(properties.$geoip_country_code, timestamp, event = '$pageview') AS cc, if(coalesce(any(session.$entry_utm_medium),'') = 'paid' OR (coalesce(any(session.$entry_fbclid),'') != '' AND coalesce(any(session.$entry_utm_source),'') = ''), 1, 0) AS paid, any(session.$entry_referring_domain) AS ref, max(properties.$virt_is_bot = true) AS is_bot, countIf(event = '$pageview') AS pvs FROM events WHERE timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND event IN ('$pageview','preorder_form_started','preorder_start','begin_checkout','purchase') AND properties.$session_id IS NOT NULL GROUP BY sid HAVING pvs > 0 AND is_bot = 0 AND NOT (coalesce(ref,'') IN ('localhost:3456','127.0.0.1:3456') OR coalesce(ref,'') LIKE '%vercel.app')) GROUP BY cc ORDER BY sessions DESC LIMIT 12",
+      "rows": [
+        {
+          "country": "IN",
+          "sessions": 681,
+          "pct_of_all": 84.9,
+          "non_paid": 274,
+          "pct_of_non_paid": 70.6,
+          "paid_sessions": 407
+        },
+        {
+          "country": "US",
+          "sessions": 61,
+          "pct_of_all": 7.6,
+          "non_paid": 59,
+          "pct_of_non_paid": 15.2,
+          "paid_sessions": 2
+        },
+        {
+          "country": "SE",
+          "sessions": 8,
+          "pct_of_all": 1.0,
+          "non_paid": 6,
+          "pct_of_non_paid": 1.5,
+          "paid_sessions": 2
+        },
+        {
+          "country": "HK",
+          "sessions": 6,
+          "pct_of_all": 0.7,
+          "non_paid": 6,
+          "pct_of_non_paid": 1.5,
+          "paid_sessions": 0
+        },
+        {
+          "country": "UA",
+          "sessions": 5,
+          "pct_of_all": 0.6,
+          "non_paid": 5,
+          "pct_of_non_paid": 1.3,
+          "paid_sessions": 0
+        },
+        {
+          "country": "CN",
+          "sessions": 5,
+          "pct_of_all": 0.6,
+          "non_paid": 5,
+          "pct_of_non_paid": 1.3,
+          "paid_sessions": 0
+        },
+        {
+          "country": "GB",
+          "sessions": 4,
+          "pct_of_all": 0.5,
+          "non_paid": 4,
+          "pct_of_non_paid": 1.0,
+          "paid_sessions": 0
+        },
+        {
+          "country": "ES",
+          "sessions": 3,
+          "pct_of_all": 0.4,
+          "non_paid": 3,
+          "pct_of_non_paid": 0.8,
+          "paid_sessions": 0
+        },
+        {
+          "country": "CA",
+          "sessions": 2,
+          "pct_of_all": 0.2,
+          "non_paid": 2,
+          "pct_of_non_paid": 0.5,
+          "paid_sessions": 0
+        },
+        {
+          "country": "SG",
+          "sessions": 2,
+          "pct_of_all": 0.2,
+          "non_paid": 2,
+          "pct_of_non_paid": 0.5,
+          "paid_sessions": 0
+        },
+        {
+          "country": "IE",
+          "sessions": 2,
+          "pct_of_all": 0.2,
+          "non_paid": 0,
+          "pct_of_non_paid": 0.0,
+          "paid_sessions": 2
+        },
+        {
+          "country": "AU",
+          "sessions": 2,
+          "pct_of_all": 0.2,
+          "non_paid": 2,
+          "pct_of_non_paid": 0.5,
+          "paid_sessions": 0
+        }
+      ],
+      "note": "Same figures as Q33 and V15. Q33 checked the bot flag on pageviews only; here the full Q34 human-session definition is applied."
+    },
+    {
+      "id": "H33b",
+      "what": "Human sessions inside and outside India, all and non-paid, and US sessions",
+      "recomputes": "Q33 (totals)",
+      "hogql": "SELECT count() AS sessions, countIf(cc = 'IN') AS india, countIf(coalesce(cc,'') != 'IN') AS outside_india_incl_unknown, countIf(coalesce(cc,'') = '') AS unknown_country, countIf(paid = 0) AS non_paid, countIf(paid = 0 AND cc = 'IN') AS non_paid_india, countIf(paid = 0 AND coalesce(cc,'') != 'IN') AS non_paid_outside_india, round(100*countIf(paid = 0 AND coalesce(cc,'') != 'IN')/countIf(paid = 0), 1) AS pct_non_paid_outside_india, countIf(cc = 'US') AS us_sessions, countIf(cc = 'US' AND paid = 0) AS us_non_paid, countIf(paid = 1 AND coalesce(cc,'') != 'IN') AS paid_outside_india, uniqIf(cc, coalesce(cc,'') != '') AS countries FROM (SELECT properties.$session_id AS sid, argMinIf(properties.$geoip_country_code, timestamp, event = '$pageview') AS cc, if(coalesce(any(session.$entry_utm_medium),'') = 'paid' OR (coalesce(any(session.$entry_fbclid),'') != '' AND coalesce(any(session.$entry_utm_source),'') = ''), 1, 0) AS paid, any(session.$entry_referring_domain) AS ref, max(properties.$virt_is_bot = true) AS is_bot, countIf(event = '$pageview') AS pvs FROM events WHERE timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND event IN ('$pageview','preorder_form_started','preorder_start','begin_checkout','purchase') AND properties.$session_id IS NOT NULL GROUP BY sid HAVING pvs > 0 AND is_bot = 0 AND NOT (coalesce(ref,'') IN ('localhost:3456','127.0.0.1:3456') OR coalesce(ref,'') LIKE '%vercel.app'))",
+      "rows": [
+        {
+          "sessions": 802,
+          "india": 681,
+          "outside_india_incl_unknown": 121,
+          "unknown_country": 0,
+          "non_paid": 388,
+          "non_paid_india": 274,
+          "non_paid_outside_india": 114,
+          "pct_non_paid_outside_india": 29.4,
+          "us_sessions": 61,
+          "us_non_paid": 59,
+          "paid_outside_india": 7,
+          "countries": 27
+        }
+      ]
+    }
+  ]
+}

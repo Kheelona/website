@@ -40,7 +40,7 @@ EXTERNAL and owned by [age-band-review.md](../product/age-band-review.md).
 | Who buys | Parents of children aged **3 to 7** (the docs say 4 to 7; the brief overrides) **[3–7]** | brief §2 L25; docx §1 L15 |
 | Market | India; English (`en-IN`); prices in ₹ | brief §2 L26 |
 | First buyers | The first 500: urban parents, mostly mothers, who already spend time and money on their child's development and want a better use of screen minutes. **Start in Bengaluru** | docx §6 L160; pdf p.7 |
-| Devices | About 70% of visits on phones, 30% on laptops. This is the brief's figure ("we believe"), to be measured by the PostHog Analyst in `research/posthog-audit.md` (pending, Phase 1). The positioning docs say nothing about devices | brief §1 L17; §6 L178 |
+| Devices | About 70% of visits on phones, 30% on laptops. This is the brief's figure ("we believe"). Measured by the [PostHog audit](../research/posthog-audit.md#device-split-the-7030-belief-corrected-q7-q34-q40): 76.1% phone, 23.3% laptop across all human sessions (paid traffic is 99% phone), but about 51% phone without ads. The positioning docs say nothing about devices | brief §1 L17; §6 L178 |
 | Not for (yet) | Children under 3; children 8 and over; families seeking help with a diagnosed speech or developmental condition ("Kheelu is not a therapy device, and we never market it as one"). Site, for the disclaimer: **EXTERNAL** on Terms and Meet Kheelu (`/products/kheelu`) only, **not on Home** ([D025](../decisions/D025-speech-and-language.md); the draft line is on [messaging.md](messaging.md#confirmed-candidate-lines)) | docx §6 L180; pdf p.7 |
 | Not for the site at all | Corporate HR gifting; preschools and other institutions; investors and press | [R9](../open-questions.md#f-content-rulings-from-the-d013-classification-pass-ask-one-at-a-time) (2026-10-10); [D013](../decisions/D013-internal-vs-external-content.md) |
 
@@ -93,9 +93,9 @@ Site: **INTERNAL** (jobs to be done shape copy; the quoted parent voices are SKM
 2. **Make my child think, not just watch.** "My child asks a hundred questions, then sits in front of
    cartoons. I want those questions answered and turned into more thinking." Preschoolers ask about 76
    information-seeking questions an hour (Chouinard 2007, cited in Lazaroff & Vlach 2022). Site, for the
-   figure: **EXTERNAL IF CONFIRMED** (pending source verification, [D026](../decisions/D026-public-statistics.md): checked against Chouinard 2007
-   itself, not the citing paper, and published only with a linked source marker;
-   [positioning.md](positioning.md#the-evidence-as-skm-rates-it)).
+   figure: **not usable**: the independent check could not verify it
+   ([source verification](../research/source-verification.md) C13: COULD-NOT-VERIFY; [D026](../decisions/D026-public-statistics.md);
+   [positioning.md](positioning.md#the-evidence-as-skm-rates-it)). The parent's need itself shapes the copy.
 3. **The 20-minute swap.** "When I'm cooking or on a call, give my child something good for their brain
    instead of the phone." SKM: "This is the everyday use, and the reason it gets used on Day 90."
    (As copy, "good for their brain" credits time with Kheelu, which [D016](../decisions/D016-brain-wording.md)'s rule rewords to the
@@ -159,7 +159,7 @@ below are offline channels or out of scope, never website sections.
 | Seeing a child think: ads open on "a child pausing, then answering 'because…'"; pilot videos | docx §11 L385, L388–389 |
 | Hearing it in their language: a 20-second clip sent on WhatsApp | docx §9 L315 |
 | Bengaluru demos; apartment and school Story Hours run as "Thinking Hours" | docx §11 L379, L390–391 |
-| A named child-development advisor, in ads and on the website (none yet: F9) | docx §11 L386–387 |
+| A named child-development advisor, in ads and on the website (there is none: [D038](../decisions/D038-trust-content-rulings.md)) | docx §11 L386–387 |
 | Gifting: Diwali, Christmas, corporate gifting (site: family gifting only; corporate gifting is out of scope, [R9](../open-questions.md#f-content-rulings-from-the-d013-classification-pass-ask-one-at-a-time)) | docx §6 L174; §11 L396–397 |
 | The low-risk start: "₹499 reserves it, refundable until we ship" (as copy, only in [D028](../decisions/D028-price-wording.md)'s form, with the ₹4,999 total in the same sentence) | docx §9 L319 |
 | Instagram "Why question of the week" with an advisor tip | docx §11 L392–393 |
@@ -171,9 +171,8 @@ buy without risk, which makes it a line beside the CTA as well as a policy ([D02
 ## What the docs say about the market's parents
 
 Site: **INTERNAL** as a section. The research-brief figures and the unsourced rows never go on the site;
-the two public statistics (NEP 2020, AIIMS Raipur) are **EXTERNAL IF CONFIRMED** (pending source
-verification, [D026](../decisions/D026-public-statistics.md)): usable as SKM framed them only if the independent check against the original
-source (`research/source-verification.md`, not yet written) supports them, each with a linked source
+the two public statistics (NEP 2020, AIIMS Raipur) are **EXTERNAL** in their verified wording
+([source verification](../research/source-verification.md) C01, C06: SUPPORTED-WITH-REWORDING; [D026](../decisions/D026-public-statistics.md)), each with a linked source
 marker on the page ([content boundary](../site/content-boundary.md), "Public research"). Both are
 fear-based figures; the founder allows them over the DS no-fear rule, paired with what a parent can do (D026).
 
@@ -181,8 +180,8 @@ fear-based figures; the founder allows them over the DS no-fear rule, paired wit
 |---|---|---|
 | 70% want an AI toy to help their child learn; 19% want a companion; 56% reject companionship | Kheelona research brief, 30 May 2026 (docx §2 L29; §3 L68) | **INTERNAL** (research: shapes strategy, never on the site; [D013](../decisions/D013-internal-vs-external-content.md)) ([list](messaging.md#internal-research-figures)); sample size unknown |
 | Indian parents fear the screen more than AI | Same research brief (docx §2 L31) | **INTERNAL** (research: shapes strategy, never on the site; [D013](../decisions/D013-internal-vs-external-content.md)) |
-| Over 85% of a child's brain develops by age 6; foundational years 3 to 8 | NEP 2020 via EducationWorld (docx §3 L67) | Cited, not re-checked. **EXTERNAL IF CONFIRMED** (pending source verification, [D026](../decisions/D026-public-statistics.md): the NEP 2020 text itself, not EducationWorld, [claims.md §8](../product/claims.md#8-brain-and-development-claims-with-their-anchors)), with a linked source marker |
-| Under-5s average about 2.2 hours of screen time a day | AIIMS Raipur meta-analysis via Pune Pulse, Jan 2026 (docx §3 L69) | Cited, not re-checked. **EXTERNAL IF CONFIRMED** (pending source verification, [D026](../decisions/D026-public-statistics.md): the study itself, not the news report), with a linked source marker. **[3–7]** the sample includes under-3s; use as a screen-time fact only |
+| Over 85% of a child's brain develops by age 6; foundational years 3 to 8 | NEP 2020 via EducationWorld (docx §3 L67) | Verified against NEP 2020 para 4.1 ([source verification](../research/source-verification.md) C01, C02). **EXTERNAL** in the verified wording ([D026](../decisions/D026-public-statistics.md), [claims.md §8](../product/claims.md#8-brain-and-development-claims-with-their-anchors)), with a linked source marker |
+| Under-5s average about 2.2 hours of screen time a day | AIIMS Raipur meta-analysis via Pune Pulse, Jan 2026 (docx §3 L69) | Verified against the study itself ([source verification](../research/source-verification.md) C06). **EXTERNAL** in the verified wording ([D026](../decisions/D026-public-statistics.md)), with a linked source marker; never "double", never "Indian children average". **[3–7]** the sample includes under-3s; use as a screen-time fact only |
 | Buyer is a mother aged 28 to 40 | No source given (docx §6 L165) | Unsourced. **INTERNAL** (a buyer demographic) |
 | "The pilot children are younger" than 7–8 | No data given (docx §2 L40) | Unsourced. **INTERNAL** (pilot data) |
 

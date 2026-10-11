@@ -342,7 +342,7 @@ Title drafts show where the term goes; the Copywriter owns the words. Character 
 | `/stories` | "Parenting guides for ages 3 to 7 · Kheelona" (43) | "parenting guides" | one per topic group | "parenting guides" | none |
 | `/team` | "Kheelona founders: the team behind Kheelu" (41) | "founders" | "The founders" | "Kheelona", three co-founders | names as live, minus the removed bio |
 | `/setup` | "How to set up Kheelu on day one · Kheelona" (42) | "set up" | each step | "set up Kheelu" | as live |
-| `/contact` | "Contact Kheelona: WhatsApp and email support" (44) | "Contact" | "WhatsApp (messages only) or email" | WhatsApp, email | none |
+| `/contact` | "Contact Kheelona: WhatsApp and email support" (44) | "Contact" | "WhatsApp (call or message) or email" ([D032](../decisions/D032-grievance-block-and-call-line.md)) | WhatsApp, email | none |
 | `/privacy` | "Kheelona privacy policy, in plain words" (39) | "Privacy" | as live | "privacy policy" | none |
 | `/terms` | "Kheelu pre-order terms · Kheelona" (33) | "pre-order terms" | as live | "pre-order terms" | none |
 | `/refund` | "Kheelu returns, refunds and warranty · Kheelona" (47) | "Refunds" | "7-day returns, no questions asked" ([D021](../decisions/D021-returns-policy.md)) | "refund", 7-day returns, 6-month warranty | none |
@@ -449,17 +449,20 @@ those owner pages are being updated**:
 | Topic | Ruling the drafts follow | Decision |
 |---|---|---|
 | Brain | Conversation helps a young brain grow and Kheelu gives a child more of it; "brain development" only as a topic | [D016](../decisions/D016-brain-wording.md) |
-| Behaviour | Answers, then asks a question back; cannot browse the internet; parents read every conversation; one-tap delete. Other live R1-marked rows are applied row by row by the claims owner (D027 found one that was never real), so they stay as `[PLACEHOLDER D017 row check, …]` here | [D017](../decisions/D017-live-behaviour-claims-confirmed.md) |
+| Behaviour | Answers, then asks a question back; cannot browse the internet; parents read every conversation; one-tap delete. The other live rows are now ruled by the claims owner ([claims §2](../product/claims.md#2-published-product-behaviour-claims-live-not-re-confirmed)): "switches languages mid-sentence" EXTERNAL; "no wheels, no face screen and no moving parts", the closed library and the age-graded safety layer EXTERNAL with a Gate A flag (the wake-up button; D019's outside providers). Confirmed for launch: weekly four-skills report, remembers earlier conversations, says when it doesn't know, parent alerts, curated closed content library, age-graded safety layer set to the age a parent enters in the app, red-teamed before launch, new-word count. The "adapts" family ("grows with your child", "at your child's pace") is BANNED | [D017](../decisions/D017-live-behaviour-claims-confirmed.md), [D036](../decisions/D036-launch-feature-claims.md) |
 | Listening | No wake word; the microphone turns on only when someone presses the wake-up button, stays on through the conversation, switches itself off after about a minute of quiet; a light shows while it listens. No "no risk" absolutes, no hardware-disconnect claim | [D018](../decisions/D018-wake-up-button.md) |
-| Voice and data | Trusted speech and AI providers, on servers in India, process voice only to produce the reply, keep nothing, never train on it, by contract; we don't sell your data; transcripts kept 36 months, then deleted automatically; one-tap delete sooner | [D019](../decisions/D019-voice-providers.md), [D020](../decisions/D020-provider-terms-and-no-sale.md) |
-| Returns, warranty | 7-day returns, no questions asked (opened is fine if undamaged and complete with the box); 6-month warranty on manufacturing defects (not drops, water, misuse); faulty on arrival replaced if reported within 7 days of receipt; we arrange pickup; refund within 7 working days of receipt if eligible; no timelines published | [D021](../decisions/D021-returns-policy.md), [D022](../decisions/D022-warranty-replacement-refund.md) |
-| Delivery | New orders: same ₹499 advance, deliveries start mid-November 2026 (one content value). Production keeps "20 October 2026" until Gate B, an accepted risk | [D023](../decisions/D023-new-order-delivery.md), [D011](../decisions/D011-production-held-until-gate-b.md) |
+| Voice and data | Trusted speech and AI providers, on servers in India, process voice only to produce the reply, keep nothing, never train on it, by contract; we don't sell your data; transcripts kept 36 months, then deleted automatically; one-tap delete sooner. Kheelona's own model trains on voice and transcripts by default, parents can opt out: stated on `/terms` and `/privacy` only (P1), never on customer pages, which also never imply there is no training. Never used to advertise to your child | [D019](../decisions/D019-voice-providers.md), [D020](../decisions/D020-provider-terms-and-no-sale.md), [D035](../decisions/D035-model-training-opt-out.md), [D038](../decisions/D038-trust-content-rulings.md) |
+| Returns, warranty | 7-day returns, no questions asked (opened is fine if undamaged and complete with the box); 6-month warranty on manufacturing defects (not drops, water, misuse); faulty on arrival replaced if reported within 7 days of receipt; after day 7, repaired, or replaced if the repair fails; free pickup; refund within 7 working days of the unit reaching us if eligible; faulty or not as described: replacement or full refund; no timelines published | [D021](../decisions/D021-returns-policy.md), [D022](../decisions/D022-warranty-replacement-refund.md), [D033](../decisions/D033-warranty-after-day-7.md) |
+| Delivery | New orders: same ₹499 advance, deliveries start mid-November 2026 (one content value; Product JSON-LD `availabilityStarts` 2026-11-15). Production keeps "20 October 2026" until Gate B, an accepted risk | [D023](../decisions/D023-new-order-delivery.md), [D037](../decisions/D037-delivery-date-in-schema.md), [D011](../decisions/D011-production-held-until-gate-b.md) |
 | Payment | UPI, debit and credit cards, net banking (nothing else is mentioned); prices include GST; a GST invoice with every order | [D024](../decisions/D024-payment-methods-gst.md) |
 | Speech | Public sources only, never an outcome claim for Kheelu; the disclaimer sits on `/terms` and `/products/kheelu`, not Home | [D025](../decisions/D025-speech-and-language.md) |
 | Statistics | A figure ships only after independent verification against its original source, with a linked marker | [D026](../decisions/D026-public-statistics.md) |
 | Story mode, Kheelona+ | Stories, poems and jingles; no "lessons"; no interrupt-and-ask feature; the new Kheelona+ line | [D027](../decisions/D027-story-mode-wording.md) |
 | Price | These drafts feed FAQPage JSON-LD, which machines read, so every price statement leads with ₹4,999 (incl. GST) and the advance comes second, with "refundable" beside it | [D028](../decisions/D028-price-wording.md) |
-| Complaints | Grievance officer: Aman Soni, Co-Founder and CTO, aman@kheelona.com. Response times are not drafted: the 5-day acknowledgement conflicts with the E-Commerce Rules' 48 hours (F2) | [D029](../decisions/D029-grievance-officer-legal-review.md) |
+| Complaints | Grievance officer: Aman Soni, Co-Founder and CTO, aman@kheelona.com, +91 91875 46483; complaints acknowledged within 48 hours and resolved within one month. The WhatsApp number takes calls on the new site, so "messages only" goes | [D029](../decisions/D029-grievance-officer-legal-review.md), [D032](../decisions/D032-grievance-block-and-call-line.md) |
+| Origin, MRP | Made in India; manufacturer Kheelona Robotics Pvt Ltd; MRP ₹7,999 (incl. of all taxes) | [D034](../decisions/D034-origin-manufacturer-mrp.md) |
+| Trust content | No advisor; no demo venue; no pilot-results promise; recognition and team bios only once proof is filed; "It asks. They think." usable; Kheelona+ after the 6 months is undecided (only the sanctioned line); BIS licence under application, so no BIS claim | [D038](../decisions/D038-trust-content-rulings.md), [claims §6](../product/claims.md#6-certifications) |
+| Entity | "Kheelona India" (cradle mobiles) is not connected to Kheelona Robotics | [D039](../decisions/D039-repo-and-setup-answers.md) |
 | Emotion | "The feeling gets read", mood reading and "maps emotions" are banned, like "adapts" | R5 ([open questions](../open-questions.md) F) |
 
 Founder-drafted lines from the decisions are kept verbatim, contractions included. Research is
@@ -473,8 +476,9 @@ and return" with its caring adult, Romeo et al. 2018 with its ages of about 4 to
 - `[CITE: …]`: a public source (WHO, AAP, IAP, NEP, DPDP Act, Tisseron, a provider's terms) the
   Copywriter reads at source and links on the page before use (content boundary, "Public research").
   **Any figure** under a CITE also passes [D026](../decisions/D026-public-statistics.md): checked against
-  its original source in `research/source-verification.md` (being written; SUPPORTED rows only) and
-  shown with a superscript marker linking to it.
+  its original source in [source verification](source-verification.md) (finished 2026-10-11: SUPPORTED or
+  SUPPORTED-WITH-REWORDING rows, in their verified wording only) and shown with a superscript marker
+  linking to it.
 
 Prices and the delivery date render from one content source, never hand-typed: price lines are the
 token-mode wording and change at sell-out ([pricing](../product/pricing.md), G9); "mid-November
@@ -491,8 +495,10 @@ and SP1 are new on 2026-10-11. Every question was seen in the source named, unle
 **B2. Is Kheelu the same as Lumi?** (brand; Bing rewrote "Kheelona Lumi toy" to "Khilona"; GSC ~1,050 "Lumi" impressions; both app listings still say Lumi) · 48 words
 > Yes. Kheelu is the toy that was called Lumi until 5 September 2026: the same product with a new name. Some older app-store listings and directory pages still say Lumi. Toys sold under the name Lumi by other companies are different products, and Kheelona does not make them.
 
-**B12. Is Kheelu a robot?** (brand; LinkedIn "Robotic brand"; Perplexity "talking robot companion", 2026-09-11) · 54 words
-> No. Kheelu is a soft, cream plush rabbit that talks, not a robot, and it has no screen and no camera. [PLACEHOLDER D017 row check, F8: no wheels, no face screen and no moving parts (claims §2; with a wake-up button, "no moving parts" needs re-reading).] Your child talks to it the way they talk to a favourite toy, and Kheelu answers, then asks a question back. It also tells stories, and it can play your music over Bluetooth.
+**B12. Is Kheelu a robot?** (brand; LinkedIn "Robotic brand"; Perplexity "talking robot companion", 2026-09-11) · 56 words
+> No. Kheelu is a soft, cream plush rabbit that talks, not a robot. It has no screen, no camera, no wheels and no moving parts. Your child talks to it like a favourite toy, and Kheelu answers, then asks a question back. It also tells stories, and it can play your music over Bluetooth.
+
+*"No moving parts": EXTERNAL ([D017](../decisions/D017-live-behaviour-claims-confirmed.md)) with a Gate A flag: it sits beside the physical wake-up button ([claims §2](../product/claims.md#2-published-product-behaviour-claims-live-not-re-confirmed)).*
 
 ### 6.2 Product page `/products/kheelu` (or `/faq`, if G8 makes it a page)
 
@@ -502,8 +508,8 @@ and SP1 are new on 2026-10-11. Every question was seen in the source named, unle
 **B4. What ages is Kheelu for?** (buy; off-site sources say 3+, 4+ and 2 to 8) · 47 words
 > Kheelu is made for children aged 3 to 7, and it is not a toy for children under 3. If you are choosing for a two-year-old, wait until they turn 3. Your child can talk with it in English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish or French. [PLACEHOLDER F9: what Kheelu offers at 3, 5 and 7, signed off by the advisor.] [PLACEHOLDER F4: toy-safety age grading and any required warnings.] [PLACEHOLDER G5: whether a grown-up stays nearby at 3.]
 
-**B5. Does Kheelu need WiFi or the internet?** (buy; competitor FAQs; live Home FAQ) · 49 words
-> Only for open conversation. AI mode runs on your home WiFi, and Kheelu cannot browse the internet. Story mode's stories, poems and jingles need no WiFi, and Bluetooth mode needs only a paired phone, so Kheelu still plays on a train or at a grandparent's home with no WiFi.
+**B5. Does Kheelu need Wi-Fi or the internet?** (buy; competitor FAQs; live Home FAQ) · 49 words
+> Only for open conversation. AI mode runs on your home Wi-Fi, and Kheelu cannot browse the internet. Story mode's stories, poems and jingles need no Wi-Fi, and Bluetooth mode needs only a paired phone, so Kheelu still plays on a train or at a grandparent's home with no WiFi.
 
 **B6. Does Kheelu need a subscription?** (buy; Bing's AI summary invented "a lifetime subscription to Kheelona+") · 51 words
 > Not to keep it working. Every Kheelu comes with 6 months of Kheelona+: stories, poems, jingles, languages and the parent app. Kheelu's smart features keep working for life, with no subscription needed. Kheelona+ pricing will be announced soon. So Kheelona+ is included for 6 months; it is not a lifetime subscription. [PLACEHOLDER F7: what a family keeps after the 6 months, beyond the smart features.]
@@ -513,8 +519,8 @@ The middle three sentences are the new Kheelona+ line, verbatim
 new site (owner: [facts](../product/facts.md#kheelona)), and "keep working for life, with no
 subscription needed" cannot be read as a free lifetime subscription, which closes SV-6.
 
-**B7. Which languages does Kheelu speak?** (buy; competitor pages lead with language counts) · 42 words
-> English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish and French are named today, with up to 10 languages at launch. So your child can talk with Kheelu in the language a grandparent speaks at home and in the English they hear at school. [PLACEHOLDER D017 row check, F8: switches languages mid-sentence (facts, Languages).]
+**B7. Which languages does Kheelu speak?** (buy; competitor pages lead with language counts) · 47 words
+> English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish and French are named today, with up to 10 languages at launch. So your child can talk with Kheelu in the language a grandparent speaks at home and in the English they hear at school. It can switch languages mid-sentence.
 
 **B8. When will I get Kheelu?** (buy; brief 9.1, delivery next to the CTA) · 56 words
 > Deliveries for new orders start in mid-November 2026, and pre-orders are served first, in the order they were placed. Kheelu is ₹4,999 including GST; if you reserve with the refundable ₹499 advance, the remaining ₹4,500 is due before delivery. Delivery anywhere in India is included, and you get a tracking link when your Kheelu leaves us.
@@ -542,8 +548,10 @@ subscription needed" cannot be read as a free lifetime subscription, which close
 **AI1. Are AI toys safe for kids?** (compare; AC "are ai toys safe for kids"; KP 10-100, rising) · 54 words
 > Not all of them, so check before you buy. Ask whether the toy has a camera, when its microphone listens, where your child's voice goes, whether it can reach the open internet, and whether you can read and delete every conversation. A toy that answers all five plainly, in writing, is easier to trust. [PLACEHOLDER G5: how the site cites Common Sense Media's January 2026 advice on AI toys for children aged 5 and under.]
 
-**AI2. Is Kheelu safe for my child?** (buy; Bing "Is Kheelu safe for kids" found nothing about us; block order per D020) · 59 words
-> Kheelu has no camera and says it is a toy. Its microphone turns on only when someone presses the wake-up button, and a light shows while it listens. Trusted speech and AI providers, on servers in India, process your child's voice only to produce its reply. You can read and delete every conversation. No toy-safety certificate is issued yet. [PLACEHOLDER F4: certificates, once issued.]
+**AI2. Is Kheelu safe for my child?** (buy; Bing "Is Kheelu safe for kids" found nothing about us; block order per D020: button and light, the full providers line, read and delete, no sale) · 57-word answer, then 47 words of detail (the full D020 line is verbatim, so the block runs past 60)
+> Kheelu's microphone turns on only when someone presses its wake-up button, and a light shows while it listens. To understand and answer your child, Kheelu uses trusted speech and AI providers, on servers in India. They process your child's voice only to produce Kheelu's reply. They don't keep it, and they never use it to train their AI.
+>
+> Our contracts with them say so. You can read and delete every conversation in the parent app. We don't sell your data. Kheelu has no camera and always says it is a toy. Its toy-safety (BIS) licence has been applied for and is not yet granted.
 
 **AL1. Is Kheelu always listening?** (trust; a `/safety` secondary in 4.1; the FAQ D018 drafts, kept verbatim with its light line) · 56 words
 > No. Kheelu has no wake word to listen for. Its microphone turns on only when someone presses the wake-up button. It stays on while your child is talking and switches itself off after about a minute of quiet. Until the next press, nothing is heard, recorded or sent. A light on Kheelu shows whenever it's listening.
@@ -567,8 +575,10 @@ subscription needed" cannot be read as a free lifetime subscription, which close
 
 ### 6.5 AI and safety articles
 
-**AI4. Can an AI toy say something inappropriate to my child?** (`what-to-look-for-in-a-safe-ai-toy`; Quora; a Bing news result on an AI teddy bear) · 50 words
-> It can happen with any toy that makes up its own answers, so ask how the maker filters replies and whether you can read every conversation afterwards, and test it yourself before your child does. Kheelu cannot browse the internet, and you can read every conversation in the parent app. [PLACEHOLDER G5: Common Sense Media's January 2026 test finding.] [PLACEHOLDER D017 row check, F8: how Kheelu filters replies; the live closed-library and age-graded safety-layer lines, re-checked against D019's outside providers.]
+**AI4. Can an AI toy say something inappropriate to my child?** (`what-to-look-for-in-a-safe-ai-toy`; Quora; a Bing news result on an AI teddy bear) · 62 words
+> It can happen with any toy that makes up its own answers, so ask how the maker filters replies and test it yourself before your child does. Kheelu cannot browse the internet. Its answers come from a curated, closed content library, every reply passes an age-graded safety layer set to the age you enter in the parent app, and you can read every conversation. [PLACEHOLDER G5: Common Sense Media's January 2026 test finding.]
+
+*Closed library and age-graded layer: EXTERNAL ([D017](../decisions/D017-live-behaviour-claims-confirmed.md), [D036](../decisions/D036-launch-feature-claims.md)) with a Gate A flag: beside D019's outside AI providers they must not suggest that no outside AI model is involved ([claims §2](../product/claims.md#2-published-product-behaviour-claims-live-not-re-confirmed)).*
 
 **AI3. Does an AI toy record everything my child says?** (`questions-parents-ask-about-ai-toys`; Common Sense Media and Fairplay guides) · 59 words
 > Some do, so ask when the microphone listens and what happens to what it hears. Kheelu has no wake word: its microphone turns on only when someone presses the wake-up button, and it switches itself off after about a minute of quiet. Conversations stay in your parent app for 36 months, unless you delete them sooner, in one tap.
@@ -662,23 +672,25 @@ subscription needed" cannot be read as a free lifetime subscription, which close
 
 ### 6.9 Trust pages
 
-**B10. Who makes Kheelu?** (`/team`; a ChatGPT landing on `/team`; YNOS lists two founders) · 45 words
-> Kheelona Robotics Private Limited, a small company in Bengaluru with three co-founders: Apoorva Sahu, Aman Soni and Kashyap C.R. Kheelu is designed in Bengaluru. You pay for a pre-order on store.kheelona.com, and the team answers messages on WhatsApp (messages only, not calls) or at hello@kheelona.com. [PLACEHOLDER F3: manufacturer or importer, and country of origin.]
+**B10. Who makes Kheelu?** (`/team`; a ChatGPT landing on `/team`; YNOS lists two founders) · 52 words
+> Kheelona Robotics Private Limited, a small company in Bengaluru with three co-founders: Apoorva Sahu, Aman Soni and Kashyap C.R. Kheelu is designed in Bengaluru. You pay for a pre-order on store.kheelona.com, and the team answers messages on WhatsApp (call or message) or at hello@kheelona.com. Kheelu is made in India by Kheelona Robotics.
 
 **B9. Can I get my money back?** (`/refund`; a ChatGPT landing on `/refund`) · 58 words
 > Yes. Until we dispatch it, everything you pay is refundable in full, with no reason needed. After delivery, you can return Kheelu within 7 days, no questions asked: opened is fine, if everything that came in the box comes back undamaged. We arrange the pickup, and your refund is processed within 7 working days of it reaching us.
 
-**W1. What warranty does Kheelu have?** (`/refund`; inferred from brief 9.7 and E-Commerce Rules 7(1)(a); D022's lines, near verbatim) · 49 words
-> A 6-month warranty on manufacturing defects. It doesn't cover drops, water damage or misuse. If your Kheelu arrives faulty, tell us within 7 days of receiving it and we'll replace it, and we arrange the pickup. Message us on WhatsApp (messages only) or email hello@kheelona.com with your order number. [PLACEHOLDER F1: the remedy for a defect found after the first 7 days.]
+**W1. What warranty does Kheelu have?** (`/refund`; inferred from brief 9.7 and E-Commerce Rules 7(1)(a); D022's and D033's lines, near verbatim) · 60 words
+> A 6-month warranty on manufacturing defects. It doesn't cover drops, water damage or misuse. If your Kheelu arrives faulty, tell us within 7 days of receiving it and we'll replace it. After that, we repair it, or replace it if the repair doesn't work. Pickup is free. Call or message us on WhatsApp, or email hello@kheelona.com, with your order number.
 
-**SH1. Do you deliver everywhere in India, and what does delivery cost?** (`/shipping`; GSC 100 impressions on the page) · 54 words
-> Yes, anywhere in India, with delivery included in the price and nothing to pay at the door. Kheelu does not ship outside India. Deliveries for new orders start in mid-November 2026, and a reserved Kheelu is sent once the rest of the ₹4,999 price is paid. You get a tracking link when it ships.
+**SH1. Do you deliver everywhere in India, and what does delivery cost?** (`/shipping`; GSC 100 impressions on the page) · 55 words
+> Yes, anywhere in India, with delivery included in the price and nothing to pay at the door. Kheelu does not ship outside India. Deliveries for new orders start in mid-November 2026, and a reserved Kheelu is sent once the rest of the ₹4,999 (incl. GST) is paid. You get a tracking link when it ships.
 
-**C1. How do I contact Kheelona?** (`/contact`; GSC 183 impressions on the page; four emails and three phones exist off-site) · 52 words
-> Message us on WhatsApp at +91 91875 46483 (messages only, not calls) or email hello@kheelona.com, with your order number if you have one. We are a small team in Bengaluru and we answer our own messages. For a formal complaint, write to our grievance officer, Aman Soni, Co-Founder and CTO, at aman@kheelona.com.
+**C1. How do I contact Kheelona?** (`/contact`; GSC 183 impressions on the page; four emails and three phones exist off-site) · 56 words
+> Call or message us on WhatsApp at +91 91875 46483, or email hello@kheelona.com, with your order number if you have one. We are a small team in Bengaluru and we answer our own messages. For a formal complaint, contact our grievance officer, Aman Soni, Co-Founder and CTO, at aman@kheelona.com. We acknowledge every complaint within 48 hours.
 
-**P1. What does Kheelona do with my child's data?** (`/privacy`; the two app listings declare opposite data practices) · 59 words
-> We don't sell your data. Trusted speech and AI providers, on servers in India, process your child's voice only to produce Kheelu's reply; they don't keep it or train on it, and our contracts say so. Conversations stay in your parent app for 36 months, then are deleted automatically. Card, UPI and bank details go to Razorpay, not us.
+**P1. What does Kheelona do with my child's data?** (`/privacy`; the two app listings declare opposite data practices) · 60 words
+> We don't sell your data. Trusted speech and AI providers, on servers in India, process your child's voice only to produce Kheelu's reply; they don't keep it or train on it, and our contracts say so. Kheelona's own model learns from conversations unless you opt out [PLACEHOLDER D035: how a parent opts out]. Conversations stay in your parent app for 36 months, then are deleted automatically.
+
+*P1 is the `/privacy` answer, where the training disclosure belongs ([D035](../decisions/D035-model-training-opt-out.md)); it never appears on customer pages. "Card, UPI and bank details go to Razorpay, not us" moves to the detail below the answer.*
 
 **RT1. How long are my child's conversations kept?** (`/privacy`; the Common Sense Media and Fairplay guides tell parents to ask, AI3; D020's retention line, verbatim) · 55 words
 > For 36 months, unless you delete them sooner. You can read every conversation in the parent app. Your child's conversations stay in your parent app for 36 months, then they're deleted automatically. You can delete any of them sooner, in one tap. The speech and AI providers that help Kheelu reply keep none of it.
@@ -708,8 +720,8 @@ way. The wording to publish is on the owner page; this table only points at it.
 | Modes and connectivity | AI mode on home WiFi (cannot browse the internet, D017); Story mode: stories, poems and jingles, no WiFi needed, never "lessons" and no interrupt-and-ask ([D027](../decisions/D027-story-mode-wording.md)); Bluetooth mode with a paired phone; never a blanket "works offline" | [facts](../product/facts.md#modes-and-connectivity) | YNOS ("offline learning"); Bing's snippet "It works offline"; the live Story mode line ("lessons it can interrupt, question and be quizzed on") |
 | Languages | 8 named, up to 10 | [facts](../product/facts.md) | Instagram ("every language") |
 | Delivery | Deliveries for new orders start mid-November 2026, one content value ([D023](../decisions/D023-new-order-delivery.md)); never a delivery or replacement timeline ([D022](../decisions/D022-warranty-replacement-refund.md)) | [facts](../product/facts.md#ship-date) | production and checkout say "20 October 2026" until Gate B ([D011](../decisions/D011-production-held-until-gate-b.md), accepted) |
-| Returns, warranty, payment | 7-day returns, no questions asked (opened is fine if undamaged and complete); 6-month warranty on manufacturing defects; faulty on arrival replaced if reported within 7 days of receipt; pickup arranged; refund within 7 working days of receipt; UPI, cards and net banking; prices include GST; GST invoice | [policies](../product/policies.md); [D021](../decisions/D021-returns-policy.md), [D022](../decisions/D022-warranty-replacement-refund.md), [D024](../decisions/D024-payment-methods-gst.md) | live `/refund` and `/products/kheelu` say the terms are coming (held until Gate B) |
-| Support | WhatsApp +91 91875 46483 (messages only) and hello@kheelona.com; grievance officer Aman Soni, Co-Founder and CTO, aman@kheelona.com (response times wait on F2) | [facts](../product/facts.md#support-channel), [policies](../product/policies.md); [D029](../decisions/D029-grievance-officer-legal-review.md) | Play, Facebook and kheelona.ai list other emails and phones; no grievance officer published anywhere |
+| Returns, warranty, payment | 7-day returns, no questions asked (opened is fine if undamaged and complete); 6-month warranty on manufacturing defects; faulty on arrival replaced if reported within 7 days of receipt; after day 7, repaired or replaced; free pickup; refund within 7 working days of the unit reaching us; UPI, cards and net banking; prices include GST; GST invoice | [policies](../product/policies.md); [D021](../decisions/D021-returns-policy.md), [D022](../decisions/D022-warranty-replacement-refund.md), [D033](../decisions/D033-warranty-after-day-7.md), [D024](../decisions/D024-payment-methods-gst.md) | live `/refund` and `/products/kheelu` say the terms are coming (held until Gate B) |
+| Support | WhatsApp +91 91875 46483 (calls and messages on the new site) and hello@kheelona.com; grievance officer Aman Soni, Co-Founder and CTO, aman@kheelona.com, 48-hour acknowledgement, resolved within one month | [facts](../product/facts.md#support-channel), [policies](../product/policies.md); [D029](../decisions/D029-grievance-officer-legal-review.md), [D032](../decisions/D032-grievance-block-and-call-line.md) | Play, Facebook and kheelona.ai list other emails and phones; no grievance officer published anywhere |
 | Certification | None issued yet | [claims §6](../product/claims.md#6-certifications) | App Store and Instagram imply outcomes, not certificates |
 
 ### 7.2 Schema to add or fix
@@ -725,10 +737,10 @@ Product `@id` stays `https://kheelona.com/products/lumi#product`; a unit-bounded
 | Product `audience` | `suggestedMinAge: 3`, **`suggestedMaxAge: 7`** (the legacy test that bans the max changes with it) | nothing (brief) |
 | Product `additionalProperty` | Age "3 to 7 years"; **add "Camera: None"**; remove "Microphone: … not muted", "Internet access: None" and any wake-word row (the 2026-10-04 line included); add the microphone row in the D018 form (on only after a press of the wake-up button, off after about a minute of quiet), "Open internet: cannot browse" (D017) and the voice row in the D020 form (trusted providers, servers in India, nothing kept, never used for training); never "only our own servers" | final wording at Gate A (D015) |
 | Product `description` | 3 to 7; no "friend"; no "lessons" (D027), no mood reading (R5), no brain-growth promise (D016) | G5 |
-| Product `offers` | price from the live offer mode, not a constant (G9), the GST-inclusive amount (D024; `priceSpecification.valueAddedTaxIncluded: true`); keep INR and `PreOrder`; add `seller` (the Organization); add `shippingDetails` (free delivery in India, **no** handling or transit time, since none is published, D022); **`hasMerchantReturnPolicy` is now possible** (D021, D022): `MerchantReturnFiniteReturnWindow`, `merchantReturnDays: 7` counted from delivery (D021's reading), `returnMethod: ReturnByMail` as the nearest value to a pickup we arrange, `returnFees` left out until who pays is confirmed; `availabilityStarts` needs an exact date, and "mid-November" is not one (SV-9); every value from the same content source as the visible policy text | G9, F1 (pickup fee), SV-9 |
+| Product `offers` | price from the live offer mode, not a constant (G9), the GST-inclusive amount (D024; `priceSpecification.valueAddedTaxIncluded: true`); keep INR and `PreOrder`; add `seller` (the Organization); add `shippingDetails` (free delivery in India, **no** handling or transit time, since none is published, D022); **`hasMerchantReturnPolicy` is now possible** (D021, D022): `MerchantReturnFiniteReturnWindow`, `merchantReturnDays: 7` counted from delivery (D021's reading), `returnMethod: ReturnByMail` as the nearest value to a pickup we arrange, `returnFees: FreeReturn` (free pickup, [D033](../decisions/D033-warranty-after-day-7.md)); `availabilityStarts: 2026-11-15` ([D037](../decisions/D037-delivery-date-in-schema.md)); every value from the same content source as the visible policy text | G9 |
 | Product `alternateName` | keep "Lumi" | nothing |
 | FAQPage (Home, product, `/faq`) | rebuild from section 6; add "Is Kheelu the same as Lumi?" to Home too (Home takes most AI landings); never the same question on two pages once `/faq` exists; no speech or language question on Home, and SP1 only on `/products/kheelu`, beside the D025 disclaimer | G8 |
-| Organization | description 3 to 7; `memberOf` only with proof (F11); remove the removed team member; `sameAs` points at profiles **after** they are corrected (7.5); add the App Store listing once fixed | F11, C6 |
+| Organization | description 3 to 7; `memberOf` only with proof (F11: the founder says all are real and files the proof, [D038](../decisions/D038-trust-content-rulings.md)); remove the removed team member; `sameAs` points at profiles **after** they are corrected (7.5); add the App Store listing once fixed | F11, C6 |
 | Article / BlogPosting | every story: author Person `@id`, git-derived dates, `citation` from its sources (as live) | nothing |
 | BreadcrumbList | every page below Home | nothing |
 | VideoObject | only for consented films used on the page (G3), with transcript | G3 |
@@ -748,13 +760,14 @@ the price, key answers and official profiles. Changes for the new site
    for a secret); the wake-up button and light (D018); the providers line, "we don't sell your data"
    and the 36-month retention ([D020](../decisions/D020-provider-terms-and-no-sale.md)); parents read
    and delete every conversation ([D017](../decisions/D017-live-behaviour-claims-confirmed.md)).
-3. "Support is WhatsApp only" becomes "WhatsApp (messages only) or email".
+3. "Support is WhatsApp only" becomes "WhatsApp (calls and messages) or email" ([D032](../decisions/D032-grievance-block-and-call-line.md)).
 4. New "commonly wrong" lines the audit justifies: **Kheelu costs ₹4,999 (incl. GST); ₹499 is a
    refundable advance, not the price** ([D028](../decisions/D028-price-wording.md)); **Kheelona+ is
    included for 6 months; Kheelu's smart features keep working for life, with no subscription
    needed** (the [D027](../decisions/D027-story-mode-wording.md) line, so no engine reads a lifetime
    subscription); **Kheelu is not a robot** (keep); and, subject to SV-7, that a "Lumi" toy sold in
-   Europe, a "Kheelona India" seller and the @KHEELONA YouTube channel are not this company.
+   Europe, a "Kheelona India" seller (not connected, [D039](../decisions/D039-repo-and-setup-answers.md)) and the @KHEELONA YouTube
+   channel are not this company.
 5. Lead the summary with "Kheelu by Kheelona" so the unknown product name sits beside the known
    brand.
 6. "Key answers" lists the cluster owners from section 4, not a hand-picked nine.
@@ -762,7 +775,7 @@ the price, key answers and official profiles. Changes for the new site
    sell-out (G9 and the sell-out sweep in [pricing](../product/pricing.md)).
 8. Add the buying answers engines are asked, from the same content source as the pages: Story mode
    as stories, poems and jingles (D027); deliveries for new orders from mid-November 2026 (D023);
-   7-day returns, the 6-month warranty and the pickup we arrange ([D021](../decisions/D021-returns-policy.md),
+   7-day returns, the 6-month warranty and free pickup ([D021](../decisions/D021-returns-policy.md), [D033](../decisions/D033-warranty-after-day-7.md),
    [D022](../decisions/D022-warranty-replacement-refund.md)); UPI, cards and net banking, GST included,
    a GST invoice ([D024](../decisions/D024-payment-methods-gst.md)). No delivery or replacement
    timeline (D022), and no speech or health claim (D025).
@@ -890,10 +903,10 @@ Returned to the orchestrator, who owns [open questions](../open-questions.md); I
 | SV-4 | 301s for the under-3 articles if G5 retires them | `brain-development-toys-for-a-2-year-old` → `learning-toys-for-a-three-year-old`; `talking-toys-and-late-talkers` → `talking-late-or-talking-little` | SKM / founder (G5) |
 | SV-5 | New page for learning toys at 4 to 7 | Build if C11 shows 100 or more a month for any single age | either |
 | SV-6 | May the Kheelona+ line be split so "for life" is not next to "Kheelona+"? | **Answered by [D027](../decisions/D027-story-mode-wording.md)** (the new line) and [D028](../decisions/D028-price-wording.md) (R10). Closed | founder |
-| SV-7 | May `llms.txt` and the Lumi answer name other businesses (the European Lumi, "Kheelona India", the @KHEELONA channel)? Is "Kheelona India" connected? | Describe them without links in `llms.txt` only; confirm the seller | founder |
+| SV-7 | May `llms.txt` and the Lumi answer name other businesses (the European Lumi, "Kheelona India", the @KHEELONA channel)? Is "Kheelona India" connected? | Describe them without links in `llms.txt` only. **"Kheelona India" answered 2026-10-11: not connected** ([D039](../decisions/D039-repo-and-setup-answers.md)) | founder (naming them in `llms.txt`: Gate A) |
 | SV-8 | An official YouTube channel for the consented films | Yes, after G3 | founder |
-| SV-9 | Product `offers.availabilityStarts` needs an exact date, and D023 gives "mid-November 2026" | Leave `availabilityStarts` out until an exact first-delivery date exists, or the founder names one; never derive a day from "mid-November" | founder (F12) |
-| SV-10 | D017 row checks this page waits on (claims §2, facts): "no wheels, no face screen and no moving parts" (a wake-up button may read as one), "switches languages mid-sentence", and the "closed library" and "age-graded safety layer" lines, which describe answers that now come through outside AI providers (D019) | The claims owner applies D017 row by row; until then the drafts keep a `[PLACEHOLDER D017 row check]` (B7, B12, AI4) | founder / claims owner |
+| SV-9 | Product `offers.availabilityStarts` needs an exact date, and D023 gives "mid-November 2026" | **Answered 2026-10-11:** `availabilityStarts: 2026-11-15` ([D037](../decisions/D037-delivery-date-in-schema.md)), from the same content value as "mid-November" | closed |
+| SV-10 | D017 row checks this page waits on (claims §2, facts): "no wheels, no face screen and no moving parts" (a wake-up button may read as one), "switches languages mid-sentence", and the "closed library" and "age-graded safety layer" lines, which describe answers that now come through outside AI providers (D019) | **Applied 2026-10-11** ([claims §2](../product/claims.md#2-published-product-behaviour-claims-live-not-re-confirmed)): mid-sentence switching EXTERNAL; no moving parts, closed library and age-graded layer EXTERNAL with a Gate A flag. B7, B12 and AI4 carry the lines | closed (Gate A flags remain) |
 
 ## 11. Gaps
 
@@ -905,8 +918,9 @@ Returned to the orchestrator, who owns [open questions](../open-questions.md); I
   5-year seasonality (429), Perplexity, ChatGPT, Gemini and Copilot answers (login or no render).
 - **Density is a baseline**, measured by regular expression on copy that the reset rewrites
   ([raw/qa/2026-10-10/html/](../raw/qa/2026-10-10/html/)).
-- **Every figure under a `[CITE]` waits on D026's independent check**: `research/source-verification.md`
-  is not yet written, so no statistic in section 6 (for example ST1's hour a day) is cleared to ship.
+- **Every figure under a `[CITE]` passes D026's independent check**: [source verification](source-verification.md)
+  (finished 2026-10-11) clears a statistic only in its verified wording; check each section 6 figure (for
+  example ST1's hour a day) against it before it ships.
 - **The owner pages were mid-update** when the drafts were refreshed (2026-10-11): facts, claims and
   policies still showed the pre-ruling values, so the drafts cite D016-D029 directly. Re-read them
   against the owner pages once those land.

@@ -123,7 +123,7 @@ not differ (8 named, ceiling 10); the new copy picks one wording and renders it 
 |---|---|---|---|
 | Listening | **No wake word.** A **wake-up button** turns the microphone on: one press starts a conversation, the microphone stays on through the back-and-forth and **switches itself off after about a minute** with no conversation; the next conversation needs another press. **A light on Kheelu shows while the microphone is on** (colour and pattern not specified, so copy never names one). Founder, 2026-10-10 ([D018](../decisions/D018-wake-up-button.md)); supersedes the production wording AND the 2026-10-04 wake-word wording (`mid:src/lib/product-facts.ts:76`) | [D018](../decisions/D018-wake-up-button.md) | EXTERNAL, within D018's wording rules: describe the mechanism ("the microphone stays off until someone presses the button, so nothing is recorded or sent"); never "no risk" or "zero risk"; no physical or electrical disconnect claim; never "nothing is ever recorded" (conversations are kept for parents, [D017](../decisions/D017-live-behaviour-claims-confirmed.md), [D020](../decisions/D020-provider-terms-and-no-sale.md)). "Wake-up button" is the en-IN name. Draft lines are in D018. **Every wake-word line is BANNED**: the retired "The microphone is off. Not muted. Off." family and the 2026-10-04 "listens only for its wake word" line, with every live location in [claims.md](claims.md#41-the-retired-microphone-wording) |
 | The wake word itself | **None: Kheelu has no wake word** ([D018](../decisions/D018-wake-up-button.md)). The live site still promises to publish one "before Kheelu ships" | `src/app/(site)/products/kheelu/page.tsx:339`; live `/setup`; D018 | "No wake word": EXTERNAL (D018). The live promise to publish a wake word is BANNED (it implies one; [claims 4.1](claims.md#41-the-retired-microphone-wording)). F4's "wake word" spec item is moot (D018) |
-| First processing | "The first thinking happens on the toy itself, before anything is sent anywhere" (both versions) | live `/` and `/safety`; `mid:src/lib/safety.ts:44-45` | EXTERNAL ([D017](../decisions/D017-live-behaviour-claims-confirmed.md)): live, founder-approved, and no later ruling contradicts it. Write it beside the providers line (next row) and never so it implies the voice stays on the toy ([D019](../decisions/D019-voice-providers.md)) |
+| First processing | "The first thinking happens on the toy itself, before anything is sent anywhere" (both versions) | live `/` and `/safety`; `mid:src/lib/safety.ts:44-45` | EXTERNAL ([D017](../decisions/D017-live-behaviour-claims-confirmed.md)): live, founder-approved, and no later ruling contradicts it. **Flag for Gate A** (D019): write it beside the providers line (next row) and never so it implies the voice stays on the toy or that no outside AI model is involved ([D019](../decisions/D019-voice-providers.md)); never "on-device-first processing" ([D036](../decisions/D036-launch-feature-claims.md)) |
 | Where voice goes | **Multiple outside speech and AI providers, on servers in India for every provider** ([D019](../decisions/D019-voice-providers.md); [D020](../decisions/D020-provider-terms-and-no-sale.md) item 6). They process a child's voice **only to produce Kheelu's reply**, **do not keep it**, **never train on it**, and **contracts say so** (founder, 2026-10-10, D020 items 1-4). Was: production "Stays in your region"; mid "Kheelona's own servers, **in India**" (confirmed 2026-10-04, withdrawn by D019) | `src/lib/product-facts.ts:80`; `mid:src/lib/product-facts.ts:86-88`; `mid:docs/checkpoints/cmo-merge-2026-10.md:28`; D019; D020 | EXTERNAL in D020's wording and its guardrails: "trusted" describes our choice of provider, not a certification; if any provider ever moves processing abroad, this line changes first. BANNED: "stays in your region"; "only Kheelona's own servers" and any "only our own servers" or "never leaves Kheelona" wording; `/playos`'s "Nothing rented that matters" and its "own the model" family ([D019](../decisions/D019-voice-providers.md); [claims §4](claims.md#4-retired-or-banned-wording)) |
 | Sold? | "Never sold, never used to advertise to your child" (both) | both product-facts files; [D020](../decisions/D020-provider-terms-and-no-sale.md) item 5 | "We don't sell your data": EXTERNAL (D020, confirmed for the new site; the live `/privacy` already states it: "We never sell your child's data", `src/app/(site)/privacy/page.tsx:189`; "your child's voice data is never sold", `:202`). "Never used to advertise to your child": EXTERNAL IF CONFIRMED: the answer to F5 (D019, D020) does not cover advertising, so it needs its own yes (no open-question ID yet) |
 | Consent | "Nothing is collected without your say-so" (both) | `src/app/(site)/safety/page.tsx:43` | EXTERNAL IF CONFIRMED (G6, and the independent legal review of [D029](../decisions/D029-grievance-officer-legal-review.md), which covers DPDP verifiable parental consent for children's data). The answer to F5 does not cover consent |
@@ -141,7 +141,7 @@ documented: [claims.md](claims.md#7-childrens-data-what-is-published-versus-docu
 
 | Fact | Value | Source | Status | Site |
 |---|---|---|---|---|
-| Open internet | Cannot browse or search; answers come from a closed library | `src/lib/product-facts.ts:74` | Both | "Cannot browse the internet": EXTERNAL ([D017](../decisions/D017-live-behaviour-claims-confirmed.md), named in the ruling). "Answers come from a closed library": EXTERNAL (D017); flag for Gate A: beside the outside AI providers ([D019](../decisions/D019-voice-providers.md)) it must not suggest that no AI model is involved |
+| Open internet | Cannot browse or search; answers come from a closed library | `src/lib/product-facts.ts:74` | Both | "Cannot browse the internet": EXTERNAL ([D017](../decisions/D017-live-behaviour-claims-confirmed.md), named in the ruling). "Answers come from a closed library": EXTERNAL (D017; confirmed for launch as a curated, closed content library, [D036](../decisions/D036-launch-feature-claims.md)); flag for Gate A: beside the outside AI providers ([D019](../decisions/D019-voice-providers.md)) it must not suggest that no AI model is involved |
 | Spec row wording | Production: "Internet access: None" (contradicts AI mode on WiFi). Mid: "Open internet: No … connects only to our own servers" | `src/lib/product-facts.ts:74`; `mid:src/lib/product-facts.ts:77-80` | Production wording is wrong | "Internet access: None": BANNED ([claims §4](claims.md#4-retired-or-banned-wording)). "Open internet: No": EXTERNAL (D017). "Connects only to our own servers": BANNED ([D019](../decisions/D019-voice-providers.md)) |
 | Camera | **None** (founder-confirmed 2026-10-04) | `mid:src/lib/comparison.ts:86`; `mid:docs/checkpoints/cmo-merge-2026-10.md:28` | Mid only. Production never states it (live text checked 2026-10-10; "camera" appears only in video alt text) | EXTERNAL |
 
@@ -151,6 +151,7 @@ Published features (none verifiable until ship): daily summary; the full convers
 word; delete any conversation in one tap; topic controls; quiet hours; language choice; a count of
 new words learnt; "one simple thing to do together each day"; alerts ("if something ever needs your
 attention, you hear about it first"); "parenting philosophy, in one prompt".
+Confirmed for launch ([D036](../decisions/D036-launch-feature-claims.md), 2026-10-11): a weekly four-skills report; the new-word count; alerts (trigger not specified). **The child's age is set by a parent in the app at setup** and can be changed; the age-graded safety layer follows it.
 Sources: `src/lib/product-facts.ts:79`; `src/app/(site)/products/kheelu/page.tsx:297`;
 `src/features/home/components/ParentAppSection.tsx:19,45`; live `/llms.txt` lines 36-40.
 Status: Both (mid uses the same list; Home's card shows the real app screenshot,
@@ -167,7 +168,7 @@ CONFIRMED until it lands. Nothing that reads the child's mood ships (R5, BANNED)
 **The parent app is part of Kheelona+**, which is included for 6 months (next section). Kheelu's
 smart features keep working for life with no subscription
 ([D027](../decisions/D027-story-mode-wording.md)); what a parent keeps of the parent app after the 6
-months is not stated ([open questions](../open-questions.md) F7).
+months is **not decided** (founder, 2026-10-11, [D038](../decisions/D038-trust-content-rulings.md)); flagged at Gate A, because "parents can read every conversation" depends on it after month 6.
 
 ## Kheelona+
 
@@ -219,7 +220,7 @@ This page owns the support channel; other pages link here.
 
 | Fact | Value | Source | Status | Site |
 |---|---|---|---|---|
-| WhatsApp | **+91 91875 46483, messages only, not calls**; every visible label must say so (founder, 2026-08-22) | `src/config/site.ts:195-202`; `src/lib/legal.ts:22` | Both | EXTERNAL, labelled "messages only" |
+| WhatsApp | **+91 91875 46483.** Live: messages only, not calls (founder, 2026-08-22). **New site: takes calls as well as messages** ([D032](../decisions/D032-grievance-block-and-call-line.md), 2026-10-11; also the grievance officer's number). The "messages only" label is retired on the new site; the founder arranges calls before Gate B | `src/config/site.ts:195-202`; `src/lib/legal.ts:22`; D032 | Live: messages only | EXTERNAL |
 | Email | hello@kheelona.com (founder-confirmed monitored inbox, 2026-07-28) | `src/config/site.ts:173-174` | Both | EXTERNAL |
 | Never publish | The legacy Wix number +91 98765 43210 (a placeholder) | `docs/checkpoints/closed-rounds.md:166` | n/a | BANNED |
 
@@ -260,7 +261,7 @@ a guess; a gap becomes a marked placeholder and an open question.
 | Item | Where the gap is stated | Guard | Open question | Site |
 |---|---|---|---|---|
 | Battery life | `src/lib/product-facts.ts:38-39,87` ("Not announced yet") | `src/lib/seo.test.ts:387` bans "battery" in the spec table | F4 | EXTERNAL IF CONFIRMED (F4) |
-| Warranty terms | `src/lib/product-facts.ts:40-41,88`; `/products/kheelu` FAQ (line 102); `/refund` | `src/lib/seo.test.ts:388` (the new site's guard must let the decided terms through) | **Answered** ([D022](../decisions/D022-warranty-replacement-refund.md)); still open in F1: the remedy for a defect found after the first 7 days, and whether pickup is free | EXTERNAL (D022): a 6-month warranty on manufacturing defects, in D022's wording; the terms are owned by [policies](policies.md) |
+| Warranty terms | `src/lib/product-facts.ts:40-41,88`; `/products/kheelu` FAQ (line 102); `/refund` | `src/lib/seo.test.ts:388` (the new site's guard must let the decided terms through) | **Answered** ([D022](../decisions/D022-warranty-replacement-refund.md), [D033](../decisions/D033-warranty-after-day-7.md): after day 7, repair or else replace; pickup free) | EXTERNAL (D022, D033): a 6-month warranty on manufacturing defects; the terms are owned by [policies](policies.md) |
 | Country of manufacture | `src/lib/product-facts.ts:42-46` ("this site has never made it"). `/contact` contradicts it today: [claims.md](claims.md#31-origin-designed-and-built-here) | `src/lib/seo.test.ts:389`; `mid:test/claims-gated.test.ts:26,30` | F3 | EXTERNAL IF CONFIRMED (F3) |
 | Toy-safety certificates (incl. BIS/ISI) | `src/lib/product-facts.ts:89-92` ("In progress") | see [claims.md](claims.md#6-certifications) | F4 | EXTERNAL IF CONFIRMED (F4) |
 | Size, weight, materials | `src/app/(site)/products/kheelu/page.tsx:339` | none | F4 | EXTERNAL IF CONFIRMED (F4) |
@@ -285,10 +286,10 @@ fetch shows only two, because two are logos whose name is the image's alt text (
 
 | Entry | How it renders | Also in | Site |
 |---|---|---|---|
-| NVIDIA Inception Program | Logo, `/recognition/nvidia-inception.png` | Organization schema `memberOf` (`src/lib/seo.ts:172-175`); `/llms.txt` | EXTERNAL IF CONFIRMED (F11, G3) |
-| Karnataka Elevate | Seal plus text | `/llms.txt` | EXTERNAL IF CONFIRMED (F11, G3) |
-| nasscom startups | Logo, `/recognition/nasscom.png` | Organization schema `memberOf`; `/llms.txt` | EXTERNAL IF CONFIRMED (F11, G3) |
-| Founders Inc | Text only | `/llms.txt` | EXTERNAL IF CONFIRMED (F11, G3) |
+| NVIDIA Inception Program | Logo, `/recognition/nvidia-inception.png` | Organization schema `memberOf` (`src/lib/seo.ts:172-175`); `/llms.txt` | EXTERNAL once its proof is filed in `wiki/raw/` ([D038](../decisions/D038-trust-content-rulings.md)); logo use is G3 |
+| Karnataka Elevate | Seal plus text | `/llms.txt` | EXTERNAL once its proof is filed (D038); G3 |
+| nasscom startups | Logo, `/recognition/nasscom.png` | Organization schema `memberOf`; `/llms.txt` | EXTERNAL once its proof is filed (D038); G3 |
+| Founders Inc | Text only | `/llms.txt` | EXTERNAL once its proof is filed (D038); G3 |
 
 Sources: `src/components/organisms/RecognitionStrip.tsx:15-29` (comment: "founder-published",
 mirrored from kheelona.ai); `src/app/llms.txt/route.ts:114-115`. The schema comment
@@ -304,5 +305,5 @@ mirrors his kheelona.ai bio). Three co-founders: Apoorva Sahu, Aman Soni, Kashya
 version at the founder's request (`mid:docs/checkpoints/cmo-merge-2026-10.md`, review round 2).
 
 **Site:** the three co-founders' names EXTERNAL (company basics); the patents and the Intel work
-EXTERNAL IF CONFIRMED (F11, and the grey list); Ria Mangala Rewari BANNED (removed from the whole mid version
+EXTERNAL once their proof is filed in `wiki/raw/` (the founder says both are real, [D038](../decisions/D038-trust-content-rulings.md)); Ria Mangala Rewari BANNED (removed from the whole mid version
 at the founder's request).

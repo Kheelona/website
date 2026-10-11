@@ -1,0 +1,77 @@
+{
+  "meta": {
+    "project": "PostHog 617632 (US cloud), project timezone UTC",
+    "range": "2026-09-19 00:00 to 2026-10-11 00:00 UTC (the audit's window)",
+    "run_at": "2026-10-11 12:25-12:28 UTC, read-only, through the PostHog MCP (execute-sql; insight-get)",
+    "purpose": "Store-link tap counts in human sessions without the one session that tapped a store link on /privacy (8 taps in 3 s on the phone menu's 'Pre-order Kheelu' button, 2026-09-20, before cta tags went live; see H14e-H14g in 2026-10-11-human-session-recomputes.json). Also one read-only check of the saved baseline funnel's test-account setting after D031.",
+    "human_filter": "properties.$session_id IN the audit's Q34 per-session subquery (>=1 $pageview, no $virt_is_bot event, entry referrer not localhost:3456 / 127.0.0.1:3456 / *.vercel.app), as in 2026-10-11-human-session-recomputes.json",
+    "caveat": "Aggregates only; no person-level data. The insight read keeps only the query-definition fields that bear on the check; creator and editor fields are left out."
+  },
+  "queries": [
+    {
+      "id": "H14h",
+      "what": "Store-link taps from kheelona.com per device, human sessions, excluding every session with a store-link tap on /privacy (taps, untagged, fixed-element and guide-bar taps, each with sessions)",
+      "recomputes": "H14, H14d without the /privacy session",
+      "hogql": "SELECT properties.$device_type AS device, count() AS taps, uniq(properties.$session_id) AS sessions, countIf(coalesce(properties.cta,'') = '') AS untagged_taps, uniqIf(properties.$session_id, coalesce(properties.cta,'') = '') AS untagged_sessions, countIf(position(elements_chain, 'fixed') > 0) AS fixed_taps, uniqIf(properties.$session_id, position(elements_chain, 'fixed') > 0) AS fixed_sessions, countIf(position(elements_chain, 'md:hidden') > 0 AND position(elements_chain, 'fixed') > 0) AS guide_bar_taps, uniqIf(properties.$session_id, position(elements_chain, 'md:hidden') > 0 AND position(elements_chain, 'fixed') > 0) AS guide_bar_sessions, (SELECT uniq(properties.$session_id) FROM events WHERE event = '$autocapture' AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND properties.$host = 'kheelona.com' AND properties.$pathname = '/privacy' AND elements_chain_href LIKE '%store.kheelona.com%') AS excluded_sessions FROM events WHERE event = '$autocapture' AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND properties.$host = 'kheelona.com' AND elements_chain_href LIKE '%store.kheelona.com%' AND properties.$session_id IN (SELECT sid FROM (SELECT properties.$session_id AS sid, any(session.$entry_referring_domain) AS ref, max(properties.$virt_is_bot = true) AS is_bot, countIf(event = '$pageview') AS pvs FROM events WHERE timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND event IN ('$pageview','preorder_form_started','preorder_start','begin_checkout','purchase') AND properties.$session_id IS NOT NULL GROUP BY sid HAVING pvs > 0 AND is_bot = 0 AND NOT (coalesce(ref,'') IN ('localhost:3456','127.0.0.1:3456') OR coalesce(ref,'') LIKE '%vercel.app'))) AND properties.$session_id NOT IN (SELECT properties.$session_id FROM events WHERE event = '$autocapture' AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND properties.$host = 'kheelona.com' AND properties.$pathname = '/privacy' AND elements_chain_href LIKE '%store.kheelona.com%') GROUP BY device ORDER BY device",
+      "rows": [
+        {
+          "device": "Desktop",
+          "taps": 24,
+          "sessions": 19,
+          "untagged_taps": 2,
+          "untagged_sessions": 2,
+          "fixed_taps": 0,
+          "fixed_sessions": 0,
+          "guide_bar_taps": 0,
+          "guide_bar_sessions": 0,
+          "excluded_sessions": 1
+        },
+        {
+          "device": "Mobile",
+          "taps": 21,
+          "sessions": 17,
+          "untagged_taps": 17,
+          "untagged_sessions": 14,
+          "fixed_taps": 14,
+          "fixed_sessions": 11,
+          "guide_bar_taps": 14,
+          "guide_bar_sessions": 11,
+          "excluded_sessions": 1
+        }
+      ],
+      "note": "excluded_sessions is the number of sessions removed (1, a phone session; it is the same in both rows because it is a scalar subquery). Phone with that session (H14, H14d): 29 taps / 18 sessions, untagged 25 / 15, fixed 22 / 12. Without it: 21 / 17, untagged 17 / 14, fixed 14 / 11, and every remaining fixed-element tap is the guide's bar. Laptop is unchanged."
+    },
+    {
+      "id": "S5",
+      "what": "Saved baseline funnel Y9KjojeN: does it use the project's test-account filter (which D031 extended to drop $virt_is_bot events)?",
+      "tool": "insight-get {\"id\": \"Y9KjojeN\"}",
+      "rows": [
+        {
+          "short_id": "Y9KjojeN",
+          "name": "Website reset — baseline funnel by device (2026-09-19 to 2026-10-10)",
+          "query.source.kind": "FunnelsQuery",
+          "query.source.filterTestAccounts": false,
+          "query.source.properties": [
+            {
+              "key": "coalesce(properties.$virt_is_bot, false) = false",
+              "type": "hogql"
+            }
+          ],
+          "query.source.dateRange": {
+            "date_from": "2026-09-19T00:00:00Z",
+            "date_to": "2026-10-11T00:00:00Z"
+          },
+          "query.source.breakdownFilter": {
+            "breakdown": "$device_type",
+            "breakdown_type": "event"
+          },
+          "query.source.funnelsFilter.funnelOrderType": "ordered",
+          "query.source.funnelsFilter.funnelWindowInterval": 14,
+          "query.source.funnelsFilter.funnelWindowIntervalUnit": "day",
+          "last_modified_at": "2026-10-11T02:18:47.551650Z"
+        }
+      ],
+      "note": "filterTestAccounts is false and the insight carries its own bot filter, so the D031 change to the test-account filter does not change this insight's result."
+    }
+  ]
+}

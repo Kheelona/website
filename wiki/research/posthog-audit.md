@@ -1,10 +1,14 @@
 ---
 title: PostHog audit (Phase 1 baseline)
 type: research
-updated: 2026-10-10
+updated: 2026-10-11
 cites_at: archive/pre-reset-2026-10-10
 sources:
   - "PostHog project 617632, read-only queries and tool reads, run 2026-10-11 01:00-02:30 UTC; every query text and result is in raw/posthog/2026-10-10-*.json"
+  - "raw/posthog/2026-10-11-human-session-recomputes.json (human-session recomputes H0-H39 of scroll depth, web vitals, CTA taps and countries; run 2026-10-11 12:01-12:10 UTC, same window; supersedes Q13, Q14, Q14b, Q19, Q19b, Q20, Q39 and confirms Q33)"
+  - "raw/posthog/2026-10-11-cta-without-privacy-session.json (H14h: store-link taps without the one /privacy session; S5: baseline funnel Y9KjojeN's test-account setting; run 2026-10-11 12:25-12:28 UTC)"
+  - "raw/posthog/2026-10-11-recompute-verification.sql (independent verifier's recompute W0-W6d, run 2026-10-11 ~11:40-12:10 UTC, same window; W2c scroll-report coverage, W5c US sessions)"
+  - decisions/D031-posthog-settings-and-replays.md
   - raw/posthog/2026-10-10-traffic-overview.json
   - raw/posthog/2026-10-10-funnel.json
   - raw/posthog/2026-10-10-landing-and-cta.json
@@ -32,8 +36,9 @@ checkout steps by [checkout](../site/checkout.md); URLs by [URL map](../site/url
 
 **Read the sample sizes.** The whole window holds **802 human sessions and 2 purchases**. Anything
 counted in single digits is a lead to check in QA, not a result. Each table names its query
-(`Q…`, or `V…` for the verifier's checks); the exact HogQL and the raw result sit in the linked
-file in `raw/posthog/`. An independent verifier re-derived about 120 values; what it corrected is
+(`Q…`; `V…` for the verifier's checks; `H…` for the 2026-10-11 human-session recomputes; `W…` for
+the 2026-10-11 verifier's recompute); the exact HogQL and the raw result sit in the linked file in
+`raw/posthog/`. An independent verifier re-derived about 120 values; what it corrected is
 in [section 13](#13-verification-and-corrections).
 
 ## In one screen
@@ -50,14 +55,20 @@ in [section 13](#13-verification-and-corrections).
 5. **The store page is where the money leaks**: 81 of 91 store visitors never touched the form, half
    of form starters did not submit, and 3 of 5 orders created were never paid. All 3 unpaid orders
    were in in-app browsers (WhatsApp, Instagram); both paid orders were in normal Chrome.
-6. **On phones the first screen and the sticky bar do the selling**: 90% of phone views of Home never
-   pass 25% of the page, and sticky elements produced 22 of 29 phone taps to the store (14 from the
-   guide's bottom bar). That bar carries **no `cta` tag**, so 25 of 29 phone taps are unattributed.
-7. **The store is the slowest page**: on the phone, the store page's LCP p75 is 3.2 s and FCP p75
-   3.2 s (Home 2.4 s). Phone INP on Home is p75 546 ms, well over the 200 ms target (Q20).
+6. **On phones the first screen and the sticky bar do the selling**: 90% of measured phone views of
+   Home (the 373 of 607 that sent a scroll report) never pass 25% of the page, and the guide's
+   sticky bottom bar produced 14 of the 29 phone taps to the store (11 of the 18 phone sessions that
+   tapped through), and 14 of 18 once `cta` tags went live on 2026-09-20. That bar carries **no
+   `cta` tag**, so its taps are unattributed (25 of 29 phone taps carry no tag; the other 11 predate
+   tagging) (H19, W2c, H14c, H14g).
+7. **The store is the slowest page**: on the phone, the store page's LCP p75 is 3.3 s and FCP p75
+   3.4 s (Home LCP 2.4 s). Phone INP on Home is p75 546 ms, well over the 200 ms target (H20, human
+   sessions).
 8. **No errors come from our code.** The 37 exceptions are third-party or browser noise.
-9. **Setup is sound but unfinished**: no conversion goal, no actions, revenue analytics not set,
-   the internal-users cohort is empty, bots are not in the test filter.
+9. **Setup is sound; the main gaps were closed on 2026-10-11** ([D031](../decisions/D031-posthog-settings-and-replays.md)):
+   conversion goal `purchase_confirmed`, revenue analytics in INR on `purchase_confirmed.value`, bots
+   in the test-account filter, the store in authorised URLs. Still open: no actions, and the
+   internal-users cohort is empty.
 
 ## 1. Method and window
 
@@ -72,7 +83,8 @@ in [section 13](#13-verification-and-corrections).
 | Still included | team browsing: 4 devices with 10 or more sessions each (3 Mac Chrome, 1 iPhone) hold 48 sessions; cohort 580233 is empty ([C7](../open-questions.md)) | Q24 |
 | Paid | entry `utm_medium=paid`, or a Meta `fbclid` with no UTM at all | Q34 |
 | Session entry (landing, source, paid flag) | PostHog's sessions table, `session.$entry_*`: the session's first event. The verifier rebuilt the same from each session's first `$pageview`: every total agrees (802 / 388 / 414) and 7 sessions change landing page (section 3) | Q12, Q34, V1, V4 |
-| Scope exceptions | Scroll depth (Q19, Q19b) and web vitals (Q20, Q39) count non-bot **events**, not human sessions, so they include internal sessions and sessions without a `$pageview`; each table says so and shows the human-session figures the verifier measured | V9, V12 |
+| Human-session recomputes | Scroll depth, web vitals, CTA taps and countries were re-run on 2026-10-11 inside the human sessions above (`properties.$session_id IN` the Q34 per-session subquery), with the same window, paid flag and event-level device as the original queries; they reproduce the verifier's V9 and V12 exactly. Vitals n is still events, not sessions | H0-H39 |
+| Figures with another scope | These keep the scope their query states and were not recomputed: exceptions (every event, Q21), dead, rage and swipe counts (all or non-bot events, Q15, Q16, Q41), heatmap points (heatmap table, Q37), recordings (Q36, Q36b), the native funnel (persons, Q8) | Q8, Q15, Q16, Q21, Q36, Q37, Q41 |
 | Rupees | Rounded to the nearest rupee everywhere. Exact sums: ₹2,416.64 spent 09-19 to 09-23, ₹2,472.28 spent 09-02 to 09-13 | V7, V21 |
 | Funnel unit | a session; a step counts if it happened in the session (steps need not be in order). PostHog's native ordered funnel by person is the cross-check (Q8) | Q6-Q8 |
 | Replays | 26 drop-off sessions reviewed through recording metadata plus a full event timeline each; video frames could not be viewed through the MCP (section 6) | R1 |
@@ -84,10 +96,10 @@ session restarted on the store after 30 minutes idle); **Referral**.
 
 ## 2. Baseline metrics (for the post-launch comparison)
 
-Window 2026-09-19 to 2026-10-10, human sessions, internal excluded, **except the web-vitals rows**,
-which count every non-bot `$web_vitals` event per host (internal sessions included; n is events).
-"Apex host" is every kheelona.com page; "store host" is every store.kheelona.com page, `/thanks`
-included. Per-page vitals are in section 7.
+Window 2026-09-19 to 2026-10-10, human sessions, internal excluded. The web-vitals rows count the
+`$web_vitals` events inside those sessions (n is events, not sessions; H39). Three rows keep a wider
+scope, as labelled: exceptions, dead or rage clicks, and the recordings total. "Apex host" is every kheelona.com page;
+"store host" is every store.kheelona.com page, `/thanks` included. Per-page vitals are in section 7.
 
 | Metric | All | Not paid | Paid | Query |
 |---|---|---|---|---|
@@ -106,17 +118,20 @@ included. Per-page vitals are in section 7.
 | Purchase, browser (`purchase`) | 2 (0.25%) | 2 (0.52%) | 0 | Q34 |
 | Purchase, server (`purchase_confirmed`) | 2; stored `tier` is `"launch"` on both (and on both browser `purchase` events); `value` sums to ₹998, i.e. 2 × ₹499, the token amount | | | Q38, V6 |
 | Browser purchase loss (server minus browser) | 0 of 2 | | | Q38 |
-| LCP p75, phone, apex host / store host (non-bot events) | 2,348 ms (n 187) / 3,292 ms (n 32); human sessions only, store host: **3,308 ms (n 30)** | | | Q39, V9 |
-| INP p75, phone, apex host / store host (non-bot events) | 440 ms (n 47) / 258 ms (n 18) | | | Q39 |
-| CLS p75, phone, apex host / store host (non-bot events) | 0.0 / 0.0 | | | Q39 |
-| LCP p75, laptop, apex host / store host (non-bot events) | 1,574 ms (n 111) / 2,850 ms (n 11) | | | Q39 |
-| Exceptions | 37 in 12 sessions, none from our code | | | Q21, Q41 |
-| Dead clicks / dead swipes / rage clicks | 89 / 61 / 13 (41 / 41 / 9 sessions) | | | Q41 |
+| LCP p75, phone, apex host / store host | 2,348 ms (n 187) / **3,308 ms (n 30)** | | | H39 |
+| INP p75, phone, apex host / store host | 440 ms (n 47) / 258 ms (n 18) | | | H39 |
+| CLS p75, phone, apex host / store host | 0.0 (n 134) / 0.0 (n 23) | | | H39 |
+| LCP p75, laptop, apex host / store host | 1,574 ms (n 111) / 2,850 ms (n 11) | | | H39 |
+| Exceptions (every event, not only human sessions) | 37 in 12 sessions, none from our code | | | Q21, Q41 |
+| Dead clicks / dead swipes / rage clicks (non-bot events, internal included) | 89 / 61 / 13 (41 / 41 / 9 sessions) | | | Q41 |
 | Recordings | 533 recordings in the window (all sessions); 485 of 802 human sessions (61%) have one; 0 recordings contain `/thanks` | | | Q36, V16 |
 
 The saved insight **"Website reset — baseline funnel by device (2026-09-19 to 2026-10-10)"**
 ([Y9KjojeN](https://us.posthog.com/project/617632/insights/Y9KjojeN)) holds the native funnel with a
-fixed date range, so Phase 8 can open it beside the post-launch one.
+fixed date range, so Phase 8 can open it beside the post-launch one. **Note for Phase 8:** since
+D031, insights with "filter test accounts" on also drop bot events; Y9KjojeN has that toggle off and
+carries its own bot filter (`coalesce(properties.$virt_is_bot, false) = false`), so its result does
+not change (S5, read 2026-10-11 12:27 UTC).
 
 ## 3. Traffic: source, campaign, device
 
@@ -184,8 +199,14 @@ So "every paid landing was Home or the store root" holds by session entry (399 +
 off by one by first pageview (398 + 15 + 1 on `/team`). **No paid session landed on the product
 page under either definition**, and no conclusion changes.
 
-Countries (Q33): India 84.9%, US 7.6%, then nothing above 1%. **114 of the 388 non-paid sessions
-(29%) are outside India.**
+Countries (H33, H33b; human sessions, country of the first pageview): India 84.9% (681 of 802),
+US 7.6% (61), then nothing above 1% (Sweden 1.0%); 27 countries in all. Of the 388 non-paid
+sessions, India is 70.6% and the US 15.2% (59): **114 of the 388 non-paid sessions (29%) are
+outside India.** Paid sessions are 98.3% India (407 of 414).
+Caveat on the US figure: 19 of the 61 US human sessions are direct, single-page Chrome-on-Linux
+visits with a median length of 0 s and no clicks, which `$virt_is_bot` did not flag (verifier's
+W5c, [recompute verification](../raw/posthog/2026-10-11-recompute-verification.sql)). That they are
+automated is an inference, not a classification; either way, do not read the US count as US demand.
 
 ### Device split: the 70/30 belief, corrected (Q7, Q34, Q40)
 
@@ -248,45 +269,62 @@ customer films first) (Q25, R1).
 
 ## 5. Behaviour on Home, the product page and the store
 
-### Scroll depth (Q19, Q19b; human-session check V12)
+### Scroll depth (H19, H19b; human sessions)
 
-**Scope: all non-bot page views, not the page's human-session definition.** Q19 and Q19b read
-`$prev_pageview_max_scroll_percentage` from every `$pageview` or `$pageleave` without a bot flag,
-so they include 33 views from sessions with no `$pageview` (Home laptop 13, Home phone 5, product
-laptop 6, store 9) and 4 store views from internal sessions. The last column is the same count
-restricted to human sessions (V12).
+Read from `$prev_pageview_max_scroll_percentage` and `$prev_pageview_duration`, which a page view
+reports when it is left (on the next `$pageview` or a `$pageleave`). "Views measured" are the views
+that sent that report; a view that sent none is not in the table. **Coverage** (verifier's W2c,
+human sessions, [recompute verification](../raw/posthog/2026-10-11-recompute-verification.sql)):
+only 373 of 607 phone Home pageviews (61.4%) and 33 of 68 phone store pageviews (48.5%) sent a
+report; laptop Home 132 of 170, product page phone 21 of 28 and laptop 29 of 39, store laptop 22 of
+31. Every percentage below describes measured views only. Device is the reporting event's
+`$device_type`; paid is the audit's flag (section 1). Percentages are rounded; the raw file has one
+decimal.
 
-| Page | Device | Views (non-bot) | Median max scroll | Reach 25% | Reach 50% | Reach 90% | Median time | Views in human sessions (V12) |
-|---|---|---|---|---|---|---|---|---|
-| Home | Phone, all | 378 | 0% | 10% | 6% | 3% | 9 s | 373 |
-| Home | Phone, not paid | 82 | 13% | 37% | 22% | 10% | 27 s | 79 |
-| Home | Phone, paid | 296 | 0% | 3% | 2% | 1% | 8 s | 294 |
-| Home | Laptop | 145 | 16% | 41% | 28% | 21% | 53 s | 132 |
-| Product page | Phone | 21 | 30% | 57% | 19% | 10% | 33 s | 21 |
-| Product page | Laptop | 35 | 23% | 46% | 29% | 6% | 18 s | **29** |
-| Store | Phone | 40 | 47% | 62% | 48% | 28% | 50 s | 33 |
-| Store | Laptop | 28 | 77% | 64% | 57% | 39% | 18 s | 22 |
+| Page | Device | Views measured | Median max scroll | Reach 25% | Reach 50% | Reach 90% | Median time |
+|---|---|---|---|---|---|---|---|
+| Home | Phone, all | 373 | 0% | 10% | 6% | 3% | 9 s |
+| Home | Phone, not paid | 79 | 12% | 34% | 22% | 9% | 26 s |
+| Home | Phone, paid | 294 | 0% | 3% | 2% | 1% | 8 s |
+| Home | Laptop | 132 | 15% | 40% | 28% | 22% | 41 s |
+| Product page | Phone | 21 | 30% | 57% | 19% | 10% | 33 s |
+| Product page | Laptop | 29 | **2%** | 41% | 24% | **0%** | 10 s |
+| Store | Phone | 33 | 46% | 61% | 45% | 24% | 34 s |
+| Store | Laptop | 22 | 69% | 59% | 55% | 36% | 17 s |
 
-**What changes in human sessions (V12).** Home on the phone barely moves: 9.7% of 373 views reach
-25% (so 90% stay above it); paid 3.1% of 294 with a median 7.8 s; not paid 34.2% of 79 (so 66% stay
-above 25%, not 63%). **The product page on the laptop changes materially: median max scroll 2% and
-0% reach 90% (n 29), against 23% and 6% above.** The other cells in human sessions were not
-recomputed (section 12). Product-page phone views are the same 21 in both scopes.
+Home on the phone: 90% of 373 measured views stay above 25% of the page (paid 97% of 294, not paid
+66% of 79). The product page on the laptop is opened and left near the top: median max scroll 2%,
+none of 29 views reach 90%, although 41% pass 25%. The verifier's human-session counts (V12)
+reproduce exactly.
 
-Store visitors read deep and still leave: the store page answers some question, but not the one
-that stops them (replays, section 6). The store scroll figures are non-bot views (n 40 and 28);
-human-session store views number 33 and 22, with their medians not recomputed.
+Store visitors read deep and still leave: on the phone the median measured view reaches 46% of the
+store page and a quarter reach 90%; on the laptop the median is 69%. The store page answers some
+question, but not the one that stops them (replays, section 6).
 
-### Which CTAs people tap (Q13, Q14, Q14b)
+### Which CTAs people tap (H13, H14, H14b-H14h; human sessions)
 
-- **Laptop:** 24 taps on a store link; navbar 11, finale 5, hero 3, product-top 3, untagged 2.
-- **Phone:** 29 taps on a store link in 18 sessions; **25 carry no `cta` value** and 22 of those come
-  from a fixed (sticky) element. 14 sit in the guide's phone-only bottom bar on Home and the product
-  page; its link has no `data-ph-capture-attribute-cta`
-  (`git show archive/pre-reset-2026-10-10:src/components/organisms/KheeluGuide.tsx`, lines 255-279).
-  The mobile purchaser reached the store through that bar, twice.
-- Heatmaps agree: 23% of phone click points on Home land on fixed elements (Q37).
-- `navbar-mobile` (the CTA inside the phone menu) was never tapped in the window.
+Taps on a store link from kheelona.com. The `cta` tag went live on 2026-09-20: the attribute entered
+the code that day (commit bada255) and the first tagged click arrived at 17:35 UTC (H14f). Every
+store-link tap in the window was in a human session, so these counts equal Q13, Q14 and V13.
+
+- **Laptop:** 24 taps in 19 sessions; navbar 11, finale 5, hero 3, product-top 3, untagged 2 (both
+  before tagging went live; H14, H14g).
+- **Phone:** 29 taps in 18 sessions; **25 carry no `cta` value** (15 sessions) (H14). Without the one
+  `/privacy` session described below: 21 taps in 17 sessions, 17 untagged (14 sessions) (H14h).
+  - **14 taps from 11 sessions sit in the guide's phone-only sticky bottom bar** on Home (9) and the
+    product page (5); its link has no `data-ph-capture-attribute-cta`
+    (`git show archive/pre-reset-2026-10-10:src/components/organisms/KheeluGuide.tsx`, lines 255-279).
+    Since tagging went live, the bar gave 14 of the 18 phone taps (H14c, H14g). The mobile purchaser
+    reached the store through that bar, twice.
+  - The other 11 untagged taps predate tagging: 3 in-page links on Home, and 8 taps in 3 seconds
+    by one session on 09-20 on the "Pre-order Kheelu" button in the phone menu's slide-in panel on
+    `/privacy` (H14e, H14f). That panel is a fixed element, which is why fixed elements account for
+    22 taps (12 sessions) but only the guide's bar is a sticky CTA (H14d). Without that session,
+    fixed elements account for 14 taps (11 sessions), all of them the guide's bar (H14h).
+- Heatmaps agree: 23% of phone click points on Home land on fixed elements (Q37; heatmap table, all
+  sessions).
+- `navbar-mobile` (the CTA inside the phone menu, `Navbar.tsx` line 91 at the archive tag) was never
+  tapped after tagging went live; the only phone-menu taps are the 8 above (H13, H14f).
 
 ### Product page versus Home (Q12, Q32)
 
@@ -352,7 +390,9 @@ back, used the sticky bar twice, took 87 s on the form and 151 s in Razorpay.
 Recording coverage: 485 of 802 human sessions (61%) have a recording (V16), and only 73 of 218
 sessions inside WhatsApp's browser (33%; Q36b, which does not exclude internal sessions), so short
 paid visits are under-represented. Recordings are kept 30 days: the paid-campaign replays
-(09-19 to 09-23) expire between 2026-10-19 and 2026-10-23.
+(09-19 to 09-23) expire between 2026-10-19 and 2026-10-23, and by the founder's decision they are
+not exported ([D031](../decisions/D031-posthog-settings-and-replays.md)); the timelines above are
+rebuilt from events, which stay.
 
 ## 7. Errors, web vitals, on-site search
 
@@ -362,23 +402,23 @@ Found Matching Id:1, MethodName:update" 9 (1 laptop session; a pattern commonly 
 link-scanning crawlers, not verified here), "Java object is gone" 3 (Android in-app browser bridge),
 `window.ethereum` 2 (a wallet extension). **None comes from our code.**
 
-**Web vitals per page, p75 (Q20), against brief 9.5 (LCP ≤ 2.5 s, INP ≤ 200 ms, CLS ≤ 0.1).**
-Scope: every non-bot `$web_vitals` event on that page, internal sessions included; n (in brackets)
-is events. "Store page" is store.kheelona.com `/` only; section 2's "store host" adds `/thanks`.
-The one cell checked in human sessions, the store host's phone LCP, reads 3,308 ms (n 30) against
-3,292 ms (n 32) (V9); the verdicts below do not change.
+**Web vitals per page, p75 (H20), against brief 9.5 (LCP ≤ 2.5 s, INP ≤ 200 ms, CLS ≤ 0.1).**
+Scope: `$web_vitals` events on that page inside human sessions; n (in brackets) is events, not
+sessions, and differs per metric because each event carries only the metrics ready when it was
+sent. "Store page" is store.kheelona.com `/` only; section 2's "store host" adds `/thanks`.
 
 | Page | Device | LCP | INP | CLS | FCP | Verdict |
 |---|---|---|---|---|---|---|
-| Home | Phone | 2,354 ms (167) | **546 ms** (38) | 0.0 (132) | 2,340 ms (362) | INP fails |
-| Home | Laptop | 1,563 ms (84) | 96 ms (50) | 0.007 (72) | 1,577 ms (128) | pass |
+| Home | Phone | 2,354 ms (167) | **546 ms** (38) | 0.0 (131) | 2,308 ms (333) | INP fails |
+| Home | Laptop | 1,563 ms (84) | 96 ms (46) | 0.007 (70) | 1,577 ms (128) | pass |
 | Product page | Phone | 2,075 ms (10) | n 2 | n 1 | 2,256 ms (13) | too few samples |
 | Product page | Laptop | 2,430 ms (11) | 104 ms (13) | 0.007 (17) | 2,018 ms (14) | pass, thin |
-| Store page `/` | Phone | **3,244 ms** (31) | **294 ms** (14) | 0.0 (22) | **3,245 ms** (52) | LCP and INP fail |
-| Store page `/` | Laptop | **2,863 ms** (10) | 64 ms (4) | 0.0 (10) | 2,896 ms (21) | LCP fails, thin |
+| Store page `/` | Phone | **3,284 ms** (29) | **294 ms** (14) | 0.0 (21) | **3,368 ms** (49) | LCP and INP fail |
+| Store page `/` | Laptop | **2,863 ms** (10) | 64 ms (4) | 0.0 (10) | 2,842 ms (20) | LCP fails, thin |
 
-On the store, FCP equals LCP, which points at server response time rather than the page's images
-(the store page renders per request; [checkout](../site/checkout.md) step 3). From tapping a store
+On the store, FCP is as slow as LCP (phone p75 3,368 against 3,284 ms; laptop 2,842 against
+2,863 ms), which points at server response time rather than the page's images (the store page
+renders per request; [checkout](../site/checkout.md) step 3). From tapping a store
 link to the store's pageview registering takes a median 3.1 s, phone p90 6.5 s (n 25; Q35).
 
 **On-site search:** none exists. There is no search box or `/search` route at the archive tag
@@ -394,15 +434,15 @@ payment, then strength of evidence. Each order is worth the launch price on
 
 | # | Issue | Evidence (window 09-19 to 10-10 unless stated) | Size and confidence | The new site must include |
 |---|---|---|---|---|
-| 1 | **Paid clicks do not land, and landed paid visitors leave Home in seconds** | 414 paid sessions, 0 orders; ₹2,417 spent in the window; Meta landing page views 29% of link clicks; paid phone Home median scroll 0%, median 8 s (human sessions: 7.8 s, n 294); by session entry every paid landing was Home or the store root (by first pageview, one was `/team`), none the product page under either (Q30b, Q31, Q34, Q19b, V12, Q12, V4) | Half of all traffic; high confidence | Ads land on `/products/kheelu` (or a phone landing page) that matches the ad (the films), with CTA, price caption and refund line in the first 360 × 640 screen; content and CTA usable before JavaScript; LCP ≤ 2.5 s inside WhatsApp, Instagram and Facebook in-app browsers on a mid-range Android over 4G |
+| 1 | **Paid clicks do not land, and landed paid visitors leave Home in seconds** | 414 paid sessions, 0 orders; ₹2,417 spent in the window; Meta landing page views 29% of link clicks; paid phone Home views: median scroll 0%, 3% reach 25%, median 8 s (n 294); by session entry every paid landing was Home or the store root (by first pageview, one was `/team`), none the product page under either (Q30b, Q31, Q34, H19b, Q12, V4) | Half of all traffic; high confidence | Ads land on `/products/kheelu` (or a phone landing page) that matches the ad (the films), with CTA, price caption and refund line in the first 360 × 640 screen; content and CTA usable before JavaScript; LCP ≤ 2.5 s inside WhatsApp, Instagram and Facebook in-app browsers on a mid-range Android over 4G |
 | 2 | **Orders created but not paid, all in in-app browsers** | 5 orders created, 2 paid; the 3 unpaid were Instagram (iPhone) and WhatsApp (Android, twice): 2 closed the sheet in 7-11 s, 1 never came back; both paid orders were in normal Chrome (Q7, Q17, R1) | 3 orders lost at the last step; n 5, directional | QA of the Razorpay sheet (sandbox) inside WhatsApp, Instagram and Facebook browsers on Android and iOS, including the UPI app switch; a presentation-only hint on the store for in-app browsers ("open in Chrome or Safari", copy link), subject to founder approval; new events that show the sheet opening and failing (section 9) |
 | 3 | **Half of form starters never submit; validation stops some** | 10 started, 5 valid submits; 4 left after 1-2 fields; 1 rejected twice by validation and left; 2 of 6 submitters hit an error first, including one buyer (Q7, Q17, R1) | 5 lost form starters; directional | Presentation only, validators unchanged: label the phone field as an Indian WhatsApp number with a visible +91; errors tied to their field and announced; correct `autocomplete` and input types; refund promise and "charged on the next step" beside the button; form in the first phone screen |
-| 4 | **Store visitors read the page and leave without starting** | 81 of 91 store sessions never touched the form; phone median scroll 47%, 50 s (non-bot views, n 40); in replays 9 of 18 read 85%+, 7 went back to marketing pages, 2 asked on WhatsApp (Q7, Q19, R1) | 81 sessions; high confidence on the drop, medium on the cause | Checkout page restyle that answers the buying questions beside the form: price incl. taxes, what the refundable token means, ship date, returns, a 3-4 question FAQ, one help link; nothing that sends the visitor back to the marketing site mid-purchase |
-| 5 | **Phones decide on the first screen and the sticky bar** | 90% of phone Home views stay above 25% depth (373 views in human sessions; non-paid: 66% of 79); the guide's bottom bar gave 14 of 29 phone store taps, and the phone buyer used it (Q19, V12, Q14b, R1) | Every phone visit; high confidence | Sticky bottom CTA on phones (Home and product page) with a `cta` value; CTA, price caption and one trust line inside 360 × 640 and also 360 × 590 (in-app browser height) |
+| 4 | **Store visitors read the page and leave without starting** | 81 of 91 store sessions never touched the form; phone median scroll 46%, median time 34 s (n 33 measured views); in replays 9 of 18 read 85%+, 7 went back to marketing pages, 2 asked on WhatsApp (Q7, H19, R1) | 81 sessions; high confidence on the drop, medium on the cause | Checkout page restyle that answers the buying questions beside the form: price incl. taxes, what the refundable token means, ship date, returns, a 3-4 question FAQ, one help link; nothing that sends the visitor back to the marketing site mid-purchase |
+| 5 | **Phones decide on the first screen and the sticky bar** | 90% of measured phone Home views (the 373 of 607 that sent a scroll report; W2c) stay above 25% depth (non-paid: 66% of 79); the guide's bottom bar gave 14 of 29 phone store taps, from 11 of the 18 phone sessions that tapped through, and 14 of 18 since `cta` tags went live; the phone buyer used it (H19, H19b, H14c, H14g, R1) | Every phone visit; high confidence | Sticky bottom CTA on phones (Home and product page) with a `cta` value; CTA, price caption and one trust line inside 360 × 640 and also 360 × 590 (in-app browser height) |
 | 6 | **Visitors land on Home; the product page sends three times more to the store** | Product-page sessions → store 14.8% (9 of 61) vs Home-only 4.5% (30 of 660); product-page landings → store 16.1% vs Home 4.1% (Q32, V15, Q12) | Medium; self-selection inflates it | Product page as the default ad and share destination; Home's first screen routes to the product page or store in one tap; nav kept to buying pages (`/playos` was viewed in 24 human sessions in the window, 3% of 802; Q32 `saw_playos`, V22) |
-| 7 | **The store is the slowest page** | Store page `/`, phone LCP p75 3,244 ms and FCP 3,245 ms (non-bot events, n 31/52); store host, phone LCP in human sessions 3,308 ms (n 30); laptop LCP 2,863 ms; tap to store view median 3.1 s, phone p90 6.5 s (Q20, V9, Q35) | Every buyer passes it; medium confidence | Store server response fast enough for LCP ≤ 2.5 s on the phone without changing price or mode logic (architecture choice for Phase 4); perf budget includes the store |
-| 8 | **Home is sluggish to the touch on phones** | INP p75 546 ms on phone Home (n 38); whole apex host, phone 440 ms (n 47); both non-bot events (Q20, Q39) | Thin sample; medium | INP ≤ 200 ms budget on phones; no heavy main-thread work (3D canvas, scripted reveals) on phones |
-| 9 | **Visitors outside India meet an India-only phone rule without warning** | 29% of non-paid sessions are outside India (US 59 sessions); one such form starter was rejected and left; one buyer recovered after an error (Q33, Q17, R1) | Small; low-medium | Say "Indian WhatsApp number" in the label and state where Kheelu is delivered beside the CTA, from [policies](../product/policies.md) |
+| 7 | **The store is the slowest page** | Store page `/`, phone LCP p75 3,284 ms (n 29) and FCP 3,368 ms (n 49); whole store host, phone LCP 3,308 ms (n 30); store page laptop LCP 2,863 ms (n 10); tap to store view median 3.1 s, phone p90 6.5 s (H20, H39, Q35) | Every buyer passes it; medium confidence | Store server response fast enough for LCP ≤ 2.5 s on the phone without changing price or mode logic (architecture choice for Phase 4); perf budget includes the store |
+| 8 | **Home is sluggish to the touch on phones** | INP p75 546 ms on phone Home (n 38); whole apex host, phone 440 ms (n 47); events in human sessions (H20, H39) | Thin sample; medium | INP ≤ 200 ms budget on phones; no heavy main-thread work (3D canvas, scripted reveals) on phones |
+| 9 | **Visitors outside India meet an India-only phone rule without warning** | 29% of non-paid sessions (114 of 388) are outside India, 59 of them in the US; one such form starter was rejected and left; one buyer recovered after an error (H33, H33b, Q17, R1) | Small; low-medium | Say "Indian WhatsApp number" in the label and state where Kheelu is delivered beside the CTA, from [policies](../product/policies.md) |
 | 10 | **Small frustrations: film carousel, mascot, taps near fields** | Rage clicks on "Next video" and on "Give Kheelu a poke"; dead taps on form wrappers and the consent row (Q15, Q16, R1) | Low | Carousel controls that show position and disable at the end; decorative art that does not look tappable; tap targets ≥ 44 px covering label and field, and the whole consent row toggles the tick |
 
 ## 9. Instrumentation gaps
@@ -412,42 +452,45 @@ names and parameters may not change ([tracking inventory](../site/tracking-inven
 
 | # | Gap | Evidence | Fix | Who |
 |---|---|---|---|---|
-| 1 | The phone sticky CTA has no `cta` value, so 25 of 29 phone taps to the store are unattributed | Q14, Q14b | Every CTA, including the new sticky bar, carries `data-ph-capture-attribute-cta` (the mid version used `sticky-bar`); mapping is [G10](../open-questions.md) | Builder |
+| 1 | The phone sticky CTA has no `cta` value, so 14 of the 18 phone taps to the store since tagging went live (2026-09-20) are unattributed; over the whole window 25 of 29 carry no tag, 11 of them from before tagging | H14, H14c, H14g | Every CTA, including the new sticky bar, carries `data-ph-capture-attribute-cta` (the mid version used `sticky-bar`); mapping is [G10](../open-questions.md) | Builder |
 | 2 | Nothing records the Razorpay sheet opening, a payment failure or an app switch; `begin_checkout` fires before the sheet opens ([checkout](../site/checkout.md)) | Q17, R1 | Add new events (for example sheet opened, payment failed with Razorpay's reason code); the file is on the must-not-change list, so it needs approval | Founder approval, then Builder |
 | 3 | A rejected submit leaves only an autocaptured `submit` | Q17 | Add a form-error event carrying the field name only, never the value | Founder approval, then Builder |
 | 4 | `purchase_confirmed` has no `$session_id`, so a server purchase cannot be tied to its session, source or replay except through the device id | Q38 | Optional: store the PostHog session id with the order; touches create-order, needs approval | Founder |
 | 5 | Store links sent in WhatsApp chats carry no UTM and look like Direct; 2 of 5 orders created came that way | Q11, R1 | Tag chat links (for example `utm_source=whatsapp&utm_medium=chat`) with `npm run utm` | Founder / SKM (ops) |
 | 6 | 217 Meta-click sessions had no UTM (208 inside WhatsApp's browser); `placement` never arrived; sources `an/ig/th/fb` instead of `facebook` | Q11, Q31 | Re-tag every ad and placement ([C5](../open-questions.md)) | Founder |
-| 7 | No conversion goal, no actions, revenue analytics unset (currency USD, no revenue event); PostHog's own diagnostic flags the missing goal | S1, S3, S4 | Conversion goal `purchase_confirmed`; revenue analytics in INR on `purchase_confirmed.value` | Founder (PostHog settings) |
+| 7 | No conversion goal, no actions, revenue analytics unset (currency USD, no revenue event); PostHog's own diagnostic flagged the missing goal (read 2026-10-11 ~01:00 UTC) | S1, S3, S4 | **Done 2026-10-11 ([D031](../decisions/D031-posthog-settings-and-replays.md))**: marketing-analytics conversion goal `purchase_confirmed` (counts as customer); revenue analytics on `purchase_confirmed.value`, static INR, base currency INR (the main session's check after applying: 2 charges, ₹998). Still open: no actions | Founder approved; main session applied |
 | 8 | Team traffic counted: cohort "Internal / Test users" has 0 members; about 48 sessions from 4 repeat devices | Q24, S3 | Fill the cohort; option below | Founder ([C7](../open-questions.md)) |
-| 9 | Bots are not in the test-account filter (67 bot pageviews; 54 from the Play Store checker on `/privacy`) | Q2 | Add `$virt_is_bot = false` to the project's test-account filter | Founder (setting) |
-| 10 | Replays cover 485 of 802 human sessions (61%; 33% in WhatsApp's browser) and expire after 30 days | V16, Q36b, R1 | Accept, or keep the paid-era recordings before 2026-10-19; longer retention is a plan setting | Founder |
-| 11 | Authorised URLs list only `https://kheelona.com`, so the toolbar and heatmap overlay cannot open on the store | S1 | Add `https://store.kheelona.com` | Founder (setting) |
+| 9 | Bots were not in the test-account filter (67 bot pageviews; 54 from the Play Store checker on `/privacy`) | Q2 | **Done 2026-10-11 (D031)**: the filter adds `$virt_is_bot` is not true; the cohort 580233 rule is kept. Insights with "filter test accounts" on now drop bot events (Y9KjojeN does not use it; S5) | Founder approved; main session applied |
+| 10 | Replays cover 485 of 802 human sessions (61%; 33% in WhatsApp's browser) and expire after 30 days | V16, Q36b, R1 | **Decided (D031)**: the paid-ad replays (09-19 to 09-23) expire from 2026-10-19; no export; retention unchanged | Founder |
+| 11 | Authorised URLs listed only `https://kheelona.com`, so the toolbar and heatmap overlay could not open on the store | S1 | **Done 2026-10-11 (D031)**: `https://store.kheelona.com` added | Founder approved; main session applied |
 | 12 | "Daily traffic & purchases" has no purchase tile; no funnel dashboard existed | S3 | Use the "Website reset —" baseline insight; Phase 8 builds the post-launch board | Done / Phase 8 |
 | 13 | 23 of 37 exceptions are "Script error." with no detail; no source maps uploaded | Q21, S1 | Optional: `crossorigin` on third-party scripts where allowed; upload source maps from the new build | Architect |
-| 14 | INP and product-page vitals have thin samples | Q20 | Read field vitals over at least 7 days after launch | Phase 8 |
+| 14 | INP and product-page vitals have thin samples | H20 | Read field vitals over at least 7 days after launch | Phase 8 |
 
 ## 10. Setup audit
+
+State as read 2026-10-11 ~01:00 UTC (S1-S4), with the changes the founder approved and the main
+session applied at 12:25 UTC marked ([D031](../decisions/D031-posthog-settings-and-replays.md)).
 
 | Item | State | Source |
 |---|---|---|
 | Autocapture | On (code `autocapture: true`; project not opted out) | S1; [tracking inventory §6](../site/tracking-inventory.md#6-posthog-in-the-browser) |
 | Dead clicks, rage clicks, heatmaps | On, data flowing for Home, product page and store | S1, Q37, Q41 |
-| Session replay | On, no sampling, no minimum length, all inputs masked, 30-day retention; **deny list works: 0 of 533 recordings contain a `/thanks` URL** | S1, Q36 |
+| Session replay | On, no sampling, no minimum length, all inputs masked, 30-day retention; **deny list works: 0 of 533 recordings contain a `/thanks` URL**. The paid-ad replays (09-19 to 09-23) expire from 2026-10-19 by decision, no export (D031) | S1, Q36, D031 |
 | Web vitals | On; 1,001 `$web_vitals` events | S1, Q41 |
 | Exceptions, console logs, network timing | On | S1 |
-| Conversion events | Six browser funnel events plus server `purchase_confirmed` exist; **0 actions, 0 conversion goals, revenue analytics not configured** | S1, S3, S4 |
+| Conversion events | Six browser funnel events plus server `purchase_confirmed` exist; **0 actions**. Read at 01:00 UTC: 0 conversion goals, revenue analytics not configured. **Since 12:25 UTC (D031)**: marketing-analytics conversion goal `purchase_confirmed` (counts as customer); revenue analytics on `purchase_confirmed.value`, static INR, base currency INR. The Web analytics dashboard's own "conversion goal" is a per-view filter in the UI, not a stored setting | S1, S3, S4, D031 |
 | UTM and click-id capture | Works: built-in `utm_*` and click ids plus `utm_id` and `placement`; the edge cookie carried `utm_source` onto 1 of 2 server purchases (the other was organic Google, no UTM to carry) | Q38; [tracking inventory §9](../site/tracking-inventory.md#9-attribution-across-kheelonacom--storekheelonacom) |
 | Cross-host sessions | One session spans both hosts (40 sessions did) | Q5 |
 | Reverse proxy | Healthy (its health warning resolved 2026-09-20) | S2 |
 | Installation health | **0 active issues**; 2 resolved (reverse proxy, authorised URLs); 7 onboarding tasks complete. The MCP does not expose the UI's "x/7" label, so "7/7" ([C7](../open-questions.md)) is consistent with this but not read from the screen | S1, S2 |
 | "Internal / Test users" cohort | **0 members** | S3 |
-| Bot handling | PostHog flags bots per event; the test filter does not exclude them | Q2, S1 |
-| Authorised URLs | `https://kheelona.com` only | S1 |
+| Bot handling | PostHog flags bots per event. Read at 01:00 UTC, the test filter did not exclude them; **since 12:25 UTC (D031)** it adds `$virt_is_bot` is not true, beside the cohort 580233 rule | Q2, S1, D031 |
+| Authorised URLs | `https://kheelona.com`; **`https://store.kheelona.com` added 12:25 UTC (D031)** | S1, D031 |
 | Dashboards and insights | "Your starter dashboard" and "Daily traffic & purchases" (pageviews and visitors only); 10 template insights; 1 added by this audit | S3 |
 | Meta Ads warehouse source | Healthy, syncs every 6 h | S4 |
 | GeoIP | Works (India 84.9%) | Q33 |
-| PostHog's own suggestions | "Configure at least one conversion goal" (warning). It also guesses `utm_source=chatgpt.com` is "OpenAI Ads"; it is organic ChatGPT referral | S4 |
+| PostHog's own suggestions | "Configure at least one conversion goal" (warning, read before D031 set one; not re-read). It also guesses `utm_source=chatgpt.com` is "OpenAI Ads"; it is organic ChatGPT referral | S4 |
 
 ## 11. Devices, browsers and screen sizes for QA
 
@@ -506,12 +549,10 @@ Safari 2%. Width bands: under 1280 18.7%, 1280-1365 8.0%, **1366-1439 1.6%**, 14
   `onsite_conversion.total_messaging_connection` actions, 09-18 to 09-23; Q30b note, V21) and the
   ₹4,500 balance payments: no tool records them
   ([checkout, balance step](../site/checkout.md#the-balance-step-4500)).
-- **The full human-session recompute of scroll depth and web vitals.** The PostHog connector was
-  disconnected for the whole correction run on 2026-10-10 (every call answered "MCP server
-  'claude.ai PostHog' is not connected"), so Q19, Q19b, Q20 and Q39 were not re-run. They are
-  labelled with their real scope, and the human-session values the verifier measured are printed
-  beside them (V9, V12). Re-run them with the human-session join before Phase 8 uses them as a
-  baseline.
+- **Exceptions and frustration counts in human sessions.** Exceptions (Q21, every event) and dead,
+  rage and swipe totals (Q41, non-bot events, internal included) were not recomputed in human
+  sessions. **Phase 8 prerequisite:** recompute them in the human-session scope before the
+  post-launch reports compare against them.
 - **Meta Ads Manager itself**: figures come from PostHog's warehouse copy of the ad account.
 
 ## 13. Verification and corrections
@@ -520,8 +561,8 @@ An independent verifier rebuilt sessions from the events table (each session's f
 and re-derived about 120 values over the same window (V0-V22,
 [verification checks](../raw/posthog/2026-10-10-verification-checks.sql)). **The baseline table,
 the device split, every funnel step, the source table and the evidence for issues 1 to 3 matched
-exactly.** Corrected on 2026-10-10, all from V queries already run; none changes a ranking or a
-must-include:
+exactly.** Rows 1 to 9 were corrected on 2026-10-10, all from V queries already run; none changes a
+ranking or a must-include:
 
 | # | Where | Was | Now | Query |
 |---|---|---|---|---|
@@ -534,11 +575,28 @@ must-include:
 | 7 | Section 3 and issue 1 | ₹2,416 (truncated) beside ₹2,473 (rounded up) | Nearest rupee everywhere: ₹2,417 and ₹2,472 | V7, V21 |
 | 8 | Section 2 | "both token tier" | Stored `tier` is `"launch"`; ₹998 = 2 × ₹499 | V6, Q38 |
 | 9 | Sections 3, 8, 12 | "28 messaging connections", "PlayOS drew 24 sessions" and "about 12 sessions a day" carried no query | Cited (Q30b, V21; Q32, V22; Q9). The daily rate is about 13, not 12: the week of 10-05 has 6 days in the window | Q9 |
+| 10 | Section 5, scroll table; issues 1, 4, 5 | Non-bot views (Q19, Q19b): Home phone 378 / not paid 82 / paid 296 / laptop 145 views; product laptop 35 views, median 23%; store phone 40 views, 47%, 50 s; store laptop 28 views, 77%, 18 s; Home laptop 16%, 53 s | Human sessions, every cell: Home phone 373 / 79 / 294 / laptop 132 views; product laptop 29 views, median 2%; store phone 33 views, 46%, 34 s; store laptop 22 views, 69%, 17 s; Home laptop 15%, 41 s; V12 reproduced exactly | H19, H19b |
+| 11 | Sections 2 and 7, vitals; issues 7, 8 | Non-bot events (Q20, Q39): store page phone LCP 3,244 ms (31), FCP 3,245 ms (52); store page laptop FCP 2,896 ms (21); Home phone FCP 2,340 ms (362); store host phone LCP 3,292 ms (32) | Events in human sessions: store page phone LCP 3,284 ms (29), FCP 3,368 ms (49); laptop FCP 2,842 ms (20); Home phone FCP 2,308 ms (333); store host phone LCP 3,308 ms (30), V9 reproduced. Every other p75 shown in sections 2 and 7 is unchanged (some n smaller); no verdict changes | H20, H39 |
+| 12 | "In one screen" item 7 | Store page phone LCP and FCP "3.2 s" | 3.3 s and 3.4 s | H20 |
+| 13 | Section 5 CTAs, "In one screen" item 6, issue 5, gap 1 | "Sticky elements produced 22 of 29 phone taps"; the bar's missing tag explains "25 of 29 unattributed"; "`navbar-mobile` never tapped" | Same counts in human sessions. Fixed elements: 22 taps in 12 sessions, but 8 are one session tapping the phone menu's "Pre-order Kheelu" 8 times in 3 s on 09-20; the guide's sticky bar: 14 taps in 11 sessions. All 11 other untagged phone taps, and both untagged laptop taps, predate the first tagged click (2026-09-20 17:35 UTC); since then the bar gave 14 of 18 phone taps and `navbar-mobile` was never tapped | H14-H14g |
+| 14 | Section 3, countries; issue 9 | Q33 checked the bot flag on pageviews only | Same figures under the full human-session definition (India 84.9%, US 7.6%, 114 of 388 non-paid outside India, 59 US); non-paid shares added | H33, H33b |
+| 15 | Sections 1, 2, 7, 12 | "Scope exception" wording and the open recompute bullet | Removed; the figures that still have a wider scope are named in section 1 and labelled in section 2; the Q21 and Q41 recompute stays in section 12 as a Phase 8 prerequisite | H0 |
+| 16 | Section 5, "In one screen" item 6, issue 5 | Scroll shares with no coverage stated | Scoped to measured views: 373 of 607 phone Home pageviews (61.4%) and 33 of 68 phone store pageviews (48.5%) sent a scroll report | W2c |
+| 17 | Section 3, countries | US count unqualified | Caveat: 19 of 61 US sessions look automated and were not bot-flagged (inference) | W5c |
+| 18 | Section 5, CTAs | Phone untagged and fixed-element taps given only with the `/privacy` session | Also without it: 21 taps in 17 sessions, 17 untagged (14 sessions), 14 fixed (11 sessions, all the guide's bar) | H14h |
+
+Rows 10 to 15 come from the human-session recompute of 2026-10-11
+([recomputes](../raw/posthog/2026-10-11-human-session-recomputes.json)), run once the connector
+was back. **No ranking in section 8 and no "must include" changes**: every issue keeps its evidence
+direction and size; issue 5's evidence gets stronger (14 of 18 phone taps since tagging went live).
+Rows 16 and 17 cite the verifier's independent recompute of the same day
+([recompute verification](../raw/posthog/2026-10-11-recompute-verification.sql)), which matches
+rows 10 to 14 on every cell; row 18 is [H14h](../raw/posthog/2026-10-11-cta-without-privacy-session.json).
+The setup changes of 2026-10-11 (D031) are recorded in sections 9 and 10, not here.
 
 Also fixed: the narrowest phone width (324 is the narrowest with more than one session; one
 session reported 320, V20), and "In one screen" item 7, which mixed host-level and
-page-level vitals. Still open: the full human-session recompute of Q19, Q19b, Q20 and Q39
-(section 12).
+page-level vitals.
 
 ## Appendix: query index
 
@@ -551,6 +609,8 @@ timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-
 pvs > 0 AND is_bot = 0
 AND NOT (coalesce(ref,'') IN ('localhost:3456','127.0.0.1:3456') OR coalesce(ref,'') LIKE '%vercel.app')
 -- where is_bot = max(properties.$virt_is_bot = true), ref = any(session.$entry_referring_domain)
+-- H queries (2026-10-11): event-level queries keep only events with
+--   properties.$session_id IN (the Q34 per-session subquery with the HAVING above)
 -- paid flag
 if(coalesce(any(session.$entry_utm_medium),'') = 'paid'
    OR (coalesce(any(session.$entry_fbclid),'') != '' AND coalesce(any(session.$entry_utm_source),'') = ''), 1, 0)
@@ -560,12 +620,15 @@ event = '$pageview' AND properties.$host = 'store.kheelona.com' AND properties.$
 
 | Query | What | Raw file (exact HogQL and result) |
 |---|---|---|
-| Q1-Q5, Q9, Q24, Q33, Q34, Q40 | Window, bots, referrers, channels, cross-host, weekly, repeat devices, country, baseline, device split after ads | [traffic-overview](../raw/posthog/2026-10-10-traffic-overview.json) |
+| Q1-Q5, Q9, Q24, Q33, Q34, Q40 | Window, bots, referrers, channels, cross-host, weekly, repeat devices, country (Q33 confirmed by H33), baseline, device split after ads | [traffic-overview](../raw/posthog/2026-10-10-traffic-overview.json) |
 | Q6-Q8, Q17, Q25, Q35, Q38 | Funnels by source and device, native funnel, validation, purchasers, tap-to-store time, purchase vs server | [funnel](../raw/posthog/2026-10-10-funnel.json) |
-| Q12-Q14b, Q27, Q32 | Landing pages, CTA clicks, untagged sticky CTA, films, product page vs Home | [landing-and-cta](../raw/posthog/2026-10-10-landing-and-cta.json) |
+| Q12-Q14b, Q27, Q32 | Landing pages, CTA clicks and untagged sticky CTA (Q13-Q14b superseded by H13-H14b, same counts), films, product page vs Home | [landing-and-cta](../raw/posthog/2026-10-10-landing-and-cta.json) |
 | Q10, Q11, Q22-Q23b | Devices, browsers, in-app browsers, viewports, phone makers | [devices-qa](../raw/posthog/2026-10-10-devices-qa.json) |
-| Q15, Q16, Q19, Q19b, Q37, Q41 | Rage and dead clicks, scroll depth, heatmaps, window totals | [frustration-scroll-heatmaps](../raw/posthog/2026-10-10-frustration-scroll-heatmaps.json) |
-| Q20, Q21, Q39 | Web vitals, exceptions | [web-vitals-errors](../raw/posthog/2026-10-10-web-vitals-errors.json) |
+| Q15, Q16, Q19, Q19b, Q37, Q41 | Rage and dead clicks, scroll depth (Q19, Q19b superseded by H19, H19b), heatmaps, window totals | [frustration-scroll-heatmaps](../raw/posthog/2026-10-10-frustration-scroll-heatmaps.json) |
+| Q20, Q21, Q39 | Web vitals (Q20, Q39 superseded by H20, H39), exceptions | [web-vitals-errors](../raw/posthog/2026-10-10-web-vitals-errors.json) |
+| H0, H13-H14g, H19, H19b, H20, H33, H33b, H39 | Human-session recomputes (2026-10-11): session-set check, CTA taps with containers, sessions and tagging date, scroll depth, web vitals, countries | [human-session-recomputes](../raw/posthog/2026-10-11-human-session-recomputes.json) |
+| H14h, S5 | Store-link taps without the one `/privacy` session; baseline funnel Y9KjojeN's test-account setting after D031 | [cta-without-privacy-session](../raw/posthog/2026-10-11-cta-without-privacy-session.json) |
+| W0-W6d | The verifier's independent human-session recompute (2026-10-11), incl. scroll-report coverage (W2c) and US sessions (W5c) | [recompute-verification](../raw/posthog/2026-10-11-recompute-verification.sql) |
 | Q30, Q30b, Q31 | Meta spend, clicks, landing page views, paid sessions per day | [paid-meta](../raw/posthog/2026-10-10-paid-meta.json) |
 | Q36, Q36b, R1 | Recordings, coverage, the replay review | [replays](../raw/posthog/2026-10-10-replays.json) |
 | S1-S4 | Project settings, health checks, dashboards and cohorts, PostHog's diagnostic | [setup-audit](../raw/posthog/2026-10-10-setup-audit.json) |
