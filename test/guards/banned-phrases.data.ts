@@ -99,7 +99,7 @@ export const BANNED_PHRASES: readonly BannedPhrase[] = [
   // ── Row 18: the retired offer terms (ported from test/preorder-copy.test.ts) ──
   { id: "offer-no-payment", kind: "offer", claimsRow: R18, pattern: /\bno payment(?! fees?\b)/i, planted: "No payment now.", why: "The token is real money: say what it costs and that it is refundable. \"No payment fees\" (D042) passes." },
   { id: "offer-pay-nothing", kind: "offer", claimsRow: R18, pattern: /\bpay nothing\b|\bnothing is charged today\b/i, planted: "Pay nothing today.", why: "₹499 is charged today." },
-  { id: "offer-tally", kind: "offer", claimsRow: R18, pattern: /\btally(?:\.so| form)\b/i, planted: "Fill in the Tally form.", why: "The form is ours now, in src/features/preorder." },
+  { id: "offer-tally", kind: "offer", claimsRow: R18, pattern: /\btally\b/i, planted: "Reserve through Tally.", why: "The form is ours now, in src/features/preorder. Whole word, so \"totally\" passes." },
   { id: "offer-30-september", kind: "offer", claimsRow: R18, pattern: /\b30 September\b|2026-09-30/i, planted: "Reserve before 30 September.", why: "The date deadline is retired (2026-08-23): the urgency is the 500-unit cap." },
   { id: "offer-9999", kind: "offer", claimsRow: R18, pattern: /₹\s?9,999|\bRs\.? ?9,999|999_900/, planted: "₹9,999 after the launch.", why: "The post-cap price is ₹7,999 (FULL_PRICE)." },
   { id: "offer-1-october", kind: "offer", claimsRow: R18, pattern: /\b1 October 2026\b|2026-10-01/, planted: "Ships 1 October 2026.", why: "The old ship date; new orders deliver from mid-November (D023)." },
