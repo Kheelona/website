@@ -1,0 +1,466 @@
+/**
+ * Shared content shapes (ADR-004, architecture §6). Every module under
+ * src/content/<locale>/ ends with `satisfies <Type>` against these, so a future
+ * hi-IN folder must have the same shape.
+ *
+ * Type-only: nothing here runs. The placeholder build guard (task 2.9) skips this
+ * file and src/lib/content/placeholder.ts because they define the syntax it hunts.
+ */
+
+import type { StaticImageData } from "next/image";
+
+/* ── Text and modes ───────────────────────────────────────────────────────── */
+
+/**
+ * A content string in the one inline syntax (architecture §6.2): `{hand:…}`,
+ * `{mark:…}`, `{nowrap:…}`, `[label](href)`, `[^1]`, `{price:token|balance|
+ * headline|full|mrp}`, `{delivery}` and `{ph:ID note}`. Parsed by
+ * src/lib/content/rich-text.ts, rendered by `ui/RichText`, and turned into the
+ * exact visible text by src/lib/content/plain-text.ts. Never a typed rupee amount.
+ */
+export type RichTextString = string;
+
+/** The store's offer mode: token while the refundable advance reserves one of the
+ *  capped units, then full (paid in full). Decided by the store, never the count. */
+export type OfferMode = "token" | "full";
+
+/** Anything that changes with the offer mode carries both versions. */
+export interface ModeVariant<T = RichTextString> {
+  readonly token: T;
+  readonly full: T;
+}
+
+/** A value that is the same in both modes, or one that changes with the mode. */
+export type ByMode<T> = T | ModeVariant<T>;
+
+/** Copy as content modules hold it: one string, or one per offer mode. */
+export type Copy = ByMode<RichTextString>;
+
+/** A calendar date as stored: `2026-11-15`. Formatted by src/lib/format/date.ts. */
+export type IsoDate = `${number}-${number}-${number}`;
+
+/* ── The offer (ADR-005) ──────────────────────────────────────────────────── */
+
+/** The amounts a content string may name, as `{price:<key>}`. */
+export type PriceKey = "token" | "balance" | "headline" | "full" | "mrp";
+
+/**
+ * The offer view model, built by src/lib/offer/offer.ts (task 2.1) from the live
+ * store mode and the checkout's own amounts in src/config/site.ts. Every price on
+ * a page, in JSON-LD and in machine files resolves through one of these.
+ */
+export interface Offer {
+  readonly mode: OfferMode;
+  /** LAUNCH in token mode, FULL in full mode; Meta `ViewContent` value × 100. */
+  readonly headlinePaise: number;
+  /** Formatted amounts for `{price:…}`, each `formatInr` of a paise constant:
+   *  token (TOKEN), balance (BALANCE), headline (LAUNCH in token mode, FULL in
+   *  full mode), full (FULL) and mrp (MRP, its own value per D034). */
+  readonly prices: Readonly<Record<PriceKey, string>>;
+  /** The D028 price sentence for this mode (it may carry price tokens). */
+  readonly sentence: RichTextString;
+  /** The phone buy bar's two lines for this mode. */
+  readonly sticky: { readonly big: RichTextString; readonly small: RichTextString };
+  /** The visible delivery line, `DELIVERY_TEXT` (D023), for `{delivery}`. */
+  readonly delivery: string;
+  /** The schema date the delivery line stands for, `DELIVERY_SCHEMA_DATE` (D037). */
+  readonly availabilityStarts: IsoDate;
+}
+
+/* ── Placeholders ─────────────────────────────────────────────────────────── */
+
+declare const placeholderBrand: unique symbol;
+
+/**
+ * An unknown fact, waiting on the founder. Made only by `placeholder('F4', 'size
+ * and weight')` in data or `{ph:F4 size and weight}` inside a content string; both
+ * render `[PLACEHOLDER F4: size and weight]` in the dashed placeholder style on
+ * every environment except production, whose build refuses them (ADR-004).
+ *
+ * `id` is the open item (F4, B24, C6, G-20, ARTICLE) or null when the copy page
+ * names none: `[PLACEHOLDER: region]`. The brand stops a hand-written object from
+ * passing as one; `kind` is the runtime tag, which survives serialisation.
+ */
+export interface Placeholder {
+  readonly kind: "placeholder";
+  readonly id: string | null;
+  readonly note: string;
+  readonly [placeholderBrand]: true;
+}
+
+/** A value that may still be waiting on the founder. */
+export type OrPlaceholder<T> = T | Placeholder;
+
+/* ── Proof gates (D038) ───────────────────────────────────────────────────── */
+
+/** The open item whose proof must be filed in wiki/raw/ first, such as F11. */
+export interface ProofGate {
+  readonly proof: string;
+}
+
+/**
+ * Proof-gated content (D038: founder bios, recognition). While `gated` is present
+ * the item is never rendered, on any environment, and it is not a placeholder:
+ * it is hidden, not marked. Delete `gated` once the proof is filed.
+ */
+export type Gated<T> = T & { readonly gated?: ProofGate };
+
+/* ── References ───────────────────────────────────────────────────────────── */
+
+/** A path on this site from its root, such as `/refund` or `/og/home.jpg`. */
+export type SitePath = `/${string}`;
+
+/**
+ * One of the 76 design-system icons. A string until the generated `IconName`
+ * union (src/assets/icons.generated.ts, task 1.5) is merged, then that union.
+ */
+export type IconRef = string;
+
+/** One of the design-system doodles; `DoodleName` (src/assets/doodles.generated.tsx, task 1.5) once merged. */
+export type DoodleName = string;
+
+/** A CTA tracking value; `CtaId` (src/lib/tracking/cta.ts, task 1.4) once merged. Never invented. */
+export type CtaRef = string;
+
+/** The design system's three brand tones (`kh-tone-*`). */
+export type Tone = "chilli" | "blue" | "sun";
+
+/**
+ * An image. A design-system or app-screen raster is a static import (its size
+ * comes with it); a file under public/ with a stable URL (film posters, Open
+ * Graph and JSON-LD images) is a site path with its real size, so nothing shifts.
+ * `alt` is empty only for a decorative image.
+ */
+export type ImageRef =
+  | { readonly src: StaticImageData; readonly alt: string }
+  | { readonly src: SitePath; readonly width: number; readonly height: number; readonly alt: string };
+
+/** Doodles draw in up to five staggered steps (D049 pick 3). */
+export type DrawOrder = 1 | 2 | 3 | 4 | 5;
+
+/**
+ * A design-system doodle. `draw` asks for the inline version that draws itself
+ * below the first screen (D049 pick 3), in `order`; a hero always shows it still
+ * (pick 2), whatever this says.
+ */
+export interface DoodleRef {
+  readonly name: DoodleName;
+  readonly draw?: boolean;
+  readonly order?: DrawOrder;
+}
+
+interface ArtPlacement {
+  /** Percent of the board, as the design system's scrapbook board places layers. */
+  readonly left?: number;
+  readonly right?: number;
+  readonly top?: number;
+  readonly bottom?: number;
+  readonly width: number;
+  /** Degrees. */
+  readonly rotate?: number;
+}
+
+/** One layer of an art board: an image or a doodle, never both. */
+export type ArtLayer = ArtPlacement &
+  ({ readonly image: ImageRef; readonly doodle?: never } | { readonly doodle: DoodleRef; readonly image?: never });
+
+/** A word sticker: `lines` break where the copy breaks; `lead` is set in bold first. */
+export interface StickerRef {
+  readonly tone: Tone;
+  /** Degrees, the design system's `--kh-tilt`. */
+  readonly tilt?: number;
+  readonly variant?: "hand" | "round";
+  readonly lead?: RichTextString;
+  readonly lines: readonly RichTextString[];
+}
+
+/** The design system's scrapbook board (`kh-art`): one tone, layers, one sticker. */
+export interface ArtBoardRef {
+  readonly tone: Tone;
+  /** The board's accessible name when it shows something a parent should know. */
+  readonly label?: string;
+  readonly layers: readonly ArtLayer[];
+  readonly sticker?: StickerRef;
+}
+
+/** A link a content module names: a site path or an https address. */
+export interface LinkRef {
+  readonly label: string;
+  readonly href: SitePath | `https://${string}`;
+  readonly cta?: CtaRef;
+}
+
+/* ── Page meta ────────────────────────────────────────────────────────────── */
+
+/** A page's metadata, exactly as its copy page words it. */
+export interface Meta {
+  /** At most 60 characters once serialised, unique across routes. */
+  readonly title: Copy;
+  /** At most 155 characters once serialised, unique; per mode when it names a price. */
+  readonly description: Copy;
+  readonly og: { readonly image: SitePath; readonly alt: string };
+}
+
+/* ── Short content ────────────────────────────────────────────────────────── */
+
+/**
+ * Text that may open with a bold label, as the mockups' list items do ("Data:"
+ * then the rest): the renderer sets `lead` in bold, then a space, then `text`.
+ */
+export type LeadText =
+  | { readonly lead: RichTextString; readonly text?: RichTextString }
+  | { readonly lead?: undefined; readonly text: RichTextString };
+
+/** One trust-line item: a short promise linked to its terms (strategy §3.2). */
+export interface TrustItem {
+  readonly id: string;
+  readonly icon: IconRef;
+  readonly label: RichTextString;
+  readonly href: SitePath;
+}
+
+/** One item of a design-system trust list: icon, optional title, body. */
+export interface TrustListItem {
+  readonly icon: IconRef;
+  readonly title?: RichTextString;
+  readonly body: RichTextString;
+}
+
+/** An icon and a line: tick lists, offer-card perks. */
+export interface IconText {
+  readonly icon: IconRef;
+  readonly text: RichTextString;
+}
+
+/** An answer-first block (architecture §9.5): the question, the answer, then detail. */
+export interface Answer {
+  readonly question: Copy;
+  /** The answer itself; 40 to 60 words where the answer-length guard applies. */
+  readonly answer: Copy;
+  readonly detail?: readonly ProseBlock[];
+}
+
+/** One FAQ item. Each lives once in faqs.ts; pages list ids. */
+export interface FaqItem extends Answer {
+  /** Stable, kebab-case: `price-and-advance`. */
+  readonly id: string;
+}
+
+/** One of the parent films (D040). */
+export interface Film {
+  /** Also the file name under /video/moments/. */
+  readonly id: string;
+  readonly chip: string;
+  /** The visible line under the tile; the play button reads "Play: {chip}. {caption}". */
+  readonly caption: string;
+  /** As printed on the tile: "0:30". */
+  readonly duration: `${number}:${number}`;
+  /** The still, shown at rest and with reduced motion. */
+  readonly poster: ImageRef;
+  readonly video: SitePath;
+  /** Subtitles are burned into the file (WCAG 1.2.2). */
+  readonly hasOpenCaptions: true;
+  /** Written parental consent is held for every child in it (D040). */
+  readonly consentOnFile: true;
+}
+
+/** Where the WhatsApp bubble sits (D050): marketing pages, the store, `/thanks`. */
+export type SupportChatContext = "site" | "store" | "thanks";
+
+/** The WhatsApp chat bubble's number and words (D050), held in seller.ts. */
+export interface SupportChat {
+  /** International digits only, for wa.me: `919187546483`. */
+  readonly number: `${number}`;
+  /** The link's accessible name. */
+  readonly label: string;
+  /** The laptop label that slides out on hover and focus. */
+  readonly shortLabel: string;
+  /** The pre-filled message per context; never an order number or personal data. */
+  readonly texts: Readonly<Record<SupportChatContext, string>>;
+}
+
+/* ── Prose blocks (articles, legal documents, long FAQ answers) ───────────── */
+
+export type ParagraphBlock = { readonly kind: "p"; readonly variant?: "gut" } & LeadText;
+
+export interface SubheadingBlock {
+  readonly kind: "h3";
+  readonly text: RichTextString;
+}
+
+/** A list item: a line, or a line with a bold label and, for tips, its own icon. */
+export type ListItem = RichTextString | (LeadText & { readonly icon?: IconRef });
+
+export interface ListBlock {
+  readonly kind: "list";
+  /** bullets (default), numbered steps, ticked checks, or tips in a tinted card. */
+  readonly variant?: "bullets" | "steps" | "checks" | "tips";
+  readonly items: readonly ListItem[];
+}
+
+/** Questions a parent can ask, each answered in a paragraph or two. */
+export interface QuestionsBlock {
+  readonly kind: "questions";
+  readonly items: readonly { readonly question: RichTextString; readonly answer: readonly RichTextString[] }[];
+}
+
+export interface QuoteBlock {
+  readonly kind: "quote";
+  readonly quote: RichTextString;
+  readonly cite?: RichTextString;
+}
+
+/** A tinted card with an icon ("Try this:", "Faulty or not as described?"). */
+export type CalloutBlock = { readonly kind: "callout"; readonly icon: IconRef; readonly tone?: Tone } & LeadText;
+
+export interface FigureBlock {
+  readonly kind: "figure";
+  readonly image: ImageRef;
+  readonly variant?: "wide" | "square";
+  readonly caption?: RichTextString;
+}
+
+/** A trust list of facts, optionally with a photo inside the grid. */
+export interface FactsBlock {
+  readonly kind: "facts";
+  readonly items: readonly TrustListItem[];
+  readonly figure?: ImageRef;
+}
+
+/** The D025 line: a toy, not a therapy or treatment. */
+export interface DisclaimerBlock {
+  readonly kind: "disclaimer";
+  readonly text: RichTextString;
+}
+
+/** Every block type the approved article mockups use. */
+export type ProseBlock =
+  | ParagraphBlock
+  | SubheadingBlock
+  | ListBlock
+  | QuestionsBlock
+  | QuoteBlock
+  | CalloutBlock
+  | FigureBlock
+  | FactsBlock
+  | DisclaimerBlock;
+
+/* ── Articles ─────────────────────────────────────────────────────────────── */
+
+/** One part of an article: an optional heading and its blocks. */
+export interface ArticlePart {
+  readonly kind: "part";
+  /** A fragment other pages link to (`#brain-development`). */
+  readonly id?: string;
+  readonly title?: RichTextString;
+  /** A part that widens out of the reading column. */
+  readonly variant?: "breakout";
+  readonly blocks: readonly ProseBlock[];
+}
+
+/** The card the stories hub shows for an article; the hub holds slugs only. */
+export interface ArticleCard {
+  readonly title: RichTextString;
+  readonly summary: RichTextString;
+}
+
+/** A numbered source; `[^n]` in the article's text links to source n (D026). */
+export interface Source {
+  readonly citation: RichTextString;
+  readonly href: `https://${string}`;
+}
+
+/** One article module under stories/articles/. */
+export interface Article {
+  readonly slug: string;
+  readonly meta: Meta;
+  readonly card: ArticleCard;
+  /** Exactly three, so every article keeps three incoming links. */
+  readonly related: readonly [string, string, string];
+  /** Stored from git history when the article changes, never computed at build. */
+  readonly published: IsoDate;
+  readonly updated: IsoDate;
+  readonly head: {
+    readonly title: RichTextString;
+    readonly lead?: RichTextString;
+    readonly author: string;
+    readonly readMinutes?: number;
+    readonly image?: ImageRef;
+  };
+  readonly answer?: Answer;
+  readonly body: readonly (ArticlePart | FigureBlock)[];
+  readonly sources: readonly Source[];
+  /** journal: the close with the pre-order button; keep: keep-reading links, no button (B5). */
+  readonly close: "journal" | "keep";
+}
+
+/* ── Legal documents ──────────────────────────────────────────────────────── */
+
+export type LegalStatus = "draft" | "approved";
+
+/** The tools a policy names, one block each (privacy). */
+export interface ToolsBlock {
+  readonly kind: "tools";
+  readonly tools: readonly { readonly name: RichTextString; readonly blocks: readonly ProseBlock[] }[];
+}
+
+/** Everyone who handles a parent's data: cards on phones, a table on laptops. */
+export interface RecipientsBlock {
+  readonly kind: "recipients";
+  readonly label: string;
+  readonly headings: { readonly who: string; readonly what: string; readonly where: string };
+  readonly rows: readonly {
+    readonly who: RichTextString;
+    readonly what: RichTextString;
+    readonly where: RichTextString;
+  }[];
+}
+
+/** The shared grievance (D032) or seller block, rendered from seller.ts, never retyped. */
+export interface SharedBlock {
+  readonly kind: "grievance" | "seller";
+}
+
+export type LegalBlock = ProseBlock | ToolsBlock | RecipientsBlock | SharedBlock;
+
+/** One numbered part; consecutive parts with the same `group` share a contents heading. */
+export interface LegalPart {
+  readonly id: string;
+  readonly title: RichTextString;
+  readonly group?: string;
+  /** The answer-first line that opens the part. */
+  readonly answer?: RichTextString;
+  readonly blocks: readonly LegalBlock[];
+}
+
+/** The short version: a trust list, or numbered points with bold labels. */
+export type LegalSummary =
+  | { readonly kind: "trust"; readonly title: RichTextString; readonly items: readonly TrustListItem[] }
+  | { readonly kind: "points"; readonly title: RichTextString; readonly points: readonly LeadText[] };
+
+export interface LegalClose {
+  readonly title?: RichTextString;
+  readonly lead?: RichTextString;
+  readonly actions: readonly LinkRef[];
+  readonly also?: { readonly label: string; readonly links: readonly LinkRef[] };
+  readonly help?: RichTextString;
+}
+
+interface LegalDocBase {
+  readonly slug: string;
+  readonly meta: Meta;
+  readonly hero: { readonly title: RichTextString; readonly lead?: RichTextString; readonly art?: ArtBoardRef };
+  readonly summary: LegalSummary;
+  readonly help?: RichTextString;
+  readonly parts: readonly LegalPart[];
+  readonly close?: LegalClose;
+}
+
+/**
+ * A policy page. A draft is a placeholder by definition: it shows the draft note
+ * on beta and the production build refuses it (ADR-004). An approved document
+ * carries the real date the founder approved it, its "Last updated" line (D029).
+ */
+export type LegalDoc =
+  | (LegalDocBase & { readonly status: "draft"; readonly approvedOn: OrPlaceholder<IsoDate> })
+  | (LegalDocBase & { readonly status: "approved"; readonly approvedOn: IsoDate });
