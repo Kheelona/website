@@ -4,9 +4,9 @@
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
 <!-- END:nextjs-agent-rules -->
 
-# Structure & component standards (BINDING)
+# Structure & component standards
 
-App code is `src/`-based atomic design. Before writing or moving any code, follow
-`../docs/standards/` (`PROJECT_STRUCTURE.md`, `COMPONENT_GUIDELINES.md`, `STRUCTURE-MAP.md`)
-and the "Production structure & standards" section in the root `CLAUDE.md`. Every component
-ships a colocated Storybook story + Vitest test; Storybook/Vitest are dev-only. Node ≥ 24.
+The website reset (2026-10-10) replaces the structure: the Architect writes it in Phase 4 at
+`wiki/engineering/structure.md`, with catalogues beside it. Until then, the existing code still
+follows `docs/standards/` (`src/`-based atomic design; every component ships a colocated Vitest
+test). Node ≥ 24.
