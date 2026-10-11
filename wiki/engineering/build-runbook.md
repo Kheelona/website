@@ -63,7 +63,7 @@ never stage them).
 | Wave | Run | State |
 |---|---|---|
 | 0 (prep) | – | Done 2026-10-12: plan committed (`b2ea409`); dev tools pinned and **security patch next 16.3.8, sharp 0.35.5** (`1806937`); D051 (`8423f87`); runbook (`242126b`) |
-| 1 | `wf_de7ff1a5-e8b` (base `1806937`), started 14:45 in the old account's session | Snapshot 2026-10-12 ~16:00 below. **The run may die with that session (account switch).** |
+| 1 | `wf_de7ff1a5-e8b` (base `1806937`), held 16:40; resumed in run `wf_20aaa1e8-c0f` (new account, resume mode: finish 1.1, review 1.2) | Snapshot 2026-10-12 ~16:00 below. **The run may die with that session (account switch).** |
 | 2 | – | Next: 2.1-2.10 (2.10 = beta never takes a payment, D051) |
 | 3-10 | – | Per [tasks](tasks.md) |
 
@@ -73,11 +73,13 @@ never stage them).
 |---|---|---|---|
 | 1.1 Toolchain, harness, guards | `build/w1-1.1` **`e7da91c`** (= `200623d` configs, step runner, Vitest guards + a WIP commit of the e2e harness: 13 specs, 11 support files, CI workflow, Lighthouse script) in `.claude/worktrees/wf_de7ff1a5-e8b-1`; nothing uncommitted | Unfinished, unverified, unreviewed | Start a `builder` agent in that worktree (cd there; `node_modules` present) to finish 1.1 against acceptance 1-16 and run `npm run verify`; then an adversarial review (prompt shape: `reviewPrompt` in `.claude/workflows/build-wave.js`), fix, review |
 | 1.2 Visual layer and motion | `build/w1-1.2` `7c8ebe8` (`src/styles/generated/compose.css` uncommitted on purpose: generated, gitignored by 1.1) | Round-1 review failed on the motion guard; fix committed; **round-2 review was running and was stopped** | Run the review on `7c8ebe8`; fix if needed |
-| 1.3 Environments and beta | `build/w1-1.3` `db711ce` | **Passed** review round 1 | Merge. Minor: a www-only `/store/:path*` redirect beyond §9.4 (check) |
-| 1.4 Tracking registries | `build/w1-1.4` `8578501` | **Passed** after two fixes | Merge |
-| 1.5 Assets, icons, doodles, OG | `build/w1-1.5` `fe338c2` | **Passed** after one fix | Merge |
+| 1.3 Environments and beta | `build/w1-1.3` `db711ce` | **Passed; MERGED** (`d8e03db`) | Done. Minor: a www-only `/store/:path*` redirect beyond §9.4 (check) |
+| 1.4 Tracking registries | `build/w1-1.4` `8578501` | **Passed; MERGED** (`cf73b8b`) | Done |
+| 1.5 Assets, icons, doodles, OG | `build/w1-1.5` `fe338c2` | **Passed; MERGED** (`33dff28`); `next build` then failed on RGB icons, fixed in `517a38e` | Done |
 | 1.5b App screenshots | on `reset/website-v2` `6225df2` | **Done** | – |
-| 1.6 Content contracts | `build/w1-1.6` `0d8bc4e` | **Passed** after one fix | Merge. Minor: `formatInr` wording vs the frozen helper (check before 2.1) |
+| 1.6 Content contracts | `build/w1-1.6` `0d8bc4e` | **Passed; MERGED** (`1e2168a`) | Done. Minor: `formatInr` wording vs the frozen helper (check before 2.1) |
+
+**After the merges (17:00):** tsc green, Vitest 131 files / 1862 tests green, DS checksums intact, `next build` green after `517a38e`. Waiting on run `wf_20aaa1e8-c0f` for 1.1 and 1.2, then merge both and the full wave close (`npm run verify`).
 
 **Resume order for a fresh session:** (1) `git worktree list` and the table above (re-check heads with
 `git -C <worktree> log -1`); (2) finish 1.1 and re-review 1.2 in their worktrees (the run is stopped; nothing will notify); (3) merge per §2 in id order; (4) wave close; (5) wave 2

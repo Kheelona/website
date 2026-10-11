@@ -38,8 +38,8 @@ const REVIEW = {
 }
 
 const VERIFY_NOTE = W === 1
-  ? `Wave 1 tasks run in parallel, so the other wave-1 tasks' files are NOT in your tree, and \`npm run verify\` exists only once task 1.1 lands. Task 1.1 creates it and must run it; every other wave-1 task runs the equivalent itself: \`npx tsc --noEmit\`, \`npx vitest run\` (whole suite), \`npx eslint <every file you changed>\`, \`node scripts/ds-checksums.mjs\`. Your work must be green on its own tree.`
-  : `Run \`npm run verify\` green on your own tree${W >= 3 ? ', and the e2e specs your task owns (`npx playwright test <spec>`)' : ''}.`
+  ? `Wave 1 tasks run in parallel, so the other wave-1 tasks' files are NOT in your tree, and \`npm run verify\` exists only once task 1.1 lands. Task 1.1 creates it and must run it; every other wave-1 task runs the equivalent itself: \`npx tsc --noEmit\`, \`npx vitest run\` (whole suite), \`npx eslint <every file you changed>\`, \`node scripts/ds-checksums.mjs\`. Also run \`npm run build\` (the full Next production build; unit tests do not catch Turbopack failures). Your work must be green on its own tree.`
+  : `Run \`npm run verify\` and \`npm run build\` (the full Next production build: unit tests do not catch Turbopack failures) green on your own tree${W >= 3 ? ', and the e2e specs your task owns (`npx playwright test <spec>`)' : ''}.`
 
 function buildPrompt(t) {
   return `You are building task ${t.id} of Phase 5 wave ${W} on the Kheelona.com website: "${t.title}".

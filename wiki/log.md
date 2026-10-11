@@ -540,3 +540,6 @@ Founder switched betawebsite.kheelona.com and betastore.kheelona.com to the `bet
 
 ## [2026-10-12 16:40] agent | Wave 1 run held by the founder (workflow wf_de7ff1a5-e8b stopped)
 Founder: "hold the build-wave" while changing the Chrome login. Stopped the workflow. Task 1.1's unfinished e2e harness committed as WIP `e7da91c` on build/w1-1.1 (unverified, unreviewed). 1.2's round-2 review was cut off (fix `7c8ebe8` committed). 1.3, 1.4, 1.5, 1.6 passed; 1.5b done. Resume per build-runbook §4 when the founder says go.
+
+## [2026-10-12 17:05] build | Wave 1 resumed on the new account; 1.3-1.6 merged
+build-wave gained a resume mode (finish or review a task in its existing worktree; no session trailer). Run wf_20aaa1e8-c0f: finish 1.1 from e7da91c, review 1.2 at 7c8ebe8. Merged build/w1-1.3, 1.4, 1.5, 1.6 (no conflicts): tsc, Vitest 1862 tests, DS checksums green; `next build` failed on RGB app icons (Turbopack needs RGBA), fixed in 517a38e. Every build task now runs `npm run build` (lessons).

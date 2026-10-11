@@ -470,4 +470,7 @@ URLs and redirects are in [site/url-map.md](../site/url-map.md).
   same code); the founder was told at once.
 - **Rule:** push only with an explicit `<src>:refs/heads/<dst>`; create branches with `--no-track`;
   run `git branch -vv` before any push. (CLAUDE.md hard rules.)
-
+- **2026-10-12, wave 1 merge:** unit tests and reviews were green, yet `next build` failed: Turbopack's
+  icon pipeline refuses RGB PNGs inside `favicon.ico` ("The PNG is not in RGBA format"). Opaque icons
+  are written as RGBA with alpha 255. Every build task now runs `npm run build` before reporting
+  (`.claude/workflows/build-wave.js`).
