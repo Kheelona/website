@@ -19,8 +19,13 @@
   --ks-film-focus: 1.05; /* pick 8B: the film in focus, one value inside D049's 1.04 to 1.1 */
 }
 
-/* In-page anchor jumps (skip link, "#faq") glide; reduced motion jumps. */
-html {
+/* In-page anchor jumps (skip link, "#faq") glide, as in the approved mockup (mockup.css); reduced motion jumps.
+   Keyed on data-scroll-behavior="smooth", which the root layout (src/app/layout.tsx) must set on <html>: in
+   Next.js 16, Next resets scroll-behavior to auto during a route change only when that attribute is present
+   (node_modules/next/dist/docs/01-app/02-guides/upgrading/version-16.md, "Scroll Behavior Override"), so a <Link>
+   lands at the top of its page instead of gliding there from the old position. Without the attribute nothing
+   glides, never the other way round. */
+html[data-scroll-behavior="smooth"] {
   scroll-behavior: smooth;
 }
 
@@ -43,42 +48,54 @@ html.js-motion [data-reveal] .kh-sticker {
 }
 
 /* ---------- 3B. Doodles draw themselves, below the first screen only ----------
-   The generated inline SVG (src/assets/doodles.generated.tsx) sets pathLength="1" on every stroked path, so one
-   dash covers the whole stroke: drawn by default and without JavaScript. Under js-motion the stroke waits at
-   offset 1 until MotionController marks the doodle .is-in, then draws once; filled dots fade in as it ends.
-   Doodles in one group start 400 ms apart (--duration-base x 2), inside D049's 300 to 600 ms. Hero doodles are
-   plain <img> and never draw (pick 2A).
+   The generated inline SVG (src/assets/doodles.generated.tsx) sets pathLength="1" on every stroked path and the
+   class ks-doodle__fill on every filled shape. Without JavaScript none of this applies: the doodle is simply drawn,
+   whatever the SVG holds. Under js-motion one dash covers the whole stroke (pathLength 1, so dasharray 1); the
+   stroke waits at offset 1 until MotionController marks the doodle .is-in, then draws once, and the filled shapes
+   fade in as it ends. Hero doodles are plain <img> and never draw (pick 2A).
    Strokes are selected as `path:not(.ks-doodle__fill)`, not `path[pathLength]`: Chromium does not restyle an
    SVG camelCase-attribute selector when html.js-motion is added at run time (probe 2026-10-12, Chromium 153). */
-.ks-doodle[data-draw] {
-  --ks-draw-delay: 0s;
-}
-.ks-doodle[data-draw][data-draw-order="2"] {
-  --ks-draw-delay: calc(var(--duration-base) * 2);
-}
-.ks-doodle[data-draw][data-draw-order="3"] {
-  --ks-draw-delay: calc(var(--duration-base) * 4);
-}
-.ks-doodle[data-draw][data-draw-order="4"] {
-  --ks-draw-delay: calc(var(--duration-base) * 6);
-}
-.ks-doodle[data-draw][data-draw-order="5"] {
-  --ks-draw-delay: calc(var(--duration-base) * 8);
-}
-.ks-doodle[data-draw] path:not(.ks-doodle__fill) {
+html.js-motion .ks-doodle[data-draw] path:not(.ks-doodle__fill) {
   stroke-dasharray: 1;
 }
 html.js-motion .ks-doodle[data-draw]:not(.is-in) path:not(.ks-doodle__fill) {
   stroke-dashoffset: 1;
 }
 html.js-motion .ks-doodle[data-draw].is-in path:not(.ks-doodle__fill) {
-  animation: ks-draw var(--duration-draw) var(--ease-standard) var(--ks-draw-delay) both;
+  animation: ks-draw var(--duration-draw) var(--ease-standard) both;
 }
 html.js-motion .ks-doodle[data-draw]:not(.is-in) .ks-doodle__fill {
   opacity: 0;
 }
 html.js-motion .ks-doodle[data-draw].is-in .ks-doodle__fill {
-  animation: ks-fade-in var(--duration-fast) var(--ease-standard) calc(var(--ks-draw-delay) + var(--duration-draw)) both;
+  animation: ks-fade-in var(--duration-fast) var(--ease-standard) var(--duration-draw) both;
+}
+/* The group's stagger: order n starts --duration-base x 2(n - 1) after the first (400 ms steps, inside D049's 300
+   to 600 ms) and its fills a draw later. Written per order rather than through a custom property, which may hold no
+   number (test/guards/no-off-token.test.ts). The extra [data-draw-order] makes each rule outrank the two above. */
+html.js-motion .ks-doodle[data-draw][data-draw-order="2"].is-in path:not(.ks-doodle__fill) {
+  animation-delay: calc(var(--duration-base) * 2);
+}
+html.js-motion .ks-doodle[data-draw][data-draw-order="2"].is-in .ks-doodle__fill {
+  animation-delay: calc(var(--duration-base) * 2 + var(--duration-draw));
+}
+html.js-motion .ks-doodle[data-draw][data-draw-order="3"].is-in path:not(.ks-doodle__fill) {
+  animation-delay: calc(var(--duration-base) * 4);
+}
+html.js-motion .ks-doodle[data-draw][data-draw-order="3"].is-in .ks-doodle__fill {
+  animation-delay: calc(var(--duration-base) * 4 + var(--duration-draw));
+}
+html.js-motion .ks-doodle[data-draw][data-draw-order="4"].is-in path:not(.ks-doodle__fill) {
+  animation-delay: calc(var(--duration-base) * 6);
+}
+html.js-motion .ks-doodle[data-draw][data-draw-order="4"].is-in .ks-doodle__fill {
+  animation-delay: calc(var(--duration-base) * 6 + var(--duration-draw));
+}
+html.js-motion .ks-doodle[data-draw][data-draw-order="5"].is-in path:not(.ks-doodle__fill) {
+  animation-delay: calc(var(--duration-base) * 8);
+}
+html.js-motion .ks-doodle[data-draw][data-draw-order="5"].is-in .ks-doodle__fill {
+  animation-delay: calc(var(--duration-base) * 8 + var(--duration-draw));
 }
 @keyframes ks-draw {
   from { stroke-dashoffset: 1; }
@@ -128,7 +145,8 @@ dialog.kh-drawer[open]::backdrop {
    Native <details>. Where ::details-content exists, the content slot is a one-row grid that grows from 0fr to
    1fr, and content-visibility switches discretely at the end, so it closes smoothly too. The answer sits in
    .ks-faq__clip so the DS padding of .kh-faq__a does not show while the row is collapsed. The plus sign already
-   turns 45 degrees with the DS's own transition (bundle.css .kh-faq__sign). Without ::details-content (older
+   turns 45 degrees with the DS's own transition (bundle.css .kh-faq__sign, --duration-base: it turns in 200 ms
+   while the answer opens in 240 ms; the DS decides, so it is not restyled here). Without ::details-content (older
    iOS Safari) the answer opens instantly: pick 7A. */
 @supports selector(::details-content) {
   .kh-faq__item::details-content {
@@ -192,7 +210,7 @@ html[data-buybar="shown"] .ks-wa {
    README.md:161: drop movement, keep fades); the drawer appears without sliding; the arrow does not nudge; the
    film does not grow; the FAQ opens instantly; the bubble still clears the bar, without moving there. */
 @media (prefers-reduced-motion: reduce) {
-  html {
+  html[data-scroll-behavior="smooth"] {
     scroll-behavior: auto;
   }
   html.js-motion [data-reveal],
