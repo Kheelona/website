@@ -3,6 +3,7 @@ title: "Build tasks in dependency waves, with ownership, inputs, acceptance crit
 type: plan
 updated: 2026-10-12
 sources:
+  - ../decisions/D051-beta-without-store-integrations.md (beta without store integrations; task 2.10; 7.2 and 7.3 revised)
   - architecture.md, structure.md, components.md, assets.md, dependencies.md, adr/ADR-001 to adr/ADR-013
   - ../qa/architecture-review-2026-10-12.md (blocking B1-B4, non-blocking N1-N26), ../qa/test-plan.md (§3 viewports, §4 suites, §6 payment procedure)
   - ../raw/brief/kickoff-brief.md (§7 Phase 5-8, §9)
@@ -537,6 +538,19 @@ alone; 1.2 leaves `globals.css` alone; 1.1 deletes only the two tests it owns).
 **Wave 2 ownership check:** `src/config/site.ts` only in 2.6 (the `POSTHOG_HOSTS` line); `ui/` folders
 distinct; the layout import lines only in 2.6; no task touches `src/lib/cn.ts`.
 
+### 2.10 Beta never takes a payment (D051) (builder)
+
+- **Goal:** the beta build cannot reach Razorpay, Supabase or email, whatever environment variables
+  Vercel gives it ([D051](../decisions/D051-beta-without-store-integrations.md)).
+- **Owns:** `src/lib/store/env.ts` (one early return), `test/store-env-beta.test.ts`,
+  `test/guards/fixtures/authorised-diffs/src__lib__store__env.ts.patch` (regenerated and reviewed).
+- **Acceptance:** `storeEnv()` returns null and `missingStoreEnv()` reports the store as not configured
+  when `SITE_ENV === "beta"`; production, preview and development unchanged (truth table against the
+  tag); the store page renders its not-configured state on beta and every store API route answers 503
+  there (route tests with `KH_SITE_ENV=beta`); `/api/health` on beta reports `store: not-configured`;
+  the reviewed patch carries D051 in its header; checkout-freeze green with the new patch.
+- **Test:** `test/store-env-beta.test.ts`; the checkout guards.
+
 ## Wave 3: chrome, shells and sections (after wave 2)
 
 ### 3.1 Chrome, shells and the WhatsApp bubble (builder)
@@ -812,29 +826,18 @@ waits; it may run in any later wave before wave 8, alone with its own files.
 ### 7.2 Beta deploy and beta QA (main session, founder, QA)
 
 - **Owns:** the `beta` branch (the main session pushes it); the founder's dashboard steps
-  ([architecture §15.4](architecture.md#154-founder-runbook-the-beta-vercel-dashboard-only-never-the-cli)).
-- **Gate before any beta payment (B4):** all five recorded by the main session; QA refuses to start the
-  payment procedure without them:
-
-  | Precondition | Who | Check |
-  |---|---|---|
-  | Beta uses its own Supabase project (`ap-south-1`), never production's | Founder | The beta `SUPABASE_URL` project ref differs from production's (recorded); QA's first beta order is absent from production's admin view (founder spot check) |
-  | `RAZORPAY_KEY_ID` in Preview (branch `beta`) is `rzp_test_…` | Founder | `GET https://betastore.kheelona.com/api/health` shows `"razorpay":"test"`; the sheet shows Razorpay's test banner |
-  | No `META_CAPI_TOKEN` or `META_CAPI_TEST_CODE` in Preview | Founder | `/api/health` on betastore shows `"capi":"missing"` |
-  | `ORDER_ALERT_EMAIL` and `EMAIL_FROM` in Preview point at a test inbox, or `RESEND_API_KEY` is absent | Founder | The alert for QA's test order arrives at the test inbox only |
-  | PostHog's test-account filter and revenue analytics exclude `env = beta` (and `internal = true`) | Founder, or the PostHog analyst with the founder's OK | A HogQL query of `purchase_confirmed` with the filter on returns no beta rows |
-
+  ([architecture §15.4](architecture.md#154-founder-runbook-the-beta-vercel-dashboard-and-cloudflare-only-never-the-cli)).
+- **No beta payment (D051).** The beta has no Supabase, Razorpay or email settings and the code refuses
+  store keys there (2.10); the B4 preconditions and the test plan §6 payment are dropped. The founder's
+  only dashboard step is the two domains ([architecture §15.4](architecture.md#154-founder-runbook-the-beta-vercel-dashboard-and-cloudflare-only-never-the-cli)).
 - **Acceptance:** both beta hosts serve the build; every HTML route carries `x-robots-tag: noindex,
   nofollow` and the robots meta, and non-HTML files (`/llms.txt`, `/pricing.md`, `/sitemap.xml`, an image,
-  a film) carry the header (N1); every CTA opens betastore; the beta database is awake (`store: ready`,
-  N11); the test-mode payment of [test plan §6](../qa/test-plan.md#6-razorpay-test-mode-payment-on-betastore)
-  completes to `/thanks`; no GA4, Meta Pixel, CAPI or Ahrefs requests from beta; PostHog events carry
-  `env = beta`; no `$current_url` containing the bypass secret (N5); axe and Lighthouse Accessibility on
-  beta through the bypass cookie; region and timing: `x-vercel-id` names `bom1` on marketing and store
-  responses, `curl -w` timings from QA's network, and the founder runs the same one-line command from an
-  Indian network (N26); the founder's in-app browser check on a real Android phone in WhatsApp and
-  Instagram ([test plan §6.4](../qa/test-plan.md#64-in-app-browsers-real-devices)) decides whether the
-  in-app note is enabled; the bypass secret rotated after any real-device test that used a query bypass.
+  a film) carry the header (N1); every CTA opens betastore; betastore shows the restyled not-configured
+  screen and its API routes answer 503 (D051); no GA4, Meta Pixel, CAPI or Ahrefs requests from beta;
+  PostHog events carry `env = beta`; no `$current_url` containing the bypass secret (N5); axe and
+  Lighthouse Accessibility on beta through the bypass cookie; region and timing: `x-vercel-id` names
+  `bom1`; the store form (token and full mode, validation errors) and the `/thanks` states sent to the
+  founder as phone screenshots from the local production build (D051).
 
 ## Wave 10: Gate B and release (after wave 9)
 
@@ -843,8 +846,8 @@ waits; it may run in any later wave before wave 8, alone with its own files.
 - **Owns:** the readiness pack (main session's pages), the rollback tag, the merge to `main`.
 - **Acceptance:** per [architecture §15.5](architecture.md#155-gate-b-release-to-production-and-rollback):
   founder prerequisites done (Supabase moved, placeholders answered, legal approved, optional `www` switch,
-  the waiver of "checkout in test mode" on production in favour of the beta payment on the same commit
-  recorded, N10); Gate B OK logged; rollback tag pushed before the merge; production build green
+  no test payment anywhere but the local sandbox (D051; the founder's optional real order and refund
+  after launch is their call); Gate B OK logged; rollback tag pushed before the merge; production build green
   (placeholder guard passes); smoke tests green; sitemap resubmitted; monitoring scheduled (24 hours,
   72 hours, 7 days).
 
@@ -869,12 +872,12 @@ waits; it may run in any later wave before wave 8, alone with its own files.
 | Wave | Tasks | Starts after |
 |---|---|---|
 | 1 | 1.1, 1.2, 1.3, 1.4, 1.5, 1.5b, 1.6 | Phase 4 QA approval of this plan |
-| 2 | 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9 | wave 1 closed |
+| 2 | 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 2.10 | wave 1 closed |
 | 3 | 3.1, 3.2, 3.3, 3.4 | wave 2 closed |
 | 4 | 4.1, 4.2, 4.3, 4.4 | wave 3 closed |
 | 5 | 5.1-5.19 | wave 4 closed |
 | 6 | 6.1, 6.2 (gated), 6.4 (gated) | wave 5 closed |
 | 7 | 6.3 | wave 6 closed (gated tasks may still be waiting; they touch no file 6.3 deletes) |
 | 8 | 7.1 | wave 7 closed |
-| 9 | 7.2 | wave 8 closed and the five B4 preconditions recorded before any beta payment |
+| 9 | 7.2 | wave 8 closed and the two beta domains connected by the founder (D051: no payment on beta) |
 | 10 | 7.3 | wave 9 closed and the founder's Gate B OK |

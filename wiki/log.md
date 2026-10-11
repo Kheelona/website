@@ -516,3 +516,6 @@ Added (exact, ≥ 2 weeks old where possible): @playwright/test 1.63.0, @axe-cor
 
 ## [2026-10-12 14:45] agent | Wave 1 build workflow started (run wf_de7ff1a5-e8b)
 Tasks 1.1-1.6 each in its own git worktree (branch build/w1-<id>, base 1806937), each reviewed adversarially against its acceptance criteria with up to two fix rounds; 1.5b app screenshots (transcript, activity round 2) edited in the main checkout under mockup/_work (local only) and verified. Reusable script: workflows/scripts/build-wave-wf_de7ff1a5-e8b.js (args: wave, base, tasks, screens). Next: merge the six branches, wave close (`npm run verify`), review the screenshots against D044, then wave 2.
+
+## [2026-10-12 15:05] decision | D051: the beta runs without store integrations
+Founder: no Supabase, Razorpay or email on beta ("when we are doing final merge, we can directly use the main website details"); no PostHog filter (beta lives 1-2 days). New task 2.10 makes `storeEnv()` null on beta so betastore can never take a payment even if Preview has production keys. B4 checks and the beta test payment (test plan §6) dropped; store form and /thanks reviewed from local screenshots; residual risk (first completed payment through the restyled checkout is real) stated with mitigations. Runbook §15.4 rewritten: two Cloudflare CNAMEs (DNS only) + two Vercel Preview domains on branch `beta`.

@@ -746,7 +746,7 @@ on pushes to `beta` and `main`.
 | Development | any, local | `localhost:3000`, `store.localhost:3000` | `development` | `.env.local` test keys, Supabase stub | none (hosts not in lists) | loopback indexable (lessons §3) |
 | Local production check (L, LP) | local | `localhost:3456`; LP serves the real origins from the local build through Playwright routing | `development` (or `KH_SITE_ENV=production` for the dry run) | test keys, stub; never a completed payment (N4) | LP: gates open, every request recorded and answered locally | as production |
 | Preview | `reset/*` | none | `preview` | n/a | n/a | builds off (D014) |
-| **Beta** | `beta` | betawebsite.kheelona.com, betastore.kheelona.com | `beta` | Razorpay **test** keys and **its own Supabase project (required)**, Preview env scoped to `beta` | PostHog with `env=beta`; GA4, Meta Pixel, CAPI, Ahrefs off; Vercel Analytics (Preview) | noindex header on every response + meta; Vercel Authentication |
+| **Beta** | `beta` | betawebsite.kheelona.com, betastore.kheelona.com | `beta` | **none (D051):** no Supabase, Razorpay or email; the code treats beta as not configured (task 2.10) | PostHog with `env=beta`; GA4, Meta Pixel, CAPI, Ahrefs off; Vercel Analytics (Preview) | noindex header on every response + meta; Vercel Authentication |
 | Production | `main` | kheelona.com, www, store.kheelona.com | `production` | live keys (unchanged) | all, as today | apex indexable; store noindex |
 
 ### 15.2 `SITE_ENV`
@@ -825,59 +825,40 @@ production in a production build; the beta header rule present only for a beta `
 on beta; `purchase_confirmed` payload identical to the tag in production and with `env` elsewhere; the
 PostHog persistence control (N3).
 
-### 15.4 Founder runbook: the beta (Vercel dashboard only; never the CLI)
+### 15.4 Founder runbook: the beta (Vercel dashboard and Cloudflare only; never the CLI)
 
-**Before the first beta payment, five checks are required (B4)**; the main session records each, and QA
-does not start the payment procedure ([test plan §6](../qa/test-plan.md#6-razorpay-test-mode-payment-on-betastore))
-until all five are recorded:
+**Revised by [D051](../decisions/D051-beta-without-store-integrations.md) (2026-10-12):** the beta runs
+without store integrations. No Supabase project, Razorpay keys, email settings or PostHog filter; the
+store code refuses store keys on beta (task 2.10), so betastore shows the "Pre-orders open here shortly"
+screen and can never take a payment. The founder's only steps are the two domains. (The earlier B4
+isolation checks are void.)
 
-| # | Requirement | Why | Check |
-|---|---|---|---|
-| 1 | Beta has **its own Supabase project** in `ap-south-1`, never production's | A test payment goes through `markPaid` like a real one: on a shared database it counts toward the 500-unit cap that flips **production** to ₹7,999 and enters the dispatch queue | The beta `SUPABASE_URL` project ref differs from production's (recorded); QA's first beta order is absent from production's admin view |
-| 2 | `RAZORPAY_KEY_ID` in Preview (branch `beta`) is `rzp_test_…` | Test mode only | `/api/health` on betastore shows `"razorpay":"test"`; the sheet shows Razorpay's test banner |
-| 3 | No `META_CAPI_TOKEN` or `META_CAPI_TEST_CODE` in Preview | Second, independent switch for CAPI (the code also drops it on beta) | `/api/health` on betastore shows `"capi":"missing"` |
-| 4 | `ORDER_ALERT_EMAIL` and `EMAIL_FROM` point at a test inbox, or `RESEND_API_KEY` is absent | The email templates are frozen, so a beta alert looks exactly like a real order | The alert for QA's test order arrives only at the test inbox |
-| 5 | PostHog's test-account filter and revenue analytics exclude `env = beta` (and `internal = true`) | `purchase_confirmed` is the conversion goal and revenue source since D031; beta events land in the production project | A HogQL query of `purchase_confirmed` with the filter on returns no beta rows |
+kheelona.com's DNS is on Cloudflare (nameservers `abby` and `yichun.ns.cloudflare.com`, checked
+2026-10-12); `store.kheelona.com` is a CNAME to this project's Vercel target
+`6eb2cd39f8ca1fdf.vercel-dns-017.com`.
 
-Steps:
-
-1. **Supabase for beta:** create a free project in `ap-south-1` (Mumbai); in its SQL editor run
-   `supabase/migrations/0001` to `0004` in order; leave RLS on with no policies (as production). The free
-   tier pauses after a quiet week and the health cron runs only on production, so wake it before each beta
-   session by opening `https://betastore.kheelona.com/api/health` until it shows `store: ready` (N11).
-2. **Domains:** Vercel → project → Settings → Domains → Add `betawebsite.kheelona.com` → Edit → "Connect
-   to an environment": **Preview** → Git branch: `beta` → Save. Repeat for `betastore.kheelona.com`.
-3. **DNS** (where kheelona.com is managed): add the two records Vercel shows for each domain (normally
-   `CNAME betawebsite` and `CNAME betastore` to the target Vercel displays, for example
-   `cname.vercel-dns.com`). If the DNS is behind Cloudflare, set both to "DNS only" (grey cloud), as for the
-   apex and store (lessons §6). Wait until Vercel shows "Valid Configuration".
-4. **Environment variables:** Settings → Environment Variables → confirm "Enable access to System
-   Environment Variables" is on (the build refuses otherwise). Add, for **Preview** with **Git branch
-   `beta`** selected, the same names as production: `RAZORPAY_KEY_ID` (`rzp_test_…`), `RAZORPAY_KEY_SECRET`
-   (test), `RAZORPAY_WEBHOOK_SECRET` (a long random string unless step 8 is done), `SUPABASE_URL` and
-   `SUPABASE_SERVICE_ROLE_KEY` (the beta project), `STORE_SIGNING_SECRET` (new:
-   `openssl rand -base64 48`), and either no `RESEND_API_KEY` or `RESEND_API_KEY` with `EMAIL_FROM` and
-   `ORDER_ALERT_EMAIL` set to a test inbox. **Do not add `META_CAPI_TOKEN` or `META_CAPI_TEST_CODE` to
-   Preview.** Never a `NEXT_PUBLIC_` name.
-5. **PostHog:** in project settings, add `env = beta` (and `internal = true`) to the test-account filter
-   and confirm revenue analytics and the conversion goal use it (requirement 5), or let the PostHog analyst
-   do it with your written OK.
-6. **Protection:** Settings → Deployment Protection: keep Standard Protection with Vercel Authentication
-   (you sign in with your Vercel account on your phone). Create a "Protection Bypass for Automation" secret
-   and send it to the main session privately (never in the repo). QA sends it only to the two beta hosts;
-   after any real-device test that used a bypass link, rotate it (N5).
-7. **Deploy:** the main session pushes the `beta` branch; Vercel builds it as a Preview; open
-   https://betawebsite.kheelona.com.
-8. **Optional, Razorpay test webhook:** Razorpay dashboard in **Test Mode** → Webhooks → add
-   `https://betastore.kheelona.com/api/razorpay/webhook?x-vercel-protection-bypass=<secret>`, events
-   `order.paid` and `payment.captured`, with the same secret as `RAZORPAY_WEBHOOK_SECRET`. Without it, the
-   browser's confirm call still marks test orders paid.
-9. **What to check on beta:** every page against the mockup on your phone; every orange button opens
-   betastore (never store.kheelona.com); the five requirements recorded; a test payment (Razorpay test card
-   or `success@razorpay`, test plan §6) lands on `/thanks`; GA4 Realtime and Meta Events Manager show
-   nothing from beta; PostHog shows events with `env = beta`; QA reports the noindex header on both hosts,
-   including `/llms.txt` and an image; the in-app browser check in WhatsApp and Instagram on an Android
-   phone (test plan §6.4); a private window for reviews (attribution cookies are on `.kheelona.com`).
+1. **Vercel, first domain:** vercel.com → the kheelona project → Settings → Domains → Add Domain → type
+   `betawebsite.kheelona.com` → Add. When asked where to connect it, choose **Preview** and type the Git
+   branch **`beta`** → Save. (If the dialog has no branch field: add it, then click Edit on the domain and
+   set Git Branch to `beta`.) If Vercel refuses because the branch does not exist yet, stop and tell the
+   main session, which pushes a `beta` branch whose `vercel.json` keeps beta builds off until the new site
+   is ready.
+2. **Vercel, second domain:** the same for `betastore.kheelona.com`, Preview, branch `beta`.
+3. **Cloudflare:** dash.cloudflare.com → kheelona.com → DNS → Records → Add record: Type **CNAME**, Name
+   **`betawebsite`**, Target = the value Vercel shows for that domain (expected
+   `6eb2cd39f8ca1fdf.vercel-dns-017.com`, the same as `store`), Proxy status **DNS only** (grey cloud, as
+   for the apex, `www` and `store`; lessons §6), TTL Auto → Save. Repeat with Name **`betastore`**. If
+   Vercel also shows a TXT verification record, add it as shown.
+4. **Check:** within minutes Vercel shows "Valid Configuration" for both and issues the certificates.
+   Until the first beta deployment the domains show a Vercel "not found" page; that is expected.
+5. **Protection:** leave Deployment Protection as it is (Standard Protection with Vercel Authentication):
+   the beta asks for a Vercel login, which keeps it private. For the automated checks of wave 9, the
+   founder creates a "Protection Bypass for Automation" secret then (Settings → Deployment Protection) and
+   puts it in the local `.env.local` as `VERCEL_AUTOMATION_BYPASS_SECRET` (never in the repo or the wiki).
+6. **Deploy:** the main session pushes `beta` when wave 8 closes; Vercel builds it as a Preview.
+7. **What the founder checks on beta:** every page against the mockup on a phone; every orange button
+   opens betastore (never store.kheelona.com); betastore shows the restyled not-configured screen; the
+   store form and `/thanks` states arrive as screenshots from the local build (D051).
 
 ### 15.5 Gate B, release to production and rollback
 
@@ -886,8 +867,8 @@ Steps:
    risks, rollback plan, proposed low-traffic IST window.
 2. **Founder prerequisites:** Supabase moved to Mumbai (§15.6) and `ORDER_DATA_LOCATION` confirmed; every
    placeholder answered or its sentence cut (the production build refuses otherwise); legal pages approved;
-   the waiver of brief Phase 8's "checkout in test mode" on production, in favour of the beta test-mode
-   payment on the same commit (production has live keys and `qa:payment` refuses them, N10); optional:
+   no test payment anywhere but the local sandbox (D051: production has live keys and `qa:payment` refuses
+   them, N10; an optional real order and refund after launch is the founder's call); optional:
    `www` switched from "Redirect" to serving the project (one-hop `www` legacy URLs, ADR-012).
 3. **Gate B OK** recorded as a decision by the main session.
 4. **Rollback point first** (lessons §8): `git tag archive/pre-v2-launch-<YYYY-MM-DD> origin/main`, push the

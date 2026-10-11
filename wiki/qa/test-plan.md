@@ -130,12 +130,12 @@ reopened). A defect that fails three rounds is escalated with the root cause and
 
 ### 2.3 Beta
 
-1. The five isolation preconditions of review item B4 are recorded by the main session (separate
-   Supabase project, test Razorpay keys, no CAPI token or test code in Preview, test inbox for alerts,
-   PostHog filter and revenue analytics excluding `env = beta`). QA does not start §6 without them.
-2. `GET https://betastore.kheelona.com/api/health` (through the bypass) shows `"ok":true`,
-   `"store":"ready"`, `"razorpay":"test"`, `"capi":"missing"`. If `store` is not ready, the beta database
-   may be paused (no cron on Preview): wake it and re-check.
+**Revised by [D051](../decisions/D051-beta-without-store-integrations.md):** the beta has no Supabase,
+Razorpay or email settings and the code treats it as not configured.
+
+1. No isolation preconditions are needed: no payment can run on beta.
+2. `GET https://betastore.kheelona.com/api/health` (through the bypass) shows the store as not
+   configured; betastore renders the restyled "Pre-orders open here shortly" screen.
 3. **Bypass secret handling** (review N5): QA receives the "Protection Bypass for Automation" secret
    privately and keeps it in an environment variable, never in a file in the repo or the wiki. Playwright
    adds `x-vercel-protection-bypass` and `x-vercel-set-bypass-cookie: true` only to requests whose host is
@@ -397,6 +397,12 @@ is checked for: one `purchase` and one `purchase_confirmed`, Events Manager Purc
 "Multiple", the `[meta-capi] SENT` log line (founder).
 
 ## 6. Razorpay test-mode payment on betastore
+
+**Dropped by [D051](../decisions/D051-beta-without-store-integrations.md)** (the founder: no store
+integrations on beta). §6.1-§6.4 are kept for reference only. What runs instead: §6.5 (local sandbox up
+to the Razorpay sheet, every store task), the checkout guards (§9), screenshots of the store form and
+`/thanks` states from the local production build for the founder, the production smoke (§10), and the
+in-app browser check on production right after launch, up to the sheet without paying.
 
 ### 6.1 Preconditions
 

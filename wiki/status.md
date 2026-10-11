@@ -18,15 +18,16 @@ git worktrees and are merged back by the main session; wave close = `npm run ver
 subset-font 2.9.0); **security patch next 16.3.4 → 16.3.8, sharp → 0.35.5** (npm audit: next's own critical
 next/og RCE, high image SSRF, ISR cache poisoning; floors raised in test/dependency-floor.test.ts).
 **Motion (D049):** 1A 2A 3B 4A 5A 6B 7B 8B. **WhatsApp bubble (D050):** `#25D366` (G-20).
-**Beta rules (D048):** Razorpay TEST keys; Meta, GA4, Ahrefs off on beta; PostHog env=beta; noindex;
-beta needs its own Supabase project before any test payment (B4).
+**Beta rules (D048, D051):** no Supabase, Razorpay or email on beta (the code refuses store keys there,
+task 2.10); Meta, GA4, Ahrefs off; PostHog env=beta; noindex. Founder's only step: the two domains
+(Cloudflare CNAMEs + Vercel, runbook architecture §15.4).
 
 **Waiting on the founder:** Phase 4 questions P1-P11 ([open questions §P](open-questions.md); defaults apply);
-beta runbook steps before wave 9 (architecture §15.4); to-dos: WhatsApp calls (D032),
+the two beta domains before wave 9 (architecture §15.4); to-dos: WhatsApp calls (D032),
 F11 proof, C17 Supabase region, provider contracts vs the Home safety line, F4 specs, GST/HSN, section D
 checks (C1, C2, C4, C8, C11, C12, C15, C18). Working defaults may be overridden (gate-a-open-items §2-3).
 
-**Founder decisions so far:** D010-D050 + R1-R10 (see index). Latest: films move over; white on Chilli
+**Founder decisions so far:** D010-D051 + R1-R10 (see index). Latest: films move over; white on Chilli
 accepted; Kheelona+ after 6 months unspecified; training clause kept; "friend" allowed; no consent banner
 at launch; no exchanges; no fees.
 

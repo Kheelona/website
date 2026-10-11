@@ -89,7 +89,12 @@ Option 3. Exact changes: [architecture §15.3](../architecture.md#153-beta-per-d
   500-unit cap that flips production's price, and put test orders in the dispatch queue); `rzp_test_`
   keys; no CAPI token or test code in Preview; order alerts to a test inbox (the frozen templates make a
   beta alert look like a real order); PostHog's test-account filter and revenue analytics excluding
-  `env = beta`. Each check and who verifies it: [architecture §15.4](../architecture.md#154-founder-runbook-the-beta-vercel-dashboard-only-never-the-cli).
+  `env = beta`. Each check and who verifies it: [architecture §15.4](../architecture.md#154-founder-runbook-the-beta-vercel-dashboard-and-cloudflare-only-never-the-cli).
+
+**Superseded in part by [D051](../../decisions/D051-beta-without-store-integrations.md) (2026-10-12):**
+the founder ruled that the beta runs without Supabase, Razorpay or email, and without a PostHog filter.
+The isolation checks above are void; instead the store code refuses store keys on beta (task 2.10), so
+no payment can happen there.
 
 ## Consequences
 

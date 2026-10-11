@@ -21,7 +21,7 @@ it (`action: "read"`); publishing without the URL creates a separate artifact.
 
 - **Phase 4 (2026-10-12):** only the motion options page above was published (by the main session, for D049). From Phase 5 on, the founder reviews the built site on the
   beta hosts (betawebsite.kheelona.com, betastore.kheelona.com, [D048](../decisions/D048-beta-deployment.md);
-  [architecture §15.4](architecture.md#154-founder-runbook-the-beta-vercel-dashboard-only-never-the-cli)).
+  [architecture §15.4](architecture.md#154-founder-runbook-the-beta-vercel-dashboard-and-cloudflare-only-never-the-cli)).
   Those are deployments, not artifacts, and are not listed here. If a report or preview is ever published
   as an Artifact again, add a row first; the mockups row belongs to the previous Claude account and cannot
   be updated from a new one.
