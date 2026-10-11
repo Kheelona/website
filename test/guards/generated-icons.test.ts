@@ -4,7 +4,7 @@
 //      the same path data the approved mockup inlines, never stale.
 //   2. The images scripts/assets/build-og.mjs writes: the Open Graph cards, the JSON-LD product
 //      image, the Organization logo and the app icons. Sizes, byte budgets, opacity, the header
-//      naming source and script, and drift against a fresh in-memory render.
+//      naming source and script, and drift against a fresh in-memory render, pixel by pixel.
 //
 // Expectations are derived from the DS files and the built mockup pages, never from the scripts.
 import { mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
@@ -131,12 +131,41 @@ async function rgba(buf: Buffer) {
   return { data, width: info.width, height: info.height };
 }
 
-async function meanAbsDiff(a: Buffer, b: Buffer): Promise<number> {
+/**
+ * Drift between two encodes of the same picture, per pixel: `max` is the largest channel difference
+ * anywhere, `fracOver4` the share of pixels whose largest channel difference exceeds 4. Channels are
+ * premultiplied by alpha, so colour under a fully clear pixel (which nobody sees) does not count.
+ * A mean over the whole image would hide a local edit, such as a claim added in one corner.
+ */
+async function pixelDrift(a: Buffer, b: Buffer) {
   const [x, y] = await Promise.all([rgba(a), rgba(b)]);
   expect([x.width, x.height]).toEqual([y.width, y.height]);
-  let sum = 0;
-  for (let i = 0; i < x.data.length; i++) sum += Math.abs(x.data[i] - y.data[i]);
-  return sum / x.data.length;
+  const seen = (d: Buffer, i: number, c: number) => (c === 3 ? d[i + 3] : Math.round((d[i + c] * d[i + 3]) / 255));
+  let max = 0;
+  let over4 = 0;
+  for (let i = 0; i < x.data.length; i += 4) {
+    let worst = 0;
+    for (let c = 0; c < 4; c++) worst = Math.max(worst, Math.abs(seen(x.data, i, c) - seen(y.data, i, c)));
+    max = Math.max(max, worst);
+    if (worst > 4) over4++;
+  }
+  return { max, fracOver4: over4 / (x.width * x.height) };
+}
+
+/**
+ * How far a committed image may sit from a fresh render: room for another platform's encoder
+ * rounding, none for a visible mark. On the reference machine the committed files are byte-identical
+ * to a fresh render (drift 0). sharp's WebAssembly build, a different libvips binary, renders the
+ * cards and app icons byte-identical too and the product image within 2 (it draws SVG with resvg,
+ * the native darwin-arm64 build with librsvg, so it says nothing about logo-mark.png).
+ */
+const DRIFT = { max: 16, fracOver4: 0.0005 };
+const withinDrift = ({ max, fracOver4 }: { max: number; fracOver4: number }) => max <= DRIFT.max && fracOver4 <= DRIFT.fracOver4;
+
+async function expectNoDrift(committed: Buffer, fresh: Buffer, label: string) {
+  const d = await pixelDrift(committed, fresh);
+  expect(d.max, `${label}: largest channel difference`).toBeLessThanOrEqual(DRIFT.max);
+  expect(d.fracOver4, `${label}: share of pixels off by more than 4`).toBeLessThanOrEqual(DRIFT.fracOver4);
 }
 
 /** The ICO container: a 6-byte header, a 16-byte entry per image, then PNG data. */
@@ -259,12 +288,32 @@ describe("build-og.mjs: Open Graph, stable-URL images and app icons", () => {
       if (out.path.endsWith(".ico")) {
         const [a, b] = [icoEntries(committed), icoEntries(out.buffer)];
         expect(a.length).toBe(b.length);
-        for (let i = 0; i < a.length; i++) expect(await meanAbsDiff(a[i].png, b[i].png), out.path).toBeLessThanOrEqual(1);
+        for (let i = 0; i < a.length; i++) {
+          expect([a[i].width, a[i].height], `${out.path} entry ${i}`).toEqual([b[i].width, b[i].height]);
+          await expectNoDrift(a[i].png, b[i].png, `${out.path} entry ${i}`);
+        }
       } else {
-        expect(await meanAbsDiff(committed, out.buffer), out.path).toBeLessThanOrEqual(1);
+        await expectNoDrift(committed, out.buffer, out.path);
       }
     }
   }, 30_000);
+
+  // The drift check proven red in the suite (lessons §6: og.png once showed a retired age band).
+  // Thin strokes the size of a line of 40 px text in one corner, under 1% of the card. A whole-image
+  // mean averaged such marks under 1 (white 0.04, ink 0.81) and let them through. White and ink trip
+  // both bounds; the faint mark, 12 levels off the cream ground, stays under `max` and trips the
+  // share bound alone.
+  it.each([
+    ["white", "#ffffff"],
+    ["ink", "#2a2118"],
+    ["faint", "#f0ebe1"],
+  ])("flags a text-sized mark in %s added to a committed card", async (_name, fill) => {
+    const committed = read("public/og.png");
+    const strokes = Array.from({ length: 24 }, (_, i) => `<rect x="${i * 16}" y="0" width="4" height="40"/>`).join("");
+    const mark = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="400" height="40" fill="${fill}">${strokes}</svg>`);
+    const marked = await sharp(committed).composite([{ input: mark, left: 40, top: 40 }]).png({ palette: true }).toBuffer();
+    expect(withinDrift(await pixelDrift(marked, committed))).toBe(false);
+  });
 
   it("refuses a photo whose border is not one flat ground (the card would show a seam)", async () => {
     const dir = mkdtempSync(join(tmpdir(), "ks-og-"));

@@ -92,12 +92,15 @@ five where children appear): verified per page in the page task's visual review.
 | `public/media/kheelu-front.jpg` (1200 x 1200, 76 KB) | `build-og.mjs` | `kheelu-on-fur.jpg` | yes | 1.5 |
 | `public/brand/logo-mark.png` (URL kept, 512 x 512) | `build-og.mjs` | `kheelona-mark.svg` | yes | 1.5 |
 | `src/app/icon.png` (48 px), `src/app/apple-icon.png` (180 px), `src/app/favicon.ico` (32 and 48 px), opaque | `build-og.mjs` | DS favicons and Apple touch icon | yes | 1.5 |
+| AVIF and WebP renditions of rasters | `next/image` on Vercel (cached) | the DS and non-DS rasters above | no | 2.3 |
 
 Every generated image carries an EXIF `ImageDescription` naming `build-og.mjs` and its DS source (the
 image form of the generated-file header); `test/guards/generated-icons.test.ts` checks sizes, the 200 KB
-card budget, opacity, the header, and drift against a fresh in-memory render (decoded pixels, mean
-difference at most 1, so another platform's encoder rounding does not fail it).
-| AVIF and WebP renditions of rasters | `next/image` on Vercel (cached) | the DS and non-DS rasters above | no | 2.3 |
+card budget, opacity, the header, and drift against a fresh in-memory render. Drift is measured per
+pixel on decoded, alpha-premultiplied RGBA, for every image and each `favicon.ico` entry: the largest
+channel difference at most 16, and at most 0.05% of pixels off by more than 4. That leaves room for
+another platform's encoder rounding (the committed files are byte-identical to a fresh render on the
+reference machine) but not for a mark: a whole-image mean let a line of text added to a card through.
 
 ## 4. Verification files and machine routes
 
