@@ -1,0 +1,33 @@
+# CI (task 1.1; architecture §14, ADR-011): `npm run verify` on every push to beta and main.
+# Lint, typecheck, Vitest (repo guards included), jscpd and the design-system checksums.
+# The checkout-freeze guards compare with the tag archive/pre-reset-2026-10-10, so the clone needs
+# the full history and tags (fetch-depth: 0). The repo is public: this workflow uses no secrets and
+# can only read the repository.
+name: verify
+
+on:
+  push:
+    branches: [beta, main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run verify
