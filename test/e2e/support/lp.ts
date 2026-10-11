@@ -62,8 +62,10 @@ function localFetch(req: Request, url: URL): Promise<{ status: number; headers: 
   });
 }
 
-/** Serves the real origins from the local build and records every measurement request. */
-export async function serveRealOriginsLocally(context: BrowserContext): Promise<Recorded[]> {
+/** Serves the real origins from the local build and records every measurement request.
+ *  `downloads: false` aborts the tags' script downloads too, so nothing at all leaves the machine
+ *  (the method controls need no tag). */
+export async function serveRealOriginsLocally(context: BrowserContext, { downloads = true }: { downloads?: boolean } = {}): Promise<Recorded[]> {
   const recorded: Recorded[] = [];
   await context.route("**/*", async (route: Route) => {
     const req = route.request();
@@ -89,7 +91,8 @@ export async function serveRealOriginsLocally(context: BrowserContext): Promise<
       recorded.push({ destination: beacon.destination, url: href, body: decodeBody(req) });
       return route.fulfill({ status: 204, body: "" });
     }
-    if (DOWNLOADS.some((d) => d.test(href)) || url.protocol === "data:" || url.protocol === "blob:") return route.continue();
+    if (url.protocol === "data:" || url.protocol === "blob:") return route.continue();
+    if (downloads && DOWNLOADS.some((d) => d.test(href))) return route.continue();
     return route.abort("blockedbyclient");
   });
   return recorded;

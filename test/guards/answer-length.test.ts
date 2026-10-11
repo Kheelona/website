@@ -2,7 +2,7 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { MOCKUP_SLUGS } from "../e2e/support/mockup-text";
-import { ROOT, listFiles, readRepoFile } from "../e2e/support/repo";
+import { ROOT, isTestOrStory, listFiles, readRepoFile } from "../e2e/support/repo";
 
 /* answer-length (task 1.1; architecture §9.5, brief §9.3).
  *
@@ -58,6 +58,27 @@ function answersIn(value: unknown, where: string, out: Found[], seen = new Set<u
 const outOfRange = (found: Found[]) =>
   found.filter((f) => f.words < MIN || f.words > MAX).map((f) => `${f.where} "${f.question}": ${f.words} words`);
 
+/** The runtime content modules: .ts files under src/content, never a test, a type test
+ *  (`*.test-d.ts`, compile-time fixtures such as `{ question: "q", answer: "a" }`), a story, or
+ *  the shared types file. */
+function contentModules(paths: string[]): string[] {
+  return paths.filter((p) => p.endsWith(".ts") && !isTestOrStory(p) && !p.endsWith("/types.ts"));
+}
+
+describe("content module discovery", () => {
+  it("reads content modules only, never tests, type tests, stories or the types file", () => {
+    const tree = [
+      "src/content/types.ts",
+      "src/content/types.test-d.ts",
+      "src/content/en-IN/faqs.ts",
+      "src/content/en-IN/faqs.test.ts",
+      "src/content/en-IN/pages/home.ts",
+      "src/content/en-IN/Thing.stories.tsx",
+    ];
+    expect(contentModules(tree)).toEqual(["src/content/en-IN/faqs.ts", "src/content/en-IN/pages/home.ts"]);
+  });
+});
+
 describe("answer-length rule", () => {
   const words = (n: number) => Array.from({ length: n }, (_, i) => `word${i}`).join(" ");
   it("is red below 40 and above 60 words, green inside", () => {
@@ -104,7 +125,7 @@ describe("answer-length holds on the approved mockup (the rule never contradicts
 
 describe("answer-length: src/content", () => {
   it("keeps every answer-first block at 40-60 words", async () => {
-    const modules = listFiles(["src/content"]).filter((p) => /\.ts$/.test(p) && !/\.test\.ts$/.test(p) && !p.endsWith("/types.ts"));
+    const modules = contentModules(listFiles(["src/content"]));
     const found: Found[] = [];
     for (const path of modules) {
       const mod = (await import(/* @vite-ignore */ join(ROOT, path))) as Record<string, unknown>;

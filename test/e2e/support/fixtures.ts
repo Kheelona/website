@@ -159,12 +159,19 @@ export const PLANTS: Record<string, string> = {
   redirect: "",
   sideways: `${MAIN}.insertAdjacentHTML("beforeend", '<div style="width:200vw;height:2px"></div>');`,
   axe: `${MAIN}.insertAdjacentHTML("afterbegin", '<img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" width="40" height="40">');`,
-  motion: `document.head.insertAdjacentHTML("beforeend", '<style>@keyframes kh-planted{to{transform:rotate(1turn)}} .kh-planted{animation:kh-planted 1s linear infinite}</style>'); ${MAIN}.insertAdjacentHTML("beforeend", '<div class="kh-planted">x</div>'); ${MAIN}.firstElementChild.style.opacity = "0.5";`,
+  // An endless animation below the hero (motion.spec: nothing running after 6 s, nor under reduced motion).
+  loop: `document.head.insertAdjacentHTML("beforeend", '<style>@keyframes kh-planted{to{transform:rotate(1turn)}} .kh-planted{animation:kh-planted 1s linear infinite}</style>'); ${MAIN}.insertAdjacentHTML("beforeend", '<div class="kh-planted">x</div>');`,
+  // A hero that is not still at first paint (motion.spec, D049 pick 2).
+  hero: `${MAIN}.firstElementChild.style.opacity = "0.5";`,
   cta: `document.querySelector("[data-ph-capture-attribute-cta]").setAttribute("data-ph-capture-attribute-cta", "home-arc");`,
   content: `${MAIN}.insertAdjacentHTML("beforeend", '<p>No payment now. Made for ages 2 to 5.</p>');`,
   text: `${MAIN}.insertAdjacentHTML("beforeend", '<p>A planted sentence the approved mockup does not have.</p>');`,
   firstscreen: `${MAIN}.insertAdjacentHTML("afterbegin", '<div style="height:900px"></div>');`,
-  visual: `${MAIN}.insertAdjacentHTML("afterbegin", '<div style="height:120px;background:#c00"></div>');`,
+  // Pixels only: an overlay on the first screen that moves nothing, so the page height still
+  // matches and only the per-chunk comparator can catch it.
+  visual: `document.body.insertAdjacentHTML("beforeend", '<div style="position:absolute;top:0;left:0;width:240px;height:160px;background:#c00;z-index:2147483647"></div>');`,
+  // Layout only: a block that pushes the page down, for the page-height check.
+  height: `${MAIN}.insertAdjacentHTML("afterbegin", '<div style="height:400px"></div>');`,
 };
 
 type Harness = {

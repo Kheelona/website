@@ -1,6 +1,6 @@
 import { IMAGE_SRC_HOOK, REAL_DESKTOP_UA, serveRealOriginsLocally } from "./support/lp";
-import { expect, guardNetwork, test } from "./support/fixtures";
-import { ORIGINS } from "./support/env";
+import { expect, guardNetwork, requiresServer, test } from "./support/fixtures";
+import { ORIGINS, TARGET } from "./support/env";
 import { VIEWPORTS, contextFor } from "./support/viewports";
 
 /* Tracking probe, LP (task 1.1 builds the instrument; QA runs it in Phase 6: test plan §5.1-5.2,
@@ -13,7 +13,8 @@ import { VIEWPORTS, contextFor } from "./support/viewports";
  * its kh_utm cookie in the browser (so Set-Cookie from a fulfilled response is honoured). A control
  * host run on http://localhost:3456 must load no gtag, no fbq and no /ingest request.
  *
- * Needs the network for the tags' own scripts, so it runs only on request:
+ * The controls need no tag, so they run offline (every download aborted) in every e2e run. The
+ * rows need the network for the tags' own scripts, so they run only on request:
  *   KH_TRACKING_PROBE=1 npx playwright test test/e2e/tracking-probe.spec.ts
  * Row evidence (payloads) is attached to the report; IDs and names come from the inventory.
  */
@@ -23,17 +24,19 @@ const GA4_ID = "G-7LMKSFEXZ9";
 const PIXEL_ID = "1051265191046395";
 const vp = VIEWPORTS[0];
 
-test.describe("tracking probe (LP)", () => {
-  test.skip(!ENABLED, "QA instrument: set KH_TRACKING_PROBE=1 (needs the tags' script downloads)");
+test.describe("tracking probe (LP): method controls, offline", () => {
+  requiresServer();
+  test.skip(TARGET === "beta", "LP serves the local build; the beta hosts have their own capture (task 7.2)");
 
   test("control: the store host reaches the store and a tagged landing keeps kh_utm", async ({ browser }) => {
     const context = await browser.newContext({ ...contextFor(vp), userAgent: REAL_DESKTOP_UA });
-    await serveRealOriginsLocally(context);
+    await serveRealOriginsLocally(context, { downloads: false });
     const page = await context.newPage();
     const store = await page.goto("https://store.kheelona.com/");
     expect(store?.status()).toBe(200);
     // The store layout is noindex and the marketing home is not: a lost Host header would serve the home.
-    const robots = await page.locator('meta[name="robots"]').getAttribute("content").catch(() => null);
+    // Read at once: a locator would wait the whole test timeout for a tag the home page lacks.
+    const robots = await page.evaluate(() => document.querySelector('meta[name="robots"]')?.getAttribute("content") ?? null);
     expect(robots ?? "", "the store host did not reach the store routes (Host header lost)").toMatch(/noindex/);
     await page.goto("https://kheelona.com/?utm_source=qa-probe&utm_medium=test&utm_campaign=lp");
     const cookies = await context.cookies("https://kheelona.com");
@@ -59,6 +62,11 @@ test.describe("tracking probe (LP)", () => {
     expect(ingest).toEqual([]);
     await context.close();
   });
+});
+
+test.describe("tracking probe (LP): parity rows", () => {
+  requiresServer();
+  test.skip(!ENABLED || TARGET === "beta", "QA instrument: set KH_TRACKING_PROBE=1 (needs the tags' script downloads)");
 
   for (const [path, viewContent] of [
     ["/", true],

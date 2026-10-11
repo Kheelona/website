@@ -27,6 +27,11 @@ export function listFiles(pathspecs: string[]): string[] {
     .sort();
 }
 
+/** Never shipped: unit and e2e tests, Vitest type tests (`*.test-d.ts`) and Storybook stories. */
+export function isTestOrStory(path: string): boolean {
+  return /\.(?:test|test-d|spec|stories)\.[cm]?[jt]sx?$/.test(path);
+}
+
 export function readRepoFile(path: string): string {
   return readFileSync(join(ROOT, path), "utf8");
 }
