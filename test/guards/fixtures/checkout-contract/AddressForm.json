@@ -1,0 +1,72 @@
+{
+  "empty": {
+    "forms": 1,
+    "noValidate": true,
+    "fields": [
+      {
+        "name": "city",
+        "tag": "input",
+        "type": "text",
+        "inputMode": null,
+        "autocomplete": "address-level2",
+        "maxLength": 60,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "line1",
+        "tag": "input",
+        "type": "text",
+        "inputMode": null,
+        "autocomplete": "address-line1",
+        "maxLength": 120,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "line2",
+        "tag": "input",
+        "type": "text",
+        "inputMode": null,
+        "autocomplete": "address-line2",
+        "maxLength": 120,
+        "required": false,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "pincode",
+        "tag": "input",
+        "type": "text",
+        "inputMode": "numeric",
+        "autocomplete": "postal-code",
+        "maxLength": 6,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "state",
+        "tag": "select",
+        "type": null,
+        "inputMode": null,
+        "autocomplete": null,
+        "maxLength": null,
+        "required": true,
+        "checked": null,
+        "options": 36
+      }
+    ],
+    "submit": {
+      "type": "submit",
+      "disabled": false,
+      "label": "Save my address"
+    }
+  },
+  "saved": {
+    "forms": 0,
+    "changeButton": true
+  }
+}

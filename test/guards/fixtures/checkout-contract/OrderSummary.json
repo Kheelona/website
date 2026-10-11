@@ -1,0 +1,30 @@
+{
+  "token": {
+    "amounts": [
+      "₹4,500",
+      "₹4,999",
+      "₹499",
+      "₹7,999"
+    ],
+    "refundLine": true,
+    "deliveryRow": true
+  },
+  "full": {
+    "amounts": [
+      "₹4,999",
+      "₹7,999"
+    ],
+    "refundLine": true,
+    "deliveryRow": true
+  },
+  "event": {
+    "amounts": [
+      "₹4,900",
+      "₹4,999",
+      "₹7,999",
+      "₹99"
+    ],
+    "refundLine": true,
+    "deliveryRow": true
+  }
+}

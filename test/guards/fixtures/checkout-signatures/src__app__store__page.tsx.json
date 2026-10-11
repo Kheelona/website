@@ -1,0 +1,40 @@
+{
+  "file": "src/app/store/page.tsx",
+  "note": "Logic signature (test/guards/checkout-signature.test.ts). Regenerated only with a restyle; every changed line is reviewed (ADR-013).",
+  "code": [
+    "import Image from \"next/image\";",
+    "import { storeEnv } from \"@/lib/store/env\";",
+    "import { launchTier, fullTier } from \"@/lib/store/tiers\";",
+    "import { preorderMode } from \"@/lib/store/mode\";",
+    "import { PreorderForm, OrderSummary } from \"@/features/preorder\";",
+    "import { KHEELU_ART } from \"@/lib/kheelu-art\";",
+    "import { VideoMoments } from \"@/components/organisms/VideoMoments\";",
+    "import { VIDEO_MOMENTS, hasVideoMoments, videoLede } from \"@/lib/video-moments\";",
+    "import { formatInr, FULL_PRICE, TOKEN_PRICE, SUPPORT_WHATSAPP_HREF, } from \"@/config/site\";",
+    "export const dynamic = \"force-dynamic\";",
+    "export default async function StorePage() {",
+    "    const env = storeEnv();",
+    "    if (!env)",
+    "        return __JSX_NotConfiguredState__;",
+    "    const mode = await preorderMode(env);",
+    "    const tier = mode === \"token\" ? launchTier() : fullTier();",
+    "    return (__JSX_fragment__);",
+    "}",
+    "function NotConfiguredState() {",
+    "    return (__JSX_div__);",
+    "}"
+  ],
+  "jsx": [
+    "{mode === \"token\" ? `Reserve Kheelu for ${TOKEN_PRICE}.` : `Pre-order Kheelu for ${FULL_PRICE}.`}",
+    "@PreorderForm tier={tier.id}",
+    "@PreorderForm amountLabel={formatInr(tier.amountPaise)}",
+    "@PreorderForm mode={mode}",
+    "@OrderSummary amountLabel={formatInr(tier.amountPaise)}",
+    "@OrderSummary tierLabel={tier.label}",
+    "@OrderSummary mode={mode}",
+    "{hasVideoMoments() && (__JSX_section__)}",
+    "{videoLede()}",
+    "@VideoMoments moments={VIDEO_MOMENTS}",
+    "@a href={SUPPORT_WHATSAPP_HREF}"
+  ]
+}

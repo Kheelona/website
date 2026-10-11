@@ -1,0 +1,23 @@
+{
+  "file": "src/app/store/_components/NotFoundPanel.tsx",
+  "note": "Logic signature (test/guards/checkout-signature.test.ts). Regenerated only with a restyle; every changed line is reviewed (ADR-013).",
+  "code": [
+    "import { SUPPORT_WHATSAPP_HREF } from \"@/config/site\";",
+    "export function NotFoundPanel({ title = \"That page is not here.\", body = \"The link may have expired, or it may never have been ours. If you were trying to reach an order you have already placed, we can open it for you.\", cta = true, }: {",
+    "    title?: string;",
+    "    body?: string;",
+    "    cta?: boolean;",
+    "}) {",
+    "    return (__JSX_div__);",
+    "}"
+  ],
+  "jsx": [
+    "{title}",
+    "{body}",
+    "{cta ? (__JSX_a__) : null}",
+    "@a href=\"/\"",
+    "{cta ? \"Or \" : \"\"}",
+    "@a href={SUPPORT_WHATSAPP_HREF}",
+    "{cta ? \"message us on WhatsApp\" : \"Message us on WhatsApp\"}"
+  ]
+}

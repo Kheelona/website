@@ -1,0 +1,13 @@
+{
+  "robots": {
+    "index": false,
+    "follow": false
+  },
+  "policyLinks": [
+    "https://kheelona.com/contact",
+    "https://kheelona.com/privacy",
+    "https://kheelona.com/refund",
+    "https://kheelona.com/shipping",
+    "https://kheelona.com/terms"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "paid": {
+    "orderRefShown": true,
+    "noCaptureContainerHoldsOrder": true,
+    "orderDataOutsideNoCapture": false
+  },
+  "created": {
+    "orderRefShown": true,
+    "noCaptureContainerHoldsOrder": true,
+    "orderDataOutsideNoCapture": false
+  },
+  "link-needed": {
+    "orderRefShown": false,
+    "noCaptureContainerHoldsOrder": false,
+    "orderDataOutsideNoCapture": false
+  },
+  "cannot-open": {
+    "orderRefShown": false,
+    "noCaptureContainerHoldsOrder": false,
+    "orderDataOutsideNoCapture": false
+  }
+}
