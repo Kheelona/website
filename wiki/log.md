@@ -120,3 +120,171 @@ adversarial leak check.
 ## [2026-10-10 19:55] decision | Push the branch as a backup with Vercel builds off for reset/* (founder, option a)
 [D014](decisions/D014-branch-pushed-no-previews.md). `vercel.json` rule added and checked with
 minimatch (matches `reset/website-v2`, not `main`); `test/store-secrets.test.ts` passes.
+
+## [2026-10-10 20:15] build | Push of reset/website-v2 FAILED three times (HTTP 408); nothing new on GitHub
+Pack to send: 53.9 MB (mostly design-system images). Upload speed 15.8 Mbps (networkQuality), so
+bandwidth is not the cause: the HTTPS POST stalls (4m31s) and GitHub answers 408. Tried: default,
+`http.postBuffer=524288000` + low-speed limits, and `http.version=HTTP/1.1`: all 408. SSH: both
+aliases in ~/.ssh/config (`github-kheelona`, `github-personal`) are refused (publickey), so SSH
+needs the founder to register a key. Remote has only `main`; GitHub deployments list unchanged
+(latest still the mid version, 2026-10-05). Constraint: do NOT push intermediate commits as the
+branch head: only the head `1743f16` carries the vercel.json `reset/*` no-deploy rule, so earlier
+heads would trigger Vercel previews. Options next: founder adds the Kheelona SSH key to GitHub;
+or push the big objects under a non-branch ref first; or try from another network.
+
+## [2026-10-10 20:40] agent | D013 classification finished: no leaks; corrections and 9 rulings queued
+Run `wf_68f4ef5c-ad8` (3/3). Brand pages: an INTERNAL note on positioning, audience and voice;
+messaging has a Site column on 10 tables. facts.md and claims.md have Site columns (facts 54 rows,
+claims 69). Verifier: **0 leaks**; about 10 externals looser than the owner rules (e.g. "asks back",
+Harvard line without "a caring adult", unread public research, the live tutor/best-friend lines
+should be BANNED, "lessons" in Story mode); 6 over-classifications ("never sold" is documented on
+live /privacy, so EXTERNAL; "3+" as a safety age grade is F4, not BANNED; "Own the model" belongs
+to G8); about 20 unclassified lines (voice.md:89 recommends a BANNED line). Founder rulings R1-R9
+added to [open questions](open-questions.md) section F. Rule-conformant corrections: next fix pass.
+Public-research sources not yet read: the Copywriter reads and cites them before use (no founder
+question needed).
+
+## [2026-10-10 22:30] agent | Session limit cut Phase 1 and the brand fix; completion run launched
+Account limit hit around 21:00: of Phase 1 `wf_f0e4e8b2-9ab`, only the PostHog audit, its verifier
+and the two search gatherers finished. On disk and reused: 19 benchmark folders with screenshots
+(5 with notes), 60 Lighthouse runs + axe + HTML + screens, 34 search raw captures. The brand-page
+boundary fix (`wf_2678bf5d-79b`) was cut; the product-page fix finished. Completion run
+`wf_08ea6a36-c38` (9 agents): notes for 15 sites, QA baseline write-up, keyword map, PostHog fixes,
+brand fix, then benchmark synthesis and the critic.
+
+## [2026-10-10 22:32] ingest | PostHog audit (verified) and search raw ingested into open questions
+PostHog audit: 802 human sessions 2026-09-19..10-10; 76% phone (paid 99%); 360 px widest share
+(31%); WhatsApp in-app browser 36% of phone sessions; funnel 802 > 91 store > 10 form > 5 orders >
+2 paid; paid social 414 sessions, 0 orders, median 7 s, all landed on Home; all 3 unpaid orders in
+in-app browsers. Verifier: 33 checks, about 120 values, matches except 7 scope/wording slips
+(being fixed). New items: C12-C16, G12-G14, R10; C5, C6, C7, C11 extended.
+
+## [2026-10-10 22:40] decision | Push deferred: keep the branch local, retry from another network (founder)
+[D014](decisions/D014-branch-pushed-no-previews.md) updated. The `reset/*` no-deploy rule stays.
+The project's agent definitions are now registered as agent types in this session.
+
+## [2026-10-10 22:45] decision | Only the founder signs off copy (founder, option c)
+[D015](decisions/D015-founder-signs-off-copy.md). CMO Reviewer definition updated; SKM-owned
+questions now go to the founder.
+
+## [2026-10-10 22:50] decision | R7 brain wording = (b): honest promise, "brain development" as a topic (founder)
+[D016](decisions/D016-brain-wording.md). To apply to claims, messaging and positioning once the
+completion run releases those pages.
+
+## [2026-10-10 22:55] decision | R1 = (c): live, founder-approved behaviour claims confirmed (founder)
+[D017](decisions/D017-live-behaviour-claims-confirmed.md). Scope: claims live on production;
+positioning-only claims (weekly report, mood reading) still need confirmation.
+
+## [2026-10-10 23:00] decision | No wake word: the mic is on only after a press of the wake-up button (founder)
+[D018](decisions/D018-wake-up-button.md): new product fact, wording rules (mechanism, not "no
+risk"; no hardware claim unless confirmed), and draft lines. Supersedes R2 and every wake-word
+line. Asking next: how long the mic stays on after a press, and whether a light shows.
+
+## [2026-10-10 23:05] decision | Wake-up button: one press starts a conversation; mic off after about a minute of quiet (founder)
+[D018](decisions/D018-wake-up-button.md) updated with the mechanism and revised draft lines.
+Still unknown: a listening light or sound (asked next).
+
+## [2026-10-10 23:08] decision | A light shows while Kheelu's microphone is on (founder)
+[D018](decisions/D018-wake-up-button.md): new trust line "You'll always see when Kheelu is
+listening." Colour unspecified, so copy never names one.
+
+## [2026-10-10 23:12] decision | Voice uses multiple outside providers; "only our own servers, in India" retired (founder, R3)
+[D019](decisions/D019-voice-providers.md). No processing claim is published until the provider
+facts (location, retention, training, contracts) are confirmed; asked next.
+
+## [2026-10-10 23:16] decision | Provider terms confirmed; "we don't sell your data" confirmed (founder)
+[D020](decisions/D020-provider-terms-and-no-sale.md): process only to reply, keep nothing, never
+train, by contract. Open in F5: processing location; transcript retention.
+
+## [2026-10-10 23:18] decision | All voice processing is on servers in India, for every provider (founder)
+[D020](decisions/D020-provider-terms-and-no-sale.md) updated; the providers line now says "on
+servers in India". F5 narrowed to transcript retention.
+
+## [2026-10-10 23:21] decision | Transcript retention: 36 months, then automatic deletion (founder); F5 closed
+[D020](decisions/D020-provider-terms-and-no-sale.md) now holds the whole voice-and-data answer.
+The same period becomes the DPDP retention line on /privacy (counsel review stays with F2).
+
+## [2026-10-10 23:25] decision | Returns: 7 days, no questions asked, opened OK if undamaged and complete (founder)
+[D021](decisions/D021-returns-policy.md). Applied reading: 7 days from delivery. F1 narrowed to
+warranty, replacement, pickup cost and refund speed.
+
+## [2026-10-10 23:30] decision | Warranty 6 months; faulty-on-arrival replaced within 7 days of receipt; pickup arranged; refund in 7 working days (founder)
+[D022](decisions/D022-warranty-replacement-refund.md). No timelines published. Minor open
+points in F1: the remedy after the first 7 days, and whether pickup is free.
+
+## [2026-10-10 23:35] decision | New orders: same ₹499 advance, deliveries from mid-November (founder)
+[D023](decisions/D023-new-order-delivery.md). Raised: the live site will show a passed ship date
+from 20 October while production is held (D011).
+
+## [2026-10-10 23:40] decision | Ship date on production held until Gate B (founder, option b; accepted risk)
+[D023](decisions/D023-new-order-delivery.md), [D011](decisions/D011-production-held-until-gate-b.md)
+reaffirmed. Do not re-raise.
+
+## [2026-10-10 23:45] decision | Payment methods UPI, cards, net banking; prices incl. GST; GST invoice (founder); F6 closed
+[D024](decisions/D024-payment-methods-gst.md).
+
+## [2026-10-10 23:47] decision | R9: the site is for parents of 3-7 year olds and family buyers only (founder)
+Recorded on [content boundary](site/content-boundary.md) and in open questions.
+
+## [2026-10-10 23:52] decision | R4 speech and language: allowed with public sources only; disclaimer on Terms + Meet Kheelu, not Home (founder)
+[D025](decisions/D025-speech-and-language.md).
+
+## [2026-10-10 23:54] decision | R5 emotion reading dropped from the new site (founder)
+"The feeling gets read", mood reading and "maps emotions and triggers" are BANNED, like "adapts".
+To apply on claims, facts and messaging after the completion run.
+
+## [2026-10-11 00:00] decision | R6 public statistics: use as SKM wrote them, after independent source verification, each with a linked marker (founder)
+[D026](decisions/D026-public-statistics.md). The DS "never sell through fear" rule conflicts; the
+founder's instruction wins (recorded once). Internal survey figures stay internal (D013).
+
+## [2026-10-11 00:02] agent | Source verification workflow launched (`wf_dc801a61-c52`)
+Extract every public-source claim from both SKM documents → one independent verifier per source
+family (primary sources only, exact quotes, excerpt files in `raw/research/sources/`) →
+adversarial re-check of every usable claim (stricter verdict wins) → the Copywriter writes
+`research/source-verification.md` with footnoted copy lines and the DS footnote-gap finding.
+
+## [2026-10-11 00:08] decision | R8: no "lessons"; Story mode = stories, poems, jingles; no interrupt-and-ask feature (founder)
+[D027](decisions/D027-story-mode-wording.md); D017 narrowed (apply row by row).
+
+## [2026-10-11 00:11] decision | Kheelona+ line reworded (option b): poems and jingles are in Kheelona+; "no subscription needed" (founder)
+[D027](decisions/D027-story-mode-wording.md). Closes the Kheelona+ half of R10.
+
+## [2026-10-11 00:14] decision | R10 price wording: ₹499 first next to the CTA, ₹4,999 total in the same sentence; machine outputs lead with ₹4,999 (founder)
+[D028](decisions/D028-price-wording.md). All content rulings R1-R10 are now answered.
+
+## [2026-10-11 00:20] decision | Grievance officer Aman Soni; founder approves legal pages after an independent review (founder)
+[D029](decisions/D029-grievance-officer-legal-review.md). Raised at once: E-Commerce Rules 4(5)
+require acknowledgement within 48 hours, not 5 days. Independent legal-requirements review launched.
+
+## [2026-10-11 00:30] agent | Phase 1 completion finished: all four discovery outputs written; critic 0 blockers, 6 major, 9 minor
+Pages: [PostHog audit](research/posthog-audit.md) (corrected), [D2C benchmarks](research/d2c-benchmarks.md)
+(19 sites, all with notes), [keyword map](research/keyword-map.md), [QA baseline](qa/baseline-2026-10-10.md).
+QA headline: links clean; A11y 96 everywhere; BP 73 (pixel, known); mobile Perf below 90 on Home
+(86), store (85), /ai-toys (80); 9 of 36 titles over 60 chars. Critic majors: the question bank
+predates D017-D027; PostHog recomputes blocked because the **PostHog connector disconnected after
+the account switch**; replay evidence expires 19-23 Oct (C13); C11 exports still the biggest
+search gap; CTA-tap and outside-India figures need human-session scoping. New items merged:
+F14, C17-C20; G4, G7, G8, G13, C10 extended.
+
+## [2026-10-11 00:45] build | PostHog connector: the claude.ai one belongs to the OLD account; direct server added
+After the account switch (now apoorva@kheelona.com) the "claude.ai PostHog" connector answers
+"Server not found" (404): it lives in the previous account's organisation. Per PostHog's docs
+(posthog.com/docs/model-context-protocol/claude-code, fetched 2026-10-11) the founder ran
+`claude mcp add --transport http posthog https://mcp.posthog.com/mcp -s user` (user config, not
+the repo; browser login, no key stored in the project). It loads only after a restart:
+`/exit` → `claude --continue` → `/mcp` (no argument) → **posthog** → Authenticate. After it
+connects: point `.claude/agents/posthog-analyst.md` and `search-visibility.md` at the new tool
+names, then run the human-session recomputes the Phase 1 critic listed, then C13.
+The founder restarts only after the three background runs finish and are ingested.
+
+## [2026-10-11 01:05] agent | Founder rulings applied to owner pages (`wf_842c5f27-82d`, 5/5); verifier: values agree, fixes queued
+facts, claims, policies, pricing, checkout, messaging, positioning, voice, audience and the
+keyword map now carry D016-D029. Values agree everywhere; no PENDING RULING marks left. Queued
+for after the restart ([rulings check](qa/rulings-check-2026-10-11.md)): five more live
+wake-word lines (Footer, setup steps, /setup, /safety and /ai-toys meta), benchmark price lines
+that break D028, the Xu-study pairing (implies the banned interrupt-and-ask), "adapts"-family
+phrases, keyword-map placeholders the owners have since ruled on, "Region-pinned", the AI2
+providers line. Copy corrections to make (CTO): D028's draft as ONE sentence; the D023 delivery
+line paired with the D028 price sentence; "within one month" (the rule's words) not "30 days";
+"Wi-Fi" per the DS. New questions F15 (exact delivery date; existing orders), F16 (opt-in
+training), F17 (advertising to the child).

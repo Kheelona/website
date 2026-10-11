@@ -1,0 +1,959 @@
+{
+  "meta": {
+    "project": "PostHog 617632 (US cloud), project timezone UTC",
+    "range": "2026-09-19 00:00 to 2026-10-11 00:00 UTC (data exists from 2026-09-19 10:52 UTC; PostHog was installed that day)",
+    "run_at": "2026-10-11 01:00-02:30 UTC (2026-10-10 in the wiki's dating)",
+    "human_filter": "sessions with >=1 $pageview, no event with $virt_is_bot = true, entry referrer not localhost:3456 / 127.0.0.1:3456 / *.vercel.app (unless a query says otherwise)",
+    "caveat": "Test-account cohort 580233 has 0 members, so team traffic is included (about 48 sessions from 4 devices with 10+ sessions each, Q24). Aggregates only."
+  },
+  "queries": [
+    {
+      "id": "Q10",
+      "what": "Device, OS, browser and in-app browser of human non-internal sessions (first pageview)",
+      "hogql": "SELECT device, os, browser, coalesce(webview,'') AS in_app, count() AS sessions, countIf(paid = 1) AS paid_sessions, countIf(store_pv > 0) AS store_sessions, countIf(form_started > 0) AS form_sessions, countIf(purchased > 0) AS purchases FROM ( SELECT properties.$session_id AS sid, argMin(properties.$device_type, timestamp) AS device, argMin(properties.$os, timestamp) AS os, argMin(properties.$browser, timestamp) AS browser, argMin(properties.$webview_app, timestamp) AS webview, any(session.$entry_referring_domain) AS ref, if(coalesce(any(session.$entry_utm_medium),'') = 'paid' OR (coalesce(any(session.$entry_fbclid),'') != '' AND coalesce(any(session.$entry_utm_source),'') = ''), 1, 0) AS paid, max(properties.$virt_is_bot = true) AS is_bot, countIf(event = '$pageview' AND properties.$host = 'store.kheelona.com' AND properties.$pathname NOT LIKE '/thanks%') AS store_pv, countIf(event = 'preorder_form_started') AS form_started, countIf(event = 'purchase') AS purchased, countIf(event = '$pageview') AS pvs FROM events WHERE timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND event IN ('$pageview','preorder_form_started','purchase') AND properties.$session_id IS NOT NULL GROUP BY sid HAVING pvs > 0 AND is_bot = 0 AND NOT (coalesce(ref,'') IN ('localhost:3456','127.0.0.1:3456') OR coalesce(ref,'') LIKE '%vercel.app') ) GROUP BY device, os, browser, in_app ORDER BY sessions DESC LIMIT 60",
+      "rows": [
+        {
+          "device": "Mobile",
+          "os": "Android",
+          "browser": "Chrome",
+          "in_app_browser": "WhatsApp",
+          "sessions": 216,
+          "paid_sessions": 206,
+          "store_sessions": 11,
+          "form_sessions": 3,
+          "purchases": 0
+        },
+        {
+          "device": "Mobile",
+          "os": "Android",
+          "browser": "Chrome",
+          "in_app_browser": "",
+          "sessions": 194,
+          "paid_sessions": 108,
+          "store_sessions": 24,
+          "form_sessions": 2,
+          "purchases": 1
+        },
+        {
+          "device": "Desktop",
+          "os": "Mac OS X",
+          "browser": "Chrome",
+          "in_app_browser": "",
+          "sessions": 95,
+          "paid_sessions": 0,
+          "store_sessions": 15,
+          "form_sessions": 2,
+          "purchases": 1
+        },
+        {
+          "device": "Mobile",
+          "os": "iOS",
+          "browser": "Mobile Safari",
+          "in_app_browser": "",
+          "sessions": 73,
+          "paid_sessions": 1,
+          "store_sessions": 12,
+          "form_sessions": 2,
+          "purchases": 0
+        },
+        {
+          "device": "Desktop",
+          "os": "Windows",
+          "browser": "Chrome",
+          "in_app_browser": "",
+          "sessions": 48,
+          "paid_sessions": 3,
+          "store_sessions": 8,
+          "form_sessions": 0,
+          "purchases": 0
+        },
+        {
+          "device": "Mobile",
+          "os": "Android",
+          "browser": "Chrome",
+          "in_app_browser": "Instagram",
+          "sessions": 40,
+          "paid_sessions": 34,
+          "store_sessions": 6,
+          "form_sessions": 0,
+          "purchases": 0
+        },
+        {
+          "device": "Mobile",
+          "os": "Android",
+          "browser": "Chrome",
+          "in_app_browser": "Threads",
+          "sessions": 32,
+          "paid_sessions": 32,
+          "store_sessions": 0,
+          "form_sessions": 0,
+          "purchases": 0
+        },
+        {
+          "device": "Desktop",
+          "os": "Linux",
+          "browser": "Chrome",
+          "in_app_browser": "",
+          "sessions": 22,
+          "paid_sessions": 0,
+          "store_sessions": 2,
+          "form_sessions": 0,
+          "purchases": 0
+        },
+        {
+          "device": "Mobile",
+          "os": "Android",
+          "browser": "Chrome",
+          "in_app_browser": "Facebook Lite",
+          "sessions": 15,
+          "paid_sessions": 14,
+          "store_sessions": 1,
+          "form_sessions": 0,
+          "purchases": 0
+        },
+        {
+          "device": "Mobile",
+          "os": "iOS",
+          "browser": "Chrome iOS",
+          "in_app_browser": "",
+          "sessions": 13,
+          "paid_sessions": 0,
+          "store_sessions": 2,
+          "form_sessions": 0,
+          "purchases": 0
+        },
+        {
+          "device": "Mobile",
+          "os": "Android",
+          "browser": "Samsung Internet",
+          "in_app_browser": "",
+          "sessions": 11,
+          "paid_sessions": 7,
+          "store_sessions": 2,
+          "form_sessions": 0,
+          "purchases": 0
+        },
+        {
+          "device": "Desktop",
+          "os": "Windows",
+          "browser": "Microsoft Edge",
+          "in_app_browser": "",
+          "sessions": 7,
+          "paid_sessions": 0,
+          "store_sessions": 2,
+          "form_sessions": 0,
+          "purchases": 0
+        },
+        {
+          "device": "Mobile",
+          "os": "iOS",
+          "browser": "Mobile Safari",
+          "in_app_browser": "Instagram",
+          "sessions": 5,
+          "paid_sessions": 2,
+          "store_sessions": 3,
+          "form_sessions": 1,
+          "purchases": 0
+        },
+        {
+          "device": "Mobile",
+          "os": "Android",
+          "browser": "Chrome",
+          "in_app_browser": "Facebook",
+          "sessions": 4,
+          "paid_sessions": 4,
+          "store_sessions": 1,
+          "form_sessions": 0,
+          "purchases": 0
+        },
+        {
+          "device": "Desktop",
+          "os": "Mac OS X",
+          "browser": "Brave",
+          "in_app_browser": "",
+          "sessions": 3,
+          "paid_sessions": 0,
+          "store_sessions": 1,
+          "form_sessions": 0,
+          "purchases": 0
+        },
+        {
+          "device": "Mobile",
+          "os": "Android",
+          "browser": "Brave",
+          "in_app_browser": "",
+          "sessions": 3,
+          "paid_sessions": 0,
+          "store_sessions": 0,
+          "form_sessions": 0,
+          "purchases": 0
+        },
+        {
+          "device": "Desktop",
+          "os": "Mac OS X",
+          "browser": "Safari",
+          "in_app_browser": "",
+          "sessions": 3,
+          "paid_sessions": 0,
+          "store_sessions": 0,
+          "form_sessions": 0,
+          "purchases": 0
+        },
+        {
+          "device": "Desktop",
+          "os": "Windows",
+          "browser": "Firefox",
+          "in_app_browser": "",
+          "sessions": 3,
+          "paid_sessions": 0,
+          "store_sessions": 0,
+          "form_sessions": 0,
+          "purchases": 0
+        },
+        {
+          "device": "Mobile",
+          "os": "iOS",
+          "browser": "Mobile Safari",
+          "in_app_browser": "WhatsApp",
+          "sessions": 2,
+          "paid_sessions": 2,
+          "store_sessions": 0,
+          "form_sessions": 0,
+          "purchases": 0
+        },
+        {
+          "device": "Desktop",
+          "os": "Mac OS X",
+          "browser": "Firefox",
+          "in_app_browser": "",
+          "sessions": 2,
+          "paid_sessions": 0,
+          "store_sessions": 0,
+          "form_sessions": 0,
+          "purchases": 0
+        },
+        {
+          "device": "Tablet",
+          "os": "iOS",
+          "browser": "Chrome iOS",
+          "in_app_browser": "",
+          "sessions": 2,
+          "paid_sessions": 0,
+          "store_sessions": 0,
+          "form_sessions": 0,
+          "purchases": 0
+        },
+        {
+          "device": "Tablet",
+          "os": "Android",
+          "browser": "Chrome",
+          "in_app_browser": "Threads",
+          "sessions": 1,
+          "paid_sessions": 1,
+          "store_sessions": 0,
+          "form_sessions": 0,
+          "purchases": 0
+        },
+        {
+          "device": "Desktop",
+          "os": "Mac OS X",
+          "browser": "Microsoft Edge",
+          "in_app_browser": "",
+          "sessions": 1,
+          "paid_sessions": 0,
+          "store_sessions": 0,
+          "form_sessions": 0,
+          "purchases": 0
+        },
+        {
+          "device": "Mobile",
+          "os": "iOS",
+          "browser": "Brave",
+          "in_app_browser": "",
+          "sessions": 1,
+          "paid_sessions": 0,
+          "store_sessions": 0,
+          "form_sessions": 0,
+          "purchases": 0
+        },
+        {
+          "device": "Desktop",
+          "os": "Windows",
+          "browser": "Brave",
+          "in_app_browser": "",
+          "sessions": 1,
+          "paid_sessions": 0,
+          "store_sessions": 0,
+          "form_sessions": 0,
+          "purchases": 0
+        },
+        {
+          "device": "Tablet",
+          "os": "Android",
+          "browser": "Chrome",
+          "in_app_browser": "",
+          "sessions": 1,
+          "paid_sessions": 0,
+          "store_sessions": 0,
+          "form_sessions": 0,
+          "purchases": 0
+        },
+        {
+          "device": "Tablet",
+          "os": "Android",
+          "browser": "Chrome",
+          "in_app_browser": "Instagram",
+          "sessions": 1,
+          "paid_sessions": 0,
+          "store_sessions": 1,
+          "form_sessions": 0,
+          "purchases": 0
+        },
+        {
+          "device": "Desktop",
+          "os": "Mac OS X",
+          "browser": "Claude",
+          "in_app_browser": "",
+          "sessions": 1,
+          "paid_sessions": 0,
+          "store_sessions": 0,
+          "form_sessions": 0,
+          "purchases": 0
+        },
+        {
+          "device": "Mobile",
+          "os": "iOS",
+          "browser": "Mobile Safari",
+          "in_app_browser": "LinkedIn",
+          "sessions": 1,
+          "paid_sessions": 0,
+          "store_sessions": 0,
+          "form_sessions": 0,
+          "purchases": 0
+        },
+        {
+          "device": "Desktop",
+          "os": "Windows",
+          "browser": "Yandex",
+          "in_app_browser": "",
+          "sessions": 1,
+          "paid_sessions": 0,
+          "store_sessions": 0,
+          "form_sessions": 0,
+          "purchases": 0
+        }
+      ]
+    },
+    {
+      "id": "Q11",
+      "what": "In-app browser against paid source (bots excluded; internal not excluded)",
+      "hogql": "SELECT coalesce(webview,'(none)') AS in_app, src_group, count() AS sessions, min(toDate(st)) AS first_day, max(toDate(st)) AS last_day, countIf(entry_host = 'store.kheelona.com') AS store_entry, round(avg(pvs),2) AS avg_pv, round(quantile(0.5)(dur),0) AS median_dur_s FROM ( SELECT properties.$session_id AS sid, min(timestamp) AS st, any(session.$entry_hostname) AS entry_host, any(session.$session_duration) AS dur, argMin(properties.$webview_app, timestamp) AS webview, any(session.$entry_referring_domain) AS ref, coalesce(any(session.$entry_utm_source),'') AS us, coalesce(any(session.$entry_utm_medium),'') AS um, coalesce(any(session.$entry_fbclid),'') AS fbc, multiIf(um = 'paid', concat('paid ', us), fbc != '' AND us = '', concat('fbclid only, ref ', coalesce(ref,'')), um = 'social', 'ig bio', 'other') AS src_group, max(properties.$virt_is_bot = true) AS is_bot, countIf(event = '$pageview') AS pvs FROM events WHERE timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND event = '$pageview' AND properties.$session_id IS NOT NULL GROUP BY sid HAVING is_bot = 0 ) WHERE src_group != 'other' OR webview IS NOT NULL GROUP BY in_app, src_group ORDER BY sessions DESC LIMIT 40",
+      "rows": [
+        {
+          "in_app_browser": "WhatsApp",
+          "source": "fbclid only, ref $direct",
+          "sessions": 208,
+          "first_day": "2026-09-19",
+          "last_day": "2026-09-22",
+          "store_entry": 0,
+          "avg_pageviews": 1.08,
+          "median_duration_s": 11
+        },
+        {
+          "in_app_browser": "(none)",
+          "source": "paid an",
+          "sessions": 111,
+          "first_day": "2026-09-19",
+          "last_day": "2026-09-23",
+          "store_entry": 12,
+          "avg_pageviews": 1.22,
+          "median_duration_s": 3
+        },
+        {
+          "in_app_browser": "Instagram",
+          "source": "paid ig",
+          "sessions": 36,
+          "first_day": "2026-09-21",
+          "last_day": "2026-09-22",
+          "store_entry": 0,
+          "avg_pageviews": 1.11,
+          "median_duration_s": 0
+        },
+        {
+          "in_app_browser": "Threads",
+          "source": "paid th",
+          "sessions": 33,
+          "first_day": "2026-09-21",
+          "last_day": "2026-09-22",
+          "store_entry": 0,
+          "avg_pageviews": 1.03,
+          "median_duration_s": 3
+        },
+        {
+          "in_app_browser": "Facebook Lite",
+          "source": "paid fb",
+          "sessions": 14,
+          "first_day": "2026-09-19",
+          "last_day": "2026-09-20",
+          "store_entry": 1,
+          "avg_pageviews": 1.07,
+          "median_duration_s": 11
+        },
+        {
+          "in_app_browser": "WhatsApp",
+          "source": "other",
+          "sessions": 10,
+          "first_day": "2026-09-22",
+          "last_day": "2026-09-23",
+          "store_entry": 9,
+          "avg_pageviews": 1.0,
+          "median_duration_s": 82
+        },
+        {
+          "in_app_browser": "Instagram",
+          "source": "ig bio",
+          "sessions": 9,
+          "first_day": "2026-09-19",
+          "last_day": "2026-09-24",
+          "store_entry": 9,
+          "avg_pageviews": 1.44,
+          "median_duration_s": 61
+        },
+        {
+          "in_app_browser": "(none)",
+          "source": "ig bio",
+          "sessions": 7,
+          "first_day": "2026-09-19",
+          "last_day": "2026-10-06",
+          "store_entry": 6,
+          "avg_pageviews": 1.57,
+          "median_duration_s": 26
+        },
+        {
+          "in_app_browser": "(none)",
+          "source": "fbclid only, ref www.facebook.com",
+          "sessions": 4,
+          "first_day": "2026-09-19",
+          "last_day": "2026-10-08",
+          "store_entry": 1,
+          "avg_pageviews": 1.0,
+          "median_duration_s": 10
+        },
+        {
+          "in_app_browser": "Facebook",
+          "source": "paid fb",
+          "sessions": 2,
+          "first_day": "2026-09-20",
+          "last_day": "2026-09-20",
+          "store_entry": 0,
+          "avg_pageviews": 1.0,
+          "median_duration_s": 13
+        },
+        {
+          "in_app_browser": "(none)",
+          "source": "fbclid only, ref $direct",
+          "sessions": 2,
+          "first_day": "2026-09-22",
+          "last_day": "2026-09-22",
+          "store_entry": 0,
+          "avg_pageviews": 1.0,
+          "median_duration_s": 13
+        },
+        {
+          "in_app_browser": "(none)",
+          "source": "fbclid only, ref m.facebook.com",
+          "sessions": 1,
+          "first_day": "2026-09-19",
+          "last_day": "2026-09-19",
+          "store_entry": 0,
+          "avg_pageviews": 1.0,
+          "median_duration_s": 8
+        },
+        {
+          "in_app_browser": "(none)",
+          "source": "paid ig",
+          "sessions": 1,
+          "first_day": "2026-09-22",
+          "last_day": "2026-09-22",
+          "store_entry": 0,
+          "avg_pageviews": 2.0,
+          "median_duration_s": 19
+        },
+        {
+          "in_app_browser": "Instagram",
+          "source": "other",
+          "sessions": 1,
+          "first_day": "2026-09-27",
+          "last_day": "2026-09-27",
+          "store_entry": 0,
+          "avg_pageviews": 1.0,
+          "median_duration_s": 55
+        },
+        {
+          "in_app_browser": "Facebook Lite",
+          "source": "other",
+          "sessions": 1,
+          "first_day": "2026-09-19",
+          "last_day": "2026-09-19",
+          "store_entry": 0,
+          "avg_pageviews": 1.0,
+          "median_duration_s": 0
+        },
+        {
+          "in_app_browser": "Facebook",
+          "source": "fbclid only, ref kheelona.com",
+          "sessions": 1,
+          "first_day": "2026-09-22",
+          "last_day": "2026-09-22",
+          "store_entry": 0,
+          "avg_pageviews": 1.0,
+          "median_duration_s": 17
+        },
+        {
+          "in_app_browser": "LinkedIn",
+          "source": "other",
+          "sessions": 1,
+          "first_day": "2026-10-08",
+          "last_day": "2026-10-08",
+          "store_entry": 0,
+          "avg_pageviews": 1.0,
+          "median_duration_s": 82
+        },
+        {
+          "in_app_browser": "Facebook",
+          "source": "fbclid only, ref www.facebook.com",
+          "sessions": 1,
+          "first_day": "2026-09-21",
+          "last_day": "2026-09-21",
+          "store_entry": 1,
+          "avg_pageviews": 1.0,
+          "median_duration_s": 9
+        }
+      ]
+    },
+    {
+      "id": "Q22",
+      "what": "Phone and tablet viewport widths (CSS px, first pageview), with median and minimum viewport height",
+      "hogql": "SELECT device, vw, count() AS sessions, round(100*count()/sum(count()) OVER (PARTITION BY device), 1) AS pct_of_device, countIf(paid = 0) AS non_paid, round(quantile(0.5)(vh), 0) AS median_vh, min(vh) AS min_vh FROM ( SELECT properties.$session_id AS sid, argMin(properties.$device_type, timestamp) AS device, argMin(toInt(properties.$viewport_width), timestamp) AS vw, argMin(toInt(properties.$viewport_height), timestamp) AS vh, if(coalesce(any(session.$entry_utm_medium),'') = 'paid' OR (coalesce(any(session.$entry_fbclid),'') != '' AND coalesce(any(session.$entry_utm_source),'') = ''), 1, 0) AS paid, any(session.$entry_referring_domain) AS ref, max(properties.$virt_is_bot = true) AS is_bot FROM events WHERE event = '$pageview' AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') GROUP BY sid HAVING is_bot = 0 AND device IN ('Mobile','Tablet') AND NOT (coalesce(ref,'') IN ('localhost:3456','127.0.0.1:3456') OR coalesce(ref,'') LIKE '%vercel.app') ) GROUP BY device, vw ORDER BY device, sessions DESC LIMIT 40",
+      "rows": [
+        {
+          "device": "Mobile",
+          "viewport_width": 360,
+          "sessions": 191,
+          "pct_of_device": 31.3,
+          "non_paid": 37,
+          "median_vh": 666,
+          "min_vh": 588
+        },
+        {
+          "device": "Mobile",
+          "viewport_width": 384,
+          "sessions": 88,
+          "pct_of_device": 14.4,
+          "non_paid": 11,
+          "median_vh": 714,
+          "min_vh": 644
+        },
+        {
+          "device": "Mobile",
+          "viewport_width": 392,
+          "sessions": 73,
+          "pct_of_device": 12.0,
+          "non_paid": 15,
+          "median_vh": 738,
+          "min_vh": 532
+        },
+        {
+          "device": "Mobile",
+          "viewport_width": 402,
+          "sessions": 33,
+          "pct_of_device": 5.4,
+          "non_paid": 33,
+          "median_vh": 714,
+          "min_vh": 650
+        },
+        {
+          "device": "Mobile",
+          "viewport_width": 411,
+          "sessions": 29,
+          "pct_of_device": 4.8,
+          "non_paid": 17,
+          "median_vh": 778,
+          "min_vh": 637
+        },
+        {
+          "device": "Mobile",
+          "viewport_width": 393,
+          "sessions": 21,
+          "pct_of_device": 3.4,
+          "non_paid": 14,
+          "median_vh": 695,
+          "min_vh": 637
+        },
+        {
+          "device": "Mobile",
+          "viewport_width": 324,
+          "sessions": 12,
+          "pct_of_device": 2.0,
+          "non_paid": 2,
+          "median_vh": 566,
+          "min_vh": 504
+        },
+        {
+          "device": "Mobile",
+          "viewport_width": 440,
+          "sessions": 11,
+          "pct_of_device": 1.8,
+          "non_paid": 10,
+          "median_vh": 756,
+          "min_vh": 738
+        },
+        {
+          "device": "Mobile",
+          "viewport_width": 390,
+          "sessions": 11,
+          "pct_of_device": 1.8,
+          "non_paid": 11,
+          "median_vh": 669,
+          "min_vh": 641
+        },
+        {
+          "device": "Mobile",
+          "viewport_width": 375,
+          "sessions": 9,
+          "pct_of_device": 1.5,
+          "non_paid": 6,
+          "median_vh": 739,
+          "min_vh": 549
+        },
+        {
+          "device": "Mobile",
+          "viewport_width": 430,
+          "sessions": 9,
+          "pct_of_device": 1.5,
+          "non_paid": 9,
+          "median_vh": 721,
+          "min_vh": 711
+        },
+        {
+          "device": "Mobile",
+          "viewport_width": 432,
+          "sessions": 9,
+          "pct_of_device": 1.5,
+          "non_paid": 3,
+          "median_vh": 808,
+          "min_vh": 793
+        },
+        {
+          "device": "Mobile",
+          "viewport_width": 423,
+          "sessions": 9,
+          "pct_of_device": 1.5,
+          "non_paid": 1,
+          "median_vh": 808,
+          "min_vh": 774
+        },
+        {
+          "device": "Mobile",
+          "viewport_width": 325,
+          "sessions": 8,
+          "pct_of_device": 1.3,
+          "non_paid": 2,
+          "median_vh": 587,
+          "min_vh": 531
+        },
+        {
+          "device": "Mobile",
+          "viewport_width": 433,
+          "sessions": 7,
+          "pct_of_device": 1.1,
+          "non_paid": 2,
+          "median_vh": 815,
+          "min_vh": 810
+        },
+        {
+          "device": "Mobile",
+          "viewport_width": 0,
+          "sessions": 7,
+          "pct_of_device": 1.1,
+          "non_paid": 0,
+          "median_vh": 0,
+          "min_vh": 0
+        },
+        {
+          "device": "Mobile",
+          "viewport_width": 406,
+          "sessions": 5,
+          "pct_of_device": 0.8,
+          "non_paid": 2,
+          "median_vh": 760,
+          "min_vh": 594
+        },
+        {
+          "device": "Mobile",
+          "viewport_width": 414,
+          "sessions": 5,
+          "pct_of_device": 0.8,
+          "non_paid": 5,
+          "median_vh": 694,
+          "min_vh": 692
+        },
+        {
+          "device": "Mobile",
+          "viewport_width": 426,
+          "sessions": 5,
+          "pct_of_device": 0.8,
+          "non_paid": 1,
+          "median_vh": 805,
+          "min_vh": 799
+        },
+        {
+          "device": "Mobile",
+          "viewport_width": 428,
+          "sessions": 4,
+          "pct_of_device": 0.7,
+          "non_paid": 4,
+          "median_vh": 766,
+          "min_vh": 748
+        },
+        {
+          "device": "Mobile",
+          "viewport_width": 420,
+          "sessions": 4,
+          "pct_of_device": 0.7,
+          "non_paid": 3,
+          "median_vh": 799,
+          "min_vh": 796
+        }
+      ],
+      "note": "Rows below 4 sessions omitted here; they were each under 0.6% of mobile sessions. Tablet rows did not reach the top 40."
+    },
+    {
+      "id": "Q22b",
+      "what": "Desktop viewport widths, top 12",
+      "hogql": "SELECT vw, count() AS sessions, round(100*count()/sum(count()) OVER (), 1) AS pct_of_desktop, round(quantile(0.5)(vh), 0) AS median_vh, multiIf(vw < 1280, 'a <1280', vw < 1366, 'b 1280-1365', vw < 1440, 'c 1366-1439', vw < 1536, 'd 1440-1535', vw < 1920, 'e 1536-1919', 'f 1920+') AS bucket FROM ( SELECT properties.$session_id AS sid, argMin(properties.$device_type, timestamp) AS device, argMin(toInt(properties.$viewport_width), timestamp) AS vw, argMin(toInt(properties.$viewport_height), timestamp) AS vh, any(session.$entry_referring_domain) AS ref, max(properties.$virt_is_bot = true) AS is_bot FROM events WHERE event = '$pageview' AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') GROUP BY sid HAVING is_bot = 0 AND device = 'Desktop' AND NOT (coalesce(ref,'') IN ('localhost:3456','127.0.0.1:3456') OR coalesce(ref,'') LIKE '%vercel.app') ) GROUP BY vw ORDER BY sessions DESC LIMIT 12",
+      "rows": [
+        {
+          "viewport_width": 1920,
+          "sessions": 33,
+          "pct_of_desktop": 17.6,
+          "median_vh": 1080
+        },
+        {
+          "viewport_width": 1440,
+          "sessions": 25,
+          "pct_of_desktop": 13.4,
+          "median_vh": 749
+        },
+        {
+          "viewport_width": 1512,
+          "sessions": 20,
+          "pct_of_desktop": 10.7,
+          "median_vh": 861
+        },
+        {
+          "viewport_width": 1536,
+          "sessions": 12,
+          "pct_of_desktop": 6.4,
+          "median_vh": 730
+        },
+        {
+          "viewport_width": 1280,
+          "sessions": 11,
+          "pct_of_desktop": 5.9,
+          "median_vh": 597
+        },
+        {
+          "viewport_width": 1470,
+          "sessions": 10,
+          "pct_of_desktop": 5.3,
+          "median_vh": 832
+        },
+        {
+          "viewport_width": 1792,
+          "sessions": 8,
+          "pct_of_desktop": 4.3,
+          "median_vh": 998
+        },
+        {
+          "viewport_width": 1050,
+          "sessions": 5,
+          "pct_of_desktop": 2.7,
+          "median_vh": 1893
+        },
+        {
+          "viewport_width": 1234,
+          "sessions": 4,
+          "pct_of_desktop": 2.1,
+          "median_vh": 676
+        },
+        {
+          "viewport_width": 2176,
+          "sessions": 3,
+          "pct_of_desktop": 1.6,
+          "median_vh": 1028
+        },
+        {
+          "viewport_width": 2560,
+          "sessions": 3,
+          "pct_of_desktop": 1.6,
+          "median_vh": 1271
+        },
+        {
+          "viewport_width": 1986,
+          "sessions": 3,
+          "pct_of_desktop": 1.6,
+          "median_vh": 965
+        }
+      ]
+    },
+    {
+      "id": "Q22c",
+      "what": "Desktop viewport width bands",
+      "hogql": "SELECT multiIf(vw < 1280, 'a <1280', vw < 1366, 'b 1280-1365', vw < 1440, 'c 1366-1439', vw < 1536, 'd 1440-1535', vw < 1920, 'e 1536-1919', 'f 1920+') AS bucket, count() AS sessions, round(100*count()/sum(count()) OVER (), 1) AS pct_of_desktop, round(quantile(0.5)(vh), 0) AS median_vh FROM ( <same inner query as Q22b> ) GROUP BY bucket ORDER BY bucket",
+      "rows": [
+        {
+          "band": "<1280",
+          "sessions": 35,
+          "pct_of_desktop": 18.7,
+          "median_vh": 827
+        },
+        {
+          "band": "1280-1365",
+          "sessions": 15,
+          "pct_of_desktop": 8.0,
+          "median_vh": 631
+        },
+        {
+          "band": "1366-1439",
+          "sessions": 3,
+          "pct_of_desktop": 1.6,
+          "median_vh": 767
+        },
+        {
+          "band": "1440-1535",
+          "sessions": 59,
+          "pct_of_desktop": 31.6,
+          "median_vh": 812
+        },
+        {
+          "band": "1536-1919",
+          "sessions": 33,
+          "pct_of_desktop": 17.6,
+          "median_vh": 956
+        },
+        {
+          "band": "1920+",
+          "sessions": 42,
+          "pct_of_desktop": 22.5,
+          "median_vh": 1045
+        }
+      ]
+    },
+    {
+      "id": "Q23",
+      "what": "Phone families from the reported model code (mapping from code prefix to maker is our inference; Android Chrome hides the model for most visitors)",
+      "hogql": "SELECT os, brand_guess, count() AS sessions, countIf(paid = 0) AS non_paid FROM ( SELECT properties.$session_id AS sid, argMin(properties.$device_type, timestamp) AS dtype, argMin(properties.$os, timestamp) AS os, coalesce(argMin(properties.$device_model, timestamp),'') AS model, multiIf(os = 'iOS', 'Apple iPhone', model = '' OR model = 'K', '(model hidden by the browser)', match(model, '^SM-'), 'Samsung (SM-)', match(model, '^(CPH|EB)'), 'OPPO / OnePlus (CPH, EB)', match(model, '^RMX'), 'realme (RMX)', match(model, '^(V2|I2)'), 'vivo / iQOO (V, I)', match(model, '^A0[0-9]'), 'Nothing (A0xx)', match(model, '^[0-9]{5}'), 'Xiaomi / Redmi / POCO (numeric)', match(lower(model), 'redmi|poco|mi '), 'Xiaomi / Redmi / POCO (named)', match(lower(model), 'moto'), 'Motorola', match(lower(model), 'itel|infinix|tecno'), 'Transsion (itel, Infinix, Tecno)', match(lower(model), 'pixel'), 'Google Pixel', 'other Android') AS brand_guess, if(coalesce(any(session.$entry_utm_medium),'') = 'paid' OR (coalesce(any(session.$entry_fbclid),'') != '' AND coalesce(any(session.$entry_utm_source),'') = ''), 1, 0) AS paid, any(session.$entry_referring_domain) AS ref, max(properties.$virt_is_bot = true) AS is_bot FROM events WHERE event = '$pageview' AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') GROUP BY sid HAVING is_bot = 0 AND dtype = 'Mobile' AND NOT (coalesce(ref,'') IN ('localhost:3456','127.0.0.1:3456') OR coalesce(ref,'') LIKE '%vercel.app') ) GROUP BY os, brand_guess ORDER BY sessions DESC",
+      "rows": [
+        {
+          "os": "Android",
+          "phone_family": "(model hidden by the browser)",
+          "sessions": 233,
+          "non_paid": 16
+        },
+        {
+          "os": "iOS",
+          "phone_family": "Apple iPhone",
+          "sessions": 95,
+          "non_paid": 90
+        },
+        {
+          "os": "Android",
+          "phone_family": "Samsung (SM-)",
+          "sessions": 61,
+          "non_paid": 16
+        },
+        {
+          "os": "Android",
+          "phone_family": "OPPO / OnePlus (CPH, EB)",
+          "sessions": 57,
+          "non_paid": 22
+        },
+        {
+          "os": "Android",
+          "phone_family": "vivo / iQOO (V, I)",
+          "sessions": 46,
+          "non_paid": 15
+        },
+        {
+          "os": "Android",
+          "phone_family": "other Android",
+          "sessions": 28,
+          "non_paid": 10
+        },
+        {
+          "os": "Android",
+          "phone_family": "realme (RMX)",
+          "sessions": 27,
+          "non_paid": 5
+        },
+        {
+          "os": "Android",
+          "phone_family": "Xiaomi / Redmi / POCO (numeric)",
+          "sessions": 20,
+          "non_paid": 6
+        },
+        {
+          "os": "Android",
+          "phone_family": "Motorola",
+          "sessions": 17,
+          "non_paid": 4
+        },
+        {
+          "os": "Android",
+          "phone_family": "Nothing (A0xx)",
+          "sessions": 12,
+          "non_paid": 12
+        },
+        {
+          "os": "Android",
+          "phone_family": "Transsion (itel, Infinix, Tecno)",
+          "sessions": 6,
+          "non_paid": 0
+        },
+        {
+          "os": "Android",
+          "phone_family": "Xiaomi / Redmi / POCO (named)",
+          "sessions": 5,
+          "non_paid": 1
+        },
+        {
+          "os": "Android",
+          "phone_family": "Google Pixel",
+          "sessions": 3,
+          "non_paid": 3
+        }
+      ]
+    },
+    {
+      "id": "Q23b",
+      "what": "iPhone OS versions (major) among mobile sessions",
+      "hogql": "Q23's inner query grouped by os, splitByChar('.', coalesce(argMin(properties.$os_version, timestamp),''))[1], $device, $device_model",
+      "rows": [
+        {
+          "os": "iOS",
+          "major_version": "18",
+          "sessions": 84,
+          "non_paid": 83
+        },
+        {
+          "os": "iOS",
+          "major_version": "26",
+          "sessions": 9,
+          "non_paid": 5
+        }
+      ],
+      "note": "Two further iPhone sessions had other versions (95 iPhone sessions in Q23)."
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+[
+ {
+  "engine": "Bing web search, cc=IN, en-IN, logged out, headless Chrome",
+  "query": "how much screen time for a 3 year old",
+  "url": "https://www.bing.com/search?q=how%20much%20screen%20time%20for%20a%203%20year%20old&cc=IN&setlang=en-IN",
+  "status": 200,
+  "captured_utc": "2026-10-11T02:27:59.224Z",
+  "paa": [
+   "How much screen time should a child have a day?",
+   "How much screen time should a 3 year old have?",
+   "How much screen time should a 4 year old have?",
+   "How much screen time should a one-year-old have?"
+  ],
+  "related": [],
+  "questionLines": [
+   "How Much Screen Time is Okay For Children?",
+   "How much screen time should a child have a day?",
+   "How much screen time should a 3 year old have?",
+   "How much screen time should a 4 year old have?",
+   "How much screen time should a one-year-old have?"
+  ]
+ },
+ {
+  "engine": "Bing web search, cc=IN, en-IN, logged out, headless Chrome",
+  "query": "how to reduce screen time for toddlers india",
+  "url": "https://www.bing.com/search?q=how%20to%20reduce%20screen%20time%20for%20toddlers%20india&cc=IN&setlang=en-IN",
+  "status": 200,
+  "captured_utc": "2026-10-11T02:28:13.717Z",
+  "paa": [],
+  "related": [],
+  "questionLines": []
+ },
+ {
+  "engine": "Bing web search, cc=IN, en-IN, logged out, headless Chrome",
+  "query": "4 year old not talking clearly",
+  "url": "https://www.bing.com/search?q=4%20year%20old%20not%20talking%20clearly&cc=IN&setlang=en-IN",
+  "status": 200,
+  "captured_utc": "2026-10-11T02:28:24.859Z",
+  "paa": [],
+  "related": [],
+  "questionLines": []
+ },
+ {
+  "engine": "Bing web search, cc=IN, en-IN, logged out, headless Chrome",
+  "query": "how to improve vocabulary of 4 year old",
+  "url": "https://www.bing.com/search?q=how%20to%20improve%20vocabulary%20of%204%20year%20old&cc=IN&setlang=en-IN",
+  "status": 200,
+  "captured_utc": "2026-10-11T02:28:36.032Z",
+  "paa": [],
+  "related": [],
+  "questionLines": []
+ },
+ {
+  "engine": "Bing web search, cc=IN, en-IN, logged out, headless Chrome",
+  "query": "best learning toys for 3 year old india",
+  "url": "https://www.bing.com/search?q=best%20learning%20toys%20for%203%20year%20old%20india&cc=IN&setlang=en-IN",
+  "status": 200,
+  "captured_utc": "2026-10-11T02:28:46.654Z",
+  "paa": [],
+  "related": [],
+  "questionLines": []
+ },
+ {
+  "engine": "Bing web search, cc=IN, en-IN, logged out, headless Chrome",
+  "query": "educational toys for 5 year old india",
+  "url": "https://www.bing.com/search?q=educational%20toys%20for%205%20year%20old%20india&cc=IN&setlang=en-IN",
+  "status": 200,
+  "captured_utc": "2026-10-11T02:28:57.315Z",
+  "paa": [],
+  "related": [],
+  "questionLines": []
+ }
+]

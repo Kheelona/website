@@ -8,7 +8,7 @@ sources: [../decisions/D013-internal-vs-external-content.md, ../raw/brief/kickof
 # Content boundary: what the website may publish
 
 The website is a **sales site for the ICP**: parents of 3-7 year olds in India, and family buying
-for them, deciding whether to buy Kheelu ([D013](../decisions/D013-internal-vs-external-content.md)).
+for them, deciding whether to buy Kheelu (confirmed as the ONLY audience by the founder on 2026-10-10, R9: no corporate-gifting or preschool sections) ([D013](../decisions/D013-internal-vs-external-content.md)).
 Everything published (pages, metadata, JSON-LD, `llms.txt`, `pricing.md`, emails, ad copy) is
 **EXTERNAL**. Everything else in this wiki is **INTERNAL**: it shapes decisions and is never
 published. Test for anything in doubt: *does a parent need this to decide, trust or buy?*

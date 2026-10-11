@@ -1,0 +1,198 @@
+{
+  "meta": {
+    "project": "PostHog 617632 (US cloud), project timezone UTC",
+    "range": "2026-09-19 00:00 to 2026-10-11 00:00 UTC (data exists from 2026-09-19 10:52 UTC; PostHog was installed that day)",
+    "run_at": "2026-10-11 01:00-02:30 UTC (2026-10-10 in the wiki's dating)",
+    "human_filter": "sessions with >=1 $pageview, no event with $virt_is_bot = true, entry referrer not localhost:3456 / 127.0.0.1:3456 / *.vercel.app (unless a query says otherwise)",
+    "caveat": "Test-account cohort 580233 has 0 members, so team traffic is included (about 48 sessions from 4 devices with 10+ sessions each, Q24). Aggregates only."
+  },
+  "queries": [
+    {
+      "id": "S1",
+      "what": "Project settings that bear on measurement (project-get, read 2026-10-11 ~01:00 UTC)",
+      "tool": "project-get {}",
+      "rows": [
+        {
+          "timezone": "UTC",
+          "app_urls (authorised URLs)": [
+            "https://kheelona.com"
+          ],
+          "anonymize_ips": false,
+          "test_account_filters": "cohort 580233 not_in",
+          "autocapture_opt_out": null,
+          "capture_dead_clicks": true,
+          "heatmaps_opt_in": true,
+          "autocapture_web_vitals_opt_in": true,
+          "autocapture_exceptions_opt_in": true,
+          "capture_console_log_opt_in": true,
+          "capture_performance_opt_in": true,
+          "session_recording_opt_in": true,
+          "session_recording_sample_rate": null,
+          "session_recording_minimum_duration_milliseconds": null,
+          "session_recording_masking_config": {
+            "maskAllInputs": true
+          },
+          "session_recording_url_blocklist_config": [],
+          "session_recording_retention_period": "30d",
+          "revenue_analytics_config": {
+            "base_currency": "USD",
+            "events": []
+          },
+          "marketing_analytics_config": {
+            "conversion_goals": [],
+            "attribution_window_days": 90,
+            "attribution_mode": "last_touch"
+          },
+          "onboarding_tasks_completed": [
+            "connect_source",
+            "set_up_reverse_proxy",
+            "add_authorized_domain",
+            "watch_session_recording",
+            "setup_session_recordings",
+            "visit_web_vitals_dashboard",
+            "review_web_analytics_dashboard"
+          ],
+          "primary_dashboard": 2113554
+        }
+      ]
+    },
+    {
+      "id": "S2",
+      "what": "Installation health checks (health-issues-list, all statuses)",
+      "tool": "health-issues-summary {}; health-issues-list {\"limit\": 50}",
+      "rows": [
+        {
+          "active_issues": 0,
+          "snoozed": 0
+        },
+        {
+          "kind": "reverse_proxy",
+          "severity": "warning",
+          "status": "resolved",
+          "created": "2026-09-20T07:59Z",
+          "resolved": "2026-09-20T10:06Z"
+        },
+        {
+          "kind": "authorized_urls",
+          "severity": "warning",
+          "status": "resolved",
+          "created": "2026-09-19T09:57Z",
+          "resolved": "2026-09-19T10:02Z"
+        }
+      ]
+    },
+    {
+      "id": "S3",
+      "what": "Existing dashboards, insights, cohorts and actions (system tables)",
+      "hogql": "SELECT 'dashboard' AS kind, toString(id) AS id, name, toString(created_at) AS created, '' AS query_kind FROM system.dashboards WHERE deleted = 0 UNION ALL SELECT 'insight', short_id, name, toString(created_at), coalesce(JSONExtractString(toString(query), 'source', 'kind'), JSONExtractString(toString(query), 'kind')) FROM system.insights WHERE deleted = 0 UNION ALL SELECT 'cohort', toString(id), name, toString(created_at), concat('count=', toString(count)) FROM system.cohorts WHERE deleted = 0 UNION ALL SELECT 'action', toString(id), name, toString(created_at), '' FROM system.actions WHERE deleted = 0",
+      "rows": [
+        {
+          "kind": "dashboard",
+          "id": "2113554",
+          "name": "Your starter dashboard",
+          "created": "2026-09-19",
+          "detail": ""
+        },
+        {
+          "kind": "dashboard",
+          "id": "2113706",
+          "name": "Daily traffic & purchases",
+          "created": "2026-09-19",
+          "detail": "2 tiles: daily pageviews, daily unique visitors; no purchase tile (dashboard-get)"
+        },
+        {
+          "kind": "cohort",
+          "id": "580233",
+          "name": "Internal / Test users",
+          "created": "2026-09-19",
+          "detail": "count=0"
+        },
+        {
+          "kind": "insight",
+          "id": "1RymJBT2",
+          "name": "Daily unique visitors",
+          "created": "2026-09-19",
+          "detail": "TrendsQuery"
+        },
+        {
+          "kind": "insight",
+          "id": "qegZ3IGh",
+          "name": "Daily pageviews",
+          "created": "2026-09-19",
+          "detail": "TrendsQuery"
+        },
+        {
+          "kind": "insight",
+          "id": "7jH9ct3X",
+          "name": "Visit to interaction funnel",
+          "created": "2026-09-19",
+          "detail": "FunnelsQuery"
+        },
+        {
+          "kind": "insight",
+          "id": "hVxPy9Lp",
+          "name": "Top referrers",
+          "created": "2026-09-19",
+          "detail": "TrendsQuery"
+        },
+        {
+          "kind": "insight",
+          "id": "GbEiLt54",
+          "name": "Retention",
+          "created": "2026-09-19",
+          "detail": "RetentionQuery"
+        },
+        {
+          "kind": "insight",
+          "id": "yFR4XrT7",
+          "name": "Weekly active users (WAUs)",
+          "created": "2026-09-19",
+          "detail": "TrendsQuery"
+        },
+        {
+          "kind": "insight",
+          "id": "06EoRmU5",
+          "name": "Daily active users (DAUs)",
+          "created": "2026-09-19",
+          "detail": "TrendsQuery"
+        },
+        {
+          "kind": "insight",
+          "id": "Mf7Kq84h",
+          "name": "Pageviews (last 7 days)",
+          "created": "2026-09-19",
+          "detail": "TrendsQuery"
+        },
+        {
+          "kind": "insight",
+          "id": "yJt6KIh1",
+          "name": "Sessions (last 7 days)",
+          "created": "2026-09-19",
+          "detail": "TrendsQuery"
+        },
+        {
+          "kind": "insight",
+          "id": "8pR21LzR",
+          "name": "Active users (last 30 days)",
+          "created": "2026-09-19",
+          "detail": "TrendsQuery"
+        }
+      ],
+      "note": "0 actions. Created by this audit afterwards: insight Y9KjojeN 'Website reset — baseline funnel by device (2026-09-19 to 2026-10-10)'."
+    },
+    {
+      "id": "S4",
+      "what": "PostHog's own marketing-analytics diagnosis (marketing-analytics-diagnose, read-only, 30-day attribution lookback)",
+      "tool": "marketing-analytics-diagnose {\"attribution_lookback_days\": 30, \"include_conversion_goals\": true}",
+      "rows": [
+        {
+          "overall_status": "healthy",
+          "summary": "1 of 1 integrations are healthy. No conversion goals configured.",
+          "meta_ads": "healthy; last sync 2026-10-11 02:00 UTC; last event with a matching UTM 2026-09-20 17:38 UTC",
+          "recommended_action": "Configure at least one conversion goal (warning)",
+          "misleading_hint": "It suggests 448 events tagged utm_source=chatgpt.com belong to 'OpenAI Ads'; they are organic ChatGPT referrals (ChatGPT appends that tag), and no OpenAI Ads account exists to our knowledge."
+        }
+      ]
+    }
+  ]
+}

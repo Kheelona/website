@@ -1,0 +1,139 @@
+{
+  "meta": {
+    "project": "PostHog 617632 (US cloud), project timezone UTC",
+    "range": "2026-09-19 00:00 to 2026-10-11 00:00 UTC (data exists from 2026-09-19 10:52 UTC; PostHog was installed that day)",
+    "run_at": "2026-10-11 01:00-02:30 UTC (2026-10-10 in the wiki's dating)",
+    "human_filter": "sessions with >=1 $pageview, no event with $virt_is_bot = true, entry referrer not localhost:3456 / 127.0.0.1:3456 / *.vercel.app (unless a query says otherwise)",
+    "caveat": "Test-account cohort 580233 has 0 members, so team traffic is included (about 48 sessions from 4 devices with 10+ sessions each, Q24). Aggregates only."
+  },
+  "queries": [
+    {
+      "id": "Q36",
+      "what": "Recordings in the window, and whether any recording includes /thanks (deny-list check)",
+      "hogql": "SELECT count() AS recordings, countIf(first_url LIKE '%store.kheelona.com%') AS start_on_store, countIf(first_url LIKE '%/thanks%') AS start_on_thanks, countIf(arrayExists(u -> u LIKE '%/thanks%', urls)) AS any_thanks_url, round(avg(dateDiff('second', st, et)), 0) AS avg_duration_s, min(st) AS first_rec, max(st) AS last_rec FROM (SELECT session_id, min(start_time) AS st, max(end_time) AS et, any(first_url) AS first_url, groupUniqArrayArray(all_urls) AS urls FROM session_replay_events WHERE start_time >= toDateTime('2026-09-19 00:00:00') AND start_time < toDateTime('2026-10-11 00:00:00') GROUP BY session_id)",
+      "rows": [
+        {
+          "recordings": 533,
+          "start_on_store": 52,
+          "start_on_thanks": 0,
+          "any_thanks_url": 0,
+          "avg_duration_s": 300,
+          "first_rec": "2026-09-19T10:52:42Z",
+          "last_rec": "2026-10-10T22:40:14Z"
+        }
+      ]
+    },
+    {
+      "id": "Q36b",
+      "what": "Recording coverage of human sessions by device and in-app browser (internal not excluded)",
+      "hogql": "SELECT device, coalesce(in_app,'') AS in_app, count() AS sessions, countIf(sid IN (SELECT session_id FROM session_replay_events WHERE start_time >= toDateTime('2026-09-19 00:00:00') AND start_time < toDateTime('2026-10-11 00:00:00'))) AS with_recording FROM ( SELECT toString(properties.$session_id) AS sid, argMin(properties.$device_type, timestamp) AS device, argMin(properties.$webview_app, timestamp) AS in_app, max(properties.$virt_is_bot = true) AS is_bot FROM events WHERE event = '$pageview' AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') GROUP BY sid HAVING is_bot = 0 ) GROUP BY device, in_app ORDER BY sessions DESC LIMIT 20",
+      "rows": [
+        {
+          "device": "Mobile",
+          "in_app_browser": "",
+          "sessions": 297,
+          "with_recording": 210
+        },
+        {
+          "device": "Mobile",
+          "in_app_browser": "WhatsApp",
+          "sessions": 218,
+          "with_recording": 73
+        },
+        {
+          "device": "Desktop",
+          "in_app_browser": "",
+          "sessions": 189,
+          "with_recording": 159
+        },
+        {
+          "device": "Mobile",
+          "in_app_browser": "Instagram",
+          "sessions": 45,
+          "with_recording": 20
+        },
+        {
+          "device": "Mobile",
+          "in_app_browser": "Threads",
+          "sessions": 32,
+          "with_recording": 10
+        },
+        {
+          "device": "Mobile",
+          "in_app_browser": "Facebook Lite",
+          "sessions": 15,
+          "with_recording": 9
+        },
+        {
+          "device": "Mobile",
+          "in_app_browser": "Facebook",
+          "sessions": 4,
+          "with_recording": 3
+        },
+        {
+          "device": "Tablet",
+          "in_app_browser": "",
+          "sessions": 3,
+          "with_recording": 3
+        },
+        {
+          "device": "Mobile",
+          "in_app_browser": "LinkedIn",
+          "sessions": 1,
+          "with_recording": 1
+        },
+        {
+          "device": "Tablet",
+          "in_app_browser": "Instagram",
+          "sessions": 1,
+          "with_recording": 1
+        },
+        {
+          "device": "Tablet",
+          "in_app_browser": "Threads",
+          "sessions": 1,
+          "with_recording": 0
+        }
+      ]
+    },
+    {
+      "id": "R1",
+      "what": "Drop-off replays reviewed: selection and what could be seen (aggregate only; session ids kept out of the wiki)",
+      "selection": "Every human, non-internal session that started the pre-order form and did not pay (8), plus 18 store-page sessions without a form start chosen to cover long and short visits, paid and organic, phone and laptop, 2026-09-19 to 2026-10-10. To find them again: Q6's inner query with HAVING store_pv > 0 AND purchased = 0, ordered by form_started DESC, duration DESC.",
+      "tools": "query-session-recordings-list (session_ids) for metadata; execute-sql over events by $session_id for the timeline (pageviews with scroll %, clicks with element text and aria-label, dead/rage clicks, exceptions, funnel events). Video frames were NOT viewed: the MCP returns metadata, not video; Replay Vision summaries were not generated (they spend credits and create objects, outside the read-only remit).",
+      "metadata_totals": {
+        "recordings_found": 26,
+        "of_requested": 26,
+        "console_errors_total": 0,
+        "recordings_with_console_warnings": 5,
+        "recording_ttl_days_left_min": 8,
+        "recording_ttl_days_left_max": 29
+      },
+      "form_starters_8": {
+        "left_mid_form_after_1_or_2_fields": 4,
+        "blocked_by_validation_two_rejected_submits": 1,
+        "reached_payment_sheet": 3,
+        "sheet_closed_within_7_to_11_s": 2,
+        "sheet_opened_then_no_event_page_left_open_23_min": 1,
+        "in_app_browser": 4,
+        "went_to_refund_page_mid_form": 1
+      },
+      "store_visitors_without_form_18": {
+        "scrolled_store_page_85_pct_or_more": 9,
+        "played_a_customer_video": 9,
+        "went_back_to_marketing_pages_after_store": 7,
+        "tapped_logo_on_store": 3,
+        "tapped_need_help_whatsapp": 2,
+        "left_store_within_12_s": 3,
+        "no_interaction_recorded": 1,
+        "two_store_visits_in_one_session": 2,
+        "reached_store_via_mobile_sticky_guide_cta": 4,
+        "rage_clicked": 1
+      },
+      "purchasers_2_for_contrast": {
+        "desktop_google": "Home 3 min, navbar CTA, 60 s before typing, 72 s form, 125 s in payment sheet",
+        "mobile_chatgpt": "watched all 6 customer films on Home, came back later, sticky guide CTA twice, 87 s form, 151 s in payment sheet"
+      }
+    }
+  ]
+}

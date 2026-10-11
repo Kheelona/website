@@ -1,7 +1,7 @@
 ---
 title: Positioning (SKM, October 2026), with the 3–7 correction
 type: brand
-updated: 2026-10-10
+updated: 2026-10-11
 cites_at: archive/pre-reset-2026-10-10
 sources:
   - wiki/raw/positioning/Kheelona Positioning Strategy.docx
@@ -11,15 +11,24 @@ sources:
   - "git grep -i -E 'miko|mywonder|pookie|alexa' archive/pre-reset-2026-10-10 -- src public (2026-10-10)"
   - design-system/project/01-writing.md, 03-cast.md (read-only)
   - https://kheelona.com/ (homepage fetched 2026-10-10)
+  - "Site markers (2026-10-10): wiki/decisions/D013-internal-vs-external-content.md, wiki/site/content-boundary.md, wiki/product/claims.md section 8"
+  - "Founder's rulings applied 2026-10-11: wiki/decisions/D016 (brain wording), D017 (live behaviour claims), D018 (wake-up button), D019 and D020 (voice providers), D021 and D022 (returns, warranty), D024 (GST), D026 (public statistics), D027 (Story mode), D028 (price wording); wiki/open-questions.md section F (R5 and R9, answered 2026-10-10)"
 ---
 
 # Positioning
 
 Plain `path:line` citations on this page refer to tag `archive/pre-reset-2026-10-10`; `mid:path` refers to `archive/mid-version-2026-10-10`.
 
+> **INTERNAL page** ([D013](../decisions/D013-internal-vs-external-content.md)): it shapes what the site says and how; nothing here is published as is. What may be published: [content boundary](../site/content-boundary.md).
+
 **Status: a proposal, not yet proven.** The deck calls itself a "Positioning proposal" (pdf p.1), and the
 strategy says "The direction is set; the proof is not" (docx §12 L405). Most proof points still need
 product work or sign-off; see [messaging.md, proof points](messaging.md#proof-points).
+
+**Site markers on this page apply the founder's rulings of 2026-10-10 and 2026-10-11** (all ten in
+[open questions, section F](../open-questions.md#f-content-rulings-from-the-d013-classification-pass-ask-one-at-a-time)
+are answered), so no PENDING RULING mark remains. The mark key, and the new lines the rulings confirm,
+are on [messaging.md](messaging.md#confirmed-candidate-lines).
 
 ## The two source documents
 
@@ -58,19 +67,25 @@ is [below](#where-the-age-correction-bites); the product-wide age review is
 > "Brain development is the promise. Conversation is the proof of how. Screen-free and safe are the
 > foundation." (docx §1 L11; pdf p.2)
 
+Site: "brain-development toy" is **BANNED** as a product label ([D016](../decisions/D016-brain-wording.md)); "brain development" is usable
+only as a searched topic in titles, headings and articles. "It asks. They think." is **EXTERNAL IF
+CONFIRMED** (F10, the trademark check; asking back is confirmed, [D017](../decisions/D017-live-behaviour-claims-confirmed.md), and SKM's "most turns" rule is
+F8). The promise / proof / foundation sentence is the hierarchy, **INTERNAL**
+([messaging.md](messaging.md#the-hierarchy)).
+
 ## Category and frame of reference
 
-| | What the docs say | Cite |
-|---|---|---|
-| **Own** | "The brain-development toy that talks." The noun is "brain-development toy", not "AI toy". "AI" stays, as the engine, not the headline | docx §1 L6, L13; §5 L134 |
-| **Refuse: AI toy** | "Compared on tech, priced against ₹1,599 'ChatGPT robots', blamed for every scandal" | docx §5 L131 |
-| **Refuse: AI companion** | "The label regulators and safety groups now target" | docx §5 L132 |
-| **Refuse: edtech or tutor** | Compared with apps and classes, under ASCI's education rules and parents' edtech distrust | docx §5 L133; §2 L41–43 |
-| **Frame of reference** | The brain-development shelf parents already shop: puzzles, tangrams and activity books at ₹99 to ₹429. Kheelu "should join this shelf and stand apart on it" as the only product on it that talks, grows with the child and shows progress | docx §3 L70; §5 L135–136 |
+| | What the docs say | Cite | Site |
+|---|---|---|---|
+| **Own** | "The brain-development toy that talks." The noun is "brain-development toy", not "AI toy". "AI" stays, as the engine, not the headline | docx §1 L6, L13; §5 L134 | "Brain-development toy": **BANNED** as a product label ([D016](../decisions/D016-brain-wording.md)); "brain development" works as a searched topic in titles, headings and articles, never as what Kheelu is or does |
+| **Refuse: AI toy** | "Compared on tech, priced against ₹1,599 'ChatGPT robots', blamed for every scandal" | docx §5 L131 | **INTERNAL** (strategy; ₹1,599 is an unsourced competitor price) |
+| **Refuse: AI companion** | "The label regulators and safety groups now target" | docx §5 L132 | **INTERNAL** (strategy) |
+| **Refuse: edtech or tutor** | Compared with apps and classes, under ASCI's education rules and parents' edtech distrust | docx §5 L133; §2 L41–43 | **INTERNAL** (strategy) |
+| **Frame of reference** | The brain-development shelf parents already shop: puzzles, tangrams and activity books at ₹99 to ₹429. Kheelu "should join this shelf and stand apart on it" as the only product on it that talks, grows with the child and shows progress | docx §3 L70; §5 L135–136 | **INTERNAL** (strategy; ₹99 to ₹429 are competitor prices) |
 
 **Why this shelf** (docx §5 L135–139): parents already shop it; Kheelu is the only one on it that talks,
 which justifies ₹4,999 next to ₹400 puzzles; it matches the vision of "sharper minds"; it turns AI from a
-fear into a reason (the AI lets the toy ask back); future products can sit on it too.
+fear into a reason (the AI lets the toy ask back); future products can sit on it too. Site: **INTERNAL** (strategy; "₹400 puzzles" is a competitor price).
 
 **Category map** (Fig 2; pdf p.4). Vertical axis: sold on brain development (top) vs sold as fun, answers
 or friendship (bottom). Horizontal: the child receives (left) vs the child does the thinking (right).
@@ -81,19 +96,27 @@ or friendship (bottom). Horizontal: the child receives (left) vs the child does 
 | **Sold as fun, answers or friendship** | Entertainment and answers: cartoons on the phone, story and audio players, smart speakers, chatbots | AI companions: Miko, MyWonder, Pookie ("they talk, but are sold as a friend") |
 
 SKM's caveat: the map "places each brand by the words on its own site, not by testing" (docx §5 L142).
+Site: **INTERNAL** (competitor intelligence: it names Miko, MyWonder and Pookie).
 
 ## The problem
 
-**The market, October 2026** (docx §3 L64–84):
+**The market, October 2026** (docx §3 L64–84). Each bullet carries its site status:
 - Parents are primed for "the early years build the brain": NEP 2020 says over 85% of a child's brain
-  develops by age 6 and sets the foundational years at 3 to 8 (L67, via EducationWorld).
+  develops by age 6 and sets the foundational years at 3 to 8 (L67, via EducationWorld). **EXTERNAL IF
+  CONFIRMED** (pending source verification, [D026](../decisions/D026-public-statistics.md)): checked against the NEP 2020 text itself, not
+  EducationWorld; used as SKM framed it only if that text says so, with a linked source marker on the
+  page ([claims.md §8](../product/claims.md#8-brain-and-development-claims-with-their-anchors)). The
+  founder allows the figure despite the DS no-fear rule, paired with what a parent can do (D026).
 - The Kheelona research brief (30 May 2026) found 70% of parents want an AI toy to help their child learn,
-  the top reason to buy (L68). **NOT USABLE IN COPY** until [open questions](../open-questions.md) Q4 ([list](messaging.md#not-usable-in-copy-until-q4)).
+  the top reason to buy (L68). **INTERNAL** (research: shapes strategy, never on the site; [D013](../decisions/D013-internal-vs-external-content.md)) ([list](messaging.md#internal-research-figures)).
 - Indian children under 5 average about 2.2 hours of screen time a day, roughly double the guideline (L69,
-  AIIMS Raipur meta-analysis via Pune Pulse, Jan 2026).
+  AIIMS Raipur meta-analysis via Pune Pulse, Jan 2026). **EXTERNAL IF CONFIRMED** (pending source
+  verification, [D026](../decisions/D026-public-statistics.md): the study itself, not the news report, with a linked source marker), and as a
+  screen-time fact only (the sample includes under-3s), paired with what a parent can do (D026).
 - The "brain development" shelf is crowded, cheap and hands-only; none of it talks or shows a parent
-  progress (L70).
+  progress (L70). **INTERNAL** (competitor intelligence and prices).
 - AI rivals sell friendship, not thinking; "nobody owns brain development through conversation" (L71–84).
+  **INTERNAL** (competitor intelligence).
 
 **Three forces to manage** (docx §3 L85–88; pdf p.3):
 1. **AI's new fear, "cognitive stunting"**: Brookings (May 2026) warns that heavy AI use lets children skip
@@ -105,19 +128,31 @@ SKM's caveat: the map "places each brand by the words on its own site, not by te
 3. **Scrutiny of claims**: ASCI requires substantiation and bars education ads that play on "parental or
    student anxieties" (Mar 2023); "midbrain activation" has made parents wary of brain claims.
 
+Site: **INTERNAL** (strategy context: California's companion-chatbot toy ban, ASCI's rules and the
+"midbrain activation" history). The Brookings finding is marked in the
+[evidence table](#the-evidence-as-skm-rates-it).
+
 "The answer to all three is the mechanism: **Kheelu asks, your child thinks.**" (pdf p.3)
 
 ## The promise
 
 - **Core idea:** "Kheelu helps your child's brain grow, because it makes them think." (docx §9 L253)
+  Site: **BANNED** (Kheelu as the subject of brain growth: [D016](../decisions/D016-brain-wording.md), settled, keeping founder decision 4
+  of 2026-10-04; [claims.md §4](../product/claims.md#4-retired-or-banned-wording)). The promise credits
+  conversation: conversation helps a young brain grow, and Kheelu gives a child more of it.
 - **The answer to the AI fear:** "Kheelu doesn't think for your child, it makes them think." (docx §2 L25)
+  Site: **EXTERNAL IF CONFIRMED** (F8), the same product rule ("most turns", #15) as the short hero
+  option on [messaging.md](messaging.md#taglines-and-hero); the asking back it rests on is confirmed ([D017](../decisions/D017-live-behaviour-claims-confirmed.md)).
 - **Website hero:** "Kheelu helps your child's brain grow, one conversation at a time." (docx §1 L9;
-  §9 L271). SKM: "'Helps' needs the advisor's sign-off before launch" (§9 L274; §4 L125); [open questions](../open-questions.md) F9. Exact hero,
-  sub-line and taglines live in [messaging.md](messaging.md#taglines-and-hero).
+  §9 L271). SKM: "'Helps' needs the advisor's sign-off before launch" (§9 L274; §4 L125). Exact hero,
+  sub-line and taglines live in [messaging.md](messaging.md#taglines-and-hero). Site: **BANNED** as written
+  ([D016](../decisions/D016-brain-wording.md): an advisor's sign-off does not reopen it).
 
 ## Positioning statement
 
-Internal: "Every ad, script, caption and website line gets checked against it" (docx §7 L182). As corrected:
+Internal: "Every ad, script, caption and website line gets checked against it" (docx §7 L182). Site:
+**INTERNAL** (a positioning statement, [content boundary](../site/content-boundary.md)); its claims are
+marked one by one on [messaging.md](messaging.md#proof-points). As corrected:
 
 > For Indian parents of **3 to 7** year olds **[3–7]** who want to support their child's growing brain
 > without more screens, Kheelu is the brain-development toy that talks: a soft, screen-free AI rabbit that
@@ -137,8 +172,10 @@ Original: docx §1 L7 ("4 to 7"); pdf p.8. The statement as a table (docx §7 L1
 | Unlike | puzzles and activity books, which can't talk or grow with the child; and AI that gives children answers or tries to be their friend |
 | Because | Kheelu asks back, so your child does the thinking; it brings the family into the conversation; and parents see the growth in a weekly report, compared only with their child's own past |
 
-Two parts of "Because" are not yet product facts (asking back on most turns; the weekly skills report). See
-[messaging.md, proof points](messaging.md#proof-points) and [open questions](../open-questions.md) F8.
+Two parts of "Because" are not yet product facts: asking back on MOST turns (asking back itself is
+confirmed, [D017](../decisions/D017-live-behaviour-claims-confirmed.md)) and the weekly skills report. See [messaging.md, proof points](messaging.md#proof-points)
+#14, #15, #20 and [open questions](../open-questions.md) F8. The statement's "brain-development toy" is
+BANNED as a product label ([D016](../decisions/D016-brain-wording.md)) if any of it is ever reused as copy.
 
 ## Reasons to believe
 
@@ -146,21 +183,27 @@ Two parts of "Because" are not yet product facts (asking back on most turns; the
 
 Source: docx §4 L94–122; pdf p.5.
 
-| Finding | Source (as cited) | SKM's strength rating | How Kheelona uses it | [3–7] note |
-|---|---|---|---|---|
-| "Serve and return" exchanges build neural connections and support early language | Harvard Center on the Developing Child | Strong, but about caring adults | The idea Kheelu is built around; never "Harvard-proven" | Covers early childhood broadly; holds at 3 |
-| In 4 to 6 year olds, conversational turns, not words heard, predicted language scores and Broca's-area activity | Romeo et al. 2018, *Psychological Science* (via LENA) | Strong, but correlational and with adults | Why Kheelu asks back | **Study did not include 3-year-olds.** Never imply it did |
-| Children who talked with an AI that asked questions during a story understood it better and learnt more words | Xu et al. 2022, *Child Development* (via Joan Ganz Cooney Center) | Good: direct evidence for AI that asks | "The closest evidence for Kheelu's design. Can be cited." | "Preschoolers" (docx §2 L40); exact ages not given in the docs |
-| Children lead conversations and add ideas more with people than with AI | Same | Good | Why Kheelu hands the conversation back to family | – |
-| Preschoolers ask about 76 information-seeking questions an hour | Lazaroff & Vlach 2022, citing Chouinard 2007 | Moderate | The "Questions" skill; the "why" years | – |
-| Over-reliance on AI lets children skip effortful thinking | Brookings, May 2026 | Early evidence, widely reported | The risk Kheelu's design answers | – |
+SKM's strength ratings and the "how Kheelona uses it" column are INTERNAL. The Site column marks the
+finding itself: public research is EXTERNAL when it is read at its source and cited on the page
+([content boundary](../site/content-boundary.md), "Public research"); until it is read, it is
+**EXTERNAL IF CONFIRMED** (source check: the Copywriter reads and cites the source before use).
+
+| Finding | Source (as cited) | SKM's strength rating | How Kheelona uses it | [3–7] note | Site |
+|---|---|---|---|---|---|
+| "Serve and return" exchanges build neural connections and support early language | Harvard Center on the Developing Child | Strong, but about caring adults | The idea Kheelu is built around; never "Harvard-proven" | Covers early childhood broadly; holds at 3 | **EXTERNAL** (public; checked 2026-10-10), only in the [claims.md §8](../product/claims.md#8-brain-and-development-claims-with-their-anchors) form: cited, keeping "a caring adult". "Built around", never "Harvard-proven" |
+| In 4 to 6 year olds, conversational turns, not words heard, predicted language scores and Broca's-area activity | Romeo et al. 2018, *Psychological Science* (via LENA) | Strong, but correlational and with adults | Why Kheelu asks back | **Study did not include 3-year-olds.** Never imply it did | **EXTERNAL** (public; checked 2026-10-10, [claims.md §8](../product/claims.md#8-brain-and-development-claims-with-their-anchors)), always with the study's ages, 4 to 6 |
+| Children who talked with an AI that asked questions during a story understood it better and learnt more words | Xu et al. 2022, *Child Development* (via Joan Ganz Cooney Center) | Good: direct evidence for AI that asks | "The closest evidence for Kheelu's design. Can be cited." | "Preschoolers" (docx §2 L40); exact ages not given in the docs | **EXTERNAL IF CONFIRMED** (source check: public, not yet read, [claims.md §8](../product/claims.md#8-brain-and-development-claims-with-their-anchors)) |
+| Children lead conversations and add ideas more with people than with AI | Same | Good | Why Kheelu hands the conversation back to family | – | **EXTERNAL IF CONFIRMED** (source check: public, not yet read, [claims.md §8](../product/claims.md#8-brain-and-development-claims-with-their-anchors)) |
+| Preschoolers ask about 76 information-seeking questions an hour | Lazaroff & Vlach 2022, citing Chouinard 2007 | Moderate | The "Questions" skill; the "why" years | – | **EXTERNAL IF CONFIRMED** (source check: public, not yet read) |
+| Over-reliance on AI lets children skip effortful thinking | Brookings, May 2026 | Early evidence, widely reported | The risk Kheelu's design answers | – | **EXTERNAL IF CONFIRMED** (source check: public, not yet read); a fear-based finding ("AI's new fear", [three forces](#the-problem)), so never as fear (ASCI; [voice.md](voice.md) rule 4). Quoted as a figure, it follows [D026](../decisions/D026-public-statistics.md): verified at its original source, with a linked marker |
 
 The deck's "honest limit": "these studies are about conversation, mostly with adults. We say Kheelu is
 *built around* this idea, not that Kheelu is proven. Our own pilot data comes next." (pdf p.5)
 
 **What can be claimed** (docx §4 L123–127): *today*, Kheelu is built around back-and-forth conversation,
 which research links to young children's language and brain development, and it asks questions so the
-child does the thinking; *after advisor sign-off*, "Helps your child's brain grow"; *only with pilot data*,
+child does the thinking; *after advisor sign-off*, "Helps your child's brain grow" (now **BANNED** as
+written, advisor or not: [D016](../decisions/D016-brain-wording.md)); *only with pilot data*,
 any result; *never*, that Kheelu is proven to grow the brain, raise IQ or match a parent. The full
 say / never-say table is in [messaging.md](messaging.md#claims-guardrails).
 
@@ -171,14 +214,20 @@ Source: docx §1 L12; §4 L92–93; Fig 1; pdf p.6.
 "Every feature, ad and report maps to one of them" (docx §1 L12). They map onto NEP 2020's early-years goals
 (cognitive development, early language, communication) (§4 L93).
 
-| Skill | Kheelu does | Your child practises | Report shows | [3–7] note |
-|---|---|---|---|---|
-| **Words** | Uses a new word, then asks your child to use it too | Hears it, says it, uses it in their own sentence | New words used | Advisor to confirm what "uses it in their own sentence" means at 3 |
-| **Reasons** | Asks "why do you think that happened?" | Explains, gives a "because", weighs two ideas | Why-answers given | "Weighs two ideas" at 3 needs advisor sign-off |
-| **Stories** | Tells half a story, asks "what happens next?" | Remembers, puts events in order, invents an ending | Stories told and retold | Sequencing at 3 needs advisor sign-off |
-| **Questions** | Answers, then invites "what else do you wonder?" | Asks more, and deeper, questions of their own | Questions asked | Natural fit at 3 (the "why" years) |
+| Skill | Kheelu does | Your child practises | Report shows | [3–7] note | Site |
+|---|---|---|---|---|---|
+| **Words** | Uses a new word, then asks your child to use it too | Hears it, says it, uses it in their own sentence | New words used | Advisor to confirm what "uses it in their own sentence" means at 3 | **EXTERNAL IF CONFIRMED** (F8, F9) |
+| **Reasons** | Asks "why do you think that happened?" | Explains, gives a "because", weighs two ideas | Why-answers given | "Weighs two ideas" at 3 needs advisor sign-off | **EXTERNAL IF CONFIRMED** (F8, F9) |
+| **Stories** | Tells half a story, asks "what happens next?" | Remembers, puts events in order, invents an ending | Stories told and retold | Sequencing at 3 needs advisor sign-off | **EXTERNAL IF CONFIRMED** (F8, F9) |
+| **Questions** | Answers, then invites "what else do you wonder?" | Asks more, and deeper, questions of their own | Questions asked | Natural fit at 3 (the "why" years) | **EXTERNAL IF CONFIRMED** (F8, F9) |
+
+F8 covers what Kheelu does and the "Report shows" column (the weekly report, [messaging.md](messaging.md#proof-points)
+#20); F9 covers the skills at each age (#19). **Stories row:** Story mode has no feature to interrupt a
+story and ask about it ([D027](../decisions/D027-story-mode-wording.md)), so "tells half a story, asks 'what happens next?'" may never be
+presented as a Story-mode feature; as conversation in AI mode it stays F8.
 
 Plus: "Kheelu regularly hands the conversation back to family: 'Tell Amma what we found out.'" (Fig 1; pdf p.6)
+Site: **EXTERNAL IF CONFIRMED** (F8, the hand-back, #16).
 
 ## Pillars and foundation
 
@@ -189,19 +238,27 @@ permission to buy it" (L228). "Each pillar needs one piece of proof the team can
 fully in place yet.**" (L231)
 
 Band above the pillars: "It asks. They think. Kheelu helps your child's brain grow through conversation"
-(Fig 3; the pdf p.9 shortens it to "Brain growth through conversation").
+(Fig 3; the pdf p.9 shortens it to "Brain growth through conversation"). Site: **BANNED** (Kheelu as the
+subject of brain growth, [D016](../decisions/D016-brain-wording.md), settled). The pdf's short form names no subject; it may be used only
+where it plainly credits conversation, in D016's form with its cited anchor
+([claims.md §8](../product/claims.md#8-brain-and-development-claims-with-their-anchors)).
 
-| Pillar | What we claim | Why it's believable | Proof still needed (SKM) |
-|---|---|---|---|
-| **Makes them think** | Kheelu asks your child questions back, so they do the thinking | Romeo 2018; Xu 2022 | Pilot counts: questions asked by Kheelu and answers given per session |
-| **Builds four thinking skills** | Words, reasons, stories, questions, at your child's level, in English and your home language | NEP 2020's early-years goals; the deck's age-adaptive design | Age-by-age activity list for 4, 5, 6 and 7, signed off by the advisor; language clips. **[3–7] needs a list for age 3 too** (F9) |
-| **You see the growth** | A weekly report on the four skills, compared only with your child's own past | The deck's "10 new words learnt" update and "personal growth, not comparison" principle | Real app screenshots with the four skills (F8) |
-| **Foundation: a toy, not a friend** | Safe by design, and it brings the family into the conversation | The four safety behaviours on the site; offline stories; family hand-back prompts | Data answers (audio location, retention, training: F5); BIS date; outside safety test (F4) |
+The pillars as a structure are **INTERNAL** ([messaging.md](messaging.md#the-hierarchy)); the Site column
+marks each "What we claim" line.
+
+| Pillar | What we claim | Why it's believable | Proof still needed (SKM) | Site |
+|---|---|---|---|---|
+| **Makes them think** | Kheelu asks your child questions back, so they do the thinking | Romeo 2018; Xu 2022 | Pilot counts: questions asked by Kheelu and answers given per session | **EXTERNAL** ([D017](../decisions/D017-live-behaviour-claims-confirmed.md), [messaging.md](messaging.md#proof-points) #14). Pilot counts are still F10 (#27) |
+| **Builds four thinking skills** | Words, reasons, stories, questions, at your child's level, in English and your home language | NEP 2020's early-years goals; the deck's age-adaptive design | Age-by-age activity list for 4, 5, 6 and 7, signed off by the advisor; language clips. **[3–7] needs a list for age 3 too** (F9) | **EXTERNAL IF CONFIRMED** (F9, #19) |
+| **You see the growth** | A weekly report on the four skills, compared only with your child's own past | The deck's "10 new words learnt" update and "personal growth, not comparison" principle | Real app screenshots with the four skills (F8) | **EXTERNAL IF CONFIRMED** (F8, #20) |
+| **Foundation: a toy, not a friend** | Safe by design, and it brings the family into the conversation | The four safety behaviours on the site; offline stories; family hand-back prompts | Data answers (audio location, retention, training: F5); BIS date; outside safety test (F4) | "Safe by design": **BANNED** ("safe" as a bare adjective, [messaging.md](messaging.md#words-to-stop-using)). The family hand-back: **EXTERNAL IF CONFIRMED** (F8, #16). "A toy, not a friend": **EXTERNAL IF CONFIRMED** (G5). The data answers now exist ([D019](../decisions/D019-voice-providers.md), [D020](../decisions/D020-provider-terms-and-no-sale.md); [messaging.md](messaging.md#proof-points) #11 to #13); BIS and the safety test are still F4 |
 
 Foundation chips (Fig 3; pdf p.9): screen-free · wake word · no browsing · read every chat · never asks for
-a secret · stories work offline. Each is checked against the site in
-[messaging.md, proof points](messaging.md#proof-points). "The deck" in this table is an internal Kheelona
-deck that is not in `wiki/raw/`.
+a secret · stories work offline. Each is checked against the site, with its Site value, in
+[messaging.md, proof points](messaging.md#proof-points). The "wake word" chip is **BANNED**: Kheelu has no
+wake word, and the chip becomes the wake-up button and its light ([D018](../decisions/D018-wake-up-button.md)). No browsing and read every
+chat are **EXTERNAL** ([D017](../decisions/D017-live-behaviour-claims-confirmed.md)); "stories work offline" is Story mode only (stories, poems and jingles,
+[D027](../decisions/D027-story-mode-wording.md)). "The deck" in this table is an internal Kheelona deck that is not in `wiki/raw/`.
 
 ## Competitors named
 
@@ -209,12 +266,14 @@ Market-level benchmarking belongs to `research/d2c-benchmarks.md` (pending, Phas
 is only what the positioning says. Prices are SKM's, from pages "opened 8 October 2026" (docx §13 L420),
 and were not re-checked by this agent.
 
-| Brand | How it describes itself (per SKM) | Price (per SKM) | Source cited |
-|---|---|---|---|
-| Miko Mini | "AI-powered conversational robot", "a cherished companion", STEAM learning | ₹13,999 | in.miko.ai/products/miko-mini |
-| MyWonder | "Learn From Safe & Intelligent AI Companions"; closest rival with "Speak, Listen, Learn" | ₹5,499 | mywonder.in |
-| Pookie (Scoobies) | A friend-like companion that understands moods | ₹6,999 | scoobies.co.in/pages/pookie, "from the competitor review" (v9). **NOT USABLE IN COPY** until [open questions](../open-questions.md) Q4 ([list](messaging.md#not-usable-in-copy-until-q4)) |
-| "ChatGPT robots" | – | ₹1,599 | **No source given** (docx §5 L131) |
+Every row is INTERNAL: competitor names and prices never go on the site ([D013](../decisions/D013-internal-vs-external-content.md)).
+
+| Brand | How it describes itself (per SKM) | Price (per SKM) | Source cited | Site |
+|---|---|---|---|---|
+| Miko Mini | "AI-powered conversational robot", "a cherished companion", STEAM learning | ₹13,999 | in.miko.ai/products/miko-mini | **INTERNAL** (competitor intelligence) |
+| MyWonder | "Learn From Safe & Intelligent AI Companions"; closest rival with "Speak, Listen, Learn" | ₹5,499 | mywonder.in | **INTERNAL** (competitor intelligence) |
+| Pookie (Scoobies) | A friend-like companion that understands moods | ₹6,999 | scoobies.co.in/pages/pookie, "from the competitor review" (v9) | **INTERNAL** (research: shapes strategy, never on the site; [D013](../decisions/D013-internal-vs-external-content.md)) ([list](messaging.md#internal-research-figures)) |
+| "ChatGPT robots" | – | ₹1,599 | **No source given** (docx §5 L131) | **INTERNAL** (competitor price, unsourced) |
 
 Rows: docx §3 L71–84; pdf p.4. The alternatives parents actually weigh, and the line for each, are in
 [messaging.md](messaging.md#against-the-alternatives) (docx §7 L197–225).
@@ -233,17 +292,20 @@ Positioning only; the price facts live in [../product/pricing.md](../product/pri
 - SKM writes "At ₹7,999 after launch" (docx §2 L49). The site's rule is different: ₹7,999 applies **once the
   first 500 units are gone**, paid in full (`src/config/site.ts:63–67, 86, 110–113`). Copy must follow the
   site's rule.
+- How the price is WRITTEN is the founder's ruling [D028](../decisions/D028-price-wording.md): next to the CTA, ₹499 first with the ₹4,999
+  total in the same sentence; everything machines read leads with ₹4,999 (incl. GST, [D024](../decisions/D024-payment-methods-gst.md)). The
+  candidate line: [messaging.md](messaging.md#confirmed-candidate-lines).
 
 ## Brand foundations
 
 Source: docx §5 L143–158.
 
-| Level | Current | SKM's recommendation |
-|---|---|---|
-| Vision | To build sharper minds and bigger smiles for kids everywhere. | Keep |
-| Purpose | To make learning, curiosity, and meaningful conversation a natural part of childhood. | Keep |
-| Mission | We build safe, conversational AI tutors for kids, combining robotics, great content, and play. | **We make safe, screen-free toys that build young minds through conversation.** |
-| Positioning | (none) | **The brain-development toy that talks. It asks. They think.** |
+| Level | Current | SKM's recommendation | Site |
+|---|---|---|---|
+| Vision | To build sharper minds and bigger smiles for kids everywhere. | Keep | **INTERNAL** (not live) |
+| Purpose | To make learning, curiosity, and meaningful conversation a natural part of childhood. | Keep | **INTERNAL** (a brand foundation statement, [content boundary](../site/content-boundary.md)) |
+| Mission | We build safe, conversational AI tutors for kids, combining robotics, great content, and play. | **We make safe, screen-free toys that build young minds through conversation.** | Current: **BANNED** ("AI tutors", "robotics"). SKM's: **BANNED** as written: the toys are what "build young minds", which [D016](../decisions/D016-brain-wording.md) rewords to the conversation form; also drop the bare "safe" ([messaging.md](messaging.md#words-to-stop-using)) |
+| Positioning | (none) | **The brain-development toy that talks. It asks. They think.** | As [in one line](#in-one-line): "brain-development toy" **BANNED** as a product label ([D016](../decisions/D016-brain-wording.md)); "It asks. They think." **EXTERNAL IF CONFIRMED** (F10; F8 for "most turns") |
 
 ## Tone
 
@@ -253,16 +315,17 @@ never fear. Full rules and the comparison with the design system's writing guide
 ## What changes from earlier thinking
 
 Source: docx §2 L34–62; pdf p.12. "Earlier thinking" is mostly the research brief's view ("Research says",
-L35–47), which is not in the project (Q4).
+L35–47), which is not in the project and is not needed: its findings are INTERNAL
+([D013](../decisions/D013-internal-vs-external-content.md)).
 
 | Topic | Earlier thinking | SKM proposes | After the brief |
 |---|---|---|---|
 | Core age | 6 to 8; exclude under 4 | 4 to 7; 3-year-olds only "with a grown-up nearby", never shown alone in ads | **3 to 7** (brief §2). Whether the grown-up condition stays is open: [open questions](../open-questions.md) G5 |
 | Framing | Tutor or teacher | Brain development through conversation | – |
-| Differentiator | Safe and screen-free | Those are the foundation; thinking is the position ("No screen does not separate Kheelu", competitor review v9: **NOT USABLE IN COPY** until [open questions](../open-questions.md) Q4 ([list](messaging.md#not-usable-in-copy-until-q4))) | – |
+| Differentiator | Safe and screen-free | Those are the foundation; thinking is the position ("No screen does not separate Kheelu", competitor review v9: **INTERNAL** (research: shapes strategy, never on the site; [D013](../decisions/D013-internal-vs-external-content.md)); [list](messaging.md#internal-research-figures)) | – |
 | Price story | Cheaper than Miko | Compared with enrichment spend, not robots | – |
-| Deck language | "Maps your emotions and triggers", "remembers life events, values, emotions" | Learning progress only: "Remembers what your child has learnt and loves" (surveillance risk; DPDP) | – |
-| Mission | "Safe, conversational AI tutors… combining robotics" | Rewritten (above) | – |
+| Deck language | "Maps your emotions and triggers", "remembers life events, values, emotions" | Learning progress only: "Remembers what your child has learnt and loves" (surveillance risk; DPDP) | Emotion reading of any kind is **BANNED** ([R5](../open-questions.md#f-content-rulings-from-the-d013-classification-pass-ask-one-at-a-time)); memory is EXTERNAL within the live claim ([D017](../decisions/D017-live-behaviour-claims-confirmed.md), [messaging.md](messaging.md#proof-points) #17) |
+| Mission | "Safe, conversational AI tutors… combining robotics" | Rewritten (above) | SKM's rewrite needs the conversation form ([D016](../decisions/D016-brain-wording.md)) |
 | Platform story | Kheelona OS, wearables, robots | Investors only; parents see one product | Live site has a `/playos` page and nav tab: [open questions](../open-questions.md) G8 |
 
 ## Two product rules that make the promise true
@@ -273,7 +336,8 @@ Source: docx §10 L375–377; §1 L16.
 2. Kheelu regularly hands the conversation back to family (Xu: children lead more with people than with AI).
 
 SKM: "It only works if the product does it… Both need product sign-off this week" (docx §1 L16). Neither is
-confirmed in any source this agent could reach: [open questions](../open-questions.md) F8.
+confirmed in any source this agent could reach: [open questions](../open-questions.md) F8. Site: both
+**EXTERNAL IF CONFIRMED** (F8; [messaging.md](messaging.md#proof-points) #15, #16).
 
 ## Who it's for
 
@@ -282,7 +346,8 @@ See [audience.md](audience.md).
 ## Outside the website (summary)
 
 The 90-day plan keeps its structure (WhatsApp-assisted selling, Bengaluru demos, Gate 1 on 1 November) and
-changes what goes into each channel (docx §11 L379). The plan itself is not in the project (Q4). Items that touch the website:
+changes what goes into each channel (docx §11 L379). The plan itself is not in the project and is INTERNAL
+([D013](../decisions/D013-internal-vs-external-content.md)). Items that touch the website:
 - A three-way Meta test of the mechanism, outcome and contrast lines; "the winner leads from Gate 1"
   (L383). The hero line may therefore change after 1 November.
 - Put the child-development advisor's face and name "in at least one ad and on the website" (L386–387).
@@ -290,6 +355,9 @@ changes what goes into each channel (docx §11 L379). The plan itself is not in 
 - If parents hear "brain development" as hype, lead with "It asks. They think." and move the brain promise
   to the second line; if "Will AI make my child lazy?" comes up often, move the contrast line into the hero
   (docx §12 L417–418).
+- Ads are published copy, so the outcome line in that test needs [D016](../decisions/D016-brain-wording.md)'s conversation form
+  ([messaging.md](messaging.md#message-testing)). The site speaks only to parents of 3-7 year olds and
+  family buyers ([R9](../open-questions.md#f-content-rulings-from-the-d013-classification-pass-ask-one-at-a-time)): corporate gifting and preschool channels in the plan stay off the website.
 
 ## Future learning modules
 
@@ -298,8 +366,9 @@ Source: pdf pp.14–16 only (not in the docx).
 A four-step claim ladder: built on research ("Built to support…", today) → mapped to NCF Foundational Stage
 2022 and NIPUN Bharat ("Aligned with NCF goals") → measured with families ("In our pilot, children…") →
 tested independently ("Shown to improve…") (pdf p.14). Then eight possible modules with "could claim" lines,
-for example "Builds early number sense" and "Gets children ready to read" (pp.15–16). **None of these is
-usable on the site now**; the deck itself says "we only say what we've reached" (p.14). Curriculum mapping
+for example "Builds early number sense" and "Gets children ready to read" (pp.15–16). Site: **INTERNAL**
+(future plans, including "Aligned with NCF goals"): none of these is on the site now, and the deck itself
+says "we only say what we've reached" (p.14). Curriculum mapping
 and "Practise tables with Kheelu" also sit close to the edtech frame the docx refuses (docx §5 L133).
 
 ## Where the age correction bites
@@ -338,7 +407,10 @@ and "Practise tables with Kheelu" also sit close to the edtech frame the docx re
 
 ## Open questions raised by this page
 
-All tracked in [open questions](../open-questions.md): authorship, sign-off and SKM's missing documents (Q4); the grown-up-nearby
-condition, speech recognition at 3, "toddlers", "friend" and the wake-word wording (G5); the age-3 skills
-list and advisor sign-off for the hero (F9); the two product rules and the weekly report (F8); data answers
-(F5); returns and warranty (F1); BIS (F4); the trademark check (F10); `/playos` (G8); the CTA label (G1).
+All tracked in [open questions](../open-questions.md): authorship and sign-off (Q4; its missing documents
+are not needed, [D013](../decisions/D013-internal-vs-external-content.md); only the founder signs off copy,
+[D015](../decisions/D015-founder-signs-off-copy.md)); the grown-up-nearby condition, speech recognition at 3, "toddlers" and "friend" (G5; the
+wake-word wording is moot, [D018](../decisions/D018-wake-up-button.md)); the age-3 skills list and the advisor (F9; the hero is settled by
+[D016](../decisions/D016-brain-wording.md)); the two product rules and the weekly report (F8); data answers (F5, answered: [D019](../decisions/D019-voice-providers.md), [D020](../decisions/D020-provider-terms-and-no-sale.md));
+returns and warranty (F1, answered except the late-defect remedy and who pays for pickup: [D021](../decisions/D021-returns-policy.md),
+[D022](../decisions/D022-warranty-replacement-refund.md)); BIS (F4); the trademark check (F10); `/playos` (G8); the CTA label (G1).

@@ -1,0 +1,7 @@
+User-Agent: *
+Allow: /
+Disallow: /partner/thanks
+Disallow: /deck
+Disallow: /deck.enc
+
+Sitemap: https://kheelona.ai/sitemap.xml

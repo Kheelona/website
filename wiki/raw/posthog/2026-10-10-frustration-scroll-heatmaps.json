@@ -1,0 +1,591 @@
+{
+  "meta": {
+    "project": "PostHog 617632 (US cloud), project timezone UTC",
+    "range": "2026-09-19 00:00 to 2026-10-11 00:00 UTC (data exists from 2026-09-19 10:52 UTC; PostHog was installed that day)",
+    "run_at": "2026-10-11 01:00-02:30 UTC (2026-10-10 in the wiki's dating)",
+    "human_filter": "sessions with >=1 $pageview, no event with $virt_is_bot = true, entry referrer not localhost:3456 / 127.0.0.1:3456 / *.vercel.app (unless a query says otherwise)",
+    "caveat": "Test-account cohort 580233 has 0 members, so team traffic is included (about 48 sessions from 4 devices with 10+ sessions each, Q24). Aggregates only."
+  },
+  "queries": [
+    {
+      "id": "Q41",
+      "what": "Window totals of capture events, bots excluded (internal not excluded)",
+      "hogql": "SELECT event, count() AS n, uniq(properties.$session_id) AS sessions, countIf(properties.$host = 'kheelona.com') AS apex, countIf(properties.$host = 'store.kheelona.com') AS store FROM events WHERE event IN ('$rageclick','$dead_click','$dead_swipe','$exception','$pageleave','$autocapture','$web_vitals','$pageview') AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND coalesce(properties.$virt_is_bot, false) = false GROUP BY event ORDER BY n DESC",
+      "rows": [
+        {
+          "event": "$pageview",
+          "n": 1092,
+          "sessions": 806,
+          "apex": 982,
+          "store": 110
+        },
+        {
+          "event": "$web_vitals",
+          "n": 1001,
+          "sessions": 541,
+          "apex": 869,
+          "store": 132
+        },
+        {
+          "event": "$pageleave",
+          "n": 872,
+          "sessions": 766,
+          "apex": 793,
+          "store": 79
+        },
+        {
+          "event": "$autocapture",
+          "n": 750,
+          "sessions": 178,
+          "apex": 569,
+          "store": 181
+        },
+        {
+          "event": "$dead_click",
+          "n": 89,
+          "sessions": 41,
+          "apex": 82,
+          "store": 7
+        },
+        {
+          "event": "$dead_swipe",
+          "n": 61,
+          "sessions": 41,
+          "apex": 43,
+          "store": 18
+        },
+        {
+          "event": "$exception",
+          "n": 37,
+          "sessions": 12,
+          "apex": 37,
+          "store": 0
+        },
+        {
+          "event": "$rageclick",
+          "n": 13,
+          "sessions": 9,
+          "apex": 10,
+          "store": 3
+        }
+      ]
+    },
+    {
+      "id": "Q15",
+      "what": "Rage clicks, dead clicks and dead swipes by page, device and element (all sessions; top rows)",
+      "hogql": "SELECT event, properties.$host AS host, properties.$pathname AS path, properties.$device_type AS device, left(coalesce(properties.$el_text, ''), 50) AS el_text, extract(elements_chain, '^([a-z0-9]+)') AS tag, left(coalesce(elements_chain_href,''), 40) AS href, count() AS n, uniq(properties.$session_id) AS sessions FROM events WHERE event IN ('$rageclick','$dead_click','$dead_swipe') AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') GROUP BY event, host, path, device, el_text, tag, href ORDER BY n DESC LIMIT 80",
+      "rows": [
+        {
+          "event": "$dead_click",
+          "host": "kheelona.com",
+          "path": "/",
+          "device": "Mobile",
+          "element_text": "",
+          "tag": "video",
+          "n": 36,
+          "sessions": 12
+        },
+        {
+          "event": "$dead_click",
+          "host": "kheelona.com",
+          "path": "/",
+          "device": "Mobile",
+          "element_text": "",
+          "tag": "div",
+          "n": 11,
+          "sessions": 9
+        },
+        {
+          "event": "$dead_swipe",
+          "host": "kheelona.com",
+          "path": "/",
+          "device": "Mobile",
+          "element_text": "",
+          "tag": "div",
+          "n": 8,
+          "sessions": 7
+        },
+        {
+          "event": "$dead_click",
+          "host": "kheelona.com",
+          "path": "/",
+          "device": "Mobile",
+          "element_text": "",
+          "tag": "img",
+          "n": 6,
+          "sessions": 4
+        },
+        {
+          "event": "$dead_swipe",
+          "host": "kheelona.com",
+          "path": "/",
+          "device": "Mobile",
+          "element_text": "",
+          "tag": "nav",
+          "n": 4,
+          "sessions": 3
+        },
+        {
+          "event": "$dead_swipe",
+          "host": "kheelona.com",
+          "path": "/",
+          "device": "Mobile",
+          "element_text": "Kheelu listens, remembers, and grows ...",
+          "tag": "p",
+          "n": 4,
+          "sessions": 4
+        },
+        {
+          "event": "$dead_click",
+          "host": "store.kheelona.com",
+          "path": "/",
+          "device": "Mobile",
+          "element_text": "",
+          "tag": "div",
+          "n": 4,
+          "sessions": 3
+        },
+        {
+          "event": "$rageclick",
+          "host": "kheelona.com",
+          "path": "/",
+          "device": "Desktop",
+          "element_text": "",
+          "tag": "button",
+          "n": 4,
+          "sessions": 3
+        },
+        {
+          "event": "$dead_click",
+          "host": "kheelona.com",
+          "path": "/",
+          "device": "Mobile",
+          "element_text": "Kheelu listens, remembers, and grows ...",
+          "tag": "p",
+          "n": 4,
+          "sessions": 1
+        },
+        {
+          "event": "$rageclick",
+          "host": "store.kheelona.com",
+          "path": "/",
+          "device": "Desktop",
+          "element_text": "",
+          "tag": "button",
+          "n": 3,
+          "sessions": 1
+        },
+        {
+          "event": "$dead_click",
+          "host": "kheelona.com",
+          "path": "/",
+          "device": "Tablet",
+          "element_text": "",
+          "tag": "video",
+          "n": 3,
+          "sessions": 1
+        },
+        {
+          "event": "$dead_swipe",
+          "host": "store.kheelona.com",
+          "path": "/",
+          "device": "Mobile",
+          "element_text": "(seller address block)",
+          "tag": "address",
+          "n": 3,
+          "sessions": 2
+        },
+        {
+          "event": "$dead_swipe",
+          "host": "store.kheelona.com",
+          "path": "/",
+          "device": "Mobile",
+          "element_text": "Where we send your confirmation, and the ...",
+          "tag": "p",
+          "n": 3,
+          "sessions": 3
+        },
+        {
+          "event": "$dead_swipe",
+          "host": "store.kheelona.com",
+          "path": "/",
+          "device": "Mobile",
+          "element_text": "",
+          "tag": "input",
+          "n": 3,
+          "sessions": 3
+        },
+        {
+          "event": "$rageclick",
+          "host": "kheelona.com",
+          "path": "/",
+          "device": "Desktop",
+          "element_text": "",
+          "tag": "img",
+          "n": 2,
+          "sessions": 2
+        },
+        {
+          "event": "$rageclick",
+          "host": "kheelona.com",
+          "path": "/privacy",
+          "device": "Mobile",
+          "element_text": "Pre-order Kheelu",
+          "tag": "a",
+          "n": 2,
+          "sessions": 1
+        }
+      ],
+      "note": "Window totals are in Q41."
+    },
+    {
+      "id": "Q16",
+      "what": "Store-page dead and rage clicks by element chain",
+      "hogql": "SELECT event, properties.$device_type AS device, left(elements_chain, 400) AS chain, count() AS n FROM events WHERE event IN ('$dead_click','$rageclick') AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND properties.$host = 'store.kheelona.com' GROUP BY event, device, chain ORDER BY n DESC LIMIT 20",
+      "rows": [
+        {
+          "event": "$rageclick",
+          "device": "Desktop",
+          "element": "button aria-label=\"Next video\" (video carousel)",
+          "n": 3
+        },
+        {
+          "event": "$dead_click",
+          "device": "Mobile",
+          "element": "page grid container (outside the form)",
+          "n": 1
+        },
+        {
+          "event": "$dead_click",
+          "device": "Mobile",
+          "element": "form field wrapper div",
+          "n": 1
+        },
+        {
+          "event": "$dead_click",
+          "device": "Desktop",
+          "element": "main",
+          "n": 1
+        },
+        {
+          "event": "$dead_click",
+          "device": "Mobile",
+          "element": "consent tick row (div.flex items-start gap-3)",
+          "n": 1
+        },
+        {
+          "event": "$dead_click",
+          "device": "Desktop",
+          "element": "playing <video controls> (a-story-in-two-languages.mp4)",
+          "n": 1
+        },
+        {
+          "event": "$dead_click",
+          "device": "Desktop",
+          "element": "page grid container",
+          "n": 1
+        },
+        {
+          "event": "$dead_click",
+          "device": "Mobile",
+          "element": "form field wrapper div",
+          "n": 1
+        }
+      ]
+    },
+    {
+      "id": "Q19",
+      "what": "Scroll depth and time on page for Home, the product page and the store (from $prev_pageview_* on the next $pageview or $pageleave)",
+      "hogql": "SELECT properties.$host AS host, properties.$prev_pageview_pathname AS page, properties.$device_type AS device, count() AS page_views_measured, round(quantile(0.5)(toFloat(properties.$prev_pageview_max_scroll_percentage))*100, 0) AS median_max_scroll_pct, round(100*countIf(toFloat(properties.$prev_pageview_max_scroll_percentage) >= 0.25)/count(), 0) AS pct_reach_25, round(100*countIf(toFloat(properties.$prev_pageview_max_scroll_percentage) >= 0.5)/count(), 0) AS pct_reach_50, round(100*countIf(toFloat(properties.$prev_pageview_max_scroll_percentage) >= 0.75)/count(), 0) AS pct_reach_75, round(100*countIf(toFloat(properties.$prev_pageview_max_scroll_percentage) >= 0.9)/count(), 0) AS pct_reach_90, round(quantile(0.5)(toFloat(properties.$prev_pageview_duration)), 0) AS median_time_on_page_s FROM events WHERE event IN ('$pageview','$pageleave') AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND properties.$prev_pageview_pathname IN ('/', '/products/kheelu') AND properties.$prev_pageview_max_scroll_percentage IS NOT NULL AND coalesce(properties.$virt_is_bot, false) = false AND properties.$device_type IN ('Mobile','Desktop') GROUP BY host, page, device ORDER BY host, page, device",
+      "rows": [
+        {
+          "host": "kheelona.com",
+          "page": "/",
+          "device": "Desktop",
+          "page_views_measured": 145,
+          "median_max_scroll_pct": 16,
+          "pct_reach_25": 41,
+          "pct_reach_50": 28,
+          "pct_reach_75": 25,
+          "pct_reach_90": 21,
+          "median_time_on_page_s": 53
+        },
+        {
+          "host": "kheelona.com",
+          "page": "/",
+          "device": "Mobile",
+          "page_views_measured": 378,
+          "median_max_scroll_pct": 0,
+          "pct_reach_25": 10,
+          "pct_reach_50": 6,
+          "pct_reach_75": 4,
+          "pct_reach_90": 3,
+          "median_time_on_page_s": 9
+        },
+        {
+          "host": "kheelona.com",
+          "page": "/products/kheelu",
+          "device": "Desktop",
+          "page_views_measured": 35,
+          "median_max_scroll_pct": 23,
+          "pct_reach_25": 46,
+          "pct_reach_50": 29,
+          "pct_reach_75": 9,
+          "pct_reach_90": 6,
+          "median_time_on_page_s": 18
+        },
+        {
+          "host": "kheelona.com",
+          "page": "/products/kheelu",
+          "device": "Mobile",
+          "page_views_measured": 21,
+          "median_max_scroll_pct": 30,
+          "pct_reach_25": 57,
+          "pct_reach_50": 19,
+          "pct_reach_75": 10,
+          "pct_reach_90": 10,
+          "median_time_on_page_s": 33
+        },
+        {
+          "host": "store.kheelona.com",
+          "page": "/",
+          "device": "Desktop",
+          "page_views_measured": 28,
+          "median_max_scroll_pct": 77,
+          "pct_reach_25": 64,
+          "pct_reach_50": 57,
+          "pct_reach_75": 50,
+          "pct_reach_90": 39,
+          "median_time_on_page_s": 18
+        },
+        {
+          "host": "store.kheelona.com",
+          "page": "/",
+          "device": "Mobile",
+          "page_views_measured": 40,
+          "median_max_scroll_pct": 47,
+          "pct_reach_25": 62,
+          "pct_reach_50": 48,
+          "pct_reach_75": 38,
+          "pct_reach_90": 28,
+          "median_time_on_page_s": 50
+        }
+      ]
+    },
+    {
+      "id": "Q19b",
+      "what": "Home scroll depth, paid (tagged or Meta click id) vs other traffic",
+      "hogql": "SELECT properties.$device_type AS device, if(coalesce(session.$entry_utm_medium,'') = 'paid' OR (coalesce(session.$entry_fbclid,'') != '' AND coalesce(session.$entry_utm_source,'') = ''), 'paid or Meta click', 'other') AS traffic, count() AS page_views_measured, round(quantile(0.5)(toFloat(properties.$prev_pageview_max_scroll_percentage))*100, 0) AS median_max_scroll_pct, round(100*countIf(toFloat(properties.$prev_pageview_max_scroll_percentage) >= 0.25)/count(), 0) AS pct_reach_25, round(100*countIf(toFloat(properties.$prev_pageview_max_scroll_percentage) >= 0.5)/count(), 0) AS pct_reach_50, round(100*countIf(toFloat(properties.$prev_pageview_max_scroll_percentage) >= 0.9)/count(), 0) AS pct_reach_90, round(quantile(0.5)(toFloat(properties.$prev_pageview_duration)), 0) AS median_time_on_page_s FROM events WHERE event IN ('$pageview','$pageleave') AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND properties.$host = 'kheelona.com' AND properties.$prev_pageview_pathname = '/' AND properties.$prev_pageview_max_scroll_percentage IS NOT NULL AND coalesce(properties.$virt_is_bot, false) = false AND properties.$device_type IN ('Mobile','Desktop') GROUP BY device, traffic ORDER BY device, traffic",
+      "rows": [
+        {
+          "device": "Desktop",
+          "traffic": "other",
+          "page_views_measured": 143,
+          "median_max_scroll_pct": 17,
+          "pct_reach_25": 41,
+          "pct_reach_50": 29,
+          "pct_reach_90": 22,
+          "median_time_on_page_s": 53
+        },
+        {
+          "device": "Desktop",
+          "traffic": "paid or Meta click",
+          "page_views_measured": 2,
+          "median_max_scroll_pct": 0,
+          "pct_reach_25": 0,
+          "pct_reach_50": 0,
+          "pct_reach_90": 0,
+          "median_time_on_page_s": 10
+        },
+        {
+          "device": "Mobile",
+          "traffic": "other",
+          "page_views_measured": 82,
+          "median_max_scroll_pct": 13,
+          "pct_reach_25": 37,
+          "pct_reach_50": 22,
+          "pct_reach_90": 10,
+          "median_time_on_page_s": 27
+        },
+        {
+          "device": "Mobile",
+          "traffic": "paid or Meta click",
+          "page_views_measured": 296,
+          "median_max_scroll_pct": 0,
+          "pct_reach_25": 3,
+          "pct_reach_50": 2,
+          "pct_reach_90": 1,
+          "median_time_on_page_s": 8
+        }
+      ]
+    },
+    {
+      "id": "Q37",
+      "what": "Heatmap click points per key page (heatmaps table; y and width rescaled by scale_factor)",
+      "hogql": "SELECT multiIf(current_url LIKE 'https://store.kheelona.com%', 'store', current_url LIKE '%/products/kheelu%', '/products/kheelu', match(current_url, '^https://kheelona.com/?(\\\\?|#|$)'), 'home', 'other') AS page, if(viewport_width * scale_factor < 768, 'phone', 'laptop') AS width, type, count() AS points, uniq(session_id) AS sessions, countIf(pointer_target_fixed) AS on_fixed_elements, round(quantile(0.5)(y * scale_factor), 0) AS median_y_px, round(100*countIf(y * scale_factor <= viewport_height * scale_factor)/count(), 0) AS pct_in_first_screen FROM heatmaps WHERE timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND type IN ('click','rageclick','deadclick') AND page IN ('home','store','/products/kheelu') GROUP BY page, width, type ORDER BY page, width, type",
+      "rows": [
+        {
+          "page": "/products/kheelu",
+          "width": "laptop",
+          "type": "click",
+          "points": 67,
+          "sessions": 24,
+          "on_fixed_elements": 17,
+          "median_y_px": 624,
+          "pct_in_first_screen": 54
+        },
+        {
+          "page": "/products/kheelu",
+          "width": "laptop",
+          "type": "deadclick",
+          "points": 1,
+          "sessions": 1,
+          "on_fixed_elements": 0,
+          "median_y_px": 208,
+          "pct_in_first_screen": 100
+        },
+        {
+          "page": "/products/kheelu",
+          "width": "laptop",
+          "type": "rageclick",
+          "points": 3,
+          "sessions": 2,
+          "on_fixed_elements": 0,
+          "median_y_px": 1808,
+          "pct_in_first_screen": 33
+        },
+        {
+          "page": "/products/kheelu",
+          "width": "phone",
+          "type": "click",
+          "points": 36,
+          "sessions": 14,
+          "on_fixed_elements": 13,
+          "median_y_px": 3752,
+          "pct_in_first_screen": 39
+        },
+        {
+          "page": "/products/kheelu",
+          "width": "phone",
+          "type": "deadclick",
+          "points": 2,
+          "sessions": 2,
+          "on_fixed_elements": 0,
+          "median_y_px": 3520,
+          "pct_in_first_screen": 0
+        },
+        {
+          "page": "home",
+          "width": "laptop",
+          "type": "click",
+          "points": 668,
+          "sessions": 84,
+          "on_fixed_elements": 82,
+          "median_y_px": 1504,
+          "pct_in_first_screen": 39
+        },
+        {
+          "page": "home",
+          "width": "laptop",
+          "type": "deadclick",
+          "points": 12,
+          "sessions": 5,
+          "on_fixed_elements": 0,
+          "median_y_px": 1600,
+          "pct_in_first_screen": 17
+        },
+        {
+          "page": "home",
+          "width": "laptop",
+          "type": "rageclick",
+          "points": 48,
+          "sessions": 15,
+          "on_fixed_elements": 2,
+          "median_y_px": 1992,
+          "pct_in_first_screen": 31
+        },
+        {
+          "page": "home",
+          "width": "phone",
+          "type": "click",
+          "points": 288,
+          "sessions": 78,
+          "on_fixed_elements": 66,
+          "median_y_px": 1856,
+          "pct_in_first_screen": 30
+        },
+        {
+          "page": "home",
+          "width": "phone",
+          "type": "deadclick",
+          "points": 58,
+          "sessions": 20,
+          "on_fixed_elements": 3,
+          "median_y_px": 1840,
+          "pct_in_first_screen": 21
+        },
+        {
+          "page": "home",
+          "width": "phone",
+          "type": "rageclick",
+          "points": 5,
+          "sessions": 4,
+          "on_fixed_elements": 1,
+          "median_y_px": 1856,
+          "pct_in_first_screen": 40
+        },
+        {
+          "page": "store",
+          "width": "laptop",
+          "type": "click",
+          "points": 67,
+          "sessions": 9,
+          "on_fixed_elements": 8,
+          "median_y_px": 1104,
+          "pct_in_first_screen": 40
+        },
+        {
+          "page": "store",
+          "width": "laptop",
+          "type": "deadclick",
+          "points": 3,
+          "sessions": 2,
+          "on_fixed_elements": 0,
+          "median_y_px": 864,
+          "pct_in_first_screen": 33
+        },
+        {
+          "page": "store",
+          "width": "laptop",
+          "type": "rageclick",
+          "points": 3,
+          "sessions": 2,
+          "on_fixed_elements": 0,
+          "median_y_px": 2016,
+          "pct_in_first_screen": 0
+        },
+        {
+          "page": "store",
+          "width": "phone",
+          "type": "click",
+          "points": 86,
+          "sessions": 18,
+          "on_fixed_elements": 0,
+          "median_y_px": 736,
+          "pct_in_first_screen": 50
+        },
+        {
+          "page": "store",
+          "width": "phone",
+          "type": "deadclick",
+          "points": 4,
+          "sessions": 3,
+          "on_fixed_elements": 0,
+          "median_y_px": 560,
+          "pct_in_first_screen": 75
+        }
+      ],
+      "note": "pct_in_first_screen compares the stored y with the viewport height and is a rough guide only (fixed elements report viewport-relative positions)."
+    }
+  ]
+}

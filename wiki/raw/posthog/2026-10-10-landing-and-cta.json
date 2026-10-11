@@ -1,0 +1,493 @@
+{
+  "meta": {
+    "project": "PostHog 617632 (US cloud), project timezone UTC",
+    "range": "2026-09-19 00:00 to 2026-10-11 00:00 UTC (data exists from 2026-09-19 10:52 UTC; PostHog was installed that day)",
+    "run_at": "2026-10-11 01:00-02:30 UTC (2026-10-10 in the wiki's dating)",
+    "human_filter": "sessions with >=1 $pageview, no event with $virt_is_bot = true, entry referrer not localhost:3456 / 127.0.0.1:3456 / *.vercel.app (unless a query says otherwise)",
+    "caveat": "Test-account cohort 580233 has 0 members, so team traffic is included (about 48 sessions from 4 devices with 10+ sessions each, Q24). Aggregates only."
+  },
+  "queries": [
+    {
+      "id": "Q12",
+      "what": "Landing pages by host (human, non-internal sessions)",
+      "hogql": "SELECT entry_host, entry_path, count() AS sessions, countIf(paid = 1) AS paid_sessions, round(100*countIf(pvs = 1)/count(),1) AS pct_one_page, round(quantile(0.5)(dur),0) AS median_dur_s, countIf(store_pv > 0) AS reached_store, countIf(form_started > 0) AS form_started, countIf(purchased > 0) AS purchases FROM ( SELECT properties.$session_id AS sid, any(session.$entry_hostname) AS entry_host, any(session.$entry_pathname) AS entry_path, any(session.$session_duration) AS dur, any(session.$entry_referring_domain) AS ref, if(coalesce(any(session.$entry_utm_medium),'') = 'paid' OR (coalesce(any(session.$entry_fbclid),'') != '' AND coalesce(any(session.$entry_utm_source),'') = ''), 1, 0) AS paid, max(properties.$virt_is_bot = true) AS is_bot, countIf(event = '$pageview' AND properties.$host = 'store.kheelona.com' AND properties.$pathname NOT LIKE '/thanks%') AS store_pv, countIf(event = 'preorder_form_started') AS form_started, countIf(event = 'purchase') AS purchased, countIf(event = '$pageview') AS pvs FROM events WHERE timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND event IN ('$pageview','preorder_form_started','purchase') AND properties.$session_id IS NOT NULL GROUP BY sid HAVING pvs > 0 AND is_bot = 0 AND NOT (coalesce(ref,'') IN ('localhost:3456','127.0.0.1:3456') OR coalesce(ref,'') LIKE '%vercel.app') ) GROUP BY entry_host, entry_path ORDER BY sessions DESC LIMIT 40",
+      "rows": [
+        {
+          "entry_host": "kheelona.com",
+          "entry_path": "/",
+          "sessions": 681,
+          "paid_sessions": 399,
+          "pct_one_page": 81.8,
+          "median_dur_s": 13,
+          "reached_store": 28,
+          "form_started": 4,
+          "purchases": 2
+        },
+        {
+          "entry_host": "store.kheelona.com",
+          "entry_path": "/",
+          "sessions": 58,
+          "paid_sessions": 15,
+          "pct_one_page": 81.0,
+          "median_dur_s": 20,
+          "reached_store": 58,
+          "form_started": 5,
+          "purchases": 0
+        },
+        {
+          "entry_host": "kheelona.com",
+          "entry_path": "/products/kheelu",
+          "sessions": 31,
+          "paid_sessions": 0,
+          "pct_one_page": 71.0,
+          "median_dur_s": 31,
+          "reached_store": 5,
+          "form_started": 1,
+          "purchases": 0
+        },
+        {
+          "entry_host": "kheelona.com",
+          "entry_path": "/ai-toys-for-kids-in-india",
+          "sessions": 7,
+          "paid_sessions": 0,
+          "pct_one_page": 85.7,
+          "median_dur_s": 6,
+          "reached_store": 0,
+          "form_started": 0,
+          "purchases": 0
+        },
+        {
+          "entry_host": "kheelona.com",
+          "entry_path": "/team",
+          "sessions": 6,
+          "paid_sessions": 0,
+          "pct_one_page": 66.7,
+          "median_dur_s": 2,
+          "reached_store": 0,
+          "form_started": 0,
+          "purchases": 0
+        },
+        {
+          "entry_host": "kheelona.com",
+          "entry_path": "/privacy",
+          "sessions": 4,
+          "paid_sessions": 0,
+          "pct_one_page": 50.0,
+          "median_dur_s": 8,
+          "reached_store": 0,
+          "form_started": 0,
+          "purchases": 0
+        },
+        {
+          "entry_host": "kheelona.com",
+          "entry_path": "/contact",
+          "sessions": 3,
+          "paid_sessions": 0,
+          "pct_one_page": 100.0,
+          "median_dur_s": 5,
+          "reached_store": 0,
+          "form_started": 0,
+          "purchases": 0
+        },
+        {
+          "entry_host": "kheelona.com",
+          "entry_path": "/stories/learning-toys-for-a-three-year-old",
+          "sessions": 2,
+          "paid_sessions": 0,
+          "pct_one_page": 100.0,
+          "median_dur_s": 0,
+          "reached_store": 0,
+          "form_started": 0,
+          "purchases": 0
+        },
+        {
+          "entry_host": "kheelona.com",
+          "entry_path": "/safety",
+          "sessions": 2,
+          "paid_sessions": 0,
+          "pct_one_page": 50.0,
+          "median_dur_s": 1664,
+          "reached_store": 0,
+          "form_started": 0,
+          "purchases": 0
+        },
+        {
+          "entry_host": "kheelona.com",
+          "entry_path": "/refund",
+          "sessions": 1,
+          "paid_sessions": 0,
+          "pct_one_page": 0.0,
+          "median_dur_s": 854,
+          "reached_store": 0,
+          "form_started": 0,
+          "purchases": 0
+        },
+        {
+          "entry_host": "kheelona.com",
+          "entry_path": "/stories/how-to-get-your-child-talking",
+          "sessions": 1,
+          "paid_sessions": 0,
+          "pct_one_page": 100.0,
+          "median_dur_s": 0,
+          "reached_store": 0,
+          "form_started": 0,
+          "purchases": 0
+        },
+        {
+          "entry_host": "kheelona.com",
+          "entry_path": "/stories/what-actually-builds-a-sharp-brain",
+          "sessions": 1,
+          "paid_sessions": 0,
+          "pct_one_page": 100.0,
+          "median_dur_s": 0,
+          "reached_store": 0,
+          "form_started": 0,
+          "purchases": 0
+        },
+        {
+          "entry_host": "store.kheelona.com",
+          "entry_path": "/thanks",
+          "sessions": 1,
+          "paid_sessions": 0,
+          "pct_one_page": 100.0,
+          "median_dur_s": 9,
+          "reached_store": 0,
+          "form_started": 0,
+          "purchases": 0
+        },
+        {
+          "entry_host": "kheelona.com",
+          "entry_path": "/playos",
+          "sessions": 1,
+          "paid_sessions": 0,
+          "pct_one_page": 100.0,
+          "median_dur_s": 18,
+          "reached_store": 0,
+          "form_started": 0,
+          "purchases": 0
+        },
+        {
+          "entry_host": "kheelona.com",
+          "entry_path": "/stories/should-kids-use-ai",
+          "sessions": 1,
+          "paid_sessions": 0,
+          "pct_one_page": 100.0,
+          "median_dur_s": 0,
+          "reached_store": 0,
+          "form_started": 0,
+          "purchases": 0
+        },
+        {
+          "entry_host": "kheelona.com",
+          "entry_path": "/stories/what-to-look-for-in-a-safe-ai-toy",
+          "sessions": 1,
+          "paid_sessions": 0,
+          "pct_one_page": 100.0,
+          "median_dur_s": 0,
+          "reached_store": 0,
+          "form_started": 0,
+          "purchases": 0
+        },
+        {
+          "entry_host": "kheelona.com",
+          "entry_path": "/stories/a-toy-that-talks-vs-a-toy-that-listens",
+          "sessions": 1,
+          "paid_sessions": 0,
+          "pct_one_page": 100.0,
+          "median_dur_s": 0,
+          "reached_store": 0,
+          "form_started": 0,
+          "purchases": 0
+        }
+      ]
+    },
+    {
+      "id": "Q13",
+      "what": "Autocaptured clicks that carry the cta attribute, by page and device (all sessions)",
+      "hogql": "SELECT properties.$host AS host, properties.$pathname AS path, coalesce(properties.cta,'') AS cta, properties.$device_type AS device, count() AS clicks, uniq(properties.$session_id) AS sessions FROM events WHERE event = '$autocapture' AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND properties.$event_type = 'click' AND coalesce(properties.cta,'') != '' GROUP BY host, path, cta, device ORDER BY clicks DESC LIMIT 50",
+      "rows": [
+        {
+          "host": "kheelona.com",
+          "path": "/",
+          "cta": "navbar",
+          "device": "Desktop",
+          "clicks": 10,
+          "sessions": 10
+        },
+        {
+          "host": "kheelona.com",
+          "path": "/products/kheelu",
+          "cta": "product-top",
+          "device": "Desktop",
+          "clicks": 3,
+          "sessions": 2
+        },
+        {
+          "host": "kheelona.com",
+          "path": "/",
+          "cta": "finale",
+          "device": "Desktop",
+          "clicks": 3,
+          "sessions": 3
+        },
+        {
+          "host": "kheelona.com",
+          "path": "/",
+          "cta": "hero",
+          "device": "Desktop",
+          "clicks": 3,
+          "sessions": 2
+        },
+        {
+          "host": "kheelona.com",
+          "path": "/stories/how-children-learn-by-talking",
+          "cta": "finale",
+          "device": "Mobile",
+          "clicks": 2,
+          "sessions": 1
+        },
+        {
+          "host": "kheelona.com",
+          "path": "/",
+          "cta": "hero",
+          "device": "Mobile",
+          "clicks": 2,
+          "sessions": 2
+        },
+        {
+          "host": "kheelona.com",
+          "path": "/stories",
+          "cta": "finale",
+          "device": "Desktop",
+          "clicks": 1,
+          "sessions": 1
+        },
+        {
+          "host": "kheelona.com",
+          "path": "/safety",
+          "cta": "navbar",
+          "device": "Desktop",
+          "clicks": 1,
+          "sessions": 1
+        },
+        {
+          "host": "kheelona.com",
+          "path": "/playos",
+          "cta": "finale",
+          "device": "Desktop",
+          "clicks": 1,
+          "sessions": 1
+        }
+      ]
+    },
+    {
+      "id": "Q14",
+      "what": "All clicks on a link to store.kheelona.com from kheelona.com, split by whether the cta attribute was present",
+      "hogql": "SELECT properties.$device_type AS device, if(coalesce(properties.cta,'') = '', '(no cta attribute)', properties.cta) AS cta, count() AS clicks, uniq(properties.$session_id) AS sessions FROM events WHERE event = '$autocapture' AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND properties.$host = 'kheelona.com' AND elements_chain_href LIKE '%store.kheelona.com%' GROUP BY ROLLUP(device, cta) ORDER BY device, clicks DESC",
+      "rows": [
+        {
+          "device": "Desktop",
+          "cta": "(subtotal)",
+          "clicks": 24,
+          "sessions": 19
+        },
+        {
+          "device": "Desktop",
+          "cta": "navbar",
+          "clicks": 11,
+          "sessions": 10
+        },
+        {
+          "device": "Desktop",
+          "cta": "finale",
+          "clicks": 5,
+          "sessions": 4
+        },
+        {
+          "device": "Desktop",
+          "cta": "hero",
+          "clicks": 3,
+          "sessions": 2
+        },
+        {
+          "device": "Desktop",
+          "cta": "product-top",
+          "clicks": 3,
+          "sessions": 2
+        },
+        {
+          "device": "Desktop",
+          "cta": "(no cta attribute)",
+          "clicks": 2,
+          "sessions": 2
+        },
+        {
+          "device": "Mobile",
+          "cta": "(subtotal)",
+          "clicks": 29,
+          "sessions": 18
+        },
+        {
+          "device": "Mobile",
+          "cta": "(no cta attribute)",
+          "clicks": 25,
+          "sessions": 15
+        },
+        {
+          "device": "Mobile",
+          "cta": "finale",
+          "clicks": 2,
+          "sessions": 1
+        },
+        {
+          "device": "Mobile",
+          "cta": "hero",
+          "clicks": 2,
+          "sessions": 2
+        },
+        {
+          "device": "(all)",
+          "cta": null,
+          "clicks": 53,
+          "sessions": 37
+        }
+      ]
+    },
+    {
+      "id": "Q14b",
+      "what": "Where the untagged store-link clicks sit (container classes in the element chain)",
+      "hogql": "SELECT properties.$device_type AS device, properties.$pathname AS path, position(elements_chain, 'md:hidden') > 0 AS in_md_hidden_bar, position(elements_chain, 'fixed') > 0 AS in_fixed_container, position(elements_chain, 'text-[14px]') > 0 AS small_pill, count() AS clicks FROM events WHERE event = '$autocapture' AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND properties.$host = 'kheelona.com' AND elements_chain_href LIKE '%store.kheelona.com%' AND coalesce(properties.cta,'') = '' GROUP BY device, path, in_md_hidden_bar, in_fixed_container, small_pill ORDER BY clicks DESC",
+      "rows": [
+        {
+          "device": "Mobile",
+          "path": "/",
+          "in_md_hidden_bar": 1,
+          "in_fixed_container": 1,
+          "small_pill": 1,
+          "clicks": 9
+        },
+        {
+          "device": "Mobile",
+          "path": "/privacy",
+          "in_md_hidden_bar": 0,
+          "in_fixed_container": 1,
+          "small_pill": 0,
+          "clicks": 8
+        },
+        {
+          "device": "Mobile",
+          "path": "/products/kheelu",
+          "in_md_hidden_bar": 1,
+          "in_fixed_container": 1,
+          "small_pill": 1,
+          "clicks": 5
+        },
+        {
+          "device": "Mobile",
+          "path": "/",
+          "in_md_hidden_bar": 0,
+          "in_fixed_container": 0,
+          "small_pill": 0,
+          "clicks": 3
+        },
+        {
+          "device": "Desktop",
+          "path": "/team",
+          "in_md_hidden_bar": 0,
+          "in_fixed_container": 0,
+          "small_pill": 0,
+          "clicks": 1
+        },
+        {
+          "device": "Desktop",
+          "path": "/",
+          "in_md_hidden_bar": 0,
+          "in_fixed_container": 0,
+          "small_pill": 0,
+          "clicks": 1
+        }
+      ],
+      "code_reference": "The md:hidden fixed bottom bar is the mobile dock of the Kheelu guide; its pre-order <a> has no data-ph-capture-attribute-cta (git show archive/pre-reset-2026-10-10:src/components/organisms/KheeluGuide.tsx, lines 255-279)."
+    },
+    {
+      "id": "Q32",
+      "what": "Store reach for sessions that saw the product page vs Home only; WhatsApp link clicks; PlayOS views",
+      "hogql": "SELECT device, countIf(product_pv > 0) AS saw_product_page, countIf(product_pv > 0 AND store_pv > 0) AS saw_product_and_store, countIf(product_pv = 0 AND home_pv > 0) AS home_no_product, countIf(product_pv = 0 AND home_pv > 0 AND store_pv > 0) AS home_no_product_and_store, countIf(wa_clicks > 0) AS sessions_with_whatsapp_click, sum(wa_clicks) AS whatsapp_clicks, countIf(playos_pv > 0) AS saw_playos FROM ( SELECT properties.$session_id AS sid, argMin(properties.$device_type, timestamp) AS device, any(session.$entry_referring_domain) AS ref, max(properties.$virt_is_bot = true) AS is_bot, countIf(event = '$pageview' AND properties.$host = 'kheelona.com' AND properties.$pathname LIKE '/products/kheelu%') AS product_pv, countIf(event = '$pageview' AND properties.$host = 'kheelona.com' AND properties.$pathname = '/') AS home_pv, countIf(event = '$pageview' AND properties.$pathname = '/playos') AS playos_pv, countIf(event = '$pageview' AND properties.$host = 'store.kheelona.com' AND properties.$pathname NOT LIKE '/thanks%') AS store_pv, countIf(event = '$autocapture' AND (elements_chain_href LIKE '%wa.me%' OR elements_chain_href LIKE '%whatsapp%')) AS wa_clicks, countIf(event = '$pageview') AS pvs FROM events WHERE timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND event IN ('$pageview','$autocapture') AND properties.$session_id IS NOT NULL GROUP BY sid HAVING pvs > 0 AND is_bot = 0 AND NOT (coalesce(ref,'') IN ('localhost:3456','127.0.0.1:3456') OR coalesce(ref,'') LIKE '%vercel.app') ) WHERE device IN ('Mobile','Desktop') GROUP BY ROLLUP(device)",
+      "rows": [
+        {
+          "device": "Mobile",
+          "saw_product_page": 26,
+          "saw_product_and_store": 3,
+          "home_no_product": 530,
+          "home_no_product_and_store": 19,
+          "sessions_with_whatsapp_click": 3,
+          "whatsapp_clicks": 3,
+          "saw_playos": 9
+        },
+        {
+          "device": "Desktop",
+          "saw_product_page": 35,
+          "saw_product_and_store": 6,
+          "home_no_product": 126,
+          "home_no_product_and_store": 11,
+          "sessions_with_whatsapp_click": 0,
+          "whatsapp_clicks": 0,
+          "saw_playos": 15
+        },
+        {
+          "device": "(all)",
+          "saw_product_page": 61,
+          "saw_product_and_store": 9,
+          "home_no_product": 656,
+          "home_no_product_and_store": 30,
+          "sessions_with_whatsapp_click": 3,
+          "whatsapp_clicks": 3,
+          "saw_playos": 24
+        }
+      ]
+    },
+    {
+      "id": "Q27",
+      "what": "Not-paid sessions: store reach with and without a customer-video play (aria-label starting 'Play: ')",
+      "hogql": "SELECT device, played_video, count() AS sessions, countIf(store_pv > 0) AS reached_store, round(100*countIf(store_pv > 0)/count(), 1) AS pct_reached_store, countIf(form_started > 0) AS form_started, countIf(purchased > 0) AS purchased FROM ( SELECT properties.$session_id AS sid, argMin(properties.$device_type, timestamp) AS device, if(countIf(event = '$autocapture' AND match(elements_chain, 'aria-label=\"Play: ')) > 0, 'played a video', 'no video play') AS played_video, if(coalesce(any(session.$entry_utm_medium),'') = 'paid' OR (coalesce(any(session.$entry_fbclid),'') != '' AND coalesce(any(session.$entry_utm_source),'') = ''), 1, 0) AS paid, any(session.$entry_referring_domain) AS ref, max(properties.$virt_is_bot = true) AS is_bot, countIf(event = '$pageview') AS pvs, countIf(event = '$pageview' AND properties.$host = 'store.kheelona.com' AND properties.$pathname NOT LIKE '/thanks%') AS store_pv, countIf(event = 'preorder_form_started') AS form_started, countIf(event = 'purchase') AS purchased FROM events WHERE timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND event IN ('$pageview','$autocapture','preorder_form_started','purchase') AND properties.$session_id IS NOT NULL GROUP BY sid HAVING pvs > 0 AND is_bot = 0 AND paid = 0 AND NOT (coalesce(ref,'') IN ('localhost:3456','127.0.0.1:3456') OR coalesce(ref,'') LIKE '%vercel.app') ) WHERE device IN ('Mobile','Desktop') GROUP BY device, played_video ORDER BY device, played_video",
+      "rows": [
+        {
+          "device": "Desktop",
+          "played_video": "no video play",
+          "sessions": 152,
+          "reached_store": 19,
+          "pct_reached_store": 12.5,
+          "form_started": 1,
+          "purchased": 1
+        },
+        {
+          "device": "Desktop",
+          "played_video": "played a video",
+          "sessions": 32,
+          "reached_store": 8,
+          "pct_reached_store": 25.0,
+          "form_started": 1,
+          "purchased": 0
+        },
+        {
+          "device": "Mobile",
+          "played_video": "no video play",
+          "sessions": 152,
+          "reached_store": 32,
+          "pct_reached_store": 21.1,
+          "form_started": 4,
+          "purchased": 0
+        },
+        {
+          "device": "Mobile",
+          "played_video": "played a video",
+          "sessions": 48,
+          "reached_store": 11,
+          "pct_reached_store": 22.9,
+          "form_started": 2,
+          "purchased": 1
+        }
+      ]
+    }
+  ]
+}

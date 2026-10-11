@@ -1,7 +1,7 @@
 ---
 title: Checkout journey (store.kheelona.com)
 type: inventory
-updated: 2026-10-10
+updated: 2026-10-11
 cites_at: archive/pre-reset-2026-10-10
 sources:
   - src/app/store/page.tsx
@@ -29,11 +29,20 @@ sources:
   - "mid: diff of src/app/store, src/features/preorder, src/lib/store against the tag"
   - "https://razorpay.com/docs/webhooks/payment-links.md and https://razorpay.com/docs/webhooks/payments.md (fetched 2026-10-10)"
   - "GET https://kheelona.com/api/health, https://store.kheelona.com/, /thanks, /e/example, /ideabaaz, https://kheelona.com/store (browser UA, 2026-10-11 00:42-00:51 UTC)"
+  - "wt: src/config/site.ts, src/features/preorder/components/OrderSummary.tsx, src/app/store/thanks/page.tsx, src/lib/email/templates.ts (working tree of reset/website-v2, read 2026-10-11)"
+  - wiki/decisions/D011-production-held-until-gate-b.md
+  - wiki/decisions/D021-returns-policy.md
+  - wiki/decisions/D022-warranty-replacement-refund.md
+  - wiki/decisions/D023-new-order-delivery.md
+  - wiki/decisions/D024-payment-methods-gst.md
+  - wiki/decisions/D027-story-mode-wording.md
+  - wiki/decisions/D028-price-wording.md
+  - wiki/decisions/D029-grievance-officer-legal-review.md
 ---
 
 # Checkout journey
 
-Plain `path:line` citations on this page refer to tag `archive/pre-reset-2026-10-10`; `mid:path` refers to `archive/mid-version-2026-10-10`.
+Plain `path:line` citations on this page refer to tag `archive/pre-reset-2026-10-10`; `mid:path` refers to `archive/mid-version-2026-10-10`; `wt:path:line` refers to the working tree of `reset/website-v2`, read 2026-10-11.
 
 Every step from a CTA tap on kheelona.com to the paid confirmation, the receipt email and the address
 link. The tag is production `77552ff`. Prices, the mode and what the client
@@ -52,6 +61,10 @@ may send live on [pricing](../product/pricing.md); refund, shipping and seller p
   webhook (guaranteed), both through the idempotent `markPaid` (`src/lib/store/fulfil.ts:58-196`).
 - **The address comes after payment**, on `/thanks`, authorised only by a signed 30-day token
   (`src/lib/store/signing.ts:38-64`).
+- **New-site copy rulings (2026-10-10/11)** change what the checkout SAYS, never how it works:
+  the price sentence, the trust terms beside the pay button, the delivery date for new orders, and
+  the receipt's Kheelona+ line ([below](#copy-the-new-checkout-carries)). Production keeps its text
+  until Gate B ([D011](../decisions/D011-production-held-until-gate-b.md)).
 - **Live today: token mode, live Razorpay keys, email and CAPI configured**
   (`/api/health`, fetched 2026-10-11 00:42 UTC:
   `{"ok":true,"store":"ready","preorder":"token","razorpay":"live","email":"configured","capi":"configured"}`).
@@ -86,10 +99,10 @@ it (tracking parity); read the funnel with it in mind.
 | 5 | Taps "Pay ₹499 and reserve" (or "Pay ₹7,999 and pre-order") | same | Errors shown inline and scrolled into view; button reads "Setting up your payment…" | Client validates with the same functions the server uses; `preorder_start`; `POST /api/preorder/create-order` with contact fields, `tier`, optional `signature`, `utm`, `phDistinctId`. **No amount.** | `PreorderForm.tsx:84-128`; `validate.ts:58-92` |
 | 6 | (server) create-order | `/api/preorder/create-order` | – | Rate limit (8/min per IP, per instance) → `resolveTier` (price, cap, expiry) → validate → insert `preorders` row `status='created'` **first** → create Razorpay order (`receipt` and `notes.order_ref` = our ref) → attach `rzp_order_id` → return `orderRef`, `razorpayOrderId`, `keyId`, `amountPaise`, signed `addressToken`, prefill | `create-order/route.ts:38-176`; `razorpay.ts:27-56`; `rate-limit.ts:20-42` |
 | 7 | Razorpay sheet opens | Razorpay modal over the store page | Button: "Opening the payment window…". Razorpay's own UI, prefilled name/email/phone, header tinted `#EF762F`, name "Kheelona", description "Kheelu pre-order KH-…" | `checkout.js` loaded on first submit only (never on page load); `begin_checkout` + `InitiateCheckout` | `src/features/preorder/lib/checkout.ts:13-99` |
-| 8 | Pays (methods: [policies](../product/policies.md#payment-methods); only UPI is proven, [open questions](../open-questions.md) F6) | Razorpay | – | Razorpay captures | – |
+| 8 | Pays: UPI, debit or credit card, or net banking (founder, [D024](../decisions/D024-payment-methods-gst.md); [policies](../product/policies.md#payment-methods)). Only UPI has been seen in a real order | Razorpay | – | Razorpay captures | – |
 | 9 | Success | browser | Redirect to `/thanks?ref=KH-…&t=<token>` | `onPaid`: browser `purchase` + Meta `Purchase`; background `POST /api/preorder/confirm` (verifies Razorpay's HMAC, then `markPaid` + `notifyPaid`) | `PreorderForm.tsx:154-173`; `confirm/route.ts:21-62` |
 | 10 | Token leaves the URL | `store.kheelona.com/thanks` | Lands on a clean `/thanks` | Proxy validates the `ref` + token shape, sets HttpOnly cookie `kh_order` (2 h, path `/thanks`), 303 to `/thanks`, `cache-control: private, no-store` | `proxy.ts:60-82`; `thanks-session.ts:24-56` |
-| 11 | Confirmation page | `store.kheelona.com/thanks` | "Pre-order confirmed / Your Kheelu is reserved." (or "Confirming your payment" until paid), order number, paid today, due on dispatch, ships from, then the address form | Reads the order **row** (never the current mode), verifies the token from the cookie | `thanks/page.tsx:60-185` |
+| 11 | Confirmation page | `store.kheelona.com/thanks` | "Pre-order confirmed / Your Kheelu is reserved." (or "Confirming your payment" until paid), order number, paid today, due on dispatch, ships from, then the address form | Reads the order **row** (never the current mode), verifies the token from the cookie. "Ships from" is the config value `SHIP_DATE_TEXT`, not the row (`wt:src/app/store/thanks/page.tsx:159`) | `thanks/page.tsx:60-185` |
 | 12 | Enters address (table below) | same | "Save my address" → "We have your address." | `POST /api/preorder/address` with `orderRef`, `token`, address; allowed while `created` or `paid`; `preorder_address_saved` | `AddressForm.tsx:40-87`; `address/route.ts:24-88` |
 | 13 | (server) Webhook, the guaranteed path | `POST /api/razorpay/webhook` (any host; `/api` is outside the proxy matcher) | – | Verify HMAC on the raw body → claim event id in `webhook_events` → `order.paid` / `payment.captured` → `markPaid`; `refund.processed` → `markRefunded`; `payment.failed` → `markFailed`; on error, release the claim and answer 500 so Razorpay retries | `webhook/route.ts:34-170` |
 | 14 | Receipt and alerts, exactly once | Email | Acknowledgement email "Your Kheelu is reserved (KH-…)": what was paid, what is due and when, ships-from date, address link if none yet, refund promise, Kheelona+ line, seller block. From `Kheelona <hello@send.kheelona.com>` by default, reply-to `hello@kheelona.com` | `notifyPaid` runs only when `markPaid` returns `paid`: receipt to the parent, internal alert to `ORDER_ALERT_EMAIL`, Meta CAPI `Purchase`, PostHog `purchase_confirmed`. Never throws | `fulfil.ts:324-358`; `templates.ts:103-185`; `env.ts:100-104` |
@@ -228,7 +241,7 @@ Brief §4.4: logic stays; restyle only.
 | Must NOT change (logic; founder approval needed) | Free to restyle (presentation) |
 |---|---|
 | `src/lib/store/**`, `src/app/api/**`, `src/proxy.ts`, `supabase/migrations/**` | Store page layout, kicker, h1 wording, image, video section (`src/app/store/page.tsx`) |
-| Money constants and derivations in `src/config/site.ts:55-117` | Store chrome: header, footer layout (`src/app/store/layout.tsx`) — keep the seller block and policy links |
+| Money constants and derivations in `src/config/site.ts:55-117` | Store chrome: header, footer layout (`src/app/store/layout.tsx`); keep the seller block and policy links |
 | `features/preorder/lib/{validate,checkout,analytics,india}.ts` (validation, payload, event names) | Markup and styling of `PreorderForm`, `OrderSummary`, `AddressForm`, `NotFoundPanel`, `/thanks`, event and partner pages |
 | The request body to create-order (fields, `tier`, `signature`, `utm`, `phDistinctId`) and the redirect to `/thanks?ref=&t=` | Copy of hints, errors and reassurance lines (facts must still come from config or the order row) |
 | Email templates' facts and branching (paid / due / ships from / refund promise derived from the row) | Email visual layout (`templates.ts:35-56`) |
@@ -255,6 +268,25 @@ The mid version (`archive/mid-version-2026-10-10`) changed only presentation in 
 kicker style, tier label "Pre-order price" → "Refundable deposit", store heading text); no payment,
 pricing or order logic (diff of `src/app/store`, `src/features/preorder`, `src/lib/store`, 2026-10-11).
 
+## Copy the new checkout carries
+
+Founder rulings of 2026-10-10 and 2026-10-11 for the store page, `/thanks` and the receipt on the new
+site. All are copy or presentation (brief 4.4): no payment, pricing or order logic changes. The terms
+are owned on [policies](../product/policies.md#decided-for-the-new-site) and the price wording on
+[pricing](../product/pricing.md#price-wording-for-the-new-site-d028); this table only places them in
+the journey. Final copy is signed off at Gate A ([D015](../decisions/D015-founder-signs-off-copy.md)).
+
+| Where in the journey | What it carries | Status | Decision |
+|---|---|---|---|
+| Beside the pay button (step 5) | The price sentence: ₹499 first, the ₹4,999 total (incl. GST) in the same sentence, the ₹4,500 due before delivery, "refundable" beside the advance. Today's h1 "Reserve Kheelu for ₹499." and `PRICE_CAPTION` carry no total | **Confirmed** | [D028](../decisions/D028-price-wording.md) |
+| Beside the pay button | The refund-before-dispatch promise (kept, §8.25-b) and the trust terms: 7-day returns, no questions asked; 6-month warranty; pay by UPI, card or net banking; price includes GST; GST invoice with every order | **Confirmed** | [D021](../decisions/D021-returns-policy.md), [D022](../decisions/D022-warranty-replacement-refund.md), [D024](../decisions/D024-payment-methods-gst.md) |
+| Beside the pay button and in the summary (steps 3, 5) | Delivery for new orders: deliveries start mid-November, from the one content value (owned on [facts](../product/facts.md#ship-date)) | **Confirmed** | [D023](../decisions/D023-new-order-delivery.md) |
+| Production store, `/thanks` and receipt (steps 3, 11, 14) | Keep "20 October 2026" until Gate B; founder-accepted risk, not re-raised | **Held** | [D023](../decisions/D023-new-order-delivery.md), [D011](../decisions/D011-production-held-until-gate-b.md) |
+| Existing token orders (steps 11, 15) | The summary, `/thanks` and the receipt print `SHIP_DATE_TEXT` from config, not from the order row (`wt:src/features/preorder/components/OrderSummary.tsx:55, 73`; `wt:src/app/store/thanks/page.tsx:159`; `wt:src/lib/email/templates.ts:136`). Changing the value therefore changes what an existing token holder sees on `/thanks` and in any later email. Whether those orders still dispatch from 20 October: F12 | **Still open** | [D023](../decisions/D023-new-order-delivery.md) |
+| Order summary and receipt (steps 3, 14) | The Kheelona+ line. The checkout prints the short constant `KHEELONA_PLUS_SHORT`, "Every Kheelu includes 6 months of Kheelona+." (`wt:src/config/site.ts:134`; `wt:src/features/preorder/components/OrderSummary.tsx:98`; `wt:src/lib/email/templates.ts:149`), not the full `KHEELONA_PLUS_LINE`, so it carries neither "lessons" nor "lifetime". Whether it moves to the new line (owned on [facts](../product/facts.md#kheelona)) is copy for Gate A | New line **confirmed**; its use in checkout not ruled on | [D027](../decisions/D027-story-mode-wording.md) |
+| Payment sheet (steps 7-8) | No wallet, EMI or Pay Later badge anywhere. The sheet shows what the Razorpay account enables; `checkout.ts` sets no method filter and is logic, so none is added | **Confirmed** | [D024](../decisions/D024-payment-methods-gst.md) |
+| Store chrome (beside the seller block and policy links) | The grievance officer: Aman Soni, Co-Founder and CTO, aman@kheelona.com. Where it is displayed is not decided. The acknowledgement time is not published until decided (5 days proposed; Rule 4(5) says 48 hours) | Officer **confirmed**; acknowledgement **still open** (F2) | [D029](../decisions/D029-grievance-officer-legal-review.md) |
+
 ## Testing a restyle without real money
 
 `npm run qa:payment` drives Razorpay's **sandbox** in a browser, refuses a live key, and stops at the
@@ -278,8 +310,13 @@ open sheet; run it with `node tools/qa/supabase-stub.mjs` and test keys in `.env
 
 ## Open questions
 
-In [open questions](../open-questions.md): WhatsApp order confirmations and the balance links (F12),
-payment methods (F6), the CTA label (G1), the "nearly 3" store hint (Q3 a), webhook subscriptions (C4).
+In [open questions](../open-questions.md): F12, partly answered by
+[D023](../decisions/D023-new-order-delivery.md) (new orders deliver from mid-November with the same
+₹499 advance); still open: whether existing token orders dispatch from 20 October, the balance-link
+timing and channel, WhatsApp order confirmations, and balance measurement. F1: who pays the return
+pickup, and the warranty remedy after the first 7 days. F2: the complaint acknowledgement time. Also
+the CTA label (G1), the "nearly 3" store hint (Q3 a), webhook subscriptions (C4). Payment methods
+(F6) are answered ([D024](../decisions/D024-payment-methods-gst.md)).
 
 ## Related
 

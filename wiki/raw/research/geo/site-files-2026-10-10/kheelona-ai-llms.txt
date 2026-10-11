@@ -1,0 +1,27 @@
+# Kheelona
+
+> Kheelona builds PlayOS — the AI operating system for toys, baby care and physical companions ("the Android for physical AI"). B2B only: toy OEMs, character-IP owners and nursery brands license PlayOS free, drop the Kheelona Magic Box module into their own shell, and ship a screen-free conversational AI product under their own brand in 4–6 weeks. The only prices on kheelona.ai are per-unit module prices: $10–50 for companions, $30–100 for baby care. One call to action: book a partnership call at https://kheelona.ai/partner. Contact: connect@kheelona.com. Consumer purchases live at https://kheelona.com, never here.
+
+Key facts:
+- Kheelona sells two things; one is free. PlayOS (voice-to-voice AI engine, safety filters, OTA updates, parent app, SDK, 10+ languages) is free to adopt. The Kheelona Magic Box — the palm-sized module that runs it (custom PCB, MCU, mic array, speaker) — is $10–100 per unit by spec.
+- Companion module ($10–50/unit, for plush, pets, character toys): Talk & Respond $10 · Real Conversation mid-band, priced on the spec call · Sees & Understands $50.
+- Baby-care module ($30–100/unit, for monitors, cribs, bassinets): Monitors & Alerts $30 · Soothes & Responds mid-band · Sleeps & Learns $100.
+- Partners set retail and keep the hardware margin; premium content, language packs and advanced models are revenue-shared. Partner IP stays with the partner.
+- COPPA / GDPR-K, region-pinned data residency (US/EU/India), one-tap delete, no ads, no data resale — built into PlayOS; every partner build inherits the stack.
+- Proprietary sub-1B-parameter Voice SLM trained on consented, kid-safe conversations; offered as API credits from Q4 2026.
+- Traction (June 2026): Lumi live with 10 families daily; Lori production-ready and taking partner orders; 1 school MOU; 5+ OEM design-partner conversations; backed by NVIDIA Inception, Karnataka Elevate, Founders Inc.
+
+## Reference designs (proof, not the catalog — each runs the exact stack partners license)
+- [Lumi — AI companion plush](https://kheelona.ai/lumi): LIVE with families. Real Conversation tier of the $10–50 companion module: two-way dialogue, 10+ languages, breathing motion, parent app. Public launch this quarter; evaluation units at https://kheelona.com.
+- [Lori — AI baby monitor & soother](https://kheelona.ai/lori): TAKING ORDERS. $30–100 baby-care module: HD IR camera, AI cry detection, sound-machine soothing, temperature alerts; clips onto any crib, bed, bassinet or stroller. White-label pilots open. "Lori" is लोरी, Hindi for lullaby.
+- Lori Crib — tops the $30–100 baby-care band: auto-bounce, early-wake AI, sleep analytics. Coming soon.
+- Lua — companion pet on the $10–50 module (motion + SOS), for kids and the elderly. Coming soon.
+- Voice SLM — the voice brain as an API, Q4 2026.
+- Robu — humanoid on the loaded end of the companion module. Q1 2027 beta.
+
+## Pages
+- [Home](https://kheelona.ai/): the offer — "Put a soul in anything." PlayOS free, modules from $10 a unit.
+- [PlayOS platform](https://kheelona.ai/playos): six experience tiers with per-unit module pricing, Magic Box spec, 4–6 week integration journey.
+- [Safety & compliance](https://kheelona.ai/safety): COPPA/GDPR-K, data residency, parent controls.
+- [Become a partner](https://kheelona.ai/partner): partnership-call form + partner economics.
+- [Blog](https://kheelona.ai/blog): build-vs-buy economics, compliance explainers and category playbooks from the team.

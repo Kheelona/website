@@ -54,8 +54,13 @@ pages a task needs. Phase 0 pages cite legacy files at tag `archive/pre-reset-20
 - [lessons](engineering/lessons.md): hard-won behaviour of this stack (Next 16, Vercel, store host, payments, tracking verification, SEO, QA, git).
 - Architecture, structure, catalogues and dependency register: from Phase 4.
 
-## Research and QA
-- Phase 1 pages to come: `research/posthog-audit.md`, `research/d2c-benchmarks.md`, `research/keyword-map.md`, `qa/baseline-<date>.md`.
+## Research and QA (INTERNAL, D013)
+- [PostHog audit](research/posthog-audit.md): 2026-09-19 to 10-10, verified by an independent re-run; funnel, device split (76% phone), top 10 issues by revenue impact, baseline for Phase 8, QA device list.
+- [D2C benchmarks](research/d2c-benchmarks.md): 19 sites phone first, pattern library, adopt/adapt/avoid tied to positioning and PostHog; per-site notes in `raw/research/benchmarks/`.
+- [keyword map](research/keyword-map.md): intent clusters with sourced volumes (Keyword Planner and GSC exports pending, C11), one primary cluster per URL, question bank, placement rules, GEO plan.
+- [QA baseline](qa/baseline-2026-10-10.md): Lighthouse medians on production (mobile and desktop), CWV, links, metadata, JSON-LD, axe, phone first-screen checks: what the new site must beat.
+- [rulings check](qa/rulings-check-2026-10-11.md): verification that D016-D029 reached every owner page; the queued fixes.
+- Pending: `research/source-verification.md` (D026) and `product/legal-requirements.md` (D029).
 
 ## Decisions
 - [D001](decisions/D001-branch-and-archive.md) branch from production; archive production and the mid version as tags.
@@ -72,6 +77,21 @@ pages a task needs. Phase 0 pages cite legacy files at tag `archive/pre-reset-20
 - [D012](decisions/D012-founder-answers-q2-q4-q5.md) PR #16 closed, remote branches deleted, pitch deck removed, caches deleted (founder).
 - [D013](decisions/D013-internal-vs-external-content.md) the website publishes only external, buyer-facing content; research stays internal (founder; closes Q4).
 - [D014](decisions/D014-branch-pushed-no-previews.md) the reset branch is pushed as a backup; Vercel builds are off for `reset/*` (founder).
+- [D015](decisions/D015-founder-signs-off-copy.md) only the founder signs off copy; SKM's documents are input (founder).
+- [D016](decisions/D016-brain-wording.md) brain wording: the promise is about conversation; "brain development" only as a search topic (founder, R7).
+- [D017](decisions/D017-live-behaviour-claims-confirmed.md) live, founder-approved behaviour claims are confirmed (founder, R1).
+- [D018](decisions/D018-wake-up-button.md) no wake word: the mic is on only after a press of the wake-up button; wording rules and draft lines (founder).
+- [D019](decisions/D019-voice-providers.md) voice is processed by multiple outside providers; "only our own servers" retired (founder, R3).
+- [D020](decisions/D020-provider-terms-and-no-sale.md) providers process voice only to reply, keep nothing, never train, by contract; we don't sell data (founder).
+- [D021](decisions/D021-returns-policy.md) 7-day returns, no questions asked; opened is fine if undamaged and complete (founder).
+- [D022](decisions/D022-warranty-replacement-refund.md) 6-month warranty on defects; replace if faulty within 7 days of receipt; pickup arranged; refund in 7 working days (founder).
+- [D023](decisions/D023-new-order-delivery.md) new orders: same ₹499 advance, deliveries start mid-November 2026 (founder).
+- [D024](decisions/D024-payment-methods-gst.md) UPI, cards, net banking; prices include GST; GST invoice with every order (founder).
+- [D025](decisions/D025-speech-and-language.md) speech and language: public sources only; disclaimer on Terms and Meet Kheelu, not Home (founder, R4).
+- [D026](decisions/D026-public-statistics.md) public statistics usable after independent source verification, each with a linked source marker (founder, R6).
+- [D027](decisions/D027-story-mode-wording.md) Story mode = stories, poems and jingles; no "lessons"; no interrupt-and-ask feature (founder, R8).
+- [D028](decisions/D028-price-wording.md) price wording: ₹499 first next to the CTA with the ₹4,999 total in the same sentence; machine outputs lead with ₹4,999 (founder, R10).
+- [D029](decisions/D029-grievance-officer-legal-review.md) grievance officer Aman Soni; legal pages approved by the founder after an independent review against Indian law.
 
 ## Agents
 - [roster](agents/roster.md): the eight-role team, their outputs and skills, and the run history.

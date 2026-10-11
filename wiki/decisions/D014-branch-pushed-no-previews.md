@@ -7,6 +7,8 @@ sources: ["founder's answer, 2026-10-10", "https://vercel.com/docs/project-confi
 
 # D014: Branch pushed for backup; no Vercel previews
 
+> **Status 2026-10-10 22:40: NOT YET PUSHED.** Three pushes failed with HTTP 408 (54 MB pack; bandwidth fine; SSH keys refused; see [log](../log.md)). **Founder's choice: keep it local and retry later from another network.** The `vercel.json` rule stays committed so the eventual push builds nothing. Retry with `git push -u origin reset/website-v2` on a different network; never push an earlier commit as the branch head (only `1743f16` onward carries the rule).
+
 **Context.** All work lived only on this machine. The founder wants local review, not previews
 ([D011](D011-production-held-until-gate-b.md)), and Vercel builds every pushed branch by default.
 

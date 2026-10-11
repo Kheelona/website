@@ -1,0 +1,602 @@
+{
+  "meta": {
+    "project": "PostHog 617632 (US cloud), project timezone UTC",
+    "range": "2026-09-19 00:00 to 2026-10-11 00:00 UTC (data exists from 2026-09-19 10:52 UTC; PostHog was installed that day)",
+    "run_at": "2026-10-11 01:00-02:30 UTC (2026-10-10 in the wiki's dating)",
+    "human_filter": "sessions with >=1 $pageview, no event with $virt_is_bot = true, entry referrer not localhost:3456 / 127.0.0.1:3456 / *.vercel.app (unless a query says otherwise)",
+    "caveat": "Test-account cohort 580233 has 0 members, so team traffic is included (about 48 sessions from 4 devices with 10+ sessions each, Q24). Aggregates only."
+  },
+  "queries": [
+    {
+      "id": "Q1",
+      "what": "Data window and automated-traffic check over the requested 90 days",
+      "range": "2026-07-12 00:00 to 2026-10-11 00:00 UTC (requested); data found only from 2026-09-19",
+      "hogql": "SELECT min(timestamp) AS first_event, max(timestamp) AS last_event, count() AS pageviews, uniq(properties.$session_id) AS sessions, uniq(person_id) AS persons, countIf(properties.$virt_is_bot = true) AS bot_pv, countIf(properties.$browser IS NULL OR properties.$browser = '') AS no_browser_pv, countIf(properties.$raw_user_agent ILIKE '%headless%') AS headless_pv, countIf(properties.$host NOT IN ('kheelona.com','store.kheelona.com','www.kheelona.com')) AS other_host_pv FROM events WHERE event = '$pageview' AND timestamp >= toDateTime('2026-07-12 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00')",
+      "rows": [
+        {
+          "first_event": "2026-09-19T11:04:39.852Z",
+          "last_event": "2026-10-10T23:02:02.787Z",
+          "pageviews": 1159,
+          "sessions": 873,
+          "persons": 758,
+          "bot_pv": 67,
+          "no_browser_pv": 49,
+          "headless_pv": 0,
+          "other_host_pv": 0
+        }
+      ]
+    },
+    {
+      "id": "Q2",
+      "what": "Pageviews flagged as bots or with no browser, by PostHog traffic classification",
+      "hogql": "SELECT coalesce(properties.$virt_traffic_type,'(none)') AS traffic_type, coalesce(properties.$virt_traffic_category,'') AS cat, coalesce(properties.$virt_bot_name,'') AS bot, coalesce(properties.$browser,'(null)') AS browser, coalesce(properties.$device_type,'(null)') AS device_type, count() AS pv, uniq(properties.$session_id) AS sessions FROM events WHERE event = '$pageview' AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND (properties.$virt_is_bot = true OR properties.$browser IS NULL OR properties.$browser = '') GROUP BY 1,2,3,4,5 ORDER BY pv DESC LIMIT 50",
+      "rows": [
+        {
+          "traffic_type": "Bot",
+          "category": "http_client",
+          "bot": "Google Play Store",
+          "browser": "(null)",
+          "device_type": "Desktop",
+          "pageviews": 47,
+          "sessions": 47
+        },
+        {
+          "traffic_type": "Bot",
+          "category": "http_client",
+          "bot": "Google Play Store",
+          "browser": "Chrome",
+          "device_type": "Desktop",
+          "pageviews": 7,
+          "sessions": 7
+        },
+        {
+          "traffic_type": "Bot",
+          "category": "search_crawler",
+          "bot": "Google special crawler",
+          "browser": "Chrome",
+          "device_type": "Desktop",
+          "pageviews": 4,
+          "sessions": 4
+        },
+        {
+          "traffic_type": "AI Agent",
+          "category": "ai_assistant",
+          "bot": "Shap",
+          "browser": "Firefox",
+          "device_type": "Desktop",
+          "pageviews": 3,
+          "sessions": 3
+        },
+        {
+          "traffic_type": "Bot",
+          "category": "seo_crawler",
+          "bot": "Google-AdWords-Express",
+          "browser": "Chrome",
+          "device_type": "Desktop",
+          "pageviews": 2,
+          "sessions": 2
+        },
+        {
+          "traffic_type": "Bot",
+          "category": "search_crawler",
+          "bot": "Google fetcher",
+          "browser": "(null)",
+          "device_type": "Desktop",
+          "pageviews": 2,
+          "sessions": 2
+        },
+        {
+          "traffic_type": "Bot",
+          "category": "search_crawler",
+          "bot": "Google fetcher",
+          "browser": "Chrome",
+          "device_type": "Desktop",
+          "pageviews": 1,
+          "sessions": 1
+        },
+        {
+          "traffic_type": "Automation",
+          "category": "headless_browser",
+          "bot": "Malformed Chrome UA",
+          "browser": "Chrome",
+          "device_type": "Desktop",
+          "pageviews": 1,
+          "sessions": 1
+        }
+      ]
+    },
+    {
+      "id": "Q3",
+      "what": "Sessions by entry referring domain (all sessions with a pageview, bots included)",
+      "hogql": "SELECT coalesce($entry_referring_domain,'(none)') AS ref, count() AS sessions, countIf($entry_hostname = 'store.kheelona.com') AS store_entry, min(toDate($start_timestamp)) AS first_day, max(toDate($start_timestamp)) AS last_day FROM sessions WHERE $start_timestamp >= toDateTime('2026-09-19 00:00:00') AND $start_timestamp < toDateTime('2026-10-11 00:00:00') AND $pageview_count > 0 GROUP BY ref ORDER BY sessions DESC LIMIT 60",
+      "rows": [
+        {
+          "referring_domain": "$direct",
+          "sessions": 552,
+          "store_entry": 26,
+          "first_day": "2026-09-19",
+          "last_day": "2026-10-10"
+        },
+        {
+          "referring_domain": "l.facebook.com",
+          "sessions": 103,
+          "store_entry": 12,
+          "first_day": "2026-09-19",
+          "last_day": "2026-09-23"
+        },
+        {
+          "referring_domain": "www.google.com",
+          "sessions": 85,
+          "store_entry": 0,
+          "first_day": "2026-09-19",
+          "last_day": "2026-10-09"
+        },
+        {
+          "referring_domain": "www.threads.com",
+          "sessions": 33,
+          "store_entry": 0,
+          "first_day": "2026-09-21",
+          "last_day": "2026-09-22"
+        },
+        {
+          "referring_domain": "instagram.com",
+          "sessions": 25,
+          "store_entry": 0,
+          "first_day": "2026-09-21",
+          "last_day": "2026-09-22"
+        },
+        {
+          "referring_domain": "l.instagram.com",
+          "sessions": 13,
+          "store_entry": 11,
+          "first_day": "2026-09-19",
+          "last_day": "2026-09-30"
+        },
+        {
+          "referring_domain": "chatgpt.com",
+          "sessions": 12,
+          "store_entry": 0,
+          "first_day": "2026-09-20",
+          "last_day": "2026-10-03"
+        },
+        {
+          "referring_domain": "www.kheelona.com",
+          "sessions": 12,
+          "store_entry": 0,
+          "first_day": "2026-09-20",
+          "last_day": "2026-09-22"
+        },
+        {
+          "referring_domain": "kheelona.com",
+          "sessions": 8,
+          "store_entry": 7,
+          "first_day": "2026-09-20",
+          "last_day": "2026-10-10"
+        },
+        {
+          "referring_domain": "m.facebook.com",
+          "sessions": 7,
+          "store_entry": 1,
+          "first_day": "2026-09-19",
+          "last_day": "2026-09-20"
+        },
+        {
+          "referring_domain": "www.facebook.com",
+          "sessions": 5,
+          "store_entry": 2,
+          "first_day": "2026-09-19",
+          "last_day": "2026-10-08"
+        },
+        {
+          "referring_domain": "www.bing.com",
+          "sessions": 4,
+          "store_entry": 0,
+          "first_day": "2026-10-06",
+          "last_day": "2026-10-06"
+        },
+        {
+          "referring_domain": "kheelona.ai",
+          "sessions": 2,
+          "store_entry": 0,
+          "first_day": "2026-09-22",
+          "last_day": "2026-09-22"
+        },
+        {
+          "referring_domain": "www.linkedin.com",
+          "sessions": 2,
+          "store_entry": 0,
+          "first_day": "2026-09-28",
+          "last_day": "2026-10-08"
+        },
+        {
+          "referring_domain": "localhost:3456",
+          "sessions": 2,
+          "store_entry": 2,
+          "first_day": "2026-10-02",
+          "last_day": "2026-10-02"
+        },
+        {
+          "referring_domain": "com.google.android.googlequicksearchbox",
+          "sessions": 2,
+          "store_entry": 0,
+          "first_day": "2026-09-22",
+          "last_day": "2026-09-28"
+        },
+        {
+          "referring_domain": "127.0.0.1:3456",
+          "sessions": 1,
+          "store_entry": 1,
+          "first_day": "2026-10-02",
+          "last_day": "2026-10-02"
+        },
+        {
+          "referring_domain": "duckduckgo.com",
+          "sessions": 1,
+          "store_entry": 0,
+          "first_day": "2026-10-07",
+          "last_day": "2026-10-07"
+        },
+        {
+          "referring_domain": "(a US college LMS)",
+          "sessions": 1,
+          "store_entry": 0,
+          "first_day": "2026-10-08",
+          "last_day": "2026-10-08"
+        },
+        {
+          "referring_domain": "com.twitter.android",
+          "sessions": 1,
+          "store_entry": 0,
+          "first_day": "2026-09-19",
+          "last_day": "2026-09-19"
+        },
+        {
+          "referring_domain": "au.search.yahoo.com",
+          "sessions": 1,
+          "store_entry": 0,
+          "first_day": "2026-10-06",
+          "last_day": "2026-10-06"
+        },
+        {
+          "referring_domain": "(mid-version Vercel preview)",
+          "sessions": 1,
+          "store_entry": 1,
+          "first_day": "2026-10-07",
+          "last_day": "2026-10-07"
+        }
+      ],
+      "note": "Two referrer hostnames are generalised in brackets: a US college learning-management host and the mid version's Vercel preview host (listed in wiki/site/url-map.md)."
+    },
+    {
+      "id": "Q4",
+      "what": "PostHog's own channel type against entry UTM source and medium",
+      "hogql": "SELECT $channel_type AS channel, $entry_utm_source AS src, $entry_utm_medium AS med, count() AS sessions FROM sessions WHERE $start_timestamp >= toDateTime('2026-09-19 00:00:00') AND $start_timestamp < toDateTime('2026-10-11 00:00:00') AND $pageview_count > 0 GROUP BY 1,2,3 ORDER BY sessions DESC LIMIT 60",
+      "rows": [
+        {
+          "channel_type": "Direct",
+          "utm_source": null,
+          "utm_medium": null,
+          "sessions": 248
+        },
+        {
+          "channel_type": "Organic Social",
+          "utm_source": null,
+          "utm_medium": null,
+          "sessions": 221
+        },
+        {
+          "channel_type": "Paid Social",
+          "utm_source": "an",
+          "utm_medium": "paid",
+          "sessions": 111
+        },
+        {
+          "channel_type": "Organic Search",
+          "utm_source": null,
+          "utm_medium": null,
+          "sessions": 93
+        },
+        {
+          "channel_type": "AI",
+          "utm_source": "chatgpt.com",
+          "utm_medium": null,
+          "sessions": 83
+        },
+        {
+          "channel_type": "Paid Social",
+          "utm_source": "ig",
+          "utm_medium": "paid",
+          "sessions": 37
+        },
+        {
+          "channel_type": "Paid Social",
+          "utm_source": "th",
+          "utm_medium": "paid",
+          "sessions": 32
+        },
+        {
+          "channel_type": "Paid Social",
+          "utm_source": "fb",
+          "utm_medium": "paid",
+          "sessions": 16
+        },
+        {
+          "channel_type": "Organic Social",
+          "utm_source": "ig",
+          "utm_medium": "social",
+          "sessions": 16
+        },
+        {
+          "channel_type": "Referral",
+          "utm_source": null,
+          "utm_medium": null,
+          "sessions": 13
+        },
+        {
+          "channel_type": "Paid Unknown",
+          "utm_source": null,
+          "utm_medium": null,
+          "sessions": 2
+        },
+        {
+          "channel_type": "Paid Unknown",
+          "utm_source": "th",
+          "utm_medium": "paid",
+          "sessions": 1
+        }
+      ],
+      "note": "PostHog files 221 fbclid-only sessions as Organic Social; Q6 treats them as Meta clicks without UTM."
+    },
+    {
+      "id": "Q5",
+      "what": "Do sessions continue across kheelona.com and store.kheelona.com?",
+      "hogql": "SELECT countIf(apex_pv > 0) AS sessions_with_apex, countIf(store_pv > 0) AS sessions_with_store, countIf(apex_pv > 0 AND store_pv > 0) AS both_hosts, countIf(store_pv > 0 AND apex_pv = 0) AS store_only FROM (SELECT properties.$session_id AS sid, countIf(properties.$host = 'kheelona.com') AS apex_pv, countIf(properties.$host = 'store.kheelona.com') AS store_pv FROM events WHERE event = '$pageview' AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') GROUP BY sid)",
+      "rows": [
+        {
+          "sessions_with_apex": 816,
+          "sessions_with_store": 97,
+          "both_hosts": 40,
+          "store_only": 57
+        }
+      ]
+    },
+    {
+      "id": "Q9",
+      "what": "Weekly human sessions by source group (weeks start Monday; the first week holds only 2026-09-19 and 09-20)",
+      "hogql": "SELECT toStartOfWeek(st, 1) AS week_mon, count() AS sessions, countIf(src_group = 'Paid social, tagged') AS paid_tagged, countIf(src_group = 'Meta click id, no UTM') AS meta_untagged, countIf(src_group = 'Direct') AS direct, countIf(src_group = 'Organic search') AS organic_search, countIf(src_group = 'ChatGPT') AS chatgpt, countIf(src_group NOT IN ('Paid social, tagged','Meta click id, no UTM','Direct','Organic search','ChatGPT')) AS other, uniq(device_id) AS unique_devices, countIf(store_pv > 0) AS store_sessions, countIf(form_started > 0) AS form_sessions, countIf(purchased > 0) AS purchase_sessions FROM ( SELECT properties.$session_id AS sid, min(timestamp) AS st, any(distinct_id) AS device_id, any(session.$entry_referring_domain) AS ref, coalesce(any(session.$entry_utm_source),'') AS us, coalesce(any(session.$entry_utm_medium),'') AS um, coalesce(any(session.$entry_fbclid),'') AS fbc, <SRC_GROUP, with 'Internal' / 'Instagram bio link' / 'Own site' labels> AS src_group, max(properties.$virt_is_bot = true) AS is_bot, countIf(event = '$pageview' AND properties.$host = 'store.kheelona.com' AND properties.$pathname NOT LIKE '/thanks%') AS store_pv, countIf(event = 'preorder_form_started') AS form_started, countIf(event = 'purchase') AS purchased, countIf(event = '$pageview') AS pvs FROM events WHERE timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND event IN ('$pageview','preorder_form_started','purchase') AND properties.$session_id IS NOT NULL GROUP BY sid HAVING pvs > 0 AND is_bot = 0 AND src_group != 'Internal' ) GROUP BY week_mon ORDER BY week_mon",
+      "src_group_expression": "multiIf( ref IN ('localhost:3456','127.0.0.1:3456') OR ref LIKE '%vercel.app', 'Internal (local or preview)', um = 'paid', 'Paid social, tagged', fbc != '' AND us = '', 'Meta click id, no UTM', um = 'social', 'Instagram bio link (ig/social)', us = 'chatgpt.com' OR ref = 'chatgpt.com', 'ChatGPT', ref IN ('www.google.com','www.bing.com','duckduckgo.com','au.search.yahoo.com','com.google.android.googlequicksearchbox'), 'Organic search', ref IN ('l.facebook.com','m.facebook.com','www.facebook.com','instagram.com','l.instagram.com','www.threads.com','www.linkedin.com','com.twitter.android'), 'Organic social, other', ref IN ('kheelona.com','www.kheelona.com'), 'Own site (session restarted)', ref = '$direct' OR ref IS NULL, 'Direct', 'Referral')",
+      "rows": [
+        {
+          "week_mon": "2026-09-14",
+          "sessions": 176,
+          "paid_tagged": 124,
+          "meta_untagged": 11,
+          "direct": 26,
+          "organic_search": 4,
+          "chatgpt": 4,
+          "other": 7,
+          "unique_devices": 156,
+          "store_sessions": 25,
+          "form_sessions": 2,
+          "purchase_sessions": 0
+        },
+        {
+          "week_mon": "2026-09-21",
+          "sessions": 455,
+          "paid_tagged": 73,
+          "meta_untagged": 205,
+          "direct": 78,
+          "organic_search": 47,
+          "chatgpt": 37,
+          "other": 15,
+          "unique_devices": 412,
+          "store_sessions": 45,
+          "form_sessions": 6,
+          "purchase_sessions": 2
+        },
+        {
+          "week_mon": "2026-09-28",
+          "sessions": 83,
+          "paid_tagged": 0,
+          "meta_untagged": 0,
+          "direct": 43,
+          "organic_search": 14,
+          "chatgpt": 23,
+          "other": 3,
+          "unique_devices": 69,
+          "store_sessions": 11,
+          "form_sessions": 1,
+          "purchase_sessions": 0
+        },
+        {
+          "week_mon": "2026-10-05",
+          "sessions": 88,
+          "paid_tagged": 0,
+          "meta_untagged": 1,
+          "direct": 36,
+          "organic_search": 28,
+          "chatgpt": 19,
+          "other": 4,
+          "unique_devices": 77,
+          "store_sessions": 10,
+          "form_sessions": 1,
+          "purchase_sessions": 0
+        }
+      ]
+    },
+    {
+      "id": "Q34",
+      "what": "Headline baseline, paid vs not paid (human, non-internal sessions)",
+      "hogql": "SELECT paid, count() AS sessions, uniq(did) AS unique_devices, sum(pvs) AS pageviews, round(100*countIf(pvs = 1)/count(), 1) AS pct_single_pageview, round(quantile(0.5)(dur), 0) AS median_session_s, countIf(store_pv > 0) AS reached_store, countIf(form_started > 0) AS form_started, countIf(submit > 0) AS valid_submit, countIf(checkout > 0) AS order_created, countIf(purchased > 0) AS purchase FROM ( SELECT properties.$session_id AS sid, any(distinct_id) AS did, any(session.$session_duration) AS dur, if(coalesce(any(session.$entry_utm_medium),'') = 'paid' OR (coalesce(any(session.$entry_fbclid),'') != '' AND coalesce(any(session.$entry_utm_source),'') = ''), 'paid or Meta click', 'not paid') AS paid, any(session.$entry_referring_domain) AS ref, max(properties.$virt_is_bot = true) AS is_bot, countIf(event = '$pageview') AS pvs, countIf(event = '$pageview' AND properties.$host = 'store.kheelona.com' AND properties.$pathname NOT LIKE '/thanks%') AS store_pv, countIf(event = 'preorder_form_started') AS form_started, countIf(event = 'preorder_start') AS submit, countIf(event = 'begin_checkout') AS checkout, countIf(event = 'purchase') AS purchased FROM events WHERE timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND event IN ('$pageview','preorder_form_started','preorder_start','begin_checkout','purchase') AND properties.$session_id IS NOT NULL GROUP BY sid HAVING pvs > 0 AND is_bot = 0 AND NOT (coalesce(ref,'') IN ('localhost:3456','127.0.0.1:3456') OR coalesce(ref,'') LIKE '%vercel.app') ) GROUP BY ROLLUP(paid)",
+      "rows": [
+        {
+          "traffic": "paid or Meta click",
+          "sessions": 414,
+          "unique_devices": 399,
+          "pageviews": 462,
+          "pct_single_pageview": 91.1,
+          "median_session_s": 7,
+          "reached_store": 20,
+          "form_started": 2,
+          "valid_submit": 0,
+          "order_created": 0,
+          "purchase": 0
+        },
+        {
+          "traffic": "not paid",
+          "sessions": 388,
+          "unique_devices": 292,
+          "pageviews": 625,
+          "pct_single_pageview": 70.6,
+          "median_session_s": 37,
+          "reached_store": 71,
+          "form_started": 8,
+          "valid_submit": 5,
+          "order_created": 5,
+          "purchase": 2
+        },
+        {
+          "traffic": "(all)",
+          "sessions": 802,
+          "unique_devices": 690,
+          "pageviews": 1087,
+          "pct_single_pageview": 81.2,
+          "median_session_s": 13,
+          "reached_store": 91,
+          "form_started": 10,
+          "valid_submit": 5,
+          "order_created": 5,
+          "purchase": 2
+        }
+      ]
+    },
+    {
+      "id": "Q33",
+      "what": "Human sessions by GeoIP country (top 8)",
+      "hogql": "SELECT cc, count() AS sessions, round(100*count()/sum(count()) OVER (), 1) AS pct, countIf(paid = 0) AS non_paid FROM ( SELECT properties.$session_id AS sid, argMin(properties.$geoip_country_code, timestamp) AS cc, if(coalesce(any(session.$entry_utm_medium),'') = 'paid' OR (coalesce(any(session.$entry_fbclid),'') != '' AND coalesce(any(session.$entry_utm_source),'') = ''), 1, 0) AS paid, any(session.$entry_referring_domain) AS ref, max(properties.$virt_is_bot = true) AS is_bot FROM events WHERE event = '$pageview' AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') GROUP BY sid HAVING is_bot = 0 AND NOT (coalesce(ref,'') IN ('localhost:3456','127.0.0.1:3456') OR coalesce(ref,'') LIKE '%vercel.app') ) GROUP BY cc ORDER BY sessions DESC LIMIT 8",
+      "rows": [
+        {
+          "country": "IN",
+          "sessions": 681,
+          "pct": 84.9,
+          "non_paid": 274
+        },
+        {
+          "country": "US",
+          "sessions": 61,
+          "pct": 7.6,
+          "non_paid": 59
+        },
+        {
+          "country": "SE",
+          "sessions": 8,
+          "pct": 1.0,
+          "non_paid": 6
+        },
+        {
+          "country": "HK",
+          "sessions": 6,
+          "pct": 0.7,
+          "non_paid": 6
+        },
+        {
+          "country": "UA",
+          "sessions": 5,
+          "pct": 0.6,
+          "non_paid": 5
+        },
+        {
+          "country": "CN",
+          "sessions": 5,
+          "pct": 0.6,
+          "non_paid": 5
+        },
+        {
+          "country": "GB",
+          "sessions": 4,
+          "pct": 0.5,
+          "non_paid": 4
+        },
+        {
+          "country": "ES",
+          "sessions": 3,
+          "pct": 0.4,
+          "non_paid": 3
+        }
+      ]
+    },
+    {
+      "id": "Q24",
+      "what": "Devices with many repeat sessions (likely the team; cannot be confirmed)",
+      "hogql": "SELECT device, os, browser, sessions_per_device_bucket, count() AS devices, sum(sessions) AS sessions FROM ( SELECT distinct_id, argMin(properties.$device_type, timestamp) AS device, argMin(properties.$os, timestamp) AS os, argMin(properties.$browser, timestamp) AS browser, uniq(properties.$session_id) AS sessions, multiIf(sessions = 1, '1', sessions <= 3, '2-3', sessions <= 9, '4-9', '10+') AS sessions_per_device_bucket, max(properties.$virt_is_bot = true) AS is_bot FROM events WHERE event = '$pageview' AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') GROUP BY distinct_id HAVING is_bot = 0 ) WHERE sessions_per_device_bucket IN ('4-9','10+') GROUP BY device, os, browser, sessions_per_device_bucket ORDER BY sessions DESC LIMIT 20",
+      "rows": [
+        {
+          "device": "Desktop",
+          "os": "Mac OS X",
+          "browser": "Chrome",
+          "sessions_per_device": "10+",
+          "devices": 3,
+          "sessions": 33
+        },
+        {
+          "device": "Mobile",
+          "os": "iOS",
+          "browser": "Mobile Safari",
+          "sessions_per_device": "10+",
+          "devices": 1,
+          "sessions": 15
+        },
+        {
+          "device": "Desktop",
+          "os": "Mac OS X",
+          "browser": "Chrome",
+          "sessions_per_device": "4-9",
+          "devices": 3,
+          "sessions": 13
+        },
+        {
+          "device": "Mobile",
+          "os": "Android",
+          "browser": "Chrome",
+          "sessions_per_device": "4-9",
+          "devices": 1,
+          "sessions": 4
+        },
+        {
+          "device": "Mobile",
+          "os": "iOS",
+          "browser": "Mobile Safari",
+          "sessions_per_device": "4-9",
+          "devices": 1,
+          "sessions": 4
+        }
+      ]
+    },
+    {
+      "id": "Q40",
+      "what": "Device split after paid ads stopped (sessions from 2026-09-24), with and without the 4 devices that had 10+ sessions",
+      "range": "2026-09-24 00:00 to 2026-10-11 00:00 UTC",
+      "hogql": "SELECT device, count() AS sessions, round(100*count()/sum(count()) OVER (), 1) AS pct, countIf(heavy = 0) AS excl_4_heavy_devices FROM ( SELECT properties.$session_id AS sid, argMin(properties.$device_type, timestamp) AS device, any(distinct_id) AS did, if(any(distinct_id) IN (SELECT distinct_id FROM events WHERE event = '$pageview' AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') GROUP BY distinct_id HAVING uniq(properties.$session_id) >= 10), 1, 0) AS heavy, any(session.$entry_referring_domain) AS ref, max(properties.$virt_is_bot = true) AS is_bot FROM events WHERE event = '$pageview' AND timestamp >= toDateTime('2026-09-24 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') GROUP BY sid HAVING is_bot = 0 AND NOT (coalesce(ref,'') IN ('localhost:3456','127.0.0.1:3456') OR coalesce(ref,'') LIKE '%vercel.app') ) GROUP BY device ORDER BY sessions DESC",
+      "rows": [
+        {
+          "device": "Mobile",
+          "sessions": 131,
+          "pct": 51.0,
+          "excl_4_heavy_devices": 120
+        },
+        {
+          "device": "Desktop",
+          "sessions": 124,
+          "pct": 48.2,
+          "excl_4_heavy_devices": 110
+        },
+        {
+          "device": "Tablet",
+          "sessions": 2,
+          "pct": 0.8,
+          "excl_4_heavy_devices": 2
+        }
+      ]
+    }
+  ]
+}

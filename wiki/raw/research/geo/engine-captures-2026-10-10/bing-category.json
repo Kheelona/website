@@ -1,0 +1,339 @@
+[
+ {
+  "engine": "Bing web search, cc=IN (logged out)",
+  "query": "are AI toys safe for kids",
+  "url": "https://www.bing.com/search?q=are%20AI%20toys%20safe%20for%20kids&cc=IN&setlang=en-IN",
+  "status": 200,
+  "captured_utc": "2026-10-11T02:34:44.320Z",
+  "title": "are AI toys safe for kids - Search",
+  "text": "Skip to content\nAccessibility Feedback\nRewards\nAllWebAI ModeImagesVideosMapsNews\nMore\nAbout 6,37,000 results\nopenai.com\nhttps://openai.com\nOpenAI | Research & Deployment\n\nWe believe our research will eventually lead to artificial general intelligence, a system that can solve human-level problems.Read more\n\n \nchatgpt.com\nhttps://chatgpt.com\nChatGPT: Chat, Work, Create & Code with AI\n\nUse ChatGPT to answer questions, write, create images, complete work, and code—all in one place. Get started for free or …\n\ngoogle.com\nhttps://gemini.google.com\n‎Google Gemini\n\nMeet Gemini, Google’s AI assistant. Get help with writing, planning, brainstorming, and more. Experience the power of generative AI.\n\nai.google\nhttps://ai.google\nGoogle AI - How we're making AI helpful for everyone\n\nDiscover how Google AI is committed to enriching knowledge, solving complex challenges and helping people grow by building …\n\nwikipedia.org\nhttps://en.wikipedia.org › wiki › Artificial_intelligence\nArtificial intelligence - Wikipedia\n\nArtificial intelligence - Wikipedia. Jump to content. Main menu. move to sidebarhide. Navigation . Main page. Contents. Current …\n\ndeepai.org\nhttps://deepai.org\nDeepAI\n\nThis is what AI for Good means to us—using technology and resources to create opportunities and inspire hope, whether through …\n\ndeepai.org\nhttps://deepai.org › chat\nAI Chat - DeepAI\n\nAI Chat is a free AI assistant and chatbot. Ask questions, write text, create code, and make or edit images.\n\nmicrosoft.com\nhttps://copilot.microsoft.com\nMicrosoft Copilot\n\nMicrosoft Copilot is AI built to help you get things done. Create, brainstorm, learn, and solve problems with AI chat that works across …\n\nz.ai\nhttps://z.ai\nZ.ai - Advanced AI Chatbot & Agent powered by GLM-5.3-Flash\n\nMeet Z.ai, the AI assistant powered by GLM-5.3-Flash. Build websites, write code, handle long-horizon tasks, and get instant …\n\nperplexity.ai\nhttps://www.perplexity.ai\nPerplexity AI\n\nPerplexity is a free AI-powered answer engine that provides accurate, trusted, and real-time answers to any question.\n\n1\n2\n3\n4\n© 2026 Microsoft\nPrivacy and Cookies\nLegal\nAdvertise\nHelp\nFeedback",
+  "algos": [
+   {
+    "title": "OpenAI | Research & Deployment",
+    "url": "https://www.bing.com/ck/a?!&&p=64253eee44011ff771d6bda4dcbcc461d4dbbc9bd9105249f9950835218ff45fJmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly9vcGVuYWkuY29tLw&ntb=1",
+    "cite": "https://openai.com",
+    "snippet": "We believe our research will eventually lead to artificial general intelligence, a system that can solve human-level problems.Read more"
+   },
+   {
+    "title": "ChatGPT: Chat, Work, Create & Code with AI",
+    "url": "https://www.bing.com/ck/a?!&&p=3f3f780e4e9d20cb92ae17bd4ba2e00cb7ce2a40ff7f3292b962ae93d9dabe2dJmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly9jaGF0Z3B0LmNvbS8&ntb=1",
+    "cite": "https://chatgpt.com",
+    "snippet": "Use ChatGPT to answer questions, write, create images, complete work, and code—all in one place. Get started for free or …"
+   },
+   {
+    "title": "‎Google Gemini",
+    "url": "https://www.bing.com/ck/a?!&&p=4d584a52d1078c9603e9106c69bc00559af1275367a901c41e9668c70f4c5799JmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly9nZW1pbmkuZ29vZ2xlLmNvbS8&ntb=1",
+    "cite": "https://gemini.google.com",
+    "snippet": "Meet Gemini, Google’s AI assistant. Get help with writing, planning, brainstorming, and more. Experience the power of generative AI."
+   },
+   {
+    "title": "Google AI - How we're making AI helpful for everyone",
+    "url": "https://www.bing.com/ck/a?!&&p=0f7052660f9848971bf2631d8de48434f74a109f1ebadbd4f7a1dcc7e9f0d12dJmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly9haS5nb29nbGUv&ntb=1",
+    "cite": "https://ai.google",
+    "snippet": "Discover how Google AI is committed to enriching knowledge, solving complex challenges and helping people grow by building …"
+   },
+   {
+    "title": "Artificial intelligence - Wikipedia",
+    "url": "https://www.bing.com/ck/a?!&&p=f4353b50460d46bb7531377e3fd035aaed32d4d07ed19894f8b6e5dc455bfc30JmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvQXJ0aWZpY2lhbF9pbnRlbGxpZ2VuY2U&ntb=1",
+    "cite": "https://en.wikipedia.org › wiki › Artificial_intelligence",
+    "snippet": "Artificial intelligence - Wikipedia. Jump to content. Main menu. move to sidebarhide. Navigation . Main page. Contents. Current …"
+   },
+   {
+    "title": "DeepAI",
+    "url": "https://www.bing.com/ck/a?!&&p=55b2c8fab15e2a79bbf1da377fc5975ccf7bb8d5454297283f780f0d9b2d37ceJmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly9kZWVwYWkub3JnLw&ntb=1",
+    "cite": "https://deepai.org",
+    "snippet": "This is what AI for Good means to us—using technology and resources to create opportunities and inspire hope, whether through …"
+   },
+   {
+    "title": "AI Chat - DeepAI",
+    "url": "https://www.bing.com/ck/a?!&&p=b4de5e2e95610de037a7bbd0e82783372627c839b1620cdcc5417d4a437bc4a5JmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly9kZWVwYWkub3JnL2NoYXQ&ntb=1",
+    "cite": "https://deepai.org › chat",
+    "snippet": "AI Chat is a free AI assistant and chatbot. Ask questions, write text, create code, and make or edit images."
+   },
+   {
+    "title": "Microsoft Copilot",
+    "url": "https://www.bing.com/ck/a?!&&p=a1545033962f9e850b7c8c98149843a9dbe21480daacb715c776118173fdabc2JmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly9jb3BpbG90Lm1pY3Jvc29mdC5jb20vP21zb2NraWQ9MjYzM2JmNjQ4NTViNjBkYjBiZTBhODhiODQ5NzYxYjA&ntb=1",
+    "cite": "https://copilot.microsoft.com",
+    "snippet": "Microsoft Copilot is AI built to help you get things done. Create, brainstorm, learn, and solve problems with AI chat that works across …"
+   },
+   {
+    "title": "Z.ai - Advanced AI Chatbot & Agent powered by GLM-5.3-Flash",
+    "url": "https://www.bing.com/ck/a?!&&p=4f61297dcadc1928a34a2af545225b8c16c0a1951d47e87e374e78226d458da9JmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly96LmFpLw&ntb=1",
+    "cite": "https://z.ai",
+    "snippet": "Meet Z.ai, the AI assistant powered by GLM-5.3-Flash. Build websites, write code, handle long-horizon tasks, and get instant …"
+   },
+   {
+    "title": "Perplexity AI",
+    "url": "https://www.bing.com/ck/a?!&&p=39131587390658f4c866d5235f7908ba191d17d39d94a2a0ca4b357c1880f88cJmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly93d3cucGVycGxleGl0eS5haS8&ntb=1",
+    "cite": "https://www.perplexity.ai",
+    "snippet": "Perplexity is a free AI-powered answer engine that provides accurate, trusted, and real-time answers to any question."
+   }
+  ]
+ },
+ {
+  "engine": "Bing web search, cc=IN (logged out)",
+  "query": "best screen free AI toy India",
+  "url": "https://www.bing.com/search?q=best%20screen%20free%20AI%20toy%20India&cc=IN&setlang=en-IN",
+  "status": 200,
+  "captured_utc": "2026-10-11T02:34:57.671Z",
+  "title": "best screen free AI toy India - Search",
+  "text": "Skip to content\nAccessibility Feedback\nRewards\nAllWebAI ModeImagesVideosMapsNews\nMore\nAbout 9,30,000 results\nbestundertaking.net\nhttps://www.bestundertaking.net\nBEST Online Payment\n\nHello, Consumer Enter your 9 digit consumer number and pay online Quick PayRead more\n\n \nmerriam-webster.com\nhttps://www.merriam-webster.com › dictionary › best\nBEST Definition & Meaning - Merriam-Webster\n\n5 days ago · In the best of all possible worlds, no one would be without food and clean water. I have a wonderful family and a great …\n\ncambridge.org\nhttps://dictionary.cambridge.org › dictionary › english › best\nBEST | English meaning - Cambridge Dictionary\n\nBEST definition: 1. of the highest quality, or being the most suitable, pleasing, or effective type of thing or…. Learn more.\n\nwiktionary.org\nhttps://en.m.wiktionary.org › wiki › best\nbest - Wiktionary, the free dictionary\n\n3 Oct, 2026 · Although it is sometimes considered an adverb, best is virtually synonymous with should in \" We best be going, \" and …\n\nthefreedictionary.com\nhttps://www.thefreedictionary.com › best\nBest - definition of best by The Free Dictionary\n\nDefine best. best synonyms, best pronunciation, best translation, English dictionary definition of best. adj. Superlative of good 1. …\n\nbestundertaking.com\nhttps://www.bestundertaking.com\nThe Brihanmumbai Electric Supply & Transport Undertaking (BEST)\n\nOfficial website of Brihanmumbai Electric Supply & Transport (BEST) Undertaking – providing reliable transport and electricity …\n\nwordreference.com\nhttps://www.wordreference.com › definition › best\nbest - WordReference.com Dictionary of English\n\nIdioms as best one can, in the best way possible: As best I can tell, we're the first ones here. Idioms at best, even under the most …\n\nusdictionary.com\nhttps://usdictionary.com › definitions › best\nBest: Definition, Meaning, and Examples - usdictionary.com\n\n14 Oct, 2024 · \"Best\" means something that is superior or of the highest quality in comparison to others. Understanding this word …\n\nbritannica.com\nhttps://www.britannica.com › dictionary › best\nBest Definition & Meaning | Britannica Dictionary\n\nThe best [=most valuable] things in life are free. Which of these do you think tastes best? Mary sends you her very best …\n\nbestbuy.com\nhttps://www.bestbuy.com\nBest Buy | Official Online Store | Shop Now & Save\n\nShop Best Buy for electronics, computers, appliances, cell phones, video games & more new tech. Store pickup & free 2-day …\n\n1\n2\n3\n4\n© 2026 Microsoft\nPrivacy and Cookies\nLegal\nAdvertise\nHelp\nFeedback",
+  "algos": [
+   {
+    "title": "BEST Online Payment",
+    "url": "https://www.bing.com/ck/a?!&&p=5ba7ca6e4a3cb8a52a8c546040d82ae6d2d1e481c5635c6c8811ce7641bf1ab4JmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly93d3cuYmVzdHVuZGVydGFraW5nLm5ldC8&ntb=1",
+    "cite": "https://www.bestundertaking.net",
+    "snippet": "Hello, Consumer Enter your 9 digit consumer number and pay online Quick PayRead more"
+   },
+   {
+    "title": "BEST Definition & Meaning - Merriam-Webster",
+    "url": "https://www.bing.com/ck/a?!&&p=3544087b706c825323fcbac471c6b60f3b633e96079d8e0214d160e9341fb8cfJmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly93d3cubWVycmlhbS13ZWJzdGVyLmNvbS9kaWN0aW9uYXJ5L2Jlc3Q&ntb=1",
+    "cite": "https://www.merriam-webster.com › dictionary › best",
+    "snippet": "5 days ago · In the best of all possible worlds, no one would be without food and clean water. I have a wonderful family and a great …"
+   },
+   {
+    "title": "BEST | English meaning - Cambridge Dictionary",
+    "url": "https://www.bing.com/ck/a?!&&p=e0b15eeb72892462dab1dcd0caef41cd1364bf038bf9b4fc909a618e111fb61eJmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly9kaWN0aW9uYXJ5LmNhbWJyaWRnZS5vcmcvZGljdGlvbmFyeS9lbmdsaXNoL2Jlc3Q&ntb=1",
+    "cite": "https://dictionary.cambridge.org › dictionary › english › best",
+    "snippet": "BEST definition: 1. of the highest quality, or being the most suitable, pleasing, or effective type of thing or…. Learn more."
+   },
+   {
+    "title": "best - Wiktionary, the free dictionary",
+    "url": "https://www.bing.com/ck/a?!&&p=5d78e5d4b5fe15774a4ade274e1fab61b18255b5e3b8e9a267b27fbb2a3a26ceJmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly9lbi5tLndpa3Rpb25hcnkub3JnL3dpa2kvYmVzdA&ntb=1",
+    "cite": "https://en.m.wiktionary.org › wiki › best",
+    "snippet": "3 Oct, 2026 · Although it is sometimes considered an adverb, best is virtually synonymous with should in \" We best be going, \" and …"
+   },
+   {
+    "title": "Best - definition of best by The Free Dictionary",
+    "url": "https://www.bing.com/ck/a?!&&p=d1dba5534b7fcc85f717eb6f0fc92d434f80e357d2cc8365e0f6e07eddc1e73bJmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly93d3cudGhlZnJlZWRpY3Rpb25hcnkuY29tL2Jlc3Q&ntb=1",
+    "cite": "https://www.thefreedictionary.com › best",
+    "snippet": "Define best. best synonyms, best pronunciation, best translation, English dictionary definition of best. adj. Superlative of good 1. …"
+   },
+   {
+    "title": "The Brihanmumbai Electric Supply & Transport Undertaking (BEST)",
+    "url": "https://www.bing.com/ck/a?!&&p=58337156a1cd8b92abf21e5dca66d82609d484a797824ca56c66a465a48fb20bJmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly93d3cuYmVzdHVuZGVydGFraW5nLmNvbS8&ntb=1",
+    "cite": "https://www.bestundertaking.com",
+    "snippet": "Official website of Brihanmumbai Electric Supply & Transport (BEST) Undertaking – providing reliable transport and electricity …"
+   },
+   {
+    "title": "best - WordReference.com Dictionary of English",
+    "url": "https://www.bing.com/ck/a?!&&p=429368c40d713cb8570f7034467f7717c16caeace4f4397a5011a7da8a695081JmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly93d3cud29yZHJlZmVyZW5jZS5jb20vZGVmaW5pdGlvbi9iZXN0&ntb=1",
+    "cite": "https://www.wordreference.com › definition › best",
+    "snippet": "Idioms as best one can, in the best way possible: As best I can tell, we're the first ones here. Idioms at best, even under the most …"
+   },
+   {
+    "title": "Best: Definition, Meaning, and Examples - usdictionary.com",
+    "url": "https://www.bing.com/ck/a?!&&p=18eb846d69dbdb0812b2961319ff8120f50bb213679447c4c0f165a7e0d32fd5JmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly91c2RpY3Rpb25hcnkuY29tL2RlZmluaXRpb25zL2Jlc3Qv&ntb=1",
+    "cite": "https://usdictionary.com › definitions › best",
+    "snippet": "14 Oct, 2024 · \"Best\" means something that is superior or of the highest quality in comparison to others. Understanding this word …"
+   },
+   {
+    "title": "Best Definition & Meaning | Britannica Dictionary",
+    "url": "https://www.bing.com/ck/a?!&&p=028437af99c40bfdfbea2fc46731fa97537f0e7f73726fd4badb44ce94968ec6JmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly93d3cuYnJpdGFubmljYS5jb20vZGljdGlvbmFyeS9iZXN0&ntb=1",
+    "cite": "https://www.britannica.com › dictionary › best",
+    "snippet": "The best [=most valuable] things in life are free. Which of these do you think tastes best? Mary sends you her very best …"
+   },
+   {
+    "title": "Best Buy | Official Online Store | Shop Now & Save",
+    "url": "https://www.bing.com/ck/a?!&&p=550958997f2db56fe671aca06cfa2f51872b87afd0e2b939794ed6adbd8b9fc6JmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly93d3cuYmVzdGJ1eS5jb20v&ntb=1",
+    "cite": "https://www.bestbuy.com",
+    "snippet": "Shop Best Buy for electronics, computers, appliances, cell phones, video games & more new tech. Store pickup & free 2-day …"
+   }
+  ]
+ },
+ {
+  "engine": "Bing web search, cc=IN (logged out)",
+  "query": "AI plush toy India",
+  "url": "https://www.bing.com/search?q=AI%20plush%20toy%20India&cc=IN&setlang=en-IN",
+  "status": 200,
+  "captured_utc": "2026-10-11T02:35:10.543Z",
+  "title": "AI plush toy India - Search",
+  "text": "Skip to content\nAccessibility Feedback\nRewards\nAllWebAI ModeImagesVideosMaps\nMore\nAbout 6,37,000 results\nopenai.com\nhttps://openai.com\nOpenAI | Research & Deployment\n\nWe believe our research will eventually lead to artificial general intelligence, a system that can solve human-level problems.Read more\n\n \nchatgpt.com\nhttps://chatgpt.com\nChatGPT: Chat, Work, Create & Code with AI\n\nUse ChatGPT to answer questions, write, create images, complete work, and code—all in one place. Get started for free or …\n\ngoogle.com\nhttps://gemini.google.com\n‎Google Gemini\n\nMeet Gemini, Google’s AI assistant. Get help with writing, planning, brainstorming, and more. Experience the power of generative AI.\n\nai.google\nhttps://ai.google\nGoogle AI - How we're making AI helpful for everyone\n\nDiscover how Google AI is committed to enriching knowledge, solving complex challenges and helping people grow by building …\n\nwikipedia.org\nhttps://en.wikipedia.org › wiki › Artificial_intelligence\nArtificial intelligence - Wikipedia\n\nArtificial intelligence - Wikipedia. Jump to content. Main menu. move to sidebarhide. Navigation . Main page. Contents. Current …\n\ndeepai.org\nhttps://deepai.org\nDeepAI\n\nThis is what AI for Good means to us—using technology and resources to create opportunities and inspire hope, whether through …\n\ndeepai.org\nhttps://deepai.org › chat\nAI Chat - DeepAI\n\nAI Chat is a free AI assistant and chatbot. Ask questions, write text, create code, and make or edit images.\n\nmicrosoft.com\nhttps://copilot.microsoft.com\nMicrosoft Copilot\n\nMicrosoft Copilot is AI built to help you get things done. Create, brainstorm, learn, and solve problems with AI chat that works across …\n\nz.ai\nhttps://z.ai\nZ.ai - Advanced AI Chatbot & Agent powered by GLM-5.3-Flash\n\nMeet Z.ai, the AI assistant powered by GLM-5.3-Flash. Build websites, write code, handle long-horizon tasks, and get instant …\n\nperplexity.ai\nhttps://www.perplexity.ai\nPerplexity AI\n\nPerplexity is a free AI-powered answer engine that provides accurate, trusted, and real-time answers to any question.\n\n1\n2\n3\n4\n© 2026 Microsoft\nPrivacy and Cookies\nLegal\nAdvertise\nHelp\nFeedback",
+  "algos": [
+   {
+    "title": "OpenAI | Research & Deployment",
+    "url": "https://www.bing.com/ck/a?!&&p=64253eee44011ff771d6bda4dcbcc461d4dbbc9bd9105249f9950835218ff45fJmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly9vcGVuYWkuY29tLw&ntb=1",
+    "cite": "https://openai.com",
+    "snippet": "We believe our research will eventually lead to artificial general intelligence, a system that can solve human-level problems.Read more"
+   },
+   {
+    "title": "ChatGPT: Chat, Work, Create & Code with AI",
+    "url": "https://www.bing.com/ck/a?!&&p=3f3f780e4e9d20cb92ae17bd4ba2e00cb7ce2a40ff7f3292b962ae93d9dabe2dJmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly9jaGF0Z3B0LmNvbS8&ntb=1",
+    "cite": "https://chatgpt.com",
+    "snippet": "Use ChatGPT to answer questions, write, create images, complete work, and code—all in one place. Get started for free or …"
+   },
+   {
+    "title": "‎Google Gemini",
+    "url": "https://www.bing.com/ck/a?!&&p=4d584a52d1078c9603e9106c69bc00559af1275367a901c41e9668c70f4c5799JmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly9nZW1pbmkuZ29vZ2xlLmNvbS8&ntb=1",
+    "cite": "https://gemini.google.com",
+    "snippet": "Meet Gemini, Google’s AI assistant. Get help with writing, planning, brainstorming, and more. Experience the power of generative AI."
+   },
+   {
+    "title": "Google AI - How we're making AI helpful for everyone",
+    "url": "https://www.bing.com/ck/a?!&&p=0f7052660f9848971bf2631d8de48434f74a109f1ebadbd4f7a1dcc7e9f0d12dJmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly9haS5nb29nbGUv&ntb=1",
+    "cite": "https://ai.google",
+    "snippet": "Discover how Google AI is committed to enriching knowledge, solving complex challenges and helping people grow by building …"
+   },
+   {
+    "title": "Artificial intelligence - Wikipedia",
+    "url": "https://www.bing.com/ck/a?!&&p=f4353b50460d46bb7531377e3fd035aaed32d4d07ed19894f8b6e5dc455bfc30JmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvQXJ0aWZpY2lhbF9pbnRlbGxpZ2VuY2U&ntb=1",
+    "cite": "https://en.wikipedia.org › wiki › Artificial_intelligence",
+    "snippet": "Artificial intelligence - Wikipedia. Jump to content. Main menu. move to sidebarhide. Navigation . Main page. Contents. Current …"
+   },
+   {
+    "title": "DeepAI",
+    "url": "https://www.bing.com/ck/a?!&&p=55b2c8fab15e2a79bbf1da377fc5975ccf7bb8d5454297283f780f0d9b2d37ceJmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly9kZWVwYWkub3JnLw&ntb=1",
+    "cite": "https://deepai.org",
+    "snippet": "This is what AI for Good means to us—using technology and resources to create opportunities and inspire hope, whether through …"
+   },
+   {
+    "title": "AI Chat - DeepAI",
+    "url": "https://www.bing.com/ck/a?!&&p=b4de5e2e95610de037a7bbd0e82783372627c839b1620cdcc5417d4a437bc4a5JmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly9kZWVwYWkub3JnL2NoYXQ&ntb=1",
+    "cite": "https://deepai.org › chat",
+    "snippet": "AI Chat is a free AI assistant and chatbot. Ask questions, write text, create code, and make or edit images."
+   },
+   {
+    "title": "Microsoft Copilot",
+    "url": "https://www.bing.com/ck/a?!&&p=a1545033962f9e850b7c8c98149843a9dbe21480daacb715c776118173fdabc2JmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly9jb3BpbG90Lm1pY3Jvc29mdC5jb20vP21zb2NraWQ9MjYzM2JmNjQ4NTViNjBkYjBiZTBhODhiODQ5NzYxYjA&ntb=1",
+    "cite": "https://copilot.microsoft.com",
+    "snippet": "Microsoft Copilot is AI built to help you get things done. Create, brainstorm, learn, and solve problems with AI chat that works across …"
+   },
+   {
+    "title": "Z.ai - Advanced AI Chatbot & Agent powered by GLM-5.3-Flash",
+    "url": "https://www.bing.com/ck/a?!&&p=4f61297dcadc1928a34a2af545225b8c16c0a1951d47e87e374e78226d458da9JmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly96LmFpLw&ntb=1",
+    "cite": "https://z.ai",
+    "snippet": "Meet Z.ai, the AI assistant powered by GLM-5.3-Flash. Build websites, write code, handle long-horizon tasks, and get instant …"
+   },
+   {
+    "title": "Perplexity AI",
+    "url": "https://www.bing.com/ck/a?!&&p=39131587390658f4c866d5235f7908ba191d17d39d94a2a0ca4b357c1880f88cJmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly93d3cucGVycGxleGl0eS5haS8&ntb=1",
+    "cite": "https://www.perplexity.ai",
+    "snippet": "Perplexity is a free AI-powered answer engine that provides accurate, trusted, and real-time answers to any question."
+   }
+  ]
+ },
+ {
+  "engine": "Bing web search, cc=IN (logged out)",
+  "query": "toys that talk back for kids India",
+  "url": "https://www.bing.com/search?q=toys%20that%20talk%20back%20for%20kids%20India&cc=IN&setlang=en-IN",
+  "status": 200,
+  "captured_utc": "2026-10-11T02:35:23.510Z",
+  "title": "toys that talk back for kids India - Search",
+  "text": "Skip to content\nAccessibility Feedback\nRewards\nAllWebAI ModeImagesVideosMapsNews\nMore\nAbout 1,97,000 results\nflipkart.com\nhttps://www.flipkart.com › toys-online-store\nToys for Kids: Buy Online at Best Prices | Flipkart\n\nFind the perfect toys for kids of all ages. Explore a huge collection of educational toys, action figures, dolls & more from top brands at …Read more\n\n \ntoyfort.in\nhttps://toyfort.in\nToy Fort - Buy Toys, Games, Barbie, Lego, Hot Wheels - Best ...\n\nYou can find toys from leading brands in our store with the widest range of toys for all age groups and interests. Toy Fort collaborates …\n\nhamleys.in\nhttps://www.hamleys.in\nHamleys India – Buy Toys, Games, LEGO, Barbie, Hot Wheels ...\n\nSubscribe to hear about new products and stores.\n\nflipkart.com\nhttps://www.flipkart.com › toys › pr\nToys - Buy Toys Online at Best Prices In India | Flipkart.com\n\nToys - Shop Toys at India's Best Online Shopping Store. Check Price and Buy Online. Free Shipping Cash on Delivery Best Offers.\n\namazon.in\nhttps://www.amazon.in › Toys-Games\nToys Online | Buy Kids Toys at Best Prices in India\n\nBuy toys online at Amazon India from trusted brands like LEGO, Storio, Intex and Lifelong. Explore animal toys and more for every …\n\namazon.in\nhttps://www.amazon.in › toys-for-kids\nAmazon.in: Toys For Kids\n\nSee all products, across price ranges. Check each product page for other buying options.\n\nfirstcry.com\nhttps://www.firstcry.com › baby-kids-toys-store\nBaby & Kids Toy Store Online - Buy Toys at FirstCry.com\n\nBuy Toys for Kids & Babies online in India at FirstCry.com. Discover a wide range of Baby & Kids Toys at our online Toy Store in …\n\n1\n2\n3\n4\n© 2026 Microsoft\nPrivacy and Cookies\nLegal\nAdvertise\nHelp\nFeedback",
+  "algos": [
+   {
+    "title": "Toys for Kids: Buy Online at Best Prices | Flipkart",
+    "url": "https://www.bing.com/ck/a?!&&p=451e90d29e0fbfd4538352c7834880be25a4b6bad0b06398d69dc06106d09354JmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly93d3cuZmxpcGthcnQuY29tL3RveXMtb25saW5lLXN0b3Jl&ntb=1",
+    "cite": "https://www.flipkart.com › toys-online-store",
+    "snippet": "Find the perfect toys for kids of all ages. Explore a huge collection of educational toys, action figures, dolls & more from top brands at …Read more"
+   },
+   {
+    "title": "Toy Fort - Buy Toys, Games, Barbie, Lego, Hot Wheels - Best ...",
+    "url": "https://www.bing.com/ck/a?!&&p=049e281a8e8159e68c62c8bdfa66007d13d0dfeae0ee5737f8ac6fcf80a84952JmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly90b3lmb3J0LmluLw&ntb=1",
+    "cite": "https://toyfort.in",
+    "snippet": "You can find toys from leading brands in our store with the widest range of toys for all age groups and interests. Toy Fort collaborates …"
+   },
+   {
+    "title": "Hamleys India – Buy Toys, Games, LEGO, Barbie, Hot Wheels ...",
+    "url": "https://www.bing.com/ck/a?!&&p=755d5f7299c02e487471d59c86f5f35a8c53e173ba9f19dabbe79c98dd8cc24fJmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly93d3cuaGFtbGV5cy5pbi8&ntb=1",
+    "cite": "https://www.hamleys.in",
+    "snippet": "Subscribe to hear about new products and stores."
+   },
+   {
+    "title": "Toys - Buy Toys Online at Best Prices In India | Flipkart.com",
+    "url": "https://www.bing.com/ck/a?!&&p=742445d46bfd3cda4a436a09bfc93a878a26e7a128814a395a7d034d9209a7ddJmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly93d3cuZmxpcGthcnQuY29tL3RveXMvcHI_c2lkPWt5aCxtZ2w&ntb=1",
+    "cite": "https://www.flipkart.com › toys › pr",
+    "snippet": "Toys - Shop Toys at India's Best Online Shopping Store. Check Price and Buy Online. Free Shipping Cash on Delivery Best Offers."
+   },
+   {
+    "title": "Toys Online | Buy Kids Toys at Best Prices in India",
+    "url": "https://www.bing.com/ck/a?!&&p=3fb8437f5124e66ac5ff9984cec45fdcbe4581799f6601e882ab2aa7fcc3e49aJmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly93d3cuYW1hem9uLmluL1RveXMtR2FtZXMvYj9ub2RlPTEzNTAzODAwMzE&ntb=1",
+    "cite": "https://www.amazon.in › Toys-Games",
+    "snippet": "Buy toys online at Amazon India from trusted brands like LEGO, Storio, Intex and Lifelong. Explore animal toys and more for every …"
+   },
+   {
+    "title": "Amazon.in: Toys For Kids",
+    "url": "https://www.bing.com/ck/a?!&&p=d1c9fa9c49555239826e2b098f55085ac40d941c329d1ce98192fcbe9e23c9eaJmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly93d3cuYW1hem9uLmluL3RveXMtZm9yLWtpZHMvcz9rPXRveXMrZm9yK2tpZHM&ntb=1",
+    "cite": "https://www.amazon.in › toys-for-kids",
+    "snippet": "See all products, across price ranges. Check each product page for other buying options."
+   },
+   {
+    "title": "Baby & Kids Toy Store Online - Buy Toys at FirstCry.com",
+    "url": "https://www.bing.com/ck/a?!&&p=1e9e6238ed3b5ae93b1ff58b01a78b19a2c93f8fd5b97b87a3810b3d8d2ca13eJmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly93d3cuZmlyc3RjcnkuY29tL2JhYnkta2lkcy10b3lzLXN0b3Jl&ntb=1",
+    "cite": "https://www.firstcry.com › baby-kids-toys-store",
+    "snippet": "Buy Toys for Kids & Babies online in India at FirstCry.com. Discover a wide range of Baby & Kids Toys at our online Toy Store in …"
+   }
+  ]
+ },
+ {
+  "engine": "Bing web search, cc=IN (logged out)",
+  "query": "learning toys for 3 year olds India",
+  "url": "https://www.bing.com/search?q=learning%20toys%20for%203%20year%20olds%20India&cc=IN&setlang=en-IN",
+  "status": 200,
+  "captured_utc": "2026-10-11T02:35:37.621Z",
+  "title": "learning toys for 3 year olds India - Search",
+  "text": "Skip to content\nAccessibility Feedback\nRewards\nAllWebAI ModeImagesVideosMapsNews\nMore\nAbout 5,80,000 results\nlinkedin.com\nhttps://www.linkedin.com › learning\nLinkedIn Learning: Online Training Courses & Skill Building\n\nExplore Role Guides to support your career advancement for over 35 different roles and 1,300+ hand-curated pathways for guided …Read more\n\n \nwikipedia.org\nhttps://en.wikipedia.org › wiki › Learning\nLearning - Wikipedia\n\nHuman learning begins at birth and may even start before birth [5] and continues until death as a consequence of ongoing …\n\nyoutube.com\nhttps://www.youtube.com › LEARNING\nLearning - YouTube\n\nComputers are a part of every aspect of life, even in areas you don't immediately realize. Learning about Computer Science is …\n\nsap.com\nhttps://learning.sap.com\nLearn SAP skills | SAP Learning\n\nSAP Learning offers self-paced and premium learning resources for anyone who wants to build in-demand SAP skills and prepare for …\n\nk5learning.com\nhttps://www.k5learning.com\nFree worksheets | K5 Learning\n\nReading, math and more for kindergarten to grade 5. Thousands of free worksheets in math, reading, science, vocabulary, spelling, …\n\nicai.org\nhttps://lms.icai.org\nICAI Digital Learning Campus\n\nEmpowered LXP is a learning experience platform that empowers organizations and individuals.\n\nverywellmind.com\nhttps://www.verywellmind.com\nWhat Is Learning? - Verywell Mind\n\n4 Jul, 2026 · Learning is a relatively lasting change in behavior resulting from observation and experience. It is the acquisition of …\n\ngeektonight.com\nhttps://www.geektonight.com › what-is-learning\nWhat Is Learning? Definition, Characteristics, Process, Nature, Types\n\n11 Apr, 2026 · Theories of learning have been developed as models of learning which explain the learning process by which …\n\ngeeksforgeeks.org\nhttps://www.geeksforgeeks.org › business-studies › learning-meaning-nature...\nLearning - GeeksforGeeks\n\n4 May, 2026 · Successful learning requires full participation. Finding areas for development and strengths is facilitated by asking for …\n\nmicrosoft.com\nhttps://learn.microsoft.com › en-us › training\nTraining - Courses, Learning Paths, Modules | Microsoft Learn\n\nLooking for specific training content? Learn new skills and discover the power of Microsoft products with step-by-step guidance. Start …\n\n1\n2\n3\n4\n© 2026 Microsoft\nPrivacy and Cookies\nLegal\nAdvertise\nHelp\nFeedback",
+  "algos": [
+   {
+    "title": "LinkedIn Learning: Online Training Courses & Skill Building",
+    "url": "https://www.bing.com/ck/a?!&&p=ad01c24c0bc09192162a38b48cac116dceb7fc644d0ee39199378887e6c0ec8dJmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly93d3cubGlua2VkaW4uY29tL2xlYXJuaW5nLw&ntb=1",
+    "cite": "https://www.linkedin.com › learning",
+    "snippet": "Explore Role Guides to support your career advancement for over 35 different roles and 1,300+ hand-curated pathways for guided …Read more"
+   },
+   {
+    "title": "Learning - Wikipedia",
+    "url": "https://www.bing.com/ck/a?!&&p=dcbbd2b81e27923b66f75a4f30390f12a7246aec6cbef16918cdec78d8f36e0dJmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvTGVhcm5pbmc&ntb=1",
+    "cite": "https://en.wikipedia.org › wiki › Learning",
+    "snippet": "Human learning begins at birth and may even start before birth [5] and continues until death as a consequence of ongoing …"
+   },
+   {
+    "title": "Learning - YouTube",
+    "url": "https://www.bing.com/ck/a?!&&p=95749c39f2b83ef88ccea057bea028d044febe6101668ea380684b6414cd7dd7JmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly93d3cueW91dHViZS5jb20vTEVBUk5JTkc&ntb=1",
+    "cite": "https://www.youtube.com › LEARNING",
+    "snippet": "Computers are a part of every aspect of life, even in areas you don't immediately realize. Learning about Computer Science is …"
+   },
+   {
+    "title": "Learn SAP skills | SAP Learning",
+    "url": "https://www.bing.com/ck/a?!&&p=3e77ab4aae3ae4712db929071b8e16af7ea6b160396b4ee145785519b1f23c3aJmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly9sZWFybmluZy5zYXAuY29tLw&ntb=1",
+    "cite": "https://learning.sap.com",
+    "snippet": "SAP Learning offers self-paced and premium learning resources for anyone who wants to build in-demand SAP skills and prepare for …"
+   },
+   {
+    "title": "Free worksheets | K5 Learning",
+    "url": "https://www.bing.com/ck/a?!&&p=694e5c4e065da965e597542fdde1412f3d0df12ca6ce77a2866b05674e6500a1JmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly93d3cuazVsZWFybmluZy5jb20v&ntb=1",
+    "cite": "https://www.k5learning.com",
+    "snippet": "Reading, math and more for kindergarten to grade 5. Thousands of free worksheets in math, reading, science, vocabulary, spelling, …"
+   },
+   {
+    "title": "ICAI Digital Learning Campus",
+    "url": "https://www.bing.com/ck/a?!&&p=a4496a2477ac7ae4fb2d6fc8813cae9de2b588531b9b94a20246edffb51dbe31JmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly9sbXMuaWNhaS5vcmcv&ntb=1",
+    "cite": "https://lms.icai.org",
+    "snippet": "Empowered LXP is a learning experience platform that empowers organizations and individuals."
+   },
+   {
+    "title": "What Is Learning? - Verywell Mind",
+    "url": "https://www.bing.com/ck/a?!&&p=4962572b947616971f763637fadbbf25e3a77ca1909b9ed364eff98c84338d13JmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly93d3cudmVyeXdlbGxtaW5kLmNvbS93aGF0LWlzLWxlYXJuaW5nLTI3OTUzMzI&ntb=1",
+    "cite": "https://www.verywellmind.com",
+    "snippet": "4 Jul, 2026 · Learning is a relatively lasting change in behavior resulting from observation and experience. It is the acquisition of …"
+   },
+   {
+    "title": "What Is Learning? Definition, Characteristics, Process, Nature, Types",
+    "url": "https://www.bing.com/ck/a?!&&p=44509d0486c9b8305279162b97d4c77fca704c63f8c9e48c2945b5920530c827JmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly93d3cuZ2Vla3RvbmlnaHQuY29tL3doYXQtaXMtbGVhcm5pbmcv&ntb=1",
+    "cite": "https://www.geektonight.com › what-is-learning",
+    "snippet": "11 Apr, 2026 · Theories of learning have been developed as models of learning which explain the learning process by which …"
+   },
+   {
+    "title": "Learning - GeeksforGeeks",
+    "url": "https://www.bing.com/ck/a?!&&p=e9dcf4d06215af5d4e1ba44e012df3f329f9c59f938173c3ed7a7b50cd352ff9JmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvYnVzaW5lc3Mtc3R1ZGllcy9sZWFybmluZy1tZWFuaW5nLW5hdHVyZS10eXBlcy1hbmQtcHJpbmNpcGxlcy8&ntb=1",
+    "cite": "https://www.geeksforgeeks.org › business-studies › learning-meaning-nature...",
+    "snippet": "4 May, 2026 · Successful learning requires full participation. Finding areas for development and strengths is facilitated by asking for …"
+   },
+   {
+    "title": "Training - Courses, Learning Paths, Modules | Microsoft Learn",
+    "url": "https://www.bing.com/ck/a?!&&p=ebfadf23dc6936e5a1b0c454ca3f5d3dc6e6a5fc4481a14f10a28690cb77b810JmltdHM9MTc5MTU5MDQwMA&ptn=3&ver=2&hsh=4&fclid=2633bf64-855b-60db-0be0-a88b849761b0&u=a1aHR0cHM6Ly9sZWFybi5taWNyb3NvZnQuY29tL2VuLXVzL3RyYWluaW5nLw&ntb=1",
+    "cite": "https://learn.microsoft.com › en-us › training",
+    "snippet": "Looking for specific training content? Learn new skills and discover the power of Microsoft products with step-by-step guidance. Start …"
+   }
+  ]
+ }
+]

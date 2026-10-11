@@ -1,7 +1,7 @@
 ---
 title: Pricing and offer source
 type: inventory
-updated: 2026-10-10
+updated: 2026-10-11
 cites_at: archive/pre-reset-2026-10-10
 sources:
   - src/config/site.ts
@@ -27,15 +27,25 @@ sources:
   - wiki/raw/positioning/Kheelona Positioning Strategy.docx
   - "mid: src/config/site.ts lines 96-109, CLAUDE.md lines 27-28"
   - "GET https://kheelona.com/api/health and https://store.kheelona.com/ (browser UA, 2026-10-11 00:42 UTC)"
+  - "GET https://kheelona.com/pricing.md and https://kheelona.com/llms.txt (browser UA, 2026-10-11 06:09 UTC)"
+  - wiki/decisions/D011-production-held-until-gate-b.md
+  - wiki/decisions/D023-new-order-delivery.md
+  - wiki/decisions/D024-payment-methods-gst.md
+  - wiki/decisions/D027-story-mode-wording.md
+  - wiki/decisions/D028-price-wording.md
+  - wiki/raw/research/geo/ai-answer-audit-2026-10-10.md
 ---
 
 # Pricing and offer source
 
 Plain `path:line` citations on this page refer to tag `archive/pre-reset-2026-10-10`; `mid:path` refers to `archive/mid-version-2026-10-10`.
 
-Where every price, offer and amount comes from, how the store picks the price per request, and which
-on-site texts render from it. The checkout steps are on [checkout](../site/checkout.md); refund and
-delivery terms on [policies](policies.md).
+Where every price, offer and amount comes from, how the store picks the price per request, which
+on-site texts render from it, and how the new site must word the price
+([D028](../decisions/D028-price-wording.md), [below](#price-wording-for-the-new-site-d028)). The
+checkout steps are on [checkout](../site/checkout.md); refund and delivery terms on
+[policies](policies.md). Production keeps its current text until Gate B
+([D011](../decisions/D011-production-held-until-gate-b.md)).
 
 ## Live state
 
@@ -60,8 +70,8 @@ Amounts are integers in **paise**, defined once; every rupee string is derived w
 | `TOKEN_AMOUNT_PAISE` | 49,900 | `TOKEN_PRICE` = ₹499 (refundable token) | `site.ts:69, 76` |
 | `BALANCE_AMOUNT_PAISE` | derived: launch − token = 450,000 | `BALANCE_PRICE` = ₹4,500 | `site.ts:72, 77` |
 | `PREORDER_CAP_UNITS` | 500 | `CAP_UNITS_TEXT` = "first 500 units" | `site.ts:86-88` |
-| `TAX_LINE` | "All prices include GST." | – | `site.ts:102` |
-| `SHIP_DATE_TEXT` / `_ISO` | "20 October 2026" / `2026-10-20` | – | `site.ts:138-139` |
+| `TAX_LINE` | "All prices include GST." (new site: "incl. GST" beside every price, [D024](../decisions/D024-payment-methods-gst.md)) | – | `site.ts:102` |
+| `SHIP_DATE_TEXT` / `_ISO` | "20 October 2026" / `2026-10-20`. Production keeps it until Gate B; new orders deliver from mid-November ([D023](../decisions/D023-new-order-delivery.md); the date is owned on [facts](facts.md#ship-date)) | – | `site.ts:138-139` |
 
 Derived sentences (the only sanctioned phrasings, pinned by `test/preorder-money.test.ts:84-95`):
 
@@ -154,6 +164,45 @@ and these six strings are typed by hand. All are meta descriptions or prose:
 (Competitor and category figures such as "around ₹14,000" on `ai-toys…/page.tsx:131` are not our
 prices and are out of scope here.) The reset should render all of these from config.
 
+## Price wording for the new site (D028)
+
+Founder, 2026-10-11 ([D028](../decisions/D028-price-wording.md)), after Bing's AI said Kheelu is
+"priced at ₹499" (`raw/research/geo/ai-answer-audit-2026-10-10.md`; [open questions](../open-questions.md) R10).
+CTA labels themselves stay on [messaging](../brand/messaging.md#cta-labels).
+
+| Where | Rule |
+|---|---|
+| Next to the CTA | Lead with ₹499, and in the SAME sentence say the ₹4,999 total (incl. GST) and that the ₹4,500 remainder is due before delivery. "Refundable" sits beside the advance wherever the advance appears. Draft sentence: D028 |
+| Everything machines read: Product JSON-LD, `llms.txt`, `pricing.md`, page titles and meta descriptions, ad text | Lead with ₹4,999 (incl. GST); the advance comes second |
+| Every amount | Rendered from the source on this page, never hand-typed, so the wording stays true in both modes: in full mode (₹7,999 paid in full) there is no advance to mention. How price display follows the live mode: G9 |
+| Every price | Says "incl. GST" where it appears; the JSON-LD price stays the GST-inclusive amount ([D024](../decisions/D024-payment-methods-gst.md)) |
+
+Production text read against the rule, as input for the new site's content model (production itself
+is held until Gate B):
+
+| Text | Kind | Against D028 |
+|---|---|---|
+| `PRICE_CAPTION` "₹499 now, ₹4,500 on dispatch. Fully refundable until we ship." (`site.ts:96-97`, "the standard reassurance caption under a pre-order button") | Beside a CTA | **Does not meet it**: no ₹4,999 total, no "incl. GST" |
+| `PREORDER_OFFER_LINES[0]` "₹499 reserves one of the first 500 units at ₹4,999." (`site.ts:110-114`) | Beside a CTA | Order meets it (₹499 first, total in the same sentence); lacks "refundable" beside the advance and "incl. GST" |
+| Store h1 "Reserve Kheelu for ₹499." beside the button "Pay ₹499 and reserve" ([live state](#live-state)) | Beside a CTA | The h1 carries no total; the sentence beside the pay button needs it. Checkout presentation may be restyled ([checkout](../site/checkout.md)) |
+| D023's draft line "Reserve Kheelu with ₹499 today. Deliveries start mid-November." ([D023](../decisions/D023-new-order-delivery.md)) | New-site draft | Written before D028: used beside a CTA it needs the ₹4,999 total in the same sentence |
+| `/pricing.md` lines 7-10 and `/llms.txt` lines 43-44 (live, 2026-10-11 06:09 UTC) | Machine | Order meets it (₹4,999 first). "All prices include GST." is a separate line (`/pricing.md` line 11, `/llms.txt` line 46), not with the leading price |
+| `/products/kheelu` meta description "…₹499 reserves yours at ₹4,999." (`products/kheelu/page.tsx:48`) | Machine | **Does not meet it**: leads with ₹499, the shape the rule exists to stop |
+| `/terms` meta description "…what the ₹499 buys…" (`terms/page.tsx:18`) | Machine | **Does not meet it**: names the advance only |
+| Root and Home meta descriptions "Pre-order at ₹4,999 with a refundable ₹499." / "Pre-order at ₹4,999, ₹499 refundable." (`layout.tsx:46`; `(site)/page.tsx:60`) | Machine | Order meets it; no "incl. GST" |
+| `/ai-toys-for-kids-in-india` meta description "…from ₹4,999." (`ai-toys…/page.tsx:65`) | Machine | Order meets it; no "incl. GST" |
+| Product JSON-LD `Offer` `price: 4999` (`seo.ts:322-341`) | Machine | Meets it; GST-inclusive per D024 |
+
+## Kheelona+ has no price
+
+No ₹ amount exists for Kheelona+, and none is published until the founder sets one
+([open questions](../open-questions.md) F7). Every Kheelu includes 6 months of it. The new site uses
+the founder's new Kheelona+ line ([D027](../decisions/D027-story-mode-wording.md), option b), which
+replaces `KHEELONA_PLUS_LINE`; the wording is owned on [facts](facts.md#kheelona). Production keeps
+the old line until Gate B (D011): live `/llms.txt` line 45 still says "stories, lessons, language
+packs, parent app" and "Kheelu's smart features are lifetime" (2026-10-11 06:09 UTC), the wording
+Bing's AI read as "a lifetime subscription to Kheelona+" (R10).
+
 ## Sell-out sweep (§8.26-g)
 
 **Trigger:** `/api/health` reports `"preorder":"full"`, or the internal order alert. The store flips
@@ -174,7 +223,8 @@ The legacy checklist, as written, mapped to the table above:
 
 Rows marked "No" in the last column above (spec rows, `FinaleCTA`, WhatsApp share text, the family
 card label, the guide and journal, the six meta descriptions) also need the sweep; the legacy list
-missed them. Whether the reset keeps a static price plus this manual sweep, or renders the offer from
+missed them. On the new site D028 covers that day too: in full mode the price is ₹7,999 paid in full and
+there is no advance to mention ([above](#price-wording-for-the-new-site-d028)). Whether the reset keeps a static price plus this manual sweep, or renders the offer from
 a read-only block that follows the live mode, is a Gate A decision:
 [open questions](../open-questions.md) G9.
 
@@ -182,10 +232,10 @@ a read-only block that follows the live mode, is a Gate A decision:
 
 | Topic | What exists | Source |
 |---|---|---|
-| GST | Every published price is **GST-inclusive** (founder-confirmed 2026-08-22). "All prices include GST." appears on the store summary, `/terms`, `/shipping`, `PriceTable`, `/pricing.md`, `llms.txt`. **No GST breakup** is shown anywhere | `site.ts:98-102`; `OrderSummary.tsx:102` |
+| GST | Every published price is **GST-inclusive** (founder-confirmed 2026-08-22, again 2026-10-10 in [D024](../decisions/D024-payment-methods-gst.md)). "All prices include GST." appears on the store summary, `/terms`, `/shipping`, `PriceTable`, `/pricing.md`, `llms.txt`. **No GST breakup** is shown anywhere. New site: "incl. GST" beside every price, and the JSON-LD price stays the GST-inclusive amount (D024) | `site.ts:98-102`; `OrderSummary.tsx:102` |
 | GST accounting | An internal accounting note exists and is deliberately unpublished (founder decision); not restated here | `docs/checkpoints/closed-rounds.md:284` |
-| Tax invoice | No GST invoice is generated by this codebase. The email is an acknowledgement. Whether an invoice is issued elsewhere is not documented: [open questions](../open-questions.md) F6 | `templates.ts:96-185`; repo grep for "invoice", 2026-10-11 |
-| Delivery | **Included anywhere in India** (founder-confirmed 2026-08-22) | `closed-rounds.md:193-197`; `OrderSummary.tsx:102` |
+| Tax invoice | **Every buyer gets a GST invoice** (founder, 2026-10-10, [D024](../decisions/D024-payment-methods-gst.md); F6 closed). This codebase does not generate it: the email is an acknowledgement, so the invoice is issued outside the repo; how and when is not documented | `templates.ts:96-185`; repo grep for "invoice", 2026-10-11 |
+| Delivery | **Included anywhere in India** (founder-confirmed 2026-08-22). New orders deliver from mid-November 2026 with the same ₹499 advance ([D023](../decisions/D023-new-order-delivery.md); terms on [policies](policies.md#decided-for-the-new-site)) | `closed-rounds.md:193-197`; `OrderSummary.tsx:102` |
 | MRP | **Not defined anywhere.** No MRP string in `src/`. The DS says never call a price MRP unless it is. MRP is asked in [open questions](../open-questions.md) F3; the disclosure check is on [policies](policies.md#check-against-the-e-commerce-rules-2020-brief-97) | repo grep, 2026-10-11; `design-system/project/07-selling.md:43` |
 | Discounts / coupons | None. The only lower prices are signed event tiers | `tiers.ts` |
 | Product feed (Merchant Center, Meta catalog) | None found in the repo; Meta Events Manager shows "No connected catalogs" | `docs/checkpoints/meta-pixel-migration-2026-09-20.md:240-241` |
@@ -193,9 +243,16 @@ a read-only block that follows the live mode, is a Gate A decision:
 ## Structured data gap against brief §9.2
 
 The `Offer` has price, currency, availability, start date, URL and region, but **no
-`shippingDetails` and no `hasMerchantReturnPolicy`** (`seo.ts:322-341`). Return terms do not exist yet
-([policies](policies.md); [open questions](../open-questions.md) F1), so a return policy cannot be
-marked up honestly today. It also has no `priceValidUntil` by design (`seo.ts:328-333`).
+`shippingDetails` and no `hasMerchantReturnPolicy`** (`seo.ts:322-341`). It also has no
+`priceValidUntil` by design (`seo.ts:328-333`).
+
+For the new site the return and warranty terms now exist ([policies](policies.md#decided-for-the-new-site);
+[D021](../decisions/D021-returns-policy.md), [D022](../decisions/D022-warranty-replacement-refund.md)),
+so `hasMerchantReturnPolicy` and the warranty fields can render from the same content source as the
+page copy (D022). Two points stay open: who pays the return pickup (F1), and the exact date for
+`availabilityStarts`. Production's is `2026-10-20` from `SHIP_DATE_ISO`; the new orders' "mid-November"
+([D023](../decisions/D023-new-order-delivery.md)) is not an exact date, and none has been given, so
+the content model needs one from the founder rather than an invented day.
 
 ## The new design system's price rules (for the reset)
 
@@ -214,4 +271,6 @@ Owned by the DS: [overview, Selling](../design-system/overview.md#selling-projec
 ## Related
 
 [Checkout](../site/checkout.md) · [Policies](policies.md) · [Product facts](facts.md) ·
-[Tracking inventory](../site/tracking-inventory.md) · [Legacy laws](../legacy/laws-summary.md)
+[Tracking inventory](../site/tracking-inventory.md) · [Legacy laws](../legacy/laws-summary.md) ·
+[D023](../decisions/D023-new-order-delivery.md) · [D024](../decisions/D024-payment-methods-gst.md) ·
+[D027](../decisions/D027-story-mode-wording.md) · [D028](../decisions/D028-price-wording.md)

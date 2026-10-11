@@ -1,0 +1,296 @@
+{
+  "meta": {
+    "project": "PostHog 617632 (US cloud), project timezone UTC",
+    "range": "2026-09-19 00:00 to 2026-10-11 00:00 UTC (data exists from 2026-09-19 10:52 UTC; PostHog was installed that day)",
+    "run_at": "2026-10-11 01:00-02:30 UTC (2026-10-10 in the wiki's dating)",
+    "human_filter": "sessions with >=1 $pageview, no event with $virt_is_bot = true, entry referrer not localhost:3456 / 127.0.0.1:3456 / *.vercel.app (unless a query says otherwise)",
+    "caveat": "Test-account cohort 580233 has 0 members, so team traffic is included (about 48 sessions from 4 devices with 10+ sessions each, Q24). Aggregates only."
+  },
+  "queries": [
+    {
+      "id": "Q20",
+      "what": "p75 web vitals per page and device (pages with at least 5 samples across LCP, INP and CLS)",
+      "hogql": "SELECT properties.$host AS host, multiIf(properties.$pathname = '/', '/', properties.$pathname LIKE '/products/kheelu%', '/products/kheelu', properties.$pathname LIKE '/stories/%', '/stories/*', properties.$pathname) AS page, properties.$device_type AS device, countIf(properties.$web_vitals_LCP_value IS NOT NULL) AS lcp_n, round(quantileIf(0.75)(toFloat(properties.$web_vitals_LCP_value), properties.$web_vitals_LCP_value IS NOT NULL), 0) AS lcp_p75_ms, countIf(properties.$web_vitals_FCP_value IS NOT NULL) AS fcp_n, round(quantileIf(0.75)(toFloat(properties.$web_vitals_FCP_value), properties.$web_vitals_FCP_value IS NOT NULL), 0) AS fcp_p75_ms, countIf(properties.$web_vitals_INP_value IS NOT NULL) AS inp_n, round(quantileIf(0.75)(toFloat(properties.$web_vitals_INP_value), properties.$web_vitals_INP_value IS NOT NULL), 0) AS inp_p75_ms, countIf(properties.$web_vitals_CLS_value IS NOT NULL) AS cls_n, round(quantileIf(0.75)(toFloat(properties.$web_vitals_CLS_value), properties.$web_vitals_CLS_value IS NOT NULL), 3) AS cls_p75 FROM events WHERE event = '$web_vitals' AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND coalesce(properties.$virt_is_bot, false) = false AND properties.$device_type IN ('Mobile','Desktop') GROUP BY host, page, device HAVING lcp_n + inp_n + cls_n >= 5 ORDER BY host, lcp_n DESC LIMIT 40",
+      "rows": [
+        {
+          "host": "kheelona.com",
+          "page": "/",
+          "device": "Mobile",
+          "lcp_n": 167,
+          "lcp_p75_ms": 2354,
+          "fcp_n": 362,
+          "fcp_p75_ms": 2340,
+          "inp_n": 38,
+          "inp_p75_ms": 546,
+          "cls_n": 132,
+          "cls_p75": 0.0
+        },
+        {
+          "host": "kheelona.com",
+          "page": "/",
+          "device": "Desktop",
+          "lcp_n": 84,
+          "lcp_p75_ms": 1563,
+          "fcp_n": 128,
+          "fcp_p75_ms": 1577,
+          "inp_n": 50,
+          "inp_p75_ms": 96,
+          "cls_n": 72,
+          "cls_p75": 0.007
+        },
+        {
+          "host": "kheelona.com",
+          "page": "/products/kheelu",
+          "device": "Desktop",
+          "lcp_n": 11,
+          "lcp_p75_ms": 2430,
+          "fcp_n": 14,
+          "fcp_p75_ms": 2018,
+          "inp_n": 13,
+          "inp_p75_ms": 104,
+          "cls_n": 17,
+          "cls_p75": 0.007
+        },
+        {
+          "host": "kheelona.com",
+          "page": "/products/kheelu",
+          "device": "Mobile",
+          "lcp_n": 10,
+          "lcp_p75_ms": 2075,
+          "fcp_n": 13,
+          "fcp_p75_ms": 2256,
+          "inp_n": 2,
+          "inp_p75_ms": 36,
+          "cls_n": 1,
+          "cls_p75": 0.0
+        },
+        {
+          "host": "kheelona.com",
+          "page": "/playos",
+          "device": "Desktop",
+          "lcp_n": 9,
+          "lcp_p75_ms": 1380,
+          "fcp_n": 5,
+          "fcp_p75_ms": 1992,
+          "inp_n": 4,
+          "inp_p75_ms": 62,
+          "cls_n": 5,
+          "cls_p75": 0.004
+        },
+        {
+          "host": "kheelona.com",
+          "page": "/playos",
+          "device": "Mobile",
+          "lcp_n": 4,
+          "lcp_p75_ms": 2680,
+          "fcp_n": 1,
+          "fcp_p75_ms": 2068,
+          "inp_n": 1,
+          "inp_p75_ms": 184,
+          "cls_n": 0,
+          "cls_p75": null
+        },
+        {
+          "host": "kheelona.com",
+          "page": "/team",
+          "device": "Desktop",
+          "lcp_n": 3,
+          "lcp_p75_ms": 1542,
+          "fcp_n": 1,
+          "fcp_p75_ms": 1484,
+          "inp_n": 8,
+          "inp_p75_ms": 80,
+          "cls_n": 5,
+          "cls_p75": 0.006
+        },
+        {
+          "host": "kheelona.com",
+          "page": "/team",
+          "device": "Mobile",
+          "lcp_n": 3,
+          "lcp_p75_ms": 3098,
+          "fcp_n": 3,
+          "fcp_p75_ms": 1635,
+          "inp_n": 4,
+          "inp_p75_ms": 148,
+          "cls_n": 1,
+          "cls_p75": 0.0
+        },
+        {
+          "host": "kheelona.com",
+          "page": "/safety",
+          "device": "Desktop",
+          "lcp_n": 1,
+          "lcp_p75_ms": 824,
+          "fcp_n": 0,
+          "fcp_p75_ms": null,
+          "inp_n": 3,
+          "inp_p75_ms": 132,
+          "cls_n": 2,
+          "cls_p75": 0.294
+        },
+        {
+          "host": "store.kheelona.com",
+          "page": "/",
+          "device": "Mobile",
+          "lcp_n": 31,
+          "lcp_p75_ms": 3244,
+          "fcp_n": 52,
+          "fcp_p75_ms": 3245,
+          "inp_n": 14,
+          "inp_p75_ms": 294,
+          "cls_n": 22,
+          "cls_p75": 0.0
+        },
+        {
+          "host": "store.kheelona.com",
+          "page": "/",
+          "device": "Desktop",
+          "lcp_n": 10,
+          "lcp_p75_ms": 2863,
+          "fcp_n": 21,
+          "fcp_p75_ms": 2896,
+          "inp_n": 4,
+          "inp_p75_ms": 64,
+          "cls_n": 10,
+          "cls_p75": 0.0
+        },
+        {
+          "host": "store.kheelona.com",
+          "page": "/thanks",
+          "device": "Mobile",
+          "lcp_n": 1,
+          "lcp_p75_ms": 3316,
+          "fcp_n": 4,
+          "fcp_p75_ms": 5132,
+          "inp_n": 4,
+          "inp_p75_ms": 60,
+          "cls_n": 2,
+          "cls_p75": 0.0
+        }
+      ]
+    },
+    {
+      "id": "Q39",
+      "what": "p75 web vitals per host and device (all pages)",
+      "hogql": "SELECT properties.$host AS host, properties.$device_type AS device, countIf(properties.$web_vitals_LCP_value IS NOT NULL) AS lcp_n, round(quantileIf(0.75)(toFloat(properties.$web_vitals_LCP_value), properties.$web_vitals_LCP_value IS NOT NULL), 0) AS lcp_p75_ms, countIf(properties.$web_vitals_INP_value IS NOT NULL) AS inp_n, round(quantileIf(0.75)(toFloat(properties.$web_vitals_INP_value), properties.$web_vitals_INP_value IS NOT NULL), 0) AS inp_p75_ms, countIf(properties.$web_vitals_CLS_value IS NOT NULL) AS cls_n, round(quantileIf(0.75)(toFloat(properties.$web_vitals_CLS_value), properties.$web_vitals_CLS_value IS NOT NULL), 3) AS cls_p75, countIf(properties.$web_vitals_FCP_value IS NOT NULL) AS fcp_n, round(quantileIf(0.75)(toFloat(properties.$web_vitals_FCP_value), properties.$web_vitals_FCP_value IS NOT NULL), 0) AS fcp_p75_ms FROM events WHERE event = '$web_vitals' AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND coalesce(properties.$virt_is_bot, false) = false AND properties.$device_type IN ('Mobile','Desktop') GROUP BY host, device ORDER BY host, device",
+      "rows": [
+        {
+          "host": "kheelona.com",
+          "device": "Desktop",
+          "lcp_n": 111,
+          "lcp_p75_ms": 1574,
+          "inp_n": 82,
+          "inp_p75_ms": 96,
+          "cls_n": 104,
+          "cls_p75": 0.007,
+          "fcp_n": 153,
+          "fcp_p75_ms": 1588
+        },
+        {
+          "host": "kheelona.com",
+          "device": "Mobile",
+          "lcp_n": 187,
+          "lcp_p75_ms": 2348,
+          "inp_n": 47,
+          "inp_p75_ms": 440,
+          "cls_n": 135,
+          "cls_p75": 0.0,
+          "fcp_n": 385,
+          "fcp_p75_ms": 2308
+        },
+        {
+          "host": "store.kheelona.com",
+          "device": "Desktop",
+          "lcp_n": 11,
+          "lcp_p75_ms": 2850,
+          "inp_n": 5,
+          "inp_p75_ms": 64,
+          "cls_n": 12,
+          "cls_p75": 0.0,
+          "fcp_n": 22,
+          "fcp_p75_ms": 2878
+        },
+        {
+          "host": "store.kheelona.com",
+          "device": "Mobile",
+          "lcp_n": 32,
+          "lcp_p75_ms": 3292,
+          "inp_n": 18,
+          "inp_p75_ms": 258,
+          "cls_n": 24,
+          "cls_p75": 0.0,
+          "fcp_n": 56,
+          "fcp_p75_ms": 3329
+        }
+      ]
+    },
+    {
+      "id": "Q21",
+      "what": "Captured exceptions by page, device, browser and message",
+      "hogql": "SELECT properties.$host AS host, properties.$pathname AS path, properties.$device_type AS device, properties.$browser AS browser, left(arrayStringConcat(JSONExtractArrayRaw(coalesce(toString(properties.$exception_types), '[]')), ','), 40) AS types, left(arrayStringConcat(JSONExtractArrayRaw(coalesce(toString(properties.$exception_values), '[]')), ' | '), 160) AS vals, count() AS n, uniq(properties.$session_id) AS sessions, min(toDate(timestamp)) AS first_day, max(toDate(timestamp)) AS last_day FROM events WHERE event = '$exception' AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') GROUP BY host, path, device, browser, types, vals ORDER BY n DESC LIMIT 40",
+      "rows": [
+        {
+          "host": "kheelona.com",
+          "path": "/",
+          "device": "Mobile",
+          "browser": "Chrome",
+          "type": "Error",
+          "message": "Script error.",
+          "n": 16,
+          "sessions": 8,
+          "first_day": "2026-09-20",
+          "last_day": "2026-09-22"
+        },
+        {
+          "host": "kheelona.com",
+          "path": "/products/kheelu",
+          "device": "Desktop",
+          "browser": "Chrome",
+          "type": "UnhandledRejection",
+          "message": "Non-Error promise rejection captured with value: Object Not Found Matching Id:1, MethodName:update, ParamCount:4",
+          "n": 9,
+          "sessions": 1,
+          "first_day": "2026-10-06",
+          "last_day": "2026-10-06"
+        },
+        {
+          "host": "kheelona.com",
+          "path": "/",
+          "device": "Mobile",
+          "browser": "Mobile Safari",
+          "type": "Error",
+          "message": "Script error.",
+          "n": 7,
+          "sessions": 1,
+          "first_day": "2026-10-02",
+          "last_day": "2026-10-02"
+        },
+        {
+          "host": "kheelona.com",
+          "path": "/",
+          "device": "Mobile",
+          "browser": "Chrome",
+          "type": "Error",
+          "message": "Error invoking postMessage: Java object is gone",
+          "n": 3,
+          "sessions": 2,
+          "first_day": "2026-09-21",
+          "last_day": "2026-09-21"
+        },
+        {
+          "host": "kheelona.com",
+          "path": "/",
+          "device": "Mobile",
+          "browser": "Mobile Safari",
+          "type": "TypeError",
+          "message": "undefined is not an object (evaluating 'window.ethereum.selectedAddress = undefined')",
+          "n": 2,
+          "sessions": 1,
+          "first_day": "2026-10-02",
+          "last_day": "2026-10-02"
+        }
+      ]
+    }
+  ]
+}

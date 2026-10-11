@@ -1,0 +1,742 @@
+{
+  "meta": {
+    "project": "PostHog 617632 (US cloud), project timezone UTC",
+    "range": "2026-09-19 00:00 to 2026-10-11 00:00 UTC (data exists from 2026-09-19 10:52 UTC; PostHog was installed that day)",
+    "run_at": "2026-10-11 01:00-02:30 UTC (2026-10-10 in the wiki's dating)",
+    "human_filter": "sessions with >=1 $pageview, no event with $virt_is_bot = true, entry referrer not localhost:3456 / 127.0.0.1:3456 / *.vercel.app (unless a query says otherwise)",
+    "caveat": "Test-account cohort 580233 has 0 members, so team traffic is included (about 48 sessions from 4 devices with 10+ sessions each, Q24). Aggregates only."
+  },
+  "queries": [
+    {
+      "id": "Q6",
+      "what": "Session funnel by source group and first device (bots excluded; internal shown as its own group). A step counts if it happened anywhere in the session, so steps need not be in order.",
+      "hogql": "SELECT src_group, device, count() AS sessions, countIf(product_pv > 0) AS s1_product, countIf(store_pv > 0) AS s2_store, countIf(form_started > 0) AS s3_form_started, countIf(submit > 0) AS s4_valid_submit, countIf(checkout > 0) AS s5_order_created, countIf(dismissed > 0) AS sheet_closed, countIf(purchased > 0) AS s6_purchase FROM ( SELECT properties.$session_id AS sid, any(session.$entry_referring_domain) AS ref, coalesce(any(session.$entry_utm_source),'') AS us, coalesce(any(session.$entry_utm_medium),'') AS um, coalesce(any(session.$entry_fbclid),'') AS fbc, multiIf( ref IN ('localhost:3456','127.0.0.1:3456') OR ref LIKE '%vercel.app', 'Internal (local or preview)', um = 'paid', 'Paid social, tagged', fbc != '' AND us = '', 'Meta click id, no UTM', um = 'social', 'Instagram bio link (ig/social)', us = 'chatgpt.com' OR ref = 'chatgpt.com', 'ChatGPT', ref IN ('www.google.com','www.bing.com','duckduckgo.com','au.search.yahoo.com','com.google.android.googlequicksearchbox'), 'Organic search', ref IN ('l.facebook.com','m.facebook.com','www.facebook.com','instagram.com','l.instagram.com','www.threads.com','www.linkedin.com','com.twitter.android'), 'Organic social, other', ref IN ('kheelona.com','www.kheelona.com'), 'Own site (session restarted)', ref = '$direct' OR ref IS NULL, 'Direct', 'Referral') AS src_group, argMin(properties.$device_type, timestamp) AS device, max(properties.$virt_is_bot = true) AS is_bot, countIf(event = '$pageview' AND properties.$host = 'kheelona.com' AND properties.$pathname LIKE '/products/kheelu%') AS product_pv, countIf(event = '$pageview' AND properties.$host = 'store.kheelona.com' AND properties.$pathname NOT LIKE '/thanks%') AS store_pv, countIf(event = 'preorder_form_started') AS form_started, countIf(event = 'preorder_start') AS submit, countIf(event = 'begin_checkout') AS checkout, countIf(event = 'preorder_dismissed') AS dismissed, countIf(event = 'purchase') AS purchased, countIf(event = '$pageview') AS pvs FROM events WHERE timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND event IN ('$pageview','preorder_form_started','preorder_start','begin_checkout','preorder_dismissed','purchase') AND properties.$session_id IS NOT NULL GROUP BY sid HAVING pvs > 0 AND is_bot = 0 ) GROUP BY ROLLUP(src_group, device) ORDER BY src_group, device",
+      "rows": [
+        {
+          "source_group": "(all, incl. internal)",
+          "device": null,
+          "sessions": 806,
+          "s1_product_page": 61,
+          "s2_store_page": 95,
+          "s3_form_started": 11,
+          "s4_valid_submit": 6,
+          "s5_order_created": 6,
+          "sheet_closed": 3,
+          "s6_purchase": 2
+        },
+        {
+          "source_group": "ChatGPT",
+          "device": "Desktop",
+          "sessions": 24,
+          "s1_product_page": 5,
+          "s2_store_page": 5,
+          "s3_form_started": 0,
+          "s4_valid_submit": 0,
+          "s5_order_created": 0,
+          "sheet_closed": 0,
+          "s6_purchase": 0
+        },
+        {
+          "source_group": "ChatGPT",
+          "device": "Mobile",
+          "sessions": 58,
+          "s1_product_page": 14,
+          "s2_store_page": 8,
+          "s3_form_started": 2,
+          "s4_valid_submit": 1,
+          "s5_order_created": 1,
+          "sheet_closed": 0,
+          "s6_purchase": 1
+        },
+        {
+          "source_group": "ChatGPT",
+          "device": "Tablet",
+          "sessions": 1,
+          "s1_product_page": 0,
+          "s2_store_page": 0,
+          "s3_form_started": 0,
+          "s4_valid_submit": 0,
+          "s5_order_created": 0,
+          "sheet_closed": 0,
+          "s6_purchase": 0
+        },
+        {
+          "source_group": "ChatGPT",
+          "device": null,
+          "sessions": 83,
+          "s1_product_page": 19,
+          "s2_store_page": 13,
+          "s3_form_started": 2,
+          "s4_valid_submit": 1,
+          "s5_order_created": 1,
+          "sheet_closed": 0,
+          "s6_purchase": 1
+        },
+        {
+          "source_group": "Direct",
+          "device": "Desktop",
+          "sessions": 102,
+          "s1_product_page": 15,
+          "s2_store_page": 11,
+          "s3_form_started": 0,
+          "s4_valid_submit": 0,
+          "s5_order_created": 0,
+          "sheet_closed": 0,
+          "s6_purchase": 0
+        },
+        {
+          "source_group": "Direct",
+          "device": "Mobile",
+          "sessions": 81,
+          "s1_product_page": 4,
+          "s2_store_page": 16,
+          "s3_form_started": 2,
+          "s4_valid_submit": 2,
+          "s5_order_created": 2,
+          "sheet_closed": 1,
+          "s6_purchase": 0
+        },
+        {
+          "source_group": "Direct",
+          "device": null,
+          "sessions": 183,
+          "s1_product_page": 19,
+          "s2_store_page": 27,
+          "s3_form_started": 2,
+          "s4_valid_submit": 2,
+          "s5_order_created": 2,
+          "sheet_closed": 1,
+          "s6_purchase": 0
+        },
+        {
+          "source_group": "Instagram bio link (ig/social)",
+          "device": "Desktop",
+          "sessions": 2,
+          "s1_product_page": 0,
+          "s2_store_page": 2,
+          "s3_form_started": 0,
+          "s4_valid_submit": 0,
+          "s5_order_created": 0,
+          "sheet_closed": 0,
+          "s6_purchase": 0
+        },
+        {
+          "source_group": "Instagram bio link (ig/social)",
+          "device": "Mobile",
+          "sessions": 13,
+          "s1_product_page": 0,
+          "s2_store_page": 13,
+          "s3_form_started": 1,
+          "s4_valid_submit": 1,
+          "s5_order_created": 1,
+          "sheet_closed": 1,
+          "s6_purchase": 0
+        },
+        {
+          "source_group": "Instagram bio link (ig/social)",
+          "device": "Tablet",
+          "sessions": 1,
+          "s1_product_page": 0,
+          "s2_store_page": 1,
+          "s3_form_started": 0,
+          "s4_valid_submit": 0,
+          "s5_order_created": 0,
+          "sheet_closed": 0,
+          "s6_purchase": 0
+        },
+        {
+          "source_group": "Instagram bio link (ig/social)",
+          "device": null,
+          "sessions": 16,
+          "s1_product_page": 0,
+          "s2_store_page": 16,
+          "s3_form_started": 1,
+          "s4_valid_submit": 1,
+          "s5_order_created": 1,
+          "sheet_closed": 1,
+          "s6_purchase": 0
+        },
+        {
+          "source_group": "Internal (local or preview)",
+          "device": "Desktop",
+          "sessions": 2,
+          "s1_product_page": 0,
+          "s2_store_page": 2,
+          "s3_form_started": 0,
+          "s4_valid_submit": 0,
+          "s5_order_created": 0,
+          "sheet_closed": 0,
+          "s6_purchase": 0
+        },
+        {
+          "source_group": "Internal (local or preview)",
+          "device": "Mobile",
+          "sessions": 2,
+          "s1_product_page": 0,
+          "s2_store_page": 2,
+          "s3_form_started": 1,
+          "s4_valid_submit": 1,
+          "s5_order_created": 1,
+          "sheet_closed": 1,
+          "s6_purchase": 0
+        },
+        {
+          "source_group": "Internal (local or preview)",
+          "device": null,
+          "sessions": 4,
+          "s1_product_page": 0,
+          "s2_store_page": 4,
+          "s3_form_started": 1,
+          "s4_valid_submit": 1,
+          "s5_order_created": 1,
+          "sheet_closed": 1,
+          "s6_purchase": 0
+        },
+        {
+          "source_group": "Meta click id, no UTM",
+          "device": "Desktop",
+          "sessions": 3,
+          "s1_product_page": 0,
+          "s2_store_page": 1,
+          "s3_form_started": 0,
+          "s4_valid_submit": 0,
+          "s5_order_created": 0,
+          "sheet_closed": 0,
+          "s6_purchase": 0
+        },
+        {
+          "source_group": "Meta click id, no UTM",
+          "device": "Mobile",
+          "sessions": 214,
+          "s1_product_page": 1,
+          "s2_store_page": 3,
+          "s3_form_started": 1,
+          "s4_valid_submit": 0,
+          "s5_order_created": 0,
+          "sheet_closed": 0,
+          "s6_purchase": 0
+        },
+        {
+          "source_group": "Meta click id, no UTM",
+          "device": null,
+          "sessions": 217,
+          "s1_product_page": 1,
+          "s2_store_page": 4,
+          "s3_form_started": 1,
+          "s4_valid_submit": 0,
+          "s5_order_created": 0,
+          "sheet_closed": 0,
+          "s6_purchase": 0
+        },
+        {
+          "source_group": "Organic search",
+          "device": "Desktop",
+          "sessions": 52,
+          "s1_product_page": 15,
+          "s2_store_page": 5,
+          "s3_form_started": 1,
+          "s4_valid_submit": 1,
+          "s5_order_created": 1,
+          "sheet_closed": 0,
+          "s6_purchase": 1
+        },
+        {
+          "source_group": "Organic search",
+          "device": "Mobile",
+          "sessions": 39,
+          "s1_product_page": 6,
+          "s2_store_page": 1,
+          "s3_form_started": 0,
+          "s4_valid_submit": 0,
+          "s5_order_created": 0,
+          "sheet_closed": 0,
+          "s6_purchase": 0
+        },
+        {
+          "source_group": "Organic search",
+          "device": "Tablet",
+          "sessions": 2,
+          "s1_product_page": 0,
+          "s2_store_page": 0,
+          "s3_form_started": 0,
+          "s4_valid_submit": 0,
+          "s5_order_created": 0,
+          "sheet_closed": 0,
+          "s6_purchase": 0
+        },
+        {
+          "source_group": "Organic search",
+          "device": null,
+          "sessions": 93,
+          "s1_product_page": 21,
+          "s2_store_page": 6,
+          "s3_form_started": 1,
+          "s4_valid_submit": 1,
+          "s5_order_created": 1,
+          "sheet_closed": 0,
+          "s6_purchase": 1
+        },
+        {
+          "source_group": "Organic social, other",
+          "device": "Desktop",
+          "sessions": 1,
+          "s1_product_page": 0,
+          "s2_store_page": 1,
+          "s3_form_started": 0,
+          "s4_valid_submit": 0,
+          "s5_order_created": 0,
+          "sheet_closed": 0,
+          "s6_purchase": 0
+        },
+        {
+          "source_group": "Organic social, other",
+          "device": "Mobile",
+          "sessions": 3,
+          "s1_product_page": 0,
+          "s2_store_page": 0,
+          "s3_form_started": 0,
+          "s4_valid_submit": 0,
+          "s5_order_created": 0,
+          "sheet_closed": 0,
+          "s6_purchase": 0
+        },
+        {
+          "source_group": "Organic social, other",
+          "device": null,
+          "sessions": 4,
+          "s1_product_page": 0,
+          "s2_store_page": 1,
+          "s3_form_started": 0,
+          "s4_valid_submit": 0,
+          "s5_order_created": 0,
+          "sheet_closed": 0,
+          "s6_purchase": 0
+        },
+        {
+          "source_group": "Own site (session restarted)",
+          "device": "Desktop",
+          "sessions": 3,
+          "s1_product_page": 0,
+          "s2_store_page": 3,
+          "s3_form_started": 1,
+          "s4_valid_submit": 0,
+          "s5_order_created": 0,
+          "sheet_closed": 0,
+          "s6_purchase": 0
+        },
+        {
+          "source_group": "Own site (session restarted)",
+          "device": "Mobile",
+          "sessions": 4,
+          "s1_product_page": 0,
+          "s2_store_page": 4,
+          "s3_form_started": 0,
+          "s4_valid_submit": 0,
+          "s5_order_created": 0,
+          "sheet_closed": 0,
+          "s6_purchase": 0
+        },
+        {
+          "source_group": "Own site (session restarted)",
+          "device": null,
+          "sessions": 7,
+          "s1_product_page": 0,
+          "s2_store_page": 7,
+          "s3_form_started": 1,
+          "s4_valid_submit": 0,
+          "s5_order_created": 0,
+          "sheet_closed": 0,
+          "s6_purchase": 0
+        },
+        {
+          "source_group": "Paid social, tagged",
+          "device": "Mobile",
+          "sessions": 196,
+          "s1_product_page": 0,
+          "s2_store_page": 16,
+          "s3_form_started": 1,
+          "s4_valid_submit": 0,
+          "s5_order_created": 0,
+          "sheet_closed": 0,
+          "s6_purchase": 0
+        },
+        {
+          "source_group": "Paid social, tagged",
+          "device": "Tablet",
+          "sessions": 1,
+          "s1_product_page": 0,
+          "s2_store_page": 0,
+          "s3_form_started": 0,
+          "s4_valid_submit": 0,
+          "s5_order_created": 0,
+          "sheet_closed": 0,
+          "s6_purchase": 0
+        },
+        {
+          "source_group": "Paid social, tagged",
+          "device": null,
+          "sessions": 197,
+          "s1_product_page": 0,
+          "s2_store_page": 16,
+          "s3_form_started": 1,
+          "s4_valid_submit": 0,
+          "s5_order_created": 0,
+          "sheet_closed": 0,
+          "s6_purchase": 0
+        },
+        {
+          "source_group": "Referral",
+          "device": "Mobile",
+          "sessions": 2,
+          "s1_product_page": 1,
+          "s2_store_page": 1,
+          "s3_form_started": 1,
+          "s4_valid_submit": 0,
+          "s5_order_created": 0,
+          "sheet_closed": 0,
+          "s6_purchase": 0
+        },
+        {
+          "source_group": "Referral",
+          "device": null,
+          "sessions": 2,
+          "s1_product_page": 1,
+          "s2_store_page": 1,
+          "s3_form_started": 1,
+          "s4_valid_submit": 0,
+          "s5_order_created": 0,
+          "sheet_closed": 0,
+          "s6_purchase": 0
+        }
+      ]
+    },
+    {
+      "id": "Q7",
+      "what": "Session funnel by first device, internal sessions excluded, with duration and single-page share",
+      "hogql": "SELECT device, count() AS sessions, countIf(product_pv > 0) AS s1_product, countIf(store_pv > 0) AS s2_store, countIf(form_started > 0) AS s3_form_started, countIf(submit > 0) AS s4_valid_submit, countIf(checkout > 0) AS s5_order_created, countIf(dismissed > 0) AS sheet_closed, countIf(purchased > 0) AS s6_purchase, round(avg(dur),0) AS avg_duration_s, round(quantile(0.5)(dur),0) AS median_duration_s, round(avg(pvs),2) AS avg_pageviews, round(100*countIf(pvs = 1)/count(),1) AS pct_single_page FROM ( SELECT properties.$session_id AS sid, any(session.$entry_referring_domain) AS ref, any(session.$session_duration) AS dur, argMin(properties.$device_type, timestamp) AS device, max(properties.$virt_is_bot = true) AS is_bot, countIf(event = '$pageview' AND properties.$host = 'kheelona.com' AND properties.$pathname LIKE '/products/kheelu%') AS product_pv, countIf(event = '$pageview' AND properties.$host = 'store.kheelona.com' AND properties.$pathname NOT LIKE '/thanks%') AS store_pv, countIf(event = 'preorder_form_started') AS form_started, countIf(event = 'preorder_start') AS submit, countIf(event = 'begin_checkout') AS checkout, countIf(event = 'preorder_dismissed') AS dismissed, countIf(event = 'purchase') AS purchased, countIf(event = '$pageview') AS pvs FROM events WHERE timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND event IN ('$pageview','preorder_form_started','preorder_start','begin_checkout','preorder_dismissed','purchase') AND properties.$session_id IS NOT NULL GROUP BY sid HAVING pvs > 0 AND is_bot = 0 AND NOT (coalesce(ref,'') IN ('localhost:3456','127.0.0.1:3456') OR coalesce(ref,'') LIKE '%vercel.app') ) GROUP BY ROLLUP(device) ORDER BY sessions DESC",
+      "rows": [
+        {
+          "device": "(all)",
+          "sessions": 802,
+          "s1_product_page": 61,
+          "s2_store_page": 91,
+          "s3_form_started": 10,
+          "s4_valid_submit": 5,
+          "s5_order_created": 5,
+          "sheet_closed": 2,
+          "s6_purchase": 2,
+          "avg_duration_s": 160,
+          "median_duration_s": 13,
+          "avg_pageviews": 1.36,
+          "pct_single_page": 81.2
+        },
+        {
+          "device": "Mobile",
+          "sessions": 610,
+          "s1_product_page": 26,
+          "s2_store_page": 62,
+          "s3_form_started": 8,
+          "s4_valid_submit": 4,
+          "s5_order_created": 4,
+          "sheet_closed": 2,
+          "s6_purchase": 1,
+          "avg_duration_s": 83,
+          "median_duration_s": 9,
+          "avg_pageviews": 1.24,
+          "pct_single_page": 84.8
+        },
+        {
+          "device": "Desktop",
+          "sessions": 187,
+          "s1_product_page": 35,
+          "s2_store_page": 28,
+          "s3_form_started": 2,
+          "s4_valid_submit": 1,
+          "s5_order_created": 1,
+          "sheet_closed": 0,
+          "s6_purchase": 1,
+          "avg_duration_s": 414,
+          "median_duration_s": 42,
+          "avg_pageviews": 1.75,
+          "pct_single_page": 69.0
+        },
+        {
+          "device": "Tablet",
+          "sessions": 5,
+          "s1_product_page": 0,
+          "s2_store_page": 1,
+          "s3_form_started": 0,
+          "s4_valid_submit": 0,
+          "s5_order_created": 0,
+          "sheet_closed": 0,
+          "s6_purchase": 0,
+          "avg_duration_s": 72,
+          "median_duration_s": 61,
+          "avg_pageviews": 1.0,
+          "pct_single_page": 100.0
+        }
+      ]
+    },
+    {
+      "id": "Q8",
+      "what": "PostHog's native ordered funnel (persons, 14-day window, bots excluded, internal NOT excluded), by device. Saved as insight Y9KjojeN.",
+      "tool": "query-funnel",
+      "input": {
+        "kind": "FunnelsQuery",
+        "series": [
+          {
+            "kind": "EventsNode",
+            "event": "$pageview",
+            "custom_name": "Any page view"
+          },
+          {
+            "kind": "EventsNode",
+            "event": "$pageview",
+            "custom_name": "Store page view",
+            "properties": [
+              {
+                "key": "$host",
+                "operator": "exact",
+                "type": "event",
+                "value": [
+                  "store.kheelona.com"
+                ]
+              },
+              {
+                "key": "$pathname",
+                "operator": "not_icontains",
+                "type": "event",
+                "value": "/thanks"
+              }
+            ]
+          },
+          {
+            "kind": "EventsNode",
+            "event": "preorder_form_started"
+          },
+          {
+            "kind": "EventsNode",
+            "event": "preorder_start"
+          },
+          {
+            "kind": "EventsNode",
+            "event": "begin_checkout"
+          },
+          {
+            "kind": "EventsNode",
+            "event": "purchase"
+          }
+        ],
+        "dateRange": {
+          "date_from": "2026-09-19T00:00:00Z",
+          "date_to": "2026-10-11T00:00:00Z"
+        },
+        "properties": [
+          {
+            "type": "hogql",
+            "key": "coalesce(properties.$virt_is_bot, false) = false"
+          }
+        ],
+        "funnelsFilter": {
+          "funnelOrderType": "ordered",
+          "funnelWindowInterval": 14,
+          "funnelWindowIntervalUnit": "day"
+        },
+        "breakdownFilter": {
+          "breakdown": "$device_type",
+          "breakdown_type": "event"
+        },
+        "filterTestAccounts": false
+      },
+      "rows": [
+        {
+          "device": "Mobile",
+          "any_page_view": 551,
+          "store_page_view": 26,
+          "preorder_form_started": 5,
+          "preorder_start": 2,
+          "begin_checkout": 2,
+          "purchase": 1,
+          "median_s_store_to_form": 5,
+          "median_s_form_to_submit": 52,
+          "median_s_checkout_to_purchase": 151
+        },
+        {
+          "device": "Desktop",
+          "any_page_view": 135,
+          "store_page_view": 19,
+          "preorder_form_started": 3,
+          "preorder_start": 2,
+          "begin_checkout": 2,
+          "purchase": 1,
+          "median_s_store_to_form": 18,
+          "median_s_form_to_submit": 48,
+          "median_s_checkout_to_purchase": 125
+        },
+        {
+          "device": "Tablet",
+          "any_page_view": 5,
+          "store_page_view": 0,
+          "preorder_form_started": 0,
+          "preorder_start": 0,
+          "begin_checkout": 0,
+          "purchase": 0,
+          "median_s_store_to_form": null,
+          "median_s_form_to_submit": null,
+          "median_s_checkout_to_purchase": null
+        }
+      ]
+    },
+    {
+      "id": "Q17",
+      "what": "Form submits rejected by client validation (an autocaptured form submit with no preorder_start)",
+      "hogql": "SELECT device, in_app, count() AS sessions_with_submit, countIf(starts = 0) AS submit_never_valid, countIf(submits > starts AND starts > 0) AS some_submits_invalid, sum(submits) AS submit_events, sum(starts) AS valid_submits, countIf(checkouts > 0) AS order_created, countIf(purchased > 0) AS purchased, countIf(dismissed > 0) AS sheet_closed FROM ( SELECT properties.$session_id AS sid, argMin(properties.$device_type, timestamp) AS device, coalesce(argMin(properties.$webview_app, timestamp),'') AS in_app, any(session.$entry_referring_domain) AS ref, countIf(event = '$autocapture' AND properties.$event_type = 'submit' AND properties.$host = 'store.kheelona.com') AS submits, countIf(event = 'preorder_start') AS starts, countIf(event = 'begin_checkout') AS checkouts, countIf(event = 'preorder_dismissed') AS dismissed, countIf(event = 'purchase') AS purchased FROM events WHERE timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND event IN ('$autocapture','preorder_start','begin_checkout','preorder_dismissed','purchase','$pageview') AND properties.$session_id IS NOT NULL GROUP BY sid HAVING submits > 0 AND NOT (coalesce(ref,'') IN ('localhost:3456','127.0.0.1:3456') OR coalesce(ref,'') LIKE '%vercel.app') ) GROUP BY ROLLUP(device, in_app)",
+      "rows": [
+        {
+          "device": "Mobile",
+          "in_app_browser": "Instagram",
+          "sessions_with_submit": 1,
+          "submit_never_valid": 0,
+          "some_submits_invalid": 0,
+          "submit_events": 1,
+          "valid_submits": 1,
+          "order_created": 1,
+          "purchased": 0,
+          "sheet_closed": 1
+        },
+        {
+          "device": "Mobile",
+          "in_app_browser": "(none)",
+          "sessions_with_submit": 2,
+          "submit_never_valid": 1,
+          "some_submits_invalid": 0,
+          "submit_events": 3,
+          "valid_submits": 1,
+          "order_created": 1,
+          "purchased": 1,
+          "sheet_closed": 0
+        },
+        {
+          "device": "Mobile",
+          "in_app_browser": "WhatsApp",
+          "sessions_with_submit": 2,
+          "submit_never_valid": 0,
+          "some_submits_invalid": 0,
+          "submit_events": 2,
+          "valid_submits": 2,
+          "order_created": 2,
+          "purchased": 0,
+          "sheet_closed": 1
+        },
+        {
+          "device": "Desktop",
+          "in_app_browser": "(none)",
+          "sessions_with_submit": 1,
+          "submit_never_valid": 0,
+          "some_submits_invalid": 1,
+          "submit_events": 2,
+          "valid_submits": 1,
+          "order_created": 1,
+          "purchased": 1,
+          "sheet_closed": 0
+        },
+        {
+          "device": "(all)",
+          "in_app_browser": null,
+          "sessions_with_submit": 6,
+          "submit_never_valid": 1,
+          "some_submits_invalid": 1,
+          "submit_events": 8,
+          "valid_submits": 5,
+          "order_created": 5,
+          "purchased": 2,
+          "sheet_closed": 2
+        }
+      ]
+    },
+    {
+      "id": "Q38",
+      "what": "Browser purchase vs server purchase_confirmed",
+      "hogql": "SELECT event, count() AS n, sum(toFloat(properties.value)) AS value_inr_sum, groupUniqArray(properties.tier) AS tiers, countIf(coalesce(properties.utm_source,'') != '') AS with_utm_source, groupUniqArray(coalesce(properties.utm_source,'')) AS utm_sources, countIf(properties.$session_id IS NOT NULL) AS with_session_id FROM events WHERE event IN ('purchase','purchase_confirmed') AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') GROUP BY event",
+      "rows": [
+        {
+          "event": "purchase",
+          "n": 2,
+          "value_inr_sum": 998.0,
+          "tiers": [
+            "launch"
+          ],
+          "with_utm_source": 0,
+          "utm_sources": [
+            ""
+          ],
+          "with_session_id": 2
+        },
+        {
+          "event": "purchase_confirmed",
+          "n": 2,
+          "value_inr_sum": 998.0,
+          "tiers": [
+            "launch"
+          ],
+          "with_utm_source": 1,
+          "utm_sources": [
+            "",
+            "chatgpt.com"
+          ],
+          "with_session_id": 0
+        }
+      ]
+    },
+    {
+      "id": "Q25",
+      "what": "Sessions per purchasing device (aggregate of the 2 purchasing devices)",
+      "hogql": "SELECT distinct_id IN (SELECT distinct_id FROM events WHERE event = 'purchase' AND <window>) AS is_purchaser_device, argMin(properties.$device_type, timestamp) AS device, uniq(properties.$session_id) AS sessions, min(toDate(timestamp)) AS first_seen, countIf(properties.$host = 'store.kheelona.com') AS store_pageviews FROM events WHERE event = '$pageview' AND <window> AND distinct_id IN (SELECT distinct_id FROM events WHERE event = 'purchase' AND <window>) GROUP BY distinct_id",
+      "rows": [
+        {
+          "device": "Mobile",
+          "sessions": 2,
+          "first_seen": "2026-09-27",
+          "store_pageviews": 4
+        },
+        {
+          "device": "Desktop",
+          "sessions": 1,
+          "first_seen": "2026-09-25",
+          "store_pageviews": 2
+        }
+      ]
+    },
+    {
+      "id": "Q35",
+      "what": "Seconds from the last tap on a store link on kheelona.com to the first store $pageview in the same session (proxy for store load plus SDK start; gaps over 300 s dropped)",
+      "hogql": "SELECT device, count() AS hops, round(quantile(0.5)(gap_ms)/1000, 1) AS median_s, round(quantile(0.75)(gap_ms)/1000, 1) AS p75_s, round(quantile(0.9)(gap_ms)/1000, 1) AS p90_s, max(gap_ms)/1000 AS max_s FROM ( SELECT sid, device, dateDiff('millisecond', click_ts, store_ts) AS gap_ms FROM ( SELECT properties.$session_id AS sid, argMin(properties.$device_type, timestamp) AS device, maxIf(timestamp, event = '$autocapture' AND properties.$host = 'kheelona.com' AND elements_chain_href LIKE '%store.kheelona.com%') AS click_ts, minIf(timestamp, event = '$pageview' AND properties.$host = 'store.kheelona.com') AS store_ts, countIf(event = '$autocapture' AND properties.$host = 'kheelona.com' AND elements_chain_href LIKE '%store.kheelona.com%') AS n_clicks, countIf(event = '$pageview' AND properties.$host = 'store.kheelona.com') AS n_store FROM events WHERE timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-10-11 00:00:00') AND event IN ('$autocapture','$pageview') AND properties.$session_id IS NOT NULL GROUP BY sid HAVING n_clicks > 0 AND n_store > 0 ) WHERE store_ts > click_ts AND dateDiff('second', click_ts, store_ts) < 300 ) GROUP BY ROLLUP(device)",
+      "rows": [
+        {
+          "device": "Mobile",
+          "hops": 13,
+          "median_s": 3.2,
+          "p75_s": 3.7,
+          "p90_s": 6.5,
+          "max_s": 43.0
+        },
+        {
+          "device": "Desktop",
+          "hops": 12,
+          "median_s": 3.0,
+          "p75_s": 3.4,
+          "p90_s": 3.7,
+          "max_s": 4.4
+        },
+        {
+          "device": "(all)",
+          "hops": 25,
+          "median_s": 3.1,
+          "p75_s": 3.7,
+          "p90_s": 4.2,
+          "max_s": 43.0
+        }
+      ]
+    }
+  ]
+}

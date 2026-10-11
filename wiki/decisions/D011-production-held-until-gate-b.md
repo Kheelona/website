@@ -24,3 +24,6 @@ happen **locally** (a local build on this machine), not on a deployed preview.
   link is still allowed: it is not a deploy.
 
 **Approved by.** Founder. **Date.** 2026-10-10.
+
+**Reaffirmed 2026-10-10 23:40** for the ship date too: new buyers keep seeing "20 October 2026"
+until Gate B although new orders deliver from mid-November ([D023](D023-new-order-delivery.md)).

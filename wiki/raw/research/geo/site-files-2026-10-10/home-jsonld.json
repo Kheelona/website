@@ -1,0 +1,317 @@
+[
+ {
+  "@context": "https://schema.org",
+  "@graph": [
+   {
+    "@type": "Organization",
+    "@id": "https://kheelona.com/#organization",
+    "name": "Kheelona",
+    "legalName": "Kheelona Robotics Private Limited",
+    "taxID": "29AAMCK1530E1ZN",
+    "url": "https://kheelona.com",
+    "logo": "https://kheelona.com/brand/logo-mark.png",
+    "image": "https://kheelona.com/og.png",
+    "description": "Kheelona makes screen-free talking friends for children. Kheelu, the first one, is a plush toy for ages 3+ that holds a real conversation, tells stories a child can question, and comes with a parent app that shows every word.",
+    "foundingDate": "2025",
+    "founder": [
+     {
+      "@type": "Person",
+      "@id": "https://kheelona.com/team#apoorva-sahu",
+      "name": "Apoorva Sahu",
+      "jobTitle": "Co-founder and CEO",
+      "description": "Chartered Accountant with fifteen years in finance and company-building, who grew up inside education businesses.",
+      "url": "https://kheelona.com/team",
+      "sameAs": [
+       "https://www.linkedin.com/in/sahu-apoorva/"
+      ]
+     },
+     {
+      "@type": "Person",
+      "@id": "https://kheelona.com/team#aman-soni",
+      "name": "Aman Soni",
+      "jobTitle": "Co-founder and CTO",
+      "description": "AI engineer with 14 patents filed in his own name. Owns the voice loop, the safety filters, and the small language model Kheelona trains itself.",
+      "url": "https://kheelona.com/team",
+      "sameAs": [
+       "https://www.linkedin.com/in/aman-soni-6b17b6223/"
+      ]
+     },
+     {
+      "@type": "Person",
+      "@id": "https://kheelona.com/team#kashyap-c-r",
+      "name": "Kashyap C.R",
+      "jobTitle": "Co-founder and Chief Hardware Officer",
+      "description": "Hardware engineer who led Thunderbolt 4 and 5 compliance at Intel and has taken products from a blank page to certification for over a decade.",
+      "url": "https://kheelona.com/team",
+      "sameAs": [
+       "https://www.linkedin.com/in/kashyap-c-r-7ba18177/"
+      ]
+     }
+    ],
+    "employee": [
+     {
+      "@type": "Person",
+      "@id": "https://kheelona.com/team#ria-mangala-rewari",
+      "name": "Ria Mangala Rewari",
+      "jobTitle": "Head of Marketing",
+      "description": "Co-founded and ran a marketing agency for seven years, and has trained more than 1,000 students and entrepreneurs in digital marketing.",
+      "url": "https://kheelona.com/team",
+      "sameAs": [
+       "https://www.linkedin.com/in/ria-mangala/"
+      ]
+     }
+    ],
+    "address": {
+     "@type": "PostalAddress",
+     "streetAddress": "5th Floor, No 51 (Old Site No 1), Kokarya Business Synergy Center, 5th Main, 5th Block Jayanagar",
+     "addressLocality": "Bengaluru",
+     "addressRegion": "Karnataka",
+     "postalCode": "560041",
+     "addressCountry": "IN"
+    },
+    "areaServed": {
+     "@type": "Country",
+     "name": "India"
+    },
+    "knowsAbout": [
+     "screen-free AI toys",
+     "talking toys for children",
+     "child-safe conversational AI",
+     "early childhood learning",
+     "Indian language voice technology"
+    ],
+    "sameAs": [
+     "https://www.linkedin.com/company/kheelona/",
+     "https://www.instagram.com/kheelona/",
+     "https://www.facebook.com/kheelona/",
+     "https://play.google.com/store/apps/developer?id=Kheelona.com",
+     "https://kheelona.ai"
+    ],
+    "memberOf": [
+     {
+      "@type": "Organization",
+      "name": "NVIDIA Inception Program"
+     },
+     {
+      "@type": "Organization",
+      "name": "nasscom startups"
+     }
+    ],
+    "contactPoint": {
+     "@type": "ContactPoint",
+     "email": "hello@kheelona.com",
+     "telephone": "+91 91875 46483",
+     "contactType": "customer support",
+     "url": "https://wa.me/919187546483",
+     "areaServed": "IN",
+     "availableLanguage": [
+      "English",
+      "Hindi"
+     ]
+    }
+   },
+   {
+    "@type": "WebSite",
+    "@id": "https://kheelona.com/#website",
+    "url": "https://kheelona.com",
+    "name": "Kheelona",
+    "inLanguage": "en-IN",
+    "publisher": {
+     "@id": "https://kheelona.com/#organization"
+    }
+   }
+  ]
+ },
+ {
+  "@context": "https://schema.org",
+  "@graph": [
+   {
+    "@type": "Product",
+    "@id": "https://kheelona.com/products/lumi#product",
+    "name": "Kheelu by Kheelona",
+    "alternateName": "Lumi",
+    "brand": {
+     "@type": "Brand",
+     "name": "Kheelona"
+    },
+    "manufacturer": {
+     "@id": "https://kheelona.com/#organization"
+    },
+    "category": "Screen-free AI toy",
+    "audience": {
+     "@type": "PeopleAudience",
+     "suggestedMinAge": 3,
+     "audienceType": "Children"
+    },
+    "description": "A screen-free talking friend for children aged 3+ that holds a real conversation in up to 10 home languages, carries stories and lessons they can be quizzed on, plays your music over Bluetooth, and comes with a parent app that shows you everything. Part of a growing family of friends.",
+    "image": "https://kheelona.com/product/lumi.png",
+    "additionalProperty": [
+     {
+      "@type": "PropertyValue",
+      "name": "Age",
+      "value": "3+ years"
+     },
+     {
+      "@type": "PropertyValue",
+      "name": "Screen",
+      "value": "None. There is no screen on the toy and none in the play."
+     },
+     {
+      "@type": "PropertyValue",
+      "name": "Languages",
+      "value": "8 at launch (English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish, and French), up to 10. Switches mid-sentence."
+     },
+     {
+      "@type": "PropertyValue",
+      "name": "Modes",
+      "value": "Three: AI mode for open conversation, Story mode for stories and lessons, Bluetooth mode as a speaker."
+     },
+     {
+      "@type": "PropertyValue",
+      "name": "Microphone",
+      "value": "Wakes to a word. Off the rest of the time, not muted."
+     },
+     {
+      "@type": "PropertyValue",
+      "name": "Internet access",
+      "value": "None. Answers come from a closed library. Kheelu cannot browse or search."
+     },
+     {
+      "@type": "PropertyValue",
+      "name": "Works offline",
+      "value": "Story-mode stories and lessons, and Bluetooth music with a paired phone. AI mode needs home WiFi."
+     },
+     {
+      "@type": "PropertyValue",
+      "name": "Parent app",
+      "value": "Every conversation word for word, deletable in one tap, plus topic controls and quiet hours."
+     },
+     {
+      "@type": "PropertyValue",
+      "name": "Where the voice data goes",
+      "value": "Stays in your region. Never sold, never used to advertise to your child."
+     },
+     {
+      "@type": "PropertyValue",
+      "name": "Price",
+      "value": "₹4,999 for the first 500 units, then ₹7,999."
+     },
+     {
+      "@type": "PropertyValue",
+      "name": "To reserve one",
+      "value": "₹499, refundable in full any time before dispatch. ₹4,500 balance falls due before we ship."
+     },
+     {
+      "@type": "PropertyValue",
+      "name": "Delivery",
+      "value": "Included anywhere in India. All prices include GST. The published price is the total cost."
+     },
+     {
+      "@type": "PropertyValue",
+      "name": "Ships from",
+      "value": "20 October 2026"
+     },
+     {
+      "@type": "PropertyValue",
+      "name": "Included subscription",
+      "value": "6 months of Kheelona+. Kheelu's smart features are lifetime."
+     }
+    ],
+    "isFamilyFriendly": true,
+    "offers": {
+     "@type": "Offer",
+     "price": 4999,
+     "priceCurrency": "INR",
+     "availability": "https://schema.org/PreOrder",
+     "availabilityStarts": "2026-10-20",
+     "url": "https://kheelona.com/products/kheelu",
+     "eligibleRegion": {
+      "@type": "Country",
+      "name": "India"
+     },
+     "description": "₹4,999 for the first 500 units, ₹7,999 once they are gone. A refundable ₹499 reserves one of the first 500 units, with the ₹4,500 balance due before dispatch."
+    }
+   },
+   {
+    "@type": "FAQPage",
+    "mainEntity": [
+     {
+      "@type": "Question",
+      "name": "What is Kheelu?",
+      "acceptedAnswer": {
+       "@type": "Answer",
+       "text": "Kheelu is a screen-free toy that talks with children aged 3 and up: your child speaks to it and it answers, tells stories, sings, and asks questions back. It is an interactive AI toy with no screen at all, it cannot reach the open internet, and every conversation is readable by you in the parent app."
+      }
+     },
+     {
+      "@type": "Question",
+      "name": "What will my child actually get out of Kheelu?",
+      "acceptedAnswer": {
+       "@type": "Answer",
+       "text": "A friend at 3, and a head start for school. Kheelu answers your child's questions, remembers the words they know, and builds on them the next day: stories, numbers, thinking games, and the languages you speak at home. The parent app counts the new words, so you see the growth, not just the play."
+      }
+     },
+     {
+      "@type": "Question",
+      "name": "How much does Kheelu cost in India?",
+      "acceptedAnswer": {
+       "@type": "Answer",
+       "text": "₹4,999 for the first 500 units, and ₹7,999 once they are gone. A refundable ₹499 reserves your Kheelu now, and the ₹4,500 balance is due only when it is ready to ship. Every Kheelu includes 6 months of Kheelona+."
+      }
+     },
+     {
+      "@type": "Question",
+      "name": "What ages is Kheelu for?",
+      "acceptedAnswer": {
+       "@type": "Answer",
+       "text": "Ages 3+. Kheelu meets your child where they are and grows with them, and the wider family of Kheelona friends that follows, the Kheelu Speaker and AI books, keeps growing alongside."
+      }
+     },
+     {
+      "@type": "Question",
+      "name": "Which languages does Kheelu speak?",
+      "acceptedAnswer": {
+       "@type": "Answer",
+       "text": "English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish, and French, with up to ten languages at launch. Kheelu can switch mid-sentence, in the languages you speak at home."
+      }
+     },
+     {
+      "@type": "Question",
+      "name": "When does Kheelu ship?",
+      "acceptedAnswer": {
+       "@type": "Answer",
+       "text": "Shipping starts 20 October 2026. Pre-ordering now holds the ₹4,999 price and your place in line for a refundable ₹499, and pre-orders are served first."
+      }
+     },
+     {
+      "@type": "Question",
+      "name": "Does Kheelu need the internet to work?",
+      "acceptedAnswer": {
+       "@type": "Answer",
+       "text": "For open conversation, yes: AI mode runs on your home WiFi. For everything else, no: Story-mode stories and lessons play offline, and Bluetooth music needs only a paired phone. On a train or anywhere without a signal, your child still has stories to interrupt, question, and be quizzed on."
+      }
+     },
+     {
+      "@type": "Question",
+      "name": "Is an AI toy safe for a small child?",
+      "acceptedAnswer": {
+       "@type": "Answer",
+       "text": "Not all of them are, and what makes a safe toy is how it is built. Kheelu wakes to a word and the microphone is off the rest of the time, the first thinking happens on the toy, answers come from a closed library rather than the open internet, and you can read or delete every conversation."
+      }
+     }
+    ]
+   },
+   {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+     {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://kheelona.com"
+     }
+    ]
+   }
+  ]
+ }
+]

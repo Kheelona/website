@@ -1,0 +1,255 @@
+{
+  "meta": {
+    "project": "PostHog 617632 (US cloud), project timezone UTC",
+    "range": "2026-09-19 00:00 to 2026-10-11 00:00 UTC (data exists from 2026-09-19 10:52 UTC; PostHog was installed that day)",
+    "run_at": "2026-10-11 01:00-02:30 UTC (2026-10-10 in the wiki's dating)",
+    "human_filter": "sessions with >=1 $pageview, no event with $virt_is_bot = true, entry referrer not localhost:3456 / 127.0.0.1:3456 / *.vercel.app (unless a query says otherwise)",
+    "caveat": "Test-account cohort 580233 has 0 members, so team traffic is included (about 48 sessions from 4 devices with 10+ sessions each, Q24). Aggregates only."
+  },
+  "queries": [
+    {
+      "id": "Q30",
+      "what": "Meta Ads spend and clicks per campaign (PostHog warehouse sync of ad account 1195520716116929; INR)",
+      "range": "all synced rows (2026-01-11 to 2026-09-23)",
+      "hogql": "SELECT s.campaign_id AS campaign_id, any(c.name) AS campaign, any(c.objective) AS objective, min(s.date_start) AS first_day, max(s.date_stop) AS last_day, round(sum(toFloat(s.spend)), 0) AS spend, any(s.account_currency) AS currency, sum(toInt(s.impressions)) AS impressions, sum(toInt(s.clicks)) AS clicks, sum(toInt(s.inline_link_clicks)) AS link_clicks FROM metaads_campaign_stats AS s LEFT JOIN metaads_campaigns AS c ON s.campaign_id = c.id GROUP BY s.campaign_id ORDER BY first_day",
+      "rows": [
+        {
+          "campaign": "(unnamed, Jan)",
+          "objective": null,
+          "first_day": "2026-01-11",
+          "last_day": "2026-01-21",
+          "spend_inr": 310,
+          "impressions": 72014,
+          "clicks": 403,
+          "link_clicks": 373
+        },
+        {
+          "campaign": "(unnamed, Jan)",
+          "objective": null,
+          "first_day": "2026-01-12",
+          "last_day": "2026-01-21",
+          "spend_inr": 238,
+          "impressions": 52147,
+          "clicks": 311,
+          "link_clicks": 288
+        },
+        {
+          "campaign": "(unnamed, Jan)",
+          "objective": null,
+          "first_day": "2026-01-15",
+          "last_day": "2026-01-16",
+          "spend_inr": 205,
+          "impressions": 2332,
+          "clicks": 24,
+          "link_clicks": 14
+        },
+        {
+          "campaign": "(unnamed, Jan)",
+          "objective": null,
+          "first_day": "2026-01-15",
+          "last_day": "2026-01-22",
+          "spend_inr": 95,
+          "impressions": 5893,
+          "clicks": 44,
+          "link_clicks": 33
+        },
+        {
+          "campaign": "(unnamed, Mar)",
+          "objective": null,
+          "first_day": "2026-03-18",
+          "last_day": "2026-03-20",
+          "spend_inr": 154,
+          "impressions": 21356,
+          "clicks": 168,
+          "link_clicks": 145
+        },
+        {
+          "campaign": "(unnamed, Mar)",
+          "objective": null,
+          "first_day": "2026-03-19",
+          "last_day": "2026-03-21",
+          "spend_inr": 151,
+          "impressions": 10336,
+          "clicks": 273,
+          "link_clicks": 276
+        },
+        {
+          "campaign": "(unnamed, Apr)",
+          "objective": null,
+          "first_day": "2026-04-13",
+          "last_day": "2026-04-15",
+          "spend_inr": 189,
+          "impressions": 14728,
+          "clicks": 261,
+          "link_clicks": 190
+        },
+        {
+          "campaign": "Kheelona-Traffic",
+          "objective": "OUTCOME_TRAFFIC",
+          "first_day": "2026-09-02",
+          "last_day": "2026-09-08",
+          "spend_inr": 1790,
+          "impressions": 361885,
+          "clicks": 4432,
+          "link_clicks": 4113
+        },
+        {
+          "campaign": "Instagram post: Every child has a superpower...",
+          "objective": "LINK_CLICKS",
+          "first_day": "2026-09-06",
+          "last_day": "2026-09-07",
+          "spend_inr": 45,
+          "impressions": 3532,
+          "clicks": 30,
+          "link_clicks": 31
+        },
+        {
+          "campaign": "New Traffic Campaign",
+          "objective": "OUTCOME_TRAFFIC",
+          "first_day": "2026-09-10",
+          "last_day": "2026-09-13",
+          "spend_inr": 638,
+          "impressions": 55598,
+          "clicks": 842,
+          "link_clicks": 910
+        },
+        {
+          "campaign": "20260918_Kids_Interaction_Video Campaign",
+          "objective": "OUTCOME_TRAFFIC",
+          "first_day": "2026-09-18",
+          "last_day": "2026-09-20",
+          "spend_inr": 814,
+          "impressions": 21938,
+          "clicks": 1151,
+          "link_clicks": 1182
+        },
+        {
+          "campaign": "20260920_Kids_Interaction_Video Campaign Campaign",
+          "objective": "OUTCOME_TRAFFIC",
+          "first_day": "2026-09-20",
+          "last_day": "2026-09-23",
+          "spend_inr": 1183,
+          "impressions": 84502,
+          "clicks": 1055,
+          "link_clicks": 1030
+        },
+        {
+          "campaign": "2026-09-Click-to-Whatsapp",
+          "objective": "OUTCOME_LEADS",
+          "first_day": "2026-09-22",
+          "last_day": "2026-09-23",
+          "spend_inr": 545,
+          "impressions": 10890,
+          "clicks": 141,
+          "link_clicks": 98
+        }
+      ]
+    },
+    {
+      "id": "Q30b",
+      "what": "Meta daily totals from 2026-09-15, with Meta's own landing_page_view action (read from the actions JSON of each row)",
+      "hogql": "SELECT date_start, date_stop, count() AS rows, round(sum(toFloat(spend)), 0) AS spend_inr, sum(toInt(impressions)) AS impressions, sum(toInt(inline_link_clicks)) AS link_clicks FROM metaads_campaign_stats WHERE date_start >= '2026-09-15' GROUP BY date_start, date_stop ORDER BY date_start  ;  then: SELECT date_start, campaign_id, toInt(inline_link_clicks) AS link_clicks, left(toString(actions), 900) AS actions_raw FROM metaads_campaign_stats WHERE date_start >= '2026-09-18' ORDER BY date_start",
+      "rows": [
+        {
+          "day": "2026-09-18",
+          "spend_inr": 125,
+          "impressions": 4923,
+          "link_clicks": 191,
+          "meta_landing_page_views": 59,
+          "posthog_paid_sessions_Q31": null
+        },
+        {
+          "day": "2026-09-19",
+          "spend_inr": 459,
+          "impressions": 11208,
+          "link_clicks": 650,
+          "meta_landing_page_views": 183,
+          "posthog_paid_sessions_Q31": 49
+        },
+        {
+          "day": "2026-09-20",
+          "spend_inr": 263,
+          "impressions": 8763,
+          "link_clicks": 403,
+          "meta_landing_page_views": 91,
+          "posthog_paid_sessions_Q31": 86
+        },
+        {
+          "day": "2026-09-21",
+          "spend_inr": 498,
+          "impressions": 27744,
+          "link_clicks": 421,
+          "meta_landing_page_views": 116,
+          "posthog_paid_sessions_Q31": 98
+        },
+        {
+          "day": "2026-09-22",
+          "spend_inr": 1175,
+          "impressions": 63081,
+          "link_clicks": 636,
+          "meta_landing_page_views": 214,
+          "posthog_paid_sessions_Q31": 177
+        },
+        {
+          "day": "2026-09-23",
+          "spend_inr": 21,
+          "impressions": 1611,
+          "link_clicks": 9,
+          "meta_landing_page_views": 4,
+          "posthog_paid_sessions_Q31": 3
+        }
+      ],
+      "note": "2026-09-19 PostHog figure covers only from 10:52 UTC (install). Click-to-WhatsApp (2026-09-22) also reported 2 InitiateCheckout via the pixel and 28 messaging connections."
+    },
+    {
+      "id": "Q31",
+      "what": "Paid sessions per day in PostHog (bots excluded)",
+      "hogql": "SELECT toDate(st) AS day, countIf(um = 'paid') AS paid_tagged_sessions, countIf(fbc != '' AND us = '') AS meta_click_untagged_sessions, countIf(um = 'paid' OR (fbc != '' AND us = '')) AS paid_total, countIf((um = 'paid' OR (fbc != '' AND us = '')) AND webview = 'WhatsApp') AS paid_in_whatsapp FROM ( SELECT properties.$session_id AS sid, min(timestamp) AS st, coalesce(any(session.$entry_utm_source),'') AS us, coalesce(any(session.$entry_utm_medium),'') AS um, coalesce(any(session.$entry_fbclid),'') AS fbc, coalesce(argMin(properties.$webview_app, timestamp),'') AS webview, max(properties.$virt_is_bot = true) AS is_bot FROM events WHERE event = '$pageview' AND timestamp >= toDateTime('2026-09-19 00:00:00') AND timestamp < toDateTime('2026-09-25 00:00:00') GROUP BY sid HAVING is_bot = 0 ) GROUP BY day ORDER BY day",
+      "range": "2026-09-19 00:00 to 2026-09-25 00:00 UTC",
+      "rows": [
+        {
+          "day": "2026-09-19",
+          "paid_tagged_sessions": 44,
+          "meta_click_untagged_sessions": 5,
+          "paid_total": 49,
+          "paid_in_whatsapp": 3
+        },
+        {
+          "day": "2026-09-20",
+          "paid_tagged_sessions": 80,
+          "meta_click_untagged_sessions": 6,
+          "paid_total": 86,
+          "paid_in_whatsapp": 6
+        },
+        {
+          "day": "2026-09-21",
+          "paid_tagged_sessions": 40,
+          "meta_click_untagged_sessions": 58,
+          "paid_total": 98,
+          "paid_in_whatsapp": 57
+        },
+        {
+          "day": "2026-09-22",
+          "paid_tagged_sessions": 32,
+          "meta_click_untagged_sessions": 145,
+          "paid_total": 177,
+          "paid_in_whatsapp": 142
+        },
+        {
+          "day": "2026-09-23",
+          "paid_tagged_sessions": 1,
+          "meta_click_untagged_sessions": 2,
+          "paid_total": 3,
+          "paid_in_whatsapp": 0
+        },
+        {
+          "day": "2026-09-24",
+          "paid_tagged_sessions": 0,
+          "meta_click_untagged_sessions": 0,
+          "paid_total": 0,
+          "paid_in_whatsapp": 0
+        }
+      ]
+    }
+  ]
+}
