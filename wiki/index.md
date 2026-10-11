@@ -60,7 +60,8 @@ pages a task needs. Phase 0 pages cite legacy files at tag `archive/pre-reset-20
 - [keyword map](research/keyword-map.md): intent clusters with sourced volumes (Keyword Planner and GSC exports pending, C11), one primary cluster per URL, question bank, placement rules, GEO plan.
 - [QA baseline](qa/baseline-2026-10-10.md): Lighthouse medians on production (mobile and desktop), CWV, links, metadata, JSON-LD, axe, phone first-screen checks: what the new site must beat.
 - [rulings check](qa/rulings-check-2026-10-11.md): verification that D016-D029 reached every owner page; the queued fixes.
-- Pending: `research/source-verification.md` (D026) and `product/legal-requirements.md` (D029).
+- [source verification](research/source-verification.md): 45 public claims checked against ORIGINAL sources and re-checked (D026): 1 supported as is, 38 only reworded, 4 not supported, 2 unverifiable; 26 ready footnoted site lines. Excerpts in `raw/research/sources/`.
+- Pending: `product/legal-requirements.md` (D029).
 
 ## Decisions
 - [D001](decisions/D001-branch-and-archive.md) branch from production; archive production and the mid version as tags.

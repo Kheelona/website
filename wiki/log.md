@@ -288,3 +288,12 @@ providers line. Copy corrections to make (CTO): D028's draft as ONE sentence; th
 line paired with the D028 price sentence; "within one month" (the rule's words) not "30 days";
 "Wi-Fi" per the DS. New questions F15 (exact delivery date; existing orders), F16 (opt-in
 training), F17 (advertising to the child).
+
+## [2026-10-11 01:20] agent | Source verification finished (`wf_dc801a61-c52`, 16/16): 45 public claims, none of SKM's 30 usable as written
+[Source verification](research/source-verification.md): final verdicts (stricter of two
+independent passes) 1 SUPPORTED, 38 SUPPORTED-WITH-REWORDING, 4 NOT-SUPPORTED (C15 parents'
+worry, C28 "thinks in it too", C41 vocabulary doubling, C45 "learn fastest"), 2 COULD-NOT-VERIFY
+(C04 NCF alignment, C13 "76 questions an hour"). Nine wrong attributions inside supported claims
+(e.g. the Xu study is UC Irvine, not Harvard). 26 ready footnoted site lines; 13 supported but
+INTERNAL. Several LIVE lines fail (held until Gate B, D011). 95 excerpt files in
+`raw/research/sources/`. DS gap G-18 (no footnote pattern) logged; Gate A item G15.

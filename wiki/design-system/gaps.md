@@ -247,7 +247,19 @@ and sets sentence length for ages 3 and 5 only (`01-writing.md:75-77`). The publ
 (brief §2; [open questions](../open-questions.md) section E). Affects child-facing audio, video and
 quoted speech only, not parent copy. Flagged by [brand voice](../brand/voice.md#where-they-conflict)
 (row 13) and [positioning](../brand/positioning.md) (row 12). Ask the DS owner for guidance at 6–7; no
-open-question ID yet (returned to the orchestrator).
+open-question ID yet (returned to the orchestrator). Now part of [open questions](../open-questions.md) G11.
+
+### G-18
+**No footnote or source-citation pattern.** The founder requires every public statistic on the site
+to carry a marker linking to its source ([D026](../decisions/D026-public-statistics.md)). DS v11 has
+the note text styles (`kh-body-s`, listed for footnotes, `tokens.json:411`; `kh-caption`,
+`tokens.json:452`) and a `--link` colour, but no inline marker, no in-text link style outside
+components, no numbered notes list and no back-link, and a superscript numeral is far below the
+48 px `tap-min`. String-only props (OfferCard `fine`, ComparisonTable `caption`) cannot carry a
+marker. Full finding: [source verification §6](../research/source-verification.md). Proposal for
+Gate A ([open questions](../open-questions.md) G15): compose from DS parts (a "Sources" block in
+`kh-body-s` at the end of the section, each figure followed by a short linked label rather than a
+bare superscript, so the tap target meets 48 px), and ask the DS owner for a footnote pattern.
 
 ## Checked, no gap found
 
