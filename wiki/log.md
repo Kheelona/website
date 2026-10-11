@@ -531,3 +531,6 @@ Main-session review against D044: transcript (no AI summary, first line fixed, H
 
 ## [2026-10-12 16:00] cleanup | Handoff snapshot before the account switch
 Wave 1 (run wf_de7ff1a5-e8b): 1.3, 1.4, 1.5, 1.6 passed review (branches build/w1-*, heads in build-runbook §4); 1.5b done on the main branch; 1.2 fix committed, re-review pending; 1.1 still building with uncommitted files in its worktree. Beta domains still attached to Production (founder to switch to Preview, branch beta). Next session: build-runbook §4 resume order.
+
+## [2026-10-12 16:10] deploy | INCIDENT: push meant for `beta` went to `main`; `beta` then created correctly
+`git push -u origin beta` (branch tracking origin/main, global push.default=upstream) pushed 24e92e3 to main: vercel.json only (adds git.deploymentEnabled.beta: false), no app code; production rebuilt identical code; /, store, /products/kheelu all 200 right after. Then `git push origin 24e92e3:refs/heads/beta` created `beta` (builds nothing). Not reverted (a revert would be another identical production deploy); founder told immediately. New hard rule in CLAUDE.md and lessons: explicit `<src>:refs/heads/<dst>` pushes, `--no-track` branches.

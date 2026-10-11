@@ -43,7 +43,7 @@ never stage them).
 3. **Wave close:** on the merged branch run `npm run verify` (from wave 3 also `npm run verify:e2e`) and
    `node scripts/ds-checksums.mjs`. Route any failure to the task that owns the failing file (fix agent),
    re-run until green.
-4. Remove the worktrees: `git worktree remove .claude/worktrees/wf_<run>-<n>` (add `--force` only if
+4. Remove the worktrees (and the tool's leftover `worktree-wf_*` branches, which sit at `main`'s old head and must never be pushed: `git branch -D worktree-wf_<run>-<n>`): `git worktree remove .claude/worktrees/wf_<run>-<n>` (add `--force` only if
    it is locked by a finished run), then `git branch -d build/w<wave>-<id>` after the merge.
 5. Update [status](../status.md), [log](../log.md) and this page's §4; commit by name.
 6. Start the next wave with `base` = the merged head.
@@ -91,6 +91,7 @@ task ids and titles from [tasks](tasks.md) "Wave 2" (2.1-2.10).
 - **Review notes to carry:** 1.3 added a www-only `/store/:path*` redirect beyond architecture §9.4 (minor,
   check at merge); 1.6 noted `formatInr` in `site.ts` cannot produce "₹1,00,000" as the spec words it
   (minor, check the frozen helper's real output before 2.1).
+- **`beta` exists on GitHub** (2026-10-12, `24e92e3` = main + `vercel.json` with `"beta": false`, so Vercel builds nothing). When the new site is ready: merge `reset/website-v2` into a local `beta` (no force), flip `"beta": true` per architecture §15.3, push with `git push origin beta:refs/heads/beta`.
 - **Founder:** switch both beta domains from Production to **Preview, branch `beta`** in Vercel (they are
   attached to Production today and serve the live site with a noindex header). If Vercel needs the branch
   to exist, push a `beta` branch whose `vercel.json` sets `"beta": false` (builds nothing) first.

@@ -26,6 +26,9 @@ the founder is recorded in `wiki/decisions/` and `wiki/log.md`, and the latest l
   founder rules on it (wiki/decisions/D004).
 - Vercel is the founder's: never run the Vercel CLI. `main` auto-deploys, so nothing is pushed
   to `main` before Gate B.
+- Push only with an explicit destination: `git push origin <src>:refs/heads/<dst>`. Global
+  `push.default` is `upstream`, so a branch made from `origin/main` pushes to `main` (it happened once:
+  2026-10-12, 24e92e3). Create branches with `--no-track`.
 - Never run a bare `npm install`: name the package and pin it with `--save-exact`.
 - Never place a real order or refund. The payment sandbox is `npm run qa:payment`.
 - No secrets in the repo or the wiki; keep the existing env var names. The store's six secrets

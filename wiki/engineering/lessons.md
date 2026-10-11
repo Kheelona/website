@@ -458,3 +458,16 @@ URLs and redirects are in [site/url-map.md](../site/url-map.md).
 - Vercel-side behaviour (4xx rewrites, the duplicate HSTS header, the Web Analytics path) is taken from
   the checkpoints, not re-checked on production today.
 - `docs/qa-report.md` (1,681 lines) was skimmed by heading; only its lesson sections were read.
+
+## Incident 2026-10-12: a push meant for `beta` landed on `main`
+
+- **What happened:** `git worktree add -b beta <dir> origin/main` made `beta` track `origin/main`; the
+  global git setting `push.default=upstream` then sent `git push -u origin beta` to **`main`**
+  (`77552ff..24e92e3 beta -> main`). The commit changed only `vercel.json` (adds
+  `git.deploymentEnabled.beta: false`); no app code changed, so production rebuilt the same code. Live
+  checks right after: `/`, store and `/products/kheelu` all 200. `beta` was then pushed correctly with
+  `git push origin 24e92e3:refs/heads/beta`. Not reverted (a revert is another production deploy of the
+  same code); the founder was told at once.
+- **Rule:** push only with an explicit `<src>:refs/heads/<dst>`; create branches with `--no-track`;
+  run `git branch -vv` before any push. (CLAUDE.md hard rules.)
+
