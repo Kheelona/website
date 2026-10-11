@@ -5,26 +5,28 @@ updated: 2026-10-11
 sources: [log.md, open-questions.md]
 ---
 
-# Status (2026-10-11, 14:10 PDT)
+# Status (2026-10-12)
 
-**Phase:** **Gate A APPROVED** for the full page set (D046, after D043-D045). **Next: Phase 4**
-(start from [engineering/phase-4-kickoff.md](engineering/phase-4-kickoff.md): the Architect agent, brief §7), then Phase 5 build. The founder is switching to another
-Claude account; resume from here and [site/gate-a-progress.md](site/gate-a-progress.md).
-**Branch:** `reset/website-v2`, local commits on production `77552ff`, **NOT pushed** (D014). Today's
-work is committed (`42a65b3`); local-only and never committed: `mockup/_work/`, the demo video, raw
-captures (D039). Production untouched until Gate B (D011).
+**Phase:** **5, build, wave 1 of 10 running** (Gate A approved D046; Phase 4 plan done 2026-10-12). The
+founder asked for the full website with animation on **betawebsite.kheelona.com** and
+**betastore.kheelona.com** before it goes live (D048). Plan: [tasks](engineering/tasks.md) (10 waves),
+[architecture](engineering/architecture.md), [QA review](qa/architecture-review-2026-10-12.md), [test plan](qa/test-plan.md).
+After the build: Phase 6 QA, push `beta`, founder runbook (architecture §15.4), **Gate B** on beta, merge to `main`.
+**Account:** apoorva@geekyants.work. **Branch:** `reset/website-v2`, not pushed. Wave tasks run in their own
+git worktrees and are merged back by the main session; wave close = `npm run verify` on the merged branch.
+**Done before wave 1:** dev tools pinned (Playwright 1.63.0, axe 4.12.1, Lighthouse 13.4.1, jscpd 5.3.2,
+subset-font 2.9.0); **security patch next 16.3.4 → 16.3.8, sharp → 0.35.5** (npm audit: next's own critical
+next/og RCE, high image SSRF, ISR cache poisoning; floors raised in test/dependency-floor.test.ts).
+**Motion (D049):** 1A 2A 3B 4A 5A 6B 7B 8B. **WhatsApp bubble (D050):** `#25D366` (G-20).
+**Beta rules (D048):** Razorpay TEST keys; Meta, GA4, Ahrefs off on beta; PostHog env=beta; noindex;
+beta needs its own Supabase project before any test payment (B4).
 
-**Approved set:** 18 mockups at https://claude.ai/artifact/W6XpUUMXhdubxb4fvJpYxa (v6, owned by the old
-account; a new account publishes a new artifact). Sources: `mockup/pages/`, copy in `wiki/site/pages/`.
-**Carry into Phase 5:** reviews that never ran (gate-a-progress), two screenshot re-edits (D044:
-transcript, activity), team/setup fixes, cross-page check; app fixes before launch (Khelu spelling,
-36-month retention, Hindi title).
-
-**Waiting on the founder:** headline pick and Gate A approval (after v4); to-dos: WhatsApp calls (D032),
+**Waiting on the founder:** Phase 4 questions P1-P11 ([open questions §P](open-questions.md); defaults apply);
+beta runbook steps before wave 9 (architecture §15.4); to-dos: WhatsApp calls (D032),
 F11 proof, C17 Supabase region, provider contracts vs the Home safety line, F4 specs, GST/HSN, section D
 checks (C1, C2, C4, C8, C11, C12, C15, C18). Working defaults may be overridden (gate-a-open-items §2-3).
 
-**Founder decisions so far:** D010-D047 + R1-R10 (see index). Latest: films move over; white on Chilli
+**Founder decisions so far:** D010-D050 + R1-R10 (see index). Latest: films move over; white on Chilli
 accepted; Kheelona+ after 6 months unspecified; training clause kept; "friend" allowed; no consent banner
 at launch; no exchanges; no fees.
 

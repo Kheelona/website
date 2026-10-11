@@ -1,7 +1,7 @@
 ---
 title: Design system motion
 type: design-system
-updated: 2026-10-10
+updated: 2026-10-12
 cites_at: archive/pre-reset-2026-10-10
 sources:
   - design-system/project/README.md (lines 155-161)
@@ -147,6 +147,22 @@ Gate A (brief §9.11).
 9. **Reduced motion:** fades only or nothing; the spinner keeps the DS's slow-down.
 10. **Implementation:** CSS transitions, keyframes and scroll-driven animations with a fallback; the
     stack already depends on `motion` 12 (`package.json:32`), which the Architect may keep or drop.
+
+## What the build does (D049, 2026-10-12)
+
+The founder chose one option per place ([D049](../decisions/D049-motion-picks.md): 1A 2A 3B 4A 5A 6B 7B
+8B); the build plan is [architecture §11](../engineering/architecture.md#11-motion) and
+[ADR-007](../engineering/adr/ADR-007-motion-css-first.md). The open questions above are answered there:
+reveals fade and rise once below the fold; the hero stays still; doodles draw themselves (inline SVG,
+below the first screen only); the phone buy bar slides up; the menu panel slides from the side; the
+orange button's arrow nudges on hover; FAQ answers open smoothly; the focused film grows a little. The
+WhatsApp bubble (D050) lifts above the buy bar with it.
+
+**Two founder-approved exceptions to "transform and opacity only"**, each guarded by
+`test/guards/motion-properties.test.ts`: `stroke-dashoffset` inside `.ks-doodle` rules (pick 3B) and
+`grid-template-rows` inside `.kh-faq__item::details-content` rules (pick 7B). Two named literals outside
+the DS tokens: `--ks-nudge: 5px` (pick 6B, the value shown to the founder) and `--ks-film-focus: 1.05`
+(pick 8B). Reduced motion: nothing moves.
 
 ## Related
 

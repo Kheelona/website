@@ -51,14 +51,20 @@ pages a task needs. Phase 0 pages cite legacy files at tag `archive/pre-reset-20
 - [component map](design-system/component-map.md): all 47 components, their props and the site sections they serve.
 - [tokens](design-system/tokens.md): token families and naming, how to consume them, a Tailwind v4 bridge sketch.
 - [motion](design-system/motion.md): the DS motion rules and what they do not cover.
-- [gaps](design-system/gaps.md): DS gap register (G-01 to G-16).
+- [gaps](design-system/gaps.md): DS gap register (G-01 to G-20).
 - [manifest](design-system/manifest.md): SHA-256 of all 643 DS files; verify with `node scripts/ds-checksums.mjs`.
 
 ## Engineering
 - [lessons](engineering/lessons.md): hard-won behaviour of this stack (Next 16, Vercel, store host, payments, tracking verification, SEO, QA, git).
 - [phase 4 kickoff](engineering/phase-4-kickoff.md): what the Architect starts from after Gate A: the approved sources, hard constraints, the seven architecture decisions to make, and what carries into Phase 5.
 - [artifacts](engineering/artifacts.md): every published Artifact (the Gate A mockup link), updated in place; check before publishing.
-- Architecture, structure, catalogues and dependency register: from Phase 4.
+- [architecture](engineering/architecture.md): the Phase 4 plan (2026-10-12): visual layer, components, content model, offer, tracking, SEO, media, motion (D049), performance, environments and beta (D048), release, rollback, checkout boundary.
+- [tasks](engineering/tasks.md): the build in ten dependency waves with owners, owned files, acceptance criteria and the guard-test ownership table.
+- [structure](engineering/structure.md): folders, naming, the mockup-to-route map, path-scoped rules (now in `.claude/rules/`).
+- [components](engineering/components.md): component catalogue (check before creating anything).
+- [assets](engineering/assets.md): asset catalogue (images, films, icons, doodles, fonts) and their pipelines.
+- [dependencies](engineering/dependencies.md): dependency register: kept, added, retired.
+- ADRs: [001 keep the stack](engineering/adr/ADR-001-keep-the-stack.md) · [002 visual layer](engineering/adr/ADR-002-visual-layer-ds-css.md) · [003 server-rendered ports](engineering/adr/ADR-003-server-rendered-ds-ports.md) · [004 content model](engineering/adr/ADR-004-content-model.md) · [005 offer follows live mode](engineering/adr/ADR-005-offer-follows-live-mode.md) · [006 tracking](engineering/adr/ADR-006-tracking-module-and-registry.md) · [007 motion](engineering/adr/ADR-007-motion-css-first.md) · [008 environments and beta](engineering/adr/ADR-008-environments-and-beta.md) · [009 region and Supabase](engineering/adr/ADR-009-region-and-supabase-move.md) · [010 media](engineering/adr/ADR-010-media-pipeline.md) · [011 guardrails](engineering/adr/ADR-011-guardrails-and-qa-harness.md) · [012 SEO and URLs](engineering/adr/ADR-012-seo-urls-and-schema.md) · [013 checkout boundary](engineering/adr/ADR-013-checkout-restyle-boundary.md).
 
 ## Research and QA (INTERNAL, D013)
 - [PostHog audit](research/posthog-audit.md): 2026-09-19 to 10-10, verified by an independent re-run; funnel, device split (76% phone), top 10 issues by revenue impact, baseline for Phase 8, QA device list.
@@ -67,6 +73,8 @@ pages a task needs. Phase 0 pages cite legacy files at tag `archive/pre-reset-20
 - [QA baseline](qa/baseline-2026-10-10.md): Lighthouse medians on production (mobile and desktop), CWV, links, metadata, JSON-LD, axe, phone first-screen checks: what the new site must beat.
 - [rulings check](qa/rulings-check-2026-10-11.md): verification that D016-D029 reached every owner page; the queued fixes.
 - [CMO review 2026-10-11](qa/cmo-review-2026-10-11.md): homepage copy against the positioning: ready after two fixes (F1 caring-adult implication, F2 voice heading vs D035); H1 pick A; should-fix S1-S12.
+- [architecture review 2026-10-12](qa/architecture-review-2026-10-12.md): QA on the Phase 4 plan: blocking B1-B4 (motion picks, guard ownership, checkout JSX freeze, beta isolation), all folded into the final tasks.
+- [test plan](qa/test-plan.md): Phase 6 verification: viewports, suites, tracking parity evidence, the Razorpay test-mode payment on betastore.
 - [source verification](research/source-verification.md): 45 public claims checked against ORIGINAL sources and re-checked (D026): 1 supported as is, 38 only reworded, 4 not supported, 2 unverifiable; 26 ready footnoted site lines. Excerpts in `raw/research/sources/`.
 
 ## Decisions
@@ -111,6 +119,9 @@ pages a task needs. Phase 0 pages cite legacy files at tag `archive/pre-reset-20
 - [D039](decisions/D039-repo-and-setup-answers.md) raw files stay local; repo website set; Kheelona India unrelated; no Google Ads; no linked assets; security defaults; no YouTube yet.
 - [D040](decisions/D040-films-move-to-new-site.md) the seven parent films move to the new site; film 6 caption (AI mode); film 1 label kept; subtitles as they are; proof line instead of an endorsement disclosure (risk recorded).
 - [D041](decisions/D041-gate-a-round-1.md) Gate A round 1: Pre-order Kheelu, price (d), white on Chilli (exception), motion, URLs, crawlers, training clause kept, Kheelona+ unspecified, more children, box contents, friend allowed; new headline options; Gate A not yet approved.
+- [D050](decisions/D050-whatsapp-chat-button.md) persistent WhatsApp chat bubble on every page: bottom right, lifts above the phone buy bar, WhatsApp green (approved DS exception), pre-filled text per context, cta whatsapp-float.
+- [D049](decisions/D049-motion-picks.md) motion picks: reveals fade-and-rise, hero still, doodles draw themselves, buy bar slides up, menu from the side, button arrow nudge, FAQ smooth open, films focus grows.
+- [D048](decisions/D048-beta-deployment.md) beta at betawebsite/betastore.kheelona.com from a pushed `beta` branch; Razorpay test mode; Meta/GA4 off on beta, PostHog tagged beta; approval there = Gate B.
 - [D047](decisions/D047-vercel-build-and-data-regions.md) Vercel build command not overridden (keep off); Supabase ap-southeast-2 until moved before launch; toy server and memory on GCP India.
 - [D046](decisions/D046-gate-a-approved.md) **Gate A approved** for the full page set, with final Home changes (store caption, equal phone sizes, Myra, guides fold); next Phase 4.
 - [D045](decisions/D045-hero-headline.md) Home hero: "Kheelu answers every why. Then it asks one back." (Hand on "asks one back."); picker removed.

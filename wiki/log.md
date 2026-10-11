@@ -491,3 +491,25 @@ pack complete: `mockup/APPROVAL.md`. Phase 4 waits for the founder's explicit ap
 ## [2026-10-11 14:35] decision | Phase 4 kickoff written; today's work committed locally
 - [engineering/phase-4-kickoff.md](engineering/phase-4-kickoff.md): approved sources, constraints, seven architecture decisions (components from mk- patterns, one content model with a placeholder guard, regions per D047, tracking registry, SEO/schema/robots/redirects, media pipeline, guardrails), Phase 5 carry-overs.
 - Committed locally: `42a65b3` (112 files, staged by name; not pushed, D014).
+
+## [2026-10-12 00:10] decision | Account switch; D048 beta deployment; Phase 4 started
+- Founder (new account): "let's get to full website building. with animation and ready for deployment. show me the version in betawebsite.kheelona.com and betastore.kheelona.com, this version once i approve make it live on main website." D048: push branch `beta`; Razorpay test mode on beta; Meta/GA4 off and PostHog tagged on beta; approval on beta = Gate B.
+- GitHub reachable (`git ls-remote` returns main at 77552ff). Phase 4 workflow started (architect → QA → revise).
+
+## [2026-10-12 00:40] build | Motion options page for the founder (8 places × 3 options)
+- https://claude.ai/artifact/XgoMduGs3cLTaWawJ7RE5w: reveals, hero picture, doodles (true line draw-in from the DS SVG strokes), phone buy bar, phone menu, orange button, FAQ opening, films strip; DS motion tokens; my picks marked (1A 2B 3B 4A 5A 6B 7B 8B). Picks feed Phase 5 (D049 when answered).
+
+## [2026-10-12 00:55] decision | D049: motion picks 1A 2A 3B 4A 5A 6B 7B 8B
+- Reveals fade and rise; hero still; doodles draw themselves; buy bar slides up; menu from the side; button arrow nudge; FAQ smooth open; films focus grows. Build specs with DS timings in D049.
+
+## [2026-10-12 01:05] decision | D050: persistent WhatsApp chat bubble on every page
+- Bottom right; on phones it lifts above the buy bar and drops back when the bar steps aside; WhatsApp green (approved DS exception, gap G-20); pre-filled messages per context; `cta=whatsapp-float`. Added to the build scope.
+
+## [2026-10-12 14:25] agent | Phase 4 architecture workflow done (architect → QA review → architect revision)
+Outputs: architecture.md, structure.md, components.md, assets.md, dependencies.md, tasks.md (10 waves), ADR-001 to ADR-013, qa/architecture-review-2026-10-12.md (B1-B4 blocking, folded in), qa/test-plan.md. D049 and D050 have owners and tests. Founder questions recorded as open-questions §P with working defaults.
+
+## [2026-10-12 14:30] decision | Main-session prep for wave 1
+WhatsApp green `#25D366` recorded in gaps G-20; motion.md gains the D049 section and the two named exceptions; seven path-scoped rules added to `.claude/rules/` (structure §9); CLAUDE.md and AGENTS.md point at structure and tasks (structure §10).
+
+## [2026-10-12 14:35] build | Dev tools pinned; security patch next 16.3.8 and sharp 0.35.5
+Added (exact, ≥ 2 weeks old where possible): @playwright/test 1.63.0, @axe-core/playwright 4.12.1, axe-core 4.12.1, lighthouse 13.4.1, jscpd 5.3.2, sharp 0.35.5, subset-font 2.9.0 (BSD-3-Clause). npm audit showed next 16.3.4's own advisories (GHSA-vcvr-r3jv-pc5j critical next/og RCE, GHSA-cjq9-62q9-8jv4 high image SSRF, ISR cache poisoning GHSA-4jqv-mc3x-m676 / GHSA-mcj8-r9mp-w47p, three more); next and eslint-config-next → 16.3.8 (2026-09-30), floors raised in test/dependency-floor.test.ts. tsc, Vitest (1346 tests) and `next build` green. Remaining audit items are dev-only (eslint chain, source-map-js, dompurify low). Lint baseline: 15 errors (legacy src files, mockup tools, a DS runtime file) for task 1.1 to scope.

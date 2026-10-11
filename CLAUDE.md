@@ -15,7 +15,9 @@ the founder is recorded in `wiki/decisions/` and `wiki/log.md`, and the latest l
   `1051265191046395`). Inventory and parity checklist: wiki/site/tracking-inventory.md.
 - Mobile-first: ~70% of visits are on phones.
 - Build once, reuse: check the catalogues in wiki/engineering/ before creating anything.
-- Everything in its place: wiki/engineering/structure.md.
+- Everything in its place: folder structure, naming and the mockup-to-route map are in
+  wiki/engineering/structure.md. Catalogues: components.md, assets.md, artifacts.md, dependencies.md.
+  Build plan: wiki/engineering/tasks.md (waves) and architecture.md.
 - Nothing reaches production without the approver's explicit OK (Gate B).
 
 ## Hard rules for this repo (each one cost us once; detail in wiki/engineering/lessons.md)

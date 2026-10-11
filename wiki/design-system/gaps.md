@@ -1,7 +1,7 @@
 ---
 title: Design system gap register
 type: design-system
-updated: 2026-10-10
+updated: 2026-10-12
 cites_at: archive/pre-reset-2026-10-10
 sources:
   - design-system/project/README.md
@@ -69,6 +69,7 @@ before build · **Low** = note for the build.
 | [G-17](#g-17) | Kheelu's child-facing voice is specified for ages 3–6; the site's band is 3–7 | Low | Founder (DS owner) | – (returned to the orchestrator) | Open |
 | [G-18](#g-18) | No footnote or source-marker pattern (D026 needs a marker on every statistic) | Medium | Compose / DS owner | G15 | Open (composed in the mockup) |
 | [G-19](#g-19) | `.kh-chip` keeps the band colour on a band section, so a chip disappears there; the DS switches its quiet panels to the page cream on bands but leaves chips out | Low | Compose / DS owner | – | Composed (mockup v3) |
+| [G-20](#g-20) | No WhatsApp brand colour or floating chat button in the DS | Low | Founder (approved exception, D050) | – | Composed in the build |
 
 ## Gaps
 
@@ -299,4 +300,18 @@ only). Ask the DS owner to add `.kh-chip` to that rule.
 tile, a 9:16 frame at `--radius-l` on `--ink-900`, the DS `IconButton` (`kh-iconbtn--primary --l`, play
 icon) centred on the poster, `kh-iconbtn--outline` arrows, `kh-label-s` counter. Native `<video controls>`
 replaces the poster on tap (DS 08: captions burned in; audio never autoplays). No DS video component exists.
+
+### G-20
+
+**WhatsApp chat bubble.** The DS has the `whatsapp-logo` icon but no WhatsApp green and no floating
+action button. The founder approved WhatsApp green as a brand exception for this one element
+([D050](../decisions/D050-whatsapp-chat-button.md)); everything else about it (size, shadow, focus ring,
+motion) uses DS tokens.
+
+**Value: `#25D366`** (WhatsApp green, the logo's green; one named literal `--ks-wa-green` in
+`src/components/chrome/WhatsAppFloat/whatsapp-float.css`, listed in `test/guards/token-exceptions.ts`).
+Meta's brand page publishes no hex; the value is the one every brand-colour reference gives for the
+logo (brandcolorcode.com/whatsapp, color.codes.in/brands/whatsapp, brandkit.pro/color/25D366; searched
+2026-10-12). White on `#25D366` is about 2:1, below AA; the founder accepted the risk (D050) and QA
+reports it apart.
 

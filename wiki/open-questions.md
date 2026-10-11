@@ -1,7 +1,7 @@
 ---
 title: Open questions
 type: open-questions
-updated: 2026-10-11
+updated: 2026-10-12
 sources: [raw/brief/kickoff-brief.md, "Phase 0 inventory workflow wf_fee145da-3a0 (99 agent questions, deduplicated here)"]
 ---
 
@@ -180,6 +180,25 @@ law's own text, not legal advice). The page owns the provisions; this list only 
 | L6 | **Scope (D030):** the privacy-policy wording is drafted by the CTO from D018-D020 and D035 for the founder's approval; the setup consent step is operational. A product privacy policy matching D018-D020 and the signed provider contracts, and a verifiable parental-consent step at setup; no tracking or behavioural monitoring of children (daily summaries and alerts need a reading) | DPDP Act s.9; DPDP Rules (duties from 13 May 2027, counsel to confirm the date) | Before the toy connects to servers |
 | L7 | Copy fixes the review requires (CTO will apply in the new copy): drop "free" from Kheelona+ and say what stops after 6 months; the store's "Pre-order price" row becomes "Refundable advance"; no learning-outcome claims; no "Families already using Kheelu" | CCPA misleading-ads and dark-pattern guidelines; ASCI | New site |
 | L8 | Dated duties: join the National Consumer Helpline before 1 January 2027; first dark-pattern self-audit in December 2026; five more E-Commerce duties from 1 January 2027 (Amendment Rules 2026) | E-Commerce (Amendment) Rules 2026; dark-pattern guidelines | Dec 2026 / Jan 2027 |
+
+## P. From the Phase 4 build plan (2026-10-12; working defaults apply until the founder says otherwise)
+
+Source: [architecture §20](engineering/architecture.md#20-open-points-for-the-founder) and the QA review
+([questions](qa/architecture-review-2026-10-12.md#questions-for-the-main-session-options-and-qas-recommendation)).
+
+| # | Question | Working default (built this way) | Status |
+|---|---|---|---|
+| P1 | Product details fold: stacked panels as the approved mockup shows, or tabs? | Stacked, as approved (no JS) | OPEN, default applies |
+| P2 | Orange-button arrow nudge (D049 6B): exactly 5px as shown, and on the two hero buttons too? | 5px as one named value; all six buttons (hover is started by the visitor, so the hero still counts as still) | OPEN, default applies |
+| P3 | White on Kheelu Blue ("Save my address" on /thanks, blue stickers) is below AA, like white on Chilli | Ask to extend the D041 exception; fallback restyle to a passing DS variant | ASKED 2026-10-12 |
+| P4 | Production smoke after the merge cannot use test-mode checkout (live keys) | Waive it in favour of the beta test payment on the same commit the day before | ASKED 2026-10-12 |
+| P5 | In-app browser payment check (WhatsApp 35.7% of phone sessions) | Founder runs a short scripted check on an Android phone in WhatsApp and Instagram on beta | ASKED 2026-10-12 |
+| P6 | Ahrefs on beta (it has no environment field) | Off on beta | OPEN, default applies |
+| P7 | Beta isolation: separate free Supabase project (Mumbai), rzp_test keys, no CAPI token in Preview, test inbox, PostHog filter env=beta, before the first beta payment | Required (B4); runbook in [architecture §15.4](engineering/architecture.md#154-founder-runbook-the-beta-vercel-dashboard-only-never-the-cli) | ASKED 2026-10-12 |
+| P8 | F12: orders placed before 10 Oct see "Ships from 20 October 2026"; later orders the mid-November line | Keep that split until answered | ASKED 2026-10-12 |
+| P9 | WhatsApp bubble on /thanks marked ph-no-capture, so /thanks keeps zero autocapture events | Yes | OPEN, default applies |
+| P10 | At Gate B: switch www.kheelona.com from "Redirect" to serving the site (one-hop legacy www URLs) | Yes, optional | OPEN |
+| P11 | The approved privacy copy drops the "most detailed of the five" sentence about PostHog | Intended (approved copy wins) | ASKED 2026-10-12 |
 
 ## E. Decided by the brief (no answer needed; recorded so nobody re-asks)
 

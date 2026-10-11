@@ -6,7 +6,6 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # Structure & component standards
 
-The website reset (2026-10-10) replaces the structure: the Architect writes it in Phase 4 at
-`wiki/engineering/structure.md`, with catalogues beside it. Until then, the existing code still
-follows `docs/standards/` (`src/`-based atomic design; every component ships a colocated Vitest
-test). Node ≥ 24.
+Structure: `wiki/engineering/structure.md` (Phase 4, 2026-10-12); build plan: `wiki/engineering/tasks.md`.
+Components ship a colocated Vitest test (and a story for `ui/` and `sections/`). Legacy code keeps
+`docs/standards/` until task 6.3 deletes it. Node ≥ 24.
