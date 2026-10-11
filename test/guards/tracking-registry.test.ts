@@ -227,6 +227,17 @@ const SNAPSHOT_SDK_NAMES = SNAPSHOT_SEEN.filter((n) => n.startsWith("$"));
 const CAPI_EVENT = bullet(section(INVENTORY, "## 5. "), "Event:");
 const POSTHOG_SERVER_EVENT = bullet(section(INVENTORY, "## 7. "), "Event:");
 const POSTHOG_SERVER_PAYLOAD = bullet(section(INVENTORY, "## 7. "), "Payload");
+/** §7's property list: from "properties" to `timestamp` (distinctId and timestamp are not properties). */
+const POSTHOG_SERVER_PROPERTIES = POSTHOG_SERVER_PAYLOAD.split("properties ")[1]?.split("`timestamp`")[0] ?? "";
+const CARRIERS = table(section(INVENTORY, "## 9. "), ["Carrier", "Set by", "Contents", "Attributes", "Read by"]);
+/** The kh_utm row's Contents cell as code tokens: the list's name, then its keys in order. */
+const KH_UTM_CONTENTS = code(withoutAsides(CARRIERS.find(([carrier]) => code(carrier)[0] === "kh_utm")?.[2] ?? ""));
+/**
+ * The campaign keys as inventory §9 lists them for the kh_utm cookie, in order. They reach the
+ * order row and purchase_confirmed spreads them flat, so this list, not CAMPAIGN_KEYS, is what the
+ * registry and the fixture are held to.
+ */
+const SECTION9_KEYS = KH_UTM_CONTENTS.slice(1);
 const POSTHOG_INIT = table(section(INVENTORY, "## 6. "), ["Option", "Value", "Line"]);
 const REPLAY_DENY = bullet(section(INVENTORY, "## 6. "), "Session replay deny list:");
 const PARITY = table(section(INVENTORY, "## Parity checklist"), [
@@ -394,7 +405,7 @@ describe("events.ts: existing events equal the inventory", () => {
     expect(plain(destination)).toBe("PostHog");
     expect(mustMatch).toContain("campaign props");
     for (const n of code(mustMatch)) expect(names, `parity row 14 names ${n}`).toContain(n);
-    for (const n of names) expect(CAMPAIGN_KEYS as readonly string[], `${n} is a campaign key`).toContain(n);
+    for (const n of names) expect(SECTION9_KEYS, `${n} is a campaign key (inventory §9)`).toContain(n);
     const checked = code(withoutAsides(behaviour));
     expect(checked.length).toBeGreaterThan(0);
     for (const e of EVENTS) {
@@ -436,7 +447,7 @@ const order = (): PreorderRow => ({
   rzp_order_id: "order_test",
   rzp_payment_id: "pay_test",
   balance_status: "due",
-  utm: Object.fromEntries(CAMPAIGN_KEYS.map((k) => [k, "test"])),
+  utm: Object.fromEntries(SECTION9_KEYS.map((k) => [k, "test"])),
   fb_attrib: { fbp: "fb.1.1.1", fbc: "fb.1.1.test", ip: "203.0.113.9", ua: "Mozilla/5.0" },
   ph_distinct_id: "device-test",
   created_at: "2026-10-01T00:00:00.000Z",
@@ -488,11 +499,28 @@ describe("events.ts: server events", () => {
     );
   });
 
-  it("purchase_confirmed: every parameter is named in inventory §7 (utm_* covers the campaign keys)", () => {
-    const named = code(POSTHOG_SERVER_PAYLOAD).map((t) => param(t).name);
-    const covered = (p: string) =>
-      named.some((n) => n === p || (n.endsWith("*") && p.startsWith(n.slice(0, -1))));
-    for (const p of confirmed().params) expect(covered(p), `${p} is not in inventory §7`).toBe(true);
+  it("CAMPAIGN_KEYS (src/lib/campaign.ts) is inventory §9's kh_utm list, key for key, in order", () => {
+    expect(KH_UTM_CONTENTS[0], "inventory §9 kh_utm Contents names the list first").toBe("CAMPAIGN_KEYS");
+    expect([...CAMPAIGN_KEYS]).toEqual(SECTION9_KEYS);
+  });
+
+  it("purchase_confirmed: the campaign keys between source and $process_person_profile are inventory §9's", () => {
+    const params = confirmed().params;
+    const from = params.indexOf("source");
+    const to = params.indexOf("$process_person_profile");
+    expect(from, "source").toBeGreaterThanOrEqual(0);
+    expect(to, "$process_person_profile after source").toBeGreaterThan(from);
+    expect(params.slice(from + 1, to)).toEqual(SECTION9_KEYS);
+  });
+
+  it("purchase_confirmed: the parameters are exactly inventory §7's, in order (utm_* is §9's utm_ keys)", () => {
+    const named = code(POSTHOG_SERVER_PROPERTIES).map((t) => param(t).name);
+    for (const literal of ["utm_*", "utm_id", "placement"]) {
+      expect(named, `inventory §7 names ${literal} literally`).toContain(literal);
+    }
+    const utm = SECTION9_KEYS.filter((k) => k.startsWith("utm_"));
+    const expanded = [...new Set(named.flatMap((n) => (n === "utm_*" ? utm : [n])))];
+    expect(confirmed().params).toEqual(expanded);
   });
 
   it("purchase_confirmed: fixed values equal the builder and the inventory", () => {

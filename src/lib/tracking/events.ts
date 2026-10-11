@@ -10,7 +10,6 @@
  * file equal to the inventory, to architecture §8.2 and to the frozen server payload builders.
  */
 import { POSTHOG_REPLAY_DENY_PATHS } from "@/config/site";
-import { CAMPAIGN_KEYS } from "@/lib/campaign";
 import type { DestinationKey } from "./destinations";
 
 export type EventStatus = "existing" | "new";
@@ -234,7 +233,22 @@ const EVENT_LIST = [
   {
     name: "purchase_confirmed",
     destinations: ["posthog-server"],
-    params: ["transaction_id", "currency", "value", "tier", "source", ...CAMPAIGN_KEYS, "$process_person_profile"],
+    params: [
+      "transaction_id",
+      "currency",
+      "value",
+      "tier",
+      "source",
+      /* The order's campaign keys, spread flat: inventory §9's kh_utm list, written out as data. */
+      "utm_source",
+      "utm_medium",
+      "utm_campaign",
+      "utm_content",
+      "utm_term",
+      "utm_id",
+      "placement",
+      "$process_person_profile",
+    ],
     fixed: { currency: "INR", source: "webhook", $process_person_profile: false },
     added: [
       {
