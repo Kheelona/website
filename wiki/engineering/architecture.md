@@ -837,7 +837,7 @@ kheelona.com's DNS is on Cloudflare (nameservers `abby` and `yichun.ns.cloudflar
 2026-10-12); `store.kheelona.com` is a CNAME to this project's Vercel target
 `6eb2cd39f8ca1fdf.vercel-dns-017.com`.
 
-1. **Vercel, first domain:** vercel.com → the kheelona project → Settings → Domains → Add Domain → type
+1. **Vercel, first domain** (2026-10-12: both domains were added but attached to Production; edit each to Preview, branch `beta`): vercel.com → the kheelona project → Settings → Domains → Add Domain → type
    `betawebsite.kheelona.com` → Add. When asked where to connect it, choose **Preview** and type the Git
    branch **`beta`** → Save. (If the dialog has no branch field: add it, then click Edit on the domain and
    set Git Branch to `beta`.) If Vercel refuses because the branch does not exist yet, stop and tell the

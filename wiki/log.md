@@ -522,3 +522,6 @@ Founder: no Supabase, Razorpay or email on beta ("when we are doing final merge,
 
 ## [2026-10-12 15:20] deploy | Beta domains added in Vercel, but connected to Production
 Founder added betawebsite.kheelona.com and betastore.kheelona.com (Valid Configuration). Both are attached to the Production environment, so today they serve the live site (checked by curl: 200, `x-robots-tag: noindex, nofollow` because neither is in INDEXABLE_HOSTS; GA4 and Meta gated off by host lists). Asked the founder to switch each to Preview, Git branch `beta` (runbook §15.4 step 1).
+
+## [2026-10-12 15:35] cleanup | Build runbook written; build-wave saved as a named workflow
+New page engineering/build-runbook.md (how waves run, merge, close and resume; wave progress; wave-1 follow-ups). Script saved as `.claude/workflows/build-wave.js` so any session can run `Workflow({name: "build-wave", args})`. `.claude/worktrees/` added to `.git/info/exclude`. Wave 1 at 15:30: 1.3, 1.5, 1.6 passed review; 1.4 and 1.2 in fix rounds; 1.1 building; screenshots re-edited and verified (uncommitted, awaiting D044 review).

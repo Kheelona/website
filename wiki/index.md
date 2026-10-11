@@ -59,6 +59,7 @@ pages a task needs. Phase 0 pages cite legacy files at tag `archive/pre-reset-20
 - [phase 4 kickoff](engineering/phase-4-kickoff.md): what the Architect starts from after Gate A: the approved sources, hard constraints, the seven architecture decisions to make, and what carries into Phase 5.
 - [artifacts](engineering/artifacts.md): every published Artifact (the Gate A mockup link), updated in place; check before publishing.
 - [architecture](engineering/architecture.md): the Phase 4 plan (2026-10-12): visual layer, components, content model, offer, tracking, SEO, media, motion (D049), performance, environments and beta (D048), release, rollback, checkout boundary.
+- [build runbook](engineering/build-runbook.md): **read first when resuming the build**: the `build-wave` workflow, merge and wave close, resume after a break, wave progress.
 - [tasks](engineering/tasks.md): the build in ten dependency waves with owners, owned files, acceptance criteria and the guard-test ownership table.
 - [structure](engineering/structure.md): folders, naming, the mockup-to-route map, path-scoped rules (now in `.claude/rules/`).
 - [components](engineering/components.md): component catalogue (check before creating anything).

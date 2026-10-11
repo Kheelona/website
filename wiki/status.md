@@ -12,8 +12,9 @@ founder asked for the full website with animation on **betawebsite.kheelona.com*
 **betastore.kheelona.com** before it goes live (D048). Plan: [tasks](engineering/tasks.md) (10 waves),
 [architecture](engineering/architecture.md), [QA review](qa/architecture-review-2026-10-12.md), [test plan](qa/test-plan.md).
 After the build: Phase 6 QA, push `beta`, founder runbook (architecture §15.4), **Gate B** on beta, merge to `main`.
-**Account:** apoorva@geekyants.work. **Branch:** `reset/website-v2`, not pushed. Wave tasks run in their own
-git worktrees and are merged back by the main session; wave close = `npm run verify` on the merged branch.
+**Account:** apoorva@geekyants.work. **Branch:** `reset/website-v2`, not pushed. **Resume the build from
+[build runbook](engineering/build-runbook.md)** (workflow `build-wave` in `.claude/workflows/`; wave 1 run
+`wf_de7ff1a5-e8b`, branches `build/w1-*` in `.claude/worktrees/`; merge, wave close, then wave 2).
 **Done before wave 1:** dev tools pinned (Playwright 1.63.0, axe 4.12.1, Lighthouse 13.4.1, jscpd 5.3.2,
 subset-font 2.9.0); **security patch next 16.3.4 → 16.3.8, sharp → 0.35.5** (npm audit: next's own critical
 next/og RCE, high image SSRF, ISR cache poisoning; floors raised in test/dependency-floor.test.ts).
