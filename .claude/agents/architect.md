@@ -19,6 +19,8 @@ Read `wiki/status.md`, `wiki/index.md`, the approved mockup in `mockup/` and `mo
 behaviour of this exact stack on Vercel), and the DS docs in `wiki/design-system/`.
 
 ## Constraints
+- The content model holds EXTERNAL items only (`wiki/site/content-boundary.md`); nothing internal
+  is importable by a page.
 - Keep the stack unless you find a BLOCKING reason; a stack change needs the founder's approval.
 - Checkout logic, pricing, the store host rewrite and every tracking ID and event name stay as
   they are. Restyle only.

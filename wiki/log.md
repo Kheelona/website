@@ -108,3 +108,15 @@ Q4: the founder read "the deck" as the investor pitch deck: `pitch-deck/` moved 
 (restorable), never to be pushed; SKM's source documents re-asked with clarity. Q5: about 840 MB
 of regenerable caches deleted; originals kept ([D012](decisions/D012-founder-answers-q2-q4-q5.md)).
 The founder asked for remaining questions one at a time in chat.
+
+## [2026-10-10 19:45] decision | Internal vs external content boundary (founder); Q4 closed
+The founder: the research figures are internal; publish only what the ICP needs; this is a sales
+website. [D013](decisions/D013-internal-vs-external-content.md) and the new
+[content boundary](site/content-boundary.md) page. Copywriter, CMO Reviewer, Search & AI
+Visibility, Architect and QA definitions now enforce it. Classification workflow `wf_68f4ef5c-ad8`
+tags every fact, claim and message EXTERNAL / EXTERNAL IF CONFIRMED / INTERNAL / BANNED, with an
+adversarial leak check.
+
+## [2026-10-10 19:55] decision | Push the branch as a backup with Vercel builds off for reset/* (founder, option a)
+[D014](decisions/D014-branch-pushed-no-previews.md). `vercel.json` rule added and checked with
+minimatch (matches `reset/website-v2`, not `main`); `test/store-secrets.test.ts` passes.

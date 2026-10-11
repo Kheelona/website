@@ -57,7 +57,7 @@ merges, no checkout logic touched. (2) Hold everything for Gate B.
 **Recommendation.** (1) for (a) now. (b), (c) and (d) also go out via (1) as soon as you supply
 the facts in F1, F2 and F12. **Owner** founder · **Customer-visible** yes.
 
-### Q4. Missing inputs from SKM — RE-ASKED 2026-10-10 with clarity (first answer was about the investor pitch deck, now removed: [D012](decisions/D012-founder-answers-q2-q4-q5.md))
+### Q4. Missing inputs from SKM — ANSWERED 2026-10-10: not needed; internal research never goes on the site ([D013](decisions/D013-internal-vs-external-content.md), [content boundary](site/content-boundary.md)). The sign-off owner part is still open
 The positioning rests on three documents that are not in the project: the **research brief (30 May
 2026)**, the **competitor review v9 (30 Sep 2026)** and the **90-day plan (7 Oct 2026)**. They are
 the source of figures like "70% of parents want an AI toy to help their child learn" and the Pookie

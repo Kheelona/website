@@ -38,6 +38,7 @@ pages a task needs. Phase 0 pages cite legacy files at tag `archive/pre-reset-20
 ## Site
 - [url map](site/url-map.md): every indexable URL, store-host URL, machine route and redirect, with live status and hop counts; ad landing URLs.
 - [tracking inventory](site/tracking-inventory.md): every tracking, ads and verification integration, its IDs, events, parameters, dedup and consent, plus the parity checklist. Blocks launch.
+- [content boundary](site/content-boundary.md): what the website may publish (EXTERNAL, for the ICP) vs what stays INTERNAL; the rule every page and agent follows.
 - [checkout](site/checkout.md): the journey from CTA tap to receipt, what must not change, and the brief's funnel mapped onto it (there is no cart).
 - `site/pages/`: page copy, from Phase 3.
 
@@ -69,6 +70,8 @@ pages a task needs. Phase 0 pages cite legacy files at tag `archive/pre-reset-20
 - [D010](decisions/D010-wiki-and-ds-committed-publicly.md) `wiki/` and `design-system/` are committed to the public repo (founder; supersedes D004).
 - [D011](decisions/D011-production-held-until-gate-b.md) production held until Gate B; reviews happen locally (founder).
 - [D012](decisions/D012-founder-answers-q2-q4-q5.md) PR #16 closed, remote branches deleted, pitch deck removed, caches deleted (founder).
+- [D013](decisions/D013-internal-vs-external-content.md) the website publishes only external, buyer-facing content; research stays internal (founder; closes Q4).
+- [D014](decisions/D014-branch-pushed-no-previews.md) the reset branch is pushed as a backup; Vercel builds are off for `reset/*` (founder).
 
 ## Agents
 - [roster](agents/roster.md): the eight-role team, their outputs and skills, and the run history.

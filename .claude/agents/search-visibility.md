@@ -27,6 +27,10 @@ Amazon.in, Flipkart and FirstCry search suggestions → PostHog referrers, UTM t
 parent communities. Label every volume with source and date. Never invent one. Save raw captures
 to `wiki/raw/research/serp/`.
 
+## Boundary
+Answer drafts, `llms.txt` and schema use EXTERNAL facts only (`wiki/site/content-boundary.md`).
+Keyword data and research are INTERNAL.
+
 ## Output
 `wiki/research/keyword-map.md`: clusters by intent (buy / compare / learn / gift) and by age (3, 4,
 5, 6, 7 and 3-7); one primary cluster per URL with secondaries and no shared primaries; the

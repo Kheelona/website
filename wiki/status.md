@@ -26,8 +26,8 @@ source documents arrive ([Q4](open-questions.md)).
 Q2 PR #16 closed, remote branches deleted; Q3 production held until Gate B, review locally
 ([D011](decisions/D011-production-held-until-gate-b.md)); Q5 caches deleted, originals kept;
 pitch deck moved to the Trash ([D012](decisions/D012-founder-answers-q2-q4-q5.md)).
-**Waiting on the founder** (asked one at a time in chat, as the founder asked): Q4 re-asked
-(SKM's source documents, sign-off owner), then the facts F1-F13 and checks C1-C11
+**Waiting on the founder** (asked one at a time in chat, as the founder asked): Q4 closed by
+[D013](decisions/D013-internal-vs-external-content.md) (internal vs external content); next: pushing the branch, the copy sign-off owner, then the facts F1-F13 and checks C1-C11
 ([open questions](open-questions.md)). Photoshoot originals: the founder backs them up.
 
 **Due dates:** shipping starts **20 Oct 2026**; production is held until Gate B by the founder's choice (D011). Post-launch

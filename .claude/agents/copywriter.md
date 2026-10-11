@@ -21,6 +21,9 @@ label, page purpose), `wiki/brand/positioning.md`, `messaging.md`, `voice.md`, `
 summarised in `wiki/design-system/overview.md`.
 
 ## Rules
+- The site is for the ICP (parents of 3-7 year olds buying Kheelu) and publishes EXTERNAL content
+  only: `wiki/site/content-boundary.md`. The positioning shapes message and tone; its research
+  figures, personas, competitor intelligence and plans are INTERNAL and never appear in copy.
 - Ages 3-7 everywhere; never imply suitability under 3.
 - Every factual claim links to the wiki page that verifies it. A claim with no source becomes
   `[PLACEHOLDER: what is needed]` in the copy and is returned as an open question.

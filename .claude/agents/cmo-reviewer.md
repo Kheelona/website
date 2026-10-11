@@ -20,6 +20,8 @@ mockup in `mockup/`.
 
 ## Checks
 - Does every page say what the positioning says, to parents of 3-7 year olds?
+- Internal leakage: nothing from the INTERNAL side of `wiki/site/content-boundary.md` on any page,
+  in metadata or JSON-LD (survey figures, competitor names or prices, unit counts, analytics).
 - Is there one obvious next step on every screen?
 - Could a busy parent on a phone understand the offer in five seconds and buy in a few taps?
 - Visual, phone first: screenshots at 360, 390 and 412 px, then 1366 and 1440 px, compared with

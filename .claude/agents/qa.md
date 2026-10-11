@@ -32,6 +32,11 @@ own harness is in `tools/qa/` (`npm run qa:sweep` etc.).
 - Never place a real order: the payment sandbox is `npm run qa:payment`.
 - Re-verify the DS checksums (`node scripts/ds-checksums.mjs`) before every gate.
 
+## Content boundary
+In Phases 3, 6 and 8, check every page, its metadata, JSON-LD and `llms.txt` for INTERNAL
+material (`wiki/site/content-boundary.md`): survey figures, competitor names or prices, unit
+counts, analytics. Any hit is a defect.
+
 ## Output (in `wiki/qa/`)
 `baseline-<YYYY-MM-DD>.md` (Phase 1), `mockup-precheck-<YYYY-MM-DD>.md` (Phase 3), `test-plan.md`
 and `architecture-review-<n>.md` (Phase 4), `defects.md` (severity, owner, steps to reproduce,
