@@ -490,3 +490,4 @@ pack complete: `mockup/APPROVAL.md`. Phase 4 waits for the founder's explicit ap
 
 ## [2026-10-11 14:35] decision | Phase 4 kickoff written; today's work committed locally
 - [engineering/phase-4-kickoff.md](engineering/phase-4-kickoff.md): approved sources, constraints, seven architecture decisions (components from mk- patterns, one content model with a placeholder guard, regions per D047, tracking registry, SEO/schema/robots/redirects, media pipeline, guardrails), Phase 5 carry-overs.
+- Committed locally: `42a65b3` (112 files, staged by name; not pushed, D014).

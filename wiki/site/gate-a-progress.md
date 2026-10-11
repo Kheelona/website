@@ -76,5 +76,4 @@ The round-2 spec is in [D044](../decisions/D044-app-screens-on-the-site.md) and 
    the current account): publish a new artifact from the new account and record it in
    [artifacts](../engineering/artifacts.md).
 5. Rewrite `mockup/APPROVAL.md` as the full-set approval pack; tell the founder all pages are ready.
-6. Commit locally, staging by name (never `mockup/_work/` or the demo video); nothing has been committed
-   since `c0f1668`.
+6. Done: committed locally as `42a65b3` (2026-10-11). Keep staging by name; never `mockup/_work/` or the demo video.

@@ -10,9 +10,9 @@ sources: [log.md, open-questions.md]
 **Phase:** **Gate A APPROVED** for the full page set (D046, after D043-D045). **Next: Phase 4**
 (start from [engineering/phase-4-kickoff.md](engineering/phase-4-kickoff.md): the Architect agent, brief §7), then Phase 5 build. The founder is switching to another
 Claude account; resume from here and [site/gate-a-progress.md](site/gate-a-progress.md).
-**Branch:** `reset/website-v2`, local commits on production `77552ff`, **NOT pushed** (D014). Nothing
-committed since `c0f1668`: commit today's work first (stage by name; never `mockup/_work/` or the demo
-video). Production untouched until Gate B (D011).
+**Branch:** `reset/website-v2`, local commits on production `77552ff`, **NOT pushed** (D014). Today's
+work is committed (`42a65b3`); local-only and never committed: `mockup/_work/`, the demo video, raw
+captures (D039). Production untouched until Gate B (D011).
 
 **Approved set:** 18 mockups at https://claude.ai/artifact/W6XpUUMXhdubxb4fvJpYxa (v6, owned by the old
 account; a new account publishes a new artifact). Sources: `mockup/pages/`, copy in `wiki/site/pages/`.
