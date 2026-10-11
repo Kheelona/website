@@ -1,0 +1,16 @@
+<!-- @dsCard group="Selling" height=360 -->
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>TrustList — preview</title></head>
+<body>
+<div id="root" class="kh-stack" style="padding:32px"></div>
+<script>
+  var K = window.Kheelona, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(K.TrustList, { items: [
+    { icon: 'hand-heart', title: 'We do not sell data.', body: 'Your child\u2019s voice is never sold or used for ads.' },
+    { icon: 'lock-simple', title: 'Kheelu thinks on the device.', body: 'Safety filtering runs on the toy before anything leaves it.' },
+    { icon: 'eye', title: 'You hold the keys.', body: 'Read every conversation in the parent app. Delete any of it in one tap.' },
+    { icon: 'wifi-slash', title: 'No open internet.', body: 'Answers come from a closed, child-safe library, never the open web.' } ] }));
+</script>
+</body>
+</html>

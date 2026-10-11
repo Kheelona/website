@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pages: putting it together · Kheelona design system</title>
+<link rel="stylesheet" href="runtime/tokens.css">
+<link rel="stylesheet" href="runtime/bundle.css">
+<link rel="stylesheet" href="runtime/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="site-header__in">
+  <a class="site-logo" href="../index.html"><img src="../project/assets/Logo/kheelona-logo.svg" alt="Kheelona" height="30"><span>Design system <b>v11</b></span></a>
+  <nav aria-label="Sections"><a href="../index.html">Start</a><a href="brand-overview.html" aria-current="page">Brand book</a><a href="components.html">Components</a><a href="pages.html">Page templates</a><a href="assets.html">Assets</a><a href="tokens.html">Tokens</a></nav>
+</div></header>
+<main id="main" class="site-main">
+<div class="doc-layout">
+  <aside class="doc-nav"><p class="side-label">Brand book</p><ul><li><a href="brand-overview.html">Overview</a></li><li><a href="brand-how-to-use.html">How to use this system</a></li><li><a href="brand-writing.html">Writing</a></li><li><a href="brand-imagery.html">Photography, chalk &amp; crayon</a></li><li><a href="brand-cast.html">The cast</a></li><li><a href="brand-kheelu.html">Kheelu, the product</a></li><li><a href="brand-asset-playbook.html">Making new assets (for agents)</a></li><li><a href="brand-surfaces.html">Surfaces</a></li><li><a href="brand-selling.html">Selling</a></li><li><a href="brand-accessibility.html">Accessibility &amp; inclusion</a></li><li><a href="brand-cast-photo-recipe.html">Making cast photos (step by step)</a></li><li><a href="brand-pages.html" aria-current="page">Pages: putting it together</a></li></ul></aside>
+  <article class="prose"><h1>Pages: putting it together</h1><nav class="toc" aria-label="On this page"><p>On this page</p><ul><li><a href="#the-layout-classes">The layout classes</a></li><li><a href="#rhythm">Rhythm</a></li><li><a href="#the-scrapbook-board">The scrapbook board</a></li><li><a href="#choosing-pictures-for-a-page">Choosing pictures for a page</a></li><li><a href="#phones">Phones</a></li><li><a href="#the-app">The app</a></li><li><a href="#campaigns">Campaigns</a></li></ul></nav>
+<p>The <strong>Pages</strong> group shows the system assembled into whole pages, with real photos, cut-outs, doodles and shapes. Start a new page from the closest one, keep its structure, and swap the words and pictures.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Template</th>
+<th>What it shows</th>
+<th>Width</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="cref" href="component-HomePage.html"><code>HomePage</code></a></td>
+<td>Header, hero, languages, how it works, year by year, a day with Kheelu</td>
+<td>1280</td>
+</tr>
+<tr>
+<td><a class="cref" href="component-HomePageTrust.html"><code>HomePageTrust</code></a></td>
+<td>What Kheelu does, the Imagination layer, safety, feelings, the parent app</td>
+<td>1280</td>
+</tr>
+<tr>
+<td><a class="cref" href="component-HomePageBuy.html"><code>HomePageBuy</code></a></td>
+<td>Compare, pilot parents, questions, the offer and WhatsApp share, footer</td>
+<td>1280</td>
+</tr>
+<tr>
+<td><a class="cref" href="component-HomePagePhone.html"><code>HomePagePhone</code></a></td>
+<td>The hero, the scrolled page with the sticky buy bar, the menu open</td>
+<td>390</td>
+</tr>
+<tr>
+<td><a class="cref" href="component-AppScreens.html"><code>AppScreens</code></a></td>
+<td>Setup, today, conversations, and settings in the Bedtime theme</td>
+<td>4 × 390</td>
+</tr>
+<tr>
+<td><a class="cref" href="component-CampaignKit.html"><code>CampaignKit</code></a></td>
+<td>Four posts, a WhatsApp share, a deck slide, an email, a Story cover</td>
+<td>1280</td>
+</tr>
+</tbody>
+</table></div>
+<p>The three home page parts follow the product page skeleton in <a class="xref" href="brand-selling.html"><strong>Selling</strong></a>. The video section is left out because the templates don't use stand-in footage: add it only with real video.</p>
+<h2 id="the-layout-classes">The layout classes</h2>
+<p>Pages are built from components plus a few layout classes in <code>bundle.css</code>. They use tokens only, so a page never needs its own spacing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Does</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>kh-page</code></td>
+<td>The page wrapper: the cream ground and body text</td>
+<td>Set <code>data-theme=&quot;light&quot;</code> on it for marketing pages, which are always Day</td>
+</tr>
+<tr>
+<td><code>kh-section</code></td>
+<td>One band of the page: <code>space-9</code> top and bottom and <code>space-7</code> sides from 1024px, <code>space-8</code> and <code>space-4</code> on phones</td>
+<td>Add <code>kh-section--band</code> for the cream band, <code>kh-section--tight</code> for a short strip</td>
+</tr>
+<tr>
+<td><code>kh-container</code></td>
+<td>Holds the content at <code>content-max</code> (1200px), centred</td>
+<td>One per section</td>
+</tr>
+<tr>
+<td><code>kh-section__head</code></td>
+<td>The <a class="cref" href="component-SectionHeading.html"><code>SectionHeading</code></a> above a section's content</td>
+<td><code>space-7</code> below it</td>
+</tr>
+<tr>
+<td><code>kh-section__actions</code></td>
+<td>A row of buttons or chips after the content</td>
+<td>Add <code>--center</code> under centred headings</td>
+</tr>
+<tr>
+<td><code>kh-split</code></td>
+<td>Two columns from 900px, stacked on phones</td>
+<td><code>--wide-start</code> (7:5) for heroes, <code>--wide-end</code> (5:7) for a picture beside words</td>
+</tr>
+<tr>
+<td><code>kh-cols--2</code>, <code>--3</code>, <code>--4</code></td>
+<td>Equal card or photo grids</td>
+<td>Two columns from 720px; four from 1024px</td>
+</tr>
+<tr>
+<td><code>kh-photo</code></td>
+<td>A library photo at 4:5 with the card radius and a caption</td>
+<td><code>--wide</code> (16:9), <code>--square</code>, <code>--xl</code> (the big radius)</td>
+</tr>
+<tr>
+<td><code>kh-trustline</code></td>
+<td>Three short facts with icons under a hero cta</td>
+<td>&quot;Screen-free · No open internet · Ships 20 Oct 2026&quot;</td>
+</tr>
+<tr>
+<td><code>kh-art</code></td>
+<td>A scrapbook board: one brand block holding layers placed in %</td>
+<td>Add a tone class for the block; layers are <code>img.kh-art__layer</code></td>
+</tr>
+<tr>
+<td><code>kh-device</code></td>
+<td>A phone frame for showing screens in docs, decks and posts</td>
+<td><code>__screen</code>, <code>__status</code>, <code>__body</code>, <code>__foot</code>; set <code>data-theme=&quot;dark&quot;</code> on it for Bedtime</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="rhythm">Rhythm</h2>
+<ul>
+<li><strong>Alternate the bands.</strong> <code>surface</code>, then <code>surface-band</code>, then <code>surface</code> again, each with one colour moment (a brand block, a photo, a sticker or a crayon mark).</li>
+<li><strong>Quiet panels look after themselves.</strong> Cards and table headers that sit on the cream band switch to the page cream when their section is a band, so they never disappear.</li>
+<li><strong>One <code>cta</code> per view.</strong> On the home page it comes after the hero, safety, compare and the close. Learning actions are secondary buttons; &quot;read more&quot; links are ghost buttons.</li>
+<li><strong>One accent per headline.</strong> Each <a class="cref" href="component-SectionHeading.html"><code>SectionHeading</code></a> gets at most one <code>Hand</code> phrase or one <code>Mark</code>, and the hero is the only display-xl headline on the page.</li>
+<li><strong>Close every section</strong> with a button or a link, so a parent always has a next step.</li>
+</ul>
+<h2 id="the-scrapbook-board">The scrapbook board</h2>
+<p>The hero and the offer use a <code>kh-art</code> board. Build it in this order, and stop as soon as it feels full:</p>
+<ol>
+<li><strong>The block:</strong> one brand fill (<code>kh-tone-blue</code>, <code>-sun</code> or <code>-chilli</code>) at 1:1 or 4:5.</li>
+<li><strong>One shape behind:</strong> a cut-paper shape from <strong>Shapes</strong> in a different brand colour, in a corner.</li>
+<li><strong>The cut-outs:</strong> a cast sticker, bottom-aligned, and the Kheelu sticker, slightly tilted (−4° to −6°), in front of it.</li>
+<li><strong>One doodle:</strong> chalk (white) on Kheelu Blue, Chilli and dark grounds, ink on Sunshine and cream. Keep it near the child's head, where the idea is.</li>
+<li><strong>One sticker:</strong> a round price sticker or a word sticker, tilted, in a free corner.</li>
+</ol>
+<p>Place every layer with <code>left</code>, <code>top</code> or <code>bottom</code> and <code>width</code> in %, so the board scales with its column. Never cover a face, and never put the full-colour logo on the block.</p>
+<h2 id="choosing-pictures-for-a-page">Choosing pictures for a page</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Section</th>
+<th>Use</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hero</td>
+<td>A cast sticker and the Kheelu sticker on a brand block, or a web-hero photo (<code>myra-02</code>, <code>kabir-02</code>, <code>kabir-04</code>, <code>advik-02</code>)</td>
+<td>One child, real joy, Kheelu in view</td>
+</tr>
+<tr>
+<td>A day with Kheelu</td>
+<td>Three 4:5 photos with Kheelu: <code>myra-01</code>, <code>advik-01</code>, <code>ira-01</code></td>
+<td>Morning, afternoon and evening, three different children</td>
+</tr>
+<tr>
+<td>Imagination</td>
+<td><code>kabir-01-imagining-space</code> with chalk doodles</td>
+<td>The dark wall carries chalk</td>
+</tr>
+<tr>
+<td>Feelings</td>
+<td><code>tara-01-naming-feelings</code></td>
+<td>Tara names big feelings</td>
+</tr>
+<tr>
+<td>Parent app</td>
+<td><code>tara-02-evening-with-amma</code></td>
+<td>Parents appear only with Tara</td>
+</tr>
+<tr>
+<td>Offer</td>
+<td>A cast sticker and Kheelu on Sunshine, or <code>kheelu-on-fur.jpg</code></td>
+<td>Calm, product in focus</td>
+</tr>
+<tr>
+<td>Email and WhatsApp</td>
+<td><code>myra-02-monsoon-window</code>, <code>kheelu-on-fur.jpg</code></td>
+<td>Must work as a small thumbnail</td>
+</tr>
+<tr>
+<td>Story or Reel</td>
+<td>A 9:16 photo: <code>myra-03</code>, <code>ira-03</code>, <code>tara-03</code>, <code>kabir-03</code></td>
+<td>Each keeps its top third calm for the words</td>
+</tr>
+</tbody>
+</table></div>
+<p>Across a page, use each child at most twice and show at least three of the five. Use the <code>-web.webp</code> files on the web and the <code>.jpg</code> files for print and decks.</p>
+<h2 id="phones">Phones</h2>
+<ul>
+<li>The nav collapses to the menu button, which opens <a class="cref" href="component-NavDrawer.html"><code>NavDrawer</code></a>. The cta stays in the bar.</li>
+<li>Hero: the words first, a full-width cta, the trust line, then the board under them.</li>
+<li><a class="cref" href="component-StickyBuyBar.html"><code>StickyBuyBar</code></a> appears once the hero has scrolled away and hides while the <a class="cref" href="component-OfferCard.html"><code>OfferCard</code></a> is on screen.</li>
+<li>Two-column splits stack; photo grids become one column; drop the icons in <a class="cref" href="component-ModeSwitch.html"><code>ModeSwitch</code></a> so the three modes fit on one row.</li>
+</ul>
+<h2 id="the-app">The app</h2>
+<ul>
+<li>Every screen is a stack inside the <code>kh-device</code> body with <a class="cref" href="component-TabBar.html"><code>TabBar</code></a> in the foot: Today, Conversations, Stories, Settings.</li>
+<li>Everyday actions are Kheelu Blue <code>primary</code> buttons with white text. Chilli appears only to buy, and never inside the child's data.</li>
+<li>Data screens (the log, summaries, settings) use no doodles, stickers or crayon marks.</li>
+<li>Bedtime is the same screens with <code>data-theme=&quot;dark&quot;</code>: buttons and selection stay Kheelu Blue with white on it.</li>
+</ul>
+<h2 id="campaigns">Campaigns</h2>
+<ul>
+<li><strong>Posts:</strong> rotate the grounds Sunshine, Kheelu Blue, cream, Chilli, chalkboard. Chilli is for offers. Keep the footer pill on every post.</li>
+<li><strong>WhatsApp:</strong> a 1200×630 preview (<code>kheelu-on-fur.jpg</code>, the logo, one line) and the message a parent would send themselves.</li>
+<li><strong>Email:</strong> one 600px column of live text: the logo, one photo, a <a class="cref" href="component-SectionHeading.html"><code>SectionHeading</code></a>, two or three <a class="cref" href="component-FeatureCard.html"><code>FeatureCard</code></a>s and one cta.</li>
+<li><strong>Story or Reel cover:</strong> a 9:16 photo with the words on its calm wall, in the safe zone (below the top 14%, above the bottom third): the logo and the offer on one row, then a two-line headline with one <code>Hand</code> phrase. On a dark wall the words are white, the <code>Hand</code> phrase Sunshine and the logo <code>chalk</code>; on a light wall, ink and the full-colour logo. Never cover a face or Kheelu.</li>
+<li><strong>Deck:</strong> the statement slide on the chalkboard for the one line to remember.</li>
+</ul>
+<nav class="pager"><a href="brand-cast-photo-recipe.html">← Making cast photos (step by step)</a></nav><p class="source">Source: <code>project/10-pages.md</code></p></article>
+</div>
+</main>
+<footer class="site-footer"><div class="site-footer__in">Kheelona design system v11 · exported 10 Oct 2026 · the web version on claude.ai is the source of truth</div></footer>
+<script src="runtime/site.js"></script>
+</body>
+</html>

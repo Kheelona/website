@@ -1,0 +1,15 @@
+<!-- @dsCard group="Content" height=440 -->
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>FAQ — preview</title></head>
+<body>
+<div id="root" class="kh-stack" style="padding:32px"></div>
+<script>
+  var K = window.Kheelona, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(K.FAQ, { items: [
+    { q: 'Is Kheelu always listening?', a: 'No. The microphone wakes only on the wake word and is fully off otherwise. Nothing is recorded before the wake word.', open: true },
+    { q: 'Does Kheelu need the internet?', a: 'AI mode runs on your home Wi-Fi. Story mode works offline, so stories still play on a train with no signal.' },
+    { q: 'When does Kheelu ship?', a: 'Shipping starts 20 October 2026. Pre-orders are served first, in the order they were placed.' } ] }));
+</script>
+</body>
+</html>

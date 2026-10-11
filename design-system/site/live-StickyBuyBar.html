@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="runtime/frame.js"></script>
+<link rel="stylesheet" href="runtime/tokens.css">
+<link rel="stylesheet" href="runtime/bundle.css">
+<script src="runtime/react.production.min.js"></script>
+<script src="runtime/react-dom.production.min.js"></script>
+<script src="runtime/bundle.js"></script>
+<script src="runtime/assets-map.js"></script>
+
+<title>StickyBuyBar · Kheelona</title>
+
+</head>
+<body>
+<div id="root" class="kh-stack"></div>
+<script>
+  var K = window.Kheelona, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h('div', { style: { maxWidth: 390, margin: '0 auto', border: '1px solid var(--border)', borderRadius: 24, overflow: 'hidden' } },
+    h('div', { style: { height: 24 } }),
+    h(K.StickyBuyBar, { price: '\u20B94,999', note: 'Reserve for \u20B9499 today', cta: 'Pre-order' })));
+</script>
+</body>
+</html>

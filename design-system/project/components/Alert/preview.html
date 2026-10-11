@@ -1,0 +1,16 @@
+<!-- @dsCard group="Feedback" height=530 -->
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Alert — preview</title></head>
+<body>
+<div id="root" class="kh-stack" style="padding:32px;gap:12px"></div>
+<script>
+  var K = window.Kheelona, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+    h(K.Alert, { tone: 'info', title: 'Kheelu is updating' }, 'Keep it on the charger. We\u2019ll tell you when it\u2019s done.'),
+    h(K.Alert, { tone: 'success', title: 'Kheelu is connected' }, 'Say the wake word to start. Tara\u2019s first summary arrives tonight at 7 pm.'),
+    h(K.Alert, { tone: 'warning', title: 'Battery low', action: { label: 'How to charge' } }, 'Charge Kheelu before bedtime stories.'),
+    h(K.Alert, { tone: 'danger', title: 'Kheelu can\u2019t reach your Wi-Fi', action: { label: 'Try again' }, onClose: function () {} }, 'Story mode still works. Check the Wi-Fi name and password.')));
+</script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220" width="200" height="220" role="img" aria-label="Chalk doodle: question mark">
+<title>Chalk doodle: question mark</title>
+<defs><filter id="chalk" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">
+<feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7" result="n"></feTurbulence>
+<feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.2 1.75" result="grain"></feColorMatrix>
+<feComposite in="SourceGraphic" in2="grain" operator="in"></feComposite>
+</filter></defs>
+<g filter="url(#chalk)"><path d="M64 72 C59.56641080137342 30.215793096460402, 135.54855924006552 24.50307720247656, 135.50112389679998 73.75162243191153 M66.03964074607939 72.49845399800688 C64.7648228474427 29.513668906642124, 138.06179252197035 24.03682803059928, 139.00387845863588 69.21707681263797 M138 72 C138.48631357308477 101.8424863750115, 101.65980818029493 106.60067101661116, 101.28336091991514 139.11496522370726 M135.99064283724874 73.3203968340531 C137.9329662763048 105.96512350882404, 102.72689444501884 109.42175550456159, 102.15691306372173 141.10049891169183" fill="none" stroke="#ffffff" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></g><g filter="url(#chalk)"><circle cx="100" cy="178" r="7" fill="#ffffff"></circle></g>
+</svg>

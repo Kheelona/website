@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Logo · Kheelona design system</title>
+<link rel="stylesheet" href="runtime/tokens.css">
+<link rel="stylesheet" href="runtime/bundle.css">
+<link rel="stylesheet" href="runtime/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="site-header__in">
+  <a class="site-logo" href="../index.html"><img src="../project/assets/Logo/kheelona-logo.svg" alt="Kheelona" height="30"><span>Design system <b>v11</b></span></a>
+  <nav aria-label="Sections"><a href="../index.html">Start</a><a href="brand-overview.html">Brand book</a><a href="components.html" aria-current="page">Components</a><a href="pages.html">Page templates</a><a href="assets.html">Assets</a><a href="tokens.html">Tokens</a></nav>
+</div></header>
+<main id="main" class="site-main">
+<p class="crumbs"><a href="components.html">Components</a> / Brand</p>
+<h1 class="page-title">Logo</h1>
+
+<div class="tools"><a class="kh-btn kh-btn--secondary kh-btn--s" href="live-Logo.html" target="_blank">Open on its own ↗</a><div class="seg" data-theme-switch role="group" aria-label="Theme"><button type="button" value="light" aria-pressed="true">Day</button><button type="button" value="dark" aria-pressed="false">Bedtime</button></div></div>
+<div class="frame-col"><div class="frame" data-w="980" data-h="520"><iframe src="live-Logo.html" data-src="live-Logo.html" title="Logo, live preview" loading="lazy"></iframe></div></div>
+<article class="prose guide"><p>The official Kheelona wordmark, flattened from kheelona.com/brand/kheelona-wordmark.svg in its own colours: Chilli, the logo's orange (<code>#EF762F</code>), for the K, e, e, o and a, and Kheelu Blue, the logo's sky blue (<code>#29A0D7</code>), for the K's ear, h, l and n. The star in the o is white.</p>
+<p><strong>Use it for:</strong> every header, footer, deck, social post, email and document. Never retype &quot;Kheelona&quot; in a font as a logo.</p>
+<p><strong>Props:</strong> <code>variant</code>, <code>mark</code> (the K only), <code>height</code> (px number or any CSS length, default 32), <code>title</code> (accessible name, default &quot;Kheelona&quot;), <code>className</code>, <code>style</code>.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th><code>variant</code></th>
+<th>Colours</th>
+<th>Use on</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>auto</code> (default)</td>
+<td>The logo's own colours in both themes (they read on cream and on night grounds)</td>
+<td>App and website UI</td>
+</tr>
+<tr>
+<td><code>day</code></td>
+<td>Chilli + Kheelu Blue</td>
+<td>Cream, white, light photos</td>
+</tr>
+<tr>
+<td><code>bedtime</code></td>
+<td>The same as <code>day</code> since v7; kept so existing code keeps working</td>
+<td>Night grounds, the chalkboard, dark photos</td>
+</tr>
+<tr>
+<td><code>sticker</code></td>
+<td>Day colours on a white cut-out outline</td>
+<td>Sun, chilli and blue colour blocks, busy photos</td>
+</tr>
+<tr>
+<td><code>ink</code></td>
+<td>All <code>ink-900</code></td>
+<td>One-colour print, stamps, embossing, fax-like documents</td>
+</tr>
+<tr>
+<td><code>chalk</code></td>
+<td>All white</td>
+<td>Photos and dark or saturated fills where colour would clash</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Files:</strong> the Logo asset group has each variant as SVG, the K mark, the app icon and PNG exports (favicon 32, Apple touch icon 180, app icon 512, logo at 2x).</p>
+<p><strong>Rules</strong></p>
+<ul>
+<li><strong>Clear space:</strong> keep a margin of at least the height of the K's ear around the logo. Nothing else may enter it.</li>
+<li><strong>Minimum size:</strong> 20px tall on screen, 6mm tall in print. Below that, use the K mark.</li>
+<li>Never stretch, rotate, outline, add shadows or effects, swap the two colours, or put the full-colour logo on chilli or blue fills (use <code>sticker</code> or <code>chalk</code>).</li>
+<li>Never place the full-colour logo on a busy photo without the sticker outline.</li>
+<li>One logo per view. In co-branding, the partner logo sits to the right, separated by a <code>stroke-hair</code> (1px) rule in <code>border-strong</code>.</li>
+</ul>
+<nav class="pager"><a href="component-ImaginationFrame.html">← ImaginationFrame</a><a href="component-Sticker.html">Sticker →</a></nav><p class="source">Source: <code>project/components/Logo/</code></p></article>
+</main>
+<footer class="site-footer"><div class="site-footer__in">Kheelona design system v11 · exported 10 Oct 2026 · the web version on claude.ai is the source of truth</div></footer>
+<script src="runtime/site.js"></script>
+</body>
+</html>

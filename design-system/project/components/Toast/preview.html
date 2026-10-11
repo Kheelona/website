@@ -1,0 +1,15 @@
+<!-- @dsCard group="Feedback" height=280 -->
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Toast — preview</title></head>
+<body>
+<div id="root" class="kh-stack" style="padding:32px;gap:12px;align-items:flex-start"></div>
+<script>
+  var K = window.Kheelona, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+    h(K.Toast, { tone: 'success' }, 'Quiet hours saved'),
+    h(K.Toast, { icon: 'trash', action: { label: 'Undo' } }, 'Conversation deleted'),
+    h(K.Toast, { tone: 'danger', action: { label: 'Retry' }, onClose: function () {} }, 'Couldn\u2019t save. Check your connection.')));
+</script>
+</body>
+</html>

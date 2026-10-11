@@ -1,0 +1,24 @@
+<!-- @dsCard group="Content" height=150 -->
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Badge — preview</title></head>
+<body>
+<div id="root" class="kh-stack" style="padding:32px;gap:16px"></div>
+<script>
+  var K = window.Kheelona, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+    h('div', { className: 'kh-row', style: { padding: 0, gap: 10 } },
+      h(K.Badge, { tone: 'sun', variant: 'solid' }, 'New'),
+      h(K.Badge, { tone: 'blue' }, 'Kannada'),
+      h(K.Badge, { tone: 'chilli' }, 'Pre-order'),
+      h(K.Badge, { tone: 'neutral' }, 'Coming soon'),
+      h(K.Badge, { tone: 'blue', variant: 'solid' }, '3 new'),
+      h(K.Badge, { tone: 'chilli', variant: 'solid' }, 'First 500')),
+    h('div', { className: 'kh-row', style: { padding: 0, gap: 10 } },
+      h(K.Badge, { tone: 'success', icon: 'check-circle' }, 'Connected'),
+      h(K.Badge, { tone: 'warning', icon: 'battery-low' }, 'Battery low'),
+      h(K.Badge, { tone: 'danger', icon: 'wifi-slash' }, 'Offline'),
+      h(K.Badge, { tone: 'neutral', icon: 'moon' }, 'Quiet hours'))));
+</script>
+</body>
+</html>

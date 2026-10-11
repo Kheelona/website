@@ -1,0 +1,19 @@
+<!-- @dsCard group="App" height=180 -->
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Avatar — preview</title></head>
+<body>
+<div id="root" class="kh-row" style="padding:32px;gap:16px"></div>
+<script>
+  var K = window.Kheelona, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+    h(K.Avatar, { name: 'Tara Sen Rao', src: '/_blob/8ad45a88b69491c550fe4f8f00a52c14', size: 'xl' }),
+    h(K.Avatar, { name: 'Meera Rao', src: '/_blob/2646b5e124442afd892d9d1f1a4e0be3', size: 'l' }),
+    h(K.Avatar, { name: 'Arnab Sen', src: '/_blob/d7965f7e60d6a57f1173e47d01945c2c' }),
+    h(K.Avatar, { name: 'Tara Sen Rao', tone: 'chilli', size: 'xl' }),
+    h(K.Avatar, { name: 'Meera Rao', tone: 'sun', size: 'l' }),
+    h(K.Avatar, { name: 'Arnab Sen', tone: 'blue' }),
+    h(K.Avatar, { name: 'Kheelu', tone: 'blue', size: 's' })));
+</script>
+</body>
+</html>

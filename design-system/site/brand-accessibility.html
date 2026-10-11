@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Accessibility &amp; inclusion · Kheelona design system</title>
+<link rel="stylesheet" href="runtime/tokens.css">
+<link rel="stylesheet" href="runtime/bundle.css">
+<link rel="stylesheet" href="runtime/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="site-header__in">
+  <a class="site-logo" href="../index.html"><img src="../project/assets/Logo/kheelona-logo.svg" alt="Kheelona" height="30"><span>Design system <b>v11</b></span></a>
+  <nav aria-label="Sections"><a href="../index.html">Start</a><a href="brand-overview.html" aria-current="page">Brand book</a><a href="components.html">Components</a><a href="pages.html">Page templates</a><a href="assets.html">Assets</a><a href="tokens.html">Tokens</a></nav>
+</div></header>
+<main id="main" class="site-main">
+<div class="doc-layout">
+  <aside class="doc-nav"><p class="side-label">Brand book</p><ul><li><a href="brand-overview.html">Overview</a></li><li><a href="brand-how-to-use.html">How to use this system</a></li><li><a href="brand-writing.html">Writing</a></li><li><a href="brand-imagery.html">Photography, chalk &amp; crayon</a></li><li><a href="brand-cast.html">The cast</a></li><li><a href="brand-kheelu.html">Kheelu, the product</a></li><li><a href="brand-asset-playbook.html">Making new assets (for agents)</a></li><li><a href="brand-surfaces.html">Surfaces</a></li><li><a href="brand-selling.html">Selling</a></li><li><a href="brand-accessibility.html" aria-current="page">Accessibility &amp; inclusion</a></li><li><a href="brand-cast-photo-recipe.html">Making cast photos (step by step)</a></li><li><a href="brand-pages.html">Pages: putting it together</a></li></ul></aside>
+  <article class="prose"><h1>Accessibility &amp; inclusion</h1><nav class="toc" aria-label="On this page"><p>On this page</p><ul><li><a href="#contrast-the-pairs-that-are-allowed">Contrast: the pairs that are allowed</a></li><li><a href="#interaction">Interaction</a></li><li><a href="#images-video-and-audio">Images, video and audio</a></li><li><a href="#languages-and-scripts">Languages and scripts</a></li><li><a href="#representation">Representation</a></li><li><a href="#children-s-privacy-in-our-own-materials">Children's privacy in our own materials</a></li></ul></nav>
+<p>Kheelona is for every family, including parents who use screen readers, grandparents with low vision, and children who are still learning to speak.</p>
+<h2 id="contrast-the-pairs-that-are-allowed">Contrast: the pairs that are allowed</h2>
+<p>All numbers are WCAG 2 contrast ratios. The minimum is 4.5:1 for text and 3:1 for large text (24px and up), icons, borders and focus rings.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Text or mark</th>
+<th>On</th>
+<th>Day</th>
+<th>Bedtime</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>text</code></td>
+<td><code>surface</code>, <code>surface-raised</code>, <code>surface-band</code></td>
+<td>13.0–15.8</td>
+<td>13.4–16.6</td>
+</tr>
+<tr>
+<td><code>text-muted</code></td>
+<td>the same grounds</td>
+<td>6.0–7.2</td>
+<td>10.2–12.6</td>
+</tr>
+<tr>
+<td><code>deep-blue</code> and <code>link</code></td>
+<td>the same grounds</td>
+<td>ink, 13.0+</td>
+<td>4.9–6.1 (Kheelu Blue)</td>
+</tr>
+<tr>
+<td><code>deep-chilli</code>, <code>deep-sun</code></td>
+<td>the same grounds</td>
+<td>ink, 13.0+</td>
+<td>5.0–6.2 (orange), 9.9–12.2 (sunshine)</td>
+</tr>
+<tr>
+<td><code>ink-900</code></td>
+<td>Sunshine (<code>sun-500</code>)</td>
+<td>10.8</td>
+<td>same (fills don't change)</td>
+</tr>
+<tr>
+<td>White (<code>on-cta</code>)</td>
+<td>Chilli (<code>chilli-500</code>): the buy button, chilli blocks and stickers</td>
+<td><strong>2.9, fails AA</strong> (brand decision)</td>
+<td><strong>2.9</strong></td>
+</tr>
+<tr>
+<td>White (<code>on-primary</code>, and text on blue blocks, stickers and avatars)</td>
+<td>Kheelu Blue (<code>blue-500</code>)</td>
+<td><strong>3.0, fails AA</strong> (brand decision)</td>
+<td><strong>3.0</strong></td>
+</tr>
+<tr>
+<td><code>success</code>, <code>danger</code></td>
+<td>the grounds</td>
+<td>4.7–6.0</td>
+<td>6.4–10.7</td>
+</tr>
+<tr>
+<td><code>ink-900</code></td>
+<td><code>warning</code> (Sunshine badges and icon circles)</td>
+<td>10.8</td>
+<td>10.8</td>
+</tr>
+<tr>
+<td><code>border-strong</code> (controls)</td>
+<td>the grounds</td>
+<td>3.4–4.1</td>
+<td>3.5–4.3</td>
+</tr>
+<tr>
+<td><code>primary</code> fills (buttons, checked controls, the selected mode, tags and tab-bar item, progress bars)</td>
+<td>the grounds and the progress track</td>
+<td>2.4–3.0: every blue fill carries a white label, tick, dot or thumb, buttons sit on the ink edge, and progress values are written out</td>
+<td>4.9–6.1</td>
+</tr>
+<tr>
+<td><code>focus</code> ring</td>
+<td>every surface (ink ring on brand fills, set in <code>bundle.css</code>)</td>
+<td>13.0+ (5.3+ on fills)</td>
+<td>13.4+</td>
+</tr>
+<tr>
+<td><code>chalk</code> lines</td>
+<td>the <code>ink-900</code> chalkboard</td>
+<td>15.8</td>
+<td>15.8</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>The two exceptions: white on Chilli and white on Kheelu Blue.</strong> On 9 Oct 2026 Kheelona chose white text on the logo's orange (#EF762F) for the buy button, chilli blocks and stickers, and on 10 Oct 2026 white on the logo's sky blue (#29A0D7) for everyday buttons, selection, blue blocks and stickers (3.0:1). White on Chilli measures 2.9:1 and white on Kheelu Blue 3.0:1: below WCAG AA for text (4.5:1) and at or just below the 3:1 minimum for large text and icons. Both are kept as brand decisions and flagged here and in the tokens. To keep them as readable as possible, use them only for short, bold labels, icons with a word, and big headlines, never for body text, prices in small type or fine print. If a surface ever has to meet AA (a regulated checkout, say), the passing option is ink on the fill (5.5:1 on Chilli, 5.3:1 on Kheelu Blue); that needs the owner's OK, because the brand rule is white.</p>
+<p><strong>Not allowed:</strong> white or <code>chalk</code> text on Sunshine (1.5:1); small or long white text on Chilli or Kheelu Blue; Chilli or Kheelu Blue as text or thin lines on cream, white or the band (2.4–3.0:1; use ink: <code>deep-blue</code>, <code>deep-chilli</code> and <code>link</code> are ink in Day); Sunshine as text, a border or a progress fill on light grounds (1.4:1); <code>text-muted</code> on brand fills; <code>chalk</code> doodles on light photos (use the ink versions). Kheelu's rainbow is not a UI colour at all.</p>
+<p><strong>The logo</strong> is exempt from contrast rules as a logotype. In its own colours it is 2.7:1 on cream, 2.9:1 on white and 6.1:1 or better on night grounds, so keep it 20px tall or more on light grounds, and use the Ink logo where it must be read small (print, stamps).</p>
+<h2 id="interaction">Interaction</h2>
+<ul>
+<li><strong>Touch targets</strong> are at least 48×48 (<code>tap-min</code>) for parents and 64×64 (<code>tap-kid</code>) for anything a child might press. Smaller visible controls (small buttons and icon buttons, tags, toast buttons, nav links) keep a 48px tap area with an invisible extension; footer links are 48px rows.</li>
+<li><strong>Focus</strong> is always visible: a 3px (<code>stroke-focus</code>) <code>focus</code> ring with a 2px offset. Never remove outlines without replacing them.</li>
+<li><strong>Status</strong> is never shown by colour alone. Success, warning and danger carry an icon and a word (&quot;Connected&quot;, &quot;Battery low&quot;).</li>
+<li><strong>Forms</strong> have visible labels (not placeholder-only), hints linked with <code>aria-describedby</code>, and errors that say how to fix the problem.</li>
+<li><strong>Switches</strong> (<a class="cref" href="component-Switch.html"><code>Switch</code></a>, <a class="cref" href="component-ParentControl.html"><code>ParentControl</code></a>) use <code>role=&quot;switch&quot;</code> with the whole row as the label. Checkboxes and radios are native inputs with a 48px row; their checked state shows a tick or dot, not just a colour.</li>
+<li><strong>Menus</strong> open with Enter, Space or the down arrow; arrow keys, Home and End move, Escape closes and returns focus to the button.</li>
+<li><strong>Dialogs</strong> use the native <code>&lt;dialog&gt;</code>: focus moves in, Escape closes, and the page behind is inert. The menu drawer keeps Tab inside it and returns focus to the menu button.</li>
+<li><strong>Tabs</strong> follow the ARIA tabs pattern: arrow keys move between tabs and only the selected tab is in the Tab order.</li>
+<li><strong>Tooltips</strong> appear on hover and focus, hide with Escape, and never hold essential information.</li>
+<li><strong>Toasts</strong> are polite live regions and never take focus; anything critical is an <a class="cref" href="component-Alert.html"><code>Alert</code></a> instead.</li>
+<li><strong>Motion</strong> respects <code>prefers-reduced-motion</code>. Doodle draw-ons and bounces turn into simple fades.</li>
+</ul>
+<h2 id="images-video-and-audio">Images, video and audio</h2>
+<ul>
+<li><strong>Alt text</strong> for every meaningful image follows the formula in <a class="xref" href="brand-writing.html"><strong>Writing</strong></a>. Decorative doodles, crayon marks and shapes use <code>alt=&quot;&quot;</code>.</li>
+<li><strong>The question in an Imagination frame</strong> is real text (a <code>figcaption</code>), not part of the image.</li>
+<li><strong>Video</strong> has captions in the spoken language, and an English version of regional videos. Never let audio autoplay.</li>
+<li><strong>Kheelu's voice and pace</strong> stay slow and clear for 3-year-olds, and parents can see transcripts in the app.</li>
+</ul>
+<h2 id="languages-and-scripts">Languages and scripts</h2>
+<ul>
+<li>Mark text in another language with <code>lang</code> (<code>hi</code>, <code>bn</code>, <code>te</code>, <code>ta</code>, <code>kn</code>, <code>es</code>, <code>fr</code>) so screen readers switch voices.</li>
+<li>Use Baloo 2 for Devanagari, and Baloo Da 2, Baloo Tammudu 2, Baloo Thambi 2 and Baloo Tamma 2 for Bengali, Telugu, Tamil and Kannada headlines. Body text uses Noto Sans for that script. Indic scripts need about 10–15% more line height than Latin.</li>
+<li>Never put Indic text into an image when it can be live text.</li>
+</ul>
+<h2 id="representation">Representation</h2>
+<ul>
+<li>Show the cast's full range: North and South, girls and boys, a range of skin tones, and multilingual homes.</li>
+<li>Show different family shapes over time: grandparents raising children, single parents, working mothers and hands-on fathers.</li>
+<li>Include children with disabilities and assistive devices (glasses are already in the cast) when we commission real photography, cast authentically and with consent. Don't generate them with AI.</li>
+<li>No stereotypes: boys can tell stories and girls can love rockets.</li>
+</ul>
+<h2 id="children-s-privacy-in-our-own-materials">Children's privacy in our own materials</h2>
+<ul>
+<li>Use real children's images only with written parental consent for that use, and remove them on request.</li>
+<li>Never publish a real child's full name, school or exact location.</li>
+<li>Conversation snippets in marketing must be written by us (clearly illustrative) or used with explicit consent, and must never identify a child.</li>
+</ul>
+<nav class="pager"><a href="brand-selling.html">← Selling</a><a href="brand-cast-photo-recipe.html">Making cast photos (step by step) →</a></nav><p class="source">Source: <code>project/08-accessibility.md</code></p></article>
+</div>
+</main>
+<footer class="site-footer"><div class="site-footer__in">Kheelona design system v11 · exported 10 Oct 2026 · the web version on claude.ai is the source of truth</div></footer>
+<script src="runtime/site.js"></script>
+</body>
+</html>

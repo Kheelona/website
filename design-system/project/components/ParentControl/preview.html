@@ -1,0 +1,16 @@
+<!-- @dsCard group="App" height=380 -->
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>ParentControl — preview</title></head>
+<body>
+<div id="root" class="kh-row" style="justify-content:center;padding:32px"></div>
+<script>
+  var K = window.Kheelona, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(K.ParentControl, { items: [
+    { icon: 'moon', tone: 'blue', label: 'Quiet hours', hint: '8:30 pm to 7:00 am. Kheelu sleeps too.', checked: true },
+    { icon: 'book-open', tone: 'sun', label: 'Stories only after 8 pm', hint: 'No new topics at bedtime.', checked: true },
+    { icon: 'sliders-horizontal', tone: 'chilli', label: 'Scary stories', hint: 'Ghosts, monsters and the dark.', checked: false },
+    { icon: 'bell', tone: 'blue', label: 'Daily summary', hint: 'A short note every evening at 7 pm.', checked: true } ] }));
+</script>
+</body>
+</html>

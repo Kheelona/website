@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="runtime/frame.js"></script>
+<link rel="stylesheet" href="runtime/tokens.css">
+<link rel="stylesheet" href="runtime/bundle.css">
+<script src="runtime/react.production.min.js"></script>
+<script src="runtime/react-dom.production.min.js"></script>
+<script src="runtime/bundle.js"></script>
+<script src="runtime/assets-map.js"></script>
+
+<title>ListItem · Kheelona</title>
+
+</head>
+<body>
+<div id="root" class="kh-row" style="justify-content:center;padding:32px"></div>
+<script>
+  var K = window.Kheelona, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h('div', { style: { width: '100%', maxWidth: 440 } },
+    h(K.List, { label: 'Today' },
+      h(K.ListItem, { icon: 'chat-circle-dots', title: 'Why does the moon follow our car?', subtitle: 'Tara \u00B7 6 min \u00B7 Space', meta: '7:42 pm', href: '#' }),
+      h(K.ListItem, { icon: 'book-open', tone: 'sun', title: 'The mango who wanted to fly', subtitle: 'Story mode \u00B7 Kannada', meta: '7:10 pm', href: '#' }),
+      h(K.ListItem, { avatar: h(K.Avatar, { name: 'Tara', src: '../project/assets/Cast/tara-portrait-web.webp', alt: '' }), title: 'Tara', subtitle: '5\u00BD \u00B7 Kannada, Bengali, English', href: '#' }),
+      h(K.ListItem, { icon: 'moon', title: 'Quiet hours', subtitle: '8:30 pm to 7:00 am',
+        end: h('input', { type: 'checkbox', role: 'switch', className: 'kh-switch', defaultChecked: true, 'aria-label': 'Quiet hours' }) }))));
+</script>
+</body>
+</html>

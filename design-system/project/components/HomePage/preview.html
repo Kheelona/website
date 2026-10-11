@@ -1,0 +1,105 @@
+<!-- @dsCard group="Pages" height=3300 width=1280 page subtitle="Home page 1 of 3: header, hero, languages, how it works, year by year, a day with Kheelu" -->
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>HomePage — preview</title>
+<style>
+  .pg-hero .kh-heading { max-width: none; }
+  .pg-hero-art .kh-sticker { right: 5%; top: 5%; }
+  .pg-langs { display: grid; justify-items: center; gap: var(--space-4); margin-top: var(--space-8); padding-top: var(--space-7); border-top: var(--stroke-hair) solid var(--border); }
+  .pg-langs .kh-langs { justify-content: center; }
+  .pg-langs h2 { margin: 0; text-align: center; }
+  .pg-day .kh-modes { justify-self: center; }
+  .pg-day-foot { display: grid; justify-items: center; gap: var(--space-3); margin-top: var(--space-7); }
+  .pg-day-foot p { margin: 0; color: var(--text-muted); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  var K = window.Kheelona, h = React.createElement;
+  function B(id) { return '/_blob/' + id; }
+  function Layer(p) {
+    var st = { left: p.x + '%', width: p.w + '%' };
+    if (p.y != null) st.top = p.y + '%'; else st.bottom = (p.b || 0) + '%';
+    if (p.r) st.transform = 'rotate(' + p.r + 'deg)';
+    if (p.z) st.zIndex = p.z;
+    return h('img', { className: 'kh-art__layer', src: B(p.id), alt: p.alt || '', style: st });
+  }
+  function Section(p) {
+    return h('section', { className: 'kh-section' + (p.band ? ' kh-section--band' : '') + (p.tight ? ' kh-section--tight' : '') + (p.className ? ' ' + p.className : ''), id: p.id },
+      h('div', { className: 'kh-container' }, p.children));
+  }
+  function Photo(p) {
+    return h('figure', { className: 'kh-photo' + (p.wide ? ' kh-photo--wide' : '') },
+      h('img', { src: B(p.id), alt: p.alt }), p.caption ? h('figcaption', null, p.caption) : null);
+  }
+
+  var page = h('div', { className: 'kh-page', 'data-theme': 'light' },
+    h(K.AnnouncementBar, { items: ['First 500 Kheelus at ₹4,999', 'Ships from 20 Oct 2026'], link: { href: 'https://store.kheelona.com', label: 'Pre-order' } }),
+    h(K.NavBar, { links: [ { label: 'Meet Kheelu', href: '#', current: true }, { label: 'PlayOS', href: '#' }, { label: 'Safety', href: '#' }, { label: 'Stories', href: '#' }, { label: 'Team', href: '#' } ],
+      cta: { label: 'Pre-order Kheelu', href: 'https://store.kheelona.com' } }),
+
+    // 3. Hero: headline with one Hand phrase, cta, trust line; Myra and Kheelu on a Kheelu Blue block
+    h(Section, { className: 'pg-hero' },
+      h('div', { className: 'kh-split kh-split--wide-start' },
+        h('div', null,
+          h(K.SectionHeading, { hero: true, level: 1, align: 'left', eyebrow: 'Screen-free · Ages 3+',
+            title: ['A best friend at 3. ', h('br', { key: 'b' }), 'A ', h(K.Hand, { key: 'h' }, 'head start'), h('br', { key: 'c' }), 'for school.'],
+            lead: 'Kheelu listens, remembers, and grows with your child. Stories, numbers, and the languages you speak at home, at their pace.' }),
+          h('div', { className: 'kh-section__actions' },
+            h(K.Button, { variant: 'cta', size: 'l', iconEnd: 'arrow-right', href: 'https://store.kheelona.com' }, 'Pre-order Kheelu'),
+            h(K.Button, { variant: 'secondary', size: 'l', href: '#how' }, 'See how it works')),
+          h('ul', { className: 'kh-trustline' },
+            h('li', null, h(K.Icon, { name: 'shield-check' }), 'Screen-free'),
+            h('li', null, h(K.Icon, { name: 'wifi-slash' }), 'No open internet'),
+            h('li', null, h(K.Icon, { name: 'truck' }), 'Ships 20 Oct 2026'))),
+        h('div', { className: 'kh-art kh-tone-blue pg-hero-art', role: 'img', 'aria-label': 'Myra, 3, with Kheelu' },
+          h(Layer, { id: '7781769ba5c008237f0326f4ba707117', x: 6, y: 8, w: 30 }),
+          h(Layer, { id: '4f712b1ebe8b39a40d6c894d3c0fd341', x: 36, b: 0, w: 56 }),
+          h(Layer, { id: 'd53f5a3962997ac35db37066131a9139', x: 2, b: 2, w: 44, r: -6 }),
+          h(Layer, { id: '6603f8571c22e1472914eeb8fb976548', x: 43, y: 1, w: 13, r: 10 }),
+          h(K.Sticker, { round: true, tone: 'sun', big: '₹499', tilt: 8 }, 'reserves yours'))),
+      // Languages: native names in their own scripts
+      h('div', { className: 'pg-langs' },
+        h('h2', { className: 'kh-subtitle' }, 'Speaks the languages of your home'),
+        h(K.LanguageChips, null))),
+
+    // 5. How it works
+    h(Section, { band: true, id: 'how' },
+      h('div', { className: 'kh-section__head' },
+        h(K.SectionHeading, { align: 'center', eyebrow: 'How it works', title: ['A loop that ', h(K.Mark, { key: 'm' }, 'learns'), ' your child.'],
+          lead: 'New ideas arrive inside everyday conversation, not forced drills.' })),
+      h(K.StepLoop, { steps: [
+        { title: 'Talk and play', body: 'Your child asks questions, plays word games, and listens to stories that talk back, in their own language.' },
+        { title: 'Kheelu remembers', body: 'Kheelu keeps track of the words your child knows, what they love, and the pace they learn at.' },
+        { title: 'Knowledge that sticks', body: 'New ideas arrive inside everyday conversation, not forced drills.' } ] }),
+      h('div', { className: 'kh-section__actions kh-section__actions--center' },
+        h(K.Button, { variant: 'ghost', iconEnd: 'arrow-right', href: '#' }, 'Read the science'))),
+
+    // 6. Year by year (quiet panels need a cream section)
+    h(Section, null,
+      h('div', { className: 'kh-section__head' },
+        h(K.SectionHeading, { align: 'center', eyebrow: 'Year by year', title: ['It grows with them, ', h(K.Hand, { key: 'h' }, 'year by year.')] })),
+      h(K.AgeTimeline, { items: [
+        { age: 'Age 3', title: 'Asking why, and why again.', body: 'Kheelu answers the fourth why with the same patience as the first, then asks one back.', note: 'asking is worth it' },
+        { age: 'Age 4', title: 'Playing with ideas.', body: 'Thinking games, counting the apples a squirrel ran off with, naming a big feeling.', note: 'one small step further' },
+        { age: 'Age 5', title: 'Words, numbers, confidence.', body: 'Serve and return, day after day, adds up to a child who expects to be heard.', note: 'ready for class' },
+        { age: 'Every year after', title: 'Growing right alongside.', body: 'Longer stories, bigger ideas, the next language. It remembers the child it met at 3.', note: 'still friends' } ] })),
+
+    // 7. A day with Kheelu: three library photos and the three modes
+    h(Section, { band: true, className: 'pg-day' },
+      h('div', { className: 'kh-section__head' },
+        h(K.SectionHeading, { align: 'center', eyebrow: 'A day with Kheelu', title: ['Morning questions. Afternoon games. ', h(K.Hand, { key: 'h' }, 'Bedtime stories.')],
+          lead: 'AI mode for questions, Story mode for stories (even offline), and Bluetooth for music.' })),
+      h('div', { className: 'kh-cols kh-cols--3' },
+        h(Photo, { id: 'fe78b00cab1b7a1376c8cceb6d501de8', alt: 'Myra, 3, asks Kheelu a question at the breakfast table', caption: 'Morning · AI mode · Questions at breakfast' }),
+        h(Photo, { id: '0a0901bda7f0ec8887c9ba3cb73a4ef0', alt: 'Advik, 4, counts the carriages of his toy train with Kheelu beside him', caption: 'Afternoon · AI mode · Counting train carriages' }),
+        h(Photo, { id: '7542eccafb13cc3256afaeccacfa26d5', alt: 'Ira, 5, tells a story on her bed with both hands while Kheelu listens', caption: 'Evening · Story mode · A story that asks back' })),
+      h('div', { className: 'pg-day-foot' },
+        h(K.ModeSwitch, { defaultValue: 'story', label: 'Kheelu’s mode' }),
+        h('p', { className: 'kh-body-s' }, 'Parents switch modes in the app; the child never needs a screen.'))));
+
+  ReactDOM.createRoot(document.getElementById('root')).render(page);
+</script>
+</body>
+</html>

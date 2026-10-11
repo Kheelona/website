@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to use this system · Kheelona design system</title>
+<link rel="stylesheet" href="runtime/tokens.css">
+<link rel="stylesheet" href="runtime/bundle.css">
+<link rel="stylesheet" href="runtime/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="site-header__in">
+  <a class="site-logo" href="../index.html"><img src="../project/assets/Logo/kheelona-logo.svg" alt="Kheelona" height="30"><span>Design system <b>v11</b></span></a>
+  <nav aria-label="Sections"><a href="../index.html">Start</a><a href="brand-overview.html" aria-current="page">Brand book</a><a href="components.html">Components</a><a href="pages.html">Page templates</a><a href="assets.html">Assets</a><a href="tokens.html">Tokens</a></nav>
+</div></header>
+<main id="main" class="site-main">
+<div class="doc-layout">
+  <aside class="doc-nav"><p class="side-label">Brand book</p><ul><li><a href="brand-overview.html">Overview</a></li><li><a href="brand-how-to-use.html" aria-current="page">How to use this system</a></li><li><a href="brand-writing.html">Writing</a></li><li><a href="brand-imagery.html">Photography, chalk &amp; crayon</a></li><li><a href="brand-cast.html">The cast</a></li><li><a href="brand-kheelu.html">Kheelu, the product</a></li><li><a href="brand-asset-playbook.html">Making new assets (for agents)</a></li><li><a href="brand-surfaces.html">Surfaces</a></li><li><a href="brand-selling.html">Selling</a></li><li><a href="brand-accessibility.html">Accessibility &amp; inclusion</a></li><li><a href="brand-cast-photo-recipe.html">Making cast photos (step by step)</a></li><li><a href="brand-pages.html">Pages: putting it together</a></li></ul></aside>
+  <article class="prose"><h1>How to use this system</h1><nav class="toc" aria-label="On this page"><p>On this page</p><ul><li><a href="#what-s-where">What's where</a></li><li><a href="#find-the-right-part-for-the-job">Find the right part for the job</a></li><li><a href="#choosing-a-photo">Choosing a photo</a></li><li><a href="#without-code-canva-figma-keynote-google-slides">Without code (Canva, Figma, Keynote, Google Slides)</a></li><li><a href="#in-code-websites-emails-prototypes">In code (websites, emails, prototypes)</a></li><li><a href="#for-ai-agents">For AI agents</a></li><li><a href="#version-history">Version history</a></li></ul></nav>
+<p>Start here if you are new to Kheelona, or about to make something for it. This page covers people and AI agents alike. It shows where everything is, which part to use for each job, how to use it with or without code, and how to change the system without breaking it. The brand rules themselves are on the Overview page: read them next.</p>
+<h2 id="what-s-where">What's where</h2>
+<ul>
+<li><strong>This design-system page is the source of truth.</strong> If anything else disagrees with it (an old export, a campaign file, a copy in a folder), this page wins. It is private until the owner shares it from the page's Share menu.</li>
+<li><strong>A local copy</strong> sits in the <code>kheelona-DSX-v4</code> folder on the owner's Mac (synced to v6 on 9 Oct 2026). Use it to work offline or to hand files to a designer, then check here for anything newer.</li>
+<li><strong>The originals of the AI images</strong> (cast portraits and the photo library) are in two ElevenLabs flows, linked from <a class="xref" href="brand-cast.html"><strong>The cast</strong></a> and <a class="xref" href="brand-cast-photo-recipe.html"><strong>Making cast photos (step by step)</strong></a>.</li>
+</ul>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Path</th>
+<th>What's in it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>README.md</code></td>
+<td>The Overview: principles, rules, colour, logo, type, layout, imagery, icons, motion</td>
+</tr>
+<tr>
+<td><code>00-…</code> to <code>09-….md</code></td>
+<td>The sections, including this one</td>
+</tr>
+<tr>
+<td><code>tokens.json</code></td>
+<td>Every design token: colour (Day and Bedtime themes), type, spacing, radius, shadow</td>
+</tr>
+<tr>
+<td><code>tokens.css</code></td>
+<td>The same tokens as CSS, for use outside this page (local copy; rebuild with <code>tools/tokens/</code>)</td>
+</tr>
+<tr>
+<td><code>fonts/</code></td>
+<td>Baloo 2, Nunito and Kalam, as web fonts</td>
+</tr>
+<tr>
+<td><code>components/</code></td>
+<td><code>bundle.css</code> (every <code>kh-</code> class), <code>bundle.js</code> (React components on <code>window.Kheelona</code>), <code>index.d.ts</code> (every prop), and a folder per component with its guidelines and a live preview</td>
+</tr>
+<tr>
+<td><code>assets/</code></td>
+<td>Logo, Kheelu, Cast, Photo library, Doodles, Crayon, Shapes and Icons; each group has a README</td>
+</tr>
+<tr>
+<td><code>tools/photo/</code></td>
+<td>Scripts for making new cast photos: face check, page-text clean-up, export, and the photo log</td>
+</tr>
+<tr>
+<td><code>tools/tokens/</code></td>
+<td>The script that rebuilds <code>tokens.css</code> from <code>tokens.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="find-the-right-part-for-the-job">Find the right part for the job</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>I need to make…</th>
+<th>Start with</th>
+<th>Then read</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>An Instagram or Facebook post</td>
+<td><a class="cref" href="component-SocialPost.html"><code>SocialPost</code></a> (4:5), one cast sticker or a 4:5 library photo, at most one Kheelu sticker</td>
+<td><a class="xref" href="brand-surfaces.html"><strong>Surfaces</strong></a> → Social; <a class="xref" href="brand-asset-playbook.html"><strong>Making new assets (for agents)</strong></a> → Recipes</td>
+</tr>
+<tr>
+<td>A Story or Reel cover</td>
+<td><a class="cref" href="component-SocialPost.html"><code>SocialPost</code></a> stretched to 1080×1920, or a 9:16 library photo</td>
+<td><a class="xref" href="brand-surfaces.html"><strong>Surfaces</strong></a> → Sizes at a glance</td>
+</tr>
+<tr>
+<td>A performance ad</td>
+<td><a class="cref" href="component-SocialPost.html"><code>SocialPost</code></a> plus a price <a class="cref" href="component-Sticker.html"><code>Sticker</code></a></td>
+<td><a class="xref" href="brand-selling.html"><strong>Selling</strong></a> → Price and offer rules</td>
+</tr>
+<tr>
+<td>A website section</td>
+<td><a class="cref" href="component-SectionHeading.html"><code>SectionHeading</code></a> plus <a class="cref" href="component-FeatureCard.html"><code>FeatureCard</code></a>, <a class="cref" href="component-StepLoop.html"><code>StepLoop</code></a>, <a class="cref" href="component-AgeTimeline.html"><code>AgeTimeline</code></a>, <a class="cref" href="component-TrustList.html"><code>TrustList</code></a>, <a class="cref" href="component-ComparisonTable.html"><code>ComparisonTable</code></a> or <a class="cref" href="component-FAQ.html"><code>FAQ</code></a>; a 16:9 library photo</td>
+<td><a class="xref" href="brand-surfaces.html"><strong>Surfaces</strong></a> → Website</td>
+</tr>
+<tr>
+<td>The product page or any whole web page</td>
+<td>The <a class="cref" href="component-HomePage.html"><code>HomePage</code></a>, <a class="cref" href="component-HomePageTrust.html"><code>HomePageTrust</code></a> and <a class="cref" href="component-HomePageBuy.html"><code>HomePageBuy</code></a> templates (Pages group) and the layout classes, with <a class="cref" href="component-StickyBuyBar.html"><code>StickyBuyBar</code></a> on phones</td>
+<td><a class="xref" href="brand-pages.html"><strong>Pages: putting it together</strong></a>; <a class="xref" href="brand-selling.html"><strong>Selling</strong></a> → Product page skeleton</td>
+</tr>
+<tr>
+<td>A deck</td>
+<td><a class="cref" href="component-DeckSlide.html"><code>DeckSlide</code></a> (title, statement and facts layouts); 16:9 library photos</td>
+<td><a class="xref" href="brand-surfaces.html"><strong>Surfaces</strong></a> → Decks</td>
+</tr>
+<tr>
+<td>An email</td>
+<td>A 600px column: one photo, <a class="cref" href="component-SectionHeading.html"><code>SectionHeading</code></a>, two or three <a class="cref" href="component-FeatureCard.html"><code>FeatureCard</code></a>s, one cta</td>
+<td><a class="xref" href="brand-asset-playbook.html"><strong>Making new assets (for agents)</strong></a> → Recipes</td>
+</tr>
+<tr>
+<td>A WhatsApp creative</td>
+<td><code>kheelu-on-fur.jpg</code> or a 1:1 <a class="cref" href="component-SocialPost.html"><code>SocialPost</code></a>, one line and a link</td>
+<td><a class="xref" href="brand-surfaces.html"><strong>Surfaces</strong></a> → WhatsApp</td>
+</tr>
+<tr>
+<td>A parent-app screen</td>
+<td><a class="cref" href="component-TabBar.html"><code>TabBar</code></a>, <a class="cref" href="component-ListItem.html"><code>ListItem</code></a>, <a class="cref" href="component-AppSummaryCard.html"><code>AppSummaryCard</code></a>, <a class="cref" href="component-ParentControl.html"><code>ParentControl</code></a>, <a class="cref" href="component-ModeSwitch.html"><code>ModeSwitch</code></a>, the form controls; Bedtime theme at night</td>
+<td><a class="xref" href="brand-surfaces.html"><strong>Surfaces</strong></a> → Parent app; the <a class="cref" href="component-AppScreens.html"><code>AppScreens</code></a> template in <a class="xref" href="brand-pages.html"><strong>Pages: putting it together</strong></a></td>
+</tr>
+<tr>
+<td>Print (inserts, cards)</td>
+<td>The Ink logo, the brand fonts at 9pt or more</td>
+<td><a class="xref" href="brand-surfaces.html"><strong>Surfaces</strong></a> → Print and packaging</td>
+</tr>
+<tr>
+<td>Copy for anything</td>
+<td>The voice, words, claims and CTA tables</td>
+<td><a class="xref" href="brand-writing.html"><strong>Writing</strong></a></td>
+</tr>
+<tr>
+<td>A new photo of a child</td>
+<td>The Photo library first; only then a new one</td>
+<td><a class="xref" href="brand-cast-photo-recipe.html"><strong>Making cast photos (step by step)</strong></a></td>
+</tr>
+<tr>
+<td>A picture of Kheelu</td>
+<td>The Kheelu group. Never generate it</td>
+<td><a class="xref" href="brand-kheelu.html"><strong>Kheelu, the product</strong></a></td>
+</tr>
+<tr>
+<td>The logo</td>
+<td>The <a class="cref" href="component-Logo.html"><code>Logo</code></a> component or the Logo group</td>
+<td>Overview → Logo</td>
+</tr>
+<tr>
+<td>An icon</td>
+<td><a class="cref" href="component-Icon.html"><code>Icon</code></a> in code, or the Icons group</td>
+<td>Overview → Iconography</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Before anything goes out</strong>, run the ship gate at the end of <a class="xref" href="brand-asset-playbook.html"><strong>Making new assets (for agents)</strong></a>: brand, sales, truth and safety, accessibility and India fit.</p>
+<h2 id="choosing-a-photo">Choosing a photo</h2>
+<p>The <strong>Photo library</strong> has 25 photos, five of each child. Each photo is in two files: <code>.jpg</code> (full size, for decks, print and cropping) and <code>-web.webp</code> (1500px, for websites and email). The full table, with setting, outfit and best use for every photo, is in <a class="xref" href="brand-cast.html"><strong>The cast</strong></a>.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>You need</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A web hero, text on the left</td>
+<td><code>myra-02-monsoon-window</code>, <code>ira-02-drawing-the-dragon</code>, <code>kabir-02-block-rocket</code>, <code>kabir-04-planet-book</code></td>
+</tr>
+<tr>
+<td>A web hero, text on the right</td>
+<td><code>advik-02-whispering-to-kheelu</code>, <code>advik-04-floor-train</code></td>
+</tr>
+<tr>
+<td>A 4:5 post with Kheelu</td>
+<td><code>myra-01-breakfast-why</code>, <code>advik-01-counting-carriages</code>, <code>ira-01-story-on-the-bed</code>, <code>tara-01-naming-feelings</code>, <code>kabir-01-imagining-space</code></td>
+</tr>
+<tr>
+<td>A Story or Reel (9:16)</td>
+<td><code>myra-03-bedtime-cuddle</code>, <code>ira-03-festive-evening-song</code>, <code>tara-03-bedtime-with-baba</code>, <code>kabir-03-homework-desk</code></td>
+</tr>
+<tr>
+<td>A child with the product, ready to cut out</td>
+<td><code>advik-03-studio-hug</code> (cream studio sweep)</td>
+</tr>
+<tr>
+<td>A portrait for an avatar, sticker or cast card</td>
+<td>the <code>-05-portrait</code> of each child (1:1, plain wall)</td>
+</tr>
+<tr>
+<td>Parents and family proof</td>
+<td><code>tara-02-evening-with-amma</code>, <code>tara-03-bedtime-with-baba</code></td>
+</tr>
+<tr>
+<td>Childhood without selling</td>
+<td><code>myra-04-drawing-at-home</code>, <code>advik-04-floor-train</code>, <code>ira-04-paper-crown</code>, <code>tara-04-reading-nook</code>, <code>kabir-04-planet-book</code></td>
+</tr>
+<tr>
+<td>Chalk doodles over a photo (the Imagination layer)</td>
+<td><code>kabir-01-imagining-space</code> (dark wall), or any photo with a calm wall. Put the helmet on like a real one: the whole head inside the bubble, the collar at the neck, and Kheelu in front (see <a class="xref" href="brand-imagery.html"><strong>Photography, chalk &amp; crayon</strong></a> → The Imagination layer)</td>
+</tr>
+<tr>
+<td>A season or moment</td>
+<td>Festive: <code>ira-03</code>. Monsoon: <code>myra-02</code>. Bedtime: <code>myra-03</code>, <code>tara-03</code>. School readiness: <code>kabir-03</code>, <code>tara-04</code></td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>Match the child to the message (character sheets in <a class="xref" href="brand-cast.html"><strong>The cast</strong></a>), and keep the cast's balance across a campaign.</li>
+<li>Crop freely, but never mirror a photo, lighten skin or retouch faces.</li>
+<li>Write alt text that describes what is happening (<a class="xref" href="brand-writing.html"><strong>Writing</strong></a> → Alt text). The children are illustrative: never present them as customers.</li>
+</ul>
+<h2 id="without-code-canva-figma-keynote-google-slides">Without code (Canva, Figma, Keynote, Google Slides)</h2>
+<ol>
+<li><strong>Install the fonts:</strong> Baloo 2 (headings), Nunito (text) and Kalam (one handwritten word). They are in <code>fonts/</code> and free on Google Fonts.</li>
+<li><strong>Add the colour swatches.</strong> In code, always use the tokens; these hex values are only for tools that don't read tokens.</li>
+</ol>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Swatch</th>
+<th>Hex</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cream (<code>fur-100</code>)</td>
+<td>#FBF5EB</td>
+<td>The page, most of every layout</td>
+</tr>
+<tr>
+<td>Cream band (<code>fur-200</code>)</td>
+<td>#F3E8D7</td>
+<td>Alternating bands and quiet panels</td>
+</tr>
+<tr>
+<td>White</td>
+<td>#FFFFFF</td>
+<td>Cards, sticker outlines, text on Chilli and Kheelu Blue</td>
+</tr>
+<tr>
+<td>Ink (<code>ink-900</code>)</td>
+<td>#2A2118</td>
+<td>All text and icons on light grounds; text on Sunshine</td>
+</tr>
+<tr>
+<td>Ink, quiet (<code>ink-600</code>)</td>
+<td>#625547</td>
+<td>Secondary text</td>
+</tr>
+<tr>
+<td>Chilli (<code>chilli-500</code>)</td>
+<td>#EF762F</td>
+<td>The logo's orange: the buy button and brand blocks, with white text</td>
+</tr>
+<tr>
+<td>Kheelu Blue (<code>blue-500</code>)</td>
+<td>#29A0D7</td>
+<td>The logo's sky blue: everyday buttons, selection, brand blocks and stickers, always with white text</td>
+</tr>
+<tr>
+<td>Sunshine (<code>sun-500</code>)</td>
+<td>#FFCF4D</td>
+<td>The one accent: highlights, stickers, badges</td>
+</tr>
+</tbody>
+</table></div>
+<p>That's every colour a design tool needs. The success and error colours (<code>green-700</code>, <code>red-700</code>) are for the parent app only.</p>
+<ol start="3">
+<li><strong>Use the type styles</strong> in Overview → Typography: sizes, weights and line heights.</li>
+<li><strong>Take the files</strong> from the asset groups: the logo as SVG (or the PNG at 2x where SVG isn't accepted), photos as <code>.jpg</code>, cut-outs and stickers as PNG, and doodles, crayon marks and shapes as SVG.</li>
+<li><strong>Set the size</strong> from <a class="xref" href="brand-surfaces.html"><strong>Surfaces</strong></a> → Sizes at a glance: posts 1080×1350, Stories 1080×1920, slides 1920×1080.</li>
+<li><strong>Check it</strong> against the ship gate before it goes out.</li>
+</ol>
+<h2 id="in-code-websites-emails-prototypes">In code (websites, emails, prototypes)</h2>
+<p>Load four things in this order: <code>tokens.css</code>, <code>components/bundle.css</code>, React 18.3.1 with ReactDOM, then <code>components/bundle.js</code>. Every component is then on <code>window.Kheelona</code>. This example was tested on 9 Oct 2026, with the files laid out as in the local copy:</p>
+<pre><code class="language-html">&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot; data-theme=&quot;light&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;utf-8&quot;&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+  &lt;link rel=&quot;stylesheet&quot; href=&quot;tokens.css&quot;&gt;
+  &lt;link rel=&quot;stylesheet&quot; href=&quot;components/bundle.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div id=&quot;root&quot;&gt;&lt;/div&gt;
+  &lt;script src=&quot;https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js&quot;&gt;&lt;/script&gt;
+  &lt;script src=&quot;https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js&quot;&gt;&lt;/script&gt;
+  &lt;script src=&quot;components/bundle.js&quot;&gt;&lt;/script&gt;
+  &lt;script&gt;
+    const h = React.createElement;
+    const { SectionHeading, Hand, Button } = window.Kheelona;
+
+    function Hero() {
+      return h('main', { style: { maxWidth: 'var(--content-max)', margin: '0 auto', padding: 'var(--space-8) var(--space-4)' } },
+        h(SectionHeading, {
+          hero: true, level: 1,
+          eyebrow: 'Screen-free',
+          title: ['Learning starts with ', h(Hand, null, 'feeling understood.')],
+          lead: 'A screen-free AI friend for ages 3+ that listens, remembers and grows with your child.'
+        }),
+        h('img', {
+          src: 'assets/Photo library/tara-01-naming-feelings-web.webp',
+          alt: 'Tara, five, explains something to Kheelu by the window',
+          style: { display: 'block', width: '100%', maxWidth: 560, borderRadius: 'var(--radius-xl)', margin: 'var(--space-6) 0' }
+        }),
+        h(Button, { variant: 'cta', size: 'l', href: 'https://store.kheelona.com' }, 'Pre-order Kheelu')
+      );
+    }
+    ReactDOM.createRoot(document.getElementById('root')).render(h(Hero));
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<ul>
+<li><strong>Themes:</strong> <code>data-theme=&quot;light&quot;</code> is Day, the default. <code>data-theme=&quot;dark&quot;</code> is Bedtime, for the parent app at night and bedtime-story screens. Marketing artwork always stays in Day.</li>
+<li><strong>Props:</strong> every component's props are in <code>components/index.d.ts</code>, and its do's and don'ts are in <code>components/&lt;Name&gt;/README.md</code>. The previews on this page show the states.</li>
+<li><strong>Without React</strong> (plain HTML, email): the <code>kh-</code> classes in <code>bundle.css</code> style the same markup the components render. Open a component's preview to copy its structure.</li>
+<li><strong>Values:</strong> use tokens only, never pasted hex values or one-off sizes: colour, spacing, radius, stroke, size, motion (<code>duration-*</code>, <code>ease-*</code>) and layer (<code>z-*</code>) tokens, and the type styles. Format money with <code>Kheelona.formatINR(4999)</code>, which gives &quot;₹4,999&quot;.</li>
+<li><strong>When <code>tokens.json</code> changes</strong>, rebuild the CSS: <code>python3 tools/tokens/build_tokens_css.py</code>.</li>
+</ul>
+<h2 id="for-ai-agents">For AI agents</h2>
+<p><strong>Read in this order:</strong> the Overview (README), this page, the section for your job, then the README of each component or asset group you will use. Props are in <code>components/index.d.ts</code>.</p>
+<p><strong>Reading files:</strong> every file on this page is at <code>project/&lt;path&gt;</code>, for example <code>project/03-cast.md</code>. Photos, logos and other images are uploads: <code>design-system.json</code> lists each asset group's files with their upload IDs, served at <code>/_blob/&lt;id&gt;</code>. The local copy has the same files at the same paths.</p>
+<p><strong>The rules that most often get broken:</strong></p>
+<ul>
+<li>Tokens only, never hex values; one chilli <code>cta</code> per view, for buying only.</li>
+<li>The official logo files or the <a class="cref" href="component-Logo.html"><code>Logo</code></a> component; never retype or recolour the logo.</li>
+<li>Only the cast; never present them as real customers; parents appear only with Tara.</li>
+<li>Kheelu only from the product photos; never generate it.</li>
+<li>Home, studio or plain-wall settings; never outdoors.</li>
+<li>Prices, dates and offers checked against store.kheelona.com on the day.</li>
+</ul>
+<h3 id="changing-the-system">Changing the system</h3>
+<p>Only change the system when the owner asks.</p>
+<ol>
+<li><strong>Edit the files</strong> under <code>project/</code>. Keep the README lists, the counts and each group's README in step with what you change.</li>
+<li><strong>Upload new images</strong> to this page's asset store (the Artifact tool's publish with <code>asset: true</code>, up to 25 files per call). Note each file's upload ID.</li>
+<li><strong>Register them</strong> in <code>design-system.json</code>: under <code>assetGroups.&lt;Group&gt;</code>, add the file name to <code>order</code> and an entry to <code>files</code> (<code>{&quot;name&quot;, &quot;blob&quot;: &quot;&lt;upload id&gt;&quot;, &quot;size&quot;, &quot;type&quot;}</code>). Add a new group to <code>groups</code> as well.</li>
+<li><strong>Stamp the change:</strong> update <code>lastChange</code> in <code>design-system.json</code> (<code>by</code>, <code>at</code>, <code>via</code>, and a one-line <code>note</code>).</li>
+<li><strong>Publish</strong> with <code>root</code> set to the folder that contains <code>project/</code>, <code>file_path</code> set to <code>project/design-system.json</code>, and every changed file listed in <code>files</code>. Files you leave out are kept.</li>
+<li><strong>Check it:</strong> open the changed component previews in both themes and re-run the contrast checks in <a class="xref" href="brand-accessibility.html"><strong>Accessibility &amp; inclusion</strong></a> if you touched a colour.</li>
+<li><strong>Sync the local copy:</strong> copy the changed and new files into <code>kheelona-DSX-v4</code>. Never delete anything there or in the asset store without the owner's OK; move retired files to a <code>_retired-&lt;version&gt;/</code> folder instead.</li>
+<li><strong>Log it</strong> in the version history below.</li>
+</ol>
+<h2 id="version-history">Version history</h2>
+<p>The page's own version history counts every publish, so its numbers run ahead of these.</p>
+<ul>
+<li><strong>v11, 10 Oct 2026:</strong> the astronaut helmet is worn. On <a class="cref" href="component-HomePageTrust.html"><code>HomePageTrust</code></a> it had sat on top of Kabir's head with its rim across his glasses; now the bubble holds his whole head, the collar sits at his neck and the helmet passes behind Kheelu. <a class="cref" href="component-ImaginationFrame.html"><code>ImaginationFrame</code></a> doodles take a new <code>clip</code> option (a CSS <code>clip-path</code>) for that; <a class="xref" href="brand-imagery.html"><strong>Photography, chalk &amp; crayon</strong></a>, the <a class="cref" href="component-ImaginationFrame.html"><code>ImaginationFrame</code></a> guide and this page say how to place a helmet or crown. The planet doodle moved to the top left, clear of the helmet.</li>
+<li><strong>v10, 10 Oct 2026:</strong> white on Kheelu Blue. Text, ticks, dots, thumbs and icons on every Kheelu Blue fill (buttons, selection, blocks, stickers, avatars) are white, 3.0:1: a brand decision like white on Chilli, flagged in <a class="xref" href="brand-accessibility.html"><strong>Accessibility &amp; inclusion</strong></a>. New <a class="xref" href="brand-pages.html"><strong>Pages: putting it together</strong></a> section and six showcase pages (<a class="cref" href="component-HomePage.html"><code>HomePage</code></a>, <a class="cref" href="component-HomePageTrust.html"><code>HomePageTrust</code></a>, <a class="cref" href="component-HomePageBuy.html"><code>HomePageBuy</code></a>, <a class="cref" href="component-HomePagePhone.html"><code>HomePagePhone</code></a>, <a class="cref" href="component-AppScreens.html"><code>AppScreens</code></a>, <a class="cref" href="component-CampaignKit.html"><code>CampaignKit</code></a>) built from the components and 26 assets (8 library photos, 6 cast stickers and portraits, 2 Kheelu files, 6 doodles, 4 shapes), with crayon marks from the <code>Mark</code> helper. New layout classes in <code>bundle.css</code>: <code>kh-section</code>, <code>kh-container</code>, <code>kh-split</code>, <code>kh-cols</code>, <code>kh-photo</code>, <code>kh-trustline</code>, <code>kh-art</code> and <code>kh-device</code>; quiet panels switch to cream on band sections. Story and Reel covers put the words on the photo's calm top third, in a safe zone below the top 14% and above the bottom third; the old “middle 60%” rule put them over the child and Kheelu in every 9:16 library photo.</li>
+<li><strong>v9, 10 Oct 2026:</strong> one blue. The deep blue (#00668E) is gone and Kheelu Blue (#29A0D7, the logo's sky blue) does every blue job, always with ink on it: everyday buttons, checked boxes, radios and switches, the selected mode, tags and tab-bar item, progress bars. Blue text and lines on light grounds (eyebrows, links, handwritten accents, the selected-tab underline) are now ink in Day, as orange text has been since v7; Bedtime keeps them blue. Ticks on the OfferCard and ComparisonTable are Kheelu Blue instead of the app's success green. 18 colours. Removed token: <code>blue-700</code>; code that used it should use <code>primary</code> (fills) or <code>deep-blue</code> (text).</li>
+<li><strong>v8, 10 Oct 2026:</strong> a consistency audit. Components now use the type scale only (no more 11, 15 or 19px text, 13px only in the eyebrow style, and no 600 weights), with one emphasized weight per style; new <code>kh-label-l</code> for large buttons; <code>kh-headline</code> is 800, as every component already set it; the hero headline steps 40 → 56 → 72px. New token families for motion (<code>duration-*</code>, <code>ease-*</code>) and layers (<code>z-*</code>), and <code>stroke-focus</code> (3px). Spacing, radii and strokes in components are all tokens; chips are 40px tall; icons sit at half their circle or tile; small controls, nav and footer links keep 48px tap areas. No colour values changed. The README's motion, iconography, layout and typography rules are rewritten to match.</li>
+<li><strong>v7, 9 Oct 2026:</strong> the palette narrowed to the logo's own colours. Chilli is now the logo's orange (#EF762F) and Kheelu Blue its sky blue (#29A0D7), with one deep blue (#00668E) for buttons, links and blue text; Sunshine stays as the one accent. 19 colours in all, down from 45. Quiet panels are now the cream band instead of tints; buttons share one ink edge; error red moved away from the buy colour; feeling chips have cream dots. The logo set, shapes and crayon marks are recoloured to match the website. White text on Chilli (2.9:1) is a brand decision, flagged in <a class="xref" href="brand-accessibility.html"><strong>Accessibility &amp; inclusion</strong></a>. Removed tokens: <code>chilli-100</code>, <code>chilli-300</code>, <code>chilli-600</code>, <code>chilli-800</code>, <code>blue-100</code>, <code>blue-300</code>, <code>blue-900</code>, <code>sun-100</code>, <code>sun-800</code>, <code>rainbow-*</code>, <code>green-100</code>, <code>red-100</code>, <code>tint-chilli</code>, <code>tint-blue</code>, <code>tint-sun</code>, <code>success-tint</code>, <code>warning-tint</code>, <code>danger-tint</code>, <code>cta-hover</code>, <code>cta-edge</code>, <code>primary-hover</code>, <code>primary-edge</code>, <code>brand-warm</code>, <code>brand-cool</code>, <code>accent</code>, <code>shadow-press-primary</code> and <code>shadow-press-ink</code>. Code that used them needs the new names (see Overview → Colour).</li>
+<li><strong>v6, 9 Oct 2026:</strong> the Photo library (25 cast photos, 5 per child); <a class="xref" href="brand-cast-photo-recipe.html"><strong>Making cast photos (step by step)</strong></a> with its helper scripts; this guide.</li>
+<li><strong>v5, 9 Oct 2026:</strong> the palette locked to the logo (Chilli, Kheelu Blue, Sunshine on cream, white and ink); the official logo set; 21 new basic components (menus, dialogs, tabs, form controls, alerts and more); doodles, crayon marks and shapes recoloured; Bedtime contrast fixes.</li>
+<li><strong>v1 to v4, 8–9 Oct 2026:</strong> the first system: tokens, the brand book, the cast, the Kheelu product files, doodles, crayon marks, shapes, icons and the first 26 components.</li>
+</ul>
+<nav class="pager"><a href="brand-overview.html">← Overview</a><a href="brand-writing.html">Writing →</a></nav><p class="source">Source: <code>project/00-how-to-use.md</code></p></article>
+</div>
+</main>
+<footer class="site-footer"><div class="site-footer__in">Kheelona design system v11 · exported 10 Oct 2026 · the web version on claude.ai is the source of truth</div></footer>
+<script src="runtime/site.js"></script>
+</body>
+</html>

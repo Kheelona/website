@@ -1,0 +1,86 @@
+<!-- @dsCard group="Pages" height=2820 width=440 page subtitle="The home page on a phone: the hero, scrolled with the sticky buy bar, and the menu open" -->
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>HomePagePhone — preview</title>
+<style>
+  .pg-phones { display: grid; justify-items: center; gap: var(--space-6); padding: var(--space-6) 0; background: var(--surface); }
+  .pg-phones .kh-device { width: 390px; }
+  .pg-phones .kh-device__body { overflow: hidden; }
+  .pg-phones .kh-section { padding: var(--space-6) var(--space-4); }
+  .pg-phones .kh-art { margin-top: var(--space-6); }
+  .pg-hero-art .kh-sticker { right: 4%; top: 4%; }
+  .pg-label { margin: 0; font: 800 13px/16px var(--font-body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+  .pg-menu-layer { position: absolute; inset: 0; z-index: var(--z-overlay); }
+  .pg-menu-layer .pg-scrim { position: absolute; inset: 0; background: var(--scrim); }
+  .pg-menu-layer .kh-drawer--inline { position: absolute; top: 0; right: 0; bottom: 0; width: 88%; }
+  .pg-menu-layer .kh-drawer--inline .kh-drawer__panel { max-width: none; height: 100%; min-height: 0; border: 0; border-radius: 0; box-shadow: var(--shadow-lift); }
+  .pg-phones .kh-buybar { position: static; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  var K = window.Kheelona, h = React.createElement;
+  function B(id) { return '/_blob/' + id; }
+  function Layer(p) {
+    var st = { left: p.x + '%', width: p.w + '%' };
+    if (p.y != null) st.top = p.y + '%'; else st.bottom = (p.b || 0) + '%';
+    if (p.r) st.transform = 'rotate(' + p.r + 'deg)';
+    return h('img', { className: 'kh-art__layer', src: B(p.id), alt: p.alt || '', style: st });
+  }
+  function Device(p) {
+    return h('div', { className: 'kh-device', 'aria-label': p.label, role: 'group' },
+      h('div', { className: 'kh-device__screen' },
+        h('div', { className: 'kh-device__status' }, h('span', null, '9:41'),
+          h('span', null, h(K.Icon, { name: 'wifi-high' }), h(K.Icon, { name: 'battery-charging' }))),
+        h('div', { className: 'kh-device__body' }, p.children),
+        p.foot ? h('div', { className: 'kh-device__foot' }, p.foot) : null));
+  }
+  var links = [ { label: 'Meet Kheelu', href: '#', current: true }, { label: 'PlayOS', href: '#' }, { label: 'Safety', href: '#' }, { label: 'Stories', href: '#' }, { label: 'Team', href: '#' } ];
+  var cta = { label: 'Pre-order Kheelu', href: 'https://store.kheelona.com' };
+  function Top() {
+    return h(React.Fragment, null,
+      h(K.AnnouncementBar, { items: ['First 500 at ₹4,999', 'Ships 20 Oct 2026'] }),
+      h(K.NavBar, { links: links, cta: cta }),
+      h('section', { className: 'kh-section' },
+        h(K.SectionHeading, { hero: true, level: 1, eyebrow: 'Screen-free · Ages 3+', title: ['A best friend at 3. A ', h(K.Hand, { key: 'h' }, 'head start'), ' for school.'],
+          lead: 'Kheelu listens, remembers, and grows with your child, in the languages you speak at home.' }),
+        h('div', { className: 'kh-section__actions' }, h(K.Button, { variant: 'cta', size: 'l', block: true, href: cta.href }, 'Pre-order Kheelu')),
+        h('ul', { className: 'kh-trustline' },
+          h('li', null, h(K.Icon, { name: 'shield-check' }), 'Screen-free'),
+          h('li', null, h(K.Icon, { name: 'wifi-slash' }), 'No open internet'),
+          h('li', null, h(K.Icon, { name: 'truck' }), 'Ships 20 Oct 2026')),
+        h('div', { className: 'kh-art kh-tone-blue pg-hero-art', role: 'img', 'aria-label': 'Myra, 3, with Kheelu' },
+          h(Layer, { id: '7781769ba5c008237f0326f4ba707117', x: 6, y: 8, w: 30 }),
+          h(Layer, { id: '4f712b1ebe8b39a40d6c894d3c0fd341', x: 36, b: 0, w: 56 }),
+          h(Layer, { id: 'd53f5a3962997ac35db37066131a9139', x: 2, b: 2, w: 44, r: -6 }),
+          h(Layer, { id: '6603f8571c22e1472914eeb8fb976548', x: 43, y: 1, w: 13, r: 10 }),
+          h(K.Sticker, { round: true, tone: 'sun', big: '₹499', tilt: 8 }, 'reserves yours'))));
+  }
+
+  var page = h('div', { className: 'pg-phones', 'data-theme': 'light' },
+    h('p', { className: 'pg-label' }, '1 · The hero'),
+    h(Device, { label: 'The home page hero on a phone' }, h(Top)),
+
+    h('p', { className: 'pg-label' }, '2 · Scrolled, with the sticky buy bar'),
+    h(Device, { label: 'The home page scrolled, with the sticky buy bar',
+        foot: h(K.StickyBuyBar, { price: '₹4,999', note: 'Reserve for ₹499 today', cta: 'Pre-order', href: cta.href }) },
+      h('section', { className: 'kh-section kh-section--band' },
+        h('div', { className: 'kh-section__head' },
+          h(K.SectionHeading, { eyebrow: 'How it works', title: ['A loop that ', h(K.Mark, { key: 'm' }, 'learns'), ' your child.'] })),
+        h(K.StepLoop, { steps: [
+          { title: 'Talk and play', body: 'Your child asks questions, plays word games, and listens to stories that talk back, in their own language.' },
+          { title: 'Kheelu remembers', body: 'Kheelu keeps track of the words your child knows, what they love, and the pace they learn at.' },
+          { title: 'Knowledge that sticks', body: 'New ideas arrive inside everyday conversation, not forced drills.' } ] }))),
+
+    h('p', { className: 'pg-label' }, '3 · The menu open'),
+    h(Device, { label: 'The menu drawer open on a phone' },
+      h(Top),
+      h('div', { className: 'pg-menu-layer' },
+        h('div', { className: 'pg-scrim' }),
+        h(K.NavDrawer, { inline: true, onClose: function () {}, links: links, cta: cta, note: 'Ships from 20 Oct 2026. Full refund until it ships.' }))));
+
+  ReactDOM.createRoot(document.getElementById('root')).render(page);
+</script>
+</body>
+</html>

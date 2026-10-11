@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="runtime/frame.js"></script>
+<link rel="stylesheet" href="runtime/tokens.css">
+<link rel="stylesheet" href="runtime/bundle.css">
+<script src="runtime/react.production.min.js"></script>
+<script src="runtime/react-dom.production.min.js"></script>
+<script src="runtime/bundle.js"></script>
+<script src="runtime/assets-map.js"></script>
+
+<title>DeckSlide · Kheelona</title>
+
+</head>
+<body>
+<div id="root" class="kh-stack" style="padding:32px;gap:24px"></div>
+<script>
+  var K = window.Kheelona, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+    h(K.DeckSlide, { layout: 'title', tone: 'blue', eyebrow: 'Kheelona \u00B7 2026', title: 'A best friend at 3. A head start', hand: 'for school.', sub: 'Kheelu listens, remembers and grows with your child, in the languages you speak at home.', kid: '../project/assets/Cast/tara-sticker.png', product: '../project/assets/Kheelu/kheelu-front-sticker.png', foot: 'Pre-order at kheelona.com' }),
+    h(K.DeckSlide, { layout: 'statement', board: true, title: 'Safety is not a feature. It is', hand: 'the whole product.', foot: 'Why parents trust Kheelu' }),
+    h(K.DeckSlide, { layout: 'facts', eyebrow: 'Kheelu in numbers', title: 'Small toy.', hand: 'Big head start.', facts: [ { num: '0', label: 'screens, ever' }, { num: 'Up to 10', label: 'home languages at launch' }, { num: '\u20B94,999', label: 'for the first 500 families' } ] })));
+</script>
+</body>
+</html>

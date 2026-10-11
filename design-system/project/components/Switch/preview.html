@@ -1,0 +1,15 @@
+<!-- @dsCard group="Forms" height=260 -->
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Switch — preview</title></head>
+<body>
+<div id="root" class="kh-stack" style="padding:24px 32px;gap:8px"></div>
+<script>
+  var K = window.Kheelona, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+    h(K.Switch, { label: 'Quiet hours', hint: '8:30 pm to 7:00 am. Kheelu sleeps too.', defaultChecked: true }),
+    h(K.Switch, { label: 'Stories only after 8 pm', hint: 'No new topics at bedtime.' }),
+    h(K.Switch, { label: 'Wake word', hint: 'Always on. The microphone stays off until it hears it.', defaultChecked: true, disabled: true })));
+</script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!-- @dsCard group="Forms" height=270 -->
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>RadioGroup — preview</title></head>
+<body>
+<div id="root" class="kh-grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr));padding:32px;align-items:start"></div>
+<script>
+  var K = window.Kheelona, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+    h(K.RadioGroup, { label: 'When should Kheelu stop for the night?', name: 'bed', defaultValue: '830', options: [
+      { value: '800', label: '8:00 pm' }, { value: '830', label: '8:30 pm', hint: 'Bedtime stories can still finish.' }, { value: '900', label: '9:00 pm' } ] }),
+    h(K.RadioGroup, { label: 'Kheelu\u2019s voice', name: 'voice', inline: true, defaultValue: 'soft', options: [
+      { value: 'soft', label: 'Soft' }, { value: 'bright', label: 'Bright' }, { value: 'slow', label: 'Slow' } ] })));
+</script>
+</body>
+</html>

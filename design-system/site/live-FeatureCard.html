@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="runtime/frame.js"></script>
+<link rel="stylesheet" href="runtime/tokens.css">
+<link rel="stylesheet" href="runtime/bundle.css">
+<script src="runtime/react.production.min.js"></script>
+<script src="runtime/react-dom.production.min.js"></script>
+<script src="runtime/bundle.js"></script>
+<script src="runtime/assets-map.js"></script>
+
+<title>FeatureCard · Kheelona</title>
+
+</head>
+<body>
+<div id="root" class="kh-grid"></div>
+<script>
+  var K = window.Kheelona, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+    h(K.FeatureCard, { tone: 'sun', icon: 'book-open', title: 'Stories that ask back' }, 'Kheelu pauses the story to ask what happens next, so listening turns into thinking.'),
+    h(K.FeatureCard, { tone: 'blue', variant: 'tint', icon: 'chart-line-up', title: 'Kheelu remembers' }, 'It keeps track of the words your child knows, what they love, and the pace they learn at.'),
+    h(K.FeatureCard, { tone: 'chilli', variant: 'block', icon: 'translate', title: 'Your home languages', link: { href: '#', label: 'See all languages' } }, 'Up to ten languages at launch, so stories sound like home.')));
+</script>
+</body>
+</html>

@@ -1,0 +1,137 @@
+/* Kheelona — generated from tokens.json (for use outside the design-system page; regenerate when tokens.json changes) */
+:root, [data-theme="light"] {
+  --white: #ffffff;
+  --fur-100: #fbf5eb;
+  --fur-200: #f3e8d7;
+  --fur-300: #e6d6bf;
+  --fur-600: #8c7a64;
+  --ink-600: #625547;
+  --ink-900: #2a2118;
+  --chilli-500: #ef762f;
+  --blue-500: #29a0d7;
+  --sun-500: #ffcf4d;
+  --green-700: #16705e;
+  --green-300: #7fd8c4;
+  --red-700: #c4262e;
+  --red-300: #ff8a83;
+  --night-100: #1b1611;
+  --night-200: #241e18;
+  --night-300: #30281f;
+  --night-500: #4b3f33;
+  --surface: var(--fur-100);
+  --surface-raised: var(--white);
+  --surface-band: var(--fur-200);
+  --text: var(--ink-900);
+  --text-muted: var(--ink-600);
+  --border: var(--fur-300);
+  --border-strong: var(--fur-600);
+  --cta: var(--chilli-500);
+  --on-cta: var(--white);
+  --primary: var(--blue-500);
+  --on-primary: var(--white);
+  --deep-blue: var(--ink-900);
+  --link: var(--deep-blue);
+  --deep-chilli: var(--ink-900);
+  --deep-sun: var(--ink-900);
+  --focus: var(--ink-900);
+  --chalk: var(--white);
+  --success: var(--green-700);
+  --warning: var(--sun-500);
+  --danger: var(--red-700);
+  --scrim: #1b161180;
+  --shadow-press: 0 4px 0 #2a2118;
+  --shadow-lift: 0 1px 2px rgba(42,33,24,0.06), 0 10px 28px rgba(42,33,24,0.12);
+  --shadow-sticker: 0 6px 14px rgba(42,33,24,0.18);
+}
+[data-theme="dark"] {
+  --surface: var(--night-100);
+  --surface-raised: var(--night-300);
+  --surface-band: var(--night-200);
+  --text: var(--fur-100);
+  --text-muted: var(--fur-300);
+  --border: var(--night-500);
+  --border-strong: var(--fur-600);
+  --cta: var(--chilli-500);
+  --on-cta: var(--white);
+  --primary: var(--blue-500);
+  --on-primary: var(--white);
+  --deep-blue: var(--blue-500);
+  --link: var(--deep-blue);
+  --deep-chilli: var(--chilli-500);
+  --deep-sun: var(--sun-500);
+  --focus: var(--fur-100);
+  --chalk: var(--white);
+  --success: var(--green-300);
+  --warning: var(--sun-500);
+  --danger: var(--red-300);
+  --shadow-press: 0 4px 0 rgba(0,0,0,0.6);
+  --shadow-lift: 0 1px 2px rgba(0,0,0,0.4), 0 10px 28px rgba(0,0,0,0.5);
+}
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 128px;
+  --radius-xs: 6px;
+  --radius-s: 10px;
+  --radius-m: 16px;
+  --radius-l: 24px;
+  --radius-xl: 36px;
+  --radius-pill: 999px;
+  --tap-min: 48px;
+  --tap-kid: 64px;
+  --icon-s: 16px;
+  --icon-m: 20px;
+  --icon-l: 24px;
+  --icon-xl: 40px;
+  --measure: 60ch;
+  --content-max: 1200px;
+  --stroke-hair: 1px;
+  --stroke-control: 2px;
+  --stroke-focus: 3px;
+  --stroke-chalk: 3px;
+  --stroke-sticker: 8px;
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-enter: 240ms;
+  --duration-draw: 800ms;
+  --ease-standard: ease;
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --z-sticky: 10;
+  --z-popover: 30;
+  --z-tooltip: 40;
+  --z-overlay: 50;
+  --z-toast: 60;
+  --font-display: "Baloo 2", "Baloo Da 2", "Baloo Tammudu 2", "Baloo Thambi 2", "Baloo Tamma 2", "Nunito", system-ui, sans-serif;
+  --font-body: "Nunito", "Baloo 2", system-ui, sans-serif;
+  --font-hand: "Kalam", "Baloo 2", cursive;
+}
+.kh-display-xl { font-family: var(--font-display); font-size: 72px; line-height: 74px; font-weight: 800; letter-spacing: -0.01em; }
+.kh-display-l { font-family: var(--font-display); font-size: 56px; line-height: 58px; font-weight: 800; letter-spacing: -0.01em; }
+.kh-display-m { font-family: var(--font-display); font-size: 40px; line-height: 44px; font-weight: 800; }
+.kh-headline { font-family: var(--font-display); font-size: 32px; line-height: 38px; font-weight: 800; }
+.kh-title { font-family: var(--font-display); font-size: 24px; line-height: 30px; font-weight: 700; }
+.kh-subtitle { font-family: var(--font-display); font-size: 20px; line-height: 26px; font-weight: 700; }
+.kh-price { font-family: var(--font-display); font-size: 44px; line-height: 46px; font-weight: 800; }
+.kh-hand-l { font-family: var(--font-hand); font-size: 44px; line-height: 48px; font-weight: 700; }
+.kh-hand-m { font-family: var(--font-hand); font-size: 28px; line-height: 32px; font-weight: 700; }
+.kh-note { font-family: var(--font-hand); font-size: 20px; line-height: 24px; font-weight: 400; }
+.kh-lead { font-family: var(--font-body); font-size: 20px; line-height: 30px; font-weight: 500; }
+.kh-body-l { font-family: var(--font-body); font-size: 18px; line-height: 28px; font-weight: 400; }
+.kh-body { font-family: var(--font-body); font-size: 16px; line-height: 24px; font-weight: 400; }
+.kh-body-s { font-family: var(--font-body); font-size: 14px; line-height: 20px; font-weight: 400; }
+.kh-label-l { font-family: var(--font-body); font-size: 18px; line-height: 22px; font-weight: 800; }
+.kh-label { font-family: var(--font-body); font-size: 16px; line-height: 20px; font-weight: 800; }
+.kh-label-s { font-family: var(--font-body); font-size: 14px; line-height: 18px; font-weight: 800; }
+.kh-eyebrow { font-family: var(--font-body); font-size: 13px; line-height: 16px; font-weight: 800; letter-spacing: 0.08em; }
+.kh-caption { font-family: var(--font-body); font-size: 12px; line-height: 16px; font-weight: 700; }
+@font-face { font-family: "Baloo 2"; src: url("fonts/Baloo2-Variable.woff2") format("woff2"); font-weight: 400 800; font-style: normal; font-display: swap; }
+@font-face { font-family: "Nunito"; src: url("fonts/Nunito-Variable.woff2") format("woff2"); font-weight: 200 1000; font-style: normal; font-display: swap; }
+@font-face { font-family: "Kalam"; src: url("fonts/Kalam-Regular.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Kalam"; src: url("fonts/Kalam-Bold.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }

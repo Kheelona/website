@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LanguageChips · Kheelona design system</title>
+<link rel="stylesheet" href="runtime/tokens.css">
+<link rel="stylesheet" href="runtime/bundle.css">
+<link rel="stylesheet" href="runtime/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="site-header__in">
+  <a class="site-logo" href="../index.html"><img src="../project/assets/Logo/kheelona-logo.svg" alt="Kheelona" height="30"><span>Design system <b>v11</b></span></a>
+  <nav aria-label="Sections"><a href="../index.html">Start</a><a href="brand-overview.html">Brand book</a><a href="components.html" aria-current="page">Components</a><a href="pages.html">Page templates</a><a href="assets.html">Assets</a><a href="tokens.html">Tokens</a></nav>
+</div></header>
+<main id="main" class="site-main">
+<p class="crumbs"><a href="components.html">Components</a> / Content</p>
+<h1 class="page-title">LanguageChips</h1>
+
+<div class="tools"><a class="kh-btn kh-btn--secondary kh-btn--s" href="live-LanguageChips.html" target="_blank">Open on its own ↗</a><div class="seg" data-theme-switch role="group" aria-label="Theme"><button type="button" value="light" aria-pressed="true">Day</button><button type="button" value="dark" aria-pressed="false">Bedtime</button></div></div>
+<div class="frame-col"><div class="frame" data-w="980" data-h="170"><iframe src="live-LanguageChips.html" data-src="live-LanguageChips.html" title="LanguageChips, live preview" loading="lazy"></iframe></div></div>
+<article class="prose guide"><p>Each home language in its own script with its English name, plus a dashed &quot;coming&quot; chip.</p>
+<p><strong>Use it for:</strong> the languages section, the hero trust line, the language settings in the app.</p>
+<p><strong>Props:</strong> <code>languages</code> (an array of <code>{ native, english, lang?, soon? }</code>). It defaults to the eight announced languages plus &quot;+2 more at launch&quot;. <code>Kheelona.LANGUAGES</code> holds the default list.</p>
+<p><strong>Rules</strong></p>
+<ul>
+<li>Only list announced languages as available. Unannounced ones are <code>soon: true</code> or not shown at all.</li>
+<li>Native names use the Baloo sister families (Baloo Da 2, Baloo Tammudu 2, Baloo Thambi 2, Baloo Tamma 2 from Google Fonts). Load them on pages that show these scripts.</li>
+<li>Set <code>lang</code> on each chip (<code>hi</code>, <code>bn</code>, <code>te</code>, <code>ta</code>, <code>kn</code>, <code>es</code>, <code>fr</code>) so screen readers pronounce them.</li>
+</ul>
+<nav class="pager"><a href="component-FeelingChip.html">← FeelingChip</a><a href="component-SectionHeading.html">SectionHeading →</a></nav><p class="source">Source: <code>project/components/LanguageChips/</code></p></article>
+</main>
+<footer class="site-footer"><div class="site-footer__in">Kheelona design system v11 · exported 10 Oct 2026 · the web version on claude.ai is the source of truth</div></footer>
+<script src="runtime/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HomePage · Kheelona design system</title>
+<link rel="stylesheet" href="runtime/tokens.css">
+<link rel="stylesheet" href="runtime/bundle.css">
+<link rel="stylesheet" href="runtime/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="site-header__in">
+  <a class="site-logo" href="../index.html"><img src="../project/assets/Logo/kheelona-logo.svg" alt="Kheelona" height="30"><span>Design system <b>v11</b></span></a>
+  <nav aria-label="Sections"><a href="../index.html">Start</a><a href="brand-overview.html">Brand book</a><a href="components.html">Components</a><a href="pages.html" aria-current="page">Page templates</a><a href="assets.html">Assets</a><a href="tokens.html">Tokens</a></nav>
+</div></header>
+<main id="main" class="site-main">
+<p class="crumbs"><a href="components.html">Components</a> / Pages</p>
+<h1 class="page-title">HomePage</h1>
+<p class="lead">Home page 1 of 3: header, hero, languages, how it works, year by year, a day with Kheelu</p>
+<div class="tools"><a class="kh-btn kh-btn--secondary kh-btn--s" href="live-HomePage.html" target="_blank">Open on its own ↗</a></div>
+<div class="frame-col"><div class="frame" data-w="1280" data-h="3300"><iframe src="live-HomePage.html" data-src="live-HomePage.html" title="HomePage, live preview" loading="lazy"></iframe></div></div>
+<article class="prose guide"><p>The top of the Kheelona home page, built only from the system: the announcement bar, the nav, the hero with Myra and Kheelu on a Kheelu Blue block, the languages, how it works, year by year, and a day with Kheelu. A showcase page, not a bundle export: part 1 of 3, with <strong>HomePageTrust</strong> and <strong>HomePageBuy</strong>.</p>
+<p><strong>Use it for:</strong> starting any web page, landing page or campaign page. Copy the structure; swap the words, photos and stickers.</p>
+<p><strong>Props:</strong> none. Open the preview to copy its markup.</p>
+<p><strong>Sections:</strong> <a class="cref" href="component-AnnouncementBar.html"><code>AnnouncementBar</code></a> · <a class="cref" href="component-NavBar.html"><code>NavBar</code></a> · hero (<a class="cref" href="component-SectionHeading.html"><code>SectionHeading</code></a> hero, cta, <code>kh-trustline</code>, a <code>kh-art</code> board) with <a class="cref" href="component-LanguageChips.html"><code>LanguageChips</code></a> under it · how it works (<a class="cref" href="component-StepLoop.html"><code>StepLoop</code></a>, band) · year by year (<a class="cref" href="component-AgeTimeline.html"><code>AgeTimeline</code></a>) · a day with Kheelu (three <code>kh-photo</code> frames and <a class="cref" href="component-ModeSwitch.html"><code>ModeSwitch</code></a>, band).</p>
+<p><strong>Assets:</strong> <code>myra-sticker.png</code>, <code>kheelu-front-sticker.png</code>, <code>sun-sun.svg</code>, <code>chalk-question-mark.svg</code>; <code>myra-01-breakfast-why</code>, <code>advik-01-counting-carriages</code>, <code>ira-01-story-on-the-bed</code> (web versions).</p>
+<p><strong>Rules</strong></p>
+<ul>
+<li>One hero per page, one <code>cta</code> per view, and one <code>Hand</code> or <code>Mark</code> per headline.</li>
+<li>Bands alternate <code>surface</code> and <code>surface-band</code> (<code>kh-section--band</code>); each band has one colour moment.</li>
+<li>The hero board follows the scrapbook rule: one brand block, the child and Kheelu, one shape behind them, one doodle, one sticker.</li>
+<li>The children are illustrative. Captions describe the moment, never a customer.</li>
+</ul>
+<nav class="pager"><a href="component-CampaignKit.html">← CampaignKit</a><a href="component-HomePageBuy.html">HomePageBuy →</a></nav><p class="source">Source: <code>project/components/HomePage/</code></p></article>
+</main>
+<footer class="site-footer"><div class="site-footer__in">Kheelona design system v11 · exported 10 Oct 2026 · the web version on claude.ai is the source of truth</div></footer>
+<script src="runtime/site.js"></script>
+</body>
+</html>

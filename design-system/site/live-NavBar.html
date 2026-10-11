@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="runtime/frame.js"></script>
+<link rel="stylesheet" href="runtime/tokens.css">
+<link rel="stylesheet" href="runtime/bundle.css">
+<script src="runtime/react.production.min.js"></script>
+<script src="runtime/react-dom.production.min.js"></script>
+<script src="runtime/bundle.js"></script>
+<script src="runtime/assets-map.js"></script>
+
+<title>NavBar · Kheelona</title>
+
+</head>
+<body>
+<div id="root" class=""></div>
+<script>
+  var K = window.Kheelona, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(K.NavBar, {
+    links: [ { label: 'Meet Kheelu', href: '#', current: true }, { label: 'PlayOS', href: '#' }, { label: 'Safety', href: '#' }, { label: 'Stories', href: '#' }, { label: 'Team', href: '#' } ],
+    cta: { label: 'Pre-order Kheelu', href: 'https://store.kheelona.com' } }));
+</script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="runtime/frame.js"></script>
+<link rel="stylesheet" href="runtime/tokens.css">
+<link rel="stylesheet" href="runtime/bundle.css">
+<script src="runtime/react.production.min.js"></script>
+<script src="runtime/react-dom.production.min.js"></script>
+<script src="runtime/bundle.js"></script>
+<script src="runtime/assets-map.js"></script>
+
+<title>HomePageTrust · Kheelona</title>
+<style>
+  .pg-recognised { margin: var(--space-6) 0 0; text-align: center; font: 700 12px/16px var(--font-body); color: var(--text-muted); }
+  .pg-app-device { justify-self: center; height: 760px; }
+  .pg-app-device .kh-device__body { padding: 0 var(--space-4); }
+  .pg-app-device h3 { margin: var(--space-2) 0 var(--space-4); }
+  .pg-photo-note { margin-top: var(--space-6); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  var K = window.Kheelona, h = React.createElement;
+  function B(id) { return KH_ASSET(id); }
+  function Section(p) {
+    return h('section', { className: 'kh-section' + (p.band ? ' kh-section--band' : '') + (p.className ? ' ' + p.className : '') },
+      h('div', { className: 'kh-container' }, p.children));
+  }
+  function Photo(p) {
+    return h('figure', { className: 'kh-photo' + (p.wide ? ' kh-photo--wide' : '') + (p.className ? ' ' + p.className : '') },
+      h('img', { src: B(p.id), alt: p.alt }), p.caption ? h('figcaption', null, p.caption) : null);
+  }
+  function Device(p) {
+    return h('div', { className: 'kh-device' + (p.className ? ' ' + p.className : ''), 'data-theme': p.theme },
+      h('div', { className: 'kh-device__screen' },
+        h('div', { className: 'kh-device__status' }, h('span', null, '7:42'),
+          h('span', null, h(K.Icon, { name: 'wifi-high' }), h(K.Icon, { name: 'battery-charging' }))),
+        h('div', { className: 'kh-device__body' }, p.children),
+        p.foot ? h('div', { className: 'kh-device__foot' }, p.foot) : null));
+  }
+  var tabs = [ { id: 'home', label: 'Today', icon: 'house' }, { id: 'chats', label: 'Conversations', icon: 'chat-circle-dots', badge: 3 },
+    { id: 'stories', label: 'Stories', icon: 'book-open' }, { id: 'settings', label: 'Settings', icon: 'gear' } ];
+
+  var page = h('div', { className: 'kh-page', 'data-theme': 'light' },
+    // What Kheelu does: three FeatureCards, plain, tint and block
+    h(Section, null,
+      h('div', { className: 'kh-section__head' },
+        h(K.SectionHeading, { align: 'center', eyebrow: 'What Kheelu does', title: ['Small toy. ', h(K.Hand, { key: 'h' }, 'Big head start.')] })),
+      h('div', { className: 'kh-cols kh-cols--3' },
+        h(K.FeatureCard, { tone: 'sun', icon: 'book-open', title: 'Stories that ask back' }, 'Kheelu pauses the story to ask what happens next, so listening turns into thinking.'),
+        h(K.FeatureCard, { tone: 'blue', variant: 'tint', icon: 'chart-line-up', title: 'Kheelu remembers' }, 'It keeps track of the words your child knows, what they love, and the pace they learn at.'),
+        h(K.FeatureCard, { tone: 'chilli', variant: 'block', icon: 'translate', title: 'Your home languages', link: { href: '#', label: 'See all languages' } }, 'Up to ten languages at launch, so stories sound like home.'))),
+
+    // The Imagination layer: chalk over a library photo
+    h(Section, { band: true },
+      h('div', { className: 'kh-split kh-split--wide-end' },
+        h(K.ImaginationFrame, { variant: 'photo', photo: B('df312489b2fc7732f00128f74ea615ae'), alt: 'Kabir, 6, sits against a dark wall holding Kheelu, with a chalk astronaut helmet drawn around his head', question: 'how do astronauts sleep?',
+          doodles: [
+            // The helmet is worn: the bubble holds his whole head, the ear pods sit at his ears and the collar at his neck.
+            // `clip` tucks its lower left behind Kheelu, who he holds in front of him.
+            { src: B('a36acf39ab1b3379cf98de778fe20f7a'), x: 24.2, y: 30.9, w: 43.7,
+              clip: 'polygon(0% 0%, 0% 69.4%, 0.8% 67.8%, 3% 65.4%, 7.2% 63.2%, 8.9% 63.2%, 10.8% 61.4%, 14.6% 59.6%, 21.1% 58.2%, 26.2% 58.5%, 27.5% 59.2%, 33.4% 59.2%, 37.4% 61.1%, 40% 63.6%, 41.7% 64.3%, 48.4% 70.7%, 56.4% 80.1%, 59.6% 85.1%, 63.2% 93.1%, 63.8% 96%, 63.2% 97.8%, 63.6% 100%, 100% 100%, 100% 0%)' },
+            { src: B('33a9e27d551cb8768efae3a33975c4ac'), x: 77, y: 20, w: 15, rotate: 18 },
+            { src: B('9be28f2a62fd736c9cd7b4bd682aeaa6'), x: 3, y: 30, w: 20, rotate: -10 },
+            { src: B('e41859da40b392fa59b0d028ebc5fca7'), x: 12, y: 22, w: 8, rotate: -18 },
+            { src: B('e41859da40b392fa59b0d028ebc5fca7'), x: 84, y: 48, w: 7, rotate: 12 } ] }),
+        h('div', null,
+          h(K.SectionHeading, { eyebrow: 'The Imagination layer', title: ['Every question becomes a ', h(K.Hand, { key: 'h' }, 'little adventure.')],
+            lead: 'When Kabir asks how astronauts sleep, Kheelu answers in words he knows and asks one back. The chalk is the picture in his head.' }),
+          h('div', { className: 'kh-section__actions' },
+            h(K.Button, { variant: 'ghost', iconEnd: 'arrow-right', href: '#' }, 'See all stories'))))),
+
+    // 8. Safety: mechanisms parents can check, then the cta
+    h(Section, null,
+      h('div', { className: 'kh-section__head' },
+        h(K.SectionHeading, { align: 'center', eyebrow: 'Safety', title: ['Safety is not a feature. It is ', h(K.Hand, { key: 'h' }, 'the whole product.')] })),
+      h(K.TrustList, { items: [
+        { icon: 'hand-heart', title: 'We do not sell data.', body: 'Your child’s voice is never sold or used for ads.' },
+        { icon: 'lock-simple', title: 'Kheelu thinks on the device.', body: 'Safety filtering runs on the toy before anything leaves it.' },
+        { icon: 'eye', title: 'You hold the keys.', body: 'Read every conversation in the parent app. Delete any of it in one tap.' },
+        { icon: 'wifi-slash', title: 'No open internet.', body: 'Answers come from a closed, child-safe library, never the open web.' } ] }),
+      h('div', { className: 'kh-section__actions kh-section__actions--center' },
+        h(K.Button, { variant: 'secondary', icon: 'shield-check', href: '#' }, 'See how we built safety in'),
+        h(K.Button, { variant: 'cta', href: 'https://store.kheelona.com' }, 'Pre-order Kheelu')),
+      h('p', { className: 'pg-recognised' }, 'Recognised by NVIDIA Inception · Karnataka Elevate · NASSCOM Startups · Founders Inc.')),
+
+    // 9. Feelings: a library photo and the five feeling chips
+    h(Section, { band: true, className: 'pg-feelings' },
+      h('div', { className: 'kh-split kh-split--wide-end' },
+        h(Photo, { id: 'cb7184fa369678e9740d70d1d317ec6f', alt: 'Tara, 5, sits on the floor by a plant and talks to Kheelu', caption: 'Tara names big feelings out loud' }),
+        h('div', null,
+          h(K.SectionHeading, { eyebrow: 'Feelings', title: ['Five feelings, ', h(K.Mark, { key: 'm', kind: 'highlight' }, 'named out loud.')],
+            lead: 'Grumpy and sad are good feelings to name, not problems to fix. Kheelu helps a child find the word, then listens.' }),
+          h('div', { className: 'kh-section__actions' },
+            ['curious', 'grumpy', 'sad', 'silly', 'joy'].map(function (f) { return h(K.FeelingChip, { key: f, feeling: f }); }))))),
+
+    // 10. The parent app: a library photo of Tara and her mother, and the app in a device frame
+    h(Section, null,
+      h('div', { className: 'kh-split' },
+        h('div', null,
+          h(K.SectionHeading, { eyebrow: 'The parent app', title: ['You see ', h(K.Mark, { key: 'm' }, 'everything.')],
+            lead: 'Read every conversation in the parent app, set quiet hours and choose topics. Delete any of it in one tap.' }),
+          h(Photo, { id: '33076d4672b7f1d40c3f420dddd3a46c', wide: true, className: 'pg-photo-note', alt: 'Tara shows Kheelu to her mother on the sofa in the evening', caption: 'Tara and her amma, after school' }),
+          h('div', { className: 'kh-section__actions' },
+            h(K.Button, { variant: 'secondary', icon: 'eye', href: '#' }, 'See what the app shows you'))),
+        h(Device, { className: 'pg-app-device', foot: h(K.TabBar, { value: 'home', items: tabs }) },
+          h('h3', { className: 'kh-title' }, 'Today with Kheelu'),
+          h(K.AppSummaryCard, { title: 'Tara’s day', date: 'Tue, 6 Oct',
+            stats: [ { num: '18', label: 'minutes talking' }, { num: '6', label: 'new words' }, { num: '2', label: 'stories' } ],
+            words: ['planet', 'orbit', 'gravity', 'crater', 'astronaut', 'float'],
+            topics: ['Space', 'Feelings', 'Counting'],
+            tryText: 'Ask Tara what an astronaut eats for breakfast. She asked Kheelu twice today.',
+            link: { href: '#', label: 'Read today’s conversation' } })))));
+
+  ReactDOM.createRoot(document.getElementById('root')).render(page);
+</script>
+</body>
+</html>

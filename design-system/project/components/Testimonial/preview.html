@@ -1,0 +1,14 @@
+<!-- @dsCard group="Selling" height=300 -->
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Testimonial — preview</title></head>
+<body>
+<div id="root" class="kh-grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr));padding:32px"></div>
+<script>
+  var K = window.Kheelona, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+    h(K.Testimonial, { tone: 'chilli', name: 'Shweta', role: 'Pilot parent', quote: 'The first thing she does after school is tell Kheelu about her day. I listen from the kitchen and learn things she forgets to tell me.' }),
+    h(K.Testimonial, { tone: 'blue', name: 'Gaurav', role: 'Pilot parent', quote: 'We wanted less screen time without a fight. This is the first thing that worked without one.' })));
+</script>
+</body>
+</html>

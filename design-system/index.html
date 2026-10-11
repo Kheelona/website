@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Start · Kheelona design system</title>
+<link rel="stylesheet" href="site/runtime/tokens.css">
+<link rel="stylesheet" href="site/runtime/bundle.css">
+<link rel="stylesheet" href="site/runtime/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="site-header__in">
+  <a class="site-logo" href="index.html"><img src="project/assets/Logo/kheelona-logo.svg" alt="Kheelona" height="30"><span>Design system <b>v11</b></span></a>
+  <nav aria-label="Sections"><a href="index.html" aria-current="page">Start</a><a href="site/brand-overview.html">Brand book</a><a href="site/components.html">Components</a><a href="site/pages.html">Page templates</a><a href="site/assets.html">Assets</a><a href="site/tokens.html">Tokens</a></nav>
+</div></header>
+<main id="main" class="site-main">
+<div class="hero">
+<div class="frame-col"><div class="frame" data-fill data-w="960" data-h="300"><iframe src="site/live-Cover.html" data-src="site/live-Cover.html" title="Kheelona cover"></iframe></div></div>
+<h1>The Kheelona design system</h1>
+<p class="lead">Everything in one folder: the brand book, 47 components with live previews, 6 page templates and the whole home page, 224 assets with their real file names, and every token. It works offline: keep the folder together and open this page in any browser.</p>
+<ul class="facts"><li>v11 · exported 10 Oct 2026</li><li>12 brand book sections</li><li>47 components</li><li>6 page templates</li><li>224 assets · 48.7 MB</li><li>Day and Bedtime themes</li></ul>
+</div>
+<div class="start-grid">
+  <a class="start-card start-card--sun" href="site/home-page.html" target="_blank"><b>See the home page ↗</b><span>The sample website: header, hero, how it works, safety, the parent app, compare, questions, the offer and footer. Narrow the window for the phone layout.</span><i>site/home-page.html</i></a>
+  <a class="start-card" href="site/brand-how-to-use.html"><b>Start here: How to use</b><span>Where everything is, which part to use for each job, and how to change the system safely.</span><i>Brand book</i></a>
+  <a class="start-card" href="site/brand-overview.html"><b>Brand book</b><span>Principles, colour, logo, type, layout, writing, photography, the cast, Kheelu, surfaces, selling, accessibility and pages.</span><i>12 sections</i></a>
+  <a class="start-card" href="site/components.html"><b>Components</b><span>Buttons, forms, navigation, content, feedback, app and selling components, each with guidelines and a live preview.</span><i>47 components</i></a>
+  <a class="start-card" href="site/pages.html"><b>Page templates</b><span>Home page in three parts, the phone version, the parent app screens and a launch campaign kit.</span><i>6 templates</i></a>
+  <a class="start-card" href="site/assets.html"><b>Assets</b><span>Logo (14), Kheelu (5), Cast (28), Photo library (50), Doodles (32), Crayon (10), Shapes (9), Icons (76).</span><i>48.7 MB</i></a>
+  <a class="start-card" href="site/tokens.html"><b>Tokens</b><span>Colour in Day and Bedtime, type styles, spacing, radius, shadow, size, stroke, motion and layers.</span><i>tokens.json · tokens.css</i></a>
+</div>
+<h2>What's in the folder</h2>
+<div class="table-wrap folder"><table>
+<thead><tr><th>Folder</th><th>What it holds</th></tr></thead><tbody>
+<tr><td><code>index.html</code></td><td>This page. Open it to browse everything.</td></tr>
+<tr><td><code>project/</code></td><td>The design system's own files, exactly as published: the brand book (<code>README.md</code> and <code>00-…</code> to <code>10-….md</code>), <code>tokens.json</code> and <code>tokens.css</code>, <code>components/</code> (<code>bundle.js</code>, <code>bundle.css</code>, <code>index.d.ts</code>, and a folder per component with its guidelines and preview), <code>fonts/</code>, <code>assets/</code> and <code>tools/</code>.</td></tr>
+<tr><td><code>project/assets/</code></td><td>Every asset with its real name, in its group: Logo, Kheelu, Cast, Photo library, Doodles, Crayon, Shapes and Icons. Each group has a README.</td></tr>
+<tr><td><code>site/</code></td><td>The pages of this offline site. <code>live-*.html</code> are the working previews and templates; <code>home-page.html</code> is the whole home page.</td></tr>
+<tr><td><code>renders/</code></td><td>Images of the home page (desktop and phone), the parent app screens and the campaign kit.</td></tr>
+</tbody></table></div>
+<h2>Using it in code</h2>
+<div class="prose"><p>Load the tokens, the stylesheet, React 18 and the bundle, then use the components from <code>window.Kheelona</code>. Every prop is in <code>project/components/index.d.ts</code>.</p>
+<pre><code>&lt;link rel="stylesheet" href="project/tokens.css"&gt;
+&lt;link rel="stylesheet" href="project/components/bundle.css"&gt;
+&lt;script src="site/runtime/react.production.min.js"&gt;&lt;/script&gt;
+&lt;script src="site/runtime/react-dom.production.min.js"&gt;&lt;/script&gt;
+&lt;script src="project/components/bundle.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  var K = window.Kheelona, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root'))
+    .render(h(K.Button, { variant: 'cta', href: 'https://store.kheelona.com' }, 'Pre-order Kheelu'));
+&lt;/script&gt;</code></pre>
+<p>The web version on claude.ai stays the source of truth. If this copy and the web disagree, the web wins.</p></div>
+</main>
+<footer class="site-footer"><div class="site-footer__in">Kheelona design system v11 · exported 10 Oct 2026 · the web version on claude.ai is the source of truth</div></footer>
+<script src="site/runtime/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+<!-- @dsCard group="Forms" height=260 -->
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>TextArea — preview</title></head>
+<body>
+<div id="root" class="kh-grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr));padding:32px;align-items:start"></div>
+<script>
+  var K = window.Kheelona, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+    h(K.TextArea, { label: 'Anything Kheelu should know?', maxLength: 200, hint: 'Kheelu uses this to pick stories. Only you can see it.',
+      defaultValue: 'Tara is learning to say sorry in Kannada. She loves mangoes and the moon.' }),
+    h(K.TextArea, { label: 'Tell us what happened', rows: 3, error: 'Add a few words so we can help.' })));
+</script>
+</body>
+</html>

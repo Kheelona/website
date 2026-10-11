@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="runtime/frame.js"></script>
+<link rel="stylesheet" href="runtime/tokens.css">
+<link rel="stylesheet" href="runtime/bundle.css">
+<script src="runtime/react.production.min.js"></script>
+<script src="runtime/react-dom.production.min.js"></script>
+<script src="runtime/bundle.js"></script>
+<script src="runtime/assets-map.js"></script>
+
+<title>Logo · Kheelona</title>
+
+</head>
+<body>
+<div id="root" class="kh-stack" style="padding:32px;gap:28px"></div>
+<script>
+  var K = window.Kheelona, h = React.createElement;
+  var tiles = [
+    { v: 'day', bg: 'var(--fur-100)', line: true, label: 'Day \u00B7 on cream and white' },
+    { v: 'bedtime', bg: 'var(--night-100)', label: 'Bedtime \u00B7 on night grounds' },
+    { v: 'sticker', bg: 'var(--sun-500)', label: 'Sticker \u00B7 on brand colour blocks' },
+    { v: 'ink', bg: 'var(--white)', line: true, label: 'Ink \u00B7 one-colour print' },
+    { v: 'chalk', bg: 'var(--blue-500)', label: 'Chalk \u00B7 on photos and dark fills' },
+    { v: 'day', mark: true, bg: 'var(--fur-100)', line: true, label: 'Mark \u00B7 app icon, favicon, avatar' } ];
+  function Tile(t, i) {
+    return h('figure', { key: i, style: { margin: 0, display: 'grid', gap: 8 } },
+      h('div', { style: { height: 128, borderRadius: 24, background: t.bg, display: 'grid', placeItems: 'center', boxShadow: 'inset 0 0 0 1px var(--border)' } },
+        h(K.Logo, { variant: t.v, mark: t.mark, height: t.mark ? 64 : 40 })),
+      h('figcaption', { style: { font: '700 13px/18px var(--font-body)', color: 'var(--text-muted)' } }, t.label));
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+    h('div', { style: { display: 'flex', alignItems: 'center', gap: 24, flexWrap: 'wrap' } },
+      h(K.Logo, { height: 80 }),
+      h('p', { style: { margin: 0, maxWidth: 360, color: 'var(--text-muted)' } }, 'The kheelona.com wordmark in its own colours: Chilli (orange) and Kheelu Blue (sky). Variant \u201Cauto\u201D works in both themes.')),
+    h('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 16 } }, tiles.map(Tile))));
+</script>
+</body>
+</html>

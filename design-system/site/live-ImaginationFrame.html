@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="runtime/frame.js"></script>
+<link rel="stylesheet" href="runtime/tokens.css">
+<link rel="stylesheet" href="runtime/bundle.css">
+<script src="runtime/react.production.min.js"></script>
+<script src="runtime/react-dom.production.min.js"></script>
+<script src="runtime/bundle.js"></script>
+<script src="runtime/assets-map.js"></script>
+
+<title>ImaginationFrame · Kheelona</title>
+
+</head>
+<body>
+<div id="root" class="kh-grid" style="grid-template-columns:repeat(auto-fit,minmax(260px,340px));justify-content:center;padding:32px"></div>
+<script>
+  var K = window.Kheelona, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+    h(K.ImaginationFrame, { variant: 'board', cutout: '../project/assets/Cast/kabir-cutout.png', alt: 'Kabir, 6, grinning', question: 'how do astronauts sleep?',
+      cutoutStyle: { height: '74%' },
+      doodles: [
+        { src: '../project/assets/Doodles/chalk-astronaut-helmet.svg', x: 15, y: 19, w: 72 },
+        { src: '../project/assets/Doodles/chalk-rocket.svg', x: 77, y: 42, w: 17, rotate: 18 },
+        { src: '../project/assets/Doodles/chalk-planet.svg', x: 3, y: 64, w: 27, rotate: -10 },
+        { src: '../project/assets/Doodles/chalk-star.svg', x: 82, y: 22, w: 10, rotate: 12 },
+        { src: '../project/assets/Doodles/chalk-star.svg', x: 8, y: 30, w: 7, rotate: -18 } ] }),
+    h(K.ImaginationFrame, { variant: 'photo', ink: true, photo: '../project/assets/Cast/myra-portrait-web.webp', alt: 'Myra, 3, mid-question', question: 'but why is the sky blue?', questionAlign: 'left',
+      doodles: [
+        { src: '../project/assets/Doodles/ink-sun.svg', x: 72, y: 3, w: 22 },
+        { src: '../project/assets/Doodles/ink-question-mark.svg', x: 79, y: 29, w: 12, rotate: 14 },
+        { src: '../project/assets/Doodles/ink-question-mark.svg', x: 6, y: 33, w: 10, rotate: -16 } ] })));
+</script>
+</body>
+</html>

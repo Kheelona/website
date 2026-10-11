@@ -1,0 +1,20 @@
+<!-- @dsCard group="Selling" height=470 -->
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>ComparisonTable — preview</title></head>
+<body>
+<div id="root" class="kh-stack" style="padding:32px"></div>
+<script>
+  var K = window.Kheelona, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(K.ComparisonTable, {
+    columns: ['Kheelu', 'Smart toys', 'Phone or TV', 'Ordinary toys'],
+    rows: [
+      { label: 'No screen, ever', values: ['Yes', 'Varies', 'No', 'Yes'] },
+      { label: 'Talks with your child, not at them', values: ['Yes', 'Limited', 'No', 'No'] },
+      { label: 'Speaks the languages of your home', values: ['Yes, up to 10', 'Rarely', 'Varies', 'No'] },
+      { label: 'Cannot wander the internet', values: ['Yes', 'Rarely', 'No', 'Yes'] },
+      { label: 'You can read every conversation', values: ['Yes', 'Partial', 'Partial', 'No'] },
+      { label: 'Grows with them', values: ['Yes, for years', 'Varies', 'No', 'Varies'] } ] }));
+</script>
+</body>
+</html>

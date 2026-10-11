@@ -1,0 +1,16 @@
+<!-- @dsCard group="App" height=420 -->
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>EmptyState — preview</title></head>
+<body>
+<div id="root" class="kh-grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr));padding:16px 32px"></div>
+<script>
+  var K = window.Kheelona, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+    h(K.EmptyState, { icon: 'chat-circle-dots', tone: 'blue', title: 'No conversations yet', action: { label: 'Connect Kheelu', variant: 'primary' } },
+      'When Tara talks to Kheelu, you\u2019ll see every conversation here.'),
+    h(K.EmptyState, { icon: 'magnifying-glass', tone: 'sun', title: 'No stories about \u201Cdinos\u201D yet', action: { label: 'Clear search', variant: 'secondary' } },
+      'Try \u201Cdinosaurs\u201D, or ask Kheelu for a new one tonight.')));
+</script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="runtime/frame.js"></script>
+<link rel="stylesheet" href="runtime/tokens.css">
+<link rel="stylesheet" href="runtime/bundle.css">
+<script src="runtime/react.production.min.js"></script>
+<script src="runtime/react-dom.production.min.js"></script>
+<script src="runtime/bundle.js"></script>
+<script src="runtime/assets-map.js"></script>
+
+<title>Switch · Kheelona</title>
+
+</head>
+<body>
+<div id="root" class="kh-stack" style="padding:24px 32px;gap:8px"></div>
+<script>
+  var K = window.Kheelona, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+    h(K.Switch, { label: 'Quiet hours', hint: '8:30 pm to 7:00 am. Kheelu sleeps too.', defaultChecked: true }),
+    h(K.Switch, { label: 'Stories only after 8 pm', hint: 'No new topics at bedtime.' }),
+    h(K.Switch, { label: 'Wake word', hint: 'Always on. The microphone stays off until it hears it.', defaultChecked: true, disabled: true })));
+</script>
+</body>
+</html>

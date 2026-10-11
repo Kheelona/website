@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 60" width="420" height="60" role="img" aria-label="Crayon mark: underline chilli">
+<title>Crayon mark: underline chilli</title>
+<defs><filter id="crayon" x="-10%" y="-20%" width="120%" height="140%" color-interpolation-filters="sRGB">
+<feTurbulence type="fractalNoise" baseFrequency="0.035 0.6" numOctaves="2" seed="4" result="fibre"></feTurbulence>
+<feDisplacementMap in="SourceGraphic" in2="fibre" scale="5" xChannelSelector="R" yChannelSelector="G" result="rough"></feDisplacementMap>
+<feTurbulence type="fractalNoise" baseFrequency="1.4" numOctaves="1" seed="11" result="n"></feTurbulence>
+<feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.6 2.05" result="grain"></feColorMatrix>
+<feComposite in="rough" in2="grain" operator="in"></feComposite>
+</filter></defs>
+<g filter="url(#crayon)"><path d="M14 34 C110.6211686661467 20.432683567143975, 252.06846960689873 37.89639460835606, 327.8030659904704 28.598425994254647 M330 28 C358.20137429144233 23.338422212935985, 384.17864063289016 25.161990241147578, 406.06413995530454 28.49978250656277" fill="none" stroke="#ef762f" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" opacity="0.92"></path>
+<path d="M14 34 C109.64901980757713 20.63513155579567, 248.03532981276513 38.605391985177995, 326.8048911988735 30.50306082367897 M330 28 C358.6790252625942 22.428450685739517, 382.9430513322353 26.830858331918716, 408.4765165269375 28.329271799325944" fill="none" stroke="#ef762f" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" opacity="0.92"></path></g>
+</svg>

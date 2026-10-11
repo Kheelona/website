@@ -1,0 +1,15 @@
+<!-- @dsCard group="Content" height=330 -->
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>FeatureCard — preview</title></head>
+<body>
+<div id="root" class="kh-grid"></div>
+<script>
+  var K = window.Kheelona, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+    h(K.FeatureCard, { tone: 'sun', icon: 'book-open', title: 'Stories that ask back' }, 'Kheelu pauses the story to ask what happens next, so listening turns into thinking.'),
+    h(K.FeatureCard, { tone: 'blue', variant: 'tint', icon: 'chart-line-up', title: 'Kheelu remembers' }, 'It keeps track of the words your child knows, what they love, and the pace they learn at.'),
+    h(K.FeatureCard, { tone: 'chilli', variant: 'block', icon: 'translate', title: 'Your home languages', link: { href: '#', label: 'See all languages' } }, 'Up to ten languages at launch, so stories sound like home.')));
+</script>
+</body>
+</html>

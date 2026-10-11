@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Selling · Kheelona design system</title>
+<link rel="stylesheet" href="runtime/tokens.css">
+<link rel="stylesheet" href="runtime/bundle.css">
+<link rel="stylesheet" href="runtime/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="site-header__in">
+  <a class="site-logo" href="../index.html"><img src="../project/assets/Logo/kheelona-logo.svg" alt="Kheelona" height="30"><span>Design system <b>v11</b></span></a>
+  <nav aria-label="Sections"><a href="../index.html">Start</a><a href="brand-overview.html" aria-current="page">Brand book</a><a href="components.html">Components</a><a href="pages.html">Page templates</a><a href="assets.html">Assets</a><a href="tokens.html">Tokens</a></nav>
+</div></header>
+<main id="main" class="site-main">
+<div class="doc-layout">
+  <aside class="doc-nav"><p class="side-label">Brand book</p><ul><li><a href="brand-overview.html">Overview</a></li><li><a href="brand-how-to-use.html">How to use this system</a></li><li><a href="brand-writing.html">Writing</a></li><li><a href="brand-imagery.html">Photography, chalk &amp; crayon</a></li><li><a href="brand-cast.html">The cast</a></li><li><a href="brand-kheelu.html">Kheelu, the product</a></li><li><a href="brand-asset-playbook.html">Making new assets (for agents)</a></li><li><a href="brand-surfaces.html">Surfaces</a></li><li><a href="brand-selling.html" aria-current="page">Selling</a></li><li><a href="brand-accessibility.html">Accessibility &amp; inclusion</a></li><li><a href="brand-cast-photo-recipe.html">Making cast photos (step by step)</a></li><li><a href="brand-pages.html">Pages: putting it together</a></li></ul></aside>
+  <article class="prose"><h1>Selling</h1><nav class="toc" aria-label="On this page"><p>On this page</p><ul><li><a href="#the-parent-s-path-and-what-answers-each-step">The parent's path, and what answers each step</a></li><li><a href="#product-page-skeleton">Product page skeleton</a></li><li><a href="#price-and-offer-rules">Price and offer rules</a></li><li><a href="#cta-hierarchy">CTA hierarchy</a></li><li><a href="#objections-and-the-proof-for-each">Objections and the proof for each</a></li><li><a href="#trust-signals">Trust signals</a></li><li><a href="#what-we-never-do-to-sell">What we never do to sell</a></li></ul></nav>
+<p>The brand is calm, and the page still sells. These patterns turn a parent's curiosity into a pre-order without pressure tricks.</p>
+<h2 id="the-parent-s-path-and-what-answers-each-step">The parent's path, and what answers each step</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Parent is thinking</th>
+<th>We answer with</th>
+<th>Component</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;What is this?&quot;</td>
+<td>One line plus a real child with Kheelu</td>
+<td><a class="cref" href="component-SectionHeading.html"><code>SectionHeading</code></a> hero, photo or <a class="cref" href="component-SocialPost.html"><code>SocialPost</code></a></td>
+</tr>
+<tr>
+<td>&quot;Will my child actually like it?&quot;</td>
+<td>Children meeting Kheelu, the five feelings, stories</td>
+<td><a class="cref" href="component-FeelingChip.html"><code>FeelingChip</code></a>, video, <a class="cref" href="component-ImaginationFrame.html"><code>ImaginationFrame</code></a></td>
+</tr>
+<tr>
+<td>&quot;What will my child get from it?&quot;</td>
+<td>The loop, and year-by-year growth</td>
+<td><a class="cref" href="component-StepLoop.html"><code>StepLoop</code></a>, <a class="cref" href="component-AgeTimeline.html"><code>AgeTimeline</code></a></td>
+</tr>
+<tr>
+<td>&quot;Is an AI toy safe?&quot;</td>
+<td>Mechanisms they can check</td>
+<td><a class="cref" href="component-TrustList.html"><code>TrustList</code></a>, <a class="cref" href="component-FAQ.html"><code>FAQ</code></a>, link to the Safety page</td>
+</tr>
+<tr>
+<td>&quot;Can I see what it says?&quot;</td>
+<td>The parent app</td>
+<td><a class="cref" href="component-AppSummaryCard.html"><code>AppSummaryCard</code></a>, <a class="cref" href="component-ParentControl.html"><code>ParentControl</code></a></td>
+</tr>
+<tr>
+<td>&quot;Why not a phone, or a regular toy?&quot;</td>
+<td>A fair comparison</td>
+<td><a class="cref" href="component-ComparisonTable.html"><code>ComparisonTable</code></a></td>
+</tr>
+<tr>
+<td>&quot;Do other parents like it?&quot;</td>
+<td>Real pilot parents</td>
+<td><a class="cref" href="component-Testimonial.html"><code>Testimonial</code></a></td>
+</tr>
+<tr>
+<td>&quot;What does it cost, and is it risky?&quot;</td>
+<td>Price, the ₹499 refundable reserve, the ship date</td>
+<td><a class="cref" href="component-OfferCard.html"><code>OfferCard</code></a>, <a class="cref" href="component-StickyBuyBar.html"><code>StickyBuyBar</code></a></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="product-page-skeleton">Product page skeleton</h2>
+<p>The <a class="cref" href="component-HomePage.html"><code>HomePage</code></a>, <a class="cref" href="component-HomePageTrust.html"><code>HomePageTrust</code></a> and <a class="cref" href="component-HomePageBuy.html"><code>HomePageBuy</code></a> templates in the Pages group show this skeleton built (see <a class="xref" href="brand-pages.html"><strong>Pages: putting it together</strong></a>).</p>
+<ol>
+<li><a class="cref" href="component-AnnouncementBar.html"><code>AnnouncementBar</code></a>: the offer and ship date.</li>
+<li><a class="cref" href="component-NavBar.html"><code>NavBar</code></a>.</li>
+<li><strong>Hero:</strong> headline, lead, cta, trust line, and the child with Kheelu.</li>
+<li><strong>Watch a child meet Kheelu:</strong> real video.</li>
+<li><strong>How it works:</strong> <a class="cref" href="component-StepLoop.html"><code>StepLoop</code></a>.</li>
+<li><strong>Year by year:</strong> <a class="cref" href="component-AgeTimeline.html"><code>AgeTimeline</code></a>.</li>
+<li><strong>A day with Kheelu:</strong> the moments of the day and the three modes (<a class="cref" href="component-ModeSwitch.html"><code>ModeSwitch</code></a> visual).</li>
+<li><strong>Safety:</strong> <a class="cref" href="component-TrustList.html"><code>TrustList</code></a> plus a link.</li>
+<li><strong>Feelings:</strong> <a class="cref" href="component-FeelingChip.html"><code>FeelingChip</code></a> cards.</li>
+<li><strong>Parent app:</strong> <a class="cref" href="component-AppSummaryCard.html"><code>AppSummaryCard</code></a>.</li>
+<li><strong>Compare:</strong> <a class="cref" href="component-ComparisonTable.html"><code>ComparisonTable</code></a>.</li>
+<li><strong>Parents say:</strong> <a class="cref" href="component-Testimonial.html"><code>Testimonial</code></a> ×3.</li>
+<li><strong>Questions:</strong> <a class="cref" href="component-FAQ.html"><code>FAQ</code></a> (price, ages, languages, shipping, internet, safety).</li>
+<li><strong>Close:</strong> <a class="cref" href="component-OfferCard.html"><code>OfferCard</code></a> with a WhatsApp share link.</li>
+<li><a class="cref" href="component-Footer.html"><code>Footer</code></a>.</li>
+</ol>
+<p>Put a cta after sections 3, 8, 11 and 14, and keep <a class="cref" href="component-StickyBuyBar.html"><code>StickyBuyBar</code></a> on phones throughout.</p>
+<h2 id="price-and-offer-rules">Price and offer rules</h2>
+<ul>
+<li>Lead with the <strong>barrier price</strong> where it helps (&quot;Reserve for ₹499&quot;) and always show the full price nearby (&quot;₹4,999 for the first 500, then ₹7,999&quot;).</li>
+<li>Only show a struck-through price that is real: ₹7,999 is the announced later price. Label it as the later price for screen readers (&quot;Later price ₹7,999&quot;), and never call it MRP unless it is.</li>
+<li>Always say <strong>refundable</strong> next to the deposit and <strong>including GST</strong> near the price.</li>
+<li><strong>Unit counts</strong> (&quot;312 of 500 left&quot;) come only from live inventory. If you can't wire it live, don't show a number. &quot;First 500 only&quot; is enough.</li>
+<li><strong>Countdowns</strong> are allowed only for a real deadline, and are never reset per visitor.</li>
+<li>Ship date: &quot;Ships from 20 Oct 2026&quot;. If it changes, update everywhere the same day.</li>
+</ul>
+<h2 id="cta-hierarchy">CTA hierarchy</h2>
+<ul>
+<li><strong>One <code>cta</code> per view:</strong> &quot;Pre-order Kheelu&quot; (or &quot;Pre-order for ₹499&quot; in the offer card).</li>
+<li><strong>Secondary</strong> (<a class="cref" href="component-Button.html"><code>Button</code></a> secondary): learning actions such as &quot;See how we built safety in&quot; and &quot;See what the app shows you&quot;.</li>
+<li><strong>Not on selling pages:</strong> the blue <code>primary</code> button. It is for everyday actions in the app and setup (Continue, Save, Connect Kheelu), so a selling view never shows a blue button competing with the chilli one.</li>
+<li><strong>Tertiary</strong> (<a class="cref" href="component-Button.html"><code>Button</code></a> ghost or text link): &quot;Read the science&quot;, &quot;See all stories&quot;.</li>
+<li><strong>Sharing</strong> (secondary with the WhatsApp icon): &quot;Share on WhatsApp&quot;.</li>
+</ul>
+<h2 id="objections-and-the-proof-for-each">Objections and the proof for each</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Objection</th>
+<th>Proof to show</th>
+<th>Never say</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;AI for a 3-year-old? Is it safe?&quot;</td>
+<td>Wake word; on-device filtering; closed library; read and delete everything</td>
+<td>&quot;Completely safe&quot;</td>
+</tr>
+<tr>
+<td>&quot;It's just another screen.&quot;</td>
+<td>Screen-free; no app for the child; stories offline</td>
+<td>&quot;Screens are ruining kids&quot;</td>
+</tr>
+<tr>
+<td>&quot;₹4,999 is a lot for a toy.&quot;</td>
+<td>Years of use (&quot;grows with them&quot;); languages; 6 months of Kheelona+; ₹499 refundable to reserve</td>
+<td>&quot;Cheaper than tuition&quot;</td>
+</tr>
+<tr>
+<td>&quot;Will it speak our language?&quot;</td>
+<td>Language chips in native script; a story-in-two-languages video</td>
+<td>Promising a language before it's announced</td>
+</tr>
+<tr>
+<td>&quot;My child will get bored.&quot;</td>
+<td>Memory; stories that ask back; the five feelings; real children over weeks</td>
+<td>&quot;Never boring&quot;</td>
+</tr>
+<tr>
+<td>&quot;Is it listening all the time?&quot;</td>
+<td>&quot;Not muted. Off.&quot; Wake-word explanation</td>
+<td>Technical jargon</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="trust-signals">Trust signals</h2>
+<ul>
+<li><strong>Real pilot parents</strong> use first name and &quot;Pilot parent&quot; (with their consent), never with cast photos.</li>
+<li><strong>Recognitions:</strong> NVIDIA Inception, Karnataka Elevate, NASSCOM Startups, Founders Inc. Show them as a quiet &quot;Recognised by&quot; row of names. Use logos only with permission.</li>
+<li><strong>The founders:</strong> &quot;Designed by parents in Bengaluru&quot;. Show real team photos on the Team page.</li>
+<li><strong>Policies:</strong> link refund, shipping and privacy near the price.</li>
+</ul>
+<h2 id="what-we-never-do-to-sell">What we never do to sell</h2>
+<ul>
+<li>Fake reviews, fake scarcity, fake &quot;just bought&quot; pop-ups or fake countdowns.</li>
+<li>Fear about screens or development to push the sale.</li>
+<li>Selling to children, including through Kheelu itself.</li>
+<li>Dark patterns: pre-ticked add-ons, hidden balances, confirm-shaming (&quot;No, I don't care about my child&quot;).</li>
+</ul>
+<nav class="pager"><a href="brand-surfaces.html">← Surfaces</a><a href="brand-accessibility.html">Accessibility &amp; inclusion →</a></nav><p class="source">Source: <code>project/07-selling.md</code></p></article>
+</div>
+</main>
+<footer class="site-footer"><div class="site-footer__in">Kheelona design system v11 · exported 10 Oct 2026 · the web version on claude.ai is the source of truth</div></footer>
+<script src="runtime/site.js"></script>
+</body>
+</html>

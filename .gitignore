@@ -7,21 +7,15 @@
 node_modules/
 .next/
 out/
-launch-video/out/
 
 # OS noise
 .DS_Store
-
-# Compiled tool binaries
-tools/cutout/cutout
 
 # Raw photoshoot originals: stay on disk, never in git (620MB)
 Design/product-images/Kheelona photoshoot 2025/
 
 # QA screenshots and process artifacts
 docs/snapshots/
-3d-handoff/exports/
-design-concepts/round-2-immersive/previews/
 
 # Agent skill packages (2026-07-28 cleanup). These are tooling, not the website,
 # and every one is reinstallable from skills-lock.json (which IS tracked, with a
@@ -64,8 +58,7 @@ next-env.d.ts
 # the history had to be rewritten to remove it.
 pitch-deck/
 
-# Website reset (2026-10-10): the internal project wiki and the shared design system stay
-# OUT of this PUBLIC repo until the founder answers wiki/open-questions.md Q1 (KICKOFF brief
-# section 4.8). Remove these two lines only on that answer, and log it in wiki/log.md.
-/wiki/
-/design-system/
+# Website reset (2026-10-10): wiki/ and design-system/ ARE committed, by the founder's answer
+# to Q1 (commit both publicly; wiki/decisions/D010). The positioning .docx is a raw source,
+# so it is exempt from the *.docx rule above.
+!/wiki/raw/**/*.docx

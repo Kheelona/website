@@ -1,0 +1,1675 @@
+{
+ "v": 3,
+ "layout": "files",
+ "createdOnFiles": {
+  "v": 1,
+  "at": "2026-10-09T02:24:49Z"
+ },
+ "title": "Kheelona",
+ "namespace": "Kheelona",
+ "libraries": [
+  {
+   "name": "react",
+   "version": "18.3.1"
+  },
+  {
+   "name": "react-dom",
+   "version": "18.3.1"
+  }
+ ],
+ "sections": {},
+ "groups": [
+  "Logo",
+  "Kheelu",
+  "Cast",
+  "Photo library",
+  "Doodles",
+  "Crayon",
+  "Shapes",
+  "Icons"
+ ],
+ "assetGroups": {
+  "Logo": {
+   "name": "Logo",
+   "tile": "l",
+   "order": [
+    "kheelona-logo.svg",
+    "kheelona-logo-bedtime.svg",
+    "kheelona-logo-sticker.svg",
+    "kheelona-logo-ink.svg",
+    "kheelona-logo-chalk.svg",
+    "kheelona-mark.svg",
+    "kheelona-app-icon.svg",
+    "kheelona-logo@2x.png",
+    "kheelona-logo-bedtime@2x.png",
+    "kheelona-logo-sticker@2x.png",
+    "app-icon-512.png",
+    "apple-touch-icon-180.png",
+    "favicon-48.png",
+    "favicon-32.png"
+   ],
+   "files": {
+    "kheelona-logo.svg": {
+     "name": "kheelona-logo.svg",
+     "blob": "fae091523e1ceaf93f7747cf5431acf1",
+     "size": 7134,
+     "type": "image/svg+xml"
+    },
+    "kheelona-logo-bedtime.svg": {
+     "name": "kheelona-logo-bedtime.svg",
+     "blob": "adb12fa49697a996679c6244c6572bba",
+     "size": 7134,
+     "type": "image/svg+xml"
+    },
+    "kheelona-logo-sticker.svg": {
+     "name": "kheelona-logo-sticker.svg",
+     "blob": "3ef2756e7e997161f688f0033b5b370a",
+     "size": 11882,
+     "type": "image/svg+xml"
+    },
+    "kheelona-logo-ink.svg": {
+     "name": "kheelona-logo-ink.svg",
+     "blob": "1edb4c78c839ebfd6ec9f2f04b4ceaaf",
+     "size": 6797,
+     "type": "image/svg+xml"
+    },
+    "kheelona-logo-chalk.svg": {
+     "name": "kheelona-logo-chalk.svg",
+     "blob": "2a32904a5ca30db004cf8a8bad2257d5",
+     "size": 6797,
+     "type": "image/svg+xml"
+    },
+    "kheelona-mark.svg": {
+     "name": "kheelona-mark.svg",
+     "blob": "fc7f38567663062b967ffb4fe26f4a2a",
+     "size": 1362,
+     "type": "image/svg+xml"
+    },
+    "kheelona-app-icon.svg": {
+     "name": "kheelona-app-icon.svg",
+     "blob": "25eca179d2881999298d4cc1c62cb942",
+     "size": 1456,
+     "type": "image/svg+xml"
+    },
+    "kheelona-logo@2x.png": {
+     "name": "kheelona-logo@2x.png",
+     "blob": "8753dc787d301aa481da31f7f5eac08e",
+     "size": 16000,
+     "type": "image/png"
+    },
+    "kheelona-logo-bedtime@2x.png": {
+     "name": "kheelona-logo-bedtime@2x.png",
+     "blob": "c33065729bf1df292c7cef4eddbb9f08",
+     "size": 16000,
+     "type": "image/png"
+    },
+    "kheelona-logo-sticker@2x.png": {
+     "name": "kheelona-logo-sticker@2x.png",
+     "blob": "3eb8e7559d58f6818ed62a9d5275c74f",
+     "size": 21741,
+     "type": "image/png"
+    },
+    "app-icon-512.png": {
+     "name": "app-icon-512.png",
+     "blob": "0746da3d6c7584c2f5d222d8638d0ed1",
+     "size": 11997,
+     "type": "image/png"
+    },
+    "apple-touch-icon-180.png": {
+     "name": "apple-touch-icon-180.png",
+     "blob": "84a24200f2c1df51f5bc57267ca512db",
+     "size": 3781,
+     "type": "image/png"
+    },
+    "favicon-48.png": {
+     "name": "favicon-48.png",
+     "blob": "87420617d639cc97fc05f289a7a57e26",
+     "size": 1424,
+     "type": "image/png"
+    },
+    "favicon-32.png": {
+     "name": "favicon-32.png",
+     "blob": "902c6f9dc796210293db390254469445",
+     "size": 957,
+     "type": "image/png"
+    }
+   }
+  },
+  "Kheelu": {
+   "name": "Kheelu",
+   "tile": "l",
+   "order": [
+    "kheelu-front.png",
+    "kheelu-front.webp",
+    "kheelu-front-sticker.png",
+    "kheelu-on-fur.jpg",
+    "kheelu-belly-module.png"
+   ],
+   "files": {
+    "kheelu-front.png": {
+     "name": "kheelu-front.png",
+     "blob": "1f0c028a8c56014bf858a3590d9a7897",
+     "size": 1462012,
+     "type": "image/png"
+    },
+    "kheelu-front.webp": {
+     "name": "kheelu-front.webp",
+     "blob": "8e5d6b2af9fb59040fe1abc0f1c76ceb",
+     "size": 174568,
+     "type": "image/webp"
+    },
+    "kheelu-front-sticker.png": {
+     "name": "kheelu-front-sticker.png",
+     "blob": "d53f5a3962997ac35db37066131a9139",
+     "size": 1514870,
+     "type": "image/png"
+    },
+    "kheelu-on-fur.jpg": {
+     "name": "kheelu-on-fur.jpg",
+     "blob": "676b14f35b2f90d90b4685fae638c866",
+     "size": 191818,
+     "type": "image/jpeg"
+    },
+    "kheelu-belly-module.png": {
+     "name": "kheelu-belly-module.png",
+     "blob": "bdfba3f943bbb33e9d24fdc004dbf118",
+     "size": 190318,
+     "type": "image/png"
+    }
+   }
+  },
+  "Cast": {
+   "name": "Cast",
+   "tile": "l",
+   "order": [
+    "myra-portrait.jpg",
+    "myra-portrait-web.webp",
+    "myra-cutout.png",
+    "myra-sticker.png",
+    "advik-portrait.jpg",
+    "advik-portrait-web.webp",
+    "advik-cutout.png",
+    "advik-sticker.png",
+    "ira-portrait.jpg",
+    "ira-portrait-web.webp",
+    "ira-cutout.png",
+    "ira-sticker.png",
+    "tara-portrait.jpg",
+    "tara-portrait-web.webp",
+    "tara-cutout.png",
+    "tara-sticker.png",
+    "kabir-portrait.jpg",
+    "kabir-portrait-web.webp",
+    "kabir-cutout.png",
+    "kabir-sticker.png",
+    "meera-portrait.jpg",
+    "meera-portrait-web.webp",
+    "meera-cutout.png",
+    "meera-sticker.png",
+    "arnab-portrait.jpg",
+    "arnab-portrait-web.webp",
+    "arnab-cutout.png",
+    "arnab-sticker.png"
+   ],
+   "files": {
+    "myra-portrait.jpg": {
+     "name": "myra-portrait.jpg",
+     "blob": "08a8a4849d479531165f1ca711a00f03",
+     "size": 985660,
+     "type": "image/jpeg"
+    },
+    "myra-portrait-web.webp": {
+     "name": "myra-portrait-web.webp",
+     "blob": "7094cffd10466d605bb62c0d5fd7f9d7",
+     "size": 112186,
+     "type": "image/webp"
+    },
+    "myra-cutout.png": {
+     "name": "myra-cutout.png",
+     "blob": "402339d91289c8b0c4621e75a8e0ba90",
+     "size": 1465510,
+     "type": "image/png"
+    },
+    "myra-sticker.png": {
+     "name": "myra-sticker.png",
+     "blob": "4f712b1ebe8b39a40d6c894d3c0fd341",
+     "size": 1521590,
+     "type": "image/png"
+    },
+    "advik-portrait.jpg": {
+     "name": "advik-portrait.jpg",
+     "blob": "f0cd0369e9ccd86c0d242826417eb0fe",
+     "size": 745517,
+     "type": "image/jpeg"
+    },
+    "advik-portrait-web.webp": {
+     "name": "advik-portrait-web.webp",
+     "blob": "b9e3d8adac39d81a12d045e26b2013e5",
+     "size": 66050,
+     "type": "image/webp"
+    },
+    "advik-cutout.png": {
+     "name": "advik-cutout.png",
+     "blob": "93187c9719909068b4fe8aeaf0084dcf",
+     "size": 1006697,
+     "type": "image/png"
+    },
+    "advik-sticker.png": {
+     "name": "advik-sticker.png",
+     "blob": "c2b35885b118c45a34ea530e5fec5507",
+     "size": 1067575,
+     "type": "image/png"
+    },
+    "ira-portrait.jpg": {
+     "name": "ira-portrait.jpg",
+     "blob": "1f187ca609e3cd8dba43dfdd66729115",
+     "size": 812983,
+     "type": "image/jpeg"
+    },
+    "ira-portrait-web.webp": {
+     "name": "ira-portrait-web.webp",
+     "blob": "9e0211f033bde641980f1e1c063b8d3a",
+     "size": 65100,
+     "type": "image/webp"
+    },
+    "ira-cutout.png": {
+     "name": "ira-cutout.png",
+     "blob": "5ae08e9c09df15ff13e9e3891831930b",
+     "size": 999729,
+     "type": "image/png"
+    },
+    "ira-sticker.png": {
+     "name": "ira-sticker.png",
+     "blob": "b6c510fe6fd4f36d3da7d31b50d826cd",
+     "size": 1055702,
+     "type": "image/png"
+    },
+    "tara-portrait.jpg": {
+     "name": "tara-portrait.jpg",
+     "blob": "12073925ad111d982ecaec4bf9be8d72",
+     "size": 1109540,
+     "type": "image/jpeg"
+    },
+    "tara-portrait-web.webp": {
+     "name": "tara-portrait-web.webp",
+     "blob": "8ad45a88b69491c550fe4f8f00a52c14",
+     "size": 122840,
+     "type": "image/webp"
+    },
+    "tara-cutout.png": {
+     "name": "tara-cutout.png",
+     "blob": "d111dce4bfc31e3d47d291284a8b3a86",
+     "size": 1438828,
+     "type": "image/png"
+    },
+    "tara-sticker.png": {
+     "name": "tara-sticker.png",
+     "blob": "760a3c071ae4f6d478bb4a830f4076c6",
+     "size": 1490654,
+     "type": "image/png"
+    },
+    "kabir-portrait.jpg": {
+     "name": "kabir-portrait.jpg",
+     "blob": "a54741ef80e80a39e4208d8afd0006d6",
+     "size": 891640,
+     "type": "image/jpeg"
+    },
+    "kabir-portrait-web.webp": {
+     "name": "kabir-portrait-web.webp",
+     "blob": "6f74f97adc27f2854e5f4c61b46a4969",
+     "size": 59274,
+     "type": "image/webp"
+    },
+    "kabir-cutout.png": {
+     "name": "kabir-cutout.png",
+     "blob": "37d0d424e4bd05eded6def5deab72548",
+     "size": 960673,
+     "type": "image/png"
+    },
+    "kabir-sticker.png": {
+     "name": "kabir-sticker.png",
+     "blob": "9dc07649cebff1016907e28cb838d91e",
+     "size": 1028419,
+     "type": "image/png"
+    },
+    "meera-portrait.jpg": {
+     "name": "meera-portrait.jpg",
+     "blob": "60ea3a93b7ea920f97b1f9c07bf54886",
+     "size": 972761,
+     "type": "image/jpeg"
+    },
+    "meera-portrait-web.webp": {
+     "name": "meera-portrait-web.webp",
+     "blob": "2646b5e124442afd892d9d1f1a4e0be3",
+     "size": 94124,
+     "type": "image/webp"
+    },
+    "meera-cutout.png": {
+     "name": "meera-cutout.png",
+     "blob": "bb6c99f71c8f480630d5201f1add8596",
+     "size": 1436848,
+     "type": "image/png"
+    },
+    "meera-sticker.png": {
+     "name": "meera-sticker.png",
+     "blob": "1dbd7861710d163c55c9f57ee9a9b65d",
+     "size": 1490687,
+     "type": "image/png"
+    },
+    "arnab-portrait.jpg": {
+     "name": "arnab-portrait.jpg",
+     "blob": "ee9d79fec5053b1e73cbe880875c9e41",
+     "size": 1077795,
+     "type": "image/jpeg"
+    },
+    "arnab-portrait-web.webp": {
+     "name": "arnab-portrait-web.webp",
+     "blob": "d7965f7e60d6a57f1173e47d01945c2c",
+     "size": 100042,
+     "type": "image/webp"
+    },
+    "arnab-cutout.png": {
+     "name": "arnab-cutout.png",
+     "blob": "9b0450eb0b1ddf1ee14933f8a9d05a24",
+     "size": 1284481,
+     "type": "image/png"
+    },
+    "arnab-sticker.png": {
+     "name": "arnab-sticker.png",
+     "blob": "8bf46d3dc7636c4cc957fa6a23004bba",
+     "size": 1339567,
+     "type": "image/png"
+    }
+   }
+  },
+  "Doodles": {
+   "name": "Doodles",
+   "tile": "m",
+   "order": [
+    "chalk-arrow-curly.svg",
+    "chalk-astronaut-helmet.svg",
+    "chalk-book-open.svg",
+    "chalk-crown.svg",
+    "chalk-heart.svg",
+    "chalk-music-notes.svg",
+    "chalk-planet.svg",
+    "chalk-question-mark.svg",
+    "chalk-rainbow.svg",
+    "chalk-rocket.svg",
+    "chalk-spark-lines.svg",
+    "chalk-speech-bubble.svg",
+    "chalk-star.svg",
+    "chalk-sun.svg",
+    "chalk-swirl.svg",
+    "chalk-thought-cloud.svg",
+    "ink-arrow-curly.svg",
+    "ink-astronaut-helmet.svg",
+    "ink-book-open.svg",
+    "ink-crown.svg",
+    "ink-heart.svg",
+    "ink-music-notes.svg",
+    "ink-planet.svg",
+    "ink-question-mark.svg",
+    "ink-rainbow.svg",
+    "ink-rocket.svg",
+    "ink-spark-lines.svg",
+    "ink-speech-bubble.svg",
+    "ink-star.svg",
+    "ink-sun.svg",
+    "ink-swirl.svg",
+    "ink-thought-cloud.svg"
+   ],
+   "files": {
+    "chalk-arrow-curly.svg": {
+     "name": "chalk-arrow-curly.svg",
+     "blob": "1e4fc6be2cb3418db9bb1b40cd304ff0",
+     "size": 2517,
+     "type": "image/svg+xml"
+    },
+    "chalk-astronaut-helmet.svg": {
+     "name": "chalk-astronaut-helmet.svg",
+     "blob": "a36acf39ab1b3379cf98de778fe20f7a",
+     "size": 12224,
+     "type": "image/svg+xml"
+    },
+    "chalk-book-open.svg": {
+     "name": "chalk-book-open.svg",
+     "blob": "0737d4ef4e1df9a0f76e5803135dbc49",
+     "size": 4054,
+     "type": "image/svg+xml"
+    },
+    "chalk-crown.svg": {
+     "name": "chalk-crown.svg",
+     "blob": "36a5751028a5c76c853960391a72000d",
+     "size": 3380,
+     "type": "image/svg+xml"
+    },
+    "chalk-heart.svg": {
+     "name": "chalk-heart.svg",
+     "blob": "8697a4a14dceca4584305de77254f5a2",
+     "size": 1855,
+     "type": "image/svg+xml"
+    },
+    "chalk-music-notes.svg": {
+     "name": "chalk-music-notes.svg",
+     "blob": "11e85d6bba328f6ec663fac77d443e33",
+     "size": 7653,
+     "type": "image/svg+xml"
+    },
+    "chalk-planet.svg": {
+     "name": "chalk-planet.svg",
+     "blob": "9be28f2a62fd736c9cd7b4bd682aeaa6",
+     "size": 4881,
+     "type": "image/svg+xml"
+    },
+    "chalk-question-mark.svg": {
+     "name": "chalk-question-mark.svg",
+     "blob": "6603f8571c22e1472914eeb8fb976548",
+     "size": 1334,
+     "type": "image/svg+xml"
+    },
+    "chalk-rainbow.svg": {
+     "name": "chalk-rainbow.svg",
+     "blob": "e963a87f28ce003b1255e15507722aee",
+     "size": 1731,
+     "type": "image/svg+xml"
+    },
+    "chalk-rocket.svg": {
+     "name": "chalk-rocket.svg",
+     "blob": "33a9e27d551cb8768efae3a33975c4ac",
+     "size": 6567,
+     "type": "image/svg+xml"
+    },
+    "chalk-spark-lines.svg": {
+     "name": "chalk-spark-lines.svg",
+     "blob": "a7e8f9e93bbbea18ef3547385a2487fc",
+     "size": 2651,
+     "type": "image/svg+xml"
+    },
+    "chalk-speech-bubble.svg": {
+     "name": "chalk-speech-bubble.svg",
+     "blob": "8e4a6aa48a1acdc4de09141077c1675d",
+     "size": 3995,
+     "type": "image/svg+xml"
+    },
+    "chalk-star.svg": {
+     "name": "chalk-star.svg",
+     "blob": "e41859da40b392fa59b0d028ebc5fca7",
+     "size": 3715,
+     "type": "image/svg+xml"
+    },
+    "chalk-sun.svg": {
+     "name": "chalk-sun.svg",
+     "blob": "e70f89d02b94ec0413859e2183fe7d3e",
+     "size": 7578,
+     "type": "image/svg+xml"
+    },
+    "chalk-swirl.svg": {
+     "name": "chalk-swirl.svg",
+     "blob": "3b432f78242eef792eed306a0b12ab44",
+     "size": 2332,
+     "type": "image/svg+xml"
+    },
+    "chalk-thought-cloud.svg": {
+     "name": "chalk-thought-cloud.svg",
+     "blob": "37c6d1c3ec65cc2211ac84ddb7f36684",
+     "size": 7869,
+     "type": "image/svg+xml"
+    },
+    "ink-arrow-curly.svg": {
+     "name": "ink-arrow-curly.svg",
+     "blob": "65efdd662e2d1eb4fbde949d9d424c8e",
+     "size": 2513,
+     "type": "image/svg+xml"
+    },
+    "ink-astronaut-helmet.svg": {
+     "name": "ink-astronaut-helmet.svg",
+     "blob": "f1e2764e1ba06af9489988231386868e",
+     "size": 12220,
+     "type": "image/svg+xml"
+    },
+    "ink-book-open.svg": {
+     "name": "ink-book-open.svg",
+     "blob": "fe556cb64dc033ebae6a15d565deefca",
+     "size": 4050,
+     "type": "image/svg+xml"
+    },
+    "ink-crown.svg": {
+     "name": "ink-crown.svg",
+     "blob": "8e1cc48e7a5ed5245df04aa651b96583",
+     "size": 3376,
+     "type": "image/svg+xml"
+    },
+    "ink-heart.svg": {
+     "name": "ink-heart.svg",
+     "blob": "870961547622d4828ca904bc14e2ba80",
+     "size": 1851,
+     "type": "image/svg+xml"
+    },
+    "ink-music-notes.svg": {
+     "name": "ink-music-notes.svg",
+     "blob": "ec709a7f049764fb193771420fd04d8b",
+     "size": 7649,
+     "type": "image/svg+xml"
+    },
+    "ink-planet.svg": {
+     "name": "ink-planet.svg",
+     "blob": "e5bb35fb9bbbe18ec703eefc91327896",
+     "size": 4877,
+     "type": "image/svg+xml"
+    },
+    "ink-question-mark.svg": {
+     "name": "ink-question-mark.svg",
+     "blob": "174e0bbd380c14f2cf2561ac62f993d8",
+     "size": 1330,
+     "type": "image/svg+xml"
+    },
+    "ink-rainbow.svg": {
+     "name": "ink-rainbow.svg",
+     "blob": "9e772e74c43ad26c12eaae30fab6ec11",
+     "size": 1727,
+     "type": "image/svg+xml"
+    },
+    "ink-rocket.svg": {
+     "name": "ink-rocket.svg",
+     "blob": "a735d619d0078f3adbc3606d4aab5dad",
+     "size": 6563,
+     "type": "image/svg+xml"
+    },
+    "ink-spark-lines.svg": {
+     "name": "ink-spark-lines.svg",
+     "blob": "6cff9f8b5312c87ed156088e36b3be6d",
+     "size": 2647,
+     "type": "image/svg+xml"
+    },
+    "ink-speech-bubble.svg": {
+     "name": "ink-speech-bubble.svg",
+     "blob": "e70b9bde27a881a491dfdfd34b9ab5ec",
+     "size": 3991,
+     "type": "image/svg+xml"
+    },
+    "ink-star.svg": {
+     "name": "ink-star.svg",
+     "blob": "0b1cbbdb10ea072a06b897eb2b0f2de0",
+     "size": 3711,
+     "type": "image/svg+xml"
+    },
+    "ink-sun.svg": {
+     "name": "ink-sun.svg",
+     "blob": "508e10f8897ecdb7853f44e30ff6f3aa",
+     "size": 7574,
+     "type": "image/svg+xml"
+    },
+    "ink-swirl.svg": {
+     "name": "ink-swirl.svg",
+     "blob": "fb34ea0b6a48b368dfc06f71f487e1b5",
+     "size": 2328,
+     "type": "image/svg+xml"
+    },
+    "ink-thought-cloud.svg": {
+     "name": "ink-thought-cloud.svg",
+     "blob": "bbf868f1606873bb2f5b52e79694cae3",
+     "size": 7865,
+     "type": "image/svg+xml"
+    }
+   }
+  },
+  "Crayon": {
+   "name": "Crayon",
+   "tile": "m",
+   "order": [
+    "burst-sun.svg",
+    "circle-blue.svg",
+    "circle-chilli.svg",
+    "highlight-sun.svg",
+    "scribble-sun.svg",
+    "squiggle-blue.svg",
+    "underline-blue.svg",
+    "underline-chilli.svg",
+    "underline-sun.svg",
+    "zigzag-chilli.svg"
+   ],
+   "files": {
+    "burst-sun.svg": {
+     "name": "burst-sun.svg",
+     "blob": "dfb7cf5adf8a8203c65280968a0ee33f",
+     "size": 5887,
+     "type": "image/svg+xml"
+    },
+    "circle-blue.svg": {
+     "name": "circle-blue.svg",
+     "blob": "1d96c6549739041a4833ba5ffaac8ccb",
+     "size": 2364,
+     "type": "image/svg+xml"
+    },
+    "circle-chilli.svg": {
+     "name": "circle-chilli.svg",
+     "blob": "73e5cdf4c3b5e95a6c60d2851035f150",
+     "size": 2114,
+     "type": "image/svg+xml"
+    },
+    "highlight-sun.svg": {
+     "name": "highlight-sun.svg",
+     "blob": "b5534025003c7ffc08b63c2b5d302ccb",
+     "size": 1296,
+     "type": "image/svg+xml"
+    },
+    "scribble-sun.svg": {
+     "name": "scribble-sun.svg",
+     "blob": "b12e5672cf53e6d1bfc527da12238fcf",
+     "size": 3175,
+     "type": "image/svg+xml"
+    },
+    "squiggle-blue.svg": {
+     "name": "squiggle-blue.svg",
+     "blob": "181a42ed3a663d4eb082389a0e0f8a83",
+     "size": 2833,
+     "type": "image/svg+xml"
+    },
+    "underline-blue.svg": {
+     "name": "underline-blue.svg",
+     "blob": "413a2c31cd42979618eb172564bd3cea",
+     "size": 1387,
+     "type": "image/svg+xml"
+    },
+    "underline-chilli.svg": {
+     "name": "underline-chilli.svg",
+     "blob": "874b1e32bbb1c89ba68de43093ddaa1c",
+     "size": 1636,
+     "type": "image/svg+xml"
+    },
+    "underline-sun.svg": {
+     "name": "underline-sun.svg",
+     "blob": "228c252233b42fa0a34398a85a291084",
+     "size": 1538,
+     "type": "image/svg+xml"
+    },
+    "zigzag-chilli.svg": {
+     "name": "zigzag-chilli.svg",
+     "blob": "94efc7e1021d7edb7582009afa68034b",
+     "size": 4464,
+     "type": "image/svg+xml"
+    }
+   }
+  },
+  "Shapes": {
+   "name": "Shapes",
+   "tile": "m",
+   "order": [
+    "cloud-blue.svg",
+    "blob-blue.svg",
+    "ribbon-blue.svg",
+    "flower-chilli.svg",
+    "half-round-chilli.svg",
+    "heart-chilli.svg",
+    "sun-sun.svg",
+    "star-sun.svg",
+    "rainbow-arch.svg"
+   ],
+   "files": {
+    "cloud-blue.svg": {
+     "name": "cloud-blue.svg",
+     "blob": "e5c48681deba1fcc6d294d2bad83a950",
+     "size": 1538,
+     "type": "image/svg+xml"
+    },
+    "blob-blue.svg": {
+     "name": "blob-blue.svg",
+     "blob": "ad917995c6a7c82fbd12ce1e29660ab1",
+     "size": 1078,
+     "type": "image/svg+xml"
+    },
+    "ribbon-blue.svg": {
+     "name": "ribbon-blue.svg",
+     "blob": "0e25c5ca4a09f1fc21bb9fd9b908baea",
+     "size": 1730,
+     "type": "image/svg+xml"
+    },
+    "flower-chilli.svg": {
+     "name": "flower-chilli.svg",
+     "blob": "6856e3b44232dc9a33beb747b0dab0ff",
+     "size": 4529,
+     "type": "image/svg+xml"
+    },
+    "half-round-chilli.svg": {
+     "name": "half-round-chilli.svg",
+     "blob": "61de3b7f5b4fb11b2186ddbf10831ae1",
+     "size": 964,
+     "type": "image/svg+xml"
+    },
+    "heart-chilli.svg": {
+     "name": "heart-chilli.svg",
+     "blob": "0b831d0af9b3286ef79983fd51b989a0",
+     "size": 1088,
+     "type": "image/svg+xml"
+    },
+    "sun-sun.svg": {
+     "name": "sun-sun.svg",
+     "blob": "7781769ba5c008237f0326f4ba707117",
+     "size": 2161,
+     "type": "image/svg+xml"
+    },
+    "star-sun.svg": {
+     "name": "star-sun.svg",
+     "blob": "6ab45e33e9049035d05e6cd58b300975",
+     "size": 1753,
+     "type": "image/svg+xml"
+    },
+    "rainbow-arch.svg": {
+     "name": "rainbow-arch.svg",
+     "blob": "90425bb97ea39f7fd3fceda8d4d177d0",
+     "size": 4855,
+     "type": "image/svg+xml"
+    }
+   }
+  },
+  "Icons": {
+   "name": "Icons",
+   "tile": "xs",
+   "order": [
+    "arrow-counter-clockwise.svg",
+    "arrow-left.svg",
+    "arrow-right.svg",
+    "battery-charging.svg",
+    "battery-low.svg",
+    "bell.svg",
+    "bluetooth.svg",
+    "book-open.svg",
+    "calculator.svg",
+    "calendar-check.svg",
+    "caret-down.svg",
+    "caret-left.svg",
+    "caret-right.svg",
+    "caret-up.svg",
+    "chart-line-up.svg",
+    "chat-circle-dots.svg",
+    "check-circle.svg",
+    "check.svg",
+    "clock.svg",
+    "copy.svg",
+    "currency-inr.svg",
+    "dots-three-vertical.svg",
+    "dots-three.svg",
+    "download-simple.svg",
+    "envelope-simple.svg",
+    "eye-slash.svg",
+    "eye.svg",
+    "funnel.svg",
+    "gear.svg",
+    "graduation-cap.svg",
+    "hand-heart.svg",
+    "heart.svg",
+    "house.svg",
+    "image.svg",
+    "info.svg",
+    "instagram-logo.svg",
+    "link-simple.svg",
+    "list.svg",
+    "lock-simple.svg",
+    "magnifying-glass.svg",
+    "map-pin.svg",
+    "microphone-slash.svg",
+    "microphone.svg",
+    "minus.svg",
+    "moon.svg",
+    "music-notes.svg",
+    "package.svg",
+    "pause.svg",
+    "pencil-simple.svg",
+    "plant.svg",
+    "play.svg",
+    "plus.svg",
+    "puzzle-piece.svg",
+    "question.svg",
+    "share-network.svg",
+    "shield-check.svg",
+    "sign-out.svg",
+    "sliders-horizontal.svg",
+    "smiley-angry.svg",
+    "smiley-sad.svg",
+    "smiley-wink.svg",
+    "smiley.svg",
+    "speaker-high.svg",
+    "star.svg",
+    "sun.svg",
+    "translate.svg",
+    "trash.svg",
+    "truck.svg",
+    "user.svg",
+    "users-three.svg",
+    "warning-circle.svg",
+    "whatsapp-logo.svg",
+    "wifi-high.svg",
+    "wifi-slash.svg",
+    "x.svg",
+    "youtube-logo.svg"
+   ],
+   "files": {
+    "arrow-left.svg": {
+     "name": "arrow-left.svg",
+     "blob": "71a128619d0769551c7e33424c188e3b",
+     "size": 234,
+     "type": "image/svg+xml"
+    },
+    "arrow-right.svg": {
+     "name": "arrow-right.svg",
+     "blob": "3d8ec24d3a434427e464359205745def",
+     "size": 230,
+     "type": "image/svg+xml"
+    },
+    "battery-charging.svg": {
+     "name": "battery-charging.svg",
+     "blob": "4795d7ecda1aa2a6fd7a4fd4132aafe4",
+     "size": 469,
+     "type": "image/svg+xml"
+    },
+    "battery-low.svg": {
+     "name": "battery-low.svg",
+     "blob": "756719bc6f75692da33035c4f361805e",
+     "size": 358,
+     "type": "image/svg+xml"
+    },
+    "bell.svg": {
+     "name": "bell.svg",
+     "blob": "b5c1ad9eec402317eae3b8274afb7e2f",
+     "size": 463,
+     "type": "image/svg+xml"
+    },
+    "bluetooth.svg": {
+     "name": "bluetooth.svg",
+     "blob": "aeb536823f4deb5bbfdc00d3592f8ae4",
+     "size": 341,
+     "type": "image/svg+xml"
+    },
+    "book-open.svg": {
+     "name": "book-open.svg",
+     "blob": "1cea6d8d54ffad4bad7eb7b3e2922f24",
+     "size": 428,
+     "type": "image/svg+xml"
+    },
+    "calculator.svg": {
+     "name": "calculator.svg",
+     "blob": "6a3202526622a2dd9f9d8cba7b13d000",
+     "size": 453,
+     "type": "image/svg+xml"
+    },
+    "calendar-check.svg": {
+     "name": "calendar-check.svg",
+     "blob": "dc10fe480656823ff01499ae5e27f4e7",
+     "size": 443,
+     "type": "image/svg+xml"
+    },
+    "caret-down.svg": {
+     "name": "caret-down.svg",
+     "blob": "82fa3ed5d0a403d913df104b10cb347f",
+     "size": 197,
+     "type": "image/svg+xml"
+    },
+    "caret-right.svg": {
+     "name": "caret-right.svg",
+     "blob": "b41cb6a008d2a82fd9119f9a44524b87",
+     "size": 205,
+     "type": "image/svg+xml"
+    },
+    "chart-line-up.svg": {
+     "name": "chart-line-up.svg",
+     "blob": "b86af473ac41c6b9b91a777ee535487a",
+     "size": 346,
+     "type": "image/svg+xml"
+    },
+    "chat-circle-dots.svg": {
+     "name": "chat-circle-dots.svg",
+     "blob": "bdb0ede0200db1de5fb8406508672c7d",
+     "size": 424,
+     "type": "image/svg+xml"
+    },
+    "check-circle.svg": {
+     "name": "check-circle.svg",
+     "blob": "368986e3e022b6a093af0d1589807ac9",
+     "size": 329,
+     "type": "image/svg+xml"
+    },
+    "check.svg": {
+     "name": "check.svg",
+     "blob": "4f72657d80daf1a0fb3371692f1a3adf",
+     "size": 198,
+     "type": "image/svg+xml"
+    },
+    "clock.svg": {
+     "name": "clock.svg",
+     "blob": "fd86ac25bf7797a14e49eb78075c4c2d",
+     "size": 296,
+     "type": "image/svg+xml"
+    },
+    "currency-inr.svg": {
+     "name": "currency-inr.svg",
+     "blob": "bbf22b2fe1d3e2da2ba1bb02a3c4aa2c",
+     "size": 363,
+     "type": "image/svg+xml"
+    },
+    "download-simple.svg": {
+     "name": "download-simple.svg",
+     "blob": "e89c9bfd58644be02f56188403023a6b",
+     "size": 311,
+     "type": "image/svg+xml"
+    },
+    "envelope-simple.svg": {
+     "name": "envelope-simple.svg",
+     "blob": "129772d43f1162e7ce9f5e78754b7d9d",
+     "size": 281,
+     "type": "image/svg+xml"
+    },
+    "eye.svg": {
+     "name": "eye.svg",
+     "blob": "cd15d062eb38c45563cdde7125c72306",
+     "size": 738,
+     "type": "image/svg+xml"
+    },
+    "gear.svg": {
+     "name": "gear.svg",
+     "blob": "77427ab1ca1d9056242f022e1b20da5e",
+     "size": 1966,
+     "type": "image/svg+xml"
+    },
+    "graduation-cap.svg": {
+     "name": "graduation-cap.svg",
+     "blob": "9911377ba359c49a79ad534c527503a2",
+     "size": 662,
+     "type": "image/svg+xml"
+    },
+    "hand-heart.svg": {
+     "name": "hand-heart.svg",
+     "blob": "645ca3c9d783237d39c2c07646884993",
+     "size": 991,
+     "type": "image/svg+xml"
+    },
+    "heart.svg": {
+     "name": "heart.svg",
+     "blob": "181175ae82ec6b1bb88f80ddf59b48eb",
+     "size": 554,
+     "type": "image/svg+xml"
+    },
+    "house.svg": {
+     "name": "house.svg",
+     "blob": "adc16d7f796122b0b28875f998fefd65",
+     "size": 378,
+     "type": "image/svg+xml"
+    },
+    "info.svg": {
+     "name": "info.svg",
+     "blob": "165c79d459d33c744543fdfefb3b1cbf",
+     "size": 343,
+     "type": "image/svg+xml"
+    },
+    "instagram-logo.svg": {
+     "name": "instagram-logo.svg",
+     "blob": "dd955f2886a91c6f8c5f06fe55d2e499",
+     "size": 441,
+     "type": "image/svg+xml"
+    },
+    "list.svg": {
+     "name": "list.svg",
+     "blob": "f176c463dc09dd8e96cf92cbd1feb435",
+     "size": 264,
+     "type": "image/svg+xml"
+    },
+    "lock-simple.svg": {
+     "name": "lock-simple.svg",
+     "blob": "9bda12b84eed632372700f13414c49a5",
+     "size": 270,
+     "type": "image/svg+xml"
+    },
+    "map-pin.svg": {
+     "name": "map-pin.svg",
+     "blob": "e6d28883280024ee706f5026eec93b8f",
+     "size": 506,
+     "type": "image/svg+xml"
+    },
+    "microphone-slash.svg": {
+     "name": "microphone-slash.svg",
+     "blob": "5cbd13ed9705124d8e90b029e6f3f63d",
+     "size": 639,
+     "type": "image/svg+xml"
+    },
+    "microphone.svg": {
+     "name": "microphone.svg",
+     "blob": "1d67fa10980cdc9a48174d4582c5e488",
+     "size": 368,
+     "type": "image/svg+xml"
+    },
+    "minus.svg": {
+     "name": "minus.svg",
+     "blob": "a44730ff8b9d9476ae4d2c461e36a3d7",
+     "size": 166,
+     "type": "image/svg+xml"
+    },
+    "moon.svg": {
+     "name": "moon.svg",
+     "blob": "7409e4046a8fc1594e793b44b138ba6c",
+     "size": 476,
+     "type": "image/svg+xml"
+    },
+    "music-notes.svg": {
+     "name": "music-notes.svg",
+     "blob": "65ea0068899c1ab787d53aa3e840eac7",
+     "size": 370,
+     "type": "image/svg+xml"
+    },
+    "package.svg": {
+     "name": "package.svg",
+     "blob": "0add3834fcc2d4e10241a5d15e85c0f4",
+     "size": 477,
+     "type": "image/svg+xml"
+    },
+    "pause.svg": {
+     "name": "pause.svg",
+     "blob": "4effe3d01b6f77f1eddb2775d2e647cd",
+     "size": 317,
+     "type": "image/svg+xml"
+    },
+    "plant.svg": {
+     "name": "plant.svg",
+     "blob": "3982cbd7d67b6c4756704ee05b6a741f",
+     "size": 936,
+     "type": "image/svg+xml"
+    },
+    "play.svg": {
+     "name": "play.svg",
+     "blob": "7e542f79e49c68f9bc9c79b805821adf",
+     "size": 241,
+     "type": "image/svg+xml"
+    },
+    "plus.svg": {
+     "name": "plus.svg",
+     "blob": "7895d3a58acdf006b0273bede5cf497e",
+     "size": 219,
+     "type": "image/svg+xml"
+    },
+    "puzzle-piece.svg": {
+     "name": "puzzle-piece.svg",
+     "blob": "0cb169b68ff4eea18c8e48db2ce266a5",
+     "size": 850,
+     "type": "image/svg+xml"
+    },
+    "question.svg": {
+     "name": "question.svg",
+     "blob": "c958aaef01636f9254c4db62a2b490f7",
+     "size": 449,
+     "type": "image/svg+xml"
+    },
+    "share-network.svg": {
+     "name": "share-network.svg",
+     "blob": "e0e8023fa15de835453fa6ac6ee27143",
+     "size": 401,
+     "type": "image/svg+xml"
+    },
+    "shield-check.svg": {
+     "name": "shield-check.svg",
+     "blob": "2fb78f509cc191020cd66c8a54bd3791",
+     "size": 530,
+     "type": "image/svg+xml"
+    },
+    "sliders-horizontal.svg": {
+     "name": "sliders-horizontal.svg",
+     "blob": "7b5c5f8a233c7ce51d30e724021e4721",
+     "size": 388,
+     "type": "image/svg+xml"
+    },
+    "smiley-angry.svg": {
+     "name": "smiley-angry.svg",
+     "blob": "0a5e1e2b76119cf557dd897a5421177f",
+     "size": 494,
+     "type": "image/svg+xml"
+    },
+    "smiley-sad.svg": {
+     "name": "smiley-sad.svg",
+     "blob": "62ea2933f6e415b9d7019f11270ad5d7",
+     "size": 385,
+     "type": "image/svg+xml"
+    },
+    "smiley-wink.svg": {
+     "name": "smiley-wink.svg",
+     "blob": "3cae4af345bdd174ef6f347734570f39",
+     "size": 468,
+     "type": "image/svg+xml"
+    },
+    "smiley.svg": {
+     "name": "smiley.svg",
+     "blob": "b4972c59c3e94b4b33d1362647412b2c",
+     "size": 446,
+     "type": "image/svg+xml"
+    },
+    "speaker-high.svg": {
+     "name": "speaker-high.svg",
+     "blob": "d596497b9a90ad6ba93940acafa8a996",
+     "size": 538,
+     "type": "image/svg+xml"
+    },
+    "star.svg": {
+     "name": "star.svg",
+     "blob": "b2e14d82d4162c4abd4c030ac3ebce54",
+     "size": 606,
+     "type": "image/svg+xml"
+    },
+    "sun.svg": {
+     "name": "sun.svg",
+     "blob": "bafd440872d043e4c1813770a1c61048",
+     "size": 677,
+     "type": "image/svg+xml"
+    },
+    "translate.svg": {
+     "name": "translate.svg",
+     "blob": "1b24c3dcbf8e222bd2cf44ae746fec9e",
+     "size": 603,
+     "type": "image/svg+xml"
+    },
+    "trash.svg": {
+     "name": "trash.svg",
+     "blob": "4e8d5c6c87f9081c2986af201df9c8a6",
+     "size": 402,
+     "type": "image/svg+xml"
+    },
+    "truck.svg": {
+     "name": "truck.svg",
+     "blob": "55c6f901d7d71de6e662a61bdb81fa5f",
+     "size": 581,
+     "type": "image/svg+xml"
+    },
+    "users-three.svg": {
+     "name": "users-three.svg",
+     "blob": "b3883b56ea481ca483be8a853f16354f",
+     "size": 702,
+     "type": "image/svg+xml"
+    },
+    "warning-circle.svg": {
+     "name": "warning-circle.svg",
+     "blob": "b5c2a00eebefe23db2ea42f694d6d485",
+     "size": 296,
+     "type": "image/svg+xml"
+    },
+    "whatsapp-logo.svg": {
+     "name": "whatsapp-logo.svg",
+     "blob": "ad3950da12f727e6aff9f21e662051d5",
+     "size": 582,
+     "type": "image/svg+xml"
+    },
+    "wifi-high.svg": {
+     "name": "wifi-high.svg",
+     "blob": "f39e8f5a4452d5fdefff48a3be8df112",
+     "size": 460,
+     "type": "image/svg+xml"
+    },
+    "wifi-slash.svg": {
+     "name": "wifi-slash.svg",
+     "blob": "f4d8235eb1aa13ab435e6502837767e9",
+     "size": 797,
+     "type": "image/svg+xml"
+    },
+    "x.svg": {
+     "name": "x.svg",
+     "blob": "5da525bad9da2d352c07a392049c16ae",
+     "size": 251,
+     "type": "image/svg+xml"
+    },
+    "youtube-logo.svg": {
+     "name": "youtube-logo.svg",
+     "blob": "97a100c5e8679ee0feaef643c9ec5000",
+     "size": 889,
+     "type": "image/svg+xml"
+    },
+    "arrow-counter-clockwise.svg": {
+     "name": "arrow-counter-clockwise.svg",
+     "blob": "afa6e17f9a89194cc2c37abf5dd7c6da",
+     "size": 339,
+     "type": "image/svg+xml"
+    },
+    "caret-left.svg": {
+     "name": "caret-left.svg",
+     "blob": "634fca92bef7eeed9ed8c01788205a20",
+     "size": 183,
+     "type": "image/svg+xml"
+    },
+    "caret-up.svg": {
+     "name": "caret-up.svg",
+     "blob": "cc273afb637454e942316df7cda1c64b",
+     "size": 220,
+     "type": "image/svg+xml"
+    },
+    "copy.svg": {
+     "name": "copy.svg",
+     "blob": "ead1fe2ad813cf8ffb42f97919decf2f",
+     "size": 302,
+     "type": "image/svg+xml"
+    },
+    "dots-three-vertical.svg": {
+     "name": "dots-three-vertical.svg",
+     "blob": "29990cadabbaca664470a3196a81ce31",
+     "size": 229,
+     "type": "image/svg+xml"
+    },
+    "dots-three.svg": {
+     "name": "dots-three.svg",
+     "blob": "5db76e24a1761b11406d97fa30060175",
+     "size": 232,
+     "type": "image/svg+xml"
+    },
+    "eye-slash.svg": {
+     "name": "eye-slash.svg",
+     "blob": "cd8ebb7501ded2cce3aa900383587055",
+     "size": 763,
+     "type": "image/svg+xml"
+    },
+    "funnel.svg": {
+     "name": "funnel.svg",
+     "blob": "92e1ac50dbfb06a86ee78f4a437868ad",
+     "size": 366,
+     "type": "image/svg+xml"
+    },
+    "image.svg": {
+     "name": "image.svg",
+     "blob": "f15b57df923cd2d2f14848aeedc7e55d",
+     "size": 408,
+     "type": "image/svg+xml"
+    },
+    "link-simple.svg": {
+     "name": "link-simple.svg",
+     "blob": "b71c999ad0fa10ba37c6a7a6c2d1d6cc",
+     "size": 481,
+     "type": "image/svg+xml"
+    },
+    "magnifying-glass.svg": {
+     "name": "magnifying-glass.svg",
+     "blob": "6fceb6e3512ebfaf87e08a5678f86719",
+     "size": 223,
+     "type": "image/svg+xml"
+    },
+    "pencil-simple.svg": {
+     "name": "pencil-simple.svg",
+     "blob": "9efe1b890ae12b17942bf0b7368db9fe",
+     "size": 334,
+     "type": "image/svg+xml"
+    },
+    "sign-out.svg": {
+     "name": "sign-out.svg",
+     "blob": "d137fb02169d2a1745546828ef4b1601",
+     "size": 347,
+     "type": "image/svg+xml"
+    },
+    "user.svg": {
+     "name": "user.svg",
+     "blob": "09ea75f66ce6e39a82687baf21ec00a8",
+     "size": 330,
+     "type": "image/svg+xml"
+    }
+   }
+  },
+  "Photo library": {
+   "name": "Photo library",
+   "tile": "l",
+   "order": [
+    "myra-01-breakfast-why.jpg",
+    "myra-01-breakfast-why-web.webp",
+    "myra-02-monsoon-window.jpg",
+    "myra-02-monsoon-window-web.webp",
+    "myra-03-bedtime-cuddle.jpg",
+    "myra-03-bedtime-cuddle-web.webp",
+    "myra-04-drawing-at-home.jpg",
+    "myra-04-drawing-at-home-web.webp",
+    "myra-05-portrait.jpg",
+    "myra-05-portrait-web.webp",
+    "advik-01-counting-carriages.jpg",
+    "advik-01-counting-carriages-web.webp",
+    "advik-02-whispering-to-kheelu.jpg",
+    "advik-02-whispering-to-kheelu-web.webp",
+    "advik-03-studio-hug.jpg",
+    "advik-03-studio-hug-web.webp",
+    "advik-04-floor-train.jpg",
+    "advik-04-floor-train-web.webp",
+    "advik-05-portrait.jpg",
+    "advik-05-portrait-web.webp",
+    "ira-01-story-on-the-bed.jpg",
+    "ira-01-story-on-the-bed-web.webp",
+    "ira-02-drawing-the-dragon.jpg",
+    "ira-02-drawing-the-dragon-web.webp",
+    "ira-03-festive-evening-song.jpg",
+    "ira-03-festive-evening-song-web.webp",
+    "ira-04-paper-crown.jpg",
+    "ira-04-paper-crown-web.webp",
+    "ira-05-portrait.jpg",
+    "ira-05-portrait-web.webp",
+    "tara-01-naming-feelings.jpg",
+    "tara-01-naming-feelings-web.webp",
+    "tara-02-evening-with-amma.jpg",
+    "tara-02-evening-with-amma-web.webp",
+    "tara-03-bedtime-with-baba.jpg",
+    "tara-03-bedtime-with-baba-web.webp",
+    "tara-04-reading-nook.jpg",
+    "tara-04-reading-nook-web.webp",
+    "tara-05-portrait.jpg",
+    "tara-05-portrait-web.webp",
+    "kabir-01-imagining-space.jpg",
+    "kabir-01-imagining-space-web.webp",
+    "kabir-02-block-rocket.jpg",
+    "kabir-02-block-rocket-web.webp",
+    "kabir-03-homework-desk.jpg",
+    "kabir-03-homework-desk-web.webp",
+    "kabir-04-planet-book.jpg",
+    "kabir-04-planet-book-web.webp",
+    "kabir-05-portrait.jpg",
+    "kabir-05-portrait-web.webp"
+   ],
+   "files": {
+    "myra-01-breakfast-why.jpg": {
+     "name": "myra-01-breakfast-why.jpg",
+     "blob": "959b65ac18a5a7fe8cd1625d67d3d363",
+     "size": 777181,
+     "type": "image/jpeg"
+    },
+    "myra-01-breakfast-why-web.webp": {
+     "name": "myra-01-breakfast-why-web.webp",
+     "blob": "fe78b00cab1b7a1376c8cceb6d501de8",
+     "size": 139978,
+     "type": "image/webp"
+    },
+    "myra-02-monsoon-window.jpg": {
+     "name": "myra-02-monsoon-window.jpg",
+     "blob": "9ba9f181fd30677e1168f5d3d98224d2",
+     "size": 913465,
+     "type": "image/jpeg"
+    },
+    "myra-02-monsoon-window-web.webp": {
+     "name": "myra-02-monsoon-window-web.webp",
+     "blob": "2bf61c28c3b12add5a649c3c04a94a9b",
+     "size": 124288,
+     "type": "image/webp"
+    },
+    "myra-03-bedtime-cuddle.jpg": {
+     "name": "myra-03-bedtime-cuddle.jpg",
+     "blob": "ae0d31b8b5f582ea746f3cac5f1f7c13",
+     "size": 870965,
+     "type": "image/jpeg"
+    },
+    "myra-03-bedtime-cuddle-web.webp": {
+     "name": "myra-03-bedtime-cuddle-web.webp",
+     "blob": "c50a48684c4c4c4a60f23096dccf4fbf",
+     "size": 116452,
+     "type": "image/webp"
+    },
+    "myra-04-drawing-at-home.jpg": {
+     "name": "myra-04-drawing-at-home.jpg",
+     "blob": "e5194b72efd6cedbc3b2c0d89d971f68",
+     "size": 694534,
+     "type": "image/jpeg"
+    },
+    "myra-04-drawing-at-home-web.webp": {
+     "name": "myra-04-drawing-at-home-web.webp",
+     "blob": "065c8a39764e1be02593a32eaba3cbcf",
+     "size": 112408,
+     "type": "image/webp"
+    },
+    "myra-05-portrait.jpg": {
+     "name": "myra-05-portrait.jpg",
+     "blob": "a0d8855012bb429a5bd16c0b5761a28b",
+     "size": 603579,
+     "type": "image/jpeg"
+    },
+    "myra-05-portrait-web.webp": {
+     "name": "myra-05-portrait-web.webp",
+     "blob": "edae093d7113d50e6b20f4044a8e33c6",
+     "size": 108896,
+     "type": "image/webp"
+    },
+    "advik-01-counting-carriages.jpg": {
+     "name": "advik-01-counting-carriages.jpg",
+     "blob": "b8348144f57938a13ba9a0bdc174dd78",
+     "size": 651003,
+     "type": "image/jpeg"
+    },
+    "advik-01-counting-carriages-web.webp": {
+     "name": "advik-01-counting-carriages-web.webp",
+     "blob": "0a0901bda7f0ec8887c9ba3cb73a4ef0",
+     "size": 104704,
+     "type": "image/webp"
+    },
+    "advik-02-whispering-to-kheelu.jpg": {
+     "name": "advik-02-whispering-to-kheelu.jpg",
+     "blob": "d16aa46bc960926885be4bf0515ec090",
+     "size": 547913,
+     "type": "image/jpeg"
+    },
+    "advik-02-whispering-to-kheelu-web.webp": {
+     "name": "advik-02-whispering-to-kheelu-web.webp",
+     "blob": "ca92831f98fd811b7812cc42d00a933b",
+     "size": 61222,
+     "type": "image/webp"
+    },
+    "advik-03-studio-hug.jpg": {
+     "name": "advik-03-studio-hug.jpg",
+     "blob": "10e29f1919ecab5361cf177ec90e9d11",
+     "size": 495747,
+     "type": "image/jpeg"
+    },
+    "advik-03-studio-hug-web.webp": {
+     "name": "advik-03-studio-hug-web.webp",
+     "blob": "2fd6435d946a828116dfacb98814dc9e",
+     "size": 61510,
+     "type": "image/webp"
+    },
+    "advik-04-floor-train.jpg": {
+     "name": "advik-04-floor-train.jpg",
+     "blob": "67d5ef63d9e869331f4730eeb44a0f6f",
+     "size": 628686,
+     "type": "image/jpeg"
+    },
+    "advik-04-floor-train-web.webp": {
+     "name": "advik-04-floor-train-web.webp",
+     "blob": "097a6d5fe7d725208b4984c6274aa6b4",
+     "size": 51884,
+     "type": "image/webp"
+    },
+    "advik-05-portrait.jpg": {
+     "name": "advik-05-portrait.jpg",
+     "blob": "1095e50d0b1b27bf0185f792bbdae47f",
+     "size": 480770,
+     "type": "image/jpeg"
+    },
+    "advik-05-portrait-web.webp": {
+     "name": "advik-05-portrait-web.webp",
+     "blob": "a68269371d7efc3be65072b92ddc80ee",
+     "size": 58214,
+     "type": "image/webp"
+    },
+    "ira-01-story-on-the-bed.jpg": {
+     "name": "ira-01-story-on-the-bed.jpg",
+     "blob": "c875ae6b491260194ecf889476c9250c",
+     "size": 772169,
+     "type": "image/jpeg"
+    },
+    "ira-01-story-on-the-bed-web.webp": {
+     "name": "ira-01-story-on-the-bed-web.webp",
+     "blob": "7542eccafb13cc3256afaeccacfa26d5",
+     "size": 125968,
+     "type": "image/webp"
+    },
+    "ira-02-drawing-the-dragon.jpg": {
+     "name": "ira-02-drawing-the-dragon.jpg",
+     "blob": "8d7b2efcf620b4e4f48e369b57aff070",
+     "size": 639815,
+     "type": "image/jpeg"
+    },
+    "ira-02-drawing-the-dragon-web.webp": {
+     "name": "ira-02-drawing-the-dragon-web.webp",
+     "blob": "37a519addc9e808bafac057ddb7e607a",
+     "size": 74246,
+     "type": "image/webp"
+    },
+    "ira-03-festive-evening-song.jpg": {
+     "name": "ira-03-festive-evening-song.jpg",
+     "blob": "c58464c828cc346c0457f2083f3d38d6",
+     "size": 747259,
+     "type": "image/jpeg"
+    },
+    "ira-03-festive-evening-song-web.webp": {
+     "name": "ira-03-festive-evening-song-web.webp",
+     "blob": "372fadf6c9db9f005a986483bbf9f3a8",
+     "size": 68762,
+     "type": "image/webp"
+    },
+    "ira-04-paper-crown.jpg": {
+     "name": "ira-04-paper-crown.jpg",
+     "blob": "6f099bfbec52de12635c8762c90abd03",
+     "size": 704538,
+     "type": "image/jpeg"
+    },
+    "ira-04-paper-crown-web.webp": {
+     "name": "ira-04-paper-crown-web.webp",
+     "blob": "cf6403767156f7e000a584d2c5bb94ff",
+     "size": 96424,
+     "type": "image/webp"
+    },
+    "ira-05-portrait.jpg": {
+     "name": "ira-05-portrait.jpg",
+     "blob": "89bdf52819f0223d49544774d2bcc73c",
+     "size": 676937,
+     "type": "image/jpeg"
+    },
+    "ira-05-portrait-web.webp": {
+     "name": "ira-05-portrait-web.webp",
+     "blob": "482f498755d8174e916aa56cfdb3585a",
+     "size": 84108,
+     "type": "image/webp"
+    },
+    "tara-01-naming-feelings.jpg": {
+     "name": "tara-01-naming-feelings.jpg",
+     "blob": "3212b7cd449526ae6a63176e3b24c6e9",
+     "size": 833862,
+     "type": "image/jpeg"
+    },
+    "tara-01-naming-feelings-web.webp": {
+     "name": "tara-01-naming-feelings-web.webp",
+     "blob": "cb7184fa369678e9740d70d1d317ec6f",
+     "size": 140136,
+     "type": "image/webp"
+    },
+    "tara-02-evening-with-amma.jpg": {
+     "name": "tara-02-evening-with-amma.jpg",
+     "blob": "3020ed29524aa2dad3633d011e0a0630",
+     "size": 620652,
+     "type": "image/jpeg"
+    },
+    "tara-02-evening-with-amma-web.webp": {
+     "name": "tara-02-evening-with-amma-web.webp",
+     "blob": "33076d4672b7f1d40c3f420dddd3a46c",
+     "size": 67640,
+     "type": "image/webp"
+    },
+    "tara-03-bedtime-with-baba.jpg": {
+     "name": "tara-03-bedtime-with-baba.jpg",
+     "blob": "2ac40496fb9e5ccae8eb84b78eb104c3",
+     "size": 842436,
+     "type": "image/jpeg"
+    },
+    "tara-03-bedtime-with-baba-web.webp": {
+     "name": "tara-03-bedtime-with-baba-web.webp",
+     "blob": "d955732a506904139807567107d481db",
+     "size": 114864,
+     "type": "image/webp"
+    },
+    "tara-04-reading-nook.jpg": {
+     "name": "tara-04-reading-nook.jpg",
+     "blob": "2f41c18d8147cd4ac373e6676a35205c",
+     "size": 755996,
+     "type": "image/jpeg"
+    },
+    "tara-04-reading-nook-web.webp": {
+     "name": "tara-04-reading-nook-web.webp",
+     "blob": "ea770440c5e9e8b772155c2952e5706c",
+     "size": 115738,
+     "type": "image/webp"
+    },
+    "tara-05-portrait.jpg": {
+     "name": "tara-05-portrait.jpg",
+     "blob": "5319e8ccd9a8745d232dd4642451225e",
+     "size": 840661,
+     "type": "image/jpeg"
+    },
+    "tara-05-portrait-web.webp": {
+     "name": "tara-05-portrait-web.webp",
+     "blob": "6ad5498b1791e1f1ffb28d959270492a",
+     "size": 154516,
+     "type": "image/webp"
+    },
+    "kabir-01-imagining-space.jpg": {
+     "name": "kabir-01-imagining-space.jpg",
+     "blob": "5ac78f4eabd5b34773a4ee95d7b15c8b",
+     "size": 722003,
+     "type": "image/jpeg"
+    },
+    "kabir-01-imagining-space-web.webp": {
+     "name": "kabir-01-imagining-space-web.webp",
+     "blob": "df312489b2fc7732f00128f74ea615ae",
+     "size": 57110,
+     "type": "image/webp"
+    },
+    "kabir-02-block-rocket.jpg": {
+     "name": "kabir-02-block-rocket.jpg",
+     "blob": "5646c345b33242b4c34b419af9ca82d6",
+     "size": 860067,
+     "type": "image/jpeg"
+    },
+    "kabir-02-block-rocket-web.webp": {
+     "name": "kabir-02-block-rocket-web.webp",
+     "blob": "09439c4fff31f29b8353716681926d64",
+     "size": 75848,
+     "type": "image/webp"
+    },
+    "kabir-03-homework-desk.jpg": {
+     "name": "kabir-03-homework-desk.jpg",
+     "blob": "457222befe7e7242882c073c2c44ceaa",
+     "size": 575901,
+     "type": "image/jpeg"
+    },
+    "kabir-03-homework-desk-web.webp": {
+     "name": "kabir-03-homework-desk-web.webp",
+     "blob": "e113c1d842f9ecafd9f4a4f399430be4",
+     "size": 63876,
+     "type": "image/webp"
+    },
+    "kabir-04-planet-book.jpg": {
+     "name": "kabir-04-planet-book.jpg",
+     "blob": "3575c978920da23deda4b5180affa3c9",
+     "size": 728948,
+     "type": "image/jpeg"
+    },
+    "kabir-04-planet-book-web.webp": {
+     "name": "kabir-04-planet-book-web.webp",
+     "blob": "07ed7f3c11f766a9e4c516a708f37dea",
+     "size": 71208,
+     "type": "image/webp"
+    },
+    "kabir-05-portrait.jpg": {
+     "name": "kabir-05-portrait.jpg",
+     "blob": "d73fd947dfb5c95fba7ad4b1fd5d0c76",
+     "size": 632763,
+     "type": "image/jpeg"
+    },
+    "kabir-05-portrait-web.webp": {
+     "name": "kabir-05-portrait-web.webp",
+     "blob": "1c2b3c9d791ef30ae9e1c27a8083c4b5",
+     "size": 131126,
+     "type": "image/webp"
+    }
+   }
+  }
+ },
+ "blobs": {},
+ "docs": {
+  "sections": []
+ },
+ "lastChange": {
+  "by": "Apoorva",
+  "at": "2026-10-10T21:01:05Z",
+  "via": "Claude (Cowork)",
+  "note": "v11: the astronaut helmet is worn. On HomePageTrust the bubble now holds Kabir's whole head, the collar sits at his neck and the helmet passes behind Kheelu; ImaginationFrame doodles take a new clip option. Placement rules added to Imagery, the ImaginationFrame guide and How to use."
+ }
+}

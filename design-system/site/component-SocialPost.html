@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SocialPost · Kheelona design system</title>
+<link rel="stylesheet" href="runtime/tokens.css">
+<link rel="stylesheet" href="runtime/bundle.css">
+<link rel="stylesheet" href="runtime/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="site-header__in">
+  <a class="site-logo" href="../index.html"><img src="../project/assets/Logo/kheelona-logo.svg" alt="Kheelona" height="30"><span>Design system <b>v11</b></span></a>
+  <nav aria-label="Sections"><a href="../index.html">Start</a><a href="brand-overview.html">Brand book</a><a href="components.html" aria-current="page">Components</a><a href="pages.html">Page templates</a><a href="assets.html">Assets</a><a href="tokens.html">Tokens</a></nav>
+</div></header>
+<main id="main" class="site-main">
+<p class="crumbs"><a href="components.html">Components</a> / Marketing</p>
+<h1 class="page-title">SocialPost</h1>
+
+<div class="tools"><a class="kh-btn kh-btn--secondary kh-btn--s" href="live-SocialPost.html" target="_blank">Open on its own ↗</a><div class="seg" data-theme-switch role="group" aria-label="Theme"><button type="button" value="light" aria-pressed="true">Day</button><button type="button" value="dark" aria-pressed="false">Bedtime</button></div></div>
+<div class="frame-col"><div class="frame" data-w="980" data-h="470"><iframe src="live-SocialPost.html" data-src="live-SocialPost.html" title="SocialPost, live preview" loading="lazy"></iframe></div></div>
+<article class="prose guide"><p>A 4:5 social post (1080×1350 when exported) built from a brand-colour block, a cast sticker, an optional Kheelu sticker, a Baloo headline with one handwritten phrase, and the brand footer pill.</p>
+<p><strong>Use it for:</strong> Instagram and Facebook feed posts and carousel covers, and as the base for stories and ads.</p>
+<p><strong>Props:</strong> <code>tone</code>, <code>variant</code> (<code>&quot;block&quot;</code> default | <code>&quot;fur&quot;</code> | <code>&quot;board&quot;</code>), <code>eyebrow</code>, <code>headline</code>, <code>hand</code> (the handwritten ending), <code>sub</code>, <code>kid</code> (a <code>*-sticker.png</code>), <code>product</code> (<code>kheelu-front-sticker.png</code>), <code>shape</code> (<code>{ src, x, y, w }</code> cut-paper shape), <code>brand</code> (default: the Day logo), <code>offer</code> (pill text, or <code>false</code>).</p>
+<p><strong>Rules</strong></p>
+<ul>
+<li>It always renders in the Day theme (it sets <code>data-theme=&quot;light&quot;</code>).</li>
+<li>Use one child and at most one Kheelu. Faces stay clear of the footer pill and the headline.</li>
+<li>Keep headlines to 3–6 words before the handwritten phrase. The offer pill only appears on selling posts.</li>
+<li>Alternate grounds across the grid (sun → blue → fur → chilli → board). Chilli posts are for offers.</li>
+<li>Text is ink on sun and fur grounds, and white on chilli and blue (2.9:1 and 3.0:1, brand decisions): keep chilli and blue post headlines big and short.</li>
+<li>The component scales with its width (container units). Render it at 540px and export at 2x for 1080×1350.</li>
+</ul>
+<nav class="pager"><a href="component-DeckSlide.html">← DeckSlide</a><a href="component-AppScreens.html">AppScreens →</a></nav><p class="source">Source: <code>project/components/SocialPost/</code></p></article>
+</main>
+<footer class="site-footer"><div class="site-footer__in">Kheelona design system v11 · exported 10 Oct 2026 · the web version on claude.ai is the source of truth</div></footer>
+<script src="runtime/site.js"></script>
+</body>
+</html>

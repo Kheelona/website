@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Surfaces · Kheelona design system</title>
+<link rel="stylesheet" href="runtime/tokens.css">
+<link rel="stylesheet" href="runtime/bundle.css">
+<link rel="stylesheet" href="runtime/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="site-header__in">
+  <a class="site-logo" href="../index.html"><img src="../project/assets/Logo/kheelona-logo.svg" alt="Kheelona" height="30"><span>Design system <b>v11</b></span></a>
+  <nav aria-label="Sections"><a href="../index.html">Start</a><a href="brand-overview.html" aria-current="page">Brand book</a><a href="components.html">Components</a><a href="pages.html">Page templates</a><a href="assets.html">Assets</a><a href="tokens.html">Tokens</a></nav>
+</div></header>
+<main id="main" class="site-main">
+<div class="doc-layout">
+  <aside class="doc-nav"><p class="side-label">Brand book</p><ul><li><a href="brand-overview.html">Overview</a></li><li><a href="brand-how-to-use.html">How to use this system</a></li><li><a href="brand-writing.html">Writing</a></li><li><a href="brand-imagery.html">Photography, chalk &amp; crayon</a></li><li><a href="brand-cast.html">The cast</a></li><li><a href="brand-kheelu.html">Kheelu, the product</a></li><li><a href="brand-asset-playbook.html">Making new assets (for agents)</a></li><li><a href="brand-surfaces.html" aria-current="page">Surfaces</a></li><li><a href="brand-selling.html">Selling</a></li><li><a href="brand-accessibility.html">Accessibility &amp; inclusion</a></li><li><a href="brand-cast-photo-recipe.html">Making cast photos (step by step)</a></li><li><a href="brand-pages.html">Pages: putting it together</a></li></ul></aside>
+  <article class="prose"><h1>Surfaces</h1><nav class="toc" aria-label="On this page"><p>On this page</p><ul><li><a href="#sizes-at-a-glance">Sizes at a glance</a></li><li><a href="#website">Website</a></li><li><a href="#parent-app">Parent app</a></li><li><a href="#decks-sales-partners-investors-schools">Decks (sales, partners, investors, schools)</a></li><li><a href="#social">Social</a></li><li><a href="#video-and-audio">Video and audio</a></li><li><a href="#whatsapp">WhatsApp</a></li><li><a href="#print-and-packaging">Print and packaging</a></li></ul></nav>
+<p>The same system, tuned for each place a parent meets Kheelona.</p>
+<h2 id="sizes-at-a-glance">Sizes at a glance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Surface</th>
+<th>Size</th>
+<th>Theme</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Website</td>
+<td>360–1440px wide, content max 1200px</td>
+<td>Day</td>
+<td>Mobile first: most Indian parents arrive on a phone</td>
+</tr>
+<tr>
+<td>Parent app</td>
+<td>360–430pt wide</td>
+<td>Day, plus Bedtime</td>
+<td>48pt touch targets, and 64pt for anything a child might press</td>
+</tr>
+<tr>
+<td>Instagram / Facebook feed</td>
+<td>1080×1350 (4:5)</td>
+<td>Day</td>
+<td><a class="cref" href="component-SocialPost.html"><code>SocialPost</code></a></td>
+</tr>
+<tr>
+<td>Stories / Reels</td>
+<td>1080×1920 (9:16)</td>
+<td>Day</td>
+<td>Keep text and CTA in the safe zone: below the top 14%, above the bottom third. Check the app's current overlay before posting</td>
+</tr>
+<tr>
+<td>YouTube / web video</td>
+<td>1920×1080</td>
+<td>Day</td>
+<td>Burned-in captions, English plus the regional version</td>
+</tr>
+<tr>
+<td>Deck</td>
+<td>1920×1080 (16:9)</td>
+<td>Day, with chalkboard statement slides</td>
+<td><a class="cref" href="component-DeckSlide.html"><code>DeckSlide</code></a></td>
+</tr>
+<tr>
+<td>WhatsApp share / OG image</td>
+<td>1200×630, or 1080×1080</td>
+<td>Day</td>
+<td>Must work as a thumbnail; one face, one line</td>
+</tr>
+<tr>
+<td>Email</td>
+<td>600px column</td>
+<td>Day</td>
+<td>Live text, one cta</td>
+</tr>
+<tr>
+<td>Marketplace listings</td>
+<td>2000×2000</td>
+<td>Day</td>
+<td>Many marketplaces need a pure white main image; make a white-ground version from <code>kheelu-front.png</code> when needed</td>
+</tr>
+<tr>
+<td>Print (quick-start card, inserts)</td>
+<td>As specified by the printer</td>
+<td>Day</td>
+<td>CMYK conversion of cream and the brand colours needs a proof; no thin chalk lines</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="website">Website</h2>
+<p><strong>Feel:</strong> a calm, cream page where every scroll gives one clear reason to believe, and the pre-order button is never far away.</p>
+<ul>
+<li>Order sections as in <a class="xref" href="brand-selling.html"><strong>Selling</strong></a>, and start from the home page templates in <a class="xref" href="brand-pages.html"><strong>Pages: putting it together</strong></a>. Alternate <code>surface</code> and <code>surface-band</code> bands, and give each band one colour moment.</li>
+<li><strong>Header:</strong> <a class="cref" href="component-AnnouncementBar.html"><code>AnnouncementBar</code></a> (offer and ship date) above <a class="cref" href="component-NavBar.html"><code>NavBar</code></a> (logo, five links, cta).</li>
+<li><strong>Hero:</strong> <a class="cref" href="component-SectionHeading.html"><code>SectionHeading</code></a> in hero size with one <code>Hand</code> phrase, a real photo or a cast sticker on a brand-colour block, the cta, and a line of trust under it (&quot;Screen-free · No open internet · Ships 20 Oct 2026&quot;).</li>
+<li><strong>Phones:</strong> <a class="cref" href="component-StickyBuyBar.html"><code>StickyBuyBar</code></a> appears after the hero scrolls away, and the nav collapses to the menu button, which opens <a class="cref" href="component-NavDrawer.html"><code>NavDrawer</code></a>.</li>
+<li><strong>Links:</strong> <code>link</code> colour, always underlined in body copy.</li>
+<li><strong>Performance:</strong> serve <code>*-portrait-web.webp</code> and <code>kheelu-front.webp</code>, lazy-load below the fold, and keep the hero image under 200 KB.</li>
+</ul>
+<h2 id="parent-app">Parent app</h2>
+<p><strong>Feel:</strong> quiet, kind and factual. This is where the trust earned in marketing is kept. <strong>No selling inside the child's data.</strong></p>
+<ul>
+<li><strong>Home:</strong> <a class="cref" href="component-AppSummaryCard.html"><code>AppSummaryCard</code></a> (&quot;Today with Kheelu&quot;: minutes, new words, topics, one &quot;Try together tonight&quot; idea, a link to the full conversation).</li>
+<li><strong>Controls:</strong> <a class="cref" href="component-ParentControl.html"><code>ParentControl</code></a> rows for quiet hours, topic filters, languages and daily summary. Every switch has a label and a hint in plain words.</li>
+<li><strong>Modes:</strong> <a class="cref" href="component-ModeSwitch.html"><code>ModeSwitch</code></a> (AI mode, Story mode, Bluetooth).</li>
+<li><strong>Navigation:</strong> <a class="cref" href="component-TabBar.html"><code>TabBar</code></a> at the bottom (Today, Conversations, Stories, Settings), <a class="cref" href="component-Tabs.html"><code>Tabs</code></a> inside a screen, <a class="cref" href="component-ListItem.html"><code>ListItem</code></a> rows in <code>List</code> cards.</li>
+<li><strong>Forms:</strong> <a class="cref" href="component-TextField.html"><code>TextField</code></a>, <a class="cref" href="component-TextArea.html"><code>TextArea</code></a>, <a class="cref" href="component-Select.html"><code>Select</code></a>, <a class="cref" href="component-Checkbox.html"><code>Checkbox</code></a>, <a class="cref" href="component-RadioGroup.html"><code>RadioGroup</code></a> and <a class="cref" href="component-Switch.html"><code>Switch</code></a>, with real-world examples (&quot;Myra&quot;, &quot;14/02/2022&quot;). Everyday actions are blue <code>primary</code> buttons; chilli never appears in the app except to buy.</li>
+<li><strong>Feedback:</strong> <a class="cref" href="component-Alert.html"><code>Alert</code></a> for device status (&quot;Kheelu is updating&quot;), <a class="cref" href="component-Toast.html"><code>Toast</code></a> after an action (&quot;Quiet hours saved&quot;, with Undo), <a class="cref" href="component-EmptyState.html"><code>EmptyState</code></a> for empty screens, <a class="cref" href="component-ProgressBar.html"><code>ProgressBar</code></a> for setup.</li>
+<li><strong>Bedtime theme:</strong> offer it automatically after 7 pm and in bedtime story screens. Grounds turn warm cocoa; buttons and selection stay Kheelu Blue (<code>blue-500</code>) with white on it, and Kheelu Blue, Chilli and Sunshine can also be text on night grounds.</li>
+<li><strong>Data screens</strong> (conversation log, summaries) use no doodles, stickers or crayon marks. Clarity is the brand here.</li>
+<li><strong>Destructive actions</strong> use a <code>danger</code> button, a confirm <a class="cref" href="component-Dialog.html"><code>Dialog</code></a> (or <code>BottomSheet</code> on phones) and plain verbs (&quot;Delete conversation&quot;).</li>
+<li>Kheelona+ upsells live in Settings only, never in the summary or the log.</li>
+</ul>
+<h2 id="decks-sales-partners-investors-schools">Decks (sales, partners, investors, schools)</h2>
+<ul>
+<li>Use 16:9 with the cream ground, ink text and an ink eyebrow; colour comes from the brand block. The footer shows the logo plus context.</li>
+<li><strong>Title slides:</strong> use <a class="cref" href="component-DeckSlide.html"><code>DeckSlide</code></a> title with a cast sticker and Kheelu on a brand-colour block.</li>
+<li><strong>Statement slides:</strong> use the chalkboard (<code>board</code>) for the one sentence you want remembered, with one <code>hand</code> phrase in <code>sun-500</code>.</li>
+<li><strong>Fact slides:</strong> three numbers at most, each with a short label. Numbers come from approved facts only.</li>
+<li>Keep to one idea per slide and 30 words at most. Put details in the speaker notes.</li>
+<li>Investor decks may use PlayOS layer diagrams. Draw them with tokens (cream blocks, ink lines, brand-colour accents), never with stock 3D or gradient art.</li>
+</ul>
+<h2 id="social">Social</h2>
+<ul>
+<li><strong>Grid rhythm:</strong> alternate grounds (sunshine → blue → cream → chilli → chalkboard) so the grid has a steady rhythm in the brand colours. Chilli grounds are for offers.</li>
+<li><strong>The footer pill</strong> (the Day logo plus an optional chilli &quot;Pre-order ₹4,999&quot;) sits on every post and makes the grid recognisable.</li>
+<li><strong>Content mix</strong> (guide): 40% child moments (cast and real families with consent), 25% how it works and safety proof, 20% parenting value (bilingual homes, screen-free play), 15% offer and launch.</li>
+<li><strong>Carousels:</strong> slide 1 is the hook (a question a parent asks), slides 2–4 are proof, the last slide is the cta and share.</li>
+<li><strong>Captions:</strong> the first line is the hook, use one emoji at most, keep to 3–5 relevant hashtags, and avoid Hinglish in captions about safety or price.</li>
+</ul>
+<h2 id="video-and-audio">Video and audio</h2>
+<ul>
+<li>Start with a child and Kheelu talking within the first 2 seconds.</li>
+<li>Kheelu's voice: warm, unhurried, gently Indian-English, never cartoonish or robotic. Record or design it once and reuse it. Never clone a real person's voice.</li>
+<li>Caption everything, and keep burned-in captions inside the safe zones in Nunito ExtraBold on a <code>white</code> pill.</li>
+<li>Chalk doodles may draw on over 600–900ms to show the idea forming.</li>
+</ul>
+<h2 id="whatsapp">WhatsApp</h2>
+<ul>
+<li>WhatsApp is where Indian parents recommend things. Make every page shareable: &quot;Know a parent who needs this? Share Kheelu on WhatsApp.&quot;</li>
+<li>The share message is plain text a parent would send themselves: &quot;Found this screen-free AI friend for kids, speaks Hindi and Tamil too. First 500 at ₹4,999: kheelona.com&quot;</li>
+<li>Support chats use the first name, short answers and one link.</li>
+</ul>
+<h2 id="print-and-packaging">Print and packaging</h2>
+<ul>
+<li>Use the cream ground, ink text, Baloo 2 headlines and one Kalam line. Chilli, Kheelu Blue and sunshine blocks need a printed proof against the screen colours, because they shift in CMYK. One-colour jobs use the ink logo.</li>
+<li>Set the quick-start card in numbered steps (<a class="cref" href="component-StepLoop.html"><code>StepLoop</code></a> style), with icons from the Icons group and the belly-unit photo for button positions.</li>
+<li>Safety and age marks follow the regulations. Never decorate them.</li>
+</ul>
+<nav class="pager"><a href="brand-asset-playbook.html">← Making new assets (for agents)</a><a href="brand-selling.html">Selling →</a></nav><p class="source">Source: <code>project/06-surfaces.md</code></p></article>
+</div>
+</main>
+<footer class="site-footer"><div class="site-footer__in">Kheelona design system v11 · exported 10 Oct 2026 · the web version on claude.ai is the source of truth</div></footer>
+<script src="runtime/site.js"></script>
+</body>
+</html>

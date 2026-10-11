@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="runtime/frame.js"></script>
+<link rel="stylesheet" href="runtime/tokens.css">
+<link rel="stylesheet" href="runtime/bundle.css">
+<script src="runtime/react.production.min.js"></script>
+<script src="runtime/react-dom.production.min.js"></script>
+<script src="runtime/bundle.js"></script>
+<script src="runtime/assets-map.js"></script>
+
+<title>CampaignKit · Kheelona</title>
+<style>
+  .pg-kit { display: grid; gap: var(--space-7); padding: var(--space-7) var(--space-7) var(--space-8); background: var(--surface); color: var(--text); }
+  .pg-kit h2 { margin: 0 0 var(--space-4); }
+  .pg-label { margin: 0 0 var(--space-3); font: 800 13px/16px var(--font-body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+  .pg-row { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 0.72fr); gap: var(--space-6); align-items: start; }
+  /* WhatsApp share: the 1200x630 link preview and the message a parent would send */
+  .pg-og { display: grid; grid-template-columns: 1fr 1fr; aspect-ratio: 1200 / 630; overflow: hidden; border: var(--stroke-hair) solid var(--border); border-radius: var(--radius-l); background: var(--surface-raised); }
+  .pg-og img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .pg-og div { display: grid; align-content: center; gap: var(--space-2); padding: var(--space-5); }
+  .pg-og p { margin: 0; }
+  .pg-bubble { margin: var(--space-4) 0 0; padding: var(--space-3) var(--space-4); border-radius: var(--radius-l) var(--radius-l) var(--radius-l) var(--radius-xs); background: var(--surface-raised); box-shadow: inset 0 0 0 var(--stroke-hair) var(--border); }
+  .pg-bubble p { margin: 0; }
+  .pg-bubble .kh-caption { display: block; margin-top: var(--space-1); color: var(--text-muted); text-align: right; }
+  .pg-deck { margin-top: var(--space-7); }
+  /* Email: one fluid 600px column */
+  .pg-email { display: grid; gap: var(--space-5); padding: var(--space-5); border-radius: var(--radius-l); background: var(--surface); box-shadow: inset 0 0 0 var(--stroke-hair) var(--border); }
+  .pg-email .kh-heading__title { font-size: 32px; line-height: 38px; }
+  .pg-email .kh-logo { justify-self: center; }
+  .pg-email .kh-caption { margin: 0; text-align: center; color: var(--text-muted); }
+  /* Story cover, 9:16: the words sit on the photo's calm wall inside the safe zone (below the top 14%, above the bottom third),
+     clear of Myra's face and Kheelu. Sizes are in cqw, so the frame is a true scale model of the 1080 × 1920 file. */
+  .pg-story { position: relative; overflow: hidden; aspect-ratio: 9 / 16; border-radius: var(--radius-l); background: var(--ink-900); container-type: inline-size; }
+  .pg-story > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .pg-story__words { position: absolute; left: 7%; right: 7%; top: 15%; display: grid; gap: 2cqw; color: var(--white); }
+  .pg-story__row { display: flex; align-items: center; justify-content: space-between; gap: 3cqw; }
+  .pg-story__title { margin: 0; font: 800 6.6cqw/1.1 var(--font-display); color: var(--white); }
+  .pg-story__title .kh-hand { color: var(--sun-500); }
+  .pg-story__offer { padding: 1.4cqw 3.6cqw; border-radius: var(--radius-pill); background: var(--cta); color: var(--on-cta); font: 800 4.2cqw/1.2 var(--font-body); white-space: nowrap; }
+  .pg-note { margin: var(--space-2) 0 0; color: var(--text-muted); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  var K = window.Kheelona, h = React.createElement;
+  function B(id) { return KH_ASSET(id); }
+
+  var page = h('div', { className: 'pg-kit', 'data-theme': 'light' },
+    h('div', null,
+      h('p', { className: 'pg-label' }, 'Instagram grid · sunshine, blue, chilli, chalkboard'),
+      h('div', { className: 'kh-cols kh-cols--4' },
+        h(K.SocialPost, { tone: 'sun', eyebrow: 'Age 5', headline: 'Stories told with', hand: 'both hands.', kid: B('b6c510fe6fd4f36d3da7d31b50d826cd'), kidAlt: 'Ira, 5, mid-story',
+          shape: { src: B('e5c48681deba1fcc6d294d2bad83a950'), x: 4, y: 52, w: 52 }, offer: false }),
+        h(K.SocialPost, { tone: 'blue', eyebrow: 'Imagination', headline: 'How do astronauts', hand: 'sleep?', kid: B('9dc07649cebff1016907e28cb838d91e'), kidAlt: 'Kabir, 6, grinning',
+          shape: { src: B('6ab45e33e9049035d05e6cd58b300975'), x: 6, y: 56, w: 34 }, offer: false }),
+        h(K.SocialPost, { tone: 'chilli', eyebrow: 'Pre-order', headline: 'First 500 at', hand: '₹4,999.', kid: B('760a3c071ae4f6d478bb4a830f4076c6'), kidAlt: 'Tara, 5½',
+          product: B('d53f5a3962997ac35db37066131a9139'), offer: 'Reserve ₹499' }),
+        h(K.SocialPost, { variant: 'board', eyebrow: 'Safety', headline: 'Not muted.', hand: 'Off.', sub: 'The microphone wakes only on the wake word.',
+          product: B('d53f5a3962997ac35db37066131a9139'), offer: false }))),
+
+    h('div', { className: 'pg-row' },
+      h('div', null,
+        h('p', { className: 'pg-label' }, 'WhatsApp share · 1200 × 630'),
+        h('div', { className: 'pg-og' },
+          h('img', { src: B('676b14f35b2f90d90b4685fae638c866'), alt: 'Kheelu on a cream background' }),
+          h('div', null,
+            h(K.Logo, { height: 22 }),
+            h('p', { className: 'kh-subtitle' }, 'A screen-free AI friend for kids.'),
+            h('p', { className: 'kh-body-s' }, 'Speaks Hindi and Tamil too. First 500 at ₹4,999.'),
+            h('p', { className: 'kh-caption' }, 'kheelona.com'))),
+        h('div', { className: 'pg-bubble' },
+          h('p', { className: 'kh-body' }, 'Found this screen-free AI friend for kids, speaks Hindi and Tamil too. First 500 at ₹4,999: kheelona.com'),
+          h('span', { className: 'kh-caption' }, '9:41 pm')),
+        h('div', { className: 'pg-deck' },
+          h('p', { className: 'pg-label' }, 'Deck \u00B7 statement slide'),
+          h(K.DeckSlide, { layout: 'statement', board: true, title: 'Safety is not a feature. It is', hand: 'the whole product.', foot: 'Why parents trust Kheelu' }))),
+
+      h('div', null,
+        h('p', { className: 'pg-label' }, 'Email · one 600px column'),
+        h('div', { className: 'pg-email' },
+          h(K.Logo, { height: 26 }),
+          h('figure', { className: 'kh-photo kh-photo--wide' }, h('img', { src: B('2bf61c28c3b12add5a649c3c04a94a9b'), alt: 'Myra, 3, at a window on a monsoon afternoon with Kheelu' })),
+          h(K.SectionHeading, { eyebrow: 'Ships 20 Oct 2026', title: ['Reserve Kheelu for ', h(K.Mark, { key: 'm', kind: 'highlight' }, '₹499.')],
+            lead: 'Fully refundable until it ships. ₹4,999 for the first 500 families.' }),
+          h(K.FeatureCard, { tone: 'sun', icon: 'book-open', title: 'Stories that ask back' }, 'Kheelu pauses the story to ask what happens next.'),
+          h(K.FeatureCard, { tone: 'blue', variant: 'tint', icon: 'translate', title: 'Your home languages' }, 'Up to ten languages at launch.'),
+          h(K.Button, { variant: 'cta', size: 'l', block: true, href: 'https://store.kheelona.com' }, 'Pre-order Kheelu'),
+          h('p', { className: 'kh-caption' }, '© 2026 Kheelona · Unsubscribe'))),
+
+      h('div', null,
+        h('p', { className: 'pg-label' }, 'Story cover · 9:16'),
+        h('div', { className: 'pg-story' },
+          h('img', { src: B('c50a48684c4c4c4a60f23096dccf4fbf'), alt: 'Myra, 3, cuddles Kheelu in bed at night' }),
+          h('div', { className: 'pg-story__words' },
+            h('div', { className: 'pg-story__row' },
+              h(K.Logo, { variant: 'chalk', height: '7.2cqw' }),
+              h('span', { className: 'pg-story__offer' }, 'Pre-order ₹4,999')),
+            h('p', { className: 'pg-story__title' }, 'Bedtime stories,', h('br'), h(K.Hand, null, 'in your language.')))),
+        h('p', { className: 'kh-caption pg-note' }, 'The words sit on the calm wall, below the top bar. Myra’s face and Kheelu stay clear.'))));
+
+  ReactDOM.createRoot(document.getElementById('root')).render(page);
+</script>
+</body>
+</html>

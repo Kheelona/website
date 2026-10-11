@@ -1,0 +1,517 @@
+{
+ "about": "One entry per Photo library photo: the flow node it was generated on, the take that was kept, how many takes were reviewed and any clean-up. Add an entry for every new library photo.",
+ "flow": "https://elevenlabs.io/app/flows/lFyNGM9BZuQmAaVydVfT",
+ "model": "gemini-3-pro-image (Nano Banana Pro), resolution 2K",
+ "references": {
+  "myra": "O5NQjjvprp72vU4cmTHK",
+  "advik": "UmTdMoaKxL2orPAAPrpA",
+  "ira": "eanHC8S86yMB5NDUrpHL",
+  "tara": "Qn1uNArjCv2ECIiUSkNY",
+  "kabir": "zYrmOow0f21QEmwmMFMH",
+  "meera": "ukQA18gvls2GUzHYEmW5",
+  "arnab": "vEV5sqPMJqk3wHGKYuy0",
+  "kheelu": "SbIPVWnUVQdDrM34lVhY"
+ },
+ "photos": [
+  {
+   "photo": "myra-01-breakfast-why",
+   "title": "Breakfast why",
+   "ratio": "4:5",
+   "kheelu": true,
+   "with": null,
+   "flow_node": "KfSzWgV1YiuKXumF3QQV",
+   "kept_generation": "qRcM9sRtsxFTmonEoFIC",
+   "takes_reviewed": 4,
+   "cleanup": null,
+   "files": {
+    "jpg": "myra-01-breakfast-why.jpg",
+    "webp": "myra-01-breakfast-why-web.webp"
+   },
+   "blobs": {
+    "jpg": "959b65ac18a5a7fe8cd1625d67d3d363",
+    "webp": "fe78b00cab1b7a1376c8cceb6d501de8"
+   },
+   "date": "2026-10"
+  },
+  {
+   "photo": "myra-02-monsoon-window",
+   "title": "Monsoon window",
+   "ratio": "16:9",
+   "kheelu": true,
+   "with": null,
+   "flow_node": "CLZMP0f9mt8jJnyMJ5J2",
+   "kept_generation": "HEqvCyaKJc3cbIhKVJuY",
+   "takes_reviewed": 2,
+   "cleanup": null,
+   "files": {
+    "jpg": "myra-02-monsoon-window.jpg",
+    "webp": "myra-02-monsoon-window-web.webp"
+   },
+   "blobs": {
+    "jpg": "9ba9f181fd30677e1168f5d3d98224d2",
+    "webp": "2bf61c28c3b12add5a649c3c04a94a9b"
+   },
+   "date": "2026-10"
+  },
+  {
+   "photo": "myra-03-bedtime-cuddle",
+   "title": "Bedtime cuddle",
+   "ratio": "9:16",
+   "kheelu": true,
+   "with": null,
+   "flow_node": "Zqy4X9keUkaDN0Ywb5pm",
+   "kept_generation": "kEMPWE9hZgGAqZwkGtx9",
+   "takes_reviewed": 2,
+   "cleanup": null,
+   "files": {
+    "jpg": "myra-03-bedtime-cuddle.jpg",
+    "webp": "myra-03-bedtime-cuddle-web.webp"
+   },
+   "blobs": {
+    "jpg": "ae0d31b8b5f582ea746f3cac5f1f7c13",
+    "webp": "c50a48684c4c4c4a60f23096dccf4fbf"
+   },
+   "date": "2026-10"
+  },
+  {
+   "photo": "myra-04-drawing-at-home",
+   "title": "Drawing at home",
+   "ratio": "4:5",
+   "kheelu": false,
+   "with": null,
+   "flow_node": "szj4SYWoIqVUTdpW0lzO",
+   "kept_generation": "iZ1yltKVUR3MUQyM9EL6",
+   "takes_reviewed": 2,
+   "cleanup": null,
+   "files": {
+    "jpg": "myra-04-drawing-at-home.jpg",
+    "webp": "myra-04-drawing-at-home-web.webp"
+   },
+   "blobs": {
+    "jpg": "e5194b72efd6cedbc3b2c0d89d971f68",
+    "webp": "065c8a39764e1be02593a32eaba3cbcf"
+   },
+   "date": "2026-10"
+  },
+  {
+   "photo": "myra-05-portrait",
+   "title": "Portrait",
+   "ratio": "1:1",
+   "kheelu": false,
+   "with": null,
+   "flow_node": "woVqzq7o9uBub075RN6G",
+   "kept_generation": "roMSDmUOLeJSHhrCAsn3",
+   "takes_reviewed": 2,
+   "cleanup": null,
+   "files": {
+    "jpg": "myra-05-portrait.jpg",
+    "webp": "myra-05-portrait-web.webp"
+   },
+   "blobs": {
+    "jpg": "a0d8855012bb429a5bd16c0b5761a28b",
+    "webp": "edae093d7113d50e6b20f4044a8e33c6"
+   },
+   "date": "2026-10"
+  },
+  {
+   "photo": "advik-01-counting-carriages",
+   "title": "Counting carriages",
+   "ratio": "4:5",
+   "kheelu": true,
+   "with": null,
+   "flow_node": "jeJPlJLWBmhEHoWQaBZ0",
+   "kept_generation": "E1F8Q21OeHHcCV8iSLGr",
+   "takes_reviewed": 2,
+   "cleanup": "trim film border (crop [19, 27, 1835, 2281], scaled back to full size)",
+   "files": {
+    "jpg": "advik-01-counting-carriages.jpg",
+    "webp": "advik-01-counting-carriages-web.webp"
+   },
+   "blobs": {
+    "jpg": "b8348144f57938a13ba9a0bdc174dd78",
+    "webp": "0a0901bda7f0ec8887c9ba3cb73a4ef0"
+   },
+   "date": "2026-10"
+  },
+  {
+   "photo": "advik-02-whispering-to-kheelu",
+   "title": "Whispering to Kheelu",
+   "ratio": "16:9",
+   "kheelu": true,
+   "with": null,
+   "flow_node": "QwTVSLoYyF3kDcPF7mNS",
+   "kept_generation": "hxggTONGy6lymjUqb3p4",
+   "takes_reviewed": 2,
+   "cleanup": null,
+   "files": {
+    "jpg": "advik-02-whispering-to-kheelu.jpg",
+    "webp": "advik-02-whispering-to-kheelu-web.webp"
+   },
+   "blobs": {
+    "jpg": "d16aa46bc960926885be4bf0515ec090",
+    "webp": "ca92831f98fd811b7812cc42d00a933b"
+   },
+   "date": "2026-10"
+  },
+  {
+   "photo": "advik-03-studio-hug",
+   "title": "Studio hug",
+   "ratio": "4:5",
+   "kheelu": true,
+   "with": null,
+   "flow_node": "uzUjLlp456ARGtMHM78s",
+   "kept_generation": "B6A7UODTwOf7gEwCQISF",
+   "takes_reviewed": 2,
+   "cleanup": "trim film border (crop [19, 27, 1834, 2280], scaled back to full size)",
+   "files": {
+    "jpg": "advik-03-studio-hug.jpg",
+    "webp": "advik-03-studio-hug-web.webp"
+   },
+   "blobs": {
+    "jpg": "10e29f1919ecab5361cf177ec90e9d11",
+    "webp": "2fd6435d946a828116dfacb98814dc9e"
+   },
+   "date": "2026-10"
+  },
+  {
+   "photo": "advik-04-floor-train",
+   "title": "Floor train",
+   "ratio": "16:9",
+   "kheelu": false,
+   "with": null,
+   "flow_node": "CCsUYrEEpPHoUwMvflqm",
+   "kept_generation": "w2hAVb3aw1Xlp3paCyL0",
+   "takes_reviewed": 2,
+   "cleanup": "trim film border (crop [19, 12, 2732, 1526], scaled back to full size)",
+   "files": {
+    "jpg": "advik-04-floor-train.jpg",
+    "webp": "advik-04-floor-train-web.webp"
+   },
+   "blobs": {
+    "jpg": "67d5ef63d9e869331f4730eeb44a0f6f",
+    "webp": "097a6d5fe7d725208b4984c6274aa6b4"
+   },
+   "date": "2026-10"
+  },
+  {
+   "photo": "advik-05-portrait",
+   "title": "Portrait",
+   "ratio": "1:1",
+   "kheelu": false,
+   "with": null,
+   "flow_node": "FNm1K1siT22F4zDd9UPm",
+   "kept_generation": "udo868YhgETPAsw4Y0bI",
+   "takes_reviewed": 2,
+   "cleanup": "trim film border (crop [22, 22, 2025, 2025], scaled back to full size)",
+   "files": {
+    "jpg": "advik-05-portrait.jpg",
+    "webp": "advik-05-portrait-web.webp"
+   },
+   "blobs": {
+    "jpg": "1095e50d0b1b27bf0185f792bbdae47f",
+    "webp": "a68269371d7efc3be65072b92ddc80ee"
+   },
+   "date": "2026-10"
+  },
+  {
+   "photo": "ira-01-story-on-the-bed",
+   "title": "Story on the bed",
+   "ratio": "4:5",
+   "kheelu": true,
+   "with": null,
+   "flow_node": "FcIcWWkuccssF7P1GB3J",
+   "kept_generation": "MepLyqdGOkaevKOlfoZS",
+   "takes_reviewed": 2,
+   "cleanup": null,
+   "files": {
+    "jpg": "ira-01-story-on-the-bed.jpg",
+    "webp": "ira-01-story-on-the-bed-web.webp"
+   },
+   "blobs": {
+    "jpg": "c875ae6b491260194ecf889476c9250c",
+    "webp": "7542eccafb13cc3256afaeccacfa26d5"
+   },
+   "date": "2026-10"
+  },
+  {
+   "photo": "ira-02-drawing-the-dragon",
+   "title": "Drawing the dragon",
+   "ratio": "16:9",
+   "kheelu": true,
+   "with": null,
+   "flow_node": "SMz3zXq3Vij55BXlL7SC",
+   "kept_generation": "hY060r06qd9HP3pOEqRp",
+   "takes_reviewed": 2,
+   "cleanup": null,
+   "files": {
+    "jpg": "ira-02-drawing-the-dragon.jpg",
+    "webp": "ira-02-drawing-the-dragon-web.webp"
+   },
+   "blobs": {
+    "jpg": "8d7b2efcf620b4e4f48e369b57aff070",
+    "webp": "37a519addc9e808bafac057ddb7e607a"
+   },
+   "date": "2026-10"
+  },
+  {
+   "photo": "ira-03-festive-evening-song",
+   "title": "Festive evening song",
+   "ratio": "9:16",
+   "kheelu": true,
+   "with": null,
+   "flow_node": "fEd2Fe2EgAQeeN6wAbTl",
+   "kept_generation": "3NvFtI5ZXe9knrEhvJ20",
+   "takes_reviewed": 2,
+   "cleanup": null,
+   "files": {
+    "jpg": "ira-03-festive-evening-song.jpg",
+    "webp": "ira-03-festive-evening-song-web.webp"
+   },
+   "blobs": {
+    "jpg": "c58464c828cc346c0457f2083f3d38d6",
+    "webp": "372fadf6c9db9f005a986483bbf9f3a8"
+   },
+   "date": "2026-10"
+  },
+  {
+   "photo": "ira-04-paper-crown",
+   "title": "Paper crown",
+   "ratio": "4:5",
+   "kheelu": false,
+   "with": null,
+   "flow_node": "XyNYB6qtzwYRRHGIsj8R",
+   "kept_generation": "aulGUuOoFv1gWewUdZ36",
+   "takes_reviewed": 2,
+   "cleanup": null,
+   "files": {
+    "jpg": "ira-04-paper-crown.jpg",
+    "webp": "ira-04-paper-crown-web.webp"
+   },
+   "blobs": {
+    "jpg": "6f099bfbec52de12635c8762c90abd03",
+    "webp": "cf6403767156f7e000a584d2c5bb94ff"
+   },
+   "date": "2026-10"
+  },
+  {
+   "photo": "ira-05-portrait",
+   "title": "Portrait",
+   "ratio": "1:1",
+   "kheelu": false,
+   "with": null,
+   "flow_node": "tz0m8qpwWi1MXKranw5Z",
+   "kept_generation": "suwT07U9pTNxAHxZpiNg",
+   "takes_reviewed": 2,
+   "cleanup": null,
+   "files": {
+    "jpg": "ira-05-portrait.jpg",
+    "webp": "ira-05-portrait-web.webp"
+   },
+   "blobs": {
+    "jpg": "89bdf52819f0223d49544774d2bcc73c",
+    "webp": "482f498755d8174e916aa56cfdb3585a"
+   },
+   "date": "2026-10"
+  },
+  {
+   "photo": "tara-01-naming-feelings",
+   "title": "Naming feelings",
+   "ratio": "4:5",
+   "kheelu": true,
+   "with": null,
+   "flow_node": "bcJpO3jI9IdQ8Kjg7X2J",
+   "kept_generation": "CmWMqFwXgu0VJvvBpZ3g",
+   "takes_reviewed": 2,
+   "cleanup": null,
+   "files": {
+    "jpg": "tara-01-naming-feelings.jpg",
+    "webp": "tara-01-naming-feelings-web.webp"
+   },
+   "blobs": {
+    "jpg": "3212b7cd449526ae6a63176e3b24c6e9",
+    "webp": "cb7184fa369678e9740d70d1d317ec6f"
+   },
+   "date": "2026-10"
+  },
+  {
+   "photo": "tara-02-evening-with-amma",
+   "title": "Evening with Amma",
+   "ratio": "16:9",
+   "kheelu": true,
+   "with": "Meera",
+   "flow_node": "juW2OS6NcZ6EU9HQgBWD",
+   "kept_generation": "ZXrB5Hu0rfSWqjmzCf7J",
+   "takes_reviewed": 2,
+   "cleanup": null,
+   "files": {
+    "jpg": "tara-02-evening-with-amma.jpg",
+    "webp": "tara-02-evening-with-amma-web.webp"
+   },
+   "blobs": {
+    "jpg": "3020ed29524aa2dad3633d011e0a0630",
+    "webp": "33076d4672b7f1d40c3f420dddd3a46c"
+   },
+   "date": "2026-10"
+  },
+  {
+   "photo": "tara-03-bedtime-with-baba",
+   "title": "Bedtime with Baba",
+   "ratio": "9:16",
+   "kheelu": true,
+   "with": "Arnab",
+   "flow_node": "ZJcNPEUak8MdKgV1vFdv",
+   "kept_generation": "T1a9UtcpoWcDDEC4Y5ey",
+   "takes_reviewed": 2,
+   "cleanup": "retouch pseudo-text on book page (--low telea 980 1545 1215 1640)",
+   "files": {
+    "jpg": "tara-03-bedtime-with-baba.jpg",
+    "webp": "tara-03-bedtime-with-baba-web.webp"
+   },
+   "blobs": {
+    "jpg": "2ac40496fb9e5ccae8eb84b78eb104c3",
+    "webp": "d955732a506904139807567107d481db"
+   },
+   "date": "2026-10"
+  },
+  {
+   "photo": "tara-04-reading-nook",
+   "title": "Reading nook",
+   "ratio": "4:5",
+   "kheelu": false,
+   "with": null,
+   "flow_node": "Q5cJfbdWfx43AFxcrtAv",
+   "kept_generation": "nYLoVDOpCQWwd4UBPUEN",
+   "takes_reviewed": 2,
+   "cleanup": null,
+   "files": {
+    "jpg": "tara-04-reading-nook.jpg",
+    "webp": "tara-04-reading-nook-web.webp"
+   },
+   "blobs": {
+    "jpg": "2f41c18d8147cd4ac373e6676a35205c",
+    "webp": "ea770440c5e9e8b772155c2952e5706c"
+   },
+   "date": "2026-10"
+  },
+  {
+   "photo": "tara-05-portrait",
+   "title": "Portrait",
+   "ratio": "1:1",
+   "kheelu": false,
+   "with": null,
+   "flow_node": "zTEBxHr4br4Rb4UjLcyE",
+   "kept_generation": "W8tqnboiUOGEaWZDPWSZ",
+   "takes_reviewed": 2,
+   "cleanup": null,
+   "files": {
+    "jpg": "tara-05-portrait.jpg",
+    "webp": "tara-05-portrait-web.webp"
+   },
+   "blobs": {
+    "jpg": "5319e8ccd9a8745d232dd4642451225e",
+    "webp": "6ad5498b1791e1f1ffb28d959270492a"
+   },
+   "date": "2026-10"
+  },
+  {
+   "photo": "kabir-01-imagining-space",
+   "title": "Imagining space",
+   "ratio": "4:5",
+   "kheelu": true,
+   "with": null,
+   "flow_node": "THfXQr0hix6uH9u9ZWey",
+   "kept_generation": "oqFC5Au046Ng4nevQ3DT",
+   "takes_reviewed": 2,
+   "cleanup": null,
+   "files": {
+    "jpg": "kabir-01-imagining-space.jpg",
+    "webp": "kabir-01-imagining-space-web.webp"
+   },
+   "blobs": {
+    "jpg": "5ac78f4eabd5b34773a4ee95d7b15c8b",
+    "webp": "df312489b2fc7732f00128f74ea615ae"
+   },
+   "date": "2026-10"
+  },
+  {
+   "photo": "kabir-02-block-rocket",
+   "title": "Block rocket",
+   "ratio": "16:9",
+   "kheelu": true,
+   "with": null,
+   "flow_node": "ZNT03P5owlahhcX3kcFl",
+   "kept_generation": "OH2exv3kq5yF5zMWFNed",
+   "takes_reviewed": 2,
+   "cleanup": null,
+   "files": {
+    "jpg": "kabir-02-block-rocket.jpg",
+    "webp": "kabir-02-block-rocket-web.webp"
+   },
+   "blobs": {
+    "jpg": "5646c345b33242b4c34b419af9ca82d6",
+    "webp": "09439c4fff31f29b8353716681926d64"
+   },
+   "date": "2026-10"
+  },
+  {
+   "photo": "kabir-03-homework-desk",
+   "title": "Homework desk",
+   "ratio": "9:16",
+   "kheelu": true,
+   "with": null,
+   "flow_node": "bMCyk4ekElY415yKQYS2",
+   "kept_generation": "isR49SoKxHG0XPuL6EUs",
+   "takes_reviewed": 2,
+   "cleanup": null,
+   "files": {
+    "jpg": "kabir-03-homework-desk.jpg",
+    "webp": "kabir-03-homework-desk-web.webp"
+   },
+   "blobs": {
+    "jpg": "457222befe7e7242882c073c2c44ceaa",
+    "webp": "e113c1d842f9ecafd9f4a4f399430be4"
+   },
+   "date": "2026-10"
+  },
+  {
+   "photo": "kabir-04-planet-book",
+   "title": "Planet book",
+   "ratio": "16:9",
+   "kheelu": false,
+   "with": null,
+   "flow_node": "EfT8mtDyYG9euTP1Eek7",
+   "kept_generation": "NOvCdU0kMWANY6CV2CaJ",
+   "takes_reviewed": 2,
+   "cleanup": "retouch pseudo-text on book page (--low paper --sat 45 2080 1200 2470 1360 1560 1212 1840 1280)",
+   "files": {
+    "jpg": "kabir-04-planet-book.jpg",
+    "webp": "kabir-04-planet-book-web.webp"
+   },
+   "blobs": {
+    "jpg": "3575c978920da23deda4b5180affa3c9",
+    "webp": "07ed7f3c11f766a9e4c516a708f37dea"
+   },
+   "date": "2026-10"
+  },
+  {
+   "photo": "kabir-05-portrait",
+   "title": "Portrait",
+   "ratio": "1:1",
+   "kheelu": false,
+   "with": null,
+   "flow_node": "UvVRxwfgfJIUwqg35FLT",
+   "kept_generation": "CjbUpn7DdUKuORYyRTi4",
+   "takes_reviewed": 2,
+   "cleanup": null,
+   "files": {
+    "jpg": "kabir-05-portrait.jpg",
+    "webp": "kabir-05-portrait-web.webp"
+   },
+   "blobs": {
+    "jpg": "d73fd947dfb5c95fba7ad4b1fd5d0c76",
+    "webp": "1c2b3c9d791ef30ae9e1c27a8083c4b5"
+   },
+   "date": "2026-10"
+  }
+ ]
+}

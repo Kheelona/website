@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 240" width="280" height="240" role="img" aria-label="Cut-paper shape: blob blue">
+<title>Cut-paper shape: blob blue</title>
+<defs><filter id="paper" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB">
+<feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="3" seed="2" result="w"></feTurbulence>
+<feDisplacementMap in="SourceGraphic" in2="w" scale="4" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>
+</filter></defs>
+<g filter="url(#paper)"><path d="M60 60 C99.69690619539469 12.958957897312938, 197.85666119288652 20.89244182575494, 239.0978245301172 63.08789328802377 C276.5918093485758 104.42906510103494, 254.60149205755442 179.0231102095917, 201.05937101673334 204.89834873545914 C137.48386502098293 232.44842786658555, 63.26154795121401 221.78115305174143, 36.55292720030993 172.34888616073877 C12.311079804413021 129.7332388209179, 23.971124528162182 93.75209891665727, 63.23896061014384 62.26761225331575 C60 60, 60 60, 60 60" fill="#29a0d7"></path></g>
+</svg>

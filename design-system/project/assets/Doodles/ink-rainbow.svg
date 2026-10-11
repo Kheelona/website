@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 170" width="300" height="170" role="img" aria-label="Ink doodle: rainbow">
+<title>Ink doodle: rainbow</title>
+<defs><filter id="chalk" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">
+<feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7" result="n"></feTurbulence>
+<feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.2 1.75" result="grain"></feColorMatrix>
+<feComposite in="SourceGraphic" in2="grain" operator="in"></feComposite>
+</filter></defs>
+<g filter="url(#chalk)"><path d="M30 150 C28.263724215794355 58.23162060929462, 268.5584312607534 59.03538782848045, 267.5129248131998 151.39365796698257 M32.20586857991293 149.48222097707912 C31.607962745591067 58.71969242638443, 269.273114002659 58.986022351891734, 271.48210227431264 151.05888334533665" fill="none" stroke="#2a2118" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M64 150 C65.2703652959317 91.80319991894066, 238.26328718475997 91.13569554872811, 233.5130372028798 151.81882021017373 M65.15983265452087 151.2820663768798 C63.29694503033534 89.33355931704864, 237.49179325485602 87.35220515495166, 237.86999012017623 152.79309102660045" fill="none" stroke="#2a2118" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M98 150 C97.27700637606904 116.3747792285867, 202.96814310876653 114.23600326897576, 199.51314959255978 152.24398245336488 M98.11379672912881 148.0819117766805 C100.7359273150796 115.94742620771285, 199.96047250705305 117.46838795801159, 204.2578779660398 148.77729870786425" fill="none" stroke="#2a2118" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"></path></g>
+</svg>

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="runtime/frame.js"></script>
+<link rel="stylesheet" href="runtime/tokens.css">
+<link rel="stylesheet" href="runtime/bundle.css">
+<script src="runtime/react.production.min.js"></script>
+<script src="runtime/react-dom.production.min.js"></script>
+<script src="runtime/bundle.js"></script>
+<script src="runtime/assets-map.js"></script>
+
+<title>StepLoop · Kheelona</title>
+
+</head>
+<body>
+<div id="root" class="kh-stack" style="padding:32px"></div>
+<script>
+  var K = window.Kheelona, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(K.StepLoop, { steps: [
+    { title: 'Talk and play', body: 'Your child asks questions, plays word games, and listens to stories that talk back, in their own language.' },
+    { title: 'Kheelu remembers', body: 'Kheelu keeps track of the words your child knows, what they love, and the pace they learn at.' },
+    { title: 'Knowledge that sticks', body: 'New ideas arrive inside everyday conversation, not forced drills.' } ] }));
+</script>
+</body>
+</html>

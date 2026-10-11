@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="runtime/frame.js"></script>
+<link rel="stylesheet" href="runtime/tokens.css">
+<link rel="stylesheet" href="runtime/bundle.css">
+<script src="runtime/react.production.min.js"></script>
+<script src="runtime/react-dom.production.min.js"></script>
+<script src="runtime/bundle.js"></script>
+<script src="runtime/assets-map.js"></script>
+
+<title>AppScreens · Kheelona</title>
+<style>
+  .pg-screens { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: var(--space-6); padding: var(--space-7) var(--space-5); background: var(--surface); }
+  .pg-screen { display: grid; justify-items: center; gap: var(--space-4); }
+  .pg-label { margin: 0; font: 800 13px/16px var(--font-body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+  .pg-body { display: grid; align-content: start; gap: var(--space-4); height: 100%; padding: var(--space-2) var(--space-4) var(--space-4); }
+  .pg-body h2 { margin: 0; }
+  .pg-hello { display: flex; align-items: center; gap: var(--space-3); }
+  .pg-hello div { flex: 1; display: grid; }
+  .pg-hello .kh-caption { color: var(--text-muted); }
+  .pg-body .kh-app, .pg-body .kh-controls, .pg-body .kh-field { max-width: none; }
+  .pg-body .kh-alert { max-width: none; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  var K = window.Kheelona, h = React.createElement;
+  function B(id) { return KH_ASSET(id); }
+  function Device(p) {
+    return h('div', { className: 'pg-screen' },
+      h('p', { className: 'pg-label' }, p.label),
+      h('div', { className: 'kh-device', 'data-theme': p.theme || 'light', role: 'group', 'aria-label': p.label },
+        h('div', { className: 'kh-device__screen' },
+          h('div', { className: 'kh-device__status' }, h('span', null, p.time || '7:42'),
+            h('span', null, h(K.Icon, { name: 'wifi-high' }), h(K.Icon, { name: 'battery-charging' }))),
+          h('div', { className: 'kh-device__body' }, h('div', { className: 'pg-body' }, p.children)),
+          p.foot ? h('div', { className: 'kh-device__foot' }, p.foot) : null)));
+  }
+  function Tabbar(v) {
+    return h(K.TabBar, { value: v, items: [ { id: 'home', label: 'Today', icon: 'house' }, { id: 'chats', label: 'Conversations', icon: 'chat-circle-dots', badge: 3 },
+      { id: 'stories', label: 'Stories', icon: 'book-open' }, { id: 'settings', label: 'Settings', icon: 'gear' } ] });
+  }
+
+  var page = h('div', { className: 'pg-screens', 'data-theme': 'light' },
+    // 1. Setup: progress, a real-world form, the everyday blue action
+    h(Device, { label: '1 · Setup', time: '6:05' },
+      h(K.ProgressBar, { value: 3, max: 4, label: 'Setting up Kheelu', showValue: true, valueText: 'Step 3 of 4' }),
+      h('h2', { className: 'kh-title' }, 'Tell Kheelu about your child'),
+      h(K.TextField, { label: 'Child’s first name', defaultValue: 'Tara', hint: 'Kheelu uses it to say hello. You can change it later.' }),
+      h(K.Select, { label: 'Age', defaultValue: '5', options: [ { value: '3', label: '3 years' }, { value: '4', label: '4 years' }, { value: '5', label: '5 years' }, { value: '6', label: '6 years' } ] }),
+      h(K.RadioGroup, { label: 'First language for stories', name: 'setup-lang', defaultValue: 'kn', options: [ { value: 'kn', label: 'Kannada' }, { value: 'bn', label: 'Bengali' }, { value: 'en', label: 'English' } ] }),
+      h(K.Button, { variant: 'primary', size: 'l', block: true, iconEnd: 'arrow-right' }, 'Continue')),
+
+    // 2. Today: greeting, a status alert and the daily summary
+    h(Device, { label: '2 · Today', foot: Tabbar('home') },
+      h('div', { className: 'pg-hello' },
+        h(K.Avatar, { name: 'Tara', src: B('8ad45a88b69491c550fe4f8f00a52c14'), alt: '' }),
+        h('div', null, h('span', { className: 'kh-subtitle' }, 'Good evening, Meera'), h('span', { className: 'kh-caption' }, 'Tara talked to Kheelu 4 times today')),
+        h(K.IconButton, { icon: 'bell', label: 'Notifications' })),
+      h(K.Alert, { tone: 'success', title: 'Kheelu is connected' }, 'Tara’s summary arrives every evening at 7 pm.'),
+      h(K.AppSummaryCard, { title: 'Tara’s day', date: 'Tue, 6 Oct',
+        stats: [ { num: '18', label: 'minutes talking' }, { num: '6', label: 'new words' }, { num: '2', label: 'stories' } ],
+        words: ['planet', 'orbit', 'gravity', 'crater'], topics: ['Space', 'Feelings', 'Counting'],
+        tryText: 'Ask Tara what an astronaut eats for breakfast. She asked Kheelu twice today.',
+        link: { href: '#', label: 'Read today’s conversation' } })),
+
+    // 3. Conversations: tabs and list rows
+    h(Device, { label: '3 · Conversations', foot: Tabbar('chats') },
+      h('h2', { className: 'kh-title' }, 'Conversations'),
+      h(K.Tabs, { label: 'Conversations', tabs: [
+        { id: 'today', label: 'Today', count: 4, content: h(K.List, { label: 'Today' },
+            h(K.ListItem, { icon: 'chat-circle-dots', title: 'Why does the moon follow our car?', subtitle: 'Tara · 6 min · Space', meta: '7:42 pm', href: '#' }),
+            h(K.ListItem, { icon: 'book-open', tone: 'sun', title: 'The mango who wanted to fly', subtitle: 'Story mode · Kannada', meta: '7:10 pm', href: '#' }),
+            h(K.ListItem, { icon: 'smiley-sad', tone: 'chilli', title: 'Feeling sad about a lost pencil', subtitle: 'Tara · 4 min · Feelings', meta: '5:20 pm', href: '#' }),
+            h(K.ListItem, { icon: 'music-notes', title: 'Bengali lullabies', subtitle: 'Bluetooth · 12 min', meta: '1:30 pm', href: '#' })) },
+        { id: 'week', label: 'This week', count: 23 },
+        { id: 'all', label: 'All' } ] })),
+
+    // 4. Settings in the Bedtime theme: the mode, parent controls, save
+    h(Device, { label: '4 · Settings, Bedtime theme', theme: 'dark', time: '20:45', foot: Tabbar('settings') },
+      h('h2', { className: 'kh-title' }, 'Kheelu’s settings'),
+      h(K.ModeSwitch, { defaultValue: 'story', label: 'Kheelu’s mode', modes: [ { id: 'ai', label: 'AI mode' }, { id: 'story', label: 'Story mode' }, { id: 'bluetooth', label: 'Bluetooth' } ] }),
+      h(K.ParentControl, { items: [
+        { icon: 'moon', tone: 'blue', label: 'Quiet hours', hint: '8:30 pm to 7:00 am. Kheelu sleeps too.', checked: true },
+        { icon: 'book-open', tone: 'sun', label: 'Stories only after 8 pm', hint: 'No new topics at bedtime.', checked: true },
+        { icon: 'sliders-horizontal', tone: 'chilli', label: 'Scary stories', hint: 'Ghosts, monsters and the dark.', checked: false } ] }),
+      h(K.Button, { variant: 'primary', block: true }, 'Save changes')));
+
+  ReactDOM.createRoot(document.getElementById('root')).render(page);
+</script>
+</body>
+</html>

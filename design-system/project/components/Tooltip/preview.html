@@ -1,0 +1,15 @@
+<!-- @dsCard group="Feedback" height=200 -->
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Tooltip — preview</title></head>
+<body>
+<div id="root" class="kh-row" style="padding:64px 32px;gap:120px;justify-content:center"></div>
+<script>
+  var K = window.Kheelona, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+    h(K.Tooltip, { label: 'Microphone off until the wake word', open: true }, h(K.IconButton, { icon: 'microphone-slash', label: 'Microphone status', variant: 'outline' })),
+    h(K.Tooltip, { label: 'Read every conversation', open: true, placement: 'bottom' }, h(K.IconButton, { icon: 'eye', label: 'Conversation log', variant: 'outline' })),
+    h(K.Tooltip, { label: 'Share today\u2019s summary' }, h(K.IconButton, { icon: 'share-network', label: 'Share' }))));
+</script>
+</body>
+</html>

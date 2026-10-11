@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="runtime/frame.js"></script>
+<link rel="stylesheet" href="runtime/tokens.css">
+<link rel="stylesheet" href="runtime/bundle.css">
+<script src="runtime/react.production.min.js"></script>
+<script src="runtime/react-dom.production.min.js"></script>
+<script src="runtime/bundle.js"></script>
+<script src="runtime/assets-map.js"></script>
+
+<title>Tag · Kheelona</title>
+
+</head>
+<body>
+<div id="root" class="kh-stack" style="padding:32px;gap:16px"></div>
+<script>
+  var K = window.Kheelona, h = React.createElement;
+  function Demo() {
+    var s = React.useState(['space', 'feelings']), on = s[0];
+    var l = React.useState(['Kannada', 'Bengali']), langs = l[0];
+    var topics = [['space', 'Space'], ['animals', 'Animals'], ['feelings', 'Feelings'], ['numbers', 'Numbers'], ['music', 'Music']];
+    return h(React.Fragment, null,
+      h('div', { className: 'kh-row', style: { padding: 0, gap: 8 }, role: 'group', 'aria-label': 'Topics' }, topics.map(function (t) {
+        var sel = on.indexOf(t[0]) >= 0;
+        return h(K.Tag, { key: t[0], selected: sel, onClick: function () { s[1](sel ? on.filter(function (x) { return x !== t[0]; }) : on.concat(t[0])); } }, t[1]);
+      })),
+      h('div', { className: 'kh-row', style: { padding: 0, gap: 8 } }, langs.map(function (x) {
+        return h(K.Tag, { key: x, icon: 'translate', onRemove: function () { l[1](langs.filter(function (y) { return y !== x; })); } }, x);
+      }), h(K.Tag, { icon: 'plus', onClick: function () {} }, 'Add a language')));
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(h(Demo));
+</script>
+</body>
+</html>

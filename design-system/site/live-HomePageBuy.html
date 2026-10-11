@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="runtime/frame.js"></script>
+<link rel="stylesheet" href="runtime/tokens.css">
+<link rel="stylesheet" href="runtime/bundle.css">
+<script src="runtime/react.production.min.js"></script>
+<script src="runtime/react-dom.production.min.js"></script>
+<script src="runtime/bundle.js"></script>
+<script src="runtime/assets-map.js"></script>
+
+<title>HomePageBuy · Kheelona</title>
+<style>
+  .pg-close .kh-offer { justify-self: center; width: 100%; }
+  .pg-share { display: grid; justify-items: center; gap: var(--space-3); margin-top: var(--space-6); text-align: center; }
+  .pg-share p { margin: 0; color: var(--text-muted); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  var K = window.Kheelona, h = React.createElement;
+  function B(id) { return KH_ASSET(id); }
+  function Layer(p) {
+    var st = { left: p.x + '%', width: p.w + '%' };
+    if (p.y != null) st.top = p.y + '%'; else st.bottom = (p.b || 0) + '%';
+    if (p.r) st.transform = 'rotate(' + p.r + 'deg)';
+    return h('img', { className: 'kh-art__layer', src: B(p.id), alt: p.alt || '', style: st });
+  }
+  function Section(p) {
+    return h('section', { className: 'kh-section' + (p.band ? ' kh-section--band' : '') + (p.className ? ' ' + p.className : '') },
+      h('div', { className: 'kh-container' }, p.children));
+  }
+
+  var page = h('div', { className: 'kh-page', 'data-theme': 'light' },
+    // 11. Compare, then the cta
+    h(Section, { band: true },
+      h('div', { className: 'kh-section__head' },
+        h(K.SectionHeading, { align: 'center', eyebrow: 'Compare', title: 'Why not a phone, or a regular toy?',
+          lead: 'A fair look at what children usually get instead.' })),
+      h(K.ComparisonTable, {
+        columns: ['Kheelu', 'Smart toys', 'Phone or TV', 'Ordinary toys'],
+        rows: [
+          { label: 'No screen, ever', values: ['Yes', 'Varies', 'No', 'Yes'] },
+          { label: 'Talks with your child, not at them', values: ['Yes', 'Limited', 'No', 'No'] },
+          { label: 'Speaks the languages of your home', values: ['Yes, up to 10', 'Rarely', 'Varies', 'No'] },
+          { label: 'Cannot wander the internet', values: ['Yes', 'Rarely', 'No', 'Yes'] },
+          { label: 'You can read every conversation', values: ['Yes', 'Partial', 'Partial', 'No'] },
+          { label: 'Grows with them', values: ['Yes, for years', 'Varies', 'No', 'Varies'] } ] }),
+      h('div', { className: 'kh-section__actions kh-section__actions--center' },
+        h(K.Button, { variant: 'cta', href: 'https://store.kheelona.com' }, 'Pre-order Kheelu'))),
+
+    // 12. Pilot parents: real quotes, initials only, never cast photos
+    h(Section, null,
+      h('div', { className: 'kh-section__head' },
+        h(K.SectionHeading, { align: 'center', eyebrow: 'Pilot parents', title: ['What parents ', h(K.Hand, { key: 'h' }, 'tell us')] })),
+      h('div', { className: 'kh-cols kh-cols--2' },
+        h(K.Testimonial, { tone: 'chilli', name: 'Shweta', role: 'Pilot parent', quote: 'The first thing she does after school is tell Kheelu about her day. I listen from the kitchen and learn things she forgets to tell me.' }),
+        h(K.Testimonial, { tone: 'blue', name: 'Gaurav', role: 'Pilot parent', quote: 'We wanted less screen time without a fight. This is the first thing that worked without one.' }))),
+
+    // 13. Questions: price, ages, languages, shipping, internet, safety
+    h(Section, { band: true },
+      h('div', { className: 'kh-split kh-split--wide-end' },
+        h('div', { style: { alignSelf: 'start' } },
+          h(K.SectionHeading, { eyebrow: 'Questions', title: ['Questions parents ', h(K.Hand, { key: 'h' }, 'ask us.')],
+            lead: 'Price, ages, languages, shipping, the internet and safety.' }),
+          h('div', { className: 'kh-section__actions' },
+            h(K.Button, { variant: 'ghost', iconEnd: 'arrow-right', href: '#' }, 'See all questions'))),
+        h(K.FAQ, { items: [
+          { q: 'How much does Kheelu cost?', a: '₹4,999 for the first 500 families, then ₹7,999. Reserve today for ₹499, fully refundable until it ships; the ₹4,500 balance is due at dispatch. Prices include GST.', open: true },
+          { q: 'What ages is Kheelu for?', a: 'Ages 3 and up. Kheelu grows with your child: longer stories, bigger ideas and the next language, year after year.' },
+          { q: 'Which languages does it speak?', a: 'Up to ten languages at launch, including Hindi, Bengali, Telugu, Tamil and Kannada alongside English.' },
+          { q: 'Is Kheelu always listening?', a: 'No. The microphone wakes only on the wake word and is fully off otherwise. Nothing is recorded before the wake word.' },
+          { q: 'Does Kheelu need the internet?', a: 'AI mode runs on your home Wi-Fi. Story mode works offline, so stories still play on a train with no signal.' },
+          { q: 'When does Kheelu ship?', a: 'Shipping starts 20 October 2026. Pre-orders are served first, in the order they were placed.' } ] }))),
+
+    // 14. Close: the offer, with a WhatsApp share
+    h(Section, { className: 'pg-close' },
+      h('div', { className: 'kh-section__head' },
+        h(K.SectionHeading, { align: 'center', eyebrow: 'Pre-order', title: ['Reserve yours for ', h(K.Mark, { key: 'm', kind: 'highlight' }, '₹499.')],
+          lead: 'Fully refundable until it ships. Ships from 20 Oct 2026.' })),
+      h('div', { className: 'kh-split' },
+        h('div', { className: 'kh-art kh-tone-sun pg-close-art', role: 'img', 'aria-label': 'Advik, 4, with Kheelu' },
+          h(Layer, { id: '6856e3b44232dc9a33beb747b0dab0ff', x: 6, y: 7, w: 30 }),
+          h(Layer, { id: 'c2b35885b118c45a34ea530e5fec5507', x: 40, b: 0, w: 54 }),
+          h(Layer, { id: 'd53f5a3962997ac35db37066131a9139', x: 3, b: 3, w: 42, r: -5 }),
+          h(Layer, { id: '870961547622d4828ca904bc14e2ba80', x: 82, y: 9, w: 12, r: 14 })),
+        h('div', null,
+          h(K.OfferCard, { href: 'https://store.kheelona.com' }),
+          h('div', { className: 'pg-share' },
+            h('p', { className: 'kh-body-s' }, 'Know a parent who needs this?'),
+            h(K.Button, { variant: 'secondary', icon: 'whatsapp-logo', href: '#' }, 'Share on WhatsApp'))))),
+
+    h(K.Footer, {
+      columns: [
+        { title: 'Kheelu', links: [ { label: 'Meet Kheelu', href: '#' }, { label: 'PlayOS', href: '#' }, { label: 'Safety', href: '#' }, { label: 'Setup', href: '#' } ] },
+        { title: 'Read', links: [ { label: 'Stories', href: '#' }, { label: 'Choosing an AI toy', href: '#' }, { label: 'Team', href: '#' } ] },
+        { title: 'Help', links: [ { label: 'Contact', href: '#' }, { label: 'Shipping', href: '#' }, { label: 'Refunds', href: '#' } ] } ],
+      legal: ['© 2026 Kheelona', 'Privacy', 'Terms', 'hello@kheelona.com'] }));
+
+  ReactDOM.createRoot(document.getElementById('root')).render(page);
+</script>
+</body>
+</html>

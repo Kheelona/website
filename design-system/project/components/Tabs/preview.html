@@ -1,0 +1,21 @@
+<!-- @dsCard group="Navigation" height=310 -->
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Tabs — preview</title></head>
+<body>
+<div id="root" class="kh-stack" style="padding:32px;gap:40px"></div>
+<script>
+  var K = window.Kheelona, h = React.createElement;
+  function Line(t) { return h('p', { style: { margin: 0, color: 'var(--text-muted)' } }, t); }
+  ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+    h(K.Tabs, { label: 'Conversations', tabs: [
+      { id: 'today', label: 'Today', count: 4, content: Line('4 conversations, 18 minutes, 6 new words.') },
+      { id: 'week', label: 'This week', count: 23, content: Line('23 conversations this week.') },
+      { id: 'all', label: 'All', content: Line('Every conversation since Kheelu arrived.') } ] }),
+    h(K.Tabs, { variant: 'pill', label: 'Summary', defaultValue: 'topics', tabs: [
+      { id: 'words', label: 'Words', icon: 'translate', content: Line('planet, orbit, gravity, crater') },
+      { id: 'topics', label: 'Topics', icon: 'book-open', content: Line('Space, feelings, counting') },
+      { id: 'feelings', label: 'Feelings', icon: 'smiley', content: Line('Curious most of the day, a little grumpy at bath time.') } ] })));
+</script>
+</body>
+</html>

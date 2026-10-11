@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ImaginationFrame · Kheelona design system</title>
+<link rel="stylesheet" href="runtime/tokens.css">
+<link rel="stylesheet" href="runtime/bundle.css">
+<link rel="stylesheet" href="runtime/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="site-header__in">
+  <a class="site-logo" href="../index.html"><img src="../project/assets/Logo/kheelona-logo.svg" alt="Kheelona" height="30"><span>Design system <b>v11</b></span></a>
+  <nav aria-label="Sections"><a href="../index.html">Start</a><a href="brand-overview.html">Brand book</a><a href="components.html" aria-current="page">Components</a><a href="pages.html">Page templates</a><a href="assets.html">Assets</a><a href="tokens.html">Tokens</a></nav>
+</div></header>
+<main id="main" class="site-main">
+<p class="crumbs"><a href="components.html">Components</a> / Brand</p>
+<h1 class="page-title">ImaginationFrame</h1>
+
+<div class="tools"><a class="kh-btn kh-btn--secondary kh-btn--s" href="live-ImaginationFrame.html" target="_blank">Open on its own ↗</a><div class="seg" data-theme-switch role="group" aria-label="Theme"><button type="button" value="light" aria-pressed="true">Day</button><button type="button" value="dark" aria-pressed="false">Bedtime</button></div></div>
+<div class="frame-col"><div class="frame" data-w="980" data-h="560"><iframe src="live-ImaginationFrame.html" data-src="live-ImaginationFrame.html" title="ImaginationFrame, live preview" loading="lazy"></iframe></div></div>
+<article class="prose guide"><p>Kheelona's signature: a child with chalk (or ink) doodles of the idea they are thinking about, and their question handwritten above.</p>
+<p><strong>Use it for:</strong> learning and curiosity stories (hero blocks, social posts, decks). It shows Kheelu's intelligence through the child, never through tech imagery.</p>
+<p><strong>Props:</strong> <code>variant</code> (<code>&quot;board&quot;</code>: a cut-out child on the ink chalkboard with chalk doodles; <code>&quot;photo&quot;</code>: a full photo, used with <code>ink</code> for light photos), <code>cutout</code> or <code>photo</code> (asset URL), <code>cutoutStyle</code>, <code>alt</code>, <code>question</code> (lower case, the child's words), <code>questionAlign</code> (<code>&quot;center&quot;</code> | <code>&quot;left&quot;</code>), <code>doodles</code> (an array of <code>{ src, x, y, w, rotate?, clip? }</code> in % of the frame; <code>clip</code> is a CSS <code>clip-path</code> in % of the doodle that hides the part passing behind something in front, such as Kheelu in the child's arms), <code>tone</code> (block colour for non-board frames).</p>
+<p><strong>Rules</strong></p>
+<ul>
+<li>Chalk on the board or on dark photos, ink on light photos. Lines must hold 3:1 against what's behind them.</li>
+<li>Use 3–5 doodles with one hero (helmet, crown, thought cloud). Never cross the eyes, nose or mouth.</li>
+<li>The helmet is worn: size it so the bubble holds the whole head, from above the hair to below the chin, with the ear pods at the ears and the collar at the neck. A crown sits on the hair.</li>
+<li>If the child holds Kheelu in front, <code>clip</code> the doodle so it goes behind Kheelu. <a class="cref" href="component-HomePageTrust.html"><code>HomePageTrust</code></a> shows the helmet on <code>kabir-01-imagining-space</code>.</li>
+<li>Draw the topic (space, mangoes, trains, numbers), never the AI (chips, brains, sparkles, waves).</li>
+<li>Use the Doodles group only. New doodles must match the style (see <a class="xref" href="brand-imagery.html"><strong>Photography, chalk &amp; crayon</strong></a>).</li>
+</ul>
+<nav class="pager"><a href="component-Icon.html">← Icon</a><a href="component-Logo.html">Logo →</a></nav><p class="source">Source: <code>project/components/ImaginationFrame/</code></p></article>
+</main>
+<footer class="site-footer"><div class="site-footer__in">Kheelona design system v11 · exported 10 Oct 2026 · the web version on claude.ai is the source of truth</div></footer>
+<script src="runtime/site.js"></script>
+</body>
+</html>

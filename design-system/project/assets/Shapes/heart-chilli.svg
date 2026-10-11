@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 200" width="220" height="200" role="img" aria-label="Cut-paper shape: heart chilli">
+<title>Cut-paper shape: heart chilli</title>
+<defs><filter id="paper" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB">
+<feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="3" seed="2" result="w"></feTurbulence>
+<feDisplacementMap in="SourceGraphic" in2="w" scale="4" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>
+</filter></defs>
+<g filter="url(#paper)"><path d="M110 184 C42.96638778112829 138.904582843557, 7.918441339954734 85.88192095495761, 38.1235837187618 51.50968835093081 C63.07847077511251 22.062785455957055, 97.91674450300634 31.573904618993403, 113.00641675852239 61.14335063435137 C117.96543742083013 36.02974089123309, 157.2225607123226 21.428144523873925, 179.54986343048512 49.457652947679165 C209.9302540268749 87.29213127829135, 180.46893440149725 134.7324946735054, 107.16431191824377 186.50060554482042 C110 184, 110 184, 110 184" fill="#ef762f"></path></g>
+</svg>

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="runtime/frame.js"></script>
+<link rel="stylesheet" href="runtime/tokens.css">
+<link rel="stylesheet" href="runtime/bundle.css">
+<script src="runtime/react.production.min.js"></script>
+<script src="runtime/react-dom.production.min.js"></script>
+<script src="runtime/bundle.js"></script>
+<script src="runtime/assets-map.js"></script>
+
+<title>SectionHeading · Kheelona</title>
+
+</head>
+<body>
+<div id="root" class="kh-stack" style="gap:56px;padding:40px 32px"></div>
+<script>
+  var K = window.Kheelona, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+    h(K.SectionHeading, { hero: true, align: 'center', eyebrow: 'Kheelu \u00B7 ages 3+', title: ['A best friend at 3. A ', h(K.Hand, { key: 'h' }, 'head start'), ' for school.'], lead: 'Kheelu listens, remembers, and grows with your child. Stories, numbers, and the languages you speak at home, at their pace.' }),
+    h(K.SectionHeading, { tone: 'blue', eyebrow: 'How it works', title: ['A loop that ', h(K.Mark, { key: 'm', tone: 'sun', kind: 'highlight' }, 'learns'), ' your child.'], lead: 'New ideas arrive inside everyday conversation, not forced drills.' })));
+</script>
+</body>
+</html>

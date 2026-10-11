@@ -1,0 +1,21 @@
+<!-- @dsCard group="Actions" height=190 -->
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Button — preview</title></head>
+<body>
+<div id="root" class="kh-row"></div>
+<script>
+  var K = window.Kheelona, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+    h(K.Button, { variant: 'cta', iconEnd: 'arrow-right' }, 'Pre-order Kheelu'),
+    h(K.Button, { variant: 'primary', icon: 'wifi-high' }, 'Connect Kheelu'),
+    h(K.Button, { variant: 'secondary', icon: 'shield-check' }, 'See how we built safety in'),
+    h(K.Button, { variant: 'ghost' }, 'Read the science'),
+    h(K.Button, { variant: 'danger', icon: 'trash' }, 'Delete conversation'),
+    h(K.Button, { variant: 'primary', loading: true }, 'Saving'),
+    h(K.Button, { variant: 'cta', size: 'l' }, 'Reserve for \u20B9499'),
+    h(K.Button, { variant: 'secondary', size: 's', icon: 'whatsapp-logo' }, 'Share'),
+    h(K.Button, { variant: 'primary', disabled: true }, 'Continue')));
+</script>
+</body>
+</html>
