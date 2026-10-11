@@ -11,6 +11,7 @@ sources:
   - "ls -la public/video/moments, design-system/project/fonts, design-system/project/assets/*, 2026-10-12"
   - ../decisions/D049-motion-picks.md (doodles draw), ../decisions/D050-whatsapp-chat-button.md (WhatsApp green), ../qa/architecture-review-2026-10-12.md (N17, N19)
   - "grep of every doodle <img> in mockup/pages, 2026-10-12: 11 files; hero placements in home, meet-kheelu, ai-toys, team, refund, shipping"
+  - "task 1.5 build: scripts/assets/build-{icons,doodles,og}.mjs run on branch build/w1-1.5; output sizes from the scripts' own log and test/guards/generated-icons.test.ts"
 ---
 
 # Assets catalogue
@@ -38,12 +39,12 @@ layout widths) or a plain `<img>` (SVG).
 | Asset | Group | Used on | Delivered by | Notes | Task |
 |---|---|---|---|---|---|
 | `Logo/kheelona-logo.svg` | Logo | all (nav, drawer, footer), ST, TH | `Logo` (`<img>`) | | 2.2 |
-| `Logo/favicon-32.png`, `favicon-48.png`, `apple-touch-icon-180.png` | Logo | browser icons | `scripts/assets/build-og.mjs` → `src/app/icon.png`, `src/app/apple-icon.png` (opaque) | lessons §2: the iOS icon must be opaque | 1.5 |
-| `Logo/kheelona-mark.svg` | Logo | Organization logo | `build-og.mjs` → `public/brand/logo-mark.png` (URL kept) | | 1.5 |
+| `Logo/favicon-32.png`, `favicon-48.png`, `apple-touch-icon-180.png` | Logo | browser icons | `scripts/assets/build-og.mjs` → `src/app/icon.png` (favicon-48, 48 px), `src/app/apple-icon.png` (180 px), `src/app/favicon.ico` (favicon-32 and -48 as PNG entries), all opaque: flattened onto the ground of `kheelona-app-icon.svg` | lessons §2: the iOS icon must be opaque. `favicon.ico` is regenerated, not deleted, so the live `/favicon.ico` keeps answering 200 ([url-map §3](../site/url-map.md), brief §9.2); the main session rules (task 1.5 report) | 1.5 |
+| `Logo/kheelona-mark.svg` (sized as in `kheelona-app-icon.svg`) | Logo | Organization logo | `build-og.mjs` → `public/brand/logo-mark.png` (URL kept; 512 x 512, transparent ground, the K at the share of the square the DS app icon gives it) | | 1.5 |
 | `Kheelu/kheelu-front-sticker.png` (1.5 MB) | Kheelu | H, G, P, L (refund, shipping), S, T | `ArtBoard` | G-14: never shipped at source size | 2.3 |
 | `Kheelu/kheelu-front.webp` | Kheelu | G, SH, A, ST | `ArtBoard`, `Photo`, `StoreTop` | store product image | 2.3 |
 | `Kheelu/kheelu-belly-module.png` | Kheelu | P, S, SU, A | `Photo` | | 2.3 |
-| `Kheelu/kheelu-on-fur.jpg` (1600 x 1600) | Kheelu | P; OG for P; Product JSON-LD image | `Photo`; `build-og.mjs` → `public/og/kheelu.jpg`, `public/media/kheelu-front.jpg` | | 1.5 |
+| `Kheelu/kheelu-on-fur.jpg` (1600 x 1600) | Kheelu | P; OG for H and P (copy pages); default OG card; Product JSON-LD image | `Photo`; `build-og.mjs` → `public/og/kheelu.jpg`, `public/og.png` (default card), `public/media/kheelu-front.jpg` | cards set the photo on its own fur ground (the script fails if the photo's border is not one flat ground) | 1.5 |
 | `Cast/advik-sticker.png` | Cast | H (hero board) | `ArtBoard` | Advik in the hero (A13) | 2.3 |
 | `Cast/myra-sticker.png` | Cast | H (close board, D046), G, P | `ArtBoard` | | 2.3 |
 | `Cast/ira-sticker.png` | Cast | P, S | `ArtBoard` | | 2.3 |
@@ -58,7 +59,7 @@ layout widths) or a plain `<img>` (SVG).
 | `Shapes/sun-sun.svg`, `star-sun.svg`, `flower-chilli.svg`, `heart-chilli.svg`, `cloud-blue.svg` | Shapes | H, G, P, S, SH, A, T, L | `ArtBoard` (`<img>`, `alt=""`) | at most two shapes per view (DS) | 2.3 |
 | `Doodles/chalk-question-mark.svg`, `chalk-planet.svg`, `chalk-star.svg`, `chalk-thought-cloud.svg`, `chalk-heart.svg`, `chalk-speech-bubble.svg`, `chalk-spark-lines.svg` | Doodles | H, P, S, L | `Doodle` inside `ArtBoard` and `ImaginationFrame`: plain `<img>` in heroes (still, D049 pick 2); below the first screen the generated inline SVG from `src/assets/doodles.generated.tsx`, which draws itself (pick 3) | hero placements: Home (`chalk-question-mark`), product (`chalk-speech-bubble`), refund (`chalk-heart`), shipping (`chalk-spark-lines`); drawing: Home imagination frame (`chalk-planet`, `chalk-star` twice, `chalk-thought-cloud`), safety close (`chalk-heart`) | 1.5, 2.3 |
 | `Doodles/ink-heart.svg`, `ink-star.svg`, `ink-question-mark.svg`, `ink-spark-lines.svg` | Doodles | H, G, P, SH, A, T | `Doodle` (as above) | hero placements: guide (`ink-question-mark`), team (`ink-spark-lines`); drawing: Home, hub and learning-toys closes (`ink-heart`), guide and product closes (`ink-star`) | 1.5, 2.3 |
-| `Icons/*.svg` (76; the pages use 47, most often `arrow-right`, `plus`, `whatsapp-logo`, `pencil-simple`, `arrow-counter-clockwise`, `caret-right`, `truck`, `shield-check`) | Icons | all | `scripts/assets/build-icons.mjs` → `src/assets/icons.generated.ts` → `Icon` | the only icon set (brief §9.12); missing icons are DS gap G-12 | 1.5 |
+| `Icons/*.svg` (76; the pages use 47, most often `arrow-right`, `plus`, `whatsapp-logo`, `pencil-simple`, `arrow-counter-clockwise`, `caret-right`, `truck`, `shield-check`) | Icons | all | `scripts/assets/build-icons.mjs` → `src/assets/icons.generated.ts` (`ICON_PATHS`, `ICON_VIEWBOX`, `IconName`) → `Icon` | the only icon set (brief §9.12); missing icons are DS gap G-12. The map is about 30 KB of path data: import it from server components only, or a client island ships all 76 | 1.5 |
 | `../fonts/Baloo2-Variable.woff2`, `Nunito-Variable.woff2`, `Kalam-Regular.woff2`, `Kalam-Bold.woff2` | Fonts | all | `scripts/assets/build-fonts.mjs` → `public/fonts/` + `src/styles/generated/fonts.css` (Latin plus ₹; Baloo 2 Devanagari by `unicode-range`) + `fonts.generated.ts` (preload list), after the OFL Reserved Font Name check | preload three Latin files: Nunito, Baloo 2 and the Kalam face of `kh-hand` (almost every h1 carries it; QA N17); ≤ 130 KB together | 1.2 |
 | `../tokens.css`, `../components/bundle.css` | Tokens, components | all | `generated/ds-tokens.css` (tokens without `@font-face`); `bundle.css` imported as is | ADR-002 | 1.2 |
 
@@ -85,12 +86,17 @@ five where children appear): verified per page in the page task's visual review.
 | `src/styles/generated/ds-tokens.css`, `type-steps.css` | `scripts/assets/build-ds-css.mjs` | `tokens.css` | yes | 1.2 |
 | `src/styles/generated/fonts.css`, `src/styles/generated/fonts.generated.ts`, `public/fonts/*.woff2` | `scripts/assets/build-fonts.mjs` | DS fonts | yes | 1.2 |
 | `src/styles/generated/compose.css` | `scripts/assets/build-compose-css.mjs` | colocated component CSS | no (git-ignored) | 1.2 |
-| `src/assets/icons.generated.ts` | `scripts/assets/build-icons.mjs` | DS icons | yes | 1.5 |
-| `src/assets/doodles.generated.tsx` (11 inline doodle components, `pathLength="1"`, one shared `#ks-chalk` filter) | `scripts/assets/build-doodles.mjs` | DS doodles | yes | 1.5 |
-| `public/og.png` (default, URL kept), `public/og/<name>.jpg` | `scripts/assets/build-og.mjs` (sharp) | DS photos, no text | yes | 1.5 |
-| `public/media/kheelu-front.jpg` | `build-og.mjs` | `kheelu-on-fur.jpg` | yes | 1.5 |
-| `public/brand/logo-mark.png` (URL kept) | `build-og.mjs` | `kheelona-mark.svg` | yes | 1.5 |
-| `src/app/icon.png`, `src/app/apple-icon.png` | `build-og.mjs` | DS favicon and Apple touch icon | yes | 1.5 |
+| `src/assets/icons.generated.ts` (`ICON_PATHS` keyed by `IconName`, `ICON_VIEWBOX`; drift test `test/guards/generated-icons.test.ts`) | `scripts/assets/build-icons.mjs` | DS icons | yes | 1.5 |
+| `src/assets/doodles.generated.tsx` (11 inline doodle components such as `ChalkPlanet`, the `DOODLES` map, `DoodleName`, `DoodleProps`, `DOODLE_NAMES`; `pathLength="1"`; `DoodleChalkFilter` = the one shared `#ks-chalk` filter for `DoodleDefs`; drift test `test/guards/generated-doodles.test.ts`) | `scripts/assets/build-doodles.mjs` | DS doodles | yes | 1.5 |
+| `public/og.png` (default, URL kept; palette PNG, 111 KB), `public/og/kheelu.jpg` (26 KB) | `scripts/assets/build-og.mjs` (sharp) | `kheelu-on-fur.jpg` on its own ground, 1200 x 630, no text | yes | 1.5 |
+| `public/media/kheelu-front.jpg` (1200 x 1200, 76 KB) | `build-og.mjs` | `kheelu-on-fur.jpg` | yes | 1.5 |
+| `public/brand/logo-mark.png` (URL kept, 512 x 512) | `build-og.mjs` | `kheelona-mark.svg` | yes | 1.5 |
+| `src/app/icon.png` (48 px), `src/app/apple-icon.png` (180 px), `src/app/favicon.ico` (32 and 48 px), opaque | `build-og.mjs` | DS favicons and Apple touch icon | yes | 1.5 |
+
+Every generated image carries an EXIF `ImageDescription` naming `build-og.mjs` and its DS source (the
+image form of the generated-file header); `test/guards/generated-icons.test.ts` checks sizes, the 200 KB
+card budget, opacity, the header, and drift against a fresh in-memory render (decoded pixels, mean
+difference at most 1, so another platform's encoder rounding does not fail it).
 | AVIF and WebP renditions of rasters | `next/image` on Vercel (cached) | the DS and non-DS rasters above | no | 2.3 |
 
 ## 4. Verification files and machine routes
