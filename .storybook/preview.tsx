@@ -1,46 +1,17 @@
 import type { Preview } from "@storybook/nextjs-vite";
-import React from "react";
-import localFont from "next/font/local";
-import "../src/styles/globals.css";
+import "../src/styles/site.css";
 
-// Mirror app/layout.tsx exactly so var(--font-*) resolve to the real faces and
-// stories render pixel-identical to the app. The serif is the LOCAL italic
-// subset since CS3 — the old Google Fonts import here was fetching a face the
-// app had retired, on every `storybook dev`, for nothing.
-const glory = localFont({
-  src: [{ path: "../src/app/fonts/Glory.woff2", weight: "100 900", style: "normal" }],
-  variable: "--font-glory",
-  display: "swap",
-});
-const instrumentSans = localFont({
-  src: [{ path: "../src/app/fonts/InstrumentSans.woff2", weight: "100 900", style: "normal" }],
-  variable: "--font-instrument-sans",
-  display: "swap",
-});
-const instrumentSerif = localFont({
-  src: [
-    { path: "../src/app/fonts/InstrumentSerifItalic.woff2", weight: "400", style: "italic" },
-  ],
-  variable: "--font-instrument-serif",
-  display: "swap",
-});
-
+// Stories load the site's one CSS entry (task 1.2, ADR-002), so a component renders against the same DS tokens,
+// fonts (served from public/fonts through staticDirs), bundle.css, motion presets and composition CSS as the
+// pages. The predev step writes the composition manifest before Storybook starts. bundle.css styles the body
+// (surface, text, body font), so no decorator is needed. Legacy stories (atoms, molecules, organisms) were styled
+// by the retired globals.css; they render unstyled here until task 6.3 deletes them with their components.
 const preview: Preview = {
   parameters: {
     nextjs: { appDirectory: true },
     layout: "fullscreen",
     a11y: { test: "todo" },
   },
-  decorators: [
-    (Story) => (
-      <div
-        className={`${glory.variable} ${instrumentSans.variable} ${instrumentSerif.variable} js`}
-        style={{ fontFamily: "var(--font-sans)", color: "var(--color-ink)" }}
-      >
-        <Story />
-      </div>
-    ),
-  ],
 };
 
 export default preview;
