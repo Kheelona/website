@@ -12,6 +12,8 @@
  *  "opening shortly" state and the API routes answer 503, rather than a build
  *  failing or a parent meeting a stack trace. */
 
+import { SITE_ENV } from "@/config/env";
+
 export type StoreEnv = {
   razorpayKeyId: string;
   razorpayKeySecret: string;
@@ -100,8 +102,8 @@ export function storeEnv(): StoreEnv | null {
     alertEmail: real(process.env.ORDER_ALERT_EMAIL) ?? "hello@kheelona.com",
     resendApiKey: real(process.env.RESEND_API_KEY),
     emailFrom: real(process.env.EMAIL_FROM) ?? "Kheelona <hello@send.kheelona.com>",
-    metaCapiToken: real(process.env.META_CAPI_TOKEN),
-    metaCapiTestCode: real(process.env.META_CAPI_TEST_CODE),
+    metaCapiToken: SITE_ENV === "beta" ? null : real(process.env.META_CAPI_TOKEN),
+    metaCapiTestCode: SITE_ENV === "beta" ? null : real(process.env.META_CAPI_TEST_CODE),
   };
 }
 

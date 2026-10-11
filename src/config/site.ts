@@ -16,9 +16,15 @@
  *  hardcode a rupee amount, and nothing may hardcode a paise amount that a
  *  payment request could read (test/preorder-money.test.ts guards both). */
 
+/* Relative, not `@/`: next.config.ts imports this file, and Next resolves no
+   alias in the config's own import graph (structure §2). */
+import { STORE_ORIGIN } from "./env";
+
 /** The store host. Same repo, reached through the host rewrite in src/proxy.ts
- *  (§8.25-a), so the design system and the brand laws stay in one place. */
-export const STORE_URL = "https://store.kheelona.com";
+ *  (§8.25-a), so the design system and the brand laws stay in one place.
+ *  Per build since D048: https://store.kheelona.com in production (unchanged),
+ *  https://betastore.kheelona.com on beta, so beta buttons open the beta store. */
+export const STORE_URL = STORE_ORIGIN;
 
 /** Where every "Pre-order Kheelu" button goes. One tap from anywhere on the site
  *  to the page that takes the payment. */
@@ -115,6 +121,13 @@ export const PREORDER_OFFER_LINE = PREORDER_OFFER_LINES.join(" ");
 /** The hold promise (V6 D11): one sentence, one source. Still exactly true of
  *  a paid reservation, so it survives the money change unchanged. */
 export const PRICE_HOLD_LINE = "We hold the price, you hold your place.";
+
+/** MRP, inclusive of all taxes (D034): the legal declaration on the product
+ *  page, its own constant rather than a borrowed FULL_AMOUNT_PAISE, because the
+ *  two answer different questions (ADR-004). Outside the money block above,
+ *  which is frozen (ADR-013); no payment request reads it. */
+export const MRP_AMOUNT_PAISE = 799_900;
+export const MRP_PRICE = formatInr(MRP_AMOUNT_PAISE);
 
 /* Founder decision #8, 2026-08-23 (migration-to-new-dsx.md): the site says
    "3+" EVERYWHERE. The "2 to 5" band and the "2 to 14" platform arc are both

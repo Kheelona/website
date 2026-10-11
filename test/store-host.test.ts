@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { routeForHost, isStoreHost } from "@/lib/store/host";
 import { POSTHOG_ASSET_PROXY_PATH, POSTHOG_PROXY_PATH, STORE_URL } from "@/config/site";
 
@@ -162,4 +162,72 @@ describe("the PostHog proxy paths", () => {
       path: "/store/ingestion-report",
     });
   });
+});
+
+/** THE BETA HOSTS (D048, architecture §15.3).
+ *
+ *  betastore.kheelona.com must behave exactly like store.kheelona.com, or the
+ *  founder reviews a checkout that is not the one parents will use; and
+ *  betawebsite.kheelona.com must behave like the apex, or its `/store` links
+ *  land in the marketing site. The store host list is the same on every build
+ *  (a pure function, authorised by D048); where the apex's `/store` redirect
+ *  points is per build, through `STORE_URL`. */
+describe("the beta hosts", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.resetModules();
+  });
+
+  async function hostModuleUnder(value: string | undefined) {
+    vi.resetModules();
+    vi.stubEnv("KH_SITE_ENV", value);
+    return import("@/lib/store/host");
+  }
+
+  it("treats betastore as a store host, and betawebsite and the apex as marketing", () => {
+    expect(isStoreHost("betastore.kheelona.com")).toBe(true);
+    expect(isStoreHost("BETASTORE.kheelona.com:443")).toBe(true);
+    for (const host of ["betawebsite.kheelona.com", "kheelona.com", "beta.kheelona.com", "store.kheelona.com.evil.test"]) {
+      expect(isStoreHost(host), host).toBe(false);
+    }
+  });
+
+  it("routes betastore exactly like the production store", () => {
+    for (const [path, search] of [
+      ["/", ""],
+      ["/thanks", ""],
+      ["/thanks", "?ref=KH-A2B3-C4D5&t=1790000000000.AbCdEfGh12345678"],
+      ["/e/ideabaaz", "?utm_source=qr"],
+      [`${POSTHOG_PROXY_PATH}/e/`, ""],
+    ]) {
+      expect(routeForHost("betastore.kheelona.com", path, search), `${path}${search}`).toEqual(
+        routeForHost("store.kheelona.com", path, search),
+      );
+    }
+  });
+
+  it("sends betawebsite's /store paths to betastore in a beta build", async () => {
+    const host = await hostModuleUnder("beta");
+    expect(host.routeForHost("betawebsite.kheelona.com", "/store/x", "?utm_source=qa")).toEqual({
+      kind: "redirect",
+      url: "https://betastore.kheelona.com/x?utm_source=qa",
+    });
+    expect(host.routeForHost("betawebsite.kheelona.com", "/store")).toEqual({
+      kind: "redirect",
+      url: "https://betastore.kheelona.com/",
+    });
+  });
+
+  it.each([undefined, "production"])(
+    "KH_SITE_ENV=%s sends every marketing host's /store paths to the production store",
+    async (value) => {
+      const host = await hostModuleUnder(value);
+      for (const marketing of ["kheelona.com", "betawebsite.kheelona.com"]) {
+        expect(host.routeForHost(marketing, "/store/x"), marketing).toEqual({
+          kind: "redirect",
+          url: "https://store.kheelona.com/x",
+        });
+      }
+    },
+  );
 });
