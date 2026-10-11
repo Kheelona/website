@@ -5,25 +5,23 @@ updated: 2026-10-11
 sources: [log.md, open-questions.md]
 ---
 
-# Status (2026-10-11, 06:20 PDT)
+# Status (2026-10-11, 08:45 PDT)
 
-**Phase:** 1 DONE. Now: Phase 2 strategy (`site/strategy.md`), then Phase 3 homepage copy → CMO
-review → `mockup/` → Gate A. The founder is asleep (from ~06:05 PDT); work continues autonomously.
+**Phase:** 3 DONE up to Gate A (strategy, copy, CMO reviews, mockup, approval pack). STOPPED at
+Gate A for the founder's approval.
 **Branch:** `reset/website-v2`, local commits on production `77552ff`, **NOT pushed** (HTTP 408 x3;
 founder: retry later from another network, D014). Production untouched until Gate B (D011).
 
-**Done this session:** PostHog reconnected (claude.ai connector, new account); human-session
-recomputes ingested (writer = verifier on every cell); D031 settings applied in PostHog; repo
-website field set; the founder answered every pending website question → D030-D039.
+**Done this session:** PostHog reconnected; human-session recomputes ingested; D031 applied in
+PostHog; repo website set; founder answered every website question (D030-D039); Phase 2 strategy
+(`site/strategy.md`); Phase 3 homepage copy (`site/pages/home.md`), CMO copy review and visual review
+passed after fixes; mockup built (`mockup/index.html`) and published privately
+(https://claude.ai/artifact/W6XpUUMXhdubxb4fvJpYxa, v2); approval pack `mockup/APPROVAL.md`.
 
-**Running:** posthog-analyst follow-ups on the audit (coverage, US automation, /privacy session,
-setup status).
-
-**Next (in order):**
-1. Rulings-check fixes + propagate D032-D039 to brand, keyword-map and benchmark pages.
-2. Phase 2: write `site/strategy.md` (brief §7 Phase 2).
-3. Phase 3: Copywriter → homepage copy (incl. tagline alternatives, D038) → CMO review → mockup.
-4. Gate A pack (`mockup/APPROVAL.md`). STOP for the founder's approval.
+**AT GATE A: waiting for the founder.** Seven decisions in `mockup/APPROVAL.md` §3 (label, hero
+copy and price sentence, contrast, films, motion, URLs and AI crawlers, Kheelona+ after six months
+and the training clause). Do NOT start Phase 4 until the founder explicitly approves (brief §7).
+Iterate on feedback; log each round; republish to the same artifact link.
 
 **Waiting on the founder (no rush):** C17 Supabase region; F11 proof files; WhatsApp to take calls
 (D032); F7 Kheelona+ after 6 months (Gate A); section D checks (C1, C2, C4, C8, C11, C12, C15, C18).

@@ -398,3 +398,40 @@ not usable), audience, keyword map (placeholders ruled; schema `availabilityStar
 (A3/A4/D2 price lines now D028; anchors fixed), QA baseline, age-band review; rulings check marked
 applied. Also banned as learning-outcome claims: "builds four thinking skills, at your child's level"
 and "Knowledge that sticks". Lint: 77 pages, every link resolves.
+
+## [2026-10-11 07:50] agent | Homepage copy written and CMO-reviewed: ready after two fixes
+[Home copy](site/pages/home.md) (Copywriter): nine folds, H1 recommended "Your child asks why. Kheelu
+asks back." with four alternatives, one-sentence D028 price line, one marked placeholder (box
+contents, F4). [CMO review](qa/cmo-review-2026-10-11.md): pass on fidelity, five-second test, tone,
+comparison, FAQ, keywords; fail F1 (fold 3 card implied Kheelu is the "caring adult") and F2 (fold 6
+heading "Where your child's voice goes" implied no training, against D035). Fixes routed to the
+Copywriter with S1, S2, S4, S5, S6, S10 and the sticky bar in D028 order (₹499 first); S12 (drop the
+Lumi FAQ) declined: Lumi is Home's keyword-map secondary. CMO wants F7 decided at Gate A.
+
+## [2026-10-11 07:55] build | Mockup v1 built: `mockup/index.html` (plain HTML + CSS from DS classes)
+Composed from DS `tokens.css` + `bundle.css` markup (captured by rendering the DS's own live
+previews headlessly), `mockup.css` (tokens only; breakpoints are the DS's 720/1024) and `mockup.js`
+(reveals, sticky bar that steps aside for any inline CTA, native `<dialog>` drawer, G2 preview switch
+`?contrast=ink`). Checks: 360 × 590 holds the CTA and the full price sentence; no sideways scroll at
+360-1440; axe: only G2's white-on-Chilli CTAs (2.87:1) are serious, 0 with `?contrast=ink`; no
+off-token values; DS checksums intact.
+
+## [2026-10-11 08:20] build | Mockup v1 published privately for the founder's phone; approval pack drafted
+Private artifact https://claude.ai/artifact/W6XpUUMXhdubxb4fvJpYxa (catalogued in
+[artifacts](engineering/artifacts.md)); `#ink` shows the G2 option. Price sentence (d) adopted on the
+page and in [home copy](site/pages/home.md) (Copywriter and CMO pick; 18 words). `mockup/APPROVAL.md`
+drafted: seven decisions (label, hero copy, contrast, films, motion, URLs and AI crawlers, Kheelona+
+after six months and the training clause), fold rationale, CTA strategy, URL plan, page outlines,
+tracking parity, checks. Waiting on the CMO's visual pass.
+
+## [2026-10-11 08:45] gate | Gate A pack ready: mockup v2 after the CMO's visual pass; stopped for the founder
+[CMO review, mockup pass](qa/cmo-review-2026-10-11.md): ready after five fixes, all applied: V1 phone
+comparison as one card per row with Kheelu first (the table hid Kheelu off screen; G-05 workaround);
+V2 DS 1:1 hero board (face clear); V3 no reveal on any button, price or the OfferCard; V4 every trust
+item links to its terms; V5 fold-5 heading spacing. Also M1-M4, M6-M12 (price straight under each
+button; the bar stays until the OfferCard's own button, logged under G-09; 44 px tap areas; laptop CTA
+not full width; offer before the board; nothing in view at load fades). M13 tried and reverted (made
+safety longer). Bar hidden from 900 px per the DS. Checks: 360 × 590 holds the button, price sentence
+and delivery line; no sideways scroll; axe only G2 (0 with `#ink`); DS checksums intact. Artifact v2
+at the same private link; curated screenshots in `mockup/screenshots/` (kept local, D039). Approval
+pack complete: `mockup/APPROVAL.md`. Phase 4 waits for the founder's explicit approval.

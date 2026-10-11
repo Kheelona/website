@@ -1,0 +1,128 @@
+/*
+ * Kheelona.com homepage mockup (Gate A). Page-level composition only.
+ * Every value is a DS token from design-system/project/tokens.css; no colours, sizes, radii,
+ * shadows or timings are introduced here. Components and layout come from bundle.css.
+ * Motion follows the spec proposed at Gate A (mockup/APPROVAL.md, decision G4; DS gap G-10).
+ */
+
+/* ---------- Page shell ---------- */
+html { scroll-behavior: smooth; }
+body { margin: 0; }
+.mk-skip { position: absolute; left: var(--space-4); top: calc(var(--space-9) * -1); z-index: var(--z-toast); }
+.mk-skip:focus { top: var(--space-4); }
+
+/* The hero is the first screen on a phone: tighter top padding so the CTA and the price
+   sentence land inside 360 x 590 (strategy §3.3). */
+.mk-hero { padding-top: var(--space-5); }
+.mk-hero .kh-section__actions { margin-top: var(--space-5); }
+.mk-price { margin: var(--space-3) 0 0; }
+.mk-hero .kh-trustline { margin-top: var(--space-3); }
+.mk-hero .kh-art { margin-top: var(--space-6); } /* DS 1:1 board on phones: the child's face stays clear (CMO V2) */
+.mk-hero .kh-art .kh-sticker { right: 4%; top: 6%; }
+
+/* Phone nav: logo and menu only; the hero CTA is the one chilli button in view (G-06). */
+.mk-nav-cta { display: none; }
+
+/* Price sentence and trust row beside every CTA. */
+.mk-beside { display: grid; gap: var(--space-2); margin-top: var(--space-3); }
+.mk-beside .kh-trustline { margin-top: 0; }
+.mk-help { margin: 0; }
+.mk-help a { position: relative; color: inherit; font-weight: 800; }
+.mk-help a::before, .mk-trust a::before { content: ""; position: absolute; inset: calc(var(--space-3) * -1) 0; } /* 44 px tap area without taller lines (CMO M3, V4) */
+.mk-nowrap { white-space: nowrap; }
+
+/* Source markers (G15 proposal: a short linked label after a sourced line). */
+.mk-src { position: relative; padding-inline: var(--space-1); font-weight: 800; color: var(--text-muted); text-underline-offset: var(--space-1); }
+.mk-src::before { content: ""; position: absolute; inset: calc(var(--space-3) * -1) calc(var(--space-2) * -1); } /* 44 px tap area without moving the line */
+
+/* Sample exchange ("see it ask", no-films variant). */
+.mk-chat { display: grid; gap: var(--space-3); margin: 0; padding: 0; list-style: none; }
+.mk-chat__line { max-width: 85%; padding: var(--space-3) var(--space-4); border-radius: var(--radius-l); background: var(--surface-raised); border: var(--stroke-hair) solid var(--border); }
+.mk-chat__line--kheelu { justify-self: start; }
+.mk-chat__line--child { justify-self: end; background: var(--surface-band); }
+.mk-chat__who { display: block; margin-bottom: var(--space-1); }
+.mk-chat__note { margin: var(--space-3) 0 0; }
+
+/* Films strip: native scroll-snap, controls show position and stop at the ends (audit #10). */
+.mk-films { display: grid; grid-auto-flow: column; grid-auto-columns: 80%; gap: var(--space-4); overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: var(--space-2); }
+.mk-films > * { scroll-snap-align: start; }
+.mk-films-ctrl { display: flex; align-items: center; gap: var(--space-3); margin-top: var(--space-4); }
+/* Disabled controls use the DS's own .kh-iconbtn[disabled] style. */
+
+/* The phone sticky buy bar (strategy §3.4). Hidden until the hero CTA leaves the screen;
+   steps aside while the OfferCard is on screen. Opacity and transform only. */
+.kh-buybar { transition: opacity var(--duration-base) var(--ease-standard), transform var(--duration-base) var(--ease-standard); padding-bottom: calc(var(--space-3) + env(safe-area-inset-bottom)); }
+.kh-buybar.is-hidden { opacity: 0; transform: translateY(100%); pointer-events: none; }
+
+/* The menu drawer as a native <dialog> (DS: native dialog; NavDrawer markup). */
+dialog.kh-drawer { width: 100%; max-width: none; height: 100%; max-height: none; margin: 0; padding: 0; border: 0; background: transparent; }
+dialog.kh-drawer::backdrop { background: var(--scrim); }
+dialog.kh-drawer[open] .kh-drawer__panel { animation: mk-drawer-in var(--duration-enter) var(--ease-standard); }
+@keyframes mk-drawer-in { from { transform: translateX(100%); } to { transform: none; } }
+
+/* Section reveals: below the fold only, never the hero, price, CTA or sticky bar.
+   Content is visible without JavaScript; the hidden state applies only once motion.js runs. */
+.js-motion [data-reveal] { opacity: 0; transform: translateY(var(--space-4)); transition: opacity var(--duration-enter) var(--ease-standard), transform var(--duration-enter) var(--ease-standard); }
+.js-motion [data-reveal].is-in { opacity: 1; transform: none; }
+
+/* Stickers below the fold settle once when they arrive (DS: entrances use ease-bounce). */
+.js-motion [data-reveal] .kh-sticker { transition: transform var(--duration-enter) var(--ease-bounce); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .kh-buybar, .js-motion [data-reveal] { transition: opacity var(--duration-base) var(--ease-standard); transform: none; }
+  .kh-buybar.is-hidden { transform: none; }
+  dialog.kh-drawer[open] .kh-drawer__panel { animation: none; }
+}
+
+/* ---------- Laptop (the DS breakpoints: 720 and 1024) ---------- */
+@media (min-width: 720px) {
+  .mk-films { grid-auto-columns: calc((100% - var(--space-4) * 2) / 3); }
+  .mk-hero .kh-art { margin-top: 0; }
+  .mk-hero .kh-btn--block { display: inline-flex; width: auto; } /* full-width CTA on phones only (DS 10-pages, CMO M4) */
+}
+@media (min-width: 900px) { .kh-buybar { display: none; } } /* DS: the bar is for screens narrower than 900 px */
+@media (min-width: 1024px) {
+  .mk-hero { padding-top: var(--space-8); }
+  .mk-nav-cta { display: inline-flex; }
+}
+
+/* Gate A decision G2 preview only (open the mockup with ?contrast=ink): the DS's own passing
+   alternative, ink labels on Chilli and Kheelu Blue fills (08-accessibility.md: needs the owner's OK). */
+.mk-ink .kh-btn--cta, .mk-ink .kh-btn--primary, .mk-ink .kh-sticker.kh-tone-chilli, .mk-ink .kh-sticker.kh-tone-blue { color: var(--ink-900); }
+
+/* ---------- Composition helpers for this page ---------- */
+ul.kh-trust { margin: 0; padding: 0; list-style: none; }
+.mk-beside--center { justify-items: center; text-align: center; }
+.mk-beside--center .kh-trustline { justify-content: center; }
+.mk-facts { justify-content: center; margin-top: var(--space-6); }
+.mk-app { margin: 0; }
+.mk-app .kh-caption { margin-top: var(--space-2); }
+/* A marked placeholder must stay visible until the fact exists (brief §4.2). */
+.mk-placeholder { padding-inline: var(--space-1); border: var(--stroke-hair) dashed var(--border-strong); border-radius: var(--radius-xs); background: var(--surface-band); color: inherit; }
+.kh-cols + .kh-subtitle, .kh-split + .kh-cols { margin-top: var(--space-7); }
+.kh-subtitle { margin: var(--space-7) 0 var(--space-4); }
+.kh-caption a, .kh-body-s a:not(.kh-btn) { color: var(--link); }
+
+/* Trust items link to their terms, each a full tap target (strategy §3.2; CMO V4). */
+.mk-trust { row-gap: var(--space-5); }
+.mk-trust a { position: relative; display: inline-flex; align-items: center; gap: var(--space-2); color: inherit; text-decoration: underline; text-decoration-color: var(--border-strong); text-underline-offset: var(--space-1); }
+
+/* Comparison: on phones one card per row with Kheelu's answer first; the table from 720 px (CMO V1, DS gap G-05). */
+.mk-compare-stack { display: grid; gap: var(--space-4); }
+.mk-compare-stack + .kh-compare-wrap { display: none; }
+.mk-compare-others { margin: var(--space-2) 0 0; padding-left: var(--space-5); color: var(--text-muted); }
+@media (min-width: 720px) {
+  .mk-compare-stack { display: none; }
+  .mk-compare-stack + .kh-compare-wrap { display: block; }
+}
+
+/* CMO M13 (icon above the title on phones) was tried and made the safety fold longer; not applied. */
+
+/* The parent-app screen sits centred in its column on laptop (CMO V5). */
+.mk-app { justify-self: center; }
+
+/* Footer legal links in the DS link colour, with a full tap target (CMO M9). */
+.kh-footer__legal a { display: inline-flex; align-items: center; min-height: var(--tap-min); color: var(--link); }
+/* The link box itself reaches 28 px (axe target-size) without moving the line. */
+.mk-trust a, .mk-help a { padding-block: var(--space-1); margin-block: calc(var(--space-1) * -1); }

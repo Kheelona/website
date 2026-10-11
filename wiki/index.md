@@ -42,7 +42,7 @@ pages a task needs. Phase 0 pages cite legacy files at tag `archive/pre-reset-20
 - [content boundary](site/content-boundary.md): what the website may publish (EXTERNAL, for the ICP) vs what stays INTERNAL; the rule every page and agent follows.
 - [checkout](site/checkout.md): the journey from CTA tap to receipt, what must not change, and the brief's funnel mapped onto it (there is no cart).
 - [strategy](site/strategy.md): Phase 2: messaging hierarchy as the parent meets it, the journey and objections, the one CTA ("Pre-order Kheelu") with its placement and sticky bar, the URL plan (drop `/playos` and the under-3 article), each page's purpose and cluster, and the fix for each top PostHog issue.
-- `site/pages/`: page copy, from Phase 3 (`home.md` first).
+- [home copy](site/pages/home.md): Phase 3 homepage copy, nine folds phone-first, H1 options A-E, the D028 price sentence, sources per claim, open questions for Gate A.
 
 ## Design system (documents the DS in `design-system/`; never a copy)
 - [overview](design-system/overview.md): what DS v11 contains and the rules a page builder follows.
@@ -54,6 +54,7 @@ pages a task needs. Phase 0 pages cite legacy files at tag `archive/pre-reset-20
 
 ## Engineering
 - [lessons](engineering/lessons.md): hard-won behaviour of this stack (Next 16, Vercel, store host, payments, tracking verification, SEO, QA, git).
+- [artifacts](engineering/artifacts.md): every published Artifact (the Gate A mockup link), updated in place; check before publishing.
 - Architecture, structure, catalogues and dependency register: from Phase 4.
 
 ## Research and QA (INTERNAL, D013)
@@ -62,6 +63,7 @@ pages a task needs. Phase 0 pages cite legacy files at tag `archive/pre-reset-20
 - [keyword map](research/keyword-map.md): intent clusters with sourced volumes (Keyword Planner and GSC exports pending, C11), one primary cluster per URL, question bank, placement rules, GEO plan.
 - [QA baseline](qa/baseline-2026-10-10.md): Lighthouse medians on production (mobile and desktop), CWV, links, metadata, JSON-LD, axe, phone first-screen checks: what the new site must beat.
 - [rulings check](qa/rulings-check-2026-10-11.md): verification that D016-D029 reached every owner page; the queued fixes.
+- [CMO review 2026-10-11](qa/cmo-review-2026-10-11.md): homepage copy against the positioning: ready after two fixes (F1 caring-adult implication, F2 voice heading vs D035); H1 pick A; should-fix S1-S12.
 - [source verification](research/source-verification.md): 45 public claims checked against ORIGINAL sources and re-checked (D026): 1 supported as is, 38 only reworded, 4 not supported, 2 unverifiable; 26 ready footnoted site lines. Excerpts in `raw/research/sources/`.
 
 ## Decisions

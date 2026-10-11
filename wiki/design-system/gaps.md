@@ -128,6 +128,10 @@ axe-core also reports **`scrollable-region-focusable` (serious)** on `.kh-compar
 keyboard users cannot reach the hidden columns. The DS has no stacked phone variant; asking the DS owner
 for one is [open questions](../open-questions.md) G11.
 
+**Gate A mockup (2026-10-11):** composed by layout only, no DS change: below 720 px the comparison is a stack of
+`FeatureCard`-style cards, one per row with Kheelu's answer first; the table (Kheelu as the first data column)
+from 720 px (`mockup/mockup.css`; CMO review V1).
+
 ### G-06
 **Two chilli CTAs in the first view.** Open as part of [open questions](../open-questions.md) G2. The DS
 rule is one `cta` per view (`README.md:11`, `:16`; `07-selling.md:51`), yet `NavBar` always carries a
@@ -166,6 +170,12 @@ consent banner or FAQ answers, page padding equal to its height (`StickyBuyBar/R
 (`bundle.css:414-430`; `bundle.js:307-313`): no show or hide logic, no width rule, no entrance
 motion, no `env(safe-area-inset-bottom)`. Composable with a small script, but the motion is undefined
 ([G-10](#g-10); [open questions](../open-questions.md) G4).
+
+**Gate A mockup (2026-10-11):** built with a few lines of script (`mockup/mockup.js`): hidden until the hero cta
+leaves; **steps aside while any inline cta is on screen, including the OfferCard's own button** rather than the
+whole OfferCard (a deliberate departure from the DS letter, CMO review M2: hiding for the whole card left a
+parent reading the price with no button in view for about 430 px); safe-area padding; opacity and transform
+only; hidden from 900 px. For the founder at Gate A with G4.
 
 ### G-10
 **Motion is undefined beyond small interactions.** Open as [open questions](../open-questions.md) G4.
