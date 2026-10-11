@@ -79,16 +79,50 @@ describe("site.css source", () => {
   });
 });
 
+/**
+ * Tailwind's bare values compile to literals even with every theme default reset (`z-50` is `z-index: 50`,
+ * `border-2` is `border-width: 2px`): each is a visual decision the DS makes (its --z-* tokens, .kh-sr, the kh-
+ * classes' borders, radii, type and focus ring), so none may ship (ADR-002 rule 5, tokens only).
+ */
+const LITERAL_UTILITIES = [
+  "z-50", "-z-1", "border", "border-2", "border-t-4", "divide-x-2", "opacity-50", "ring", "ring-1", "p-px", "h-px",
+  "scale-105", "rotate-45", "skew-x-3", "leading-none", "rounded-full", "stroke-2", "decoration-2",
+  "underline-offset-2", "outline", "outline-2", "outline-hidden", "aspect-square", "brightness-50", "bg-cta/50",
+  "sr-only", "line-clamp-2", "lg:z-50",
+];
+/** Layout glue that carries no literal besides zero, 100%, a full viewport, a fraction or a grid or flex count. */
+const GLUE_UTILITIES = [
+  "p-5", "flex", "lg:p-7", "bg-deep-sun", "grid-cols-2", "sm:grid-cols-3", "col-span-2", "col-start-2",
+  "col-span-full", "order-first", "-order-1", "flex-1", "flex-initial", "grow", "shrink-0", "basis-1/3", "w-1/2",
+  "w-full", "h-screen", "min-h-dvh", "max-w-content", "-mt-5", "space-y-4", "border-0", "opacity-0", "top-1/2",
+  "-translate-x-1/2", "translate-y-full", "columns-2", "z-auto", "overflow-hidden", "hidden",
+];
+/** The selector Tailwind writes for a class name. */
+const selectorOf = (cls: string) => `.${cls.replace(/[/:]/g, "\\$&")}`;
+
 describe("site.css compiled through postcss.config.mjs", () => {
   let out: Root;
   let probe: Root;
+  let literal: Root;
   beforeAll(async () => {
     buildComposeCss(); // the predev/prebuild step; compose.css is git-ignored, so a fresh clone has none yet
     out = await compile(siteCss, "site");
-    const siteScan = scannedFiles; // the probe below adds an inline source; keep what the real entry reads
+    const siteScan = scannedFiles; // the probes below add an inline source; keep what the real entry reads
     probe = await compile(`${siteCss}\n@source inline("p-[13px] bg-red-500 [color:red] p-(--space-3) p-5 flex lg:p-7 bg-deep-sun");`, "probe");
+    literal = await compile(`${siteCss}\n@source inline("${[...LITERAL_UTILITIES, ...GLUE_UTILITIES].join(" ")}");`, "literal");
     scannedFiles = siteScan;
   }, 60_000);
+
+  it("drops utilities that carry a literal value instead of a token (Tailwind's bare values), and keeps layout glue", () => {
+    const selectors = new Set<string>();
+    literal.walkRules((r) => { if (inLayer(r) === "utilities") selectors.add(r.selector); });
+    expect(LITERAL_UTILITIES.map(selectorOf).filter((s) => selectors.has(s))).toEqual([]);
+    expect(GLUE_UTILITIES.map(selectorOf).filter((s) => !selectors.has(s))).toEqual([]);
+    // Only the utilities layer: bundle.css itself holds `width: 1px` (.kh-sr), as delivered.
+    const utilities = literal.nodes.filter((n) => n.type === "atrule" && n.name === "layer" && n.params === "utilities").join("\n");
+    expect(utilities).toMatch(/grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
+    for (const decl of [/z-index: 50/, /border-width: 2px/, /opacity: 50%/, /width: 1px/, /scale-x: 105%/]) expect(utilities).not.toMatch(decl);
+  });
 
   it("keeps the cascade order: tokens, fonts, bundle.css, type steps, motion, compose, then Tailwind's layers", () => {
     const order = [
