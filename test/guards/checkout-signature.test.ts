@@ -82,6 +82,44 @@ function presentationFiles(): string[] {
 
 type Signature = { code: string[]; jsx: string[] };
 
+/** The PostHog privacy classes in a text, sorted and deduplicated ("" when there are none). */
+function phTokens(text: string): string {
+  return [...new Set(text.match(/\bph-(?:no-capture|mask)\b/g) ?? [])].sort().join(" ");
+}
+
+/** A className expression with every string literal reduced to its ph- tokens, printed. */
+function phShape(expr: ts.Expression, sf: ts.SourceFile): string {
+  const result = ts.transform(expr, [
+    (ctx) => {
+      const visit = (n: ts.Node): ts.Node => {
+        if (ts.isStringLiteral(n) || ts.isNoSubstitutionTemplateLiteral(n)) return ts.factory.createStringLiteral(phTokens(n.text));
+        if (ts.isTemplateExpression(n)) {
+          return ts.factory.createTemplateExpression(
+            ts.factory.createTemplateHead(phTokens(n.head.text)),
+            n.templateSpans.map((s) =>
+              ts.factory.createTemplateSpan(
+                ts.visitNode(s.expression, visit) as ts.Expression,
+                ts.isTemplateTail(s.literal)
+                  ? ts.factory.createTemplateTail(phTokens(s.literal.text))
+                  : ts.factory.createTemplateMiddle(phTokens(s.literal.text)),
+              ),
+            ),
+          );
+        }
+        return ts.visitEachChild(n, visit, ctx);
+      };
+      return (root) => ts.visitNode(root, visit) as ts.Expression;
+    },
+  ]);
+  const printed = ts
+    .createPrinter({ removeComments: true })
+    .printNode(ts.EmitHint.Expression, result.transformed[0], sf)
+    .replace(/\s+/g, " ")
+    .trim();
+  result.dispose();
+  return printed;
+}
+
 const isJsxRoot = (n: ts.Node): n is ts.JsxElement | ts.JsxSelfClosingElement | ts.JsxFragment =>
   ts.isJsxElement(n) || ts.isJsxSelfClosingElement(n) || ts.isJsxFragment(n);
 
@@ -130,8 +168,14 @@ function computeSignature(path: string, text: string): Signature {
         const name = a.name.getText(sf);
         const init = a.initializer;
         if (!component && name === "className") {
-          const tokens = (init?.getText(sf) ?? "").match(/\bph-(?:no-capture|mask)\b/g);
-          if (tokens) jsx.push(`@${tag} class~${[...new Set(tokens)].sort().join(" ")}`);
+          const tokens = phTokens(init?.getText(sf) ?? "");
+          if (tokens) {
+            jsx.push(`@${tag} class~${tokens}`);
+            // A computed className that carries the tokens: its shape, every string reduced to its
+            // ph- tokens, so a condition that toggles them shows while the classes around them
+            // stay free to change.
+            if (init && ts.isJsxExpression(init) && init.expression) jsx.push(`@${tag} class={${phShape(init.expression, sf)}}`);
+          }
           continue;
         }
         const keep = component
@@ -187,6 +231,16 @@ describe("checkout-signature instrument", () => {
     expect(computeSignature("x.tsx", before.replace("noValidate ", ""))).not.toEqual(sig);
     expect(computeSignature("x.tsx", before.replace('s === "idle"', 's !== "idle"'))).not.toEqual(sig);
     expect(computeSignature("x.tsx", before.replace("const [s", "useEffect(() => {}); const [s"))).not.toEqual(sig);
+  });
+
+  it("sees a condition that toggles ph-no-capture or ph-mask, and lets classes around them change", () => {
+    const page = (cls: string) => `export function P({ paid }: { paid: boolean }) { return <div className=${cls}>{paid ? "Paid" : "Pending"}</div>; }`;
+    const fixed = computeSignature("p.tsx", page(`"ph-no-capture ph-mask mx-auto"`));
+    expect(computeSignature("p.tsx", page(`"ph-no-capture ph-mask kh-section"`))).toEqual(fixed);
+    expect(computeSignature("p.tsx", page(`{paid ? "ph-mask mx-auto" : "ph-no-capture ph-mask mx-auto"}`))).not.toEqual(fixed);
+    const viaClsx = computeSignature("p.tsx", page(`{clsx("ph-no-capture ph-mask", "mx-auto")}`));
+    expect(computeSignature("p.tsx", page(`{clsx("ph-no-capture ph-mask", "kh-section")}`))).toEqual(viaClsx);
+    expect(computeSignature("p.tsx", page(`{clsx("ph-mask", !paid && "ph-no-capture", "mx-auto")}`))).not.toEqual(viaClsx);
   });
 });
 
