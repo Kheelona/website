@@ -54,8 +54,8 @@ their approval of the set is Gate A, then Phase 4 and the build (D043). Workflow
 | File | State | Remaining |
 |---|---|---|
 | app-privacy.webp (576×1032) | **Round 2 done, verified**: banner cropped, 36 months, Kheelu | – |
-| app-transcript.webp (576×1209) | Round 1 only | Round 2: first line "Kheelu remembers! Hello, Aarav. Ready to hop for bubbles again?"; remove the AI summary card; app-bar title "हिंदी में बातें" without the overlap |
-| app-activity.webp (576×1209) | Round 1 only | Round 2: remove Games (legend and bar); Chats = 3; card 2 title "हिंदी में बातें"; previews in the app's own format |
+| app-transcript.webp (576×1209) | **Round 2 done** 2026-10-12 (`6225df2`) | Round 2: first line "Kheelu remembers! Hello, Aarav. Ready to hop for bubbles again?"; remove the AI summary card; app-bar title "हिंदी में बातें" without the overlap |
+| app-activity.webp (576×1209) | **Round 2 done** 2026-10-12 (`6225df2`) | Round 2: remove Games (legend and bar); Chats = 3; card 2 title "हिंदी में बातें"; previews in the app's own format |
 
 The round-2 spec is in [D044](../decisions/D044-app-screens-on-the-site.md) and in the workflow script
 `~/.claude/projects/-Users-apoorvasahu-Documents-kheelona-com-website/a7840453-29e0-4cce-aaef-7d40bff98747/workflows/scripts/app-screens-round-2-wf_552b667d-b1e.js`

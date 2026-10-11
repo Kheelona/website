@@ -63,16 +63,13 @@ never stage them).
 | Wave | Run | State |
 |---|---|---|
 | 0 (prep) | – | Done 2026-10-12: plan committed (`b2ea409`); dev tools pinned and **security patch next 16.3.8, sharp 0.35.5** (`1806937`); D051 (`8423f87`) |
-| 1 | `wf_de7ff1a5-e8b` (base `1806937`) | **Running** (15:30): 1.3 passed review round 1; 1.5 and 1.6 passed after one fix; 1.4 in its third review; 1.2 in fix round 1; 1.1 still building. Screens (1.5b): transcript and activity re-edited and verified, now in `mockup/assets/app/` (uncommitted), awaiting the main session's D044 review |
+| 1 | `wf_de7ff1a5-e8b` (base `1806937`) | **Running** (15:30): 1.3 passed review round 1; 1.5 and 1.6 passed after one fix; 1.4 in its third review; 1.2 in fix round 1; 1.1 still building. Screens (1.5b): **done**, reviewed against D044 and committed (`6225df2`, all three in `src/assets/app/`) |
 | 2 | – | Next: 2.1-2.10 (2.10 = beta never takes a payment, D051) |
 | 3-10 | – | Per [tasks](tasks.md) |
 
 ## 5. Wave 1 follow-ups for the main session
 
-- **1.5b screenshots:** read both WebPs against [D044](../decisions/D044-app-screens-on-the-site.md)
-  (activity verifier noted card 2's ellipsis falls at "What is your nam…": acceptable); then copy all three
-  (`app-transcript`, `app-activity`, `app-privacy`, each 576 × 1209) to `src/assets/app/` and commit them
-  with `mockup/assets/app/*.webp`. Never stage `mockup/_work/`.
+- **1.5b screenshots:** done (`6225df2`).
 - **Review notes to carry:** 1.3 added a www-only `/store/:path*` redirect beyond architecture §9.4 (minor,
   check at merge); 1.6 noted `formatInr` in `site.ts` cannot produce "₹1,00,000" as the spec words it
   (minor, check the frozen helper's real output before 2.1).

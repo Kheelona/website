@@ -525,3 +525,6 @@ Founder added betawebsite.kheelona.com and betastore.kheelona.com (Valid Configu
 
 ## [2026-10-12 15:35] cleanup | Build runbook written; build-wave saved as a named workflow
 New page engineering/build-runbook.md (how waves run, merge, close and resume; wave progress; wave-1 follow-ups). Script saved as `.claude/workflows/build-wave.js` so any session can run `Workflow({name: "build-wave", args})`. `.claude/worktrees/` added to `.git/info/exclude`. Wave 1 at 15:30: 1.3, 1.5, 1.6 passed review; 1.4 and 1.2 in fix rounds; 1.1 building; screenshots re-edited and verified (uncommitted, awaiting D044 review).
+
+## [2026-10-12 15:45] build | Task 1.5b done: app screenshots round 2 reviewed and committed
+Main-session review against D044: transcript (no AI summary, first line fixed, Hindi title clear of "Activity") and activity (no Games, Chats 3, titles and times match). All three at 576 × 1209 in `src/assets/app/` and `mockup/assets/app/` (`6225df2`).
