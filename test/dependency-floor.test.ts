@@ -33,7 +33,7 @@ import { describe, expect, it } from "vitest";
 const FLOORS: { name: string; min: string; why: string }[] = [
   {
     name: "next",
-    min: "16.3.4",
+    min: "16.3.8",
     why:
       "16.2.11 fixed nine advisories in 16.2.x, four of them high: a middleware/proxy " +
       "bypass (GHSA-6gpp-xcg3-4w24), which is the layer this app's whole host split and the " +
@@ -45,11 +45,17 @@ const FLOORS: { name: string; min: string; why: string }[] = [
       "shows via: [postcss, sharp]), but 16.2.12 is the LAST 16.2.x release ever published, so " +
       "the patch-only-inside-16.2.x policy recorded in August had no path left. 16.3.4 declares " +
       "postcss 8.5.23 (was an exact 8.4.31) and sharp ^0.35.4 (was ^0.34.5), which is what " +
-      "actually closes the two transitive advisories. Founder-approved as a minor bump.",
+      "actually closes the two transitive advisories. Founder-approved as a minor bump. " +
+      "RAISED to 16.3.8 on 2026-10-12 (patch, Phase 5): npm audit on 16.3.4 listed next's OWN " +
+      "advisories: GHSA-vcvr-r3jv-pc5j CRITICAL RCE in next/og ImageResponse (<16.3.6; this app " +
+      "does not use next/og), GHSA-cjq9-62q9-8jv4 HIGH SSRF in Image Optimization, and the ISR/SSG " +
+      "cache-poisoning pair GHSA-4jqv-mc3x-m676 and GHSA-mcj8-r9mp-w47p (<16.3.8; the new site " +
+      "uses ISR for the offer, ADR-005), plus three moderate or low. 16.3.8 is the first version " +
+      "clear of all of them.",
   },
   {
     name: "eslint-config-next",
-    min: "16.3.4",
+    min: "16.3.8",
     why:
       "NOT a security floor: a coherence one. This package is exact-pinned to the same string " +
       "as `next` because @next/eslint-plugin-next ships inside it and lints against one " +
@@ -98,7 +104,7 @@ const TRANSITIVE_FLOORS: {
   },
   {
     name: "sharp",
-    min: "0.35.4",
+    min: "0.35.5",
     why:
       "GHSA-f88m-g3jw-g9cj HIGH, inherited libvips CVE-2026-33327/33328/35590/35591 (<0.35.0). " +
       "The advisory's own wording is 'those processing UNTRUSTED INPUT are affected'; this app " +
@@ -245,8 +251,8 @@ describe("security version floors", () => {
      DEFAULT (save-prefix is ^, and this repo has no .npmrc) — so the pin is one
      forgotten --save-exact away from disappearing. */
   it("keeps the framework pins exact, not caret ranges", () => {
-    expect(pkg.dependencies.next).toBe("16.3.4");
-    expect(pkg.devDependencies["eslint-config-next"]).toBe("16.3.4");
+    expect(pkg.dependencies.next).toBe("16.3.8");
+    expect(pkg.devDependencies["eslint-config-next"]).toBe("16.3.8");
   });
 
   for (const floor of TRANSITIVE_FLOORS) {
