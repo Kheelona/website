@@ -1,8 +1,11 @@
 import { readFileSync } from "node:fs";
+import { join, relative, sep } from "node:path";
 import { render, screen } from "@testing-library/react";
+import ts from "typescript";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { buildOffer } from "@/lib/offer/offer";
-import { isListedLegacy } from "../../test/guards/legacy-paths";
+import { ROOT } from "../../test/e2e/support/repo";
+import { isStillLegacy } from "../../test/guards/legacy-paths";
 import { mockupDiff, mockupPage } from "../../test/support/mockup-compare";
 import NotFound, { metadata } from "./not-found";
 
@@ -101,17 +104,51 @@ describe("not-found: what the mockup did not have", () => {
   });
 });
 
+/** Every src/ module the file loads, directly or through the modules it loads, resolved as tsconfig.json resolves
+ *  them (`@/`, relative paths, index files); packages, stylesheets and assets are not followed. Type-only imports
+ *  count too: a legacy type is still a legacy module (6.3 deletes them). */
+function reachableFrom(entry: string): string[] {
+  const { config } = ts.readConfigFile(join(ROOT, "tsconfig.json"), ts.sys.readFile);
+  const { options } = ts.convertCompilerOptionsFromJson(config.compilerOptions, ROOT);
+  const resolution = { ...options, baseUrl: ROOT };
+  const cache = ts.createModuleResolutionCache(ROOT, (name) => name, resolution);
+  const seen = new Set<string>();
+  const queue = [entry];
+  for (let file = queue.pop(); file !== undefined; file = queue.pop()) {
+    if (seen.has(file)) continue;
+    seen.add(file);
+    for (const { fileName } of ts.preProcessFile(readFileSync(join(ROOT, file), "utf8"), true, true).importedFiles) {
+      const resolved = ts.resolveModuleName(fileName, join(ROOT, file), resolution, ts.sys, cache).resolvedModule;
+      if (resolved === undefined || resolved.isExternalLibraryImport) continue;
+      const path = relative(ROOT, resolved.resolvedFileName).split(sep).join("/");
+      if (path.startsWith("src/")) queue.push(path);
+    }
+  }
+  return [...seen].sort();
+}
+
 describe("not-found: the route file", () => {
   const source = readFileSync("src/app/not-found.tsx", "utf8");
   const imports = [...source.matchAll(/^import[^"]*"([^"]+)";$/gm)].map((m) => m[1]);
 
-  it("imports no legacy module (the legacy boundary's client chunks sat in every route's manifest; tasks.md wave-4 close)", () => {
-    expect(imports.length).toBeGreaterThan(0);
-    const legacy = imports.filter(
-      (spec) => spec.startsWith("@/") && (isListedLegacy(`src/${spec.slice(2)}.tsx`) || isListedLegacy(`src/${spec.slice(2)}.ts`)),
+  /* The root not-found is rendered into every route's tree (Next passes it to the root boundary), so every client
+     module it reaches sits in every route's client reference manifest: the legacy page's chunks were about 34 KB of
+     every new route's JavaScript (tasks.md "Wave 4 close"). Reaching only new-design modules keeps them out until
+     6.3 deletes the legacy code. */
+  it("reaches no legacy module, directly or through the modules it loads (test/guards/legacy-paths.ts)", () => {
+    const reached = reachableFrom("src/app/not-found.tsx");
+    /* Guard the guard: the walk follows `@/` imports into the shell, the template and the sections. */
+    expect(reached).toEqual(
+      expect.arrayContaining([
+        "src/content/en-IN/pages/not-found.ts",
+        "src/layouts/SiteShell/SiteShell.tsx",
+        "src/layouts/PageTemplate/PageTemplate.tsx",
+        "src/components/sections/EmptyStateSection/EmptyStateSection.tsx",
+        "src/components/chrome/WhatsAppFloat/WhatsAppFloat.tsx",
+      ]),
     );
-    expect(legacy).toEqual([]);
-  });
+    expect(reached.filter(isStillLegacy)).toEqual([]);
+  }, 30_000);
 
   it("stays thin: no copy typed in it, the words come from the content module", () => {
     expect(imports).toContain("@/content/en-IN/pages/not-found");
