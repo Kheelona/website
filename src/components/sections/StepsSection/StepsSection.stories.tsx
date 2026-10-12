@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { buildOffer } from "@/lib/offer/offer";
-import type { StepsSectionConfig } from "./steps-section.types";
+import type { StepsSectionChecks, StepsSectionFour, StepsSectionThanks } from "./steps-section.types";
 import { StepsSection, StepsTip } from "./StepsSection";
 
 /* StepsSection (task 3.4): the DS StepLoop under its heading, in the three approved placements. The steps are the
  * approved copy, story and test data only (exported in capitals, left out of the story list). */
 
 /** ai-toys-for-kids-in-india.html fold 2: the five checks, then the ghost link to the article. */
-export const GUIDE_CHECKS: StepsSectionConfig = {
+export const GUIDE_CHECKS: StepsSectionChecks = {
   variant: "checks",
   band: true,
   heading: {
@@ -26,7 +26,7 @@ export const GUIDE_CHECKS: StepsSectionConfig = {
 };
 
 /** setup.html fold 3: four steps, two by two from 720 px, one row from 1024 px. */
-export const SETUP_STEPS: StepsSectionConfig = {
+export const SETUP_STEPS: StepsSectionFour = {
   variant: "four",
   id: "connect",
   heading: { title: "Connect Kheelu to your {hand:home Wi‑Fi.}" },
@@ -42,7 +42,7 @@ export const SETUP_STEPS: StepsSectionConfig = {
 export const SETUP_TIP = "Kheelu connects to 2.4 GHz Wi‑Fi. If your router shows two network names, choose the 2.4 GHz one.";
 
 /** store-confirmation.html fold 4: what happens next, in the confirmation's column. */
-export const THANKS_STEPS: StepsSectionConfig = {
+export const THANKS_STEPS: StepsSectionThanks = {
   variant: "thanks",
   heading: { title: "What happens next" },
   steps: [
@@ -62,23 +62,23 @@ const meta = {
   title: "Sections/StepsSection",
   component: StepsSection,
   excludeStories: /^[A-Z0-9_]+$/,
-  args: { ...GUIDE_CHECKS, offer },
   parameters: { layout: "fullscreen" },
-  /* Story args merge over these, so each placement below states its band and link itself. */
+  /* No shared args: each placement below states its whole config, so none inherits another's band or link (and the
+     confirmation's placement takes neither, by type). */
 } satisfies Meta<typeof StepsSection>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 /** The guide's five checks: no arrows, the numeral beside each check on phones, one row from 1200 px. */
-export const Checks: Story = {};
+export const Checks: Story = { args: { ...GUIDE_CHECKS, offer } };
 
 /** Setup's four steps in their tones. */
-export const Four: Story = { args: { ...SETUP_STEPS, band: false, action: undefined, offer } };
+export const Four: Story = { args: { ...SETUP_STEPS, offer } };
 
 /** The confirmation's three steps, the balance from the offer. */
 export const Thanks: Story = {
-  args: { ...THANKS_STEPS, band: false, action: undefined, offer },
+  args: { ...THANKS_STEPS, offer },
   render: (args) => (
     <div className="kh-section">
       <div className="kh-container">
@@ -88,8 +88,9 @@ export const Thanks: Story = {
   ),
 };
 
-/** Setup's Wi-Fi tip, the line that closes the "Before you start" fold above the steps. */
-export const Tip: Story = {
+/** Setup's Wi-Fi tip, the line that closes the "Before you start" fold above the steps. It renders StepsTip, not
+ *  StepsSection, so it takes no StepsSection args. */
+export const Tip: StoryObj = {
   render: () => (
     <section className="kh-section kh-section--band">
       <div className="kh-container">

@@ -13,10 +13,10 @@ import type { StepsSectionConfig } from "./steps-section.types";
  * confirmation's plain section inside its column, headed in the store's `ks-h2` style (StoreDetails, task 5.15).
  * Server component.
  */
-export interface StepsSectionProps extends StepsSectionConfig {
+export type StepsSectionProps = StepsSectionConfig & {
   /** For an amount in a step (the confirmation's balance). */
   offer?: Offer;
-}
+};
 
 const TITLE_IDS = { checks: "checks-title", four: "connect-title", thanks: "next-title" } as const;
 
