@@ -226,7 +226,7 @@ export async function settle(page: Page): Promise<void> {
  *   KH_PARITY_TARGET=mockup KH_NO_SERVER=1 KH_E2E_PLANT=sideways npx playwright test test/e2e/no-sideways.spec.ts
  *   KH_E2E_GATE=off KH_E2E_PLANT=brokenlink npx playwright test test/e2e/links.spec.ts
  * Each runs after load in the page under test, so the mockup reference stays clean.
- * ("redirect" is read by redirects.spec.ts, which has no page.) */
+ * ("redirect" and "lp-main" are read by redirects.spec.ts, which has no page.) */
 const MAIN = `document.querySelector("main")`;
 export const PLANTS: Record<string, string> = {
   brokenlink: `${MAIN}.insertAdjacentHTML("beforeend", '<a href="/kh-planted-broken-link">planted</a>');`,

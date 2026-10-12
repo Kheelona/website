@@ -20,10 +20,13 @@ export type ProductSchemaCopy = Omit<ProductSchemaFacts, "path" | "description" 
  * A node the page declares (architecture §9.2): a product page's Product with its Offer, /team's AboutPage and
  * /contact's ContactPage. The FAQPage and a HowTo are never declared: the template reads them off the page's own
  * sections (a FAQ fold, an opted-in answer block, a steps fold with `howTo`), so they say exactly what the page shows.
+ * Likewise the AboutPage's description is the page's answer-section fold (team.md fold 2; task 4.5 item 5), never
+ * words of its own.
  */
 export type PageSchema =
   | { readonly kind: "product"; readonly product: ProductSchemaCopy }
-  | { readonly kind: "about-page" | "contact-page"; readonly name: Copy; readonly description?: Copy };
+  | { readonly kind: "about-page"; readonly name: Copy; readonly description?: never }
+  | { readonly kind: "contact-page"; readonly name: Copy; readonly description?: Copy };
 
 export interface PageContent {
   /** Title, description and Open Graph image, as the copy page words them (`pageMeta` in the route). */

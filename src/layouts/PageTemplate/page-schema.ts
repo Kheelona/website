@@ -12,24 +12,34 @@ import type { PageContent, PageSchema } from "./page-template.types";
 /*
  * The page's own JSON-LD nodes (task 4.1; architecture §9.2), besides the Organization and WebSite the site shell
  * emits once. In this order: the nodes the content declares (Product, AboutPage, ContactPage), each HowTo, then one
- * FAQPage. The HowTo and the FAQPage are read off the page's sections, so every answer and step is the plain text of
- * words the page shows in the live offer mode (the serialiser RichText's output matches; jsonld-matches-page).
+ * FAQPage. The HowTo, the FAQPage and the AboutPage's description are read off the page's sections, so every answer
+ * and step is the plain text of words the page shows in the live offer mode (the serialiser RichText's output matches;
+ * jsonld-matches-page).
  */
 
 const plain = (copy: Copy, offer: Offer) => toPlainText(copy, offer);
 const plainOptional = (copy: Copy | undefined, offer: Offer) => (copy === undefined ? undefined : plain(copy, offer));
 
-function declaredNode(schema: PageSchema, offer: Offer, path: SitePath): SchemaNode {
+/** The AboutPage's description: the answer of the page's one answer-section fold (team.md fold 2: "feeds AboutPage
+ *  JSON-LD"), so the node says what the page shows and is never written twice (task 4.5 item 5). */
+function aboutDescription(page: PageContent, offer: Offer, path: SitePath): string {
+  const folds = page.sections.flatMap((entry) => (entry.kind === "answer-section" ? [entry.config] : []));
+  if (folds.length !== 1) {
+    throw new Error(`${path}: an AboutPage is described by the page's one answer-section fold; found ${folds.length}`);
+  }
+  return plain(folds[0].answer, offer);
+}
+
+function declaredNode(schema: PageSchema, page: PageContent, offer: Offer, path: SitePath): SchemaNode {
   switch (schema.kind) {
     case "product": {
       const { description, offerDescription, ...facts } = schema.product;
       return productNode({ ...facts, path, description: plain(description, offer), offerDescription: plain(offerDescription, offer) }, offer);
     }
     case "about-page":
-    case "contact-page": {
-      const facts = { name: plain(schema.name, offer), description: plainOptional(schema.description, offer), path };
-      return schema.kind === "about-page" ? aboutPageNode(facts) : contactPageNode(facts);
-    }
+      return aboutPageNode({ name: plain(schema.name, offer), description: aboutDescription(page, offer, path), path });
+    case "contact-page":
+      return contactPageNode({ name: plain(schema.name, offer), description: plainOptional(schema.description, offer), path });
   }
 }
 
@@ -80,7 +90,7 @@ function howToOf(entry: SectionEntry, offer: Offer, path: SitePath): SchemaNode[
 
 /** Every node of the page's own graph; empty when it has none (then the template prints no script). */
 export function pageSchemaNodes(page: PageContent, offer: Offer, path: SitePath): SchemaNode[] {
-  const declared = (page.schema ?? []).map((schema) => declaredNode(schema, offer, path));
+  const declared = (page.schema ?? []).map((schema) => declaredNode(schema, page, offer, path));
   const howTos = page.sections.flatMap((entry) => howToOf(entry, offer, path));
   const answers = page.sections.flatMap(answersOf);
   const faqPage = answers.length > 0 ? [faqPageNode(faqPlainItems(answers, offer))] : [];
