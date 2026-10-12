@@ -166,6 +166,18 @@ test.describe("films strip: playback", () => {
   });
 });
 
+/** Storybook's a11y addon runs its own axe in the preview when a story renders; ours waits until that run is over. */
+async function axeWhenIdle(page: Page): ReturnType<typeof runAxe> {
+  for (let attempt = 0; ; attempt++) {
+    try {
+      return await runAxe(page);
+    } catch (error) {
+      if (attempt >= 20 || !/Axe is already running/.test(String(error))) throw error;
+      await page.waitForTimeout(250);
+    }
+  }
+}
+
 test.describe("films strip: axe", () => {
   for (const vp of [phone, laptop]) {
     test(`${vp.name}: no critical or serious finding with the film unmounted, then mounted`, async ({ browser }, info) => {
@@ -175,7 +187,7 @@ test.describe("films strip: axe", () => {
             await page.locator(".ks-film__play").first().click();
             await expect(page.locator("video")).toHaveCount(1);
           }
-          const { blocking, accepted, apart } = await runAxe(page);
+          const { blocking, accepted, apart } = await axeWhenIdle(page);
           if (accepted.length || apart.length) console.log(`[films axe ${vp.name} ${state}] accepted or apart:\n${describeFindings([...accepted, ...apart])}`);
           expect(blocking, `${state}:\n${describeFindings(blocking)}`).toEqual([]);
         }
