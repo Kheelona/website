@@ -28,4 +28,18 @@ export type TextDeviation = {
 
 export const VISUAL_DEVIATIONS: Readonly<Record<string, readonly VisualDeviation[]>> = {};
 
-export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>> = {};
+export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>> = {
+  "meet-kheelu": [
+    {
+      /* The product details fold without JavaScript (wiki/qa/deviations.md V3): the tab row stays hidden and the three
+         panels stack under their headings, so against the approved (tabbed) text the build lacks the tab label "Specs"
+         (the panel's heading stays) and adds the In the box and Safety panels' lines. Applied by text-parity.spec.ts and,
+         for the build's own JavaScript-on and -off texts, by no-js.spec.ts. */
+      mockup: /^Specs$/,
+      build:
+        /^(?:Kheelu plush toy|Charger|Quick-start card|Every reply passes an age-graded safety layer, set to the age you enter in the parent app\.|Tested before launch by trying to make it say unsafe things\.|Toy-safety certification \(BIS\): applied for, not yet granted\.|We show no mark until it is granted\.|Age grading and warnings: \[PLACEHOLDER F4: toy-safety age grading and any required warnings\]|Battery safety: \[PLACEHOLDER F4: battery safety certification\])$/,
+      reason: "details fold without JavaScript: the tab row hidden, the three panels stacked (the approved tabs with JavaScript; P1, N21 corrected)",
+      approvedBy: "deviations.md V3 (main session, 2026-10-13; task 5.2)",
+    },
+  ],
+};
