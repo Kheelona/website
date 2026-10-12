@@ -1,0 +1,27 @@
+/* FoundersSection (task 3.4), ported from mockup/css/team.css:16-21 (founder cards: the badge beside the name and
+   role; the profile link a full tap target, G-01). The link's display, alignment, gap and 44 px height are Card's
+   shared ks-card__link--tap rule; only its own alignment stays here. */
+.ks-founder {
+  gap: var(--space-3);
+}
+.ks-founder__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+.ks-founder__who {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+.ks-founder__role {
+  margin: 0;
+  color: var(--text-muted);
+}
+.ks-founder__photo,
+.ks-founder__bg {
+  margin: 0;
+}
+.ks-founder .kh-card__link {
+  align-self: start;
+}
