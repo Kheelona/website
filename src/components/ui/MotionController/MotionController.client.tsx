@@ -76,12 +76,14 @@ function arm(): (() => void) | undefined {
 
   // Targets added later (task 2.12). A mutation observer reports as a microtask, before the browser paints, so an
   // added target on screen is never seen hidden. js-motion is on by now, so a block's position includes the preset's
-  // small offset; the fold test is the same as above.
+  // small offset; the fold test is the same as above. A target with no layout box yet (task 3.6: React streams a late
+  // block into a `hidden` holder, then moves it into place) reads as 0, 0, which is not "on screen": it is observed,
+  // and when React moves it into place the move is another addition, judged again where it lands.
   const mutations = new MutationObserver((records) => {
     const added = addedTargets(records);
     if (added.length === 0) return;
     const viewport = window.innerHeight;
-    const below = new Set(added.filter((el) => el.getBoundingClientRect().top >= viewport));
+    const below = new Set(added.filter((el) => el.getClientRects().length === 0 || el.getBoundingClientRect().top >= viewport));
     for (const el of added) {
       if (below.has(el)) {
         observer.observe(el);

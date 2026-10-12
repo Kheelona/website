@@ -6,7 +6,7 @@
  */
 import type { StaticImageData } from "next/image";
 import type { ArtLayer } from "@/content/types";
-import { ArtBoard } from "./ArtBoard";
+import { ArtBoard, type ArtBoardBase } from "./ArtBoard";
 
 const ADVIK = { src: "/_next/static/media/advik-sticker.png", width: 744, height: 1198 } as StaticImageData;
 const LAYERS: readonly ArtLayer[] = [
@@ -38,6 +38,26 @@ export const misuses = () => (
     <ArtBoard tone="blue" layers={LAYERS} sizes={SIZES} lcp />
     {/* @ts-expect-error not with hero={false} either */}
     <ArtBoard tone="blue" layers={LAYERS} sizes={SIZES} hero={false} lcp />
+  </>
+);
+
+/** A wrapper (a section's own board) takes `ArtBoardBase`, which omits `hero` and `lcp`, and passes them literally
+ *  (task 3.6 item 10): the pair is a union, so the wrapper decides it, never its caller. */
+function HeroBoard(props: ArtBoardBase) {
+  return <ArtBoard {...props} hero lcp />;
+}
+function BelowBoard(props: ArtBoardBase) {
+  return <ArtBoard {...props} />;
+}
+
+export const wrappers = () => (
+  <>
+    <HeroBoard tone="blue" layers={LAYERS} sizes={SIZES} ratio="4 / 3" />
+    <BelowBoard tone="sun" layers={LAYERS} sizes={SIZES} reveal />
+    {/* @ts-expect-error the base props carry no lcp: the wrapper passes it */}
+    <HeroBoard tone="blue" layers={LAYERS} sizes={SIZES} lcp />
+    {/* @ts-expect-error nor hero */}
+    <BelowBoard tone="blue" layers={LAYERS} sizes={SIZES} hero />
   </>
 );
 

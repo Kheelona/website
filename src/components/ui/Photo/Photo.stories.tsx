@@ -1,5 +1,6 @@
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import type { Decorator, Meta, StoryObj } from "@storybook/nextjs-vite";
 import appActivity from "@/assets/app/app-activity.webp";
+import kheeluBelly from "@ds/assets/Kheelu/kheelu-belly-module.png";
 import kheeluOnFur from "@ds/assets/Kheelu/kheelu-on-fur.jpg";
 import advik02 from "@ds/assets/Photo library/advik-02-whispering-to-kheelu-web.webp";
 import ira01 from "@ds/assets/Photo library/ira-01-story-on-the-bed-web.webp";
@@ -10,20 +11,22 @@ import { Photo } from "./Photo";
 
 const COLUMN = "(min-width: 1024px) 560px, (min-width: 900px) 45vw, calc(100vw - 32px)";
 
+/* Typed as a plain Decorator: an inline decorator would take Photo's props union (the framed photo, or the bare form,
+   task 3.6) as its args, and Storybook intersects decorator args, which collapses the union (ArtBoard.stories.tsx). */
+const inASplitColumn: Decorator = (Story) => (
+  <div className="kh-section">
+    <div className="kh-container">
+      <div className="kh-split">
+        <Story />
+      </div>
+    </div>
+  </div>
+);
+
 const meta = {
   title: "UI/Photo",
   component: Photo,
-  decorators: [
-    (Story) => (
-      <div className="kh-section">
-        <div className="kh-container">
-          <div className="kh-split">
-            <Story />
-          </div>
-        </div>
-      </div>
-    ),
-  ],
+  decorators: [inASplitColumn],
   args: {
     image: { src: ira01, alt: "A laughing girl in a peach kurta sitting cross-legged on a block-print bedsheet, telling Kheelu a story with both hands." },
     sizes: COLUMN,
@@ -62,3 +65,13 @@ export const RatioWithCaption: Story = {
 
 /** Fades in once on scroll under MotionController (D049 pick 1). */
 export const Revealed: Story = { args: { reveal: true } };
+
+/** The bare form (task 3.6): the image alone, no frame or crop, at its own ratio; the section's class sizes it
+ *  (ModesSection's "Good to know" photo, meet-kheelu.html fold 4). */
+export const Bare: Story = {
+  args: {
+    bare: true,
+    sizes: "(min-width: 720px) 224px, 176px",
+    image: { src: kheeluBelly, alt: "Kheelu’s tummy unit up close, with its speaker, light ring and buttons." },
+  },
+};

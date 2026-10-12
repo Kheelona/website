@@ -32,3 +32,24 @@ export const misuses = () => (
     <Photo image={IRA} sizes={SIZES} ratio="4:5" />
   </>
 );
+
+/** The bare form (task 3.6): the image alone, so nothing that belongs to the frame. */
+export const bare = () => (
+  <>
+    <Photo bare image={IRA} sizes={SIZES} className="ks-know__img" />
+    <Photo bare image={IRA} sizes={SIZES} lcp />
+    <Photo bare image={IRA} sizes={SIZES} fetchPriority="low" />
+    {/* @ts-expect-error sizes is required in the bare form too */}
+    <Photo bare image={IRA} />
+    {/* @ts-expect-error no frame variant: there is no frame */}
+    <Photo bare image={IRA} sizes={SIZES} variant="wide" />
+    {/* @ts-expect-error no larger frame radius */}
+    <Photo bare image={IRA} sizes={SIZES} xl />
+    {/* @ts-expect-error no crop ratio */}
+    <Photo bare image={IRA} sizes={SIZES} ratio="4 / 5" />
+    {/* @ts-expect-error no caption: a caption needs the figure */}
+    <Photo bare image={IRA} sizes={SIZES} caption="x" />
+    {/* @ts-expect-error no reveal: the reveal hook is the figure's */}
+    <Photo bare image={IRA} sizes={SIZES} reveal />
+  </>
+);

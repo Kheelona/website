@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { clsx } from "clsx";
-import { ICON_VIEWBOX } from "@/components/ui/Field/field-icons";
+import { Glyph } from "@/components/ui/Icon/Glyph";
 import { ALERT_TONE_ICON } from "./alert-icons";
 
 /** The DS status tones (index.d.ts `Status`). */
@@ -30,10 +30,7 @@ export interface AlertProps {
 export function Alert({ tone = "info", title, children, action, className }: AlertProps) {
   return (
     <div className={clsx("kh-alert", tone !== "info" && `kh-alert--${tone}`, className)} role={tone === "danger" ? "alert" : "status"}>
-      {/* The DS icon markup, as the mockup writes it (ui/Icon is task 2.2, same wave). */}
-      <svg className="kh-icon kh-alert__icon" viewBox={ICON_VIEWBOX} aria-hidden="true" focusable="false">
-        <path d={ALERT_TONE_ICON[tone]} />
-      </svg>
+      <Glyph d={ALERT_TONE_ICON[tone]} className="kh-alert__icon" />
       <div className="kh-alert__content">
         {title ? <p className="kh-alert__title">{title}</p> : null}
         {children ? <div className="kh-alert__body">{children}</div> : null}

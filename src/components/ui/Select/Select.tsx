@@ -1,5 +1,6 @@
 import { useId, type ReactNode, type Ref, type SelectHTMLAttributes } from "react";
-import { ICON_CARET_DOWN, ICON_VIEWBOX } from "@/components/ui/Field/field-icons";
+import { ICON_CARET_DOWN } from "@/components/ui/Field/field-icons";
+import { Glyph } from "@/components/ui/Icon/Glyph";
 import { describedControl, FieldFrame } from "@/components/ui/Field/field-parts";
 
 /** A choice: its text, or a value with its own label (DS SelectProps). */
@@ -65,10 +66,7 @@ export function Select({
             );
           })}
         </select>
-        {/* The DS icon markup, as the mockup's {{icon:}} injection writes it (ui/Icon is task 2.2, same wave). */}
-        <svg className="kh-icon kh-select__caret" viewBox={ICON_VIEWBOX} aria-hidden="true" focusable="false">
-          <path d={ICON_CARET_DOWN} />
-        </svg>
+        <Glyph d={ICON_CARET_DOWN} className="kh-select__caret" />
       </div>
     </FieldFrame>
   );

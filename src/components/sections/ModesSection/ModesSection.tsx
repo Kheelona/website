@@ -1,11 +1,9 @@
-import Image from "next/image";
 import { SectionLinkRow, SectionTitle } from "@/components/sections/FeatureSplit/section-parts";
 import { Card } from "@/components/ui/Card/Card";
 import { Icon } from "@/components/ui/Icon/Icon";
 import { LanguageChips } from "@/components/ui/LanguageChips/LanguageChips";
 import { Cols, Container, Section, SectionHead } from "@/components/ui/Layout/Layout";
 import { Photo } from "@/components/ui/Photo/Photo";
-import { imageSource, loadingFor } from "@/components/ui/Photo/image";
 import { RichText } from "@/components/ui/RichText/RichText";
 import { TickList } from "@/components/ui/TickList/TickList";
 import type { Copy } from "@/content/types";
@@ -63,7 +61,7 @@ export function ModesSection({ variant, id = "modes", heading, photo, modes, lan
             titleId={know.id}
             groupText
             groupClassName="ks-know__text"
-            after={<Image {...imageSource(know.image)} alt={know.image.alt} sizes={KNOW_SIZES} className="ks-know__img" {...loadingFor(false)} />}
+            after={<Photo bare image={know.image} sizes={KNOW_SIZES} className="ks-know__img" />}
           >
             <TickList items={know.items.map((item) => ({ icon: <Icon name={item.icon} />, text: text(item.text) }))} />
           </Card>

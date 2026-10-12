@@ -11,6 +11,21 @@ import { Alert } from "./Alert";
 
 const iconPath = (el: Element | null) => el?.querySelector("path")?.getAttribute("d");
 
+/** The DS icon markup exactly as the mockup's {{icon:}} injection writes it (mockup/build.mjs; ui/Icon's own test). */
+const dsIcon = (cls: string, d: string) => `<svg class="${cls}" viewBox="0 0 256 256" aria-hidden="true" focusable="false"><path d="${d}"></path></svg>`;
+
+describe("Alert: the tone's icon, drawn through Glyph with markup unchanged (task 3.6 item 4)", () => {
+  it.each([
+    ["info", ICON_PATHS.info],
+    ["success", ICON_PATHS["check-circle"]],
+    ["warning", ICON_PATHS["warning-circle"]],
+    ["danger", ICON_PATHS["warning-circle"]],
+  ] as const)("%s", (tone, d) => {
+    const { container } = render(<Alert tone={tone} title="Title" />);
+    expect(container.firstElementChild!.firstElementChild!.outerHTML).toBe(dsIcon("kh-icon kh-alert__icon", d));
+  });
+});
+
 describe("Alert", () => {
   it("info (the default): role=status, the info icon, the title, then the body", () => {
     const { container } = render(

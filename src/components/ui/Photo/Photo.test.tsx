@@ -113,3 +113,44 @@ describe("Photo: loading (ADR-010, N12)", () => {
     expect(img(container)).toHaveAttribute("height", "750");
   });
 });
+
+/* The bare form (task 3.6 item 18; architecture §10): the image alone, with Photo's loading and sizes rules and no
+   figure, frame or crop, for a DS raster a section places itself (ModesSection's "Good to know" photo,
+   meet-kheelu.html fold 4, `img.mk-know__img`). Sections never render next/image directly. */
+describe("Photo: the bare form", () => {
+  const bare = (c: HTMLElement) => c.firstElementChild as HTMLImageElement;
+
+  it("is the next/image alone: no figure, the section's class on the image, the alt text", () => {
+    const { container } = render(<Photo bare image={IRA} sizes={SIZES} className="ks-know__img" />);
+    expect(container.children).toHaveLength(1);
+    expect(bare(container).tagName.toLowerCase()).toBe("img");
+    expect(bare(container).getAttribute("class")).toBe("ks-know__img");
+    expect(bare(container)).toHaveAttribute("alt", IRA.alt);
+    expect(bare(container)).toHaveAttribute("width", "1208");
+    expect(bare(container)).toHaveAttribute("height", "1500");
+    expect(container.querySelector("figure")).toBeNull();
+  });
+
+  it("carries no frame class, no crop and no ratio variable", () => {
+    const { container } = render(<Photo bare image={IRA} sizes={SIZES} />);
+    expect(bare(container)).not.toHaveAttribute("class");
+    expect(bare(container).getAttribute("style") ?? "").not.toContain("--kh-ratio");
+  });
+
+  it("follows Photo's loading rules: the layout's sizes, lazy by default, fetchPriority as a hint only", () => {
+    const lazy = bare(render(<Photo bare image={IRA} sizes={SIZES} />).container);
+    expect(lazy).toHaveAttribute("sizes", SIZES);
+    expect(lazy.getAttribute("srcset")).toMatch(/ \d+w(,|$)/);
+    expect(lazy).toHaveAttribute("loading", "lazy");
+    expect(lazy).not.toHaveAttribute("fetchpriority");
+    const low = bare(render(<Photo bare image={IRA} sizes={SIZES} fetchPriority="low" />).container);
+    expect(low).toHaveAttribute("loading", "lazy");
+    expect(low).toHaveAttribute("fetchpriority", "low");
+  });
+
+  it("as a page's LCP image: eager and fetchpriority high", () => {
+    const lcp = bare(render(<Photo bare image={IRA} sizes={SIZES} lcp fetchPriority="low" />).container);
+    expect(lcp).toHaveAttribute("loading", "eager");
+    expect(lcp).toHaveAttribute("fetchpriority", "high");
+  });
+});

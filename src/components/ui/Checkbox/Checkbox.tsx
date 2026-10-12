@@ -1,6 +1,7 @@
 import { useId, type InputHTMLAttributes, type ReactNode, type Ref } from "react";
 import { clsx } from "clsx";
-import { ICON_CHECK, ICON_VIEWBOX } from "@/components/ui/Field/field-icons";
+import { ICON_CHECK } from "@/components/ui/Field/field-icons";
+import { Glyph } from "@/components/ui/Icon/Glyph";
 import { FieldError } from "@/components/ui/Field/field-parts";
 
 export type CheckboxProps = Omit<InputHTMLAttributes<HTMLInputElement>, "id" | "className" | "type"> & {
@@ -41,10 +42,7 @@ export function Checkbox({ label, hint, error, consent, id, className, "aria-des
       />
       <label htmlFor={inputId} className="kh-check__label">
         <span className="kh-check__box" aria-hidden="true">
-          {/* The DS icon markup, as the mockup's {{icon:}} injection writes it (ui/Icon is task 2.2, same wave). */}
-          <svg className="kh-icon kh-check__tick" viewBox={ICON_VIEWBOX} aria-hidden="true" focusable="false">
-            <path d={ICON_CHECK} />
-          </svg>
+          <Glyph d={ICON_CHECK} className="kh-check__tick" />
           <span className="kh-check__dash" />
         </span>
         <span className="kh-check__text">

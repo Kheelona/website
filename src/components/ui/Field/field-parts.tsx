@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { clsx } from "clsx";
-import { ICON_VIEWBOX, ICON_WARNING_CIRCLE } from "./field-icons";
+import { Glyph } from "@/components/ui/Icon/Glyph";
+import { ICON_WARNING_CIRCLE } from "./field-icons";
 
 /* The label, hint and error pattern the DS shares between TextField and Select (bundle.js `fieldMeta`:
  * one `<id>-d` element under the control, the error replacing the hint), used by Field and Select, and the
@@ -20,10 +21,7 @@ export function describedControl(
 export function FieldError({ id, children }: { id: string; children: ReactNode }) {
   return (
     <span className="kh-field__error" id={id} role="alert">
-      {/* The DS icon markup, as the mockup's {{icon:}} injection writes it (ui/Icon is task 2.2, same wave). */}
-      <svg className="kh-icon" viewBox={ICON_VIEWBOX} aria-hidden="true" focusable="false">
-        <path d={ICON_WARNING_CIRCLE} />
-      </svg>
+      <Glyph d={ICON_WARNING_CIRCLE} />
       {children}
     </span>
   );

@@ -145,5 +145,15 @@ describe("ModesSection: product (product fold 4)", () => {
     const img = know.querySelector("img.ks-know__img")!;
     expect(img).toHaveAttribute("alt", "Kheelu’s tummy unit up close, with its speaker, light ring and buttons.");
     expect(img).toHaveAttribute("loading", "lazy");
+    expect(img).toHaveAttribute("sizes", "(min-width: 720px) 224px, 176px");
+    expect(img.parentElement?.tagName.toLowerCase()).not.toBe("figure");
+  });
+
+  /* Architecture §10 (wave-3 close ruling): DS rasters reach next/image only inside the media primitives. The Good to
+     know photo is Photo's bare form (task 3.6 item 18), never next/image straight from the section. */
+  it("draws the Good to know photo through Photo's bare form, never next/image directly", () => {
+    const source = readFileSync(join(process.cwd(), "src/components/sections/ModesSection/ModesSection.tsx"), "utf8");
+    expect(source).not.toMatch(/from "next\/image"/);
+    expect(source).toMatch(/<Photo\s[^>]*\bbare\b[^>]*className="ks-know__img"/);
   });
 });
