@@ -1,0 +1,57 @@
+/* SourcesSection (task 3.4). The article notes ported from mockup/css/stories.css:105-111 and 151; the buyer's guide
+   note from mockup/css/ai-toys-for-kids-in-india.css:42-43. font-weight 800: exception ds-weight-800 (mapping row
+   78); 400 is written `normal` (row 79). */
+
+/* ---------- article: the numbered notes the markers link to ---------- */
+/* Beats ArticleBody's `.ks-prose > * + *` (equal specificity) because this file loads after it in the compose order. */
+.ks-sources {
+  margin-top: var(--space-7);
+  padding-top: var(--space-6);
+  border-top: var(--stroke-hair) solid var(--border);
+}
+.ks-sources h2 {
+  margin: 0 0 var(--space-4);
+}
+.ks-notes {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--text-muted);
+}
+.ks-notes li {
+  display: grid;
+  grid-template-columns: 4ch minmax(0, 1fr);
+  scroll-margin-top: var(--space-4);
+}
+.ks-notes li:target {
+  color: var(--text);
+}
+.ks-notes__n {
+  font-weight: 800;
+  color: var(--text);
+}
+/* Resets ArticleBody's prose links (`.ks-prose a:not(.kh-btn):not(.ks-src)`, equal specificity) by loading after it
+   (mockup-css-mapping §5 rule 8). */
+.ks-notes a,
+.ks-prose .ks-notes a:not(.ks-src) {
+  color: var(--link);
+  font-weight: normal;
+  overflow-wrap: anywhere;
+  text-decoration-color: var(--border-strong);
+}
+@media (min-width: 1024px) {
+  .ks-sources {
+    margin-top: var(--space-8);
+  }
+}
+
+/* ---------- inline: the buyer's guide's note under its questions ---------- */
+.ks-gd-sources {
+  margin-top: var(--space-5);
+  color: var(--text-muted);
+}
+.ks-gd-sources p {
+  margin: 0 0 var(--space-2);
+}

@@ -1,0 +1,46 @@
+/* RelatedGuides (task 3.4), ported from mockup/css/stories.css:114-117 and 122-127 (related guides and "keep reading":
+   DS list rows that wrap), 135-137 (the keep card from 720 px) and 155 (the chevron). The list reset is List's
+   ks-list-reset; the column is ArticleBody's ks-col. */
+.ks-related .kh-section__head {
+  margin-bottom: var(--space-5);
+}
+.ks-related .kh-listitem__title {
+  overflow: visible;
+  white-space: normal;
+  text-overflow: clip;
+}
+.ks-related .kh-section__actions {
+  margin-top: var(--space-5);
+}
+/* The chevron at the end of each row, muted. */
+.ks-related .kh-listitem > .kh-icon {
+  flex: none;
+  font-size: var(--icon-m);
+  color: var(--text-muted);
+}
+
+/* ---------- keep: the late-talker close ---------- */
+.ks-keep {
+  padding-top: 0;
+}
+.ks-keep__card {
+  gap: 0;
+  padding: var(--space-5) var(--space-4);
+}
+/* The long label may wrap on a 360 px phone instead of pushing the page wider. */
+.ks-keep .kh-btn {
+  max-width: 100%;
+  padding-block: var(--space-2);
+  white-space: normal;
+  text-align: center;
+}
+@media (min-width: 720px) {
+  /* Full-width buttons on phones only (DS 10-pages). */
+  .ks-keep .kh-btn--block {
+    display: inline-flex;
+    width: auto;
+  }
+  .ks-keep__card {
+    padding: var(--space-7);
+  }
+}

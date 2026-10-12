@@ -1,0 +1,32 @@
+/* AnswerSection (task 3.4). The article answer card ported from mockup/css/stories.css:75-77 (the answer comes first:
+   one quiet panel); the team answer from mockup/css/team.css:9-11 (font-weight 800: exception ds-weight-800, mapping
+   row 85). */
+
+/* ---------- article ---------- */
+.ks-answer {
+  gap: var(--space-3);
+  padding: var(--space-5);
+}
+.ks-answer h2 {
+  margin: 0;
+}
+/* (0,2,1): beats ArticleBody's `.ks-prose p` (0,1,1), which loads after this file in the compose order; in the mockup
+   stories.css:77 beat stories.css:62 by coming later in the same file (mockup-css-mapping §5 rule 8). */
+.ks-answer.kh-card p {
+  margin: 0;
+}
+
+/* ---------- team: the answer keeps a reading measure beside its heading ---------- */
+.ks-team-answer {
+  margin: 0;
+  max-width: var(--measure);
+}
+.ks-team-answer a {
+  color: var(--link);
+  font-weight: 800;
+}
+@media (min-width: 900px) {
+  .ks-team-who {
+    align-items: start;
+  }
+}
