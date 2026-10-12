@@ -1,0 +1,179 @@
+/* ArticleBody (task 3.4): the articles' reading column and every prose block, ported from mockup/css/stories.css
+   ("Guide · body", the answer-first spacing, "Try this", the checks, the facts list, the questions, the late-talker
+   lines). Type: the column carries ks-type-body ks-type-body-l@xl (mapping rows 71-72, 83-84) and the facts' bodies
+   ks-type-body (rows 76-77), so no size is typed here. font-weight 800 and 700: exceptions ds-weight-800 and
+   ds-weight-700; the 3px underline offset: ds-underline-offset-3px; the 1200 px query: content-max-1200
+   (test/guards/token-exceptions.ts; wiki/engineering/mockup-css-mapping.md rows 73-75, 80, 10b). */
+
+/* ---------- The column ---------- */
+.ks-story-body {
+  padding-top: var(--space-7);
+}
+/* 7/12 of the DS content width; RelatedGuides centres its rows on the same column. */
+.ks-col {
+  max-width: calc(var(--content-max) * 7 / 12);
+  margin-inline: auto;
+}
+.ks-prose p,
+.ks-prose ul,
+.ks-prose ol {
+  margin: 0 0 var(--space-4);
+}
+.ks-prose > * > :last-child,
+.ks-prose .kh-card > :last-child {
+  margin-bottom: 0;
+}
+.ks-prose a:not(.kh-btn):not(.ks-src) {
+  color: var(--link);
+  font-weight: 700;
+  text-decoration-thickness: var(--stroke-control); /* 2px (mapping row 74) */
+  text-decoration-color: var(--sun-500);
+  text-underline-offset: 3px;
+}
+.ks-prose a:not(.kh-btn):not(.ks-src):hover {
+  text-decoration-color: var(--text);
+}
+/* Every block of the column: the answer, each part, the photo, the sources. */
+.ks-prose > * + * {
+  margin-top: var(--space-7);
+}
+
+/* ---------- Parts ---------- */
+.ks-part h2 {
+  margin: 0 0 var(--space-3);
+  scroll-margin-top: var(--space-4);
+}
+.ks-part h3 {
+  margin: var(--space-5) 0 var(--space-1);
+}
+.ks-part h2 + h3 {
+  margin-top: 0;
+}
+.ks-part ul:not([class]) {
+  padding-left: var(--space-5);
+}
+.ks-part ul:not([class]) li + li {
+  margin-top: var(--space-2);
+}
+
+/* The D025 line under an answer. */
+.ks-disclaimer {
+  margin: 0;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* ---------- A "Try this" line and short rules, set apart ---------- */
+.ks-try {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-m);
+}
+.ks-try .kh-icon {
+  flex: none;
+  margin-top: var(--space-1);
+  font-size: var(--icon-m);
+}
+.ks-try p {
+  margin: 0;
+}
+.ks-prose .ks-checks {
+  display: grid;
+  gap: var(--space-3);
+  padding: 0;
+  list-style: none;
+}
+.ks-checks li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+.ks-checks li + li {
+  margin-top: 0;
+}
+.ks-checks .kh-icon {
+  flex: none;
+  margin-top: var(--space-1);
+  font-size: var(--icon-m);
+  color: var(--text);
+}
+
+/* ---------- The product facts (safe-AI-toy article): TrustList rows with kh-label lead-ins ---------- */
+.ks-facts-list {
+  margin: var(--space-5) 0;
+}
+.ks-facts-list .kh-trust__item {
+  padding: var(--space-4);
+}
+.ks-facts-list .kh-trust__body {
+  margin: 0;
+  color: var(--text);
+}
+.ks-facts-list .kh-label {
+  display: block;
+  margin-bottom: var(--space-1);
+}
+/* One column inside the reading column; two from 1200 px, where the list widens. */
+.ks-facts-list {
+  grid-template-columns: minmax(0, 1fr);
+}
+.ks-belly {
+  justify-self: center;
+  width: min(100%, calc(var(--space-9) * 2)); /* 2 × 96 = 192 */
+  margin: var(--space-2) 0 0;
+}
+
+/* ---------- The six questions (safe-AI-toy article) ---------- */
+.ks-questions h3 {
+  margin: var(--space-5) 0 var(--space-1);
+}
+.ks-questions h3:first-child {
+  margin-top: var(--space-2);
+}
+
+/* ---------- The late-talker article: the plain line after the signs, the tips with their icons ---------- */
+.ks-gut {
+  font-weight: 800;
+}
+.ks-prose .ks-tips {
+  gap: var(--space-4);
+  margin: 0 0 var(--space-4);
+  padding: var(--space-5);
+  list-style: none;
+}
+.ks-tips li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+.ks-tips .kh-icon {
+  flex: none;
+  margin-top: var(--space-1);
+  font-size: var(--icon-m);
+}
+
+@media (min-width: 1024px) {
+  .ks-story-body {
+    padding-top: var(--space-8);
+  }
+}
+
+/* The safe-AI-toy article's facts widen past the reading column into two columns, the belly unit in the tenth cell,
+   from the DS content-max (1200 px), which a media query cannot read as a variable. */
+@media (min-width: 1200px) {
+  .ks-breakout .ks-facts-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-inline: calc(var(--space-10) * -1);
+  }
+  .ks-breakout .ks-facts-list .kh-trust__item {
+    padding: var(--space-5);
+  }
+  .ks-breakout .ks-belly {
+    align-self: center;
+    width: calc(var(--space-10) + var(--space-6)); /* 128 + 32 = 160 */
+    margin: 0;
+  }
+}

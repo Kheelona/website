@@ -1,0 +1,8 @@
+/* StepsSection (task 3.4). The step layouts are ui/StepLoop's (checks and four); the confirmation's heading style is
+   StoreDetails' ks-h2 (task 5.15). Setup's Wi-Fi tip ported from mockup/css/setup.css:9 (font-weight 700: exception
+   ds-weight-700, mapping row 59). */
+.ks-setup-tip {
+  margin: var(--space-5) 0 0;
+  max-width: var(--measure);
+  font-weight: 700;
+}

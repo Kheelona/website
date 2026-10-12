@@ -1,0 +1,20 @@
+/* ArticleHead (task 3.4), ported from mockup/css/stories.css:57-58 and 145-146 (guide head: byline, photo). The crumbs
+   are ui/Breadcrumbs (ks-crumbs); the title's 1024 px size is Heading's titleStepXl (mapping rows 81-82); the
+   first-screen padding is HeroSection's ks-hero (task 3.3). */
+.ks-byline {
+  margin: var(--space-4) 0 0;
+  color: var(--text-muted);
+}
+.ks-story-head .kh-photo {
+  margin: 0;
+}
+@media (min-width: 900px) {
+  .ks-story-head .kh-split {
+    align-items: center;
+  }
+  /* A 4:5 photo stays inside a laptop screen. */
+  .ks-story-head .kh-photo:not(.kh-photo--wide) {
+    justify-self: end;
+    width: min(100%, calc(var(--space-10) * 3)); /* 3 × 128 = 384 */
+  }
+}
