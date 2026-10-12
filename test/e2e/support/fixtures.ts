@@ -15,6 +15,7 @@ import { test as base, expect, type Browser, type BrowserContext, type Page, typ
 import { BETA_HOSTS, BYPASS_SECRET, HOST_HEADERS, NODE_ORIGIN, ORIGINS, PARITY_TARGET, TARGET } from "./env";
 import { REVIEW_TOOL_SELECTOR, type MockupSlug } from "./mockup-text";
 import { isNewDesignHtml } from "./page-checks";
+import { projectDeviceScaleFactor, viewportOffProject, type ProjectMeta } from "./projects";
 import { builtUrl, mayBeLegacy, mockupUrl, type Route } from "./routes";
 import { contextFor, type Viewport } from "./viewports";
 
@@ -279,10 +280,16 @@ type Harness = {
 };
 
 export const test = base.extend<{ harness: Harness }>({
-  harness: async ({ browser }, provide) => {
+  harness: async ({ browser }, provide, testInfo) => {
     const contexts: BrowserContext[] = [];
+    const meta = testInfo.project.metadata as ProjectMeta;
     const make = async (vp: Viewport, opts?: OpenOptions) => {
-      const c = await newGuardedContext(browser, vp, opts);
+      // The WebKit projects (KH_WEBKIT=1) each run one viewport group: phones under iPhone
+      // emulation, laptops in desktop WebKit (projects.ts). The iPhone keeps its pixel ratio
+      // unless the spec asks for one.
+      const off = viewportOffProject(vp, testInfo.project.name, meta);
+      if (off) testInfo.skip(true, off);
+      const c = await newGuardedContext(browser, vp, { ...opts, deviceScaleFactor: opts?.deviceScaleFactor ?? projectDeviceScaleFactor(meta) });
       contexts.push(c);
       return c;
     };
