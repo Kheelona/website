@@ -68,10 +68,11 @@ const LEGACY_DATES: ReadonlyMap<string, { published: string; updated: string }> 
 })();
 
 describe("the folder", () => {
-  it("holds one module per article of the URL plan, plus the stub builder while any body is open", () => {
+  it("holds one module per article of the URL plan, the registry, plus the stub builder while any body is open", () => {
     const files = readdirSync(DIR).filter((f) => f.endsWith(".ts") && !f.endsWith(".test.ts"));
     const open = ARTICLE_SLUGS.some((s) => isStub(get(s)) || isPortPending(get(s)));
-    expect(files.sort()).toEqual([...ARTICLE_SLUGS.map((s) => `${s}.ts`), ...(open ? ["stub.ts"] : [])].sort());
+    /* index.ts: the one registry of the article modules (wave-3 close ruling, task 4.2). */
+    expect(files.sort()).toEqual([...ARTICLE_SLUGS.map((s) => `${s}.ts`), "index.ts", ...(open ? ["stub.ts"] : [])].sort());
   });
 });
 
