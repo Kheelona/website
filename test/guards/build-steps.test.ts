@@ -10,6 +10,8 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import ts from "typescript";
 import { describe, expect, it } from "vitest";
+import { FREEZE_TAG, readRepoFile, tagText } from "../e2e/support/repo";
+import { isStillLegacy } from "./legacy-paths";
 
 const REPO = join(__dirname, "..", "..");
 const STEPS = join(REPO, "scripts", "steps");
@@ -100,11 +102,15 @@ describe("the hooks run around the production build", () => {
    listed after task 2.6), so it fails here, and so does a glob (the list is by name only). Each
    exclusion also says why it stays: the task that deletes or rewrites the file, or "for good" for
    one of the four frozen tests kept byte-identical to the tag, and only for them (ruling
-   2026-10-12). A comment may head a group of entries. */
+   2026-10-12). A comment may head a group of entries.
+   The 2.13 review: a comment check alone let a new line take any file out of the typecheck (any
+   N.N number read as a task id), so the list is pinned to its 2.13 snapshot and only shrinks; each
+   line's comment must name the reason the snapshot gives it, as a whole id; and a legacy line holds
+   only while its file is the tag's (imports apart, legacy-paths.ts): a rewritten file type-checks,
+   so its line leaves with the rewrite. A frozen test's reviewed patch (5.11, 5.15, 6.4) changes no
+   type, so its line is not tied to the tag's bytes here (the freeze guards pin those). */
 
 const GUARDS_TSCONFIG = "tsconfig.guards.json";
-/** A task id ("6.3", "5.15", "1.1b") or the frozen-for-good wording. */
-const REASON = /\b[1-7]\.\d+[a-z]?\b|\bfor good\b/;
 const QUOTED_ENTRY = /^\s*"[^"]*",?\s*$/;
 /** The frozen tests (structure §7, ADR-013): byte-identical to the tag, excluded for good. */
 const FROZEN_FOR_GOOD = [
@@ -113,6 +119,35 @@ const FROZEN_FOR_GOOD = [
   "src/lib/email/templates.test.ts",
   "test/analytics-tags.test.ts",
 ] as const;
+/** The legacy lines as of 2.13, each with the task that deletes or rewrites its file. */
+const LEGACY_EXCLUSIONS: Readonly<Record<string, string>> = {
+  "src/components/atoms/Room.stories.tsx": "6.3",
+  "src/components/atoms/Section.stories.tsx": "6.3",
+  "src/components/organisms/FinaleCTA.stories.tsx": "6.3",
+  "src/components/organisms/ParentQuotes.stories.tsx": "6.3",
+  "src/features/home/components/ParentAppSection.stories.tsx": "6.3",
+  "test/action-label.test.ts": "6.3",
+  "test/utm.test.ts": "6.3",
+};
+const FOR_GOOD = "for good";
+/** The 2.13 snapshot: every exclusion allowed (node_modules apart) and the reason its comment gives.
+ *  A line may leave; none may join. Never add an entry here. */
+const EXCLUSION_SNAPSHOT: Readonly<Record<string, string>> = {
+  ...LEGACY_EXCLUSIONS,
+  ...Object.fromEntries(FROZEN_FOR_GOOD.map((path) => [path, FOR_GOOD])),
+};
+
+/** The reason as a whole word or id: "6.3" matches "by 6.3." but not "16.3", "6.31" or "6.3b". */
+function namesReason(comment: string, reason: string): boolean {
+  if (reason === FOR_GOOD) return /\bfor good\b/.test(comment);
+  return new RegExp(`(?<![\\w.])${reason.replaceAll(".", "\\.")}(?!\\w|\\.\\d)`).test(comment);
+}
+
+/** True while the file is the tag's: imports apart for a listed legacy source file
+ *  (legacy-paths.ts), byte for byte otherwise. */
+function unchangedSinceTag(path: string): boolean {
+  return isStillLegacy(path) || (existsSync(join(REPO, path)) && tagText(path) === readRepoFile(path));
+}
 
 type Exclusion = { entry: string; line: number; comment: string };
 
@@ -149,11 +184,33 @@ function staleExclusions(list: readonly Exclusion[], root: string): string[] {
   );
 }
 
-/** An exclusion (node_modules apart) whose comment names neither a task nor "for good". */
-function unexplainedExclusions(list: readonly Exclusion[]): string[] {
+/** An exclusion (node_modules apart) that the snapshot does not list: the list only shrinks. */
+function unlistedExclusions(list: readonly Exclusion[], snapshot: Readonly<Record<string, string>> = EXCLUSION_SNAPSHOT): string[] {
   return list
-    .filter((x) => x.entry !== "node_modules" && !REASON.test(x.comment))
-    .map((x) => `${GUARDS_TSCONFIG}:${x.line} "${x.entry}": its comment names no task and does not say "for good"`);
+    .filter((x) => x.entry !== "node_modules" && !Object.hasOwn(snapshot, x.entry))
+    .map((x) => `${GUARDS_TSCONFIG}:${x.line} "${x.entry}" is not in the 2.13 snapshot: the list only shrinks, never add a file here`);
+}
+
+/** A listed exclusion whose comment does not name the reason the snapshot gives it (an unlisted
+ *  one fails unlistedExclusions instead). */
+function unexplainedExclusions(list: readonly Exclusion[], snapshot: Readonly<Record<string, string>> = EXCLUSION_SNAPSHOT): string[] {
+  return list
+    .filter((x) => Object.hasOwn(snapshot, x.entry) && !namesReason(x.comment, snapshot[x.entry]))
+    .map((x) => `${GUARDS_TSCONFIG}:${x.line} "${x.entry}": its comment does not name ${snapshot[x.entry]}, the reason the 2.13 snapshot gives it`);
+}
+
+/** A legacy exclusion (its reason a task) whose file is no longer the tag's. */
+function rewrittenLegacy(
+  list: readonly Exclusion[],
+  unchanged: (path: string) => boolean,
+  snapshot: Readonly<Record<string, string>> = EXCLUSION_SNAPSHOT,
+): string[] {
+  return list
+    .filter((x) => Object.hasOwn(snapshot, x.entry) && snapshot[x.entry] !== FOR_GOOD && !unchanged(x.entry))
+    .map(
+      (x) =>
+        `${GUARDS_TSCONFIG}:${x.line} "${x.entry}" changed since ${FREEZE_TAG}: a rewritten legacy file must type-check, so its line leaves with the rewrite (${snapshot[x.entry]})`,
+    );
 }
 
 describe("the tsconfig exclusion detector", () => {
@@ -186,11 +243,46 @@ describe("the tsconfig exclusion detector", () => {
     ]);
   });
 
+  const snapshot = { "test/a.test.ts": "6.3", "test/b.test.ts": "6.3", "test/c.test.ts": "for good" };
+
   it("red on an exclusion whose comment gives no reason, or that has no comment", () => {
     const list = exclusions(fixture(['    "node_modules",', "    // Does not type-check.", '    "test/a.test.ts",', "    // 6.3 retires it.", '    "test/b.test.ts"'].join("\n")));
-    expect(unexplainedExclusions(list)).toEqual([`${GUARDS_TSCONFIG}:7 "test/a.test.ts": its comment names no task and does not say "for good"`]);
+    expect(unexplainedExclusions(list, snapshot)).toEqual([`${GUARDS_TSCONFIG}:7 "test/a.test.ts": its comment does not name 6.3, the reason the 2.13 snapshot gives it`]);
     const bare = exclusions(fixture(['    "node_modules",', '    "test/a.test.ts"'].join("\n")));
-    expect(unexplainedExclusions(bare)).toHaveLength(1);
+    expect(unexplainedExclusions(bare, snapshot)).toHaveLength(1);
+  });
+
+  /* The 2.13 review: any N.N number passed as a task id, so "Does not type-check under TypeScript
+     5.9." let a new exclusion take a guard out of the typecheck. The comment must name the task the
+     snapshot gives that line, as a whole id. */
+  it("red on a comment that names another number than its task, or its task inside a longer id", () => {
+    const list = exclusions(
+      fixture(['    // Does not type-check under TypeScript 5.9.', '    "test/a.test.ts",', "    // 16.3 or 6.31 rewrites it.", '    "test/b.test.ts",', "    // 6.3 retires it. Frozen: excluded for good.", '    "test/c.test.ts"'].join("\n")),
+    );
+    expect(unexplainedExclusions(list, snapshot).map((p) => p.split(" ")[1])).toEqual(['"test/a.test.ts":', '"test/b.test.ts":']);
+  });
+
+  it("green on a comment that names its task at the end of a sentence, or says for good", () => {
+    const list = exclusions(fixture(['    "node_modules",', "    // Legacy: deleted by 6.3.", '    "test/a.test.ts",', "    // Frozen: excluded for good.", '    "test/c.test.ts"'].join("\n")));
+    expect(unexplainedExclusions(list, snapshot)).toEqual([]);
+  });
+
+  it("red on an exclusion the 2.13 snapshot does not list, whatever its comment says: the list only shrinks", () => {
+    const list = exclusions(
+      fixture(['    "node_modules",', "    // Does not type-check under TypeScript 5.9.", '    "test/guards/build-steps.test.ts",', "    // 6.3 retires it, or it stays for good.", '    "test/d.test.ts",', "    // 6.3 retires it.", '    "test/a.test.ts"'].join("\n")),
+    );
+    expect(unlistedExclusions(list, snapshot)).toEqual([
+      `${GUARDS_TSCONFIG}:7 "test/guards/build-steps.test.ts" is not in the 2.13 snapshot: the list only shrinks, never add a file here`,
+      `${GUARDS_TSCONFIG}:9 "test/d.test.ts" is not in the 2.13 snapshot: the list only shrinks, never add a file here`,
+    ]);
+  });
+
+  it("red on a legacy exclusion whose file changed since the freeze tag; a frozen test's reviewed patch is not checked", () => {
+    const list = exclusions(fixture(['    // 6.3 retires these.', '    "test/a.test.ts",', '    "test/b.test.ts",', "    // Frozen: excluded for good.", '    "test/c.test.ts"'].join("\n")));
+    const unchanged = (path: string) => path !== "test/b.test.ts" && path !== "test/c.test.ts";
+    expect(rewrittenLegacy(list, unchanged, snapshot)).toEqual([
+      `${GUARDS_TSCONFIG}:7 "test/b.test.ts" changed since ${FREEZE_TAG}: a rewritten legacy file must type-check, so its line leaves with the rewrite (6.3)`,
+    ]);
   });
 });
 
@@ -208,6 +300,14 @@ describe("npm run typecheck reads every test (tsconfig.guards.json)", () => {
 
   it("says, for every exclusion, which task removes it or that it stays for good", () => {
     expect(unexplainedExclusions(list)).toEqual([]);
+  });
+
+  it("lists nothing the 2.13 snapshot does not (the list only shrinks)", () => {
+    expect(unlistedExclusions(list)).toEqual([]);
+  });
+
+  it("excludes a legacy file only while it is unchanged since the freeze tag", () => {
+    expect(rewrittenLegacy(list, unchangedSinceTag)).toEqual([]);
   });
 
   /* Ruling 2026-10-12: the frozen tests stay byte-identical to the tag, so they never type-check

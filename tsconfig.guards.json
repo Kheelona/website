@@ -25,8 +25,10 @@
   // By name only, never a glob: the legacy and frozen files that do not type-check (2026-10-12).
   // A legacy file's line leaves with the task that deletes or rewrites it; a frozen test stays
   // byte-identical to the tag, so its line stays for good (ruling 2026-10-12). Never add a new file
-  // here. test/guards/build-steps.test.ts fails on a line that names no file, a line whose comment
-  // names neither its task nor "for good", and a "for good" line that is not a frozen test (2.13).
+  // here: test/guards/build-steps.test.ts pins this list to its 2.13 snapshot, so it only shrinks.
+  // It fails on a line that names no file, a line the snapshot does not list, a line whose comment
+  // does not name the task the snapshot gives it (or "for good", for the four frozen tests only),
+  // and a legacy line whose file changed since the freeze tag (a rewritten file must type-check).
   "exclude": [
     "node_modules",
     // Legacy: 6.3 deletes these stories with their components (atoms, organisms, features/home).
