@@ -12,9 +12,11 @@
  * green on all 18 approved mockup pages and every copy block of wiki/site/pages/*.md, so the guard
  * can never contradict approved copy; banned-phrases.test.ts proves both on every run.
  *
- * Scope: src/content/** strings and rendered text (test/e2e/content-integrity.spec.ts). The
- * en-IN spelling entries apply there only (N24), never to code, where CSS words like "center"
- * and identifiers like "color" are not copy.
+ * Scope: src/content/** strings and rendered text (test/e2e/content-integrity.spec.ts); the offer
+ * entries also over every shipped src/**\/*.ts(x) file, comments aside, as the old test did; the
+ * claim entries also over every shipped src file that is not still legacy. The en-IN spelling
+ * entries apply to content and rendered text only (N24), never to code, where CSS words like
+ * "center" and identifiers like "color" are not copy.
  */
 
 export type BannedKind = "claim" | "offer" | "spelling";
@@ -92,6 +94,7 @@ export const BANNED_PHRASES: readonly BannedPhrase[] = [
   // ── Row 15 ──
   { id: "kheelu-brain", kind: "claim", claimsRow: R15, pattern: /(?<![/.])\bKheelu\b[^.?!\n]{0,40}\b(?:helps|grows|builds|develops|supports|boosts|improves)\b[^.?!\n]{0,40}\bbrains?\b/i, planted: "Kheelu helps your child's brain grow.", why: "Founder decision 4; D016. \"Conversation helps a young brain grow\" is approved and passes." },
   { id: "brain-development-product", kind: "claim", claimsRow: R15, pattern: new RegExp(`\\bsupports? your child${APOS}s brain development\\b|\\b(?:a|the|our) brain[- ]development toy\\b`, "i"), planted: "Kheelu is a brain-development toy that supports your child's brain development.", why: "D016: brain development is a searched topic, never what Kheelu does." },
+  { id: "helps-child-brain-grow", kind: "claim", claimsRow: R15, pattern: new RegExp(`\\bhelps? your child${APOS}s brain grow\\b`, "i"), planted: "It helps your child’s brain grow.", why: "Claims §4 row 15 bans the exact phrase, with or without \"Kheelu\" nearby. \"Conversation helps a young brain grow\" is approved and passes." },
   // ── Row 16 ──
   { id: "made-in-bengaluru", kind: "claim", claimsRow: R16, pattern: /\bmade in Bengaluru\b|\bbuilt in Bengaluru\b|\bdesigned and built here\b/i, planted: "The toy is designed and built here, made in Bengaluru.", why: "Where in India it is made was not stated: say \"Made in India\" (D034)." },
   // ── Row 17 ──

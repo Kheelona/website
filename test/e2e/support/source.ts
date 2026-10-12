@@ -84,6 +84,17 @@ export function jsxAttributes(sf: ts.SourceFile): JsxAttr[] {
   return out;
 }
 
+/** The file's code with every comment removed, printed by the compiler: string literals, template
+ *  literals, numeric literals and JSX text are emitted verbatim, so a phrase split across JSX
+ *  elements or concatenated strings is still one stretch of text, while the comment that explains
+ *  why a phrase was retired is gone. `target` is the printer's internal option: without it the
+ *  printer down-levels numeric separators (999_900 becomes 999900); banned-phrases.test.ts
+ *  calibrates this on every run. */
+export function codeWithoutComments(sf: ts.SourceFile): string {
+  const options = { removeComments: true, target: ts.ScriptTarget.Latest } as ts.PrinterOptions;
+  return ts.createPrinter(options).printFile(sf);
+}
+
 /** CSS without comments, keeping line numbers (comments become spaces and newlines). */
 export function stripCssComments(css: string): string {
   return css.replace(/\/\*[\s\S]*?\*\//g, (c) => c.replace(/[^\n]/g, " "));
