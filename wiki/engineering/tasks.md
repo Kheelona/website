@@ -1026,6 +1026,16 @@ story spec. Rulings:
 - **Campaigns** (before the first real one, not now): `CampaignEntry` becomes the whole page shape and campaign paths
   get a buy-bar placement (4.5 item 1 does the type; the placement waits for a campaign).
 
+- **`verify:e2e` at the close (2026-10-13 12:20): red only where wave 5 clears it.** 866 passed, 524 skipped, failures
+  only on the new `/stories/*` routes (the first new-design marketing routes): (1) text and visual parity of the three
+  approved articles, whose bodies are `ARTICLE_PORT_PENDING` until **5.6**; (2) `perf-budget` on all 21 article routes
+  (script about 250 KB against 130 KB; route-specific 103.5 KB against 25 KB). Measured on the built site: the article
+  page's own chunk is about 6 KB; about 34 KB is the legacy root `not-found.tsx` boundary's chunks, present in every
+  route's manifest (cleared by **5.10**); about 61 KB is Next prefetching the legacy pages the nav and crumbs link to
+  (home, product, safety, team, contact, setup, the hub: cleared as **5.1-5.9** replace them). Ruling: the specs stay
+  as they are; a wave-5 builder reports its route's own chunk sizes and does not chase legacy chunks; the full
+  `verify:e2e` is the wave-5 close gate. 5.10 runs in part A so the not-found chunks go early.
+
 ### 4.5 Wave-4 code follow-ups (builder; with wave 5 part A)
 
 - **Owns:** the files each item names, their tests and catalogue rows.
@@ -1058,6 +1068,9 @@ story spec. Rulings:
 - **Test:** `npm run verify` and the touched e2e specs green.
 
 ## Wave 5: pages (after wave 4; all parallel)
+
+**Run in three parts** (machine load: each task builds and runs Playwright on its own ports): **A** 4.5, 5.1, 5.2, 5.3,
+5.5, 5.6, 5.10; **B** (after 4.5 merges: legal shapes) 5.4, 5.7, 5.8, 5.9, 5.11-5.14; **C** 5.15-5.19.
 
 Every page task: SPA (above); owns its content module(s) and route file(s); reads shared content
 read-only (corrections to `faqs.ts`, `trust.ts`, `offer.ts`, `routes.ts` or `seller.ts` go to the main
