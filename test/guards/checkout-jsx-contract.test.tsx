@@ -17,7 +17,8 @@ import { ROOT, readRepoFile } from "../e2e/support/repo";
  *   PreorderForm (token, full and event tiers; idle, working, paying, failure): one <form> with
  *     noValidate; one change handler (typing in two fields fires preorder_form_started once);
  *     every field's name, type, inputMode, autocomplete, maxLength, required, checked; the submit
- *     button's type, disabled and label; a "refundable" sentence beside it; the policy links.
+ *     button's type, disabled and label; a "refundable" sentence in the button's own block (its
+ *     form), never only in a link; the policy links.
  *   OrderSummary (token, full, event): the amounts shown, a refund line, the delivery row.
  *   AddressForm (empty, saved): the fields, the submit, the saved state.
  *   /thanks (paid, created, link needed, cannot open): order data only inside the
@@ -137,15 +138,23 @@ async function fillValid(container: HTMLElement, user: ReturnType<typeof userEve
   await user.click(container.querySelector('[name="accepted"]')!);
 }
 
+/** The submit button's block (architecture §16.2: "a refund sentence in the same block as the
+ *  button"): its form, or its parent element when it has none. */
+function submitBlock(scope: Element): Element | null {
+  const b = scope.querySelector('button[type="submit"], input[type="submit"]');
+  return b ? (b.closest("form") ?? b.parentElement) : null;
+}
+
 function formContract(container: HTMLElement) {
   const forms = container.querySelectorAll("form");
   const form = forms[0];
+  const block = submitBlock(container);
   return {
     forms: forms.length,
     noValidate: form ? form.noValidate : null,
     fields: form ? fields(form) : [],
     submit: submitOf(container),
-    refundableSentence: /\brefundable\b/i.test(withoutLinks(container)),
+    refundableSentence: block ? /\brefundable\b/i.test(withoutLinks(block)) : false,
     policyLinks: policyLinks(container, /\/(terms|refund)(?:[#?]|$)/),
     alert: container.querySelector('[role="alert"]') ? "shown" : "none",
   };
@@ -205,6 +214,27 @@ describe("checkout-jsx-contract", () => {
     cleanup();
     vi.unstubAllGlobals();
     delete (window as unknown as { gtag?: unknown }).gtag;
+  });
+
+  it("reads the refund sentence only from the submit button's block (self-test, architecture §16.2)", () => {
+    const inside = render(
+      <form noValidate>
+        <button type="submit">Pay ₹499 and reserve</button>
+        <p>₹499 today. Refundable in full until we dispatch it.</p>
+      </form>,
+    );
+    expect(formContract(inside.container).refundableSentence).toBe(true);
+    cleanup();
+    const outside = render(
+      <div>
+        <form noValidate>
+          <button type="submit">Pay ₹499 and reserve</button>
+          <a href="/refund">Refundable? Read the refund policy</a>
+        </form>
+        <p>Refundable in full until we dispatch it.</p>
+      </div>,
+    );
+    expect(formContract(outside.container).refundableSentence, "a refund line moved out of the button's block, or only inside a link").toBe(false);
   });
 
   it("PreorderForm keeps its form, fields, submit labels, refund sentence and policy links in every tier and state", async () => {
