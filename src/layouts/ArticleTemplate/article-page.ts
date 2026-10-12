@@ -1,6 +1,7 @@
 import type { GuideLink } from "@/components/sections/RelatedGuides/related-guides.types";
 import type { Crumb } from "@/components/ui/Breadcrumbs/Breadcrumbs";
 import { organization } from "@/content/en-IN/organization";
+import { routes } from "@/content/en-IN/routes";
 import { articlePageCopy, getArticle, PLAIN_CLOSE_ART } from "@/content/en-IN/stories/articles";
 import { hubTopics } from "@/content/en-IN/stories/hub";
 import { topics } from "@/content/en-IN/stories/topics";
@@ -19,8 +20,13 @@ import { personIds } from "@/lib/seo/schema/organization";
  * art, its metadata and its page graph (BlogPosting and BreadcrumbList, architecture §9.2). Pure; the template renders.
  */
 
-/** An article's page. */
-export const articlePath = (slug: string): SitePath => `/stories/${slug}`;
+/** An article's page: its address in the URL plan (routes.ts), the route whose content module is the article's. A story
+ *  is its module plus its slug in the plan (architecture §5.4), so an article with no route has no page. */
+export function articlePath(slug: string): SitePath {
+  const route = routes.find((r) => r.kind === "article" && r.module === `stories/articles/${slug}`);
+  if (route === undefined) throw new Error(`Article "${slug}" has no route in routes.ts: a story is its module plus its slug in the URL plan`);
+  return route.path;
+}
 
 /**
  * The bylines that are people: the person ids the shell's Organization node publishes (its founders), from the same

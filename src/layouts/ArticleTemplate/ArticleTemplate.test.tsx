@@ -7,6 +7,7 @@ import { articles } from "@/content/en-IN/stories/articles";
 import type { Article } from "@/content/types";
 import { siteGraphOf } from "@/layouts/SiteShell/site-graph";
 import { buildOffer } from "@/lib/offer/offer";
+import { articlePath } from "./article-page";
 import { ArticleTemplate, articleMeta } from "./ArticleTemplate";
 
 /* ArticleTemplate (task 4.2; structure §5): an article module rendered as its page, in the approved order (story-*.html):
@@ -227,6 +228,13 @@ describe("ArticleTemplate: crumbs and structured data", () => {
   it("refuses a related guide that is not in the article registry", () => {
     const broken = { ...articles["how-children-collect-words"], related: ["no-such-guide", "busy-hands-no-screens", "should-kids-use-ai"] as const };
     expect(() => page(broken)).toThrow(/no-such-guide/);
+  });
+});
+
+describe("articlePath", () => {
+  it("is the article's address in the URL plan (routes.ts), never one the template spells", () => {
+    expect(articlePath("busy-hands-no-screens")).toBe("/stories/busy-hands-no-screens");
+    expect(() => articlePath("a-guide-with-no-route")).toThrow(/a-guide-with-no-route.*routes\.ts/);
   });
 });
 
