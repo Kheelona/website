@@ -1,4 +1,5 @@
-import { ICON_PATHS, ICON_VIEWBOX } from "@/assets/icons.generated";
+import { ICON_COPY } from "@/assets/icons.generated";
+import { Glyph } from "@/components/ui/Icon/Glyph";
 import { CopyLinkButtonIsland } from "./CopyLinkButton.client";
 
 export interface CopyLinkButtonProps {
@@ -14,21 +15,10 @@ export interface CopyLinkButtonProps {
  * "Copy link" (mockup/store.html fold 2): the DS secondary small button with the copy icon, then a polite live
  * region that says what happened. Not a pre-order CTA, so no cta value; autocapture records its text.
  *
- * Server part: it draws the DS copy icon here and hands it to the client island, so the browser never receives
- * the 30 KB icon map (assets catalogue, Icons row). Render it from a server component.
+ * Server part: it draws the DS copy icon with `Glyph` and the named `ICON_COPY` constant (task 2.11) and hands it
+ * to the client island, so the island stays React-only and the browser never receives the icon map (assets
+ * catalogue, Icons row). Render it from a server component.
  */
 export function CopyLinkButton({ value, label, copiedMessage }: CopyLinkButtonProps) {
-  return (
-    <CopyLinkButtonIsland
-      value={value}
-      label={label}
-      copiedMessage={copiedMessage}
-      icon={
-        // The DS icon markup, as the mockup's {{icon:}} injection writes it (ui/Icon is task 2.2, same wave).
-        <svg className="kh-icon" viewBox={ICON_VIEWBOX} aria-hidden="true" focusable="false">
-          <path d={ICON_PATHS.copy} />
-        </svg>
-      }
-    />
-  );
+  return <CopyLinkButtonIsland value={value} label={label} copiedMessage={copiedMessage} icon={<Glyph d={ICON_COPY} />} />;
 }

@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 // Writes src/assets/icons.generated.ts: the path data of every DS icon, keyed by name, for the
-// Icon primitive (task 1.5, ADR-010, brief §9.12 "one icon set").
+// Icon primitive (task 1.5, ADR-010, brief §9.12 "one icon set"), and one named constant per icon
+// (`ICON_CARET_LEFT`, typed with the branded `IconPath`) for client islands (task 2.11): an island
+// imports only the constants it draws and a production build drops the rest, while `ICON_PATHS`,
+// built from the same constants, stays with server components.
 //
 //   node scripts/assets/build-icons.mjs
 //
@@ -32,6 +35,19 @@ function iconPath(name, svg) {
   return attrs.find(([, attr]) => attr === "d")[2];
 }
 
+/** The set's own exports; an icon whose constant would take one of these names stops the script. */
+const OWN_EXPORTS = new Set(["ICON_VIEWBOX", "ICON_PATHS"]);
+
+/** `caret-left` -> `ICON_CARET_LEFT`; throws on a file name that is not lower-case kebab. */
+function constantName(name) {
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(name)) {
+    throw new Error(`build-icons: ${name}: the file name is not lower-case kebab, so its constant name would be guessed`);
+  }
+  const constant = `ICON_${name.toUpperCase().replaceAll("-", "_")}`;
+  if (OWN_EXPORTS.has(constant)) throw new Error(`build-icons: ${name}: its constant ${constant} would shadow the set's own export`);
+  return constant;
+}
+
 /** The content of icons.generated.ts for the icons in `iconsDir`. */
 export function generateIcons({ iconsDir = ICONS_DIR } = {}) {
   const names = readdirSync(iconsDir)
@@ -44,7 +60,7 @@ export function generateIcons({ iconsDir = ICONS_DIR } = {}) {
     const vb = svg.match(/<svg\b[^>]*\bviewBox="([^"]+)"/)?.[1];
     viewBox ??= vb;
     if (vb !== viewBox) throw new Error(`build-icons: ${name}: viewBox "${vb}" differs from the set's "${viewBox}"`);
-    return [name, iconPath(name, svg)];
+    return [name, constantName(name), iconPath(name, svg)];
   });
   const source = relative(ROOT, iconsDir).split("\\").join("/");
   return [
@@ -54,13 +70,26 @@ export function generateIcons({ iconsDir = ICONS_DIR } = {}) {
     "/** The viewBox every DS icon shares. */",
     `export const ICON_VIEWBOX = ${JSON.stringify(viewBox)};`,
     "",
+    "declare const iconPathBrand: unique symbol;",
+    "/**",
+    " * The path data of one DS icon, drawn on ICON_VIEWBOX and filled with currentColor. Branded: only the",
+    " * constants below carry it, so `Glyph` and `IconButton` take a DS icon and never a typed string.",
+    " */",
+    "export type IconPath = string & { readonly [iconPathBrand]: true };",
+    "",
     "/** The name of a DS icon; anything else is a DS gap (G-12). */",
     "export type IconName =",
     ...names.map((name, i) => `  | ${JSON.stringify(name)}${i === names.length - 1 ? ";" : ""}`),
     "",
-    "/** The path data of each DS icon, drawn on ICON_VIEWBOX and filled with currentColor. */",
-    "export const ICON_PATHS: Readonly<Record<IconName, string>> = {",
-    ...entries.map(([name, d]) => `  ${JSON.stringify(name)}: ${JSON.stringify(d)},`),
+    "/* One constant per DS icon, named after its file (`caret-left` is ICON_CARET_LEFT). A client island imports",
+    " * only the ones it draws, through Glyph or IconButton; a production build ships only those (Turbopack",
+    " * removes unused exports; task 2.11, test/guards/client-icons.test.ts). */",
+    ...entries.map(([, constant, d]) => `export const ${constant} = ${JSON.stringify(d)} as IconPath;`),
+    "",
+    "/** The path data of each DS icon by name, built from the constants above. Server components only: a",
+    " *  client island that reads it ships all of them (test/guards/client-icons.test.ts). */",
+    "export const ICON_PATHS: Readonly<Record<IconName, IconPath>> = {",
+    ...entries.map(([name, constant]) => `  ${JSON.stringify(name)}: ${constant},`),
     "};",
     "",
   ].join("\n");

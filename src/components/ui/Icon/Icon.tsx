@@ -1,5 +1,5 @@
-import clsx from "clsx";
-import { ICON_PATHS, ICON_VIEWBOX, type IconName } from "@/assets/icons.generated";
+import { ICON_PATHS, type IconName } from "@/assets/icons.generated";
+import { Glyph } from "./Glyph";
 
 export type { IconName };
 
@@ -13,22 +13,12 @@ export interface IconProps {
 }
 
 /**
- * DS Icon (design-system/project/components/Icon): a Phosphor Bold path on the shared 256 grid, filled
- * with currentColor and sized in em by `kh-icon`. Markup as mockup/build.mjs inlines `{{icon:…}}`.
- * Server component: the path map is about 30 KB, so a client island should take icons as children
- * rendered on the server rather than import this (assets catalogue, Icons row).
+ * DS Icon (design-system/project/components/Icon) by name: a Phosphor Bold path on the shared 256 grid, filled
+ * with currentColor and sized in em by `kh-icon`. Markup as mockup/build.mjs inlines `{{icon:…}}`, drawn by
+ * `Glyph`. Server component: it reads the whole icon map (`ICON_PATHS`, about 30 KB), so a client island never
+ * imports it; an island draws its own icons with `Glyph` or `IconButton` and the named `ICON_*` constants
+ * (task 2.11, `test/guards/client-icons.test.ts`).
  */
 export function Icon({ name, label, className }: IconProps) {
-  return (
-    <svg
-      className={clsx("kh-icon", className)}
-      viewBox={ICON_VIEWBOX}
-      role={label ? "img" : undefined}
-      aria-label={label}
-      aria-hidden={label ? undefined : "true"}
-      focusable="false"
-    >
-      <path d={ICON_PATHS[name]} />
-    </svg>
-  );
+  return <Glyph d={ICON_PATHS[name]} label={label} className={className} />;
 }
