@@ -7,7 +7,7 @@ import { RichText } from "@/components/ui/RichText/RichText";
 import { Tabs } from "@/components/ui/Tabs/Tabs";
 import { TickList } from "@/components/ui/TickList/TickList";
 import type { IconText, Offer } from "@/content/types";
-import { ContentIcon } from "../ArticleBody/content-icon";
+import { ContentIcon } from "@/components/ui/Icon/Icon";
 import type { DetailRow, ProductDetailsConfig } from "./product-details.types";
 
 /**

@@ -1,45 +1,32 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { render, screen } from "@testing-library/react";
 import type { StaticImageData } from "next/image";
 import { describe, expect, it, vi } from "vitest";
 import type { ArtBoardRef } from "@/content/types";
+import { outline, parseMockup, type Renames } from "../../../../test/support/mockup-compare";
 import { HeroSection, type HeroSectionProps } from "./HeroSection";
 
 // The real next/image, as the media primitives' own tests use it: the loading hints are what this file checks.
 vi.unmock("next/image");
 
 /* HeroSection (task 3.3; components §2; D045, D049 pick 2): the first fold of eight approved pages, compared class by
- * class (mk- renamed ks-) and word for word with the built mockup, down to the media primitives (ArtBoard, Photo). The
- * CTA block is the page's (CtaBlock, task 3.2): a stand-in takes its place here. Nothing in a hero ever moves. */
+ * class (mk- renamed ks-) and word for word with the built mockup through the mockup comparison harness
+ * (test/support/mockup-compare.ts), down to the media primitives (ArtBoard, Photo). The CTA block is the page's
+ * (CtaBlock, task 3.2): a stand-in takes its place here. Nothing in a hero ever moves. */
 
-const doc = (slug: string) =>
-  new DOMParser().parseFromString(readFileSync(join(process.cwd(), "mockup", `${slug}.html`), "utf8"), "text/html");
-const heroOf = (slug: string) => doc(slug).querySelector("main > section")!;
+const heroOf = (slug: string) => parseMockup(slug).querySelector("main > section")!;
 const norm = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").trim();
 const words = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, "");
 
-const RENAME: Record<string, string[]> = {
-  "mk-hero": ["ks-hero"],
-  "mk-hero-sticker": ["ks-hero-sticker"],
-  "mk-gd-hero-art": ["ks-art--clamp"],
-  "mk-team-board": ["ks-team-board"],
-  "mk-sf-hero-photo": [],
-  "mk-setup-hero": ["ks-hero-words"],
-  "mk-contact-ways": ["ks-contact-ways"],
-  "mk-nowrap": ["ks-nowrap"],
-  "mk-journal-intro": ["ks-journal-intro"],
-  "mk-written": ["ks-written"],
-  "mk-topics": ["ks-topics"],
-  "mk-topics__label": ["ks-topics__label"],
+/** The hero blocks the build names otherwise; every other mockup block takes its ks- name. */
+const RENAMES: Renames = {
+  "gd-hero-art": ["ks-art--clamp"],
+  "sf-hero-photo": [],
+  "setup-hero": ["ks-hero-words"],
 };
 
-function shape(el: Element, extra: (el: Element) => string[] = () => [], depth = 0): string[] {
-  const classes = [...[...el.classList].flatMap((c) => RENAME[c] ?? [c]), ...extra(el)];
-  const line = `${"  ".repeat(depth)}${el.tagName.toLowerCase()}${[...new Set(classes)].sort().map((c) => `.${c}`).join("")}${el.hasAttribute("data-reveal") ? "[data-reveal]" : ""}`;
-  if (el.tagName.toLowerCase() === "svg" || el.classList.contains("kh-art") || el.classList.contains("kh-photo")) return [line];
-  return [line, ...[...el.children].flatMap((c) => shape(c, extra, depth + 1))];
-}
+/** Inside the art board and the photo, the media primitives' own tests own the markup. */
+const STOP = (el: Element) => el.classList.contains("kh-art") || el.classList.contains("kh-photo");
+const shape = (el: Element, extra: (el: Element) => string[] = () => []) => outline(el, { renames: RENAMES, stop: STOP, extra });
 
 /** A mockup string as content: accents, no-wrap phrases and links. */
 function copyOf(el: Element): string {

@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { mockupFold, skeleton, words } from "../ArticleBody/__fixtures__/approved-fold";
+import { mockupFold, skeleton, words } from "../../../../test/support/mockup-compare";
 import { EmptyStateSection } from "./EmptyStateSection";
 import { NOT_FOUND } from "./EmptyStateSection.stories";
 

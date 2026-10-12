@@ -8,7 +8,7 @@ import { TRUST_FULL, trustItems } from "@/content/en-IN/trust";
 import type { ArtBoardRef, ImageRef } from "@/content/types";
 import { buildOffer } from "@/lib/offer/offer";
 import type { SellingContext } from "../CtaBlock/cta-block.types";
-import { builtMarkup, canonical, mockupElement, renderedElement, STORE, without } from "../CtaBlock/mockup-fold.test-support";
+import { builtMarkup, canonical, mockupFold, renderedElement, STORE, without } from "../../../../test/support/mockup-compare";
 import { OfferSection } from "./OfferSection";
 import type { OfferSectionConfig } from "./offer-section.types";
 
@@ -61,7 +61,7 @@ describe("OfferSection: the approved folds, exactly (media aside)", () => {
     ["Home close (home.html fold 9)", "home", "#close", HOME],
     ["product offer (meet-kheelu.html fold 3)", "meet-kheelu", "#offer", PRODUCT],
   ] as const)("%s", (_name, slug, fold, config) => {
-    const expected = builtMarkup([without(mockupElement(slug, fold), MEDIA)], { keepSpans: KEEP });
+    const expected = builtMarkup([without(mockupFold(slug, fold), MEDIA)], { keepSpans: KEEP });
     const actual = canonical(without(renderedElement(<OfferSection {...config} {...context()} />), MEDIA));
     expect(actual).toBe(expected);
   });
@@ -120,6 +120,20 @@ describe("OfferSection: variants", () => {
     expect(perks(HOME)).toEqual(["Deliveries start mid-November", "In the box: Kheelu plush toy, charger and quick-start card", "Delivery anywhere in India, included", "A GST invoice with every order"]);
     expect(perks(PRODUCT)).toHaveLength(5);
     expect(perks(PRODUCT)[1]).toMatch(/^6 months of Kheelona\+ included/);
+  });
+
+  /* Task 3.6 item 6: the help line is content (`Copy`) and renders with the page's offer, as in CtaBlock. */
+  it("renders the help line with the offer: copy that changes with the mode", () => {
+    const help = { lead: { token: "Questions before you pay the advance?", full: "Questions before you pay?" }, contact: seller.help.contact };
+    for (const [offer, lead] of [
+      [TOKEN, "Questions before you pay the advance?"],
+      [FULL, "Questions before you pay?"],
+    ] as const) {
+      for (const config of [HOME, PRODUCT]) {
+        const line = renderedElement(<OfferSection {...config} offer={offer} ctaLabel={cta.preorder} help={help} />).querySelector(".ks-help");
+        expect(line?.textContent).toContain(lead);
+      }
+    }
   });
 
   it("never moves on arrival: no data-reveal anywhere in the section (the offer card and the price, §11.2)", () => {

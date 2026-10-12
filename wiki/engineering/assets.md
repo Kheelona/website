@@ -44,7 +44,7 @@ layout widths) or a plain `<img>` (SVG).
 | `Logo/kheelona-mark.svg` (sized as in `kheelona-app-icon.svg`) | Logo | Organization logo | `build-og.mjs` → `public/brand/logo-mark.png` (URL kept; 512 x 512, transparent ground, the K at the share of the square the DS app icon gives it) | | 1.5 |
 | `Kheelu/kheelu-front-sticker.png` (1.5 MB) | Kheelu | H, G, P, L (refund, shipping), S, T | `ArtBoard` | G-14: never shipped at source size | 2.3 |
 | `Kheelu/kheelu-front.webp` | Kheelu | G, SH, A, ST | `ArtBoard`, `Photo`, `StoreTop` | store product image | 2.3 |
-| `Kheelu/kheelu-belly-module.png` | Kheelu | P, S, SU, A | `Photo` | | 2.3 |
+| `Kheelu/kheelu-belly-module.png` | Kheelu | P, S, SU, A | `Photo`; on P's "Good to know" card (`ModesSection` `ks-know__img`, meet-kheelu.html fold 4) through `Photo`'s bare form (the image alone, no frame or crop; architecture §10) | | 2.3, 3.6 |
 | `Kheelu/kheelu-on-fur.jpg` (1600 x 1600) | Kheelu | P; OG for H and P (copy pages); default OG card; Product JSON-LD image | `Photo`; `build-og.mjs` → `public/og/kheelu.jpg`, `public/og.png` (default card), `public/media/kheelu-front.jpg` | cards set the photo on its own fur ground (the script fails if the photo's border is not one flat ground) | 1.5 |
 | `Cast/advik-sticker.png` | Cast | H (hero board) | `ArtBoard` | Advik in the hero (A13) | 2.3 |
 | `Cast/myra-sticker.png` | Cast | H (close board, D046), G, P | `ArtBoard` | | 2.3 |

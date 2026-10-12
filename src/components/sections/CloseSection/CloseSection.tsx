@@ -60,12 +60,17 @@ export function CloseSection(props: CloseSectionProps) {
       return (
         <CloseFold id="help">
           <CloseHeading heading={props.heading} context={context} center id="help-title">
-            <HelpLine size="body-l" contact={<RichText text={props.contact} />} className="ks-setup-help" />
+            <HelpLine size="body-l" contact={<RichText text={props.contact} offer={offer} />} className="ks-setup-help" />
           </CloseHeading>
           <Actions center>
             <SecondaryLink link={props.action} />
           </Actions>
-          <HelpLine size="body" lead={<RichText text={props.meet.lead} />} contact={<RichText text={props.meet.link} />} className="ks-setup-meet" />
+          <HelpLine
+            size="body"
+            lead={<RichText text={props.meet.lead} offer={offer} />}
+            contact={<RichText text={props.meet.link} offer={offer} />}
+            className="ks-setup-meet"
+          />
         </CloseFold>
       );
   }

@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { ICON_WHATSAPP_LOGO } from "@/assets/icons.generated";
+import { seller } from "@/content/en-IN/seller";
 import type { SupportChat } from "@/content/types";
 import { WhatsAppFloat, whatsAppChatUrl } from "./WhatsAppFloat";
 
@@ -16,7 +17,7 @@ import { WhatsAppFloat, whatsAppChatUrl } from "./WhatsAppFloat";
 const HREF = "https://wa.me/910000000001";
 const CHAT: Omit<SupportChat, "number"> = {
   label: "Chat with us on WhatsApp",
-  shortLabel: "Chat on WhatsApp",
+  shortLabel: "Chat with us on WhatsApp",
   texts: {
     site: "Hi Kheelona! I have a question about Kheelu.",
     store: "Hi Kheelona! I need help with my pre-order.",
@@ -83,9 +84,19 @@ describe("WhatsAppFloat", () => {
   it("carries the laptop label as hidden-from-readers text (the link's name says it already)", () => {
     const { container } = render(<WhatsAppFloat href={HREF} chat={CHAT} context="site" />);
     const label = container.querySelector("a > .ks-wa__label");
-    expect(label).toHaveTextContent("Chat on WhatsApp");
+    expect(label).toHaveTextContent(CHAT.shortLabel);
     expect(label).toHaveClass("kh-label-s");
     expect(label).toHaveAttribute("aria-hidden", "true");
+  });
+
+  /* Task 3.6 item 17 (P13 default): with the site's own words, the laptop label reads the link's name, so what a
+     sighted keyboard or voice user sees is what the link is called (WCAG 2.5.3, label in name). */
+  it("with the content's words: the laptop label reads the link's accessible name, 'Chat with us on WhatsApp'", () => {
+    const { container } = render(<WhatsAppFloat href={seller.support.whatsapp} chat={seller.chat} context="site" />);
+    const link = screen.getByRole("link", { name: seller.chat.label });
+    expect(container.querySelector(".ks-wa__label")?.textContent).toBe(seller.chat.shortLabel);
+    expect(link).toHaveAccessibleName("Chat with us on WhatsApp");
+    expect(container.querySelector(".ks-wa__label")).toHaveTextContent("Chat with us on WhatsApp");
   });
 
   it.each(["site", "store", "thanks"] as const)("uses the %s text", (context) => {
@@ -112,16 +123,27 @@ describe("whatsapp-float.css", () => {
     expect(rule(".ks-wa:hover")).toBe("background: var(--ks-wa-green);");
   });
 
-  it("sits fixed at the bottom right: space-4 plus the safe area on phones, space-5 from 900 px", () => {
+  it("sits fixed at the bottom right: space-4 plus the safe areas on phones, space-5 from 900 px", () => {
     const base = rule(".ks-wa");
     expect(base).toContain("position: fixed");
-    expect(base).toContain("right: var(--space-4)");
+    // The right offset adds the right inset (architecture §5.3, task 3.6): a phone held sideways has one.
+    expect(base).toContain("right: calc(var(--space-4) + env(safe-area-inset-right))");
     expect(base).toContain("bottom: calc(var(--space-4) + env(safe-area-inset-bottom))");
     expect(base).toContain("margin: 0");
     expect(base).toContain("box-shadow: var(--shadow-lift)");
     const laptop = /@media \(min-width: 900px\)\s*\{([\s\S]*?)\n\}/.exec(CSS)?.[1] ?? "";
-    expect(rule(".ks-wa", laptop)).toContain("right: var(--space-5)");
+    expect(rule(".ks-wa", laptop)).toContain("right: calc(var(--space-5) + env(safe-area-inset-right))");
     expect(rule(".ks-wa", laptop)).toContain("bottom: var(--space-5)");
+  });
+
+  /* Architecture §5.3 (task 3.6 item 16): the buy bar's height already holds the bottom inset (its safe-area padding,
+     G-09), and the bubble already sits that inset above the edge, so the lift is the bar's height less the inset: on a
+     notched phone the bubble stays space-4 above the bar, as everywhere else (D050). */
+  it("lifts by the bar's height less the bottom inset while the bar shows (motion.css)", () => {
+    const motion = readFileSync("src/motion/motion.css", "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+    expect(rule('html[data-buybar="shown"] .ks-wa', motion)).toBe(
+      "transform: translateY(calc((var(--ks-buybar-h, 0px) - env(safe-area-inset-bottom)) * -1));",
+    );
   });
 
   it("adds no transition of its own: the lift and the label move only through motion.css", () => {

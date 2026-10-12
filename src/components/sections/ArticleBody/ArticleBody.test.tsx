@@ -2,7 +2,7 @@ import { render, screen, within } from "@testing-library/react";
 import type { StaticImageData } from "next/image";
 import { describe, expect, it } from "vitest";
 import type { ArticlePart, ProseBlock } from "@/content/types";
-import { mockupFold, skeleton, words } from "./__fixtures__/approved-fold";
+import { mockupFold, skeleton, words } from "../../../../test/support/mockup-compare";
 import { ArticleBody } from "./ArticleBody";
 import { LATE_TALKERS_BODY, LEARNING_TOYS_BODY, SAFE_AI_TOY_BODY, SOURCE_LABEL } from "./ArticleBody.stories";
 

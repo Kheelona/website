@@ -1,11 +1,21 @@
-// The build hooks are wired (task 2.9; ADR-011 "where they run", architecture §14, structure §1).
+// The build hooks are wired and the type check reads every test (task 2.9; checks added by 2.13;
+// ADR-011 "where they run", architecture §14, structure §1). Three groups of checks:
 //
-// scripts/run-steps.mjs (task 1.1) runs every scripts/steps/<hook>/NN-name.mjs in name order, and
-// stops at the first that fails. A guard only blocks a deploy if its step file exists, the runner
-// accepts its name, and the hook actually runs around the production build. This test pins all
-// three for the steps the deploy depends on: DS checksums (prebuild 10, task 1.1), compose.css
-// (prebuild 20, task 1.2), and the placeholder guard on src/ (prebuild 30) and on the prerendered
-// output (postbuild 10), both task 2.9.
+// 1. The build steps. scripts/run-steps.mjs (task 1.1) runs every scripts/steps/<hook>/NN-name.mjs in
+//    name order, and stops at the first that fails. A guard only blocks a deploy if its step file
+//    exists, the runner accepts its name, and the hook actually runs around the production build.
+//    This test pins all three for the steps the deploy depends on: DS checksums (prebuild 10, task
+//    1.1), compose.css (prebuild 20, task 1.2), and the placeholder guard on src/ (prebuild 30) and
+//    on the prerendered output (postbuild 10), both task 2.9.
+// 2. Nothing replaces `npm run build` on Vercel: package.json has no `vercel-build` or `now-build`
+//    script (task 2.13: Vercel would run it instead of build, and npm its own pre and post hooks, so
+//    the steps above would silently never run), vercel.json sets no build command, and no .npmrc
+//    switches lifecycle scripts off.
+// 3. The tsconfig.guards.json exclusions (task 2.13): `npm run typecheck` reads every test, story
+//    and harness file through it, and it leaves out, by name only, the files that do not type-check
+//    today. Every exclusion matches a file, says which task removes it (or "for good", for the four
+//    frozen tests only), is in the 2.13 snapshot (the list only shrinks), and, if legacy, holds only
+//    while its file is unchanged since the freeze tag.
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import ts from "typescript";

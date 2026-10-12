@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
+import { ICON_PATHS } from "@/assets/icons.generated";
 import { Field } from "@/components/ui/Field/Field";
 import { Select } from "./Select";
 
@@ -45,6 +46,10 @@ describe("Select", () => {
     const caret = container.querySelector(".kh-select__caret");
     expect(caret?.tagName.toLowerCase()).toBe("svg");
     expect(caret).toHaveAttribute("aria-hidden", "true");
+    // Drawn through Glyph (task 3.6 item 4), with the DS icon markup exactly as the mockup's {{icon:}} injection writes it.
+    expect(caret!.outerHTML).toBe(
+      `<svg class="kh-icon kh-select__caret" viewBox="0 0 256 256" aria-hidden="true" focusable="false"><path d="${ICON_PATHS["caret-down"]}"></path></svg>`,
+    );
     expect(screen.getAllByRole("option").map((o) => o.textContent)).toEqual([...STATES]);
   });
 

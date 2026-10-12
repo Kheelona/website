@@ -204,8 +204,9 @@ test.describe("chrome: store header and footer parity with mockup/store.html", (
   for (const vp of APPROVED_WIDTHS) {
     test(`store chrome ${vp.name}`, async ({ harness }, testInfo) => {
       const ref = await openMockup(harness, "store", vp);
-      // The payments line is held back from the build for the main session's ruling (the never-edited store-layout
-      // contract lists five policy links; the line's chargeback link would be a sixth): left out of the golden too.
+      // Approved deviation V1 (wiki/qa/deviations.md): the payments line and its chargeback link render as the last
+      // line of the store page's main (task 5.15), not in the footer, because the never-edited store-layout contract
+      // lists five policy links and refund#chargeback would be a sixth. So the footer golden leaves it out.
       await ref.evaluate(() => {
         Array.from(document.querySelectorAll(".mk-store-foot p.kh-body-s"))
           .find((p) => /Payments by Razorpay/.test(p.textContent ?? ""))
@@ -457,7 +458,10 @@ test.describe("chrome: WhatsApp bubble (D050)", () => {
   test("shows its label on laptops on hover and keyboard focus, never on phones", async ({ harness }) => {
     const page = await openBuilt(harness, laptop, { reducedMotion: "no-preference" });
     const label = page.locator(".ks-wa__label");
-    await expect(label).toHaveText("Chat on WhatsApp");
+    // The label reads the link's own name, both from content (seller.chat; P13 default, WCAG 2.5.3; task 3.6).
+    const name = await page.locator(".ks-wa").getAttribute("aria-label");
+    expect(name).toBe("Chat with us on WhatsApp");
+    await expect(label).toHaveText(name!);
     expect(await label.evaluate((el) => getComputedStyle(el).opacity)).toBe("0");
     await page.locator(".ks-wa").hover();
     await expect.poll(() => label.evaluate((el) => getComputedStyle(el).opacity)).toBe("1");

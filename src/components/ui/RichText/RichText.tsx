@@ -4,6 +4,7 @@ import type { Copy, Offer, Placeholder as OpenFact } from "@/content/types";
 import { pickMode } from "@/lib/content/mode";
 import { isPlaceholder } from "@/lib/content/placeholder";
 import { leafText, parseRichText, type LinkNode, type RichNode } from "@/lib/content/rich-text";
+import { isSitePath } from "@/lib/links";
 import { Placeholder } from "../Placeholder/Placeholder";
 import { SourceMarker } from "../SourceMarker/SourceMarker";
 
@@ -47,18 +48,16 @@ export interface RichTextProps {
   id?: string;
 }
 
-/** A site path: one slash, then never a second one or a backslash (a browser reads `//host` and `/\host` as another
- *  site). Only these go through next/link; the parser already refuses the others in content. */
-const SITE_PATH = /^\/(?![/\\])/;
-
 interface Context {
   offer: Offer | undefined;
   sources: SourceMarkerOptions | undefined;
 }
 
+/** Only a site path (`isSitePath`: one leading slash, never `//host` or `/\host`) goes through next/link; the parser
+ *  already refuses the others in content. */
 function renderLink(node: LinkNode, ctx: Context, className?: string): ReactNode {
   const children = renderNodes(node.children, ctx);
-  return SITE_PATH.test(node.href) ? (
+  return isSitePath(node.href) ? (
     <Link href={node.href} className={className}>
       {children}
     </Link>

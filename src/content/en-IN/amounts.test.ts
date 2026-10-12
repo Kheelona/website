@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
+import { TYPED_AMOUNT } from "@/lib/seo/price-lead";
 import { isTestOrStory, listFiles, readRepoFile } from "../../../test/e2e/support/repo";
 
 /* Every amount is a `{price:…}` token (architecture §6.2; task 2.1 acceptance 6): no content module
  * and no part of the offer view model types a rupee amount, not even in a comment, so a price can
- * only ever come from the checkout's own paise constants in src/config/site.ts. */
-
-const TYPED_AMOUNT = /₹|\bRs\.?\s?\d|\bINR\s?\d|\d\s?(?:rupees|INR)\b/i;
+ * only ever come from the checkout's own paise constants in src/config/site.ts. The pattern is the one
+ * pageMeta refuses in a title or description (src/lib/seo/price-lead.ts, one definition; task 3.6). */
 
 function typedAmounts(paths: readonly string[]): string[] {
   return paths.flatMap((path) =>

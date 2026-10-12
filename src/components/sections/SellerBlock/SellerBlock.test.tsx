@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { seller } from "@/content/en-IN/seller";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
-import { builtMarkup, canonical, mockupElement, mockupPage, renderedElement } from "../CtaBlock/mockup-fold.test-support";
+import { builtMarkup, canonical, mockupFold, mockupPage, renderedElement } from "../../../../test/support/mockup-compare";
 import { SellerBlock } from "./SellerBlock";
 import type { SellerBlockConfig, SellerLinesCopy } from "./seller-block.types";
 
@@ -27,7 +27,7 @@ const LEGAL_SENTENCE = `${seller.legalName}, registered at ${seller.addressLine}
 
 describe("SellerBlock: contact (contact.html fold 4)", () => {
   it("renders the fold exactly as the mockup", () => {
-    const expected = builtMarkup([mockupElement("contact", 'section[aria-labelledby="seller-title"]')]);
+    const expected = builtMarkup([mockupFold("contact", 'section[aria-labelledby="seller-title"]')]);
     expect(canonical(renderedElement(<SellerBlock {...CONTACT} />))).toBe(expected);
   });
 
@@ -50,18 +50,33 @@ describe("SellerBlock: contact (contact.html fold 4)", () => {
 describe("SellerBlock: legal (the seller line in a legal page's part)", () => {
   it("renders privacy's card exactly as the mockup: a bold lead, then the registered seller", () => {
     const card = <SellerBlock context="legal" line={{ lead: "Who we are:", text: LEGAL_SENTENCE }} className="ks-doc__card" />;
-    expect(canonical(renderedElement(card))).toBe(builtMarkup([mockupElement("privacy", "#contact .mk-doc__card:last-child")]));
+    expect(canonical(renderedElement(card))).toBe(builtMarkup([mockupFold("privacy", "#contact .mk-doc__card:last-child")]));
   });
 
   it("renders terms' card with its own lead", () => {
     const card = <SellerBlock context="legal" line={{ lead: "Seller:", text: LEGAL_SENTENCE }} className="ks-doc__card" />;
-    expect(canonical(renderedElement(card))).toBe(builtMarkup([mockupElement("terms", "#contact .mk-doc__card:first-of-type")]));
+    expect(canonical(renderedElement(card))).toBe(builtMarkup([mockupFold("terms", "#contact .mk-doc__card:first-of-type")]));
   });
 
   it("renders a plain paragraph with no card and no lead where the page has one (refund and shipping)", () => {
     const p = renderedElement(<SellerBlock context="legal" line={{ text: LEGAL_SENTENCE }} card={false} />);
     expect(p.outerHTML).toBe(`<p>${LEGAL_SENTENCE}</p>`);
-    expect(mockupElement("refund", 'section[aria-labelledby="seller"] p').textContent).toBe(LEGAL_SENTENCE);
+    expect(mockupFold("refund", 'section[aria-labelledby="seller"] p').textContent).toBe(LEGAL_SENTENCE);
+  });
+
+  /* Task 3.6 item 6. Refund and shipping keep three phrases of the address on one line (refund.html:175,
+     shipping.html:148); 4.3's seller-lines helper writes them as {nowrap:…} tokens for that family. Here the sentence
+     carries the tokens itself, and the paragraph equals the mockup's, markup and all. */
+  const NOWRAP_SENTENCE = LEGAL_SENTENCE.replace("No 51", "{nowrap:No 51}")
+    .replace("(Old Site No 1)", "{nowrap:(Old Site No 1)}")
+    .replace("Bengaluru 560041", "{nowrap:Bengaluru 560041}");
+
+  it.each(["refund", "shipping"])("renders %s's seller paragraph exactly as the mockup, its no-wrap phrases included", (slug) => {
+    const expected = builtMarkup([mockupFold(slug, 'section[aria-labelledby="seller"] > p')]);
+    expect(NOWRAP_SENTENCE.match(/\{nowrap:/g)).toHaveLength(3);
+    expect(canonical(renderedElement(<SellerBlock context="legal" line={{ text: NOWRAP_SENTENCE }} card={false} />))).toBe(expected);
+    // Control: the sentence without its no-wrap phrases is not the approved paragraph.
+    expect(canonical(renderedElement(<SellerBlock context="legal" line={{ text: LEGAL_SENTENCE }} card={false} />))).not.toBe(expected);
   });
 });
 

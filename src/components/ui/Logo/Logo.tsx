@@ -2,14 +2,11 @@ import clsx from "clsx";
 import type { StaticImageData } from "next/image";
 import Link from "next/link";
 import logoFile from "@ds/assets/Logo/kheelona-logo.svg";
+import { isSitePath } from "@/lib/links";
 
 /** The logo's height on every approved page (partials/nav.html, drawer.html, footer.html; store.html), the HTML
  *  attribute the mockup sets; the DS minimum is 20 px. */
 const LOGO_HEIGHT = 30;
-
-/** A site path: one slash, then never a second one or a backslash (a browser reads `//host` and `/\host` as another
- *  site). Only these go through next/link. */
-const SITE_PATH = /^\/(?![/\\])/;
 
 /**
  * The DS logo file as a URL, with the width that keeps its proportions at `height` when the bundler knows the
@@ -44,7 +41,7 @@ export function Logo({ alt, href, linkLabel, height = LOGO_HEIGHT, className }: 
   // eslint-disable-next-line @next/next/no-img-element
   const img = <img className={clsx("kh-logo", className)} src={src} alt={alt} width={width} height={height} />;
   if (href === undefined) return img;
-  return SITE_PATH.test(href) ? (
+  return isSitePath(href) ? (
     <Link className="kh-logo-link" href={href} aria-label={linkLabel}>
       {img}
     </Link>

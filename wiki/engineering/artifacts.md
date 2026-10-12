@@ -25,3 +25,12 @@ it (`action: "read"`); publishing without the URL creates a separate artifact.
   Those are deployments, not artifacts, and are not listed here. If a report or preview is ever published
   as an Artifact again, add a row first; the mockups row belongs to the previous Claude account and cannot
   be updated from a new one.
+
+## Test support (never published)
+
+Recorded here so a later task finds it before writing another (wave-3 close, "One of each helper"). Not an
+Artifact: it lives in the repo, outside `src/`, and only tests import it.
+
+| Support | Path | What it does | Used by | Task |
+|---|---|---|---|---|
+| Mockup comparison harness | `test/support/mockup-compare.ts` (its own test beside it) | Reads the approved Gate A mockup (`mockup/<slug>.html`: `mockupPage` shared, `parseMockup` fresh, `mockupFold`, `mockupCtaRun`), ports what the build prints differently (`mockupRoute`: a page file read as its route, store.html as the build's store; `portClass`: `mk-` to `ks-` or a test's rename table; value markers dropped, N22), and compares four ways: exact markup (`builtMarkup`, `renderedMarkup`, `canonical`, `asBuilt`; the 3.2 sections), skeleton and words (`skeleton`, `words`; the 3.4 sections), outline (`outline`: tags, ported classes and reveals down to the media primitives; the 3.3 sections, which compare their words apart), element by element (`mockupDiff`; the shells). Replaced `sections/CtaBlock/mockup-fold.test-support.ts`, `sections/ArticleBody/__fixtures__/approved-fold.ts` and `layouts/SiteShell/mockup-diff.ts` | Every section test that compares with the mockup (3.2, 3.3, 3.4 sections) and both shells' parity tests | 3.6 |

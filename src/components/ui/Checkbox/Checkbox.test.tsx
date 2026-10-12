@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
+import { ICON_PATHS } from "@/assets/icons.generated";
 import { Checkbox } from "./Checkbox";
 
 /* Checkbox (task 2.5): the DS Checkbox (`kh-check`) as the approved store mockup's consent row uses it
@@ -55,7 +56,10 @@ describe("Checkbox", () => {
     expect(input.nextElementSibling).toBe(label);
     const box = label!.querySelector(".kh-check__box");
     expect(box).toHaveAttribute("aria-hidden", "true");
-    expect(box!.querySelector("svg.kh-check__tick")).not.toBeNull();
+    // Drawn through Glyph (task 3.6 item 4), with the DS icon markup exactly as the mockup's {{icon:}} injection writes it.
+    expect(box!.querySelector("svg.kh-check__tick")!.outerHTML).toBe(
+      `<svg class="kh-icon kh-check__tick" viewBox="0 0 256 256" aria-hidden="true" focusable="false"><path d="${ICON_PATHS.check}"></path></svg>`,
+    );
     expect(box!.querySelector(".kh-check__dash")).not.toBeNull();
     expect(label!.querySelector(".kh-check__text > span")).toHaveTextContent("Send me updates");
   });

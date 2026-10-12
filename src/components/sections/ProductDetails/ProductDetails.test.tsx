@@ -4,7 +4,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { approvedDetailsFoldHtml, runApprovedTabScript, tabStates } from "@/components/ui/Tabs/approved-tabs.test-support";
 import { buildOffer } from "@/lib/offer/offer";
-import { mockupFold, skeleton, words } from "../ArticleBody/__fixtures__/approved-fold";
+import { mockupFold, skeleton, words } from "../../../../test/support/mockup-compare";
 import { ProductDetails } from "./ProductDetails";
 import { PRODUCT_DETAILS } from "./ProductDetails.stories";
 

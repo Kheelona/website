@@ -39,6 +39,19 @@ describe("the chrome's own labels", () => {
     expect(navigation.labels.skip).toBe(norm(home.querySelector(".mk-skip")?.textContent));
     expect(navigation.labels.policies).toBe(doc("store").querySelector(".mk-policy")?.getAttribute("aria-label"));
   });
+
+  /* Task 3.6 item 13: the two store-chrome lines StoreShell typed while content had no place for them. */
+  it("name the store's logo link and the note every new-tab store link reads, as the store pages print them", () => {
+    for (const slug of ["store", "store-confirmation"]) {
+      const page = doc(slug);
+      expect(navigation.labels.storeLogoLink, slug).toBe(page.querySelector(".mk-store-head .kh-logo-link")?.getAttribute("aria-label"));
+      const notes = Array.from(page.querySelectorAll('a[target="_blank"] .kh-sr')).map((n) => n.textContent);
+      expect(notes.length, slug).toBeGreaterThan(0);
+      for (const note of notes) expect(note, slug).toBe(navigation.labels.newTabNote);
+    }
+    expect(navigation.labels.storeLogoLink).toBe("Kheelona home");
+    expect(navigation.labels.newTabNote).toBe(" (opens in a new tab)");
+  });
 });
 
 describe("the footer", () => {

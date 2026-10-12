@@ -9,7 +9,7 @@ import { TRUST_COMPACT, TRUST_FULL, trustItems, type TrustId } from "@/content/e
 import type { ArtBoardRef } from "@/content/types";
 import { buildOffer } from "@/lib/offer/offer";
 import type { CtaSecondary, SellingContext } from "../CtaBlock/cta-block.types";
-import { addClass, builtMarkup, canonical, mockupElement, renderedElement, STORE, without } from "../CtaBlock/mockup-fold.test-support";
+import { addClass, builtMarkup, canonical, mockupFold, renderedElement, STORE, without } from "../../../../test/support/mockup-compare";
 import { CloseSection } from "./CloseSection";
 import { CLAMPED_SPLIT_COLUMN_SIZES } from "./close-art";
 import type { CloseSectionConfig } from "./close-section.types";
@@ -74,7 +74,13 @@ const CASES: Case[] = [
         title: "Bring home a toy that {hand:asks back.}",
         lead: "For your own child, or as a gift for a 3 to 7 year old in the family.",
       },
-      cta: { cta: "product-foot", layout: "full", trust: trust(["deliveries-start", ...TRUST_FULL]), helpLine: true },
+      // map-pin for "Delivery included anywhere in India", as meet-kheelu.html draws it (wave-3 close ruling; 5.2's config).
+      cta: {
+        cta: "product-foot",
+        layout: "full",
+        trust: trust(["deliveries-start", ...TRUST_FULL]).map((item) => (item.id === "delivery-included" ? { ...item, icon: "map-pin" } : item)),
+        helpLine: true,
+      },
       art: art("sun", "A smiling girl in a peach kurta beside Kheelu, the cream plush rabbit."),
     },
   ],
@@ -120,7 +126,7 @@ const CASES: Case[] = [
   ],
 ];
 
-/* The build's documented differences inside a close (besides mockup-fold.test-support's and CtaBlock's): the journal
+/* The build's documented differences inside a close (besides the harness's, test/support/mockup-compare.ts, and CtaBlock's): the journal
    close's section and board take their own names (mk-close is a stories-page name; in one global stylesheet it
    would read as every close's, mockup-css-mapping §6.2), the guide close's board clamp is ArtBoard's class, and the
    CtaBlock classes (CtaBlock.test.tsx). */
@@ -131,14 +137,36 @@ const adjustFor = (config: CloseSectionConfig) => (el: Element) => {
   addClass(el, ".ks-beside--center .kh-trustline", "ks-trustline--center");
   if (config.variant === "split" && config.cta.layout === "full") addClass(el, ".kh-split .ks-help", "ks-cta__full-help");
 };
-/* As in CtaBlock.test.tsx: the product close's last trust item draws map-pin in the mockup, package in the content. */
-const knownIcon = (markup: string) => markup.replace(ICON_PATHS["map-pin"], ICON_PATHS.package);
-
 describe("CloseSection: every close of the approved mockup, exactly (art aside)", () => {
   it.each(CASES)("%s", (_name, slug, fold, config) => {
-    const expected = builtMarkup([without(mockupElement(slug, fold), ".kh-art")], { renames: RENAMES, adjust: adjustFor(config) });
+    const expected = builtMarkup([without(mockupFold(slug, fold), ".kh-art")], { renames: RENAMES, adjust: adjustFor(config) });
     const actual = canonical(without(renderedElement(<CloseSection {...config} {...context()} />), ".kh-art"));
-    expect(actual).toBe(knownIcon(expected));
+    expect(actual).toBe(expected);
+  });
+
+  it("the product close draws the map-pin its config passes (no rewrite of the mockup)", () => {
+    const html = renderToStaticMarkup(<CloseSection {...CASES[1][3]} {...context()} />);
+    expect(html).toContain(ICON_PATHS["map-pin"]);
+    expect(html).not.toContain(ICON_PATHS.package);
+  });
+
+  /* Task 3.6 item 6: /setup's links close renders its three content lines with the page's offer, as every other close
+     renders its words, so copy that changes with the mode or names the delivery line works there too. */
+  it("links: the contact line, the lead and the link render with the offer", () => {
+    const links = CASES[8][3];
+    if (links.variant !== "links") throw new Error("CASES[8] is the links close");
+    const config: CloseSectionConfig = {
+      ...links,
+      contact: { token: "Token-mode help.", full: "Full-mode help." },
+      meet: { lead: "{delivery}.", link: { token: "[Token link](/products/kheelu)", full: "[Full link](/products/kheelu)" } },
+    };
+    const token = renderedElement(<CloseSection {...config} {...context(TOKEN)} />);
+    expect(token.querySelector(".ks-setup-help")?.textContent).toContain("Token-mode help.");
+    expect(token.querySelector(".ks-setup-meet")?.textContent).toContain(`${TOKEN.delivery}.`);
+    expect(token.querySelector(".ks-setup-meet a")?.textContent).toBe("Token link");
+    const full = renderedElement(<CloseSection {...config} {...context(FULL)} />);
+    expect(full.querySelector(".ks-setup-help")?.textContent).toContain("Full-mode help.");
+    expect(full.querySelector(".ks-setup-meet a")?.textContent).toBe("Full link");
   });
 });
 

@@ -103,6 +103,10 @@ describe("Field", () => {
     expect(icon).toHaveAttribute("aria-hidden", "true");
     expect(icon).toHaveAttribute("viewBox", ICON_VIEWBOX);
     expect(icon!.querySelector("path")).toHaveAttribute("d", ICON_PATHS["warning-circle"]);
+    // Drawn through Glyph (task 3.6 item 4), with the DS icon markup exactly as the mockup's {{icon:}} injection writes it.
+    expect(icon!.outerHTML).toBe(
+      `<svg class="kh-icon" viewBox="0 0 256 256" aria-hidden="true" focusable="false"><path d="${ICON_PATHS["warning-circle"]}"></path></svg>`,
+    );
   });
 
   it("describes an error on a field that has no hint (the store's name and email fields)", () => {

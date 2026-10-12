@@ -106,6 +106,11 @@ beforeEach(() => {
     const top = Number(this.getAttribute("data-top") ?? 0);
     return { top, bottom: top + 100, left: 0, right: 100, width: 100, height: 100, x: 0, y: top, toJSON: () => ({}) } as DOMRect;
   });
+  // As a browser: an element inside a `hidden` ancestor (React's streaming holder) has no layout box at all.
+  vi.spyOn(Element.prototype, "getClientRects").mockImplementation(function (this: Element) {
+    const boxes = this.closest("[hidden]") ? [] : [this.getBoundingClientRect()];
+    return Object.assign(boxes, { item: (i: number) => boxes[i] ?? null }) as unknown as DOMRectList;
+  });
 });
 
 afterEach(() => {
@@ -345,6 +350,55 @@ describe("MotionController: targets added after it armed", () => {
     observer.fire(low, true);
     expect(low).toHaveClass("is-in");
     expect(lowDraw.finish).not.toHaveBeenCalled();
+  });
+
+  /* Task 3.6 item 3. React streams a late block into a `hidden` holder first and then moves it into place. In the
+     holder the block has no layout box (getClientRects() is empty and its rectangle reads 0, 0), which looks "on
+     screen" to a top-edge test: shown there, it would skip its reveal wherever it lands. It is observed instead. */
+  it("observes an added target with no layout box (inside a hidden streaming holder), and never shows it at once", async () => {
+    const { observer } = await armed();
+    const holder = document.createElement("div");
+    holder.hidden = true;
+    const late = fragment(`<section id="streamed" data-reveal></section>`);
+    const fade = stubAnimations(late);
+    holder.append(late);
+    document.body.append(holder);
+    await mutationsDelivered();
+
+    expect(late.getClientRects()).toHaveLength(0);
+    expect(late).not.toHaveClass("is-in");
+    expect(observer.observed.has(late)).toBe(true);
+    expect(fade.finish).not.toHaveBeenCalled();
+
+    // React moves it out of the holder into its place, below the fold: still waiting, revealed once it enters.
+    late.setAttribute("data-top", String(below + 200));
+    document.body.append(late);
+    holder.remove();
+    await mutationsDelivered();
+    expect(late.getClientRects()).toHaveLength(1);
+    expect(late).not.toHaveClass("is-in");
+    expect(observer.observed.has(late)).toBe(true);
+    observer.fire(late, true);
+    expect(late).toHaveClass("is-in");
+    expect(observer.observed.has(late)).toBe(false);
+  });
+
+  it("shows a streamed target at once when it is moved into place on screen", async () => {
+    const { observer } = await armed();
+    const holder = document.createElement("div");
+    holder.hidden = true;
+    const late = fragment(`<section id="streamed-top" data-reveal data-top="120"></section>`);
+    holder.append(late);
+    document.body.append(holder);
+    await mutationsDelivered();
+    expect(late).not.toHaveClass("is-in");
+
+    document.body.prepend(late);
+    holder.remove();
+    await mutationsDelivered();
+    expect(late).toHaveClass("is-in");
+    observer.fire(late, true);
+    expect(observer.observed.has(late)).toBe(false);
   });
 
   it("finds targets anywhere inside an added subtree, deep in the page", async () => {

@@ -7,7 +7,8 @@
 .ks-wa {
   --ks-wa-green: #25D366;
   position: fixed;
-  right: var(--space-4);
+  /* Both insets count (architecture §5.3): the home indicator below, a sideways phone's notch on the right. */
+  right: calc(var(--space-4) + env(safe-area-inset-right));
   bottom: calc(var(--space-4) + env(safe-area-inset-bottom));
   z-index: var(--z-sticky);
   margin: 0; /* the DS gives icon buttons negative margins for in-flow use (bundle.css .kh-drawer__head .kh-iconbtn) */
@@ -23,14 +24,14 @@
 html:has(dialog[open]) .ks-wa {
   visibility: hidden;
 }
-/* The "Chat on WhatsApp" label is for laptops only. */
+/* The laptop label ("Chat with us on WhatsApp", the link's own name; P13) is for laptops only. */
 .ks-wa__label {
   display: none;
 }
 
 @media (min-width: 900px) {
   .ks-wa {
-    right: var(--space-5);
+    right: calc(var(--space-5) + env(safe-area-inset-right));
     bottom: var(--space-5);
   }
   /* To the bubble's left, centred on it. Its opacity and slide are motion.css's, which owns the label's transform, so

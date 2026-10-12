@@ -3,34 +3,20 @@ import { join } from "node:path";
 import { render, screen } from "@testing-library/react";
 import type { StaticImageData } from "next/image";
 import { describe, expect, it } from "vitest";
+import { outline, parseMockup } from "../../../../test/support/mockup-compare";
 import { ModesSection, type ModesSectionProps } from "./ModesSection";
 
 /* ModesSection (task 3.3; components §2): "What is Kheelu?" on Home (fold 4) and "How it works" on the product page
  * (fold 4, with the compact mode rows and the Good to know card). Each compared class by class (mk- renamed ks-) and
- * word for word with the built mockup fold. */
+ * word for word with the built mockup fold, through the mockup comparison harness (test/support/mockup-compare.ts). */
 
-const mockup = (slug: string) =>
-  new DOMParser().parseFromString(readFileSync(join(process.cwd(), "mockup", `${slug}.html`), "utf8"), "text/html");
+const mockup = parseMockup;
 const norm = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").trim();
 const words = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, "");
-const RENAME: Record<string, string[]> = {
-  "mk-modes": ["ks-modes"],
-  "mk-list-reset": ["ks-list-reset"],
-  "mk-know": ["ks-know"],
-  "mk-know__text": ["ks-know__text"],
-  "mk-know__img": ["ks-know__img"],
-  "mk-ticks": ["ks-ticks"],
-  "mk-placeholder": ["ks-placeholder"],
-};
-
-function shape(el: Element, depth = 0): string[] {
-  const classes = [...el.classList].flatMap((c) => RENAME[c] ?? [c]);
-  // Home's language list resets itself inline (home.html:180); the build uses the shared reset class.
-  if (el.classList.contains("kh-langs") && !classes.includes("ks-list-reset")) classes.push("ks-list-reset");
-  const line = `${"  ".repeat(depth)}${el.tagName.toLowerCase()}${classes.sort().map((c) => `.${c}`).join("")}${el.hasAttribute("data-reveal") ? "[data-reveal]" : ""}`;
-  if (el.tagName.toLowerCase() === "svg" || el.classList.contains("kh-photo")) return [line];
-  return [line, ...[...el.children].flatMap((c) => shape(c, depth + 1))];
-}
+/** Home's language list resets itself inline (home.html:180); the build uses the shared reset class. */
+const listReset = (el: Element) => (el.classList.contains("kh-langs") ? ["ks-list-reset"] : []);
+/** Every mockup block takes its ks- name; Photo's own test owns the inside of the photo. */
+const shape = (el: Element) => outline(el, { extra: listReset, stop: (e) => e.classList.contains("kh-photo") });
 
 const image = (name: string, width: number, height: number, alt: string) => ({
   src: { src: `/_next/static/media/${name}`, width, height } as StaticImageData,
@@ -145,5 +131,15 @@ describe("ModesSection: product (product fold 4)", () => {
     const img = know.querySelector("img.ks-know__img")!;
     expect(img).toHaveAttribute("alt", "Kheelu’s tummy unit up close, with its speaker, light ring and buttons.");
     expect(img).toHaveAttribute("loading", "lazy");
+    expect(img).toHaveAttribute("sizes", "(min-width: 720px) 224px, 176px");
+    expect(img.parentElement?.tagName.toLowerCase()).not.toBe("figure");
+  });
+
+  /* Architecture §10 (wave-3 close ruling): DS rasters reach next/image only inside the media primitives. The Good to
+     know photo is Photo's bare form (task 3.6 item 18), never next/image straight from the section. */
+  it("draws the Good to know photo through Photo's bare form, never next/image directly", () => {
+    const source = readFileSync(join(process.cwd(), "src/components/sections/ModesSection/ModesSection.tsx"), "utf8");
+    expect(source).not.toMatch(/from "next\/image"/);
+    expect(source).toMatch(/<Photo\s[^>]*\bbare\b[^>]*className="ks-know__img"/);
   });
 });

@@ -16,7 +16,13 @@ import type { MediaRatio } from "@/components/ui/Photo/Photo";
  * `sizes`; DS shapes (SVG) stay plain <img> (next/image does not optimise SVG); doodles go through Doodle, still
  * in a hero (D049 pick 2) and drawn below the first screen (pick 3). */
 
-interface ArtBoardBase {
+/**
+ * The board's props without its loading pair (`hero`, `lcp`). A wrapper that renders a board of its own (a section's
+ * hero art, a close's art) takes these and passes `hero` and `lcp` literally (`<ArtBoard {...props} hero lcp />`, or
+ * neither below the first screen): the pair is a union (`HeroLoading`), so the wrapper decides where its board sits
+ * and its caller cannot hand it an LCP hint for a board below the fold (task 3.6; ArtBoard.test-d.tsx).
+ */
+export interface ArtBoardBase {
   readonly tone: Tone;
   /** The board's accessible name (role="img"); omit when the board only decorates. */
   readonly label?: string;

@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { mockupFold, skeleton, words } from "../ArticleBody/__fixtures__/approved-fold";
+import { mockupFold, skeleton, words } from "../../../../test/support/mockup-compare";
 import { LATE_TALKERS_ANSWER, LEARNING_TOYS_ANSWER, SAFE_AI_TOY_ANSWER, SOURCE_LABEL } from "../ArticleBody/ArticleBody.stories";
 import { AnswerSection } from "./AnswerSection";
 import { TEAM_ANSWER } from "./AnswerSection.stories";

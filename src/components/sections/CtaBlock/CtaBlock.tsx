@@ -1,10 +1,10 @@
 import clsx from "clsx";
 import { Button } from "@/components/ui/Button/Button";
+import { asIconName } from "@/components/ui/Icon/Icon";
 import { Actions } from "@/components/ui/Layout/Layout";
 import { PreorderButton } from "@/components/ui/PreorderButton/PreorderButton";
 import { PriceSentence } from "@/components/ui/PriceSentence/PriceSentence";
 import type { CtaBlockProps, CtaSecondary } from "./cta-block.types";
-import { iconName } from "./icon-name";
 import { SellingHelpLine, SellingTrustLine } from "./selling-lines";
 
 /**
@@ -23,7 +23,7 @@ export function CtaBlock(props: CtaBlockProps) {
   const full = layout === "full";
   const price = <PriceSentence offer={offer} id={priceId} />;
   const trustLine = <SellingTrustLine items={trust} offer={offer} center={center} className={full ? "ks-cta__full-trust" : undefined} />;
-  const helpLineEl = helpLine ? <SellingHelpLine help={help} className={full ? "ks-cta__full-help" : undefined} /> : null;
+  const helpLineEl = helpLine ? <SellingHelpLine help={help} offer={offer} className={full ? "ks-cta__full-help" : undefined} /> : null;
   const grouped = layout === "beside" || layout === "journal";
   return (
     <>
@@ -60,8 +60,8 @@ export function SecondaryLink({ link }: { link: CtaSecondary }) {
       variant={link.variant}
       href={link.href}
       cta={link.cta}
-      icon={link.icon === undefined ? undefined : iconName(link.icon)}
-      iconEnd={link.iconEnd === undefined ? undefined : iconName(link.iconEnd)}
+      icon={link.icon === undefined ? undefined : asIconName(link.icon)}
+      iconEnd={link.iconEnd === undefined ? undefined : asIconName(link.iconEnd)}
     >
       {link.label}
     </Button>

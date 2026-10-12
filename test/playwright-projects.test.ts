@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { LAYOUT_SPECS, e2eProjects, projectDeviceScaleFactor, viewportOffProject } from "./e2e/support/projects";
+import { LAYOUT_SPECS, STORY_SPECS, WEBKIT_STORY_SPECS, e2eProjects, projectDeviceScaleFactor, viewportOffProject } from "./e2e/support/projects";
 import { VIEWPORTS } from "./e2e/support/viewports";
 
 /* The Playwright projects (task 1.1b item 2; test plan §1.2, §3, §4.1).
@@ -21,7 +21,7 @@ describe("Playwright projects", () => {
   });
 
   it("add WebKit with iPhone emulation for the phones and WebKit at the laptop sizes on KH_WEBKIT=1", () => {
-    expect(names({ KH_WEBKIT: "1" })).toEqual(["site", "storybook", "webkit-iphone", "webkit-laptop"]);
+    expect(names({ KH_WEBKIT: "1" })).toEqual(["site", "storybook", "webkit-iphone", "webkit-laptop", "webkit-storybook"]);
     const [iphone, mac] = e2eProjects({ KH_WEBKIT: "1" }, URLS).slice(2);
     expect(iphone).toMatchObject({ use: { browserName: "webkit", isMobile: true, hasTouch: true, baseURL: URLS.site }, metadata: { viewportGroups: ["phone"] } });
     expect(iphone.use?.userAgent).toMatch(/\(iPhone; CPU iPhone OS \d+/);
@@ -29,8 +29,23 @@ describe("Playwright projects", () => {
     expect(mac.use?.userAgent).toMatch(/Macintosh.*Version\/[\d.]+ Safari/);
   });
 
-  it("give the WebKit projects the layout specs only", () => {
-    const webkit = e2eProjects({ KH_WEBKIT: "1" }, URLS).slice(2);
+  /* Task 3.6 item 11: the story specs that run in WebKit too get their engine from a project, as the layout specs do,
+     instead of launching WebKit themselves (motion-faq.spec.ts did, task 2.12). */
+  it("add WebKit on the static Storybook for the story specs verified in WebKit on KH_WEBKIT=1", () => {
+    const storybook = e2eProjects({ KH_WEBKIT: "1" }, URLS).find((p) => p.name === "webkit-storybook")!;
+    expect(storybook).toMatchObject({ testMatch: WEBKIT_STORY_SPECS, use: { browserName: "webkit", baseURL: URLS.storybook } });
+    expect(storybook.use?.userAgent).toMatch(/Macintosh.*Version\/[\d.]+ Safari/);
+    expect(WEBKIT_STORY_SPECS.test("test/e2e/motion-faq.spec.ts")).toBe(true);
+    for (const spec of ["no-sideways", "axe", "chrome", "visual-parity"]) expect(WEBKIT_STORY_SPECS.test(`test/e2e/${spec}.spec.ts`), spec).toBe(false);
+    // Every spec it takes is a story spec (it runs against Storybook, not the site).
+    for (const spec of ["motion-faq", "motion-reveal", "motion-doodle", "motion-button", "motion-hero", "motion-films", "films"]) {
+      if (WEBKIT_STORY_SPECS.test(`test/e2e/${spec}.spec.ts`)) expect(STORY_SPECS.test(`test/e2e/${spec}.spec.ts`), spec).toBe(true);
+    }
+    expect(names({})).not.toContain("webkit-storybook");
+  });
+
+  it("give the WebKit layout projects the layout specs only", () => {
+    const webkit = e2eProjects({ KH_WEBKIT: "1" }, URLS).filter((p) => p.name === "webkit-iphone" || p.name === "webkit-laptop");
     for (const p of webkit) expect(p.testMatch).toBe(LAYOUT_SPECS);
     for (const spec of ["no-sideways", "first-screen", "cta", "axe", "chrome"]) expect(LAYOUT_SPECS.test(`test/e2e/${spec}.spec.ts`), spec).toBe(true);
     for (const spec of ["visual-parity", "text-parity", "no-js", "motion", "motion-faq", "films", "perf-budget", "links", "tracking-probe", "redirects", "content-integrity"]) {

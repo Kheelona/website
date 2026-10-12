@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import Link from "next/link";
 import type { MouseEventHandler, ReactNode } from "react";
+import { isSitePath } from "@/lib/links";
 import { CTAS, type CtaId } from "@/lib/tracking/cta";
 import { Icon, type IconName } from "../Icon/Icon";
 
@@ -16,8 +17,8 @@ import { Icon, type IconName } from "../Icon/Icon";
  *   `cta` (architecture §8.3). A store link is `PreorderButton`, which wraps this.
  * - `arrow` (Chilli only) ends the button with the arrow-right icon carrying `ks-btn__arrow`, the hook
  *   motion.css nudges on hover with a fine pointer (D049 pick 6; architecture §11.3).
- * - `href` renders a link: a site path (one leading slash) through next/link, anything else (store URL, anchor, a
- *   protocol-relative `//host/path`) a plain `<a>`.
+ * - `href` renders a link: a site path (`isSitePath`, src/lib/links.ts: one leading slash) through next/link, anything
+ *   else (store URL, anchor, a protocol-relative `//host/path` or `/\host/path`) a plain `<a>`.
  * - Ghost buttons keep the mockup's markup (`kh-btn kh-btn--ghost`); button.css ports mockup.css's ghost rule onto
  *   `.kh-btn--ghost`, so a long label may wrap on a phone.
  *
@@ -27,10 +28,6 @@ import { Icon, type IconName } from "../Icon/Icon";
  */
 
 type Size = "s" | "m" | "l";
-
-/** A site path: one slash, then never a second one or a backslash (a browser reads `//host` and `/\host` as another
- *  site). Only these go through next/link. */
-const SITE_PATH = /^\/(?![/\\])/;
 
 interface Common {
   size?: Size;
@@ -131,7 +128,7 @@ export function Button(props: ButtonProps) {
 
   if (props.href !== undefined) {
     const { href } = props;
-    return SITE_PATH.test(href) ? (
+    return isSitePath(href) ? (
       <Link id={id} href={href} className={cls} {...track}>
         {content}
       </Link>

@@ -1,44 +1,26 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { films, filmsStrip } from "@/content/en-IN/films";
+import { outline, parseMockup } from "../../../../test/support/mockup-compare";
 import { FilmsStrip, type FilmsStripProps } from "./FilmsStrip";
+import storiesMeta, * as stories from "./FilmsStrip.stories";
 
 /* FilmsStrip (task 3.3; components §2; D040, D049 pick 8; architecture §10, §11.2 row 8): the seven parent films on Home
  * (fold 2), the product page (fold 2) and the store (fold 6). The markup is compared class by class (mk- renamed ks-)
- * with each approved strip; the behaviour of mockup.js sections 4 and 5 is driven here with the browser APIs jsdom
- * lacks stood in for (IntersectionObserver, media playback). Layout-dependent behaviour (positions, ends, the focus
- * scale) runs in a real browser: test/e2e/films.spec.ts and motion-films.spec.ts. */
+ * with each approved strip through the mockup comparison harness (test/support/mockup-compare.ts); the behaviour of
+ * mockup.js sections 4 and 5 is driven here with the browser APIs jsdom lacks stood in for (IntersectionObserver, media
+ * playback). Layout-dependent behaviour (positions, ends, the focus scale) runs in a real browser: test/e2e/films.spec.ts
+ * and motion-films.spec.ts. */
 vi.unmock("next/image");
 
-const doc = (slug: string) =>
-  new DOMParser().parseFromString(readFileSync(join(process.cwd(), "mockup", `${slug}.html`), "utf8"), "text/html");
-const strip = (slug: string) => doc(slug).querySelector("[data-films]")!.closest("section")!;
+const strip = (slug: string) => parseMockup(slug).querySelector("[data-films]")!.closest("section")!;
 const norm = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").trim();
 const words = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, "");
 
-const RENAME: Record<string, string[]> = {
-  "mk-films-wrap": ["ks-films-wrap"],
-  "mk-films": ["ks-films"],
-  "mk-film": ["ks-film"],
-  "mk-film__meta": ["ks-film__meta"],
-  "mk-film__time": ["ks-film__time"],
-  "mk-film__frame": ["ks-film__frame"],
-  "mk-film__play": ["ks-film__play"],
-  "mk-film__caption": ["ks-film__caption"],
-  "mk-films-proof": ["ks-films-proof"],
-  "mk-films-ctrl": ["ks-films-ctrl"],
-  "mk-nowrap": ["ks-nowrap"],
-};
-
-function shape(el: Element, depth = 0): string[] {
-  const classes = [...el.classList].flatMap((c) => RENAME[c] ?? [c]);
-  // The film chips switch to the page cream on the band (mockup.css:137; Chip `onBand`, DS gap G-19).
-  if (el.classList.contains("kh-chip")) classes.push("ks-chip--on-band");
-  const line = `${"  ".repeat(depth)}${el.tagName.toLowerCase()}${[...new Set(classes)].sort().map((c) => `.${c}`).join("")}${el.hasAttribute("data-reveal") ? "[data-reveal]" : ""}`;
-  if (el.tagName.toLowerCase() === "svg") return [line];
-  return [line, ...[...el.children].flatMap((c) => shape(c, depth + 1))];
-}
+/** The film chips switch to the page cream on the band (mockup.css:137; Chip `onBand`, DS gap G-19). Every mockup block
+ *  of the strip takes its ks- name. */
+const onBand = (el: Element) => (el.classList.contains("kh-chip") ? ["ks-chip--on-band"] : []);
+const shape = (el: Element) => outline(el, { extra: onBand });
 
 /** The section with whatever follows the strip (the CTA block, the store's link) replaced by the test's stand-in. */
 function withAfterSlot(section: Element): Element {
@@ -65,7 +47,7 @@ const filmsFrom = (section: Element): FilmsStripProps["films"] =>
     };
   });
 
-const LABELS = { listLabel: "Seven films of families with Kheelu", previous: "Previous video", next: "Next video", length: "Length", play: "Play:", of: "of" };
+const LABELS = filmsStrip;
 
 const home = strip("home");
 const PROPS: FilmsStripProps = {
@@ -256,5 +238,18 @@ describe("FilmsStrip: the film in focus (D049 pick 8)", () => {
     act(() => band.callback([{ target: tiles[2], intersectionRect: { width: 320 } as DOMRectReadOnly }]));
     expect(container.querySelectorAll(".is-focus")).toHaveLength(1);
     expect(tiles[2]).toHaveClass("ks-film", "is-focus");
+  });
+});
+
+/* Task 3.6 item 19: films.spec.ts and motion-films.spec.ts run on these stories, so the stories show the content itself
+   (content/en-IN/films.ts), never a retyped copy: the specs then test what the pages publish. */
+describe("FilmsStrip: the stories show the content", () => {
+  it("every story takes the content's films and the strip's labels, the very values", () => {
+    expect(storiesMeta.args.films).toBe(films);
+    expect(storiesMeta.args.labels).toBe(filmsStrip);
+    for (const story of [stories.Home, stories.Product, stories.Store]) {
+      expect(story.args?.films ?? storiesMeta.args.films).toBe(films);
+      expect(story.args?.labels ?? storiesMeta.args.labels).toBe(filmsStrip);
+    }
   });
 });

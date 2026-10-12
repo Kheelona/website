@@ -1,12 +1,14 @@
-/* The Playwright projects (task 1.1, WebKit added by 1.1b; test plan §1.2, §3, §4.1).
+/* The Playwright projects (task 1.1, WebKit added by 1.1b, webkit-storybook by 3.6; test plan §1.2, §3, §4.1).
  *
- *   site           Chromium, every spec except the story specs, against the local build.
- *   storybook      Chromium, the per-pick specs of waves 2 and 3 against a static Storybook build.
- *   webkit-iphone  opt-in (KH_WEBKIT=1): WebKit with iPhone emulation (iOS Safari user agent,
- *                  touch, mobile viewport, pixel ratio 3) for the layout specs at the PHONE
- *                  viewports of the matrix; laptop viewports are skipped.
- *   webkit-laptop  opt-in (KH_WEBKIT=1): desktop WebKit (Safari's engine and user agent) for the
- *                  layout specs at the LAPTOP sizes; phone viewports are skipped.
+ *   site              Chromium, every spec except the story specs, against the local build.
+ *   storybook         Chromium, the per-pick specs of waves 2 and 3 against a static Storybook build.
+ *   webkit-iphone     opt-in (KH_WEBKIT=1): WebKit with iPhone emulation (iOS Safari user agent,
+ *                     touch, mobile viewport, pixel ratio 3) for the layout specs at the PHONE
+ *                     viewports of the matrix; laptop viewports are skipped.
+ *   webkit-laptop     opt-in (KH_WEBKIT=1): desktop WebKit (Safari's engine and user agent) for the
+ *                     layout specs at the LAPTOP sizes; phone viewports are skipped.
+ *   webkit-storybook  opt-in (KH_WEBKIT=1): desktop WebKit on the static Storybook, for the story
+ *                     specs verified in WebKit (WEBKIT_STORY_SPECS); each opens its own viewport.
  * The harness sets each context's viewport itself (viewports.ts), so a project's descriptor gives
  * the engine, the user agent and, for the iPhone, the pixel ratio; viewportOffProject() skips a
  * viewport the project does not run. WebKit needs its browser once: `npx playwright install
@@ -20,6 +22,10 @@ import type { Viewport } from "./viewports";
 export const LAYOUT_SPECS = /(?:^|[\\/])(?:no-sideways|first-screen|cta|axe|chrome)\.spec\.ts$/;
 /** Per-pick motion specs and the films spec run on stories (waves 2 and 3). */
 export const STORY_SPECS = /(?:^|[\\/])(?:motion-[a-z]+|films)\.spec\.ts$/;
+/** The story specs that also run in WebKit (KH_WEBKIT=1, project webkit-storybook): D049 pick 7's FAQ open, whose
+ *  older-Safari fallback (7A) matters on iPhones (task 2.12; the project from task 3.6). A story spec joins once it
+ *  has been run green in WebKit. */
+export const WEBKIT_STORY_SPECS = /(?:^|[\\/])motion-faq\.spec\.ts$/;
 
 /** The iPhone emulated: 402 px wide like the matrix's 402 x 714 (test plan §3), iOS 18 Safari. */
 export const IPHONE = "iPhone 16 Pro";
@@ -60,6 +66,7 @@ export function e2eProjects(env: { KH_WEBKIT?: string }, urls: { site: string; s
       use: webkitUse(devices[DESKTOP_SAFARI], urls.site),
       metadata: laptopMeta,
     },
+    { name: "webkit-storybook", testMatch: WEBKIT_STORY_SPECS, use: webkitUse(devices[DESKTOP_SAFARI], urls.storybook) },
   ];
 }
 

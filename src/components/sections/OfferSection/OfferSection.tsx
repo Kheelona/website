@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Heading } from "@/components/ui/Heading/Heading";
-import { Icon } from "@/components/ui/Icon/Icon";
+import { ContentIcon } from "@/components/ui/Icon/Icon";
 import { Container, Section, SectionHead, Split } from "@/components/ui/Layout/Layout";
 import { OfferCard } from "@/components/ui/OfferCard/OfferCard";
 import { Photo } from "@/components/ui/Photo/Photo";
@@ -8,7 +8,6 @@ import { PreorderButton } from "@/components/ui/PreorderButton/PreorderButton";
 import { RichText } from "@/components/ui/RichText/RichText";
 import type { OfferCardPlacement } from "@/content/types";
 import { CloseArt } from "../CloseSection/close-art";
-import { iconName } from "../CtaBlock/icon-name";
 import { SellingHelpLine, SellingTrustLine } from "../CtaBlock/selling-lines";
 import type { OfferSectionProps } from "./offer-section.types";
 
@@ -33,7 +32,7 @@ export function OfferSection(props: OfferSectionProps) {
     <OfferCard
       offer={offer}
       perks={offer.card.perks[PLACEMENT[variant]].map((perk) => ({
-        icon: <Icon name={iconName(perk.icon)} />,
+        icon: <ContentIcon name={perk.icon} />,
         text: <RichText text={perk.text} offer={offer} />,
       }))}
       action={<PreorderButton cta={cta} label={ctaLabel} size="l" block />}
@@ -44,7 +43,7 @@ export function OfferSection(props: OfferSectionProps) {
   const lines = (
     <>
       <SellingTrustLine items={trust} offer={offer} />
-      <SellingHelpLine help={help} />
+      <SellingHelpLine help={help} offer={offer} />
     </>
   );
   let body: ReactNode;
