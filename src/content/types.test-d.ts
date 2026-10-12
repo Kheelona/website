@@ -17,9 +17,12 @@ import type {
   FaqItem,
   Film,
   Gated,
+  HelpLineCopy,
   IconText,
   ImageRef,
   LegalDoc,
+  LegalPage,
+  LegalTemplateCopy,
   Meta,
   Offer,
   OfferCard,
@@ -227,7 +230,7 @@ export const greenBoard = { tone: "green", layers: [] } satisfies ArtBoardRef;
 export const chat = {
   number: "919187546483",
   label: "Chat with us on WhatsApp",
-  shortLabel: "Chat on WhatsApp",
+  shortLabel: "Chat with us on WhatsApp",
   texts: {
     site: "Hi Kheelona! I have a question about Kheelu.",
     store: "Hi Kheelona! I need help with my pre-order.",
@@ -444,6 +447,14 @@ export const termsDoc = {
   ],
 } satisfies LegalDoc;
 
+const recipients = {
+  kind: "recipients",
+  label: "Everyone who handles your data, and where",
+  headings: { who: "Who", what: "What they do for us", where: "Where" },
+  keys: { what: "What:", where: "Where:" },
+  rows: [{ who: "Razorpay", what: "Takes your payment", where: "India" }],
+} as const;
+
 export const privacyParts = [
   {
     id: "measuring",
@@ -453,14 +464,8 @@ export const privacyParts = [
   {
     id: "who-else",
     title: "Everyone who handles your data, and where.",
-    blocks: [
-      {
-        kind: "recipients",
-        label: "Everyone who handles your data, and where",
-        headings: { who: "Who", what: "What they do for us", where: "Where" },
-        rows: [{ who: "Razorpay", what: "Takes your payment", where: "India" }],
-      },
-    ],
+    contents: "Who handles your data",
+    blocks: [recipients, { kind: "grievance" }, { kind: "seller", lead: "Who we are:" }],
   },
 ] satisfies LegalDoc["parts"];
 
@@ -468,3 +473,56 @@ export const privacyParts = [
 export const reviewDoc = { ...refundDoc, status: "in review" } satisfies LegalDoc;
 // @ts-expect-error an approved document carries the real approval date, never a placeholder
 export const undatedApproval = { ...refundDoc, approvedOn: ph(null, "the date") } satisfies LegalDoc;
+
+/* ── Legal pages as LegalTemplate renders them (task 4.3; moved into this file by task 4.5 item 2) ── */
+
+/* The page shape is the document shape: a legal module writes `satisfies LegalPage` and imports nothing from layouts
+   (structure §6, wave-4 close). */
+export const pageIsDoc: Equals<LegalPage, LegalDoc> = true;
+
+/* Terms, as it reads in both offer modes (terms.md folds 2 and 4): the hero's eyebrow, a run of parts under one group,
+   the short version's points and the price paragraphs per mode, and a paragraph that is there in token mode only (its
+   full-mode words empty, so the template leaves it out); the close's help line is the template's, not the page's. */
+export const termsPage = {
+  ...termsDoc,
+  hero: { eyebrow: "Terms", title: "Terms, in {hand:plain words.}" },
+  groups: [{ label: "Your pre-order", eyebrow: "Part one · Your pre-order" }],
+  summary: {
+    kind: "points",
+    title: "The {hand:short version.}",
+    points: [
+      { lead: "What you pay.", text: { token: "Reserve yours for {price:token} today.", full: "{price:full} (incl. GST), paid in full when you order." } },
+      { lead: "Changed your mind before dispatch?", text: { token: "Cancel any time for a full refund.", full: "Cancel any time before dispatch for a full refund." } },
+    ],
+  },
+  parts: [
+    {
+      id: "price",
+      group: "Your pre-order",
+      title: "The price.",
+      blocks: [
+        { kind: "p", id: "first-500", text: { token: "While the first 500 units last, Kheelu costs {price:headline}.", full: "Kheelu costs {price:full} (incl. GST)." } },
+        { kind: "p", text: { token: "The {price:balance} balance is paid by a payment link.", full: "" } },
+        { kind: "card", lead: "Customer care:", text: "[WhatsApp](https://wa.me/919187546483)." },
+      ],
+    },
+  ],
+} satisfies LegalPage;
+
+export const sharedWords = {
+  draftNote: "Draft for the founder’s approval; not legal advice.",
+  updated: "Last updated:",
+  contents: "On this page",
+  grievanceNote: "{ph:how you get a complaint reference to track your complaint; not set up yet}",
+  help: { lead: "Questions?", contact: "[WhatsApp](https://wa.me/919187546483)" },
+} satisfies LegalTemplateCopy;
+export const helpLine = sharedWords.help satisfies HelpLineCopy;
+
+// @ts-expect-error a part's title is the same in both modes: the contents list prints it, and it never names a price
+export const titleByMode = { id: "price", title: { token: "The price.", full: "The price, paid in full." }, blocks: [] } satisfies LegalPage["parts"][number];
+// @ts-expect-error the recipients rows open with their labels ("What:", "Where:"), so the block names them
+export const keyless = { ...recipients, keys: undefined } satisfies LegalPage["parts"][number]["blocks"][number];
+// @ts-expect-error the close's help line is the template's (seller.help through LegalTemplateCopy), never retyped
+export const retypedHelp = { ...termsPage, close: { actions: [], help: "Questions? [WhatsApp](https://wa.me/919187546483)" } } satisfies LegalPage;
+// @ts-expect-error the template's words carry the help line from seller.ts
+export const noHelp = { draftNote: "a", updated: "b", contents: "c", grievanceNote: "d" } satisfies LegalTemplateCopy;

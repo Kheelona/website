@@ -1,8 +1,8 @@
 /* LegalTemplate (task 4.3): the four approved legal pages' CSS (mockup/css/privacy.css, terms.css, refund.css,
    shipping.css) in one file. They are two families, not four copies (mockup-css-mapping §6.1): `reference` (privacy,
    terms) and `notice` (refund, shipping). Rules both share are written once; a family's own rules hang off the
-   modifier on its block (ks-doc--reference, ks-doc--notice, ks-doc-summary--notice, ks-doc-close--reference,
-   ks-doc-close--notice, ks-draft--notice); terms' groups off ks-toc--groups. Type sizes are ks-type-* classes in the
+   modifier on its block (ks-doc--reference, ks-doc--notice, ks-doc-summary--reference, ks-doc-summary--notice,
+   ks-doc-close--reference, ks-doc-close--notice, ks-draft--notice); terms' groups off ks-toc--groups. Type sizes are ks-type-* classes in the
    markup (§3.6 rows 27-28, 31-32, 38-41, 48-51); the only typed type values are the three legal exceptions of §4.1.
    Every value a DS token, an exact calc() of one, or a named exception (test/guards/token-exceptions.ts). */
 
@@ -45,9 +45,11 @@
 .ks-doc-summary .kh-section__head {
   margin-bottom: var(--space-6);
 }
-/* The links in a promise and in the document (privacy.css:17, 38; refund.css:44; mapping rows 22-23, 29-30). The
-   document's rule (0,2,1) also outranks the contents rows' own colour, so they show in the link colour, as approved. */
-.ks-doc-summary .kh-trust__body a,
+/* The links in a promise, reference family only (privacy.css:17, terms.css:17; refund.css and shipping.css have no such
+   rule; mapping rows 22-23; task 4.5), and in the document, both families (privacy.css:38, refund.css:44; mapping rows
+   29-30). The document's rule (0,2,1) also outranks the contents rows' own colour, so they show in the link colour, as
+   approved. */
+.ks-doc-summary--reference .kh-trust__body a,
 .ks-doc a:not(.kh-btn) {
   color: var(--link);
   font-weight: 700; /* ds-weight-700 */

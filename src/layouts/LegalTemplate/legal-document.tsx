@@ -8,7 +8,8 @@ import { asIconName, Icon } from "@/components/ui/Icon/Icon";
 import { Container, Section } from "@/components/ui/Layout/Layout";
 import { RichText } from "@/components/ui/RichText/RichText";
 import { seller } from "@/content/en-IN/seller";
-import type { LeadText, Offer } from "@/content/types";
+import type { Copy, LegalLeadText, Offer } from "@/content/types";
+import { pickMode } from "@/lib/content/mode";
 import { grievanceOfficerLine, legalSellerSentence } from "@/lib/content/seller-lines";
 import type { LegalGroup, LegalPage, LegalPageBlock, LegalPagePart, LegalTemplateCopy, LegalVariant } from "./legal-template.types";
 
@@ -23,17 +24,29 @@ interface Ctx {
   readonly offer: Offer;
 }
 
-/** A line that may open with a bold label: the label, a space, the rest (the mockup's `<strong>` leads). */
-function Lead({ item, offer }: { item: LeadText; offer: Offer }) {
+/** A line's words in the live offer mode ("" for none). */
+const wordsOf = (copy: Copy | undefined, offer: Offer): string => (copy === undefined ? "" : pickMode(copy, offer.mode));
+
+/** Whether a line says anything in the live offer mode. Terms writes a "token mode only" paragraph with no full-mode
+ *  words (`{ token: "…", full: "" }`, terms.md fold 4); such a line is left out, never printed as an empty element. */
+export function saysAnything(item: LegalLeadText, offer: Offer): boolean {
+  return wordsOf(item.lead, offer).trim() !== "" || wordsOf(item.text, offer).trim() !== "";
+}
+
+/** A line that may open with a bold label: the label, a space, the rest (the mockup's `<strong>` leads), each in the
+ *  live offer mode's words. */
+export function Lead({ item, offer }: { item: LegalLeadText; offer: Offer }) {
+  const lead = wordsOf(item.lead, offer);
+  const text = wordsOf(item.text, offer);
   return (
     <>
-      {item.lead !== undefined && (
+      {lead !== "" && (
         <strong>
-          <RichText text={item.lead} offer={offer} />
+          <RichText text={lead} offer={offer} />
         </strong>
       )}
-      {item.lead !== undefined && item.text !== undefined && " "}
-      {item.text !== undefined && <RichText text={item.text} offer={offer} />}
+      {lead !== "" && text !== "" && " "}
+      {text !== "" && <RichText text={text} offer={offer} />}
     </>
   );
 }
@@ -45,6 +58,7 @@ function Block({ block, ctx }: { block: LegalPageBlock; ctx: Ctx }): ReactNode {
   const notice = variant === "notice";
   switch (block.kind) {
     case "p":
+      if (!saysAnything(block, offer)) return null;
       return (
         <p id={block.id}>
           <Lead item={block} offer={offer} />
