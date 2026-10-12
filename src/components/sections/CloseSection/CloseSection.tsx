@@ -1,10 +1,13 @@
+import type { ReactNode } from "react";
 import { Card } from "@/components/ui/Card/Card";
 import { Heading } from "@/components/ui/Heading/Heading";
 import { HelpLine } from "@/components/ui/HelpLine/HelpLine";
 import { Actions, Container, Section, Split } from "@/components/ui/Layout/Layout";
+import type { MediaRatio } from "@/components/ui/Photo/Photo";
 import { RichText } from "@/components/ui/RichText/RichText";
+import type { ArtBoardRef } from "@/content/types";
 import { CtaBlock, SecondaryLink } from "../CtaBlock/CtaBlock";
-import type { SellingContext, SellingHeading } from "../CtaBlock/cta-block.types";
+import type { CtaBlockConfig, SellingContext, SellingHeading } from "../CtaBlock/cta-block.types";
 import { CloseArt } from "./close-art";
 import type { CloseSectionProps } from "./close-section.types";
 
@@ -22,38 +25,27 @@ export function CloseSection(props: CloseSectionProps) {
     case "split":
       return (
         <CloseFold>
-          <Split>
-            <div>
-              <CloseHeading heading={props.heading} context={context} />
-              <CtaBlock {...props.cta} {...context} />
-            </div>
-            <CloseArt art={props.art} clamp={props.artClamp} />
-          </Split>
+          <BesideArt heading={props.heading} cta={props.cta} context={context} art={props.art} clamp={props.artClamp} />
         </CloseFold>
       );
     case "journal":
       return (
         <CloseFold className="ks-close-journal">
-          <Split>
-            <div>
-              <CloseHeading heading={props.heading} context={context} />
-              <CtaBlock {...props.cta} layout="journal" {...context} />
-            </div>
-            <CloseArt art={props.art} ratio="4 / 3" className="ks-close-journal__art" />
-          </Split>
+          <BesideArt
+            heading={props.heading}
+            cta={{ ...props.cta, layout: "journal" }}
+            context={context}
+            art={props.art}
+            ratio="4 / 3"
+            artClassName="ks-close-journal__art"
+          />
         </CloseFold>
       );
     case "guide":
       return (
         <CloseFold>
           <Card as="div" variant="tint" tone={props.tone} className="ks-gd-close">
-            <Split>
-              <div>
-                <CloseHeading heading={props.heading} context={context} />
-                <CtaBlock {...props.cta} {...context} />
-              </div>
-              <CloseArt art={props.art} clamp />
-            </Split>
+            <BesideArt heading={props.heading} cta={props.cta} context={context} art={props.art} clamp />
           </Card>
         </CloseFold>
       );
@@ -80,11 +72,34 @@ export function CloseSection(props: CloseSectionProps) {
 }
 
 /** The close's section and container: `#close` named by `#close-title` (`#help` on /setup). */
-function CloseFold({ id = "close", className, children }: { id?: string; className?: string; children: React.ReactNode }) {
+function CloseFold({ id = "close", className, children }: { id?: string; className?: string; children: ReactNode }) {
   return (
     <Section id={id} labelledBy={`${id}-title`} className={className}>
       <Container>{children}</Container>
     </Section>
+  );
+}
+
+interface BesideArtProps {
+  heading: SellingHeading;
+  cta: Omit<CtaBlockConfig, "align">;
+  context: SellingContext;
+  art: ArtBoardRef;
+  clamp?: boolean;
+  ratio?: MediaRatio;
+  artClassName?: string;
+}
+
+/** The heading and the CTA block in the first column of a split, the art board in the second. */
+function BesideArt({ heading, cta, context, art, clamp, ratio, artClassName }: BesideArtProps) {
+  return (
+    <Split>
+      <div>
+        <CloseHeading heading={heading} context={context} />
+        <CtaBlock {...cta} {...context} />
+      </div>
+      <CloseArt art={art} clamp={clamp} ratio={ratio} className={artClassName} />
+    </Split>
   );
 }
 
@@ -93,7 +108,7 @@ interface CloseHeadingProps {
   context: SellingContext;
   center?: boolean;
   id?: string;
-  children?: React.ReactNode;
+  children?: ReactNode;
 }
 
 function CloseHeading({ heading, context, center, id = "close-title", children }: CloseHeadingProps) {
