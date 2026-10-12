@@ -9,8 +9,9 @@
 // site.css imports the manifest after motion.css and before Tailwind. An empty manifest is valid (wave 1, before
 // any component exists). The output is git-ignored: it changes whenever a component adds CSS.
 
-import { mkdirSync, readdirSync, statSync, writeFileSync } from "node:fs";
-import { dirname, join, relative, sep } from "node:path";
+import { randomBytes } from "node:crypto";
+import { mkdirSync, readFileSync, readdirSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { basename, dirname, join, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -49,12 +50,34 @@ export function renderComposeCss(files) {
   ].join("");
 }
 
+/** `path`'s text, or undefined when there is none. */
+function readIfAny(path) {
+  try {
+    return readFileSync(path, "utf8");
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Writes the manifest so that a reader only ever sees the old one or the new one, never an emptied file: the guards
+ * rebuild it while other Vitest workers compile site.css, and a dev server may read it at any time. A current
+ * manifest is left untouched (no rewrite, no new mtime); a stale one is written beside it under a name no CSS glob
+ * matches, then renamed over it (atomic within one folder).
+ */
 export function buildComposeCss({ root = ROOT, write = true } = {}) {
   const files = collectComposeFiles(join(root, "src"));
   const path = join(root, COMPOSE_OUT);
-  if (write) {
+  const css = renderComposeCss(files);
+  if (write && readIfAny(path) !== css) {
     mkdirSync(dirname(path), { recursive: true });
-    writeFileSync(path, renderComposeCss(files));
+    const temp = join(dirname(path), `.${basename(path)}.${process.pid}-${randomBytes(6).toString("hex")}.tmp`);
+    try {
+      writeFileSync(temp, css);
+      renameSync(temp, path);
+    } finally {
+      rmSync(temp, { force: true });
+    }
   }
   return { path, files };
 }
