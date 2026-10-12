@@ -1,0 +1,12 @@
+/* The contact page's folds that hold GrievanceBlock and SellerBlock (task 3.2; contact.css:24-25, .mk-contact-text,
+   .mk-contact-split): the heading's sentence at the reading measure, and the heading and card top-aligned on laptops. */
+.ks-contact-text {
+  margin: 0;
+  max-width: var(--measure);
+  color: var(--text);
+}
+@media (min-width: 900px) {
+  .ks-contact-split {
+    align-items: start;
+  }
+}

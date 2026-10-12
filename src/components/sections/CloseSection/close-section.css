@@ -1,0 +1,39 @@
+/* CloseSection (task 3.2). Ported from the approved mockup; the CTA block's own rules are CtaBlock's (cta-block.css),
+   the 480 px tablet clamp of the safety and guide boards is ArtBoard's (art-board.css). */
+
+/* journal: the stories hub and article closes (stories.css:45-47 and 143, .mk-close, .mk-close-art). The board is 4:3
+   (ArtBoard ratio) and shows from 900 px only (the copy: optional, beside the block). */
+.ks-close-journal .kh-section__actions {
+  margin-top: var(--space-5);
+}
+.ks-close-journal .ks-help {
+  margin-top: var(--space-4);
+}
+.ks-close-journal__art {
+  display: none;
+}
+@media (min-width: 900px) {
+  .ks-close-journal__art {
+    display: block;
+  }
+}
+
+/* guide: the close as one quiet tinted panel (ai-toys-for-kids-in-india.css:48 and 51, .mk-gd-close). */
+.ks-gd-close {
+  padding: var(--space-6) var(--space-5);
+}
+@media (min-width: 1024px) {
+  .ks-gd-close {
+    padding: var(--space-7);
+  }
+}
+
+/* links: /setup's "Stuck?" fold (setup.css:37 and 39, .mk-setup-help, .mk-setup-meet). The links' colour of
+   setup.css:38 is HelpLine's own (help-line.css). */
+.ks-setup-help {
+  max-width: var(--measure);
+}
+.ks-setup-meet {
+  margin-top: var(--space-5);
+  text-align: center;
+}
