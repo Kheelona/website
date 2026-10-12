@@ -17,3 +17,20 @@ export function leadWithHeadline(text: string, headline: string, what: string): 
   }
   return text;
 }
+
+/** A typed amount in content source: the rupee sign, or digits with Rs, INR or "rupees" (the same
+ *  forms src/content/en-IN/amounts.test.ts refuses in the content modules). */
+const TYPED_AMOUNT = /₹|\bRs\.?\s?\d|\bINR\s?\d|\d\s?(?:rupees|INR)\b/i;
+
+/**
+ * Every amount in content is a `{price:…}` token (architecture §6.2), so it follows the checkout's
+ * own paise constants and the offer mode. Returns the source text unchanged when it types no amount;
+ * throws otherwise (task 2.13). Read the source, before serialising: a token prints as "₹4,999".
+ */
+export function noTypedAmount(source: string, what: string): string {
+  const typed = source.match(TYPED_AMOUNT)?.[0];
+  if (typed !== undefined) {
+    throw new Error(`${what} has a typed rupee amount ("${typed}"); write it as a {price:…} token: "${source}"`);
+  }
+  return source;
+}
