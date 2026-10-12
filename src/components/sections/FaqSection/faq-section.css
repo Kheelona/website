@@ -1,0 +1,88 @@
+/* FaqSection (task 3.3). Ported from the approved mockup: meet-kheelu.css:96-101 (the product fold), home.html fold 8
+   (its heading column's inline align-self, the same rule), safety.css:38-48 and ai-toys-for-kids-in-india.css:35-46
+   (the photo layout, one block for both pages) and store.css:74. */
+
+/* The heading column stays at the top of its row beside the questions (meet-kheelu.css:96, .mk-faq-head). */
+.ks-faq-head {
+  align-self: start;
+}
+
+/* The product page's D025 line under the questions (meet-kheelu.css:98-99, .mk-disclaimer). Its own name: the
+   article disclaimer is italic and muted (stories.css:78), and both load on every page (mockup-css-mapping §6.2). */
+.ks-faq__disclaimer {
+  display: grid;
+  grid-template-columns: var(--icon-m) minmax(0, 1fr);
+  gap: var(--space-2);
+  align-items: start;
+  margin: var(--space-5) 0 0;
+  color: var(--text);
+  font-weight: 700; /* ds-weight-700: meet-kheelu.css:98 (mockup-css-mapping row 21) */
+}
+.ks-faq__disclaimer .kh-icon {
+  font-size: var(--icon-m);
+  color: var(--blue-500);
+}
+
+/* The product fold's source note (meet-kheelu.css:100, .mk-sources; not the article's sources block). */
+.ks-faq__sources {
+  margin: var(--space-4) 0 0;
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+/* The help line under the product questions (meet-kheelu.css:101, #faq .mk-help). Loads after HelpLine's own
+   margin reset (ui before sections), so it wins at equal specificity. */
+.ks-faq__help {
+  margin-top: var(--space-5);
+}
+
+/* A bullet list inside an answer (safety.css:47-48, .mk-sf-answer). */
+.ks-faq__list {
+  margin: 0 0 var(--space-3);
+  padding-left: var(--space-5);
+}
+.ks-faq__list li + li {
+  margin-top: var(--space-2);
+}
+
+/* The photo layout: heading, then the questions; the photo under them on phones and under the heading on laptops
+   (safety.css:38-44, .mk-sf-faq; ai-toys-for-kids-in-india.css:35-44, .mk-gd-faq: the same grid). */
+.ks-faq-photo {
+  display: grid;
+  gap: var(--space-6);
+  grid-template-areas: "head" "body" "photo";
+}
+.ks-faq-photo__head {
+  grid-area: head;
+}
+.ks-faq-photo__body {
+  grid-area: body;
+  min-width: 0;
+}
+.ks-faq-photo__photo {
+  grid-area: photo;
+}
+/* The guide's portrait photo stays small (ai-toys-for-kids-in-india.css:39-40; mockup-css-mapping rows 14-15). */
+@media (min-width: 720px) and (max-width: 899px) {
+  .ks-faq-photo__photo--clamp {
+    width: min(100%, calc(var(--space-10) * 3 + var(--space-6) + var(--space-1))); /* 3 × 128 + 32 + 4 = 420 */
+  }
+}
+@media (min-width: 900px) {
+  .ks-faq-photo {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    grid-template-rows: auto 1fr;
+    column-gap: var(--space-7);
+    row-gap: var(--space-6);
+    grid-template-areas: "head body" "photo body";
+    align-items: start;
+  }
+  .ks-faq-photo__photo--clamp {
+    width: min(100%, calc(var(--space-10) * 3 - var(--space-5))); /* 3 × 128 − 24 = 360 */
+  }
+}
+
+/* The store's questions take their column's width (store.css:74, .mk-faq). */
+.ks-faq .kh-faq {
+  max-width: none;
+}
