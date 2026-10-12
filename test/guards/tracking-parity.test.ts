@@ -44,13 +44,17 @@ beforeEach(() => {
   win.gtag = (...a: unknown[]) => {
     if (a[0] === "event") emitted.push({ destination: "ga4", name: a[1] as string, params: (a[2] ?? {}) as Record<string, unknown> });
   };
+  /* Every fbq call is recorded. The frozen funnel only ever uses "track" (src/lib/fbq.ts), so any
+     other command (trackCustom, or trackSingle* with the pixel id first) is recorded under
+     "<command>:<event>", a name no registry row has, and fails the comparison. */
   win.fbq = (...a: unknown[]) => {
-    if (a[0] !== "track") return;
-    const opts = a[3] as { eventID?: string } | undefined;
+    const command = String(a[0]);
+    const single = command === "trackSingle" || command === "trackSingleCustom";
+    const [event, params, opts] = (single ? a.slice(2) : a.slice(1)) as [unknown, unknown, { eventID?: string } | undefined];
     emitted.push({
       destination: "meta-pixel",
-      name: a[1] as string,
-      params: (a[2] ?? {}) as Record<string, unknown>,
+      name: command === "track" ? String(event) : `${command}:${String(event)}`,
+      params: (params ?? {}) as Record<string, unknown>,
       ...(opts?.eventID ? { eventId: opts.eventID } : {}),
     });
   };
@@ -66,6 +70,22 @@ afterEach(() => {
   delete win.gtag;
   delete win.fbq;
   resetPostHogForTests();
+});
+
+/* The spies must see every way a tool can be reached, or a guard built on them is blind. */
+describe("tracking-parity instruments", () => {
+  it("records every fbq command, not only track: a custom or single-pixel send is a send to Meta", () => {
+    win.fbq?.("track", "PageView");
+    win.fbq?.("trackCustom", "preorder_form_rejected", { tier: "launch" });
+    win.fbq?.("trackSingle", "1051265191046395", "Lead", { value: 1 });
+    win.fbq?.("trackSingleCustom", "1051265191046395", "preorder_payment_failed", {});
+    expect(emitted.map((e) => pair(e.destination, e.name))).toEqual([
+      "meta-pixel PageView",
+      "meta-pixel trackCustom:preorder_form_rejected",
+      "meta-pixel trackSingle:Lead",
+      "meta-pixel trackSingleCustom:preorder_payment_failed",
+    ]);
+  });
 });
 
 /* ── Comparing what was sent with the registry ────────────────────────────────────────────── */

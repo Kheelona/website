@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from "vitest";
 import { registerPostHog, resetPostHogForTests } from "@/lib/posthog";
 import { EVENTS } from "@/lib/tracking/events";
 import { track, type NewEventParams } from "./track";
@@ -6,16 +6,17 @@ import { track, type NewEventParams } from "./track";
 /** The dispatcher for NEW events only (ADR-006; architecture §8.1). It reads the registry for
  *  each event's destinations and parameters; the proven funnel never goes through it. */
 type Gtag = (...args: unknown[]) => void;
+type Capture = (event: string, properties?: Record<string, unknown>) => void;
 const win = window as unknown as { gtag?: Gtag; fbq?: Gtag };
 
-let gtag: ReturnType<typeof vi.fn>;
-let fbq: ReturnType<typeof vi.fn>;
-let capture: ReturnType<typeof vi.fn>;
+let gtag: Mock<Gtag>;
+let fbq: Mock<Gtag>;
+let capture: Mock<Capture>;
 
 beforeEach(() => {
-  gtag = vi.fn();
-  fbq = vi.fn();
-  capture = vi.fn();
+  gtag = vi.fn<Gtag>();
+  fbq = vi.fn<Gtag>();
+  capture = vi.fn<Capture>();
   win.gtag = gtag;
   win.fbq = fbq;
   registerPostHog({ capture, startSessionRecording: () => {}, stopSessionRecording: () => {}, get_distinct_id: () => "d" });

@@ -197,6 +197,7 @@ describe("the posthog wrapper no-ops when the SDK never loaded", () => {
       capture: (e, p) => calls.push([e, p]),
       startSessionRecording: () => {},
       stopSessionRecording: () => {},
+      get_distinct_id: () => "d",
     });
 
     phCapture("purchase", { value: 499, currency: "INR" });
@@ -211,6 +212,7 @@ describe("the posthog wrapper no-ops when the SDK never loaded", () => {
       capture: () => {},
       startSessionRecording: () => log.push("start"),
       stopSessionRecording: () => log.push("stop"),
+      get_distinct_id: () => "d",
     });
 
     phSetReplay(replayAllowedOnPath("/store"));
@@ -403,12 +405,14 @@ describe("the gate on each kind of host", () => {
     await waitFor(() => expect(sdk.register).toHaveBeenCalledWith({ internal: true }));
     expect(sdk.register).toHaveBeenCalledTimes(1);
     expect(sdk.init.mock.invocationCallOrder[0]).toBeLessThan(sdk.register.mock.invocationCallOrder[0]);
+    expect(sdk.capture, "the flag is a property, never an event").not.toHaveBeenCalled();
   });
 
   it("?internal=0 unregisters internal and registers nothing (B46)", async () => {
     await renderAt("https://store.kheelona.com/?internal=0");
     await waitFor(() => expect(sdk.unregister).toHaveBeenCalledWith("internal"));
     expect(sdk.register).not.toHaveBeenCalled();
+    expect(sdk.capture, "the flag is a property, never an event").not.toHaveBeenCalled();
   });
 
   it("hands the SDK to lib/posthog, so the funnel's phCapture reaches it", async () => {
