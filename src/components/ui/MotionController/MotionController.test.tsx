@@ -196,6 +196,27 @@ describe("MotionController", () => {
     expect(low.finish).not.toHaveBeenCalled();
   });
 
+  /* Task 4.5 item 7: the same no-box test at arming as for added targets (3.6). A target inside a `hidden` holder
+     (React's streaming holder, still there when the frame comes) has no layout box and reads 0, 0, which a top-edge
+     test takes for "on screen": shown at once, it would skip its reveal wherever React moves it. It is observed. */
+  it("at arming, observes a target with no layout box (inside a hidden holder) and never shows it at once", async () => {
+    document.body.innerHTML = `${PAGE}<div hidden><section id="held" data-reveal></section><svg id="held-draw" class="ks-doodle" data-draw></svg></div>`;
+    const draw = stubAnimations(byId("held-draw"));
+    render(<MotionController />);
+    await nextFrame();
+    const [observer] = FakeObserver.instances;
+
+    for (const id of ["held", "held-draw"]) {
+      expect(byId(id).getClientRects(), id).toHaveLength(0);
+      expect(byId(id), id).not.toHaveClass("is-in");
+      expect(observer.observed.has(byId(id)), id).toBe(true);
+    }
+    expect(draw.finish).not.toHaveBeenCalled();
+    // The targets with a box keep their rules: on screen shown, below observed.
+    expect(byId("reveal-top")).toHaveClass("is-in");
+    expect([...observer.observed].map((el) => el.id).sort()).toEqual(["draw-low", "held", "held-draw", "reveal-low"]);
+  });
+
   it("does nothing with reduced motion: no js-motion, no is-in, no observer, everything stays visible", async () => {
     vi.spyOn(window, "matchMedia").mockImplementation(
       (query: string) => ({ matches: query === REDUCE, media: query, addEventListener: vi.fn(), removeEventListener: vi.fn() }) as unknown as MediaQueryList,
