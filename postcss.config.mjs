@@ -1,7 +1,12 @@
 // PostCSS for Next (Turbopack), Storybook and Vitest (both Vite). Task 1.2, ADR-002.
 //
-// Plugins are listed as plugin objects in an array: Next 16's Turbopack loader passes them through and Vite's
-// postcss-load-config accepts them. (Next's webpack mode wants plugin names as strings; the build uses Turbopack.)
+// A deviation from Next's docs, raised with the main session (task 1.2 review, 2026-10-11): the PostCSS guide
+// (node_modules/next/dist/docs/02-pages/02-guides/post-css.md:144) says plugins must be given as strings, never
+// require()d. Both documented forms name a module, and the inline plugin below would need a file of its own, which
+// task 1.2 does not own. So the plugins are plugin objects in an array: Turbopack 16.3.8 runs them (scratch
+// next build, 2026-10-11: transition-all, duration-700, scroll-smooth, p-[13px], z-50 and border-2 absent from the
+// built CSS, p-5 and grid-cols-2 present) and Vite's postcss-load-config accepts them; `next build --webpack` would
+// not. test/guards/visual-layer.test.ts pins the Next version this was verified on, so an upgrade repeats the check.
 // Turbopack bundles this file before running it, and cannot bundle Tailwind's native bindings (lightningcss), so
 // Tailwind is loaded at run time with Node's require, which Turbopack is told to leave alone.
 import { createRequire } from "node:module";
@@ -98,7 +103,11 @@ const dsOnlyUtilities = {
 };
 
 const config = {
-  plugins: [tailwindcss(), dsOnlyUtilities],
+  // optimize: false. Otherwise @tailwindcss/postcss optimises when it is created under NODE_ENV=production (next build)
+  // but not under test: it would fold w-1/2 into `width: 50%` and flatten nesting before dsOnlyUtilities reads the
+  // CSS, so the build would drop fraction glue and keep the base half of bg-cta/50. Unoptimised, the filter reads the
+  // same CSS in the guards and in the build; Turbopack and Vite still minify the result with lightningcss.
+  plugins: [tailwindcss({ optimize: false }), dsOnlyUtilities],
 };
 
 export default config;

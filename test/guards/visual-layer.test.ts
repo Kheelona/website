@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join, relative, sep } from "node:path";
 import postcss, { type AtRule, type ChildNode, type Container, type Root } from "postcss";
-import { beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 import postcssConfig from "../../postcss.config.mjs";
 import { buildComposeCss } from "../../scripts/assets/build-compose-css.mjs";
 
@@ -191,6 +191,43 @@ describe("site.css compiled through postcss.config.mjs", () => {
       }
     });
     expect(seen.sort()).toEqual([".flex", ".lg\\:p-7", ".p-5"]);
+  });
+});
+
+describe("site.css compiled as next build compiles it (NODE_ENV=production)", () => {
+  // @tailwindcss/postcss optimises its output when the plugin is created under NODE_ENV=production (next build) but
+  // not under test: it would fold w-1/2 into `width: 50%` and flatten nesting before the filter reads the CSS, so the
+  // shipped CSS would differ from what the guards above prove. Found on a scratch next build, 2026-10-11.
+  it("drops and keeps the same utilities as the test pipeline", async () => {
+    const env = process.env.NODE_ENV;
+    vi.resetModules();
+    process.env.NODE_ENV = "production";
+    let plugins: typeof postcssConfig.plugins;
+    try {
+      plugins = (await import("../../postcss.config.mjs")).default.plugins;
+    } finally {
+      process.env.NODE_ENV = env;
+    }
+    const css = `${siteCss}\n@source inline("${[...LITERAL_UTILITIES, ...GLUE_UTILITIES].join(" ")}");`;
+    const out = postcss.parse((await postcss(plugins).process(css, { from: `${SITE}?visual-layer-production` })).css);
+    const selectors = new Set<string>();
+    out.walkRules((r) => { if (inLayer(r) === "utilities") selectors.add(r.selector); });
+    expect(LITERAL_UTILITIES.map(selectorOf).filter((s) => selectors.has(s))).toEqual([]);
+    expect(GLUE_UTILITIES.map(selectorOf).filter((s) => !selectors.has(s))).toEqual([]);
+  }, 60_000);
+});
+
+describe("postcss.config.mjs on Next.js", () => {
+  // Next's PostCSS guide asks for plugin names as strings; postcss.config.mjs passes plugin objects (its header says
+  // why). Turbopack 16.3.8 runs them, which a scratch next build showed on 2026-10-11; nothing in Vitest runs
+  // Turbopack, so a Next upgrade that stopped running the filter would pass every guard above. This pin makes the
+  // upgrade repeat that check.
+  it("runs on the Next version its plugin objects were verified on", () => {
+    const next = (JSON.parse(readFileSync(join(ROOT, "node_modules/next/package.json"), "utf8")) as { version: string }).version;
+    expect(
+      next,
+      "Next changed: import src/styles/site.css in a scratch root layout, run next build, and check that the built CSS's @layer utilities holds no .transition, .duration-, .z-50, .border-2 or \\[ selector while .p-5 is present; then update this version",
+    ).toBe("16.3.8");
   });
 });
 
