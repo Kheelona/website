@@ -47,6 +47,10 @@ export interface RichTextProps {
   id?: string;
 }
 
+/** A site path: one slash, then never a second one or a backslash (a browser reads `//host` and `/\host` as another
+ *  site). Only these go through next/link; the parser already refuses the others in content. */
+const SITE_PATH = /^\/(?![/\\])/;
+
 interface Context {
   offer: Offer | undefined;
   sources: SourceMarkerOptions | undefined;
@@ -54,7 +58,7 @@ interface Context {
 
 function renderLink(node: LinkNode, ctx: Context, className?: string): ReactNode {
   const children = renderNodes(node.children, ctx);
-  return node.href.startsWith("/") ? (
+  return SITE_PATH.test(node.href) ? (
     <Link href={node.href} className={className}>
       {children}
     </Link>

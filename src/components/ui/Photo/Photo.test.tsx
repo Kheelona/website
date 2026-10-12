@@ -89,10 +89,18 @@ describe("Photo: loading (ADR-010, N12)", () => {
     expect(preloads(renderToStaticMarkup(<Photo image={IRA} sizes={SIZES} />))).toEqual([]);
   });
 
-  it("an image that is neither: a lower priority when asked (film posters, N19)", () => {
-    const { container } = render(<Photo image={IRA} sizes={SIZES} fetchPriority="low" />);
+  /* fetchPriority sets only the image's fetchpriority attribute; it never changes how the image loads (it stays lazy)
+     and never asks for high, which belongs to the LCP image alone (Photo.test-d.tsx refuses it). */
+  it.each(["low", "auto"] as const)("fetchPriority=%s on an image that is not the LCP: still lazy, with that priority hint", (hint) => {
+    const { container } = render(<Photo image={IRA} sizes={SIZES} fetchPriority={hint} />);
     expect(img(container)).toHaveAttribute("loading", "lazy");
-    expect(img(container)).toHaveAttribute("fetchpriority", "low");
+    expect(img(container)).toHaveAttribute("fetchpriority", hint);
+  });
+
+  it("the LCP image keeps its high priority whatever fetchPriority says", () => {
+    const { container } = render(<Photo image={IRA} sizes={SIZES} lcp fetchPriority="low" />);
+    expect(img(container)).toHaveAttribute("loading", "eager");
+    expect(img(container)).toHaveAttribute("fetchpriority", "high");
   });
 
   it("refuses an LCP image that would fade in on scroll (D049 pick 2: the hero never moves)", () => {

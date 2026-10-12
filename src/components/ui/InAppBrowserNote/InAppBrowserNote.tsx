@@ -1,20 +1,10 @@
 import { Alert } from "@/components/ui/Alert/Alert";
 import { CopyLinkButton } from "@/components/ui/CopyLinkButton/CopyLinkButton";
+import type { InAppBrowserNoteContent } from "@/content/types";
 import { InAppBrowserGate } from "./InAppBrowserNote.client";
 
-/** The note's words and its switch, as the store's content module holds them (structure §3.3,
- *  `store/in-app-note.ts`). Plain text: no inline syntax. */
-export interface InAppBrowserNoteContent {
-  /** False until QA's real-device check confirms the in-app payment problem (test plan §6.4; B12, N7). */
-  readonly enabled: boolean;
-  readonly title: string;
-  /** The note prints the store address after this, in bold and unbroken, so it works without the button. */
-  readonly body: string;
-  readonly copyLabel: string;
-  readonly copiedMessage: string;
-}
-
 export interface InAppBrowserNoteProps {
+  /** The note's words and its switch (the content shape, src/content/types.ts). */
   content: InAppBrowserNoteContent;
   /** The store's own URL on this environment: what "Copy link" copies and the note prints. */
   storeUrl: string;
