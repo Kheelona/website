@@ -6,7 +6,7 @@ import { Avatar } from "./Avatar";
    and a photo. The photo story shows Kheelu, whom the DS lets an avatar show (DS Avatar README); cast photos never
    stand in for real people. */
 
-const meta = {
+const meta: Meta<typeof Avatar> = {
   title: "UI/Avatar",
   component: Avatar,
   decorators: [
@@ -18,17 +18,17 @@ const meta = {
       </div>
     ),
   ],
-  args: { initials: "AS", size: "xl", tone: "sun" },
-} satisfies Meta<typeof Avatar>;
+};
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+/* The props are a union (initials or a photo), so stories are typed by the component, not by shared args. */
+type Story = StoryObj<typeof Avatar>;
 
-/** The team page's founder badge, hidden beside the visible name. */
-export const TeamInitials: Story = {};
+/** The team page's founder badge, hidden beside the visible name (team.html:44). */
+export const TeamInitials: Story = { args: { initials: "AS", size: "xl", tone: "sun" } };
 
 /** Standing alone: one named image. */
-export const Labelled: Story = { args: { initials: "KC", label: "Kashyap", tone: "blue" } };
+export const Labelled: Story = { args: { initials: "KC", label: "Kashyap", size: "xl", tone: "blue" } };
 
 /** The DS sizes, s 32, m 48, l 64 and xl 96 px, in the three tones. */
 export const Sizes: Story = {

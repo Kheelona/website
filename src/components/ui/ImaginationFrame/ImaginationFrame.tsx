@@ -3,7 +3,7 @@ import Image from "next/image";
 import type { ReactNode } from "react";
 import type { ArtLayer, DoodleRef, DrawOrder, ImageRef } from "@/content/types";
 import { asDoodleName, Doodle } from "@/components/ui/Doodle/Doodle";
-import { imageSource, loadingFor } from "@/components/ui/Photo/image";
+import { imageSource, loadingFor, scaleSizes } from "@/components/ui/Photo/image";
 
 /* The DS imagination frame (task 2.3; kh-imagine, bundle.css:432-460; DS ImaginationFrame, photo variant).
  *
@@ -18,7 +18,7 @@ export type DoodleLayer = Extract<ArtLayer, { readonly doodle: DoodleRef }>;
 
 export interface ImaginationFrameProps {
   readonly photo: ImageRef;
-  /** The frame's rendered width at each layout (the photo fills it). */
+  /** The frame's rendered width at each layout (the photo fills it; a zoomed photo asks for its painted size). */
   readonly sizes: string;
   /** In order; without an `order` each draws one step after the one before (1 to 5). */
   readonly doodles?: readonly DoodleLayer[];
@@ -36,6 +36,10 @@ export interface ImaginationFrameProps {
   readonly className?: string;
 }
 
+/** The founder's zoom, as imagination-frame.css scales the photo (the test reads the CSS so the two never drift).
+ *  The zoomed photo is painted this much wider than its frame, so it asks for that much more of the frame's sizes. */
+export const IMAGINE_ZOOM = 1.32;
+
 const stepFor = (i: number) => Math.min(i + 1, 5) as DrawOrder;
 
 export function ImaginationFrame({ photo, sizes, doodles = [], question, zoom, hero, lcp, reveal, className }: ImaginationFrameProps) {
@@ -43,7 +47,13 @@ export function ImaginationFrame({ photo, sizes, doodles = [], question, zoom, h
   if (lcp && reveal) throw new Error("The imagination frame holding the LCP image never fades in on scroll (D049 pick 2)");
   return (
     <figure className={clsx("kh-imagine", zoom && "ks-imagine-zoom", className)} data-reveal={reveal ? "" : undefined}>
-      <Image {...imageSource(photo)} alt={photo.alt} className="kh-imagine__photo" sizes={sizes} {...loadingFor(lcp)} />
+      <Image
+        {...imageSource(photo)}
+        alt={photo.alt}
+        className="kh-imagine__photo"
+        sizes={zoom ? scaleSizes(sizes, IMAGINE_ZOOM) : sizes}
+        {...loadingFor(lcp)}
+      />
       {doodles.map((layer, i) => {
         const { name, draw, order } = layer.doodle;
         return (

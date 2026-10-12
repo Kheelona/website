@@ -1,7 +1,8 @@
+import { readFileSync } from "node:fs";
 import { render } from "@testing-library/react";
 import type { StaticImageData } from "next/image";
 import { describe, expect, it, vi } from "vitest";
-import { type DoodleLayer, ImaginationFrame } from "./ImaginationFrame";
+import { type DoodleLayer, IMAGINE_ZOOM, ImaginationFrame } from "./ImaginationFrame";
 
 /* ImaginationFrame (task 2.3; DS ImaginationFrame kh-imagine, bundle.css:432-460; D049 pick 3; the founder's zoom,
    mockup.css:130-132). Fixture: Home fold 3, home.html:145-151. Rendered through the real next/image. */
@@ -52,13 +53,25 @@ describe("ImaginationFrame: markup", () => {
 
 describe("ImaginationFrame: the photo", () => {
   it("renders the photo through next/image with its alt text and the frame's sizes, lazily", () => {
-    const { container } = render(<ImaginationFrame photo={KABIR} sizes={SIZES} zoom />);
+    const { container } = render(<ImaginationFrame photo={KABIR} sizes={SIZES} />);
     const photo = children(container)[0];
     expect(photo).toHaveAttribute("alt", KABIR.alt);
     expect(photo).toHaveAttribute("sizes", SIZES);
     expect(photo.getAttribute("srcset")).toMatch(/ \d+w(,|$)/);
     expect(photo).toHaveAttribute("loading", "lazy");
     expect(photo).not.toHaveAttribute("fetchpriority");
+  });
+
+  it("asks for the photo at its painted size when zoomed: the frame's sizes times the zoom", () => {
+    const { container } = render(<ImaginationFrame photo={KABIR} sizes={SIZES} zoom />);
+    expect(children(container)[0]).toHaveAttribute("sizes", "(min-width: 900px) calc(540px * 1.32), calc((100vw - 32px) * 1.32)");
+  });
+
+  it("takes its zoom factor from imagination-frame.css, the one place the scale is set", () => {
+    const css = readFileSync("src/components/ui/ImaginationFrame/imagination-frame.css", "utf8");
+    const scale = /\.ks-imagine-zoom \.kh-imagine__photo\s*\{[^}]*transform:\s*scale\(([\d.]+)\)/.exec(css);
+    expect(scale, "the zoom rule in imagination-frame.css").not.toBeNull();
+    expect(IMAGINE_ZOOM).toBe(Number(scale![1]));
   });
 
   it("loads eagerly at high priority when it is the page's LCP image", () => {
@@ -99,5 +112,21 @@ describe("ImaginationFrame: the doodles (D049 pick 3)", () => {
 
   it("refuses a doodle the DS does not have", () => {
     expect(() => render(<ImaginationFrame photo={KABIR} sizes={SIZES} doodles={[{ doodle: { name: "chalk-moon" }, left: 1, top: 1, width: 5 }]} />)).toThrow(/chalk-moon/);
+  });
+});
+
+describe("ImaginationFrame: compile-time contract (tsc checks these lines; never rendered)", () => {
+  it("requires sizes, has no priority prop, and takes doodles only as doodle layers", () => {
+    const misuses = () => (
+      <>
+        {/* @ts-expect-error sizes is required */}
+        <ImaginationFrame photo={KABIR} />
+        {/* @ts-expect-error no priority prop: the photo takes lcp */}
+        <ImaginationFrame photo={KABIR} sizes={SIZES} priority />
+        {/* @ts-expect-error an image layer is not a doodle */}
+        <ImaginationFrame photo={KABIR} sizes={SIZES} doodles={[{ image: KABIR, left: 1, top: 1, width: 10 }]} />
+      </>
+    );
+    expect(misuses).toBeTypeOf("function");
   });
 });

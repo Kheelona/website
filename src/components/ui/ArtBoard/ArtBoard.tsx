@@ -42,7 +42,9 @@ export interface ArtBoardProps {
 
 type RasterLayerProps = { readonly image: ImageRef; readonly placement: LayerPlacement; readonly sizes: string; readonly lcp: boolean };
 
-const isSvg = (ref: ImageRef) => /\.svg(?:[?#]|$)/i.test(svgSrc(ref.src));
+/** An SVG file, which next/image does not optimise: served as a .svg URL (Next), or inlined as an SVG data URI where
+ *  the bundler inlines small assets (Vite, in Storybook). */
+const isSvg = (ref: ImageRef) => /\.svg(?:[?#]|$)|^data:image\/svg\+xml[,;]/i.test(svgSrc(ref.src));
 
 /** The raster with the largest rendered area (width share squared times the image's own ratio), or -1. */
 function largestRaster(layers: readonly ArtLayer[]): number {

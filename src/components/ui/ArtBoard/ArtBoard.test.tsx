@@ -105,6 +105,16 @@ describe("ArtBoard: layers", () => {
     expect(layers(below.container)[0]).toHaveAttribute("loading", "lazy");
   });
 
+  it("knows a DS shape that the bundler inlined as a data URI (Vite does, in Storybook) is an SVG, not a raster", () => {
+    const inlined = { src: "data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%3e%3c/svg%3e", width: 240, height: 240 } as StaticImageData;
+    const hero = render(<ArtBoard tone="blue" layers={[{ image: { src: inlined, alt: "" }, left: 6, width: 30, top: 8 }]} sizes={SIZES} hero />);
+    const shape = layers(hero.container)[0];
+    expect(shape).toHaveAttribute("src", inlined.src);
+    expect(shape).not.toHaveAttribute("srcset");
+    expect(shape).not.toHaveAttribute("loading");
+    expect(shape).not.toHaveAttribute("data-nimg");
+  });
+
   it("places a right-anchored layer at the same left edge (meet-kheelu.html:20)", () => {
     const star: ArtLayer[] = [{ image: { src: SUN, alt: "" }, right: 4, width: 30, top: 6 }];
     const { container } = render(<ArtBoard tone="blue" layers={star} sizes={SIZES} />);
@@ -171,5 +181,23 @@ describe("ArtBoard: loading (ADR-010, N12)", () => {
     const { container } = render(<ArtBoard tone="blue" layers={swapped} sizes={SIZES} lcp />);
     expect(layers(container)[0]).toHaveAttribute("fetchpriority", "high");
     expect(layers(container)[1]).not.toHaveAttribute("fetchpriority");
+  });
+});
+
+describe("ArtBoard: compile-time contract (tsc checks these lines; never rendered)", () => {
+  it("requires sizes, has no priority prop, and takes a layer as an image or a doodle, never both", () => {
+    const misuses = () => (
+      <>
+        {/* @ts-expect-error sizes is required: each raster asks for its share of the board's sizes */}
+        <ArtBoard tone="blue" layers={HOME_HERO} />
+        {/* @ts-expect-error no priority prop: the board's LCP raster takes lcp */}
+        <ArtBoard tone="blue" layers={HOME_HERO} sizes={SIZES} priority />
+        {/* @ts-expect-error a layer is an image or a doodle, never both */}
+        <ArtBoard tone="blue" sizes={SIZES} layers={[{ image: { src: ADVIK, alt: "" }, doodle: { name: "ink-heart" }, left: 1, top: 1, width: 10 }]} />
+        {/* @ts-expect-error a ratio is "width / height" */}
+        <ArtBoard tone="blue" layers={HOME_HERO} sizes={SIZES} ratio="4:3" />
+      </>
+    );
+    expect(misuses).toBeTypeOf("function");
   });
 });

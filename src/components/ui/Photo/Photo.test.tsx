@@ -10,7 +10,7 @@ vi.unmock("next/image");
 const IRA = { src: { src: "/_next/static/media/ira-01.webp", width: 1208, height: 1500 } as StaticImageData, alt: "A laughing girl telling Kheelu a story." };
 const SIZES = "(min-width: 900px) 540px, calc(100vw - 32px)";
 
-const img = (c: HTMLElement) => c.querySelector("figure > img")!;
+const img = (c: HTMLElement) => c.querySelector<HTMLImageElement>("figure > img")!;
 
 describe("Photo: markup", () => {
   it("is a kh-photo figure holding one next/image with the alt text", () => {
@@ -91,5 +91,21 @@ describe("Photo: loading (ADR-010, N12)", () => {
     const { container } = render(<Photo image={{ src: "/team/aman.jpg", width: 600, height: 750, alt: "Aman" }} sizes="96px" />);
     expect(img(container)).toHaveAttribute("width", "600");
     expect(img(container)).toHaveAttribute("height", "750");
+  });
+});
+
+describe("Photo: compile-time contract (tsc checks these lines; never rendered)", () => {
+  it("requires sizes and has no priority or preload prop (ADR-010, N12)", () => {
+    const misuses = () => (
+      <>
+        {/* @ts-expect-error sizes is required: the phone never fetches a laptop image */}
+        <Photo image={IRA} />
+        {/* @ts-expect-error no priority prop: deprecated in Next 16 */}
+        <Photo image={IRA} sizes={SIZES} priority />
+        {/* @ts-expect-error no preload prop: the LCP image takes lcp (eager, fetchpriority high) */}
+        <Photo image={IRA} sizes={SIZES} preload />
+      </>
+    );
+    expect(misuses).toBeTypeOf("function");
   });
 });

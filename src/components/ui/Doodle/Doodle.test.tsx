@@ -75,6 +75,24 @@ describe("Doodle, drawn (below the first screen: pick 3)", () => {
     strokes.forEach((p) => expect(p).toHaveAttribute("pathLength", "1"));
   });
 
+  /* motion.css strokes every `.ks-doodle[data-draw] path:not(.ks-doodle__fill)` from dash offset 1 to 0 and fades
+     every `.ks-doodle__fill` in at the end (architecture §11.2 row 3). So, in every doodle: what the stroke rule
+     selects is an unfilled stroke that is one dash long, and anything painted with a fill is marked as a fill. */
+  it.each(DOODLE_NAMES)("%s: the stroke rule selects only unfilled strokes, and every filled shape is a ks-doodle__fill", (name) => {
+    const { container } = render(<Doodle name={name} draw className="kh-art__layer" placement={at} />);
+    const svg = container.querySelector("svg")!;
+    // From the container: jsdom does not match a descendant selector that starts at the scope element itself.
+    const strokes = [...container.querySelectorAll(".ks-doodle[data-draw] path:not(.ks-doodle__fill)")];
+    expect(strokes.length, "strokes to draw").toBeGreaterThan(0);
+    for (const path of strokes) {
+      expect(path.getAttribute("fill"), "a drawn path is not filled").toBe("none");
+      expect(path.getAttribute("stroke"), "a drawn path has a stroke").toMatch(/\S/);
+      expect(path.getAttribute("pathLength"), "a drawn path is one dash long").toBe("1");
+    }
+    const filled = [...svg.querySelectorAll("[fill]")].filter((el) => el.tagName.toLowerCase() !== "g" && el.getAttribute("fill") !== "none");
+    for (const shape of filled) expect(shape, `${shape.tagName} painted with fill ${shape.getAttribute("fill")}`).toHaveClass("ks-doodle__fill");
+  });
+
   it.each([2, 3, 4, 5] as const)("carries data-draw-order %i for the stagger", (order) => {
     const { container } = render(<Doodle name="chalk-star" draw order={order} className="kh-imagine__doodle" placement={at} />);
     expect(container.querySelector("svg")).toHaveAttribute("data-draw-order", String(order));
