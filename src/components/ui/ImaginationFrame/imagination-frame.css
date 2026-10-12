@@ -1,0 +1,9 @@
+/* ImaginationFrame composition (task 2.3). The frame itself is the DS kh-imagine (bundle.css:432-460).
+
+   Kabir's imagination frame (Home fold 3): zoomed from the bottom so he fills the frame and the chalk question sits
+   just above his head (founder, 2026-10-11, approved D046; mockup.css:130-132; mockup-css-mapping §3 row 3). The one
+   static transform the site allows (token exception imagine-zoom); never transitioned. */
+.ks-imagine-zoom .kh-imagine__photo {
+  transform: scale(1.32);
+  transform-origin: 52% 100%;
+}
