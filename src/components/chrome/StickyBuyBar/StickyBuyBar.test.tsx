@@ -198,14 +198,14 @@ describe("StickyBuyBar: behaviour (mockup.js §2)", () => {
     expect(html.dataset.buybar).toBe("shown");
     const late = document.createElement("a");
     late.className = "kh-btn kh-btn--cta";
+    // The mutation is read on the next frame (MutationObserver, then requestAnimationFrame): wait for it.
     act(() => main.append(late));
-    await flush();
-    expect(io().watched.has(late)).toBe(true);
+    await vi.waitFor(() => expect(io().watched.has(late)).toBe(true));
     io().report([[late, true]]);
     expect(html.dataset.buybar).toBe("aside");
     act(() => late.remove());
+    await vi.waitFor(() => expect(io().watched.has(late)).toBe(false));
     await flush();
-    expect(io().watched.has(late)).toBe(false);
     expect(html.dataset.buybar).toBe("shown");
   });
 
