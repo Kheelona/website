@@ -1,26 +1,25 @@
-import type { ReactNode } from "react";
 import { Button } from "@/components/ui/Button/Button";
 import { Card } from "@/components/ui/Card/Card";
 import { DefinitionList } from "@/components/ui/DefinitionList/DefinitionList";
 import { Heading } from "@/components/ui/Heading/Heading";
 import { Actions, Container, Section, SectionHead, Split } from "@/components/ui/Layout/Layout";
 import { RichText } from "@/components/ui/RichText/RichText";
+import { Tabs } from "@/components/ui/Tabs/Tabs";
 import { TickList } from "@/components/ui/TickList/TickList";
 import type { IconText, Offer } from "@/content/types";
 import { ContentIcon } from "../ArticleBody/content-icon";
 import type { DetailRow, ProductDetailsConfig } from "./product-details.types";
 
 /**
- * The product's details (task 3.4; meet-kheelu.html fold 7), section `#specs`: the three panels (specs, in the box,
- * safety) STACKED, as the plan rules (N21; tasks 3.4): the DS `kh-tabs` and `kh-tabs__panel` classes without
- * `is-tabs`, no tab list and no JavaScript, each panel under its own heading. The approved page shows a DS tab row in
- * both states (its page script makes tabs; without JavaScript the DS `.kh-tabs__list` display rule overrides the row's
- * `hidden` attribute, so the row sits above the stacked panels); this build leaves the row out by the N21 ruling, which
- * is the fold's one difference from the approved render. The panel ids stay so a later tabs island can enhance this
- * markup. Beside them the declarations card (MRP from the offer, consumer care one line per way to reach us). Open
- * facts render visibly as placeholders. The split is `ks-product-details`, not the mockup's `mk-details` renamed: the
- * store page uses that name for a different block (mapping §6.2; `ks-details` is StoreDetails', task 5.15). Server
- * component.
+ * The product's details (tasks 3.4 and 3.5; meet-kheelu.html fold 7), section `#specs`: the three panels (specs, in the
+ * box, safety) on `ui/Tabs`, as approved (P1 default; N21 corrected): the server sends them stacked, each under its
+ * heading, with the tab row hidden, and after hydration the Tabs island makes line tabs of them as the approved page's
+ * own script does (mockup/pages/meet-kheelu.html:397-439). Without JavaScript the panels stay stacked
+ * (`meet-kheelu.css:81` spacing, `product-details.css`) and the tab row stays hidden. The section keeps `id="specs"`
+ * and the panel and tab ids (`panel-specs`, `tab-specs`, ...). Beside them the declarations card (MRP from the offer,
+ * consumer care one line per way to reach us). Open facts render visibly as placeholders. The split is
+ * `ks-product-details`, not the mockup's `mk-details` renamed: the store page uses that name for a different block
+ * (mapping §6.2; `ks-details` is StoreDetails', task 5.15). Server component.
  */
 export interface ProductDetailsProps extends ProductDetailsConfig {
   /** For the MRP in the declarations. */
@@ -46,16 +45,7 @@ function rows(list: readonly DetailRow[], offer: Offer | undefined) {
 const ticks = (items: readonly IconText[], offer: Offer | undefined) =>
   items.map((item) => ({ icon: <ContentIcon name={item.icon} />, text: <RichText text={item.text} offer={offer} /> }));
 
-function Panel({ id, title, children }: { id: string; title: string; children: ReactNode }) {
-  return (
-    <div className="kh-tabs__panel" id={id}>
-      <h3 className="kh-subtitle ks-panel-title">{title}</h3>
-      {children}
-    </div>
-  );
-}
-
-export function ProductDetails({ heading, specs, box, safety, declarations, link, offer }: ProductDetailsProps) {
+export function ProductDetails({ heading, tabsLabel, specs, box, safety, declarations, link, offer }: ProductDetailsProps) {
   return (
     <Section id="specs" labelledBy="specs-title">
       <Container>
@@ -63,17 +53,15 @@ export function ProductDetails({ heading, specs, box, safety, declarations, link
           <Heading eyebrow={heading.eyebrow} title={heading.title} id="specs-title" offer={offer} />
         </SectionHead>
         <Split wide="start" className="ks-product-details">
-          <div className="kh-tabs">
-            <Panel id="panel-specs" title={specs.title}>
-              <DefinitionList rows={rows(specs.rows, offer)} />
-            </Panel>
-            <Panel id="panel-box" title={box.title}>
-              <TickList items={ticks(box.items, offer)} />
-            </Panel>
-            <Panel id="panel-safety" title={safety.title}>
-              <TickList items={ticks(safety.items, offer)} />
-            </Panel>
-          </div>
+          <Tabs
+            label={tabsLabel}
+            headingClassName="ks-panel-title"
+            panels={[
+              { id: "panel-specs", tabId: "tab-specs", label: specs.title, heading: specs.title, content: <DefinitionList rows={rows(specs.rows, offer)} /> },
+              { id: "panel-box", tabId: "tab-box", label: box.title, heading: box.title, content: <TickList items={ticks(box.items, offer)} /> },
+              { id: "panel-safety", tabId: "tab-safety", label: safety.title, heading: safety.title, content: <TickList items={ticks(safety.items, offer)} /> },
+            ]}
+          />
           <Card as="div" className="ks-declare">
             <h3 className="kh-subtitle ks-panel-title">{declarations.title}</h3>
             <DefinitionList variant="stack" rows={rows(declarations.rows, offer)} />
