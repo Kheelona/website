@@ -19,6 +19,10 @@ const FULL = buildOffer("full");
 const context = (offer = TOKEN): SellingContext => ({ offer, ctaLabel: cta.preorder, help: seller.help });
 const trust = (ids: readonly TrustId[]) => ids.map((id) => trustItems[id]);
 const COMPACT = trust(TRUST_COMPACT);
+/* The product close draws "Delivery included anywhere in India" with map-pin, as meet-kheelu.html does; the content keeps
+   one icon per item (Home's package), so the product page's config passes map-pin for that item (wave-3 close ruling;
+   task 5.2's config). */
+const PRODUCT_CLOSE_TRUST = trust(["deliveries-start", ...TRUST_FULL]).map((item) => (item.id === "delivery-included" ? { ...item, icon: "map-pin" } : item));
 const secondary = (id: keyof typeof cta.secondary, variant: CtaSecondary["variant"]): CtaSecondary => ({ ...cta.secondary[id], variant });
 /* The untracked ghost links of the closes (the copy names no CTA value for them). */
 const SEE_HOW: CtaSecondary = { label: "See how it works", href: "/products/kheelu", variant: "ghost", iconEnd: "arrow-right" };
@@ -47,7 +51,7 @@ const PLACEMENTS: Placement[] = [
   ["Home safety (fold 6)", "home", 'section[aria-labelledby="safety-title"]', { cta: "safety", align: "center", trust: COMPACT, secondary: secondary("safety-learn", "secondary") }],
   ["product hero (fold 1)", "meet-kheelu", 'section[aria-labelledby="hero-title"]', { cta: "product-top", arrow: true, block: true, layout: "stack", trust: COMPACT, helpLine: true }],
   ["product safety (fold 6)", "meet-kheelu", "#safety", { cta: "product-safety", align: "center", trust: COMPACT, secondary: secondary("product-safety-learn", "secondary") }],
-  ["product close (fold 9)", "meet-kheelu", "#close", { cta: "product-foot", layout: "full", trust: trust(["deliveries-start", ...TRUST_FULL]), helpLine: true }],
+  ["product close (fold 9)", "meet-kheelu", "#close", { cta: "product-foot", layout: "full", trust: PRODUCT_CLOSE_TRUST, helpLine: true }],
   ["safety close", "safety", "#close", { cta: "finale", arrow: true, block: true, trust: COMPACT, helpLine: true }],
   ["guide close", "ai-toys-for-kids-in-india", "#close", { cta: "finale", arrow: true, block: true, trust: COMPACT, helpLine: true }],
   ["stories hub close", "stories", "#close", { cta: "finale", arrow: true, block: true, layout: "journal", trust: COMPACT, helpLine: true, secondary: SEE_HOW }],
@@ -58,15 +62,16 @@ const PLACEMENTS: Placement[] = [
   ["404 close", "404", "#close", { cta: "finale", align: "center", trust: COMPACT, helpLine: true }],
 ];
 
-/* The product close's last trust item draws map-pin in the mockup and package on Home and the store; the content
-   keeps one icon per item (Home's), a difference task 2.1 reported (src/content/en-IN/trust.test.ts). */
-const PRODUCT_CLOSE_ICON = (markup: string) => markup.replace(ICON_PATHS["map-pin"], ICON_PATHS.package);
-
 describe("CtaBlock: every placement of the approved mockup, exactly", () => {
-  it.each(PLACEMENTS)("%s", (name, slug, fold, config) => {
+  it.each(PLACEMENTS)("%s", (_name, slug, fold, config) => {
     const expected = builtMarkup(mockupCtaRun(mockupFold(slug, fold)), { renames: RENAMES, adjust: adjustFor(config.layout) });
-    const actual = renderedMarkup(<CtaBlock {...config} {...context()} />);
-    expect(actual).toBe(name.startsWith("product close") ? PRODUCT_CLOSE_ICON(expected) : expected);
+    expect(renderedMarkup(<CtaBlock {...config} {...context()} />)).toBe(expected);
+  });
+
+  it("the product close draws the map-pin its config passes, as the mockup (no rewrite of the mockup)", () => {
+    const html = renderedMarkup(<CtaBlock {...PLACEMENTS[5][3]} {...context()} />);
+    expect(html).toContain(ICON_PATHS["map-pin"]);
+    expect(html).not.toContain(ICON_PATHS.package);
   });
 });
 
@@ -110,6 +115,17 @@ describe("CtaBlock: the block", () => {
     expect(screen.getByRole("link", { name: "7-day returns, no questions asked" })).toHaveAttribute("href", "/refund");
     expect(screen.getByRole("link", { name: "WhatsApp" })).toHaveAttribute("href", "https://wa.me/919187546483");
     expect(screen.getByRole("link", { name: "call +91 91875 46483" })).toHaveAttribute("href", "tel:+919187546483");
+  });
+
+  /* Task 3.6 item 6: the help line's words are content (`Copy`), which may change with the offer mode or name the
+     delivery line, so the help line renders them with the page's offer, as every other line of the block does. */
+  it("renders the help line with the offer: copy that changes with the mode, and the {delivery} token", () => {
+    const help = { lead: { token: "Questions before you pay the advance?", full: "Questions before you pay?" }, contact: "{delivery}. [WhatsApp](https://wa.me/919187546483)" };
+    const token = render(<CtaBlock {...hero} offer={TOKEN} ctaLabel={cta.preorder} help={help} />).container.querySelector(".ks-help");
+    expect(token).toHaveTextContent("Questions before you pay the advance?");
+    expect(token?.textContent).toContain(`${TOKEN.delivery}.`);
+    const full = render(<CtaBlock {...hero} offer={FULL} ctaLabel={cta.preorder} help={help} />).container.querySelector(".ks-help");
+    expect(full).toHaveTextContent("Questions before you pay?");
   });
 
   it("leaves the help line out where the mockup has none (contact close, Home folds 2 and 6)", () => {

@@ -74,7 +74,13 @@ const CASES: Case[] = [
         title: "Bring home a toy that {hand:asks back.}",
         lead: "For your own child, or as a gift for a 3 to 7 year old in the family.",
       },
-      cta: { cta: "product-foot", layout: "full", trust: trust(["deliveries-start", ...TRUST_FULL]), helpLine: true },
+      // map-pin for "Delivery included anywhere in India", as meet-kheelu.html draws it (wave-3 close ruling; 5.2's config).
+      cta: {
+        cta: "product-foot",
+        layout: "full",
+        trust: trust(["deliveries-start", ...TRUST_FULL]).map((item) => (item.id === "delivery-included" ? { ...item, icon: "map-pin" } : item)),
+        helpLine: true,
+      },
       art: art("sun", "A smiling girl in a peach kurta beside Kheelu, the cream plush rabbit."),
     },
   ],
@@ -131,14 +137,36 @@ const adjustFor = (config: CloseSectionConfig) => (el: Element) => {
   addClass(el, ".ks-beside--center .kh-trustline", "ks-trustline--center");
   if (config.variant === "split" && config.cta.layout === "full") addClass(el, ".kh-split .ks-help", "ks-cta__full-help");
 };
-/* As in CtaBlock.test.tsx: the product close's last trust item draws map-pin in the mockup, package in the content. */
-const knownIcon = (markup: string) => markup.replace(ICON_PATHS["map-pin"], ICON_PATHS.package);
-
 describe("CloseSection: every close of the approved mockup, exactly (art aside)", () => {
   it.each(CASES)("%s", (_name, slug, fold, config) => {
     const expected = builtMarkup([without(mockupFold(slug, fold), ".kh-art")], { renames: RENAMES, adjust: adjustFor(config) });
     const actual = canonical(without(renderedElement(<CloseSection {...config} {...context()} />), ".kh-art"));
-    expect(actual).toBe(knownIcon(expected));
+    expect(actual).toBe(expected);
+  });
+
+  it("the product close draws the map-pin its config passes (no rewrite of the mockup)", () => {
+    const html = renderToStaticMarkup(<CloseSection {...CASES[1][3]} {...context()} />);
+    expect(html).toContain(ICON_PATHS["map-pin"]);
+    expect(html).not.toContain(ICON_PATHS.package);
+  });
+
+  /* Task 3.6 item 6: /setup's links close renders its three content lines with the page's offer, as every other close
+     renders its words, so copy that changes with the mode or names the delivery line works there too. */
+  it("links: the contact line, the lead and the link render with the offer", () => {
+    const links = CASES[8][3];
+    if (links.variant !== "links") throw new Error("CASES[8] is the links close");
+    const config: CloseSectionConfig = {
+      ...links,
+      contact: { token: "Token-mode help.", full: "Full-mode help." },
+      meet: { lead: "{delivery}.", link: { token: "[Token link](/products/kheelu)", full: "[Full link](/products/kheelu)" } },
+    };
+    const token = renderedElement(<CloseSection {...config} {...context(TOKEN)} />);
+    expect(token.querySelector(".ks-setup-help")?.textContent).toContain("Token-mode help.");
+    expect(token.querySelector(".ks-setup-meet")?.textContent).toContain(`${TOKEN.delivery}.`);
+    expect(token.querySelector(".ks-setup-meet a")?.textContent).toBe("Token link");
+    const full = renderedElement(<CloseSection {...config} {...context(FULL)} />);
+    expect(full.querySelector(".ks-setup-help")?.textContent).toContain("Full-mode help.");
+    expect(full.querySelector(".ks-setup-meet a")?.textContent).toBe("Full link");
   });
 });
 

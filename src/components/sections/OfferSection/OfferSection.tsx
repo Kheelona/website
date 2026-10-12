@@ -43,7 +43,7 @@ export function OfferSection(props: OfferSectionProps) {
   const lines = (
     <>
       <SellingTrustLine items={trust} offer={offer} />
-      <SellingHelpLine help={help} />
+      <SellingHelpLine help={help} offer={offer} />
     </>
   );
   let body: ReactNode;

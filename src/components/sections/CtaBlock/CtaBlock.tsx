@@ -23,7 +23,7 @@ export function CtaBlock(props: CtaBlockProps) {
   const full = layout === "full";
   const price = <PriceSentence offer={offer} id={priceId} />;
   const trustLine = <SellingTrustLine items={trust} offer={offer} center={center} className={full ? "ks-cta__full-trust" : undefined} />;
-  const helpLineEl = helpLine ? <SellingHelpLine help={help} className={full ? "ks-cta__full-help" : undefined} /> : null;
+  const helpLineEl = helpLine ? <SellingHelpLine help={help} offer={offer} className={full ? "ks-cta__full-help" : undefined} /> : null;
   const grouped = layout === "beside" || layout === "journal";
   return (
     <>

@@ -63,6 +63,21 @@ describe("SellerBlock: legal (the seller line in a legal page's part)", () => {
     expect(p.outerHTML).toBe(`<p>${LEGAL_SENTENCE}</p>`);
     expect(mockupFold("refund", 'section[aria-labelledby="seller"] p').textContent).toBe(LEGAL_SENTENCE);
   });
+
+  /* Task 3.6 item 6. Refund and shipping keep three phrases of the address on one line (refund.html:175,
+     shipping.html:148); 4.3's seller-lines helper writes them as {nowrap:…} tokens for that family. Here the sentence
+     carries the tokens itself, and the paragraph equals the mockup's, markup and all. */
+  const NOWRAP_SENTENCE = LEGAL_SENTENCE.replace("No 51", "{nowrap:No 51}")
+    .replace("(Old Site No 1)", "{nowrap:(Old Site No 1)}")
+    .replace("Bengaluru 560041", "{nowrap:Bengaluru 560041}");
+
+  it.each(["refund", "shipping"])("renders %s's seller paragraph exactly as the mockup, its no-wrap phrases included", (slug) => {
+    const expected = builtMarkup([mockupFold(slug, 'section[aria-labelledby="seller"] > p')]);
+    expect(NOWRAP_SENTENCE.match(/\{nowrap:/g)).toHaveLength(3);
+    expect(canonical(renderedElement(<SellerBlock context="legal" line={{ text: NOWRAP_SENTENCE }} card={false} />))).toBe(expected);
+    // Control: the sentence without its no-wrap phrases is not the approved paragraph.
+    expect(canonical(renderedElement(<SellerBlock context="legal" line={{ text: LEGAL_SENTENCE }} card={false} />))).not.toBe(expected);
+  });
 });
 
 describe("SellerBlock: the link weight follows the context (mockup-css-mapping §6.2, row 18)", () => {

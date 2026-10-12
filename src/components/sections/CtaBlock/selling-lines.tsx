@@ -33,17 +33,19 @@ export function SellingTrustLine({ items, offer, center, className }: SellingTru
 
 export interface SellingHelpLineProps {
   readonly help: CtaHelp;
+  /** The help line is content (`Copy`): it may change with the mode or name the delivery line. */
+  readonly offer: Offer;
   readonly className?: string;
 }
 
 /** The help line beside every chilli button (`kh-body-s ks-help`): the WhatsApp icon, the lead, then the links, as
  *  every CTA block of the approved mockup draws it (home.html fold 1). */
-export function SellingHelpLine({ help, className }: SellingHelpLineProps) {
+export function SellingHelpLine({ help, offer, className }: SellingHelpLineProps) {
   return (
     <HelpLine
       icon={<Icon name="whatsapp-logo" />}
-      lead={<RichText text={help.lead} />}
-      contact={<RichText text={help.contact} />}
+      lead={<RichText text={help.lead} offer={offer} />}
+      contact={<RichText text={help.contact} offer={offer} />}
       className={className}
     />
   );
