@@ -63,6 +63,12 @@ export function personNode(person: PersonFacts) {
   });
 }
 
+/** The person ids the Organization node publishes, founders then employees: the only ids a
+ *  BlogPosting author may take (task 2.13). */
+export function personIds(facts: OrganizationFacts): string[] {
+  return [...(facts.founders ?? []), ...(facts.employees ?? [])].map((person) => personId(person.name));
+}
+
 export function organizationNode(facts: OrganizationFacts) {
   const { address, contactPoint } = facts;
   return definedOnly({

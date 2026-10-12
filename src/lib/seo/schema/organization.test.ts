@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { organizationNode, type OrganizationFacts } from "./organization";
+import { organizationNode, personIds, type OrganizationFacts } from "./organization";
 
 /* Fixture facts in the shape organization.ts and seller.ts hand over (task 2.1 owns the real ones). */
 const facts: OrganizationFacts = {
@@ -107,5 +107,24 @@ describe("organizationNode", () => {
   it("refuses a profile listed twice or a profile that is not https", () => {
     expect(() => organizationNode({ ...facts, sameAs: ["https://kheelona.ai", "https://kheelona.ai"] })).toThrow(/twice/);
     expect(() => organizationNode({ ...facts, sameAs: ["http://kheelona.ai" as never] })).toThrow(/https/);
+  });
+});
+
+describe("personIds", () => {
+  /* The ids a BlogPosting author may take (task 2.13): exactly the people the Organization node
+     publishes, founders and employees, under the ids personNode gives them. */
+  it("lists the id of every founder and employee the Organization node publishes", () => {
+    const withStaff: OrganizationFacts = { ...facts, employees: [{ name: "Ria Mangala Rewari" }] };
+    const node = organizationNode(withStaff);
+    expect(personIds(withStaff)).toEqual([...(node.founder ?? []), ...(node.employee ?? [])].map((p) => p["@id"]));
+    expect(personIds(withStaff)).toEqual([
+      "https://kheelona.com/team#apoorva-sahu",
+      "https://kheelona.com/team#kashyap-c-r",
+      "https://kheelona.com/team#ria-mangala-rewari",
+    ]);
+  });
+
+  it("is empty when the Organization names nobody", () => {
+    expect(personIds({ name: "Kheelona", legalName: "Kheelona Robotics Private Limited", logo: "/brand/logo-mark.png" })).toEqual([]);
   });
 });
