@@ -531,7 +531,9 @@ link may preview the old image).
 | `/safety`, `/ai-toys-for-kids-in-india` | FAQPage |
 | `/stories/<slug>` | BlogPosting (headline, description, image, `datePublished`, `dateModified` from the module's stored dates, author, publisher), BreadcrumbList (visible crumbs) |
 | `/setup` | HowTo (from the same steps) |
-| `/team`, `/contact`, legal pages, `/stories` | none beyond the shell |
+| `/team` | `AboutPage` (as live, `team/page.tsx:120-131` at the tag; description = fold 2's answer; Organization `memberOf` stays proof-gated) |
+| `/contact` | `ContactPage` (as live, `contact/page.tsx:69-79` at the tag), pointing at the Organization node |
+| legal pages, `/stories` | none beyond the shell |
 
 Product fields: `@id` `https://kheelona.com/products/lumi#product` (never changes, lessons §6), `name`
 "Kheelu by Kheelona", `alternateName` "Lumi", `brand` Kheelona, `manufacturer` the Organization,

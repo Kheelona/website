@@ -517,7 +517,7 @@ alone; 1.2 leaves `globals.css` alone; 1.1 deletes only the two tests it owns).
 - **Acceptance:** `pageMeta` returns absolute titles and complete Open Graph and Twitter objects and
   **never a `robots` key** (so the root's beta noindex cannot be replaced, N15); builders for Organization,
   WebSite, Product + Offer (+ return policy, shipping details, warranty), FAQPage, BreadcrumbList,
-  BlogPosting, HowTo take data only; `jsonLd()` escaping kept; Product `@id` unchanged; robots per §9.3 with
+  BlogPosting, HowTo, **AboutPage and ContactPage** (as live; architecture §9.2, ruling 2026-10-12) take data only; `jsonLd()` escaping kept; Product `@id` unchanged; robots per §9.3 with
   Bytespider disallowed.
 - **Test:** unit tests per builder; `pageMeta` has no `robots` for any input; schema.org validator on a
   fixture (report); robots snapshot.
@@ -565,6 +565,14 @@ alone; 1.2 leaves `globals.css` alone; 1.1 deletes only the two tests it owns).
      the allowed list (union printed); **gating = the simulated median** (Lighthouse's default, PageSpeed's
      method); devtools-throttled medians are recorded and printed, with a warning below budget, never gating
      (lessons §6 "record both"; main session 2026-10-12).
+  4. **Colocated tests and stories are type-checked** (2.8's finding: `tsconfig.vitest.json` inherits the `test`
+     and `*.test.*` excludes and finds no inputs, so `npm run verify` never type-checks `src/**/*.test.tsx` or
+     `*.stories.tsx`): extend `tsconfig.guards.json` (1.1 owns it) to include `src/**/*.test.{ts,tsx}`,
+     `src/**/*.stories.tsx`, `src/**/*.test-d.tsx` and `test/**/*.ts(x)`, excluding by name only the legacy files
+     that fail today (`test/utm.test.ts`, the frozen `PreorderForm.test.tsx`, the legacy stories and tests the
+     review listed), each commented with the task that deletes or rewrites it (6.3, 2.6, 5.15); green at the end.
+  5. `test/guards/jsonld-matches-page.test.ts`: the Product fixture uses `warranty` on the Offer (a
+     `WarrantyPromise`), not the non-schema.org `hasWarranty` (2.7's finding).
 - **Test:** `npm run verify` green; each new no-off-token case proven red; the WebKit project runs one spec
   green locally when installed.
 
