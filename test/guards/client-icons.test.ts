@@ -7,10 +7,13 @@ import { parseSource } from "../e2e/support/source";
 
 /* client-icons (task 2.11; wave-2 close ruling; architecture §12 "Client islands and icons").
  *
- * `Icon`, `Button` and `PreorderButton` read the whole icon map (`ICON_PATHS` in src/assets/icons.generated.ts,
- * about 30 KB, 10.6 KB gzip), so a client island that reaches any of them ships all 76 paths against the §12 route
- * budget. An island draws its own icons with `Glyph` or `IconButton` and the named `ICON_*` constants, which a
- * production build keeps one by one (Turbopack removes unused exports).
+ * `Icon`, `Button` and `PreorderButton` read the whole icon map (`ICON_PATHS` in src/assets/icons.generated.ts), so
+ * a client island that reaches any of them ships all 76 paths against the §12 route budget (an island rendering
+ * `Icon` by a name from its props: one client chunk of 29,255 B, 10,451 B gzip, task 2.11 probe build). An island
+ * draws its own icons with `Glyph` or `IconButton` and the named `ICON_*` constants, which a production build keeps
+ * one by one (Turbopack removes unused exports; the same probe with `ICON_CARET_LEFT`: 1,425 B, that path alone).
+ * A literal key (`ICON_PATHS["caret-left"]`) happens to minify to one path too, but a key from data ships all 76 and
+ * an import cannot tell them apart, so the guard refuses any import of `ICON_PATHS` in client code.
  *
  * The rule: from every module under src/ whose directive prologue holds "use client", and every `*.client.tsx`,
  * following relative and `@/` imports transitively (static imports, re-exports and `import()`; type-only imports
@@ -41,6 +44,8 @@ const CLIENT_SAFE = [
 
 const CODE = /\.(?:tsx?|jsx?|mjs)$/;
 const EXTENSIONS = ["", ".ts", ".tsx", ".js", ".jsx", ".mjs", "/index.ts", "/index.tsx", "/index.js"];
+/** Stylesheets, data and media: loaded, never followed, so they need not exist (compose.css is git-ignored). */
+const ASSET = /\.(?:css|json|svg|png|jpe?g|webp|avif|gif|woff2?|mp4|webm|txt)$/;
 
 /** The source tree the guard reads: the working tree, or the working tree with planted files over it. */
 interface Tree {
@@ -118,7 +123,7 @@ function resolveLocal(tree: Tree, from: string, specifier: string): string | nul
     : specifier.startsWith(".")
       ? posix.normalize(posix.join(posix.dirname(from), specifier))
       : null;
-  if (base === null) return null;
+  if (base === null || ASSET.test(base)) return null;
   for (const ext of EXTENSIONS) {
     const path = base + ext;
     if (tree.isFile(path)) return CODE.test(path) ? path : null;
@@ -236,6 +241,10 @@ describe("client-icons: planted violations are red", () => {
     ["Glyph with a named constant", { "src/__plant__/G.client.tsx": 'import { ICON_X } from "@/assets/icons.generated";\nimport { Glyph } from "@/components/ui/Icon/Glyph";\nexport const G = () => <Glyph d={ICON_X} />;\n' }],
     ["type-only imports of Icon and Button", { "src/__plant__/T.tsx": '"use client";\nimport type { IconProps } from "@/components/ui/Icon/Icon";\nimport { type ButtonProps } from "@/components/ui/Button/Button";\nexport type { IconName } from "@/components/ui/Icon/Icon";\nexport type P = IconProps & ButtonProps;\n' }],
     ["a server component importing Icon", { "src/__plant__/Server.tsx": 'import { Icon } from "@/components/ui/Icon/Icon";\nexport const S = () => <Icon name="x" />;\n' }],
+    [
+      "a client file importing a stylesheet, JSON and an image that are not on disk (never followed; a git-ignored generated file may be absent before predev)",
+      { "src/__plant__/S.client.tsx": 'import "@/styles/generated/absent.css";\nimport data from "./absent.json";\nimport pic from "./absent.webp";\nexport const S = () => <img src={pic.src} alt={data.alt} />;\n' },
+    ],
   ])("green: %s", (_name, overlay) => {
     expect(check(overlay)).toEqual([]);
   });

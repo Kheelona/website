@@ -80,6 +80,6 @@ describe("field-icons.ts and alert-icons.ts carry no copied path data (task 2.11
   });
 
   it("the path-literal scan sees a copied path (so a green result above is real)", () => {
-    expect(pathLiterals("src/assets/icons.generated.ts").length).toBe(76);
+    expect(pathLiterals("src/assets/icons.generated.ts").length).toBe(Object.keys(generated.ICON_PATHS).length);
   });
 });
