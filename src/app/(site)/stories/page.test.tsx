@@ -160,6 +160,14 @@ describe("/stories: the approved hub", () => {
     expect(talking.getAllByRole("heading", { level: 3 })).toHaveLength(7);
   });
 
+  it("keeps the heading order: the h1, then each fold's h2 and each guide's h3, never skipping a level (SPA 5)", () => {
+    const levels = Array.from(builtMain().querySelectorAll("h1, h2, h3, h4, h5, h6")).map((h) => Number(h.tagName.slice(1)));
+    expect(levels[0]).toBe(1);
+    expect(levels.flatMap((level, i) => (i > 0 && level > levels[i - 1] + 1 ? [`h${levels[i - 1]} then h${level}`] : []))).toEqual([]);
+    expect(levels.filter((level) => level === 2)).toHaveLength(hubTopics.length + 1);
+    expect(levels.filter((level) => level === 3)).toHaveLength(ARTICLE_SLUGS.length);
+  });
+
   it("has one h1, one chilli button (finale, to the store) and no page JSON-LD (architecture §9.2: none beyond the shell)", () => {
     const main = builtMain();
     expect(main.querySelectorAll("h1")).toHaveLength(1);

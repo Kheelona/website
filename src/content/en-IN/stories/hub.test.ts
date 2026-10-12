@@ -183,4 +183,19 @@ describe("the hub page", () => {
     });
     expect(close.config.cta.secondary).toBe(words.secondary);
   });
+
+  it("types none of a guide's words, the read time or the journal close in its code: all are read from the registry", () => {
+    /* Value checks cannot tell a read string from a retyped copy of it, so the module's code (comments aside) must not
+       hold any of them: a retitled guide (tasks 5.17-5.19) or a reworded close then changes on the hub by itself. */
+    const code = readRepoFile("src/content/en-IN/stories/hub.ts").replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
+    const { heading, secondary } = articlePageCopy.close;
+    const read = [
+      ...ARTICLE_SLUGS.flatMap((slug) => [articles[slug].card.title, articles[slug].card.summary]),
+      heading.title,
+      heading.lead,
+      secondary.label,
+    ].flatMap((words) => [words, toPlainText(words)]);
+    expect(read.filter((words) => code.includes(words))).toEqual([]);
+    expect(code).not.toMatch(/min read/);
+  });
 });
