@@ -77,6 +77,7 @@ pages a task needs. Phase 0 pages cite legacy files at tag `archive/pre-reset-20
 - [CMO review 2026-10-11](qa/cmo-review-2026-10-11.md): homepage copy against the positioning: ready after two fixes (F1 caring-adult implication, F2 voice heading vs D035); H1 pick A; should-fix S1-S12.
 - [architecture review 2026-10-12](qa/architecture-review-2026-10-12.md): QA on the Phase 4 plan: blocking B1-B4 (motion picks, guard ownership, checkout JSX freeze, beta isolation), all folded into the final tasks.
 - [test plan](qa/test-plan.md): Phase 6 verification: viewports, suites, tracking parity evidence, the Razorpay test-mode payment on betastore.
+- [deviations](qa/deviations.md): approved departures from the Gate A mockups (V1 store payments line in the page, V2 films strip with motion on, V3 product details without JavaScript); parity treats anything else over tolerance as a defect.
 - [source verification](research/source-verification.md): 45 public claims checked against ORIGINAL sources and re-checked (D026): 1 supported as is, 38 only reworded, 4 not supported, 2 unverifiable; 26 ready footnoted site lines. Excerpts in `raw/research/sources/`.
 
 ## Decisions

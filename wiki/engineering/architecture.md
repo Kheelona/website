@@ -297,6 +297,15 @@ Each becomes a component once (kickoff §3, decision 1):
 - **Hidden bar is inert:** `.kh-buybar.is-hidden` (copied from `mockup.css:58`) is only `opacity: 0` and
   `pointer-events: none`, so `StickyBuyBar` (3.1) sets `inert` on the bar while it is hidden, keeping its CTA
   out of the tab order.
+- **API (3.1, wave-3 close):** `WhatsAppFloat` takes `href={seller.support.whatsapp}` (the number's one source,
+  config `SUPPORT_WHATSAPP_HREF`), `chat={seller.chat}` and `context`; the store pages (5.15, 5.16, 6.1) pass all
+  three. The root viewport is `width=device-width, initial-scale=1, viewport-fit=cover` (as the mockup), which
+  makes the `env()` insets live.
+- **Insets (main session, wave-3 close; 3.6):** the right offset adds `env(safe-area-inset-right)`; the lift is
+  `--ks-buybar-h` minus `env(safe-area-inset-bottom)`, because the bar's height already holds that inset, so the
+  bubble sits 16 px above the bar on a notched phone too (D050).
+- **Label in name (P13):** the laptop label reads "Chat with us on WhatsApp", the same words as the link's
+  name (WCAG 2.5.3), unless the founder chooses otherwise.
 
 ### 5.4 The scalability test
 
@@ -594,7 +603,8 @@ and the details panels stay visible without JavaScript).
 
 Decision: [ADR-010](adr/ADR-010-media-pipeline.md). Catalogue: [assets](assets.md).
 
-- DS rasters via `import x from "@ds/assets/…"` and `next/image` inside `Photo`, `ArtBoard`,
+- DS rasters via `import x from "@ds/assets/…"` and `next/image` inside `Photo` (also its bare form with no
+  figure, added by 3.6 for `ModesSection`'s `ks-know__img`), `ArtBoard`,
   `ImaginationFrame`, `AppScreens` and `Avatar` (its photo form, added by 2.3) only; `sizes` per layout. **No `priority` prop** (deprecated in Next
   16 in favour of `preload`; the docs prefer `loading="eager"` or `fetchPriority="high"`, `image.md:289-293`,
   N12): a page's one LCP image takes `loading="eager"` and `fetchPriority="high"`; everything below the
@@ -649,7 +659,7 @@ WhatsApp bubble carry their own few lines. The `motion` library is not used (ADR
 | 5 | Phone menu: **A slide from the side** | native `<dialog>` `showModal()`; panel keyframe from `translateX(100%)`; DS scrim on `::backdrop` fades | `--duration-enter`, `--ease-standard` | appears without sliding | 3.1 |
 | 6 | Orange button: **B press and arrow nudge** | `@media (hover: hover) and (pointer: fine)`: `.kh-btn--cta:hover .ks-btn__arrow { transform: translateX(var(--ks-nudge)) }`, `--ks-nudge: 5px` (the value D049 names, one literal); press is the DS's own `:active` (`translateY(4px)`, shadow removed). Applies to every chilli button with an arrow (Home hero, product hero, the guide, safety, stories and article closes): hover and press are feedback the visitor starts, not arrival motion, so pick 2 is not affected (question to the main session) | `--duration-fast`, `--ease-standard` | no nudge (the DS press stays: it is the tap state, not an animation) | 2.2 |
 | 7 | FAQ answers: **B smooth open** | native `<details>`; `@supports selector(::details-content)`: `.kh-faq__item::details-content { display: grid; grid-template-rows: 0fr; transition: grid-template-rows var(--duration-enter) var(--ease-standard), content-visibility var(--duration-enter) allow-discrete }`, `[open]` → `1fr`; the answer sits in `ks-faq__clip` (`overflow: hidden; min-height: 0`) so the DS padding does not leak; `.kh-faq__sign` keeps the DS's own rotate transition (`bundle.css:280`; motion.css leaves it alone). Where `::details-content` is unsupported (older iOS Safari), the answer opens instantly, the 7A behaviour | `--duration-enter`, `--ease-standard` | instant | 2.4 |
-| 8 | Parent films strip: **B focus grows** | native scroll-snap; one `IntersectionObserver` per strip with the track as root and a `rootMargin` that narrows it to its central band; the tile most inside the band gets `is-focus`; `.ks-film.is-focus .ks-film__frame { transform: scale(var(--ks-film-focus)) }`, `--ks-film-focus: 1.05` (one value inside D049's 1.04-1.1); the track has `padding-block: var(--space-3); margin-block: calc(var(--space-3) * -1)` so a scaled tile is not clipped and the layout box does not change; end detection tolerates half a tile; nothing overflows the document (lessons §2) | `--duration-base`, `--ease-standard` | no scale | 3.3 |
+| 8 | Parent films strip: **B focus grows** | native scroll-snap; one `IntersectionObserver` per strip with the track as root and a `rootMargin` that narrows it to its central band; the tile most inside the band gets `is-focus`; `.ks-film.is-focus .ks-film__frame { transform: scale(var(--ks-film-focus)) }`, `--ks-film-focus: 1.05` (one value inside D049's 1.04-1.1); the track keeps `padding-block: var(--space-3); margin-block: calc(var(--space-3) * -1)`, and under `prefers-reduced-motion: no-preference` the frame takes a `margin-block` equal to its growth (and phones from 430 to 719 px a wider `column-gap`), so the focused film never covers its own chip or caption or a neighbour (3.3 review); the reduced-motion layout, which visual parity uses, is the mockup's; the motion-on layout is taller by about 25 px at 390 ([deviations](../qa/deviations.md) V2); end detection tolerates half a tile; nothing overflows the document (lessons §2) | `--duration-base`, `--ease-standard` | no scale | 3.3 |
 | D050 | WhatsApp bubble | lift with the bar (`translateY(calc(var(--ks-buybar-h) * -1))` while `html[data-buybar="shown"]`); laptop label slides out on hover or focus (opacity and transform) | `--duration-base`, `--ease-standard` | nothing moves | 3.1 |
 | – | Tap feedback | the DS's own button, icon-button and focus transitions (`bundle.css`) | `--duration-fast`, `--duration-base` | DS | – |
 | – | Films buttons | scroll by one tile, smooth unless reduced motion | none | instant scroll | 3.3 |

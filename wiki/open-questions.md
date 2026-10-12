@@ -200,6 +200,7 @@ Source: [architecture §20](engineering/architecture.md#20-open-points-for-the-f
 | P10 | At Gate B: switch www.kheelona.com from "Redirect" to serving the site (one-hop legacy www URLs) | Yes, optional | OPEN |
 | P11 | The approved privacy copy drops the "most detailed of the five" sentence about PostHog | Intended (approved copy wins) | ASKED 2026-10-12 |
 | P12 | Refund and shipping h2 render weight 700 from 1024 px, though the mockup comment says kh-headline (800) ([mockup-css-mapping §6.5](engineering/mockup-css-mapping.md#65-the-legal-h2-at-1024-px-renders-700-not-kh-headline)). Optional | Keep 700, as approved | Default applied (optional; not asked) |
+| P13 | WhatsApp bubble on laptops: the hover label says "Chat on WhatsApp" but the link's name is "Chat with us on WhatsApp" (both D050); WCAG 2.5.3 asks that the name contain the visible words (3.1 review) | The label also reads "Chat with us on WhatsApp" (task 3.6) | OPEN, default applies |
 
 ## E. Decided by the brief (no answer needed; recorded so nobody re-asks)
 

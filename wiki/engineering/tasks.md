@@ -819,6 +819,7 @@ Wave 2 merged at `d87c71f` (twelve tasks, run `wf_2317874f-e7d`); `npm run verif
 
 2.11 merged `91208de`; 2.12, 2.13, 3.2 and 3.4 merged `3629d2e`, `2a51371`, `2a7cc40`, `d7e0bea` (run
 `wf_3a360d0e-7b7`, all passed); `npm run verify` green after the four (255 files, 4014 tests; jscpd 0.88%).
+3.1 and 3.3 merged `0632ed1`, `28b4440` (run `wf_8e83e0d9-f82`, both passed after one fix round).
 Rulings on the reviewers' open points:
 
 - **Product details are tabs, as approved** (P1 default, N21 corrected): the approved page's own script
@@ -833,6 +834,19 @@ Rulings on the reviewers' open points:
 - **One of each helper:** the content-icon narrowing (`asIconName`) lives in `ui/Icon`; the single-slash
   site-path test (`isSitePath`) in `src/lib/links.ts`; the mockup comparison harness in `test/support/` (3.6).
 - 3.4's edit of the components §7 mapping row (`mk-details` of the product becomes `ks-product-details`) is accepted.
+- **Store footer payments line** ("No payment fees. Nothing recurring. Payments by Razorpay." and the chargeback
+  link, `store.html:219`): the store layout's policy links are a frozen checkout contract, so the line renders as
+  the last line of the store page's `main` (5.15; [deviations](../qa/deviations.md) V1).
+- **Store metadata:** the root layout no longer supplies a description, Open Graph or Twitter defaults, so each
+  store page sets its own through `pageMeta` (no robots): 5.15, 5.16 and 6.1.
+- **WhatsApp bubble:** the lift subtracts the bottom inset and the right offset adds the right inset (architecture
+  §5.3); the laptop label reads "Chat with us on WhatsApp" (P13 default); the store pages pass `href`, `chat` and
+  `context` (3.1's API).
+- **`ModesSection`'s bare DS image** goes through a bare form of `Photo` (no figure), not `next/image` directly
+  (architecture §10).
+- **Films strip with motion on** is taller than the mockup by design ([deviations](../qa/deviations.md) V2).
+- **Article registry:** `src/content/en-IN/stories/articles/index.ts` (4.2) is the one list of article modules;
+  the stories route and `SiteShell/sticky-bar-paths.ts` read it, so a new article needs no shell edit.
 - 6.3 (exclusion lines of rewritten legacy files, `utm.test.ts` type errors), 4.2 (`knownAuthorIds`) and 4.3
   (seller-lines helper) are amended above and below.
 
@@ -892,6 +906,26 @@ Rulings on the reviewers' open points:
       `test/playwright-projects.test.ts`); `motion-faq.spec.ts` drops its own WebKit launch.
   12. components §7 records 3.2's class renames (`mk-beside` to `ks-beside`, the four page CTA classes to
       `ks-cta__button`, and the rest of 3.2's list).
+  13. Shell copy into content: `navigation.ts` labels for the store logo link ("Kheelona home") and the new-tab
+      note (" (opens in a new tab)"), and `seller.gstinLine`; `StoreShell` and `SiteShell` read them;
+      `STORE_COPY_PENDING_CONTENT` and (after item 7) `hoistNowrap` go.
+  14. Item 5's harness also takes `src/layouts/SiteShell/mockup-diff.ts` and its test.
+  15. `StoreShell.test.tsx`: a case under `KH_SITE_ENV=beta` (fresh module import) asserts the five policy links
+      and the logo link start with `https://betawebsite.kheelona.com`.
+  16. WhatsApp bubble insets (architecture §5.3): `whatsapp-float.css` right offset plus
+      `env(safe-area-inset-right)`; the lift in `src/motion/motion.css` subtracts `env(safe-area-inset-bottom)`.
+  17. `seller.chat.shortLabel` reads "Chat with us on WhatsApp" (P13 default); the WhatsAppFloat, SiteShell and
+      `chrome.spec.ts` label cases follow the content.
+  18. `Photo` gains a bare form (the image alone, Photo's loading and `sizes` rules, no figure or crop);
+      `ModesSection`'s `ks-know__img` uses it; assets.md's `kheelu-belly-module.png` row names it.
+  19. `films.ts`: `filmsStrip` gains `of: "of"`; `FilmsStrip.stories.tsx` imports `films` and `filmsStrip`
+      instead of retyping them, so the films specs test the content.
+  20. Comments that still say the track padding alone holds the films growth (`films-strip.css:5-7`,
+      `motion.css:166-168`) describe the frame margin (architecture §11.2 row 8).
+  21. `chrome.spec.ts`: the block that strips the payments line from the store-footer golden cites
+      [deviations](../qa/deviations.md) V1.
+  22. Now that `ks-hero` exists (3.3), `ArticleHead` and `EmptyStateSection` (404) stories match the heights of
+      their mockup folds (`story-*.html`, `404.html`) at 390 and 1440 within 2 percent (3.4 review finding 5).
 - **Test:** `npm run verify` and the touched e2e specs green.
 
 ## Wave 4: templates and machine files (after wave 3)
@@ -910,7 +944,9 @@ Rulings on the reviewers' open points:
 ### 4.2 ArticleTemplate and the stories route (builder)
 
 - **Owns:** `src/layouts/ArticleTemplate/**`, `src/app/(site)/stories/[slug]/page.tsx`,
-  `test/scalability-article.test.tsx`.
+  `test/scalability-article.test.tsx`, `src/content/en-IN/stories/articles/index.ts` (new: the one registry of
+  article modules, wave-3 close) and the article import in `src/layouts/SiteShell/sticky-bar-paths.ts` (reads the
+  registry instead of importing the 21 modules).
 - **Inputs (wave-3 close):** `blogPostingNode` needs `knownAuthorIds = personIds(<3.1's Organization mapper in
   `src/layouts/SiteShell/`>(organization))` (2.13): founder bylines resolve to Person nodes, `TEAM_BYLINE` to the Organization.
 - **Acceptance:** 21 slugs from `routes.ts`, `export const dynamicParams = false;`; BlogPosting with the
@@ -985,8 +1021,8 @@ the JSX contract fixtures are never edited.
 | 5.12 | Terms (builder) | `legal/terms.ts`, its route | mockup and copy | D035 and D041 AI-image disclosure; full-mode variants; draft until approved |
 | 5.13 | Refund (builder) | `legal/refund.ts`, its route | mockup and copy; [legal review](../qa/legal-review-pages-legal-b-2026-10-11.md) | D042 lines; `refund-learn` close; draft until approved |
 | 5.14 | Shipping (builder) | `legal/shipping.ts`, its route | mockup and copy; legal review | `shipping-learn` close; draft until approved |
-| 5.15 | Store page restyle (builder) | `src/app/store/page.tsx`, `src/features/preorder/components/{PreorderForm,OrderSummary}.{tsx,test.tsx,stories.tsx}`, their three signature fixtures, the literal-only patches for the two tests, `src/components/sections/store/{StoreTop,StoreDetails}/**`, `src/content/en-IN/store/{store-page,in-app-note}.ts` | `mockup/pages/store.html`, [store copy](../site/pages/store.md), [checkout](../site/checkout.md), ADR-013 | JSX contract and signature guards green; pay button labels unchanged; refund promise beside it; films below every money answer; no `<video>` at rest; no import of a path 6.3 deletes (`atoms/Field`, `lib/cn`, `lib/interactions`, `molecules/PromiseMark`, `organisms/VideoMoments`, `lib/video-moments`, `lib/kheelu-art`); the bubble (store text); in-app note built with `enabled: false` (N7); `npm run qa:payment` reaches the open sandbox sheet; store noindex |
-| 5.16 | Confirmation `/thanks` restyle (builder) | `src/app/store/thanks/page.{tsx,test.tsx}`, `src/features/preorder/components/AddressForm.{tsx,test.tsx,stories.tsx}`, their signature fixtures and literal-only patches, `src/components/sections/store/{ConfirmationHead,OrderRows,AddressStep,HelpBlock}/**`, `src/content/en-IN/store/confirmation.ts` | `mockup/pages/store-confirmation.html`, its copy | JSX contract and signature guards green; `ph-no-capture ph-mask` on the order container in the paid and created branches; the bubble with `ph-no-capture` (`/thanks` text); **delivery line (N9, F12):** `OrderRows` shows "Ships from 20 October 2026" (`SHIP_DATE_TEXT`, as today) for orders created before 2026-10-10 00:00 IST and the D023 line for later ones, chosen in `OrderRows/delivery-line.ts` (outside the frozen file), both cases tested, until F12 is answered; "Save my address" primary button (white on Blue question, architecture §13); no import of a path 6.3 deletes |
+| 5.15 | Store page restyle (builder) | `src/app/store/page.tsx`, `src/features/preorder/components/{PreorderForm,OrderSummary}.{tsx,test.tsx,stories.tsx}`, their three signature fixtures, the literal-only patches for the two tests, `src/components/sections/store/{StoreTop,StoreDetails}/**`, `src/content/en-IN/store/{store-page,in-app-note}.ts` | `mockup/pages/store.html`, [store copy](../site/pages/store.md), [checkout](../site/checkout.md), ADR-013 | JSX contract and signature guards green; pay button labels unchanged; refund promise beside it; films below every money answer; no `<video>` at rest; no import of a path 6.3 deletes (`atoms/Field`, `lib/cn`, `lib/interactions`, `molecules/PromiseMark`, `organisms/VideoMoments`, `lib/video-moments`, `lib/kheelu-art`); the bubble (store text); in-app note built with `enabled: false` (N7); `npm run qa:payment` reaches the open sandbox sheet; store noindex; wave-3 close: the payments line "No payment fees. Nothing recurring. Payments by Razorpay." with the chargeback link as the last line of `main` ([deviations](../qa/deviations.md) V1), description, Open Graph and Twitter through `pageMeta` (no robots), `WhatsAppFloat` with `href`, `chat` and `context` |
+| 5.16 | Confirmation `/thanks` restyle (builder) | `src/app/store/thanks/page.{tsx,test.tsx}`, `src/features/preorder/components/AddressForm.{tsx,test.tsx,stories.tsx}`, their signature fixtures and literal-only patches, `src/components/sections/store/{ConfirmationHead,OrderRows,AddressStep,HelpBlock}/**`, `src/content/en-IN/store/confirmation.ts` | `mockup/pages/store-confirmation.html`, its copy | JSX contract and signature guards green; `ph-no-capture ph-mask` on the order container in the paid and created branches; the bubble with `ph-no-capture` (`/thanks` text); **delivery line (N9, F12):** `OrderRows` shows "Ships from 20 October 2026" (`SHIP_DATE_TEXT`, as today) for orders created before 2026-10-10 00:00 IST and the D023 line for later ones, chosen in `OrderRows/delivery-line.ts` (outside the frozen file), both cases tested, until F12 is answered; "Save my address" primary button (white on Blue question, architecture §13); no import of a path 6.3 deletes; wave-3 close: description, Open Graph and Twitter through `pageMeta` (no robots), `WhatsAppFloat` with `href`, `chat` and `context` |
 | 5.17 | Articles: screen time (copywriter, then builder) | `src/content/en-IN/stories/articles/{how-much-screen-time-for-a-3-to-6-year-old,screen-time-rules-parents-swear-by,screen-time-and-tantrums,the-gentle-way-off-the-phone,busy-hands-no-screens,screen-free-does-not-mean-silent}.ts` | the article template, the three approved articles, `src/lib/stories*.ts` (legacy text as input only), [claims](../product/claims.md), [source verification](../research/source-verification.md) | Rewritten to the template and rules (3-7, D016, D025, D026 markers); `related` keeps three incoming links per article; CMO approval before merge (brief Phase 5 step 1); titles ≤ 60 |
 | 5.18 | Articles: talking and language (copywriter, then builder) | `…/articles/{talking-late-or-talking-little,how-to-get-your-child-talking,how-children-learn-by-talking,how-children-collect-words,raising-a-bilingual-child-in-india,a-toy-that-talks-vs-a-toy-that-listens}.ts` | as 5.17 | as 5.17; speech-delay answers only with the D025 disclaimer |
 | 5.19 | Articles: AI, safety and learning (copywriter, then builder) | `…/articles/{questions-parents-ask-about-ai-toys,should-kids-use-ai,ai-toys-and-indias-data-law,does-a-three-year-old-need-an-ai-tutor,what-actually-builds-a-sharp-brain,why-three-to-six-are-the-years-that-matter-most}.ts` | as 5.17 | as 5.17; no competitor names; brain wording per D016 |
@@ -1028,7 +1064,8 @@ processor names, the payload key allow-list and every `not.toContain` stay.
 - **Acceptance:** JSX contract and signature guards green; reuse `StoreTop` and `StoreDetails`; the event
   page keeps token shape and signature handling; `/ideabaaz` keeps "The Ideabaaz exclusive has ended." and
   its logo (B29); store dead ends answer 200 in store chrome; the not-configured state reads "Pre-orders
-  open here shortly."; the bubble (store text); no import of a path 6.3 deletes; axe and no-sideways green
+  open here shortly."; the bubble (store text) with `href`, `chat` and `context`; description, Open Graph and
+  Twitter through `pageMeta` (no robots; wave-3 close); no import of a path 6.3 deletes; axe and no-sideways green
   on the matrix.
 - **Test:** the two frozen tests (with their reviewed patches); `not-found-ssr`; e2e on each path.
 
