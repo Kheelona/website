@@ -25,7 +25,13 @@ async function layoutFor(env: "development" | "beta" | "production"): Promise<{ 
   vi.resetModules();
   vi.stubEnv("KH_SITE_ENV", env);
   const mod = (await import("./layout")) as LayoutModule;
-  const html = renderToStaticMarkup(<>{mod.default({ children: <p id="page">page</p> })}</>);
+  const Layout = mod.default;
+  // Rendered as an element, so React's preload() calls reach this render (they write the head's preload links).
+  const html = renderToStaticMarkup(
+    <Layout>
+      <p id="page">page</p>
+    </Layout>,
+  );
   return { doc: new DOMParser().parseFromString(html, "text/html"), metadata: mod.metadata };
 }
 afterEach(() => {
@@ -55,10 +61,12 @@ describe("root layout: the document", () => {
     expect(kids.slice(1).map((el) => el.getAttribute("data-tool"))).toEqual(["vercel", "ga4", "meta", "posthog"]);
   });
 
-  it("preloads the three hero fonts from the generated list (architecture §10, N17)", async () => {
+  it("preloads the three hero fonts from the generated list, each once (architecture §10, N17)", async () => {
     const { doc } = await layoutFor("production");
     const links = Array.from(doc.head.querySelectorAll('link[rel="preload"]'));
-    expect(links.map((l) => [l.getAttribute("href"), l.getAttribute("as"), l.getAttribute("type"), l.getAttribute("crossorigin")])).toEqual(
+    // crossorigin="" and "anonymous" are the same CORS mode (React's server renderer writes the empty form).
+    const cors = (l: Element) => (l.getAttribute("crossorigin") === "" ? "anonymous" : l.getAttribute("crossorigin"));
+    expect(links.map((l) => [l.getAttribute("href"), l.getAttribute("as"), l.getAttribute("type"), cors(l)])).toEqual(
       FONT_PRELOADS.map((f) => [f.href, "font", "font/woff2", "anonymous"]),
     );
   });
