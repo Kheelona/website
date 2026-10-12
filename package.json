@@ -10,7 +10,7 @@
     "postbuild": "node scripts/run-steps.mjs postbuild",
     "start": "next start",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.guards.json",
     "test": "vitest run",
     "test:watch": "vitest",
     "guards": "vitest run test/guards",
