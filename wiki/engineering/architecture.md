@@ -538,9 +538,9 @@ link may preview the old image).
 
 | Page | Nodes (besides Organization and WebSite from the shell) |
 |---|---|
-| `/` | FAQPage (the six Home answers); the Product node lives on the product page only |
+| `/` | FAQPage (the six Home answers plus fold 4's "What is Kheelu?", as [home copy](../site/pages/home.md) fold 8 says; wave-4 close); the Product node lives on the product page only |
 | `/products/kheelu` | Product + Offer (+ return policy, shipping details, warranty), FAQPage |
-| `/safety`, `/ai-toys-for-kids-in-india` | FAQPage |
+| `/safety`, `/ai-toys-for-kids-in-india` | FAQPage (on `/safety` also fold 2's four facts, as [safety copy](../site/pages/safety.md) says; wave-4 close) |
 | `/stories/<slug>` | BlogPosting (headline, description, image, `datePublished`, `dateModified` from the module's stored dates, author, publisher), BreadcrumbList (visible crumbs) |
 | `/setup` | HowTo (from the same steps) |
 | `/team` | `AboutPage` (as live, `team/page.tsx:120-131` at the tag; description = fold 2's answer; Organization `memberOf` stays proof-gated) |

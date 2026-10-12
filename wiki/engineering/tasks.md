@@ -142,6 +142,7 @@ with an earlier one.
 | `src/lib/email/templates.test.ts` | email facts | Keep; **6.4** only with its reviewed diff |
 | Tests of frozen code (`features/preorder/lib/*`, `lib/store/*` other than `posthog-server`, `app/api/**`, `lib/fbq`) | frozen modules | Keep |
 | Tests of legacy components and modules (`atoms`, `molecules`, `organisms`, `templates`, `vendor`, `features/home`, `lib/{seo,stories,growth-arc}`, old product `_components`) | legacy | Deleted with their subjects: 5.2 (old product route), 6.3 (the rest) |
+| `test/machine-files.test.ts` (`DATED`) and the routes' `LLMS_UPDATED` / `PRICING_UPDATED` | the bodies of `llms.txt` and `pricing.md`, built from faqs, trust, seller, offer, product, navigation, topics, routes, organization, policies, cta | **4.4** wrote them. **Main session**: in the same commit as any change to one of those modules (a founder filling an F4 placeholder too), bump the date constant(s) and re-pin `DATED` (wave-4 close); **4.5** item 6 |
 
 ---
 
@@ -962,7 +963,7 @@ Rulings on the reviewers' open points:
 
 ### 4.3 LegalTemplate (builder)
 
-- **Owns:** `src/layouts/LegalTemplate/**`, `test/fixtures/legal/**`, `src/lib/content/seller-lines.{ts,test.ts}` (new, wave-3 close).
+- **Owns:** `src/layouts/LegalTemplate/**`, `test/fixtures/legal/**`, `src/lib/content/seller-lines.{ts,test.ts}` (new, wave-3 close), `test/e2e/legal-template.spec.ts` (new; wave-4 close).
 - **Inputs:** `mockup/pages/{privacy,terms,refund,shipping}.html` and the four page CSS files (merged).
 - **Acceptance:** one CSS file replaces the four mockup copies, as **two families behind a two-value
   variant** (privacy and terms; refund and shipping: contents column, measure, close card, draft-note icon,
@@ -1001,6 +1002,61 @@ Rulings on the reviewers' open points:
   3. The Organization JSON-LD input comes from the mapper 3.1 wrote in `src/layouts/SiteShell/`; nothing restates it.
 - **Test:** the four rewritten tests, each proven red once.
 
+### Wave 4 close: rulings and follow-up task (main session, 2026-10-13)
+
+Run `wf_431ed8e5-d4c` (3.6, 4.1-4.4): all five passed (4.4 after one fix round). Merged `--no-ff` in order 3.6
+`4af95da`, 4.1 `056d48b` (fixtures given 3.5's required `tabsLabel`), 4.2 `fc0af71` and 4.3 `c093d2e` (imports
+re-pointed at 3.6's `asIconName` in `ui/Icon` and `test/support/mockup-compare.ts`; the no-op no-wrap hoists dropped;
+the GSTIN literal taken out of a `seller-lines.ts` comment for 4.4's guard), 4.4 `c0633cd`. Close commit `7867b93`:
+both shells read the GSTIN line from `seller-lines`, `sitemap.ts` reads the article registry, `tabs.spec.ts` is a
+story spec. Rulings:
+
+- **FAQPage on Home** carries the six Home answers plus fold 4's "What is Kheelu?" and `/safety` adds fold 2's four
+  facts, as the copy pages say (architecture §9.2 corrected); 5.1 and 5.3 set `faq: true` on those entries.
+- **Page modules import types only** from `layouts` and `components` (structure §6); legal shapes move into
+  `content/types.ts` (4.5).
+- **Accepted as built:** 4.2's one-line edit of `articles.test.ts` (the folder test lists `index.ts`); 4.3's
+  `test/e2e/legal-template.spec.ts` (added to its Owns); 4.3's family names `reference` (privacy, terms) and
+  `notice` (refund, shipping); the two connecting words in `seller-lines.ts`; 4.4's stricter date pin.
+- **Machine-file pins:** any change to a module that `llms.txt` or `pricing.md` reads (faqs, trust, seller, offer,
+  product, navigation, topics, routes, organization, policies, cta), including a founder filling an F4 placeholder,
+  bumps `LLMS_UPDATED` and/or `PRICING_UPDATED` and re-pins `DATED` in `test/machine-files.test.ts` in the same
+  commit (main session; guard-ownership row).
+- **5.5** reads the journal close from `articlePageCopy.close` (4.2's registry), never retyped.
+- **Campaigns** (before the first real one, not now): `CampaignEntry` becomes the whole page shape and campaign paths
+  get a buy-bar placement (4.5 item 1 does the type; the placement waits for a campaign).
+
+### 4.5 Wave-4 code follow-ups (builder; with wave 5 part A)
+
+- **Owns:** the files each item names, their tests and catalogue rows.
+- **Acceptance:**
+  1. `CampaignEntry` (`src/content/en-IN/campaigns/index.ts`) is the whole page shape (`PageContent`), and the
+     campaign route reads it through `getCampaign` instead of re-implementing the lookup.
+  2. Legal shapes in `src/content/types.ts`: `LegalPage` and its parts (hero eyebrow, `groups`, part `contents`,
+     paragraph `id`, recipient `keys`, the seller `lead`, the `card` block), re-exported from
+     `layouts/LegalTemplate/legal-template.types.ts`; prose that changes with the offer typed `Copy` where the
+     template renders it with the offer (terms' full-mode paragraphs, 5.12).
+  3. `src/content/en-IN/legal/shared.ts` (new): the template's shared words (draft note, "Last updated:", "On this
+     page", the complaint-reference placeholder) from `test/fixtures/legal/index.ts`; `LegalTemplateCopy` takes
+     `help: HelpLineCopy` (`seller.help`) so the reference close renders lead and contact from the one seller value;
+     the fixtures drop their retyped support line.
+  4. `legal-template.css`: the promise-link rule scoped to the reference family (mapping rows 22-23), with a test.
+  5. `PageTemplate`: the AboutPage description is read off the page's `answer-section` fold (no separate copy);
+     the template test's FAQ fixture names a price, so "both modes" is proven by the template's own tests;
+     `scalability.test.tsx`'s campaign test is named for what it asserts; a `/lp/<unknown>` 404 case (rendered
+     `<main>`) joins `test/e2e/redirects.spec.ts`.
+  6. `test/machine-files.test.ts`: gated objects are not visible copy; a placeholder in mid-sentence is refused (no
+     mangled sentence); `pricing.md`'s "About Kheelu" carries the Manufacturer declaration (architecture §9.3
+     "made in India by Kheelona Robotics"), entity facts list it, pins and `PRICING_UPDATED` bumped.
+  7. `MotionController`: the same no-box test at arming as for added targets, with a unit case.
+  8. One mockup reader: the ui tests with their own (`Checkbox`, `Field`, `Select`, `PolicyLinks`,
+     `InAppBrowserNote`) and `ui/Tabs/approved-tabs.test-support.ts` use `test/support/mockup-compare.ts`.
+  9. Stale words: `WhatsAppFloat.tsx` lift comment (less the bottom inset); `playwright.config.ts` header names the
+     `webkit-storybook` project; "Chat on WhatsApp" in `test/e2e/support/{axe,fixtures}.ts` and
+     `src/content/types.test-d.ts` follows P13; `CopyLinkButton.client.tsx`'s "ui/Button is task 2.2" comment; the
+     components.md SiteShell row says `ARTICLE_CLOSES` reads the article registry.
+- **Test:** `npm run verify` and the touched e2e specs green.
+
 ## Wave 5: pages (after wave 4; all parallel)
 
 Every page task: SPA (above); owns its content module(s) and route file(s); reads shared content
@@ -1012,11 +1068,11 @@ the JSX contract fixtures are never edited.
 
 | Id | Page (owner) | Owns | Inputs | Page-specific acceptance (besides SPA) |
 |---|---|---|---|---|
-| 5.1 | Home `/` (builder) | `src/content/en-IN/pages/home.ts`, `src/app/(site)/page.tsx` | `mockup/pages/home.html`, [home copy](../site/pages/home.md), D045, D046 | Hero exactly D045 with the Hand accent; the hero art board's doodle still (pick 2), the imagination-frame and close doodles draw (pick 3); CTAs `hero` (arrow), `see-it-ask`, `safety`, `finale`, learn links; `ViewContentTracker` mounted (B9); sticky bar after the hero CTA; FAQPage = the six visible answers; LCP image `fetchPriority="high"` |
+| 5.1 | Home `/` (builder) | `src/content/en-IN/pages/home.ts`, `src/app/(site)/page.tsx` | `mockup/pages/home.html`, [home copy](../site/pages/home.md), D045, D046 | Hero exactly D045 with the Hand accent; the hero art board's doodle still (pick 2), the imagination-frame and close doodles draw (pick 3); CTAs `hero` (arrow), `see-it-ask`, `safety`, `finale`, learn links; `ViewContentTracker` mounted (B9); sticky bar after the hero CTA; FAQPage = the six visible answers plus fold 4's "What is Kheelu?" (`faq: true` on that entry; wave-4 close, home copy fold 8); LCP image `fetchPriority="high"` |
 | 5.2 | Product `/products/kheelu` (builder) | `src/content/en-IN/products/kheelu/page.ts`, `src/app/(site)/products/[slug]/page.tsx`, `src/app/(site)/products/kheelu/` (delete the old route and its colocated tests); the `LAUNCH_AMOUNT_PAISE` default of `valuePaise` in `src/components/tracking/ViewContentTracker.tsx` (removed once the legacy page is gone, so every mount passes the offer's value; wave-2 close) | `mockup/pages/meet-kheelu.html`, [meet-kheelu copy](../site/pages/meet-kheelu.md) | Product + Offer JSON-LD; fragments `#faq`, `#story-mode`, `#reserve`, `#offer`, `#specs`; sticky bar from first paint; `ViewContent` value 4999 in token mode; speech disclaimer (D025); declarations incl. MRP from `MRP_PRICE`; details as tabs (3.5; N21 corrected, P1): pass `ProductDetailsConfig.tabsLabel` ("Product details", the mockup's tablist name) from content, and add the JavaScript-off text deviation for this route to `test/e2e/support/deviations.ts` (and its allowance in `no-js.spec.ts`, whose N21 comment it corrects), citing [deviations](../qa/deviations.md) V3, approved by the main session (wave-3 close); `export const dynamicParams = false;` |
-| 5.3 | Safety `/safety` (builder) | `pages/safety.ts`, `src/app/(site)/safety/page.tsx` | `mockup/pages/safety.html`, [safety copy](../site/pages/safety.md) | D020 order; certification "applied for, not yet granted", no ISI mark; FAQPage |
+| 5.3 | Safety `/safety` (builder) | `pages/safety.ts`, `src/app/(site)/safety/page.tsx` | `mockup/pages/safety.html`, [safety copy](../site/pages/safety.md) | D020 order; certification "applied for, not yet granted", no ISI mark; FAQPage with fold 2's four facts (`faq: true` on the trust facts entry; wave-4 close) |
 | 5.4 | Buyer's guide (builder) | `pages/ai-toys-for-kids-in-india.ts`, its route | mockup and copy of the same name; `css/ai-toys-for-kids-in-india.css` (the `mk-gd-*` rows of components §7) | No competitor names; answer-first hero; FAQPage; sources |
-| 5.5 | Stories hub (builder) | `src/content/en-IN/stories/hub.ts`, `src/app/(site)/stories/page.tsx` | `mockup/pages/stories.html`, [stories copy](../site/pages/stories.md) | All 21 guides under the four topics with anchors `#screen-time`, `#talking`, `#ai-and-safety`, `#learning`; cards read title and summary from the article modules; no "Rewritten in the build" labels |
+| 5.5 | Stories hub (builder) | `src/content/en-IN/stories/hub.ts`, `src/app/(site)/stories/page.tsx` | `mockup/pages/stories.html`, [stories copy](../site/pages/stories.md); the journal close and read times from `articlePageCopy` in the article registry (4.2), never retyped | All 21 guides under the four topics with anchors `#screen-time`, `#talking`, `#ai-and-safety`, `#learning`; cards read title and summary from the article modules; no "Rewritten in the build" labels |
 | 5.6 | Three rewritten articles (builder) | `src/content/en-IN/stories/articles/{learning-toys-for-a-three-year-old,what-to-look-for-in-a-safe-ai-toy,talking-toys-and-late-talkers}.ts` | the three article mockups and copy pages | One in-text product link each (none pitching on the late-talker page, B5); D025 disclaimer on the late-talker page; sources with markers; the merged 2-year-old topic as an H2 on the 3-year-old article (D041) |
 | 5.7 | Team (builder + copywriter) | `pages/team.ts`, its route | `mockup/pages/team.html`, [team copy](../site/pages/team.md), [CMO review](../qa/cmo-review-pages-help-2026-10-11.md) | CMO fix: first screen says what Kheelu is, the age band and the search term; bios and recognition gated (D038); founder photos only if supplied (B24) |
 | 5.8 | Setup (builder + copywriter) | `pages/setup.ts`, its route | `mockup/pages/setup.html`, [setup copy](../site/pages/setup.md), CMO review | CMO fix: step 2 values; the screenshot without "Games" (1.5b); D018 wording; no chilli button |

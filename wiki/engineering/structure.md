@@ -233,7 +233,7 @@ agrees a new one.
 | `story-talking-toys-and-late-talkers.html` | `/stories/talking-toys-and-late-talkers` | same | `ArticleTemplate` | same, with the D025 disclaimer; close RelatedGuides `keep` (no CTA, B5) | no | 5.6 |
 | (template) the 18 other articles | `/stories/<slug>` | same | `ArticleTemplate` | as the template | per article | 5.17-5.19 |
 | `team.html` | `/team` | `pages/team.ts` | `PageTemplate` | HeroSection `answer` (product art, no CTA) · AnswerSection · FoundersSection (bios gated, D038) · FeatureSplit `quote` (why we build) · RecognitionStrip (gated, F11) · CloseSection (`finale`) | yes | 5.7 |
-| `setup.html` | `/setup` | `pages/setup.ts` | `PageTemplate` | HeroSection `answer` · FeatureSplit `ticks` (before you start) · StepsSection `four` (Wi-Fi tip, four steps) · FeatureSplit `photo` (child's age) · FeatureSplit `photo` (wake-up button, D018) · FeatureSplit `photo` (the activity screenshot as a photo) · CloseSection `links` (no CTA) | no | 5.8 |
+| `setup.html` | `/setup` | `pages/setup.ts` | `PageTemplate` | HeroSection `answer` · FeatureSplit `ticks` (before you start, with the Wi-Fi tip, as `setup.html` fold 2; 4.1 review) · StepsSection `four` (four steps) · FeatureSplit `photo` (child's age) · FeatureSplit `photo` (wake-up button, D018) · FeatureSplit `photo` (the activity screenshot as a photo) · CloseSection `links` (no CTA) | no | 5.8 |
 | `contact.html` | `/contact` | `pages/contact.ts` | `PageTemplate` | HeroSection `contact` · CardGrid `routes` · GrievanceBlock (`#grievance`) · SellerBlock · CloseSection (`finale`) | yes | 5.9 |
 | `404.html` | unmatched | `pages/not-found.ts` | `PageTemplate` | EmptyStateSection · CloseSection (`finale`) | no | 5.10 |
 | `privacy.html`, `terms.html`, `refund.html`, `shipping.html` | `/privacy`, `/terms`, `/refund`, `/shipping` | `legal/<slug>.ts` | `LegalTemplate` | draft note (while draft) · hero · last updated · short version · contents · parts and sections (tools list on privacy) · seller and grievance blocks · close link (`refund-learn`, `shipping-learn`; none on privacy and terms) | no | 5.11-5.14 |
@@ -248,6 +248,11 @@ agrees a new one.
 `lib`, `content/types` and `config`. `ui` never imports `content/en-IN`, `sections`, `layouts` or
 `app`. Only `app` and `layouts` import `content/en-IN`. Nothing in `src` imports `wiki/`, `mockup/` or
 DS markdown (ESLint `no-restricted-imports`, task 1.1). Frozen files keep their existing imports.
+**Page modules and types (wave-4 close, 4.1 and 4.3 reviews):** a content page module (`content/en-IN/pages/*.ts`,
+`legal/*.ts`) may import **types only** from `layouts` and `components` (`import type { PageContent }` from
+`layouts/PageTemplate/page-template.types`, a section's config type), because section configs live with their sections
+(§2); it never imports a value from them. Legal shapes that content writes (`LegalPage` and its parts) move into
+`content/types.ts` (task 4.5), so legal modules need no layout import.
 
 ## 7. Frozen zones
 
