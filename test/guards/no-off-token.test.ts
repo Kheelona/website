@@ -25,8 +25,9 @@ import {
  * family names included), z-indexes and scales, literals in var() fallbacks (only another var(),
  * a keyword or a zero may follow the comma), lengths in @media and @container preludes
  * other than the DS min-/max-width breakpoints, Tailwind arbitrary values, arbitrary properties
- * (any name Tailwind compiles, digits and capitals included), arbitrary modifiers ("text-sm/[17px]",
- * "bg-black/[0.37]"), arbitrary breakpoints and the (--var) shorthand, read class by class whatever
+ * (any name Tailwind compiles, digits and capitals included), arbitrary modifiers on the colour and
+ * text utilities ("text-sm/[17px]", "bg-black/[0.37]"; numeric steps such as "bg-surface/37" are not
+ * refused), arbitrary breakpoints and the (--var) shorthand, read class by class whatever
  * the variants and the important mark (in .ts modules too, where variants and class lists live, and
  * in CSS @apply), colour strings in .tsx (so a hex cannot reach an attribute through a const), named
  * colours on fill, stroke and the other colour attributes, written there or reaching them through a
@@ -34,6 +35,14 @@ import {
  * beyond the art-board positions. The only literals allowed are listed in token-exceptions.ts and
  * printed on every run. Generated files are exempt (their drift tests compare them with the DS);
  * legacy files are skipped only while unchanged (legacy-paths.ts).
+ *
+ * Known limits of the named-colour flow (probed in 1.1b's review; each passes today, so a later wave
+ * must not rely on this guard for them): names are resolved inside the file only, so a colour
+ * exported from a .ts module (where named colours are legal) and imported is not followed; nor is a
+ * local component's prop from its call site (`const Dot = ({ c }) => <path fill={c} />; <Dot c="red" />`),
+ * a template literal (fill={`${C}`}), a function's return value, a destructuring of an object literal
+ * (`const { fill } = { fill: "red" }`), a computed key in a spread (`{ ["fill"]: "red" }`) or an
+ * array element. A key that is not a literal (`FILLS[tone]`) is followed to every value of the object.
  */
 
 type Violation = { line: number; rule: string; text: string };
@@ -237,9 +246,14 @@ const VAR_SHORTHAND = /^-?[a-z][\w-]*-\((?:[a-z-]+:)?--[\w-]+\)$/;
 /** A bracketed or (--var) modifier: "text-sm/[17px]" is line-height: 17px, "bg-black/[0.37]" a
  *  37 percent colour-mix, "bg-black/(--x)" an opacity from any custom property. */
 const ARBITRARY_MODIFIER = /^(?:\[[^\]]+\]|\([^)]+\))$/;
-/** The base a modifier can follow: a utility with a value ("text-sm", "bg-kh-orange-500"), so a
- *  path such as "stories/[slug]" or "/store/e/[event]" is never read as one. */
-const MODIFIABLE_BASE = /^-?[a-z][a-z0-9]*(?:-[\w.]+)+$/;
+/** The utilities whose modifier reaches the CSS: the colour utilities (an opacity) and text-* (a line
+ *  height). Probed on the pinned Tailwind 4.3.2, default theme and src/styles/tailwind-theme.css:
+ *  every class of getClassList() compiled with /[0.37], /[17px] and /(--x), and only these roots put
+ *  the modifier in a declaration (task 1.1b review; on every other utility it is ignored). Any
+ *  bracketed modifier after one of them is refused, so "parent-guides/[slug]", "stories/[slug]" or
+ *  "/store/e/[event]" are never read as utilities. */
+const MODIFIABLE_BASE =
+  /^-?(?:accent|bg|border|caret|decoration|divide|drop|fill|from|inset|mask|outline|placeholder|ring|scrollbar|shadow|stroke|text|to|via)(?:-[\w.-]+)?$/;
 const ARBITRARY_BREAKPOINT = /^@?(?:min|max)-\[[^\]]+\]$|^@\[[^\]]+\]$/;
 const COLOUR_ATTR_SKIP = /^(?:href|id|key|to|htmlFor|aria-[\w-]+|data-[\w-]+)$/;
 
@@ -332,8 +346,14 @@ function declaredValue(d: ts.Declaration): ts.Expression | undefined {
   return undefined;
 }
 
-/** The declarations behind a name, a property access or a string-keyed element access. */
+/** A key the checker resolves to one property: a string or numeric literal. Any other key (a prop,
+ *  a const, an expression) can pick any property, so it is followed to all of them (pickedValues). */
+const isLiteralKey = (key: ts.Expression) => ts.isStringLiteralLike(key) || ts.isNumericLiteral(key);
+const isPickedAccess = (e: ts.Expression): e is ts.ElementAccessExpression => ts.isElementAccessExpression(e) && !isLiteralKey(e.argumentExpression);
+
+/** The declarations behind a name, a property access or a literal-keyed element access. */
 function declarationsOf(e: ts.Expression, checker: ts.TypeChecker): readonly ts.Declaration[] {
+  if (isPickedAccess(e)) return [];
   const at = ts.isPropertyAccessExpression(e) ? e.name : ts.isElementAccessExpression(e) ? e.argumentExpression : e;
   const symbol = checker.getSymbolAtLocation(at);
   if (!symbol) return [];
@@ -359,6 +379,7 @@ function stringValues(expr: ts.Expression, checker: ts.TypeChecker, hops = 0): t
     }
     return [];
   }
+  if (isPickedAccess(e)) return pickedValues(e, checker, hops).flatMap((v) => stringValues(v, checker, hops + 1));
   if (ts.isIdentifier(e) || ts.isPropertyAccessExpression(e) || ts.isElementAccessExpression(e)) {
     return declarationsOf(e, checker).flatMap((d) => {
       const value = declaredValue(d);
@@ -377,6 +398,7 @@ function objectLiterals(expr: ts.Expression, checker: ts.TypeChecker, hops = 0):
   if (ts.isBinaryExpression(e) && [ts.SyntaxKind.AmpersandAmpersandToken, ts.SyntaxKind.BarBarToken, ts.SyntaxKind.QuestionQuestionToken].includes(e.operatorToken.kind)) {
     return [...objectLiterals(e.left, checker, hops), ...objectLiterals(e.right, checker, hops)];
   }
+  if (isPickedAccess(e)) return pickedValues(e, checker, hops).flatMap((v) => objectLiterals(v, checker, hops + 1));
   if (ts.isIdentifier(e) || ts.isPropertyAccessExpression(e) || ts.isElementAccessExpression(e)) {
     return declarationsOf(e, checker).flatMap((d) => {
       const value = declaredValue(d);
@@ -384,6 +406,25 @@ function objectLiterals(expr: ts.Expression, checker: ts.TypeChecker, hops = 0):
     });
   }
   return [];
+}
+
+/** Every property value of an object literal, its spreads followed: what a key that is not a
+ *  literal can pick (`FILLS[tone]` may read any value of FILLS, so all are checked). */
+function propertyValues(obj: ts.ObjectLiteralExpression, checker: ts.TypeChecker, hops: number): ts.Expression[] {
+  return obj.properties.flatMap((p) =>
+    ts.isPropertyAssignment(p)
+      ? [p.initializer]
+      : ts.isShorthandPropertyAssignment(p)
+        ? [p.name]
+        : ts.isSpreadAssignment(p)
+          ? objectLiterals(p.expression, checker, hops + 1).flatMap((inner) => propertyValues(inner, checker, hops + 1))
+          : [],
+  );
+}
+
+/** The values an element access with a non-literal key can read: every value of the objects behind it. */
+function pickedValues(e: ts.ElementAccessExpression, checker: ts.TypeChecker, hops: number): ts.Expression[] {
+  return objectLiterals(e.expression, checker, hops + 1).flatMap((obj) => propertyValues(obj, checker, hops + 1));
 }
 
 /** Each colour-attribute entry of a spread object (spreads inside it included): name and value. */
@@ -472,7 +513,7 @@ const within = (node: ts.Node, outer: ts.Node) => node.pos >= outer.pos && node.
  *  an object property or a destructured default (`const C = "red"; <path fill={C} />`), or through
  *  a spread (`<path {...{ fill: "red" }} />`, `<path {...attrs} />`). A literal written inside the
  *  attribute itself is the string pass's. Names are resolved in the file only: a colour imported
- *  from another module is not followed. */
+ *  from another module is not followed (the header lists the other known limits). */
 function colourFlowViolations(sf: ts.SourceFile, checker: () => ts.TypeChecker): Violation[] {
   const out: Violation[] = [];
   const at = (lit: ts.Node) => (lit.getSourceFile() === sf ? ` (line ${lineOfNode(sf, lit)})` : "");
@@ -686,6 +727,14 @@ describe("no-off-token detector: red on every planted literal", () => {
     ["named colour in a spread shorthand", `const fill = "gold"; export const A = () => <svg><path {...{ fill }} /></svg>;`],
     ["named colour in a nested spread", `const base = { fill: "red" }; const attrs = { ...base, stroke: "currentColor" }; export const A = () => <svg><path {...attrs} /></svg>;`],
     ["named colour in a conditional spread", `const on = { color: "crimson" }; export const A = ({ x }: { x: boolean }) => <svg {...(x ? on : {})} />;`],
+    // 1.1b review: a key that is not a literal can pick any value of the object, so every value is read.
+    ["named colour among the values behind a prop key", `const FILLS = { warm: "var(--kh-orange-500)", hot: "red" }; export const A = ({ tone = "warm" }: { tone?: "warm" | "hot" }) => <svg><path fill={FILLS[tone]} /></svg>;`],
+    ["named colour among the values behind a const key", `const k = "day"; const FILLS = { day: "var(--kh-gold)", night: "navy" }; export const A = () => <svg><path fill={FILLS[k]} /></svg>;`],
+    ["named colour in a spread picked by a prop key", `const ATTRS = { warm: { fill: "currentColor" }, hot: { fill: "red" } }; export const A = ({ tone = "warm" }: { tone?: "warm" | "hot" }) => <svg><path {...ATTRS[tone]} /></svg>;`],
+    // 1.1b review: a bracketed modifier on any colour or text utility is refused, whatever it holds.
+    ["arbitrary calc() opacity modifier", `export const A = () => <div className="bg-surface/[calc(var(--x)*2)]" />;`],
+    ["arbitrary var() opacity modifier on fill", `export const A = () => <svg className="fill-cta/[var(--ks-a)]" />;`],
+    ["arbitrary modifier on a shadow colour", `export const A = () => <div className="drop-shadow-scrim/[0.37] inset-ring-border/[0.5]" />;`],
   ])("%s", (_name, text) => {
     expect(tsx(text).length).toBeGreaterThan(0);
   });
@@ -857,10 +906,29 @@ describe("no-off-token detector: green on DS-token code", () => {
     expect(tsx(ok)).toEqual([]);
   });
 
+  it("follows a key that is not a literal to every value of its object: tokens only pass", () => {
+    const ok = `
+      const FILLS = { orange: "var(--kh-orange-500)" };
+      const k = "gold";
+      const GOLD = { gold: "var(--kh-gold)", ink: "currentColor" };
+      const ATTRS = { warm: { fill: "currentColor", stroke: "none" } };
+      export const A = ({ tone = "orange", look = "warm" }: { tone?: "orange"; look?: "warm" }) => (
+        <svg>
+          <path fill={FILLS[tone]} />
+          <path fill={GOLD[k]} stroke={FILLS["orange"]} />
+          <path {...ATTRS[look]} />
+        </svg>
+      );`;
+    expect(tsx(ok)).toEqual([]);
+  });
+
   it("reads modifiers by their value: theme steps, fractions and paths with brackets pass", () => {
     const ok = `export const A = () => <a className="text-sm/6 w-1/2 md:w-1/3" href="/store/e/[event]">x</a>;`;
     expect(tsx(ok)).toEqual([]);
     expect(script(`export const HUB = "stories/[slug]"; export const EVENT = "/store/e/[event]"; export const LEAD = "text-sm/6";`, "src/config/routes.ts")).toEqual([]);
+    // Relative route patterns with a dashed segment are not utilities (1.1b review).
+    expect(script(`export const GUIDE = "parent-guides/[slug]"; export const PLAY = "how-to-play/[id]";`, "src/config/routes.ts")).toEqual([]);
+    expect(tsx(`export const A = () => <a href="parent-guides/[slug]" data-route="how-to-play/[id]">x</a>;`)).toEqual([]);
   });
 
   it("accepts .ts modules of plain utilities, anchors and route patterns", () => {
