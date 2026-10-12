@@ -16,6 +16,8 @@ import { APPROVED_WIDTHS, VIEWPORTS, type Viewport } from "./support/viewports";
  *     revealed; after a full scroll everything is is-in;
  *   - a doodle on screen at load is shown drawn (its draw finished at once), while one that enters later
  *     draws itself;
+ *   - a block added after arming (task 2.12) follows the same rules: on screen it shows on the first frame with
+ *     no fade running, below the fold it waits for the same observer and reveals as it enters;
  *   - no layout shift: block positions equal those with motion off, and no layout-shift entry after arming.
  * Reduced motion: no js-motion, no is-in, nothing starts while the page scrolls, everything visible.
  */
@@ -284,6 +286,59 @@ test.describe("motion-reveal (pick 1A): motion on", () => {
     await expect
       .poll(async () => (await probe(phonePage)).motion.filter((m) => m.who === "draw-more-doodles-1" && m.name === "ks-draw").length)
       .toBeGreaterThan(0);
+  });
+
+  /* Task 2.12: a client-only island or a streamed block lands after the controller armed. Without the controller's
+     MutationObserver it would wait at opacity 0 for good. */
+  test("a block added after arming: on screen it shows at once, without a fade; below the fold it reveals as it enters", async ({ harness }) => {
+    const page = await openStory(harness, phone, "no-preference");
+    await settled(page);
+    const watching = () => probe(page).then((p) => p.observers.filter((o) => o.motionTargets > 0));
+    const before = await watching();
+    expect(before, "IntersectionObservers watching motion targets").toHaveLength(1);
+
+    // Both inserted in one task, as a client render commits them; read on the first frame after it.
+    const first = await page.evaluate(
+      () =>
+        new Promise<Record<"top" | "low", { shown: boolean; opacity: string; transform: string; running: number }>>((done) => {
+          const block = (id: string) => {
+            const el = document.createElement("div");
+            el.className = "kh-card kh-card--tint kh-tone-sun";
+            el.setAttribute("data-reveal", "");
+            el.setAttribute("data-testid", id);
+            el.textContent = "Added after the controller armed.";
+            return el;
+          };
+          const main = document.querySelector("#storybook-root main")!;
+          const top = block("added-top");
+          const low = block("added-low");
+          main.prepend(top);
+          // Before the last section, not at the very end: a short block on the last line of a page never rises past
+          // the observer's bottom margin (a tenth of the screen), so it could not be scrolled far enough to enter.
+          main.querySelector("section:last-of-type")!.before(low);
+          const read = (el: HTMLElement) => ({
+            shown: el.classList.contains("is-in"),
+            opacity: getComputedStyle(el).opacity,
+            transform: getComputedStyle(el).transform,
+            running: el.getAnimations().filter((a) => a.playState === "running").length,
+          });
+          requestAnimationFrame(() => done({ top: read(top), low: read(low) }));
+        }),
+    );
+    expect(first.top, "on screen: shown on the first frame, nothing fading").toEqual({ shown: true, opacity: "1", transform: "none", running: 0 });
+    expect(first.low.shown, "below the fold: waiting").toBe(false);
+    expect(first.low.opacity).toBe("0");
+
+    const after = await watching();
+    expect(after, "still the one IntersectionObserver").toHaveLength(1);
+    expect(after[0].observed, "the block below the fold handed to it").toBe(before[0].observed + 1);
+
+    const low = page.getByTestId("added-low");
+    await low.scrollIntoViewIfNeeded();
+    await expect(low).toHaveClass(/\bis-in\b/);
+    await settled(page);
+    expect(await low.evaluate((el) => [getComputedStyle(el).opacity, getComputedStyle(el).transform])).toEqual(["1", "none"]);
+    expect(await transitionsOn(page, "added-low"), "it fades and rises as it enters").toEqual(expect.arrayContaining(["opacity", "transform"]));
   });
 
   test("no layout shift: positions equal motion off, and no layout-shift entry after arming", async ({ harness }) => {
