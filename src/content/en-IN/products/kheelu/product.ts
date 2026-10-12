@@ -49,8 +49,8 @@ export interface ProductFacts {
     /** Never changes (lessons §6): the URL is the old product path on purpose. */
     readonly id: `https://kheelona.com/products/${string}#product`;
     readonly name: string;
-    /** The former name (architecture §6.1; claims §4 row 19). Left out until the banned-phrases
-     *  guard's code scan allows it here: its allowance matches a bare string only (task 2.1 report). */
+    /** The former name, "Lumi" (architecture §6.1, §9.2; claims §4 row 19): allowed by the
+     *  banned-phrases guard's `lumi` entry as the sentence `alternateName: "Lumi",` (task 2.13). */
     readonly alternateName?: string;
     readonly brand: string;
     readonly category: string;
@@ -148,6 +148,7 @@ export const product = {
   schema: {
     id: "https://kheelona.com/products/lumi#product",
     name: "Kheelu by Kheelona",
+    alternateName: "Lumi",
     brand: seller.brand,
     category: "Screen-free AI toy",
     countryOfOrigin: seller.origin.countryCode,

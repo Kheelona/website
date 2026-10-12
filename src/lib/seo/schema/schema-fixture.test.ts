@@ -7,7 +7,7 @@ import { blogPostingNode } from "./blog-posting";
 import { breadcrumbListNode } from "./breadcrumb-list";
 import { faqPageNode } from "./faq-page";
 import { howToNode } from "./how-to";
-import { organizationNode } from "./organization";
+import { organizationNode, personIds, type OrganizationFacts } from "./organization";
 import { productNode } from "./product";
 import { aboutPageNode, contactPageNode } from "./web-page";
 import { websiteNode } from "./website";
@@ -28,34 +28,33 @@ const offer: Pick<Offer, "headlinePaise" | "availabilityStarts" | "prices"> = {
   prices: { token: "₹499", balance: "₹4,500", headline: "₹4,999", full: "₹7,999", mrp: "₹7,999" },
 };
 
-const site = siteGraph(
-  organizationNode({
-    name: "Kheelona",
-    legalName: "Kheelona Robotics Private Limited",
-    taxId: "29AAMCK1530E1ZN",
-    description: "Kheelona makes Kheelu, a screen-free talking friend for children aged 3 to 7.",
-    logo: "/brand/logo-mark.png",
-    image: "/og.png",
-    foundingDate: "2025",
-    address: { street: "Line one, Line two", locality: "Bengaluru", region: "Karnataka", postalCode: "560001", country: "IN" },
-    founders: [
-      { name: "Apoorva Sahu", jobTitle: "Co-founder and CEO", sameAs: ["https://www.linkedin.com/in/sahu-apoorva/"] },
-      { name: "Aman Soni", jobTitle: "Co-founder and CTO" },
-    ],
-    employees: [{ name: "Ria Mangala Rewari", jobTitle: "Head of Marketing" }],
-    sameAs: ["https://www.linkedin.com/company/kheelona/", "https://www.instagram.com/kheelona/"],
+const organization: OrganizationFacts = {
+  name: "Kheelona",
+  legalName: "Kheelona Robotics Private Limited",
+  taxId: "29AAMCK1530E1ZN",
+  description: "Kheelona makes Kheelu, a screen-free talking friend for children aged 3 to 7.",
+  logo: "/brand/logo-mark.png",
+  image: "/og.png",
+  foundingDate: "2025",
+  address: { street: "Line one, Line two", locality: "Bengaluru", region: "Karnataka", postalCode: "560001", country: "IN" },
+  founders: [
+    { name: "Apoorva Sahu", jobTitle: "Co-founder and CEO", sameAs: ["https://www.linkedin.com/in/sahu-apoorva/"] },
+    { name: "Aman Soni", jobTitle: "Co-founder and CTO" },
+  ],
+  employees: [{ name: "Ria Mangala Rewari", jobTitle: "Head of Marketing" }],
+  sameAs: ["https://www.linkedin.com/company/kheelona/", "https://www.instagram.com/kheelona/"],
+  areaServed: "IN",
+  contactPoint: {
+    contactType: "customer support",
+    email: "hello@kheelona.com",
+    telephone: "+91 91875 46483",
+    url: "https://wa.me/919187546483",
     areaServed: "IN",
-    contactPoint: {
-      contactType: "customer support",
-      email: "hello@kheelona.com",
-      telephone: "+91 91875 46483",
-      url: "https://wa.me/919187546483",
-      areaServed: "IN",
-      availableLanguage: ["English", "Hindi"],
-    },
-  }),
-  websiteNode({ name: "Kheelona", inLanguage: "en-IN" }),
-);
+    availableLanguage: ["English", "Hindi"],
+  },
+};
+
+const site = siteGraph(organizationNode(organization), websiteNode({ name: "Kheelona", inLanguage: "en-IN" }));
 
 const productPage = pageGraph(
   productNode(
@@ -97,6 +96,7 @@ const articlePage = pageGraph(
     published: "2026-07-28",
     updated: "2026-10-11",
     author: "Ria Mangala Rewari",
+    knownAuthorIds: personIds(organization),
   }),
   breadcrumbListNode([
     { name: "Stories", path: "/stories" },

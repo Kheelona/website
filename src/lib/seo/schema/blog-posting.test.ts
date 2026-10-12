@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { blogPostingNode, type BlogPostingFacts } from "./blog-posting";
 
+/** The person ids the page's Organization node publishes (its founders and employees), as the
+ *  caller hands them over from `personIds(organizationFacts)`. */
+const TEAM_IDS = ["https://kheelona.com/team#apoorva-sahu", "https://kheelona.com/team#ria-mangala-rewari"];
+
 const article: BlogPostingFacts = {
   path: "/stories/learning-toys-for-a-three-year-old",
   headline: "Learning toys for a 3-year-old, skill by skill",
@@ -9,6 +13,7 @@ const article: BlogPostingFacts = {
   published: "2026-07-28",
   updated: "2026-10-11",
   author: "Ria Mangala Rewari",
+  knownAuthorIds: TEAM_IDS,
 };
 
 describe("blogPostingNode", () => {
@@ -42,5 +47,35 @@ describe("blogPostingNode", () => {
 
   it("refuses an empty headline", () => {
     expect(() => blogPostingNode({ ...article, headline: "  " })).toThrow(/headline/i);
+  });
+
+  /* Task 2.13 (the 2.7 review's probe): any byline became a team-page id, so "Guest Writer" got
+     https://kheelona.com/team#guest-writer, a person the team page never shows. The author's id
+     comes only from the ids the Organization node publishes; anyone else is credited to the
+     Organization, which the shell declares on every page. */
+  it("credits a byline that is not on the team page to the Organization", () => {
+    expect(blogPostingNode({ ...article, author: "Guest Writer" }).author).toEqual({ "@id": "https://kheelona.com/#organization" });
+    expect(JSON.stringify(blogPostingNode({ ...article, author: "Guest Writer" }))).not.toContain("team#");
+  });
+
+  it("credits every byline to the Organization when no team id is known", () => {
+    expect(blogPostingNode({ ...article, knownAuthorIds: [] }).author).toEqual({ "@id": "https://kheelona.com/#organization" });
+  });
+
+  it("matches a known author by the id the team page publishes for the name", () => {
+    expect(blogPostingNode({ ...article, author: "Apoorva Sahu" }).author).toEqual({
+      "@type": "Person",
+      "@id": "https://kheelona.com/team#apoorva-sahu",
+      name: "Apoorva Sahu",
+    });
+  });
+
+  it("takes the language as data, en-IN when the article does not say", () => {
+    expect(blogPostingNode(article).inLanguage).toBe("en-IN");
+    expect(blogPostingNode({ ...article, inLanguage: "hi-IN" }).inLanguage).toBe("hi-IN");
+  });
+
+  it.each(["", "english", "en_IN", "EN-in", "en-IN "])("refuses a language that is not a BCP 47 tag (%j)", (inLanguage) => {
+    expect(() => blogPostingNode({ ...article, inLanguage })).toThrow(/language/i);
   });
 });

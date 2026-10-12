@@ -1,10 +1,10 @@
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
-import { join, posix } from "node:path";
+import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { devNull, tmpdir } from "node:os";
+import { dirname, join, posix } from "node:path";
 import { runInThisContext } from "node:vm";
 import ts from "typescript";
-import { describe, expect, it } from "vitest";
+import { afterAll, describe, expect, it } from "vitest";
 import * as site from "@/config/site";
 import { BETA_HOSTS } from "@/config/env";
 import { FREEZE_TAG, ROOT, fixtureName, listFiles, readRepoBytes, readRepoFile, tagBytes, tagText } from "../e2e/support/repo";
@@ -23,10 +23,18 @@ import { isStillLegacy } from "./legacy-paths";
  *    test/guards/fixtures/tracking-diffs/<new path with "/" as "__">.patch: the D048 beta stamp
  *    and the B46 internal flag; the B9 value from a `valuePaise` prop (ADR-005). The diff between
  *    the tag's file and today's must EQUAL the stored patch, hunk for hunk, so any further edit
- *    turns this red until the patch is regenerated and reviewed. Regenerate a patch with:
- *      git show archive/pre-reset-2026-10-10:<old path> > /tmp/old && \
- *      git diff --no-index --no-color --diff-algorithm=myers -U3 /tmp/old <new path>
- *    and keep the review header above the first "@@" (it must name its decisions).
+ *    turns this red until the patch is regenerated and reviewed. Regenerate a patch from the
+ *    repository root under the instrument's own environment (neutralGitEnv: no GIT_* variable, no
+ *    configuration file, no attributes file, run outside the repository):
+ *      d="$(mktemp -d)" && git show archive/pre-reset-2026-10-10:<old path> > "$d/old" && \
+ *      env -i PATH="$PATH" HOME="$d" XDG_CONFIG_HOME="$d" GIT_CONFIG_NOSYSTEM=1 \
+ *        GIT_CONFIG_SYSTEM=/dev/null GIT_CONFIG_GLOBAL=/dev/null GIT_ATTR_NOSYSTEM=1 \
+ *        GIT_CEILING_DIRECTORIES="$(dirname "$d")" git -C "$d" diff --no-index --no-color \
+ *        --no-ext-diff --diff-algorithm=myers -U3 old "$PWD/<new path>"
+ *    and keep the review header above the first "@@" (it must name its decisions). The comparison
+ *    runs git with the user's and the system's configuration and attributes neutralised
+ *    (neutralGitEnv, task 2.13), so a setting such as diff.interHunkContext, or `* -diff` in
+ *    ~/.config/git/attributes, can never turn it red or green.
  * 3. The old copies are gone, and every test the tag ran on these components still runs (titles
  *    kept; one reviewed rename, B2a). No file under src/ imports a gate or the tracker from its old
  *    path, and every import of one names @/components/tracking/<Name> (a scan, so it holds when
@@ -97,26 +105,59 @@ const OLD_TARGETS: ReadonlySet<string> = new Set(MOVED.map((m) => m.then.replace
 
 /* ── Instruments ──────────────────────────────────────────────────────────────────────────── */
 
-/** The unified diff from `before` to the file at `path`, from its first hunk (headers dropped). */
-function hunks(before: string, path: string): string {
+/** `git diff --no-index` from file `a` to file `b`, run in `cwd` under exactly `env`. */
+function gitDiffNoIndex(a: string, b: string, env: NodeJS.ProcessEnv, cwd: string): string {
+  try {
+    return execFileSync("git", ["diff", "--no-index", "--no-color", "--no-ext-diff", "--diff-algorithm=myers", "-U3", a, b], {
+      cwd,
+      env,
+      encoding: "utf8",
+    });
+  } catch (e) {
+    // git diff --no-index exits 1 when the files differ; its stdout is the diff.
+    const err = e as { status?: number; stdout?: string };
+    if (err.status !== 1 || typeof err.stdout !== "string") throw e;
+    return err.stdout;
+  }
+}
+
+/**
+ * The environment the instrument runs git under (task 2.13): the caller's variables minus every
+ * GIT_* one (GIT_DIFF_OPTS overrides -U; GIT_CONFIG_COUNT, GIT_CONFIG_PARAMETERS and the config file
+ * variables carry settings), with the global and the system configuration files set to the null
+ * device, so no configuration setting (diff.interHunkContext, diff.suppressBlankEmpty,
+ * diff.indentHeuristic …) reaches git. The attributes files are switched off too, since git reads
+ * them whatever the configuration says: the global one (core.attributesFile defaults to
+ * $XDG_CONFIG_HOME/git/attributes, else ~/.config/git/attributes) by pointing HOME and
+ * XDG_CONFIG_HOME at `cwd`, the empty temporary folder; the system one ($(prefix)/etc/gitattributes)
+ * by GIT_ATTR_NOSYSTEM. So no user or machine setting can change a diff the stored patches are
+ * compared with (`* -diff` would make it "Binary files … differ"; diff=<driver> swaps the hunk
+ * headers). Repository configuration and attributes are out of reach as well: git runs in that
+ * folder, outside the repository, and may not look above it (GIT_CEILING_DIRECTORIES).
+ */
+function neutralGitEnv(base: NodeJS.ProcessEnv, cwd: string): NodeJS.ProcessEnv {
+  const env: NodeJS.ProcessEnv = { ...base };
+  for (const name of Object.keys(env)) if (name.startsWith("GIT_")) delete env[name];
+  return {
+    ...env,
+    HOME: cwd,
+    XDG_CONFIG_HOME: cwd,
+    GIT_CONFIG_NOSYSTEM: "1",
+    GIT_CONFIG_SYSTEM: devNull,
+    GIT_CONFIG_GLOBAL: devNull,
+    GIT_ATTR_NOSYSTEM: "1",
+    GIT_CEILING_DIRECTORIES: dirname(cwd),
+  };
+}
+
+/** The unified diff from `before` to the file at `path`, from its first hunk (headers dropped),
+ *  identical under any git configuration (`neutralGitEnv`). */
+function hunks(before: string, path: string, base: NodeJS.ProcessEnv = process.env): string {
   const dir = mkdtempSync(join(tmpdir(), "tracking-freeze-"));
   try {
     const old = join(dir, "old");
     writeFileSync(old, before);
-    let out = "";
-    try {
-      out = execFileSync(
-        "git",
-        ["diff", "--no-index", "--no-color", "--no-ext-diff", "--diff-algorithm=myers", "-U3", old, join(ROOT, path)],
-        { cwd: ROOT, encoding: "utf8" },
-      );
-    } catch (e) {
-      // git diff --no-index exits 1 when the files differ; its stdout is the diff.
-      const err = e as { status?: number; stdout?: string };
-      if (err.status !== 1 || typeof err.stdout !== "string") throw e;
-      out = err.stdout;
-    }
-    return fromFirstHunk(out);
+    return fromFirstHunk(gitDiffNoIndex(old, join(ROOT, path), neutralGitEnv(base, dir), dir));
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
@@ -272,6 +313,67 @@ describe("tracking-freeze instruments", () => {
     expect(d).toMatch(/^@@ -\d+,\d+ \+\d+,\d+ @@/);
     expect(d).toContain('-  return `purchase-${orderRef}`;');
     expect(d).toContain('+  return `purchase_${orderRef}`;');
+  });
+
+  /* Task 2.13: the stored patches are compared hunk for hunk, so the diff must not depend on who
+     runs it. Each hostile setting below changes git's output when it reaches git (the control);
+     the instrument must give the default result anyway. */
+  describe("diffs the same whatever the user's or the system's git configuration says", () => {
+    const path = "src/lib/fbq.ts";
+    const now = readRepoFile(path);
+    // Two changes nine unchanged lines apart: two hunks at -U3, one hunk under diff.interHunkContext=10.
+    const before = now.replace('window.fbq?.("track"', 'window.fbq?.("trackX"').replace("purchase_", "purchase-");
+    const HOSTILE_CONFIG = "[diff]\n\tinterHunkContext = 10\n";
+    const home = mkdtempSync(join(tmpdir(), "tracking-freeze-home-"));
+    const hostileFile = join(home, ".gitconfig");
+    writeFileSync(hostileFile, HOSTILE_CONFIG);
+    const oldFile = join(home, "old");
+    writeFileSync(oldFile, before);
+    // git reads a global attributes file even when GIT_CONFIG_GLOBAL is the null device:
+    // core.attributesFile defaults to $XDG_CONFIG_HOME/git/attributes, else ~/.config/git/attributes
+    // (the 2.13 review). `-diff` turns the diff into "Binary files … differ"; diff=python swaps the
+    // hunk headers' function context.
+    const emptyHome = join(home, "empty");
+    const attrHome = join(home, "attr-home");
+    const xdgHome = join(home, "xdg");
+    mkdirSync(emptyHome);
+    mkdirSync(join(attrHome, ".config", "git"), { recursive: true });
+    writeFileSync(join(attrHome, ".config", "git", "attributes"), "* -diff\n");
+    mkdirSync(join(xdgHome, "git"), { recursive: true });
+    writeFileSync(join(xdgHome, "git", "attributes"), "*.ts diff=python\n");
+    afterAll(() => rmSync(home, { recursive: true, force: true }));
+
+    const cases: readonly [string, Readonly<Record<string, string>>][] = [
+      ["diff.interHunkContext=10 in ~/.gitconfig", { HOME: home, XDG_CONFIG_HOME: home }],
+      ["diff.interHunkContext=10 in the file GIT_CONFIG_GLOBAL names", { GIT_CONFIG_GLOBAL: hostileFile }],
+      ["diff.interHunkContext=10 in the file GIT_CONFIG_SYSTEM names", { GIT_CONFIG_SYSTEM: hostileFile, GIT_CONFIG_NOSYSTEM: "" }],
+      ["diff.interHunkContext=10 passed as -c through GIT_CONFIG_COUNT", { GIT_CONFIG_COUNT: "1", GIT_CONFIG_KEY_0: "diff.interHunkContext", GIT_CONFIG_VALUE_0: "10" }],
+      ["GIT_DIFF_OPTS=--unified=10", { GIT_DIFF_OPTS: "--unified=10" }],
+      ["`* -diff` in ~/.config/git/attributes (git's default attributes file)", { HOME: attrHome, XDG_CONFIG_HOME: "" }],
+      ["`*.ts diff=python` in $XDG_CONFIG_HOME/git/attributes", { HOME: emptyHome, XDG_CONFIG_HOME: xdgHome }],
+    ];
+
+    it("splits the planted pair into two hunks by default", () => {
+      expect(hunks(before, path).match(/^@@ /gm)).toHaveLength(2);
+    });
+
+    /* The system attributes file ($(prefix)/etc/gitattributes) is compiled into git, so no test can
+       plant one without writing outside the sandbox; the instrument switches it off by name. */
+    it("never reads the system attributes file, and points HOME and XDG_CONFIG_HOME at the empty folder", () => {
+      const dir = join(home, "cwd");
+      expect(neutralGitEnv({ ...process.env, HOME: attrHome, XDG_CONFIG_HOME: xdgHome, GIT_ATTR_NOSYSTEM: "" }, dir)).toMatchObject({
+        GIT_ATTR_NOSYSTEM: "1",
+        HOME: dir,
+        XDG_CONFIG_HOME: dir,
+      });
+    });
+
+    it.each(cases)("%s", (_name, vars) => {
+      const hostile = { ...process.env, ...vars };
+      const control = fromFirstHunk(gitDiffNoIndex(oldFile, join(ROOT, path), hostile, ROOT));
+      expect(control, "the hostile setting must change a plain git run, or this case proves nothing").not.toBe(hunks(before, path));
+      expect(hunks(before, path, hostile)).toBe(hunks(before, path));
+    });
   });
 
   it("reads describe and it titles, nested, including it.each", () => {

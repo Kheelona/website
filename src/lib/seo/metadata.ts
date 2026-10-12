@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import type { IsoDate, Meta, Offer, SitePath } from "@/content/types";
+import type { Copy, IsoDate, Meta, Offer, SitePath } from "@/content/types";
+import { isModeVariant } from "@/lib/content/mode";
 import { toPlainText } from "@/lib/content/plain-text";
-import { leadWithHeadline } from "./price-lead";
+import { leadWithHeadline, noTypedAmount } from "./price-lead";
 
 /**
  * A page's metadata from its content module (ADR-012, architecture §9.1).
@@ -19,7 +20,9 @@ import { leadWithHeadline } from "./price-lead";
  *    root layout's beta noindex. The return type cannot hold one, and the object is built field by
  *    field, so nothing in the input passes through.
  * 4. **Machine-read text leads with the total** (D028): with an offer, a title or description whose
- *    first amount is not the offer's headline amount stops the build.
+ *    first amount is not the offer's headline amount stops the build. And every amount is a
+ *    `{price:…}` token: a typed rupee amount in either mode's source stops the build, with or
+ *    without an offer (task 2.13).
  *
  * Paths stay root-relative: the root layout's `metadataBase` (`CANONICAL_ORIGIN`) makes them
  * absolute, on the production origin in every environment (accepted on beta, N8).
@@ -51,10 +54,17 @@ export type PageMetadata = Pick<Metadata, "title" | "description" | "alternates"
 /** `/`, or slash-separated segments with no trailing slash, query or fragment. */
 const CANONICAL_PATH = /^\/(?:[A-Za-z0-9._~%-]+(?:\/[A-Za-z0-9._~%-]+)*)?$/;
 
+/** Every source string of a piece of copy: both modes of a variant, whichever one renders. */
+function sources(copy: Copy): readonly string[] {
+  return isModeVariant(copy) ? [copy.token, copy.full] : [copy];
+}
+
 export function pageMeta({ title, description, og, path, offer, article }: PageMetaInput): PageMetadata {
   if (!CANONICAL_PATH.test(path)) {
     throw new Error(`pageMeta: "${path}" cannot be a canonical (a site path without fragment, query or trailing slash)`);
   }
+  for (const source of sources(title)) noTypedAmount(source, `The title of ${path}`);
+  for (const source of sources(description)) noTypedAmount(source, `The meta description of ${path}`);
   const titleText = toPlainText(title, offer);
   const descriptionText = toPlainText(description, offer);
   if (offer) {

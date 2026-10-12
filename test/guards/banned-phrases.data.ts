@@ -111,7 +111,11 @@ export const BANNED_PHRASES: readonly BannedPhrase[] = [
   { id: "offer-no-commitment", kind: "offer", claimsRow: R18, pattern: /\bdoes not commit you to buy\b|\bno commitment\b/i, planted: "Reserving now does not commit you to buy.", why: "A paid token is a commitment we refund on request: say refundable." },
   { id: "offer-reserving-free", kind: "offer", claimsRow: R18, pattern: new RegExp(`\\b(?:reserv\\w*|spot|place)\\b[\\s\\S]{0,60}\\b(?:is|it is|it${APOS}s) free\\b`, "i"), planted: "Reserve a spot on the list. It is free, and it holds the launch price.", why: "Nothing about a reservation is free. Whole words, so \"replacement … is free\" passes." },
   // ── Row 19: "Lumi" only as alternateName and in the rename answer ──
-  { id: "lumi", kind: "claim", claimsRow: R19, pattern: /\bLumi\b/, allowSentence: /\bsame as Lumi\b|\bcalled Lumi\b|\bsold as Lumi\b|^Lumi$/, planted: "Meet Lumi, the toy that talks back.", why: "Renamed 2026-09-05; allowed only as alternateName and in \"Is Kheelu the same as Lumi?\"." },
+  // The alternateName line of src/content/en-IN/products/kheelu/product.ts reaches the code scan as
+  // the sentence `alternateName: "Lumi",`; the bare string "Lumi" is how the content scan reads it
+  // (task 2.13; architecture §6.1, §9.2). The allowance has no file scope (findBanned takes no
+  // path), so that sentence passes in any file; row 19 allows "Lumi" as alternateName anywhere.
+  { id: "lumi", kind: "claim", claimsRow: R19, pattern: /\bLumi\b/, allowSentence: /\bsame as Lumi\b|\bcalled Lumi\b|\bsold as Lumi\b|^Lumi$|^alternateName: "Lumi",?$/, planted: "Meet Lumi, the toy that talks back.", why: "Renamed 2026-09-05; allowed only as alternateName and in \"Is Kheelu the same as Lumi?\"." },
   // ── Row 20: the positioning's never-say list ──
   { id: "never-iq", kind: "claim", claimsRow: R20, pattern: new RegExp(`\\bboosts? (?:your child${APOS}s |a child${APOS}s |their )?IQ\\b|\\bmakes? (?:your child|kids|children|them) smarter\\b|\\b2x faster\\b|\\btwice as fast\\b|\\bgenius\\b`, "i"), planted: "It boosts IQ and makes your child smarter.", why: "ASCI substantiation and anti-anxiety rules (positioning guardrails)." },
   { id: "never-anxiety", kind: "claim", claimsRow: R20, pattern: new RegExp(`\\bdon${APOS}t miss the window\\b|\\b(?:will|could|might) fall behind\\b`, "i"), planted: "Don't miss the window, or your child will fall behind.", why: "Anti-anxiety rule (positioning guardrails)." },

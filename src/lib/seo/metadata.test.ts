@@ -105,6 +105,32 @@ describe("pageMeta", () => {
     expect(() => pageMeta({ ...titleWithAdvance, path: "/products/kheelu", offer: fullOffer })).toThrow(/lead with ₹7,999/);
   });
 
+  /* Task 2.13 (the 2.7 review's probe): "Reserve Kheelu for ₹499" without an offer passed, because
+     the D028 check runs only with an offer. Every amount is a {price:…} token (architecture §6.2),
+     so a typed amount is refused in any mode and with or without an offer: it can never follow the
+     checkout's price, and it can lead a machine-read line with the advance. */
+  const plain = { og: { image: "/og.png" as const, alt: "" }, path: "/x" as const };
+  it.each([
+    ["a title, no offer", { ...plain, title: "Reserve Kheelu for ₹499", description: "Plain." }, undefined, /title of \/x/],
+    ["a description, no offer", { ...plain, title: "Plain", description: "Kheelu costs ₹4,999 in total." }, undefined, /description of \/x/],
+    ["a title that leads with the headline", { ...plain, title: "₹4,999 Kheelu", description: "Plain." }, tokenOffer, /title of \/x/],
+    ["a spaced amount", { ...plain, title: "Kheelu for ₹ 4,999", description: "Plain." }, undefined, /title/],
+    ["Rs", { ...plain, title: "Kheelu for Rs. 4999", description: "Plain." }, undefined, /title/],
+    ["INR", { ...plain, title: "Plain", description: "Kheelu is INR 4999." }, undefined, /description/],
+    ["rupees", { ...plain, title: "Plain", description: "Kheelu is 4999 rupees." }, undefined, /description/],
+    ["the mode the offer does not pick", { ...plain, title: "Plain", description: { token: "Kheelu is {price:headline}.", full: "Kheelu is ₹7,999." } }, tokenOffer, /description of \/x/],
+  ] as const)("refuses a typed rupee amount in %s", (_name, meta, offer, where) => {
+    expect(() => pageMeta({ ...meta, offer })).toThrow(/typed rupee amount/);
+    expect(() => pageMeta({ ...meta, offer })).toThrow(where);
+  });
+
+  it("accepts the same amounts as {price:…} tokens, and words that only look like amounts", () => {
+    expect(pageMeta({ ...plain, title: "Kheelu for {price:headline}", description: "Plain.", offer: tokenOffer }).title).toEqual({
+      absolute: "Kheelu for ₹4,999",
+    });
+    expect(() => pageMeta({ ...plain, title: "Kheelu for ages 3 to 7", description: "36 months of Kheelona+. Rs is not a price." })).not.toThrow();
+  });
+
   it("refuses a canonical that is not the page's own clean path", () => {
     const base = { title: "T", description: "D", og: { image: "/og.png" as const, alt: "" } };
     expect(() => pageMeta({ ...base, path: "/products/kheelu#offer" })).toThrow(/canonical/);

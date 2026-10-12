@@ -109,12 +109,11 @@ describe("schema facts (architecture §9.2)", () => {
     expect(product.schema.countryOfOrigin).toBe("IN");
   });
 
-  it("leave out the former name until the banned-phrases guard allows it as alternateName", () => {
-    /* Claims §4 row 19 allows the old name only as alternateName and in the rename answer, but the
-       guard's scan of new src code reads `alternateName: "Lumi"` as a banned use: its allowance
-       matches a bare string only. Reported to the main session with task 2.1; the field is added
-       here, and this test flipped, in the commit that widens the allowance. */
-    expect("alternateName" in product.schema).toBe(false);
+  it("name the former name as alternateName, so one product never reads as two", () => {
+    /* Architecture §6.1 and §9.2; claims §4 row 19 allows the old name only as alternateName and in
+       the rename answer. The banned-phrases guard's `lumi` entry allows this line's sentence (task
+       2.13; in any file, since the guard takes no path), added in the same commit as this assertion. */
+    expect(product.schema.alternateName).toBe("Lumi");
   });
 
   it("state the 3 to 7 band, never 3+ alone", () => {

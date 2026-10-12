@@ -19,6 +19,7 @@ import {
   EXCLUDED,
   decide,
   findPlaceholders,
+  isNeverShipped,
   scanBuild,
   scanSource,
 } from "../../scripts/guards/placeholders.mjs";
@@ -85,6 +86,9 @@ describe("findPlaceholders: one text", () => {
     ["a draft in single quotes", `status: 'draft'`, "draft"],
     ["a draft as JSON", `{"status":"draft","approvedOn":"x"}`, "draft"],
     ["a draft in escaped flight data", `self.__next_f.push([1,"{\\"status\\":\\"draft\\"}"])`, "draft"],
+    // Task 2.13: a template literal is a string too.
+    ["a draft in backticks", "  status: `draft`,", "draft"],
+    ["a draft in backticks, no spaces", "{status:`draft`}", "draft"],
   ])("red on %s", (_name, text, pattern) => {
     expect(findPlaceholders(text).map((h) => h.pattern)).toEqual([pattern]);
   });
@@ -137,7 +141,7 @@ describe("scanSource: src/ before next build", () => {
     const token = `export const x = "{ph:F4 x}";\n`;
     const scan = scanSource(
       tree({
-        "src/lib/content/placeholder.test.ts": token,
+        "src/lib/content/placeholder.tsx": token,
         "src/content/en-IN/placeholder.ts": token,
         "src/lib/types.ts": token,
         "src/content/types.tsx": token,
@@ -146,9 +150,130 @@ describe("scanSource: src/ before next build", () => {
     expect(scan.findings.map((f: { file: string }) => f.file).sort()).toEqual([
       "src/content/en-IN/placeholder.ts",
       "src/content/types.tsx",
-      "src/lib/content/placeholder.test.ts",
+      "src/lib/content/placeholder.tsx",
       "src/lib/types.ts",
     ]);
+  });
+
+  /* Wave-2 close ruling (task 2.13): files that never ship are not scanned, and their count is
+     printed; the postbuild scan of the prerendered output still covers everything that ships. */
+  const NEVER_SHIPPED_FILES = {
+    "src/components/ui/X/X.test.tsx": "[PLACEHOLDER F4: x]",
+    "src/lib/content/placeholder.test.ts": "{ph:F4 x}",
+    "src/components/ui/X/X.spec.ts": "{ph:F4 x}",
+    "src/components/ui/X/X.test-d.tsx": "{ph:F4 x}",
+    "src/components/ui/X/X.stories.tsx": "[PLACEHOLDER F4: x]",
+    "src/components/ui/X/X.stories.mdx": "{ph:F4 x}",
+    "src/components/ui/X/__snapshots__/X.test.tsx.snap": "[PLACEHOLDER F4: x]",
+    "src/lib/seo/schema/__snapshots__/notes.txt": "{ph:F4 x}",
+    "src/lib/seo/schema/__fixtures__/schema-fixture.html": "[PLACEHOLDER F4: x]",
+    "src/content/__fixtures__/legal/privacy.ts": `export const privacy = { status: "draft" };\n`,
+  };
+
+  it("skips the files that never ship: tests, specs, type tests, stories, snapshots, fixtures", () => {
+    const scan = scanSource(tree({ ...NEVER_SHIPPED_FILES, "src/content/en-IN/offer.ts": CLEAN_MODULE }));
+    expect(scan.findings).toEqual([]);
+    expect(scan.files).toBe(1);
+    expect(scan.notShipped).toBe(Object.keys(NEVER_SHIPPED_FILES).length);
+  });
+
+  it.each([
+    ["a module whose name holds the word test", "src/lib/latest.ts"],
+    ["a module named for a spec sheet", "src/content/en-IN/specs.ts"],
+    ["a stories content module", "src/content/en-IN/stories/hub.ts"],
+    ["a fixtures folder without the underscores", "src/content/fixtures/x.ts"],
+    ["a snapshot-like name outside __snapshots__", "src/lib/x.snap.ts"],
+  ])("still scans %s (%s)", (_name, path) => {
+    const scan = scanSource(tree({ [path]: `export const x = "{ph:F4 x}";\n` }));
+    expect(scan.findings.map((f: { file: string }) => f.file)).toEqual([path]);
+    expect(scan.notShipped).toBe(0);
+  });
+
+  /* The 2.13 review: dynamic routes (/store/*, /api/*) are never prerendered, so the output scan
+     never reads them; a shipped file importing a fixture slipped past both scans. A never-shipped
+     file that shipped code imports (relative or @/, followed through every hop) ships, so it is
+     scanned and named. */
+  const FIXTURE_NOTE = `export const note = { text: "{ph:F4 battery}", status: "draft" };\n`;
+
+  it("scans a fixture a shipped store route imports, and production refuses it", () => {
+    const root = tree({
+      "src/app/store/x/page.tsx": `import { note } from "./__fixtures__/note";\nexport default function Page() { return <p>{note.text}</p>; }\n`,
+      "src/app/store/x/__fixtures__/note.ts": FIXTURE_NOTE,
+    });
+    const scan = scanSource(root);
+    expect(scan.findings.map((f: { file: string; pattern: string }) => `${f.file} ${f.pattern}`)).toEqual([
+      "src/app/store/x/__fixtures__/note.ts token",
+      "src/app/store/x/__fixtures__/note.ts draft",
+    ]);
+    expect(scan.files).toBe(2);
+    expect(scan.notShipped).toBe(0);
+    expect(scan.importedNeverShipped).toEqual([{ file: "src/app/store/x/__fixtures__/note.ts", by: "src/app/store/x/page.tsx" }]);
+    expect(decide("production", scan).code).toBe(1);
+  });
+
+  it.each([
+    ["an export-from", `export { note } from "./__fixtures__/note";`, "src/lib/__fixtures__/note.ts"],
+    ["an export-star", `export * from "@/lib/__fixtures__/note";`, "src/lib/__fixtures__/note.ts"],
+    ["a side-effect import", `import "./__fixtures__/note.css";`, "src/lib/__fixtures__/note.css"],
+    ["a dynamic import", `export const load = () => import("./__fixtures__/note");`, "src/lib/__fixtures__/note.ts"],
+    ["a require", `const n = require("../lib/__fixtures__/note.json");`, "src/lib/__fixtures__/note.json"],
+    ["a folder's index", `import { note } from "@/lib/__fixtures__/dir";`, "src/lib/__fixtures__/dir/index.tsx"],
+    ["a story by its full name", `import { meta } from "./X.stories.tsx";`, "src/lib/X.stories.tsx"],
+    ["a multi-line import", `import {\n  note,\n} from "./__fixtures__/note";`, "src/lib/__fixtures__/note.ts"],
+  ])("follows %s to the never-shipped file it names", (_name, importer, target) => {
+    const scan = scanSource(
+      tree({
+        "src/lib/shipped.ts": `${importer}\n`,
+        [target]: `export const note = "{ph:F4 x}";\n`,
+        "src/lib/__fixtures__/other.ts": `export const other = "{ph:F4 y}";\n`,
+      }),
+    );
+    expect(scan.findings.map((f: { file: string }) => f.file)).toEqual([target]);
+    expect(scan.notShipped).toBe(1);
+  });
+
+  it("follows every hop: a pulled-in fixture's own imports ship too", () => {
+    const scan = scanSource(
+      tree({
+        "src/lib/a.ts": `export { b } from "@/lib/__fixtures__/b";\n`,
+        "src/lib/__fixtures__/b.ts": `export * from "./c.test-d";\n`,
+        "src/lib/__fixtures__/c.test-d.ts": `export const c = "{ph:F4 c}";\n`,
+      }),
+    );
+    expect(scan.findings.map((f: { file: string }) => f.file)).toEqual(["src/lib/__fixtures__/c.test-d.ts"]);
+    expect(scan.importedNeverShipped).toEqual([
+      { file: "src/lib/__fixtures__/b.ts", by: "src/lib/a.ts" },
+      { file: "src/lib/__fixtures__/c.test-d.ts", by: "src/lib/__fixtures__/b.ts" },
+    ]);
+    expect(scan.notShipped).toBe(0);
+  });
+
+  it("leaves a fixture alone when only tests, stories or packages name it", () => {
+    const scan = scanSource(
+      tree({
+        "src/lib/a.test.ts": `import { note } from "./__fixtures__/note";\n`,
+        "src/lib/a.stories.tsx": `import { note } from "@/lib/__fixtures__/note";\n`,
+        "src/lib/a.ts": `import x from "__fixtures__/note";\nimport y from "@ds/__fixtures__/note";\nimport z from "./__fixtures__/missing";\nexport const s = "./__fixtures__/note";\n`,
+        "src/lib/__fixtures__/note.ts": FIXTURE_NOTE,
+      }),
+    );
+    expect(scan.findings).toEqual([]);
+    expect(scan.importedNeverShipped).toEqual([]);
+    expect(scan.notShipped).toBe(3);
+  });
+
+  it.each([
+    ["src/components/ui/X/X.test.tsx", true],
+    ["src/components/ui/X/X.spec.ts", true],
+    ["src/components/ui/X/X.test-d.ts", true],
+    ["src/components/ui/X/X.stories.tsx", true],
+    ["src/a/__snapshots__/b.snap", true],
+    ["src/a/__fixtures__/b.html", true],
+    ["src/content/en-IN/stories/hub.ts", false],
+    ["src/lib/latest.ts", false],
+    ["src/content/en-IN/specs.ts", false],
+  ])("isNeverShipped(%s) is %s", (path, expected) => {
+    expect(isNeverShipped(path)).toBe(expected);
   });
 
   it("reads every text file in src/: modules, components, CSS, markdown, JSON", () => {
@@ -287,6 +412,40 @@ describe("decide: production refuses, every other environment reports", () => {
     }
   });
 
+  it("prints how many files were not scanned because they never ship, on every source run", () => {
+    const withTests = (files: Record<string, string>) =>
+      scanSource(tree({ ...files, "src/a/A.test.tsx": "{ph:F4 x}", "src/a/A.stories.tsx": "x", "src/a/__fixtures__/f.html": "x" }));
+    const runs = [
+      decide("production", withTests({ "src/content/en-IN/offer.ts": CLEAN_MODULE })),
+      decide("production", withTests({ [PLANTED_PATH]: PLANTED_MODULE })),
+      decide("beta", withTests({ [PLANTED_PATH]: PLANTED_MODULE })),
+      decide("development", withTests({ "src/content/en-IN/offer.ts": CLEAN_MODULE })),
+    ];
+    for (const d of runs) {
+      expect([...d.out, ...d.err].join("\n")).toContain("[placeholders] not scanned (never shipped): 3 files");
+    }
+    expect(runs.map((d) => d.code)).toEqual([0, 1, 0, 0]);
+  });
+
+  it("names each never-shipped file it scanned because shipped code imports it, and says nothing when none is", () => {
+    const pulled = scanSource(
+      tree({
+        "src/app/store/x/page.tsx": `import { note } from "./__fixtures__/note";\n`,
+        "src/app/store/x/__fixtures__/note.ts": `export const note = "ok";\n`,
+      }),
+    );
+    for (const d of [decide("production", pulled), decide("beta", dirty)]) expect(d.code).toBe(0);
+    expect(decide("production", pulled).out).toContain(
+      "[placeholders] scanned as shipped (shipped code imports them): src/app/store/x/__fixtures__/note.ts (from src/app/store/x/page.tsx)",
+    );
+    expect(decide("beta", dirty).out.join("\n")).not.toContain("scanned as shipped");
+  });
+
+  it("says nothing about never-shipped files on an output scan (everything there ships)", () => {
+    const d = decide("beta", scanBuild(tree({ ".next/server/app/index.html": "<main>ok</main>" })));
+    expect([...d.out, ...d.err].join("\n")).not.toContain("never shipped");
+  });
+
   it("production with nothing to scan: exit 1 (an empty scan cannot vouch for a build); elsewhere a note and exit 0", () => {
     expect(decide("production", nothing).code).toBe(1);
     expect(decide("production", nothing).err.join("\n")).toMatch(/nothing to scan/i);
@@ -378,5 +537,6 @@ describe("npm run verify reports the open placeholders in the live src/", () => 
     expect(r.code, r.all).toBe(0);
     expect(r.out).toMatch(/src\/: (?:no open placeholders|\d+ open placeholders?)/);
     for (const path of EXCLUDED) expect(r.out).toContain(path);
+    expect(r.out).toMatch(/not scanned \(never shipped\): [1-9]\d* files/);
   });
 });
