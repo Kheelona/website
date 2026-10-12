@@ -58,7 +58,7 @@ export const safetyPage = {
     /* Fold 2: the four facts in full, in the D020 order; each titled fact is a question of the page's FAQPage. */
     {
       kind: "trust-section",
-      faq: false,
+      faq: true,
       config: {
         variant: "facts",
         id: "facts",
