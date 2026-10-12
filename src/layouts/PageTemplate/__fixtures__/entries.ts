@@ -161,7 +161,7 @@ export const ENTRY_FIXTURES: { readonly [K in SectionKind]: SectionEntryOf<K> } 
     kind: "article-head",
     config: {
       head: { title: "A {hand:guide}", author: "The Kheelona team" },
-      published: "2026-10-01",
+      published: "2026-09-15",
       trail: [{ name: "Stories", path: "/stories" }],
       labels: { breadcrumb: "Breadcrumb", published: "First published" },
     },
