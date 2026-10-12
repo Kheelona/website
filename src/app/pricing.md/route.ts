@@ -80,10 +80,7 @@ export function pricingText(offer: Offer): string {
 }
 
 export async function GET() {
-  return new Response(pricingText(await getOffer()), {
-    headers: {
-      "content-type": "text/markdown; charset=utf-8",
-      "cache-control": "public, max-age=3600",
-    },
-  });
+  /* No cache-control of its own: Next sends the ISR header (s-maxage=300, stale-while-revalidate), so no
+     browser or shared cache keeps a body past the offer window (ADR-005). */
+  return new Response(pricingText(await getOffer()), { headers: { "content-type": "text/markdown; charset=utf-8" } });
 }

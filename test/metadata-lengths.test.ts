@@ -191,6 +191,7 @@ describe("the copy pages this guard reads", () => {
       expect(copy.title.length, slug).toBeLessThanOrEqual(TITLE_MAX);
       for (const mode of MODES) expect(copy.description[mode].length, `${slug} ${mode}`).toBeLessThanOrEqual(DESCRIPTION_MAX);
     }
-    expect(COPY_PAGE.size).toBe(15);
+    // A floor, never a count (15 marketing mockups on 2026-10-12), so the map cannot go empty unnoticed.
+    expect(COPY_PAGE.size).toBeGreaterThanOrEqual(15);
   });
 });
