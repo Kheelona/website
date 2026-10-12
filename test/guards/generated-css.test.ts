@@ -269,7 +269,7 @@ describe("fonts", () => {
   });
 
   it("ships OFL.txt as build-fonts.mjs writes it today (drift)", () => {
-    const plan = fontPlan(TOKENS, collectDevanagari(ROOT).keys());
+    const plan = fontPlan(TOKENS, [...collectDevanagari(ROOT).keys()]);
     const notices = plan.map((f) => ({ family: f.family, ...licenceNotice(dsFont(f.source)) }));
     expect(read("public/fonts/OFL.txt")).toBe(renderOfl(plan, notices));
   });
@@ -312,7 +312,7 @@ describe("fonts", () => {
   });
 
   it("matches what build-fonts.mjs writes today: CSS and preload list (drift)", () => {
-    const plan = fontPlan(TOKENS, collectDevanagari(ROOT).keys());
+    const plan = fontPlan(TOKENS, [...collectDevanagari(ROOT).keys()]);
     expect(fontsCss).toBe(renderFontsCss(plan));
     expect(read(`${GENERATED}/fonts.generated.ts`)).toBe(renderPreloads(plan));
   });

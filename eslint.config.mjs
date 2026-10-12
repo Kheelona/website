@@ -68,6 +68,8 @@ const eslintConfig = defineConfig([
     "mockup/**",
     "wiki/**",
     "storybook-static/**",
+    // Agent worktrees of the build workflow (each a full copy of the repo, with its own build output).
+    ".claude/**",
     "test-results/**",
     "playwright-report/**",
     "lighthouse-reports/**",
