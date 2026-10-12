@@ -15,7 +15,7 @@ const RENAME: Record<string, string[]> = { "mk-compare-stack": ["ks-compare-stac
 
 function shape(el: Element, depth = 0): string[] {
   const classes = [...el.classList].flatMap((c) => RENAME[c] ?? [c]);
-  const line = `${"  ".repeat(depth)}${el.tagName.toLowerCase()}${classes.sort().map((c) => `.${c}`).join("")}`;
+  const line = `${"  ".repeat(depth)}${el.tagName.toLowerCase()}${classes.sort().map((c) => `.${c}`).join("")}${el.hasAttribute("data-reveal") ? "[data-reveal]" : ""}`;
   if (el.tagName.toLowerCase() === "svg") return [line];
   return [line, ...[...el.children].flatMap((c) => shape(c, depth + 1))];
 }

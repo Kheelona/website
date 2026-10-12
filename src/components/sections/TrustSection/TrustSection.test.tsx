@@ -34,7 +34,7 @@ function shape(el: Element, depth = 0): string[] {
   const classes = [...el.classList].flatMap((c) => RENAME[c] ?? [c]);
   // TrustList resets its lists with the shared class (mockup.css:95, safety.css:6, ai-toys-for-kids-in-india.css:6).
   if (/^(ul|ol)$/i.test(el.tagName) && el.classList.contains("kh-trust")) classes.push("ks-list-reset");
-  const line = `${"  ".repeat(depth)}${el.tagName.toLowerCase()}${[...new Set(classes)].sort().map((c) => `.${c}`).join("")}`;
+  const line = `${"  ".repeat(depth)}${el.tagName.toLowerCase()}${[...new Set(classes)].sort().map((c) => `.${c}`).join("")}${el.hasAttribute("data-reveal") ? "[data-reveal]" : ""}`;
   if (STOP(el)) return [line];
   return [line, ...[...el.children].flatMap((c) => shape(c, depth + 1))];
 }

@@ -24,7 +24,7 @@ function shape(el: Element, depth = 0): string[] {
   const classes = [...el.classList].flatMap((c) => RENAME[c] ?? [c]);
   // Card marks every link of the contact cards' row as a full tap target (G-01; contact.css:21).
   if (el.tagName === "A" && el.parentElement?.classList.contains("mk-card-links")) classes.push("ks-card__link--tap");
-  const line = `${"  ".repeat(depth)}${el.tagName.toLowerCase()}${classes.sort().map((c) => `.${c}`).join("")}`;
+  const line = `${"  ".repeat(depth)}${el.tagName.toLowerCase()}${classes.sort().map((c) => `.${c}`).join("")}${el.hasAttribute("data-reveal") ? "[data-reveal]" : ""}`;
   if (el.tagName.toLowerCase() === "svg") return [line];
   return [line, ...[...el.children].flatMap((c) => shape(c, depth + 1))];
 }

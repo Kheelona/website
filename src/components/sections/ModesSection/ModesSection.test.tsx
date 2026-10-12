@@ -27,7 +27,7 @@ function shape(el: Element, depth = 0): string[] {
   const classes = [...el.classList].flatMap((c) => RENAME[c] ?? [c]);
   // Home's language list resets itself inline (home.html:180); the build uses the shared reset class.
   if (el.classList.contains("kh-langs") && !classes.includes("ks-list-reset")) classes.push("ks-list-reset");
-  const line = `${"  ".repeat(depth)}${el.tagName.toLowerCase()}${classes.sort().map((c) => `.${c}`).join("")}`;
+  const line = `${"  ".repeat(depth)}${el.tagName.toLowerCase()}${classes.sort().map((c) => `.${c}`).join("")}${el.hasAttribute("data-reveal") ? "[data-reveal]" : ""}`;
   if (el.tagName.toLowerCase() === "svg" || el.classList.contains("kh-photo")) return [line];
   return [line, ...[...el.children].flatMap((c) => shape(c, depth + 1))];
 }
