@@ -18,7 +18,9 @@ import { isStillLegacy } from "./legacy-paths";
  * 2. `home-arc` and `compare` are reserved: registered, never a CtaId, never written by new code.
  * 3. Legacy code still writes only the eight; new code writes only registered, non-reserved
  *    values, and only the Button primitive writes the attribute from a variable (its typed
- *    `cta: CtaId` prop); any other writer must use a literal the registry knows.
+ *    `cta: CtaId` prop); any other writer must use a literal the registry knows. A write is the
+ *    attribute in JSX, the attribute's name as an object key (spread onto an element, the way the
+ *    Button writes it) or as any other string (a DOM call, a constant used as a key).
  * 4. `Button` with `variant="cta"` refuses to compile without a CtaId (architecture §8.3; the
  *    Button is task 2.2's): checked by compiling probes against src/components/ui/Button/Button.tsx
  *    once it exists. The probe instrument is proven on every run against two stand-ins, a strict
@@ -57,13 +59,45 @@ describe("cta-registry: the eight existing values, byte for byte", () => {
 
 /* ── 3. Who writes which value ────────────────────────────────────────────────────────────── */
 
-type Write = { path: string; line: number; attr: string; value: string | null };
+type Write = { path: string; line: number; attr: string; value: string | null; at: number };
 
-/** Every CTA write in a file: the attribute itself, a `cta` prop, and the legacy `track` prop. */
+/** A string literal's text (plain or template without substitutions), else null. */
+function literalText(e: ts.Node | undefined): string | null {
+  return e && (ts.isStringLiteral(e) || ts.isNoSubstitutionTemplateLiteral(e)) ? e.text : null;
+}
+
+/** The attribute's name used outside JSX attribute syntax: as an object key, quoted or computed
+ *  (`{ "data-ph-capture-attribute-cta": cta }`, spread onto an element), or as any other string
+ *  (`setAttribute("data-ph-capture-attribute-cta", v)`, a constant later used as a key). The value
+ *  is known only for an object key with a literal value; everything else is a variable write. */
+function attributeNameWrites(path: string, sf: ts.SourceFile): Write[] {
+  const out: Write[] = [];
+  const at = (n: ts.Node) => ({ line: sf.getLineAndCharacterOfPosition(n.getStart(sf)).line + 1, at: n.getStart(sf) });
+  const visit = (node: ts.Node): void => {
+    if (ts.isPropertyAssignment(node)) {
+      const key = ts.isComputedPropertyName(node.name) ? node.name.expression : node.name;
+      if (literalText(key) === ATTRIBUTE) {
+        out.push({ path, attr: ATTRIBUTE, value: literalText(node.initializer), ...at(node) });
+        visit(node.initializer);
+        return;
+      }
+    } else if (literalText(node) === ATTRIBUTE && !ts.isImportDeclaration(node.parent)) {
+      out.push({ path, attr: ATTRIBUTE, value: null, ...at(node) });
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(sf);
+  return out;
+}
+
+/** Every CTA write in a file, in source order: the attribute itself (in JSX, as an object key or
+ *  any other string), a `cta` prop, and the legacy `track` prop. */
 function ctaWrites(path: string, text: string): Write[] {
-  return jsxAttributes(parseSource(path, text))
+  const sf = parseSource(path, text);
+  const jsx = jsxAttributes(sf)
     .filter((a) => a.name === ATTRIBUTE || a.name === "cta" || a.name === "track")
-    .map((a) => ({ path, line: a.line, attr: a.name, value: a.value }));
+    .map((a) => ({ path, line: a.line, attr: a.name, value: a.value, at: a.node.getStart(sf) }));
+  return [...jsx, ...attributeNameWrites(path, sf)].sort((a, b) => a.at - b.at);
 }
 
 describe("cta-registry: every value written is registered", () => {
@@ -73,6 +107,25 @@ describe("cta-registry: every value written is registered", () => {
       [ATTRIBUTE, "hero"],
       ["cta", null],
       ["track", "finale"],
+    ]);
+  });
+
+  /* The attribute can also reach the DOM through a spread object (the way the Button primitive
+     writes it) or a DOM call, so the attribute's name as an object key or any other string is a
+     write too; only a literal value next to it counts as a known value. */
+  it("records: an object key (quoted or computed) and any other use of the attribute's name", () => {
+    const src = [
+      `const d = { "${ATTRIBUTE}": cta };`,
+      `const e = { ["${ATTRIBUTE}"]: "finale" };`,
+      `const f = <a {...{ "${ATTRIBUTE}": "hero" }} />;`,
+      `el.setAttribute("${ATTRIBUTE}", v);`,
+      `const g = { label: "${ATTRIBUTE} is promoted to cta" };`,
+    ].join("\n");
+    expect(ctaWrites("x.tsx", src).map((w) => [w.attr, w.value, w.line])).toEqual([
+      [ATTRIBUTE, null, 1],
+      [ATTRIBUTE, "finale", 2],
+      [ATTRIBUTE, "hero", 3],
+      [ATTRIBUTE, null, 4],
     ]);
   });
 
