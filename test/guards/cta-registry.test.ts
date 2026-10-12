@@ -20,7 +20,8 @@ import { isStillLegacy } from "./legacy-paths";
  *    values, and only the Button primitive writes the attribute from a variable (its typed
  *    `cta: CtaId` prop); any other writer must use a literal the registry knows. A write is the
  *    attribute in JSX, the attribute's name as an object key (spread onto an element, the way the
- *    Button writes it) or as any other string (a DOM call, a constant used as a key).
+ *    Button writes it) or as any other string (a DOM call, a constant used as a key), in any
+ *    shipped `.ts` or `.tsx` file under src/.
  * 4. `Button` with `variant="cta"` refuses to compile without a CtaId (architecture §8.3; the
  *    Button is task 2.2's): checked by compiling probes against src/components/ui/Button/Button.tsx
  *    once it exists. The probe instrument is proven on every run against two stand-ins, a strict
@@ -100,6 +101,12 @@ function ctaWrites(path: string, text: string): Write[] {
   return [...jsx, ...attributeNameWrites(path, sf)].sort((a, b) => a.at - b.at);
 }
 
+/** The files the scan reads: shipped TypeScript, `.ts` as well as `.tsx`, because a `.ts` module
+ *  can hold the attribute as an object key that a component spreads onto an element. */
+function isScanned(path: string): boolean {
+  return /\.(ts|tsx)$/.test(path) && !isTestOrStory(path);
+}
+
 describe("cta-registry: every value written is registered", () => {
   it("records: reads literal and variable writes of all three forms", () => {
     const src = `const a = <a ${ATTRIBUTE}="hero" />; const b = <Button cta={id} />; const c = <Button track="finale" />;`;
@@ -129,7 +136,28 @@ describe("cta-registry: every value written is registered", () => {
     ]);
   });
 
-  const files = listFiles(["src"]).filter((p) => p.endsWith(".tsx") && !isTestOrStory(p));
+  /* Task 2.6 review: a `.ts` module exporting `{ "data-ph-capture-attribute-cta": "buy-now" }`
+     for a component to spread was invisible while the scan read `.tsx` files only. */
+  it.each([
+    ["src/components/sections/Probe/attrs.ts", true],
+    ["src/components/sections/Probe/Probe.tsx", true],
+    ["src/lib/tracking/cta.ts", true],
+    ["src/components/sections/Probe/Probe.test.tsx", false],
+    ["src/components/sections/Probe/Probe.stories.tsx", false],
+    ["src/lib/tracking/track.test.ts", false],
+    ["src/components/sections/Probe/Probe.css", false],
+  ] as const)("records: scans %s: %s", (path, expected) => {
+    expect(isScanned(path)).toBe(expected);
+  });
+
+  it("records: a .ts module's object key is a write, with its literal value", () => {
+    const src = `export const attrs = { "${ATTRIBUTE}": "buy-now" } as const;`;
+    expect(ctaWrites("src/components/sections/Probe/attrs.ts", src).map((w) => [w.attr, w.value, w.line])).toEqual([
+      [ATTRIBUTE, "buy-now", 1],
+    ]);
+  });
+
+  const files = listFiles(["src"]).filter(isScanned);
   const writes = files.flatMap((p) => ctaWrites(p, readRepoFile(p)));
   const legacy = writes.filter((w) => isStillLegacy(w.path));
   const fresh = writes.filter((w) => !isStillLegacy(w.path));

@@ -63,7 +63,11 @@ export function ViewContentTracker({ valuePaise = LAUNCH_AMOUNT_PAISE }: { value
         currency: "INR",
       }),
     );
-  }, [valuePaise]);
+    /* `[]` as at the tag (task 2.6 review): the value at first render is this page view's
+       value. Re-running on a new `valuePaise` would clear the wait for fbq and then stop at
+       the fired ref, so the page view would send no ViewContent at all. */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return null;
 }

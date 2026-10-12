@@ -107,6 +107,22 @@ describe("ViewContentTracker", () => {
     expect((fbq.mock.calls[0][2] as Record<string, unknown>).value).toBe(4999);
   });
 
+  /* Task 2.6 review: a new valuePaise before fbq arrives (an RSC refresh with a new offer while
+     the pixel is still loading) must not cancel the wait. If the effect re-ran on the new value,
+     its cleanup would clear whenFbqReady's interval and the re-run would stop at the fired ref,
+     so this page view would send no ViewContent at all. The first render's value is this page
+     view's value, as at the tag. */
+  it("still fires exactly once, with the first value, when valuePaise changes before fbq arrives", () => {
+    vi.useFakeTimers();
+    const { rerender } = render(<ViewContentTracker valuePaise={LAUNCH_AMOUNT_PAISE} />);
+    rerender(<ViewContentTracker valuePaise={FULL_AMOUNT_PAISE} />);
+    const fbq = vi.fn();
+    window.fbq = fbq;
+    vi.advanceTimersByTime(1_000);
+    expect(fbq).toHaveBeenCalledTimes(1);
+    expect((fbq.mock.calls[0][2] as Record<string, unknown>).value).toBe(LAUNCH_AMOUNT_PAISE / 100);
+  });
+
   /* ⚑ THE KNOWN STALENESS, pinned so it is impossible to forget. The value above
      becomes wrong the day the 500-unit cap fills and the price is ₹7,999. That
      is a manual change riding the standing sell-out copy sweep (§8.26-g), and

@@ -20,7 +20,9 @@ import { FREEZE_TAG, ROOT, fixtureName, readRepoFile, tagText } from "../e2e/sup
  *    PostHogGate passes to posthog.init on a production host, and this guard re-derives them from
  *    the tag on every run (the tag's gate, evaluated with the tag's site.ts), so the fixture can
  *    never drift from production as it was.
- * 2. Today's gate passes exactly those options on every production host.
+ * 2. Today's gate passes exactly those options on every production host. Compared with
+ *    toStrictEqual, so a key present with the value undefined (`before_send: undefined`) is a
+ *    difference, not a match (task 2.6 review).
  * 3. On the two beta hosts the only addition is `before_send`, which stamps `env: "beta"` on every
  *    event and changes nothing else.
  * 4. NO posthog.register for env (N3): a registered super property persists in PostHog's storage
@@ -134,8 +136,8 @@ describe(`posthog-init-fixture: the fixture is the production options at ${FREEZ
     expect(calls.init).toHaveLength(1);
     expect(calls.init[0].key).toBe(fixture.key);
     // The tag's options hold no function, so the JSON round trip loses nothing.
-    expect(jsonPart(calls.init[0].options)).toEqual(calls.init[0].options);
-    expect(calls.init[0].options).toEqual(fixture.options);
+    expect(jsonPart(calls.init[0].options)).toStrictEqual(calls.init[0].options);
+    expect(calls.init[0].options).toStrictEqual(fixture.options);
     expect(calls.register).toEqual([]);
   });
 
@@ -159,7 +161,7 @@ describe("posthog-init-fixture: today's gate on the production hosts", () => {
     const calls = await runGate("today", `https://${host}/products/kheelu?utm_source=meta`);
     expect(calls.init).toHaveLength(1);
     expect(calls.init[0].key).toBe(fixture.key);
-    expect(calls.init[0].options).toEqual(fixture.options);
+    expect(calls.init[0].options).toStrictEqual(fixture.options);
     expect(calls.register).toEqual([]);
     expect(calls.unregister).toEqual([]);
   });
@@ -185,7 +187,7 @@ describe("posthog-init-fixture: on the beta hosts the only addition is before_se
     const calls = await runGate("today", `https://${host}/`);
     expect(calls.init).toHaveLength(1);
     const { before_send: beforeSend, ...rest } = calls.init[0].options;
-    expect(rest).toEqual(fixture.options);
+    expect(rest).toStrictEqual(fixture.options);
     expect(typeof beforeSend).toBe("function");
     expect(calls.register, "N3: nothing may be registered on a beta visit").toEqual([]);
   });
