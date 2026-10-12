@@ -7,9 +7,11 @@ import {
   CSS_EXCEPTIONS,
   EXEMPT_FILES,
   INLINE_STYLE_KEYS,
-  INLINE_STYLE_TEMPLATE_TEXT,
+  INLINE_STYLE_TEMPLATE,
+  INLINE_STYLE_TYPED_KEYS,
   INLINE_STYLE_VALUE,
   MEDIA_LENGTHS,
+  VAR_FALLBACK_KEYWORDS,
   ZERO,
 } from "./token-exceptions";
 
@@ -17,8 +19,10 @@ import {
  *
  * Every visual value in src/ comes from the design system: a DS token, a kh- class, or a ks-
  * composition class built on tokens. This guard scans src/**\/*.css, *.tsx and *.ts (tests,
- * stories and .d.ts excluded: never shipped) for literal colours, lengths, durations, font values
- * (quoted family names included), z-indexes and scales, lengths in @media and @container preludes
+ * stories and .d.ts excluded: never shipped) for literal colours (hex, colour functions and all
+ * 148 CSS named colours, custom properties included), lengths, durations, font values (quoted
+ * family names included), z-indexes and scales, literals in var() fallbacks (only another var(),
+ * a keyword or a zero may follow the comma), lengths in @media and @container preludes
  * other than the DS min-/max-width breakpoints, Tailwind arbitrary values and the (--var) shorthand
  * (in .ts modules too, where variants and class lists live), colour strings in .tsx (so a hex cannot
  * reach an attribute through a const), and inline styles beyond the art-board positions. The only
@@ -29,8 +33,25 @@ import {
 type Violation = { line: number; rule: string; text: string };
 type Result = { violations: Violation[]; applied: string[] };
 
-const NAMED_COLOURS =
-  /\b(?:white|black|red|green|blue|yellow|orange|purple|pink|gray|grey|brown|cyan|magenta|lime|navy|teal|olive|maroon|silver|gold|beige|ivory|coral|salmon|crimson|indigo|violet|tomato)\b/i;
+/** CSS Color 4 named colours, all 148 (gray and grey spellings both), matched as whole tokens. */
+const CSS_NAMED_COLOURS: ReadonlySet<string> = new Set(
+  `aliceblue antiquewhite aqua aquamarine azure beige bisque black blanchedalmond blue blueviolet brown
+   burlywood cadetblue chartreuse chocolate coral cornflowerblue cornsilk crimson cyan darkblue darkcyan
+   darkgoldenrod darkgray darkgreen darkgrey darkkhaki darkmagenta darkolivegreen darkorange darkorchid
+   darkred darksalmon darkseagreen darkslateblue darkslategray darkslategrey darkturquoise darkviolet
+   deeppink deepskyblue dimgray dimgrey dodgerblue firebrick floralwhite forestgreen fuchsia gainsboro
+   ghostwhite gold goldenrod gray green greenyellow grey honeydew hotpink indianred indigo ivory khaki
+   lavender lavenderblush lawngreen lemonchiffon lightblue lightcoral lightcyan lightgoldenrodyellow
+   lightgray lightgreen lightgrey lightpink lightsalmon lightseagreen lightskyblue lightslategray
+   lightslategrey lightsteelblue lightyellow lime limegreen linen magenta maroon mediumaquamarine
+   mediumblue mediumorchid mediumpurple mediumseagreen mediumslateblue mediumspringgreen
+   mediumturquoise mediumvioletred midnightblue mintcream mistyrose moccasin navajowhite navy oldlace
+   olive olivedrab orange orangered orchid palegoldenrod palegreen paleturquoise palevioletred
+   papayawhip peachpuff peru pink plum powderblue purple rebeccapurple red rosybrown royalblue
+   saddlebrown salmon sandybrown seagreen seashell sienna silver skyblue slateblue slategray slategrey
+   snow springgreen steelblue tan teal thistle tomato turquoise violet wheat white whitesmoke yellow
+   yellowgreen`.split(/\s+/),
+);
 const COLOUR_FN = /\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color)\(/i;
 const HEX = /#[0-9a-fA-F]{3,8}\b/;
 const LENGTH = /(?<![\w.-])-?(?:\d+\.?\d*|\.\d+)(px|rem|em|pt|pc|cm|mm|in|q)\b/gi;
@@ -42,16 +63,75 @@ function lineAt(text: string, index: number): number {
   return text.slice(0, index).split("\n").length;
 }
 
-/** The value with strings, url(...) and var(...) removed: what is left are the literals. */
-function literalsOf(value: string): string {
-  return withoutVars(value.replace(/"[^"]*"|'[^']*'/g, '""').replace(/url\([^)]*\)/gi, "url()"));
+/** Index of the parenthesis that closes the one at `open`, or -1 (strings are blanked first). */
+function closingParen(s: string, open: number): number {
+  let depth = 0;
+  for (let i = open; i < s.length; i++) {
+    if (s[i] === "(") depth++;
+    else if (s[i] === ")" && --depth === 0) return i;
+  }
+  return -1;
 }
 
-/** var(...) calls collapsed to "var()"; they may nest (fallbacks), so innermost first. */
-function withoutVars(value: string): string {
-  let v = value;
-  for (let i = 0; i < 5 && /var\(/.test(v); i++) v = v.replace(/var\([^()]*\)/g, "var()");
-  return v;
+/** The text after the first comma outside parentheses, or null when there is none. */
+function afterFirstComma(s: string): string | null {
+  let depth = 0;
+  for (let i = 0; i < s.length; i++) {
+    if (s[i] === "(") depth++;
+    else if (s[i] === ")") depth--;
+    else if (s[i] === "," && depth === 0) return s.slice(i + 1);
+  }
+  return null;
+}
+
+function isSingleVar(s: string): boolean {
+  return /^var\(/i.test(s) && closingParen(s, 3) === s.length - 1;
+}
+
+/** A fallback that adds no literal of its own: another var(), a keyword, a zero, or nothing. */
+function isTokenFallback(fallback: string): boolean {
+  return fallback === "" || isSingleVar(fallback) || VAR_FALLBACK_KEYWORDS.test(fallback) || ZERO.test(fallback);
+}
+
+/** var(--name) and var(--name, <token fallback>) collapse to "var()". Any other fallback replaces
+ *  its var(), innermost first, so the literal rules read it, and is listed in `fallbacks`
+ *  ("var(--space-3, 12px)" ships 12px whenever the token is missing). */
+function resolveVars(value: string): { text: string; fallbacks: string[] } {
+  const fallbacks: string[] = [];
+  const call = /(?<![\w-])var\(/gi;
+  let text = "";
+  let i = 0;
+  for (;;) {
+    call.lastIndex = i;
+    const m = call.exec(value);
+    const close = m ? closingParen(value, m.index + 3) : -1;
+    if (!m || close < 0) return { text: text + value.slice(i), fallbacks };
+    text += value.slice(i, m.index);
+    const fallback = afterFirstComma(value.slice(m.index + 4, close))?.trim() ?? "";
+    const inner = resolveVars(fallback);
+    if (isTokenFallback(fallback) && !inner.fallbacks.length) {
+      text += "var()";
+    } else {
+      text += inner.text;
+      if (!isTokenFallback(fallback)) fallbacks.push(fallback);
+      fallbacks.push(...inner.fallbacks);
+    }
+    i = close + 1;
+  }
+}
+
+/** The value with strings and url(...) blanked and var(...) resolved: what is left are the literals. */
+function literalsOf(value: string): { lit: string; fallbacks: string[] } {
+  const r = resolveVars(value.replace(/"[^"]*"|'[^']*'/g, '""').replace(/url\([^)]*\)/gi, "url()"));
+  return { lit: r.text, fallbacks: r.fallbacks };
+}
+
+/** A CSS named colour standing as a whole token ("darkred", never the "red" of "ks-red-dot"). */
+function namedColourIn(lit: string): string | undefined {
+  return lit
+    .toLowerCase()
+    .split(/[^a-z-]+/)
+    .find((token) => CSS_NAMED_COLOURS.has(token));
 }
 
 function nonZero(matches: string[]): string[] {
@@ -62,18 +142,19 @@ function declarationViolations(path: string, prop: string, rawValue: string): { 
   const value = rawValue.trim();
   const exception = CSS_EXCEPTIONS.find((e) => e.file.test(path) && e.property.test(prop) && e.value.test(value));
   if (exception) return [{ rule: `exception:${exception.id}`, text: `${prop}: ${value}` }];
-  const lit = literalsOf(value);
+  const { lit, fallbacks } = literalsOf(value);
   const out: { rule: string; text: string }[] = [];
   const add = (rule: string) => out.push({ rule, text: `${prop}: ${value}` });
-  if (HEX.test(lit) || COLOUR_FN.test(lit) || (!prop.startsWith("--") && NAMED_COLOURS.test(lit))) add("colour literal");
+  if (fallbacks.length) add(`literal in a var() fallback (${fallbacks.join("; ")})`);
+  if (HEX.test(lit) || COLOUR_FN.test(lit) || namedColourIn(lit)) add("colour literal");
   if (nonZero(lit.match(LENGTH) ?? []).length) add("length literal (px, rem, em …)");
   if (nonZero(lit.match(TIME) ?? []).length) add("duration literal");
   if (FONT_PROPS.test(prop) && !/^(?:inherit|initial|unset|normal|var\(\))$/.test(lit.trim())) {
     if ((lit.match(NUMBER) ?? []).length || /[a-z]/i.test(lit.replace(/var\(\)|inherit|normal/g, ""))) add("font literal");
   }
-  // A quoted family name is a font literal too: literalsOf() blanks strings, so read the raw value
-  // with var() removed (a quoted name inside a var() fallback belongs to the token).
-  if (/^(?:font|font-family)$/.test(prop) && /"[^"]*"|'[^']*'/.test(withoutVars(value))) add("font literal");
+  // A quoted family name is a font literal too (strings are blanked to "" in `lit`; a quoted name
+  // in a var() fallback is refused with the fallback).
+  if (/^(?:font|font-family)$/.test(prop) && lit.includes('""')) add("font literal");
   if (prop === "z-index" && nonZero(lit.match(NUMBER) ?? []).length) add("z-index literal");
   if (/\bscale[XYZ3d]*\(\s*-?\d/.test(lit) && !/\bscale[XYZ3d]*\(\s*-?1\s*\)/.test(lit)) add("scale literal");
   if (prop.startsWith("--") && nonZero(lit.match(NUMBER) ?? []).length) add("literal in a custom property");
@@ -158,12 +239,17 @@ function inlineStyleViolations(sf: ts.SourceFile, init: ts.JsxAttributeValue | u
     if (ts.isStringLiteral(v) || ts.isNoSubstitutionTemplateLiteral(v)) {
       if (!INLINE_STYLE_VALUE[key].test(v.text)) out.push(`${key}: "${v.text}" is not an allowed value`);
     } else if (ts.isTemplateExpression(v)) {
-      const statics = [v.head.text, ...v.templateSpans.map((s) => s.literal.text)];
-      if (!statics.every((s) => INLINE_STYLE_TEMPLATE_TEXT.test(s))) out.push(`${key}: ${v.getText(sf)}`);
+      const shape = [v.head.text, ...v.templateSpans.map((s) => s.literal.text)].join("${}");
+      if (!INLINE_STYLE_TEMPLATE[key].test(shape)) {
+        out.push(`${key}: ${v.getText(sf)} (allowed: ${INLINE_STYLE_TEMPLATE[key].source.replace(/\\/g, "").slice(1, -1)})`);
+      }
     } else if (ts.isNumericLiteral(v)) {
       out.push(`${key}: ${v.text} (a bare number is pixels)`);
+    } else if (!INLINE_STYLE_TYPED_KEYS.includes(key)) {
+      // React renders a number in left, top, width or height as pixels, and a variable transform
+      // can carry any scale: positions take `${x}%`, the transform `rotate(${deg}deg)`.
+      out.push(`${key}: ${v.getText(sf)} (a variable may be a number, which React renders as pixels; write a template literal)`);
     }
-    // Identifiers and other expressions are typed props (percent numbers), checked by the component's types.
   }
   return out;
 }
@@ -239,8 +325,30 @@ describe("no-off-token detector: red on every planted literal", () => {
     ["media query on height", "@media (min-height: 600px) { .ks-a { margin: 0; } }"],
     ["container query off the DS widths", "@container (min-width: 400px) { .ks-a { margin: 0; } }"],
     ["nested media query", ".ks-a { @media (max-width: 1199px) { margin: 0; } }"],
+    // Review of 1.1 (2026-10-12): each of these passed the first version of this guard.
+    ["named colour in a custom property", ".b { --ks-bg: white; }"],
+    ["compound named colour", ".c { color: firebrick; }"],
+    ["compound named colour in a shorthand", ".d { background: darkred; }"],
+    ["named colour outside the common thirty", ".e { color: rebeccapurple; }"],
+    ["named colour aqua", ".e { border-color: aqua; }"],
+    ["named colour fuchsia", ".e { outline: 2px solid fuchsia; }"],
+    ["named colour in a custom property, mixed case", ".e { --ks-x: DarkSlateGray; }"],
+    ["length in a var() fallback, font property", ".f { letter-spacing: var(--x, 0.02em); }"],
+    ["hex in a var() fallback", ".g { color: var(--kh-nope, #f00); }"],
+    ["length in a var() fallback", ".g { margin: var(--kh-nope, 13px); }"],
+    ["named colour in a var() fallback", ".g { color: var(--kh-nope, white); }"],
+    ["literal in a nested var() fallback", ".g { padding: var(--a, var(--b, 12px)); }"],
+    ["percentage in a var() fallback", ".g { width: var(--kh-nope, 50%); }"],
+    ["duration in a var() fallback", ".g { transition: opacity var(--kh-nope, 200ms); }"],
+    ["calc() in a var() fallback", ".g { margin: var(--kh-nope, calc(var(--space-2) + 1px)); }"],
+    ["quoted family in a var() fallback", '.g { font-family: var(--kh-nope, "Comic Sans MS"); }'],
   ])("%s", (_name, text) => {
     expect(css(text).length).toBeGreaterThan(0);
+  });
+
+  it("knows every CSS named colour (CSS Color 4: 148 names)", () => {
+    expect(CSS_NAMED_COLOURS.size).toBe(148);
+    for (const name of CSS_NAMED_COLOURS) expect(css(`.ks-a { color: ${name}; }`), name).not.toEqual([]);
   });
 
   it("WhatsApp green: only the one D050 hex, in its own file", () => {
@@ -261,6 +369,14 @@ describe("no-off-token detector: red on every planted literal", () => {
     ["hex colour attribute", `export const A = () => <svg><path fill="#EF762F" /></svg>;`],
     ["hex colour through a const", `const RED = "#ff0000"; export const A = () => <svg><path fill={RED} /></svg>;`],
     ["colour function through an object", `const TONES = { warm: "rgb(239 118 47)" }; export const A = () => <i data-tone={TONES.warm} />;`],
+    // React renders a bare number in left/top/width/height as pixels, so a variable is refused.
+    ["inline position from a variable (a number is pixels)", `const w = 13; export const KhPlant = () => <div style={{ width: w }} />;`],
+    ["inline position from a prop", `export const A = ({ left }: { left: number }) => <div style={{ left }} />;`],
+    ["inline position from an expression", `export const A = ({ x }: { x: number }) => <div style={{ top: x * 2 }} />;`],
+    ["inline position template not in percent", "export const A = ({ x }: { x: number }) => <div style={{ height: `${x}` }} />;"],
+    ["inline position template in degrees", "export const A = ({ x }: { x: number }) => <div style={{ right: `${x}deg` }} />;"],
+    ["inline transform from a variable", `export const A = ({ t }: { t: string }) => <div style={{ transform: t }} />;`],
+    ["inline transform template beyond a rotation", "export const A = ({ s }: { s: number }) => <div style={{ transform: `scale(${s})` }} />;"],
   ])("%s", (_name, text) => {
     expect(tsx(text).length).toBeGreaterThan(0);
   });
@@ -291,6 +407,25 @@ describe("no-off-token detector: green on DS-token code", () => {
     expect(css(ok)).toEqual([]);
   });
 
+  it("accepts a var() fallback only when it is a var(), a keyword or zero", () => {
+    const ok = `
+      .ks-a { transform: translateY(calc(var(--ks-buybar-h, 0px) * -1)); }
+      .ks-a { color: var(--kh-a, var(--kh-b)); background: var(--kh-a, var(--kh-b, transparent)); }
+      .ks-a { border-color: var(--kh-a, currentColor); outline-color: var(--kh-a, currentcolor); }
+      .ks-a { inset: var(--kh-a, auto); max-height: var(--kh-a, none); line-height: var(--kh-a, normal); }
+      .ks-a { color: var(--kh-a, inherit); margin: var(--kh-a, initial) var(--kh-b, unset); }
+      .ks-a { padding: var(--kh-a, 0) var(--kh-b,0); gap: var(--kh-a,); }`;
+    expect(css(ok)).toEqual([]);
+  });
+
+  it("reads a named colour as a whole value token, never inside a longer name", () => {
+    const ok = `
+      .ks-a { animation-name: ks-gold-shine; transition-property: color, background-color; }
+      .ks-a { grid-template-areas: "tan red"; --ks-tone: var(--kh-orange-500); }
+      .kh-tone-blue { color: var(--on-primary); }`;
+    expect(css(ok)).toEqual([]);
+  });
+
   it("accepts each named exception in its own file only", () => {
     expect(css(".ks-x { --ks-nudge: 5px; --ks-film-focus: 1.05; }", "src/motion/motion.css")).toEqual([]);
     expect(
@@ -310,6 +445,19 @@ describe("no-off-token detector: green on DS-token code", () => {
             <a href="#faq">FAQ</a>
             <a href="#add" id="#bad">Add</a>
           </div>
+        );
+      }`;
+    expect(tsx(ok)).toEqual([]);
+  });
+
+  it("accepts art-board positions only as percent templates, rotations only as rotate(…deg)", () => {
+    const ok = `
+      export function A({ x, y, w, tilt, ratio }: { x: number; y: number; w: number; tilt: number; ratio: string }) {
+        return (
+          <i
+            className="kh-art__layer"
+            style={{ left: \`\${x}%\`, top: \`\${y}%\`, width: \`\${w}%\`, height: "40%", transform: \`rotate(\${tilt}deg)\`, "--kh-ratio": ratio } as React.CSSProperties}
+          />
         );
       }`;
     expect(tsx(ok)).toEqual([]);

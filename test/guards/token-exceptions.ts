@@ -26,6 +26,11 @@ export const DS_BREAKPOINT_NEIGHBOURS = DS_BREAKPOINTS.map((w) => w - 1);
 /** Zero needs no token: 0, 0px, 0s, 0ms, 0%, 0fr are all allowed, everywhere. */
 export const ZERO = /^-?0(?:\.0+)?(?:px|rem|em|s|ms|%|fr|deg)?$/;
 
+/** The only fallbacks a var(--token, X) may carry besides another var() or a zero: keywords
+ *  that add no value of their own. Anything else ("var(--space-3, 12px)") is a literal that
+ *  ships whenever the token is missing, so it is scanned like any other value and refused. */
+export const VAR_FALLBACK_KEYWORDS = /^(?:inherit|initial|unset|transparent|currentcolor|none|auto|normal)$/i;
+
 export const CSS_EXCEPTIONS: readonly CssException[] = [
   {
     id: "outline-offset-2px",
@@ -73,7 +78,10 @@ export const MEDIA_LENGTHS = {
 
 /* Inline `style` (architecture §4.4): only art-board layer positions in percent and their
    rotation, the DS sticker tilt (--kh-tilt, DS 10-pages.md:42-52) and the DS photo ratio
-   (--kh-ratio, read by .kh-photo img in bundle.css), all passed as typed props. */
+   (--kh-ratio, read by .kh-photo img in bundle.css), all passed as typed props. A value is a
+   string literal (INLINE_STYLE_VALUE) or a template literal of the exact shape below; a bare
+   variable or expression is refused for positions and the transform, because React renders a
+   number in left, top, width or height as pixels. */
 export const INLINE_STYLE_KEYS: readonly string[] = [
   "left",
   "right",
@@ -97,8 +105,21 @@ export const INLINE_STYLE_VALUE: Record<string, RegExp> = {
   "--kh-tilt": /^-?\d+(?:\.\d+)?deg$/,
   "--kh-ratio": /^\d+(?:\.\d+)?\s*\/\s*\d+(?:\.\d+)?$/,
 };
-/** The only static text a template-literal inline-style value may contain around its ${…}. */
-export const INLINE_STYLE_TEMPLATE_TEXT = /^(?:%|deg|rotate\(|deg\)|\s|\/)*$/;
+/** The shape a template-literal inline-style value must have, each ${…} written as "${}". */
+export const INLINE_STYLE_TEMPLATE: Record<string, RegExp> = {
+  left: /^\$\{\}%$/,
+  right: /^\$\{\}%$/,
+  top: /^\$\{\}%$/,
+  bottom: /^\$\{\}%$/,
+  width: /^\$\{\}%$/,
+  height: /^\$\{\}%$/,
+  transform: /^rotate\(\$\{\}deg\)$/,
+  "--kh-tilt": /^\$\{\}deg$/,
+  "--kh-ratio": /^\$\{\}\s*\/\s*\$\{\}$/,
+};
+/** Keys that may also take a typed prop as is: custom properties, which React passes through
+ *  untouched (never as pixels) and the DS reads in one place only (rotate(), aspect-ratio). */
+export const INLINE_STYLE_TYPED_KEYS: readonly string[] = ["--kh-tilt", "--kh-ratio"];
 
 /** Generated files are exempt: their drift tests compare them with the DS (structure §8). */
 export const EXEMPT_FILES: readonly RegExp[] = [/^src\/styles\/generated\//, /\.generated\./];
