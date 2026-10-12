@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { buildOffer } from "@/lib/offer/offer";
 import { isListedLegacy } from "../../test/guards/legacy-paths";
 import { mockupDiff, mockupPage } from "../../test/support/mockup-compare";
+import NotFound, { metadata } from "./not-found";
 
 /* The root not-found page (task 5.10; structure §3.1, §5; architecture §9.4): every unmatched URL of the marketing site
  * renders it, answering 404 (Next marks it noindex). It sits outside the (site) route group, so it renders the site
@@ -31,21 +32,18 @@ const differences = mockupDiff({
 
 async function page(mode: "token" | "full" = "token") {
   getOffer.mockResolvedValue(buildOffer(mode));
-  const { default: NotFound } = await import("./not-found");
   return render(await NotFound());
 }
 
 describe("not-found: the metadata (404.md, At a glance)", () => {
-  it("is the copy page's title, whole (no template suffix), and its description", async () => {
-    const { metadata } = await import("./not-found");
+  it("is the copy page's title, whole (no template suffix), and its description", () => {
     expect(metadata.title).toEqual({ absolute: "Page not found · Kheelona" });
     expect(metadata.description).toBe(
       "We can’t find that page. Meet Kheelu, the screen-free plush toy for ages 3 to 7, read our guides for parents, or talk to the team.",
     );
   });
 
-  it("sets no robots, canonical or share card: the page answers 404, Next marks it noindex, and the root's beta rule stands", async () => {
-    const { metadata } = await import("./not-found");
+  it("sets no robots, canonical or share card: the page answers 404, Next marks it noindex, and the root's beta rule stands", () => {
     expect(Object.keys(metadata).sort()).toEqual(["description", "title"]);
   });
 });
