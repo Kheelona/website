@@ -5,7 +5,9 @@ import { ArticleTemplate } from "@/layouts/ArticleTemplate/ArticleTemplate";
 import { toPlainText } from "@/lib/content/plain-text";
 import { parseRichText, type RichNode } from "@/lib/content/rich-text";
 import { buildOffer } from "@/lib/offer/offer";
+import { readRepoFile } from "../../../../../test/e2e/support/repo";
 import { mockupFold, skeleton, words } from "../../../../../test/support/mockup-compare";
+import { RETENTION_LINE, RETENTION_MONTHS } from "../../policies";
 import { seller } from "../../seller";
 import { article as learningToys } from "./learning-toys-for-a-three-year-old";
 import { article as lateTalkers } from "./talking-toys-and-late-talkers";
@@ -121,5 +123,12 @@ describe("the page-specific rules (tasks.md 5.6)", () => {
     const contact = columnStrings(safeAiToy).filter((s) => s.includes(seller.support.phone));
     expect(contact).toHaveLength(1);
     expect(contact[0].endsWith(`you can ask us anything: ${seller.help.contact}.`)).toBe(true);
+  });
+
+  it("prints the safe-AI-toy guide's retention line from policies.ts, never a retyped policy number (D020, architecture §6.1)", () => {
+    const retention = columnStrings(safeAiToy).filter((s) => s.includes(RETENTION_LINE));
+    expect(retention).toEqual([`You can read every conversation in the parent app. ${RETENTION_LINE}`]);
+    const source = readRepoFile("src/content/en-IN/stories/articles/what-to-look-for-in-a-safe-ai-toy.ts");
+    expect(source).not.toMatch(new RegExp(`\\b${RETENTION_MONTHS}\\s+months\\b`));
   });
 });

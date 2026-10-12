@@ -3,6 +3,7 @@ import bellyModule from "@ds/assets/Kheelu/kheelu-belly-module.png";
 import eveningWithAmma from "@ds/assets/Photo library/tara-02-evening-with-amma-web.webp";
 import type { Article, TrustListItem } from "@/content/types";
 import { DEFAULT_OG } from "../../organization";
+import { RETENTION_LINE } from "../../policies";
 import { seller } from "../../seller";
 
 /** One of Kheelu's checkable facts in fold 5: a bold lead-in, then the fact. */
@@ -13,8 +14,9 @@ const fact = (icon: string, title: string, body: string): TrustListItem => ({ ic
  * story-what-to-look-for-in-a-safe-ai-toy.html; copy page of the same name). Head, byline (its
  * author is named on /team), photo, answer, body, sources, related guides and close as the mockup
  * shows them; card words as the hub's (stories.md fold 4). Fold 5 is the signed B3 answer, then
- * Kheelu's facts in the founder's order (D020), the page's one in-text product link, and the help
- * line every CTA block carries (seller.ts). No word "safe" about Kheelu; the light's colour is
+ * Kheelu's facts in the founder's order (D020) with the retention line every page prints
+ * (policies.ts), the page's one in-text product link, and the help line every CTA block carries
+ * (seller.ts). No word "safe" about Kheelu; the light's colour is
  * never named (D018). `updated` is the rewrite's date (task 5.6).
  */
 export const article = {
@@ -145,7 +147,7 @@ export const article = {
             fact(
               "eye",
               "Every conversation.",
-              "You can read every conversation in the parent app. Your child’s conversations stay in your parent app for 36 months, then they’re deleted automatically. You can delete any of them sooner, in one tap.",
+              `You can read every conversation in the parent app. ${RETENTION_LINE}`,
             ),
             fact("hand-heart", "Your data.", "We don’t sell your data. Your child’s data is never used to advertise to them."),
             fact(
