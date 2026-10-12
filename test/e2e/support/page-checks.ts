@@ -1,6 +1,8 @@
 /* Page-level checks shared by the Vitest guards and the Playwright specs (task 1.1).
- * Each works on a whole HTML document (a built page, a served page or a mockup page), so the same
- * rule runs on the prerendered output in `verify` and on the live pages in `verify:e2e`.
+ * Each works on a whole HTML document (a fixture, a mockup page, a prerendered page or a served
+ * page), so one rule serves both runners: the Vitest guards in `verify` (fixtures and the mockup;
+ * the prerendered output only when a build newer than src/ is present) and the Playwright specs in
+ * `verify:e2e` (every served route; revealOnMoneyInDocument runs in motion.spec.ts).
  */
 import { existsSync, readdirSync, statSync } from "node:fs";
 import { join, relative } from "node:path";

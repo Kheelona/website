@@ -223,6 +223,9 @@ export const PLANTS: Record<string, string> = {
   motionon: `document.head.insertAdjacentHTML("beforeend", '<style>@media (prefers-reduced-motion: no-preference) { .kh-planted-motion { color: #eee; } }</style>'); ${MAIN}.insertAdjacentHTML("beforeend", '<p class="kh-planted-motion">planted</p>');`,
   // A hero that is not still at first paint (motion.spec, D049 pick 2).
   hero: `${MAIN}.firstElementChild.style.opacity = "0.5";`,
+  // A reveal around the first chilli button's section, as a composed page could set it (motion.spec:
+  // no entrance motion on the money, D049 1A).
+  revealmoney: `document.querySelector("main .kh-btn--cta")?.closest("section")?.setAttribute("data-reveal", "");`,
   cta: `document.querySelector("[data-ph-capture-attribute-cta]").setAttribute("data-ph-capture-attribute-cta", "home-arc");`,
   content: `${MAIN}.insertAdjacentHTML("beforeend", '<p>No payment now. Made for ages 2 to 5.</p>');`,
   text: `${MAIN}.insertAdjacentHTML("beforeend", '<p>A planted sentence the approved mockup does not have.</p>');`,

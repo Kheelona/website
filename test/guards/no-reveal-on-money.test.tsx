@@ -12,12 +12,20 @@ import { isStillLegacy } from "./legacy-paths";
  *
  * Nothing that sells moves on arrival: the first section, any h1, the price sentence, any chilli
  * button, the offer card and the store form never sit inside a [data-reveal] block, and no doodle
- * draws in the first section (hero doodles stay still). Three layers:
- *   1. the DOM rule, on rendered fixtures (red and green) and on all 18 approved mockup pages,
- *      which follow it (so the rule never contradicts the approval);
- *   2. the source rule: no JSX element with data-reveal wraps a money element or component;
- *   3. the prerendered pages of the last build, when newer than src/ (verify:e2e builds first;
- *      test/e2e/motion.spec.ts checks the served pages too).
+ * draws in the first section (hero doodles stay still). Where each layer runs:
+ *   1. here, in every `npm run verify` and CI run: the DOM rule (revealOnMoneyInDocument in
+ *      test/e2e/support/page-checks.ts) on rendered fixtures (red and green) and on all 18 approved
+ *      mockup pages, which follow it (so the rule never contradicts the approval);
+ *   2. here, in every `npm run verify` and CI run: the source rule, within one file only: no JSX
+ *      element with data-reveal wraps a money element or component. It cannot see composition
+ *      across files (a `<section data-reveal>{children}</section>` given a price by the page);
+ *   3. here, only when .next/BUILD_ID is newer than every file in src/ (a local `npm run build`
+ *      followed by `npm test`): the DOM rule on the prerendered HTML. It is skipped in CI (no build)
+ *      and in the wave-close order (verify runs before verify:e2e builds);
+ *   4. in `npm run verify:e2e` (wave close from wave 3 on, and task 7.2 on beta), not here:
+ *      test/e2e/motion.spec.ts runs the same DOM rule in the browser on every served route at
+ *      390 x 844, the page as composed. That is the layer that catches composition across files;
+ *      proven red with KH_E2E_PLANT=revealmoney on the mockup self-test.
  */
 
 const MONEY_COMPONENTS = /^(?:PreorderButton|PriceSentence|OfferCard|OfferSection|CtaBlock|HeroSection|StickyBuyBar|PreorderForm|OrderSummary)$/;

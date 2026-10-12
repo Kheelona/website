@@ -1,5 +1,6 @@
 import type { Page } from "@playwright/test";
 import { expect, gateRouteGroup, motionStarted, requiresServer, routeIsNewDesign, test, type MotionEvent } from "./support/fixtures";
+import { revealOnMoneyInDocument } from "./support/page-checks";
 import { builtUrl, mockupRoute, sweepRoutes } from "./support/routes";
 import { VIEWPORTS } from "./support/viewports";
 
@@ -9,6 +10,10 @@ import { VIEWPORTS } from "./support/viewports";
  *   - motion on: after scrolling the whole page, nothing is still running 6 s later
  *     (no loop, nothing longer than five seconds);
  *   - the hero (the first fold) is still at first paint: opacity 1, no transform, no animation;
+ *   - no entrance motion on the money, on the served page as composed (D049 1A and 2A, SPA 9): no
+ *     [data-reveal] on or around the first section, an h1, the price, a chilli button, the offer
+ *     card, the sticky bar or a form, and no doodle drawing in the first section
+ *     (revealOnMoneyInDocument, the rule no-reveal-on-money.test.tsx runs on fixtures and the mockup);
  *   - reduced motion: from before the first paint to the end of the same scroll, no transition or
  *     animation starts (recorded as each starts, so a finite reveal fade that finished long before
  *     the check is caught too) except the buy bar's opacity fade (pick 4, printed), and none is
@@ -70,6 +75,11 @@ for (const route of sweepRoutes()) {
       await scrollThrough(page);
       await page.waitForTimeout(6000);
       expect(await running(page), `${route.id}: animations still running 6 s after the scroll`).toEqual([]);
+    });
+
+    test("no entrance motion on the money (first section, h1, price, CTA, offer, form)", async ({ harness }) => {
+      const { page } = await harness.open(route, vp);
+      expect(await page.evaluate(revealOnMoneyInDocument, undefined), `${route.id}: reveal or draw on what sells (architecture §11.2 "never animated")`).toEqual([]);
     });
 
     test("reduced motion: nothing starts but the bar's fade, nothing running", async ({ harness }) => {
