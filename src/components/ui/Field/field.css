@@ -1,0 +1,8 @@
+/* Field `tel-in` (task 2.5): the store's phone field, ported from the approved mockup's `mk-tel`
+   (mockup/css/store.css:57-59). The +91 sits inside the field, before the digits, as decoration; the input's
+   own type, size and border are the DS TextField's. */
+.ks-tel { position: relative; display: grid; }
+.ks-tel .kh-field__input { padding-left: calc(var(--space-4) + var(--space-7) + var(--space-1)); } /* 16 + 48 + 4 = 68 */
+/* Centred as the DS centres its select caret (bundle.css .kh-select__caret): static, never transitioned.
+   font-weight 700: mockup-css-mapping §3.4 row 62, exception ds-weight-700. */
+.ks-tel__cc { position: absolute; top: 50%; left: var(--space-4); padding-right: var(--space-3); border-right: var(--stroke-hair) solid var(--border-strong); transform: translateY(-50%); font-weight: 700; color: var(--text); pointer-events: none; }

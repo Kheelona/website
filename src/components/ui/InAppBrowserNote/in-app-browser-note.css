@@ -1,0 +1,6 @@
+/* InAppBrowserNote (task 2.5): the store's fold 2, ported from the approved mockup's `mk-inapp`
+   (mockup/css/store.css:46-48). The note takes the column's width; the copy button and its "Link copied."
+   sit in one row under the body. */
+.ks-inapp { display: grid; gap: var(--space-2); }
+.ks-inapp .kh-alert { max-width: none; }
+.ks-inapp__action { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); margin-top: var(--space-3); }
