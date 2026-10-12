@@ -2,11 +2,13 @@
 //
 // A deviation from Next's docs, raised with the main session (task 1.2 review, 2026-10-11): the PostCSS guide
 // (node_modules/next/dist/docs/02-pages/02-guides/post-css.md:144) says plugins must be given as strings, never
-// require()d. Both documented forms name a module, and the inline plugin below would need a file of its own, which
+// require()d. Both documented forms name a module, and the inline plugins below would need a file of their own, which
 // task 1.2 does not own. So the plugins are plugin objects in an array: Turbopack 16.3.8 runs them (scratch
 // next build, 2026-10-11: transition-all, duration-700, scroll-smooth, p-[13px], z-50 and border-2 absent from the
-// built CSS, p-5 and grid-cols-2 present) and Vite's postcss-load-config accepts them; `next build --webpack` would
-// not. test/guards/visual-layer.test.ts pins the Next version this was verified on, so an upgrade repeats the check.
+// built CSS, p-5 and grid-cols-2 present; rerun with tailwindByEntry: the site CSS byte for byte as before, the legacy
+// globals.css byte for byte as the pre-reset `"@tailwindcss/postcss": {}` config built it), and Vite's
+// postcss-load-config accepts them; `next build --webpack` would not. test/guards/visual-layer.test.ts pins the Next
+// version this was verified on, so an upgrade repeats the check.
 // Turbopack bundles this file before running it, and cannot bundle Tailwind's native bindings (lightningcss), so
 // Tailwind is loaded at run time with Node's require, which Turbopack is told to leave alone.
 import { createRequire } from "node:module";
@@ -15,9 +17,14 @@ const require = createRequire(import.meta.url);
 const tailwindcss = require(/* turbopackIgnore: true */ "@tailwindcss/postcss");
 
 // The new site's CSS entry. The legacy src/styles/globals.css, still used by the old pages until task 6.3, relies
-// on arbitrary values and Tailwind's transitions, and is left alone. A query string marks a guard's probe of
-// site.css: @tailwindcss/postcss caches its compiler per `from` path, so each probe compiles under its own key.
+// on arbitrary values and Tailwind's transitions, and is left alone: it compiles through Tailwind's default plugin,
+// exactly as before (test/guards/visual-layer.test.ts compares). A query string marks a guard's probe of site.css:
+// @tailwindcss/postcss caches its compiler per `from` path, so each probe compiles under its own key.
 const SITE_ENTRY = /(^|[\\/])src[\\/]styles[\\/]site\.css(\?[^\\/]*)?$/;
+
+/** The file a PostCSS run compiles: the parsed input's path, or the `from` option. */
+const fromOf = (root, result) => root.source?.input.file ?? result.opts.from ?? "";
+
 // An escaped "[" or "(" in a utility selector is an arbitrary value, property or variant: p-[13px],
 // [color:red], data-[open]:p-5, or the (--var) shorthand p-(--space-3).
 const ARBITRARY = /\\[[(]/;
@@ -77,8 +84,7 @@ function utilityOf(node, layer) {
 const dsOnlyUtilities = {
   postcssPlugin: "kheelona-ds-only-utilities",
   OnceExit(root, { result }) {
-    const from = root.source?.input.file ?? result.opts.from ?? "";
-    if (!SITE_ENTRY.test(from)) return;
+    if (!SITE_ENTRY.test(fromOf(root, result))) return;
     const dropped = new Set();
     root.walkAtRules("layer", (layer) => {
       if (layer.params !== "utilities" || !layer.nodes) return;
@@ -102,12 +108,38 @@ const dsOnlyUtilities = {
   },
 };
 
+/**
+ * Runs one @tailwindcss/postcss instance on site.css and another on every other file. PostCSS flattens a plugin
+ * pack when the processor is built, so the choice per file has to happen inside a hook: each pack's plugins expose a
+ * single Once hook (@tailwindcss/postcss 4.3), which this calls in the pack's order. A Tailwind release that changes
+ * that shape fails here, at load, rather than compiling a file wrongly.
+ */
+function tailwindByEntry(site, other) {
+  for (const pack of [site, other]) {
+    for (const plugin of pack.plugins ?? []) {
+      const hooks = Object.keys(plugin).filter((k) => k !== "postcssPlugin");
+      if (hooks.length !== 1 || typeof plugin.Once !== "function") {
+        throw new Error(`postcss.config.mjs: ${pack.postcssPlugin} plugin ${plugin.postcssPlugin} has hooks [${hooks.join(", ")}], not one Once; revisit tailwindByEntry`);
+      }
+    }
+    if (!pack.plugins?.length) throw new Error(`postcss.config.mjs: ${pack.postcssPlugin} is no plugin pack; revisit tailwindByEntry`);
+  }
+  return {
+    postcssPlugin: "kheelona-tailwind-by-entry",
+    async Once(root, helpers) {
+      const pack = SITE_ENTRY.test(fromOf(root, helpers.result)) ? site : other;
+      for (const plugin of pack.plugins) await plugin.Once(root, helpers);
+    },
+  };
+}
+
 const config = {
-  // optimize: false. Otherwise @tailwindcss/postcss optimises when it is created under NODE_ENV=production (next build)
-  // but not under test: it would fold w-1/2 into `width: 50%` and flatten nesting before dsOnlyUtilities reads the
-  // CSS, so the build would drop fraction glue and keep the base half of bg-cta/50. Unoptimised, the filter reads the
-  // same CSS in the guards and in the build; Turbopack and Vite still minify the result with lightningcss.
-  plugins: [tailwindcss({ optimize: false }), dsOnlyUtilities],
+  // site.css: optimize false. Otherwise @tailwindcss/postcss optimises when it is created under NODE_ENV=production
+  // (next build) but not under test: it would fold w-1/2 into `width: 50%` and flatten nesting before dsOnlyUtilities
+  // reads the CSS, so the build would drop fraction glue and keep the base half of bg-cta/50. Unoptimised, the filter
+  // reads the same CSS in the guards and in the build; Turbopack and Vite still minify the result with lightningcss.
+  // Every other file (the legacy globals.css): Tailwind's defaults, unchanged.
+  plugins: [tailwindByEntry(tailwindcss({ optimize: false }), tailwindcss()), dsOnlyUtilities],
 };
 
 export default config;

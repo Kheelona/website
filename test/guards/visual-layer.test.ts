@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { join, relative, sep } from "node:path";
+import tailwindcss from "@tailwindcss/postcss";
 import postcss, { type AtRule, type ChildNode, type Container, type Root } from "postcss";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 import postcssConfig from "../../postcss.config.mjs";
@@ -194,26 +195,50 @@ describe("site.css compiled through postcss.config.mjs", () => {
   });
 });
 
+/** Runs `make` with NODE_ENV=production, as next build does: @tailwindcss/postcss reads it when a plugin is created. */
+async function asProduction<T>(make: () => Promise<T> | T): Promise<T> {
+  const env = process.env as Record<string, string | undefined>; // Next's types make NODE_ENV read-only
+  const was = env.NODE_ENV;
+  env.NODE_ENV = "production";
+  try {
+    return await make();
+  } finally {
+    if (was === undefined) delete env.NODE_ENV;
+    else env.NODE_ENV = was;
+  }
+}
+
+/** postcss.config.mjs's plugins as next build creates them. */
+async function productionPlugins(): Promise<typeof postcssConfig.plugins> {
+  vi.resetModules();
+  return asProduction(async () => (await import("../../postcss.config.mjs")).default.plugins);
+}
+
 describe("site.css compiled as next build compiles it (NODE_ENV=production)", () => {
   // @tailwindcss/postcss optimises its output when the plugin is created under NODE_ENV=production (next build) but
   // not under test: it would fold w-1/2 into `width: 50%` and flatten nesting before the filter reads the CSS, so the
   // shipped CSS would differ from what the guards above prove. Found on a scratch next build, 2026-10-11.
   it("drops and keeps the same utilities as the test pipeline", async () => {
-    const env = process.env.NODE_ENV;
-    vi.resetModules();
-    process.env.NODE_ENV = "production";
-    let plugins: typeof postcssConfig.plugins;
-    try {
-      plugins = (await import("../../postcss.config.mjs")).default.plugins;
-    } finally {
-      process.env.NODE_ENV = env;
-    }
+    const plugins = await productionPlugins();
     const css = `${siteCss}\n@source inline("${[...LITERAL_UTILITIES, ...GLUE_UTILITIES].join(" ")}");`;
     const out = postcss.parse((await postcss(plugins).process(css, { from: `${SITE}?visual-layer-production` })).css);
     const selectors = new Set<string>();
     out.walkRules((r) => { if (inLayer(r) === "utilities") selectors.add(r.selector); });
     expect(LITERAL_UTILITIES.map(selectorOf).filter((s) => selectors.has(s))).toEqual([]);
     expect(GLUE_UTILITIES.map(selectorOf).filter((s) => !selectors.has(s))).toEqual([]);
+  }, 60_000);
+
+  // Task 1.2 review (2026-10-11): one unoptimised Tailwind for every file reshaped the legacy globals.css in next
+  // build (60,988 to 63,364 bytes: media blocks no longer merged). Only site.css needs Tailwind unoptimised.
+  it("compiles every other CSS file, the legacy globals.css included, exactly as Tailwind's default plugin does", async () => {
+    const plugins = await productionPlugins();
+    const reference = await asProduction(() => tailwindcss());
+    const GLOBALS = join(ROOT, "src/styles/globals.css");
+    const legacy = readFileSync(GLOBALS, "utf8");
+    const viaConfig = (await postcss(plugins).process(legacy, { from: `${GLOBALS}?visual-layer-legacy-config` })).css;
+    const viaDefault = (await postcss([reference]).process(legacy, { from: `${GLOBALS}?visual-layer-legacy-default` })).css;
+    expect(viaConfig.length).toBeGreaterThan(0);
+    expect(viaConfig).toBe(viaDefault);
   }, 60_000);
 });
 
@@ -226,7 +251,7 @@ describe("postcss.config.mjs on Next.js", () => {
     const next = (JSON.parse(readFileSync(join(ROOT, "node_modules/next/package.json"), "utf8")) as { version: string }).version;
     expect(
       next,
-      "Next changed: import src/styles/site.css in a scratch root layout, run next build, and check that the built CSS's @layer utilities holds no .transition, .duration-, .z-50, .border-2 or \\[ selector while .p-5 is present; then update this version",
+      "Next changed: import src/styles/site.css in a scratch root layout, run next build, and check that the built CSS's @layer utilities holds no .transition, .duration-, .z-50, .border-2 or \\[ selector while .p-5 is present, and that src/styles/globals.css builds byte for byte as with the plain `\"@tailwindcss/postcss\": {}` config; then update this version",
     ).toBe("16.3.8");
   });
 });
