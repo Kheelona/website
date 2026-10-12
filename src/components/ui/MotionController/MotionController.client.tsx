@@ -26,7 +26,8 @@ const ROOT_MARGIN = "0px 0px -10% 0px";
 
 /** A target shown without moving: a doodle's draw (on its paths, so the whole subtree) or a block's own fade (its
  *  own transitions only, so nothing inside it is cut short) jumps to its end. Reading the animations brings the
- *  element's style up to date first, so a transition that the class change has just started is among them. */
+ *  element's style up to date first, so a fade that the class change has just started is among them. (The singular
+ *  word for a CSS fade stays out of this folder: Tailwind reads it as its motion utility; motion-properties guard.) */
 function finishShown(el: Element): void {
   if (typeof el.getAnimations !== "function") return;
   const animations = el.matches("[data-draw]") ? el.getAnimations({ subtree: true }) : el.getAnimations();

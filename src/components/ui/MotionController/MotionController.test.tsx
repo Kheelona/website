@@ -298,7 +298,7 @@ describe("MotionController: targets added after it armed", () => {
     return { view, observer: FakeObserver.instances[0] };
   }
 
-  it("shows a block added on screen at once: is-in, not observed, its own transition jumped to the end", async () => {
+  it("shows a block added on screen at once: is-in, not observed, its own fade jumped to the end", async () => {
     const { observer } = await armed();
     const late = fragment(`<section id="late-top" data-reveal data-top="200"></section>`);
     const fade = stubAnimations(late);
