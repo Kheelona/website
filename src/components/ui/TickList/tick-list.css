@@ -1,0 +1,19 @@
+/* TickList (task 2.4): a list with a Kheelu Blue icon per line. Ported from meet-kheelu.css:14-16 (.mk-ticks). */
+.ks-ticks {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ks-ticks > li {
+  display: grid;
+  grid-template-columns: var(--icon-l) minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: start;
+}
+.ks-ticks > li > .kh-icon {
+  margin-top: calc(var(--space-1) / 2);
+  font-size: var(--icon-l);
+  color: var(--blue-500);
+}

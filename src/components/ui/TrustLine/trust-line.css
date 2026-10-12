@@ -1,0 +1,23 @@
+/* TrustLine (task 2.4): the linked trust line beside every CTA. Ported from mockup.css:107-109 (.mk-trust), :31
+   (the link's 44 px tap area without taller lines, CMO M3 and V4) and :128 (the link box itself reaches 28 px for
+   axe target-size without moving the line). The DS kh-trustline sets the row, gap, type and icon colour. */
+.ks-trust {
+  row-gap: var(--space-5);
+}
+.ks-trust a {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-block: var(--space-1);
+  margin-block: calc(var(--space-1) * -1);
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--border-strong);
+  text-underline-offset: var(--space-1);
+}
+.ks-trust a::before {
+  content: "";
+  position: absolute;
+  inset: calc(var(--space-3) * -1) 0;
+}

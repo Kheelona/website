@@ -1,0 +1,24 @@
+/* EmptyState (task 2.4): the 404 block. Ported from 404.css:3-9 (.mk-404 and its elements), one BEM block in one
+   file: EmptyStateSection (task 3.4) renders the nav as ks-404__nav and passes className="ks-404__list" to List.
+   The list's margin, padding and list-style reset (404.css:7) come from List's ks-list-reset. */
+.ks-404 {
+  max-width: calc(var(--space-10) * 4); /* 4 x 128 = 512 */
+  padding: 0;
+  gap: var(--space-4);
+}
+/* The art circle is the cream band colour; on a band section it takes the page cream, as DS quiet panels do. */
+.kh-section--band .ks-404 .kh-empty__art {
+  background: var(--surface);
+}
+.ks-404__nav {
+  width: 100%;
+  margin-top: var(--space-3);
+}
+.ks-404__list {
+  text-align: left;
+}
+/* The DS row truncates long lines; these short helper lines wrap instead, so nothing is cut on a 360 px phone. */
+.ks-404__list .kh-listitem__title,
+.ks-404__list .kh-listitem__sub {
+  white-space: normal;
+}

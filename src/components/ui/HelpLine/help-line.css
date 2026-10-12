@@ -1,0 +1,21 @@
+/* HelpLine (task 2.4): the help line beside CTAs. Ported from mockup.css:29-31 (.mk-help), :128 (the link box
+   reaches 28 px for axe target-size without moving the line) and :31 (a 44 px tap area without taller lines,
+   CMO M3).
+   Link colour: mockup.css:30 writes `color: inherit`, but every help line is also .kh-body-s, and mockup.css:105
+   (`.kh-body-s a:not(.kh-btn) { color: var(--link) }`, specificity 0,2,1) beats it, so the approved render shows
+   the DS link colour. That computed value is what is ported here. */
+.ks-help {
+  margin: 0;
+}
+.ks-help a {
+  position: relative;
+  padding-block: var(--space-1);
+  margin-block: calc(var(--space-1) * -1);
+  color: var(--link);
+  font-weight: 800; /* ds-weight-800: mockup.css:30 */
+}
+.ks-help a::before {
+  content: "";
+  position: absolute;
+  inset: calc(var(--space-3) * -1) 0;
+}

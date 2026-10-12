@@ -1,0 +1,103 @@
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
+import { Card } from "./Card";
+
+const icon = (name: string) => <svg className="kh-icon" data-icon={name} aria-hidden="true" />;
+const card = (ui: React.ReactElement) => render(ui).container.firstElementChild as HTMLElement;
+
+describe("Card", () => {
+  it("renders the feature card as home.html fold 3 does: article.kh-card.kh-card--tint.kh-tone-sun > icon, h3, p", () => {
+    const el = card(
+      <Card
+        variant="tint"
+        tone="sun"
+        icon={icon("question")}
+        title="Where Kheelu comes in"
+        body="Kheelu is built around the same idea: it answers your child, then asks a question back."
+      />,
+    );
+    expect(el.tagName).toBe("ARTICLE");
+    expect(el.className).toBe("kh-card kh-card--tint kh-tone-sun");
+    expect([...el.children].map((c) => `${c.tagName}.${c.className}`)).toEqual([
+      "SPAN.kh-card__icon",
+      "H3.kh-card__title",
+      "P.kh-card__body",
+    ]);
+    expect(el.querySelector(".kh-card__icon > svg")?.getAttribute("data-icon")).toBe("question");
+  });
+
+  it.each([
+    ["plain", "kh-card kh-tone-blue"],
+    ["tint", "kh-card kh-card--tint kh-tone-blue"],
+    ["block", "kh-card kh-card--block kh-tone-blue"],
+  ] as const)("the %s variant carries the DS modifier", (variant, classes) => {
+    expect(card(<Card variant={variant} tone="blue" title="AI mode" />).className).toBe(classes);
+  });
+
+  it("renders as the element the mockup uses (li in a guides list, section, div)", () => {
+    expect(card(<Card as="li" title="Screen time" />).tagName).toBe("LI");
+    expect(card(<Card as="section" title="How long we keep it" />).tagName).toBe("SECTION");
+    expect(card(<Card as="div" title="x" />).tagName).toBe("DIV");
+  });
+
+  it("ends with its link: the label, then the arrow (home.html fold 7b)", () => {
+    const el = card(<Card title="Screen time" link={{ href: "/stories#screen-time", label: "Read the screen-time guides", icon: icon("arrow-right") }} />);
+    const link = screen.getByRole("link", { name: "Read the screen-time guides" });
+    expect(link).toBe(el.lastElementChild);
+    expect(link.className).toBe("kh-card__link");
+    expect(link).toHaveAttribute("href", "/stories#screen-time");
+    expect(link.lastElementChild?.getAttribute("data-icon")).toBe("arrow-right");
+  });
+
+  it("gives a link its own accessible name where the copy asks for one (contact.html route cards)", () => {
+    render(<Card title="About your order" link={{ href: "https://wa.me/919187546483", label: "Message us on WhatsApp", ariaLabel: "Message us on WhatsApp about your order" }} />);
+    expect(screen.getByRole("link", { name: "Message us on WhatsApp about your order" })).toBeInTheDocument();
+  });
+
+  it("adds the full tap target (DS gap G-01) only when asked: contact, team and hub cards", () => {
+    render(<Card title="x" link={{ href: "/refund", label: "Refunds and returns", tap: true }} />);
+    expect(screen.getByRole("link").className).toBe("kh-card__link ks-card__link--tap");
+  });
+
+  it("sets the hub card title in the subtitle step (titleType; mockup-css-mapping rows 63-64)", () => {
+    render(<Card title="Late talker? What helps a child find their words" titleType="subtitle" />);
+    expect(screen.getByRole("heading", { level: 3 }).className).toBe("kh-card__title ks-type-subtitle");
+  });
+
+  it("puts media first (the hub's guide photo), before the title", () => {
+    const el = card(<Card media={<figure className="kh-photo kh-photo--wide" />} title="Late talker?" body="What helps." />);
+    expect([...el.children].map((c) => c.tagName)).toEqual(["FIGURE", "H3", "P"]);
+  });
+
+  it("groups the words beside the icon for the product page's row cards (meet-kheelu.html fold 4)", () => {
+    const el = card(<Card tone="blue" icon={icon("wifi-high")} title="AI mode" body="Open conversation." groupText />);
+    expect([...el.children].map((c) => `${c.tagName}.${c.className}`)).toEqual(["SPAN.kh-card__icon", "DIV."]);
+    expect([...el.children[1].children].map((c) => c.className)).toEqual(["kh-card__title", "kh-card__body"]);
+  });
+
+  it("is named by its own heading when asked (aria-labelledby on the card, id on the h3)", () => {
+    const el = card(<Card as="section" title="Good to know" titleId="know-title" labelledBy="know-title" />);
+    expect(el.getAttribute("aria-labelledby")).toBe("know-title");
+    expect(screen.getByRole("region", { name: "Good to know" })).toBe(el);
+  });
+
+  it("renders a second-level title where the card is a section's own heading", () => {
+    render(<Card title="What you are agreeing to" titleAs="h2" />);
+    expect(screen.getByRole("heading", { level: 2 }).className).toBe("kh-card__title");
+  });
+
+  it("keeps extra content after the body and before the link, and the parent's class", () => {
+    const el = card(
+      <Card title="Screen-free" body="Kheelu: Yes" className="ks-compare-card" link={{ href: "/x", label: "More" }}>
+        <ul className="kh-body-s" />
+      </Card>,
+    );
+    expect(el.className).toBe("kh-card ks-compare-card");
+    expect([...el.children].map((c) => c.tagName)).toEqual(["H3", "P", "UL", "A"]);
+  });
+
+  it("reveals on scroll only when asked", () => {
+    expect(card(<Card title="x" />).hasAttribute("data-reveal")).toBe(false);
+    expect(card(<Card title="x" reveal />).getAttribute("data-reveal")).toBe("");
+  });
+});

@@ -1,0 +1,59 @@
+/* StepLoop (task 2.4): the two approved layouts beyond the DS's three-in-a-row.
+   Each rule matches the bundle.css rule it refines at equal specificity and wins by load order (compose.css loads
+   after bundle.css): .ks-steps--checks .kh-step::after (0,2,1) against .kh-step:not(:last-child)::after (0,2,1),
+   and .ks-steps--* (0,1,0) against .kh-steps (0,1,0). */
+
+/* checks: the buyer's guide's five checks. Ported from ai-toys-for-kids-in-india.css:13-21 (.mk-gd-checks). They are
+   checks, not a sequence, so the drawn arrows between steps are left out. */
+.ks-steps--checks .kh-step::after {
+  content: none;
+}
+/* Phones: the numeral beside its check, so the five read as one short list. */
+@media (max-width: 719px) {
+  .ks-steps--checks {
+    gap: var(--space-5);
+  }
+  .ks-steps--checks .kh-step {
+    grid-template-columns: var(--space-8) minmax(0, 1fr); /* 64 px, the numeral circle's width (mockup-css-mapping row 9) */
+    column-gap: var(--space-4);
+    row-gap: var(--space-1);
+  }
+  .ks-steps--checks .kh-step__num {
+    grid-row: span 2;
+    margin-bottom: 0;
+  }
+}
+@media (min-width: 720px) {
+  .ks-steps--checks {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-6) var(--space-7);
+  }
+}
+/* All five in one row from the DS content-max (tokens.css --content-max, 1200 px), which a media query cannot read
+   as a variable: media exception content-max-1200 (test/guards/token-exceptions.ts; mockup-css-mapping §4.2). */
+@media (min-width: 1200px) {
+  .ks-steps--checks {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: var(--space-6);
+  }
+}
+
+/* four: setup's four steps. Ported from setup.css:14-21 (.mk-steps-4). The DS lays steps out in threes from 720 px,
+   which would leave step 4 alone on a row: two by two from 720 px (arrows only within each pair), four in a row from
+   1024 px. */
+@media (min-width: 720px) {
+  .ks-steps--four {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ks-steps--four .kh-step:nth-child(2n)::after {
+    display: none;
+  }
+}
+@media (min-width: 1024px) {
+  .ks-steps--four {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .ks-steps--four .kh-step:nth-child(2n):not(:last-child)::after {
+    display: block;
+  }
+}

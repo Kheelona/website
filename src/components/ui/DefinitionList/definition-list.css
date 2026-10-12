@@ -1,0 +1,66 @@
+/* DefinitionList (task 2.4): term and value rows (DS gap G-11, composed).
+   Spec table and stacked declarations: ported from meet-kheelu.css:81-89 (.mk-specs, .mk-specs--stack). */
+.ks-specs {
+  display: grid;
+  margin: 0;
+}
+.ks-specs > div {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-3) 0;
+  border-bottom: var(--stroke-hair) solid var(--border);
+}
+.ks-specs > div:last-child {
+  border-bottom: 0;
+}
+.ks-specs dt {
+  color: var(--text);
+  font-weight: 800; /* ds-weight-800: meet-kheelu.css:85 (mockup-css-mapping row 19) */
+}
+.ks-specs dd {
+  margin: 0;
+  color: var(--text-muted);
+}
+@media (min-width: 720px) {
+  .ks-specs:not(.ks-specs--stack) > div {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 5fr);
+    gap: var(--space-5);
+  }
+}
+
+/* Order rows: ported from store-confirmation.css:17-21 and 36-37 (.mk-order__rows). Phones put the label above its
+   value, so a long value never wraps against the right edge; from 720 px they share the row. */
+.ks-order__rows {
+  display: grid;
+  margin: 0;
+}
+.ks-order__rows > div {
+  display: grid;
+  gap: var(--space-1);
+  padding-block: var(--space-3);
+  border-bottom: var(--stroke-hair) solid var(--border);
+}
+.ks-order__rows > div:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+.ks-order__rows dt {
+  color: var(--text-muted);
+}
+.ks-order__rows dd {
+  margin: 0;
+  font-weight: 800; /* ds-weight-800: store-confirmation.css:23 (mockup-css-mapping row 60) */
+}
+@media (min-width: 720px) {
+  .ks-order__rows > div {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-1) var(--space-4);
+  }
+  .ks-order__rows dd {
+    margin-left: auto;
+    text-align: right;
+  }
+}

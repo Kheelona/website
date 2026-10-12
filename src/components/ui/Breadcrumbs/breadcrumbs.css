@@ -1,0 +1,34 @@
+/* Breadcrumbs (task 2.4): the article trail (DS gap G-11, composed). Ported from stories.css:50-54 (.mk-crumbs).
+   Type: the ol carries ks-type-body-s (body 14/20) and the rule below makes it bold, the DS's own 700 14/20 body
+   pairing (mockup-css-mapping row 70); .ks-crumbs ol (0,1,1) outranks .ks-type-body-s (0,1,0). */
+.ks-crumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--space-1);
+  margin: 0 0 var(--space-3);
+  padding: 0;
+  list-style: none;
+  color: var(--text-muted);
+  font-weight: 700; /* ds-weight-700: stories.css:50 */
+}
+.ks-crumbs li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+.ks-crumbs .kh-icon {
+  font-size: var(--icon-s);
+}
+.ks-crumbs a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-min);
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--border-strong);
+  text-underline-offset: var(--space-1);
+}
+.ks-crumbs a:hover {
+  text-decoration-color: var(--text);
+}
