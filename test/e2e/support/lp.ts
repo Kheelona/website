@@ -5,8 +5,12 @@
  * to the local server instead, passing the original hostname as the Host header, and fulfils the
  * response, so the page runs on the real HTTPS origin, the host gates open, cookies behave as on
  * production, and nothing leaves the machine except the tags' script and config downloads.
- * Every measurement request is recorded and answered locally (204); /ingest/** is answered before
- * it reaches the local server, whose rewrite would forward it to PostHog.
+ * Every measurement request is recorded and answered locally (204); PostHog's capture paths under
+ * /ingest/ are answered before they reach the local server, whose rewrite would forward them to
+ * PostHog. With `downloads: false` (the offline method controls) every /ingest/ and
+ * /ingest-assets/ request is answered here, so nothing at all leaves the machine; with downloads
+ * (the parity rows, KH_TRACKING_PROBE=1 only) PostHog's config, flags and SDK files are fetched
+ * through the rewrite, as test plan §5.1 allows.
  */
 import http from "node:http";
 import { gunzipSync } from "node:zlib";
@@ -64,9 +68,13 @@ function localFetch(req: Request, url: URL): Promise<{ status: number; headers: 
 
 /** Serves the real origins from the local build and records every measurement request.
  *  `downloads: false` aborts the tags' script downloads too, so nothing at all leaves the machine
- *  (the method controls need no tag). */
-export async function serveRealOriginsLocally(context: BrowserContext, { downloads = true }: { downloads?: boolean } = {}): Promise<Recorded[]> {
+ *  (the method controls need no tag). `forwarded` lists every path handed to the local server. */
+export async function serveRealOriginsLocally(
+  context: BrowserContext,
+  { downloads = true }: { downloads?: boolean } = {},
+): Promise<{ recorded: Recorded[]; forwarded: string[] }> {
   const recorded: Recorded[] = [];
+  const forwarded: string[] = [];
   await context.route("**/*", async (route: Route) => {
     const req = route.request();
     const href = req.url();
@@ -77,12 +85,20 @@ export async function serveRealOriginsLocally(context: BrowserContext, { downloa
           recorded.push({ destination: "posthog", url: href, body: decodeBody(req) });
           return route.fulfill({ status: 200, contentType: "application/json", body: '{"status":1}' });
         }
-        // Config, flags and SDK assets are allowed (test plan §5.1): the local server's rewrite fetches them.
+        // Offline: config, flags and SDK assets are answered here too, empty, because the local
+        // server's rewrite would fetch them from PostHog.
+        if (!downloads) {
+          return url.pathname.endsWith(".js")
+            ? route.fulfill({ status: 200, contentType: "text/javascript", body: "" })
+            : route.fulfill({ status: 200, contentType: "application/json", body: "{}" });
+        }
+        // With downloads (the probe's rows), they are allowed (test plan §5.1): the rewrite fetches them.
       }
       if (url.pathname.startsWith("/_vercel/") || /\/insights\//.test(url.pathname)) {
         recorded.push({ destination: "vercel", url: href, body: decodeBody(req) });
         return route.fulfill({ status: 204, body: "" });
       }
+      forwarded.push(url.pathname);
       const res = await localFetch(req, url);
       return route.fulfill({ status: res.status, headers: res.headers, body: res.body });
     }
@@ -95,7 +111,7 @@ export async function serveRealOriginsLocally(context: BrowserContext, { downloa
     if (downloads && DOWNLOADS.some((d) => d.test(href))) return route.continue();
     return route.abort("blockedbyclient");
   });
-  return recorded;
+  return { recorded, forwarded };
 }
 
 /** The Meta pixel beacons through `new Image().src` (lessons §5): hook the setter itself. */

@@ -121,7 +121,13 @@ test.describe("redirects: platform behaviour", () => {
     expect(shadowed).toEqual([]);
   });
 
-  test("a trailing slash is one 308 to the bare path, query kept; /ingest/e/ keeps its slash", async () => {
+  /* /ingest/e/ keeping its slash is NOT requested here: any request under /ingest/ that is not
+     redirected reaches the PostHog rewrite and leaves the machine. It is asserted without the
+     network by the kept repo guards that `verify` runs (architecture §14): next.config's
+     skipTrailingSlashRedirect (test/posthog-proxy.test.ts), proxy() leaving /ingest/e/ alone
+     (test/proxy-trailing-slash.test.ts) and the proxy matcher skipping every PostHog path
+     (test/posthog-proxy.test.ts). */
+  test("a trailing slash is one 308 to the bare path, query kept", async () => {
     for (const [from, to] of [
       ["/team/", "/team"],
       ["/team/?utm_source=x", "/team?utm_source=x"],
@@ -131,8 +137,6 @@ test.describe("redirects: platform behaviour", () => {
       expect(target, from).toBe(to);
       expect(final?.status, `${from}: target`).toBe(200);
     }
-    const ingest = await nodeGet("/ingest/e/", "marketing");
-    expect(ingest.status === 308 && String(ingest.headers.location).endsWith("/ingest/e"), "/ingest/e/ must keep its slash").toBe(false);
   });
 
   test("the marketing host's /store/* is one 308 to the store host", async () => {

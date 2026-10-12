@@ -13,7 +13,9 @@ import { VIEWPORTS, contextFor } from "./support/viewports";
  * its kh_utm cookie in the browser (so Set-Cookie from a fulfilled response is honoured). A control
  * host run on http://localhost:3456 must load no gtag, no fbq and no /ingest request.
  *
- * The controls need no tag, so they run offline (every download aborted) in every e2e run. The
+ * The controls need no tag, so they run offline in every e2e run: every download aborted and every
+ * PostHog path answered in the browser (the first control asserts none reached the local server,
+ * whose rewrite would forward it to PostHog). The
  * rows need the network for the tags' own scripts, so they run only on request:
  *   KH_TRACKING_PROBE=1 npx playwright test test/e2e/tracking-probe.spec.ts
  * Row evidence (payloads) is attached to the report; IDs and names come from the inventory.
@@ -30,7 +32,7 @@ test.describe("tracking probe (LP): method controls, offline", () => {
 
   test("control: the store host reaches the store and a tagged landing keeps kh_utm", async ({ browser }) => {
     const context = await browser.newContext({ ...contextFor(vp), userAgent: REAL_DESKTOP_UA });
-    await serveRealOriginsLocally(context, { downloads: false });
+    const { forwarded } = await serveRealOriginsLocally(context, { downloads: false });
     const page = await context.newPage();
     const store = await page.goto("https://store.kheelona.com/");
     expect(store?.status()).toBe(200);
@@ -41,6 +43,10 @@ test.describe("tracking probe (LP): method controls, offline", () => {
     await page.goto("https://kheelona.com/?utm_source=qa-probe&utm_medium=test&utm_campaign=lp");
     const cookies = await context.cookies("https://kheelona.com");
     expect(cookies.some((c) => c.name === "kh_utm"), "kh_utm was not set: Set-Cookie from a fulfilled response is not honoured").toBe(true);
+    // Offline means offline: the local server's PostHog rewrite would forward any /ingest path.
+    await page.waitForTimeout(2000);
+    const proxied = forwarded.filter((p) => /^\/ingest(?:-assets)?\//.test(p));
+    expect(proxied, "a PostHog path reached the local server, whose rewrite forwards it to PostHog").toEqual([]);
     await context.close();
   });
 
@@ -76,7 +82,7 @@ test.describe("tracking probe (LP): parity rows", () => {
     test(`rows 4, 11, 12, 14 on ${path}`, async ({ browser }, testInfo) => {
       const context = await browser.newContext({ ...contextFor(vp), userAgent: REAL_DESKTOP_UA });
       await context.addInitScript(IMAGE_SRC_HOOK);
-      const recorded = await serveRealOriginsLocally(context);
+      const { recorded } = await serveRealOriginsLocally(context);
       const page = await context.newPage();
       await page.goto(`https://kheelona.com${path}`);
       await page.waitForTimeout(6000);
