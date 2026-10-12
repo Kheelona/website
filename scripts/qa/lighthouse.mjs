@@ -10,7 +10,10 @@
 //
 // Throttling (test plan §1.2, lessons §6: "record devtools-throttled and simulated runs"): by
 // default both Lighthouse's simulated throttling and devtools throttling run, each with its own
-// report files and its own medians, each scored against the budget.
+// report files and its own medians. GATING = THE SIMULATED MEDIAN (Lighthouse's default,
+// PageSpeed's method; main session 2026-10-12, task 1.1b): only a simulated median below budget
+// fails the run. Devtools medians are recorded and printed, with a warning below budget, and
+// never gate.
 //
 // Profiles (which run counts, N18):
 //   local       the local production build on http://localhost:3456 (no tags: hosts in no list)
@@ -24,16 +27,14 @@
 // about 66 (noindex on purpose); on lp-tags and production, Best Practices may fail only on the
 // Meta pixel's third-party cookie (the third-party-cookies audit, and inspector-issues only while
 // every issue it lists is a third-party-cookie phase-out issue), and on lp-tags the HTTPS audits
-// flip on the http:// origin.
+// flip on the http:// origin. The Best Practices allowance holds only when EVERY run's failing
+// audits are in the allowed list; the union of failing audits over the runs is printed.
 // Reports go to lighthouse-reports/<date>/<profile>-<method>-<page>-<n>.json (git-ignored, D039).
-// Exit 1 when a page misses in any method.
+// Exit 1 when a page misses the budget on the simulated median.
 
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
-import { chromium } from "@playwright/test";
-import * as chromeLauncher from "chrome-launcher";
-import lighthouse from "lighthouse";
 
 const PAGES = [
   "/",
@@ -126,8 +127,51 @@ const median = (xs) => {
   return s[Math.floor(s.length / 2)];
 };
 
+/** The method whose medians gate (task 1.1b, main session 2026-10-12): Lighthouse's default
+ *  simulated throttling, PageSpeed's method. Devtools medians are recorded, never gating. */
+export const GATING_METHOD = "simulate";
+
+/** One page's verdict for one throttling method, from its runs ({ scores, bpFailures } each).
+ *  A category misses when its median is under THRESHOLD, apart from the pre-approved store SEO
+ *  and, on tag-loading profiles, a Best Practices median whose every run failed only allowed
+ *  audits (one run with any other failing audit refuses the allowance; the union is printed).
+ *  A miss fails the page only on the gating method; on devtools it is printed as a warning. */
+export function scorePage({ profile, page, method, runs }) {
+  const medians = Object.fromEntries(CATEGORIES.map((c) => [c, median(runs.map((r) => r.scores[c] ?? 0))]));
+  const bpUnion = [...new Set(runs.flatMap((r) => r.bpFailures))].sort();
+  const allowed = ALLOWED_BP[profile];
+  const everyRunAllowed = !!allowed && runs.every((r) => r.bpFailures.every((id) => allowed.includes(id)));
+  const gating = method === GATING_METHOD;
+  const notes = [];
+  let failed = false;
+  for (const c of CATEGORIES) {
+    const score = Math.round(medians[c] * 100);
+    if (medians[c] >= THRESHOLD) continue;
+    if (c === "seo" && page.startsWith("store:")) {
+      notes.push(`store SEO ${score}: pre-approved exception (noindex on purpose, B10)`);
+      continue;
+    }
+    if (c === "best-practices" && everyRunAllowed) {
+      notes.push(`Best Practices ${score}: every run failed only ${bpUnion.join(", ")} (pre-approved, B10/N18)`);
+      continue;
+    }
+    const miss = `${c} ${score} < ${THRESHOLD * 100}${c === "best-practices" ? ` (failing audits over ${runs.length} run(s): ${bpUnion.join(", ") || "none"})` : ""}`;
+    if (gating) {
+      failed = true;
+      notes.push(miss);
+    } else {
+      notes.push(`warning: ${miss} (${method}, recorded, not gating)`);
+    }
+  }
+  return { medians, gating, failed, notes, bpUnion };
+}
+
 async function main() {
   const { profile, runs, methods, pages } = parseArgs(process.argv.slice(2));
+  // Loaded here, not at the top, so the verdict functions import without Chrome or Lighthouse.
+  const { chromium } = await import("@playwright/test");
+  const chromeLauncher = await import("chrome-launcher");
+  const { default: lighthouse } = await import("lighthouse");
   const flags = ["--headless=new", "--no-first-run", "--disable-extensions"];
   if (profile === "lp-tags") flags.push("--host-resolver-rules=MAP kheelona.com 127.0.0.1, MAP store.kheelona.com 127.0.0.1");
   const chrome = await chromeLauncher.launch({ chromePath: chromium.executablePath(), chromeFlags: flags });
@@ -138,42 +182,29 @@ async function main() {
     for (const page of pages) {
       const url = urlFor(profile, page);
       for (const method of methods) {
-        const scores = Object.fromEntries(CATEGORIES.map((c) => [c, []]));
-        let lastBpFailures = [];
+        const results = [];
         for (let n = 1; n <= runs; n++) {
           const result = await lighthouse(url, lighthouseFlags(profile, method, chrome.port));
-          const lhr = result.lhr;
           writeFileSync(join(dir, reportName(profile, method, page, n)), result.report);
-          for (const c of CATEGORIES) scores[c].push(lhr.categories[c]?.score ?? 0);
-          lastBpFailures = bestPracticesFailures(result);
+          results.push({
+            scores: Object.fromEntries(CATEGORIES.map((c) => [c, result.lhr.categories[c]?.score ?? 0])),
+            bpFailures: bestPracticesFailures(result),
+          });
         }
-        const med = Object.fromEntries(CATEGORIES.map((c) => [c, median(scores[c])]));
-        const notes = [];
-        for (const c of CATEGORIES) {
-          if (med[c] >= THRESHOLD) continue;
-          if (c === "seo" && page.startsWith("store:")) {
-            notes.push(`store SEO ${Math.round(med[c] * 100)}: pre-approved exception (noindex on purpose, B10)`);
-            continue;
-          }
-          const allowed = ALLOWED_BP[profile];
-          if (c === "best-practices" && allowed && lastBpFailures.every((id) => allowed.includes(id))) {
-            notes.push(`Best Practices ${Math.round(med[c] * 100)}: only ${lastBpFailures.join(", ")} (pre-approved, B10/N18)`);
-            continue;
-          }
-          failed = true;
-          notes.push(`${c} ${Math.round(med[c] * 100)} < ${THRESHOLD * 100}${c === "best-practices" ? ` (failing audits: ${lastBpFailures.join(", ")})` : ""}`);
-        }
+        const v = scorePage({ profile, page, method, runs: results });
+        failed ||= v.failed;
         console.log(
-          `[lighthouse ${profile} ${method}] ${url}  ` +
-            CATEGORIES.map((c) => `${c} ${Math.round(med[c] * 100)}`).join("  ") +
-            (notes.length ? `\n  ${notes.join("\n  ")}` : ""),
+          `[lighthouse ${profile} ${method}${v.gating ? ", gating" : ", recorded"}] ${url}  ` +
+            CATEGORIES.map((c) => `${c} ${Math.round(v.medians[c] * 100)}`).join("  ") +
+            (v.notes.length ? `\n  ${v.notes.join("\n  ")}` : ""),
         );
       }
     }
   } finally {
     await chrome.kill();
   }
-  console.log(`[lighthouse ${profile}] ${methods.join(" and ")} throttling; reports in ${dir}/`);
+  console.log(`[lighthouse ${profile}] ${methods.join(" and ")} throttling; the ${GATING_METHOD} median gates; reports in ${dir}/`);
+  if (!methods.includes(GATING_METHOD)) console.log(`[lighthouse ${profile}] warning: no ${GATING_METHOD} run, so nothing gated; this run is a record only.`);
   process.exit(failed ? 1 : 0);
 }
 

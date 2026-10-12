@@ -1,15 +1,53 @@
 {
+  // Type-checks what tsconfig.json leaves out: every test, story and harness file (task 1.1, widened
+  // by 1.1b item 4). `npm run typecheck` runs it after the app's own check.
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "incremental": false,
     "types": ["vitest/globals", "@testing-library/jest-dom", "node"]
   },
   "include": [
-    "test/guards/**/*.ts",
-    "test/guards/**/*.tsx",
-    "test/e2e/**/*.ts",
+    "test/**/*.ts",
+    "test/**/*.tsx",
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx",
+    "src/**/*.test-d.ts",
+    "src/**/*.test-d.tsx",
+    "src/**/*.stories.ts",
+    "src/**/*.stories.tsx",
+    // Ambient declarations the app program sees through **/*.ts (static image types for a clean clone,
+    // where the git-ignored next-env.d.ts is missing) must be in this program too: a test's subject
+    // that imports an .svg or .png type-checks here only with them.
+    "src/**/*.d.ts",
     "playwright.config.ts",
     "vitest.config.ts"
   ],
-  "exclude": ["node_modules"]
+  // By name only: the legacy, moving and frozen files that do not type-check today (2026-10-12).
+  // Each leaves this list with the task that deletes, moves or rewrites it; never add a new file here.
+  "exclude": [
+    "node_modules",
+    // 6.3 deletes the legacy stories with their components (atoms, organisms, features/home).
+    "src/components/atoms/Room.stories.tsx",
+    "src/components/atoms/Section.stories.tsx",
+    "src/components/organisms/FinaleCTA.stories.tsx",
+    "src/components/organisms/ParentQuotes.stories.tsx",
+    "src/features/home/components/ParentAppSection.stories.tsx",
+    // 6.3 retires this legacy guard with its subject.
+    "test/action-label.test.ts",
+    // 6.3 rewrites it (CANONICAL_ORIGIN from @/config/env when seo.ts goes). It fails today (10 errors:
+    // allowJs types tools/utm/build-link.mjs, so its @ts-expect-error is unused and the calls miss
+    // `content` and `term`).
+    "test/utm.test.ts",
+    // 2.6 moves it to src/components/tracking/ with PostHogGate; the moved file is type-checked
+    // there (its PostHogLike mocks lack get_distinct_id).
+    "src/components/molecules/PostHogGate.test.tsx",
+    // 5.15: a frozen checkout test (ADR-013, B3), changed only by a literal-only reviewed patch.
+    "src/features/preorder/components/PreorderForm.test.tsx",
+    // 5.11 re-pins this guard (guard-test ownership); its PreorderRow fixture lacks ph_distinct_id.
+    "test/analytics-tags.test.ts",
+    // 6.4, with its reviewed diff: src/lib/email/ is frozen (checkout-freeze).
+    "src/lib/email/templates.test.ts",
+    // Frozen with src/features/preorder/lib/ (ADR-013; guard-test ownership "Keep"): no task edits it.
+    "src/features/preorder/lib/analytics.test.ts"
+  ]
 }

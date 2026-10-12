@@ -19,6 +19,8 @@ const faq = (text: string) => ({
   "@type": "FAQPage",
   mainEntity: [{ "@type": "Question", name: "How much is Kheelu?", acceptedAnswer: { "@type": "Answer", text } }],
 });
+/* schema.org puts the warranty on the Offer: Offer.warranty takes a WarrantyPromise. Product has
+   no hasWarranty property (2.7's finding; task 1.1b). */
 const product = (price: number, days: number, months: number) => ({
   "@type": "Product",
   offers: {
@@ -26,8 +28,8 @@ const product = (price: number, days: number, months: number) => ({
     price,
     priceCurrency: "INR",
     hasMerchantReturnPolicy: { "@type": "MerchantReturnPolicy", merchantReturnDays: days },
+    warranty: { "@type": "WarrantyPromise", durationOfWarranty: { "@type": "QuantitativeValue", value: months, unitCode: "MON" } },
   },
-  hasWarranty: { "@type": "WarrantyPromise", durationOfWarranty: { "@type": "QuantitativeValue", value: months, unitCode: "MON" } },
 });
 
 describe("jsonld-matches-page detector", () => {
