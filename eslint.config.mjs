@@ -98,6 +98,7 @@ const eslintConfig = defineConfig([
       "src/app/store/_components/NotFoundPanel.tsx",
       "src/app/store/e/[[]event]/page.tsx",
       "src/app/store/ideabaaz/page.tsx",
+      "src/components/molecules/Sheet.stories.tsx",
     ],
     rules: { "@next/next/no-html-link-for-pages": "off" },
   },
