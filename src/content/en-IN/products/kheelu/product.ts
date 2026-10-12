@@ -50,7 +50,7 @@ export interface ProductFacts {
     readonly id: `https://kheelona.com/products/${string}#product`;
     readonly name: string;
     /** The former name, "Lumi" (architecture §6.1, §9.2; claims §4 row 19): allowed by the
-     *  banned-phrases guard's `lumi` entry only as this one line (task 2.13). */
+     *  banned-phrases guard's `lumi` entry as the sentence `alternateName: "Lumi",` (task 2.13). */
     readonly alternateName?: string;
     readonly brand: string;
     readonly category: string;

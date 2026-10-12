@@ -113,7 +113,8 @@ export const BANNED_PHRASES: readonly BannedPhrase[] = [
   // ── Row 19: "Lumi" only as alternateName and in the rename answer ──
   // The alternateName line of src/content/en-IN/products/kheelu/product.ts reaches the code scan as
   // the sentence `alternateName: "Lumi",`; the bare string "Lumi" is how the content scan reads it
-  // (task 2.13; architecture §6.1, §9.2).
+  // (task 2.13; architecture §6.1, §9.2). The allowance has no file scope (findBanned takes no
+  // path), so that sentence passes in any file; row 19 allows "Lumi" as alternateName anywhere.
   { id: "lumi", kind: "claim", claimsRow: R19, pattern: /\bLumi\b/, allowSentence: /\bsame as Lumi\b|\bcalled Lumi\b|\bsold as Lumi\b|^Lumi$|^alternateName: "Lumi",?$/, planted: "Meet Lumi, the toy that talks back.", why: "Renamed 2026-09-05; allowed only as alternateName and in \"Is Kheelu the same as Lumi?\"." },
   // ── Row 20: the positioning's never-say list ──
   { id: "never-iq", kind: "claim", claimsRow: R20, pattern: new RegExp(`\\bboosts? (?:your child${APOS}s |a child${APOS}s |their )?IQ\\b|\\bmakes? (?:your child|kids|children|them) smarter\\b|\\b2x faster\\b|\\btwice as fast\\b|\\bgenius\\b`, "i"), planted: "It boosts IQ and makes your child smarter.", why: "ASCI substantiation and anti-anxiety rules (positioning guardrails)." },

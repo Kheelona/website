@@ -111,8 +111,8 @@ describe("schema facts (architecture §9.2)", () => {
 
   it("name the former name as alternateName, so one product never reads as two", () => {
     /* Architecture §6.1 and §9.2; claims §4 row 19 allows the old name only as alternateName and in
-       the rename answer. The banned-phrases guard's `lumi` entry allows exactly this line (task
-       2.13), added in the same commit as this assertion. */
+       the rename answer. The banned-phrases guard's `lumi` entry allows this line's sentence (task
+       2.13; in any file, since the guard takes no path), added in the same commit as this assertion. */
     expect(product.schema.alternateName).toBe("Lumi");
   });
 
