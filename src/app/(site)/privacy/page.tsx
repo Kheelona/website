@@ -1,12 +1,12 @@
 import { pageMeta, pageGraph, breadcrumbs, jsonLd } from "@/lib/seo";
 import { LegalDoc, type LegalSection } from "@/components/templates/LegalDoc";
 import { SELLER_SECTION } from "@/lib/legal";
-import { CONTACT_EMAIL, SUPPORT_WHATSAPP_DISPLAY, SHIP_DATE_TEXT } from "@/config/site";
+import { CONTACT_EMAIL, GRIEVANCE_EMAIL, SUPPORT_WHATSAPP_DISPLAY, SHIP_DATE_TEXT } from "@/config/site";
 
 export const metadata = pageMeta({
   title: "Privacy",
   description:
-    "What Kheelona collects when you pre-order Kheelu, who processes it, what we never do with it, and the promises we make about your child's data.",
+    "What Kheelona collects when you pre-order Kheelu and when you use the parent app, who processes it, and what we promise about your child's data.",
   path: "/privacy",
 });
 
@@ -196,11 +196,60 @@ const SECTIONS: readonly LegalSection[] = [
       `You can ask us to delete your details at any time. Message us on WhatsApp at ${SUPPORT_WHATSAPP_DISPLAY}, reply to any email we have sent you, or write to ${CONTACT_EMAIL}. If you have an open pre-order, deleting your details means cancelling it, so we will refund you at the same time.`,
     ],
   },
+  /* ── THE PARENT APP AND THE TOY (added 2026-10-12, for the App Store and Play
+     reviews). Replaces "When Kheelu ships", which promised region pinning and
+     one-tap deletion: neither is true of the app today (deleting a chat in the app
+     hides it on that phone; Google's Gemini processes speech), and a store reviewer
+     compares this page with the app. Every sentence below was checked against
+     Kheelona_App and backend-service on that date. "Save voice recordings" is
+     honoured by the server only from backend-service PR #39, so that must be live
+     before this ships. */
   {
-    h: "When Kheelu ships",
+    h: "The parent app and your Kheelu",
     ps: [
-      "The product itself follows stricter rules, explained in plain words on our Safety page: conversations stay in your region, nothing is collected without parent consent, any conversation can be deleted in one tap, and your child's voice data is never sold.",
-      "A full product privacy policy will be published here before Kheelu ships.",
+      "This part covers the Kheelona parent app, on Android and iPhone, and the Kheelu toy it sets up. Everything above covers your pre-order on this website.",
+    ],
+  },
+  {
+    h: "What the app and Kheelu collect",
+    ps: [
+      "Your mobile number, so you can sign in with a one-time code we send by SMS. Your name and how you are related to your child, if you add them.",
+      "Your child's first name, age, pronouns and the languages they speak, so Kheelu can talk with them properly. A photo of your child, only if you choose to add one.",
+      "What your child says to Kheelu. Their voice is sent to our servers so Kheelu can understand it and answer, and we keep a written record of each conversation so you can read it in the parent app. We also keep the voice recording itself, unless you turn off Save voice recordings in the app's privacy settings.",
+      "Details about the toy: its ID, the name you give it, its battery and WiFi strength, and when it was last online.",
+    ],
+  },
+  {
+    h: "What the app does not do",
+    ps: [
+      "The app does not collect your location. Your phone asks for location permission while you set up Kheelu only because Android and iPhone require it before an app can read the name of your WiFi network, and that name stays on your phone.",
+      "The app shows no advertising and contains no advertising or analytics tools, so nothing in it follows you to other apps or websites. We never sell what your child says, and we never use it to advertise to you or to profile your child.",
+    ],
+  },
+  {
+    h: "Who helps us run it",
+    ps: [
+      "Google Cloud hosts our servers and stores recordings and photos, and Google's Gemini turns what your child says into Kheelu's reply. Some Kheelu voices use Sarvam AI for speech. Twilio sends the sign-in codes. Aiven and Redis run our databases, and New Relic and Sentry help us find errors on our servers.",
+      "Each of them handles this data only to do that job for us. Some of them process it outside India.",
+    ],
+  },
+  {
+    h: "Your choices in the app",
+    ps: [
+      "In the app's privacy settings you can turn off Save voice recordings, download your child's data, and delete your account.",
+      "Removing a chat in the app hides it on that phone. To remove conversations from our servers, delete your account, or write to us and we will do it for you.",
+      "Deleting your account removes your account, your child's profile, and your conversations and recordings from our servers.",
+    ],
+  },
+  {
+    /* The two DPDP lines (Technical-Todo, HIGH since 5 October 2026): a retention
+       period and a grievance contact. The retention stated is the one the server
+       actually implements; there is no timed expiry, so no number is given.
+       Counsel-gated like the rest of this page. */
+    h: "How long we keep it, and who to contact",
+    ps: [
+      "We keep what the app collects for as long as your account is open, and delete it when you delete your account, apart from anything the law requires us to keep.",
+      `If you have a concern about how we handle your data or your child's, write to our grievance officer at ${GRIEVANCE_EMAIL}.`,
     ],
   },
   SELLER_SECTION,
@@ -220,7 +269,7 @@ export default function PrivacyPage() {
       />
       <LegalDoc
         title="Privacy, in plain words."
-        lede="This page covers your pre-order. It is written to be read, not skimmed past."
+        lede="This page covers your pre-order and the Kheelona parent app. It is written to be read, not skimmed past."
         sections={SECTIONS}
         guide="bliss"
         /* GATED:kheelu-line — founder sign-off before merge to master */
