@@ -84,4 +84,6 @@ export const filmsStrip = {
   /** Read before each length by screen readers only. */
   length: "Length",
   play: "Play:",
+  /** The position line's word: "1 of 7" on phones, "1–3 of 7" on laptops (mockup.js §4). */
+  of: "of",
 } as const;

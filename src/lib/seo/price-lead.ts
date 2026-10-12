@@ -18,9 +18,9 @@ export function leadWithHeadline(text: string, headline: string, what: string): 
   return text;
 }
 
-/** A typed amount in content source: the rupee sign, or digits with Rs, INR or "rupees" (the same
- *  forms src/content/en-IN/amounts.test.ts refuses in the content modules). */
-const TYPED_AMOUNT = /₹|\bRs\.?\s?\d|\bINR\s?\d|\d\s?(?:rupees|INR)\b/i;
+/** A typed amount in content source: the rupee sign, or digits with Rs, INR or "rupees". The one
+ *  definition: src/content/en-IN/amounts.test.ts scans the content modules with it (task 3.6). */
+export const TYPED_AMOUNT = /₹|\bRs\.?\s?\d|\bINR\s?\d|\d\s?(?:rupees|INR)\b/i;
 
 /**
  * Every amount in content is a `{price:…}` token (architecture §6.2), so it follows the checkout's

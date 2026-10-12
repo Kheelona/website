@@ -2,7 +2,9 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { films, filmsStrip } from "@/content/en-IN/films";
 import { FilmsStrip, type FilmsStripProps } from "./FilmsStrip";
+import storiesMeta, * as stories from "./FilmsStrip.stories";
 
 /* FilmsStrip (task 3.3; components §2; D040, D049 pick 8; architecture §10, §11.2 row 8): the seven parent films on Home
  * (fold 2), the product page (fold 2) and the store (fold 6). The markup is compared class by class (mk- renamed ks-)
@@ -65,7 +67,7 @@ const filmsFrom = (section: Element): FilmsStripProps["films"] =>
     };
   });
 
-const LABELS = { listLabel: "Seven films of families with Kheelu", previous: "Previous video", next: "Next video", length: "Length", play: "Play:", of: "of" };
+const LABELS = filmsStrip;
 
 const home = strip("home");
 const PROPS: FilmsStripProps = {
@@ -256,5 +258,18 @@ describe("FilmsStrip: the film in focus (D049 pick 8)", () => {
     act(() => band.callback([{ target: tiles[2], intersectionRect: { width: 320 } as DOMRectReadOnly }]));
     expect(container.querySelectorAll(".is-focus")).toHaveLength(1);
     expect(tiles[2]).toHaveClass("ks-film", "is-focus");
+  });
+});
+
+/* Task 3.6 item 19: films.spec.ts and motion-films.spec.ts run on these stories, so the stories show the content itself
+   (content/en-IN/films.ts), never a retyped copy: the specs then test what the pages publish. */
+describe("FilmsStrip: the stories show the content", () => {
+  it("every story takes the content's films and the strip's labels, the very values", () => {
+    expect(storiesMeta.args.films).toBe(films);
+    expect(storiesMeta.args.labels).toBe(filmsStrip);
+    for (const story of [stories.Home, stories.Product, stories.Store]) {
+      expect(story.args?.films ?? storiesMeta.args.films).toBe(films);
+      expect(story.args?.labels ?? storiesMeta.args.labels).toBe(filmsStrip);
+    }
   });
 });

@@ -83,4 +83,11 @@ describe("the strip's own labels", () => {
     expect(`${filmsStrip.length} `).toBe(home.querySelector(".mk-film__time .kh-sr")?.textContent);
     expect(filmsStrip.play).toBe("Play:");
   });
+
+  /* Task 3.6 item 19: the position line's word, "1 of 7" (mockup.js §4 writes "1–3 of 7" on laptops), is content too. */
+  it("give the position line its word, as the mockup prints it (1 of 7)", () => {
+    const pos = doc("home").querySelector("[data-films-pos]")?.textContent;
+    expect(pos).toBe(`1 ${filmsStrip.of} ${films.length}`);
+    expect(filmsStrip.of).toBe("of");
+  });
 });
