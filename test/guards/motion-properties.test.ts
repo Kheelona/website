@@ -28,9 +28,11 @@ import { buildComposeCss, collectComposeFiles } from "../../scripts/assets/build
  * - property names are read as the browser reads them: case-folded, escapes decoded, vendor prefix dropped, and
  *   inside CSS nesting;
  * - no scroll-driven animation and no view transitions (ADR-007 rejects both).
- * A sheet may @import only sheets read here, the DS bundle.css and Tailwind's theme and utilities. Tailwind's
- * motion utilities never reach the new site (postcss.config.mjs drops them; new-design source asks for none), and
- * new-design source has no JavaScript motion. motion.css also stays on the class contract of architecture §11.3
+ * A sheet may @import only sheets read here, the DS bundle.css and (site.css only) Tailwind's theme and utilities.
+ * Tailwind directives are refused outside site.css and tailwind-theme.css, and @apply everywhere: its declarations
+ * land unlayered, where neither this guard's source reading nor postcss.config.mjs's filter would see them. So
+ * Tailwind's motion utilities reach the new site only through markup, where postcss.config.mjs drops them (and
+ * new-design source asks for none), and new-design source has no JavaScript motion. motion.css also stays on the class contract of architecture §11.3
  * and its only literals are the two D049 values.
  *
  * Not design-system/ (the DS's own spinner and progress bar are the DS's), and not the legacy
@@ -45,8 +47,10 @@ const DS_TOKENS_CSS = "src/styles/generated/ds-tokens.css";
 const LEGACY = new Set(["src/styles/globals.css"]);
 /** Folders that hold only new-design source (the legacy atoms, molecules, organisms and old pages are elsewhere). */
 const NEW_DESIGN_SOURCES = ["src/components/ui", "src/components/sections", "src/components/chrome", "src/components/tracking", "src/layouts", "src/motion", "src/features/preorder/components", "src/app/store"];
+/** Tailwind's two layers, which only site.css imports. */
+const TAILWIND_LAYERS = new Set(["tailwindcss/theme.css", "tailwindcss/utilities.css"]);
 /** What a scanned sheet may @import besides another scanned sheet: the DS as delivered and Tailwind's two layers. */
-const IMPORTABLE = new Set(["design-system/project/components/bundle.css", "tailwindcss/theme.css", "tailwindcss/utilities.css"]);
+const IMPORTABLE = new Set(["design-system/project/components/bundle.css", ...TAILWIND_LAYERS]);
 /** Architecture §11.2: nothing moves for more than five seconds. */
 const FIVE_SECONDS = 5000;
 
@@ -629,15 +633,53 @@ function analyseMotion(sheets: Sheet[], dsMotion: ReadonlyMap<string, string> = 
   return findings;
 }
 
-/** @imports of CSS this guard does not read: only scanned sheets, the DS bundle.css and Tailwind's layers may load. */
+/**
+ * @imports of CSS this guard does not read: only scanned sheets, the DS bundle.css and Tailwind's layers may load,
+ * and Tailwind's layers only from site.css (a second, unlayered import of the utilities would take every utility out
+ * of the layer postcss.config.mjs filters).
+ */
 function importFindings(sheets: Sheet[]): string[] {
   const findings: string[] = [];
   for (const { file, css } of sheets) {
     postcss.parse(css, { from: file }).walkAtRules(/^import$/i, (a) => {
       const spec = /^(?:url\(\s*)?["']?([^"')\s]+)/i.exec(a.params.trim())?.[1] ?? a.params;
       const target = spec.startsWith(".") ? posix.normalize(posix.join(posix.dirname(file), spec)) : spec;
+      if (TAILWIND_LAYERS.has(target) && file !== SITE_CSS) {
+        findings.push(`${file}: @import "${spec}": only site.css loads Tailwind's theme and utilities, once, in their layers`);
+        return;
+      }
       if (inScope(target) || IMPORTABLE.has(target)) return;
       findings.push(`${file}: @import "${spec}" loads CSS this guard does not read (${target}); import only scanned sheets, the DS bundle.css or Tailwind's theme and utilities`);
+    });
+  }
+  return findings;
+}
+
+/**
+ * Tailwind's own at-rules (the ones tailwindcss 4.3 compiles). Never anywhere: @apply writes a utility's declarations
+ * into the rule that holds it, unlayered, where neither this guard (it reads source declarations) nor
+ * postcss.config.mjs's filter (it reads the utilities layer) sees them; the others load Tailwind or its plugins again.
+ */
+const TAILWIND_NEVER = new Set(["apply", "tailwind", "plugin", "config", "reference"]);
+/** Tailwind's at-rules that configure it: only the CSS entry and the token bridge do that. */
+const TAILWIND_SETUP = new Set(["utility", "variant", "custom-variant", "slot", "source", "theme"]);
+const TAILWIND_SETUP_FILES = new Set([SITE_CSS, "src/styles/tailwind-theme.css"]);
+
+/**
+ * Tailwind directives in the scanned sheets. Composition CSS ports the mockup's plain declarations (architecture
+ * §4.4) and needs none; the entry and the token bridge need @source and @theme, and never @apply.
+ */
+function tailwindDirectiveFindings(sheets: Sheet[]): string[] {
+  const findings: string[] = [];
+  for (const { file, css } of sheets) {
+    postcss.parse(css, { from: file }).walkAtRules((a) => {
+      const name = unescapeIdent(a.name).toLowerCase();
+      const where = `${file}:${a.source?.start?.line ?? "?"}: @${a.name}`;
+      if (TAILWIND_NEVER.has(name)) {
+        findings.push(`${where} ${a.params}: Tailwind directives never ship on the new site (an @apply's declarations land unlayered, past the motion guard and postcss.config.mjs's filter); write the DS declarations, or put the utility in markup`);
+      } else if (TAILWIND_SETUP.has(name) && !TAILWIND_SETUP_FILES.has(file)) {
+        findings.push(`${where} ${a.params}: Tailwind is configured only in src/styles/site.css and src/styles/tailwind-theme.css`);
+      }
     });
   }
   return findings;
@@ -932,6 +974,37 @@ describe("the motion analyser also catches motion written in other spellings and
     expect(importFindings([{ file: SITE_CSS, css: readFileSync(join(ROOT, SITE_CSS), "utf8") }])).toEqual([]);
   });
 
+  it("lets only site.css import Tailwind's theme and utilities, so no second, unlayered copy of the utilities ships", () => {
+    // Plant (task 1.2 review, 2026-10-11): `@import "tailwindcss/utilities.css";` in a component file moved every
+    // utility out of the utilities layer, where postcss.config.mjs filters, into unlayered CSS (z-50 shipped).
+    const card = (css: string) => importFindings([{ file: "src/components/ui/Card/card.css", css }]).join("\n");
+    expect(card(`@import "tailwindcss/utilities.css";`)).toMatch(/card\.css: @import "tailwindcss\/utilities\.css".*only site\.css/);
+    expect(card(`@import "tailwindcss/theme.css" layer(theme);`)).toMatch(/tailwindcss\/theme\.css/);
+    expect(card(`@import "../../../../design-system/project/components/bundle.css";`)).toBe("");
+  });
+
+  it("refuses Tailwind's directives in composition CSS: @apply output is unlayered, so no filter or source check sees it", () => {
+    // Plant (task 1.2 review, 2026-10-11): `.ks-zz-plant { @apply transition-all duration-700 z-50; }` in a
+    // component file shipped `transition-property: all` with a literal 700ms, unswitched under reduced motion.
+    const card = (css: string) => tailwindDirectiveFindings([{ file: "src/components/ui/Card/card.css", css }]).join("\n");
+    expect(card(".ks-x { @apply transition-all duration-700; }")).toMatch(/card\.css:1: @apply/);
+    expect(card("@media (min-width: 720px) { .ks-x { & .ks-y { @apply z-50; } } }")).toMatch(/@apply/);
+    expect(card(".ks-x { @APPLY z-50; }")).toMatch(/@APPLY/);
+    for (const directive of ['@tailwind utilities;', '@plugin "@tailwindcss/typography";', '@config "../../tailwind.config.js";', '@reference "../../../styles/site.css";']) {
+      expect(card(directive), directive).toMatch(new RegExp(`card\\.css:1: ${directive.split(/[ ;]/)[0]}`));
+    }
+    for (const directive of ["@utility ks-glide { transition: all 1s; }", "@variant hover { .ks-x { opacity: 0; } }", ".ks-x { @variant hover { opacity: 0; } }", "@custom-variant ks-on (&.is-on);", '@source "../../../../wiki";', "@theme { --duration-glacial: 9s; }"]) {
+      expect(card(directive), directive).toMatch(/only in src\/styles\/site\.css and src\/styles\/tailwind-theme\.css/);
+    }
+    // Plain CSS at-rules are not Tailwind's.
+    expect(card("@media (min-width: 720px) { .ks-x { opacity: 1; } } @supports (display: grid) { .ks-y { display: grid; } } @keyframes ks-in { from { opacity: 0; } } @container (min-width: 20rem) { .ks-z { order: 1; } }")).toBe("");
+    // The entry and the token bridge configure Tailwind; even they never @apply.
+    const at = (file: string, css: string) => tailwindDirectiveFindings([{ file, css }]).join("\n");
+    expect(at(SITE_CSS, '@source "../**/*.{ts,tsx}";')).toBe("");
+    expect(at("src/styles/tailwind-theme.css", "@theme inline { --*: initial; }")).toBe("");
+    expect(at("src/styles/tailwind-theme.css", ".ks-x { @apply p-5; }")).toMatch(/tailwind-theme\.css:1: @apply/);
+  });
+
   it("rejects JavaScript motion in new-design source: an animation library, Element.animate(), a <style> element", () => {
     const f = (text: string) => jsMotionFindings([{ file: "src/components/ui/Card/Card.tsx", text }]);
     expect(f(`import { motion } from "motion/react";`).join("\n")).toMatch(/motion\/react/);
@@ -1020,8 +1093,12 @@ describe("the shipped CSS", () => {
     expect(analyseMotion(sheets)).toEqual([]);
   });
 
-  it("imports only sheets this guard reads, the DS bundle.css and Tailwind's theme and utilities", () => {
+  it("imports only sheets this guard reads, the DS bundle.css and (from site.css) Tailwind's theme and utilities", () => {
     expect(importFindings(sheets)).toEqual([]);
+  });
+
+  it("uses no Tailwind directive outside site.css and tailwind-theme.css, and @apply nowhere", () => {
+    expect(tailwindDirectiveFindings(sheets)).toEqual([]);
   });
 });
 
