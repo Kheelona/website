@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { act, fireEvent, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ICON_PATHS } from "@/assets/icons.generated";
 import { CopyLinkButton } from "./CopyLinkButton";
@@ -53,6 +54,20 @@ describe("CopyLinkButton", () => {
     fireEvent.click(button);
     expect(await screen.findByText("Link copied.")).toBe(live);
     expect(writeText).toHaveBeenCalledWith(STORE);
+  });
+
+  it("is reachable by Tab, and Enter copies (keyboard alone)", async () => {
+    const writeText = vi.fn(async () => {});
+    const user = userEvent.setup();
+    // user-event installs its own clipboard on setup; the page's is the one the button must use.
+    setClipboard({ writeText });
+    const { button, live } = renderButton();
+    await user.tab();
+    expect(button).toHaveFocus();
+    await user.keyboard("{Enter}");
+    expect(await screen.findByText("Link copied.")).toBe(live);
+    expect(writeText).toHaveBeenCalledWith(STORE);
+    expect(button).toHaveFocus();
   });
 
   it("says nothing when the browser refuses (the address is printed in full beside it)", async () => {

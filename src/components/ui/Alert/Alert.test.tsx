@@ -5,7 +5,9 @@ import { Alert } from "./Alert";
 
 /* Alert (task 2.5): the DS Alert (`kh-alert`), an inline notice. Its markup is the approved store mockup's
  * in-app note (mockup/store.html fold 2: `kh-alert` role="status", the info icon, title, body, then the
- * action row); that whole note is compared with the mockup in InAppBrowserNote.test.tsx. */
+ * action row); that whole note is compared with the mockup in InAppBrowserNote.test.tsx. Each tone's drawn path
+ * is checked against the generated icon map here: the drift guard for alert-icons.ts, which Alert draws from so
+ * the checkout forms' client islands never ship the map (Field/field-icons.test.ts). */
 
 const iconPath = (el: Element | null) => el?.querySelector("path")?.getAttribute("d");
 
@@ -52,9 +54,23 @@ describe("Alert", () => {
     expect(screen.getByRole("alert")).toHaveTextContent("We could not save your address.");
   });
 
-  it("takes an icon override", () => {
-    const { container } = render(<Alert icon="whatsapp-logo" title="Title" />);
-    expect(iconPath(container.querySelector(".kh-alert__icon"))).toBe(ICON_PATHS["whatsapp-logo"]);
+  it.each(["info", "danger"] as const)("%s: never moves focus when it appears, and is no tab stop itself", (tone) => {
+    // The store's failure line appears while the parent is on the pay button: focus stays there (DS Alert rule).
+    function Form({ failed }: { failed: boolean }) {
+      return (
+        <>
+          {failed ? <Alert tone={tone} title="We could not reach our payment provider." /> : null}
+          <button type="button">Pay</button>
+        </>
+      );
+    }
+    const { rerender, container } = render(<Form failed={false} />);
+    const pay = screen.getByRole("button", { name: "Pay" });
+    pay.focus();
+    rerender(<Form failed />);
+    expect(container.querySelector(".kh-alert")).not.toBeNull();
+    expect(pay).toHaveFocus();
+    expect(container.querySelector(".kh-alert [tabindex], .kh-alert[tabindex]")).toBeNull();
   });
 
   it("renders the action slot inside the content, after the body", () => {

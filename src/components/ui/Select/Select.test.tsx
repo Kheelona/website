@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
+import { Field } from "@/components/ui/Field/Field";
 import { Select } from "./Select";
 
 /* Select (task 2.5): the DS Select (`kh-select`, a native <select> styled as the text field) as the approved
@@ -107,6 +108,22 @@ describe("Select", () => {
     expect(select).toHaveAttribute("aria-invalid", "true");
     expect(select).toHaveAttribute("aria-describedby", "state-d");
     expect(select).toHaveAccessibleDescription("Choose your state.");
+  });
+
+  it("takes focus from the keyboard in DOM order after a Field, as the address form has them", async () => {
+    const user = userEvent.setup();
+    render(
+      <>
+        <Field label="City or town" name="city" />
+        <Select label="State" name="state" options={STATES} placeholder="Choose your state" />
+      </>,
+    );
+    await user.tab();
+    expect(screen.getByLabelText("City or town")).toHaveFocus();
+    await user.tab();
+    expect(screen.getByLabelText("State")).toHaveFocus();
+    await user.tab();
+    expect(document.body).toHaveFocus();
   });
 
   it("matches the approved mockup's state picker", () => {

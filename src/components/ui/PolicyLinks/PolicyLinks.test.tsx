@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { PolicyLinks } from "./PolicyLinks";
 
@@ -58,6 +59,15 @@ describe("PolicyLinks", () => {
     expect(screen.getAllByRole("link").map((a) => a.getAttribute("href"))).toEqual(["privacy.html", "terms.html"]);
     const empty = render(<PolicyLinks label="Other" links={[]} newTabNote={NEW_TAB} />);
     expect(empty.container.firstChild).toBeNull();
+  });
+
+  it("puts every link in the tab order, in the order given", async () => {
+    const user = userEvent.setup();
+    render(<PolicyLinks label="Policies" links={LINKS} newTabNote={NEW_TAB} />);
+    for (const link of LINKS) {
+      await user.tab();
+      expect(document.activeElement).toHaveAttribute("href", link.href);
+    }
   });
 
   it.each(["store", "store-confirmation"])("matches the approved mockup's policy links (%s)", (page) => {

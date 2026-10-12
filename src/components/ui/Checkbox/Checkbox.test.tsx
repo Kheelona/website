@@ -71,6 +71,20 @@ describe("Checkbox", () => {
     expect(input.checked).toBe(true);
   });
 
+  it("is reachable by Tab although visually hidden, Space ticks and unticks it, and the sentence's links follow", async () => {
+    const user = userEvent.setup();
+    render(<Checkbox consent label={<ConsentLabel />} name="consent" required />);
+    const input = screen.getByRole("checkbox") as HTMLInputElement;
+    await user.tab();
+    expect(input).toHaveFocus();
+    await user.keyboard(" ");
+    expect(input.checked).toBe(true);
+    await user.keyboard(" ");
+    expect(input.checked).toBe(false);
+    await user.tab();
+    expect(screen.getByRole("link", { name: /pre-order terms/ })).toHaveFocus();
+  });
+
   it("ties the hint to the input (`<id>-h`, inside the label text, as the DS does)", () => {
     render(<Checkbox id="news" label="Updates" name="news" hint="One message a month." />);
     const input = screen.getByRole("checkbox");

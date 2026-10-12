@@ -1,6 +1,8 @@
 import { readFileSync } from "node:fs";
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
+import { ICON_PATHS, ICON_VIEWBOX } from "@/assets/icons.generated";
 import { Field } from "./Field";
 
 /* Field (task 2.5): the DS TextField (`kh-field`) as the approved store and confirmation mockups use it
@@ -99,6 +101,8 @@ describe("Field", () => {
     const icon = alert.querySelector("svg");
     expect(icon).toHaveClass("kh-icon");
     expect(icon).toHaveAttribute("aria-hidden", "true");
+    expect(icon).toHaveAttribute("viewBox", ICON_VIEWBOX);
+    expect(icon!.querySelector("path")).toHaveAttribute("d", ICON_PATHS["warning-circle"]);
   });
 
   it("describes an error on a field that has no hint (the store's name and email fields)", () => {
@@ -136,6 +140,31 @@ describe("Field", () => {
     expect(cc!.nextElementSibling).toBe(input);
     expect(input.value).toBe("");
     expect(input).toHaveAccessibleName("Indian WhatsApp number");
+  });
+
+  it("tel-in: the +91 is centred on the input without a transform (mockup-css-mapping §5 rule 7)", () => {
+    // A static transform is for the imagination zoom only; the +91 is centred by auto block margins instead.
+    const css = readFileSync("src/components/ui/Field/field.css", "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+    const cc = /\.ks-tel__cc\s*\{([^}]*)\}/.exec(css)?.[1] ?? "";
+    expect(cc).toMatch(/position:\s*absolute/);
+    expect(cc).toMatch(/margin-block:\s*auto/);
+    expect(css).not.toMatch(/\btransform\s*:/);
+  });
+
+  it("takes focus from the keyboard; the tel-in +91 is never a tab stop", async () => {
+    const user = userEvent.setup();
+    render(
+      <>
+        <Field label="Your name" name="parentName" />
+        <Field variant="tel-in" label="Indian WhatsApp number" name="phone" type="tel" />
+      </>,
+    );
+    await user.tab();
+    expect(screen.getByLabelText("Your name")).toHaveFocus();
+    await user.tab();
+    expect(screen.getByLabelText("Indian WhatsApp number")).toHaveFocus();
+    await user.keyboard("98765 43210");
+    expect(screen.getByLabelText("Indian WhatsApp number")).toHaveValue("98765 43210");
   });
 
   it("passes a className to the wrapper only", () => {

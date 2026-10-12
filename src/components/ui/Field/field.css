@@ -3,6 +3,8 @@
    own type, size and border are the DS TextField's. */
 .ks-tel { position: relative; display: grid; }
 .ks-tel .kh-field__input { padding-left: calc(var(--space-4) + var(--space-7) + var(--space-1)); } /* 16 + 48 + 4 = 68 */
-/* Centred as the DS centres its select caret (bundle.css .kh-select__caret): static, never transitioned.
+/* Centred on the input by auto block margins between top 0 and bottom 0, where the mockup used
+   top: 50% with translateY(-50%): mockup-css-mapping §5 rule 7 keeps static transforms for the imagination zoom.
+   Same box, same place (checked in Chromium and WebKit at 360 and 390 px against mockup/store.html).
    font-weight 700: mockup-css-mapping §3.4 row 62, exception ds-weight-700. */
-.ks-tel__cc { position: absolute; top: 50%; left: var(--space-4); padding-right: var(--space-3); border-right: var(--stroke-hair) solid var(--border-strong); transform: translateY(-50%); font-weight: 700; color: var(--text); pointer-events: none; }
+.ks-tel__cc { position: absolute; top: 0; bottom: 0; left: var(--space-4); height: fit-content; margin-block: auto; padding-right: var(--space-3); border-right: var(--stroke-hair) solid var(--border-strong); font-weight: 700; color: var(--text); pointer-events: none; }

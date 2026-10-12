@@ -112,6 +112,27 @@ describe("InAppBrowserNote", () => {
     container.remove();
   });
 
+  it("never moves focus when it appears after hydration", async () => {
+    userAgent = INSTAGRAM;
+    const page = (
+      <>
+        <a href="#form">Skip to the form</a>
+        <InAppBrowserNote content={CONTENT} storeUrl={STORE} />
+      </>
+    );
+    const container = document.createElement("div");
+    container.innerHTML = renderToString(page);
+    document.body.appendChild(container);
+    const skip = container.querySelector("a")!;
+    skip.focus();
+    await act(async () => {
+      hydrateRoot(container, page);
+    });
+    expect(container.querySelector(".ks-inapp")).not.toBeNull();
+    expect(skip).toHaveFocus();
+    container.remove();
+  });
+
   it("prints the address it copies, and copies the store URL it is given", async () => {
     userAgent = WHATSAPP;
     const writeText = vi.fn(async () => {});
