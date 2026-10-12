@@ -6,8 +6,8 @@ import { films } from "@/content/en-IN/films";
 import type { Film } from "@/content/types";
 
 /** The half of `docs/video-conventions.md` a machine can check (§8.37-e), over the films the site shows
- *  (content/en-IN/films.ts, D040; rewritten by task 3.3 from the retired src/lib/video-moments.ts, which task 6.3
- *  deletes with launch.mp4).
+ *  (content/en-IN/films.ts, D040). Rewritten by task 3.3 over the films content, so nothing here depends on the legacy
+ *  film list or on the launch film, both of which task 6.3 deletes.
  *
  *  The founder chose a written checklist over a CLI, which is the right call for a handful of files a year. This is
  *  the guard that makes the checklist worth writing down: a rule nothing enforces is a rule that gets skipped at
