@@ -91,6 +91,11 @@ describe("answer-length rule", () => {
     expect(outOfRange(answersIn({ q: { question: "Q?", answer: `${words(50)}\n\n${words(80)}` } }, "x", []))).toEqual([]);
     expect(countWords("A back-and-forth talk¹ helps.")).toBe(4);
   });
+  it("leaves an article body's questions block alone (questions answered in prose), and still counts the answers beside it", () => {
+    expect(outOfRange(answersIn({ b: { kind: "questions", items: [{ question: "Q?", answer: [words(10)] }] } }, "x", []))).toEqual([]);
+    const mixed = { b: { kind: "questions", items: [{ question: "Q?", answer: [words(10)] }] }, faq: { question: "F?", answer: words(10) } };
+    expect(outOfRange(answersIn(mixed, "x", []))).toEqual(['x.faq "F?": 10 words']);
+  });
 });
 
 describe("answer-length holds on the approved mockup (the rule never contradicts approved copy)", () => {
