@@ -10,9 +10,11 @@ import { WhatsAppFloat, whatsAppChatUrl } from "./WhatsAppFloat";
  * its hiding under an open dialog and its laptop label are CSS (whatsapp-float.css and motion.css), so it renders
  * on the server with no client part. */
 
-/** The support chat as content/en-IN/seller.ts words it (fixture copy; the shell passes the real one). */
-const CHAT: SupportChat = {
-  number: "919187546483",
+/** The support line's click-to-chat link and the chat's words, as content/en-IN/seller.ts gives them (fixture copy;
+ *  the shell passes `seller.support.whatsapp`, which is config's SUPPORT_WHATSAPP_HREF, and `seller.chat`). A number
+ *  unlike the real one, so a test can tell where the link's number comes from. */
+const HREF = "https://wa.me/910000000001";
+const CHAT: Omit<SupportChat, "number"> = {
   label: "Chat with us on WhatsApp",
   shortLabel: "Chat on WhatsApp",
   texts: {
@@ -33,47 +35,53 @@ function rule(selector: string, css = CSS): string {
 }
 
 describe("whatsAppChatUrl", () => {
-  it("is the D050 address: wa.me, the support number and the context's text, encoded", () => {
-    expect(whatsAppChatUrl(CHAT, "site")).toBe("https://wa.me/919187546483?text=Hi%20Kheelona!%20I%20have%20a%20question%20about%20Kheelu.");
-    expect(whatsAppChatUrl(CHAT, "store")).toBe("https://wa.me/919187546483?text=Hi%20Kheelona!%20I%20need%20help%20with%20my%20pre-order.");
-    expect(whatsAppChatUrl(CHAT, "thanks")).toBe(
-      "https://wa.me/919187546483?text=Hi%20Kheelona!%20I%20have%20a%20question%20about%20my%20order.",
+  it("is the D050 address: the support line's own wa.me link, then the context's text, encoded", () => {
+    expect(whatsAppChatUrl(HREF, CHAT.texts.site)).toBe("https://wa.me/910000000001?text=Hi%20Kheelona!%20I%20have%20a%20question%20about%20Kheelu.");
+    expect(whatsAppChatUrl(HREF, CHAT.texts.store)).toBe("https://wa.me/910000000001?text=Hi%20Kheelona!%20I%20need%20help%20with%20my%20pre-order.");
+    expect(whatsAppChatUrl(HREF, CHAT.texts.thanks)).toBe(
+      "https://wa.me/910000000001?text=Hi%20Kheelona!%20I%20have%20a%20question%20about%20my%20order.",
     );
   });
 
   it("decodes back to exactly the content's words", () => {
     for (const context of ["site", "store", "thanks"] as const) {
-      expect(new URL(whatsAppChatUrl(CHAT, context)).searchParams.get("text")).toBe(CHAT.texts[context]);
+      expect(new URL(whatsAppChatUrl(HREF, CHAT.texts[context])).searchParams.get("text")).toBe(CHAT.texts[context]);
     }
+  });
+
+  it("refuses a link that already carries a query (the text would not be the only parameter)", () => {
+    expect(() => whatsAppChatUrl("https://wa.me/910000000001?text=x" as typeof HREF, CHAT.texts.site)).toThrow(/query/);
   });
 });
 
 describe("WhatsAppFloat", () => {
   it("is one real link named for screen readers, opening WhatsApp in a new tab", () => {
-    render(<WhatsAppFloat chat={CHAT} context="site" />);
+    render(<WhatsAppFloat href={HREF} chat={CHAT} context="site" />);
     const link = screen.getByRole("link", { name: "Chat with us on WhatsApp" });
-    expect(link).toHaveAttribute("href", whatsAppChatUrl(CHAT, "site"));
+    expect(link).toHaveAttribute("href", whatsAppChatUrl(HREF, CHAT.texts.site));
+    // The number is the support line's (config), never a second copy of it.
+    expect(link.getAttribute("href")).toMatch(/^https:\/\/wa\.me\/910000000001\?text=/);
     expect(link).toHaveAttribute("target", "_blank");
     expect(link).toHaveAttribute("rel", "noopener");
     expect(screen.getAllByRole("link")).toHaveLength(1);
   });
 
   it("wears the DS large icon button with the bubble's own hook, and says which CTA it is", () => {
-    render(<WhatsAppFloat chat={CHAT} context="site" />);
+    render(<WhatsAppFloat href={HREF} chat={CHAT} context="site" />);
     const link = screen.getByRole("link");
     expect(link.className.split(/\s+/)).toEqual(["kh-iconbtn", "kh-iconbtn--l", "ks-wa"]);
     expect(link).toHaveAttribute("data-ph-capture-attribute-cta", "whatsapp-float");
   });
 
   it("draws the DS whatsapp-logo icon, hidden from screen readers", () => {
-    const { container } = render(<WhatsAppFloat chat={CHAT} context="site" />);
+    const { container } = render(<WhatsAppFloat href={HREF} chat={CHAT} context="site" />);
     const svg = container.querySelector("a > svg.kh-icon");
     expect(svg).toHaveAttribute("aria-hidden", "true");
     expect(svg?.querySelector("path")).toHaveAttribute("d", ICON_WHATSAPP_LOGO);
   });
 
   it("carries the laptop label as hidden-from-readers text (the link's name says it already)", () => {
-    const { container } = render(<WhatsAppFloat chat={CHAT} context="site" />);
+    const { container } = render(<WhatsAppFloat href={HREF} chat={CHAT} context="site" />);
     const label = container.querySelector("a > .ks-wa__label");
     expect(label).toHaveTextContent("Chat on WhatsApp");
     expect(label).toHaveClass("kh-label-s");
@@ -81,16 +89,16 @@ describe("WhatsAppFloat", () => {
   });
 
   it.each(["site", "store", "thanks"] as const)("uses the %s text", (context) => {
-    render(<WhatsAppFloat chat={CHAT} context={context} />);
-    expect(screen.getByRole("link")).toHaveAttribute("href", whatsAppChatUrl(CHAT, context));
+    render(<WhatsAppFloat href={HREF} chat={CHAT} context={context} />);
+    expect(screen.getByRole("link")).toHaveAttribute("href", whatsAppChatUrl(HREF, CHAT.texts[context]));
   });
 
   it("keeps PostHog autocapture off the bubble on /thanks only (inventory row 18)", () => {
-    const { rerender } = render(<WhatsAppFloat chat={CHAT} context="thanks" />);
+    const { rerender } = render(<WhatsAppFloat href={HREF} chat={CHAT} context="thanks" />);
     expect(screen.getByRole("link")).toHaveClass("ph-no-capture");
     expect(screen.getByRole("link")).toHaveAttribute("data-ph-capture-attribute-cta", "whatsapp-float");
     for (const context of ["site", "store"] as const) {
-      rerender(<WhatsAppFloat chat={CHAT} context={context} />);
+      rerender(<WhatsAppFloat href={HREF} chat={CHAT} context={context} />);
       expect(screen.getByRole("link")).not.toHaveClass("ph-no-capture");
     }
   });

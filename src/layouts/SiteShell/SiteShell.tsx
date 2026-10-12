@@ -85,7 +85,7 @@ export function SiteShell({ children, offer, stickyBar = [] }: SiteShellProps) {
         offer={offer}
         note={drawerNote(offer)}
       />
-      <WhatsAppFloat chat={seller.chat} context="site" />
+      <WhatsAppFloat href={seller.support.whatsapp} chat={seller.chat} context="site" />
       <MotionController />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(siteGraphOf(organization)) }} />
     </>

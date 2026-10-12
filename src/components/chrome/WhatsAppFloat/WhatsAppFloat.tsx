@@ -3,17 +3,24 @@ import { ICON_WHATSAPP_LOGO } from "@/assets/icons.generated";
 import { Glyph } from "@/components/ui/Icon/Glyph";
 import type { SupportChat, SupportChatContext } from "@/content/types";
 
-/** WhatsApp's click-to-chat endpoint (D050): the support number follows it, then the pre-filled text. */
-const CLICK_TO_CHAT = "https://wa.me/";
+/** The support line's click-to-chat link, `https://wa.me/<number>`. */
+export type ClickToChatHref = `https://wa.me/${string}`;
 
-/** The D050 link for a context: the support number from content and that context's pre-filled text, encoded. */
-export function whatsAppChatUrl(chat: SupportChat, context: SupportChatContext): string {
-  return `${CLICK_TO_CHAT}${chat.number}?text=${encodeURIComponent(chat.texts[context])}`;
+/**
+ * The D050 link: the support line's own click-to-chat link (content/en-IN/seller.ts `support.whatsapp`, which is
+ * src/config/site.ts SUPPORT_WHATSAPP_HREF, so the number has one source) and the pre-filled text, encoded.
+ */
+export function whatsAppChatUrl(href: ClickToChatHref, text: string): string {
+  if (href.includes("?")) throw new Error(`whatsAppChatUrl: "${href}" already carries a query; the text must be its only one`);
+  return `${href}?text=${encodeURIComponent(text)}`;
 }
 
 export interface WhatsAppFloatProps {
-  /** The number, the link's name, the laptop label and the three texts: content/en-IN/seller.ts `chat`. */
-  chat: SupportChat;
+  /** The support line's click-to-chat link: content/en-IN/seller.ts `support.whatsapp`. */
+  href: ClickToChatHref;
+  /** The link's name, the laptop label and the three texts: content/en-IN/seller.ts `chat` (its `number` is not read:
+   *  the number comes with `href`). */
+  chat: Omit<SupportChat, "number">;
   /** `site` in SiteShell (every marketing page and the 404); `store` on the store's pages; `thanks` on /thanks. */
   context: SupportChatContext;
 }
@@ -32,11 +39,11 @@ export interface WhatsAppFloatProps {
  * (whatsapp-float.css). PostHog reads `data-ph-capture-attribute-cta="whatsapp-float"`; on /thanks the bubble also
  * carries `ph-no-capture`, so that page keeps zero autocapture events (tracking inventory row 18).
  */
-export function WhatsAppFloat({ chat, context }: WhatsAppFloatProps) {
+export function WhatsAppFloat({ href, chat, context }: WhatsAppFloatProps) {
   return (
     <a
       className={clsx("kh-iconbtn kh-iconbtn--l ks-wa", context === "thanks" && "ph-no-capture")}
-      href={whatsAppChatUrl(chat, context)}
+      href={whatsAppChatUrl(href, chat.texts[context])}
       target="_blank"
       rel="noopener"
       aria-label={chat.label}

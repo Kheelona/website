@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { preload } from "react-dom";
 import "@/styles/site.css";
 import { Analytics } from "@vercel/analytics/next";
@@ -20,6 +20,9 @@ import { FONT_PRELOADS } from "@/styles/generated/fonts.generated";
  *   canonicalises to itself); noindex, nofollow on beta only. Pages never set `robots` (pageMeta cannot), because
  *   Next merges metadata key by key and a page's `robots` would replace this one (N15). The title template is for
  *   the legacy pages until wave 5; new pages give `{ absolute }` titles.
+ * - Viewport: the approved mockup's (mockup/build.mjs:37), `viewport-fit=cover` included. Browsers give
+ *   `env(safe-area-inset-*)` a value only under it, and the buy bar's foot (G-09, D041), the WhatsApp bubble's offset
+ *   (D050) and the footer's clearance (`ks-has-float`) all add the inset; Next's default viewport leaves it out.
  * - `data-scroll-behavior="smooth"`: motion.css's hook for the mockup's smooth anchor scrolling; Next 16 resets it to
  *   `auto` during route changes only when the attribute is there (architecture §11.3).
  * - The three font preloads are the faces every hero uses (generated list, ≤ 130 KB; QA N17), given to React's
@@ -39,6 +42,8 @@ export const metadata: Metadata = {
   title: { default: organization.name, template: `%s · ${organization.name}` },
   ...(SITE_ENV === "beta" ? { robots: { index: false, follow: false } } : {}),
 };
+
+export const viewport: Viewport = { width: "device-width", initialScale: 1, viewportFit: "cover" };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   for (const font of FONT_PRELOADS) preload(font.href, { as: "font", type: font.type, crossOrigin: "anonymous" });

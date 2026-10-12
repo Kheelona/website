@@ -2,6 +2,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import type { BrowserContext, Page, TestInfo } from "@playwright/test";
 import { expect, hideForParity, motionStarted, requiresServer, test, type OpenOptions } from "./support/fixtures";
+import { ORIGINS, REAL_ORIGINS, TARGET } from "./support/env";
 import { CHUNK_MAX_DIFF_RATIO } from "./support/parity";
 import { builtUrl } from "./support/routes";
 import { APPROVED_WIDTHS, VIEWPORTS, type Viewport } from "./support/viewports";
@@ -24,11 +25,17 @@ import { APPROVED_WIDTHS, VIEWPORTS, type Viewport } from "./support/viewports";
  *   - Drawer keyboard path (pick 5): the skip link first, then the logo and the menu button; Enter opens the modal
  *     dialog with focus inside, Tab stays inside, Escape closes it and returns focus; the backdrop closes it; the
  *     panel slides with motion on and not with reduced motion.
- *   - WhatsApp bubble (D050): the D050 link; never over the bar or the footer's last line at 360 x 590; lifts by the
- *     bar's height while the bar shows and drops when it steps aside; hidden with the drawer open; its laptop label
- *     on hover and focus; reached by keyboard after the page content; nothing moves with reduced motion.
- *   - The root layout as served: lang, the smooth-scroll hook, the body classes, the three font preloads, no robots
- *     meta outside beta; the store layout noindex.
+ *   - WhatsApp bubble (D050): the D050 link; at 360 x 590 never over the bar, a price, a form field or the pay button
+ *     on the first screen or at the end of the page (where the store page renders its bubble too), nor the footer's
+ *     lines; lifts by the bar's height while the bar shows and drops when it steps aside; hidden with the drawer open;
+ *     its laptop label on hover and focus; reached by keyboard after the page content; nothing moves with reduced
+ *     motion.
+ *   - The layouts as served: lang, the smooth-scroll hook, the body classes, the three font preloads, the mockup's
+ *     viewport with viewport-fit=cover (the safe areas) on both hosts, noindex, nofollow on beta and no robots meta
+ *     elsewhere; the store layout noindex, its policy links on the marketing site of the target.
+ *
+ * KH_E2E_TARGET=beta (task 7.2) runs the same cases on the two beta hosts: the robots and policy-link cases read the
+ * target (support/env.ts).
  */
 
 type Built = { host: "marketing" | "store"; path: string };
@@ -323,6 +330,35 @@ test.describe("chrome: drawer", () => {
 /** The bubble's distance from the bottom of the viewport. */
 const bubbleGap = (page: Page) => page.locator(".ks-wa").evaluate((el) => innerHeight - el.getBoundingClientRect().bottom);
 
+/** What the bubble must never cover (D050, architecture §5.3): the bar, a price, a form field, the pay button. On
+ *  today's legacy content only the bar matches; the case enforces itself as wave 5 lands the hero price (5.1) and the
+ *  store's form and pay button (5.15). */
+const NEVER_COVERED = [
+  ".kh-buybar",
+  ".kh-buybar__price",
+  ".ks-price",
+  ".ks-store-top__price",
+  ".kh-offer__prices",
+  "input:not([type=hidden])",
+  "select",
+  "textarea",
+  "button[type=submit]",
+].join(", ");
+
+/** The elements matching `selector` that a visitor can see and that the bubble covers, by tag and class. */
+function coveredByBubble(page: Page, selector: string): Promise<string[]> {
+  return page.evaluate((sel) => {
+    const b = document.querySelector(".ks-wa")!.getBoundingClientRect();
+    return Array.from(document.querySelectorAll<HTMLElement>(sel))
+      .filter((el) => {
+        if (!el.checkVisibility({ opacityProperty: true, visibilityProperty: true })) return false;
+        const r = el.getBoundingClientRect();
+        return r.width > 1 && r.height > 1 && r.left < b.right && r.right > b.left && r.top < b.bottom && r.bottom > b.top;
+      })
+      .map((el) => `<${el.tagName.toLowerCase()}${el.className ? `.${String(el.className).trim().split(/\s+/).join(".")}` : ""}>`);
+  }, selector);
+}
+
 test.describe("chrome: WhatsApp bubble (D050)", () => {
   test("is the D050 link, after the page content in the tab order", async ({ harness }) => {
     const page = await openBuilt(harness, phone390);
@@ -342,22 +378,38 @@ test.describe("chrome: WhatsApp bubble (D050)", () => {
     expect(order.bubble).toBeGreaterThan(order.lastFooterLink);
   });
 
-  test("at 360 x 590 it never covers the bar, and at the end of the page never the footer's lines", async ({ harness }) => {
+  test("at 360 x 590 it never covers the bar, a price, a field or the pay button, nor at the end the footer's lines", async ({ harness }) => {
     const page = await openBuilt(harness, phone360short);
     await page.waitForTimeout(300);
-    const overlap = (selector: string) =>
-      page.evaluate((sel) => {
-        const b = document.querySelector(".ks-wa")!.getBoundingClientRect();
-        return Array.from(document.querySelectorAll(sel)).some((el) => {
-          const r = el.getBoundingClientRect();
-          return r.width > 0 && r.height > 0 && r.left < b.right && r.right > b.left && r.top < b.bottom && r.bottom > b.top;
-        });
-      }, selector);
     expect((await barState(page)).published).toBe("shown");
-    expect(await overlap(".kh-buybar"), "bubble over the bar").toBe(false);
+    expect(await coveredByBubble(page, ".kh-buybar"), "the bar is there to be checked").toEqual([]);
+    expect(await coveredByBubble(page, NEVER_COVERED), "first screen: bubble over the bar, a price, a field or the pay button").toEqual([]);
     await scrollToY(page, 1e7);
     await page.waitForTimeout(300);
-    expect(await overlap(".kh-footer__legal span, .kh-footer__legal a, .kh-footer__col a, .kh-footer p"), "bubble over the footer").toBe(false);
+    expect(await coveredByBubble(page, NEVER_COVERED), "end of the page: bubble over the bar, a price, a field or the pay button").toEqual([]);
+    expect(await coveredByBubble(page, ".kh-footer__legal span, .kh-footer__legal a, .kh-footer__col a, .kh-footer p"), "bubble over the footer").toEqual([]);
+  });
+
+  test("the cover check sees a price, a field and a pay button placed under the bubble (it is not vacuous)", async ({ harness }) => {
+    const page = await openBuilt(harness, phone360short);
+    await page.evaluate(() => {
+      const b = document.querySelector(".ks-wa")!.getBoundingClientRect();
+      const form = document.createElement("form");
+      form.innerHTML = '<p class="ks-price">price</p><input name="planted"><button type="submit">Pay</button>';
+      for (const el of Array.from(form.children) as HTMLElement[]) el.style.cssText = `position: fixed; margin: 0; left: ${b.left}px; top: ${b.top}px;`;
+      document.querySelector("main")!.append(form);
+    });
+    expect(await coveredByBubble(page, NEVER_COVERED)).toEqual(expect.arrayContaining(["<p.ks-price>", "<input>", "<button>"]));
+  });
+
+  test("on the store at 360 x 590 it never covers a price, a field or the pay button (once the store page renders it)", async ({ harness }) => {
+    const page = await openBuilt(harness, phone360short, {}, STORE);
+    // Each store page renders its own bubble (D050; StoreShell cannot know its page): the store page's from 5.15.
+    test.skip((await page.locator(".ks-wa").count()) === 0, "the store page renders its WhatsApp bubble from task 5.15");
+    expect(await coveredByBubble(page, NEVER_COVERED), "first screen").toEqual([]);
+    await scrollToY(page, 1e7);
+    await page.waitForTimeout(300);
+    expect(await coveredByBubble(page, NEVER_COVERED), "end of the page").toEqual([]);
   });
 
   test("lifts by the bar's height while the bar shows and drops when it steps aside (motion on)", async ({ harness }) => {
@@ -425,27 +477,35 @@ test.describe("chrome: WhatsApp bubble (D050)", () => {
 /* ── Layouts as served ─────────────────────────────────────────────────────────────────────────────────────────── */
 
 test.describe("chrome: the layouts as served", () => {
-  test("root layout: lang, smooth scrolling, body classes, three font preloads, no robots meta outside beta", async ({ harness }) => {
+  test("root layout: lang, smooth scrolling, body classes, three font preloads, the viewport, robots only on beta", async ({ harness }) => {
     const page = await openBuilt(harness, phone390);
     expect(await page.evaluate(() => document.documentElement.lang)).toBe("en-IN");
     expect(await page.evaluate(() => document.documentElement.dataset.scrollBehavior)).toBe("smooth");
     expect(await page.evaluate(() => [...document.body.classList].filter((c) => c.startsWith("k")))).toEqual(["kh-page", "ks-has-float"]);
     const preloads = await page.evaluate(() => Array.from(document.querySelectorAll('link[rel="preload"][as="font"]')).map((l) => new URL((l as HTMLLinkElement).href).pathname));
     expect(preloads.sort()).toEqual(["/fonts/baloo2-variable-latin.woff2", "/fonts/kalam-bold-latin.woff2", "/fonts/nunito-variable-latin.woff2"]);
-    expect(await page.locator('meta[name="robots"]').count()).toBe(0);
+    // The approved mockup's viewport: without viewport-fit=cover, env(safe-area-inset-*) is 0 on notched phones.
+    await expect(page.locator('meta[name="viewport"]')).toHaveCount(1);
+    await expect(page.locator('meta[name="viewport"]')).toHaveAttribute("content", /(^|,\s*)viewport-fit=cover(\s*,|$)/);
+    if (TARGET === "beta") await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", "noindex, nofollow");
+    else expect(await page.locator('meta[name="robots"]').count()).toBe(0);
     const graphs = await page.evaluate(() =>
       Array.from(document.querySelectorAll('script[type="application/ld+json"]')).filter((s) => (s.textContent ?? "").includes('"@type":"WebSite"')).length,
     );
     expect(graphs, "the site graph (Organization and WebSite) once").toBe(1);
   });
 
-  test("store layout: noindex, its own chrome, no site navigation, no bar", async ({ harness }) => {
+  test("store layout: noindex, the viewport, its own chrome, no site navigation, no bar", async ({ harness }) => {
     const page = await openBuilt(harness, phone390, {}, STORE);
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+    await expect(page.locator('meta[name="viewport"]')).toHaveCount(1);
+    await expect(page.locator('meta[name="viewport"]')).toHaveAttribute("content", /(^|,\s*)viewport-fit=cover(\s*,|$)/);
     await expect(page.locator("header.ks-store-head")).toBeVisible();
     await expect(page.locator("footer.ks-store-foot")).toBeVisible();
     expect(await page.locator("nav.kh-nav, .kh-buybar").count()).toBe(0);
     const policies = await page.getByRole("navigation", { name: "Policies" }).getByRole("link").evaluateAll((links) => links.map((a) => a.getAttribute("href")));
-    expect(policies).toEqual(["terms", "refund", "shipping", "privacy", "contact"].map((p) => `https://kheelona.com/${p}`));
+    // MARKETING_ORIGIN: the beta site on beta, the production site in every other build (a local build included).
+    const marketing = TARGET === "beta" ? ORIGINS.marketing : REAL_ORIGINS.marketing;
+    expect(policies).toEqual(["terms", "refund", "shipping", "privacy", "contact"].map((p) => `${marketing}/${p}`));
   });
 });

@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -18,10 +18,12 @@ vi.mock("@/components/tracking/GoogleAnalyticsGate", () => ({ GoogleAnalyticsGat
 vi.mock("@/components/tracking/MetaPixel", () => ({ MetaPixel: () => <i data-tool="meta" /> }));
 vi.mock("@/components/tracking/PostHogGate", () => ({ PostHogGate: () => <i data-tool="posthog" /> }));
 
-type LayoutModule = { default: (props: { children: ReactNode }) => ReactNode; metadata: Metadata };
+type LayoutModule = { default: (props: { children: ReactNode }) => ReactNode; metadata: Metadata; viewport?: Viewport };
 
 /** The layout as built for one site environment (SITE_ENV is read once, when src/config/env.ts loads). */
-async function layoutFor(env: "development" | "beta" | "production"): Promise<{ doc: Document; metadata: Metadata }> {
+async function layoutFor(
+  env: "development" | "beta" | "production",
+): Promise<{ doc: Document; metadata: Metadata; viewport: Viewport | undefined }> {
   vi.resetModules();
   vi.stubEnv("KH_SITE_ENV", env);
   const mod = (await import("./layout")) as LayoutModule;
@@ -32,7 +34,7 @@ async function layoutFor(env: "development" | "beta" | "production"): Promise<{ 
       <p id="page">page</p>
     </Layout>,
   );
-  return { doc: new DOMParser().parseFromString(html, "text/html"), metadata: mod.metadata };
+  return { doc: new DOMParser().parseFromString(html, "text/html"), metadata: mod.metadata, viewport: mod.viewport };
 }
 afterEach(() => {
   vi.unstubAllEnvs();
@@ -69,6 +71,17 @@ describe("root layout: the document", () => {
     expect(links.map((l) => [l.getAttribute("href"), l.getAttribute("as"), l.getAttribute("type"), cors(l)])).toEqual(
       FONT_PRELOADS.map((f) => [f.href, "font", "font/woff2", "anonymous"]),
     );
+  });
+
+  it("declares the approved mockup's viewport: device width, scale 1, viewport-fit=cover (so the safe areas apply)", async () => {
+    /* Every approved mockup page has `width=device-width, initial-scale=1, viewport-fit=cover` (mockup/build.mjs:37).
+       Browsers give env(safe-area-inset-*) a value only under viewport-fit=cover, and the buy bar's foot (G-09), the
+       WhatsApp bubble's offset (D050) and the footer's clearance (ks-has-float) all add it. Next's default viewport
+       leaves it out, so the root layout exports its own, in every environment. */
+    for (const env of ["production", "beta", "development"] as const) {
+      const { viewport } = await layoutFor(env);
+      expect(viewport, env).toEqual({ width: "device-width", initialScale: 1, viewportFit: "cover" });
+    }
   });
 
   it("loads the new site's one CSS entry and none of the retired fonts or styles", () => {

@@ -1,15 +1,16 @@
 import { readFileSync } from "node:fs";
 import { render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { STORE_URL } from "@/config/site";
+import { STORE_URL, SUPPORT_WHATSAPP_HREF } from "@/config/site";
 import { buildOffer } from "@/lib/offer/offer";
+import { hoistNowrap, mockupDiff } from "./mockup-diff";
 import { SiteShell } from "./SiteShell";
 
 /* SiteShell (task 3.1; architecture §5.1, structure §3.1): the marketing site's shell, rendered by
  * src/app/(site)/layout.tsx and by the root not-found page. Its chrome is compared element by element with the same
  * elements of the approved mockup's built Home (mockup/home.html, D046): tag, classes (mk- renamed ks-), attributes,
- * order and text, with every word, link and price from content. Pixel parity of the same elements is
- * test/e2e/chrome.spec.ts's. */
+ * order and text (mockup-diff.ts, shared with StoreShell.test.tsx), with every word, link and price from content.
+ * Pixel parity of the same elements is test/e2e/chrome.spec.ts's. */
 
 const nav = vi.hoisted(() => ({ pathname: "/" }));
 vi.mock("next/navigation", () => ({ usePathname: () => nav.pathname }));
@@ -29,79 +30,9 @@ function realHref(href: string): string {
   return page ? `/${page[1]}${page[2] ?? ""}` : href;
 }
 
-/** Attributes that are behaviour hooks, not markup: the mockup's script hook and the image source and width. */
-const IGNORED = new Set(["data-open-menu", "src", "width", "inert"]);
-
-function attributes(el: Element, side: "mockup" | "built"): Record<string, string> {
-  const out: Record<string, string> = {};
-  for (const a of Array.from(el.attributes)) {
-    if (IGNORED.has(a.name)) continue;
-    let value = a.value;
-    // is-hidden is the bar's state (the mockup ships it hidden; here its controller has already run).
-    if (a.name === "class") value = value.replace(/\bmk-/g, "ks-").split(/\s+/).filter((c) => c !== "is-hidden").sort().join(" ");
-    if (a.name === "href" && side === "mockup") value = realHref(value);
-    out[a.name] = value;
-  }
-  return out;
-}
-
-/** Children as elements and whitespace-normalised text, with the mockup's data-src spans read as their text. */
-function children(el: Element): Array<Element | string> {
-  const out: Array<Element | string> = [];
-  const pushText = (t: string) => {
-    if (typeof out[out.length - 1] === "string") out[out.length - 1] += t;
-    else out.push(t);
-  };
-  for (const node of Array.from(el.childNodes)) {
-    if (node.nodeType === 3) pushText(node.textContent ?? "");
-    else if (node instanceof Element && node.hasAttribute("data-src")) pushText(node.textContent ?? "");
-    else if (node instanceof Element) out.push(node);
-  }
-  return out.map((c) => (typeof c === "string" ? c.replace(/\s+/g, " ") : c)).filter((c) => typeof c !== "string" || c.trim() !== "")
-    .map((c) => (typeof c === "string" ? c.trim() : c));
-}
-
-/**
- * Known content deviation, reported to the main session (task 3.1 report): seller.ts writes the phone link as
- * `[{nowrap:+91 91875 46483}](tel:…)`, which RichText renders as `<a><span class="ks-nowrap">…</span></a>`; the mockup
- * puts the class on the link (`{nowrap:[…](tel:…)}` in RichText's syntax). Both keep the number on one line. Until the
- * content owner swaps the two, the comparison reads a link whose only child is a no-wrap span as the mockup's link.
- */
-function hoistNowrap(el: Element): Element {
-  const copy = el.cloneNode(true) as Element;
-  for (const span of Array.from(copy.querySelectorAll("a > span.ks-nowrap"))) {
-    const link = span.parentElement!;
-    if (link.childNodes.length !== 1) continue;
-    link.classList.add("ks-nowrap");
-    link.replaceChildren(...Array.from(span.childNodes));
-  }
-  return copy;
-}
-
-/** Every difference between a built element and the mockup's, with the path to it. */
-function differences(built: Element, ref: Element, path = ref.tagName.toLowerCase()): string[] {
-  const out: string[] = [];
-  if (built.tagName !== ref.tagName) return [`${path}: <${built.tagName.toLowerCase()}> instead of <${ref.tagName.toLowerCase()}>`];
-  const a = attributes(built, "built");
-  const b = attributes(ref, "mockup");
-  for (const name of new Set([...Object.keys(a), ...Object.keys(b)])) {
-    if (a[name] !== b[name]) out.push(`${path} [${name}]: ${JSON.stringify(a[name])} instead of ${JSON.stringify(b[name])}`);
-  }
-  const x = children(built);
-  const y = children(ref);
-  if (x.length !== y.length) {
-    const show = (list: Array<Element | string>) => list.map((c) => (typeof c === "string" ? JSON.stringify(c) : `<${c.tagName.toLowerCase()}>`)).join(", ");
-    return [...out, `${path}: children [${show(x)}] instead of [${show(y)}]`];
-  }
-  x.forEach((c, i) => {
-    const r = y[i];
-    const say = (v: Element | string) => (typeof v === "string" ? JSON.stringify(v) : `<${v.tagName.toLowerCase()}>`);
-    if (typeof c === "string" || typeof r === "string") {
-      if (c !== r) out.push(`${path} child ${i}: ${say(c)} instead of ${say(r)}`);
-    } else out.push(...differences(c, r, `${path} > ${r.tagName.toLowerCase()}:nth(${i})`));
-  });
-  return out;
-}
+/** The mockup's script hook, the image source and width, and the bar's state (the mockup ships the bar hidden; here
+ *  its controller has already run) are not markup. */
+const differences = mockupDiff({ realHref, ignore: ["data-open-menu", "src", "width", "inert"], dropClasses: ["is-hidden"] });
 
 function shell(stickyBar: readonly string[] = ["/"]) {
   return render(
@@ -151,6 +82,8 @@ describe("SiteShell: what the mockup did not have", () => {
     const bubble = screen.getByRole("link", { name: "Chat with us on WhatsApp" });
     expect(bubble).toHaveClass("ks-wa");
     expect(new URL(bubble.getAttribute("href")!).searchParams.get("text")).toBe("Hi Kheelona! I have a question about Kheelu.");
+    // The number is the support line's, from config (SUPPORT_WHATSAPP_HREF), so a new number moves the bubble too.
+    expect(bubble.getAttribute("href")!.startsWith(`${SUPPORT_WHATSAPP_HREF}?text=`)).toBe(true);
     expect(bubble).not.toHaveClass("ph-no-capture");
   });
 
