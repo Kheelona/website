@@ -9,6 +9,7 @@ import {
   SUPPORT_WHATSAPP_HREF,
 } from "@/config/site";
 import { toPlainText } from "@/lib/content/plain-text";
+import { parseRichText } from "@/lib/content/rich-text";
 import { readRepoFile } from "../../../test/e2e/support/repo";
 import { seller } from "./seller";
 
@@ -66,6 +67,29 @@ describe("the visible lines equal the approved mockup", () => {
     expect(help).toBe("Questions? WhatsApp or call +91 91875 46483");
   });
 
+  /* Task 3.6 item 7. Every no-wrap phone link of the approved mockup puts the no-wrap on the link itself
+     (`<a href="tel:…" class="mk-nowrap">`, and never a no-wrap span inside a link), so the content wraps the whole link:
+     `{nowrap:[…](tel:…)}`, which RichText renders as `<a class="ks-nowrap">`. */
+  it("wraps each call link whole in a no-wrap, as every no-wrap phone link of the mockup is marked", () => {
+    const mockupLinks = ["home", "contact", "store", "refund", "meet-kheelu"].flatMap((slug) => Array.from(doc(slug).querySelectorAll('a[href^="tel:"]')));
+    expect(mockupLinks.length).toBeGreaterThan(0);
+    for (const a of mockupLinks.filter((a) => a.querySelector(".mk-nowrap") || a.classList.contains("mk-nowrap"))) {
+      expect(a.classList.contains("mk-nowrap"), a.outerHTML).toBe(true);
+    }
+    const callLinks = (source: string) =>
+      parseRichText(source).flatMap((node) => (node.kind === "nowrap" ? node.children : [node])).filter((n) => n.kind === "link" && n.href.startsWith("tel:"));
+    for (const [name, source] of [
+      ["support line", seller.support.line],
+      ["help line", seller.help.contact],
+      ["grievance line", seller.grievance.line.text],
+    ] as const) {
+      const nodes = parseRichText(source);
+      const wrapped = nodes.filter((n) => n.kind === "nowrap" && n.children.length === 1 && n.children[0].kind === "link" && n.children[0].href.startsWith("tel:"));
+      expect(wrapped, `${name}: ${source}`).toHaveLength(1);
+      expect(callLinks(source), name).toHaveLength(1);
+    }
+  });
+
   it("prints the store header's help line exactly (store.html)", () => {
     const help = norm(doc("store").querySelector(".mk-store-head__help")?.textContent);
     expect(`${seller.storeHelp.lead} ${toPlainText(seller.storeHelp.contact)}`).toBe(help);
@@ -89,9 +113,10 @@ describe("the support chat (D050)", () => {
     expect(`https://wa.me/${seller.chat.number}`).toBe(SUPPORT_WHATSAPP_HREF);
   });
 
-  it("is named for screen readers and on laptops exactly as D050 says", () => {
+  it("is named for screen readers as D050 says, and its laptop label reads the same words (P13 default, WCAG 2.5.3)", () => {
     expect(seller.chat.label).toBe("Chat with us on WhatsApp");
-    expect(seller.chat.shortLabel).toBe("Chat on WhatsApp");
+    expect(seller.chat.shortLabel).toBe("Chat with us on WhatsApp");
+    expect(seller.chat.label).toContain(seller.chat.shortLabel);
   });
 
   it("carries the three pre-filled texts, one per context", () => {

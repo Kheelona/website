@@ -111,12 +111,11 @@ function portClasses(el: Element, renames: Renames): void {
  * A mockup element turned into what the build prints (see the header), on a deep clone: value markers gone, classes
  * ported, addresses read as routes. A span that only carried a value marker goes with it, unless `keepSpans` matches
  * it: a span the component draws anyway (an offer card perk's words are always in a span, with or without the marker).
- * A link the mockup marks no-wrap carries the no-wrap span inside it, as RichText renders the content's
- * `[{nowrap:…}](href)` (same rendering: white-space applies to the same words).
+ * A link the mockup marks no-wrap stays one (`<a class="ks-nowrap">`): the content wraps the whole link,
+ * `{nowrap:[…](href)}` (seller.ts, task 3.6 item 7).
  */
 export function asBuilt(source: Element, renames: Renames = {}, keepSpans?: string): Element {
   const el = source.cloneNode(true) as Element;
-  const doc = el.ownerDocument;
   const all = () => [el, ...Array.from(el.querySelectorAll("*"))];
   for (const node of all()) {
     if (!node.hasAttribute("data-src")) continue;
@@ -128,14 +127,6 @@ export function asBuilt(source: Element, renames: Renames = {}, keepSpans?: stri
   for (const a of all().filter((n) => n.tagName === "A")) {
     const href = a.getAttribute("href");
     if (href !== null) a.setAttribute("href", mockupRoute(href));
-    if (a.classList.contains("ks-nowrap")) {
-      a.classList.remove("ks-nowrap");
-      if (a.classList.length === 0) a.removeAttribute("class");
-      const span = doc.createElement("span");
-      span.className = "ks-nowrap";
-      span.append(...Array.from(a.childNodes));
-      a.append(span);
-    }
   }
   return el;
 }
@@ -412,22 +403,4 @@ export function mockupDiff(options: MockupDiffOptions = {}): (built: Element, re
   }
 
   return (built, ref) => differences(built, ref, ref.tagName.toLowerCase());
-}
-
-/**
- * Known content deviation, reported to the main session (task 3.1): seller.ts writes the phone link as
- * `[{nowrap:+91 91875 46483}](tel:…)`, which RichText renders as `<a><span class="ks-nowrap">…</span></a>`; the mockup
- * puts the class on the link (`{nowrap:[…](tel:…)}` in RichText's syntax). Both keep the number on one line. Until the
- * content owner swaps the two, the shells' parity tests read a link whose only child is a no-wrap span as the mockup's
- * link, on a copy of the built element.
- */
-export function hoistNowrap(el: Element): Element {
-  const copy = el.cloneNode(true) as Element;
-  for (const span of Array.from(copy.querySelectorAll("a > span.ks-nowrap"))) {
-    const link = span.parentElement!;
-    if (link.childNodes.length !== 1) continue;
-    link.classList.add("ks-nowrap");
-    link.replaceChildren(...Array.from(span.childNodes));
-  }
-  return copy;
 }

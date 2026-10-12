@@ -70,7 +70,9 @@ function present(value: string | null, name: string): string {
 
 const email = present(CONTACT_EMAIL, "CONTACT_EMAIL");
 const tel = `tel:${SUPPORT_WHATSAPP_DISPLAY.replace(/\s/g, "")}` as const;
-const phoneLink = `[{nowrap:${SUPPORT_WHATSAPP_DISPLAY}}](${tel})`;
+/** The no-wrap on the whole link, as the mockup marks every phone link (`<a class="mk-nowrap">`): RichText renders
+ *  `{nowrap:[…](tel:…)}` as `<a class="ks-nowrap">` (task 3.6). */
+const phoneLink = `{nowrap:[${SUPPORT_WHATSAPP_DISPLAY}](${tel})}`;
 const shortLegalName = "Kheelona Robotics Pvt Ltd";
 
 export const seller = {
@@ -92,7 +94,7 @@ export const seller = {
   },
   help: {
     lead: "Questions?",
-    contact: `[WhatsApp](${SUPPORT_WHATSAPP_HREF}) or [{nowrap:call ${SUPPORT_WHATSAPP_DISPLAY}}](${tel})`,
+    contact: `[WhatsApp](${SUPPORT_WHATSAPP_HREF}) or {nowrap:[call ${SUPPORT_WHATSAPP_DISPLAY}](${tel})}`,
   },
   storeHelp: {
     lead: "Need help?",
@@ -111,7 +113,8 @@ export const seller = {
   chat: {
     number: "919187546483",
     label: "Chat with us on WhatsApp",
-    shortLabel: "Chat on WhatsApp",
+    /** The laptop label reads the link's name (P13 default; WCAG 2.5.3, label in name). */
+    shortLabel: "Chat with us on WhatsApp",
     texts: {
       site: "Hi Kheelona! I have a question about Kheelu.",
       store: "Hi Kheelona! I need help with my pre-order.",

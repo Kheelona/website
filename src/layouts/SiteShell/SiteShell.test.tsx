@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { STORE_URL, SUPPORT_WHATSAPP_HREF } from "@/config/site";
 import { buildOffer } from "@/lib/offer/offer";
-import { hoistNowrap, mockupDiff, mockupPage, STORE } from "../../../test/support/mockup-compare";
+import { mockupDiff, mockupPage, STORE } from "../../../test/support/mockup-compare";
 import { SiteShell } from "./SiteShell";
 
 /* SiteShell (task 3.1; architecture §5.1, structure §3.1): the marketing site's shell, rendered by
@@ -46,7 +46,7 @@ describe("SiteShell: the chrome equals the approved mockup's (mockup/home.html)"
     const built = container.querySelector(builtSelector);
     expect(ref, mockupSelector).not.toBeNull();
     expect(built, builtSelector).not.toBeNull();
-    expect(differences(hoistNowrap(built!), ref!)).toEqual([]);
+    expect(differences(built!, ref!)).toEqual([]);
   });
 
   it("reads the mockup's store link as this build's store (the harness's STORE is STORE_URL in tests)", () => {
@@ -80,6 +80,8 @@ describe("SiteShell: what the mockup did not have", () => {
     // The number is the support line's, from config (SUPPORT_WHATSAPP_HREF), so a new number moves the bubble too.
     expect(bubble.getAttribute("href")!.startsWith(`${SUPPORT_WHATSAPP_HREF}?text=`)).toBe(true);
     expect(bubble).not.toHaveClass("ph-no-capture");
+    // The laptop label reads the link's name (P13 default, WCAG 2.5.3), from content (seller.chat, task 3.6).
+    expect(bubble.querySelector(".ks-wa__label")).toHaveTextContent(/^Chat with us on WhatsApp$/);
   });
 
   it("emits the Organization and WebSite JSON-LD exactly once", () => {

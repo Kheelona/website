@@ -35,6 +35,10 @@ export interface Navigation {
     readonly skip: string;
     /** The store's policy links landmark. */
     readonly policies: string;
+    /** The store header's logo link, which leaves the store for the marketing site (store.html fold 0). */
+    readonly storeLogoLink: string;
+    /** Read to screen readers after every store link that opens a new tab (store.html folds 1, 3 and 7). */
+    readonly newTabNote: string;
   };
   readonly footer: {
     /** Under the logo; never the DS default, whose wake-word line is banned (claims §4.1). */
@@ -64,6 +68,8 @@ export const navigation = {
     logo: "Kheelona",
     skip: "Skip to content",
     policies: "Policies",
+    storeLogoLink: "Kheelona home",
+    newTabNote: " (opens in a new tab)",
   },
   footer: {
     promise: "Press to talk. No open internet. You read every conversation.",

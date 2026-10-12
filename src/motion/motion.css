@@ -174,15 +174,16 @@ dialog.kh-drawer[open]::backdrop {
 }
 
 /* ---------- D050. WhatsApp bubble lifts with the buy bar; laptop label ----------
-   StickyBuyBar publishes html[data-buybar] and --ks-buybar-h; while the bar shows, the bubble rises by the bar's
-   height so it never covers it, and drops back when the bar steps aside. No entrance animation. The label slides
-   out to the bubble's left on hover or keyboard focus. Position, colour, size and hiding the label on phones are
-   WhatsAppFloat's own CSS. */
+   StickyBuyBar publishes html[data-buybar] and --ks-buybar-h; while the bar shows, the bubble rises so it never
+   covers it, and drops back when the bar steps aside. The bar's height already holds the bottom safe-area inset, and
+   the bubble already sits that inset above the edge, so it rises by the height less the inset: space-4 above the bar
+   on a notched phone too (architecture §5.3, task 3.6). No entrance animation. The label slides out to the bubble's
+   left on hover or keyboard focus. Position, colour, size and hiding the label on phones are WhatsAppFloat's own CSS. */
 .ks-wa {
   transition: transform var(--duration-base) var(--ease-standard);
 }
 html[data-buybar="shown"] .ks-wa {
-  transform: translateY(calc(var(--ks-buybar-h, 0px) * -1));
+  transform: translateY(calc((var(--ks-buybar-h, 0px) - env(safe-area-inset-bottom)) * -1));
 }
 .ks-wa__label {
   opacity: 0;

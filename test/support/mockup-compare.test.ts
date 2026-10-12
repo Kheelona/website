@@ -4,7 +4,6 @@ import {
   asBuilt,
   builtMarkup,
   canonical,
-  hoistNowrap,
   mockupCtaRun,
   mockupDiff,
   mockupFold,
@@ -106,6 +105,12 @@ describe("1. the exact markup", () => {
     const source = html('<p class="mk-price">Pay <span data-src="TOKEN">₹499</span> at <a href="store.html" data-src="STORE_URL">the store</a></p>');
     expect(canonical(asBuilt(source))).toBe(`<p class="ks-price">Pay ₹499 at <a href="${STORE}">the store</a></p>`);
     expect(source.getAttribute("class")).toBe("mk-price");
+  });
+
+  it("asBuilt keeps a no-wrap link one link with the class on it, as RichText renders {nowrap:[…](tel:…)} (task 3.6)", () => {
+    expect(canonical(asBuilt(html('<p><a href="tel:+919187546483" class="mk-nowrap">+91 91875 46483</a></p>')))).toBe(
+      '<p><a class="ks-nowrap" href="tel:+919187546483">+91 91875 46483</a></p>',
+    );
   });
 
   it("asBuilt keeps a marked span the component draws anyway", () => {
@@ -257,16 +262,3 @@ describe("3. mockupDiff", () => {
   });
 });
 
-describe("hoistNowrap", () => {
-  it("reads a link whose only child is a no-wrap span as the mockup's no-wrap link, on a copy", () => {
-    const built = html('<p><a href="tel:+91"><span class="ks-nowrap">+91 1</span></a></p>');
-    const hoisted = hoistNowrap(built);
-    expect(hoisted.innerHTML).toBe('<a href="tel:+91" class="ks-nowrap">+91 1</a>');
-    expect(built.innerHTML).toBe('<a href="tel:+91"><span class="ks-nowrap">+91 1</span></a>');
-  });
-
-  it("leaves a link with more than the span alone", () => {
-    const built = html('<p><a href="tel:+91">call <span class="ks-nowrap">+91 1</span></a></p>');
-    expect(hoistNowrap(built).innerHTML).toBe(built.innerHTML);
-  });
-});
