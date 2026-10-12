@@ -17,11 +17,14 @@
 //
 // Pre-approved exceptions (working default B10), printed every run and never silent: store SEO
 // about 66 (noindex on purpose); on lp-tags and production, Best Practices may fail only on the
-// Meta pixel's third-party cookie, and on lp-tags the HTTPS audit flips on the http:// origin.
+// Meta pixel's third-party cookie (the third-party-cookies audit, and inspector-issues only while
+// every issue it lists is a third-party-cookie phase-out issue), and on lp-tags the HTTPS audits
+// flip on the http:// origin.
 // Reports go to lighthouse-reports/<date>/ (git-ignored, D039). Exit 1 when a page misses.
 
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { pathToFileURL } from "node:url";
 import { chromium } from "@playwright/test";
 import * as chromeLauncher from "chrome-launcher";
 import lighthouse from "lighthouse";
@@ -43,8 +46,30 @@ const THRESHOLD = 0.9;
 const PORT = Number(process.env.KH_E2E_PORT ?? 3456);
 /** Beacons blocked on lp-tags, so nothing is delivered (test plan §4.4). */
 const BLOCKED = ["*google-analytics.com/g/collect*", "*analytics.google.com/g/collect*", "*facebook.com/tr*", "*/ingest/e/*", "*/ingest/s/*", "*/ingest/i/*", "*/ingest/batch*", "*analytics.ahrefs.com/api/*"];
-/** Best Practices audits allowed to fail on tag-loading profiles (B10, N18). */
+/** Best Practices audits allowed to fail on tag-loading profiles (B10, N18). "inspector-issues"
+ *  counts as allowed only when bestPracticesFailures() finds nothing in it but third-party-cookie
+ *  issues; any other issue renames it, so it is never allowed. */
 const ALLOWED_BP = { "lp-tags": ["third-party-cookies", "is-on-https", "inspector-issues", "redirects-http"], production: ["third-party-cookies", "inspector-issues"] };
+const THIRD_PARTY_COOKIE = (issue) =>
+  (issue.cookieWarningReasons ?? []).includes("WarnThirdPartyPhaseout") ||
+  (issue.cookieExclusionReasons ?? []).includes("ExcludeThirdPartyPhaseout");
+
+/** The failing weighted Best Practices audits of one run. inspector-issues is reported as itself
+ *  only when every row is a Cookie row and every cookie issue behind it (the run's artifacts) is a
+ *  third-party-cookie phase-out issue, which is the Meta pixel's cookie B10 accepts. The artifacts
+ *  are internal to Lighthouse (pinned 13.4.1): if they are missing, the check fails closed. */
+export function bestPracticesFailures(result) {
+  const { lhr } = result;
+  return lhr.categories["best-practices"].auditRefs
+    .filter((r) => r.weight > 0 && (lhr.audits[r.id]?.score ?? 1) < 1)
+    .map((r) => {
+      if (r.id !== "inspector-issues") return r.id;
+      const rows = lhr.audits[r.id].details?.items ?? [];
+      const cookies = result.artifacts?.InspectorIssues?.cookieIssue ?? [];
+      const onlyThirdPartyCookies = rows.length > 0 && rows.every((row) => row.issueType === "Cookie") && cookies.length > 0 && cookies.every(THIRD_PARTY_COOKIE);
+      return onlyThirdPartyCookies ? r.id : "inspector-issues (not only third-party cookies)";
+    });
+}
 
 function args() {
   const a = process.argv.slice(2);
@@ -98,9 +123,7 @@ async function main() {
         const lhr = result.lhr;
         writeFileSync(join(dir, `${profile}-${page.replace(/[^a-z0-9]+/gi, "_") || "home"}-${n}.json`), result.report);
         for (const c of CATEGORIES) scores[c].push(lhr.categories[c]?.score ?? 0);
-        lastBpFailures = lhr.categories["best-practices"].auditRefs
-          .filter((r) => r.weight > 0 && (lhr.audits[r.id]?.score ?? 1) < 1)
-          .map((r) => r.id);
+        lastBpFailures = bestPracticesFailures(result);
       }
       const med = Object.fromEntries(CATEGORIES.map((c) => [c, median(scores[c])]));
       const notes = [];
@@ -129,7 +152,10 @@ async function main() {
   process.exit(failed ? 1 : 0);
 }
 
-main().catch((e) => {
-  console.error(e);
-  process.exit(1);
-});
+// Run only as a script, so bestPracticesFailures can be imported and checked on its own.
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((e) => {
+    console.error(e);
+    process.exit(1);
+  });
+}
