@@ -15,6 +15,10 @@
     "src/**/*.test-d.tsx",
     "src/**/*.stories.ts",
     "src/**/*.stories.tsx",
+    // Ambient declarations the app program sees through **/*.ts (static image types for a clean clone,
+    // where the git-ignored next-env.d.ts is missing) must be in this program too: a test's subject
+    // that imports an .svg or .png type-checks here only with them.
+    "src/**/*.d.ts",
     "playwright.config.ts",
     "vitest.config.ts"
   ],
@@ -30,7 +34,9 @@
     "src/features/home/components/ParentAppSection.stories.tsx",
     // 6.3 retires this legacy guard with its subject.
     "test/action-label.test.ts",
-    // 6.3 rewrites it (CANONICAL_ORIGIN from @/config/env when seo.ts goes).
+    // 6.3 rewrites it (CANONICAL_ORIGIN from @/config/env when seo.ts goes). It fails today (10 errors:
+    // allowJs types tools/utm/build-link.mjs, so its @ts-expect-error is unused and the calls miss
+    // `content` and `term`).
     "test/utm.test.ts",
     // 2.6 moves it to src/components/tracking/ with PostHogGate; the moved file is type-checked
     // there (its PostHogLike mocks lack get_distinct_id).
