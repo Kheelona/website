@@ -1,0 +1,46 @@
+Reviewed diff, task 2.6 (ADR-006; architecture §8.1, §8.2; tracking-freeze.test.ts applies it exactly).
+From: archive/pre-reset-2026-10-10:src/app/(site)/products/kheelu/_components/ViewContentTracker.tsx
+To:   src/components/tracking/ViewContentTracker.tsx (moved; body otherwise byte-identical)
+
+B9 (ViewContent also on Home, same payload) and ADR-005 (the offer follows the live mode): the
+value comes from a valuePaise prop that the page reads from the offer's headline. The payload's
+names, fixed values and rupee conversion are unchanged (tracking-parity.test.ts). The
+LAUNCH_AMOUNT_PAISE default keeps the legacy product page, whose only change in task 2.6 is its
+import line, sending exactly the tag's 4999 until task 5.2 replaces that page; every other mount
+must pass valuePaise (tracking-parity.test.ts). The effect now depends on valuePaise; the fired
+ref still limits it to one event per page view.
+
+--- a/src/app/(site)/products/kheelu/_components/ViewContentTracker.tsx (archive/pre-reset-2026-10-10)
++++ b/src/components/tracking/ViewContentTracker.tsx
+@@ -36,8 +36,15 @@ import { LAUNCH_AMOUNT_PAISE } from "@/config/site";
+  *  It waits for `fbq` rather than calling `fbTrack` directly, because the pixel
+  *  is gated behind a hostname check in an effect and then loads
+  *  `afterInteractive` — so at mount it is usually not there yet, and a direct
+- *  call would be silently dropped. See `whenFbqReady`. */
+-export function ViewContentTracker() {
++ *  call would be silently dropped. See `whenFbqReady`.
++ *
++ *  SINCE TASK 2.6 THE PAGE PASSES THE VALUE (B9, ADR-005): `valuePaise` is the
++ *  offer's headline, read on the server where the live mode is known, so the
++ *  staleness above ends for every page that passes it, and Home (B9) and the
++ *  product page send the same payload. The `LAUNCH_AMOUNT_PAISE` default exists
++ *  only for the legacy product page until task 5.2 replaces it; every other mount
++ *  must pass `valuePaise` (test/guards/tracking-parity.test.ts). */
++export function ViewContentTracker({ valuePaise = LAUNCH_AMOUNT_PAISE }: { valuePaise?: number }) {
+   const fired = useRef(false);
+ 
+   useEffect(() => {
+@@ -52,11 +59,11 @@ export function ViewContentTracker() {
+         content_name: "Kheelu",
+         content_ids: ["lumi"],
+         content_type: "product",
+-        value: LAUNCH_AMOUNT_PAISE / 100,
++        value: valuePaise / 100,
+         currency: "INR",
+       }),
+     );
+-  }, []);
++  }, [valuePaise]);
+ 
+   return null;
+ }

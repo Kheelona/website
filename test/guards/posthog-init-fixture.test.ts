@@ -217,7 +217,7 @@ describe("posthog-init-fixture: on the beta hosts the only addition is before_se
 
 /* ── 4. The persistence control, against the real SDK ─────────────────────────────────────── */
 
-type Sent = { url: string; host: string; events: { event: string; properties: Record<string, unknown> }[] };
+type Sent = { url: string; events: { uuid?: string; event: string; properties: Record<string, unknown> }[] };
 
 async function decodeBody(body: unknown): Promise<unknown> {
   let bytes: Buffer | null = null;
@@ -235,11 +235,10 @@ function blockIngest() {
   const pending: Promise<void>[] = [];
   const sent: Sent[] = [];
   const record = (url: string, body: unknown) => {
-    const host = window.location.hostname;
     pending.push(
       decodeBody(body).then((json) => {
         const j = json as { batch?: Sent["events"] } & Sent["events"][number];
-        sent.push({ url, host, events: j.batch ?? (Array.isArray(json) ? (json as Sent["events"]) : [j]) });
+        sent.push({ url, events: j.batch ?? (Array.isArray(json) ? (json as Sent["events"]) : [j]) });
       }),
     );
   };
@@ -259,7 +258,21 @@ function blockIngest() {
     },
   });
   const sentEvent = (name: string) => sent.flatMap((s) => s.events).find((e) => e.event === name);
-  return { sent, sentEvent, settle: () => Promise.all(pending) };
+  /** Events by the host they were CAPTURED on ($host), once each: a refused batch is retried
+   *  later, possibly after the test has moved to the other host, so the send-time host lies. */
+  const eventsFrom = (host: string) => {
+    const seen = new Set<unknown>();
+    return sent
+      .flatMap((s) => s.events)
+      .filter((e) => e.properties.$host === host)
+      .filter((e) => {
+        const id = e.uuid;
+        if (seen.has(id)) return false;
+        seen.add(id);
+        return true;
+      });
+  };
+  return { sent, sentEvent, eventsFrom, settle: () => Promise.all(pending) };
 }
 
 type PersistenceLike = { persistence?: { props?: Record<string, unknown> }; capture: (e: string, p?: Options) => void };
@@ -296,7 +309,7 @@ describe("posthog-init-fixture: N3 control, real posthog-js, /ingest blocked", (
       posthog.capture("qa_probe_beta");
       await waitFor(() => expect(net.sentEvent("qa_probe_beta")).toBeDefined(), { timeout: 8000 });
       await net.settle();
-      const betaEvents = net.sent.filter((s) => s.host === "betawebsite.kheelona.com").flatMap((s) => s.events);
+      const betaEvents = net.eventsFrom("betawebsite.kheelona.com");
       expect(betaEvents.map((e) => e.event)).toContain("qa_probe_beta");
       for (const e of betaEvents) expect(e.properties.env, `${e.event} on beta`).toBe("beta");
       expect(stored(POSTHOG_KEY).length, "the SDK stored nothing: the control would prove nothing").toBeGreaterThan(0);
@@ -311,7 +324,7 @@ describe("posthog-init-fixture: N3 control, real posthog-js, /ingest blocked", (
       await net.settle();
       expect(prod.persistence?.props && hasEnv(prod.persistence.props), "production persistence holds env").toBe(false);
       expect(stored(POSTHOG_KEY).filter(hasEnv)).toEqual([]);
-      const prodEvents = net.sent.filter((s) => s.host === "kheelona.com").flatMap((s) => s.events);
+      const prodEvents = net.eventsFrom("kheelona.com");
       expect(prodEvents.map((e) => e.event)).toContain("qa_probe_production");
       for (const e of prodEvents) expect(hasEnv(e.properties), `${e.event} on production carries env`).toBe(false);
     },

@@ -75,6 +75,38 @@ describe("ViewContentTracker", () => {
     expect(params.value).not.toBe(FULL_AMOUNT_PAISE / 100);
   });
 
+  /* B9 and ADR-005 (task 2.6): the value comes from the page, which reads the offer's headline,
+     so it follows the live mode instead of going stale at the sell-out: 4999 in token mode, 7999
+     once the cap fills. Home and the product page pass the same offer, so the same payload. */
+  it("reports the value the page passes, in rupees (valuePaise / 100)", () => {
+    const fbq = vi.fn();
+    window.fbq = fbq;
+    render(<ViewContentTracker valuePaise={FULL_AMOUNT_PAISE} />);
+    expect(fbq).toHaveBeenCalledTimes(1);
+    expect(fbq).toHaveBeenCalledWith(
+      "track",
+      "ViewContent",
+      {
+        content_name: "Kheelu",
+        content_ids: ["lumi"],
+        content_type: "product",
+        value: FULL_AMOUNT_PAISE / 100,
+        currency: "INR",
+      },
+      undefined,
+    );
+  });
+
+  it("waits for the pixel with the given value too, firing once when fbq arrives", () => {
+    vi.useFakeTimers();
+    render(<ViewContentTracker valuePaise={LAUNCH_AMOUNT_PAISE} />);
+    const fbq = vi.fn();
+    window.fbq = fbq;
+    vi.advanceTimersByTime(1_000);
+    expect(fbq).toHaveBeenCalledTimes(1);
+    expect((fbq.mock.calls[0][2] as Record<string, unknown>).value).toBe(4999);
+  });
+
   /* ⚑ THE KNOWN STALENESS, pinned so it is impossible to forget. The value above
      becomes wrong the day the 500-unit cap fills and the price is ₹7,999. That
      is a manual change riding the standing sell-out copy sweep (§8.26-g), and
