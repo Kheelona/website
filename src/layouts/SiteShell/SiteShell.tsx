@@ -15,6 +15,7 @@ import { organization } from "@/content/en-IN/organization";
 import { seller } from "@/content/en-IN/seller";
 import { TRUST_COMPACT, trustItems } from "@/content/en-IN/trust";
 import type { Offer, SitePath } from "@/content/types";
+import { gstinLine } from "@/lib/content/seller-lines";
 import { jsonLd } from "@/lib/seo/jsonld";
 import { siteGraphOf } from "./site-graph";
 
@@ -67,7 +68,7 @@ export function SiteShell({ children, offer, stickyBar = [] }: SiteShellProps) {
         columns={footer.columns}
         seller={{
           entity: <RichText text={seller.copyright} />,
-          gstin: `GSTIN ${seller.gstin}`,
+          gstin: gstinLine(seller),
           address: seller.addressLine,
           contact: <RichText text={seller.support.line} />,
         }}

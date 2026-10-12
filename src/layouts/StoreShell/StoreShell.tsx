@@ -7,6 +7,7 @@ import { RichText } from "@/components/ui/RichText/RichText";
 import { MARKETING_ORIGIN } from "@/config/env";
 import { navigation } from "@/content/en-IN/navigation";
 import { seller } from "@/content/en-IN/seller";
+import { gstinLine } from "@/lib/content/seller-lines";
 
 /**
  * The store host's shell (architecture §16.1; structure §3.1), rendered by src/app/store/layout.tsx around the store
@@ -23,9 +24,8 @@ import { seller } from "@/content/en-IN/seller";
  * links, and refund#chargeback would be a sixth. The line renders as the last line of the store page's `main` instead
  * (task 5.15; wiki/qa/deviations.md V1). `StoreFooter` still takes it as `payments`.
  *
- * Every word comes from content: the logo link's name and the new-tab note from `navigation.labels` (task 3.6). The
- * "GSTIN " lead of the seller line stays typed here and in SiteShell until the seller-lines helper of task 4.3
- * (src/lib/content/seller-lines.ts) builds the GSTIN line; both shells then read it from there.
+ * Every word comes from content: the logo link's name and the new-tab note from `navigation.labels` (task 3.6); the
+ * seller's GSTIN line from the seller-lines helper (task 4.3), as in SiteShell.
  */
 export function StoreShell({ children }: { children: ReactNode }) {
   const { labels } = navigation;
@@ -45,7 +45,7 @@ export function StoreShell({ children }: { children: ReactNode }) {
         }}
         seller={{
           entity: seller.legalName,
-          gstin: `GSTIN ${seller.gstin}`,
+          gstin: gstinLine(seller),
           address: seller.addressLine,
           contact: <RichText text={seller.support.line} />,
         }}

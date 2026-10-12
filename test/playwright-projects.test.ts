@@ -38,9 +38,11 @@ describe("Playwright projects", () => {
     expect(WEBKIT_STORY_SPECS.test("test/e2e/motion-faq.spec.ts")).toBe(true);
     for (const spec of ["no-sideways", "axe", "chrome", "visual-parity"]) expect(WEBKIT_STORY_SPECS.test(`test/e2e/${spec}.spec.ts`), spec).toBe(false);
     // Every spec it takes is a story spec (it runs against Storybook, not the site).
-    for (const spec of ["motion-faq", "motion-reveal", "motion-doodle", "motion-button", "motion-hero", "motion-films", "films"]) {
+    for (const spec of ["motion-faq", "motion-reveal", "motion-doodle", "motion-button", "motion-hero", "motion-films", "films", "tabs"]) {
       if (WEBKIT_STORY_SPECS.test(`test/e2e/${spec}.spec.ts`)) expect(STORY_SPECS.test(`test/e2e/${spec}.spec.ts`), spec).toBe(true);
     }
+    // tabs.spec opens stories only, so it is a story spec (wave-3 close).
+    expect(STORY_SPECS.test("test/e2e/tabs.spec.ts")).toBe(true);
     expect(names({})).not.toContain("webkit-storybook");
   });
 

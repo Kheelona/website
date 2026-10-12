@@ -24,8 +24,8 @@ import { APPROVED_WIDTHS, AXE_VIEWPORTS, VIEWPORTS, type Viewport } from "./supp
  *     mockup/meet-kheelu.html (its script run) is the golden for each tab selected, and the story's section may
  *     differ in at most CHUNK_MAX_DIFF_RATIO of its pixels (the visual-parity standard, SPA 1).
  *
- * The stories come from the Storybook server playwright.config.ts starts beside the site (its "storybook" project's
- * baseURL), so this spec runs from either project. To run it alone on a static build:
+ * It runs in the "storybook" project (STORY_SPECS) and opens stories from that project's baseURL. To run it alone on
+ * a static build:
  *   npm run build-storybook && node test/e2e/support/static-server.mjs storybook-static 6118 &
  *   KH_NO_SERVER=1 KH_STORYBOOK_PORT=6118 npx playwright test test/e2e/tabs.spec.ts
  */
@@ -38,10 +38,10 @@ const smallPhone = APPROVED_WIDTHS.find((v) => v.width === 360)!;
 
 type Harness = { context(vp: Viewport, opts?: OpenOptions): Promise<BrowserContext> };
 
-/** The static Storybook's origin: the "storybook" project's baseURL (playwright.config.ts starts its server). */
+/** The static Storybook's origin: this spec's project is "storybook" (STORY_SPECS), as motion-doodle.spec.ts reads it. */
 function storybook(info: TestInfo): string {
-  const base = info.config.projects.find((p) => p.name === "storybook")?.use.baseURL;
-  if (!base) throw new Error("tabs.spec opens stories: playwright.config.ts has no storybook project with a baseURL");
+  const base = info.project.use.baseURL;
+  if (!base) throw new Error("tabs.spec opens stories: run it in the storybook project (STORY_SPECS)");
   return base;
 }
 

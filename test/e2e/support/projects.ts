@@ -21,7 +21,7 @@ import type { Viewport } from "./viewports";
  *  targets, CTA placement, axe, and the chrome (sticky bar safe area, drawer, bubble; task 3.1). */
 export const LAYOUT_SPECS = /(?:^|[\\/])(?:no-sideways|first-screen|cta|axe|chrome)\.spec\.ts$/;
 /** Per-pick motion specs and the films spec run on stories (waves 2 and 3). */
-export const STORY_SPECS = /(?:^|[\\/])(?:motion-[a-z]+|films)\.spec\.ts$/;
+export const STORY_SPECS = /(?:^|[\\/])(?:motion-[a-z]+|films|tabs)\.spec\.ts$/;
 /** The story specs that also run in WebKit (KH_WEBKIT=1, project webkit-storybook): D049 pick 7's FAQ open, whose
  *  older-Safari fallback (7A) matters on iPhones (task 2.12; the project from task 3.6). A story spec joins once it
  *  has been run green in WebKit. */
