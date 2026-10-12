@@ -907,8 +907,9 @@ Rulings on the reviewers' open points:
   12. components §7 records 3.2's class renames (`mk-beside` to `ks-beside`, the four page CTA classes to
       `ks-cta__button`, and the rest of 3.2's list).
   13. Shell copy into content: `navigation.ts` labels for the store logo link ("Kheelona home") and the new-tab
-      note (" (opens in a new tab)"), and `seller.gstinLine`; `StoreShell` and `SiteShell` read them;
-      `STORE_COPY_PENDING_CONTENT` and (after item 7) `hoistNowrap` go.
+      note (" (opens in a new tab)"); `StoreShell` and `SiteShell` read them; `STORE_COPY_PENDING_CONTENT` and
+      (after item 7) `hoistNowrap` go. (The shells' typed "GSTIN " lead moves to 4.3's `seller-lines` helper at the
+      close: the main session switches the two shells once both have merged.)
   14. Item 5's harness also takes `src/layouts/SiteShell/mockup-diff.ts` and its test.
   15. `StoreShell.test.tsx`: a case under `KH_SITE_ENV=beta` (fresh module import) asserts the five policy links
       and the logo link start with `https://betawebsite.kheelona.com`.
