@@ -189,6 +189,79 @@ describe("scanSource: src/ before next build", () => {
     expect(scan.notShipped).toBe(0);
   });
 
+  /* The 2.13 review: dynamic routes (/store/*, /api/*) are never prerendered, so the output scan
+     never reads them; a shipped file importing a fixture slipped past both scans. A never-shipped
+     file that shipped code imports (relative or @/, followed through every hop) ships, so it is
+     scanned and named. */
+  const FIXTURE_NOTE = `export const note = { text: "{ph:F4 battery}", status: "draft" };\n`;
+
+  it("scans a fixture a shipped store route imports, and production refuses it", () => {
+    const root = tree({
+      "src/app/store/x/page.tsx": `import { note } from "./__fixtures__/note";\nexport default function Page() { return <p>{note.text}</p>; }\n`,
+      "src/app/store/x/__fixtures__/note.ts": FIXTURE_NOTE,
+    });
+    const scan = scanSource(root);
+    expect(scan.findings.map((f: { file: string; pattern: string }) => `${f.file} ${f.pattern}`)).toEqual([
+      "src/app/store/x/__fixtures__/note.ts token",
+      "src/app/store/x/__fixtures__/note.ts draft",
+    ]);
+    expect(scan.files).toBe(2);
+    expect(scan.notShipped).toBe(0);
+    expect(scan.importedNeverShipped).toEqual([{ file: "src/app/store/x/__fixtures__/note.ts", by: "src/app/store/x/page.tsx" }]);
+    expect(decide("production", scan).code).toBe(1);
+  });
+
+  it.each([
+    ["an export-from", `export { note } from "./__fixtures__/note";`, "src/lib/__fixtures__/note.ts"],
+    ["an export-star", `export * from "@/lib/__fixtures__/note";`, "src/lib/__fixtures__/note.ts"],
+    ["a side-effect import", `import "./__fixtures__/note.css";`, "src/lib/__fixtures__/note.css"],
+    ["a dynamic import", `export const load = () => import("./__fixtures__/note");`, "src/lib/__fixtures__/note.ts"],
+    ["a require", `const n = require("../lib/__fixtures__/note.json");`, "src/lib/__fixtures__/note.json"],
+    ["a folder's index", `import { note } from "@/lib/__fixtures__/dir";`, "src/lib/__fixtures__/dir/index.tsx"],
+    ["a story by its full name", `import { meta } from "./X.stories.tsx";`, "src/lib/X.stories.tsx"],
+    ["a multi-line import", `import {\n  note,\n} from "./__fixtures__/note";`, "src/lib/__fixtures__/note.ts"],
+  ])("follows %s to the never-shipped file it names", (_name, importer, target) => {
+    const scan = scanSource(
+      tree({
+        "src/lib/shipped.ts": `${importer}\n`,
+        [target]: `export const note = "{ph:F4 x}";\n`,
+        "src/lib/__fixtures__/other.ts": `export const other = "{ph:F4 y}";\n`,
+      }),
+    );
+    expect(scan.findings.map((f: { file: string }) => f.file)).toEqual([target]);
+    expect(scan.notShipped).toBe(1);
+  });
+
+  it("follows every hop: a pulled-in fixture's own imports ship too", () => {
+    const scan = scanSource(
+      tree({
+        "src/lib/a.ts": `export { b } from "@/lib/__fixtures__/b";\n`,
+        "src/lib/__fixtures__/b.ts": `export * from "./c.test-d";\n`,
+        "src/lib/__fixtures__/c.test-d.ts": `export const c = "{ph:F4 c}";\n`,
+      }),
+    );
+    expect(scan.findings.map((f: { file: string }) => f.file)).toEqual(["src/lib/__fixtures__/c.test-d.ts"]);
+    expect(scan.importedNeverShipped).toEqual([
+      { file: "src/lib/__fixtures__/b.ts", by: "src/lib/a.ts" },
+      { file: "src/lib/__fixtures__/c.test-d.ts", by: "src/lib/__fixtures__/b.ts" },
+    ]);
+    expect(scan.notShipped).toBe(0);
+  });
+
+  it("leaves a fixture alone when only tests, stories or packages name it", () => {
+    const scan = scanSource(
+      tree({
+        "src/lib/a.test.ts": `import { note } from "./__fixtures__/note";\n`,
+        "src/lib/a.stories.tsx": `import { note } from "@/lib/__fixtures__/note";\n`,
+        "src/lib/a.ts": `import x from "__fixtures__/note";\nimport y from "@ds/__fixtures__/note";\nimport z from "./__fixtures__/missing";\nexport const s = "./__fixtures__/note";\n`,
+        "src/lib/__fixtures__/note.ts": FIXTURE_NOTE,
+      }),
+    );
+    expect(scan.findings).toEqual([]);
+    expect(scan.importedNeverShipped).toEqual([]);
+    expect(scan.notShipped).toBe(3);
+  });
+
   it.each([
     ["src/components/ui/X/X.test.tsx", true],
     ["src/components/ui/X/X.spec.ts", true],
@@ -352,6 +425,20 @@ describe("decide: production refuses, every other environment reports", () => {
       expect([...d.out, ...d.err].join("\n")).toContain("[placeholders] not scanned (never shipped): 3 files");
     }
     expect(runs.map((d) => d.code)).toEqual([0, 1, 0, 0]);
+  });
+
+  it("names each never-shipped file it scanned because shipped code imports it, and says nothing when none is", () => {
+    const pulled = scanSource(
+      tree({
+        "src/app/store/x/page.tsx": `import { note } from "./__fixtures__/note";\n`,
+        "src/app/store/x/__fixtures__/note.ts": `export const note = "ok";\n`,
+      }),
+    );
+    for (const d of [decide("production", pulled), decide("beta", dirty)]) expect(d.code).toBe(0);
+    expect(decide("production", pulled).out).toContain(
+      "[placeholders] scanned as shipped (shipped code imports them): src/app/store/x/__fixtures__/note.ts (from src/app/store/x/page.tsx)",
+    );
+    expect(decide("beta", dirty).out.join("\n")).not.toContain("scanned as shipped");
   });
 
   it("says nothing about never-shipped files on an output scan (everything there ships)", () => {

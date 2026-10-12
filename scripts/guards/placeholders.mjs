@@ -13,18 +13,22 @@
 // Source scan: every text file under src/, comments included (the token in a comment is still
 // the token; write "the ph token" instead), except the two files that define the syntax (N25) and
 // the files that never ship (tests, specs, type tests, stories, snapshots and fixtures: the wave-2
-// close ruling, task 2.13), whose count is printed on every run. Nothing that ships escapes: the
-// output scan below reads everything the build prerendered.
-// Output scan: the prerendered HTML (*.html) and prerendered route bodies (*.body: llms.txt,
-// pricing.md, sitemap.xml, robots.txt) under .next/server/app. Binary files and dot-files are
-// skipped. A production run with nothing to scan fails: an empty scan cannot vouch for a build.
+// close ruling, task 2.13), whose count is printed on every run. A never-shipped file that shipped
+// code imports does ship, so it is scanned and named (its import, export-from, side-effect,
+// import() or require() specifier, relative or @/, followed through every hop; the 2.13 review).
+// The source scan is the only check of the dynamic routes (/store/*, /api/*): they are never
+// prerendered.
+// Output scan: everything prerendered, i.e. the prerendered HTML (*.html) and prerendered route
+// bodies (*.body: llms.txt, pricing.md, sitemap.xml, robots.txt) under .next/server/app. Binary
+// files and dot-files are skipped. A production run with nothing to scan fails: an empty scan
+// cannot vouch for a build.
 //
 // The build steps scripts/steps/prebuild/30-placeholders.mjs and
 // scripts/steps/postbuild/10-placeholders-html.mjs run this file; test/guards/placeholders.test.ts
 // proves it red and green, and runs the source scan in development on every `npm run verify`.
 
 import { readdirSync, readFileSync, realpathSync, statSync } from "node:fs";
-import { dirname, join, relative, sep } from "node:path";
+import { dirname, join, posix as posixPath, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -147,32 +151,96 @@ function outputExcerpt(text, hit) {
   return text.slice(hit.index, stop);
 }
 
+/** The module specifiers a source text names: import and export-from declarations (multi-line
+ *  too), side-effect imports, import() and require() with a literal. Comments are read as code,
+ *  as everywhere in this scan, so a commented-out import still pulls its file in. */
+const SPECIFIERS = [
+  /\bfrom\s*["']([^"'\n]+)["']/g,
+  /\bimport\s*["']([^"'\n]+)["']/g,
+  /\bimport\s*\(\s*["'`]([^"'`\n]+)["'`]\s*\)/g,
+  /\brequire\s*\(\s*["']([^"'\n]+)["']\s*\)/g,
+];
+const CODE_FILE = /\.(?:[cm]?[jt]sx?)$/;
+const RESOLVE_EXTENSIONS = [".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".mts", ".cts", ".json"];
+
+/**
+ * The repo file (posix) a relative or @/ specifier resolves to, as the bundler would: the exact
+ * path, then each extension, then the folder's index; null for a package or a missing file.
+ * @param {string} from  the importing file, a repo path
+ * @param {string} spec
+ * @param {Set<string>} known  every file under src/, as repo paths
+ */
+function resolveSpecifier(from, spec, known) {
+  const path = spec.replace(/[?#].*$/, "");
+  let target;
+  if (path.startsWith("@/")) target = `${SOURCE_DIR}/${path.slice(2)}`;
+  else if (path.startsWith("./") || path.startsWith("../")) target = posixPath.join(posixPath.dirname(from), path);
+  else return null;
+  const candidates = [
+    target,
+    ...RESOLVE_EXTENSIONS.map((ext) => `${target}${ext}`),
+    ...RESOLVE_EXTENSIONS.map((ext) => `${target}/index${ext}`),
+  ];
+  return candidates.find((c) => known.has(c)) ?? null;
+}
+
 /**
  * Scans src/ under root, minus EXCLUDED and the files that never ship (counted in `notShipped`).
+ * A never-shipped file that a shipped file imports ships after all: it is scanned and listed in
+ * `importedNeverShipped` with the first file that pulled it in.
  * @param {string} [root]
  */
 export function scanSource(root = REPO) {
   const dir = join(root, SOURCE_DIR);
   const base = { kind: "source", target: `${SOURCE_DIR}/`, excluded: [...EXCLUDED] };
-  if (!isDir(dir)) return { ...base, missing: true, files: 0, notShipped: 0, findings: [] };
+  if (!isDir(dir)) return { ...base, missing: true, files: 0, notShipped: 0, importedNeverShipped: [], findings: [] };
+  const all = walk(dir).map((path) => ({ path, file: posix(relative(root, path)) }));
+  const known = new Set(all.map((f) => f.file));
+  const byFile = new Map(all.map((f) => [f.file, f.path]));
+  const texts = new Map();
+  const textOf = (file) => {
+    if (!texts.has(file)) texts.set(file, readText(byFile.get(file)));
+    return texts.get(file);
+  };
+
+  // Shipped: everything but the syntax files and the never-shipped ones, plus every never-shipped
+  // file a shipped file imports, hop after hop.
+  const shipped = new Set(all.map((f) => f.file).filter((file) => !EXCLUDED.includes(file) && !isNeverShipped(file)));
+  const importedNeverShipped = [];
+  const queue = [...shipped];
+  while (queue.length > 0) {
+    const from = queue.shift();
+    if (!CODE_FILE.test(from)) continue;
+    const text = textOf(from);
+    if (text === null) continue;
+    for (const re of SPECIFIERS) {
+      for (const m of text.matchAll(re)) {
+        const target = resolveSpecifier(from, m[1], known);
+        if (target === null || shipped.has(target) || EXCLUDED.includes(target)) continue;
+        shipped.add(target);
+        importedNeverShipped.push({ file: target, by: from });
+        queue.push(target);
+      }
+    }
+  }
+
   let files = 0;
   let notShipped = 0;
   const findings = [];
-  for (const path of walk(dir)) {
-    const file = posix(relative(root, path));
+  for (const { file } of all) {
     if (EXCLUDED.includes(file)) continue;
-    if (isNeverShipped(file)) {
+    if (!shipped.has(file)) {
       notShipped++;
       continue;
     }
-    const text = readText(path);
+    const text = textOf(file);
     if (text === null) continue;
     files++;
     for (const hit of findPlaceholders(text)) {
       findings.push({ file, line: hit.line, pattern: hit.pattern, label: hit.label, excerpt: lineExcerpt(text, hit.index) });
     }
   }
-  return { ...base, missing: false, files, notShipped, findings };
+  return { ...base, missing: false, files, notShipped, importedNeverShipped, findings };
 }
 
 /**
@@ -228,6 +296,13 @@ export function decide(siteEnv, scan) {
     ...(scan.excluded.length ? [`${tag} not scanned, they define the syntax: ${scan.excluded.join(", ")}`] : []),
     ...(scan.kind === "source"
       ? [`${tag} not scanned (never shipped): ${plural(scan.notShipped ?? 0, "file")} (tests, specs, type tests, stories, snapshots, fixtures)`]
+      : []),
+    ...(scan.importedNeverShipped?.length
+      ? [
+          `${tag} scanned as shipped (shipped code imports them): ${scan.importedNeverShipped
+            .map((x) => `${x.file} (from ${x.by})`)
+            .join(", ")}`,
+        ]
       : []),
   ];
 
