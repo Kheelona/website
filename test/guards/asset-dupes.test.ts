@@ -54,6 +54,9 @@ describe("asset-dupes detector", () => {
 });
 
 describe("asset-dupes: public/ and src/assets/", () => {
+  /* Hashes every film, poster and design-system file (about 90 MB on 2026-10-12): a quarter of a
+     second on a warm disk, but it can pass Vitest's 5 s default on a cold clone or a loaded runner
+     while the whole suite runs in parallel, hence the explicit 30 s (task 2.13). */
   it("has no duplicate asset and no stray design-system copy", () => {
     const site = listFiles(["public", "src/assets"]).map((path) => ({ path, hash: sha(readRepoBytes(path)) }));
     const ds = new Map<string, string>();
@@ -66,5 +69,5 @@ describe("asset-dupes: public/ and src/assets/", () => {
     console.log(`[asset-dupes] hashed ${site.length} site file(s) against ${ds.size} design-system file(s).`);
     const problems = findProblems(site, ds);
     expect(problems, problems.join("\n")).toEqual([]);
-  });
+  }, 30_000);
 });
