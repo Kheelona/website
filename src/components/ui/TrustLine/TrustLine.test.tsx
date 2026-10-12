@@ -47,6 +47,18 @@ describe("TrustLine", () => {
     }
   });
 
+  it("centres the line when asked: the centred CTA blocks and the facts line (mockup.css:97-98)", () => {
+    const { container } = render(<TrustLine items={LINKED} center />);
+    expect(container.firstElementChild?.className).toBe("kh-trustline ks-trust ks-trustline--center");
+    const facts = render(<TrustLine center className="ks-facts" items={[{ icon: icon("eye-slash"), label: "No camera" }]} />);
+    expect(facts.container.firstElementChild?.className).toBe("kh-trustline ks-trustline--center ks-facts");
+  });
+
+  it("is left-aligned by default", () => {
+    const { container } = render(<TrustLine items={LINKED} />);
+    expect(container.firstElementChild?.className).not.toMatch(/center/);
+  });
+
   it("renders an unlinked facts line without the link styling (home.html fold 6, mk-facts)", () => {
     const { container } = render(
       <TrustLine

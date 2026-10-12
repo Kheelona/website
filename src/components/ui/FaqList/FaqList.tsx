@@ -8,7 +8,9 @@ import { toPlainText } from "@/lib/content/plain-text";
  * (home.html fold 8, meet-kheelu.html, the store). Each answer sits in `ks-faq__clip`, the hook of the D049 pick 7
  * open animation in src/motion/motion.css (architecture §11.3): the content slot grows from 0fr to 1fr where the
  * browser has `::details-content`, and the clip keeps the DS padding of `kh-faq__a` from showing while it is
- * collapsed. The plus sign turns with the DS's own transition (bundle.css .kh-faq__sign).
+ * collapsed. The plus sign turns with the DS's own rotate rule (bundle.css .kh-faq__sign; motion.css leaves it alone).
+ * Never write the bare Tailwind word for an animated change in this file's prose: the motion guard reads it as a
+ * class (test/guards/motion-properties.test.ts).
  *
  * The question and answer slots take `RichText` and the sign slot the `Icon` primitive (plus); FaqSection maps the
  * page's FaqItems onto them and builds the FAQPage JSON-LD from the same items with `faqPlainItems`, so the schema

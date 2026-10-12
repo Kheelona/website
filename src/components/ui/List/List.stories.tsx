@@ -28,9 +28,10 @@ type Story = StoryObj<typeof meta>;
 
 /** The 404's link rows. */
 export const LinkRows: Story = {};
-/** Related guides: title and chevron. */
+/** Related guides (story-*.html): title, then the chevron icon straight in the row. */
 export const Related: Story = {
   args: {
+    bareChevron: true,
     items: [
       { title: "What actually builds a sharp brain in the early years", href: "/stories#learning" },
       { title: "A toy that talks is not a toy that listens", href: "/stories#talking" },
@@ -45,6 +46,16 @@ export const QuietRows: Story = {
     items: [
       { title: "Busy hands, no screens", sub: "Screen-free ways to keep a young child busy at home." },
       { title: "Screen-free does not mean silent", sub: "What a childhood full of talk looks like, without a single screen." },
+    ],
+  },
+};
+/** Link rows with h3 titles, for a page outline that needs row headings (block wrappers inside the link). */
+export const HeadingLinkRows: Story = {
+  args: {
+    titleAs: "h3",
+    items: [
+      { title: "How much screen time is okay for a young child?", sub: "What the WHO and the IAP say, age by age.", href: "/stories#screen-time" },
+      { title: "Busy hands, no screens", sub: "Screen-free ways to keep a young child busy at home.", href: "/stories#screen-time" },
     ],
   },
 };

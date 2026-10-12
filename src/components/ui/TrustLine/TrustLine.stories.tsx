@@ -52,3 +52,6 @@ export const Facts: Story = {
     ],
   },
 };
+
+/** Centred, as in the centred CTA blocks (404.html fold 2, the closes) and the facts line. */
+export const Centered: Story = { args: { center: true } };

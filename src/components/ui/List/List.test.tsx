@@ -32,11 +32,22 @@ describe("List", () => {
     expect(screen.getByRole("link", { name: /^Stories\s?Guides for parents\.$/ })).toBeInTheDocument();
   });
 
-  it("renders the related-guide rows (title only, then the chevron)", () => {
+  it("renders a title-only link row with the DS chevron wrapper by default", () => {
     const ul = root(<List chevron={chevron} items={[{ title: "Raising a bilingual child in India", href: "/stories#talking" }]} />);
     const a = ul.querySelector("a") as HTMLElement;
     expect(a.className).toBe("kh-listitem");
     expect([...a.children].map((c) => c.className)).toEqual(["kh-listitem__text", "kh-listitem__chev"]);
+  });
+
+  it("renders the articles' related rows as story-*.html does: the chevron icon straight in the row, no wrapper", () => {
+    const ul = root(<List chevron={chevron} bareChevron items={[{ title: "Raising a bilingual child in India", href: "/stories#talking" }]} />);
+    const a = ul.querySelector(":scope > li > a") as HTMLElement;
+    expect(a.className).toBe("kh-listitem");
+    expect(a.innerHTML).toBe(
+      '<span class="kh-listitem__text"><span class="kh-listitem__title">Raising a bilingual child in India</span></span>' +
+        '<svg class="kh-icon" data-icon="caret-right" aria-hidden="true"></svg>',
+    );
+    expect(a.querySelector(".kh-listitem__chev")).toBeNull();
   });
 
   it("renders rows without a link as the hub's quiet rows: li.kh-listitem > div text with an h3 title and a p line", () => {
@@ -49,9 +60,14 @@ describe("List", () => {
     expect(screen.queryByRole("link")).toBeNull();
   });
 
-  it("puts a heading title inside a link row when the page's outline asks for it", () => {
-    render(<List titleAs="h3" chevron={chevron} items={[{ title: "How much screen time is okay?", href: "/stories/screen-time" }]} />);
+  it("puts a heading title inside a link row when the page's outline asks for it, in block wrappers (no h3 inside a span)", () => {
+    const ul = root(
+      <List titleAs="h3" chevron={chevron} items={[{ title: "How much screen time is okay?", sub: "Age by age.", href: "/stories/screen-time" }]} />,
+    );
     expect(screen.getByRole("heading", { level: 3 }).className).toBe("kh-listitem__title");
+    expect((ul.querySelector("a") as HTMLElement).children[0].outerHTML).toBe(
+      '<div class="kh-listitem__text"><h3 class="kh-listitem__title">How much screen time is okay?</h3><p class="kh-listitem__sub">Age by age.</p></div>',
+    );
   });
 
   it("shows meta text after the words when given", () => {

@@ -1,6 +1,25 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { Card } from "./Card";
+import { Card, TYPE_STEPS, typeStepClass } from "./Card";
+
+describe("TYPE_STEPS", () => {
+  /* The generated type steps (task 1.2, from the 19 kh- type classes in tokens.css): a step the prop accepts must
+     exist as a class, and every generated base class must be selectable, so the union cannot drift from the DS. */
+  const css = readFileSync(join(process.cwd(), "src/styles/generated/type-steps.css"), "utf8");
+  const generated = [...new Set([...css.matchAll(/^\.ks-type-([a-z0-9-]+) \{/gm)].map((m) => m[1]))].sort();
+
+  it("equals the base classes of src/styles/generated/type-steps.css", () => {
+    expect(generated.length).toBe(19);
+    expect([...TYPE_STEPS].sort()).toEqual(generated);
+  });
+
+  it("maps a step to its class, and nothing to nothing", () => {
+    expect(typeStepClass("subtitle")).toBe("ks-type-subtitle");
+    expect(typeStepClass(undefined)).toBeUndefined();
+  });
+});
 
 const icon = (name: string) => <svg className="kh-icon" data-icon={name} aria-hidden="true" />;
 const card = (ui: React.ReactElement) => render(ui).container.firstElementChild as HTMLElement;
@@ -73,6 +92,36 @@ describe("Card", () => {
     const el = card(<Card tone="blue" icon={icon("wifi-high")} title="AI mode" body="Open conversation." groupText />);
     expect([...el.children].map((c) => `${c.tagName}.${c.className}`)).toEqual(["SPAN.kh-card__icon", "DIV."]);
     expect([...el.children[1].children].map((c) => c.className)).toEqual(["kh-card__title", "kh-card__body"]);
+  });
+
+  it("renders the product page's Good to know card (meet-kheelu.html fold 4): a classed text group, then the photo", () => {
+    const el = card(
+      <Card
+        variant="tint"
+        tone="sun"
+        className="ks-know"
+        title="Good to know"
+        titleId="know-title"
+        labelledBy="know-title"
+        groupText
+        groupClassName="ks-know__text"
+        after={<figure className="ks-know__img" />}
+      >
+        <ul className="ks-ticks" />
+      </Card>,
+    );
+    expect(el.className).toBe("kh-card kh-card--tint kh-tone-sun ks-know");
+    expect([...el.children].map((c) => `${c.tagName}.${c.className}`)).toEqual(["DIV.ks-know__text", "FIGURE.ks-know__img"]);
+    expect([...el.children[0].children].map((c) => `${c.tagName}.${c.className}`)).toEqual(["H3.kh-card__title", "UL.ks-ticks"]);
+  });
+
+  it("puts the trailing slot last, after the link", () => {
+    const el = card(<Card title="x" link={{ href: "/x", label: "More" }} after={<figure />} />);
+    expect([...el.children].map((c) => c.tagName)).toEqual(["H3", "A", "FIGURE"]);
+  });
+
+  it("refuses a group class without the text group", () => {
+    expect(() => render(<Card title="x" groupClassName="ks-know__text" />)).toThrow(/groupText/);
   });
 
   it("is named by its own heading when asked (aria-labelledby on the card, id on the h3)", () => {

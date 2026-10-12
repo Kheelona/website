@@ -60,6 +60,20 @@ describe("TrustList", () => {
     expect(screen.queryByRole("heading")).toBeNull();
   });
 
+  it("holds the facts list's photo inside the grid, after the items (story-what-to-look-for…, the belly unit)", () => {
+    const list = root(
+      <TrustList variant="facts" items={[{ icon: icon("clock"), title: "Certification.", body: "Applied for, not yet granted." }]}>
+        <figure className="kh-photo kh-photo--square ks-belly" />
+      </TrustList>,
+    );
+    expect([...list.children].map((c) => `${c.tagName}.${c.className}`)).toEqual(["DIV.kh-trust__item", "FIGURE.kh-photo kh-photo--square ks-belly"]);
+  });
+
+  it("refuses extra content inside a ul or ol list, where only list items may sit", () => {
+    expect(() => render(<TrustList items={TITLED}><figure /></TrustList>)).toThrow(/div/);
+    expect(() => render(<TrustList as="ol" items={TITLED}><figure /></TrustList>)).toThrow(/div/);
+  });
+
   it("puts the bodyType step on every body (mockup-css-mapping rows 76-77)", () => {
     const list = root(<TrustList bodyType="body" items={TITLED} />);
     expect([...list.querySelectorAll(".kh-trust__body")].map((p) => p.className)).toEqual([

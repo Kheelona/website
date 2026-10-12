@@ -1,5 +1,5 @@
 import { clsx } from "clsx";
-import type { ReactNode } from "react";
+import { Children, type ReactNode } from "react";
 import { typeStepClass, type TypeStep } from "@/components/ui/Card/Card";
 
 /**
@@ -9,7 +9,8 @@ import { typeStepClass, type TypeStep } from "@/components/ui/Card/Card";
  *   safety.html, the guide's answers; mockup.css:95, ai-toys-for-kids-in-india.css:6);
  * - `as="div"`: `article` items (home.html and meet-kheelu.html safety folds);
  * - `variant="facts"`: the safe-AI-toy article's facts, `div` items whose title is a bold `kh-label` lead-in inside
- *   the body (story-what-to-look-for-in-a-safe-ai-toy.html fold 5); its spacing is ArticleBody's.
+ *   the body (story-what-to-look-for-in-a-safe-ai-toy.html fold 5), with the belly unit's photo as the last cell of
+ *   the grid (`children`); its spacing is ArticleBody's.
  * The icon slot takes the `Icon` primitive; the title and body slots take `RichText`.
  */
 export interface TrustListItem {
@@ -27,11 +28,16 @@ export interface TrustListProps {
   reveal?: boolean;
   /** The parent's composition class, added after the DS classes. */
   className?: string;
+  /** More cells after the items, inside a `div` list only: the facts list's photo (`Photo`). */
+  children?: ReactNode;
 }
 
-export function TrustList({ items, as = "ul", variant, bodyType, reveal = false, className }: TrustListProps) {
+export function TrustList({ items, as = "ul", variant, bodyType, reveal = false, className, children }: TrustListProps) {
   const facts = variant === "facts";
   const Root = facts ? "div" : as;
+  if (Children.toArray(children).length > 0 && Root !== "div") {
+    throw new Error(`TrustList: extra cells need a div list (as="div" or variant="facts"); a ${Root} holds list items only`);
+  }
   const Item = facts ? "div" : as === "div" ? "article" : "li";
   const bodyClass = clsx("kh-trust__body", typeStepClass(bodyType));
   return (
@@ -56,6 +62,7 @@ export function TrustList({ items, as = "ul", variant, bodyType, reveal = false,
           )}
         </Item>
       ))}
+      {children}
     </Root>
   );
 }

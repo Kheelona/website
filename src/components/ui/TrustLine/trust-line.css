@@ -21,3 +21,8 @@
   position: absolute;
   inset: calc(var(--space-3) * -1) 0;
 }
+/* Centred: the centred CTA blocks (mockup.css:97, .mk-beside--center .kh-trustline) and the facts line
+   (mockup.css:98, .mk-facts), linked or not. */
+.ks-trustline--center {
+  justify-content: center;
+}

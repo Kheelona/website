@@ -6,7 +6,8 @@ import type { Tone } from "@/content/types";
 /**
  * The DS List and ListItem (`kh-list`, `kh-listitem`): rows of links or quiet rows. Three approved uses:
  * - the 404's four link rows: icon tile, title, a line under it, chevron (404.html fold 1);
- * - the related guides and "keep reading" rows: title, chevron (story-*.html);
+ * - the related guides and "keep reading" rows: title, then the chevron icon straight in the row, without the DS
+ *   wrapper (story-*.html; `bareChevron`, styled by RelatedGuides as stories.css:155 does);
  * - the stories hub's rows: an h3 title and a line, as quiet rows or links (stories.html, TopicSection).
  * A row is one tap target (DS rule); the icon tile and chevron are decoration. The list reset is the shared
  * composition class (`ks-list-reset`); each page's wrapping rules are its section's (EmptyState `ks-404__list`,
@@ -27,8 +28,10 @@ export interface ListRow {
 
 export interface ListProps {
   items: readonly ListRow[];
-  /** The chevron at the end of each link row (the `Icon` primitive, caret-right). */
+  /** The chevron at the end of each link row (the `Icon` primitive, caret-right), in the DS `kh-listitem__chev` span. */
   chevron?: ReactNode;
+  /** The chevron icon straight in the row, as the articles' related rows have it (story-*.html). */
+  bareChevron?: boolean;
   /** The title element: `span` (default) or `h3` where the page's outline needs row headings (the hub). */
   titleAs?: "span" | "h3";
   /** The list's accessible name, where the page gives one. */
@@ -37,7 +40,7 @@ export interface ListProps {
   className?: string;
 }
 
-export function List({ items, chevron, titleAs: Title = "span", label, className }: ListProps) {
+export function List({ items, chevron, bareChevron = false, titleAs: Title = "span", label, className }: ListProps) {
   return (
     <ul className={clsx("kh-list", "ks-list-reset", className)} aria-label={label}>
       {items.map((row, i) => {
@@ -60,20 +63,26 @@ export function List({ items, chevron, titleAs: Title = "span", label, className
             </li>
           );
         }
+        // A heading title needs block wrappers: an h3 is not phrasing content, so it never sits in a span.
+        const Text = Title === "h3" ? "div" : "span";
+        const Sub = Title === "h3" ? "p" : "span";
         return (
           <li key={i}>
             <Link href={row.href} className={rowClass}>
               {tile}
-              <span className="kh-listitem__text">
+              <Text className="kh-listitem__text">
                 <Title className="kh-listitem__title">{row.title}</Title>
-                {row.sub !== undefined && <span className="kh-listitem__sub">{row.sub}</span>}
-              </span>
+                {row.sub !== undefined && <Sub className="kh-listitem__sub">{row.sub}</Sub>}
+              </Text>
               {meta}
-              {chevron !== undefined && (
-                <span className="kh-listitem__chev" aria-hidden="true">
-                  {chevron}
-                </span>
-              )}
+              {chevron !== undefined &&
+                (bareChevron ? (
+                  chevron
+                ) : (
+                  <span className="kh-listitem__chev" aria-hidden="true">
+                    {chevron}
+                  </span>
+                ))}
             </Link>
           </li>
         );

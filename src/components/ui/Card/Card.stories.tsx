@@ -1,6 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import Image from "next/image";
 import { ICON_PATHS, ICON_VIEWBOX, type IconName } from "@/assets/icons.generated";
 import { Card } from "./Card";
+
+/* A stable public image (public/media/kheelu-front.jpg, task 1.5) standing in for the page's photo. */
+const KHEELU = {
+  src: "/media/kheelu-front.jpg",
+  width: 1200,
+  height: 1200,
+  alt: "Kheelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy.",
+};
 
 /* Story stand-in for the Icon primitive (task 2.2, built in the same wave): the same DS svg. */
 const icon = (name: IconName) => (
@@ -30,8 +39,9 @@ export const Plain: Story = {};
 export const Tint: Story = {
   args: { variant: "tint", tone: "sun", icon: icon("question"), title: "Where Kheelu comes in", body: "Kheelu answers your child, then asks a question back." },
 };
-/** Block (DS variant). */
-export const Block: Story = { args: { variant: "block", tone: "chilli", icon: icon("bluetooth"), title: "Bluetooth mode", body: "Pair your phone and use it as a speaker." } };
+/** Block (DS variant; no approved page uses it). Shown on Sunshine, ink on the fill: on Chilli or Kheelu Blue the DS
+ *  puts white text on the fill, which fails AA contrast (DS gap G-02). */
+export const Block: Story = { args: { variant: "block", tone: "sun", icon: icon("bluetooth"), title: "Bluetooth mode", body: "Pair your phone and use it as a speaker." } };
 /** A guide card with its link (home.html fold 7b). */
 export const WithLink: Story = {
   args: {
@@ -66,3 +76,24 @@ export const HubTitle: Story = {
 };
 /** The product page's compact mode row: the words grouped beside the icon. */
 export const GroupText: Story = { args: { groupText: true } };
+/** The product page's Good to know card (meet-kheelu.html fold 4): a classed text group (title and a tick list), then
+ *  the photo in the trailing slot. Its layout classes are ModesSection's (task 3.3). */
+export const GoodToKnow: Story = {
+  args: {
+    variant: "tint",
+    tone: "sun",
+    icon: undefined,
+    body: undefined,
+    title: "Good to know",
+    titleId: "know-title",
+    labelledBy: "know-title",
+    groupText: true,
+    groupClassName: "ks-know__text",
+    children: (
+      <ul>
+        <li>AI mode needs your home Wi‑Fi. Story mode and Bluetooth mode work without it.</li>
+      </ul>
+    ),
+    after: <Image src={KHEELU.src} width={KHEELU.width} height={KHEELU.height} sizes="(min-width: 720px) 240px, 50vw" alt={KHEELU.alt} />,
+  },
+};

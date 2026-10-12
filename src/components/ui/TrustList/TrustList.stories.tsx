@@ -1,6 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import Image from "next/image";
 import { ICON_PATHS, ICON_VIEWBOX, type IconName } from "@/assets/icons.generated";
 import { TrustList } from "./TrustList";
+
+/* A stable public image (public/media/kheelu-front.jpg, task 1.5) standing in for the page's photo. */
+const KHEELU = {
+  src: "/media/kheelu-front.jpg",
+  width: 1200,
+  height: 1200,
+  alt: "Kheelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy.",
+};
 
 /* Story stand-in for the Icon primitive (task 2.2, built in the same wave): the same DS svg. */
 const icon = (name: IconName) => (
@@ -40,7 +49,7 @@ export const Default: Story = {};
 export const Articles: Story = { args: { as: "div", items: titled } };
 /** A numbered list (safety.html, the guide's answers). */
 export const Numbered: Story = { args: { as: "ol", items: titled } };
-/** The article's facts: bold lead-ins inside a body-step paragraph. */
+/** The article's facts: bold lead-ins inside a body-step paragraph, and the belly unit's photo as the last cell. */
 export const Facts: Story = {
   args: {
     variant: "facts",
@@ -49,5 +58,10 @@ export const Facts: Story = {
       { icon: icon("microphone"), title: "The microphone.", body: "It turns on only when someone presses the wake-up button." },
       { icon: icon("question"), title: "When it doesn’t know.", body: "It says so, instead of guessing." },
     ],
+    children: (
+      <figure className="kh-photo kh-photo--square">
+        <Image src={KHEELU.src} width={KHEELU.width} height={KHEELU.height} sizes="(min-width: 720px) 240px, 50vw" alt={KHEELU.alt} />
+      </figure>
+    ),
   },
 };

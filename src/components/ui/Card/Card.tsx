@@ -8,26 +8,29 @@ import type { Tone } from "@/content/types";
  * type classes in tokens.css). A step on an element replaces a pixel size the mockup restated (mockup-css-mapping
  * §5 rule 2), for example a hub card title (rows 63-64) or a fact's body (rows 76-77).
  */
-export type TypeStep =
-  | "display-xl"
-  | "display-l"
-  | "display-m"
-  | "headline"
-  | "title"
-  | "subtitle"
-  | "lead"
-  | "body-l"
-  | "body"
-  | "body-s"
-  | "caption"
-  | "label-l"
-  | "label"
-  | "label-s"
-  | "eyebrow"
-  | "price"
-  | "hand-l"
-  | "hand-m"
-  | "note";
+export const TYPE_STEPS = [
+  "display-xl",
+  "display-l",
+  "display-m",
+  "headline",
+  "title",
+  "subtitle",
+  "lead",
+  "body-l",
+  "body",
+  "body-s",
+  "caption",
+  "label-l",
+  "label",
+  "label-s",
+  "eyebrow",
+  "price",
+  "hand-l",
+  "hand-m",
+  "note",
+] as const;
+
+export type TypeStep = (typeof TYPE_STEPS)[number];
 
 /** The class of a DS type step. */
 export const typeStepClass = (step: TypeStep | undefined): string | undefined => (step ? `ks-type-${step}` : undefined);
@@ -50,7 +53,10 @@ export interface CardProps {
   /** The element the mockup uses: `article` (default), `li` in a guides list, `section` or `div`. */
   as?: "article" | "div" | "li" | "section";
   tone?: Tone;
-  /** DS FeatureCard variants: `plain` (default), `tint`, `block`. */
+  /**
+   * DS FeatureCard variants: `plain` (default), `tint`, `block`. No approved page uses `block`; on Chilli or Kheelu
+   * Blue it sets white text on the fill, which fails AA contrast (DS gap G-02), so only Sunshine passes axe.
+   */
   variant?: "plain" | "tint" | "block";
   /** The DS icon in its circle (the `Icon` primitive). */
   icon?: ReactNode;
@@ -68,6 +74,8 @@ export interface CardProps {
    * (meet-kheelu.html fold 4, styled by ModesSection).
    */
   groupText?: boolean;
+  /** The group's composition class: the Good to know card's text column (`mk-know__text`, meet-kheelu.html fold 4). */
+  groupClassName?: string;
   /** The id of the heading that names the card (aria-labelledby). */
   labelledBy?: string;
   reveal?: boolean;
@@ -75,6 +83,8 @@ export interface CardProps {
   className?: string;
   /** Anything after the body and before the link (a tick list, the comparison lines, a section's own markup). */
   children?: ReactNode;
+  /** Last, after the link: the Good to know card's photo beside its text (`mk-know__img`, meet-kheelu.html fold 4). */
+  after?: ReactNode;
 }
 
 export function Card({
@@ -90,11 +100,16 @@ export function Card({
   body,
   link,
   groupText = false,
+  groupClassName,
   labelledBy,
   reveal = false,
   className,
   children,
+  after,
 }: CardProps) {
+  if (groupClassName !== undefined && !groupText) {
+    throw new Error(`Card: groupClassName "${groupClassName}" names the text group, so it needs groupText`);
+  }
   const words = (
     <>
       {title !== undefined && (
@@ -114,13 +129,14 @@ export function Card({
     >
       {media}
       {icon !== undefined && <span className="kh-card__icon">{icon}</span>}
-      {groupText ? <div>{words}</div> : words}
+      {groupText ? <div className={groupClassName}>{words}</div> : words}
       {link && (
         <Link href={link.href} className={clsx("kh-card__link", link.tap && "ks-card__link--tap")} aria-label={link.ariaLabel}>
           {link.label}
           {link.icon}
         </Link>
       )}
+      {after}
     </Root>
   );
 }
