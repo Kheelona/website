@@ -57,15 +57,14 @@ describe("Button: markup ported from the mockup", () => {
     );
   });
 
-  it("renders a ghost link with a plain end arrow and a secondary CTA value (home.html:18), ready to wrap", () => {
-    // ks-btn--wrap carries mockup.css's ghost rule: a long label may wrap on a 360 px phone.
+  it("renders a ghost link with a plain end arrow and a secondary CTA value (home.html:18), markup as the mockup", () => {
     const html = renderToStaticMarkup(
       <Button variant="ghost" href="/products/kheelu" iconEnd="arrow-right" cta="hero-learn">
         See how it works
       </Button>,
     );
     expect(html).toBe(
-      '<a href="/products/kheelu" data-next-link="" class="kh-btn kh-btn--ghost ks-btn--wrap" data-ph-capture-attribute-cta="hero-learn">' +
+      '<a href="/products/kheelu" data-next-link="" class="kh-btn kh-btn--ghost" data-ph-capture-attribute-cta="hero-learn">' +
         "<span>See how it works</span>" +
         `<svg class="kh-icon" viewBox="0 0 256 256" aria-hidden="true" focusable="false"><path d="${ARROW_PATH}"></path></svg>` +
         "</a>",
@@ -86,7 +85,7 @@ describe("Button: variants and sizes", () => {
   it.each([
     ["primary", "kh-btn kh-btn--primary"],
     ["secondary", "kh-btn kh-btn--secondary"],
-    ["ghost", "kh-btn kh-btn--ghost ks-btn--wrap"],
+    ["ghost", "kh-btn kh-btn--ghost"],
     ["danger", "kh-btn kh-btn--danger"],
   ] as const)("%s", (variant, cls) => {
     render(<Button variant={variant}>Save</Button>);
@@ -239,8 +238,8 @@ describe("Button: CTA tracking value (architecture §8.3)", () => {
 });
 
 describe("Button CSS", () => {
-  it("ports mockup.css's ghost rule (mockup.css:135: a long ghost label wraps on a 360 px phone) as ks-btn--wrap", () => {
-    const ported = declarations("src/components/ui/Button/button.css", ".ks-btn--wrap");
+  it("ports mockup.css's ghost rule verbatim onto .kh-btn--ghost (mockup.css:135: a long ghost label wraps on a 360 px phone)", () => {
+    const ported = declarations("src/components/ui/Button/button.css", ".kh-btn--ghost");
     expect(ported.length).toBeGreaterThan(0);
     expect(ported).toEqual(declarations("mockup/mockup.css", ".kh-btn--ghost"));
   });

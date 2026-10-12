@@ -46,8 +46,8 @@ Option 2. Detail and the full tables: [architecture §8](../architecture.md#8-tr
   status `existing | new`, where it fires). `src/lib/tracking/cta.ts`: the CTA value registry (the eight
   existing values unchanged, plus the new ones reconciled from the mockups and `whatsapp-float` for the
   D050 bubble). `src/lib/tracking/track.ts`:
-  the dispatcher for new events, which sends to GA4 (`window.gtag`), Meta (`fbTrack`) and PostHog
-  (`phCapture`) as the registry says.
+  the dispatcher for new events, which sends to GA4 (`window.gtag`) and PostHog (`phCapture`) as the
+  registry says; never Meta, enforced by `tracking-parity` (wording corrected at the wave-2 close, 2026-10-12).
 - The gates and `ViewContentTracker` move to `src/components/tracking/`; their bodies stay as they are
   except the two reviewed changes below.
 - The CTA attribute `data-ph-capture-attribute-cta` is written only by the `Button` primitive from a

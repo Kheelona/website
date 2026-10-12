@@ -123,10 +123,10 @@ with the computed equality. Component CSS file names are in §4.1. "720-899" mea
 |---|---|---|---|---|---|
 | 52 | safety.css:10 | `.mk-sf-belly` | `width: min(100%, 200px)` | TrustSection `facts` (3.3) | `min(100%, calc(var(--space-9) * 2 + var(--space-2)))`: 192 + 8 = 200 |
 | 53 | safety.css:11 | `.mk-sf-belly` in `(min-width: 900px)` | `width: min(100%, 300px)` | TrustSection `facts` (3.3) | `min(100%, calc(var(--space-9) * 3 + var(--space-3)))`: 288 + 12 = 300 |
-| 54 | safety.css:26 | `.mk-sf-shot .kh-device` | `width: min(100%, 272px)` | FeatureSplit `app-screens`, one screen (3.3) | `min(100%, calc(var(--space-10) * 2 + var(--space-4)))`: 256 + 16 = 272 (architecture §4.4(d)) |
-| 55 | safety.css:28 | `.mk-sf-shot .kh-caption` | `max-width: 272px` | FeatureSplit (3.3) | `calc(var(--space-10) * 2 + var(--space-4))` = 272 |
-| 56 | safety.css:29 | `.mk-sf-shot .kh-device` in `(min-width: 900px)` | `width: 300px` | FeatureSplit (3.3) | `calc(var(--space-9) * 3 + var(--space-3))` = 300 |
-| 57 | safety.css:29 | `.mk-sf-shot .kh-caption` in `(min-width: 900px)` | `max-width: 300px` | FeatureSplit (3.3) | As row 56 |
+| 54 | safety.css:26 | `.mk-sf-shot .kh-device` | `width: min(100%, 272px)` | AppScreens `variant="safety"` (2.3, `app-screens.css`; FeatureSplit 3.3 only renders it) | `min(100%, calc(var(--space-10) * 2 + var(--space-4)))`: 256 + 16 = 272 (architecture §4.4(d)) |
+| 55 | safety.css:28 | `.mk-sf-shot .kh-caption` | `max-width: 272px` | AppScreens `variant="safety"` (2.3, `app-screens.css`; FeatureSplit 3.3 only renders it) | `calc(var(--space-10) * 2 + var(--space-4))` = 272 |
+| 56 | safety.css:29 | `.mk-sf-shot .kh-device` in `(min-width: 900px)` | `width: 300px` | AppScreens `variant="safety"` (2.3, `app-screens.css`; FeatureSplit 3.3 only renders it) | `calc(var(--space-9) * 3 + var(--space-3))` = 300 |
+| 57 | safety.css:29 | `.mk-sf-shot .kh-caption` in `(min-width: 900px)` | `max-width: 300px` | AppScreens `variant="safety"` (2.3, `app-screens.css`; FeatureSplit 3.3 only renders it) | As row 56 |
 | 58 | safety.css:52 | `.mk-sf-art` in 720-899 | `width: min(100%, 480px)` | CloseSection (3.2), through ArtBoard `clamp` (2.3) | As row 8 |
 
 ### 3.4 Product, contact, setup, team, store

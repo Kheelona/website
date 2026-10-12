@@ -481,7 +481,8 @@ alone; 1.2 leaves `globals.css` alone; 1.1 deletes only the two tests it owns).
   `tel-in` shows +91 as decoration only; `PolicyLinks` renders the store's policy links as `mk-policy`
   does in `store.html` and `store-confirmation.html`; `InAppBrowserNote` renders only when its content's `enabled` flag
   is true **and** the user agent is an Instagram, Facebook or WhatsApp in-app browser (detected in an
-  effect; N7) and copies the store URL it is given.
+  effect; N7; a `useSyncExternalStore` read with a `false` server snapshot counts, wave-2 close ruling) and
+  copies the store URL it is given.
 - **Test:** component tests incl. user-agent and flag cases; stories.
 
 ### 2.6 Tracking runtime (builder)
@@ -490,7 +491,10 @@ alone; 1.2 leaves `globals.css` alone; 1.1 deletes only the two tests it owns).
   `src/components/molecules/{GoogleAnalyticsGate,MetaPixel,PostHogGate}.*` (move out, delete originals),
   `src/app/(site)/products/kheelu/_components/ViewContentTracker.*` (move out), the import lines of
   `src/app/layout.tsx` and `src/app/(site)/products/kheelu/page.tsx` that point at the moved files, **the
-  `POSTHOG_HOSTS` line of `src/config/site.ts`**, `test/guards/{tracking-freeze,tracking-parity,posthog-init-fixture,cta-registry}.test.ts`.
+  `POSTHOG_HOSTS` line of `src/config/site.ts`** (with its doc comment and the `BETA_HOSTS` import line),
+  `test/guards/{tracking-freeze,tracking-parity,posthog-init-fixture,cta-registry}.test.ts`,
+  `test/guards/fixtures/tracking-diffs/*.patch`, `test/guards/fixtures/posthog-init/*.json`,
+  `src/lib/tracking/{track,internal-flag}.test.ts` (added at the wave-2 close, 2026-10-12).
 - **Inputs:** [ADR-006](adr/ADR-006-tracking-module-and-registry.md), [architecture §8, §15.3](architecture.md#8-tracking-module-and-event-registry),
   [inventory parity checklist](../site/tracking-inventory.md#parity-checklist-phase-6-qa).
 - **Acceptance:**
@@ -551,7 +555,8 @@ alone; 1.2 leaves `globals.css` alone; 1.1 deletes only the two tests it owns).
 
 - **Why:** the minor findings of 1.1's last review (run `wf_7ba453ba-6cb`), left after 1.1 merged.
 - **Owns:** `test/guards/no-off-token.test.ts` (no new exceptions in `token-exceptions.ts`), `playwright.config.ts`,
-  `scripts/qa/lighthouse.mjs`, `test/e2e/support/**` where needed.
+  `scripts/qa/lighthouse.mjs`, `test/e2e/support/**` where needed, `tsconfig.guards.json`,
+  `test/{lighthouse-gating,playwright-projects}.test.ts` (Vitest excludes `test/e2e/**`; added at the wave-2 close).
 - **Acceptance:**
   1. no-off-token also refuses Tailwind arbitrary modifiers (`text-sm/[17px]`, `bg-black/[0.37]`), arbitrary
      properties whose name has a digit or a capital (`[--ks-x2:3px]`), and a CSS named colour that reaches a
@@ -602,6 +607,111 @@ wave-1 tooling files no wave-2 task owns.
   the reviewed patch carries D051 in its header; checkout-freeze green with the new patch.
 - **Test:** `test/store-env-beta.test.ts`; the checkout guards.
 
+### Wave 2 close: rulings and follow-up tasks (main session, 2026-10-12)
+
+Wave 2 merged at `d87c71f` (twelve tasks, run `wf_2317874f-e7d`); `npm run verify` green (234 files, 3581 tests),
+`next build` green, DS checksums intact. Rulings on the reviewers' open points:
+
+- **Ghost buttons** keep the mockup's markup (`kh-btn kh-btn--ghost`): `Button/button.css` ports mockup.css:135
+  verbatim onto `.kh-btn--ghost` (done by the main session at the close; architecture §4.4).
+- **Client islands never import `Icon`, `Button` or `PreorderButton`** (each pulls the whole icon map, about
+  10.6 KB gzip, against the §12 route budget): a server parent renders them and passes them in as children or
+  props; icons inside an island come from the named path constants through `Glyph` or `IconButton` (task 2.11).
+- **Placeholders guard:** the source scan skips files that never ship (tests, specs, type tests, stories,
+  snapshots, fixtures) and prints them; the postbuild HTML scan still covers everything that ships (2.13).
+- **MotionController** also takes targets added after it armed (2.12); the authoring rule stays: `data-reveal`
+  and `data-draw` go on server-rendered elements with a static `className` (architecture §11.3).
+- **Offer cache:** a Redeploy after the sell-out switch waits 300 s after `/api/health` shows `full`
+  (architecture §15.5, ADR-005), because `unstable_cache` outlives a deployment.
+- **Organization JSON-LD input:** `SiteShell` (3.1) maps the content's `OrganizationFacts` to
+  `organizationNode()`'s input in a small tested function in its own folder; 4.4 reuses it. No type is renamed.
+- **`stub.ts`** is deleted by 6.3 (after 5.17-5.19 rewrite the last stubs). The three stub titles too long for
+  " · Kheelona" stay unbranded until their rewrite (accepted).
+- **Hero art layers** stay eager at `fetchPriority="low"` as the mockup has them (2.3's choice, accepted).
+- **`useSyncExternalStore`** with a `false` server snapshot counts as "detected in an effect" (N7, ADR-003): later
+  islands may follow 2.5's `InAppBrowserNote` pattern.
+- **Numeric opacity modifiers** (`bg-surface/37`) are off-token: the DS has no opacity tokens (2.13).
+- **2.7's offline schema.org vocabulary check** stays out of the repo (a 1.5 MB vocabulary file); the live
+  validators run in Phase 6 QA.
+- Stale comments about beta Razorpay payments inside frozen store tests stay (byte-identical to the tag).
+
+### 2.11 Client-safe icons (builder; runs with wave 3, before 3.1 and 3.3)
+
+- **Why:** `Icon` and `IconButton` import the whole icon map (`src/assets/icons.generated.ts`, 30 KB, about
+  10.6 KB gzip), so any client island using them ships all 76 paths (2.2 and 2.5 review findings).
+- **Owns:** `scripts/assets/build-icons.mjs`, `src/assets/icons.generated.ts`, `test/guards/generated-icons.test.ts`,
+  `src/components/ui/{Icon,IconButton,CopyLinkButton}/**`, `src/components/ui/Field/field-icons.{ts,test.ts}`,
+  `src/components/ui/Alert/alert-icons.ts`, `test/guards/client-icons.test.ts` (new), and the catalogue rows
+  `Icon`, `IconButton`, `CopyLinkButton`, `Field`, `Alert` (components.md) and the icons row (assets.md).
+- **Acceptance:**
+  1. The generator also emits one named constant per icon (`ICON_CARET_LEFT`: upper snake case of the file
+     name) typed with a branded `IconPath`; `ICON_PATHS` is built from them with the same values; regenerating
+     is byte-stable; the generated-icons guard covers the constants.
+  2. `Glyph` (`ui/Icon/Glyph.tsx`, props `d: IconPath`, `label?`, `className?`) renders exactly the markup `Icon`
+     renders today; `Icon` renders through it (its markup and tests unchanged).
+  3. `IconButton` takes `icon: IconPath` (a named constant) and imports only `Glyph`, so a client island may use
+     it; its tests and stories use the constants.
+  4. `field-icons.ts` and `alert-icons.ts` re-export the named constants (no copied path data);
+     `CopyLinkButton` draws its icon with `Glyph` and `ICON_COPY`, markup unchanged.
+  5. `client-icons.test.ts`: from every module under `src/` that starts with `"use client"` (and every
+     `*.client.tsx`), following relative and `@/` imports transitively (type-only imports skipped), no reachable
+     module is `ui/Icon/Icon.tsx`, `ui/Button/**` or `ui/PreorderButton/**`, and none imports `ICON_PATHS`.
+     Proven red by three plants (a client file importing `Icon`; one importing a helper that imports `Button`;
+     one importing `ICON_PATHS`) and green on the tree.
+  6. Proof on a production build that a client chunk carries only the paths it uses: a scratch client probe
+     importing `ICON_CARET_LEFT`, `next build`, the chunk holds that path and not another icon's (Turbopack
+     removes unused exports in production builds, `turbopackRemoveUnusedExports`,
+     `node_modules/next/dist/docs/01-app/03-api-reference/08-turbopack.md`); probe deleted, evidence reported.
+- **Test:** `npm run verify` and `npm run build` green.
+
+### 2.12 Wave-2 runtime follow-ups (builder; runs with wave 3)
+
+- **Owns:** `src/components/ui/{MotionController,ArtBoard,Card,Photo,InAppBrowserNote}/**`,
+  `test/e2e/{motion-reveal,motion-faq}.spec.ts`, the href handling in `src/components/ui/Button/Button.tsx`,
+  `src/components/ui/RichText/RichText.tsx` and `src/components/ui/Logo/Logo.tsx` (with their tests), and the
+  `InAppBrowserNoteContent` shape in `src/content/types.ts`.
+- **Acceptance:**
+  1. `MotionController` also handles `[data-reveal]` and `[data-draw]` nodes added after it armed (one
+     `MutationObserver` on `document.body`, `childList` and `subtree`, disconnected on disarm): an added target on
+     screen gets `is-in` at once (its doodle animations finished, as at arming); one below is observed. Unit cases
+     insert a below-fold and an on-screen target after the first frame.
+  2. `ArtBoard`: `lcp` only together with `hero` (typed; a type test refuses `lcp` alone).
+  3. `Card`: link rows keyed by index and `href`; `links` is a readonly array.
+  4. `Photo`: the `fetchPriority` doc comment and test name describe what the prop does, without citing N19.
+  5. `InAppBrowserNoteContent` moves to `src/content/types.ts` (structure §6: `ui` may import `content/types`).
+  6. `Button`, `RichText` and `Logo` route an `href` through `next/link` only when it starts with a single `/`;
+     a protocol-relative `//host/path` is an external link (tests).
+  7. `motion-faq.spec.ts` under the opt-in WebKit project (`KH_WEBKIT=1`): if WebKit lacks `::details-content`,
+     the 7A case runs there too; if it has it, the spec's comment says so.
+- **Test:** `npm run verify`; the touched e2e specs green.
+
+### 2.13 Wave-2 guard and library follow-ups (builder; runs with wave 3)
+
+- **Owns:** `scripts/guards/placeholders.mjs`, `test/guards/{placeholders,build-steps,asset-dupes,tracking-freeze,no-off-token}.test.ts`,
+  `tsconfig.guards.json`, `test/guards/banned-phrases.data.ts` (the `lumi` entry), `src/content/en-IN/products/kheelu/product.{ts,test.ts}`
+  (`alternateName` only), `src/lib/seo/**`.
+- **Acceptance:**
+  1. The placeholders source scan skips files that never ship (`*.test.*`, `*.spec.*`, `*.test-d.*`,
+     `*.stories.*`, `__snapshots__/`, `__fixtures__/`) and prints their count as "not scanned (never shipped)";
+     the draft pattern also matches a backtick-quoted `draft`; `build-steps.test.ts` refuses a `vercel-build` or
+     `now-build` script in `package.json`.
+  2. `asset-dupes.test.ts`: an explicit 30 s timeout on the hashing test.
+  3. `tracking-freeze.test.ts`: `git diff --no-index` runs with the user's and the system's git configuration
+     neutralised; proven by a run with a hostile global setting (`diff.interHunkContext=10`) giving the same result.
+  4. `no-off-token` refuses numeric opacity modifiers on colour utilities (`bg-surface/37`, `text-text/50`,
+     `bg-scrim/7.5`); red and green cases.
+  5. `tsconfig.guards.json` drops every exclusion that matches no file (the moved `PostHogGate.test.tsx`), and a
+     guard fails on an exclusion that matches no file. The remaining exclusions: a legacy file's line goes with
+     the task that deletes or rewrites it (6.3, 5.15); the frozen tests (`PreorderForm.test.tsx`,
+     `src/features/preorder/lib/analytics.test.ts`, `src/lib/email/templates.test.ts`, `test/analytics-tags.test.ts`)
+     stay excluded for good, since they stay byte-identical to the tag (ruling, 2026-10-12); each line's comment says which.
+  6. Product schema `alternateName: "Lumi"` (architecture §6.1, §9.2): the `lumi` entry of
+     `banned-phrases.data.ts` also allows that one line in `product.ts`; `product.test.ts` asserts it; one commit.
+  7. The SEO builders refuse bad data as the others do: `productNode` with no image or an out-of-range price
+     throws; `blogPostingNode` takes the author's `@id` only from known ids (else the Organization) and takes
+     `inLanguage` as data (default `en-IN`); `pageMeta` refuses a typed rupee amount in a title or description.
+- **Test:** `npm run verify` green; each new refusal proven red once.
+
 ## Wave 3: chrome, shells and sections (after wave 2)
 
 ### 3.1 Chrome, shells and the WhatsApp bubble (builder)
@@ -638,6 +748,12 @@ wave-1 tooling files no wave-2 task owns.
      to `.ks-wa` (its hover colour change is instant, architecture §5.3).
   6. Store layout: noindex, policy links to `MARKETING_ORIGIN`; its signature fixture regenerated in the
      same commit and the diff reviewed (presentation only, ADR-013).
+- **Wave-2 close notes (2026-10-12):** client islands (drawer controller, sticky bar) never import `Icon`,
+  `Button` or `PreorderButton`; the server shell renders those and passes them in as children or props; an
+  island's own icons use `IconButton` or `Glyph` with the named `ICON_*` constants (2.11; `client-icons` guard).
+  The Organization JSON-LD input is mapped from `src/content/en-IN/organization.ts` by a small tested function in
+  `src/layouts/SiteShell/` (4.4 reuses it). The WhatsApp bubble may be a server-rendered link; its lift and
+  hide follow `--ks-buybar-h` and the open dialog in CSS where possible.
 - **Test:** component tests; `chrome.spec.ts` on any built marketing route (the chrome is the shell's): element parity of nav, drawer, footer and
   buy bar with the same elements of `mockup/home.html` at the approved widths (the first pixel proof of the
   visual layer); sticky-bar state at each scroll position; drawer keyboard path; one chilli button per
@@ -653,7 +769,9 @@ wave-1 tooling files no wave-2 task owns.
   mockup pass); arrowed buttons exactly where the mockup has them (Home hero, product hero, the guide,
   safety, stories and article closes); full-mode rendering of every price-bearing part; grievance wording
   verbatim D032; `SellerBlock` and `GrievanceBlock` take a context (contact: links 800; legal: links 700,
-  [mockup-css-mapping §6.2](mockup-css-mapping.md#62-same-names-different-blocks)).
+  [mockup-css-mapping §6.2](mockup-css-mapping.md#62-same-names-different-blocks)). `OfferCard` takes its
+  button as an `action` node (2.4): `OfferSection`'s test asserts `data-ph-capture-attribute-cta` `finale` (Home)
+  and `product-offer` (product page) on the card's button for each placement (wave-2 close note).
 - **Test:** component tests in both modes; stories.
 
 ### 3.3 Story sections (builder)
@@ -673,6 +791,10 @@ wave-1 tooling files no wave-2 task owns.
   720 px; `ModesSection` keeps `id="modes"` and `id="story-mode"`; `FaqSection` keeps `id="faq"` and gives
   its disclaimer its own `ks-` name (the product page's `mk-disclaimer` differs from the article one);
   `HeroSection`'s contact lead-link weight is scoped to the `contact` variant ([mockup-css-mapping §6.2](mockup-css-mapping.md#62-same-names-different-blocks)).
+  Wave-2 close notes: the /safety `FeatureSplit` renders `<AppScreens variant="safety" …>` and never restyles the
+  device (the values live in `app-screens.css`, mapping rows 54-57); contact route cards use `Card` `links`;
+  `FilmsStrip`'s controls are `IconButton`s with the `ICON_*` constants (2.11), and the island never imports
+  `Icon` or `Button` (`client-icons` guard).
 - **Test:** component tests; `films.spec.ts` on the story (keyboard, playback, axe with the video mounted
   and unmounted); `motion-hero.spec.ts` (pick 2: hero `getAnimations()` empty, opacity 1, no transform,
   hero doodles plain images); `motion-films.spec.ts` (pick 8): the focused tile scales to `--ks-film-focus` over
@@ -723,7 +845,8 @@ wave-1 tooling files no wave-2 task owns.
   with `ks-tools`/`ks-tool` (privacy's measuring tools) and the `ks-step` counter of the refund steps ported
   (§6.3-6.4); the refund and shipping h2 keep weight 700 at 1024 px as approved (§6.5); summary, contents with anchors, parts and
   sections, draft note while `status: draft`, last-updated line, the seller and grievance blocks; type
-  steps by `ks-type-*`; visual parity on all four legal mockups with fixture content.
+  steps by `ks-type-*`; visual parity on all four legal mockups with fixture content. Help lines use `HelpLine`
+  `size` and omit `lead` where the mockup has none (2.4's note).
 - **Test:** template tests; visual parity against the four mockups using fixture content copied from them.
 
 ### 4.4 SEO wiring and the data-driven page guards (builder)
@@ -743,6 +866,7 @@ wave-1 tooling files no wave-2 task owns.
      the redirect table and present in the sitemap and footer navigation; every article has at least three
      incoming `related` links); a route still served by a legacy page and listed in `LEGACY_PATHS` prints
      "pending"; any other missing module fails. Once 6.3 empties `LEGACY_PATHS`, "pending" is impossible.
+  3. The Organization JSON-LD input comes from the mapper 3.1 wrote in `src/layouts/SiteShell/`; nothing restates it.
 - **Test:** the four rewritten tests, each proven red once.
 
 ## Wave 5: pages (after wave 4; all parallel)
@@ -757,7 +881,7 @@ the JSX contract fixtures are never edited.
 | Id | Page (owner) | Owns | Inputs | Page-specific acceptance (besides SPA) |
 |---|---|---|---|---|
 | 5.1 | Home `/` (builder) | `src/content/en-IN/pages/home.ts`, `src/app/(site)/page.tsx` | `mockup/pages/home.html`, [home copy](../site/pages/home.md), D045, D046 | Hero exactly D045 with the Hand accent; the hero art board's doodle still (pick 2), the imagination-frame and close doodles draw (pick 3); CTAs `hero` (arrow), `see-it-ask`, `safety`, `finale`, learn links; `ViewContentTracker` mounted (B9); sticky bar after the hero CTA; FAQPage = the six visible answers; LCP image `fetchPriority="high"` |
-| 5.2 | Product `/products/kheelu` (builder) | `src/content/en-IN/products/kheelu/page.ts`, `src/app/(site)/products/[slug]/page.tsx`, `src/app/(site)/products/kheelu/` (delete the old route and its colocated tests) | `mockup/pages/meet-kheelu.html`, [meet-kheelu copy](../site/pages/meet-kheelu.md) | Product + Offer JSON-LD; fragments `#faq`, `#story-mode`, `#reserve`, `#offer`, `#specs`; sticky bar from first paint; `ViewContent` value 4999 in token mode; speech disclaimer (D025); declarations incl. MRP from `MRP_PRICE`; details stacked (N21); `export const dynamicParams = false;` |
+| 5.2 | Product `/products/kheelu` (builder) | `src/content/en-IN/products/kheelu/page.ts`, `src/app/(site)/products/[slug]/page.tsx`, `src/app/(site)/products/kheelu/` (delete the old route and its colocated tests); the `LAUNCH_AMOUNT_PAISE` default of `valuePaise` in `src/components/tracking/ViewContentTracker.tsx` (removed once the legacy page is gone, so every mount passes the offer's value; wave-2 close) | `mockup/pages/meet-kheelu.html`, [meet-kheelu copy](../site/pages/meet-kheelu.md) | Product + Offer JSON-LD; fragments `#faq`, `#story-mode`, `#reserve`, `#offer`, `#specs`; sticky bar from first paint; `ViewContent` value 4999 in token mode; speech disclaimer (D025); declarations incl. MRP from `MRP_PRICE`; details stacked (N21); `export const dynamicParams = false;` |
 | 5.3 | Safety `/safety` (builder) | `pages/safety.ts`, `src/app/(site)/safety/page.tsx` | `mockup/pages/safety.html`, [safety copy](../site/pages/safety.md) | D020 order; certification "applied for, not yet granted", no ISI mark; FAQPage |
 | 5.4 | Buyer's guide (builder) | `pages/ai-toys-for-kids-in-india.ts`, its route | mockup and copy of the same name; `css/ai-toys-for-kids-in-india.css` (the `mk-gd-*` rows of components §7) | No competitor names; answer-first hero; FAQPage; sources |
 | 5.5 | Stories hub (builder) | `src/content/en-IN/stories/hub.ts`, `src/app/(site)/stories/page.tsx` | `mockup/pages/stories.html`, [stories copy](../site/pages/stories.md) | All 21 guides under the four topics with anchors `#screen-time`, `#talking`, `#ai-and-safety`, `#learning`; cards read title and summary from the article modules; no "Rewritten in the build" labels |
@@ -856,7 +980,10 @@ waits; it may run in any later wave before wave 8, alone with its own files.
   `action-label`, `kicker-language`, `kheelu-art`, `contrast-tokens`, `a11y-v4`, `config-copy` with the
   legacy copy constants it guards once nothing imports them), `test/stories-parse.test.ts`,
   `test/utm.test.ts`, `test/dependency-floor.test.ts`, `test/guards/legacy-paths.ts`,
-  `tools/qa/{sweep,shot,text,axe-run}.mjs` (delete) and their npm scripts.
+  `tools/qa/{sweep,shot,text,axe-run}.mjs` (delete) and their npm scripts; `src/content/en-IN/stories/articles/stub.ts`
+  (delete once 5.17-5.19 have rewritten the last stub; `articles.test.ts`'s folder test asks for it, wave-2 close);
+  the old `src/components/molecules/*Gate*` entries of the set-state-in-effect override in `eslint.config.mjs`; the
+  `tsconfig.guards.json` exclusion lines of the legacy files it deletes.
 - **Inputs:** [cleanup](../legacy/cleanup.md), [cleanup-public-assets](../legacy/cleanup-public-assets.md),
   [dependencies](dependencies.md), the guard-test ownership table.
 - **Acceptance:** no file imports a deleted path (`tsc`, build); `LEGACY_PATHS` empty and every guard green

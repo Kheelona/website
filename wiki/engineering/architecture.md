@@ -188,7 +188,8 @@ runs in the `predev` and `prebuild` hooks (`scripts/run-steps.mjs`, structure §
 ### 4.4 Composition CSS rules
 
 - Prefix `ks-`, BEM like the DS. One file per component that needs it, colocated
-  (`Button/button.css` is never needed; `FilmsStrip/films-strip.css` is).
+  (`FilmsStrip/films-strip.css` is one; `Button/button.css` holds only mockup.css:135's ghost rule, ported
+  verbatim onto `.kh-btn--ghost` so the markup stays the mockup's: wave-2 close ruling, 2026-10-12).
 - Port rule: each mockup `mk-` block moves to the component that renders it, renamed `ks-`, with the
   same declarations (every one of the 167 blocks is mapped in [components §7](components.md#7-mockup-mk--helpers--where-they-go)),
   except (a) the Gate A review tool (`mk-review-*`, `mk-h1*`, `mk-review-note`, `mk-later`), dropped
@@ -354,7 +355,9 @@ One inline syntax for every content string, parsed by `ui/RichText` and serialis
 The placeholder guard (`scripts/guards/placeholders.mjs`, task 2.9) fails the build when
 `resolveSiteEnv(process.env)` is `production` and any `{ph:`, `placeholder(`, `[PLACEHOLDER` or
 `status: "draft"` remains in `src/` (the two files that define them, `src/lib/content/placeholder.ts` and
-`src/content/types.ts`, are excluded), then scans the prerendered HTML after `next build`. On beta and
+`src/content/types.ts`, are excluded; so are files that never ship: tests, specs, type tests, stories,
+snapshots and fixtures, printed as "not scanned" every run; wave-2 close ruling, task 2.13), then scans the
+prerendered HTML after `next build`, which covers everything that ships. On beta and
 development it prints the count and the list, so the founder sees every open fact in place. Proof-gated
 items (founder bios, recognition: D038, F11) are `gated` and never render until the proof is filed.
 
@@ -407,7 +410,7 @@ Decision: [ADR-006](adr/ADR-006-tracking-module-and-registry.md). IDs and parame
 | `src/lib/tracking/destinations.ts` | The 17 destinations of the inventory (§8.2) | New |
 | `src/lib/tracking/events.ts` | Event registry (data) | New |
 | `src/lib/tracking/cta.ts` | CTA value registry and the `CtaId` type | New |
-| `src/lib/tracking/track.ts` | Dispatcher for **new** events: GA4 `window.gtag?.("event", …)`, Meta `fbTrack`, PostHog `phCapture` per the registry | New |
+| `src/lib/tracking/track.ts` | Dispatcher for **new** events: GA4 (`window.gtag`) and PostHog (`phCapture`) per the registry; never Meta, enforced by `tracking-parity` (wording corrected at the wave-2 close: the code never called `fbTrack`) | New |
 | `src/lib/tracking/internal-flag.ts` | `?internal=1` / `?internal=0` → PostHog `register({ internal: true })` / `unregister("internal")` (B46) | New |
 | `src/features/preorder/lib/analytics.ts`, `src/lib/fbq.ts`, `src/lib/posthog.ts`, `src/lib/campaign.ts`, `src/lib/click-id.ts`, `src/proxy.ts`, `src/lib/store/{meta-capi,fulfil}.ts` | The proven funnel, cookies, server events | Frozen, byte-identical |
 | `src/components/tracking/GoogleAnalyticsGate.tsx`, `MetaPixel.tsx` | Gates | Moved from `components/molecules/` (2.6), bodies unchanged |
@@ -592,7 +595,7 @@ and the details panels stay visible without JavaScript).
 Decision: [ADR-010](adr/ADR-010-media-pipeline.md). Catalogue: [assets](assets.md).
 
 - DS rasters via `import x from "@ds/assets/…"` and `next/image` inside `Photo`, `ArtBoard`,
-  `ImaginationFrame`, `AppScreens` only; `sizes` per layout. **No `priority` prop** (deprecated in Next
+  `ImaginationFrame`, `AppScreens` and `Avatar` (its photo form, added by 2.3) only; `sizes` per layout. **No `priority` prop** (deprecated in Next
   16 in favour of `preload`; the docs prefer `loading="eager"` or `fetchPriority="high"`, `image.md:289-293`,
   N12): a page's one LCP image takes `loading="eager"` and `fetchPriority="high"`; everything below the
   first phone screen lazy-loads.
@@ -672,6 +675,12 @@ moves for more than five seconds; nothing flashes; no scroll-jacking.
 | `.ks-wa`, `.ks-wa__label`, `body.ks-has-float` | `WhatsAppFloat`, shells | bubble, label and clearance |
 | `html[data-scroll-behavior="smooth"]` | root layout `src/app/layout.tsx` (3.1) | smooth in-page anchor scrolling as in the mockup; Next 16 resets it to `auto` during route changes only when this attribute is present; off under reduced motion |
 
+**Authoring rule (wave-2 close, 2026-10-12):** under `html.js-motion` a `[data-reveal]` without `.is-in` stays at
+opacity 0, so put `data-reveal` and `data-draw` only on server-rendered elements with a static `className`
+(never on an element whose class changes with client state, which would drop `.is-in`). `MotionController`
+also picks up targets added after it armed, through one `MutationObserver` (task 2.12), so client-only and
+streamed blocks still reveal.
+
 ### 11.4 Exceptions and guards
 
 - **Two founder-approved exceptions** to brief §9.11's "transform and opacity only" (D049):
@@ -704,6 +713,11 @@ and by Lighthouse mobile (median of 3).
 | Films | never preloaded; ≤ 4 MB each on play; posters ≤ 40 KB each at tile size | after the form only |
 | Lighthouse mobile | ≥ 90 Performance, Accessibility, Best Practices, SEO; aim 95 | same, with the pre-approved exceptions |
 | Core Web Vitals | LCP ≤ 2.5 s, INP ≤ 200 ms, CLS ≤ 0.1 (lab before launch, PostHog field after) | TTFB ≤ 800 ms from India |
+
+**Client islands and icons (wave-2 close, 2026-10-12):** `Icon`, `Button` and `PreorderButton` import the whole
+icon map (30 KB, about 10.6 KB gzip), so a client island never imports them: the server parent renders them and
+passes them in, and an island's own icons come from the named `ICON_*` constants through `Glyph` or `IconButton`
+(task 2.11; guard `test/guards/client-icons.test.ts`).
 
 **Which Lighthouse run counts (N18):** beta is noindex (SEO's crawlability audit fails by design) and has no
 GA4, Meta or Ahrefs, so it reads better than production. Authoritative runs: Performance and Best Practices
@@ -925,9 +939,10 @@ kheelona.com's DNS is on Cloudflare (nameservers `abby` and `yichun.ns.cloudflar
    to Gate B. Payment emergency stop: remove `RAZORPAY_KEY_ID` from Production and redeploy (the store shows
    "opening shortly"; lessons §4).
 8. **Monitoring** for 7 days per brief Phase 8 (reports at 24 hours, 72 hours, 7 days).
-9. **Sell-out, whenever it happens:** `/api/health` shows `full` → the founder clicks Redeploy on the
-   production deployment, so every page carries the full-mode price at once (§7, N14) → spot-check Home,
-   product, `llms.txt`.
+9. **Sell-out, whenever it happens:** `/api/health` shows `full` → **wait 300 s** (the cached mode lives in
+   `unstable_cache`, which Next 16 keeps across deployments, so an earlier Redeploy could prerender `token`
+   again; 2.1's review, wave-2 close) → the founder clicks Redeploy on the production deployment, so every
+   page carries the full-mode price (§7, N14) → spot-check Home, product, `llms.txt`.
 
 ### 15.6 Supabase move to Mumbai (D047)
 

@@ -51,7 +51,9 @@ Option 3.
   cached mode inside can itself be up to 300 s old; a page nobody visits stays stale until someone does
   (QA review N14). No wrong charge is possible: the store decides per request and refuses a stale token
   order. The sell-out runbook therefore ends with a **Redeploy** of the production deployment once
-  `/api/health` shows `full`, which rebuilds every page with the new mode in minutes and no code change
+  `/api/health` shows `full` **and 300 s have passed** (`unstable_cache` persists across deployments, so a
+  Redeploy inside the window can prerender the cached `token` again; amended at the wave-2 close,
+  2026-10-12), which rebuilds every page with the new mode in minutes and no code change
   ([architecture §15.5](../architecture.md#155-gate-b-release-to-production-and-rollback), step 9).
 - **Cache Components stay off** (QA review N13). Next 16 says `unstable_cache` "has been replaced by
   `use cache`" (`unstable_cache.md:7`), but `use cache` belongs to the Cache Components model, which

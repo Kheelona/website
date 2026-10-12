@@ -17,9 +17,12 @@ import { Icon, type IconName } from "../Icon/Icon";
  * - `arrow` (Chilli only) ends the button with the arrow-right icon carrying `ks-btn__arrow`, the hook
  *   motion.css nudges on hover with a fine pointer (D049 pick 6; architecture §11.3).
  * - `href` renders a link: a site path through next/link, anything else (store URL, anchor) a plain `<a>`.
- * - Ghost buttons also carry `ks-btn--wrap` (button.css): a long label may wrap on a phone, as mockup.css has it.
+ * - Ghost buttons keep the mockup's markup (`kh-btn kh-btn--ghost`); button.css ports mockup.css's ghost rule onto
+ *   `.kh-btn--ghost`, so a long label may wrap on a phone.
  *
- * Server component; `onClick` only works when a client component renders it.
+ * Server component. A client component never imports Button or Icon (either would ship the whole icon map,
+ * src/assets/icons.generated.ts, to the browser): a server parent renders the Button and passes it in as
+ * children or a prop. `onClick` therefore belongs to client-only markup, not to this component.
  */
 
 type Size = "s" | "m" | "l";
@@ -110,7 +113,6 @@ export function Button(props: ButtonProps) {
     size && size !== "m" && `kh-btn--${size}`,
     block && "kh-btn--block",
     loading && "kh-btn--loading",
-    variant === "ghost" && "ks-btn--wrap",
     className,
   );
   const track = cta ? { "data-ph-capture-attribute-cta": cta } : {};

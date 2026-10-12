@@ -43,7 +43,8 @@ Option 2.
 
 - **Raster images** (`-web.webp` photos, cast stickers and cut-outs, Kheelu PNGs, posters, app screens):
   `import img from "@ds/assets/Cast/advik-sticker.png"` and `<Image src={img} sizes=… />` through the
-  `Photo`, `ArtBoard`, `ImaginationFrame` and `AppScreens` primitives only. Each call site passes a
+  `Photo`, `ArtBoard`, `ImaginationFrame`, `AppScreens` and `Avatar` (photo form; added at the wave-2 close)
+  primitives only. Each call site passes a
   `sizes` value matching its layout at 360, 390 and 1440 px. **No `priority` prop:** Next 16 deprecates it
   in favour of `preload` and recommends `loading="eager"` or `fetchPriority="high"` in most cases
   (`image.md:289-293`, changelog `:1404`; QA review N12), so the one LCP image of a page takes

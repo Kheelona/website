@@ -22,8 +22,8 @@ the founder is recorded in `wiki/decisions/` and `wiki/log.md`, and the latest l
 
 ## Hard rules for this repo (each one cost us once; detail in wiki/engineering/lessons.md)
 - The GitHub repo is PUBLIC. Stage files by name: never `git add -A` or `git add .`.
-  Never force-push or rewrite history. `wiki/` and `design-system/` stay out of git until the
-  founder rules on it (wiki/decisions/D004).
+  Never force-push or rewrite history. `wiki/` and `design-system/` are committed publicly
+  (wiki/decisions/D010, superseding D004), so neither ever holds a secret or personal data.
 - Vercel is the founder's: never run the Vercel CLI. `main` auto-deploys, so nothing is pushed
   to `main` before Gate B.
 - Push only with an explicit destination: `git push origin <src>:refs/heads/<dst>`. Global
