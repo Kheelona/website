@@ -138,6 +138,7 @@ with an earlier one.
 | `src/lib/store/posthog-server.test.ts` | server event payload | **1.3** |
 | `test/guards/visual-layer.test.ts` ("runs on the Next version its plugin objects were verified on": pins `16.3.8`) and `postcss.config.mjs` `tailwindByEntry` (throws at load if `@tailwindcss/postcss` changes shape) | `next` and `@tailwindcss/postcss` versions | **Whoever bumps `next` or `@tailwindcss/postcss`** re-runs the scratch `next build` check described in the test's message, then updates the pin in the same commit (main session, 2026-10-12) |
 | `test/guards/generated-css.test.ts` (Devanagari coverage) | every Devanagari character in non-test `src/` files and `mockup/pages/*.html` against the Baloo 2 Devanagari subset | **Any task that adds Devanagari text** regenerates `public/fonts/baloo2-variable-devanagari.woff2` and `src/styles/generated/fonts.css` with `node scripts/assets/build-fonts.mjs` in the same commit (never by hand); the guard and the script stay 1.2's |
+| `test/guards/client-icons.test.ts` (2.11) | every `"use client"` module and `*.client.tsx` under `src/`, their imports; its root list and `CLIENT_SAFE` list name files | Keep. A task that moves or renames a listed island or client-safe module updates both lists in the same commit; a task that adds a client-safe `ui` module adds it to `CLIENT_SAFE` (wave-2 close) |
 | `src/lib/email/templates.test.ts` | email facts | Keep; **6.4** only with its reviewed diff |
 | Tests of frozen code (`features/preorder/lib/*`, `lib/store/*` other than `posthog-server`, `app/api/**`, `lib/fbq`) | frozen modules | Keep |
 | Tests of legacy components and modules (`atoms`, `molecules`, `organisms`, `templates`, `vendor`, `features/home`, `lib/{seo,stories,growth-arc}`, old product `_components`) | legacy | Deleted with their subjects: 5.2 (old product route), 6.3 (the rest) |
@@ -634,6 +635,8 @@ Wave 2 merged at `d87c71f` (twelve tasks, run `wf_2317874f-e7d`); `npm run verif
 - **2.7's offline schema.org vocabulary check** stays out of the repo (a 1.5 MB vocabulary file); the live
   validators run in Phase 6 QA.
 - Stale comments about beta Razorpay payments inside frozen store tests stay (byte-identical to the tag).
+- After 2.11 (merged `91208de`): `Alert`, `Select`, `Checkbox` and `field-parts` still draw their own `<svg class="kh-icon">`
+  and carry stale "ui/Icon is task 2.2" comments; the main session switches them to `Glyph` at the wave-3 close (markup unchanged).
 
 ### 2.11 Client-safe icons (builder; runs with wave 3, before 3.1 and 3.3)
 
