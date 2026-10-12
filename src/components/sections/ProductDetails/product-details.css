@@ -1,0 +1,33 @@
+/* ProductDetails (task 3.4), ported from mockup/css/meet-kheelu.css:78-81 and 90-94 (fold 7: details, the stacked
+   panels, the declarations card and its consumer-care lines). The spec rows are ui/DefinitionList's ks-specs, the
+   lists ui/TickList's ks-ticks. font-weight 800: exception ds-weight-800 (mapping row 20). */
+.ks-details {
+  align-items: start;
+}
+.ks-panel-title {
+  margin: 0 0 var(--space-3);
+}
+/* Stacked as approved (N21): the panels follow one another under their headings (meet-kheelu.css:81), here scoped to
+   this fold. */
+.ks-details .kh-tabs:not(.is-tabs) .kh-tabs__panel + .kh-tabs__panel {
+  margin-top: var(--space-6);
+}
+.ks-declare {
+  gap: var(--space-2);
+}
+.ks-declare dd a {
+  position: relative;
+  color: var(--link);
+  font-weight: 800;
+  text-underline-offset: var(--space-1);
+}
+/* Consumer care: one 48 px row per way to reach us, each link with a 44 px tap area (DS 08-accessibility). */
+.ks-care {
+  display: block;
+  padding-block: var(--space-3);
+}
+.ks-care a::before {
+  content: "";
+  position: absolute;
+  inset: calc(var(--space-3) * -1) 0;
+}

@@ -1,0 +1,89 @@
+/* TopicSection (task 3.4), ported from mockup/css/stories.css:19-40 and 140-142 (the hub: one band per topic, the
+   rewritten guide's card, the quiet rows). Renamed from the mockup so the hub's blocks never meet Home's guide cards
+   (CardGrid) in the one composition file: the hub's rows `ks-topic__guides`, the portrait crop
+   `ks-guide__photo--portrait` (mockup-css-mapping §6.2). The card title's 20/26 is the class ks-type-subtitle on the
+   h3 (rows 63-64); the link's tap target is Card's ks-card__link--tap; the list reset is List's ks-list-reset. The
+   mockup's row title size (stories.css:40) restates the DS and is not ported (rows 67-68). */
+
+/* ---------- One band per topic ---------- */
+.ks-topic {
+  scroll-margin-top: var(--space-4);
+}
+.ks-topic .kh-section__head {
+  margin-bottom: var(--space-6);
+}
+.ks-topic__grid {
+  display: grid;
+  gap: var(--space-5);
+  align-items: start;
+}
+
+/* ---------- The rewritten guide: a card with its photo; the whole card is one tap (the link is stretched over it) ---------- */
+.ks-guide {
+  gap: var(--space-3);
+}
+.ks-guide .kh-photo {
+  margin-bottom: var(--space-2);
+}
+.ks-guide .kh-card__link {
+  margin-top: var(--space-1);
+}
+.ks-guide .kh-card__link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-l);
+}
+.ks-guide:hover .kh-card__link {
+  text-decoration-thickness: var(--stroke-control); /* 2px (mapping row 65) */
+}
+.ks-guide:focus-within {
+  outline: var(--stroke-focus) solid var(--focus);
+  outline-offset: 2px;
+}
+.ks-guide .kh-card__link:focus-visible {
+  outline: none;
+}
+/* The 16:9 crop of a 4:5 photo keeps the child's face and hand in frame. */
+.ks-guide__photo--portrait img {
+  object-position: 50% 52%;
+}
+
+/* ---------- The guides not yet rewritten: quiet rows (rows that link take the same layout) ---------- */
+.ks-topic__guides .kh-listitem {
+  align-items: flex-start;
+  padding: var(--space-4) var(--space-5);
+}
+.ks-topic__guides .kh-listitem__text {
+  gap: var(--space-1);
+}
+.ks-topic__guides .kh-listitem__title,
+.ks-topic__guides .kh-listitem__sub {
+  margin: 0;
+  overflow: visible;
+  white-space: normal;
+  text-overflow: clip;
+}
+
+@media (min-width: 900px) {
+  .ks-topic__grid {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: var(--space-7);
+  }
+  .ks-topic__grid > .ks-topic__guides:only-child {
+    grid-column: 1 / -1;
+  }
+  .ks-topic__guides--two {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  /* Quiet rows are the list items themselves; a linked row is the link inside its item. */
+  .ks-topic__guides--two > .kh-listitem:nth-last-child(2):nth-child(odd),
+  .ks-topic__guides--two > li:nth-last-child(2):nth-child(odd) > .kh-listitem {
+    border-bottom: 0;
+  }
+  .ks-topic__guides--two > .kh-listitem:nth-child(odd),
+  .ks-topic__guides--two > li:nth-child(odd) > .kh-listitem {
+    border-right: var(--stroke-hair) solid var(--border);
+  }
+}
