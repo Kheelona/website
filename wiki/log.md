@@ -601,3 +601,6 @@ Rulings (tasks.md "Wave 4 close", architecture §9.2, structure §6 and the setu
 
 ## [2026-10-13 12:30] agent | Wave 5 part A launched (run wf_08c09180-f5a)
 Base `3ab2cbb`, `build-wave` wave 5: **4.5** wave-4 follow-ups, **5.1** Home, **5.2** product, **5.3** safety, **5.5** stories hub, **5.6** the three approved articles, **5.10** 404 (also clears the legacy not-found chunks from every route). Each builder runs Playwright on its own ports (`KH_E2E_PORT` 3501-3507, `KH_STORYBOOK_PORT` 6131-6137); `perf-budget` is reported, not chased, until the wave-5 close. 5.2 may add the V3 JavaScript-off text deviation (main-session approval). Part B follows 4.5's merge.
+
+## [2026-10-13 12:45] agent | Wave 5 part A paused at the founder's request (usage limit approaching)
+Run wf_08c09180-f5a stopped (TaskStop) while all seven builders were mid-task; no review had run. Leftover local servers stopped. Uncommitted work saved by name as WIP commits: 5.2 `9fcb5a0` (also edits `eslint.config.mjs` and `test/guards/banned-phrases.data.ts`, outside its Owns: for the review), 5.3 `53207d2`, 5.6 `98f468b` (also edits `test/guards/answer-length.test.ts`, outside its Owns). 4.5, 5.1, 5.5 and 5.10 had clean trees. Per-task branches, heads and the resume call are in the runbook ("Wave 5 part A, paused"). Nothing merged or pushed in this step.
