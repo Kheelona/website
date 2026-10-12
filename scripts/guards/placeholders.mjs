@@ -217,7 +217,7 @@ function listLines(scan) {
 /**
  * What a run does in this environment: the exit code and the lines for stdout and stderr.
  * @param {"production" | "beta" | "preview" | "development"} siteEnv
- * @param {ReturnType<typeof scanSource>} scan
+ * @param {ReturnType<typeof scanSource> | ReturnType<typeof scanBuild>} scan
  * @returns {{ code: number, out: string[], err: string[] }}
  */
 export function decide(siteEnv, scan) {
