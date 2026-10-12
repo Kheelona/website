@@ -55,7 +55,7 @@ describe("the words every article page shares (story-*.html)", () => {
     expect(close.trust).toBe(TRUST_COMPACT);
     expect(close.secondary).toEqual({ label: "See how it works", href: "/products/kheelu", variant: "ghost", iconEnd: "arrow-right" });
     expect(close.art.tone).toBe("sun");
-    expect(close.art.layers.filter((layer) => layer.doodle).map((layer) => layer.doodle?.name)).toEqual(["ink-heart"]);
+    expect(close.art.layers.flatMap((layer) => ("doodle" in layer ? [layer.doodle.name] : []))).toEqual(["ink-heart"]);
   });
 
   it("keeps the safety guide's close art plain, no doodle (DS 02-imagery: no imagination layer on safety)", () => {
