@@ -1,10 +1,11 @@
 import { HOSTS } from "@/config/env";
 import { cta } from "@/content/en-IN/cta";
-import { faqs } from "@/content/en-IN/faqs";
+import { faqs, type FaqId } from "@/content/en-IN/faqs";
 import { navigation } from "@/content/en-IN/navigation";
 import { offerCopy } from "@/content/en-IN/offer";
 import { PAYMENT_TERMS } from "@/content/en-IN/policies";
 import { product } from "@/content/en-IN/products/kheelu/product";
+import { seller } from "@/content/en-IN/seller";
 import { trustItems } from "@/content/en-IN/trust";
 import type { Copy, Offer } from "@/content/types";
 import { toPlainText } from "@/lib/content/plain-text";
@@ -16,9 +17,10 @@ import { absoluteUrl } from "@/lib/seo/urls";
  * and skip what they cannot parse.
  *
  * HARD RULES, as for llms.txt: visible copy only (the price answer, the price sentence beside the button, the
- * offer card's perks, the trust items and the product page's MRP declaration, joined only by list marks, links
- * and ": "); every amount from the live offer, so the first is the total (incl. GST) in both modes and the
- * advance, in token mode, comes second (D028). `test/machine-files.test.ts` checks both modes.
+ * offer card's perks, the trust items, the product page's MRP declaration, two FAQ answers and the seller's
+ * lines, joined only by list marks, links, ": " and " · "); every amount from the live offer, so the first is
+ * the total (incl. GST) in both modes and the advance, in token mode, comes second (D028).
+ * `test/machine-files.test.ts` checks both modes.
  *
  * Prerendered and revalidated with the offer mode (ADR-005), like the pages that show a price.
  */
@@ -28,6 +30,9 @@ export const revalidate = 300;
 /** The day this file's body last changed in substance: its prices, its terms or its words. Bump it in the
  *  same commit (the sell-out sweep's Redeploy republishes the full-mode prices under it). */
 export const PRICING_UPDATED = "2026-10-12";
+
+/** The entity facts an agent needs beside the price (architecture §9.3): who it is for and the rename note. */
+const ABOUT: readonly FaqId[] = ["what-ages", "same-as-lumi"];
 
 export function pricingText(offer: Offer): string {
   const plain = (value: Copy) => toPlainText(value, offer);
@@ -62,6 +67,12 @@ export function pricingText(offer: Offer): string {
     "",
     `- [${cta.preorder}](https://${HOSTS.production.store})`,
     `- [${meet.label}](${absoluteUrl(meet.href)})`,
+    "",
+    "## About Kheelu",
+    "",
+    ...ABOUT.flatMap((id) => [`### ${plain(faqs[id].question)}`, "", plain(faqs[id].answer), ""]),
+    `- ${seller.origin.line}`,
+    `- ${plain(seller.help.contact)} · ${seller.support.email}`,
     "",
     `Last updated: ${PRICING_UPDATED}`,
     "",

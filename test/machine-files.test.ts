@@ -205,6 +205,16 @@ describe.each(MACHINE)("$name", ({ name, route, text, updated, type }) => {
       expect(urlsIn(body()).filter((u) => !allowedUrl(u))).toEqual([]);
     });
 
+    it("carries the rename note: Kheelu was called Lumi until 5 September 2026", () => {
+      expect(body()).toMatch(/\bKheelu is the toy that was called Lumi until 5 September 2026\b/);
+    });
+
+    it("states the entity facts as the pages do (test plan §4.3)", () => {
+      for (const fact of ["Kheelu by Kheelona", "3 to 7", "Made in India", "WhatsApp or call +91 91875 46483"]) {
+        expect(body(), fact).toContain(fact);
+      }
+    });
+
     it("ends with its dated constant", () => {
       expect(updated).toMatch(/^\d{4}-\d{2}-\d{2}$/);
       expect(new Date(`${updated}T00:00:00Z`).toISOString().slice(0, 10)).toBe(updated);
@@ -235,17 +245,6 @@ describe.each(MACHINE)("$name", ({ name, route, text, updated, type }) => {
 
 describe("llms.txt", () => {
   const body = (mode: OfferMode = "token") => llmsRoute.llmsText(offerFor(mode));
-
-  it("carries the rename note: Kheelu was called Lumi until 5 September 2026", () => {
-    expect(body()).toMatch(/\bLumi\b/);
-    expect(body()).toMatch(/5 September 2026/);
-  });
-
-  it("states the entity facts as the pages do (test plan §4.3)", () => {
-    for (const fact of ["Kheelu by Kheelona", "3 to 7", "Made in India", "WhatsApp or call +91 91875 46483"]) {
-      expect(body(), fact).toContain(fact);
-    }
-  });
 
   it("names the grievance officer with the published line, in both modes (D029, D032)", () => {
     for (const mode of MODES) {
