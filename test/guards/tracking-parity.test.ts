@@ -1,7 +1,7 @@
 import { render } from "@testing-library/react";
 import * as React from "react";
 import ts from "typescript";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, expectTypeOf, it } from "vitest";
 import { shouldLoadGa4 } from "@/components/tracking/GoogleAnalyticsGate";
 import { shouldLoadMetaPixel } from "@/components/tracking/MetaPixel";
 import { ViewContentTracker } from "@/components/tracking/ViewContentTracker";
@@ -31,7 +31,8 @@ import { isStillLegacy } from "./legacy-paths";
  * - track() sends each new event only to the registry's destinations, never to Meta, with exactly
  *   the registry's parameters, and its parameter types are the registry's (compile-time checks);
  * - GA4 and the Meta Pixel stay shut on both beta hosts, PostHog opens there (D048);
- * - every ViewContentTracker mount outside the legacy code passes valuePaise (B9, ADR-005).
+ * - every ViewContentTracker mount outside the legacy code passes valuePaise (B9, ADR-005); since task 5.2 the prop has
+ *   no default, so a mount without it does not compile either.
  */
 
 type Emission = { destination: DestinationKey; name: string; params: Record<string, unknown>; eventId?: string };
@@ -190,9 +191,10 @@ describe("tracking-parity: ViewContentTracker emits the registry's ViewContent",
     expect(emitted[0].eventId).toBeUndefined();
   });
 
-  it("without valuePaise (the legacy product page only) sends the tag's 4999 (inventory §4)", () => {
-    render(React.createElement(ViewContentTracker));
-    expect(emitted[0].params.value).toBe(4999);
+  /* Task 5.2: the legacy product page, the one mount that sent the tag's 4999 by default, is gone, and the default with
+     it: every mount passes the offer's headline (4999 in token mode, the two cases above), or it does not compile. */
+  it("takes no default value since the legacy product page went (task 5.2)", () => {
+    expectTypeOf<Parameters<typeof ViewContentTracker>[0]>().toEqualTypeOf<{ valuePaise: number }>();
   });
 });
 
@@ -288,7 +290,7 @@ describe("tracking-parity: ViewContentTracker mounts pass valuePaise (B9, ADR-00
       if (isStillLegacy(path)) legacy.push(path);
       else problems.push(...lines.map((l) => `${path}:${l}`));
     }
-    console.log(`[tracking-parity] legacy mounts on the tag's default value (until 5.2): ${legacy.join(", ") || "none"}`);
+    console.log(`[tracking-parity] legacy mounts without valuePaise (none since 5.2): ${legacy.join(", ") || "none"}`);
     expect(problems, `ViewContentTracker without valuePaise: ${problems.join(", ")}`).toEqual([]);
   });
 });

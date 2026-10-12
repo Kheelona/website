@@ -1,5 +1,5 @@
 import { render } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, expectTypeOf, it, vi } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { ViewContentTracker } from "./ViewContentTracker";
@@ -12,14 +12,14 @@ afterEach(() => {
 
 describe("ViewContentTracker", () => {
   it("renders nothing", () => {
-    const { container } = render(<ViewContentTracker />);
+    const { container } = render(<ViewContentTracker valuePaise={LAUNCH_AMOUNT_PAISE} />);
     expect(container).toBeEmptyDOMElement();
   });
 
   it("reports ViewContent for Kheelu when the pixel is present", () => {
     const fbq = vi.fn();
     window.fbq = fbq;
-    render(<ViewContentTracker />);
+    render(<ViewContentTracker valuePaise={LAUNCH_AMOUNT_PAISE} />);
 
     expect(fbq).toHaveBeenCalledWith(
       "track",
@@ -38,13 +38,13 @@ describe("ViewContentTracker", () => {
   it("fires exactly once, not once per effect run", () => {
     const fbq = vi.fn();
     window.fbq = fbq;
-    const { rerender } = render(<ViewContentTracker />);
-    rerender(<ViewContentTracker />);
+    const { rerender } = render(<ViewContentTracker valuePaise={LAUNCH_AMOUNT_PAISE} />);
+    rerender(<ViewContentTracker valuePaise={LAUNCH_AMOUNT_PAISE} />);
     expect(fbq).toHaveBeenCalledTimes(1);
   });
 
   it("stays silent where the pixel never loads, and does not throw", () => {
-    expect(() => render(<ViewContentTracker />)).not.toThrow();
+    expect(() => render(<ViewContentTracker valuePaise={LAUNCH_AMOUNT_PAISE} />)).not.toThrow();
   });
 
   /* The pixel is gated behind an effect and then loads afterInteractive, so at
@@ -65,7 +65,7 @@ describe("ViewContentTracker", () => {
   it("reports the headline unit price, taken from config and not retyped", () => {
     const fbq = vi.fn();
     window.fbq = fbq;
-    render(<ViewContentTracker />);
+    render(<ViewContentTracker valuePaise={LAUNCH_AMOUNT_PAISE} />);
 
     const params = fbq.mock.calls[0][2] as Record<string, unknown>;
     expect(params.value).toBe(LAUNCH_AMOUNT_PAISE / 100);
@@ -121,6 +121,12 @@ describe("ViewContentTracker", () => {
     vi.advanceTimersByTime(1_000);
     expect(fbq).toHaveBeenCalledTimes(1);
     expect((fbq.mock.calls[0][2] as Record<string, unknown>).value).toBe(LAUNCH_AMOUNT_PAISE / 100);
+  });
+
+  /* Task 5.2: the legacy product page, the one mount that relied on a default, is gone, so the value has none: a mount
+     that does not pass the offer's headline does not compile (architecture §8.1; tracking-parity scans the mounts too). */
+  it("takes no default value: every mount passes the offer's headline", () => {
+    expectTypeOf<Parameters<typeof ViewContentTracker>[0]>().toEqualTypeOf<{ valuePaise: number }>();
   });
 
   /* ⚑ THE KNOWN STALENESS, pinned so it is impossible to forget. The value above

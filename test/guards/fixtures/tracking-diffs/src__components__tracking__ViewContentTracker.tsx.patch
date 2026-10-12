@@ -1,20 +1,31 @@
-Reviewed diff, task 2.6 (ADR-006; architecture §8.1, §8.2; tracking-freeze.test.ts applies it exactly).
+Reviewed diff, task 2.6 (ADR-006; architecture §8.1, §8.2; tracking-freeze.test.ts applies it exactly),
+amended by task 5.2.
 From: archive/pre-reset-2026-10-10:src/app/(site)/products/kheelu/_components/ViewContentTracker.tsx
 To:   src/components/tracking/ViewContentTracker.tsx (moved; body otherwise byte-identical)
 
 B9 (ViewContent also on Home, same payload) and ADR-005 (the offer follows the live mode): the
 value comes from a valuePaise prop that the page reads from the offer's headline. The payload's
-names, fixed values and rupee conversion are unchanged (tracking-parity.test.ts). The
-LAUNCH_AMOUNT_PAISE default keeps the legacy product page, whose only change in task 2.6 is its
-import line, sending exactly the tag's 4999 until task 5.2 replaces that page; every other mount
-must pass valuePaise (tracking-parity.test.ts). The effect keeps the tag's [] dependencies (task
-2.6 review): the value at first render is the page view's value, and depending on valuePaise
-would let a new value that arrives before fbq cancel the wait and send no ViewContent at all
-(ViewContentTracker.test.tsx pins exactly one event).
+names, fixed values and rupee conversion are unchanged (tracking-parity.test.ts). The effect keeps
+the tag's [] dependencies (task 2.6 review): the value at first render is the page view's value,
+and depending on valuePaise would let a new value that arrives before fbq cancel the wait and send
+no ViewContent at all (ViewContentTracker.test.tsx pins exactly one event).
+
+Task 5.2 (wave-2 close; tasks.md 5.2 Owns): the LAUNCH_AMOUNT_PAISE default, which kept the legacy
+product page sending the tag's 4999 while its only change was its import line, goes with that page
+(products/[slug]/page.tsx mounts the tracker with the offer's headline). valuePaise is required, so
+a mount without it does not compile; its LAUNCH_AMOUNT_PAISE import goes too.
 
 --- a/src/app/(site)/products/kheelu/_components/ViewContentTracker.tsx (archive/pre-reset-2026-10-10)
 +++ b/src/components/tracking/ViewContentTracker.tsx
-@@ -36,8 +36,15 @@ import { LAUNCH_AMOUNT_PAISE } from "@/config/site";
+@@ -2,7 +2,6 @@
+ 
+ import { useEffect, useRef } from "react";
+ import { fbTrack, whenFbqReady } from "@/lib/fbq";
+-import { LAUNCH_AMOUNT_PAISE } from "@/config/site";
+ 
+ /** Reports a Meta `ViewContent` for Kheelu, once per page view (§8.30-j).
+  *
+@@ -36,8 +35,15 @@ import { LAUNCH_AMOUNT_PAISE } from "@/config/site";
   *  It waits for `fbq` rather than calling `fbTrack` directly, because the pixel
   *  is gated behind a hostname check in an effect and then loads
   *  `afterInteractive` — so at mount it is usually not there yet, and a direct
@@ -25,14 +36,14 @@ would let a new value that arrives before fbq cancel the wait and send no ViewCo
 + *  SINCE TASK 2.6 THE PAGE PASSES THE VALUE (B9, ADR-005): `valuePaise` is the
 + *  offer's headline, read on the server where the live mode is known, so the
 + *  staleness above ends for every page that passes it, and Home (B9) and the
-+ *  product page send the same payload. The `LAUNCH_AMOUNT_PAISE` default exists
-+ *  only for the legacy product page until task 5.2 replaces it; every other mount
-+ *  must pass `valuePaise` (test/guards/tracking-parity.test.ts). */
-+export function ViewContentTracker({ valuePaise = LAUNCH_AMOUNT_PAISE }: { valuePaise?: number }) {
++ *  product page send the same payload. Since task 5.2 replaced the legacy
++ *  product page, its one mount without a value, there is no default: every
++ *  mount passes `valuePaise` (test/guards/tracking-parity.test.ts). */
++export function ViewContentTracker({ valuePaise }: { valuePaise: number }) {
    const fired = useRef(false);
  
    useEffect(() => {
-@@ -52,10 +59,14 @@ export function ViewContentTracker() {
+@@ -52,10 +58,14 @@ export function ViewContentTracker() {
          content_name: "Kheelu",
          content_ids: ["lumi"],
          content_type: "product",
