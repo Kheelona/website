@@ -607,3 +607,6 @@ Run wf_08c09180-f5a stopped (TaskStop) while all seven builders were mid-task; n
 
 ## [2026-10-13 13:00] agent | Wave 5 part A resumed on apoorva@geekyants.work (run wf_2de8d3c9-589)
 The founder switched accounts and asked to continue. All seven paused worktrees checked unchanged (heads as in the runbook, clean trees). Resumed with `build-wave` wave 5, base `3ab2cbb`, each task `stage: "finish"` from its saved head; 5.2 and 5.6 are told to revert their WIP edits outside their Owns (`eslint.config.mjs`, `banned-phrases.data.ts`; `answer-length.test.ts`) unless strictly required, and report any kept edit for a ruling.
+
+## [2026-10-13 14:00] agent | Wave 5 part A: network outage mid-run; resumed from the run's cache
+Run wf_2de8d3c9-589 lost seven agents to "Can't reach the API server (ENOTFOUND)": the finishers of 5.1, 5.2 and 5.10 and the first reviews of 4.5, 5.3, 5.5 and 5.6. The four completed builders (4.5, 5.3, 5.5, 5.6) are kept. Every worktree was clean with its progress committed (heads: 4.5 `d3c7338`, 5.1 `7315915`, 5.2 `b3321f0`, 5.3 `8bba3ec`, 5.5 `ca0149a`, 5.6 `0e8c1f3`, 5.10 `be2a10a`); leftover local servers stopped. Resumed the same run with `resumeFromRunId` and identical args: finished agents replay from cache, failed ones run again (a finisher reads the worktree's own commits, so nothing is redone or lost).
