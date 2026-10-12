@@ -53,14 +53,27 @@ export const WithLink: Story = {
     link: { href: "/stories#screen-time", label: "Read the screen-time guides", icon: icon("arrow-right") },
   },
 };
-/** A route card's link as a full tap target (contact.html, DS gap G-01). */
+/** A single card link as a full tap target (the team page's founder cards, DS gap G-01). */
 export const TapLink: Story = {
+  args: {
+    tone: undefined,
+    icon: undefined,
+    title: "Apoorva Sahu",
+    body: "Apoorva leads Kheelona and owns the promise we make to your family.",
+    link: { href: "https://www.linkedin.com/in/sahu-apoorva/", label: "Apoorva on LinkedIn", icon: icon("arrow-right"), tap: true },
+  },
+};
+/** A contact route card (contact.html fold 2): its links row at the foot, each link a full tap target (G-01). */
+export const LinksRow: Story = {
   args: {
     tone: "sun",
     icon: icon("arrow-counter-clockwise"),
     title: "Returns, refunds and delivery",
-    body: "7-day returns, no questions asked, and a 6-month warranty.",
-    link: { href: "/refund", label: "Refunds and returns", icon: icon("arrow-right"), tap: true },
+    body: "7-day returns, no questions asked, and a 6-month warranty. Delivery is included anywhere in India.",
+    links: [
+      { href: "/refund", label: "Refunds and returns", icon: icon("arrow-right") },
+      { href: "/shipping", label: "Shipping", icon: icon("arrow-right") },
+    ],
   },
 };
 /** The hub's guide card: the title in the subtitle step. */

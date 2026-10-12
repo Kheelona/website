@@ -68,9 +68,54 @@ describe("Card", () => {
     expect(link.lastElementChild?.getAttribute("data-icon")).toBe("arrow-right");
   });
 
-  it("gives a link its own accessible name where the copy asks for one (contact.html route cards)", () => {
-    render(<Card title="About your order" link={{ href: "https://wa.me/919187546483", label: "Message us on WhatsApp", ariaLabel: "Message us on WhatsApp about your order" }} />);
-    expect(screen.getByRole("link", { name: "Message us on WhatsApp about your order" })).toBeInTheDocument();
+  it("gives a link its own accessible name where the copy asks for one", () => {
+    render(<Card title="Screen time" link={{ href: "/stories#screen-time", label: "Read more", ariaLabel: "Read the screen-time guides" }} />);
+    expect(screen.getByRole("link", { name: "Read the screen-time guides" })).toHaveAttribute("href", "/stories#screen-time");
+  });
+
+  it("ends with a links row as contact.html:53 does: p.ks-card-links > two tap-target links, after the body", () => {
+    const el = card(
+      <Card
+        tone="sun"
+        icon={icon("arrow-counter-clockwise")}
+        title="Returns, refunds and delivery"
+        body="7-day returns, no questions asked, and a 6-month warranty. Delivery is included anywhere in India."
+        links={[
+          { href: "/refund", label: "Refunds and returns", icon: icon("arrow-right") },
+          { href: "/shipping", label: "Shipping", icon: icon("arrow-right") },
+        ]}
+      />,
+    );
+    expect([...el.children].map((c) => `${c.tagName}.${c.className}`)).toEqual([
+      "SPAN.kh-card__icon",
+      "H3.kh-card__title",
+      "P.kh-card__body",
+      "P.ks-card-links",
+    ]);
+    const row = el.lastElementChild as HTMLElement;
+    expect([...row.children].map((a) => [a.tagName, a.className, a.getAttribute("href"), a.textContent])).toEqual([
+      ["A", "kh-card__link ks-card__link--tap", "/refund", "Refunds and returns"],
+      ["A", "kh-card__link ks-card__link--tap", "/shipping", "Shipping"],
+    ]);
+    expect(row.querySelectorAll("a > svg[data-icon='arrow-right']")).toHaveLength(2);
+  });
+
+  it("names a row link by its own label where the copy gives one (contact.html:41, About your order)", () => {
+    render(
+      <Card
+        title="About your order"
+        links={[{ href: "https://wa.me/919187546483", label: "Message us on WhatsApp", ariaLabel: "Message us on WhatsApp about your order" }]}
+      />,
+    );
+    expect(screen.getByRole("link", { name: "Message us on WhatsApp about your order" })).toHaveAttribute("href", "https://wa.me/919187546483");
+  });
+
+  it("refuses a single link and a links row together", () => {
+    expect(() => render(<Card title="x" link={{ href: "/a", label: "A" }} links={[{ href: "/b", label: "B" }]} />)).toThrow(/link and links/);
+  });
+
+  it("renders no empty row for an empty links list", () => {
+    expect(card(<Card title="x" links={[]} />).querySelector(".ks-card-links")).toBeNull();
   });
 
   it("adds the full tap target (DS gap G-01) only when asked: contact, team and hub cards", () => {

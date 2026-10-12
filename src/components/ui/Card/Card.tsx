@@ -68,7 +68,13 @@ export interface CardProps {
   /** A DS type step on the title (`subtitle` on the hub's guide cards; mockup-css-mapping §3.5). */
   titleType?: TypeStep;
   body?: ReactNode;
+  /** One link straight in the card, last before `after` (Home's guide cards, the hub, the founder cards). */
   link?: CardLink;
+  /**
+   * A row of links at the card's foot instead: the contact route cards (contact.html fold 2: `p` wrapper, one or two
+   * links each, contact.css:20-21). Every link in the row is a full tap target (G-01). Use `link` or `links`, not both.
+   */
+  links?: Omit<CardLink, "tap">[];
   /**
    * Wraps the title, body and children in one `<div>` beside the icon: the product page's compact mode rows
    * (meet-kheelu.html fold 4, styled by ModesSection).
@@ -99,6 +105,7 @@ export function Card({
   titleType,
   body,
   link,
+  links,
   groupText = false,
   groupClassName,
   labelledBy,
@@ -109,6 +116,9 @@ export function Card({
 }: CardProps) {
   if (groupClassName !== undefined && !groupText) {
     throw new Error(`Card: groupClassName "${groupClassName}" names the text group, so it needs groupText`);
+  }
+  if (link !== undefined && links !== undefined) {
+    throw new Error("Card: pass link and links one at a time (a single link, or the contact cards' links row)");
   }
   const words = (
     <>
@@ -130,13 +140,25 @@ export function Card({
       {media}
       {icon !== undefined && <span className="kh-card__icon">{icon}</span>}
       {groupText ? <div className={groupClassName}>{words}</div> : words}
-      {link && (
-        <Link href={link.href} className={clsx("kh-card__link", link.tap && "ks-card__link--tap")} aria-label={link.ariaLabel}>
-          {link.label}
-          {link.icon}
-        </Link>
+      {link && <CardAnchor link={link} />}
+      {links !== undefined && links.length > 0 && (
+        <p className="ks-card-links">
+          {links.map((l) => (
+            <CardAnchor key={l.href} link={{ ...l, tap: true }} />
+          ))}
+        </p>
       )}
       {after}
     </Root>
+  );
+}
+
+/** A card link: the label, then the arrow (`kh-card__link`, with the G-01 tap target when asked). */
+function CardAnchor({ link }: { link: CardLink }) {
+  return (
+    <Link href={link.href} className={clsx("kh-card__link", link.tap && "ks-card__link--tap")} aria-label={link.ariaLabel}>
+      {link.label}
+      {link.icon}
+    </Link>
   );
 }
