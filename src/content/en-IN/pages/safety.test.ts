@@ -337,6 +337,21 @@ describe("the safety page: page-wide rules", () => {
     }
   });
 
+  /* Equal values cannot tell a read from a retyped copy, which would go stale the day the shared module changes; the
+   * source can. The trust pair's delivery label is the {delivery} token, so only its typed labels are listed. */
+  it("reads the shared words by reference: no retention line, FAQ question or answer, or trust label typed in its source", () => {
+    const source = readRepoFile("src/content/en-IN/pages/safety.ts");
+    const shared = [
+      RETENTION_LINE,
+      ...[faqs["age-three"], faqs["child-safety-groups"]].flatMap((f) => [f.question, f.answer]),
+      ...TRUST_COMPACT.map((id) => trustItems[id].label).filter((label) => !label.startsWith("{")),
+    ];
+    expect(shared.length).toBeGreaterThanOrEqual(6);
+    for (const text of shared) expect(source, text).not.toContain(text);
+    expect(source).toMatch(/\bRETENTION_LINE\b/);
+    expect(source).toMatch(/\bfaqs\["age-three"\], faqs\["child-safety-groups"\]/);
+  });
+
   it("names no amount, no placeholder and none of the retired safety lines (copy page, live page changes)", () => {
     const all = strings(safetyPage).join("\n");
     expect(all).not.toMatch(/₹|\{price:|\{ph:|\[PLACEHOLDER/);

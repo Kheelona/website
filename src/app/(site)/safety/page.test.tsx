@@ -63,6 +63,23 @@ describe("/safety: the route file", () => {
     expect(code).toMatch(/^export const revalidate = 300;$/m);
   });
 
+  it("gives the head its canonical, a complete Open Graph card and a large Twitter card, worded as the copy page (SPA 5)", async () => {
+    const { metadata } = await import("./page");
+    const title = "Are AI toys safe? How Kheelu works · Kheelona";
+    const description =
+      "Are AI toys safe? Check Kheelu: its mic turns on only when someone presses its button, no camera, no internet browsing, and you read every conversation.";
+    expect(metadata.title).toEqual({ absolute: title });
+    expect(metadata.description).toBe(description);
+    expect(title.length).toBeLessThanOrEqual(60);
+    expect(description.length).toBeLessThanOrEqual(155);
+    expect(metadata.alternates).toEqual({ canonical: "/safety" });
+    expect(metadata.openGraph).toMatchObject({ type: "website", url: "/safety", title, description, siteName: "Kheelona", locale: "en_IN" });
+    expect(metadata.openGraph.images).toEqual([expect.objectContaining({ url: expect.any(String), width: 1200, height: 630, alt: expect.any(String) })]);
+    expect(metadata.twitter).toMatchObject({ card: "summary_large_image", title, description });
+    expect(metadata.twitter.images).toHaveLength(1);
+    expect("robots" in metadata).toBe(false);
+  });
+
   it("is thin: no copy, price or outside address typed in it, only its own path (structure §3.1)", () => {
     const body = code.replace(/^import [^;]*;$/gm, "");
     expect([...body.matchAll(/"([^"]*)"/g)].map((m) => m[1])).toEqual(["/safety"]);
@@ -78,6 +95,17 @@ describe("/safety: the rendered page against the approved mockup", () => {
     expect(h1).toHaveLength(1);
     expect(h1[0].textContent).toBe("Are AI toys safe? Check ours, fact by fact.");
     expect(h1[0].querySelector(".kh-hand")?.textContent).toBe("fact by fact.");
+  });
+
+  it("keeps the mockup's heading outline: every heading's level and words in order, no level skipped (SPA 5)", async () => {
+    const { main } = await renderPage(buildOffer("token"));
+    const outline = (root: Element) =>
+      Array.from(root.querySelectorAll("h1, h2, h3, h4, h5, h6")).map((h) => `${h.tagName.toLowerCase()} ${words(h)}`);
+    const built = outline(main);
+    expect(built).toEqual(outline(mockupMain));
+    const levels = built.map((h) => Number(h[1]));
+    expect(levels[0]).toBe(1);
+    levels.forEach((level, i) => expect(level, built[i]).toBeLessThanOrEqual((levels[i - 1] ?? 0) + 1));
   });
 
   it("holds the mockup's folds in its order", async () => {
