@@ -1,8 +1,8 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
-import { Card, TYPE_STEPS, typeStepClass } from "./Card";
+import { describe, expect, it, vi } from "vitest";
+import { Card, TYPE_STEPS, typeStepClass, type CardLink } from "./Card";
 
 describe("TYPE_STEPS", () => {
   /* The generated type steps (task 1.2, from the 19 kh- type classes in tokens.css): a step the prop accepts must
@@ -112,6 +112,26 @@ describe("Card", () => {
 
   it("refuses a single link and a links row together", () => {
     expect(() => render(<Card title="x" link={{ href: "/a", label: "A" }} links={[{ href: "/b", label: "B" }]} />)).toThrow(/link and links/);
+  });
+
+  /* Task 2.12: rows are keyed by position and address, so two links to the same address (a call and a WhatsApp line
+     to one number, say) never share a React key; the row takes a readonly list, as content modules hold them. */
+  it("renders two links to the same address in a row, in order, without a key clash", () => {
+    const errors = vi.spyOn(console, "error").mockImplementation(() => {});
+    const row: readonly CardLink[] = [
+      { href: "/contact", label: "Write to us" },
+      { href: "/contact", label: "Find the grievance officer" },
+    ];
+    try {
+      const el = card(<Card title="Help" links={row} />);
+      expect([...el.querySelectorAll(".ks-card-links > a")].map((a) => [a.getAttribute("href"), a.textContent])).toEqual([
+        ["/contact", "Write to us"],
+        ["/contact", "Find the grievance officer"],
+      ]);
+      expect(errors.mock.calls.map((call) => String(call[0])).filter((m) => /same key/i.test(m))).toEqual([]);
+    } finally {
+      errors.mockRestore();
+    }
   });
 
   it("renders no empty row for an empty links list", () => {
