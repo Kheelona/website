@@ -1,24 +1,21 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
+import { mockupFold, mockupPage } from "../../../../test/support/mockup-compare";
 
 /*
  * Test support for task 3.5 (never shipped: nothing in the app imports it). The approved product page turns its
  * stacked DS Tabs panels into tabs with its own inline script (mockup/pages/meet-kheelu.html:397-439; the built copy,
  * mockup/meet-kheelu.html, carries it unchanged). These helpers run that script, as approved, on a document, so a test
  * can compare what the build's island does with what the founder saw, and compare the attributes the tabs pattern
- * sets that the section skeleton (ArticleBody's approved-fold support) does not read. Tests run from the repository
- * root.
+ * sets that the section skeleton (ArticleBody's approved-fold support) does not read. The page is read through the one
+ * mockup harness (test/support/mockup-compare.ts; task 4.5 item 8), shared and never changed here: the script's text
+ * and the fold's markup are read off it, and the script runs on a document of the caller's own. Tests run from the
+ * repository root.
  */
 
-const PAGE = join(process.cwd(), "mockup", "meet-kheelu.html");
-
-function approvedPage(): Document {
-  return new DOMParser().parseFromString(readFileSync(PAGE, "utf8"), "text/html");
-}
+const PAGE = "meet-kheelu";
 
 /** The approved page's tab script: its one inline script that looks for `[data-tabs]`. */
 export function approvedTabScript(): string {
-  const scripts = [...approvedPage().querySelectorAll("script:not([src])")].filter((s) => s.textContent?.includes("[data-tabs]"));
+  const scripts = [...mockupPage(PAGE).querySelectorAll("script:not([src])")].filter((s) => s.textContent?.includes("[data-tabs]"));
   if (scripts.length !== 1) throw new Error(`mockup/meet-kheelu.html: expected one inline tab script, found ${scripts.length}`);
   return scripts[0].textContent ?? "";
 }
@@ -29,11 +26,10 @@ export function runApprovedTabScript(doc: Document): void {
   new Function("document", approvedTabScript())(doc);
 }
 
-/** The approved fold 7 (section#specs) as the server sends it: before any script ran. */
+/** The approved fold 7 (section#specs) as the server sends it: before any script ran (the harness throws when the fold
+ *  is missing). */
 export function approvedDetailsFoldHtml(): string {
-  const fold = approvedPage().querySelector("section#specs");
-  if (!fold) throw new Error("mockup/meet-kheelu.html: no section#specs");
-  return fold.outerHTML;
+  return mockupFold(PAGE, "section#specs").outerHTML;
 }
 
 /** The attributes of the tabs pattern beyond classes, roles, labels and ids, which the section skeleton compares. */

@@ -3,37 +3,20 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { ICON_PATHS, ICON_VIEWBOX } from "@/assets/icons.generated";
+import { asBuilt, canonical, mockupFold } from "../../../../test/support/mockup-compare";
 import { Field } from "./Field";
 
 /* Field (task 2.5): the DS TextField (`kh-field`) as the approved store and confirmation mockups use it
  * (mockup/store.html fold 3, mockup/store-confirmation.html fold 3), with the `tel-in` variant (`ks-tel`,
  * from `mk-tel`) that shows +91 as decoration only. */
 
-/** The built mockup's element, comments and whitespace-only text dropped, `mk-` classes renamed `ks-`
- *  (components §7). */
-function mockupElement(page: string, selector: string): Element {
-  const doc = new DOMParser().parseFromString(readFileSync(`mockup/${page}.html`, "utf8"), "text/html");
-  const el = doc.querySelector(selector);
-  if (!el) throw new Error(`${selector} is not in mockup/${page}.html`);
-  return tidy(el.cloneNode(true) as Element);
-}
+/** The built mockup's element as the build prints it, read and ported by the one mockup harness
+ *  (test/support/mockup-compare.ts: `mk-` classes renamed `ks-`, components §7). */
+const mockupElement = (page: string, selector: string): Element => asBuilt(mockupFold(page, selector));
 
-function tidy<T extends Node>(node: T): T {
-  node.normalize();
-  const walk = (n: Node) => {
-    for (const child of [...n.childNodes]) {
-      if (child.nodeType === 8 || (child.nodeType === 3 && !(child.textContent ?? "").trim())) child.remove();
-      else if (child.nodeType === 1) walk(child);
-    }
-    if (n instanceof Element && n.hasAttribute("class")) n.setAttribute("class", n.getAttribute("class")!.replace(/\bmk-/g, "ks-"));
-  };
-  walk(node);
-  return node;
-}
-
+/** The same markup: one canonical serialisation of both (attributes sorted, comments and indentation left out). */
 function expectSameMarkup(actual: Element, expected: Element) {
-  const a = tidy(actual.cloneNode(true) as Element);
-  expect(a.isEqualNode(expected), `built:\n${a.outerHTML}\nmockup:\n${expected.outerHTML}`).toBe(true);
+  expect(canonical(actual)).toBe(canonical(expected));
 }
 
 describe("Field", () => {

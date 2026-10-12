@@ -4,11 +4,12 @@ import { readRepoFile } from "../e2e/support/repo";
 
 /*
  * The one mockup comparison harness (task 3.6 items 5 and 14; wave-3 close, "One of each helper"). Test support, never
- * shipped: it lives outside src/ and only tests import it. Every section and shell test that compares what it renders
- * with the approved Gate A mockup (mockup/<slug>.html, built: partials and icons inlined; D046) reads the mockup and
+ * shipped: it lives outside src/ and only tests import it. Every ui, section, shell and template test that compares what
+ * it renders with the approved Gate A mockup (mockup/<slug>.html, built: partials and icons inlined; D046) reads the mockup and
  * ports its addresses and classes here, then compares in one of three ways:
  *
- *   builtMarkup, renderedMarkup, canonical   the exact markup (SCA 1): the selling sections (task 3.2)
+ *   builtMarkup, renderedMarkup, canonical   the exact markup (SCA 1): the selling sections (task 3.2) and the ui
+ *                                           primitives that compare with the mockup (task 4.5 item 8)
  *   skeleton, words                         tags, classes, ARIA, ids and addresses, then the words apart: the support
  *                                           sections (task 3.4)
  *   outline                                 tags, classes and reveals down to the media primitives: the story
