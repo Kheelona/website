@@ -1,0 +1,22 @@
+{
+  "source": "archive/pre-reset-2026-10-10:src/components/molecules/PostHogGate.tsx: the options its posthog.init(POSTHOG_KEY, …) call passes on kheelona.com, evaluated with archive/pre-reset-2026-10-10:src/config/site.ts (task 2.6, ADR-006). Re-derived from the tag on every run by test/guards/posthog-init-fixture.test.ts; never edit by hand.",
+  "key": "phc_ute69SyrVALLjx3bW8xUNVqiALe7RRNbJp9KuZDd9726",
+  "options": {
+    "api_host": "/ingest",
+    "asset_host": "/ingest-assets",
+    "ui_host": "https://us.posthog.com",
+    "custom_campaign_params": [
+      "utm_id",
+      "placement"
+    ],
+    "autocapture": true,
+    "capture_exceptions": true,
+    "disable_session_recording": true,
+    "session_recording": {
+      "maskAllInputs": true,
+      "maskTextSelector": ".ph-mask"
+    },
+    "person_profiles": "identified_only",
+    "capture_pageview": "history_change"
+  }
+}

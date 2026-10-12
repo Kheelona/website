@@ -1,0 +1,53 @@
+Reviewed diff, task 2.6 (ADR-006; architecture §8.1, §15.3; tracking-freeze.test.ts applies it exactly).
+From: archive/pre-reset-2026-10-10:src/components/molecules/PostHogGate.tsx
+To:   src/components/tracking/PostHogGate.tsx (moved; body otherwise byte-identical)
+
+1. D048 beta stamp: on the two beta hosts (isBetaHost) the init options gain only
+   before_send, which adds env: "beta" to every event. QA review N3: never posthog.register,
+   whose super property would persist in storage and follow a tester to production.
+   Production options deep-equal the tag's (posthog-init-fixture.test.ts, with a real-SDK
+   persistence control).
+2. B46 internal flag: after init, ?internal=1 registers internal: true and ?internal=0
+   unregisters it (src/lib/tracking/internal-flag.ts). No event is added or renamed.
+
+--- a/src/components/molecules/PostHogGate.tsx (archive/pre-reset-2026-10-10)
++++ b/src/components/tracking/PostHogGate.tsx
+@@ -11,8 +11,20 @@ import {
+   shouldLoadPostHog,
+ } from "@/config/site";
+ import { phSetReplay, registerPostHog } from "@/lib/posthog";
+-
+-/** Loads PostHog on production hosts only (2026-09-19).
++import type { BeforeSendFn } from "posthog-js";
++import { isBetaHost } from "@/config/env";
++import { applyInternalFlag } from "@/lib/tracking/internal-flag";
++
++/** D048 (architecture §15.3, QA review N3): on the two beta hosts every event leaves
++ *  stamped `env: "beta"`, so beta traffic can always be told from production. Through
++ *  `before_send` and NEVER `posthog.register`: a registered super property persists in
++ *  PostHog's storage and would follow a tester from beta to production. Production
++ *  options stay exactly the tag's (test/guards/posthog-init-fixture.test.ts). */
++const stampBeta: BeforeSendFn = (event) =>
++  event ? { ...event, properties: { ...event.properties, env: "beta" } } : event;
++
++/** Loads PostHog on production hosts only (2026-09-19), and on the two beta hosts
++ *  with the stamp above (D048).
+  *
+  *  The fifth measurement tool, and the widest: product analytics, session
+  *  replay, error tracking, and autocapture ON (founder, 2026-09-19).
+@@ -145,9 +157,15 @@ export function PostHogGate() {
+            the skip-first-run pathname effect MetaPixel carries. Stated because
+            the absence of that code looks like an omission beside its sibling. */
+         capture_pageview: "history_change",
++
++        /* D048: the beta stamp, on the beta hosts only (see stampBeta). */
++        ...(isBetaHost(window.location.hostname) ? { before_send: stampBeta } : {}),
+       });
+ 
+       registerPostHog(posthog);
++      /* B46: `?internal=1` marks a team device with the lasting property
++         `internal: true`; `?internal=0` clears it (lib/tracking/internal-flag.ts). */
++      applyInternalFlag(posthog, window.location.search);
+       setReady(true);
+     });
+ 
