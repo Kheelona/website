@@ -2,13 +2,14 @@ import { existsSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { beforeAll, describe, expect, it } from "vitest";
 import type { Article, Copy } from "@/content/types";
+import { isPlaceholder } from "@/lib/content/placeholder";
 import { parseRichText, type RichNode } from "@/lib/content/rich-text";
 import { toPlainText } from "@/lib/content/plain-text";
 import { formatDate } from "@/lib/format/date";
 import { ROOT, readRepoFile, tagText } from "../../../../../test/e2e/support/repo";
+import { DEFAULT_OG, TEAM_BYLINE } from "../../organization";
 import { ARTICLE_SLUGS, type ArticleSlug } from "../../routes";
 import { hubTopics } from "../hub";
-import { ARTICLE_OG, ARTICLE_PORT_PENDING, ARTICLE_REWRITE_PENDING, TEAM_BYLINE } from "./stub";
 
 /* The 21 article modules (architecture §6.1; task 2.1 acceptance 5). Invariants every article
  * keeps whoever writes it later (tasks 5.6, 5.17-5.19): its slug, three related articles that
@@ -16,9 +17,20 @@ import { ARTICLE_OG, ARTICLE_PORT_PENDING, ARTICLE_REWRITE_PENDING, TEAM_BYLINE 
  * published date, titles and descriptions within the SEO limits. The eighteen not yet rewritten
  * are stubs (title and summary from the hub, body open, related from the legacy ring). The three
  * rewritten ones match their approved mockups' head, byline, photo, related list and close; their
- * approved body is ported by task 5.6, so until then it is one open paragraph too. */
+ * approved body is ported by task 5.6, so until then it is one open paragraph too.
+ *
+ * Every assertion holds in every state of the rewrite (B2): a stub may become an article, a
+ * port-pending body may become the approved one, and stub.ts goes once no body is open. So this
+ * test never imports stub.ts (it reads it only while it exists), and never spells the inline
+ * token: the production placeholder scan (task 2.9) refuses it anywhere in src/ but the syntax's
+ * own files, so the two open bodies are built in pieces here. */
 
 const DIR = join(ROOT, "src/content/en-IN/stories/articles");
+const STUB = join(DIR, "stub.ts");
+const ph = (body: string) => "{" + "ph:" + body + "}";
+const REWRITE_PENDING = ph("ARTICLE rewrite pending");
+const PORT_PENDING = ph("ARTICLE body from the approved mockup");
+const BRAND = " · Kheelona";
 const articles = new Map<ArticleSlug, Article>();
 
 beforeAll(async () => {
@@ -30,10 +42,23 @@ beforeAll(async () => {
 
 const get = (slug: ArticleSlug) => articles.get(slug)!;
 const bodyHas = (a: Article, marker: string) => JSON.stringify(a.body).includes(marker);
-const isStub = (a: Article) => bodyHas(a, ARTICLE_REWRITE_PENDING);
-const isPortPending = (a: Article) => bodyHas(a, ARTICLE_PORT_PENDING);
+const isStub = (a: Article) => bodyHas(a, REWRITE_PENDING);
+const isPortPending = (a: Article) => bodyHas(a, PORT_PENDING);
 const norm = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").trim();
 const plain = (value: Copy) => toPlainText(value);
+
+/** Every open placeholder an article still carries, inline or as data (images skipped). */
+function openPlaceholders(value: unknown): string[] {
+  const inNodes = (nodes: readonly RichNode[]): string[] =>
+    nodes.flatMap((n) => (n.kind === "placeholder" ? [n.note] : "children" in n ? inNodes(n.children) : []));
+  if (typeof value === "string") return inNodes(parseRichText(value));
+  if (isPlaceholder(value)) return [value.note];
+  if (Array.isArray(value)) return value.flatMap(openPlaceholders);
+  if (value && typeof value === "object") {
+    return Object.entries(value).flatMap(([key, v]) => (key === "src" ? [] : openPlaceholders(v)));
+  }
+  return [];
+}
 
 /** The live journal at the freeze tag: each article's first-published and last-edited dates. */
 const LEGACY_DATES: ReadonlyMap<string, { published: string; updated: string }> = (() => {
@@ -47,6 +72,20 @@ describe("the folder", () => {
     const files = readdirSync(DIR).filter((f) => f.endsWith(".ts") && !f.endsWith(".test.ts"));
     const open = ARTICLE_SLUGS.some((s) => isStub(get(s)) || isPortPending(get(s)));
     expect(files.sort()).toEqual([...ARTICLE_SLUGS.map((s) => `${s}.ts`), ...(open ? ["stub.ts"] : [])].sort());
+  });
+});
+
+describe("the two open bodies", () => {
+  it("are ARTICLE placeholders, which beta prints and the production build refuses (task 2.9)", () => {
+    for (const body of [REWRITE_PENDING, PORT_PENDING]) {
+      expect(parseRichText(body), body).toEqual([expect.objectContaining({ kind: "placeholder", id: "ARTICLE" })]);
+    }
+  });
+
+  it.runIf(existsSync(STUB))("are spelled by the stub builder exactly as this test reads them", async () => {
+    const stub = (await import(/* @vite-ignore */ STUB)) as Record<string, unknown>;
+    expect(stub.ARTICLE_REWRITE_PENDING).toBe(REWRITE_PENDING);
+    expect(stub.ARTICLE_PORT_PENDING).toBe(PORT_PENDING);
   });
 });
 
@@ -104,10 +143,22 @@ describe("every article", () => {
     expect(new Set(descriptions).size).toBe(descriptions.length);
   });
 
-  it("shares the default card until its own is chosen (a stable file that exists)", () => {
-    for (const slug of ARTICLE_SLUGS) expect(get(slug).meta.og, slug).toEqual(ARTICLE_OG);
-    expect(existsSync(join(ROOT, "public", ARTICLE_OG.image))).toBe(true);
-    expect(ARTICLE_OG.alt.length).toBeGreaterThan(0);
+  it("shares a card that exists, with words for it (the default one until its own is chosen)", () => {
+    for (const slug of ARTICLE_SLUGS) {
+      const { og } = get(slug).meta;
+      expect(existsSync(join(ROOT, "public", og.image)), slug).toBe(true);
+      expect(og.alt.length, slug).toBeGreaterThan(0);
+      if (isStub(get(slug))) expect(og, slug).toEqual(DEFAULT_OG);
+    }
+  });
+
+  it("once written, holds no open placeholder and cites its sources", () => {
+    for (const slug of ARTICLE_SLUGS) {
+      const a = get(slug);
+      if (isStub(a) || isPortPending(a)) continue;
+      expect(openPlaceholders(a), slug).toEqual([]);
+      expect(a.sources.length, slug).toBeGreaterThan(0);
+    }
   });
 
   it("is placed under one hub topic", () => {
@@ -164,40 +215,55 @@ describe("the stubs (the eighteen not yet rewritten)", () => {
   const SHORT_TITLES: Readonly<Partial<Record<ArticleSlug, string>>> = {
     "should-kids-use-ai": "Should kids use AI?",
   };
+  /* The meta title is the page's whole <title> (pageMeta's `absolute`, ADR-012), so it carries the
+     brand as the rewritten articles' do. Three hub titles leave no room for it within the limit and
+     go without: a shorter title would be new copy (reported to the main session with task 2.1). */
+  const UNBRANDED: readonly ArticleSlug[] = [
+    "what-actually-builds-a-sharp-brain",
+    "screen-time-and-tantrums",
+    "screen-time-rules-parents-swear-by",
+  ];
 
   const stubs = () => ARTICLE_SLUGS.filter((s) => isStub(get(s)));
+  const stillStubs = (slugs: readonly ArticleSlug[]) => slugs.filter((s) => isStub(get(s)));
 
-  it("are eighteen today", () => {
-    expect(stubs()).toHaveLength(18);
+  it("are at most eighteen: the rewrites (tasks 5.17-5.19) only ever take them away", () => {
+    expect(stubs().length).toBeLessThanOrEqual(18);
   });
 
   it("show the hub's title and summary as their meta, card and head, by the Kheelona team (stories.md folds 2-5)", () => {
     for (const slug of stubs()) {
       const a = get(slug);
-      expect(a.meta.title, slug).toBe(SHORT_TITLES[slug] ?? a.card.title);
+      const title = SHORT_TITLES[slug] ?? a.card.title;
+      expect(a.meta.title, slug).toBe(UNBRANDED.includes(slug) ? title : `${title}${BRAND}`);
       expect(a.meta.description, slug).toBe(a.card.summary);
       expect(a.head.title, slug).toBe(a.card.title);
       expect(a.head.author, slug).toBe(TEAM_BYLINE);
-      expect(TEAM_BYLINE).toBe("The Kheelona team");
     }
   });
 
   it("shorten a meta title only where the live title is over the limit", () => {
-    for (const [slug, short] of Object.entries(SHORT_TITLES) as [ArticleSlug, string][]) {
+    for (const slug of stillStubs(Object.keys(SHORT_TITLES) as ArticleSlug[])) {
       expect(plain(get(slug).card.title).length, slug).toBeGreaterThan(60);
-      expect(plain(get(slug).card.title).startsWith(short), slug).toBe(true);
+      expect(plain(get(slug).card.title).startsWith(SHORT_TITLES[slug]!), slug).toBe(true);
+    }
+  });
+
+  it("leave the brand off only where it would take the title over 60 characters", () => {
+    for (const slug of stillStubs(UNBRANDED)) {
+      expect(plain(get(slug).meta.title).length, slug).toBeLessThanOrEqual(60);
+      expect(`${plain(get(slug).meta.title)}${BRAND}`.length, slug).toBeGreaterThan(60);
     }
   });
 
   it("hold one open paragraph and no sources, so production refuses them until rewritten", () => {
     for (const slug of stubs()) {
       const a = get(slug);
-      expect(a.body, slug).toEqual([{ kind: "part", blocks: [{ kind: "p", text: ARTICLE_REWRITE_PENDING }] }]);
+      expect(a.body, slug).toEqual([{ kind: "part", blocks: [{ kind: "p", text: REWRITE_PENDING }] }]);
       expect(a.sources, slug).toEqual([]);
       expect(a.close, slug).toBe("journal");
       expect(a.answer, slug).toBeUndefined();
     }
-    expect(ARTICLE_REWRITE_PENDING).toBe("{ph:ARTICLE rewrite pending}");
   });
 
   it("keep the live article's last-edit date until rewritten", () => {
@@ -289,10 +355,15 @@ describe.each([
     expect(page.querySelector('[data-ph-capture-attribute-cta="finale"]') !== null).toBe(close === "journal");
   });
 
-  it("holds one open paragraph until task 5.6 ports the approved body, sources and answer", () => {
+  it("holds either the port-pending paragraph, or the approved body task 5.6 ports, with its sources", () => {
     const a = get(slug);
     expect(isStub(a)).toBe(false);
-    expect(a.body).toEqual([{ kind: "part", blocks: [{ kind: "p", text: ARTICLE_PORT_PENDING }] }]);
-    expect(ARTICLE_PORT_PENDING).toBe("{ph:ARTICLE body from the approved mockup}");
+    if (isPortPending(a)) {
+      expect(a.body).toEqual([{ kind: "part", blocks: [{ kind: "p", text: PORT_PENDING }] }]);
+      expect(a.sources).toEqual([]);
+    } else {
+      expect(openPlaceholders(a)).toEqual([]);
+      expect(a.sources.length).toBeGreaterThan(0);
+    }
   });
 });

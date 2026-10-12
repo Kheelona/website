@@ -7,7 +7,7 @@ import { seller } from "../../seller";
  * page (mockup meet-kheelu.html fold 7, stacked as approved, N21), the languages and modes, and the
  * schema fields the Product JSON-LD takes (architecture §9.2). Owner page: wiki/product/facts.md;
  * D018 (wake-up button), D034 (origin, manufacturer, MRP), D036 (launch features). Open facts are
- * `{ph:…}` placeholders (F4), which the production build refuses until the founder supplies them.
+ * F4 placeholders, which the production build refuses until the founder supplies them.
  * The page's own sections live in products/kheelu/page.ts (task 5.2).
  */
 

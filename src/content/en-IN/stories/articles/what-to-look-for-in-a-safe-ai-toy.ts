@@ -1,7 +1,8 @@
 /// <reference types="next/image-types/global" />
 import eveningWithAmma from "@ds/assets/Photo library/tara-02-evening-with-amma-web.webp";
 import type { Article } from "@/content/types";
-import { ARTICLE_OG, ARTICLE_PORT_PENDING } from "./stub";
+import { DEFAULT_OG } from "../../organization";
+import { ARTICLE_PORT_PENDING } from "./stub";
 
 /**
  * What to look for in a safe AI toy: rewritten and approved (mockup
@@ -16,7 +17,7 @@ export const article = {
     title: "What to look for in a safe AI toy · Kheelona",
     description:
       "What to look for in a safe AI toy: what Common Sense Media and Fairplay advise, the checks to make before one comes home, and how Kheelu measures up.",
-    og: ARTICLE_OG,
+    og: DEFAULT_OG,
   },
   card: {
     title: "What to look for in a safe AI toy",

@@ -2,7 +2,7 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { ROOT, readRepoFile } from "../../../test/e2e/support/repo";
-import { organization } from "./organization";
+import { DEFAULT_OG, organization, TEAM_BYLINE } from "./organization";
 import { seller } from "./seller";
 
 /* Organization and WebSite schema facts (architecture §6.1, §9.2; wiki/product/facts.md): the
@@ -60,5 +60,17 @@ describe("the organization", () => {
   it("states no recognition and no founder bio until its proof is filed (D038, F11)", () => {
     expect("memberOf" in organization).toBe(false);
     for (const f of organization.founders) expect("description" in f).toBe(false);
+  });
+});
+
+describe("what every page by the team shares", () => {
+  it("bylines a guide the team wrote together as the Kheelona team, never a person (stories.md)", () => {
+    expect(TEAM_BYLINE).toBe("The Kheelona team");
+  });
+
+  it("shares the organization's default card, a file that exists, in the copy pages' words (home.md)", () => {
+    expect(DEFAULT_OG.image).toBe(organization.image);
+    expect(existsSync(join(ROOT, "public", DEFAULT_OG.image))).toBe(true);
+    expect(DEFAULT_OG.alt).toBe("Kheelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy.");
   });
 });

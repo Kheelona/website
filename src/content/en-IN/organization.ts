@@ -1,4 +1,4 @@
-import type { SitePath } from "@/content/types";
+import type { Meta, SitePath } from "@/content/types";
 import { seller } from "./seller";
 
 /**
@@ -90,3 +90,13 @@ export const organization = {
     },
   ],
 } as const satisfies OrganizationFacts;
+
+/** The byline of every guide the team wrote together; no card names a person (stories.md). */
+export const TEAM_BYLINE = "The Kheelona team";
+
+/** The default share card: public/og.png, Kheelu on its own fur, no text (assets.md), with the
+ *  copy pages' words for it (home.md). For every page whose copy names no card of its own. */
+export const DEFAULT_OG = {
+  image: organization.image,
+  alt: "Kheelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy.",
+} as const satisfies Meta["og"];

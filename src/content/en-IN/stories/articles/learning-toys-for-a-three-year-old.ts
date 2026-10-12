@@ -1,7 +1,8 @@
 /// <reference types="next/image-types/global" />
 import drawingAtHome from "@ds/assets/Photo library/myra-04-drawing-at-home-web.webp";
 import type { Article } from "@/content/types";
-import { ARTICLE_OG, ARTICLE_PORT_PENDING, TEAM_BYLINE } from "./stub";
+import { DEFAULT_OG, TEAM_BYLINE } from "../../organization";
+import { ARTICLE_PORT_PENDING } from "./stub";
 
 /**
  * Learning toys for a 3-year-old, skill by skill: rewritten and approved (mockup
@@ -16,7 +17,7 @@ export const article = {
     title: "Learning toys for a 3-year-old, skill by skill · Kheelona",
     description:
       "Learning toys for a 3-year-old, skill by skill: language, turn-taking, pretend play, hands and numbers, plus what the WHO and IAP say about screens.",
-    og: ARTICLE_OG,
+    og: DEFAULT_OG,
   },
   card: {
     title: "Learning toys for a 3-year-old, skill by skill",
