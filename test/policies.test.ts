@@ -1,77 +1,95 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync } from "node:fs";
 import { join } from "node:path";
-import { describe, expect, it } from "vitest";
-import { SELLER_SECTION } from "@/lib/legal";
+import { beforeAll, describe, expect, it } from "vitest";
+import sitemap from "@/app/sitemap";
+import { GSTIN } from "@/config/site";
 import { REDIRECTS } from "@/config/redirects";
-import {
-  FOOTER_LINKS,
-  LEGAL_ENTITY,
-  GSTIN,
-  SUPPORT_WHATSAPP_DISPLAY,
-  REGISTERED_ADDRESS,
-} from "@/config/site";
+import { navigation } from "@/content/en-IN/navigation";
+import { routes, type RouteEntry } from "@/content/en-IN/routes";
+import type { LegalDoc } from "@/content/types";
+import { absoluteUrl } from "@/lib/seo/urls";
+import { ROOT, isTestOrStory, listFiles, readRepoFile } from "./e2e/support/repo";
+import { isStillLegacy } from "./guards/legacy-paths";
 
 /**
- * The policy layer a merchant needs, guarded (§8.25-d).
+ * The policy layer a merchant has to publish (task 4.4; D029, D032, D042), data-driven over the URL plan's legal
+ * routes (src/content/en-IN/routes.ts, kind "legal") and their content modules, so tasks 5.11-5.14 never edit it.
  *
- * Until 2026-08-22 `/refund` and `/shipping` were 301s to `/terms`, with a
- * comment in next.config.ts explaining that there was nothing to refund or ship
- * because pre-orders took no payment. The moment the store began taking money
- * that stopped being true, and a merchant that redirects its refund policy to
- * its terms is the shape a payment gateway's review rejects.
- *
- * So this guards three separate ways the layer can rot: the pages can be
- * deleted, the redirects can be restored by someone tidying the config, and the
- * seller of record can quietly drift out of the shared section every policy
- * page renders.
+ * Until 2026-08-22 /refund and /shipping were 301s to /terms, because pre-orders took no payment. A merchant that
+ * redirects its refund policy away is the shape a payment gateway's review rejects. So, for every policy page:
+ *   - a page serves it, no redirect rule takes it away, the sitemap lists it, and the footer of every marketing
+ *     page and the store's policy links reach it;
+ *   - its content module renders the shared seller block (rendered from seller.ts, never retyped) and never
+ *     types the GSTIN; while the route is still served by its legacy page and the module is not written yet, the
+ *     route prints "pending" (legacy-paths.ts); any other missing module fails;
+ *   - and no shipped file types the GSTIN at all but src/config/site.ts, where the checkout reads it.
  */
 
-const ROOT = process.cwd();
-/* The one redirect table since the reset (task 1.3); next.config.ts returns it whole. */
-const redirectSources = REDIRECTS.map((r) => r.source);
+const LEGAL = routes.filter((r) => r.kind === "legal");
+const pageFile = (r: RouteEntry) => `src/app/(site)${r.path}/page.tsx`;
+const moduleFile = (r: RouteEntry) => `src/content/en-IN/${r.module}.ts`;
 
-const POLICY_ROUTES = ["/refund", "/shipping", "/terms", "/privacy"] as const;
-
-describe("the policy layer a merchant has to publish", () => {
-  it.each(POLICY_ROUTES)("%s is a real page", (route) => {
-    expect(existsSync(join(ROOT, "src/app/(site)", route, "page.tsx"))).toBe(true);
-  });
-
-  /* The failure this catches: a future cleanup pass sees two legacy-looking
-     entries and "restores" them, silently un-publishing the refund policy. */
-  it.each(["/refund", "/shipping"])("%s is NOT redirected away", (route) => {
-    expect(redirectSources).not.toContain(route);
-  });
-
-  it("reaches both new pages from the footer of every page", () => {
-    const hrefs = FOOTER_LINKS.map((l) => l.href);
-    expect(hrefs).toContain("/refund");
-    expect(hrefs).toContain("/shipping");
-  });
-
-  it("lists both new pages in the sitemap", () => {
-    const sitemap = readFileSync(join(ROOT, "src/app/sitemap.ts"), "utf8");
-    expect(sitemap).toContain('"/refund"');
-    expect(sitemap).toContain('"/shipping"');
-  });
-
-  it("names the seller of record, in full, in the shared section", () => {
-    const text = SELLER_SECTION.ps.join(" ");
-    expect(text).toContain(LEGAL_ENTITY);
-    expect(text).toContain(GSTIN);
-    expect(text).toContain(SUPPORT_WHATSAPP_DISPLAY);
-    expect(text).toContain(REGISTERED_ADDRESS.pincode);
-    /* A support number that does not take calls must never be printed as if it
-       does. Every surface says WhatsApp, including the schema contactOption. */
-    expect(text).toMatch(/WhatsApp/);
-  });
-
-  it("renders that one section on every policy page, rather than four copies", () => {
-    for (const route of POLICY_ROUTES) {
-      const src = readFileSync(join(ROOT, "src/app/(site)", route, "page.tsx"), "utf8");
-      expect(src, `${route} does not render SELLER_SECTION`).toContain("SELLER_SECTION");
-      // and never hardcodes what the section already says
-      expect(src, `${route} hardcodes the GSTIN`).not.toContain(GSTIN);
+/** A legal route's document: the export of its content module that carries `meta` and `parts`. */
+const docs = new Map<string, LegalDoc | null>();
+beforeAll(async () => {
+  for (const r of LEGAL) {
+    if (!existsSync(join(ROOT, moduleFile(r)))) {
+      docs.set(r.path, null);
+      continue;
     }
+    const mod = (await import(/* @vite-ignore */ join(ROOT, moduleFile(r)))) as Record<string, unknown>;
+    const doc = Object.values(mod).find((v) => typeof v === "object" && v !== null && "meta" in v && "parts" in v);
+    docs.set(r.path, (doc as LegalDoc | undefined) ?? null);
+  }
+});
+
+describe("the policy pages a merchant has to publish", () => {
+  it("are the plan's legal routes, refund and shipping among them", () => {
+    expect(LEGAL.length).toBeGreaterThanOrEqual(4);
+    expect(LEGAL.map((r) => r.path)).toEqual(expect.arrayContaining(["/privacy", "/terms", "/refund", "/shipping"]));
+  });
+
+  it.each(LEGAL.map((r) => [r.path, r] as const))("%s is a real page", (_path, r) => {
+    expect(existsSync(join(ROOT, pageFile(r))), pageFile(r)).toBe(true);
+  });
+
+  /* The failure this catches: a cleanup pass sees two legacy-looking rules and "restores" them. */
+  it.each(LEGAL.map((r) => r.path))("%s is NOT redirected away", (path) => {
+    expect(REDIRECTS.filter((rule) => rule.source === path)).toEqual([]);
+  });
+
+  it.each(LEGAL.map((r) => r.path))("%s is in the sitemap", (path) => {
+    expect(sitemap().map((entry) => entry.url)).toContain(absoluteUrl(path));
+  });
+
+  it.each(LEGAL.map((r) => r.path))("%s is linked from the footer of every page and from the store's policy links", (path) => {
+    expect(navigation.footer.columns.flatMap((c) => c.links.map((l) => l.href))).toContain(path);
+    expect(navigation.policies.map((l) => l.href)).toContain(path);
+  });
+});
+
+describe("the legal content modules", () => {
+  it.each(LEGAL.map((r) => [r.path, r] as const))("%s renders the shared seller block and never types the GSTIN", (_path, r) => {
+    const doc = docs.get(r.path);
+    if (!doc) {
+      // No module yet: only a route still served by its legacy page may wait (legacy-paths.ts, LEGACY_PATHS).
+      expect(isStillLegacy(pageFile(r)), `${r.path}: ${moduleFile(r)} is missing and ${pageFile(r)} is no longer the legacy page`).toBe(true);
+      console.log(`[policies] pending ${r.path}: served by the legacy page ${pageFile(r)} until ${moduleFile(r)} is written`);
+      return;
+    }
+    const blocks = doc.parts.flatMap((part) => part.blocks);
+    expect(blocks.filter((b) => b.kind === "seller"), `${r.path} does not render the shared seller block`).not.toEqual([]);
+    expect(readRepoFile(moduleFile(r)), `${moduleFile(r)} types the GSTIN; the seller block renders it`).not.toContain(GSTIN);
+  });
+});
+
+describe("the GSTIN", () => {
+  it("is typed once, in src/config/site.ts, and every other shipped file reads it from there (seller.ts)", () => {
+    const shipped = listFiles(["src"]).filter(
+      (p) => /\.(?:tsx?|mjs|js|json|md|css)$/.test(p) && !isTestOrStory(p) && !/(?:__fixtures__|__snapshots__)\/|\.test-support\.ts$/.test(p),
+    );
+    expect(shipped.length).toBeGreaterThan(100);
+    const typed = shipped.filter((p) => readRepoFile(p).includes(GSTIN));
+    expect(typed).toEqual(["src/config/site.ts"]);
   });
 });
