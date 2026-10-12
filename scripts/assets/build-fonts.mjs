@@ -8,10 +8,10 @@
 // files they name in design-system/project/fonts/ (read-only). For each face it writes a Latin plus rupee subset,
 // and for Baloo 2 also a Devanagari subset, each behind its unicode-range, so a page downloads only the scripts
 // it shows. The Devanagari subset holds only the Devanagari the site uses, read from mockup/pages/*.html and every
-// non-test, non-story text file under src/ (so copy added later in src/content is covered): the one-word Hindi
-// chip costs a few KB instead of the 110 KB of the whole script, inside the 130 KB of fonts on first view
-// (architecture §12). Any task that adds Devanagari text runs this script again; test/guards/generated-css.test.ts
-// names each character the subset lacks, and the file it comes from.
+// non-test, non-story text file under src/ except dot-files (so copy added later in src/content is covered): the
+// one-word Hindi chip costs a few KB instead of the 110 KB of the whole script, inside the 130 KB of fonts on first
+// view (architecture §12). Any task that adds Devanagari text runs this script again;
+// test/guards/generated-css.test.ts names each character the subset lacks, and the file it comes from.
 //
 // Outputs, all committed and re-derived by test/guards/generated-css.test.ts:
 //   public/fonts/<file>-<subset>.woff2         served at /fonts/... (stable URLs, so the preloads match)
@@ -25,7 +25,7 @@
 // Every copy must carry the copyright notice and the licence (OFL condition 2), hence OFL.txt beside the files.
 
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { basename, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { TextDecoder } from "node:util";
 import { brotliDecompressSync } from "node:zlib";
@@ -176,23 +176,44 @@ export function unicodeRange(codePoints) {
   return parts.join(", ");
 }
 
-/** The files whose Devanagari the subset covers: mockup/pages/*.html and every non-test, non-story file in src/. */
+/** A regular file's bytes; null for anything else, or for a file that is gone by the time it is read (ENOENT). */
+function readSourceFile(path) {
+  try {
+    return statSync(path).isFile() ? readFileSync(path) : null;
+  } catch (error) {
+    if (error?.code === "ENOENT") return null;
+    throw error;
+  }
+}
+
+/**
+ * The files whose Devanagari the subset covers, with their bytes: mockup/pages/*.html and every non-test, non-story
+ * file in src/. Dot-files are skipped, and so is a file that vanishes between the listing and the read: other
+ * processes write in src/ while this scans it (buildComposeCss writes `.compose.css.<pid>-<hex>.tmp` and renames it
+ * over the manifest while the guards run). Any other error still throws. test/guards/generated-css.test.ts restates
+ * this scan in siteDevanagari(); the two stay identical (task 1.2b).
+ */
 function devanagariSources(root) {
   const pages = existsSync(join(root, "mockup/pages"))
     ? readdirSync(join(root, "mockup/pages")).filter((f) => f.endsWith(".html")).map((f) => `mockup/pages/${f}`)
     : [];
   const src = readdirSync(join(root, "src"), { recursive: true, encoding: "utf8" })
     .map((f) => `src/${f}`)
-    .filter((f) => statSync(join(root, f)).isFile() && !NOT_SHIPPED.test(f));
-  return [...pages, ...src].sort();
+    .filter((f) => !NOT_SHIPPED.test(f));
+  return [...pages, ...src]
+    .filter((f) => !basename(f).startsWith("."))
+    .sort()
+    .flatMap((file) => {
+      const bytes = readSourceFile(join(root, file));
+      return bytes ? [{ file, bytes }] : [];
+    });
 }
 
 /** Every Devanagari code point the site's sources use, ascending, each with the first file that uses it. */
 export function collectDevanagari(root = ROOT) {
   const utf8 = new TextDecoder("utf-8", { fatal: true });
   const used = new Map();
-  for (const file of devanagariSources(root)) {
-    const bytes = readFileSync(join(root, file));
+  for (const { file, bytes } of devanagariSources(root)) {
     if (bytes.includes(0)) continue; // binary: fonts, images
     let text;
     try {

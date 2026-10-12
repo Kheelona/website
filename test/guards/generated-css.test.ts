@@ -1,8 +1,21 @@
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, utimesSync, writeFileSync } from "node:fs";
+import {
+  chmodSync,
+  copyFileSync,
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  statSync,
+  symlinkSync,
+  utimesSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
+import { basename, dirname, join } from "node:path";
 import { TextDecoder } from "node:util";
 import postcss, { type AtRule, type Rule } from "postcss";
 import { afterAll, describe, expect, it } from "vitest";
@@ -146,18 +159,26 @@ describe("fonts", () => {
    * Every Devanagari character the site's sources use, with the first file that uses it: runs of U+0900-097F
    * (with any ZWNJ or ZWJ inside a run) in mockup/pages/*.html and in every non-test, non-story text file under
    * src/. Restated here rather than imported, so a fault in the script's own scan cannot hide a missing glyph.
+   * Like the script, it skips dot-files and a file gone by the time it is read (ENOENT), and throws on anything else.
    */
-  function siteDevanagari(): Map<string, string> {
-    const pages = existsSync(join(ROOT, "mockup/pages"))
-      ? readdirSync(join(ROOT, "mockup/pages")).filter((f) => f.endsWith(".html")).map((f) => `mockup/pages/${f}`)
+  function siteDevanagari(root = ROOT): Map<string, string> {
+    const pages = existsSync(join(root, "mockup/pages"))
+      ? readdirSync(join(root, "mockup/pages")).filter((f) => f.endsWith(".html")).map((f) => `mockup/pages/${f}`)
       : [];
-    const src = readdirSync(join(ROOT, "src"), { recursive: true, encoding: "utf8" })
+    const src = readdirSync(join(root, "src"), { recursive: true, encoding: "utf8" })
       .map((f) => `src/${f}`)
-      .filter((f) => statSync(join(ROOT, f)).isFile() && !/\.(test|spec|stories)\.[^/]+$/.test(f));
+      .filter((f) => !/\.(test|spec|stories)\.[^/]+$/.test(f));
     const utf8 = new TextDecoder("utf-8", { fatal: true });
     const used = new Map<string, string>();
-    for (const file of [...pages, ...src].sort()) {
-      const bytes = readFileSync(join(ROOT, file));
+    for (const file of [...pages, ...src].filter((f) => !basename(f).startsWith(".")).sort()) {
+      let bytes: Buffer;
+      try {
+        if (!statSync(join(root, file)).isFile()) continue;
+        bytes = readFileSync(join(root, file));
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code === "ENOENT") continue; // gone between the listing and the read
+        throw error;
+      }
       if (bytes.includes(0)) continue; // binary (fonts, images)
       let text: string;
       try {
@@ -237,6 +258,76 @@ describe("fonts", () => {
       expect(mapped.map(hex), `${f.file} maps exactly the site's Devanagari`).toEqual(used.map(hex));
       expect(rangeCodePoints(f.range).map(hex), `${f.file} unicode-range`).toEqual(mapped.map(hex));
     }
+  });
+
+  // Other Vitest workers rebuild compose.css while this file scans src/: buildComposeCss writes
+  // src/styles/generated/.compose.css.<pid>-<hex>.tmp and renames it over the manifest, so a scan could list the
+  // temporary file and find it gone when it came to read it (task 1.2b). The script's scan (devanagariSources) and
+  // siteDevanagari above both skip dot-files and any file that vanishes between the listing and the read (ENOENT),
+  // fail on every other error, and stay identical.
+  describe("the two Devanagari scans, the script's and this file's", () => {
+    const temps: string[] = [];
+    afterAll(() => temps.forEach((t) => rmSync(t, { recursive: true, force: true })));
+
+    /** A site in a temporary folder: each path with its text, or `null` for a link to a file that no longer exists. */
+    function site(files: Record<string, string | null>): string {
+      const root = mkdtempSync(join(tmpdir(), "ks-devanagari-"));
+      temps.push(root);
+      mkdirSync(join(root, "src"), { recursive: true });
+      for (const [path, text] of Object.entries(files)) {
+        mkdirSync(dirname(join(root, path)), { recursive: true });
+        if (text === null) symlinkSync(join(root, "vanished.txt"), join(root, path));
+        else writeFileSync(join(root, path), text);
+      }
+      return root;
+    }
+
+    /** What each scan finds in `root`, as "<character> <first file>" lines in code point order. */
+    function scans(root: string) {
+      const line = (cp: number, file: string) => `${String.fromCodePoint(cp)} ${file}`;
+      const restated = [...siteDevanagari(root)].map(([ch, file]) => [ch.codePointAt(0)!, file] as const);
+      return {
+        script: [...collectDevanagari(root)].map(([cp, file]) => line(cp, file)),
+        restated: restated.sort(([a], [b]) => a - b).map(([cp, file]) => line(cp, file)),
+      };
+    }
+
+    it("skip dot-files, such as the temporary manifest buildComposeCss renames into place", () => {
+      const root = site({
+        "src/content/home.ts": 'export const chip = "क";\n',
+        "src/styles/generated/.compose.css.4242-0123456789ab.tmp": "/* ख */\n",
+        "src/.notes.ts": 'export const note = "ग";\n',
+        "mockup/pages/home.html": "<p>घ</p>\n",
+        "mockup/pages/.draft.html": "<p>ङ</p>\n",
+      });
+      const found = ["क src/content/home.ts", "घ mockup/pages/home.html"];
+      expect(scans(root)).toEqual({ script: found, restated: found });
+    });
+
+    it("skip a file that vanishes between the listing and the read (ENOENT)", () => {
+      // A link to a missing file is listed like any other file and fails with ENOENT when read, exactly as a file
+      // renamed or deleted after the listing does: the race, made repeatable.
+      const root = site({
+        "src/content/home.ts": 'export const chip = "क";\n',
+        "src/content/gone.ts": null,
+        "mockup/pages/gone.html": null,
+      });
+      const found = ["क src/content/home.ts"];
+      expect(scans(root)).toEqual({ script: found, restated: found });
+    });
+
+    // Root reads any file whatever its mode, so the unreadable fixture cannot be made there.
+    it.skipIf(process.getuid?.() === 0)("fail on any other error, so no unreadable source is passed over in silence", () => {
+      const root = site({ "src/content/home.ts": 'export const chip = "क";\n' });
+      chmodSync(join(root, "src/content/home.ts"), 0o000);
+      expect(() => collectDevanagari(root)).toThrow(/EACCES/);
+      expect(() => siteDevanagari(root)).toThrow(/EACCES/);
+    });
+
+    it("find the same characters in the same first files across the site's own sources", () => {
+      const { script, restated } = scans(ROOT);
+      expect(restated).toEqual(script);
+    });
   });
 
   it("points every face at a font file in public/fonts, every font file there is used, and OFL.txt is the one other file", () => {
