@@ -220,7 +220,7 @@ with an earlier one.
      DS gap G-20) in `src/components/chrome/WhatsAppFloat/whatsapp-float.css`, **plus the ten entries of
      [mockup-css-mapping §4](mockup-css-mapping.md#4-named-exceptions-for-token-exceptionsts)** (nine
      `CSS_EXCEPTIONS` and the per-file `MEDIA_EXCEPTIONS` `content-max-1200`; added after the 1.1 merge by the
-     main session through the 1.1 owner, 2026-10-12). Inline `style` is allowed only
+     main session, commit `5c65999`, 2026-10-12, each proven red outside its files). Inline `style` is allowed only
      for art-board positions (percent and rotation), `--kh-tilt` and `--kh-ratio`. Files under `generated/`
      and `*.generated.*` are exempt from the off-token scan (their drift tests compare them with the DS).
   12. `mockup-markup` scans `src/` for `mk-`, `data-src` and review-tool markup (N22).
@@ -547,8 +547,39 @@ alone; 1.2 leaves `globals.css` alone; 1.1 deletes only the two tests it owns).
 - **Test:** proven red (a planted `{ph:` in a fixture module with `KH_SITE_ENV=production`) and green;
   the excluded files never trip it.
 
+### 1.1b Harness addendum (builder; runs with wave 2)
+
+- **Why:** the minor findings of 1.1's last review (run `wf_7ba453ba-6cb`), left after 1.1 merged.
+- **Owns:** `test/guards/no-off-token.test.ts` (no new exceptions in `token-exceptions.ts`), `playwright.config.ts`,
+  `scripts/qa/lighthouse.mjs`, `test/e2e/support/**` where needed.
+- **Acceptance:**
+  1. no-off-token also refuses Tailwind arbitrary modifiers (`text-sm/[17px]`, `bg-black/[0.37]`), arbitrary
+     properties whose name has a digit or a capital (`[--ks-x2:3px]`), and a CSS named colour that reaches a
+     colour attribute through a const (`const C = "red"; <path fill={C} />`) or an object property or spread
+     (`<path {...{ fill: "red" }} />`); red table cases for each, green for `fill="currentColor"` and tokens.
+  2. An opt-in WebKit project (`KH_WEBKIT=1`): iPhone emulation for the layout specs (no-sideways, first-screen,
+     cta, axe, chrome) and WebKit at the laptop sizes (test plan §1.2, §3, §4.1 safe-area on WebKit); the
+     config header documents `npx playwright install webkit` (approved: the browser for the pinned Playwright
+     1.63.0, no npm change).
+  3. `lighthouse.mjs`: the Best Practices allowance applies only when **every** run's failing audits are in
+     the allowed list (union printed); **gating = the simulated median** (Lighthouse's default, PageSpeed's
+     method); devtools-throttled medians are recorded and printed, with a warning below budget, never gating
+     (lessons §6 "record both"; main session 2026-10-12).
+- **Test:** `npm run verify` green; each new no-off-token case proven red; the WebKit project runs one spec
+  green locally when installed.
+
+### 1.2b Font scan robustness (builder; runs with wave 2)
+
+- **Owns:** `scripts/assets/build-fonts.mjs`, `test/guards/generated-css.test.ts`.
+- **Acceptance:** both Devanagari scans (the script's `devanagariSources()` and the test's restatement) skip
+  dot-files and skip a file that vanishes between listing and reading (ENOENT), so a concurrent
+  `buildComposeCss()` temp file can never fail them; the two stay identical; regenerated outputs are
+  byte-identical (`--check` green).
+- **Test:** whole Vitest suite and `npm run build` green.
+
 **Wave 2 ownership check:** `src/config/site.ts` only in 2.6 (the `POSTHOG_HOSTS` line); `ui/` folders
-distinct; the layout import lines only in 2.6; no task touches `src/lib/cn.ts`.
+distinct; the layout import lines only in 2.6; no task touches `src/lib/cn.ts`; 1.1b and 1.2b touch only
+wave-1 tooling files no wave-2 task owns.
 
 ### 2.10 Beta never takes a payment (D051) (builder)
 
@@ -862,7 +893,7 @@ waits; it may run in any later wave before wave 8, alone with its own files.
   nofollow` and the robots meta, and non-HTML files (`/llms.txt`, `/pricing.md`, `/sitemap.xml`, an image,
   a film) carry the header (N1); every CTA opens betastore; betastore shows the restyled not-configured
   screen and its API routes answer 503 (D051); no GA4, Meta Pixel, CAPI or Ahrefs requests from beta;
-  PostHog events carry `env = beta`; no `$current_url` containing the bypass secret (N5); axe and
+  PostHog events carry `env = beta`; no `$current_url` containing the bypass secret (N5; the harness sends the bypass header only on the first request to a beta host, reads each 3xx `Location` itself and aborts any hop that leaves the beta hosts, and warms each beta host's bypass cookie first; Playwright never routes redirect hops; confirmed by the main session 2026-10-12); axe and
   Lighthouse Accessibility on beta through the bypass cookie; region and timing: `x-vercel-id` names
   `bom1`; the store form (token and full mode, validation errors) and the `/thanks` states sent to the
   founder as phone screenshots from the local production build (D051).

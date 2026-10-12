@@ -63,8 +63,8 @@ never stage them).
 | Wave | Run | State |
 |---|---|---|
 | 0 (prep) | – | Done 2026-10-12: plan committed (`b2ea409`); dev tools pinned and **security patch next 16.3.8, sharp 0.35.5** (`1806937`); D051 (`8423f87`); runbook (`242126b`) |
-| 1 | `wf_de7ff1a5-e8b` (base `1806937`), held 16:40; resumed in `wf_20aaa1e8-c0f` (1.1 failed round 3, 1.2 passed); then **`wf_7ba453ba-6cb`** (18:40: 1.1 fix round, 1.2 font follow-up) | 1.2-1.6 merged; **waiting on `wf_7ba453ba-6cb`** (snapshot below) |
-| 2 | – | Next: 2.1-2.10 (2.10 = beta never takes a payment, D051) |
+| 1 | `wf_de7ff1a5-e8b` → `wf_20aaa1e8-c0f` → `wf_7ba453ba-6cb` | **Done 19:40, 2026-10-12.** All seven tasks merged (1.1 `b3fff53`, 1.2 follow-up `e8b56ce`); wave close `51b9b5f`: `npm run verify` green (143 files / 2143 tests, lint 0 errors, both typechecks, jscpd, checksums) and `next build` green; mapping exceptions `5c65999`; worktrees and branches removed |
+| 2 | (launching 19:45, base `5c65999`+wiki) | 2.1-2.10 plus the addenda 1.1b (harness minors) and 1.2b (font scan) |
 | 3-10 | – | Per [tasks](tasks.md) |
 
 ### Wave 1 snapshot (18:50, 2026-10-12)
