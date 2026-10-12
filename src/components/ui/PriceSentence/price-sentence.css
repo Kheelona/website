@@ -1,0 +1,5 @@
+/* PriceSentence (task 2.4): the price sentence beside every CTA. Ported from mockup.css:18 (.mk-price). The drawer,
+   offer-card and store variants use the DS classes only (kh-drawer__note, kh-offer__fine, kh-body). */
+.ks-price {
+  margin: var(--space-3) 0 0;
+}
