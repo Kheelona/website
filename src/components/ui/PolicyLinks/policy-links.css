@@ -1,0 +1,4 @@
+/* PolicyLinks (task 2.5): ported from the approved mockup's `mk-policy` (mockup/css/store.css:20-21), on the
+   store and the confirmation page. font-weight 800: mockup-css-mapping §3.4 row 61, exception ds-weight-800. */
+.ks-policy { display: flex; flex-wrap: wrap; gap: 0 var(--space-5); }
+.ks-policy a { display: inline-flex; align-items: center; min-height: var(--tap-min); color: var(--text); font-weight: 800; text-underline-offset: var(--space-1); }
