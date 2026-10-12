@@ -1,0 +1,65 @@
+/* TrustSection (task 3.3). Ported from the approved mockup: mockup.css:98 (the facts line), meet-kheelu.css:72-76 (the
+   product page's safety split), safety.css:9-18 (the tummy unit and the "never" list) and
+   ai-toys-for-kids-in-india.css:27-29 (the guide's answers and pointer). */
+
+/* The checkable facts line under the safety split (mockup.css:98, .mk-facts; TrustLine centres it). */
+.ks-facts {
+  margin-top: var(--space-6);
+}
+
+/* Product page: the facts beside the privacy screen; on laptops one column of facts (wider lines, no empty panel)
+   and the screen stays in view while they scroll (meet-kheelu.css:72-76, .mk-safety-split). */
+.ks-safety-split {
+  align-items: start;
+}
+@media (min-width: 900px) {
+  .ks-safety-split .kh-trust {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ks-safety-split .ks-shots {
+    position: sticky;
+    top: var(--space-9);
+  }
+}
+
+/* The safety page's tummy unit beside the four facts: small on phones so the facts stay close (safety.css:10-11;
+   mockup-css-mapping rows 52-53). */
+.ks-sf-belly {
+  width: min(100%, calc(var(--space-9) * 2 + var(--space-2))); /* 2 × 96 + 8 = 200 */
+}
+@media (min-width: 900px) {
+  .ks-sf-belly {
+    width: min(100%, calc(var(--space-9) * 3 + var(--space-3))); /* 3 × 96 + 12 = 300 */
+    justify-self: center;
+  }
+}
+
+/* An odd last item runs the full width from 720 px, where the DS list has two columns: the safety page's fifth
+   "never" item and the guide's fifth answer (safety.css:14, ai-toys-for-kids-in-india.css:27). */
+@media (min-width: 720px) {
+  .ks-trust--span-last .kh-trust__item:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+/* The five "never" items: three then two from 1024 px (safety.css:16-18, .mk-sf-never). */
+@media (min-width: 1024px) {
+  .ks-sf-never {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  .ks-sf-never .kh-trust__item {
+    grid-column: span 2;
+  }
+  .ks-sf-never .kh-trust__item:nth-child(n + 4) {
+    grid-column: span 3;
+  }
+}
+
+/* The guide's pointer to the safety page, after the answers (ai-toys-for-kids-in-india.css:28-29). */
+.ks-gd-pointer {
+  max-width: var(--measure);
+  margin: var(--space-6) 0 0;
+}
+.ks-gd-pointer + .kh-section__actions {
+  margin-top: var(--space-4);
+}
