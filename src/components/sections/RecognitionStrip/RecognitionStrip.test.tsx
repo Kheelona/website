@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { mockupFold, skeleton } from "../ArticleBody/__fixtures__/approved-fold";
+import { mockupFold, skeleton } from "../../../../test/support/mockup-compare";
 import { RecognitionStrip } from "./RecognitionStrip";
 import { RECOGNITION_GATED, RECOGNITION_ONE_FILED } from "./RecognitionStrip.stories";
 

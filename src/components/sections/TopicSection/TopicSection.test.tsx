@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import type { StaticImageData } from "next/image";
 import { describe, expect, it } from "vitest";
-import { mockupFold, skeleton, words } from "../ArticleBody/__fixtures__/approved-fold";
+import { mockupFold, skeleton, words } from "../../../../test/support/mockup-compare";
 import type { TopicSectionConfig } from "./topic-section.types";
 import { TopicSection } from "./TopicSection";
 import { AI_AND_SAFETY_TOPIC, LEARNING_TOPIC, SCREEN_TIME_TOPIC, TALKING_TOPIC } from "./TopicSection.stories";

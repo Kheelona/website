@@ -1,7 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { buildOffer } from "@/lib/offer/offer";
-import { mockupFold, skeleton, words } from "../ArticleBody/__fixtures__/approved-fold";
+import { mockupFold, skeleton, words } from "../../../../test/support/mockup-compare";
 import { ProductDetails } from "./ProductDetails";
 import { PRODUCT_DETAILS } from "./ProductDetails.stories";
 

@@ -8,7 +8,7 @@ import { TRUST_FULL, trustItems } from "@/content/en-IN/trust";
 import type { ArtBoardRef, ImageRef } from "@/content/types";
 import { buildOffer } from "@/lib/offer/offer";
 import type { SellingContext } from "../CtaBlock/cta-block.types";
-import { builtMarkup, canonical, mockupElement, renderedElement, STORE, without } from "../CtaBlock/mockup-fold.test-support";
+import { builtMarkup, canonical, mockupFold, renderedElement, STORE, without } from "../../../../test/support/mockup-compare";
 import { OfferSection } from "./OfferSection";
 import type { OfferSectionConfig } from "./offer-section.types";
 
@@ -61,7 +61,7 @@ describe("OfferSection: the approved folds, exactly (media aside)", () => {
     ["Home close (home.html fold 9)", "home", "#close", HOME],
     ["product offer (meet-kheelu.html fold 3)", "meet-kheelu", "#offer", PRODUCT],
   ] as const)("%s", (_name, slug, fold, config) => {
-    const expected = builtMarkup([without(mockupElement(slug, fold), MEDIA)], { keepSpans: KEEP });
+    const expected = builtMarkup([without(mockupFold(slug, fold), MEDIA)], { keepSpans: KEEP });
     const actual = canonical(without(renderedElement(<OfferSection {...config} {...context()} />), MEDIA));
     expect(actual).toBe(expected);
   });

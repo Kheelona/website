@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import type { StaticImageData } from "next/image";
 import { describe, expect, it } from "vitest";
-import { mockupFold, skeleton, words } from "../ArticleBody/__fixtures__/approved-fold";
+import { mockupFold, skeleton, words } from "../../../../test/support/mockup-compare";
 import { ArticleHead } from "./ArticleHead";
 import { LATE_TALKERS_HEAD, LEARNING_TOYS_HEAD, SAFE_AI_TOY_HEAD } from "./ArticleHead.stories";
 

@@ -1,16 +1,15 @@
-import { readFileSync } from "node:fs";
 import { render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { STORE_URL, SUPPORT_WHATSAPP_HREF } from "@/config/site";
 import { buildOffer } from "@/lib/offer/offer";
-import { hoistNowrap, mockupDiff } from "./mockup-diff";
+import { hoistNowrap, mockupDiff, mockupPage, STORE } from "../../../test/support/mockup-compare";
 import { SiteShell } from "./SiteShell";
 
 /* SiteShell (task 3.1; architecture §5.1, structure §3.1): the marketing site's shell, rendered by
  * src/app/(site)/layout.tsx and by the root not-found page. Its chrome is compared element by element with the same
  * elements of the approved mockup's built Home (mockup/home.html, D046): tag, classes (mk- renamed ks-), attributes,
- * order and text (mockup-diff.ts, shared with StoreShell.test.tsx), with every word, link and price from content.
- * Pixel parity of the same elements is test/e2e/chrome.spec.ts's. */
+ * order and text (the mockup comparison harness, test/support/mockup-compare.ts, task 3.6), with every word, link and
+ * price from content. Pixel parity of the same elements is test/e2e/chrome.spec.ts's. */
 
 const nav = vi.hoisted(() => ({ pathname: "/" }));
 vi.mock("next/navigation", () => ({ usePathname: () => nav.pathname }));
@@ -18,21 +17,13 @@ afterEach(() => {
   nav.pathname = "/";
 });
 
-const mockup = new DOMParser().parseFromString(readFileSync("mockup/home.html", "utf8"), "text/html");
+const mockup = mockupPage("home");
 const offer = buildOffer("token");
 
-/** The mockup links its pages by file name; the site by path, and the store by STORE_URL. */
-function realHref(href: string): string {
-  if (href === "store.html") return STORE_URL;
-  if (href === "home.html") return "/";
-  if (href === "meet-kheelu.html") return "/products/kheelu";
-  const page = /^([a-z0-9-]+)\.html(#.*)?$/.exec(href);
-  return page ? `/${page[1]}${page[2] ?? ""}` : href;
-}
-
 /** The mockup's script hook, the image source and width, and the bar's state (the mockup ships the bar hidden; here
- *  its controller has already run) are not markup. */
-const differences = mockupDiff({ realHref, ignore: ["data-open-menu", "src", "width", "inert"], dropClasses: ["is-hidden"] });
+ *  its controller has already run) are not markup. The mockup's page links are read as routes, the store as the
+ *  build's (`mockupRoute`). */
+const differences = mockupDiff({ ignore: ["data-open-menu", "src", "width", "inert"], dropClasses: ["is-hidden"] });
 
 function shell(stickyBar: readonly string[] = ["/"]) {
   return render(
@@ -56,6 +47,10 @@ describe("SiteShell: the chrome equals the approved mockup's (mockup/home.html)"
     expect(ref, mockupSelector).not.toBeNull();
     expect(built, builtSelector).not.toBeNull();
     expect(differences(hoistNowrap(built!), ref!)).toEqual([]);
+  });
+
+  it("reads the mockup's store link as this build's store (the harness's STORE is STORE_URL in tests)", () => {
+    expect(STORE).toBe(STORE_URL);
   });
 
   it("keeps the mockup's order: skip link, nav, main, footer, buy bar, drawer; then the bubble", () => {

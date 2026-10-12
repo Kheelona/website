@@ -1,27 +1,27 @@
-import { readFileSync } from "node:fs";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { MARKETING_ORIGIN } from "@/config/env";
-import { hoistNowrap, mockupDiff } from "@/layouts/SiteShell/mockup-diff";
+import { isSitePath } from "@/lib/links";
+import { hoistNowrap, mockupDiff, mockupPage, mockupRoute } from "../../../test/support/mockup-compare";
 import { StoreShell } from "./StoreShell";
 
 /* StoreShell (task 3.1; architecture §16.1, structure §3.1): the store host's shell, rendered by src/app/store/layout.tsx:
  * the skip link, the store header, the page in <main id="main">, the store footer, compared element by element with
- * the approved store mockup (mockup/store.html, shared with store-confirmation.html) through mockup-diff.ts (shared
- * with SiteShell.test.tsx). Each store page renders its own WhatsApp bubble (a layout cannot know its page, D050), so
- * the shell has none. */
+ * the approved store mockup (mockup/store.html, shared with store-confirmation.html) through the mockup comparison
+ * harness (test/support/mockup-compare.ts, task 3.6). Each store page renders its own WhatsApp bubble (a layout cannot
+ * know its page, D050), so the shell has none. */
 
-const mockup = new DOMParser().parseFromString(readFileSync("mockup/store.html", "utf8"), "text/html");
+const mockup = mockupPage("store");
 
 /** The mockup links the marketing pages by file name; the store links them on the marketing origin of this build. */
 function realHref(href: string): string {
-  if (href === "home.html") return MARKETING_ORIGIN;
-  const page = /^([a-z0-9-]+)\.html(#.*)?$/.exec(href);
-  return page ? `${MARKETING_ORIGIN}/${page[1]}${page[2] ?? ""}` : href;
+  const route = mockupRoute(href);
+  if (!isSitePath(route)) return route;
+  return route === "/" ? MARKETING_ORIGIN : `${MARKETING_ORIGIN}${route}`;
 }
 
 /** The image source and width are not markup; the address's mk-seller is ks-store-foot__seller (mockup-css-mapping §6.2). */
-const differences = mockupDiff({ realHref, ignore: ["src", "width"], renameClasses: { "mk-seller": "ks-store-foot__seller" } });
+const differences = mockupDiff({ realHref, ignore: ["src", "width"], renames: { seller: "ks-store-foot__seller" } });
 
 function shell() {
   return render(

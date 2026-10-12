@@ -9,7 +9,7 @@ import { TRUST_COMPACT, TRUST_FULL, trustItems, type TrustId } from "@/content/e
 import type { ArtBoardRef } from "@/content/types";
 import { buildOffer } from "@/lib/offer/offer";
 import type { CtaSecondary, SellingContext } from "../CtaBlock/cta-block.types";
-import { addClass, builtMarkup, canonical, mockupElement, renderedElement, STORE, without } from "../CtaBlock/mockup-fold.test-support";
+import { addClass, builtMarkup, canonical, mockupFold, renderedElement, STORE, without } from "../../../../test/support/mockup-compare";
 import { CloseSection } from "./CloseSection";
 import { CLAMPED_SPLIT_COLUMN_SIZES } from "./close-art";
 import type { CloseSectionConfig } from "./close-section.types";
@@ -120,7 +120,7 @@ const CASES: Case[] = [
   ],
 ];
 
-/* The build's documented differences inside a close (besides mockup-fold.test-support's and CtaBlock's): the journal
+/* The build's documented differences inside a close (besides the harness's, test/support/mockup-compare.ts, and CtaBlock's): the journal
    close's section and board take their own names (mk-close is a stories-page name; in one global stylesheet it
    would read as every close's, mockup-css-mapping §6.2), the guide close's board clamp is ArtBoard's class, and the
    CtaBlock classes (CtaBlock.test.tsx). */
@@ -136,7 +136,7 @@ const knownIcon = (markup: string) => markup.replace(ICON_PATHS["map-pin"], ICON
 
 describe("CloseSection: every close of the approved mockup, exactly (art aside)", () => {
   it.each(CASES)("%s", (_name, slug, fold, config) => {
-    const expected = builtMarkup([without(mockupElement(slug, fold), ".kh-art")], { renames: RENAMES, adjust: adjustFor(config) });
+    const expected = builtMarkup([without(mockupFold(slug, fold), ".kh-art")], { renames: RENAMES, adjust: adjustFor(config) });
     const actual = canonical(without(renderedElement(<CloseSection {...config} {...context()} />), ".kh-art"));
     expect(actual).toBe(knownIcon(expected));
   });

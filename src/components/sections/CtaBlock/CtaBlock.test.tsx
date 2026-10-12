@@ -8,7 +8,7 @@ import { TRUST_COMPACT, TRUST_FULL, trustItems, type TrustId } from "@/content/e
 import { buildOffer } from "@/lib/offer/offer";
 import { CtaBlock } from "./CtaBlock";
 import type { CtaBlockConfig, CtaSecondary, SellingContext } from "./cta-block.types";
-import { addClass, builtMarkup, mockupCtaRun, mockupElement, renderedMarkup, STORE } from "./mockup-fold.test-support";
+import { addClass, builtMarkup, mockupCtaRun, mockupFold, renderedMarkup, STORE } from "../../../../test/support/mockup-compare";
 
 /* CtaBlock (task 3.2; architecture §5.2 "Compact CTA block"; home.md "CTA block"). Rendered from the real content
    (the offer view model in both modes, content/en-IN/{cta,seller,trust}.ts), so each case proves the content and the
@@ -24,7 +24,7 @@ const secondary = (id: keyof typeof cta.secondary, variant: CtaSecondary["varian
 const SEE_HOW: CtaSecondary = { label: "See how it works", href: "/products/kheelu", variant: "ghost", iconEnd: "arrow-right" };
 const SEE_HOW_KHEELU: CtaSecondary = { ...SEE_HOW, label: "See how Kheelu works" };
 
-/* The build's documented differences from the mockup markup in a CTA block (besides mockup-fold.test-support's):
+/* The build's documented differences from the mockup markup in a CTA block (besides the harness's, test/support/mockup-compare.ts):
    - every chilli button of a CTA block carries ks-cta__button: the four page-only rules that make a phone-width
      button inline from 720 px (mockup.css:85, safety.css:51, ai-toys-for-kids-in-india.css:49, stories.css:130) are
      one rule on that class, so the page names mk-sf-cta, mk-gd-cta and mk-close-cta (no rule of its own) go;
@@ -64,7 +64,7 @@ const PRODUCT_CLOSE_ICON = (markup: string) => markup.replace(ICON_PATHS["map-pi
 
 describe("CtaBlock: every placement of the approved mockup, exactly", () => {
   it.each(PLACEMENTS)("%s", (name, slug, fold, config) => {
-    const expected = builtMarkup(mockupCtaRun(mockupElement(slug, fold)), { renames: RENAMES, adjust: adjustFor(config.layout) });
+    const expected = builtMarkup(mockupCtaRun(mockupFold(slug, fold)), { renames: RENAMES, adjust: adjustFor(config.layout) });
     const actual = renderedMarkup(<CtaBlock {...config} {...context()} />);
     expect(actual).toBe(name.startsWith("product close") ? PRODUCT_CLOSE_ICON(expected) : expected);
   });

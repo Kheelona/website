@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { seller } from "@/content/en-IN/seller";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
-import { builtMarkup, canonical, mockupElement, renderedElement } from "../CtaBlock/mockup-fold.test-support";
+import { builtMarkup, canonical, mockupFold, renderedElement } from "../../../../test/support/mockup-compare";
 import { GrievanceBlock } from "./GrievanceBlock";
 import type { GrievanceBlockConfig } from "./grievance-block.types";
 
@@ -25,7 +25,7 @@ const LEGAL: GrievanceBlockConfig = { context: "legal", line: seller.grievance.l
 
 describe("GrievanceBlock: contact (contact.html fold 3)", () => {
   it("renders the fold exactly as the mockup", () => {
-    expect(canonical(renderedElement(<GrievanceBlock {...CONTACT} />))).toBe(builtMarkup([mockupElement("contact", "#grievance")]));
+    expect(canonical(renderedElement(<GrievanceBlock {...CONTACT} />))).toBe(builtMarkup([mockupFold("contact", "#grievance")]));
   });
 
   it("prints the D032 wording verbatim, from the one content value", () => {
@@ -45,9 +45,9 @@ describe("GrievanceBlock: contact (contact.html fold 3)", () => {
 
 describe("GrievanceBlock: legal (the card in a legal page's part)", () => {
   it("renders the privacy and terms card exactly as the mockup: the D032 line, then the complaint-reference placeholder", () => {
-    const expected = builtMarkup([mockupElement("privacy", "#contact .mk-doc__card")]);
+    const expected = builtMarkup([mockupFold("privacy", "#contact .mk-doc__card")]);
     expect(canonical(renderedElement(<GrievanceBlock {...LEGAL} />))).toBe(expected);
-    expect(builtMarkup([mockupElement("terms", "#contact .mk-doc__card:last-child")])).toBe(expected);
+    expect(builtMarkup([mockupFold("terms", "#contact .mk-doc__card:last-child")])).toBe(expected);
   });
 
   it("prints the same D032 wording, and no note unless the page gives one (refund, shipping and contact promise none)", () => {
