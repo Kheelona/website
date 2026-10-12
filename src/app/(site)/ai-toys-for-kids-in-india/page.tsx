@@ -62,7 +62,7 @@ export const metadata = pageMeta({
      2026-09-11 carried a price, an age and a language count in the description;
      ours carried a sentence about warmth. 158 characters, under the 160 guard. */
   description:
-    "Five checks before you buy an AI toy for a 3 to 5 year old in India, and how Kheelu answers each one: no screen, wake-word mic, 8 languages, from ₹4,999.",
+    "Five checks before you buy an AI toy for a 3 to 5 year old in India, and how Kheelu answers each one: no screen, press-to-talk, 8 languages, from ₹4,999.",
   path: "/ai-toys-for-kids-in-india",
 });
 
@@ -75,17 +75,17 @@ const CHECKS = [
   {
     n: "01",
     title: "When is the microphone on?",
-    body: "The only good answer is: when your child invites it. Look for wake-word listening and a plain explanation of what happens the rest of the time. Off should mean off, not muted and waiting.",
+    body: "The only good answer is: when your child invites it. Look for a toy that starts listening only when your child starts a conversation, and a plain explanation of what happens the rest of the time.",
   },
   {
     n: "02",
     title: "Can it reach the open internet?",
-    body: "A toy that can browse can stumble. Ask where the answers come from. If the answer is a general chatbot with a filter on top, the filter is doing all the work, and filters leak.",
+    body: "A toy that can browse can stumble. Ask where the answers come from, whether the toy can search the web, and what rules it follows for a child of your child's age. A maker who cannot say how its replies are kept safe has not thought about it.",
   },
   {
     n: "03",
     title: "Can you read everything it said?",
-    body: "Every conversation should be readable by you, word for word, and deletable by you, in one tap, without emailing anyone. A summary is not a transcript.",
+    body: "Every conversation should be readable by you, word for word, and you should be able to delete everything yourself. A summary is not a transcript.",
   },
   {
     n: "04",

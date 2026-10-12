@@ -81,7 +81,7 @@ const HOME_FAQ: FaqEntry[] = [
      is the one they open. */
   {
     q: "What will my child actually get out of Kheelu?",
-    a: "A friend at 3, and a head start for school. Kheelu answers your child's questions, remembers the words they know, and builds on them the next day: stories, numbers, thinking games, and the languages you speak at home. The parent app counts the new words, so you see the growth, not just the play.",
+    a: "A friend at 3, and a head start for school. Kheelu answers your child's questions, remembers the words they know, and builds on them the next day: stories, numbers, thinking games, and the languages you speak at home. The parent app shows what they asked and talked about each day, so you see the growth, not just the play.",
   },
   {
     q: "How much does Kheelu cost in India?",
@@ -104,13 +104,13 @@ const HOME_FAQ: FaqEntry[] = [
      than a broad claim. */
   {
     q: "Does Kheelu need the internet to work?",
-    a: "For open conversation, yes: AI mode runs on your home WiFi. For everything else, no: Story-mode stories and lessons play offline, and Bluetooth music needs only a paired phone. On a train or anywhere without a signal, your child still has stories to interrupt, question, and be quizzed on.",
+    a: "For open conversation, yes: AI mode runs on your home WiFi. For everything else, no: the stories and songs you pick in the parent app play offline, and Bluetooth music needs only a paired phone. On a train or anywhere without a signal, your child still has their stories.",
   },
   /* V6 D7: opens with the same honest verdict as the /safety flagship answer,
      so the two pages agree in substance and differ only in length. */
   {
     q: "Is an AI toy safe for a small child?",
-    a: "Not all of them are, and what makes a safe toy is how it is built. Kheelu wakes to a word and the microphone is off the rest of the time, the first thinking happens on the toy, answers come from a closed library rather than the open internet, and you can read or delete every conversation.",
+    a: "Not all of them are, and what makes a safe toy is how it is built. Kheelu starts listening only when your child presses its button, cannot browse or search the internet, follows child-safety rules set for your child's age, and shows you every conversation in the parent app, word for word.",
   },
 ];
 

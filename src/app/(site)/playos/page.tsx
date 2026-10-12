@@ -161,7 +161,7 @@ const MOAT = [
 /* The parent-app answer, mirrored into FAQPage schema below (schema may only
    ever describe copy a parent can read on the page). */
 const APP_ANSWER =
-  "Everything the toy said and heard. The parent app gives you a summary of the day, the full conversation log word for word, and topic filters that decide what is open and what waits. It counts the new words your child learned and gives you one simple thing to do together each day. One app covers every Kheelona friend.";
+  "Everything the toy said and heard. The parent app gives you a summary of the day, the full conversation log word for word, and the stories and songs Kheelu plays offline. One app covers every Kheelona friend.";
 
 const JSON_LD = pageGraph(
   faqPage([{ q: "What can you see in the parent app?", a: APP_ANSWER }]),
