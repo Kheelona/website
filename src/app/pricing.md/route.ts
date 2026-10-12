@@ -17,8 +17,8 @@ import { absoluteUrl } from "@/lib/seo/urls";
  * and skip what they cannot parse.
  *
  * HARD RULES, as for llms.txt: visible copy only (the price answer, the price sentence beside the button, the
- * offer card's perks, the trust items, the product page's MRP declaration, two FAQ answers and the seller's
- * lines, joined only by list marks, links, ": " and " · "); every amount from the live offer, so the first is
+ * offer card's perks, the trust items, the product page's MRP and Manufacturer declarations, two FAQ answers and the
+ * seller's lines, joined only by list marks, links, ": " and " · "); every amount from the live offer, so the first is
  * the total (incl. GST) in both modes and the advance, in token mode, comes second (D028).
  * `test/machine-files.test.ts` checks both modes.
  *
@@ -29,7 +29,7 @@ export const revalidate = 300;
 
 /** The day this file's body last changed in substance: its prices, its terms or its words. Bump it in the
  *  same commit (the sell-out sweep's Redeploy republishes the full-mode prices under it). */
-export const PRICING_UPDATED = "2026-10-12";
+export const PRICING_UPDATED = "2026-10-13";
 
 /** The entity facts an agent needs beside the price (architecture §9.3): who it is for and the rename note. */
 const ABOUT: readonly FaqId[] = ["what-ages", "same-as-lumi"];
@@ -38,6 +38,9 @@ export function pricingText(offer: Offer): string {
   const plain = (value: Copy) => toPlainText(value, offer);
   const mrp = product.declarations.find((row) => typeof row.value === "string" && row.value.includes("{price:mrp}"));
   if (!mrp) throw new Error("pricing.md: the product page declares no MRP (src/content/en-IN/products/kheelu/product.ts)");
+  // Who makes it, as the product page declares it (D034; architecture §9.3 "made in India by Kheelona Robotics").
+  const maker = product.declarations.find((row) => typeof row.value === "string" && row.value === seller.manufacturer);
+  if (!maker) throw new Error("pricing.md: the product page declares no manufacturer (src/content/en-IN/products/kheelu/product.ts)");
   const meet = navigation.main.find((link) => link.href === "/products/kheelu");
   if (!meet) throw new Error("pricing.md: the nav no longer links the product page (src/content/en-IN/navigation.ts)");
 
@@ -72,6 +75,7 @@ export function pricingText(offer: Offer): string {
     "",
     ...ABOUT.flatMap((id) => [`### ${plain(faqs[id].question)}`, "", plain(faqs[id].answer), ""]),
     `- ${seller.origin.line}`,
+    `- ${maker.term}: ${plain(maker.value as string)}`,
     `- ${plain(seller.help.contact)} · ${seller.support.email}`,
     "",
     `Last updated: ${PRICING_UPDATED}`,
