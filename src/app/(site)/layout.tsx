@@ -1,14 +1,24 @@
-import { SiteChrome } from "@/components/templates/SiteChrome";
+import type { ReactNode } from "react";
+import { SiteShell } from "@/layouts/SiteShell/SiteShell";
+import { stickyBarPaths } from "@/layouts/SiteShell/sticky-bar-paths";
+import { getOffer } from "@/lib/offer/get-offer";
 
-/** The marketing site's chrome (§8.25-z).
- *
- *  A route group, so no URL changes: `(site)` is not a path segment. It exists
- *  because this app now serves two kinds of page, and only one of them wants a
- *  navbar, a footer, a mascot and an Organization graph. The store wants none of
- *  those, and inheriting them put a dead `#reserve` CTA on the checkout.
- *
- *  Everything shared by BOTH kinds stays in the root layout: the html element,
- *  the fonts, the analytics tags. Nothing here is duplicated there. */
-export default function SiteLayout({ children }: { children: React.ReactNode }) {
-  return <SiteChrome>{children}</SiteChrome>;
+/** The drawer's price sentence and the buy bar's lines show on every marketing page, so every marketing page follows
+ *  the live mode like a page that shows a price (ADR-005; OFFER_REVALIDATE_SECONDS, written as a literal because
+ *  Next reads it statically). */
+export const revalidate = 300;
+
+/**
+ * The marketing site's layout (structure §3.1). A route group, so no URL changes: `(site)` is not a path segment. It
+ * wraps every marketing page in the site shell (chrome, the WhatsApp bubble, the motion observer, the doodles' filter,
+ * the Organization and WebSite JSON-LD) with the live offer and the paths that carry the phone buy bar. The root
+ * not-found page sits outside the group and renders the shell itself, with no bar.
+ */
+export default async function SiteLayout({ children }: { children: ReactNode }) {
+  const offer = await getOffer();
+  return (
+    <SiteShell offer={offer} stickyBar={stickyBarPaths()}>
+      {children}
+    </SiteShell>
+  );
 }
