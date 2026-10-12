@@ -1,5 +1,17 @@
+Reviewed diff of src/lib/store/env.ts against archive/pre-reset-2026-10-10 (checkout-freeze, ADR-013 class 1).
+Regenerate with: git diff archive/pre-reset-2026-10-10 -- src/lib/store/env.ts (keep this header above it).
+
+D048 (task 1.3, architecture §15.3): import SITE_ENV; on beta the Meta Conversions API token and test
+  code read as absent.
+D051 (task 2.10, founder ruling 2026-10-12, "beta never takes a payment"): one early return in real().
+  On a beta build every store value reads as absent, whatever Vercel passes in, so storeEnv() is null,
+  missingStoreEnv() names all six required variables, the store pages render their not-configured state,
+  every store API route answers 503 and /api/health reports store: not-configured. Production, preview
+  and development are unchanged: test/store-env-beta.test.ts runs the tag's env.ts beside this one.
+  The D048 CAPI switch stays as a second, independent switch behind the D051 one.
+
 diff --git a/src/lib/store/env.ts b/src/lib/store/env.ts
-index 15b3523..edd2726 100644
+index 15b3523..7726e40 100644
 --- a/src/lib/store/env.ts
 +++ b/src/lib/store/env.ts
 @@ -12,6 +12,8 @@
@@ -11,7 +23,19 @@ index 15b3523..edd2726 100644
  export type StoreEnv = {
    razorpayKeyId: string;
    razorpayKeySecret: string;
-@@ -100,8 +102,8 @@ export function storeEnv(): StoreEnv | null {
+@@ -44,6 +46,11 @@ export type StoreEnv = {
+  *  that a placeholder which passes a truthiness check is worse than no value:
+  *  the Tally form silently rendered a placeholder card in production. */
+ function real(value: string | undefined): string | null {
++  /* D051: BETA NEVER TAKES A PAYMENT. On a beta build every store value reads
++     as absent, whatever Vercel passes in (a Preview-scoped production key
++     reaches every preview branch): `storeEnv()` is null, `missingStoreEnv()`
++     names all six, the store shows "opening shortly" and the routes answer 503. */
++  if (SITE_ENV === "beta") return null;
+   if (!value) return null;
+   const v = value.trim();
+   if (!v || v.includes("DUMMY") || v.startsWith("<")) return null;
+@@ -100,8 +107,8 @@ export function storeEnv(): StoreEnv | null {
      alertEmail: real(process.env.ORDER_ALERT_EMAIL) ?? "hello@kheelona.com",
      resendApiKey: real(process.env.RESEND_API_KEY),
      emailFrom: real(process.env.EMAIL_FROM) ?? "Kheelona <hello@send.kheelona.com>",
