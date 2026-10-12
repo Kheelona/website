@@ -244,7 +244,7 @@ export function setupHowTo(steps: readonly { title: string; body: string }[]) {
     "@type": "HowTo",
     name: "How to set up Kheelu on day one",
     description:
-      "Day one with Kheelu takes minutes: charge it, set your languages and topics in the parent app, teach your child the wake word, and let them talk.",
+      "Day one with Kheelu takes minutes: charge it, set your languages in the parent app, show your child how to start a conversation, and let them talk.",
     totalTime: "PT15M",
     supply: [{ "@type": "HowToSupply", name: "Kheelu and its charger" }],
     tool: [{ "@type": "HowToTool", name: "The Kheelona parent app on a phone" }],
@@ -310,7 +310,7 @@ export const KHEELU_PRODUCT = {
     suggestedMinAge: 3,
     audienceType: "Children",
   },
-  description: `A screen-free talking friend for children aged ${KHEELU_AGES} that holds a real conversation in up to 10 home languages, carries stories and lessons they can be quizzed on, plays your music over Bluetooth, and comes with a parent app that shows you everything. Part of a growing family of friends.`,
+  description: `A screen-free talking friend for children aged ${KHEELU_AGES} that holds a real conversation in up to 10 home languages, plays the stories and songs you pick even offline, plays your music over Bluetooth, and comes with a parent app that shows you everything. Part of a growing family of friends.`,
   image: `${SITE_URL}${KHEELU_ART.src}`,
   /* The published specification, as structured properties (§8.36-a).
      One array, shared with the visible table on /ai-toys-for-kids-in-india, so

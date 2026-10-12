@@ -60,10 +60,10 @@ Market: India. Currency: INR. Stage: pre-order, taking a refundable token.
 
 ## What you get for the price
 
-- Three modes in one toy: AI mode (open conversation), Story mode (stories and lessons that quiz back, offline), Bluetooth mode (pair a phone and Kheelu is the speaker)
+- Three modes in one toy: AI mode (open conversation), Story mode (stories and songs picked in the parent app, offline), Bluetooth mode (pair a phone and Kheelu is the speaker)
 - Languages: ${LANGUAGES_LINE}, with up to 10 at launch. Kheelu switches mid-sentence.
-- No screen, and no access to the open internet
-- A parent app with the full conversation log, topic controls, quiet hours, and one-tap deletion
+- No screen, and no web browsing or search
+- A parent app with the full conversation log, a daily summary, offline stories and songs, and privacy controls
 
 Last updated: ${PRICING_UPDATED}. Canonical page: https://kheelona.com/products/kheelu
 `;

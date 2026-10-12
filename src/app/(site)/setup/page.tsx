@@ -61,10 +61,11 @@ export default function SetupPage() {
           {/* steps sit directly under the h1, so their titles are h2 */}
           <StepList items={SETUP_STEPS} as="h2" />
           <Reveal className="mt-8">
-            {/* TODO(claims-specs): add wake word + charger details when final. */}
+            {/* TODO(claims-specs): add charger details when final. The wake word
+                was dropped in firmware on 2026-07-23; a button starts a conversation. */}
             <p className="max-w-[62ch] text-[16px] text-ink-muted">
-              The exact wake word and charger details will be published here
-              with the final specs, before Kheelu ships.
+              The charger details will be published here with the final specs,
+              before Kheelu ships.
             </p>
           </Reveal>
         </Room>

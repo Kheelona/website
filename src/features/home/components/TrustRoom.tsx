@@ -16,17 +16,19 @@ const POINTS = [
     h: "We do not sell data.",
     b: "Your child's voice and words are never sold, and never used to sell them anything. That is a promise, not a setting you have to go find.",
   },
+  /* 2026-10-12: rewritten to the product as built (no on-device model, no wake
+     word, no topic controls, no one-tap deletion). See the note on /safety. */
   {
-    h: "Kheelu thinks on the device.",
-    b: "The first thinking happens on Kheelu itself, before anything is sent anywhere.",
+    h: "Kheelu listens when invited.",
+    b: "A conversation starts only when your child presses Kheelu's button. Between conversations nothing is sent anywhere.",
   },
   {
     h: "You hold the keys.",
-    b: "Read every conversation. Delete anything in one tap. Choose the topics. The grown-up decides, always.",
+    b: "Read every conversation. Choose the languages and the stories. Delete it all by deleting your account. The grown-up decides, always.",
   },
   {
     h: "No open internet.",
-    b: "Kheelu answers from a library you can see, not the open web. It wakes to a word, and the mic is off the rest of the time.",
+    b: "Kheelu cannot browse or search the web, and every reply follows child-safety rules set for your child's age.",
   },
 ] as const;
 

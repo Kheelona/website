@@ -67,26 +67,28 @@ const HOW_IT_ANSWERS = [
   /* V6 axe fix: text-blue measures 2.68:1 on the cool wash (the team page
      recorded the same finding) — the darkened blue-ink token is the numeral
      blue everywhere now. */
-  { n: "01", title: "Your child says the wake word.", body: "Until then, the microphone is off. Kheelu starts listening only when it is invited to.", color: "text-blue-ink" },
-  { n: "02", title: "The device thinks first.", body: "Speech is processed on the toy before anything goes anywhere. Low latency. No long waits. No sending everything to a distant server.", color: "text-blue-ink" },
+  /* 2026-10-12: the wake word was dropped in firmware and the toy runs no model
+     of its own, so steps 01, 02 and 04 now describe the product as built. */
+  { n: "01", title: "Your child presses to talk.", body: "A conversation starts when Kheelu is invited, with a press of its button, and ends after a couple of minutes of quiet.", color: "text-blue-ink" },
+  { n: "02", title: "The question travels safely.", body: "Speech goes to Kheelona's servers over an encrypted connection, so Kheelu can understand it and answer quickly.", color: "text-blue-ink" },
   { n: "03", title: "The feeling gets read.", body: "PlayOS hears more than words. Curious, Grumpy, Sad, Silly, Joy: the answer meets the mood.", color: "text-orange-ink" },
-  { n: "04", title: "The right response comes back.", body: "Every reply passes through an age-graded safety layer before it is spoken. On-device and cloud filters work together. No open internet. No surprises.", color: "text-orange-ink" },
+  { n: "04", title: "The right response comes back.", body: "Every reply follows child-safety rules set for your child's age, with Google's safety filters on top. No web browsing.", color: "text-orange-ink" },
 ] as const;
 
 const APP_FEATURES = [
-  { title: "A daily summary", body: "One card each evening. What your child talked about, what made them laugh, what they asked." },
-  { title: "The full conversation log", body: "Every conversation, word for word. Read it anytime. Delete any of it with one tap." },
-  { title: "Topic controls", body: "You choose what is open and what waits. Dinosaurs today, tricky questions when you are ready." },
-  { title: "Time and languages", body: "Set quiet hours. Pick the languages you speak at home. Kheelu follows your lead." },
+  { title: "A daily summary", body: "Today at a glance: how long your child talked, how many questions they asked, and what they were most curious about." },
+  { title: "The full conversation log", body: "Every conversation, word for word. Read it anytime, search it, and look back over the week or the month." },
+  { title: "Stories and songs, offline", body: "Pick stories and songs from the Kheelona store, and Kheelu keeps them so they play even without WiFi." },
+  { title: "Languages", body: "Pick up to two languages you speak at home. Kheelu starts in the first and follows your lead." },
 ] as const;
 
 /* FAQ v2 (copy-v2): seed answers + the honest existing ship/payment answers.
    Subscription and camera questions are GATED (REV-b) and absent until the
    founder confirms the facts. */
 const FAQ_ITEMS: FaqEntry[] = [
-  { q: "Is Kheelu safe for my child?", a: "Kheelu wakes to a word, thinks on the device first, and answers from a closed library. There is a safety check on every reply, and you can read or delete anything. The five checks worth applying to any AI toy, including this one, are set out in our guide to choosing one." },
+  { q: "Is Kheelu safe for my child?", a: "Kheelu listens only when your child presses its button, cannot browse or search the internet, and follows child-safety rules on every reply. You can read every conversation in the parent app. The five checks worth applying to any AI toy, including this one, are set out in our guide to choosing one." },
   /* V6 D4b (founder-licensed fact): mode-precise. */
-  { q: "Does Kheelu need the internet?", a: "Only for open conversation: AI mode runs on your home WiFi. Story-mode stories and lessons work offline, and Bluetooth music needs only a paired phone. New content and updates download when you choose." },
+  { q: "Does Kheelu need the internet?", a: "Only for open conversation: AI mode runs on your home WiFi. The stories and songs you pick in the parent app work offline, and Bluetooth music needs only a paired phone. New content and updates download when you choose." },
   { q: "What languages does Kheelu speak?", a: "English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish, and French, with up to ten at launch. Kheelu switches mid-sentence, in the languages you speak at home." },
   /* SEO round 2026-08-12: the "5 6 year olds" keyword hangs off the family
      arc at the founder's direction — Kheelu's own band (3+ since 2026-08-23)
@@ -232,9 +234,9 @@ export default function KheeluPage() {
           <Reveal>
             <SectionHeading
               eyebrow="Story mode"
-              title="Stories that ask questions back."
+              title="Stories that play without WiFi."
               titleClassName="mb-4 max-w-[18ch]"
-              lede="Story mode fills Kheelu with stories and lessons your child can interrupt, question, and be quizzed on, offline. New packs and seasonal sets arrive over time, and school learning modules are on the way."
+              lede="Story mode fills Kheelu with the stories and songs you pick in the parent app, and they play even without WiFi. With WiFi on, your child can stop a story to ask Kheelu about it. New packs and seasonal sets arrive over time, and school learning modules are on the way."
               /* the gap is for the carousel; without one it is dead space */
               ledeClassName={hasVideoMoments() ? "mb-10 max-w-[52ch]" : "max-w-[52ch]"}
             />
@@ -294,7 +296,7 @@ export default function KheeluPage() {
             <SectionHeading
               title="You see every conversation. You decide what Kheelu does next."
               titleClassName="mb-3 max-w-[24ch]"
-              lede="The parent app is your window into every conversation, and your hand on every dial. The new words your child learned are counted for you, you get one simple thing to do together each day, and if something ever needs your attention, you hear about it first."
+              lede="The parent app is your window into every conversation. You see what your child talked about each day, read every word, choose the languages, and pick the stories and songs Kheelu plays offline."
               ledeClassName="mb-11 max-w-[58ch]"
             />
           </Reveal>
@@ -336,8 +338,8 @@ export default function KheeluPage() {
                 not commit you to buy", which was written for the free list and
                 reads as "this costs nothing" beside a paid button. */}
             <p className="max-w-[62ch] text-[16.5px] text-ink-muted">
-              We publish the full specs, battery, size, materials, and the wake
-              word, before Kheelu ships. The {TOKEN_PRICE} you pay to reserve is
+              We publish the full specs, battery, size and materials, before
+              Kheelu ships. The {TOKEN_PRICE} you pay to reserve is
               refundable until we dispatch.
             </p>
           </Reveal>

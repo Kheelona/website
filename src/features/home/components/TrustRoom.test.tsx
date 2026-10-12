@@ -6,7 +6,7 @@ describe("TrustRoom", () => {
     render(<TrustRoom />);
     for (const h of [
       "We do not sell data.",
-      "Kheelu thinks on the device.",
+      "Kheelu listens when invited.",
       "You hold the keys.",
       "No open internet.",
     ]) {

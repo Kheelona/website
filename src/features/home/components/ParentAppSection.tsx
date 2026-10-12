@@ -42,7 +42,7 @@ export function ParentAppSection({
             eyebrow="For the grown-ups"
             title="Your child is just playing. You can see the learning."
             titleClassName="mb-5 max-w-[20ch]"
-            lede="Open the app for a daily summary, the full conversation log, and one simple thing to do together each day. The new words your child learned are counted for you. If something ever needs your attention, you hear about it first."
+            lede="Open the app for a daily summary and the full conversation log, word for word. Pick the languages you speak at home and the stories and songs Kheelu plays offline."
             ledeClassName="mb-6 max-w-[58ch]"
           />
           <ul className="mb-7 flex max-w-[560px] flex-wrap gap-2.5">

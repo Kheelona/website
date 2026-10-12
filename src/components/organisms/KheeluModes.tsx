@@ -38,7 +38,7 @@ export const KHEELU_MODES = [
   {
     mode: "Story mode",
     heading: "Learn inside a story.",
-    body: "Stories and lessons your child can interrupt, question, and be quizzed on. Kheelu reads, your child asks why, and Kheelu asks one back. It works offline.",
+    body: "Stories and songs you pick in the parent app, and they play even without WiFi. With WiFi on, your child can stop a story to ask why, and Kheelu asks one back.",
     short: "Learn inside a story",
   },
   {

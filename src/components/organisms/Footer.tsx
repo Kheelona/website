@@ -28,7 +28,7 @@ export function Footer() {
           </nav>
         </div>
         <p className="mt-6 text-white/70">
-          Wake-word listening. No open internet. You see everything.
+          Press to talk. No web browsing. You see every conversation.
         </p>
         {/* V3 (Apple-tier pass): the provenance line. "Designed by Apple in
             California" works because it is a fact stated plainly — this is
