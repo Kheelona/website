@@ -1,0 +1,9 @@
+/* GrievanceBlock (task 3.2), contact context only (contact.css:26-27, .mk-grievance). On a legal page the card has no
+   ks-grievance: its links take the legal template's weight, 700 (mockup-css-mapping §6.2). */
+.ks-grievance p {
+  margin: 0;
+}
+.ks-grievance a {
+  color: var(--link);
+  font-weight: 800; /* ds-weight-800: contact.css:27 */
+}

@@ -1,0 +1,38 @@
+/* OfferSection (task 3.2). The product page's offer fold (variant photo), ported from mockup/css/meet-kheelu.css:19-28
+   (.mk-offer-split, .mk-offer-col, .mk-offer-photo). Home's close (variant close) is the DS split as delivered. */
+
+/* The card, the trust row and the help line in one column; the card fills it. */
+.ks-offer-col {
+  display: grid;
+  gap: var(--space-4);
+  justify-items: start;
+}
+.ks-offer-col .kh-offer {
+  width: 100%;
+}
+.ks-offer-col .kh-trustline {
+  margin-top: var(--space-2);
+}
+.ks-offer-photo {
+  max-width: calc(var(--space-10) * 2); /* 2 × 128 = 256 */
+  justify-self: center;
+  width: 100%;
+}
+@media (min-width: 900px) {
+  .ks-offer-split {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  }
+  .ks-offer-col {
+    justify-items: end;
+  }
+  .ks-offer-col > .kh-offer,
+  .ks-offer-col > .kh-trustline,
+  .ks-offer-col > .ks-help {
+    width: 100%;
+    max-width: calc(var(--space-10) * 3 + var(--space-7)); /* 3 × 128 + 48 = 432 */
+  }
+  .ks-offer-photo {
+    justify-self: start;
+    max-width: calc(var(--space-10) * 4); /* 4 × 128 = 512 */
+  }
+}
