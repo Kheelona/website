@@ -1,24 +1,16 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+import { outline, parseMockup } from "../../../../test/support/mockup-compare";
 import { CompareByCategory, type CompareByCategoryProps } from "./CompareByCategory";
 
 /* CompareByCategory (task 3.3; components §2; DS gap G-05): Home fold 7, "compared by category". Below 720 px one card
  * per row with Kheelu's answer first; from 720 px the DS comparison table. Compared class by class (mk- renamed ks-)
- * with the built mockup fold, and word for word. */
+ * with the built mockup fold through the mockup comparison harness (test/support/mockup-compare.ts), and word for word. */
 
-const mockup = (slug: string) =>
-  new DOMParser().parseFromString(readFileSync(join(process.cwd(), "mockup", `${slug}.html`), "utf8"), "text/html");
+const mockup = parseMockup;
 const words = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, "");
-const RENAME: Record<string, string[]> = { "mk-compare-stack": ["ks-compare-stack"], "mk-compare-others": ["ks-compare-others"] };
-
-function shape(el: Element, depth = 0): string[] {
-  const classes = [...el.classList].flatMap((c) => RENAME[c] ?? [c]);
-  const line = `${"  ".repeat(depth)}${el.tagName.toLowerCase()}${classes.sort().map((c) => `.${c}`).join("")}${el.hasAttribute("data-reveal") ? "[data-reveal]" : ""}`;
-  if (el.tagName.toLowerCase() === "svg") return [line];
-  return [line, ...[...el.children].flatMap((c) => shape(c, depth + 1))];
-}
+/** Every mockup block of the fold takes its ks- name (mk-compare-stack, mk-compare-others). */
+const shape = (el: Element) => outline(el);
 
 /* Home fold 7's words (home.md fold 7; home.html:270-307). */
 const PROPS: CompareByCategoryProps = {

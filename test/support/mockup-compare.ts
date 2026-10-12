@@ -11,6 +11,8 @@ import { readRepoFile } from "../e2e/support/repo";
  *   builtMarkup, renderedMarkup, canonical   the exact markup (SCA 1): the selling sections (task 3.2)
  *   skeleton, words                         tags, classes, ARIA, ids and addresses, then the words apart: the support
  *                                           sections (task 3.4)
+ *   outline                                 tags, classes and reveals down to the media primitives: the story
+ *                                           sections (task 3.3), which compare their words apart
  *   mockupDiff                              element by element, every difference listed with its path: the shells
  *                                           (task 3.1)
  *
@@ -326,6 +328,29 @@ export function words(el: Element, options: Pick<SkeletonOptions, "skip"> = {}):
     block.after(" ");
   }
   return (copy.textContent ?? "").replace(/\s+/g, " ").trim();
+}
+
+/* ── 2b. The outline (the story sections, task 3.3) ─────────────────────────────────────────────────────────────── */
+
+export interface OutlineOptions {
+  /** Mockup blocks the build names otherwise (`portClass`). */
+  readonly renames?: Renames;
+  /** Elements whose inside a primitive's own test owns (a media primitive, the FAQ list): their line, never their
+   *  children. An svg is always one line. */
+  readonly stop?: (el: Element) => boolean;
+  /** Classes the build adds to an element where the mockup has none for it (a list reset, a tap target), added on
+   *  both sides. */
+  readonly extra?: (el: Element) => readonly string[];
+}
+
+/** The element's tree as lines: tag, its classes (ported, each once, sorted) and `[data-reveal]`, two spaces per level;
+ *  a stop element's inside left out. The story sections compare it with the mockup fold's, then their words apart. */
+export function outline(el: Element, options: OutlineOptions = {}, depth = 0): string[] {
+  const ported = [...el.classList].flatMap((c) => portClass(c, options.renames));
+  const classes = [...new Set([...ported, ...(options.extra?.(el) ?? [])])].sort();
+  const line = `${"  ".repeat(depth)}${el.tagName.toLowerCase()}${classes.map((c) => `.${c}`).join("")}${el.hasAttribute("data-reveal") ? "[data-reveal]" : ""}`;
+  if (el.tagName.toLowerCase() === "svg" || options.stop?.(el)) return [line];
+  return [line, ...[...el.children].flatMap((c) => outline(c, options, depth + 1))];
 }
 
 /* ── 3. Element by element (the shells, task 3.1) ──────────────────────────────────────────────────────────────── */

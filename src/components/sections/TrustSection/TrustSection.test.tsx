@@ -1,43 +1,32 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { render, screen } from "@testing-library/react";
 import type { StaticImageData } from "next/image";
 import { describe, expect, it } from "vitest";
+import { outline, parseMockup, type Renames } from "../../../../test/support/mockup-compare";
 import { TrustSection, type TrustItemCopy } from "./TrustSection";
 
 /* TrustSection (task 3.3; components §2): the safety folds of Home and the product page (D020 order, with the
  * parent app's privacy screen, the facts line and the CTA slot), the safety page's four facts and its "never" list,
  * and the buyer's guide's answers. Each compared class by class (mk- renamed ks-) and word for word with the built
- * mockup fold; the CTA block is the page's (CtaBlock, task 3.2), so here a stand-in takes its place. */
+ * mockup fold, through the mockup comparison harness (test/support/mockup-compare.ts); the CTA block is the page's
+ * (CtaBlock, task 3.2), so here a stand-in takes its place. */
 
-const mockup = (slug: string) =>
-  new DOMParser().parseFromString(readFileSync(join(process.cwd(), "mockup", `${slug}.html`), "utf8"), "text/html");
+const mockup = parseMockup;
 const norm = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").trim();
 const words = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, "");
-const RENAME: Record<string, string[]> = {
-  "mk-safety": ["ks-safety"],
-  "mk-safety-split": ["ks-safety-split"],
-  "mk-shots": ["ks-shots"],
-  "mk-shots--solo": ["ks-shots--solo", "ks-shots--product"],
-  "mk-facts": ["ks-facts", "ks-trustline--center"],
-  "mk-sf-belly": ["ks-sf-belly"],
-  "mk-sf-list": [],
-  "mk-sf-never": ["ks-sf-never", "ks-trust--span-last"],
-  "mk-gd-answers": ["ks-gd-answers", "ks-trust--span-last"],
-  "mk-gd-pointer": ["ks-gd-pointer"],
+/** The blocks the build names otherwise; every other mockup block takes its ks- name. */
+const RENAMES: Renames = {
+  "shots--solo": ["ks-shots--solo", "ks-shots--product"],
+  facts: ["ks-facts", "ks-trustline--center"],
+  "sf-list": [],
+  "sf-never": ["ks-sf-never", "ks-trust--span-last"],
+  "gd-answers": ["ks-gd-answers", "ks-trust--span-last"],
 };
 
 /** Inside these the primitive's own test owns the markup (AppScreens, Photo). */
-const STOP = (el: Element) => el.tagName.toLowerCase() === "svg" || el.classList.contains("mk-shots") || el.classList.contains("ks-shots") || el.classList.contains("kh-photo");
-
-function shape(el: Element, depth = 0): string[] {
-  const classes = [...el.classList].flatMap((c) => RENAME[c] ?? [c]);
-  // TrustList resets its lists with the shared class (mockup.css:95, safety.css:6, ai-toys-for-kids-in-india.css:6).
-  if (/^(ul|ol)$/i.test(el.tagName) && el.classList.contains("kh-trust")) classes.push("ks-list-reset");
-  const line = `${"  ".repeat(depth)}${el.tagName.toLowerCase()}${[...new Set(classes)].sort().map((c) => `.${c}`).join("")}${el.hasAttribute("data-reveal") ? "[data-reveal]" : ""}`;
-  if (STOP(el)) return [line];
-  return [line, ...[...el.children].flatMap((c) => shape(c, depth + 1))];
-}
+const STOP = (el: Element) => el.classList.contains("mk-shots") || el.classList.contains("ks-shots") || el.classList.contains("kh-photo");
+/** TrustList resets its lists with the shared class (mockup.css:95, safety.css:6, ai-toys-for-kids-in-india.css:6). */
+const listReset = (el: Element) => (/^(ul|ol)$/i.test(el.tagName) && el.classList.contains("kh-trust") ? ["ks-list-reset"] : []);
+const shape = (el: Element) => outline(el, { renames: RENAMES, stop: STOP, extra: listReset });
 
 /** The fold with the CTA block (everything after the facts line) replaced by the stand-in the test passes. */
 function withCtaSlot(fold: Element): Element {

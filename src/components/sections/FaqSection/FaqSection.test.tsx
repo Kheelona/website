@@ -1,57 +1,45 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { render, screen } from "@testing-library/react";
 import type { StaticImageData } from "next/image";
 import { describe, expect, it } from "vitest";
 import type { FaqItem } from "@/content/types";
 import { buildOffer } from "@/lib/offer/offer";
+import { outline, parseMockup, type Renames } from "../../../../test/support/mockup-compare";
 import { FaqSection } from "./FaqSection";
 
 /* FaqSection (task 3.3; components §2): the FAQ folds of the approved mockup, Home fold 8, product fold 8 (with the
  * D025 disclaimer, its source and the help line), the safety and buyer's guide folds with their photo, and the
  * store's "Questions before you pay". Each test renders the fold from data and compares its markup, class by class
- * (mk- renamed ks-), with the fold in the built mockup page, down to the primitives (FaqList, Photo), which carry
- * their own tests. */
+ * (mk- renamed ks-), with the fold in the built mockup page through the mockup comparison harness
+ * (test/support/mockup-compare.ts), down to the primitives (FaqList, Photo), which carry their own tests. */
 
 const offer = buildOffer("token");
 
-const mockup = (slug: string) =>
-  new DOMParser().parseFromString(readFileSync(join(process.cwd(), "mockup", `${slug}.html`), "utf8"), "text/html");
+const mockup = parseMockup;
 const norm = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").trim();
 /** The fold's words with every space removed: the mockup's source formatting puts newlines between blocks. */
 const words = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, "");
 
-/** mk- blocks and the names they take in the build (components §7; mockup-css-mapping §6.2). */
-const RENAME: Record<string, string[]> = {
-  "mk-faq-head": ["ks-faq-head"],
-  "mk-disclaimer": ["ks-faq__disclaimer"],
-  "mk-sources": ["ks-faq__sources"],
-  "mk-help": ["ks-help", "ks-faq__help"],
-  "mk-nowrap": ["ks-nowrap"],
-  "mk-faq": ["ks-faq"],
-  "mk-h2": ["ks-h2"],
-  "mk-gd-faq": ["ks-faq-photo"],
-  "mk-gd-faq__head": ["ks-faq-photo__head"],
-  "mk-gd-faq__photo": ["ks-faq-photo__photo", "ks-faq-photo__photo--clamp"],
-  "mk-gd-faq__body": ["ks-faq-photo__body"],
-  "mk-sf-faq": ["ks-faq-photo"],
-  "mk-sf-faq__head": ["ks-faq-photo__head"],
-  "mk-sf-faq__photo": ["ks-faq-photo__photo"],
-  "mk-sf-faq__body": ["ks-faq-photo__body"],
+/** mk- blocks that take another name in the build (components §7; mockup-css-mapping §6.2); every other block takes its
+ *  ks- name. */
+const RENAMES: Renames = {
+  disclaimer: ["ks-faq__disclaimer"],
+  sources: ["ks-faq__sources"],
+  help: ["ks-help", "ks-faq__help"],
+  "gd-faq": ["ks-faq-photo"],
+  "gd-faq__head": ["ks-faq-photo__head"],
+  "gd-faq__photo": ["ks-faq-photo__photo", "ks-faq-photo__photo--clamp"],
+  "gd-faq__body": ["ks-faq-photo__body"],
+  "sf-faq": ["ks-faq-photo"],
+  "sf-faq__head": ["ks-faq-photo__head"],
+  "sf-faq__photo": ["ks-faq-photo__photo"],
+  "sf-faq__body": ["ks-faq-photo__body"],
 };
 
 /** Inside these the primitive's own test owns the markup (FaqList, Photo, the sources note), so the walk stops. */
-const STOP = (el: Element) =>
-  el.classList.contains("kh-faq") || el.classList.contains("kh-photo") || el.tagName.toLowerCase() === "svg" || /sources$/.test(el.className);
-
-function shape(el: Element, depth = 0): string[] {
-  const classes = [...el.classList].flatMap((c) => RENAME[c] ?? [c]);
-  // Home's heading column carries an inline align-self (home.html fold 8); the build gives it the product's class.
-  if (el.getAttribute("style")?.includes("align-self: start")) classes.push("ks-faq-head");
-  const line = `${"  ".repeat(depth)}${el.tagName.toLowerCase()}${classes.sort().map((c) => `.${c}`).join("")}${el.hasAttribute("data-reveal") ? "[data-reveal]" : ""}`;
-  if (STOP(el)) return [line];
-  return [line, ...[...el.children].flatMap((c) => shape(c, depth + 1))];
-}
+const STOP = (el: Element) => el.classList.contains("kh-faq") || el.classList.contains("kh-photo") || /sources$/.test(el.className);
+/** Home's heading column carries an inline align-self (home.html fold 8); the build gives it the product's class. */
+const faqHead = (el: Element) => (el.getAttribute("style")?.includes("align-self: start") ? ["ks-faq-head"] : []);
+const shape = (el: Element) => outline(el, { renames: RENAMES, stop: STOP, extra: faqHead });
 
 /** The mockup's questions and answers as plain items (words only; the shared FaqList test owns the details). */
 function itemsFrom(fold: Element): FaqItem[] {
@@ -183,7 +171,7 @@ describe("FaqSection: photo (buyer's guide fold 5, safety fold 7)", () => {
         offer={offer}
       />,
     );
-    const expected = shape(fold).map((l) => l.replace(/div\.mk-gd-sources$/, "div.ks-sources-slot"));
+    const expected = shape(fold).map((l) => l.replace(/div\.ks-gd-sources$/, "div.ks-sources-slot"));
     expect(shape(container.firstElementChild!)).toEqual(expected);
     expect(container.querySelector(".ks-faq-photo__body > .kh-faq + [data-testid=notes]")).not.toBeNull();
   });
@@ -215,7 +203,7 @@ describe("FaqSection: photo (buyer's guide fold 5, safety fold 7)", () => {
         offer={offer}
       />,
     );
-    const expected = shape(fold).map((l) => l.replace(/div\.mk-sf-sources$/, "div.ks-sources-slot"));
+    const expected = shape(fold).map((l) => l.replace(/div\.ks-sf-sources$/, "div.ks-sources-slot"));
     expect(shape(container.firstElementChild!)).toEqual(expected);
     const details = container.querySelectorAll("details");
     expect(details[0].open).toBe(true);

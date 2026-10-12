@@ -1,55 +1,36 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { render, screen } from "@testing-library/react";
 import type { StaticImageData } from "next/image";
 import { describe, expect, it } from "vitest";
 import { buildOffer } from "@/lib/offer/offer";
+import { outline, parseMockup, type Renames } from "../../../../test/support/mockup-compare";
 import { FeatureSplit, type FeatureSplitProps } from "./FeatureSplit";
 
 /* FeatureSplit (task 3.3; components §2): the words-beside-media folds of the approved mockup. Each test builds the
  * fold from data (the words read from the mockup itself) and compares its markup class by class (mk- renamed ks-) and
- * word for word with the fold in the built mockup page, down to the media primitives (ImaginationFrame, AppScreens,
- * ArtBoard, Photo), which carry their own tests. */
+ * word for word with the fold in the built mockup page, through the mockup comparison harness
+ * (test/support/mockup-compare.ts), down to the media primitives (ImaginationFrame, AppScreens, ArtBoard, Photo), which
+ * carry their own tests. */
 
 const offer = buildOffer("token");
-const doc = (slug: string) =>
-  new DOMParser().parseFromString(readFileSync(join(process.cwd(), "mockup", `${slug}.html`), "utf8"), "text/html");
-const fold = (slug: string, labelledBy: string) => doc(slug).querySelector(`[aria-labelledby="${labelledBy}"]`)!;
+const fold = (slug: string, labelledBy: string) => parseMockup(slug).querySelector(`[aria-labelledby="${labelledBy}"]`)!;
 const norm = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").trim();
 const words = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, "");
 
-const RENAME: Record<string, string[]> = {
-  "mk-imagine-zoom": ["ks-imagine-zoom"],
-  "mk-src": ["ks-src"],
-  "mk-shots": ["ks-shots"],
-  "mk-sf-shot": ["ks-shots", "ks-shots--safety"],
-  "mk-app-split": ["ks-app-split"],
-  "mk-skills": ["ks-skills"],
-  "mk-list-reset": ["ks-list-reset"],
-  "mk-app-note": ["ks-app-note"],
-  "mk-sf-controls": ["ks-sf-controls"],
-  "mk-gd-plush-text": ["ks-gd-plush-text"],
-  "mk-gd-plush-art": ["ks-gd-plush-art", "ks-art--clamp"],
-  "mk-setup-split": ["ks-setup-split"],
-  "mk-setup-copy": ["ks-feature-copy"],
-  "mk-setup-belly": ["ks-setup-belly"],
-  "mk-setup-shot": ["ks-setup-shot"],
-  "mk-placeholder": ["ks-placeholder"],
-  "mk-sf-pair": ["ks-sf-pair"],
-  "mk-team-why": ["ks-feature-copy"],
-  "mk-team-quote": [],
+/** The blocks the build names otherwise; every other mockup block takes its ks- name. */
+const RENAMES: Renames = {
+  "sf-shot": ["ks-shots", "ks-shots--safety"],
+  "gd-plush-art": ["ks-gd-plush-art", "ks-art--clamp"],
+  "setup-copy": ["ks-feature-copy"],
+  "team-why": ["ks-feature-copy"],
+  "team-quote": [],
 };
 
 /** Inside these the primitive's own test owns the markup. */
 const STOP = /\b(?:kh-imagine|kh-art|kh-photo|mk-shots|mk-sf-shot|ks-shots)\b/;
-
-function shape(el: Element, rename: Record<string, string[]> = {}, depth = 0): string[] {
-  const classes = [...el.classList].flatMap((c) => rename[c] ?? RENAME[c] ?? [c]);
-  if (/^(ul|ol)$/i.test(el.tagName) && el.classList.contains("kh-trust")) classes.push("ks-list-reset");
-  const line = `${"  ".repeat(depth)}${el.tagName.toLowerCase()}${[...new Set(classes)].sort().map((c) => `.${c}`).join("")}${el.hasAttribute("data-reveal") ? "[data-reveal]" : ""}`;
-  if (el.tagName.toLowerCase() === "svg" || STOP.test(el.className)) return [line];
-  return [line, ...[...el.children].flatMap((c) => shape(c, rename, depth + 1))];
-}
+/** TrustList resets its lists with the shared class. */
+const listReset = (el: Element) => (/^(ul|ol)$/i.test(el.tagName) && el.classList.contains("kh-trust") ? ["ks-list-reset"] : []);
+/** A fold may name a block otherwise than the table (the product page's app screens). */
+const shape = (el: Element, rename: Renames = {}) => outline(el, { renames: { ...RENAMES, ...rename }, stop: (e) => STOP.test(e.className), extra: listReset });
 
 /** A mockup paragraph as a content string: accents, no-wrap phrases, links, source markers and placeholders. */
 function copyOf(el: Element): string {
@@ -90,7 +71,7 @@ const image = (name: string, width: number, height: number, alt = "") => ({
 const SHOT = (name: string) => image(`${name}.webp`, 576, 1209, `The parent app's ${name} screen.`);
 const CAPTION = "The Kheelona app is live on Apple’s App Store and the Google Play Store.";
 
-function renders(props: FeatureSplitProps, expected: Element, rename?: Record<string, string[]>) {
+function renders(props: FeatureSplitProps, expected: Element, rename?: Renames) {
   const { container } = render(<FeatureSplit offer={offer} {...props} />);
   expect(shape(container.firstElementChild!, rename)).toEqual(shape(expected, rename));
   expect(words(container.textContent)).toBe(words(expected.textContent));
@@ -181,7 +162,7 @@ describe("FeatureSplit: app-screens", () => {
         link: { label: "See what we keep, and for how long", href: "#safety" },
       },
       f,
-      { "mk-shots": ["ks-shots", "ks-shots--product"] },
+      { shots: ["ks-shots", "ks-shots--product"] },
     );
     expect(screen.getByRole("list", { name: "The four thinking skills" })).toHaveClass("kh-chips", "kh-tone-sun");
     expect(container.querySelector(".ks-app-split > .kh-section__actions")).not.toBeNull();

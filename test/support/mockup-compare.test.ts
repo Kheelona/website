@@ -9,6 +9,7 @@ import {
   mockupFold,
   mockupPage,
   mockupRoute,
+  outline,
   parseMockup,
   portClass,
   skeleton,
@@ -208,6 +209,30 @@ describe("2. words", () => {
   it("separates blocks, as the page shows them, but keeps inline text joined exactly (a missing space stays red)", () => {
     expect(words(html("<div><h2>Title</h2><p>One.</p><ul><li>a</li><li>b</li></ul></div>"))).toBe("Title One. a b");
     expect(words(html("<p><strong>Try this:</strong>pause</p>"))).toBe("Try this:pause");
+  });
+});
+
+describe("2b. outline", () => {
+  it("lists tags, ported classes (each once, sorted) and [data-reveal], two spaces per level", () => {
+    const el = html('<section class="mk-hero kh-section" data-reveal><div class="b a a"><p>x</p></div></section>');
+    expect(outline(el)).toEqual(["section.kh-section.ks-hero[data-reveal]", "  div.a.b", "    p"]);
+  });
+
+  it("follows a rename table, stops where a primitive's own test takes over, and keeps an svg as one line", () => {
+    const el = html('<div class="mk-shots--solo"><figure class="kh-photo"><img></figure><span><svg class="kh-icon"><path/></svg></span></div>');
+    const lines = outline(el, { renames: { "shots--solo": ["ks-shots--solo", "ks-shots--product"] }, stop: (e) => e.classList.contains("kh-photo") });
+    expect(lines).toEqual(["div.ks-shots--product.ks-shots--solo", "  figure.kh-photo", "  span", "    svg.kh-icon"]);
+  });
+
+  it("adds the classes the build adds where the mockup has none, on either side", () => {
+    const extra = (e: Element) => (e.tagName === "UL" ? ["ks-list-reset"] : []);
+    expect(outline(html('<ul class="kh-trust"><li></li></ul>'), { extra })).toEqual(outline(html('<ul class="kh-trust ks-list-reset"><li></li></ul>'), { extra }));
+  });
+
+  it("is red when the markup or a reveal differs (controls)", () => {
+    expect(outline(html("<div><p></p></div>"))).not.toEqual(outline(html("<div><span></span></div>")));
+    expect(outline(html("<div data-reveal></div>"))).not.toEqual(outline(html("<div></div>")));
+    expect(outline(html('<div class="mk-x"></div>'))).not.toEqual(outline(html('<div class="mk-x"></div>'), { renames: { x: "ks-y" } }));
   });
 });
 

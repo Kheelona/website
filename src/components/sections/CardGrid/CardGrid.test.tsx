@@ -1,33 +1,21 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+import { outline, parseMockup, type Renames } from "../../../../test/support/mockup-compare";
 import { CardGrid, type CardGridItem } from "./CardGrid";
 
 /* CardGrid (task 3.3; components §2): Home's guides for parents (home.html fold 7b, D046) and the contact page's route
- * cards (contact.html fold 2), each compared class by class (mk- renamed ks-) with the built mockup fold, down to the
- * Card primitive's own parts. */
+ * cards (contact.html fold 2), each compared class by class (mk- renamed ks-) with the built mockup fold through the
+ * mockup comparison harness (test/support/mockup-compare.ts), down to the Card primitive's own parts. */
 
-const mockup = (slug: string) =>
-  new DOMParser().parseFromString(readFileSync(join(process.cwd(), "mockup", `${slug}.html`), "utf8"), "text/html");
+const mockup = parseMockup;
 const norm = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").trim();
 const words = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, "");
 
-const RENAME: Record<string, string[]> = {
-  "mk-guides": ["ks-guides", "ks-list-reset"],
-  "mk-routes": ["ks-routes"],
-  "mk-card-links": ["ks-card-links"],
-  "mk-nowrap": ["ks-nowrap"],
-};
-
-function shape(el: Element, depth = 0): string[] {
-  const classes = [...el.classList].flatMap((c) => RENAME[c] ?? [c]);
-  // Card marks every link of the contact cards' row as a full tap target (G-01; contact.css:21).
-  if (el.tagName === "A" && el.parentElement?.classList.contains("mk-card-links")) classes.push("ks-card__link--tap");
-  const line = `${"  ".repeat(depth)}${el.tagName.toLowerCase()}${classes.sort().map((c) => `.${c}`).join("")}${el.hasAttribute("data-reveal") ? "[data-reveal]" : ""}`;
-  if (el.tagName.toLowerCase() === "svg") return [line];
-  return [line, ...[...el.children].flatMap((c) => shape(c, depth + 1))];
-}
+/** The guides list also takes the shared list reset; every other block takes its ks- name. */
+const RENAMES: Renames = { guides: ["ks-guides", "ks-list-reset"] };
+/** Card marks every link of the contact cards' row as a full tap target (G-01; contact.css:21). */
+const tapTarget = (el: Element) => (el.tagName === "A" && el.parentElement?.classList.contains("mk-card-links") ? ["ks-card__link--tap"] : []);
+const shape = (el: Element) => outline(el, { renames: RENAMES, extra: tapTarget });
 
 /** The fold's cards as data, read from the mockup (words, tone, links); icons by the mockup's order. */
 function cardsFrom(fold: Element, icons: CardGridItem["icon"][]): CardGridItem[] {
