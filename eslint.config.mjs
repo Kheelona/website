@@ -98,8 +98,13 @@ const eslintConfig = defineConfig([
       "src/app/store/_components/NotFoundPanel.tsx",
       "src/app/store/e/[[]event]/page.tsx",
       "src/app/store/ideabaaz/page.tsx",
-      "src/components/molecules/Sheet.stories.tsx",
     ],
+    rules: { "@next/next/no-html-link-for-pages": "off" },
+  },
+  {
+    // Legacy story, deleted by task 6.3: its plain <a href="/products/kheelu"> meets the rule since
+    // task 5.2 serves that page from the dynamic products/[slug] route.
+    files: ["src/components/molecules/Sheet.stories.tsx"],
     rules: { "@next/next/no-html-link-for-pages": "off" },
   },
   {
