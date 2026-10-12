@@ -15,8 +15,8 @@ After the build: Phase 6 QA, push `beta`, founder runbook (architecture §15.4),
 **Account:** apoorva@kheelona.com again (since 23:15 2026-10-12; apoorva@geekyants.work 21:00-23:00). **Branch:** `reset/website-v2`, not pushed.
 **RESUME FROM [build runbook](engineering/build-runbook.md) §4.** **Waves 1 and 2 closed** (wave 2 at 22:30: twelve tasks
 merged, verify 3581 tests, `next build` green; rulings `610f141`). **Wave 3:** all six build tasks and 2.11-2.13 merged
-(`28b4440`; verify 4277 tests, verify:e2e green). Running: 3.5 product details tabs (**N21 corrected**: the approved page shows
-tabs, P1); launching 3.6 follow-ups with wave 4 ([tasks](engineering/tasks.md) "Wave 3 close"; [deviations](qa/deviations.md)).
+(`28b4440`; verify 4277 tests, verify:e2e green). 3.5 product details tabs merged (**N21 corrected**: the approved page shows
+tabs, P1). Running `wf_431ed8e5-d4c`: 3.6 follow-ups + wave 4 ([tasks](engineering/tasks.md) "Wave 3 close"; [deviations](qa/deviations.md)).
 **Incident 2026-10-12:** a push meant for `beta` landed on `main` (`24e92e3`, vercel.json only; production
 healthy; [lessons](engineering/lessons.md)). `beta` exists on GitHub (builds nothing yet); **beta domains attached to branch `beta`** (founder, done).
 **Done before wave 1:** dev tools pinned (Playwright 1.63.0, axe 4.12.1, Lighthouse 13.4.1, jscpd 5.3.2,
