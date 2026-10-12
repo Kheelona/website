@@ -1,0 +1,129 @@
+/* HeroSection (task 3.3). Ported from the approved mockup: mockup.css:14-21, 84-85, 89 (every hero), meet-kheelu.css:8
+   (the product sticker), team.css:6-7 (the team board), setup.css:5-6 and stories.css:9-16, 128-131 (the words-only
+   heroes and the hub's byline and topics), contact.css:4-7 (the contact hero). */
+
+/* The hero is the first screen on a phone: a tighter top padding so the CTA and the price sentence land inside
+   360 x 590 (strategy §3.3). The CTA block's own rows sit closer under the heading. */
+.ks-hero {
+  padding-top: var(--space-5);
+}
+.ks-hero .kh-section__actions {
+  margin-top: var(--space-5);
+}
+.ks-hero .kh-trustline {
+  margin-top: var(--space-3);
+}
+/* The DS 1:1 board on phones follows the words; the child's face stays clear (CMO V2). */
+.ks-hero .kh-art {
+  margin-top: var(--space-6);
+}
+.ks-hero .kh-art .kh-sticker {
+  right: 4%;
+  top: 6%;
+}
+/* Product page: the word sticker sits top left, clear of the child's face (meet-kheelu.css:8, .mk-hero-sticker). */
+.ks-hero .kh-art .ks-hero-sticker {
+  left: 5%;
+  right: auto;
+  top: 6%;
+}
+@media (min-width: 720px) {
+  .ks-hero .kh-art {
+    margin-top: 0;
+  }
+  /* The full-width CTA is for phones only (DS 10-pages, CMO M4). */
+  .ks-hero .kh-btn--block {
+    display: inline-flex;
+    width: auto;
+  }
+}
+@media (min-width: 1024px) {
+  .ks-hero {
+    padding-top: var(--space-8);
+  }
+}
+
+/* Team: the product-only board follows the words with a gap until the split begins at 900 px (team.css:6-7). After the
+   720 px rule above, so it wins between 720 and 899 px. */
+.ks-hero .ks-team-board {
+  margin-top: var(--space-6);
+}
+@media (min-width: 900px) {
+  .ks-hero .ks-team-board {
+    margin-top: 0;
+  }
+}
+
+/* A words-only hero (setup, the stories hub) centres from 900 px, where it would otherwise leave the right half of
+   the screen empty (setup.css:6, stories.css:128: the same rules as the DS centred heading). */
+@media (min-width: 900px) {
+  .ks-hero-words {
+    margin-inline: auto;
+    text-align: center;
+    justify-items: center;
+  }
+}
+
+/* The stories hub: the byline and the topic links under the heading (stories.css:9-16). */
+.ks-written {
+  margin: var(--space-4) 0 0;
+  color: var(--text-muted);
+}
+.ks-topics {
+  margin-top: var(--space-5);
+}
+.ks-topics__label {
+  margin: 0 0 var(--space-3);
+  color: var(--text-muted);
+}
+.ks-topics ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ks-topics .kh-tag {
+  text-decoration: none;
+}
+/* The DS tag's own 48 px tap area (button.kh-tag, bundle.css:862), on a link. */
+.ks-topics .kh-tag::before {
+  content: "";
+  position: absolute;
+  inset: calc(var(--space-1) * -1) 0;
+}
+.ks-topics .kh-tag:hover {
+  background: var(--surface-band);
+}
+@media (min-width: 900px) {
+  .ks-journal-intro .ks-written,
+  .ks-journal-intro .ks-topics__label {
+    text-align: center;
+  }
+  .ks-journal-intro .ks-topics ul {
+    justify-content: center;
+  }
+}
+
+/* Contact: the three ways to reach the team, full width under the words on phones, beside them from 900 px
+   (contact.css:4-6, .mk-contact-ways). */
+.ks-contact-ways {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+.ks-contact-ways .kh-btn {
+  min-width: 0;
+}
+@media (min-width: 900px) {
+  .ks-contact-ways {
+    margin-top: 0;
+  }
+}
+/* The lead's links in the DS link colour and emphasis weight, on the contact hero only (contact.css:7; a rule on every
+   hero would reach any later hero lead link: mockup-css-mapping §6.2). */
+.ks-hero--contact .kh-heading__lead a {
+  color: var(--link);
+  font-weight: 800; /* ds-weight-800: contact.css:7 (mockup-css-mapping row 17) */
+}
