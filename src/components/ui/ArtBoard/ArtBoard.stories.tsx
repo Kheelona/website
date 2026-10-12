@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import type { Decorator, Meta, StoryObj } from "@storybook/nextjs-vite";
 import type { CSSProperties } from "react";
 import advikSticker from "@ds/assets/Cast/advik-sticker.png";
 import kabirSticker from "@ds/assets/Cast/kabir-sticker.png";
@@ -18,23 +18,25 @@ import { ArtBoard } from "./ArtBoard";
 
 const COLUMN = "(min-width: 1024px) 560px, (min-width: 900px) 45vw, calc(100vw - 32px)";
 
+/* Typed as a plain Decorator: an inline decorator would take the props union (lcp only with hero) as its args, and
+   Storybook intersects decorator args, which turns every story's args into never. */
+const inASplitColumn: Decorator = (Story) => (
+  <>
+    <DoodleDefs />
+    <div className="kh-section">
+      <div className="kh-container">
+        <div className="kh-split">
+          <Story />
+        </div>
+      </div>
+    </div>
+  </>
+);
+
 const meta = {
   title: "UI/ArtBoard",
   component: ArtBoard,
-  decorators: [
-    (Story) => (
-      <>
-        <DoodleDefs />
-        <div className="kh-section">
-          <div className="kh-container">
-            <div className="kh-split">
-              <Story />
-            </div>
-          </div>
-        </div>
-      </>
-    ),
-  ],
+  decorators: [inASplitColumn],
   args: {
     tone: "blue",
     sizes: COLUMN,

@@ -34,5 +34,17 @@ export const misuses = () => (
     <ArtBoard tone="blue" sizes={SIZES} layers={[{ image: { src: ADVIK, alt: "" }, left: 1, top: 1 }]} />
     {/* @ts-expect-error a ratio is "width / height" */}
     <ArtBoard tone="blue" layers={LAYERS} sizes={SIZES} ratio="4:3" />
+    {/* @ts-expect-error the LCP image is on the first screen: lcp only together with hero (task 2.12) */}
+    <ArtBoard tone="blue" layers={LAYERS} sizes={SIZES} lcp />
+    {/* @ts-expect-error not with hero={false} either */}
+    <ArtBoard tone="blue" layers={LAYERS} sizes={SIZES} hero={false} lcp />
+  </>
+);
+
+/** A hero decided at run time still takes the board without an LCP hint, and the hint as false. */
+export const computed = (hero: boolean) => (
+  <>
+    <ArtBoard tone="blue" layers={LAYERS} sizes={SIZES} hero={hero} />
+    <ArtBoard tone="blue" layers={LAYERS} sizes={SIZES} lcp={false} />
   </>
 );
