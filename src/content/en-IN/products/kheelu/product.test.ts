@@ -13,7 +13,7 @@ import { product, type SpecRow } from "./product";
 /* Product facts (architecture §6.1, §9.2; wiki/product/facts.md; D034, D036): the details panels
  * and declarations exactly as the approved product page prints them (stacked, N21), placeholders
  * where the facts are still open (F4), languages with their `lang` codes, the three modes, and the
- * schema fields that never change (Product `@id`, Lumi as `alternateName`, ages 3 to 7). */
+ * schema fields that never change (Product `@id`, ages 3 to 7). */
 
 const doc = (slug: string) => new DOMParser().parseFromString(readRepoFile(`mockup/${slug}.html`), "text/html");
 const norm = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").trim();
@@ -101,13 +101,20 @@ describe("languages and modes", () => {
 });
 
 describe("schema facts (architecture §9.2)", () => {
-  it("keep the Product @id and the former name for good (lessons §6)", () => {
+  it("keep the Product @id for good (lessons §6)", () => {
     expect(product.schema.id).toBe("https://kheelona.com/products/lumi#product");
     expect(product.schema.name).toBe("Kheelu by Kheelona");
-    expect(product.schema.alternateName).toBe("Lumi");
     expect(product.schema.brand).toBe(seller.brand);
     expect(product.schema.category).toBe("Screen-free AI toy");
     expect(product.schema.countryOfOrigin).toBe("IN");
+  });
+
+  it("leave out the former name until the banned-phrases guard allows it as alternateName", () => {
+    /* Claims §4 row 19 allows the old name only as alternateName and in the rename answer, but the
+       guard's scan of new src code reads `alternateName: "Lumi"` as a banned use: its allowance
+       matches a bare string only. Reported to the main session with task 2.1; the field is added
+       here, and this test flipped, in the commit that widens the allowance. */
+    expect("alternateName" in product.schema).toBe(false);
   });
 
   it("state the 3 to 7 band, never 3+ alone", () => {

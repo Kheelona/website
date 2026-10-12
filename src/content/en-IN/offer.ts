@@ -10,22 +10,20 @@ import type { IconText, OfferCopy } from "@/content/types";
  * (home.md "At a glance", "Phone sticky bar" and fold 9 "Full mode"; D028 wording).
  */
 
+/** Each offer-card perk, written once; the cards below list them in their own order. */
+const perk = {
+  delivery: { icon: "truck", text: "{delivery}" },
+  box: { icon: "package", text: "In the box: Kheelu plush toy, charger and quick-start card" },
+  plus: { icon: "star", text: "6 months of Kheelona+ included: stories, poems, jingles, languages and the parent app" },
+  anywhere: { icon: "map-pin", text: "Delivery anywhere in India, included" },
+  invoice: { icon: "check-circle", text: "A GST invoice with every order" },
+} as const satisfies Readonly<Record<string, IconText>>;
+
 /** Home's card (fold 9): the delivery line first, then three perks. */
-const homePerks: readonly IconText[] = [
-  { icon: "truck", text: "{delivery}" },
-  { icon: "package", text: "In the box: Kheelu plush toy, charger and quick-start card" },
-  { icon: "map-pin", text: "Delivery anywhere in India, included" },
-  { icon: "check-circle", text: "A GST invoice with every order" },
-];
+const homePerks: readonly IconText[] = [perk.delivery, perk.box, perk.anywhere, perk.invoice];
 
 /** The product page's card (fold 3): five perks, Kheelona+ among them. */
-const productPerks: readonly IconText[] = [
-  { icon: "package", text: "In the box: Kheelu plush toy, charger and quick-start card" },
-  { icon: "star", text: "6 months of Kheelona+ included: stories, poems, jingles, languages and the parent app" },
-  { icon: "map-pin", text: "Delivery anywhere in India, included" },
-  { icon: "truck", text: "{delivery}" },
-  { icon: "check-circle", text: "A GST invoice with every order" },
-];
+const productPerks: readonly IconText[] = [perk.box, perk.plus, perk.anywhere, perk.delivery, perk.invoice];
 
 export const offerCopy = {
   /* D028, option (d): beside every chilli button. Full mode: home.md "At a glance". */
@@ -34,20 +32,20 @@ export const offerCopy = {
       "Reserve yours for {price:token} today, refundable until dispatch, then pay {price:balance} before delivery: {price:headline} in total (incl. GST).",
     full: "{price:full} (incl. GST), paid in full when you order.",
   },
-  /* The phone buy bar (partials/buybar.html); full mode: home.md "Phone sticky bar". */
-  sticky: {
-    token: { big: "{price:token} today", small: "refundable · {price:headline} total (incl. GST)" },
-    full: { big: "{price:full} (incl. GST)", small: "Paid in full · {delivery}" },
-  },
   card: {
     product: "Kheelu",
-    /* Full mode: the composed block's price reads "₹7,999 (incl. GST)" (home.md fold 9). */
+    /* Full mode: the composed block's price reads "{price:full} (incl. GST)" (home.md fold 9). */
     priceNote: { token: "incl. GST", full: "(incl. GST)" },
     split: [
       { label: "Today, refundable", price: "token" },
       { label: "Before delivery", price: "balance" },
     ],
     perks: { home: homePerks, product: productPerks },
+  },
+  /* The phone buy bar (partials/buybar.html); full mode: home.md "Phone sticky bar". */
+  sticky: {
+    token: { big: "{price:token} today", small: "refundable · {price:headline} total (incl. GST)" },
+    full: { big: "{price:full} (incl. GST)", small: "Paid in full · {delivery}" },
   },
   /* D027's first sentence only (D041 F7), under Home's card. */
   plus: "Every Kheelu comes with 6 months of Kheelona+: stories, poems, jingles, languages and the parent app.",

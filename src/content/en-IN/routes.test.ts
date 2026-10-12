@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { ROOT, readRepoFile } from "../../../test/e2e/support/repo";
 import { MOCKUP_SLUGS } from "../../../test/e2e/support/mockup-text";
 import { ARTICLE_SLUGS as E2E_ARTICLE_SLUGS } from "../../../test/e2e/support/routes";
-import { navigation } from "./navigation";
+import { navigation, type NavLink } from "./navigation";
 import { ARTICLE_SLUGS, routes, routeFor } from "./routes";
 
 /* The URL plan (architecture §6.1, §9.3; strategy §4.1; wiki/site/url-map.md §1; task 2.1
@@ -93,11 +93,11 @@ describe("nav and footer membership (read from navigation.ts)", () => {
       for (const link of column.links) expect(routeFor(link.href)?.footer, link.href).toBe(column.id);
     }
     const inFooter = routes.filter((r) => r.footer !== null).length;
-    expect(inFooter).toBe(navigation.footer.columns.flatMap((c) => c.links).length);
+    expect(inFooter).toBe(navigation.footer.columns.flatMap<NavLink>((c) => c.links).length);
   });
 
   it("never links the chrome to a URL outside the plan", () => {
-    const links = [...navigation.main, ...navigation.footer.columns.flatMap((c) => c.links), navigation.footer.grievance, ...navigation.policies];
+    const links = [...navigation.main, ...navigation.footer.columns.flatMap<NavLink>((c) => c.links), navigation.footer.grievance, ...navigation.policies];
     for (const link of links) expect(paths, link.href).toContain(link.href);
   });
 });
