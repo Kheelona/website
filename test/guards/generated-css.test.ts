@@ -1,11 +1,22 @@
 import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, utimesSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
+import { TextDecoder } from "node:util";
 import postcss, { type AtRule, type Rule } from "postcss";
 import { afterAll, describe, expect, it } from "vitest";
 import { renderDsTokens, renderTypeSteps } from "../../scripts/assets/build-ds-css.mjs";
-import { fontPlan, hasReservedFontName, renderFontsCss, renderPreloads } from "../../scripts/assets/build-fonts.mjs";
+import {
+  collectDevanagari,
+  fontCodePoints,
+  fontPlan,
+  hasReservedFontName,
+  licenceNotice,
+  renderFontsCss,
+  renderOfl,
+  renderPreloads,
+} from "../../scripts/assets/build-fonts.mjs";
 import { buildComposeCss, collectComposeFiles, renderComposeCss } from "../../scripts/assets/build-compose-css.mjs";
 import { FONT_PRELOADS } from "@/styles/generated/fonts.generated";
 
@@ -117,6 +128,49 @@ describe("fonts", () => {
   );
   const publicFonts = readdirSync(join(ROOT, "public/fonts")).filter((f) => !f.startsWith("."));
   const size = (file: string) => statSync(join(ROOT, "public/fonts", file)).size;
+  const codePoints = (file: string) => fontCodePoints(readFileSync(join(ROOT, "public/fonts", file)));
+  const dsFont = (file: string) => readFileSync(join(ROOT, "design-system/project/fonts", file));
+  const isLatin = (f: (typeof faces)[number]) => f.range.includes("U+0000-00FF");
+  const devanagariFaces = faces.filter((f) => !isLatin(f));
+  const hex = (cp: number) => cp.toString(16).toUpperCase().padStart(4, "0");
+
+  /** Every code point of a CSS unicode-range list. */
+  function rangeCodePoints(range: string): number[] {
+    return range.split(",").flatMap((part) => {
+      const [from, to = from] = part.trim().replace(/^U\+/i, "").split("-").map((h) => parseInt(h, 16));
+      return Array.from({ length: to - from + 1 }, (_, i) => from + i);
+    });
+  }
+
+  /**
+   * Every Devanagari character the site's sources use, with the first file that uses it: runs of U+0900-097F
+   * (with any ZWNJ or ZWJ inside a run) in mockup/pages/*.html and in every non-test, non-story text file under
+   * src/. Restated here rather than imported, so a fault in the script's own scan cannot hide a missing glyph.
+   */
+  function siteDevanagari(): Map<string, string> {
+    const pages = existsSync(join(ROOT, "mockup/pages"))
+      ? readdirSync(join(ROOT, "mockup/pages")).filter((f) => f.endsWith(".html")).map((f) => `mockup/pages/${f}`)
+      : [];
+    const src = readdirSync(join(ROOT, "src"), { recursive: true, encoding: "utf8" })
+      .map((f) => `src/${f}`)
+      .filter((f) => statSync(join(ROOT, f)).isFile() && !/\.(test|spec|stories)\.[^/]+$/.test(f));
+    const utf8 = new TextDecoder("utf-8", { fatal: true });
+    const used = new Map<string, string>();
+    for (const file of [...pages, ...src].sort()) {
+      const bytes = readFileSync(join(ROOT, file));
+      if (bytes.includes(0)) continue; // binary (fonts, images)
+      let text: string;
+      try {
+        text = utf8.decode(bytes);
+      } catch {
+        continue; // not UTF-8 text
+      }
+      for (const run of text.match(/[\u0900-\u097F][\u0900-\u097F\u200C\u200D]*/gu) ?? []) {
+        for (const ch of run) if (!used.has(ch)) used.set(ch, file);
+      }
+    }
+    return used;
+  }
 
   it("reads the four DS faces from tokens.css", () => {
     expect(dsFaces.map((f) => `${f.family} ${f.weight}`)).toEqual(["Baloo 2 400 800", "Nunito 200 1000", "Kalam 400", "Kalam 700"]);
@@ -131,23 +185,93 @@ describe("fonts", () => {
     for (const f of faces) expect(f.display, `${f.family} ${f.weight}`).toBe("swap");
   });
 
-  it("serves a Latin plus rupee subset for every face, and a Devanagari subset for Baloo 2 only", () => {
+  it("serves a Latin plus rupee subset for every face, and any other subset for Baloo 2 only, in Devanagari", () => {
     for (const ds of dsFaces) {
-      const latin = faces.filter((f) => f.family === ds.family && f.weight === ds.weight && f.range.includes("U+0000-00FF"));
+      const latin = faces.filter((f) => f.family === ds.family && f.weight === ds.weight && isLatin(f));
       expect(latin, `${ds.family} ${ds.weight} latin`).toHaveLength(1);
       expect(latin[0].range).toContain("U+20B9");
     }
-    const deva = faces.filter((f) => f.range.includes("U+0900-097F"));
-    expect(deva.map((f) => f.family)).toEqual(["Baloo 2"]);
-    expect(deva[0].range).not.toContain("U+0000-00FF");
+    for (const f of devanagariFaces) {
+      expect(`${f.family} ${f.file}`).toBe("Baloo 2 baloo2-variable-devanagari.woff2");
+      const outside = rangeCodePoints(f.range).filter((cp) => !(cp >= 0x0900 && cp <= 0x097f) && cp !== 0x200c && cp !== 0x200d);
+      expect(outside.map(hex), f.range).toEqual([]);
+    }
   });
 
-  it("points every face at a file in public/fonts, and every file there is used", () => {
+  it("reads a font's cmap and copyright from its WOFF2 bytes with Node's own Brotli, so these checks run in-process", () => {
+    const baloo = dsFont("Baloo2-Variable.woff2");
+    const mapped = new Set(fontCodePoints(baloo));
+    for (const ch of "Aa₹कि्") expect(mapped.has(ch.codePointAt(0)!), ch).toBe(true);
+    expect(mapped.has(0x0bb8), "Tamil is not a Baloo 2 script").toBe(false);
+    expect(licenceNotice(baloo).copyright).toBe("Copyright 2019 The Baloo 2 Project Authors (https://github.com/EkType/Baloo2)");
+  });
+
+  it("maps nothing outside each face's unicode-range, and the rupee sign in every Latin file", () => {
+    for (const f of faces) {
+      const range = new Set(rangeCodePoints(f.range));
+      const mapped = codePoints(f.file!);
+      expect(mapped.filter((cp) => !range.has(cp)).map(hex), f.file).toEqual([]);
+      if (isLatin(f)) expect(mapped, f.file).toContain(0x20b9);
+    }
+  });
+
+  // Architecture §12 caps fonts on first view at 130 KB, so the Devanagari file carries only the characters the
+  // site shows (the Hindi chip, हिन्दी, on Home and Meet Kheelu), never the whole script (task 1.2, decision A).
+  it("keeps every Devanagari character the site's sources use in the Baloo 2 Devanagari subset", () => {
+    const used = siteDevanagari();
+    if (used.size === 0) {
+      expect(devanagariFaces, "no Devanagari in the sources, so no Devanagari face").toEqual([]);
+      return;
+    }
+    expect(devanagariFaces.map((f) => f.file)).toEqual(["baloo2-variable-devanagari.woff2"]);
+    const file = devanagariFaces[0].file!;
+    const kept = new Set(codePoints(file));
+    const missing = [...used].filter(([ch]) => !kept.has(ch.codePointAt(0)!)).map(([ch, from]) => `"${ch}" (U+${hex(ch.codePointAt(0)!)}) in ${from}`);
+    expect(missing, `Devanagari missing from public/fonts/${file}; run node scripts/assets/build-fonts.mjs`).toEqual([]);
+  });
+
+  it("holds only the Devanagari the site uses, with a unicode-range of exactly the code points the file maps", () => {
+    const used = [...siteDevanagari().keys()].map((ch) => ch.codePointAt(0)!).sort((a, b) => a - b);
+    for (const f of devanagariFaces) {
+      const mapped = codePoints(f.file!);
+      expect(mapped.map(hex), `${f.file} maps exactly the site's Devanagari`).toEqual(used.map(hex));
+      expect(rangeCodePoints(f.range).map(hex), `${f.file} unicode-range`).toEqual(mapped.map(hex));
+    }
+  });
+
+  it("points every face at a font file in public/fonts, every font file there is used, and OFL.txt is the one other file", () => {
     for (const f of faces) expect(f.file && publicFonts.includes(f.file), `${f.family} ${f.weight} -> ${f.file}`).toBe(true);
-    expect(new Set(publicFonts)).toEqual(new Set(faces.map((f) => f.file)));
-    for (const file of publicFonts) {
+    const fontFiles = publicFonts.filter((f) => f !== "OFL.txt");
+    expect(publicFonts.filter((f) => !f.endsWith(".woff2"))).toEqual(["OFL.txt"]);
+    expect(new Set(fontFiles)).toEqual(new Set(faces.map((f) => f.file)));
+    for (const file of fontFiles) {
       expect(readFileSync(join(ROOT, "public/fonts", file)).subarray(0, 4).toString("latin1"), file).toBe("wOF2");
     }
+  });
+
+  it("ships OFL.txt with each family, its files and the copyright line its DS font carries (name ID 0)", () => {
+    const ofl = read("public/fonts/OFL.txt");
+    for (const family of new Set(dsFaces.map((f) => f.family))) {
+      const files = faces.filter((f) => f.family === family).map((f) => f.file);
+      const copyrights = new Set(dsFaces.filter((f) => f.family === family).map((f) => licenceNotice(dsFont(f.file)).copyright));
+      expect(ofl, family).toContain(`\n${family}: ${files.join(", ")}\n${[...copyrights].join("\n")}\n\n`);
+    }
+  });
+
+  it("ships OFL.txt with the SIL Open Font License 1.1 exactly as google/fonts ships it (ofl/kalam/OFL.txt from line 3)", () => {
+    const ofl = read("public/fonts/OFL.txt");
+    const licence = ofl.slice(ofl.indexOf("This Font Software is licensed under the SIL Open Font License, Version 1.1."));
+    expect(licence.startsWith("This Font Software")).toBe(true);
+    expect(licence.trimEnd().endsWith("OTHER DEALINGS IN THE FONT SOFTWARE.")).toBe(true);
+    // SHA-256 of https://raw.githubusercontent.com/google/fonts/90abd17b4f97671435798b6147b698aa9087612f/ofl/kalam/OFL.txt
+    // from its third line to the end (fetched 2026-10-12; ofl/baloo2 and ofl/nunito carry the same text).
+    expect(createHash("sha256").update(licence).digest("hex")).toBe("e564f06d018e7b95bc3594c96a17f1d41865af4038c375e7aa974dd69df38602");
+  });
+
+  it("ships OFL.txt as build-fonts.mjs writes it today (drift)", () => {
+    const plan = fontPlan(TOKENS, collectDevanagari(ROOT).keys());
+    const notices = plan.map((f) => ({ family: f.family, ...licenceNotice(dsFont(f.source)) }));
+    expect(read("public/fonts/OFL.txt")).toBe(renderOfl(plan, notices));
   });
 
   it("subsets every face (no DS family declares a Reserved Font Name), so each file is smaller than its source", () => {
@@ -181,8 +305,14 @@ describe("fonts", () => {
     expect(total).toBeLessThanOrEqual(130_000);
   });
 
+  it("keeps a page that shows Devanagari within 130 KB of fonts too: the three preloads plus the Devanagari file (§12)", () => {
+    const preloads = FONT_PRELOADS.reduce((sum, p) => sum + size(p.href.replace("/fonts/", "")), 0);
+    const devanagari = devanagariFaces.reduce((sum, f) => sum + size(f.file!), 0);
+    expect(preloads + devanagari).toBeLessThanOrEqual(130_000);
+  });
+
   it("matches what build-fonts.mjs writes today: CSS and preload list (drift)", () => {
-    const plan = fontPlan(TOKENS);
+    const plan = fontPlan(TOKENS, collectDevanagari(ROOT).keys());
     expect(fontsCss).toBe(renderFontsCss(plan));
     expect(read(`${GENERATED}/fonts.generated.ts`)).toBe(renderPreloads(plan));
   });
