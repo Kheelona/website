@@ -10,6 +10,7 @@ import {
   INLINE_STYLE_TEMPLATE,
   INLINE_STYLE_TYPED_KEYS,
   INLINE_STYLE_VALUE,
+  MEDIA_EXCEPTIONS,
   MEDIA_LENGTHS,
   VAR_FALLBACK_KEYWORDS,
   ZERO,
@@ -185,9 +186,13 @@ function cssViolations(path: string, css: string): Result {
     if (ch === "{") {
       const prelude = buf.trim();
       if (/^@(?:media|container)\b/i.test(prelude)) {
-        for (const bad of mediaViolations(prelude)) {
-          violations.push({ line: lineAt(text, start), rule: "media query off the DS breakpoints", text: bad });
-        }
+        const normal = prelude.replace(/\s+/g, " ");
+        const media = MEDIA_EXCEPTIONS.find((e) => e.file.test(path) && e.prelude.test(normal));
+        if (media) applied.push(`${path}: ${normal} (${media.id})`);
+        else
+          for (const bad of mediaViolations(prelude)) {
+            violations.push({ line: lineAt(text, start + buf.indexOf(prelude)), rule: "media query off the DS breakpoints", text: bad });
+          }
       }
       buf = "";
       start = i + 1;
@@ -416,6 +421,32 @@ describe("no-off-token detector: red on every planted literal", () => {
     for (const name of CSS_NAMED_COLOURS) expect(css(`.ks-a { color: ${name}; }`), name).not.toEqual([]);
   });
 
+  /* The mockup-mapping exceptions (wiki/engineering/mockup-css-mapping.md §4): each is red outside
+     its files and green inside them (the green half is in "accepts each named exception"). */
+  it.each([
+    ["ds-weight-800", ".ks-a { font-weight: 800; }", "src/components/ui/Card/card.css"],
+    ["ds-weight-800 at another weight in its file", ".ks-a { font-weight: 900; }", "src/components/ui/HelpLine/help-line.css"],
+    ["ds-weight-700", ".ks-a { font-weight: 700; }", "src/components/ui/HelpLine/help-line.css"],
+    ["ds-weight-500-legal", ".ks-a { font-weight: 500; }", "src/components/sections/ArticleBody/article-body.css"],
+    ["ds-underline-offset-3px", ".ks-a { text-underline-offset: 3px; }", "src/components/ui/Field/field.css"],
+    ["legal-step-numeral", ".ks-a::before { font: 800 16px/20px var(--font-display); }", "src/components/sections/StepsSection/steps-section.css"],
+    ["legal-step-numeral, other size", ".ks-a::before { font: 800 18px/20px var(--font-display); }", "src/layouts/LegalTemplate/legal-template.css"],
+    ["legal-toc-fine-size", ".ks-a { font-size: 14px; }", "src/components/ui/Breadcrumbs/breadcrumbs.css"],
+    ["legal-toc-fine-line", ".ks-a { line-height: 20px; }", "src/components/ui/Breadcrumbs/breadcrumbs.css"],
+    ["imagine-zoom", ".ks-a { transform: scale(1.32); }", "src/components/ui/ArtBoard/art-board.css"],
+    ["imagine-zoom, other scale", ".ks-a { transform: scale(1.4); }", "src/components/ui/ImaginationFrame/imagination-frame.css"],
+    ["guide-plush-ratio", ".ks-a { --kh-ratio: 4 / 3; }", "src/components/ui/ArtBoard/art-board.css"],
+    ["content-max-1200 outside its files", "@media (min-width: 1200px) { .ks-a { margin: 0; } }", "src/components/sections/FeatureSplit/feature-split.css"],
+    ["content-max-1200 combined with another feature", "@media (min-width: 1200px) and (max-width: 1300px) { .ks-a { margin: 0; } }", "src/components/ui/StepLoop/step-loop.css"],
+    ["content-max-1200 as max-width", "@media (max-width: 1200px) { .ks-a { margin: 0; } }", "src/components/ui/StepLoop/step-loop.css"],
+  ])("mapping exception refused out of place: %s", (_name, text, path) => {
+    expect(css(text, path).length).toBeGreaterThan(0);
+  });
+
+  it("prints a refused media query at the prelude's own line", () => {
+    expect(cssViolations("src/components/ui/Card/card.css", ".ks-a { margin: 0; }\n\n@media (min-width: 1200px) {\n  .ks-a { margin: 0; }\n}").violations[0]?.line).toBe(3);
+  });
+
   it("WhatsApp green: only the one D050 hex, in its own file", () => {
     const file = "src/components/chrome/WhatsAppFloat/whatsapp-float.css";
     expect(css(".ks-wa { --ks-wa-green: #ff0000; }", file).length).toBeGreaterThan(0);
@@ -530,6 +561,22 @@ describe("no-off-token detector: green on DS-token code", () => {
       css(".ks-wa { --ks-wa-green: #25D366; }", "src/components/chrome/WhatsAppFloat/whatsapp-float.css"),
     ).toEqual([]);
     expect(css("@theme inline { --breakpoint-sm: 720px; --breakpoint-xl: 1024px; }", "src/styles/tailwind-theme.css")).toEqual([]);
+    // The mockup-mapping exceptions (mockup-css-mapping.md §4), each in one of its files.
+    const ok: [string, string][] = [
+      [".ks-a { font-weight: 800; }", "src/components/ui/HelpLine/help-line.css"],
+      [".ks-a { font-weight: 800; }", "src/layouts/LegalTemplate/legal-template.css"],
+      [".ks-a { font-weight: 700; }", "src/components/ui/Field/field.css"],
+      [".ks-a { font-weight: 700; }", "src/components/sections/ArticleBody/article-body.css"],
+      [".ks-a { font-weight: 500; }", "src/layouts/LegalTemplate/legal-template.css"],
+      [".ks-a { text-underline-offset: 3px; }", "src/components/sections/ArticleBody/article-body.css"],
+      [".ks-a::before { font: 800 16px/20px var(--font-display); }", "src/layouts/LegalTemplate/legal-template.css"],
+      ["@media (min-width: 1024px) and (pointer: fine) { .ks-a { font-size: 14px; line-height: 20px; } }", "src/layouts/LegalTemplate/legal-template.css"],
+      [".ks-a { transform: scale(1.32); transform-origin: 52% 100%; }", "src/components/ui/ImaginationFrame/imagination-frame.css"],
+      [".ks-a { --kh-ratio: 4 / 3; }", "src/components/sections/FeatureSplit/feature-split.css"],
+      ["@media (min-width: 1200px) { .ks-a { margin: 0; } }", "src/components/ui/StepLoop/step-loop.css"],
+      ["@media   (min-width:   1200px)   { .ks-a { margin: 0; } }", "src/components/sections/ArticleBody/article-body.css"],
+    ];
+    for (const [text, path] of ok) expect(css(text, path), `${path}: ${text}`).toEqual([]);
   });
 
   it("accepts DS classes, utilities without arbitrary values, and art-board inline styles", () => {

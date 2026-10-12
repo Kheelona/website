@@ -67,6 +67,72 @@ export const CSS_EXCEPTIONS: readonly CssException[] = [
     value: /^#25D366$/i,
     reason: "D050: WhatsApp's brand green #25D366 for the chat bubble, that one hex only (DS gap G-20).",
   },
+  // From wiki/engineering/mockup-css-mapping.md §4 (2026-10-12): the approved mockup (D046) ported exactly.
+  {
+    id: "ds-weight-800",
+    file: /^src\/(?:components\/ui\/(?:HelpLine\/help-line|SourceMarker\/source-marker|DefinitionList\/definition-list|PolicyLinks\/policy-links)|components\/sections\/(?:HeroSection\/hero-section|GrievanceBlock\/grievance-block|SellerBlock\/seller-block|ProductDetails\/product-details|AnswerSection\/answer-section|ArticleBody\/article-body|SourcesSection\/sources-section)|layouts\/LegalTemplate\/legal-template)\.css$/,
+    property: /^font-weight$/,
+    value: /^800$/,
+    reason:
+      "The DS's emphasis weight for links and labels, restated as bundle.css does (169, 210, 387, 410, 561); the DS has no weight tokens. Weight-only changes in the approved mockup: mockup.css:30,35; contact.css:7,27; meet-kheelu.css:85,91; store-confirmation.css:23; store.css:21; stories.css:110,120; team.css:11; privacy.css:26,54; terms.css:26,54,66; refund.css:33; shipping.css:33.",
+  },
+  {
+    id: "ds-weight-700",
+    file: /^src\/(?:components\/ui\/(?:Breadcrumbs\/breadcrumbs|Field\/field)|components\/sections\/(?:FaqSection\/faq-section|StepsSection\/steps-section|ArticleBody\/article-body)|layouts\/LegalTemplate\/legal-template)\.css$/,
+    property: /^font-weight$/,
+    value: /^700$/,
+    reason:
+      "The DS's bold weight for text links and row labels, restated as bundle.css does (54, 342, 343, 569, 651, 653); the DS has no weight tokens. Approved mockup: meet-kheelu.css:98; setup.css:9; store.css:60; stories.css:50 (with ks-type-body-s), 64; privacy.css:17,24,38,72; terms.css:17,24,38; refund.css:31,44 and 69 (keeps kh-title's 700 under ks-type-headline@xl); shipping.css:31,44,69.",
+  },
+  {
+    id: "ds-weight-500-legal",
+    file: /^src\/layouts\/LegalTemplate\/legal-template\.css$/,
+    property: /^font-weight$/,
+    value: /^500$/,
+    reason: "kh-lead's weight (tokens.css:125; bundle.css:179) on the answer-first line at kh-body-l size below 1024 px: privacy.css:42, terms.css:42.",
+  },
+  {
+    id: "ds-underline-offset-3px",
+    file: /^src\/(?:layouts\/LegalTemplate\/legal-template|components\/sections\/ArticleBody\/article-body)\.css$/,
+    property: /^text-underline-offset$/,
+    value: /^3px$/,
+    reason: "The DS's own link underline offset (bundle.css:123, 210, 410, 561, 652, 915), restated on the legal and article links: privacy.css:17,25,38,54; terms.css:17,25,38,54; refund.css:32,44; shipping.css:32,44; stories.css:64.",
+  },
+  {
+    id: "legal-step-numeral",
+    file: /^src\/layouts\/LegalTemplate\/legal-template\.css$/,
+    property: /^font$/,
+    value: /^800 16px\/20px var\(--font-display\)$/,
+    reason: "Numerals in the Sunshine step circles, drawn by ::before, which no class can reach; the DS lets glyphs inside shapes leave the type scale (bundle.css:2-3; .kh-avatar 800 18px/1, .kh-step__num 700 34px/1). refund.css:54, shipping.css:54, terms.css:65.",
+  },
+  {
+    id: "legal-toc-fine-size",
+    file: /^src\/layouts\/LegalTemplate\/legal-template\.css$/,
+    property: /^font-size$/,
+    value: /^14px$/,
+    reason: "kh-body-s size (tokens.css:128) for the contents list inside (min-width: 1024px) and (pointer: fine) only; touch screens keep 16/24 and no generated type step is pointer-aware. privacy.css:94, terms.css:94.",
+  },
+  {
+    id: "legal-toc-fine-line",
+    file: /^src\/layouts\/LegalTemplate\/legal-template\.css$/,
+    property: /^line-height$/,
+    value: /^20px$/,
+    reason: "kh-body-s line height (tokens.css:128), same query and lines as legal-toc-fine-size: privacy.css:94, terms.css:94.",
+  },
+  {
+    id: "imagine-zoom",
+    file: /^src\/components\/ui\/ImaginationFrame\/imagination-frame\.css$/,
+    property: /^transform$/,
+    value: /^scale\(1\.32\)$/,
+    reason: "The founder's crop of Kabir's imagination frame (log 2026-10-11 10:55, screenshot feedback; mockup.css:130-132, approved D046), with transform-origin 52% 100%. Static: never transitioned.",
+  },
+  {
+    id: "guide-plush-ratio",
+    file: /^src\/components\/sections\/FeatureSplit\/feature-split\.css$/,
+    property: /^--kh-ratio$/,
+    value: /^4 \/ 3$/,
+    reason: "The buyer's guide plush board is 4:3 on phones and the DS default 1:1 from 900 px (ai-toys-for-kids-in-india.css:30,32); an inline --kh-ratio cannot change at a breakpoint. The 900 px rule writes --kh-ratio: initial.",
+  },
 ];
 
 /** Lengths allowed inside @media and @container preludes, as (min-width: Npx) or (max-width: Npx)
@@ -75,6 +141,19 @@ export const MEDIA_LENGTHS = {
   "min-width": DS_BREAKPOINTS as readonly number[],
   "max-width": DS_BREAKPOINT_NEIGHBOURS as readonly number[],
 };
+
+/** @media preludes allowed in one file only, beyond MEDIA_LENGTHS. `prelude` matches the whole
+ *  prelude, trimmed, with runs of whitespace collapsed to one space. */
+export type MediaException = { id: string; file: RegExp; prelude: RegExp; reason: string };
+
+export const MEDIA_EXCEPTIONS: readonly MediaException[] = [
+  {
+    id: "content-max-1200",
+    file: /^src\/components\/(?:ui\/StepLoop\/step-loop|sections\/ArticleBody\/article-body)\.css$/,
+    prelude: /^@media \(min-width: 1200px\)$/,
+    reason: "Approved mockup (D046): the buyer's guide's five checks in one row (ai-toys-for-kids-in-india.css:21) and the safe-AI-toy facts breaking out of the reading column (stories.css:156) from 1200 px, the DS content-max (tokens.css:94; 06-surfaces.md:9). A media query cannot read var(--content-max). DS gap G-03 (wiki/engineering/mockup-css-mapping.md §4.2).",
+  },
+];
 
 /* Inline `style` (architecture §4.4): only art-board layer positions in percent and their
    rotation, the DS sticker tilt (--kh-tilt, DS 10-pages.md:42-52) and the DS photo ratio
