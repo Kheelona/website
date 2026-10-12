@@ -2,7 +2,8 @@ import { readFileSync } from "node:fs";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { ICON_PATHS } from "@/assets/icons.generated";
+import { renderToStaticMarkup } from "react-dom/server";
+import { ICON_COPY, ICON_PATHS } from "@/assets/icons.generated";
 import { CopyLinkButton } from "./CopyLinkButton";
 
 /* CopyLinkButton (task 2.5): the in-app note's "Copy link" (mockup/store.html fold 2): a DS secondary small
@@ -36,7 +37,8 @@ describe("CopyLinkButton", () => {
     expect(icon.tagName.toLowerCase()).toBe("svg");
     expect(icon.getAttribute("class")).toBe("kh-icon");
     expect(icon).toHaveAttribute("aria-hidden", "true");
-    expect(icon.querySelector("path")).toHaveAttribute("d", ICON_PATHS.copy);
+    expect(icon.querySelector("path")).toHaveAttribute("d", ICON_COPY);
+    expect(ICON_COPY).toBe(ICON_PATHS.copy);
     expect(text.tagName).toBe("SPAN");
     expect(text).toHaveTextContent("Copy link");
     expect(live.tagName).toBe("SPAN");
@@ -89,6 +91,23 @@ describe("CopyLinkButton", () => {
       fireEvent.click(button);
     });
     expect(live).toBeEmptyDOMElement();
+  });
+
+  it("renders the mockup's markup (store.html fold 2), the icon as the DS writes it", () => {
+    const html = renderToStaticMarkup(<CopyLinkButton value={STORE} label="Copy link" copiedMessage="Link copied." />);
+    expect(html).toBe(
+      '<button type="button" class="kh-btn kh-btn--secondary kh-btn--s">' +
+        `<svg class="kh-icon" viewBox="0 0 256 256" aria-hidden="true" focusable="false"><path d="${ICON_COPY}"></path></svg>` +
+        '<span>Copy link</span></button><span class="kh-label-s" aria-live="polite"></span>',
+    );
+  });
+
+  it("draws its icon with Glyph and ICON_COPY, never the icon map (task 2.11)", () => {
+    const server = readFileSync("src/components/ui/CopyLinkButton/CopyLinkButton.tsx", "utf8");
+    expect(server).toMatch(/^import \{ ICON_COPY \} from "@\/assets\/icons\.generated";$/m);
+    expect(server).toMatch(/^import \{ Glyph \} from "@\/components\/ui\/Icon\/Glyph";$/m);
+    expect(server).toMatch(/icon=\{<Glyph d=\{ICON_COPY\} \/>\}/);
+    expect(server).not.toMatch(/ICON_PATHS|<svg\b/);
   });
 
   it("ships no icon map to the browser: the client island imports React only, the server part draws the icon", () => {
