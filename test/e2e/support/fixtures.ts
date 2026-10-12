@@ -3,7 +3,8 @@
  *   - Third-party requests are aborted: only the local server (or the two beta hosts), file: and
  *     data: URLs load, so no probe ever reaches a measurement host.
  *   - The protection-bypass header is added to requests for the two beta hosts only, by routing,
- *     never through extraHTTPHeaders, so the secret never reaches any other origin (N5).
+ *     never through extraHTTPHeaders and never on a redirect hop, so the secret never reaches any
+ *     other origin (N5); a redirect off the beta hosts is aborted.
  *   - Reduced motion is on unless a spec asks otherwise.
  *   - A route still served by a legacy page is skipped as "pending"; a route not listed as legacy
  *     must render the new design (legacy-paths.ts).
@@ -20,6 +21,12 @@ import { contextFor, type Viewport } from "./viewports";
 export { expect, ORIGINS };
 
 const LOCAL_HOST = /^(?:localhost|127\.0\.0\.1|\[::1\]|[a-z0-9-]+\.localhost)$/i;
+const isBetaHost = (hostname: string): boolean => (BETA_HOSTS as readonly string[]).includes(hostname);
+
+/** The protection-bypass headers (task 7.2), for requests to the two beta hosts only (N5). */
+function bypassHeaders(): Record<string, string> {
+  return BYPASS_SECRET ? { "x-vercel-protection-bypass": BYPASS_SECRET, "x-vercel-set-bypass-cookie": "true" } : {};
+}
 
 /** Aborts every request that is not local (or a beta host on a beta run). */
 export async function guardNetwork(context: BrowserContext, extraAllowed: (url: URL) => boolean = () => false): Promise<void> {
@@ -27,17 +34,39 @@ export async function guardNetwork(context: BrowserContext, extraAllowed: (url: 
     const url = new URL(route.request().url());
     if (url.protocol === "file:" || url.protocol === "data:" || url.protocol === "blob:") return route.continue();
     if (TARGET === "local" && LOCAL_HOST.test(url.hostname)) return route.continue();
-    if (TARGET === "beta" && (BETA_HOSTS as readonly string[]).includes(url.hostname)) {
-      const headers = { ...route.request().headers() };
-      if (BYPASS_SECRET) {
-        headers["x-vercel-protection-bypass"] = BYPASS_SECRET;
-        headers["x-vercel-set-bypass-cookie"] = "true";
+    if (TARGET === "beta" && isBetaHost(url.hostname)) {
+      // N5. Headers given to route.continue, or to a route.fetch that follows redirects, go to every
+      // redirect hop as well, and Playwright never calls this handler for a hop ("the handler will
+      // only be called for the first url if the response is a redirect"), so a beta 308 to
+      // https://store.kheelona.com would carry the secret to production. So: fetch with redirects
+      // off, read the hop here, abort it unless it stays on a beta host, and hand the 3xx to the
+      // browser, which follows it as a plain request: no header on any hop. A hop to the other
+      // beta host passes on its bypass cookie (warmBypassCookies). Proven on a scratch server
+      // (2026-10-11): with route.continue the hop to store.kheelona.com received the secret; now
+      // that hop is never requested and the beta-to-beta hop arrives without the header.
+      const response = await route.fetch({ headers: { ...route.request().headers(), ...bypassHeaders() }, maxRedirects: 0 });
+      const location = response.status() >= 300 && response.status() < 400 ? response.headers()["location"] : undefined;
+      if (location) {
+        const hop = new URL(location, url);
+        if (!isBetaHost(hop.hostname) && !extraAllowed(hop)) return route.abort("blockedbyclient");
       }
-      return route.continue({ headers });
+      return route.fulfill({ response });
     }
     if (extraAllowed(url)) return route.continue();
     return route.abort("blockedbyclient");
   });
+}
+
+/** On a beta run, one request to each beta host with the bypass headers, so the context holds
+ *  both hosts' bypass cookies before any page loads: a redirect hop between the two beta hosts
+ *  then passes without the header (guardNetwork never sends it on a hop). The request goes from the
+ *  context's own API client (it shares the cookie jar), to the beta origins only. */
+export async function warmBypassCookies(context: BrowserContext, origins: readonly string[] = [ORIGINS.marketing, ORIGINS.store]): Promise<void> {
+  if (TARGET !== "beta" || !BYPASS_SECRET) return;
+  for (const origin of origins) {
+    if (!isBetaHost(new URL(origin).hostname)) throw new Error(`warmBypassCookies: ${origin} is not a beta host (N5)`);
+    await context.request.get(`${origin}/robots.txt`, { headers: bypassHeaders(), maxRedirects: 0, failOnStatusCode: false });
+  }
 }
 
 export type OpenOptions = {
@@ -97,6 +126,7 @@ export async function newGuardedContext(browser: Browser, vp: Viewport, opts: Op
     ...(opts.userAgent ? { userAgent: opts.userAgent } : {}),
   });
   await guardNetwork(context);
+  await warmBypassCookies(context);
   if (opts.recordMotion) await context.addInitScript(installMotionRecorder);
   return context;
 }
