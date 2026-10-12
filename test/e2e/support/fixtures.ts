@@ -253,6 +253,9 @@ export const PLANTS: Record<string, string> = {
   motionon: `document.head.insertAdjacentHTML("beforeend", '<style>@media (prefers-reduced-motion: no-preference) { .kh-planted-motion { color: #eee; } }</style>'); ${MAIN}.insertAdjacentHTML("beforeend", '<p class="kh-planted-motion">planted</p>');`,
   // A hero that is not still at first paint (motion.spec, D049 pick 2).
   hero: `${MAIN}.firstElementChild.style.opacity = "0.5";`,
+  // A strip that widens the page only while a tile is focused and motion is on (no-sideways: the
+  // films strip at each end with its focused tile scaled, D049 pick 8).
+  filmfocus: `document.head.insertAdjacentHTML("beforeend", '<style>@media (prefers-reduced-motion: no-preference) { [data-films]:has(.is-focus) { width: 200vw; } }</style>');`,
   // A reveal around the first chilli button's section, as a composed page could set it (motion.spec:
   // no entrance motion on the money, D049 1A).
   revealmoney: `document.querySelector("main .kh-btn--cta")?.closest("section")?.setAttribute("data-reveal", "");`,
