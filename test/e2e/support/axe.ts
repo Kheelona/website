@@ -4,7 +4,7 @@
  *
  *   accepted, D041: colour contrast of white on Chilli on the chilli button (.kh-btn--cta);
  *   accepted, D050: the WhatsApp bubble's white glyph on WhatsApp green: the .ks-wa icon link itself
- *     only (the link has a name); its "Chat on WhatsApp" label (.ks-wa__label) and any other
+ *     only (the link has a name); its "Chat with us on WhatsApp" label (.ks-wa__label, P13) and any other
  *     visible text inside the bubble are blocking (architecture §13);
  *   accepted, harness: the phone buy bar parked off screen (.kh-buybar.is-hidden) gives axe a false
  *     background (mockup/tools/check.cjs); it is checked when shown, in axe.spec.ts's "sticky bar
@@ -44,7 +44,7 @@ export async function runAxe(page: Page): Promise<{ blocking: AxeFinding[]; acce
         const wa = el.closest(".ks-wa");
         if (wa) {
           // Only the icon link itself: its glyph is not text, and its name is an aria-label or
-          // visually hidden text. Any visible text (the "Chat on WhatsApp" label) must pass.
+          // visually hidden text. Any visible text (the "Chat with us on WhatsApp" label) must pass.
           if (el.closest(".ks-wa__label") || !el.matches("a, .ks-wa")) return "blocking";
           const visible = el.cloneNode(true) as Element;
           visible.querySelectorAll(".ks-wa__label, .kh-sr, .sr-only, svg").forEach((n) => n.remove());
