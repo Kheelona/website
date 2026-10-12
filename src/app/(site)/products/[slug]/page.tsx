@@ -10,9 +10,13 @@ import { pageMeta } from "@/lib/seo/metadata";
 
 /* A product page (structure §3.1, §5; architecture §5.4; task 5.2): the product's page module (products/<slug>/page.ts)
  * through PageTemplate with the live offer, and Meta's ViewContent with the offer's headline (B9, ADR-005: 4999 in
- * token mode, 7999 in full mode). Thin: no words here.
- *
- * Only the products of the registry (content/en-IN/products) exist. With `dynamicParams = false` every other slug stops
+ * token mode, 7999 in full mode). Thin: no words here. */
+
+/** Each product's page module. The `satisfies` refuses to compile until every product of the registry has its page.
+ *  ViewContent's payload names Kheelu (tracking inventory §4), so a second product needs its own tracking decision. */
+const pages = { kheelu: kheeluPage } as const satisfies Readonly<Record<ProductSlug, PageContent>>;
+
+/* Only the products of the registry (content/en-IN/products) exist. With `dynamicParams = false` every other slug stops
  * at the router and the marketing 404 renders on the server; a `notFound()` thrown from a page would serve a blank
  * document instead (test/not-found-ssr.test.ts, lessons §1). */
 export const dynamicParams = false;
@@ -20,10 +24,6 @@ export const dynamicParams = false;
 /* The page shows the price, so it follows the live mode (ADR-005; OFFER_REVALIDATE_SECONDS, written as a literal because
  * Next reads it statically). */
 export const revalidate = 300;
-
-/** Each product's page module. The `satisfies` refuses to compile until every product of the registry has its page.
- *  ViewContent's payload names Kheelu (tracking inventory §4), so a second product needs its own tracking decision. */
-const pages = { kheelu: kheeluPage } as const satisfies Readonly<Record<ProductSlug, PageContent>>;
 
 type Props = { params: Promise<{ slug: string }> };
 
