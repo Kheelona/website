@@ -1,0 +1,54 @@
+/*
+ * The token bridge: Tailwind is layout glue mapped to the design system, never a second design system
+ * (ADR-002, architecture §4.2; guarded by test/guards/tailwind-theme.test.ts).
+ * - Every Tailwind default is dropped, so bg-red-500, rounded-lg or text-xl produce no CSS.
+ * - Colours: the 21 DS roles only (tokens.css), never the primitives. `inline` emits var(--role) directly,
+ *   so the Bedtime theme still switches them.
+ * - Spacing: the DS numbering, so p-5 is space-5. The content container is --content-max.
+ * - Breakpoints: the four widths bundle.css hard-codes (DS gap G-03).
+ * Radius, shadow, easing, font and type are deliberately absent: they belong to the kh- classes, and their
+ * Tailwind names (--radius-*, --shadow-*, --ease-*, --font-*) collide with DS tokens.
+ */
+@theme inline {
+  --*: initial;
+
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-band: var(--surface-band);
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-cta: var(--cta);
+  --color-on-cta: var(--on-cta);
+  --color-primary: var(--primary);
+  --color-on-primary: var(--on-primary);
+  --color-deep-blue: var(--deep-blue);
+  --color-link: var(--link);
+  --color-deep-chilli: var(--deep-chilli);
+  --color-deep-sun: var(--deep-sun);
+  --color-focus: var(--focus);
+  --color-chalk: var(--chalk);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-scrim: var(--scrim);
+
+  --spacing-1: var(--space-1);
+  --spacing-2: var(--space-2);
+  --spacing-3: var(--space-3);
+  --spacing-4: var(--space-4);
+  --spacing-5: var(--space-5);
+  --spacing-6: var(--space-6);
+  --spacing-7: var(--space-7);
+  --spacing-8: var(--space-8);
+  --spacing-9: var(--space-9);
+  --spacing-10: var(--space-10);
+
+  --container-content: var(--content-max);
+
+  --breakpoint-sm: 720px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 900px;
+  --breakpoint-xl: 1024px;
+}
