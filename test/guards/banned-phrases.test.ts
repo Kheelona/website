@@ -196,7 +196,7 @@ describe("new src/ code carries no banned claim", () => {
       id: "lessons",
       match: "lessons",
       count: 1,
-      why: 'KHEELONA_PLUS_LINE says "the stories, lessons, languages"; claims §4 row 10 already flags it (D027).',
+      why: 'KHEELONA_PLUS_LINE says "the stories, lessons, languages" (claims §4 row 10, D027). Owner: task 6.3, which deletes the legacy KheelonaPlusBand and this constant.',
     },
   ];
 
