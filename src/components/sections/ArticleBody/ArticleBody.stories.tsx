@@ -1,13 +1,16 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import bellyModule from "@ds/assets/Kheelu/kheelu-belly-module.png";
 import floorTrain from "@ds/assets/Photo library/advik-04-floor-train-web.webp";
-import type { ArticlePart, FigureBlock, ProseBlock } from "@/content/types";
+import type { Answer, ArticlePart, FigureBlock, ProseBlock, Source } from "@/content/types";
+import { AnswerSection } from "../AnswerSection/AnswerSection";
+import { SourcesSection } from "../SourcesSection/SourcesSection";
 import { ArticleBody } from "./ArticleBody";
 
-/* ArticleBody (task 3.4): the reading column of the three approved article mockups (story-*.html). The bodies below
- * are the approved copy, ported verbatim into the content model's blocks (src/content/types.ts) as task 5.6 will port
- * them into the article modules; they are story and test data only (exported in capitals, which Storybook leaves out
- * of the story list). The answer and the sources are their own sections (AnswerSection, SourcesSection), passed in. */
+/* ArticleBody (task 3.4): the reading column of the three approved article mockups (story-*.html). The bodies, answers
+ * and sources below are the approved copy, ported verbatim into the content model's shapes (src/content/types.ts) as
+ * task 5.6 will port them into the article modules; they are story and test data only (exported in capitals, which
+ * Storybook leaves out of the story list), shared by the AnswerSection and SourcesSection stories. The answer and the
+ * sources are their own sections, passed in as `before` and `after`: each story shows the column as the article does. */
 
 type Body = readonly (ArticlePart | FigureBlock)[];
 
@@ -210,29 +213,146 @@ export const LATE_TALKERS_BODY: Body = [
 /** The marker word the article templates pass (story-*.html: aria-label "Source 1"). */
 export const SOURCE_LABEL = "Source";
 
+/** story-learning-toys-for-a-three-year-old.html fold 2: the answer, then two paragraphs of detail. */
+export const LEARNING_TOYS_ANSWER: Answer = {
+  question: "What are the best learning toys for a {nowrap:3-year-old}?",
+  answer:
+    "Toys that get your child building, pretending and talking: blocks, simple puzzles, pretend-play sets, crayons and dough, and picture books you read together. Research links back-and-forth talk between a young child and a caring adult to early language and brain development,[^1] so the best toys are often the ones you play with together, out loud.",
+  detail: [
+    { kind: "p", text: "The word “educational” on a box says little about the toy inside. A shape sorter is educational. So is a tablet full of phonics videos. They are not the same purchase." },
+    { kind: "p", text: "A better question: what is my {nowrap:3-year-old} working on right now, and does this toy help or get in the way? Here is that list, skill by skill." },
+  ],
+};
+
+/** story-what-to-look-for-in-a-safe-ai-toy.html fold 2. */
+export const SAFE_AI_TOY_ANSWER: Answer = {
+  question: "What should you look for in a safe AI toy?",
+  answer:
+    "Look for mechanisms you can check, not promises. Ask when the microphone is on, whether the toy can reach the open internet, where your child’s voice goes and who keeps it, whether you can read and delete every conversation, and how replies are filtered for your child’s age. Then weigh what child-safety groups say.",
+};
+
+/** story-talking-toys-and-late-talkers.html fold 2: the answer, then the D025 line. */
+export const LATE_TALKERS_ANSWER: Answer = {
+  question: "What helps a late talker?",
+  answer:
+    "Talk with your child, wait, and follow their lead. Name what they look at, add one word to what they say, and give them time to answer before you fill the silence. If your child is 3 or older and other people still can’t understand them most of the time, talk to your paediatrician.[^1]",
+  detail: [{ kind: "disclaimer", text: "Kheelu is a toy, not a therapy or treatment. If you’re worried about your child’s speech, talk to your paediatrician." }],
+};
+
+/** The heading the article notes and the guide's note open with. */
+export const SOURCES_LABEL = "Sources";
+
+export const LEARNING_TOYS_SOURCES: readonly Source[] = [
+  {
+    citation:
+      "Center on the Developing Child at Harvard University, “Serve and Return” (Key Concepts), undated (page metadata 2024, updated 2026), Key Takeaways and the paragraph after Fast Facts.",
+    href: "https://developingchild.harvard.edu/key-concept/serve-and-return/",
+  },
+  {
+    citation: "Ministry of Human Resource Development (now Ministry of Education), Government of India, “National Education Policy 2020”, 2020, chapter 4, para 4.1, p. 11.",
+    href: "https://ncert.nic.in/pdf/nep/NEP_2020.pdf",
+  },
+  {
+    citation: "Ministry of Human Resource Development (now Ministry of Education), Government of India, “National Education Policy 2020”, 2020, chapter 1, para 1.2, p. 7.",
+    href: "https://ncert.nic.in/pdf/nep/NEP_2020.pdf",
+  },
+  {
+    citation:
+      "Romeo, Leonard, Robinson, West, Mackey, Rowe and Gabrieli, “Beyond the 30-Million-Word Gap: Children’s Conversational Exposure Is Associated With Language-Related Brain Function”, Psychological Science, 2018, Abstract and Results.",
+    href: "https://pmc.ncbi.nlm.nih.gov/articles/PMC5945324/",
+  },
+  {
+    citation:
+      "World Health Organization, “Guidelines on physical activity, sedentary behaviour and sleep for children under 5 years of age”, 2019, Recommendations: sedentary time, p. 8.",
+    href: "https://iris.who.int/handle/10665/311664",
+  },
+  {
+    citation: "Indian Academy of Pediatrics, “Guidelines on Screen Time and Digital Wellness in Infants, Children and Adolescents”, Indian Pediatrics, 2022, p. 239.",
+    href: "https://www.indianpediatrics.net/mar2022/235.pdf",
+  },
+  {
+    citation: "American Academy of Pediatrics, Council on Communications and Media, “Media and Young Minds”, Pediatrics, 2016, Recommendations: Families.",
+    href: "https://doi.org/10.1542/peds.2016-2591",
+  },
+];
+
+export const SAFE_AI_TOY_SOURCES: readonly Source[] = [
+  { citation: "Fairplay, “AI Toys are NOT Safe for Kids” (advisory), 2025, opening paragraph.", href: "https://fairplayforkids.org/pf/aitoyadvisory/" },
+  {
+    citation:
+      "Common Sense Media, “Common Sense Media Warns Against AI Toy Companions After Research Reveals Safety Risks” (press release), 22 January 2026, paragraph 1 and the list of findings.",
+    href: "https://www.commonsensemedia.org/press-releases/common-sense-media-warns-against-ai-toy-companions-after-research-reveals-safety-risks",
+  },
+  {
+    citation: "Common Sense Media Youth AI Safety Institute, “AI Toys” (risk assessment), 2026, “What we found” and “Where they fall short”.",
+    href: "https://institute.commonsensemedia.org/risk-assessments/ai-toys",
+  },
+];
+
+export const LATE_TALKERS_SOURCES: readonly Source[] = [
+  {
+    citation: "US Centers for Disease Control and Prevention, “Learn the Signs. Act Early.”: milestones by 3 years, 2026 (reviewed 16 May), Language/Communication and “act early”.",
+    href: "https://www.cdc.gov/act-early/milestones/3-years.html",
+  },
+  {
+    citation: "American Speech-Language-Hearing Association, “Communication Milestones: 3 to 4 Years” and “Communication Milestones: 2 to 3 Years”, undated pages.",
+    href: "https://www.asha.org/public/developmental-milestones/communication-milestones-3-to-4-years/",
+  },
+  {
+    citation:
+      "Center on the Developing Child at Harvard University, “Serve and Return” (Key Concepts), undated (page metadata 2024, updated 2026), Key Takeaways and the paragraph after Fast Facts.",
+    href: "https://developingchild.harvard.edu/key-concept/serve-and-return/",
+  },
+  {
+    citation:
+      "Romeo, Leonard, Robinson, West, Mackey, Rowe and Gabrieli, “Beyond the 30-Million-Word Gap: Children’s Conversational Exposure Is Associated With Language-Related Brain Function”, Psychological Science, 2018, Abstract, Method and Discussion.",
+    href: "https://pmc.ncbi.nlm.nih.gov/articles/PMC5945324/",
+  },
+  {
+    citation:
+      "American Academy of Pediatrics and American Speech-Language-Hearing Association, “Young Children Learning Multiple Languages: Parent FAQs”, HealthyChildren.org, 2025 (updated 20 November).",
+    href: "https://www.healthychildren.org/English/ages-stages/gradeschool/school/Pages/7-Myths-Facts-Bilingual-Children-Learning-Language.aspx",
+  },
+  {
+    citation: "American Speech-Language-Hearing Association, “Late Language Emergence” (Practice Portal), undated, Assessment: Cultural and Linguistic Considerations.",
+    href: "https://www.asha.org/practice-portal/clinical-topics/late-language-emergence/",
+  },
+];
+
+
+/** The answer first and the sources last, as the article template (4.2) passes them. */
+function column(answer: Answer, sources: readonly Source[]) {
+  return {
+    before: <AnswerSection {...answer} variant="article" sourceLabel={SOURCE_LABEL} />,
+    after: <SourcesSection variant="article" label={SOURCES_LABEL} sources={sources} />,
+  };
+}
+
 const meta = {
   title: "Sections/ArticleBody",
   component: ArticleBody,
   excludeStories: /^[A-Z0-9_]+$/,
-  args: { blocks: LEARNING_TOYS_BODY, sourceLabel: SOURCE_LABEL },
+  args: { blocks: LEARNING_TOYS_BODY, sourceLabel: SOURCE_LABEL, ...column(LEARNING_TOYS_ANSWER, LEARNING_TOYS_SOURCES) },
   parameters: { layout: "fullscreen" },
 } satisfies Meta<typeof ArticleBody>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** Learning toys: parts, a "Try this" callout, a wide photo between parts, the checks list and in-text links. */
+/** Learning toys, the whole column: the answer, parts, a "Try this" callout, a wide photo between parts, the checks list and in-text links. */
 export const LearningToys: Story = {};
 
 /** Safe AI toy: the six questions, and the facts list with the belly unit, breaking out of the column from 1200 px. */
-export const SafeAiToy: Story = { args: { blocks: SAFE_AI_TOY_BODY } };
+export const SafeAiToy: Story = { args: { blocks: SAFE_AI_TOY_BODY, ...column(SAFE_AI_TOY_ANSWER, SAFE_AI_TOY_SOURCES) } };
 
 /** Late talkers: an untitled opening part, a bulleted list with markers, the plain "gut" line, the tips card, myths. */
-export const LateTalkers: Story = { args: { blocks: LATE_TALKERS_BODY } };
+export const LateTalkers: Story = { args: { blocks: LATE_TALKERS_BODY, ...column(LATE_TALKERS_ANSWER, LATE_TALKERS_SOURCES) } };
 
 /** The other block types the content model allows: numbered steps, a quote, a blue callout and a captioned photo. */
 export const OtherBlocks: Story = {
   args: {
+    before: undefined,
+    after: undefined,
     blocks: [
       part("Other blocks", [
         { kind: "list", variant: "steps", items: ["Charge Kheelu.", "Open the parent app."] },

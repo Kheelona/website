@@ -1,9 +1,9 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { mockupFold, skeleton, words } from "../ArticleBody/__fixtures__/approved-fold";
-import { SOURCE_LABEL } from "../ArticleBody/ArticleBody.stories";
+import { LATE_TALKERS_ANSWER, LEARNING_TOYS_ANSWER, SAFE_AI_TOY_ANSWER, SOURCE_LABEL } from "../ArticleBody/ArticleBody.stories";
 import { AnswerSection } from "./AnswerSection";
-import { LATE_TALKERS_ANSWER, LEARNING_TOYS_ANSWER, SAFE_AI_TOY_ANSWER, TEAM_ANSWER } from "./AnswerSection.stories";
+import { TEAM_ANSWER } from "./AnswerSection.stories";
 
 /* AnswerSection (task 3.4): the answer-first block (architecture §9.5) of the three article mockups (fold 2, a tinted
    card first in the reading column) and of team.html (fold 2, its own band). Its configuration is the content's

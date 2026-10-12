@@ -7,8 +7,8 @@
 .ks-panel-title {
   margin: 0 0 var(--space-3);
 }
-/* Stacked as approved (N21): the panels follow one another under their headings (meet-kheelu.css:81), here scoped to
-   this fold. */
+/* Stacked (N21): the panels follow one another under their headings, as meet-kheelu.css:81 lays them out while the
+   mockup's tab script has not run; scoped to this fold. */
 .ks-details .kh-tabs:not(.is-tabs) .kh-tabs__panel + .kh-tabs__panel {
   margin-top: var(--space-6);
 }

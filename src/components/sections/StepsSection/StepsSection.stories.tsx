@@ -64,6 +64,7 @@ const meta = {
   excludeStories: /^[A-Z0-9_]+$/,
   args: { ...GUIDE_CHECKS, offer },
   parameters: { layout: "fullscreen" },
+  /* Story args merge over these, so each placement below states its band and link itself. */
 } satisfies Meta<typeof StepsSection>;
 
 export default meta;
@@ -73,11 +74,11 @@ type Story = StoryObj<typeof meta>;
 export const Checks: Story = {};
 
 /** Setup's four steps in their tones. */
-export const Four: Story = { args: { ...SETUP_STEPS, offer } };
+export const Four: Story = { args: { ...SETUP_STEPS, band: false, action: undefined, offer } };
 
 /** The confirmation's three steps, the balance from the offer. */
 export const Thanks: Story = {
-  args: { ...THANKS_STEPS, offer },
+  args: { ...THANKS_STEPS, band: false, action: undefined, offer },
   render: (args) => (
     <div className="kh-section">
       <div className="kh-container">

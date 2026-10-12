@@ -102,19 +102,26 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+/* Story args merge over the meta's, so each story states band and featured itself. */
+
 /** A topic with its rewritten guide: the card (one tap) beside the rows from 900 px, on the band. */
 export const WithGuide: Story = {};
 
 /** A topic with no rewritten guide yet: the rows in two columns from 900 px, on the page surface. */
-export const RowsOnly: Story = { args: SCREEN_TIME_TOPIC };
+export const RowsOnly: Story = { args: { ...SCREEN_TIME_TOPIC, featured: undefined, band: false } };
 
 /** A wide photo on the page surface. */
-export const AiAndSafety: Story = { args: AI_AND_SAFETY_TOPIC };
+export const AiAndSafety: Story = { args: { ...AI_AND_SAFETY_TOPIC, band: false } };
 
 /** A portrait photo in the card's 16:9 frame. */
 export const PortraitPhoto: Story = { args: LEARNING_TOPIC };
 
 /** Rows that link, once their guides are rewritten. */
 export const LinkedRows: Story = {
-  args: { ...SCREEN_TIME_TOPIC, items: SCREEN_TIME_TOPIC.items.map((item) => ({ ...item, href: "/stories/busy-hands-no-screens" })) },
+  args: {
+    ...SCREEN_TIME_TOPIC,
+    featured: undefined,
+    band: false,
+    items: SCREEN_TIME_TOPIC.items.map((item) => ({ ...item, href: "/stories/busy-hands-no-screens" })),
+  },
 };

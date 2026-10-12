@@ -12,10 +12,12 @@ import type { DetailRow, ProductDetailsConfig } from "./product-details.types";
 
 /**
  * The product's details (task 3.4; meet-kheelu.html fold 7), section `#specs`: the three panels (specs, in the box,
- * safety) STACKED as approved (N21: the mockup hides its tab list and has no tabs code, so the build ships the DS
- * `kh-tabs` and `kh-tabs__panel` classes without `is-tabs`, no tab list and no JavaScript; the panel ids stay for a
- * later tabs island), each under its own heading, beside the declarations card (MRP from the offer, consumer care one
- * line per way to reach us). Open facts render visibly as placeholders. Server component.
+ * safety) STACKED, as the plan rules (N21; tasks 3.4): the mockup's no-JavaScript state, the DS `kh-tabs` and
+ * `kh-tabs__panel` classes without `is-tabs`, no tab list and no JavaScript, each panel under its own heading. (The
+ * mockup page also carries a page script after its main content that turns the panels into DS tabs when JavaScript
+ * runs; it is not built here, and the panel ids stay so a later tabs island can enhance this markup.) Beside them the
+ * declarations card (MRP from the offer, consumer care one line per way to reach us). Open facts render visibly as
+ * placeholders. Server component.
  */
 export interface ProductDetailsProps extends ProductDetailsConfig {
   /** For the MRP in the declarations. */

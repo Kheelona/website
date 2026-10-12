@@ -5,17 +5,18 @@ import { mockupFold, skeleton, words } from "../ArticleBody/__fixtures__/approve
 import { ProductDetails } from "./ProductDetails";
 import { PRODUCT_DETAILS } from "./ProductDetails.stories";
 
-/* ProductDetails (task 3.4): the product page's fold 7 (meet-kheelu.html), the three panels STACKED as approved (N21:
-   the mockup hides its tab list and mockup.js has no tabs code, so no tab list and no JavaScript), each under its own
-   heading, beside the declarations card; open facts shown as placeholders; the section keeps id="specs". */
+/* ProductDetails (task 3.4): the product page's fold 7 (meet-kheelu.html), the three panels STACKED as the plan rules
+   (N21: no tab list and no JavaScript), each under its own heading, beside the declarations card; open facts shown as
+   placeholders; the section keeps id="specs". The comparison is with the mockup's markup as served, which is its
+   no-JavaScript state: the tab list hidden, the panels stacked (its page script, which makes tabs, is not built). */
 
 const offer = buildOffer("token");
-/* The hidden tab list is the mockup's no-JavaScript state and is not built (N21); the mockup's amount span marks
-   where the MRP comes from (data-src, mockup-only, N22). */
+/* The hidden tab list is not built (N21); the mockup's amount span marks where the MRP comes from (data-src,
+   mockup-only, N22). */
 const OPTIONS = { skip: "[hidden]", unwrap: "[data-src]" };
 
 describe("ProductDetails: the approved fold", () => {
-  it("markup and words equal meet-kheelu.html fold 7 without its hidden tab list", () => {
+  it("markup and words equal meet-kheelu.html fold 7 as served (no JavaScript), without its hidden tab list", () => {
     const { container } = render(<ProductDetails {...PRODUCT_DETAILS} offer={offer} />);
     const mockup = mockupFold("meet-kheelu", "section#specs");
     expect(skeleton(container.firstElementChild!, OPTIONS)).toBe(skeleton(mockup, OPTIONS));

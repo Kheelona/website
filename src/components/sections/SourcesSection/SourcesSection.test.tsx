@@ -2,7 +2,8 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { mockupFold, skeleton, words } from "../ArticleBody/__fixtures__/approved-fold";
 import { SourcesSection } from "./SourcesSection";
-import { GUIDE_SOURCES, LATE_TALKERS_SOURCES, LEARNING_TOYS_SOURCES, SAFE_AI_TOY_SOURCES, SOURCES_LABEL } from "./SourcesSection.stories";
+import { LATE_TALKERS_SOURCES, LEARNING_TOYS_SOURCES, SAFE_AI_TOY_SOURCES, SOURCES_LABEL } from "../ArticleBody/ArticleBody.stories";
+import { GUIDE_SOURCES } from "./SourcesSection.stories";
 
 /* SourcesSection (task 3.4; D026, DS gap G-18): the numbered notes at the foot of each article mockup and the buyer's
    guide's inline note (ai-toys-for-kids-in-india.html fold 5). Each note is the target of its markers (#src-n). */
