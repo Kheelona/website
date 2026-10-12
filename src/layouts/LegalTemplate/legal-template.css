@@ -1,0 +1,492 @@
+/* LegalTemplate (task 4.3): the four approved legal pages' CSS (mockup/css/privacy.css, terms.css, refund.css,
+   shipping.css) in one file. They are two families, not four copies (mockup-css-mapping §6.1): `reference` (privacy,
+   terms) and `notice` (refund, shipping). Rules both share are written once; a family's own rules hang off the
+   modifier on its block (ks-doc--reference, ks-doc--notice, ks-doc-summary--notice, ks-doc-close--reference,
+   ks-doc-close--notice, ks-draft--notice); terms' groups off ks-toc--groups. Type sizes are ks-type-* classes in the
+   markup (§3.6 rows 27-28, 31-32, 38-41, 48-51); the only typed type values are the three legal exceptions of §4.1.
+   Every value a DS token, an exact calc() of one, or a named exception (test/guards/token-exceptions.ts). */
+
+/* ---------- Hero ---------- */
+
+/* The quiet draft note and the last-updated line (privacy.css:12-13; refund.css:9-11): on a notice page the note opens
+   with the DS info icon. */
+.ks-draft {
+  margin: 0 0 var(--space-4);
+  color: var(--text-muted);
+}
+.ks-draft--notice {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.ks-draft--notice .kh-icon {
+  font-size: var(--icon-m);
+}
+.ks-updated {
+  margin: var(--space-4) 0 0;
+  color: var(--text-muted);
+}
+
+/* Kheelu's note on a board (refund.css:12-17; mapping rows 44-45): 4:3 by the ArtBoard prop. On phones and tablets the
+   hero stacks and the decorative note would push the short version below the first screen, so it shows from 900 px. */
+.ks-hero .ks-doc-art .kh-sticker {
+  right: 5%;
+  top: 16%;
+  text-align: center;
+}
+@media (max-width: 899px) {
+  .ks-doc-art {
+    display: none;
+  }
+}
+
+/* ---------- The short version ---------- */
+
+.ks-doc-summary .kh-section__head {
+  margin-bottom: var(--space-6);
+}
+/* A link in a promise (privacy.css:17; mapping rows 22-23). */
+.ks-doc-summary .kh-trust__body a {
+  color: var(--link);
+  font-weight: 700; /* ds-weight-700 */
+  text-underline-offset: 3px; /* ds-underline-offset-3px */
+}
+/* Notice: "Deliveries start / mid-November." never splits at the hyphen; an odd last promise spans both columns
+   (refund.css:20, 22). */
+.ks-doc-summary--notice .kh-trust__title {
+  text-wrap: balance;
+}
+@media (min-width: 720px) {
+  .ks-doc-summary--notice .kh-trust__item:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+}
+/* Notice: the help line under the promises (refund.css:23-24; mapping row 46: -0.2em of the 20 px icon = −4 px). */
+.ks-doc-help {
+  margin-top: var(--space-6);
+  max-width: var(--measure);
+}
+.ks-doc-help .kh-icon {
+  font-size: var(--icon-m);
+  vertical-align: calc(var(--space-1) * -1);
+}
+
+/* Terms: the short version as numbered points in a Sunshine panel, a Sunshine circle per number (terms.css:62-66). */
+.ks-short-panel {
+  padding: var(--space-5);
+}
+.ks-short {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: ks-short;
+}
+.ks-short li {
+  position: relative;
+  min-height: var(--space-6);
+  padding-left: calc(var(--space-6) + var(--space-3));
+  counter-increment: ks-short;
+}
+.ks-short li::before {
+  content: counter(ks-short);
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: grid;
+  place-items: center;
+  width: var(--space-6);
+  height: var(--space-6);
+  border-radius: 50%;
+  background: var(--sun-500);
+  color: var(--ink-900);
+  font: 800 16px/20px var(--font-display); /* legal-step-numeral: terms.css:65 */
+}
+.ks-short strong {
+  font-weight: 800; /* ds-weight-800: terms.css:66 */
+}
+
+/* ---------- The document: the contents list, then the numbered parts ---------- */
+
+.ks-doc__grid {
+  display: grid;
+  gap: var(--space-7);
+}
+
+/* "On this page": DS footer-link rows, 48 px tall (privacy.css:21-26, refund.css:28-33). The number column is 3.5ch in
+   reference, for the two-digit numbers, and 3ch in notice. */
+.ks-toc {
+  gap: var(--space-2);
+  padding-bottom: var(--space-3);
+}
+.ks-toc ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ks-toc li + li {
+  border-top: var(--stroke-hair) solid var(--border);
+}
+.ks-toc a {
+  display: grid;
+  grid-template-columns: 3.5ch minmax(0, 1fr);
+  padding: var(--space-3) 0;
+  color: var(--text);
+  font-weight: 700; /* ds-weight-700 */
+  text-decoration: none;
+}
+.ks-doc--notice .ks-toc a {
+  grid-template-columns: 3ch minmax(0, 1fr);
+}
+.ks-toc a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px; /* ds-underline-offset-3px */
+}
+.ks-toc__n {
+  color: var(--text-muted);
+  font-weight: 800; /* ds-weight-800 */
+}
+
+/* Terms: the three parts as quiet group labels inside the list (terms.css:69-70). */
+.ks-toc__group {
+  margin: var(--space-3) 0 0;
+  color: var(--text-muted);
+}
+.ks-toc ol + .ks-toc__group {
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: var(--stroke-control) solid var(--border);
+}
+
+/* The parts. The column is kh-body on phones and kh-body-l from 1024 px by its classes (mapping rows 27-28, 38-39).
+   The reading measure sits on each paragraph, list and card in reference (privacy.css:33, 45), on the whole column in
+   notice (refund.css:35). */
+.ks-doc__body {
+  min-width: 0;
+}
+.ks-doc--notice .ks-doc__body {
+  max-width: var(--measure);
+}
+.ks-doc__part + .ks-doc__part {
+  margin-top: var(--space-6);
+  padding-top: var(--space-6);
+  border-top: var(--stroke-hair) solid var(--border);
+}
+/* The in-page targets: the part in reference, its heading and any paragraph with an id in notice (/refund#chargeback). */
+.ks-doc--reference .ks-doc__part {
+  scroll-margin-top: var(--space-5);
+}
+.ks-doc__part h2 {
+  margin: 0 0 var(--space-4);
+}
+.ks-doc--notice .ks-doc__part h2,
+.ks-doc--notice .ks-doc__part p[id] {
+  scroll-margin-top: var(--space-5);
+}
+/* Notice headings step up with the body from 1024 px by ks-type-headline@xl (32/38) but keep kh-title's weight, as the
+   approved pages render them (mapping row 48, §6.5). */
+.ks-doc--notice .ks-doc__part h2 {
+  font-weight: 700; /* ds-weight-700: refund.css:69, shipping.css:69 */
+}
+.ks-doc__n {
+  color: var(--text-muted);
+}
+.ks-doc__part p,
+.ks-doc__part ul,
+.ks-doc__part ol {
+  margin: 0 0 var(--space-4);
+}
+.ks-doc--reference .ks-doc__part :is(p, ul, ol) {
+  max-width: var(--measure);
+}
+.ks-doc__part > :last-child {
+  margin-bottom: 0;
+}
+.ks-doc__part .kh-subtitle {
+  margin: var(--space-6) 0 var(--space-2);
+}
+.ks-doc__part ul {
+  padding-left: var(--space-5);
+}
+.ks-doc__part ul li + li {
+  margin-top: var(--space-2);
+}
+.ks-doc a:not(.kh-btn) {
+  color: var(--link);
+  font-weight: 700; /* ds-weight-700 */
+  text-underline-offset: 3px; /* ds-underline-offset-3px */
+}
+.ks-doc__part .ks-placeholder {
+  display: inline;
+}
+
+/* The answer-first lines (keyword map P1, RT1): kh-body-l's size at kh-lead's weight, then kh-lead from 1024 px, by
+   their classes (mapping rows 31-33, 40-41). */
+.ks-doc__part .ks-doc__answer {
+  font-weight: 500; /* ds-weight-500-legal: privacy.css:42 */
+}
+
+/* The grievance and seller blocks read as cards, so a parent finds them fast (privacy.css:45-47, refund.css:57-58).
+   The card <p> rule comes after the part's paragraph rule, as in the mockup, so the card's lines sit flush. */
+.ks-doc__part .ks-doc__card {
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-m);
+}
+.ks-doc--reference .ks-doc__part .ks-doc__card {
+  max-width: var(--measure);
+  margin-bottom: var(--space-4);
+}
+.ks-doc__card p {
+  margin: 0;
+}
+.ks-doc--reference .ks-doc__part > .ks-doc__card:last-child {
+  margin-bottom: 0;
+}
+
+/* Notice: a short bold remedy line set apart (refund.css:48-49). */
+.ks-doc__part .ks-doc__callout {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-m);
+}
+.ks-doc__callout .kh-icon {
+  flex: none;
+  margin-top: var(--space-1);
+  font-size: var(--icon-m);
+}
+
+/* Numbered steps: a Sunshine circle per step, the text beside it (refund.css:52-54; mapping §6.4, the live counter
+   mk-step ported as ks-step). */
+.ks-doc__part .ks-doc__steps {
+  display: grid;
+  gap: var(--space-4);
+  padding: 0;
+  list-style: none;
+  counter-reset: ks-step;
+}
+.ks-doc__steps li {
+  position: relative;
+  min-height: var(--space-6);
+  padding-left: calc(var(--space-6) + var(--space-3));
+  counter-increment: ks-step;
+}
+.ks-doc__steps li::before {
+  content: counter(ks-step);
+  position: absolute;
+  left: 0;
+  top: calc(var(--space-1) * -1);
+  display: grid;
+  place-items: center;
+  width: var(--space-6);
+  height: var(--space-6);
+  border-radius: 50%;
+  background: var(--sun-500);
+  color: var(--ink-900);
+  font: 800 16px/20px var(--font-display); /* legal-step-numeral: refund.css:54 */
+}
+
+/* Terms: the three parts in the body, an eyebrow over each part's first section with the part's rule above it
+   (terms.css:73-74). */
+.ks-doc__group {
+  margin: var(--space-7) 0 var(--space-4);
+  padding-top: var(--space-6);
+  border-top: var(--stroke-control) solid var(--border);
+  color: var(--text-muted);
+}
+.ks-doc__body > .ks-doc__group:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+/* Privacy: the measuring tools, one quiet block per tool, so seven tools read as a list (privacy.css:62-65;
+   mapping §6.3). */
+.ks-tools {
+  display: grid;
+  gap: var(--space-3);
+  max-width: var(--measure);
+  margin-bottom: var(--space-4);
+}
+.ks-tool {
+  padding: var(--space-4) var(--space-5);
+  border: var(--stroke-hair) solid var(--border);
+  border-radius: var(--radius-m);
+  background: var(--surface-raised);
+}
+.ks-doc__part .ks-tool .kh-subtitle {
+  margin: 0 0 var(--space-2);
+}
+.ks-tool > :last-child {
+  margin-bottom: 0;
+}
+
+/* Privacy: everyone who handles your data, one stacked row per recipient on phones, the DS table from 720 px
+   (privacy.css:68-79). */
+.ks-doc__part .ks-recips {
+  max-width: var(--measure);
+  padding: 0;
+  list-style: none;
+  border: var(--stroke-hair) solid var(--border);
+  border-radius: var(--radius-m);
+  background: var(--surface-raised);
+}
+.ks-doc__part .ks-recips li {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+}
+.ks-doc__part .ks-recips li + li {
+  border-top: var(--stroke-hair) solid var(--border);
+}
+.ks-doc__part .ks-recips p {
+  margin: 0;
+}
+.ks-recips__k {
+  color: var(--text-muted);
+  font-weight: 700; /* ds-weight-700: privacy.css:72 */
+}
+.ks-recips-table {
+  display: none;
+  margin-bottom: var(--space-4);
+}
+.ks-recips-table .kh-compare {
+  min-width: 0;
+}
+.ks-recips-table .kh-compare th,
+.ks-recips-table .kh-compare td {
+  vertical-align: top;
+}
+@media (min-width: 720px) {
+  .ks-doc__part .ks-recips {
+    display: none;
+  }
+  .ks-recips-table {
+    display: block;
+  }
+}
+
+/* ---------- The close: one tinted card, centred ---------- */
+
+.ks-doc-close {
+  padding-top: 0;
+}
+.ks-doc-close .kh-card {
+  align-items: center;
+  padding: var(--space-6) var(--space-5);
+  text-align: center;
+}
+/* Reference: the button, the related pages and the help line spaced by the card's gap (privacy.css:51-52); notice: a
+   heading, then the buttons below it (refund.css:62-63). */
+.ks-doc-close--reference .kh-card {
+  gap: var(--space-4);
+}
+.ks-doc-close--reference .kh-section__actions {
+  margin-top: 0;
+}
+.ks-doc-close--notice .kh-section__actions {
+  margin-top: var(--space-4);
+}
+/* The related pages, spaced by the gap with no separator to strand on a wrap; on phones the label on its own line
+   (privacy.css:53-56). */
+.ks-also {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  column-gap: var(--space-4);
+  margin: 0;
+  color: var(--text-muted);
+}
+.ks-also a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-min);
+  color: var(--link);
+  font-weight: 800; /* ds-weight-800: privacy.css:54 */
+  text-underline-offset: 3px; /* ds-underline-offset-3px */
+}
+.ks-also__label {
+  flex-basis: 100%;
+}
+@media (min-width: 720px) {
+  .ks-also__label {
+    flex-basis: auto;
+  }
+}
+/* mapping row 36: -0.2em of the 20 px icon = −4 px. */
+.ks-doc-close .ks-help .kh-icon {
+  font-size: var(--icon-m);
+  vertical-align: calc(var(--space-1) * -1);
+}
+
+/* ---------- Tablet ---------- */
+
+@media (min-width: 720px) {
+  .ks-short-panel {
+    padding: var(--space-6);
+  }
+  .ks-short {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-5) var(--space-7);
+  }
+}
+
+/* ---------- Laptop (DS breakpoint 1024) ---------- */
+
+@media (min-width: 1024px) {
+  .ks-doc__grid {
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    gap: var(--space-8);
+    align-items: start;
+  }
+  .ks-toc {
+    position: sticky;
+    top: var(--space-5);
+  }
+  /* Reference: the long list scrolls in its own box beside the text (privacy.css:84). */
+  .ks-doc--reference .ks-toc {
+    max-height: calc(100vh - var(--space-5) * 2);
+    overflow-y: auto;
+  }
+  .ks-doc-help {
+    max-width: none;
+  }
+  .ks-doc__part + .ks-doc__part {
+    margin-top: var(--space-7);
+    padding-top: var(--space-7);
+  }
+  .ks-doc__group {
+    margin-top: var(--space-8);
+    padding-top: var(--space-7);
+  }
+  .ks-doc-close .kh-card {
+    max-width: calc(var(--content-max) * 2 / 3);
+    margin-inline: auto;
+    padding: var(--space-7);
+  }
+}
+
+/* With a mouse, reference's long list takes compact rows so all of it fits a laptop screen beside the text; touch
+   screens (phones, tablets at any width) keep the 48 px rows (privacy.css:91-95, terms.css:93-98). */
+@media (min-width: 1024px) and (pointer: fine) {
+  .ks-doc--reference .ks-toc a {
+    padding-block: var(--space-2);
+    font-size: 14px; /* legal-toc-fine-size: kh-body-s, privacy.css:94 */
+    line-height: 20px; /* legal-toc-fine-line */
+  }
+  .ks-toc--groups {
+    gap: 0;
+  }
+  .ks-toc--groups .ks-toc__group {
+    margin: var(--space-3) 0 var(--space-1);
+  }
+  .ks-toc--groups ol + .ks-toc__group {
+    margin-top: var(--space-3);
+    padding-top: var(--space-3);
+  }
+}
