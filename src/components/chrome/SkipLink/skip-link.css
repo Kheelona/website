@@ -1,0 +1,4 @@
+/* SkipLink (task 3.1): mockup/mockup.css:11-12 (.mk-skip), ported verbatim as .ks-skip. Above the screen until focused;
+   the toast layer keeps it over the sticky nav, the buy bar and the bubble. */
+.ks-skip { position: absolute; left: var(--space-4); top: calc(var(--space-9) * -1); z-index: var(--z-toast); }
+.ks-skip:focus { top: var(--space-4); }

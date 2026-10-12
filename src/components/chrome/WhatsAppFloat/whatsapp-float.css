@@ -1,0 +1,62 @@
+/* WhatsAppFloat (task 3.1; D050, architecture §5.3). A post-Gate A addition, composed from DS parts: the large icon
+   button (kh-iconbtn kh-iconbtn--l, 56 px), shadow-lift and the DS focus ring, plus WhatsApp green, the founder's one
+   colour exception (DS gap G-20: #25D366, the logo's green; listed once in test/guards/token-exceptions.ts as
+   ks-wa-green). The lift above the buy bar and the label's slide are motion.css's (D050 row); nothing here moves.
+   A transition here would also replace motion.css's transform transition on the same element (the motion guard
+   refuses colour transitions on .ks-wa: its hover colour stays, architecture §5.3). */
+.ks-wa {
+  --ks-wa-green: #25D366;
+  position: fixed;
+  right: var(--space-4);
+  bottom: calc(var(--space-4) + env(safe-area-inset-bottom));
+  z-index: var(--z-sticky);
+  margin: 0; /* the DS gives icon buttons negative margins for in-flow use (bundle.css .kh-drawer__head .kh-iconbtn) */
+  background: var(--ks-wa-green);
+  color: var(--white);
+  box-shadow: var(--shadow-lift);
+}
+/* bundle.css turns an icon button's ground to the band colour on hover; the bubble stays WhatsApp green. */
+.ks-wa:hover {
+  background: var(--ks-wa-green);
+}
+/* Hidden while the menu drawer or any other modal dialog is open (its top layer and inert page cover it anyway). */
+html:has(dialog[open]) .ks-wa {
+  visibility: hidden;
+}
+/* The "Chat on WhatsApp" label is for laptops only. */
+.ks-wa__label {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .ks-wa {
+    right: var(--space-5);
+    bottom: var(--space-5);
+  }
+  /* To the bubble's left, centred on it. Its opacity and slide are motion.css's, which owns the label's transform, so
+     the centring uses auto margins between the block insets, not a translate. Dark text on the raised surface: the
+     white-on-green exception covers the icon only, never text (architecture §13). */
+  .ks-wa__label {
+    display: block;
+    position: absolute;
+    right: calc(100% + var(--space-2));
+    inset-block: 0;
+    height: max-content;
+    margin-block: auto;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-pill);
+    background: var(--surface-raised);
+    color: var(--text);
+    box-shadow: var(--shadow-lift);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+}
+
+/* body.ks-has-float (set by the root layout: every page carries the bubble, D050): the last content of the page, the
+   site footer or the store footer (both kh-footer), ends a bubble's height and gap above the bottom edge, so at the end
+   of the page the bubble never covers a line, a link or the bar below it. 64 + 16 = 80 px: the bubble (56) and its
+   offset (16), with room to spare. */
+.ks-has-float .kh-footer {
+  padding-bottom: calc(var(--space-8) + var(--space-4) + env(safe-area-inset-bottom));
+}

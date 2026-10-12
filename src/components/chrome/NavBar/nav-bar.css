@@ -1,0 +1,5 @@
+/* NavBar (task 3.1): mockup/mockup.css:24 and :91 (.mk-nav-cta), ported as .ks-nav-cta. On phones the nav shows the
+   logo and the menu only, so the hero's chilli button is the one in view (G-06); the nav's own button appears at the
+   DS laptop width, beside the four links (D041). */
+.ks-nav-cta { display: none; }
+@media (min-width: 1024px) { .ks-nav-cta { display: inline-flex; } }

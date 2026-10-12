@@ -1,120 +1,62 @@
-import type { Metadata } from "next";
-import localFont from "next/font/local";
-import "@/styles/globals.css";
+import type { Metadata, Viewport } from "next";
+import { preload } from "react-dom";
+import "@/styles/site.css";
 import { Analytics } from "@vercel/analytics/next";
 import { GoogleAnalyticsGate } from "@/components/tracking/GoogleAnalyticsGate";
 import { MetaPixel } from "@/components/tracking/MetaPixel";
 import { PostHogGate } from "@/components/tracking/PostHogGate";
+import { CANONICAL_ORIGIN, SITE_ENV } from "@/config/env";
 import { AHREFS_ANALYTICS_KEY } from "@/config/site";
+import { organization } from "@/content/en-IN/organization";
+import { FONT_PRELOADS } from "@/styles/generated/fonts.generated";
 
-/* All three faces are subsets of the v3 design system's TTFs
-   (Design/Kheelona-Design-System-v3/fonts, SIL OFL — licences alongside the
-   woff2 files) since CS3 Phase A, 2026-08-23. Glory and Instrument Sans stay
-   upright-only; the serif ships ITALIC ONLY, because that is its entire v3
-   role. */
-const glory = localFont({
-  src: [{ path: "./fonts/Glory.woff2", weight: "100 900", style: "normal" }],
-  variable: "--font-glory",
-  display: "swap",
-});
-
-const instrumentSans = localFont({
-  src: [{ path: "./fonts/InstrumentSans.woff2", weight: "100 900", style: "normal" }],
-  variable: "--font-instrument-sans",
-  display: "swap",
-});
-
-/* Instrument Serif, REINSTATED by founder order 2026-08-23 (decision #11,
-   migration-to-new-dsx.md), reversing the 2026-07-24 retirement and the
-   zero-italics law with it — but only this far: v3's editorial accent is
-   italic serif for section titles and pull-quotes, used sparingly, one per
-   composition (v3 guidelines/typography.md §1). Body copy and UI never
-   take italics; JONY specs each placement page by page in Phase B. */
-const instrumentSerif = localFont({
-  src: [{ path: "./fonts/InstrumentSerifItalic.woff2", weight: "400", style: "italic" }],
-  variable: "--font-instrument-serif",
-  display: "swap",
-});
+/* The root layout (architecture §4.1, §9.1, §10, §15.3; structure §3.1): what the marketing site and the store share.
+ * The page chrome is each host's shell (src/layouts/SiteShell for (site) and the 404, src/layouts/StoreShell for the
+ * store), never this file.
+ *
+ * - One CSS entry, src/styles/site.css: DS tokens, DS fonts, bundle.css, type steps, motion presets, composition, then
+ *   a layout-only Tailwind (ADR-002).
+ * - Metadata: relative URLs resolve against the production origin in every environment (so a beta page never
+ *   canonicalises to itself); noindex, nofollow on beta only. Pages never set `robots` (pageMeta cannot), because
+ *   Next merges metadata key by key and a page's `robots` would replace this one (N15). The title template is for
+ *   the legacy pages until wave 5; new pages give `{ absolute }` titles.
+ * - Viewport: the approved mockup's (mockup/build.mjs:37), `viewport-fit=cover` included. Browsers give
+ *   `env(safe-area-inset-*)` a value only under it, and the buy bar's foot (G-09, D041), the WhatsApp bubble's offset
+ *   (D050) and the footer's clearance (`ks-has-float`) all add the inset; Next's default viewport leaves it out.
+ * - `data-scroll-behavior="smooth"`: motion.css's hook for the mockup's smooth anchor scrolling; Next 16 resets it to
+ *   `auto` during route changes only when the attribute is there (architecture §11.3).
+ * - The three font preloads are the faces every hero uses (generated list, ≤ 130 KB; QA N17), given to React's
+ *   `preload()` as Next's metadata guide says: React puts each `<link rel="preload">` in the head once (a `<link>`
+ *   written into the head by hand comes out twice, once hoisted and once in place).
+ * - `body.ks-has-float`: every page carries the WhatsApp bubble (D050), so the last content of every page keeps clear
+ *   of it (whatsapp-float.css). `kh-page` and the light theme are the mockup's body.
+ * - The five measurement tools, unchanged (tracking inventory; architecture §8): Ahrefs in the document head and in
+ *   the server HTML, because its verifier fetches the page and looks for the tag, async so it never holds up the
+ *   first paint; not on beta (D048, D051). Vercel Web Analytics, GA4, the Meta Pixel and PostHog last in the body, so
+ *   none competes with the hero image; GA4 and Meta load on production hosts only and PostHog on production and
+ *   beta (their gates). What each collects is stated on /privacy, which changes in the same commit as any tool.
+ */
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://kheelona.com"),
-  title: {
-    default: "Kheelu by Kheelona: the screen-free friend that grows with your child, ages 3+",
-    template: "%s · Kheelona",
-  },
-  description:
-    "Kheelu is a screen-free talking friend for ages 3+. It listens first, then talks back, tells stories, and slips learning into the play, in up to 10 languages you speak at home. Pre-order at ₹4,999 with a refundable ₹499.",
-  openGraph: {
-    siteName: "Kheelona",
-    type: "website",
-    /* GEO: India-first, and stated. "AI toy India" style queries reward an
-       explicit locale, and the offer (₹, WhatsApp, the refundable token) is only
-       true here. */
-    locale: "en_IN",
-    images: [{ url: "/og.png", width: 1200, height: 630 }],
-  },
-  twitter: { card: "summary_large_image" },
+  metadataBase: new URL(CANONICAL_ORIGIN),
+  title: { default: organization.name, template: `%s · ${organization.name}` },
+  ...(SITE_ENV === "beta" ? { robots: { index: false, follow: false } } : {}),
 };
 
-/* 2026-08-22 (§8.25-z): the marketing chrome and the Organization graph moved
-   OUT of this file into components/templates/SiteChrome, rendered by the
-   (site) route group. This layout is now only what BOTH kinds of page share:
-   the html element, the fonts, and the three measurement tags. The store gets
-   its own chrome, and no longer inherits a navbar whose CTA points at an
-   anchor it does not have. */
+export const viewport: Viewport = { width: "device-width", initialScale: 1, viewportFit: "cover" };
 
-export default function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  for (const font of FONT_PRELOADS) preload(font.href, { as: "font", type: font.type, crossOrigin: "anonymous" });
   return (
-    <html
-      lang="en-IN"
-      suppressHydrationWarning
-      className={`${glory.variable} ${instrumentSans.variable} ${instrumentSerif.variable}`}
-    >
+    <html lang="en-IN" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
-        {/* Marks JS availability before first paint so reveal styles only apply
-            when the observer will actually run (see globals.css). */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: "document.documentElement.classList.add('js')",
-          }}
-        />
-        {/* Ahrefs Web Analytics. In the <head> and in the SSR HTML on purpose:
-            Ahrefs verifies by fetching the page and looking for this tag, so the
-            deferred client-side pattern GA4 uses would fail its check. `async`
-            keeps it off the parser's critical path, so the hero image still owns
-            LCP. What it collects is stated on /privacy. */}
-        <script
-          src="https://analytics.ahrefs.com/analytics.js"
-          data-key={AHREFS_ANALYTICS_KEY}
-          async
-        />
+        {SITE_ENV !== "beta" && <script src="https://analytics.ahrefs.com/analytics.js" data-key={AHREFS_ANALYTICS_KEY} async />}
       </head>
-      <body>
+      <body className="kh-page ks-has-float" data-theme="light">
         {children}
-        {/* Vercel Web Analytics: page views and visitors, cookieless, no
-            cross-site tracking and no fingerprinting. Last element in the body
-            so its script never competes with the hero image, which owns mobile
-            LCP (§8.19). It only reports from a Vercel deployment; locally it is
-            a no-op. What it collects is stated on /privacy. */}
         <Analytics />
-        {/* GA4 (gtag.js), manual install, production hosts only — see the
-            component for why the host gate exists and why it is not GTM. */}
         <GoogleAnalyticsGate />
-        {/* Meta Pixel (2026-09-01), for Facebook and Instagram advertising.
-            Production hosts only, like GA4, and last in the body for the same
-            LCP reason. Unlike the three tools above it, this one sets a cookie
-            (_fbp) and follows a visitor to other sites, which is its purpose
-            and is why /privacy had to be rewritten rather than extended. */}
         <MetaPixel />
-        {/* PostHog (2026-09-19), the fifth tool: product analytics, session
-            replay and error tracking, with autocapture on. Production hosts
-            only, and last in the body for the same LCP reason as the two above
-            it. The SDK is imported dynamically AFTER the host check, so on
-            localhost and previews it is never downloaded at all.
-            Session replay does not run on /store/thanks, which prints a
-            parent's address back to them; see the component. */}
         <PostHogGate />
       </body>
     </html>

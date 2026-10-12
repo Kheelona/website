@@ -79,7 +79,7 @@ five where children appear): verified per page in the page task's visual review.
 | Founder photos `public/team/{aman,apoorva,kashyap}.jpg` | live site | T (only if supplied and approved, B24) | `FoundersSection` | until then the page shows names without photos; `ria.jpg` unused | 5.7 |
 | Recognition logos `public/recognition/*.png` | live site | none (names as text only, proof-gated, D038, B25) | none | not rendered; verdict FOUNDER (G3) | 6.3 (verdict only) |
 | Ideabaaz logo `public/partners/ideabaaz-startup-fest.png` | live site | EV (`/ideabaaz`, printed QR codes) | `<img>` | kept (B29) | 6.1 |
-| WhatsApp green (a colour, not a file) | WhatsApp's brand logo pack (value recorded in DS gap G-20 by the main session; Meta's brand page lists no hex, fetched 2026-10-12) | the WhatsApp bubble on every page | `--ks-wa-green`, defined once in `WhatsAppFloat/whatsapp-float.css`, allowed by `token-exceptions.ts` | the founder's one colour exception to the DS (D050); the glyph is the DS `whatsapp-logo` icon in white | 3.1 |
+| WhatsApp green (a colour, not a file) | WhatsApp's brand logo pack (value recorded in DS gap G-20 by the main session; Meta's brand page lists no hex, fetched 2026-10-12) | the WhatsApp bubble on every page | `--ks-wa-green: #25D366`, defined once on `.ks-wa` in `src/components/chrome/WhatsAppFloat/whatsapp-float.css` (the bubble's ground, hover included), allowed by `token-exceptions.ts` (`ks-wa-green`). Built (3.1) | the founder's one colour exception to the DS (D050); the glyph is the DS `whatsapp-logo` icon in white (`Glyph` + `ICON_WHATSAPP_LOGO`); the laptop label is dark text on the raised surface, never white on green (architecture §13) | 3.1 |
 
 ## 3. Generated outputs
 

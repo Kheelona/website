@@ -1,0 +1,6 @@
+/* NavDrawer (task 3.1): mockup/mockup.css:61-62, ported verbatim (the markup stays the DS's dialog.kh-drawer). The
+   native dialog covers the whole screen, transparent, so the DS panel (bundle.css .kh-drawer__panel) sits at its right
+   edge and a click beside the panel lands on the dialog itself (the backdrop close, NavDrawer.client.tsx); the DS scrim
+   is the dialog's ::backdrop. The panel's slide and the scrim's fade are motion.css's (D049 pick 5). */
+dialog.kh-drawer { width: 100%; max-width: none; height: 100%; max-height: none; margin: 0; padding: 0; border: 0; background: transparent; }
+dialog.kh-drawer::backdrop { background: var(--scrim); }
