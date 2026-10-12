@@ -26,7 +26,8 @@ export interface PhotoProps {
   readonly caption?: ReactNode;
   /** The page's one LCP image: eager, fetchpriority high. */
   readonly lcp?: boolean;
-  /** A priority hint for an image that is not the LCP (film posters on Home: low, N19). */
+  /** The fetchpriority attribute of an image that is not the LCP (`low` lets the LCP image's request go first). It
+   *  changes nothing else: the image still loads lazily. Ignored with `lcp`, which always asks for high. */
   readonly fetchPriority?: "low" | "auto";
   /** Fades in once on scroll (D049 pick 1); never on the LCP image. */
   readonly reveal?: boolean;

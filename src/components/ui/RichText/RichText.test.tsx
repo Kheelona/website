@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from "vitest";
 import type { Offer } from "@/content/types";
 import { placeholder as ph } from "@/lib/content/placeholder";
 import { toPlainText } from "@/lib/content/plain-text";
-import { RichTextError } from "@/lib/content/rich-text";
+import { parseRichText, RichTextError, type RichNode } from "@/lib/content/rich-text";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { RichText } from "./RichText";
 
@@ -19,6 +19,12 @@ function declarations(path: string, selector: string): string[] {
   });
   return out;
 }
+
+/* The real parser, spied on so one test can hand the renderer a node the parser would never produce. */
+vi.mock("@/lib/content/rich-text", async (importOriginal) => {
+  const real = await importOriginal<typeof import("@/lib/content/rich-text")>();
+  return { ...real, parseRichText: vi.fn(real.parseRichText) };
+});
 
 vi.mock("next/link", async () => {
   const React = await import("react");
@@ -91,6 +97,29 @@ describe("RichText: the inline syntax rendered as the mockup marks it up", () =>
     expect(screen.getByRole("link", { name: "Refunds" })).toHaveAttribute("data-next-link");
     expect(screen.getByRole("link", { name: "FAQ" })).not.toHaveAttribute("data-next-link");
     expect(screen.getByRole("link", { name: "email" })).toHaveAttribute("href", "mailto:hello@kheelona.com");
+  });
+
+  /* Task 2.12: only a single leading slash is a site path; "//host/path" (or "/\host/path") is another site's address.
+     The parser refuses such a link in content, and the renderer never routes one through next/link either. */
+  it("refuses a protocol-relative link in content", () => {
+    expect(() => render(<RichText text="[the kit](//cdn.example.com/kit.pdf)" />)).toThrow(RichTextError);
+    expect(() => render(<RichText text={"[the kit](/\\cdn.example.com/kit.pdf)"} />)).toThrow(RichTextError);
+  });
+
+  it("renders a protocol-relative link node as a plain anchor, never next/link", () => {
+    const link = (href: string, label: string): RichNode => ({ kind: "link", href, internal: false, children: [{ kind: "text", text: label }] });
+    vi.mocked(parseRichText).mockReturnValueOnce([
+      link("//cdn.example.com/kit.pdf", "slashes"),
+      { kind: "text", text: " " },
+      link("/\\cdn.example.com/kit.pdf", "backslash"),
+      { kind: "text", text: " " },
+      link("/refund", "site"),
+    ]);
+    render(<RichText text="replaced by the spy" />);
+    expect(screen.getByRole("link", { name: "slashes" })).toHaveAttribute("href", "//cdn.example.com/kit.pdf");
+    expect(screen.getByRole("link", { name: "slashes" })).not.toHaveAttribute("data-next-link");
+    expect(screen.getByRole("link", { name: "backslash" })).not.toHaveAttribute("data-next-link");
+    expect(screen.getByRole("link", { name: "site" })).toHaveAttribute("data-next-link");
   });
 
   it("renders a source marker as the mockup does, with the word it is given", () => {

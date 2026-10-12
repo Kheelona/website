@@ -3,7 +3,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import type { StaticImageData } from "next/image";
 import { describe, expect, it, vi } from "vitest";
 import type { ArtLayer } from "@/content/types";
-import { ArtBoard } from "./ArtBoard";
+import { ArtBoard, type ArtBoardProps } from "./ArtBoard";
 
 /* ArtBoard (task 2.3; DS scrapbook board kh-art, 10-pages.md:42-52; ADR-010; D049 picks 2 and 3). Rendered
    through the real next/image (the shared test setup mocks it). Fixture: the Home hero board, home.html:22-26. */
@@ -69,7 +69,14 @@ describe("ArtBoard: the board", () => {
     const { container } = render(<ArtBoard tone="blue" layers={HOME_HERO} sizes={SIZES} reveal />);
     expect(board(container)).toHaveAttribute("data-reveal", "");
     expect(() => render(<ArtBoard tone="blue" layers={HOME_HERO} sizes={SIZES} hero reveal />)).toThrow(/hero/i);
-    expect(() => render(<ArtBoard tone="blue" layers={HOME_HERO} sizes={SIZES} lcp reveal />)).toThrow(/LCP/);
+    expect(() => render(<ArtBoard tone="blue" layers={HOME_HERO} sizes={SIZES} hero lcp reveal />)).toThrow(/never fades in/);
+  });
+
+  /* The type refuses lcp without hero (ArtBoard.test-d.tsx); props that reach it untyped (content cast at run time)
+     are refused too, so a board below the first screen never takes the page's one high-priority image. */
+  it("refuses the LCP hint on a board that is not the hero", () => {
+    const untyped = { tone: "blue", layers: HOME_HERO, sizes: SIZES, lcp: true } as unknown as ArtBoardProps;
+    expect(() => render(<ArtBoard {...untyped} />)).toThrow(/lcp.*hero/i);
   });
 });
 
@@ -183,7 +190,7 @@ describe("ArtBoard: loading (ADR-010, N12)", () => {
       { image: { src: KHEELU, alt: "" }, left: 2, width: 60, bottom: 2 },
       { image: { src: ADVIK, alt: "" }, left: 38, width: 40, bottom: 0 },
     ];
-    const { container } = render(<ArtBoard tone="blue" layers={swapped} sizes={SIZES} lcp />);
+    const { container } = render(<ArtBoard tone="blue" layers={swapped} sizes={SIZES} hero lcp />);
     expect(layers(container)[0]).toHaveAttribute("fetchpriority", "high");
     expect(layers(container)[1]).not.toHaveAttribute("fetchpriority");
   });

@@ -74,7 +74,7 @@ export interface CardProps {
    * A row of links at the card's foot instead: the contact route cards (contact.html fold 2: `p` wrapper, one or two
    * links each, contact.css:20-21). Every link in the row is a full tap target (G-01). Use `link` or `links`, not both.
    */
-  links?: Omit<CardLink, "tap">[];
+  links?: readonly Omit<CardLink, "tap">[];
   /**
    * Wraps the title, body and children in one `<div>` beside the icon: the product page's compact mode rows
    * (meet-kheelu.html fold 4, styled by ModesSection).
@@ -143,8 +143,9 @@ export function Card({
       {link && <CardAnchor link={link} />}
       {links !== undefined && links.length > 0 && (
         <p className="ks-card-links">
-          {links.map((l) => (
-            <CardAnchor key={l.href} link={{ ...l, tap: true }} />
+          {links.map((l, i) => (
+            // Position and address: two links to one address never share a key.
+            <CardAnchor key={`${i}:${l.href}`} link={{ ...l, tap: true }} />
           ))}
         </p>
       )}

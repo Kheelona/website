@@ -143,6 +143,23 @@ describe("Button: as a button or a link", () => {
     expect(screen.getByRole("link", { name: "Store" })).not.toHaveAttribute("data-next-link");
   });
 
+  /* Task 2.12: only a single leading slash is a site path. A browser reads "//host/path" (and "/\host/path", whose
+     backslash it turns into a slash) as another site's address, so neither may go through next/link. */
+  it("treats a protocol-relative address as another site's: a plain anchor, never next/link", () => {
+    render(
+      <>
+        <Button href="//store.kheelona.com/thanks">Thanks</Button>
+        <Button href={"/\\store.kheelona.com/thanks"}>Backslash</Button>
+        <Button href="/">Home</Button>
+      </>,
+    );
+    const thanks = screen.getByRole("link", { name: "Thanks" });
+    expect(thanks).toHaveAttribute("href", "//store.kheelona.com/thanks");
+    expect(thanks).not.toHaveAttribute("data-next-link");
+    expect(screen.getByRole("link", { name: "Backslash" })).not.toHaveAttribute("data-next-link");
+    expect(screen.getByRole("link", { name: "Home" })).toHaveAttribute("data-next-link");
+  });
+
   it("is reached by the keyboard in order, as a link or a button; a disabled or loading button is skipped", async () => {
     const user = userEvent.setup();
     render(

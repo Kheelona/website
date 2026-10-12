@@ -36,6 +36,20 @@ describe("Logo", () => {
     expect(link).not.toHaveAttribute("data-next-link");
   });
 
+  /* Task 2.12: "//host" (or "/\host") is another site's address, however it starts; only a single slash is a site path. */
+  it("treats a protocol-relative address as another site's: a plain link, never next/link", () => {
+    render(
+      <>
+        <Logo href="//kheelona.com" linkLabel="Kheelona home" alt="Kheelona" />
+        <Logo href={"/\\kheelona.com"} linkLabel="Kheelona home, backslash" alt="Kheelona" />
+      </>,
+    );
+    const link = screen.getByRole("link", { name: "Kheelona home" });
+    expect(link).toHaveAttribute("href", "//kheelona.com");
+    expect(link).not.toHaveAttribute("data-next-link");
+    expect(screen.getByRole("link", { name: "Kheelona home, backslash" })).not.toHaveAttribute("data-next-link");
+  });
+
   it("takes another height", () => {
     render(<Logo alt="Kheelona" height={40} />);
     expect(screen.getByRole("img")).toHaveAttribute("height", "40");

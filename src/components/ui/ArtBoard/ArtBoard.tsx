@@ -16,7 +16,7 @@ import type { MediaRatio } from "@/components/ui/Photo/Photo";
  * `sizes`; DS shapes (SVG) stay plain <img> (next/image does not optimise SVG); doodles go through Doodle, still
  * in a hero (D049 pick 2) and drawn below the first screen (pick 3). */
 
-export interface ArtBoardProps {
+interface ArtBoardBase {
   readonly tone: Tone;
   /** The board's accessible name (role="img"); omit when the board only decorates. */
   readonly label?: string;
@@ -26,11 +26,6 @@ export interface ArtBoardProps {
   readonly sizes: string;
   /** A word sticker (ui/Sticker), last on the board. */
   readonly sticker?: ReactNode;
-  /** On the first screen: doodles stay still (pick 2), shapes and still doodles load eagerly at low priority (the
-   *  LCP raster alone is high), nothing reveals. */
-  readonly hero?: boolean;
-  /** The board holds the page's LCP image: its largest raster loads eagerly at high priority. */
-  readonly lcp?: boolean;
   /** A fixed ratio other than the DS 1:1, as the DS --kh-ratio variable (refund.css:14, stories.css:47). */
   readonly ratio?: MediaRatio;
   /** At most 480 px wide between 720 and 899 px (ks-art--clamp; mockup-css-mapping §6.7). */
@@ -40,6 +35,19 @@ export interface ArtBoardProps {
   /** The section's own composition class (`ks-…`). */
   readonly className?: string;
 }
+
+/** The LCP image is on the first screen, so only a hero board may hold it (task 2.12). */
+type HeroLoading =
+  | {
+      /** On the first screen: doodles stay still (pick 2), shapes and still doodles load eagerly at low priority
+       *  (the LCP raster alone is high), nothing reveals. */
+      readonly hero: true;
+      /** The board holds the page's LCP image: its largest raster loads eagerly at high priority. */
+      readonly lcp?: boolean;
+    }
+  | { readonly hero?: false; readonly lcp?: false };
+
+export type ArtBoardProps = ArtBoardBase & HeroLoading;
 
 type RasterLayerProps = { readonly image: ImageRef; readonly placement: LayerPlacement; readonly sizes: string; readonly lcp: boolean };
 
@@ -70,8 +78,10 @@ function RasterLayer({ image, placement, sizes, lcp }: RasterLayerProps) {
 }
 
 export function ArtBoard({ tone, label, layers, sizes, sticker, hero, lcp, ratio, clamp, reveal, className }: ArtBoardProps) {
+  // The type refuses lcp without hero; this catches props that reach the board untyped (content cast at run time).
+  if (lcp && !hero) throw new Error("ArtBoard: lcp only together with hero (the LCP image is on the first screen)");
+  // A hero, and so the board holding the LCP image, never fades in.
   if (hero && reveal) throw new Error("A hero art board never fades in on scroll (D049 pick 2, architecture §11.2)");
-  if (lcp && reveal) throw new Error("The art board holding the LCP image never fades in on scroll (D049 pick 2)");
   const lcpAt = lcp ? largestRaster(layers) : -1;
   return (
     <div

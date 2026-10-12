@@ -12,6 +12,9 @@ import { useLayoutEffect } from "react";
  * (CMO M12) and a doodle already on screen is shown drawn (doodles draw below the first screen only). The
  * rest is observed and unobserved once revealed. With reduced motion or without IntersectionObserver it does
  * nothing: js-motion never arrives, so everything stays visible and drawn, as without JavaScript.
+ * Targets added after it armed (a client-only island, a streamed block; task 2.12) follow the same rules through
+ * one MutationObserver on document.body: on screen, shown at once (its fade or draw jumped to the end before the
+ * frame paints); below, observed.
  * It renders nothing and changes only opacity and transform (motion.css), so it shifts no layout. */
 
 const TARGETS = "[data-reveal]:not(.is-in), [data-draw]:not(.is-in)";
@@ -20,6 +23,29 @@ const SHOWN = "is-in";
 const REDUCED = "(prefers-reduced-motion: reduce)";
 /** mockup.js: a block reveals once its top is a tenth of the screen above the bottom edge. */
 const ROOT_MARGIN = "0px 0px -10% 0px";
+
+/** A target shown without moving: a doodle's draw (on its paths, so the whole subtree) or a block's own fade (its
+ *  own transitions only, so nothing inside it is cut short) jumps to its end. Reading the animations brings the
+ *  element's style up to date first, so a fade that the class change has just started is among them. (The singular
+ *  word for a CSS fade stays out of this folder: Tailwind reads it as its motion utility; motion-properties guard.) */
+function finishShown(el: Element): void {
+  if (typeof el.getAnimations !== "function") return;
+  const animations = el.matches("[data-draw]") ? el.getAnimations({ subtree: true }) : el.getAnimations();
+  for (const animation of animations) animation.finish();
+}
+
+/** The targets still waiting in the nodes a mutation added: each node itself and anything inside it. */
+function addedTargets(records: readonly MutationRecord[]): Element[] {
+  const found = new Set<Element>();
+  for (const record of records) {
+    for (const node of record.addedNodes) {
+      if (!(node instanceof Element) || !node.isConnected) continue;
+      if (node.matches(TARGETS)) found.add(node);
+      node.querySelectorAll(TARGETS).forEach((el) => found.add(el));
+    }
+  }
+  return [...found];
+}
 
 /** Arms motion on the page as it is now and returns the disarm, or undefined when motion stays off. */
 function arm(): (() => void) | undefined {
@@ -46,11 +72,29 @@ function arm(): (() => void) | undefined {
 
   // A doodle already shown (on screen at load, or kept by the shell across a navigation) is drawn, not
   // drawing: its draw, which js-motion has just started, jumps to the end before the frame paints.
-  document.querySelectorAll(`[data-draw].${SHOWN}`).forEach((el) => {
-    if (typeof el.getAnimations === "function") for (const animation of el.getAnimations({ subtree: true })) animation.finish();
+  document.querySelectorAll(`[data-draw].${SHOWN}`).forEach(finishShown);
+
+  // Targets added later (task 2.12). A mutation observer reports as a microtask, before the browser paints, so an
+  // added target on screen is never seen hidden. js-motion is on by now, so a block's position includes the preset's
+  // small offset; the fold test is the same as above.
+  const mutations = new MutationObserver((records) => {
+    const added = addedTargets(records);
+    if (added.length === 0) return;
+    const viewport = window.innerHeight;
+    const below = new Set(added.filter((el) => el.getBoundingClientRect().top >= viewport));
+    for (const el of added) {
+      if (below.has(el)) {
+        observer.observe(el);
+      } else {
+        el.classList.add(SHOWN);
+        finishShown(el);
+      }
+    }
   });
+  mutations.observe(document.body, { childList: true, subtree: true });
 
   return () => {
+    mutations.disconnect();
     observer.disconnect();
     root.classList.remove(ARMED);
   };

@@ -341,6 +341,18 @@ export interface SupportChat {
   readonly texts: Readonly<Record<SupportChatContext, string>>;
 }
 
+/** The store's in-app browser note (ui/InAppBrowserNote): its words and its switch, as `store/in-app-note.ts`
+ *  holds them (structure §3.3). Plain text: no inline syntax. */
+export interface InAppBrowserNoteContent {
+  /** False until QA's real-device check confirms the in-app payment problem (test plan §6.4; B12, N7). */
+  readonly enabled: boolean;
+  readonly title: string;
+  /** The note prints the store address after this, in bold and unbroken, so it works without the button. */
+  readonly body: string;
+  readonly copyLabel: string;
+  readonly copiedMessage: string;
+}
+
 /* ── Prose blocks (articles, legal documents, long FAQ answers) ───────────── */
 
 export type ParagraphBlock = { readonly kind: "p"; readonly variant?: "gut" } & LeadText;

@@ -1,4 +1,4 @@
-import type { BrowserContext, Page, TestInfo } from "@playwright/test";
+import { webkit, type Browser, type BrowserContext, type Page, type TestInfo } from "@playwright/test";
 import { expect, newGuardedContext, test } from "./support/fixtures";
 import { VIEWPORTS } from "./support/viewports";
 
@@ -16,6 +16,15 @@ import { VIEWPORTS } from "./support/viewports";
  *     stylesheet with that one @supports condition made false, which is what such a browser does with the block;
  *   - reduced motion: the answer opens at once and nothing turns or grows.
  *   - the question is a native summary: Enter and Space open it.
+ *
+ * WebKit (task 2.12). With KH_WEBKIT=1 the same four cases also run in WebKit, the engine of Safari on iPhones, which
+ * this spec launches itself (the story specs run in the storybook project; the KH_WEBKIT projects of
+ * playwright.config.ts take the layout specs). The WebKit that the pinned Playwright 1.63.0 installs (Safari 26.6,
+ * `npx playwright install webkit`) HAS ::details-content (probe 2026-10-12: CSS.supports true, the slot's computed
+ * transition "grid-template-rows, content-visibility"), so there the smooth open is checked natively, like Chromium.
+ * The 7A case runs there as well, with the same stylesheet rewrite: WebKit without that @supports block is what an
+ * older iOS Safari does with it. Run it with
+ *   KH_WEBKIT=1 npx playwright test --project=storybook test/e2e/motion-faq.spec.ts
  *
  * How it is measured. Chromium 153 runs the ::details-content transition but does not list it in
  * document.getAnimations() (probe 2026-10-12: only the sign's transform appears), so the transition is read from the
@@ -144,102 +153,131 @@ async function openFirstAnswer(page: Page): Promise<Opened> {
 /** Frames strictly between closed and open: the answer was seen growing. */
 const growing = (o: Opened) => o.frames.filter((f) => f.h > 1 && f.h < o.answer - 1);
 
-test.describe("motion: FAQ answers open smoothly (D049 pick 7)", () => {
-  test("with ::details-content: the answer's row grows 0fr → 1fr over --duration-enter, the sign turns 45°", async ({ browser }, info) => {
-    const context = await newGuardedContext(browser, vp, { reducedMotion: "no-preference" });
-    try {
-      const page = await openStory(context, info);
-      const o = await openFirstAnswer(page);
-      expect(o.supports, "this Chromium has ::details-content").toBe(true);
-      expect(o.enter, "--duration-enter resolves").toBeGreaterThan(0);
+/** The engines the story opens in: the storybook project's Chromium, and WebKit too on KH_WEBKIT=1 (launched here). */
+type Engine = { id: "chromium" | "webkit"; name: string; title: string; launch?: () => Promise<Browser> };
+const ENGINES: readonly Engine[] = [
+  { id: "chromium", name: "Chromium", title: "motion: FAQ answers open smoothly (D049 pick 7)" },
+  ...(process.env.KH_WEBKIT === "1"
+    ? [
+        {
+          id: "webkit" as const,
+          name: "WebKit",
+          title: "motion: FAQ answers open smoothly (D049 pick 7), in WebKit (KH_WEBKIT=1)",
+          launch: () => webkit.launch(),
+        },
+      ]
+    : []),
+];
 
-      const rows = o.slot.filter((s) => s.property === "grid-template-rows");
-      expect(rows, JSON.stringify(o.slot)).toHaveLength(1);
-      expect(rows[0].duration, "over --duration-enter").toBe(o.enter);
-      expect(norm(rows[0].easing), "with --ease-standard").toBe(norm(o.ease));
-      expect(o.slot.map((s) => s.property).sort(), "and nothing else moves but the discrete content-visibility switch").toEqual([
-        "content-visibility",
-        "grid-template-rows",
-      ]);
+for (const engine of ENGINES) {
+  test.describe(engine.title, () => {
+    let launched: Browser | undefined;
+    /** The project's browser, or this engine's own, launched once per worker. */
+    const browserFor = async (projectBrowser: Browser): Promise<Browser> => {
+      const browser = engine.launch ? (launched ??= await engine.launch()) : projectBrowser;
+      expect(browser.browserType().name(), `this block runs in ${engine.name}`).toBe(engine.id);
+      return browser;
+    };
+    test.afterAll(async () => {
+      await launched?.close();
+    });
 
-      const frames = JSON.stringify(o.frames.map((f) => [Math.round(f.t), Math.round(f.h)]));
-      expect(o.closed, "closed: the clip holds nothing, so no DS padding shows").toBeLessThan(1);
-      expect(o.frames[0].h, `the first frame after the click is not yet open: ${frames}`).toBeLessThan(o.answer - 1);
-      expect(growing(o).length, `the row is seen growing: ${frames}`).toBeGreaterThan(1);
-      for (let i = 1; i < o.frames.length; i++) {
-        expect(o.frames[i].h, `the row only grows: ${frames}`).toBeGreaterThanOrEqual(o.frames[i - 1].h - 0.5);
+    test("with ::details-content: the answer's row grows 0fr → 1fr over --duration-enter, the sign turns 45°", async ({ browser }, info) => {
+      const context = await newGuardedContext(await browserFor(browser), vp, { reducedMotion: "no-preference" });
+      try {
+        const page = await openStory(context, info);
+        const o = await openFirstAnswer(page);
+        expect(o.supports, `this ${engine.name} has ::details-content`).toBe(true);
+        expect(o.enter, "--duration-enter resolves").toBeGreaterThan(0);
+
+        const rows = o.slot.filter((s) => s.property === "grid-template-rows");
+        expect(rows, JSON.stringify(o.slot)).toHaveLength(1);
+        expect(rows[0].duration, "over --duration-enter").toBe(o.enter);
+        expect(norm(rows[0].easing), "with --ease-standard").toBe(norm(o.ease));
+        expect(o.slot.map((s) => s.property).sort(), "and nothing else moves but the discrete content-visibility switch").toEqual([
+          "content-visibility",
+          "grid-template-rows",
+        ]);
+
+        const frames = JSON.stringify(o.frames.map((f) => [Math.round(f.t), Math.round(f.h)]));
+        expect(o.closed, "closed: the clip holds nothing, so no DS padding shows").toBeLessThan(1);
+        expect(o.frames[0].h, `the first frame after the click is not yet open: ${frames}`).toBeLessThan(o.answer - 1);
+        expect(growing(o).length, `the row is seen growing: ${frames}`).toBeGreaterThan(1);
+        for (let i = 1; i < o.frames.length; i++) {
+          expect(o.frames[i].h, `the row only grows: ${frames}`).toBeGreaterThanOrEqual(o.frames[i - 1].h - 0.5);
+        }
+        const full = o.frames.find((f) => f.h >= o.answer - 0.5);
+        expect(full, `the row reaches the whole answer: ${frames}`).toBeDefined();
+        expect(full!.t, `it takes about --duration-enter (${o.enter} ms), not an instant: ${frames}`).toBeGreaterThanOrEqual(o.enter * 0.5);
+        expect(full!.t, `and is done soon after --duration-enter: ${frames}`).toBeLessThanOrEqual(o.enter + 750);
+        expect(Math.abs(o.clip - o.answer), "open: the clip is the answer's height (1fr)").toBeLessThan(1);
+
+        expect(o.sign, "the sign turns with the DS's own rule (bundle.css)").toEqual([o.base]);
+        expect(o.signDeg).toBe(45);
+      } finally {
+        await context.close();
       }
-      const full = o.frames.find((f) => f.h >= o.answer - 0.5);
-      expect(full, `the row reaches the whole answer: ${frames}`).toBeDefined();
-      expect(full!.t, `it takes about --duration-enter (${o.enter} ms), not an instant: ${frames}`).toBeGreaterThanOrEqual(o.enter * 0.5);
-      expect(full!.t, `and is done soon after --duration-enter: ${frames}`).toBeLessThanOrEqual(o.enter + 750);
-      expect(Math.abs(o.clip - o.answer), "open: the clip is the answer's height (1fr)").toBeLessThan(1);
+    });
 
-      expect(o.sign, "the sign turns with the DS's own rule (bundle.css)").toEqual([o.base]);
-      expect(o.signDeg).toBe(45);
-    } finally {
-      await context.close();
-    }
-  });
+    test("without ::details-content: the answer opens at once (pick 7A)", async ({ browser }, info) => {
+      const context = await newGuardedContext(await browserFor(browser), vp, { reducedMotion: "no-preference" });
+      try {
+        let rewritten = 0;
+        await context.route("**/assets/*.css", async (route) => {
+          const response = await route.fetch();
+          const css = await response.text();
+          if (css.includes(SUPPORTS)) rewritten++;
+          await route.fulfill({ response, body: css.split(SUPPORTS).join("selector(::ks-unsupported-pseudo)") });
+        });
+        const page = await openStory(context, info);
+        const o = await openFirstAnswer(page);
+        expect(rewritten, "the stylesheet carrying the @supports block was served").toBeGreaterThan(0);
+        expect(o.slot.filter((s) => s.property === "grid-template-rows"), JSON.stringify(o.slot)).toEqual([]);
+        const frames = JSON.stringify(o.frames.map((f) => [Math.round(f.t), Math.round(f.h)]));
+        expect(o.answer).toBeGreaterThan(0);
+        expect(Math.abs(o.frames[0].h - o.answer), `open on the first frame: ${frames}`).toBeLessThan(1);
+        expect(growing(o), frames).toEqual([]);
+        expect(Math.abs(o.clip - o.answer), "open at once: the clip is the answer's height").toBeLessThan(1);
+      } finally {
+        await context.close();
+      }
+    });
 
-  test("without ::details-content: the answer opens at once (pick 7A)", async ({ browser }, info) => {
-    const context = await newGuardedContext(browser, vp, { reducedMotion: "no-preference" });
-    try {
-      let rewritten = 0;
-      await context.route("**/assets/*.css", async (route) => {
-        const response = await route.fetch();
-        const css = await response.text();
-        if (css.includes(SUPPORTS)) rewritten++;
-        await route.fulfill({ response, body: css.split(SUPPORTS).join("selector(::ks-unsupported-pseudo)") });
-      });
-      const page = await openStory(context, info);
-      const o = await openFirstAnswer(page);
-      expect(rewritten, "the stylesheet carrying the @supports block was served").toBeGreaterThan(0);
-      expect(o.slot.filter((s) => s.property === "grid-template-rows"), JSON.stringify(o.slot)).toEqual([]);
-      const frames = JSON.stringify(o.frames.map((f) => [Math.round(f.t), Math.round(f.h)]));
-      expect(o.answer).toBeGreaterThan(0);
-      expect(Math.abs(o.frames[0].h - o.answer), `open on the first frame: ${frames}`).toBeLessThan(1);
-      expect(growing(o), frames).toEqual([]);
-      expect(Math.abs(o.clip - o.answer), "open at once: the clip is the answer's height").toBeLessThan(1);
-    } finally {
-      await context.close();
-    }
-  });
+    test("reduced motion: the answer opens at once and nothing turns or grows", async ({ browser }, info) => {
+      const context = await newGuardedContext(await browserFor(browser), vp, { reducedMotion: "reduce" });
+      try {
+        const page = await openStory(context, info);
+        const o = await openFirstAnswer(page);
+        expect(o.supports).toBe(true);
+        expect(o.slot.every((s) => s.duration === 0), JSON.stringify(o.slot)).toBe(true);
+        const frames = JSON.stringify(o.frames.map((f) => [Math.round(f.t), Math.round(f.h)]));
+        expect(o.answer).toBeGreaterThan(0);
+        expect(Math.abs(o.frames[0].h - o.answer), `open on the first frame: ${frames}`).toBeLessThan(1);
+        expect(growing(o), frames).toEqual([]);
+        expect(o.sign, "the sign does not turn: it shows the open state at once").toEqual([]);
+        expect(o.signDeg).toBe(45);
+      } finally {
+        await context.close();
+      }
+    });
 
-  test("reduced motion: the answer opens at once and nothing turns or grows", async ({ browser }, info) => {
-    const context = await newGuardedContext(browser, vp, { reducedMotion: "reduce" });
-    try {
-      const page = await openStory(context, info);
-      const o = await openFirstAnswer(page);
-      expect(o.supports).toBe(true);
-      expect(o.slot.every((s) => s.duration === 0), JSON.stringify(o.slot)).toBe(true);
-      const frames = JSON.stringify(o.frames.map((f) => [Math.round(f.t), Math.round(f.h)]));
-      expect(o.answer).toBeGreaterThan(0);
-      expect(Math.abs(o.frames[0].h - o.answer), `open on the first frame: ${frames}`).toBeLessThan(1);
-      expect(growing(o), frames).toEqual([]);
-      expect(o.sign, "the sign does not turn: it shows the open state at once").toEqual([]);
-      expect(o.signDeg).toBe(45);
-    } finally {
-      await context.close();
-    }
+    test("the question is a native summary: Enter and Space open it from the keyboard", async ({ browser }, info) => {
+      const context = await newGuardedContext(await browserFor(browser), vp, { reducedMotion: "reduce" });
+      try {
+        const page = await openStory(context, info);
+        const questions = page.locator(".kh-faq__q");
+        const items = page.locator(".kh-faq__item");
+        await questions.nth(0).focus();
+        await page.keyboard.press("Enter");
+        await expect.poll(() => items.nth(0).evaluate((d) => (d as HTMLDetailsElement).open)).toBe(true);
+        await questions.nth(1).focus();
+        await page.keyboard.press("Space");
+        await expect.poll(() => items.nth(1).evaluate((d) => (d as HTMLDetailsElement).open)).toBe(true);
+        await page.keyboard.press("Space");
+        await expect.poll(() => items.nth(1).evaluate((d) => (d as HTMLDetailsElement).open), "and close it again").toBe(false);
+      } finally {
+        await context.close();
+      }
+    });
   });
-
-  test("the question is a native summary: Enter and Space open it from the keyboard", async ({ browser }, info) => {
-    const context = await newGuardedContext(browser, vp, { reducedMotion: "reduce" });
-    try {
-      const page = await openStory(context, info);
-      const questions = page.locator(".kh-faq__q");
-      const items = page.locator(".kh-faq__item");
-      await questions.nth(0).focus();
-      await page.keyboard.press("Enter");
-      await expect.poll(() => items.nth(0).evaluate((d) => (d as HTMLDetailsElement).open)).toBe(true);
-      await questions.nth(1).focus();
-      await page.keyboard.press("Space");
-      await expect.poll(() => items.nth(1).evaluate((d) => (d as HTMLDetailsElement).open)).toBe(true);
-      await page.keyboard.press("Space");
-      await expect.poll(() => items.nth(1).evaluate((d) => (d as HTMLDetailsElement).open), "and close it again").toBe(false);
-    } finally {
-      await context.close();
-    }
-  });
-});
+}

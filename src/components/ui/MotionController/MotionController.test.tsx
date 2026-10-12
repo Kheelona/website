@@ -274,3 +274,162 @@ describe("MotionController", () => {
     expect(FakeObserver.instances).toHaveLength(0);
   });
 });
+
+/* Targets added after it armed (task 2.12; architecture §11.3, authoring rule): a client-only island or a streamed
+ * block lands in the page after the first frame. Under html.js-motion such a block would sit at opacity 0 for good
+ * unless the controller takes it too. One MutationObserver on document.body (childList, subtree) hands each added
+ * [data-reveal] and [data-draw] to the same rules as at arming, before the browser paints (a mutation observer runs
+ * as a microtask). */
+describe("MotionController: targets added after it armed", () => {
+  /** Mutation observers report as a microtask: one queued after the insertion runs after them. */
+  const mutationsDelivered = () => act(() => new Promise<void>((done) => queueMicrotask(done)));
+
+  /** An element parsed from markup, not yet in the page (so a stub can go on it before it lands). */
+  function fragment(markup: string): Element {
+    const holder = document.createElement("div");
+    holder.innerHTML = markup.trim();
+    return holder.firstElementChild!;
+  }
+
+  async function armed() {
+    document.body.innerHTML = PAGE;
+    const view = render(<MotionController />);
+    await nextFrame();
+    return { view, observer: FakeObserver.instances[0] };
+  }
+
+  it("shows a block added on screen at once: is-in, not observed, its own fade jumped to the end", async () => {
+    const { observer } = await armed();
+    const late = fragment(`<section id="late-top" data-reveal data-top="200"></section>`);
+    const fade = stubAnimations(late);
+    document.body.append(late);
+    await mutationsDelivered();
+
+    expect(late).toHaveClass("is-in");
+    expect(observer.observed.has(late)).toBe(false);
+    // Reading its position styled it hidden (js-motion is on), so is-in starts a fade: it is finished before the
+    // frame paints, and only the block's own transitions (no subtree), so nothing inside it is cut short.
+    expect(fade.finish).toHaveBeenCalled();
+    expect(late.getAnimations).toHaveBeenCalledWith();
+  });
+
+  it("observes a block added below the fold, and reveals it once it enters", async () => {
+    const { observer } = await armed();
+    const late = fragment(`<section id="late-low" data-reveal data-top="${below + 800}"></section>`);
+    document.body.append(late);
+    await mutationsDelivered();
+
+    expect(late).not.toHaveClass("is-in");
+    expect(observer.observed.has(late)).toBe(true);
+    observer.fire(late, true);
+    expect(late).toHaveClass("is-in");
+    expect(observer.observed.has(late)).toBe(false);
+  });
+
+  it("shows a doodle added on screen drawn (its draw finished, as at arming); one added below draws when it enters", async () => {
+    const { observer } = await armed();
+    const top = fragment(`<svg id="late-draw-top" class="ks-doodle" data-draw data-top="120"></svg>`);
+    const low = fragment(`<svg id="late-draw-low" class="ks-doodle" data-draw data-top="${below + 300}"></svg>`);
+    const topDraw = stubAnimations(top);
+    const lowDraw = stubAnimations(low);
+    document.body.append(top, low);
+    await mutationsDelivered();
+
+    expect(top).toHaveClass("is-in");
+    expect(topDraw.finish).toHaveBeenCalled();
+    expect(top.getAnimations).toHaveBeenCalledWith({ subtree: true });
+    expect(observer.observed.has(top)).toBe(false);
+
+    expect(low).not.toHaveClass("is-in");
+    expect(observer.observed.has(low)).toBe(true);
+    observer.fire(low, true);
+    expect(low).toHaveClass("is-in");
+    expect(lowDraw.finish).not.toHaveBeenCalled();
+  });
+
+  it("finds targets anywhere inside an added subtree, deep in the page", async () => {
+    const { observer } = await armed();
+    const host = document.createElement("div");
+    document.body.append(host);
+    await mutationsDelivered();
+    host.insertAdjacentHTML(
+      "beforeend",
+      `<article id="island"><div><section id="island-top" data-reveal data-top="40"></section></div>
+       <svg id="island-low" class="ks-doodle" data-draw data-top="${below + 50}"></svg><p id="island-still" data-top="${below}"></p></article>`,
+    );
+    await mutationsDelivered();
+
+    expect(byId("island-top")).toHaveClass("is-in");
+    expect(observer.observed.has(byId("island-low"))).toBe(true);
+    expect(byId("island")).not.toHaveClass("is-in");
+    expect(byId("island-still")).not.toHaveClass("is-in");
+    expect([...observer.observed].map((el) => el.id).sort()).toEqual(["draw-low", "island-low", "reveal-low"]);
+  });
+
+  it("leaves an added target that already shows alone, and one that left again before it was seen", async () => {
+    const { observer } = await armed();
+    const shown = fragment(`<section id="kept" class="is-in" data-reveal data-top="${below}"></section>`);
+    const gone = fragment(`<section id="gone" data-reveal data-top="${below}"></section>`);
+    document.body.append(shown, gone);
+    gone.remove();
+    await mutationsDelivered();
+    expect(observer.observed.has(shown)).toBe(false);
+    expect(observer.observed.has(gone)).toBe(false);
+    expect(gone).not.toHaveClass("is-in");
+  });
+
+  it("uses one MutationObserver, on document.body, for added children anywhere below it", async () => {
+    const observe = vi.spyOn(MutationObserver.prototype, "observe");
+    await armed();
+    const onBody = observe.mock.calls.filter(([target]) => target === document.body);
+    expect(onBody).toEqual([[document.body, { childList: true, subtree: true }]]);
+  });
+
+  it("stops watching for added targets once it disarms (unmount)", async () => {
+    const { view, observer } = await armed();
+    view.unmount();
+    const late = fragment(`<section id="after-unmount" data-reveal data-top="10"></section>`);
+    document.body.append(late);
+    await mutationsDelivered();
+    expect(late).not.toHaveClass("is-in");
+    expect(observer.observed.has(late)).toBe(false);
+  });
+
+  it("after a re-arm, hands an added target to the new observer only", async () => {
+    const { view, observer: first } = await armed();
+    nav.pathname = "/safety";
+    view.rerender(<MotionController />);
+    await nextFrame();
+    const second = FakeObserver.instances[1];
+
+    const late = fragment(`<section id="after-rearm" data-reveal data-top="${below + 10}"></section>`);
+    document.body.append(late);
+    await mutationsDelivered();
+    expect(first.observed.has(late)).toBe(false);
+    expect(second.observed.has(late)).toBe(true);
+  });
+
+  it("does nothing with an added target under reduced motion", async () => {
+    vi.spyOn(window, "matchMedia").mockImplementation(
+      (query: string) => ({ matches: query === REDUCE, media: query, addEventListener: vi.fn(), removeEventListener: vi.fn() }) as unknown as MediaQueryList,
+    );
+    document.body.innerHTML = PAGE;
+    render(<MotionController />);
+    await nextFrame();
+    document.body.append(fragment(`<section id="reduced-late" data-reveal data-top="10"></section>`));
+    await mutationsDelivered();
+    expect(document.querySelectorAll(".is-in")).toHaveLength(0);
+    expect(html()).not.toHaveClass("js-motion");
+  });
+
+  it("does nothing with an added target without IntersectionObserver", async () => {
+    vi.stubGlobal("IntersectionObserver", undefined);
+    document.body.innerHTML = PAGE;
+    render(<MotionController />);
+    await nextFrame();
+    document.body.append(fragment(`<section id="no-io-late" data-reveal data-top="10"></section>`));
+    await mutationsDelivered();
+    expect(document.querySelectorAll(".is-in")).toHaveLength(0);
+    expect(html()).not.toHaveClass("js-motion");
+  });
+});

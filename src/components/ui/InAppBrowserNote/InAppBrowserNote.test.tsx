@@ -3,7 +3,8 @@ import { act, fireEvent, render, screen } from "@testing-library/react";
 import { hydrateRoot } from "react-dom/client";
 import { renderToString } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { InAppBrowserNote, type InAppBrowserNoteContent } from "./InAppBrowserNote";
+import type { InAppBrowserNoteContent } from "@/content/types";
+import { InAppBrowserNote } from "./InAppBrowserNote";
 
 /* InAppBrowserNote (task 2.5; B12, N7): the store's fold 2 (mockup/store.html, `mk-inapp`, ported as
  * `ks-inapp`). It renders only when its content's `enabled` flag is true AND the page is open inside the
@@ -152,6 +153,15 @@ describe("InAppBrowserNote", () => {
       [...readFileSync(path, "utf8").matchAll(/\bfrom\s+["']([^"']+)["']|\bimport\s*\(\s*["']([^"']+)["']/g)].map((m) => m[1] ?? m[2]);
     expect(importsOf("src/components/ui/InAppBrowserNote/InAppBrowserNote.client.tsx")).toEqual(["react", "./in-app-browser"]);
     expect(importsOf("src/components/ui/InAppBrowserNote/in-app-browser.ts")).toEqual([]);
+  });
+
+  /* Task 2.12: the note's words are a content shape, so they live with the other content shapes (structure §6: ui may
+     import content/types); the store's content module (store/in-app-note.ts) satisfies it there. */
+  it("takes its words in the content shape of src/content/types.ts, declaring no copy of its own", () => {
+    const source = readFileSync("src/components/ui/InAppBrowserNote/InAppBrowserNote.tsx", "utf8");
+    expect(source).not.toMatch(/\b(?:interface|type)\s+InAppBrowserNoteContent\b/);
+    expect(source).toMatch(/import type \{[^}]*\bInAppBrowserNoteContent\b[^}]*\} from "@\/content\/types";/);
+    expect(readFileSync("src/content/types.ts", "utf8")).toMatch(/^export interface InAppBrowserNoteContent \{/m);
   });
 
   it("matches the approved mockup's in-app note", () => {
