@@ -64,7 +64,7 @@ never stage them).
 |---|---|---|
 | 0 (prep) | – | Done 2026-10-12: plan committed (`b2ea409`); dev tools pinned and **security patch next 16.3.8, sharp 0.35.5** (`1806937`); D051 (`8423f87`); runbook (`242126b`) |
 | 1 | `wf_de7ff1a5-e8b` → `wf_20aaa1e8-c0f` → `wf_7ba453ba-6cb` | **Done 19:40, 2026-10-12.** All seven tasks merged (1.1 `b3fff53`, 1.2 follow-up `e8b56ce`); wave close `51b9b5f`: `npm run verify` green (143 files / 2143 tests, lint 0 errors, both typechecks, jscpd, checksums) and `next build` green; mapping exceptions `5c65999`; worktrees and branches removed |
-| 2 | **`wf_ab0be1f5-713`** (19:45, base `7eaa735`) | **Running:** 2.1-2.10 plus the addenda 1.1b (harness minors) and 1.2b (font scan); 8 agents at a time (10 CPUs). If it dies: re-run `build-wave` with the unfinished tasks (args in the log entry of 19:45) |
+| 2 | `wf_ab0be1f5-713` (19:45) died at the old account's usage limit; **resumed as `wf_2317874f-e7d`** (21:05, base `7eaa735`, account apoorva@geekyants.work) | **Running.** Resume mode per task: 2.1-2.7 `finish` in worktrees `.claude/worktrees/wf_ab0be1f5-713-{1..7}` (2.1-2.4 and 2.6 from local WIP commits; 2.7 adds AboutPage/ContactPage), 2.8 `review` in `-8`; fresh builds 2.9, 2.10, 1.1b, 1.2b. If this run dies too: re-run with the unfinished tasks only (args in the 21:05 log entry and this table) |
 | 3-10 | – | Per [tasks](tasks.md) |
 
 ### Wave 1 snapshot (18:50, 2026-10-12)
