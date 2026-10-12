@@ -13,7 +13,9 @@ import { countryNode, definedOnly, requireText, type CountryCode } from "./share
  * Text arrives as plain text (serialise content with `toPlainText(value, offer)` first), except the
  * spec values, which arrive as content so the builder can drop the unannounced ones. Amounts and
  * the availability date come from the offer view model only, so the schema price is always the
- * price the page and the checkout show (4999 in token mode, 7999 in full mode). Never emitted:
+ * price the page and the checkout show (4999 in token mode, 7999 in full mode). Refused (task 2.13):
+ * no image (an empty `image` list fails the rich-result validators) and a price that is not a
+ * positive whole number of rupees or not the visible headline. Never emitted:
  * `priceValidUntil` (the offer is bounded by units, not a date), a delivery time (D022), ratings or
  * reviews (none exist).
  */
@@ -69,12 +71,32 @@ function announcedProperties(properties: ProductFacts["properties"]) {
   return announced.length > 0 ? announced : undefined;
 }
 
+/**
+ * The Offer's price in rupees: the offer's headline amount, a positive whole number of rupees that
+ * is the amount the page shows (`prices.headline` is formatted from the same paise, rounded to the
+ * rupee). Anything else throws, so the build stops before a broken or wrong price is published.
+ */
+function schemaPrice(offer: SchemaOffer): number {
+  const paise = offer.headlinePaise;
+  if (!Number.isSafeInteger(paise) || paise <= 0 || paise % 100 !== 0) {
+    throw new Error(`Product price: headlinePaise ${paise} is not a positive whole number of rupees`);
+  }
+  const rupees = paise / 100;
+  const shown = Number(offer.prices.headline.replace(/[^\d]/g, ""));
+  if (shown !== rupees) {
+    throw new Error(`Product price: ${rupees} is not the headline ${offer.prices.headline} the page shows`);
+  }
+  return rupees;
+}
+
 export function productNode(facts: ProductFacts, offer: SchemaOffer) {
   if (!ABSOLUTE_ID.test(facts.id)) {
     throw new Error(`Product @id "${facts.id}" must be an absolute https URL with a fragment`);
   }
   const { minAge, maxAge } = facts.audience;
   if (minAge > maxAge) throw new Error(`Product age band ${minAge} to ${maxAge}: the minimum is above the maximum`);
+  if (facts.images.length === 0) throw new Error(`Product "${facts.name}" needs at least one image`);
+  const price = schemaPrice(offer);
   const headline = offer.prices.headline;
   const url = absoluteUrl(facts.path);
   const { returnPolicy, shipping } = facts;
@@ -96,7 +118,7 @@ export function productNode(facts: ProductFacts, offer: SchemaOffer) {
     offers: {
       "@type": "Offer" as const,
       url,
-      price: offer.headlinePaise / 100,
+      price,
       priceCurrency: "INR",
       availability: "https://schema.org/PreOrder",
       availabilityStarts: offer.availabilityStarts,

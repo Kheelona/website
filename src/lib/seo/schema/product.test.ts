@@ -147,4 +147,37 @@ describe("productNode", () => {
   it("refuses an age band whose minimum is above its maximum", () => {
     expect(() => productNode({ ...kheelu, audience: { minAge: 7, maxAge: 3 } }, tokenOffer)).toThrow(/age/);
   });
+
+  /* Task 2.13 (the 2.7 review): a Product node without an image published `"image": []`, which
+     the rich-result validators reject; the builder refuses it as it refuses an empty name. */
+  it("refuses a product with no image", () => {
+    expect(() => productNode({ ...kheelu, images: [] }, tokenOffer)).toThrow(/image/i);
+  });
+
+  /* Task 2.13: the schema price is the price the page shows (`prices.headline`, formatted from the
+     same paise), so a price that is not a positive whole number of rupees, or that disagrees with
+     the visible headline, stops the build instead of publishing a wrong or broken amount. */
+  it.each([
+    ["zero", 0],
+    ["negative", -499_900],
+    ["not a number", Number.NaN],
+    ["infinite", Number.POSITIVE_INFINITY],
+    ["a fraction of a paisa", 499_900.5],
+    ["a fraction of a rupee", 499_950],
+    ["beyond a safe integer", Number.MAX_SAFE_INTEGER + 2],
+  ])("refuses a headline price that is %s", (_name, headlinePaise) => {
+    expect(() => productNode(kheelu, { ...tokenOffer, headlinePaise })).toThrow(/price/i);
+  });
+
+  it("refuses a price that is not the visible headline amount", () => {
+    const noAmount = { ...kheelu, offerDescription: "Pre-order Kheelu." };
+    expect(() => productNode(noAmount, { ...tokenOffer, headlinePaise: 799_900 })).toThrow(/7999 is not the headline ₹4,999/);
+    expect(() => productNode(noAmount, { ...tokenOffer, prices: { ...prices, headline: "₹499" } })).toThrow(/4999 is not the headline ₹499/);
+  });
+
+  it("keeps the Product @id in both modes (lessons §6)", () => {
+    const full = { ...kheelu, offerDescription: "₹7,999 (incl. GST), paid in full when you order." };
+    expect(productNode(kheelu, tokenOffer)["@id"]).toBe("https://kheelona.com/products/lumi#product");
+    expect(productNode(full, fullOffer)["@id"]).toBe("https://kheelona.com/products/lumi#product");
+  });
 });
