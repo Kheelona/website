@@ -73,7 +73,7 @@ Data by props only; server components unless marked client. Story required. New 
 | `PolicyLinks` | `ks-policy` (from `mk-policy`): the store's policy links, each "(opens in a new tab)" | `links[{ label, href }]` | no | ST, TH | 2.5 | planned |
 | `CopyLinkButton` | `Button` secondary `s` + polite live region | `value` | yes | ST | 2.5 | planned |
 | `InAppBrowserNote` | `kh-alert` + `CopyLinkButton` (`ks-inapp`); renders only when its content's `enabled` flag is true and the user agent is an Instagram, Facebook or WhatsApp in-app browser (B12, N7) | `content`, `storeUrl` | yes | ST, EV | 2.5 | planned |
-| `MotionController` | `[data-reveal]` and `[data-draw]` presets in `src/motion/motion.css`; one observer | none | yes | site shell | 2.8 | planned |
+| `MotionController` | `[data-reveal]` and `[data-draw]` presets in `src/motion/motion.css`; one observer (`ui/MotionController/MotionController.client.tsx`, renders nothing; mount once in `SiteShell`): targets on screen marked `is-in` before `html.js-motion`, a doodle already on screen shown drawn, re-armed on every `usePathname()` change, nothing with reduced motion or without `IntersectionObserver`; demo story `UI/MotionController` | none | yes | site shell | 2.8 | built |
 
 ## 2. Sections (`src/components/sections/`)
 
