@@ -4,10 +4,12 @@ import { describe, expect, it, vi } from "vitest";
 import { addClass, mockupFold, skeleton, words } from "../../../../test/support/mockup-compare";
 import { STORE_URL } from "@/config/site";
 import { ARTICLE_SLUGS } from "@/content/en-IN/routes";
+import { articles } from "@/content/en-IN/stories/articles";
 import { hubPage, hubPath, hubTopics } from "@/content/en-IN/stories/hub";
 import type { ImageRef } from "@/content/types";
 import { PageTemplate } from "@/layouts/PageTemplate/PageTemplate";
 import type { PageContent } from "@/layouts/PageTemplate/page-template.types";
+import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 
@@ -49,6 +51,9 @@ function builtMain(page: PageContent = sized(hubPage)): HTMLElement {
  * - every guide links to its own page: each row the mockup leaves quiet while its guide waits for its rewrite becomes
  *   the DS link row, `li > a.kh-listitem` (the copy page: "at launch every card links"; stories.md question 1), in the
  *   order of hub.ts, whose slugs hub.test.ts holds to the mockup's titles.
+ * Each guide is shown in its own module's card words: hub.test.ts holds them to the mockup's while the guide waits for
+ * its rewrite, and a rewrite may take its keyword-map title (stories.md, "Notes on the cards"; tasks 5.17-5.19), so
+ * this comparison reads them from the module and checks everything around them.
  * The mockup's store page is the store host, and its centred hub heading (stories.css:128) is the hero's words-only
  * class, as HeroSection.test.tsx reads it.
  */
@@ -57,9 +62,19 @@ function approvedMain(): Element {
   addClass(main, ".mk-journal-intro header.kh-heading--hero", "ks-hero-words");
   main.querySelectorAll(".mk-later").forEach((label) => label.remove());
   hubTopics.forEach((group) => {
-    const rows = main.querySelectorAll(`section#${group.topic} li.kh-listitem`);
+    const section = main.querySelector(`section#${group.topic}`)!;
+    if (group.featured !== undefined) {
+      const { title, summary } = articles[group.featured].card;
+      section.querySelector(".mk-guide .kh-card__title")!.textContent = toPlainText(title);
+      section.querySelector(".mk-guide .kh-card__body")!.textContent = toPlainText(summary);
+      section.querySelector(".mk-guide .kh-sr")!.textContent = `: ${toPlainText(title)}`;
+    }
+    const rows = section.querySelectorAll("li.kh-listitem");
     expect(rows).toHaveLength(group.slugs.length);
     rows.forEach((row, i) => {
+      const { title, summary } = articles[group.slugs[i]].card;
+      row.querySelector(".kh-listitem__title")!.textContent = toPlainText(title);
+      row.querySelector(".kh-listitem__sub")!.textContent = toPlainText(summary);
       const link = main.ownerDocument.createElement("a");
       link.className = row.className;
       link.setAttribute("href", `/stories/${group.slugs[i]}`);
