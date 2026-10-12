@@ -45,7 +45,49 @@ export type OpenOptions = {
   javaScriptEnabled?: boolean;
   deviceScaleFactor?: number;
   userAgent?: string;
+  /** Record every transition and animation as it starts, from before the first paint (motionStarted). */
+  recordMotion?: boolean;
 };
+
+/** One started transition or animation, as recorded by recordMotion. */
+export type MotionEvent = { type: string; name: string; target: string; duration: number };
+
+declare global {
+  interface Window {
+    __khMotion?: MotionEvent[];
+  }
+}
+
+/* Runs in the page before any of its scripts. transitionrun and animationstart bubble, so one
+   capturing listener on the document sees them all, including a finite fade that has finished
+   long before anyone asks what is still running. */
+function installMotionRecorder(): void {
+  const log: MotionEvent[] = [];
+  window.__khMotion = log;
+  const describe = (el: EventTarget | null): string => {
+    if (!(el instanceof Element)) return "?";
+    const cls = typeof el.className === "string" && el.className.trim() ? `.${el.className.trim().split(/\s+/).join(".")}` : "";
+    return `<${el.tagName.toLowerCase()}${cls}>`;
+  };
+  document.addEventListener(
+    "transitionrun",
+    (e) => log.push({ type: "transition", name: e.propertyName, target: describe(e.target), duration: e.elapsedTime }),
+    true,
+  );
+  document.addEventListener(
+    "animationstart",
+    (e) => log.push({ type: "animation", name: e.animationName, target: describe(e.target), duration: e.elapsedTime }),
+    true,
+  );
+}
+
+/** Every transition and animation that started since the page began loading (needs recordMotion). */
+export async function motionStarted(page: Page): Promise<MotionEvent[]> {
+  return page.evaluate(() => {
+    if (!window.__khMotion) throw new Error("motionStarted: open the page with { recordMotion: true }");
+    return window.__khMotion;
+  });
+}
 
 export async function newGuardedContext(browser: Browser, vp: Viewport, opts: OpenOptions = {}): Promise<BrowserContext> {
   const context = await browser.newContext({
@@ -55,6 +97,7 @@ export async function newGuardedContext(browser: Browser, vp: Viewport, opts: Op
     ...(opts.userAgent ? { userAgent: opts.userAgent } : {}),
   });
   await guardNetwork(context);
+  if (opts.recordMotion) await context.addInitScript(installMotionRecorder);
   return context;
 }
 
@@ -159,8 +202,14 @@ export const PLANTS: Record<string, string> = {
   redirect: "",
   sideways: `${MAIN}.insertAdjacentHTML("beforeend", '<div style="width:200vw;height:2px"></div>');`,
   axe: `${MAIN}.insertAdjacentHTML("afterbegin", '<img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" width="40" height="40">');`,
+  // The D050 bubble with its laptop label showing, white on WhatsApp green: the label is text, so
+  // it is blocking (architecture §13 accepts only the icon link's glyph).
+  walabel: `document.body.insertAdjacentHTML("beforeend", '<a class="ks-wa" href="https://wa.me/910000000000" aria-label="Chat on WhatsApp" style="position:fixed;right:16px;bottom:16px;z-index:5;display:flex;align-items:center;gap:8px;padding:12px;border-radius:999px;background:#25D366;color:#fff"><svg width="24" height="24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#fff"/></svg><span class="ks-wa__label" style="font-size:14px">Chat on WhatsApp</span></a>');`,
   // An endless animation below the hero (motion.spec: nothing running after 6 s, nor under reduced motion).
   loop: `document.head.insertAdjacentHTML("beforeend", '<style>@keyframes kh-planted{to{transform:rotate(1turn)}} .kh-planted{animation:kh-planted 1s linear infinite}</style>'); ${MAIN}.insertAdjacentHTML("beforeend", '<div class="kh-planted">x</div>');`,
+  // A reveal that fades in over 200 ms when scrolled into view, ignoring reduced motion: finite, so
+  // it has finished long before any "still running?" check (motion.spec records it as it starts).
+  fade: `document.head.insertAdjacentHTML("beforeend", '<style>.kh-planted-fade{opacity:0;transition:opacity .2s}.kh-planted-fade.is-in{opacity:1}</style>'); ${MAIN}.insertAdjacentHTML("beforeend", '<p class="kh-planted-fade">planted reveal</p>'); { const el = ${MAIN}.lastElementChild; new IntersectionObserver((entries, o) => { if (entries[0].isIntersecting) { el.classList.add("is-in"); o.disconnect(); } }).observe(el); }`,
   // A hero that is not still at first paint (motion.spec, D049 pick 2).
   hero: `${MAIN}.firstElementChild.style.opacity = "0.5";`,
   cta: `document.querySelector("[data-ph-capture-attribute-cta]").setAttribute("data-ph-capture-attribute-cta", "home-arc");`,

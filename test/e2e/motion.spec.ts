@@ -1,5 +1,5 @@
 import type { Page } from "@playwright/test";
-import { expect, gateRouteGroup, requiresServer, routeIsNewDesign, test } from "./support/fixtures";
+import { expect, gateRouteGroup, motionStarted, requiresServer, routeIsNewDesign, test, type MotionEvent } from "./support/fixtures";
 import { builtUrl, mockupRoute, sweepRoutes } from "./support/routes";
 import { VIEWPORTS } from "./support/viewports";
 
@@ -9,12 +9,21 @@ import { VIEWPORTS } from "./support/viewports";
  *   - motion on: after scrolling the whole page, nothing is still running 6 s later
  *     (no loop, nothing longer than five seconds);
  *   - the hero (the first fold) is still at first paint: opacity 1, no transform, no animation;
- *   - reduced motion: after the same scroll, no animation or transition is running at all;
+ *   - reduced motion: from before the first paint to the end of the same scroll, no transition or
+ *     animation starts (recorded as each starts, so a finite reveal fade that finished long before
+ *     the check is caught too) except the buy bar's opacity fade (pick 4, printed), and none is
+ *     running at the end;
  *   - a client navigation re-arms the reveals (Home → product → back), checked once both pages
  *     render the new design (wave 5).
  */
 
 const vp = VIEWPORTS.find((v) => v.width === 390)!;
+
+/* Under reduced motion the only motion architecture §11.2 keeps while a page loads and scrolls is
+   pick 4's: the phone buy bar "fades without moving", an opacity transition on .kh-buybar.
+   Everything else (reveals, doodles, the films' focus, the bubble) is at its end state at once. */
+const REDUCED_MOTION_ALLOWED = (m: MotionEvent): boolean =>
+  m.type === "transition" && m.name === "opacity" && /\.kh-buybar(?=[.>])/.test(m.target);
 
 async function scrollThrough(page: Page): Promise<void> {
   const height = await page.evaluate(() => document.documentElement.scrollHeight);
@@ -63,10 +72,20 @@ for (const route of sweepRoutes()) {
       expect(await running(page), `${route.id}: animations still running 6 s after the scroll`).toEqual([]);
     });
 
-    test("reduced motion leaves nothing running", async ({ harness }) => {
-      const { page } = await harness.open(route, vp, { reducedMotion: "reduce" });
+    test("reduced motion: nothing starts but the bar's fade, nothing running", async ({ harness }) => {
+      const { page } = await harness.open(route, vp, { reducedMotion: "reduce", recordMotion: true });
       await scrollThrough(page);
       await page.waitForTimeout(500);
+      const started = await motionStarted(page);
+      const describe = (m: MotionEvent) => `${m.type} ${m.name} on ${m.target}`;
+      const accepted = started.filter(REDUCED_MOTION_ALLOWED);
+      if (accepted.length) {
+        console.log(`[motion] ${route.id}: under reduced motion, accepted (pick 4, the bar fades without moving): ${[...new Set(accepted.map(describe))].join("; ")}`);
+      }
+      expect(
+        started.filter((m) => !REDUCED_MOTION_ALLOWED(m)).map(describe),
+        `${route.id}: transitions or animations started under reduced motion`,
+      ).toEqual([]);
       expect(await running(page), `${route.id}: animations running under reduced motion`).toEqual([]);
     });
   });

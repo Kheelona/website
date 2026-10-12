@@ -16,7 +16,8 @@ import { APPROVED_WIDTHS } from "./support/viewports";
  * match within 2 percent, then every screen-height chunk may differ in at most 2 percent of its
  * pixels, unless the main session has accepted that chunk as a deviation (support/deviations.ts).
  * The mockup's chunks are written as goldens under test/e2e/.goldens/ (git-ignored) and the build
- * is compared with them by Playwright's comparator.
+ * is compared with them by Playwright's comparator. A run with --update-snapshots fails at once:
+ * it would replace the mockup golden with the build's own screenshot.
  *
  * Calibration: `npm run test:visual -- home --calibrate` compares the mockup with itself and must
  * give zero differing pixels at Playwright's default per-pixel threshold (test plan §4.9), or the
@@ -36,6 +37,12 @@ for (const route of mockupRoutes()) {
 
     for (const vp of APPROVED_WIDTHS) {
       test(vp.name, async ({ harness }, testInfo) => {
+        // The goldens are always the mockup, written by this test. With --update-snapshots (-u)
+        // Playwright would overwrite them with the build's screenshot and every chunk would pass.
+        expect(
+          ["all", "changed"].includes(testInfo.config.updateSnapshots),
+          `visual parity never updates snapshots (updateSnapshots is "${testInfo.config.updateSnapshots}"): the mockup is the golden. Run without -u / --update-snapshots.`,
+        ).toBe(false);
         const calibration = PARITY_TARGET === "mockup";
         const { page: mockup } = await harness.openMockup(route.mockup!, vp);
         await prepare(mockup);

@@ -3,7 +3,9 @@
  * off"). Same engine as the baseline: axe-core 4.12.1 through @axe-core/playwright.
  *
  *   accepted, D041: colour contrast of white on Chilli on the chilli button (.kh-btn--cta);
- *   accepted, D050: the WhatsApp bubble's white glyph on WhatsApp green (.ks-wa; the link has a name);
+ *   accepted, D050: the WhatsApp bubble's white glyph on WhatsApp green: the .ks-wa icon link itself
+ *     only (the link has a name); its "Chat on WhatsApp" label (.ks-wa__label) and any other
+ *     visible text inside the bubble are blocking (architecture §13);
  *   accepted, harness: the phone buy bar parked off screen (.kh-buybar.is-hidden) gives axe a false
  *     background (mockup/tools/check.cjs); it is checked again when shown;
  *   printed apart, pending the founder: white on Kheelu Blue (.kh-btn--primary, .kh-iconbtn--primary,
@@ -38,7 +40,15 @@ export async function runAxe(page: Page): Promise<{ blocking: AxeFinding[]; acce
         }
         if (!el) return "blocking";
         if (el.closest(".kh-buybar.is-hidden")) return "accepted-parked-bar";
-        if (el.closest(".ks-wa")) return "accepted-d050";
+        const wa = el.closest(".ks-wa");
+        if (wa) {
+          // Only the icon link itself: its glyph is not text, and its name is an aria-label or
+          // visually hidden text. Any visible text (the "Chat on WhatsApp" label) must pass.
+          if (el.closest(".ks-wa__label") || !el.matches("a, .ks-wa")) return "blocking";
+          const visible = el.cloneNode(true) as Element;
+          visible.querySelectorAll(".ks-wa__label, .kh-sr, .sr-only, svg").forEach((n) => n.remove());
+          return (visible.textContent ?? "").trim() ? "blocking" : "accepted-d050";
+        }
         if (el.closest(".kh-btn--cta")) return "accepted-d041";
         if (el.closest(".kh-btn--primary, .kh-iconbtn--primary, .kh-sticker.kh-tone-blue")) return "apart-blue";
         return "blocking";
