@@ -26,8 +26,10 @@ import {
  * a keyword or a zero may follow the comma), lengths in @media and @container preludes
  * other than the DS min-/max-width breakpoints, Tailwind arbitrary values, arbitrary properties
  * (any name Tailwind compiles, digits and capitals included), arbitrary modifiers on the colour and
- * text utilities ("text-sm/[17px]", "bg-black/[0.37]"; numeric steps such as "bg-surface/37" are not
- * refused), arbitrary breakpoints and the (--var) shorthand, read class by class whatever
+ * text utilities ("text-sm/[17px]", "bg-black/[0.37]"), numeric opacity steps on a colour
+ * ("bg-surface/37", "text-text/50", "bg-scrim/7.5": the DS has no opacity tokens, task 2.13; a line
+ * height such as "text-sm/6" and a fraction such as "w-1/2" pass), arbitrary breakpoints and the
+ * (--var) shorthand, read class by class whatever
  * the variants and the important mark (in .ts modules too, where variants and class lists live, and
  * in CSS @apply), colour strings in .tsx (so a hex cannot reach an attribute through a const), named
  * colours on fill, stroke and the other colour attributes, written there or reaching them through a
@@ -254,6 +256,26 @@ const ARBITRARY_MODIFIER = /^(?:\[[^\]]+\]|\([^)]+\))$/;
  *  "/store/e/[event]" are never read as utilities. */
 const MODIFIABLE_BASE =
   /^-?(?:accent|bg|border|caret|decoration|divide|drop|fill|from|inset|mask|outline|placeholder|ring|scrollbar|shadow|stroke|text|to|via)(?:-[\w.-]+)?$/;
+/** Tailwind's own colour values, which need no theme entry ("bg-current/50" is a colour-mix of
+ *  currentcolor); black and white are listed too, though the theme drops them, so they never pass. */
+const TAILWIND_COLOUR_KEYWORDS: readonly string[] = ["current", "transparent", "inherit", "black", "white"];
+/** The colours a utility can name: the theme's --color-* roles (src/styles/tailwind-theme.css,
+ *  which drops every Tailwind default) and the keywords above. */
+const THEME_COLOURS: readonly string[] = [
+  ...[...readRepoFile("src/styles/tailwind-theme.css").matchAll(/^\s*--color-([a-z0-9-]+)\s*:/gm)].map((m) => m[1]),
+  ...TAILWIND_COLOUR_KEYWORDS,
+];
+/** A numeric modifier: an opacity step after a colour ("bg-surface/37", "bg-scrim/7.5"), a line
+ *  height after a font size ("text-sm/6"), or a fraction ("w-1/2", "inset-1/2"). */
+const NUMERIC_MODIFIER = /^(?:\d+(?:\.\d+)?|\.\d+)$/;
+/** A colour utility: a modifiable root ending in a colour name, so the modifier is an opacity. The
+ *  DS has no opacity tokens, so every numeric opacity step is off the DS (wave-2 close ruling,
+ *  task 2.13); "text-sm/6" and "inset-1/2" do not end in a colour and pass. Probed on the pinned
+ *  Tailwind 4.3.2 with src/styles/tailwind-theme.css (task 2.13): bg-surface/37, text-text/50,
+ *  bg-scrim/7.5, bg-current/50, fill-cta/50, border-x-border/50, ring-focus/40, from-primary/20 and
+ *  shadow-scrim/25 each compile to color-mix(in oklab, <colour> N%, transparent); inset-1/2 to
+ *  calc(1 / 2 * 100%); text-sm/6 and ring-2/50 to nothing (the theme has no font sizes). */
+const isColourUtility = (base: string) => MODIFIABLE_BASE.test(base) && THEME_COLOURS.some((c) => base.endsWith(`-${c}`));
 const ARBITRARY_BREAKPOINT = /^@?(?:min|max)-\[[^\]]+\]$|^@\[[^\]]+\]$/;
 const COLOUR_ATTR_SKIP = /^(?:href|id|key|to|htmlFor|aria-[\w-]+|data-[\w-]+)$/;
 
@@ -303,9 +325,11 @@ function arbitraryClasses(classes: string): { rule: string; text: string }[] {
           ? "Tailwind (--var) shorthand"
           : modifier !== null && ARBITRARY_MODIFIER.test(modifier) && MODIFIABLE_BASE.test(base)
             ? "Tailwind arbitrary modifier"
-            : segments.some((v) => ARBITRARY_BREAKPOINT.test(v))
-              ? "Tailwind arbitrary breakpoint"
-              : null;
+            : modifier !== null && NUMERIC_MODIFIER.test(modifier) && isColourUtility(base)
+              ? "Tailwind opacity modifier (the DS has no opacity tokens)"
+              : segments.some((v) => ARBITRARY_BREAKPOINT.test(v))
+                ? "Tailwind arbitrary breakpoint"
+                : null;
     if (rule) out.push({ rule, text: token });
   }
   return out;
@@ -735,8 +759,33 @@ describe("no-off-token detector: red on every planted literal", () => {
     ["arbitrary calc() opacity modifier", `export const A = () => <div className="bg-surface/[calc(var(--x)*2)]" />;`],
     ["arbitrary var() opacity modifier on fill", `export const A = () => <svg className="fill-cta/[var(--ks-a)]" />;`],
     ["arbitrary modifier on a shadow colour", `export const A = () => <div className="drop-shadow-scrim/[0.37] inset-ring-border/[0.5]" />;`],
+    // Task 2.13 (wave-2 close ruling): a numeric opacity step on a colour is a literal opacity too,
+    // and the DS has no opacity tokens ("bg-surface/37" is a 37 percent colour-mix of --surface).
+    ["numeric opacity on a background colour", `export const A = () => <div className="bg-surface/37" />;`],
+    ["numeric opacity on a text colour", `export const A = () => <p className="text-text/50" />;`],
+    ["decimal opacity on the scrim", `export const A = () => <div className="bg-scrim/7.5" />;`],
+    ["numeric opacity after stacked variants, important", `export const A = () => <div className="md:hover:bg-surface/37!" />;`],
+    ["numeric opacity on a two-word colour", `export const A = () => <p className="text-text-muted/80 border-border-strong/50" />;`],
+    ["numeric opacity on ring, outline and divide colours", `export const A = () => <i className="ring-focus/40 outline-focus/60 divide-border/30" />;`],
+    ["numeric opacity on gradient stops", `export const A = () => <i className="from-primary/20 via-cta/10 to-deep-blue/90" />;`],
+    ["numeric opacity on fill and stroke", `export const A = () => <svg className="fill-cta/50 stroke-text/25" />;`],
+    ["numeric opacity on shadow and text-shadow colours", `export const A = () => <i className="shadow-scrim/25 drop-shadow-scrim/50 inset-ring-border/50 text-shadow-text/30" />;`],
+    ["numeric opacity on a side border colour", `export const A = () => <i className="border-x-border/50" />;`],
+    ["numeric opacity on the current colour", `export const A = () => <i className="bg-current/50" />;`],
+    ["numeric opacity in a template literal", "export const A = ({ on }: { on: boolean }) => <div className={`kh-card ${on ? \"bg-scrim/7.5\" : \"\"}`} />;"],
   ])("%s", (_name, text) => {
     expect(tsx(text).length).toBeGreaterThan(0);
+  });
+
+  it("names the rule a numeric opacity step breaks", () => {
+    expect(tsx(`export const A = () => <div className="bg-surface/37" />;`)).toEqual([
+      { line: 1, rule: "Tailwind opacity modifier (the DS has no opacity tokens)", text: "bg-surface/37" },
+    ]);
+  });
+
+  it("reads the colour names from the Tailwind theme: the 21 DS roles", () => {
+    expect(THEME_COLOURS).toEqual(expect.arrayContaining(["surface", "text", "text-muted", "scrim", "deep-chilli", "on-primary"]));
+    expect(THEME_COLOURS.filter((c) => !TAILWIND_COLOUR_KEYWORDS.includes(c))).toHaveLength(21);
   });
 
   it("names the colour attribute and the const a named colour came through", () => {
@@ -754,6 +803,7 @@ describe("no-off-token detector: red on every planted literal", () => {
     ["important arbitrary value in a classes module", `export const tight = ["grid", "gap-[3px]!"].join(" ");`],
     ["arbitrary modifier in a variants module", `export const lead = { base: "text-sm/[17px]" };`],
     ["arbitrary property with a digit in a classes module", `export const X2 = "[--ks-x2:3px]";`],
+    ["numeric opacity in a variants module", `export const overlay = { base: "fixed inset-0", dim: "bg-scrim/7.5" };`],
   ])("%s (.ts)", (_name, text) => {
     expect(script(text, "src/components/ui/Card/card.variants.ts").length).toBeGreaterThan(0);
   });
@@ -766,6 +816,7 @@ describe("no-off-token detector: red on every planted literal", () => {
     ["@apply of a (--var) shorthand", ".ks-a { @apply p-(--space-3); }"],
     ["@apply of an arbitrary modifier", ".ks-a { @apply text-sm/[17px]; }"],
     ["@apply of an arbitrary property with a capital", ".ks-a { @apply [--ks-X:3px]; }"],
+    ["@apply of a numeric opacity step", ".ks-a { @apply bg-surface/37; }"],
   ])("%s (CSS)", (_name, text) => {
     expect(css(text).length).toBeGreaterThan(0);
   });
@@ -925,6 +976,11 @@ describe("no-off-token detector: green on DS-token code", () => {
   it("reads modifiers by their value: theme steps, fractions and paths with brackets pass", () => {
     const ok = `export const A = () => <a className="text-sm/6 w-1/2 md:w-1/3" href="/store/e/[event]">x</a>;`;
     expect(tsx(ok)).toEqual([]);
+    // A numeric modifier on anything but a colour is a line height or a fraction, not an opacity
+    // (task 2.13): "inset-1/2" is 50 percent, though "inset" is also a shadow and ring colour root.
+    const fractions = `export const A = () => <i className="inset-1/2 -inset-x-1/2 top-1/2 translate-x-1/2 basis-1/3 aspect-4/3 text-base/7 bg-surface border-2 ring-2 shadow-scrim" />;`;
+    expect(tsx(fractions)).toEqual([]);
+    expect(css(".ks-a { @apply inset-x-1/2 text-sm/6 bg-surface; }")).toEqual([]);
     expect(script(`export const HUB = "stories/[slug]"; export const EVENT = "/store/e/[event]"; export const LEAD = "text-sm/6";`, "src/config/routes.ts")).toEqual([]);
     // Relative route patterns with a dashed segment are not utilities (1.1b review).
     expect(script(`export const GUIDE = "parent-guides/[slug]"; export const PLAY = "how-to-play/[id]";`, "src/config/routes.ts")).toEqual([]);
