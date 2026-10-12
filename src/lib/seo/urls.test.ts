@@ -20,6 +20,11 @@ describe("absoluteUrl", () => {
     expect(() => absoluteUrl("//example.com/x" as never)).toThrow(/site path/);
     expect(() => absoluteUrl("products/kheelu" as never)).toThrow(/site path/);
   });
+
+  it("refuses a backslash after the slash too: a browser reads /\\host as //host (src/lib/links.ts, task 3.6)", () => {
+    expect(() => absoluteUrl("/\\example.com/x" as never)).toThrow(/site path/);
+    expect(() => absoluteUrl("/\\/example.com" as never)).toThrow(/site path/);
+  });
 });
 
 describe("stable entity ids", () => {

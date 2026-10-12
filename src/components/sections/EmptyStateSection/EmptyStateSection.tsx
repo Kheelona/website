@@ -1,9 +1,8 @@
 import { EmptyState } from "@/components/ui/EmptyState/EmptyState";
 import { Heading } from "@/components/ui/Heading/Heading";
-import { Icon } from "@/components/ui/Icon/Icon";
+import { ContentIcon, Icon } from "@/components/ui/Icon/Icon";
 import { Container, Section } from "@/components/ui/Layout/Layout";
 import { List } from "@/components/ui/List/List";
-import { ContentIcon } from "../ArticleBody/content-icon";
 import type { EmptyStateSectionConfig } from "./empty-state-section.types";
 
 /**

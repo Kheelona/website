@@ -1,4 +1,5 @@
 import type { Offer, Placeholder, PriceKey } from "@/content/types";
+import { isSitePath } from "@/lib/links";
 import { parsePlaceholderToken, PLACEHOLDER_TOKEN_HINT, placeholderText } from "./placeholder";
 
 /**
@@ -72,10 +73,10 @@ const KNOWN_TOKENS = [
   "[^n]",
 ].join(", ");
 
-/** A site path: a slash, then letters, digits and - . _ ~ / % ? = &, then an
- *  optional #anchor. Never a second slash or a backslash after the first, which
- *  browsers read as another site, and never a quote or markup. */
-const SITE_PATH = /^\/(?![/\\])[A-Za-z0-9._~/%?=&-]*(#[A-Za-z0-9_-]+)?$/;
+/** What a site path (`isSitePath`, src/lib/links.ts: one slash, never a second
+ *  slash or a backslash after it) may hold in content: letters, digits and
+ *  - . _ ~ / % ? = &, then an optional #anchor; never a quote or markup. */
+const SITE_PATH_CHARS = /^\/[A-Za-z0-9._~/%?=&-]*(#[A-Za-z0-9_-]+)?$/;
 /** An in-page anchor, as the pages' section ids are written. */
 const ANCHOR = /^#[A-Za-z0-9_-]+$/;
 
@@ -193,7 +194,7 @@ class Parser {
     }
     if (children.length === 0) this.fail("A link label is empty", open);
     const href = this.href(open);
-    return { kind: "link", href, internal: href.startsWith("/") || href.startsWith("#"), children };
+    return { kind: "link", href, internal: isSitePath(href) || href.startsWith("#"), children };
   }
 
   /** Reads `(href)`, allowing balanced parentheses inside the address. */
@@ -219,7 +220,7 @@ class Parser {
     if (href === "") this.fail("A link address is empty", open);
     if (href.startsWith("/")) {
       const path = href.split(/[?#]/, 1)[0];
-      if (SITE_PATH.test(href) && !/\.html$/i.test(path)) return;
+      if (isSitePath(href) && SITE_PATH_CHARS.test(href) && !/\.html$/i.test(path)) return;
       this.fail(`Link to a site path such as /refund, not "${href}"`, open);
     }
     if (href.startsWith("#")) {

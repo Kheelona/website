@@ -1,5 +1,6 @@
 import type { SitePath } from "@/content/types";
 import { CANONICAL_ORIGIN } from "@/config/env";
+import { isSitePath } from "@/lib/links";
 
 /**
  * Absolute URLs and stable entity ids for structured data (ADR-012, architecture §9.2).
@@ -8,13 +9,11 @@ import { CANONICAL_ORIGIN } from "@/config/env";
  * describes kheelona.com, never itself (`CANONICAL_ORIGIN`, D048).
  */
 
-/** A site path: one slash, then never a second one (`//host` is another site). */
-const SITE_PATH = /^\/(?!\/)/;
-
 /** `/products/kheelu` → `https://kheelona.com/products/kheelu`; the home page is the bare origin,
- *  as the live graph has always written it. In-page anchors are kept. */
+ *  as the live graph has always written it. In-page anchors are kept. Anything but a site path
+ *  (`isSitePath`: `//host` and `/\host` are another site) throws. */
 export function absoluteUrl(path: SitePath): string {
-  if (!SITE_PATH.test(path)) {
+  if (!isSitePath(path)) {
     throw new Error(`absoluteUrl takes a site path such as "/products/kheelu", not "${path}"`);
   }
   return path === "/" ? CANONICAL_ORIGIN : `${CANONICAL_ORIGIN}${path}`;

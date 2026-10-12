@@ -1,11 +1,11 @@
 import { Fragment, type ReactNode } from "react";
 import { Card } from "@/components/ui/Card/Card";
+import { ContentIcon } from "@/components/ui/Icon/Icon";
 import { Photo } from "@/components/ui/Photo/Photo";
 import { Quote } from "@/components/ui/Quote/Quote";
 import { RichText, type RichTextTag } from "@/components/ui/RichText/RichText";
 import { TrustList } from "@/components/ui/TrustList/TrustList";
 import type { FigureBlock, IconRef, LeadText, ListBlock, ListItem, Offer, ProseBlock, RichTextString } from "@/content/types";
-import { ContentIcon } from "./content-icon";
 
 /**
  * The prose blocks of the content model (src/content/types.ts, "Prose blocks"), rendered as the three approved

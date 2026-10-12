@@ -1,7 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import { Icon } from "./Icon";
+import { ICON_PATHS } from "@/assets/icons.generated";
+import { asIconName, ContentIcon, Icon } from "./Icon";
 
 /* The arrow as mockup/build.mjs inlines it (home.html fold 1, hero CTA): the DS Phosphor Bold path of
    design-system/project/assets/Icons/arrow-right.svg, hand-copied from the built mockup. */
@@ -37,5 +38,38 @@ describe("Icon", () => {
     const left = renderToStaticMarkup(<Icon name="arrow-left" />);
     expect(left).not.toBe(ARROW_RIGHT);
     expect(left).toContain('d="M228,128a12,12,0,0,1-12,12H69l51.52,51.51');
+  });
+});
+
+/* Content names its icons as strings (IconRef, src/content/types.ts); Icon takes the generated IconName union. The one
+   narrowing (task 3.6; wave-3 close "One of each helper") lives here, beside the map it reads, so a name that is not one
+   of the 76 DS icons fails the render, and so the build, instead of drawing an empty svg (a DS gap, G-12). */
+describe("asIconName", () => {
+  it("passes a DS icon name through unchanged", () => {
+    for (const name of ["book-open", "caret-right", "whatsapp-logo", "arrow-counter-clockwise"]) expect(asIconName(name)).toBe(name);
+  });
+
+  it("refuses a name the DS does not have, and an inherited object key", () => {
+    for (const name of ["linkedin-logo", "phone", "toString", "constructor", ""]) {
+      expect(() => asIconName(name), name).toThrow(/not one of the 76 design-system icons/);
+    }
+  });
+});
+
+describe("ContentIcon", () => {
+  it("draws the DS icon of that name, decorative, with the composition class", () => {
+    const { container } = render(<ContentIcon name="check" className="ks-x" />);
+    const svg = container.querySelector("svg")!;
+    expect(svg).toHaveClass("kh-icon", "ks-x");
+    expect(svg).toHaveAttribute("aria-hidden", "true");
+    expect(svg.querySelector("path")).toHaveAttribute("d", ICON_PATHS.check);
+  });
+
+  it("is exactly the Icon of that name", () => {
+    expect(renderToStaticMarkup(<ContentIcon name="arrow-right" />)).toBe(ARROW_RIGHT);
+  });
+
+  it("fails the render on a content icon the DS lacks", () => {
+    expect(() => renderToStaticMarkup(<ContentIcon name="linkedin-logo" />)).toThrow(/not one of the 76 design-system icons/);
   });
 });

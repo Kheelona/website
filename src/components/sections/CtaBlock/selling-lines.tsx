@@ -1,10 +1,9 @@
 import { HelpLine } from "@/components/ui/HelpLine/HelpLine";
-import { Icon } from "@/components/ui/Icon/Icon";
+import { ContentIcon, Icon } from "@/components/ui/Icon/Icon";
 import { RichText } from "@/components/ui/RichText/RichText";
 import { TrustLine } from "@/components/ui/TrustLine/TrustLine";
 import type { Offer, TrustItem } from "@/content/types";
 import type { CtaHelp } from "./cta-block.types";
-import { iconName } from "./icon-name";
 
 /* The two lines every selling block shares (CtaBlock, OfferSection): the linked trust line and the help line,
    rendered from content shapes so a page passes its content as it is. */
@@ -22,7 +21,7 @@ export function SellingTrustLine({ items, offer, center, className }: SellingTru
   return (
     <TrustLine
       items={items.map((item) => ({
-        icon: <Icon name={iconName(item.icon)} />,
+        icon: <ContentIcon name={item.icon} />,
         label: <RichText text={item.label} offer={offer} />,
         href: item.href,
       }))}
