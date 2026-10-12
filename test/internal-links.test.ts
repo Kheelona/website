@@ -1,104 +1,143 @@
-import { describe, expect, it } from "vitest";
-import { STORIES, getRelatedStories } from "@/lib/stories";
-import { linksIn } from "@/components/molecules/RichParagraph";
-import sitemap from "@/app/sitemap";
+import { join } from "node:path";
+import { beforeAll, describe, expect, it } from "vitest";
+import { routes } from "@/content/en-IN/routes";
+import type { Article } from "@/content/types";
+import { isModeVariant } from "@/lib/content/mode";
+import { parseRichText, type RichNode } from "@/lib/content/rich-text";
+import { ROOT, listFiles } from "./e2e/support/repo";
 
 /**
- * The finding this file exists to keep closed.
+ * Internal links (task 4.4; architecture §6.1, SPA 5), data-driven over the URL plan (src/content/en-IN/routes.ts),
+ * the article modules' `related` lists and every content module, so a wave-5 page or article never edits this file.
  *
- * On 2026-08-12 a crawl of the live sitemap found fifteen of the nineteen
- * journal articles with exactly ONE incoming internal link — all of them from
- * the /stories index — and the remaining four with two, the ones Home promotes.
- * No article linked to any other. Ahrefs called it "page has only one dofollow
- * incoming internal link"; in plain terms the journal was nineteen dead-end
- * leaves and crawl equity pooled on Home instead of reaching the only pages on
- * this site written to rank.
- *
- * `ReadNext` fixes it by offering three neighbours at the foot of every
- * article. That is a promise about the SHAPE OF THE GRAPH, not about a
- * component, so this guard rebuilds the graph from the selector and asserts the
- * shape. It will fail the day someone adds an article the ring cannot reach, or
- * swaps the deterministic selection for something random.
+ * The finding it keeps closed: on 2026-08-12 a crawl of the live sitemap found fifteen of the nineteen journal
+ * articles with exactly ONE incoming internal link (from the /stories index) and the other four with two; no
+ * article linked to any other. The journal was a set of dead-end leaves, and crawl equity pooled on Home instead of
+ * reaching the pages written to rank. Each article's module now names three related guides, so the graph is data:
+ *   - every article is offered by at least three other articles, and none hoards the links;
+ *   - every internal link any content module carries (rich-text links, nav, trust and CTA links) lands on a
+ *     route of the plan, so the site grows no dead end of a new kind;
+ *   - every external link is https (or mailto: and tel:), and every article's sources are labelled and distinct.
  */
 
-/** The graph ReadNext creates: article → the three it offers. */
-function relatedGraph() {
-  const incoming = new Map<string, string[]>(STORIES.map((s) => [s.slug, []]));
-  for (const story of STORIES) {
-    for (const related of getRelatedStories(story.slug)) {
-      incoming.get(related.slug)!.push(story.slug);
-    }
+const ARTICLES = routes.filter((r) => r.kind === "article");
+const PLANNED = new Set<string>(routes.map((r) => r.path));
+
+type Exports = Record<string, unknown>;
+const modules = new Map<string, Exports>();
+const articles = new Map<string, Article>();
+
+beforeAll(async () => {
+  const files = listFiles(["src/content/en-IN"]).filter((p) => p.endsWith(".ts") && !/\.test(-d)?\.ts$/.test(p));
+  for (const file of files) modules.set(file, (await import(/* @vite-ignore */ join(ROOT, file))) as Exports);
+  for (const r of ARTICLES) {
+    const page = Object.values(modules.get(`src/content/en-IN/${r.module}.ts`) ?? {}).find(
+      (v) => typeof v === "object" && v !== null && "related" in v && "meta" in v,
+    );
+    if (page) articles.set(r.path, page as Article);
   }
-  return incoming;
+});
+
+/** Article path → the articles that offer it in their `related` list. */
+function incoming(): Map<string, string[]> {
+  const graph = new Map<string, string[]>(ARTICLES.map((r) => [r.path, []]));
+  for (const [path, article] of articles) {
+    for (const slug of article.related) graph.get(`/stories/${slug}`)?.push(path);
+  }
+  return graph;
 }
 
+type Link = { from: string; href: string };
+
+/** Every link a value carries: `href` fields (nav, trust items, CTAs) and the links inside rich text. */
+function linksIn(from: string, value: unknown, out: Link[] = []): Link[] {
+  const fromNodes = (nodes: readonly RichNode[]) => {
+    for (const node of nodes) {
+      if (node.kind === "link") out.push({ from, href: node.href });
+      if ("children" in node) fromNodes(node.children);
+    }
+  };
+  if (typeof value === "string") {
+    try {
+      fromNodes(parseRichText(value));
+    } catch {
+      // Not rich text (an id, a tel: target): the parser's own guards cover the strings that are.
+    }
+  } else if (isModeVariant(value)) {
+    linksIn(from, value.token, out);
+    linksIn(from, value.full, out);
+  } else if (Array.isArray(value)) value.forEach((v) => linksIn(from, v, out));
+  else if (value && typeof value === "object") {
+    for (const [key, v] of Object.entries(value)) {
+      if (key === "href" && typeof v === "string") out.push({ from, href: v });
+      else linksIn(from, v, out);
+    }
+  }
+  return out;
+}
+
+const allLinks = () => [...modules].flatMap(([file, mod]) => linksIn(file, mod));
+const isInternal = (href: string) => href.startsWith("/") && !href.startsWith("//");
+
 describe("the journal is not a set of dead ends", () => {
-  it("still has the nineteen articles this guard was measured against", () => {
-    expect(STORIES.length).toBeGreaterThanOrEqual(19);
+  it("reads every article of the plan from its module", () => {
+    expect(ARTICLES.length).toBeGreaterThanOrEqual(19);
+    expect(ARTICLES.filter((r) => !articles.has(r.path)).map((r) => r.module)).toEqual([]);
+  });
+
+  it("names three related articles in every article, all of them in the plan, never itself", () => {
+    for (const [path, article] of articles) {
+      const targets = article.related.map((slug) => `/stories/${slug}`);
+      expect(new Set(targets).size, path).toBe(3);
+      expect(targets, path).not.toContain(path);
+      expect(targets.filter((t) => !PLANNED.has(t)), path).toEqual([]);
+    }
   });
 
   it("gives every article at least three incoming links from other articles", () => {
-    for (const [slug, sources] of relatedGraph()) {
-      expect(sources.length, `${slug} is reachable from only: ${sources.join(", ") || "nothing"}`)
-        .toBeGreaterThanOrEqual(3);
-    }
-  });
-
-  it("leaves no article unreachable from any other article", () => {
-    const orphans = [...relatedGraph()].filter(([, from]) => from.length === 0);
-    expect(orphans.map(([slug]) => slug)).toEqual([]);
-  });
-
-  it("beats the baseline it was built to fix, for every single article", () => {
-    /* Before: 15 articles at 1 incoming link, 4 at 2, and every one of those
-       links came from the index rather than from another article. */
-    for (const [slug, sources] of relatedGraph()) {
-      expect(sources.length, `${slug} did not improve on the 2026-08-12 baseline`)
-        .toBeGreaterThan(2);
-    }
+    const short = [...incoming()].filter(([, from]) => from.length < 3);
+    expect(short.map(([path, from]) => `${path} is offered only by: ${from.join(", ") || "nothing"}`)).toEqual([]);
   });
 
   it("spreads the links rather than pointing them all at a few favourites", () => {
-    const counts = [...relatedGraph().values()].map((s) => s.length);
-    /* Total offered links are fixed at 3 per article, so a fair spread means
-       nothing hoards them. A ceiling of double the average catches a selector
-       that funnels the whole journal into one or two pieces. */
+    /* Three offered links per article, so a fair spread means nothing hoards them: a ceiling of double the
+       average catches a list that funnels the journal into one or two pieces. */
+    const counts = [...incoming().values()].map((from) => from.length);
     const average = counts.reduce((a, b) => a + b, 0) / counts.length;
     expect(Math.max(...counts)).toBeLessThanOrEqual(average * 2);
   });
 });
 
-/** SEO round C2 (2026-09-05): paragraphs may carry `[label](url)` links. An
- *  internal one must land on a real page, or the journal grows dead ends of a
- *  new kind. External ones must be https and real documents (the sources). */
-describe("inline links in article bodies land somewhere real", () => {
-  const routes = new Set(
-    sitemap().map((entry) => new URL(String(entry.url)).pathname.replace(/\/$/, "") || "/"),
-  );
-
-  const inline = STORIES.flatMap((story) =>
-    story.paragraphs.flatMap((block) => linksIn(block.p).map((link) => ({ slug: story.slug, ...link }))),
-  );
-
-  it("points every internal link at a page in the sitemap", () => {
-    for (const link of inline.filter((l) => l.href.startsWith("/"))) {
-      const path = link.href.split("#")[0].replace(/\/$/, "") || "/";
-      expect(routes.has(path), `${link.slug} links to ${link.href}, which is not a page`).toBe(true);
-    }
+describe("every link the content carries lands somewhere real", () => {
+  it("reads the links of every content module", () => {
+    expect(modules.size).toBeGreaterThan(20);
+    expect(allLinks().filter((l) => isInternal(l.href)).length).toBeGreaterThan(20);
   });
 
-  it("uses https for every external link and every source", () => {
-    for (const link of inline.filter((l) => !l.href.startsWith("/"))) {
-      expect(link.href, `${link.slug}: ${link.href}`).toMatch(/^https:\/\//);
-    }
-    for (const story of STORIES) {
-      for (const source of story.sources ?? []) {
-        expect(source.url, `${story.slug}: ${source.label}`).toMatch(/^https:\/\//);
-        expect(source.label.trim().length, `${story.slug}: empty source label`).toBeGreaterThan(8);
+  it("points every internal link at a route of the URL plan", () => {
+    const dead = allLinks()
+      .filter((l) => isInternal(l.href))
+      .filter((l) => !PLANNED.has(l.href.split(/[?#]/)[0].replace(/(.)\/$/, "$1")))
+      .map((l) => `${l.from} links ${l.href}, which is not a page of the plan (src/content/en-IN/routes.ts)`);
+    expect(dead).toEqual([]);
+  });
+
+  it("uses https for every outside link (or mailto: and tel:), and in-page anchors for the rest", () => {
+    const odd = allLinks()
+      .filter((l) => !isInternal(l.href))
+      .filter((l) => !/^(?:https:\/\/|mailto:|tel:|#[A-Za-z0-9_-]+$)/.test(l.href))
+      .map((l) => `${l.from}: ${l.href}`);
+    expect(odd).toEqual([]);
+  });
+
+  it("labels every article's sources and never repeats one", () => {
+    for (const [path, article] of articles) {
+      const urls = article.sources.map((s) => s.href);
+      expect(new Set(urls).size, `${path} repeats a source`).toBe(urls.length);
+      for (const source of article.sources) {
+        expect(source.href, path).toMatch(/^https:\/\//);
+        expect(source.citation.trim().length, `${path}: an unlabelled source`).toBeGreaterThan(8);
       }
-      const urls = (story.sources ?? []).map((s) => s.url);
-      expect(new Set(urls).size, `${story.slug} repeats a source`).toBe(urls.length);
     }
   });
 });
-
