@@ -1,11 +1,16 @@
 #!/usr/bin/env node
 // Lighthouse medians (task 1.1; architecture §12, test plan §4.4, lessons §6).
 //
-//   node scripts/qa/lighthouse.mjs [--profile local|lp-tags|production] [--runs 3] [path ...]
+//   node scripts/qa/lighthouse.mjs [--profile local|lp-tags|production] [--runs 3]
+//                                  [--throttling simulate|devtools|both] [path ...]
 //
 // Mobile form factor (Lighthouse's default config), median of 3 runs per page, scored against the
 // budget: >= 90 in Performance, Accessibility, Best Practices and SEO. Lighthouse 13.4.1 (pinned)
 // is the baseline's version, so before and after compare.
+//
+// Throttling (test plan §1.2, lessons §6: "record devtools-throttled and simulated runs"): by
+// default both Lighthouse's simulated throttling and devtools throttling run, each with its own
+// report files and its own medians, each scored against the budget.
 //
 // Profiles (which run counts, N18):
 //   local       the local production build on http://localhost:3456 (no tags: hosts in no list)
@@ -20,7 +25,8 @@
 // Meta pixel's third-party cookie (the third-party-cookies audit, and inspector-issues only while
 // every issue it lists is a third-party-cookie phase-out issue), and on lp-tags the HTTPS audits
 // flip on the http:// origin.
-// Reports go to lighthouse-reports/<date>/ (git-ignored, D039). Exit 1 when a page misses.
+// Reports go to lighthouse-reports/<date>/<profile>-<method>-<page>-<n>.json (git-ignored, D039).
+// Exit 1 when a page misses in any method.
 
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -42,6 +48,7 @@ const PAGES = [
   "/stories/learning-toys-for-a-three-year-old",
 ];
 const CATEGORIES = ["performance", "accessibility", "best-practices", "seo"];
+const METHODS = ["simulate", "devtools"];
 const THRESHOLD = 0.9;
 const PORT = Number(process.env.KH_E2E_PORT ?? 3456);
 /** Beacons blocked on lp-tags, so nothing is delivered (test plan §4.4). */
@@ -71,8 +78,9 @@ export function bestPracticesFailures(result) {
     });
 }
 
-function args() {
-  const a = process.argv.slice(2);
+/** The command line: profile, runs, throttling methods (default both) and pages. */
+export function parseArgs(argv) {
+  const a = [...argv];
   const take = (flag, fallback) => {
     const i = a.indexOf(flag);
     if (i < 0) return fallback;
@@ -82,8 +90,27 @@ function args() {
   };
   const profile = take("--profile", "local");
   const runs = Number(take("--runs", "3"));
+  const throttling = take("--throttling", "both");
   if (!["local", "lp-tags", "production"].includes(profile)) throw new Error(`unknown profile ${profile}`);
-  return { profile, runs, pages: a.length ? a : PAGES };
+  if (![...METHODS, "both"].includes(throttling)) throw new Error(`unknown --throttling ${throttling} (simulate, devtools or both)`);
+  return { profile, runs, methods: throttling === "both" ? METHODS : [throttling], pages: a.length ? a : PAGES };
+}
+
+/** One report file per profile, throttling method, page and run. */
+export function reportName(profile, method, page, n) {
+  return `${profile}-${method}-${page.replace(/[^a-z0-9]+/gi, "_").replace(/^_$/, "") || "home"}-${n}.json`;
+}
+
+/** The Lighthouse flags of one run. */
+export function lighthouseFlags(profile, method, port) {
+  return {
+    port,
+    output: "json",
+    logLevel: "error",
+    onlyCategories: CATEGORIES,
+    throttlingMethod: method,
+    blockedUrlPatterns: profile === "lp-tags" ? BLOCKED : [],
+  };
 }
 
 function urlFor(profile, page) {
@@ -100,7 +127,7 @@ const median = (xs) => {
 };
 
 async function main() {
-  const { profile, runs, pages } = args();
+  const { profile, runs, methods, pages } = parseArgs(process.argv.slice(2));
   const flags = ["--headless=new", "--no-first-run", "--disable-extensions"];
   if (profile === "lp-tags") flags.push("--host-resolver-rules=MAP kheelona.com 127.0.0.1, MAP store.kheelona.com 127.0.0.1");
   const chrome = await chromeLauncher.launch({ chromePath: chromium.executablePath(), chromeFlags: flags });
@@ -110,45 +137,43 @@ async function main() {
   try {
     for (const page of pages) {
       const url = urlFor(profile, page);
-      const scores = Object.fromEntries(CATEGORIES.map((c) => [c, []]));
-      let lastBpFailures = [];
-      for (let n = 1; n <= runs; n++) {
-        const result = await lighthouse(url, {
-          port: chrome.port,
-          output: "json",
-          logLevel: "error",
-          onlyCategories: CATEGORIES,
-          blockedUrlPatterns: profile === "lp-tags" ? BLOCKED : [],
-        });
-        const lhr = result.lhr;
-        writeFileSync(join(dir, `${profile}-${page.replace(/[^a-z0-9]+/gi, "_") || "home"}-${n}.json`), result.report);
-        for (const c of CATEGORIES) scores[c].push(lhr.categories[c]?.score ?? 0);
-        lastBpFailures = bestPracticesFailures(result);
-      }
-      const med = Object.fromEntries(CATEGORIES.map((c) => [c, median(scores[c])]));
-      const notes = [];
-      for (const c of CATEGORIES) {
-        if (med[c] >= THRESHOLD) continue;
-        if (c === "seo" && page.startsWith("store:")) {
-          notes.push(`store SEO ${Math.round(med[c] * 100)}: pre-approved exception (noindex on purpose, B10)`);
-          continue;
+      for (const method of methods) {
+        const scores = Object.fromEntries(CATEGORIES.map((c) => [c, []]));
+        let lastBpFailures = [];
+        for (let n = 1; n <= runs; n++) {
+          const result = await lighthouse(url, lighthouseFlags(profile, method, chrome.port));
+          const lhr = result.lhr;
+          writeFileSync(join(dir, reportName(profile, method, page, n)), result.report);
+          for (const c of CATEGORIES) scores[c].push(lhr.categories[c]?.score ?? 0);
+          lastBpFailures = bestPracticesFailures(result);
         }
-        const allowed = ALLOWED_BP[profile];
-        if (c === "best-practices" && allowed && lastBpFailures.every((id) => allowed.includes(id))) {
-          notes.push(`Best Practices ${Math.round(med[c] * 100)}: only ${lastBpFailures.join(", ")} (pre-approved, B10/N18)`);
-          continue;
+        const med = Object.fromEntries(CATEGORIES.map((c) => [c, median(scores[c])]));
+        const notes = [];
+        for (const c of CATEGORIES) {
+          if (med[c] >= THRESHOLD) continue;
+          if (c === "seo" && page.startsWith("store:")) {
+            notes.push(`store SEO ${Math.round(med[c] * 100)}: pre-approved exception (noindex on purpose, B10)`);
+            continue;
+          }
+          const allowed = ALLOWED_BP[profile];
+          if (c === "best-practices" && allowed && lastBpFailures.every((id) => allowed.includes(id))) {
+            notes.push(`Best Practices ${Math.round(med[c] * 100)}: only ${lastBpFailures.join(", ")} (pre-approved, B10/N18)`);
+            continue;
+          }
+          failed = true;
+          notes.push(`${c} ${Math.round(med[c] * 100)} < ${THRESHOLD * 100}${c === "best-practices" ? ` (failing audits: ${lastBpFailures.join(", ")})` : ""}`);
         }
-        failed = true;
-        notes.push(`${c} ${Math.round(med[c] * 100)} < ${THRESHOLD * 100}${c === "best-practices" ? ` (failing audits: ${lastBpFailures.join(", ")})` : ""}`);
+        console.log(
+          `[lighthouse ${profile} ${method}] ${url}  ` +
+            CATEGORIES.map((c) => `${c} ${Math.round(med[c] * 100)}`).join("  ") +
+            (notes.length ? `\n  ${notes.join("\n  ")}` : ""),
+        );
       }
-      console.log(
-        `[lighthouse ${profile}] ${url}  ` + CATEGORIES.map((c) => `${c} ${Math.round(med[c] * 100)}`).join("  ") + (notes.length ? `\n  ${notes.join("\n  ")}` : ""),
-      );
     }
   } finally {
     await chrome.kill();
   }
-  console.log(`[lighthouse ${profile}] reports in ${dir}/`);
+  console.log(`[lighthouse ${profile}] ${methods.join(" and ")} throttling; reports in ${dir}/`);
   process.exit(failed ? 1 : 0);
 }
 
