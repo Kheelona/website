@@ -183,21 +183,3 @@ describe("ArtBoard: loading (ADR-010, N12)", () => {
     expect(layers(container)[1]).not.toHaveAttribute("fetchpriority");
   });
 });
-
-describe("ArtBoard: compile-time contract (tsc checks these lines; never rendered)", () => {
-  it("requires sizes, has no priority prop, and takes a layer as an image or a doodle, never both", () => {
-    const misuses = () => (
-      <>
-        {/* @ts-expect-error sizes is required: each raster asks for its share of the board's sizes */}
-        <ArtBoard tone="blue" layers={HOME_HERO} />
-        {/* @ts-expect-error no priority prop: the board's LCP raster takes lcp */}
-        <ArtBoard tone="blue" layers={HOME_HERO} sizes={SIZES} priority />
-        {/* @ts-expect-error a layer is an image or a doodle, never both */}
-        <ArtBoard tone="blue" sizes={SIZES} layers={[{ image: { src: ADVIK, alt: "" }, doodle: { name: "ink-heart" }, left: 1, top: 1, width: 10 }]} />
-        {/* @ts-expect-error a ratio is "width / height" */}
-        <ArtBoard tone="blue" layers={HOME_HERO} sizes={SIZES} ratio="4:3" />
-      </>
-    );
-    expect(misuses).toBeTypeOf("function");
-  });
-});

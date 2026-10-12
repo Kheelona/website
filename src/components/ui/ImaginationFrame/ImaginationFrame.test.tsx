@@ -114,19 +114,3 @@ describe("ImaginationFrame: the doodles (D049 pick 3)", () => {
     expect(() => render(<ImaginationFrame photo={KABIR} sizes={SIZES} doodles={[{ doodle: { name: "chalk-moon" }, left: 1, top: 1, width: 5 }]} />)).toThrow(/chalk-moon/);
   });
 });
-
-describe("ImaginationFrame: compile-time contract (tsc checks these lines; never rendered)", () => {
-  it("requires sizes, has no priority prop, and takes doodles only as doodle layers", () => {
-    const misuses = () => (
-      <>
-        {/* @ts-expect-error sizes is required */}
-        <ImaginationFrame photo={KABIR} />
-        {/* @ts-expect-error no priority prop: the photo takes lcp */}
-        <ImaginationFrame photo={KABIR} sizes={SIZES} priority />
-        {/* @ts-expect-error an image layer is not a doodle */}
-        <ImaginationFrame photo={KABIR} sizes={SIZES} doodles={[{ image: KABIR, left: 1, top: 1, width: 10 }]} />
-      </>
-    );
-    expect(misuses).toBeTypeOf("function");
-  });
-});

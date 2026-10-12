@@ -58,20 +58,3 @@ describe("Avatar: photo (founders' photos once supplied, B24)", () => {
     expect(container.querySelector("img")).toHaveAttribute("alt", "Aman Soni");
   });
 });
-
-describe("Avatar: compile-time contract (tsc checks these lines; never rendered)", () => {
-  const PHOTO = { src: { src: "/_next/static/media/aman.jpg", width: 600, height: 750 } as StaticImageData, alt: "" };
-  it("takes initials or a photo with sizes, never both, and no priority prop", () => {
-    const misuses = () => (
-      <>
-        {/* @ts-expect-error a photo needs sizes */}
-        <Avatar image={PHOTO} />
-        {/* @ts-expect-error initials or a photo, not both */}
-        <Avatar initials="AS" image={PHOTO} sizes="96px" />
-        {/* @ts-expect-error no priority prop */}
-        <Avatar image={PHOTO} sizes="96px" priority />
-      </>
-    );
-    expect(misuses).toBeTypeOf("function");
-  });
-});

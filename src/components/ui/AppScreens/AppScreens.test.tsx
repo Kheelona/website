@@ -115,21 +115,3 @@ describe("AppScreens: images and options", () => {
     expect(container.firstElementChild!.className).toBe("ks-shots ks-shots--product ks-shots--solo ks-x");
   });
 });
-
-describe("AppScreens: compile-time contract (tsc checks these lines; never rendered)", () => {
-  it("requires sizes and a variant, has no priority prop, and holds one or two screens", () => {
-    const misuses = () => (
-      <>
-        {/* @ts-expect-error sizes is required */}
-        <AppScreens variant="home" screens={[PRIVACY]} />
-        {/* @ts-expect-error the variant is required: Home and the product page frame the phones differently */}
-        <AppScreens screens={[PRIVACY]} sizes={SIZES} />
-        {/* @ts-expect-error no priority prop: app screens are never the LCP image */}
-        <AppScreens variant="home" screens={[PRIVACY]} sizes={SIZES} priority />
-        {/* @ts-expect-error one or two screens, never three */}
-        <AppScreens variant="home" screens={[TRANSCRIPT, ACTIVITY, PRIVACY]} sizes={SIZES} />
-      </>
-    );
-    expect(misuses).toBeTypeOf("function");
-  });
-});

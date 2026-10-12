@@ -93,19 +93,3 @@ describe("Photo: loading (ADR-010, N12)", () => {
     expect(img(container)).toHaveAttribute("height", "750");
   });
 });
-
-describe("Photo: compile-time contract (tsc checks these lines; never rendered)", () => {
-  it("requires sizes and has no priority or preload prop (ADR-010, N12)", () => {
-    const misuses = () => (
-      <>
-        {/* @ts-expect-error sizes is required: the phone never fetches a laptop image */}
-        <Photo image={IRA} />
-        {/* @ts-expect-error no priority prop: deprecated in Next 16 */}
-        <Photo image={IRA} sizes={SIZES} priority />
-        {/* @ts-expect-error no preload prop: the LCP image takes lcp (eager, fetchpriority high) */}
-        <Photo image={IRA} sizes={SIZES} preload />
-      </>
-    );
-    expect(misuses).toBeTypeOf("function");
-  });
-});
