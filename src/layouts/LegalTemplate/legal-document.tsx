@@ -81,7 +81,7 @@ function Block({ block, ctx }: { block: LegalPageBlock; ctx: Ctx }): ReactNode {
           {block.tools.map((tool, i) => (
             <div key={i} className="ks-tool">
               <RichText as="h3" className="kh-subtitle" text={tool.name} offer={offer} />
-              <Blocks blocks={tool.blocks} ctx={ctx} />
+              {blocksOf(tool.blocks, ctx)}
             </div>
           ))}
         </div>
@@ -138,17 +138,8 @@ function Block({ block, ctx }: { block: LegalPageBlock; ctx: Ctx }): ReactNode {
   }
 }
 
-function Blocks({ blocks, ctx }: { blocks: readonly LegalPageBlock[]; ctx: Ctx }) {
-  return (
-    <>
-      {blocks.map((block, i) => (
-        <Fragment key={i}>
-          <Block block={block} ctx={ctx} />
-        </Fragment>
-      ))}
-    </>
-  );
-}
+/** A part's blocks, in order, with no wrapper of their own. */
+const blocksOf = (blocks: readonly LegalPageBlock[], ctx: Ctx) => blocks.map((block, i) => <Block key={i} block={block} ctx={ctx} />);
 
 /** The contents list's words: the part's own, or its title without the closing full stop. */
 const contentsLabel = (part: LegalPagePart) => part.contents ?? part.title.replace(/\.$/, "");
@@ -223,7 +214,7 @@ function Part({ part, n, ctx }: Numbered & { ctx: Ctx }) {
           {n}. {title}
         </h2>
         {answer}
-        <Blocks blocks={part.blocks} ctx={ctx} />
+        {blocksOf(part.blocks, ctx)}
       </section>
     );
   }
@@ -234,7 +225,7 @@ function Part({ part, n, ctx }: Numbered & { ctx: Ctx }) {
         <span className="ks-doc__n">{n}.</span> {title}
       </h2>
       {answer}
-      <Blocks blocks={part.blocks} ctx={ctx} />
+      {blocksOf(part.blocks, ctx)}
     </section>
   );
 }

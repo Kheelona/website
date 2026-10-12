@@ -45,8 +45,10 @@
 .ks-doc-summary .kh-section__head {
   margin-bottom: var(--space-6);
 }
-/* A link in a promise (privacy.css:17; mapping rows 22-23). */
-.ks-doc-summary .kh-trust__body a {
+/* The links in a promise and in the document (privacy.css:17, 38; refund.css:44; mapping rows 22-23, 29-30). The
+   document's rule (0,2,1) also outranks the contents rows' own colour, so they show in the link colour, as approved. */
+.ks-doc-summary .kh-trust__body a,
+.ks-doc a:not(.kh-btn) {
   color: var(--link);
   font-weight: 700; /* ds-weight-700 */
   text-underline-offset: 3px; /* ds-underline-offset-3px */
@@ -81,16 +83,20 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  counter-reset: ks-short;
+  counter-reset: ks-step;
 }
-.ks-short li {
+/* The Sunshine numeral circle, for terms' short version and the refund steps alike (terms.css:64-65,
+   refund.css:53-54; mapping §6.4: the live counter mk-step, ported as ks-step). */
+.ks-short li,
+.ks-doc__steps li {
   position: relative;
   min-height: var(--space-6);
   padding-left: calc(var(--space-6) + var(--space-3));
-  counter-increment: ks-short;
+  counter-increment: ks-step;
 }
-.ks-short li::before {
-  content: counter(ks-short);
+.ks-short li::before,
+.ks-doc__steps li::before {
+  content: counter(ks-step);
   position: absolute;
   left: 0;
   top: 0;
@@ -101,7 +107,7 @@
   border-radius: 50%;
   background: var(--sun-500);
   color: var(--ink-900);
-  font: 800 16px/20px var(--font-display); /* legal-step-numeral: terms.css:65 */
+  font: 800 16px/20px var(--font-display); /* legal-step-numeral: terms.css:65, refund.css:54 */
 }
 .ks-short strong {
   font-weight: 800; /* ds-weight-800: terms.css:66 */
@@ -212,11 +218,6 @@
 .ks-doc__part ul li + li {
   margin-top: var(--space-2);
 }
-.ks-doc a:not(.kh-btn) {
-  color: var(--link);
-  font-weight: 700; /* ds-weight-700 */
-  text-underline-offset: 3px; /* ds-underline-offset-3px */
-}
 .ks-doc__part .ks-placeholder {
   display: inline;
 }
@@ -259,8 +260,8 @@
   font-size: var(--icon-m);
 }
 
-/* Numbered steps: a Sunshine circle per step, the text beside it (refund.css:52-54; mapping §6.4, the live counter
-   mk-step ported as ks-step). */
+/* Numbered steps: a Sunshine circle per step (the numeral circle above), the text beside it (refund.css:52-54). The
+   steps' circle sits a space-1 higher than the short version's. */
 .ks-doc__part .ks-doc__steps {
   display: grid;
   gap: var(--space-4);
@@ -268,25 +269,8 @@
   list-style: none;
   counter-reset: ks-step;
 }
-.ks-doc__steps li {
-  position: relative;
-  min-height: var(--space-6);
-  padding-left: calc(var(--space-6) + var(--space-3));
-  counter-increment: ks-step;
-}
 .ks-doc__steps li::before {
-  content: counter(ks-step);
-  position: absolute;
-  left: 0;
   top: calc(var(--space-1) * -1);
-  display: grid;
-  place-items: center;
-  width: var(--space-6);
-  height: var(--space-6);
-  border-radius: 50%;
-  background: var(--sun-500);
-  color: var(--ink-900);
-  font: 800 16px/20px var(--font-display); /* legal-step-numeral: refund.css:54 */
 }
 
 /* Terms: the three parts in the body, an eyebrow over each part's first section with the part's rule above it
@@ -311,11 +295,15 @@
   max-width: var(--measure);
   margin-bottom: var(--space-4);
 }
-.ks-tool {
-  padding: var(--space-4) var(--space-5);
+/* Privacy's two quiet panels: each measuring tool and the recipients list (privacy.css:63, 68). */
+.ks-tool,
+.ks-doc__part .ks-recips {
   border: var(--stroke-hair) solid var(--border);
   border-radius: var(--radius-m);
   background: var(--surface-raised);
+}
+.ks-tool {
+  padding: var(--space-4) var(--space-5);
 }
 .ks-doc__part .ks-tool .kh-subtitle {
   margin: 0 0 var(--space-2);
@@ -330,9 +318,6 @@
   max-width: var(--measure);
   padding: 0;
   list-style: none;
-  border: var(--stroke-hair) solid var(--border);
-  border-radius: var(--radius-m);
-  background: var(--surface-raised);
 }
 .ks-doc__part .ks-recips li {
   display: grid;
