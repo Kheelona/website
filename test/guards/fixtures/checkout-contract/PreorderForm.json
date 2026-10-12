@@ -1,0 +1,878 @@
+{
+  "token/idle": {
+    "forms": 1,
+    "noValidate": true,
+    "fields": [
+      {
+        "name": "accepted",
+        "tag": "input",
+        "type": "checkbox",
+        "inputMode": null,
+        "autocomplete": null,
+        "maxLength": null,
+        "required": false,
+        "checked": false,
+        "options": null
+      },
+      {
+        "name": "childAge",
+        "tag": "input",
+        "type": "text",
+        "inputMode": null,
+        "autocomplete": null,
+        "maxLength": 20,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "email",
+        "tag": "input",
+        "type": "email",
+        "inputMode": "email",
+        "autocomplete": "email",
+        "maxLength": null,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "parentName",
+        "tag": "input",
+        "type": "text",
+        "inputMode": null,
+        "autocomplete": "name",
+        "maxLength": 80,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "phone",
+        "tag": "input",
+        "type": "tel",
+        "inputMode": "tel",
+        "autocomplete": "tel",
+        "maxLength": null,
+        "required": true,
+        "checked": null,
+        "options": null
+      }
+    ],
+    "submit": {
+      "type": "submit",
+      "disabled": false,
+      "label": "Pay ₹499 and reserve"
+    },
+    "refundableSentence": true,
+    "policyLinks": [
+      "https://kheelona.com/refund",
+      "https://kheelona.com/terms"
+    ],
+    "alert": "none",
+    "formStartedAfterTwoFields": 1
+  },
+  "token/working": {
+    "forms": 1,
+    "noValidate": true,
+    "fields": [
+      {
+        "name": "accepted",
+        "tag": "input",
+        "type": "checkbox",
+        "inputMode": null,
+        "autocomplete": null,
+        "maxLength": null,
+        "required": false,
+        "checked": true,
+        "options": null
+      },
+      {
+        "name": "childAge",
+        "tag": "input",
+        "type": "text",
+        "inputMode": null,
+        "autocomplete": null,
+        "maxLength": 20,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "email",
+        "tag": "input",
+        "type": "email",
+        "inputMode": "email",
+        "autocomplete": "email",
+        "maxLength": null,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "parentName",
+        "tag": "input",
+        "type": "text",
+        "inputMode": null,
+        "autocomplete": "name",
+        "maxLength": 80,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "phone",
+        "tag": "input",
+        "type": "tel",
+        "inputMode": "tel",
+        "autocomplete": "tel",
+        "maxLength": null,
+        "required": true,
+        "checked": null,
+        "options": null
+      }
+    ],
+    "submit": {
+      "type": "submit",
+      "disabled": true,
+      "label": "Setting up your payment…"
+    },
+    "refundableSentence": true,
+    "policyLinks": [
+      "https://kheelona.com/refund",
+      "https://kheelona.com/terms"
+    ],
+    "alert": "none",
+    "formStartedAfterTwoFields": null
+  },
+  "token/paying": {
+    "forms": 1,
+    "noValidate": true,
+    "fields": [
+      {
+        "name": "accepted",
+        "tag": "input",
+        "type": "checkbox",
+        "inputMode": null,
+        "autocomplete": null,
+        "maxLength": null,
+        "required": false,
+        "checked": true,
+        "options": null
+      },
+      {
+        "name": "childAge",
+        "tag": "input",
+        "type": "text",
+        "inputMode": null,
+        "autocomplete": null,
+        "maxLength": 20,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "email",
+        "tag": "input",
+        "type": "email",
+        "inputMode": "email",
+        "autocomplete": "email",
+        "maxLength": null,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "parentName",
+        "tag": "input",
+        "type": "text",
+        "inputMode": null,
+        "autocomplete": "name",
+        "maxLength": 80,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "phone",
+        "tag": "input",
+        "type": "tel",
+        "inputMode": "tel",
+        "autocomplete": "tel",
+        "maxLength": null,
+        "required": true,
+        "checked": null,
+        "options": null
+      }
+    ],
+    "submit": {
+      "type": "submit",
+      "disabled": true,
+      "label": "Opening the payment window…"
+    },
+    "refundableSentence": true,
+    "policyLinks": [
+      "https://kheelona.com/refund",
+      "https://kheelona.com/terms"
+    ],
+    "alert": "none",
+    "formStartedAfterTwoFields": null
+  },
+  "token/failure": {
+    "forms": 1,
+    "noValidate": true,
+    "fields": [
+      {
+        "name": "accepted",
+        "tag": "input",
+        "type": "checkbox",
+        "inputMode": null,
+        "autocomplete": null,
+        "maxLength": null,
+        "required": false,
+        "checked": true,
+        "options": null
+      },
+      {
+        "name": "childAge",
+        "tag": "input",
+        "type": "text",
+        "inputMode": null,
+        "autocomplete": null,
+        "maxLength": 20,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "email",
+        "tag": "input",
+        "type": "email",
+        "inputMode": "email",
+        "autocomplete": "email",
+        "maxLength": null,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "parentName",
+        "tag": "input",
+        "type": "text",
+        "inputMode": null,
+        "autocomplete": "name",
+        "maxLength": 80,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "phone",
+        "tag": "input",
+        "type": "tel",
+        "inputMode": "tel",
+        "autocomplete": "tel",
+        "maxLength": null,
+        "required": true,
+        "checked": null,
+        "options": null
+      }
+    ],
+    "submit": {
+      "type": "submit",
+      "disabled": false,
+      "label": "Pay ₹499 and reserve"
+    },
+    "refundableSentence": true,
+    "policyLinks": [
+      "https://kheelona.com/refund",
+      "https://kheelona.com/terms"
+    ],
+    "alert": "shown",
+    "formStartedAfterTwoFields": null
+  },
+  "full/idle": {
+    "forms": 1,
+    "noValidate": true,
+    "fields": [
+      {
+        "name": "accepted",
+        "tag": "input",
+        "type": "checkbox",
+        "inputMode": null,
+        "autocomplete": null,
+        "maxLength": null,
+        "required": false,
+        "checked": false,
+        "options": null
+      },
+      {
+        "name": "childAge",
+        "tag": "input",
+        "type": "text",
+        "inputMode": null,
+        "autocomplete": null,
+        "maxLength": 20,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "email",
+        "tag": "input",
+        "type": "email",
+        "inputMode": "email",
+        "autocomplete": "email",
+        "maxLength": null,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "parentName",
+        "tag": "input",
+        "type": "text",
+        "inputMode": null,
+        "autocomplete": "name",
+        "maxLength": 80,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "phone",
+        "tag": "input",
+        "type": "tel",
+        "inputMode": "tel",
+        "autocomplete": "tel",
+        "maxLength": null,
+        "required": true,
+        "checked": null,
+        "options": null
+      }
+    ],
+    "submit": {
+      "type": "submit",
+      "disabled": false,
+      "label": "Pay ₹7,999 and pre-order"
+    },
+    "refundableSentence": true,
+    "policyLinks": [
+      "https://kheelona.com/refund",
+      "https://kheelona.com/terms"
+    ],
+    "alert": "none",
+    "formStartedAfterTwoFields": 1
+  },
+  "full/working": {
+    "forms": 1,
+    "noValidate": true,
+    "fields": [
+      {
+        "name": "accepted",
+        "tag": "input",
+        "type": "checkbox",
+        "inputMode": null,
+        "autocomplete": null,
+        "maxLength": null,
+        "required": false,
+        "checked": true,
+        "options": null
+      },
+      {
+        "name": "childAge",
+        "tag": "input",
+        "type": "text",
+        "inputMode": null,
+        "autocomplete": null,
+        "maxLength": 20,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "email",
+        "tag": "input",
+        "type": "email",
+        "inputMode": "email",
+        "autocomplete": "email",
+        "maxLength": null,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "parentName",
+        "tag": "input",
+        "type": "text",
+        "inputMode": null,
+        "autocomplete": "name",
+        "maxLength": 80,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "phone",
+        "tag": "input",
+        "type": "tel",
+        "inputMode": "tel",
+        "autocomplete": "tel",
+        "maxLength": null,
+        "required": true,
+        "checked": null,
+        "options": null
+      }
+    ],
+    "submit": {
+      "type": "submit",
+      "disabled": true,
+      "label": "Setting up your payment…"
+    },
+    "refundableSentence": true,
+    "policyLinks": [
+      "https://kheelona.com/refund",
+      "https://kheelona.com/terms"
+    ],
+    "alert": "none",
+    "formStartedAfterTwoFields": null
+  },
+  "full/paying": {
+    "forms": 1,
+    "noValidate": true,
+    "fields": [
+      {
+        "name": "accepted",
+        "tag": "input",
+        "type": "checkbox",
+        "inputMode": null,
+        "autocomplete": null,
+        "maxLength": null,
+        "required": false,
+        "checked": true,
+        "options": null
+      },
+      {
+        "name": "childAge",
+        "tag": "input",
+        "type": "text",
+        "inputMode": null,
+        "autocomplete": null,
+        "maxLength": 20,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "email",
+        "tag": "input",
+        "type": "email",
+        "inputMode": "email",
+        "autocomplete": "email",
+        "maxLength": null,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "parentName",
+        "tag": "input",
+        "type": "text",
+        "inputMode": null,
+        "autocomplete": "name",
+        "maxLength": 80,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "phone",
+        "tag": "input",
+        "type": "tel",
+        "inputMode": "tel",
+        "autocomplete": "tel",
+        "maxLength": null,
+        "required": true,
+        "checked": null,
+        "options": null
+      }
+    ],
+    "submit": {
+      "type": "submit",
+      "disabled": true,
+      "label": "Opening the payment window…"
+    },
+    "refundableSentence": true,
+    "policyLinks": [
+      "https://kheelona.com/refund",
+      "https://kheelona.com/terms"
+    ],
+    "alert": "none",
+    "formStartedAfterTwoFields": null
+  },
+  "full/failure": {
+    "forms": 1,
+    "noValidate": true,
+    "fields": [
+      {
+        "name": "accepted",
+        "tag": "input",
+        "type": "checkbox",
+        "inputMode": null,
+        "autocomplete": null,
+        "maxLength": null,
+        "required": false,
+        "checked": true,
+        "options": null
+      },
+      {
+        "name": "childAge",
+        "tag": "input",
+        "type": "text",
+        "inputMode": null,
+        "autocomplete": null,
+        "maxLength": 20,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "email",
+        "tag": "input",
+        "type": "email",
+        "inputMode": "email",
+        "autocomplete": "email",
+        "maxLength": null,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "parentName",
+        "tag": "input",
+        "type": "text",
+        "inputMode": null,
+        "autocomplete": "name",
+        "maxLength": 80,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "phone",
+        "tag": "input",
+        "type": "tel",
+        "inputMode": "tel",
+        "autocomplete": "tel",
+        "maxLength": null,
+        "required": true,
+        "checked": null,
+        "options": null
+      }
+    ],
+    "submit": {
+      "type": "submit",
+      "disabled": false,
+      "label": "Pay ₹7,999 and pre-order"
+    },
+    "refundableSentence": true,
+    "policyLinks": [
+      "https://kheelona.com/refund",
+      "https://kheelona.com/terms"
+    ],
+    "alert": "shown",
+    "formStartedAfterTwoFields": null
+  },
+  "event/idle": {
+    "forms": 1,
+    "noValidate": true,
+    "fields": [
+      {
+        "name": "accepted",
+        "tag": "input",
+        "type": "checkbox",
+        "inputMode": null,
+        "autocomplete": null,
+        "maxLength": null,
+        "required": false,
+        "checked": false,
+        "options": null
+      },
+      {
+        "name": "childAge",
+        "tag": "input",
+        "type": "text",
+        "inputMode": null,
+        "autocomplete": null,
+        "maxLength": 20,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "email",
+        "tag": "input",
+        "type": "email",
+        "inputMode": "email",
+        "autocomplete": "email",
+        "maxLength": null,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "parentName",
+        "tag": "input",
+        "type": "text",
+        "inputMode": null,
+        "autocomplete": "name",
+        "maxLength": 80,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "phone",
+        "tag": "input",
+        "type": "tel",
+        "inputMode": "tel",
+        "autocomplete": "tel",
+        "maxLength": null,
+        "required": true,
+        "checked": null,
+        "options": null
+      }
+    ],
+    "submit": {
+      "type": "submit",
+      "disabled": false,
+      "label": "Pay ₹99 and reserve"
+    },
+    "refundableSentence": true,
+    "policyLinks": [
+      "https://kheelona.com/refund",
+      "https://kheelona.com/terms"
+    ],
+    "alert": "none",
+    "formStartedAfterTwoFields": 1
+  },
+  "event/working": {
+    "forms": 1,
+    "noValidate": true,
+    "fields": [
+      {
+        "name": "accepted",
+        "tag": "input",
+        "type": "checkbox",
+        "inputMode": null,
+        "autocomplete": null,
+        "maxLength": null,
+        "required": false,
+        "checked": true,
+        "options": null
+      },
+      {
+        "name": "childAge",
+        "tag": "input",
+        "type": "text",
+        "inputMode": null,
+        "autocomplete": null,
+        "maxLength": 20,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "email",
+        "tag": "input",
+        "type": "email",
+        "inputMode": "email",
+        "autocomplete": "email",
+        "maxLength": null,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "parentName",
+        "tag": "input",
+        "type": "text",
+        "inputMode": null,
+        "autocomplete": "name",
+        "maxLength": 80,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "phone",
+        "tag": "input",
+        "type": "tel",
+        "inputMode": "tel",
+        "autocomplete": "tel",
+        "maxLength": null,
+        "required": true,
+        "checked": null,
+        "options": null
+      }
+    ],
+    "submit": {
+      "type": "submit",
+      "disabled": true,
+      "label": "Setting up your payment…"
+    },
+    "refundableSentence": true,
+    "policyLinks": [
+      "https://kheelona.com/refund",
+      "https://kheelona.com/terms"
+    ],
+    "alert": "none",
+    "formStartedAfterTwoFields": null
+  },
+  "event/paying": {
+    "forms": 1,
+    "noValidate": true,
+    "fields": [
+      {
+        "name": "accepted",
+        "tag": "input",
+        "type": "checkbox",
+        "inputMode": null,
+        "autocomplete": null,
+        "maxLength": null,
+        "required": false,
+        "checked": true,
+        "options": null
+      },
+      {
+        "name": "childAge",
+        "tag": "input",
+        "type": "text",
+        "inputMode": null,
+        "autocomplete": null,
+        "maxLength": 20,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "email",
+        "tag": "input",
+        "type": "email",
+        "inputMode": "email",
+        "autocomplete": "email",
+        "maxLength": null,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "parentName",
+        "tag": "input",
+        "type": "text",
+        "inputMode": null,
+        "autocomplete": "name",
+        "maxLength": 80,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "phone",
+        "tag": "input",
+        "type": "tel",
+        "inputMode": "tel",
+        "autocomplete": "tel",
+        "maxLength": null,
+        "required": true,
+        "checked": null,
+        "options": null
+      }
+    ],
+    "submit": {
+      "type": "submit",
+      "disabled": true,
+      "label": "Opening the payment window…"
+    },
+    "refundableSentence": true,
+    "policyLinks": [
+      "https://kheelona.com/refund",
+      "https://kheelona.com/terms"
+    ],
+    "alert": "none",
+    "formStartedAfterTwoFields": null
+  },
+  "event/failure": {
+    "forms": 1,
+    "noValidate": true,
+    "fields": [
+      {
+        "name": "accepted",
+        "tag": "input",
+        "type": "checkbox",
+        "inputMode": null,
+        "autocomplete": null,
+        "maxLength": null,
+        "required": false,
+        "checked": true,
+        "options": null
+      },
+      {
+        "name": "childAge",
+        "tag": "input",
+        "type": "text",
+        "inputMode": null,
+        "autocomplete": null,
+        "maxLength": 20,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "email",
+        "tag": "input",
+        "type": "email",
+        "inputMode": "email",
+        "autocomplete": "email",
+        "maxLength": null,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "parentName",
+        "tag": "input",
+        "type": "text",
+        "inputMode": null,
+        "autocomplete": "name",
+        "maxLength": 80,
+        "required": true,
+        "checked": null,
+        "options": null
+      },
+      {
+        "name": "phone",
+        "tag": "input",
+        "type": "tel",
+        "inputMode": "tel",
+        "autocomplete": "tel",
+        "maxLength": null,
+        "required": true,
+        "checked": null,
+        "options": null
+      }
+    ],
+    "submit": {
+      "type": "submit",
+      "disabled": false,
+      "label": "Pay ₹99 and reserve"
+    },
+    "refundableSentence": true,
+    "policyLinks": [
+      "https://kheelona.com/refund",
+      "https://kheelona.com/terms"
+    ],
+    "alert": "shown",
+    "formStartedAfterTwoFields": null
+  }
+}

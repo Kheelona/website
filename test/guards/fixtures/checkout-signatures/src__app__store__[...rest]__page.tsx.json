@@ -1,0 +1,11 @@
+{
+  "file": "src/app/store/[...rest]/page.tsx",
+  "note": "Logic signature (test/guards/checkout-signature.test.ts). Regenerated only with a restyle; every changed line is reviewed (ADR-013).",
+  "code": [
+    "import { NotFoundPanel } from \"../_components/NotFoundPanel\";",
+    "export default function StoreCatchAll() {",
+    "    return __JSX_NotFoundPanel__;",
+    "}"
+  ],
+  "jsx": []
+}
