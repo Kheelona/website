@@ -79,6 +79,16 @@ interface Headed extends Base {
   readonly link?: FeatureLink;
 }
 
+/** The `photo` layout's words, with or without media. */
+interface PhotoWords {
+  /** The wider column from 900 px (7 : 5); even without it. */
+  readonly split?: "start" | "end";
+  /** Paragraphs under the heading (`ks-feature-copy`), or … */
+  readonly copy?: readonly Copy[];
+  /** … the guide's single measured paragraph (`ks-gd-plush-text`). */
+  readonly text?: Copy;
+}
+
 export type FeatureSplitConfig =
   | (Headed & {
       readonly variant: "imagination";
@@ -106,16 +116,20 @@ export type FeatureSplitConfig =
       readonly note?: Copy;
       readonly screens: FeatureScreens;
     })
-  | (Headed & {
-      readonly variant: "photo";
-      /** The wider column from 900 px (7 : 5); even without it. */
-      readonly split?: "start" | "end";
-      /** Paragraphs under the heading (`ks-feature-copy`), or … */
-      readonly copy?: readonly Copy[];
-      /** … the guide's single measured paragraph (`ks-gd-plush-text`). */
-      readonly text?: Copy;
-      readonly media?: FeatureMedia;
-    })
+  | (Headed &
+      PhotoWords & {
+        readonly variant: "photo";
+        readonly media: FeatureMedia;
+      })
+  | (Base &
+      PhotoWords & {
+        readonly variant: "photo";
+        readonly heading: FeatureHeading;
+        /** Without media (setup folds 4-6, `ks-setup-split`) the heading sits beside the words, and the mockup gives a
+         *  link no place: none is taken (it would never be drawn). */
+        readonly media?: undefined;
+        readonly link?: never;
+      })
   | (Base & {
       readonly variant: "ticks";
       readonly heading: FeatureHeading;
