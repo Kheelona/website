@@ -46,6 +46,11 @@ export type StoreEnv = {
  *  that a placeholder which passes a truthiness check is worse than no value:
  *  the Tally form silently rendered a placeholder card in production. */
 function real(value: string | undefined): string | null {
+  /* D051: BETA NEVER TAKES A PAYMENT. On a beta build every store value reads
+     as absent, whatever Vercel passes in (a Preview-scoped production key
+     reaches every preview branch): `storeEnv()` is null, `missingStoreEnv()`
+     names all six, the store shows "opening shortly" and the routes answer 503. */
+  if (SITE_ENV === "beta") return null;
   if (!value) return null;
   const v = value.trim();
   if (!v || v.includes("DUMMY") || v.startsWith("<")) return null;
