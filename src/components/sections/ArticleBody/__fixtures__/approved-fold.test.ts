@@ -25,7 +25,50 @@ describe("mockupFold", () => {
 describe("skeleton", () => {
   it("lists tags, sorted classes and ARIA, one element per line, indented by depth", () => {
     const el = html('<section class="b a" aria-labelledby="t" data-x="1" style="left: 1%"><h2 id="t">Hi</h2></section>');
-    expect(skeleton(el)).toBe("section.a.b[aria-labelledby]\n  h2[id]");
+    expect(skeleton(el)).toBe("section.a.b[aria-labelledby=@1]\n  h2[id]");
+  });
+
+  it("compares an anchor's id by value, so a wrong fragment target is red", () => {
+    expect(skeleton(html('<section id="specs"></section>'))).toBe("section[id=specs]");
+    expect(skeleton(html('<section id="specs"></section>'))).not.toBe(skeleton(html('<section id="details"></section>')));
+  });
+
+  it("compares a label by the element it points to (its line), not by the spelling of a label-only id", () => {
+    const fold = (label: string, heading: string) =>
+      skeleton(html(`<section aria-labelledby="${label}"><h2 id="${heading}"></h2><p id="note"></p></section>`));
+    expect(fold("working-title", "working-title")).toBe("section[aria-labelledby=@1]\n  h2[id]\n  p[id=note]");
+    expect(fold("story-part-1-title", "story-part-1-title")).toBe(fold("working-title", "working-title"));
+    expect(fold("note", "working-title")).not.toBe(fold("working-title", "working-title"));
+  });
+
+  it("still compares a label's id by value when a link in the fold points at it (an anchor as well as a label)", () => {
+    expect(skeleton(html('<section aria-labelledby="t"><h2 id="t"></h2><a href="#t"></a></section>'))).toBe(
+      "section[aria-labelledby=@1]\n  h2[id=t]\n  a[href=#t]",
+    );
+  });
+
+  it("keeps a label that points outside the fold as its id, compared by value", () => {
+    expect(skeleton(html('<nav aria-labelledby="menu-title"></nav>'))).toBe("nav[aria-labelledby=menu-title]");
+  });
+
+  it("compares addresses by value, a mockup page read as the route it became (structure §5)", () => {
+    const link = (href: string) => skeleton(html(`<a href="${href}"></a>`));
+    expect(link("home.html")).toBe("a[href=/]");
+    expect(link("meet-kheelu.html#faq")).toBe("a[href=/products/kheelu#faq]");
+    expect(link("story-talking-toys-and-late-talkers.html")).toBe("a[href=/stories/talking-toys-and-late-talkers]");
+    expect(link("stories.html#learning")).toBe("a[href=/stories#learning]");
+    expect(link("refund.html#returns")).toBe("a[href=/refund#returns]");
+    expect(link("ai-toys-for-kids-in-india.html")).toBe("a[href=/ai-toys-for-kids-in-india]");
+    expect(link("/products/kheelu#faq")).toBe("a[href=/products/kheelu#faq]");
+    for (const kept of ["#src-1", "tel:+919187546483", "mailto:hello@kheelona.com", "https://wa.me/919187546483"]) {
+      expect(link(kept)).toBe(`a[href=${kept}]`);
+    }
+  });
+
+  it("is red when a link goes to another page (control)", () => {
+    const link = (href: string) => skeleton(html(`<a href="${href}"></a>`));
+    expect(link("/refund")).not.toBe(link("shipping.html"));
+    expect(link("/stories/learning-toys-for-a-three-year-old")).not.toBe(link("story-talking-toys-and-late-talkers.html"));
   });
 
   it("renames the mockup prefix to ks-, or as the table says, and drops what a test ignores", () => {
