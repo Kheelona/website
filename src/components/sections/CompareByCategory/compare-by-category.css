@@ -1,0 +1,22 @@
+/* CompareByCategory (task 3.3). Ported from mockup.css:111-118 (Home fold 7; CMO V1, DS gap G-05): on phones one
+   card per row with Kheelu's answer first; the DS table from 720 px. */
+.ks-compare-stack {
+  display: grid;
+  gap: var(--space-4);
+}
+.ks-compare-stack + .kh-compare-wrap {
+  display: none;
+}
+.ks-compare-others {
+  margin: var(--space-2) 0 0;
+  padding-left: var(--space-5);
+  color: var(--text-muted);
+}
+@media (min-width: 720px) {
+  .ks-compare-stack {
+    display: none;
+  }
+  .ks-compare-stack + .kh-compare-wrap {
+    display: block;
+  }
+}
