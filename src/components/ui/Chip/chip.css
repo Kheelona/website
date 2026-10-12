@@ -1,0 +1,6 @@
+/* Chip (task 2.2). DS gap G-19: `.kh-chip` paints the tone tint, which is the band colour, so on a band section
+   a chip disappears; the DS switches its quiet panels to the page cream there but leaves chips out. Composed as
+   mockup/mockup.css does for the film chips (tokens only); the chip opts in with `onBand`. */
+.kh-section--band .ks-chip--on-band {
+  background: var(--surface);
+}

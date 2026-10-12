@@ -1,0 +1,10 @@
+/* Placeholder (task 2.2), ported from mockup/mockup.css (the mockup's placeholder block): a marked
+   placeholder stays visible until the fact exists (brief §4.2). The legal pages' inline variant is
+   LegalTemplate's own rule. */
+.ks-placeholder {
+  padding-inline: var(--space-1);
+  border: var(--stroke-hair) dashed var(--border-strong);
+  border-radius: var(--radius-xs);
+  background: var(--surface-band);
+  color: inherit;
+}

@@ -1,0 +1,6 @@
+/* Sticker (task 2.2). The refund and shipping hand stickers are paragraphs; the mockup removes their margin with
+   an inline `margin: 0` beside the tilt (refund.html, shipping.html), which becomes this class (architecture §4.4:
+   the mockup's other inline styles become composition classes). */
+.ks-sticker--flush {
+  margin: 0;
+}

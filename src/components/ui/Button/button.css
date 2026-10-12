@@ -1,0 +1,9 @@
+/* Button (task 2.2). Ported from mockup/mockup.css, which every approved page loads and which applies it to every
+   ghost button: a long ghost link may wrap on a 360 px phone instead of pushing the page 4 px wider (found
+   2026-10-11). Button puts ks-btn--wrap on every ghost variant; it beats .kh-btn and .kh-btn--ghost (bundle.css)
+   by load order at the same specificity, as the mockup's rule did. */
+.ks-btn--wrap {
+  max-width: 100%;
+  white-space: normal;
+  padding-block: var(--space-2);
+}

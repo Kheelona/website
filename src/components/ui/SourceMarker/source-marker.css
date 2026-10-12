@@ -1,0 +1,19 @@
+/* SourceMarker and SourcesNote (task 2.2; D026, DS gap G-18), ported from mockup/mockup.css (the source
+   marker block) and mockup/css/stories.css:72 (articles only, as a variant: wiki/engineering/mockup-css-mapping.md
+   §6.2). font-weight 800: exception ds-weight-800 (mapping row 2). */
+.ks-src {
+  position: relative;
+  padding-inline: var(--space-1);
+  font-weight: 800;
+  color: var(--text-muted);
+  text-underline-offset: var(--space-1);
+}
+/* A 44 px tap area without moving the line. */
+.ks-src::before {
+  content: "";
+  position: absolute;
+  inset: calc(var(--space-3) * -1) calc(var(--space-2) * -1);
+}
+.ks-src--article {
+  white-space: nowrap;
+}
