@@ -74,9 +74,9 @@ describe("/safety: the route file", () => {
     expect(description.length).toBeLessThanOrEqual(155);
     expect(metadata.alternates).toEqual({ canonical: "/safety" });
     expect(metadata.openGraph).toMatchObject({ type: "website", url: "/safety", title, description, siteName: "Kheelona", locale: "en_IN" });
-    expect(metadata.openGraph.images).toEqual([expect.objectContaining({ url: expect.any(String), width: 1200, height: 630, alt: expect.any(String) })]);
+    expect(metadata.openGraph?.images).toEqual([expect.objectContaining({ url: expect.any(String), width: 1200, height: 630, alt: expect.any(String) })]);
     expect(metadata.twitter).toMatchObject({ card: "summary_large_image", title, description });
-    expect(metadata.twitter.images).toHaveLength(1);
+    expect(metadata.twitter?.images).toHaveLength(1);
     expect("robots" in metadata).toBe(false);
   });
 
