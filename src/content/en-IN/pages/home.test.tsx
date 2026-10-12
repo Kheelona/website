@@ -8,7 +8,7 @@ import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
-import { mockupFold, mockupRoute, words } from "../../../../test/support/mockup-compare";
+import { mockupFold, mockupRoute, skeleton, words } from "../../../../test/support/mockup-compare";
 import { homePage } from "./home";
 
 /*
@@ -95,6 +95,32 @@ describe("Home: the folds of the approved page", () => {
     const { built, mockup } = each(label);
     const copyPage = COPY_PAGE_LINKS[label] ?? {};
     expect(hrefs(built)).toEqual(hrefs(mockup).map(mockupRoute).map((href) => copyPage[href] ?? href));
+  });
+
+  /* What the build prints differently from the approved markup, each documented where it was decided: the classes the
+   * build adds (the arrow's nudge hook and the inline-button rule, components §2 CtaBlock; the band chip fix G-19; the
+   * centred trust row; the list reset; the FAQ head and the answer clip of D049 pick 7), the films' `mk-films-buy`
+   * wrapper dropped (components §2 FilmsStrip), the bare value-marker spans of the mockup around an amount or the
+   * delivery line in running text (data-src, N22; the offer card's own price elements and perk span stay), the FAQ
+   * fold's default `#faq` anchor, and the doodles that draw, an inline SVG in the build (D049 pick 3), which the tests
+   * below compare file by file and place by place. The hero's still doodle is an <img> on both sides. */
+  const SKELETON = {
+    drop: /^ks-(?:cta__button|btn__arrow|chip--on-band|trustline--center|list-reset|faq-head)$/,
+    unwrap: ".ks-faq__clip, .mk-films-buy, :not(li) > span[data-src]:not([class])",
+    skip: ".ks-doodle, img.kh-imagine__doodle, #close img[src*='Doodles']",
+  };
+  const asApproved = (label: string, el: Element) =>
+    Object.entries(COPY_PAGE_LINKS[label] ?? {}).reduce((s, [from, to]) => s.replaceAll(`[href=${from}]`, `[href=${to}]`), skeleton(el, SKELETON));
+
+  it.each(LABELS)("%s has the mockup's markup: tags, classes, ARIA, ids and addresses (SCA 1)", (label) => {
+    const { built, mockup } = each(label);
+    expect(skeleton(built, SKELETON).replace("[id=faq]", "")).toBe(asApproved(label, mockup));
+  });
+
+  it("reveals exactly the blocks the mockup reveals (SPA 9)", () => {
+    const reveals = (main: Element) => folds(main).map((f) => all(f, "[data-reveal]").map((el) => skeleton(el, SKELETON).split("\n")[0]));
+    expect(reveals(BUILT)).toEqual(reveals(MOCKUP));
+    expect(reveals(BUILT).flat()).toHaveLength(11);
   });
 
   it("carries the approved tracking values in page order (architecture §8.3; home.md CTA tracking values)", () => {
