@@ -107,6 +107,7 @@ describe("ImaginationFrame: the doodles (D049 pick 3)", () => {
     imgs.forEach((img) => {
       expect(img).toHaveAttribute("alt", "");
       expect(img).not.toHaveAttribute("loading");
+      expect(img).toHaveAttribute("fetchpriority", "low");
     });
   });
 

@@ -26,7 +26,8 @@ export interface ArtBoardProps {
   readonly sizes: string;
   /** A word sticker (ui/Sticker), last on the board. */
   readonly sticker?: ReactNode;
-  /** On the first screen: doodles stay still (pick 2), shapes load eagerly, nothing reveals. */
+  /** On the first screen: doodles stay still (pick 2), shapes and still doodles load eagerly at low priority (the
+   *  LCP raster alone is high), nothing reveals. */
   readonly hero?: boolean;
   /** The board holds the page's LCP image: its largest raster loads eagerly at high priority. */
   readonly lcp?: boolean;

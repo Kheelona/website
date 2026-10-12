@@ -25,7 +25,7 @@ import { VIEWPORTS, type Viewport } from "./support/viewports";
  * after the doodles enter.
  * Without JavaScript: the story's rendered markup, served to a browser with JavaScript off, shows every doodle drawn.
  * Heroes (pick 2): the hero boards and the hero imagination frame hold no drawing doodle, only the DS doodle files as
- * plain images, and nothing in them animates.
+ * plain images (eager, fetchpriority low), and nothing in them animates.
  */
 
 const BELOW_THE_FOLD = "ui-doodle--below-the-fold";
@@ -360,13 +360,18 @@ test.describe("motion-doodle (pick 2): hero doodles stay still", () => {
           imgs.map(async (img) => ({
             alt: img.getAttribute("alt"),
             loading: img.getAttribute("loading"),
+            fetchPriority: img.getAttribute("fetchpriority"),
             text: await fetch((img as HTMLImageElement).src).then((r) => r.text()),
           })),
         ),
       );
       const doodles = plain.filter((img) => DS_DOODLES.has(squash(img.text)));
       expect(doodles.length, "the hero's doodle is a DS doodle file as a plain image").toBeGreaterThan(0);
-      for (const img of plain) expect({ alt: img.alt, loading: img.loading }, "decorative and eager, as the mockup's hero shapes and doodles").toEqual({ alt: "", loading: null });
+      // Eager as in the mockup, at low priority: React's server renderer preloads every eager <img> that is not
+      // fetchpriority low, and these must not compete with the page's LCP image (tasks.md 2.3).
+      for (const img of plain) {
+        expect({ alt: img.alt, loading: img.loading, fetchPriority: img.fetchPriority }, "decorative, eager, low priority").toEqual({ alt: "", loading: null, fetchPriority: "low" });
+      }
       expect(await page.evaluate(() => window.__khStarted!), "nothing animates in a hero").toEqual([]);
     });
   }

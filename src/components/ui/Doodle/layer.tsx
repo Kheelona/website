@@ -51,7 +51,10 @@ export interface SvgLayerProps {
   /** The board's layer class: `kh-art__layer` or `kh-imagine__doodle`. */
   readonly className: string;
   readonly placement: LayerPlacement;
-  /** Below the first screen: `loading="lazy"`, as the approved mockup marks those layers. */
+  /** Below the first screen: `loading="lazy"`, as the approved mockup marks those layers. On the first screen the
+   *  layer loads eagerly, as in the mockup, at `fetchPriority="low"`: React's server renderer hoists a
+   *  `<link rel="preload" as="image">` into <head> for every <img> that is neither lazy nor low priority, and a
+   *  decorative shape or still doodle must not compete with the page's one LCP image (tasks.md 2.3, architecture §10). */
   readonly lazy?: boolean;
 }
 
@@ -59,12 +62,12 @@ export interface SvgLayerProps {
  *  optimise SVG (ADR-010). */
 export function SvgLayer({ src, className, placement, lazy }: SvgLayerProps) {
   const p = resolvePlacement(placement);
-  const loading = lazy ? "lazy" : undefined;
+  const load = lazy ? ({ loading: "lazy" } as const) : ({ fetchPriority: "low" } as const);
   return p.top !== undefined ? (
     // eslint-disable-next-line @next/next/no-img-element -- ADR-010: SVG is a plain <img>; next/image does not optimise it
-    <img className={className} src={src} alt="" loading={loading} style={{ left: `${p.left}%`, width: `${p.width}%`, top: `${p.top}%`, transform: `rotate(${p.rotate}deg)` }} />
+    <img className={className} src={src} alt="" {...load} style={{ left: `${p.left}%`, width: `${p.width}%`, top: `${p.top}%`, transform: `rotate(${p.rotate}deg)` }} />
   ) : (
     // eslint-disable-next-line @next/next/no-img-element -- ADR-010: SVG is a plain <img>; next/image does not optimise it
-    <img className={className} src={src} alt="" loading={loading} style={{ left: `${p.left}%`, width: `${p.width}%`, bottom: `${p.bottom}%`, transform: `rotate(${p.rotate}deg)` }} />
+    <img className={className} src={src} alt="" {...load} style={{ left: `${p.left}%`, width: `${p.width}%`, bottom: `${p.bottom}%`, transform: `rotate(${p.rotate}deg)` }} />
   );
 }

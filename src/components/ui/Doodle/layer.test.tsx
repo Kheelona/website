@@ -1,4 +1,5 @@
 import { render } from "@testing-library/react";
+import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { resolvePlacement, SvgLayer } from "./layer";
 
@@ -67,5 +68,22 @@ describe("SvgLayer: a decorative SVG file placed on a board", () => {
     expect(eager.container.querySelector("img")).not.toHaveAttribute("loading");
     const lazy = render(<SvgLayer className="kh-art__layer" src="/a.svg" placement={{ left: 0, top: 0, width: 10 }} lazy />);
     expect(lazy.container.querySelector("img")).toHaveAttribute("loading", "lazy");
+    expect(lazy.container.querySelector("img")).not.toHaveAttribute("fetchpriority");
+  });
+
+  it("an eager layer is fetchpriority low, so it never competes with the page's LCP image", () => {
+    const eager = render(<SvgLayer className="kh-art__layer" src="/a.svg" placement={{ left: 0, top: 0, width: 10 }} />);
+    expect(eager.container.querySelector("img")).toHaveAttribute("fetchpriority", "low");
+  });
+
+  /* React's server renderer hoists a <link rel="preload" as="image"> into <head>, ahead of the stylesheet, for every
+     <img> that is neither loading="lazy" nor fetchpriority="low" (react-dom-server, case "img"); renderToStaticMarkup
+     runs the same code. A decorative shape or still doodle must not take that place from the LCP image. */
+  it("gives React's server renderer no reason to preload it, eager or lazy", () => {
+    for (const lazy of [false, true]) {
+      const html = renderToStaticMarkup(<SvgLayer className="kh-art__layer" src="/a.svg" placement={{ left: 0, top: 0, width: 10 }} lazy={lazy} />);
+      expect(html, `lazy=${lazy}`).toMatch(/^<img /);
+      expect(html, `lazy=${lazy}`).not.toContain('rel="preload"');
+    }
   });
 });

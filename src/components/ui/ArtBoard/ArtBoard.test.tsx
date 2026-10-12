@@ -1,4 +1,5 @@
 import { render } from "@testing-library/react";
+import { renderToStaticMarkup } from "react-dom/server";
 import type { StaticImageData } from "next/image";
 import { describe, expect, it, vi } from "vitest";
 import type { ArtLayer } from "@/content/types";
@@ -92,7 +93,7 @@ describe("ArtBoard: layers", () => {
     expect(layers(container)[0]).toHaveAttribute("alt", "Kheelu, the soft cream plush rabbit.");
   });
 
-  it("renders a DS shape (SVG) as a plain <img>: no srcset, eager in a hero, lazy below it", () => {
+  it("renders a DS shape (SVG) as a plain <img>: no srcset, eager (at low priority) in a hero, lazy below it", () => {
     const hero = render(<ArtBoard tone="blue" layers={HOME_HERO} sizes={SIZES} hero />);
     const sun = layers(hero.container)[0];
     expect(sun).toHaveAttribute("src", SUN.src);
@@ -100,6 +101,7 @@ describe("ArtBoard: layers", () => {
     expect(sun).toHaveClass("kh-art__layer");
     expect(sun).not.toHaveAttribute("srcset");
     expect(sun).not.toHaveAttribute("loading");
+    expect(sun).toHaveAttribute("fetchpriority", "low");
     expect(sun.style.top).toBe("8%");
     const below = render(<ArtBoard tone="blue" layers={HOME_HERO} sizes={SIZES} />);
     expect(layers(below.container)[0]).toHaveAttribute("loading", "lazy");
@@ -127,6 +129,8 @@ describe("ArtBoard: layers", () => {
     const doodle = layers(container)[0];
     expect(doodle.tagName.toLowerCase()).toBe("img");
     expect(doodle).toHaveClass("kh-art__layer");
+    expect(doodle).not.toHaveAttribute("loading");
+    expect(doodle).toHaveAttribute("fetchpriority", "low");
     expect(container.querySelector("[data-draw]")).toBeNull();
   });
 
@@ -163,6 +167,7 @@ describe("ArtBoard: loading (ADR-010, N12)", () => {
     }
   });
 
+  /* jsdom: Next adds no preload of its own (what the deprecated priority did). The server's preloads are below. */
   it("gives the LCP hint to the largest raster only: Advik (0.54² × 1198/744) over Kheelu (0.44² × 1397/1154)", () => {
     const { container, baseElement } = render(<ArtBoard tone="blue" layers={HOME_HERO} sizes={SIZES} hero lcp />);
     const [advik, kheelu] = [layers(container)[1], layers(container)[2]];
@@ -181,5 +186,22 @@ describe("ArtBoard: loading (ADR-010, N12)", () => {
     const { container } = render(<ArtBoard tone="blue" layers={swapped} sizes={SIZES} lcp />);
     expect(layers(container)[0]).toHaveAttribute("fetchpriority", "high");
     expect(layers(container)[1]).not.toHaveAttribute("fetchpriority");
+  });
+
+  /* React's server renderer hoists a <link rel="preload" as="image"> into <head>, ahead of the stylesheet, for every
+     <img> that is neither loading="lazy" nor fetchpriority="low"; renderToStaticMarkup runs the same code. */
+  const preloads = (html: string) => html.match(/<link rel="preload"[^>]*>/g) ?? [];
+
+  it("on the server, a hero board holding the LCP preloads that raster only, never a shape or a still doodle", () => {
+    const html = renderToStaticMarkup(<ArtBoard tone="blue" label={LABEL} layers={HOME_HERO} sizes={SIZES} hero lcp />);
+    expect(html).toContain("sun-sun.svg");
+    const found = preloads(html);
+    expect(found).toHaveLength(1);
+    expect(found[0]).toContain("advik-sticker.png");
+    expect(found[0]).toContain('fetchPriority="high"');
+  });
+
+  it("on the server, a hero board without the LCP preloads nothing", () => {
+    expect(preloads(renderToStaticMarkup(<ArtBoard tone="blue" label={LABEL} layers={HOME_HERO} sizes={SIZES} hero />))).toEqual([]);
   });
 });

@@ -1,4 +1,5 @@
 import { render } from "@testing-library/react";
+import { renderToStaticMarkup } from "react-dom/server";
 import type { StaticImageData } from "next/image";
 import { describe, expect, it, vi } from "vitest";
 import { Photo } from "./Photo";
@@ -70,11 +71,22 @@ describe("Photo: loading (ADR-010, N12)", () => {
     expect(img(container)).not.toHaveAttribute("fetchpriority");
   });
 
-  it("the page's LCP image: eager and fetchpriority high, and no preload (the deprecated priority's effect)", () => {
+  /* jsdom: Next adds no preload of its own (what the deprecated priority did). React's server renderer does hoist a
+     preload for this image (it is eager and not fetchpriority low); the next test shows that one. */
+  it("the page's LCP image: eager and fetchpriority high, and Next adds no preload of its own", () => {
     const { container, baseElement } = render(<Photo image={IRA} sizes={SIZES} lcp />);
     expect(img(container)).toHaveAttribute("loading", "eager");
     expect(img(container)).toHaveAttribute("fetchpriority", "high");
     expect(baseElement.ownerDocument.head.querySelector('link[rel="preload"]')).toBeNull();
+  });
+
+  it("on the server: the LCP image is the one React preloads, at high priority; a lazy photo is never preloaded", () => {
+    const preloads = (html: string) => html.match(/<link rel="preload"[^>]*>/g) ?? [];
+    const lcp = preloads(renderToStaticMarkup(<Photo image={IRA} sizes={SIZES} lcp />));
+    expect(lcp).toHaveLength(1);
+    expect(lcp[0]).toContain("ira-01.webp");
+    expect(lcp[0]).toContain('fetchPriority="high"');
+    expect(preloads(renderToStaticMarkup(<Photo image={IRA} sizes={SIZES} />))).toEqual([]);
   });
 
   it("an image that is neither: a lower priority when asked (film posters, N19)", () => {

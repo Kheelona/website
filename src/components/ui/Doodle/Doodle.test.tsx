@@ -38,6 +38,7 @@ describe("Doodle, still (a hero: pick 2)", () => {
     expect(img.style.width).toBe("13%");
     expect(img.style.transform).toBe("rotate(10deg)");
     expect(img).not.toHaveAttribute("loading");
+    expect(img).toHaveAttribute("fetchpriority", "low");
   });
 
   it("never carries the draw hooks and never inlines the SVG", () => {
