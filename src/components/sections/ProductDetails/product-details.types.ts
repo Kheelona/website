@@ -13,6 +13,9 @@ export interface DetailRow {
  */
 export interface ProductDetailsConfig {
   readonly heading: { readonly eyebrow?: Copy; readonly title: Copy };
+  /** The tab row's accessible name ("Product details", meet-kheelu.html fold 7). Each panel's title is its tab's
+   *  words and its heading (task 3.5). */
+  readonly tabsLabel: string;
   readonly specs: { readonly title: string; readonly rows: readonly DetailRow[] };
   readonly box: { readonly title: string; readonly items: readonly IconText[] };
   readonly safety: { readonly title: string; readonly items: readonly IconText[] };

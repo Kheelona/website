@@ -1,0 +1,8 @@
+/* Tabs (task 3.5; architecture §5.2). Without JavaScript the panels stay stacked under their headings and the tab
+   row stays hidden. The row carries the hidden attribute, but the DS gives .kh-tabs__list display: flex
+   (bundle.css:1025), which beats the attribute's display: none, so the approved page showed the row above its stacked
+   panels when its script did not run. This rule keeps the row out until the island adds is-tabs; scoped to the
+   island's [data-tabs] boxes, so any other DS tab row keeps the DS rule. */
+.kh-tabs[data-tabs]:not(.is-tabs) > .kh-tabs__list {
+  display: none;
+}

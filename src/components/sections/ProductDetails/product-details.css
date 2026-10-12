@@ -10,8 +10,8 @@
 .ks-panel-title {
   margin: 0 0 var(--space-3);
 }
-/* Stacked (N21): the panels follow one another under their headings with meet-kheelu.css:81's spacing; scoped to this
-   fold. The mockup's tab row above them is left out by the N21 ruling (see ProductDetails.tsx). */
+/* Without JavaScript (task 3.5): the panels follow one another under their headings with meet-kheelu.css:81's spacing,
+   until the Tabs island adds is-tabs; scoped to this fold. ui/Tabs keeps the tab row out meanwhile (tabs.css). */
 .ks-product-details .kh-tabs:not(.is-tabs) .kh-tabs__panel + .kh-tabs__panel {
   margin-top: var(--space-6);
 }
