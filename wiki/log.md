@@ -604,3 +604,6 @@ Base `3ab2cbb`, `build-wave` wave 5: **4.5** wave-4 follow-ups, **5.1** Home, **
 
 ## [2026-10-13 12:45] agent | Wave 5 part A paused at the founder's request (usage limit approaching)
 Run wf_08c09180-f5a stopped (TaskStop) while all seven builders were mid-task; no review had run. Leftover local servers stopped. Uncommitted work saved by name as WIP commits: 5.2 `9fcb5a0` (also edits `eslint.config.mjs` and `test/guards/banned-phrases.data.ts`, outside its Owns: for the review), 5.3 `53207d2`, 5.6 `98f468b` (also edits `test/guards/answer-length.test.ts`, outside its Owns). 4.5, 5.1, 5.5 and 5.10 had clean trees. Per-task branches, heads and the resume call are in the runbook ("Wave 5 part A, paused"). Nothing merged or pushed in this step.
+
+## [2026-10-13 13:00] agent | Wave 5 part A resumed on apoorva@geekyants.work (run wf_2de8d3c9-589)
+The founder switched accounts and asked to continue. All seven paused worktrees checked unchanged (heads as in the runbook, clean trees). Resumed with `build-wave` wave 5, base `3ab2cbb`, each task `stage: "finish"` from its saved head; 5.2 and 5.6 are told to revert their WIP edits outside their Owns (`eslint.config.mjs`, `banned-phrases.data.ts`; `answer-length.test.ts`) unless strictly required, and report any kept edit for a ruling.
