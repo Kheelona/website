@@ -4,7 +4,7 @@ import type { ProductDetailsConfig } from "./product-details.types";
 import { ProductDetails } from "./ProductDetails";
 
 /* ProductDetails (task 3.4): the product page's fold 7 (meet-kheelu.html): specs, in the box and safety stacked as
- * approved (N21), beside the declarations card. The rows are the approved copy with its open facts as placeholders,
+ * the plan rules (N21: the approved page's tab row is left out), beside the declarations card. The rows are the approved copy with its open facts as placeholders,
  * story and test data only (exported in capitals, left out of the story list); the product page (task 5.2) passes the
  * facts from products/kheelu/product.ts. */
 

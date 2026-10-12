@@ -7,16 +7,20 @@ import { PRODUCT_DETAILS } from "./ProductDetails.stories";
 
 /* ProductDetails (task 3.4): the product page's fold 7 (meet-kheelu.html), the three panels STACKED as the plan rules
    (N21: no tab list and no JavaScript), each under its own heading, beside the declarations card; open facts shown as
-   placeholders; the section keeps id="specs". The comparison is with the mockup's markup as served, which is its
-   no-JavaScript state: the tab list hidden, the panels stacked (its page script, which makes tabs, is not built). */
+   placeholders; the section keeps id="specs". The approved page renders a DS tab row (Specs, In the box, Safety) in
+   both states: its page script turns the panels into tabs, and without JavaScript the row still shows above the three
+   stacked panels, because the DS `.kh-tabs__list { display: flex }` overrides the row's `hidden` attribute. The build
+   leaves that row out by the N21 ruling, so the comparison is with the mockup's markup without its tab list (the fold's
+   one difference from the approved render; reported to the main session for 5.2's parity, 2026-10-12). */
 
 const offer = buildOffer("token");
-/* The hidden tab list is not built (N21); the mockup's amount span marks where the MRP comes from (data-src,
-   mockup-only, N22). */
-const OPTIONS = { skip: "[hidden]", unwrap: "[data-src]" };
+/* The tab row is left out by ruling (N21), not because it is invisible; the mockup names its split mk-details, which
+   the store page also uses for a different block (mapping §6.2), so the product takes its own name; the mockup's
+   amount span marks where the MRP comes from (data-src, mockup-only, N22). */
+const OPTIONS = { rename: { details: "ks-product-details" }, skip: ".kh-tabs__list", unwrap: "[data-src]" };
 
 describe("ProductDetails: the approved fold", () => {
-  it("markup and words equal meet-kheelu.html fold 7 as served (no JavaScript), without its hidden tab list", () => {
+  it("markup and words equal meet-kheelu.html fold 7 without its tab row (left out by the N21 ruling)", () => {
     const { container } = render(<ProductDetails {...PRODUCT_DETAILS} offer={offer} />);
     const mockup = mockupFold("meet-kheelu", "section#specs");
     expect(skeleton(container.firstElementChild!, OPTIONS)).toBe(skeleton(mockup, OPTIONS));
@@ -29,6 +33,13 @@ describe("ProductDetails: parts", () => {
     render(<ProductDetails {...PRODUCT_DETAILS} offer={offer} />);
     const section = screen.getByRole("region", { name: "The details, in full." });
     expect(section).toHaveAttribute("id", "specs");
+  });
+
+  it("names its split ks-product-details, never the store's ks-details card (mapping §6.2: mk-details is two blocks)", () => {
+    const { container } = render(<ProductDetails {...PRODUCT_DETAILS} offer={offer} />);
+    const split = container.querySelector(".kh-split")!;
+    expect(split.className).toBe("kh-split kh-split--wide-start ks-product-details");
+    expect(container.querySelector(".ks-details")).toBeNull();
   });
 
   it("stacks the three panels, each with its heading, with no tab list, no tab roles and nothing interactive", () => {
