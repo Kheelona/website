@@ -23,9 +23,11 @@ import {
  * 148 CSS named colours, custom properties included), lengths, durations, font values (quoted
  * family names included), z-indexes and scales, literals in var() fallbacks (only another var(),
  * a keyword or a zero may follow the comma), lengths in @media and @container preludes
- * other than the DS min-/max-width breakpoints, Tailwind arbitrary values and the (--var) shorthand
- * (in .ts modules too, where variants and class lists live), colour strings in .tsx (so a hex cannot
- * reach an attribute through a const), and inline styles beyond the art-board positions. The only
+ * other than the DS min-/max-width breakpoints, Tailwind arbitrary values, arbitrary properties,
+ * arbitrary breakpoints and the (--var) shorthand, read class by class whatever the variants and
+ * the important mark (in .ts modules too, where variants and class lists live, and in CSS @apply),
+ * colour strings in .tsx (so a hex cannot reach an attribute through a const), named colours on
+ * fill, stroke and the other colour attributes, and inline styles beyond the art-board positions. The only
  * literals allowed are listed in token-exceptions.ts and printed on every run. Generated files are exempt (their drift tests
  * compare them with the DS); legacy files are skipped only while unchanged (legacy-paths.ts).
  */
@@ -191,11 +193,16 @@ function cssViolations(path: string, css: string): Result {
       start = i + 1;
     } else if (ch === ";" || ch === "}") {
       const decl = buf.trim();
+      const line = () => lineAt(text, start + buf.indexOf(decl));
       const m = /^(-{0,2}[a-zA-Z][\w-]*)\s*:([\s\S]*)$/.exec(decl);
-      if (m && !decl.startsWith("@")) {
+      const apply = /^@apply\s+([\s\S]*)$/i.exec(decl);
+      if (apply) {
+        // The classes an @apply pulls in compile to the same CSS as in markup: same per-token check.
+        for (const v of arbitraryClasses(apply[1].replace(/!important\s*$/i, ""))) violations.push({ line: line(), rule: `${v.rule} in @apply`, text: v.text });
+      } else if (m && !decl.startsWith("@")) {
         for (const v of declarationViolations(path, m[1], m[2].replace(/!important\s*$/, ""))) {
           if (v.rule.startsWith("exception:")) applied.push(`${path}: ${v.text} (${v.rule.slice(10)})`);
-          else violations.push({ line: lineAt(text, start + buf.indexOf(decl)), ...v });
+          else violations.push({ line: line(), ...v });
         }
       }
       buf = "";
@@ -207,10 +214,55 @@ function cssViolations(path: string, css: string): Result {
   return { violations, applied };
 }
 
-const ARBITRARY_VALUE = /(?:^|\s)(?:[\w-]+:)*!?-?[a-z][\w-]*-\[[^\]\s]+\](?:\/[\w.[\]]+)?(?=\s|$)/;
-const ARBITRARY_PROPERTY = /(?:^|\s)(?:[\w-]+:)*\[[a-z-]+:[^\]\s]+\](?=\s|$)/;
-const VAR_SHORTHAND = /(?:^|\s)(?:[\w-]+:)*!?-?[a-z][\w-]*-\(--[\w-]+\)(?=\s|$)/;
+/* Tailwind classes are read one token at a time, by their utility: the token is split on ":" at
+   bracket and parenthesis depth 0 (so "supports-[display:grid]" stays one variant), the last
+   segment is the utility, and one leading or trailing "!" (important) is dropped. Variants may use
+   brackets freely ("data-[state=open]:", "[&>svg]:"), except the arbitrary breakpoints, which
+   compile to an off-DS media or container query. */
+const ARBITRARY_VALUE = /^-?[a-z][\w-]*-\[[^\]]+\](?:\/[\w.[\]]+)?$/;
+const ARBITRARY_PROPERTY = /^\[[a-z-]+:[^\]]+\]$/;
+const VAR_SHORTHAND = /^-?[a-z][\w-]*-\((?:[a-z-]+:)?--[\w-]+\)(?:\/\S+)?$/;
+const ARBITRARY_BREAKPOINT = /^@?(?:min|max)-\[[^\]]+\]$|^@\[[^\]]+\]$/;
 const COLOUR_ATTR_SKIP = /^(?:href|id|key|to|htmlFor|aria-[\w-]+|data-[\w-]+)$/;
+
+/** A class token's variants and utility, split on ":" outside brackets and parentheses. */
+function classSegments(token: string): string[] {
+  const out: string[] = [];
+  let depth = 0;
+  let from = 0;
+  for (let i = 0; i < token.length; i++) {
+    const ch = token[i];
+    if (ch === "[" || ch === "(") depth++;
+    else if ((ch === "]" || ch === ")") && depth > 0) depth--;
+    else if (ch === ":" && depth === 0) {
+      out.push(token.slice(from, i));
+      from = i + 1;
+    }
+  }
+  out.push(token.slice(from));
+  return out;
+}
+
+/** Every arbitrary Tailwind class in a whitespace-separated class string, with its rule. */
+function arbitraryClasses(classes: string): { rule: string; text: string }[] {
+  const out: { rule: string; text: string }[] = [];
+  for (const token of classes.split(/\s+/)) {
+    if (!token) continue;
+    const segments = classSegments(token);
+    const utility = segments.pop()!.replace(/^!|!$/, "");
+    const rule = ARBITRARY_VALUE.test(utility)
+      ? "Tailwind arbitrary value"
+      : ARBITRARY_PROPERTY.test(utility)
+        ? "Tailwind arbitrary property"
+        : VAR_SHORTHAND.test(utility)
+          ? "Tailwind (--var) shorthand"
+          : segments.some((v) => ARBITRARY_BREAKPOINT.test(v))
+            ? "Tailwind arbitrary breakpoint"
+            : null;
+    if (rule) out.push({ rule, text: token });
+  }
+  return out;
+}
 
 function unwrap(e: ts.Expression): ts.Expression {
   let x = e;
@@ -254,39 +306,52 @@ function inlineStyleViolations(sf: ts.SourceFile, init: ts.JsxAttributeValue | u
   return out;
 }
 
-/** The JSX attribute a string is the value of (directly or inside {…}), if any. */
+/** The JSX attribute a string is the value of, if any: directly, inside {…}, or as a branch of a
+ *  condition in it (`fill={on ? "navy" : "currentColor"}`, `color={tone ?? "red"}`). */
 function owningAttribute(node: ts.Node): string | null {
-  const parent = node.parent;
+  let child = node;
+  let parent = node.parent;
+  while (
+    parent &&
+    (ts.isParenthesizedExpression(parent) ||
+      (ts.isConditionalExpression(parent) && child !== parent.condition) ||
+      (ts.isBinaryExpression(parent) &&
+        [ts.SyntaxKind.AmpersandAmpersandToken, ts.SyntaxKind.BarBarToken, ts.SyntaxKind.QuestionQuestionToken].includes(parent.operatorToken.kind)))
+  ) {
+    child = parent;
+    parent = parent.parent;
+  }
   if (parent && ts.isJsxAttribute(parent)) return parent.name.getText();
   if (parent && ts.isJsxExpression(parent) && parent.parent && ts.isJsxAttribute(parent.parent)) return parent.parent.name.getText();
   return null;
 }
 
 const COLOUR_STRING = new RegExp(`^(?:#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})|${COLOUR_FN.source}.*\\))$`, "i");
+/** SVG and colour attributes, where a bare colour word paints (currentColor, none, url(#…) and
+ *  var(--…) are not named colours, so they pass). */
+const COLOUR_ATTRS = /^(?:fill|stroke|color|stopColor|floodColor|lightingColor|stop-color|flood-color|lighting-color)$/;
 
-/** .tsx and .ts modules: Tailwind arbitrary values in any string (a class can be built in a
- *  variants or classes module), and in .tsx also colour literals in any string, so a hex cannot
- *  reach an attribute through a const, and inline styles beyond the art-board positions. Hex in
- *  .ts stays legal: e-mail HTML and the payment sheet's theme need real colours, not tokens. */
+/** .tsx and .ts modules: Tailwind arbitrary classes in any string, read token by token (a class can
+ *  be built in a variants or classes module), and in .tsx also colour literals in any string, so a
+ *  hex cannot reach an attribute through a const, named colours on colour attributes, and inline
+ *  styles beyond the art-board positions. Hex in .ts stays legal: e-mail HTML and the payment
+ *  sheet's theme need real colours, not tokens. */
 function tsxViolations(path: string, text: string): Result {
   const sf = parseSource(path, text);
   const isTsx = path.endsWith(".tsx");
   const violations: Violation[] = [];
   for (const s of sourceStrings(sf)) {
     if (s.kind === "jsx-text") continue;
-    for (const [re, rule] of [
-      [ARBITRARY_VALUE, "Tailwind arbitrary value"],
-      [ARBITRARY_PROPERTY, "Tailwind arbitrary property"],
-      [VAR_SHORTHAND, "Tailwind (--var) shorthand"],
-    ] as const) {
-      const m = re.exec(s.text);
-      if (m) violations.push({ line: s.line, rule, text: m[0].trim() });
-    }
-    if (isTsx && COLOUR_STRING.test(s.text.trim())) {
-      const attr = owningAttribute(s.node);
+    for (const v of arbitraryClasses(s.text)) violations.push({ line: s.line, ...v });
+    if (!isTsx) continue;
+    const value = s.text.trim();
+    const attr = owningAttribute(s.node);
+    if (COLOUR_STRING.test(value)) {
       if (!(attr && COLOUR_ATTR_SKIP.test(attr))) {
         violations.push({ line: s.line, rule: "colour literal", text: attr ? `${attr}="${s.text}"` : `"${s.text}"` });
       }
+    } else if (attr && COLOUR_ATTRS.test(attr) && CSS_NAMED_COLOURS.has(value.toLowerCase())) {
+      violations.push({ line: s.line, rule: "named colour on a colour attribute", text: `${attr}="${s.text}"` });
     }
   }
   if (isTsx) {
@@ -377,6 +442,27 @@ describe("no-off-token detector: red on every planted literal", () => {
     ["inline position template in degrees", "export const A = ({ x }: { x: number }) => <div style={{ right: `${x}deg` }} />;"],
     ["inline transform from a variable", `export const A = ({ t }: { t: string }) => <div style={{ transform: t }} />;`],
     ["inline transform template beyond a rotation", "export const A = ({ s }: { s: number }) => <div style={{ transform: `scale(${s})` }} />;"],
+    // Review of 1.1, round 3: each class below compiles to a literal and passed the whole-string
+    // patterns, which allowed no brackets in a variant and nothing after the closing bracket.
+    ["arbitrary value with the important suffix", `export const A = () => <div className="p-[13px]!" />;`],
+    ["arbitrary value with the important prefix", `export const A = () => <div className="!p-[13px]" />;`],
+    ["arbitrary value after an arbitrary data variant", `export const A = () => <div className="data-[state=open]:p-[13px]" />;`],
+    ["arbitrary colour after an arbitrary selector variant", `export const A = () => <div className="[&>svg]:text-[#ff0000]" />;`],
+    ["arbitrary grid after a supports variant", `export const A = () => <div className="grid supports-[display:grid]:grid-cols-[200px_1fr]" />;`],
+    ["(--var) shorthand after an aria variant", `export const A = () => <div className="aria-[expanded=true]:p-(--space-3)" />;`],
+    ["typed (--var) shorthand", `export const A = () => <div className="text-(length:--kh-nope)" />;`],
+    ["arbitrary value with a modifier", `export const A = () => <div className="bg-[#ff0000]/50" />;`],
+    ["arbitrary property after a stacked variant", `export const A = () => <div className="md:hover:[mask-type:luminance]!" />;`],
+    ["arbitrary breakpoint variant", `export const A = () => <div className="min-[1200px]:grid" />;`],
+    ["arbitrary max breakpoint variant", `export const A = () => <div className="max-[600px]:hidden" />;`],
+    ["arbitrary container-query variant", `export const A = () => <div className="@min-[400px]:grid @[30rem]:flex" />;`],
+    ["arbitrary value in a template literal", "export const A = ({ on }: { on: boolean }) => <div className={`kh-card ${on ? \"is-in\" : \"\"} data-[side=top]:mt-[3px]`} />;"],
+    // Named colours on an SVG or colour attribute (hex is refused in any .tsx string already).
+    ["named colour on fill", `export const A = () => <svg><path fill="red" /></svg>;`],
+    ["named colour on stroke, any case", `export const A = () => <svg><path stroke="White" /></svg>;`],
+    ["named colour on stopColor in braces", `export const A = () => <svg><stop stopColor={"rebeccapurple"} /></svg>;`],
+    ["named colour on color, in a condition", `export const A = ({ on }: { on: boolean }) => <svg color={on ? "navy" : "currentColor"} />;`],
+    ["named colour on floodColor and lightingColor", `export const A = () => <svg><feFlood floodColor="gold" /><feDiffuseLighting lightingColor="snow" /></svg>;`],
   ])("%s", (_name, text) => {
     expect(tsx(text).length).toBeGreaterThan(0);
   });
@@ -385,8 +471,20 @@ describe("no-off-token detector: red on every planted literal", () => {
     ["arbitrary value in a variants module", `export const card = { base: "grid gap-4", tight: "p-[13px]" };`],
     ["arbitrary property in a classes module", `export const MASK = "[mask-type:luminance]";`],
     ["(--var) shorthand in a classes module", `export const pad = (on: boolean) => (on ? "p-(--space-3)" : "");`],
+    ["arbitrary value after a variant in a variants module", `export const open = "data-[state=open]:p-[13px]";`],
+    ["important arbitrary value in a classes module", `export const tight = ["grid", "gap-[3px]!"].join(" ");`],
   ])("%s (.ts)", (_name, text) => {
     expect(script(text, "src/components/ui/Card/card.variants.ts").length).toBeGreaterThan(0);
+  });
+
+  it.each([
+    ["@apply of an arbitrary value", ".ks-a { @apply p-[13px]; }"],
+    ["@apply of an arbitrary value and colour", ".ks-a { @apply p-[13px] text-[#ff0000]; }"],
+    ["@apply of an arbitrary value after a variant", ".ks-a { @apply flex data-[state=open]:p-[13px]; }"],
+    ["@apply of an arbitrary property, important", ".ks-a { @apply [mask-type:luminance] !important; }"],
+    ["@apply of a (--var) shorthand", ".ks-a { @apply p-(--space-3); }"],
+  ])("%s (CSS)", (_name, text) => {
+    expect(css(text).length).toBeGreaterThan(0);
   });
 });
 
@@ -460,6 +558,34 @@ describe("no-off-token detector: green on DS-token code", () => {
           />
         );
       }`;
+    expect(tsx(ok)).toEqual([]);
+  });
+
+  it("reads each class by its utility: arbitrary variants are fine when the utility is a token", () => {
+    const ok = `
+      export function A({ on }: { on: boolean }) {
+        return (
+          <div className={clsx("data-[state=open]:rotate-45 [&>svg]:size-5 group-hover:opacity-100", on && "aria-[expanded=true]:is-in")}>
+            <i className="supports-[display:grid]:grid md:hover:opacity-100! !hidden has-[input:checked]:opacity-100" />
+            <a href="/store/e/[event]">x</a>
+          </div>
+        );
+      }`;
+    expect(tsx(ok)).toEqual([]);
+    expect(css(".ks-a { @apply flex group-hover:opacity-100 data-[state=open]:rotate-45; }")).toEqual([]);
+    expect(script(`export const open = "data-[state=open]:rotate-45 [&>svg]:size-5"; export const PATH = "/store/e/[event]";`, "src/components/ui/Card/card.variants.ts")).toEqual([]);
+  });
+
+  it("allows currentColor, none, url(#…) and tokens on colour attributes, and colour words elsewhere", () => {
+    const ok = `
+      export const A = () => (
+        <svg fill="currentColor" stroke="none" color="var(--kh-ink)" aria-label="A red ball">
+          <path fill="url(#kh-grad)" stroke="currentcolor" />
+          <stop stopColor="var(--kh-orange-500)" />
+          <title>red, white and gold</title>
+          <text data-tone="red">red</text>
+        </svg>
+      );`;
     expect(tsx(ok)).toEqual([]);
   });
 
