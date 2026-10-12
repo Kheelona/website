@@ -14,8 +14,9 @@ founder asked for the full website with animation on **betawebsite.kheelona.com*
 After the build: Phase 6 QA, push `beta`, founder runbook (architecture §15.4), **Gate B** on beta, merge to `main`.
 **Account:** apoorva@kheelona.com again (since 23:15 2026-10-12; apoorva@geekyants.work 21:00-23:00). **Branch:** `reset/website-v2`, not pushed.
 **RESUME FROM [build runbook](engineering/build-runbook.md) §4.** **Waves 1 and 2 closed** (wave 2 at 22:30: twelve tasks
-merged, verify 3581 tests, `next build` green; rulings `610f141`). **Wave 3:** 2.11 client-safe icons merged (`91208de`); running `wf_3a360d0e-7b7` (2.12, 2.13, 3.2, 3.4) and
-`wf_8e83e0d9-f82` (3.1 chrome and WhatsApp bubble, 3.3 story sections); then the wave close.
+merged, verify 3581 tests, `next build` green; rulings `610f141`). **Wave 3:** 2.11, 2.12, 2.13, 3.2 selling and 3.4 support sections
+merged (`d7e0bea`, verify 4014 tests); running `wf_8e83e0d9-f82` (3.1 chrome and WhatsApp bubble, 3.3 story sections); next 3.5
+(product details tabs: **N21 corrected**, the approved page shows tabs, P1), 3.6 follow-ups and wave 4 together ([tasks](engineering/tasks.md) "Wave 3 close").
 **Incident 2026-10-12:** a push meant for `beta` landed on `main` (`24e92e3`, vercel.json only; production
 healthy; [lessons](engineering/lessons.md)). `beta` exists on GitHub (builds nothing yet); **beta domains attached to branch `beta`** (founder, done).
 **Done before wave 1:** dev tools pinned (Playwright 1.63.0, axe 4.12.1, Lighthouse 13.4.1, jscpd 5.3.2,

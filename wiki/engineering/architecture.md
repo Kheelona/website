@@ -254,7 +254,7 @@ Each becomes a component once (kickoff §3, decision 1):
 | Source markers (`mk-src`) | `ui/SourceMarker` + `ui/SourcesNote` | Short linked label, 44 px tap area, "Sources" note (G-18, D026) |
 | Guides cards (fold 7b) | `sections/CardGrid` (variant `guides`) | Topics and links from the stories content (D046) |
 | Doodles (`kh-art__layer`, `kh-imagine__doodle` SVGs) | `ui/Doodle` | Plain `<img>` in a hero (pick 2: still); inline generated SVG that draws itself below the first screen (pick 3) |
-| Product details (DS Tabs markup, tab list hidden) | `sections/ProductDetails` | **Stacked panels as approved** (N21): the mockup hides the tab list and `mockup.js` has no tabs code, so the build ships three stacked panels with their headings and no JavaScript |
+| Product details (DS Tabs markup; the page script makes tabs) | `sections/ProductDetails` + `ui/Tabs` | **Tabs as approved** (P1 default; N21 corrected 2026-10-12: `mockup.js` has no tabs code, but the page's own script, `mockup/pages/meet-kheelu.html:397-439`, adds `is-tabs`, shows the tab list and one panel at a time). The server renders the three panels stacked with their headings and the tab list hidden; a small client island (task 3.5) turns them into DS tabs (ARIA tabs pattern, arrow keys, Home and End), as the page script does. Without JavaScript the panels stay stacked and the tab row stays hidden |
 | Legal layout (`mk-doc`, `mk-toc`) | `layouts/LegalTemplate` | Summary, contents, parts and sections; draft note while `status: draft` |
 
 ### 5.3 The WhatsApp bubble (D050)
@@ -1022,7 +1022,6 @@ order container; store noindex; inputs at 16 px or more; no `<video>` before pla
 | Accounts and login | none in v1 (brief §2); the store host and API routes are where it would attach |
 | Consent gate before 13 May 2027 (D042) | the three gates and `track.ts` read one consent state; `/privacy` changes in the same commit |
 | Kheelona+ pricing | a new constant beside the money block and a content line, when the founder sets a price |
-| Product details as tabs | only if the founder asks (N21): a client island over the same stacked markup |
 
 ## 18. Brief §9 coverage
 
@@ -1050,7 +1049,7 @@ order container; store noindex; inputs at 16 px or more; no `<video>` before pla
 | Store-confirmation placeholders (order number, email) | Come from the order row in the real page |
 | D044 round-2 edits (transcript, activity screenshots) | Task 1.5b before the screens ship |
 | `id="story-mode"` and `id="reserve"` missing on the product mockup | Added (fragment parity, url-map §5a); no visual change |
-| Product details tab list hidden in the mockup | Shipped stacked, no tab list in the HTML (N21) |
+| Product details tab list: hidden in the mockup's HTML, shown by its page script | Tabs as approved (task 3.5); the mockup's no-JavaScript render also shows the tab row (DS `.kh-tabs__list { display: flex }` beats `hidden`), which the build fixes: without JavaScript the row stays hidden (N21 corrected 2026-10-12) |
 | Team and setup CMO fixes (first screen must say what Kheelu is; setup step 2 values) | Copy tasks in wave 5 ([gate-a-progress](../site/gate-a-progress.md)) |
 | Post-Gate A additions: D049 motion, D050 bubble and its bottom clearance | Hidden or neutralised in visual-parity runs; verified by their own specs |
 | Reviews not run before approval (meet-kheelu, safety, buyer's guide, stories and articles, store, privacy and terms legal check) | CMO and legal passes on the built pages (Phase 5 and 7), tracked by the main session |

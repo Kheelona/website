@@ -188,7 +188,7 @@ Source: [architecture §20](engineering/architecture.md#20-open-points-for-the-f
 
 | # | Question | Working default (built this way) | Status |
 |---|---|---|---|
-| P1 | Product details fold: stacked panels as the approved mockup shows, or tabs? | Stacked, as approved (no JS) | OPEN, default applies |
+| P1 | Product details fold: tabs, as the approved page renders them, or three stacked panels? **Premise corrected 2026-10-12:** the approved page's own script (`mockup/pages/meet-kheelu.html:397-439`) turns the panels into DS tabs, one panel at a time; N21 missed it (found by the 3.4 review) | Tabs, as approved: a small client island over the stacked markup (task 3.5); without JavaScript the panels stack with their headings | OPEN, default applies (was "stacked" until the correction) |
 | P2 | Orange-button arrow nudge (D049 6B): exactly 5px as shown, and on the two hero buttons too? | 5px as one named value; all six buttons (hover is started by the visitor, so the hero still counts as still) | OPEN, default applies |
 | P3 | White on Kheelu Blue ("Save my address" on /thanks, blue stickers) is below AA, like white on Chilli | Ask to extend the D041 exception; fallback restyle to a passing DS variant | ASKED 2026-10-12 |
 | P4 | Production smoke after the merge cannot use test-mode checkout (live keys) | No test payment on beta either; local sandbox to the Razorpay sheet, then the production smoke without an order | ANSWERED 2026-10-12 ([D051](decisions/D051-beta-without-store-integrations.md)) |

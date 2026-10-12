@@ -463,7 +463,7 @@ alone; 1.2 leaves `globals.css` alone; 1.1 deletes only the two tests it owns).
 
 - **Owns:** `src/components/ui/{Card,TrustList,TrustLine,TickList,PriceSentence,HelpLine,SellerLines,OfferCard,FaqList,StepLoop,LanguageChips,CompareTable,List,Quote,EmptyState,DefinitionList,Breadcrumbs}/**`,
   `test/e2e/motion-faq.spec.ts`.
-  (No `Tabs`: the product details ship stacked as approved, N21; see 3.4.)
+  (No `Tabs` here: built by 3.5 after N21 was corrected, wave-3 close.)
 - **Acceptance:** SCA; `PriceSentence` renders the offer's sentence for both modes exactly as D028 and the
   full-mode text; `OfferCard` omits the split in full mode; `FaqList` uses native `<details>`, wraps each
   answer in `ks-faq__clip` (so the D049 pick 7 grid-rows animation does not leak the DS padding) and
@@ -808,12 +808,91 @@ Wave 2 merged at `d87c71f` (twelve tasks, run `wf_2317874f-e7d`); `npm run verif
 
 - **Owns:** `src/components/sections/{AnswerSection,StepsSection,ProductDetails,TopicSection,FoundersSection,RecognitionStrip,EmptyStateSection,ArticleHead,ArticleBody,SourcesSection,RelatedGuides}/**`.
 - **Inputs:** product fold 7, guide, setup, team, stories hub, the three article mockups, 404.
-- **Acceptance:** SCA; `ProductDetails` renders the three panels **stacked as approved** (N21: no tab list,
+- **Acceptance** (as built; the tabs follow in 3.5 after N21 was corrected): SCA; `ProductDetails` renders the three panels **stacked as approved** (N21: no tab list,
   no JavaScript; each panel with its heading, `meet-kheelu.css:81` spacing), keeps `id="specs"`, and shows
   placeholders visibly; `RecognitionStrip` and gated bios render nothing while gated; `ArticleBody` covers
   every block type the three article mockups use, with `ks-type-*` steps instead of pixel sizes; answer
   blocks 40-60 words (guard).
 - **Test:** component tests; stories.
+
+### Wave 3 close: rulings and follow-up tasks (main session, 2026-10-12)
+
+2.11 merged `91208de`; 2.12, 2.13, 3.2 and 3.4 merged `3629d2e`, `2a51371`, `2a7cc40`, `d7e0bea` (run
+`wf_3a360d0e-7b7`, all passed); `npm run verify` green after the four (255 files, 4014 tests; jscpd 0.88%).
+Rulings on the reviewers' open points:
+
+- **Product details are tabs, as approved** (P1 default, N21 corrected): the approved page's own script
+  (`mockup/pages/meet-kheelu.html:397-439`, in the Gate A commit `42a65b3`) turns the stacked panels into DS
+  tabs. Task 3.5 builds `ui/Tabs` and puts `ProductDetails` on it; without JavaScript the panels stay stacked.
+- **Product close, "Delivery included anywhere in India":** each placement follows its mockup. The content keeps
+  one icon per trust item (`package`); the product close passes `map-pin` for that item, as `meet-kheelu.html`
+  draws it (5.2's config; 3.6 makes 3.2's tests pass `map-pin` instead of rewriting the mockup).
+- **Seller sentences and no-wrap spans on the legal pages:** one helper owned by 4.3 (see 4.3).
+- **`alternateName: "Lumi"`** may appear in any file (claims §4 row 19 allows it as an alternate name); no
+  path-scoped allowance (2.13 finding 6, option a).
+- **One of each helper:** the content-icon narrowing (`asIconName`) lives in `ui/Icon`; the single-slash
+  site-path test (`isSitePath`) in `src/lib/links.ts`; the mockup comparison harness in `test/support/` (3.6).
+- 3.4's edit of the components §7 mapping row (`mk-details` of the product becomes `ks-product-details`) is accepted.
+- 6.3 (exclusion lines of rewritten legacy files, `utm.test.ts` type errors), 4.2 (`knownAuthorIds`) and 4.3
+  (seller-lines helper) are amended above and below.
+
+### 3.5 Product details tabs (builder; wave-3 close)
+
+- **Owns:** `src/components/ui/Tabs/**` (new), `src/components/sections/ProductDetails/**` (except its
+  content-icon import line, which 3.6 changes), `test/e2e/tabs.spec.ts` (new); the `Tabs` and `ProductDetails`
+  catalogue rows.
+- **Inputs:** `mockup/pages/meet-kheelu.html:277-330` (markup) and `:397-439` (the tab script),
+  `mockup/css/meet-kheelu.css` (`mk-details`, the `.kh-tabs:not(.is-tabs)` stacking), the DS Tabs CSS.
+- **Acceptance:**
+  1. `Tabs` (server) renders the mockup's DS Tabs markup from generic props (`label`, `panels[{ id, tabId, label,
+     heading, content }]`): `div.kh-tabs[data-tabs]`, the `kh-tabs__list` tablist (hidden in the HTML) with
+     `button.kh-tab` ids, `aria-controls`, `aria-selected` and `tabindex` as the mockup, then each
+     `kh-tabs__panel` with its `h3.kh-subtitle[data-tab-heading]` heading and content.
+  2. A client island (`Tabs.client.tsx`; never imports `Icon`, `Button` or `PreorderButton`) does what the page
+     script does: panels get `role="tabpanel"`, `aria-labelledby` and `tabindex="0"`, headings `kh-sr`, the list
+     is shown, `is-tabs` added, the first tab selected; click, ArrowLeft and ArrowRight (wrapping), Home and End
+     select and focus; only the selected tab is in the Tab order.
+  3. Without JavaScript the three panels show stacked with their headings and the tab row does not show (the DS
+     `.kh-tabs__list { display: flex }` beats `hidden`, so a scoped rule hides the list until `is-tabs`).
+  4. `ProductDetails` renders through `Tabs`, keeps `id="specs"` and the ids `panel-specs`, `panel-box`,
+     `panel-safety`, `tab-specs`, `tab-box`, `tab-safety`; all three panels' text is in the server HTML; with
+     JavaScript the fold matches the mockup's tabbed fold at 360, 390 and 1440.
+- **Test:** component tests; `tabs.spec.ts` on the story: keyboard path, ARIA states, axe with and without
+  JavaScript, no layout shift inside the first screen; `client-icons` guard green.
+
+### 3.6 Wave-3 code follow-ups (builder; wave-3 close)
+
+- **Owns:** the files each item names, their tests and catalogue rows.
+- **Acceptance:**
+  1. One `asIconName` (content `IconRef` to `IconName`, throws on a name the DS lacks) in `src/components/ui/Icon/`
+     (server only); `sections/CtaBlock/icon-name.ts` and `sections/ArticleBody/content-icon.tsx` deleted with their
+     tests moved; `CtaBlock`, `ArticleBody`, `EmptyStateSection` and the import line of `ProductDetails` use it.
+  2. One `isSitePath(href)` in `src/lib/links.ts` (single leading `/`, not `//` or `/\`), used by `Button`, `Logo`,
+     `RichText`, the parser in `src/lib/content/rich-text.ts` and `src/lib/seo/urls.ts` (which gains the
+     backslash refusal); tests for both forms.
+  3. `MotionController`: an added target with no layout box (`getClientRects().length === 0`, for example inside a
+     `hidden` streaming holder) is observed, not shown; a unit case moves it below the fold afterwards.
+  4. `Alert`, `Select`, `Checkbox` and `Field/field-parts` draw their icons through `Glyph` (markup unchanged,
+     proven by their tests); the stale "ui/Icon is task 2.2" comments go.
+  5. One mockup comparison harness: `sections/CtaBlock/mockup-fold.test-support.ts` and
+     `sections/ArticleBody/__fixtures__/approved-fold.ts` merge into `test/support/` (no duplicated logic; every
+     section test imports it); recorded in artifacts.md.
+  6. 3.2's selling sections: `SellingHelpLine` takes `offer` (from `CtaBlock` and `OfferSection`); the
+     `CloseSection` links variant passes the offer to its three `RichText` calls; `SellerBlock` and
+     `GrievanceBlock` copy is typed `RichTextString`; `GrievanceBlock`'s types and test say the complaint-reference
+     note shows on all four legal pages and compare the refund and shipping cards; `SellerBlock`'s test compares
+     refund's and shipping's paragraphs with a sentence carrying their `{nowrap:…}` tokens; the product-close tests
+     pass `map-pin` (ruling above) instead of rewriting the mockup.
+  7. `seller.ts`: the phone link and the help line's call link put `{nowrap:…}` around the whole link, so the
+     link carries `ks-nowrap` as in all 42 mockup uses (`<a class="mk-nowrap">`); every consumer's test green.
+  8. `TYPED_AMOUNT` exported from `src/lib/seo/price-lead.ts` and imported by `src/content/en-IN/amounts.test.ts`.
+  9. `test/guards/build-steps.test.ts` header names its exclusion and `vercel-build` checks.
+  10. `ArtBoard` exports `ArtBoardBase`; its doc says wrappers omit `hero` and `lcp` and pass them literally.
+  11. A `webkit-storybook` Playwright project on `KH_WEBKIT=1` (`test/e2e/support/projects.ts`,
+      `test/playwright-projects.test.ts`); `motion-faq.spec.ts` drops its own WebKit launch.
+  12. components §7 records 3.2's class renames (`mk-beside` to `ks-beside`, the four page CTA classes to
+      `ks-cta__button`, and the rest of 3.2's list).
+- **Test:** `npm run verify` and the touched e2e specs green.
 
 ## Wave 4: templates and machine files (after wave 3)
 
@@ -832,6 +911,8 @@ Wave 2 merged at `d87c71f` (twelve tasks, run `wf_2317874f-e7d`); `npm run verif
 
 - **Owns:** `src/layouts/ArticleTemplate/**`, `src/app/(site)/stories/[slug]/page.tsx`,
   `test/scalability-article.test.tsx`.
+- **Inputs (wave-3 close):** `blogPostingNode` needs `knownAuthorIds = personIds(<3.1's Organization mapper in
+  `src/layouts/SiteShell/`>(organization))` (2.13): founder bylines resolve to Person nodes, `TEAM_BYLINE` to the Organization.
 - **Acceptance:** 21 slugs from `routes.ts`, `export const dynamicParams = false;`; BlogPosting with the
   module's stored `published` and `updated` dates and BreadcrumbList from the visible crumbs; the close
   variant per article; stubs render their placeholder on beta and block production.
@@ -840,7 +921,7 @@ Wave 2 merged at `d87c71f` (twelve tasks, run `wf_2317874f-e7d`); `npm run verif
 
 ### 4.3 LegalTemplate (builder)
 
-- **Owns:** `src/layouts/LegalTemplate/**`, `test/fixtures/legal/**`.
+- **Owns:** `src/layouts/LegalTemplate/**`, `test/fixtures/legal/**`, `src/lib/content/seller-lines.{ts,test.ts}` (new, wave-3 close).
 - **Inputs:** `mockup/pages/{privacy,terms,refund,shipping}.html` and the four page CSS files (merged).
 - **Acceptance:** one CSS file replaces the four mockup copies, as **two families behind a two-value
   variant** (privacy and terms; refund and shipping: contents column, measure, close card, draft-note icon,
@@ -850,6 +931,13 @@ Wave 2 merged at `d87c71f` (twelve tasks, run `wf_2317874f-e7d`); `npm run verif
   sections, draft note while `status: draft`, last-updated line, the seller and grievance blocks; type
   steps by `ks-type-*`; visual parity on all four legal mockups with fixture content. Help lines use `HelpLine`
   `size` and omit `lead` where the mockup has none (2.4's note).
+  **Wave-3 close (3.2 review):** `seller.ts` holds the facts, not the composed sentences. One tested helper,
+  `src/lib/content/seller-lines.ts`, builds from `seller` the GSTIN line, the legal seller sentence
+  ("<entity>, registered at <address>. GSTIN <gstin>.") and the grievance officer line, each with a `nowrap`
+  option: the refund and shipping family wraps `No 51`, `(Old Site No 1)`, `Bengaluru 560041` and `Co-Founder` in
+  `{nowrap:…}` as their mockups do (`refund.html:167,175`, `shipping.html:148,152`); privacy and terms do not.
+  `GrievanceBlock` (legal context) shows the complaint-reference `note` on all four legal pages. Contact and the
+  later pages reuse the helper (never a hard-coded GSTIN, 4.4's guard).
 - **Test:** template tests; visual parity against the four mockups using fixture content copied from them.
 
 ### 4.4 SEO wiring and the data-driven page guards (builder)
@@ -884,7 +972,7 @@ the JSX contract fixtures are never edited.
 | Id | Page (owner) | Owns | Inputs | Page-specific acceptance (besides SPA) |
 |---|---|---|---|---|
 | 5.1 | Home `/` (builder) | `src/content/en-IN/pages/home.ts`, `src/app/(site)/page.tsx` | `mockup/pages/home.html`, [home copy](../site/pages/home.md), D045, D046 | Hero exactly D045 with the Hand accent; the hero art board's doodle still (pick 2), the imagination-frame and close doodles draw (pick 3); CTAs `hero` (arrow), `see-it-ask`, `safety`, `finale`, learn links; `ViewContentTracker` mounted (B9); sticky bar after the hero CTA; FAQPage = the six visible answers; LCP image `fetchPriority="high"` |
-| 5.2 | Product `/products/kheelu` (builder) | `src/content/en-IN/products/kheelu/page.ts`, `src/app/(site)/products/[slug]/page.tsx`, `src/app/(site)/products/kheelu/` (delete the old route and its colocated tests); the `LAUNCH_AMOUNT_PAISE` default of `valuePaise` in `src/components/tracking/ViewContentTracker.tsx` (removed once the legacy page is gone, so every mount passes the offer's value; wave-2 close) | `mockup/pages/meet-kheelu.html`, [meet-kheelu copy](../site/pages/meet-kheelu.md) | Product + Offer JSON-LD; fragments `#faq`, `#story-mode`, `#reserve`, `#offer`, `#specs`; sticky bar from first paint; `ViewContent` value 4999 in token mode; speech disclaimer (D025); declarations incl. MRP from `MRP_PRICE`; details stacked (N21); `export const dynamicParams = false;` |
+| 5.2 | Product `/products/kheelu` (builder) | `src/content/en-IN/products/kheelu/page.ts`, `src/app/(site)/products/[slug]/page.tsx`, `src/app/(site)/products/kheelu/` (delete the old route and its colocated tests); the `LAUNCH_AMOUNT_PAISE` default of `valuePaise` in `src/components/tracking/ViewContentTracker.tsx` (removed once the legacy page is gone, so every mount passes the offer's value; wave-2 close) | `mockup/pages/meet-kheelu.html`, [meet-kheelu copy](../site/pages/meet-kheelu.md) | Product + Offer JSON-LD; fragments `#faq`, `#story-mode`, `#reserve`, `#offer`, `#specs`; sticky bar from first paint; `ViewContent` value 4999 in token mode; speech disclaimer (D025); declarations incl. MRP from `MRP_PRICE`; details as tabs (3.5; N21 corrected, P1); `export const dynamicParams = false;` |
 | 5.3 | Safety `/safety` (builder) | `pages/safety.ts`, `src/app/(site)/safety/page.tsx` | `mockup/pages/safety.html`, [safety copy](../site/pages/safety.md) | D020 order; certification "applied for, not yet granted", no ISI mark; FAQPage |
 | 5.4 | Buyer's guide (builder) | `pages/ai-toys-for-kids-in-india.ts`, its route | mockup and copy of the same name; `css/ai-toys-for-kids-in-india.css` (the `mk-gd-*` rows of components §7) | No competitor names; answer-first hero; FAQPage; sources |
 | 5.5 | Stories hub (builder) | `src/content/en-IN/stories/hub.ts`, `src/app/(site)/stories/page.tsx` | `mockup/pages/stories.html`, [stories copy](../site/pages/stories.md) | All 21 guides under the four topics with anchors `#screen-time`, `#talking`, `#ai-and-safety`, `#learning`; cards read title and summary from the article modules; no "Rewritten in the build" labels |
@@ -986,12 +1074,14 @@ waits; it may run in any later wave before wave 8, alone with its own files.
   `tools/qa/{sweep,shot,text,axe-run}.mjs` (delete) and their npm scripts; `src/content/en-IN/stories/articles/stub.ts`
   (delete once 5.17-5.19 have rewritten the last stub; `articles.test.ts`'s folder test asks for it, wave-2 close);
   the old `src/components/molecules/*Gate*` entries of the set-state-in-effect override in `eslint.config.mjs`; the
-  `tsconfig.guards.json` exclusion lines of the legacy files it deletes.
+  `tsconfig.guards.json` exclusion lines of the legacy files it deletes or rewrites (wave-3 close: 2.13's
+  shrink-only guard in `test/guards/build-steps.test.ts` compares a rewritten `test/utm.test.ts` with the tag byte for byte).
 - **Inputs:** [cleanup](../legacy/cleanup.md), [cleanup-public-assets](../legacy/cleanup-public-assets.md),
   [dependencies](dependencies.md), the guard-test ownership table.
 - **Acceptance:** no file imports a deleted path (`tsc`, build); `LEGACY_PATHS` empty and every guard green
   over all of `src/` (no "pending" route left); `stories-parse` floor > 40 with
-  `src/components/ui/Button/Button.stories.tsx` as its anchor; `utm.test` imports `CANONICAL_ORIGIN`;
+  `src/components/ui/Button/Button.stories.tsx` as its anchor; `utm.test` imports `CANONICAL_ORIGIN`, type-checks (today's
+  10 type errors there fixed) and its `tsconfig.guards.json` line is removed (`build-steps.test.ts` `rewrittenLegacy`);
   retired packages removed one by one with the lockfile diff read; `dependency-floor` drops only the
   `fflate` floor, and only if `npm ls fflate` is empty after `three` leaves (evidence in the report);
   `npm audit` clean of high or critical runtime advisories; `jscpd` under threshold **with the legacy
