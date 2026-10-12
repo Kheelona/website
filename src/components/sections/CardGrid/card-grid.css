@@ -1,0 +1,31 @@
+/* CardGrid (task 3.3). Ported from the approved mockup: mockup.css:156-157 (Home's guides, fold 7b; the list reset is
+   the shared ks-list-reset) and contact.css:10-17 (the route cards, fold 2). */
+
+/* Home's guide cards: words, then the link, packed from the top (mockup.css:157, .mk-guides .kh-card). */
+.ks-guides .kh-card {
+  display: grid;
+  gap: var(--space-3);
+  align-content: start;
+}
+
+/* The contact route cards: one column on phones, two from 720 px (the fifth spans both), then three over two from
+   1024 px (contact.css:10-17, .mk-routes). The 1024 px rules come later and win over the last-child span. */
+@media (min-width: 720px) {
+  .ks-routes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ks-routes > :last-child {
+    grid-column: 1 / -1;
+  }
+}
+@media (min-width: 1024px) {
+  .ks-routes {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  .ks-routes > * {
+    grid-column: span 2;
+  }
+  .ks-routes > :nth-child(n + 4) {
+    grid-column: span 3;
+  }
+}

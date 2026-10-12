@@ -1,0 +1,110 @@
+/* FeatureSplit (task 3.3). Ported from the approved mockup: meet-kheelu.css:61-69 (the product page's parent app),
+   safety.css:24 and 31-35 (the parent controls; the two short folds as cards), ai-toys-for-kids-in-india.css:30-33
+   (the plush or robot board and its words), setup.css:24-34 and team.css:21-24 (paragraph blocks, the setup photos). */
+
+/* Product fold 5: the skills and the Kheelona+ note under the heading; on laptops the phones span both rows and the
+   link sits under the words (meet-kheelu.css:61-69, .mk-app-split, .mk-skills, .mk-app-note). */
+.ks-skills {
+  margin-top: var(--space-5);
+}
+.ks-app-split > .kh-section__actions {
+  margin-top: 0;
+}
+@media (min-width: 900px) {
+  .ks-app-split > div:first-child {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: end;
+  }
+  .ks-app-split > .ks-shots {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+  .ks-app-split > .kh-section__actions {
+    grid-column: 1;
+    grid-row: 2;
+    align-self: start;
+  }
+}
+.ks-app-note {
+  margin: var(--space-4) 0 0;
+}
+
+/* Safety fold 4: the parent controls under the heading (safety.css:24, .mk-sf-controls; beats the list reset). */
+.kh-trust.ks-sf-controls {
+  margin-top: var(--space-6);
+}
+
+/* The guide's plush or robot fold: a measured paragraph, then Kheelu alone on a 4:3 board, 1:1 from 900 px
+   (ai-toys-for-kids-in-india.css:30-33; mockup-css-mapping rows 11-13; the 480 px tablet clamp is ArtBoard's). */
+.ks-gd-plush-text {
+  max-width: var(--measure);
+  margin: var(--space-4) 0 0;
+}
+.ks-gd-plush-art {
+  --kh-ratio: 4 / 3; /* guide-plush-ratio (token-exceptions.ts) */
+}
+@media (min-width: 900px) {
+  .ks-gd-plush-art {
+    --kh-ratio: initial; /* the DS board's own 1 / 1 (bundle.css .kh-art) */
+  }
+}
+
+/* Short paragraphs under or beside their heading: the setup folds (setup.css:24-28, .mk-setup-copy) and the team's
+   why we build (team.css:21-24, .mk-team-why, whose closing subtitle line takes the last paragraph's place). */
+.ks-feature-copy {
+  margin-top: var(--space-5);
+  max-width: var(--measure);
+}
+.ks-feature-copy p {
+  margin: 0 0 var(--space-4);
+}
+.ks-feature-copy p:last-child {
+  margin-bottom: 0;
+}
+.ks-feature-copy .kh-subtitle {
+  margin: var(--space-5) 0 0;
+}
+/* Beside its heading (setup fold 4) the block starts at the top (setup.css:27, 29, .mk-setup-split). */
+.ks-setup-split .ks-feature-copy {
+  margin-top: 0;
+}
+@media (min-width: 900px) {
+  .ks-setup-split {
+    align-items: start;
+  }
+}
+
+/* The setup photos: the tummy-unit crop never grows past its own size; the activity screenshot at phone size with a
+   hairline, so its light screen reads on the cream band (setup.css:30-34). */
+.ks-setup-belly {
+  width: 100%;
+  max-width: calc(var(--space-10) * 3); /* 3 × 128 = 384 */
+  justify-self: center;
+}
+.ks-setup-shot {
+  width: 100%;
+  max-width: calc(var(--space-9) * 3); /* 3 × 96 = 288 */
+  justify-self: center;
+}
+.ks-setup-shot img {
+  border: var(--stroke-hair) solid var(--border);
+  box-shadow: var(--shadow-lift);
+}
+
+/* Safety folds 5 and 6: two short folds as quiet cards, side by side from 720 px (safety.css:31-35, .mk-sf-pair). */
+.ks-sf-pair .kh-card {
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-5);
+}
+.ks-sf-pair .kh-card p {
+  margin: 0;
+}
+.ks-sf-pair .kh-section__actions {
+  margin-top: 0;
+}
+@media (min-width: 1024px) {
+  .ks-sf-pair .kh-card {
+    padding: var(--space-7);
+  }
+}
