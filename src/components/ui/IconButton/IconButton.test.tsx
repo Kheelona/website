@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 import { IconButton } from "./IconButton";
@@ -54,6 +55,18 @@ describe("IconButton", () => {
     expect(button).toHaveAttribute("aria-expanded", "false");
     rerender(<IconButton icon="caret-left" label="Previous video" disabled />);
     expect(screen.getByRole("button")).toBeDisabled();
+  });
+
+  it("is reached by the keyboard; a disabled control (the films strip at its end) is skipped", async () => {
+    const user = userEvent.setup();
+    render(
+      <>
+        <IconButton icon="caret-left" label="Previous video" variant="outline" disabled />
+        <IconButton icon="caret-right" label="Next video" variant="outline" />
+      </>,
+    );
+    await user.tab();
+    expect(screen.getByRole("button", { name: "Next video" })).toHaveFocus();
   });
 
   it("renders a link when given an address, with the link attributes it is given", () => {

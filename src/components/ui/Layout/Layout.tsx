@@ -34,17 +34,20 @@ export interface SectionProps extends Box {
   tight?: boolean;
   /** The id of the heading that names the section. */
   labelledBy?: string;
+  /** The element: a `<section>` (default); the article head is a `<header>` and the article body, the legal
+   *  document and the store page a `<div>`, as the mockup has them. */
+  as?: "section" | "header" | "div";
 }
 
-export function Section({ id, band, tight, labelledBy, className, children }: SectionProps) {
+export function Section({ id, band, tight, labelledBy, as: Tag = "section", className, children }: SectionProps) {
   return (
-    <section
+    <Tag
       id={id}
       className={clsx("kh-section", band && "kh-section--band", tight && "kh-section--tight", className)}
       aria-labelledby={labelledBy}
     >
       {children}
-    </section>
+    </Tag>
   );
 }
 

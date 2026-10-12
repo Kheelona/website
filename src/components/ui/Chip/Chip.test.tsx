@@ -1,7 +1,20 @@
-import { render, screen } from "@testing-library/react";
+import postcss from "postcss";
 import { renderToStaticMarkup } from "react-dom/server";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { Chip, ChipList } from "./Chip";
+
+/** The declarations of the top-level rule with exactly these selectors, in order. */
+function declarations(path: string, selector: string): string[] {
+  const out: string[] = [];
+  postcss.parse(readRepoFile(path)).each((node) => {
+    if (node.type === "rule" && node.selectors.join(", ") === selector) {
+      node.each((d) => void (d.type === "decl" && out.push(`${d.prop}: ${d.value}`)));
+    }
+  });
+  return out;
+}
 
 describe("Chip", () => {
   it("renders a film chip as home.html fold 2 does", () => {
@@ -37,5 +50,13 @@ describe("ChipList", () => {
     const list = screen.getByRole("list", { name: "Languages" });
     expect(list.className).toBe("kh-chips ks-list-reset");
     expect(screen.getAllByRole("listitem").map((li) => li.textContent)).toEqual(["English", "Hindi"]);
+  });
+});
+
+describe("Chip CSS", () => {
+  it("ports the film chips' band rule (mockup.css:137; DS gap G-19) to the opt-in class", () => {
+    const ported = declarations("src/components/ui/Chip/chip.css", ".kh-section--band .ks-chip--on-band");
+    expect(ported.length).toBeGreaterThan(0);
+    expect(ported).toEqual(declarations("mockup/mockup.css", ".kh-section--band .mk-film .kh-chip"));
   });
 });

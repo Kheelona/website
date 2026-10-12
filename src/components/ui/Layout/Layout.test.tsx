@@ -1,7 +1,20 @@
-import { render, screen } from "@testing-library/react";
+import postcss from "postcss";
 import { renderToStaticMarkup } from "react-dom/server";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { Actions, Cols, Container, LIST_RESET, Section, SectionHead, Split } from "./Layout";
+
+/** The declarations of the top-level rule with exactly these selectors, in order. */
+function declarations(path: string, selector: string): string[] {
+  const out: string[] = [];
+  postcss.parse(readRepoFile(path)).each((node) => {
+    if (node.type === "rule" && node.selectors.join(", ") === selector) {
+      node.each((d) => void (d.type === "decl" && out.push(`${d.prop}: ${d.value}`)));
+    }
+  });
+  return out;
+}
 
 describe("Layout: the DS page layout classes, as the mockup nests them", () => {
   it("nests a band section as home.html fold 2 does", () => {
@@ -28,6 +41,19 @@ describe("Layout: the DS page layout classes, as the mockup nests them", () => {
     expect(section.className).toBe("kh-section kh-section--tight ks-hero");
     expect(section).toHaveAttribute("id", "modes");
     expect(section).toHaveAttribute("aria-labelledby", "what-title");
+  });
+
+  it("Section can be the article head's header and the article body's div (story-*.html folds 1 and 2)", () => {
+    expect(
+      renderToStaticMarkup(
+        <Section as="header" band className="ks-hero ks-story-head">
+          h
+        </Section>,
+      ),
+    ).toBe('<header class="kh-section kh-section--band ks-hero ks-story-head">h</header>');
+    expect(renderToStaticMarkup(<Section as="div" className="ks-story-body">b</Section>)).toBe(
+      '<div class="kh-section ks-story-body">b</div>',
+    );
   });
 
   it("Section is a named region when labelled", () => {
@@ -90,5 +116,21 @@ describe("Layout: the DS page layout classes, as the mockup nests them", () => {
 
   it("exports the list reset for lists other primitives render (LanguageChips, chip lists)", () => {
     expect(renderToStaticMarkup(<ul className={LIST_RESET} />)).toBe('<ul class="ks-list-reset"></ul>');
+  });
+});
+
+describe("Layout CSS", () => {
+  const CSS = "src/components/ui/Layout/layout.css";
+
+  it("ports the list reset (meet-kheelu.css:11)", () => {
+    expect(declarations(CSS, ".ks-list-reset")).toEqual(["margin: 0", "padding: 0", "list-style: none"]);
+    expect(declarations(CSS, ".ks-list-reset")).toEqual(declarations("mockup/css/meet-kheelu.css", ".mk-list-reset"));
+  });
+
+  it("ports the vertical rhythm between layout blocks (mockup.css:103-104)", () => {
+    for (const selector of [".kh-cols + .kh-subtitle, .kh-split + .kh-cols", ".kh-subtitle"]) {
+      expect(declarations(CSS, selector).length, selector).toBeGreaterThan(0);
+      expect(declarations(CSS, selector), selector).toEqual(declarations("mockup/mockup.css", selector));
+    }
   });
 });

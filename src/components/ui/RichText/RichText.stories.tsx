@@ -60,4 +60,24 @@ export const SourceMarkersInAnArticle: Story = {
   args: { ...SourceMarkers.args, sources: { label: "Source", variant: "article" } },
 };
 
+export const PriceSentenceFullMode: Story = {
+  name: "Price sentence, full mode",
+  args: {
+    as: "p",
+    className: "kh-body-s",
+    offer: { ...offer, mode: "full", headlinePaise: 799_900, prices: { ...offer.prices, headline: "₹7,999" } },
+    text: {
+      token:
+        "Reserve yours for {price:token} today, refundable until dispatch, then pay {price:balance} before delivery: {price:headline} in total (incl. GST).",
+      full: "{price:full} (incl. GST), paid in full when you order.",
+    },
+  },
+};
+
 export const Delivery: Story = { args: { as: "p", className: "kh-body-s", text: "{delivery} · 7-day returns, no questions asked" } };
+
+/* An open fact inside a line, as meet-kheelu.html fold 7 shows it. The token is assembled here so the production
+   placeholder scan (task 2.9) never reads a story as open content. */
+export const OpenFact: Story = {
+  args: { as: "p", className: "kh-body", text: "Size and weight: " + "{" + "ph:F4 size and weight}" },
+};

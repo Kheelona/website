@@ -15,7 +15,8 @@ export interface HeadingProps {
   lead?: Copy;
   /** The heading element: h2 by default; h1 once per page. */
   level?: 1 | 2 | 3;
-  align?: "start" | "center";
+  /** The DS SectionHeading's values: left (default) or center (`kh-heading--center`). */
+  align?: "left" | "center";
   /** The hero sizes: 40 px on phones, 56 from 768, 72 from 1024 (`kh-heading--hero`). */
   hero?: boolean;
   /** On the title element, for the section's aria-labelledby. */

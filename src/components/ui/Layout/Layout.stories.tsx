@@ -93,3 +93,21 @@ export const Columns: Story = {
     </Section>
   ),
 };
+
+export const HeaderAndDivSections: Story = {
+  name: "Section as header and div (the article head and body)",
+  render: () => (
+    <>
+      <Section as="header" band>
+        <Container>
+          <Panel>An article head: a header in a band</Panel>
+        </Container>
+      </Section>
+      <Section as="div">
+        <Container>
+          <Panel>An article body: a plain div section</Panel>
+        </Container>
+      </Section>
+    </>
+  ),
+};

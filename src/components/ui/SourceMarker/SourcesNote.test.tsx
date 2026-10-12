@@ -40,6 +40,24 @@ describe("SourcesNote", () => {
     );
   });
 
+  it("names a www address by the site's name without the www, as safety.html fold 6 does", () => {
+    const html = renderToStaticMarkup(
+      <SourcesNote
+        label="Sources"
+        sources={[
+          {
+            citation:
+              "Common Sense Media, “Common Sense Media Warns Against AI Toy Companions After Research Reveals Safety Risks” (press release), 2026, paragraph 1.",
+            href: "https://www.commonsensemedia.org/press-releases/common-sense-media-warns-against-ai-toy-companions-after-research-reveals-safety-risks",
+          },
+        ]}
+      />,
+    );
+    expect(html).toContain(
+      '<a href="https://www.commonsensemedia.org/press-releases/common-sense-media-warns-against-ai-toy-companions-after-research-reveals-safety-risks">commonsensemedia.org</a></p>',
+    );
+  });
+
   it("takes a longer link label and a composition class (meet-kheelu.html, the FAQ's sources)", () => {
     render(
       <SourcesNote

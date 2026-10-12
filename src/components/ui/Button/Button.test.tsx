@@ -1,7 +1,21 @@
-import { render, screen } from "@testing-library/react";
+import postcss from "postcss";
 import { renderToStaticMarkup } from "react-dom/server";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
+import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { Button } from "./Button";
+
+/** The declarations of the top-level rule with exactly these selectors, in order. */
+function declarations(path: string, selector: string): string[] {
+  const out: string[] = [];
+  postcss.parse(readRepoFile(path)).each((node) => {
+    if (node.type === "rule" && node.selectors.join(", ") === selector) {
+      node.each((d) => void (d.type === "decl" && out.push(`${d.prop}: ${d.value}`)));
+    }
+  });
+  return out;
+}
 
 /* Internal paths go through next/link (client navigation between pages); this stand-in marks them so the
    test can tell a Link from a plain anchor. */
@@ -130,6 +144,35 @@ describe("Button: as a button or a link", () => {
     expect(screen.getByRole("link", { name: "Store" })).not.toHaveAttribute("data-next-link");
   });
 
+  it("is reached by the keyboard in order, as a link or a button; a disabled or loading button is skipped", async () => {
+    const user = userEvent.setup();
+    render(
+      <>
+        <Button variant="cta" cta="hero" href="https://store.kheelona.com" arrow>
+          Pre-order Kheelu
+        </Button>
+        <Button disabled>Off</Button>
+        <Button loading>Saving</Button>
+        <Button variant="ghost" href="/products/kheelu">
+          See how it works
+        </Button>
+      </>,
+    );
+    await user.tab();
+    expect(screen.getByRole("link", { name: "Pre-order Kheelu" })).toHaveFocus();
+    await user.tab();
+    expect(screen.getByRole("link", { name: "See how it works" })).toHaveFocus();
+  });
+
+  it("names a button by its label alone: the icons are hidden", () => {
+    render(
+      <Button variant="secondary" icon="whatsapp-logo" iconEnd="arrow-right">
+        Message on WhatsApp
+      </Button>,
+    );
+    expect(screen.getByRole("button", { name: "Message on WhatsApp" })).toBeInTheDocument();
+  });
+
   it("forwards disabled", () => {
     render(<Button disabled>Go</Button>);
     expect(screen.getByRole("button")).toBeDisabled();
@@ -192,5 +235,13 @@ describe("Button: CTA tracking value (architecture §8.3)", () => {
     ).toThrow(/"whatsapp-float"/);
     const unknown = { variant: "ghost", href: "/", cta: "compare", children: "x" } as unknown as Parameters<typeof Button>[0];
     expect(() => renderToStaticMarkup(<Button {...unknown} />)).toThrow(/"compare" is not a CTA value an element may carry/);
+  });
+});
+
+describe("Button CSS", () => {
+  it("ports mockup.css's ghost rule (mockup.css:135: a long ghost label wraps on a 360 px phone) as ks-btn--wrap", () => {
+    const ported = declarations("src/components/ui/Button/button.css", ".ks-btn--wrap");
+    expect(ported.length).toBeGreaterThan(0);
+    expect(ported).toEqual(declarations("mockup/mockup.css", ".kh-btn--ghost"));
   });
 });

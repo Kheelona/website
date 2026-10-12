@@ -90,8 +90,17 @@ function renderNode(node: RichNode, ctx: Context): ReactNode {
   }
 }
 
+/** Renders a run of nodes, joining neighbouring text (words, amounts, the delivery line) into one string, so the
+ *  server HTML prints a sentence as one text node instead of pieces React separates with `<!-- -->`. */
 function renderNodes(nodes: readonly RichNode[], ctx: Context): ReactNode {
-  return nodes.map((node, i) => <Fragment key={i}>{renderNode(node, ctx)}</Fragment>);
+  const parts: ReactNode[] = [];
+  for (const node of nodes) {
+    const part = renderNode(node, ctx);
+    const last = parts.length - 1;
+    if (typeof part === "string" && typeof parts[last] === "string") parts[last] += part;
+    else parts.push(part);
+  }
+  return parts.map((part, i) => <Fragment key={i}>{part}</Fragment>);
 }
 
 /**

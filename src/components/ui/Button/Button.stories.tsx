@@ -59,3 +59,7 @@ export const Danger: Story = {
 export const Loading: Story = {
   args: { variant: "primary", loading: true, children: "Saving" },
 };
+
+export const Disabled: Story = {
+  args: { variant: "secondary", disabled: true, children: "Save my address" },
+};

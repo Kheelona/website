@@ -1,11 +1,24 @@
+import postcss from "postcss";
+import { renderToStaticMarkup, renderToString } from "react-dom/server";
 import { render, screen } from "@testing-library/react";
-import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 import type { Offer } from "@/content/types";
 import { placeholder as ph } from "@/lib/content/placeholder";
 import { toPlainText } from "@/lib/content/plain-text";
 import { RichTextError } from "@/lib/content/rich-text";
+import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { RichText } from "./RichText";
+
+/** The declarations of the top-level rule with exactly these selectors, in order. */
+function declarations(path: string, selector: string): string[] {
+  const out: string[] = [];
+  postcss.parse(readRepoFile(path)).each((node) => {
+    if (node.type === "rule" && node.selectors.join(", ") === selector) {
+      node.each((d) => void (d.type === "decl" && out.push(`${d.prop}: ${d.value}`)));
+    }
+  });
+  return out;
+}
 
 vi.mock("next/link", async () => {
   const React = await import("react");
@@ -130,6 +143,16 @@ describe("RichText: prices and modes come from the offer", () => {
     expect(html(<RichText text={sentence} offer={fullOffer} />)).toBe("₹7,999 (incl. GST), paid in full when you order.");
   });
 
+  it("prints a sentence with amounts as one text, without React's text separators in the server HTML", () => {
+    // renderToString is what a page's HTML goes through; adjacent text nodes there get a <!-- --> between them.
+    expect(renderToString(<RichText as="p" text={sentence} offer={tokenOffer} />)).toBe(
+      "<p>Reserve yours for ₹499 today, refundable until dispatch, then pay ₹4,500 before delivery: ₹4,999 in total (incl. GST).</p>",
+    );
+    expect(renderToString(<RichText text="{delivery} · {hand:asks {price:token} back}" offer={tokenOffer} />)).toBe(
+      'Deliveries start mid-November · <span class="kh-hand">asks ₹499 back</span>',
+    );
+  });
+
   it("renders the delivery line", () => {
     expect(html(<RichText text="{delivery}" offer={tokenOffer} />)).toBe("Deliveries start mid-November");
   });
@@ -143,5 +166,20 @@ describe("RichText: prices and modes come from the offer", () => {
     const text = `Then it {hand:asks one back.} Pay {price:headline}[^1] or [ask us](/contact) ${token("C6 app store links")} {nowrap:{mark:now}}.`;
     const { container } = render(<RichText as="p" text={text} offer={tokenOffer} sources={{ label: "Source" }} />);
     expect(container.textContent).toBe(toPlainText(text, tokenOffer));
+  });
+});
+
+describe("RichText CSS", () => {
+  const CSS = "src/components/ui/RichText/rich-text.css";
+
+  it("ports the no-wrap helper (mockup.css:32)", () => {
+    expect(declarations(CSS, ".ks-nowrap")).toEqual(["white-space: nowrap"]);
+    expect(declarations(CSS, ".ks-nowrap")).toEqual(declarations("mockup/mockup.css", ".mk-nowrap"));
+  });
+
+  it("ports the link colour in captions and small text (mockup.css:105)", () => {
+    const selector = ".kh-caption a, .kh-body-s a:not(.kh-btn)";
+    expect(declarations(CSS, selector)).toEqual(["color: var(--link)"]);
+    expect(declarations(CSS, selector)).toEqual(declarations("mockup/mockup.css", selector));
   });
 });

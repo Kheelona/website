@@ -42,6 +42,12 @@ describe("Heading: the DS SectionHeading as the mockup marks it up", () => {
     );
   });
 
+  it("aligns left by default and takes the DS's own align values (SectionHeading: left, center)", () => {
+    expect(renderToStaticMarkup(<Heading align="left" title="Screen time" />)).toBe(
+      '<header class="kh-heading"><h2 class="kh-heading__title">Screen time</h2></header>',
+    );
+  });
+
   it("is an h2 with the title alone by default (stories.html topic headings)", () => {
     expect(renderToStaticMarkup(<Heading title="Screen time" id="screen-time-title" />)).toBe(
       '<header class="kh-heading"><h2 class="kh-heading__title" id="screen-time-title">Screen time</h2></header>',

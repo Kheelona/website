@@ -6,8 +6,14 @@ import { sourceId } from "./SourceMarker";
 /** A source as a section's note shows it: the citation, its address and, if the site's name is not enough,
  *  the link's own label. */
 export interface SourceNoteItem extends Source {
-  /** The visible link; defaults to the address's host name ("developingchild.harvard.edu"). */
+  /** The visible link; defaults to the site's name: the address's host without a leading "www."
+   *  ("developingchild.harvard.edu", "commonsensemedia.org"), as the approved notes print it. */
   label?: string;
+}
+
+/** The site's name as the approved notes print it (home.html, safety.html, the guide). */
+function siteName(href: string): string {
+  return new URL(href).hostname.replace(/^www\./, "");
 }
 
 export interface SourcesNoteProps {
@@ -37,7 +43,7 @@ export function SourcesNote({ label, sources, className }: SourcesNoteProps) {
               </>
             )}
             {`[${n}] `}
-            <RichText text={source.citation} /> <a href={source.href}>{source.label ?? new URL(source.href).hostname}</a>
+            <RichText text={source.citation} /> <a href={source.href}>{source.label ?? siteName(source.href)}</a>
           </p>
         );
       })}
