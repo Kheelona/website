@@ -44,5 +44,10 @@ describe("isInAppBrowser", () => {
   it("reads whole tokens only (a word that merely contains one is not an app)", () => {
     expect(isInAppBrowser("Mozilla/5.0 NotInstagramBrowser/1.0")).toBe(false);
     expect(isInAppBrowser("Mozilla/5.0 MyWhatsAppClone/1.0")).toBe(false);
+    // A token that only ends the word, or only starts it.
+    expect(isInAppBrowser("Mozilla/5.0 NotInstagram/1.0")).toBe(false);
+    expect(isInAppBrowser("Mozilla/5.0 XFBAV/1.0")).toBe(false);
+    expect(isInAppBrowser("Mozilla/5.0 WhatsAppClone/1.0")).toBe(false);
+    expect(isInAppBrowser("Mozilla/5.0 FBANX/1.0")).toBe(false);
   });
 });

@@ -101,6 +101,15 @@ describe("Field", () => {
     expect(icon).toHaveAttribute("aria-hidden", "true");
   });
 
+  it("describes an error on a field that has no hint (the store's name and email fields)", () => {
+    render(<Field id="email" label="Email" name="email" error="That inbox bounced." />);
+    const input = screen.getByLabelText("Email");
+    expect(input).toHaveAttribute("aria-invalid", "true");
+    expect(input).toHaveAttribute("aria-describedby", "email-d");
+    expect(input).toHaveAccessibleDescription("That inbox bounced.");
+    expect(screen.getByRole("alert")).toHaveAttribute("id", "email-d");
+  });
+
   it("mounts a fresh alert when an error appears, so screen readers announce it", () => {
     const { rerender } = render(<Field id="phone" label="Phone" name="phone" hint="For messages about your order." />);
     const hint = screen.getByText("For messages about your order.");

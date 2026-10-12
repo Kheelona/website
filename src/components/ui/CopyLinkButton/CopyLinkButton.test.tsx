@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ICON_PATHS } from "@/assets/icons.generated";
@@ -73,5 +74,13 @@ describe("CopyLinkButton", () => {
       fireEvent.click(button);
     });
     expect(live).toBeEmptyDOMElement();
+  });
+
+  it("ships no icon map to the browser: the client island imports React only, the server part draws the icon", () => {
+    // The icon map is about 30 KB; a client island that imports it ships all 76 icons (assets catalogue, Icons row).
+    const island = readFileSync("src/components/ui/CopyLinkButton/CopyLinkButton.client.tsx", "utf8");
+    const imports = [...island.matchAll(/\bfrom\s+["']([^"']+)["']|\bimport\s*\(\s*["']([^"']+)["']/g)].map((m) => m[1] ?? m[2]);
+    expect(imports).toEqual(["react"]);
+    expect(readFileSync("src/components/ui/CopyLinkButton/CopyLinkButton.tsx", "utf8")).not.toMatch(/^\s*["']use client["']/m);
   });
 });

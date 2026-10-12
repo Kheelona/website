@@ -125,6 +125,14 @@ describe("InAppBrowserNote", () => {
     expect(writeText).toHaveBeenCalledWith("https://betastore.kheelona.com");
   });
 
+  it("ships no icon map to the browser: the gate island imports React and the user-agent test only", () => {
+    // The note's icons are drawn on the server (Alert, CopyLinkButton); the 30 KB icon map stays there (assets, Icons row).
+    const importsOf = (path: string) =>
+      [...readFileSync(path, "utf8").matchAll(/\bfrom\s+["']([^"']+)["']|\bimport\s*\(\s*["']([^"']+)["']/g)].map((m) => m[1] ?? m[2]);
+    expect(importsOf("src/components/ui/InAppBrowserNote/InAppBrowserNote.client.tsx")).toEqual(["react", "./in-app-browser"]);
+    expect(importsOf("src/components/ui/InAppBrowserNote/in-app-browser.ts")).toEqual([]);
+  });
+
   it("matches the approved mockup's in-app note", () => {
     userAgent = INSTAGRAM;
     const { container } = render(<InAppBrowserNote content={CONTENT} storeUrl={STORE} />);

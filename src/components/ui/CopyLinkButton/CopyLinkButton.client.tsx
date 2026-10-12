@@ -1,24 +1,24 @@
 "use client";
 
-import { useState } from "react";
-import { ICON_PATHS, ICON_VIEWBOX } from "@/assets/icons.generated";
+import { useState, type ReactNode } from "react";
 
-export interface CopyLinkButtonProps {
-  /** What goes on the clipboard: the store URL the page is given. */
+export interface CopyLinkButtonIslandProps {
+  /** What goes on the clipboard. */
   value: string;
-  /** The button's words ("Copy link"), from content. */
+  /** The button's words. */
   label: string;
-  /** Said in the polite live region once the value is on the clipboard ("Link copied."), from content. */
+  /** Said in the polite live region once the value is on the clipboard. */
   copiedMessage: string;
+  /** The DS copy icon, drawn by the server part (CopyLinkButton.tsx): this island never imports the icon map. */
+  icon: ReactNode;
 }
 
 /**
- * "Copy link" (mockup/store.html fold 2): the DS secondary small button with the copy icon, then a polite live
- * region that says what happened. If the browser refuses or has no Clipboard API, nothing is said: the note
- * prints the address in full beside the button, so it works without this (as approved). Not a pre-order CTA,
- * so no cta value; autocapture records its text.
+ * The interactive half of "Copy link": writes the value to the clipboard on a click, then says so in the polite
+ * live region. If the browser refuses or has no Clipboard API, nothing is said: the in-app note prints the address
+ * in full beside the button, so it works without this (as approved). Import `CopyLinkButton` instead.
  */
-export function CopyLinkButton({ value, label, copiedMessage }: CopyLinkButtonProps) {
+export function CopyLinkButtonIsland({ value, label, copiedMessage, icon }: CopyLinkButtonIslandProps) {
   const [copied, setCopied] = useState(false);
 
   async function copy() {
@@ -32,12 +32,9 @@ export function CopyLinkButton({ value, label, copiedMessage }: CopyLinkButtonPr
 
   return (
     <>
-      {/* DS Button markup (secondary, s) and the DS icon markup as the mockup writes them; ui/Button and
-          ui/Icon are task 2.2, same wave. */}
+      {/* DS Button markup (secondary, s) as the mockup writes it; ui/Button is task 2.2, same wave. */}
       <button type="button" className="kh-btn kh-btn--secondary kh-btn--s" onClick={copy}>
-        <svg className="kh-icon" viewBox={ICON_VIEWBOX} aria-hidden="true" focusable="false">
-          <path d={ICON_PATHS.copy} />
-        </svg>
+        {icon}
         <span>{label}</span>
       </button>
       <span className="kh-label-s" aria-live="polite">

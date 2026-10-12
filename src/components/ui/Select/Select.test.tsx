@@ -101,6 +101,14 @@ describe("Select", () => {
     expect(select).toHaveAccessibleDescription("Choose your state.");
   });
 
+  it("describes an error when there is no hint", () => {
+    render(<Select id="state" label="State" name="state" placeholder="Choose your state" options={STATES} error="Choose your state." />);
+    const select = screen.getByLabelText("State");
+    expect(select).toHaveAttribute("aria-invalid", "true");
+    expect(select).toHaveAttribute("aria-describedby", "state-d");
+    expect(select).toHaveAccessibleDescription("Choose your state.");
+  });
+
   it("matches the approved mockup's state picker", () => {
     const html = readFileSync("mockup/store-confirmation.html", "utf8");
     const all = [...new DOMParser().parseFromString(html, "text/html").querySelectorAll("#state option:not([value])")].map(
