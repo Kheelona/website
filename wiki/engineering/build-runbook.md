@@ -64,7 +64,7 @@ never stage them).
 |---|---|---|
 | 0 (prep) | – | Done 2026-10-12: plan committed (`b2ea409`); dev tools pinned and **security patch next 16.3.8, sharp 0.35.5** (`1806937`); D051 (`8423f87`); runbook (`242126b`) |
 | 1 | `wf_de7ff1a5-e8b` → `wf_20aaa1e8-c0f` → `wf_7ba453ba-6cb` | **Done 19:40, 2026-10-12.** All seven tasks merged (1.1 `b3fff53`, 1.2 follow-up `e8b56ce`); wave close `51b9b5f`: `npm run verify` green (143 files / 2143 tests, lint 0 errors, both typechecks, jscpd, checksums) and `next build` green; mapping exceptions `5c65999`; worktrees and branches removed |
-| 2 | (launching 19:45, base `5c65999`+wiki) | 2.1-2.10 plus the addenda 1.1b (harness minors) and 1.2b (font scan) |
+| 2 | **`wf_ab0be1f5-713`** (19:45, base `7eaa735`) | **Running:** 2.1-2.10 plus the addenda 1.1b (harness minors) and 1.2b (font scan); 8 agents at a time (10 CPUs). If it dies: re-run `build-wave` with the unfinished tasks (args in the log entry of 19:45) |
 | 3-10 | – | Per [tasks](tasks.md) |
 
 ### Wave 1 snapshot (18:50, 2026-10-12)

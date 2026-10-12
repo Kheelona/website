@@ -7,16 +7,15 @@ sources: [log.md, open-questions.md]
 
 # Status (2026-10-12)
 
-**Phase:** **5, build, wave 1 of 10 nearly done** (Gate A approved D046; Phase 4 plan done 2026-10-12). The
+**Phase:** **5, build, wave 2 of 10 running** (Gate A approved D046; Phase 4 plan done 2026-10-12). The
 founder asked for the full website with animation on **betawebsite.kheelona.com** and
 **betastore.kheelona.com** before it goes live (D048). Plan: [tasks](engineering/tasks.md) (10 waves),
 [architecture](engineering/architecture.md), [QA review](qa/architecture-review-2026-10-12.md), [test plan](qa/test-plan.md).
 After the build: Phase 6 QA, push `beta`, founder runbook (architecture §15.4), **Gate B** on beta, merge to `main`.
 **Account:** apoorva@kheelona.com (since ~17:00 2026-10-12). **Branch:** `reset/website-v2`, not pushed.
-**RESUME FROM [build runbook](engineering/build-runbook.md) §4 "Wave 1 snapshot (18:50)"**: 1.2-1.6 and 1.5b merged
-(`ab4868e`; tsc, 1957 unit tests, `next build` green). **Run `wf_7ba453ba-6cb`:** 1.1 fix round (round 3 found 2 guard
-gaps) + 1.2 font follow-up (Devanagari subset, OFL.txt). [Mockup CSS mapping](engineering/mockup-css-mapping.md) done and
-accepted: apply its 10 exceptions to token-exceptions.ts right after 1.1 merges, BEFORE wave 2. Then wave close, wave 2.
+**RESUME FROM [build runbook](engineering/build-runbook.md) §4.** **Wave 1 closed 19:40** (all merged; verify 2143 tests,
+`next build` green; mapping exceptions `5c65999`). **Wave 2 running: `wf_ab0be1f5-713`** (base `7eaa735`; 2.1-2.10 +
+addenda 1.1b, 1.2b). Then merge per runbook §2, wave close, wave 3.
 **Incident 2026-10-12:** a push meant for `beta` landed on `main` (`24e92e3`, vercel.json only; production
 healthy; [lessons](engineering/lessons.md)). `beta` exists on GitHub (builds nothing yet); **beta domains attached to branch `beta`** (founder, done).
 **Done before wave 1:** dev tools pinned (Playwright 1.63.0, axe 4.12.1, Lighthouse 13.4.1, jscpd 5.3.2,
