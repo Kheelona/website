@@ -19,6 +19,7 @@ export const accepted = () => (
     <AppScreens variant="home" screens={[PRIVACY]} sizes={SIZES} />
     <AppScreens variant="product" screens={[TRANSCRIPT, ACTIVITY]} sizes={SIZES} />
     <AppScreens variant="product" screens={[PRIVACY]} sizes={SIZES} />
+    <AppScreens variant="safety" screens={[PRIVACY]} sizes={SIZES} caption="Caption" reveal />
   </>
 );
 
@@ -34,5 +35,7 @@ export const misuses = () => (
     <AppScreens variant="home" screens={[TRANSCRIPT, ACTIVITY, PRIVACY]} sizes={SIZES} />
     {/* @ts-expect-error at least one screen */}
     <AppScreens variant="product" screens={[]} sizes={SIZES} />
+    {/* @ts-expect-error the safety page shows one phone (safety.html:87-93) */}
+    <AppScreens variant="safety" screens={[TRANSCRIPT, ACTIVITY]} sizes={SIZES} />
   </>
 );

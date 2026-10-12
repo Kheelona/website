@@ -4,12 +4,12 @@ import appPrivacy from "@/assets/app/app-privacy.webp";
 import appTranscript from "@/assets/app/app-transcript.webp";
 import { AppScreens } from "./AppScreens";
 
-/* AppScreens (task 2.3; D044, D046). The four approved placements; alt texts and caption as the mockup. */
+/* AppScreens (task 2.3; D044, D046). The five approved placements; alt texts and caption as the mockup. */
 
 const CAPTION = "The Kheelona app is live on Apple’s App Store and the Google Play Store.";
 const ONE_PHONE = "(min-width: 1024px) 280px, (min-width: 900px) 22vw, calc((100vw - 48px) / 2)";
 
-const meta = {
+const meta: Meta<typeof AppScreens> = {
   title: "UI/AppScreens",
   component: AppScreens,
   decorators: [
@@ -33,10 +33,11 @@ const meta = {
       { src: appActivity, alt: "The parent app's activity screen for today: 22 minutes of talking, 3 chats and 9 questions asked, with today's chats listed." },
     ],
   },
-} satisfies Meta<typeof AppScreens>;
+};
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+/* The props are a union (the safety page holds one screen), so stories are typed by the component, not by shared args. */
+type Story = StoryObj<typeof AppScreens>;
 
 const PRIVACY = {
   src: appPrivacy,
@@ -54,3 +55,19 @@ export const ProductTwo: Story = { args: { variant: "product", reveal: true } };
 
 /** Product fold 6 (meet-kheelu.html:245-248): one phone standing alone. */
 export const ProductSolo: Story = { args: { variant: "product", screens: [PRIVACY], reveal: true } };
+
+/** Safety page fold 4 (safety.html:87-93): one phone in the plain DS frame, 272 px wide, 300 from 900 px. The screen
+ *  is the frame less its padding (space-2 each side): 256 px, 284 from 900 px. */
+export const SafetyPage: Story = {
+  args: {
+    variant: "safety",
+    screens: [
+      {
+        src: appPrivacy,
+        alt: "A real screen from the Kheelu parent app: the privacy centre. Chats are kept for 36 months, with buttons to download your child’s data and to delete all chats.",
+      },
+    ],
+    sizes: "(min-width: 900px) 284px, 256px",
+    reveal: true,
+  },
+};

@@ -13,12 +13,11 @@ import { imageSource, loadingFor } from "@/components/ui/Photo/image";
  * - `home`: one phone sits in the same two-column row, marked `--one`, so it is exactly as wide as each of two
  *   (founder, D046: the same phone size in the parent-app and safety folds);
  * - `product`: a narrower row, a thicker frame from 720 px, and one phone stands alone (`--solo`, no row), as the
- *   product page shows it. */
+ *   product page shows it;
+ * - `safety`: the safety page's one phone (safety.html:87-93, safety.css:25-29): the DS frame as it is, with no
+ *   compact `ks-shot` frame and no row, 272 px wide, 300 from 900 px. */
 
-export interface AppScreensProps {
-  /** One or two screens; each image's alt text describes the scene (never "real conversations", D046 risk). */
-  readonly screens: readonly [ImageRef] | readonly [ImageRef, ImageRef];
-  readonly variant: "home" | "product";
+type AppScreensBase = {
   /** One phone screen's rendered width at each layout. */
   readonly sizes: string;
   readonly caption?: ReactNode;
@@ -26,11 +25,18 @@ export interface AppScreensProps {
   readonly reveal?: boolean;
   /** The section's own composition class (`ks-…`). */
   readonly className?: string;
-}
+};
 
-function Device({ screen, sizes }: { readonly screen: ImageRef; readonly sizes: string }) {
+/** Each screen's alt text describes the scene (never "real conversations", D046 risk). */
+export type AppScreensProps = AppScreensBase &
+  (
+    | { readonly variant: "home" | "product"; readonly screens: readonly [ImageRef] | readonly [ImageRef, ImageRef] }
+    | { readonly variant: "safety"; readonly screens: readonly [ImageRef] }
+  );
+
+function Device({ screen, sizes, compact }: { readonly screen: ImageRef; readonly sizes: string; readonly compact: boolean }) {
   return (
-    <div className="kh-device ks-shot">
+    <div className={clsx("kh-device", compact && "ks-shot")}>
       <div className="kh-device__screen">
         <Image {...imageSource(screen)} alt={screen.alt} sizes={sizes} {...loadingFor(false)} />
       </div>
@@ -39,14 +45,15 @@ function Device({ screen, sizes }: { readonly screen: ImageRef; readonly sizes: 
 }
 
 export function AppScreens({ screens, variant, sizes, caption, reveal, className }: AppScreensProps) {
+  const safety = variant === "safety";
   const solo = variant === "product" && screens.length === 1;
-  const devices = screens.map((screen, i) => <Device key={i} screen={screen} sizes={sizes} />);
+  const devices = screens.map((screen, i) => <Device key={i} screen={screen} sizes={sizes} compact={!safety} />);
   return (
     <figure
-      className={clsx("ks-shots", variant === "product" && "ks-shots--product", solo && "ks-shots--solo", className)}
+      className={clsx("ks-shots", variant === "product" && "ks-shots--product", safety && "ks-shots--safety", solo && "ks-shots--solo", className)}
       data-reveal={reveal ? "" : undefined}
     >
-      {solo ? devices : <div className={clsx("ks-shots__row", screens.length === 1 && "ks-shots__row--one")}>{devices}</div>}
+      {solo || safety ? devices : <div className={clsx("ks-shots__row", screens.length === 1 && "ks-shots__row--one")}>{devices}</div>}
       {caption ? <figcaption className="kh-caption">{caption}</figcaption> : null}
     </figure>
   );

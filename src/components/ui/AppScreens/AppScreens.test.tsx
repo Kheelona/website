@@ -83,6 +83,37 @@ describe("AppScreens: product", () => {
   });
 });
 
+describe("AppScreens: safety page", () => {
+  /* safety.html:87-93: `figure.mk-sf-shot > div.kh-device > div.kh-device__screen > img`, then the caption. The DS
+     frame as it is (no compact ks-shot frame), at the page's own width (safety.css:25-29). */
+  it("one phone in the plain DS device frame, then the caption", () => {
+    const { container } = render(<AppScreens variant="safety" screens={[PRIVACY]} sizes={SIZES} caption={CAPTION} />);
+    expect(tree(container.firstElementChild!)).toEqual([
+      "figure.ks-shots.ks-shots--safety",
+      "  div.kh-device",
+      "    div.kh-device__screen",
+      "      img",
+      "  figcaption.kh-caption",
+    ]);
+    expect(container.querySelector("figcaption")).toHaveTextContent(CAPTION);
+  });
+
+  it("renders the screen through next/image with its alt text and sizes, lazily", () => {
+    const { container } = render(<AppScreens variant="safety" screens={[PRIVACY]} sizes={SIZES} />);
+    const img = container.querySelector("img")!;
+    expect(img).toHaveAttribute("alt", PRIVACY.alt);
+    expect(img).toHaveAttribute("sizes", SIZES);
+    expect(img).toHaveAttribute("loading", "lazy");
+    expect(img).not.toHaveAttribute("fetchpriority");
+  });
+
+  it("reveals on scroll as the mockup marks it, and takes a section class", () => {
+    const { container } = render(<AppScreens variant="safety" screens={[PRIVACY]} sizes={SIZES} reveal className="ks-x" />);
+    expect(container.firstElementChild).toHaveAttribute("data-reveal", "");
+    expect(container.firstElementChild!.className).toBe("ks-shots ks-shots--safety ks-x");
+  });
+});
+
 describe("AppScreens: images and options", () => {
   it("renders each screen through next/image with its alt text, the phone's sizes, lazily", () => {
     const { container } = render(<AppScreens variant="home" screens={[TRANSCRIPT, ACTIVITY]} sizes={SIZES} />);
