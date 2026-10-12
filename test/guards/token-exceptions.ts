@@ -59,12 +59,13 @@ export const CSS_EXCEPTIONS: readonly CssException[] = [
     id: "ks-wa-green",
     file: /^src\/components\/chrome\/WhatsAppFloat\/whatsapp-float\.css$/,
     property: /^--ks-wa-green$/,
-    value: /^#[0-9a-fA-F]{6}$/,
-    reason: "D050: WhatsApp's brand green for the chat bubble, one hex (DS gap G-20).",
+    value: /^#25D366$/i,
+    reason: "D050: WhatsApp's brand green #25D366 for the chat bubble, that one hex only (DS gap G-20).",
   },
 ];
 
-/** Lengths allowed inside @media preludes: the DS breakpoints and their max-width neighbours. */
+/** Lengths allowed inside @media and @container preludes, as (min-width: Npx) or (max-width: Npx)
+ *  only: the DS breakpoints and their max-width neighbours. */
 export const MEDIA_LENGTHS = {
   "min-width": DS_BREAKPOINTS as readonly number[],
   "max-width": DS_BREAKPOINT_NEIGHBOURS as readonly number[],
