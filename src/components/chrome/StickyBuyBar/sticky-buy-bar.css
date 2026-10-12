@@ -1,0 +1,5 @@
+/* StickyBuyBar (task 3.1): mockup/mockup.css:57 (the padding half; its transition and is-hidden state are motion.css's,
+   D049 pick 4) and :87, ported verbatim. The bar's foot clears the phone's home indicator (G-09, D041); the DS keeps the
+   bar for screens narrower than 900 px. Position (sticky at the bottom), surface and shadow are bundle.css's .kh-buybar. */
+.kh-buybar { padding-bottom: calc(var(--space-3) + env(safe-area-inset-bottom)); }
+@media (min-width: 900px) { .kh-buybar { display: none; } }

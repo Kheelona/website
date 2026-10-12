@@ -1,0 +1,18 @@
+/* StoreFooter (task 3.1): mockup/css/store.css:13-19 and :23-27 (.mk-store-foot, ported as .ks-store-foot; the address's
+   .mk-seller as .ks-store-foot__seller, since contact's seller block is another block of that name, mockup-css-mapping
+   §6.2). The hairline parts the footer from a band section above it; the lines keep the reading measure in the muted
+   colour, their links reach a 28 px box without moving the line; from 1024 px seller, grievance officer and payments
+   sit side by side and the policy links and the copyright span the width. */
+.ks-store-foot { padding-inline: var(--space-4); border-top: var(--stroke-hair) solid var(--border); }
+.ks-store-foot__in { display: grid; gap: var(--space-5); align-items: start; }
+.ks-store-foot p, .ks-store-foot__seller { margin: 0; max-width: var(--measure); color: var(--text-muted); }
+.ks-store-foot__seller { font-style: normal; }
+.ks-store-foot__seller strong { color: var(--text); }
+.ks-store-foot .kh-body-s a { color: var(--link); padding-block: var(--space-1); margin-block: calc(var(--space-1) * -1); }
+.ks-store-foot .kh-footer__legal { max-width: none; }
+
+@media (min-width: 1024px) {
+  .ks-store-foot { padding-inline: var(--space-7); }
+  .ks-store-foot__in { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: var(--space-7); }
+  .ks-store-foot__in > .ks-policy, .ks-store-foot__in > .kh-footer__legal { grid-column: 1 / -1; }
+}

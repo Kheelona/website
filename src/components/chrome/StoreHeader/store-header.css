@@ -1,0 +1,9 @@
+/* StoreHeader (task 3.1): mockup/css/store.css:9-11 and :24 (.mk-store-head, ported as .ks-store-head). The header
+   lines up with the content container: the same side padding as kh-section (space-4, then space-7 from 1024 px). The
+   help line sits at the row's end; it overrides HelpLine's margin by load order (chrome after ui), as store.css did
+   after mockup.css. */
+.ks-store-head { padding-inline: var(--space-4); }
+.ks-store-head__in { display: flex; align-items: center; gap: var(--space-4); }
+.ks-store-head__help { margin: 0 0 0 auto; text-align: right; }
+
+@media (min-width: 1024px) { .ks-store-head { padding-inline: var(--space-7); } }

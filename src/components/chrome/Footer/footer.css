@@ -1,0 +1,4 @@
+/* Footer (task 3.1): mockup/mockup.css:126, ported verbatim. The legal row's links (the phone number, the email and the
+   grievance officer) in the DS link colour, each a full tap target (CMO M9). The markup stays the DS's (kh-footer__legal),
+   so the rule keeps the mockup's selector; it loads after bundle.css, as the mockup's did. */
+.kh-footer__legal a { display: inline-flex; align-items: center; min-height: var(--tap-min); color: var(--link); }
