@@ -1,0 +1,95 @@
+/* AppScreens composition (task 2.3; D044, D046). Real parent-app screens in the DS Device frame, which is
+   390 × 844 in the DS (gap G-04: it pushes a phone page sideways), so here it takes its column's width and the
+   screenshot's own height.
+
+   Home is the base: mockup.css:148-155, ported as is (mockup-css-mapping §6.2). The product page loaded mockup.css
+   and then meet-kheelu.css:49-60 on top; the declarations meet-kheelu.css changes are the ks-shots--product rules
+   below, so the product page computes exactly what it did. The safety page's phone (safety.css:25-29) is the
+   ks-shots--safety rules at the end. Not ported: `.mk-shots--one .mk-shot` (mockup.css:153) and `.mk-app`
+   (mockup.css:99-100, 123), which match no element on any approved page. */
+.ks-shots {
+  margin: 0;
+  display: grid;
+  gap: var(--space-3);
+  justify-items: center;
+}
+.ks-shots__row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  width: 100%;
+  max-width: calc(var(--space-10) * 4.5); /* 4.5 × 128 = 576 */
+}
+.ks-shot.kh-device {
+  width: 100%;
+  height: auto;
+  padding: var(--space-1);
+  border-radius: calc(var(--radius-l) + var(--space-1));
+}
+.ks-shot .kh-device__screen {
+  height: auto;
+  border-radius: var(--radius-l);
+}
+.ks-shots .kh-device__screen img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.ks-shots .kh-caption {
+  text-align: center;
+  max-width: var(--measure);
+}
+/* One phone takes exactly the width of each of two: the same phone size in every fold (founder, 2026-10-11, D046). */
+.ks-shots__row--one .ks-shot {
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: calc((100% - var(--space-4)) / 2);
+}
+
+/* ---------- Product page (meet-kheelu.css:49-60) ---------- */
+.ks-shots--product .ks-shots__row {
+  max-width: calc(var(--space-10) * 4 + var(--space-5)); /* 4 × 128 + 24 = 536 */
+}
+.ks-shots--product .ks-shot .kh-device__screen {
+  background: var(--surface-band);
+}
+.ks-shots--product .kh-caption {
+  margin: 0;
+  color: var(--text-muted);
+}
+.ks-shots--solo .ks-shot.kh-device {
+  max-width: calc(var(--space-10) + var(--space-9)); /* 128 + 96 = 224 */
+}
+@media (min-width: 720px) {
+  .ks-shots--product .ks-shot.kh-device {
+    padding: var(--space-2);
+    border-radius: calc(var(--radius-xl) + var(--space-2));
+  }
+  .ks-shots--product .ks-shot .kh-device__screen {
+    border-radius: var(--radius-xl);
+  }
+  .ks-shots--solo .ks-shot.kh-device {
+    max-width: calc(var(--space-10) * 2 + var(--space-5)); /* 2 × 128 + 24 = 280 */
+  }
+}
+
+/* ---------- Safety page (safety.css:25-29; mockup-css-mapping rows 54-57) ---------- */
+/* One phone in the DS frame as it is (padding space-2, radius xl + space-2; no compact ks-shot frame), at the
+   safety page's own width: 272 px, 300 from 900 px. */
+.ks-shots--safety .kh-device {
+  width: min(100%, calc(var(--space-10) * 2 + var(--space-4))); /* 2 × 128 + 16 = 272 */
+  height: auto;
+}
+.ks-shots--safety .kh-caption {
+  max-width: calc(var(--space-10) * 2 + var(--space-4));
+  margin: 0;
+  color: var(--text-muted);
+}
+@media (min-width: 900px) {
+  .ks-shots--safety .kh-device {
+    width: calc(var(--space-9) * 3 + var(--space-3)); /* 3 × 96 + 12 = 300 */
+  }
+  .ks-shots--safety .kh-caption {
+    max-width: calc(var(--space-9) * 3 + var(--space-3));
+  }
+}

@@ -1,0 +1,8 @@
+/* DoodleDefs: the SVG that only holds the shared #ks-chalk filter takes no room and no layout line
+   (task 2.3; ADR-010). Not display: none, so the filter it defines is always resolvable. */
+.ks-doodle-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}

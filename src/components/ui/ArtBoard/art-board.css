@@ -1,0 +1,10 @@
+/* ArtBoard composition (task 2.3). The board itself is the DS kh-art (bundle.css:1164-1166).
+
+   The 480 px tablet clamp: between 720 and 899 px a single-column board would grow to the full column, so the
+   buyer's guide hero, plush and close boards and the safety close board stop at 480 px (mockup
+   ai-toys-for-kids-in-india.css:9, 31, 50 and safety.css:52; mockup-css-mapping §3 rows 8, 12, 16, 58 and §6.7). */
+@media (min-width: 720px) and (max-width: 899px) {
+  .ks-art--clamp {
+    width: min(100%, calc(var(--space-10) * 3 + var(--space-9))); /* 3 × 128 + 96 = 480 */
+  }
+}
