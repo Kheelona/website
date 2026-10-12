@@ -7,7 +7,8 @@
  *     only (the link has a name); its "Chat on WhatsApp" label (.ks-wa__label) and any other
  *     visible text inside the bubble are blocking (architecture §13);
  *   accepted, harness: the phone buy bar parked off screen (.kh-buybar.is-hidden) gives axe a false
- *     background (mockup/tools/check.cjs); it is checked again when shown;
+ *     background (mockup/tools/check.cjs); it is checked when shown, in axe.spec.ts's "sticky bar
+ *     shown" state (proven red with KH_E2E_PLANT=buybar);
  *   printed apart, pending the founder: white on Kheelu Blue (.kh-btn--primary, .kh-iconbtn--primary,
  *     blue stickers), which fails the same way but D041 names only Chilli (architecture §13).
  * Every other critical or serious violation fails.

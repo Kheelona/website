@@ -210,6 +210,17 @@ export const PLANTS: Record<string, string> = {
   // A reveal that fades in over 200 ms when scrolled into view, ignoring reduced motion: finite, so
   // it has finished long before any "still running?" check (motion.spec records it as it starts).
   fade: `document.head.insertAdjacentHTML("beforeend", '<style>.kh-planted-fade{opacity:0;transition:opacity .2s}.kh-planted-fade.is-in{opacity:1}</style>'); ${MAIN}.insertAdjacentHTML("beforeend", '<p class="kh-planted-fade">planted reveal</p>'); { const el = ${MAIN}.lastElementChild; new IntersectionObserver((entries, o) => { if (entries[0].isIntersecting) { el.classList.add("is-in"); o.disconnect(); } }).observe(el); }`,
+  // axe.spec states (test plan §4.5), each red only when its state is exercised:
+  // a text field under 16 px in <main> (iOS zooms the page on focus; architecture §16.2);
+  smallinput: `${MAIN}.insertAdjacentHTML("afterbegin", '<label>planted <input type="text" name="kh-planted" style="font-size:14px"></label>');`,
+  // low-contrast text in the sticky bar: accepted while the bar is parked off screen, blocking once it shows;
+  buybar: `document.querySelector(".kh-buybar")?.insertAdjacentHTML("beforeend", '<span style="color:#eee">planted</span>');`,
+  // a low-contrast line that appears only once a film's <video> is mounted;
+  film: `new MutationObserver((_, o) => { if (document.querySelector("main video")) { o.disconnect(); ${MAIN}.insertAdjacentHTML("beforeend", '<p style="color:#eee">planted</p>'); } }).observe(document.body, { childList: true, subtree: true });`,
+  // validators for a form that has none (the mockup's), whose error is low contrast;
+  formerrors: `document.querySelectorAll("main form").forEach((f) => f.addEventListener("submit", (e) => { e.preventDefault(); f.querySelectorAll("input").forEach((i) => i.setAttribute("aria-invalid", "true")); f.insertAdjacentHTML("afterbegin", '<p role="alert" style="color:#eee">planted error</p>'); }));`,
+  // low-contrast text with motion on only (the reduced-motion-off pass).
+  motionon: `document.head.insertAdjacentHTML("beforeend", '<style>@media (prefers-reduced-motion: no-preference) { .kh-planted-motion { color: #eee; } }</style>'); ${MAIN}.insertAdjacentHTML("beforeend", '<p class="kh-planted-motion">planted</p>');`,
   // A hero that is not still at first paint (motion.spec, D049 pick 2).
   hero: `${MAIN}.firstElementChild.style.opacity = "0.5";`,
   cta: `document.querySelector("[data-ph-capture-attribute-cta]").setAttribute("data-ph-capture-attribute-cta", "home-arc");`,
