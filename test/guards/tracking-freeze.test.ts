@@ -1,10 +1,10 @@
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
-import { join, posix } from "node:path";
+import { devNull, tmpdir } from "node:os";
+import { dirname, join, posix } from "node:path";
 import { runInThisContext } from "node:vm";
 import ts from "typescript";
-import { describe, expect, it } from "vitest";
+import { afterAll, describe, expect, it } from "vitest";
 import * as site from "@/config/site";
 import { BETA_HOSTS } from "@/config/env";
 import { FREEZE_TAG, ROOT, fixtureName, listFiles, readRepoBytes, readRepoFile, tagBytes, tagText } from "../e2e/support/repo";
@@ -25,8 +25,11 @@ import { isStillLegacy } from "./legacy-paths";
  *    the tag's file and today's must EQUAL the stored patch, hunk for hunk, so any further edit
  *    turns this red until the patch is regenerated and reviewed. Regenerate a patch with:
  *      git show archive/pre-reset-2026-10-10:<old path> > /tmp/old && \
- *      git diff --no-index --no-color --diff-algorithm=myers -U3 /tmp/old <new path>
- *    and keep the review header above the first "@@" (it must name its decisions).
+ *      env -u GIT_DIFF_OPTS GIT_CONFIG_NOSYSTEM=1 GIT_CONFIG_GLOBAL=/dev/null \
+ *        git diff --no-index --no-color --diff-algorithm=myers -U3 /tmp/old <new path>
+ *    and keep the review header above the first "@@" (it must name its decisions). The comparison
+ *    runs git with the user's and the system's configuration neutralised (neutralGitEnv, task 2.13),
+ *    so a setting such as diff.interHunkContext can never turn it red or green.
  * 3. The old copies are gone, and every test the tag ran on these components still runs (titles
  *    kept; one reviewed rename, B2a). No file under src/ imports a gate or the tracker from its old
  *    path, and every import of one names @/components/tracking/<Name> (a scan, so it holds when
@@ -97,26 +100,51 @@ const OLD_TARGETS: ReadonlySet<string> = new Set(MOVED.map((m) => m.then.replace
 
 /* ── Instruments ──────────────────────────────────────────────────────────────────────────── */
 
-/** The unified diff from `before` to the file at `path`, from its first hunk (headers dropped). */
-function hunks(before: string, path: string): string {
+/** `git diff --no-index` from file `a` to file `b`, run in `cwd` under exactly `env`. */
+function gitDiffNoIndex(a: string, b: string, env: NodeJS.ProcessEnv, cwd: string): string {
+  try {
+    return execFileSync("git", ["diff", "--no-index", "--no-color", "--no-ext-diff", "--diff-algorithm=myers", "-U3", a, b], {
+      cwd,
+      env,
+      encoding: "utf8",
+    });
+  } catch (e) {
+    // git diff --no-index exits 1 when the files differ; its stdout is the diff.
+    const err = e as { status?: number; stdout?: string };
+    if (err.status !== 1 || typeof err.stdout !== "string") throw e;
+    return err.stdout;
+  }
+}
+
+/**
+ * The environment the instrument runs git under (task 2.13): the caller's variables minus every
+ * GIT_* one (GIT_DIFF_OPTS overrides -U; GIT_CONFIG_COUNT, GIT_CONFIG_PARAMETERS and the config file
+ * variables carry settings), with the global and the system configuration files set to the null
+ * device. So no user or machine setting (diff.interHunkContext, diff.suppressBlankEmpty,
+ * diff.indentHeuristic …) can change a diff the stored patches are compared with. Repository
+ * configuration is out of reach as well: git runs in a temporary folder outside the repository and
+ * may not look above it (GIT_CEILING_DIRECTORIES).
+ */
+function neutralGitEnv(base: NodeJS.ProcessEnv, cwd: string): NodeJS.ProcessEnv {
+  const env: NodeJS.ProcessEnv = { ...base };
+  for (const name of Object.keys(env)) if (name.startsWith("GIT_")) delete env[name];
+  return {
+    ...env,
+    GIT_CONFIG_NOSYSTEM: "1",
+    GIT_CONFIG_SYSTEM: devNull,
+    GIT_CONFIG_GLOBAL: devNull,
+    GIT_CEILING_DIRECTORIES: dirname(cwd),
+  };
+}
+
+/** The unified diff from `before` to the file at `path`, from its first hunk (headers dropped),
+ *  identical under any git configuration (`neutralGitEnv`). */
+function hunks(before: string, path: string, base: NodeJS.ProcessEnv = process.env): string {
   const dir = mkdtempSync(join(tmpdir(), "tracking-freeze-"));
   try {
     const old = join(dir, "old");
     writeFileSync(old, before);
-    let out = "";
-    try {
-      out = execFileSync(
-        "git",
-        ["diff", "--no-index", "--no-color", "--no-ext-diff", "--diff-algorithm=myers", "-U3", old, join(ROOT, path)],
-        { cwd: ROOT, encoding: "utf8" },
-      );
-    } catch (e) {
-      // git diff --no-index exits 1 when the files differ; its stdout is the diff.
-      const err = e as { status?: number; stdout?: string };
-      if (err.status !== 1 || typeof err.stdout !== "string") throw e;
-      out = err.stdout;
-    }
-    return fromFirstHunk(out);
+    return fromFirstHunk(gitDiffNoIndex(old, join(ROOT, path), neutralGitEnv(base, dir), dir));
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
@@ -272,6 +300,42 @@ describe("tracking-freeze instruments", () => {
     expect(d).toMatch(/^@@ -\d+,\d+ \+\d+,\d+ @@/);
     expect(d).toContain('-  return `purchase-${orderRef}`;');
     expect(d).toContain('+  return `purchase_${orderRef}`;');
+  });
+
+  /* Task 2.13: the stored patches are compared hunk for hunk, so the diff must not depend on who
+     runs it. Each hostile setting below changes git's output when it reaches git (the control);
+     the instrument must give the default result anyway. */
+  describe("diffs the same whatever the user's or the system's git configuration says", () => {
+    const path = "src/lib/fbq.ts";
+    const now = readRepoFile(path);
+    // Two changes nine unchanged lines apart: two hunks at -U3, one hunk under diff.interHunkContext=10.
+    const before = now.replace('window.fbq?.("track"', 'window.fbq?.("trackX"').replace("purchase_", "purchase-");
+    const HOSTILE_CONFIG = "[diff]\n\tinterHunkContext = 10\n";
+    const home = mkdtempSync(join(tmpdir(), "tracking-freeze-home-"));
+    const hostileFile = join(home, ".gitconfig");
+    writeFileSync(hostileFile, HOSTILE_CONFIG);
+    const oldFile = join(home, "old");
+    writeFileSync(oldFile, before);
+    afterAll(() => rmSync(home, { recursive: true, force: true }));
+
+    const cases: readonly [string, Readonly<Record<string, string>>][] = [
+      ["diff.interHunkContext=10 in ~/.gitconfig", { HOME: home, XDG_CONFIG_HOME: home }],
+      ["diff.interHunkContext=10 in the file GIT_CONFIG_GLOBAL names", { GIT_CONFIG_GLOBAL: hostileFile }],
+      ["diff.interHunkContext=10 in the file GIT_CONFIG_SYSTEM names", { GIT_CONFIG_SYSTEM: hostileFile, GIT_CONFIG_NOSYSTEM: "" }],
+      ["diff.interHunkContext=10 passed as -c through GIT_CONFIG_COUNT", { GIT_CONFIG_COUNT: "1", GIT_CONFIG_KEY_0: "diff.interHunkContext", GIT_CONFIG_VALUE_0: "10" }],
+      ["GIT_DIFF_OPTS=--unified=10", { GIT_DIFF_OPTS: "--unified=10" }],
+    ];
+
+    it("splits the planted pair into two hunks by default", () => {
+      expect(hunks(before, path).match(/^@@ /gm)).toHaveLength(2);
+    });
+
+    it.each(cases)("%s", (_name, vars) => {
+      const hostile = { ...process.env, ...vars };
+      const control = fromFirstHunk(gitDiffNoIndex(oldFile, join(ROOT, path), hostile, ROOT));
+      expect(control, "the hostile setting must change a plain git run, or this case proves nothing").not.toBe(hunks(before, path));
+      expect(hunks(before, path, hostile)).toBe(hunks(before, path));
+    });
   });
 
   it("reads describe and it titles, nested, including it.each", () => {
