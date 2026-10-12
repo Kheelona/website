@@ -7,16 +7,16 @@ sources: [log.md, open-questions.md]
 
 # Status (2026-10-12)
 
-**Phase:** **5, build, wave 3 of 10 running** (Gate A approved D046; Phase 4 plan done 2026-10-12). The
+**Phase:** **5, build, wave 5 of 10 running** (Gate A approved D046; Phase 4 plan done 2026-10-12). The
 founder asked for the full website with animation on **betawebsite.kheelona.com** and
 **betastore.kheelona.com** before it goes live (D048). Plan: [tasks](engineering/tasks.md) (10 waves),
 [architecture](engineering/architecture.md), [QA review](qa/architecture-review-2026-10-12.md), [test plan](qa/test-plan.md).
 After the build: Phase 6 QA, push `beta`, founder runbook (architecture §15.4), **Gate B** on beta, merge to `main`.
 **Account:** apoorva@kheelona.com again (since 23:15 2026-10-12; apoorva@geekyants.work 21:00-23:00). **Branch:** `reset/website-v2`, not pushed.
 **RESUME FROM [build runbook](engineering/build-runbook.md) §4.** **Waves 1 and 2 closed** (wave 2 at 22:30: twelve tasks
-merged, verify 3581 tests, `next build` green; rulings `610f141`). **Wave 3:** all six build tasks and 2.11-2.13 merged
-(`28b4440`; verify 4277 tests, verify:e2e green). 3.5 product details tabs merged (**N21 corrected**: the approved page shows
-tabs, P1). Running `wf_431ed8e5-d4c`: 3.6 follow-ups + wave 4 ([tasks](engineering/tasks.md) "Wave 3 close"; [deviations](qa/deviations.md)).
+merged, verify 3581 tests, `next build` green; rulings `610f141`). **Waves 3 and 4 closed** (templates, stories route, legal
+template, machine files; verify 4570 tests; e2e red only on `/stories/*` until wave 5, ruled). **Wave 5 part A running**
+(`wf_08c09180-f5a`: 4.5, Home, product, safety, hub, 3 articles, 404); then B and C ([tasks](engineering/tasks.md) "Wave 4 close").
 **Incident 2026-10-12:** a push meant for `beta` landed on `main` (`24e92e3`, vercel.json only; production
 healthy; [lessons](engineering/lessons.md)). `beta` exists on GitHub (builds nothing yet); **beta domains attached to branch `beta`** (founder, done).
 **Done before wave 1:** dev tools pinned (Playwright 1.63.0, axe 4.12.1, Lighthouse 13.4.1, jscpd 5.3.2,
