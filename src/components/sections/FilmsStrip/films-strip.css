@@ -54,6 +54,24 @@
 .ks-film:last-child .ks-film__frame {
   transform-origin: 100% 50%;
 }
+/* Room for the growth, wherever motion.css scales the film in focus (everywhere but reduced motion): it grows by
+   (focus - 1) / 2 of its height above and below, its height is 16 / 9 of its width, and a grid item's percentage margin
+   is a share of its area's width. So this margin is that growth at every width and for any focus value, and the grown
+   frame keeps the mockup's space-2 to its chip and caption instead of painting over them. With reduced motion nothing
+   grows and the tile is the mockup's (mockup.css:43-46), so visual parity (which runs reduced) is unchanged. */
+@media (prefers-reduced-motion: no-preference) {
+  .ks-film__frame {
+    margin-block: calc((var(--ks-film-focus) - 1) * 100% * 8 / 9);
+  }
+}
+/* Phones: the film in focus also grows sideways, into the gap after it (before it, for the last), by (focus - 1) of its
+   width, a film being 80% of the strip. The mockup's space-4 holds that up to about 430 px wide; on wider phones and
+   small tablets the gap widens to the growth, so the grown film never runs under its neighbour. */
+@media (prefers-reduced-motion: no-preference) and (max-width: 719px) {
+  .ks-films {
+    column-gap: max(var(--space-4), calc((var(--ks-film-focus) - 1) * 80%));
+  }
+}
 .ks-film__frame > img,
 .ks-film__frame > video {
   position: absolute;

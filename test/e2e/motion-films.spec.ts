@@ -8,6 +8,8 @@ import { SIDEWAYS_VIEWPORTS, VIEWPORTS, type Viewport } from "./support/viewport
  *   - motion on: the film most inside the strip's central band carries is-focus and its frame scales to
  *     --ks-film-focus by a transform transition over --duration-base with --ease-standard; every other film stays at 1;
  *     the scaled frame stays inside the strip (never clipped by it), at rest and at the strip's end;
+ *   - the scaled frame never covers its own tile's chip row or caption, nor the films beside it, at rest and at the
+ *     strip's end, on the whole viewport matrix and on wider phones up to the three-film layout (500 to 719 px);
  *   - nothing scrolls the document sideways at either end of the strip, on the whole viewport matrix (test plan §3,
  *     320 px included; scrollWidth against clientWidth, lessons §2);
  *   - reduced motion: the focus is still marked, but nothing scales and nothing transitions.
@@ -16,6 +18,9 @@ import { SIDEWAYS_VIEWPORTS, VIEWPORTS, type Viewport } from "./support/viewport
 const STORY = "sections-filmsstrip--product";
 const phone = VIEWPORTS.find((v) => v.width === 390)!;
 const laptop = VIEWPORTS.find((v) => v.width === 1440 && v.height === 900)!;
+/** Wider than the matrix's phones and still one film with a peek (below 720 px), where the film in focus grows
+ *  sideways by more than the mockup's space-4 gap: large phones, foldables, small tablets upright. */
+const WIDE_PHONES = [500, 600, 719].map((width): Viewport => ({ name: `phone-${width}x960`, width, height: 960, isMobile: true, group: "phone" }));
 
 async function openStory(context: BrowserContext, info: TestInfo): Promise<Page> {
   const baseURL = info.project.use.baseURL;
@@ -46,6 +51,10 @@ type Focus = {
   tokens: { focus: number; base: string; ease: string };
   /** The focused frame's box against the strip's box (px), once its transition has finished. */
   inside: { left: number; right: number; top: number; bottom: number } | null;
+  /** How far the focused frame's box runs into its own tile's chip row and caption, and into the frames of the films
+   *  beside it (px; 0 when they do not meet): the frame is positioned and transformed, so where it grows it paints over
+   *  the words, and the next film's frame paints over it. */
+  covers: { meta: number; caption: number; previous: number; next: number } | null;
 };
 
 /** Waits for one film to take the focus, finishes the running transitions, and reads the strip. */
@@ -65,6 +74,15 @@ async function readFocus(page: Page): Promise<Focus> {
     const style = frame ? getComputedStyle(frame) : null;
     const box = frame?.getBoundingClientRect();
     const strip = track.getBoundingClientRect();
+    /** The depth of two boxes' overlap: the smaller side of their intersection, 0 when they do not meet. */
+    const depth = (a: DOMRect, b: DOMRect) =>
+      Math.max(0, Math.min(Math.min(a.right, b.right) - Math.max(a.left, b.left), Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top)));
+    const wordsOf = (selector: string) => focusedTile!.querySelector<HTMLElement>(selector)!.getBoundingClientRect();
+    const frameBeside = (step: number) => {
+      const film = tiles[tiles.indexOf(focusedTile!) + step];
+      return film ? film.querySelector<HTMLElement>(".ks-film__frame")!.getBoundingClientRect() : null;
+    };
+    const near = (other: DOMRect | null) => (box && other ? depth(box, other) : 0);
     return {
       focused: tiles.filter((t) => t.classList.contains("is-focus")).map((t) => t.dataset.videoId!),
       scales: Object.fromEntries(tiles.map((t) => [t.dataset.videoId!, scaleOf(t.querySelector(".ks-film__frame")!)])),
@@ -75,8 +93,17 @@ async function readFocus(page: Page): Promise<Focus> {
         ease: root.getPropertyValue("--ease-standard").trim(),
       },
       inside: box ? { left: box.left - strip.left, right: strip.right - box.right, top: box.top - strip.top, bottom: strip.bottom - box.bottom } : null,
+      covers: box
+        ? { meta: depth(box, wordsOf(".ks-film__meta")), caption: depth(box, wordsOf(".ks-film__caption")), previous: near(frameBeside(-1)), next: near(frameBeside(1)) }
+        : null,
     };
   });
+}
+
+/** The grown film never covers its own chip or caption, nor the films beside it (D049 pick 8 keeps the mockup whole). */
+function expectClear(f: Focus, at: string) {
+  expect(f.covers, `${at}: a film is in focus`).not.toBeNull();
+  for (const [what, px] of Object.entries(f.covers!)) expect(px, `${at}: the focused frame covers its ${what} by ${px.toFixed(1)} px`).toBeLessThanOrEqual(0.5);
 }
 
 /** Scrolls the strip to its far end at once and waits for the focus to settle on a film there. */
@@ -111,12 +138,14 @@ test.describe("motion: the film in focus grows (D049 pick 8)", () => {
         expect(started.every((m) => m.name === "transform")).toBe(true);
 
         for (const [side, gap] of Object.entries(rest.inside!)) expect(gap, `at rest the scaled film stays inside the strip (${side})`).toBeGreaterThanOrEqual(-0.5);
+        expectClear(rest, "at rest");
 
         await toTheEnd(page);
         const end = await readFocus(page);
         expect(end.focused).toHaveLength(1);
         expect(end.scales[end.focused[0]]).toBeCloseTo(end.tokens.focus, 3);
         for (const [side, gap] of Object.entries(end.inside!)) expect(gap, `at the end the scaled film stays inside the strip (${side})`).toBeGreaterThanOrEqual(-0.5);
+        expectClear(end, "at the end");
       });
     });
   }
@@ -127,14 +156,15 @@ test.describe("motion: the film in focus grows (D049 pick 8)", () => {
         const f = await readFocus(page);
         expect(f.focused).toHaveLength(1);
         expect(Object.values(f.scales).every((s) => s === 1), JSON.stringify(f.scales)).toBe(true);
+        expectClear(f, `${vp.name}, reduced motion`);
         expect((await motionStarted(page)).filter((m) => m.target.includes("ks-film"))).toEqual([]);
       });
     }
   });
 });
 
-test.describe("motion: the films strip never scrolls the page sideways, and the scaled film stays in the strip", () => {
-  for (const vp of SIDEWAYS_VIEWPORTS) {
+test.describe("motion: the films strip never scrolls the page sideways, and the scaled film stays in the strip, off its words and off its neighbours", () => {
+  for (const vp of [...SIDEWAYS_VIEWPORTS, ...WIDE_PHONES]) {
     test(`${vp.name}: at the start and at the end of the strip`, async ({ browser }, info) => {
       await withStory(browser, info, vp, { reducedMotion: "no-preference" }, async (page) => {
         const overflow = () => page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
@@ -144,6 +174,7 @@ test.describe("motion: the films strip never scrolls the page sideways, and the 
           expect(await overflow(), `no sideways scroll at the ${at}`).toBeLessThanOrEqual(0);
           expect(f.scales[f.focused[0]]).toBeCloseTo(f.tokens.focus, 3);
           for (const [side, gap] of Object.entries(f.inside!)) expect(gap, `${at}: the scaled film inside the strip (${side})`).toBeGreaterThanOrEqual(-0.5);
+          expectClear(f, at);
         }
       });
     });
