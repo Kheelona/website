@@ -173,6 +173,11 @@ export const WHATSAPP_SHARE_LABEL = "Know a parent who needs this? Share Kheelu 
 /** The contact email. Founder-confirmed 2026-07-28 as a monitored inbox. */
 export const CONTACT_EMAIL: string | null = "hello@kheelona.com";
 
+/** The grievance contact the DPDP Act expects /privacy to name (2026-10-12). It is the
+ *  same address the parent app's "Contact our grievance officer" opens, so the page and
+ *  the app send a parent to one place. Founder to confirm the officer's name. */
+export const GRIEVANCE_EMAIL = "connect@kheelona.com";
+
 /* ── Seller of record ───────────────────────────────────────────────────── */
 
 /** Founder-supplied 2026-08-22 from the GST registration certificate
