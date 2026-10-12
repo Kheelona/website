@@ -9,14 +9,16 @@ import { faqPageNode } from "./faq-page";
 import { howToNode } from "./how-to";
 import { organizationNode } from "./organization";
 import { productNode } from "./product";
+import { aboutPageNode, contactPageNode } from "./web-page";
 import { websiteNode } from "./website";
 
 /*
  * The fixture every builder renders into, written to __fixtures__/schema-fixture.html: the file the
  * schema.org validator report of task 2.7 covers (lessons §6: content tests do not check validity).
- * A diff in that file means the schema changed, so run the validator again before merging:
- *   validator.schema.org (paste the file) and Google's Rich Results Test for Product, FAQPage,
- *   BreadcrumbList and BlogPosting.
+ * A diff in that file means the schema changed, so check it again before merging: against the
+ * schema.org vocabulary (types, properties, domains and ranges), and, with a browser, in
+ * validator.schema.org (paste the file) and Google's Rich Results Test for Product, FAQPage,
+ * BreadcrumbList and BlogPosting (the browser run is Phase 6 QA's, main session 2026-10-12).
  * Fixture facts only: the real ones are content's (tasks 2.1, 5.x).
  */
 
@@ -114,7 +116,19 @@ const setupPage = pageGraph(
   }),
 );
 
-const pages: readonly SchemaGraph[] = [site, productPage, articlePage, setupPage];
+/* /team and /contact point at the Organization the shell declares (ruling 2026-10-12). */
+const teamPage = pageGraph(
+  aboutPageNode({
+    name: "The people who build Kheelona",
+    description:
+      "Kheelona Robotics Private Limited, a small company in Bengaluru, makes Kheelu. Its three co-founders are Apoorva Sahu, Aman Soni and Kashyap C.R.",
+    path: "/team",
+  }),
+);
+
+const contactPage = pageGraph(contactPageNode({ name: "Contact Kheelona", path: "/contact" }));
+
+const pages: readonly SchemaGraph[] = [site, productPage, articlePage, setupPage, teamPage, contactPage];
 
 const html = [
   "<!doctype html>",

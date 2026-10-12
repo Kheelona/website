@@ -31,9 +31,9 @@ export function siteGraph(
   return { "@context": CONTEXT, "@graph": [organization, website] };
 }
 
-/** A page's own nodes (Product, FAQPage, BreadcrumbList, BlogPosting, HowTo). Never the
- *  Organization or the WebSite: the shell already declared them, and a second copy under the same
- *  `@id` is the duplicate the live site once shipped on every page. */
+/** A page's own nodes (Product, FAQPage, BreadcrumbList, BlogPosting, HowTo, AboutPage,
+ *  ContactPage). Never the Organization or the WebSite: the shell already declared them, and a
+ *  second copy under the same `@id` is the duplicate the live site once shipped on every page. */
 export function pageGraph(...nodes: readonly SchemaNode[]): SchemaGraph {
   if (nodes.length === 0) throw new Error("pageGraph needs at least one node");
   const publisher = nodes.find((node) => PUBLISHER_TYPES.includes(node["@type"]));

@@ -8,7 +8,7 @@ import { leadWithHeadline } from "./price-lead";
  *
  *   export const metadata = pageMeta({ ...page.meta, path: "/safety", offer });
  *
- * Three rules, each learned on the live site (lessons §1, §6):
+ * Four rules, each learned on the live site (lessons §1, §6; D028):
  *
  * 1. **The title is absolute.** `{ absolute }` ignores any parent title template, so the brand can
  *    never be doubled (it was, on production, for months). The words are the content module's.
