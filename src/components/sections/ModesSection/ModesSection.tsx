@@ -1,10 +1,9 @@
 import Image from "next/image";
-import { Button } from "@/components/ui/Button/Button";
+import { SectionLinkRow, SectionTitle } from "@/components/sections/FeatureSplit/section-parts";
 import { Card } from "@/components/ui/Card/Card";
-import { Heading } from "@/components/ui/Heading/Heading";
 import { Icon } from "@/components/ui/Icon/Icon";
 import { LanguageChips } from "@/components/ui/LanguageChips/LanguageChips";
-import { Actions, Cols, Container, Section, SectionHead } from "@/components/ui/Layout/Layout";
+import { Cols, Container, Section, SectionHead } from "@/components/ui/Layout/Layout";
 import { Photo } from "@/components/ui/Photo/Photo";
 import { imageSource, loadingFor } from "@/components/ui/Photo/image";
 import { RichText } from "@/components/ui/RichText/RichText";
@@ -34,7 +33,7 @@ export function ModesSection({ variant, id = "modes", heading, photo, modes, lan
     <Section id={id} band labelledBy={heading.id}>
       <Container>
         <SectionHead split="start">
-          <Heading eyebrow={heading.eyebrow} title={heading.title} lead={heading.lead} id={heading.id} offer={offer} />
+          <SectionTitle heading={heading} offer={offer} />
           <Photo image={photo.image} sizes={PHOTO_SIZES} variant={photo.wide ? "wide" : undefined} xl reveal />
         </SectionHead>
         <Cols count={3} reveal className={product ? "ks-modes" : undefined}>
@@ -69,13 +68,7 @@ export function ModesSection({ variant, id = "modes", heading, photo, modes, lan
             <TickList items={know.items.map((item) => ({ icon: <Icon name={item.icon} />, text: text(item.text) }))} />
           </Card>
         )}
-        {link && (
-          <Actions>
-            <Button variant="ghost" href={link.href} cta={link.cta} iconEnd="arrow-right">
-              {link.label}
-            </Button>
-          </Actions>
-        )}
+        <SectionLinkRow link={link} />
       </Container>
     </Section>
   );

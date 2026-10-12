@@ -1,11 +1,10 @@
 import type { ReactNode } from "react";
 import type { ArtBoardRef, Copy, ImageRef, Offer, Tone } from "@/content/types";
-import type { HeadingProps } from "@/components/ui/Heading/Heading";
 import type { IconName } from "@/components/ui/Icon/Icon";
 import type { DoodleLayer } from "@/components/ui/ImaginationFrame/ImaginationFrame";
 import type { MediaRatio } from "@/components/ui/Photo/Photo";
 import type { SourceNoteItem } from "@/components/ui/SourceMarker/SourcesNote";
-import type { CtaId } from "@/lib/tracking/cta";
+import type { SectionHeading, SectionLink } from "./section-parts";
 
 /* FeatureSplit's configuration (task 3.3; components §2): words beside media, in the layouts of the approved mockup:
  * - `imagination`: Home fold 3, the sourced words and the Kheelu card beside the imagination frame;
@@ -16,15 +15,10 @@ import type { CtaId } from "@/lib/tracking/cta";
  * - `pair`: two short folds as cards side by side (safety folds 5 and 6);
  * - `quote`: why we build, beside the founder's quote (team fold 4). */
 
-export type FeatureHeading = Pick<HeadingProps, "eyebrow" | "title" | "lead" | "align"> & { readonly id: string };
+export type FeatureHeading = SectionHeading;
 
 /** A link in the fold: a ghost link with its arrow, or, with `icon`, a secondary button with the icon first. */
-export interface FeatureLink {
-  readonly label: string;
-  readonly href: string;
-  readonly cta?: CtaId;
-  readonly icon?: IconName;
-}
+export type FeatureLink = SectionLink;
 
 /** One line of a DS trust list: the icon, an optional title, the words. */
 export interface FeatureItem {

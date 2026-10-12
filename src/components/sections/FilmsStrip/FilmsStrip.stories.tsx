@@ -83,6 +83,6 @@ export const Store: Story = {
   args: {
     heading: { title: "See Kheelu {nowrap:{hand:ask},} in real homes.", lead: "Real children in real homes. Press play on any of them.", id: "ask-title" },
     posters: "lazy",
-    link: { label: "Back to your details", href: "#details", icon: "caret-up" },
+    link: { label: "Back to your details", href: "#details", iconEnd: "caret-up" },
   },
 };

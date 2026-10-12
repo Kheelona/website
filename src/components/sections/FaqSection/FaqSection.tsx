@@ -1,15 +1,14 @@
 import clsx from "clsx";
 import type { FaqItem, LeadText, Offer, ProseBlock } from "@/content/types";
-import { Button } from "@/components/ui/Button/Button";
+import { SectionLinkRow, SectionTitle } from "@/components/sections/FeatureSplit/section-parts";
 import { FaqList } from "@/components/ui/FaqList/FaqList";
-import { Heading } from "@/components/ui/Heading/Heading";
 import { HelpLine } from "@/components/ui/HelpLine/HelpLine";
 import { Icon } from "@/components/ui/Icon/Icon";
-import { Actions, Container, Section, Split } from "@/components/ui/Layout/Layout";
+import { Container, Section, Split } from "@/components/ui/Layout/Layout";
 import { Photo } from "@/components/ui/Photo/Photo";
 import { RichText, type SourceMarkerOptions } from "@/components/ui/RichText/RichText";
 import { SourcesNote } from "@/components/ui/SourceMarker/SourcesNote";
-import type { FaqLink, FaqSectionProps } from "./faq-section.types";
+import type { FaqSectionProps } from "./faq-section.types";
 
 export type { FaqSectionConfig, FaqSectionProps } from "./faq-section.types";
 
@@ -45,7 +44,7 @@ export function FaqSection(props: FaqSectionProps) {
   }
 
   const { heading, id = "faq", band } = props;
-  const title = <Heading eyebrow={heading.eyebrow} title={heading.title} id={heading.id} offer={offer} className={props.variant === "photo" ? "ks-faq-photo__head" : undefined} />;
+  const title = <SectionTitle heading={heading} offer={offer} className={props.variant === "photo" ? "ks-faq-photo__head" : undefined} />;
 
   if (props.variant === "photo") {
     const { photo } = props;
@@ -63,7 +62,7 @@ export function FaqSection(props: FaqSectionProps) {
           <div className="ks-faq-photo__body">
             {list({ firstOpen: props.firstOpen })}
             {props.notes}
-            <MoreLink link={props.more} />
+            <SectionLinkRow link={props.more} />
           </div>
         </Container>
       </Section>
@@ -94,23 +93,11 @@ export function FaqSection(props: FaqSectionProps) {
                 className="ks-faq__help"
               />
             )}
-            <MoreLink link={props.more} />
+            <SectionLinkRow link={props.more} />
           </div>
         </Split>
       </Container>
     </Section>
-  );
-}
-
-/** The ghost link after the questions, with its arrow, in the DS actions row. */
-function MoreLink({ link }: { link: FaqLink | undefined }) {
-  if (!link) return null;
-  return (
-    <Actions>
-      <Button variant="ghost" href={link.href} cta={link.cta} iconEnd="arrow-right">
-        {link.label}
-      </Button>
-    </Actions>
   );
 }
 

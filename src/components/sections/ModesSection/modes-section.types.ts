@@ -1,14 +1,13 @@
 import type { Copy, ImageRef, Offer, Tone } from "@/content/types";
-import type { HeadingProps } from "@/components/ui/Heading/Heading";
+import type { SectionHeading, SectionLink } from "@/components/sections/FeatureSplit/section-parts";
 import type { IconName } from "@/components/ui/Icon/Icon";
 import type { LanguageChip } from "@/components/ui/LanguageChips/LanguageChips";
-import type { CtaId } from "@/lib/tracking/cta";
 
 /* ModesSection's configuration (task 3.3; components §2): the three modes and the languages, on Home (fold 4, "What
  * is Kheelu?") and the product page (fold 4, "How it works", with compact mode rows on phones and the Good to know
  * card). */
 
-export type ModesHeading = Pick<HeadingProps, "eyebrow" | "title" | "lead"> & { readonly id: string };
+export type ModesHeading = SectionHeading;
 
 export interface ModeCardCopy {
   /** A fragment other pages link to, on the card's title: Story mode's `story-mode`. */
@@ -49,7 +48,7 @@ export interface ModesSectionConfig {
   readonly languages: ModesLanguages;
   readonly know?: ModesKnow;
   /** The ghost link that closes the fold, with its arrow. */
-  readonly link?: { readonly label: string; readonly href: string; readonly cta?: CtaId };
+  readonly link?: SectionLink;
 }
 
 export interface ModesSectionProps extends ModesSectionConfig {

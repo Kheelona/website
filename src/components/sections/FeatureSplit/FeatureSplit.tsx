@@ -2,13 +2,11 @@ import clsx from "clsx";
 import type { ReactNode } from "react";
 import { AppScreens } from "@/components/ui/AppScreens/AppScreens";
 import { ArtBoard } from "@/components/ui/ArtBoard/ArtBoard";
-import { Button } from "@/components/ui/Button/Button";
 import { Card } from "@/components/ui/Card/Card";
 import { ChipList } from "@/components/ui/Chip/Chip";
-import { Heading } from "@/components/ui/Heading/Heading";
 import { Icon } from "@/components/ui/Icon/Icon";
 import { ImaginationFrame } from "@/components/ui/ImaginationFrame/ImaginationFrame";
-import { Actions, Cols, Container, Section, SectionHead, Split } from "@/components/ui/Layout/Layout";
+import { Cols, Container, Section, SectionHead, Split } from "@/components/ui/Layout/Layout";
 import { Photo } from "@/components/ui/Photo/Photo";
 import { Quote } from "@/components/ui/Quote/Quote";
 import { RichText } from "@/components/ui/RichText/RichText";
@@ -16,7 +14,8 @@ import { SourcesNote } from "@/components/ui/SourceMarker/SourcesNote";
 import { Sticker } from "@/components/ui/Sticker/Sticker";
 import { TrustList } from "@/components/ui/TrustList/TrustList";
 import type { Copy, Offer } from "@/content/types";
-import type { FeatureHeading, FeatureItem, FeatureLink, FeatureMedia, FeatureSplitConfig, FeatureSplitProps } from "./feature-split.types";
+import type { FeatureItem, FeatureMedia, FeatureSplitConfig, FeatureSplitProps } from "./feature-split.types";
+import { SectionLinkRow, SectionTitle } from "./section-parts";
 
 export type { FeatureSplitConfig, FeatureSplitProps } from "./feature-split.types";
 
@@ -55,9 +54,9 @@ export function FeatureSplit(props: FeatureSplitProps) {
           <Cols count={2} className="ks-sf-pair">
             {props.cards.map((card) => (
               <Card key={card.heading.id} as="section" labelledBy={card.heading.id} reveal>
-                <FeatureTitle heading={card.heading} offer={offer} />
+                <SectionTitle heading={card.heading} offer={offer} />
                 <Paragraphs copy={card.copy} offer={offer} />
-                <LinkRow link={card.link} />
+                <SectionLinkRow link={card.link} />
               </Card>
             ))}
           </Cols>
@@ -67,7 +66,7 @@ export function FeatureSplit(props: FeatureSplitProps) {
   }
 
   const { heading, id, band } = props;
-  const title = <FeatureTitle heading={heading} offer={offer} />;
+  const title = <SectionTitle heading={heading} offer={offer} />;
   return (
     <Section id={id} band={band} labelledBy={heading.id}>
       <Container>
@@ -115,7 +114,7 @@ function Body({
             />
           </Split>
           {sources && <SourcesNote label={sources.label} sources={sources.items} />}
-          <LinkRow link={config.link} center />
+          <SectionLinkRow link={config.link} center />
         </>
       );
     }
@@ -142,7 +141,7 @@ function Body({
           <div>
             {title}
             {words}
-            <LinkRow link={config.link} />
+            <SectionLinkRow link={config.link} />
           </div>
           <Media media={media} text={text} />
         </Split>
@@ -171,7 +170,7 @@ function Body({
               tone={quote.tone}
             />
           </Split>
-          <LinkRow link={config.link} />
+          <SectionLinkRow link={config.link} />
         </>
       );
     }
@@ -198,7 +197,7 @@ function AppScreensBody({ config, title, text }: { config: Extract<FeatureSplitC
         <Split>
           <div data-reveal="">
             {list}
-            <LinkRow link={link} />
+            <SectionLinkRow link={link} />
           </div>
           {media}
         </Split>
@@ -215,7 +214,7 @@ function AppScreensBody({ config, title, text }: { config: Extract<FeatureSplitC
           {note !== undefined && <p className="kh-body-s ks-app-note">{text(note)}</p>}
         </div>
         {media}
-        <LinkRow link={link} />
+        <SectionLinkRow link={link} />
       </Split>
     );
   }
@@ -225,15 +224,11 @@ function AppScreensBody({ config, title, text }: { config: Extract<FeatureSplitC
       <div>
         {title}
         {list}
-        <LinkRow link={link} />
+        <SectionLinkRow link={link} />
       </div>
       {media}
     </Split>
   );
-}
-
-function FeatureTitle({ heading, offer }: { heading: FeatureHeading; offer: Offer | undefined }) {
-  return <Heading eyebrow={heading.eyebrow} title={heading.title} lead={heading.lead} align={heading.align} id={heading.id} offer={offer} />;
 }
 
 /** Paragraphs in `kh-body-l`, bare or in a measured block, with an optional closing line in the subtitle style. */
@@ -283,22 +278,4 @@ function trustItems(items: readonly FeatureItem[], text: Text) {
     title: item.title === undefined ? undefined : text(item.title),
     body: text(item.body),
   }));
-}
-
-/** A ghost link with its arrow, or a secondary button with its icon first, in the DS actions row. */
-function LinkRow({ link, center }: { link: FeatureLink | undefined; center?: boolean }) {
-  if (!link) return null;
-  return (
-    <Actions center={center}>
-      {link.icon ? (
-        <Button variant="secondary" href={link.href} cta={link.cta} icon={link.icon}>
-          {link.label}
-        </Button>
-      ) : (
-        <Button variant="ghost" href={link.href} cta={link.cta} iconEnd="arrow-right">
-          {link.label}
-        </Button>
-      )}
-    </Actions>
-  );
 }

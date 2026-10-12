@@ -1,17 +1,16 @@
 import type { ReactNode } from "react";
 import type { Copy, FaqItem, ImageRef, Offer } from "@/content/types";
-import type { HeadingProps } from "@/components/ui/Heading/Heading";
+import type { SectionHeading, SectionLink } from "@/components/sections/FeatureSplit/section-parts";
 import type { IconName } from "@/components/ui/Icon/Icon";
 import type { SourceNoteItem } from "@/components/ui/SourceMarker/SourcesNote";
-import type { CtaId } from "@/lib/tracking/cta";
 
 /* FaqSection's configuration (task 3.3; components §2): what a page's content gives the FAQ fold. Three layouts
  * from the approved mockup: `default` (Home and product fold 8: the heading column beside the questions), `photo`
  * (safety fold 7 and the buyer's guide fold 5: heading, photo and questions on a grid) and `store` (the store's
  * "Questions before you pay", inside the store column). FAQPage JSON-LD is the template's (4.1), from the same items. */
 
-/** The fold's heading: the eyebrow and the title, whose id names the section. */
-export type FaqHeading = Pick<HeadingProps, "eyebrow" | "title"> & { readonly id: string };
+/** The fold's heading: the eyebrow and the title, whose id names the section (no lead in the approved folds). */
+export type FaqHeading = Pick<SectionHeading, "eyebrow" | "title" | "id">;
 
 /** The product fold's source note: its bold word ("Sources") and the sources in marker order. */
 export interface FaqSources {
@@ -20,12 +19,7 @@ export interface FaqSources {
 }
 
 /** A ghost link after the questions, with its arrow ("See all questions", `faq-more`). */
-export interface FaqLink {
-  readonly label: string;
-  readonly href: string;
-  /** A secondary CTA value from src/lib/tracking/cta.ts, where the copy tags the link. */
-  readonly cta?: CtaId;
-}
+export type FaqLink = SectionLink;
 
 /** The product page's help line under the questions ("Still have a question? WhatsApp or call …"). */
 export interface FaqHelp {

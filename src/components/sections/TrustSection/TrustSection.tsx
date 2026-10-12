@@ -1,14 +1,13 @@
 import { AppScreens } from "@/components/ui/AppScreens/AppScreens";
-import { Button } from "@/components/ui/Button/Button";
-import { Heading } from "@/components/ui/Heading/Heading";
 import { Icon } from "@/components/ui/Icon/Icon";
-import { Actions, Container, Section, SectionHead, Split } from "@/components/ui/Layout/Layout";
+import { Container, Section, SectionHead, Split } from "@/components/ui/Layout/Layout";
 import { Photo } from "@/components/ui/Photo/Photo";
 import { RichText } from "@/components/ui/RichText/RichText";
 import { TrustLine } from "@/components/ui/TrustLine/TrustLine";
 import { TrustList } from "@/components/ui/TrustList/TrustList";
 import type { Copy, Offer } from "@/content/types";
-import type { TrustItemCopy, TrustLink, TrustSectionProps } from "./trust-section.types";
+import { SectionLinkRow, SectionTitle } from "@/components/sections/FeatureSplit/section-parts";
+import type { TrustItemCopy, TrustSectionProps } from "./trust-section.types";
 
 export type { TrustItemCopy, TrustSectionConfig, TrustSectionProps } from "./trust-section.types";
 
@@ -38,16 +37,7 @@ const BELLY_SIZES = "(min-width: 900px) 300px, 200px";
 export function TrustSection(props: TrustSectionProps) {
   const { heading, items, id, band, offer, cta } = props;
   const text = (copy: Copy) => <RichText text={copy} offer={offer} />;
-  const title = (
-    <Heading
-      eyebrow={heading.eyebrow}
-      title={heading.title}
-      lead={heading.lead}
-      align={props.variant === "safety" ? "center" : undefined}
-      id={heading.id}
-      offer={offer}
-    />
-  );
+  const title = <SectionTitle heading={heading} offer={offer} align={props.variant === "safety" ? "center" : undefined} />;
   const list = trustItems(items, offer);
 
   return (
@@ -85,7 +75,7 @@ export function TrustSection(props: TrustSectionProps) {
             {props.pointer !== undefined && <RichText as="p" className="kh-body-l ks-gd-pointer" text={props.pointer} offer={offer} />}
           </>
         )}
-        {(props.variant === "never" || props.variant === "meets") && <ClosingLink link={props.link} />}
+        {(props.variant === "never" || props.variant === "meets") && <SectionLinkRow link={props.link} />}
         {cta}
       </Container>
     </Section>
@@ -98,22 +88,4 @@ function trustItems(items: readonly TrustItemCopy[], offer: Offer | undefined) {
     title: item.title === undefined ? undefined : <RichText text={item.title} offer={offer} />,
     body: <RichText text={item.body} offer={offer} />,
   }));
-}
-
-/** A ghost link with its arrow, or a secondary button with its icon first, in the DS actions row. */
-function ClosingLink({ link }: { link: TrustLink | undefined }) {
-  if (!link) return null;
-  return (
-    <Actions>
-      {link.icon ? (
-        <Button variant="secondary" href={link.href} cta={link.cta} icon={link.icon}>
-          {link.label}
-        </Button>
-      ) : (
-        <Button variant="ghost" href={link.href} cta={link.cta} iconEnd="arrow-right">
-          {link.label}
-        </Button>
-      )}
-    </Actions>
-  );
 }

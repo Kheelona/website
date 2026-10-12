@@ -1,9 +1,8 @@
-import { Button } from "@/components/ui/Button/Button";
+import { SectionLinkRow, SectionTitle } from "@/components/sections/FeatureSplit/section-parts";
 import { Card } from "@/components/ui/Card/Card";
 import { CompareTable } from "@/components/ui/CompareTable/CompareTable";
-import { Heading } from "@/components/ui/Heading/Heading";
 import { Icon } from "@/components/ui/Icon/Icon";
-import { Actions, Container, Section, SectionHead } from "@/components/ui/Layout/Layout";
+import { Container, Section, SectionHead } from "@/components/ui/Layout/Layout";
 import { RichText } from "@/components/ui/RichText/RichText";
 import type { Copy } from "@/content/types";
 import type { CompareByCategoryProps, CompareMark } from "./compare-by-category.types";
@@ -36,7 +35,7 @@ export function CompareByCategory({ heading, label, firstColumn, columns, rows, 
     <Section labelledBy={heading.id}>
       <Container>
         <SectionHead>
-          <Heading eyebrow={heading.eyebrow} title={heading.title} lead={heading.lead} align="center" id={heading.id} offer={offer} />
+          <SectionTitle heading={heading} align="center" offer={offer} />
         </SectionHead>
         <div className="ks-compare-stack" data-reveal="">
           {rows.map((row, r) => (
@@ -70,13 +69,7 @@ export function CompareByCategory({ heading, label, firstColumn, columns, rows, 
           usIndex={0}
           caption={text(caption)}
         />
-        {link && (
-          <Actions center>
-            <Button variant="ghost" href={link.href} cta={link.cta} iconEnd="arrow-right">
-              {link.label}
-            </Button>
-          </Actions>
-        )}
+        <SectionLinkRow link={link} center />
       </Container>
     </Section>
   );

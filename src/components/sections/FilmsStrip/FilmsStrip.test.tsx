@@ -147,7 +147,7 @@ describe("FilmsStrip: the approved markup", () => {
         {...PROPS}
         heading={{ title: "See Kheelu {nowrap:{hand:ask},} in real homes.", lead: norm(section.querySelector(".kh-heading__lead")?.textContent), id: "ask-title" }}
         posters="lazy"
-        link={{ label: "Back to your details", href: "#details", icon: "caret-up" }}
+        link={{ label: "Back to your details", href: "#details", iconEnd: "caret-up" }}
       />,
     );
     expect(shape(container.firstElementChild!)).toEqual(shape(section));

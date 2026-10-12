@@ -1,5 +1,5 @@
+import { SectionTitle } from "@/components/sections/FeatureSplit/section-parts";
 import { Card, type CardLink } from "@/components/ui/Card/Card";
-import { Heading } from "@/components/ui/Heading/Heading";
 import { Icon } from "@/components/ui/Icon/Icon";
 import { Cols, Container, LIST_RESET, Section, SectionHead } from "@/components/ui/Layout/Layout";
 import { RichText } from "@/components/ui/RichText/RichText";
@@ -23,7 +23,7 @@ export function CardGrid({ variant, heading, items, band, columns, offer }: Card
     <Section band={band} labelledBy={heading.id}>
       <Container>
         <SectionHead>
-          <Heading eyebrow={heading.eyebrow} title={heading.title} lead={heading.lead} align={heading.align} id={heading.id} offer={offer} />
+          <SectionTitle heading={heading} offer={offer} />
         </SectionHead>
         {variant === "guides" ? (
           <Cols as="ul" count={3} reveal className={`ks-guides ${LIST_RESET}`}>

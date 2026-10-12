@@ -1,8 +1,7 @@
 import type { ReactNode } from "react";
 import type { Copy, ImageRef, Offer } from "@/content/types";
-import type { HeadingProps } from "@/components/ui/Heading/Heading";
 import type { IconName } from "@/components/ui/Icon/Icon";
-import type { CtaId } from "@/lib/tracking/cta";
+import type { SectionHeading, SectionLink } from "@/components/sections/FeatureSplit/section-parts";
 
 /* TrustSection's configuration (task 3.3; components §2): the safety facts as a DS TrustList, in four layouts of the
  * approved mockup:
@@ -13,7 +12,7 @@ import type { CtaId } from "@/lib/tracking/cta";
  * - `never`: the safety page's "What you won't find" (fold 3), five items, three then two from 1024 px;
  * - `meets`: the buyer's guide's answers to the five checks (fold 3), in the checks' order, then a pointer line. */
 
-export type TrustHeading = Pick<HeadingProps, "eyebrow" | "title" | "lead"> & { readonly id: string };
+export type TrustHeading = SectionHeading;
 
 /** One fact: the DS icon, an optional title, the words. */
 export interface TrustItemCopy {
@@ -22,14 +21,9 @@ export interface TrustItemCopy {
   readonly body: Copy;
 }
 
-/** A link after the list: a ghost link with its arrow, or a secondary button with its icon first (`icon`). */
-export interface TrustLink {
-  readonly label: string;
-  readonly href: string;
-  readonly cta?: CtaId;
-  /** Makes the link a secondary button, the icon before the words ("See the full safety facts", shield). */
-  readonly icon?: IconName;
-}
+/** A link after the list: a ghost link with its arrow, or a secondary button with its icon first (`icon`: "See the
+ *  full safety facts", shield). */
+export type TrustLink = SectionLink;
 
 interface Base {
   readonly heading: TrustHeading;

@@ -1,13 +1,12 @@
 import type { Copy, Offer } from "@/content/types";
-import type { HeadingProps } from "@/components/ui/Heading/Heading";
-import type { CtaId } from "@/lib/tracking/cta";
+import type { SectionHeading, SectionLink } from "@/components/sections/FeatureSplit/section-parts";
 
 /* CompareByCategory's configuration (task 3.3; components §2): Home fold 7, Kheelu against kinds of products (never
  * brands, B14). One set of rows feeds both layouts: the phone cards (below 720 px) and the DS table (from 720 px).
  * The phone cards word the other kinds as sentences ("Puzzles and activity books: yes"), which differ from the
  * table's cells, so each row carries both. */
 
-export type CompareHeading = Pick<HeadingProps, "eyebrow" | "title" | "lead"> & { readonly id: string };
+export type CompareHeading = SectionHeading;
 
 /** The DS marks: a check (yes), a cross (no), or words alone (some). */
 export type CompareMark = "yes" | "no" | "some";
@@ -40,7 +39,7 @@ export interface CompareByCategoryConfig {
   /** Under the cards and under the table ("Kinds of products, not brands: …"). */
   readonly caption: Copy;
   /** The ghost link after the comparison, with its arrow ("How to choose an AI toy", `compare-learn`). */
-  readonly link?: { readonly label: string; readonly href: string; readonly cta?: CtaId };
+  readonly link?: SectionLink;
 }
 
 export interface CompareByCategoryProps extends CompareByCategoryConfig {
