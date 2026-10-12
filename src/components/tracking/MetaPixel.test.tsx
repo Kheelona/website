@@ -26,6 +26,14 @@ describe("shouldLoadMetaPixel", () => {
     expect(shouldLoadMetaPixel("website-git-demo-website-kheelona.vercel.app")).toBe(false);
   });
 
+  /* D048: the beta never reaches GA4 or the Meta Pixel (architecture §15.1, §15.3); a page
+     view from there would join a retargeting audience. Only PostHog runs there. */
+  it("does NOT load on the two beta hosts (D048)", () => {
+    expect(shouldLoadMetaPixel("betawebsite.kheelona.com")).toBe(false);
+    expect(shouldLoadMetaPixel("betastore.kheelona.com")).toBe(false);
+    expect(shouldLoadMetaPixel("BETASTORE.KHEELONA.COM")).toBe(false);
+  });
+
   it("does NOT load on the sister site or a lookalike domain", () => {
     expect(shouldLoadMetaPixel("kheelona.ai")).toBe(false);
     expect(shouldLoadMetaPixel("kheelona.com.evil.example")).toBe(false);

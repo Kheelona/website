@@ -18,7 +18,7 @@
 
 /* Relative, not `@/`: next.config.ts imports this file, and Next resolves no
    alias in the config's own import graph (structure §2). */
-import { STORE_ORIGIN } from "./env";
+import { BETA_HOSTS, STORE_ORIGIN } from "./env";
 
 /** The store host. Same repo, reached through the host rewrite in src/proxy.ts
  *  (§8.25-a), so the design system and the brand laws stay in one place.
@@ -418,12 +418,15 @@ export function isPostHogProxyPath(pathname: string): boolean {
   );
 }
 
-/** Deliberately the same list as GA4_HOSTS, for the same reason META_PIXEL_HOSTS
- *  is. The stake here sits between the other two: preview traffic would not
- *  merely dirty a report (GA4) or feed an ad budget (Meta), but session replay
- *  bills per recording and autocapture bills per event, so an ungated preview
- *  deploy spends the founder's PostHog quota on our own QA runs. */
-export const POSTHOG_HOSTS = GA4_HOSTS;
+/** GA4_HOSTS plus exactly the two beta hosts (D048, architecture §15.3, task 2.6).
+ *  The stake sits between the other two lists: preview traffic would not merely
+ *  dirty a report (GA4) or feed an ad budget (Meta), but session replay bills per
+ *  recording and autocapture bills per event, so an ungated preview deploy spends
+ *  the founder's PostHog quota on our own QA runs. The beta is the one exception:
+ *  it is measured by PostHog alone, and the gate stamps every beta event
+ *  `env: "beta"` through `before_send` (never `register`), so it can always be
+ *  filtered out of production numbers. */
+export const POSTHOG_HOSTS = [...GA4_HOSTS, ...BETA_HOSTS] as const;
 
 /** Routes where session replay MUST NOT run, matched as a path prefix AND
  *  EXPRESSED AS THE BROWSER SEES THEM.

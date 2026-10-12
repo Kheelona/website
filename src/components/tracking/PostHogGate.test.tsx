@@ -14,6 +14,7 @@ import {
   replayAllowedOnPath,
   shouldLoadPostHog,
 } from "@/config/site";
+import { BETA_HOSTS } from "@/config/env";
 import {
   phCapture,
   phDistinctId,
@@ -54,6 +55,14 @@ describe("shouldLoadPostHog", () => {
   it("is case-insensitive, because hostnames are", () => {
     expect(shouldLoadPostHog("Kheelona.com")).toBe(true);
     expect(shouldLoadPostHog("STORE.KHEELONA.COM")).toBe(true);
+  });
+
+  /* D048: the beta is measured by PostHog alone, every event stamped env=beta by the gate's
+     before_send (architecture §15.3). GA4 and the Meta Pixel stay off there (their own tests). */
+  it("loads on the two beta hosts (D048)", () => {
+    expect(shouldLoadPostHog("betawebsite.kheelona.com")).toBe(true);
+    expect(shouldLoadPostHog("betastore.kheelona.com")).toBe(true);
+    expect(shouldLoadPostHog("BETASTORE.KHEELONA.COM")).toBe(true);
   });
 });
 
@@ -149,8 +158,10 @@ describe("the PostHog constants", () => {
     expect(POSTHOG_ASSET_HOST).toBe("https://us-assets.i.posthog.com");
   });
 
-  it("measures exactly the hosts GA4 measures", () => {
-    expect([...POSTHOG_HOSTS]).toEqual([...GA4_HOSTS]);
+  /* B2a (architecture §15.3): the production hosts GA4 measures, plus exactly the two beta
+     hosts, changed in the same commit as this assertion. */
+  it("measures the hosts GA4 measures, plus the two beta hosts (D048, B2a)", () => {
+    expect([...POSTHOG_HOSTS]).toEqual([...GA4_HOSTS, ...BETA_HOSTS]);
   });
 
   it("never names a preview or local host", () => {
@@ -220,7 +231,7 @@ describe("the posthog wrapper no-ops when the SDK never loaded", () => {
  *  prefix in one place cannot leave this quietly asserting the old one. */
 describe("the gate points the SDK at our own domain", () => {
   const SOURCE = readFileSync(
-    join(process.cwd(), "src/components/molecules/PostHogGate.tsx"),
+    join(process.cwd(), "src/components/tracking/PostHogGate.tsx"),
     "utf8",
   );
 

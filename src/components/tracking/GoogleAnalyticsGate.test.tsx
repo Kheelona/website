@@ -23,6 +23,14 @@ describe("shouldLoadGa4", () => {
     expect(shouldLoadGa4("website-git-demo-website-kheelona.vercel.app")).toBe(false);
   });
 
+  /* D048: the beta never reaches GA4 or the Meta Pixel (architecture §15.1, §15.3); only
+     PostHog runs there, stamped env=beta. */
+  it("does NOT load on the two beta hosts (D048)", () => {
+    expect(shouldLoadGa4("betawebsite.kheelona.com")).toBe(false);
+    expect(shouldLoadGa4("betastore.kheelona.com")).toBe(false);
+    expect(shouldLoadGa4("BETAWEBSITE.KHEELONA.COM")).toBe(false);
+  });
+
   it("does NOT load on the sister site or a lookalike domain", () => {
     expect(shouldLoadGa4("kheelona.ai")).toBe(false);
     expect(shouldLoadGa4("kheelona.com.evil.example")).toBe(false);
