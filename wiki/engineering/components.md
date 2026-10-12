@@ -35,21 +35,21 @@ Data by props only; server components unless marked client. Story required. New 
 | `IconButton` | DS IconButton: `kh-iconbtn`, `--primary`, `--outline`, `--l` | `icon`, `label` (required), `variant`, `size`, `onClick`, `disabled` | no | films, drawer, nav | 2.2 | planned |
 | `Icon` | DS Icon: `kh-icon`, Phosphor Bold paths from `src/assets/icons.generated.ts` | `name: IconName`, `label?` (then `role="img"`) | no | all | 2.2 | planned |
 | `RichText` | Renders the content inline syntax: `kh-hand`, `kh-mark`, `ks-nowrap`, links, `SourceMarker`, prices, `Placeholder` | `text`, `offer?`, `as` | no | all | 2.2 | planned |
-| `Heading` | DS SectionHeading: `kh-heading`, `kh-heading--hero`, `--center`, `kh-eyebrow`, `kh-heading__title`, `kh-heading__lead` | `eyebrow`, `title`, `lead`, `level` (1-3), `align`, `hero`, `id` | no | all | 2.2 | planned |
+| `Heading` | DS SectionHeading: `kh-heading`, `kh-heading--hero`, `--center`, `kh-eyebrow`, `kh-heading__title`, `kh-heading__lead` | `eyebrow`, `title`, `lead`, `level` (1-3), `align`, `hero`, `id`; `titleStepXl` (a `ks-type-*` step on an inner block span where a compound DS rule beats a class on the h1; mockup-css-mapping row 81) | no | all | 2.2 | planned |
 | `Chip` | `kh-chip`, `kh-chips`; G-19 band fix (`ks-chip--on-band`) | `label`, `tone` | no | H, P, ST (films), SH | 2.2 | planned |
 | `Sticker` | DS Sticker: `kh-sticker`, `--round`, `kh-tone-*`, `--kh-tilt` | `tone`, `tilt`, `round`, children | no | H, P, L (refund, shipping art) | 2.2 | planned |
 | `Logo` | DS Logo: `kh-logo`, `kh-logo-link`, `kheelona-logo.svg` | `href`, `alt`, `height` | no | chrome, ST, TH | 2.2 | planned |
 | `Placeholder` | `ks-placeholder` (from `mk-placeholder`) | `id`, `note` | no | wherever content has `{ph:}` | 2.2 | planned |
-| `SourceMarker`, `SourcesNote` | `ks-src` (44 px tap area), `kh-caption` "Sources" (G-18, D026) | `n`, `href`; `sources[]` | no | H, P, G, A | 2.2 | planned |
+| `SourceMarker`, `SourcesNote` | `ks-src` (44 px tap area), `kh-caption` "Sources" (G-18, D026) | `n`, `href`; `sources[]`; `variant: "article"` (articles add `white-space: nowrap`; mockup-css-mapping §6.2) | no | H, P, G, A | 2.2 | planned |
 | `Layout` family: `Section`, `Container`, `Split`, `Cols`, `SectionHead`, `Actions` | `kh-section` (`--band`, `--tight`), `kh-container`, `kh-split` (`--wide-start`, `--wide-end`), `kh-cols` (`--2`, `--3`, `--4`), `kh-section__head`, `kh-section__actions` (`--center`); `ks-list-reset` (from `mk-list-reset`) | `id`, `band`, `labelledBy`, `reveal`, variant props | no | all | 2.2 | planned |
 | `Photo` | `kh-photo` (`--xl`, `--wide`, `--square`) + `next/image` from `@ds/…`; `ratio` sets the DS `--kh-ratio` variable inline (the one allowed photo style) | `image`, `alt`, `sizes`, `ratio?`, `lcp` (renders `loading="eager"` and `fetchPriority="high"`; no `priority`, deprecated in Next 16), `fetchPriority?`, `variant` | no | H, P, S, G, SU, SH, A | 2.3 | planned |
-| `ArtBoard` | `kh-art`, `kh-art__layer`, `kh-tone-*`, optional `Sticker` (DS scrapbook board, `10-pages.md:42-52`); doodle layers through `Doodle` | `tone`, `label` (aria-label), `layers[{ image \| doodle, left, top \| bottom, width, rotate }]` in %, `sticker?`, `lcp`, `hero` (doodles stay still) | no | H, P, S, G, T, SH, A, L | 2.3 | planned |
+| `ArtBoard` | `kh-art`, `kh-art__layer`, `kh-tone-*`, optional `Sticker` (DS scrapbook board, `10-pages.md:42-52`); doodle layers through `Doodle` | `tone`, `label` (aria-label), `layers[{ image \| doodle, left, top \| bottom, width, rotate }]` in %, `sticker?`, `lcp`, `hero` (doodles stay still); `ratio` (inline `--kh-ratio`), `clamp` (`ks-art--clamp`, the 480 px tablet clamp inside 720-899; mockup-css-mapping §6.7) | no | H, P, S, G, T, SH, A, L | 2.3 | planned |
 | `ImaginationFrame` | DS ImaginationFrame: `kh-imagine`, `__photo`, `__doodle`, `__question`; `ks-imagine-zoom` | `photo`, `alt`, `doodles[]` (drawn, staggered by order), `question`, `zoom` | no | H | 2.3 | planned |
 | `Doodle`, `DoodleDefs` | `kh-art__layer` or `kh-imagine__doodle` + `ks-doodle`; inline SVG from `src/assets/doodles.generated.tsx` with `data-draw`, `data-draw-order`; or a plain decorative `<img>` of the DS file; `DoodleDefs` renders the one shared `#ks-chalk` grain filter (D049 pick 3) | `name: DoodleName`, `draw` (false in heroes, pick 2), `order` (1-5), position props | no | H, P, S, G, SH, A, T, L | 2.3 | planned |
-| `AppScreens` | `kh-device`, `kh-device__screen` + `ks-shots`, `ks-shots__row`, `ks-shot` (D044, D046 equal sizes) | `screens[{ image, alt }]`, `caption`, `layout: "two" \| "one"` | no | H, P, S, SU | 2.3 | planned |
+| `AppScreens` | `kh-device`, `kh-device__screen` + `ks-shots`, `ks-shots__row`, `ks-shot` (D044, D046 equal sizes) | `screens[{ image, alt }]`, `caption`, `layout: "two" \| "one"`; `variant: "home" | "product"` (different row width, frame padding and radius from 720 px; mockup-css-mapping §6.2) | no | H, P, S, SU | 2.3 | planned |
 | `Avatar` | `kh-avatar` | `initials` or `image`, `alt` | no | T | 2.3 | planned |
-| `Card` | DS FeatureCard: `kh-card`, `--tint`, `--block`, `kh-tone-*`, `__icon`, `__title`, `__body`, `__link` (G-01 tap extension) | `tone`, `variant`, `icon`, `title`, `body`, `link?`, `as` | no | H, P, C, SH, T, A, L | 2.4 | planned |
-| `TrustList` | DS TrustList: `kh-trust`, `__item`, `__icon`, `__title`, `__body` | `items[{ icon, title?, body }]`, `as` | no | H, P, S, G, L, A | 2.4 | planned |
+| `Card` | DS FeatureCard: `kh-card`, `--tint`, `--block`, `kh-tone-*`, `__icon`, `__title`, `__body`, `__link` (G-01 tap extension) | `tone`, `variant`, `icon`, `title`, `body`, `link?`, `as`; `titleType` (the `ks-type-*` step for hub card titles; mockup-css-mapping §3.5) | no | H, P, C, SH, T, A, L | 2.4 | planned |
+| `TrustList` | DS TrustList: `kh-trust`, `__item`, `__icon`, `__title`, `__body` | `items[{ icon, title?, body }]`, `as`; `bodyType` (`ks-type-*` step; mockup-css-mapping §3) | no | H, P, S, G, L, A | 2.4 | planned |
 | `TrustLine` | `kh-trustline` + `ks-trust` (linked items, 44 px tap areas, CMO V4) | `items[{ icon, label, href }]`, `center`, `newTab` (store) | no | every CTA block, ST | 2.4 | planned |
 | `TickList` | `ks-ticks` (icon + text rows) | `items[{ icon, text }]` | no | P (box, safety panels), SU | 2.4 | planned |
 | `PriceSentence` | `kh-body-s ks-price` (store: `kh-body`) | `offer`, `variant: "beside" \| "drawer" \| "offer-fine" \| "store"` | no | every CTA block, drawer, ST | 2.4 | planned |
@@ -57,7 +57,7 @@ Data by props only; server components unless marked client. Story required. New 
 | `SellerLines` | the four seller lines (entity, GSTIN, registered address, contact) as in `partials/footer.html` `kh-footer__legal`, or as an `<address>` (store) | `seller`, `as: "spans" \| "address"` | no | Footer, StoreFooter, `SellerBlock` | 2.4 | planned |
 | `OfferCard` | DS OfferCard: `kh-offer`, `__product`, `__prices`, `__price`, `__split`, `__list`, `__fine`; full mode omits `__split` (G-08) | `offer`, `items`, `cta: CtaId`, `id` | no | H, P | 2.4 | planned |
 | `FaqList` | DS FAQ: `kh-faq`, `__item`, `__q`, `__sign`, `__a` (native `<details>`); each answer wrapped in `ks-faq__clip` for the D049 pick 7 open animation (CSS in `motion.css`) | `items: FaqItem[]`, `offer`, `firstOpen` | no | H, P, S, G, ST | 2.4 | planned |
-| `StepLoop` | DS StepLoop: `kh-steps`, `kh-step` | `steps[{ title, body, tone }]`, `variant: "loop" \| "checks" \| "four"` | no | G, SU, TH | 2.4 | planned |
+| `StepLoop` | DS StepLoop: `kh-steps`, `kh-step` | `steps[{ title, body, tone }]`, `variant: "loop" \| "checks" \| "four"`; `checks` holds the guide's one-row rule from `min-width: 1200px` (`content-max-1200` media exception; mockup-css-mapping §4.2) | no | G, SU, TH | 2.4 | planned |
 | `LanguageChips` | DS LanguageChips: `kh-langs`, `kh-lang`, `__native`, `__en` (each with `lang`, G-13) | `languages[]`, `note` | no | H, P | 2.4 | planned |
 | `CompareTable` | DS ComparisonTable: `kh-compare-wrap` (focusable region), `kh-compare`, `is-us`, `kh-yes`, `kh-no`, `kh-some` | `columns`, `rows`, `usIndex`, `caption` | no | H (from 720 px), L (privacy recipients on laptops) | 2.4 | planned |
 | `List` | `kh-list`, `kh-listitem` and its parts | `items[{ title, href, meta? }]` | no | SH, A, 404 | 2.4 | planned |
@@ -94,7 +94,7 @@ Generic folds configured from content; variants in `name.types.ts`. Story requir
 | `CompareByCategory` | `ks-compare-stack` cards below 720 px + `CompareTable` from 720 px (G-05) | `rows`, `columns`, `caption`, `link` | no | H | 3.3 | planned |
 | `CardGrid` | `Cols` of `Card`s | `guides` (fold 7b, D046), `routes` (C, `ks-routes`), `plain` | no | H, C | 3.3 | planned |
 | `FaqSection` | `Split` heading (`ks-faq-head`) + `FaqList` + more link (+ disclaimer slot) | `default`, `store` (`ks-faq`), `photo` (G: `ks-gd-faq`); `items`, `more?`, `disclaimer?` | no | H, P, S, G, ST | 3.3 | planned |
-| `AnswerSection` | question heading + 40-60 word answer + optional detail | `question`, `answer`, `detail?` | no | T, A | 3.4 | planned |
+| `AnswerSection` | question heading + 40-60 word answer + optional detail (ports `mk-answer` on articles and `mk-team-answer` on team, structure §5) | `question`, `answer`, `detail?` | no | T, A | 3.4 | planned |
 | `StepsSection` | `Heading` + `StepLoop` + optional tip (`ks-setup-tip`) | `steps`, `heading`, `variant` | no | G, SU, TH | 3.4 | planned |
 | `ProductDetails` | `Split`: three **stacked** panels (specs `DefinitionList`, box `TickList`, safety `TickList`), each with its `kh-subtitle` heading, DS `kh-tabs` and `kh-tabs__panel` classes without `is-tabs` and without a tab list (N21) + declarations `Card` with `DefinitionList` and the care line (`ks-care`) | `specs`, `box`, `safety`, `declarations`, `link` | no | P | 3.4 | planned |
 | `TopicSection` | topic heading (`id` = topic) + featured `Card` (`ks-photo-myra` art direction ported as is) + `List` | `topic`, `featured?`, `items` | no | SH | 3.4 | planned |
@@ -177,8 +177,8 @@ Built HTML never carries an `mk-` class (`test/guards/mockup-markup.test.ts`).
 | `mk-updated` (all four legal CSS files) | `LegalTemplate` (last-updated line) |
 | `mk-short-panel` (`terms.css`) | `LegalTemplate` (short-version panel) |
 | `mk-tools` (`privacy.css`) | `LegalTemplate` (tools list block) |
-| `mk-step` (`refund.css`, `shipping.css`; no element uses it) | not ported (dead CSS) |
-| `mk-story*`, `mk-prose`, `mk-crumbs`, `mk-byline`, `mk-answer`, `mk-sources`, `mk-notes*`, `mk-related`, `mk-facts-list`, `mk-disclaimer` (`stories.css`, article CSS) | `ArticleHead`, `ArticleBody`, `Breadcrumbs`, `AnswerSection`, `SourcesSection`, `RelatedGuides` |
+| `mk-step` (`refund.css`, `shipping.css`) | `LegalTemplate`: the CSS counter that numbers `.mk-doc__steps` on refund (ported as `ks-step` with `ks-doc__steps`; it is not dead CSS, [mockup-css-mapping §6.4](mockup-css-mapping.md#64-mk-step-is-a-live-counter-not-dead-css)) |
+| `mk-story*`, `mk-prose`, `mk-crumbs`, `mk-byline`, `mk-answer`, `mk-sources`, `mk-notes*`, `mk-related`, `mk-facts-list`, `mk-disclaimer` (`stories.css`, article CSS; the product page's `mk-disclaimer` and `mk-sources` in `meet-kheelu.css` are different blocks with their own `ks-` names, mockup-css-mapping §6.2) | `ArticleHead`, `ArticleBody`, `Breadcrumbs`, `AnswerSection`, `SourcesSection`, `RelatedGuides` |
 | `mk-part` (`stories.css`; all three articles) | `ArticleBody` (part wrapper, h2 scroll margin) |
 | `mk-checks` (learning-toys article) | `ArticleBody` (`list` block, checks variant) |
 | `mk-belly`, `mk-breakout`, `mk-questions` (safe-AI-toy article) | `ArticleBody` (`figure`, `facts` breakout, `questions` blocks) |
@@ -218,7 +218,7 @@ Built HTML never carries an `mk-` class (`test/guards/mockup-markup.test.ts`).
 | `mk-policy` (`store.css`; store and confirmation) | `PolicyLinks` |
 | `mk-thanks*`, `mk-order*` (`store-confirmation.css`) | `ConfirmationHead`, `OrderRows`, `AddressStep`, `StepsSection` |
 | `mk-addr`, `mk-ghost-start` (`store-confirmation.css`) | `AddressStep` (form, button width); `HelpBlock` (ghost link flush start) |
-| `mk-review-*`, `mk-h1*`, `mk-tool`, `mk-review-note`, `css/index.css` | not built (Gate A review tools) |
+| `mk-review-*`, `mk-h1*`, `mk-review-note`, `css/index.css` | not built (Gate A review tools). `mk-tool` is **not** a review tool: it is the privacy page's measuring-tool block, ported with `mk-tools` as `ks-tool(s)` in `LegalTemplate` ([mockup-css-mapping §6.3](mockup-css-mapping.md#63-mk-tool-is-privacy-content-not-a-review-tool)) |
 
 ## 8. Legacy components (deleted in task 6.3)
 

@@ -85,7 +85,10 @@ intact (643), `next build` green.
 **In parallel (main session):** an `architect` agent is writing `mockup-css-mapping.md`: every literal value in
 the approved mockup CSS (about 189 off-token declarations found by 1.1's calibration: font weights and px
 sizes, a 1200 px breakpoint, fixed widths, `--kh-ratio` in CSS, z-index 60, scale 1.32) mapped to a DS token
-or class, or a narrow named exception for `token-exceptions.ts`. **Must be applied before wave 3.**
+or class, or a narrow named exception for `token-exceptions.ts`. **Done 19:20 and accepted** ([mockup-css-mapping](mockup-css-mapping.md)):
+**apply its §4 (nine `CSS_EXCEPTIONS`, the per-file `MEDIA_EXCEPTIONS` `content-max-1200` and the guard change of
+§4.2) right after 1.1 merges and BEFORE wave 2**: tasks 2.2-2.5 already need them. Prove each new id red outside its
+files and green inside; every existing plant stays red. Wave-2 builders read its §5.
 
 **Resume order for a fresh session:** (1) `git worktree list`; re-check heads with `git -C <worktree> log -1`;
 (2) if `wf_7ba453ba-6cb` died, re-run `build-wave` with the two resume entries (1.1 stage `finish` with the

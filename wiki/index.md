@@ -62,6 +62,7 @@ pages a task needs. Phase 0 pages cite legacy files at tag `archive/pre-reset-20
 - [build runbook](engineering/build-runbook.md): **read first when resuming the build**: the `build-wave` workflow, merge and wave close, resume after a break, wave progress.
 - [tasks](engineering/tasks.md): the build in ten dependency waves with owners, owned files, acceptance criteria and the guard-test ownership table.
 - [structure](engineering/structure.md): folders, naming, the mockup-to-route map, path-scoped rules (now in `.claude/rules/`).
+- [mockup CSS mapping](engineering/mockup-css-mapping.md): every off-token value in the approved mockup CSS (189 detector rows) mapped to a DS token, `ks-type-*` class, exact `calc()` or one of ten named exceptions; rules for builders porting mockup CSS; legal CSS is two families; same-name collisions to scope.
 - [components](engineering/components.md): component catalogue (check before creating anything).
 - [assets](engineering/assets.md): asset catalogue (images, films, icons, doodles, fonts) and their pipelines.
 - [dependencies](engineering/dependencies.md): dependency register: kept, added, retired.

@@ -73,11 +73,16 @@ Option 3, with these rules (detail in [architecture §4](../architecture.md#4-vi
    (prebuild and predev), in a fixed order: ui, sections, chrome, layouts. Every mockup `mk-` class maps
    to one `ks-` class with the same declarations (all 167 blocks are mapped in
    [components §7](../components.md#7-mockup-mk--helpers--where-they-go)), except the Gate A review tool
-   classes (`mk-review-*`, `mk-h1*`, `mk-tool`, `mk-later`), which are dropped, and three blocks with CSS
-   but no element in any page (`mk-article`, `mk-lead`, `mk-step`), which are not ported.
+   classes (`mk-review-*`, `mk-h1*`, `mk-later`), which are dropped, and two blocks with CSS but no element
+   in any page (`mk-article`, `mk-lead`), which are not ported. (Corrected 2026-10-12 by the mockup CSS
+   mapping: `mk-tool` is privacy content and `mk-step` a live counter; both are ported.)
 5. **Values:** tokens only. Literal pixels are allowed in exactly two places: media-query breakpoints
-   (the four DS widths and their `max-width` neighbours 719, 767, 899, 1023) and the DS's own literals
-   that composition repeats (`outline-offset: 2px`, from `bundle.css`). Three founder exceptions after
+   (the four DS widths and their `max-width` neighbours 719, 767, 899, 1023; plus `min-width: 1200px`, the
+   DS content-max, in two named files) and the DS's own literals that composition repeats
+   (`outline-offset: 2px`, the weights 800, 700 and 500 and the link underline offset 3px, all restated by
+   `bundle.css`, in named files only). Also named: three legal type values no class can reach (a
+   `::before` numeral and a pointer-only contents size), the founder's imagination-frame zoom and the guide
+   plush board's 4:3 ratio. The full list and its sources: [mockup-css-mapping §4](../mockup-css-mapping.md#4-named-exceptions-for-token-exceptionsts). Three founder exceptions after
    Gate A, each defined once as a named custom property and listed in `test/guards/token-exceptions.ts`:
    `--ks-nudge: 5px` and `--ks-film-focus: 1.05` (D049) and `--ks-wa-green` (D050, DS gap G-20). Type sizes are never restated:
    where the mockup restated a DS type style in pixels to step it up on laptops (the four legal pages,

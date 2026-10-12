@@ -199,6 +199,7 @@ Source: [architecture §20](engineering/architecture.md#20-open-points-for-the-f
 | P9 | WhatsApp bubble on /thanks marked ph-no-capture, so /thanks keeps zero autocapture events | Yes | OPEN, default applies |
 | P10 | At Gate B: switch www.kheelona.com from "Redirect" to serving the site (one-hop legacy www URLs) | Yes, optional | OPEN |
 | P11 | The approved privacy copy drops the "most detailed of the five" sentence about PostHog | Intended (approved copy wins) | ASKED 2026-10-12 |
+| P12 | Refund and shipping h2 render weight 700 from 1024 px, though the mockup comment says kh-headline (800) ([mockup-css-mapping §6.5](engineering/mockup-css-mapping.md#65-the-legal-h2-at-1024-px-renders-700-not-kh-headline)). Optional | Keep 700, as approved | Default applied (optional; not asked) |
 
 ## E. Decided by the brief (no answer needed; recorded so nobody re-asks)
 

@@ -57,7 +57,12 @@ three single-task waves.
 
 1. Markup, classes, ARIA and order match the mockup element it ports (cite the mockup file and fold).
 2. DS classes and tokens only; composition classes `ks-`; `test/guards/no-off-token.test.ts` green;
-   the only literals are those in `test/guards/token-exceptions.ts`.
+   the only literals are those in `test/guards/token-exceptions.ts`. Composition CSS ported from the mockup
+   follows the rules of [mockup-css-mapping §5](mockup-css-mapping.md#5-rules-for-builders-porting-mockup-css)
+   and the row for each value in its §3 (type by `ks-type-*` classes, fixed widths as exact `calc()` of
+   space tokens, weights only in the named files); a page-only `mk-` name styled differently on two pages
+   becomes a variant or its own `ks-` name (its §6.2). A value the guard refuses that has no row there goes
+   to the main session.
 3. Colocated `Name.test.tsx` covers every variant and the accessibility contract (roles, labels, focus);
    `Name.stories.tsx` for `ui/` and `sections/` shows every variant.
 4. Server component unless the catalogue row says client; client parts in `*.client.tsx`.
@@ -212,7 +217,10 @@ with an earlier one.
      legacy pages (emptied by 6.3). `token-exceptions.ts` lists exactly: the four DS breakpoints and their
      `max-width` neighbours, `outline-offset: 2px`, zero values, `--ks-nudge: 5px` (D049 pick 6) and
      `--ks-film-focus: 1.05` (D049 pick 8) in `src/motion/motion.css`, and `--ks-wa-green` (one hex, D050,
-     DS gap G-20) in `src/components/chrome/WhatsAppFloat/whatsapp-float.css`. Inline `style` is allowed only
+     DS gap G-20) in `src/components/chrome/WhatsAppFloat/whatsapp-float.css`, **plus the ten entries of
+     [mockup-css-mapping §4](mockup-css-mapping.md#4-named-exceptions-for-token-exceptionsts)** (nine
+     `CSS_EXCEPTIONS` and the per-file `MEDIA_EXCEPTIONS` `content-max-1200`; added after the 1.1 merge by the
+     main session through the 1.1 owner, 2026-10-12). Inline `style` is allowed only
      for art-board positions (percent and rotation), `--kh-tilt` and `--kh-ratio`. Files under `generated/`
      and `*.generated.*` are exempt from the off-token scan (their drift tests compare them with the DS).
   12. `mockup-markup` scans `src/` for `mk-`, `data-src` and review-tool markup (N22).
@@ -605,7 +613,8 @@ distinct; the layout import lines only in 2.6; no task touches `src/lib/cn.ts`.
 - **Acceptance:** SCA; CTA block order: button, price sentence, trust line, help line, secondary (CMO
   mockup pass); arrowed buttons exactly where the mockup has them (Home hero, product hero, the guide,
   safety, stories and article closes); full-mode rendering of every price-bearing part; grievance wording
-  verbatim D032.
+  verbatim D032; `SellerBlock` and `GrievanceBlock` take a context (contact: links 800; legal: links 700,
+  [mockup-css-mapping §6.2](mockup-css-mapping.md#62-same-names-different-blocks)).
 - **Test:** component tests in both modes; stories.
 
 ### 3.3 Story sections (builder)
@@ -622,7 +631,9 @@ distinct; the layout import lines only in 2.6; no task touches `src/lib/cn.ts`.
   except the first three on Home, which stay eager with `fetchPriority="low"` (N19); the film in focus
   takes `is-focus` (pick 8, [architecture §11.2](architecture.md#112-what-moves-d041-g4-and-d049)) from one
   observer whose root is the strip's central band; `CompareByCategory` stack below 720 px and table from
-  720 px; `ModesSection` keeps `id="modes"` and `id="story-mode"`; `FaqSection` keeps `id="faq"`.
+  720 px; `ModesSection` keeps `id="modes"` and `id="story-mode"`; `FaqSection` keeps `id="faq"` and gives
+  its disclaimer its own `ks-` name (the product page's `mk-disclaimer` differs from the article one);
+  `HeroSection`'s contact lead-link weight is scoped to the `contact` variant ([mockup-css-mapping §6.2](mockup-css-mapping.md#62-same-names-different-blocks)).
 - **Test:** component tests; `films.spec.ts` on the story (keyboard, playback, axe with the video mounted
   and unmounted); `motion-hero.spec.ts` (pick 2: hero `getAnimations()` empty, opacity 1, no transform,
   hero doodles plain images); `motion-films.spec.ts` (pick 8): the focused tile scales to `--ks-film-focus` over
@@ -667,7 +678,11 @@ distinct; the layout import lines only in 2.6; no task touches `src/lib/cn.ts`.
 
 - **Owns:** `src/layouts/LegalTemplate/**`, `test/fixtures/legal/**`.
 - **Inputs:** `mockup/pages/{privacy,terms,refund,shipping}.html` and the four page CSS files (merged).
-- **Acceptance:** one CSS file replaces the four mockup copies; summary, contents with anchors, parts and
+- **Acceptance:** one CSS file replaces the four mockup copies, as **two families behind a two-value
+  variant** (privacy and terms; refund and shipping: contents column, measure, close card, draft-note icon,
+  sticky contents; [mockup-css-mapping §6.1](mockup-css-mapping.md#61-the-legal-css-is-two-families-not-four-copies)),
+  with `ks-tools`/`ks-tool` (privacy's measuring tools) and the `ks-step` counter of the refund steps ported
+  (§6.3-6.4); the refund and shipping h2 keep weight 700 at 1024 px as approved (§6.5); summary, contents with anchors, parts and
   sections, draft note while `status: draft`, last-updated line, the seller and grievance blocks; type
   steps by `ks-type-*`; visual parity on all four legal mockups with fixture content.
 - **Test:** template tests; visual parity against the four mockups using fixture content copied from them.

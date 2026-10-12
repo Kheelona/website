@@ -191,13 +191,23 @@ runs in the `predev` and `prebuild` hooks (`scripts/run-steps.mjs`, structure §
   (`Button/button.css` is never needed; `FilmsStrip/films-strip.css` is).
 - Port rule: each mockup `mk-` block moves to the component that renders it, renamed `ks-`, with the
   same declarations (every one of the 167 blocks is mapped in [components §7](components.md#7-mockup-mk--helpers--where-they-go)),
-  except (a) the Gate A review tool (`mk-review-*`, `mk-h1*`, `mk-tool`, `mk-review-note`, `mk-later`),
-  dropped; (b) pixel type sizes, replaced by `ks-type-*` classes in markup; (c) the four copies of the
-  legal-page CSS, merged into `LegalTemplate/legal-template.css`; (d) `272px` widths in `safety.css`,
-  expressed with `var(--space-10)` multiples as `mockup.css` already does; (e) dead mockup CSS with no
-  element (`mk-article`, `mk-lead`, `mk-step`), not ported.
+  except (a) the Gate A review tool (`mk-review-*`, `mk-h1*`, `mk-review-note`, `mk-later`), dropped
+  (`mk-tool`/`mk-tools` are the privacy page's measuring-tool blocks and **are ported** as `ks-tool(s)`);
+  (b) pixel type sizes, replaced by `ks-type-*` classes in markup; (c) the four legal-page files, merged
+  into `LegalTemplate/legal-template.css` as **two families** (privacy/terms and refund/shipping) behind a
+  two-value variant; (d) fixed widths (272, 480, 420, 360, 300, 200 px), expressed as exact `calc()` of
+  space tokens as `mockup.css` already does; (e) dead mockup CSS with no element (`mk-article`, `mk-lead`),
+  not ported (`mk-step` is the live counter that numbers the refund steps and **is ported** as `ks-step`).
+  **Every off-token value of the approved mockup CSS is mapped, row by row, in [mockup-css-mapping](mockup-css-mapping.md)**
+  (main session accepted it 2026-10-12): builders follow its §5 rules, and a page-only `mk-` name that two
+  pages styled differently becomes a variant or its own `ks-` name (its §6.2), because the build loads all
+  composition CSS on every page.
 - Allowed literals, listed once in `test/guards/token-exceptions.ts`: the four DS breakpoints and their
-  `max-width` neighbours, `outline-offset: 2px` (the DS's own focus-ring value), zero values, and the
+  `max-width` neighbours, `outline-offset: 2px` (the DS's own focus-ring value), zero values, the ten
+  mapping exceptions of [mockup-css-mapping §4](mockup-css-mapping.md#4-named-exceptions-for-token-exceptionsts)
+  (DS weights 800/700 and 500 and the DS link offset 3px in named files, three legal type values no class
+  can reach, the founder's imagination-frame zoom `scale(1.32)`, the guide plush board's 4:3 ratio, and
+  `@media (min-width: 1200px)` = the DS content-max in two files), and the
   three founder exceptions: `--ks-nudge: 5px` and `--ks-film-focus: 1.05` (D049, in `src/motion/motion.css`)
   and `--ks-wa-green` (D050, DS gap G-20, in `WhatsAppFloat/whatsapp-float.css`). Generated files are
   exempt and checked by their drift tests. `test/guards/no-off-token.test.ts` scans `src/**/*.css` and
