@@ -14,7 +14,8 @@ const SRC_BOUNDARIES = [
     message: "src/ never imports the Gate A mockup: port its markup instead (structure §6).",
   },
   {
-    regex: "(^@ds/|(^|/)design-system/).*\\.md$",
+    // A query suffix ("?raw", "?url") still loads the markdown, so it is matched too.
+    regex: "(^@ds/|(^|/)design-system/).*\\.md(\\?.*)?$",
     message: "src/ never imports design-system markdown: the DS is read through its CSS and assets.",
   },
 ];
@@ -40,6 +41,17 @@ const UI_BOUNDARIES = [
   },
 ];
 
+/* no-restricted-imports reads static imports and export-from only; a dynamic import("../../wiki/x")
+   slips past it. The same boundaries, as no-restricted-syntax selectors on ImportExpression: a
+   string source, or any static part of a template-literal source. esquery's regex literal cannot
+   hold "/", so it is written as \x2F. */
+const esqueryRegex = (regex) => regex.replaceAll("/", "\\x2F");
+const dynamicImportBans = (boundaries) =>
+  boundaries.flatMap(({ regex, message }) => [
+    { selector: `ImportExpression > Literal.source[value=/${esqueryRegex(regex)}/]`, message },
+    { selector: `ImportExpression > TemplateLiteral.source > TemplateElement[value.raw=/${esqueryRegex(regex)}/]`, message },
+  ]);
+
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
@@ -64,11 +76,17 @@ const eslintConfig = defineConfig([
   ]),
   {
     files: ["src/**/*.{ts,tsx,js,jsx,mjs}"],
-    rules: { "no-restricted-imports": ["error", { patterns: SRC_BOUNDARIES }] },
+    rules: {
+      "no-restricted-imports": ["error", { patterns: SRC_BOUNDARIES }],
+      "no-restricted-syntax": ["error", ...dynamicImportBans(SRC_BOUNDARIES)],
+    },
   },
   {
     files: ["src/components/ui/**/*.{ts,tsx,js,jsx,mjs}"],
-    rules: { "no-restricted-imports": ["error", { patterns: UI_BOUNDARIES }] },
+    rules: {
+      "no-restricted-imports": ["error", { patterns: UI_BOUNDARIES }],
+      "no-restricted-syntax": ["error", ...dynamicImportBans(UI_BOUNDARIES)],
+    },
   },
   /* Legacy files only (task 1.1). Each entry names exact files that the build must not edit
      yet, and the task that removes the entry. Never widen this block to a folder or to new code. */
