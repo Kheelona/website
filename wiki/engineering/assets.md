@@ -39,7 +39,7 @@ layout widths) or a plain `<img>` (SVG).
 
 | Asset | Group | Used on | Delivered by | Notes | Task |
 |---|---|---|---|---|---|
-| `Logo/kheelona-logo.svg` | Logo | all (nav, drawer, footer), ST, TH | `Logo` (`<img>`) | | 2.2 |
+| `Logo/kheelona-logo.svg` | Logo | all (nav, drawer, footer), ST, TH | `Logo` (`<img>`): one static import (`@ds/assets/Logo/kheelona-logo.svg`) in `src/components/ui/Logo/Logo.tsx`, the file's only reference; Next serves it from `/_next/static/media/` | 30 px tall as the mockup; the width attribute is reserved from the file's own size so nothing shifts while it loads (`.kh-logo { width: auto }` keeps the rendered size). Built (2.2) | 2.2 |
 | `Logo/favicon-32.png`, `favicon-48.png`, `apple-touch-icon-180.png` | Logo | browser icons | `scripts/assets/build-og.mjs` → `src/app/icon.png` (favicon-48, 48 px), `src/app/apple-icon.png` (180 px), `src/app/favicon.ico` (favicon-32 and -48 as PNG entries), all opaque: flattened onto the ground of `kheelona-app-icon.svg` | lessons §2: the iOS icon must be opaque. `favicon.ico` is regenerated, not deleted, so the live `/favicon.ico` keeps answering 200 ([url-map §3](../site/url-map.md), brief §9.2); the main session rules (task 1.5 report) | 1.5 |
 | `Logo/kheelona-mark.svg` (sized as in `kheelona-app-icon.svg`) | Logo | Organization logo | `build-og.mjs` → `public/brand/logo-mark.png` (URL kept; 512 x 512, transparent ground, the K at the share of the square the DS app icon gives it) | | 1.5 |
 | `Kheelu/kheelu-front-sticker.png` (1.5 MB) | Kheelu | H, G, P, L (refund, shipping), S, T | `ArtBoard` | G-14: never shipped at source size | 2.3 |

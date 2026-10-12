@@ -1,0 +1,18 @@
+/* Layout family (task 2.2). Ported from the approved mockup. */
+
+/* The list reset of mockup/css/meet-kheelu.css (the mockup's list-reset helper), used by LanguageChips and chip lists. */
+.ks-list-reset {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Vertical rhythm between layout blocks, from mockup/mockup.css (composition helpers), which every approved page
+   loads: a column grid after a split, and a subtitle after a column grid, sit a step further down. */
+.kh-cols + .kh-subtitle,
+.kh-split + .kh-cols {
+  margin-top: var(--space-7);
+}
+.kh-subtitle {
+  margin: var(--space-7) 0 var(--space-4);
+}

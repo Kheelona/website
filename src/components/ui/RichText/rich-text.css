@@ -1,0 +1,13 @@
+/* RichText (task 2.2), ported from mockup/mockup.css, which every approved page loads. */
+
+/* {nowrap:…}: a phrase that never breaks across lines (the mockup's no-wrap helper). */
+.ks-nowrap {
+  white-space: nowrap;
+}
+
+/* Links inside captions and small body text take the DS link colour (mockup.css, composition helpers). The
+   links themselves come from content strings, which RichText renders, so the rule lives here. */
+.kh-caption a,
+.kh-body-s a:not(.kh-btn) {
+  color: var(--link);
+}

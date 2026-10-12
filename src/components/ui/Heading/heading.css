@@ -1,0 +1,7 @@
+/* Heading (task 2.2). The inner step span of `titleStepXl` (wiki/engineering/mockup-css-mapping.md row 81):
+   a ks-type-* class on the h1 itself would lose to the DS hero rule (.kh-heading--hero .kh-heading__title,
+   bundle.css:178), so the step sits on a span inside it. As a block, its lines take the span's own line height
+   rather than the h1's strut; below the step's breakpoint it inherits the h1's type unchanged. */
+.ks-heading__step {
+  display: block;
+}
