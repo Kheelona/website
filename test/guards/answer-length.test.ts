@@ -8,7 +8,8 @@ import { ROOT, isTestOrStory, listFiles, readRepoFile } from "../e2e/support/rep
  *
  * Answer-first blocks: a question, then a 40-60 word answer, then any detail. The rule applies to
  * the first paragraph of every answer in the content model: FAQ items, AnswerSection and the
- * answer block of HeroSection's `answer` variant (any object with a `question` and an `answer`).
+ * answer block of HeroSection's `answer` variant (any object with a `question` and an `answer`, except
+ * inside an article's prose `questions` block, which is body prose).
  * Counting follows the copy pages: source markers excluded, hyphenated words count as one, an
  * amount token counts as one word. The rule is proven against approved copy on every run: every
  * FAQ answer and answer card of the 18 mockup pages is 40-60 words.
@@ -47,6 +48,9 @@ function answersIn(value: unknown, where: string, out: Found[], seen = new Set<u
   if (!value || typeof value !== "object" || seen.has(value)) return out;
   seen.add(value);
   const o = value as Record<string, unknown>;
+  // An article's prose questions (QuestionsBlock, approved at 35 words in story-what-to-look-for-in-a-safe-ai-toy.html)
+  // are body prose, not one of the three answer-first shapes of architecture §9.5.
+  if (o.kind === "questions") return out;
   if (typeof o.question === "string" && "answer" in o) {
     const p = firstParagraph(o.answer);
     if (p !== null) out.push({ where, question: o.question, words: countWords(p) });
@@ -90,6 +94,11 @@ describe("answer-length rule", () => {
     expect(countWords("It is {price:headline} (incl. GST).[^1] Read [the terms](/terms).")).toBe(8);
     expect(outOfRange(answersIn({ q: { question: "Q?", answer: `${words(50)}\n\n${words(80)}` } }, "x", []))).toEqual([]);
     expect(countWords("A back-and-forth talk¹ helps.")).toBe(4);
+  });
+  it("leaves an article's prose questions block alone (not an answer-first shape, architecture §9.5), and still counts the answers beside it", () => {
+    expect(outOfRange(answersIn({ b: { kind: "questions", items: [{ question: "Q?", answer: [words(10)] }] } }, "x", []))).toEqual([]);
+    const mixed = { b: { kind: "questions", items: [{ question: "Q?", answer: [words(10)] }] }, faq: { question: "F?", answer: words(10) } };
+    expect(outOfRange(answersIn(mixed, "x", []))).toEqual(['x.faq "F?": 10 words']);
   });
 });
 
