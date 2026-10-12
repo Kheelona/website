@@ -133,7 +133,7 @@ export async function newGuardedContext(browser: Browser, vp: Viewport, opts: Op
 
 /** `KH_E2E_GATE=off` runs the page specs on legacy pages too: the before-picture, and the way to
  *  prove the server-side specs (perf bytes, links) record before any new page exists. */
-const GATE_OFF = process.env.KH_E2E_GATE === "off";
+export const GATE_OFF = process.env.KH_E2E_GATE === "off";
 
 /** Skips the current test as pending while the route is legacy; fails if it should not be. */
 export function gateOnNewDesign(route: Route, isNew: boolean): void {
