@@ -11,8 +11,10 @@
 // count and the list and exit 0.
 //
 // Source scan: every text file under src/, comments included (the token in a comment is still
-// the token; write "the ph token" instead), except the two files that define the syntax (N25).
-// Tests and stories are scanned too: they spell the markers in pieces, as task 1.6's tests do.
+// the token; write "the ph token" instead), except the two files that define the syntax (N25) and
+// the files that never ship (tests, specs, type tests, stories, snapshots and fixtures: the wave-2
+// close ruling, task 2.13), whose count is printed on every run. Nothing that ships escapes: the
+// output scan below reads everything the build prerendered.
 // Output scan: the prerendered HTML (*.html) and prerendered route bodies (*.body: llms.txt,
 // pricing.md, sitemap.xml, robots.txt) under .next/server/app. Binary files and dot-files are
 // skipped. A production run with nothing to scan fails: an empty scan cannot vouch for a build.
@@ -30,13 +32,23 @@ const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 /** The two files that define the syntax, by exact repo path (QA review N25). Printed every run. */
 export const EXCLUDED = Object.freeze(["src/lib/content/placeholder.ts", "src/content/types.ts"]);
 
+/** Files that never ship, by repo path: tests, specs, type tests and stories by name, snapshots and
+ *  fixtures by folder (wave-2 close ruling, task 2.13). Not scanned; their count is printed. */
+export const NEVER_SHIPPED = Object.freeze([/\.(?:test|test-d|spec|stories)\.[^/]+$/, /(?:^|\/)__(?:snapshots|fixtures)__\//]);
+
+/** True when the file at this repo path (posix separators) never ships. */
+export function isNeverShipped(file) {
+  return NEVER_SHIPPED.some((re) => re.test(file));
+}
+
 /** What counts as an open placeholder. The literals are task 1.6's syntax
- *  (src/lib/content/placeholder.ts); the draft form also matches JSON and escaped flight data. */
+ *  (src/lib/content/placeholder.ts); the draft form also matches a template literal, JSON and
+ *  escaped flight data. */
 export const PATTERNS = Object.freeze([
   { id: "token", label: "{ph:} token", re: /\{ph:/g },
   { id: "helper", label: "placeholder() call", re: /placeholder\(/g },
   { id: "marker", label: "[PLACEHOLDER marker", re: /\[PLACEHOLDER/g },
-  { id: "draft", label: "draft legal document", re: /status\\?["']?\s*:\s*\\?["']draft\\?["']/g },
+  { id: "draft", label: "draft legal document", re: /status\\?["']?\s*:\s*\\?["'`]draft\\?["'`]/g },
 ]);
 
 const SOURCE_DIR = "src";
@@ -136,18 +148,23 @@ function outputExcerpt(text, hit) {
 }
 
 /**
- * Scans src/ under root, minus EXCLUDED.
+ * Scans src/ under root, minus EXCLUDED and the files that never ship (counted in `notShipped`).
  * @param {string} [root]
  */
 export function scanSource(root = REPO) {
   const dir = join(root, SOURCE_DIR);
   const base = { kind: "source", target: `${SOURCE_DIR}/`, excluded: [...EXCLUDED] };
-  if (!isDir(dir)) return { ...base, missing: true, files: 0, findings: [] };
+  if (!isDir(dir)) return { ...base, missing: true, files: 0, notShipped: 0, findings: [] };
   let files = 0;
+  let notShipped = 0;
   const findings = [];
   for (const path of walk(dir)) {
     const file = posix(relative(root, path));
     if (EXCLUDED.includes(file)) continue;
+    if (isNeverShipped(file)) {
+      notShipped++;
+      continue;
+    }
     const text = readText(path);
     if (text === null) continue;
     files++;
@@ -155,7 +172,7 @@ export function scanSource(root = REPO) {
       findings.push({ file, line: hit.line, pattern: hit.pattern, label: hit.label, excerpt: lineExcerpt(text, hit.index) });
     }
   }
-  return { ...base, missing: false, files, findings };
+  return { ...base, missing: false, files, notShipped, findings };
 }
 
 /**
@@ -207,9 +224,12 @@ export function decide(siteEnv, scan) {
   const production = siteEnv === "production";
   const tag = "[placeholders]";
   const what = scan.kind === "source" ? "files scanned" : "prerendered files scanned";
-  const excludedLine = scan.excluded.length
-    ? [`${tag} not scanned, they define the syntax: ${scan.excluded.join(", ")}`]
-    : [];
+  const excludedLine = [
+    ...(scan.excluded.length ? [`${tag} not scanned, they define the syntax: ${scan.excluded.join(", ")}`] : []),
+    ...(scan.kind === "source"
+      ? [`${tag} not scanned (never shipped): ${plural(scan.notShipped ?? 0, "file")} (tests, specs, type tests, stories, snapshots, fixtures)`]
+      : []),
+  ];
 
   if (scan.missing) {
     const note =

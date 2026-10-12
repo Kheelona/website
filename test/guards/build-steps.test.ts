@@ -43,11 +43,41 @@ describe("the build steps the deploy depends on", () => {
   });
 });
 
+/* Vercel runs a `vercel-build` script (or the legacy `now-build`) INSTEAD of `build` when
+   package.json has one, and npm then runs that script's own pre and post hooks, not prebuild and
+   postbuild: DS checksums and both placeholder scans would silently never run on a deploy
+   (task 2.13). */
+const BUILD_OVERRIDES = ["vercel-build", "now-build"] as const;
+
+/** Every script that would make Vercel skip `npm run build` and its hooks. */
+function buildOverrides(scripts: Readonly<Record<string, string>>): string[] {
+  return BUILD_OVERRIDES.filter((name) => Object.hasOwn(scripts, name)).map((name) => `"${name}": "${scripts[name]}"`);
+}
+
+describe("the build-override detector", () => {
+  it.each([
+    ["a vercel-build script", { build: "next build", "vercel-build": "next build" }],
+    ["a now-build script", { build: "next build", "now-build": "npm run build" }],
+    ["an empty vercel-build script", { build: "next build", "vercel-build": "" }],
+  ])("red on %s", (_name, scripts) => {
+    expect(buildOverrides(scripts)).toHaveLength(1);
+  });
+
+  it("green on build with its hooks, and on names that only look alike", () => {
+    expect(buildOverrides({ build: "next build", prebuild: "x", postbuild: "y", "build-storybook": "z", "vercel-builds": "w" })).toEqual([]);
+  });
+});
+
 describe("the hooks run around the production build", () => {
   it("npm runs prebuild and postbuild around build, and both call the step runner", () => {
     expect(pkg.scripts.build).toBe("next build");
     expect(pkg.scripts.prebuild).toBe("node scripts/run-steps.mjs prebuild");
     expect(pkg.scripts.postbuild).toBe("node scripts/run-steps.mjs postbuild");
+  });
+
+  it("package.json has no vercel-build or now-build script, which Vercel would run instead of build", () => {
+    const found = buildOverrides(pkg.scripts);
+    expect(found, `package.json: ${found.join(", ")} would skip prebuild and postbuild on Vercel`).toEqual([]);
   });
 
   it("vercel.json leaves the build command to package.json, so Vercel's npm run build runs the hooks", () => {

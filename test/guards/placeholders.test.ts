@@ -19,6 +19,7 @@ import {
   EXCLUDED,
   decide,
   findPlaceholders,
+  isNeverShipped,
   scanBuild,
   scanSource,
 } from "../../scripts/guards/placeholders.mjs";
@@ -85,6 +86,9 @@ describe("findPlaceholders: one text", () => {
     ["a draft in single quotes", `status: 'draft'`, "draft"],
     ["a draft as JSON", `{"status":"draft","approvedOn":"x"}`, "draft"],
     ["a draft in escaped flight data", `self.__next_f.push([1,"{\\"status\\":\\"draft\\"}"])`, "draft"],
+    // Task 2.13: a template literal is a string too.
+    ["a draft in backticks", "  status: `draft`,", "draft"],
+    ["a draft in backticks, no spaces", "{status:`draft`}", "draft"],
   ])("red on %s", (_name, text, pattern) => {
     expect(findPlaceholders(text).map((h) => h.pattern)).toEqual([pattern]);
   });
@@ -137,7 +141,7 @@ describe("scanSource: src/ before next build", () => {
     const token = `export const x = "{ph:F4 x}";\n`;
     const scan = scanSource(
       tree({
-        "src/lib/content/placeholder.test.ts": token,
+        "src/lib/content/placeholder.tsx": token,
         "src/content/en-IN/placeholder.ts": token,
         "src/lib/types.ts": token,
         "src/content/types.tsx": token,
@@ -146,9 +150,57 @@ describe("scanSource: src/ before next build", () => {
     expect(scan.findings.map((f: { file: string }) => f.file).sort()).toEqual([
       "src/content/en-IN/placeholder.ts",
       "src/content/types.tsx",
-      "src/lib/content/placeholder.test.ts",
+      "src/lib/content/placeholder.tsx",
       "src/lib/types.ts",
     ]);
+  });
+
+  /* Wave-2 close ruling (task 2.13): files that never ship are not scanned, and their count is
+     printed; the postbuild scan of the prerendered output still covers everything that ships. */
+  const NEVER_SHIPPED_FILES = {
+    "src/components/ui/X/X.test.tsx": "[PLACEHOLDER F4: x]",
+    "src/lib/content/placeholder.test.ts": "{ph:F4 x}",
+    "src/components/ui/X/X.spec.ts": "{ph:F4 x}",
+    "src/components/ui/X/X.test-d.tsx": "{ph:F4 x}",
+    "src/components/ui/X/X.stories.tsx": "[PLACEHOLDER F4: x]",
+    "src/components/ui/X/X.stories.mdx": "{ph:F4 x}",
+    "src/components/ui/X/__snapshots__/X.test.tsx.snap": "[PLACEHOLDER F4: x]",
+    "src/lib/seo/schema/__snapshots__/notes.txt": "{ph:F4 x}",
+    "src/lib/seo/schema/__fixtures__/schema-fixture.html": "[PLACEHOLDER F4: x]",
+    "src/content/__fixtures__/legal/privacy.ts": `export const privacy = { status: "draft" };\n`,
+  };
+
+  it("skips the files that never ship: tests, specs, type tests, stories, snapshots, fixtures", () => {
+    const scan = scanSource(tree({ ...NEVER_SHIPPED_FILES, "src/content/en-IN/offer.ts": CLEAN_MODULE }));
+    expect(scan.findings).toEqual([]);
+    expect(scan.files).toBe(1);
+    expect(scan.notShipped).toBe(Object.keys(NEVER_SHIPPED_FILES).length);
+  });
+
+  it.each([
+    ["a module whose name holds the word test", "src/lib/latest.ts"],
+    ["a module named for a spec sheet", "src/content/en-IN/specs.ts"],
+    ["a stories content module", "src/content/en-IN/stories/hub.ts"],
+    ["a fixtures folder without the underscores", "src/content/fixtures/x.ts"],
+    ["a snapshot-like name outside __snapshots__", "src/lib/x.snap.ts"],
+  ])("still scans %s (%s)", (_name, path) => {
+    const scan = scanSource(tree({ [path]: `export const x = "{ph:F4 x}";\n` }));
+    expect(scan.findings.map((f: { file: string }) => f.file)).toEqual([path]);
+    expect(scan.notShipped).toBe(0);
+  });
+
+  it.each([
+    ["src/components/ui/X/X.test.tsx", true],
+    ["src/components/ui/X/X.spec.ts", true],
+    ["src/components/ui/X/X.test-d.ts", true],
+    ["src/components/ui/X/X.stories.tsx", true],
+    ["src/a/__snapshots__/b.snap", true],
+    ["src/a/__fixtures__/b.html", true],
+    ["src/content/en-IN/stories/hub.ts", false],
+    ["src/lib/latest.ts", false],
+    ["src/content/en-IN/specs.ts", false],
+  ])("isNeverShipped(%s) is %s", (path, expected) => {
+    expect(isNeverShipped(path)).toBe(expected);
   });
 
   it("reads every text file in src/: modules, components, CSS, markdown, JSON", () => {
@@ -287,6 +339,26 @@ describe("decide: production refuses, every other environment reports", () => {
     }
   });
 
+  it("prints how many files were not scanned because they never ship, on every source run", () => {
+    const withTests = (files: Record<string, string>) =>
+      scanSource(tree({ ...files, "src/a/A.test.tsx": "{ph:F4 x}", "src/a/A.stories.tsx": "x", "src/a/__fixtures__/f.html": "x" }));
+    const runs = [
+      decide("production", withTests({ "src/content/en-IN/offer.ts": CLEAN_MODULE })),
+      decide("production", withTests({ [PLANTED_PATH]: PLANTED_MODULE })),
+      decide("beta", withTests({ [PLANTED_PATH]: PLANTED_MODULE })),
+      decide("development", withTests({ "src/content/en-IN/offer.ts": CLEAN_MODULE })),
+    ];
+    for (const d of runs) {
+      expect([...d.out, ...d.err].join("\n")).toContain("[placeholders] not scanned (never shipped): 3 files");
+    }
+    expect(runs.map((d) => d.code)).toEqual([0, 1, 0, 0]);
+  });
+
+  it("says nothing about never-shipped files on an output scan (everything there ships)", () => {
+    const d = decide("beta", scanBuild(tree({ ".next/server/app/index.html": "<main>ok</main>" })));
+    expect([...d.out, ...d.err].join("\n")).not.toContain("never shipped");
+  });
+
   it("production with nothing to scan: exit 1 (an empty scan cannot vouch for a build); elsewhere a note and exit 0", () => {
     expect(decide("production", nothing).code).toBe(1);
     expect(decide("production", nothing).err.join("\n")).toMatch(/nothing to scan/i);
@@ -378,5 +450,6 @@ describe("npm run verify reports the open placeholders in the live src/", () => 
     expect(r.code, r.all).toBe(0);
     expect(r.out).toMatch(/src\/: (?:no open placeholders|\d+ open placeholders?)/);
     for (const path of EXCLUDED) expect(r.out).toContain(path);
+    expect(r.out).toMatch(/not scanned \(never shipped\): [1-9]\d* files/);
   });
 });
