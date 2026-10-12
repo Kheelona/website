@@ -1,9 +1,12 @@
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import type { Article } from "@/content/types";
 import { navigation } from "../../navigation";
 import { ARTICLE_SLUGS } from "../../routes";
 import { TRUST_COMPACT } from "../../trust";
 import { articlePageCopy, articles, getArticle, PLAIN_CLOSE_ART } from "./index";
+
+const DIR = join(process.cwd(), "src/content/en-IN/stories/articles");
 
 /* The article registry (task 4.2; wave-3 close ruling): the one list of the 21 article modules, which the stories
  * route and the site shell's sticky-bar paths read, so a new article is its module, one line here and its slug in
@@ -17,7 +20,7 @@ describe("the article registry", () => {
 
   it("holds the very object each article module exports", async () => {
     for (const slug of ARTICLE_SLUGS) {
-      const mod = (await import(`./${slug}.ts`)) as { article: Article };
+      const mod = (await import(/* @vite-ignore */ join(DIR, `${slug}.ts`))) as { article: Article };
       expect(articles[slug], slug).toBe(mod.article);
     }
   });
