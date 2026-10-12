@@ -63,34 +63,44 @@ never stage them).
 | Wave | Run | State |
 |---|---|---|
 | 0 (prep) | – | Done 2026-10-12: plan committed (`b2ea409`); dev tools pinned and **security patch next 16.3.8, sharp 0.35.5** (`1806937`); D051 (`8423f87`); runbook (`242126b`) |
-| 1 | `wf_de7ff1a5-e8b` (base `1806937`), held 16:40; resumed in run `wf_20aaa1e8-c0f` (new account, resume mode: finish 1.1, review 1.2) | Snapshot 2026-10-12 ~16:00 below. **The run may die with that session (account switch).** |
+| 1 | `wf_de7ff1a5-e8b` (base `1806937`), held 16:40; resumed in `wf_20aaa1e8-c0f` (1.1 failed round 3, 1.2 passed); then **`wf_7ba453ba-6cb`** (18:40: 1.1 fix round, 1.2 font follow-up) | 1.2-1.6 merged; **waiting on `wf_7ba453ba-6cb`** (snapshot below) |
 | 2 | – | Next: 2.1-2.10 (2.10 = beta never takes a payment, D051) |
 | 3-10 | – | Per [tasks](tasks.md) |
 
-### Wave 1 snapshot (16:40, 2026-10-12): **run HELD by the founder** (workflow stopped; no agent running)
+### Wave 1 snapshot (18:50, 2026-10-12)
 
-| Task | Branch, head | State | What the new session does |
+| Task | Branch, head | State | What the main session does next |
 |---|---|---|---|
-| 1.1 Toolchain, harness, guards | `build/w1-1.1` **`e7da91c`** (= `200623d` configs, step runner, Vitest guards + a WIP commit of the e2e harness: 13 specs, 11 support files, CI workflow, Lighthouse script) in `.claude/worktrees/wf_de7ff1a5-e8b-1`; nothing uncommitted | Unfinished, unverified, unreviewed | Start a `builder` agent in that worktree (cd there; `node_modules` present) to finish 1.1 against acceptance 1-16 and run `npm run verify`; then an adversarial review (prompt shape: `reviewPrompt` in `.claude/workflows/build-wave.js`), fix, review |
-| 1.2 Visual layer and motion | `build/w1-1.2` `7c8ebe8` (`src/styles/generated/compose.css` uncommitted on purpose: generated, gitignored by 1.1) | Round-1 review failed on the motion guard; fix committed; **round-2 review was running and was stopped** | Run the review on `7c8ebe8`; fix if needed |
-| 1.3 Environments and beta | `build/w1-1.3` `db711ce` | **Passed; MERGED** (`d8e03db`) | Done. Minor: a www-only `/store/:path*` redirect beyond §9.4 (check) |
-| 1.4 Tracking registries | `build/w1-1.4` `8578501` | **Passed; MERGED** (`cf73b8b`) | Done |
-| 1.5 Assets, icons, doodles, OG | `build/w1-1.5` `fe338c2` | **Passed; MERGED** (`33dff28`); `next build` then failed on RGB icons, fixed in `517a38e` | Done |
-| 1.5b App screenshots | on `reset/website-v2` `6225df2` | **Done** | – |
-| 1.6 Content contracts | `build/w1-1.6` `0d8bc4e` | **Passed; MERGED** (`1e2168a`) | Done. Minor: `formatInr` wording vs the frozen helper (check before 2.1) |
+| 1.1 Toolchain, harness, guards | `build/w1-1.1-b` `11e792f` in `.claude/worktrees/wf_20aaa1e8-c0f-1` (descends from `e7da91c`; the old `build/w1-1.1` and worktree `wf_de7ff1a5-e8b-1` are superseded) | Run `wf_20aaa1e8-c0f`: three reviews, verify green, **round 3 failed** on 2 blocking guard gaps (no-off-token misses bracketed variants, the `!` suffix and `@apply`; no served-page check runs the no-reveal-on-money DOM rule) + 6 minor. Findings saved in the session scratchpad `r3-issues-1.1.json`. **Fix round running in `wf_7ba453ba-6cb`** with main-session approvals: `tsconfig.guards.json` (1.1 owns it), `postcss@8.5.23` pinned (phantom dependency of 1.2's guards), the perf-budget "shared" definition, KHEELONA_PLUS_LINE → 6.3 | Read the result; merge `build/w1-1.1-b` if it passes |
+| 1.2 Visual layer and motion | `build/w1-1.2-b` `6078e4d` in `.claude/worktrees/wf_20aaa1e8-c0f-2` | **Passed round 3; MERGED** (`ab4868e`; assets.md conflict resolved by keeping both tasks' rows). Follow-up in `wf_7ba453ba-6cb`: Devanagari font subset to the text the site uses (110,588 B → a few KB; §12 budget) and `public/fonts/OFL.txt` | Merge the follow-up commits again (second `--no-ff` merge) |
+| 1.3 | `build/w1-1.3` `db711ce` | MERGED (`d8e03db`). The www-only `/store/:path*` redirect accepted and recorded in architecture §9.4 | Done |
+| 1.4 | `build/w1-1.4` `8578501` | MERGED (`cf73b8b`) | Done |
+| 1.5 | `build/w1-1.5` `fe338c2` | MERGED (`33dff28`); RGBA icon fix `517a38e`; stale `path[pathLength]` comments fixed by the main session | Done |
+| 1.5b | `6225df2` | Done | – |
+| 1.6 | `build/w1-1.6` `0d8bc4e` | MERGED (`1e2168a`). `formatInr` note: the code is right (it takes paise); the spec example was wrong and is corrected in tasks.md | Done |
 
-**After the merges (17:00):** tsc green, Vitest 131 files / 1862 tests green, DS checksums intact, `next build` green after `517a38e`. Waiting on run `wf_20aaa1e8-c0f` for 1.1 and 1.2, then merge both and the full wave close (`npm run verify`).
+**Merged tree after 1.2 (`ab4868e`, 18:45):** tsc green, Vitest 135 files / 1957 tests green, DS checksums
+intact (643), `next build` green.
 
-**Resume order for a fresh session:** (1) `git worktree list` and the table above (re-check heads with
-`git -C <worktree> log -1`); (2) finish 1.1 and re-review 1.2 in their worktrees (the run is stopped; nothing will notify); (3) merge per §2 in id order; (4) wave close; (5) wave 2
-with `Workflow({name: "build-wave", args: {wave: 2, base: <merged head>, screens: false, tasks: [...]}})`,
+**In parallel (main session):** an `architect` agent is writing `mockup-css-mapping.md`: every literal value in
+the approved mockup CSS (about 189 off-token declarations found by 1.1's calibration: font weights and px
+sizes, a 1200 px breakpoint, fixed widths, `--kh-ratio` in CSS, z-index 60, scale 1.32) mapped to a DS token
+or class, or a narrow named exception for `token-exceptions.ts`. **Must be applied before wave 3.**
+
+**Resume order for a fresh session:** (1) `git worktree list`; re-check heads with `git -C <worktree> log -1`;
+(2) if `wf_7ba453ba-6cb` died, re-run `build-wave` with the two resume entries (1.1 stage `finish` with the
+round-3 findings; 1.2 stage `finish` with the font follow-up; args in the log entry of 18:40); (3) merge
+`build/w1-1.1-b` and the 1.2 follow-up per §2; (4) wave close (`npm run verify`, `npm run build`, checksums);
+(5) clean up worktrees and branches (including `build/w1-1.1`, `build/w1-1.2` and every `worktree-wf_*`);
+(6) wave 2 with `Workflow({name: "build-wave", args: {wave: 2, base: <merged head>, screens: false, tasks: [...]}})`,
 task ids and titles from [tasks](tasks.md) "Wave 2" (2.1-2.10).
 
 ## 5. Wave 1 follow-ups for the main session
 
 - **1.5b screenshots:** done (`6225df2`).
-- **Review notes to carry:** 1.3 added a www-only `/store/:path*` redirect beyond architecture §9.4 (minor,
-  check at merge); 1.6 noted `formatInr` in `site.ts` cannot produce "₹1,00,000" as the spec words it
-  (minor, check the frozen helper's real output before 2.1).
+- **Review notes:** both settled 2026-10-12 (1.3 redirect accepted, §9.4; 1.6 spec corrected).
+- **1.2 review notes recorded:** architecture §4.1 (built-CSS order), §4.2 (the PostCSS literal-utility filter),
+  §5.3 (bubble hover instant; hidden bar `inert`), §11.2-§11.3 (doodle selector, FAQ sign, the
+  `data-scroll-behavior` hook), §12/§17 (Devanagari subset); tasks.md 2.3, 3.1, 6.3 and two guard-owner rows.
 - **`beta` exists on GitHub** (2026-10-12, `24e92e3` = main + `vercel.json` with `"beta": false`, so Vercel builds nothing). When the new site is ready: merge `reset/website-v2` into a local `beta` (no force), flip `"beta": true` per architecture §15.3, push with `git push origin beta:refs/heads/beta`.
 - **Beta domains done** (2026-10-12): both attached to branch `beta`, Valid Configuration; until the first `beta` deployment Vercel still serves the live site there (checked 16:25: 200, `x-robots-tag: noindex, nofollow`, no GA4 or Meta by host lists), harmless.

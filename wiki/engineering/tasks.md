@@ -131,6 +131,8 @@ with an earlier one.
 | `test/preorder-cta.test.ts`, `action-label`, `kicker-language`, `kheelu-art`, `contrast-tokens`, `a11y-v4`, `config-copy` | legacy files and classes | **6.3**: retire with their subjects (they cannot fail before 6.3 deletes the legacy code) |
 | Six checkout tests: `PreorderForm`, `OrderSummary`, `AddressForm`, `NotFoundPanel`, `store/thanks/page`, `store/ideabaaz/page` | checkout behaviour and copy | **Frozen** (B3). Only literal-only reviewed diffs: **5.15** (PreorderForm, OrderSummary), **5.16** (AddressForm, thanks), **6.1** (NotFoundPanel, ideabaaz) |
 | `src/lib/store/posthog-server.test.ts` | server event payload | **1.3** |
+| `test/guards/visual-layer.test.ts` ("runs on the Next version its plugin objects were verified on": pins `16.3.8`) and `postcss.config.mjs` `tailwindByEntry` (throws at load if `@tailwindcss/postcss` changes shape) | `next` and `@tailwindcss/postcss` versions | **Whoever bumps `next` or `@tailwindcss/postcss`** re-runs the scratch `next build` check described in the test's message, then updates the pin in the same commit (main session, 2026-10-12) |
+| `test/guards/generated-css.test.ts` (Devanagari coverage) | every Devanagari character in non-test `src/` files and `mockup/pages/*.html` against the Baloo 2 Devanagari subset | **Any task that adds Devanagari text** regenerates `public/fonts/baloo2-variable-devanagari.woff2` and `src/styles/generated/fonts.css` with `node scripts/assets/build-fonts.mjs` in the same commit (never by hand); the guard and the script stay 1.2's |
 | `src/lib/email/templates.test.ts` | email facts | Keep; **6.4** only with its reviewed diff |
 | Tests of frozen code (`features/preorder/lib/*`, `lib/store/*` other than `posthog-server`, `app/api/**`, `lib/fbq`) | frozen modules | Keep |
 | Tests of legacy components and modules (`atoms`, `molecules`, `organisms`, `templates`, `vendor`, `features/home`, `lib/{seo,stories,growth-arc}`, old product `_components`) | legacy | Deleted with their subjects: 5.2 (old product route), 6.3 (the rest) |
@@ -374,7 +376,7 @@ with an earlier one.
   DoodleRef, SupportChat (D050), Article blocks (with `related` and `card`), LegalDoc (with `status`),
   Gated, Placeholder; the parser handles every token of architecture §6.2 and rejects unknown tokens with
   a message; the serialiser turns any content string into the exact visible text (prices resolved by an
-  Offer); `placeholder()` and `{ph:}` produce `[PLACEHOLDER ID: note]`; `formatInr(100000)` = "₹1,00,000".
+  Offer); `placeholder()` and `{ph:}` produce `[PLACEHOLDER ID: note]`; `formatInr(10_000_000)` = "₹1,00,000" (the argument is **paise**, like every money constant in the frozen block; the DS helper takes rupees; spec corrected 2026-10-12 after the 1.6 review).
 - **Test:** unit tests per token; a round-trip test (parse → render → text equals serialiser output).
 
 **Wave 1 ownership check:** `package.json` and the e2e support only in 1.1; the two `.storybook` files
@@ -441,7 +443,9 @@ alone; 1.2 leaves `globals.css` alone; 1.1 deletes only the two tests it owns).
   `AppScreens` sizes equal for one and two phones (D046); `Doodle` renders a plain decorative `<img>` from
   the DS file when `draw` is false (hero boards, pick 2) and the generated inline SVG with `data-draw` and
   `data-draw-order` (1-5) when true; `ArtBoard` and `ImaginationFrame` doodle layers use `Doodle`;
-  `DoodleDefs` renders one hidden SVG holding `#ks-chalk`.
+  `DoodleDefs` renders one hidden SVG holding `#ks-chalk`. motion.css draws every
+  `.ks-doodle[data-draw] path:not(.ks-doodle__fill)` as a stroke, so any filled path must carry `ks-doodle__fill`
+  (`build-doodles.mjs` adds it to generated doodles; architecture §11.2 row 3).
 - **Test:** component tests (attributes, `sizes`, no `priority`); `motion-doodle.spec.ts` on the stories
   (pick 3): below the fold `stroke-dashoffset` goes 1 → 0 within `--duration-draw` after entering, staggered
   by order; drawn at once with reduced motion; drawn without JavaScript.
@@ -564,7 +568,9 @@ distinct; the layout import lines only in 2.6; no task touches `src/lib/cn.ts`.
 - **Acceptance:**
   1. SCA for each chrome part. Root layout: `lang="en-IN"`, `site.css`, the three font preloads from
      `fonts.generated.ts`, `metadataBase` = `CANONICAL_ORIGIN`, `robots: noindex, nofollow` when
-     `SITE_ENV === "beta"`, the gates last in `<body>`, no old fonts. **`test/analytics-tags.test.ts` stays
+     `SITE_ENV === "beta"`, the gates last in `<body>`, no old fonts, and `data-scroll-behavior="smooth"` on
+     `<html>` (the motion.css hook for the mockup's smooth anchor scrolling, architecture §11.3; added after
+     the 1.2 review, 2026-10-12). **`test/analytics-tags.test.ts` stays
      green without edits:** the literal `<head>` and `</head>` remain in the file, the Ahrefs `<script async
      src="https://analytics.ahrefs.com/analytics.js">` stays inside them (wrapped in the beta condition),
      and `<Analytics />`, `<GoogleAnalyticsGate />`, `<MetaPixel />`, `<PostHogGate />` stay literal.
@@ -572,14 +578,17 @@ distinct; the layout import lines only in 2.6; no task touches `src/lib/cn.ts`.
      `MotionController`, `DoodleDefs`, `WhatsAppFloat` (site text), Organization and WebSite JSON-LD once.
   3. Sticky bar: hidden until the hero CTA leaves (or shown from first paint where the page has none);
      steps aside while any inline chilli CTA is on screen; hidden from 900 px; safe-area padding; slides up
-     once (pick 4); publishes its state as `data-buybar` on `<html>` and its height as `--ks-buybar-h`.
+     once (pick 4); publishes its state as `data-buybar` on `<html>` and its height as `--ks-buybar-h`; sets
+     `inert` on the bar while `.is-hidden` (the DS hidden state is only opacity and pointer-events, so its CTA
+     would stay in the tab order; architecture §5.3).
   4. Drawer: native `<dialog>`, focus inside, Escape and backdrop close, `aria-expanded`, panel slides from
      the side (pick 5); nav chilli button from 1024 px only.
   5. `WhatsAppFloat` per [architecture §5.3](architecture.md#53-the-whatsapp-bubble-d050): a real link named
      "Chat with us on WhatsApp", the D050 URL and text for its context, new tab with `rel="noopener"`, DS
      `kh-iconbtn kh-iconbtn--l` look with `--ks-wa-green`, `data-ph-capture-attribute-cta="whatsapp-float"`
      (with `ph-no-capture` in the `/thanks` context); lifts with the bar, hidden under an open dialog, label
-     on laptop hover and focus; every page's last content keeps clear of it.
+     on laptop hover and focus; every page's last content keeps clear of it; no colour transition is added
+     to `.ks-wa` (its hover colour change is instant, architecture §5.3).
   6. Store layout: noindex, policy links to `MARKETING_ORIGIN`; its signature fixture regenerated in the
      same commit and the diff reviewed (presentation only, ADR-013).
 - **Test:** component tests; `chrome.spec.ts` on any built marketing route (the chrome is the shell's): element parity of nav, drawer, footer and
@@ -801,7 +810,11 @@ waits; it may run in any later wave before wave 8, alone with its own files.
   `src/components/ui/Button/Button.stories.tsx` as its anchor; `utm.test` imports `CANONICAL_ORIGIN`;
   retired packages removed one by one with the lockfile diff read; `dependency-floor` drops only the
   `fflate` floor, and only if `npm ls fflate` is empty after `three` leaves (evidence in the report);
-  `npm audit` clean of high or critical runtime advisories; `jscpd` under threshold; asset-dupes green;
+  `npm audit` clean of high or critical runtime advisories; `jscpd` under threshold **with the legacy
+  route-file entries removed from `package.json` `jscpd.ignore`** (`src/app/(site)/page.tsx`, `contact`, `safety`,
+  `setup`, `playos/**`, `src/app/store/e/**`, `src/app/store/ideabaaz/page.tsx`; added by 1.1 because the legacy
+  tree is 2.06% duplicated); the `KHEELONA_PLUS_LINE` constant in `src/config/site.ts` ("lessons", claims §4 row
+  10) deleted with the legacy `KheelonaPlusBand`, so banned-phrases prints it as resolved; asset-dupes green;
   every remaining file in `public/` referenced or marked FOUNDER in assets.md; the deleted list logged for
   the main session.
 - **Test:** `npm run verify` and `npm run verify:e2e` green.

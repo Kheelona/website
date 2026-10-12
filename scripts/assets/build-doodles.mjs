@@ -9,7 +9,7 @@
 //   - the root becomes <svg class="ks-doodle" aria-hidden="true" focusable="false"> with the DS
 //     viewBox only (no width, height, role, aria-label; <title> dropped): doodles are decorative,
 //     and the page sizes them as it sized the <img> they replace;
-//   - every stroked path gets pathLength="1" (motion.css draws `path[pathLength]` from 1 to 0);
+//   - every stroked path gets pathLength="1" (motion.css draws every `path:not(.ks-doodle__fill)` from 1 to 0);
 //   - every filled shape gets class ks-doodle__fill (it fades in when the lines are drawn);
 //   - the per-file <defs> grain filter (id "chalk", identical in every DS doodle) is dropped and
 //     filter="url(#chalk)" points at the one shared filter, #ks-chalk, exported here as
@@ -124,7 +124,7 @@ function drawing(file, el, filterRef, depth) {
   } else if (el.tag === "path" || el.tag === "circle") {
     if (isSet(attr(el, "fill"))) extra.push('className="ks-doodle__fill"');
     if (isSet(attr(el, "stroke"))) {
-      if (el.tag !== "path") throw new Error(`build-doodles: ${file}: stroked <${el.tag}>; the draw animates path[pathLength] only`);
+      if (el.tag !== "path") throw new Error(`build-doodles: ${file}: stroked <${el.tag}>; the draw animates stroked <path> elements only`);
       extra.push("pathLength={1}");
     }
     if (el.children.length) throw new Error(`build-doodles: ${file}: <${el.tag}> has children`);

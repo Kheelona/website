@@ -119,17 +119,24 @@ Decision and options: [ADR-002](adr/ADR-002-visual-layer-ds-css.md).
 @import "./generated/compose.css";
 /* 7. Tailwind: theme and utilities only, in layers, no preflight */
 @import "tailwindcss/theme.css" layer(theme);
-@import "tailwindcss/utilities.css" layer(utilities);
+@import "tailwindcss/utilities.css" layer(utilities) source(none);
 @import "./tailwind-theme.css";
 @source "../**/*.{ts,tsx}";
-@source not "../**/*.{test,stories}.tsx";
+@source not "../**/*.{test,stories}.{ts,tsx}";
 ```
+
+As built (task 1.2, `6078e4d`): `source(none)` stops Tailwind scanning anything but the two `@source` lines,
+and tests and stories are excluded in `.ts` as well as `.tsx`.
 
 Layers 1-6 are unlayered, exactly as the mockup loads them, so the cascade the founder approved is the
 cascade that ships. Tailwind's utilities live in a layer, and unlayered CSS beats any layer, so a
 utility can only fill a property nothing else sets. The order is checked twice: by compiling `site.css`
 in Vitest (`test/guards/visual-layer.test.ts`) and on `next build` output (Next docs, CSS "Ordering and
-Merging": order follows import order; dev can differ).
+Merging": order follows import order; dev can differ). In the built file lightningcss hoists
+`@layer properties{}`, `@layer theme;` and the `@layer utilities{}` block above the unlayered DS CSS; the
+cascade is unaffected (unlayered beats any layer), so a check on `next build` output compares the order of
+the **unlayered parts** (tokens < fonts < bundle.css < type steps < motion < composition), not top-level
+positions (task 1.2 review, 2026-10-12).
 
 ### 4.2 The Tailwind theme (`src/styles/tailwind-theme.css`)
 
@@ -150,7 +157,17 @@ Merging": order follows import order; dev can differ).
 ```
 
 Radius, shadow, easing, font and type are deliberately absent (they collide with DS names and belong
-to `kh-` classes). `test/guards/tailwind-theme.test.ts` asserts: every colour maps to a DS role; the
+to `kh-` classes).
+
+**The PostCSS filter (as built, task 1.2):** `postcss.config.mjs` passes plugin objects (not the string
+form in Next's PostCSS guide) so that `site.css` alone runs through an unoptimised Tailwind
+(`tailwindByEntry`; every other CSS file, the legacy `globals.css` included, keeps Tailwind's defaults) and
+then `dsOnlyUtilities` drops every utility in `@layer utilities` that carries a literal value: motion
+utilities and also `z-50`, `border`, `border-2`, `sr-only`, `opacity-50`, `aspect-*`, `rounded-full`,
+`leading-none`, arbitrary values (`p-[13px]`) and the like. Utilities that resolve to a DS variable survive
+(`p-5`, `w-1/2`, `-mt-5`, `grid-cols-2`, `lg:p-7`). **Builders:** a filtered utility silently does nothing;
+use the DS class or a composition class (`ks-`) with a token instead. `@apply`, `@theme`, `@utility` and
+Tailwind imports are refused in component CSS (`test/guards/motion-properties.test.ts`). `test/guards/tailwind-theme.test.ts` asserts: every colour maps to a DS role; the
 four breakpoints equal the `min-width` values parsed from `bundle.css`; no other namespace exists.
 
 ### 4.3 Generated derivatives
@@ -261,6 +278,14 @@ Each becomes a component once (kickoff §3, decision 1):
   Meta or GA4 event.
 - **Fidelity:** a post-Gate A addition, so the visual-parity runs hide the bubble and its padding and a
   dedicated spec (task 3.1) checks it.
+- **Hover (main session, 2026-10-12):** `motion.css` gives `.ks-wa` a transform transition only; coming
+  after `bundle.css` with equal specificity, it replaces the DS `.kh-iconbtn` transition list (background
+  and border colour at `--duration-fast`, `bundle.css:698`) on the same `<a>`. Accepted: the bubble's
+  colour change on hover is instant and the lift is its only motion; 3.1 does not add colour transitions to
+  `.ks-wa` (the motion guard would refuse them).
+- **Hidden bar is inert:** `.kh-buybar.is-hidden` (copied from `mockup.css:58`) is only `opacity: 0` and
+  `pointer-events: none`, so `StickyBuyBar` (3.1) sets `inert` on the bar while it is hidden, keeping its CTA
+  out of the tab order.
 
 ### 5.4 The scalability test
 
@@ -533,6 +558,7 @@ appears in the visible text of the same page.
 | `/pricing` | 308 → `/products/kheelu#offer` | url-map §4d |
 | The 24 existing rules | unchanged | url-map §4b |
 | `www.kheelona.com/*` | host-matched twins of every rule, absolute apex destinations, then a catch-all; one hop once the founder switches `www` to serve the project | url-map §4c |
+| `www.kheelona.com/store/*` | 308 → `https://store.kheelona.com/*` directly, before the `www` catch-all (the apex's `/store` redirect lives in the frozen `host.ts` and runs in the proxy, so going via the apex would cost a second hop); added by 1.3, accepted by the main session 2026-10-12 | `src/config/redirects.ts` |
 | `/faq` | stays → `/products/kheelu#faq`; the product page keeps `#faq`, `#story-mode`, `#reserve`, `#offer` | url-map §4b, `docs/utm-conventions.md` |
 
 Next emits 308 for `permanent: true`, the permanent equivalent of the brief's 301 (url-map §4). Rules keep
@@ -603,11 +629,11 @@ WhatsApp bubble carry their own few lines. The `motion` library is not used (ADR
 | 1 | Sections on scroll: **A fade and rise** | `[data-reveal]`: `opacity 0; translateY(var(--space-4))` only under `html.js-motion`; `.is-in` → none; once; anything in view at load is marked `is-in` before `js-motion` is added | `--duration-enter`, `--ease-standard` | visible at once | 1.2, 2.8 |
 | 1b | Stickers settling inside a revealed block (Gate A spec) | transform transition when the block becomes `is-in` | `--duration-enter`, `--ease-bounce` | none | 1.2 |
 | 2 | Hero picture: **A still** | nothing: the hero section, h1, price sentence and CTA have no entrance motion; hero doodles are plain `<img>` | none | same | 3.3, 2.3 |
-| 3 | Doodles: **B draw themselves** (below the first screen only) | `.ks-doodle[data-draw] path[pathLength]` `stroke-dasharray: 1`; under `html.js-motion` `stroke-dashoffset: 1` until `.is-in`, then `@keyframes ks-draw` 1 → 0 once; `ks-doodle__fill` shapes fade in at the end; `[data-draw-order="2".."5"]` delay `calc(var(--duration-base) * 2 * (n - 1))` (400 ms steps, inside D049's 300-600 ms); without JavaScript the doodle is drawn | `--duration-draw`, `--ease-standard`, `--duration-fast` | drawn at once | 1.5, 2.3, 2.8 |
+| 3 | Doodles: **B draw themselves** (below the first screen only) | `.ks-doodle[data-draw] path:not(.ks-doodle__fill)` `stroke-dasharray: 1` (every stroked path carries `pathLength="1"`; selected by class, not `[pathLength]`, because Chromium does not restyle `[pathLength]` selectors when `html.js-motion` arrives, and a guard forbids them; so any filled path in a drawn doodle must carry `ks-doodle__fill`, which `build-doodles.mjs` adds); under `html.js-motion` `stroke-dashoffset: 1` until `.is-in`, then `@keyframes ks-draw` 1 → 0 once; `ks-doodle__fill` shapes fade in at the end; `[data-draw-order="2".."5"]` delay `calc(var(--duration-base) * 2 * (n - 1))` (400 ms steps, inside D049's 300-600 ms); without JavaScript the doodle is drawn | `--duration-draw`, `--ease-standard`, `--duration-fast` | drawn at once | 1.5, 2.3, 2.8 |
 | 4 | Phone buy bar: **A slide up** | `.kh-buybar.is-hidden` ↔ shown: opacity and `translateY(100%)`, once; afterwards it only steps aside (G-09) | `--duration-base`, `--ease-standard` | fades without moving | 3.1 |
 | 5 | Phone menu: **A slide from the side** | native `<dialog>` `showModal()`; panel keyframe from `translateX(100%)`; DS scrim on `::backdrop` fades | `--duration-enter`, `--ease-standard` | appears without sliding | 3.1 |
 | 6 | Orange button: **B press and arrow nudge** | `@media (hover: hover) and (pointer: fine)`: `.kh-btn--cta:hover .ks-btn__arrow { transform: translateX(var(--ks-nudge)) }`, `--ks-nudge: 5px` (the value D049 names, one literal); press is the DS's own `:active` (`translateY(4px)`, shadow removed). Applies to every chilli button with an arrow (Home hero, product hero, the guide, safety, stories and article closes): hover and press are feedback the visitor starts, not arrival motion, so pick 2 is not affected (question to the main session) | `--duration-fast`, `--ease-standard` | no nudge (the DS press stays: it is the tap state, not an animation) | 2.2 |
-| 7 | FAQ answers: **B smooth open** | native `<details>`; `@supports selector(::details-content)`: `.kh-faq__item::details-content { display: grid; grid-template-rows: 0fr; transition: grid-template-rows var(--duration-enter) var(--ease-standard), content-visibility var(--duration-enter) allow-discrete }`, `[open]` → `1fr`; the answer sits in `ks-faq__clip` (`overflow: hidden; min-height: 0`) so the DS padding does not leak; `.kh-faq__sign` gets a transform transition (the DS rotates it 45° when open, with no transition). Where `::details-content` is unsupported (older iOS Safari), the answer opens instantly, the 7A behaviour | `--duration-enter`, `--ease-standard` | instant | 2.4 |
+| 7 | FAQ answers: **B smooth open** | native `<details>`; `@supports selector(::details-content)`: `.kh-faq__item::details-content { display: grid; grid-template-rows: 0fr; transition: grid-template-rows var(--duration-enter) var(--ease-standard), content-visibility var(--duration-enter) allow-discrete }`, `[open]` → `1fr`; the answer sits in `ks-faq__clip` (`overflow: hidden; min-height: 0`) so the DS padding does not leak; `.kh-faq__sign` keeps the DS's own rotate transition (`bundle.css:280`; motion.css leaves it alone). Where `::details-content` is unsupported (older iOS Safari), the answer opens instantly, the 7A behaviour | `--duration-enter`, `--ease-standard` | instant | 2.4 |
 | 8 | Parent films strip: **B focus grows** | native scroll-snap; one `IntersectionObserver` per strip with the track as root and a `rootMargin` that narrows it to its central band; the tile most inside the band gets `is-focus`; `.ks-film.is-focus .ks-film__frame { transform: scale(var(--ks-film-focus)) }`, `--ks-film-focus: 1.05` (one value inside D049's 1.04-1.1); the track has `padding-block: var(--space-3); margin-block: calc(var(--space-3) * -1)` so a scaled tile is not clipped and the layout box does not change; end detection tolerates half a tile; nothing overflows the document (lessons §2) | `--duration-base`, `--ease-standard` | no scale | 3.3 |
 | D050 | WhatsApp bubble | lift with the bar (`translateY(calc(var(--ks-buybar-h) * -1))` while `html[data-buybar="shown"]`); laptop label slides out on hover or focus (opacity and transform) | `--duration-base`, `--ease-standard` | nothing moves | 3.1 |
 | – | Tap feedback | the DS's own button, icon-button and focus transitions (`bundle.css`) | `--duration-fast`, `--duration-base` | DS | – |
@@ -632,6 +658,7 @@ moves for more than five seconds; nothing flashes; no scroll-jacking.
 | `.kh-buybar.is-hidden`, `html[data-buybar="shown" \| "aside" \| "hidden"]`, `--ks-buybar-h` | `StickyBuyBar` | bar state and height, read by the bubble |
 | `dialog.kh-drawer[open]` | `NavDrawer` | drawer panel and scrim |
 | `.ks-wa`, `.ks-wa__label`, `body.ks-has-float` | `WhatsAppFloat`, shells | bubble, label and clearance |
+| `html[data-scroll-behavior="smooth"]` | root layout `src/app/layout.tsx` (3.1) | smooth in-page anchor scrolling as in the mockup; Next 16 resets it to `auto` during route changes only when this attribute is present; off under reduced motion |
 
 ### 11.4 Exceptions and guards
 
@@ -659,7 +686,7 @@ and by Lighthouse mobile (median of 3).
 | HTML document (gzip, N16) | ≤ 60 KB per route (the approved mockup's built Home is 14.8 KB gzip and the product page 15.6 KB; the App Router inlines the server-component payload, roughly doubling text, plus inline doodles and JSON-LD) | ≤ 45 KB |
 | First-load JavaScript (gzip), excluding the post-hydration tags | ≤ 130 KB total; ≤ 25 KB route-specific beyond the shared framework chunks | ≤ 150 KB |
 | CSS (gzip) | ≤ 35 KB | ≤ 35 KB |
-| Fonts on first view | ≤ 130 KB, three preloads (§10) | same |
+| Fonts on first view | ≤ 130 KB, three preloads (§10; 95,976 B as built). The Baloo 2 Devanagari file loads by `unicode-range` wherever Devanagari text shows (the "हिन्दी" chip on Home and Meet Kheelu), so it is subset to the Devanagari text the site actually uses (main session 2026-10-12: the full block was 110,588 B, about 206 KB with the preloads; a subset of the used text is a few KB) | same |
 | Images above the fold at 390 px | ≤ 250 KB; LCP image ≤ 200 KB (DS hero budget, `06-surfaces.md:29`) | ≤ 120 KB |
 | Images on first load in total (lazy excluded) | ≤ 400 KB | ≤ 200 KB |
 | Films | never preloaded; ≤ 4 MB each on play; posters ≤ 40 KB each at tile size | after the form only |
@@ -962,7 +989,7 @@ order container; store noindex; inputs at 16 px or more; no `<video>` before pla
 
 | Feature | Where it plugs in |
 |---|---|
-| Hindi (and other languages) | `src/content/hi-IN/` with the same types; a `[locale]` route segment and `hreflang` later; Devanagari font subset already generated |
+| Hindi (and other languages) | `src/content/hi-IN/` with the same types; a `[locale]` route segment and `hreflang` later; the Devanagari font subset covers only the Devanagari text in the site today, so Hindi content re-runs `node scripts/assets/build-fonts.mjs` (a guard in `generated-css.test.ts` names any uncovered character) |
 | More products | `src/content/en-IN/products/<slug>/`; route `products/[slug]` exists; checkout tiers are the store's (founder decision when it comes) |
 | Campaign landing pages | `src/content/en-IN/campaigns/<slug>.ts` and the `lp/[slug]` route (empty registry at launch) |
 | Accounts and login | none in v1 (brief §2); the store host and API routes are where it would attach |

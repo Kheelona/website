@@ -1,6 +1,6 @@
 // Guard for src/assets/doodles.generated.tsx (task 1.5; D049 pick 3 "doodles draw themselves";
 // ADR-010). Each DS doodle the approved pages use becomes one inline SVG component that the
-// motion layer can draw (architecture §11.3: `.ks-doodle[data-draw] path[pathLength]`).
+// motion layer can draw (architecture §11.3: `.ks-doodle[data-draw] path:not(.ks-doodle__fill)`, pathLength 1).
 //
 // The expected markup is derived here from the DS file with the browser's own SVG parser and the
 // rules of the task (tasks.md 1.5, acceptance 2), never from the generator's code:
