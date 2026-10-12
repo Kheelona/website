@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { ICON_PATHS } from "@/assets/icons.generated";
+import { MRP_PRICE } from "@/config/site";
 import type { Offer, OfferMode } from "@/content/types";
 import { PageTemplate } from "@/layouts/PageTemplate/PageTemplate";
 import { toPlainText } from "@/lib/content/plain-text";
@@ -143,7 +144,7 @@ describe("the product page as rendered (token mode)", () => {
   it("declares the MRP from the checkout's own constant, labelled exactly \"MRP\" (D034)", () => {
     for (const offer of [TOKEN, FULL]) {
       const declarations = rendered(offer).main.querySelector("#specs .ks-declare")!;
-      expect(words(declarations.querySelector("dl > div")!)).toBe(`MRP ${offer.prices.mrp} (incl. of all taxes)`);
+      expect(words(declarations.querySelector("dl > div")!)).toBe(`MRP ${MRP_PRICE} (incl. of all taxes)`);
     }
   });
 
