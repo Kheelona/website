@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "@/styles/globals.css";
 import { Analytics } from "@vercel/analytics/next";
-import { GoogleAnalyticsGate } from "@/components/molecules/GoogleAnalyticsGate";
-import { MetaPixel } from "@/components/molecules/MetaPixel";
-import { PostHogGate } from "@/components/molecules/PostHogGate";
+import { GoogleAnalyticsGate } from "@/components/tracking/GoogleAnalyticsGate";
+import { MetaPixel } from "@/components/tracking/MetaPixel";
+import { PostHogGate } from "@/components/tracking/PostHogGate";
 import { AHREFS_ANALYTICS_KEY } from "@/config/site";
 
 /* All three faces are subsets of the v3 design system's TTFs

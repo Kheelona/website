@@ -1,6 +1,8 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { describe, expect, it, beforeEach } from "vitest";
+import { render, waitFor } from "@testing-library/react";
+import { describe, expect, it, beforeEach, vi } from "vitest";
+import { PostHogGate } from "./PostHogGate";
 import {
   GA4_HOSTS,
   POSTHOG_API_HOST,
@@ -14,6 +16,7 @@ import {
   replayAllowedOnPath,
   shouldLoadPostHog,
 } from "@/config/site";
+import { BETA_HOSTS } from "@/config/env";
 import {
   phCapture,
   phDistinctId,
@@ -54,6 +57,14 @@ describe("shouldLoadPostHog", () => {
   it("is case-insensitive, because hostnames are", () => {
     expect(shouldLoadPostHog("Kheelona.com")).toBe(true);
     expect(shouldLoadPostHog("STORE.KHEELONA.COM")).toBe(true);
+  });
+
+  /* D048: the beta is measured by PostHog alone, every event stamped env=beta by the gate's
+     before_send (architecture §15.3). GA4 and the Meta Pixel stay off there (their own tests). */
+  it("loads on the two beta hosts (D048)", () => {
+    expect(shouldLoadPostHog("betawebsite.kheelona.com")).toBe(true);
+    expect(shouldLoadPostHog("betastore.kheelona.com")).toBe(true);
+    expect(shouldLoadPostHog("BETASTORE.KHEELONA.COM")).toBe(true);
   });
 });
 
@@ -149,8 +160,10 @@ describe("the PostHog constants", () => {
     expect(POSTHOG_ASSET_HOST).toBe("https://us-assets.i.posthog.com");
   });
 
-  it("measures exactly the hosts GA4 measures", () => {
-    expect([...POSTHOG_HOSTS]).toEqual([...GA4_HOSTS]);
+  /* B2a (architecture §15.3): the production hosts GA4 measures, plus exactly the two beta
+     hosts, changed in the same commit as this assertion. */
+  it("measures the hosts GA4 measures, plus the two beta hosts (D048, B2a)", () => {
+    expect([...POSTHOG_HOSTS]).toEqual([...GA4_HOSTS, ...BETA_HOSTS]);
   });
 
   it("never names a preview or local host", () => {
@@ -184,6 +197,7 @@ describe("the posthog wrapper no-ops when the SDK never loaded", () => {
       capture: (e, p) => calls.push([e, p]),
       startSessionRecording: () => {},
       stopSessionRecording: () => {},
+      get_distinct_id: () => "d",
     });
 
     phCapture("purchase", { value: 499, currency: "INR" });
@@ -198,6 +212,7 @@ describe("the posthog wrapper no-ops when the SDK never loaded", () => {
       capture: () => {},
       startSessionRecording: () => log.push("start"),
       stopSessionRecording: () => log.push("stop"),
+      get_distinct_id: () => "d",
     });
 
     phSetReplay(replayAllowedOnPath("/store"));
@@ -220,7 +235,7 @@ describe("the posthog wrapper no-ops when the SDK never loaded", () => {
  *  prefix in one place cannot leave this quietly asserting the old one. */
 describe("the gate points the SDK at our own domain", () => {
   const SOURCE = readFileSync(
-    join(process.cwd(), "src/components/molecules/PostHogGate.tsx"),
+    join(process.cwd(), "src/components/tracking/PostHogGate.tsx"),
     "utf8",
   );
 
@@ -320,5 +335,91 @@ describe("reading the device id back out of PostHog", () => {
       },
     } as never);
     expect(phDistinctId()).toBeNull();
+  });
+});
+
+/** THE GATE ITSELF, RENDERED (task 2.6). posthog-js is replaced by a recorder, so these read
+ *  what the gate asks of the SDK on each kind of host. The production options are pinned
+ *  against the tag by test/guards/posthog-init-fixture.test.ts, which also runs the real SDK
+ *  for the persistence control (N3); these cover the component's own branches. */
+const sdk = vi.hoisted(() => ({
+  init: vi.fn(),
+  register: vi.fn(),
+  unregister: vi.fn(),
+  capture: vi.fn(),
+  startSessionRecording: vi.fn(),
+  stopSessionRecording: vi.fn(),
+  get_distinct_id: vi.fn(() => "test-device"),
+}));
+vi.mock("posthog-js", () => ({ default: sdk }));
+
+type Jsdom = { reconfigure(o: { url: string }): void };
+async function renderAt(url: string) {
+  (globalThis as unknown as { jsdom: Jsdom }).jsdom.reconfigure({ url });
+  render(<PostHogGate />);
+  if (shouldLoadPostHog(new URL(url).hostname)) await waitFor(() => expect(sdk.init).toHaveBeenCalledTimes(1));
+  else await new Promise((r) => setTimeout(r, 30));
+}
+const initOptions = () => sdk.init.mock.calls[0][1] as Record<string, unknown>;
+
+describe("the gate on each kind of host", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    resetPostHogForTests();
+  });
+
+  it("initialises once on a production host, with the project key and no before_send", async () => {
+    await renderAt("https://kheelona.com/");
+    expect(sdk.init.mock.calls[0][0]).toBe(POSTHOG_KEY);
+    expect(initOptions()).not.toHaveProperty("before_send");
+    expect(initOptions().api_host).toBe(POSTHOG_PROXY_PATH);
+  });
+
+  it("never initialises off the host list", async () => {
+    await renderAt("http://localhost:3000/");
+    await renderAt("https://website-hdn2.vercel.app/");
+    expect(sdk.init).not.toHaveBeenCalled();
+  });
+
+  it.each([...BETA_HOSTS])("on %s adds before_send, which stamps env: beta on every event (D048)", async (host) => {
+    await renderAt(`https://${host}/`);
+    const beforeSend = initOptions().before_send as (e: unknown) => { properties: Record<string, unknown> } | null;
+    expect(typeof beforeSend).toBe("function");
+    expect(beforeSend({ uuid: "u", event: "$autocapture", properties: { cta: "hero" } })).toEqual({
+      uuid: "u",
+      event: "$autocapture",
+      properties: { cta: "hero", env: "beta" },
+    });
+    expect(beforeSend(null)).toBeNull();
+  });
+
+  /* N3: a registered super property persists in PostHog's storage and could follow a tester
+     from beta to production. The stamp goes through before_send only. */
+  it("registers nothing on a beta visit (no env super property, N3)", async () => {
+    await renderAt("https://betastore.kheelona.com/thanks");
+    expect(sdk.register).not.toHaveBeenCalled();
+  });
+
+  it("?internal=1 registers internal: true once the SDK is up, on production too (B46)", async () => {
+    await renderAt("https://kheelona.com/?internal=1");
+    await waitFor(() => expect(sdk.register).toHaveBeenCalledWith({ internal: true }));
+    expect(sdk.register).toHaveBeenCalledTimes(1);
+    expect(sdk.init.mock.invocationCallOrder[0]).toBeLessThan(sdk.register.mock.invocationCallOrder[0]);
+    expect(sdk.capture, "the flag is a property, never an event").not.toHaveBeenCalled();
+  });
+
+  it("?internal=0 unregisters internal and registers nothing (B46)", async () => {
+    await renderAt("https://store.kheelona.com/?internal=0");
+    await waitFor(() => expect(sdk.unregister).toHaveBeenCalledWith("internal"));
+    expect(sdk.register).not.toHaveBeenCalled();
+    expect(sdk.capture, "the flag is a property, never an event").not.toHaveBeenCalled();
+  });
+
+  it("hands the SDK to lib/posthog, so the funnel's phCapture reaches it", async () => {
+    await renderAt("https://kheelona.com/");
+    await waitFor(() => {
+      phCapture("preorder_start", { tier: "launch" });
+      expect(sdk.capture).toHaveBeenCalledWith("preorder_start", { tier: "launch" });
+    });
   });
 });

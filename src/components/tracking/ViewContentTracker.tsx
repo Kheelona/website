@@ -36,8 +36,15 @@ import { LAUNCH_AMOUNT_PAISE } from "@/config/site";
  *  It waits for `fbq` rather than calling `fbTrack` directly, because the pixel
  *  is gated behind a hostname check in an effect and then loads
  *  `afterInteractive` — so at mount it is usually not there yet, and a direct
- *  call would be silently dropped. See `whenFbqReady`. */
-export function ViewContentTracker() {
+ *  call would be silently dropped. See `whenFbqReady`.
+ *
+ *  SINCE TASK 2.6 THE PAGE PASSES THE VALUE (B9, ADR-005): `valuePaise` is the
+ *  offer's headline, read on the server where the live mode is known, so the
+ *  staleness above ends for every page that passes it, and Home (B9) and the
+ *  product page send the same payload. The `LAUNCH_AMOUNT_PAISE` default exists
+ *  only for the legacy product page until task 5.2 replaces it; every other mount
+ *  must pass `valuePaise` (test/guards/tracking-parity.test.ts). */
+export function ViewContentTracker({ valuePaise = LAUNCH_AMOUNT_PAISE }: { valuePaise?: number }) {
   const fired = useRef(false);
 
   useEffect(() => {
@@ -52,10 +59,14 @@ export function ViewContentTracker() {
         content_name: "Kheelu",
         content_ids: ["lumi"],
         content_type: "product",
-        value: LAUNCH_AMOUNT_PAISE / 100,
+        value: valuePaise / 100,
         currency: "INR",
       }),
     );
+    /* `[]` as at the tag (task 2.6 review): the value at first render is this page view's
+       value. Re-running on a new `valuePaise` would clear the wait for fbq and then stop at
+       the fired ref, so the page view would send no ViewContent at all. */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return null;
