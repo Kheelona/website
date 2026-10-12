@@ -146,32 +146,72 @@ describe("src/ publishes no retired offer term (ported from test/preorder-copy.t
   });
 });
 
+type PendingItem = { path: string; id: string; match: string; count: number; why: string };
+type ClaimHit = { path: string; id: string; match: string; text: string };
+
+/** A pending item absorbs at most `count` hits of its own phrase (same path, id and matched
+ *  text); every other hit, a further copy of the same phrase included, is a problem. `seen[i]`
+ *  is how many hits item i absorbed: 0 means its owner has rewritten the line (resolved). */
+function classifyClaimHits(hits: readonly ClaimHit[], pending: readonly PendingItem[]): { problems: string[]; seen: number[] } {
+  const seen = pending.map(() => 0);
+  const problems: string[] = [];
+  for (const h of hits) {
+    const i = pending.findIndex((p) => p.path === h.path && p.id === h.id && p.match === h.match);
+    if (i >= 0 && seen[i] < pending[i].count) seen[i]++;
+    else problems.push(h.text);
+  }
+  return { problems, seen };
+}
+
+describe("pending items absorb only their own count of hits", () => {
+  const item = { path: "src/config/site.ts", id: "lessons", match: "lessons", count: 1, why: "" };
+  const hit = (path = item.path, match = item.match) => ({ path, id: item.id, match, text: `${path} lessons: "${match}"` });
+
+  it("absorbs the one pending hit", () => {
+    expect(classifyClaimHits([hit()], [item])).toEqual({ problems: [], seen: [1] });
+  });
+
+  it("fails a second hit of the same phrase in the same file", () => {
+    expect(classifyClaimHits([hit(), hit()], [item]).problems).toEqual([hit().text]);
+  });
+
+  it("fails the same phrase in another file", () => {
+    expect(classifyClaimHits([hit("src/config/other.ts")], [item]).problems).toEqual([hit("src/config/other.ts").text]);
+  });
+
+  it("reports an item with no hit left as resolved (seen 0)", () => {
+    expect(classifyClaimHits([], [item])).toEqual({ problems: [], seen: [0] });
+  });
+});
+
 describe("new src/ code carries no banned claim", () => {
   /* The claim entries over every shipped src file that is not still legacy (legacy-paths.ts): new
      code, and any legacy file the moment a task rewrites it. Pending items are hits that predate
      the reset in files no wave-1 task owns; each is printed on every run, never silent, and stops
-     printing once its owner rewrites the line. A pending item never hides a new hit. */
-  const PENDING: readonly { path: string; id: string; match: string; why: string }[] = [
+     printing once its owner rewrites the line. A pending item never hides a new hit: it absorbs
+     exactly `count` hits of its phrase in its file, and one more fails. */
+  const PENDING: readonly PendingItem[] = [
     {
       path: "src/config/site.ts",
       id: "lessons",
       match: "lessons",
+      count: 1,
       why: 'KHEELONA_PLUS_LINE says "the stories, lessons, languages"; claims §4 row 10 already flags it (D027).',
     },
   ];
 
   it("finds no banned claim outside the named pending items", () => {
     const files = listFiles(["src"]).filter((p) => /\.(ts|tsx)$/.test(p) && !isTestOrStory(p) && !isStillLegacy(p));
-    const problems: string[] = [];
-    const pendingSeen = new Set<number>();
+    const hits: ClaimHit[] = [];
     for (const path of files) {
       for (const h of findBanned(codeWithoutComments(parseSource(path, readRepoFile(path))), ["claim"])) {
-        const i = PENDING.findIndex((p) => p.path === path && p.id === h.id && p.match === h.match);
-        if (i >= 0) pendingSeen.add(i);
-        else problems.push(`${path} ${h.id}: "${h.match}" in "${h.sentence}"`);
+        hits.push({ path, id: h.id, match: h.match, text: `${path} ${h.id}: "${h.match}" in "${h.sentence}"` });
       }
     }
-    const pendingLines = PENDING.map((p, i) => `  ${pendingSeen.has(i) ? "PENDING " : "resolved"} ${p.path} ${p.id}: ${p.why}`);
+    const { problems, seen } = classifyClaimHits(hits, PENDING);
+    const pendingLines = PENDING.map(
+      (p, i) => `  ${seen[i] ? `PENDING (${seen[i]} of ${p.count})` : "resolved"} ${p.path} ${p.id}: ${p.why}`,
+    );
     console.log(`[banned-phrases] claims: scanned ${files.length} new src file(s).\n${pendingLines.join("\n")}`);
     expect(problems, `banned claims in new src/ code (claims §4):\n${problems.join("\n")}`).toEqual([]);
   });
