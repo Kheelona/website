@@ -6,7 +6,7 @@
 // three for the steps the deploy depends on: DS checksums (prebuild 10, task 1.1), compose.css
 // (prebuild 20, task 1.2), and the placeholder guard on src/ (prebuild 30) and on the prerendered
 // output (postbuild 10), both task 2.9.
-import { existsSync, globSync, readFileSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import ts from "typescript";
 import { describe, expect, it } from "vitest";
@@ -97,14 +97,22 @@ describe("the hooks run around the production build", () => {
    `npm run verify` type-checks the tests, stories and harness through tsconfig.guards.json, which
    leaves out, by name, the files that do not type-check today. An exclusion that matches no file
    is a dead line that hides the next file given that name (the moved PostHogGate.test.tsx stayed
-   listed after task 2.6), so it fails here. Each exclusion also says why it stays: the task that
-   deletes or rewrites the file, or "for good" for a frozen test kept byte-identical to the tag
-   (ruling 2026-10-12). A comment may head a group of entries. */
+   listed after task 2.6), so it fails here, and so does a glob (the list is by name only). Each
+   exclusion also says why it stays: the task that deletes or rewrites the file, or "for good" for
+   one of the four frozen tests kept byte-identical to the tag, and only for them (ruling
+   2026-10-12). A comment may head a group of entries. */
 
 const GUARDS_TSCONFIG = "tsconfig.guards.json";
 /** A task id ("6.3", "5.15", "1.1b") or the frozen-for-good wording. */
 const REASON = /\b[1-7]\.\d+[a-z]?\b|\bfor good\b/;
 const QUOTED_ENTRY = /^\s*"[^"]*",?\s*$/;
+/** The frozen tests (structure §7, ADR-013): byte-identical to the tag, excluded for good. */
+const FROZEN_FOR_GOOD = [
+  "src/features/preorder/components/PreorderForm.test.tsx",
+  "src/features/preorder/lib/analytics.test.ts",
+  "src/lib/email/templates.test.ts",
+  "test/analytics-tags.test.ts",
+] as const;
 
 type Exclusion = { entry: string; line: number; comment: string };
 
@@ -129,10 +137,16 @@ function exclusions(text: string): Exclusion[] {
   });
 }
 
-/** An exclusion that matches no file or folder under root (a glob is expanded). */
+/** An exclusion that names no file or folder under root. The list is by name only, so a glob is
+ *  refused outright: it would also hide whatever file later takes a matching name. */
 function staleExclusions(list: readonly Exclusion[], root: string): string[] {
-  const matches = (entry: string) => (/[*?[{]/.test(entry) ? globSync(entry, { cwd: root }).length > 0 : existsSync(join(root, entry)));
-  return list.filter((x) => !matches(x.entry)).map((x) => `${GUARDS_TSCONFIG}:${x.line} "${x.entry}" matches no file`);
+  return list.flatMap((x) =>
+    /[*?[{]/.test(x.entry)
+      ? [`${GUARDS_TSCONFIG}:${x.line} "${x.entry}" is a glob; exclusions are by name only`]
+      : existsSync(join(root, x.entry))
+        ? []
+        : [`${GUARDS_TSCONFIG}:${x.line} "${x.entry}" matches no file`],
+  );
 }
 
 /** An exclusion (node_modules apart) whose comment names neither a task nor "for good". */
@@ -164,9 +178,12 @@ describe("the tsconfig exclusion detector", () => {
     ]);
   });
 
-  it("red on a glob that matches nothing; green on a file, a folder and a glob that match", () => {
+  it("red on a glob, even one that matches; green on a file and a folder that exist", () => {
     const list = exclusions(fixture(['    "test/nothing-here/**/*.ts",', '    "node_modules",', '    "test/guards",', '    "test/guards/*.test.ts",', '    "package.json"'].join("\n")));
-    expect(staleExclusions(list, REPO)).toEqual([`${GUARDS_TSCONFIG}:5 "test/nothing-here/**/*.ts" matches no file`]);
+    expect(staleExclusions(list, REPO)).toEqual([
+      `${GUARDS_TSCONFIG}:5 "test/nothing-here/**/*.ts" is a glob; exclusions are by name only`,
+      `${GUARDS_TSCONFIG}:8 "test/guards/*.test.ts" is a glob; exclusions are by name only`,
+    ]);
   });
 
   it("red on an exclusion whose comment gives no reason, or that has no comment", () => {
@@ -191,5 +208,12 @@ describe("npm run typecheck reads every test (tsconfig.guards.json)", () => {
 
   it("says, for every exclusion, which task removes it or that it stays for good", () => {
     expect(unexplainedExclusions(list)).toEqual([]);
+  });
+
+  /* Ruling 2026-10-12: the frozen tests stay byte-identical to the tag, so they never type-check
+     and stay excluded for good; every other line is legacy and leaves with the task named. */
+  it("keeps the four frozen tests excluded for good, and only them", () => {
+    const forGood = list.filter((x) => /\bfor good\b/.test(x.comment)).map((x) => x.entry);
+    expect(forGood.sort()).toEqual([...FROZEN_FOR_GOOD].sort());
   });
 });
