@@ -1,0 +1,115 @@
+/* FilmsStrip (task 3.3). Ported from mockup.css:38-53, 83, 90, 137, 145 (the seven parent films, D040), with the track
+   room the focus scale needs (D049 pick 8, architecture §11.2 row 8; the scale itself is motion.css's). The chips'
+   switch to the page cream on the band is Chip's own `onBand` (DS gap G-19). */
+
+/* Native scroll-snap; one film and a peek of the next on phones, three from 720 px. The block padding gives the scaled
+   film room so the track never clips it, and the equal negative margin keeps the strip's box where the mockup has it
+   (its own space-2 of bottom padding stays). */
+.ks-films {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 80%;
+  gap: var(--space-4);
+  margin: calc(var(--space-3) * -1) 0;
+  padding: var(--space-3) 0 calc(var(--space-3) + var(--space-2));
+  list-style: none;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+}
+.ks-films > * {
+  scroll-snap-align: start;
+}
+/* Positioned and shrinkable, so the hidden "Length" word stays inside the strip and the page never scrolls sideways
+   (lessons §2). */
+.ks-film {
+  position: relative;
+  display: grid;
+  gap: var(--space-2);
+  align-content: start;
+  min-width: 0;
+}
+.ks-film__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin: 0;
+}
+.ks-film__time {
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+.ks-film__frame {
+  position: relative;
+  aspect-ratio: 9 / 16;
+  max-width: 100%;
+  overflow: hidden;
+  border-radius: var(--radius-l);
+  background: var(--ink-900);
+  /* Phones: the film in focus is snapped at the strip's start, so it grows into the gap after it, never past the
+     strip's edge; the last film, snapped at the end, grows back into the gap before it. */
+  transform-origin: 0 50%;
+}
+.ks-film:last-child .ks-film__frame {
+  transform-origin: 100% 50%;
+}
+.ks-film__frame > img,
+.ks-film__frame > video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.ks-film__play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: var(--shadow-lift);
+}
+.ks-film__play[hidden] {
+  display: none;
+}
+.ks-film__caption {
+  margin: 0;
+}
+
+/* The proof line under the strip and the controls: position, and stops at the ends (the DS's own disabled style). */
+.ks-films-proof {
+  margin: var(--space-4) 0 0;
+  text-align: center;
+  color: var(--text-muted);
+}
+.ks-films-ctrl {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+.ks-films-ctrl [data-films-pos] {
+  min-width: 6ch;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (min-width: 720px) {
+  /* Three at rest; the montage in the centre, the parent film to its right (founder, 2026-09-19). The centre film is
+     the one in focus, so it grows from its middle. */
+  .ks-films {
+    grid-auto-columns: calc((100% - var(--space-4) * 2) / 3);
+  }
+  .ks-film__frame,
+  .ks-film:last-child .ks-film__frame {
+    transform-origin: 50% 50%;
+  }
+}
+@media (min-width: 1024px) {
+  /* Keeps a 9:16 film inside a laptop screen. */
+  .ks-films-wrap {
+    max-width: calc(var(--content-max) - var(--space-10) * 2);
+    margin-inline: auto;
+  }
+}
