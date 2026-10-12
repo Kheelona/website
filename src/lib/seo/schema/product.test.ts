@@ -175,6 +175,22 @@ describe("productNode", () => {
     expect(() => productNode(noAmount, { ...tokenOffer, prices: { ...prices, headline: "₹499" } })).toThrow(/4999 is not the headline ₹499/);
   });
 
+  /* The 2.13 review: a headline above the MRP (selling above MRP is unlawful in India, D034) would
+     still have been published; the MRP is the ceiling, and an unreadable MRP cannot vouch for it. */
+  it("refuses a price above the MRP, and an MRP that is not an amount", () => {
+    const noAmount = { ...kheelu, offerDescription: "Pre-order Kheelu." };
+    const above = { ...tokenOffer, headlinePaise: 899_900, prices: { ...prices, headline: "₹8,999" } };
+    expect(() => productNode(noAmount, above)).toThrow(/8999 is above the MRP ₹7,999/);
+    for (const mrp of ["", "MRP", "₹0"]) {
+      expect(() => productNode(noAmount, { ...tokenOffer, prices: { ...tokenOffer.prices, mrp } }), mrp).toThrow(/MRP/);
+    }
+  });
+
+  it("accepts a price equal to the MRP (full mode)", () => {
+    const full = { ...kheelu, offerDescription: "₹7,999 (incl. GST), paid in full when you order." };
+    expect(productNode(full, fullOffer).offers.price).toBe(7999);
+  });
+
   it("keeps the Product @id in both modes (lessons §6)", () => {
     const full = { ...kheelu, offerDescription: "₹7,999 (incl. GST), paid in full when you order." };
     expect(productNode(kheelu, tokenOffer)["@id"]).toBe("https://kheelona.com/products/lumi#product");

@@ -15,7 +15,7 @@ import { countryNode, definedOnly, requireText, type CountryCode } from "./share
  * the availability date come from the offer view model only, so the schema price is always the
  * price the page and the checkout show (4999 in token mode, 7999 in full mode). Refused (task 2.13):
  * no image (an empty `image` list fails the rich-result validators) and a price that is not a
- * positive whole number of rupees or not the visible headline. Never emitted:
+ * positive whole number of rupees, not the visible headline, or above the MRP. Never emitted:
  * `priceValidUntil` (the offer is bounded by units, not a date), a delivery time (D022), ratings or
  * reviews (none exist).
  */
@@ -74,7 +74,8 @@ function announcedProperties(properties: ProductFacts["properties"]) {
 /**
  * The Offer's price in rupees: the offer's headline amount, a positive whole number of rupees that
  * is the amount the page shows (`prices.headline` is formatted from the same paise, rounded to the
- * rupee). Anything else throws, so the build stops before a broken or wrong price is published.
+ * rupee) and no more than the MRP (`prices.mrp`, D034: selling above it is unlawful). Anything else
+ * throws, so the build stops before a broken or wrong price is published.
  */
 function schemaPrice(offer: SchemaOffer): number {
   const paise = offer.headlinePaise;
@@ -85,6 +86,14 @@ function schemaPrice(offer: SchemaOffer): number {
   const shown = Number(offer.prices.headline.replace(/[^\d]/g, ""));
   if (shown !== rupees) {
     throw new Error(`Product price: ${rupees} is not the headline ${offer.prices.headline} the page shows`);
+  }
+  const digits = offer.prices.mrp.replace(/[^\d]/g, "");
+  const mrp = Number(digits);
+  if (digits === "" || !Number.isSafeInteger(mrp) || mrp <= 0) {
+    throw new Error(`Product price: the MRP "${offer.prices.mrp}" is not a positive amount in rupees`);
+  }
+  if (rupees > mrp) {
+    throw new Error(`Product price: ${rupees} is above the MRP ${offer.prices.mrp}`);
   }
   return rupees;
 }
