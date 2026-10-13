@@ -1209,8 +1209,8 @@ the merge. The CMO approved all 18 article copy pages (5.19 in its second review
    GA4 host, identify which tag sends the AWS beacon before admitting it, and record both in the tracking inventory
    (no ID or event name changes).
 6. **Test harness:** `test/e2e/support/routes.ts` `sweepRoutes` takes `buybar` from `ARTICLE_CLOSES`, so the specs
-   prove the bar absent on the seven keep-close guides; one copy-page reader in `test/support/` replaces the three
-   copies in the 5.17-5.19 article tests; `hideDeviations` takes a label so `thanks-paid.spec.ts` prints its own name.
+   prove the bar absent on the seven keep-close guides; `hideDeviations` takes a label so `thanks-paid.spec.ts` prints
+   its own name. (The one copy-page reader for the three article tests moves to 6.3: 5.20 edits those tests.)
 
 #### 5.20 Article copy fixes before Gate B (verifier, copywriter, CMO, builder; risk normal)
 
@@ -1225,6 +1225,14 @@ the merge. The CMO approved all 18 article copy pages (5.19 in its second review
    founder's answers to [open questions §P](../open-questions.md) P17-P24 fold in here.
 3. **Build:** each module follows its copy page word for word in the same commit (the article tests hold them
    together); assets.md rows follow the photos.
+
+Run as three tasks with the copy stage in fix mode (`build-wave` `copy.mode: "fix"`): **5.20a** the six screen-time
+guides (5.17's), **5.20b** the six talking guides (5.18's), **5.20c** the six AI, safety and learning guides (5.19's);
+each has its own fix-pass CMO review page. Head photos come from separate pools so the three never clash: only five
+DS scene photos have no Kheelu (the `-04` set, `03-cast.md:93`), and the talking and brain guides need them, so the
+screen-time guides (5.20a: advik-01, advik-03, ira-02, kabir-03, myra-02, tara-01) and the AI guides (5.20c: ira-01,
+ira-03, kabir-01, myra-03) move to unused photos with Kheelu where their page allows it (a grown-up in frame at 3),
+and 5.20b spreads the `-04` set so no photo heads more than two talking guides.
 
 ## Wave 5: pages (after wave 4; all parallel)
 
@@ -1355,7 +1363,8 @@ waits; it may run in any later wave before wave 8, alone with its own files.
   legacy copy constants it guards once nothing imports them), `test/stories-parse.test.ts`,
   `test/utm.test.ts`, `test/dependency-floor.test.ts`, `test/guards/legacy-paths.ts`,
   `tools/qa/{sweep,shot,text,axe-run}.mjs` (delete) and their npm scripts; (`src/content/en-IN/stories/articles/stub.ts`
-  went at the wave 5 part C merge);
+  went at the wave 5 part C merge); one copy-page reader in `test/support/` for the three article tests
+  (`screen-time-articles`, `talking-articles`, `ai-safety-and-learning`), which each carry their own (5.19 review);
   the old `src/components/molecules/*Gate*` entries of the set-state-in-effect override in `eslint.config.mjs`; the
   `tsconfig.guards.json` exclusion lines of the legacy files it deletes or rewrites (wave-3 close: 2.13's
   shrink-only guard in `test/guards/build-steps.test.ts` compares a rewritten `test/utm.test.ts` with the tag byte for byte).
