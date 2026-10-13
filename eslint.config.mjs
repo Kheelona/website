@@ -102,6 +102,12 @@ const eslintConfig = defineConfig([
     rules: { "@next/next/no-html-link-for-pages": "off" },
   },
   {
+    // Legacy story, deleted by task 6.3: its plain <a href="/products/kheelu"> meets the rule since
+    // task 5.2 serves that page from the dynamic products/[slug] route.
+    files: ["src/components/molecules/Sheet.stories.tsx"],
+    rules: { "@next/next/no-html-link-for-pages": "off" },
+  },
+  {
     // Tracking gates: bodies frozen byte for byte (tracking freeze). Task 2.6 moves them to
     // src/components/tracking/ unchanged, so both paths are named; the rule returns only if a
     // founder decision lets the gate bodies change.

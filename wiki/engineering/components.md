@@ -129,7 +129,7 @@ Generic folds configured from content; variants in `name.types.ts`. Story requir
 | `GoogleAnalyticsGate` | GA4 on `GA4_HOSTS` after hydration | moved from `components/molecules/`; body unchanged | 2.6 | built |
 | `MetaPixel` | Meta Pixel on `META_PIXEL_HOSTS`, PageView on route change | moved; body unchanged | 2.6 | built |
 | `PostHogGate` | PostHog on `POSTHOG_HOSTS` (now incl. beta hosts) | moved; beta stamp `env: "beta"` through `before_send` only (no `register`); `?internal=1` flag; production init options equal the tag's | 2.6 | built |
-| `ViewContentTracker` | Meta `ViewContent` once per load | moved from the old product route; `valuePaise` prop from the offer, read at first render (the effect keeps the tag's `[]`, so a later change sends nothing new); the `LAUNCH_AMOUNT_PAISE` default serves only the legacy product page until 5.2; mounted on H and P | 2.6 | built |
+| `ViewContentTracker` | Meta `ViewContent` once per load | moved from the old product route; `valuePaise` prop from the offer, read at first render (the effect keeps the tag's `[]`, so a later change sends nothing new); required since 5.2, which deleted the legacy product page and its `LAUNCH_AMOUNT_PAISE` default (reviewed patch amended in `test/guards/fixtures/tracking-diffs/`); mounted on H and P (`src/app/(site)/products/[slug]/page.tsx` passes the offer's headline) | 2.6, 5.2 | built |
 
 ## 5. Layouts and templates (`src/layouts/`)
 

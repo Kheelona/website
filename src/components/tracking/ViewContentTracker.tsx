@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from "react";
 import { fbTrack, whenFbqReady } from "@/lib/fbq";
-import { LAUNCH_AMOUNT_PAISE } from "@/config/site";
 
 /** Reports a Meta `ViewContent` for Kheelu, once per page view (§8.30-j).
  *
@@ -41,10 +40,10 @@ import { LAUNCH_AMOUNT_PAISE } from "@/config/site";
  *  SINCE TASK 2.6 THE PAGE PASSES THE VALUE (B9, ADR-005): `valuePaise` is the
  *  offer's headline, read on the server where the live mode is known, so the
  *  staleness above ends for every page that passes it, and Home (B9) and the
- *  product page send the same payload. The `LAUNCH_AMOUNT_PAISE` default exists
- *  only for the legacy product page until task 5.2 replaces it; every other mount
- *  must pass `valuePaise` (test/guards/tracking-parity.test.ts). */
-export function ViewContentTracker({ valuePaise = LAUNCH_AMOUNT_PAISE }: { valuePaise?: number }) {
+ *  product page send the same payload. Since task 5.2 replaced the legacy
+ *  product page, its one mount without a value, there is no default: every
+ *  mount passes `valuePaise` (test/guards/tracking-parity.test.ts). */
+export function ViewContentTracker({ valuePaise }: { valuePaise: number }) {
   const fired = useRef(false);
 
   useEffect(() => {
