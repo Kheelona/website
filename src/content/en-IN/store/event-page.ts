@@ -11,7 +11,7 @@ import { storePage, type StorePageContent } from "./store-page";
  * mockup)"; architecture §16.1). Neither has a mockup: an event tier's checkout reuses the store page's folds and
  * words (wiki/site/pages/store.md), by reference; the event page's own lines and the dead end keep the live pages'
  * words (wiki/site/checkout.md "Variants" and "Failure and edge states"), checked against the freeze tag in
- * event-page.test.ts. The partner page (partner-page.ts) reads its checkout and its not-configured state from here.
+ * event-page.test.ts. (The Ideabaaz partner page that also read them is gone: /ideabaaz is a store dead end, D054 item 7.)
  *
  * Every amount an event page shows is its tier's, priced on the server and filled into the store's `{price:…}`
  * tokens (app/store/_components/TierCheckout.tsx); none is typed here, and the meta names none, so a shared event
@@ -41,7 +41,7 @@ export interface TierCheckoutContent {
   readonly payments: PaymentsLineConfig;
 }
 
-/** The live WhatsApp line of a refused event link (and of the ended partner page). */
+/** The live WhatsApp line of a refused event link. */
 const sortItOut = { or: "Or", link: "message us on WhatsApp", linkAlone: "Message us on WhatsApp", tail: "and a person will sort it out with you." };
 
 const note = storePage.notConfigured.note;
