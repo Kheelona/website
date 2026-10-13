@@ -10,8 +10,9 @@ import { legalTemplateCopy } from "./shared";
 /* The words LegalTemplate prints around every legal document (task 4.5 item 3; privacy.md, terms.md, refund.md and
  * shipping.md: the draft note, the "Last updated" line, "On this page" and the complaint-reference line), held once for
  * the four legal pages (5.11-5.14), each equal to what the four approved pages print with the founder's page facts
- * applied (task 6.7): the complaint-reference line comes off until a system issues a reference (D055 item 7), so its
- * paragraph under every grievance card is empty. The reference close's help line is seller.help itself, never retyped. */
+ * applied (task 6.7): the complaint-reference line comes off until a system issues a reference (D055 item 7), so the
+ * words hold no note and every grievance card is its D032 line alone, one paragraph, never an empty second one. The
+ * reference close's help line is seller.help itself, never retyped. */
 
 const PAGES = ["privacy", "terms", "refund", "shipping"] as const;
 const text = (el: Element) => (el.textContent ?? "").replace(/\s+/g, " ").trim();
@@ -24,11 +25,13 @@ describe("the legal template's shared words", () => {
     expect(toPlainText(legalTemplateCopy.contents)).toBe(text(main.querySelector("#toc-title")!));
     const grievance = [...main.querySelectorAll(".kh-card")].find((card) => text(card).startsWith("Grievance Officer:"));
     expect(grievance, `${slug}: the grievance card`).toBeDefined();
-    expect(text(grievance!.querySelectorAll("p")[1])).toBe(toPlainText(legalTemplateCopy.grievanceNote));
+    // The D032 line alone: no complaint-reference paragraph, not even an empty one (D055 item 7).
+    expect(grievance!.querySelectorAll("p")).toHaveLength(1);
+    expect(text(grievance!)).toMatch(/^Grievance Officer: .*of receiving it\.$/);
   });
 
-  it("has no complaint-reference line until a system issues a reference (D055 item 7): no words, no placeholder", () => {
-    expect(legalTemplateCopy.grievanceNote).toBe("");
+  it("has no complaint-reference line until a system issues a reference (D055 item 7): no note, no placeholder", () => {
+    expect(legalTemplateCopy).not.toHaveProperty("grievanceNote");
     for (const slug of PAGES) {
       const marker = "[PLACEHOLDER: how you get a complaint reference to track your complaint; not set up yet]";
       expect(text(mockupFold(slug, "main")), `${slug}.html still shows the approved marker`).toContain(marker);

@@ -178,12 +178,14 @@ describe("/terms: the rendered page against the approved mockup (token mode, the
 
   it("prints the seller and grievance cards from seller.ts, with no complaint-reference line (D032; D055 item 7)", async () => {
     const { main } = await renderPage(TOKEN);
-    const cards = [...main.querySelectorAll("#contact .ks-doc__card")].map(textOf);
+    const cardEls = [...main.querySelectorAll("#contact .ks-doc__card")];
+    const cards = cardEls.map(textOf);
     expect(cards).toHaveLength(3);
     expect(cards[0]).toMatch(/^Seller: Kheelona Robotics Private Limited, registered at /);
     expect(cards[1]).toBe("Customer care: WhatsApp or call +91 91875 46483, or email hello@kheelona.com.");
-    // The D032 line alone: the complaint-reference note is off until a system issues a reference (D055 item 7).
+    // The D032 line alone, one paragraph: the complaint-reference note is off until a system issues a reference (D055 item 7).
     expect(cards[2]).toMatch(/^Grievance Officer: Aman Soni, Co-Founder and CTO, .*of receiving it\.$/);
+    expect(cardEls[2].querySelectorAll("p")).toHaveLength(1);
   });
 
   it("has no pre-order button, no tracking value and no hero button; the phone buy bar is not placed on /terms", async () => {
@@ -233,11 +235,7 @@ describe("/terms: full mode (terms.md folds 2 and 4, sections 5 and 6)", () => {
     expect(textOf(main.querySelector("#cancel"))).not.toMatch(/If you don’t pay the balance/);
     expect(main.querySelectorAll("#payment > p")).toHaveLength(3);
     expect(main.querySelectorAll("#cancel > p")).toHaveLength(3);
-    /* One empty paragraph is accepted, the grievance card's note: the template keeps its paragraph while
-       LegalTemplateCopy.grievanceNote is a required field, and D055 item 7 leaves it with no words (legal/shared.ts). */
-    const note = main.querySelector("#contact .ks-doc__card:has(> p + p) > p:nth-child(2)");
-    expect(note && textOf(note)).toBe("");
-    expect([...main.querySelectorAll("p, li")].filter((el) => textOf(el) === "" && el !== note)).toEqual([]);
+    expect([...main.querySelectorAll("p, li")].filter((el) => textOf(el) === "")).toEqual([]);
   });
 
   it("names no advance, balance or launch amount and not the cap once the reservations close", async () => {

@@ -68,9 +68,10 @@ const F4 = (note: string) => `[PLACEHOLDER F4: ${note}]`;
 /** "Last updated" on the four legal pages (D055 item 8). */
 const UPDATED = "14 October 2026";
 /** The complaint-reference line under every legal page's grievance card comes off until a system issues one (D055
- *  item 7). It is the template's one shared value (legal/shared.ts), not the page's document, so a legal fixture rendered
- *  through the template already lacks it (its comparisons skip this edit); its paragraph stays, empty. */
-export const GRIEVANCE_NOTE = fill("[PLACEHOLDER: how you get a complaint reference to track your complaint; not set up yet]", "");
+ *  item 7), its paragraph with it: the card is its D032 line alone. It is the template's one shared value (legal/shared.ts
+ *  holds no note), not the page's document, so a legal fixture rendered through the template already lacks it (its
+ *  comparisons skip this edit). For the pixels the paragraph is hidden on the mockup's side alone. */
+export const GRIEVANCE_NOTE = hide("[PLACEHOLDER: how you get a complaint reference to track your complaint; not set up yet]", "p");
 const LEGAL_APPROVED = (row: string, items: string) => `deviations.md ${row} (founder, D055 ${items}, 2026-10-14; task 6.7)`;
 
 /* /privacy's recipients, phone rows then the laptop table: who, then where (D055 items 16 and 24; privacy.md section 7). */
@@ -361,9 +362,15 @@ export const PAGE_FACTS = {
         "#keep > ul > li:nth-child(5)",
         "#keep > ul > li:nth-child(7)",
         "#rights > p:nth-child(3)",
+      ],
+      mockup: [
+        ".mk-updated",
+        "#kheelu > p:nth-child(8)",
+        "#kheelu > ul > li:nth-child(7)",
+        "#security > p:nth-child(3)",
+        "#security > p:nth-child(4)",
         "#contact > div:nth-child(3) > p:nth-child(2)",
       ],
-      mockup: [".mk-updated", "#kheelu > p:nth-child(8)", "#kheelu > ul > li:nth-child(7)", "#security > p:nth-child(3)", "#security > p:nth-child(4)"],
       build: [".ks-updated", "#security > p:nth-child(3)"],
     },
     reason:
@@ -453,9 +460,8 @@ export const PAGE_FACTS = {
         "section:has(> #faulty) > p:nth-child(8)",
         "section:has(> #refund-timing) > ul > li:nth-child(1)",
         "section:has(> #refund-timing) > ul > li:nth-child(2)",
-        "section:has(> #complaints) > div:nth-child(3) > p:nth-child(2)",
       ],
-      mockup: [".mk-updated", "section:has(> #refund-timing) > ul > li:nth-child(3)"],
+      mockup: [".mk-updated", "section:has(> #refund-timing) > ul > li:nth-child(3)", "section:has(> #complaints) > div:nth-child(3) > p:nth-child(2)"],
       build: [".ks-updated"],
     },
     reason:
@@ -482,8 +488,8 @@ export const PAGE_FACTS = {
       "Last updated: 14 October 2026",
     ],
     hidden: {
-      both: ["section:has(> #problems) > p:nth-child(5)", "section:has(> #seller) > div:nth-child(5) > p:nth-child(2)"],
-      mockup: [".mk-updated"],
+      both: ["section:has(> #problems) > p:nth-child(5)"],
+      mockup: [".mk-updated", "section:has(> #seller) > div:nth-child(5) > p:nth-child(2)"],
       build: [".ks-updated"],
     },
     reason: "the founder's shipping facts (D055 items 7-9): the date; the lost-parcel line and the complaint reference ruled off",
@@ -519,8 +525,8 @@ export const PAGE_FACTS = {
       "This is on by default, and you can turn it off at any time with a switch in the parent app.",
     ],
     hidden: {
-      both: ["#price > p:nth-child(6)", "#training > p:nth-child(2)", "#contact > div:nth-child(4) > p:nth-child(2)"],
-      mockup: [".mk-updated", "#price > p:nth-child(7)"],
+      both: ["#price > p:nth-child(6)", "#training > p:nth-child(2)"],
+      mockup: [".mk-updated", "#price > p:nth-child(7)", "#contact > div:nth-child(4) > p:nth-child(2)"],
       build: [".ks-updated"],
     },
     reason: "the founder's terms facts (D055 items 7, 8, 10 and 11): the date, GST as D024 confirms it, the training switch; the CA slots and the complaint reference ruled off",

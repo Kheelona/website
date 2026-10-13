@@ -8,15 +8,13 @@ import { seller } from "../seller";
  * and shipping.md word them (folds 0, 1 and 3; the grievance section). The reference close's help line is the one beside
  * every chilli button, seller.help itself.
  *
- * The complaint-reference line comes off all four pages until a system issues a reference (D055 item 7; task 6.7): it
- * says nothing, so the card promises nothing (ECOM-04, Rule 7(1)(f), still open). The template keeps its paragraph,
- * empty, until the field may be left out (`LegalTemplateCopy.grievanceNote` is required, src/content/types.ts). When a
- * reference exists, legal-requirements.md line 491's sentence goes here.
+ * The complaint-reference line comes off all four pages until a system issues a reference (D055 item 7; task 6.7): the
+ * words hold no `grievanceNote`, so every grievance card is its D032 line alone and promises nothing (ECOM-04, Rule
+ * 7(1)(f), still open). When a reference exists, legal-requirements.md line 491's sentence goes here as `grievanceNote`.
  */
 export const legalTemplateCopy = {
   draftNote: "Draft for the founder’s approval; not legal advice.",
   updated: "Last updated:",
   contents: "On this page",
-  grievanceNote: "",
   help: seller.help,
 } as const satisfies LegalTemplateCopy;
