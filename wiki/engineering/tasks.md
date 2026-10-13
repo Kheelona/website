@@ -1186,7 +1186,7 @@ the merge. The CMO approved all 18 article copy pages (5.19 in its second review
   `hideDeviations` lines are 4.8's item 1. Script sizes (4.8 item 4, gzip, route chunks): store 17.50 → 15.54 KB,
   `/thanks` 11.73 → 10.04 KB; total script 174.4 KB and 168.9 KB against the 150 KB store budget (shared layer, M1).
 
-#### 4.9 Shared fixes from part C (builder; risk high: chrome, shared template, test harness)
+#### 4.9 Shared fixes from part C and M1 (builder; risk high: chrome, shared template, headers, test harness)
 
 1. **D050 gap on marketing pages** (found by 4.7): at 324 x 566 the resting bubble covers the hero price sentence on
    Home and `/products/kheelu`, and mid-page sweeps find it over `p.ks-price` while the bar has stepped aside and over
@@ -1199,15 +1199,25 @@ the merge. The CMO approved all 18 article copy pages (5.19 in its second review
    changes (ADR-013); otherwise report. Prove it on the `ThanksPaid` story.
 3. **BlogPosting `citation`:** the copy pages say each article's source list is its BlogPosting `citation`;
    `articleGraph` emits none. Emit it from `article.sources` (jsonld-matches-page stays green).
-4. **Test harness:** `test/e2e/support/routes.ts` `sweepRoutes` takes `buybar` from `ARTICLE_CLOSES`, so the specs
+4. **The 404's own JavaScript** (M1): 35.0 KB of route-specific script against the 25 KB budget, the only route over it
+   (the others 14.4-22.6 KB); find what the not-found route loads beyond its layout and bring it under 25 KB.
+5. **A console error on every page** (M1 Lighthouse, Best Practices 96): the report-only CSP carries
+   `upgrade-insecure-requests` (`src/lib/security-headers.ts:179`, unchanged since the tag), which browsers ignore in a
+   report-only policy and log as an error. Drop it from the report-only policy (HSTS already upgrades); the CSP tests
+   follow. With the tags loading (lp-tags), the report-only CSP also refuses GA4's beacon to `www.google.com/g/collect`
+   and a `dv-*.ecs.us-east-1.on.aws/events` beacon (Best Practices 70 against the B10 allowance of about 74): admit the
+   GA4 host, identify which tag sends the AWS beacon before admitting it, and record both in the tracking inventory
+   (no ID or event name changes).
+6. **Test harness:** `test/e2e/support/routes.ts` `sweepRoutes` takes `buybar` from `ARTICLE_CLOSES`, so the specs
    prove the bar absent on the seven keep-close guides; one copy-page reader in `test/support/` replaces the three
    copies in the 5.17-5.19 article tests; `hideDeviations` takes a label so `thanks-paid.spec.ts` prints its own name.
 
 #### 5.20 Article copy fixes before Gate B (verifier, copywriter, CMO, builder; risk normal)
 
-1. **Sources first** (main session's verifier, [D026](../decisions/D026-public-statistics.md)): Tisseron's
-   2020 3-6-13-18 markers and the "De 3 à 6 ans" minutes passage (C34); the CDC "milestones by 4 years" sentence item
-   (C42); the CDC two-word item checked against Zubler 2022 Table 4.
+1. **Sources first: done 2026-10-14** ([source verification, 2026-10-14](../research/source-verification-2026-10-14.md),
+   D026): Tisseron's 3-6-13-18 markers and the "De 3 à 6 ans" minutes (C34); the CDC "sentences with four or more
+   words" item, a 4-year milestone only (C42); the CDC 30-month items match Zubler 2022 Table 4. Ready lines are on
+   that page. The 3-6-9-12 article follows the founder's answer to P25 (the markers say no connected toys before 6).
 2. **Copy:** the CMO reviews' minor fixes, each copy page first: 5.17 M1-M17 (M1 first: the 3-6-9-12 page names
    Tisseron's AI markers; the CMO would not show that page at Gate B without it), 5.18 M1, M3, M5, M7, M8, M9, M12,
    M13, and 5.19's remaining minors (`wiki/qa/cmo-review-articles-<task>-2026-10-14.md`). Fewer repeated head photos

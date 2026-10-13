@@ -724,7 +724,7 @@ and by Lighthouse mobile (median of 3).
 | Budget | Marketing pages | Store |
 |---|---|---|
 | HTML document (gzip, N16) | ≤ 60 KB per route (the approved mockup's built Home is 14.8 KB gzip and the product page 15.6 KB; the App Router inlines the server-component payload, roughly doubling text, plus inline doodles and JSON-LD) | ≤ 45 KB |
-| First-load JavaScript (gzip), excluding the post-hydration tags | ≤ 130 KB total; ≤ 25 KB route-specific beyond the shared framework chunks | ≤ 150 KB |
+| First-load JavaScript (gzip), excluding the post-hydration tags | ≤ 175 KB total; ≤ 25 KB route-specific beyond the shared framework chunks (**re-based at M1**, below; was 130) | ≤ 185 KB (was 150) |
 | CSS (gzip) | ≤ 35 KB | ≤ 35 KB |
 | Fonts on first view | ≤ 130 KB, three preloads (§10; 95,976 B as built). The Baloo 2 Devanagari file loads by `unicode-range` wherever Devanagari text shows (the "हिन्दी" chip on Home and Meet Kheelu), so it is subset to the Devanagari text the site actually uses (main session 2026-10-12: the full block was 110,588 B, about 206 KB with the preloads; a subset of the used text is a few KB) | same |
 | Images above the fold at 390 px | ≤ 250 KB; LCP image ≤ 200 KB (DS hero budget, `06-surfaces.md:29`) | ≤ 120 KB |
@@ -732,6 +732,18 @@ and by Lighthouse mobile (median of 3).
 | Films | never preloaded; ≤ 4 MB each on play; posters ≤ 40 KB each at tile size | after the form only |
 | Lighthouse mobile | ≥ 90 Performance, Accessibility, Best Practices, SEO; aim 95 | same, with the pre-approved exceptions |
 | Core Web Vitals | LCP ≤ 2.5 s, INP ≤ 200 ms, CLS ≤ 0.1 (lab before launch, PostHog field after) | TTFB ≤ 800 ms from India |
+
+**JavaScript re-based at M1 (main session, 2026-10-14):** the 130 / 150 KB totals were set before measuring the
+framework. Next 16.3 with React 19.2 ships 127.4 KB gzip in its root chunks alone (`.next/build-manifest.json`
+`rootMainFiles`; the 38.7 KB polyfill chunk is `nomodule` and not fetched), and the shared layouts add about 21 KB, so
+every route measured 162.9-183.6 KB and no page could meet 130. The budgets are now 175 KB (marketing) and 185 KB
+(store) in total; the page's own code keeps its 25 KB budget (every route within it except the 404, 35.0 KB, task 4.9);
+and the outcome that gates is the brief's (§9.5): Lighthouse mobile ≥ 90, median of 3, simulated. M1 measured
+Performance 94-98 on every marketing page of the baseline set (local profile) and 92-97 with the tags loading
+(lp-tags). The store measured 88 / 86 at first only because this machine's network is blocked: its per-request Supabase
+read waited about 7 s before falling back to the token price (TTFB 7.0 s). With the store settings blank, as in CI and
+on beta, it scores 95 local and 94 with the tags. Accessibility 96-100 (the one failure is the D041 white on Chilli);
+Best Practices 96 local, and 70 with the tags (task 4.9 item 5: report-only CSP noise; B10 allows about 74).
 
 **Client islands and icons (wave-2 close, 2026-10-12):** `Icon`, `Button` and `PreorderButton` import the whole
 icon map (30 KB, about 10.6 KB gzip), so a client island never imports them: the server parent renders them and

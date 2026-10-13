@@ -13,7 +13,7 @@ import { VIEWPORTS } from "./support/viewports";
  * profile, every built route is loaded without scrolling (so lazy images stay out of first load)
  * and the TRANSFERRED bytes of each response are summed per resource type from the network
  * itself (Network.loadingFinished encodedDataLength), never from attributes (lessons §2).
- * Budgets, marketing / store: HTML document 60 / 45 KB, JavaScript 130 / 150 KB, CSS 35 / 35 KB,
+ * Budgets, marketing / store: HTML document 60 / 45 KB, JavaScript 175 / 185 KB (re-based at M1, below), CSS 35 / 35 KB,
  * fonts 130 / 130 KB, images above the fold 250 / 120 KB, images on first load 400 / 200 KB, the
  * LCP image 200 KB; on marketing pages at most 25 KB of JavaScript beyond the shared chunks (the
  * framework chunks and every layout's chunks, read from the local build: see sharedChunks; local
@@ -23,9 +23,14 @@ import { VIEWPORTS } from "./support/viewports";
  */
 
 const KB = 1024;
+/* JavaScript, re-based at milestone M1 (main session, 2026-10-14; architecture §12): the plan's 130 / 150 KB were set
+ * before measuring Next 16.3 with React 19.2, whose root chunks alone are 127.4 KB gzip (build-manifest rootMainFiles),
+ * so no page could meet them. Measured at M1: shared framework and layouts 148.5 KB on every marketing route; total
+ * 162.9-171.1 KB on marketing pages, 175.4 KB on the store. The page's own code stays the controllable budget
+ * (ROUTE_SCRIPT_BUDGET, unchanged), and Lighthouse mobile >= 90 (scripts/qa/lighthouse.mjs) is the outcome that gates. */
 const BUDGETS = {
-  marketing: { document: 60, script: 130, stylesheet: 35, font: 130, imagesAboveFold: 250, images: 400, lcp: 200 },
-  store: { document: 45, script: 150, stylesheet: 35, font: 130, imagesAboveFold: 120, images: 200, lcp: 200 },
+  marketing: { document: 60, script: 175, stylesheet: 35, font: 130, imagesAboveFold: 250, images: 400, lcp: 200 },
+  store: { document: 45, script: 185, stylesheet: 35, font: 130, imagesAboveFold: 120, images: 200, lcp: 200 },
 } as const;
 const ROUTE_SCRIPT_BUDGET = 25;
 const POSTER_BUDGET = 40;

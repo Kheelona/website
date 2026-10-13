@@ -121,7 +121,28 @@ Return the full structured report (all acceptance items, current head).`
 // Copy stage (wave 5 part C, the 18 articles): copywriters write the copy pages in a worktree the main session
 // created; the CMO reviewer approves them (2 reviews at most, brief Phase 5 step 1); the builder then commits the
 // pages and builds the modules in the same worktree. The copywriter has no shell: it reads and writes by absolute path.
+/** The CMO review page of a task's copy stage (a fix pass names its own, so the write pass's review stays as written). */
+function reviewPage(t) {
+  return t.copy.review_page || `${t.copy.worktree_path}/wiki/qa/cmo-review-articles-${t.id}-2026-10-14.md`
+}
+
+/** copy.mode "fix" (task 5.20): the pages exist and are approved; apply the listed fixes and nothing else. */
+function copyFixModePrompt(t, slugs) {
+  const wt = t.copy.worktree_path
+  return `You are applying approved fixes to existing article copy for Phase 5 task ${t.id} ("${t.title}") of the Kheelona.com website: ${slugs.length} articles, ${slugs.join(', ')}.
+
+WHERE: work only in the git worktree ${wt}. Read and write by absolute path under ${wt}; never write under ${REPO} outside it. Do not touch any other article's page: another copywriter is fixing the rest of this task's articles in the same worktree at the same time.
+
+THE PAGES: ${slugs.map((s) => `${wt}/wiki/site/pages/story-${s}.md`).join(', ')}. They are CMO-approved copy (wave 5 part C). Change only what the fixes below ask for, and keep every other word as it is. Where a fix changes a Copy block, update the page's own notes that describe it (word counts, read time, keyword placements, sources, questions) so the page stays true. Record each change in a short "## Changes after approval (task ${t.id})" section at the foot of the page: what changed and why, citing the review finding or source line.
+
+THE FIXES: ${t.copy.fixes || 'see the notes from the main session below'}
+Sources: every new or changed research statement uses a ready line from ${wt}/wiki/research/source-verification-2026-10-14.md or ${wt}/wiki/research/source-verification.md with its source marker and note (D026); nothing else may be added as research. Same rules as the original pages: the approved card title and summary word for word; D016, D025, D026; ages 3 to 7; no competitor names; at most one in-text product link and none on a speech or language page; banned phrases in ${wt}/test/guards/banned-phrases.data.ts never used. Do not write open-questions.md, decisions/, index.md, log.md or status.md.
+${t.extra ? `\nNOTES FROM THE MAIN SESSION:\n${t.extra}\n` : ''}
+Return the absolute paths of the pages you changed, the open questions (options and a recommendation each) and every placeholder.`
+}
+
 function copyPrompt(t, slugs) {
+  if (t.copy.mode === 'fix') return copyFixModePrompt(t, slugs)
   const wt = t.copy.worktree_path
   return `You are writing the article copy for Phase 5 task ${t.id} ("${t.title}") of the Kheelona.com website: ${slugs.length} articles, ${slugs.join(', ')}.
 
@@ -138,8 +159,9 @@ Return the absolute paths of the pages you wrote, the open questions (options an
 
 function cmoPrompt(t, round, writes) {
   const wt = t.copy.worktree_path
-  const page = `${wt}/wiki/qa/cmo-review-articles-${t.id}-2026-10-14.md`
-  return `CMO review (round ${round}) of the article copy for Phase 5 task ${t.id} ("${t.title}") on the Kheelona.com website, before it is built (brief Phase 5 step 1). The pages are ${t.copy.groups.flat().map((s) => `${wt}/wiki/site/pages/story-${s}.md`).join(', ')}. Work in the worktree ${wt} (cd there; read by absolute path). This is a copy review: there is no built page and no screenshot yet.
+  const page = reviewPage(t)
+  const fixNote = t.copy.mode === 'fix' ? `This is a review of FIXES to copy you approved in wave 5 part C: check that each fix asked for (${String(t.copy.fixes || 'see the task notes').slice(0, 3000)}) is applied correctly and that nothing else changed for the worse; the criteria below still apply to every changed line.\n` : ''
+  return `${fixNote}CMO review (round ${round}) of the article copy for Phase 5 task ${t.id} ("${t.title}") on the Kheelona.com website, before it is built (brief Phase 5 step 1). The pages are ${t.copy.groups.flat().map((s) => `${wt}/wiki/site/pages/story-${s}.md`).join(', ')}. Work in the worktree ${wt} (cd there; read by absolute path). This is a copy review: there is no built page and no screenshot yet.
 The copywriters' reports: ${JSON.stringify(writes).slice(0, 6000)}
 
 Judge each article as SKM would, against: the positioning and voice (${wt}/wiki/brand/), parents of 3-7 year olds and their real question (the article's keyword-map rows in ${wt}/wiki/research/keyword-map.md); the answer first in 40 to 60 words; one idea per section, phone-first lines; every statistic or research statement traced (check each one against ${wt}/wiki/product/claims.md, ${wt}/wiki/research/source-verification.md and the source notes); D016 brain wording, D025 speech and language (the disclaimer present wherever speech or language development is discussed), D026 markers; no banned or retired wording (claims.md §4 and ${wt}/test/guards/banned-phrases.data.ts); ages 3 to 7 and nothing implying under 3; no internal content (${wt}/wiki/site/content-boundary.md); no competitor names; at most one product link and no pitch on a speech page; title tag at most 60 characters, meta description at most 155; the approved card title and summary unchanged; every fold maps to a block of the article template.
@@ -150,7 +172,7 @@ pass = true only if no blocking issue remains. Blocking: an unverified or invent
 
 function copyFixPrompt(t, review) {
   const wt = t.copy.worktree_path
-  return `Fix the CMO review findings on the article copy of Phase 5 task ${t.id} ("${t.title}") of the Kheelona.com website. The pages are ${t.copy.groups.flat().map((s) => `${wt}/wiki/site/pages/story-${s}.md`).join(', ')}, in the worktree ${wt}: read and write only there, by absolute path. The review is ${review.review_page || `${wt}/wiki/qa/cmo-review-articles-${t.id}-2026-10-14.md`}.
+  return `Fix the CMO review findings on the article copy of Phase 5 task ${t.id} ("${t.title}") of the Kheelona.com website. The pages are ${t.copy.groups.flat().map((s) => `${wt}/wiki/site/pages/story-${s}.md`).join(', ')}, in the worktree ${wt}: read and write only there, by absolute path. The review is ${review.review_page || reviewPage(t)}.
 Fix every blocking finding, and a minor one where it is small; if a finding is wrong, say why with the source in notes instead of changing the copy:
 ${JSON.stringify(review.issues, null, 1).slice(0, 12000)}
 Same rules as when you wrote them (the approved card title and summary stay word for word; every claim sourced or a marked placeholder). Return the pages you changed, the open questions and the placeholders.`
@@ -161,10 +183,10 @@ function buildFromCopyPrompt(t, copy) {
   const last = copy.cmo[copy.cmo.length - 1] || {}
   return `You are building task ${t.id} of Phase 5 wave ${W} on the Kheelona.com website: "${t.title}".
 
-The spec is the row "${t.id}" of the Wave 5 table in ${REPO}/wiki/engineering/tasks.md, with the paragraphs above that table (part C), "How to read a task", "Standard page acceptance" and "Guard-test ownership", and the note on the 18 articles without a mockup below the table (template parity). Read them in full.
+${t.copy.spec || `The spec is the row "${t.id}" of the Wave 5 table in ${REPO}/wiki/engineering/tasks.md, with the paragraphs above that table (part C), "How to read a task", "Standard page acceptance" and "Guard-test ownership", and the note on the 18 articles without a mockup below the table (template parity). Read them in full.`}
 
 SETUP: the main session created your worktree ${wt} on branch ${t.copy.branch} from base ${BASE}, with node_modules already cloned. cd there and run \`git log -1 --oneline\` and \`git status\`. Do not create another worktree or branch.
-The copy stage ran first in this worktree: ${copy.approved ? 'the CMO reviewer APPROVED the copy pages' : 'the CMO reviewer did NOT approve the copy pages in its last round (its open findings are below; build from the pages as they stand and list each open finding under blocked)'}. The pages are ${t.copy.groups.flat().map((s) => `wiki/site/pages/story-${s}.md`).join(', ')}, and the review is wiki/qa/cmo-review-articles-${t.id}-2026-10-14.md; they are uncommitted. FIRST stage exactly those files by name and commit them ("Article copy for task ${t.id}, CMO review ${copy.approved ? 'approved' : 'open'}"). Last CMO round: ${JSON.stringify({ pass: last.pass, summary: last.summary, issues: last.issues }).slice(0, 4000)}
+The copy stage ran first in this worktree: ${copy.approved ? 'the CMO reviewer APPROVED the copy pages' : 'the CMO reviewer did NOT approve the copy pages in its last round (its open findings are below; build from the pages as they stand and list each open finding under blocked)'}. The pages are ${t.copy.groups.flat().map((s) => `wiki/site/pages/story-${s}.md`).join(', ')}, and the review is ${reviewPage(t).replace(`${wt}/`, '')}; they are uncommitted. FIRST stage exactly those files by name and commit them ("Article copy for task ${t.id}, CMO review ${copy.approved ? 'approved' : 'open'}"). Last CMO round: ${JSON.stringify({ pass: last.pass, summary: last.summary, issues: last.issues }).slice(0, 4000)}
 Copywriters' open questions and placeholders: ${JSON.stringify(copy.writes.map((w) => ({ open_questions: w.open_questions, placeholders: w.placeholders }))).slice(0, 3000)}
 
 Then build: each article module from its copy page word for word (the copy pages are the approved copy for these articles), through the article template, as task 5.6 built the three approved articles (read their modules and tests in src/content/en-IN/stories/articles/). Never change a copy page's words in the module; if the template cannot render something, list it under blocked.

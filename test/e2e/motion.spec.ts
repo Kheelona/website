@@ -112,7 +112,8 @@ test.describe("motion: reveals re-arm after a client navigation", () => {
 
   test("Home → product → back reveals below-the-fold blocks again", async ({ harness }) => {
     const { page } = await harness.open(home, vp, { reducedMotion: "no-preference" });
-    await page.locator(`a[href="${product.path}"]`).first().click();
+    /* The first visible link: on a phone the laptop nav link comes first in the DOM and is hidden. */
+    await page.locator(`a[href="${product.path}"]:visible`).first().click();
     await page.waitForURL(builtUrl(product));
     await page.goBack();
     await page.waitForURL(builtUrl(home));

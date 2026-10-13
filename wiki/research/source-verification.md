@@ -1,7 +1,7 @@
 ---
 title: Source verification (public statistics and research claims, D026)
 type: research
-updated: 2026-10-10
+updated: 2026-10-14
 sources:
   - ../decisions/D026-public-statistics.md
   - ../decisions/D013-internal-vs-external-content.md
@@ -651,7 +651,12 @@ developmental psychologists"); C40 (the asha.org consumer page, now published by
   and the G5 call on C16.
 - **Re-read the sources that change:** the chatbot terms (C37), the DPDP Gazette for the
   commencement date (C20), the Harvard key concept pages (C05, C07, C44 all show recent edits), the
-  Brookings commentary (C14), Common Sense Media's pages (C16) and the CDC milestone pages (C42).
+  Brookings commentary (C14), Common Sense Media's pages (C16) and the CDC milestone pages (C42), including
+  the "3-year-old not talking in sentences?" article (CMO review 5.18 M4).
+- **Update 2026-10-14:** [source verification, 2026-10-14](source-verification-2026-10-14.md) re-read C34
+  (Tisseron's 2020 3-6-13-18 markers about AI, and the "De 3 à 6 ans" daily minutes, both SUPPORTED) and C42 (the
+  CDC "sentences with four or more words" item at 4 years, and the 30-month items against Zubler 2022 Table 4,
+  SUPPORTED), with ready lines. Its finding on Tisseron's markers ("no connected toys before 6") is open question P25.
 - **Counsel** for the legal lines (C20) and for the C37 hold.
 - **What could not be read**, so nothing here leans on it: Chouinard 2007 chapter II (C13); the
   published version of Xu 2024 (C12); the full Hiniker 2016 paper (C35, abstract only); the AAP

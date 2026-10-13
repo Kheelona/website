@@ -52,6 +52,14 @@ export type VisualHide = {
 const literal = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 /** Matches a line that is exactly one of these sentences. */
 const oneOf = (lines: readonly string[]) => new RegExp(`^(?:${lines.map(literal).join("|")})$`);
+/* The build's words for the team and setup rules (V7, V8). Spelled here because Playwright cannot load those content
+   modules (they import images); src/content/en-IN/pages/parity-deviations.test.ts holds each to its content module. */
+export const TEAM_LEAD_BUILD = "Kheelona’s founders are parents in Bengaluru, building Kheelu: a screen-free plush toy that talks, for children aged 3 to 7.";
+export const SETUP_STEP_BUILD = [
+  "Press and hold Kheelu’s setup button.",
+  "[PLACEHOLDER: which button and where; the app’s own screen still shows “[back]”]",
+  "Hold it for 3 seconds, until its light starts pulsing.",
+] as const;
 
 /** A route whose own parity runs would compare a state its mockup does not show, with the spec that proves that
  *  state's parity instead. The visual and text parity specs skip the route on the build and print why (SPA 1 and 2). */
@@ -102,6 +110,8 @@ const paymentsHidden: readonly VisualHide[] = [
   },
 ];
 
+const TEAM_V7 = "deviations.md V7 (main session, 2026-10-14, M1; task 5.7, CMO M-T1, D038)";
+
 export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
   store: [
     {
@@ -116,6 +126,38 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
     ...paymentsHidden,
   ],
   "store-confirmation": paymentsHidden,
+  team: [
+    {
+      side: "mockup",
+      selector: ".mk-founder__bg",
+      reason: "the founders' background lines are proof-gated slots that render nothing until F11's proof is filed (D038)",
+      approvedBy: TEAM_V7,
+    },
+    {
+      side: "mockup",
+      selector: 'section[aria-labelledby="recognised-title"]',
+      reason: "fold 5, \"Recognised by.\", is hidden in the build until a programme's proof is filed (D038, F11; the mockup's own fold comment)",
+      approvedBy: TEAM_V7,
+    },
+    /* The hero lead is the CMO's M-T1 wording on one side and the mockup's on the other; on phones it wraps to a
+       different number of lines and every chunk below would shift, so the pixels compare the page without it on both
+       sides, and its words are compared by the text pass (TEXT_DEVIATIONS). */
+    ...(["mockup", "build"] as const).map((side) => ({
+      side,
+      selector: "#hero-title ~ .kh-heading__lead",
+      reason: "the hero lead (CMO fix M-T1 in the build), compared by the text pass; hidden on both sides so the chunks below line up",
+      approvedBy: TEAM_V7,
+    })),
+  ],
+  setup: (["mockup", "build"] as const).map((side) => ({
+    /* Step 2 is CMO fix M-S1 in the build (no place, no light colour; an open placeholder for the place), so it wraps
+       differently and moves every step below it; the pixels compare the page without step 2 on both sides, and its
+       words are compared by the text pass (TEXT_DEVIATIONS). */
+    side,
+    selector: ".kh-steps > .kh-step:nth-child(2)",
+    reason: "step 2 (CMO fix M-S1 in the build, with its open placeholder), compared by the text pass; hidden on both sides so the steps below line up",
+    approvedBy: "deviations.md V8 (main session, 2026-10-14, M1; task 5.8, CMO M-S1)",
+  })),
 };
 
 /** The style the visual pass adds to one side of a page's comparison: its hidden selectors, or "" when it has none. */
@@ -185,6 +227,31 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
       build: oneOf(sentences(toPlainText(faqs["returns-and-warranty"].answer)).filter((s) => s.startsWith("Tell us within"))),
       reason: "P15 default: a faulty Kheelu reported within 7 days gets a replacement or a full refund (D033, Rule 7(4)), the words of /refund",
       approvedBy: "deviations.md V6 (main session; task 4.7 item 4, P15 default)",
+    },
+  ],
+  team: [
+    {
+      /* CMO fix M-T1 (task 5.7): the hero lead says what Kheelu is, for whom, and the search term (team.ts). */
+      mockup: /^Kheelu is designed by parents in Bengaluru\.$/,
+      build: oneOf([TEAM_LEAD_BUILD]),
+      reason: "CMO fix M-T1: the hero lead names the product, the age band and the search term",
+      approvedBy: "deviations.md V7 (main session, 2026-10-14, M1; task 5.7)",
+    },
+    {
+      /* The proof-gated lines (D038, F11): the three founders' backgrounds and fold 5's programmes, with its heading. */
+      mockup: /^(?:\[PLACEHOLDER F11: .+\]|Recognised by\.)$/,
+      reason: "proof-gated slots that render nothing until F11's proof is filed (D038); fold 5 is hidden with them",
+      approvedBy: "deviations.md V7 (main session, 2026-10-14, M1; task 5.7)",
+    },
+  ],
+  setup: [
+    {
+      /* CMO fix M-S1 (task 5.8): step 2 names no place and no light colour for the setup button (the app's own screen
+         bracketed both); its place is an open placeholder (setup.ts). */
+      mockup: oneOf(["Press and hold the button on Kheelu’s back.", "Hold it for 3 seconds, until the light starts pulsing blue."]),
+      build: oneOf(SETUP_STEP_BUILD),
+      reason: "CMO fix M-S1: no unconfirmed place or light colour for the setup button; its place is a placeholder until confirmed",
+      approvedBy: "deviations.md V8 (main session, 2026-10-14, M1; task 5.8)",
     },
   ],
 };
