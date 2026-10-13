@@ -8,7 +8,7 @@ import { SectionHeading } from "@/components/molecules/SectionHeading";
 import { PageHero } from "@/components/templates/PageHero";
 import { FinaleCTA } from "@/components/organisms/FinaleCTA";
 import { ReadNext } from "@/components/organisms/ReadNext";
-import { RichParagraph } from "@/components/molecules/RichParagraph";
+import { ArticleBody } from "@/components/organisms/ArticleBody";
 import { SourcesList } from "@/components/molecules/SourcesList";
 import {
   STORIES,
@@ -37,6 +37,9 @@ import { pageGraph, breadcrumbs, SITE_URL, pageMeta, jsonLd, authorRef } from "@
  *  returned 404 with 0 stylesheets and 0 characters of body text. */
 export const dynamicParams = false;
 
+/** Covers are a path on this site (the imported articles) or our blog storage. */
+const absoluteImage = (src: string) => (src.startsWith("/") ? `${SITE_URL}${src}` : src);
+
 export function generateStaticParams() {
   return STORIES.map((s) => ({ slug: s.slug }));
 }
@@ -57,6 +60,14 @@ export async function generateMetadata({
       modifiedTime: schemaDate(story.updated),
       authors: [story.author],
     },
+    ...(story.hero && {
+      image: {
+        url: absoluteImage(story.hero),
+        width: story.heroWidth ?? 1440,
+        height: story.heroHeight ?? 803,
+        alt: story.heroAlt,
+      },
+    }),
   });
 }
 
@@ -100,10 +111,10 @@ export default async function StoryPage({
       mainEntityOfPage: `${SITE_URL}/stories/${story.slug}`,
       datePublished: schemaDate(story.published),
       dateModified: schemaDate(story.updated),
-      ...(story.hero && { image: `${SITE_URL}${story.hero}` }),
+      ...(story.hero && { image: absoluteImage(story.hero) }),
       /* The same array SourcesList renders (§8.35-c): what the reader can
          click is what the crawler is told, by construction. */
-      ...(story.sources?.length && {
+      ...(story.sources.length > 0 && {
         citation: story.sources.map((source) => ({
           "@type": "CreativeWork",
           name: source.label,
@@ -163,25 +174,16 @@ export default async function StoryPage({
             {story.hero && (
               <Image
                 src={story.hero}
-                alt={story.heroAlt ?? ""}
-                width={1440}
-                height={803}
+                alt={story.heroAlt}
+                width={story.heroWidth ?? 1440}
+                height={story.heroHeight ?? 803}
                 sizes="(max-width: 768px) 90vw, 720px"
                 priority
                 className="mb-9 h-auto w-full rounded-(--radius-card-lg)"
               />
             )}
-            {story.paragraphs.map((block, i) => (
-              <div key={i}>
-                {block.h && (
-                  <h2 className="mb-3 mt-9 font-display text-[26px] font-extrabold text-ink-head">
-                    {block.h}
-                  </h2>
-                )}
-                <RichParagraph text={block.p} className="mb-5 text-[18px] leading-[1.7]" />
-              </div>
-            ))}
-            <SourcesList sources={story.sources ?? []} />
+            <ArticleBody doc={story.body} />
+            <SourcesList sources={story.sources} />
             {/* The age caveat, where the piece is about a child younger than
                 Kheelu's band. Placed directly under the closing paragraph on
                 purpose: that paragraph is the invitation, and this qualifies it

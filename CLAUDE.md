@@ -1,5 +1,20 @@
 # kheelona.com — session entry point
 
+**📝 THE JOURNAL IS WRITTEN IN THE ADMIN DASHBOARD SINCE 2026-10-13.** Writers (role `writer`) draft at
+admin.kheelona.com → Blog, an admin publishes, and publishing POSTs a Vercel Deploy Hook. **`tools/blog/sync.mjs`
+runs before `next build`** and writes every published post from `api.kheelona.com/v1/public/blog/posts` into
+`src/lib/stories.data.json`, which `src/lib/stories.ts` reads, so every article is still a static page and
+`dynamicParams = false` still holds (§8.34-a). The 22 code articles were imported verbatim (same slugs, dates,
+words, read times and "read next" ring, verified) and `stories-expansion.ts`/`RichParagraph` are deleted.
+Four things bind. (1) **The sync FAILS the build** on an unreachable API, a malformed post, or a drop below half
+the last count (`BLOG_ALLOW_SHRINK=1` for one intended build), so Vercel keeps the last good deploy. `BLOG_SYNC=off`
+builds from the committed snapshot. (2) **The voice law is enforced at PUBLISH by the backend** (em dashes,
+exclamation marks, contractions, vague link labels, bare URLs), because `stories.test.ts` only ever sees the
+committed snapshot, never a dashboard post. (3) Bodies render through `organisms/ArticleBody` from a whitelist;
+videos are `molecules/VideoEmbed`, a still until pressed (youtube-nocookie / Vimeo `dnt=1` in `frame-src`; this
+**reset the §8.28-a CSP clock**). (4) A byline is a /team person or `"Kheelona"` (the Organization); `authorRef`
+still throws on anything else. Each article now shares with its own cover as `og:image`.
+
 **🎯 THE META PIXEL MOVED TO `1051265191046395` — DEPLOYED AND VERIFIED ON PRODUCTION 2026-09-20.**
 Record: `docs/checkpoints/meta-pixel-migration-2026-09-20.md`; laws **§8.41 a-i**; rollback tags
 `pre-meta-clickid-2026-09-20` = `b1078de`, `pre-meta-pixel-migration-2026-09-20` = `06a93b8`.

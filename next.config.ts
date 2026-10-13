@@ -11,6 +11,13 @@ const nextConfig: NextConfig = {
   images: {
     // AVIF preferred, WebP fallback (AVIF is opt-in on this Next build).
     formats: ["image/avif", "image/webp"],
+    /* Journal images live in our own storage (uploaded from the dashboard's blog
+       editor), and video stills come from YouTube. Exact paths, no wildcards on the
+       host: the optimizer will fetch nothing else. */
+    remotePatterns: [
+      new URL("https://storage.googleapis.com/kheelona/blog/**"),
+      new URL("https://i.ytimg.com/vi/**"),
+    ],
   },
   /* Nothing gains from telling the world which framework serves this (F-08). */
   poweredByHeader: false,
