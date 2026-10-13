@@ -78,6 +78,13 @@ const SOURCES = {
    *  endpoints and there is no reason to admit the rest of the estate. */
   metaPixelScript: "https://connect.facebook.net",
   metaPixelCollect: "https://www.facebook.com",
+  /** Journal videos (2026-10-13). Writers add YouTube or Vimeo links in the dashboard
+   *  and the article shows a still until a reader presses play; only then does the
+   *  player frame load (molecules/VideoEmbed). The privacy-enhanced YouTube host and
+   *  Vimeo's player host only: exact origins, frame-src only. Thumbnails and journal
+   *  images do NOT need img-src: next/image fetches them server-side and serves them
+   *  from this origin. */
+  videoPlayers: ["https://www.youtube-nocookie.com", "https://player.vimeo.com"],
   /** PostHog (2026-09-19). TWO origins, and the split is not cosmetic: events
    *  are ingested at `us.i.posthog.com`, while the lazily-fetched bundles — the
    *  session recorder, error tracking, surveys, the toolbar — are fetched from
@@ -161,7 +168,14 @@ export function contentSecurityPolicy(dev = false): string {
        frame for cookie-matching, which production Report-Only was refusing.
        frame-ancestors above still forbids anyone framing US, which is the
        direction that matters for a checkout. */
-    directive("frame-src", "'self'", SOURCES.razorpay, SOURCES.googlePay, SOURCES.metaPixelCollect),
+    directive(
+      "frame-src",
+      "'self'",
+      SOURCES.razorpay,
+      SOURCES.googlePay,
+      SOURCES.metaPixelCollect,
+      SOURCES.videoPlayers,
+    ),
     directive(
       "connect-src",
       "'self'",

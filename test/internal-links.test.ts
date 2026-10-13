@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { STORIES, getRelatedStories } from "@/lib/stories";
-import { linksIn } from "@/components/molecules/RichParagraph";
+import { STORIES, getRelatedStories, storyLinks } from "@/lib/stories";
 import sitemap from "@/app/sitemap";
 
 /**
@@ -68,16 +67,16 @@ describe("the journal is not a set of dead ends", () => {
   });
 });
 
-/** SEO round C2 (2026-09-05): paragraphs may carry `[label](url)` links. An
- *  internal one must land on a real page, or the journal grows dead ends of a
- *  new kind. External ones must be https and real documents (the sources). */
+/** SEO round C2 (2026-09-05): article bodies carry links (written in the dashboard's
+ *  editor since 2026-10-13). An internal one must land on a real page, or the journal
+ *  grows dead ends of a new kind. External ones must be https and real documents. */
 describe("inline links in article bodies land somewhere real", () => {
   const routes = new Set(
     sitemap().map((entry) => new URL(String(entry.url)).pathname.replace(/\/$/, "") || "/"),
   );
 
   const inline = STORIES.flatMap((story) =>
-    story.paragraphs.flatMap((block) => linksIn(block.p).map((link) => ({ slug: story.slug, ...link }))),
+    storyLinks(story).map((link) => ({ slug: story.slug, ...link })),
   );
 
   it("points every internal link at a page in the sitemap", () => {

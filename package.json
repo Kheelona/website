@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "node tools/tokens/check-tokens.mjs && next build",
+    "build": "node tools/tokens/check-tokens.mjs && node tools/blog/sync.mjs && next build",
+    "blog:sync": "node tools/blog/sync.mjs",
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",

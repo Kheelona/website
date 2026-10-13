@@ -1,188 +1,141 @@
-import { TOKEN_PRICE } from "@/config/site";
+import data from "./stories.data.json";
 
-/** The journal (prompt §5.2 Stories): useful before we sell. Four seed pieces,
- *  keyword-mapped, voice-linted, each ending on a soft invite (never a hard sell). */
+/** The journal (kheelona.com/stories). Since 2026-10-13 every article is written in the
+ *  admin dashboard (admin.kheelona.com → Blog): writers draft, an admin publishes, and
+ *  publishing rebuilds this site. `tools/blog/sync.mjs` pulls the published posts into
+ *  `stories.data.json` before `next build`, so every article is still a static page.
+ *
+ *  The 22 articles that used to be typed into this file (and `stories-expansion.ts`)
+ *  were imported into the dashboard with their slugs, dates, bylines, covers, sources
+ *  and words unchanged; `stories.data.json` was first written from them, verbatim.
+ *  Their history is in git before the commit that deleted them. */
+
+/** A post body: a ProseMirror document, sanitised by the backend to these nodes. */
+export type StoryText = {
+  type: "text";
+  text: string;
+  marks?: ({ type: "bold" } | { type: "link"; attrs: { href: string } })[];
+};
+export type StoryInline = StoryText | { type: "hardBreak" };
+export type StoryBlock =
+  | { type: "paragraph"; content?: StoryInline[] }
+  | { type: "heading"; attrs: { level: 2 | 3 }; content?: StoryInline[] }
+  | { type: "bulletList" | "orderedList"; content: StoryListItem[] }
+  | { type: "blockquote"; content: StoryBlock[] }
+  | { type: "horizontalRule" }
+  | {
+      type: "image";
+      attrs: {
+        src: string;
+        alt: string;
+        caption: string;
+        width: number | null;
+        height: number | null;
+      };
+    }
+  | {
+      type: "videoEmbed";
+      attrs: {
+        provider: "youtube" | "vimeo";
+        videoId: string;
+        title: string;
+        caption: string;
+      };
+    };
+export type StoryListItem = { type: "listItem"; content: StoryBlock[] };
+export type StoryDoc = { type: "doc"; content: StoryBlock[] };
 
 export type Story = {
   slug: string;
   title: string;
   description: string;
   theme: string;
-  /** Byline (V3-f cleared 2026-07-31): one of the four people on /team. Every
-   *  author resolves to a Person entity in `lib/seo` (§8.35-d). */
+  /** Byline: one of the four people on /team, or "Kheelona" for the company. Every
+   *  author resolves to an entity in `lib/seo` (§8.35-d); the dashboard only offers
+   *  those names, and `authorRef` throws on anything else so a drift fails the build. */
   author: string;
-  /** ISO date the article first went live. FROM GIT, never invented (§8.35-a):
-   *  `git log --diff-filter=A` on the article's block. Fourteen pieces landed
-   *  with the site on 2026-07-28, five on 2026-07-30. */
+  /** ISO date the article first went live. Set once, on its first publish (the
+   *  imported articles keep the git-derived dates they had, §8.35-a). */
   published: string;
-  /** ISO date of the last SUBSTANTIVE edit a reader can see (§8.35-a): a
-   *  rewrite, a rename in the body, a new source. Not a typo, not a build.
-   *  Feeds `dateModified`, the visible byline and the sitemap `lastmod`. The
-   *  2026-07-31 clearance and the 2026-09-05 rename both count. */
+  /** ISO date of the last reader-visible change that went live. Feeds
+   *  `dateModified`, the visible byline and the sitemap `lastmod`. */
   updated: string;
   pose: "curious" | "silly" | "joy" | "bliss" | "grumpy" | "sad";
   tint: string;
-  /** optional illustrated header, path under /public */
-  hero?: string;
-  /** An age caveat, shown as an aside under the article.
-   *
-   *  Only for pieces whose SUBJECT is a child younger than Kheelu's band, where
-   *  the closing invitation would otherwise read as "buy this for your
-   *  two-year-old". Kheelu is 3+, and an article about two-year-olds that ends on
-   *  a pre-order link and never says so is selling past its own audience.
-   *  Flagged by the agency audit 2026-09-05 on the two pieces that do it. */
-  ageNote?: string;
-  heroAlt?: string;
-  /** Body blocks. `p` may carry `[label](url)` links (RichParagraph, §8.35-c):
-   *  root-relative for our own pages, https for a source. Nothing else is
-   *  markup, so every copy law keeps reading the paragraph as prose. */
-  paragraphs: { h?: string; p: string }[];
+  /** Cover image: a path under /public (the imported articles) or our blog storage. */
+  hero: string | null;
+  heroAlt: string;
+  heroWidth: number | null;
+  heroHeight: number | null;
+  /** An age caveat, shown as an aside under the article, for pieces whose SUBJECT is a
+   *  child younger than Kheelu's band (agency audit 2026-09-05). */
+  ageNote: string | null;
   /** The documents the piece leans on, rendered under it AND emitted as the
-   *  BlogPosting `citation` from this one array (§8.35-c). Real, linkable
-   *  guidelines, papers and advisories only; a claim that cannot be sourced
-   *  is not written. */
-  sources?: readonly { label: string; url: string }[];
+   *  BlogPosting `citation` from this one array (§8.35-c). */
+  sources: readonly { label: string; url: string }[];
+  body: StoryDoc;
 };
 
-const CORE: Story[] = [
-  {
-    slug: "why-three-to-six-are-the-years-that-matter-most",
-    title: "Why the early years matter most",
-    description:
-      "A short, warm read on the window when a child's brain grows fastest, and what actually fills it.",
-    theme: "How children grow",
-    author: "Apoorva Sahu",
-    published: "2026-07-28",
-    updated: "2026-09-05",
-    pose: "curious",
-    tint: "bg-blue/15",
-    hero: "/stories/why-three-to-six-are-the-years-that-matter-most.jpg",
-    heroAlt:
-      "A father with his daughter on his shoulders, both pointing at kites drifting over evening rooftops",
-    paragraphs: [
-      /* V6 D9b: the author's own observation (not a cited band), aligned to
-         KHEELU_AGES; spelling normalized to en-IN. Slug deliberately unchanged. */
-      { p: "Somewhere between the second and fifth birthday, your child becomes a person. Not a smaller version of one. The real thing: opinions, jokes, fears, favourite dinosaurs." },
-      { p: "The science under that everyday miracle is simple to say and hard to overstate. In these years, a child's brain builds connections faster than it ever will again. What they hear, what they feel, and who they talk to shape everything that follows." },
-      { h: "The window is not about flashcards", p: "It is tempting to fill the window with drills and apps, and the toy aisle is glad to help. But brain development toys and worksheets are not what the research keeps pointing at. It keeps pointing at conversation. Back and forth exchanges. Someone who answers the fourth why is the sky blue with the same patience as the first." },
-      { p: "Every answered question teaches two things at once: the fact, and the deeper lesson that asking is worth it. Children who keep asking keep learning. That is the whole engine." },
-      { h: "Feelings are the fast lane", p: "There is a second finding hiding in the first. Children learn fastest from exchanges that feel good. A child who feels heard stays in the conversation. A child who feels rushed leaves it. Understanding the heart is not the soft part of learning. It is the mechanism." },
-      { p: "So the years that matter most do not ask for a classroom at home. They ask for talk. At dinner, in the car, at bedtime, and yes, in play." },
-      { p: "That is the belief Kheelu is built on: a talking toy that keeps the conversation going when your hands are full, in the languages you speak at home. If that sounds like your house, you can hold a place in line for a refundable ₹499." },
-    ],
-  },
-  {
-    slug: "screen-free-does-not-mean-silent",
-    title: "Screen-free does not mean silent",
-    description:
-      "What a rich, language-filled childhood actually looks like, without a single screen.",
-    theme: "Screen-free living",
-    author: "Ria Mangala Rewari",
-    published: "2026-07-28",
-    updated: "2026-09-05",
-    pose: "silly",
-    tint: "bg-yellow/15",
-    hero: "/stories/screen-free-does-not-mean-silent.jpg",
-    heroAlt:
-      "Two children playing inside a blanket fort with steel pots, wooden blocks, and a paper crown",
-    paragraphs: [
-      { p: "Take the tablet away and the first thing you notice is the noise. Not the TV kind. The good kind: questions, made-up songs, a running commentary on ants." },
-      { p: "Parents worry that screen-free means a quieter, duller childhood, and that a child without cartoons is a child missing out. The opposite is closer to the truth. Screens mostly ask children to watch. Language grows when children speak." },
-      { h: "The talking house", p: "A language-filled childhood is built from small habits. Narrate what you are cooking. Ask questions with no wrong answers. Let the silly voice read the bedtime story. None of it needs a curriculum. All of it needs another voice in the room." },
-      { p: "This is also where interactive toys earn their place, or fail to. A toy that beeps and plays jingles is a screen without the picture. A toy that listens and talks back is something else: another turn in the conversation." },
-      { h: "Boredom is not the enemy", p: "One more secret from screen-free homes: a bored child invents. The floor becomes lava. The sofa becomes a ship. Boredom is where imagination clocks in for work." },
-      { p: "So screen-free does not mean silent, and it does not mean joyless. It means the sound in your home is your child thinking out loud." },
-      { p: `We are building Kheelu for exactly that home: a screen-free friend that listens first and talks back, ready when you need one more voice. If you want one, pre-orders are open, and a refundable ${TOKEN_PRICE} holds your place.` },
-    ],
-  },
-  {
-    slug: "how-children-learn-by-talking",
-    title: "How children learn by talking",
-    description:
-      "The back and forth of conversation is the oldest learning technology in the world. Here is how it works.",
-    theme: "How children grow",
-    author: "Ria Mangala Rewari",
-    published: "2026-07-28",
-    updated: "2026-09-05",
-    pose: "joy",
-    tint: "bg-orange/15",
-    hero: "/stories/how-children-learn-by-talking.jpg",
-    heroAlt:
-      "A grandmother and two children on a veranda at night, looking up at the full moon together",
-    paragraphs: [
-      { p: "Watch a child ask why the moon follows the car. Then watch what happens after the answer. The next question is never random. It builds. That building is learning, live and out loud." },
-      { p: "Researchers call it serve and return. The child serves a question or an idea. Someone returns it with an answer and a new question. Every loop wires language, logic, and confidence together." },
-      { h: "Why talking beats watching", p: "A video can show your child a volcano. But it cannot pause when their eyes go wide, ask what they think happens next, and wait. The waiting matters. Children learn to think in the space a listener gives them." },
-      { h: "The mother tongue advantage", p: "The loop works best in the languages you speak at home. A child who can wonder in their own words wonders more. That is why a voice toy for kids should speak your language, not just English." },
-      { p: "Vocabulary is the visible result. The invisible one is bigger: a child who expects to be heard. That expectation walks into every classroom with them." },
-      { p: "You cannot be available for every loop, and you should not have to be. That is the gap Kheelu lives in: a cognitive development toy that keeps serve and return going, in up to 10 home languages, with you watching the whole exchange in the parent app." },
-      { p: `If a house full of good questions sounds right to you, pre-orders are open, and a refundable ${TOKEN_PRICE} holds your place.` },
-    ],
-  },
-  {
-    slug: "what-to-look-for-in-a-safe-ai-toy",
-    title: "What to look for in a safe AI toy",
-    description:
-      "Are AI toys safe for a three-year-old? What Common Sense Media and Fairplay warn about, what India's DPDP Act requires, and five checks for any AI toy.",
-    theme: "Safety",
-    author: "Aman Soni",
-    published: "2026-07-28",
-    updated: "2026-09-05",
-    pose: "bliss",
-    tint: "bg-blue/15",
-    hero: "/stories/what-to-look-for-in-a-safe-ai-toy.jpg",
-    heroAlt:
-      "A mother examines the underside of a small white toy robot by lamp light while her young son sits waiting beside the open box",
-    paragraphs: [
-      { p: "Most AI toys are not safe enough for a three-year-old, and two child-safety groups now say so plainly. A safe one passes five checks: it listens only when your child starts a conversation, it cannot reach the open internet, you can read everything it said and delete it, the voice data is never sold, and every reply is shaped for the child's age." },
-      { p: "The first time your child asks a toy a question and the toy answers, your stomach does a small flip. Half wonder, half alarm. Both halves are correct, and the alarm half deserves a checklist. Here is ours, the one we would use on any smart toy, including our own. First, though, the warnings you may have seen, because they are worth taking seriously." },
-      { h: "What do Common Sense Media and Fairplay say about AI toys?", p: "In November 2025 [Fairplay](https://fairplayforkids.org/ai-toys-unsafe-for-kids-this-holiday-season-advisory-warns/), a children's advocacy group, published an advisory signed by more than 150 experts and organisations telling parents not to buy AI toys that season. In January 2026 [Common Sense Media](https://institute.commonsensemedia.org/risk-assessments/ai-toys) tested AI toy companions and concluded that no child of five or under should be given one, and that parents of six to twelve year olds should use extreme caution. More than a quarter of the replies its testers logged included content a child should not hear. The toys collected voice recordings, transcripts and behaviour data, and several were built to make a child feel attached." },
-      { p: "We build an AI toy for children aged three and up, so you would expect us to argue. We mostly agree. Read what those groups actually ask for and it is a list of design decisions: no open internet, a parent who can see every conversation, no advertising and no data selling, and a toy that does not pretend to be alive. Each of those is a choice a company makes or refuses to make. The checklist below is how you tell which." },
-      { h: "One: when is the microphone on?", p: "The only good answer is: when your child invites it. Look for a toy that listens only when your child starts a conversation, and an honest explanation of what happens the rest of the time. Ask whether there is a camera at all, and if there is, how you cover it. A toy that is always listening in a bedroom is the one thing every warning above has in common." },
-      { h: "Two: can it reach the open internet?", p: "A toy that can browse can stumble, and so can your child right behind it. A safe AI toy is a closed world: a library of stories and answers it was given, no search, no videos, no strangers. Ask the maker where the answers come from. If the answer is a general chatbot with a filter on top, the filter is doing all the work, and filters leak." },
-      { h: "Three: can you read everything?", p: "You would not leave your child with a babysitter who refuses to tell you what happened all afternoon. The same bar applies to a talking toy. Every conversation should be readable by you, word for word, and deletable by you, in one tap, without emailing anyone. If the app shows you a summary and keeps the transcript to itself, that is a toy asking for trust it has not earned." },
-      { h: "Four: where does the voice go?", p: "Ask three questions and expect three plain answers. Where are recordings stored, and in which country? Who at the company can hear them? Are they ever sold, shared or used to advertise? India's [Digital Personal Data Protection Act](https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf), passed in 2023, already answers the last one for you: a company handling a child's data needs a parent's verifiable consent, and it may not track a child, monitor their behaviour or aim advertising at them. A toy maker that cannot explain how it meets that is telling you something. Vague answers are answers." },
-      { h: "Five: is it built for your child's age?", p: "A toy sold for small children should filter every response for the age of the child holding it, on the device and again in the cloud, and the maker should be able to say how. Age-graded safety is the difference between a children's product and a gadget with a cute shell. Ask, too, what the toy does when it does not know something. The honest answer is that it says so and moves on. The dangerous answer is that it improvises." },
-      { h: "How does Kheelu measure against the list?", p: "That is the bar we hold [Kheelu](/products/kheelu) to: a conversation starts only with a press of its button, no web browsing or search, a full conversation log in the parent app that you can read and that is deleted when you delete your account, voice data that is never sold, no advertising, and child-safety rules set for your child's age on every reply. The mechanisms are written out on the [Safety page](/safety), and toy-safety certifications will be published there in full before Kheelu ships, and not before they are earned." },
-      { p: `Hold us to it too. Read the Safety page, ask us the hard questions on WhatsApp, and if the answers earn your trust, pre-orders are open and a refundable ${TOKEN_PRICE} holds your place.` },
-    ],
-    sources: [
-      { label: "Common Sense Media, Youth AI Safety Institute: AI Toys risk assessment (January 2026)", url: "https://institute.commonsensemedia.org/risk-assessments/ai-toys" },
-      { label: "Common Sense Media: press release on the AI toy companion findings (22 January 2026)", url: "https://www.commonsensemedia.org/press-releases/common-sense-media-warns-against-ai-toy-companions-after-research-reveals-safety-risks" },
-      { label: "Fairplay: AI toys are not safe for kids, advisory signed by more than 150 experts and organisations (20 November 2025)", url: "https://fairplayforkids.org/ai-toys-unsafe-for-kids-this-holiday-season-advisory-warns/" },
-      { label: "The Digital Personal Data Protection Act, 2023: official text (Government of India, PDF)", url: "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf" },
-      { label: "Section 9 of the Digital Personal Data Protection Act, 2023: processing of personal data of children (Indian Kanoon)", url: "https://indiankanoon.org/doc/98869575/" },
-    ],
-  },
-];
-
-import { EXPANSION } from "./stories-expansion";
-
-export const STORIES: Story[] = [...CORE, ...EXPANSION];
+export const STORIES: Story[] = data as Story[];
 
 export function getStory(slug: string) {
   return STORIES.find((s) => s.slug === slug);
 }
 
-/** Words a reader actually reads: headings and paragraphs, nothing else. */
-export function wordCount(story: Pick<Story, "paragraphs">): number {
-  /* `[label](url)` counts as its label: the address is not read aloud. */
-  const prose = (text: string) => text.replace(/\[([^\]]+)\]\([^)\s]+\)/g, "$1");
-  return story.paragraphs.reduce(
-    (n, block) =>
-      n +
-      prose(block.p).split(/\s+/).filter(Boolean).length +
-      (block.h ? block.h.split(/\s+/).length : 0),
+/** The text of a block, inline runs joined: a link counts as its label. */
+function inlineText(content: StoryInline[] | undefined): string {
+  return (content ?? [])
+    .map((n) => (n.type === "text" ? n.text : " "))
+    .join("");
+}
+
+/** Every readable block's text, in order: headings, paragraphs, list items, quotes.
+ *  Captions and alt text are not read as prose and do not count. */
+export function storyText(story: Pick<Story, "body">): string[] {
+  const out: string[] = [];
+  const walk = (block: StoryBlock | StoryListItem) => {
+    if (block.type === "paragraph" || block.type === "heading")
+      out.push(inlineText(block.content));
+    else if ("content" in block && Array.isArray(block.content)) {
+      for (const child of block.content as (StoryBlock | StoryListItem)[])
+        walk(child);
+    }
+  };
+  story.body.content.forEach(walk);
+  return out;
+}
+
+/** Words a reader actually reads: headings, paragraphs, lists and quotes. */
+export function wordCount(story: Pick<Story, "body">): number {
+  return storyText(story).reduce(
+    (n, text) => n + text.split(/\s+/).filter(Boolean).length,
     0,
   );
 }
 
-/** Read time DERIVED from the words, never typed (§8.35-b). The journal used
- *  to carry a hand-set `minutes` per article that said 4 to 6 on bodies of 200
- *  to 430 words, and the schema `timeRequired` repeated it. 200 words a minute
- *  is the usual adult reading pace for plain prose; the floor is one minute. */
-export function readingMinutes(story: Pick<Story, "paragraphs">): number {
+/** Read time DERIVED from the words, never typed (§8.35-b). 200 words a minute is
+ *  the usual adult reading pace for plain prose; the floor is one minute. */
+export function readingMinutes(story: Pick<Story, "body">): number {
   return Math.max(1, Math.round(wordCount(story) / 200));
+}
+
+/** Every link in the body (internal-link and citation guards read this). */
+export function storyLinks(
+  story: Pick<Story, "body">,
+): { label: string; href: string }[] {
+  const out: { label: string; href: string }[] = [];
+  const walk = (
+    node: { type: string; content?: unknown[] } & Partial<StoryText>,
+  ) => {
+    if (node.type === "text") {
+      for (const m of node.marks ?? [])
+        if (m.type === "link")
+          out.push({ label: node.text ?? "", href: m.attrs.href });
+    }
+    for (const child of (node.content ?? []) as (typeof node)[]) walk(child);
+  };
+  walk(story.body as unknown as Parameters<typeof walk>[0]);
+  return out;
 }
 
 /** The ISO date as schema.org and Open Graph want it: a full datetime with a

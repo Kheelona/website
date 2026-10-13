@@ -107,6 +107,9 @@ export const AUTHORS: Readonly<Record<string, string>> = Object.fromEntries(
 /** The author node a BlogPosting carries: a reference, never a second copy.
  *  The full Person lives once, inside the Organization on the same page. */
 export function authorRef(name: string) {
+  /* The company itself, for a post written by someone who is not on /team: the
+     dashboard offers "Kheelona" as the byline for them (2026-10-13). */
+  if (name === "Kheelona") return { "@id": `${SITE_URL}/#organization` };
   const id = AUTHORS[name];
   if (!id) throw new Error(`No author entity for "${name}": add them to /team and lib/seo first`);
   return { "@id": id };
@@ -358,6 +361,7 @@ export function pageMeta({
   description,
   path,
   article,
+  image,
 }: {
   title: string;
   description: string;
@@ -366,7 +370,11 @@ export function pageMeta({
    *  every share and citation tool, with the dates and author the BlogPosting
    *  already carries. Marketing routes leave it out and stay `website`. */
   article?: { publishedTime: string; modifiedTime: string; authors: readonly string[] };
+  /** The page's own share image (a journal cover), replacing the brand card. A
+   *  WhatsApp share of an article then shows THAT article, not the logo card. */
+  image?: { url: string; width: number; height: number; alt: string };
 }): Metadata {
+  const shareImage = image ?? { url: OG_IMAGE, width: 1200, height: 630 };
   return {
     title,
     description,
@@ -397,7 +405,7 @@ export function pageMeta({
       description,
       siteName: "Kheelona",
       locale: "en_IN",
-      images: [{ url: OG_IMAGE, width: 1200, height: 630 }],
+      images: [shareImage],
       ...(article
         ? {
             type: "article",
@@ -411,7 +419,7 @@ export function pageMeta({
       card: "summary_large_image",
       title,
       description,
-      images: [OG_IMAGE],
+      images: [shareImage.url],
     },
   };
 }

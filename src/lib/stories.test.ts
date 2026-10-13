@@ -6,6 +6,10 @@ import {
   readingMinutes,
   schemaDate,
   wordCount,
+  storyText,
+  storyLinks,
+  type Story,
+  type StoryDoc,
 } from "./stories";
 
 /** §8.35-a/b (2026-09-05). Before this round every article shared ONE hardcoded
@@ -53,16 +57,46 @@ describe("journal dates are real, ordered and machine-readable", () => {
 });
 
 describe("read time is derived from the words, never typed", () => {
-  it("counts headings and paragraphs and nothing else", () => {
-    expect(wordCount({ paragraphs: [{ h: "Two words", p: "one two three" }, { p: "four" }] })).toBe(6);
+  const t = (text: string) => ({ type: "text" as const, text });
+  const para = (...content: ReturnType<typeof t>[]) => ({ type: "paragraph" as const, content });
+  const body = (...content: StoryDoc["content"]): Pick<Story, "body"> => ({ body: { type: "doc", content } });
+
+  it("counts headings, paragraphs and list items, and nothing else", () => {
+    expect(
+      wordCount(
+        body(
+          { type: "heading", attrs: { level: 2 }, content: [t("Two words")] },
+          para(t("one two three")),
+          { type: "bulletList", content: [{ type: "listItem", content: [para(t("four"))] }] },
+          { type: "image", attrs: { src: "/x.jpg", alt: "not counted", caption: "nor this", width: 1, height: 1 } },
+        ),
+      ),
+    ).toBe(6);
   });
 
   it("counts a link by its label, never its address", () => {
-    expect(wordCount({ paragraphs: [{ p: "see [the WHO guideline](https://www.ncbi.nlm.nih.gov/books/NBK541169/) here" }] })).toBe(5);
+    expect(
+      wordCount(
+        body({
+          type: "paragraph",
+          content: [
+            t("see "),
+            { type: "text", text: "the WHO guideline", marks: [{ type: "link", attrs: { href: "https://www.ncbi.nlm.nih.gov/books/NBK541169/" } }] },
+            t(" here"),
+          ],
+        }),
+      ),
+    ).toBe(5);
+  });
+
+  it("does not split a word that runs across a link edge", () => {
+    expect(
+      wordCount(body({ type: "paragraph", content: [{ type: "text", text: "Kheelu", marks: [{ type: "link", attrs: { href: "/products/kheelu" } }] }, t("'s friend")] })),
+    ).toBe(2);
   });
 
   it("rounds at 200 words a minute with a one-minute floor", () => {
-    const words = (n: number) => ({ paragraphs: [{ p: Array(n).fill("w").join(" ") }] });
+    const words = (n: number) => body(para(t(Array(n).fill("w").join(" "))));
     expect(readingMinutes(words(50))).toBe(1);
     expect(readingMinutes(words(299))).toBe(1);
     expect(readingMinutes(words(300))).toBe(2);
@@ -92,15 +126,11 @@ describe("read time is derived from the words, never typed", () => {
 describe("every article keeps the brand voice", () => {
   const CONTRACTIONS =
     /\b(don't|doesn't|can't|won't|isn't|aren't|wasn't|weren't|it's|that's|there's|here's|what's|we're|you're|they're|I'm|I'll|we'll|you'll|we've|you've|I've|didn't|couldn't|shouldn't|wouldn't|hasn't|haven't|let's)\b/i;
-  const prose = (t: string) => t.replace(/\[([^\]]+)\]\([^)\s]+\)/g, "$1");
   const texts = STORIES.flatMap((s) => [
     { where: `${s.slug} title`, text: s.title },
     { where: `${s.slug} description`, text: s.description },
-    ...s.paragraphs.flatMap((b, i) => [
-      ...(b.h ? [{ where: `${s.slug} h#${i}`, text: b.h }] : []),
-      { where: `${s.slug} p#${i}`, text: prose(b.p) },
-    ]),
-    ...(s.sources ?? []).map((src) => ({ where: `${s.slug} source`, text: src.label })),
+    ...storyText(s).map((text, i) => ({ where: `${s.slug} block#${i}`, text })),
+    ...s.sources.map((src) => ({ where: `${s.slug} source`, text: src.label })),
   ]);
 
   it("uses no em-dash anywhere (en-dash only inside number ranges)", () => {
@@ -121,17 +151,15 @@ describe("every article keeps the brand voice", () => {
        the description of the target; make it say where it goes. */
     const GENERIC = /^(here|this|that|link|read more|click here|more|that read is here|learn more)$/i;
     for (const s of STORIES) {
-      for (const block of s.paragraphs) {
-        for (const m of block.p.matchAll(/\[([^\]]+)\]\([^)\s]+\)/g)) {
-          /* One-word labels are fine when the word IS the destination ("Kheelu",
-             "Fairplay"); only the words that describe nothing are refused. */
-          expect(m[1].trim(), `${s.slug}: link labelled "${m[1]}"`).not.toMatch(GENERIC);
-        }
+      for (const link of storyLinks(s)) {
+        /* One-word labels are fine when the word IS the destination ("Kheelu",
+           "Fairplay"); only the words that describe nothing are refused. */
+        expect(link.label.trim(), `${s.slug}: link labelled "${link.label}"`).not.toMatch(GENERIC);
       }
     }
   });
 
   it("does not leave a raw link address in the prose", () => {
-    for (const { where, text } of texts) expect(text, where).not.toMatch(/\]\(|https?:\/\//);
+    for (const { where, text } of texts) expect(text, where).not.toMatch(/https?:\/\//);
   });
 });
