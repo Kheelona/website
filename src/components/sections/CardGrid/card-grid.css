@@ -7,6 +7,16 @@
   gap: var(--space-3);
   align-content: start;
 }
+/* Each guide link's 44 px tap area without a taller line (task 4.6): an invisible extension 12 px above and below the
+   one-line link, as the trust links have (trust-line.css, mockup.css:31). The approved link and card do not move. */
+.ks-guides .kh-card__link {
+  position: relative;
+}
+.ks-guides .kh-card__link::before {
+  content: "";
+  position: absolute;
+  inset: calc(var(--space-3) * -1) 0;
+}
 
 /* The contact route cards: one column on phones, two from 720 px (the fifth spans both), then three over two from
    1024 px (contact.css:10-17, .mk-routes). The 1024 px rules come later and win over the last-child span. */

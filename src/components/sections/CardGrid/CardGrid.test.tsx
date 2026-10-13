@@ -1,7 +1,20 @@
 import { render, screen } from "@testing-library/react";
+import postcss from "postcss";
 import { describe, expect, it } from "vitest";
+import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { outline, parseMockup, type Renames } from "../../../../test/support/mockup-compare";
 import { CardGrid, type CardGridItem } from "./CardGrid";
+
+/** The declarations of card-grid.css's top-level rule with exactly these selectors, in order. */
+function declarations(selector: string): string[] {
+  const out: string[] = [];
+  postcss.parse(readRepoFile("src/components/sections/CardGrid/card-grid.css")).each((node) => {
+    if (node.type === "rule" && node.selectors.join(", ") === selector) {
+      node.each((d) => void (d.type === "decl" && out.push(`${d.prop}: ${d.value}`)));
+    }
+  });
+  return out;
+}
 
 /* CardGrid (task 3.3; components §2): Home's guides for parents (home.html fold 7b, D046) and the contact page's route
  * cards (contact.html fold 2), each compared class by class (mk- renamed ks-) with the built mockup fold through the
@@ -61,6 +74,18 @@ describe("CardGrid: guides (Home fold 7b)", () => {
     expect(screen.getByRole("list")).toBeInTheDocument();
     expect(screen.getAllByRole("listitem")).toHaveLength(3);
     expect(screen.getByRole("link", { name: "Read the talking guides" })).toHaveAttribute("href", "/stories#talking");
+  });
+
+  /* The approved guide link is one line of text, under 44 px tall, so it failed the tap-target check on Home at 360
+     (task 4.6, from the 5.1 review). As the trust links do (trust-line.css, mockup.css:31), an invisible ::before
+     reaches 12 px above and below it, 48 px in all, with no visual change; the markup stays the mockup's (no
+     ks-card__link--tap, which would make the link 48 px tall and move the card). Scoped to the guides list. */
+  it("gives each guide link a 44 px tap area with an invisible extension, scoped to the guides list", () => {
+    expect(declarations(".ks-guides .kh-card__link")).toEqual(["position: relative"]);
+    expect(declarations(".ks-guides .kh-card__link::before")).toEqual(['content: ""', "position: absolute", "inset: calc(var(--space-3) * -1) 0"]);
+    expect(declarations(".kh-card__link::before")).toEqual([]);
+    const { container } = render(<CardGrid variant="guides" band heading={heading} items={items} />);
+    for (const a of container.querySelectorAll("a.kh-card__link")) expect(a.className).toBe("kh-card__link");
   });
 
   it("refuses a guide card with more than one link (the approved cards have one each)", () => {
