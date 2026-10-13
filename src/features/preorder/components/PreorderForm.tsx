@@ -22,6 +22,7 @@ import { startCheckout } from "../lib/checkout";
 import { preorderAnalytics } from "../lib/analytics";
 import { phDistinctId } from "@/lib/posthog";
 import { CAMPAIGN_KEYS } from "@/lib/campaign";
+import { track } from "@/lib/tracking/track";
 
 /** The pre-order form (§8.25-s).
  *
@@ -49,7 +50,9 @@ import { CAMPAIGN_KEYS } from "@/lib/campaign";
  *  the store page hands in the rest (`beside`: the trust row, the payment window
  *  line, a person to reach), which a client island cannot draw itself. Every
  *  handler, field attribute and request below is the tag's
- *  (test/guards/checkout-signature.test.ts, checkout-jsx-contract.test.tsx). */
+ *  (test/guards/checkout-signature.test.ts, checkout-jsx-contract.test.tsx),
+ *  plus two measurement additions for B11 (task 6.2): a refused submit reports
+ *  its field names, and the tier rides along to the payment window's events. */
 export function PreorderForm({
   tier,
   signature,
@@ -123,6 +126,10 @@ export function PreorderForm({
         behavior: "smooth",
         block: "center",
       });
+      /* Which fields sent the parent back, by name only and never what was
+         typed: to GA4 and PostHog through the dispatcher, never Meta (B11,
+         task 6.2; architecture §8.2). */
+      track("preorder_form_rejected", { tier, fields: Object.keys(found).join(",") });
       return;
     }
 
@@ -163,6 +170,7 @@ export function PreorderForm({
         amountPaise: data.amountPaise!,
         orderRef: data.orderRef!,
         prefill: data.prefill ?? {},
+        tier,
         onDismiss: () => {
           preorderAnalytics.dismissed(tier);
           setState("idle");
