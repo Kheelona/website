@@ -1,36 +1,88 @@
 import type { Metadata } from "next";
-import { notFoundPage } from "@/content/en-IN/pages/not-found";
-import type { SitePath } from "@/content/types";
-import { PageTemplate } from "@/layouts/PageTemplate/PageTemplate";
-import { SiteShell } from "@/layouts/SiteShell/SiteShell";
-import { getOffer } from "@/lib/offer/get-offer";
-import { pageMeta } from "@/lib/seo/metadata";
+import Image from "next/image";
+import { Room } from "@/components/atoms/Room";
+import { RoomsTrack } from "@/components/atoms/RoomsTrack";
+import { SectionHeading } from "@/components/molecules/SectionHeading";
+import { PageHero } from "@/components/templates/PageHero";
+import { Button } from "@/components/atoms/Button";
+import { FinaleCTA } from "@/components/organisms/FinaleCTA";
+import { SiteChrome } from "@/components/templates/SiteChrome";
+import { KHEELU_ART, kheeluAlt } from "@/lib/kheelu-art";
 
-/*
- * The 404 (task 5.10; structure §3.1, §5; architecture §9.4): every URL that matches no route renders this page, and
- * so does a dynamic route's unknown param, which stops at the router (`dynamicParams = false`), never a thrown
- * `notFound()` (test/not-found-ssr.test.ts, lessons §1). Thin: the words are src/content/en-IN/pages/not-found.ts.
- *
- * - It sits outside the (site) route group, so it renders the site shell itself: chrome, the WhatsApp bubble (D050),
- *   no buy bar (404.html's meta says `"buybar": false`). The store host keeps its own (src/app/store/not-found.tsx).
- * - The offer is the live one (ADR-005): the close's price sentence and the drawer's follow the store's mode. getOffer's
- *   cache window (300 s) is the prerendered page's revalidate, as on every marketing page.
- * - Metadata: the copy page's title, whole (`absolute`: the root template would add the brand twice), and its
- *   description, both through pageMeta's checks. Nothing else: the page answers 404 and Next adds
- *   `<meta name="robots" content="noindex">` itself, so it has no canonical or share card, and it sets no `robots`
- *   (the root layout's beta noindex, nofollow stands; N15). The path below only names the page to the template.
- */
-const PATH: SitePath = "/404";
+/* The 404 says so in its title (2026-08-12). It used to inherit the root
+   layout's default title, so every broken URL served a page called "Kheelu by
+   Kheelona: the screen-free friend that grows with your child, ages 2 to 5" —
+   indistinguishable from a real page in any analytics tool. That is why
+   Ahrefs' "Possible 404" report sat empty while /accessibility-statement was
+   quietly taking 10.8% of all site entries into a dead end. Detectors match on
+   the title; give them something to match.
 
-const { title, description } = pageMeta({ ...notFoundPage.meta, path: PATH });
+   NO brand suffix here: not-found.tsx DOES receive the root layout's
+   `%s · Kheelona` template, even though app/page.tsx does not. Writing the
+   suffix by hand rendered "Page not found · Kheelona · Kheelona" against a
+   local production build, which is why it is measured rather than reasoned
+   about. Next injects `robots: noindex` on 404s by itself, so there is none
+   here. */
+export const metadata: Metadata = {
+  title: "Page not found",
+  description: "That page is not here. Find Kheelu, the journal, or the way home.",
+};
 
-export const metadata: Metadata = { title, description };
-
-export default async function NotFound() {
-  const offer = await getOffer();
+/* Revamp M4 (theme B): the 404 joins the room grammar, finale included, by
+   the standing law that every page ends in one. It closed a real gap at the
+   time: PREORDER_HREF was "#reserve" then, so the navbar and the guide dock
+   both pointed at an anchor this page did not have. Since 2026-08-23 both go
+   straight to the store, so the finale is here to argue the case, not to
+   rescue a broken link. Copy: copy-v2 NOT-FOUND. */
+export default function NotFound() {
+  /* Wrapped explicitly: a root-level not-found.tsx sits OUTSIDE the (site)
+     route group, so it would render with no navbar, no footer and no way out
+     (§8.25-z). */
   return (
-    <SiteShell offer={offer}>
-      <PageTemplate page={notFoundPage} offer={offer} path={PATH} />
-    </SiteShell>
+    <SiteChrome>
+      <PageHero
+        ratio="md:grid-cols-[1.1fr_0.9fr]"
+        guide="curious"
+        media={
+          <Image
+            src={KHEELU_ART.src}
+            alt={kheeluAlt("waiting patiently")}
+            width={KHEELU_ART.width}
+            height={KHEELU_ART.height}
+            sizes="(max-width: 768px) 60vw, 300px"
+            priority
+            className="h-auto w-full max-w-[260px]"
+          />
+        }
+      >
+        <SectionHeading
+          as="h1"
+          title="This page wandered off."
+          titleClassName="mb-4"
+          lede="Kheelu asked the moon. The moon has not seen it either. Let us take you home."
+          ledeClassName="mb-8 max-w-[48ch] text-[19px]"
+        />
+        <div className="flex flex-wrap gap-4">
+          <Button href="/">Back to the start</Button>
+          <Button href="/products/kheelu" variant="ghost">
+            Meet Kheelu
+          </Button>
+        </div>
+      </PageHero>
+
+      <RoomsTrack>
+        <Room
+          fill="white"
+          id="reserve"
+          guide="silly"
+          /* GATED:kheelu-line */
+          say="Save your spot. I'll mind Kheelu till launch."
+          reveal="pop"
+          className="overflow-x-clip"
+        >
+          <FinaleCTA bare variant="compact" />
+        </Room>
+      </RoomsTrack>
+    </SiteChrome>
   );
 }
