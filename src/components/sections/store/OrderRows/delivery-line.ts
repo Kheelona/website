@@ -7,6 +7,10 @@
  * D023 line ("Deliveries start mid-November"). An order whose date is missing or unreadable reads the D023 line
  * (open question P8, confirmed by the same answer). The rule lives here, outside the frozen page: the page only passes
  * the order's `created_at`, which it already reads. The words come in from content; this module only picks.
+ *
+ * The receipt email (`src/lib/email/templates.ts`, frozen; its reviewed diff cites D054 item 1) picks its delivery row
+ * with this same function and the same two lines, so the receipt and the /thanks card never disagree about an order
+ * (test/email-delivery-line.test.ts). Pure, and never throws: the receipt is built inside `notifyPaid`'s never-throw rule.
  */
 
 /** One row of the order card: its label and its value. */
