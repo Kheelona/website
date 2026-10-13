@@ -2,7 +2,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import type { Page } from "@playwright/test";
 import { PARITY_TARGET } from "./support/env";
-import { VISUAL_DEVIATIONS } from "./support/deviations";
+import { VISUAL_DEVIATIONS, hideDeviations } from "./support/deviations";
 import { expect, forceMotionEnd, gateRouteGroup, hideForParity, settle, test } from "./support/fixtures";
 import { CHUNK_MAX_DIFF_RATIO, HEIGHT_TOLERANCE, captureChunks, pageHeight } from "./support/parity";
 import { mockupRoutes } from "./support/routes";
@@ -15,6 +15,8 @@ import { APPROVED_WIDTHS } from "./support/viewports";
  * D050 WhatsApp bubble and its clearance hidden (it has its own spec, task 3.1). Page height must
  * match within 2 percent, then every screen-height chunk may differ in at most 2 percent of its
  * pixels, unless the main session has accepted that chunk as a deviation (support/deviations.ts).
+ * A block approved as absent or moved is hidden on its side first (VISUAL_HIDDEN, task 4.8), so the
+ * chunks below it still line up; each hide is printed.
  * The mockup's chunks are written as goldens under test/e2e/.goldens/ (git-ignored) and the build
  * is compared with them by Playwright's comparator. A run with --update-snapshots fails at once:
  * it would replace the mockup golden with the build's own screenshot.
@@ -45,12 +47,14 @@ for (const route of mockupRoutes()) {
         ).toBe(false);
         const calibration = PARITY_TARGET === "mockup";
         const { page: mockup } = await harness.openMockup(route.mockup!, vp);
+        if (!calibration) await hideDeviations(mockup, route.id, "mockup");
         await prepare(mockup);
         const expectedHeight = await pageHeight(mockup);
         const expectedChunks = await captureChunks(mockup);
 
         // In calibration, open() loads the mockup again (support/fixtures.ts).
         const { page } = await harness.open(route, vp);
+        if (!calibration) await hideDeviations(page, route.id, "build");
         await prepare(page);
         const height = await pageHeight(page);
         if (calibration) expect(height, "calibration: the mockup's height must not change between two loads").toBe(expectedHeight);
