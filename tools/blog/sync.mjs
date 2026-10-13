@@ -73,9 +73,19 @@ const previous = JSON.parse(readFileSync(SNAPSHOT, "utf8"));
 const shrink = shrinkProblem(previous.length, posts.length);
 if (shrink && process.env.BLOG_ALLOW_SHRINK !== "1") fail(shrink);
 
-const next = `${JSON.stringify(posts, null, 2)}\n`;
-const changed = next !== readFileSync(SNAPSHOT, "utf8");
-if (changed) writeFileSync(SNAPSHOT, next);
+/* Compare DATA, not text: Postgres jsonb returns object keys in its own order, so a
+   text compare would rewrite the whole file on every build with nothing changed. */
+const canonical = (v) =>
+  Array.isArray(v)
+    ? `[${v.map(canonical).join(",")}]`
+    : v && typeof v === "object"
+      ? `{${Object.keys(v)
+          .sort()
+          .map((k) => `${JSON.stringify(k)}:${canonical(v[k])}`)
+          .join(",")}}`
+      : JSON.stringify(v);
+const changed = canonical(posts) !== canonical(previous);
+if (changed) writeFileSync(SNAPSHOT, `${JSON.stringify(posts, null, 2)}\n`);
 console.log(
   `blog-sync: ${posts.length} posts${changed ? " (snapshot updated)" : " (unchanged)"}`,
 );
