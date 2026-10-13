@@ -44,7 +44,9 @@ never stage them).
    (no rebase, no force). Expected conflicts: only catalogue rows in `wiki/engineering/components.md` and
    `assets.md` (keep both sides' rows).
 3. **Batch merge gate (D052):** on the merged branch run `npm run verify` and `npm run build` once. Read the
-   diff of any `fixed-unreviewed` or `not-reviewed` task. Route any failure to the task that owns the failing file
+   diff of any `fixed-unreviewed` or `not-reviewed` task. Run it when no batch is building (parallel builders make
+   whole-tree guards time out), or re-run timed-out files alone with `--testTimeout=120000` before calling them red;
+   run `npm run build` first, so `.next/types` does not name a deleted route. Route any failure to the task that owns the failing file
    (fix agent), re-run until green. The full `npm run verify:e2e` runs only at the milestones: **M1** end of wave 5,
    **M2** end of wave 6, **M3** Gate B readiness.
 4. Remove the worktrees (and the tool's leftover `worktree-wf_*` branches, which sit at `main`'s old head and must never be pushed: `git branch -D worktree-wf_<run>-<n>`): `git worktree remove .claude/worktrees/wf_<run>-<n>` (add `--force` only if
