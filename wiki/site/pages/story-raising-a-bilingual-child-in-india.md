@@ -18,6 +18,7 @@ sources:
   - "src/lib/stories-expansion.ts:187-217 (the live article; text and facts as input only), read in the task worktree at base aa4b39e"
   - "src/content/en-IN/stories/articles/raising-a-bilingual-child-in-india.ts (stub: card, related list, dates); src/content/types.ts (Article shape); src/layouts/ArticleTemplate/ArticleTemplate.tsx"
   - test/guards/banned-phrases.data.ts (checked against every Copy block)
+  - ../../qa/cmo-review-articles-5.18-2026-10-14.md (M11, the read time)
   - design-system/project/03-cast.md:50, 120; 01-writing.md:19-26, 38, 111-113 (read-only)
 ---
 
@@ -51,7 +52,7 @@ sources:
 | Meta description (145 characters) | Raising a bilingual child in India: what the research says about two languages, why mixing words is normal, and what keeps a home language alive. |
 | H1 | Raising a bilingual child in India |
 | Card (hub, unchanged) | "Raising a bilingual child in India" · "Does a bilingual home confuse a young child? What the research says, and what keeps a home language alive." (approved hub copy, [stories.md fold 3](stories.md#fold-3--talking-and-language-talking), word for word) |
-| Byline line | The Kheelona team · First published 28 Jul 2026 · 4 min read |
+| Byline line | The Kheelona team · First published 28 Jul 2026 · 3 min read (CMO review M11) |
 | CTA | None in the page body. No finale CTA, no sticky bar. The site chrome keeps its own button |
 | In-text product link | None (question 1) |
 | Template settings | `close: "keep"` (keep-reading close, no pre-order button; no phone buy bar); crumb topic `talking`; `og: DEFAULT_OG` |
@@ -95,14 +96,16 @@ keeps only the word count across languages and links here.
 >
 > What the research says about two languages at home, and what keeps a home language alive.
 >
-> The Kheelona team · First published 28 Jul 2026 · 4 min read
+> The Kheelona team · First published 28 Jul 2026 · 3 min read
 
 - **H1 accent:** `Hand` on "bilingual child". The H1 is the live title, as the keyword map asks (§5.2: "keep").
 - **Lead:** the card's summary without its opening question, because fold 2's H2 asks that question one line
   later. The card itself is unchanged.
 - **Dates and read time:** "First published" is the stub's `published` (`2026-07-28`, the live date). Read time
-  from the words: about 700 words in the article (head to fold 9), so 4 min (700 / 200 = 3.5, rounded up as
-  `readingMinutes` rounds); if the CMO review trims it below 700, the byline becomes 3 min.
+  3 min: the CMO review counts about 696 words from the H1 to fold 9 (3.48), and the build derives `readMinutes`
+  from the final module text with the shared rule, `round(words / 200)`
+  ([CMO review M11](../../qa/cmo-review-articles-5.18-2026-10-14.md); this draft's earlier "4 min" came from an
+  estimate of 700 words rounded up).
 - **Image** (`kh-photo`, 4:5): `tara-04-reading-nook-web.webp`. Alt: "A girl in a coral kurta sits cross-legged in a
   cushioned window seat, reading a picture book aloud." (`03-cast.md:120`, "multilingual books"; the cast's
   multilingual-homes child, `03-cast.md:50`; no Kheelu in the photo; checked by eye.) No name or age in the alt.

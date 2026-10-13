@@ -229,12 +229,6 @@ function headNotes(slug: string): { hand: string; photo: string; alt: string } {
   return { hand: hand[1], photo: image[1], alt: image[2] };
 }
 
-/** The one accepted difference from a copy page (CMO review M11, a builder fix): the read time is the module's own
- *  words over 200, rounded, so a byline the copy page worked out from an estimate follows the final text. */
-const READ_TIME_DEVIATIONS: Readonly<Record<string, readonly [string, string]>> = {
-  "raising-a-bilingual-child-in-india": ["4 min read", "3 min read"],
-};
-
 /* ── The module ─────────────────────────────────────────────────────────────────────────────────────────────────── */
 
 /** Every content string of the module a reader sees (meta, card, head, answer, body; never an image or an href). */
@@ -329,9 +323,7 @@ const page = (article: Article) => render(<ArticleTemplate article={sized(articl
 
 describe.each(TALKING)("the talking guide %s", (slug, { article, stub, links, icons }) => {
   it("prints its copy page word for word: head, answer, parts, sources and the keep-reading close", () => {
-    const deviation = READ_TIME_DEVIATIONS[slug];
-    const copy = deviation ? copyWords(slug).replace(deviation[0], deviation[1]) : copyWords(slug);
-    expect(same(words(page(article), { skip: "script" }))).toBe(same(copy));
+    expect(same(words(page(article), { skip: "script" }))).toBe(same(copyWords(slug)));
   });
 
   it("has the copy page's title and description", () => {
@@ -355,6 +347,13 @@ describe.each(TALKING)("the talking guide %s", (slug, { article, stub, links, ic
 
   it("states its read time from its own words, round(words / 200) (CMO review M11)", () => {
     expect(article.head.readMinutes).toBe(Math.max(1, Math.round(readingWords(article) / 200)));
+  });
+
+  it("has the copy page's byline row at the module's read time (the copy page and the build agree)", () => {
+    const row = copyPage(slug)
+      .split("\n")
+      .find((l) => /^\|\s*Byline line\s*\|/.test(l));
+    expect(row?.split("|")[2]).toMatch(new RegExp(`· ${article.head.readMinutes} min read(?: \\(.*\\))?\\s*$`));
   });
 
   it("puts D025's line, verbatim, directly under the answer, and names Kheelu nowhere else (B5)", () => {
