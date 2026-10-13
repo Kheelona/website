@@ -26,7 +26,7 @@ export type RedirectRule = {
 };
 
 /** The apex rules: the 24 the site had at the reset (url-map §4b), unchanged and
- *  in their order, then the reset's own (D041; url-map §4d). */
+ *  in their order, then the reset's own (D041, D053; url-map §4d). */
 const RULES: readonly RedirectRule[] = [
   {
     // intuitive short slug people will type/share (UX panel 2026-07-10)
@@ -152,6 +152,10 @@ const RULES: readonly RedirectRule[] = [
     destination: "/stories/learning-toys-for-a-three-year-old",
     permanent: true,
   },
+  /* D053 (task 6.5): the 3-6-9-12 article leaves the journal (its author's AI
+     markers advise no connected toys before 6), to the hub's screen-time topic,
+     so links and search results that point at it still land on the subject. */
+  { source: "/stories/screen-time-rules-parents-swear-by", destination: "/stories#screen-time", permanent: true },
   /* Guessable URLs that 404ed at the reset (url-map §4d; strategy §4.2): the
      product's own name, the bare products folder, and the job pages people
      tried (`/jobs` had two landings in PostHog, `/careers` one). `/pricing`

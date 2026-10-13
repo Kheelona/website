@@ -68,6 +68,17 @@ export const PRIVACY_B11_BUILD = [
   "It is told the same steps of a pre-order as Google Analytics.",
 ] as const;
 const PRIVACY_V10 = "deviations.md V10 (founder, D054 item 10, 2026-10-14; task 6.2)";
+/* The card the hub no longer shows (V9): the 3-6-9-12 article left the journal after Gate A (D053), so the approved
+   hub's second screen-time guide has no page and no module. Its words are spelled here because nothing in the build
+   holds them any more; src/content/en-IN/stories/parity-deviations.test.ts holds them, and the row's selector, to the
+   approved hub and to hub.ts. */
+export const STORIES_REMOVED_CARD = {
+  title: "The 3-6-9-12 rule, and other screen rules parents swear by",
+  summary: "Where the 3-6-9-12 rule comes from, whether it holds up, and what the WHO, the IAP and the AAP say.",
+  /** The card's row in the approved hub (stories.html fold 2): the screen-time topic's second guide. */
+  selector: "section#screen-time .mk-guides > .kh-listitem:nth-child(2)",
+} as const;
+const STORIES_V9 = "deviations.md V9 (founder, D053, 2026-10-14; task 6.5)";
 
 /** A route whose own parity runs would compare a state its mockup does not show, with the spec that proves that
  *  state's parity instead. The visual and text parity specs skip the route on the build and print why (SPA 1 and 2). */
@@ -134,6 +145,17 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
     ...paymentsHidden,
   ],
   "store-confirmation": paymentsHidden,
+  /* The 3-6-9-12 card (V9) is hidden in the approved hub, so its screen-time topic lists the build's five guides in the
+     build's order and every fold below it lines up. The mockup alone: hidden there, the topic's rows reflow into the
+     build's grid (two columns from 900 px), and the build has nothing of the card to hide. */
+  stories: [
+    {
+      side: "mockup",
+      selector: STORIES_REMOVED_CARD.selector,
+      reason: "the 3-6-9-12 guide left the journal (D053), so its card left the screen-time topic",
+      approvedBy: STORIES_V9,
+    },
+  ],
   team: [
     {
       side: "mockup",
@@ -225,6 +247,14 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
     paymentsMoved,
   ],
   "store-confirmation": [paymentsMoved],
+  stories: [
+    {
+      /* The 3-6-9-12 card's title and summary (stories.html fold 2), missing from the build; nothing replaces them. */
+      mockup: oneOf(sentences(`${STORIES_REMOVED_CARD.title}\n${STORIES_REMOVED_CARD.summary}`)),
+      reason: "the 3-6-9-12 guide left the journal (D053), so its card left the screen-time topic",
+      approvedBy: STORIES_V9,
+    },
+  ],
   "meet-kheelu": [
     {
       /* The product details fold without JavaScript (wiki/qa/deviations.md V3): the tab row stays hidden and the three

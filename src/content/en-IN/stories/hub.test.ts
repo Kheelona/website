@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import type { Article } from "@/content/types";
 import type { SectionEntryOf } from "@/layouts/sections-registry";
 import { toPlainText } from "@/lib/content/plain-text";
+import { STORIES_REMOVED_CARD } from "../../../../test/e2e/support/deviations";
 import { ROOT, readRepoFile } from "../../../../test/e2e/support/repo";
 import { DEFAULT_OG } from "../organization";
 import { ARTICLE_SLUGS, routes, type ArticleSlug } from "../routes";
@@ -38,6 +39,11 @@ describe("the hub's topic groups", () => {
     expect([...placed].sort()).toEqual([...ARTICLE_SLUGS].sort());
   });
 
+  it("leave the 3-6-9-12 guide out: it left the journal, and its card the screen-time topic (D053; deviations V9)", () => {
+    const placed: readonly string[] = hubTopics.flatMap((g) => [...(g.featured ? [g.featured] : []), ...g.slugs]);
+    expect(placed).not.toContain("screen-time-rules-parents-swear-by");
+  });
+
   it("hold slugs only: no titles or summaries live in the hub (a rewrite never edits hub.ts)", () => {
     for (const g of hubTopics) expect(Object.keys(g).sort()).toEqual(g.featured ? ["featured", "slugs", "topic"] : ["slugs", "topic"]);
   });
@@ -59,7 +65,9 @@ describe.each(hubTopics.map((g) => [g.topic, g] as const))("topic %s, as the app
   });
 
   it("lists the other guides in order; a guide still waiting for its rewrite carries the hub's card words", async () => {
-    const shown = Array.from(section.querySelectorAll("li.kh-listitem")).map((li) => ({
+    /* The approved row of a guide that has left the journal is not the build's (D053: the 3-6-9-12 card; deviations V9). */
+    const rows = Array.from(section.querySelectorAll("li.kh-listitem")).filter((li) => !li.matches(STORIES_REMOVED_CARD.selector));
+    const shown = rows.map((li) => ({
       title: norm(li.querySelector(".kh-listitem__title")?.textContent),
       summary: norm(li.querySelector(".kh-listitem__sub")?.textContent),
     }));
@@ -160,7 +168,7 @@ describe("the hub page", () => {
     });
   });
 
-  it("links all 21 guides of the URL plan once each, with no review label anywhere (N22)", () => {
+  it("links all 20 guides of the URL plan once each, with no review label anywhere (N22)", () => {
     const linked = topicFolds().flatMap((f) => [...(f.config.featured ? [f.config.featured.href] : []), ...f.config.items.map((r) => r.href)]);
     expect([...linked].sort()).toEqual(ARTICLE_SLUGS.map(pathOf).sort());
     expect(JSON.stringify(hubPage)).not.toMatch(/Rewritten in the build/);

@@ -4,6 +4,7 @@ type: page-copy
 updated: 2026-10-14
 cites_at: archive/pre-reset-2026-10-10
 sources:
+  - ../../decisions/D053-remove-the-3-6-9-12-article.md (task 6.5: the related list, fold 11)
   - ../strategy.md (§3.2, §3.3, §5 /stories/* row)
   - ../gate-a-open-items.md (B15 source markers, B28 journal photos)
   - ../pages/stories.md (fold 4 card, word for word; fold 6 journal close)
@@ -101,7 +102,7 @@ cite them).
   photo.) A child talking to a toy, the page's subject. The light on Kheelu is not lit in the photo, and the alt
   never describes it (D018). No imagination layer: a safety guide (DS `02-imagery.md`). Checked by eye in task 5.20c.
 - **Task 5.20c (CMO M11, applied again):** round 2 gave this head `advik-04` because no other guide used it as a
-  head then. It now heads three more (the 3-6-9-12 rule, talking late, a toy that talks;
+  head then. It now heads three more (the 3-6-9-12 rule, since removed from the journal by D053; talking late; a toy that talks;
   [assets](../../engineering/assets.md)), and the talking and brain guides need the few photos without Kheelu
   ([tasks, 5.20](../../engineering/tasks.md): photo pools). So this page takes a photo from the AI guides' pool
   (ira-01, ira-03, kabir-01, myra-03), all with Kheelu. `ira-01` is 4:5, so the head shows it whole with no crop; it
@@ -314,15 +315,21 @@ point to the policy that covers the rest. Never a compliance claim.
 >
 > - What to look for in a safe AI toy
 > - How to get your child talking
-> - The 3-6-9-12 rule, and other screen rules parents swear by
+> - Busy hands, no screens
 
 | Title (each guide's own card) | Real URL | Mockup link |
 |---|---|---|
 | What to look for in a safe AI toy | `/stories/what-to-look-for-in-a-safe-ai-toy` | `story-what-to-look-for-in-a-safe-ai-toy.html` |
 | How to get your child talking | `/stories/how-to-get-your-child-talking` | `stories.html#talking` |
-| The 3-6-9-12 rule, and other screen rules parents swear by | `/stories/screen-time-rules-parents-swear-by` | `stories.html#screen-time` |
+| Busy hands, no screens | `/stories/busy-hands-no-screens` | `stories.html#screen-time` |
 
-- The stub's `related` list, unchanged; titles render from each module's card.
+- The stub's `related` list with one change (task 6.5, [D053](../../decisions/D053-remove-the-3-6-9-12-article.md)):
+  the 3-6-9-12 guide left the journal, and the busy-hands guide takes its place, third. The guides the removed one
+  offered (busy hands, the safe-AI-toy guide and this one) each need one more incoming link, and the other AI guides
+  already have three; this list already offers the safe-AI-toy guide and cannot offer itself, so it takes busy hands,
+  and every guide keeps three related guides and three incoming links (`articles.test.ts`). Its head photo
+  (`ira-02`) is not this page's (`ira-01`), so no linked guide shares a head photo (task 5.20a's rule). Titles render
+  from each module's card.
 
 ---
 

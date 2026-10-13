@@ -1,8 +1,9 @@
 ---
 title: Keyword map (Phase 1)
 type: research
-updated: 2026-10-11
+updated: 2026-10-14
 sources:
+  - ../decisions/D053-remove-the-3-6-9-12-article.md (the 3-6-9-12 article's rows marked removed; task 6.5)
   - raw/research/serp/legacy-gsc-keyword-planner-2026-09.md
   - raw/research/serp/google-trends-in-2026-10-10.md
   - raw/research/serp/google-autocomplete-in-2026-10-10.md
@@ -163,7 +164,7 @@ sales site. "Owner" is the URL whose **primary** it is ([section 4](#4-one-prima
 | ID | Cluster | Phrasings seen | Volume | Owner |
 |---|---|---|---|---|
 | LRN-1 | Screen time by age | how much screen time for 3 / 4 / 5 year old, screen time for 3-4 year old; Bing PAA "How much screen time should a 3 year old have?" and "... 4 year old ..." | **KP no data** "how much screen time for a 3 year old", "screen time for kids" (2026-09-11), treat as unmeasured | `/stories/how-much-screen-time-for-a-3-to-6-year-old` |
-| LRN-2 | 3-6-9-12 rule | 3 6 9 12 rule (screen time) | **KP 10-100** (2026-09-05); **GSC 9 impr., position 1.0** (3 mo to 08 Sep) | `/stories/screen-time-rules-parents-swear-by` |
+| LRN-2 | 3-6-9-12 rule | 3 6 9 12 rule (screen time) | **KP 10-100** (2026-09-05); **GSC 9 impr., position 1.0** (3 mo to 08 Sep) | none: `/stories/screen-time-rules-parents-swear-by` was **removed** ([D053](../decisions/D053-remove-the-3-6-9-12-article.md), task 6.5) and 308s to `/stories#screen-time` |
 | LRN-3 | Reducing screen time, phone habits | how to reduce screen time for kids / toddlers, how to stop mobile addiction in child, my child is addicted to mobile phone | **KP 10-100** "toys to reduce screen time" (2026-09-05); rest no volume data | `/stories/the-gentle-way-off-the-phone` |
 | LRN-4 | Tantrums at switch-off | (Quora) "dissuade a three-year-old from using a smartphone ... control his tantrums"; cartoon addiction in children (AC) | no volume data | `/stories/screen-time-and-tantrums` |
 | LRN-5 | Screen-free activities at home | activities for 3 year olds at home, screen free activities for kids (at home, indoors) | **KP no data** "screen free activities for kids" (2026-09-11) | `/stories/busy-hands-no-screens` |
@@ -248,7 +249,7 @@ several pages. Brand words ("Kheelu", "Kheelona") appear everywhere and are not 
 | `busy-hands-no-screens` | **screen-free activities for kids at home** | LRN-5 · 3 to 7 | KP no data (2026-09-11) | activities for 3 year olds at home |
 | `does-a-three-year-old-need-an-ai-tutor` | **AI tutor for a 3-year-old** | LRN-15 · 3 | no volume data | "tutor" is a stop-word for Kheelu ([messaging](../brand/messaging.md#words-to-stop-using)); the article may discuss tutors, never call Kheelu one |
 | `a-toy-that-talks-vs-a-toy-that-listens` | **toys for language development** | BUY-9 · 3 to 7 | no volume data | are talking toys good for speech; smart speaker for a child (CMP-7) |
-| `screen-time-rules-parents-swear-by` | **3-6-9-12 rule** | LRN-2 · 3 to 7 | KP 10-100 (2026-09-05); GSC 9 impr., position 1.0 | screen time rules |
+| `screen-time-rules-parents-swear-by` (**removed**, [D053](../decisions/D053-remove-the-3-6-9-12-article.md): 308 to `/stories#screen-time`) | **3-6-9-12 rule** | LRN-2 · 3 to 7 | KP 10-100 (2026-09-05); GSC 9 impr., position 1.0 | screen time rules |
 | `talking-toys-and-late-talkers` | **late talker** | LRN-8 · today "a quiet two-year-old" | no volume data | G5 decides its age; merge option in 4.3 |
 | `brain-development-toys-for-a-2-year-old` | **brain development toys for a 2-year-old** (as live) | BUY-3 · **under 3** | KP 1k-10k for the head only (2026-09-05) | G5 decides; recommended 301 in 4.3 |
 | `learning-toys-for-a-three-year-old` | **learning toys for a 3-year-old** | BUY-1 · 3 | KP 1k-10k (2026-09-11) | educational toys for 3 year olds (KP 1k-10k); brain development toys for 3 year old (BUY-3) |
@@ -363,7 +364,7 @@ Title drafts show where the term goes; the Copywriter owns the words. Character 
 | `busy-hands-no-screens` | "Screen-free activities for kids at home · Kheelona" (50) | "Screen-free activities" | "Ten-second setups" | same | as live |
 | `does-a-three-year-old-need-an-ai-tutor` | "Does a 3-year-old need an AI tutor? · Kheelona" (46) | as live | "What to look for instead" | as live | as live |
 | `a-toy-that-talks-vs-…` | "Toys for language development: talk or listen? · Kheelona" (57) | "language development" | "What listening does for language" | same | as live |
-| `screen-time-rules-parents-swear-by` | "The 3-6-9-12 rule and other screen-time rules · Kheelona" (56) | as live | as live | as live | as live |
+| `screen-time-rules-parents-swear-by` (**removed**, [D053](../decisions/D053-remove-the-3-6-9-12-article.md)) | "The 3-6-9-12 rule and other screen-time rules · Kheelona" (56) | as live | as live | as live | as live |
 | `talking-toys-and-late-talkers` | G5 first; if kept, "Late talker? What helps a child find their words · Kheelona" (59) | as live | as live | drop "two-year-old" if re-aged | as live |
 | `brain-development-toys-for-a-2-year-old` | G5 first (recommended 301) | n/a | n/a | n/a | n/a |
 | `learning-toys-for-a-three-year-old` | "Learning toys for a 3-year-old, skill by skill · Kheelona" (57) | as live | "Brain development toys for a 3-year-old: what the label means" | "learning toys for a 3-year-old" | add one, with the toy named |
@@ -626,7 +627,7 @@ subscription needed" cannot be read as a free lifetime subscription, which close
 **ST2. How much screen time for a 5, 6 or 7-year-old?** (same page; Bing AC "how much screen time for 6 year old") · 55 words
 > At 5, most guidance still says about an hour a day; from 6, it asks families to set consistent limits instead of a fixed number. [CITE: AAP 2016 and IAP 2022, read at source.] Keep screens away from meals and the hour before bed, and make sure sleep, outdoor play, homework and conversation come first. Then judge the rest by what your child watches.
 
-**SR2. What is the 3-6-9-12 rule?** (`screen-time-rules-parents-swear-by`; KP 10-100; GSC position 1.0) · 52 words
+**SR2. What is the 3-6-9-12 rule?** (`screen-time-rules-parents-swear-by`, **removed** with its page, [D053](../decisions/D053-remove-the-3-6-9-12-article.md); KP 10-100; GSC position 1.0) · 52 words
 > It is a set of four age markers for screens, proposed by the French psychiatrist Serge Tisseron in 2008: no screens before 3, no personal games console before 6, the internet with an adult from 9, and on their own from 12. It is a rule of thumb, not a research finding. [CITE: Tisseron, as cited in the article, read at source.]
 
 **ST3. How do I get my 3-year-old off the phone without tantrums?** (`screen-time-and-tantrums`; Quora; FirstCry Parenting) · 58 words

@@ -26,9 +26,9 @@ export interface HubTopic {
 export const hubTopics: readonly HubTopic[] = [
   {
     topic: "screen-time",
+    /* The approved hub's second guide, the 3-6-9-12 rule, left the journal (D053, task 6.5; deviations V9). */
     slugs: [
       "how-much-screen-time-for-a-3-to-6-year-old",
-      "screen-time-rules-parents-swear-by",
       "screen-time-and-tantrums",
       "the-gentle-way-off-the-phone",
       "busy-hands-no-screens",

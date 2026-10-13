@@ -3,7 +3,7 @@ import { basename, join } from "node:path";
 import sharp from "sharp";
 import { beforeAll, describe, expect, it } from "vitest";
 import { STORE_URL } from "@/config/site";
-import type { Article, ArticleCard, ArticlePart, IsoDate, ListBlock, ProseBlock } from "@/content/types";
+import type { Article, ArticleCard, IsoDate, ListBlock, ProseBlock } from "@/content/types";
 import { ArticleTemplate } from "@/layouts/ArticleTemplate/ArticleTemplate";
 import { isPlaceholder } from "@/lib/content/placeholder";
 import { toPlainText } from "@/lib/content/plain-text";
@@ -19,10 +19,10 @@ import { article as busyHands } from "./busy-hands-no-screens";
 import { article as howMuch } from "./how-much-screen-time-for-a-3-to-6-year-old";
 import { article as screenFree } from "./screen-free-does-not-mean-silent";
 import { article as tantrums } from "./screen-time-and-tantrums";
-import { article as rules } from "./screen-time-rules-parents-swear-by";
 import { article as gentleWay } from "./the-gentle-way-off-the-phone";
 
-/* The six screen-time articles (task 5.17; copy fixes of task 5.20a): each module is its copy page
+/* The five screen-time articles (task 5.17; copy fixes of task 5.20a; six until the 3-6-9-12 guide left the journal,
+ * D053, task 6.5): each module is its copy page
  * (wiki/site/pages/story-<slug>.md, CMO reviews wiki/qa/cmo-review-articles-5.17-2026-10-14.md and
  * wiki/qa/cmo-review-article-fixes-5.20a-2026-10-14.md) word for word, rendered through the article template. There is no
  * mockup for them, so:
@@ -33,15 +33,25 @@ import { article as gentleWay } from "./the-gentle-way-off-the-phone";
  *     story-what-to-look-for-in-a-safe-ai-toy.html (a wide one) prints it, the answer card, the sources, the related
  *     guides and the journal close as story-learning-toys-for-a-three-year-old.html prints them, and no markup in the
  *     reading column that the three approved reading columns do not have.
- * Each keeps its stub's hub card, related list and dates (the main session's note for 5.17); the folder's invariants
+ * Each keeps its stub's hub card, related list and dates (the main session's note for 5.17), the 3-6-9-12 guide aside:
+ * where a stub offered it, the article offers the guide D053's task 6.5 put in its place; the folder's invariants
  * (titles within 60, three incoming links, the live first-published date) are articles.test.ts's. */
 
 interface Stub {
   readonly card: ArticleCard;
-  readonly related: readonly [ArticleSlug, ArticleSlug, ArticleSlug];
+  /** The stub's related list as it was, so it may still name the guide that has left the journal. */
+  readonly related: readonly [string, string, string];
   readonly published: IsoDate;
   readonly updated: IsoDate;
 }
+
+/** The guide that left the journal (D053), and what each stub that offered it offers instead (task 6.5: the only
+ *  places that keep every article of the journal offered by three others; copy pages' related folds). */
+const REMOVED = "screen-time-rules-parents-swear-by";
+const IN_ITS_PLACE: Readonly<Partial<Record<ArticleSlug, ArticleSlug>>> = {
+  "the-gentle-way-off-the-phone": "what-to-look-for-in-a-safe-ai-toy",
+  "busy-hands-no-screens": "ai-toys-and-indias-data-law",
+};
 
 /* Each stub's approved hub card (stories.md fold 2), its related list (the live journal's ring) and its dates (the live
    article's, src/lib/stories*.ts at the freeze tag), as the stub modules held them at the build's base. */
@@ -56,19 +66,6 @@ const SCREEN_TIME: readonly (readonly [ArticleSlug, Article, Stub])[] = [
       },
       related: ["screen-free-does-not-mean-silent", "screen-time-and-tantrums", "the-gentle-way-off-the-phone"],
       published: "2026-07-28",
-      updated: "2026-09-05",
-    },
-  ],
-  [
-    "screen-time-rules-parents-swear-by",
-    rules,
-    {
-      card: {
-        title: "The 3-6-9-12 rule, and other screen rules parents swear by",
-        summary: "Where the 3-6-9-12 rule comes from, whether it holds up, and what the WHO, the IAP and the AAP say.",
-      },
-      related: ["busy-hands-no-screens", "what-to-look-for-in-a-safe-ai-toy", "ai-toys-and-indias-data-law"],
-      published: "2026-07-30",
       updated: "2026-09-05",
     },
   ],
@@ -121,19 +118,6 @@ const SCREEN_TIME: readonly (readonly [ArticleSlug, Article, Stub])[] = [
       updated: "2026-09-05",
     },
   ],
-];
-
-/** The screen-time guides with no in-text product link. The 3-6-9-12 guide names Tisseron's AI markers ("no connected
- *  toys before 6"), so the working default of open question P25 drops its product line, as on the talking guides (task
- *  5.20a; its copy page's fold 7). Every other screen-time guide links the product page once (strategy §3.3). */
-const NO_PRODUCT_LINK: ReadonlySet<ArticleSlug> = new Set(["screen-time-rules-parents-swear-by"]);
-
-/** Tisseron's 3-6-13-18 markers about AI, all four (source verification 2026-10-14 §1a, the ready line). */
-const AI_MARKERS = [
-  "no digital tool before 3",
-  "no connected toys before 6",
-  "no internet or general-purpose chatbots before 12, except used with an adult",
-  "no digital companion before 18",
 ];
 
 /** The rewrite's date: every rewritten article's `updated` (BlogPosting dateModified and the sitemap), as task 5.6
@@ -342,10 +326,11 @@ describe.each(SCREEN_TIME)("the screen-time article %s", (slug, article, stub) =
     expect(article.sources.length).toBeGreaterThan(0);
   });
 
-  it("keeps its stub's hub card, related guides and first-published date; `updated` is the rewrite's (stories.md fold 2; part C merge ruling)", () => {
+  it("keeps its stub's hub card, related guides (another in the 3-6-9-12 guide's place, D053) and first-published date; `updated` is the rewrite's (stories.md fold 2; part C merge ruling)", () => {
     expect(article.slug).toBe(slug);
     expect(article.card).toEqual(stub.card);
-    expect(article.related).toEqual(stub.related);
+    expect(stub.related.includes(REMOVED)).toBe(IN_ITS_PLACE[slug] !== undefined);
+    expect(article.related).toEqual(stub.related.map((r) => (r === REMOVED ? IN_ITS_PLACE[slug] : r)));
     expect(article.published).toBe(stub.published);
     expect(article.updated).toBe(REWRITE_DATE);
     expect(article.updated > stub.updated).toBe(true);
@@ -382,11 +367,11 @@ describe.each(SCREEN_TIME)("the screen-time article %s", (slug, article, stub) =
     expect(same(words(column(article)))).toBe(same(expected));
   });
 
-  it("links in its text exactly where the copy page links, the product page once (strategy §3.3), or never under P25", () => {
+  it("links in its text exactly where the copy page links, the product page once (strategy §3.3)", () => {
     const expected = copyLinks(columnFolds(folds).flatMap((f) => f.lines));
     const links = [...column(article).querySelectorAll("a:not(.ks-src)")].filter((a) => a.closest(".ks-sources") === null);
     expect(links.map((a) => [same(a.textContent ?? ""), a.getAttribute("href")])).toEqual(expected.map(([label, path]) => [same(label), path]));
-    expect(links.filter((a) => a.getAttribute("href") === "/products/kheelu")).toHaveLength(NO_PRODUCT_LINK.has(slug) ? 0 : 1);
+    expect(links.filter((a) => a.getAttribute("href") === "/products/kheelu")).toHaveLength(1);
   });
 
   it("numbers its sources in reading order, cites every one, and every marker names a note (D026, B15)", () => {
@@ -479,30 +464,10 @@ describe.each(SCREEN_TIME)("the screen-time article %s", (slug, article, stub) =
   });
 });
 
-describe("the 3-6-9-12 guide under open question P25's working default (task 5.20a)", () => {
-  const text = () => same(words(column(rules)));
-
-  it("names Tisseron's four AI markers in full, together in one fold, never a selection", () => {
-    const fold3 = (rules.body as readonly { kind: string }[]).find((b): b is ArticlePart => b.kind === "part" && ((b as ArticlePart).title?.startsWith("Where does") ?? false));
-    expect(fold3, "fold 3, where the rule comes from").toBeDefined();
-    const fold3Text = same((fold3?.blocks ?? []).flatMap((b) => (b.kind === "p" && b.text !== undefined ? [toPlainText(b.text)] : [])).join(" "));
-    for (const marker of AI_MARKERS) {
-      expect(text(), marker).toContain(marker);
-      expect(fold3Text, `fold 3: ${marker}`).toContain(marker);
-    }
-  });
-
-  it("names Kheelu nowhere in its reading column: no product line beside the markers", () => {
-    expect(text()).not.toMatch(/\bKheelu\b/);
-    expect(NO_PRODUCT_LINK).toEqual(new Set([rules.slug]));
-  });
-});
-
 describe("the screen-time articles together", () => {
-  it("are all six of the topic's guides, none of them a stub any more", () => {
+  it("are all five of the topic's guides, none of them a stub any more, and the 3-6-9-12 guide is gone (D053)", () => {
     expect(SCREEN_TIME.map(([slug]) => slug)).toEqual([
       "how-much-screen-time-for-a-3-to-6-year-old",
-      "screen-time-rules-parents-swear-by",
       "screen-time-and-tantrums",
       "the-gentle-way-off-the-phone",
       "busy-hands-no-screens",
@@ -519,8 +484,8 @@ describe("the screen-time articles together", () => {
 
   /* Fewer repeated head photos, one alt per photo (tasks.md 5.20 item 2; CMO 5.17 M16; fix-pass review N1): a reader who
      taps from one guide to a linked one never meets the same picture again, and a picture reads the same wherever it
-     heads a guide. Held across the whole journal for the photos of task 5.20a's pool; the 3-6-9-12 guide keeps
-     advik-04 (its copy page's question 5, under P25), whose other heads are 5.20b's and 5.20c's to spread. */
+     heads a guide. Held across the whole journal for the photos of task 5.20a's pool, which now heads every guide of
+     the topic: the one that did not, the 3-6-9-12 guide (advik-04), left the journal (D053, task 6.5). */
   const journal = Object.values(articles) as Article[];
   const headPhoto = (a: Article) => (a.head.image === undefined ? undefined : photoFile(a));
   /** Task 5.20a's head-photo pool (tasks.md 5.20): unused photos with Kheelu, apart from 5.20b's and 5.20c's. */
@@ -532,16 +497,15 @@ describe("the screen-time articles together", () => {
     ...nodes(readingStrings(a)).flatMap((n) => (n.kind === "link" && n.href.startsWith("/stories/") ? [n.href.slice("/stories/".length).split("#")[0]] : [])),
   ];
 
-  it("head five of the six guides from task 5.20a's pool, as the fix-pass review's N1 places them", () => {
+  it("head all five guides from task 5.20a's pool, as the fix-pass review's N1 places them", () => {
     expect(Object.fromEntries(SCREEN_TIME.map(([slug, a]) => [slug, headPhoto(a)]))).toEqual({
       "how-much-screen-time-for-a-3-to-6-year-old": "advik-01-counting-carriages-web.webp",
-      "screen-time-rules-parents-swear-by": "advik-04-floor-train-web.webp",
       "screen-time-and-tantrums": "kabir-03-homework-desk-web.webp",
       "the-gentle-way-off-the-phone": "tara-01-naming-feelings-web.webp",
       "busy-hands-no-screens": "ira-02-drawing-the-dragon-web.webp",
       "screen-free-does-not-mean-silent": "ira-02-drawing-the-dragon-web.webp",
     });
-    expect(pooled.map(([slug]) => slug)).toEqual(SCREEN_TIME.map(([slug]) => slug).filter((slug) => slug !== rules.slug));
+    expect(pooled.map(([slug]) => slug)).toEqual(SCREEN_TIME.map(([slug]) => slug));
   });
 
   it("give each of their head photos one alt, wherever in the journal it heads a guide", () => {

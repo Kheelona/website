@@ -8,7 +8,7 @@ import { articlePageCopy, articles, getArticle, PLAIN_CLOSE_ART } from "./index"
 
 const DIR = join(process.cwd(), "src/content/en-IN/stories/articles");
 
-/* The article registry (task 4.2; wave-3 close ruling): the one list of the 21 article modules, which the stories
+/* The article registry (task 4.2; wave-3 close ruling): the one list of the 20 article modules, which the stories
  * route and the site shell's sticky-bar paths read, so a new article is its module, one line here and its slug in
  * routes.ts, never a shell edit. Also the words and the close every article page shares (story-*.html). */
 
@@ -27,7 +27,10 @@ describe("the article registry", () => {
 
   it("finds an article by its URL slug, and nothing outside the registry", () => {
     expect(getArticle("talking-toys-and-late-talkers")).toBe(articles["talking-toys-and-late-talkers"]);
-    for (const slug of ["no-such-guide", "constructor", "__proto__", "toString", ""]) expect(getArticle(slug), slug).toBeUndefined();
+    /* The last: the 3-6-9-12 article, which left the journal (D053; its URL redirects to the hub's screen-time topic). */
+    for (const slug of ["no-such-guide", "constructor", "__proto__", "toString", "", "screen-time-rules-parents-swear-by"]) {
+      expect(getArticle(slug), slug).toBeUndefined();
+    }
   });
 });
 

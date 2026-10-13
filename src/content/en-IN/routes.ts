@@ -7,18 +7,19 @@ import { navigation, type FooterColumn } from "./navigation";
  * link it (read from navigation.ts, so membership is stated once). The sitemap, the article route's
  * static params and the data-driven page guards (task 4.4) all read this list.
  *
- * Not here: /playos and /stories/brain-development-toys-for-a-2-year-old (308s, D041), the 404,
+ * Not here: /playos and /stories/brain-development-toys-for-a-2-year-old (308s, D041),
+ * /stories/screen-time-rules-parents-swear-by (308 to the hub's screen-time topic, D053), the 404,
  * the store host (noindex) and campaign pages (campaigns/index.ts, none at launch). Priorities are
  * the live sitemap's (url-map §1a, §1b). A new page is a line here only if the URL plan allows it.
  */
 
-/** The 21 articles of the URL plan; three are rewritten, eighteen wait for theirs (tasks 5.17-5.19). */
+/** The 20 articles of the URL plan, all rewritten (tasks 5.6, 5.17-5.19); the 3-6-9-12 article left the journal (D053,
+ *  task 6.5). */
 export const ARTICLE_SLUGS = [
   "learning-toys-for-a-three-year-old",
   "what-to-look-for-in-a-safe-ai-toy",
   "talking-toys-and-late-talkers",
   "how-much-screen-time-for-a-3-to-6-year-old",
-  "screen-time-rules-parents-swear-by",
   "screen-time-and-tantrums",
   "the-gentle-way-off-the-phone",
   "busy-hands-no-screens",

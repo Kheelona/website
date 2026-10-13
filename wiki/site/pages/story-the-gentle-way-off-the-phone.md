@@ -4,6 +4,7 @@ type: page-copy
 updated: 2026-10-14
 cites_at: archive/pre-reset-2026-10-10
 sources:
+  - ../../decisions/D053-remove-the-3-6-9-12-article.md (task 6.5: the related list, fold 11)
   - ../strategy.md (§3.3 one in-text product link, §5 /stories/* row)
   - ../../engineering/tasks.md (wave 5 part C paragraph; task 5.17 row; the note on the 18 articles without a mockup)
   - ../pages/story-learning-toys-for-a-three-year-old.md (approved format, the age lines, the close)
@@ -56,7 +57,7 @@ sources:
 | Card (hub, unchanged) | Title "The gentle way off the phone: a seven-day plan"; summary "A week-long plan to cut a young child's screen time without turning your home into a battlefield." ([stories §2](stories.md#fold-2--screen-time-screen-time), card 4) |
 | Byline line | The Kheelona team · First published 28 Jul 2026 · 3 min read (byline: question 1) |
 | Dates | `published` 2026-07-28 (live, unchanged); `updated` 2026-10-13, the rewrite's date (main-session ruling at the wave 5 part C merge, as task 5.6 set it for the three approved guides) |
-| Related (unchanged) | `screen-time-and-tantrums`, `busy-hands-no-screens`, `screen-time-rules-parents-swear-by` |
+| Related | `screen-time-and-tantrums`, `busy-hands-no-screens`, `what-to-look-for-in-a-safe-ai-toy` (the stub's, the safe-AI-toy guide in the removed 3-6-9-12 guide's place: task 6.5, D053; fold 11) |
 | CTA | The close only: "Pre-order Kheelu", `cta` = `finale`; phone sticky bar `sticky-bar` |
 | In-text product link | One, in fold 9 ("Kheelu" → `/products/kheelu`) |
 | Template settings | `close: "journal"` (pre-order close and sticky bar); breadcrumb topic "Screen time" (`/stories#screen-time`) |
@@ -291,15 +292,21 @@ age limits; the author byline becomes "The Kheelona team" (question 1).
 >
 > - Screen time and tantrums: what is actually happening
 > - Busy hands, no screens
-> - The 3-6-9-12 rule, and other screen rules parents swear by
+> - What to look for in a safe AI toy
 
 | Title (card title, from each module) | Real URL |
 |---|---|
 | Screen time and tantrums: what is actually happening | `/stories/screen-time-and-tantrums` |
 | Busy hands, no screens | `/stories/busy-hands-no-screens` |
-| The 3-6-9-12 rule, and other screen rules parents swear by | `/stories/screen-time-rules-parents-swear-by` |
+| What to look for in a safe AI toy | `/stories/what-to-look-for-in-a-safe-ai-toy` |
 
-Text links only (no photos), so the page keeps one DS child. The list is the stub's, unchanged.
+Text links only (no photos), so the page keeps one DS child. The list is the stub's with one change (task 6.5,
+[D053](../../decisions/D053-remove-the-3-6-9-12-article.md)): the 3-6-9-12 guide left the journal, and the safe-AI-toy
+guide takes its place, third. The guides the removed one offered (busy hands, the safe-AI-toy guide and the data-law
+guide) each need one more incoming link, and the screen-time guides this list does not name already have three; it
+already offers busy hands, so it takes the safe-AI-toy guide, and every guide keeps three related guides and three
+incoming links (`articles.test.ts`). Its head photo (`tara-02`) is not this page's (`tara-01`), so no linked guide
+shares a head photo (task 5.20a's rule).
 
 ---
 
