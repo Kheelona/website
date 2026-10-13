@@ -1,12 +1,13 @@
 ---
 title: "Refunds (/refund): page copy, Gate A draft"
 type: page-copy
-updated: 2026-10-11
+updated: 2026-10-14
 cites_at: archive/pre-reset-2026-10-10
 sources:
   - ../strategy.md (§3 CTA rules, §4.4 footer, §5 policy-pages row, §7 search rules)
   - ../gate-a-open-items.md (§1 founder answers of 2026-10-11, §3 B44 and B47)
   - ../../decisions/D021-returns-policy.md, D022-warranty-replacement-refund.md, D023-new-order-delivery.md, D024-payment-methods-gst.md, D028-price-wording.md, D029-grievance-officer-legal-review.md, D032-grievance-block-and-call-line.md, D033-warranty-after-day-7.md, D041-gate-a-round-1.md, D042-policy-display-answers.md, D043-all-pages-as-mockups-before-build.md
+  - ../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md (items 1-8, applied in task 6.7; see "Changes after approval (task 6.7)")
   - ../../product/policies.md, ../../product/legal-requirements.md (H2, ECOM-04 to ECOM-10), ../../product/pricing.md, ../../product/facts.md, ../../product/claims.md
   - ../../brand/voice.md, ../../brand/messaging.md (confirmed candidate lines, words to stop using), ../content-boundary.md
   - ../../research/keyword-map.md (§4.1 row /refund, §5 per-page placements, §6.9 B9 and W1)
@@ -57,8 +58,10 @@ existing reservations still exist. No full-mode variant is needed.
 | Sticky bar | Off (`buybar: false`) |
 
 The title and meta carry no price, so D028's machine-read rule is not triggered. "Kheelu" is 1 of 24 words in the
-meta and appears 15 times in about 1,090 words of copy, placeholders left out (1.4%, under the 2% ceiling of
-[keyword map §5](../../research/keyword-map.md#5-placement-rules)).
+meta and appears 17 times in about 1,140 words of copy (1.5%, under the 2% ceiling of
+[keyword map §5](../../research/keyword-map.md#5-placement-rules)). Before task 6.7 it was 15 in about 1,090,
+placeholders left out; the D055 lines added about 50 words and two "Kheelu"s (section 2's missing-or-damaged line,
+section 3's return leg). The primary cluster's placements (title, meta, H1 word, lede, H2) are unchanged.
 
 ---
 
@@ -82,9 +85,11 @@ meta and appears 15 times in about 1,090 words of copy, placeholders left out (1
 >
 > Kheelu’s refund policy: you can change your mind. This page explains exactly how, and what happens to your money.
 >
-> Last updated: [PLACEHOLDER: the date the founder approves this page]
+> Last updated: 14 October 2026
 
 - `SectionHeading`, `level` 1, `hero` (the page's one display headline), `Hand` on "plain words".
+- The date is the founder's ([D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 8),
+  the same on all four legal pages.
 - The lede is the live page's founder-approved lede (`refund/page.tsx:92`) with the primary cluster in front,
   which puts "Kheelu refund policy" (as "Kheelu’s refund policy") in the first paragraph.
 - **Optional Kheelu note** (founder question 7): `kheelu-front-sticker.png` (DS, "for crayon blocks") with a
@@ -102,10 +107,10 @@ meta and appears 15 times in about 1,090 words of copy, placeholders left out (1
 > **H2:** The short version.
 >
 > - **Before dispatch: a full refund.** Cancel any time before your Kheelu leaves us and get back everything you’ve paid. No fee, no reason needed.
-> - **After delivery: 7 days to return.** No questions asked. Opened is fine, if everything comes back undamaged. We arrange the pickup, free. [PLACEHOLDER: confirm a change-of-mind return is refunded in full]
-> - **When your money comes back.** After a cancellation, we start your refund within 2 working days. After a return, it’s processed within 7 working days of your Kheelu reaching us. Then your bank takes 5-7 working days.
+> - **After delivery: 7 days to return.** No questions asked. Opened is fine, if everything comes back undamaged. We arrange the pickup, free. You get a full refund of everything you paid.
+> - **When your money comes back.** After a cancellation, we start your refund within 2 working days. Then your bank takes 5-7 working days. After a return, your refund reaches you within 7 working days of your Kheelu reaching us.
 > - **Faulty or not as described?** You can have a replacement or a full refund.
-> - **6-month warranty.** On manufacturing defects. We repair it, or replace it if the repair doesn’t work. [PLACEHOLDER: confirm a full refund if neither works]
+> - **6-month warranty.** On manufacturing defects. We repair it, or replace it if the repair doesn’t work.
 > - **No exchanges. No payment fees.** Nothing recurring, and nothing is ever charged automatically.
 >
 > To cancel, return or claim: call or message us on WhatsApp at +91 91875 46483, or email hello@kheelona.com, with your order number.
@@ -116,9 +121,12 @@ meta and appears 15 times in about 1,090 words of copy, placeholders left out (1
 - The help line is the DS's inline secondary action (as Home's `mk-help`), never a floating bubble; the number and
   the email are `tel:`/WhatsApp and `mailto:` links rendered from the support source.
 - Item 3 (refund timing) is section 5 in one line (legal review, /refund should-fix 7): D042 for the cancellation,
-  D022 for the return; "processed" stays D022's word until the founder answers question 10.
+  with the bank's 5-7 working days after it; [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md)
+  item 5 for the return, where the 7 working days already include the bank's time, so no bank days follow it.
 - Item 4 is [D033](../../decisions/D033-warranty-after-day-7.md)'s line verbatim (Rule 7(4)).
-- The item 2 and item 5 placeholders are founder questions 1 and 4; the same answers fill section 2 and section 3.
+- Item 2's last line is D055 item 1 (a change-of-mind return is refunded in full, everything paid); section 2 step 3
+  says the same. Item 5 ends at repair-then-replace: the full-refund backstop was not confirmed, so it is off the page
+  (D055 item 4), as in section 3.
 
 ## Fold 3 · On this page
 
@@ -177,18 +185,19 @@ whole policy, so it reads as one document.
 > **How a return works**
 > 1. Call or message us on WhatsApp, or email us, within 7 days of delivery, with your order number.
 > 2. We arrange the pickup from your address, free.
-> 3. Once your Kheelu reaches us and qualifies for return, your refund is processed within 7 working days. [PLACEHOLDER: confirm how much comes back, for example “a full refund of everything you paid”]
+> 3. Once your Kheelu reaches us and qualifies for return, your refund reaches you within 7 working days. It’s a full refund of everything you paid.
 >
-> [PLACEHOLDER: what happens if a returned Kheelu comes back damaged or with something missing, and what counts as damage on a plush toy a child has played with for a few days]
+> If your Kheelu comes back with something missing, or damaged beyond normal play, we’ll talk to you before deciding the refund.
 
 - The H2 carries the keyword map's H2 for this page, "7-day returns, no questions asked"
   ([keyword map §5](../../research/keyword-map.md#5-placement-rules), line 348).
 - The first paragraph is D021's policy line verbatim, plus the box contents the founder confirmed ([D041](../../decisions/D041-gate-a-round-1.md)).
-- "Your refund is processed", not "a full refund", follows Home's approved returns answer. How much comes back is
-  founder question 1 (legal review, /refund must-fix 3); the answer goes into step 3, summary item 2 and the
-  "Returned" line of section 5.
-- The second placeholder is founder question 2 (legal review, /refund must-fix 4): it must be filled before the
-  founder approves this page as legal text.
+- Step 3: "reaches you within 7 working days" is [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md)
+  item 5 (bank time included; it replaces D022's "processed"), and "a full refund of everything you paid" is D055
+  item 1 (founder question 1; legal review, /refund must-fix 3). Section 5's "Returned" line carries the timing; how
+  much comes back is said here and in summary item 2, the two places that asked it.
+- The last paragraph is D055 item 6, the founder's words (founder question 2; legal review, /refund must-fix 4). It
+  names no deduction and no rule for what counts as damage, because the answer gives none.
 
 ### Section 3 · Faulty, damaged or not as described (`#faulty`)
 
@@ -204,25 +213,27 @@ whole policy, so it reads as one document.
 >
 > **H3:** The 6-month warranty
 >
-> Kheelu has a 6-month warranty on manufacturing defects, from the day it’s delivered. [PLACEHOLDER: confirm the warranty starts on the delivery date] If a defect shows up after the first 7 days, we repair it, or replace it if the repair doesn’t work. [PLACEHOLDER: confirm this line: “If a repair and a replacement don’t put it right, you get a full refund.”] The warranty doesn’t cover drops, water damage or misuse.
+> Kheelu has a 6-month warranty on manufacturing defects, from the day it’s delivered. If a defect shows up after the first 7 days, we repair it, or replace it if the repair doesn’t work. The warranty doesn’t cover drops, water damage or misuse.
 >
 > **H3:** Pickup and timing
 >
-> Pickup is free for every faulty unit and every warranty claim. [PLACEHOLDER: confirm that sending the repaired or replacement Kheelu back to you is free too] How long a repair or a replacement takes depends on where in India you are, so we don’t promise a number of days. To claim, call or message us on WhatsApp, or email us, with your order number and what’s wrong.
+> Pickup is free for every faulty unit and every warranty claim. Sending the repaired or replacement Kheelu back to you is free too. How long a repair or a replacement takes depends on where in India you are, so we don’t promise a number of days. To claim, call or message us on WhatsApp, or email us, with your order number and what’s wrong.
 
 - The lead line is D033's Rule 7(4) line verbatim and is set as a short bold paragraph, so it reads as the remedy
   for every defect, with the 7-day window and the warranty as the process (policies note 2(a); legal review H2).
 - "The conditions in section 2 ... are for change-of-mind returns only" is legal review H2's required line
   ([legal requirements](../../product/legal-requirements.md) line 156: "D021 conditions for change-of-mind returns
   only"), which D033 adopts for the copy (legal review, /refund should-fix 1).
-- "From the day it’s delivered" is the applied reading (D022's first 7 days run "of receipt"; D033's 6 months
-  follow them), now flagged on the page so it is not approved unnoticed; founder question 3 (should-fix 2).
-- The warranty backstop placeholder is founder question 4 (legal review, /refund must-fix 2): today the callout
-  promises "a replacement or a full refund" with no time limit, while the warranty paragraph offers only repair,
-  then replacement, after day 7. The recommended line keeps D033's process and never refuses a refund for a
-  defective unit (Rule 7(4)).
-- The return-leg placeholder is founder question 8 (should-fix 4): D033 makes the pickup free but says nothing
-  about sending the repaired or replacement unit back.
+- "From the day it’s delivered": the founder confirmed the warranty starts on the delivery date
+  ([D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 3; founder question 3,
+  should-fix 2).
+- No warranty backstop: "If a repair and a replacement don’t put it right, you get a full refund." was not
+  confirmed, so it is off the page here and in summary item 5 (D055 item 4; founder question 4, legal review
+  /refund must-fix 2). Recorded with the answer in D055: the legal review asked for a refund option for faulty units
+  (E-Commerce Rules 7(4); L5). The lead line (D033, "a replacement or a full refund") and the 7-day paragraph stay
+  word for word.
+- "Sending the repaired or replacement Kheelu back to you is free too." is D055 item 2 (founder question 8,
+  should-fix 4): free, like the pickup.
 - No repair or replacement timeline (D022 guardrail). "Damaged" joins "faulty" from the live page's own line
   ("A damaged or faulty Kheelu is our problem to fix", `refund/page.tsx:66`).
 
@@ -242,17 +253,16 @@ whole policy, so it reads as one document.
 >
 > Every refund goes back to the card, UPI ID or bank account you paid from, because that’s the only place a payment can be reversed to.
 >
-> - **Cancelled before dispatch:** we start your refund within 2 working days of your request.
-> - **Returned, faulty or not as described:** your refund is processed within 7 working days of your Kheelu reaching us. [PLACEHOLDER: confirm whether the 7 working days is when we start the refund, before your bank’s 5-7, or when the money reaches you]
-> - **Then your bank:** once we’ve started it, your bank takes 5-7 working days.
+> - **Cancelled before dispatch:** we start your refund within 2 working days of your request; your bank takes 5-7 working days.
+> - **Returned, faulty or not as described:** your refund reaches you within 7 working days of your Kheelu reaching us.
 
-- "5-7 working days" is D042's wording as the founder chose it. The bank time is a general statement about
-  banks (D042; the live page's "that last part is your bank's timing", `refund/page.tsx:39`), so it is applied to
-  both cases.
-- The placeholder is founder question 10 (legal review, /refund should-fix 3): "processed" (returns) and "start"
-  (cancellations) sit in one list. If the 7 working days is the start, the line becomes "we start your refund within
-  7 working days of your Kheelu reaching us"; if it is when the money lands, the bank line applies to cancellations
-  only.
+- "5-7 working days" is D042's wording as the founder chose it, and now applies to cancellations only: the cancellation
+  line ends with section 1's own words ("We start your refund within 2 working days of your request; your bank takes
+  5-7 working days.").
+- The return line is [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 5 (founder
+  question 10; legal review, /refund should-fix 3): the 7 working days are when the money reaches the parent, bank
+  time included. So the old third item, "Then your bank: once we’ve started it, your bank takes 5-7 working days.",
+  came off: under the return line it would have added bank days that D055 already counts.
 
 ### Section 6 · Payments, fees and chargebacks (`#payments`)
 
@@ -282,16 +292,16 @@ whole policy, so it reads as one document.
 > If you’re unhappy with how we’ve handled a refund, a return or a repair, you can make a formal complaint to our grievance officer.
 >
 > **Grievance Officer:** Aman Soni, Co-Founder and CTO, aman@kheelona.com, +91 91875 46483. We acknowledge every complaint within 48 hours and resolve it within one month of receiving it.
->
-> [PLACEHOLDER: how you get a complaint reference to track your complaint; not set up yet]
 
 - The block is D032's published wording verbatim, rendered from the one grievance value shared with /contact,
   /terms, /privacy and the store footer. Never "5 days" or "30 days".
 - No complaint reference number is promised: none exists yet (Rule 7(1)(f), still open; the
   [Gate A sweep](../gate-a-open-items.md#5-stale-pages-found-by-the-sweep-lint-backlog) says promise nothing until it exists).
-  The placeholder line under the block is the same one /privacy and /terms carry, so the founder sees the open
-  item (ECOM-04) on every policy page; it promises nothing. Once a reference exists it becomes "You get a complaint
-  reference to track it." ([legal requirements](../../product/legal-requirements.md) line 491), and from
+  The placeholder line that stood under the block on all four legal pages came off until a system issues a
+  reference ([D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 7; it was an L2
+  recommendation, ECOM-04). In the build it is the one shared value `grievanceNote` in
+  `src/content/en-IN/legal/shared.ts`. Once a reference exists, the line "You get a complaint reference to track
+  it." ([legal requirements](../../product/legal-requirements.md) line 491) goes under the block, and from
   1 January 2027 the block adds "We send you a copy of your complaint as we recorded it." (G.S.R. 789(E);
   legal review, /refund should-fix 6). The label is bold, as on /privacy and /terms.
 
@@ -355,11 +365,12 @@ Plain `path:line` citations to `src/` refer to tag `archive/pre-reset-2026-10-10
 |---|---|
 | Title, H1 word "Refunds", H2 "7-day returns, no questions asked", meta terms, primary cluster | [keyword map](../../research/keyword-map.md) lines 228, 348 |
 | Lede ("you can change your mind … what happens to your money") | `src/app/(site)/refund/page.tsx:92` (live, founder-approved 2026-08-22) |
+| "Last updated: 14 October 2026" | [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 8 |
 | Everything paid is refundable in full before dispatch: the ₹499 advance or the whole price; no fee, no deduction, no reason | `refund/page.tsx:32`; [policies](../../product/policies.md) lines 74, 110 (published, no new ruling) |
 | Ask on WhatsApp or by email with the order number | `refund/page.tsx:38`; channel values [facts](../../product/facts.md) lines 223-224 |
 | WhatsApp number takes calls as well as messages | [D032](../../decisions/D032-grievance-block-and-call-line.md); [facts](../../product/facts.md) line 223 |
 | The order number starts with KH- | [checkout](../checkout.md) line 108 (receipt "Your Kheelu is reserved (KH-…)") |
-| "We start your refund within 2 working days of your request; your bank takes 5-7 working days" | [D042](../../decisions/D042-policy-display-answers.md) line 15; [policies](../../product/policies.md) line 131; founder's raw answer, [raw](../../raw/feedback/2026-10-11-gate-a-answers.md) line 65 |
+| "We start your refund within 2 working days of your request; your bank takes 5-7 working days" (section 1; section 5's cancellation line) | [D042](../../decisions/D042-policy-display-answers.md) line 15; [policies](../../product/policies.md) line 131; founder's raw answer, [raw](../../raw/feedback/2026-10-11-gate-a-answers.md) line 65 |
 | ₹4,500 balance of the ₹4,999 price (incl. GST), due before delivery, by a payment link on WhatsApp and email | [pricing](../../product/pricing.md) lines 68-71, 235; [policies](../../product/policies.md) line 168; `src/app/(site)/shipping/page.tsx:46` |
 | Not paying the balance is a cancellation: asked twice over two weeks, unit released, advance refunded; nothing charged automatically | `refund/page.tsx:49`; [policies](../../product/policies.md) lines 75, 170 |
 | Deliveries start mid-November | [D023](../../decisions/D023-new-order-delivery.md); [facts](../../product/facts.md) line 189 |
@@ -367,13 +378,16 @@ Plain `path:line` citations to `src/` refer to tag `archive/pre-reset-2026-10-10
 | 7-day returns of delivery, no questions asked; opened is fine; send back everything in the box, undamaged | [D021](../../decisions/D021-returns-policy.md) (policy line verbatim); [policies](../../product/policies.md) line 104; window from delivery, [Gate A items](../gate-a-open-items.md) line 91 (B44) |
 | Box contents: plush toy, charger, quick-start card | [D041](../../decisions/D041-gate-a-round-1.md) line 30; [Gate A items](../gate-a-open-items.md) line 37 |
 | We arrange the pickup, free | [D022](../../decisions/D022-warranty-replacement-refund.md) item 3; [D033](../../decisions/D033-warranty-after-day-7.md); [policies](../../product/policies.md) line 107 |
-| Refund processed within 7 working days of the unit reaching us, if it qualifies for return | [D022](../../decisions/D022-warranty-replacement-refund.md) item 4; [policies](../../product/policies.md) line 109; wording rule [messaging](../../brand/messaging.md) (confirmed lines, "Pickup and refund") |
+| After a return, the refund reaches you within 7 working days of the unit reaching us (bank time included, so no bank days after it), if it qualifies for return | [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 5; [D022](../../decisions/D022-warranty-replacement-refund.md) item 4 (the 7 working days); [policies](../../product/policies.md) line 109 |
+| A change-of-mind return is refunded in full: everything you paid | [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 1 |
+| Something missing, or damaged beyond normal play: "we’ll talk to you before deciding the refund" | [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 6 (the founder's words) |
 | "Faulty or not as described? You can have a replacement or a full refund." | [D033](../../decisions/D033-warranty-after-day-7.md) (Rule 7(4)); [policies](../../product/policies.md) line 108; legal review H2 ([legal requirements](../../product/legal-requirements.md) lines 142-158) |
 | Faulty on arrival: tell us within 7 days of receiving it | [D022](../../decisions/D022-warranty-replacement-refund.md) item 2; [policies](../../product/policies.md) line 105 |
 | "Damaged or faulty" | `refund/page.tsx:66` ("A damaged or faulty Kheelu is our problem to fix") |
 | 6-month warranty on manufacturing defects; not drops, water damage or misuse | [D022](../../decisions/D022-warranty-replacement-refund.md) item 1 and its warranty line; [policies](../../product/policies.md) line 106 |
 | After the first 7 days: repair, or replace if the repair fails | [D033](../../decisions/D033-warranty-after-day-7.md); [messaging](../../brand/messaging.md) (confirmed lines, "Warranty": "After the first 7 days, we repair it, or replace it if the repair doesn't work") |
-| Warranty counted from delivery | Applied reading of D022 (7 days "of receipt") and D033 ("after the first 7 days and within 6 months"); flagged on the page; founder question 3 |
+| Warranty counted from delivery | [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 3 (founder question 3) |
+| Sending the repaired or replacement Kheelu back is free too | [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 2 (founder question 8) |
 | No repair or replacement timeline, because it depends on where in India you are | [D022](../../decisions/D022-warranty-replacement-refund.md) item 2 and guardrails |
 | "No exchanges: return it within 7 days and order again" | [D042](../../decisions/D042-policy-display-answers.md) line 13; [policies](../../product/policies.md) line 111 |
 | Refund to the card, UPI ID or account you paid from, the only place a payment can be reversed to | `refund/page.tsx:39` |
@@ -382,29 +396,37 @@ Plain `path:line` citations to `src/` refer to tag `archive/pre-reset-2026-10-10
 | Card number, UPI ID and bank details go to Razorpay, not to us; nothing charged automatically | `src/app/(site)/privacy/page.tsx:36`; `src/app/(site)/terms/page.tsx:33`; [policies](../../product/policies.md) lines 81, 170 |
 | Razorpay's customer support at razorpay.com/support, "Customer" option | `https://razorpay.com/support/` (GET 2026-10-11) |
 | Grievance block, verbatim | [D032](../../decisions/D032-grievance-block-and-call-line.md); [policies](../../product/policies.md) lines 117-119 |
-| Complaint-reference placeholder under the block (same line as /privacy and /terms) | Rule 7(1)(f), ECOM-04 ([legal requirements](../../product/legal-requirements.md) line 363); [policies](../../product/policies.md) line 120 (still open) |
 | "A message or an email is enough: you never have to call." | Live line "We never make you call a number to cancel something you did in two taps" ([legal requirements](../../product/legal-requirements.md) line 482: "Passes; Keep"); channels [facts](../../product/facts.md) lines 223-224 |
 | Change-of-mind conditions (undamaged, complete, in the box) don't apply to a faulty, damaged or not-as-described unit | Legal review H2 ([legal requirements](../../product/legal-requirements.md) line 156); [D033](../../decisions/D033-warranty-after-day-7.md) ("What the copy still needs") |
-| Summary item "When your money comes back" | Section 5 in one line: [D042](../../decisions/D042-policy-display-answers.md) line 15 (cancellation start, bank time); [D022](../../decisions/D022-warranty-replacement-refund.md) item 4 (return) |
+| Summary item "When your money comes back" | Section 5 in one line: [D042](../../decisions/D042-policy-display-answers.md) line 15 (cancellation start, then bank time); [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 5 (return, bank time included) |
 | Seller name, address, GSTIN; order on kheelona.com, pay on store.kheelona.com | `src/lib/legal.ts:18-24`; [policies](../../product/policies.md) lines 140-144 |
 | "Changed your mind? That's allowed." (optional sticker) | `refund/page.tsx:95-99` (founder-approved 2026-08-22) |
 
 ## Placeholders
 
-| Where | Placeholder | Needed |
+None left. Each of the ten Gate A placeholders was filled or taken off the page by
+[D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) (task 6.7):
+
+| Where | Was | Now |
 |---|---|---|
-| Fold 1 | `[PLACEHOLDER: the date the founder approves this page]` | The approval date (D029); set at sign-off |
-| Fold 2, item 2 | `[PLACEHOLDER: confirm a change-of-mind return is refunded in full]` | Question 1 |
-| Fold 2, item 5 | `[PLACEHOLDER: confirm a full refund if neither works]` | Question 4 |
-| Section 2, step 3 | `[PLACEHOLDER: confirm how much comes back, for example “a full refund of everything you paid”]` | Question 1 (the answer also goes into section 5's "Returned" line) |
-| Section 2 | `[PLACEHOLDER: what happens if a returned Kheelu comes back damaged or with something missing, and what counts as damage on a plush toy a child has played with for a few days]` | The founder's rule (question 2); needed before legal approval |
-| Section 3, warranty | `[PLACEHOLDER: confirm the warranty starts on the delivery date]` | Question 3 |
-| Section 3, warranty | `[PLACEHOLDER: confirm this line: “If a repair and a replacement don’t put it right, you get a full refund.”]` | Question 4 (Rule 7(4)); needed before legal approval |
-| Section 3, pickup | `[PLACEHOLDER: confirm that sending the repaired or replacement Kheelu back to you is free too]` | Question 8 |
-| Section 5 | `[PLACEHOLDER: confirm whether the 7 working days is when we start the refund, before your bank’s 5-7, or when the money reaches you]` | Question 10 |
-| Section 7 | `[PLACEHOLDER: how you get a complaint reference to track your complaint; not set up yet]` | Question 9 (Rule 7(1)(f)); the same line as /privacy and /terms |
+| Fold 1 | The approval date | "14 October 2026" (item 8) |
+| Fold 2, item 2 | Change-of-mind return refunded in full? | "You get a full refund of everything you paid." (item 1) |
+| Fold 2, item 5 | Full refund if neither works? | Off the page (item 4) |
+| Section 2, step 3 | How much comes back | "It’s a full refund of everything you paid." (item 1) |
+| Section 2 | A return that comes back damaged or incomplete | "If your Kheelu comes back with something missing, or damaged beyond normal play, we’ll talk to you before deciding the refund." (item 6) |
+| Section 3, warranty | Warranty starts on the delivery date? | Confirmed; the slot comes off and "from the day it’s delivered" stays (item 3) |
+| Section 3, warranty | The repair-and-replacement backstop line | Off the page (item 4) |
+| Section 3, pickup | Return leg free? | "Sending the repaired or replacement Kheelu back to you is free too." (item 2) |
+| Section 5 | Start or arrival? | Arrival, bank time included: "your refund reaches you within 7 working days of your Kheelu reaching us"; the bank line moves to cancellations (item 5) |
+| Section 7 | Complaint reference | Off the page until a system issues one (item 7) |
 
 ## Questions for the founder (website only, D030)
+
+Answered on 2026-10-14 ([D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md)): question 1
+(item 1: in full), 2 (item 6: "we’ll talk to you before deciding the refund", none of the options below), 3 (item 3:
+the delivery date), 4 (item 4: not confirmed, so the backstop line is off the page), 8 (item 2: free), 9 (item 7:
+no line until a reference exists) and 10 (item 5: when the money reaches you, bank time included). The questions
+stay below as asked.
 
 1. **Change-of-mind returns: refunded in full?** D021 says "no questions asked" and "without risk"; D022 says the
    refund is processed within 7 working days, but no ruling says "in full" for a change-of-mind return. The copy
@@ -479,3 +501,41 @@ From [the legal review](../../qa/legal-review-pages-legal-b-2026-10-11.md); copy
 - Should-fix 8: the hero art is hidden below 900 px.
 - Should-fix 9 (launch dependencies: the number takes calls, D032; the GST invoice line only once the CA has
   invoicing running, GST-01) and 10 (Meet Kheelu, messaging) are not edits to this page.
+
+## Changes after approval (task 6.7)
+
+The founder's answers of 2026-10-14 ([D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md),
+items 1-8) applied to the Gate A-approved copy ([D046](../../decisions/D046-gate-a-approved.md)). Only the
+placeholder each answer fills or the line it rules off changed; every other word stands as approved. The mockup
+(`mockup/pages/refund.html`) is not edited: the builder carries these changes into `src/content/en-IN/legal/refund.ts`
+and lists the text differences for the main session.
+
+- **Fold 1, "Last updated".** The date slot becomes "14 October 2026" (item 8).
+- **Fold 2, item 2.** The in-full slot becomes "You get a full refund of everything you paid." (item 1; legal review
+  must-fix 3).
+- **Fold 2, item 3.** "After a return, it’s processed within 7 working days of your Kheelu reaching us. Then your bank
+  takes 5-7 working days." becomes "After a cancellation, we start your refund within 2 working days. Then your bank
+  takes 5-7 working days. After a return, your refund reaches you within 7 working days of your Kheelu reaching us."
+  (item 5: bank time is included in the 7 working days, so the approved bank sentence moves up to follow the
+  cancellation only, and "it’s processed" becomes "your refund reaches you").
+- **Fold 2, item 5.** The "full refund if neither works" slot comes off; the item ends at repair-then-replace (item 4).
+- **Section 2, step 3.** "is processed" becomes "reaches you" (item 5), and the how-much slot becomes "It’s a full
+  refund of everything you paid." (item 1).
+- **Section 2, damaged or incomplete returns.** The slot becomes "If your Kheelu comes back with something missing,
+  or damaged beyond normal play, we’ll talk to you before deciding the refund." (item 6; legal review must-fix 4).
+- **Section 3, warranty.** The delivery-date slot comes off; "from the day it’s delivered" stays (item 3). The
+  backstop slot ("If a repair and a replacement don’t put it right, you get a full refund.") comes off, not
+  confirmed (item 4). The D033 lead line and the 7-day faulty-on-arrival paragraph stay word for word; D055 records
+  the legal review's Rule 7(4) point (L5) with the answer.
+- **Section 3, pickup.** The return-leg slot becomes "Sending the repaired or replacement Kheelu back to you is free
+  too." (item 2).
+- **Section 5.** The cancellation line gains section 1's own "; your bank takes 5-7 working days"; the return line's
+  "is processed" becomes "reaches you" and its slot comes off; the third item ("Then your bank: once we’ve started
+  it, your bank takes 5-7 working days.") comes off, since under the return line it would add bank days D055 already
+  counts (item 5).
+- **Section 7.** The complaint-reference slot under the grievance block comes off (item 7). In the build it is the
+  shared `grievanceNote` (`src/content/en-IN/legal/shared.ts`), so one change clears it from all four legal pages.
+- **Notes.** At a glance (word count and keyword density), the notes under fold 1, fold 2, sections 2, 3, 5 and 7,
+  the Sources rows, the Placeholders table (none left) and the answered questions now match the copy.
+- **Not changed.** Fold 0's draft note ("Draft for the founder’s approval; not legal advice.") stays: D055 sets the
+  date, and no fix in task 6.7 removes the note (open question at hand-off). Title, meta, H1 and CTA are unchanged.

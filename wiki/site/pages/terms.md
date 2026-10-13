@@ -1,7 +1,7 @@
 ---
 title: "Terms (/terms): page copy, Gate A draft"
 type: page-copy
-updated: 2026-10-11
+updated: 2026-10-14
 cites_at: archive/pre-reset-2026-10-10
 sources:
   - ../strategy.md (§3, §5 policy-pages row, line 213)
@@ -16,6 +16,8 @@ sources:
   - "https://razorpay.com/support/ (GET 2026-10-11 from a US network: 200 after a geo-redirect to /us/support/; QA re-checks from India)"
   - "decisions D020-D043; binding here: D020, D021, D022, D023, D024, D025, D027, D028, D029, D032, D033, D035, D036, D040, D041, D042"
   - ../../raw/feedback/2026-10-11-gate-a-answers.md (lines 32, 62-64)
+  - ../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md (items 7, 8, 10 and 11, applied in task 6.7; see "Changes after approval (task 6.7)")
+  - "../../qa/cmo-review-page-facts-6.7-2026-10-14.md (M7: question 7, one refund timing; M8: the fold 0 draft note at Gate B)"
 ---
 
 # Terms (`/terms`): page copy
@@ -37,8 +39,9 @@ sources:
 - `{support-source}`, `{grievance-source}`, `{seller-source}`: as on [privacy.md](privacy.md#how-to-read-this-page).
 - **Token mode** = while ₹499 reservations are open; **full mode** = after the first 500 units, ₹7,999 paid in
   full. Sections that change by mode give both versions; the build renders the live one (G9).
-- `[PLACEHOLDER: …]` = a fact we do not have; renders as a visible `<span class="mk-placeholder">`. Five on
-  this page, listed under [Placeholders](#placeholders).
+- `[PLACEHOLDER: …]` = a fact we do not have; renders as a visible `<span class="mk-placeholder">`. None left
+  on this page: the five Gate A ones were filled or taken off by
+  [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md), listed under [Placeholders](#placeholders).
 - **Drafter's addition** = wording no decision covers yet (listed for the founder's OK).
 - No accordions: every term stays visible ("burying them here would be a way of hiding them",
   `terms/page.tsx:76` at the tag).
@@ -58,7 +61,7 @@ sources:
 | Anchors other pages link to | `#payment` (Home's trust row links "UPI, card or net banking" here, [home.md, CTA block](home.md#cta-block)); `#price`, `#cancel`, `#delivery`, `#returns`, `#training` |
 | Mockup meta | `{"title": "Kheelu pre-order terms · Kheelona", "description": "<token-mode meta>", "url": "/terms", "buybar": false, "active": "", "css": true}` |
 | Images | None (text-only policy page) |
-| Length | About 1,800 words of copy |
+| Length | About 1,800 words of copy at Gate A. Task 6.7 takes out the five placeholders' wording (84 words) and adds 10 ("14 October 2026"; "with a switch in the parent app") |
 
 The meta descriptions are machine-read, so they lead with the total and give the advance second
 ([D028](../../decisions/D028-price-wording.md)). They leave out "first 500 units" so no search snippet reads as
@@ -91,7 +94,10 @@ an urgency line (D041 keeps that phrase to one place a page).
 > What you pay and when, how to cancel, when Kheelu arrives, and the rules for using Kheelu and its parent
 > app. A fair deal should survive being written clearly.
 >
-> Last updated: [PLACEHOLDER: the date the founder approves this text]
+> Last updated: 14 October 2026
+
+The date is the founder's ([D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 8), the
+same on all four legal pages.
 
 ## Fold 2 · The short version
 
@@ -226,11 +232,7 @@ Notes:
 > Prices include GST. Delivery anywhere in India is included, so the price is the whole cost of Kheelu arriving
 > at your door. Nothing is collected at the door.
 >
-> Every order gets a GST invoice. [PLACEHOLDER: which GST documents you get and when, for example a receipt
-> voucher for the advance and a tax invoice at dispatch, as our CA sets them up]
->
-> [PLACEHOLDER: the price breakup (taxable value, GST rate and amount, delivery ₹0), once our CA confirms the HSN
-> code and the GST rate]
+> Every order gets a GST invoice.
 
 **Copy (full mode):** the first two paragraphs become
 
@@ -244,6 +246,9 @@ Notes:
   while the paid count is real). No MRP here: the MRP ₹7,999 belongs in the product page's declarations block
   only, never framed as a saving (legal review §3, LM-02, [D034](../../decisions/D034-origin-manufacturer-mrp.md)).
 - Never "just ₹499" or "only ₹499" (DARK-03).
+- GST: only what [D024](../../decisions/D024-payment-methods-gst.md) confirms, prices include GST and a GST invoice
+  with every order ([D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 10). The two
+  slots that waited on the CA (which GST documents and when, GST-01; the price breakup, ECOM-08) came off the page.
 
 ### Section 5 · Paying (`#payment`)
 
@@ -389,14 +394,16 @@ Notes: the account-holder line is legal review DATA-30 (a drafter's addition). R
 > ## Conversations and Kheelona's own model.
 >
 > Kheelona's own AI model learns from your child's voice recordings and conversation transcripts. This is on by
-> default, and you can turn it off at any time: [PLACEHOLDER: how a parent turns training off, for example a
-> setting in the parent app]. Our outside speech and AI providers never train on your child's voice.
+> default, and you can turn it off at any time with a switch in the parent app. Our outside speech and AI
+> providers never train on your child's voice.
 >
 > The full detail, including what happens when you turn it off, is on our [Privacy](../../../mockup/privacy.html#training)
 > page.
 
 Notes: [D035](../../decisions/D035-model-training-opt-out.md) (terms and privacy only; never on customer pages);
-the providers clause is [D020](../../decisions/D020-provider-terms-and-no-sale.md), scoped to the providers.
+the providers clause is [D020](../../decisions/D020-provider-terms-and-no-sale.md), scoped to the providers. "With
+a switch in the parent app" is [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 11,
+the same method /privacy states (item 12); what happens after a parent turns it off stays on /privacy only.
 
 ### Section 12 · A toy, not a therapy (`#toy`)
 
@@ -484,10 +491,12 @@ addition.
 >
 > **Grievance Officer:** Aman Soni, Co-Founder and CTO, aman@kheelona.com, +91 91875 46483. We acknowledge every
 > complaint within 48 hours and resolve it within one month of receiving it.`{grievance-source}`
-> [PLACEHOLDER: how you get a complaint reference to track your complaint; not set up yet]
 
 Notes: seller block from `src/lib/legal.ts:18-24` minus the retired "messages, not calls" line
-([D032](../../decisions/D032-grievance-block-and-call-line.md)); registered office only (B43). From 1 January
+([D032](../../decisions/D032-grievance-block-and-call-line.md)); registered office only (B43). The
+complaint-reference placeholder under the grievance block came off until a system issues a reference
+([D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 7; ECOM-04 still open); in the build
+it is the shared `grievanceNote` in `src/content/en-IN/legal/shared.ts`, one change for all four legal pages. From 1 January
 2027 the grievance block adds "We send you a copy of your complaint as we recorded it." and the yearly
 dark-pattern self-audit certificate appears here or in the footer (legal review ECOM-03, ECOM-13): dated tasks,
 not copy for today.
@@ -512,13 +521,13 @@ Plain `path:line` = tag `archive/pre-reset-2026-10-10`. Wiki paths are relative 
 |---|---|
 | Draft note; founder approves; no lawyer; counsel points not settled | [D029](../../decisions/D029-grievance-officer-legal-review.md); gate-a-open-items.md:94 (B47) |
 | Lede "A fair deal should survive being written clearly." | `terms/page.tsx:103` |
+| "Last updated: 14 October 2026" | [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 8 |
 | Price sentence (token) and full-mode form | [D028](../../decisions/D028-price-wording.md); [D041](../../decisions/D041-gate-a-round-1.md) (option (d)); site/pages/home.md:54-55 |
 | Amounts, cap, counted by paid pre-orders, full price after | product/pricing.md:54, 68-72; `terms/page.tsx:32-34, 40` |
 | Advance is part of the price | `terms/page.tsx:33` |
 | Price fixed on the day you order | `terms/page.tsx:40` |
 | Prices incl. GST; delivery included; nothing collected at the door | [D024](../../decisions/D024-payment-methods-gst.md); `terms/page.tsx:46`; product/policies.md:79, 87 |
-| GST invoice with every order; documents per CA | [D024](../../decisions/D024-payment-methods-gst.md); product/legal-requirements.md:380 (GST-01), 522; gate-a-open-items.md:101 |
-| Price breakup pending HSN and rate | product/legal-requirements.md:376 (ECOM-08) |
+| GST invoice with every order (nothing more on GST until the CA confirms it) | [D024](../../decisions/D024-payment-methods-gst.md); [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 10 |
 | 18 or over | product/legal-requirements.md:442 (DATA-13), 523 |
 | Indian mobile number; India only | site/checkout.md:121; product/policies.md:79 |
 | One Kheelu per pre-order; more via WhatsApp | `terms/page.tsx:52`; product/policies.md:80 |
@@ -547,6 +556,7 @@ Plain `path:line` = tag `archive/pre-reset-2026-10-10`. Wiki paths are relative 
 | Adult account holder; privacy part of the terms | product/legal-requirements.md:459 (DATA-30), 524 |
 | Read and delete every conversation; 36 months | [D017](../../decisions/D017-live-behaviour-claims-confirmed.md); [D020](../../decisions/D020-provider-terms-and-no-sale.md) item 7 |
 | Own-model training, on by default, opt-out; providers never train | [D035](../../decisions/D035-model-training-opt-out.md):14-29; [D020](../../decisions/D020-provider-terms-and-no-sale.md) item 3 |
+| Turned off with a switch in the parent app | [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 11 (as on /privacy, item 12) |
 | Speech disclaimer | [D025](../../decisions/D025-speech-and-language.md):19-20; product/policies.md:123 |
 | Closed library, safety layer, red-teamed, says it doesn't know | [D036](../../decisions/D036-launch-feature-claims.md):18, 21-23 |
 | AI-generated images disclosure | [D041](../../decisions/D041-gate-a-round-1.md); raw/feedback/2026-10-11-gate-a-answers.md:32; product/policies.md:133 |
@@ -557,19 +567,21 @@ Plain `path:line` = tag `archive/pre-reset-2026-10-10`. Wiki paths are relative 
 | Seller block | product/policies.md:140-144; `src/lib/legal.ts:18-24` |
 | Customer care calls and messages; email | product/facts.md:223-224; [D032](../../decisions/D032-grievance-block-and-call-line.md) |
 | Grievance block | [D032](../../decisions/D032-grievance-block-and-call-line.md):20-22; product/policies.md:117-119; product/legal-requirements.md:489-492 |
-| Complaint reference not set up | product/policies.md:120; gate-a-open-items.md:110; product/legal-requirements.md:363 (ECOM-04) |
 | No CTA on policy pages; link to the product page | site/strategy.md:213 |
 | Meta title and H1 keyword | research/keyword-map.md:227, 347 |
 
 ## Placeholders
 
-| # | Where | Placeholder | Who supplies it |
+None left. Each of the five Gate A placeholders was filled or taken off the page by
+[D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) (task 6.7):
+
+| # | Where | Was | Now |
 |---|---|---|---|
-| 1 | Header | Last-updated date | Founder (on approval) |
-| 2 | Section 4 | Which GST documents and when (receipt voucher, tax invoice) | CA (founder to-do, gate-a-open-items §4) |
-| 3 | Section 4 | Price breakup: taxable value, GST rate and amount, delivery ₹0 | CA (HSN code and rate) |
-| 4 | Section 11 | How a parent turns training off | Founder / product team (D035; question 1 on [privacy.md](privacy.md#questions-for-the-founder-website-only)) |
-| 5 | Section 16 | Complaint reference | CTO (ECOM-04; operational under D030) |
+| 1 | Header | Last-updated date | "14 October 2026" (item 8) |
+| 2 | Section 4 | Which GST documents and when (receipt voucher, tax invoice) | Off the page; "Every order gets a GST invoice." stays (item 10) |
+| 3 | Section 4 | Price breakup: taxable value, GST rate and amount, delivery ₹0 | Off the page (item 10) |
+| 4 | Section 11 | How a parent turns training off | "with a switch in the parent app" (item 11) |
+| 5 | Section 16 | Complaint reference | Off the page until a system issues one (item 7) |
 
 ## Drafter's additions (need the founder's OK)
 
@@ -584,12 +596,24 @@ Plain `path:line` = tag `archive/pre-reset-2026-10-10`. Wiki paths are relative 
 
 The questions shared with `/privacy` are on [privacy.md](privacy.md#questions-for-the-founder-website-only)
 (1: the opt-out method and purpose; 4: the drafter's additions on both pages; 5: no pre-order button on the policy
-pages). One more for this page:
+pages). Two more for this page:
 
 6. **The GST line before your CA confirms.** (a) Keep "Every order gets a GST invoice." with the placeholder for
    the document details, as drafted; (b) hold the whole line until the CA has vouchers and invoices running (legal
    review GST-01). **Recommend (a)**: you confirmed the invoice (D024) and Home's trust copy already depends on it;
    the placeholder keeps the unconfirmed part visible.
+
+7. **One refund timing on both pages** (new, [CMO review](../../qa/cmo-review-page-facts-6.7-2026-10-14.md) M7).
+   Section 8 here says "Once your Kheelu reaches us and qualifies for return, your refund is processed within 7
+   working days." `/refund` now says "your refund reaches you within 7 working days" (D055 item 5: bank time
+   included). They don't contradict, but a parent comparing the pages sees two timings. (a) Keep the approved
+   "is processed"; (b) "your refund reaches you within 7 working days", so the sentence matches `/refund` step 3
+   word for word ([refund.md](refund.md) line 188). **Recommend (b)**: one promise, worded once, and it is the one
+   the founder gave. Not applied: D055 names no line on `/terms` here.
+
+Answered on 2026-10-14 ([D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md)): question 6 by
+item 10 (the invoice line stays; the documents-and-timing and price-breakup slots come off), and privacy.md
+question 1's "how" by item 11 (a switch in the parent app). The questions stay above as asked.
 
 ## Checks before sign-off (CTO or QA, not founder questions)
 
@@ -604,6 +628,8 @@ pages). One more for this page:
 - Opt-out training default vs DPDP consent ([D035](../../decisions/D035-model-training-opt-out.md)).
 - A published delivery start that slips gives buyers the Rule 7(4) refund claim, which the terms already honour
   ([D037](../../decisions/D037-delivery-date-in-schema.md)).
+- No GST document timing (GST-01) and no price breakup (ECOM-08) on the page until the CA confirms them
+  ([D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 10).
 
 ## Keyword placements
 
@@ -614,3 +640,30 @@ pages). One more for this page:
 | Meta description | ₹4,999 (incl. GST) first, then "refundable ₹499 advance" (D028) |
 | H2 | "What a pre-order is." / "The price." (what the advance buys, after the total) |
 | Banned words checked | No "lessons", "best friend", "free" beside Kheelona+, "just/only ₹499", wake-word lines, "region", "MRP" framed as a saving, em dashes |
+
+The keyword placements are unchanged by task 6.7 (no change touches the title, meta, H1 or H2s).
+
+## Changes after approval (task 6.7)
+
+The founder's answers of 2026-10-14 ([D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md),
+items 7, 8, 10 and 11) applied to the Gate A-approved copy ([D046](../../decisions/D046-gate-a-approved.md)). Only
+the five slots changed; every other word stands as approved. The mockup (`mockup/pages/terms.html`) is not edited:
+the builder carries these changes into `src/content/en-IN/legal/terms.ts` and lists the text differences for the
+main session.
+
+- **Fold 1, "Last updated".** The date slot becomes "14 October 2026" (item 8).
+- **Section 4, GST.** "Every order gets a GST invoice." and "Prices include GST." stay; the documents-and-timing
+  slot and the price-breakup paragraph come off (item 10; only what D024 confirms). Both modes: the full-mode copy
+  replaces the first two paragraphs only, so it changes the same way.
+- **Section 11, training.** The how-to slot becomes "with a switch in the parent app": "This is on by default, and
+  you can turn it off at any time with a switch in the parent app." (item 11, as on /privacy; the colon before the
+  slot goes with it).
+- **Section 16.** The complaint-reference slot under the grievance block comes off (item 7); in the build it is the
+  shared `grievanceNote` in `src/content/en-IN/legal/shared.ts`, one change for all four legal pages.
+- **Notes.** How to read this page (no placeholders left), the fold 1 date note, the section 4, 11 and 16 notes,
+  the Sources rows, the Placeholders table, the answered questions, Length, and a new line under Risks (GST-01,
+  ECOM-08 off the page) now match the copy.
+- **Not changed.** Fold 0's draft note stays (no fix in task 6.7 removes it; whether it stays on production is the
+  founder's call at Gate B, CMO review M8). Section 8 keeps its approved "your refund is processed within 7 working
+  days" (no D055 item reaches /terms there; question 7, from CMO review M7). Title, meta, H1 and close are
+  unchanged.
