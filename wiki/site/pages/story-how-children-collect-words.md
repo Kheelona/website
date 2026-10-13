@@ -17,7 +17,9 @@ sources:
   - "src/lib/stories-expansion.ts:164-186 (the live article; text and facts as input only), read in the task worktree at base aa4b39e"
   - "src/content/en-IN/stories/articles/how-children-collect-words.ts (stub: card, related list, dates); src/content/types.ts (Article shape); src/layouts/ArticleTemplate/ArticleTemplate.tsx"
   - test/guards/banned-phrases.data.ts (checked against every Copy block)
-  - design-system/project/03-cast.md:116; 01-writing.md:19-26, 38, 111-113 (read-only)
+  - design-system/project/03-cast.md:21-26, 105; 01-writing.md:19-26, 38, 111-113 (read-only)
+  - ../../qa/cmo-review-articles-5.18-2026-10-14.md (M8, M9, M13: applied in task 5.20b, see the foot of this page)
+  - ../pages/stories.md (fold 5, card 1 image: the alt for myra-04)
 ---
 
 # Story: How to build a 3-year-old's vocabulary
@@ -96,11 +98,15 @@ links there.
 - **H1 accent:** `Hand` on "vocabulary". Builder: `{nowrap:3-year-old's}` as in the approved modules.
 - **Lead:** the hub card's summary, word for word (as the late-talker page does).
 - **Dates and read time:** "First published" is the stub's `published` (`2026-07-28`, the live date). Read time
-  from the words: about 610 words in the article (head to fold 7), so 3 min (`readingMinutes`: words / 200, rounded).
-- **Image** (`kh-photo`, 4:5): `ira-04-paper-crown-web.webp`. Alt: "A laughing girl with a long braid holds a yellow
-  paper crown on her head, beside a low table scattered with paper scraps and crayons." (`03-cast.md:116`,
-  "confidence and creativity"; no Kheelu in the photo; checked by eye.) No name or age in the alt (the cast is
-  illustrative). **No Kheelu in any image on this page** (no pitch).
+  from the words: about 590 words in the article (head to fold 7; head, answer and parts, as the article test counts
+  them, 588 after task 5.20b), so 3 min (`readingMinutes`: words / 200, rounded).
+- **Image** (`kh-photo`, 4:5): `myra-04-drawing-at-home-web.webp`. Alt: "A little girl in a red polka-dot frock,
+  tongue out in concentration, scribbling with an orange crayon at a low table." (`03-cast.md:105`, "screen-free
+  play, creativity, parenting posts without selling"; Myra is the cast's 3½-year-old, for "age-3 messaging",
+  `03-cast.md:21, 26`, which suits a page about a 3-year-old's words; no Kheelu in the photo; checked by eye
+  2026-10-14.) The alt is the journal's one alt for this photo, word for word as the hub's learning-toys card
+  ([stories.md](stories.md), fold 5, card 1 image), the learning-toys guide and the AI-tutor guide (CMO review
+  M13). No name or age in the alt (the cast is illustrative). **No Kheelu in any image on this page** (no pitch).
 
 ---
 
@@ -152,15 +158,17 @@ links there.
 >
 > In the study, a turn was an adult speaking and the child replying, or the other way round. The children were native English speakers, and the study shows a link, not cause and effect.²
 >
-> Its authors suggest encouraging parents to talk with their children in "more interactive, back-and-forth conversation".² For words, that means saying the new word, then giving your child a reason to use it.
+> Its authors suggest encouraging parents to talk with their children in "more interactive, back-and-forth conversation".² With a new word, one way to do that: say it, then give your child a reason to use it.
 
 - Paragraph 1 is the verified C09 line ([source verification §4 C09](../../research/source-verification.md#c09--turns-not-just-words-ages-4-to-6)),
   verbatim; its "language scores" sentence is kept here because this page is about words. Ages stay "4 to 6",
   never three-year-olds ([claims §8](../../product/claims.md#8-brain-and-development-claims-with-their-anchors)).
 - Paragraph 2: the turn definition (C09 ready line) and the honest limits from the paper itself ("native-English
   speakers", "causation cannot be implied").
-- The last sentence is a house line: plain advice, no marker. No Kheelu in this fold
-  ([D016](../../decisions/D016-brain-wording.md)).
+- The last sentence is a house line: plain advice, no marker. It offers "one way" to have that back-and-forth, so
+  it never reads as the study's own advice on words: the study counted conversational turns and tested no way of
+  teaching words (excerpt `C09-romeo-2018-psychological-science.md:38-44, 77-85`; CMO review M8). No Kheelu in this
+  fold ([D016](../../decisions/D016-brain-wording.md)).
 
 ---
 
@@ -227,7 +235,7 @@ approved modules use); `p`; `callout` (lead "Try this:").
 
 **Copy:**
 
-> **H2:** What if your child seems to have few words?
+> **H2:** When should you ask your doctor?
 >
 > Every child is different. As a general guide, if your child is 3 or older and other people still can't understand them most of the time, or they lose words they used to have, talk to your paediatrician.⁴
 >
@@ -237,6 +245,8 @@ approved modules use); `p`; `callout` (lead "Try this:").
   ([source verification C42](../../research/source-verification.md#c42--when-to-ask-about-speech)). This is a
   speech-delay answer, so it sits on a page with the D025 line (fold 2), as tasks.md row 5.18 requires.
 - Nothing under 3 is named: the 30-month "about 50 words" milestone stays off this page (ages 3 to 7 only).
+- The H2 asks what the paragraph answers: when to ask a doctor. The earlier "What if your child seems to have few
+  words?" promised a word count, which the page rightly does not give (CMO review M9).
 
 ---
 
@@ -302,7 +312,7 @@ approved modules use); `p`; `callout` (lead "Try this:").
 | Single age in headings | Yes | "3-year-old" in the H1 and fold 2 H2 ([keyword map §3](../../research/keyword-map.md#3-clusters-by-age)) |
 | Health terms only in a learn article, with public sources, beside the D025 line | Yes | "speech" only in the disclaimer; the doctor pointer carries the CDC marker ([§5.1](../../research/keyword-map.md#5-placement-rules) rules 8, 10) |
 | Alt text | Yes | Describes the scene; no keyword forced |
-| Density | Yes | The full primary once (H1: 6 words of about 610, 1.0%); "3-year-old's vocabulary" twice (H1, fold 2 H2); "vocabulary" 4 times (0.7%); "Kheelu" once (the disclaimer) |
+| Density | Yes | The full primary once (H1: 6 words of about 590, 1.0%); "3-year-old's vocabulary" twice (H1, fold 2 H2); "vocabulary" 4 times (0.7%); "Kheelu" once (the disclaimer) |
 | Words never placed | Yes | No "grows their vocabulary", no product, no tutor, lessons, adapts, brain-development label, competitor names; no dead age range |
 
 ## CTA tracking values
@@ -339,6 +349,7 @@ None.
 | Count a child's words across every language; the total about the same as a child learning one; Telugu or Bangla words count | [source verification C40](../../research/source-verification.md#c40--a-second-language-does-not-cause-delay) ready line; excerpt `C38-aap-asha-multiple-languages-faq.md:24-28` |
 | A strong model in any language helps build a foundation for learning others | `C40-asha-late-language-emergence.md:23-27` (paraphrase, as in the C40 ready line) |
 | Romeo 2018: 36 children aged 4 to 6; turns and Broca's area; no link with adult words; turns predicted language scores after income and education; a turn defined; native English speakers; a link, not cause; authors' suggestion | [source verification C09](../../research/source-verification.md#c09--turns-not-just-words-ages-4-to-6); excerpt `C09-romeo-2018-psychological-science.md:23-41, 46-52, 57-64, 70-75` |
+| "With a new word, one way to do that: say it, then give your child a reason to use it." | House line, no marker; framed as one way, because the study tested no way of teaching words (excerpt `C09-romeo-2018-psychological-science.md:77-85`; [CMO review M8](../../qa/cmo-review-articles-5.18-2026-10-14.md#minor-fixes)) |
 | At 3, others understand most of the time; losing words; talk with your child's doctor | [source verification C42](../../research/source-verification.md#c42--when-to-ask-about-speech); excerpt `C42-cdc-milestones-30-months-and-3-years.md:24-34` |
 | "Every child is different" | House line, as on the approved [late-talker page](story-talking-toys-and-late-talkers.md#fold-4--when-to-ask) |
 | Disclaimer line | [D025](../../decisions/D025-speech-and-language.md); [claims §1](../../product/claims.md#1-confirmed-by-the-founder); working default B45 |
@@ -346,10 +357,32 @@ None.
 | Cut lines (vocabulary rate; separate purses; overheard talk) | [source verification §5.1](../../research/source-verification.md#51-not-supported-4) (C41); C40 caveat 1; C09 caveat 3 |
 | Ages 3 to 7 only; nothing under 3 | [content boundary](../content-boundary.md); [age-band review](../../product/age-band-review.md) |
 | Card title and summary; related list; dates | stub `src/content/en-IN/stories/articles/how-children-collect-words.ts`; [stories.md fold 3](stories.md#fold-3--talking-and-language-talking); `src/lib/stories-expansion.ts:171-172` |
-| Photo | DS `03-cast.md:116`; file checked by eye |
+| Photo and alt | DS `03-cast.md:21, 26, 105`; alt as the hub's learning-toys card ([stories.md](stories.md), fold 5, card 1 image) and the learning-toys guide's head, word for word; file checked by eye 2026-10-14; [CMO review M13](../../qa/cmo-review-articles-5.18-2026-10-14.md#minor-fixes) |
 
 **For the main session (not the founder).** (1) `updated`: the task notes keep the stub's dates
 (`2026-07-31`), while the approved task 5.6 modules set `updated` to the rewrite's date (BlogPosting
-`dateModified`); the builder needs one ruling for all 18. (2) The head photo is chosen from the five DS scene
-photos without Kheelu; the parallel copywriter may pick the same one for another article, which is allowed
-(each child once per page) but worth a glance at the merge.
+`dateModified`); the builder needs one ruling for all 18. (2) The head photo is `myra-04` since task 5.20b (CMO
+review M13). It also heads the learning-toys guide and, today, the AI-tutor guide; neither links to this page and
+this page links to neither, so "Keep reading" never lands a parent on the same picture. Every guide linked from
+here (close and in-text links), or linking here, has a different head photo (`advik-04`, `ira-04`, `kabir-04`,
+`tara-04`).
+
+## Changes after approval (task 5.20b)
+
+The CMO passed this page in round 1 ([CMO review, task 5.18](../../qa/cmo-review-articles-5.18-2026-10-14.md)).
+Task 5.20b applied the review's fixes for it on 2026-10-14 ([tasks](../../engineering/tasks.md), 5.20 item 2).
+Every other word of the Copy blocks is as approved. The module follows this page word for word in the same commit
+(`talking-articles.test.tsx`).
+
+| Where | What changed | Why |
+|---|---|---|
+| Fold 4, last sentence | "For words, that means saying the new word, then giving your child a reason to use it." became "With a new word, one way to do that: say it, then give your child a reason to use it." | M8: the old line read as the study's own advice on words, but the study tested no way of teaching words (excerpt `C09-romeo-2018-psychological-science.md:77-85`). Still a house line with no marker |
+| Fold 7, H2 | "What if your child seems to have few words?" became "When should you ask your doctor?" | M9: the old H2 promised a word count; the paragraph under it (unchanged) says when to ask |
+| Fold 1, head photo and alt | `ira-04-paper-crown-web.webp` became `myra-04-drawing-at-home-web.webp`, with the alt the journal already uses for it | M13: `ira-04` also headed `how-to-get-your-child-talking`, which links here, and it carried two different alts. Myra is the cast's 3-year-old (`03-cast.md:21, 26`); the photo has no Kheelu (`03-cast.md:105`) |
+
+**What follows from the changes.** The words a reader reads (head, answer and parts, as the article test counts
+them) go from about 587 to 588, so the read time stays 3 min (`round(words / 200)`) and the byline row does not
+change. The fold 1 read-time note and the density row now use that count (about 590) in place of the draft's
+estimate of about 610. The keyword placements do not change: the fold 7 H2 never carried the primary. No research statement,
+marker or source was added, and there is no placeholder. Not part of this task: M14 (the module already uses the
+CMO's icons, and the article test holds them).
