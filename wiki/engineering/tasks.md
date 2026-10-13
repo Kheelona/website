@@ -1092,6 +1092,10 @@ legacy `Sheet.stories.tsx` until 6.3; `tracking-parity.test.ts` follows the remo
   5. `test/e2e/chrome.spec.ts` sticky-bar cases: scroll past `#hero-cta` before expecting `shown` (the legacy Home had
      no hero CTA); the cases green on the new Home.
 - **Test:** targeted checks (D052) plus the touched specs on `/`, `/products/kheelu` and `/safety`.
+- **Merged** `200bd17` (passed its one review). **Open after part B1, for the next shared-fix task:** the legal "Also
+  read" links (`.ks-also a`, `legal-template.css`) have the 44 px height but not the width, so a short label ("Terms")
+  fails the tap-target check on `/privacy` and `/terms`: give them the invisible `::before` extension used on the trust
+  and guides links.
 
 ## Wave 5: pages (after wave 4; all parallel)
 

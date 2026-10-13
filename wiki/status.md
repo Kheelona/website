@@ -25,7 +25,7 @@ next/og RCE, high image SSRF, ISR cache poisoning; floors raised in test/depende
 no Supabase, Razorpay or email (the code refuses store keys there, task 2.10); Meta, GA4, Ahrefs off; PostHog
 env=beta; noindex. Founder's only step (the two domains, architecture §15.4) is done.
 
-**Waiting on the founder:** Phase 4 questions P1-P13 ([open questions §P](open-questions.md); defaults apply);
+**Waiting on the founder:** Phase 4 questions P1-P14 ([open questions §P](open-questions.md); defaults apply);
 to-dos: WhatsApp calls (D032),
 F11 proof, C17 Supabase region, provider contracts vs the Home safety line, F4 specs, GST/HSN, section D
 checks (C1, C2, C4, C8, C11, C12, C15, C18). Working defaults may be overridden (gate-a-open-items §2-3).
