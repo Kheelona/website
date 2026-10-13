@@ -1347,6 +1347,26 @@ processor names, the payload key allow-list and every `not.toContain` stay.
   email tests green; the patches reviewed.
 - **Test:** `templates.test.ts`; freeze guard with the reviewed patches.
 
+### 6.5 Remove the 3-6-9-12 article ([D053](../decisions/D053-remove-the-3-6-9-12-article.md)) (builder; risk normal; after the batch `wf_cd8260cf-e88` merges)
+
+- **Why:** the founder's answer to P25 (2026-10-14): Tisseron's AI markers advise no connected toys before 6, so the
+  journal no longer explains his rule.
+- **Owns:** `src/content/en-IN/routes.ts` (`ARTICLE_SLUGS`, 21 → 20) and `routes.test.ts`; `src/content/en-IN/stories/articles/`
+  `screen-time-rules-parents-swear-by.ts` (delete), `index.ts` and its test, `articles.test.ts` (the counts), the
+  related lists of `busy-hands-no-screens.ts`, `the-gentle-way-off-the-phone.ts` and `ai-toys-and-indias-data-law.ts`
+  with their copy pages' related folds and their article tests; `src/content/en-IN/stories/hub.ts` and its test (the
+  card leaves the screen-time topic); `src/config/redirects.ts` and its test (one hop, permanent, to
+  `/stories#screen-time`); `test/e2e/support/routes.ts`; `wiki/site/pages/story-screen-time-rules-parents-swear-by.md`
+  (delete) and the `story-*` rows that name it; `wiki/site/url-map.md`, `wiki/research/keyword-map.md` (the URL's row
+  marked removed, D053); `wiki/engineering/assets.md` (advik-04's use).
+- **Acceptance:** 20 article routes, each with three related guides and at least three incoming links (articles.test);
+  the old URL answers 308 to `/stories#screen-time` in one hop (redirects.spec); the hub shows the topic without the
+  card (hub parity: a text and visual deviation row for the main session, V9); no page, sitemap entry, JSON-LD item or
+  `llms.txt` line names the article (the main session re-pins `llms.txt` if it changes); the banned-phrases guard
+  expects one copy page per remaining slug.
+- **Test:** targeted checks (D052); the hub and the three changed articles at 360, 390 and 1440; `redirects.spec`,
+  `links.spec` and `content-integrity` on the hub and the three articles.
+
 **Wave 6 ownership check:** 6.1, 6.2 and 6.4 own disjoint files (6.2's `PreorderForm.tsx` is not in 6.1;
 6.4's `delivery-line.ts` was 5.16's in the previous wave). A gated task whose gate has not opened simply
 waits; it may run in any later wave before wave 8, alone with its own files.
