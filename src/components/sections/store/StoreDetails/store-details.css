@@ -81,7 +81,7 @@
 /* D042's payments line, the last line of main (wiki/qa/deviations.md V1): set as the store footer sets its lines
    (store-footer.css: the same side padding, muted at the reading measure, a 28 px link box). */
 .ks-store-payments {
-  padding: var(--space-6) var(--space-4) 0;
+  padding: var(--space-6) var(--space-4);
 }
 .ks-store-payments p {
   max-width: var(--measure);

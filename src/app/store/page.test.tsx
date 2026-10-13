@@ -175,6 +175,12 @@ describe("store page: source", () => {
     }
   });
 
+  it("imports the two checkout components by file, never the feature barrel (it also loads AddressForm's client code)", () => {
+    expect(SOURCE).not.toMatch(/from "@\/features\/preorder";/);
+    expect(SOURCE).toContain('from "@/features/preorder/components/PreorderForm"');
+    expect(SOURCE).toContain('from "@/features/preorder/components/OrderSummary"');
+  });
+
   it("types no words: the copy is the content module's", () => {
     const code = SOURCE.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
     expect(code).not.toMatch(/"[A-Z][a-z]+ [a-z]+[^"]*\."/);
