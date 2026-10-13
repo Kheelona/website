@@ -11,13 +11,14 @@ import { inAppNote } from "@/content/en-IN/store/in-app-note";
 import { storePage } from "@/content/en-IN/store/store-page";
 import { isSitePath } from "@/lib/links";
 import { buildOffer } from "@/lib/offer/offer";
-import { mockupDiff, mockupFold, mockupPage, mockupRoute } from "../../../../../test/support/mockup-compare";
-import { PayBeside, StoreDetails, StorePaymentsLine } from "./StoreDetails";
+import { mockupDiff, mockupFold, mockupRoute } from "../../../../../test/support/mockup-compare";
+import { PayBeside, StoreDetails } from "./StoreDetails";
 
 /* StoreDetails (task 5.15; components §2; store.md folds 1-5 and 7): the store's two columns, compared element by
  * element with the approved mockup (mockup/store.html `mk-store`) through the mockup comparison harness, with the
  * page's real parts in its slots, as src/app/store/page.tsx composes them. The FAQ fold is FaqSection's own test's;
- * the form's and the card's inside are checkout-presentation.test.tsx's. */
+ * the form's and the card's inside are checkout-presentation.test.tsx's; the payments line is StorePaymentsLine's
+ * (task 4.8). */
 
 vi.mock("@/features/preorder/lib/checkout", () => ({ startCheckout: vi.fn() }));
 const { PreorderForm } = await import("@/features/preorder/components/PreorderForm");
@@ -113,24 +114,5 @@ describe("PayBeside", () => {
     const ref = mockupFold("store", ".mk-pay-beside").cloneNode(true) as Element;
     ref.querySelector(".mk-price")!.remove();
     expect(differences(container.firstElementChild!, ref)).toEqual([]);
-  });
-});
-
-describe("StorePaymentsLine", () => {
-  it("prints the mockup footer's payments line, its chargeback link on the marketing site in a new tab", () => {
-    const { container } = render(<StorePaymentsLine content={storePage.payments} newTabNote={NOTE} />);
-    const line = Array.from(mockupPage("store").querySelectorAll("footer p")).find((p) => /Payments by Razorpay/.test(p.textContent ?? ""))!;
-    /* In the footer the mockup's muted colour came from `.mk-store-foot p`; in main the line names it (ks-muted). */
-    const ref = line.cloneNode(true) as Element;
-    ref.classList.add("ks-muted");
-    expect(differences(container.querySelector("p")!, ref)).toEqual([]);
-    expect(container.querySelector("p")!.textContent).toBe(`${storePage.payments.text} ${storePage.payments.link.label}${NOTE}`);
-    expect(screen.getByRole("link")).toHaveAttribute("href", `${MARKETING_ORIGIN}/refund#chargeback`);
-  });
-
-  it("is a contained block aligned with the store footer", () => {
-    const { container } = render(<StorePaymentsLine content={storePage.payments} newTabNote={NOTE} />);
-    expect(container.firstElementChild).toHaveClass("ks-store-payments");
-    expect(container.querySelector(".ks-store-payments > .kh-container > p")).not.toBeNull();
   });
 });

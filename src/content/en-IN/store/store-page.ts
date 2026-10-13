@@ -4,10 +4,10 @@ import type { FilmsStripConfig } from "@/components/sections/FilmsStrip/films-st
 import type {
   OrderSummaryCopy,
   PayBesideConfig,
-  PaymentsLineConfig,
   PreorderFormCopy,
   StoreDetailsConfig,
 } from "@/components/sections/store/StoreDetails/store-details.types";
+import type { PaymentsLineConfig } from "@/components/sections/store/StorePaymentsLine/store-payments-line.types";
 import type { StoreTopConfig } from "@/components/sections/store/StoreTop/store-top.types";
 import { CAP_UNITS_TEXT } from "@/config/site";
 import type { Meta } from "@/content/types";
@@ -17,6 +17,7 @@ import { offerCopy } from "../offer";
 import { DEFAULT_OG } from "../organization";
 import { seller } from "../seller";
 import { TRUST_COMPACT, TRUST_FULL, trustItems } from "../trust";
+import { paymentsLine } from "./payments-line";
 
 /**
  * The store page, store.kheelona.com (task 5.15; structure §5 row store.html; wiki/site/pages/store.md). Token-mode
@@ -143,11 +144,8 @@ export const storePage = {
     posters: "lazy",
     link: { label: "Back to your details", href: "#details", iconEnd: "caret-up" },
   },
-  payments: {
-    /* D042's store-footer line; the chargeback how-to lives on /refund under #chargeback. */
-    text: "No payment fees. Nothing recurring. Payments by Razorpay.",
-    link: { label: "How to raise a chargeback with your bank", href: "/refund#chargeback" },
-  },
+  /* D042's store-footer line, shared with /thanks (payments-line.ts). */
+  payments: paymentsLine,
   notConfigured: {
     title: "Pre-orders open here shortly.",
     body: "Our store is not switched on yet. Nothing is wrong at your end, and nothing has been charged.",

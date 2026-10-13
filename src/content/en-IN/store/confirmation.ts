@@ -3,12 +3,14 @@ import type { ConfirmationHeadCopy } from "@/components/sections/store/Confirmat
 import type { ThanksStepCopy } from "@/components/sections/store/ConfirmationHead/slot-text";
 import type { HelpBlockCopy } from "@/components/sections/store/HelpBlock/help-block.types";
 import type { OrderRowsCopy } from "@/components/sections/store/OrderRows/order-rows.types";
+import type { PaymentsLineConfig } from "@/components/sections/store/StorePaymentsLine/store-payments-line.types";
 import { SHIP_DATE_TEXT } from "@/config/site";
 import type { HelpLineCopy, Meta, RichTextString } from "@/content/types";
 import { DELIVERY_TEXT } from "../delivery";
 import { DEFAULT_OG } from "../organization";
 import { RETURN_DAYS } from "../policies";
 import { seller } from "../seller";
+import { paymentsLine } from "./payments-line";
 
 /**
  * The store confirmation, `store.kheelona.com/thanks` (task 5.16; structure §3.3, §5; ADR-013). Words as the approved
@@ -49,7 +51,7 @@ export const addressForm = {
 } as const satisfies AddressFormCopy;
 
 /** The shape of this module: a head per state, the order card, the address step, the next steps by tier, the help
- *  fold, and the two other states' words. */
+ *  fold, the two other states' words, and the payments line that closes main. */
 export interface ConfirmationContent {
   readonly meta: Meta;
   readonly head: {
@@ -70,6 +72,9 @@ export interface ConfirmationContent {
     readonly full: readonly ThanksStepCopy[];
   };
   readonly help: HelpBlockCopy;
+  /** The store footer's payments line, the last line of main in every state (wiki/qa/deviations.md V1; task 4.8): the
+   *  store page's own, read from payments-line.ts. */
+  readonly payments: PaymentsLineConfig;
 }
 
 const email = seller.support.email;
@@ -172,4 +177,5 @@ export const confirmation = {
     undo: `Changed your mind? Until we dispatch your Kheelu, message us with your order number and we refund everything you paid, with no fee and no reason needed. After delivery, you can still return it within ${RETURN_DAYS} days, no questions asked. Nothing is ever charged automatically.`,
     refund: { label: "Refunds and returns", href: "/refund" },
   },
+  payments: paymentsLine,
 } as const satisfies ConfirmationContent;

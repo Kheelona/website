@@ -78,19 +78,6 @@
   border-top: var(--stroke-hair) solid var(--border);
 }
 
-/* D042's payments line, the last line of main (wiki/qa/deviations.md V1): set as the store footer sets its lines
-   (store-footer.css: the same side padding, muted at the reading measure, a 28 px link box). */
-.ks-store-payments {
-  padding: var(--space-6) var(--space-4);
-}
-.ks-store-payments p {
-  max-width: var(--measure);
-}
-.ks-store-payments a {
-  padding-block: var(--space-1);
-  margin-block: calc(var(--space-1) * -1);
-}
-
 /* The store before its keys are in place, and on beta (D051): the heading, the WhatsApp button, then this note
    (store.md, Other states; no mockup: the DS heading and actions, the note a step under the button). */
 .ks-store-closed {
@@ -118,8 +105,5 @@
 @media (min-width: 1024px) {
   .ks-store {
     padding-top: var(--space-7);
-  }
-  .ks-store-payments {
-    padding-inline: var(--space-7);
   }
 }

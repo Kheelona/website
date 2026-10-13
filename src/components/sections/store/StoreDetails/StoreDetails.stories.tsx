@@ -8,7 +8,8 @@ import { storePage } from "@/content/en-IN/store/store-page";
 import { OrderSummary } from "@/features/preorder/components/OrderSummary";
 import { PreorderForm } from "@/features/preorder/components/PreorderForm";
 import { buildOffer } from "@/lib/offer/offer";
-import { PayBeside, StoreDetails, StorePaymentsLine } from "./StoreDetails";
+import { StorePaymentsLine } from "@/components/sections/store/StorePaymentsLine/StorePaymentsLine";
+import { PayBeside, StoreDetails } from "./StoreDetails";
 
 /* StoreDetails (task 5.15): the store's two columns (store.html folds 1-5) with the store page's own parts in its
  * slots, in both offer modes, and the payments line the page closes its main with. The pay button here posts to

@@ -15,6 +15,7 @@ import { offerCopy } from "../offer";
 import { DEFAULT_OG } from "../organization";
 import { seller } from "../seller";
 import { TRUST_COMPACT, TRUST_FULL, trustItems } from "../trust";
+import { paymentsLine } from "./payments-line";
 import { orderSummaryCopy, preorderFormCopy, storePage } from "./store-page";
 
 /* The store page module (task 5.15; structure §5 row store.html; wiki/site/pages/store.md). Token mode is the approved
@@ -225,11 +226,8 @@ describe("store page module: fold 6, films", () => {
 });
 
 describe("store page module: the payments line (store.md fold 7; deviations V1)", () => {
-  it("D042's words and the chargeback link on /refund, as the mockup's footer prints them", () => {
-    const line = Array.from(mockup.querySelectorAll("footer p")).find((p) => /Payments by Razorpay/.test(p.textContent ?? ""))!;
-    const a = the("a", line);
-    expect(`${storePage.payments.text} ${storePage.payments.link.label}`).toBe(seen(line));
-    expect(storePage.payments.link).toEqual({ label: seen(a), href: mockupRoute(a.getAttribute("href")!) });
+  it("is the shared line /thanks prints too (payments-line.ts, task 4.8; its words are checked there)", () => {
+    expect(storePage.payments).toBe(paymentsLine);
   });
 });
 
