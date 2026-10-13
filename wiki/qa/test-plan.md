@@ -20,6 +20,8 @@ sources:
 
 # Test plan for the new kheelona.com
 
+> **Cadence ([D052](../decisions/D052-qa-checkpoints.md), 2026-10-13):** during the build, each task runs targeted checks; the full unit suite runs at each batch merge; the whole browser suite of this plan runs at milestones M1 (end of wave 5), M2 (end of wave 6) and M3 (Gate B readiness); the full Phase 6 verification below is wave 8.
+
 What QA verifies, how, with which tools, where, and what counts as a pass, from the first built page
 (Phase 5) to the post-deploy smoke (Phase 8). Every brief §9 criterion has a test here, and every page
 has acceptance criteria (§7). The Architect's guards (architecture §14) are QA's first instrument; QA

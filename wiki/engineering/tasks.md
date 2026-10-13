@@ -1072,6 +1072,13 @@ story spec. Rulings:
 **Run in three parts** (machine load: each task builds and runs Playwright on its own ports): **A** 4.5, 5.1, 5.2, 5.3,
 5.5, 5.6, 5.10; **B** (after 4.5 merges: legal shapes) 5.4, 5.7, 5.8, 5.9, 5.11-5.14; **C** 5.15-5.19.
 
+**QA from part B on ([D052](../decisions/D052-qa-checkpoints.md)):** a page task proves its SPA items for its own
+route at the three approved widths with targeted checks; the full unit suite runs once per batch merge and the full
+browser suite at milestone **M1** (end of wave 5). Review risk: `high` for 5.15 and 5.16 (checkout, under ADR-013)
+and any task that touches shared guards, shared content or templates; `normal` for the other pages and the articles;
+`mechanical` for renames, comments and moved files. Where a row or SPA item says "`npm run verify` green", read it as
+the targeted checks for the task and the full suite at the merge gate.
+
 Every page task: SPA (above); owns its content module(s) and route file(s); reads shared content
 read-only (corrections to `faqs.ts`, `trust.ts`, `offer.ts`, `routes.ts` or `seller.ts` go to the main
 session). Store tasks also own the checkout tests and signature fixtures named in their row; every

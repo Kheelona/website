@@ -31,7 +31,7 @@ to-dos: WhatsApp calls (D032),
 F11 proof, C17 Supabase region, provider contracts vs the Home safety line, F4 specs, GST/HSN, section D
 checks (C1, C2, C4, C8, C11, C12, C15, C18). Working defaults may be overridden (gate-a-open-items §2-3).
 
-**Founder decisions so far:** D010-D051 + R1-R10 (see index). Latest: D051 beta without store integrations;
+**Founder decisions so far:** D010-D052 + R1-R10 (see index). Latest: **D052 QA at checkpoints** (from wave 5 part B); D051 beta without store integrations;
 D050 WhatsApp bubble; D049 motion picks; D048 beta hosts.
 
 **Traps:** read legacy files at tag `archive/pre-reset-2026-10-10` (D008); never `git add -A`;

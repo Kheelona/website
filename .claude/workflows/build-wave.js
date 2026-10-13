@@ -1,6 +1,6 @@
 export const meta = {
   name: 'build-wave',
-  description: 'Phase 5: build one wave of tasks in parallel git worktrees, adversarially review each against its acceptance criteria, fix and re-review',
+  description: 'Phase 5: build one wave of tasks in parallel git worktrees; targeted checks per task; review depth by risk (D052)',
   phases: [{ title: 'Build' }, { title: 'Review' }, { title: 'Fix' }, { title: 'Screens' }],
 }
 
@@ -39,7 +39,7 @@ const REVIEW = {
 
 const VERIFY_NOTE = W === 1
   ? `Wave 1 tasks run in parallel, so the other wave-1 tasks' files are NOT in your tree, and \`npm run verify\` exists only once task 1.1 lands. Task 1.1 creates it and must run it; every other wave-1 task runs the equivalent itself: \`npx tsc --noEmit\`, \`npx vitest run\` (whole suite), \`npx eslint <every file you changed>\`, \`node scripts/ds-checksums.mjs\`. Also run \`npm run build\` (the full Next production build; unit tests do not catch Turbopack failures). Your work must be green on its own tree.`
-  : `Run \`npm run verify\` and \`npm run build\` (the full Next production build: unit tests do not catch Turbopack failures) green on your own tree${W >= 3 ? ', and the e2e specs your task owns (`npx playwright test <spec>`)' : ''}.`
+  : `TARGETED CHECKS ONLY (founder decision D052, wiki/decisions/D052-qa-checkpoints.md): do NOT run the full \`npm run verify\` or the whole Playwright suite; the main session runs the full unit suite and the production build once per batch merge, and the full browser suite only at milestones. Run, green, on your own tree: (1) \`npx tsc --noEmit\` (and \`npx tsc --noEmit -p tsconfig.guards.json\` if you touched test/); (2) \`npx eslint <every file you changed>\`; (3) \`npx vitest related --run <every source file you changed>\` plus the test files you added or changed; (4) \`npx vitest run test/guards\` (the whole-tree rules: tokens, banned phrases, client icons, motion, mockup markup); (5) \`node scripts/ds-checksums.mjs\`. (6) Only if your task adds or changes a route, a layout, src/app, next.config, the CSS pipeline or package.json: \`npm run build\` once. (7) Only for a page or route task: that route's browser specs at the three approved widths (360, 390, 1440; for example \`KH_SLUGS=<slug> npm run test:visual\`, \`npm run test:text -- <slug>\`, and axe, no-sideways, first-screen and links filtered to your route with \`--grep\`), on the ports the notes give you; ${W >= 3 ? 'plus any e2e spec your task owns (`npx playwright test <spec>`). ' : ''}Report each command and the tail of its output. A check that times out under machine load is re-run alone before you call it red.`
 
 function buildPrompt(t) {
   return `You are building task ${t.id} of Phase 5 wave ${W} on the Kheelona.com website: "${t.title}".
@@ -61,8 +61,11 @@ ${t.extra ? `\nNOTES FROM THE MAIN SESSION FOR THIS TASK:\n${t.extra}\n` : ''}
 Return the structured report: worktree path, branch, head commit, commits, files changed, the verify commands with the tail of their output, every acceptance item with status and evidence, catalogue rows touched, and anything blocked.`
 }
 
+const risk = (t) => (t.risk === 'high' || t.risk === 'mechanical' ? t.risk : 'normal')
+
 function reviewPrompt(t, b, round) {
-  return `Adversarial review (round ${round}) of Phase 5 task ${t.id} ("${t.title}") on the Kheelona.com website. Your job is to find what is wrong or missing, not to approve. Do NOT edit, create, stage or commit files in the worktree (scratch files only under /private/tmp/claude-501/ and deleted afterwards; if you plant a violation to prove a guard red, restore it with \`git checkout -- <file>\` and confirm \`git status\` is clean at the end).
+  const high = risk(t) === 'high'
+  return `${high ? 'Adversarial review' : 'Review'} (round ${round}, ${risk(t)} risk, D052) of Phase 5 task ${t.id} ("${t.title}") on the Kheelona.com website. Your job is to find what is wrong or missing, not to approve. Do NOT edit, create, stage or commit files in the worktree (scratch files only under /private/tmp/claude-501/ and deleted afterwards; if you plant a violation to prove a guard red, restore it with \`git checkout -- <file>\` and confirm \`git status\` is clean at the end).
 
 Worktree: ${b.worktree_path} (branch ${b.branch}, head ${b.head}); base commit ${BASE}. cd there first.
 Spec: section "### ${t.id}" of ${REPO}/wiki/engineering/tasks.md, with "How to read a task", the standard acceptance lists and "Guard-test ownership"; the architecture.md and ADR sections it cites.
@@ -70,16 +73,16 @@ The builder's report: ${JSON.stringify({ acceptance: b.acceptance, verify: b.ver
 
 Check, with evidence for each:
 1. Ownership: \`git diff --name-only ${BASE}..HEAD\` lists only files the task Owns (plus its catalogue rows). Nothing under design-system/ changed; \`node scripts/ds-checksums.mjs\` passes; no .env file, secret, real name or phone number from the app demo is staged; no mockup/_work file committed.
-2. Every acceptance item, independently: run the tests, read the code, re-derive numbers, prove guards red on a planted violation. Do not trust the builder's evidence.
-3. Verify: ${VERIFY_NOTE}
+2. Every acceptance item against the diff (\`git diff ${BASE}..HEAD\`) and the code. ${high ? 'Check each item independently: run its tests, re-derive numbers, and prove every guard this task added or changed red on a planted violation. Do not trust the builder\'s evidence.' : 'Read the code for each item; run the tests behind any item whose evidence is thin or doubtful; prove red only a guard this task added or changed. Do not re-derive what the builder\'s evidence already shows convincingly.'}
+3. Checks: run the task's targeted checks once (below), not the full suites; reuse the builder's production build in the worktree if HEAD has not moved since it was built. ${VERIFY_NOTE}
 4. Quality: matches the approved mockup and the plan; DS tokens only; no copy, price or URL typed in components; tracking IDs and event names unchanged; checkout logic unchanged; correct for Next.js 16.3.8 (node_modules/next/dist/docs/); no test weakened; nothing that will break a later wave's owned file.
-pass = true only if there is no blocking issue and verify is green. Each issue: severity, the acceptance item, what is wrong (file:line), and the exact fix.`
+pass = true only if there is no blocking issue and the targeted checks are green (verify_green). Blocking means an acceptance item is not met, a rule is broken, or something will break at the merge; everything else is minor (it goes to a follow-up list, it does not hold the task). Each issue: severity, the acceptance item, what is wrong (file:line), and the exact fix.`
 }
 
 function fixPrompt(t, b, review) {
   return `Fix the review findings on Phase 5 task ${t.id} ("${t.title}") of the Kheelona.com website. Work in the existing worktree ${b.worktree_path} on branch ${b.branch} (cd there; do not create another worktree; node_modules is already present). The spec is section "### ${t.id}" of ${REPO}/wiki/engineering/tasks.md.
 
-Findings to fix (all blocking ones; minor ones too unless a fix would leave your Owns list):
+Findings to fix: every blocking one; a minor one only if it is small and inside your Owns (otherwise list it in notes as a follow-up):
 ${JSON.stringify(review.issues, null, 1).slice(0, 12000)}
 
 Same rules as the build: only your Owns files, stage by name, commit with the trailer line Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>, never push or merge, never edit design-system/. ${VERIFY_NOTE}
@@ -104,17 +107,22 @@ async function runTask(t) {
     b = await agent(buildPrompt(t), { label: `build:${t.id}`, phase: 'Build', schema: BUILD, agentType: 'builder', isolation: 'worktree' })
   }
   if (!b) return { task: t.id, error: 'builder returned nothing' }
+  // D052: review depth by risk. high: review, fix, re-review (2 reviews at most). normal: one review; a blocking
+  // finding gets one fix, which the main session checks at the merge. mechanical: no review; the main session checks.
+  const level = risk(t)
+  const maxReviews = level === 'high' ? 2 : level === 'normal' ? 1 : 0
   const rounds = []
-  for (let round = 1; round <= 3; round++) {
+  let status = level === 'mechanical' ? 'not-reviewed' : 'failed'
+  for (let round = 1; round <= maxReviews; round++) {
     const r = await agent(reviewPrompt(t, b, round), { label: `review:${t.id}#${round}`, phase: 'Review', schema: REVIEW })
     if (!r) { rounds.push({ round, error: 'review returned nothing' }); break }
     rounds.push({ round, pass: r.pass, verify_green: r.verify_green, ownership_ok: r.ownership_ok, issues: r.issues, summary: r.summary })
-    if (r.pass || round === 3) break
+    if (r.pass) { status = 'passed'; break }
     const f = await agent(fixPrompt(t, b, r), { label: `fix:${t.id}#${round}`, phase: 'Fix', schema: BUILD, agentType: 'builder' })
-    if (f) b = { ...b, ...f, worktree_path: b.worktree_path, branch: b.branch }
+    if (f) { b = { ...b, ...f, worktree_path: b.worktree_path, branch: b.branch }; if (round === maxReviews) status = 'fixed-unreviewed' }
   }
   const last = rounds[rounds.length - 1] || {}
-  return { task: t.id, title: t.title, worktree_path: b.worktree_path, branch: b.branch, head: b.head, commits: b.commits, files_changed: b.files_changed, acceptance: b.acceptance, blocked: b.blocked, notes: b.notes, catalogue_rows: b.catalogue_rows, final_pass: !!last.pass, rounds }
+  return { task: t.id, title: t.title, risk: level, status, worktree_path: b.worktree_path, branch: b.branch, head: b.head, commits: b.commits, files_changed: b.files_changed, acceptance: b.acceptance, blocked: b.blocked, notes: b.notes, catalogue_rows: b.catalogue_rows, final_pass: status === 'passed', rounds }
 }
 
 const SHOT_COMMON = `Round 2 edits to a REAL Kheelona parent-app screenshot (576 wide) for the website. Read ${REPO}/wiki/decisions/D044-app-screens-on-the-site.md and D046 first (the founder's rulings). The round-1 masters are ${REPO}/mockup/_work/appshots/edited/<name>.png (already redacted: the child is "Aarav", the toy is "Kheelu", recorder icon and Android nav bar removed); source frames are in ${REPO}/mockup/_work/appshots/frames/ (t*.png) and you may extract more with ffmpeg from ${REPO}/mobileapp-live-demo-oct2026.mp4 into ${REPO}/mockup/_work/appshots/frames/ (never copy, commit or upload that video; it shows a real family and the founder's inbox). The round-1 scripts and font fitting are in ${REPO}/mockup/_work/appshots/work/ (build.py, fit.py, build_privacy_r2.py): reuse them. Fonts: Instrument Sans (ls ~/Library/Fonts /Library/Fonts | grep -i instrument); Devanagari: /System/Library/Fonts/Kohinoor.ttc (Kohinoor Devanagari), matched to the app's Devanagari weight and size. Edit cleanly: sample backgrounds, keep shapes and spacing, prefer moving the app's own pixels over drawing, draw new text fitted to size, weight, colour and softness, iterate by reading zoomed crops until a careful viewer cannot tell. Final canvas 576 x 1209. Overwrite ${REPO}/mockup/_work/appshots/edited/<name>.png and ${REPO}/mockup/assets/app/<name>.webp (WebP q90, no upscaling). Do not stage or commit anything. Return paths, final size and every edit.`
@@ -138,7 +146,7 @@ async function runShot(s) {
   return { name: s.name, ...r, check: v }
 }
 
-// Resume entries: { id, title, extra?, resume: { worktree_path, branch, head?, stage: 'finish' | 'review' } }
+// Resume entries: { id, title, extra?, risk?: 'high' | 'normal' | 'mechanical' (D052; default normal), resume: { worktree_path, branch, head?, stage: 'finish' | 'review' } }
 const taskRuns = args.tasks.map(t => runTask(t))
 const shotRuns = args.screens ? SHOTS.map(s => runShot(s)) : []
 const results = await Promise.all(taskRuns.map(p => p.catch(e => ({ error: String(e) }))))

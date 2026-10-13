@@ -25,9 +25,12 @@ Workflow({ name: "build-wave", args: {
 ```
 
 Per task it runs a pipeline: **builder** (agent type `builder`, `isolation: worktree`, creates branch
-`build/w<wave>-<id>`, clones `node_modules` with `cp -cR`, commits by name, never pushes) → **adversarial
-review** against the task's acceptance criteria (no edits; checks ownership, DS checksums, verify, each
-item independently) → if not passed, **fix** in the same worktree → review again (at most 3 reviews).
+`build/w<wave>-<id>`, clones `node_modules` with `cp -cR`, commits by name, never pushes; **targeted checks
+only**, [D052](../decisions/D052-qa-checkpoints.md)) → **review by risk** (each task's `risk` in the args:
+`high` = adversarial review, fix, re-review, 2 reviews at most; `normal`, the default = one review, one fix for a
+blocking finding, which the main session checks at the merge; `mechanical` = no review). The result carries
+`status`: `passed`, `fixed-unreviewed` (check the fix at the merge), `not-reviewed` (check at the merge) or
+`failed`. Until 2026-10-13 every task ran the full suites in build, review and each fix, with up to 3 reviews.
 The result per task: worktree path, branch, head, commits, acceptance evidence, `final_pass`, every
 review round. Worktrees live in `.claude/worktrees/wf_<run>-<n>/` (excluded in `.git/info/exclude`;
 never stage them).
@@ -40,9 +43,10 @@ never stage them).
 2. **Merge** each `build/w<wave>-<id>` into `reset/website-v2`, in task-id order, `git merge --no-ff`
    (no rebase, no force). Expected conflicts: only catalogue rows in `wiki/engineering/components.md` and
    `assets.md` (keep both sides' rows).
-3. **Wave close:** on the merged branch run `npm run verify` (from wave 3 also `npm run verify:e2e`) and
-   `node scripts/ds-checksums.mjs`. Route any failure to the task that owns the failing file (fix agent),
-   re-run until green.
+3. **Batch merge gate (D052):** on the merged branch run `npm run verify` and `npm run build` once. Read the
+   diff of any `fixed-unreviewed` or `not-reviewed` task. Route any failure to the task that owns the failing file
+   (fix agent), re-run until green. The full `npm run verify:e2e` runs only at the milestones: **M1** end of wave 5,
+   **M2** end of wave 6, **M3** Gate B readiness.
 4. Remove the worktrees (and the tool's leftover `worktree-wf_*` branches, which sit at `main`'s old head and must never be pushed: `git branch -D worktree-wf_<run>-<n>`): `git worktree remove .claude/worktrees/wf_<run>-<n>` (add `--force` only if
    it is locked by a finished run), then `git branch -d build/w<wave>-<id>` after the merge.
 5. Update [status](../status.md), [log](../log.md) and this page's §4; commit by name.
