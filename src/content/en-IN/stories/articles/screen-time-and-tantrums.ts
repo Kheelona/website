@@ -1,11 +1,13 @@
 /// <reference types="next/image-types/global" />
-import paperCrown from "@ds/assets/Photo library/ira-04-paper-crown-web.webp";
+import homeworkDesk from "@ds/assets/Photo library/kabir-03-homework-desk-web.webp";
 import type { Article } from "@/content/types";
 import { DEFAULT_OG, TEAM_BYLINE } from "../../organization";
 
 /**
  * Screen time and tantrums: what is actually happening: rewritten (task 5.17; copy page
- * story-screen-time-and-tantrums.md, CMO review cmo-review-articles-5.17-2026-10-14.md). No mockup: it renders through
+ * story-screen-time-and-tantrums.md, CMO review cmo-review-articles-5.17-2026-10-14.md; fixes of task 5.20a, CMO M7,
+ * M8, M10 and M16, fix-pass review cmo-review-article-fixes-5.20a-2026-10-14.md, N1 and N2: the head photo is
+ * kabir-03, a 9:16 master the head shows in its 4:5 frame as a centred crop, as tara-03's). No mockup: it renders through
  * the article template, held to the approved articles' shared parts. Card words as the hub's (stories.md fold 2),
  * related links and dates as the stub held them (the main session's note for 5.17). One in-text product link (fold 6);
  * no countdown tip anywhere (source verification C35).
@@ -15,7 +17,7 @@ export const article = {
   meta: {
     title: "Screen time tantrums: why they happen, what helps · Kheelona",
     description:
-      "Screen time tantrums: why a two-minute warning made children more upset in one study, and how to make switching off boring instead of explosive.",
+      "Screen time tantrums: one study found a two-minute warning made children more upset. What helps instead, and how to make switching off boring.",
     og: DEFAULT_OG,
   },
   card: {
@@ -31,8 +33,8 @@ export const article = {
     author: TEAM_BYLINE,
     readMinutes: 2,
     image: {
-      src: paperCrown,
-      alt: "A laughing girl in a sky-blue T-shirt holds a yellow paper crown on her head, beside a table scattered with crayons, cut paper and a bottle of glue.",
+      src: homeworkDesk,
+      alt: "A boy in round glasses and a white school shirt grins, one finger at his nose, as he writes in an exercise book at a wooden desk by a window, Kheelu sitting at the far end of the desk.",
     },
   },
   /* Fold 2: the answer first (54 words), then a hook to the finding below. */
@@ -108,7 +110,7 @@ export const article = {
         },
         {
           kind: "p",
-          text: "Need something ready for that moment? [Kheelu](/products/kheelu) is one screen-free option: a plush toy for ages 3 to 7 that answers your child, then asks a question back. If your child is 3, keep a grown-up nearby while they play.",
+          text: "Looking for something to hand over when the screen goes dark? [Kheelu](/products/kheelu) is one screen-free option: a plush toy for ages 3 to 7 that answers your child, then asks a question back. It is not a toy for children under 3. If your child is 3, keep a grown-up nearby while they play.",
         },
         {
           kind: "p",

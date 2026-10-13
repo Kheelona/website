@@ -19,7 +19,10 @@ sources:
   - ../../decisions/D013, D015, D016, D017, D025, D026, D027, D041
   - "src/content/en-IN/stories/articles/screen-free-does-not-mean-silent.ts (stub: card, related, dates), read in the w5c-5.17 worktree 2026-10-14"
   - "src/lib/stories.ts:74-97 (the live article, legacy input only), read in the same worktree"
-  - design-system/project/01-writing.md:19-26,111-113; 03-cast.md:102 (read-only)
+  - design-system/project/01-writing.md:19-26,111-113; 03-cast.md:9-11, 79-81, 113 (read-only)
+  - ../../qa/cmo-review-articles-5.17-2026-10-14.md (M17; applied by task 5.20a, see the foot of this page)
+  - ../../qa/cmo-review-article-fixes-5.20a-2026-10-14.md (N1: the head moves to ira-02, with the busy-hands guide's alt)
+  - ../../engineering/tasks.md (5.20, the screen-time photo pool) and ../../engineering/assets.md (§1, the pool photos' other uses)
 ---
 
 # Story: Screen-free does not mean silent
@@ -95,10 +98,19 @@ line inside the story-box fold, with the age limits; the live byline names a per
 - **Lead:** the hub card's summary, word for word, extended by one clause, as the learning-toys guide extends its own.
 - Breadcrumb links: "Stories" → `/stories`; "Screen time" → `/stories#screen-time`.
 - **Read time:** about 650 words in the article body.
-- **Image** (`head.image`, `kh-photo`, 4:5): `myra-01-breakfast-why-web.webp`. Alt: "A little girl in a mustard frock
-  kneels on her chair at the breakfast table, hands open mid-question, talking to Kheelu beside her steel plate." The DS
-  photo for the age-3 "why" moment (`03-cast.md:102`): a talking breakfast table with no screen in sight. It shows
-  Kheelu, on the one guide whose topic is screen-free toys (question 1). File checked by eye 2026-10-14.
+- **Image** (`head.image`, `kh-photo kh-photo--wide`, 16:9): `ira-02-drawing-the-dragon-web.webp`. Alt: "A laughing
+  girl in a yellow frock lies on her tummy on a rug, a blue crayon in her hand, a big drawing of a green dragon in front
+  of her and Kheelu sitting beside her." The DS photo for "Creativity and imagination" (`03-cast.md:113`): crayons on a
+  big sheet of paper, a screen-free toy in use, with Kheelu as one more thing in the room, waiting beside the child
+  rather than performing at her, as the answer's shop test puts it. No meal, no child-and-toy exchange standing in for
+  the adult of fold 4's research line, and the child is the cast's 5-year-old (`03-cast.md:11`), so the page's age-3
+  line needs no grown-up in frame (voice rule 17). From task 5.20's screen-time pool. It also heads the busy-hands
+  guide, and this alt is that guide's, word for word (the photo's one alt); the two guides link to each other in
+  neither direction ([CMO fix pass](../../qa/cmo-review-article-fixes-5.20a-2026-10-14.md) N1;
+  [assets §1](../../engineering/assets.md#1-design-system-assets-used-by-the-approved-pages)). The photo is 16:9, so the
+  head takes the wide layout (two even columns, the 16:9 frame), as the safe-AI-toy guide's head; the photo's shape
+  sets it. Kheelu stays in the head, on the one guide whose topic is screen-free toys (question 1). No name or age in
+  the alt; the light on Kheelu is not described (D018). File checked by eye 2026-10-14.
 
 ---
 
@@ -303,7 +315,7 @@ As Home: **₹499`{price-source}` today** · **refundable · ₹4,999`{price-sou
 | Primary in an answer-first block in the first ~100 words | Yes | Fold 2 H2 "What are screen-free toys?" (SF1) and its 57-word answer |
 | An H2 with the primary or a close variant | Yes | Fold 2 H2; fold 6 H2 "How do you choose screen-free toys?"; fold 7 H2 carries "screen-free gift" (GFT-4) |
 | The §5.2 H2 ("Story box or a toy that talks back?") | Yes | Fold 8 (CMP-5) |
-| Alt text: "screen-free play" only if true | Yes | The breakfast photo is described as it is; Kheelu named, no keyword forced |
+| Alt text: "screen-free play" only if true | Yes | The dragon-drawing photo is described as it is; Kheelu named, no keyword forced |
 | Density | Yes | "screen-free toys" 4 times in `<main>` (H1, lead, fold 2 H2, fold 6 H2): about 1.2% of about 650 words; "Kheelu" 3 times including the close and its button (0.5%) |
 | ST4 "Is screen time bad for my child's speech?" | Not answered here, on purpose | A speech question needs the D025 one-line disclaimer, and a speech page carries no pitch; this page has the one product link. Question 3 |
 | Words never placed | Yes | No speech or health terms, no language outcome for Kheelu, no "lessons" or interrupt-a-story line, no brand of story player, no price in the body |
@@ -323,10 +335,13 @@ None.
 
 ## Questions for the founder (website only)
 
-1. **Head photo with Kheelu.** (a) Myra at breakfast, talking to Kheelu (as drafted: this guide's topic is screen-free
-   toys, and the product is named once in the body); (b) a photo without Kheelu, as the other screen-time guides use
-   (the two unused no-Kheelu photos already head the gentle-way and busy-hands guides, so this would repeat a photo from
-   another guide). **Recommend (a).**
+1. **Head photo with Kheelu.** (a) A girl drawing a dragon with crayons, Kheelu sitting beside her (`ira-02`, as
+   drafted since the task 5.20a fix pass, CMO N1; shared with the busy-hands guide, which this page does not link to
+   and which does not link here: this guide's topic is screen-free toys, the product is named once in the body, and Kheelu is one
+   more toy in the room, not the child's conversation partner); (b) a photo without Kheelu: the DS has five scene photos
+   without Kheelu (the `-04` set), task 5.20 gives them to the talking guides, so this would repeat a photo that heads
+   other guides. The first draft's photo, Myra at breakfast talking to Kheelu, is out (CMO M17: a 3-year-old alone with
+   the toy, at a meal, on the page whose research line credits talk with a caring adult). **Recommend (a).**
 2. **Is this a "language page"?** Fold 4 cites Harvard on language and social skills. (a) No: it is a screen-free toys
    guide in the Screen time topic; keep the one product link, four folds from the research line, with no language claim
    and no D025 line (as drafted); (b) treat it as a language page: add the D025 one-line disclaimer and drop the product
@@ -353,4 +368,30 @@ None.
 | Close block, price sentence, sticky bar | [home, CTA block](home.md#cta-block) and [phone sticky bar](home.md#phone-sticky-bar) sources ([D028](../../decisions/D028-price-wording.md), [D041](../../decisions/D041-gate-a-round-1.md), [D023](../../decisions/D023-new-order-delivery.md), [D021](../../decisions/D021-returns-policy.md), [D032](../../decisions/D032-grievance-block-and-call-line.md)) |
 | Cut live lines | `src/lib/stories.ts:90, 92, 93, 95` (a claim about parents, an unsourced language line, a line that contradicts Story mode, a price with no total) |
 | Byline | Live author removed from the site: [facts, company](../../product/facts.md#company-facts-the-site-uses-as-proof) |
-| Photo | DS `03-cast.md:102` (Myra 01, "Age-3 'why' messages"); file checked by eye 2026-10-14 |
+| Photo | DS `03-cast.md:113` (Ira 02, "Creativity and imagination, web hero"; Ira is 5, `03-cast.md:11`); task 5.20's screen-time pool ([tasks](../../engineering/tasks.md), 5.20); also the busy-hands guide's head, with the same alt, and neither guide links to the other ([CMO fix pass](../../qa/cmo-review-article-fixes-5.20a-2026-10-14.md) N1; [assets §1](../../engineering/assets.md#1-design-system-assets-used-by-the-approved-pages)); file checked by eye 2026-10-14 |
+
+## Changes after approval (task 5.20a)
+
+The CMO approved this page in round 1 with one minor fix for it
+([CMO review, 5.17](../../qa/cmo-review-articles-5.17-2026-10-14.md): M17). Task 5.20a applied it. No Copy block
+changed, and no research statement was added.
+
+1. **Fold 1, the head photo and its alt (M17).** Was `myra-01-breakfast-why` (Myra, the cast's 3-year-old, alone at the
+   breakfast table talking to Kheelu beside her plate). Now `advik-01-counting-carriages`, with its own alt. Why: the
+   old picture showed the exchange with the toy on the page whose one research line credits exchanges with "a caring
+   adult", a 3-year-old alone on a page that says to keep a grown-up nearby at 3, and a talking device at a meal on a
+   cluster that keeps meals for talking together. The CMO's pick, `kabir-02-block-rocket`, now heads the
+   should-kids-use-AI guide (task 5.19, [assets §1](../../engineering/assets.md#1-design-system-assets-used-by-the-approved-pages))
+   and is outside task 5.20's screen-time pool ([tasks](../../engineering/tasks.md), 5.20). `advik-01` is the pool's
+   match for the CMO's reasons: a screen-free toy in use, Kheelu sitting beside it as one more toy, no meal, a
+   4-year-old. It is 4:5, so the head keeps its layout.
+2. **Fold 1 again, at the fix pass (CMO N1).** `advik-01` also headed the screen-time-by-age guide, which links here
+   both ways, with another alt, which undid M16 there. Now `ira-02-drawing-the-dragon`, with the busy-hands guide's alt
+   word for word, so the photo keeps one alt. Why: of the 5.20a pool, `advik-01` stays on the screen-time-by-age guide,
+   `tara-01` on the gentle-way guide and `kabir-03` heads the tantrums guide, all three linked to this page or from it;
+   `advik-03` (a studio cut-out, "best for" ads) and `myra-02` (the 3-year-old alone) do not fit. `ira-02` passes M17's
+   tests as `advik-01` did: a screen-free toy in use, Kheelu beside the child as one more thing in the room, no meal,
+   and a 5-year-old. Its one repeat is the busy-hands guide, and neither page links to the other. The photo is 16:9, so
+   the head takes the wide layout.
+3. **Notes kept true:** fold 1's image note; question 1 (the options now that the breakfast photo is out); the keyword
+   table's alt row; the Sources table's Photo row; the front matter's sources.

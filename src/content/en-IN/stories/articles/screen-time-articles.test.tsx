@@ -3,7 +3,7 @@ import { basename, join } from "node:path";
 import sharp from "sharp";
 import { beforeAll, describe, expect, it } from "vitest";
 import { STORE_URL } from "@/config/site";
-import type { Article, ArticleCard, IsoDate, ListBlock, ProseBlock } from "@/content/types";
+import type { Article, ArticleCard, ArticlePart, IsoDate, ListBlock, ProseBlock } from "@/content/types";
 import { ArticleTemplate } from "@/layouts/ArticleTemplate/ArticleTemplate";
 import { isPlaceholder } from "@/lib/content/placeholder";
 import { toPlainText } from "@/lib/content/plain-text";
@@ -22,8 +22,9 @@ import { article as tantrums } from "./screen-time-and-tantrums";
 import { article as rules } from "./screen-time-rules-parents-swear-by";
 import { article as gentleWay } from "./the-gentle-way-off-the-phone";
 
-/* The six screen-time articles (task 5.17): each module is its copy page (wiki/site/pages/story-<slug>.md, CMO review
- * wiki/qa/cmo-review-articles-5.17-2026-10-14.md) word for word, rendered through the article template. There is no
+/* The six screen-time articles (task 5.17; copy fixes of task 5.20a): each module is its copy page
+ * (wiki/site/pages/story-<slug>.md, CMO reviews wiki/qa/cmo-review-articles-5.17-2026-10-14.md and
+ * wiki/qa/cmo-review-article-fixes-5.20a-2026-10-14.md) word for word, rendered through the article template. There is no
  * mockup for them, so:
  *   - text parity is with the copy page: the head (crumbs, h1 and its accent, lead, byline, photo and alt), the reading
  *     column (the answer, every part, the sources) and the related guides, read from the page's Copy blocks;
@@ -120,6 +121,19 @@ const SCREEN_TIME: readonly (readonly [ArticleSlug, Article, Stub])[] = [
       updated: "2026-09-05",
     },
   ],
+];
+
+/** The screen-time guides with no in-text product link. The 3-6-9-12 guide names Tisseron's AI markers ("no connected
+ *  toys before 6"), so the working default of open question P25 drops its product line, as on the talking guides (task
+ *  5.20a; its copy page's fold 7). Every other screen-time guide links the product page once (strategy §3.3). */
+const NO_PRODUCT_LINK: ReadonlySet<ArticleSlug> = new Set(["screen-time-rules-parents-swear-by"]);
+
+/** Tisseron's 3-6-13-18 markers about AI, all four (source verification 2026-10-14 §1a, the ready line). */
+const AI_MARKERS = [
+  "no digital tool before 3",
+  "no connected toys before 6",
+  "no internet or general-purpose chatbots before 12, except used with an adult",
+  "no digital companion before 18",
 ];
 
 /** The rewrite's date: every rewritten article's `updated` (BlogPosting dateModified and the sitemap), as task 5.6
@@ -368,11 +382,11 @@ describe.each(SCREEN_TIME)("the screen-time article %s", (slug, article, stub) =
     expect(same(words(column(article)))).toBe(same(expected));
   });
 
-  it("links in its text exactly where the copy page links, the product page once (strategy §3.3)", () => {
+  it("links in its text exactly where the copy page links, the product page once (strategy §3.3), or never under P25", () => {
     const expected = copyLinks(columnFolds(folds).flatMap((f) => f.lines));
     const links = [...column(article).querySelectorAll("a:not(.ks-src)")].filter((a) => a.closest(".ks-sources") === null);
     expect(links.map((a) => [same(a.textContent ?? ""), a.getAttribute("href")])).toEqual(expected.map(([label, path]) => [same(label), path]));
-    expect(links.filter((a) => a.getAttribute("href") === "/products/kheelu")).toHaveLength(1);
+    expect(links.filter((a) => a.getAttribute("href") === "/products/kheelu")).toHaveLength(NO_PRODUCT_LINK.has(slug) ? 0 : 1);
   });
 
   it("numbers its sources in reading order, cites every one, and every marker names a note (D026, B15)", () => {
@@ -465,6 +479,25 @@ describe.each(SCREEN_TIME)("the screen-time article %s", (slug, article, stub) =
   });
 });
 
+describe("the 3-6-9-12 guide under open question P25's working default (task 5.20a)", () => {
+  const text = () => same(words(column(rules)));
+
+  it("names Tisseron's four AI markers in full, together in one fold, never a selection", () => {
+    const fold3 = rules.body.find((b): b is ArticlePart => b.kind === "part" && (b.title?.startsWith("Where does") ?? false));
+    expect(fold3, "fold 3, where the rule comes from").toBeDefined();
+    const fold3Text = same((fold3?.blocks ?? []).flatMap((b) => (b.kind === "p" ? [toPlainText(b.text)] : [])).join(" "));
+    for (const marker of AI_MARKERS) {
+      expect(text(), marker).toContain(marker);
+      expect(fold3Text, `fold 3: ${marker}`).toContain(marker);
+    }
+  });
+
+  it("names Kheelu nowhere in its reading column: no product line beside the markers", () => {
+    expect(text()).not.toMatch(/\bKheelu\b/);
+    expect(NO_PRODUCT_LINK).toEqual(new Set([rules.slug]));
+  });
+});
+
 describe("the screen-time articles together", () => {
   it("are all six of the topic's guides, none of them a stub any more", () => {
     expect(SCREEN_TIME.map(([slug]) => slug)).toEqual([
@@ -481,6 +514,51 @@ describe("the screen-time articles together", () => {
   it("never import the stub builder", () => {
     for (const [slug] of SCREEN_TIME) {
       expect(readRepoFile(`src/content/en-IN/stories/articles/${slug}.ts`), slug).not.toMatch(/from "\.\/stub"/);
+    }
+  });
+
+  /* Fewer repeated head photos, one alt per photo (tasks.md 5.20 item 2; CMO 5.17 M16; fix-pass review N1): a reader who
+     taps from one guide to a linked one never meets the same picture again, and a picture reads the same wherever it
+     heads a guide. Held across the whole journal for the photos of task 5.20a's pool; the 3-6-9-12 guide keeps
+     advik-04 (its copy page's question 5, under P25), whose other heads are 5.20b's and 5.20c's to spread. */
+  const journal = Object.values(articles) as Article[];
+  const headPhoto = (a: Article) => (a.head.image === undefined ? undefined : photoFile(a));
+  /** Task 5.20a's head-photo pool (tasks.md 5.20): unused photos with Kheelu, apart from 5.20b's and 5.20c's. */
+  const POOL = ["advik-01", "advik-03", "ira-02", "kabir-03", "myra-02", "tara-01"];
+  const pooled = SCREEN_TIME.filter(([, a]) => POOL.some((p) => headPhoto(a)?.startsWith(`${p}-`)));
+  /** The guides an article sends readers to: its related list and the article paths linked in its text. */
+  const linkedGuides = (a: Article): string[] => [
+    ...a.related,
+    ...nodes(readingStrings(a)).flatMap((n) => (n.kind === "link" && n.href.startsWith("/stories/") ? [n.href.slice("/stories/".length).split("#")[0]] : [])),
+  ];
+
+  it("head five of the six guides from task 5.20a's pool, as the fix-pass review's N1 places them", () => {
+    expect(Object.fromEntries(SCREEN_TIME.map(([slug, a]) => [slug, headPhoto(a)]))).toEqual({
+      "how-much-screen-time-for-a-3-to-6-year-old": "advik-01-counting-carriages-web.webp",
+      "screen-time-rules-parents-swear-by": "advik-04-floor-train-web.webp",
+      "screen-time-and-tantrums": "kabir-03-homework-desk-web.webp",
+      "the-gentle-way-off-the-phone": "tara-01-naming-feelings-web.webp",
+      "busy-hands-no-screens": "ira-02-drawing-the-dragon-web.webp",
+      "screen-free-does-not-mean-silent": "ira-02-drawing-the-dragon-web.webp",
+    });
+    expect(pooled.map(([slug]) => slug)).toEqual(SCREEN_TIME.map(([slug]) => slug).filter((slug) => slug !== rules.slug));
+  });
+
+  it("give each of their head photos one alt, wherever in the journal it heads a guide", () => {
+    for (const [slug, article] of pooled) {
+      const photo = headPhoto(article);
+      const heads = journal.filter((a) => headPhoto(a) === photo);
+      expect(new Set(heads.map((a) => a.head.image!.alt)), `${photo} heads ${heads.map((a) => a.slug).join(", ")} (from ${slug})`).toEqual(
+        new Set([article.head.image!.alt]),
+      );
+    }
+  });
+
+  it("never share a head photo with a guide they link to, or that links to them", () => {
+    for (const [slug, article] of pooled) {
+      const photo = headPhoto(article);
+      const linked = journal.filter((other) => other.slug !== slug && (linkedGuides(article).includes(other.slug) || linkedGuides(other).includes(slug)));
+      expect(linked.filter((other) => headPhoto(other) === photo).map((other) => other.slug), `${slug} (${photo})`).toEqual([]);
     }
   });
 });

@@ -1,11 +1,12 @@
 /// <reference types="next/image-types/global" />
-import readingNook from "@ds/assets/Photo library/tara-04-reading-nook-web.webp";
+import namingFeelings from "@ds/assets/Photo library/tara-01-naming-feelings-web.webp";
 import type { Article } from "@/content/types";
 import { DEFAULT_OG, TEAM_BYLINE } from "../../organization";
 
 /**
  * The gentle way off the phone: a seven-day plan: rewritten (task 5.17; copy page story-the-gentle-way-off-the-phone.md,
- * CMO review cmo-review-articles-5.17-2026-10-14.md). No mockup: it renders through the article template, held to the
+ * CMO review cmo-review-articles-5.17-2026-10-14.md; fixes of task 5.20a, CMO M11, M12 and M16, fix-pass review
+ * cmo-review-article-fixes-5.20a-2026-10-14.md, N1: tara-01 heads this guide alone, with its one alt). No mockup: it renders through the article template, held to the
  * approved articles' shared parts. Card words as the hub's (stories.md fold 2), related links and dates as the stub held
  * them (the main session's note for 5.17). One in-text product link (fold 9).
  */
@@ -30,8 +31,8 @@ export const article = {
     author: TEAM_BYLINE,
     readMinutes: 3,
     image: {
-      src: readingNook,
-      alt: "A girl in a coral kurta sits cross-legged in a cushioned window nook, absorbed in reading a picture book aloud.",
+      src: namingFeelings,
+      alt: "A curly-haired girl in denim dungarees sits on a wooden floor by a sunlit window lined with potted plants, Kheelu in her lap, touching its chin with one finger.",
     },
   },
   /* Fold 2: the answer first (56 words), then the hand-over to the plan. */
@@ -130,7 +131,7 @@ export const article = {
         },
         {
           kind: "p",
-          text: "Say it the same way every time, so it sounds like a rule, not a mood. And keep the rule yourself: the American Academy of Pediatrics suggests parents set their phones to “do not disturb” at those times.[^2]",
+          text: "Say it the same way every time, so it sounds like a rule, not a mood. And keep the rule yourself: at meals and at playtime together, the American Academy of Pediatrics suggests parents set their phones to “do not disturb”.[^2]",
         },
       ],
     },
@@ -143,7 +144,10 @@ export const article = {
           kind: "p",
           text: "Some days will slip: a long journey, a sick day, a deadline. It happens. Go back to your list and pick up where you stopped.",
         },
-        { kind: "p", text: "Look at what your slots needed in the end: something to do, and someone to answer." },
+        {
+          kind: "p",
+          text: "Look at what your slots needed in the end: something to do, and someone to talk to, whether that is you, a grandparent or a sibling.",
+        },
         {
           kind: "p",
           text: "For the slots where your hands are full, [Kheelu](/products/kheelu) is one screen-free option. It is a plush toy for ages 3 to 7 that answers your child, then asks a question back, and you can read every conversation in the parent app. It is not a toy for children under 3. If your child is 3, keep a grown-up nearby while they play.",

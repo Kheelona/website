@@ -19,7 +19,8 @@ sources:
   - "test/guards/banned-phrases.data.ts; test/e2e/content-integrity.spec.ts:25-41 (age band, under-3, analytics words)"
   - "src/lib/stories-expansion.ts:9-42 (the live article; legacy file, input only), read in the w5c-5.17 worktree 2026-10-14"
   - "src/content/en-IN/stories/articles/how-much-screen-time-for-a-3-to-6-year-old.ts (stub: card, related, dates); src/content/types.ts:356-469 and src/layouts/ArticleTemplate/ArticleTemplate.tsx (the blocks the template renders)"
-  - design-system/project/03-cast.md:120; 01-writing.md:19-26 (read-only)
+  - design-system/project/03-cast.md:10, 34, 92, 107 (advik-01, task 5.20a; was :120, tara-04); 01-writing.md:19-26 (read-only)
+  - "Task 5.20a fixes: ../../qa/cmo-review-articles-5.17-2026-10-14.md (M4, M5, M6, M7, M16); ../../qa/cmo-review-article-fixes-5.20a-2026-10-14.md (N1: this alt is advik-01's one alt); ../../engineering/tasks.md (5.20, the head-photo pools); ../../engineering/assets.md (photo uses)"
 ---
 
 # Story: Screen time for a 3-year-old, and up to age 7
@@ -90,11 +91,18 @@ DOIs). The live byline is a co-founder (question 1).
 - **Lead:** the hub card's summary, word for word (stub; [stories.md](stories.md) line 117), as the late-talker
   guide does.
 - Breadcrumb links: "Stories" → `/stories`; "Screen time" → `/stories#screen-time` (topics.ts).
-- **Read time:** about 750 words in `<main>` before the sources and close.
-- **Image** (after the lead, `kh-photo`, 4:5): `tara-04-reading-nook-web.webp`. Alt: "A girl in a coral
-  block-print kurta sits cross-legged in a window nook, reading a picture book aloud and pointing at the page."
-  DS: "Reading and school readiness" (`03-cast.md:120`), no Kheelu (a parenting guide without selling); file
-  checked by eye 2026-10-14. No name or age in the alt.
+- **Read time:** about 760 words in `<main>` before the sources and close (about 750 before task 5.20a); still
+  4 minutes.
+- **Image** (after the lead, `kh-photo`, 4:5): `advik-01-counting-carriages-web.webp`. Alt: "A smiling boy in a
+  navy-and-white striped T-shirt sits cross-legged on a red floor, lining up a blue wooden train, with Kheelu
+  sitting beside him in front of a low bookshelf." DS: "Numbers and counting, age 4" (`03-cast.md:107`); Advik is
+  4 (`03-cast.md:10`), the page's age-4 fold, and the scene is what the hour leaves room for (play, books, no
+  screen in sight). Kheelu sits in the room as one more toy, on a page with one calm product line. Task 5.20a
+  (CMO M16): from the 5.20a pool; used on no other page (assets.md), and on no page this guide links to: the
+  screen-free toys guide, which links here both ways and took it too in the first fix-pass draft, moved to `ira-02`,
+  and this alt is the photo's one alt (CMO fix pass N1). No
+  grown-up is needed in frame: the child is not the 3-year-old cast (tasks.md 5.20). File checked by eye
+  2026-10-14. No name or age in the alt; Kheelu's light is not described (D018).
 
 ---
 
@@ -131,8 +139,10 @@ DOIs). The live byline is a co-founder (question 1).
 >
 > The same hour. The WHO and the IAP set it for four year olds too.¹ ² The American Academy of Pediatrics sets no more than an hour a day of high-quality programmes for children aged two to five, watched together.³
 >
-> For this age, the IAP adds two details: no more than 20 to 30 minutes at a time, and a grown-up always supervising.²
+> For three and four year olds, the IAP adds two details: no more than 20 to 30 minutes at a time, and a grown-up always supervising.²
 
+- "For three and four year olds" (was "For this age", CMO M4): the IAP item covers 24 to 59 months
+  (C32:44-49), so it applies at 3 as well as 4.
 - "20 to 30 minutes at a time" is the IAP's "each session not more than 20-30 min" (C32:45). The word
   "session" is avoided: the content-integrity guard reads it as an analytics word (`content-integrity.spec.ts:38`).
 - Ages are written in words ("two to five"): the banned-phrases guard refuses the numeral form of that range.
@@ -145,9 +155,12 @@ DOIs). The live byline is a co-founder (question 1).
 
 > **H2:** How much screen time for a 5-year-old?
 >
-> The WHO's guideline stops at 4.¹ From 5 until 10, the IAP's limit is under two hours a day, the less the better, and that includes time on a screen for homework.²
+> Under two hours a day, says the IAP, from 5 until 10, and that includes time on a screen for homework. Less is better.² The WHO's guideline stops at 4.¹
 
-- C31 caveat 4 (the WHO stops at age 4); C32:53-56 (5 to 10 years, homework included).
+- C31 caveat 4 (the WHO stops at age 4); C32:53-56 (5 to 10 years, homework included; "the lesser, the better",
+  written "Less is better").
+- Answer first (CMO M5): the IAP's limit leads, and what the WHO does not cover follows. Same sources; the markers
+  ² then ¹ keep reading order, as both notes are first cited in fold 2.
 
 ---
 
@@ -207,12 +220,15 @@ DOIs). The live byline is a co-founder (question 1).
 
 > **H2:** Does it matter what they watch?
 >
-> Yes. The AAP says well-designed programmes "can improve cognitive, literacy, and social outcomes for children 3 to 5 years of age".³ It also asks parents to avoid fast-paced programmes, which young children do not understand as well, apps with lots of distracting content, and anything violent.³
+> Yes. The AAP says well-designed programmes "can improve cognitive, literacy, and social outcomes for children 3 to 5 years of age".³ It also asks parents to avoid three things: fast-paced programmes (young children do not understand them as well), apps with lots of distracting content, and anything violent.³
 >
 > And it asks parents to watch with their children and help them understand what they are seeing.³
 >
 > **Try this:** after an episode, ask your child to tell you what happened, and which part they liked best.
 
+- The three things to avoid follow the AAP's own sentence, its parenthesis included ("Avoid fast-paced programs
+  (young children do not understand them as well), apps with lots of distracting content, and any violent
+  content", C33:63-64): CMO M6, so "apps" no longer reads as part of a clause on a phone.
 - C33:36-37 and 61-64, the exact forms the C33 caveat names. The "can improve" line is said of ages 3 to 5,
   so the page does not claim more for screens than the AAP does, and does not hide it either.
 - "Try this" is a `callout` (icon `chat-circle-dots`), a house line.
@@ -251,7 +267,7 @@ tantrums guide. Renders as an `ArticlePart`: `p`, `list` (variant `tips`), three
 > - Keep the screen in a room you share, not the bedroom.
 > - Sit with them for a few minutes of it, and talk about what you see.
 >
-> Looking for something to follow the screen? [Kheelu](https://kheelona.com/products/kheelu) is one screen-free option: a plush toy for ages 3 to 7 that answers your child, then asks a question back. If your child is 3, keep a grown-up nearby while they play.
+> Looking for something to follow the screen? [Kheelu](https://kheelona.com/products/kheelu) is one screen-free option: a plush toy for ages 3 to 7 that answers your child, then asks a question back. It is not a toy for children under 3. If your child is 3, keep a grown-up nearby while they play.
 >
 > If switching off ends in tears most evenings, read [Screen time and tantrums: what is actually happening](https://kheelona.com/stories/screen-time-and-tantrums).
 
@@ -260,6 +276,9 @@ tantrums guide. Renders as an `ArticlePart`: `p`, `list` (variant `tips`), three
 - Product line: facts only (screen-free plush toy, ages 3 to 7, answers then asks back); no outcome, no
   brain or speech line anywhere near it ([D016](../../decisions/D016-brain-wording.md),
   [D025](../../decisions/D025-speech-and-language.md)). The grown-up line at 3 is [D041](../../decisions/D041-gate-a-round-1.md)'s.
+- Both age lines (task 5.20a, CMO M7): "It is not a toy for children under 3." comes before the grown-up line, as on
+  the other screen-time guides and the approved learning-toys guide. Parents of 2-year-olds land here from
+  "screen time for a 3-year-old" ([facts, age](../../product/facts.md#age); [D041](../../decisions/D041-gate-a-round-1.md)).
 - Links: `/products/kheelu` (the page's one product link, [strategy §3.3](../strategy.md#33-placement-and-repetition));
   `/stories/screen-time-and-tantrums`.
 
@@ -344,7 +363,7 @@ As Home: **₹499`{price-source}` today** · **refundable · ₹4,999`{price-sou
 | One H2 per single age (§5.1 rule 4; §5.2 "one H2 per age 3, 4, 5, 6, 7") | Mostly | 3 (fold 2), 4 (fold 3), 5 (fold 4); 6 and 7 share fold 5, because their guidance is identical |
 | "3 to 7" on the page | Yes | Fold 10 product line; the close |
 | Alt text | Yes | Describes the scene; no keyword forced (the photo is not about screens) |
-| Density | Yes | "screen time for a 3-year-old" twice in `<main>` (H1, fold 2 H2): about 1.3% of about 750 words; "Kheelu" 3 times with the close and its button (0.4%) |
+| Density | Yes | "screen time for a 3-year-old" twice in `<main>` (H1, fold 2 H2): about 1.3% of about 760 words; "Kheelu" 3 times with the close and its button (0.4%) |
 | Words never placed | Yes | No under-3 ages or "toddler"; no "addiction"; no brain, speech or health line; no competitor names; no "session" |
 
 ## CTA tracking values
@@ -393,8 +412,31 @@ ruling for the six articles.
 | No screens at meals and in the hour before sleep (IAP, AAP); bedrooms screen-free (AAP); travel (IAP) | `C32-iap-2022-screen-time-digital-wellness.md:51`; `C33-aap-2016-media-and-young-minds.md:66-68` |
 | "A ceiling, not a target" | C33 note (`C33-aap-2016-media-and-young-minds.md:72-73`) |
 | Kheelu: screen-free plush toy, ages 3 to 7, answers then asks a question back | [facts, identity](../../product/facts.md#identity), [age](../../product/facts.md#age); [D017](../../decisions/D017-live-behaviour-claims-confirmed.md); [claims §1](../../product/claims.md#1-confirmed-by-the-founder) |
+| Not a toy for children under 3 (task 5.20a, CMO M7) | [facts, age](../../product/facts.md#age) (band 3 to 7, brief §2); [keyword map §7.1](../../research/keyword-map.md#7-geo-plan); [content boundary](../content-boundary.md) (never imply under 3); the same line and sources as the approved [learning-toys guide](story-learning-toys-for-a-three-year-old.md) |
 | A grown-up nearby at 3 | [D041](../../decisions/D041-gate-a-round-1.md) ("Age 3" row) |
 | Card title and summary, related list, published date | the stub module; [stories.md](stories.md) fold 2 (line 117); `src/lib/stories-expansion.ts:16` |
 | Cut lines | [source verification](../../research/source-verification.md) C31 caveat 2, C33 caveat 1, C09 caveat 3, C43 caveat 2; [age-band review](../../product/age-band-review.md) row 43 |
 | Close block, price sentence, sticky bar | [home, CTA block](home.md#cta-block) and [phone sticky bar](home.md#phone-sticky-bar) sources ([D028](../../decisions/D028-price-wording.md), [D041](../../decisions/D041-gate-a-round-1.md), [D023](../../decisions/D023-new-order-delivery.md), [D021](../../decisions/D021-returns-policy.md), [D032](../../decisions/D032-grievance-block-and-call-line.md)) |
-| Photo | DS `03-cast.md:120`; file checked by eye 2026-10-14 |
+| Photo | DS `03-cast.md:10, 107` (advik-01; task 5.20a, CMO M16; the photo's one alt, CMO fix pass N1); file checked by eye 2026-10-14 |
+
+## Changes after approval (task 5.20a)
+
+The CMO approved this page in round 1 with five minor fixes ([CMO review 5.17](../../qa/cmo-review-articles-5.17-2026-10-14.md):
+M4, M5, M6, M7, M16). Task 5.20a applied them on 2026-10-14. Nothing else in the Copy blocks changed, and no new
+research statement was added: every changed line keeps its source and marker.
+
+| # | Where | What changed | Why (finding or source line) |
+|---|---|---|---|
+| 1 | Fold 3 (age 4), paragraph 2 | "For this age, the IAP adds two details" becomes "For three and four year olds, the IAP adds two details" | M4: the IAP item covers 24 to 59 months (`C32-iap-2022-screen-time-digital-wellness.md:44-49`), so it applies at 3 too |
+| 2 | Fold 4 (age 5) | Answer first: "Under two hours a day, says the IAP, from 5 until 10, and that includes time on a screen for homework. Less is better.² The WHO's guideline stops at 4.¹" | M5's wording; `C32:53-56` ("the lesser, the better"); C31 caveat 4 |
+| 3 | Fold 8, paragraph 1 | "avoid three things: fast-paced programmes (young children do not understand them as well), apps with lots of distracting content, and anything violent" | M6; the AAP's own sentence, `C33-aap-2016-media-and-young-minds.md:63-64` |
+| 4 | Fold 10, product line | Adds "It is not a toy for children under 3." before the grown-up line | M7; [facts, age](../../product/facts.md#age), as the approved learning-toys guide |
+| 5 | Fold 1, head photo and alt | `tara-04-reading-nook` becomes `advik-01-counting-carriages`, with a new alt | M16 (this guide and the gentle-way guide, which link to each other, shared a photo and had two alts for it); the 5.20a pool in [tasks.md 5.20](../../engineering/tasks.md) ("Head photos come from separate pools"); unused elsewhere ([assets.md](../../engineering/assets.md)); not the 3-year-old cast, so no grown-up is needed in frame. Fix pass ([CMO](../../qa/cmo-review-article-fixes-5.20a-2026-10-14.md) N1): the screen-free toys guide, which links here both ways, had taken `advik-01` too, with another alt; it moved to `ira-02`, so this page keeps the photo and its alt is the photo's one alt |
+| 6 | Notes | Read time (about 760 words, still 4 minutes), the fold 1, 3, 4, 8 and 10 notes, keyword placements, the sources table | So the page stays true |
+
+**Not changed:** title, meta, H1, lead, byline, dates (`updated` stays 2026-10-13), the in-text links, related
+guides, the close and the sticky bar, the founder questions.
+
+**For the builder (same commit as this page):** the module follows folds 1, 3, 4, 8 and 10 word for word: the
+photo import and alt, and the four changed lines. assets.md: add `advik-01-counting-carriages-web.webp` (head of
+this guide, 4:5) and take this guide off the `tara-04` row.

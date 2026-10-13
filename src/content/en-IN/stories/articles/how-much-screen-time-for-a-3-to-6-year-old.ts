@@ -1,11 +1,12 @@
 /// <reference types="next/image-types/global" />
-import readingNook from "@ds/assets/Photo library/tara-04-reading-nook-web.webp";
+import countingCarriages from "@ds/assets/Photo library/advik-01-counting-carriages-web.webp";
 import type { Article } from "@/content/types";
 import { DEFAULT_OG, TEAM_BYLINE } from "../../organization";
 
 /**
  * Screen time for a 3-year-old, and up to age 7: rewritten (task 5.17; copy page
- * story-how-much-screen-time-for-a-3-to-6-year-old.md, CMO review cmo-review-articles-5.17-2026-10-14.md). No mockup:
+ * story-how-much-screen-time-for-a-3-to-6-year-old.md, CMO review cmo-review-articles-5.17-2026-10-14.md; fixes of
+ * task 5.20a, CMO M4 to M7 and M16, fix-pass review cmo-review-article-fixes-5.20a-2026-10-14.md). No mockup:
  * it renders through the article template, held to the approved articles' shared parts. Card words as the hub's
  * (stories.md fold 2), related links and dates as the stub held them (the main session's note for 5.17). One in-text
  * product link (fold 10).
@@ -30,8 +31,8 @@ export const article = {
     author: TEAM_BYLINE,
     readMinutes: 4,
     image: {
-      src: readingNook,
-      alt: "A girl in a coral block-print kurta sits cross-legged in a window nook, reading a picture book aloud and pointing at the page.",
+      src: countingCarriages,
+      alt: "A smiling boy in a navy-and-white striped T-shirt sits cross-legged on a red floor, lining up a blue wooden train, with Kheelu sitting beside him in front of a low bookshelf.",
     },
   },
   /* Fold 2: the answer first (54 words), then two paragraphs that frame the rest of the page. */
@@ -54,7 +55,10 @@ export const article = {
           kind: "p",
           text: "The same hour. The WHO and the IAP set it for four year olds too.[^1][^2] The American Academy of Pediatrics sets no more than an hour a day of high-quality programmes for children aged two to five, watched together.[^3]",
         },
-        { kind: "p", text: "For this age, the IAP adds two details: no more than 20 to 30 minutes at a time, and a grown-up always supervising.[^2]" },
+        {
+          kind: "p",
+          text: "For three and four year olds, the IAP adds two details: no more than 20 to 30 minutes at a time, and a grown-up always supervising.[^2]",
+        },
       ],
     },
     /* Fold 4 */
@@ -64,7 +68,7 @@ export const article = {
       blocks: [
         {
           kind: "p",
-          text: "The WHO’s guideline stops at 4.[^1] From 5 until 10, the IAP’s limit is under two hours a day, the less the better, and that includes time on a screen for homework.[^2]",
+          text: "Under two hours a day, says the IAP, from 5 until 10, and that includes time on a screen for homework. Less is better.[^2] The WHO’s guideline stops at 4.[^1]",
         },
       ],
     },
@@ -114,7 +118,7 @@ export const article = {
       blocks: [
         {
           kind: "p",
-          text: "Yes. The AAP says well-designed programmes “can improve cognitive, literacy, and social outcomes for children 3 to 5 years of age”.[^3] It also asks parents to avoid fast-paced programmes, which young children do not understand as well, apps with lots of distracting content, and anything violent.[^3]",
+          text: "Yes. The AAP says well-designed programmes “can improve cognitive, literacy, and social outcomes for children 3 to 5 years of age”.[^3] It also asks parents to avoid three things: fast-paced programmes (young children do not understand them as well), apps with lots of distracting content, and anything violent.[^3]",
         },
         { kind: "p", text: "And it asks parents to watch with their children and help them understand what they are seeing.[^3]" },
         {
@@ -156,7 +160,7 @@ export const article = {
         },
         {
           kind: "p",
-          text: "Looking for something to follow the screen? [Kheelu](/products/kheelu) is one screen-free option: a plush toy for ages 3 to 7 that answers your child, then asks a question back. If your child is 3, keep a grown-up nearby while they play.",
+          text: "Looking for something to follow the screen? [Kheelu](/products/kheelu) is one screen-free option: a plush toy for ages 3 to 7 that answers your child, then asks a question back. It is not a toy for children under 3. If your child is 3, keep a grown-up nearby while they play.",
         },
         {
           kind: "p",

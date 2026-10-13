@@ -1,12 +1,14 @@
 /// <reference types="next/image-types/global" />
-import breakfastWhy from "@ds/assets/Photo library/myra-01-breakfast-why-web.webp";
+import drawingTheDragon from "@ds/assets/Photo library/ira-02-drawing-the-dragon-web.webp";
 import type { Article } from "@/content/types";
 import { DEFAULT_OG, TEAM_BYLINE } from "../../organization";
 
 /**
  * Screen-free does not mean silent: rewritten (task 5.17; copy page story-screen-free-does-not-mean-silent.md, CMO
- * review cmo-review-articles-5.17-2026-10-14.md). No mockup: it renders through the article template, held to the
- * approved articles' shared parts. Card words as the hub's (stories.md fold 2), related links and dates as the stub held
+ * review cmo-review-articles-5.17-2026-10-14.md; the head photo of task 5.20a, CMO M17, fix-pass review
+ * cmo-review-article-fixes-5.20a-2026-10-14.md, N1: ira-02 with the busy-hands guide's alt, a guide this one does not
+ * link to). No mockup: it renders through the article template, held to the approved articles' shared parts (a wide
+ * head photo since the fix pass, as the safe-AI-toy guide's). Card words as the hub's (stories.md fold 2), related links and dates as the stub held
  * them (the main session's note for 5.17). The research line (fold 4) credits talk with an adult; the one in-text
  * product link sits four folds later (fold 8, D016).
  */
@@ -31,8 +33,8 @@ export const article = {
     author: TEAM_BYLINE,
     readMinutes: 3,
     image: {
-      src: breakfastWhy,
-      alt: "A little girl in a mustard frock kneels on her chair at the breakfast table, hands open mid-question, talking to Kheelu beside her steel plate.",
+      src: drawingTheDragon,
+      alt: "A laughing girl in a yellow frock lies on her tummy on a rug, a blue crayon in her hand, a big drawing of a green dragon in front of her and Kheelu sitting beside her.",
     },
   },
   /* Fold 2: the answer first (57 words), with no product in it. */
