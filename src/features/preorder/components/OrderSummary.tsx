@@ -2,7 +2,7 @@ import { ContentIcon } from "@/components/ui/Icon/Icon";
 import { checkoutPrices, checkoutWords } from "@/components/sections/store/StoreDetails/checkout-words";
 import type { OrderSummaryCopy } from "@/components/sections/store/StoreDetails/store-details.types";
 import { BALANCE_PRICE, SHIP_DATE_TEXT } from "@/config/site";
-import { orderSummaryCopy } from "@/content/en-IN/store/store-page";
+import { orderSummaryCopy } from "@/content/en-IN/store/order-summary";
 
 /** What a parent is agreeing to, on the page where they agree to it (§8.25-u).
  *

@@ -1,4 +1,4 @@
-import type { AddressFormCopy, AddressStepCopy } from "@/components/sections/store/AddressStep/address-step.types";
+import type { AddressStepCopy } from "@/components/sections/store/AddressStep/address-step.types";
 import type { ConfirmationHeadCopy } from "@/components/sections/store/ConfirmationHead/confirmation-head.types";
 import type { ThanksStepCopy } from "@/components/sections/store/ConfirmationHead/slot-text";
 import type { HelpBlockCopy } from "@/components/sections/store/HelpBlock/help-block.types";
@@ -21,34 +21,9 @@ import { paymentsLine } from "./payments-line";
  * Every amount and the email come from the order row, never from the store's current mode, so they are not `{price:…}`
  * tokens here: the words around them are slot text (`ConfirmationHead/slot-text.ts`) and the page fills the slots with
  * the values it derives from the row. Its title and description are the copy page's; the share card is the site's.
+ * The address form's words are a words-only module of their own (address-form.ts, task 4.8): the form is a client
+ * island, and this module's imports (the seller facts, the organisation node) stay out of its browser chunk.
  */
-
-/** The address form's words. Its own export, because the form is a client island and imports this alone: the page's
- *  other words (`confirmation` below) are left out of the browser bundle. This module's imports are not: the build keeps
- *  the seller facts and the organization node they read in the form's client chunk (public data, about 1-2 KB gzip),
- *  and every page that loads the `@/features/preorder` barrel's chunk carries them too. Only a words-only module for the
- *  form, importing types alone, would keep them out. */
-export const addressForm = {
-  labels: {
-    line1: "Flat or house, and street",
-    line2: "Landmark or area (optional)",
-    pincode: "PIN code",
-    city: "City or town",
-    state: "State",
-  },
-  statePlaceholder: "Choose your state",
-  save: "Save my address",
-  saving: "Saving…",
-  reassurance:
-    "Your order is already safe. This can wait if you are in the middle of something, and the link in your email brings you straight back here.",
-  saved: {
-    title: "We have your address.",
-    before: "That is everything we need. You can change it any time before dispatch: ",
-    link: "message us on WhatsApp",
-    after: " and we will update it.",
-    change: "Change it here instead",
-  },
-} as const satisfies AddressFormCopy;
 
 /** The shape of this module: a head per state, the order card, the address step, the next steps by tier, the help
  *  fold, the two other states' words, and the payments line that closes main. */

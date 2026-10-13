@@ -13,7 +13,7 @@
     "import type { PreorderFormCopy } from \"@/components/sections/store/StoreDetails/store-details.types\";",
     "import { BALANCE_PRICE } from \"@/config/site\";",
     "import { MARKETING_ORIGIN } from \"@/config/env\";",
-    "import { preorderFormCopy } from \"@/content/en-IN/store/store-page\";",
+    "import { preorderFormCopy } from \"@/content/en-IN/store/preorder-form\";",
     "import { validateContact, hasErrors, CHILD_AGE_MAX, type ContactInput, type FieldErrors, } from \"../lib/validate\";",
     "import { startCheckout } from \"../lib/checkout\";",
     "import { preorderAnalytics } from \"../lib/analytics\";",

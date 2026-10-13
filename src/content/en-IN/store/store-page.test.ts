@@ -15,8 +15,10 @@ import { offerCopy } from "../offer";
 import { DEFAULT_OG } from "../organization";
 import { seller } from "../seller";
 import { TRUST_COMPACT, TRUST_FULL, trustItems } from "../trust";
+import { orderSummaryCopy } from "./order-summary";
 import { paymentsLine } from "./payments-line";
-import { orderSummaryCopy, preorderFormCopy, storePage } from "./store-page";
+import { preorderFormCopy } from "./preorder-form";
+import { storePage } from "./store-page";
 
 /* The store page module (task 5.15; structure §5 row store.html; wiki/site/pages/store.md). Token mode is the approved
  * mockup's, word for word (mockup/store.html, D046); full mode, which no mockup shows, is the copy page's. Shared facts are
@@ -243,7 +245,9 @@ describe("store page module: the not-configured state (store.md, Other states; a
 });
 
 describe("store page module: sources", () => {
-  const source = readRepoFile("src/content/en-IN/store/store-page.ts");
+  /* The page module and the checkout's two words-only modules, which held their part of fold 3 and fold 4 here until
+     task 4.8. */
+  const source = ["store-page.ts", "preorder-form.ts", "order-summary.ts"].map((file) => readRepoFile(`src/content/en-IN/store/${file}`)).join("\n");
 
   it("types no amount, number, address or delivery date: each comes from its one source", () => {
     expect(source).not.toMatch(/₹|Rs\.? ?\d|91875|wa\.me|mid-November|20 October/);
@@ -255,7 +259,7 @@ describe("store page module: sources", () => {
     vi.resetModules();
     vi.doMock("@/config/site", async (importOriginal) => ({ ...(await importOriginal<typeof import("@/config/site")>()), CAP_UNITS_TEXT: "first 9 units" }));
     try {
-      const { orderSummaryCopy: moved } = await import("./store-page");
+      const { orderSummaryCopy: moved } = await import("./order-summary");
       expect(moved.fine.token).toContain("(incl. GST) for the first 9 units, and");
       expect(moved.fine.full).toContain("The first 9 units at {price:headline} have been reserved");
     } finally {

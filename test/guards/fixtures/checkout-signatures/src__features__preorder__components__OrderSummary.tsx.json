@@ -6,7 +6,7 @@
     "import { checkoutPrices, checkoutWords } from \"@/components/sections/store/StoreDetails/checkout-words\";",
     "import type { OrderSummaryCopy } from \"@/components/sections/store/StoreDetails/store-details.types\";",
     "import { BALANCE_PRICE, SHIP_DATE_TEXT } from \"@/config/site\";",
-    "import { orderSummaryCopy } from \"@/content/en-IN/store/store-page\";",
+    "import { orderSummaryCopy } from \"@/content/en-IN/store/order-summary\";",
     "export function OrderSummary({ amountLabel, mode = \"token\", balanceLabel = BALANCE_PRICE, delivery = `Ships ${SHIP_DATE_TEXT}`, copy = orderSummaryCopy, }: {",
     "    amountLabel: string;",
     "    tierLabel: string;",

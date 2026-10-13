@@ -15,7 +15,8 @@ import { navigation } from "../navigation";
 import { DEFAULT_OG } from "../organization";
 import { RETURN_DAYS } from "../policies";
 import { seller } from "../seller";
-import { addressForm, confirmation } from "./confirmation";
+import { addressForm } from "./address-form";
+import { confirmation } from "./confirmation";
 
 /* The /thanks words (task 5.16; structure §5 row store-confirmation.html; wiki/site/pages/store-confirmation.md). The
  * paid state of a token order is the approved mockup (mockup/store-confirmation.html, D046): every word of its five
