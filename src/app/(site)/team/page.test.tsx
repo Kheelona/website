@@ -15,9 +15,10 @@ import { words } from "../../../../test/support/mockup-compare";
 /* The /team route (task 5.7; structure §3.1, §5): the page module through PageTemplate with the live offer, thin, and as
  * a whole page equal to the approved mockup's <main> (mockup/team.html, D046) apart from what the plan changes on
  * purpose: fold 1's lede is the CMO's fix M-T1 (the first screen says what Kheelu is, the age band and the search term);
- * the founders' background lines and the "Recognised by." fold are proof-gated (D038, F11) and render nothing; the B24
- * photo placeholders show. One chilli button (`finale`), no reveal (the mockup has none), the AboutPage node described
- * by the visible fold-2 answer (architecture §9.2). */
+ * the mockup's placeholders for the founders' photos and background lines and for the "Recognised by." programmes are
+ * resolved by the founder's answers of 2026-10-14 (D054 item 20, task 6.6): the live photos, the live bios' lines and
+ * the live strip, as the copy page words them. One chilli button (`finale`), no reveal (the mockup has none), the
+ * AboutPage node described by the visible fold-2 answer (architecture §9.2). */
 
 const getOffer = vi.hoisted(() => vi.fn());
 vi.mock("@/lib/offer/get-offer", () => ({ getOffer }));
@@ -38,14 +39,36 @@ const APPROVED_LEDE = "Kheelu is designed by parents in Bengaluru. You’re trus
 const CMO_LEDE =
   "Kheelona’s founders are parents in Bengaluru, building Kheelu: a screen-free plush toy that talks, for children aged 3 to 7. You’re trusting us near your child, so here is who we are.";
 
-/** The approved <main> as the build must show it: the gated background lines and the gated fold left out (D038), and
- *  the hero lede replaced by the CMO's fix M-T1. Every other word stays the mockup's. */
+/** The founders' background lines (team.md fold 3, D054 item 20), in the card order. */
+const BIOS = [
+  "He is a Chartered Accountant with 15 years in finance and company-building. He was the first student at his family’s pre-school, in 1994.",
+  "He studied AI, shipped machine learning in production, and holds 14 patents filed in his own name.",
+  "He has spent over a decade in hardware, taking products from a blank page to certification. That includes years at Intel, leading Thunderbolt 4 and 5 compliance.",
+];
+/** The founders' photos and their alts (team.md fold 3), in the card order. */
+const PHOTOS = [
+  ["/team/apoorva.jpg", "Apoorva Sahu, Co-Founder and CEO of Kheelona, in glasses and a black T-shirt."],
+  ["/team/aman.jpg", "Aman Soni, Co-Founder and CTO of Kheelona, in glasses and an olive sweater."],
+  ["/team/kashyap.jpg", "Kashyap C.R, Co-Founder and Chief Hardware Officer of Kheelona, smiling, in a striped T-shirt."],
+];
+
+/** The approved <main> as the build must show it: the hero lede replaced by the CMO's fix M-T1, and the mockup's
+ *  placeholders resolved (D054 item 20): each founder's photo in the initials badge's place (the photo placeholder line
+ *  gone), each background line the live bio's, and fold 5's line the strip's visible names (the two marks that name
+ *  their programmes carry no text). Every other word stays the mockup's. */
 function expectedMain(): Element {
   const copy = mockupMain.cloneNode(true) as Element;
-  copy.querySelectorAll('.mk-founder__bg, section[aria-labelledby="recognised-title"]').forEach((n) => n.remove());
   const lede = copy.querySelector('section[aria-labelledby="hero-title"] .kh-heading__lead')!;
   expect(lede.textContent).toBe(APPROVED_LEDE);
   lede.textContent = CMO_LEDE;
+  copy.querySelectorAll(".mk-founder__photo").forEach((n) => n.remove());
+  copy.querySelectorAll(".mk-founder__head .kh-avatar").forEach((n) => (n.textContent = ""));
+  const bios = copy.querySelectorAll(".mk-founder__bg");
+  expect(bios).toHaveLength(BIOS.length);
+  bios.forEach((n, i) => (n.textContent = BIOS[i]));
+  const programmes = copy.querySelector('section[aria-labelledby="recognised-title"] header > p.kh-body')!;
+  expect(programmes.textContent).toMatch(/^\[PLACEHOLDER F11: programme names/);
+  programmes.textContent = "Karnataka Elevate Founders Inc";
   return copy;
 }
 
@@ -57,6 +80,12 @@ async function renderPage(offer: Offer) {
   const html = `<!doctype html><html><body><main id="main">${renderToStaticMarkup(element)}</main></body></html>`;
   const doc = new DOMParser().parseFromString(html, "text/html");
   return { html, doc, main: doc.querySelector("main")! };
+}
+
+/** The file an image renders: its path on this site, through next/image's `url` parameter when optimised. */
+function imageUrl(img: Element): string | null {
+  const src = new URL(img.getAttribute("src")!, "https://kheelona.com");
+  return src.searchParams.get("url") ?? src.pathname;
 }
 
 /** <main> without its JSON-LD and React's image preload links: the visible page. */
@@ -138,42 +167,62 @@ describe("/team: the rendered page against the approved mockup", () => {
     expect(lede?.textContent).toBe(CMO_LEDE);
   });
 
-  it("keeps the mockup's heading outline, less the gated fold: every level and its words in order, no level skipped (SPA 5)", async () => {
+  it("keeps the mockup's heading outline: every level and its words in order, no level skipped (SPA 5)", async () => {
     const { main } = await renderPage(buildOffer("token"));
     const outline = (root: Element) =>
       Array.from(root.querySelectorAll("h1, h2, h3, h4, h5, h6")).map((h) => `${h.tagName.toLowerCase()} ${words(h)}`);
     const built = outline(main);
-    expect(built).toEqual(outline(expectedMain()));
-    expect(built).not.toContain("h2 Recognised by.");
+    expect(built).toEqual(outline(mockupMain));
+    expect(built).toContain("h2 Recognised by.");
     const levels = built.map((h) => Number(h[1]));
     expect(levels[0]).toBe(1);
     levels.forEach((level, i) => expect(level, built[i]).toBeLessThanOrEqual((levels[i - 1] ?? 0) + 1));
   });
 
-  it("holds the mockup's folds in its order, the gated “Recognised by.” fold left out (D038)", async () => {
+  it("holds the mockup's six folds in its order, “Recognised by.” shown (D054 item 20)", async () => {
     const { main } = await renderPage(buildOffer("token"));
-    expect(foldNames(main)).toEqual(["hero-title", "who-title", "founders-title", "why-title", "close-title"]);
-    expect(foldNames(main)).toEqual(foldNames(mockupMain).filter((id) => id !== "recognised-title"));
+    expect(foldNames(main)).toEqual(["hero-title", "who-title", "founders-title", "why-title", "recognised-title", "close-title"]);
+    expect(foldNames(main)).toEqual(foldNames(mockupMain));
   });
 
-  it("prints every word of the mockup's <main>, in order, and nothing else, but the gated lines and the M-T1 lede (token mode)", async () => {
+  it("prints every word of the mockup's <main>, in order, and nothing else, but the M-T1 lede and the resolved placeholders (token mode)", async () => {
     const { main } = await renderPage(buildOffer("token"));
     expect(pageWords(visible(main))).toBe(pageWords(expectedMain()));
   });
 
-  it("renders no proof-gated line: no founder background, no programme name (D038, F11)", async () => {
+  it("shows each founder's background line from the live bio, under the card's words (D054 item 20)", async () => {
     const { main } = await renderPage(buildOffer("token"));
-    const text = words(visible(main));
-    expect(main.querySelector(".ks-founder__bg")).toBeNull();
-    expect(text).not.toMatch(/background, shown once its proof is filed|patent|Intel|Thunderbolt|Chartered/i);
-    expect(text).not.toMatch(/NVIDIA|Karnataka Elevate|nasscom|Founders Inc|Recognised by/);
+    const bios = [...main.querySelectorAll(".ks-founder__bg")];
+    expect(bios.map((p) => p.textContent)).toEqual(BIOS);
+    expect(bios.map((p) => p.previousElementSibling?.className)).toEqual(Array(3).fill("kh-card__body"));
+    expect(words(visible(main))).not.toMatch(/PLACEHOLDER|language model|train ourselves/i);
   });
 
-  it("shows the B24 photo placeholder in each founder card, beside the initials badge", async () => {
+  it("shows each founder's live photo in the badge's place, with the copy page's alt (D054 item 20; B24 settled)", async () => {
     const { main } = await renderPage(buildOffer("token"));
-    const lines = [...main.querySelectorAll(".ks-founder__photo")].map((p) => p.textContent);
-    expect(lines).toEqual(Array(3).fill("[PLACEHOLDER B24: founder photo]"));
-    expect([...main.querySelectorAll(".ks-founder .kh-avatar")].map((a) => a.textContent)).toEqual(["AS", "AS", "KC"]);
+    expect(main.querySelector(".ks-founder__photo")).toBeNull();
+    const photos = [...main.querySelectorAll<HTMLImageElement>(".ks-founder__head .kh-avatar img")];
+    expect(photos.map((img) => [imageUrl(img), img.getAttribute("alt")])).toEqual(PHOTOS);
+    expect(photos.map((img) => [img.getAttribute("width"), img.getAttribute("height"), img.getAttribute("loading")])).toEqual(
+      Array(3).fill(["480", "480", "lazy"]),
+    );
+    expect(main.querySelectorAll(".ks-founder .kh-avatar[aria-hidden]")).toHaveLength(0);
+  });
+
+  it("shows the strip as live: the NVIDIA and nasscom marks, the Karnataka seal beside its name, Founders Inc as text (D054 item 20)", async () => {
+    const { main } = await renderPage(buildOffer("token"));
+    const strip = main.querySelector('section[aria-labelledby="recognised-title"]')!;
+    const items = [...strip.querySelectorAll("ul.ks-recognition > li")].map((li) => {
+      const img = li.querySelector("img");
+      return { mark: img && imageUrl(img), alt: img?.getAttribute("alt"), text: li.textContent };
+    });
+    expect(items).toEqual([
+      { mark: "/recognition/nvidia-inception.png", alt: "NVIDIA Inception", text: "" },
+      { mark: "/recognition/karnataka-seal.png", alt: "", text: "Karnataka Elevate" },
+      { mark: "/recognition/nasscom.png", alt: "nasscom startups", text: "" },
+      { mark: null, alt: undefined, text: "Founders Inc" },
+    ]);
+    expect(words(strip)).not.toMatch(/backed|funded|partner|investor|member|Government/i);
   });
 
   it("gives each founder's name the person's fragment, so the article bylines resolve on /team", async () => {

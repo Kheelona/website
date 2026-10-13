@@ -1,11 +1,13 @@
+import { join } from "node:path";
+import sharp from "sharp";
 import { describe, expect, it } from "vitest";
 import { ICON_PATHS, type IconName } from "@/assets/icons.generated";
-import type { Copy } from "@/content/types";
+import type { Copy, ImageRef } from "@/content/types";
 import type { SectionEntry, SectionEntryOf, SectionKind } from "@/layouts/sections-registry";
 import { isPlaceholder, placeholderText } from "@/lib/content/placeholder";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
-import { readRepoFile } from "../../../../test/e2e/support/repo";
+import { ROOT, readRepoBytes, readRepoFile, tagBytes } from "../../../../test/e2e/support/repo";
 import { DEFAULT_OG, organization } from "../organization";
 import { routeFor } from "../routes";
 import { seller } from "../seller";
@@ -17,9 +19,11 @@ import { teamPage } from "./team";
  * changes them on purpose:
  *   - fold 1's lede is the CMO review's blocking fix M-T1 (cmo-review-pages-help-2026-10-11.md): the first screen says
  *     what Kheelu is, the age band and the page's search term;
- *   - the founders' background lines and the "Recognised by." programmes are proof-gated (D038, F11): they are in the
- *     content as gated slots and render nothing, on any environment, until their proof is filed;
- *   - the founder photos wait on B24: each card shows the mockup's photo placeholder.
+ *   - the founder's answers of 2026-10-14 (D054 item 20, task 6.6; amends D038 for F11, G3, B24, B25): the three
+ *     founders' background lines from the live bios, their live photos in place of the B24 placeholder, and the
+ *     "Recognised by." strip as live (three marks from public/recognition/, Founders Inc as text), each word for word
+ *     as the copy page (wiki/site/pages/team.md fold 3 and fold 5). The mockup shows a placeholder in each place: these
+ *     are resolved placeholders.
  * Shared facts are read, never retyped: the founders from organization.ts, the support line from seller.ts, the trust
  * pair from trust.ts. */
 
@@ -257,28 +261,41 @@ describe("fold 3: the Kheelona founders", () => {
     ).toEqual(printed);
   });
 
-  it("shows the mockup's photo placeholder in every card while B24 is open (no photo until supplied and approved)", () => {
-    const marker = norm(cards()[0].querySelector(".mk-founder__photo")?.textContent);
-    expect(marker).toBe("[PLACEHOLDER B24: founder photo]");
+  /* D054 item 20 settles B24: the live site's photos, public/team/*.jpg, byte for byte the files at the tag; each a
+   * site-path image at the file's real size (nothing shifts), with the copy page's alt, which names the founder and says
+   * what the photo shows (team.md fold 3). The mockup's placeholder line is the resolved placeholder. */
+  it("shows each founder's live photo at its real size, with the copy page's alt (D054 item 20; B24 settled)", async () => {
+    expect(norm(cards()[0].querySelector(".mk-founder__photo")?.textContent)).toBe("[PLACEHOLDER B24: founder photo]");
+    const expected: Record<string, { src: string; alt: string }> = {
+      "Apoorva Sahu": { src: "/team/apoorva.jpg", alt: "Apoorva Sahu, Co-Founder and CEO of Kheelona, in glasses and a black T-shirt." },
+      "Aman Soni": { src: "/team/aman.jpg", alt: "Aman Soni, Co-Founder and CTO of Kheelona, in glasses and an olive sweater." },
+      "Kashyap C.R": { src: "/team/kashyap.jpg", alt: "Kashyap C.R, Co-Founder and Chief Hardware Officer of Kheelona, smiling, in a striped T-shirt." },
+    };
     for (const card of founders.config.founders) {
-      expect(isPlaceholder(card.photo), card.name).toBe(true);
-      if (isPlaceholder(card.photo)) expect(placeholderText(card.photo)).toBe(marker);
+      expect(isPlaceholder(card.photo), card.name).toBe(false);
+      const photo = card.photo as ImageRef;
+      if (!("width" in photo)) throw new Error(`${card.name}: the photo is not a site path`);
+      expect({ src: photo.src, alt: photo.alt }).toEqual(expected[card.name]);
+      const meta = await sharp(join(ROOT, "public", photo.src)).metadata();
+      expect({ width: photo.width, height: photo.height }, photo.src).toEqual({ width: meta.width, height: meta.height });
+      expect(readRepoBytes(`public${photo.src}`).equals(tagBytes(`public${photo.src}`)!), `${photo.src} is the live site's file`).toBe(true);
     }
-    expect(SOURCE).not.toMatch(/\/team\/|public\/team/);
   });
 
-  /* D038: an unproven background is a hidden slot, never a placeholder and never the claim itself. Each bio is gated on
-   * F11 and holds only the copy page's note of what waits, so nothing unproven sits in the content model (content
-   * boundary: EXTERNAL only) and nothing blocks the production build (no placeholder token). Its words are written
-   * and signed off when the proof is filed (team.md question 1), and the gate is deleted then. */
-  it("keeps every background line as a gated slot (F11): no claim, no placeholder, never rendered", () => {
-    for (const card of founders.config.founders) {
-      expect(card.bio, card.name).toBeDefined();
-      expect(card.bio?.gated, card.name).toEqual({ proof: "F11" });
-      const text = String(card.bio?.text);
-      expect(text, card.name).toBe(`${card.name.split(" ")[0]}’s background, shown once its proof is filed`);
-      expect(text).not.toMatch(/\{ph:|patent|Intel|Thunderbolt|Chartered|finance|pre-school|1994|\d/i);
-    }
+  /* D054 item 20 lifts D038's proof gate for these lines: each founder's background shows, from the live bio, word for
+   * word as the copy page (team.md:127, 133, 139; "15" in numerals, DS 01-writing.md:23). The live bio's retired wording
+   * ("the small language model we train ourselves", claims §4) stays out. */
+  it("shows each founder's background line from the live bio, word for word as the copy page, with no gate", () => {
+    expect(founders.config.founders.map((card) => [card.name, card.bio && toPlainText(card.bio.text, token), card.bio?.gated])).toEqual([
+      ["Apoorva Sahu", "He is a Chartered Accountant with 15 years in finance and company-building. He was the first student at his family’s pre-school, in 1994.", undefined],
+      ["Aman Soni", "He studied AI, shipped machine learning in production, and holds 14 patents filed in his own name.", undefined],
+      [
+        "Kashyap C.R",
+        "He has spent over a decade in hardware, taking products from a blank page to certification. That includes years at Intel, leading Thunderbolt 4 and 5 compliance.",
+        undefined,
+      ],
+    ]);
+    expect(strings(founders).join("\n")).not.toMatch(/language model|train ourselves|\{ph:/i);
   });
 });
 
@@ -318,14 +335,40 @@ describe("fold 4: why we build Kheelu", () => {
   });
 });
 
-describe("fold 5: recognised by (proof-gated, D038)", () => {
+describe("fold 5: recognised by, as the live strip (D054 item 20)", () => {
   const strip = entry("recognition-strip");
 
-  it("keeps the DS label and the four programmes by name only, each gated on its F11 proof, so the fold renders nothing", () => {
+  it("keeps the DS label and the four programmes in the live strip's order, none gated", () => {
     expect(strip.config.title).toBe(headingOf(fold("recognised-title")).title);
     expect(strip.config.title).toBe("Recognised by.");
     expect(strip.config.items.map((i) => i.name)).toEqual(["NVIDIA Inception", "Karnataka Elevate", "nasscom startups", "Founders Inc"]);
-    for (const item of strip.config.items) expect(item.gated, item.name).toEqual({ proof: "F11" });
+    for (const item of strip.config.items) expect(item.gated, item.name).toBeUndefined();
+  });
+
+  /* The live marks, public/recognition/*.png (team.md fold 5): the NVIDIA and nasscom marks stand for their names, so
+   * each carries the words on the mark as its alt; the Karnataka seal is decorative beside the words "Karnataka
+   * Elevate" (empty alt, as live, and never "Government of Karnataka"); Founders Inc is text only. The NVIDIA alt is
+   * "NVIDIA Inception" until the main session allows the mark's own "Program" past the en-IN spelling guard (team.md
+   * question 5; test/guards/banned-phrases.data.ts us-program). */
+  it("shows the three live marks at their real sizes, with the copy page's alts, and Founders Inc as text", async () => {
+    expect(strip.config.items.map((i) => (i.mark ? { name: i.name, src: i.mark.src, alt: i.mark.alt } : { name: i.name }))).toEqual([
+      { name: "NVIDIA Inception", src: "/recognition/nvidia-inception.png", alt: "NVIDIA Inception" },
+      { name: "Karnataka Elevate", src: "/recognition/karnataka-seal.png", alt: "" },
+      { name: "nasscom startups", src: "/recognition/nasscom.png", alt: "nasscom startups" },
+      { name: "Founders Inc" },
+    ]);
+    for (const { mark } of strip.config.items) {
+      if (!mark) continue;
+      if (!("width" in mark)) throw new Error(`${String(mark.src)} is not a site path`);
+      const meta = await sharp(join(ROOT, "public", mark.src)).metadata();
+      expect({ width: mark.width, height: mark.height }, mark.src).toEqual({ width: meta.width, height: meta.height });
+      expect(readRepoBytes(`public${mark.src}`).equals(tagBytes(`public${mark.src}`)!), `${mark.src} is the live site's file`).toBe(true);
+    }
+  });
+
+  it("names the programmes only: no relationship, no endorsement, no government (B26; DS 01-writing.md:70)", () => {
+    const words = strings(strip).join("\n");
+    expect(words).not.toMatch(/backed|funded|partner|investor|member of|endorse|approved|certified|Government/i);
   });
 });
 
@@ -373,8 +416,8 @@ describe("the team page: page-wide rules", () => {
     expect(all).not.toMatch(/toddler|advisor|\bRia\b|Magic Box|train ourselves|own the model|battery|safe to hug|backed by|on the device|Kheelona\+|Kheelona India/i);
   });
 
-  it("carries exactly the open placeholders the copy page lists for the build: the three B24 photo markers", () => {
-    expect(placeholdersIn(teamPage)).toEqual(Array(3).fill("[PLACEHOLDER B24: founder photo]"));
+  it("carries no placeholder: the copy page lists none since task 6.6 (D054 item 20)", () => {
+    expect(placeholdersIn(teamPage)).toEqual([]);
   });
 
   it("links only planned routes of the site (internal links resolve)", () => {

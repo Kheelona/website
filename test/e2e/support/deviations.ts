@@ -55,6 +55,16 @@ const oneOf = (lines: readonly string[]) => new RegExp(`^(?:${lines.map(literal)
 /* The build's words for the team and setup rules (V7, V8). Spelled here because Playwright cannot load those content
    modules (they import images); src/content/en-IN/pages/parity-deviations.test.ts holds each to its content module. */
 export const TEAM_LEAD_BUILD = "Kheelona’s founders are parents in Bengaluru, building Kheelu: a screen-free plush toy that talks, for children aged 3 to 7.";
+/* The team page's resolved placeholders (V7 since task 6.6; D054 item 20): the founders' background lines, sentence by
+   sentence, and the strip's names that show as text (the NVIDIA and nasscom marks carry theirs as alt text). */
+export const TEAM_BIOS_BUILD = [
+  "He is a Chartered Accountant with 15 years in finance and company-building.",
+  "He was the first student at his family’s pre-school, in 1994.",
+  "He studied AI, shipped machine learning in production, and holds 14 patents filed in his own name.",
+  "He has spent over a decade in hardware, taking products from a blank page to certification.",
+  "That includes years at Intel, leading Thunderbolt 4 and 5 compliance.",
+] as const;
+export const TEAM_STRIP_BUILD = ["Karnataka Elevate", "Founders Inc"] as const;
 export const SETUP_STEP_BUILD = [
   "Press and hold Kheelu’s setup button.",
   "[PLACEHOLDER: which button and where; the app’s own screen still shows “[back]”]",
@@ -118,7 +128,12 @@ const paymentsHidden: readonly VisualHide[] = [
   },
 ];
 
-const TEAM_V7 = "deviations.md V7 (main session, 2026-10-14, M1; task 5.7, CMO M-T1, D038)";
+const TEAM_V7 = "deviations.md V7 (main session, 2026-10-14, M1; task 5.7, CMO M-T1; task 6.6, D054 item 20)";
+/** One element per side: the mockup's selector, then the build's. */
+const bothSides = (mockup: string, build: string, reason: string): VisualHide[] => [
+  { side: "mockup", selector: mockup, reason, approvedBy: TEAM_V7 },
+  { side: "build", selector: build, reason, approvedBy: TEAM_V7 },
+];
 
 export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
   store: [
@@ -134,28 +149,35 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
     ...paymentsHidden,
   ],
   "store-confirmation": paymentsHidden,
+  /* What still differs on purpose (V7): the hero lead (CMO M-T1), and the mockup's placeholders that the founder's
+     answers resolved (D054 item 20), each with other words or another height on the build's side, so every chunk below
+     would shift. The pixels compare the page without them on both sides: fold 3's cards as name, role, words and link,
+     fold 5 as its heading. Their words are compared by the text pass (TEXT_DEVIATIONS), their markup and files by the
+     unit tests (team.test.ts, the team route's page.test.tsx, FoundersSection and RecognitionStrip). */
   team: [
+    /* The lead wraps to a different number of lines on phones. */
+    ...bothSides("#hero-title ~ .kh-heading__lead", "#hero-title ~ .kh-heading__lead", "the hero lead (CMO fix M-T1 in the build), compared by the text pass; hidden on both sides so the chunks below line up"),
+    ...bothSides(
+      ".mk-founder__head .kh-avatar",
+      ".ks-founder__head .kh-avatar",
+      "each founder's badge: initials in the mockup (B24's placeholder), the live photo in the build (D054 item 20); the same box, other pixels",
+    ),
     {
       side: "mockup",
-      selector: ".mk-founder__bg",
-      reason: "the founders' background lines are proof-gated slots that render nothing until F11's proof is filed (D038)",
+      selector: ".mk-founder__photo",
+      reason: "the mockup's B24 photo placeholder line under each founder's name; the build shows the photo in the badge instead (D054 item 20)",
       approvedBy: TEAM_V7,
     },
-    {
-      side: "mockup",
-      selector: 'section[aria-labelledby="recognised-title"]',
-      reason: "fold 5, \"Recognised by.\", is hidden in the build until a programme's proof is filed (D038, F11; the mockup's own fold comment)",
-      approvedBy: TEAM_V7,
-    },
-    /* The hero lead is the CMO's M-T1 wording on one side and the mockup's on the other; on phones it wraps to a
-       different number of lines and every chunk below would shift, so the pixels compare the page without it on both
-       sides, and its words are compared by the text pass (TEXT_DEVIATIONS). */
-    ...(["mockup", "build"] as const).map((side) => ({
-      side,
-      selector: "#hero-title ~ .kh-heading__lead",
-      reason: "the hero lead (CMO fix M-T1 in the build), compared by the text pass; hidden on both sides so the chunks below line up",
-      approvedBy: TEAM_V7,
-    })),
+    ...bothSides(
+      ".mk-founder__bg",
+      ".ks-founder__bg",
+      "each founder's background line: the F11 placeholder in the mockup, the live bio's line in the build (D054 item 20); they wrap to different heights",
+    ),
+    ...bothSides(
+      "#recognised-title ~ .kh-body",
+      "#recognised-title ~ .ks-recognition",
+      "fold 5's line: the F11 placeholder in the mockup, the live strip of marks and names in the build (D054 item 20); the heading is compared",
+    ),
   ],
   setup: (["mockup", "build"] as const).map((side) => ({
     /* Step 2 is CMO fix M-S1 in the build (no place, no light colour; an open placeholder for the place), so it wraps
@@ -257,13 +279,23 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
       mockup: /^Kheelu is designed by parents in Bengaluru\.$/,
       build: oneOf([TEAM_LEAD_BUILD]),
       reason: "CMO fix M-T1: the hero lead names the product, the age band and the search term",
-      approvedBy: "deviations.md V7 (main session, 2026-10-14, M1; task 5.7)",
+      approvedBy: TEAM_V7,
     },
     {
-      /* The proof-gated lines (D038, F11): the three founders' backgrounds and fold 5's programmes, with its heading. */
-      mockup: /^(?:\[PLACEHOLDER F11: .+\]|Recognised by\.)$/,
-      reason: "proof-gated slots that render nothing until F11's proof is filed (D038); fold 5 is hidden with them",
-      approvedBy: "deviations.md V7 (main session, 2026-10-14, M1; task 5.7)",
+      /* The placeholders the founder's answers resolved (D054 item 20): the photos (B24), the three founders'
+         backgrounds and fold 5's programmes (F11). The build shows the photos without words, the background lines and
+         the strip's two names as text. */
+      mockup: /^\[PLACEHOLDER (?:B24: founder photo|F11: .+)\]$/,
+      build: oneOf([...TEAM_BIOS_BUILD, ...TEAM_STRIP_BUILD]),
+      reason: "resolved placeholders: the founders' photos, background lines and the recognition strip, as live (D054 item 20)",
+      approvedBy: TEAM_V7,
+    },
+    {
+      /* Each founder's initials badge reads as a line of its own; the build's badges hold the photos. The quote's "AS"
+         (fold 4) is on both sides, so only the founders' three go missing (team.test.ts holds the quote's). */
+      mockup: /^(?:AS|KC)$/,
+      reason: "the founders' initials badges, replaced by their live photos (D054 item 20; B24)",
+      approvedBy: TEAM_V7,
     },
   ],
   setup: [

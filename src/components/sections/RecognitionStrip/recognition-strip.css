@@ -1,0 +1,28 @@
+/* RecognitionStrip (task 3.4; the live marks since task 6.6, D054 item 20). No mockup rule: team.html fold 5 holds a
+   placeholder line where the row sits. One quiet row under the centred heading, wrapping on a phone in its order; each
+   mark at the DS space-7 height (RecognitionStrip.tsx MARK_HEIGHT) and its own ratio (--kh-ratio, Photo's bare form),
+   so next/image's whole-pixel renditions never move the fold; a name beside its decorative mark, or alone. */
+.ks-recognition {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-4) var(--space-6);
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.ks-recognition__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.ks-recognition__mark {
+  display: block;
+  height: var(--space-7);
+  width: auto;
+  aspect-ratio: var(--kh-ratio);
+}
+.ks-recognition__name {
+  margin: 0;
+}

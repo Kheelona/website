@@ -9,10 +9,10 @@ import type { FounderCard, FoundersSectionConfig } from "./founders-section.type
 
 /**
  * The founders (task 3.4; team.html fold 3): a section of DS FeatureCards in three columns, composed with Avatar (the
- * DS has no founder card). Each card: the initials badge (hidden: the visible name says who it is) or, once approved,
- * the photo (B24); the name and role; the photo placeholder line while B24 is open; the card's words; the background
- * line only once its proof is filed (D038, F11: a gated line renders nothing, on any environment); the profile link, a
- * full tap target (G-01). Server component.
+ * DS has no founder card). Each card: the founder's photo with its alt (the live photos since task 6.6, D054 item 20),
+ * or, while the photo is a placeholder, the initials badge (hidden: the visible name says who it is) and the
+ * placeholder line; the name and role; the card's words; the background line (a gated line renders nothing, on any
+ * environment, D038); the profile link, a full tap target (G-01). Server component.
  */
 export type FoundersSectionProps = FoundersSectionConfig;
 

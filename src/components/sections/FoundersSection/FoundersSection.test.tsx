@@ -2,11 +2,13 @@ import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { mockupFold, skeleton, words } from "../../../../test/support/mockup-compare";
 import { FoundersSection } from "./FoundersSection";
-import { FOUNDERS } from "./FoundersSection.stories";
+import { FOUNDERS, FOUNDERS_LIVE } from "./FoundersSection.stories";
 
 /* FoundersSection (task 3.4): the team page's founder cards (team.html fold 3), composed from FeatureCard and Avatar
-   (the DS has no founder card). The backgrounds are proof-gated (D038, F11): while gated they render nothing on any
-   environment, so the comparison leaves out the mockup's background lines, which show their placeholder. */
+   (the DS has no founder card). The mockup shows a placeholder for each photo and background line; the comparison runs
+   on the mockup's state (initials, the photo placeholder line, backgrounds gated, which render nothing on any
+   environment) and leaves out the mockup's background lines. The page's own state since task 6.6 (D054 item 20), the
+   photos and the background lines, is tested apart. */
 
 /* The card link's tap target is Card's shared rule (G-01), which replaces the mockup's own founder-link class. */
 const OPTIONS = { skip: ".mk-founder__bg", rename: { founder__link: "" }, drop: /^ks-card__link--tap$/ };
@@ -58,6 +60,20 @@ describe("FoundersSection: parts", () => {
     const bios = [...container.querySelectorAll(".ks-founder__bg")];
     expect(bios.map((b) => b.className)).toEqual(["kh-body-s ks-founder__bg", "kh-body-s ks-founder__bg", "kh-body-s ks-founder__bg"]);
     expect(bios[1].previousElementSibling!.className).toBe("kh-card__body");
+  });
+
+  /* Task 6.6 (D054 item 20): the live photos, each with the copy page's alt, which names the founder and says what the
+     photo shows; the background lines beside them, ungated. */
+  it("as the team page ships: each photo in the badge's place with its alt, and each background line", () => {
+    const { container } = render(<FoundersSection {...FOUNDERS_LIVE} />);
+    expect(container.querySelector(".ks-founder__photo")).toBeNull();
+    const photos = [...container.querySelectorAll<HTMLImageElement>(".ks-founder__head .kh-avatar img")];
+    expect(photos.map((img) => [img.getAttribute("alt"), img.getAttribute("loading"), img.getAttribute("sizes")])).toEqual(
+      FOUNDERS_LIVE.founders.map((f) => [(f.photo as { alt: string }).alt, "lazy", "96px"]),
+    );
+    expect(photos[0].getAttribute("alt")).toBe("A founder, as the photo shows them.");
+    expect(container.querySelectorAll(".kh-avatar[aria-hidden]")).toHaveLength(0);
+    expect([...container.querySelectorAll(".ks-founder__bg")].map((b) => b.textContent)).toEqual(FOUNDERS_LIVE.founders.map((f) => f.bio!.text));
   });
 
   it("shows an approved photo in the badge's place and drops the placeholder line", () => {
