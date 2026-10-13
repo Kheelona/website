@@ -53,7 +53,7 @@ layout widths) or a plain `<img>` (SVG).
 | `Photo library/kabir-01-imagining-space-web.webp` | Photos | H (imagination fold) | `ImaginationFrame` | | 2.3 |
 | `Photo library/ira-01-story-on-the-bed-web.webp` | Photos | H, G | `Photo` | | 2.3 |
 | `Photo library/advik-02-whispering-to-kheelu-web.webp` | Photos | P, S | `Photo` | | 2.3 |
-| `Photo library/advik-04-floor-train-web.webp` | Photos | A (learning toys) | `Photo` | | 2.3 |
+| `Photo library/advik-04-floor-train-web.webp` | Photos | A (learning toys; 3-6-9-12 rule: head photo) | `Photo` (learning toys, in the body); `Photo` in `ArticleHead` (the 3-6-9-12 rule page's LCP image) | the 3-6-9-12 rule page uses it as its copy page names it | 2.3, 5.17 |
 | `Photo library/tara-02-evening-with-amma-web.webp` | Photos | S, SH, A (safe AI toy) | `Photo` | parents only with Tara (DS cast rule) | 2.3 |
 | `Photo library/myra-04-drawing-at-home-web.webp` | Photos | SH, A (learning toys) | `Photo` | | 2.3 |
 | `Photo library/kabir-04-planet-book-web.webp` | Photos | SH, A (late talkers) | `Photo` | | 2.3 |
