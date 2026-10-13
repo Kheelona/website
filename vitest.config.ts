@@ -24,5 +24,9 @@ export default defineConfig({
     include: ["src/**/*.test.{ts,tsx}", "test/**/*.test.{ts,tsx}"],
     exclude: [...configDefaults.exclude, "test/e2e/**"],
     css: true,
+    // The whole-tree guards (banned phrases, client icons, tracking freeze, build steps) read every file in src/
+    // and run git; as the tree grew they passed 5 s, the default, whenever the machine was busy, and reported a
+    // timeout as red (merge gates of wave 5, 2026-10-13/14). 30 s keeps a real hang visible (D052 merge gate).
+    testTimeout: 30_000,
   },
 });
