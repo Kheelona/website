@@ -1,13 +1,17 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { describe, expect, it } from "vitest";
+import type { ReactElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 import { purchasePayload } from "@/lib/store/meta-capi";
 import { replayAllowedOnPath } from "@/config/site";
 import type { PreorderRow } from "@/lib/store/db";
+import { buildOffer } from "@/lib/offer/offer";
+import { words } from "./support/mockup-compare";
 
 /**
- * Five measurement tools now run on this site, and each one carries a promise
- * on /privacy about whether it sets cookies. The standing rule from
+ * Every measurement tool on this site carries a promise on /privacy about
+ * whether it sets cookies (never a count of them: see below). The standing rule from
  * website-steps §8.21-c is that a tool and the sentence describing it ship
  * together, so this guards the pairing: if someone adds or removes a tag
  * without touching the privacy page, this fails.
@@ -25,11 +29,54 @@ import type { PreorderRow } from "@/lib/store/db";
  * assertions below therefore pin what it does on THIS site, and in particular
  * the three promises a parent could actually act on — typed values masked, the
  * confirmation page never recorded, data held in the United States.
+ *
+ * RE-PINNED 2026-10-12 TO THE APPROVED PAGE (task 5.11, B2c). The words moved out
+ * of the route file into src/content/en-IN/legal/privacy.ts, rendered by
+ * LegalTemplate, so PRIVACY is now what a parent reads: the route's rendered
+ * <main>, as visible text, typographic apostrophes and quotes normalised to plain
+ * ones before matching. Each measuring tool has a block of its own on the page,
+ * so a tool's promise is checked inside its own block (`tool(name)`), not merely
+ * somewhere on the page. Every disclosure below survived the Gate A rewrite in
+ * new words (privacy.md section 5, approved D046); each wording assertion now
+ * pins the approved sentence. The processor names, the payload key allow-list
+ * and every `not.toContain` are unchanged. The one positive assertion not
+ * re-pinned is "most detailed of the five": the approved copy does not carry it,
+ * and it is a count, which this file bans (it is banned below instead).
  */
 
 const ROOT = process.cwd();
 const LAYOUT = readFileSync(join(ROOT, "src/app/layout.tsx"), "utf8");
-const PRIVACY = readFileSync(join(ROOT, "src/app/(site)/privacy/page.tsx"), "utf8");
+
+/* The privacy route reads the live offer for its template; the page names no
+   amount, so either mode gives the same words. */
+const getOffer = vi.hoisted(() => vi.fn());
+vi.mock("@/lib/offer/get-offer", () => ({ getOffer }));
+
+/** Typographic apostrophes and quotes as plain ones, so a pattern reads as typed. */
+const plain = (text: string) => text.replace(/[’‘]/g, "'").replace(/[“”]/g, '"');
+
+/** The privacy page as a parent reads it: the route's rendered <main>, as text. */
+let PRIVACY = "";
+/** Each measuring tool's block, by the name it is headed with. */
+const TOOLS = new Map<string, string>();
+
+beforeAll(async () => {
+  getOffer.mockResolvedValue(buildOffer("token"));
+  const { default: PrivacyPage } = await import("@/app/(site)/privacy/page");
+  const html = renderToStaticMarkup((await PrivacyPage()) as ReactElement);
+  const main = new DOMParser().parseFromString(`<main>${html}</main>`, "text/html").querySelector("main")!;
+  PRIVACY = plain(words(main));
+  for (const block of main.querySelectorAll(".ks-tool")) {
+    TOOLS.set(plain(words(block.querySelector("h3")!)), plain(words(block)));
+  }
+}, 60_000);
+
+/** One measuring tool's block on /privacy; fails if the tool has none of its own. */
+function tool(name: string): string {
+  const text = TOOLS.get(name);
+  expect(text, `${name} has no block of its own on /privacy`).toBeDefined();
+  return text!;
+}
 
 /** A fully populated order, so the key allow-list sees every field the payload
  *  can carry. A sparser fixture would let a new key hide behind an absent
@@ -57,7 +104,7 @@ const SAMPLE_ORDER = {
 } as PreorderRow;
 
 describe("analytics tags and their privacy disclosure stay in step", () => {
-  it("mounts all five tools in the root layout", () => {
+  it("mounts each browser tool in the root layout", () => {
     expect(LAYOUT).toContain("analytics.ahrefs.com/analytics.js");
     expect(LAYOUT).toContain("<Analytics />"); // Vercel
     expect(LAYOUT).toContain("<GoogleAnalyticsGate />");
@@ -80,18 +127,29 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
       "PostHog",
     ]) {
       expect(PRIVACY, `${name} is not disclosed on /privacy`).toContain(name);
+      /* Since 2026-10-12 (5.11): one block per tool, headed with its name, so
+         no tool's sentence can be folded into a list or a count again. */
+      tool(name);
     }
+    tool("Meta Conversions API");
   });
 
   it("still tells the reader which tools set cookies and how to refuse them", () => {
-    expect(PRIVACY).toMatch(/set no cookies/);
+    /* Re-pinned 2026-10-12 (5.11) from the page-wide `/set no cookies/`: each
+       tool now carries its own cookie sentence, so each is checked in its own
+       block. */
+    expect(tool("Vercel Web Analytics")).toMatch(/It sets no cookies and does not follow you to other sites\./);
+    expect(tool("Ahrefs Web Analytics")).toMatch(/It sets no cookies and does not follow you to other sites\./);
     /* Conjugation-tolerant since 2026-09-19. This pinned the literal "does set
        cookies", which broke the moment PostHog joined GA4 and the sentence
        became "Google Analytics and PostHog DO set cookies" — a test failing on
        a verb agreement while the disclosure it guards got strictly better. What
        matters is that the page still separates the tools that set cookies from
        the ones that do not, so that is what is asserted. */
-    expect(PRIVACY).toMatch(/\bdo(es)? set cookies\b/);
+    /* Re-pinned 2026-10-12 (5.11) from `/\bdo(es)? set cookies\b/`: the
+       separation is now made tool by tool, in each tool's own block. */
+    expect(tool("Google Analytics")).toMatch(/It sets cookies in your browser/);
+    expect(tool("Meta Pixel")).toMatch(/It sets a cookie and does follow you to other sites\./);
     /* Was `block all four` until 2026-09-02. That sentence became false the day
        the Conversions API shipped, because the server half is sent by us and no
        ad blocker can reach it. The refusal advice must still be here, but it may
@@ -107,7 +165,9 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
        through kheelona.com/ingest — first-party requests an ad blocker cannot
        tell apart from the site itself. Defeating the blocker is the POINT of a
        reverse proxy, so the sentence had to move rather than be softened. */
-    expect(PRIVACY).toMatch(/your browser can block the tools that load from another company/);
+    /* Re-pinned 2026-10-12 (5.11): the approved list item opens with the
+       capitalised lead "Your browser can block" and names the address. */
+    expect(PRIVACY).toMatch(/Your browser can block the tools that load from another company's address/);
   });
 
   /* THE OPT-OUT MUST NOT OVERSTATE ITSELF (§8.30-r). Telling a parent to install
@@ -115,7 +175,10 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
      worst thing this page could do, because they would act on it and be wrong.
      The page has to name the gap. */
   it("admits that blocking cannot stop the server-side report", () => {
-    expect(PRIVACY).toMatch(/sent by us, not by your browser, so blocking cannot prevent it/);
+    /* Re-pinned 2026-10-12 (5.11) from "sent by us, not by your browser, so
+       blocking cannot prevent it": the approved item sits under the lead
+       naming what blocking can't stop (pinned below). */
+    expect(PRIVACY).toMatch(/the report our server sends to Meta when a pre-order is paid comes from us, not from your browser/);
     expect(PRIVACY).not.toContain("your browser can block all four");
     expect(PRIVACY).not.toContain("block the three that only run in your browser");
     /* Nor may the fix be to bump the number: the next tool would falsify it
@@ -132,8 +195,10 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
      remedy no longer reaches this one. The founder chose to state it plainly
      rather than leave it implied (2026-09-20). */
   it("admits that an ad blocker no longer reaches PostHog", () => {
-    expect(PRIVACY).toMatch(/PostHog now reports through our own address/);
-    expect(PRIVACY).toMatch(/an ad blocker usually cannot tell its requests apart/);
+    /* Re-pinned 2026-10-12 (5.11) from "PostHog now reports through our own
+       address" and "an ad blocker usually cannot tell its requests apart". */
+    expect(PRIVACY).toMatch(/PostHog reports through our own address/);
+    expect(PRIVACY).toMatch(/so an ad blocker usually can't tell it apart from the site itself/);
   });
 
   /* THE GAPS ARE NO LONGER COUNTED (§8.38-g, third occurrence). The page said
@@ -142,7 +207,11 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
      enforcing a false sentence — the exact failure of 2026-09-02 and 2026-09-19.
      A category is honest at any number; a count expires on the next change. */
   it("names the gaps without counting them", () => {
-    expect(PRIVACY).toMatch(/Be aware of the gaps/);
+    /* Re-pinned 2026-10-12 (5.11) from "Be aware of the gaps". The approved
+       lead reads "Two things blocking can't stop."; only its category is pinned,
+       never the number, for the reason above (a count expires on the next
+       change; reported to the main session as a copy note). */
+    expect(PRIVACY).toMatch(/blocking can't stop/);
     expect(PRIVACY).not.toContain("Be aware of the one gap");
     expect(PRIVACY).not.toMatch(/the (one|two|three|four) gaps?,/);
   });
@@ -154,7 +223,13 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
   it("says plainly that the pixel follows you and is used to advertise", () => {
     expect(PRIVACY).toMatch(/follow you to other sites/);
     expect(PRIVACY).toMatch(/Facebook or Instagram/);
-    expect(PRIVACY).toMatch(/advertise on Facebook and Instagram/);
+    /* Since 2026-10-12 (5.11) also inside the pixel's own block: the page
+       says "does not follow you" of other tools, so the page-wide match alone
+       would pass on theirs. */
+    expect(tool("Meta Pixel")).toMatch(/does follow you to other sites/);
+    expect(tool("Meta Pixel")).toMatch(/how you may later see a Kheelona advertisement on Facebook or Instagram/);
+    /* Re-pinned 2026-10-12 (5.11) from "advertise on Facebook and Instagram". */
+    expect(PRIVACY).toMatch(/We do advertise Kheelu to parents on Facebook and Instagram, and the Meta tools above are how we measure that/);
   });
 
   /* The old page promised the opposite of all this in two other sections. If
@@ -257,14 +332,22 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
      Whatever the fields, the page has to say that form details can reach Meta
      and that Meta's script decides which. */
   it("still discloses that form details can reach Meta, and who decides which", () => {
-    expect(PRIVACY).toMatch(/details you enter can be included/);
+    /* Re-pinned 2026-10-12 (5.11) from "details you enter can be included": the
+       approved pixel block says the script reads what it recognises on our
+       forms and sends it on. */
+    expect(tool("Meta Pixel")).toMatch(/what it recognises on our forms and sends it as one-way codes/);
     /* The old assertion pinned "determined by Meta's own measurement script
        rather than chosen by us field by field", which is true of the browser
        script and FALSE of our server, which picks seven fields by name. The
        suite was enforcing a false claim about our own code. The page now states
        the two halves separately, and this pins both. */
-    expect(PRIVACY).toMatch(/Meta's script in your browser reads what it recognises/);
-    expect(PRIVACY).toMatch(/Our own server separately sends a small, fixed set/);
+    /* Re-pinned 2026-10-12 (5.11): the two halves are now two tool blocks, the
+       pixel ("Meta's script also reads what it recognises", from "Meta's script
+       in your browser reads what it recognises") and the Conversions API (our
+       server's fixed set named field by field, from "Our own server separately
+       sends a small, fixed set"). */
+    expect(tool("Meta Pixel")).toMatch(/Meta's script also reads what it recognises/);
+    expect(tool("Meta Conversions API")).toMatch(/our own server reports it to Meta: one-way codes of your email, phone number and first name/);
   });
 
   /* The IP and the user agent are the only things that leave in READABLE form,
@@ -278,8 +361,14 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
      pins the payload. A number in the copy is a review flag. */
   it("discloses the fields that are NOT hashed, without stating a count", () => {
     expect(PRIVACY).toMatch(/your network address/);
-    expect(PRIVACY).toMatch(/identifiers already stored in Meta's own cookie/);
-    expect(PRIVACY).toMatch(/Those last ones are not coded/);
+    /* Re-pinned 2026-10-12 (5.11) from "identifiers already stored in Meta's
+       own cookie" and "Those last ones are not coded": the approved block names
+       the coded fields ("one-way codes of your email, phone number and first
+       name") and then the ones sent "together with" them, by category. */
+    expect(tool("Meta Conversions API")).toMatch(/the identifiers in Meta's cookie on your device/);
+    expect(tool("Meta Conversions API")).toMatch(
+      /one-way codes of your email, phone number and first name, together with your network address, your browser, the identifiers in Meta's cookie on your device/,
+    );
     expect(PRIVACY).not.toContain("which are the two it needs in readable form");
   });
 
@@ -313,11 +402,14 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
   it("states what PostHog records on this site, in the specific", () => {
     expect(PRIVACY).toMatch(/which buttons and links you tap/);
     expect(PRIVACY).toMatch(/replay of your screen/);
+    /* Since 2026-10-12 (5.11) also inside PostHog's own block. */
+    expect(tool("PostHog")).toMatch(/Records which buttons and links you tap, and a replay of your screen/);
   });
 
   it("promises typed values are masked before the recording leaves the browser", () => {
     expect(PRIVACY).toMatch(/hidden before the recording leaves your browser/);
-    expect(PRIVACY).toMatch(/never what you put in it/);
+    /* Re-pinned 2026-10-12 (5.11) from "never what you put in it". */
+    expect(tool("PostHog")).toMatch(/Anything you type is hidden before the recording leaves your browser/);
   });
 
   /* THE STRONGEST PROMISE ON THE PAGE, because it is the one enforced by data
@@ -326,7 +418,9 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
      emptied, that test fails too — but this one fails first and points at the
      sentence that would have become a lie. */
   it("promises the confirmation page is never recorded, and means it", () => {
-    expect(PRIVACY).toMatch(/switch recording off completely on the order confirmation page/);
+    /* Re-pinned 2026-10-12 (5.11) from "switch recording off completely on the
+       order confirmation page". */
+    expect(tool("PostHog")).toMatch(/nothing is recorded on the order confirmation page/);
     expect(
       replayAllowedOnPath("/store/thanks"),
       "/privacy promises the confirmation page is not recorded, but the deny list no longer stops it",
@@ -335,6 +429,9 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
 
   it("says where PostHog holds what it collects", () => {
     expect(PRIVACY).toMatch(/servers in the United States/);
+    /* Since 2026-10-12 (5.11) also inside PostHog's own block: the page says
+       "servers in India" of the speech providers. */
+    expect(tool("PostHog")).toMatch(/It stores what it collects on servers in the United States/);
   });
 
   /* PostHog is first-party and is not an advertising tool, and the page says
@@ -342,10 +439,17 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
      identity, a cross-domain cookie — these two sentences become false and must
      be rewritten rather than left standing. */
   it("does not overstate PostHog's reach, and does not understate it either", () => {
-    expect(PRIVACY).toMatch(/It does not follow you to other sites, and it is never used to advertise to you/);
+    /* Re-pinned 2026-10-12 (5.11) from "It does not follow you to other sites,
+       and it is never used to advertise to you", inside PostHog's own block. */
+    expect(tool("PostHog")).toMatch(/It does not follow you to other sites and is never used to advertise to you/);
     /* ...but it must not be filed away as harmless either. The page has to say
        it is the most detailed of the five. */
-    expect(PRIVACY).toMatch(/most detailed of the five/);
+    /* RETIRED 2026-10-12 (5.11): "most detailed of the five" is a count, the
+       failure this file exists to prevent, and the approved page does not carry
+       it. What keeps PostHog from being filed away as harmless is now its own
+       block saying, in the specific, that it records every tap and a replay of
+       the screen (pinned above). The count may not come back, in any number. */
+    expect(PRIVACY).not.toMatch(/most detailed of the (one|two|three|four|five|six|seven|eight)/);
   });
 
   /* 🔴 STITCHING IS A PRIVACY CHANGE, NOT A SCHEMA ONE (§8.40, founder
@@ -359,8 +463,10 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
      not imply one is. `$process_person_profile: false` on the server event is
      what makes that sentence true, and posthog-server.test.ts pins it. */
   it("admits that an order is stored with the analytics identifier", () => {
-    expect(PRIVACY).toMatch(/identifier PostHog has already given your browser/);
-    expect(PRIVACY).toMatch(/identifier for a browser, not a profile of a person/);
+    /* Re-pinned 2026-10-12 (5.11) from "identifier PostHog has already given
+       your browser" and "identifier for a browser, not a profile of a person". */
+    expect(tool("PostHog")).toMatch(/we store the anonymous identifier PostHog gave your browser alongside your order/);
+    expect(tool("PostHog")).toMatch(/It identifies a browser, not a person, and we don't ask PostHog to build a profile from it/);
   });
 
   /* 🔴 A COOKIE OF OUR OWN, ADDED 2026-09-20 (§8.40-f). `kh_utm` is set by
@@ -370,14 +476,21 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
      sets about a visitor, so the page says so rather than leaving it to be found
      in devtools. */
   it("says we remember which advertisement brought you", () => {
-    expect(PRIVACY).toMatch(/we remember which advertisement brought you/);
-    expect(PRIVACY).toMatch(/only for as long as your visit lasts/);
+    /* Re-pinned 2026-10-12 (5.11) from "we remember which advertisement
+       brought you" and "only for as long as your visit lasts": the approved page
+       names each of our cookies, with its life, in the "Our own cookies" block. */
+    expect(tool("Our own cookies")).toMatch(/kh_utm remembers which campaign brought you, for as long as your visit lasts\./);
   });
 
   /* The reason must be stated too. "We store an id" invites the question this
      sentence should answer without being asked. */
   it("says why it is stored, in the plainest terms", () => {
-    expect(PRIVACY).toMatch(/whether our advertising is worth what it costs/);
+    /* Re-pinned 2026-10-12 (5.11) from "whether our advertising is worth what
+       it costs": the approved page gives the reason beside each thing kept, the
+       order row's campaign, device and network address, and PostHog's
+       identifier. */
+    expect(PRIVACY).toMatch(/We keep these with your order, so we can tell which of our pages and advertisements work/);
+    expect(tool("PostHog")).toMatch(/alongside your order, so we can see that a visit turned into an order/);
   });
 
   /* 🔴 THE CLICK ID IS NOT A CAMPAIGN NAME (§8.41, 2026-09-20). The page said the
@@ -386,7 +499,10 @@ describe("analytics tags and their privacy disclosure stay in step", () => {
      account — so "nothing about you" stopped being the whole truth the moment
      that shipped. The retired clause is banned rather than quoted (§8.38-g). */
   it("admits the advertising cookie holds the click, not just the campaign", () => {
-    expect(PRIVACY).toMatch(/which campaign and which click brought you here/);
+    /* Re-pinned 2026-10-12 (5.11) from "which campaign and which click brought
+       you here": the campaign and the click are two cookies, each named. */
+    expect(tool("Our own cookies")).toMatch(/kh_utm remembers which campaign brought you/);
+    expect(tool("Our own cookies")).toMatch(/kh_fbclid remembers which advertisement click brought you, for as long as your visit lasts/);
     expect(PRIVACY).toMatch(/Meta can match that click back to your account/);
     expect(PRIVACY).not.toContain("the name of the campaign and nothing about you");
   });
