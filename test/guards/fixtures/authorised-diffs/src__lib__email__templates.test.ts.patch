@@ -1,0 +1,53 @@
+Reviewed diff of src/lib/email/templates.test.ts against archive/pre-reset-2026-10-10 (checkout-freeze, ADR-013 frozen tests).
+Regenerate with: git diff archive/pre-reset-2026-10-10 -- src/lib/email/templates.test.ts (keep this header above it).
+
+Task 6.4 (receipt email wording; F12 answered, D054 items 1 and 2), LITERAL-ONLY: three selectors follow the receipt's
+new labels (src/lib/email/templates.ts, its own reviewed patch). The token stream is unchanged once string, template and
+regular-expression literals are masked: no assertion added, removed or weakened.
+  - D032: the WhatsApp number takes calls as well as messages, and "messages, not calls" is retired on the new site.
+    The test that pinned the old label ("says the WhatsApp number does not take calls", /messages, not calls/ in the
+    HTML and the plain text) now pins the new one (/WhatsApp or call/), the words of the site's help line
+    (src/content/en-IN/seller.ts help.contact; wiki/site/pages/store-confirmation.md fold 5).
+  - D028 (wiki/site/pages/store-confirmation.md fold 2): "Due on dispatch" becomes "Due before delivery". The
+    full-payment assertion /paid in full/i and the ₹499 receipt's `${BALANCE_PRICE}, of the` both take the label in
+    front of the same words, so each still asserts what it did and now also the label (stricter, never weaker).
+Unchanged: every fact the receipt states (amounts from the row, SHIP_DATE_TEXT, the refund promise, the balance link
+on WhatsApp and by email, the seller block) and every branch (tier, address).
+
+diff --git a/src/lib/email/templates.test.ts b/src/lib/email/templates.test.ts
+index dd9a6c3..ae57069 100644
+--- a/src/lib/email/templates.test.ts
++++ b/src/lib/email/templates.test.ts
+@@ -86,9 +86,9 @@ describe("the acknowledgement email", () => {
+     expect(email.text).toContain(LEGAL_ENTITY);
+   });
+ 
+-  it("says the WhatsApp number does not take calls", () => {
+-    expect(email.html).toMatch(/messages, not calls/);
+-    expect(email.text).toMatch(/messages, not calls/);
++  it("says the WhatsApp number takes calls as well as messages (D032)", () => {
++    expect(email.html).toMatch(/WhatsApp or call/);
++    expect(email.text).toMatch(/WhatsApp or call/);
+   });
+ 
+   /* The site's voice laws do not stop at the site. Zero em-dashes, and none of
+@@ -135,7 +135,7 @@ describe("the acknowledgement for a full-payment order (§8.26)", () => {
+   it("says the whole price is paid, and keeps the refund promise on all of it", () => {
+     for (const part of [email.html, email.text]) {
+       expect(part).toContain(FULL_PRICE);
+-      expect(part).toMatch(/paid in full/i);
++      expect(part).toMatch(/Due before delivery(<\/strong>|:) Nothing\. You have paid in full/i);
+       expect(part).toMatch(/refund/i);
+     }
+   });
+@@ -168,8 +168,8 @@ describe("the acknowledgement for an event token (2026-08-23, the Ideabaaz page)
+ 
+   it("keeps the ₹499 receipt at ₹4,500 to the byte", () => {
+     const token = preorderAckEmail({ order, addressUrl: "https://x.example/t" });
+-    expect(token.html).toContain(`${BALANCE_PRICE}, of the`);
+-    expect(token.text).toContain(`${BALANCE_PRICE}, of the`);
++    expect(token.html).toContain(`<strong>Due before delivery</strong> ${BALANCE_PRICE}, of the`);
++    expect(token.text).toContain(`Due before delivery: ${BALANCE_PRICE}, of the`);
+   });
+ });
+ 

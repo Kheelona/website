@@ -43,9 +43,8 @@ function layout(bodyHtml: string): string {
       GSTIN ${GSTIN}
     </p>
     <p style="margin:12px 0 0;font-size:13px;color:${MUTED}">
-      Questions? WhatsApp <a href="${SUPPORT_WHATSAPP_HREF}" style="color:${INK}">${SUPPORT_WHATSAPP_DISPLAY}</a>
+      Questions? WhatsApp or call <a href="${SUPPORT_WHATSAPP_HREF}" style="color:${INK}">${SUPPORT_WHATSAPP_DISPLAY}</a>,
       or write to <a href="mailto:${CONTACT_EMAIL}" style="color:${INK}">${CONTACT_EMAIL}</a>.
-      The WhatsApp number takes messages, not calls.
     </p>
   </div>
 </div>`;
@@ -132,7 +131,7 @@ export function preorderAckEmail(input: AckInput): Email {
      <div style="border:1px solid ${RULE};border-radius:12px;padding:16px;margin:0 0 18px">
        <p style="margin:0 0 8px;font-size:15px"><strong>Order</strong> ${order.order_ref}</p>
        <p style="margin:0 0 8px;font-size:15px"><strong>Paid today</strong> ${paid}</p>
-       <p style="margin:0 0 8px;font-size:15px"><strong>Due on dispatch</strong> ${paidInFull ? "Nothing. You have paid in full" : `${balanceDue}, of the ${LAUNCH_PRICE} price`}</p>
+       <p style="margin:0 0 8px;font-size:15px"><strong>Due before delivery</strong> ${paidInFull ? "Nothing. You have paid in full" : `${balanceDue}, of the ${LAUNCH_PRICE} price`}</p>
        <p style="margin:0;font-size:15px"><strong>Ships from</strong> ${SHIP_DATE_TEXT}</p>
      </div>
      ${addressBlock}
@@ -157,8 +156,8 @@ export function preorderAckEmail(input: AckInput): Email {
     `Order: ${order.order_ref}`,
     `Paid today: ${paid}`,
     paidInFull
-      ? "Due on dispatch: Nothing. You have paid in full."
-      : `Due on dispatch: ${balanceDue}, of the ${LAUNCH_PRICE} price`,
+      ? "Due before delivery: Nothing. You have paid in full."
+      : `Due before delivery: ${balanceDue}, of the ${LAUNCH_PRICE} price`,
     `Ships from: ${SHIP_DATE_TEXT}`,
     "",
     needsAddress
@@ -172,7 +171,7 @@ export function preorderAckEmail(input: AckInput): Email {
     `Changed your mind? Message us any time before your Kheelu is dispatched and we refund the ${paid} in full.`,
     "",
     `${LEGAL_ENTITY}, ${REGISTERED_ADDRESS_LINE}. GSTIN ${GSTIN}.`,
-    `WhatsApp ${SUPPORT_WHATSAPP_DISPLAY} (messages, not calls) or ${CONTACT_EMAIL}.`,
+    `WhatsApp or call ${SUPPORT_WHATSAPP_DISPLAY}, or write to ${CONTACT_EMAIL}.`,
   ].join("\n");
 
   return {

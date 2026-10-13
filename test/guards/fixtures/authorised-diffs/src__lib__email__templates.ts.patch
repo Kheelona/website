@@ -1,0 +1,63 @@
+Reviewed diff of src/lib/email/templates.ts against archive/pre-reset-2026-10-10 (checkout-freeze, ADR-013 class 1).
+Regenerate with: git diff archive/pre-reset-2026-10-10 -- src/lib/email/templates.ts (keep this header above it).
+
+Task 6.4 (receipt email wording; F12 answered, D054 items 1 and 2; D028; D032). LABEL STRINGS ONLY: every change is
+inside a string or template literal, and the token stream with literals masked equals the tag's (the same rule the
+guard applies to a frozen test). No fact, branch, import, signature or style changes.
+  - D028 (wiki/site/pages/store-confirmation.md fold 2): the balance row's label "Due on dispatch" becomes
+    "Due before delivery" in the HTML row and in both plain-text branches (token and full payment), matching the
+    /thanks order card (src/content/en-IN/store/confirmation.ts order.due.term).
+  - D032: the support number takes calls as well as messages. The HTML footer's "The WhatsApp number takes messages,
+    not calls." comes off and its lead reads "WhatsApp or call <number>, or write to <email>."; the plain text's
+    "(messages, not calls)" comes off the same way. The link stays wa.me and the number and email stay
+    SUPPORT_WHATSAPP_DISPLAY and CONTACT_EMAIL. (D032: calls must be answered before this goes live, Gate B.)
+Not changed here: the "Ships from" row (label and SHIP_DATE_TEXT value). Its value is a fact (wiki/site/checkout.md,
+"Email templates' facts and branching ... ships from"), and the frozen templates.test.ts pins SHIP_DATE_TEXT by
+identifier, which no literal-only patch can re-pin; the main session rules on it (task 6.4 report).
+Unchanged: amounts and the balance derived from the row, the tier and address branches, the refund promise, the
+balance link on WhatsApp and by email, the seller block, the internal alert.
+
+diff --git a/src/lib/email/templates.ts b/src/lib/email/templates.ts
+index 5a0c7db..e91949a 100644
+--- a/src/lib/email/templates.ts
++++ b/src/lib/email/templates.ts
+@@ -43,9 +43,8 @@ function layout(bodyHtml: string): string {
+       GSTIN ${GSTIN}
+     </p>
+     <p style="margin:12px 0 0;font-size:13px;color:${MUTED}">
+-      Questions? WhatsApp <a href="${SUPPORT_WHATSAPP_HREF}" style="color:${INK}">${SUPPORT_WHATSAPP_DISPLAY}</a>
++      Questions? WhatsApp or call <a href="${SUPPORT_WHATSAPP_HREF}" style="color:${INK}">${SUPPORT_WHATSAPP_DISPLAY}</a>,
+       or write to <a href="mailto:${CONTACT_EMAIL}" style="color:${INK}">${CONTACT_EMAIL}</a>.
+-      The WhatsApp number takes messages, not calls.
+     </p>
+   </div>
+ </div>`;
+@@ -132,7 +131,7 @@ export function preorderAckEmail(input: AckInput): Email {
+      <div style="border:1px solid ${RULE};border-radius:12px;padding:16px;margin:0 0 18px">
+        <p style="margin:0 0 8px;font-size:15px"><strong>Order</strong> ${order.order_ref}</p>
+        <p style="margin:0 0 8px;font-size:15px"><strong>Paid today</strong> ${paid}</p>
+-       <p style="margin:0 0 8px;font-size:15px"><strong>Due on dispatch</strong> ${paidInFull ? "Nothing. You have paid in full" : `${balanceDue}, of the ${LAUNCH_PRICE} price`}</p>
++       <p style="margin:0 0 8px;font-size:15px"><strong>Due before delivery</strong> ${paidInFull ? "Nothing. You have paid in full" : `${balanceDue}, of the ${LAUNCH_PRICE} price`}</p>
+        <p style="margin:0;font-size:15px"><strong>Ships from</strong> ${SHIP_DATE_TEXT}</p>
+      </div>
+      ${addressBlock}
+@@ -157,8 +156,8 @@ export function preorderAckEmail(input: AckInput): Email {
+     `Order: ${order.order_ref}`,
+     `Paid today: ${paid}`,
+     paidInFull
+-      ? "Due on dispatch: Nothing. You have paid in full."
+-      : `Due on dispatch: ${balanceDue}, of the ${LAUNCH_PRICE} price`,
++      ? "Due before delivery: Nothing. You have paid in full."
++      : `Due before delivery: ${balanceDue}, of the ${LAUNCH_PRICE} price`,
+     `Ships from: ${SHIP_DATE_TEXT}`,
+     "",
+     needsAddress
+@@ -172,7 +171,7 @@ export function preorderAckEmail(input: AckInput): Email {
+     `Changed your mind? Message us any time before your Kheelu is dispatched and we refund the ${paid} in full.`,
+     "",
+     `${LEGAL_ENTITY}, ${REGISTERED_ADDRESS_LINE}. GSTIN ${GSTIN}.`,
+-    `WhatsApp ${SUPPORT_WHATSAPP_DISPLAY} (messages, not calls) or ${CONTACT_EMAIL}.`,
++    `WhatsApp or call ${SUPPORT_WHATSAPP_DISPLAY}, or write to ${CONTACT_EMAIL}.`,
+   ].join("\n");
+ 
+   return {

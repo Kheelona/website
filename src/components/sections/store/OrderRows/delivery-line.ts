@@ -1,12 +1,12 @@
 /**
  * Which delivery row the /thanks order card prints (task 5.16; architecture §16.3, ADR-013, QA review N9).
  *
- * Founder question F12 is open: what a parent who reserved before 10 October 2026 should read about delivery. Until
- * it is answered, an order created before 10 October 2026, 00:00 in India keeps the line it was sold with ("Ships from
- * 20 October 2026", `SHIP_DATE_TEXT`, as the page printed it at the tag), and every later order reads the D023 line
- * ("Deliveries start mid-November"). The rule lives here, outside the frozen page: the page only passes the order's
- * `created_at`, which it already reads. Task 6.4 changes this file and the receipt email's labels together once F12 is
- * answered. The words come in from content; this module only picks.
+ * Founder question F12, answered 2026-10-14 (D054 item 1; task 6.4): keep the split as built. An order created before
+ * 10 October 2026, 00:00 in India keeps the line it was sold with ("Ships from 20 October 2026", `SHIP_DATE_TEXT`, as
+ * the page printed it at the tag; the founder talks to those customers personally), and every later order reads the
+ * D023 line ("Deliveries start mid-November"). An order whose date is missing or unreadable reads the D023 line
+ * (open question P8, confirmed by the same answer). The rule lives here, outside the frozen page: the page only passes
+ * the order's `created_at`, which it already reads. The words come in from content; this module only picks.
  */
 
 /** One row of the order card: its label and its value. */
