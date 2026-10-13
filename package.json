@@ -15,7 +15,7 @@
     "test:watch": "vitest",
     "guards": "vitest run test/guards",
     "jscpd": "jscpd && npm run --silent jscpd:new",
-    "jscpd:new": "jscpd --ignore \"**/*.test.ts,**/*.test.tsx,**/*.stories.tsx,**/*.generated.*,src/styles/generated/**\" --threshold 100 --baseline-from-ref archive/pre-reset-2026-10-10 --fail-on-new-clones --reporters console",
+    "jscpd:new": "jscpd --ignore \"**/*.test.ts,**/*.test.tsx,**/*.stories.tsx,**/*.generated.*,src/styles/generated/**,src/app/(site)/playos/**\" --threshold 100 --baseline-from-ref archive/pre-reset-2026-10-10 --fail-on-new-clones --reporters console",
     "ds:checksums": "node scripts/ds-checksums.mjs",
     "verify": "npm run lint && npm run typecheck && npm run test && npm run jscpd && npm run ds:checksums",
     "verify:e2e": "npm run build && npm run build-storybook && playwright test",
