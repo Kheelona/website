@@ -85,7 +85,7 @@ describe("the Ideabaaz pre-booking page", () => {
     env = null;
     render(await IdeabaazPage());
     expect(
-      screen.getByRole("heading", { name: "This page is not open yet." }),
+      screen.getByRole("heading", { name: "Pre-orders open here shortly." }),
     ).toBeInTheDocument();
     expect(screen.getByText(/nothing has been charged/i)).toBeInTheDocument();
   });

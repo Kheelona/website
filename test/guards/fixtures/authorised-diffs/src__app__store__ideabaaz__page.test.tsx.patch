@@ -1,0 +1,23 @@
+Reviewed diff of src/app/store/ideabaaz/page.test.tsx against archive/pre-reset-2026-10-10 (checkout-freeze, ADR-013 frozen tests).
+Regenerate with: git diff archive/pre-reset-2026-10-10 -- src/app/store/ideabaaz/page.test.tsx (keep this header above it).
+
+Task 6.1 (store secondary pages), LITERAL-ONLY: one string literal follows the task's acceptance, "the not-configured
+state reads 'Pre-orders open here shortly.'" (wiki/engineering/tasks.md 6.1). Without store keys (and on beta, D051)
+the partner page now says what the store page and the event page say in that state, in the store page's own words
+(wiki/site/pages/store.md, Other states; wiki/site/checkout.md "Store keys missing"), instead of its own "This page is
+not open yet."; the body it asserts ("nothing has been charged") is unchanged. The token stream is unchanged once
+literals are masked: no assertion added, removed or weakened.
+
+diff --git a/src/app/store/ideabaaz/page.test.tsx b/src/app/store/ideabaaz/page.test.tsx
+index e0f0847..7a7e514 100644
+--- a/src/app/store/ideabaaz/page.test.tsx
++++ b/src/app/store/ideabaaz/page.test.tsx
+@@ -85,7 +85,7 @@ describe("the Ideabaaz pre-booking page", () => {
+     env = null;
+     render(await IdeabaazPage());
+     expect(
+-      screen.getByRole("heading", { name: "This page is not open yet." }),
++      screen.getByRole("heading", { name: "Pre-orders open here shortly." }),
+     ).toBeInTheDocument();
+     expect(screen.getByText(/nothing has been charged/i)).toBeInTheDocument();
+   });
