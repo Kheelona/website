@@ -1,111 +1,28 @@
-import { pageMeta, pageGraph, breadcrumbs, jsonLd } from "@/lib/seo";
-import { LegalDoc, type LegalSection } from "@/components/templates/LegalDoc";
-import { SELLER_SECTION } from "@/lib/legal";
-import {
-  LAUNCH_PRICE,
-  FULL_PRICE,
-  CAP_UNITS_TEXT,
-  TOKEN_PRICE,
-  BALANCE_PRICE,
-  SHIP_DATE_TEXT,
-  SUPPORT_WHATSAPP_DISPLAY,
-  TAX_LINE,
-} from "@/config/site";
+import type { Metadata } from "next";
+import { legalTemplateCopy } from "@/content/en-IN/legal/shared";
+import { termsPage } from "@/content/en-IN/legal/terms";
+import type { SitePath } from "@/content/types";
+import { LegalTemplate } from "@/layouts/LegalTemplate/LegalTemplate";
+import { getOffer } from "@/lib/offer/get-offer";
+import { pageMeta } from "@/lib/seo/metadata";
 
-export const metadata = pageMeta({
-  title: "Terms",
-  description:
-    "The terms of a Kheelu pre-order: what the ₹499 buys, what you owe and when, how the price hold works, and how to walk away.",
-  path: "/terms",
-});
+/* The pre-order terms (task 5.12; structure §3.1, §5): its legal module through LegalTemplate's reference family
+ * (privacy and terms; mockup-css-mapping §6.1), with the template's shared words and the live offer. Thin: every word is
+ * the module's (src/content/en-IN/legal/terms.ts) or the template's (legal/shared.ts).
+ *
+ * No buy bar (terms.html meta `"buybar": false`) and no structured data beyond the shell's (architecture §9.2). */
 
-/* TODO(counsel-review): plain-language draft per prompt §5.2. This page MUST
-   be reviewed by counsel. It changed shape on 2026-08-22: it used to describe a
-   free list where nothing was owed by anyone, and it now describes a paid
-   contract. Every clause below states a real obligation on one side or the
-   other, which is the standard it should be reviewed against. */
+const PATH: SitePath = "/terms";
 
-const SECTIONS: readonly LegalSection[] = [
-  {
-    h: "What a pre-order is",
-    ps: [
-      `A pre-order reserves one Kheelu for you and puts you in the queue at the point you joined it. While the ${CAP_UNITS_TEXT} last, you pay ${TOKEN_PRICE} today and your Kheelu is held at the ${LAUNCH_PRICE} price.`,
-      `That ${TOKEN_PRICE} is part of the price, not on top of it. The remaining ${BALANCE_PRICE} is due when your Kheelu is ready to be dispatched to you, by a payment link we send. Nothing is ever charged automatically, and we do not keep your card.`,
-      `Once the ${CAP_UNITS_TEXT} have all been reserved, a pre-order is ${FULL_PRICE}, paid in full when you place it. There is no token and no balance: nothing more is due before dispatch, and the same refund promise below applies to every rupee of it.`,
-    ],
-  },
-  {
-    h: `The price and the ${CAP_UNITS_TEXT}`,
-    ps: [
-      `${LAUNCH_PRICE} is the price for the ${CAP_UNITS_TEXT}, counted by paid pre-orders. Once they are gone, the price is ${FULL_PRICE}. Your price is fixed on the day you pre-order, and it does not move afterwards, in either direction.`,
-      `Shipping starts ${SHIP_DATE_TEXT}, and pre-orders are served in the order they were placed.`,
-      /* Founder-confirmed 2026-08-22. Stated in the price clause rather than a
-         footnote: "does this include tax and delivery" is the question a price
-         with no such line always raises, and answering it here is cheaper than
-         answering it one WhatsApp message at a time. */
-      `${TAX_LINE} Delivery anywhere in India is included too, so ${LAUNCH_PRICE} is the whole cost of a Kheelu arriving at your door.`,
-    ],
-  },
-  {
-    h: "One Kheelu per pre-order",
-    ps: [
-      `Each pre-order is for one Kheelu. If you want more than one, for siblings or as a gift, message us on WhatsApp at ${SUPPORT_WHATSAPP_DISPLAY} and we will sort it out with you directly.`,
-    ],
-  },
-  {
-    h: "Changing your mind",
-    ps: [
-      /* The refund promise is stated here and detailed on /refund. Both pages
-         must say the same thing: "before dispatch, in full, no reason". */
-      "You can cancel at any time before your Kheelu is dispatched and we refund everything you have paid us: the whole token, or the whole price if you paid in full. No fee, no deduction, and you do not have to tell us why. The full detail, including how long a refund takes to reach you, is on the Refunds page.",
-    ],
-  },
-  {
-    h: "What can still change, and what cannot",
-    ps: [
-      /* V6 D8b, updated for money: the honesty about an unfinished product now
-         has to be paired with what the parent gets if it moves, because they
-         have paid us. */
-      "Kheelu is still being finished. Specifications and availability can move while we complete testing and certification, and we will not pretend otherwise on a page you are reading before you pay us.",
-      `What cannot change without your say: your price, and your money. If the ship date moves from ${SHIP_DATE_TEXT}, you hear it from us first, your ${LAUNCH_PRICE} hold stays exactly as it is, and you can cancel for a full refund at that point even if you were happy to wait before. If we cannot supply your Kheelu at all, you get back everything you have paid us.`,
-    ],
-  },
-  {
-    h: "Delivery, refunds, and your data",
-    ps: [
-      "Three things have their own pages, because burying them here would be a way of hiding them: how and when your Kheelu reaches you is on the Shipping page, how to get your money back is on the Refunds page, and what we hold about you is on the Privacy page. All three are part of these terms.",
-    ],
-  },
-  {
-    h: "The boring but honest part",
-    ps: [
-      "These terms cover your pre-order. Indian law applies to them, and the courts at Bengaluru have jurisdiction.",
-      "If any part of this page turns out to be unclear enough to argue about, we will read it the way a careful parent would read it, not the way a lawyer would like us to.",
-    ],
-  },
-  SELLER_SECTION,
-];
+/* The page names amounts and its words change with the offer mode (terms.md folds 2 and 4), so it follows the live mode
+ * (ADR-005; OFFER_REVALIDATE_SECONDS, written as a literal because Next reads it statically). */
+export const revalidate = 300;
 
-export default function TermsPage() {
-  return (
-    <>
-      {/* BreadcrumbList (SEO round A5, 2026-09-05): the four policy pages were the
-          only routes without one. Same shape as every other page; LegalDoc itself
-          stays schema-free because it is a template, not a page. */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: jsonLd(pageGraph(breadcrumbs([{ name: "Terms", path: "/terms" }]))),
-        }}
-      />
-      <LegalDoc
-        title="Pre-order terms, in plain words."
-        lede="A fair deal should survive being written clearly. Here is ours, now that real money is involved."
-        sections={SECTIONS}
-        guide="curious"
-        /* GATED:kheelu-line — founder sign-off before merge to master */
-        say="Short version: be kind, we will be too."
-      />
-    </>
-  );
+/* The meta description leads with the live total (D028), so the head reads the offer too. */
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMeta({ ...termsPage.meta, path: PATH, offer: await getOffer() });
+}
+
+export default async function TermsPage() {
+  return <LegalTemplate doc={termsPage} variant="reference" copy={legalTemplateCopy} offer={await getOffer()} />;
 }
