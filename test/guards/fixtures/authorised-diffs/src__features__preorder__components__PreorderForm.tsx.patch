@@ -1,0 +1,60 @@
+Review record of src/features/preorder/components/PreorderForm.tsx for task 6.2 (checkout-freeze prints it, never applies it:
+a presentation file, ADR-013 class 3). Its proofs are the regenerated logic signature
+(test/guards/fixtures/checkout-signatures/src__features__preorder__components__PreorderForm.tsx.json: exactly the three
+code lines below, nothing in `jsx`) and the rendered JSX contract (test/guards/checkout-jsx-contract.test.tsx and its
+fixtures, unchanged and green).
+Diffed against the tree task 6.2 started from (25ccba5, after the 5.15 restyle, whose own review is its signature), so
+only 6.2's lines show. Regenerate with: git diff 25ccba5 -- src/features/preorder/components/PreorderForm.tsx (keep this
+header above it).
+
+B11 (task 6.2; wiki/site/gate-a-open-items.md §3 working default, confirmed by the main session 2026-10-14; architecture
+  §8.2; ADR-013 "The B11 checkout events"). Measurement only:
+  - `preorder_form_rejected { tier, fields }` through the dispatcher (GA4 and PostHog, never Meta), in the branch the
+    shared validators refuse, after the scroll to the first problem and before the same `return`: `fields` is
+    `Object.keys(found).join(",")`, the names of the refused fields in the form's order (parentName, phone, email,
+    childAge, accepted), never a value. No request, state or rendering changes.
+  - `tier` passed to `startCheckout` for the payment window's two events (checkout.ts patch); Razorpay never sees it.
+  - The doc comment names the two additions. No JSX, attribute, label or handler changes.
+
+diff --git a/src/features/preorder/components/PreorderForm.tsx b/src/features/preorder/components/PreorderForm.tsx
+index 987fcc3..3789ae4 100644
+--- a/src/features/preorder/components/PreorderForm.tsx
++++ b/src/features/preorder/components/PreorderForm.tsx
+@@ -22,6 +22,7 @@ import { startCheckout } from "../lib/checkout";
+ import { preorderAnalytics } from "../lib/analytics";
+ import { phDistinctId } from "@/lib/posthog";
+ import { CAMPAIGN_KEYS } from "@/lib/campaign";
++import { track } from "@/lib/tracking/track";
+ 
+ /** The pre-order form (§8.25-s).
+  *
+@@ -49,7 +50,9 @@ import { CAMPAIGN_KEYS } from "@/lib/campaign";
+  *  the store page hands in the rest (`beside`: the trust row, the payment window
+  *  line, a person to reach), which a client island cannot draw itself. Every
+  *  handler, field attribute and request below is the tag's
+- *  (test/guards/checkout-signature.test.ts, checkout-jsx-contract.test.tsx). */
++ *  (test/guards/checkout-signature.test.ts, checkout-jsx-contract.test.tsx),
++ *  plus two measurement additions for B11 (task 6.2): a refused submit reports
++ *  its field names, and the tier rides along to the payment window's events. */
+ export function PreorderForm({
+   tier,
+   signature,
+@@ -123,6 +126,10 @@ export function PreorderForm({
+         behavior: "smooth",
+         block: "center",
+       });
++      /* Which fields sent the parent back, by name only and never what was
++         typed: to GA4 and PostHog through the dispatcher, never Meta (B11,
++         task 6.2; architecture §8.2). */
++      track("preorder_form_rejected", { tier, fields: Object.keys(found).join(",") });
+       return;
+     }
+ 
+@@ -163,6 +170,7 @@ export function PreorderForm({
+         amountPaise: data.amountPaise!,
+         orderRef: data.orderRef!,
+         prefill: data.prefill ?? {},
++        tier,
+         onDismiss: () => {
+           preorderAnalytics.dismissed(tier);
+           setState("idle");

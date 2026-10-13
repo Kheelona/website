@@ -265,7 +265,7 @@ export const privacyPage = {
               blocks: [
                 {
                   kind: "p",
-                  text: "Counts visits and the steps of a pre-order: starting the form, opening and closing the payment window, paying, and saving your address. It is told your order number and the amount paid. It sets cookies in your browser to tell a returning visit from a new one. Google keeps this data for 14 months.",
+                  text: "Counts visits and the steps of a pre-order: starting the form, being asked to correct an answer (which answers, never what you typed), opening and closing the payment window, a payment that fails (with Razorpay’s code for why), paying, and saving your address. It is told your order number and the amount paid. It sets cookies in your browser to tell a returning visit from a new one. Google keeps this data for 14 months.",
                 },
               ],
             },
@@ -292,7 +292,7 @@ export const privacyPage = {
               blocks: [
                 {
                   kind: "p",
-                  text: "Records which buttons and links you tap, and a replay of your screen as you move through the site, so we can find the places where the pre-order form confuses people. It also tells us when something breaks or loads slowly. Anything you type is hidden before the recording leaves your browser, and nothing is recorded on the order confirmation page. PostHog also receives your network address, which tells us your country. It does not follow you to other sites and is never used to advertise to you. It stores what it collects on servers in the United States.",
+                  text: "Records which buttons and links you tap, and a replay of your screen as you move through the site, so we can find the places where the pre-order form confuses people. It is told the same steps of a pre-order as Google Analytics. It also tells us when something breaks or loads slowly. Anything you type is hidden before the recording leaves your browser, and nothing is recorded on the order confirmation page. PostHog also receives your network address, which tells us your country. It does not follow you to other sites and is never used to advertise to you. It stores what it collects on servers in the United States.",
                 },
                 {
                   kind: "p",
