@@ -694,3 +694,14 @@ setup, product). The founder answered them one by one: **[D055](decisions/D055-p
 Australia until the founder says it moved). Tasks: **6.6** narrowed to team, /ideabaaz and the CSP; new **6.7** (page
 facts, F4 rows hidden, P14); follow-ups of the batch filed under 6.3, 6.5 and 7.3. Next: remove the batch worktrees,
 launch 6.4-6.7, then M2.
+
+## [2026-10-14 02:13] agent | Batch 6b launched (run wf_146abbc8-31a): 6.4, 6.5, 6.6, 6.7
+Base `bc645ea` (the copy stage now takes non-article pages: `build-wave.js`, runbook §1). 6.4 receipt and `/thanks`
+words (high; F12 answered, D054 item 1); 6.5 the 3-6-9-12 article removed (normal; V9 rules under `stories`); 6.6
+team strip, background lines and live photos, `/ideabaaz` not found, the report-only CSP (high; copy stage on
+`team.md` in `.claude/worktrees/w6b-6.6`); 6.7 the D055 page facts, F4 rows hidden, P14 (high; copy stage on the
+privacy, refund, shipping, terms, setup and product pages in `.claude/worktrees/w6b-6.7`). The recipients' regions
+came from a research agent reading each provider's own pages on 2026-10-13: Razorpay India (its blog; the privacy
+policy names no place), Resend United States, Google "data centres around the world" (no country published), Meta
+"the United States, Ireland and other countries", Ahrefs United States (general policy; nothing specific to Web
+Analytics). Ports 3550-3553 / 6180-6183.
