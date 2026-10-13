@@ -142,6 +142,17 @@ describe("Home: the hero (D045) and the first screen", () => {
     expect(hero.querySelector(".kh-eyebrow")?.textContent).toBe("Ages 3 to 7");
   });
 
+  it("orders its headings without a skipped level: the h1, then each fold's h2, then the cards' h3 (SPA 5)", () => {
+    for (const { doc } of [TOKEN, FULL]) {
+      const levels = all(doc.querySelector("main")!, "h1, h2, h3, h4, h5, h6").map((h) => Number(h.tagName[1]));
+      expect(levels[0]).toBe(1);
+      expect(levels.filter((l) => l === 1)).toHaveLength(1);
+      expect(levels.filter((l) => l === 2)).toHaveLength(LABELS.length - 1);
+      const skips = levels.flatMap((l, i) => (i > 0 && l > levels[i - 1] + 1 ? [`h${levels[i - 1]} → h${l} at heading ${i + 1}`] : []));
+      expect(skips).toEqual([]);
+    }
+  });
+
   it("watches the hero CTA for the phone buy bar, which Home carries (after the hero CTA leaves)", () => {
     const button = hero.querySelector("#hero-cta")!;
     expect(button.classList.contains("kh-btn--cta")).toBe(true);

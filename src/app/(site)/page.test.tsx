@@ -1,3 +1,5 @@
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { render } from "@testing-library/react";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
@@ -40,6 +42,30 @@ describe("the Home route", () => {
   it.each(["token", "full"] as const)("describes the page from its content module, in the live mode (%s)", async (mode) => {
     const { generateMetadata } = await route(mode);
     expect(await generateMetadata()).toEqual(pageMeta({ ...homePage.meta, path: "/", offer: buildOffer(mode) }));
+  });
+
+  it.each(["token", "full"] as const)("gives search and share tools the whole card: canonical, Open Graph, Twitter, never robots (%s; SPA 5)", async (mode) => {
+    const meta = await (await route(mode)).generateMetadata();
+    const title = "Kheelu by Kheelona: a screen-free plush toy that talks";
+    const description = meta.description as string;
+    expect(meta.title).toEqual({ absolute: title });
+    expect(title.length).toBeLessThanOrEqual(60);
+    expect(description.length).toBeLessThanOrEqual(155);
+    expect(description).toMatch(/^Kheelu by Kheelona: .*₹(4,999|7,999) \(incl\. GST\)/);
+    expect(meta.alternates).toEqual({ canonical: "/" });
+    const image = { url: "/og/kheelu.jpg", alt: "Kheelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy." };
+    expect(meta.openGraph).toEqual({
+      type: "website",
+      url: "/",
+      title,
+      description,
+      siteName: "Kheelona",
+      locale: "en_IN",
+      images: [{ ...image, width: 1200, height: 630 }],
+    });
+    expect(meta.twitter).toEqual({ card: "summary_large_image", title, description, images: [image] });
+    expect(existsSync(join(process.cwd(), "public", image.url))).toBe(true);
+    expect(meta).not.toHaveProperty("robots");
   });
 
   it.each(["token", "full"] as const)("renders the page module through PageTemplate with the live offer (%s)", async (mode) => {
