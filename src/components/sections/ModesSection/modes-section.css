@@ -31,11 +31,14 @@
   display: grid;
   gap: var(--space-4);
 }
+/* aspect-ratio: the photo's own ratio (--kh-ratio, set by Photo's bare form from its static import), so next/image's
+   whole-pixel renditions never move the folds below (task 4.6). */
 .ks-know__img {
   display: block;
   width: 100%;
   max-width: calc(var(--space-10) + var(--space-7)); /* 128 + 48 = 176 */
   height: auto;
+  aspect-ratio: var(--kh-ratio);
   justify-self: center;
   border-radius: var(--radius-l);
 }

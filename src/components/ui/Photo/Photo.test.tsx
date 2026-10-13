@@ -131,10 +131,26 @@ describe("Photo: the bare form", () => {
     expect(container.querySelector("figure")).toBeNull();
   });
 
-  it("carries no frame class, no crop and no ratio variable", () => {
+  it("carries no frame class and no crop", () => {
     const { container } = render(<Photo bare image={IRA} sizes={SIZES} />);
     expect(bare(container)).not.toHaveAttribute("class");
-    expect(bare(container).getAttribute("style") ?? "").not.toContain("--kh-ratio");
+    expect(container.querySelector("figure")).toBeNull();
+  });
+
+  /* next/image's renditions have whole-pixel heights (389 x 397 at 256 px wide is 256 x 261, not 261.26), so an image
+     whose height follows its rendition moves the folds below by a fraction of a pixel. The bare image carries its own
+     ratio as the DS ratio variable, which the section's class reads as its aspect-ratio (ModesSection's ks-know__img;
+     task 4.6). A framed photo never does unless asked: the DS frame crops to its own ratio. */
+  it("carries the DS ratio variable from its own width and height, a static import's or a site path's stated size", () => {
+    expect(bare(render(<Photo bare image={IRA} sizes={SIZES} />).container).style.getPropertyValue("--kh-ratio")).toBe("1208 / 1500");
+    const path = bare(render(<Photo bare image={{ src: "/team/aman.jpg", width: 600, height: 750, alt: "Aman" }} sizes="96px" />).container);
+    expect(path.style.getPropertyValue("--kh-ratio")).toBe("600 / 750");
+  });
+
+  it("leaves a framed photo's ratio to the DS frame (the crop): no ratio variable unless asked", () => {
+    for (const props of [{}, { variant: "wide" as const }, { variant: "square" as const }, { xl: true }]) {
+      expect(img(render(<Photo image={IRA} sizes={SIZES} {...props} />).container).style.getPropertyValue("--kh-ratio")).toBe("");
+    }
   });
 
   it("follows Photo's loading rules: the layout's sizes, lazy by default, fetchPriority as a hint only", () => {

@@ -30,10 +30,14 @@
   height: auto;
   border-radius: var(--radius-l);
 }
+/* The screenshot's own ratio (--kh-ratio, set on the image from its static import by AppScreens): next/image serves
+   renditions with whole-pixel heights, so a height that followed the rendition would move every fold below by a
+   fraction of a pixel against the approved page, where the file is shown at its own size (task 4.6). */
 .ks-shots .kh-device__screen img {
   display: block;
   width: 100%;
   height: auto;
+  aspect-ratio: var(--kh-ratio);
 }
 .ks-shots .kh-caption {
   text-align: center;
