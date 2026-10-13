@@ -4,6 +4,7 @@ import vm from "node:vm";
 import { render, screen } from "@testing-library/react";
 import ts from "typescript";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { stickyBarPaths } from "@/layouts/SiteShell/sticky-bar-paths";
 import { buildOffer } from "@/lib/offer/offer";
 import { freshBuiltPages } from "../../test/e2e/support/page-checks";
 import { ROOT } from "../../test/e2e/support/repo";
@@ -21,6 +22,8 @@ import NotFound, { metadata } from "./not-found";
 const getOffer = vi.hoisted(() => vi.fn());
 vi.mock("@/lib/offer/get-offer", () => ({ getOffer }));
 const nav = vi.hoisted(() => ({ pathname: "/kh-no-such-page" }));
+/** The URL the page is rendered at unless a test says otherwise: one that matches no route. */
+const UNMATCHED = nav.pathname;
 vi.mock("next/navigation", () => ({ usePathname: () => nav.pathname }));
 afterEach(() => {
   getOffer.mockReset();
@@ -75,10 +78,29 @@ describe("not-found: the page equals the approved mockup (mockup/404.html)", () 
     expect(differences(main, ref)).toEqual([]);
   });
 
-  it("has one h1, the empty state's, and no buy bar (the mockup's meta: buybar false)", async () => {
+  it("has one h1, the empty state's, and no buy bar at the unmatched URL", async () => {
     const { container } = await page();
     expect(screen.getAllByRole("heading", { level: 1 }).map((h) => h.textContent)).toEqual(["We can’t find that page."]);
     expect(container.querySelector(".kh-buybar")).toBeNull();
+  });
+
+  /* The bar renders only where the page's path is one the shell was handed (StickyBuyBar.client.tsx), so an unmatched
+     URL alone would hide a bar the route wrongly passed. Rendered at every path that carries the bar on the site, the
+     404 still shows none: the route hands the shell no bar paths (the mockup's meta: buybar false). */
+  it("hands the shell no bar paths: no buy bar even at a path where the site carries one", async () => {
+    const paths = stickyBarPaths();
+    expect(paths, "the site carries the bar somewhere").toContain("/");
+    try {
+      for (const path of paths) {
+        nav.pathname = path;
+        const { container, unmount } = await page();
+        expect(container.querySelector(".kh-buybar"), path).toBeNull();
+        expect(container.querySelector('[data-ph-capture-attribute-cta="sticky-bar"]'), path).toBeNull();
+        unmount();
+      }
+    } finally {
+      nav.pathname = UNMATCHED;
+    }
   });
 });
 
@@ -151,6 +173,11 @@ describe("not-found: the route file", () => {
     );
     expect(reached.filter(isStillLegacy)).toEqual([]);
   }, 30_000);
+
+  it("hands the site shell no buy-bar paths (404.html meta: buybar false)", () => {
+    expect(source).toMatch(/<SiteShell offer=\{offer\}>/);
+    expect(source).not.toMatch(/stickyBar/);
+  });
 
   it("stays thin: no copy typed in it, the words come from the content module", () => {
     expect(imports).toContain("@/content/en-IN/pages/not-found");
