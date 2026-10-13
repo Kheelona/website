@@ -1,4 +1,6 @@
-import { describe, expect, it } from "vitest";
+import type { ReactElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { describe, expect, it, vi } from "vitest";
 import { GSTIN } from "@/config/site";
 import type { LegalBlock, LegalPart, ToolsBlock } from "@/content/types";
 import { CAMPAIGN_COOKIE } from "@/lib/campaign";
@@ -8,6 +10,7 @@ import { isPlaceholder } from "@/lib/content/placeholder";
 import { buildOffer } from "@/lib/offer/offer";
 import { THANKS_COOKIE, THANKS_COOKIE_MAX_AGE_SECONDS } from "@/lib/store/thanks-session";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
+import { words } from "../../../../test/support/mockup-compare";
 import { DEFAULT_OG } from "../organization";
 import { GRIEVANCE_ACK_HOURS, GRIEVANCE_RESOLUTION, RETENTION_LINE, RETENTION_MONTHS } from "../policies";
 import { routeFor } from "../routes";
@@ -20,6 +23,10 @@ import { ORDER_DATA_LOCATION, privacyPage } from "./privacy";
  * every measuring tool in a block of its own and never a count of them (privacy.md section 5), the order-data location a
  * placeholder until the Supabase move is confirmed (D047, ADR-009), Kheelona's own model disclosed as D035 asks, the
  * cookies named as the code names them, and the shared facts (seller, policy numbers) read, never retyped. */
+
+/* The route reads the live offer for its template (the rendered-page count rule); the page names no amount. */
+const getOffer = vi.hoisted(() => vi.fn());
+vi.mock("@/lib/offer/get-offer", () => ({ getOffer }));
 
 const SOURCE = readRepoFile("src/content/en-IN/legal/privacy.ts");
 const token = buildOffer("token");
@@ -158,15 +165,19 @@ describe("the privacy page: every measuring tool named in a block of its own, ne
   });
 
   /* The live page had to retire a count of its tools four times (privacy.md section 5; test/analytics-tags.test.ts): a
-   * count expires on the next tool, so none may appear, in any form. One string per line: a count is words inside one
-   * string, never across two (a block's `kind` is a string too). */
+   * count expires on the next tool, so none may appear, in any form. Every pattern is built from one number, in words or
+   * digits, so a form one pattern knows the others know too. In the module's words, one string per line (a block's
+   * `kind` is a string too); the rendered page below is checked as a parent reads it, every block on one line. */
+  const N = String.raw`(?:one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|(?:a )?dozen|\d+)`;
   const TOOL_COUNTS = [
-    // A number, then up to four words (a list's comma or ampersand included), then "tool(s)".
-    /\b(?:one|two|three|four|five|six|seven|eight|nine|ten|\d+)\b(?:[^\S\n]+[\w’',&-]+){0,4}?[^\S\n]+tools?\b/i,
+    // A number, then up to four words (a list's comma or ampersand included), then what a count calls the tools.
+    new RegExp(String.raw`\b${N}\b(?:[^\S\n]+[\w’',&-]+){0,4}?[^\S\n]+(?:tools?|trackers?|services|scripts|tags)\b`, "i"),
     // "All seven": a bare count. The approved who-we-are line counts places ("in all four places"), not tools.
-    /\ball (?:two|three|four|five|six|seven|eight|nine|ten)\b(?![^\S\n]+places\b)/i,
-    /\b(?:most|least) \w+ of the (?:two|three|four|five|six|seven|eight|nine|ten)\b/i,
-    /\bthe (?:two|three|four|five|six|seven|eight) (?:that|which|of them)\b/i,
+    new RegExp(String.raw`\ball ${N}\b(?![^\S\n]+places\b)`, "i"),
+    new RegExp(String.raw`\b(?:most|least) \w+ of (?:the|these|those|our) ${N}\b`, "i"),
+    // "These seven", "the six below": a count that names its tools in no word at all. A length of time is not a count.
+    new RegExp(String.raw`\b(?:the|these|those|our) ${N}\b(?![^\S\n]+(?:months|hours|days|years)\b)`, "i"),
+    new RegExp(String.raw`\bof the ${N}\b`, "i"),
   ];
 
   /* The guard is proved on the counts a copy change would most naturally add (review of 5.11): a guard that lets one of
@@ -180,6 +191,16 @@ describe("the privacy page: every measuring tool named in a block of its own, ne
     "All seven of them run on this site.",
     "PostHog is the most detailed of the seven.",
     "Blocking stops the four that run in your browser.",
+    // Round 2: a one-word edit of the measuring part's own intro, the digit form of "all seven", a number past ten.
+    "These seven run on kheelona.com.",
+    "All 7 load at once.",
+    "We use eleven tools.",
+    // The other natural counts round 2 found open: a count names its tools in other words, or none.
+    "Of the seven, one follows you.",
+    "Here are the seven we use.",
+    "The six below set cookies.",
+    "We use seven trackers.",
+    "Six analytics and advertising scripts run here.",
   ])("the count guard catches a planted count: %s", (plant) => {
     expect(TOOL_COUNTS.some((pattern) => pattern.test(plant))).toBe(true);
   });
@@ -187,6 +208,19 @@ describe("the privacy page: every measuring tool named in a block of its own, ne
   it("never counts the tools, in words or digits", () => {
     for (const pattern of TOOL_COUNTS) expect(TEXT).not.toMatch(pattern);
   });
+
+  /* The module's words are one string per line, so a count split across a list item's bold lead and its text ("We use
+   * seven" then "analytics tools") is never seen whole there, and the words the template adds (legal/shared.ts) are not
+   * the module's at all. The route as a parent reads it holds both. */
+  it("never counts the tools on the rendered page either: the template's words, and a lead read with its text", async () => {
+    getOffer.mockResolvedValue(token);
+    const { default: PrivacyPage } = await import("@/app/(site)/privacy/page");
+    const html = renderToStaticMarkup((await PrivacyPage()) as ReactElement);
+    const main = new DOMParser().parseFromString(`<main>${html}</main>`, "text/html").querySelector("main")!;
+    const page = words(main);
+    expect(page).toContain(toPlainText(privacyPage.hero.lead));
+    for (const pattern of TOOL_COUNTS) expect(page).not.toMatch(pattern);
+  }, 60_000);
 
   it("names the cookies as the code names them, and kh_order's life as the code sets it", () => {
     const own = tool("Our own cookies").blocks;

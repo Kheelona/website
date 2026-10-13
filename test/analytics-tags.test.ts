@@ -10,8 +10,8 @@ import { buildOffer } from "@/lib/offer/offer";
 import { words } from "./support/mockup-compare";
 
 /**
- * Five measurement tools now run on this site, and each one carries a promise
- * on /privacy about whether it sets cookies. The standing rule from
+ * Every measurement tool on this site carries a promise on /privacy about
+ * whether it sets cookies (never a count of them: see below). The standing rule from
  * website-steps §8.21-c is that a tool and the sentence describing it ship
  * together, so this guards the pairing: if someone adds or removes a tag
  * without touching the privacy page, this fails.
@@ -104,7 +104,7 @@ const SAMPLE_ORDER = {
 } as PreorderRow;
 
 describe("analytics tags and their privacy disclosure stay in step", () => {
-  it("mounts all five tools in the root layout", () => {
+  it("mounts each browser tool in the root layout", () => {
     expect(LAYOUT).toContain("analytics.ahrefs.com/analytics.js");
     expect(LAYOUT).toContain("<Analytics />"); // Vercel
     expect(LAYOUT).toContain("<GoogleAnalyticsGate />");
