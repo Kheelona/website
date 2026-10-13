@@ -7,8 +7,12 @@ import {
   SUPPORT_WHATSAPP_DISPLAY,
   SUPPORT_WHATSAPP_HREF,
 } from "@/config/site";
-import type { LeadText, RichTextString, SupportChat } from "@/content/types";
+import type { HelpLineCopy, LeadText, RichTextString, SupportChat } from "@/content/types";
 import { GRIEVANCE_ACK_HOURS, GRIEVANCE_RESOLUTION } from "./policies";
+
+/** A help line: a short lead, then the WhatsApp and call links. A content shape (src/content/types.ts, since task 4.5:
+ *  the legal template's words carry one), named here too for the modules that import it from the seller. */
+export type { HelpLineCopy };
 
 /**
  * Who sells Kheelu and how to reach them (architecture §6.1): the seller block, the support line,
@@ -17,12 +21,6 @@ import { GRIEVANCE_ACK_HOURS, GRIEVANCE_RESOLUTION } from "./policies";
  * already print, so every surface says the same thing (owner page: wiki/product/policies.md,
  * "Seller details"; D029, D032, D034, D050).
  */
-
-/** A help line: a short lead, then the WhatsApp and call links. */
-export interface HelpLineCopy {
-  readonly lead: string;
-  readonly contact: RichTextString;
-}
 
 export interface Seller {
   readonly brand: string;

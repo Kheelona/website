@@ -1,8 +1,10 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { cta } from "@/content/en-IN/cta";
+import { faqs } from "@/content/en-IN/faqs";
 import { seller } from "@/content/en-IN/seller";
 import type { Meta, Offer } from "@/content/types";
+import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { jsonLd, pageGraph } from "@/lib/seo/jsonld";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../test/e2e/support/page-checks";
@@ -28,13 +30,20 @@ const heroWithCta = {
   cta: { cta: "hero", arrow: true, id: "hero-cta", layout: "stack", trust: CTA_BLOCK.trust, helpLine: true },
 } as const satisfies SectionEntry;
 
+/** A FAQ fold whose second answer names the price, which reads differently in each offer mode (task 4.5 item 5), so
+ *  "in both modes" below is a claim the two modes can tell apart. */
+const faqWithPrice = {
+  kind: "faq-section",
+  config: { heading: { id: "faq-title", title: "Questions parents {hand:ask}" }, items: [faqs["think-less"], faqs["price-and-advance"]] },
+} as const satisfies SectionEntry;
+
 const PAGE: PageContent = {
   meta: META,
   sections: [
     heroWithCta,
     { ...ENTRY_FIXTURES["modes-section"], faq: true },
     { ...ENTRY_FIXTURES["films-strip"], cta: { ...CTA_BLOCK, cta: "see-it-ask" } },
-    ENTRY_FIXTURES["faq-section"],
+    faqWithPrice,
     ENTRY_FIXTURES["close-section"],
   ],
 };
@@ -97,13 +106,22 @@ describe("PageTemplate: the page's own JSON-LD", () => {
   });
 
   it("has a FAQPage whose every answer the page shows (jsonld-matches-page), in both modes", () => {
-    for (const offer of [TOKEN, FULL]) {
+    type Question = { name: string; acceptedAnswer: { text: string } };
+    const priceAnswers = [TOKEN, FULL].map((offer) => {
       const { html } = rendered(PAGE, offer);
-      const [graph] = jsonLdBlocks(html) as { "@graph": { "@type": string; mainEntity: unknown[] }[] }[];
+      const [graph] = jsonLdBlocks(html) as { "@graph": { "@type": string; mainEntity: Question[] }[] }[];
       expect(graph["@graph"].map((n) => n["@type"])).toEqual(["FAQPage"]);
       expect(graph["@graph"][0].mainEntity).toHaveLength(3);
       expect(jsonLdMismatches(html)).toEqual([]);
-    }
+      return graph["@graph"][0].mainEntity[2];
+    });
+    // The price answer in each mode's own words and amounts, each the one the page shows in that mode.
+    const [token, full] = priceAnswers;
+    expect(token.name).toBe(toPlainText(faqs["price-and-advance"].question, TOKEN));
+    expect(token.acceptedAnswer.text).toContain(TOKEN.prices.token);
+    expect(full.name).toBe(toPlainText(faqs["price-and-advance"].question, FULL));
+    expect(full.acceptedAnswer.text).toContain(FULL.prices.full);
+    expect(full.acceptedAnswer.text).not.toContain(TOKEN.prices.token);
   });
 
   it("prints no script for a page with no nodes of its own", () => {

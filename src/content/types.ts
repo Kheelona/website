@@ -468,9 +468,26 @@ export interface Article {
   readonly close: "journal" | "keep";
 }
 
-/* ── Legal documents ──────────────────────────────────────────────────────── */
+/* ── Legal pages (privacy, terms, refund, shipping) ───────────────────────── */
+/* The shape a legal content module writes (`satisfies LegalPage`) and LegalTemplate renders: task 1.6's document with
+ * what the four approved pages print, folded in here by task 4.5 (the template had held the additions, task 4.3), so a
+ * legal module imports nothing from layouts (structure §6). layouts/LegalTemplate/legal-template.types.ts re-exports
+ * every name it had. */
 
 export type LegalStatus = "draft" | "approved";
+
+/** A line that may open with a bold label (LeadText), where either part may change with the offer mode: terms' short
+ *  version and its price paragraphs read differently once the reservations close (terms.md folds 2 and 4; task 5.12). */
+export type LegalLeadText =
+  | { readonly lead: Copy; readonly text?: Copy }
+  | { readonly lead?: undefined; readonly text: Copy };
+
+/**
+ * A paragraph of a legal page. `id` where another page links into it (`/refund#chargeback`, the store footer's payments
+ * line). Its words may change with the offer; a paragraph with no words in the live mode is left out, which is how a
+ * "token mode only" paragraph of terms.md is written (`{ token: "…", full: "" }`).
+ */
+export type LegalParagraph = { readonly kind: "p"; readonly id?: string } & LegalLeadText;
 
 /** The tools a policy names, one block each (privacy). */
 export interface ToolsBlock {
@@ -483,6 +500,8 @@ export interface RecipientsBlock {
   readonly kind: "recipients";
   readonly label: string;
   readonly headings: { readonly who: string; readonly what: string; readonly where: string };
+  /** The labels each phone row opens its lines with ("What:", "Where:"). */
+  readonly keys: { readonly what: string; readonly where: string };
   readonly rows: readonly {
     readonly who: RichTextString;
     readonly what: RichTextString;
@@ -490,42 +509,69 @@ export interface RecipientsBlock {
   }[];
 }
 
-/** The shared grievance (D032) or seller block, rendered from seller.ts, never retyped. */
+/** The shared grievance (D032) or seller block, rendered from seller.ts through src/lib/content/seller-lines.ts, never
+ *  retyped; the seller card opens with its page's bold lead ("Who we are:", "Seller:"); refund and shipping print none. */
 export interface SharedBlock {
   readonly kind: "grievance" | "seller";
+  readonly lead?: RichTextString;
 }
 
-export type LegalBlock = ProseBlock | ToolsBlock | RecipientsBlock | SharedBlock;
+/** A plain DS card with a bold lead (terms: "Customer care:"). */
+export type LegalCardBlock = { readonly kind: "card" } & LeadText;
+
+export type LegalBlock = Exclude<ProseBlock, ParagraphBlock> | LegalParagraph | ToolsBlock | RecipientsBlock | SharedBlock | LegalCardBlock;
 
 /** One numbered part; consecutive parts with the same `group` share a contents heading. */
 export interface LegalPart {
   readonly id: string;
   readonly title: RichTextString;
+  /** The contents list's words, where they are not the title without its full stop (privacy: "Who we are"). */
+  readonly contents?: RichTextString;
   readonly group?: string;
   /** The answer-first line that opens the part. */
   readonly answer?: RichTextString;
   readonly blocks: readonly LegalBlock[];
 }
 
-/** The short version: a trust list, or numbered points with bold labels. */
+/** A run of parts under one heading (terms: "Your pre-order"): the contents list prints `label`, the document prints
+ *  `eyebrow` ("Part one · Your pre-order") above the run's first part. Parts name their run by `group` = `label`. */
+export interface LegalGroup {
+  readonly label: string;
+  readonly eyebrow: RichTextString;
+}
+
+/** The short version: a trust list, or numbered points with bold labels (terms, whose points change with the offer). */
 export type LegalSummary =
   | { readonly kind: "trust"; readonly title: RichTextString; readonly items: readonly TrustListItem[] }
-  | { readonly kind: "points"; readonly title: RichTextString; readonly points: readonly LeadText[] };
+  | { readonly kind: "points"; readonly title: RichTextString; readonly points: readonly LegalLeadText[] };
 
+/** The close card. Its help line (privacy, terms) is not the page's: the template prints seller.help through
+ *  LegalTemplateCopy, so no page retypes it. */
 export interface LegalClose {
   readonly title?: RichTextString;
   readonly lead?: RichTextString;
   readonly actions: readonly LinkRef[];
   readonly also?: { readonly label: string; readonly links: readonly LinkRef[] };
-  readonly help?: RichTextString;
+}
+
+/** The hero, with the eyebrow privacy and terms print above the title ("Privacy policy", "Terms"). */
+export interface LegalHero {
+  readonly eyebrow?: RichTextString;
+  readonly title: RichTextString;
+  readonly lead?: RichTextString;
+  /** Kheelu's note on a board (refund, shipping), shown from 900 px. */
+  readonly art?: ArtBoardRef;
 }
 
 interface LegalDocBase {
   readonly slug: string;
   readonly meta: Meta;
-  readonly hero: { readonly title: RichTextString; readonly lead?: RichTextString; readonly art?: ArtBoardRef };
+  readonly hero: LegalHero;
   readonly summary: LegalSummary;
+  /** The help line under the short version (refund, shipping), in the page's own words. */
   readonly help?: RichTextString;
+  /** The runs of parts the contents list and the document head (terms). */
+  readonly groups?: readonly LegalGroup[];
   readonly parts: readonly LegalPart[];
   readonly close?: LegalClose;
 }
@@ -538,3 +584,26 @@ interface LegalDocBase {
 export type LegalDoc =
   | (LegalDocBase & { readonly status: "draft"; readonly approvedOn: OrPlaceholder<IsoDate> })
   | (LegalDocBase & { readonly status: "approved"; readonly approvedOn: IsoDate });
+
+/** A legal page as its content module writes it and LegalTemplate renders it (`satisfies LegalPage`): the document. */
+export type LegalPage = LegalDoc;
+
+/** A help line: a short lead, then the WhatsApp and call links (seller.ts `help`, `storeHelp`). */
+export interface HelpLineCopy {
+  readonly lead: string;
+  readonly contact: RichTextString;
+}
+
+/** The words LegalTemplate prints around every legal document, the same on all four pages (content/en-IN/legal/shared.ts). */
+export interface LegalTemplateCopy {
+  /** The note above the hero while the document is a draft: "Draft for the founder’s approval; not legal advice." */
+  readonly draftNote: RichTextString;
+  /** Before the approval date: "Last updated:". */
+  readonly updated: RichTextString;
+  /** The contents list's heading: "On this page". */
+  readonly contents: RichTextString;
+  /** The second line of every grievance card: how a complaint gets its reference (an open fact, a placeholder). */
+  readonly grievanceNote: RichTextString;
+  /** The reference close's help line (privacy, terms): seller.help, the line beside every chilli button. */
+  readonly help: HelpLineCopy;
+}

@@ -1,18 +1,20 @@
 import { defineConfig } from "@playwright/test";
 import { e2eProjects } from "./test/e2e/support/projects";
 
-/* Playwright (task 1.1, WebKit projects added by 1.1b; ADR-011, architecture §14, test plan §1.2, §3).
+/* Playwright (task 1.1, WebKit projects added by 1.1b and 3.6; ADR-011, architecture §14, test plan §1.2, §3).
  *
  * Projects (test/e2e/support/projects.ts):
  *   site           Chromium, every spec in test/e2e against the local production build: `next start`
  *                  on port 3456, the marketing host on http://localhost:3456 and the store host on
  *                  http://store.localhost:3456 (test/e2e/support/env.ts);
- *   storybook      Chromium, the per-pick specs of waves 2 and 3 (motion-*.spec.ts, films.spec.ts)
+ *   storybook      Chromium, the story specs (STORY_SPECS: motion-*.spec.ts, films.spec.ts, tabs.spec.ts)
  *                  against a static Storybook build, so components are tested on their stories before
  *                  any page exists (`npm run build-storybook` writes storybook-static/);
  *   webkit-iphone  only with KH_WEBKIT=1: WebKit with iPhone emulation for the layout specs
  *                  (no-sideways, first-screen, cta, axe, chrome) at the phone viewports;
- *   webkit-laptop  only with KH_WEBKIT=1: WebKit (Safari's engine) for the same specs at the laptop sizes.
+ *   webkit-laptop  only with KH_WEBKIT=1: WebKit (Safari's engine) for the same specs at the laptop sizes;
+ *   webkit-storybook  only with KH_WEBKIT=1: desktop WebKit on the static Storybook, for the story specs
+ *                  verified in WebKit (WEBKIT_STORY_SPECS: motion-faq.spec.ts, D049 pick 7; task 3.6).
  * WebKit is opt-in because its browser is not installed by default. Install it once for the pinned
  * Playwright 1.63.0 (approved 2026-10-12; a browser binary only, no npm change):
  *   npx playwright install webkit

@@ -2,13 +2,16 @@ import { render, screen, within } from "@testing-library/react";
 import type { ReactElement } from "react";
 import { describe, expect, it } from "vitest";
 import { mockupFold, skeleton, words, type SkeletonOptions } from "../../../test/support/mockup-compare";
+import { legalTemplateCopy } from "@/content/en-IN/legal/shared";
 import { seller } from "@/content/en-IN/seller";
+import type * as Content from "@/content/types";
 import { buildOffer } from "@/lib/offer/offer";
 import { legalSellerSentence } from "@/lib/content/seller-lines";
 import { toPlainText } from "@/lib/content/plain-text";
 import { readRepoFile } from "../../../test/e2e/support/repo";
-import { LEGAL_FIXTURES, LEGAL_SLUGS, legalCopyFixture, type LegalSlug } from "../../../test/fixtures/legal";
+import { LEGAL_FIXTURES, LEGAL_SLUGS, type LegalSlug } from "../../../test/fixtures/legal";
 import { LegalTemplate } from "./LegalTemplate";
+import type * as Template from "./legal-template.types";
 import type { LegalPage, LegalTemplateProps } from "./legal-template.types";
 
 /* LegalTemplate (task 4.3; architecture §5.2 "Legal layout"; mockup-css-mapping §3.6, §6.1-6.5): the four approved
@@ -24,7 +27,7 @@ function page(slug: LegalSlug, overrides: Partial<LegalTemplateProps> = {}): Rea
   const { doc, variant } = LEGAL_FIXTURES[slug];
   return (
     <main id="main">
-      <LegalTemplate doc={doc} variant={variant} copy={legalCopyFixture} offer={TOKEN} {...overrides} />
+      <LegalTemplate doc={doc} variant={variant} copy={legalTemplateCopy} offer={TOKEN} {...overrides} />
     </main>
   );
 }
@@ -35,7 +38,7 @@ const mainOf = (ui: ReactElement) => render(ui).container.querySelector("main")!
  *  `margin: 0`) and the template's family modifiers, each asserted on its own below. The mockup's value markers
  *  (`span[data-src]` around an amount or the delivery line, N22) are its own: the build prints the value alone. */
 const OPTIONS: SkeletonOptions = {
-  drop: /^ks-(?:type-.+|list-reset|sticker--flush|draft--notice|doc--(?:reference|notice)|doc-summary--notice|doc-close--(?:reference|notice)|toc--groups)$/,
+  drop: /^ks-(?:type-.+|list-reset|sticker--flush|draft--notice|doc--(?:reference|notice)|doc-summary--(?:reference|notice)|doc-close--(?:reference|notice)|toc--groups)$/,
   unwrap: "span[data-src]",
 };
 
@@ -91,6 +94,7 @@ describe("LegalTemplate: the two families (mockup-css-mapping §6.1)", () => {
       expect(main.querySelector(".ks-doc")).toHaveClass("ks-doc--reference");
       expect(main.querySelector(".ks-doc-close")).toHaveClass("ks-doc-close--reference");
       expect(main.querySelector(".ks-doc-close .kh-card")).toHaveClass("kh-tone-blue");
+      expect(main.querySelector(".ks-doc-summary")).toHaveClass("ks-doc-summary--reference");
       expect(main.querySelector(".ks-doc-summary")).not.toHaveClass("ks-doc-summary--notice");
       const cards = [...main.querySelectorAll(".ks-doc__card")];
       const sellerCard = cards.find((c) => c.textContent!.includes(toPlainText(legalSellerSentence(seller))))!;
@@ -107,6 +111,7 @@ describe("LegalTemplate: the two families (mockup-css-mapping §6.1)", () => {
       expect(main.querySelector(".ks-draft > svg.kh-icon + span")).not.toBeNull();
       expect(main.querySelector(".ks-doc")).toHaveClass("ks-doc--notice");
       expect(main.querySelector(".ks-doc-summary")).toHaveClass("ks-doc-summary--notice");
+      expect(main.querySelector(".ks-doc-summary")).not.toHaveClass("ks-doc-summary--reference");
       expect(main.querySelector(".ks-doc-close")).toHaveClass("ks-doc-close--notice");
       expect(main.querySelector(".ks-doc-close .kh-card")).toHaveClass("kh-tone-sun");
       expect(main.querySelector(".ks-hero .kh-art.ks-doc-art")).toHaveStyle({ "--kh-ratio": "4 / 3" });
@@ -177,17 +182,127 @@ describe("LegalTemplate: the shared blocks come from seller.ts, never retyped (4
       const card = [...main.querySelectorAll(".ks-doc__card")].find((c) => c.textContent!.startsWith("Grievance Officer:"))!;
       expect(card.querySelectorAll("p")).toHaveLength(2);
       expect(card.querySelector("p")!.textContent).toBe(`${toPlainText(seller.grievance.line.lead)} ${toPlainText(seller.grievance.line.text)}`);
-      expect(card.querySelectorAll("p")[1].textContent).toBe(toPlainText(legalCopyFixture.grievanceNote));
+      expect(card.querySelectorAll("p")[1].textContent).toBe(toPlainText(legalTemplateCopy.grievanceNote));
     }
   });
 
-  it("the legal fixtures hold no GSTIN, address or grievance wording of their own", () => {
+  it("the legal fixtures hold no GSTIN, address, grievance wording or close help line of their own", () => {
     for (const slug of LEGAL_SLUGS) {
       const source = readRepoFile(`test/fixtures/legal/${slug}.ts`);
       expect(source).not.toContain(seller.gstin);
       expect(source).not.toContain("Kokarya");
       expect(source).not.toContain("Grievance Officer");
+      expect(source, "the close's help line is seller.help, through the template's words").not.toContain(seller.help.contact);
     }
+  });
+});
+
+/* Task 4.5 item 3: the words the template prints around every legal document live once, in
+ * src/content/en-IN/legal/shared.ts, and the reference close's help line is seller.help itself (lead and contact). */
+describe("LegalTemplate: the template's own words", () => {
+  const helpOf = (main: Element) => main.querySelectorAll(".ks-doc-close .ks-help");
+
+  it("privacy and terms: the close's help line is seller.help, its lead and its contact, after the related pages", () => {
+    expect(legalTemplateCopy.help).toBe(seller.help);
+    for (const slug of ["privacy", "terms"] as const) {
+      const help = helpOf(mainOf(page(slug)));
+      expect(help).toHaveLength(1);
+      expect(help[0].textContent!.trim()).toBe(`${seller.help.lead} ${toPlainText(seller.help.contact)}`);
+      expect(help[0].previousElementSibling).toHaveClass("ks-also");
+      expect(help[0].querySelector("svg.kh-icon")).not.toBeNull();
+    }
+  });
+
+  it("prints whatever the words give it, never a line of its own", () => {
+    const copy = { ...legalTemplateCopy, help: { lead: "Rather talk to a person?", contact: "[WhatsApp](https://wa.me/919187546483)" } };
+    const help = helpOf(mainOf(page("terms", { copy })));
+    expect(help[0].textContent!.trim()).toBe("Rather talk to a person? WhatsApp");
+    expect(within(help[0] as HTMLElement).getByRole("link", { name: "WhatsApp" })).toHaveAttribute("href", "https://wa.me/919187546483");
+  });
+
+  it("refund and shipping: no help line in the close (their help line sits under the short version)", () => {
+    for (const slug of ["refund", "shipping"] as const) expect(helpOf(mainOf(page(slug)))).toHaveLength(0);
+  });
+});
+
+/** True only when A and B are the same type. */
+type Equals<A, B> = (<T>() => T extends A ? 1 : 2) extends <T>() => T extends B ? 1 : 2 ? true : false;
+
+/* Task 4.5 item 2: the legal shapes content writes live in src/content/types.ts (a legal module imports no layout,
+ * structure §6), and this folder re-exports them, so every existing import keeps working. Checked by the type check. */
+const reExported: [
+  Equals<Template.LegalPage, Content.LegalPage>,
+  Equals<Template.LegalTemplateCopy, Content.LegalTemplateCopy>,
+  Equals<Template.LegalPagePart, Content.LegalPart>,
+  Equals<Template.LegalPageBlock, Content.LegalBlock>,
+  Equals<Template.LegalRecipients, Content.RecipientsBlock>,
+  Equals<Template.LegalShared, Content.SharedBlock>,
+  Equals<Template.LegalHero, Content.LegalHero>,
+  Equals<Template.LegalParagraph, Content.LegalParagraph>,
+  Equals<Template.LegalCardBlock, Content.LegalCardBlock>,
+  Equals<Template.LegalGroup, Content.LegalGroup>,
+] = [true, true, true, true, true, true, true, true, true, true];
+
+describe("LegalTemplate: copy that changes with the offer (terms in full mode, task 5.12)", () => {
+  const terms = LEGAL_FIXTURES.terms.doc;
+  if (terms.summary.kind !== "points") throw new Error("terms' short version is numbered points");
+  /** Terms with its first point and its price paragraphs per mode, and a paragraph there in token mode only. */
+  const byMode: LegalPage = {
+    ...terms,
+    summary: {
+      ...terms.summary,
+      points: [
+        { lead: "What you pay.", text: { token: "Reserve yours for {price:token} today.", full: "{price:full} (incl. GST), paid in full when you order." } },
+        ...terms.summary.points.slice(1),
+      ],
+    },
+    parts: terms.parts.map((part) =>
+      part.id !== "price"
+        ? part
+        : {
+            ...part,
+            blocks: [
+              { kind: "p", id: "first-500", text: { token: "While the first 500 units last, it costs {price:headline}.", full: "Kheelu costs {price:full} (incl. GST)." } },
+              { kind: "p", text: { token: "The {price:balance} balance is paid by a payment link.", full: "" } },
+              ...part.blocks,
+            ],
+          },
+    ),
+  };
+
+  it("the legal shapes live in content/types.ts and this folder re-exports them", () => {
+    expect(reExported.every(Boolean)).toBe(true);
+    const source = readRepoFile("src/layouts/LegalTemplate/legal-template.types.ts");
+    expect(source).toMatch(/from "@\/content\/types";/);
+    expect(source.match(/^export (?:interface|type) (\w+)/gm)?.map((line) => line.split(/\s+/)[2])).toEqual([
+      "LegalVariant",
+      "LegalRecipients",
+      "LegalShared",
+      "LegalPageBlock",
+      "LegalPagePart",
+      "LegalTemplateProps",
+    ]);
+  });
+
+  it("renders each mode's words: the token mode's in token mode", () => {
+    const main = mainOf(page("terms", { doc: byMode }));
+    expect(main.querySelector(".ks-short li")!.textContent).toBe(`What you pay. Reserve yours for ${TOKEN.prices.token} today.`);
+    const paragraphs = [...main.querySelectorAll("#price > p")].map((p) => p.textContent);
+    expect(paragraphs.slice(0, 2)).toEqual([
+      `While the first 500 units last, it costs ${TOKEN.prices.headline}.`,
+      `The ${TOKEN.prices.balance} balance is paid by a payment link.`,
+    ]);
+    expect(main.querySelector("p#first-500")).not.toBeNull();
+  });
+
+  it("and the full mode's in full mode, leaving out a paragraph that has no words in it (never an empty <p>)", () => {
+    const main = mainOf(page("terms", { doc: byMode, offer: FULL }));
+    expect(main.querySelector(".ks-short li")!.textContent).toBe(`What you pay. ${FULL.prices.full} (incl. GST), paid in full when you order.`);
+    const paragraphs = [...main.querySelectorAll("#price > p")];
+    expect(paragraphs[0].textContent).toBe(`Kheelu costs ${FULL.prices.full} (incl. GST).`);
+    expect(paragraphs.map((p) => p.textContent)).not.toContain(`The ${TOKEN.prices.balance} balance is paid by a payment link.`);
+    expect(paragraphs).toHaveLength(mainOf(page("terms", { doc: byMode })).querySelectorAll("#price > p").length - 1);
+    expect([...main.querySelectorAll("main p, main li")].filter((el) => el.textContent!.trim() === "")).toEqual([]);
   });
 });
 
@@ -255,6 +370,14 @@ describe("LegalTemplate: content it cannot draw fails the build", () => {
 
 describe("legal-template.css: one file, two families (mockup-css-mapping §6.1-6.5)", () => {
   const css = readRepoFile("src/layouts/LegalTemplate/legal-template.css");
+
+  /* Task 4.5 item 4: only privacy.css:17 and terms.css:17 style a promise's links (mapping rows 22-23); refund.css and
+     shipping.css have no such rule, so a link in a notice page's promise keeps the DS default. */
+  it("styles a promise's links in the reference family only (privacy.css:17, terms.css:17; mapping rows 22-23)", () => {
+    expect(css).toMatch(/\.ks-doc-summary--reference \.kh-trust__body a[,\s{]/);
+    expect(css).not.toMatch(/\.ks-doc-summary \.kh-trust__body a\b/);
+    expect(css).not.toMatch(/\.ks-doc-summary--notice \.kh-trust__body a\b/);
+  });
 
   it("the contents number column is 3.5ch in reference and 3ch in notice (privacy.css:24, refund.css:31)", () => {
     expect(css).toMatch(/\.ks-toc a \{[^}]*grid-template-columns: 3\.5ch minmax\(0, 1fr\);/);

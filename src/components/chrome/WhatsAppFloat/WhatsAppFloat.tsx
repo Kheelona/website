@@ -33,9 +33,10 @@ export interface WhatsAppFloatProps {
  * is hidden from screen readers.
  *
  * Everything that moves is CSS, so this renders on the server with no client part (wave-2 close note): the bubble
- * rises by `--ks-buybar-h` while `html[data-buybar="shown"]` (both published by StickyBuyBar) and drops back when the
- * bar steps aside, and the label slides out on hover and keyboard focus (motion.css, D050 row); it hides while a
- * modal dialog is open, and `body.ks-has-float` keeps the last content of every page clear of it
+ * rises by `--ks-buybar-h` less the bottom safe-area inset (the bar's height holds that inset, and the bubble already
+ * sits that far above the edge; task 3.6) while `html[data-buybar="shown"]` (both published by StickyBuyBar) and drops
+ * back when the bar steps aside, and the label slides out on hover and keyboard focus (motion.css, D050 row); it
+ * hides while a modal dialog is open, and `body.ks-has-float` keeps the last content of every page clear of it
  * (whatsapp-float.css). PostHog reads `data-ph-capture-attribute-cta="whatsapp-float"`; on /thanks the bubble also
  * carries `ph-no-capture`, so that page keeps zero autocapture events (tracking inventory row 18).
  */

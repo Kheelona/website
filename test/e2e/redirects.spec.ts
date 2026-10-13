@@ -155,4 +155,18 @@ test.describe("redirects: platform behaviour", () => {
       expect(res.body, `${path}: server-rendered with lang`).toMatch(/<html[^>]*\blang="en-IN"/);
     }
   });
+
+  /* Task 4.5 item 5. The campaign route lists only the registry's slugs, none at launch, with dynamicParams = false
+     (src/app/(site)/lp/[slug]/page.tsx): any /lp/<slug> stops at the router as a 404 that renders the whole not-found
+     page, chrome and <main> included, on the server. KH_E2E_PLANT=lp-main looks for an element no page has instead
+     of <main>, to prove the case red. */
+  test("an unlisted campaign page answers 404 with the not-found page rendered on the server, <main> and all", async () => {
+    const main = process.env.KH_E2E_PLANT === "lp-main" ? /<kh-no-such-element\b/ : /<main\b/;
+    for (const path of ["/lp/no-such-campaign", "/lp/toString"]) {
+      const res = await nodeGet(path, "marketing");
+      expect(res.status, path).toBe(404);
+      expect(res.body, `${path}: the empty __next_error__ shell (a thrown notFound)`).not.toMatch(/id="__next_error__"/);
+      expect(res.body, `${path}: the not-found page's <main>, rendered on the server`).toMatch(main);
+    }
+  });
 });

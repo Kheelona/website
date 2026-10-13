@@ -13,7 +13,7 @@ import { TrustList } from "@/components/ui/TrustList/TrustList";
 import type { LinkRef, Offer } from "@/content/types";
 import { formatDate } from "@/lib/format/date";
 import { CTA_IDS, type CtaId } from "@/lib/tracking/cta";
-import { LegalDocument } from "./legal-document";
+import { Lead, LegalDocument, saysAnything } from "./legal-document";
 import type { LegalPage, LegalTemplateCopy, LegalTemplateProps, LegalVariant } from "./legal-template.types";
 
 /**
@@ -99,12 +99,13 @@ function LegalHero({ doc, variant, copy, offer }: LegalTemplateProps) {
   );
 }
 
-/** Fold 2: the short version, a trust list or terms' numbered points in a Sunshine panel; on a notice page the help
- *  line under it. */
+/** Fold 2: the short version, a trust list or terms' numbered points in a Sunshine panel (each point in the live offer
+ *  mode's words; one with none is left out); on a notice page the help line under it. The family modifier carries
+ *  each family's own rules (a reference promise's links; a notice promise's balanced titles). */
 function LegalSummary({ doc, variant, offer }: LegalTemplateProps) {
   const { summary } = doc;
   return (
-    <Section band labelledBy="short-title" className={clsx("ks-doc-summary", variant === "notice" && "ks-doc-summary--notice")}>
+    <Section band labelledBy="short-title" className={clsx("ks-doc-summary", `ks-doc-summary--${variant}`)}>
       <Container>
         <SectionHead>
           <Heading title={summary.title} id="short-title" offer={offer} />
@@ -120,17 +121,13 @@ function LegalSummary({ doc, variant, offer }: LegalTemplateProps) {
         ) : (
           <Card as="div" variant="tint" tone="sun" className="ks-short-panel">
             <ol className="ks-short kh-body-l" role="list">
-              {summary.points.map((point, i) => (
-                <li key={i}>
-                  {point.lead !== undefined && (
-                    <strong>
-                      <RichText text={point.lead} offer={offer} />
-                    </strong>
-                  )}
-                  {point.lead !== undefined && point.text !== undefined && " "}
-                  {point.text !== undefined && <RichText text={point.text} offer={offer} />}
-                </li>
-              ))}
+              {summary.points
+                .filter((point) => saysAnything(point, offer))
+                .map((point, i) => (
+                  <li key={i}>
+                    <Lead item={point} offer={offer} />
+                  </li>
+                ))}
             </ol>
           </Card>
         )}
@@ -142,9 +139,10 @@ function LegalSummary({ doc, variant, offer }: LegalTemplateProps) {
   );
 }
 
-/** The close: one tinted card, centred. Reference: blue, the secondary button, the related pages and the help line;
- *  notice: Sunshine, a heading, the secondary button with its tracking value and a ghost link. No pre-order button. */
-function LegalClose({ doc, variant, offer }: LegalTemplateProps) {
+/** The close: one tinted card, centred. Reference: blue, the secondary button, the related pages and the help line
+ *  (the template's words: seller.help, lead and contact, so no page retypes it); notice: Sunshine, a heading, the
+ *  secondary button with its tracking value and a ghost link. No pre-order button. */
+function LegalClose({ doc, variant, copy, offer }: LegalTemplateProps) {
   const close = doc.close;
   if (close === undefined) return null;
   const titled = close.title !== undefined;
@@ -174,7 +172,13 @@ function LegalClose({ doc, variant, offer }: LegalTemplateProps) {
             )}
           </Actions>
           {close.also && <AlsoRead also={close.also} offer={offer} />}
-          {close.help !== undefined && <HelpLine icon={<Icon name="whatsapp-logo" />} contact={<RichText text={close.help} offer={offer} />} />}
+          {variant === "reference" && (
+            <HelpLine
+              icon={<Icon name="whatsapp-logo" />}
+              lead={<RichText text={copy.help.lead} />}
+              contact={<RichText text={copy.help.contact} offer={offer} />}
+            />
+          )}
         </Card>
       </Container>
     </Section>

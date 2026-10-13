@@ -640,6 +640,5 @@ export const privacyFixture = {
         },
       ],
     },
-    help: "Questions? [WhatsApp](https://wa.me/919187546483) or {nowrap:[call +91 91875 46483](tel:+919187546483)}",
   },
 } satisfies LegalPage;

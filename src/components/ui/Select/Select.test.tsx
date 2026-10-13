@@ -1,36 +1,21 @@
-import { readFileSync } from "node:fs";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { ICON_PATHS } from "@/assets/icons.generated";
 import { Field } from "@/components/ui/Field/Field";
+import { asBuilt, canonical, mockupFold, mockupPage } from "../../../../test/support/mockup-compare";
 import { Select } from "./Select";
 
 /* Select (task 2.5): the DS Select (`kh-select`, a native <select> styled as the text field) as the approved
  * confirmation mockup's state picker uses it (mockup/store-confirmation.html fold 3). */
 
-/** The built mockup's element: comments and whitespace-only text dropped, `mk-` classes renamed `ks-`, and an
- *  option's implicit value (its text, HTML's default) written out, as React writes every option's value. */
+/** The built mockup's element as the build prints it, read and ported by the one mockup harness
+ *  (test/support/mockup-compare.ts: `mk-` classes renamed `ks-`), with an option's implicit value (its text, HTML's
+ *  default) written out, as React writes every option's value. */
 function mockupElement(page: string, selector: string): Element {
-  const doc = new DOMParser().parseFromString(readFileSync(`mockup/${page}.html`, "utf8"), "text/html");
-  const el = doc.querySelector(selector);
-  if (!el) throw new Error(`${selector} is not in mockup/${page}.html`);
-  const copy = tidy(el.cloneNode(true) as Element);
+  const copy = asBuilt(mockupFold(page, selector));
   copy.querySelectorAll("option:not([value])").forEach((o) => o.setAttribute("value", o.textContent ?? ""));
   return copy;
-}
-
-function tidy<T extends Node>(node: T): T {
-  node.normalize();
-  const walk = (n: Node) => {
-    for (const child of [...n.childNodes]) {
-      if (child.nodeType === 8 || (child.nodeType === 3 && !(child.textContent ?? "").trim())) child.remove();
-      else if (child.nodeType === 1) walk(child);
-    }
-    if (n instanceof Element && n.hasAttribute("class")) n.setAttribute("class", n.getAttribute("class")!.replace(/\bmk-/g, "ks-"));
-  };
-  walk(node);
-  return node;
 }
 
 const STATES = ["Andhra Pradesh", "Karnataka", "Kerala"] as const;
@@ -132,14 +117,9 @@ describe("Select", () => {
   });
 
   it("matches the approved mockup's state picker", () => {
-    const html = readFileSync("mockup/store-confirmation.html", "utf8");
-    const all = [...new DOMParser().parseFromString(html, "text/html").querySelectorAll("#state option:not([value])")].map(
-      (o) => o.textContent ?? "",
-    );
+    const all = [...mockupPage("store-confirmation").querySelectorAll("#state option:not([value])")].map((o) => o.textContent ?? "");
     expect(all).toHaveLength(36);
     const { container } = render(<Select id="state" label="State" name="state" placeholder="Choose your state" options={all} required />);
-    const built = tidy(container.firstElementChild!.cloneNode(true) as Element);
-    const mockup = mockupElement("store-confirmation", ".kh-field:has(#state)");
-    expect(built.isEqualNode(mockup), `built:\n${built.outerHTML}\nmockup:\n${mockup.outerHTML}`).toBe(true);
+    expect(canonical(container.firstElementChild!)).toBe(canonical(mockupElement("store-confirmation", ".kh-field:has(#state)")));
   });
 });

@@ -136,15 +136,22 @@ type CampaignRoute = {
   revalidate: number;
 };
 
+/** The registry's lookup, watched: the route must find a campaign through it (task 4.5 item 1), never a lookup of its own. */
+const lookups = vi.fn<(slug: string) => void>();
+
 /** The campaign route as built, with the campaign registry as given and the live offer in `mode`. */
 async function campaignRoute(registry: Record<string, PageContent> | null, mode: OfferMode = "token"): Promise<CampaignRoute> {
   vi.resetModules();
+  lookups.mockClear();
   vi.doMock("@/lib/offer/get-offer", () => ({ getOffer: async () => buildOffer(mode) }));
   if (registry) {
     vi.doMock("@/content/en-IN/campaigns", () => ({
       campaigns: registry,
       campaignSlugs: Object.keys(registry),
-      getCampaign: (slug: string) => (Object.hasOwn(registry, slug) ? registry[slug] : undefined),
+      getCampaign: (slug: string) => {
+        lookups(slug);
+        return Object.hasOwn(registry, slug) ? registry[slug] : undefined;
+      },
     }));
   }
   return (await import("@/app/(site)/lp/[slug]/page")) as CampaignRoute;
@@ -158,8 +165,10 @@ afterEach(() => {
   vi.doUnmock("@/lib/offer/get-offer");
 });
 
+/* What a visitor gets at an unlisted /lp/<slug> (a 404 rendered on the server, with its <main>) is a property of the
+ * built site, asserted by test/e2e/redirects.spec.ts; this file holds the route's own exports to account. */
 describe("the campaign route at launch", () => {
-  it("builds with an empty registry: no params, and every other slug stops at the router (a rendered 404)", async () => {
+  it("builds with an empty registry: no params, dynamic params off (an unlisted slug never reaches the page), and no metadata for an unlisted slug", async () => {
     const route = await campaignRoute(null);
     expect(route.generateStaticParams()).toEqual([]);
     expect(route.dynamicParams).toBe(false);
@@ -178,6 +187,8 @@ describe("a new campaign page is a content module plus one registry line", () =>
 
       const main = renderToStaticMarkup(<>{await route.default(params("spring"))}</>);
       expect(main).toBe(renderToStaticMarkup(<PageTemplate page={springCampaign} offer={offer} path="/lp/spring" />));
+      // Both the metadata and the page found the campaign through the registry's own lookup.
+      expect(lookups.mock.calls).toEqual([["spring"], ["spring"]]);
       const doc = new DOMParser().parseFromString(documentOf(main), "text/html");
       expect(doc.querySelectorAll("h1")).toHaveLength(1);
       expect([...doc.querySelectorAll(".kh-btn--cta")].map((b) => b.textContent)).toEqual([cta.preorder, cta.preorder]);

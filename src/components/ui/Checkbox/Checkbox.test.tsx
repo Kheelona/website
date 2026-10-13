@@ -1,43 +1,25 @@
-import { readFileSync } from "node:fs";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { ICON_PATHS } from "@/assets/icons.generated";
+import { asBuilt, canonical, mockupFold } from "../../../../test/support/mockup-compare";
 import { Checkbox } from "./Checkbox";
 
 /* Checkbox (task 2.5): the DS Checkbox (`kh-check`) as the approved store mockup's consent row uses it
- * (mockup/store.html fold 3, `kh-check mk-consent`, ported as the `consent` variant `ks-consent`). */
+ * (mockup/store.html fold 3, `kh-check mk-consent`, ported as the `consent` variant `ks-consent`). The mockup is read
+ * and ported by the one harness (test/support/mockup-compare.ts): its page addresses are the routes they became. */
 
-function mockupElement(page: string, selector: string): Element {
-  const doc = new DOMParser().parseFromString(readFileSync(`mockup/${page}.html`, "utf8"), "text/html");
-  const el = doc.querySelector(selector);
-  if (!el) throw new Error(`${selector} is not in mockup/${page}.html`);
-  return tidy(el.cloneNode(true) as Element);
-}
-
-function tidy<T extends Node>(node: T): T {
-  node.normalize();
-  const walk = (n: Node) => {
-    for (const child of [...n.childNodes]) {
-      if (child.nodeType === 8 || (child.nodeType === 3 && !(child.textContent ?? "").trim())) child.remove();
-      else if (child.nodeType === 1) walk(child);
-    }
-    if (n instanceof Element && n.hasAttribute("class")) n.setAttribute("class", n.getAttribute("class")!.replace(/\bmk-/g, "ks-"));
-  };
-  walk(node);
-  return node;
-}
-
-/** The consent sentence as the mockup words and links it (the store page passes its own, from content). */
+/** The consent sentence as the mockup words and links it, at the routes its addresses became (the store page passes
+ *  its own, from content). */
 function ConsentLabel() {
   return (
     <>
       I accept the{" "}
-      <a href="terms.html" target="_blank" rel="noopener">
+      <a href="/terms" target="_blank" rel="noopener">
         pre-order terms<span className="kh-sr"> (opens in a new tab)</span>
       </a>{" "}
       and the{" "}
-      <a href="refund.html" target="_blank" rel="noopener">
+      <a href="/refund" target="_blank" rel="noopener">
         refund policy<span className="kh-sr"> (opens in a new tab)</span>
       </a>
       , and I am happy to hear about my own order on WhatsApp.
@@ -115,13 +97,11 @@ describe("Checkbox", () => {
   it("consent: links in the sentence take the link colour hook (`ks-consent`)", () => {
     const { container } = render(<Checkbox consent label={<ConsentLabel />} name="accepted" />);
     expect(container.firstElementChild).toHaveClass("kh-check", "ks-consent");
-    expect(screen.getByRole("link", { name: /^pre-order terms/ })).toHaveAttribute("href", "terms.html");
+    expect(screen.getByRole("link", { name: /^pre-order terms/ })).toHaveAttribute("href", "/terms");
   });
 
   it("matches the approved mockup's consent row", () => {
     const { container } = render(<Checkbox consent id="accepted" name="accepted" required label={<ConsentLabel />} />);
-    const built = tidy(container.firstElementChild!.cloneNode(true) as Element);
-    const mockup = mockupElement("store", ".kh-check:has(#accepted)");
-    expect(built.isEqualNode(mockup), `built:\n${built.outerHTML}\nmockup:\n${mockup.outerHTML}`).toBe(true);
+    expect(canonical(container.firstElementChild!)).toBe(canonical(asBuilt(mockupFold("store", ".kh-check:has(#accepted)"))));
   });
 });

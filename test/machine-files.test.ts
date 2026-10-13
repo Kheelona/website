@@ -126,9 +126,10 @@ const DATED: Record<(typeof MACHINE)[number]["name"], { readonly date: string } 
     full: "d34225245aba4b9b63eb0d611bf0e6791557f7a35c974e335f5106b6dc03433e",
   },
   "pricing.md": {
-    date: "2026-10-12",
-    token: "9131adc0c87a42379e746ddd9bf138874f72da7016b53810a3ff471f3e209e8d",
-    full: "02ef52afcd3b78eca7cd7392790d4a40eb9bc9aa33983fbf8335f39e958fcd96",
+    // 2026-10-13: "About Kheelu" adds the product page's Manufacturer declaration (task 4.5 item 6).
+    date: "2026-10-13",
+    token: "2906cc8bd7103c0b81eae3ebececf2170d378e69d7c3f11b70de8551c02bfc89",
+    full: "48c0631c59900ff1e296611bde258218deee3bb6d31969f599465049ecdffd5c",
   },
 };
 
@@ -147,15 +148,39 @@ interface Corpus {
   readonly records: readonly ReadonlySet<string>[];
 }
 
-/** Rich text without its placeholders: an unannounced fact is left out of the machine files (llms.txt `announced`),
- *  never printed as its marker, so the unit a file may restate is the text around it. */
+/** Where a placeholder stood in a string's plain text: a character no content string holds. */
+const GAP = "\u0001";
+
+/** Rich text with each placeholder (an unannounced fact) as a GAP: the machine files leave the fact out (llms.txt
+ *  `announced`), never printing its marker, so the unit a file may restate is the text around it. */
 const unannounced = (nodes: readonly RichNode[]): RichNode[] =>
-  nodes.flatMap((node): RichNode[] => {
-    if (node.kind === "placeholder") return [];
-    return "children" in node ? [{ ...node, children: unannounced(node.children) }] : [node];
+  nodes.map((node): RichNode => {
+    if (node.kind === "placeholder") return { kind: "text", text: GAP };
+    return "children" in node ? { ...node, children: unannounced(node.children) } : node;
   });
 
-function visibleCopy(mode: OfferMode): Corpus {
+/** Ends a sentence: a full stop, question or exclamation mark, then any closing quote or bracket. */
+const SENTENCE_END = /[.!?…][”’"')\]]*$/;
+/** Opens a sentence: any opening quote or bracket, then a capital or a digit. */
+const SENTENCE_START = /^[“‘"'([]*[A-Z0-9₹]/;
+
+/** A placeholder in the middle of a sentence (task 4.5 item 6): words follow it, and either words of the same sentence
+ *  come before it or what follows does not open a sentence. Leaving such a fact out mangles the sentence ("Lasts on one
+ *  charge."), so that string is no visible unit. One that ends the string, or stands between two sentences, is clean. */
+function midSentence(text: string): boolean {
+  const pieces = text.split(GAP);
+  return pieces.slice(1).some((after, i) => {
+    const before = pieces.slice(0, i + 1).join("").trimEnd();
+    const next = after.trimStart();
+    if (next === "") return false;
+    return (before !== "" && !SENTENCE_END.test(before)) || !SENTENCE_START.test(next);
+  });
+}
+
+/** Proof-gated content (D038): while `gated` is present the item is never rendered, so it is not visible copy. */
+const isGated = (value: object): boolean => "gated" in value && (value as { gated?: unknown }).gated !== undefined;
+
+function visibleCopy(mode: OfferMode, sources: Iterable<Exports> = modules.values()): Corpus {
   const offer = offerFor(mode);
   const units = new Set<string>();
   const records: Set<string>[] = [];
@@ -166,7 +191,8 @@ function visibleCopy(mode: OfferMode): Corpus {
     } catch {
       text = value;
     }
-    return squash(text).replace(/:$/, "");
+    if (midSentence(text)) return "";
+    return squash(text.replaceAll(GAP, " ")).replace(/:$/, "");
   };
   const inMode = (value: unknown): unknown => (isModeVariant(value) ? value[mode] : value);
   const walk = (raw: unknown): void => {
@@ -175,14 +201,14 @@ function visibleCopy(mode: OfferMode): Corpus {
       const unit = unitOf(value);
       if (unit) units.add(unit);
     } else if (Array.isArray(value)) value.forEach(walk);
-    else if (value && typeof value === "object" && !isPlaceholder(value)) {
+    else if (value && typeof value === "object" && !isPlaceholder(value) && !isGated(value)) {
       const fields = Object.values(value).map(inMode);
       const own = fields.flatMap((f) => (Array.isArray(f) ? f.map(inMode) : [f])).filter((f): f is string => typeof f === "string");
       records.push(new Set(own.map(unitOf).filter(Boolean)));
       fields.forEach(walk);
     }
   };
-  for (const mod of modules.values()) walk(Object.values(mod));
+  for (const mod of sources) walk(Object.values(mod));
   return { units, records };
 }
 
@@ -320,8 +346,8 @@ describe.each(MACHINE)("$name", ({ name, route, text, updated, constant, type })
       expect(body()).toMatch(/\bKheelu is the toy that was called Lumi until 5 September 2026\b/);
     });
 
-    it("states the entity facts as the pages do (test plan §4.3)", () => {
-      for (const fact of ["Kheelu by Kheelona", "3 to 7", "Made in India", "WhatsApp or call +91 91875 46483"]) {
+    it("states the entity facts as the pages do (test plan §4.3; architecture §9.3: made in India by Kheelona Robotics)", () => {
+      for (const fact of ["Kheelu by Kheelona", "3 to 7", "Made in India", "Manufacturer: Kheelona Robotics Pvt Ltd", "WhatsApp or call +91 91875 46483"]) {
         expect(body(), fact).toContain(fact);
       }
     });
@@ -425,5 +451,51 @@ describe("the visible-copy check", () => {
     expect(unsaid("- Microphone: None", copy)).toEqual(["Microphone: None"]);
     const swapped = `[Screen time](${ORIGIN}/stories#screen-time): What a young child is working on, and the toys and habits that serve it.`;
     expect(unsaid(`- ${swapped}`, copy)).toEqual([swapped]);
+  });
+
+  /* Task 4.5 item 6. Proof-gated content (D038: founder bios, recognition) is never rendered, on any environment, so
+     it is not visible copy, and a machine file that says it says something no page shows. */
+  it("leaves gated content out: no machine file may say what a proof gate hides (D038)", () => {
+    const copy = visibleCopy("token", [
+      {
+        founders: [{ name: "A Founder", bio: { text: "Won a national prize for toys.", gated: { proof: "F11" } } }],
+        recognition: [{ name: "A programme" }, { name: "A national award", gated: { proof: "F11" } }],
+      },
+    ]);
+    expect(copy.units.has("A Founder")).toBe(true);
+    expect(copy.units.has("A programme")).toBe(true);
+    for (const hidden of ["Won a national prize for toys.", "A national award", "F11"]) expect(copy.units.has(hidden), hidden).toBe(false);
+    expect(unsaid("- Won a national prize for toys.", copy)).toEqual(["Won a national prize for toys."]);
+    expect(unsaid("- A national award", copy)).toEqual(["A national award"]);
+  });
+
+  /* Task 4.5 item 6. A placeholder (an unannounced fact) is left out of the machine files. Where it ends a line or
+     stands between two sentences, the words around it are whole; in the middle of a sentence, leaving it out makes a
+     sentence no page says ("Lasts on one charge."), so that string is no visible unit at all. */
+  it("refuses a sentence mangled by leaving out a placeholder from its middle", () => {
+    const copy = visibleCopy("token", [
+      {
+        battery: { term: "Battery", value: "Lasts {ph:F4 hours} on one charge." },
+        size: { term: "Size", value: "{ph:F4 size} in all." },
+      },
+    ]);
+    expect(copy.units.has("Lasts on one charge.")).toBe(false);
+    expect(copy.units.has("in all.")).toBe(false);
+    expect(unsaid("- Battery: Lasts on one charge.", copy)).not.toEqual([]);
+    expect(unsaid("- Size: in all.", copy)).not.toEqual([]);
+  });
+
+  it("keeps the words around a placeholder that ends a line or stands between sentences", () => {
+    const copy = visibleCopy("token", [
+      {
+        safety: { term: "Battery safety", value: "Battery safety: {ph:F4 battery safety certification}" },
+        app: { term: "Parent app", value: "Every conversation, word for word. {ph:which phones the parent app runs on}" },
+        repair: "Pickup is free. {ph:confirm the return trip is free} How long a repair takes depends on where you are.",
+      },
+    ]);
+    expect(copy.units.has("Battery safety")).toBe(true);
+    expect(copy.units.has("Every conversation, word for word.")).toBe(true);
+    expect(copy.units.has("Pickup is free. How long a repair takes depends on where you are.")).toBe(true);
+    expect(unsaid("- Parent app: Every conversation, word for word.", copy)).toEqual([]);
   });
 });

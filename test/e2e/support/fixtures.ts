@@ -226,7 +226,7 @@ export async function settle(page: Page): Promise<void> {
  *   KH_PARITY_TARGET=mockup KH_NO_SERVER=1 KH_E2E_PLANT=sideways npx playwright test test/e2e/no-sideways.spec.ts
  *   KH_E2E_GATE=off KH_E2E_PLANT=brokenlink npx playwright test test/e2e/links.spec.ts
  * Each runs after load in the page under test, so the mockup reference stays clean.
- * ("redirect" is read by redirects.spec.ts, which has no page.) */
+ * ("redirect" and "lp-main" are read by redirects.spec.ts, which has no page.) */
 const MAIN = `document.querySelector("main")`;
 export const PLANTS: Record<string, string> = {
   brokenlink: `${MAIN}.insertAdjacentHTML("beforeend", '<a href="/kh-planted-broken-link">planted</a>');`,
@@ -235,7 +235,7 @@ export const PLANTS: Record<string, string> = {
   axe: `${MAIN}.insertAdjacentHTML("afterbegin", '<img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" width="40" height="40">');`,
   // The D050 bubble with its laptop label showing, white on WhatsApp green: the label is text, so
   // it is blocking (architecture §13 accepts only the icon link's glyph).
-  walabel: `document.body.insertAdjacentHTML("beforeend", '<a class="ks-wa" href="https://wa.me/910000000000" aria-label="Chat on WhatsApp" style="position:fixed;right:16px;bottom:16px;z-index:5;display:flex;align-items:center;gap:8px;padding:12px;border-radius:999px;background:#25D366;color:#fff"><svg width="24" height="24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#fff"/></svg><span class="ks-wa__label" style="font-size:14px">Chat on WhatsApp</span></a>');`,
+  walabel: `document.body.insertAdjacentHTML("beforeend", '<a class="ks-wa" href="https://wa.me/910000000000" aria-label="Chat with us on WhatsApp" style="position:fixed;right:16px;bottom:16px;z-index:5;display:flex;align-items:center;gap:8px;padding:12px;border-radius:999px;background:#25D366;color:#fff"><svg width="24" height="24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#fff"/></svg><span class="ks-wa__label" style="font-size:14px">Chat with us on WhatsApp</span></a>');`,
   // An endless animation below the hero (motion.spec: nothing running after 6 s, nor under reduced motion).
   loop: `document.head.insertAdjacentHTML("beforeend", '<style>@keyframes kh-planted{to{transform:rotate(1turn)}} .kh-planted{animation:kh-planted 1s linear infinite}</style>'); ${MAIN}.insertAdjacentHTML("beforeend", '<div class="kh-planted">x</div>');`,
   // A reveal that fades in over 200 ms when scrolled into view, ignoring reduced motion: finite, so

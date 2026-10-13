@@ -1,10 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { legalTemplateCopy } from "@/content/en-IN/legal/shared";
 import { buildOffer } from "@/lib/offer/offer";
-import { LEGAL_FIXTURES, legalCopyFixture } from "../../../test/fixtures/legal";
+import { LEGAL_FIXTURES } from "../../../test/fixtures/legal";
 import { LegalTemplate } from "./LegalTemplate";
 
 /* LegalTemplate (task 4.3): the four approved legal pages rendered from fixture content copied from them
- * (test/fixtures/legal), each in its family. The shell's <main> is the decorator, as SiteShell holds the page, so
+ * (test/fixtures/legal), each in its family, with the template's own words from content (legal/shared.ts, task 4.5).
+ * The shell's <main> is the decorator, as SiteShell holds the page, so
  * test/e2e/legal-template.spec.ts compares each story with its mockup's <main>, pixel for pixel, before the real legal
  * modules exist (tasks 5.11-5.14). Token mode, as the mockups render. */
 
@@ -18,7 +20,7 @@ const meta: Meta<typeof LegalTemplate> = {
       </main>
     ),
   ],
-  args: { copy: legalCopyFixture, offer: buildOffer("token") },
+  args: { copy: legalTemplateCopy, offer: buildOffer("token") },
 };
 export default meta;
 

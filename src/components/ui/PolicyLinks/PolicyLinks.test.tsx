@@ -1,39 +1,20 @@
-import { readFileSync } from "node:fs";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
+import { asBuilt, canonical, mockupFold } from "../../../../test/support/mockup-compare";
 import { PolicyLinks } from "./PolicyLinks";
 
 /* PolicyLinks (task 2.5): the store's policy links, as `mk-policy` renders them in the approved store and
- * confirmation mockups (mockup/store.html and store-confirmation.html, store footer), ported as `ks-policy`. */
+ * confirmation mockups (mockup/store.html and store-confirmation.html, store footer), ported as `ks-policy`. The mockup
+ * is read and ported by the one harness (test/support/mockup-compare.ts): its page addresses are the routes they became. */
 
-function mockupElement(page: string, selector: string): Element {
-  const doc = new DOMParser().parseFromString(readFileSync(`mockup/${page}.html`, "utf8"), "text/html");
-  const el = doc.querySelector(selector);
-  if (!el) throw new Error(`${selector} is not in mockup/${page}.html`);
-  return tidy(el.cloneNode(true) as Element);
-}
-
-function tidy<T extends Node>(node: T): T {
-  node.normalize();
-  const walk = (n: Node) => {
-    for (const child of [...n.childNodes]) {
-      if (child.nodeType === 8 || (child.nodeType === 3 && !(child.textContent ?? "").trim())) child.remove();
-      else if (child.nodeType === 1) walk(child);
-    }
-    if (n instanceof Element && n.hasAttribute("class")) n.setAttribute("class", n.getAttribute("class")!.replace(/\bmk-/g, "ks-"));
-  };
-  walk(node);
-  return node;
-}
-
-/** The mockup's links (its relative hrefs; the store passes kheelona.com addresses from content). */
+/** The mockup's links, at the routes its page addresses became (the store passes kheelona.com addresses from content). */
 const LINKS = [
-  { label: "Pre-order terms", href: "terms.html" },
-  { label: "Refunds and cancellation", href: "refund.html" },
-  { label: "Shipping and delivery", href: "shipping.html" },
-  { label: "Privacy", href: "privacy.html" },
-  { label: "Contact", href: "contact.html" },
+  { label: "Pre-order terms", href: "/terms" },
+  { label: "Refunds and cancellation", href: "/refund" },
+  { label: "Shipping and delivery", href: "/shipping" },
+  { label: "Privacy", href: "/privacy" },
+  { label: "Contact", href: "/contact" },
 ];
 const NEW_TAB = " (opens in a new tab)";
 
@@ -56,7 +37,7 @@ describe("PolicyLinks", () => {
 
   it("renders the links in the order given, and nothing for an empty list", () => {
     render(<PolicyLinks label="Policies" links={[LINKS[3], LINKS[0]]} newTabNote={NEW_TAB} />);
-    expect(screen.getAllByRole("link").map((a) => a.getAttribute("href"))).toEqual(["privacy.html", "terms.html"]);
+    expect(screen.getAllByRole("link").map((a) => a.getAttribute("href"))).toEqual(["/privacy", "/terms"]);
     const empty = render(<PolicyLinks label="Other" links={[]} newTabNote={NEW_TAB} />);
     expect(empty.container.firstChild).toBeNull();
   });
@@ -72,8 +53,6 @@ describe("PolicyLinks", () => {
 
   it.each(["store", "store-confirmation"])("matches the approved mockup's policy links (%s)", (page) => {
     const { container } = render(<PolicyLinks label="Policies" links={LINKS} newTabNote={NEW_TAB} />);
-    const built = tidy(container.firstElementChild!.cloneNode(true) as Element);
-    const mockup = mockupElement(page, "nav.mk-policy");
-    expect(built.isEqualNode(mockup), `built:\n${built.outerHTML}\nmockup:\n${mockup.outerHTML}`).toBe(true);
+    expect(canonical(container.firstElementChild!)).toBe(canonical(asBuilt(mockupFold(page, "nav.mk-policy"))));
   });
 });

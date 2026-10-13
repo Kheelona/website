@@ -32,7 +32,8 @@ export function CopyLinkButtonIsland({ value, label, copiedMessage, icon }: Copy
 
   return (
     <>
-      {/* DS Button markup (secondary, s) as the mockup writes it; ui/Button is task 2.2, same wave. */}
+      {/* DS Button markup (secondary, s) as the mockup writes it, written out: a client island never imports ui/Button,
+          which reaches the icon map (test/guards/client-icons.test.ts, task 2.11). */}
       <button type="button" className="kh-btn kh-btn--secondary kh-btn--s" onClick={copy}>
         {icon}
         <span>{label}</span>

@@ -3,6 +3,7 @@ import { faqPlainItems } from "@/components/ui/FaqList/FaqList";
 import { faqs } from "@/content/en-IN/faqs";
 import { RETURN_DAYS, WARRANTY_MONTHS } from "@/content/en-IN/policies";
 import type { FaqItem, Meta } from "@/content/types";
+import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { aboutPageNode, contactPageNode } from "@/lib/seo/schema/web-page";
 import { faqPageNode } from "@/lib/seo/schema/faq-page";
@@ -16,7 +17,7 @@ import type { PageContent, ProductSchemaCopy } from "./page-template.types";
 /* The page's own JSON-LD (task 4.1; architecture §9.2): the nodes besides the shell's Organization and WebSite. The
  * FAQPage and a HowTo are read off the page's own sections, so they are the very words it shows (FaqList's
  * `faqPlainItems`); a Product, AboutPage or ContactPage is declared by the page's content and built by the SEO
- * library's builders. */
+ * library's builders, the AboutPage described by the page's own answer-section fold. */
 
 const TOKEN = buildOffer("token");
 const FULL = buildOffer("full");
@@ -25,6 +26,7 @@ const page = (sections: readonly SectionEntry[], schema?: PageContent["schema"])
 const PATH = "/lp/spring";
 
 const hero = ENTRY_FIXTURES["hero-section"];
+const answer = ENTRY_FIXTURES["answer-section"];
 const faqSection = ENTRY_FIXTURES["faq-section"];
 const items: readonly FaqItem[] = [faqs["think-less"], faqs["what-ages"]];
 
@@ -151,17 +153,36 @@ describe("the nodes a page declares", () => {
 
   it("builds an AboutPage and a ContactPage from their words, pointing at the Organization", () => {
     const nodes = pageSchemaNodes(
-      page([hero], [
-        { kind: "about-page", name: "About {hand:Kheelona}", description: "We make Kheelu." },
-        { kind: "contact-page", name: "Contact Kheelona" },
+      page([hero, answer], [
+        { kind: "about-page", name: "About {hand:Kheelona}" },
+        { kind: "contact-page", name: "Contact Kheelona", description: "Write to us." },
       ]),
       TOKEN,
       "/team",
     );
     expect(nodes).toEqual([
-      aboutPageNode({ name: "About Kheelona", description: "We make Kheelu.", path: "/team" }),
-      contactPageNode({ name: "Contact Kheelona", path: "/team" }),
+      aboutPageNode({ name: "About Kheelona", description: "Kheelona, a team in Bengaluru.", path: "/team" }),
+      contactPageNode({ name: "Contact Kheelona", description: "Write to us.", path: "/team" }),
     ]);
+  });
+
+  /* Task 4.5 item 5 (architecture §9.2; team.md fold 2): the AboutPage says what the page's answer block says, so its
+     description is read off the page's answer-section fold, never written twice. */
+  it("describes the AboutPage with the page's own answer-section fold, in the live mode's words", () => {
+    const priced = { kind: "answer-section", config: { variant: "team", question: "Who makes {hand:Kheelu?}", answer: faqs["price-and-advance"].answer } } as const satisfies SectionEntry;
+    for (const offer of [TOKEN, FULL]) {
+      const [node] = pageSchemaNodes(page([hero, priced], [{ kind: "about-page", name: "About Kheelona" }]), offer, "/team");
+      expect(node).toEqual(aboutPageNode({ name: "About Kheelona", description: toPlainText(faqs["price-and-advance"].answer, offer), path: "/team" }));
+    }
+    // @ts-expect-error the AboutPage has no description of its own: it is the answer fold's
+    const separate: PageContent["schema"] = [{ kind: "about-page", name: "About Kheelona", description: "Words of its own." }];
+    expect(separate).toHaveLength(1);
+  });
+
+  it("refuses an AboutPage on a page without exactly one answer-section fold to describe it", () => {
+    const about = [{ kind: "about-page", name: "About Kheelona" }] as const satisfies PageContent["schema"];
+    expect(() => pageSchemaNodes(page([hero], about), TOKEN, "/team")).toThrow(/AboutPage.*one answer-section fold.*found 0/);
+    expect(() => pageSchemaNodes(page([hero, answer, answer], about), TOKEN, "/team")).toThrow(/AboutPage.*one answer-section fold.*found 2/);
   });
 
   it("puts the declared nodes first, then the HowTo, then the FAQPage", () => {

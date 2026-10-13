@@ -4,6 +4,7 @@ import { hydrateRoot } from "react-dom/client";
 import { renderToString } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { InAppBrowserNoteContent } from "@/content/types";
+import { asBuilt, canonical, mockupFold } from "../../../../test/support/mockup-compare";
 import { InAppBrowserNote } from "./InAppBrowserNote";
 
 /* InAppBrowserNote (task 2.5; B12, N7): the store's fold 2 (mockup/store.html, `mk-inapp`, ported as
@@ -40,30 +41,17 @@ afterEach(() => {
   Reflect.deleteProperty(navigator, "clipboard");
 });
 
-function tidy<T extends Node>(node: T): T {
-  node.normalize();
-  const walk = (n: Node) => {
-    for (const child of [...n.childNodes]) {
-      if (child.nodeType === 8 || (child.nodeType === 3 && !(child.textContent ?? "").trim())) child.remove();
-      else if (child.nodeType === 1) walk(child);
-    }
-    if (n instanceof Element && n.hasAttribute("class")) n.setAttribute("class", n.getAttribute("class")!.replace(/\bmk-/g, "ks-"));
-  };
-  walk(node);
-  return node;
-}
-
-/** The mockup's note without what never ships: the Gate A review annotation and the mockup script's own
- *  data hooks (`data-copy`, `data-copied`; the build's button has its own handler). */
+/** The mockup's note, read and ported by the one mockup harness (test/support/mockup-compare.ts), without what never
+ *  ships: the Gate A review annotation and the mockup script's own data hooks (`data-copy`, `data-copied`; the build's
+ *  button has its own handler). */
 function mockupNote(): Element {
-  const doc = new DOMParser().parseFromString(readFileSync("mockup/store.html", "utf8"), "text/html");
-  const note = doc.querySelector(".mk-inapp")!.cloneNode(true) as Element;
-  note.querySelectorAll(".mk-review-note").forEach((n) => n.remove());
+  const note = asBuilt(mockupFold("store", ".mk-inapp"));
+  note.querySelectorAll(".ks-review-note").forEach((n) => n.remove());
   note.querySelectorAll("[data-copy], [data-copied]").forEach((n) => {
     n.removeAttribute("data-copy");
     n.removeAttribute("data-copied");
   });
-  return tidy(note);
+  return note;
 }
 
 describe("InAppBrowserNote", () => {
@@ -167,8 +155,6 @@ describe("InAppBrowserNote", () => {
   it("matches the approved mockup's in-app note", () => {
     userAgent = INSTAGRAM;
     const { container } = render(<InAppBrowserNote content={CONTENT} storeUrl={STORE} />);
-    const built = tidy(container.firstElementChild!.cloneNode(true) as Element);
-    const mockup = mockupNote();
-    expect(built.isEqualNode(mockup), `built:\n${built.outerHTML}\nmockup:\n${mockup.outerHTML}`).toBe(true);
+    expect(canonical(container.firstElementChild!)).toBe(canonical(mockupNote()));
   });
 });

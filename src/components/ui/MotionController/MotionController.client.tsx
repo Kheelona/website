@@ -14,7 +14,8 @@ import { useLayoutEffect } from "react";
  * nothing: js-motion never arrives, so everything stays visible and drawn, as without JavaScript.
  * Targets added after it armed (a client-only island, a streamed block; task 2.12) follow the same rules through
  * one MutationObserver on document.body: on screen, shown at once (its fade or draw jumped to the end before the
- * frame paints); below, observed.
+ * frame paints); below, observed. A target with no layout box yet (a streamed block in React's hidden holder) is
+ * observed, never shown at once, whether it is there at arming or added later (tasks 3.6, 4.5).
  * It renders nothing and changes only opacity and transform (motion.css), so it shifts no layout. */
 
 const TARGETS = "[data-reveal]:not(.is-in), [data-draw]:not(.is-in)";
@@ -32,6 +33,14 @@ function finishShown(el: Element): void {
   if (typeof el.getAnimations !== "function") return;
   const animations = el.matches("[data-draw]") ? el.getAnimations({ subtree: true }) : el.getAnimations();
   for (const animation of animations) animation.finish();
+}
+
+/** Whether a target waits for the observer rather than showing at once: its top edge is at or below the fold, or it has
+ *  no layout box yet. React streams a late block into a `hidden` holder, then moves it into place (task 3.6); in the
+ *  holder its rectangle reads 0, 0, which a top-edge test alone takes for "on screen", so it would skip its reveal
+ *  wherever it lands. The same test at arming and for added targets (task 4.5 item 7). */
+function waits(el: Element, fold: number): boolean {
+  return el.getClientRects().length === 0 || el.getBoundingClientRect().top >= fold;
 }
 
 /** The targets still waiting in the nodes a mutation added: each node itself and anything inside it. */
@@ -53,8 +62,9 @@ function arm(): (() => void) | undefined {
   const root = document.documentElement;
   const fold = window.innerHeight;
   const targets = Array.from(document.querySelectorAll(TARGETS));
-  // Read every position first (one layout, js-motion off so no preset offset counts), then write.
-  const later = new Set(targets.filter((el) => el.getBoundingClientRect().top >= fold));
+  // Read every position first (one layout, js-motion off so no preset offset counts), then write. A target with no
+  // layout box yet (a streamed block still in React's hidden holder) waits too, as it does when added later.
+  const later = new Set(targets.filter((el) => waits(el, fold)));
   for (const el of targets) if (!later.has(el)) el.classList.add(SHOWN);
   root.classList.add(ARMED);
 
@@ -76,14 +86,14 @@ function arm(): (() => void) | undefined {
 
   // Targets added later (task 2.12). A mutation observer reports as a microtask, before the browser paints, so an
   // added target on screen is never seen hidden. js-motion is on by now, so a block's position includes the preset's
-  // small offset; the fold test is the same as above. A target with no layout box yet (task 3.6: React streams a late
-  // block into a `hidden` holder, then moves it into place) reads as 0, 0, which is not "on screen": it is observed,
-  // and when React moves it into place the move is another addition, judged again where it lands.
+  // small offset; the test is the same as above (`waits`). A target with no layout box yet (task 3.6: React streams a
+  // late block into a `hidden` holder, then moves it into place) reads as 0, 0, which is not "on screen": it is
+  // observed, and when React moves it into place the move is another addition, judged again where it lands.
   const mutations = new MutationObserver((records) => {
     const added = addedTargets(records);
     if (added.length === 0) return;
     const viewport = window.innerHeight;
-    const below = new Set(added.filter((el) => el.getClientRects().length === 0 || el.getBoundingClientRect().top >= viewport));
+    const below = new Set(added.filter((el) => waits(el, viewport)));
     for (const el of added) {
       if (below.has(el)) {
         observer.observe(el);
