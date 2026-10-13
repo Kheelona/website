@@ -440,6 +440,31 @@ through first-party cookies on `.kheelona.com`, read server-side when the order 
   is no Speed Insights to carry over.
 - `/api/health` reports `capi`, `email`, Razorpay mode and store readiness (§8.30-q).
 
+### 14a. Hosts the Report-Only CSP refuses with the tags loading (task 4.9 item 5, 2026-10-13)
+
+With the tags loading on a local production build (LP-tags), the Report-Only policy reports two beacon hosts that
+none of its directives names, and logs an error for its own `upgrade-insecure-requests` (M1,
+[log 2026-10-14 08:40](../log.md); Lighthouse Best Practices 70 against B10's about 74). Both are sent by tags already
+in this inventory; no ID, event name or parameter is involved, and none changed.
+
+| Host | Sent by | How identified | In the CSP |
+|---|---|---|---|
+| `https://www.google.com/g/collect` | GA4 (`gtag.js`, section 3): the hits carry its own measurement ID, `tid=G-7LMKSFEXZ9` | M1's LP-tags Lighthouse reports (`lighthouse-reports/2026-10-13/lp-tags-*`, local only, D039; read 2026-10-13): two fetches, on Home and the store, each a Content-Security-Policy issue; a headless LP-tags probe on 2026-10-13 saw the same tag report only to `www.google-analytics.com/g/collect` (allowed) | no: `img-src` and `connect-src` name `www.googletagmanager.com` and the google-analytics hosts only |
+| `https://dv-c3e594c6d429469e90b54478358619c3.ecs.us-east-1.on.aws/` (`/events`), fallback `https://bded8a3c6ae-1-1053047382554.us-central1.run.app` | the Meta Pixel (section 4): its OpenBridge gateway, named by the pixel's own configuration, which `fbevents.js` loads | the configuration `fbevents.js` requested in the 2026-10-13 LP-tags probe (`connect.facebook.net/signals/config/1051265191046395?v=2.9.419&r=stable&domain=kheelona.com…`), fetched and read the same day: `config.set("1051265191046395", "openbridge", {"endpoints":[{"endpoint":"https://dv-c3e594c6d429469e90b54478358619c3.ecs.us-east-1.on.aws/", …, "fallbackDomain":"https://bded8a3c6ae-1-1053047382554.us-central1.run.app"}]})`; the baseline saw it on production too ([baseline §7.2](../qa/baseline-2026-10-10.md)). Whether it is the business's Conversions API connection is [open questions](../open-questions.md) C18 | no: not in `connect-src` |
+
+**The policy is unchanged.** `src/lib/security-headers.ts` is a frozen checkout file (ADR-013: a change needs a
+founder decision ID and a reviewed patch, `test/guards/checkout-freeze.test.ts`), and [D039](../decisions/D039-repo-and-setup-answers.md) (C10) keeps the
+Report-Only policy identical through launch, so task 4.9 did not drop `upgrade-insecure-requests` from the
+Report-Only policy nor admit either host; the proposed change waits on the founder (main session). Report-Only refuses
+nothing, so both beacons are delivered today; if the policy is ever enforced unchanged, GA4's `www.google.com` hits
+and the Meta gateway's events stop.
+
+**LP-tags delivered them.** The LP-tags profile blocks the tags' beacons so a local run sends nothing
+(`scripts/qa/lighthouse.mjs` `BLOCKED`: google-analytics and analytics.google collect, `facebook.com/tr`, PostHog's
+capture paths, Ahrefs' API), but neither host above is in that list: M1's 30 LP-tags reports record the gateway's
+`/events` answered 200 in 36 requests and the two `www.google.com/g/collect` hits answered 204 (read 2026-10-13), so those
+local loads reached Meta's gateway and GA4.
+
 ## 15. Consent behaviour today (state exactly as it is)
 
 - **There is no consent banner, no Consent Mode, and no in-product opt-out.** All five tools load on
