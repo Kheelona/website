@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { ARTICLE_SLUGS as PLAN_ARTICLES } from "@/content/en-IN/routes";
 import { ARTICLE_CLOSES, stickyBarPaths } from "@/layouts/SiteShell/sticky-bar-paths";
 import { hiddenCss, hideDeviations } from "./e2e/support/deviations";
-import { ARTICLE_SLUGS, articleClose, NOT_FOUND_PATH, sweepRoutes } from "./e2e/support/routes";
+import { ARTICLE_SLUGS, articleClose, closeInSource, NOT_FOUND_PATH, sweepRoutes } from "./e2e/support/routes";
 
 /* The e2e harness's shared pieces that task 4.9 item 6 changed, where they can be read without a browser.
  *
@@ -37,6 +37,29 @@ describe("sweepRoutes: the buy bar on each route", () => {
 
   it("refuses an article whose module it cannot read a close from", () => {
     expect(() => articleClose("a-guide-with-no-module")).toThrow(/a-guide-with-no-module/);
+  });
+
+  /* The article modules are edited by hand (tasks 5.20a-c): a close written with a type assertion, in parentheses, as a
+     template literal or through a constant of the same module is still the same close, so the parser never throws on
+     it when the spec modules load (every spec that calls sweepRoutes() would fail). */
+  it("reads a close however the module writes it: as const, satisfies, parentheses, a template literal, a constant", () => {
+    const source = (close: string, before = "") => `${before}export const article = { slug: "x", close: ${close}, related: [] } satisfies ArticleModule;`;
+    const path = "src/content/en-IN/stories/articles/x.ts";
+    expect(closeInSource(path, source('"keep"'))).toBe("keep");
+    expect(closeInSource(path, source('"keep" as const'))).toBe("keep");
+    expect(closeInSource(path, source('"journal" satisfies ArticleClose'))).toBe("journal");
+    expect(closeInSource(path, source('("journal")'))).toBe("journal");
+    expect(closeInSource(path, source("`keep`"))).toBe("keep");
+    expect(closeInSource(path, source("CLOSE", 'const CLOSE = "journal" as const;\n'))).toBe("journal");
+    expect(closeInSource(path, `export const article = ({ close: "keep" as const }) as const;`)).toBe("keep");
+  });
+
+  it("still refuses a close it cannot read as one of the two: another word, a call, a constant from elsewhere, a loop", () => {
+    const path = "src/content/en-IN/stories/articles/x.ts";
+    expect(() => closeInSource(path, 'export const article = { close: "open" };')).toThrow(/x\.ts states no close/);
+    expect(() => closeInSource(path, "export const article = { close: pickClose() };")).toThrow(/x\.ts states no close/);
+    expect(() => closeInSource(path, 'import { CLOSE } from "./c";\nexport const article = { close: CLOSE };')).toThrow(/x\.ts states no close/);
+    expect(() => closeInSource(path, "const A = B;\nconst B = A;\nexport const article = { close: A };")).toThrow(/x\.ts states no close/);
   });
 });
 

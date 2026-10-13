@@ -102,21 +102,50 @@ export function articleClose(slug: string): "journal" | "keep" {
   } catch {
     throw new Error(`articleClose: article "${slug}" has no module at ${path}`);
   }
+  return closeInSource(path, text);
+}
+
+/** An expression without the wrappers that leave its value alone: `as`, `satisfies`, parentheses. */
+function unwrap(node: ts.Expression): ts.Expression {
+  let value = node;
+  while (ts.isSatisfiesExpression(value) || ts.isAsExpression(value) || ts.isParenthesizedExpression(value)) value = value.expression;
+  return value;
+}
+
+/**
+ * The close an article module's source states (articleClose's reader, exported for its test): the `close` of its
+ * `article` object, written as a string or a template literal with no substitution, with or without `as`, `satisfies`
+ * or parentheses, or as a constant the module itself declares so. Anything else (another module's constant, a call) the
+ * harness cannot read without loading the module, so it refuses it.
+ */
+export function closeInSource(path: string, text: string): "journal" | "keep" {
   const sf = parseSource(path, text);
-  let close: string | undefined;
+  // The module's own top-level constants, by name (a close written as one of them).
+  const constants = new Map<string, ts.Expression>();
+  for (const statement of sf.statements) {
+    if (!ts.isVariableStatement(statement)) continue;
+    for (const d of statement.declarationList.declarations) if (ts.isIdentifier(d.name) && d.initializer) constants.set(d.name.text, d.initializer);
+  }
+  let written: ts.Expression | undefined;
   const visit = (node: ts.Node): void => {
     if (ts.isVariableDeclaration(node) && node.name.getText(sf) === "article" && node.initializer) {
-      let value: ts.Expression = node.initializer;
-      while (ts.isSatisfiesExpression(value) || ts.isAsExpression(value) || ts.isParenthesizedExpression(value)) value = value.expression;
+      const value = unwrap(node.initializer);
       if (ts.isObjectLiteralExpression(value)) {
-        for (const p of value.properties) {
-          if (ts.isPropertyAssignment(p) && p.name.getText(sf) === "close" && ts.isStringLiteral(p.initializer)) close = p.initializer.text;
-        }
+        for (const p of value.properties) if (ts.isPropertyAssignment(p) && p.name.getText(sf) === "close") written = p.initializer;
       }
     }
     ts.forEachChild(node, visit);
   };
   visit(sf);
+  // A string, or a constant followed to its string (each name once, so two constants naming each other end).
+  const read = (node: ts.Expression, seen: ReadonlySet<string>): string | undefined => {
+    const value = unwrap(node);
+    if (ts.isStringLiteralLike(value)) return value.text;
+    if (!ts.isIdentifier(value) || seen.has(value.text)) return undefined;
+    const constant = constants.get(value.text);
+    return constant ? read(constant, new Set([...seen, value.text])) : undefined;
+  };
+  const close = written ? read(written, new Set()) : undefined;
   if (close !== "journal" && close !== "keep") throw new Error(`articleClose: ${path} states no close ("journal" or "keep") the harness can read`);
   return close;
 }
