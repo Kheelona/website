@@ -19,7 +19,9 @@ sources:
   - ../../decisions/D013, D015, D016, D017, D026, D041
   - "src/content/en-IN/stories/articles/busy-hands-no-screens.ts (stub: card, related, dates), read in the w5c-5.17 worktree 2026-10-14"
   - "src/lib/stories-expansion.ts:252-274 (the live article, legacy input only), read in the same worktree"
-  - design-system/project/01-writing.md:19-26,111-113; 03-cast.md:115 (read-only)
+  - design-system/project/01-writing.md:19-26,111-113; 03-cast.md:9-13, 79-81, 113 (read-only)
+  - ../../qa/cmo-review-articles-5.17-2026-10-14.md (M13, M14, M15, M16; applied by task 5.20a, see the foot of this page)
+  - ../../engineering/tasks.md (5.20, the screen-time photo pool) and ../../engineering/assets.md (§1, the pool photos' other uses)
 ---
 
 # Story: Busy hands, no screens
@@ -60,7 +62,7 @@ sources:
 
 **What changed from the live article** (`src/lib/stories-expansion.ts:252-274`): the answer comes first; two
 set-ups are swapped for ones that suit a 3-year-old a parent cannot watch every second (painting the balcony floor and
-sorting rajma become painting floor tiles with water and matching steel dabbas to their lids, `:269`); unsourced claims
+sorting rajma become painting an old slate with water and matching steel dabbas to their lids, `:269`); unsourced claims
 are cut or turned into plain advice ("Expensive toys have one script. A cardboard box has forty.", `:269`; "Real jobs hold
 attention longer than invented games because children can smell the difference", `:270`; "Busy hands last longest when
 there is a voice keeping the mind company too", `:271`; the promise that "4pm gets easier for a year", `:272`); the
@@ -89,11 +91,16 @@ project" becomes one plain product line with the age limits and the grown-up-nea
 - **H1:** the hub card's title word for word, then the primary (the gentle-way page, question 2, covers the pattern).
 - **Lead:** the hub card's summary, word for word.
 - Breadcrumb links: "Stories" → `/stories`; "Screen time" → `/stories#screen-time`.
-- **Read time:** about 600 words in the article body.
-- **Image** (`head.image`, `kh-photo`, 4:5): `ira-04-paper-crown-web.webp`. Alt: "A laughing girl in a sky-blue T-shirt
-  puts on a yellow paper crown beside a craft table strewn with paper scraps, glue and crayons." The DS photo for
-  "confidence and creativity" at a craft table (`03-cast.md:115`), no Kheelu. No name or age in the alt. File checked by
-  eye 2026-10-14.
+- **Read time:** about 620 words in the article body.
+- **Image** (`head.image`, `kh-photo kh-photo--wide`, 16:9): `ira-02-drawing-the-dragon-web.webp`. Alt: "A laughing
+  girl in a yellow frock lies on her tummy on a rug, a blue crayon in her hand, a big drawing of a green dragon in front
+  of her and Kheelu sitting beside her." The DS photo for "Creativity and imagination" (`03-cast.md:113`): crayons on a
+  big sheet of paper on the floor, one of this page's own set-ups, with Kheelu as one more thing in the room, not the
+  activity. The child is the cast's 5-year-old (`03-cast.md:11`), so no grown-up is needed in frame (the page's age-3
+  line; voice rule 17). From task 5.20's screen-time pool; it heads no other page
+  ([assets §1](../../engineering/assets.md#1-design-system-assets-used-by-the-approved-pages)). The photo is 16:9, so the
+  head takes the wide layout (two even columns, the 16:9 frame), as the safe-AI-toy guide's head; the photo's shape
+  sets it. No name or age in the alt; the light on Kheelu is not described (D018). File checked by eye 2026-10-14.
 
 ---
 
@@ -105,14 +112,16 @@ project" becomes one plain product line with the age limits and the grown-up-nea
 
 > **H2:** What are good screen-free activities for kids at home?
 >
-> Ones that start in seconds and need no grown-up to run them: dough, crayons and paper, a blanket fort, a box of blocks, real jobs like matching socks or washing potatoes, and stories told or played aloud. Set them up in the room where you are, and keep a few ready on one low shelf.
+> Ones that start in seconds and need no grown-up to run them: dough, crayons and paper, a blanket fort, a box of blocks, real jobs like matching socks or washing potatoes, and stories played aloud. Set them up in the room where you are, and keep a few ready on one low shelf.
 >
 > Below: ten-second setups, real jobs, ideas by age, and what to do on the days you have to work.
 
-- Answer: 55 words. `answer.question` is the H2, `answer.answer` the first paragraph, `answer.detail` one `p`.
+- Answer: 53 words. `answer.question` is the H2, `answer.answer` the first paragraph, `answer.detail` one `p`.
 - Built from the ST5 draft ([keyword map §6.7](../../research/keyword-map.md#67-screen-time)) and the live article's
   idea; advice only, so no marker. "Need no grown-up to run them" and "in the room where you are" sit together on
   purpose: the child plays on their own, with a grown-up nearby ([D041](../../decisions/D041-gate-a-round-1.md), "Age 3").
+  "Stories played aloud", not "told": a told story needs a teller, which the list's "need no grown-up" rules out
+  (CMO M15).
 
 ---
 
@@ -137,7 +146,7 @@ project" becomes one plain product line with the age limits and the grown-up-nea
 >
 > Keep one low shelf of things that start at once and can stop anywhere:
 >
-> - a cup of water and a paintbrush, to "paint" the floor tiles
+> - a cup of water and a paintbrush, to "paint" an old slate
 > - steel dabbas and their lids, to match up
 > - old newspaper, to tear into the world's biggest salad
 > - a bedsheet over two chairs: a house until dinner
@@ -148,7 +157,9 @@ project" becomes one plain product line with the age limits and the grown-up-nea
 
 - `list`, `bullets` (or `tips` with DS icons, the builder's pick). The H2 is the keyword map's (§5.2).
 - Every set-up uses large, everyday things a 3-year-old can use with a grown-up in the room: no balcony, nothing
-  small enough to swallow, no knife.
+  small enough to swallow, no knife, and no water on the floor. The water painting goes on an old slate: the wet slate
+  darkens, dries and starts again, and nobody slips on wet tiles (CMO M14, whose reason for a slate is that a school
+  slate is a common thing in Indian homes; the copy makes no claim about it).
 
 ---
 
@@ -228,15 +239,21 @@ project" becomes one plain product line with the age limits and the grown-up-nea
 
 > **H2:** On the days you have to work
 >
-> For the stretches you can't be interrupted, set the activity up in the room where you work, and add something that talks: a story, told or played aloud, in your home language, or a grandparent on a voice call.
+> For the stretches you can't be interrupted, pick a quiet activity and set it up in the room where you work: water and a brush, dough, crayons on a roll of paper.
 >
-> [Kheelu](https://kheelona.com/products/kheelu) is one more screen-free option: a plush toy for ages 3 to 7 that answers your child, then asks a question back. It is not a toy for children under 3. If your child is 3, keep a grown-up nearby while they play.
+> Save the ones that talk (a story played aloud, a grandparent on a voice call) for the stretches when you can listen with half an ear.
+>
+> [Kheelu](https://kheelona.com/products/kheelu) is one more screen-free option for those stretches: a plush toy for ages 3 to 7 that answers your child, then asks a question back. It is not a toy for children under 3. If your child is 3, keep a grown-up nearby while they play.
 >
 > Most of this page needs no technology at all: a shelf, a basket of socks, a cardboard box.
 
 - Link target `/products/kheelu` (the page's one in-text product link, [strategy §3.3](../strategy.md#33-placement-and-repetition)).
 - "Answers your child, then asks a question back": D017's form (CMO review S6). "In the room where you work" and
   "keep a grown-up nearby" keep the parent present on a work day; nothing suggests leaving a child alone with a toy.
+- Quiet set-ups for the call, talking ones for later (CMO M13): a story played aloud, a grandparent on a call or a
+  toy that talks back cannot sit beside a work call, so the page no longer suggests one there. "Water and a brush"
+  is fold 4's slate painting. Kheelu talks, so its line now says "for those stretches", the ones when you can listen
+  with half an ear.
 - The page ends on the plain things, not the product.
 
 ---
@@ -312,8 +329,8 @@ As Home: **₹499`{price-source}` today** · **refundable · ₹4,999`{price-sou
 | An H2 with the primary or a close variant | Yes | Fold 2 H2; fold 6 H2 "Screen-free activities for a 3-year-old at home" carries the secondary |
 | The §5.2 H2 ("Ten-second setups") | Yes | Fold 4 |
 | Single ages in headings | Yes | "3-year-old" (fold 6); "5, 6 or 7-year-old" (fold 7) |
-| Alt text describes the image | Yes | The paper-crown photo; no keyword forced |
-| Density | Yes | "screen-free activities" 3 times in `<main>` (H1, fold 2 H2, fold 6 H2): about 1% of about 600 words; "Kheelu" 3 times including the close and its button (0.5%) |
+| Alt text describes the image | Yes | The dragon-drawing photo as it is, Kheelu named; no keyword forced |
+| Density | Yes | "screen-free activities" 3 times in `<main>` (H1, fold 2 H2, fold 6 H2): about 1% of about 620 words; "Kheelu" 3 times including the close and its button (0.5%) |
 | Words never placed | Yes | No brain or speech lines, no "tutor" or "lessons", no brand names, no price in the body |
 
 ## CTA tracking values
@@ -347,8 +364,41 @@ None.
 | Kheelu: screen-free plush toy, ages 3 to 7, answers then asks a question back | [facts, identity](../../product/facts.md#identity), [age](../../product/facts.md#age); [D017](../../decisions/D017-live-behaviour-claims-confirmed.md); [claims §1](../../product/claims.md#1-confirmed-by-the-founder) |
 | Not a toy for children under 3 | [facts, age](../../product/facts.md#age); [content boundary](../content-boundary.md); as on the [learning-toys guide](story-learning-toys-for-a-three-year-old.md#fold-12--where-kheelu-fits-the-one-in-text-product-link) |
 | A grown-up nearby at 3 | [D041](../../decisions/D041-gate-a-round-1.md) ("Age 3" row) |
-| Set-ups, jobs, ideas by age, the work-day advice | Plain advice in our voice (no research claim); safety choices noted under folds 4 and 6 |
+| Set-ups, jobs, ideas by age, the work-day advice (quiet set-ups during a call, talking ones for later) | Plain advice in our voice (no research claim); safety choices noted under folds 4 and 6; the work-day split under fold 9 (CMO M13) |
 | Card title and summary, related list, dates | `src/content/en-IN/stories/articles/busy-hands-no-screens.ts` (stub); [stories §2](stories.md#fold-2--screen-time-screen-time) card 5; live dates `src/lib/stories-expansion.ts:259-260` |
 | Close block, price sentence, sticky bar | [home, CTA block](home.md#cta-block) and [phone sticky bar](home.md#phone-sticky-bar) sources ([D028](../../decisions/D028-price-wording.md), [D041](../../decisions/D041-gate-a-round-1.md), [D023](../../decisions/D023-new-order-delivery.md), [D021](../../decisions/D021-returns-policy.md), [D032](../../decisions/D032-grievance-block-and-call-line.md)) |
 | Cut live lines | `src/lib/stories-expansion.ts:269-272` (unsourced claims and a promise) |
-| Photo | DS `03-cast.md:115` (Ira 04, "Confidence and creativity"); file checked by eye 2026-10-14 |
+| Photo | DS `03-cast.md:113` (Ira 02, "Creativity and imagination, web hero"; Ira is 5, `03-cast.md:11`); task 5.20's screen-time pool ([tasks](../../engineering/tasks.md), 5.20); used on no other page ([assets §1](../../engineering/assets.md#1-design-system-assets-used-by-the-approved-pages)); file checked by eye 2026-10-14 |
+
+## Changes after approval (task 5.20a)
+
+The CMO approved this page in round 1 with four minor fixes for it
+([CMO review, 5.17](../../qa/cmo-review-articles-5.17-2026-10-14.md): M13, M14, M15, M16). Task 5.20a applied them,
+and nothing else in the Copy blocks changed. No research statement was added or changed.
+
+1. **Fold 9, the work-day advice (M13).** Was one paragraph: "For the stretches you can't be interrupted, set the
+   activity up in the room where you work, and add something that talks: a story, told or played aloud, in your home
+   language, or a grandparent on a voice call." Now two, in the CMO's words: "… pick a quiet activity and set it up in the
+   room where you work: water and a brush, dough, crayons on a roll of paper." and "Save the ones that talk (a story
+   played aloud, a grandparent on a voice call) for the stretches when you can listen with half an ear." The product line
+   after them now reads "… is one more screen-free option for those stretches: …" (rest unchanged). Why: the page's own
+   scene is a parent whose call starts in ten minutes; something that talks beside a work call is the one thing that
+   parent cannot have. "In your home language" went with the old sentence, as the CMO's fix has it. One word differs
+   from the CMO's text: "a quiet activity" for "a quiet one", because "one" straight after "the stretches" can read as a
+   quiet stretch. Split into two paragraphs for the phone (one idea each).
+2. **Fold 4, the first set-up (M14).** Was: "a cup of water and a paintbrush, to "paint" the floor tiles". Now: "… to
+   "paint" an old slate". Why: water on floor tiles is a slip waiting to happen at 3; the slate dries and starts again.
+   The "What changed from the live article" paragraph and fold 4's note follow.
+3. **Fold 2, the answer (M15).** Was: "… and stories told or played aloud." Now: "… and stories played aloud." Why: the
+   answer lists things that "need no grown-up to run them", and a told story needs a teller. The answer is 53 words
+   (was 55), inside 40 to 60.
+4. **Fold 1, the head photo and its alt (M16).** Was the paper-crown photo (`ira-04`), which also heads the tantrums
+   guide, whose related list sends readers here, with a different alt there. Now `ira-02-drawing-the-dragon`, with its
+   own alt. Why: M16 asked for a head that no linked guide shares. The CMO suggested `myra-04`, but task 5.20 moves the
+   screen-time guides off the no-Kheelu set (`-04`, `-05`), which the talking guides need, onto a pool of unused photos
+   with Kheelu ([tasks](../../engineering/tasks.md), 5.20). From that pool, `ira-02` shows one of this page's own set-ups
+   (crayons on a big sheet on the floor) with Kheelu as one more thing in the room; Ira is 5, so the page's age-3 line
+   needs no grown-up in frame. The pool's 3-year-old photo (`myra-02`) shows Myra alone with Kheelu, which this page's
+   age-3 line rules out (voice rule 17). The photo is 16:9, so the head takes the wide layout.
+5. **Notes kept true:** read time about 620 words (3 min, unchanged); the answer's word count; the keyword table's alt
+   and density rows; the Sources table's work-day and Photo rows; the front matter's sources.

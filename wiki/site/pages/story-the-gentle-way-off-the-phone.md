@@ -19,7 +19,9 @@ sources:
   - ../../decisions/D013, D015, D016, D017, D025, D026, D041
   - "src/content/en-IN/stories/articles/the-gentle-way-off-the-phone.ts (stub: card, related, dates), read in the w5c-5.17 worktree 2026-10-14"
   - "src/lib/stories-expansion.ts:67-90 (the live article, legacy input only), read in the same worktree"
-  - design-system/project/01-writing.md:19-26,33,111-113; 03-cast.md:120 (read-only)
+  - design-system/project/01-writing.md:19-26,33,111-113; 03-cast.md:9-13, 79-81, 117 (read-only)
+  - ../../qa/cmo-review-articles-5.17-2026-10-14.md (M11, M12, M16; applied by task 5.20a, see the foot of this page)
+  - ../../engineering/tasks.md (5.20, the screen-time photo pool) and ../../engineering/assets.md (§1, the pool photos' other uses)
 ---
 
 # Story: The gentle way off the phone
@@ -91,11 +93,15 @@ age limits; the author byline becomes "The Kheelona team" (question 1).
   card lands on its words and the search term sits in the one H1 (question 2).
 - **Lead:** the hub card's summary, word for word.
 - Breadcrumb links: "Stories" → `/stories`; "Screen time" → `/stories#screen-time` (from `topics.ts`).
-- **Read time:** about 650 words in the article body.
-- **Image** (`head.image`, `kh-photo`, 4:5): `tara-04-reading-nook-web.webp`. Alt: "A girl in a coral kurta sits
-  cross-legged in a cushioned window nook, absorbed in reading a picture book aloud." The DS photo for "reading"
-  (`03-cast.md:120`), no Kheelu: the plan replaces a screen slot with a book. No name or age in the alt (the cast is
-  illustrative). File checked by eye 2026-10-14.
+- **Read time:** about 660 words in the article body.
+- **Image** (`head.image`, `kh-photo`, 4:5): `tara-01-naming-feelings-web.webp`. Alt: "A curly-haired girl in denim
+  dungarees sits on a wooden floor by a sunlit window lined with potted plants, Kheelu in her lap, touching its nose
+  with one finger." The DS photo for "Feelings" and hero shots (`03-cast.md:117`), with Kheelu: a calm, quiet moment
+  at home with no screen in sight, for the plan whose aim is a week without fights. The child is the cast's 5½-year-old
+  (`03-cast.md:12`), so no grown-up is needed in frame (the page's age-3 line; voice rule 17). It is from task 5.20's
+  screen-time pool and heads no other page ([assets §1](../../engineering/assets.md#1-design-system-assets-used-by-the-approved-pages)).
+  No name or age in the alt (the cast is illustrative); the light on Kheelu is not described (D018). File checked by
+  eye 2026-10-14.
 
 ---
 
@@ -224,9 +230,12 @@ age limits; the author byline becomes "The Kheelona team" (question 1).
 >
 > Tell your child what changed, in the language you speak at home: mornings are for songs now, the car is for spotting autos, dinner is for talking.
 >
-> Say it the same way every time, so it sounds like a rule, not a mood. And keep the rule yourself: the American Academy of Pediatrics suggests parents set their phones to "do not disturb" at those times.²
+> Say it the same way every time, so it sounds like a rule, not a mood. And keep the rule yourself: at meals and at playtime together, the American Academy of Pediatrics suggests parents set their phones to "do not disturb".²
 
-- The marker covers the AAP's "Parents can set a 'do not disturb' option on their phones during these times."
+- The marker covers the AAP's "Parents can set a 'do not disturb' option on their phones during these times." The
+  AAP's "these times" are the ones its sentence before names: mealtimes and parent–child playtimes (bedrooms are a
+  place). So the line names meals and playtime together, not the mornings and the car of the line above, which are our
+  own advice (CMO M11; excerpt `C33-aap-2016-media-and-young-minds.md:66-67`).
 
 ---
 
@@ -240,11 +249,14 @@ age limits; the author byline becomes "The Kheelona team" (question 1).
 >
 > Some days will slip: a long journey, a sick day, a deadline. It happens. Go back to your list and pick up where you stopped.
 >
-> Look at what your slots needed in the end: something to do, and someone to answer.
+> Look at what your slots needed in the end: something to do, and someone to talk to, whether that is you, a grandparent or a sibling.
 >
 > For the slots where your hands are full, [Kheelu](https://kheelona.com/products/kheelu) is one screen-free option. It is a plush toy for ages 3 to 7 that answers your child, then asks a question back, and you can read every conversation in the parent app. It is not a toy for children under 3. If your child is 3, keep a grown-up nearby while they play.
 
 - Link target `/products/kheelu` (the page's one in-text product link, [strategy §3.3](../strategy.md#33-placement-and-repetition)).
+- "Someone to talk to" names the people a slot needs (you, a grandparent, a sibling) before the product line, so the
+  toy that "answers your child" is never read as the someone the slot was missing (CMO M12; voice rule 8, the parent
+  stays central).
 - "Answers your child, then asks a question back" is D017's form, said the same way everywhere (CMO review S6).
   "Read every conversation in the parent app" keeps the parent in charge (D017). "Where your hands are full" sits
   beside "keep a grown-up nearby", so nothing suggests leaving a child alone with the toy.
@@ -324,8 +336,8 @@ As Home: **₹499`{price-source}` today** · **refundable · ₹4,999`{price-sou
 | Primary in an answer-first block in the first ~100 words | Yes | Fold 2 H2 "How do I reduce my child's screen time?" (close variant, the ST6 question) and its 56-word answer |
 | An H2 with the primary or a close variant | Yes | Fold 2 H2 |
 | The §5.2 H2 ("Day one") | Yes, adapted | "Days 1 and 2: …", "Days 3 and 4: …", "Days 5 and 6: …", "Day 7: …" (numerals, DS `01-writing.md:23`) |
-| Alt text describes the image | Yes | The reading-nook photo, no keyword forced |
-| Density | Yes | "reduce screen time" once in `<main>` (H1) plus the close variant in the fold 2 H2: about 0.9% of about 650 words; "Kheelu" 3 times including the close and its button (0.5%) |
+| Alt text describes the image | Yes | The naming-feelings photo as it is, Kheelu named; no keyword forced |
+| Density | Yes | "reduce screen time" once in `<main>` (H1) plus the close variant in the fold 2 H2: about 0.9% of about 660 words; "Kheelu" 3 times including the close and its button (0.5%) |
 | Secondary "stop mobile addiction in a child" | Not placed, on purpose | DS `01-writing.md:33` says "screen-free", never "screen addiction" ("Don't shame parents"); the page answers the same intent in the answer block |
 | Words never placed | Yes | No countdown or warning tip (C35), no "addiction" or "detox", no brain or speech lines, no app or competitor brand names, no price in the body |
 
@@ -365,7 +377,7 @@ None.
 |---|---|
 | IAP: at most one hour of supervised screen time a day for 24 to 59 months, sessions supervised; under two hours a day for 5 to 10, including screen time for school and extra-curricular assignments; "the lesser, the better" in both | [source verification C32](../../research/source-verification.md#c32--the-indian-academy-of-pediatrics) (SUPPORTED-WITH-REWORDING, EXTERNAL); excerpt `raw/research/sources/C32-iap-2022-screen-time-digital-wellness.md:30-34, 44-49, 53-56` |
 | IAP: "Do not use screen media during meals, within one hour before sleep, or during surface travel" (24 to 59 months) | excerpt `C32-iap-2022-screen-time-digital-wellness.md:51` (p. 239, item 2) |
-| AAP: "Keep bedrooms, mealtimes, and parent–child playtimes screen free for children and parents"; "Parents can set a 'do not disturb' option on their phones during these times" | [source verification C33](../../research/source-verification.md#c33--the-american-academy-of-pediatrics); excerpt `C33-aap-2016-media-and-young-minds.md:66-68` (Recommendations: Families; the statement covers ages 0 to 5, line 12) |
+| AAP: "Keep bedrooms, mealtimes, and parent–child playtimes screen free for children and parents"; "Parents can set a 'do not disturb' option on their phones during these times" (fold 8 names those times: meals and playtime together, CMO M11) | [source verification C33](../../research/source-verification.md#c33--the-american-academy-of-pediatrics); excerpt `C33-aap-2016-media-and-young-minds.md:66-68` (Recommendations: Families; the statement covers ages 0 to 5, line 12) |
 | No countdown tip; the natural-break line kept as plain advice | [source verification C35](../../research/source-verification.md#c35--tantrums-at-the-off-switch) ("Never a countdown tip"); excerpt `C35-hiniker-2016-screen-time-tantrums.md:48-49` |
 | Kheelu: screen-free plush toy, ages 3 to 7, answers then asks a question back | [facts, identity](../../product/facts.md#identity), [age](../../product/facts.md#age); [D017](../../decisions/D017-live-behaviour-claims-confirmed.md); [claims §1](../../product/claims.md#1-confirmed-by-the-founder) |
 | Parents read every conversation in the parent app | [claims §1](../../product/claims.md#1-confirmed-by-the-founder) ([D017](../../decisions/D017-live-behaviour-claims-confirmed.md)); [facts, parent app](../../product/facts.md#parent-app) |
@@ -374,4 +386,28 @@ None.
 | Card title and summary, related list, dates | `src/content/en-IN/stories/articles/the-gentle-way-off-the-phone.ts` (stub); [stories §2](stories.md#fold-2--screen-time-screen-time) card 4; live dates `src/lib/stories-expansion.ts:74-75` |
 | Close block, price sentence, sticky bar | [home, CTA block](home.md#cta-block) and [phone sticky bar](home.md#phone-sticky-bar) sources ([D028](../../decisions/D028-price-wording.md), [D041](../../decisions/D041-gate-a-round-1.md), [D023](../../decisions/D023-new-order-delivery.md), [D021](../../decisions/D021-returns-policy.md), [D032](../../decisions/D032-grievance-block-and-call-line.md)) |
 | Cut live lines | `src/lib/stories-expansion.ts:82-88` (unsourced generalisations; "genuinely", DS `01-writing.md:26`) |
-| Photo | DS `03-cast.md:120` (Tara 04, "Reading and school readiness"); file checked by eye 2026-10-14 |
+| Photo | DS `03-cast.md:117` (Tara 01, "Feelings … hero shots"; Tara is 5½, `03-cast.md:12`); task 5.20's screen-time pool ([tasks](../../engineering/tasks.md), 5.20); used on no other page ([assets §1](../../engineering/assets.md#1-design-system-assets-used-by-the-approved-pages)); file checked by eye 2026-10-14 |
+
+## Changes after approval (task 5.20a)
+
+The CMO approved this page in round 1 with three minor fixes for it
+([CMO review, 5.17](../../qa/cmo-review-articles-5.17-2026-10-14.md): M11, M12, M16). Task 5.20a applied them,
+and nothing else in the Copy blocks changed. No new research statement was added.
+
+1. **Fold 8, the "do not disturb" line (M11).** Was: "… the American Academy of Pediatrics suggests parents set their
+   phones to "do not disturb" at those times.²" Now: "… at meals and at playtime together, the American Academy of
+   Pediatrics suggests parents set their phones to "do not disturb".²" Why: "those times" pointed back to mornings, the
+   car and dinner, but the AAP's "during these times" means mealtimes and parent–child playtimes
+   (`C33-aap-2016-media-and-young-minds.md:66-67`). Same source and marker; the line now says only what the source says.
+2. **Fold 9, the sentence before the product line (M12).** Was: "… something to do, and someone to answer." Now:
+   "… something to do, and someone to talk to, whether that is you, a grandparent or a sibling." Why: read straight into
+   "Kheelu … answers your child", the old line made the toy the someone the slot needed (voice rule 8: the parent stays
+   central). The product line after it is unchanged.
+3. **Fold 1, the head photo and its alt (M16).** Was the reading-nook photo (`tara-04`), which also heads the
+   screen-time-by-age guide this page links to (fold 4), with a different alt there. Now `tara-01-naming-feelings`, with
+   its own alt. Why: M16 asked for a head that no linked guide shares. The CMO suggested `kabir-04`, but task 5.20 moves
+   the screen-time guides off the no-Kheelu set (`-04`, `-05`), which the talking guides need, onto a pool of unused
+   photos with Kheelu ([tasks](../../engineering/tasks.md), 5.20). From that pool, `tara-01` fits a calm, gentle plan; Tara
+   is 5½, so the page's age-3 line needs no grown-up in frame. The photo is still 4:5, so the head keeps its layout.
+4. **Notes kept true:** read time about 660 words (3 min, unchanged); the keyword table's alt and density rows; the
+   Sources table's AAP and Photo rows; the front matter's sources.
