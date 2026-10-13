@@ -749,7 +749,7 @@ proven red); every page passes. Found once on `/privacy`: a Report-Only report f
 New founder questions from the batch 6b merge: **G16** (the Karnataka seal), **G17** (refund timing wording), **G18**.
 **M2 closes wave 6.** Next: wave 7 (task 6.3, clean-up and dependency retirement).
 
-## [2026-10-14 05:12] agent | Wave 7 launched: task 6.3 (clean-up and dependency retirement), base `3e79c43`
+## [2026-10-14 05:12] agent | Wave 7 launched (run wf_1dbdd8e9-45e): task 6.3, clean-up and dependency retirement, base `4fa8626`
 One builder, risk high (deletions across `src/`, `package.json` and the lockfile), with the two follow-up lists under
 6.3 (wave 6 batch and batch 6b). Packages retired by name only (`npm uninstall <name>`, the lockfile diff read; the
 registry is reachable, so `npm audit` runs); frozen checkout files and contract fixtures untouched. Ports 3560/6190.

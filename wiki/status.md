@@ -14,7 +14,7 @@ founder asked for the full website with animation on **betawebsite.kheelona.com*
 After the build: Phase 6 QA, push `beta`, founder runbook (architecture §15.4), **Gate B** on beta, merge to `main`.
 **Account:** apoorva@kheelona.com (since 00:00 2026-10-14). **Branch:** `reset/website-v2`, not pushed.
 **RESUME FROM [build runbook](engineering/build-runbook.md) §4.** **Waves 1-4 closed** (verify 4570 tests; e2e red only on
-`/stories/*` until wave 5, ruled). **Wave 5 closed at M1** (2026-10-14: full `verify:e2e` ruled; V7, V8; JS budget re-based on Lighthouse 92-98 mobile; see log). **Wave 6 closed at M2** (2026-10-14: batches `cb55153` and 6b; verify 5983 tests; `verify:e2e` 1485 passed after one flaky test made robust; Lighthouse ≥ 90 on every page, see log). **Wave 7 running** (6.3 clean-up, base `3e79c43`); then 7.1 QA, 7.2 beta, 7.3 Gate B.
+`/stories/*` until wave 5, ruled). **Wave 5 closed at M1** (2026-10-14: full `verify:e2e` ruled; V7, V8; JS budget re-based on Lighthouse 92-98 mobile; see log). **Wave 6 closed at M2** (2026-10-14: batches `cb55153` and 6b; verify 5983 tests; `verify:e2e` 1485 passed after one flaky test made robust; Lighthouse ≥ 90 on every page, see log). **Wave 7 running** (6.3 clean-up, run `wf_1dbdd8e9-45e`, base `4fa8626`); then 7.1 QA, 7.2 beta, 7.3 Gate B.
 **Incident 2026-10-12:** a push meant for `beta` landed on `main` (`24e92e3`, vercel.json only; production
 healthy; [lessons](engineering/lessons.md)). `beta` exists on GitHub (builds nothing yet); **beta domains attached to branch `beta`** (founder, done).
 **Done before wave 1:** dev tools pinned (Playwright 1.63.0, axe 4.12.1, Lighthouse 13.4.1, jscpd 5.3.2,
