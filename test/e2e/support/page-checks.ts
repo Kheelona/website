@@ -33,12 +33,18 @@ function walk(node: Json, visit: (o: { [k: string]: Json }) => void): void {
   }
 }
 
+/** A space before closing punctuation or a source marker ("[1]"). htmlToText puts a space where every tag was, inline
+ *  ones too, so a marker or a link reads "skills. [1] Kheelu" and "this page ." where the browser and the JSON-LD say
+ *  "skills.[1] Kheelu" and "this page."; it is dropped on both sides of the comparison (task 4.6). */
+const SPACE_BEFORE_PUNCTUATION = /\s+(?=[.,;:!?)\]…]|\[\d+\])/g;
+
 const norm = (s: string) =>
   s
     .replace(/[’‘]/g, "'")
     .replace(/[“”]/g, '"')
     .replace(/[   ]/g, " ")
     .replace(/\s+/g, " ")
+    .replace(SPACE_BEFORE_PUNCTUATION, "")
     .trim()
     .toLowerCase();
 
