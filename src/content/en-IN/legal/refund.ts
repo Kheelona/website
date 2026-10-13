@@ -47,9 +47,9 @@ const BANK = `your bank takes {nowrap:${BANK_REFUND_WORKING_DAYS}} working days`
 const FAULTY = { question: "Faulty or not as described?", answer: "You can have a replacement or a full refund." } as const;
 
 /**
- * Part 1's balance paragraph. A reservation's total is the launch price (refund.md section 1, `LAUNCH_PRICE`), which
- * `{price:headline}` names only while reservations are open; once the store sells at the full price, existing
- * reservations still owe their balance, so that mode leaves the total out rather than name the full price as it.
+ * Part 1's balance paragraph. A reservation's total is the launch price (refund.md section 1, `LAUNCH_PRICE`): once the
+ * store sells at the full price, existing reservations still owe the rest of it, so the paragraph names it as
+ * `{price:launch}` (the launch price in both modes; `{price:headline}` follows the mode) and reads true in both (4.7).
  */
 const BALANCE_TERMS =
   "is due before delivery, by a payment link we send on WhatsApp and by email. Not paying it counts as a cancellation, and we treat it exactly like one: we ask you twice over two weeks, and if we don’t hear from you, we release your Kheelu and refund your {price:token} in full. Nothing is ever charged automatically.";
@@ -125,10 +125,7 @@ export const refundPage = {
         { kind: "h3", text: "If you don’t pay the balance" },
         {
           kind: "p",
-          text: {
-            token: `On a reservation, the remaining {price:balance} of the {price:headline} price (incl. GST) ${BALANCE_TERMS}`,
-            full: `On a reservation, the remaining {price:balance} (incl. GST) ${BALANCE_TERMS}`,
-          },
+          text: `On a reservation, the remaining {price:balance} of the {price:launch} price (incl. GST) ${BALANCE_TERMS}`,
         },
         { kind: "h3", text: "If the date moves, or we can’t deliver" },
         {

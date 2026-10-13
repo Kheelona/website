@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { Meta, Offer } from "@/content/types";
 import { pageMeta, type PageMetaInput } from "./metadata";
 
-const prices = { token: "₹499", balance: "₹4,500", full: "₹7,999", mrp: "₹7,999" };
+const prices = { token: "₹499", balance: "₹4,500", full: "₹7,999", mrp: "₹7,999", launch: "₹4,999" };
 const tokenOffer: Offer = {
   mode: "token",
   headlinePaise: 499_900,

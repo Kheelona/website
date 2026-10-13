@@ -7,7 +7,7 @@ import { RichText } from "./RichText";
 const offer: Offer = {
   mode: "token",
   headlinePaise: 499_900,
-  prices: { token: "₹499", balance: "₹4,500", headline: "₹4,999", full: "₹7,999", mrp: "₹7,999" },
+  prices: { token: "₹499", balance: "₹4,500", headline: "₹4,999", full: "₹7,999", mrp: "₹7,999", launch: "₹4,999" },
   sentence: "",
   sticky: { big: "", small: "" },
   card: { product: "Kheelu", priceNote: "incl. GST", perks: { home: [], product: [] } },

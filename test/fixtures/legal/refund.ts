@@ -113,7 +113,7 @@ export const refundFixture = {
         },
         {
           kind: "p",
-          text: "On a reservation, the remaining {price:balance} of the {price:headline} price (incl. GST) is due before delivery, by a payment link we send on WhatsApp and by email. Not paying it counts as a cancellation, and we treat it exactly like one: we ask you twice over two weeks, and if we don’t hear from you, we release your Kheelu and refund your {price:token} in full. Nothing is ever charged automatically.",
+          text: "On a reservation, the remaining {price:balance} of the {price:launch} price (incl. GST) is due before delivery, by a payment link we send on WhatsApp and by email. Not paying it counts as a cancellation, and we treat it exactly like one: we ask you twice over two weeks, and if we don’t hear from you, we release your Kheelu and refund your {price:token} in full. Nothing is ever charged automatically.",
         },
         {
           kind: "h3",

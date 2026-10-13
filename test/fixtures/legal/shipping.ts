@@ -81,7 +81,7 @@ export const shippingFixture = {
       {
         icon: "currency-inr",
         title: "Reserved with the refundable {price:token}?",
-        body: "Before dispatch, we send a payment link for the remaining {price:balance} of the {price:headline} price (incl. GST).",
+        body: "Before dispatch, we send a payment link for the remaining {price:balance} of the {price:launch} price (incl. GST).",
       },
       {
         icon: "arrow-counter-clockwise",
@@ -126,7 +126,7 @@ export const shippingFixture = {
       blocks: [
         {
           kind: "p",
-          text: "If you reserved with the refundable {price:token} advance, the remaining {price:balance} of the {price:headline} price (incl. GST) is due before delivery. When your Kheelu is ready to leave us, we send you a payment link on WhatsApp and by email. Pay it by UPI, card or net banking, and your Kheelu is dispatched.",
+          text: "If you reserved with the refundable {price:token} advance, the remaining {price:balance} of the {price:launch} price (incl. GST) is due before delivery. When your Kheelu is ready to leave us, we send you a payment link on WhatsApp and by email. Pay it by UPI, card or net banking, and your Kheelu is dispatched.",
         },
         {
           kind: "p",

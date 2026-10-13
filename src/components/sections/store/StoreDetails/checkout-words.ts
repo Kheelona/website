@@ -17,7 +17,8 @@ import { parseRichText } from "@/lib/content/rich-text";
  * - `{price:headline}` the launch price the advance counts toward (LAUNCH_PRICE in both modes: the full-mode small
  *   print names the launch price the first units went at, store.md fold 4);
  * - `{price:full}` the full price; in full mode, what this order pays today (`amountLabel`);
- * - `{price:mrp}` the money block's MRP.
+ * - `{price:mrp}` the money block's MRP;
+ * - `{price:launch}` a reservation's total, LAUNCH_PRICE in both modes (task 4.7; the headline here already is).
  */
 export function checkoutPrices(mode: OfferMode, amountLabel: string, balanceLabel: string): Readonly<Record<PriceKey, string>> {
   return {
@@ -26,6 +27,7 @@ export function checkoutPrices(mode: OfferMode, amountLabel: string, balanceLabe
     headline: LAUNCH_PRICE,
     full: mode === "full" ? amountLabel : FULL_PRICE,
     mrp: MRP_PRICE,
+    launch: LAUNCH_PRICE,
   };
 }
 

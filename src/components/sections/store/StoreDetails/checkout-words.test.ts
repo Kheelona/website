@@ -14,6 +14,7 @@ describe("checkoutPrices", () => {
       headline: LAUNCH_PRICE,
       full: FULL_PRICE,
       mrp: MRP_PRICE,
+      launch: LAUNCH_PRICE,
     });
   });
 
@@ -24,6 +25,7 @@ describe("checkoutPrices", () => {
       headline: LAUNCH_PRICE,
       full: "₹7,999",
       mrp: MRP_PRICE,
+      launch: LAUNCH_PRICE,
     });
   });
 });
@@ -43,7 +45,14 @@ describe("checkoutWords", () => {
     expect(() => checkoutWords("{nowrap:soon}", prices)).toThrow(/words and amounts only/);
   });
 
-  it("refuses broken syntax as the content parser does", () => {
-    expect(() => checkoutWords("{price:launch}", prices)).toThrow();
+  it("refuses broken syntax as the content parser does (an unknown price key)", () => {
+    expect(() => checkoutWords("{price:deposit}", prices)).toThrow(/Unknown price/);
+  });
+
+  /* Task 4.7 item 2: the content's sixth amount, the launch price a reservation's total stays at, is the money block's
+     launch price for an order in either mode, as the headline here already is. */
+  it("fills {price:launch} with the money block's launch price in both modes", () => {
+    expect(checkoutWords("{price:launch}", prices)).toBe(LAUNCH_PRICE);
+    expect(checkoutWords("{price:launch}", checkoutPrices("full", "₹7,999", BALANCE_PRICE))).toBe(LAUNCH_PRICE);
   });
 });

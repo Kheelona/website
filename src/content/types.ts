@@ -15,7 +15,7 @@ import type { PreorderMode } from "@/lib/store/mode";
 /**
  * A content string in the one inline syntax (architecture §6.2): `{hand:…}`,
  * `{mark:…}`, `{nowrap:…}`, `[label](href)`, `[^1]`, `{price:token|balance|
- * headline|full|mrp}`, `{delivery}` and `{ph:ID note}`. Parsed by
+ * headline|full|mrp|launch}`, `{delivery}` and `{ph:ID note}`. Parsed by
  * src/lib/content/rich-text.ts, rendered by `ui/RichText`, and turned into the
  * exact visible text by src/lib/content/plain-text.ts. Never a typed rupee amount.
  */
@@ -44,8 +44,10 @@ export type IsoDate = `${number}-${number}-${number}`;
 
 /* ── The offer (ADR-005) ──────────────────────────────────────────────────── */
 
-/** The amounts a content string may name, as `{price:<key>}`. */
-export type PriceKey = "token" | "balance" | "headline" | "full" | "mrp";
+/** The amounts a content string may name, as `{price:<key>}`. `headline` follows the mode (LAUNCH, then FULL);
+ *  `launch` is LAUNCH in both modes: a reservation's total, which a reservation made while the advance was open still
+ *  owes after the store sells at the full price (task 4.7). */
+export type PriceKey = "token" | "balance" | "headline" | "full" | "mrp" | "launch";
 
 /** The phone buy bar's two lines: the amount line and the note under it. */
 export interface OfferSticky {
@@ -92,7 +94,8 @@ export interface Offer {
   readonly headlinePaise: number;
   /** Formatted amounts for `{price:…}`, each `formatInr` of a paise constant:
    *  token (TOKEN), balance (BALANCE), headline (LAUNCH in token mode, FULL in
-   *  full mode), full (FULL) and mrp (MRP, its own value per D034). */
+   *  full mode), full (FULL), mrp (MRP, its own value per D034) and launch
+   *  (LAUNCH in both modes: a reservation's total). */
   readonly prices: Readonly<Record<PriceKey, string>>;
   /** The D028 price sentence for this mode (it may carry price tokens). */
   readonly sentence: RichTextString;

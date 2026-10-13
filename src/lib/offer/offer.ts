@@ -29,7 +29,8 @@ export function headlinePaise(mode: OfferMode): number {
   }
 }
 
-/** The five amounts a content string may name as `{price:…}`. */
+/** The six amounts a content string may name as `{price:…}`. `launch` is LAUNCH in both modes (task 4.7): a
+ *  reservation's total, which a reservation still owes the rest of after the headline has moved to FULL. */
 export function offerPrices(mode: OfferMode): Readonly<Record<PriceKey, string>> {
   return {
     token: formatInr(TOKEN_AMOUNT_PAISE),
@@ -37,6 +38,7 @@ export function offerPrices(mode: OfferMode): Readonly<Record<PriceKey, string>>
     headline: formatInr(headlinePaise(mode)),
     full: formatInr(FULL_AMOUNT_PAISE),
     mrp: formatInr(MRP_AMOUNT_PAISE),
+    launch: formatInr(LAUNCH_AMOUNT_PAISE),
   };
 }
 

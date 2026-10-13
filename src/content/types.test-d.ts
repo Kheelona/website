@@ -98,7 +98,7 @@ export const oneSticky: OfferCopy["sticky"] = { big: "{price:token} today", smal
 export const offer = {
   mode: "token",
   headlinePaise: 499_900,
-  prices: { token: "a", balance: "b", headline: "c", full: "d", mrp: "e" },
+  prices: { token: "a", balance: "b", headline: "c", full: "d", mrp: "e", launch: "f" },
   sentence: offerCopy.sentence.token,
   sticky: offerCopy.sticky.token,
   card: { product: "Kheelu", priceNote: "incl. GST", split: offerCopy.card.split, perks: offerCopy.card.perks },
@@ -118,10 +118,10 @@ export const fullOffer = {
 } satisfies Offer;
 
 // @ts-expect-error the offer has no such price
-export const unknownPrice: Offer["prices"] = { token: "a", balance: "b", headline: "c", full: "d", mrp: "e", tax: "f" };
+export const unknownPrice: Offer["prices"] = { token: "a", balance: "b", headline: "c", full: "d", mrp: "e", launch: "f", tax: "g" };
 // @ts-expect-error there is no third mode
 export const thirdMode: Offer["mode"] = "sold-out";
-// @ts-expect-error a split row names one of the offer's five amounts, never a typed one
+// @ts-expect-error a split row names one of the offer's six amounts, never a typed one
 export const unknownSplit: OfferCard["split"] = [{ label: "Today, refundable", price: "deposit" }];
 // @ts-expect-error each placement has its own perks list, the product page's included
 export const homeOnly: OfferCard["perks"] = { home: homePerks };
