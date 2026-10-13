@@ -19,8 +19,8 @@ sources:
   - "test/guards/banned-phrases.data.ts (us-ize: no quoted 'recognize'); test/e2e/content-integrity.spec.ts:34 (UNDER_THREE: 'toddlers')"
   - "src/lib/stories-expansion.ts:43-66 (the live article; legacy file, input only), read in the w5c-5.17 worktree 2026-10-14"
   - "src/content/en-IN/stories/articles/screen-time-and-tantrums.ts (stub: card, related, dates); src/content/types.ts:356-469 and src/layouts/ArticleTemplate/ArticleTemplate.tsx (the blocks the template renders)"
-  - design-system/project/03-cast.md:12, 50, 92, 117 (tara-01, task 5.20a; was :115, ira-04); 01-writing.md:19-26 (read-only)
-  - "Task 5.20a fixes: ../../qa/cmo-review-articles-5.17-2026-10-14.md (M7, M8, M9, M10, M16; 'How the checks were run'); ../../engineering/tasks.md (5.20, the head-photo pools); ../../engineering/assets.md (photo uses)"
+  - design-system/project/03-cast.md:13, 53-58, 92, 124 (kabir-03, task 5.20a fix pass; was :115, ira-04, and in the first 5.20a draft :117, tara-01); 01-writing.md:19-26 (read-only)
+  - "Task 5.20a fixes: ../../qa/cmo-review-articles-5.17-2026-10-14.md (M7, M8, M9, M10, M16; 'How the checks were run'); ../../qa/cmo-review-article-fixes-5.20a-2026-10-14.md (N1, N2: the head photo and its alt); ../../engineering/tasks.md (5.20, the head-photo pools); ../../engineering/assets.md (photo uses)"
 ---
 
 # Story: Screen time and tantrums: what is actually happening
@@ -90,14 +90,17 @@ against the study, the second has no source.
 - Breadcrumb: "Stories" → `/stories`; "Screen time" → `/stories#screen-time`.
 - **Read time:** about 490 words in `<main>` before the sources and close (about 470 before task 5.20a); still
   2 minutes.
-- **Image** (after the lead, `kh-photo`, 4:5): `tara-01-naming-feelings-web.webp`. Alt: "A girl in denim
-  dungarees sits cross-legged on a wooden floor by a window lined with plants, touching Kheelu's nose with one
-  finger." DS: "Feelings" (`03-cast.md:117`); Tara is the cast's child for naming big feelings out loud
-  (`03-cast.md:50`), the page's subject, and she is 5½ (`03-cast.md:12`), not the 3-year-old cast, so no
-  grown-up is needed in frame (tasks.md 5.20). A quiet, ordinary moment with Kheelu as
-  one toy in the room; nothing in the photo or the alt says the toy calms a child or ends a tantrum. Task 5.20a
-  (CMO M16): from the 5.20a pool; used on no other page (assets.md), and on no page this guide links to. File
-  checked by eye 2026-10-14. No name or age in the alt; Kheelu's light is not described (D018).
+- **Image** (after the lead, `kh-photo`, 4:5): `kabir-03-homework-desk-web.webp`. Alt: "A boy in round glasses and
+  a white school shirt grins, one finger at his nose, as he writes in an exercise book at a wooden desk by a window,
+  Kheelu sitting at the far end of the desk." DS: "School readiness" (`03-cast.md:124`); Kabir is 6
+  (`03-cast.md:13`), not the 3-year-old cast, so no grown-up is needed in frame (tasks.md 5.20). The master is
+  9:16, so the head shows it in the DS 4:5 frame as a centred crop that keeps the boy's face, the book and Kheelu,
+  as the `tara-03` head on the hard-questions guide does (assets.md). An ordinary moment after the screen goes off,
+  which is the page's own advice, with Kheelu at the far end of the desk as one more thing in the room; nothing in
+  the photo or the alt says the toy calms a child or ends a tantrum. Task 5.20a fix pass (CMO N1, N2): from the
+  5.20a pool, the alt the CMO's word for word; it heads no other guide (assets.md), so no guide this one links to,
+  or that links here, shares it. File checked by eye 2026-10-14 and again at the fix pass. No name or age in the
+  alt; Kheelu's light is not described (D018).
 
 ---
 
@@ -301,8 +304,8 @@ None.
    gives every journal article one); (b) no product link, as on the late-talker guide. **Recommend (a)**:
    tantrums are not a health topic, and the line promises nothing about behaviour; (b) only if the founder
    reads it as selling to a parent at a hard moment. (Task 5.20a: the head photo now shows Kheelu, from the
-   5.20a pool. If the founder picks (b), the head goes back to a photo without Kheelu, so the page carries no
-   product at all.)
+   5.20a pool: at the far end of a homework desk, not in a calm child's arms, CMO fix pass N2. If the founder
+   picks (b), the head goes back to a photo without Kheelu, so the page carries no product at all.)
 
 **For QA before publishing:** re-read the University of Washington release and save the passage on routines
 and natural breaks to the C35 excerpt (it is in the verification's reading, source verification C35 caveat 6,
@@ -324,7 +327,7 @@ is still to be filed (CMO M9, the verifier's), with the autoplay passage if fold
 | Card title and summary, related list, published date | the stub module; [stories.md](stories.md) fold 2 (line 119); `src/lib/stories-expansion.ts:50` |
 | Cut lines | [source verification C35](../../research/source-verification.md#c35--tantrums-at-the-off-switch) caveats 1, 2, 5; no source for the live mechanism lines |
 | Close block, price sentence, sticky bar | [home, CTA block](home.md#cta-block) and [phone sticky bar](home.md#phone-sticky-bar) sources |
-| Photo | DS `03-cast.md:12, 50, 117` (tara-01; task 5.20a, CMO M16); file checked by eye 2026-10-14 |
+| Photo | DS `03-cast.md:13, 124` (kabir-03; task 5.20a, CMO M16 and fix pass N1, N2; the alt is the fix-pass review's); 9:16 master in the 4:5 head as a centred crop, as `tara-03` ([assets.md](../../engineering/assets.md)); file checked by eye 2026-10-14 |
 
 ## Changes after approval (task 5.20a)
 
@@ -337,7 +340,7 @@ is not yet filed. No new research statement was added.
 | 1 | Fold 6, product line | "Need something ready for that moment?" becomes "Looking for something to hand over when the screen goes dark?" | M8: after the tip "If tears come…", "that moment" read as the meltdown, so the line offered Kheelu to a crying child |
 | 2 | Fold 6, product line | Adds "It is not a toy for children under 3." before the grown-up line | M7 (the study's children were 1 to 5); [facts, age](../../product/facts.md#age), as the approved learning-toys guide. With row 1, the CMO's 54-word line |
 | 3 | At a glance, meta description | "Screen time tantrums: one study found a two-minute warning made children more upset. What helps instead, and how to make switching off boring." (142 characters; was 144) | M10: the old meta promised a "why" the page does not give |
-| 4 | Fold 1, head photo and alt | `ira-04-paper-crown` becomes `tara-01-naming-feelings`, with a new alt | M16 (this guide and the busy-hands guide, which it links to, shared a photo and had two alts for it); the 5.20a pool in [tasks.md 5.20](../../engineering/tasks.md); unused elsewhere ([assets.md](../../engineering/assets.md)); not the 3-year-old cast, so no grown-up is needed in frame |
+| 4 | Fold 1, head photo and alt | `ira-04-paper-crown` becomes `kabir-03-homework-desk` (the 9:16 master as a 4:5 centred crop), with the fix-pass review's alt | M16 (this guide and the busy-hands guide, which it links to, shared a photo and had two alts for it); the 5.20a pool in [tasks.md 5.20](../../engineering/tasks.md); unused elsewhere ([assets.md](../../engineering/assets.md)); not the 3-year-old cast, so no grown-up is needed in frame. The first fix-pass draft took `tara-01-naming-feelings`, which the gentle-way guide also took (the two link both ways, with two alts), and a calm child holding Kheelu at the head of a meltdown guide made feelings a reason to buy ([voice](../../brand/voice.md), row 7): [CMO fix pass](../../qa/cmo-review-article-fixes-5.20a-2026-10-14.md) N1 and N2 |
 | 5 | Not changed: fold 6's autoplay tip | Left without marker ² | M9's optional marker needs the release's autoplay passage, which is in no saved excerpt and no ready line ([source verification](../../research/source-verification.md) C35; [2026-10-14](../../research/source-verification-2026-10-14.md) does not cover C35). It can be added once the verifier files the excerpt M9 asks for |
 | 6 | Notes | Read time (about 490 words, still 2 minutes), the fold 1, 5 and 6 notes, keyword placements, question 2 (a note on the photo), the QA note, the sources table | So the page stays true |
 
@@ -345,5 +348,5 @@ is not yet filed. No new research statement was added.
 the sources list, related guides, the close and the sticky bar.
 
 **For the builder (same commit as this page):** the module follows the meta, fold 1 (photo import and alt) and
-fold 6's product line word for word. assets.md: add `tara-01-naming-feelings-web.webp` (head of this guide, 4:5)
-and take this guide off the `ira-04` row.
+fold 6's product line word for word. assets.md: add `kabir-03-homework-desk-web.webp` (head of this guide, 4:5
+centred crop of the 9:16 master) and take this guide off the `ira-04` row.

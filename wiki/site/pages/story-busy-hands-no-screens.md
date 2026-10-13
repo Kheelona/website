@@ -21,6 +21,7 @@ sources:
   - "src/lib/stories-expansion.ts:252-274 (the live article, legacy input only), read in the same worktree"
   - design-system/project/01-writing.md:19-26,111-113; 03-cast.md:9-13, 79-81, 113 (read-only)
   - ../../qa/cmo-review-articles-5.17-2026-10-14.md (M13, M14, M15, M16; applied by task 5.20a, see the foot of this page)
+  - ../../qa/cmo-review-article-fixes-5.20a-2026-10-14.md (N1: the screen-free toys guide shares ira-02, with this alt)
   - ../../engineering/tasks.md (5.20, the screen-time photo pool) and ../../engineering/assets.md (§1, the pool photos' other uses)
 ---
 
@@ -97,8 +98,10 @@ project" becomes one plain product line with the age limits and the grown-up-nea
   of her and Kheelu sitting beside her." The DS photo for "Creativity and imagination" (`03-cast.md:113`): crayons on a
   big sheet of paper on the floor, one of this page's own set-ups, with Kheelu as one more thing in the room, not the
   activity. The child is the cast's 5-year-old (`03-cast.md:11`), so no grown-up is needed in frame (the page's age-3
-  line; voice rule 17). From task 5.20's screen-time pool; it heads no other page
-  ([assets §1](../../engineering/assets.md#1-design-system-assets-used-by-the-approved-pages)). The photo is 16:9, so the
+  line; voice rule 17). From task 5.20's screen-time pool. It also heads the screen-free toys guide, with this alt word
+  for word (the photo's one alt); the two guides link to each other in neither direction
+  ([CMO fix pass](../../qa/cmo-review-article-fixes-5.20a-2026-10-14.md) N1;
+  [assets §1](../../engineering/assets.md#1-design-system-assets-used-by-the-approved-pages)). The photo is 16:9, so the
   head takes the wide layout (two even columns, the 16:9 frame), as the safe-AI-toy guide's head; the photo's shape
   sets it. No name or age in the alt; the light on Kheelu is not described (D018). File checked by eye 2026-10-14.
 
@@ -368,7 +371,7 @@ None.
 | Card title and summary, related list, dates | `src/content/en-IN/stories/articles/busy-hands-no-screens.ts` (stub); [stories §2](stories.md#fold-2--screen-time-screen-time) card 5; live dates `src/lib/stories-expansion.ts:259-260` |
 | Close block, price sentence, sticky bar | [home, CTA block](home.md#cta-block) and [phone sticky bar](home.md#phone-sticky-bar) sources ([D028](../../decisions/D028-price-wording.md), [D041](../../decisions/D041-gate-a-round-1.md), [D023](../../decisions/D023-new-order-delivery.md), [D021](../../decisions/D021-returns-policy.md), [D032](../../decisions/D032-grievance-block-and-call-line.md)) |
 | Cut live lines | `src/lib/stories-expansion.ts:269-272` (unsourced claims and a promise) |
-| Photo | DS `03-cast.md:113` (Ira 02, "Creativity and imagination, web hero"; Ira is 5, `03-cast.md:11`); task 5.20's screen-time pool ([tasks](../../engineering/tasks.md), 5.20); used on no other page ([assets §1](../../engineering/assets.md#1-design-system-assets-used-by-the-approved-pages)); file checked by eye 2026-10-14 |
+| Photo | DS `03-cast.md:113` (Ira 02, "Creativity and imagination, web hero"; Ira is 5, `03-cast.md:11`); task 5.20's screen-time pool ([tasks](../../engineering/tasks.md), 5.20); also the screen-free toys guide's head, with the same alt, and neither guide links to the other ([CMO fix pass](../../qa/cmo-review-article-fixes-5.20a-2026-10-14.md) N1; [assets §1](../../engineering/assets.md#1-design-system-assets-used-by-the-approved-pages)); file checked by eye 2026-10-14 |
 
 ## Changes after approval (task 5.20a)
 
@@ -399,6 +402,8 @@ and nothing else in the Copy blocks changed. No research statement was added or 
    with Kheelu ([tasks](../../engineering/tasks.md), 5.20). From that pool, `ira-02` shows one of this page's own set-ups
    (crayons on a big sheet on the floor) with Kheelu as one more thing in the room; Ira is 5, so the page's age-3 line
    needs no grown-up in frame. The pool's 3-year-old photo (`myra-02`) shows Myra alone with Kheelu, which this page's
-   age-3 line rules out (voice rule 17). The photo is 16:9, so the head takes the wide layout.
+   age-3 line rules out (voice rule 17). The photo is 16:9, so the head takes the wide layout. At the fix pass
+   ([CMO](../../qa/cmo-review-article-fixes-5.20a-2026-10-14.md) N1) the screen-free toys guide took `ira-02` too, with
+   this page's alt word for word; the two guides link to each other in neither direction. This page's Copy is unchanged.
 5. **Notes kept true:** read time about 620 words (3 min, unchanged); the answer's word count; the keyword table's alt
    and density rows; the Sources table's work-day and Photo rows; the front matter's sources.

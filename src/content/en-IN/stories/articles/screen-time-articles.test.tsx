@@ -516,4 +516,49 @@ describe("the screen-time articles together", () => {
       expect(readRepoFile(`src/content/en-IN/stories/articles/${slug}.ts`), slug).not.toMatch(/from "\.\/stub"/);
     }
   });
+
+  /* Fewer repeated head photos, one alt per photo (tasks.md 5.20 item 2; CMO 5.17 M16; fix-pass review N1): a reader who
+     taps from one guide to a linked one never meets the same picture again, and a picture reads the same wherever it
+     heads a guide. Held across the whole journal for the photos of task 5.20a's pool; the 3-6-9-12 guide keeps
+     advik-04 (its copy page's question 5, under P25), whose other heads are 5.20b's and 5.20c's to spread. */
+  const journal = Object.values(articles) as Article[];
+  const headPhoto = (a: Article) => (a.head.image === undefined ? undefined : photoFile(a));
+  /** Task 5.20a's head-photo pool (tasks.md 5.20): unused photos with Kheelu, apart from 5.20b's and 5.20c's. */
+  const POOL = ["advik-01", "advik-03", "ira-02", "kabir-03", "myra-02", "tara-01"];
+  const pooled = SCREEN_TIME.filter(([, a]) => POOL.some((p) => headPhoto(a)?.startsWith(`${p}-`)));
+  /** The guides an article sends readers to: its related list and the article paths linked in its text. */
+  const linkedGuides = (a: Article): string[] => [
+    ...a.related,
+    ...nodes(readingStrings(a)).flatMap((n) => (n.kind === "link" && n.href.startsWith("/stories/") ? [n.href.slice("/stories/".length).split("#")[0]] : [])),
+  ];
+
+  it("head five of the six guides from task 5.20a's pool, as the fix-pass review's N1 places them", () => {
+    expect(Object.fromEntries(SCREEN_TIME.map(([slug, a]) => [slug, headPhoto(a)]))).toEqual({
+      "how-much-screen-time-for-a-3-to-6-year-old": "advik-01-counting-carriages-web.webp",
+      "screen-time-rules-parents-swear-by": "advik-04-floor-train-web.webp",
+      "screen-time-and-tantrums": "kabir-03-homework-desk-web.webp",
+      "the-gentle-way-off-the-phone": "tara-01-naming-feelings-web.webp",
+      "busy-hands-no-screens": "ira-02-drawing-the-dragon-web.webp",
+      "screen-free-does-not-mean-silent": "ira-02-drawing-the-dragon-web.webp",
+    });
+    expect(pooled.map(([slug]) => slug)).toEqual(SCREEN_TIME.map(([slug]) => slug).filter((slug) => slug !== rules.slug));
+  });
+
+  it("give each of their head photos one alt, wherever in the journal it heads a guide", () => {
+    for (const [slug, article] of pooled) {
+      const photo = headPhoto(article);
+      const heads = journal.filter((a) => headPhoto(a) === photo);
+      expect(new Set(heads.map((a) => a.head.image!.alt)), `${photo} heads ${heads.map((a) => a.slug).join(", ")} (from ${slug})`).toEqual(
+        new Set([article.head.image!.alt]),
+      );
+    }
+  });
+
+  it("never share a head photo with a guide they link to, or that links to them", () => {
+    for (const [slug, article] of pooled) {
+      const photo = headPhoto(article);
+      const linked = journal.filter((other) => other.slug !== slug && (linkedGuides(article).includes(other.slug) || linkedGuides(other).includes(slug)));
+      expect(linked.filter((other) => headPhoto(other) === photo).map((other) => other.slug), `${slug} (${photo})`).toEqual([]);
+    }
+  });
 });

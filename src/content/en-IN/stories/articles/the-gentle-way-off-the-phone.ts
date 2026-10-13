@@ -6,7 +6,7 @@ import { DEFAULT_OG, TEAM_BYLINE } from "../../organization";
 /**
  * The gentle way off the phone: a seven-day plan: rewritten (task 5.17; copy page story-the-gentle-way-off-the-phone.md,
  * CMO review cmo-review-articles-5.17-2026-10-14.md; fixes of task 5.20a, CMO M11, M12 and M16, fix-pass review
- * cmo-review-article-fixes-5.20a-2026-10-14.md). No mockup: it renders through the article template, held to the
+ * cmo-review-article-fixes-5.20a-2026-10-14.md, N1: tara-01 heads this guide alone, with its one alt). No mockup: it renders through the article template, held to the
  * approved articles' shared parts. Card words as the hub's (stories.md fold 2), related links and dates as the stub held
  * them (the main session's note for 5.17). One in-text product link (fold 9).
  */
@@ -32,7 +32,7 @@ export const article = {
     readMinutes: 3,
     image: {
       src: namingFeelings,
-      alt: "A curly-haired girl in denim dungarees sits on a wooden floor by a sunlit window lined with potted plants, Kheelu in her lap, touching its nose with one finger.",
+      alt: "A curly-haired girl in denim dungarees sits on a wooden floor by a sunlit window lined with potted plants, Kheelu in her lap, touching its chin with one finger.",
     },
   },
   /* Fold 2: the answer first (56 words), then the hand-over to the plan. */

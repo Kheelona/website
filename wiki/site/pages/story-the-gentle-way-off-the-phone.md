@@ -21,6 +21,7 @@ sources:
   - "src/lib/stories-expansion.ts:67-90 (the live article, legacy input only), read in the same worktree"
   - design-system/project/01-writing.md:19-26,33,111-113; 03-cast.md:9-13, 79-81, 117 (read-only)
   - ../../qa/cmo-review-articles-5.17-2026-10-14.md (M11, M12, M16; applied by task 5.20a, see the foot of this page)
+  - ../../qa/cmo-review-article-fixes-5.20a-2026-10-14.md (N1: the one alt for tara-01, "touching its chin")
   - ../../engineering/tasks.md (5.20, the screen-time photo pool) and ../../engineering/assets.md (§1, the pool photos' other uses)
 ---
 
@@ -95,11 +96,14 @@ age limits; the author byline becomes "The Kheelona team" (question 1).
 - Breadcrumb links: "Stories" → `/stories`; "Screen time" → `/stories#screen-time` (from `topics.ts`).
 - **Read time:** about 660 words in the article body.
 - **Image** (`head.image`, `kh-photo`, 4:5): `tara-01-naming-feelings-web.webp`. Alt: "A curly-haired girl in denim
-  dungarees sits on a wooden floor by a sunlit window lined with potted plants, Kheelu in her lap, touching its nose
+  dungarees sits on a wooden floor by a sunlit window lined with potted plants, Kheelu in her lap, touching its chin
   with one finger." The DS photo for "Feelings" and hero shots (`03-cast.md:117`), with Kheelu: a calm, quiet moment
   at home with no screen in sight, for the plan whose aim is a week without fights. The child is the cast's 5½-year-old
   (`03-cast.md:12`), so no grown-up is needed in frame (the page's age-3 line; voice rule 17). It is from task 5.20's
-  screen-time pool and heads no other page ([assets §1](../../engineering/assets.md#1-design-system-assets-used-by-the-approved-pages)).
+  screen-time pool and heads no other page ([assets §1](../../engineering/assets.md#1-design-system-assets-used-by-the-approved-pages)):
+  the tantrums guide, which links here both ways and took it too in the first fix-pass draft, moved to `kabir-03`, and
+  this alt is the photo's one alt ([CMO fix pass](../../qa/cmo-review-article-fixes-5.20a-2026-10-14.md) N1; the finger
+  touches Kheelu's chin, below the nose).
   No name or age in the alt (the cast is illustrative); the light on Kheelu is not described (D018). File checked by
   eye 2026-10-14.
 
@@ -409,5 +413,8 @@ and nothing else in the Copy blocks changed. No new research statement was added
    the screen-time guides off the no-Kheelu set (`-04`, `-05`), which the talking guides need, onto a pool of unused
    photos with Kheelu ([tasks](../../engineering/tasks.md), 5.20). From that pool, `tara-01` fits a calm, gentle plan; Tara
    is 5½, so the page's age-3 line needs no grown-up in frame. The photo is still 4:5, so the head keeps its layout.
+   Fix pass ([CMO](../../qa/cmo-review-article-fixes-5.20a-2026-10-14.md) N1): the tantrums guide, which links here
+   both ways, had taken `tara-01` too, with a different alt; it moved to `kabir-03`, so this page keeps the photo, and
+   its alt, now the photo's one alt, says "touching its chin" (was "touching its nose"; the finger is below the nose).
 4. **Notes kept true:** read time about 660 words (3 min, unchanged); the keyword table's alt and density rows; the
    Sources table's AAP and Photo rows; the front matter's sources.

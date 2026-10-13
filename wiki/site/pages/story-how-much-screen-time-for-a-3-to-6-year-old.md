@@ -20,7 +20,7 @@ sources:
   - "src/lib/stories-expansion.ts:9-42 (the live article; legacy file, input only), read in the w5c-5.17 worktree 2026-10-14"
   - "src/content/en-IN/stories/articles/how-much-screen-time-for-a-3-to-6-year-old.ts (stub: card, related, dates); src/content/types.ts:356-469 and src/layouts/ArticleTemplate/ArticleTemplate.tsx (the blocks the template renders)"
   - design-system/project/03-cast.md:10, 34, 92, 107 (advik-01, task 5.20a; was :120, tara-04); 01-writing.md:19-26 (read-only)
-  - "Task 5.20a fixes: ../../qa/cmo-review-articles-5.17-2026-10-14.md (M4, M5, M6, M7, M16); ../../engineering/tasks.md (5.20, the head-photo pools); ../../engineering/assets.md (photo uses)"
+  - "Task 5.20a fixes: ../../qa/cmo-review-articles-5.17-2026-10-14.md (M4, M5, M6, M7, M16); ../../qa/cmo-review-article-fixes-5.20a-2026-10-14.md (N1: this alt is advik-01's one alt); ../../engineering/tasks.md (5.20, the head-photo pools); ../../engineering/assets.md (photo uses)"
 ---
 
 # Story: Screen time for a 3-year-old, and up to age 7
@@ -98,7 +98,9 @@ DOIs). The live byline is a co-founder (question 1).
   sitting beside him in front of a low bookshelf." DS: "Numbers and counting, age 4" (`03-cast.md:107`); Advik is
   4 (`03-cast.md:10`), the page's age-4 fold, and the scene is what the hour leaves room for (play, books, no
   screen in sight). Kheelu sits in the room as one more toy, on a page with one calm product line. Task 5.20a
-  (CMO M16): from the 5.20a pool; used on no other page (assets.md), and on no page this guide links to. No
+  (CMO M16): from the 5.20a pool; used on no other page (assets.md), and on no page this guide links to: the
+  screen-free toys guide, which links here both ways and took it too in the first fix-pass draft, moved to `ira-02`,
+  and this alt is the photo's one alt (CMO fix pass N1). No
   grown-up is needed in frame: the child is not the 3-year-old cast (tasks.md 5.20). File checked by eye
   2026-10-14. No name or age in the alt; Kheelu's light is not described (D018).
 
@@ -415,7 +417,7 @@ ruling for the six articles.
 | Card title and summary, related list, published date | the stub module; [stories.md](stories.md) fold 2 (line 117); `src/lib/stories-expansion.ts:16` |
 | Cut lines | [source verification](../../research/source-verification.md) C31 caveat 2, C33 caveat 1, C09 caveat 3, C43 caveat 2; [age-band review](../../product/age-band-review.md) row 43 |
 | Close block, price sentence, sticky bar | [home, CTA block](home.md#cta-block) and [phone sticky bar](home.md#phone-sticky-bar) sources ([D028](../../decisions/D028-price-wording.md), [D041](../../decisions/D041-gate-a-round-1.md), [D023](../../decisions/D023-new-order-delivery.md), [D021](../../decisions/D021-returns-policy.md), [D032](../../decisions/D032-grievance-block-and-call-line.md)) |
-| Photo | DS `03-cast.md:10, 107` (advik-01; task 5.20a, CMO M16); file checked by eye 2026-10-14 |
+| Photo | DS `03-cast.md:10, 107` (advik-01; task 5.20a, CMO M16; the photo's one alt, CMO fix pass N1); file checked by eye 2026-10-14 |
 
 ## Changes after approval (task 5.20a)
 
@@ -429,7 +431,7 @@ research statement was added: every changed line keeps its source and marker.
 | 2 | Fold 4 (age 5) | Answer first: "Under two hours a day, says the IAP, from 5 until 10, and that includes time on a screen for homework. Less is better.² The WHO's guideline stops at 4.¹" | M5's wording; `C32:53-56` ("the lesser, the better"); C31 caveat 4 |
 | 3 | Fold 8, paragraph 1 | "avoid three things: fast-paced programmes (young children do not understand them as well), apps with lots of distracting content, and anything violent" | M6; the AAP's own sentence, `C33-aap-2016-media-and-young-minds.md:63-64` |
 | 4 | Fold 10, product line | Adds "It is not a toy for children under 3." before the grown-up line | M7; [facts, age](../../product/facts.md#age), as the approved learning-toys guide |
-| 5 | Fold 1, head photo and alt | `tara-04-reading-nook` becomes `advik-01-counting-carriages`, with a new alt | M16 (this guide and the gentle-way guide, which link to each other, shared a photo and had two alts for it); the 5.20a pool in [tasks.md 5.20](../../engineering/tasks.md) ("Head photos come from separate pools"); unused elsewhere ([assets.md](../../engineering/assets.md)); not the 3-year-old cast, so no grown-up is needed in frame |
+| 5 | Fold 1, head photo and alt | `tara-04-reading-nook` becomes `advik-01-counting-carriages`, with a new alt | M16 (this guide and the gentle-way guide, which link to each other, shared a photo and had two alts for it); the 5.20a pool in [tasks.md 5.20](../../engineering/tasks.md) ("Head photos come from separate pools"); unused elsewhere ([assets.md](../../engineering/assets.md)); not the 3-year-old cast, so no grown-up is needed in frame. Fix pass ([CMO](../../qa/cmo-review-article-fixes-5.20a-2026-10-14.md) N1): the screen-free toys guide, which links here both ways, had taken `advik-01` too, with another alt; it moved to `ira-02`, so this page keeps the photo and its alt is the photo's one alt |
 | 6 | Notes | Read time (about 760 words, still 4 minutes), the fold 1, 3, 4, 8 and 10 notes, keyword placements, the sources table | So the page stays true |
 
 **Not changed:** title, meta, H1, lead, byline, dates (`updated` stays 2026-10-13), the in-text links, related

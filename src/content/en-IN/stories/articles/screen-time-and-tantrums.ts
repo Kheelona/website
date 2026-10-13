@@ -1,12 +1,13 @@
 /// <reference types="next/image-types/global" />
-import namingFeelings from "@ds/assets/Photo library/tara-01-naming-feelings-web.webp";
+import homeworkDesk from "@ds/assets/Photo library/kabir-03-homework-desk-web.webp";
 import type { Article } from "@/content/types";
 import { DEFAULT_OG, TEAM_BYLINE } from "../../organization";
 
 /**
  * Screen time and tantrums: what is actually happening: rewritten (task 5.17; copy page
  * story-screen-time-and-tantrums.md, CMO review cmo-review-articles-5.17-2026-10-14.md; fixes of task 5.20a, CMO M7,
- * M8, M10 and M16, fix-pass review cmo-review-article-fixes-5.20a-2026-10-14.md). No mockup: it renders through
+ * M8, M10 and M16, fix-pass review cmo-review-article-fixes-5.20a-2026-10-14.md, N1 and N2: the head photo is
+ * kabir-03, a 9:16 master the head shows in its 4:5 frame as a centred crop, as tara-03's). No mockup: it renders through
  * the article template, held to the approved articles' shared parts. Card words as the hub's (stories.md fold 2),
  * related links and dates as the stub held them (the main session's note for 5.17). One in-text product link (fold 6);
  * no countdown tip anywhere (source verification C35).
@@ -32,8 +33,8 @@ export const article = {
     author: TEAM_BYLINE,
     readMinutes: 2,
     image: {
-      src: namingFeelings,
-      alt: "A girl in denim dungarees sits cross-legged on a wooden floor by a window lined with plants, touching Kheelu’s nose with one finger.",
+      src: homeworkDesk,
+      alt: "A boy in round glasses and a white school shirt grins, one finger at his nose, as he writes in an exercise book at a wooden desk by a window, Kheelu sitting at the far end of the desk.",
     },
   },
   /* Fold 2: the answer first (54 words), then a hook to the finding below. */
