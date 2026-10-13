@@ -6,7 +6,12 @@
  * accepted that reason; every row names the decision or review that approved it. The specs print
  * every deviation they apply, so none is silent.
  */
+import type { Page } from "@playwright/test";
+import { HOSTS } from "@/config/env";
+import { navigation } from "@/content/en-IN/navigation";
 import { product } from "@/content/en-IN/products/kheelu/product";
+import { inAppNote } from "@/content/en-IN/store/in-app-note";
+import { paymentsLine } from "@/content/en-IN/store/payments-line";
 import { toPlainText } from "@/lib/content/plain-text";
 import { sentences } from "./parity";
 
