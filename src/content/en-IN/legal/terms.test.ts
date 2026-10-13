@@ -222,10 +222,12 @@ describe("the terms page: what the decisions require it to say", () => {
 });
 
 describe("the terms page: shared facts are read, never retyped", () => {
-  it("types no amount: every price is a {price:…} token (the ₹0 inside the price-breakup placeholder's note is the note's)", () => {
-    const amounts = [...CODE.matchAll(/₹\s?[\d,]+/g)].map((m) => m[0]);
-    expect(amounts).toEqual(["₹0"]);
-    expect(CODE).toMatch(/delivery ₹0\), once our CA confirms/);
+  /* The approved price-breakup placeholder's note says "delivery ₹0" (terms.html:116, terms.md placeholder 3): an open
+   * item's words, never a price the page publishes (production refuses every placeholder, ADR-004). Outside placeholder
+   * notes the module types no amount. */
+  it("types no amount outside a placeholder's note: every price is a {price:…} token", () => {
+    const outsideNotes = CODE.replace(/\{ph:[^}]*\}/g, "{ph}");
+    expect(outsideNotes).not.toMatch(/₹|\bRs\.?\s?\d|\bINR\s?\d|\d\s?(?:rupees|INR)\b/i);
   });
 
   it("types no support number, WhatsApp address, email, legal entity or GSTIN: seller.ts holds them", () => {
