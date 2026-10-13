@@ -19,7 +19,8 @@ sources:
   - "src/lib/stories-expansion.ts:218-251 (the live article; input only); src/content/en-IN/stories/articles/should-kids-use-ai.ts (stub: card, related, dates); src/content/en-IN/policies.ts:49 (RETENTION_LINE)"
   - test/guards/banned-phrases.data.ts (every Copy block checked against it)
   - design-system/project/03-cast.md:123; 01-writing.md:111-113 (read-only)
-  - ../../qa/cmo-review-articles-5.19-2026-10-14.md (round 1: B1, M1, M12 fixed in round 2)
+  - ../../qa/cmo-review-articles-5.19-2026-10-14.md (round 1: B1, M1, M12 fixed in round 2; round 2: R2-1 fixed in task 5.20c)
+  - ../../engineering/tasks.md (§4.9 and 5.20, task 5.20c, copy fixes and photo pools)
 ---
 
 # Story: Should kids use AI? An honest answer from people who build it
@@ -50,7 +51,7 @@ sources:
 | Meta description (147 characters) | Should kids use AI? What child-safety groups advise, what young children need from the adults around them, and how to judge any toy with AI inside. |
 | H1 | Should kids use AI? An honest answer from people who build it (the hub card title, word for word) |
 | Byline line | Aman Soni · First published 28 Jul 2026 · 5 min read (byline: question 1) |
-| Read time | 5 min (about 930 words in the article after round 2, headings included, sources, related guides and close excluded; words ÷ 200, rounded, as `readingMinutes` in `src/lib/stories.ts:184-186` and the 5.6 pages: 928 ÷ 200 = 4.6, so 5; round 1 was about 890, so 4). The build derives it from the module, so the byline follows the module |
+| Read time | 5 min (about 930 words in the article after task 5.20c, headings included, sources, related guides and close excluded; words ÷ 200, rounded, as `readingMinutes` in `src/lib/stories.ts:184-186` and the 5.6 pages: 927 ÷ 200 = 4.6, so 5; 928 after round 2, one word fewer in the answer since; round 1 was about 890, so 4). The build derives it from the module, so the byline follows the module |
 | CTA | The close only: "Pre-order Kheelu", `cta` = `finale`; phone sticky bar `sticky-bar` |
 | In-text product link | One, in fold 8 ("Kheelu" → `/products/kheelu`, `meet-kheelu.html`) |
 | Module values kept from the stub | Card title and summary (hub copy, `stories.md` fold 4); `related` (three, below); `published` 2026-07-28; `updated` as the main session's note for task 5.19 directs. The stub's `metaTitle` ("Should kids use AI?") gives way to the title above (the card title is 60 characters, so it cannot carry the brand) |
@@ -110,9 +111,13 @@ lines; the in-text "refundable ₹499 holds your place" cut (the close carries t
 
 > **H2:** Should kids use AI at all?
 >
-> Not the AI built for adults. Common Sense Media advises against AI toys at 5 and under, and extreme caution from 6 to 12.¹ If AI is part of a young child's play, it should be built for their age, unable to browse the internet and fully visible to you. It should ask your child questions, not just give answers.
+> Not the AI built for adults. Common Sense Media advises against AI toys at 5 and under, and extreme caution from 6 to 12.¹ If you choose AI for your child's play, it should be built for their age, unable to browse the internet and fully visible to you. It should ask your child questions, not just give answers.
 
-- 60 words (marker excluded). The `answer` block; no `detail`. Generic: no product in the answer, so it reads as useful to any parent.
+- 59 words (marker excluded; 60 before task 5.20c). The `answer` block; no `detail`. Generic: no product in the answer, so it reads as useful to any parent.
+- **Task 5.20c (CMO R2-1):** "If AI is part of a young child's play, it should be ..." became "If you choose AI for your
+  child's play, it should be ...". Straight after Common Sense Media's advice, the old clause read as if the advice
+  had already been set aside; the new one leaves the choice with the parent, as the B3 answer in fold 8 does ("so
+  you can check it yourself and decide"). The CMO's wording, word for word.
 - **Round 2 (CMO M12, the founder's option; question 3):** the block answer engines lift on its own now says what
   the main child-safety group advises, so it no longer gives only the conditions under which AI suits a young child.
   The CMO's draft named only the 5-and-under half; this keeps the 6-to-12 half too, because B3 is "cite it in full"
@@ -123,9 +128,12 @@ lines; the in-text "refundable ₹499 holds your place" cut (the close carries t
 - "AI built for adults" is the hub card's own frame. The answer names no chatbot and states no chatbot's age rules:
   that line (C37) is on hold until the founder and counsel confirm what Kheelu's own providers' terms say
   ([source verification C37](../../research/source-verification.md#c37--can-a-young-child-use-a-chatbot)).
-- "If AI is part of a young child's play, it should be built for their age ... and fully visible to you" is the C37
-  house line (advice, no claim), extended with the confirmed contrast "other AI gives answers; Kheelu asks
-  questions" ([messaging, against the alternatives](../../brand/messaging.md#against-the-alternatives)) in generic form.
+- "If you choose AI for your child's play, it should be built for their age ... and fully visible to you" is the C37
+  house line (advice, no claim; [source verification C37](../../research/source-verification.md#c37--can-a-young-child-use-a-chatbot),
+  "If AI is part of a young child's play, ..."), its opening turned to the parent's choice in task 5.20c (CMO R2-1),
+  and extended with the confirmed contrast "other AI gives answers; Kheelu asks questions"
+  ([messaging, against the alternatives](../../brand/messaging.md#against-the-alternatives)) in generic form. The
+  house line is our own voice, so the change adds no research statement.
 
 ---
 
@@ -368,7 +376,7 @@ As Home: **₹499`{price-source}` today** · **refundable · ₹4,999`{price-sou
 | Title ≤ 60, primary at the start | Yes | 47 characters; the keyword map's draft ([§5.2](../../research/keyword-map.md#52-per-page)) |
 | Meta ≤ 155: primary plus a concrete fact | Yes | 147 characters; names what the page gives (what groups advise, what children need, how to judge). No statistic in the meta: it can carry no source marker |
 | One H1 with the primary | Yes | "Should kids use AI? ..." (the hub card, word for word) |
-| Primary in an answer-first block in the first ~100 words | Yes | Fold 2 H2 "Should kids use AI at all?" and its 60-word answer |
+| Primary in an answer-first block in the first ~100 words | Yes | Fold 2 H2 "Should kids use AI at all?" and its 59-word answer |
 | An H2 with the primary or a close variant | Yes | Fold 2; fold 7 carries the keyword map's suggested H2 ("How do you judge anything with AI inside?") |
 | Secondaries | Yes | "AI chatbots and children": fold 4 ("general-purpose chatbots"); "is AI good for kids": answered by fold 2 and fold 6, not forced into a heading |
 | Alt text | Yes | Describes the scene |
@@ -411,6 +419,7 @@ would need the founder's and counsel's answer on Kheelu's own providers' terms (
 | Claim | Source |
 |---|---|
 | H1, lead (hub card, word for word); related list; published 28 Jul 2026; live byline | `stories.md` fold 4; stub module; `src/lib/stories-expansion.ts:224-225` |
+| "If you choose AI for your child's play, it should be built for their age, unable to browse the internet and fully visible to you" (fold 2) | Our own voice, no research claim: the C37 house line ([source verification C37](../../research/source-verification.md#c37--can-a-young-child-use-a-chatbot)), its opening as the [CMO review](../../qa/cmo-review-articles-5.19-2026-10-14.md#new-minor-items) R2-1 words it; "unable to browse the internet" is the confirmed fact in generic form ([D017](../../decisions/D017-live-behaviour-claims-confirmed.md)) |
 | Rebecca Winthrop, Brookings, May 2026: "cognitive stunting"; "reduces children's opportunities to engage in effortful thinking"; "general-purpose chatbots and AI companions not designed for learning"; evidence early | [source verification C14](../../research/source-verification.md#c14--cognitive-stunting); excerpt `C14-brookings-cognitive-stunting.md:24-41` |
 | "Give your child time to think before anyone, or anything, gives the answer" | C14 house line |
 | Fairplay advisory, November 2025, more than 150 experts and organisations, "that season" | [source verification C36](../../research/source-verification.md#c36--fairplays-advisory) (SUPPORTED); excerpt `C36-fairplay-ai-toys-advisory.md` |
@@ -432,3 +441,25 @@ would need the founder's and counsel's answer on Kheelu's own providers' terms (
 | Close block, price sentence, sticky bar | [home, CTA block](home.md#cta-block), [phone sticky bar](home.md#phone-sticky-bar) |
 | Cut live lines | [age-band review](../../product/age-band-review.md) row 38; [claims §4.1](../../product/claims.md#41-the-retired-microphone-wording) row 14; [source verification C33, C36, C20](../../research/source-verification.md#4-ready-to-use-website-lines) |
 | Photo | DS `03-cast.md:123`; file checked by eye 2026-10-13 |
+
+## Changes after approval (task 5.20c)
+
+- **Fold 2, the answer (CMO round 2, R2-1).** "If AI is part of a young child's play," became "If you choose AI for
+  your child's play,". Why: straight after Common Sense Media's advice, the old clause read as if the advice had been
+  set aside; the B3 answer leaves that choice to the parent ("so you can check it yourself and decide", fold 8), and
+  answer engines lift this block on its own
+  ([CMO review, new minor items](../../qa/cmo-review-articles-5.19-2026-10-14.md#new-minor-items)). The CMO's words,
+  unchanged. The answer is now 59 words; the read time stays 5 minutes (927 words). Fold 2's notes, the keyword
+  table and the Sources table follow. No research statement is new or changed: the line is the C37 house line, our
+  own voice.
+- **Checked, already done in round 2 (no change):** B1 (fold 5, paragraphs 3 and 4; note ⁴), M1 (fold 7, "For us,
+  ..."), M12 (Common Sense Media in the answer, both halves).
+- **Left as they are, waiting on the founder:** the three short forms of the Common Sense Media citation (answer,
+  fold 5, fold 8) follow whatever the founder signs for B3 (open question P21; this page's question 3). The C37
+  chatbot line stays out (question 2; founder and counsel).
+- **Not changed:** the head photo, `kabir-02`, which heads no other guide and is used nowhere else on the site, so
+  it keeps its one alt; the review asks for no change, and the task's photo pool (ira-01, ira-03, kabir-01,
+  myra-03) has no grown-up in frame for a page that advises one nearby at 3. D025: none needed (the main session's
+  ruling at the wave 5 part C merge, R2-3).
+- **For the builder:** `should-kids-use-ai.ts`, the answer's third sentence, word for word as fold 2, in the same
+  commit (`ai-safety-and-learning.test.tsx`); `updated` stays 2026-10-13.

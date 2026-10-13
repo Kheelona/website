@@ -18,6 +18,9 @@ sources:
   - ../../decisions/D016, D017, D026, D041
   - "src/content/en-IN/stories/articles/what-actually-builds-a-sharp-brain.ts (stub: card, related, dates); src/lib/stories-expansion.ts:138-163 (the live article, input only); test/guards/banned-phrases.data.ts"
   - "design-system/project/03-cast.md:115 (Ira 04); assets/Photo library/ira-04-paper-crown-web.webp, checked by eye 2026-10-13 (read-only)"
+  - ../../qa/cmo-review-articles-5.19-2026-10-14.md (rounds 1 and 2: no finding on this page; R2-3 ruled at the merge, no change)
+  - ../../qa/cmo-review-articles-5.18-2026-10-14.md (M13: one alt per photo across the journal; the alt of ira-04)
+  - ../../engineering/tasks.md (§4.9 and 5.20: the part C rulings, "D025 reading: as written"; the 5.20 subsection, item 2 and the photo pools)
 ---
 
 # Story: What actually builds a sharp brain in the early years
@@ -97,10 +100,15 @@ once and puts the term in no heading. `learning-toys-for-a-three-year-old` owns 
 - Breadcrumb: "Stories" → `/stories`; "Learning and play" → `/stories#learning`.
 - **Dates:** "First published" is the live `published` value (`2026-07-28`, `src/lib/stories-expansion.ts:145`). `updated`
   is the rewrite's date, set by the builder (after the live `2026-07-31`).
-- **Image** (`kh-photo`, 4:5, the head's portrait layout): `ira-04-paper-crown-web.webp`. Alt: "A girl with a long braid,
-  in a sky-blue T-shirt, laughs as she puts on a yellow paper crown, with crayons and paper scraps on the table beside
-  her." (`03-cast.md:115`: "Confidence and creativity".) No Kheelu in the head photo of a brain article, as on the
+- **Image** (`kh-photo`, 4:5, the head's portrait layout): `ira-04-paper-crown-web.webp`. Alt: "A laughing girl with a
+  long braid holds a yellow paper crown on her head, beside a low table scattered with crayons and paper scraps."
+  (`03-cast.md:115`: "Confidence and creativity".) No Kheelu in the head photo of a brain article, as on the
   learning-toys guide.
+- **Task 5.20c (one alt per photo):** the alt is now the journal's one alt for `ira-04`, word for word as on the
+  how-to-get-your-child-talking guide ([CMO review 5.18](../../qa/cmo-review-articles-5.18-2026-10-14.md) M13;
+  [tasks](../../engineering/tasks.md) 5.20 item 2). The photo stays: brain guides keep a head photo without Kheelu
+  ([D016](../../decisions/D016-brain-wording.md)). No guide this page links to, or that links here, has `ira-04` as
+  its head.
 
 ---
 
@@ -369,3 +377,26 @@ None.
 | Card title and summary, related list, first-published date | `src/content/en-IN/stories/articles/what-actually-builds-a-sharp-brain.ts` (stub); [stories.md fold 5](stories.md#fold-5--learning-and-play-learning); `src/lib/stories-expansion.ts:145` |
 | Close block, price sentence, sticky bar | [home, CTA block](home.md#cta-block) and [phone sticky bar](home.md#phone-sticky-bar) sources ([D028](../../decisions/D028-price-wording.md), [D041](../../decisions/D041-gate-a-round-1.md), [D023](../../decisions/D023-new-order-delivery.md), [D021](../../decisions/D021-returns-policy.md), [D032](../../decisions/D032-grievance-block-and-call-line.md)) |
 | Photo | DS `03-cast.md:11, 37-43, 115` (Ira, 5; confidence and creativity); file checked by eye 2026-10-13 |
+| Alt of the head photo (task 5.20c) | The how-to-get-your-child-talking guide's alt for `ira-04`, word for word ([story-how-to-get-your-child-talking.md](story-how-to-get-your-child-talking.md) fold 1); [CMO review 5.18](../../qa/cmo-review-articles-5.18-2026-10-14.md) M13 |
+
+## Changes after approval (task 5.20c)
+
+The copy the CMO approved in the [5.19 review](../../qa/cmo-review-articles-5.19-2026-10-14.md) (round 1 "Pass",
+round 2 "unchanged since round 1"). The founder signs off the copy at Gate B
+([D015](../../decisions/D015-founder-signs-off-copy.md)).
+
+| What | Change | Why |
+|---|---|---|
+| Fold 1, head photo alt | "A girl with a long braid, in a sky-blue T-shirt, laughs as she puts on a yellow paper crown, with crayons and paper scraps on the table beside her." became "A laughing girl with a long braid holds a yellow paper crown on her head, beside a low table scattered with crayons and paper scraps." | One alt per photo across the journal ([tasks](../../engineering/tasks.md) 5.20 item 2; CMO review 5.18 M13 names this alt for `ira-04`). The photo, its file and its scene are unchanged |
+| Fold 1 notes; Sources table; front matter | Updated to match | So the page stays true |
+
+**No Copy block changed.** The 5.19 review raised no finding on this page in either round, so no word of the head,
+answer, body or sources moved; read time (3 minutes), counts and keyword placements are as approved.
+
+**Not changed:** R2-3 (D025 disclaimer after the C07 and Romeo paragraphs). The main session ruled at the part C
+merge: "D025 reading: as written … the AI and brain guides need none" ([tasks](../../engineering/tasks.md), §4.9 and
+5.20). The head photo stays `ira-04` (main session: brain guides keep their `-04` heads; D016). No research line was
+added or changed. Founder questions P21 to P23 do not touch this page.
+
+**For the builder:** the module `what-actually-builds-a-sharp-brain.ts` takes the new alt in the same commit
+(`ai-safety-and-learning.test.tsx` reads the alt from fold 1); `updated` stays 2026-10-13.
