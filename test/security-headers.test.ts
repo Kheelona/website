@@ -158,10 +158,13 @@ describe("the content security policy", () => {
       "https://bded8a3c6ae-1-1053047382554.us-central1.run.app",
     ];
     const connect = directive("connect-src")!.split(" ");
+    /* Every other directive of the policy, by its name (default-src, media-src, worker-src and the rest included). */
+    const others = policy.split("; ").map((part) => part.split(" ")[0]).filter((name) => name !== "connect-src");
+    expect(others).toEqual(expect.arrayContaining(["default-src", "script-src", "img-src", "media-src", "worker-src", "frame-src", "form-action"]));
     for (const host of ["https://www.google.com", ...gateway]) {
       expect(connect, `${host} is not in connect-src`).toContain(host);
-      for (const other of ["script-src", "img-src", "frame-src", "form-action"]) {
-        expect(directive(other)!.split(" "), `${host} is in ${other}`).not.toContain(host);
+      for (const other of others) {
+        expect((directive(other) ?? "").split(" "), `${host} is in ${other}`).not.toContain(host);
       }
     }
     expect(policy).not.toMatch(/\*\.(?:google\.com|on\.aws|run\.app|amazonaws\.com)/);

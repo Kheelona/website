@@ -54,7 +54,6 @@ const literal = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const oneOf = (lines: readonly string[]) => new RegExp(`^(?:${lines.map(literal).join("|")})$`);
 /* The build's words for the team and setup rules (V7, V8). Spelled here because Playwright cannot load those content
    modules (they import images); src/content/en-IN/pages/parity-deviations.test.ts holds each to its content module. */
-export const TEAM_LEAD_BUILD = "Kheelona’s founders are parents in Bengaluru, building Kheelu: a screen-free plush toy that talks, for children aged 3 to 7.";
 /* The team page's resolved placeholders (V7 since task 6.6; D054 item 20): the founders' background lines, sentence by
    sentence, and the strip's names that show as text (the NVIDIA and nasscom marks carry theirs as alt text). */
 export const TEAM_BIOS_BUILD = [
@@ -65,6 +64,7 @@ export const TEAM_BIOS_BUILD = [
   "That includes years at Intel, leading Thunderbolt 4 and 5 compliance.",
 ] as const;
 export const TEAM_STRIP_BUILD = ["Karnataka Elevate", "Founders Inc"] as const;
+export const TEAM_LEAD_BUILD = "Kheelona’s founders are parents in Bengaluru, building Kheelu: a screen-free plush toy that talks, for children aged 3 to 7.";
 export const SETUP_STEP_BUILD = [
   "Press and hold Kheelu’s setup button.",
   "[PLACEHOLDER: which button and where; the app’s own screen still shows “[back]”]",
@@ -292,7 +292,7 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
     },
     {
       /* Each founder's initials badge reads as a line of its own; the build's badges hold the photos. The quote's "AS"
-         (fold 4) is on both sides, so only the founders' three go missing (team.test.ts holds the quote's). */
+         (fold 4) is on both sides, so only the founders' three go missing (the V7 unit test holds the build to that one badge). */
       mockup: /^(?:AS|KC)$/,
       reason: "the founders' initials badges, replaced by their live photos (D054 item 20; B24)",
       approvedBy: TEAM_V7,
