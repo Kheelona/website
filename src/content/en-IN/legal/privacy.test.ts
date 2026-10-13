@@ -158,12 +158,34 @@ describe("the privacy page: every measuring tool named in a block of its own, ne
   });
 
   /* The live page had to retire a count of its tools four times (privacy.md section 5; test/analytics-tags.test.ts): a
-   * count expires on the next tool, so none may appear, in any form. */
+   * count expires on the next tool, so none may appear, in any form. One string per line: a count is words inside one
+   * string, never across two (a block's `kind` is a string too). */
+  const TOOL_COUNTS = [
+    // A number, then up to four words (a list's comma or ampersand included), then "tool(s)".
+    /\b(?:one|two|three|four|five|six|seven|eight|nine|ten|\d+)\b(?:[^\S\n]+[\w’',&-]+){0,4}?[^\S\n]+tools?\b/i,
+    // "All seven": a bare count. The approved who-we-are line counts places ("in all four places"), not tools.
+    /\ball (?:two|three|four|five|six|seven|eight|nine|ten)\b(?![^\S\n]+places\b)/i,
+    /\b(?:most|least) \w+ of the (?:two|three|four|five|six|seven|eight|nine|ten)\b/i,
+    /\bthe (?:two|three|four|five|six|seven|eight) (?:that|which|of them)\b/i,
+  ];
+
+  /* The guard is proved on the counts a copy change would most naturally add (review of 5.11): a guard that lets one of
+   * these through is a rule that does not outlive the copy. */
+  it.each([
+    "We use seven analytics and advertising tools.",
+    "We use seven measuring tools.",
+    "Seven tools measure visits.",
+    "We use 7 analytics, advertising and session tools.",
+    "Here is what all seven do.",
+    "All seven of them run on this site.",
+    "PostHog is the most detailed of the seven.",
+    "Blocking stops the four that run in your browser.",
+  ])("the count guard catches a planted count: %s", (plant) => {
+    expect(TOOL_COUNTS.some((pattern) => pattern.test(plant))).toBe(true);
+  });
+
   it("never counts the tools, in words or digits", () => {
-    // One string per line: a count is words inside one string, never across two (a block's `kind` is a string too).
-    expect(TEXT).not.toMatch(/\b(?:one|two|three|four|five|six|seven|eight|nine|ten|\d+)[^\S\n]+(?:\w+[^\S\n]+)?tools?\b/i);
-    expect(TEXT).not.toMatch(/\b(?:most|least) \w+ of the (?:two|three|four|five|six|seven|eight|nine|ten)\b/i);
-    expect(TEXT).not.toMatch(/\bthe (?:two|three|four|five|six|seven|eight) (?:that|which|of them)\b/i);
+    for (const pattern of TOOL_COUNTS) expect(TEXT).not.toMatch(pattern);
   });
 
   it("names the cookies as the code names them, and kh_order's life as the code sets it", () => {
