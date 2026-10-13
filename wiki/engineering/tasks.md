@@ -1095,12 +1095,79 @@ legacy `Sheet.stories.tsx` until 6.3; `tracking-parity.test.ts` follows the remo
 - **Merged** `200bd17` (passed its one review). **Open after part B1, for the next shared-fix task:** the legal "Also
   read" links (`.ks-also a`, `legal-template.css`) have the 44 px height but not the width, so a short label ("Terms")
   fails the tap-target check on `/privacy` and `/terms`: give them the invisible `::before` extension used on the trust
-  and guides links.
+  and guides links. (Taken into 4.7, item 1.)
+
+### 4.7 and 4.8 Shared fixes found by wave 5 part B (builders; risk high, D052; with wave 5 part C)
+
+Wave 5 part B2 (run `wf_97020885-57b`) merged in full on 2026-10-14 (`eb47f13`, reconciliation `5c5f20d`): 5.13, 5.14
+and 5.16 passed; 5.12 and 5.15 ended `fixed-unreviewed` and their last fixes (tests only) were checked at the merge.
+The batch's merge gate is green (`npm run verify`: 5349 tests). Rulings at the merge: the amounts guard skips a
+placeholder's note (terms placeholder 3, "delivery ₹0"); `jscpd:new` ignores the legacy playos page until 6.3;
+PreorderForm's policy links on `MARKETING_ORIGIN` accepted (architecture §15.3); the full-mode "Until we dispatch your
+Kheelu, all of it is refundable." recorded in store.md fold 3; /thanks keeps the one static title "Your Kheelu is
+reserved · Kheelona" (the approved mockup's; noindex; per-state metadata would be a logic change under ADR-013).
+
+Split in two so they run in parallel: **4.7** shared content, legal pages and chrome; **4.8** the store and `/thanks`
+(checkout presentation, ADR-013). Both add rows to `test/e2e/support/deviations.ts`; the main session joins them at the merge.
+
+#### 4.7 Shared content, legal pages and chrome
+
+- **Owns:** the files each item names, their tests, stories and catalogue rows.
+- **Acceptance:**
+  1. Legal "Also read" links (`.ks-also a`, `legal-template.css`): the invisible `::before` tap extension of the
+     trust and guides links, so a short label reaches 44 px wide; `first-screen.spec.ts` tap targets green on
+     `/privacy`, `/terms`, `/refund` and `/shipping` at 360.
+  2. A `launch` price key: `PriceKey` in `src/content/types.ts`, `offerPrices` in `src/lib/offer/offer.ts`
+     (`LAUNCH_AMOUNT_PAISE` in both modes) and the rich-text price-key check. The reservation sentences that mean the
+     launch total take `{price:launch}`: `refund.ts:129` (its full-mode stopgap goes: the approved sentence reads
+     true in both modes), `shipping.ts:73` and `:116`, and any terms line that names a reservation's total in full mode
+     (check `terms.ts:58`). The parity fixtures `test/fixtures/legal/{refund,shipping}.ts` follow. Tests render
+     each line in both modes ("the remaining ₹4,500 of the ₹4,999 price" in full mode too).
+  3. The WhatsApp bubble never covers a store form field on a phone (D050): below 900 px it steps aside while a field
+     in `#details` has focus or `#details` crosses the bubble's band, as it already does for `html[data-buybar]`
+     (`WhatsAppFloat`, `motion.css`); `chrome.spec.ts`'s never-covers case (`:431`) green unchanged on the store at
+     every phone size.
+  4. P15 default ([open questions](../open-questions.md)): the shared FAQ `returns-and-warranty` answer
+     (`src/content/en-IN/faqs.ts:105`) reads "Arrived faulty? Tell us within 7 days for a replacement or a full
+     refund." (60 words; `answer-length` green); `TEXT_DEVIATIONS` entries on each page that shows the answer, citing
+     V6 (the main session adds the row at the merge); `jsonld-matches-page` green.
+- **Test:** targeted checks (D052) plus the touched specs on `/privacy`, `/terms`, `/refund`, `/shipping`, the pages
+  that show the FAQ, and `chrome.spec.ts` on the store at the phone sizes.
+
+#### 4.8 Store and `/thanks` (checkout presentation)
+
+- **Owns:** the files each item names, their tests, stories and catalogue rows; the PreorderForm, OrderSummary,
+  AddressForm and `/thanks` signature fixtures and literal-only patches (reviewed; content reads and presentation
+  imports only); the JSX contract fixtures are never edited.
+- **Acceptance:**
+  1. Store parity rows ([deviations](../qa/deviations.md) V1 and V4): `test/e2e/support/deviations.ts` gains a
+     per-slug selector-hide rule for the visual pass (`.mk-inapp` in the mockup, `.ks-store-payments` in the build)
+     and `TEXT_DEVIATIONS` entries for the note's lines (missing) and the payments line (moved), each citing its row;
+     the store's visual and text parity green at 360, 390 and 1440.
+  2. `/thanks` renders the payments line as the last line of its `main`, as the store page does (V1 extended):
+     5.15's line moves out of `StoreDetails` into one shared piece that both pages use (no copy); the store page's
+     output is unchanged.
+  3. `/thanks` paid-state parity (V5): a paid-state composition of the five folds inside the store chrome (a story
+     with fixture order data; no real order, no change to the page's logic) compared with `store-confirmation.html`
+     at 360, 390 and 1440, as `legal-template.spec.ts` compares the template's story; the route specs keep the
+     link-needed state.
+  4. Client-safe words: `preorderFormCopy`, `orderSummaryCopy` and AddressForm's words move into words-only modules
+     (type imports, plus `offer.ts` and `navigation.ts` where a price or link is needed), so the seller and
+     organisation data leave the client chunks; signature fixtures regenerated and reviewed (content reads only);
+     report the store's and `/thanks`'s script sizes before and after (the shared layer's own overrun is measured at M1).
+- **Test:** targeted checks (D052) plus the store's and `/thanks`'s specs on the store host at 360, 390 and 1440;
+  `checkout-jsx-contract`, `checkout-signature`, `checkout-freeze` green; `npm run qa:payment` reaches the open
+  sandbox sheet (never a real order).
 
 ## Wave 5: pages (after wave 4; all parallel)
 
 **Run in three parts** (machine load: each task builds and runs Playwright on its own ports): **A** 4.5, 5.1, 5.2, 5.3,
 5.5, 5.6, 5.10; **B** (after 4.5 merges: legal shapes) 5.4, 5.7, 5.8, 5.9, 5.11-5.14; **C** 5.15-5.19.
+As run: B1 (4.6, 5.4, 5.7-5.9, 5.11), B2 (5.12-5.16), **C** (4.7, 4.8, 5.17-5.19). Part C's article tasks run a copy stage
+first in the same worktree (`build-wave` `copy`): two copywriters write the six copy pages
+(`wiki/site/pages/story-<slug>.md`, the approved articles' format), the CMO reviewer approves them
+(`wiki/qa/cmo-review-articles-<task>-2026-10-14.md`; up to two reviews, brief Phase 5 step 1), then the builder commits the
+pages and builds the modules from them. The founder signs off the copy on beta at Gate B (D015).
 
 **QA from part B on ([D052](../decisions/D052-qa-checkpoints.md)):** a page task proves its SPA items for its own
 route at the three approved widths with targeted checks; the full unit suite runs once per batch merge and the full
@@ -1177,7 +1244,8 @@ processor names, the payload key allow-list and every `not.toContain` stay.
   its logo (B29); store dead ends answer 200 in store chrome; the not-configured state reads "Pre-orders
   open here shortly."; the bubble (store text) with `href`, `chat` and `context`; description, Open Graph and
   Twitter through `pageMeta` (no robots; wave-3 close); no import of a path 6.3 deletes; axe and no-sideways green
-  on the matrix.
+  on the matrix; since 5.15, `OrderSummary` no longer prints `tierLabel` (store.md fold 4), so the event and partner
+  pages show their price name ("Bangalore expo price", "Ideabaaz exclusive price") in their own heading (5.15 review).
 - **Test:** the two frozen tests (with their reviewed patches); `not-found-ssr`; e2e on each path.
 
 ### 6.2 New checkout events (B11) (builder; gated)
@@ -1235,7 +1303,9 @@ waits; it may run in any later wave before wave 8, alone with its own files.
   `npm audit` clean of high or critical runtime advisories; `jscpd` under threshold **with the legacy
   route-file entries removed from `package.json` `jscpd.ignore`** (`src/app/(site)/page.tsx`, `contact`, `safety`,
   `setup`, `playos/**`, `src/app/store/e/**`, `src/app/store/ideabaaz/page.tsx`; added by 1.1 because the legacy
-  tree is 2.06% duplicated); the `KHEELONA_PLUS_LINE` constant in `src/config/site.ts` ("lessons", claims §4 row
+  tree is 2.06% duplicated) **and `src/app/(site)/playos/**` removed from the `jscpd:new` script's `--ignore`**
+  (added at the wave 5 part B2 merge: once 5.2 deleted the old product route, jscpd paired the legacy playos page
+  with the legacy `LegalDoc.tsx` and reported it as a new clone); the `KHEELONA_PLUS_LINE` constant in `src/config/site.ts` ("lessons", claims §4 row
   10) deleted with the legacy `KheelonaPlusBand`, so banned-phrases prints it as resolved; asset-dupes green;
   every remaining file in `public/` referenced or marked FOUNDER in assets.md; the deleted list logged for
   the main session.

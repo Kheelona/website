@@ -1,7 +1,7 @@
 export const meta = {
   name: 'build-wave',
   description: 'Phase 5: build one wave of tasks in parallel git worktrees; targeted checks per task; review depth by risk (D052)',
-  phases: [{ title: 'Build' }, { title: 'Review' }, { title: 'Fix' }, { title: 'Screens' }],
+  phases: [{ title: 'Copy' }, { title: 'Build' }, { title: 'Review' }, { title: 'Fix' }, { title: 'Screens' }],
 }
 
 const REPO = '/Users/apoorvasahu/Documents/kheelona-com-website'
@@ -35,6 +35,27 @@ const REVIEW = {
     summary: { type: 'string' },
   },
   required: ['pass', 'verify_green', 'ownership_ok', 'issues', 'summary'],
+}
+
+const COPY = {
+  type: 'object',
+  properties: {
+    pages: { type: 'array', items: { type: 'string' }, description: 'absolute paths of the copy pages written or changed' },
+    open_questions: { type: 'array', items: { type: 'string' }, description: 'questions for the founder: options and a recommendation' },
+    placeholders: { type: 'array', items: { type: 'string' } },
+    notes: { type: 'string' },
+  },
+  required: ['pages', 'open_questions', 'placeholders'],
+}
+const CMO = {
+  type: 'object',
+  properties: {
+    pass: { type: 'boolean' },
+    review_page: { type: 'string' },
+    issues: REVIEW.properties.issues,
+    summary: { type: 'string' },
+  },
+  required: ['pass', 'issues', 'summary'],
 }
 
 const VERIFY_NOTE = W === 1
@@ -96,9 +117,94 @@ Same rules as any build task: only your Owns files, stage by name, commit with t
 Return the full structured report (all acceptance items, current head).`
 }
 
+
+// Copy stage (wave 5 part C, the 18 articles): copywriters write the copy pages in a worktree the main session
+// created; the CMO reviewer approves them (2 reviews at most, brief Phase 5 step 1); the builder then commits the
+// pages and builds the modules in the same worktree. The copywriter has no shell: it reads and writes by absolute path.
+function copyPrompt(t, slugs) {
+  const wt = t.copy.worktree_path
+  return `You are writing the article copy for Phase 5 task ${t.id} ("${t.title}") of the Kheelona.com website: ${slugs.length} articles, ${slugs.join(', ')}.
+
+WHERE: work only in the git worktree ${wt} (a full copy of the repo at the build's base). Read the repo's files there and write there, always by absolute path under ${wt}. Never write anything under ${REPO} outside that worktree. Do not touch any other article's page: another copywriter is writing the rest of this task's articles in the same worktree at the same time.
+
+OUTPUT: one copy page per article, ${wt}/wiki/site/pages/story-<slug>.md, in the format of the three approved article pages (${wt}/wiki/site/pages/story-learning-toys-for-a-three-year-old.md, story-what-to-look-for-in-a-safe-ai-toy.md and story-talking-toys-and-late-talkers.md: read all three first): front matter (title, type page-copy, updated 2026-10-14, cites_at, sources), "How to read this page", "At a glance" (title tag of at most 60 characters with " · Kheelona", meta description of at most 155, primary keyword, H1, read time), then fold by fold with quoted **Copy** blocks (article head; the answer first, 40 to 60 words; the body sections; sources with markers; the close), then keyword placements, CTA tracking values, placeholders, questions for the founder, and sources. Every fold must map to a block the article template renders (the Article shape in ${wt}/src/content/types.ts and ${wt}/src/components/layouts/ArticleTemplate/), as the three approved articles do.
+
+INPUTS for each article: the row of task ${t.id} in ${wt}/wiki/engineering/tasks.md (Wave 5 table) and the paragraph on part C above it; its stub module ${wt}/src/content/en-IN/stories/articles/<slug>.ts (the card title and summary are approved hub copy, ${wt}/mockup/pages/stories.html and ${wt}/wiki/site/pages/stories.md: keep them word for word; keep its related list and dates); the live article in ${wt}/src/lib/stories.ts and ${wt}/src/lib/stories-expansion.ts (input only: its topic, facts and sources, never its wording where the rules below differ); its rows in ${wt}/wiki/research/keyword-map.md (the URL's primary keyword, title, H2 plan and question bank) and ${wt}/wiki/site/url-map.md; ${wt}/wiki/product/claims.md (CONFIRMED claims only; never retired or banned wording, §4), ${wt}/wiki/research/source-verification.md and the source notes in ${wt}/wiki/raw/research/sources/ (every statistic or research statement carries a source marker and a verified source, D026; a claim without one becomes a marked placeholder); the decisions D016 (brain wording), D025 (speech and language: the disclaimer, and speech-delay answers only with it), D026, D041 (merged topics) in ${wt}/wiki/decisions/; ${wt}/wiki/site/content-boundary.md (external content only), ${wt}/wiki/product/age-band-review.md (ages 3 to 7, never anything implying under 3), the voice and messaging pages in ${wt}/wiki/brand/, and the banned phrases in ${wt}/test/guards/banned-phrases.data.ts.
+
+RULES: parent-first plain en-IN English, written for a phone; the point first; one idea per section; at most one in-text product link, and none that pitches on a speech or language page; no competitor names; Kheelu is a toy, never a therapy or a tutor; prices only as the references pricing.md names. Do not write open-questions.md, decisions/, index.md, log.md or status.md.
+${t.extra ? `\nNOTES FROM THE MAIN SESSION:\n${t.extra}\n` : ''}
+Return the absolute paths of the pages you wrote, the open questions (options and a recommendation each) and every placeholder.`
+}
+
+function cmoPrompt(t, round, writes) {
+  const wt = t.copy.worktree_path
+  const page = `${wt}/wiki/qa/cmo-review-articles-${t.id}-2026-10-14.md`
+  return `CMO review (round ${round}) of the article copy for Phase 5 task ${t.id} ("${t.title}") on the Kheelona.com website, before it is built (brief Phase 5 step 1). The pages are ${t.copy.groups.flat().map((s) => `${wt}/wiki/site/pages/story-${s}.md`).join(', ')}. Work in the worktree ${wt} (cd there; read by absolute path). This is a copy review: there is no built page and no screenshot yet.
+The copywriters' reports: ${JSON.stringify(writes).slice(0, 6000)}
+
+Judge each article as SKM would, against: the positioning and voice (${wt}/wiki/brand/), parents of 3-7 year olds and their real question (the article's keyword-map rows in ${wt}/wiki/research/keyword-map.md); the answer first in 40 to 60 words; one idea per section, phone-first lines; every statistic or research statement traced (check each one against ${wt}/wiki/product/claims.md, ${wt}/wiki/research/source-verification.md and the source notes); D016 brain wording, D025 speech and language (the disclaimer present wherever speech or language development is discussed), D026 markers; no banned or retired wording (claims.md §4 and ${wt}/test/guards/banned-phrases.data.ts); ages 3 to 7 and nothing implying under 3; no internal content (${wt}/wiki/site/content-boundary.md); no competitor names; at most one product link and no pitch on a speech page; title tag at most 60 characters, meta description at most 155; the approved card title and summary unchanged; every fold maps to a block of the article template.
+
+Write your verdict to ${page} (${round === 1 ? 'create it with front matter: title, type qa, updated 2026-10-14, sources' : 'append a "## Round 2" section; keep round 1 as written'}): pass or fail per article and criterion, with a specific fix for each failure. Do not edit the copy pages; do not stage or commit anything.
+pass = true only if no blocking issue remains. Blocking: an unverified or invented claim, a banned or retired phrase, a D016 or D025 breach, anything implying under 3, internal content, a wrong price or CTA, a title over 60 characters, a missing answer-first block, a changed card title or summary. Everything else is minor. Each issue: severity, the article and criterion, what is wrong (file and line), and the exact fix. Return review_page as ${page}.`
+}
+
+function copyFixPrompt(t, review) {
+  const wt = t.copy.worktree_path
+  return `Fix the CMO review findings on the article copy of Phase 5 task ${t.id} ("${t.title}") of the Kheelona.com website. The pages are ${t.copy.groups.flat().map((s) => `${wt}/wiki/site/pages/story-${s}.md`).join(', ')}, in the worktree ${wt}: read and write only there, by absolute path. The review is ${review.review_page || `${wt}/wiki/qa/cmo-review-articles-${t.id}-2026-10-14.md`}.
+Fix every blocking finding, and a minor one where it is small; if a finding is wrong, say why with the source in notes instead of changing the copy:
+${JSON.stringify(review.issues, null, 1).slice(0, 12000)}
+Same rules as when you wrote them (the approved card title and summary stay word for word; every claim sourced or a marked placeholder). Return the pages you changed, the open questions and the placeholders.`
+}
+
+function buildFromCopyPrompt(t, copy) {
+  const wt = t.copy.worktree_path
+  const last = copy.cmo[copy.cmo.length - 1] || {}
+  return `You are building task ${t.id} of Phase 5 wave ${W} on the Kheelona.com website: "${t.title}".
+
+The spec is the row "${t.id}" of the Wave 5 table in ${REPO}/wiki/engineering/tasks.md, with the paragraphs above that table (part C), "How to read a task", "Standard page acceptance" and "Guard-test ownership", and the note on the 18 articles without a mockup below the table (template parity). Read them in full.
+
+SETUP: the main session created your worktree ${wt} on branch ${t.copy.branch} from base ${BASE}, with node_modules already cloned. cd there and run \`git log -1 --oneline\` and \`git status\`. Do not create another worktree or branch.
+The copy stage ran first in this worktree: ${copy.approved ? 'the CMO reviewer APPROVED the copy pages' : 'the CMO reviewer did NOT approve the copy pages in its last round (its open findings are below; build from the pages as they stand and list each open finding under blocked)'}. The pages are ${t.copy.groups.flat().map((s) => `wiki/site/pages/story-${s}.md`).join(', ')}, and the review is wiki/qa/cmo-review-articles-${t.id}-2026-10-14.md; they are uncommitted. FIRST stage exactly those files by name and commit them ("Article copy for task ${t.id}, CMO review ${copy.approved ? 'approved' : 'open'}"). Last CMO round: ${JSON.stringify({ pass: last.pass, summary: last.summary, issues: last.issues }).slice(0, 4000)}
+Copywriters' open questions and placeholders: ${JSON.stringify(copy.writes.map((w) => ({ open_questions: w.open_questions, placeholders: w.placeholders }))).slice(0, 3000)}
+
+Then build: each article module from its copy page word for word (the copy pages are the approved copy for these articles), through the article template, as task 5.6 built the three approved articles (read their modules and tests in src/content/en-IN/stories/articles/). Never change a copy page's words in the module; if the template cannot render something, list it under blocked.
+
+RULES: change only the files your task Owns (the six article modules, their tests, and the copy pages and review page above), plus catalogue rows marked with your task id. Stage files BY NAME (never \`git add -A\` or \`git add .\`), commit with messages ending with the line:
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Never push, never merge, never touch main, never run the Vercel CLI, never edit design-system/, never place a real order. Next.js 16.3.8 differs from your training data: read node_modules/next/dist/docs/ for any Next API you use.
+
+VERIFY: ${VERIFY_NOTE} Prove every guard you write red with a planted violation, then restore it.
+${t.extra ? `\nNOTES FROM THE MAIN SESSION FOR THIS TASK:\n${t.extra}\n` : ''}
+Return the structured report: worktree path, branch, head commit, commits, files changed, the verify commands with the tail of their output, every acceptance item with status and evidence, catalogue rows touched, and anything blocked (including the copy's open questions for the founder).`
+}
+
+async function runCopy(t) {
+  const writes = (await parallel(t.copy.groups.map((slugs, i) => () =>
+    agent(copyPrompt(t, slugs), { label: `copy:${t.id}.${i + 1}`, phase: 'Copy', schema: COPY, agentType: 'copywriter' })))).filter(Boolean)
+  const cmo = []
+  let approved = false
+  for (let round = 1; round <= 2; round++) {
+    const r = await agent(cmoPrompt(t, round, writes), { label: `cmo:${t.id}#${round}`, phase: 'Copy', schema: CMO, agentType: 'cmo-reviewer' })
+    if (!r) { cmo.push({ round, error: 'review returned nothing' }); break }
+    cmo.push({ round, pass: r.pass, review_page: r.review_page, issues: r.issues, summary: r.summary })
+    if (r.pass) { approved = true; break }
+    const f = await agent(copyFixPrompt(t, r), { label: `copyfix:${t.id}#${round}`, phase: 'Copy', schema: COPY, agentType: 'copywriter' })
+    if (f) writes.push(f)
+  }
+  return { writes, cmo, approved }
+}
+
 async function runTask(t) {
   let b
-  if (t.resume && t.resume.stage === 'review') {
+  let copy = null
+  if (t.copy && !t.resume) {
+    copy = await runCopy(t)
+    if (!copy.writes.length) return { task: t.id, error: 'the copywriters returned nothing', copy }
+  }
+  if (copy) {
+    b = await agent(buildFromCopyPrompt(t, copy), { label: `build:${t.id}`, phase: 'Build', schema: BUILD, agentType: 'builder' })
+    if (b) b = { ...b, worktree_path: t.copy.worktree_path, branch: t.copy.branch }
+  } else if (t.resume && t.resume.stage === 'review') {
     b = { task: t.id, worktree_path: t.resume.worktree_path, branch: t.resume.branch, head: t.resume.head || 'HEAD', commits: [], files_changed: [], verify: 'not recorded (resumed at review)', acceptance: [], blocked: [], notes: 'Resumed at review after the run was held; read the code and the commits instead of a builder report.' }
   } else if (t.resume) {
     b = await agent(finishPrompt(t), { label: `finish:${t.id}`, phase: 'Build', schema: BUILD, agentType: 'builder' })
@@ -122,7 +228,7 @@ async function runTask(t) {
     if (f) { b = { ...b, ...f, worktree_path: b.worktree_path, branch: b.branch }; if (round === maxReviews) status = 'fixed-unreviewed' }
   }
   const last = rounds[rounds.length - 1] || {}
-  return { task: t.id, title: t.title, risk: level, status, worktree_path: b.worktree_path, branch: b.branch, head: b.head, commits: b.commits, files_changed: b.files_changed, acceptance: b.acceptance, blocked: b.blocked, notes: b.notes, catalogue_rows: b.catalogue_rows, final_pass: status === 'passed', rounds }
+  return { task: t.id, title: t.title, risk: level, status, worktree_path: b.worktree_path, branch: b.branch, head: b.head, commits: b.commits, files_changed: b.files_changed, acceptance: b.acceptance, blocked: b.blocked, notes: b.notes, catalogue_rows: b.catalogue_rows, final_pass: status === 'passed', rounds, copy: copy ? { approved: copy.approved, cmo: copy.cmo, open_questions: copy.writes.flatMap((w) => w.open_questions || []), placeholders: copy.writes.flatMap((w) => w.placeholders || []) } : undefined }
 }
 
 const SHOT_COMMON = `Round 2 edits to a REAL Kheelona parent-app screenshot (576 wide) for the website. Read ${REPO}/wiki/decisions/D044-app-screens-on-the-site.md and D046 first (the founder's rulings). The round-1 masters are ${REPO}/mockup/_work/appshots/edited/<name>.png (already redacted: the child is "Aarav", the toy is "Kheelu", recorder icon and Android nav bar removed); source frames are in ${REPO}/mockup/_work/appshots/frames/ (t*.png) and you may extract more with ffmpeg from ${REPO}/mobileapp-live-demo-oct2026.mp4 into ${REPO}/mockup/_work/appshots/frames/ (never copy, commit or upload that video; it shows a real family and the founder's inbox). The round-1 scripts and font fitting are in ${REPO}/mockup/_work/appshots/work/ (build.py, fit.py, build_privacy_r2.py): reuse them. Fonts: Instrument Sans (ls ~/Library/Fonts /Library/Fonts | grep -i instrument); Devanagari: /System/Library/Fonts/Kohinoor.ttc (Kohinoor Devanagari), matched to the app's Devanagari weight and size. Edit cleanly: sample backgrounds, keep shapes and spacing, prefer moving the app's own pixels over drawing, draw new text fitted to size, weight, colour and softness, iterate by reading zoomed crops until a careful viewer cannot tell. Final canvas 576 x 1209. Overwrite ${REPO}/mockup/_work/appshots/edited/<name>.png and ${REPO}/mockup/assets/app/<name>.webp (WebP q90, no upscaling). Do not stage or commit anything. Return paths, final size and every edit.`
@@ -147,6 +253,8 @@ async function runShot(s) {
 }
 
 // Resume entries: { id, title, extra?, risk?: 'high' | 'normal' | 'mechanical' (D052; default normal), resume: { worktree_path, branch, head?, stage: 'finish' | 'review' } }
+// Copy entries (articles): { id, title, extra?, risk?, copy: { worktree_path, branch, groups: [[slug, ...], ...] } }: the main
+// session creates the worktree and branch from base (node_modules cloned); one copywriter per group.
 const taskRuns = args.tasks.map(t => runTask(t))
 const shotRuns = args.screens ? SHOTS.map(s => runShot(s)) : []
 const results = await Promise.all(taskRuns.map(p => p.catch(e => ({ error: String(e) }))))

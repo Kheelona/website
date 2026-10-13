@@ -174,7 +174,9 @@ you order." The micro-line is unchanged.
 > Rather talk to a person? [WhatsApp] or [call +91 91875 46483]
 
 **Full mode, beside the button:** "₹7,999`FULL_PRICE` (incl. GST), paid in full when you order." replaces the
-price sentence; everything else is unchanged.
+price sentence, followed by "Until we dispatch your Kheelu, all of it is refundable." (the full-mode refund promise:
+the frozen checkout JSX contract keeps it beside the pay button, ADR-013, and fold 5's approved full-mode answer
+already says it; recorded at the wave 5 part B2 merge, 2026-10-14); everything else is unchanged.
 
 **What stays exactly as live (load-bearing, [checkout](../checkout.md#what-must-not-change-and-what-the-reset-restyles)):**
 

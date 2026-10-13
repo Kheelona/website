@@ -862,6 +862,7 @@ bundles only, so the config calls `resolveSiteEnv(process.env)` directly whereve
 | `src/components/tracking/PostHogGate.tsx` | on a beta host: init options gain `before_send: (ev) => (ev ? { ...ev, properties: { ...ev.properties, env: "beta" } } : ev)`; **no `register`** (a registered super property persists in PostHog's cross-subdomain storage and could follow a tester to production, N3); production options unchanged | tracking | 2.6 |
 | `src/app/layout.tsx` | Ahrefs `<script>` rendered unless `SITE_ENV === "beta"` (flagged to the founder), still literally inside `<head>` with `async`; `metadata.robots` noindex when beta | layout | 3.1 |
 | `src/app/store/layout.tsx` | policy links use `MARKETING_ORIGIN + path` (beta links to beta pages) | presentation | 3.1 |
+| `src/features/preorder/components/PreorderForm.tsx` | the consent's policy links use `` `${MARKETING_ORIGIN}${href}` `` (was the `https://kheelona.com` literal; production output identical, beta opens the beta policy pages); signature fixture regenerated and reviewed (accepted at the wave 5 part B2 merge) | presentation | 5.15 |
 | `test/store-secrets.test.ts` | `VERCEL_AUTOMATION_BYPASS_SECRET` (the system variable Vercel exposes) is never read in `src/` and never has a `NEXT_PUBLIC_` form (N5) | test | 1.3 |
 | `vercel.json` | below | config | 1.3 |
 
