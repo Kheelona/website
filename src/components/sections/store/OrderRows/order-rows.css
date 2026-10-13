@@ -1,0 +1,5 @@
+/* OrderRows (task 5.16): /thanks fold 2, the order card. Ported from mockup/css/store-confirmation.css:17 (.mk-order);
+   the rows themselves are DefinitionList's order variant (`ks-order__rows`, store-confirmation.css:18-23, 35-36). */
+.ks-order {
+  gap: var(--space-2);
+}

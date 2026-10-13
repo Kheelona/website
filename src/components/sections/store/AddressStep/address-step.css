@@ -1,0 +1,31 @@
+/* AddressStep (task 5.16): /thanks fold 3 and the AddressForm it holds. Ported from
+   mockup/css/store-confirmation.css:26-27 and :37-38 (.mk-thanks__intro, .mk-addr__pair, .mk-addr .kh-btn--block).
+   The form's grid and the muted line are the store's shared helpers (`ks-form`, `ks-muted`, from store.css:31-32 and
+   :56-57), and the heading's `ks-h2`: StoreDetails' (task 5.15). The saved card is the build's (no approved fold):
+   a DS card whose button keeps its own width. */
+.ks-thanks__intro {
+  margin: 0 0 var(--space-5);
+  max-width: var(--measure);
+}
+.ks-addr__pair {
+  display: grid;
+  gap: var(--space-5);
+  /* The build's one addition (the approved mockup has no validators, so never two error lines of different length
+     side by side): each field keeps its own height, so an error under one never stretches the other's input. */
+  align-items: start;
+}
+.ks-addr__saved .kh-btn {
+  justify-self: start;
+}
+
+@media (min-width: 720px) {
+  .ks-addr__pair {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  /* The button is full width on phones only. */
+  .ks-addr .kh-btn--block {
+    display: inline-flex;
+    width: auto;
+    justify-self: start;
+  }
+}

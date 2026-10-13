@@ -1,0 +1,22 @@
+Reviewed diff of src/app/store/thanks/page.test.tsx against archive/pre-reset-2026-10-10 (checkout-freeze, ADR-013 frozen tests).
+Regenerate with: git diff archive/pre-reset-2026-10-10 -- src/app/store/thanks/page.test.tsx (keep this header above it).
+
+Task 5.16 (the /thanks restyle), LITERAL-ONLY: one string literal follows the approved copy. The order card's balance row
+reads "₹4,500, of the ₹4,999 price (incl. GST)" (wiki/site/pages/store-confirmation.md fold 2, "Prices say incl. GST";
+mockup/pages/store-confirmation.html fold 2), so the exact-text selector gains " (incl. GST)". The token stream is
+unchanged once literals are masked: no assertion added, removed or weakened, and the balance is still derived from the
+row (₹4,999 minus the ₹499 paid).
+
+diff --git a/src/app/store/thanks/page.test.tsx b/src/app/store/thanks/page.test.tsx
+index 1b07ee4..15f521b 100644
+--- a/src/app/store/thanks/page.test.tsx
++++ b/src/app/store/thanks/page.test.tsx
+@@ -65,7 +65,7 @@ describe("the confirmation page", () => {
+ 
+     expect(screen.getByRole("heading", { name: "Your Kheelu is reserved." })).toBeInTheDocument();
+     expect(screen.getByText("₹499")).toBeInTheDocument();
+-    expect(screen.getByText("₹4,500, of the ₹4,999 price")).toBeInTheDocument();
++    expect(screen.getByText("₹4,500, of the ₹4,999 price (incl. GST)")).toBeInTheDocument();
+     /* The reference the query came from is the one inside the signed cookie,
+        never anything a caller could vary. */
+     expect(calls.some((c) => c.method === "eq" && c.args[1] === REF)).toBe(true);

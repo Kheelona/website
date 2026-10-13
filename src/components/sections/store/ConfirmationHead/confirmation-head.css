@@ -1,0 +1,36 @@
+/* ConfirmationHead (task 5.16): /thanks fold 1, and the page column every /thanks fold sits in.
+   Ported from mockup/css/store-confirmation.css:8-14 and :40-42 (.mk-thanks, .mk-thanks__col, .mk-thanks__eyebrow,
+   .mk-thanks__lede). The page draws the column (with the PostHog privacy classes the checkout contract pins on it). */
+
+/* One column at every width: the content width less four of the largest spaces (live max width 680 px). */
+.ks-thanks {
+  padding-top: var(--space-5);
+}
+.ks-thanks__col {
+  display: grid;
+  gap: var(--space-7);
+  width: 100%;
+  max-width: calc(var(--content-max) - var(--space-10) * 4); /* 1200 − 4 × 128 = 688 */
+  margin-inline: auto;
+}
+
+/* Fold 1: say it worked, first. */
+.ks-thanks__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.ks-thanks__eyebrow .kh-icon {
+  font-size: var(--icon-m);
+}
+.ks-thanks__lede {
+  margin: 0;
+  max-width: var(--measure);
+  color: var(--text-muted);
+}
+
+@media (min-width: 1024px) {
+  .ks-thanks {
+    padding-top: var(--space-7);
+  }
+}

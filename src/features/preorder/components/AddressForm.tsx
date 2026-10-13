@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { TextField, SelectField } from "@/components/atoms/Field";
-import { cn } from "@/lib/cn";
-import { PRESS_LIFT } from "@/lib/interactions";
+import { Alert } from "@/components/ui/Alert/Alert";
+import { Card } from "@/components/ui/Card/Card";
+import { Field } from "@/components/ui/Field/Field";
+import { Select } from "@/components/ui/Select/Select";
 import { SUPPORT_WHATSAPP_HREF } from "@/config/site";
+import { addressForm as copy } from "@/content/en-IN/store/confirmation";
 import { INDIAN_STATES } from "../lib/india";
 import {
   validateAddress,
@@ -23,7 +25,19 @@ import { preorderAnalytics } from "../lib/analytics";
  *  someone abandoning a house number and then worrying about their money.
  *
  *  State is a select, not a text field: a courier reads this value, and
- *  "Karnatka" costs a phone call later. */
+ *  "Karnatka" costs a phone call later.
+ *
+ *  RESTYLED IN TASK 5.16 (ADR-013: markup, classes, copy and presentation
+ *  imports only; everything above the JSX is as it was at the freeze tag). The
+ *  look is the approved /thanks fold 3 (mockup/pages/store-confirmation.html):
+ *  the DS Field and Select (client-safe, so this island never ships the icon
+ *  map), the PIN code and city side by side from 720 px (`ks-addr__pair`), and
+ *  the DS PRIMARY button, not Chilli: saving an address is an everyday action
+ *  ("Chilli means buying", DS Button README). A failure is a DS danger Alert;
+ *  the saved state a DS card. The words come from content
+ *  (src/content/en-IN/store/confirmation.ts `addressForm`); the handler's own
+ *  failure lines stay where the frozen logic has them. Layout classes are
+ *  styled by the AddressStep section around the form. */
 export function AddressForm({
   orderRef,
   token,
@@ -88,35 +102,29 @@ export function AddressForm({
 
   if (state === "saved") {
     return (
-      <div className="rounded-(--radius-card) border border-line bg-white p-6">
-        <p className="font-display text-[20px] font-extrabold text-ink-head">
-          We have your address.
-        </p>
-        <p className="mt-2 max-w-[48ch] text-[16px] text-ink">
-          That is everything we need. You can change it any time before dispatch:{" "}
-          <a
-            href={SUPPORT_WHATSAPP_HREF}
-            className="rounded font-semibold text-ink-head underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
-          >
-            message us on WhatsApp
-          </a>{" "}
-          and we will update it.
-        </p>
-        <button
-          type="button"
-          onClick={() => setState("idle")}
-          className="mt-4 rounded text-[15px] font-semibold text-ink-head underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
-        >
-          Change it here instead
+      <Card
+        as="div"
+        className="ks-addr__saved"
+        title={copy.saved.title}
+        body={
+          <>
+            {copy.saved.before}
+            <a href={SUPPORT_WHATSAPP_HREF}>{copy.saved.link}</a>
+            {copy.saved.after}
+          </>
+        }
+      >
+        <button type="button" onClick={() => setState("idle")} className="kh-btn kh-btn--secondary">
+          <span>{copy.saved.change}</span>
         </button>
-      </div>
+      </Card>
     );
   }
 
   return (
-    <form onSubmit={onSubmit} noValidate className="grid gap-5">
-      <TextField
-        label="Flat or house, and street"
+    <form onSubmit={onSubmit} noValidate className="ks-form ks-addr">
+      <Field
+        label={copy.labels.line1}
         name="line1"
         required
         autoComplete="address-line1"
@@ -124,17 +132,17 @@ export function AddressForm({
         maxLength={120}
         error={errors.line1}
       />
-      <TextField
-        label="Landmark or area"
+      <Field
+        label={copy.labels.line2}
         name="line2"
         autoComplete="address-line2"
         defaultValue={existing?.line2}
         maxLength={120}
         error={errors.line2}
       />
-      <div className="grid gap-5 sm:grid-cols-2">
-        <TextField
-          label="PIN code"
+      <div className="ks-addr__pair">
+        <Field
+          label={copy.labels.pincode}
           name="pincode"
           inputMode="numeric"
           required
@@ -143,8 +151,8 @@ export function AddressForm({
           maxLength={6}
           error={errors.pincode}
         />
-        <TextField
-          label="City or town"
+        <Field
+          label={copy.labels.city}
           name="city"
           required
           autoComplete="address-level2"
@@ -153,41 +161,27 @@ export function AddressForm({
           error={errors.city}
         />
       </div>
-      <SelectField
-        label="State"
+      <Select
+        label={copy.labels.state}
         name="state"
         required
         options={INDIAN_STATES}
         defaultValue={existing?.state}
         error={errors.state}
+        placeholder={copy.statePlaceholder}
       />
 
       {failure ? (
-        <p
-          role="alert"
-          className="rounded-(--radius-card) border border-orange-ink bg-cream px-4 py-3 text-[15px] font-medium text-ink"
-        >
-          {failure}
-        </p>
+        <Alert tone="danger">
+          <p>{failure}</p>
+        </Alert>
       ) : null}
 
-      <button
-        type="submit"
-        disabled={state === "saving"}
-        className={cn(
-          "inline-flex items-center justify-center rounded-full bg-action px-7 py-4 text-[17px] font-bold text-white shadow-cta",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2",
-          PRESS_LIFT,
-          state === "saving" && "cursor-wait opacity-70",
-        )}
-      >
-        {state === "saving" ? "Saving…" : "Save my address"}
+      <button type="submit" disabled={state === "saving"} className="kh-btn kh-btn--primary kh-btn--l kh-btn--block">
+        <span>{state === "saving" ? copy.saving : copy.save}</span>
       </button>
 
-      <p className="text-[14px] text-ink-muted">
-        Your order is already safe. This can wait if you are in the middle of
-        something, and the link in your email brings you straight back here.
-      </p>
+      <p className="kh-body-s ks-muted">{copy.reassurance}</p>
     </form>
   );
 }

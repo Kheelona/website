@@ -1,0 +1,13 @@
+/* HelpBlock (task 5.16): /thanks fold 5. Ported from mockup/css/store-confirmation.css:30-32 (.mk-thanks__help,
+   .mk-ghost-start). `.ks-ghost-start` loads after button.css (sections after ui, architecture §4.3), so it takes the
+   ghost link's side padding away at equal specificity and the link sits flush with the text above it. */
+.ks-thanks__help {
+  display: grid;
+  gap: var(--space-4);
+}
+.ks-thanks__help .kh-body {
+  max-width: var(--measure);
+}
+.ks-ghost-start {
+  padding-inline: 0;
+}
