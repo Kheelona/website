@@ -11,11 +11,12 @@ const nextConfig: NextConfig = {
   images: {
     // AVIF preferred, WebP fallback (AVIF is opt-in on this Next build).
     formats: ["image/avif", "image/webp"],
-    /* Journal images live in our own storage (uploaded from the dashboard's blog
-       editor), and video stills come from YouTube. Exact paths, no wildcards on the
-       host: the optimizer will fetch nothing else. */
+    /* Journal images are uploaded in the dashboard's blog editor and served read-only
+       by our API from a private bucket (the bucket enforces public access prevention,
+       so a storage.googleapis.com URL would 403). Video stills come from YouTube.
+       Exact paths, no host wildcards: the optimizer will fetch nothing else. */
     remotePatterns: [
-      new URL("https://storage.googleapis.com/kheelona/blog/**"),
+      new URL("https://api.kheelona.com/v1/public/blog/images/**"),
       new URL("https://i.ytimg.com/vi/**"),
     ],
   },
