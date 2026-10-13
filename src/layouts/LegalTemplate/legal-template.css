@@ -393,9 +393,19 @@
   display: inline-flex;
   align-items: center;
   min-height: var(--tap-min);
+  position: relative;
   color: var(--link);
   font-weight: 800; /* ds-weight-800: privacy.css:54 */
   text-underline-offset: 3px; /* ds-underline-offset-3px */
+}
+/* Each link's 44 px wide tap area without moving the line (task 4.7): an invisible extension, as the trust and guides
+   links have (trust-line.css, card-grid.css). Centred on the link and exactly --tap-min wide, so a short label ("Terms")
+   reaches 44 px and a longer one, wide enough itself, holds it inside; neighbours 16 px apart never overlap. */
+.ks-also a::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline: calc((100% - var(--tap-min)) / 2);
 }
 .ks-also__label {
   flex-basis: 100%;

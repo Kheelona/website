@@ -398,6 +398,18 @@ describe("legal-template.css: one file, two families (mockup-css-mapping §6.1-6
     expect(css).toMatch(/\.ks-doc--notice \.ks-doc__part h2 \{[^}]*font-weight: 700;/);
   });
 
+  /* Task 4.7 item 1: the "Also read" links are 44 px tall (privacy.css:54) but a short label ("Terms") is narrower than
+     44 px, so it failed the tap-target check on /privacy at 360. As the trust and guides links do (trust-line.css,
+     card-grid.css), an invisible ::before gives each link its tap area without moving the line: centred on the link
+     and exactly --tap-min wide (inside a longer link, which is wide enough itself), so neighbours 16 px apart never
+     overlap. */
+  it("gives each “Also read” link a tap area at least --tap-min wide with an invisible, centred ::before (task 4.7)", () => {
+    expect(css).toMatch(/\.ks-also a \{[^}]*\n\s*position: relative;/);
+    expect(css).toMatch(
+      /\.ks-also a::before \{\s*content: "";\s*position: absolute;\s*inset-block: 0;\s*inset-inline: calc\(\(100% - var\(--tap-min\)\) \/ 2\);\s*\}/,
+    );
+  });
+
   it("the refund steps are numbered by the ported counter (ks-step, §6.4) and the privacy tools are ported (ks-tool, §6.3)", () => {
     expect(css).toMatch(/counter-reset: ks-step;/);
     expect(css).toMatch(/counter-increment: ks-step;/);
