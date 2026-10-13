@@ -421,10 +421,12 @@ test.describe("chrome: WhatsApp bubble (D050)", () => {
   });
 
   test("the cover check sees a price, a field and a pay button placed under the bubble (it is not vacuous)", async ({ harness }) => {
-    const page = await openBuilt(harness, phone360short);
-    // Where the bubble rests (at the top of a small phone it steps aside from the hero's price, task 4.9): the page's end.
-    await scrollToY(page, 1e7);
-    await expect.poll(() => bubbleAside(page)).toEqual(AT_REST);
+    // A page with no price and no bar (/privacy): the bubble never arms its step aside (task 4.9; it arms only where its
+    // context's regions exist at mount) and never lifts, so it holds still under the plant. On Home the bar shows a few
+    // milliseconds after a jump, which lifts the bubble and makes it re-read the prices, the planted one included.
+    const page = await openBuilt(harness, phone360short, {}, { host: "marketing", path: "/privacy" });
+    expect(await page.locator(`${PRICES}, .kh-buybar`).count(), "a page with no price and no bar").toBe(0);
+    expect(await bubbleAside(page)).toEqual(AT_REST);
     await page.evaluate(() => {
       const b = document.querySelector(".ks-wa")!.getBoundingClientRect();
       const form = document.createElement("form");
