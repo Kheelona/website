@@ -3,12 +3,16 @@ import { act, cleanup, fireEvent, render, screen } from "@testing-library/react"
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ICON_WHATSAPP_LOGO } from "@/assets/icons.generated";
+import { CtaBlock } from "@/components/sections/CtaBlock/CtaBlock";
 import { AddressStep } from "@/components/sections/store/AddressStep/AddressStep";
 import { OfferCard } from "@/components/ui/OfferCard/OfferCard";
 import { PriceSentence } from "@/components/ui/PriceSentence/PriceSentence";
+import { RichText } from "@/components/ui/RichText/RichText";
+import { cta } from "@/content/en-IN/cta";
 import { seller } from "@/content/en-IN/seller";
 import { confirmation } from "@/content/en-IN/store/confirmation";
 import { storePage } from "@/content/en-IN/store/store-page";
+import { trustItems } from "@/content/en-IN/trust";
 import type { SupportChat } from "@/content/types";
 import { buildOffer } from "@/lib/offer/offer";
 import { STEP_ASIDE_FROM, WhatsAppFloat, whatsAppChatUrl } from "./WhatsAppFloat";
@@ -342,7 +346,7 @@ describe("WhatsAppFloat: steps aside from the store's form on a phone (task 4.7)
       });
     });
 
-    it("the site's selector matches every price the components print: the sentence beside a button and the offer card's", () => {
+    it("each region the site's selector names holds a price: the sentence beside a button and the offer card's", () => {
       const { container } = render(
         <>
           <PriceSentence offer={TOKEN} />
@@ -352,6 +356,43 @@ describe("WhatsAppFloat: steps aside from the store's form on a phone (task 4.7)
       const prices = [...container.querySelectorAll(STEP_ASIDE_FROM.site)];
       expect(prices.map((el) => el.className)).toEqual(["kh-body-s ks-price", "kh-offer__prices", "kh-offer__split", "kh-offer__fine"]);
       for (const el of prices) expect(el.textContent, el.className).toMatch(/₹/);
+    });
+
+    /* From the other side: every amount the marketing pages' price components print, in both offer modes, sits inside a
+       region the site's bubble steps aside from, so a new amount (an MRP line in the card, say) cannot slip past it. The
+       CTA block prints the sentence beside its button (PriceSentence `beside`, with every trust item and the help line);
+       the offer card its prices, split, perks (both placements) and fine print. Not here: the drawer's sentence (variant
+       `drawer`), which sits in the modal drawer, under which the bubble hides (whatsapp-float.css), and the store's first
+       screen (variant `store`), which is the store context's (task 4.7). */
+    it("every ₹ amount the site's price components print sits inside a region of the site's selector, in both modes", () => {
+      const amounts = (root: Element) => {
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+        const found: Text[] = [];
+        for (let node = walker.nextNode(); node; node = walker.nextNode()) if (/₹/.test(node.nodeValue ?? "")) found.push(node as Text);
+        return found;
+      };
+      for (const offer of [TOKEN, buildOffer("full")]) {
+        const { container, unmount } = render(
+          <>
+            <CtaBlock cta="finale" trust={Object.values(trustItems)} helpLine offer={offer} ctaLabel={cta.preorder} help={seller.help} />
+            {(["home", "product"] as const).map((placement) => (
+              <OfferCard
+                key={placement}
+                offer={offer}
+                perks={offer.card.perks[placement].map((perk) => ({ icon: null, text: <RichText text={perk.text} offer={offer} /> }))}
+                action={null}
+              />
+            ))}
+          </>,
+        );
+        const found = amounts(container);
+        const printed = found.map((node) => node.nodeValue).join(" | ");
+        for (const key of offer.mode === "token" ? (["token", "balance", "headline"] as const) : (["full"] as const)) {
+          expect(printed, `${offer.mode}: the ${key} amount is printed`).toContain(offer.prices[key]);
+        }
+        for (const node of found) expect(node.parentElement!.closest(STEP_ASIDE_FROM.site), `${offer.mode}: "${node.nodeValue}"`).not.toBeNull();
+        unmount();
+      }
     });
 
     it("the /thanks selector is the address step's own section, the one that holds the form", () => {

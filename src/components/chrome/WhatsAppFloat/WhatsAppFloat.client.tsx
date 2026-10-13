@@ -105,6 +105,12 @@ export interface StepAsideLinkProps extends ComponentPropsWithoutRef<"a"> {
  * `.is-hidden` and `inert` while it steps aside. Armed below 900 px only, again whenever the window crosses 900 px, and
  * on every page change (the site's bubble sits in a layout, so it outlives a page; lessons §2); on a page with nothing
  * to keep clear (the store's not-configured state, a page with no price) it does nothing.
+ *
+ * What it keeps clear must be in the page's server HTML: it arms only if `from` matches when it mounts, and it reads the
+ * regions again only when it re-measures (arming, a resize, html[data-buybar], the end of its own move), so a price or
+ * a form that mounts later, after hydration, would go unwatched until then. Today every region is server-rendered (the
+ * price sentences, the offer card, the store's #details, the /thanks #address); a region that mounts on the client
+ * needs this link to watch for it first.
  */
 export function StepAsideLink({ from, className, children, ...link }: StepAsideLinkProps) {
   const ref = useRef<HTMLAnchorElement>(null);
