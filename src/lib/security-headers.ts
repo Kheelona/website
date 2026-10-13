@@ -58,6 +58,12 @@ const SOURCES = {
     "https://*.analytics.google.com",
     "https://*.google-analytics.com",
   ],
+  /** GA4's hits to www.google.com/g/collect, a fetch (D054 item 9, 2026-10-14):
+   *  M1's tag runs saw gtag post there besides google-analytics.com, and the
+   *  policy named neither (tracking-inventory §14a). connect-src only, the one
+   *  directive they were reported against: no script, image or frame comes
+   *  from this host. */
+  googleCollectFetch: "https://www.google.com",
   /** Vercel Web Analytics posts to a same-origin obfuscated path, so 'self'
    *  covers it. This is its documented fallback host, kept because a blocked
    *  beacon would be silent. */
@@ -78,6 +84,16 @@ const SOURCES = {
    *  endpoints and there is no reason to admit the rest of the estate. */
   metaPixelScript: "https://connect.facebook.net",
   metaPixelCollect: "https://www.facebook.com",
+  /** The Meta Pixel's OpenBridge gateway (D054 item 9, 2026-10-14): fbevents.js
+   *  posts its events there as a fetch, to the endpoint and fallback the
+   *  pixel's own configuration names (connect.facebook.net/signals/config,
+   *  read 2026-10-13; tracking-inventory §14a). Exact origins, connect-src
+   *  only, as the other Meta entries. If the pixel's configuration names
+   *  another gateway, the reports will say so. */
+  metaPixelGateway: [
+    "https://dv-c3e594c6d429469e90b54478358619c3.ecs.us-east-1.on.aws",
+    "https://bded8a3c6ae-1-1053047382554.us-central1.run.app",
+  ],
   /** PostHog (2026-09-19). TWO origins, and the split is not cosmetic: events
    *  are ingested at `us.i.posthog.com`, while the lazily-fetched bundles — the
    *  session recorder, error tracking, surveys, the toolbar — are fetched from
@@ -168,15 +184,19 @@ export function contentSecurityPolicy(dev = false): string {
       SOURCES.ahrefs,
       SOURCES.googleTag,
       SOURCES.googleCollect,
+      SOURCES.googleCollectFetch,
       SOURCES.vercel,
       SOURCES.razorpay,
       SOURCES.metaPixelScript,
       SOURCES.metaPixelCollect,
+      SOURCES.metaPixelGateway,
       SOURCES.posthogIngest,
       SOURCES.posthogAssets,
     ),
     directive("manifest-src", "'self'"),
-    "upgrade-insecure-requests",
+    /* No upgrade-insecure-requests (D054 item 9, 2026-10-14): a report-only
+       policy ignores it, and the browser logs an error for it on every page.
+       Every origin above is https already. */
     /* Both spellings: report-uri is deprecated and is the only one Safari and
        older Chrome understand, report-to is the current one. */
     `report-uri ${CSP_REPORT_PATH}`,
