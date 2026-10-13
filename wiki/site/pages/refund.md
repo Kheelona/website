@@ -299,11 +299,11 @@ whole policy, so it reads as one document.
   [Gate A sweep](../gate-a-open-items.md#5-stale-pages-found-by-the-sweep-lint-backlog) says promise nothing until it exists).
   The placeholder line that stood under the block on all four legal pages came off until a system issues a
   reference ([D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 7; it was an L2
-  recommendation, ECOM-04). In the build it is the one shared value `grievanceNote` in
-  `src/content/en-IN/legal/shared.ts`. Once a reference exists, the line "You get a complaint reference to track
-  it." ([legal requirements](../../product/legal-requirements.md) line 491) goes under the block, and from
-  1 January 2027 the block adds "We send you a copy of your complaint as we recorded it." (G.S.R. 789(E);
-  legal review, /refund should-fix 6). The label is bold, as on /privacy and /terms.
+  recommendation, ECOM-04). In the build it is the optional `grievanceNote` of `LegalTemplateCopy`, left out
+  of `src/content/en-IN/legal/shared.ts` while D055 item 7 stands. Once a reference exists, the line "You get a
+  complaint reference to track it." ([legal requirements](../../product/legal-requirements.md) line 491) goes under
+  the block, and from 1 January 2027 the block adds "We send you a copy of your complaint as we recorded it."
+  (G.S.R. 789(E); legal review, /refund should-fix 6). The label is bold, as on /privacy and /terms.
 
 ### Section 8 · Who you're buying from (`#seller`)
 
@@ -534,7 +534,8 @@ and lists the text differences for the main session.
   it, your bank takes 5-7 working days.") comes off, since under the return line it would add bank days D055 already
   counts (item 5).
 - **Section 7.** The complaint-reference slot under the grievance block comes off (item 7). In the build it is the
-  shared `grievanceNote` (`src/content/en-IN/legal/shared.ts`), so one change clears it from all four legal pages.
+  optional `grievanceNote` of `LegalTemplateCopy`, left out of `src/content/en-IN/legal/shared.ts` while D055 item 7
+  stands, so one change clears it from all four legal pages.
 - **Notes.** At a glance (word count and keyword density), the notes under fold 1, fold 2, sections 2, 3, 5 and 7,
   the Sources rows, the Placeholders table (none left) and the answered questions now match the copy.
 - **Not changed.** Fold 0's draft note ("Draft for the founder’s approval; not legal advice.") stays: D055 sets the

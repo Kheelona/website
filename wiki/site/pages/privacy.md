@@ -647,8 +647,8 @@ The grievance block is [D032](../../decisions/D032-grievance-block-and-call-line
 content value shared with `/contact`, `/refund`, `/terms` and the store footer. The seller block is the live
 `SELLER_SECTION` minus the retired "messages, not calls" line. The complaint-reference line came off in task 6.7
 ([D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 7) until a system issues one; on the
-site it is the shared `grievanceNote` of `src/content/en-IN/legal/shared.ts`, so it comes off all four legal
-pages at once.
+site it is the optional `grievanceNote` of `LegalTemplateCopy`, left out of `src/content/en-IN/legal/shared.ts`
+while D055 item 7 stands, so it is off all four legal pages at once.
 
 **Copy:**
 
@@ -940,7 +940,8 @@ and processor is still named (`test/analytics-tags.test.ts`), and no new line us
 
 **For the builder (same commit as this page):** `src/content/en-IN/legal/privacy.ts` follows the Copy blocks word
 for word, `ORDER_DATA_LOCATION` reads "Australia" (ADR-009), and `privacy.test.ts` ("prints its approval date as
-the copy page's placeholder") moves to the date. The complaint-reference line is `grievanceNote` in
-`src/content/en-IN/legal/shared.ts`, shared by all four legal pages, so it comes off once. The approved mockup
+the copy page's placeholder") moves to the date. The complaint-reference line is the optional
+`grievanceNote` of `LegalTemplateCopy`, left out of `src/content/en-IN/legal/shared.ts` while D055 item 7 stands, so
+it is off all four legal pages at once. The approved mockup
 `privacy.html` keeps its Gate A text; the main session lists the deviations at the merge (the `privacy` key of
 `test/e2e/support/deviations.ts` already holds V10).

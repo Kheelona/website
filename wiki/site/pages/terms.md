@@ -496,7 +496,8 @@ Notes: seller block from `src/lib/legal.ts:18-24` minus the retired "messages, n
 ([D032](../../decisions/D032-grievance-block-and-call-line.md)); registered office only (B43). The
 complaint-reference placeholder under the grievance block came off until a system issues a reference
 ([D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 7; ECOM-04 still open); in the build
-it is the shared `grievanceNote` in `src/content/en-IN/legal/shared.ts`, one change for all four legal pages. From 1 January
+it is the optional `grievanceNote` of `LegalTemplateCopy`, left out of `src/content/en-IN/legal/shared.ts` while D055
+item 7 stands, one change for all four legal pages. From 1 January
 2027 the grievance block adds "We send you a copy of your complaint as we recorded it." and the yearly
 dark-pattern self-audit certificate appears here or in the footer (legal review ECOM-03, ECOM-13): dated tasks,
 not copy for today.
@@ -659,7 +660,8 @@ main session.
   you can turn it off at any time with a switch in the parent app." (item 11, as on /privacy; the colon before the
   slot goes with it).
 - **Section 16.** The complaint-reference slot under the grievance block comes off (item 7); in the build it is the
-  shared `grievanceNote` in `src/content/en-IN/legal/shared.ts`, one change for all four legal pages.
+  optional `grievanceNote` of `LegalTemplateCopy`, left out of `src/content/en-IN/legal/shared.ts` while D055 item 7
+  stands, one change for all four legal pages.
 - **Notes.** How to read this page (no placeholders left), the fold 1 date note, the section 4, 11 and 16 notes,
   the Sources rows, the Placeholders table, the answered questions, Length, and a new line under Risks (GST-01,
   ECOM-08 off the page) now match the copy.

@@ -251,8 +251,9 @@ policy.
   "Seller block and grievance block" for /shipping, so the page now shows it (legal review, /shipping should-fix 1).
   The complaint-reference placeholder that stood under it on all four legal pages came off until a system issues a
   reference ([D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 7; Rule 7(1)(f),
-  ECOM-04, still open); in the build it is the shared `grievanceNote` (`src/content/en-IN/legal/shared.ts`). The
-  contact link points at `contact.html#grievance` (that id exists on the contact mockup).
+  ECOM-04, still open); in the build it is the optional `grievanceNote` of `LegalTemplateCopy`,
+  left out of `src/content/en-IN/legal/shared.ts` while D055 item 7 stands. The contact link points at
+  `contact.html#grievance` (that id exists on the contact mockup).
 
 ## Fold 5 · Close
 
@@ -378,7 +379,8 @@ main session.
   Its sentence stays word for word: "If the tracking stops moving or the parcel doesn’t reach you, call or message
   us with your order number."
 - **Section 7.** The complaint-reference slot under the grievance block comes off (item 7); in the build it is the
-  shared `grievanceNote` in `src/content/en-IN/legal/shared.ts`, one change for all four legal pages.
+  optional `grievanceNote` of `LegalTemplateCopy`, left out of `src/content/en-IN/legal/shared.ts` while D055 item 7
+  stands, one change for all four legal pages.
 - **Notes.** The notes under fold 1, section 6 and section 7, the Sources rows, the Placeholders table (none left)
   and the answered questions now match the copy. The word count ("about 840 words, placeholders left out") and the
   keyword density (11 "Kheelu"s, 1.3%) are unchanged: the slots were never counted, and the date adds three words.
