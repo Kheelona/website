@@ -6,6 +6,7 @@ import { isPlaceholder } from "@/lib/content/placeholder";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
+import { TYPED_AMOUNT } from "@/lib/seo/price-lead";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { termsFixture } from "../../../../test/fixtures/legal/terms";
 import { offerCopy } from "../offer";
@@ -224,10 +225,11 @@ describe("the terms page: what the decisions require it to say", () => {
 describe("the terms page: shared facts are read, never retyped", () => {
   /* The approved price-breakup placeholder's note says "delivery ₹0" (terms.html:116, terms.md placeholder 3): an open
    * item's words, never a price the page publishes (production refuses every placeholder, ADR-004). Outside placeholder
-   * notes the module types no amount. */
+   * notes the module types no amount, not even in a comment, by the one pattern task 2.1's guard and pageMeta use
+   * (TYPED_AMOUNT, src/lib/seo/price-lead.ts). */
   it("types no amount outside a placeholder's note: every price is a {price:…} token", () => {
-    const outsideNotes = CODE.replace(/\{ph:[^}]*\}/g, "{ph}");
-    expect(outsideNotes).not.toMatch(/₹|\bRs\.?\s?\d|\bINR\s?\d|\d\s?(?:rupees|INR)\b/i);
+    const outsideNotes = SOURCE.replace(/\{ph:[^}]*\}/g, "{ph}");
+    expect(outsideNotes).not.toMatch(TYPED_AMOUNT);
   });
 
   it("types no support number, WhatsApp address, email, legal entity or GSTIN: seller.ts holds them", () => {
