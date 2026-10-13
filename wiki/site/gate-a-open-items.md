@@ -1,7 +1,7 @@
 ---
 title: "Gate A open items: what the founder answered on 2026-10-11 and what runs on working defaults"
 type: tracker
-updated: 2026-10-11
+updated: 2026-10-14
 sources: ["read-only sweep of open-questions, APPROVAL §3, home.md, strategy, D030-D039, claims, gaps, legal-requirements, policies, cmo-review (general-purpose agent, 2026-10-11 10:00 PDT)", ../raw/feedback/2026-10-11-gate-a-answers.md, ../decisions/D040-films-move-to-new-site.md, ../decisions/D041-gate-a-round-1.md, ../decisions/D042-policy-display-answers.md]
 ---
 
@@ -43,6 +43,8 @@ the site states nothing about it.
 
 ## 2. Gate A items on working defaults
 
+**Final 2026-10-14** ([D054](../decisions/D054-founder-answers-open-questions-2026-10-14.md) item 23): every default below stands as the founder's decision. Later rulings on single items: B24 and B25 by D054 item 20 (live photos and logos).
+
 | ID | Item | Working default | Source |
 |---|---|---|---|
 | A11 | Story-mode line spelling | "Wi-Fi" (DS spelling), keep "enjoys and learns from" | home.md:402-403, 854-856 |
@@ -53,6 +55,8 @@ the site states nothing about it.
 | A17 | Puzzles "ask a question back" cell | "No" | cmo-review S11 |
 
 ## 3. Other website items on working defaults
+
+**Final 2026-10-14** ([D054](../decisions/D054-founder-answers-open-questions-2026-10-14.md) item 23): every default below stands as the founder's decision. Later rulings on single items: B24 and B25 by D054 item 20 (live photos and logos).
 
 | ID | Item | Working default | Source |
 |---|---|---|---|

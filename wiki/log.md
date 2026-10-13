@@ -660,3 +660,20 @@ Base `25ccba5`, launched by script path. **4.9** (high): the D050 price gap on H
 
 ## [2026-10-14 09:15] decision | D053: the founder removes the 3-6-9-12 article (P25)
 Asked in the session (P25: Tisseron's 3-6-13-18 AI markers say "no connected toys before 6" and criticise talking plush toys sold from 3 as a screen alternative). Founder's answer: **remove the article** ([D053](decisions/D053-remove-the-3-6-9-12-article.md)). The journal becomes 20 articles; the old URL redirects in one hop to `/stories#screen-time`. Built as task **6.5** after the running batch merges, because 5.20a and 5.20c own two of the three related lists that name it (5.20a is fixing that article now under the old default; its changes to it are dropped by 6.5).
+
+## [2026-10-14 01:20] decision | D054: the founder answers every open build question; the batch wf_cd8260cf-e88 finished
+(Times: entries before this one ran about ten hours ahead of IST; from here they are IST from the system clock.)
+At the founder's request ("ask me all the questions you have here") the main session asked every open question in
+seven rounds. Answers recorded in [D054](decisions/D054-founder-answers-open-questions-2026-10-14.md): F12 (old orders
+keep "Ships from 20 October 2026", the founder contacts them personally; WhatsApp confirmations are sent; balance
+payments unrecorded), `24e92e3` stays on `main`, P3 (Kheelu Blue joins the D041 exception), P5 (no real-phone in-app
+check: accepted risk), the report-only CSP fixed in three lines (amends D039 C10), the B11 privacy words approved, P23
+(data-law guide published as built), P17-P24 as built or left out, F4 (final values before Gate B; the rest hidden),
+F11/G3 (the recognition strip and background lines now, the live founder photos; amends D038), P10 (www stays a
+redirect), P14 applied, P16 kept, `/ideabaaz` becomes the store's not-found (no redirect), F13 (today's tiers), the
+Gate A working defaults final. The question about photos named two founders; the page has three, so all three live
+photos apply (founder told). New task **6.6**; task **6.4** unblocked. open-questions, gate-a-open-items, tasks,
+index, status updated.
+The batch `wf_cd8260cf-e88` finished (27 agents, 2 h 6 min): 4.9, 5.20b, 5.20c and 6.1 passed; 5.20a and 6.2
+fixed-unreviewed. Merge gate next. Found by 4.9: M1's local Lighthouse runs with tags on sent 2 GA4 hits and 36 Meta
+gateway events to production (the harness's block list lacked both hosts; fixed at this merge).

@@ -1338,7 +1338,9 @@ processor names, the payload key allow-list and every `not.toContain` stay.
 
 ### 6.4 Receipt email and `/thanks` wording alignment (builder; gated on F12)
 
-- **Gate:** the founder's answer on deliveries for orders placed before 10 October (F12).
+- **Gate:** the founder's answer on deliveries for orders placed before 10 October (F12). **Open since 2026-10-14**
+  ([D054](../decisions/D054-founder-answers-open-questions-2026-10-14.md) item 1): keep the split as built (before
+  10 October: "Ships from 20 October 2026"; later: the D023 line).
 - **Owns:** label strings in `src/lib/email/templates.ts` only (facts and branching untouched),
   `src/lib/email/templates.test.ts` (literal-only), `src/components/sections/store/OrderRows/delivery-line.ts`,
   `test/guards/fixtures/authorised-diffs/{src__lib__email__templates.ts,src__lib__email__templates.test.ts}.patch`.
@@ -1366,6 +1368,26 @@ processor names, the payload key allow-list and every `not.toContain` stay.
   expects one copy page per remaining slug.
 - **Test:** targeted checks (D052); the hub and the three changed articles at 360, 390 and 1440; `redirects.spec`,
   `links.spec` and `content-integrity` on the hub and the three articles.
+
+### 6.6 The founder's answers of 2026-10-14 ([D054](../decisions/D054-founder-answers-open-questions-2026-10-14.md)) (copywriter, CMO, builder; risk high; after the batch `wf_cd8260cf-e88` merges)
+
+- **Why:** D054 items 7, 9, 12, 19 and 20.
+- **Items:** (1) `/team`: the recognition strip as live (NVIDIA Inception, Karnataka Elevate and nasscom marks from
+  `public/recognition/`, Founders Inc as text; heading "Recognised by."), the three background lines written by the
+  copywriter from the live bios (facts only; claims §4 wording stays out; CMO review), and the three live photos
+  (`apoorva.jpg`, `aman.jpg`, `kashyap.jpg` from the tag `archive/pre-reset-2026-10-10`, through the image pipeline)
+  with the copy page's alts; the F11 gate and the B24 placeholder go; parity deviation V7 shrinks to what is still
+  intentional. (2) F4: a row of the product facts or the safety list whose value is still an F4 placeholder renders
+  nothing, on every environment, and the production build no longer refuses it; the box contents stay; a unit test
+  proves both. (3) `store.kheelona.com/ideabaaz` answers the store's not-found page (404): the partner route and its
+  partner-only parts go through a reviewed authorised diff citing D054 (the route is checkout-frozen); `url-map.md`
+  row updated. (4) The report-only CSP: drop `upgrade-insecure-requests`, add `https://www.google.com` and the Meta
+  gateway hosts of tracking-inventory §14a to the directives the M1 reports name, through a reviewed authorised diff
+  citing D054; Report-Only stays. (5) `/privacy`: "What blocking can’t stop." in the copy page, the mockup source,
+  the rebuilt mockup and `privacy.ts`.
+- **Acceptance:** each item's unit tests; `/team`, `/products/kheelu`, `/privacy` and the store's `/ideabaaz` at 360,
+  390 and 1440; checkout-freeze, checkout-jsx-contract and checkout-signature green with the reviewed patches; no
+  tracking ID or event name changes; Lighthouse Best Practices on a tagged page no longer loses the CSP points.
 
 **Wave 6 ownership check:** 6.1, 6.2 and 6.4 own disjoint files (6.2's `PreorderForm.tsx` is not in 6.1;
 6.4's `delivery-line.ts` was 5.16's in the previous wave). A gated task whose gate has not opened simply
