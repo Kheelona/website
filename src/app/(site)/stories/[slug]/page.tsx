@@ -37,8 +37,14 @@ import { pageGraph, breadcrumbs, SITE_URL, pageMeta, jsonLd, authorRef } from "@
  *  returned 404 with 0 stylesheets and 0 characters of body text. */
 export const dynamicParams = false;
 
-/** Covers are a path on this site (the imported articles) or our blog storage. */
-const absoluteImage = (src: string) => (src.startsWith("/") ? `${SITE_URL}${src}` : src);
+/** The cover's address for share cards and schema, always on THIS domain: a path under
+ *  /public as is, and a dashboard upload through the image optimizer. The upload's own
+ *  URL is on api.kheelona.com, which answers `X-Robots-Tag: noindex` on every response
+ *  by design, so naming it here would ask Google to drop the article's image. */
+const absoluteImage = (src: string) =>
+  src.startsWith("/")
+    ? `${SITE_URL}${src}`
+    : `${SITE_URL}/_next/image?url=${encodeURIComponent(src)}&w=1200&q=75`;
 
 export function generateStaticParams() {
   return STORIES.map((s) => ({ slug: s.slug }));
