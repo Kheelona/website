@@ -92,12 +92,12 @@ export default async function IdeabaazPage() {
      token, with the same balance-before-dispatch terms (TierCheckout). */
   return (
     <TierCheckout
+      content={partnerPage.checkout}
+      mark={<PartnerChip />}
       tier={result.tier}
       signature={sig}
       amountLabel={amountLabel}
       balanceLabel={balanceLabel}
-      content={partnerPage.checkout}
-      mark={<PartnerChip />}
     />
   );
 }

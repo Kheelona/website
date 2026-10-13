@@ -66,7 +66,7 @@ export default async function EventPage({
   /* Always the token shape, whatever the public mode is: an event token is a
      token, with the same balance-before-dispatch terms (TierCheckout). */
   return (
-    <TierCheckout tier={result.tier} signature={sig} amountLabel={amountLabel} balanceLabel={balanceLabel} content={eventPage.checkout} />
+    <TierCheckout content={eventPage.checkout} tier={result.tier} signature={sig} amountLabel={amountLabel} balanceLabel={balanceLabel} />
   );
 }
 

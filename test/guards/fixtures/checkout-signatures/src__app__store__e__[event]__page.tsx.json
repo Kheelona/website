@@ -46,11 +46,11 @@
     "@Panel cta={false}",
     "@Panel copy={eventPage.refused}",
     "@Panel message={tierRefusalMessage(result.reason)}",
+    "@TierCheckout content={eventPage.checkout}",
     "@TierCheckout tier={result.tier}",
     "@TierCheckout signature={sig}",
     "@TierCheckout amountLabel={amountLabel}",
     "@TierCheckout balanceLabel={balanceLabel}",
-    "@TierCheckout content={eventPage.checkout}",
     "@NotFoundPanel copy={copy}",
     "@NotFoundPanel cta={cta}"
   ]
