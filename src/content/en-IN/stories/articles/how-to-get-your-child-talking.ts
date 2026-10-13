@@ -6,7 +6,8 @@ import { DEFAULT_OG, TEAM_BYLINE } from "../../organization";
 /**
  * How to get your child to talk more: rewritten (task 5.18) from its copy page,
  * wiki/site/pages/story-how-to-get-your-child-talking.md, word for word (CMO review
- * wiki/qa/cmo-review-articles-5.18-2026-10-14.md). No mockup: the article template renders it. Card words, related
+ * wiki/qa/cmo-review-articles-5.18-2026-10-14.md; copy fixes M5 and M13 in task 5.20b, CMO review
+ * wiki/qa/cmo-review-article-fixes-5.20b-2026-10-14.md). No mockup: the article template renders it. Card words, related
  * list and dates as the stub held them (stories.md fold 3; the live journal's ring and dates). No pitch on the
  * talking-and-language guides: no product link, no pre-order button (the keep-reading close), and Kheelu named only
  * in D025's line under the answer; the one in-text link goes to another guide. Every statement about language
@@ -134,7 +135,7 @@ export const article = {
       blocks: [
         {
           kind: "p",
-          text: "If it’s everywhere, not only after school, read our guide on [what varies between children, and when to ask a professional](/stories/talking-late-or-talking-little).",
+          text: "If your child says very little everywhere, not only after school, read our guide on [what varies between children, and when to ask a professional](/stories/talking-late-or-talking-little).",
         },
       ],
     },

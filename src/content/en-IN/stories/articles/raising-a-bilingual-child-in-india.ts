@@ -6,7 +6,8 @@ import { DEFAULT_OG, TEAM_BYLINE } from "../../organization";
 /**
  * Raising a bilingual child in India: rewritten (task 5.18) from its copy page,
  * wiki/site/pages/story-raising-a-bilingual-child-in-india.md, word for word (CMO review
- * wiki/qa/cmo-review-articles-5.18-2026-10-14.md). No mockup: the article template renders it. Card words, related
+ * wiki/qa/cmo-review-articles-5.18-2026-10-14.md; copy fixes M13 in task 5.20b, CMO review
+ * wiki/qa/cmo-review-article-fixes-5.20b-2026-10-14.md). No mockup: the article template renders it. Card words, related
  * list and dates as the stub held them (stories.md fold 3; the live journal's ring and dates). No pitch: no product
  * link, no pre-order button (the keep-reading close), and Kheelu named only in D025's line under the answer. Every
  * statement about speech or language carries a source marker (D025, D026); the review's count-each-idea-once method and
@@ -36,7 +37,7 @@ export const article = {
     readMinutes: 3,
     image: {
       src: readingNook,
-      alt: "A girl in a coral kurta sits cross-legged in a cushioned window seat, reading a picture book aloud.",
+      alt: "A girl with curly hair, in a coral kurta, sits cross-legged on a window seat and reads a picture book aloud, one finger on the page.",
     },
   },
   /* Fold 2: the answer first (50 words), then D025's line, verbatim, directly under it. */

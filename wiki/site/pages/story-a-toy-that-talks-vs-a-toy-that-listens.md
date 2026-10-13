@@ -8,7 +8,8 @@ sources:
   - ../gate-a-open-items.md (B3, B5, B14, B15, B28, B45)
   - ../pages/stories.md (fold 3 card, the keep close)
   - ../pages/story-talking-toys-and-late-talkers.md (the approved speech and language model, task 5.6)
-  - ../pages/story-learning-toys-for-a-three-year-old.md (fold 4: the same C07 and C09 lines; the same head photo, in its body)
+  - ../pages/story-learning-toys-for-a-three-year-old.md (fold 4: the same C07 and C09 lines)
+  - ../pages/story-how-to-get-your-child-talking.md (fold 1: the alt for ira-04)
   - ../pages/story-what-to-look-for-in-a-safe-ai-toy.md (owns Common Sense Media and Fairplay, with the B3 answer)
   - ../../engineering/tasks.md (Wave 5 part C paragraph, row 5.18, the note on the 18 articles without a mockup)
   - ../../research/keyword-map.md (§2.2 CMP-4, CMP-7, §4.2, §4.3, §5.1 rules 1-10, §5.2, §6.8 TT1)
@@ -20,7 +21,8 @@ sources:
   - "src/lib/stories-expansion.ts:306-340 (the live article; text and facts as input only), read in the task worktree at base aa4b39e"
   - "src/content/en-IN/stories/articles/a-toy-that-talks-vs-a-toy-that-listens.ts (stub: card, related list, dates); src/content/types.ts (Article shape); src/layouts/ArticleTemplate/ArticleTemplate.tsx"
   - test/guards/banned-phrases.data.ts (checked against every Copy block)
-  - design-system/project/03-cast.md:110; 01-writing.md:19-26, 111-113 (read-only)
+  - design-system/project/03-cast.md:37-43, 115; 01-writing.md:19-26, 111-113 (read-only)
+  - ../../qa/cmo-review-articles-5.18-2026-10-14.md (M12, M13: applied in task 5.20b, see the foot of this page)
 ---
 
 # Story: Toys for language development: talk or listen?
@@ -100,11 +102,16 @@ leaves them out. `what-to-look-for-in-a-safe-ai-toy` owns AI-toy safety; fold 6 
 - **H1 accent:** `Hand` on "talk or listen?".
 - **Lead:** the hub card's summary, word for word.
 - **Dates and read time:** "First published" is the stub's `published` (`2026-07-30`, the live date). Read time
-  from the words: about 660 words in the article (head to fold 7), so 3 min (`readingMinutes`: words / 200, rounded).
-- **Image** (`kh-photo --wide`, 16:9): `advik-04-floor-train-web.webp`. Alt: "A boy in a green T-shirt lying on a red
-  floor, smiling as he pushes a blue wooden train." (`03-cast.md:110`, "screen-free play"; the alt is the approved
-  one from the learning-toys page, where the same photo sits in the body.) A toy that neither talks nor listens,
-  and a child doing the play himself. **No Kheelu in any image on this page** (no pitch).
+  from the words: about 650 words in the article (head to fold 7; head, answer and parts, as the article test counts
+  them, 648 after task 5.20b), so 3 min (`readingMinutes`: words / 200, rounded).
+- **Image** (`kh-photo`, 4:5): `ira-04-paper-crown-web.webp`. Alt: "A laughing girl with a long braid holds a yellow
+  paper crown on her head, beside a low table scattered with crayons and paper scraps." (`03-cast.md:115`,
+  "confidence and creativity"; Ira is the cast's storyteller, `03-cast.md:37-43`; no Kheelu in the photo; checked by
+  eye 2026-10-14.) The alt is the journal's one alt for this photo, word for word as on
+  [how-to-get-your-child-talking](story-how-to-get-your-child-talking.md#fold-1--article-head) (CMO review M13).
+  A child making her own play out of paper and crayons: nothing in the frame talks or listens but her. The photo is
+  portrait, so the head takes the portrait layout, as on the learning-toys guide. No name or age in the alt.
+  **No Kheelu in any image on this page** (no pitch).
 
 ---
 
@@ -118,14 +125,16 @@ leaves them out. `what-to-look-for-in-a-safe-ai-toy` owns AI-toy safety; fold 6 
 
 > **H2:** Are talking toys good for a young child's language?
 >
-> A toy can't do the talking for you. Harvard's Center on the Developing Child says back-and-forth exchanges between a young child and a caring adult support early language skills.¹ A toy that plays recordings or repeats your child's words can't take a real turn. Choose toys that give you both something to talk about.
+> Not on their own: a toy can't do the talking for you. Harvard's Center on the Developing Child says back-and-forth exchanges between a young child and a caring adult support early language skills.¹ A toy that plays recordings or repeats your child's words can't take a real turn. Choose toys that give you both something to talk about.
 >
 > *Kheelu is a toy, not a therapy or treatment. If you're worried about your child's speech, talk to your paediatrician.*
 
-- Answer: 54 words (marker excluded). The marked sentence is the C07 line, trimmed (Key Takeaways 1 and 3); the
-  rest is house advice. It changes the keyword map's TT1 draft, whose "A talking toy can add to your
-  conversations" and "Only if they wait for your child to talk" promise something for a toy that no source here
-  tested.
+- Answer: 58 words (marker excluded). It opens with a direct answer to the H2, "Not on their own", because answer
+  engines quote the first sentence (CMO review M12). The marked sentence is the C07 line, trimmed (Key Takeaways 1
+  and 3); the rest is house advice. "Not on their own" is a house line with no marker: it promises nothing for any
+  toy, and the C07 line after it credits a caring adult. The answer changes the keyword map's TT1 draft, whose "A
+  talking toy can add to your conversations" and "Only if they wait for your child to talk" promise something for a
+  toy that no source here tested.
 - The disclaimer is [D025](../../decisions/D025-speech-and-language.md)'s line, verbatim (working default B45), as on
   the approved late-talker page. It is the only mention of Kheelu on the page.
 
@@ -309,13 +318,13 @@ claims.
 | Title ≤ 60, primary at the start | Yes | 57 characters; the keyword map's own draft |
 | Meta ≤ 155: primary plus a concrete fact | Yes | 150 characters; the three things the page gives |
 | One H1 with the primary | Yes | "Toys for language development: talk or listen?" |
-| Primary in an answer-first block in the first ~100 words | Yes | H1, then the fold 2 question H2 ("a young child's language") and its 54-word answer |
+| Primary in an answer-first block in the first ~100 words | Yes | H1, then the fold 2 question H2 ("a young child's language") and its 58-word answer |
 | An H2 with the primary or a close variant | Yes | Fold 5 "What helps language development?" |
 | Secondaries | Yes | "are talking toys good for speech": fold 2 H2 (as "language"; "speech" stays in the disclaimer only); "smart speaker for a child": fold 6 `h3` |
 | Not competing with `/products/kheelu` | Yes | "talks back" appears nowhere ([§4.3](../../research/keyword-map.md#43-overlap-and-cannibalisation-flags)) |
 | Health terms only beside the D025 line, with public sources | Yes | ([§5.1](../../research/keyword-map.md#5-placement-rules) rules 8, 10) |
 | Alt text | Yes | Describes the scene; no keyword forced |
-| Density | Yes | "toys for language development" once (H1: 4 words of about 660, 0.6%); "language development" twice (H1, fold 5 H2); "Kheelu" once (the disclaimer) |
+| Density | Yes | "toys for language development" once (H1: 4 words of about 650, 0.6%); "language development" twice (H1, fold 5 H2); "Kheelu" once (the disclaimer) |
 | Words never placed | Yes | No product, no competitor or brand names (generic "smart speaker"), no wake-word line, no "safe" about any toy, no tutor, lessons, adapts; no dead age range |
 
 ## CTA tracking values
@@ -352,6 +361,7 @@ None.
 
 | Claim | Source |
 |---|---|
+| "Not on their own: a toy can't do the talking for you." (the answer's opening) | House line, no marker ([CMO review M12](../../qa/cmo-review-articles-5.18-2026-10-14.md#minor-fixes)); it makes no claim for any toy, and the C07 line that follows credits a caring adult |
 | Harvard serve-and-return line, with "a caring adult"; support for early language skills (answer, trimmed) | [source verification C07](../../research/source-verification.md#c07--serve-and-return); excerpt `C07-harvard-serve-and-return.md:22-28, 36-43` |
 | Romeo 2018: 36 children aged 4 to 6; turns and Broca's area; no link with adult words; a link, not cause | [source verification C09](../../research/source-verification.md#c09--turns-not-just-words-ages-4-to-6); excerpt `C09-romeo-2018-psychological-science.md:23-36, 57-64, 70-72` |
 | Neither source tested a toy | `C07-harvard-serve-and-return.md:45-54`; `C09-romeo-2018-psychological-science.md:77-81` |
@@ -362,8 +372,32 @@ None.
 | No pitch on speech and language pages; Common Sense Media cited in full where cited | Working defaults [B5, B3](../gate-a-open-items.md#3-other-website-items-on-working-defaults); task notes (5.18); [age-band review §4](../../product/age-band-review.md#4-common-sense-media-and-the-3-to-7-band) |
 | Cut lines | [source verification](../../research/source-verification.md) C07 caveat 6, C09 caveat 3, C33 caveat 1; [age-band review](../../product/age-band-review.md) row 39; [claims §4](../../product/claims.md#4-retired-or-banned-wording) ("safe" alone) |
 | Card title and summary; related list; dates | stub `src/content/en-IN/stories/articles/a-toy-that-talks-vs-a-toy-that-listens.ts`; [stories.md fold 3](stories.md#fold-3--talking-and-language-talking); `src/lib/stories-expansion.ts:313-314` |
-| Photo and alt | DS `03-cast.md:110`; alt as approved on [the learning-toys page, fold 6](story-learning-toys-for-a-three-year-old.md#fold-6--pretend-play) |
+| Photo and alt | DS `03-cast.md:37-43, 115`; alt as on [how-to-get-your-child-talking](story-how-to-get-your-child-talking.md#fold-1--article-head), word for word; file checked by eye 2026-10-14; [CMO review M13](../../qa/cmo-review-articles-5.18-2026-10-14.md#minor-fixes) |
 
 **For the main session (not the founder).** (1) `updated`: the same ruling as the other 17 (stub date or rewrite
-date). (2) The head photo is also in the learning-toys guide's body (a different page, so each DS child still appears
-once per page); the parallel copywriter may pick it too.
+date). (2) The head photo is `ira-04` since task 5.20b (CMO review M13). Among the six talking guides it also heads
+`how-to-get-your-child-talking`, which this page does not link to and which does not link here. Every guide linked
+from here, or linking here, has a different head photo (`advik-04`, `myra-04`, `kabir-04`, `tara-04`, and
+`tara-02` on the safe-AI-toy guide). Outside the talking topic, `what-actually-builds-a-sharp-brain` (task 5.19)
+also uses `ira-04`, with a different alt; one alt per photo across the journal means it should take this one
+(raised with the main session in task 5.20b).
+
+## Changes after approval (task 5.20b)
+
+The CMO passed this page in round 1 ([CMO review, task 5.18](../../qa/cmo-review-articles-5.18-2026-10-14.md)).
+Task 5.20b applied the review's fixes for it on 2026-10-14 ([tasks](../../engineering/tasks.md), 5.20 item 2).
+Every other word of the Copy blocks is as approved. The module follows this page word for word in the same commit
+(`talking-articles.test.tsx`).
+
+| Where | What changed | Why |
+|---|---|---|
+| Fold 2, the answer's first sentence | "A toy can't do the talking for you." became "Not on their own: a toy can't do the talking for you." The answer goes from 54 to 58 words (markers excluded) | M12: the H2 asks a yes-or-no question, and answer engines quote the first sentence; now that sentence answers it. A house line with no marker, and it makes no claim for any toy |
+| Fold 1, head photo and alt | `advik-04-floor-train-web.webp` (16:9) became `ira-04-paper-crown-web.webp` (4:5), with the alt `how-to-get-your-child-talking` gives that photo. The head moves from the wide layout to the portrait one | M13: `advik-04` also headed `talking-late-or-talking-little`, which links here, so a parent tapping "Keep reading" landed on the same picture. `ira-04` has no Kheelu (`03-cast.md:115`) |
+
+**What follows from the changes.** The words a reader reads (head, answer and parts, as the article test counts
+them) go from about 644 to 648, so the read time stays 3 min (`round(words / 200)`) and the byline row does not
+change. The fold 1 read-time note and the density row now use that count (about 650) in place of the draft's
+estimate of about 660. In the keyword placements, the answer is now 58 words (still 40 to 60); nothing else moves. No research
+statement, marker or source was added, and there is no placeholder. For the builder: the head photo changes shape,
+so its `assets.md` row follows the photo (tasks.md 5.20 item 3). Not part of this task: M14 (the module already uses
+the CMO's callout icon, and the article test holds it).

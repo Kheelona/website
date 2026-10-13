@@ -20,7 +20,9 @@ sources:
   - "src/lib/stories.ts:98-121 (the live article; input only, read in the w5c-5.18 worktree); src/content/en-IN/stories/articles/how-children-learn-by-talking.ts (stub: card, related, dates)"
   - "src/content/types.ts (Article, Answer, ProseBlock, ListItem with a lead), src/layouts/ArticleTemplate/ArticleTemplate.tsx, src/content/en-IN/stories/articles/index.ts (articlePageCopy.keep), src/assets/icons.generated.ts (DS icon names)"
   - "test/guards/banned-phrases.data.ts; test/e2e/content-integrity.spec.ts:25-60"
-  - design-system/project/03-cast.md:45-51,120 (read-only); photo checked by eye 2026-10-13
+  - design-system/project/03-cast.md:53-58,125 (read-only); photo checked by eye 2026-10-14 (task 5.20b; it was tara-04, 03-cast.md:45-51,120)
+  - ../../qa/cmo-review-articles-5.18-2026-10-14.md (M7, M13; applied in task 5.20b)
+  - ../pages/story-why-three-to-six-are-the-years-that-matter-most.md, ../pages/story-what-actually-builds-a-sharp-brain.md (their head photos, for M13; read only)
 ---
 
 # Story: Serve and return: how children learn by talking
@@ -104,10 +106,20 @@ dates; task 5.6 set `updated` to the rewrite's date on its three articles, so th
 - Published date from the stub (`2026-07-28`); the byline shows only "First published".
 - No age band is attached to serve and return itself: Harvard gives it none (C07 caveat 3), so the lead says "your
   child", and the page's "3 to 7" sits in the keep-reading close.
-- **Image** (`kh-photo`, 4:5): `tara-04-reading-nook-web.webp`. Alt: "A girl with curly hair, in a coral kurta, sits
-  cross-legged on a window seat and reads a picture book aloud, one finger on the page." Tara is the cast's child for
-  multilingual homes (`03-cast.md:50`); the photo has no Kheelu (`03-cast.md:120`). **No Kheelu in any image on
-  this page**: next to Harvard's caring-adult lines, a photo of the toy would read as the toy doing the returning.
+- **Image** (`kh-photo --wide`, 16:9): `kabir-04-planet-book-web.webp`. Alt: "A boy in round glasses and a mustard
+  T-shirt lies on a striped rug, chin in his hands, wide-eyed over a picture book about planets." The alt is the
+  journal's one alt for this photo, word for word as the approved late-talker guide and the hub's talking card
+  ([stories.md](stories.md#fold-3--talking-and-language-talking), fold 3, card 1 image). Kabir is the cast's 6-year-old
+  for space and "how does it work?" (`03-cast.md:53-58`); the photo is "curiosity and reading", with no Kheelu
+  (`03-cast.md:125`), which suits a page that opens on why the moon follows the car. Checked by eye 2026-10-14.
+  **No Kheelu in any image on this page**: next to Harvard's caring-adult lines, a photo of the toy would read as the
+  toy doing the returning.
+- **Why this photo (task 5.20b, CMO review M13).** It was `tara-04-reading-nook-web.webp`, which also heads
+  `why-three-to-six-are-the-years-that-matter-most`, the first guide in this page's "Keep reading", which links back
+  here, so a parent would open the same picture twice; M13 asks that no talking guide link to a guide with its own
+  head photo. `kabir-04` heads only the late-talker guide, which neither links here nor is linked from here; every
+  guide this page links to or is linked from opens on another photo (`tara-04`, `ira-04`, `myra-04`, or a
+  photo of the AI guides). Among the six talking guides, no photo heads more than two.
 
 ---
 
@@ -160,9 +172,9 @@ dates; task 5.6 set `updated` to the rewrite's date on its three articles, so th
 >
 > Harvard's Center on the Developing Child also calls serve and return, the back-and-forth between young children and the significant adults in their lives, "one of the most essential experiences in shaping the architecture of the developing brain".²
 >
-> In a 2018 study of 36 children aged 4 to 6, children who had more back-and-forth conversational turns with adults showed more activity in Broca's area, a language region of the brain, while listening to a story. The number of adult words they heard showed no such link. Turns also predicted the children's language scores once family income and parents' education were taken into account. The study shows a link, not cause and effect.³
+> In a 2018 study of 36 children aged 4 to 6, children who had more back-and-forth conversational turns with adults showed more activity in Broca's area, a language region of the brain, while listening to a story. The number of adult words they heard showed no such link. Turns also predicted the children's language scores once family income and parents' education were taken into account.³
 >
-> In the study, a turn was an adult speaking and the child replying, or the other way round.³ A turn needs both of you.
+> The study shows a link, not cause and effect.³ In the study, a turn was an adult speaking and the child replying, or the other way round.³ A turn needs both of you.
 
 - Paragraph 1 is the verified C08 line ([source verification C08](../../research/source-verification.md#c08--one-of-the-most-essential-experiences)),
   the quote exact, from the Center's 2011 page; its second sentence is left out (fold 2 already describes the serve).
@@ -170,6 +182,8 @@ dates; task 5.6 set `updated` to the rewrite's date on its three articles, so th
 - Paragraphs 2 and 3 are the verified C09 line ([source verification C09](../../research/source-verification.md#c09--turns-not-just-words-ages-4-to-6)),
   in full: ages 4 to 6, never three-year-olds; "a link, not cause and effect"; it does not say turns beat adult words
   for language scores. "A turn needs both of you" is a house line applying the study's own definition.
+- Phone-first (CMO review M7, task 5.20b): the limit sentence opens paragraph 3, with its own marker, so the study
+  paragraph is 65 words in three sentences (it was 74 in four) and the limit is still read before the definition.
 - No Kheelu in this fold: no brain line shares a sentence or a paragraph with the product ([D016](../../decisions/D016-brain-wording.md)).
 
 ---
@@ -339,7 +353,7 @@ None.
 |---|---|
 | Serve and return: back-and-forth exchanges between a young child and a caring adult; help build (and strengthen) neural connections in the child's brain; support early language and social skills | [source verification C07](../../research/source-verification.md#c07--serve-and-return); excerpt `C07-harvard-serve-and-return.md:22-28, 36-43`; [claims §8](../../product/claims.md#8-brain-and-development-claims-with-their-anchors) |
 | "One of the most essential experiences in shaping the architecture of the developing brain", between children and significant adults | [source verification C08](../../research/source-verification.md#c08--one-of-the-most-essential-experiences); `C08-harvard-serve-return-shapes-brain-circuitry.md:18-25` |
-| Romeo 2018: 36 children aged 4 to 6; turns and Broca's-area activity during a story; no link with adult words; turns predicted language scores after income and parents' education; a link, not cause | [source verification C09](../../research/source-verification.md#c09--turns-not-just-words-ages-4-to-6); `C09-romeo-2018-psychological-science.md:23-36, 46-52, 57-64, 70-72` |
+| Romeo 2018: 36 children aged 4 to 6; turns and Broca's-area activity during a story; no link with adult words; turns predicted language scores after income and parents' education; a link, not cause (since task 5.20b the opening sentence of fold 4's third paragraph, with its own marker, M7) | [source verification C09](../../research/source-verification.md#c09--turns-not-just-words-ages-4-to-6); `C09-romeo-2018-psychological-science.md:23-36, 46-52, 57-64, 70-72` |
 | A turn: an adult speaking and the child replying, or the other way round | `C09-romeo-2018-psychological-science.md:38-41` (Method) |
 | The "serve and return" relationship "between children and their parents and other caregivers in the family or community" | `C08-harvard-inbrief-science-of-ecd.md:18-28` (p. 1, point 2) |
 | A strong model in any language helps build a foundation for learning others | [source verification C40](../../research/source-verification.md#c40--a-second-language-does-not-cause-delay); `C40-asha-late-language-emergence.md:23-27` (paraphrase, as in the C40 ready line) |
@@ -352,4 +366,27 @@ None.
 | Ages 3 to 7 on the page; no age attached to serve and return; nothing implying under 3 | C07 caveat 3; [content boundary](../content-boundary.md); [age-band review](../../product/age-band-review.md); `test/e2e/content-integrity.spec.ts:25-49` |
 | Card title and summary; related list; first-published date | Stub `src/content/en-IN/stories/articles/how-children-learn-by-talking.ts`; [stories.md fold 3](stories.md#fold-3--talking-and-language-talking); `src/lib/stories.ts:99-106` |
 | Byline | [facts, team](../../product/facts.md) (the live byline's author was removed from the site, lines 304-308); `TEAM_BYLINE` |
-| Photo | DS `03-cast.md:50, 120`; file checked by eye 2026-10-13 |
+| Photo | DS `03-cast.md:53-58, 125`; file checked by eye 2026-10-14; alt word for word as the approved [late-talker guide](story-talking-toys-and-late-talkers.md#fold-1--article-head) and [stories.md](stories.md#fold-3--talking-and-language-talking) fold 3; moved from `tara-04` under [CMO review 5.18](../../qa/cmo-review-articles-5.18-2026-10-14.md#minor-fixes) M13 (the keep-reading repeat with `why-three-to-six-are-the-years-that-matter-most`, `src/content/en-IN/stories/articles/why-three-to-six-are-the-years-that-matter-most.ts:2`) |
+
+## Changes after approval (task 5.20b)
+
+The CMO passed this page in round 1 ([CMO review, task 5.18](../../qa/cmo-review-articles-5.18-2026-10-14.md)).
+Task 5.20b applied the review's fixes for it on 2026-10-14 ([tasks](../../engineering/tasks.md), 5.20 item 2).
+Every other word of the Copy blocks is as approved. The module follows this page word for word in the same commit
+(`talking-articles.test.tsx`); its `updated` stays 2026-10-13.
+
+| Where | What changed | Why |
+|---|---|---|
+| Fold 4, paragraphs 2 and 3 | "The study shows a link, not cause and effect.³" moved from the end of paragraph 2 to the start of paragraph 3, before "In the study, a turn was …". Paragraph 2 now ends "…parents' education were taken into account.³" No word changed: paragraph 2 gains a marker ³ at its new end, and the moved sentence keeps its own (one marker more, same note) | M7: paragraph 2 was 74 words in four sentences, about eleven lines at 360 px; now 65 words in three |
+| Fold 1, head photo and alt | `tara-04-reading-nook-web.webp` (4:5) became `kabir-04-planet-book-web.webp` (16:9, the head's wide layout, `kh-photo --wide`), with the alt the journal already uses for it: "A boy in round glasses and a mustard T-shirt lies on a striped rug, chin in his hands, wide-eyed over a picture book about planets." | M13, as the task notes apply it: `tara-04` also heads `why-three-to-six-are-the-years-that-matter-most`, the first guide in this page's "Keep reading", which links back here, so a parent would open the same picture twice. Of the five no-Kheelu photos (`03-cast.md:93`), only `kabir-04` avoids every guide this page links to or is linked from (`ira-04` heads the sharp-brain guide, `myra-04` the learning-toys guide, `advik-04` sits in that guide's body). No Kheelu (`03-cast.md:125`) |
+
+**What follows from the changes.** No word was added or cut, so the read time (3 min), the byline row, the title
+(58 characters), the meta description (130), the keyword placements and the sources do not change. No research
+statement was added, and there is no placeholder. The builder updates the module's head image import and alt, and
+the `assets.md` rows for `kabir-04` and `tara-04`.
+
+**For the main session (not the founder).** The photo move goes beyond the letter of M13, which left this page on
+`tara-04`; the CMO could not see the 5.19 guides' photos then (M13, last sentence). If task 5.20c moves
+`why-three-to-six-are-the-years-that-matter-most` off `tara-04`, this page can go back to it (the alt then is the one
+M13 names for `tara-04`, this page's old alt). With `kabir-04` here, the hub's talking fold shows `kabir-04` on its
+featured card (the late-talker guide) and this guide opens on the same photo; the hub shows no other card photo there.

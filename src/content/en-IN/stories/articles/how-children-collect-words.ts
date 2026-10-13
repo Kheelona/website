@@ -1,12 +1,13 @@
 /// <reference types="next/image-types/global" />
-import paperCrown from "@ds/assets/Photo library/ira-04-paper-crown-web.webp";
+import drawingAtHome from "@ds/assets/Photo library/myra-04-drawing-at-home-web.webp";
 import type { Article } from "@/content/types";
 import { DEFAULT_OG, TEAM_BYLINE } from "../../organization";
 
 /**
  * How to build a 3-year-old's vocabulary: rewritten (task 5.18) from its copy page,
  * wiki/site/pages/story-how-children-collect-words.md, word for word (CMO review
- * wiki/qa/cmo-review-articles-5.18-2026-10-14.md). No mockup: the article template renders it. Card words, related
+ * wiki/qa/cmo-review-articles-5.18-2026-10-14.md; copy fixes M8, M9 and M13 in task 5.20b, CMO review
+ * wiki/qa/cmo-review-article-fixes-5.20b-2026-10-14.md). No mockup: the article template renders it. Card words, related
  * list and dates as the stub held them (stories.md fold 3; the live journal's ring and dates). No pitch: no product
  * link, no pre-order button (the keep-reading close), and Kheelu named only in D025's line under the answer; the two
  * in-text links go to other guides. Every statement about language carries a source marker (D025, D026). The copy page
@@ -33,8 +34,8 @@ export const article = {
     author: TEAM_BYLINE,
     readMinutes: 3,
     image: {
-      src: paperCrown,
-      alt: "A laughing girl with a long braid holds a yellow paper crown on her head, beside a low table scattered with paper scraps and crayons.",
+      src: drawingAtHome,
+      alt: "A little girl in a red polka-dot frock, tongue out in concentration, scribbling with an orange crayon at a low table.",
     },
   },
   /* Fold 2: the answer first (56 words), then D025's line, verbatim, directly under it. */
@@ -71,7 +72,7 @@ export const article = {
         },
         {
           kind: "p",
-          text: "Its authors suggest encouraging parents to talk with their children in “more interactive, back-and-forth conversation”.[^2] For words, that means saying the new word, then giving your child a reason to use it.",
+          text: "Its authors suggest encouraging parents to talk with their children in “more interactive, back-and-forth conversation”.[^2] With a new word, one way to do that: say it, then give your child a reason to use it.",
         },
       ],
     },
@@ -121,7 +122,7 @@ export const article = {
     /* Fold 7: a speech answer, on a page that carries D025's line (fold 2) */
     {
       kind: "part",
-      title: "What if your child seems to have few words?",
+      title: "When should you ask your doctor?",
       blocks: [
         {
           kind: "p",

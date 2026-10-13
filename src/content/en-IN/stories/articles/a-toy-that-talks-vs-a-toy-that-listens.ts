@@ -1,12 +1,13 @@
 /// <reference types="next/image-types/global" />
-import floorTrain from "@ds/assets/Photo library/advik-04-floor-train-web.webp";
+import paperCrown from "@ds/assets/Photo library/ira-04-paper-crown-web.webp";
 import type { Article } from "@/content/types";
 import { DEFAULT_OG, TEAM_BYLINE } from "../../organization";
 
 /**
  * Toys for language development: talk or listen?: rewritten (task 5.18) from its copy page,
  * wiki/site/pages/story-a-toy-that-talks-vs-a-toy-that-listens.md, word for word (CMO review
- * wiki/qa/cmo-review-articles-5.18-2026-10-14.md). No mockup: the article template renders it. Card words, related
+ * wiki/qa/cmo-review-articles-5.18-2026-10-14.md; copy fixes M12 and M13 in task 5.20b, CMO review
+ * wiki/qa/cmo-review-article-fixes-5.20b-2026-10-14.md). No mockup: the article template renders it. Card words, related
  * list and dates as the stub held them (stories.md fold 3; the live journal's ring and dates); the card's title is the
  * fold 4 heading. No pitch: no product link, no pre-order button (the keep-reading close), and Kheelu named only in
  * D025's line under the answer; AI toys are routed to the safe-AI-toy guide, which quotes Common Sense Media in full
@@ -34,15 +35,15 @@ export const article = {
     author: TEAM_BYLINE,
     readMinutes: 3,
     image: {
-      src: floorTrain,
-      alt: "A boy in a green T-shirt lying on a red floor, smiling as he pushes a blue wooden train.",
+      src: paperCrown,
+      alt: "A laughing girl with a long braid holds a yellow paper crown on her head, beside a low table scattered with crayons and paper scraps.",
     },
   },
-  /* Fold 2: the answer first (54 words), then D025's line, verbatim, directly under it. */
+  /* Fold 2: the answer first (58 words; CMO review M12 opens it with a direct answer), then D025's line, verbatim, directly under it. */
   answer: {
     question: "Are talking toys good for a young child’s language?",
     answer:
-      "A toy can’t do the talking for you. Harvard’s Center on the Developing Child says back-and-forth exchanges between a young child and a caring adult support early language skills.[^1] A toy that plays recordings or repeats your child’s words can’t take a real turn. Choose toys that give you both something to talk about.",
+      "Not on their own: a toy can’t do the talking for you. Harvard’s Center on the Developing Child says back-and-forth exchanges between a young child and a caring adult support early language skills.[^1] A toy that plays recordings or repeats your child’s words can’t take a real turn. Choose toys that give you both something to talk about.",
     detail: [{ kind: "disclaimer", text: "Kheelu is a toy, not a therapy or treatment. If you’re worried about your child’s speech, talk to your paediatrician." }],
   },
   body: [

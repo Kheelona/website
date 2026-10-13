@@ -17,6 +17,7 @@ sources:
   - ../../product/claims.md (§1 speech disclaimer, §4, §8), ../../product/facts.md (team, byline)
   - ../../brand/messaging.md (words to stop using), ../../brand/voice.md
   - ../../decisions/D016, D025, D026, D041
+  - ../../qa/cmo-review-articles-5.18-2026-10-14.md (M5, M13; applied in task 5.20b)
   - "src/lib/stories-expansion.ts:91-113 (the live article; input only, read in the w5c-5.18 worktree); src/content/en-IN/stories/articles/how-to-get-your-child-talking.ts (stub: card, related, dates)"
   - "src/content/types.ts (Article, Answer, ProseBlock), src/layouts/ArticleTemplate/ArticleTemplate.tsx, src/content/en-IN/stories/articles/index.ts (articlePageCopy.keep), src/assets/icons.generated.ts (DS icon names)"
   - "test/guards/banned-phrases.data.ts; test/e2e/content-integrity.spec.ts:25-60"
@@ -52,7 +53,7 @@ sources:
 | H1 | How to get your child to talk more (question 3) |
 | Answer first | Fold 2: question H2 and a 49-word answer, the D025 line directly under it |
 | Byline line | The Kheelona team · First published 28 Jul 2026 · 3 min read (question 4) |
-| Read time | 3 min: about 549 words of body (answer, disclaimer, parts and headings), `round(words / 200)` as `src/lib/stories.ts:184-186` |
+| Read time | 3 min: about 553 words of body (answer, disclaimer, parts and headings; about 549 before task 5.20b), `round(words / 200)` as `src/lib/stories.ts:184-186` |
 | CTA | None in the page body. No finale CTA, no sticky bar. The site chrome (nav, drawer) keeps its own button |
 | In-text product link | None (question 1). One in-text link to a sibling guide, `/stories/talking-late-or-talking-little` (fold 8) |
 | Card, related, dates (unchanged from the stub) | Card title "How to get your child talking"; card summary "Better questions than "How was school?", and the small habits that turn one-word answers into conversations." (curly quotes in the module); related `ai-toys-and-indias-data-law`, `talking-late-or-talking-little`, `how-children-collect-words`; published `2026-07-28`; updated: see the builder notes |
@@ -100,7 +101,10 @@ on its three articles, so the main session rules which applies (the stub's `upda
 - **Image** (`kh-photo`, 4:5): `ira-04-paper-crown-web.webp`. Alt: "A laughing girl with a long braid holds a yellow
   paper crown on her head, beside a low table scattered with crayons and paper scraps." Ira is the cast's storyteller,
   who "talks with both hands" (`03-cast.md:41`); the photo has no Kheelu (`03-cast.md:115`, "confidence and
-  creativity"). **No Kheelu in any image on this page** (no pitch).
+  creativity"). **No Kheelu in any image on this page** (no pitch). CMO review M13 (task 5.20b): this page keeps
+  `ira-04`, and its alt becomes the journal's one alt for this photo (the toy-that-talks guide takes it word for
+  word); the collect-words guide, which this page lists, moves off `ira-04`, so no guide this page links to (or that
+  links here) opens on the same photo.
 
 ---
 
@@ -231,10 +235,12 @@ on its three articles, so the main session rules which applies (the stub's `upda
 
 > **H2:** What if your child talks very little?
 >
-> If it's everywhere, not only after school, read our guide on [what varies between children, and when to ask a professional](https://kheelona.com/stories/talking-late-or-talking-little).
+> If your child says very little everywhere, not only after school, read our guide on [what varies between children, and when to ask a professional](/stories/talking-late-or-talking-little).
 
 - Link → `/stories/talking-late-or-talking-little` (an article, not a product link). The D025 line in fold 2 already
   says "talk to your paediatrician", so this answer about speech sits on a page that carries it (tasks.md row 5.18).
+- The line is the CMO's wording (M5), word for word: "your child says very little" names what "it" left unclear,
+  and echoes the H2. Advice only, no marker.
 
 ---
 
@@ -289,7 +295,7 @@ on its three articles, so the main session rules which applies (the stub's `upda
 | An H2 with the primary or a close variant | Yes | Fold 2 H2; fold 4 H2 carries "conversation starters"; fold 7 H2 is the map's "Games that get a child talking" |
 | Health terms | Yes | "speech" only in the D025 line; no "speech delay", "therapy" or health promise ([§5.1](../../research/keyword-map.md#5-placement-rules) rules 8, 10) |
 | Alt text | Yes | Describes the scene; no keyword forced |
-| Density | Yes | "get your child to talk more" twice in `<main>` (H1, fold 2 H2): about 1.75% of about 685 words; "Kheelu" once (the D025 line) |
+| Density | Yes | "get your child to talk more" twice in `<main>` (H1, fold 2 H2): about 1.75% of about 690 words; "Kheelu" once (the D025 line) |
 | No product pitch | Yes | No product link, CTA or sticky bar in the body |
 | Words never placed | Yes | No under-3 age, no percentage, no competitor, no "lessons", no brain claim for any toy |
 
@@ -342,4 +348,23 @@ None.
 | Ages 3 to 7 on the page; nothing implying under 3 | [content boundary](../content-boundary.md); [age-band review](../../product/age-band-review.md); `test/e2e/content-integrity.spec.ts:25-49` |
 | Card title and summary; related list; first-published date | Stub `src/content/en-IN/stories/articles/how-to-get-your-child-talking.ts`; [stories.md fold 3](stories.md#fold-3--talking-and-language-talking); `src/lib/stories-expansion.ts:92-99` |
 | Byline | [facts, team](../../product/facts.md) (the live byline's author was removed from the site, lines 304-308); `TEAM_BYLINE` |
-| Photo | DS `03-cast.md:41-42, 115`; file checked by eye 2026-10-13 |
+| Photo | DS `03-cast.md:41-42, 115`; file checked by eye 2026-10-13 (and again 2026-10-14: the alt matches the photo); kept, with its alt as the journal's one alt for `ira-04`, under [CMO review 5.18](../../qa/cmo-review-articles-5.18-2026-10-14.md#minor-fixes) M13 |
+| Fold 8 line ("If your child says very little everywhere, …") | Advice, no research claim; the CMO's wording ([CMO review 5.18](../../qa/cmo-review-articles-5.18-2026-10-14.md#minor-fixes) M5) |
+
+## Changes after approval (task 5.20b)
+
+The CMO passed this page in round 1 ([CMO review, task 5.18](../../qa/cmo-review-articles-5.18-2026-10-14.md)).
+Task 5.20b applied the review's fixes for it on 2026-10-14 ([tasks](../../engineering/tasks.md), 5.20 item 2).
+Every other word of the Copy blocks is as approved. The module follows this page word for word in the same commit
+(`talking-articles.test.tsx`); its `updated` stays 2026-10-13.
+
+| Where | What changed | Why |
+|---|---|---|
+| Fold 8, the line under the H2 | "If it's everywhere, not only after school, read our guide on …" became "If your child says very little everywhere, not only after school, read our guide on …"; the link words and the guide are unchanged, and the link is written as the path the module uses, `/stories/talking-late-or-talking-little` | M5: "it" had no clear referent; the CMO's wording, word for word |
+| Fold 1, photo note | No change of photo or alt; a note that this alt is now the journal's one alt for `ira-04` | M13: the collect-words guide, which this page lists, moves off `ira-04`, and the toy-that-talks guide takes it with this alt (both on their own copy pages) |
+
+**What follows from the changes.** The words a reader reads go up by 4 (body about 549 to about 553), so the read
+time stays 3 min (`round(words / 200)`) and the byline row does not change. Title (45 characters), meta description
+(147), keyword placements and sources do not change; no research statement was added, and there is no placeholder.
+Not part of this task: M6, the related ring (this page still offers the data-law guide; the main session and
+builder change it).
