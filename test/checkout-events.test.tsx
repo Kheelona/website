@@ -183,6 +183,13 @@ describe("checkout.ts reports the payment window to GA4 and PostHog (B11)", () =
     ["sentences instead of codes", { error: { code: "Card declined for priya@example.com", reason: "call 9187546483" } }, { reason_code: "unknown", reason: "unknown" }],
     ["numbers instead of strings", { error: { code: 502, reason: { why: "x" } } }, { reason_code: "unknown", reason: "unknown" }],
     ["one code and one sentence", { error: { code: "SERVER_ERROR", reason: "a parent typed this" } }, { reason_code: "SERVER_ERROR", reason: "unknown" }],
+    /* Review of 6.2: a single token is not yet a code. Razorpay's codes are upper-case words joined by underscores
+       (BAD_REQUEST_ERROR) and its reasons lower-case ones (payment_failed); a bare number or one word could be a
+       phone number or a name, so it is sent as "unknown". */
+    ["a bare number as the code (a phone number)", { error: { code: "9187546483" } }, { reason_code: "unknown", reason: "unknown" }],
+    ["one word as the reason (a first name)", { error: { reason: "Priya" } }, { reason_code: "unknown", reason: "unknown" }],
+    ["a name joined by an underscore", { error: { code: "Priya_Menon", reason: "Priya_Menon" } }, { reason_code: "unknown", reason: "unknown" }],
+    ["a code of the right shape but too long", { error: { code: `${"A".repeat(40)}_${"B".repeat(40)}` } }, { reason_code: "unknown", reason: "unknown" }],
   ])("sends only plain codes: %s", async (_label, response, expected) => {
     await startCheckout(INPUT());
     emitted = [];
@@ -191,7 +198,7 @@ describe("checkout.ts reports the payment window to GA4 and PostHog (B11)", () =
       ["ga4", { tier: "launch", ...expected }],
       ["posthog-browser", { tier: "launch", ...expected }],
     ]);
-    expect(everything()).not.toMatch(/priya|9187546483|typed/);
+    expect(everything()).not.toMatch(/priya|9187546483|typed/i);
   });
 
   it("never sends either event to Meta", async () => {

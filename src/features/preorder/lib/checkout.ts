@@ -96,10 +96,16 @@ function measure(send: () => void): void {
   }
 }
 
-/** Razorpay's machine codes only ("BAD_REQUEST_ERROR", "payment_failed"), never
- *  its `description`, which is free text: anything else is sent as "unknown". */
-function razorpayCode(value: unknown): string {
-  return typeof value === "string" && /^[A-Za-z0-9_]{1,64}$/.test(value) ? value : "unknown";
+/** Razorpay's machine codes only, never its `description`, which is free text. Each
+ *  must have the documented shape, words joined by underscores: upper case for
+ *  `error.code` ("BAD_REQUEST_ERROR"), lower case for `error.reason`
+ *  ("payment_failed"), at most 64 characters. Anything else, a bare number or a
+ *  single word included, is sent as "unknown". */
+const RAZORPAY_ERROR_CODE = /^[A-Z]+(?:_[A-Z]+)+$/;
+const RAZORPAY_ERROR_REASON = /^[a-z]+(?:_[a-z]+)+$/;
+
+function razorpayCode(value: unknown, shape: RegExp): string {
+  return typeof value === "string" && value.length <= 64 && shape.test(value) ? value : "unknown";
 }
 
 export async function startCheckout(input: StartCheckoutInput): Promise<boolean> {
@@ -126,8 +132,8 @@ export async function startCheckout(input: StartCheckoutInput): Promise<boolean>
     measure(() =>
       track("preorder_payment_failed", {
         tier: input.tier,
-        reason_code: razorpayCode(response?.error?.code),
-        reason: razorpayCode(response?.error?.reason),
+        reason_code: razorpayCode(response?.error?.code, RAZORPAY_ERROR_CODE),
+        reason: razorpayCode(response?.error?.reason, RAZORPAY_ERROR_REASON),
       }),
     ),
   );

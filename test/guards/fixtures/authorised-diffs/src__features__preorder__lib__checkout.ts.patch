@@ -5,9 +5,11 @@ B11 (task 6.2; wiki/site/gate-a-open-items.md §3 working default "three new eve
   the main session 2026-10-14; architecture §8.2; ADR-013 "The B11 checkout events"): two new events, to GA4 and
   PostHog only, through the dispatcher src/lib/tracking/track.ts (never Meta). Measurement only:
   - `preorder_payment_failed { tier, reason_code, reason }`: `checkout.on("payment.failed", ...)` registered BEFORE
-    `open()`, as Razorpay requires. Only `error.code` and `error.reason` are read, and only when each is a plain code
-    (letters, digits, underscore, at most 64); anything else is sent as "unknown". `error.description` (free text),
-    `error.source`, `error.step` and `error.metadata` (the gateway's order and payment ids) are never read.
+    `open()`, as Razorpay requires. Only `error.code` and `error.reason` are read, and only when each has Razorpay's
+    documented shape, words joined by underscores, at most 64 characters: upper case for the code (BAD_REQUEST_ERROR),
+    lower case for the reason (payment_failed). Anything else, a bare number or a single word included (it could be a
+    phone number or a name; review of 6.2), is sent as "unknown". `error.description` (free text), `error.source`,
+    `error.step` and `error.metadata` (the gateway's order and payment ids) are never read.
   - `preorder_payment_window_opened { tier }`: right after `checkout.open()`.
   - `tier` joins StartCheckoutInput for these two events only. It is NOT passed to Razorpay: the options object,
     `handler`, `modal.ondismiss`, the one `open()` and the boolean answer are the tag's (test/checkout-events.test.tsx
@@ -17,7 +19,7 @@ B11 (task 6.2; wiki/site/gate-a-open-items.md §3 working default "three new eve
   Nothing else changes: the script URL, loading, the amount (from create-order), the key, notes, theme #EF762F.
 
 diff --git a/src/features/preorder/lib/checkout.ts b/src/features/preorder/lib/checkout.ts
-index 4ee5037..a93a76f 100644
+index 4ee5037..3bfbcee 100644
 --- a/src/features/preorder/lib/checkout.ts
 +++ b/src/features/preorder/lib/checkout.ts
 @@ -10,6 +10,8 @@
@@ -44,7 +46,7 @@ index 4ee5037..a93a76f 100644
  
  declare global {
    interface Window {
-@@ -72,8 +80,28 @@ export type StartCheckoutInput = {
+@@ -72,8 +80,34 @@ export type StartCheckoutInput = {
    prefill: { name?: string; email?: string; contact?: string | null };
    onPaid: (response: RazorpayHandlerResponse) => void;
    onDismiss: () => void;
@@ -64,16 +66,22 @@ index 4ee5037..a93a76f 100644
 +  }
 +}
 +
-+/** Razorpay's machine codes only ("BAD_REQUEST_ERROR", "payment_failed"), never
-+ *  its `description`, which is free text: anything else is sent as "unknown". */
-+function razorpayCode(value: unknown): string {
-+  return typeof value === "string" && /^[A-Za-z0-9_]{1,64}$/.test(value) ? value : "unknown";
++/** Razorpay's machine codes only, never its `description`, which is free text. Each
++ *  must have the documented shape, words joined by underscores: upper case for
++ *  `error.code` ("BAD_REQUEST_ERROR"), lower case for `error.reason`
++ *  ("payment_failed"), at most 64 characters. Anything else, a bare number or a
++ *  single word included, is sent as "unknown". */
++const RAZORPAY_ERROR_CODE = /^[A-Z]+(?:_[A-Z]+)+$/;
++const RAZORPAY_ERROR_REASON = /^[a-z]+(?:_[a-z]+)+$/;
++
++function razorpayCode(value: unknown, shape: RegExp): string {
++  return typeof value === "string" && value.length <= 64 && shape.test(value) ? value : "unknown";
 +}
 +
  export async function startCheckout(input: StartCheckoutInput): Promise<boolean> {
    const ready = await loadCheckout();
    if (!ready || !window.Razorpay) return false;
-@@ -94,6 +122,17 @@ export async function startCheckout(input: StartCheckoutInput): Promise<boolean>
+@@ -94,6 +128,17 @@ export async function startCheckout(input: StartCheckoutInput): Promise<boolean>
      modal: { ondismiss: input.onDismiss },
    });
  
@@ -81,8 +89,8 @@ index 4ee5037..a93a76f 100644
 +    measure(() =>
 +      track("preorder_payment_failed", {
 +        tier: input.tier,
-+        reason_code: razorpayCode(response?.error?.code),
-+        reason: razorpayCode(response?.error?.reason),
++        reason_code: razorpayCode(response?.error?.code, RAZORPAY_ERROR_CODE),
++        reason: razorpayCode(response?.error?.reason, RAZORPAY_ERROR_REASON),
 +      }),
 +    ),
 +  );
