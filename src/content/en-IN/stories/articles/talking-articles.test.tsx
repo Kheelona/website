@@ -17,8 +17,9 @@ import { article as getTalking } from "./how-to-get-your-child-talking";
 import { article as bilingual } from "./raising-a-bilingual-child-in-india";
 import { article as talkingLate } from "./talking-late-or-talking-little";
 
-/* The six talking-and-language guides (task 5.18; tasks.md wave 5 part C). There is no mockup for them: each module is
- * its copy page (wiki/site/pages/story-<slug>.md, CMO review wiki/qa/cmo-review-articles-5.18-2026-10-14.md) word for
+/* The six talking-and-language guides (task 5.18; tasks.md wave 5 part C; copy fixes task 5.20b). There is no mockup for
+ * them: each module is its copy page (wiki/site/pages/story-<slug>.md, CMO reviews
+ * wiki/qa/cmo-review-articles-5.18-2026-10-14.md and wiki/qa/cmo-review-article-fixes-5.20b-2026-10-14.md) word for
  * word, rendered by the article template. So this file holds:
  *   - text parity with the copy page: the page the template renders says exactly the words of the copy page's Copy
  *     blocks, in order (head, answer, parts, sources, keep-reading close), markers included;
@@ -65,7 +66,8 @@ const TALKING: readonly (readonly [string, Expected])[] = [
         published: "2026-07-28",
         updated: "2026-07-31",
       },
-      links: [],
+      /* CMO review 5.18 M3 (task 5.20b): fold 7 ends on a link to the approved late-talker guide. */
+      links: ["/stories/talking-toys-and-late-talkers"],
       icons: ["chat-circle-dots", "question", "plus", "clock", "book-open", "music-notes", "eye-slash"],
     },
   ],

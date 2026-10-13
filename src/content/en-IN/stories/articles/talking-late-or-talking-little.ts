@@ -6,7 +6,8 @@ import { DEFAULT_OG, TEAM_BYLINE } from "../../organization";
 /**
  * 3-year-old not talking in sentences? What to do: rewritten (task 5.18) from its copy page,
  * wiki/site/pages/story-talking-late-or-talking-little.md, word for word (CMO review
- * wiki/qa/cmo-review-articles-5.18-2026-10-14.md). No mockup: the article template renders it. Card words, related
+ * wiki/qa/cmo-review-articles-5.18-2026-10-14.md; copy fixes M1-M4 in task 5.20b, CMO review
+ * wiki/qa/cmo-review-article-fixes-5.20b-2026-10-14.md). No mockup: the article template renders it. Card words, related
  * list and dates as the stub held them (stories.md fold 3; the live journal's ring and dates). No pitch (B5): no
  * product link, no pre-order button (the keep-reading close), and Kheelu named only in D025's line under the answer.
  * Every statement about speech or language carries a source marker (D025, D026).
@@ -35,11 +36,12 @@ export const article = {
       alt: "A boy in a green T-shirt lying on a red floor, smiling as he pushes a blue wooden train.",
     },
   },
-  /* Fold 2: the answer first (58 words), then D025's line, verbatim, directly under it. */
+  /* Fold 2: the answer first (60 words; its first sentence is source verification 2026-10-14 §2's ready line, the
+   * CDC's sentence item at 4 only), then D025's line, verbatim, directly under it. */
   answer: {
     question: "Should you worry if your {nowrap:3-year-old} is not talking in sentences?",
     answer:
-      "Use milestones as a reason to ask, not to worry. Most children put two or more words together, like “Doggie run”, before they turn 3.[^1][^2] By 3, most hold a short back-and-forth conversation and are understood by others most of the time.[^2][^3] If your child isn’t doing these yet, or has lost words, talk to your child’s doctor.[^3]",
+      "Sentences of four or more words are on the CDC’s list of milestones by 4, not 3.[^1] By 3, most children put two or more words together, like “Doggie run”, hold a short back-and-forth conversation and are understood by others most of the time.[^2][^3][^4] If your child isn’t doing these yet, or has lost words, talk to your child’s doctor.[^4]",
     detail: [{ kind: "disclaimer", text: "Kheelu is a toy, not a therapy or treatment. If you’re worried about your child’s speech, talk to your paediatrician." }],
   },
   body: [
@@ -49,7 +51,7 @@ export const article = {
       blocks: [
         {
           kind: "p",
-          text: "At every birthday party there is one parent doing sums in their head. That child is narrating a whole film. Mine points and says “come”. Is this fine? Or is it something?",
+          text: "At a birthday party, another child is narrating a whole film, and yours points and says “come”. Is that fine? Or is it something?",
         },
         { kind: "p", text: "Here is what varies between children, what deserves a professional look, and what helps at home either way." },
       ],
@@ -61,11 +63,11 @@ export const article = {
       blocks: [
         {
           kind: "p",
-          text: "The milestones from the US Centers for Disease Control and Prevention (CDC) sit at the age by which at least 3 in 4 children reach each one.[^2] So they describe most children, not every child.",
+          text: "The milestones from the US Centers for Disease Control and Prevention (CDC) sit at the age by which at least 3 in 4 children reach each one.[^3] So they describe most children, not every child.",
         },
         {
           kind: "p",
-          text: "The American Speech-Language-Hearing Association (ASHA) says its own milestone chart “is not a screening or diagnostic tool”. It is meant to start a conversation with your child’s doctor.[^4]",
+          text: "The American Speech-Language-Hearing Association (ASHA) says its own milestone chart “is not a screening or diagnostic tool”. It is meant to start a conversation with your child’s doctor.[^5]",
         },
         { kind: "p", text: "And watch your child at home, where they are most at ease, not only at a party." },
       ],
@@ -77,11 +79,11 @@ export const article = {
       blocks: [
         {
           kind: "p",
-          text: "Asked whether using more than one language can cause a speech or language disorder, the American Academy of Pediatrics and ASHA answer no: “Speech or language problems are not caused by learning multiple languages.”[^5]",
+          text: "Asked whether using more than one language can cause a speech or language disorder, the American Academy of Pediatrics and ASHA answer no: “Speech or language problems are not caused by learning multiple languages.”[^6]",
         },
         {
           kind: "p",
-          text: "A child learning two languages may split their words across them. Counted together, the total should be about the same as for a child of the same age learning one language.[^5] So count the words in every language your child uses, and keep them all going.",
+          text: "A child learning two languages may split their words across them. Counted together, the total should be about the same as for a child of the same age learning one language.[^6] So count the words in every language your child uses, and keep them all going.",
         },
       ],
     },
@@ -94,17 +96,18 @@ export const article = {
         {
           kind: "list",
           items: [
-            "at 3, your child doesn’t yet put two or more words together, with one action word, like “Doggie run”;[^1]",
-            "at 3, your child doesn’t yet keep up a short conversation with you, of at least two back-and-forth exchanges;[^3]",
-            "at 3, other people still can’t understand your child most of the time;[^3]",
-            "by 4, people can’t yet understand most of what your child says;[^6]",
-            "at any age, your child loses words or skills they used to have.[^3]",
+            "at 3, your child doesn’t yet put two or more words together, with one action word, like “Doggie run”;[^2]",
+            "at 3, your child doesn’t yet keep up a short conversation with you, of at least two back-and-forth exchanges;[^4]",
+            "at 3, other people still can’t understand your child most of the time;[^4]",
+            "by 4, your child doesn’t yet say sentences of four or more words;[^1]",
+            "by 4, people can’t yet understand most of what your child says;[^7]",
+            "at any age, your child loses words or skills they used to have.[^4]",
           ],
         },
         { kind: "p", text: "These are US guides, and every child is different. Missing one is a reason to ask, not a diagnosis." },
         {
           kind: "p",
-          text: "The CDC suggests you share your concerns with your child’s doctor and ask about developmental screening.[^3] ASHA suggests an assessment by an audiologist, who checks hearing, or a speech-language pathologist if a child misses many of the milestones for their age.[^6]",
+          text: "The CDC suggests you share your concerns with your child’s doctor and ask about developmental screening.[^4] ASHA suggests an assessment by an audiologist, who checks hearing, or a speech-language pathologist if a child misses many of the milestones for their age.[^7]",
         },
         { kind: "p", variant: "gut", text: "If your gut says ask, ask." },
       ],
@@ -116,7 +119,7 @@ export const article = {
       blocks: [
         {
           kind: "p",
-          text: "Whatever the milestones say, keep the back-and-forth going. Harvard’s Center on the Developing Child says back-and-forth exchanges between a young child and a caring adult support early language and social skills.[^7]",
+          text: "Whatever the milestones say, keep the back-and-forth going. Harvard’s Center on the Developing Child says back-and-forth exchanges between a young child and a caring adult support early language and social skills.[^8]",
         },
         {
           kind: "list",
@@ -132,11 +135,20 @@ export const article = {
           ],
         },
         { kind: "p", text: "None of this needs a purchase. Grandparents, cousins and older children can all take a turn." },
+        /* CMO review 5.18 M3: one in-text link, to the approved late-talker guide (an article, never a product: B5). */
+        {
+          kind: "p",
+          text: "For more on what helps a child who talks later or less than others, read [Late talker? What helps a child find their words](/stories/talking-toys-and-late-talkers).",
+        },
       ],
     },
   ],
   /* Fold 8 */
   sources: [
+    {
+      citation: "US Centers for Disease Control and Prevention, “Learn the Signs. Act Early.”: milestones by 4 years, 2026 (reviewed 16 May), Language/Communication.",
+      href: "https://www.cdc.gov/act-early/milestones/4-years.html",
+    },
     {
       citation: "US Centers for Disease Control and Prevention, “Learn the Signs. Act Early.”: milestones by 30 months, 2026 (reviewed 16 May), Language/Communication.",
       href: "https://www.cdc.gov/act-early/milestones/30-months.html",

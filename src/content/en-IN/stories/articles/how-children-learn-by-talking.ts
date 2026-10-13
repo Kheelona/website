@@ -1,12 +1,13 @@
 /// <reference types="next/image-types/global" />
-import readingNook from "@ds/assets/Photo library/tara-04-reading-nook-web.webp";
+import planetBook from "@ds/assets/Photo library/kabir-04-planet-book-web.webp";
 import type { Article } from "@/content/types";
 import { DEFAULT_OG, TEAM_BYLINE } from "../../organization";
 
 /**
  * Serve and return: how children learn by talking: rewritten (task 5.18) from its copy page,
  * wiki/site/pages/story-how-children-learn-by-talking.md, word for word (CMO review
- * wiki/qa/cmo-review-articles-5.18-2026-10-14.md). No mockup: the article template renders it. Card words, related
+ * wiki/qa/cmo-review-articles-5.18-2026-10-14.md; copy fixes M7 and M13 in task 5.20b, CMO review
+ * wiki/qa/cmo-review-article-fixes-5.20b-2026-10-14.md). No mockup: the article template renders it. Card words, related
  * list and dates as the stub held them (stories.md fold 3; the live journal's ring and dates). No pitch: the subject
  * is the caring adult, Kheelu's loop is never called serve and return (C07), and Kheelu is named only in D025's line
  * under the answer; no product link, no pre-order button (the keep-reading close). Every statement about language or
@@ -32,8 +33,8 @@ export const article = {
     author: TEAM_BYLINE,
     readMinutes: 3,
     image: {
-      src: readingNook,
-      alt: "A girl with curly hair, in a coral kurta, sits cross-legged on a window seat and reads a picture book aloud, one finger on the page.",
+      src: planetBook,
+      alt: "A boy in round glasses and a mustard T-shirt lies on a striped rug, chin in his hands, wide-eyed over a picture book about planets.",
     },
   },
   /* Fold 2: the answer first (57 words), then D025's line, verbatim, as its own block directly under it. */
@@ -66,9 +67,9 @@ export const article = {
         },
         {
           kind: "p",
-          text: "In a 2018 study of 36 children aged 4 to 6, children who had more back-and-forth conversational turns with adults showed more activity in Broca’s area, a language region of the brain, while listening to a story. The number of adult words they heard showed no such link. Turns also predicted the children’s language scores once family income and parents’ education were taken into account. The study shows a link, not cause and effect.[^3]",
+          text: "In a 2018 study of 36 children aged 4 to 6, children who had more back-and-forth conversational turns with adults showed more activity in Broca’s area, a language region of the brain, while listening to a story. The number of adult words they heard showed no such link. Turns also predicted the children’s language scores once family income and parents’ education were taken into account.[^3]",
         },
-        { kind: "p", text: "In the study, a turn was an adult speaking and the child replying, or the other way round.[^3] A turn needs both of you." },
+        { kind: "p", text: "The study shows a link, not cause and effect.[^3] In the study, a turn was an adult speaking and the child replying, or the other way round.[^3] A turn needs both of you." },
       ],
     },
     /* Fold 5: four everyday moments, examples not norms */
