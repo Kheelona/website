@@ -149,12 +149,12 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
     ...paymentsHidden,
   ],
   "store-confirmation": paymentsHidden,
-  /* What still differs on purpose (V7): the hero lead (CMO M-T1), and the mockup's placeholders that the founder's
-     answers resolved (D054 item 20), each with other words or another height on the build's side, so every chunk below
-     would shift. The pixels compare the page without them on both sides: fold 3's cards as name, role, words and link,
-     fold 5 as its heading. Their words are compared by the text pass (TEXT_DEVIATIONS), their markup and files by the
-     unit tests (team.test.ts, the team route's page.test.tsx, FoundersSection and RecognitionStrip). */
   team: [
+    /* What still differs on purpose (V7): the hero lead (CMO M-T1), and the mockup's placeholders that the founder's
+       answers resolved (D054 item 20), each with other words or another height on the build's side, so every chunk
+       below would shift. The pixels compare the page without them on both sides: fold 3's cards as name, role, words
+       and link, fold 5 as its heading. Their words are compared by the text pass (TEXT_DEVIATIONS), their markup and
+       files by the unit tests (team.test.ts, the team route's page.test.tsx, FoundersSection and RecognitionStrip). */
     /* The lead wraps to a different number of lines on phones. */
     ...bothSides("#hero-title ~ .kh-heading__lead", "#hero-title ~ .kh-heading__lead", "the hero lead (CMO fix M-T1 in the build), compared by the text pass; hidden on both sides so the chunks below line up"),
     ...bothSides(

@@ -167,7 +167,13 @@ describe("the content security policy", () => {
         expect((directive(other) ?? "").split(" "), `${host} is in ${other}`).not.toContain(host);
       }
     }
-    expect(policy).not.toMatch(/\*\.(?:google\.com|on\.aws|run\.app|amazonaws\.com)/);
+    /* And no wildcard came with them, in any spelling: every wildcard source of the policy (the dev one too) is still
+       one of the tag's four, GA4's regional collect hosts and Razorpay's. */
+    const tagWildcards = ["https://*.analytics.google.com", "https://*.google-analytics.com", "https://*.razorpay.com", "https://*.rzp.io"];
+    for (const dev of [false, true]) {
+      const wildcards = new Set(contentSecurityPolicy(dev).split(/[\s;]+/).filter((source) => source.includes("*")));
+      expect([...wildcards].sort(), `the wildcard sources (dev: ${dev})`).toEqual([...tagWildcards].sort());
+    }
   });
 
   /* D054 item 9: a report-only policy ignores upgrade-insecure-requests, and the browser logs an error for it on every
