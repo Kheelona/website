@@ -1,7 +1,6 @@
 import kheeluFrontSticker from "@ds/assets/Kheelu/kheelu-front-sticker.png";
 import starSun from "@ds/assets/Shapes/star-sun.svg";
 import type { LegalPage, RichTextString } from "@/content/types";
-import { placeholder } from "@/lib/content/placeholder";
 import { DELIVERY_TEXT } from "../delivery";
 import { DEFAULT_OG } from "../organization";
 import { FAULTY_REPORT_DAYS, PAYMENT_METHODS, RETURN_DAYS } from "../policies";
@@ -12,8 +11,8 @@ import { seller } from "../seller";
  * word for word, as wiki/site/pages/shipping.md words it after the legal review; rendered by LegalTemplate's notice
  * family (refund and shipping) from `src/app/(site)/shipping/page.tsx`.
  *
- * - A draft until the founder approves it after the independent review (D029): the draft note shows, the "Last updated"
- *   date is a placeholder, and the production build refuses the page (ADR-004).
+ * - A draft until the founder approves it after the independent review (D029): the draft note shows and the production
+ *   build refuses the page (ADR-004). "Last updated" is the founder's date (D055 item 8; task 6.7).
  * - The delivery line is the one delivery value (D023): `{delivery}` in the page, and the meta description's words built
  *   from the same `DELIVERY_TEXT` (shipping.md "Notes for the build"). Never an arrival date, a transit time or the
  *   schema date (D022, D037).
@@ -21,8 +20,9 @@ import { seller } from "../seller";
  * - The seller line and the grievance card are the template's, from seller.ts through src/lib/content/seller-lines.ts
  *   with their phrases kept together (task 4.3); the number, email and WhatsApp address of the help and customer-care
  *   lines from seller.ts; the payment methods and the 7-day windows from policies.ts. Nothing retyped.
- * - Placeholders exactly the copy page's: the approval date and the parcel lost in transit (founder question 1); the
- *   complaint reference under the grievance card is the template's (legal/shared.ts).
+ * - No placeholder left (task 6.7): the lost-parcel line is off the page (D055 item 9; the "If it doesn't arrive." sentence
+ *   stays as approved); the complaint-reference line under the grievance card is the template's, off all four pages until
+ *   a system issues a reference (legal/shared.ts; D055 item 7).
  * - The close links to Meet Kheelu with `shipping-learn` (architecture §8.3) and to the refund page; no pre-order
  *   button and no buy bar (strategy §5 policy row; the mockup's meta `"buybar": false`).
  */
@@ -43,7 +43,8 @@ export const shippingPage = {
     og: DEFAULT_OG,
   },
   status: "draft",
-  approvedOn: placeholder(null, "the date the founder approves this page"),
+  /* "Last updated", the founder's date (D055 item 8; task 6.7). The page stays a draft until he signs it off (D029). */
+  approvedOn: "2026-10-14",
   /* Fold 0 and 1. Kheelu's note: the live line, founder-approved 2026-08-22; the board shows from 900 px only, so on
    * phones the short version starts in the first screen (legal review, should-fix 6). */
   hero: {
@@ -170,7 +171,8 @@ export const shippingPage = {
         {
           kind: "p",
           lead: "If it doesn’t arrive.",
-          text: "If the tracking stops moving or the parcel doesn’t reach you, call or message us with your order number. {ph:what we do if a parcel is lost in transit, for example “we send a replacement, or refund you in full if you’d rather” (no number of days)}",
+          /* The lost-parcel line is off the page (D055 item 9): no ruling covers it, so the sentence promises no remedy. */
+          text: "If the tracking stops moving or the parcel doesn’t reach you, call or message us with your order number.",
         },
         {
           kind: "p",

@@ -9,7 +9,9 @@ import { stickyBarPaths } from "@/layouts/SiteShell/sticky-bar-paths";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
+import { PAGE_FACTS } from "../../../../test/e2e/support/page-facts";
 import { skeleton, words, type SkeletonOptions } from "../../../../test/support/mockup-compare";
+import { withFacts } from "../../../../test/support/mockup-facts";
 
 /* The /shipping route (task 5.14; structure §3.1, §5): the legal module through LegalTemplate's notice family (refund
  * and shipping; mockup-css-mapping §6.1) with the live offer, thin, and as a whole page equal to the approved mockup's
@@ -31,7 +33,9 @@ const SOURCE = readFileSync("src/app/(site)/shipping/page.tsx", "utf8");
 const code = SOURCE.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
 
 const mockupDoc = new DOMParser().parseFromString(readRepoFile("mockup/shipping.html"), "text/html");
-const mockupMain = mockupDoc.querySelector("main")!;
+const approvedMain = mockupDoc.querySelector("main")!;
+/** The approved page with the founder's page facts applied (task 6.7; D055 items 7-9; test/e2e/support/page-facts.ts). */
+const mockupMain = withFacts(approvedMain, PAGE_FACTS.shipping.edits);
 
 /** The page as the site shell holds it: the route's output inside <main>. */
 async function renderPage(offer: Offer) {
@@ -103,7 +107,7 @@ describe("/shipping: the rendered page against the approved mockup", () => {
     expect(skeleton(main, OPTIONS)).toBe(skeleton(mockupMain, OPTIONS));
   });
 
-  it("prints every word of the mockup's <main>, in order, and nothing else, placeholders included", async () => {
+  it("prints every word of the mockup's <main> with the founder's facts, in order, and nothing else", async () => {
     const { main } = await renderPage(buildOffer("token"));
     expect(words(main)).toBe(words(mockupMain));
   });
@@ -128,7 +132,7 @@ describe("/shipping: the rendered page against the approved mockup", () => {
     expect(h1[0].id).toBe("shipping-title");
     expect(h1[0].textContent).toBe("Shipping and delivery, in plain words.");
     expect(h1[0].querySelector(".kh-hand")?.textContent).toBe("plain words.");
-    expect(hero.querySelector(".ks-updated")?.textContent).toBe("Last updated: [PLACEHOLDER: the date the founder approves this page]");
+    expect(hero.querySelector(".ks-updated")?.textContent).toBe("Last updated: 14 October 2026");
   });
 
   it("keeps the mockup's heading outline: every heading's level and words in order, no level skipped (SPA 5)", async () => {

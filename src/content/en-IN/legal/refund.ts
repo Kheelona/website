@@ -1,7 +1,6 @@
 import kheeluFrontSticker from "@ds/assets/Kheelu/kheelu-front-sticker.png";
 import sunSun from "@ds/assets/Shapes/sun-sun.svg";
 import type { LegalPage } from "@/content/types";
-import { placeholder } from "@/lib/content/placeholder";
 import { DEFAULT_OG } from "../organization";
 import {
   BANK_REFUND_WORKING_DAYS,
@@ -21,13 +20,20 @@ import { seller } from "../seller";
  * legal review of 2026-10-11 applied. A draft until the founder approves it as legal text (D029): the template shows the
  * draft note, and the production build refuses a draft (ADR-004).
  *
+ * The founder's page facts (D055 items 1-8; task 6.7), each in the place of the placeholder it fills: "Last updated" is
+ * his date; a change-of-mind return is refunded in full; after a return the money reaches the parent within 7 working
+ * days of the Kheelu reaching us, bank time included (so the bank's 5-7 working days follow the cancellation only);
+ * sending a repaired or replacement Kheelu back is free; the warranty runs from delivery; a return with something missing
+ * or damaged is talked through. Not confirmed, so off the page: the warranty's full-refund backstop (item 4; the 7-day
+ * faulty-on-arrival remedy stays, D033) and the complaint reference (item 7, the template's).
+ *
  * - Fold 1: the recommended H1 with its Hand accent, the lede, and Kheelu's note on a board from 900 px (founder
  *   question 7, kept as recommended).
  * - Fold 2: the short version (six items) and the help line under it.
  * - Fold 4: the eight numbered parts with the copy page's ids. D042's three lines: the exchange line (part 4), the
  *   payment terms as part 6's bold lead, and the refund start before dispatch (part 1). Part 6's chargeback paragraph
  *   is `#chargeback`, where the store page's payments line links (legal review must-fix 1; deviation V1).
- * - The grievance card (D032 verbatim, with the complaint-reference note) and the seller line come from seller.ts
+ * - The grievance card (D032 verbatim) and the seller line come from seller.ts
  *   through the template (src/lib/content/seller-lines.ts, its phrases kept together in this family), never retyped.
  * - Fold 5: "Still deciding?" with Meet Kheelu (`refund-learn`) and the shipping page; no pre-order button (strategy §5).
  *
@@ -62,7 +68,8 @@ export const refundPage = {
     og: DEFAULT_OG,
   },
   status: "draft",
-  approvedOn: placeholder(null, "the date the founder approves this page"),
+  /* "Last updated", the founder's date (D055 item 8). */
+  approvedOn: "2026-10-14",
   hero: {
     title: "Refunds, returns and warranty, in {hand:plain words.}",
     lead: "Kheelu’s refund policy: you can change your mind. This page explains exactly how, and what happens to your money.",
@@ -88,18 +95,18 @@ export const refundPage = {
       {
         icon: "package",
         title: `After delivery: ${RETURN_DAYS} days to return.`,
-        body: "No questions asked. Opened is fine, if everything comes back undamaged. We arrange the pickup, free. {ph:confirm a change-of-mind return is refunded in full}",
+        body: "No questions asked. Opened is fine, if everything comes back undamaged. We arrange the pickup, free. You get a full refund of everything you paid.",
       },
       {
         icon: "clock",
         title: "When your money comes back.",
-        body: `After a cancellation, we start your refund within ${REFUND_START_WORKING_DAYS} working days. After a return, it’s processed within ${REFUND_AFTER_RETURN_WORKING_DAYS} working days of your Kheelu reaching us. Then ${BANK}.`,
+        body: `After a cancellation, we start your refund within ${REFUND_START_WORKING_DAYS} working days. Then ${BANK}. After a return, your refund reaches you within ${REFUND_AFTER_RETURN_WORKING_DAYS} working days of your Kheelu reaching us.`,
       },
       { icon: "shield-check", title: FAULTY.question, body: FAULTY.answer },
       {
         icon: "calendar-check",
         title: `${WARRANTY_MONTHS}-month warranty.`,
-        body: "On manufacturing defects. We repair it, or replace it if the repair doesn’t work. {ph:confirm a full refund if neither works}",
+        body: "On manufacturing defects. We repair it, or replace it if the repair doesn’t work.",
       },
       {
         icon: "currency-inr",
@@ -149,12 +156,12 @@ export const refundPage = {
           items: [
             `Call or message us on WhatsApp, or email us, within ${RETURN_DAYS} days of delivery, with your order number.`,
             "We arrange the pickup from your address, free.",
-            `Once your Kheelu reaches us and qualifies for return, your refund is processed within ${REFUND_AFTER_RETURN_WORKING_DAYS} working days. {ph:confirm how much comes back, for example “a full refund of everything you paid”}`,
+            `Once your Kheelu reaches us and qualifies for return, your refund reaches you within ${REFUND_AFTER_RETURN_WORKING_DAYS} working days. It’s a full refund of everything you paid.`,
           ],
         },
         {
           kind: "p",
-          text: "{ph:what happens if a returned Kheelu comes back damaged or with something missing, and what counts as damage on a plush toy a child has played with for a few days}",
+          text: "If your Kheelu comes back with something missing, or damaged beyond normal play, we’ll talk to you before deciding the refund.",
         },
       ],
     },
@@ -171,12 +178,12 @@ export const refundPage = {
         { kind: "h3", text: `The ${WARRANTY_MONTHS}-month warranty` },
         {
           kind: "p",
-          text: `Kheelu has a ${WARRANTY_MONTHS}-month warranty on manufacturing defects, from the day it’s delivered. {ph:confirm the warranty starts on the delivery date} If a defect shows up after the first ${FAULTY_REPORT_DAYS} days, we repair it, or replace it if the repair doesn’t work. {ph:confirm this line: “If a repair and a replacement don’t put it right, you get a full refund.”} The warranty doesn’t cover drops, water damage or misuse.`,
+          text: `Kheelu has a ${WARRANTY_MONTHS}-month warranty on manufacturing defects, from the day it’s delivered. If a defect shows up after the first ${FAULTY_REPORT_DAYS} days, we repair it, or replace it if the repair doesn’t work. The warranty doesn’t cover drops, water damage or misuse.`,
         },
         { kind: "h3", text: "Pickup and timing" },
         {
           kind: "p",
-          text: "Pickup is free for every faulty unit and every warranty claim. {ph:confirm that sending the repaired or replacement Kheelu back to you is free too} How long a repair or a replacement takes depends on where in India you are, so we don’t promise a number of days. To claim, call or message us on WhatsApp, or email us, with your order number and what’s wrong.",
+          text: "Pickup is free for every faulty unit and every warranty claim. Sending the repaired or replacement Kheelu back to you is free too. How long a repair or a replacement takes depends on where in India you are, so we don’t promise a number of days. To claim, call or message us on WhatsApp, or email us, with your order number and what’s wrong.",
         },
       ],
     },
@@ -201,12 +208,12 @@ export const refundPage = {
         {
           kind: "list",
           items: [
-            { lead: "Cancelled before dispatch:", text: `we start your refund within ${REFUND_START_WORKING_DAYS} working days of your request.` },
+            { lead: "Cancelled before dispatch:", text: `we start your refund within ${REFUND_START_WORKING_DAYS} working days of your request; ${BANK}.` },
+            /* The 7 working days include the bank's time (D055 item 5), so no bank line follows the return. */
             {
               lead: "Returned, faulty or not as described:",
-              text: `your refund is processed within ${REFUND_AFTER_RETURN_WORKING_DAYS} working days of your Kheelu reaching us. {ph:confirm whether the ${REFUND_AFTER_RETURN_WORKING_DAYS} working days is when we start the refund, before your bank’s ${BANK_REFUND_WORKING_DAYS}, or when the money reaches you}`,
+              text: `your refund reaches you within ${REFUND_AFTER_RETURN_WORKING_DAYS} working days of your Kheelu reaching us.`,
             },
-            { lead: "Then your bank:", text: `once we’ve started it, ${BANK}.` },
           ],
         },
       ],

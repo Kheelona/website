@@ -14,11 +14,27 @@ import { normaliseText, sentenceDiff, sentences } from "../e2e/support/parity";
 /** A mockup element's words as an edit names them: its text, white space collapsed. */
 const wordsOf = (el: Element) => (el.textContent ?? "").replace(/\s+/g, " ").trim();
 
+export interface FactsOptions {
+  /** Apply the edits to a page the build rendered (a legal template's parity fixture, copied from the mockup) instead
+   *  of the mockup itself: the mockup's `mk-` block names, in a selector or in new markup, read as the build's `ks-`. */
+  readonly built?: boolean;
+}
+
+const asBuilt = (text: string) => text.replace(/\bmk-/g, "ks-");
+
 /** A fragment of markup as nodes of `doc`, for the place an edit fills. */
 function nodes(doc: Document, html: string): Node[] {
   const template = doc.createElement("template");
   template.innerHTML = html;
   return Array.from(template.content.childNodes);
+}
+
+/** Takes an element out of its line with the white space before it, as a hidden slot goes (withoutHiddenSlots): the
+ *  words around it then read as the build prints them, to the character. */
+function removeWithSpace(el: Element): void {
+  const before = el.previousSibling;
+  if (before?.nodeType === 3) before.textContent = (before.textContent ?? "").replace(/\s+$/, "");
+  el.remove();
 }
 
 /**
@@ -27,19 +43,22 @@ function nodes(doc: Document, html: string): Node[] {
  * two edits, the first match first), then changes it, or the element around it that `scope` names. An edit that finds
  * nothing throws: an accepted change the mockup does not hold is a mistake, never a silent pass.
  */
-export function withFacts(source: Element, edits: readonly FactEdit[]): Element {
+export function withFacts(source: Element, edits: readonly FactEdit[], { built = false }: FactsOptions = {}): Element {
   const root = source.cloneNode(true) as Element;
   const doc = root.ownerDocument;
   const used = new Set<Element>();
+  const markup = built ? asBuilt : (text: string) => text;
   for (const edit of edits) {
-    const match = Array.from(root.querySelectorAll(edit.at)).find((el) => !used.has(el) && wordsOf(el) === edit.was);
-    if (!match) throw new Error(`no unused ${edit.at} reads "${edit.was}" in the mockup`);
+    const at = markup(edit.at);
+    const match = Array.from(root.querySelectorAll(at)).find((el) => !used.has(el) && wordsOf(el) === edit.was);
+    if (!match) throw new Error(`no unused ${at} reads "${edit.was}" in the ${built ? "page" : "mockup"}`);
     used.add(match);
     const target = edit.scope ? match.closest(edit.scope) : match;
     if (!target) throw new Error(`"${edit.was}" sits in no ${edit.scope}`);
     if (edit.now === null) target.remove();
-    else if (edit.inner) target.replaceChildren(...nodes(doc, edit.now));
-    else target.replaceWith(...nodes(doc, edit.now));
+    else if (edit.inner) target.replaceChildren(...nodes(doc, markup(edit.now)));
+    else if (edit.now === "") removeWithSpace(target);
+    else target.replaceWith(...nodes(doc, markup(edit.now)));
   }
   return root;
 }

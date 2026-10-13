@@ -1,5 +1,4 @@
 import type { LegalPage, RichTextString } from "@/content/types";
-import { placeholder } from "@/lib/content/placeholder";
 import { DEFAULT_OG } from "../organization";
 import { GRIEVANCE_ACK_HOURS, GRIEVANCE_RESOLUTION, RETENTION_LINE, RETENTION_MONTHS } from "../policies";
 import { seller } from "../seller";
@@ -13,10 +12,18 @@ import { seller } from "../seller";
  * - **Every measuring tool in a block of its own, never a count** (privacy.md section 5): the live page had to retire a
  *   count of its tools four times. A tool that is added or removed on the site changes this list in the same commit
  *   (test/analytics-tags.test.ts reads the rendered page, block by block).
- * - **Kheelona's own model** (D035): what is used, by whom, that it is on by default and that a parent can turn it off;
- *   why, where and how are open facts, shown as placeholders until the founder answers (privacy.md questions 1-2).
- * - **Where orders are stored** is one value, below, a placeholder until the founder confirms the Supabase move to
- *   Mumbai (D047, ADR-009, architecture §15.6); the main session then writes the country there.
+ * - **Kheelona's own model** (D035): what is used, by whom, why and where, that it is on by default, that a parent turns
+ *   it off with a switch in the parent app and what happens to what was already used, in the founder's words (D055
+ *   item 12).
+ * - **The founder's page facts** (D055 items 7, 8 and 13-24, D054 item 12; task 6.7), each in the place of the
+ *   placeholder it fills: "Last updated" is his date; what the parent app keeps; consent; what a one-tap delete does not
+ *   reach; how long each thing is kept; the breach line; every recipient's region (D047, `vercel.json`, and each
+ *   provider's own published documents, cited in privacy.md section 7). Off the page: the providers' names and any "on
+ *   request" line, parent alerts (off in v1, B34), the security-practices detail, the paid orders' period, the other
+ *   PostHog events and the complaint reference (the template's, legal/shared.ts).
+ * - **Where orders are stored** is one value, below: the Sydney region D047 records, as the founder left the move
+ *   question unanswered (D055 item 24); once he says the store is in Mumbai, the main session writes India there
+ *   (ADR-009, architecture §15.6).
  * - **Shared facts are read, never retyped:** the entity, registered office, support number, WhatsApp address and email
  *   from seller.ts; the retention period and the complaint promise from policies.ts (D020, D032). The grievance and
  *   seller cards render from seller.ts through LegalTemplate; the close's help line is the template's (seller.help).
@@ -25,8 +32,9 @@ import { seller } from "../seller";
  *   test, so a renamed cookie fails until the sentence describing it is read again.
  */
 
-/** Where Supabase stores orders (D047): a placeholder until the founder confirms the move (ADR-009). */
-export const ORDER_DATA_LOCATION: RichTextString = "{ph:region}";
+/** Where Supabase stores orders: Australia (Sydney, D047) until the founder says the store has moved (D055 item 24,
+ *  ADR-009). */
+export const ORDER_DATA_LOCATION: RichTextString = "Australia";
 
 const { phone, tel, whatsapp, email } = seller.support;
 /** The support links as the approved page prints them, the number kept whole on one line (`mk-nowrap`). */
@@ -42,7 +50,8 @@ export const privacyPage = {
     og: DEFAULT_OG,
   },
   status: "draft",
-  approvedOn: placeholder(null, "the date the founder approves this text"),
+  /* "Last updated", the founder's date (D055 item 8). The page stays a draft until he signs it off (D029). */
+  approvedOn: "2026-10-14",
   hero: {
     eyebrow: "Privacy policy",
     title: "Privacy, in {hand:plain words.}",
@@ -71,7 +80,7 @@ export const privacyPage = {
       {
         icon: "sliders-horizontal",
         title: "Our own model learns, unless you turn it off.",
-        body: "Kheelona’s own model learns from your child’s voice recordings and conversation transcripts. It’s on by default. {ph:how a parent turns it off}",
+        body: "Kheelona’s own model learns from your child’s voice recordings and conversation transcripts. It’s on by default. You can turn it off with a switch in the parent app.",
       },
       {
         icon: "chat-circle-dots",
@@ -136,10 +145,7 @@ export const privacyPage = {
           kind: "p",
           text: "In AI mode, Kheelu uses your home Wi‑Fi. To understand and answer your child, Kheelu uses trusted speech and AI providers, on servers in India. They process your child’s voice only to produce Kheelu’s reply. They don’t keep it, and they never use it to train their AI. Our contracts with them say so. “Trusted” means we chose them carefully; it is not a certification.",
         },
-        {
-          kind: "p",
-          text: "{ph:the names of the speech and AI providers, or the line “We tell you which providers we use if you ask.”}",
-        },
+        /* The providers are not named, and the page makes no "on request" line (D055 item 16). */
         { kind: "p", text: "Kheelu cannot browse the internet. It has no camera, so it takes no photos or video." },
         { kind: "h3", text: "What we keep, and why." },
         {
@@ -151,7 +157,7 @@ export const privacyPage = {
             },
             {
               lead: "Voice recordings:",
-              text: "used to train Kheelona’s own model ([next section](#training)). {ph:whether recordings are used for anything else}",
+              text: "used to train Kheelona’s own model ([next section](#training)). Besides Kheelu’s reply and that training, we use them for nothing else.",
             },
             {
               lead: "Your child’s age:",
@@ -161,18 +167,18 @@ export const privacyPage = {
               lead: "The weekly report and the new-word count",
               text: "in the parent app, worked out from your child’s conversations.",
             },
-            "{ph:parent alerts, if they ship in the app: what sets one off and what it uses}",
-            "{ph:any other detail about your child the parent app asks for, for example a first name}",
+            /* No alerts line: parent alerts are off in v1 (B34, final by D054 item 23). D055 item 14 below. */
+            { lead: "Your child’s first name:", text: "the parent app asks for it." },
             {
               lead: "Your parent-app account and Kheelu’s setup:",
-              text: "{ph:the account details (for example phone number or email, and whether you sign in with a password or a one-time code) and the device and Wi-Fi details the app keeps}",
+              text: "your phone number. You sign in with it and a one-time code. The account also keeps Kheelu’s serial or device ID, the name of the Wi‑Fi network Kheelu joins (not its password), and your phone’s model and operating system.",
             },
           ],
         },
         { kind: "h3", text: "Your consent." },
         {
           kind: "p",
-          text: "A parent or guardian sets Kheelu up in the parent app. {ph:how you give consent for your child’s data at setup, and how we check that a parent or guardian is giving it; this step is not built yet}",
+          text: "A parent or guardian sets Kheelu up in the parent app. Setting Kheelu up in the parent app is how a parent or guardian agrees to this policy. A separate consent step, with a check that you are the parent or guardian, comes before May 2027.",
         },
       ],
     },
@@ -191,16 +197,13 @@ export const privacyPage = {
           items: [
             { lead: "What it uses:", text: "your child’s voice recordings and the transcripts of their conversations with Kheelu." },
             { lead: "Who uses it:", text: "Kheelona, to train our own model. We don’t sell it." },
-            {
-              lead: "Why:",
-              text: "{ph:the purpose in the founder’s words, for example “to make Kheelu better at understanding and answering children aged 3 to 7”}",
-            },
-            { lead: "Where:", text: "{ph:where our model is trained (country or region)}" },
+            { lead: "Why:", text: "to make Kheelu better at understanding and answering children aged 3 to 7." },
+            { lead: "Where:", text: "India, on Google Cloud." },
             {
               lead: "It’s on by default.",
-              text: "You can turn it off at any time: {ph:how a parent turns training off, for example a setting in the parent app}. From then on, your child’s conversations are not used to train our model. {ph:what happens to recordings and transcripts already used before you turned it off}",
+              text: "You can turn it off at any time, with a switch in the parent app. From then on, your child’s conversations are not used to train our model. We take them out of our training data. A model already trained keeps what it learned, but they are never used again.",
             },
-            "{ph:confirm that turning it off changes nothing else about how Kheelu or the parent app works}",
+            "Turning it off changes nothing else about how Kheelu or the parent app works.",
           ],
         },
       ],
@@ -225,7 +228,7 @@ export const privacyPage = {
         },
         {
           kind: "p",
-          text: "If you start a pre-order and don’t pay, the details you entered are still saved, as an unpaid order. {ph:how long we keep unpaid orders}",
+          text: "If you start a pre-order and don’t pay, the details you entered are still saved, as an unpaid order. We keep them until you ask us to delete them.",
         },
         {
           kind: "p",
@@ -338,7 +341,7 @@ export const privacyPage = {
               text: "the tools that load from another company’s address, and most of the Meta Pixel. Private browsing, an ad blocker or turning off third-party cookies all help, and none of them stop the site or the store from working.",
             },
             {
-              lead: "Two things blocking can’t stop.",
+              lead: "What blocking can’t stop.",
               text: "PostHog reports through our own address, so an ad blocker usually can’t tell it apart from the site itself. And the report our server sends to Meta when a pre-order is paid comes from us, not from your browser.",
             },
             { lead: "You can turn off personalised advertising", text: "in your own Facebook or Instagram settings." },
@@ -347,8 +350,11 @@ export const privacyPage = {
         },
       ],
     },
-    /* Section 7 · Everyone who handles your data: one stacked row each on phones, the table on laptops. Regions only
-     * where known (D020 item 6; PostHog's US cloud); the rest wait on the CTO's region map (C17). */
+    /* Section 7 · Everyone who handles your data: one stacked row each on phones, the table on laptops. Every region is
+     * sourced (D055 items 16 and 24; privacy.md section 7 notes): the providers' servers in India (D020 item 6);
+     * conversations and the parent app with Kheelona on Google Cloud in India (D047); Supabase, ORDER_DATA_LOCATION;
+     * the store's server code in Mumbai (vercel.json, bom1); Razorpay, Resend, Google, Meta and Ahrefs from each
+     * provider's own published documents; PostHog's US cloud. */
     {
       id: "who-else",
       title: "Everyone who handles your data, and where.",
@@ -361,28 +367,28 @@ export const privacyPage = {
           headings: { who: "Who", what: "What they do for us", where: "Where" },
           keys: { what: "What:", where: "Where:" },
           rows: [
+            { who: "Speech and AI providers", what: "Turn your child’s voice into Kheelu’s reply", where: "Servers in India" },
             {
-              who: "Speech and AI providers {ph:names, or “on request”}",
-              what: "Turn your child’s voice into Kheelu’s reply",
-              where: "Servers in India",
-            },
-            {
-              who: "{ph:who stores conversations and runs the parent app}",
+              who: "Kheelona, on Google Cloud",
               what: "Stores conversations, your child’s age and your parent-app account",
-              where: "{ph:region}",
+              where: "India",
             },
-            { who: "Razorpay", what: "Takes your payment", where: "{ph:region}" },
+            { who: "Razorpay", what: "Takes your payment", where: "India" },
             { who: "Supabase", what: "Stores your order", where: ORDER_DATA_LOCATION },
-            { who: "Resend", what: "Sends our order emails", where: "{ph:region}" },
+            { who: "Resend", what: "Sends our order emails", where: "United States" },
             {
               who: "Vercel",
               what: "Hosts this website and the store, and runs the store’s server code; Vercel Web Analytics",
-              where: "{ph:region of the store’s server code on the new site}",
+              where: "India (Mumbai) for the store’s server code",
             },
-            { who: "Google", what: "Google Analytics", where: "{ph:region}" },
-            { who: "Meta", what: "Meta Pixel and Conversions API; WhatsApp, when you message or call us", where: "{ph:region}" },
+            { who: "Google", what: "Google Analytics", where: "Google data centres around the world" },
+            {
+              who: "Meta",
+              what: "Meta Pixel and Conversions API; WhatsApp, when you message or call us",
+              where: "The United States and other countries",
+            },
             { who: "PostHog", what: "Taps, screen replays and errors on this site", where: "United States" },
-            { who: "Ahrefs", what: "Counts page views", where: "{ph:region}" },
+            { who: "Ahrefs", what: "Counts page views", where: "United States" },
           ],
         },
         {
@@ -401,15 +407,15 @@ export const privacyPage = {
           kind: "list",
           items: [
             { lead: "Conversation transcripts:", text: `${RETENTION_MONTHS} months, then deleted automatically, unless you delete them sooner.` },
+            { lead: "Voice recordings:", text: `${RETENTION_MONTHS} months, the same as transcripts.` },
             {
-              lead: "Voice recordings:",
-              text: `{ph:how long we keep voice recordings, and whether the same ${RETENTION_MONTHS} months applies}`,
+              lead: "If you close your parent-app account:",
+              text: `we keep your child’s conversations and recordings until their ${RETENTION_MONTHS} months end.`,
             },
-            { lead: "If you close your parent-app account:", text: "{ph:what happens to your child’s conversations and recordings}" },
-            { lead: "Orders you’ve paid for:", text: "as long as Indian tax law requires, even after a refund. {ph:the period, from our CA}" },
-            { lead: "Unpaid orders:", text: "{ph:how long we keep them}" },
+            { lead: "Orders you’ve paid for:", text: "as long as Indian tax law requires, even after a refund." },
+            { lead: "Unpaid orders:", text: "we keep them until you ask us to delete them." },
             { lead: "Google Analytics:", text: "14 months." },
-            { lead: "PostHog:", text: "screen recordings for 30 days. {ph:how long PostHog keeps the other events}" },
+            { lead: "PostHog:", text: "screen recordings for 30 days." },
             { lead: "Meta", text: "keeps what it receives under its own policy." },
             { lead: "Our cookies:", text: "kh_utm and kh_fbclid for as long as your visit lasts; kh_order for 2 hours." },
           ],
@@ -424,7 +430,8 @@ export const privacyPage = {
         { kind: "h3", text: "Deleting a conversation." },
         {
           kind: "p",
-          text: "In the parent app, you can delete any conversation in one tap. It disappears from your app straight away. {ph:how soon a deleted conversation is erased from our systems and backups, any period the law requires us to keep records, and whether it is also removed from Kheelu’s memory and from our model’s training data}",
+          /* What a one-tap delete does not reach, said plainly (D055 item 17); no line on servers or backups. */
+          text: "In the parent app, you can delete any conversation in one tap. It disappears from your app straight away. It is not removed from Kheelu’s memory, or from the data our model trains on.",
         },
         { kind: "h3", text: "Asking us." },
         { kind: "p", text: "You can ask us to:" },
@@ -468,7 +475,8 @@ export const privacyPage = {
         },
       ],
     },
-    /* Section 11 · Keeping data safe: only what the written policy documents, once it exists. */
+    /* Section 11 · Keeping data safe: no written security policy yet, so the two confirmed lines and the founder's breach
+     * sentence (D055 items 22 and 23). */
     {
       id: "security",
       title: "Keeping data safe.",
@@ -479,11 +487,7 @@ export const privacyPage = {
         },
         {
           kind: "p",
-          text: "{ph:our security practices (for example encryption, who at Kheelona can read conversations, and backups), taken from our written security policy; this section will say only what that policy documents}",
-        },
-        {
-          kind: "p",
-          text: "{ph:what we do, and how quickly we tell you, if your data is ever exposed, once our incident plan is written}",
+          text: "If your data is ever exposed, we tell you without delay, and the Data Protection Board as the law requires.",
         },
       ],
     },

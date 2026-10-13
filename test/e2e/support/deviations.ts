@@ -296,5 +296,9 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
       reason: "the three new checkout events (B11) named in the policy, in the words the founder approved (D054 item 10)",
       approvedBy: PRIVACY_V10,
     },
+    pageFacts("privacy"),
   ],
+  refund: [pageFacts("refund")],
+  shipping: [pageFacts("shipping")],
+  terms: [pageFacts("terms")],
 };

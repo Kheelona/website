@@ -8,7 +8,9 @@ import { stickyBarPaths } from "@/layouts/SiteShell/sticky-bar-paths";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
+import { PAGE_FACTS } from "../../../../test/e2e/support/page-facts";
 import { mockupFold, skeleton, words, type SkeletonOptions } from "../../../../test/support/mockup-compare";
+import { withFacts } from "../../../../test/support/mockup-facts";
 
 /* The /refund route (task 5.13; structure §3.1, §5): thin, rewritten in place. It loads the page's content module
  * (src/content/en-IN/legal/refund.ts) and the live offer (ADR-005: part 1 names the advance and the balance), describes
@@ -27,7 +29,9 @@ beforeAll(async () => {
 
 const SOURCE = readFileSync("src/app/(site)/refund/page.tsx", "utf8");
 const code = SOURCE.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
-const mockupMain = mockupFold("refund", "main");
+const approvedMain = mockupFold("refund", "main");
+/** The approved page with the founder's page facts applied (task 6.7; D055 items 1-8; test/e2e/support/page-facts.ts). */
+const mockupMain = withFacts(approvedMain, PAGE_FACTS.refund.edits);
 
 /** As LegalTemplate.test.tsx compares a legal page with its mockup (the build's own type steps and family modifiers
  *  dropped, the mockup's value markers unwrapped). */

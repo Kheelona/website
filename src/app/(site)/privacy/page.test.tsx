@@ -8,14 +8,18 @@ import { stickyBarPaths } from "@/layouts/SiteShell/sticky-bar-paths";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { PRIVACY_B11_BUILD } from "../../../../test/e2e/support/deviations";
+import { PAGE_FACTS } from "../../../../test/e2e/support/page-facts";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { skeleton, words, type SkeletonOptions } from "../../../../test/support/mockup-compare";
+import { withFacts } from "../../../../test/support/mockup-facts";
 
 /* The /privacy route (task 5.11; structure §3.1, §5): the legal module through LegalTemplate's reference family with the
  * live offer, thin, and as a whole page equal to the approved mockup's <main> (mockup/privacy.html, D046): the same
  * elements, classes, ids and addresses in order, the same words, the same heading outline. No pre-order button, no
  * tracking value and no buy bar (privacy.md "CTA: None"; the mockup's meta says `"buybar": false`); no structured data
- * beyond the shell's (architecture §9.2: legal pages none). */
+ * beyond the shell's (architecture §9.2: legal pages none). The mockup is compared with the founder's page facts applied
+ * (task 6.7; D055 items 7, 8 and 12-24, D054 item 12; test/e2e/support/page-facts.ts): each placeholder filled in his
+ * words or ruled off, and nothing else changed. */
 
 const getOffer = vi.hoisted(() => vi.fn());
 vi.mock("@/lib/offer/get-offer", () => ({ getOffer }));
@@ -30,7 +34,9 @@ const SOURCE = readFileSync("src/app/(site)/privacy/page.tsx", "utf8");
 const code = SOURCE.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
 
 const mockupDoc = new DOMParser().parseFromString(readRepoFile("mockup/privacy.html"), "text/html");
-const mockupMain = mockupDoc.querySelector("main")!;
+const approvedMain = mockupDoc.querySelector("main")!;
+/** The approved page with the founder's page facts applied: what the build must print (task 6.7). */
+const mockupMain = withFacts(approvedMain, PAGE_FACTS.privacy.edits);
 
 /** The approved Google Analytics sentence V10 replaces, and the PostHog sentence V10's new one follows. */
 const GA4_APPROVED = "Counts visits and the steps of a pre-order: starting the form, opening and closing the payment window, paying, and saving your address.";
@@ -99,7 +105,13 @@ describe("/privacy: the rendered page against the approved mockup", () => {
     expect(skeleton(main, OPTIONS)).toBe(skeleton(mockupMain, OPTIONS));
   });
 
-  it("prints every word of the mockup's <main>, in order, and nothing else, placeholders included, V10's two sentences aside", async () => {
+  it("differs from the approved page only by the founder's page facts, every placeholder among them", () => {
+    expect(words(mockupMain)).not.toBe(words(approvedMain));
+    expect(approvedMain.querySelectorAll(".mk-placeholder").length).toBeGreaterThan(30);
+    expect(mockupMain.querySelectorAll(".mk-placeholder")).toHaveLength(0);
+  });
+
+  it("prints every word of the mockup's <main> with the founder's facts, in order, and nothing else, V10's two sentences aside", async () => {
     const { main } = await renderPage(buildOffer("token"));
     const approved = words(mockupMain);
     // The B11 events in the founder's words (D054 item 10; deviations.md V10), present in the mockup to be replaced.
