@@ -1067,6 +1067,32 @@ story spec. Rulings:
      components.md SiteShell row says `ARTICLE_CLOSES` reads the article registry.
 - **Test:** `npm run verify` and the touched e2e specs green.
 
+### 4.6 Shared fixes found by wave 5 part A (builder; risk high, D052)
+
+Wave 5 part A (run `wf_2de8d3c9-589`) merged in full on 2026-10-13 (`ef959af`): 4.5, 5.5 and 5.6 passed; 5.1, 5.2,
+5.3 and 5.10 ran out of review rounds only on causes in shared files outside their Owns. Rulings: 5.2's edits outside
+its Owns are accepted (`us-center` allows a string that is only `center`, a layout value; the eslint exception for the
+legacy `Sheet.stories.tsx` until 6.3; `tracking-parity.test.ts` follows the removed `valuePaise` default).
+
+- **Owns:** the files each item names, their tests and catalogue rows.
+- **Acceptance:**
+  1. `test/e2e/support/page-checks.ts` `norm`: a space before punctuation or a source marker (`[1]`) is dropped on both
+     sides of the comparison (inline tags no longer split `12.[1] We`); two fixture cases in
+     `test/guards/jsonld-matches-page.test.ts`; `src/content/en-IN/products/kheelu/page.test.tsx` stops pinning the
+     one mismatch (`expect(jsonLdMismatches(html)).toEqual([])`); `jsonld-matches-page` and `content-integrity` green
+     for `/products/kheelu` and `/safety`.
+  2. Image ratio drift: `AppScreens` device images and `Photo`'s bare form (`ModesSection`'s `ks-know__img`) take an
+     explicit `aspect-ratio` from the static import's width and height, so next/image's rounded renditions no longer
+     move the folds below (never on cropped Photos or art-board layers); visual parity of `/`, `/products/kheelu` and
+     `/safety` green at 360, 390 and 1440.
+  3. `scripts/assets/build-doodles.mjs` rounds path coordinates to 2 decimals; `src/assets/doodles.generated.tsx`
+     regenerated; the generated-doodles guard re-pinned; Home's HTML document within its 60 KB budget.
+  4. `CardGrid` guides card link: a tap extension to 44 px (scoped to the guides variant, as the trust links); the
+     first-screen tap-target check green on Home at 360.
+  5. `test/e2e/chrome.spec.ts` sticky-bar cases: scroll past `#hero-cta` before expecting `shown` (the legacy Home had
+     no hero CTA); the cases green on the new Home.
+- **Test:** targeted checks (D052) plus the touched specs on `/`, `/products/kheelu` and `/safety`.
+
 ## Wave 5: pages (after wave 4; all parallel)
 
 **Run in three parts** (machine load: each task builds and runs Playwright on its own ports): **A** 4.5, 5.1, 5.2, 5.3,
