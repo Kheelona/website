@@ -76,6 +76,18 @@ function linksIn(from: string, value: unknown, out: Link[] = []): Link[] {
   return out;
 }
 
+/** The notes a source list repeats. A note is its citation and its address: two places in one document (the
+ *  learning-toys guide's NEP 2020 chapter 4 and chapter 1, copy page fold 13) are two notes with one address. */
+function repeatedSources(sources: Article["sources"]): string[] {
+  const seen = new Set<string>();
+  return sources.flatMap((s) => {
+    const key = `${s.citation}\n${s.href}`;
+    if (seen.has(key)) return [s.href];
+    seen.add(key);
+    return [];
+  });
+}
+
 const allLinks = () => [...modules].flatMap(([file, mod]) => linksIn(file, mod));
 const isInternal = (href: string) => href.startsWith("/") && !href.startsWith("//");
 
@@ -130,10 +142,15 @@ describe("every link the content carries lands somewhere real", () => {
     expect(odd).toEqual([]);
   });
 
+  it("counts a note as repeated only when its citation and address both repeat: two places in one document are two notes", () => {
+    const nep = "https://ncert.nic.in/pdf/nep/NEP_2020.pdf";
+    expect(repeatedSources([{ citation: "NEP 2020, chapter 4, p. 11.", href: nep }, { citation: "NEP 2020, chapter 1, p. 7.", href: nep }])).toEqual([]);
+    expect(repeatedSources([{ citation: "NEP 2020, chapter 4, p. 11.", href: nep }, { citation: "NEP 2020, chapter 4, p. 11.", href: nep }])).toEqual([nep]);
+  });
+
   it("labels every article's sources and never repeats one", () => {
     for (const [path, article] of articles) {
-      const urls = article.sources.map((s) => s.href);
-      expect(new Set(urls).size, `${path} repeats a source`).toBe(urls.length);
+      expect(repeatedSources(article.sources), `${path} repeats a source`).toEqual([]);
       for (const source of article.sources) {
         expect(source.href, path).toMatch(/^https:\/\//);
         expect(source.citation.trim().length, `${path}: an unlabelled source`).toBeGreaterThan(8);
