@@ -1,5 +1,5 @@
 import type { TextDeviation } from "../e2e/support/deviations";
-import type { FactEdit } from "../e2e/support/page-facts";
+import type { FactEdit, PageFacts } from "../e2e/support/page-facts";
 import { normaliseText, sentenceDiff, sentences } from "../e2e/support/parity";
 
 /*
@@ -91,4 +91,36 @@ export function ruleReach(source: Element, edits: readonly FactEdit[], rule: Tex
     excused: once(blockSentences(source).filter((line) => rule.mockup.test(line))),
     accepted: once(blockSentences(withFacts(source, edits)).filter((line) => rule.build?.test(line) ?? false)),
   };
+}
+
+/** The build's stand-in for the visual pass's selectors: the mockup with the facts applied and every `mk-` class read as
+ *  the build's `ks-` (its structure, ids and labels are the build's, as each route's test proves). */
+function builtStandIn(source: Element, edits: readonly FactEdit[]): Element {
+  const root = withFacts(source, edits);
+  for (const el of [root, ...Array.from(root.querySelectorAll("[class]"))]) {
+    const cls = el.getAttribute("class");
+    if (cls) el.setAttribute("class", asBuilt(cls));
+  }
+  return root;
+}
+
+/**
+ * What is wrong with a page's visual hides (an empty list when nothing is): each selector must find exactly one element
+ * on each side it hides, and that element must hold a sentence the facts change on that side (the mockup's for a block
+ * hidden on both sides or on the mockup's alone; the build's for one hidden on the build's alone). So no hide reaches a
+ * block the founder's facts leave alone.
+ */
+export function hiddenProblems(source: Element, facts: Pick<PageFacts, "edits" | "mockup" | "build" | "hidden">): string[] {
+  const sides = { mockup: source, build: builtStandIn(source, facts.edits) } as const;
+  const checks: [keyof typeof sides, string, readonly string[] | null][] = [
+    ...facts.hidden.both.flatMap((sel) => [["mockup", sel, facts.mockup], ["build", sel, null]] as [keyof typeof sides, string, readonly string[] | null][]),
+    ...facts.hidden.mockup.map((sel) => ["mockup", sel, facts.mockup] as [keyof typeof sides, string, readonly string[]]),
+    ...facts.hidden.build.map((sel) => ["build", sel, facts.build] as [keyof typeof sides, string, readonly string[]]),
+  ];
+  return checks.flatMap(([side, selector, listed]) => {
+    const found = sides[side].querySelectorAll(selector);
+    if (found.length !== 1) return [`${side}: ${selector} finds ${found.length} elements`];
+    if (listed && !blockSentences(found[0]).some((line) => listed.includes(line))) return [`${side}: ${selector} holds no changed sentence`];
+    return [];
+  });
 }

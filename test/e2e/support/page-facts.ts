@@ -27,6 +27,16 @@ export interface FactEdit {
   readonly inner?: true;
 }
 
+/** The blocks the visual pass hides before it measures (SPA 1; deviations.ts VISUAL_HIDDEN): each block the facts change
+ *  on both sides (its words wrap differently, and every chunk below would shift), and each block that came off on the
+ *  mockup's side alone. Selectors use only what both pages share: ids, aria-labelledby and the DS's own kh- classes,
+ *  except the "Last updated" line, which each side names in its own prefix. */
+export interface FactsHidden {
+  readonly both: readonly string[];
+  readonly mockup: readonly string[];
+  readonly build: readonly string[];
+}
+
 /** The accepted changes to one page, and the sentences they change. */
 export interface PageFacts {
   readonly edits: readonly FactEdit[];
@@ -34,6 +44,7 @@ export interface PageFacts {
   readonly mockup: readonly string[];
   /** Sentences the build prints in their place. */
   readonly build: readonly string[];
+  readonly hidden: FactsHidden;
   readonly reason: string;
   readonly approvedBy: string;
 }
@@ -121,6 +132,23 @@ export const PAGE_FACTS = {
       F4("month and year of manufacture"),
     ],
     build: ["On iPhone and Android."],
+    hidden: {
+      both: [
+        "#know-title ~ ul > li:nth-child(5)",
+        "#panel-specs > dl > div:nth-child(9)",
+      ],
+      mockup: [
+        "#panel-specs > dl > div:nth-child(10)",
+        "#panel-specs > dl > div:nth-child(11)",
+        "#panel-specs > dl > div:nth-child(12)",
+        "#panel-specs > dl > div:nth-child(13)",
+        "#panel-safety > ul > li:nth-child(4)",
+        "#panel-safety > ul > li:nth-child(5)",
+        ".mk-declare dl > div:nth-child(4)",
+        ".mk-declare dl > div:nth-child(5)",
+      ],
+      build: [],
+    },
     reason: MEET_KHEELU_REASON,
     approvedBy: "deviations.md V16 (founder, D055 item 26 and D054 item 19, 2026-10-14; task 6.7)",
   },
@@ -144,6 +172,15 @@ export const PAGE_FACTS = {
       "It’s called the Kheelona app: get it on the App Store for iPhone, or on Google Play for Android.",
       "It’s the button on Kheelu’s back, the one you held during setup.",
     ],
+    hidden: {
+      both: [
+        'section[aria-labelledby="before-title"] .kh-trust__item:nth-child(1) .kh-trust__body',
+        'section[aria-labelledby="before-title"] .kh-trust__item:nth-child(4) .kh-trust__body',
+        'section[aria-labelledby="button-title"] .kh-body-l:first-child',
+      ],
+      mockup: [],
+      build: [],
+    },
     reason:
       "the charger's F4 slot hidden (D055 item 27, D054 item 19); the parent app named and linked on both stores (item 26); the wake-up button's place (item 25)",
     approvedBy: "deviations.md V15 (founder, D055 items 25-27 and D054 item 19, 2026-10-14; task 6.7)",
@@ -304,6 +341,31 @@ export const PAGE_FACTS = {
       "It is not removed from Kheelu’s memory, or from the data our model trains on.",
       "If your data is ever exposed, we tell you without delay, and the Data Protection Board as the law requires.",
     ],
+    hidden: {
+      both: [
+        'section[aria-labelledby="short-title"] .kh-trust__item:nth-child(4) .kh-trust__body',
+        "#kheelu > ul > li:nth-child(2)",
+        "#kheelu > ul > li:nth-child(5)",
+        "#kheelu > ul > li:nth-child(6)",
+        "#kheelu > p:last-child",
+        "#training > ul > li:nth-child(3)",
+        "#training > ul > li:nth-child(4)",
+        "#training > ul > li:nth-child(5)",
+        "#training > ul > li:nth-child(6)",
+        "#store > p:nth-child(5)",
+        "#choices > ul > li:nth-child(2)",
+        ...[1, 2, 3, 4, 5, 6, 7, 8, 10].flatMap((row) => [`#who-else > ul > li:nth-child(${row})`, `#who-else tbody > tr:nth-child(${row})`]),
+        "#keep > ul > li:nth-child(2)",
+        "#keep > ul > li:nth-child(3)",
+        "#keep > ul > li:nth-child(4)",
+        "#keep > ul > li:nth-child(5)",
+        "#keep > ul > li:nth-child(7)",
+        "#rights > p:nth-child(3)",
+        "#contact > div:nth-child(3) > p:nth-child(2)",
+      ],
+      mockup: [".mk-updated", "#kheelu > p:nth-child(8)", "#kheelu > ul > li:nth-child(7)", "#security > p:nth-child(3)", "#security > p:nth-child(4)"],
+      build: [".ks-updated", "#security > p:nth-child(3)"],
+    },
     reason:
       "the founder's privacy facts (D055 items 7, 8, 12-24): each placeholder filled in his words or ruled off; the recipients' regions from D047, vercel.json and the providers' published documents; \"What blocking can’t stop.\" (D054 item 12)",
     approvedBy: LEGAL_APPROVED("V11", "items 7, 8 and 12-24, D054 item 12"),
@@ -382,6 +444,20 @@ export const PAGE_FACTS = {
       "Cancelled before dispatch: we start your refund within 2 working days of your request; your bank takes 5-7 working days.",
       "Returned, faulty or not as described: your refund reaches you within 7 working days of your Kheelu reaching us.",
     ],
+    hidden: {
+      both: [
+        ...[2, 3, 5].map((item) => `section[aria-labelledby="short-title"] .kh-trust__item:nth-child(${item}) .kh-trust__body`),
+        "section:has(> #returns) > ol > li:nth-child(3)",
+        "section:has(> #returns) > p:nth-child(5)",
+        "section:has(> #faulty) > p:nth-child(6)",
+        "section:has(> #faulty) > p:nth-child(8)",
+        "section:has(> #refund-timing) > ul > li:nth-child(1)",
+        "section:has(> #refund-timing) > ul > li:nth-child(2)",
+        "section:has(> #complaints) > div:nth-child(3) > p:nth-child(2)",
+      ],
+      mockup: [".mk-updated", "section:has(> #refund-timing) > ul > li:nth-child(3)"],
+      build: [".ks-updated"],
+    },
     reason:
       "the founder's refund facts (D055 items 1-8): a full refund on a change-of-mind return, the money within 7 working days of the return (bank time included), the free return leg, the warranty from delivery; the unconfirmed backstop and the complaint reference ruled off",
     approvedBy: LEGAL_APPROVED("V12", "items 1-8"),
@@ -405,6 +481,11 @@ export const PAGE_FACTS = {
     build: [
       "Last updated: 14 October 2026",
     ],
+    hidden: {
+      both: ["section:has(> #problems) > p:nth-child(5)", "section:has(> #seller) > div:nth-child(5) > p:nth-child(2)"],
+      mockup: [".mk-updated"],
+      build: [".ks-updated"],
+    },
     reason: "the founder's shipping facts (D055 items 7-9): the date; the lost-parcel line and the complaint reference ruled off",
     approvedBy: LEGAL_APPROVED("V13", "items 7-9"),
   },
@@ -437,6 +518,11 @@ export const PAGE_FACTS = {
       "Last updated: 14 October 2026",
       "This is on by default, and you can turn it off at any time with a switch in the parent app.",
     ],
+    hidden: {
+      both: ["#price > p:nth-child(6)", "#training > p:nth-child(2)", "#contact > div:nth-child(4) > p:nth-child(2)"],
+      mockup: [".mk-updated", "#price > p:nth-child(7)"],
+      build: [".ks-updated"],
+    },
     reason: "the founder's terms facts (D055 items 7, 8, 10 and 11): the date, GST as D024 confirms it, the training switch; the CA slots and the complaint reference ruled off",
     approvedBy: LEGAL_APPROVED("V14", "items 7, 8, 10 and 11"),
   },

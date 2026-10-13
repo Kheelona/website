@@ -7,7 +7,7 @@ import type { Offer } from "@/content/types";
 import { stickyBarPaths } from "@/layouts/SiteShell/sticky-bar-paths";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
-import { PRIVACY_B11_BUILD } from "../../../../test/e2e/support/deviations";
+import { PRIVACY_B11_BUILD, VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
 import { PAGE_FACTS } from "../../../../test/e2e/support/page-facts";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { skeleton, words, type SkeletonOptions } from "../../../../test/support/mockup-compare";
@@ -180,5 +180,14 @@ describe("/privacy: the rendered page against the approved mockup", () => {
     expect(html).not.toMatch(/class="[^"]*\bmk-/);
     expect(html).not.toMatch(/\sdata-src=/);
     expect(html).not.toMatch(/Headline <span|Pick a headline|Rewritten in the build/);
+  });
+});
+
+describe("/privacy: the founder's page facts for the pixels (task 6.7)", () => {
+  it("finds each block the visual pass hides on the build side, once, on the page as it renders", async () => {
+    const { main } = await renderPage(buildOffer("token"));
+    const selectors = VISUAL_HIDDEN.privacy.filter((rule) => rule.side === "build").map((rule) => rule.selector);
+    expect(selectors.length).toBeGreaterThan(0);
+    for (const selector of selectors) expect(main.querySelectorAll(selector), selector).toHaveLength(1);
   });
 });

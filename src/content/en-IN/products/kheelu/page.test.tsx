@@ -10,14 +10,14 @@ import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../../test/e2e/support/page-checks";
-import { TEXT_DEVIATIONS } from "../../../../../test/e2e/support/deviations";
+import { TEXT_DEVIATIONS, VISUAL_HIDDEN } from "../../../../../test/e2e/support/deviations";
 import { htmlToText } from "../../../../../test/e2e/support/mockup-text";
 import { PAGE_FACTS } from "../../../../../test/e2e/support/page-facts";
 import { sentences } from "../../../../../test/e2e/support/parity";
 import { ROOT } from "../../../../../test/e2e/support/repo";
 import { mockupRoute as mockupPageRoute } from "../../../../../test/e2e/support/routes";
 import { mockupPage, mockupRoute, STORE, words } from "../../../../../test/support/mockup-compare";
-import { factSentences, ruleReach, withFacts } from "../../../../../test/support/mockup-facts";
+import { factSentences, hiddenProblems, ruleReach, withFacts } from "../../../../../test/support/mockup-facts";
 import { faqs } from "../../faqs";
 import { films } from "../../films";
 import { SAFETY_FACTS } from "../../trust";
@@ -318,6 +318,15 @@ describe("the founder's page facts as a text deviation (deviations.md V16; task 
 
   it("accepts the parent app's line as the page prints it", () => {
     expect(sentences(htmlToText(BUILT.html))).toContain(FACTS.build[0]);
+  });
+
+  it("hides for the pixels exactly the blocks the facts change, each found once on its side (VISUAL_HIDDEN)", () => {
+    expect(hiddenProblems(APPROVED, FACTS)).toEqual([]);
+    const sel = (side: string) => VISUAL_HIDDEN["meet-kheelu"].filter((r) => r.side === side).map((r) => r.selector);
+    expect(sel("mockup")).toEqual([...FACTS.hidden.both, ...FACTS.hidden.mockup]);
+    expect(sel("build")).toEqual([...FACTS.hidden.both, ...FACTS.hidden.build]);
+    // The build side's selectors hold on the page as it renders, too.
+    for (const selector of sel("build")) expect(BUILT.main.querySelectorAll(selector), selector).toHaveLength(1);
   });
 });
 

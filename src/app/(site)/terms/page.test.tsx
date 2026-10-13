@@ -11,6 +11,7 @@ import { OFFER_REVALIDATE_SECONDS } from "@/lib/offer/get-offer";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { termsFixture } from "../../../../test/fixtures/legal/terms";
+import { VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
 import { GRIEVANCE_NOTE, PAGE_FACTS } from "../../../../test/e2e/support/page-facts";
 import { mockupFold, skeleton, words, type SkeletonOptions } from "../../../../test/support/mockup-compare";
 import { withFacts } from "../../../../test/support/mockup-facts";
@@ -245,5 +246,14 @@ describe("/terms: full mode (terms.md folds 2 and 4, sections 5 and 6)", () => {
     for (const amount of [FULL.prices.token, FULL.prices.balance, TOKEN.prices.headline]) expect(text).not.toContain(amount);
     expect(text).not.toMatch(/first \d+ units/);
     expect(text).toContain(FULL.prices.full);
+  });
+});
+
+describe("/terms: the founder's page facts for the pixels (task 6.7)", () => {
+  it("finds each block the visual pass hides on the build side, once, on the page as it renders", async () => {
+    const { main } = await renderPage(TOKEN);
+    const selectors = VISUAL_HIDDEN.terms.filter((rule) => rule.side === "build").map((rule) => rule.selector);
+    expect(selectors.length).toBeGreaterThan(0);
+    for (const selector of selectors) expect(main.querySelectorAll(selector), selector).toHaveLength(1);
   });
 });

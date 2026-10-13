@@ -7,7 +7,7 @@ import type { SectionEntry } from "@/layouts/sections-registry";
 import { stickyBarPaths } from "@/layouts/SiteShell/sticky-bar-paths";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
-import { SETUP_STEP_BUILD } from "../../../../test/e2e/support/deviations";
+import { SETUP_STEP_BUILD, VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
 import { APP_STORE, GOOGLE_PLAY, PAGE_FACTS, type FactEdit } from "../../../../test/e2e/support/page-facts";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
@@ -341,5 +341,13 @@ describe("Setup: search and share metadata (setup.md At a glance)", () => {
       );
     }
     expect(setupPage.meta.og).toBe(DEFAULT_OG);
+  });
+});
+
+describe("Setup: the founder's page facts for the pixels (task 6.7)", () => {
+  it("finds each block the visual pass hides on the build side, once, on the page as it renders (V8 and the facts)", () => {
+    const selectors = VISUAL_HIDDEN.setup.filter((rule) => rule.side === "build").map((rule) => rule.selector);
+    expect(selectors).toHaveLength(4);
+    for (const selector of selectors) expect(BUILT.querySelectorAll(selector), selector).toHaveLength(1);
   });
 });

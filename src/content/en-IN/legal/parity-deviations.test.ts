@@ -7,7 +7,7 @@ import { PAGE_FACTS } from "../../../../test/e2e/support/page-facts";
 import { sentences } from "../../../../test/e2e/support/parity";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { mockupFold } from "../../../../test/support/mockup-compare";
-import { factSentences, ruleReach } from "../../../../test/support/mockup-facts";
+import { factSentences, hiddenProblems, ruleReach } from "../../../../test/support/mockup-facts";
 import { privacyPage } from "./privacy";
 
 /* The legal pages' approved parity deviations. Privacy's V10 (the founder's words, D054 item 10): the build's words the
@@ -49,7 +49,7 @@ describe("privacy parity deviations (V10)", () => {
   });
 
   it("hides the Google Analytics and the PostHog paragraphs on both sides, and those are the tools they name", () => {
-    expect(VISUAL_HIDDEN.privacy.map((r) => [r.side, r.selector])).toEqual([
+    expect(VISUAL_HIDDEN.privacy.filter((r) => r.approvedBy.startsWith("deviations.md V10")).map((r) => [r.side, r.selector])).toEqual([
       ["mockup", ".mk-tools > .mk-tool:nth-child(3) > p"],
       ["mockup", ".mk-tools > .mk-tool:nth-child(6) > p:first-of-type"],
       ["build", ".ks-tools > .ks-tool:nth-child(3) > p"],
@@ -87,6 +87,14 @@ describe.each(["privacy", "refund", "shipping", "terms"] as const)("%s: the foun
     const rule = TEXT_DEVIATIONS[slug].filter((r) => r.approvedBy === facts.approvedBy);
     expect(rule).toHaveLength(1);
     expect(ruleReach(main, facts.edits, rule[0])).toEqual({ excused: once(facts.mockup), accepted: once(facts.build) });
+  });
+
+  it("hides for the pixels exactly the blocks its facts change, each found once on its side (VISUAL_HIDDEN)", () => {
+    expect(hiddenProblems(main, facts)).toEqual([]);
+    const rules = VISUAL_HIDDEN[slug].filter((r) => r.approvedBy === facts.approvedBy);
+    const sel = (side: string) => rules.filter((r) => r.side === side).map((r) => r.selector);
+    expect(sel("mockup")).toEqual([...facts.hidden.both, ...facts.hidden.mockup]);
+    expect(sel("build")).toEqual([...facts.hidden.both, ...facts.hidden.build]);
   });
 
   it("leaves no placeholder on the page: every one the mockup shows is filled or ruled off", () => {

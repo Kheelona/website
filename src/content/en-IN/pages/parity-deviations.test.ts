@@ -7,7 +7,7 @@ import { PAGE_FACTS } from "../../../../test/e2e/support/page-facts";
 import { sentences } from "../../../../test/e2e/support/parity";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { mockupFold } from "../../../../test/support/mockup-compare";
-import { factSentences, ruleReach } from "../../../../test/support/mockup-facts";
+import { factSentences, hiddenProblems, ruleReach } from "../../../../test/support/mockup-facts";
 import { setupPage } from "./setup";
 import { teamPage } from "./team";
 
@@ -80,8 +80,16 @@ describe("setup parity deviations (V8, and the founder's page facts V15)", () =>
     expect(ruleReach(mockupFold("setup", "main"), FACTS.edits, factsRule)).toEqual({ excused: [...FACTS.mockup], accepted: [...FACTS.build] });
   });
 
+  it("hides for the pixels exactly the blocks its facts change, on both sides (VISUAL_HIDDEN)", () => {
+    expect(hiddenProblems(mockupFold("setup", "main"), FACTS)).toEqual([]);
+    const rules = VISUAL_HIDDEN.setup.filter((r) => r.approvedBy === FACTS.approvedBy);
+    expect(rules.map((r) => [r.side, r.selector])).toEqual(
+      (["mockup", "build"] as const).flatMap((side) => FACTS.hidden.both.map((selector) => [side, selector])),
+    );
+  });
+
   it("hides step 2 on both sides, one element each", () => {
-    expect(VISUAL_HIDDEN.setup.map((r) => [r.side, r.selector])).toEqual([
+    expect(VISUAL_HIDDEN.setup.filter((r) => r.approvedBy.startsWith("deviations.md V8")).map((r) => [r.side, r.selector])).toEqual([
       ["mockup", ".kh-steps > .kh-step:nth-child(2)"],
       ["build", ".kh-steps > .kh-step:nth-child(2)"],
     ]);

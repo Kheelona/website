@@ -78,6 +78,21 @@ const pageFacts = (slug: PageFactsSlug): TextDeviation => ({
   approvedBy: PAGE_FACTS[slug].approvedBy,
 });
 
+/** The blocks the founder's page facts change, hidden for the pixels: on both sides where the words reflow, on the
+ *  mockup's alone where a row or line came off (page-facts.ts; each page's parity-deviations test checks every selector
+ *  finds one changed block on its side). Their words are compared by the text pass (pageFacts, above). */
+const pageFactsHidden = (slug: PageFactsSlug): VisualHide[] => {
+  const { hidden, approvedBy } = PAGE_FACTS[slug];
+  const rule = (side: VisualHide["side"], selector: string, reason: string): VisualHide => ({ side, selector, reason, approvedBy });
+  return [
+    ...(["mockup", "build"] as const).flatMap((side) =>
+      hidden.both.map((selector) => rule(side, selector, "a block the founder's page facts reword, compared by the text pass")),
+    ),
+    ...hidden.mockup.map((selector) => rule("mockup", selector, "a block the founder's page facts take off, or its approved form")),
+    ...hidden.build.map((selector) => rule("build", selector, "the founder's page facts in a block the build words differently")),
+  ];
+};
+
 /** A route whose own parity runs would compare a state its mockup does not show, with the spec that proves that
  *  state's parity instead. The visual and text parity specs skip the route on the build and print why (SPA 1 and 2). */
 export type ParityElsewhere = {
@@ -166,28 +181,38 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
       approvedBy: TEAM_V7,
     })),
   ],
-  setup: (["mockup", "build"] as const).map((side) => ({
-    /* Step 2 is CMO fix M-S1 in the build (no place, no light colour; an open placeholder for the place), so it wraps
-       differently and moves every step below it; the pixels compare the page without step 2 on both sides, and its
-       words are compared by the text pass (TEXT_DEVIATIONS). */
-    side,
-    selector: ".kh-steps > .kh-step:nth-child(2)",
-    reason: "step 2 (CMO fix M-S1 in the build, with its open placeholder), compared by the text pass; hidden on both sides so the steps below line up",
-    approvedBy: "deviations.md V8 (main session, 2026-10-14, M1; task 5.8, CMO M-S1)",
-  })),
+  setup: [
+    ...(["mockup", "build"] as const).map((side) => ({
+      /* Step 2 is CMO fix M-S1 in the build (its light without a colour, V8), so it may wrap differently and move every
+         step below it; the pixels compare the page without step 2 on both sides, and its words are compared by the text
+         pass (TEXT_DEVIATIONS). */
+      side,
+      selector: ".kh-steps > .kh-step:nth-child(2)",
+      reason: "step 2 (CMO fix M-S1 in the build: its light without a colour), compared by the text pass; hidden on both sides so the steps below line up",
+      approvedBy: "deviations.md V8 (main session, 2026-10-14, M1; task 5.8, CMO M-S1)",
+    })),
+    ...pageFactsHidden("setup"),
+  ],
+  "meet-kheelu": pageFactsHidden("meet-kheelu"),
   /* The Google Analytics block's paragraph and the PostHog block's first one say more in the build (V10), so they wrap
      to more lines and every block below would shift; the pixels compare the page without the two paragraphs on both
      sides, and their words are compared by the text pass (TEXT_DEVIATIONS). Third and sixth tools, as privacy.ts
      and the mockup order them (parity-deviations.test.ts checks the headings). */
-  privacy: (["mockup", "build"] as const).flatMap((side) => {
-    const tool = side === "mockup" ? "mk-tool" : "ks-tool";
-    return [`.${tool}s > .${tool}:nth-child(3) > p`, `.${tool}s > .${tool}:nth-child(6) > p:first-of-type`].map((selector) => ({
-      side,
-      selector,
-      reason: "the Google Analytics and PostHog paragraphs name the B11 events (D054 item 10), compared by the text pass; hidden on both sides so the blocks below line up",
-      approvedBy: PRIVACY_V10,
-    }));
-  }),
+  privacy: [
+    ...(["mockup", "build"] as const).flatMap((side) => {
+      const tool = side === "mockup" ? "mk-tool" : "ks-tool";
+      return [`.${tool}s > .${tool}:nth-child(3) > p`, `.${tool}s > .${tool}:nth-child(6) > p:first-of-type`].map((selector) => ({
+        side,
+        selector,
+        reason: "the Google Analytics and PostHog paragraphs name the B11 events (D054 item 10), compared by the text pass; hidden on both sides so the blocks below line up",
+        approvedBy: PRIVACY_V10,
+      }));
+    }),
+    ...pageFactsHidden("privacy"),
+  ],
+  refund: pageFactsHidden("refund"),
+  shipping: pageFactsHidden("shipping"),
+  terms: pageFactsHidden("terms"),
 };
 
 /** The style the visual pass adds to one side of a page's comparison: its hidden selectors, or "" when it has none. */
