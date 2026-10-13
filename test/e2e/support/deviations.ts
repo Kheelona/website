@@ -60,8 +60,7 @@ export const TEAM_BIOS_BUILD = [
   "He is a Chartered Accountant with 15 years in finance and company-building.",
   "He was the first student at his family’s pre-school, in 1994.",
   "He studied AI, shipped machine learning in production, and holds 14 patents filed in his own name.",
-  "He has spent over a decade in hardware, taking products from a blank page to certification.",
-  "That includes years at Intel, leading Thunderbolt 4 and 5 compliance.",
+  "Over a decade in hardware, including years at Intel leading Thunderbolt 4 and 5 compliance, he took products from a blank page to certification.",
 ] as const;
 export const TEAM_STRIP_BUILD = ["Karnataka Elevate", "Founders Inc"] as const;
 export const TEAM_LEAD_BUILD = "Kheelona’s founders are parents in Bengaluru, building Kheelu: a screen-free plush toy that talks, for children aged 3 to 7.";

@@ -262,14 +262,15 @@ describe("fold 3: the Kheelona founders", () => {
   });
 
   /* D054 item 20 settles B24: the live site's photos, public/team/*.jpg, byte for byte the files at the tag; each a
-   * site-path image at the file's real size (nothing shifts), with the copy page's alt, which names the founder and says
-   * what the photo shows (team.md fold 3). The mockup's placeholder line is the resolved placeholder. */
-  it("shows each founder's live photo at its real size, with the copy page's alt (D054 item 20; B24 settled)", async () => {
+   * site-path image at the file's real size (nothing shifts), with an empty alt: the founder's name is printed beside it
+   * (DS Avatar README: alt="" next to a visible name; team.md fold 3). The mockup's placeholder line is the resolved
+   * placeholder. */
+  it("shows each founder's live photo at its real size, with an empty alt beside the visible name (D054 item 20; B24 settled)", async () => {
     expect(norm(cards()[0].querySelector(".mk-founder__photo")?.textContent)).toBe("[PLACEHOLDER B24: founder photo]");
     const expected: Record<string, { src: string; alt: string }> = {
-      "Apoorva Sahu": { src: "/team/apoorva.jpg", alt: "Apoorva Sahu, Co-Founder and CEO of Kheelona, in glasses and a black T-shirt." },
-      "Aman Soni": { src: "/team/aman.jpg", alt: "Aman Soni, Co-Founder and CTO of Kheelona, in glasses and an olive sweater." },
-      "Kashyap C.R": { src: "/team/kashyap.jpg", alt: "Kashyap C.R, Co-Founder and Chief Hardware Officer of Kheelona, smiling, in a striped T-shirt." },
+      "Apoorva Sahu": { src: "/team/apoorva.jpg", alt: "" },
+      "Aman Soni": { src: "/team/aman.jpg", alt: "" },
+      "Kashyap C.R": { src: "/team/kashyap.jpg", alt: "" },
     };
     for (const card of founders.config.founders) {
       expect(isPlaceholder(card.photo), card.name).toBe(false);
@@ -291,7 +292,7 @@ describe("fold 3: the Kheelona founders", () => {
       ["Aman Soni", "He studied AI, shipped machine learning in production, and holds 14 patents filed in his own name.", undefined],
       [
         "Kashyap C.R",
-        "He has spent over a decade in hardware, taking products from a blank page to certification. That includes years at Intel, leading Thunderbolt 4 and 5 compliance.",
+        "Over a decade in hardware, including years at Intel leading Thunderbolt 4 and 5 compliance, he took products from a blank page to certification.",
         undefined,
       ],
     ]);
@@ -341,18 +342,18 @@ describe("fold 5: recognised by, as the live strip (D054 item 20)", () => {
   it("keeps the DS label and the four programmes in the live strip's order, none gated", () => {
     expect(strip.config.title).toBe(headingOf(fold("recognised-title")).title);
     expect(strip.config.title).toBe("Recognised by.");
-    expect(strip.config.items.map((i) => i.name)).toEqual(["NVIDIA Inception", "Karnataka Elevate", "nasscom startups", "Founders Inc"]);
+    expect(strip.config.items.map((i) => i.name)).toEqual(["NVIDIA Inception Program", "Karnataka Elevate", "nasscom startups", "Founders Inc"]);
     for (const item of strip.config.items) expect(item.gated, item.name).toBeUndefined();
   });
 
   /* The live marks, public/recognition/*.png (team.md fold 5): the NVIDIA and nasscom marks stand for their names, so
    * each carries the words on the mark as its alt; the Karnataka seal is decorative beside the words "Karnataka
-   * Elevate" (empty alt, as live, and never "Government of Karnataka"); Founders Inc is text only. The NVIDIA alt is
-   * "NVIDIA Inception" until the main session allows the mark's own "Program" past the en-IN spelling guard (team.md
+   * Elevate" (empty alt, as live, and never "Government of Karnataka"); Founders Inc is text only. The NVIDIA alt is the
+   * mark's own words, "NVIDIA Inception Program", which the en-IN spelling guard passes as that exact string (team.md
    * question 5; test/guards/banned-phrases.data.ts us-program). */
   it("shows the three live marks at their real sizes, with the copy page's alts, and Founders Inc as text", async () => {
     expect(strip.config.items.map((i) => (i.mark ? { name: i.name, src: i.mark.src, alt: i.mark.alt } : { name: i.name }))).toEqual([
-      { name: "NVIDIA Inception", src: "/recognition/nvidia-inception.png", alt: "NVIDIA Inception" },
+      { name: "NVIDIA Inception Program", src: "/recognition/nvidia-inception.png", alt: "NVIDIA Inception Program" },
       { name: "Karnataka Elevate", src: "/recognition/karnataka-seal.png", alt: "" },
       { name: "nasscom startups", src: "/recognition/nasscom.png", alt: "nasscom startups" },
       { name: "Founders Inc" },

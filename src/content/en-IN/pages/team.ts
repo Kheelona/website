@@ -34,14 +34,15 @@ const founderNames = `${names.slice(0, -1).join(", ")} and ${names.at(-1)}`;
 const file = (src: SitePath, width: number, height: number, alt: string): ImageRef => ({ src, width, height, alt });
 
 type Founder = (typeof organization.founders)[number];
-/** A founder's card: the facts from organization.ts, the team page's words for the rest. The photo's alt names the
- *  founder and their role, then says what the photo shows (team.md fold 3). */
-const card = (founder: Founder, words: { initials: string; firstName: string; photo: SitePath; looks: string; body: string; bio: string }) => ({
+/** A founder's card: the facts from organization.ts, the team page's words for the rest. The photo's alt is empty:
+ *  the founder's name is printed beside it (DS Avatar README: alt="" next to a visible name, so the name is not read
+ *  twice; team.md fold 3, main-session ruling at the 6.6 merge). */
+const card = (founder: Founder, words: { initials: string; firstName: string; photo: SitePath; body: string; bio: string }) => ({
   name: founder.name,
   role: founder.role,
   anchor: founder.anchor,
   initials: words.initials,
-  photo: file(words.photo, 480, 480, `${founder.name}, ${founder.role} of Kheelona, ${words.looks}`),
+  photo: file(words.photo, 480, 480, ""),
   body: words.body,
   bio: { text: words.bio },
   link: { label: `${words.firstName} on LinkedIn`, href: founder.sameAs },
@@ -102,7 +103,6 @@ export const teamPage = {
             initials: "AS",
             firstName: "Apoorva",
             photo: "/team/apoorva.jpg",
-            looks: "in glasses and a black T-shirt.",
             body: "Apoorva leads Kheelona and owns the promise we make to your family.",
             bio: "He is a Chartered Accountant with 15 years in finance and company-building. He was the first student at his family’s pre-school, in 1994.",
           }),
@@ -110,7 +110,6 @@ export const teamPage = {
             initials: "AS",
             firstName: "Aman",
             photo: "/team/aman.jpg",
-            looks: "in glasses and an olive sweater.",
             body: "Aman builds the part your child talks to: how Kheelu listens and replies, and the safety layer every reply passes. He is also our grievance officer.",
             bio: "He studied AI, shipped machine learning in production, and holds 14 patents filed in his own name.",
           }),
@@ -118,9 +117,8 @@ export const teamPage = {
             initials: "KC",
             firstName: "Kashyap",
             photo: "/team/kashyap.jpg",
-            looks: "smiling, in a striped T-shirt.",
             body: "Kashyap builds the toy itself: the hardware inside the plush, and how it is powered and charged.",
-            bio: "He has spent over a decade in hardware, taking products from a blank page to certification. That includes years at Intel, leading Thunderbolt 4 and 5 compliance.",
+            bio: "Over a decade in hardware, including years at Intel leading Thunderbolt 4 and 5 compliance, he took products from a blank page to certification.",
           }),
         ],
       },
@@ -149,15 +147,15 @@ export const teamPage = {
       },
     },
     /* Fold 5: the live strip, in its order (team.md fold 5): the NVIDIA Inception and nasscom startups marks name their
-       programmes (the words on each mark as its alt); the Karnataka seal is decorative beside the words "Karnataka
-       Elevate"; Founders Inc is text. Names only, no relationship (B26). The NVIDIA alt drops the mark's "Program" until
-       the main session allows that proper noun past the en-IN spelling guard (team.md question 5). */
+       programmes (the words on each mark as its alt: "NVIDIA Inception Program" is the programme's own name, which the en-IN
+       spelling guard lets through as that exact alt, team.md question 5); the Karnataka seal is decorative beside the
+       words "Karnataka Elevate"; Founders Inc is text. Names only, no relationship (B26). */
     {
       kind: "recognition-strip",
       config: {
         title: "Recognised by.",
         items: [
-          { name: "NVIDIA Inception", mark: file("/recognition/nvidia-inception.png", 575, 200, "NVIDIA Inception") },
+          { name: "NVIDIA Inception Program", mark: file("/recognition/nvidia-inception.png", 575, 200, "NVIDIA Inception Program") },
           { name: "Karnataka Elevate", mark: file("/recognition/karnataka-seal.png", 240, 240, "") },
           { name: "nasscom startups", mark: file("/recognition/nasscom.png", 306, 126, "nasscom startups") },
           { name: "Founders Inc" },

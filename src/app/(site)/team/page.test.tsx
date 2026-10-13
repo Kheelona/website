@@ -43,13 +43,13 @@ const CMO_LEDE =
 const BIOS = [
   "He is a Chartered Accountant with 15 years in finance and company-building. He was the first student at his family’s pre-school, in 1994.",
   "He studied AI, shipped machine learning in production, and holds 14 patents filed in his own name.",
-  "He has spent over a decade in hardware, taking products from a blank page to certification. That includes years at Intel, leading Thunderbolt 4 and 5 compliance.",
+  "Over a decade in hardware, including years at Intel leading Thunderbolt 4 and 5 compliance, he took products from a blank page to certification.",
 ];
-/** The founders' photos and their alts (team.md fold 3), in the card order. */
+/** The founders' photos and their alts (team.md fold 3), in the card order: empty, the name is printed beside each. */
 const PHOTOS = [
-  ["/team/apoorva.jpg", "Apoorva Sahu, Co-Founder and CEO of Kheelona, in glasses and a black T-shirt."],
-  ["/team/aman.jpg", "Aman Soni, Co-Founder and CTO of Kheelona, in glasses and an olive sweater."],
-  ["/team/kashyap.jpg", "Kashyap C.R, Co-Founder and Chief Hardware Officer of Kheelona, smiling, in a striped T-shirt."],
+  ["/team/apoorva.jpg", ""],
+  ["/team/aman.jpg", ""],
+  ["/team/kashyap.jpg", ""],
 ];
 
 /** The approved <main> as the build must show it: the hero lede replaced by the CMO's fix M-T1, and the mockup's
@@ -198,7 +198,7 @@ describe("/team: the rendered page against the approved mockup", () => {
     expect(words(visible(main))).not.toMatch(/PLACEHOLDER|language model|train ourselves/i);
   });
 
-  it("shows each founder's live photo in the badge's place, with the copy page's alt (D054 item 20; B24 settled)", async () => {
+  it("shows each founder's live photo in the badge's place, alt empty beside the visible name (D054 item 20; DS Avatar)", async () => {
     const { main } = await renderPage(buildOffer("token"));
     expect(main.querySelector(".ks-founder__photo")).toBeNull();
     const photos = [...main.querySelectorAll<HTMLImageElement>(".ks-founder__head .kh-avatar img")];
@@ -217,7 +217,7 @@ describe("/team: the rendered page against the approved mockup", () => {
       return { mark: img && imageUrl(img), alt: img?.getAttribute("alt"), text: li.textContent };
     });
     expect(items).toEqual([
-      { mark: "/recognition/nvidia-inception.png", alt: "NVIDIA Inception", text: "" },
+      { mark: "/recognition/nvidia-inception.png", alt: "NVIDIA Inception Program", text: "" },
       { mark: "/recognition/karnataka-seal.png", alt: "", text: "Karnataka Elevate" },
       { mark: "/recognition/nasscom.png", alt: "nasscom startups", text: "" },
       { mark: null, alt: undefined, text: "Founders Inc" },
