@@ -128,7 +128,7 @@ export const article = {
         },
         {
           kind: "p",
-          text: "[Kheelu](/products/kheelu) is built around this list: a screen-free plush toy for ages 3 to 7 that answers your child, then asks a question back. It can’t browse the internet, it says when it doesn’t know, and you can read every conversation in the parent app. It is a toy, not a tutor, and it tells your child it’s a toy.",
+          text: "[Kheelu](/products/kheelu) is built around the list above: a screen-free plush toy for ages 3 to 7 that answers your child, then asks a question back. It can’t browse the internet, it says when it doesn’t know, and you can read every conversation in the parent app. It is a toy, not a tutor, and it tells your child it’s a toy.",
         },
         { kind: "p", text: "It is not a toy for children under 3, and if your child is 3, keep a grown-up nearby while they play." },
       ],

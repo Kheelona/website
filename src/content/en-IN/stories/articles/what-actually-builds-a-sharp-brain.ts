@@ -34,7 +34,7 @@ export const article = {
     readMinutes: 3,
     image: {
       src: paperCrown,
-      alt: "A girl with a long braid, in a sky-blue T-shirt, laughs as she puts on a yellow paper crown, with crayons and paper scraps on the table beside her.",
+      alt: "A laughing girl with a long braid holds a yellow paper crown on her head, beside a low table scattered with crayons and paper scraps.",
     },
   },
   /* Fold 2: the answer first (58 words), then one paragraph that frames the four things. No product in the fold. */
