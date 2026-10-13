@@ -332,6 +332,7 @@ describe("scanSource: src/ before next build", () => {
    refused as before, and the output scan refuses an F4 slot that reached a page, since nothing of it may render. */
 describe("D054 item 19: the source scan lets an F4 slot stay, hidden, and refuses every other", () => {
   const HIDDEN_MODULE = [
+    'import { placeholder, withoutHiddenRows } from "@/lib/content/placeholder";',
     "export const specs = withoutHiddenRows([",
     '  { term: "Size and weight", value: "{ph:F4 size and weight}" },',
     '  { term: "Net quantity", value: placeholder("F4", "net quantity") },',
@@ -345,9 +346,9 @@ describe("D054 item 19: the source scan lets an F4 slot stay, hidden, and refuse
     const scan = scanSource(tree({ [HIDDEN_PATH]: HIDDEN_MODULE }));
     expect(scan.findings).toEqual([]);
     expect(scan.hidden.map((h: { file: string; line: number; label: string }) => `${h.file}:${h.line} ${h.label}`)).toEqual([
-      `${HIDDEN_PATH}:2 {ph:} token`,
-      `${HIDDEN_PATH}:3 placeholder() call`,
+      `${HIDDEN_PATH}:3 {ph:} token`,
       `${HIDDEN_PATH}:4 placeholder() call`,
+      `${HIDDEN_PATH}:5 placeholder() call`,
     ]);
   });
 
@@ -364,7 +365,7 @@ describe("D054 item 19: the source scan lets an F4 slot stay, hidden, and refuse
     const scan = scanSource(tree({ [HIDDEN_PATH]: HIDDEN_MODULE, [PLANTED_PATH]: PLANTED_MODULE }));
     const out = decide("beta", scan).out.join("\n");
     expect(out).toContain("1 open placeholder");
-    expect(out).toContain(`${HIDDEN_PATH}:2`);
+    expect(out).toContain(`${HIDDEN_PATH}:3`);
     expect(out).toContain("{ph:F4 size and weight}");
   });
 
@@ -394,6 +395,65 @@ describe("D054 item 19: the source scan lets an F4 slot stay, hidden, and refuse
     expect(scan.findings.map((f: { file: string; pattern: string }) => `${f.file} ${f.pattern}`)).toEqual([`${file} ${pattern}`]);
     expect(scan.hidden.map((h: { file: string }) => h.file)).toEqual([HIDDEN_PATH, HIDDEN_PATH, HIDDEN_PATH]);
     expect(decide("production", scan).code).toBe(1);
+  });
+
+  /* In a content module too, only a slot inside a withoutHiddenRows( … ) call, imported from the placeholder module,
+     is dropped: a value no such call holds renders as it is (6.7 review, round 2: an F4 slot in a store summary's note
+     was listed as hidden, and the dynamic /store route would have printed it in production). */
+  const IMPORT = 'import { placeholder, withoutHiddenRows } from "@/lib/content/placeholder";\n';
+  it.each([
+    ["a value no withoutHiddenRows call holds (a store summary's note)", `export const delivery = { note: "{ph:F4 charger type}" };\n`, "token"],
+    [
+      "a slot after the call has closed",
+      `${IMPORT}export const a = withoutHiddenRows([{ value: "x" }], "value");\nexport const b = "{ph:F4 x}";\n`,
+      "token",
+    ],
+    [
+      "a slot before the call opens",
+      `${IMPORT}export const b = placeholder("F4", "x");\nexport const a = withoutHiddenRows([{ value: "x" }], "value");\n`,
+      "helper",
+    ],
+    ["a call to a look-alike name", `${IMPORT}export const a = myWithoutHiddenRows([{ value: "{ph:F4 x}" }], "value");\n`, "token"],
+    [
+      "a call to a withoutHiddenRows the module never imports",
+      `const withoutHiddenRows = (rows) => rows;\nexport const a = withoutHiddenRows([{ value: "{ph:F4 x}" }], "value");\n`,
+      "token",
+    ],
+    ["a call opened only in comments", `${IMPORT}/* withoutHiddenRows( */ export const a = "{ph:F4 x}"; // )\n`, "token"],
+    ["a call opened only in strings", `${IMPORT}export const a = ["withoutHiddenRows(", "{ph:F4 x}", ")"];\n`, "token"],
+    ["a call that never closes", `${IMPORT}export const a = withoutHiddenRows([{ value: "{ph:F4 x}" }];\n`, "token"],
+  ])("still refuses an F4 slot in a content module that no withoutHiddenRows call drops: %s", (_name, text, pattern) => {
+    const file = "src/content/en-IN/store/order-summary.ts";
+    const scan = scanSource(tree({ [HIDDEN_PATH]: HIDDEN_MODULE, [file]: text }));
+    expect(scan.findings.map((f: { file: string; pattern: string }) => `${f.file} ${f.pattern}`)).toEqual([`${file} ${pattern}`]);
+    expect(scan.hidden.map((h: { file: string }) => h.file)).toEqual([HIDDEN_PATH, HIDDEN_PATH, HIDDEN_PATH]);
+    expect(decide("production", scan).code).toBe(1);
+  });
+
+  it("keeps a slot hidden past the brackets, strings, comments and template literals inside the call", () => {
+    const text = [
+      IMPORT.trimEnd(),
+      "export const specs = withoutHiddenRows([",
+      "  { term: \"Languages (at launch)\", value: `${names.slice(0, -1).join(\", \")} and more)` },",
+      "  { term: \"Note\", value: 'a ) and a } inside a string' }, // a ) in a comment",
+      "  /* and a ) here */",
+      "  { term: \"Nested\", value: `x ${`y ${f(\")\")}`} z)` },",
+      "  { term: \"Size and weight\", value: \"{ph:F4 size and weight}\" },",
+      "  { term: \"Battery\", value: placeholder(\"F4\", \"battery\") },",
+      "], \"value\");",
+      "",
+    ].join("\n");
+    const scan = scanSource(tree({ [HIDDEN_PATH]: text }));
+    expect(scan.findings).toEqual([]);
+    expect(scan.hidden.map((h: { line: number }) => h.line)).toEqual([7, 8]);
+  });
+
+  it("stops the production prebuild step on an F4 slot in a content module that no withoutHiddenRows call drops", () => {
+    const file = "src/content/en-IN/store/order-summary.ts";
+    const root = tree({ [HIDDEN_PATH]: HIDDEN_MODULE, [file]: `export const delivery = { note: "{ph:F4 charger type}" };\n` });
+    const r = run(PREBUILD_STEP, ["--root", root], { KH_SITE_ENV: "production" });
+    expect(r.code, r.all).toBe(1);
+    expect(r.all).toContain(`${file}:1`);
   });
 
   it("stops the production prebuild step on an F4 slot in a store route", () => {
