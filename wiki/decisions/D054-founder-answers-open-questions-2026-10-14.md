@@ -93,8 +93,9 @@ CSP, B25's text-only strip), the latest logged decision wins (CLAUDE.md).
 
 ## What it changes in the build
 
-- Task **6.4** runs (no longer gated). Task **6.6** (new, [tasks](../engineering/tasks.md)) carries items 7, 9, 12,
-  19 and 20, and the `/privacy` copy page and mockup for 10 and 12. The B11 words (10) land with the 6.2 merge.
+- Task **6.4** runs (no longer gated). Task **6.6** (new, [tasks](../engineering/tasks.md)) carries items 7, 9 and
+  20; task **6.7** carries 12 and 19 with the page facts of [D055](D055-page-facts-legal-setup-product-2026-10-14.md).
+  The B11 words (10) landed with the 6.2 merge as deviation V10.
 - The Lighthouse harness's block list (`scripts/qa/lighthouse.mjs`) takes the two beacon hosts, so local tag runs
   never reach production (found by task 4.9: M1's local runs sent 2 GA4 hits and 36 Meta gateway events).
 

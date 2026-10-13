@@ -214,6 +214,13 @@ Source: [architecture §20](engineering/architecture.md#20-open-points-for-the-f
 | P24 | Head photos repeat across the journal: advik-04, ira-04 and tara-04 each head four or five guides (the DS photos without Kheelu are few); tara-01 is unused; the screen-free guide's head (myra-01) shows a 3-year-old with Kheelu and no grown-up | Task 5.20 cuts repeats where the copy allows. More scene photos without Kheelu, if the founder has them, would end the repeats | **ANSWERED 2026-10-14: as built by 5.20a-c** ([D054](decisions/D054-founder-answers-open-questions-2026-10-14.md)) |
 | P25 | **Positioning, before Gate B.** Serge Tisseron, whose 3-6-9-12 rule our journal explains (`/stories/screen-time-rules-parents-swear-by`), published AI markers "3-6-13-18" (dated 2020 by his association; page July 2026). The second reads "Pas de jouets connectés avant 6 ans" (no connected toys before 6: AI listens but does not understand the child), and the page criticises talking plush toys with a Wi-Fi voice box "offered from age three as an alternative to screens". Kheelu is that category for ages 3 to 7. Quoting his markers without that line would be a selective quote ([source verification 2026-10-14 §1a](research/source-verification-2026-10-14.md)) | Until the founder rules: the article states the 3-6-9-12 rule as approved; task 5.20 adds the AI markers in full, with the CMO's link to the safe-AI-toy guide, and drops the article's product line (as on the talking guides), rather than pitching Kheelu beside an expert who advises against it. Options: (a) that; (b) keep the product line and add a signed answer, as B3 does for Common Sense Media; (c) take the 3-6-9-12 article off the journal | **ANSWERED 2026-10-14: remove the article** ([D053](decisions/D053-remove-the-3-6-9-12-article.md); task 6.5) |
 
+## G. Page facts the production build refuses (2026-10-14)
+
+**ANSWERED 2026-10-14** ([D055](decisions/D055-page-facts-legal-setup-product-2026-10-14.md); task 6.7): the
+placeholders on `/privacy`, `/refund`, `/shipping`, `/terms`, `/setup` and the product page's app line, asked one by one
+at the founder's request. Still to come from the founder: the F4 values (D054 item 19; rows without one are hidden), the
+light's colour on `/setup` (V8), the C6 listing names, and word if Supabase moves out of Sydney (D055 item 24).
+
 ## E. Decided by the brief (no answer needed; recorded so nobody re-asks)
 
 - **The published age band is 3-7**, everywhere (brief 2, 9.3, 9.8). This overrides the 2026-08-23

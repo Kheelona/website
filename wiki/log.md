@@ -677,3 +677,20 @@ index, status updated.
 The batch `wf_cd8260cf-e88` finished (27 agents, 2 h 6 min): 4.9, 5.20b, 5.20c and 6.1 passed; 5.20a and 6.2
 fixed-unreviewed. Merge gate next. Found by 4.9: M1's local Lighthouse runs with tags on sent 2 GA4 hits and 36 Meta
 gateway events to production (the harness's block list lacked both hosts; fixed at this merge).
+
+## [2026-10-14 02:00] build | Wave 6 batch merged and reconciled; D055: the founder fills the page facts
+Merged `--no-ff`: 4.9 (`8ef6d2e`), 6.1 (`3f92250`), 6.2 (`32b7afb`), 5.20a (`95ef53a`), 5.20b (`55ebeaf`; assets.md
+photo rows joined by hand), 5.20c (`83cdc9f`; advik-04 row joined). Read before merging: 5.20a's fix pass (one alt per
+pool photo; the tantrums guide moves off the "feelings" photo, CMO N1 and N2: the CMO's recommended option, ruled
+accepted) and 6.2's last round (no code change; its four findings resolved at this merge). Reconciliation `cb55153`:
+the B11 privacy words as deviation **V10** (copy page updated; the Gate A mockup keeps its text; unit test proven red),
+`gated: "B11"` dropped from events.ts, architecture §8.2 and the tracking-registry guard, the Lighthouse harness now
+blocks www.google.com/g/collect and the Meta gateway, and a 5.20a test typed for `tsc`. Accepted outside Owns:
+6.1's `TierCheckout` and its tests, the two DS-mapped utilities (mb-5, h-7). Gate: `npm run build` green; `npm run
+verify` 347 files, 5892 passed, 6 skipped; checksums 643. Contract fixtures untouched.
+The build's placeholder report listed about 55 slots the production build refuses (privacy, refund, shipping, terms,
+setup, product). The founder answered them one by one: **[D055](decisions/D055-page-facts-legal-setup-product-2026-10-14.md)**
+(lines without a confirmed fact come off; the recipients' regions from each provider's documents; Supabase stated as
+Australia until the founder says it moved). Tasks: **6.6** narrowed to team, /ideabaaz and the CSP; new **6.7** (page
+facts, F4 rows hidden, P14); follow-ups of the batch filed under 6.3, 6.5 and 7.3. Next: remove the batch worktrees,
+launch 6.4-6.7, then M2.

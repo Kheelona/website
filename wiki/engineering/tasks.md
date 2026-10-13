@@ -1361,6 +1361,10 @@ processor names, the payload key allow-list and every `not.toContain` stay.
   `/stories#screen-time`); `test/e2e/support/routes.ts`; `wiki/site/pages/story-screen-time-rules-parents-swear-by.md`
   (delete) and the `story-*` rows that name it; `wiki/site/url-map.md`, `wiki/research/keyword-map.md` (the URL's row
   marked removed, D053); `wiki/engineering/assets.md` (advik-04's use).
+- **Also (5.20a follow-up):** the screen-free toys guide's H1 puts its colon at the start of a line (the DS
+  `.kh-hand` is inline-block): the accent takes the colon, `{hand:does not mean silent:}`, with the copy page's H1
+  accent note (copywriter and CMO; `screen-free-does-not-mean-silent.ts` and its copy page join the Owns). The
+  5.20a photo-pool test's map loses the 3-6-9-12 entry, and its `pooled` assertion stops filtering on `rules.slug`.
 - **Acceptance:** 20 article routes, each with three related guides and at least three incoming links (articles.test);
   the old URL answers 308 to `/stories#screen-time` in one hop (redirects.spec); the hub shows the topic without the
   card (hub parity: a text and visual deviation row for the main session, V9); no page, sitemap entry, JSON-LD item or
@@ -1369,25 +1373,43 @@ processor names, the payload key allow-list and every `not.toContain` stay.
 - **Test:** targeted checks (D052); the hub and the three changed articles at 360, 390 and 1440; `redirects.spec`,
   `links.spec` and `content-integrity` on the hub and the three articles.
 
-### 6.6 The founder's answers of 2026-10-14 ([D054](../decisions/D054-founder-answers-open-questions-2026-10-14.md)) (copywriter, CMO, builder; risk high; after the batch `wf_cd8260cf-e88` merges)
+### 6.6 The founder's answers of 2026-10-14 ([D054](../decisions/D054-founder-answers-open-questions-2026-10-14.md)): team, `/ideabaaz`, the CSP (copywriter, CMO, builder; risk high; after the batch `wf_cd8260cf-e88` merges)
 
-- **Why:** D054 items 7, 9, 12, 19 and 20.
+- **Why:** D054 items 7, 9 and 20.
 - **Items:** (1) `/team`: the recognition strip as live (NVIDIA Inception, Karnataka Elevate and nasscom marks from
   `public/recognition/`, Founders Inc as text; heading "Recognised by."), the three background lines written by the
   copywriter from the live bios (facts only; claims §4 wording stays out; CMO review), and the three live photos
   (`apoorva.jpg`, `aman.jpg`, `kashyap.jpg` from the tag `archive/pre-reset-2026-10-10`, through the image pipeline)
   with the copy page's alts; the F11 gate and the B24 placeholder go; parity deviation V7 shrinks to what is still
-  intentional. (2) F4: a row of the product facts or the safety list whose value is still an F4 placeholder renders
-  nothing, on every environment, and the production build no longer refuses it; the box contents stay; a unit test
-  proves both. (3) `store.kheelona.com/ideabaaz` answers the store's not-found page (404): the partner route and its
-  partner-only parts go through a reviewed authorised diff citing D054 (the route is checkout-frozen); `url-map.md`
-  row updated. (4) The report-only CSP: drop `upgrade-insecure-requests`, add `https://www.google.com` and the Meta
-  gateway hosts of tracking-inventory §14a to the directives the M1 reports name, through a reviewed authorised diff
-  citing D054; Report-Only stays. (5) `/privacy`: "What blocking can’t stop." in the copy page, the mockup source,
-  the rebuilt mockup and `privacy.ts`.
-- **Acceptance:** each item's unit tests; `/team`, `/products/kheelu`, `/privacy` and the store's `/ideabaaz` at 360,
-  390 and 1440; checkout-freeze, checkout-jsx-contract and checkout-signature green with the reviewed patches; no
-  tracking ID or event name changes; Lighthouse Best Practices on a tagged page no longer loses the CSP points.
+  intentional (the main session rules it at the merge). (2) `store.kheelona.com/ideabaaz` answers the store's
+  not-found page (404), no redirect: the partner route and its partner-only parts go through a reviewed authorised
+  diff citing D054 (the route is checkout-frozen; the JSX contract fixtures are never edited: if one would change,
+  report it); `url-map.md` row updated. (3) The report-only CSP: drop `upgrade-insecure-requests`, add
+  `https://www.google.com` and the Meta gateway hosts of tracking-inventory §14a to the directives the M1 reports
+  name, through a reviewed authorised diff citing D054; Report-Only stays.
+- **Acceptance:** each item's unit tests; `/team` and the store's `/ideabaaz` at 360, 390 and 1440; checkout-freeze,
+  checkout-jsx-contract and checkout-signature green with the reviewed patches; no tracking ID or event name changes;
+  a Lighthouse lp-tags run on one page no longer reports the CSP console errors.
+
+### 6.7 Page facts for the legal, setup and product pages ([D055](../decisions/D055-page-facts-legal-setup-product-2026-10-14.md), D054 items 12 and 19) (copywriter, CMO, builder; risk high; after the batch `wf_cd8260cf-e88` merges)
+
+- **Why:** the production build refuses every `{ph:…}` slot; the founder answered them (D055) or ruled them off the
+  page (D054 item 19 for F4).
+- **Items:** (1) Each D055 item in the copy pages `wiki/site/pages/{privacy,refund,shipping,terms,setup}.md` (and
+  the product page's app line), then in the modules (`src/content/en-IN/legal/*.ts`, `policies.ts` where a constant
+  moves, `pages/setup.ts`, `products/kheelu/*.ts`), word for word; every line the founder ruled off comes off, with
+  no new claim. (2) The recipients table's regions for Razorpay, Resend, Google, Meta and Ahrefs, each from the
+  provider's own published documents (URL and date in the copy page's notes; where none is published, what the
+  provider does publish). (3) F4 (D054 item 19): a fact row, a safety line or a setup line whose value is still an F4
+  placeholder renders nothing on every environment, and the production build no longer refuses it; the box contents
+  stay; a unit test proves both. (4) P14 (D054 item 12): "What blocking can’t stop." in the copy page and
+  `privacy.ts`. (5) "Last updated: 14 October 2026" on the four legal pages. (6) The parent-app links from the live
+  site (tag `archive/pre-reset-2026-10-10`).
+- **Acceptance:** `npm run build` with `SITE_ENV=production` lists no placeholder on these pages (the F4 rows hidden);
+  each page's unit tests, with the text differences from the Gate A mockups returned as a list for the main session
+  (deviation rows at the merge); `/privacy`, `/refund`, `/shipping`, `/terms`, `/setup` and `/products/kheelu` at 360,
+  390 and 1440; the CMO checks every changed sentence against D055 (no claim beyond it); analytics-tags and
+  content-integrity green.
 
 **Wave 6 ownership check:** 6.1, 6.2 and 6.4 own disjoint files (6.2's `PreorderForm.tsx` is not in 6.1;
 6.4's `delivery-line.ts` was 5.16's in the previous wave). A gated task whose gate has not opened simply
@@ -1427,6 +1449,15 @@ waits; it may run in any later wave before wave 8, alone with its own files.
   10) deleted with the legacy `KheelonaPlusBand`, so banned-phrases prints it as resolved; asset-dupes green;
   every remaining file in `public/` referenced or marked FOUNDER in assets.md; the deleted list logged for
   the main session.
+- **Follow-ups from the wave 6 batch** (`wf_cd8260cf-e88`, merged 2026-10-14): `track.ts` imports a client-only map
+  of the new events instead of the whole `EVENTS` registry (about 2.3 KB gzip on three store chunks), with a
+  tracking-registry assertion that the map equals `EVENTS` filtered to status "new" (6.2 note 2);
+  `tools/qa/payment-probe.mjs` prints the analytics events through a gtag spy (6.2 note 1); `test/e2e/axe.spec.ts`'s
+  skipped "store tier pages" case runs on store-secondary.spec's stand-in environment (6.1); the store page's own
+  not-configured state reuses `NotFoundPanel` like the event pages (6.1); copy-page notes only: the early-years and
+  should-kids pages' stale photo notes (5.20c CMO F1, F2), the bilingual page's tara-04 notes (5.20b CMO F2), and the
+  talking-late guide added to source verification §7's CDC re-read list with source-verification-2026-10-14 linked
+  from C42 (5.20b question 4).
 - **Test:** `npm run verify` and `npm run verify:e2e` green.
 
 ## Wave 8: full verification on a local production build (after wave 7)
@@ -1468,11 +1499,17 @@ waits; it may run in any later wave before wave 8, alone with its own files.
 
 - **Owns:** the readiness pack (main session's pages), the rollback tag, the merge to `main`.
 - **Acceptance:** per [architecture §15.5](architecture.md#155-gate-b-release-to-production-and-rollback):
-  founder prerequisites done (Supabase moved, placeholders answered, legal approved, optional `www` switch,
+  founder prerequisites done (Supabase moved or `/privacy` naming its region, D055 item 24; placeholders answered
+  (D054, D055) or ruled off; legal approved; the `www` switch declined, D054 item 21;
   no test payment anywhere but the local sandbox (D051; the founder's optional real order and refund
   after launch is their call); Gate B OK logged; rollback tag pushed before the merge; production build green
   (placeholder guard passes); smoke tests green; sitemap resubmitted; monitoring scheduled (24 hours,
   72 hours, 7 days).
+- **The readiness pack lists for the founder:** the two wording changes accepted by D054 item 17 (done); the D055
+  sentence that a deleted conversation stays in Kheelu's memory and the training data; the 5.20b items left with the
+  main session (CMO 5.18 M6, the related-guide ring; M10, the bilingual guide's line "Most of the studies it draws on
+  were done in North America and Europe.", traced only to the verifier's note); the bylines' named owners reading their
+  pages (P17); "May 2027" re-read against the Gazette (P23).
 
 ---
 
