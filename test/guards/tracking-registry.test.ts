@@ -654,8 +654,7 @@ describe("events.ts: architecture §8.2 and the new events", () => {
     }
   });
 
-  it("marks gated exactly the events architecture's Status calls gated, with the decision (B11)", () => {
-    expect(pairs().filter((p) => p.gated).length).toBeGreaterThan(0);
+  it("marks gated exactly the events architecture's Status calls gated, with the decision (none since B11 was made final, D054)", () => {
     for (const e of EVENTS) {
       const decisions = [...new Set(planFor(e).map((p) => p.gated))];
       expect(decisions.length, `${e.name}: one gate per event`).toBeLessThanOrEqual(1);

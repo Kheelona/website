@@ -368,13 +368,12 @@ const EVENT_LIST = [
       "inputs and .ph-mask text masked",
   },
 
-  /* ── New checkout events (B11; wired only by task 6.2, gated) ────────── */
+  /* ── New checkout events (B11; wired by task 6.2, final since D054) ──── */
   {
     name: "preorder_payment_window_opened",
     destinations: ["ga4", "posthog-browser"],
     params: ["tier"],
     status: "new",
-    gated: "B11",
     firedBy: "src/features/preorder/lib/checkout.ts, right after checkout.open() (task 6.2)",
     when: "the Razorpay payment window opens",
   },
@@ -383,7 +382,6 @@ const EVENT_LIST = [
     destinations: ["ga4", "posthog-browser"],
     params: ["tier", "reason_code", "reason"],
     status: "new",
-    gated: "B11",
     firedBy: 'checkout.on("payment.failed", …), registered before open() (task 6.2)',
     when: "a payment fails; reason_code and reason are Razorpay's error.code and error.reason, never free text",
   },
@@ -392,7 +390,6 @@ const EVENT_LIST = [
     destinations: ["ga4", "posthog-browser"],
     params: ["tier", "fields"],
     status: "new",
-    gated: "B11",
     firedBy: "PreorderForm, on a submit that fails validation (task 6.2)",
     when: "the form refuses a submit; fields are the comma-joined field names, never their values",
   },

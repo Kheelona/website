@@ -60,6 +60,14 @@ export const SETUP_STEP_BUILD = [
   "[PLACEHOLDER: which button and where; the app’s own screen still shows “[back]”]",
   "Hold it for 3 seconds, until its light starts pulsing.",
 ] as const;
+/* The build's words for the privacy rule (V10): the B11 events of task 6.2 named in the policy, in the words the founder
+   approved after Gate A (D054 item 10). Literals for the same reason; src/content/en-IN/legal/parity-deviations.test.ts
+   holds them to privacy.ts. */
+export const PRIVACY_B11_BUILD = [
+  "Counts visits and the steps of a pre-order: starting the form, being asked to correct an answer (which answers, never what you typed), opening and closing the payment window, a payment that fails (with Razorpay’s code for why), paying, and saving your address.",
+  "It is told the same steps of a pre-order as Google Analytics.",
+] as const;
+const PRIVACY_V10 = "deviations.md V10 (founder, D054 item 10, 2026-10-14; task 6.2)";
 
 /** A route whose own parity runs would compare a state its mockup does not show, with the spec that proves that
  *  state's parity instead. The visual and text parity specs skip the route on the build and print why (SPA 1 and 2). */
@@ -158,6 +166,19 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
     reason: "step 2 (CMO fix M-S1 in the build, with its open placeholder), compared by the text pass; hidden on both sides so the steps below line up",
     approvedBy: "deviations.md V8 (main session, 2026-10-14, M1; task 5.8, CMO M-S1)",
   })),
+  /* The Google Analytics block's paragraph and the PostHog block's first one say more in the build (V10), so they wrap
+     to more lines and every block below would shift; the pixels compare the page without the two paragraphs on both
+     sides, and their words are compared by the text pass (TEXT_DEVIATIONS). Third and sixth tools, as privacy.ts
+     and the mockup order them (parity-deviations.test.ts checks the headings). */
+  privacy: (["mockup", "build"] as const).flatMap((side) => {
+    const tool = side === "mockup" ? "mk-tool" : "ks-tool";
+    return [`.${tool}s > .${tool}:nth-child(3) > p`, `.${tool}s > .${tool}:nth-child(6) > p:first-of-type`].map((selector) => ({
+      side,
+      selector,
+      reason: "the Google Analytics and PostHog paragraphs name the B11 events (D054 item 10), compared by the text pass; hidden on both sides so the blocks below line up",
+      approvedBy: PRIVACY_V10,
+    }));
+  }),
 };
 
 /** The style the visual pass adds to one side of a page's comparison: its hidden selectors, or "" when it has none. */
@@ -253,6 +274,16 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
       build: oneOf(SETUP_STEP_BUILD),
       reason: "CMO fix M-S1: no unconfirmed place or light colour for the setup button; its place is a placeholder until confirmed",
       approvedBy: "deviations.md V8 (main session, 2026-10-14, M1; task 5.8)",
+    },
+  ],
+  privacy: [
+    {
+      /* The three new checkout events (B11, task 6.2): the Google Analytics block's first sentence names the two new
+         steps a parent can meet, and the PostHog block gains one sentence (it has no counterpart in the mockup). */
+      mockup: /^Counts visits and the steps of a pre-order: starting the form, opening and closing the payment window, paying, and saving your address\.$/,
+      build: oneOf(PRIVACY_B11_BUILD),
+      reason: "the three new checkout events (B11) named in the policy, in the words the founder approved (D054 item 10)",
+      approvedBy: PRIVACY_V10,
     },
   ],
 };

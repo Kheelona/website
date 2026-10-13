@@ -7,6 +7,7 @@ import type { Offer } from "@/content/types";
 import { stickyBarPaths } from "@/layouts/SiteShell/sticky-bar-paths";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
+import { PRIVACY_B11_BUILD } from "../../../../test/e2e/support/deviations";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { skeleton, words, type SkeletonOptions } from "../../../../test/support/mockup-compare";
 
@@ -30,6 +31,11 @@ const code = SOURCE.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
 
 const mockupDoc = new DOMParser().parseFromString(readRepoFile("mockup/privacy.html"), "text/html");
 const mockupMain = mockupDoc.querySelector("main")!;
+
+/** The approved Google Analytics sentence V10 replaces, and the PostHog sentence V10's new one follows. */
+const GA4_APPROVED = "Counts visits and the steps of a pre-order: starting the form, opening and closing the payment window, paying, and saving your address.";
+const POSTHOG_LEAD =
+  "Records which buttons and links you tap, and a replay of your screen as you move through the site, so we can find the places where the pre-order form confuses people.";
 
 /** The page as the site shell holds it: the route's output inside <main>. */
 async function renderPage(offer: Offer) {
@@ -93,9 +99,14 @@ describe("/privacy: the rendered page against the approved mockup", () => {
     expect(skeleton(main, OPTIONS)).toBe(skeleton(mockupMain, OPTIONS));
   });
 
-  it("prints every word of the mockup's <main>, in order, and nothing else, placeholders included", async () => {
+  it("prints every word of the mockup's <main>, in order, and nothing else, placeholders included, V10's two sentences aside", async () => {
     const { main } = await renderPage(buildOffer("token"));
-    expect(words(main)).toBe(words(mockupMain));
+    const approved = words(mockupMain);
+    // The B11 events in the founder's words (D054 item 10; deviations.md V10), present in the mockup to be replaced.
+    const [ga4, posthog] = PRIVACY_B11_BUILD;
+    expect(approved).toContain(GA4_APPROVED);
+    expect(approved).toContain(POSTHOG_LEAD);
+    expect(words(main)).toBe(approved.replace(GA4_APPROVED, ga4).replace(POSTHOG_LEAD, `${POSTHOG_LEAD} ${posthog}`));
   });
 
   it("is LegalTemplate's reference family (privacy and terms; mockup-css-mapping §6.1)", async () => {

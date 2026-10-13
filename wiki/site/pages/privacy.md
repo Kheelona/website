@@ -1,9 +1,10 @@
 ---
 title: "Privacy (/privacy): page copy, Gate A draft"
 type: page-copy
-updated: 2026-10-11
+updated: 2026-10-14
 cites_at: archive/pre-reset-2026-10-10
 sources:
+  - ../../decisions/D054-founder-answers-open-questions-2026-10-14.md (item 10: the B11 events in the Google Analytics and PostHog blocks, approved after Gate A)
   - ../strategy.md (§3, §4.4 footer, §5 policy-pages row, line 213)
   - ../gate-a-open-items.md (the founder's 2026-10-11 answers and working defaults B13, B34, B35, B43, B47)
   - ../../product/legal-requirements.md (§1 H11-H16, §2.1, §2.7, §2.8 DATA-00 to DATA-31, §4 /privacy checklist lines 494-514, grievance block lines 489-492)
@@ -320,8 +321,9 @@ keeps all of them on the new site.
 > Counts page views. It sets no cookies and does not follow you to other sites.
 >
 > ### Google Analytics
-> Counts visits and the steps of a pre-order: starting the form, opening and closing the payment window,
-> paying, and saving your address. It is told your order number and the amount paid. It sets cookies in your
+> Counts visits and the steps of a pre-order: starting the form, being asked to correct an answer (which answers,
+> never what you typed), opening and closing the payment window, a payment that fails (with Razorpay’s code for
+> why), paying, and saving your address. It is told your order number and the amount paid. It sets cookies in your
 > browser to tell a returning visit from a new one. Google keeps this data for 14 months.
 >
 > ### Meta Pixel
@@ -339,7 +341,8 @@ keeps all of them on the new site.
 >
 > ### PostHog
 > Records which buttons and links you tap, and a replay of your screen as you move through the site, so we can
-> find the places where the pre-order form confuses people. It also tells us when something breaks or loads
+> find the places where the pre-order form confuses people. It is told the same steps of a pre-order as Google
+> Analytics. It also tells us when something breaks or loads
 > slowly. Anything you type is hidden before the recording leaves your browser, and nothing is recorded on the
 > order confirmation page. PostHog also receives your network address, which tells us your country. It does not
 > follow you to other sites and is never used to advertise to you. It stores what it collects on servers in the
@@ -365,6 +368,11 @@ Notes:
 - Resend's own open and click tracking is a dashboard setting nobody has read
   ([tracking inventory §11](../tracking-inventory.md#11-resend-order-emails)); the page claims nothing about it.
   CTO check before sign-off.
+- **Changed after Gate A** ([D054](../../decisions/D054-founder-answers-open-questions-2026-10-14.md) item 10,
+  2026-10-14): the Google Analytics block names the two new steps a parent can meet (being asked to correct an
+  answer; a payment that fails), and the PostHog block says it is told the same steps. They are the three new
+  checkout events of task 6.2 (B11), which send field names and Razorpay's codes only, never what a parent typed.
+  The approved mockup keeps its Gate A text; the difference is [deviation V10](../../qa/deviations.md).
 
 ## Section 6 · Your choices (`#choices`)
 

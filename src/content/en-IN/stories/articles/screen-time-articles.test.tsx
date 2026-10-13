@@ -483,9 +483,9 @@ describe("the 3-6-9-12 guide under open question P25's working default (task 5.2
   const text = () => same(words(column(rules)));
 
   it("names Tisseron's four AI markers in full, together in one fold, never a selection", () => {
-    const fold3 = rules.body.find((b): b is ArticlePart => b.kind === "part" && (b.title?.startsWith("Where does") ?? false));
+    const fold3 = (rules.body as readonly { kind: string }[]).find((b): b is ArticlePart => b.kind === "part" && ((b as ArticlePart).title?.startsWith("Where does") ?? false));
     expect(fold3, "fold 3, where the rule comes from").toBeDefined();
-    const fold3Text = same((fold3?.blocks ?? []).flatMap((b) => (b.kind === "p" ? [toPlainText(b.text)] : [])).join(" "));
+    const fold3Text = same((fold3?.blocks ?? []).flatMap((b) => (b.kind === "p" && b.text !== undefined ? [toPlainText(b.text)] : [])).join(" "));
     for (const marker of AI_MARKERS) {
       expect(text(), marker).toContain(marker);
       expect(fold3Text, `fold 3: ${marker}`).toContain(marker);
