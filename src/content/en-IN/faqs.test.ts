@@ -34,6 +34,15 @@ const PAGES: Readonly<Record<string, readonly FaqId[]>> = {
   store: ["paying-today", "change-my-mind", "store-arrival", "how-to-pay"],
 };
 
+/** P15's default (open questions §P; applied by task 4.7, deviation V6): the shared answer to "What if it isn’t right
+ *  for us, or stops working?" gives D033's remedy for a faulty Kheelu, a replacement or a full refund (Rule 7(4)), as
+ *  /refund does, where the approved mockup said "we replace it" (meet-kheelu.html:357). The one sentence that differs. */
+const P15 = {
+  id: "returns-and-warranty",
+  mockup: "Tell us within 7 days and we replace it.",
+  build: "Tell us within 7 days for a replacement or a full refund.",
+} as const;
+
 /** A prose block as the visible text it renders. */
 function blockText(block: ProseBlock, offer: Offer): string[] {
   switch (block.kind) {
@@ -84,7 +93,33 @@ describe.each(Object.entries(PAGES))("mockup %s, token mode, word for word", (sl
     expect(plain(item.question, token)).toBe(norm(shown.querySelector(".kh-faq__q span")?.textContent));
     const paragraphs = Array.from(shown.querySelectorAll(".kh-faq__a > p, .kh-faq__a > ul > li")).map((el) => norm(el.textContent));
     const rendered = [plain(item.answer, token), ...(item.detail ?? []).flatMap((b) => blockText(b, token))];
+    if (id === P15.id) {
+      // The approved answer, with P15's one sentence (the replacement is never vacuous: the mockup has the old line).
+      expect(paragraphs[0]).toContain(P15.mockup);
+      expect(rendered).toEqual([paragraphs[0].replace(P15.mockup, P15.build), ...paragraphs.slice(1)]);
+      return;
+    }
     expect(rendered).toEqual(paragraphs);
+  });
+});
+
+describe("P15: the shared answer gives D033's remedy for a faulty Kheelu (deviation V6)", () => {
+  const answer = () => plain(faqs[P15.id].answer, token);
+
+  it("says “a replacement or a full refund”, as /refund does, and no longer “we replace it”", () => {
+    expect(answer()).toContain(`Arrived faulty? ${P15.build}`);
+    expect(answer()).not.toContain(P15.mockup);
+  });
+
+  it("changes only that sentence: every other word is the approved mockup's", () => {
+    const doc = new DOMParser().parseFromString(readRepoFile("mockup/meet-kheelu.html"), "text/html");
+    const item = Array.from(doc.querySelectorAll(".kh-faq__item")).find((el) => norm(el.querySelector(".kh-faq__q span")?.textContent) === plain(faqs[P15.id].question, token));
+    expect(answer()).toBe(norm(item?.querySelector(".kh-faq__a > p")?.textContent).replace(P15.mockup, P15.build));
+  });
+
+  it("stays within 60 words in both modes (answer-length)", () => {
+    expect(words(answer())).toBe(60);
+    expect(words(plain(faqs[P15.id].answer, full))).toBe(60);
   });
 });
 

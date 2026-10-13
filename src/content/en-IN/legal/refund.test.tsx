@@ -229,19 +229,25 @@ describe("the refund module in full mode (the store sells at the full price once
     expect(() => html(refundPage, FULL)).not.toThrow();
   });
 
-  it("never gives a reservation's total as the full price: the balance paragraph drops the total there", () => {
-    const balance = (offer: Offer) => mainOf(refundPage, offer).querySelector("#before-dispatch")!.parentElement!.querySelectorAll("p")[2].textContent!;
-    expect(balance(TOKEN)).toContain(`the remaining ${TOKEN.prices.balance} of the ${TOKEN.prices.headline} price (incl. GST)`);
-    expect(balance(FULL)).not.toContain(FULL.prices.headline);
-    expect(balance(FULL)).toContain(`On a reservation, the remaining ${FULL.prices.balance} (incl. GST) is due before delivery`);
+  /* Task 4.7 item 2: a reservation's total is the launch price in both modes (refund.md section 1), so the balance
+     paragraph names it as {price:launch}; its full-mode stopgap (the total left out) is gone, and the approved sentence
+     reads true whichever mode the store is in. */
+  const balance = (offer: Offer) => mainOf(refundPage, offer).querySelector("#before-dispatch")!.parentElement!.querySelectorAll("p")[2].textContent!;
+
+  it("gives a reservation's total as the launch price in both modes, never the full price", () => {
+    for (const offer of [TOKEN, FULL]) {
+      expect(balance(offer)).toContain(`On a reservation, the remaining ${offer.prices.balance} of the ${offer.prices.launch} price (incl. GST) is due before delivery`);
+    }
+    expect(balance(FULL)).toContain("the remaining ₹4,500 of the ₹4,999 price (incl. GST)");
+    expect(balance(FULL)).not.toContain(FULL.prices.full);
   });
 
-  it("changes nothing else", () => {
-    const rest = (offer: Offer) => {
-      const main = mainOf(refundPage, offer);
-      main.querySelector("#before-dispatch")!.parentElement!.querySelectorAll("p")[2].remove();
-      return words(main);
-    };
-    expect(rest(FULL)).toBe(rest(TOKEN));
+  it("names that total as {price:launch}, one sentence for both modes (no {price:headline}, which follows the mode)", () => {
+    expect(CODE).toContain("the remaining {price:balance} of the {price:launch} price (incl. GST)");
+    expect(CODE).not.toContain("{price:headline}");
+  });
+
+  it("reads word for word the same in both modes", () => {
+    expect(words(mainOf(refundPage, FULL))).toBe(words(mainOf(refundPage, TOKEN)));
   });
 });

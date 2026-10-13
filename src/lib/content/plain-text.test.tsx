@@ -10,7 +10,7 @@ import { leafText, parseRichText, RichTextError, type RichNode } from "./rich-te
 const token = (body: string) => "{" + "ph:" + body + "}";
 const OPEN = "[" + "PLACEHOLDER";
 
-const prices = { token: "₹499", balance: "₹4,500", full: "₹7,999", mrp: "₹7,999" };
+const prices = { token: "₹499", balance: "₹4,500", full: "₹7,999", mrp: "₹7,999", launch: "₹4,999" };
 const tokenOffer: Offer = {
   mode: "token",
   headlinePaise: 499_900,

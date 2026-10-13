@@ -28,6 +28,7 @@ const SOURCE = readRepoFile("src/content/en-IN/legal/shipping.ts");
 /** The module without its comments, for the "never typed" rules (a comment may name what a value says). */
 const CODE = SOURCE.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
 const token = buildOffer("token");
+const full = buildOffer("full");
 
 /** Every string anywhere in the module (deep), for the page-wide word rules. */
 function strings(value: unknown, out: string[] = []): string[] {
@@ -118,7 +119,7 @@ describe("the shipping page: the short version (shipping.md fold 2)", () => {
       [
         "currency-inr",
         `Reserved with the refundable ${token.prices.token}?`,
-        `Before dispatch, we send a payment link for the remaining ${token.prices.balance} of the ${token.prices.headline} price (incl. GST).`,
+        `Before dispatch, we send a payment link for the remaining ${token.prices.balance} of the ${token.prices.launch} price (incl. GST).`,
       ],
       ["arrow-counter-clockwise", "Refundable until dispatch.", "Change your mind before it leaves us, and you get back everything you’ve paid."],
     ]);
@@ -129,7 +130,25 @@ describe("the shipping page: the short version (shipping.md fold 2)", () => {
     if (shippingPage.summary.kind !== "trust") throw new Error("the short version is a trust list");
     const balance = shippingPage.summary.items[3];
     expect(balance.title).toBe("Reserved with the refundable {price:token}?");
-    expect(balance.body).toContain("{price:balance} of the {price:headline} price (incl. GST)");
+    expect(balance.body).toContain("{price:balance} of the {price:launch} price (incl. GST)");
+  });
+
+  /* Task 4.7 item 2: a reservation's total is the launch price in both modes, so once the store sells at the full
+     price the short version's line and the balance part still name the launch price, never the full one. */
+  it("names a reservation's total as the launch price in both modes: the short version's line and the balance part", () => {
+    if (shippingPage.summary.kind !== "trust") throw new Error("the short version is a trust list");
+    const shortLine = shippingPage.summary.items[3].body;
+    const balancePart = part("balance").blocks[0];
+    if (balancePart.kind !== "p" || !balancePart.text) throw new Error("the balance part opens with a paragraph");
+    const balanceText = balancePart.text;
+    for (const offer of [token, full]) {
+      const total = `the remaining ${offer.prices.balance} of the ${offer.prices.launch} price (incl. GST)`;
+      expect(toPlainText(shortLine, offer), offer.mode).toContain(total);
+      expect(toPlainText(balanceText, offer), offer.mode).toContain(total);
+    }
+    expect(toPlainText(shortLine, full)).toBe("Before dispatch, we send a payment link for the remaining ₹4,500 of the ₹4,999 price (incl. GST).");
+    expect(toPlainText(balanceText, full)).toContain("the remaining ₹4,500 of the ₹4,999 price (incl. GST) is due before delivery");
+    expect(CODE).not.toContain("{price:headline}");
   });
 
   it("is followed by the delivery help line, every contact read from seller.ts", () => {
@@ -212,7 +231,7 @@ describe("the shipping page: amounts, placeholders and the close", () => {
   it("types no amount: every price is a {price:…} token (D028; architecture §6.2)", () => {
     expect(SOURCE.split("\n").filter((line) => TYPED_AMOUNT.test(line))).toEqual([]);
     const tokens = new Set([...strings(shippingPage).join("\n").matchAll(/\{price:([a-z]+)\}/g)].map((m) => m[1]));
-    expect([...tokens].sort()).toEqual(["balance", "headline", "token"]);
+    expect([...tokens].sort()).toEqual(["balance", "launch", "token"]);
   });
 
   it("carries exactly the copy page's placeholders: the approval date and the parcel lost in transit (the complaint reference is the template's)", () => {

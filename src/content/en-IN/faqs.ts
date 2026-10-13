@@ -102,7 +102,7 @@ export const faqs = {
   "returns-and-warranty": {
     id: "returns-and-warranty",
     question: "What if it isn’t right for us, or stops working?",
-    answer: `Return it within ${RETURN_DAYS} days of delivery, no questions asked; opened is fine if it comes back undamaged and complete. Pickup is free. Arrived faulty? Tell us within ${FAULTY_REPORT_DAYS} days and we replace it. The ${WARRANTY_MONTHS}-month warranty covers manufacturing defects, not drops, water damage or misuse: we repair it, or replace it if the repair doesn’t work.`,
+    answer: `Return it within ${RETURN_DAYS} days of delivery, no questions asked; opened is fine if it comes back undamaged and complete. Pickup is free. Arrived faulty? Tell us within ${FAULTY_REPORT_DAYS} days for a replacement or a full refund. The ${WARRANTY_MONTHS}-month warranty covers manufacturing defects, not drops, water damage or misuse: we repair it, or replace it if the repair doesn’t work.`,
   },
   "after-the-first-week": {
     id: "after-the-first-week",

@@ -9,7 +9,7 @@ import { productNode, type ProductFacts } from "./product";
 const token = (body: string) => "{" + "ph:" + body + "}";
 
 type SchemaOffer = Pick<Offer, "headlinePaise" | "availabilityStarts" | "prices">;
-const prices = { token: "₹499", balance: "₹4,500", full: "₹7,999", mrp: "₹7,999" };
+const prices = { token: "₹499", balance: "₹4,500", full: "₹7,999", mrp: "₹7,999", launch: "₹4,999" };
 const tokenOffer: SchemaOffer = { headlinePaise: 499_900, availabilityStarts: "2026-11-15", prices: { ...prices, headline: "₹4,999" } };
 const fullOffer: SchemaOffer = { headlinePaise: 799_900, availabilityStarts: "2026-11-15", prices: { ...prices, headline: "₹7,999" } };
 

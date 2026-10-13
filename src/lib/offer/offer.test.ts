@@ -41,9 +41,20 @@ describe("headlinePaise and the formatted amounts", () => {
       headline: formatInr(LAUNCH_AMOUNT_PAISE),
       full: formatInr(FULL_AMOUNT_PAISE),
       mrp: formatInr(MRP_AMOUNT_PAISE),
+      launch: formatInr(LAUNCH_AMOUNT_PAISE),
     });
-    expect(offerPrices("token")).toEqual({ token: "₹499", balance: "₹4,500", headline: "₹4,999", full: "₹7,999", mrp: "₹7,999" });
+    expect(offerPrices("token")).toEqual({ token: "₹499", balance: "₹4,500", headline: "₹4,999", full: "₹7,999", mrp: "₹7,999", launch: "₹4,999" });
     expect(offerPrices("full").headline).toBe("₹7,999");
+  });
+
+  /* Task 4.7 item 2: a reservation made while the advance was open still owes the rest of the launch price after the
+     store sells at the full price, so the words that name a reservation's total read `{price:launch}`, which is the
+     launch price in both modes (the headline follows the mode). */
+  it("names the launch price as `launch` in both modes, LAUNCH_AMOUNT_PAISE formatted once", () => {
+    expect(offerPrices("token").launch).toBe(formatInr(LAUNCH_AMOUNT_PAISE));
+    expect(offerPrices("full").launch).toBe(formatInr(LAUNCH_AMOUNT_PAISE));
+    expect(offerPrices("full").launch).toBe("₹4,999");
+    expect(buildOffer("full").prices.launch).toBe(buildOffer("token").prices.headline);
   });
 });
 

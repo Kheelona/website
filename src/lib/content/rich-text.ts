@@ -13,7 +13,7 @@ import { parsePlaceholderToken, PLACEHOLDER_TOKEN_HINT, placeholderText } from "
  *   {nowrap:…}    a phrase that never breaks across lines
  *   [label](href) link: /path or #anchor (internal), https://, mailto:, tel:
  *   [^n]          source marker, linked to the section's source n
- *   {price:key}   an amount from the offer: token, balance, headline, full, mrp
+ *   {price:key}   an amount from the offer: token, balance, headline, full, mrp, launch
  *   {delivery}    the delivery line
  *   the ph token  a placeholder (syntax and marker live in ./placeholder.ts)
  *
@@ -23,7 +23,7 @@ import { parsePlaceholderToken, PLACEHOLDER_TOKEN_HINT, placeholderText } from "
  * reaching a parent.
  */
 
-export const PRICE_KEYS = ["token", "balance", "headline", "full", "mrp"] as const satisfies readonly PriceKey[];
+export const PRICE_KEYS = ["token", "balance", "headline", "full", "mrp", "launch"] as const satisfies readonly PriceKey[];
 
 export interface TextNode {
   readonly kind: "text";

@@ -503,6 +503,123 @@ test.describe("chrome: WhatsApp bubble (D050)", () => {
   });
 });
 
+/* ── WhatsApp bubble beside the store's form (task 4.7 item 3) ─────────────────────────────────────────────────────
+
+   D050: the bubble never covers a store form field on a phone. Below 900 px it steps aside (fades and slides off the
+   right edge, `.is-hidden` and `inert`) while a field of the form's section, #details, has focus or the section crosses
+   the bubble's band, and comes back once the section has passed (WhatsAppFloat.client.tsx, motion.css). The case
+   above (the store at 360 x 590, first screen and end) stays as it is; these sweep the whole store page at every phone
+   size of the audit matrix, and prove the sweep is not vacuous, the focus rule, the motion and the laptop. */
+
+const PHONES = VIEWPORTS.filter((v) => v.group === "phone");
+
+/** What the bubble says about stepping aside: its class, inert, and whether its box has left the screen. */
+function bubbleAside(page: Page) {
+  return page.locator(".ks-wa").evaluate((el) => ({
+    hidden: el.classList.contains("is-hidden"),
+    inert: el.hasAttribute("inert"),
+    offScreen: el.getBoundingClientRect().left >= innerWidth,
+  }));
+}
+const ASIDE = { hidden: true, inert: true, offScreen: true };
+const AT_REST = { hidden: false, inert: false, offScreen: false };
+
+/** What the bubble would cover at its resting place, measured with its step aside switched off for the read. */
+function coveredAtRest(page: Page, selector: string): Promise<string[]> {
+  return page.evaluate((sel) => {
+    const bubble = document.querySelector<HTMLElement>(".ks-wa")!;
+    bubble.style.transition = "none";
+    bubble.style.transform = "none";
+    const b = bubble.getBoundingClientRect();
+    bubble.style.transform = "";
+    bubble.style.transition = "";
+    return Array.from(document.querySelectorAll<HTMLElement>(sel))
+      .filter((el) => {
+        const r = el.getBoundingClientRect();
+        return el.checkVisibility() && r.width > 1 && r.height > 1 && r.left < b.right && r.right > b.left && r.top < b.bottom && r.bottom > b.top;
+      })
+      .map((el) => `<${el.tagName.toLowerCase()}${el.className ? `.${String(el.className).trim().split(/\s+/).join(".")}` : ""}>`);
+  }, selector);
+}
+
+/** Scrolls so that the first field of #details sits in the bubble's band: the place where it would cover the field. */
+async function scrollFieldIntoBand(page: Page): Promise<void> {
+  const y = await page.evaluate(() => {
+    const field = document.querySelector("#details input:not([type=hidden])")!.getBoundingClientRect();
+    const bubble = document.querySelector(".ks-wa")!.getBoundingClientRect();
+    return Math.round(field.top + scrollY - (bubble.top + bubble.height / 2 - field.height / 2));
+  });
+  await scrollToY(page, y);
+}
+
+test.describe("chrome: WhatsApp bubble beside the store's form (task 4.7; D050)", () => {
+  for (const vp of PHONES) {
+    test(`on the store it never covers a field, a price or the pay button, top to bottom ${vp.name}`, async ({ harness }) => {
+      const page = await openBuilt(harness, vp, {}, STORE);
+      const { height, step } = await page.evaluate(() => ({ height: document.documentElement.scrollHeight - innerHeight, step: Math.round(innerHeight / 4) }));
+      const seen = new Set<string>();
+      for (let y = 0; y < height + step; y += step) {
+        await scrollToY(page, Math.min(y, height));
+        await expect.poll(() => coveredByBubble(page, NEVER_COVERED), `scrolled to ${Math.min(y, height)}`).toEqual([]);
+        const state = await bubbleAside(page);
+        expect([ASIDE, AT_REST], `scrolled to ${Math.min(y, height)}: aside in full or at rest`).toContainEqual(state);
+        seen.add(state.hidden ? "aside" : "rest");
+        // Off the right edge it never makes the page scroll sideways.
+        expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+      }
+      // The sweep met both states: aside beside the form, at rest once the form had passed.
+      expect([...seen].sort()).toEqual(["aside", "rest"]);
+    });
+  }
+
+  test("the step aside is not vacuous: at rest the bubble would cover a field of the form (360 x 590)", async ({ harness }) => {
+    const page = await openBuilt(harness, phone360short, {}, STORE);
+    await scrollFieldIntoBand(page);
+    await expect.poll(() => bubbleAside(page)).toEqual(ASIDE);
+    expect(await coveredAtRest(page, NEVER_COVERED)).toEqual(expect.arrayContaining([expect.stringMatching(/^<input/)]));
+    expect(await coveredByBubble(page, NEVER_COVERED)).toEqual([]);
+  });
+
+  test("a field with focus sends it aside, and it returns when focus leaves (390 x 844)", async ({ harness }) => {
+    const page = await openBuilt(harness, phone390, {}, STORE);
+    // At the end of the page the form has passed: the bubble rests.
+    await scrollToY(page, 1e7);
+    await expect.poll(() => bubbleAside(page)).toEqual(AT_REST);
+    const field = page.locator("#details input:not([type=hidden])").first();
+    await field.evaluate((el: HTMLElement) => el.focus({ preventScroll: true }));
+    await expect.poll(() => bubbleAside(page)).toEqual(ASIDE);
+    await field.evaluate((el: HTMLElement) => el.blur());
+    await expect.poll(() => bubbleAside(page)).toEqual(AT_REST);
+  });
+
+  test("with motion on it fades and slides aside; with reduced motion it leaves and returns without moving there", async ({ harness }) => {
+    for (const reducedMotion of ["no-preference", "reduce"] as const) {
+      const page = await openBuilt(harness, phone390, { reducedMotion, recordMotion: true }, STORE);
+      await scrollToY(page, 1e7);
+      await expect.poll(() => bubbleAside(page)).toEqual(AT_REST);
+      await scrollFieldIntoBand(page);
+      await expect.poll(() => bubbleAside(page)).toEqual(ASIDE);
+      await page.waitForTimeout(400);
+      const moved = (await motionStarted(page)).filter((m) => m.type === "transition" && /ks-wa/.test(m.target)).map((m) => m.name);
+      if (reducedMotion === "no-preference") expect(moved, "motion on").toEqual(expect.arrayContaining(["transform", "opacity"]));
+      else expect(moved, "reduced motion: nothing moves").toEqual([]);
+    }
+  });
+
+  test("from 900 px it keeps its place: never aside beside the form, nor with a field focused (1440 x 900)", async ({ harness }) => {
+    const page = await openBuilt(harness, laptop, {}, STORE);
+    const { height, step } = await page.evaluate(() => ({ height: document.documentElement.scrollHeight - innerHeight, step: Math.round(innerHeight / 2) }));
+    for (let y = 0; y < height + step; y += step) {
+      await scrollToY(page, Math.min(y, height));
+      await page.waitForTimeout(100);
+      expect(await bubbleAside(page), `scrolled to ${Math.min(y, height)}`).toEqual(AT_REST);
+    }
+    await page.locator("#details input:not([type=hidden])").first().focus();
+    await page.waitForTimeout(200);
+    expect(await bubbleAside(page)).toEqual(AT_REST);
+  });
+});
+
 /* ── Layouts as served ─────────────────────────────────────────────────────────────────────────────────────────── */
 
 test.describe("chrome: the layouts as served", () => {

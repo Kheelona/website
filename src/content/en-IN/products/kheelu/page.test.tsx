@@ -48,6 +48,18 @@ const name = (el: Element) => el.getAttribute("aria-labelledby");
 /** An element's text, white space collapsed (the parsed document is not the test's own, so no DOM matchers here). */
 const text = (el: Element | null | undefined) => (el?.textContent ?? "").replace(/\s+/g, " ").trim();
 
+/** P15's default (deviations.md V6; task 4.7 item 4): the shared FAQ answer "What if it isn’t right for us, or stops
+ *  working?" gives D033's remedy for a faulty Kheelu, as /refund does. The rule deviations.ts holds for it, and the one
+ *  sentence it accepts on each side, read from the two pages' folds (exactly one each, so the rule is precise; the
+ *  JSON-LD script is not a fold). */
+const P15_RULE = TEXT_DEVIATIONS["meet-kheelu"].find((rule) => rule.approvedBy.startsWith("deviations.md V6"));
+const only = (from: Element, pattern: RegExp | undefined) => {
+  const found = folds(from).flatMap((fold) => sentences(text(fold))).filter((s) => pattern?.test(s));
+  if (found.length !== 1) throw new Error(`P15: expected one sentence matching ${pattern}, found ${JSON.stringify(found)}`);
+  return found[0];
+};
+const P15 = { mockup: only(MOCKUP, P15_RULE?.mockup), build: only(BUILT.main, P15_RULE?.build) };
+
 describe("the product page's meta (meet-kheelu.md \"At a glance\")", () => {
   const plain = (mode: OfferMode) => ({
     title: toPlainText(kheeluPage.meta.title, buildOffer(mode)),
@@ -78,9 +90,11 @@ describe("the product page as rendered (token mode)", () => {
     expect(folds(BUILT.main).map((f) => f.id)).toEqual(folds(MOCKUP).map((f) => f.id));
   });
 
-  it("says, fold by fold, exactly what the mockup says (placeholders included)", () => {
+  it("says, fold by fold, exactly what the mockup says (placeholders included), P15's one sentence aside (V6)", () => {
     const built = folds(BUILT.main);
-    folds(MOCKUP).forEach((fold, i) => expect(words(built[i]), name(fold) ?? `fold ${i + 1}`).toBe(words(fold)));
+    // The one accepted difference is in the questions fold, and it is there in the mockup to be replaced (not vacuous).
+    expect(folds(MOCKUP).filter((fold) => words(fold).includes(P15.mockup)).map(name)).toEqual(["faq-title"]);
+    folds(MOCKUP).forEach((fold, i) => expect(words(built[i]), name(fold) ?? `fold ${i + 1}`).toBe(words(fold).replace(P15.mockup, P15.build)));
   });
 
   it("links every address the mockup links, in the same order (the store as this build's store)", () => {
@@ -289,7 +303,14 @@ describe("the JavaScript-off text deviation for this route (deviations.md V3; te
   });
 
   it("is one rule, for the JavaScript-off run only (with JavaScript on the build's tabs hide what the mockup's hide)", () => {
-    expect(TEXT_DEVIATIONS["meet-kheelu"]).toEqual([expect.objectContaining({ mockup: /^Specs$/, jsOff: true })]);
+    expect(TEXT_DEVIATIONS["meet-kheelu"].filter((rule) => rule.approvedBy.includes("V3"))).toEqual([
+      expect.objectContaining({ mockup: /^Specs$/, jsOff: true }),
+    ]);
+    // The route's other rule is P15's (V6, task 4.7), for both runs: the FAQ answer reads the same with JavaScript off.
+    expect(TEXT_DEVIATIONS["meet-kheelu"].map((rule) => [rule.approvedBy.slice(0, "deviations.md V3".length), rule.jsOff ?? false])).toEqual([
+      ["deviations.md V3", true],
+      ["deviations.md V6", false],
+    ]);
   });
 
   it("accepts on the build side exactly the stacked panels' lines, as the page prints them, and no other line of the page", () => {

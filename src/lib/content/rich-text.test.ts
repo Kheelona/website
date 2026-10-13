@@ -10,7 +10,7 @@ const OPEN = "[" + "PLACEHOLDER";
 const offer: Offer = {
   mode: "token",
   headlinePaise: 499_900,
-  prices: { token: "₹499", balance: "₹4,500", headline: "₹4,999", full: "₹7,999", mrp: "₹7,999" },
+  prices: { token: "₹499", balance: "₹4,500", headline: "₹4,999", full: "₹7,999", mrp: "₹7,999", launch: "₹4,999" },
   sentence: "Reserve yours for {price:token} today.",
   sticky: { big: "{price:token} today", small: "refundable" },
   card: { product: "Kheelu", priceNote: "incl. GST", perks: { home: [], product: [] } },
@@ -106,8 +106,18 @@ describe("each token of architecture §6.2", () => {
     expect(parseRichText(`{price:${key}}`)).toEqual([{ kind: "price", key }]);
   });
 
-  it("offers exactly the five price tokens of the plan", () => {
-    expect([...PRICE_KEYS].sort()).toEqual(["balance", "full", "headline", "mrp", "token"]);
+  it("offers exactly the six price tokens of the plan (launch: task 4.7)", () => {
+    expect([...PRICE_KEYS].sort()).toEqual(["balance", "full", "headline", "launch", "mrp", "token"]);
+  });
+
+  it("{price:launch} is the launch price a reservation's total stays at, in both modes (task 4.7)", () => {
+    expect(parseRichText("the remaining {price:balance} of the {price:launch} price")).toEqual([
+      text("the remaining "),
+      { kind: "price", key: "balance" },
+      text(" of the "),
+      { kind: "price", key: "launch" },
+      text(" price"),
+    ]);
   });
 
   it("{delivery} is the delivery line", () => {

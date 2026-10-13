@@ -25,7 +25,7 @@ import { websiteNode } from "./website";
 const offer: Pick<Offer, "headlinePaise" | "availabilityStarts" | "prices"> = {
   headlinePaise: 499_900,
   availabilityStarts: "2026-11-15",
-  prices: { token: "₹499", balance: "₹4,500", headline: "₹4,999", full: "₹7,999", mrp: "₹7,999" },
+  prices: { token: "₹499", balance: "₹4,500", headline: "₹4,999", full: "₹7,999", mrp: "₹7,999", launch: "₹4,999" },
 };
 
 const organization: OrganizationFacts = {

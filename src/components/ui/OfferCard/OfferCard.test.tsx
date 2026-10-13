@@ -12,7 +12,7 @@ const SPLIT = [
 const TOKEN: Offer = {
   mode: "token",
   headlinePaise: 499_900,
-  prices: { token: "₹499", balance: "₹4,500", headline: "₹4,999", full: "₹7,999", mrp: "₹7,999" },
+  prices: { token: "₹499", balance: "₹4,500", headline: "₹4,999", full: "₹7,999", mrp: "₹7,999", launch: "₹4,999" },
   sentence:
     "Reserve yours for {price:token} today, refundable until dispatch, then pay {price:balance} before delivery: {price:headline} in total (incl. GST).",
   sticky: { big: "{price:token} today", small: "refundable · {price:headline} total (incl. GST)" },
