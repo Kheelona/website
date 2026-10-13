@@ -1,0 +1,434 @@
+---
+title: "Story: Should kids use AI? An honest answer from people who build it (/stories/should-kids-use-ai): page copy, Phase 5 draft (task 5.19)"
+type: page-copy
+updated: 2026-10-14
+cites_at: archive/pre-reset-2026-10-10
+sources:
+  - ../strategy.md (§3.2, §3.3, §5 /stories/* row)
+  - ../gate-a-open-items.md (B3 Common Sense Media, B15 source markers, B28 journal photos)
+  - ../pages/stories.md (fold 4 card, word for word; fold 6 journal close)
+  - ../pages/story-what-to-look-for-in-a-safe-ai-toy.md (the AI-safety model: B3 answer, fold 5 fact wording)
+  - ../pages/home.md (CTA block, sticky bar)
+  - ../tracking-inventory.md (§6)
+  - ../../research/keyword-map.md (§4.2 LRN-14, §4.3, §5.1, §5.2, §6.5 AI5)
+  - ../../research/source-verification.md (§4: C07, C11, C14, C16, C36; C37 on hold, not used)
+  - "../../raw/research/sources/: C14-brookings-cognitive-stunting.md, C36-fairplay-ai-toys-advisory.md, C16-common-sense-press-release-2026-01-22.md, C16-common-sense-ai-toys-risk-assessment.md, C07-harvard-serve-and-return.md, C11-xu-2021-computers-and-education.md"
+  - ../../product/claims.md (§1, §2, §4, §4.1 row 14, §8), ../../product/facts.md, ../../product/age-band-review.md (§4, row 38)
+  - ../../brand/messaging.md (confirmed candidate lines; against the alternatives; objection answers), ../../brand/voice.md
+  - ../../decisions/D016, D017, D018, D019, D020, D026, D035, D036, D038, D041
+  - "src/lib/stories-expansion.ts:218-251 (the live article; input only); src/content/en-IN/stories/articles/should-kids-use-ai.ts (stub: card, related, dates); src/content/en-IN/policies.ts:49 (RETENTION_LINE)"
+  - test/guards/banned-phrases.data.ts (every Copy block checked against it)
+  - design-system/project/03-cast.md:123; 01-writing.md:111-113 (read-only)
+  - ../../qa/cmo-review-articles-5.19-2026-10-14.md (round 1: B1, M1, M12 fixed in round 2)
+---
+
+# Story: Should kids use AI? An honest answer from people who build it
+
+> **INTERNAL page** ([D013](../../decisions/D013-internal-vs-external-content.md)). Only the text inside
+> the **Copy** blocks is meant for the site. Draft for the CMO review of task 5.19 and the founder's sign-off on
+> beta at Gate B ([D015](../../decisions/D015-founder-signs-off-copy.md)).
+
+## How to read this page
+
+- **Copy** blocks (quoted) are the words to publish. Notes and tables are INTERNAL.
+- `¹` to `⁶` are source markers ([D026](../../decisions/D026-public-statistics.md), working default
+  [B15](../gate-a-open-items.md#3-other-website-items-on-working-defaults)), numbered in reading order and reused.
+  Lines without a marker are our own voice and make no research claim.
+- `{price-source}`, `{delivery-source}`: as on [Home](home.md#how-to-read-this-page).
+- Links show the real URL, then the mockup file in brackets. **This article has no mockup:** visual acceptance
+  is template parity with `story-learning-toys-for-a-three-year-old.html` for the shared parts; every fold below
+  maps to a block of the `Article` shape (`src/content/types.ts`) that `ArticleTemplate` renders.
+
+## At a glance
+
+| Item | Draft |
+|---|---|
+| Real URL | `https://kheelona.com/stories/should-kids-use-ai` (no mockup; the hub links it from `stories.html#ai-and-safety`) |
+| Page job | Answer "should kids use AI?" for a parent of a 3 to 7 year old: where the line sits between AI built for adults and a toy built for young children, what the worry is, what child-safety groups advise, what young children need from the adults around them, and how to judge any toy with AI inside. Then Kheelu's design, once, against those points. Route to the product page once |
+| Primary cluster | **should kids use AI** (LRN-14); secondaries "is AI good for kids", "AI chatbots and children" ([keyword map §4.2](../../research/keyword-map.md#42-journal-articles-22)) |
+| Title (47 characters) | Should kids use AI? An honest answer · Kheelona |
+| Meta description (147 characters) | Should kids use AI? What child-safety groups advise, what young children need from the adults around them, and how to judge any toy with AI inside. |
+| H1 | Should kids use AI? An honest answer from people who build it (the hub card title, word for word) |
+| Byline line | Aman Soni · First published 28 Jul 2026 · 5 min read (byline: question 1) |
+| Read time | 5 min (about 930 words in the article after round 2, headings included, sources, related guides and close excluded; words ÷ 200, rounded, as `readingMinutes` in `src/lib/stories.ts:184-186` and the 5.6 pages: 928 ÷ 200 = 4.6, so 5; round 1 was about 890, so 4). The build derives it from the module, so the byline follows the module |
+| CTA | The close only: "Pre-order Kheelu", `cta` = `finale`; phone sticky bar `sticky-bar` |
+| In-text product link | One, in fold 8 ("Kheelu" → `/products/kheelu`, `meet-kheelu.html`) |
+| Module values kept from the stub | Card title and summary (hub copy, `stories.md` fold 4); `related` (three, below); `published` 2026-07-28; `updated` as the main session's note for task 5.19 directs. The stub's `metaTitle` ("Should kids use AI?") gives way to the title above (the card title is 60 characters, so it cannot carry the brand) |
+| Page settings | Template parity; `close: "journal"`, so the shell shows the phone buy bar; `active: "stories"`, chrome on |
+
+**Overlap.** The safe-AI-toy article owns "what to look for" worry by worry, and the buyer's guide owns the "five
+checks"; this page owns the yes-or-no question and the line between AI built for adults and a toy built for young
+children. Its four questions in fold 7 are framed as a way to judge a design, not as a checklist, and it links to the
+guide for the side-by-side comparison.
+
+**What changed from the live article** (`src/lib/stories-expansion.ts:218-251`, input only): "We ... would not hand
+one of those to a four-year-old" and "built for ages three and up" re-aged to 3 to 7
+([age-band review](../../product/age-band-review.md) row 38); "more than a quarter of the replies ... from
+self-harm to drugs" and "no child of five or under should be given one" replaced by the verified C16 lines; Fairplay
+"told parents not to buy AI toys at all" corrected to "that season" (C36; it sets no age line) with the advisory
+page's URL; the AAP line ("about an hour of good content" for two to five year olds) cut (C33: never "about an
+hour"; the age range is outside the band); "Researchers at Harvard call the loop" replaced by C07's verified line
+with its caring adult; Brookings (C14) and the Xu 2021 study (C11) added in their verified wording; "Does the company
+earn more when your child spends more minutes?" cut, as on the safe-AI-toy page (no confirmed answer for Kheelu);
+"Five good answers is a tool. Fewer is a slot machine with a cartoon on it" cut (the guide owns five checks); "The
+only good answer is when your child says a wake word" (retired, [claims §4.1](../../product/claims.md#41-the-retired-microphone-wording)
+row 14) replaced by the wake-up button facts; "what India's data-protection law now requires" cut (section 9 is
+not in force yet, C20); "a friend that asks the next question" and "no ads, nothing sold" replaced by the confirmed
+lines; the in-text "refundable ₹499 holds your place" cut (the close carries the price sentence from the offer).
+
+---
+
+## Fold 1 · Article head
+
+**Fold job:** say what the page answers, and who is answering, in the first phone screen.
+
+**Copy:**
+
+> **Breadcrumb:** Stories › AI toys and safety
+>
+> **H1:** Should kids use AI? An honest answer from people who build it
+>
+> Where the line sits between AI built for adults and a toy built for young children, and how to judge any toy with AI inside.
+>
+> Aman Soni · First published 28 Jul 2026 · 5 min read
+
+- **H1 accent:** `Hand` on "honest answer" (`{hand:honest answer}`).
+- H1 and lead are the hub card's title and summary, word for word (`stories.md` fold 4; the stub module).
+- Breadcrumb: "Stories" → `/stories`; "AI toys and safety" → `/stories#ai-and-safety` (from `hub.ts`, `topics.ts`).
+- **Image** (`kh-photo --wide`, 16:9, the LCP image): `kabir-02-block-rocket-web.webp`. Alt: "A boy in round
+  glasses and an olive T-shirt kneels on a patterned rug, grinning as he stacks wooden blocks into a tall tower, with
+  Kheelu sitting beside it." (`03-cast.md:123`: "Curiosity and STEM"; a child thinking with his hands, the page's
+  frame. Checked by eye 2026-10-13. The alt never describes Kheelu's light: no colour is specified, D018.)
+
+---
+
+## Fold 2 · The answer first
+
+**Fold job:** answer the search in 40 to 60 words, then frame the rest of the page.
+
+**Copy:**
+
+> **H2:** Should kids use AI at all?
+>
+> Not the AI built for adults. Common Sense Media advises against AI toys at 5 and under, and extreme caution from 6 to 12.¹ If AI is part of a young child's play, it should be built for their age, unable to browse the internet and fully visible to you. It should ask your child questions, not just give answers.
+
+- 60 words (marker excluded). The `answer` block; no `detail`. Generic: no product in the answer, so it reads as useful to any parent.
+- **Round 2 (CMO M12, the founder's option; question 3):** the block answer engines lift on its own now says what
+  the main child-safety group advises, so it no longer gives only the conditions under which AI suits a young child.
+  The CMO's draft named only the 5-and-under half; this keeps the 6-to-12 half too, because B3 is "cite it in full"
+  and a parent of a 6 or 7 year old reads this block as well. To stay inside 60 words, "not just hand over answers,
+  so your child still does the thinking" became "not just give answers" (fold 8 still carries "so your child does the
+  thinking"). The sentence is the C16 line in short form, sourced to the press release, paragraph 1 (excerpt
+  `C16-common-sense-press-release-2026-01-22.md:22-25`).
+- "AI built for adults" is the hub card's own frame. The answer names no chatbot and states no chatbot's age rules:
+  that line (C37) is on hold until the founder and counsel confirm what Kheelu's own providers' terms say
+  ([source verification C37](../../research/source-verification.md#c37--can-a-young-child-use-a-chatbot)).
+- "If AI is part of a young child's play, it should be built for their age ... and fully visible to you" is the C37
+  house line (advice, no claim), extended with the confirmed contrast "other AI gives answers; Kheelu asks
+  questions" ([messaging, against the alternatives](../../brand/messaging.md#against-the-alternatives)) in generic form.
+
+---
+
+## Fold 3 · Who is answering (no heading)
+
+**Copy:**
+
+> We build a toy with AI inside, for children aged 3 to 7, so we may be the last people you should ask, or the first. Either way, here is our answer in full, including where child-safety groups disagree with us.
+
+- An `ArticlePart` with no title. "A toy with AI inside" (not "we build AI"): Kheelu uses outside speech and AI
+  providers ([D019](../../decisions/D019-voice-providers.md)), so nothing here may suggest Kheelona owns the model.
+
+---
+
+## Fold 4 · The worry
+
+**Fold job:** name the worry about children and AI in a cited voice, then give the parent one thing to do.
+
+**Copy:**
+
+> **H2:** What is the worry about children and AI?
+>
+> In a May 2026 commentary for the Brookings Institution, Rebecca Winthrop, who directs its Center for Universal Education, described one worry about children and AI as "cognitive stunting": relying too heavily on AI "reduces children's opportunities to engage in effortful thinking".² She points to children's wide use of "general-purpose chatbots and AI companions not designed for learning", and calls the evidence early.²
+>
+> Give your child time to think before anyone, or anything, gives the answer.
+
+- C14's verified line, with the commentary's own scope added from the same excerpt (C14:35-37). Never "Brookings
+  warns": one author's commentary. Her ask for measurement is left out (stricter, and its wording carries a
+  banned phrase). No Kheelu line in this fold
+  ([source verification C14](../../research/source-verification.md#c14--cognitive-stunting)).
+- The second paragraph is C14's house line (no marker).
+- "AI companions not designed for learning" is a group a reader may put an AI toy in: it is quoted, not argued
+  away here (fold 8 answers it with mechanisms).
+
+---
+
+## Fold 5 · What child-safety groups advise
+
+**Fold job:** quote both warnings in full and in their real scope, before saying anything about Kheelu (B3).
+
+**Copy:**
+
+> **H2:** What do child-safety groups advise?
+>
+> In November 2025 Fairplay, a children's advocacy group, published an advisory signed by more than 150 experts and organisations telling parents not to buy AI toys that season.³
+>
+> In January 2026, Common Sense Media advised parents not to give AI toys, which it describes as "smart toys with voice-based interactions", to children aged 5 and under, and to use extreme caution before buying them for children aged 6 to 12.¹ When it tested three AI toys, it rated 27% of their replies as not appropriate for kids. It also raised concerns about toys designed to create emotional attachment, the data they collect and how reliably they work.⁴
+>
+> Common Sense Media also says children aged 5 and under "cannot reliably distinguish AI from real people".⁴
+>
+> Most of these concerns are about how a toy is built, and those you can check. The age advice is about young children themselves, and only you can weigh it for yours.
+
+- Paragraphs 1 and 2 are the verified C36 and C16 lines, verbatim. Never name the toys tested; never "at any age"
+  for Fairplay; never "found" a result at ages 3 to 5 (the tests used accounts set to 6 to 13)
+  ([source verification C16, C36](../../research/source-verification.md#c16--common-sense-media-on-ai-toys)).
+- **Round 2 (CMO B1).** Paragraph 3 quotes the risk assessment ("Where they fall short", excerpt
+  `C16-common-sense-ai-toys-risk-assessment.md:37-38`), as the approved safe-AI-toy page does (its fold 3). Paragraph 4
+  replaces "Notice what these concerns are about: how a toy is built. That is something you can check.", which turned
+  a firm age warning into a checklist: the 5-and-under advice rests on development, not on how a toy is built (the
+  same excerpt, `:37-41`: "Developmentally inappropriate for target age groups"; "For children age 5 and under, AI
+  toys are developmentally inappropriate"). Its first sentence keeps the approved "Most of these worries are about how
+  a toy is built" (safe-AI-toy page fold 4); its second says where the advice comes from without arguing with it. No
+  marker on paragraph 4: it makes no new research claim.
+- The answer to this advice is the B3 paragraph, which opens fold 8, as on the safe-AI-toy page.
+
+---
+
+## Fold 6 · What young children need
+
+**Fold job:** the research case for the adult in the loop, with its real ages and limits; no product in the fold.
+
+**Copy:**
+
+> **H2:** What does the research say young children need?
+>
+> Harvard's Center on the Developing Child says back-and-forth "serve and return" exchanges between a young child and a caring adult help build and strengthen neural connections in the child's brain. They also support the early language and social skills that later, more complex thinking builds on.⁵
+>
+> In a US study of 90 children aged between 3 and 6, children asked about a story by an adult researcher gave longer answers, using more different words, than children asked the same questions by a smart speaker. Both groups answered about equally accurately.⁶
+>
+> You can do it anywhere: answer your child, then ask one back. And the test for any AI near a young child is simple: does it leave more room for that back-and-forth with you, or less?
+
+- Paragraph 1 is C07's verified line, with "a caring adult". Paragraph 2 is C11's verified line, "related" dropped
+  (C10 is not on this page) and the ages written "between 3 and 6" (the study's own range, "aged three to six
+  years"; the site guard bans the digits "3 to 6" as a retired product age range). Both stand on their sources;
+  neither is an outcome claim for any toy ([D016](../../decisions/D016-brain-wording.md),
+  [D025](../../decisions/D025-speech-and-language.md)).
+- No Kheelu in this fold: no brain line shares a sentence or a paragraph with the product (D016). The C07 company
+  line ("Kheelu is built around the same idea") is not used, so the research stays the parent's, not ours.
+- Paragraph 3 opens with C07's house line; its second sentence is our own test, with no claim.
+
+---
+
+## Fold 7 · Not a yes or no, and how to judge (keyword map's H2)
+
+**Fold job:** turn the page into questions a parent can put to any maker, then the page's conclusion.
+
+**Copy:**
+
+> **H2:** How do you judge anything with AI inside?
+>
+> Ask the same four questions of every maker, us included.
+>
+> - Can it reach the open internet, or only a closed set of material?
+> - Is every reply checked for your child's age, and can the maker say how?
+> - Can you read every conversation, and delete any of it yourself?
+> - Does it talk with your child, in questions and turns, or perform at them?
+>
+> A maker who answers all four plainly is worth a closer look. For us, AI near a young child is not a simple yes or no. It is a question of who built it, and why.
+>
+> To compare toys side by side, use our guide to [AI toys for kids in India](https://kheelona.com/ai-toys-for-kids-in-india).
+
+- A `list` block (bullets) between paragraphs. Four questions, never "five checks"; the microphone question is left
+  to fold 8's facts and the guide, so this list does not shadow the guide's.
+- **Round 2 (CMO M1):** "For us, ... not a simple yes or no" marks the conclusion as our view, two folds after a group
+  that says no at 5 and under; it no longer reads as a fact set against theirs.
+- Link: `/ai-toys-for-kids-in-india` → `ai-toys-for-kids-in-india.html`.
+
+---
+
+## Fold 8 · Where Kheelu stands (the one in-text product link)
+
+**Fold job:** give the signed B3 answer once, then Kheelu's checkable facts in the founder's order (D020), each
+matched to a point above.
+
+**Copy:**
+
+> **H2:** Where does Kheelu stand?
+>
+> Kheelu is made for children aged 3 to 7. Common Sense Media's advice covers that whole range: avoid AI toys at 5 and under, and use extreme caution at 6 and 7. You should hear that from us. Here is how we built [Kheelu](https://kheelona.com/products/kheelu) on each point above, so you can check it yourself and decide.
+>
+> **The microphone.** It turns on only when someone presses the wake-up button, and a light on Kheelu shows whenever it's listening. It switches itself off after about a minute of quiet.
+>
+> **Your child's voice.** To understand and answer your child, Kheelu uses trusted speech and AI providers, on servers in India. They process your child's voice only to produce Kheelu's reply. They don't keep it, and they never use it to train their AI. Our contracts with them say so.
+>
+> **Every conversation.** You can read every conversation in the parent app. Your child's conversations stay in your parent app for 36 months, then they're deleted automatically. You can delete any of them sooner, in one tap.
+>
+> **Your data.** We don't sell your data. Your child's data is never used to advertise to them.
+>
+> **No open internet.** Kheelu can't browse the internet. Its answers come from a curated, closed content library, and every reply passes an age-graded safety layer set to the age you enter in the parent app.
+>
+> **Talking with, not at.** It answers your child, then asks a question back, so your child does the thinking.
+>
+> If your child is 3, keep a grown-up nearby while they play.
+>
+> Whether that is enough is your call, and the child-safety groups above are right to make companies earn it. The detail is on our [Safety page](https://kheelona.com/safety).
+
+- **The first paragraph is the B3 answer, word for word** (safe-AI-toy page fold 5), its "each point above" now
+  pointing at fold 7's four questions and fold 5's concerns.
+- A `facts` block (`TrustList`, one column on phones), as fold 5 of the safe-AI-toy page, with the same icons for
+  the same items (microphone, lock-simple, eye, hand-heart, wifi-slash) and `chat-circle` or `question` for the last
+  (builder's pick from the DS icon set); bold lead-ins are the items' titles, not headings. No figure.
+- **Wording held to the rulings, as on the safe-AI-toy page:** the microphone item is D018's (no wake-word phrase,
+  no "no risk", no disconnect claim, the light's colour never named); the voice item is D020's line verbatim, its
+  training clause scoped to the providers ([D041](../../decisions/D041-gate-a-round-1.md)); the retention sentences
+  are `RETENTION_LINE`; the closed library and the age-graded layer come after the providers line and omit "on the
+  device and in the cloud" (D019 flag); no word "safe" about Kheelu.
+- Links: `/products/kheelu` → `meet-kheelu.html`; `/safety` → `safety.html`.
+
+---
+
+## Fold 9 · Sources (article foot)
+
+**Copy** (`kh-body-s`, numbered list; each URL is a link):
+
+> **Sources**
+>
+> ¹ Common Sense Media, "Common Sense Media Warns Against AI Toy Companions After Research Reveals Safety Risks" (press release), 22 January 2026, paragraph 1. https://www.commonsensemedia.org/press-releases/common-sense-media-warns-against-ai-toy-companions-after-research-reveals-safety-risks
+>
+> ² Rebecca Winthrop, Brookings Institution, "Is it time to measure cognitive stunting?" (commentary), 2026, section "Cognitive stunting" and the section on early evidence. https://www.brookings.edu/articles/is-it-time-to-measure-cognitive-stunting/
+>
+> ³ Fairplay, "AI Toys are NOT Safe for Kids" (advisory), 2025, opening paragraph. https://fairplayforkids.org/pf/aitoyadvisory/
+>
+> ⁴ Common Sense Media Youth AI Safety Institute, "AI Toys" (risk assessment), 2026, "What we found" and "Where they fall short". https://institute.commonsensemedia.org/risk-assessments/ai-toys
+>
+> ⁵ Center on the Developing Child at Harvard University, "Serve and Return" (Key Concepts), undated (page metadata 2024, updated 2026), Key Takeaways and the paragraph after Fast Facts. https://developingchild.harvard.edu/key-concept/serve-and-return/
+>
+> ⁶ Xu, Wang, Collins, Lee and Warschauer, "Same benefits, different communication patterns: Comparing Children's reading with a conversational agent vs. a human partner", Computers & Education, 2021, Abstract and section 4.3. https://doi.org/10.1016/j.compedu.2020.104059
+
+- Round 2: the notes are renumbered in reading order, because the answer block (fold 2) now cites the press release
+  first; note 1 is reused in fold 5. Note 4 adds "Where they fall short" for fold 5's third paragraph (CMO B1).
+- Note 2 names the second section by description: its title carries a phrase the site guard bans for product copy.
+- The same list is the BlogPosting `citation` array. Re-read the Brookings commentary, both Common Sense Media
+  pages and the Harvard page before publishing ([source verification §7](../../research/source-verification.md#7-before-any-line-is-published)).
+
+---
+
+## Fold 10 · Related guides
+
+**Copy:**
+
+> **H2:** Related guides
+>
+> - Raising a bilingual child in India
+> - Does a three-year-old need an AI tutor?
+> - The hard questions parents ask about AI toys
+
+| Title (each guide's own card) | Real URL | Mockup link |
+|---|---|---|
+| Raising a bilingual child in India | `/stories/raising-a-bilingual-child-in-india` | `stories.html#talking` |
+| Does a three-year-old need an AI tutor? | `/stories/does-a-three-year-old-need-an-ai-tutor` | `stories.html#ai-and-safety` |
+| The hard questions parents ask about AI toys | `/stories/questions-parents-ask-about-ai-toys` | `stories.html#ai-and-safety` |
+
+- The stub's `related` list, unchanged; titles render from each module's card.
+
+---
+
+## Fold 11 · Close (journal close block)
+
+**Copy** (identical to the [hub close](stories.md#fold-6--close-journal-close-block); rendered from
+`articlePageCopy.close`, never retyped):
+
+> **H2:** A toy that asks back.
+>
+> Kheelu by Kheelona is a screen-free plush toy for ages 3 to 7. It answers your child, then asks a question back.
+>
+> **[Pre-order Kheelu]** → `https://store.kheelona.com` (`store.html`), same tab
+>
+> Reserve yours for ₹499`{price-source}` today, refundable until dispatch, then pay ₹4,500`{price-source}` before delivery: ₹4,999`{price-source}` in total (incl. GST).
+>
+> Deliveries start mid-November`{delivery-source}` · 7-day returns, no questions asked
+>
+> Questions? WhatsApp or call +91 91875 46483
+>
+> [See how it works] → `/products/kheelu` (`meet-kheelu.html`)
+
+- `cta` = `finale`. Close art: plain, without the doodle (an AI-and-safety guide; `PLAIN_CLOSE_ART` in
+  `stories/articles/index.ts` is outside this task's Owns: reported to the main session).
+
+## Phone sticky bar
+
+As Home: **₹499`{price-source}` today** · **refundable · ₹4,999`{price-source}` total (incl. GST)** · **Pre-order Kheelu**,
+`cta` = `sticky-bar`; the shell's, because the close carries the button.
+
+---
+
+## Keyword placements
+
+| Rule ([keyword map §5](../../research/keyword-map.md#5-placement-rules)) | Met | Where |
+|---|---|---|
+| Title ≤ 60, primary at the start | Yes | 47 characters; the keyword map's draft ([§5.2](../../research/keyword-map.md#52-per-page)) |
+| Meta ≤ 155: primary plus a concrete fact | Yes | 147 characters; names what the page gives (what groups advise, what children need, how to judge). No statistic in the meta: it can carry no source marker |
+| One H1 with the primary | Yes | "Should kids use AI? ..." (the hub card, word for word) |
+| Primary in an answer-first block in the first ~100 words | Yes | Fold 2 H2 "Should kids use AI at all?" and its 60-word answer |
+| An H2 with the primary or a close variant | Yes | Fold 2; fold 7 carries the keyword map's suggested H2 ("How do you judge anything with AI inside?") |
+| Secondaries | Yes | "AI chatbots and children": fold 4 ("general-purpose chatbots"); "is AI good for kids": answered by fold 2 and fold 6, not forced into a heading |
+| Alt text | Yes | Describes the scene |
+| Density | Yes | "should kids use AI" twice in `<main>` (H1, fold 2 H2): about 0.8% of about 990 words with the close, counting its 4 words; "Kheelu" 9 times including the close and its button (under 1%) |
+| Words never placed | Yes | No chatbot brand or age rule (C37 on hold), no "Brookings warns", no wake-word line, no "safe" about Kheelu, "friend", "tutor", "lessons", "adapts", brain promise for Kheelu, health terms, competitor or tested-toy names, "five checks" |
+
+## CTA tracking values
+
+| Position | Element | `cta` value | Status |
+|---|---|---|---|
+| Laptop nav, phone drawer (chrome) | Pre-order Kheelu | `navbar`, `navbar-mobile` | Existing |
+| Close | Pre-order Kheelu | `finale` | Existing |
+| Phone sticky bar | Pre-order Kheelu | `sticky-bar` | As Home |
+| In-text links (product, guide, Safety page) | text links | none (not buttons) | n/a |
+
+## Placeholders
+
+None. (A rewritten article module may hold no open placeholder: `articles.test.ts`. The chatbot age-rule line, which
+would need the founder's and counsel's answer on Kheelu's own providers' terms (C37), is left out rather than held.)
+
+## Questions for the founder (website only)
+
+1. **Byline.** The live article is by Aman Soni. (a) Keep his name, after he reads and owns it; (b) "The
+   Kheelona team". **Recommend (a)**: "from people who build it" is the card's promise, and a named co-founder
+   keeps it.
+2. **What general chatbots allow children to do (C37, on hold).** The verified line on ChatGPT, Copilot, Claude
+   and Gemini age rules would answer "AI chatbots and children" directly, but it invites the question of what
+   Kheelu's own providers' terms say about children. (a) Leave it out (as drafted); (b) add it once the founder
+   and counsel confirm the answer about Kheelu's providers. **Recommend (a)** until that answer exists; the page
+   makes its case without naming any chatbot.
+3. **Common Sense Media in the answer block (round 2, CMO M12, your option).** The block answer engines lift on
+   their own now says "Common Sense Media advises against AI toys at 5 and under, and extreme caution from 6 to 12."
+   (a) Keep it (as now drafted); (b) the round-1 answer, which gave only the conditions for AI in a young child's
+   play and left the advice to fold 5. **Recommend (a)**: on the page that answers "should my young child use AI at
+   all", an answer lifted without the main child-safety advice reads as the maker's view alone. It is a second short
+   form of the B3 citation, so it follows whatever you sign for B3.
+
+## Sources
+
+| Claim | Source |
+|---|---|
+| H1, lead (hub card, word for word); related list; published 28 Jul 2026; live byline | `stories.md` fold 4; stub module; `src/lib/stories-expansion.ts:224-225` |
+| Rebecca Winthrop, Brookings, May 2026: "cognitive stunting"; "reduces children's opportunities to engage in effortful thinking"; "general-purpose chatbots and AI companions not designed for learning"; evidence early | [source verification C14](../../research/source-verification.md#c14--cognitive-stunting); excerpt `C14-brookings-cognitive-stunting.md:24-41` |
+| "Give your child time to think before anyone, or anything, gives the answer" | C14 house line |
+| Fairplay advisory, November 2025, more than 150 experts and organisations, "that season" | [source verification C36](../../research/source-verification.md#c36--fairplays-advisory) (SUPPORTED); excerpt `C36-fairplay-ai-toys-advisory.md` |
+| Common Sense Media advice (fold 2 in short form, both halves; fold 5 in full); 27% of replies in tests of three toys; attachment, data, reliability | [source verification C16](../../research/source-verification.md#c16--common-sense-media-on-ai-toys); excerpts `C16-common-sense-press-release-2026-01-22.md:22-32`, `C16-common-sense-ai-toys-risk-assessment.md:29-35`; owner [age-band review §4](../../product/age-band-review.md#4-common-sense-media-and-the-3-to-7-band); cite in full: working default B3 |
+| Children aged 5 and under "cannot reliably distinguish AI from real people" (fold 5) | `C16-common-sense-ai-toys-risk-assessment.md:37-38` ("Where they fall short"); as on the approved [safe-AI-toy page](story-what-to-look-for-in-a-safe-ai-toy.md#fold-3--what-child-safety-groups-say), fold 3 |
+| "Most of these concerns are about how a toy is built, and those you can check. The age advice is about young children themselves" (fold 5) | Our own voice, no research claim: the approved "Most of these worries are about how a toy is built" ([safe-AI-toy page](story-what-to-look-for-in-a-safe-ai-toy.md#fold-4--what-to-look-for-warning-by-warning), fold 4); the ground of the age advice is the risk assessment's own (`C16-common-sense-ai-toys-risk-assessment.md:37-41`, development); [CMO review B1](../../qa/cmo-review-articles-5.19-2026-10-14.md#b1--should-kids-use-ai-fold-5-the-line-after-the-two-warnings-overstates-what-the-sources-say) |
+| "For us, AI near a young child is not a simple yes or no" (fold 7) | Our own view, marked as ours ([CMO review](../../qa/cmo-review-articles-5.19-2026-10-14.md#minor) M1) |
+| Harvard serve-and-return line, with "a caring adult" | [source verification C07](../../research/source-verification.md#c07--serve-and-return); excerpt `C07-harvard-serve-and-return.md:22-43`; [claims §8](../../product/claims.md#8-brain-and-development-claims-with-their-anchors) |
+| Xu 2021: 90 children aged 3 to 6; adult questions drew longer answers with more different words than a smart speaker's; accuracy about equal | [source verification C11](../../research/source-verification.md#c11--an-adult-still-draws-out-more-words-ages-3-to-6); excerpt `C11-xu-2021-computers-and-education.md:24-35, 71-79` |
+| "You can do it anywhere: answer your child, then ask one back" | C07 house line |
+| B3 answer, word for word | [safe-AI-toy page](story-what-to-look-for-in-a-safe-ai-toy.md#fold-5--how-kheelu-is-built-against-each-worry-the-one-in-text-product-link), fold 5 paragraph 1 (draft for the founder's signature) |
+| Wake-up button; light; off after about a minute of quiet | [D018](../../decisions/D018-wake-up-button.md); [claims §1](../../product/claims.md#1-confirmed-by-the-founder) |
+| Providers line, verbatim | [D019](../../decisions/D019-voice-providers.md), [D020](../../decisions/D020-provider-terms-and-no-sale.md); [D041](../../decisions/D041-gate-a-round-1.md) (training clause kept, scoped); [D035](../../decisions/D035-model-training-opt-out.md) |
+| Read every conversation; 36 months; delete sooner in one tap | [D017](../../decisions/D017-live-behaviour-claims-confirmed.md); [D020](../../decisions/D020-provider-terms-and-no-sale.md) (`RETENTION_LINE`) |
+| We don't sell your data; never used to advertise to your child | [D020](../../decisions/D020-provider-terms-and-no-sale.md); [D038](../../decisions/D038-trust-content-rulings.md) (F17) |
+| Can't browse; curated, closed content library; age-graded safety layer set to the age a parent enters | [D017](../../decisions/D017-live-behaviour-claims-confirmed.md), [D036](../../decisions/D036-launch-feature-claims.md); [claims §2](../../product/claims.md#2-published-product-behaviour-claims-live-not-re-confirmed) |
+| Answers, then asks a question back; "so your child does the thinking" | [D017](../../decisions/D017-live-behaviour-claims-confirmed.md); [messaging, objection answers](../../brand/messaging.md#objection-answers) |
+| A grown-up nearby at 3 | [D041](../../decisions/D041-gate-a-round-1.md) ("Age 3") |
+| Close block, price sentence, sticky bar | [home, CTA block](home.md#cta-block), [phone sticky bar](home.md#phone-sticky-bar) |
+| Cut live lines | [age-band review](../../product/age-band-review.md) row 38; [claims §4.1](../../product/claims.md#41-the-retired-microphone-wording) row 14; [source verification C33, C36, C20](../../research/source-verification.md#4-ready-to-use-website-lines) |
+| Photo | DS `03-cast.md:123`; file checked by eye 2026-10-13 |
