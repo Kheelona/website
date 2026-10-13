@@ -383,6 +383,26 @@ describe("D054 item 19: the source scan lets an F4 slot stay, hidden, and refuse
     expect(decide("production", scan).code).toBe(1);
   });
 
+  /* Only the content layer drops a hidden slot (withoutHiddenRows), and the output scan never reads the dynamic routes
+     (/store/*, /api/*): an F4 slot anywhere else in src/ would render, so it is refused like any other. */
+  it.each([
+    ["a store route (dynamic, never prerendered)", "src/app/store/not-found.tsx", `export const storeSpec = "{ph:F4 battery}";\n`, "token"],
+    ["a component", "src/components/ui/X/X.tsx", `export const spec = placeholder("F4", "battery");\n`, "helper"],
+    ["a folder that only starts like src/content", "src/contents/x.ts", `export const spec = "{ph:F4 battery}";\n`, "token"],
+  ])("still refuses an F4 slot outside src/content/ in production: %s", (_name, file, text, pattern) => {
+    const scan = scanSource(tree({ [HIDDEN_PATH]: HIDDEN_MODULE, [file]: text }));
+    expect(scan.findings.map((f: { file: string; pattern: string }) => `${f.file} ${f.pattern}`)).toEqual([`${file} ${pattern}`]);
+    expect(scan.hidden.map((h: { file: string }) => h.file)).toEqual([HIDDEN_PATH, HIDDEN_PATH, HIDDEN_PATH]);
+    expect(decide("production", scan).code).toBe(1);
+  });
+
+  it("stops the production prebuild step on an F4 slot in a store route", () => {
+    const root = tree({ [HIDDEN_PATH]: HIDDEN_MODULE, "src/app/store/not-found.tsx": `export const storeSpec = "{ph:F4 battery}";\n` });
+    const r = run(PREBUILD_STEP, ["--root", root], { KH_SITE_ENV: "production" });
+    expect(r.code, r.all).toBe(1);
+    expect(r.all).toContain("src/app/store/not-found.tsx:1");
+  });
+
   it("refuses an F4 slot that reached the prerendered output: nothing of it may render", () => {
     const APP = ".next/server/app";
     const scan = scanBuild(

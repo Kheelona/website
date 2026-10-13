@@ -25,7 +25,9 @@
 //
 // Hidden slots (D054 item 19; task 6.7): an F4 slot (the product's final specs) is hidden, not marked. The content
 // layer drops the row or line it is the value of before anything renders (withoutHiddenRows), so the slot may stay in
-// the source, where its value lands: the source scan lists it as hidden and never refuses it. Which items are hidden,
+// the source, where its value lands: the source scan lists it as hidden and never refuses it. Only in a content module
+// (src/content/), the one layer that drops it: anywhere else an F4 slot would render (and the output scan never reads
+// the dynamic routes), so it is refused like any other. Which items are hidden,
 // and how a token's body reads, come from src/lib/content/placeholder.ts (never restated here). A typed marker, a
 // draft and every other slot are refused as before, and the output scan stays strict: an F4 slot that reached a page
 // is refused there, since nothing of it may render.
@@ -64,6 +66,8 @@ export const PATTERNS = Object.freeze([
 ]);
 
 const SOURCE_DIR = "src";
+/** The content modules, by repo path: the only place a hidden slot may stay, since only the content layer drops it. */
+const HIDDEN_SLOT_DIR = `${SOURCE_DIR}/content/`;
 const BUILD_DIR = join(".next", "server", "app");
 const BUILD_FILE = /\.(?:html|body)$/;
 
@@ -197,7 +201,8 @@ const HELPER_ID = /^placeholder\(\s*(?:(["'`])([^"'`\n]*)\1|null)\s*,/;
 
 /**
  * True when a source finding is a hidden slot (D054 item 19): an inline token or a helper call whose open item
- * placeholder.ts hides. A typed marker or a draft never is (a marker in the source renders as it is).
+ * placeholder.ts hides. A typed marker or a draft never is (a marker in the source renders as it is). The scan asks
+ * only of a content module's findings (HIDDEN_SLOT_DIR).
  * @param {string} text
  * @param {{ pattern: string, index: number, end: number }} hit
  */
@@ -272,7 +277,7 @@ export function scanSource(root = REPO) {
     files++;
     for (const hit of findPlaceholders(text)) {
       const finding = { file, line: hit.line, pattern: hit.pattern, label: hit.label, excerpt: lineExcerpt(text, hit.index) };
-      (isHiddenSlot(text, hit) ? hidden : findings).push(finding);
+      (file.startsWith(HIDDEN_SLOT_DIR) && isHiddenSlot(text, hit) ? hidden : findings).push(finding);
     }
   }
   return { ...base, missing: false, files, notShipped, importedNeverShipped, findings, hidden };
