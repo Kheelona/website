@@ -163,8 +163,9 @@ supported as written. This version adds the source's next sentence:
    framework. It is stricter than the medical bodies' ceiling of one hour from two until five (C31 to C33;
    CMO 5.17 M2), so do not merge the two into one number.
 3. The copy page currently says "For the number of minutes, turn to the medical bodies"
-   ([story-screen-time-rules-parents-swear-by](../site/pages/story-screen-time-rules-parents-swear-by.md),
-   line 141). Its note on what was left out (lines 297-298) is now out of date. Both are for the Copywriter.
+   (story-screen-time-rules-parents-swear-by.md, line 141). Its note on what was left out (lines 297-298) is now out of
+   date. Both are for the Copywriter. **Moot since 2026-10-14:** the guide and its copy page were removed
+   ([D053](../decisions/D053-remove-the-3-6-9-12-article.md), task 6.5).
 4. The same section also says: never a screen in the bedroom; screens in a shared room; avoid them in the
    evening, at the table or to calm the child; set a daily time slot. All are quoted in the
    [excerpt](../raw/research/sources/C34-tisseron-3-6-ages-minutes-2026-10-14.md) if the article wants them.

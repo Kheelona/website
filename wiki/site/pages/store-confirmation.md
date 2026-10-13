@@ -92,7 +92,9 @@ sources:
   label changes, both copy: "Due on dispatch" becomes "Due before delivery", the founder's
   [D028](../../decisions/D028-price-wording.md) wording, so it matches the price sentence the parent read on the store;
   "Ships from 20 October 2026" becomes "Delivery: Deliveries start mid-November", the one delivery value for new
-  orders ([D023](../../decisions/D023-new-order-delivery.md)). What this means for orders placed earlier is question 1.
+  orders ([D023](../../decisions/D023-new-order-delivery.md)). What this means for orders placed earlier is question 1,
+  answered 2026-10-14 ([D054](../../decisions/D054-founder-answers-open-questions-2026-10-14.md) item 1): orders created
+  before 10 October 2026 (IST) keep "Ships from 20 October 2026"; every later order reads the D023 line.
 - The balance is derived from the row, never typed: a ₹99 event token reads ₹4,900 (`wt:thanks/page.tsx:152-157`).
 - The order number format is `KH-` plus two groups of four characters (`wt:src/lib/store/order-ref.ts:17-26`); the
   placeholder shows the shape only.
@@ -298,7 +300,10 @@ No factual claim on this page lacks a source.
 
 - **DS gap:** no confirmation-page or receipt pattern ([G-11](../../design-system/gaps.md#g-11)); compose from
   `SectionHeading`, a `kh-` card with a `dl`, `TextField`, `Select`, `Button`, `StepLoop`.
-- **Same checkout, outside this group:** the receipt email still says "Due on dispatch", "Ships from" and
-  "(messages, not calls)" (`wt:src/lib/email/templates.ts:135-136, 160-162, 175`). Its facts and branching are logic;
-  its labels are copy for the build, to match this page and [D032](../../decisions/D032-grievance-block-and-call-line.md).
+- **Same checkout, outside this group:** at the tag the receipt email said "Order", "Due on dispatch", "Ships from" and
+  "(messages, not calls)" (`wt:src/lib/email/templates.ts:135-136, 160-162, 175`). Since task 6.4 its labels match this
+  page ("Order number", "Due before delivery") and [D032](../../decisions/D032-grievance-block-and-call-line.md) ("WhatsApp
+  or call"), and its delivery row is this page's, picked by the order's date with the same rule
+  (`src/lib/offer/delivery-line.ts`; [D054](../../decisions/D054-founder-answers-open-questions-2026-10-14.md) item 1),
+  through a reviewed diff of the frozen template.
 - Production is untouched until Gate B ([D011](../../decisions/D011-production-held-until-gate-b.md)).

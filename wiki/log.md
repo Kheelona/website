@@ -705,3 +705,28 @@ came from a research agent reading each provider's own pages on 2026-10-13: Razo
 policy names no place), Resend United States, Google "data centres around the world" (no country published), Meta
 "the United States, Ireland and other countries", Ahrefs United States (general policy; nothing specific to Web
 Analytics). Ports 3550-3553 / 6180-6183.
+
+## [2026-10-14 04:40] build | Batch 6b merged (6.4-6.7) with main-session rulings; merge gate green
+Run `wf_146abbc8-31a` (25 agents). 6.5 passed; 6.4, 6.6 and 6.7 came back fixed-unreviewed with rulings for the main
+session, made on their branches before merging:
+- **6.4** (`77841dd`): the receipt's delivery row follows the `/thanks` card by the order's `created_at` (accepted: D054
+  item 1 and D023 need it, or every new-site receipt would say "Ships from 20 October 2026"); the rule moved to
+  `src/lib/offer/delivery-line.ts` so `lib/email` imports no section; the receipt's "Order" label reads "Order number"
+  as on `/thanks`; the reviewed patch regenerated with the ruling in its header.
+- **6.6** (`ceb9ef7`, `0460724`): `/ideabaaz` applied as the builder's v2 patch (checkout-freeze accepts a deletion only
+  for a path in its `RETIRED` map citing the decision; the frozen page test and signature fixture go with the page; it
+  answers 200 noindex like every store dead end, a Vercel constraint in `host.ts`); founder photos `alt=""` (DS Avatar
+  rule); the NVIDIA alt "NVIDIA Inception Program" (the en-IN guard allows that exact string); Kashyap's line in the
+  live bio's shape and past tense (CMO M2). The Karnataka mark (the state's emblem) is built as ordered and put on
+  the Gate B list with the CMO's text-only recommendation.
+- **6.7**: the last fix (F4 slots hidden only inside a `withoutHiddenRows` call) read and accepted; `types.ts`'s
+  optional `grievanceNote` granted.
+Merged `--no-ff`, no conflicts: 6.5 `c0bb934`, 6.6 `b8d43dc`, 6.4 `3e3aee1`, 6.7 `fa957d0`. Reconciliation: the
+LegalTemplate test and story render the fixtures with the Gate A words (`LEGAL_TEMPLATE_GATE_A_COPY`); `llms.txt`
+re-pinned (2026-10-14; only "On iPhone and Android." changed; hashes as the 6.7 reviewer computed); deviations V7 and V8
+updated, V9 and V11-V16 filed; checkout, store-confirmation, architecture (§9.4 rows for D053 and `/ideabaaz`), ADR-013,
+structure, components, tracking inventory §14a (the CSP now admits both beacon hosts), the hub copy page, guard-test
+ownership and the batch 6b rulings in tasks.md; follow-ups under 6.3; Gate B list extended (Karnataka mark, Kashyap's
+line, refund timing wording on `/terms` and the FAQ, the legal sign-off). Gate: `npm run build` green; the placeholder
+report is down to 4 (the legal pages' `status: "draft"`, D029); `npm run verify` 347 files, 5983 passed, 2 skipped;
+checksums 643. Next: M2.

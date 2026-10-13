@@ -9,7 +9,7 @@ import { buildOffer } from "@/lib/offer/offer";
 import { legalSellerSentence } from "@/lib/content/seller-lines";
 import { toPlainText } from "@/lib/content/plain-text";
 import { readRepoFile } from "../../../test/e2e/support/repo";
-import { LEGAL_FIXTURES, LEGAL_SLUGS, type LegalSlug } from "../../../test/fixtures/legal";
+import { LEGAL_FIXTURES, LEGAL_SLUGS, LEGAL_TEMPLATE_GATE_A_COPY, type LegalSlug } from "../../../test/fixtures/legal";
 import { LegalTemplate } from "./LegalTemplate";
 import type * as Template from "./legal-template.types";
 import type { LegalPage, LegalTemplateProps } from "./legal-template.types";
@@ -22,12 +22,14 @@ import type { LegalPage, LegalTemplateProps } from "./legal-template.types";
 
 const TOKEN = buildOffer("token");
 const FULL = buildOffer("full");
+/** The Gate A words the fixtures were copied with (test/fixtures/legal; D055 item 7 ruled the note off the live pages). */
+const GATE_A_COPY = LEGAL_TEMPLATE_GATE_A_COPY;
 
 function page(slug: LegalSlug, overrides: Partial<LegalTemplateProps> = {}): ReactElement {
   const { doc, variant } = LEGAL_FIXTURES[slug];
   return (
     <main id="main">
-      <LegalTemplate doc={doc} variant={variant} copy={legalTemplateCopy} offer={TOKEN} {...overrides} />
+      <LegalTemplate doc={doc} variant={variant} copy={GATE_A_COPY} offer={TOKEN} {...overrides} />
     </main>
   );
 }
@@ -182,7 +184,16 @@ describe("LegalTemplate: the shared blocks come from seller.ts, never retyped (4
       const card = [...main.querySelectorAll(".ks-doc__card")].find((c) => c.textContent!.startsWith("Grievance Officer:"))!;
       expect(card.querySelectorAll("p")).toHaveLength(2);
       expect(card.querySelector("p")!.textContent).toBe(`${toPlainText(seller.grievance.line.lead)} ${toPlainText(seller.grievance.line.text)}`);
-      expect(card.querySelectorAll("p")[1].textContent).toBe(toPlainText(legalTemplateCopy.grievanceNote));
+      expect(card.querySelectorAll("p")[1].textContent).toBe(toPlainText(GATE_A_COPY.grievanceNote));
+    }
+  });
+
+  it("leaves the note's paragraph out when the words hold none, as the live words do (D055 item 7)", () => {
+    for (const slug of LEGAL_SLUGS) {
+      const main = mainOf(page(slug, { copy: legalTemplateCopy }));
+      const card = [...main.querySelectorAll(".ks-doc__card")].find((c) => c.textContent!.startsWith("Grievance Officer:"))!;
+      expect(card.querySelectorAll("p")).toHaveLength(1);
+      expect([...main.querySelectorAll("p, li")].filter((el) => el.textContent!.trim() === "")).toEqual([]);
     }
   });
 
@@ -214,7 +225,7 @@ describe("LegalTemplate: the template's own words", () => {
   });
 
   it("prints whatever the words give it, never a line of its own", () => {
-    const copy = { ...legalTemplateCopy, help: { lead: "Rather talk to a person?", contact: "[WhatsApp](https://wa.me/919187546483)" } };
+    const copy = { ...GATE_A_COPY, help: { lead: "Rather talk to a person?", contact: "[WhatsApp](https://wa.me/919187546483)" } };
     const help = helpOf(mainOf(page("terms", { copy })));
     expect(help[0].textContent!.trim()).toBe("Rather talk to a person? WhatsApp");
     expect(within(help[0] as HTMLElement).getByRole("link", { name: "WhatsApp" })).toHaveAttribute("href", "https://wa.me/919187546483");

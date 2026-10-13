@@ -67,7 +67,8 @@ Two presentation rules that follow:
 
 - **Delivery line on `/thanks` (F12 open, QA N9):** orders created before 2026-10-10 00:00 IST keep "Ships
   from 20 October 2026" as today; later orders show the D023 line. The choice lives in a new presentation
-  module (`sections/store/OrderRows/delivery-line.ts`), not in the frozen page; the page's signature gains
+  module (`sections/store/OrderRows/delivery-line.ts`; since task 6.4 `src/lib/offer/delivery-line.ts`, shared with the
+  receipt email), not in the frozen page; the page's signature gains
   only the prop that passes the order it already reads.
 - The B11 checkout events (payment window opened, payment failed with reason, form rejected by field) are
   new events, allowed by brief §9.4, but they add calls inside the frozen `checkout.ts` and the form's

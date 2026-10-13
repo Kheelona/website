@@ -123,10 +123,11 @@ const MACHINE = [
  */
 const DATED: Record<(typeof MACHINE)[number]["name"], { readonly date: string } & Record<OfferMode, string>> = {
   "llms.txt": {
-    // 2026-10-13: the FAQ's returns-and-warranty answer gives D033's remedy for a faulty Kheelu (P15 default, V6; task 4.7 item 4).
-    date: "2026-10-13",
-    token: "5dac46d9949bc9c09469d00658d455c81132fb2d64d0d3de4d80b97e43ae7cba",
-    full: "2b9e9ce0ab921f363e6b1d35d19b3301a9e79b093e11c70879ff9bd2a0ad062c",
+    // 2026-10-14: the product's Parent app row ends "On iPhone and Android." (D055 item 26; task 6.7); the 3-6-9-12 guide's
+    // removal (D053; task 6.5) changed no line of it.
+    date: "2026-10-14",
+    token: "4575d9a28417aeb3c0416954462a9882447ec01e8793ab7850677fa61136bfeb",
+    full: "b05c32366e09420e1852939d72a3bacf4abc29c7f1e2db55e1701bb41695f70c",
   },
   "pricing.md": {
     // 2026-10-13: "About Kheelu" adds the product page's Manufacturer declaration (task 4.5 item 6).

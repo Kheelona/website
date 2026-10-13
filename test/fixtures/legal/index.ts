@@ -1,4 +1,5 @@
-import type { LegalPage } from "@/content/types";
+import { legalTemplateCopy } from "@/content/en-IN/legal/shared";
+import type { LegalPage, LegalTemplateCopy } from "@/content/types";
 import type { LegalVariant } from "@/layouts/LegalTemplate/legal-template.types";
 import { privacyFixture } from "./privacy";
 import { refundFixture } from "./refund";
@@ -20,3 +21,11 @@ export const LEGAL_FIXTURES: Readonly<Record<LegalSlug, { readonly doc: LegalPag
 };
 
 export const LEGAL_SLUGS = Object.keys(LEGAL_FIXTURES) as LegalSlug[];
+
+/** The template's words as the Gate A mockups print them, which the fixtures copy: the live words (legal/shared.ts) with
+ *  the complaint-reference placeholder the founder ruled off after Gate A (D055 item 7; task 6.7). The test and the
+ *  story render the fixtures with these; the live pages, with no note, are each legal route's own test. */
+export const LEGAL_TEMPLATE_GATE_A_COPY = {
+  ...legalTemplateCopy,
+  grievanceNote: "{ph:how you get a complaint reference to track your complaint; not set up yet}",
+} satisfies LegalTemplateCopy;

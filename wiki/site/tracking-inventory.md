@@ -452,12 +452,15 @@ in this inventory; no ID, event name or parameter is involved, and none changed.
 | `https://www.google.com/g/collect` | GA4 (`gtag.js`, section 3): the hits carry its own measurement ID, `tid=G-7LMKSFEXZ9` | M1's LP-tags Lighthouse reports (`lighthouse-reports/2026-10-13/lp-tags-*`, local only, D039; read 2026-10-13): two fetches, on Home and the store, each a Content-Security-Policy issue; a headless LP-tags probe on 2026-10-13 saw the same tag report only to `www.google-analytics.com/g/collect` (allowed) | no: `img-src` and `connect-src` name `www.googletagmanager.com` and the google-analytics hosts only |
 | `https://dv-c3e594c6d429469e90b54478358619c3.ecs.us-east-1.on.aws/` (`/events`), fallback `https://bded8a3c6ae-1-1053047382554.us-central1.run.app` | the Meta Pixel (section 4): its OpenBridge gateway, named by the pixel's own configuration, which `fbevents.js` loads | the configuration `fbevents.js` requested in the 2026-10-13 LP-tags probe (`connect.facebook.net/signals/config/1051265191046395?v=2.9.419&r=stable&domain=kheelona.com…`), fetched and read the same day: `config.set("1051265191046395", "openbridge", {"endpoints":[{"endpoint":"https://dv-c3e594c6d429469e90b54478358619c3.ecs.us-east-1.on.aws/", …, "fallbackDomain":"https://bded8a3c6ae-1-1053047382554.us-central1.run.app"}]})`; the baseline saw it on production too ([baseline §7.2](../qa/baseline-2026-10-10.md)). Whether it is the business's Conversions API connection is [open questions](../open-questions.md) C18 | no: not in `connect-src` |
 
-**The policy is unchanged.** `src/lib/security-headers.ts` is a frozen checkout file (ADR-013: a change needs a
-founder decision ID and a reviewed patch, `test/guards/checkout-freeze.test.ts`), and [D039](../decisions/D039-repo-and-setup-answers.md) (C10) keeps the
-Report-Only policy identical through launch, so task 4.9 did not drop `upgrade-insecure-requests` from the
-Report-Only policy nor admit either host; the proposed change waits on the founder (main session). Report-Only refuses
-nothing, so both beacons are delivered today; if the policy is ever enforced unchanged, GA4's `www.google.com` hits
-and the Meta gateway's events stop.
+**The policy now admits both (task 6.6, merged 2026-10-14).** The founder amended [D039](../decisions/D039-repo-and-setup-answers.md) C10
+([D054](../decisions/D054-founder-answers-open-questions-2026-10-14.md) item 9): the Report-Only policy drops
+`upgrade-insecure-requests` and admits `www.google.com` and the Meta gateway (`dv-c3e594c6d429469e90b54478358619c3.ecs.us-east-1.on.aws`
+and its `run.app` fallback). It stays Report-Only, so nothing that loads today is blocked. `src/lib/security-headers.ts` is
+frozen (ADR-013), so the change went through a reviewed authorised diff citing D054 (task 6.6, commit `4ffa0f0`);
+`test/security-headers.test.ts` proves the hosts admitted, the directive gone, the header still Report-Only, and the
+policy's wildcard sources equal to the tag's. No ID, event name or parameter changed. Before the policy is ever enforced,
+`upgrade-insecure-requests` comes back for the enforced header only (6.6 note: it is dropped unconditionally today;
+a new reviewed diff). The table above records what task 4.9 found before the change.
 
 **LP-tags delivered them.** The LP-tags profile blocks the tags' beacons so a local run sends nothing
 (`scripts/qa/lighthouse.mjs` `BLOCKED`: google-analytics and analytics.google collect, `facebook.com/tr`, PostHog's

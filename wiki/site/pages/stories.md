@@ -115,7 +115,7 @@ reviewer reaches it in one scroll.
 | # | Card title | One-line summary | State |
 |---|---|---|---|
 | 1 | How much screen time is okay for a young child? | What the WHO, the Indian Academy of Pediatrics and the AAP say, age by age, and what to do at 6 pm. | Rewritten in the build |
-| 2 | The 3-6-9-12 rule, and other screen rules parents swear by | Where the 3-6-9-12 rule comes from, whether it holds up, and what the WHO, the IAP and the AAP say. | Rewritten in the build |
+| 2 | The 3-6-9-12 rule, and other screen rules parents swear by | Where the 3-6-9-12 rule comes from, whether it holds up, and what the WHO, the IAP and the AAP say. | **Removed** 2026-10-14 ([D053](../../decisions/D053-remove-the-3-6-9-12-article.md), task 6.5): the topic shows five guides; the URL answers one 308 to `/stories#screen-time`; parity deviation [V9](../../qa/deviations.md) |
 | 3 | Screen time and tantrums: what is actually happening | Why the meltdown lands the moment the screen goes off, and how to make switching off boring instead of explosive. | Rewritten in the build |
 | 4 | The gentle way off the phone: a seven-day plan | A week-long plan to cut a young child's screen time without turning your home into a battlefield. | Rewritten in the build |
 | 5 | Busy hands, no screens | Screen-free ways to keep a young child busy at home, including on the days you have to work. | Rewritten in the build |

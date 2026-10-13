@@ -592,6 +592,8 @@ appears in the visible text of the same page.
 | `www.kheelona.com/*` | host-matched twins of every rule, absolute apex destinations, then a catch-all; one hop once the founder switches `www` to serve the project | url-map §4c |
 | `www.kheelona.com/store/*` | 308 → `https://store.kheelona.com/*` directly, before the `www` catch-all (the apex's `/store` redirect lives in the frozen `host.ts` and runs in the proxy, so going via the apex would cost a second hop); added by 1.3, accepted by the main session 2026-10-12 | `src/config/redirects.ts` |
 | `/faq` | stays → `/products/kheelu#faq`; the product page keeps `#faq`, `#story-mode`, `#reserve`, `#offer` | url-map §4b, `docs/utm-conventions.md` |
+| `/stories/screen-time-rules-parents-swear-by` | 308 → `/stories#screen-time` (the 3-6-9-12 guide removed, task 6.5) | [D053](../decisions/D053-remove-the-3-6-9-12-article.md) |
+| `store.kheelona.com/ideabaaz` | no redirect: the store's not-found page (200, noindex, like every store dead end; task 6.6) | [D054](../decisions/D054-founder-answers-open-questions-2026-10-14.md) item 7 |
 
 Next emits 308 for `permanent: true`, the permanent equivalent of the brief's 301 (url-map §4). Rules keep
 the `[^.]+` guard where a source could shadow `public/` (`test/redirects-vs-assets.test.ts`).
@@ -1035,10 +1037,11 @@ Kept: field `name`s and `autocomplete`; `noValidate` with the shared validators;
 form; the pay button's labels; the refund promise beside it; `ph-no-capture ph-mask` on the `/thanks`
 order container; store noindex; inputs at 16 px or more; no `<video>` before play; Razorpay theme `#EF762F`.
 
-- **Delivery line on `/thanks` (N9, F12 open):** orders created before 2026-10-10 00:00 IST keep "Ships
-  from 20 October 2026" (`SHIP_DATE_TEXT`, as today); later orders show the D023 delivery line. The choice
-  lives in `sections/store/OrderRows/delivery-line.ts`, outside the frozen page, and both cases are tested.
-  When the founder answers F12, task 6.4 updates that file and the email labels together.
+- **Delivery line on `/thanks` and the receipt (N9; F12 answered, D054 item 1):** orders created before
+  2026-10-10 00:00 IST keep "Ships from 20 October 2026" (`SHIP_DATE_TEXT`, as today); later orders show the D023
+  delivery line. The choice lives in `src/lib/offer/delivery-line.ts` (moved from `sections/store/OrderRows/` by task
+  6.4 so `lib/email` imports no section), outside the frozen page; the `/thanks` card and the receipt email both call
+  it (the receipt through a reviewed diff), and `test/email-delivery-line.test.ts` holds the two to the same row.
 - **In-app browser note (B12, N7):** built (2.5, 5.15) but `enabled: false` until QA's real-device check
   (test plan §6.4) confirms the payment problem in WhatsApp or Instagram; then the main session enables it.
   "Copy link" copies the store URL; the campaign cannot follow (attribution cookies do not cross from the

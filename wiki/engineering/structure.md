@@ -80,7 +80,7 @@ src/
   lib/
     tracking/                destination, event and CTA registries, dispatcher, internal flag
     seo/                     metadata, JSON-LD escaping, schema builders
-    offer/                   cached live mode, offer view model
+    offer/                   cached live mode, offer view model, the order's delivery row (delivery-line.ts, used by /thanks and the receipt)
     content/                 rich-text parser, plain-text serialiser, placeholder helper
     format/                  the one ₹ and date formatter
     store/ email/            checkout server code (frozen, ADR-013)

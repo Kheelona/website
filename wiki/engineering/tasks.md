@@ -122,7 +122,7 @@ with an earlier one.
 | `test/redirects-vs-assets.test.ts` | `next.config.ts` text, `public/` folders | **1.3**: read the redirect table module |
 | `test/store-host.test.ts` | `host.ts`, store routing | **1.3** |
 | `test/store-secrets.test.ts` | `src/` scan, `.env.example`, `.gitignore`, `vercel.json` | **1.3**: add the platform secret (N5); keep the cron assertion |
-| `test/security-headers.test.ts` | `next.config.ts` text (`securityHeaders`, `async headers()`, `poweredByHeader: false`) | Keep (1.3 keeps the three literals) |
+| `test/security-headers.test.ts` | `next.config.ts` text (`securityHeaders`, `async headers()`, `poweredByHeader: false`) | Keep (1.3 keeps the three literals); **6.6** added the D054 item 9 assertions (the admitted hosts, no `upgrade-insecure-requests`, still Report-Only, the wildcard sources equal to the tag's) |
 | `test/posthog-proxy.test.ts` | `next.config.ts` (import), `site.ts`, `proxy.ts` | Keep (1.3 keeps the rewrites) |
 | `src/components/molecules/PostHogGate.test.tsx` (moves to `tracking/`) | `POSTHOG_HOSTS` equals `GA4_HOSTS` | **2.6**: move with the component; the host assertions change with `POSTHOG_HOSTS` in the same commit (B2a) |
 | `GoogleAnalyticsGate.test.tsx`, `MetaPixel.test.tsx`, `ViewContentTracker.test.tsx` | the gates | **2.6**: move with the components |
@@ -140,9 +140,24 @@ with an earlier one.
 | `test/guards/generated-css.test.ts` (Devanagari coverage) | every Devanagari character in non-test `src/` files and `mockup/pages/*.html` against the Baloo 2 Devanagari subset | **Any task that adds Devanagari text** regenerates `public/fonts/baloo2-variable-devanagari.woff2` and `src/styles/generated/fonts.css` with `node scripts/assets/build-fonts.mjs` in the same commit (never by hand); the guard and the script stay 1.2's |
 | `test/guards/client-icons.test.ts` (2.11) | every `"use client"` module and `*.client.tsx` under `src/`, their imports; its root list and `CLIENT_SAFE` list name files | Keep. A task that moves or renames a listed island or client-safe module updates both lists in the same commit; a task that adds a client-safe `ui` module adds it to `CLIENT_SAFE` (wave-2 close) |
 | `src/lib/email/templates.test.ts` | email facts | Keep; **6.4** only with its reviewed diff |
+| `test/email-delivery-line.test.ts` | the receipt's delivery row and order-number label against the `/thanks` card (`src/lib/offer/delivery-line.ts`, `confirmation.order`) | Keep (**6.4** wrote it; it sits outside `src/lib/email/` because a frozen folder cannot gain a file) |
 | Tests of frozen code (`features/preorder/lib/*`, `lib/store/*` other than `posthog-server`, `app/api/**`, `lib/fbq`) | frozen modules | Keep |
 | Tests of legacy components and modules (`atoms`, `molecules`, `organisms`, `templates`, `vendor`, `features/home`, `lib/{seo,stories,growth-arc}`, old product `_components`) | legacy | Deleted with their subjects: 5.2 (old product route), 6.3 (the rest) |
 | `test/machine-files.test.ts` (`DATED`) and the routes' `LLMS_UPDATED` / `PRICING_UPDATED` | the bodies of `llms.txt` and `pricing.md`, built from faqs, trust, seller, offer, product, navigation, topics, routes, organization, policies, cta | **4.4** wrote them. **Main session**: in the same commit as any change to one of those modules (a founder filling an F4 placeholder too), bump the date constant(s) and re-pin `DATED` (wave-4 close); **4.5** item 6 |
+
+**Batch 6b merge rulings (main session, 2026-10-14).** Edits outside a task's written Owns, accepted at the merge:
+- **6.4:** the receipt's delivery row by `created_at` (D054 item 1, D023), with the rule moved to
+  `src/lib/offer/delivery-line.ts` so `lib/email` imports no section (structure §6); the receipt's "Order number" label.
+- **6.5:** `test/guards/redirect-hops.test.ts` (one LEGACY sample), `test/e2e/redirects.spec.ts` (one row), the
+  `stories` key of `test/e2e/support/deviations.ts`, the new `src/content/en-IN/stories/parity-deviations.test.ts`, the
+  hub and article route tests (20 guides), `test/machine-files.test.ts` (two sitemap floors): counts and V9 only.
+- **6.6:** `test/guards/checkout-freeze.test.ts` gains the `RETIRED` map (a deletion only for a listed path whose
+  reviewed patch cites its decision); the frozen `src/app/store/ideabaaz/page.test.tsx` and the page's signature fixture
+  are deleted with the page (D054 item 7); 6.1's `test/store-env-beta.test.ts` and `test/e2e/store-secondary.spec.ts`
+  follow; `test/guards/banned-phrases.data.ts` `us-program` allows exactly "NVIDIA Inception Program".
+- **6.7:** `src/content/types.ts` `LegalTemplateCopy.grievanceNote` is optional (commit `7ce9c1c`); the main session
+  moved `LegalTemplate.test.tsx` and its story to the Gate A words (`LEGAL_TEMPLATE_GATE_A_COPY` in
+  `test/fixtures/legal`), and re-pinned `llms.txt` (`LLMS_UPDATED` 2026-10-14).
 
 ---
 
@@ -1338,6 +1353,10 @@ processor names, the payload key allow-list and every `not.toContain` stay.
 
 ### 6.4 Receipt email and `/thanks` wording alignment (builder; gated on F12)
 
+- **Merged** `3e3aee1` (run `wf_146abbc8-31a`, fixed-unreviewed; main-session ruling `77841dd`: the delivery rule
+  moved to `src/lib/offer/delivery-line.ts`, the receipt's "Order number" label, the patch regenerated). Left after the
+  merge: the receipt footer's number as a `tel:` link (a new reviewed diff of the frozen template; after launch).
+
 - **Gate:** the founder's answer on deliveries for orders placed before 10 October (F12). **Open since 2026-10-14**
   ([D054](../decisions/D054-founder-answers-open-questions-2026-10-14.md) item 1): keep the split as built (before
   10 October: "Ships from 20 October 2026"; later: the D023 line).
@@ -1350,6 +1369,10 @@ processor names, the payload key allow-list and every `not.toContain` stay.
 - **Test:** `templates.test.ts`; freeze guard with the reviewed patches.
 
 ### 6.5 Remove the 3-6-9-12 article ([D053](../decisions/D053-remove-the-3-6-9-12-article.md)) (builder; risk normal; after the batch `wf_cd8260cf-e88` merges)
+
+- **Merged** `c0bb934` (run `wf_146abbc8-31a`, passed). Deviation V9 filed. The forced related-guide swaps
+  (busy-hands ↔ data-law, gentle-way → safe-AI-toy) are cross-topic; the CMO may ask for same-topic links later, which
+  would change other guides' related lists.
 
 - **Why:** the founder's answer to P25 (2026-10-14): Tisseron's AI markers advise no connected toys before 6, so the
   journal no longer explains his rule.
@@ -1375,6 +1398,10 @@ processor names, the payload key allow-list and every `not.toContain` stay.
 
 ### 6.6 The founder's answers of 2026-10-14 ([D054](../decisions/D054-founder-answers-open-questions-2026-10-14.md)): team, `/ideabaaz`, the CSP (copywriter, CMO, builder; risk high; after the batch `wf_cd8260cf-e88` merges)
 
+- **Merged** `b8d43dc` (run `wf_146abbc8-31a`, fixed-unreviewed; main-session rulings `ceb9ef7`, the /ideabaaz patch,
+  and `0460724`: founder photos `alt=""` by the DS Avatar rule, the NVIDIA alt "NVIDIA Inception Program", Kashyap's
+  line in the live bio's shape). Deviation V7 updated. The Karnataka seal's permission is on the Gate B list (7.3).
+
 - **Why:** D054 items 7, 9 and 20.
 - **Items:** (1) `/team`: the recognition strip as live (NVIDIA Inception, Karnataka Elevate and nasscom marks from
   `public/recognition/`, Founders Inc as text; heading "Recognised by."), the three background lines written by the
@@ -1392,6 +1419,10 @@ processor names, the payload key allow-list and every `not.toContain` stay.
   a Lighthouse lp-tags run on one page no longer reports the CSP console errors.
 
 ### 6.7 Page facts for the legal, setup and product pages ([D055](../decisions/D055-page-facts-legal-setup-product-2026-10-14.md), D054 items 12 and 19) (copywriter, CMO, builder; risk high; after the batch `wf_cd8260cf-e88` merges)
+
+- **Merged** `fa957d0` (run `wf_146abbc8-31a`, fixed-unreviewed; the last fix, F4 slots hidden only inside a
+  `withoutHiddenRows` call, read at the merge). Deviations V11-V16 filed; V8 shrunk to the colour. The production
+  prebuild now lists 4 open items, the four legal drafts (D029 sign-off, Gate B).
 
 - **Why:** the production build refuses every `{ph:…}` slot; the founder answered them (D055) or ruled them off the
   page (D054 item 19 for F4).
@@ -1458,6 +1489,14 @@ waits; it may run in any later wave before wave 8, alone with its own files.
   should-kids pages' stale photo notes (5.20c CMO F1, F2), the bilingual page's tara-04 notes (5.20b CMO F2), and the
   talking-late guide added to source verification §7's CDC re-read list with source-verification-2026-10-14 linked
   from C42 (5.20b question 4).
+- **Follow-ups from batch 6b** (`wf_146abbc8-31a`, merged 2026-10-14): `test/guards/legacy-paths.ts` still lists the store
+  path `/ideabaaz`, and `test/e2e/axe.spec.ts`'s skipped store-tier block names it (6.6); the F11 "proof-gated"
+  comments in `src/content/en-IN/organization.ts`, `src/layouts/SiteShell/site-graph.ts` and
+  `src/lib/seo/schema/organization.ts` (6.6); the Storybook fixture `TopicSection.stories.tsx` `SCREEN_TIME_TOPIC` still
+  shows the 3-6-9-12 card, `src/lib/stories-expansion.ts` and `public/stories/screen-time-rules-parents-swear-by.jpg`
+  are legacy, `Technical-Todo.md` names the guide, the banned-phrases test title says 21 copy pages and
+  `content-integrity.spec.ts` comments say 18 template articles (6.5); stale grievance-note comments in
+  `src/components/sections/GrievanceBlock/legal-document.tsx` and `grievance-block.types.ts` (6.7).
 - **Test:** `npm run verify` and `npm run verify:e2e` green.
 
 ## Wave 8: full verification on a local production build (after wave 7)
@@ -1509,7 +1548,12 @@ waits; it may run in any later wave before wave 8, alone with its own files.
   sentence that a deleted conversation stays in Kheelu's memory and the training data; the 5.20b items left with the
   main session (CMO 5.18 M6, the related-guide ring; M10, the bilingual guide's line "Most of the studies it draws on
   were done in North America and Europe.", traced only to the verifier's note); the bylines' named owners reading their
-  pages (P17); "May 2027" re-read against the Gazette (P23).
+  pages (P17); "May 2027" re-read against the Gazette (P23); from batch 6b: the Karnataka mark on `/team` is the
+  Government of Karnataka's state emblem (team.md question 3; CMO M1 recommends "Karnataka Elevate" as text only unless
+  the founder holds Karnataka Elevate's terms for it; one line in `team.ts`), Kashyap's background line as the main
+  session ruled it (team.md ruling 7), and the refund timing on `/terms` and the FAQ ("processed within 7 working
+  days") against `/refund`'s "reaches you within 7 working days" (D055 item 5; CMO M7: align both if the founder agrees,
+  then re-pin `llms.txt`); the four legal pages' D029 sign-off (their `status: "draft"` stops a production build).
 
 ---
 
