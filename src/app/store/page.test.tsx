@@ -1,9 +1,12 @@
 import { readFileSync } from "node:fs";
+import { render } from "@testing-library/react";
 import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { InAppBrowserNote } from "@/components/ui/InAppBrowserNote/InAppBrowserNote";
 import { STORE_ORIGIN } from "@/config/env";
 import { seller } from "@/content/en-IN/seller";
+import { inAppNote } from "@/content/en-IN/store/in-app-note";
 import { storePage } from "@/content/en-IN/store/store-page";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
@@ -34,6 +37,14 @@ beforeEach(() => {
 });
 
 const SOURCE = readFileSync("src/app/store/page.tsx", "utf8");
+
+/** The store's canonical and og:url: the production store in every environment (config/env.ts CANONICAL_ORIGIN's rule;
+ *  the store is noindex everywhere, so this only keeps a shared beta link from naming beta as the page's home). */
+const PRODUCTION_STORE = "https://store.kheelona.com/";
+
+/** Instagram's in-app browser on an iPhone: one of the browsers the in-app note is for (B12; in-app-browser.ts). */
+const INSTAGRAM =
+  "Mozilla/5.0 (iPhone; CPU iPhone OS 17_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Instagram 310.0.0.27.110 (iPhone14,5; iOS 17_1; en_IN; en; scale=3.00; 1170x2532; 541635890)";
 
 /** The page as the store layout holds it: the route's output inside <main>. */
 async function renderPage() {
@@ -105,9 +116,24 @@ describe("store page: the configured store (token mode)", () => {
     expect(bubble.classList.contains("ph-no-capture")).toBe(false);
   });
 
-  it("keeps the in-app note out while it is switched off (N7)", async () => {
-    const { main } = await renderPage();
-    expect(main.querySelector(".ks-inapp")).toBeNull();
+  it("keeps the in-app note out while it is switched off (N7), even inside Instagram's browser once hydrated", async () => {
+    // The note's gate reads the user agent on the client only (the server HTML never holds it), so this renders in the
+    // browser's way, as Instagram's in-app browser.
+    const agent = vi.spyOn(navigator, "userAgent", "get").mockReturnValue(INSTAGRAM);
+    try {
+      // Not vacuous: switched on, the same render shows the note, so the agent reaches the gate and `.ks-inapp` is its mark.
+      const on = render(<InAppBrowserNote content={{ ...inAppNote, enabled: true }} storeUrl={STORE_ORIGIN} />);
+      expect(on.container.querySelector(".ks-inapp")).not.toBeNull();
+      on.unmount();
+      // The page as built hands over the content module's note, switched off: nothing shows, not even in the app.
+      const { default: StorePage } = await import("./page");
+      const page = render((await StorePage()) as ReactElement);
+      expect(page.container.querySelector("form")).not.toBeNull();
+      expect(page.container.querySelector(".ks-inapp")).toBeNull();
+      page.unmount();
+    } finally {
+      agent.mockRestore();
+    }
   });
 
   it("moves nothing on the money: no reveal on the first fold, the h1, the price, the pay button or the form", async () => {
@@ -144,7 +170,7 @@ describe("store page: not configured (no store keys; beta, D051)", () => {
 });
 
 describe("store page: metadata", () => {
-  it("description, Open Graph and Twitter through pageMeta, on the store's own address; no robots (the layout's noindex stays)", async () => {
+  it("description, Open Graph and Twitter through pageMeta, on the production store's address; no robots (the layout's noindex stays)", async () => {
     getOffer.mockResolvedValue(buildOffer("token"));
     const { generateMetadata } = await import("./page");
     const meta = await generateMetadata();
@@ -152,10 +178,26 @@ describe("store page: metadata", () => {
     expect(meta.title).toEqual(base.title);
     expect(meta.description).toBe(base.description);
     expect(meta.twitter).toEqual(base.twitter);
-    expect(meta.alternates).toEqual({ canonical: `${STORE_ORIGIN}/` });
-    expect(meta.openGraph).toEqual({ ...base.openGraph, url: `${STORE_ORIGIN}/` });
+    expect(meta.alternates).toEqual({ canonical: PRODUCTION_STORE });
+    expect(meta.openGraph).toEqual({ ...base.openGraph, url: PRODUCTION_STORE });
     expect(meta).not.toHaveProperty("robots");
   });
+
+  it("canonicalises to the production store on beta too: a beta page never canonicalises to itself (config/env.ts, N8)", async () => {
+    vi.resetModules();
+    vi.stubEnv("KH_SITE_ENV", "beta");
+    try {
+      // The precondition: on beta the store's own links point at betastore, so a canonical built from them would be beta's.
+      expect((await import("@/config/env")).STORE_ORIGIN).toBe("https://betastore.kheelona.com");
+      getOffer.mockResolvedValue(buildOffer("token"));
+      const meta = await (await import("./page")).generateMetadata();
+      expect(meta.alternates).toEqual({ canonical: PRODUCTION_STORE });
+      expect(meta.openGraph).toMatchObject({ url: PRODUCTION_STORE });
+    } finally {
+      vi.unstubAllEnvs();
+      vi.resetModules();
+    }
+  }, 60_000);
 
   it("follows the offer mode", async () => {
     getOffer.mockResolvedValue(buildOffer("full"));

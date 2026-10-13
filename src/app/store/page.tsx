@@ -14,7 +14,7 @@ import { InAppBrowserNote } from "@/components/ui/InAppBrowserNote/InAppBrowserN
 import { Heading } from "@/components/ui/Heading/Heading";
 import { Actions, Container, Section } from "@/components/ui/Layout/Layout";
 import { formatInr } from "@/config/site";
-import { STORE_ORIGIN } from "@/config/env";
+import { HOSTS, STORE_ORIGIN } from "@/config/env";
 import { pickFaqs } from "@/content/en-IN/faqs";
 import { films, filmsStrip } from "@/content/en-IN/films";
 import { navigation } from "@/content/en-IN/navigation";
@@ -56,11 +56,12 @@ import { pageMeta } from "@/lib/seo/metadata";
 export const dynamic = "force-dynamic";
 
 /** The store's description, Open Graph and Twitter (pageMeta; the store layout keeps its noindex, so no robots here),
- *  on the store's own address: a link shared from the store previews the store, not the marketing home. The mode is
- *  the offer's cached read, which a mode flip reaches within its window (ADR-005); the page itself reads it live. */
+ *  on the production store's address in every environment (config/env.ts: a beta page never canonicalises to itself):
+ *  a link shared from the store previews the store, not the marketing home. The mode is the offer's cached read, which
+ *  a mode flip reaches within its window (ADR-005); the page itself reads it live. */
 export async function generateMetadata(): Promise<Metadata> {
   const meta = pageMeta({ ...storePage.meta, path: "/", offer: await getOffer() });
-  const url = `${STORE_ORIGIN}/`;
+  const url = `https://${HOSTS.production.store}/`;
   return { ...meta, alternates: { canonical: url }, openGraph: { ...meta.openGraph, url } };
 }
 

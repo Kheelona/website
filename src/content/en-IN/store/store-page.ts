@@ -9,6 +9,7 @@ import type {
   StoreDetailsConfig,
 } from "@/components/sections/store/StoreDetails/store-details.types";
 import type { StoreTopConfig } from "@/components/sections/store/StoreTop/store-top.types";
+import { CAP_UNITS_TEXT } from "@/config/site";
 import type { Meta } from "@/content/types";
 import type { FaqId } from "../faqs";
 import { navigation } from "../navigation";
@@ -26,8 +27,10 @@ import { TRUST_COMPACT, TRUST_FULL, trustItems } from "../trust";
  * line (seller.ts), the new-tab note (navigation.ts); the FAQs (faqs.ts) and the films (films.ts) by the page.
  *
  * Restyle only (ADR-013, brief §4.4): field names, validation, the consent row, the payment flow and the pay button's
- * wording stay the form's own. The three parts the checkout reads are their own exports, so the pre-order form's client
- * bundle takes its words and nothing else of the page.
+ * wording stay the form's own. The two parts the checkout reads (`preorderFormCopy`, `orderSummaryCopy`) are their own
+ * exports, so the pre-order form's client bundle drops `storePage`; it still carries this module's imports (seller.ts,
+ * organization.ts, trust.ts and the image's URL), measured on the 5.15 review build. Moving the two exports to a module
+ * that imports only offer.ts and navigation.ts is a follow-up for the wave-5 close's ruling on the store script budget.
  */
 
 /** The pre-order form's words (store.md fold 3). */
@@ -86,9 +89,9 @@ export const orderSummaryCopy = {
   },
   delivery: { icon: "truck", note: "Pre-orders go out first, in the order they were placed." },
   fine: {
-    /* "First 500 units" once on the page, as an offer term, never a count (D041). */
-    token: `${offerCopy.plus} The price is {price:headline} (incl. GST) for the first 500 units, and {price:full} (incl. GST) once they are gone. Delivery anywhere in India is included, and every order comes with a GST invoice.`,
-    full: `${offerCopy.plus} The first 500 units at {price:headline} have been reserved, and this order is at the {price:full} price (incl. GST). Delivery anywhere in India is included, and every order comes with a GST invoice.`,
+    /* The cap once on the page, as an offer term, never a count (D041); its words are config's, as in faqs.ts. */
+    token: `${offerCopy.plus} The price is {price:headline} (incl. GST) for the ${CAP_UNITS_TEXT}, and {price:full} (incl. GST) once they are gone. Delivery anywhere in India is included, and every order comes with a GST invoice.`,
+    full: `${offerCopy.plus} The ${CAP_UNITS_TEXT} at {price:headline} have been reserved, and this order is at the {price:full} price (incl. GST). Delivery anywhere in India is included, and every order comes with a GST invoice.`,
   },
 } as const satisfies OrderSummaryCopy;
 

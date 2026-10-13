@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { ICON_PATHS, type IconName } from "@/assets/icons.generated";
 import { checkoutPrices, checkoutWords } from "@/components/sections/store/StoreDetails/checkout-words";
 import { BALANCE_PRICE, FULL_PRICE, TOKEN_PRICE } from "@/config/site";
@@ -249,6 +249,21 @@ describe("store page module: sources", () => {
 
   it("types no amount, number, address or delivery date: each comes from its one source", () => {
     expect(source).not.toMatch(/₹|Rs\.? ?\d|91875|wa\.me|mid-November|20 October/);
+  });
+
+  it("types no unit cap: the agreement card's small print reads config's CAP_UNITS_TEXT, as faqs.ts does (checkout.md)", async () => {
+    expect(source).not.toMatch(/\b500\b|first \d+ units/);
+    // Change the cap at its source and both small prints follow.
+    vi.resetModules();
+    vi.doMock("@/config/site", async (importOriginal) => ({ ...(await importOriginal<typeof import("@/config/site")>()), CAP_UNITS_TEXT: "first 9 units" }));
+    try {
+      const { orderSummaryCopy: moved } = await import("./store-page");
+      expect(moved.fine.token).toContain("(incl. GST) for the first 9 units, and");
+      expect(moved.fine.full).toContain("The first 9 units at {price:headline} have been reserved");
+    } finally {
+      vi.doUnmock("@/config/site");
+      vi.resetModules();
+    }
   });
 
   it("names no banned line (\"Families already using Kheelu\", the old ages)", () => {
