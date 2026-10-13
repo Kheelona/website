@@ -11,7 +11,7 @@ import appActivity from "@/assets/app/app-activity.webp";
 import appPrivacy from "@/assets/app/app-privacy.webp";
 import appTranscript from "@/assets/app/app-transcript.webp";
 import type { ModeCardCopy } from "@/components/sections/ModesSection/modes-section.types";
-import type { IconName } from "@/components/ui/Icon/Icon";
+import { asIconName } from "@/components/ui/Icon/Icon";
 import type { LanguageChip } from "@/components/ui/LanguageChips/LanguageChips";
 import type { TrustItem } from "@/content/types";
 import type { PageContent } from "@/layouts/PageTemplate/page-template.types";
@@ -221,8 +221,9 @@ export const kheeluPage = {
           ],
           caption: APP_CAPTION,
         },
-        /* trust.ts types its icons as content (IconRef); the section takes the DS name, which these are. */
-        facts: SAFETY_FACTS.map(({ icon, text }) => ({ icon: icon as IconName, text })),
+        /* trust.ts types its icons as content (IconRef); asIconName narrows each to the DS name the section takes, and
+           throws on any other name, so a wrong one fails the build (G-12) instead of drawing an empty svg. */
+        facts: SAFETY_FACTS.map(({ icon, text }) => ({ icon: asIconName(icon), text })),
       },
       cta: {
         cta: "product-safety",

@@ -40,8 +40,9 @@ for (const route of sweepRoutes()) {
       }
       if (PARITY_TARGET === "build" && route.id === "meet-kheelu") {
         // The build's details fold without JavaScript (deviations.md V3, task 5.2): the tab label "Specs" goes with the
-        // hidden tab row, and panels 2 and 3 show under their headings. Only that deviation's own sentences pass.
-        const rules = TEXT_DEVIATIONS[route.id] ?? [];
+        // hidden tab row, and panels 2 and 3 show under their headings. Only that deviation's own sentences pass, and only
+        // rules marked for the JavaScript-off run apply here.
+        const rules = (TEXT_DEVIATIONS[route.id] ?? []).filter((r) => r.jsOff);
         const applied = [...missing.filter((s) => rules.some((r) => r.mockup.test(s))), ...extra.filter((s) => rules.some((r) => r.build?.test(s)))];
         if (applied.length) console.log(`[no-js] ${route.id}: accepted deviation (deviations.md V3):\n  ${applied.join("\n  ")}`);
         missing.splice(0, missing.length, ...missing.filter((s) => !rules.some((r) => r.mockup.test(s))));

@@ -1,7 +1,7 @@
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { ICON_PATHS } from "@/assets/icons.generated";
 import { MRP_PRICE } from "@/config/site";
 import type { Offer, OfferMode } from "@/content/types";
@@ -10,6 +10,9 @@ import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../../test/e2e/support/page-checks";
+import { TEXT_DEVIATIONS } from "../../../../../test/e2e/support/deviations";
+import { htmlToText } from "../../../../../test/e2e/support/mockup-text";
+import { sentences } from "../../../../../test/e2e/support/parity";
 import { ROOT } from "../../../../../test/e2e/support/repo";
 import { mockupRoute as mockupPageRoute } from "../../../../../test/e2e/support/routes";
 import { mockupPage, mockupRoute, STORE, words } from "../../../../../test/support/mockup-compare";
@@ -247,9 +250,62 @@ describe("the product page's structured data (architecture §9.2)", () => {
     expect(offers).not.toHaveProperty("priceValidUntil");
     expect(String(offers.description).match(/₹[\d,]+/)?.[0]).toBe(offer.prices.headline);
     expect(String(nodes[0].description)).not.toMatch(/₹/);
-    // The shared detector (jsonld-matches-page): every price and policy number is on the page. Its FAQ check reads the
-    // page through htmlToText, which puts a space where an inline tag was, so FAQ 8's marker ("skills.[1] Kheelu")
-    // reads "skills. [1] Kheelu" there; the test above holds each answer equal to its visible text exactly.
-    expect(jsonLdMismatches(html).filter((m) => !m.startsWith("FAQ answer not visible: \"Kheelu is a toy"))).toEqual([]);
+    // The shared detector (jsonld-matches-page): every answer, price and policy number is on the page. Its FAQ check reads
+    // the page through htmlToText, which puts a space where an inline tag was, so it reads FAQ 8's marker as
+    // "skills. [1] Kheelu" where the browser and the JSON-LD both say "skills.[1] Kheelu" (the test above holds each
+    // answer equal to its visible text exactly). That is a harness defect, fixed in test/e2e/support/page-checks.ts
+    // `norm` by the main session (5.2 review, finding 1). Pinned, not filtered: any other mismatch fails here, and so
+    // does this line once the harness is fixed, when it becomes `toEqual([])`.
+    const speech = toPlainText(faqs.speech.answer, offer);
+    expect(jsonLdMismatches(html)).toEqual([`FAQ answer not visible: "${speech.slice(0, 80)}…"`]);
+  });
+});
+
+describe("the shared facts it narrows (trust.ts)", () => {
+  afterEach(() => {
+    vi.doUnmock("../../trust");
+    vi.resetModules();
+  });
+
+  it("refuses a safety fact whose icon the DS lacks when the module loads, so `next build` fails too (asIconName, G-12)", async () => {
+    vi.resetModules();
+    vi.doMock("../../trust", async (importOriginal) => ({
+      ...(await importOriginal<typeof import("../../trust")>()),
+      SAFETY_FACTS: [{ icon: "not-a-ds-icon", text: "No camera" }],
+    }));
+    await expect(import("./page")).rejects.toThrow(/"not-a-ds-icon" is not one of the \d+ design-system icons/);
+  });
+});
+
+describe("the JavaScript-off text deviation for this route (deviations.md V3; test/e2e/support/deviations.ts)", () => {
+  const DEVIATIONS = "../../../../../test/e2e/support/deviations";
+  /** The sentences of the details panels that the tabs hide with JavaScript on: In the box and Safety. */
+  const stacked = (p: typeof product) => [...p.box, ...p.safety].flatMap(({ text }) => sentences(toPlainText(text)));
+
+  afterEach(() => {
+    vi.doUnmock("./product");
+    vi.resetModules();
+  });
+
+  it("is one rule, for the JavaScript-off run only (with JavaScript on the build's tabs hide what the mockup's hide)", () => {
+    expect(TEXT_DEVIATIONS["meet-kheelu"]).toEqual([expect.objectContaining({ mockup: /^Specs$/, jsOff: true })]);
+  });
+
+  it("accepts on the build side exactly the stacked panels' lines, as the page prints them, and no other line of the page", () => {
+    const [rule] = TEXT_DEVIATIONS["meet-kheelu"];
+    const page = new Set(sentences(htmlToText(BUILT.html)));
+    expect([...page].filter((s) => rule.build!.test(s)).sort()).toEqual([...new Set(stacked(product))].sort());
+  });
+
+  it("reads those lines from product.ts, so it still holds once the founder fills an F4 placeholder", async () => {
+    vi.resetModules();
+    vi.doMock("./product", async (importOriginal) => {
+      const real = await importOriginal<typeof import("./product")>();
+      const safety = real.product.safety.map((item) => (item.text.startsWith("Battery safety:") ? { ...item, text: "Battery safety: a filled-in fact." } : item));
+      return { ...real, product: { ...real.product, safety } };
+    });
+    const [rule] = (await import(DEVIATIONS)).TEXT_DEVIATIONS["meet-kheelu"] as typeof TEXT_DEVIATIONS[string];
+    expect(rule.build!.test("Battery safety: a filled-in fact.")).toBe(true);
+    expect(rule.build!.test("Battery safety: [PLACEHOLDER F4: battery safety certification]")).toBe(false);
   });
 });
