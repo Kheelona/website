@@ -9,8 +9,9 @@ else is inside a string or template literal.
    (src/lib/store/fulfil.ts notifyPaid, behind markPaid), so after launch every receipt belongs to a new order, and
    D023 allows "20 October 2026" in it only until the new site launches. The row now follows the /thanks order card
    by the ROW's created_at, with the card's own rule:
-   - imports `deliveryLine` from src/components/sections/store/OrderRows/delivery-line.ts (pure; never throws, so
-     notifyPaid's never-throw rule holds) and `DELIVERY_TEXT` from src/content/en-IN/delivery.ts (the one D023 value);
+   - imports `deliveryLine` from src/lib/offer/delivery-line.ts (pure; never throws, so notifyPaid's never-throw rule
+     holds; the same function the /thanks card's OrderRows section uses) and `DELIVERY_TEXT` from
+     src/content/en-IN/delivery.ts (the one D023 value);
    - `AckInput.order` also picks "created_at". The one caller, frozen fulfil.ts, already passes the whole PreorderRow,
      so it is unchanged; created_at is `not null` in the schema;
    - before 10 October 2026, 00:00 IST: "Ships from" + SHIP_DATE_TEXT, byte-identical to the tag's row; on or after,
@@ -19,9 +20,9 @@ else is inside a string or template literal.
    The frozen templates.test.ts is unchanged by this: its fixture was created 2026-08-22, before the cutoff, so it
    still pins SHIP_DATE_TEXT. The later orders are tested in test/email-delivery-line.test.ts (the frozen folder cannot
    gain a file), which also proves the receipt prints the same row as the /thanks card for the same order.
-   NEEDS the main session's ruling: 6.4's Owns said "label strings only (facts and branching untouched)", and
-   structure §6/§7 say frozen files keep their imports and only app and layouts import content/en-IN
-   (src/lib/offer/offer.ts already imports DELIVERY_TEXT the same way).
+   RULED by the main session at the batch 6b merge (2026-10-14): accepted, because D054 item 1 and D023 need it; the
+   rule moved from sections/store/OrderRows to src/lib/offer/delivery-line.ts so lib/email imports no section
+   (structure §6); DELIVERY_TEXT comes in as src/lib/offer/offer.ts already takes it.
 2. D028 (wiki/site/pages/store-confirmation.md fold 2): the balance row's label "Due on dispatch" becomes
    "Due before delivery" in the HTML row and in both plain-text branches (token and full payment), matching the
    /thanks order card (order.due.term). The token branch's sentence ends "of the <LAUNCH_PRICE> price (incl. GST)",
@@ -30,18 +31,22 @@ else is inside a string or template literal.
    not calls." comes off and its lead reads "WhatsApp or call <number>, or write to <email>."; the plain text's
    "(messages, not calls)" comes off the same way. The link stays wa.me and the number and email stay
    SUPPORT_WHATSAPP_DISPLAY and CONTACT_EMAIL. (D032: calls must be answered before this goes live, Gate B.)
+4. D028 (wiki/site/pages/store-confirmation.md, 'labels are copy for the build, to match this page'): the order
+   reference's label "Order" becomes "Order number" in the HTML row and the plain text, as on the /thanks order card
+   (confirmation.order.number); test/email-delivery-line.test.ts holds the two together. The internal alert's
+   "Order" row is internal and stays.
 Unchanged: amounts and the balance derived from the row, the tier and address branches, the refund promise, the
 balance link on WhatsApp and by email, the seller block, the internal alert, the signature of preorderAckEmail.
 
 diff --git a/src/lib/email/templates.ts b/src/lib/email/templates.ts
-index 5a0c7db..ef51cbf 100644
+index 5a0c7db..3486303 100644
 --- a/src/lib/email/templates.ts
 +++ b/src/lib/email/templates.ts
 @@ -14,6 +14,8 @@ import {
  } from "@/config/site";
  import type { Email } from "./send";
  import type { PreorderRow } from "@/lib/store/db";
-+import { deliveryLine } from "@/components/sections/store/OrderRows/delivery-line";
++import { deliveryLine } from "@/lib/offer/delivery-line";
 +import { DELIVERY_TEXT } from "@/content/en-IN/delivery";
  
  /** The two emails the store sends (§8.25-i).
@@ -79,9 +84,12 @@ index 5a0c7db..ef51cbf 100644
  
    const addressBlock = needsAddress
      ? p(
-@@ -132,8 +139,8 @@ export function preorderAckEmail(input: AckInput): Email {
+@@ -130,10 +137,10 @@ export function preorderAckEmail(input: AckInput): Email {
+      <h1 style="margin:0 0 18px;font-size:26px;line-height:1.2">Your Kheelu is reserved.</h1>
+      ${p(`Thank you, ${esc(firstName)}. We have your ${paid}, and your place in the queue is held from the moment you paid.`)}
       <div style="border:1px solid ${RULE};border-radius:12px;padding:16px;margin:0 0 18px">
-        <p style="margin:0 0 8px;font-size:15px"><strong>Order</strong> ${order.order_ref}</p>
+-       <p style="margin:0 0 8px;font-size:15px"><strong>Order</strong> ${order.order_ref}</p>
++       <p style="margin:0 0 8px;font-size:15px"><strong>Order number</strong> ${order.order_ref}</p>
         <p style="margin:0 0 8px;font-size:15px"><strong>Paid today</strong> ${paid}</p>
 -       <p style="margin:0 0 8px;font-size:15px"><strong>Due on dispatch</strong> ${paidInFull ? "Nothing. You have paid in full" : `${balanceDue}, of the ${LAUNCH_PRICE} price`}</p>
 -       <p style="margin:0;font-size:15px"><strong>Ships from</strong> ${SHIP_DATE_TEXT}</p>
@@ -90,8 +98,12 @@ index 5a0c7db..ef51cbf 100644
       </div>
       ${addressBlock}
       ${
-@@ -157,9 +164,9 @@ export function preorderAckEmail(input: AckInput): Email {
-     `Order: ${order.order_ref}`,
+@@ -154,12 +161,12 @@ export function preorderAckEmail(input: AckInput): Email {
+     "",
+     `Thank you, ${firstName}. We have your ${paid}, and your place in the queue is held from the moment you paid.`,
+     "",
+-    `Order: ${order.order_ref}`,
++    `Order number: ${order.order_ref}`,
      `Paid today: ${paid}`,
      paidInFull
 -      ? "Due on dispatch: Nothing. You have paid in full."

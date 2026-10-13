@@ -1,12 +1,14 @@
 /**
- * Which delivery row the /thanks order card prints (task 5.16; architecture §16.3, ADR-013, QA review N9).
+ * Which delivery row an order prints: the /thanks order card and the receipt email (task 5.16; architecture §16.3,
+ * ADR-013, QA review N9; moved here from sections/store/OrderRows by task 6.4 so `lib/email` never imports a section,
+ * structure §6).
  *
  * Founder question F12, answered 2026-10-14 (D054 item 1; task 6.4): keep the split as built. An order created before
  * 10 October 2026, 00:00 in India keeps the line it was sold with ("Ships from 20 October 2026", `SHIP_DATE_TEXT`, as
  * the page printed it at the tag; the founder talks to those customers personally), and every later order reads the
  * D023 line ("Deliveries start mid-November"). An order whose date is missing or unreadable reads the D023 line
  * (open question P8, confirmed by the same answer). The rule lives here, outside the frozen page: the page only passes
- * the order's `created_at`, which it already reads. The words come in from content; this module only picks.
+ * the order's `created_at`, which it already reads. The words come in from the caller; this module only picks.
  *
  * The receipt email (`src/lib/email/templates.ts`, frozen; its reviewed diff cites D054 item 1) picks its delivery row
  * with this same function and the same two lines, so the receipt and the /thanks card never disagree about an order

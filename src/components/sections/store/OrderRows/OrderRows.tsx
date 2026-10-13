@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/Card/Card";
 import { DefinitionList } from "@/components/ui/DefinitionList/DefinitionList";
 import { RichText } from "@/components/ui/RichText/RichText";
 import { fillSlots } from "../ConfirmationHead/slot-text";
-import { deliveryLine } from "./delivery-line";
+import { deliveryLine } from "@/lib/offer/delivery-line";
 import type { OrderRowsCopy } from "./order-rows.types";
 
 export interface OrderRowsProps {
@@ -16,7 +16,7 @@ export interface OrderRowsProps {
   balance: string | null;
   /** The price the balance is part of. */
   price: string;
-  /** The row's `created_at`: it picks the delivery row (delivery-line.ts). */
+  /** The row's `created_at`: it picks the delivery row (lib/offer/delivery-line.ts). */
   createdAt: string | null | undefined;
   /** The h2's id, which names the card. */
   id?: string;
@@ -26,7 +26,7 @@ export interface OrderRowsProps {
  * The /thanks order card (task 5.16; store-confirmation.html fold 2; DS gap G-11: a DS card and a description list):
  * order number, paid today, due before delivery, delivery. Every value comes from the order row through the page,
  * which derives them as it did at the freeze tag, never from the store's current mode; this section only words them.
- * The delivery row is chosen by the order's date (delivery-line.ts; N9, F12). Values print as plain text.
+ * The delivery row is chosen by the order's date (lib/offer/delivery-line.ts; N9, F12). Values print as plain text.
  * Server component.
  */
 export function OrderRows({ copy, orderRef, paid, balance, price, createdAt, id = "order-title" }: OrderRowsProps) {

@@ -14,7 +14,7 @@ import {
 } from "@/config/site";
 import type { Email } from "./send";
 import type { PreorderRow } from "@/lib/store/db";
-import { deliveryLine } from "@/components/sections/store/OrderRows/delivery-line";
+import { deliveryLine } from "@/lib/offer/delivery-line";
 import { DELIVERY_TEXT } from "@/content/en-IN/delivery";
 
 /** The two emails the store sends (§8.25-i).
@@ -137,7 +137,7 @@ export function preorderAckEmail(input: AckInput): Email {
      <h1 style="margin:0 0 18px;font-size:26px;line-height:1.2">Your Kheelu is reserved.</h1>
      ${p(`Thank you, ${esc(firstName)}. We have your ${paid}, and your place in the queue is held from the moment you paid.`)}
      <div style="border:1px solid ${RULE};border-radius:12px;padding:16px;margin:0 0 18px">
-       <p style="margin:0 0 8px;font-size:15px"><strong>Order</strong> ${order.order_ref}</p>
+       <p style="margin:0 0 8px;font-size:15px"><strong>Order number</strong> ${order.order_ref}</p>
        <p style="margin:0 0 8px;font-size:15px"><strong>Paid today</strong> ${paid}</p>
        <p style="margin:0 0 8px;font-size:15px"><strong>Due before delivery</strong> ${paidInFull ? "Nothing. You have paid in full" : `${balanceDue}, of the ${LAUNCH_PRICE} price (incl. GST)`}</p>
        <p style="margin:0;font-size:15px"><strong>${delivery.term}</strong> ${delivery.value}</p>
@@ -161,7 +161,7 @@ export function preorderAckEmail(input: AckInput): Email {
     "",
     `Thank you, ${firstName}. We have your ${paid}, and your place in the queue is held from the moment you paid.`,
     "",
-    `Order: ${order.order_ref}`,
+    `Order number: ${order.order_ref}`,
     `Paid today: ${paid}`,
     paidInFull
       ? "Due before delivery: Nothing. You have paid in full."
