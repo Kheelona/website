@@ -26,7 +26,7 @@ export const article = {
   },
   related: ["ai-toys-and-indias-data-law", "talking-late-or-talking-little", "how-children-collect-words"],
   published: "2026-07-28",
-  updated: "2026-09-05",
+  updated: "2026-10-13",
   head: {
     title: "How to get your child to {hand:talk more}",
     lead: "Better questions than “How was school?”, and the small habits that turn one-word answers into conversations.",

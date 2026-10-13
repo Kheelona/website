@@ -53,6 +53,31 @@ const literal = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 /** Matches a line that is exactly one of these sentences. */
 const oneOf = (lines: readonly string[]) => new RegExp(`^(?:${lines.map(literal).join("|")})$`);
 
+/** A route whose own parity runs would compare a state its mockup does not show, with the spec that proves that
+ *  state's parity instead. The visual and text parity specs skip the route on the build and print why (SPA 1 and 2). */
+export type ParityElsewhere = {
+  reason: string;
+  /** The spec that compares the mockup's state with the build. */
+  provedBy: string;
+  approvedBy: string;
+};
+
+export const PARITY_ELSEWHERE: Readonly<Record<string, ParityElsewhere>> = {
+  "store-confirmation": {
+    reason:
+      "the route opens /thanks with no order, which shows the link-needed state; the mockup is the paid state, which needs a real order (never placed; checkout logic frozen, ADR-013)",
+    provedBy: "test/e2e/thanks-paid.spec.ts (the paid-state story in the store chrome against store-confirmation.html at 360, 390 and 1440; task 4.8 item 3)",
+    approvedBy: "deviations.md V5 (main session, 2026-10-14; the route's parity runs ruled skipped at the wave 5 part C merge)",
+  },
+};
+
+/** Skips the calling parity spec's describe block on the build when its route's parity is proved elsewhere, and says
+ *  where. The mockup self-test (calibration) still runs it. */
+export function parityElsewhere(slug: string, spec: string): string | undefined {
+  const rule = PARITY_ELSEWHERE[slug];
+  return rule && `${spec}: ${slug} is proved by ${rule.provedBy} (${rule.approvedBy}): ${rule.reason}`;
+}
+
 export const VISUAL_DEVIATIONS: Readonly<Record<string, readonly VisualDeviation[]>> = {};
 
 /* D042's payments line (wiki/qa/deviations.md V1): both store mockups print it in the store footer; the build prints it

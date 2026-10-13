@@ -1,5 +1,5 @@
 import { PARITY_TARGET } from "./support/env";
-import { TEXT_DEVIATIONS } from "./support/deviations";
+import { TEXT_DEVIATIONS, parityElsewhere } from "./support/deviations";
 import { expect, forceMotionEnd, gateRouteGroup, test } from "./support/fixtures";
 import { mainText, sentenceDiff, sentences } from "./support/parity";
 import { mockupRoutes } from "./support/routes";
@@ -32,6 +32,9 @@ function unexplained(slug: string, missing: string[], extra: string[]) {
 for (const route of mockupRoutes()) {
   test.describe(`text parity: ${route.id}`, () => {
     if (PARITY_TARGET === "build") gateRouteGroup(route);
+    const elsewhere = PARITY_TARGET === "build" ? parityElsewhere(route.id, "text-parity") : undefined;
+    if (elsewhere) console.log(`[text-parity] skipped: ${elsewhere}`);
+    test.skip(elsewhere !== undefined, elsewhere);
 
     for (const js of [true, false]) {
       test(js ? "JavaScript on" : "JavaScript off", async ({ harness }) => {

@@ -1,8 +1,8 @@
-import { render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { mockupFold, skeleton, words } from "../../../test/support/mockup-compare";
 import { STORE_URL } from "@/config/site";
-import { organization, TEAM_BYLINE } from "@/content/en-IN/organization";
+import { organization } from "@/content/en-IN/organization";
 import { articles } from "@/content/en-IN/stories/articles";
 import type { Article } from "@/content/types";
 import { siteGraphOf } from "@/layouts/SiteShell/site-graph";
@@ -100,9 +100,18 @@ describe("ArticleTemplate: the three approved articles", () => {
     });
   });
 
-  it("gives the learning-toys close its doodle and keeps the safety guide's plain (DS 02-imagery)", () => {
-    expect(page(articles["learning-toys-for-a-three-year-old"]).querySelectorAll("#close .ks-doodle")).toHaveLength(1);
-    expect(page(articles["what-to-look-for-in-a-safe-ai-toy"]).querySelectorAll("#close .ks-doodle")).toHaveLength(0);
+  it("gives the learning-toys close its doodle and keeps the safety and data guides' plain (DS 02-imagery)", () => {
+    /* One page mounted at a time: with two in the document, jsdom resolves "#close" to the first page's close only. */
+    const closeOf = (slug: Slug) => {
+      cleanup();
+      const close = page(articles[slug]).querySelector("#close");
+      expect(close, slug).not.toBeNull();
+      return close!;
+    };
+    expect(closeOf("learning-toys-for-a-three-year-old").querySelectorAll(".ks-doodle")).toHaveLength(1);
+    for (const slug of ["what-to-look-for-in-a-safe-ai-toy", "questions-parents-ask-about-ai-toys", "should-kids-use-ai", "ai-toys-and-indias-data-law"] as const) {
+      expect(closeOf(slug).querySelectorAll(".ks-doodle"), slug).toHaveLength(0);
+    }
   });
 
   it("sends the journal close's button to the store, tracked as finale, with the arrow", () => {
@@ -132,28 +141,6 @@ describe("ArticleTemplate: the three approved articles", () => {
       expect(container.querySelector("[data-reveal]"), slug).toBeNull();
       expect(container.querySelectorAll("h1"), slug).toHaveLength(1);
     }
-  });
-});
-
-describe("ArticleTemplate: an article still waiting for its rewrite", () => {
-  const stub = articles["how-children-collect-words"];
-
-  it("shows the hub's title as its h1, the byline without a read time, and the open body, which beta prints", () => {
-    const container = page(stub);
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("How children collect words");
-    expect(container.querySelector(".ks-byline")?.textContent).toBe(`${TEAM_BYLINE} · First published 28 Jul 2026`);
-    expect(container.querySelector(".ks-story-head figure")).toBeNull();
-    expect(container.querySelector(".ks-story-body .ks-placeholder")?.textContent).toBe("[PLACEHOLDER ARTICLE: rewrite pending]");
-  });
-
-  it("links its three related guides by their hub titles, then closes with the journal close", () => {
-    page(stub);
-    const related = screen.getByRole("region", { name: "Related guides" });
-    const rows = within(related).getAllByRole("link");
-    expect(rows.map((row) => [row.textContent, row.getAttribute("href")])).toEqual(
-      stub.related.map((slug) => [articles[slug as Slug].card.title, `/stories/${slug}`]),
-    );
-    expect(screen.getByRole("region", { name: "A toy that asks back." })).toHaveAttribute("id", "close");
   });
 });
 

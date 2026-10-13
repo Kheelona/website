@@ -82,6 +82,7 @@ to 7 are titled parts (`p`, `list`, `list` with `variant: "tips"` and the icons 
 `sources`: seven entries in marker order. `meta.og`: `DEFAULT_OG`. **Dates:** the main session's note keeps the stub's
 dates; task 5.6 set `updated` to the rewrite's date on its three articles, so the main session rules which applies
 here (the stub's `updated` is `2026-07-31`).
+**Ruled at the wave 5 part C merge (main session):** `updated` is the rewrite's date, 2026-10-13, as task 5.6 set it; `published` stays the live page's.
 
 ---
 

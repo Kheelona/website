@@ -31,6 +31,10 @@ import { article as talkingLate } from "./talking-late-or-talking-little";
  *     answer card, the sources and the keep-reading close render the approved articles' markup.
  * The folder's invariants (slugs, related ring, dates, lengths) stay articles.test.ts's. */
 
+/** The rewrite's date: every rewritten article's `updated` (BlogPosting dateModified and the sitemap), as task 5.6
+ *  set it for the three approved guides; `published` stays the live page's (ruling at the wave 5 part C merge). */
+const REWRITE_DATE = "2026-10-13";
+
 const TOKEN = buildOffer("token");
 
 /** D025's in-article line, as the approved late-talker page prints it. */
@@ -332,8 +336,11 @@ describe.each(TALKING)("the talking guide %s", (slug, { article, stub, links, ic
     expect(article.meta.og).toEqual(DEFAULT_OG);
   });
 
-  it("keeps the stub's card, related list and dates (the hub's approved copy; task notes)", () => {
-    expect({ card: article.card, related: article.related, published: article.published, updated: article.updated }).toEqual(stub);
+  it("keeps the stub's card, related list and first-published date; `updated` is the rewrite's (the hub's approved copy; part C merge ruling)", () => {
+    const { updated, ...kept } = stub;
+    expect({ card: article.card, related: article.related, published: article.published }).toEqual(kept);
+    expect(article.updated).toBe(REWRITE_DATE);
+    expect(article.updated > updated).toBe(true);
   });
 
   it("has the copy page's head: the Hand accent, the team byline, the photo and its words", () => {

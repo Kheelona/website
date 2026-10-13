@@ -122,6 +122,10 @@ const SCREEN_TIME: readonly (readonly [ArticleSlug, Article, Stub])[] = [
   ],
 ];
 
+/** The rewrite's date: every rewritten article's `updated` (BlogPosting dateModified and the sitemap), as task 5.6
+ *  set it for the three approved guides; `published` stays the live page's (ruling at the wave 5 part C merge). */
+const REWRITE_DATE: IsoDate = "2026-10-13";
+
 const TOKEN = buildOffer("token");
 
 /* ── The copy page ──────────────────────────────────────────────────────────────────────────────────────────────── */
@@ -324,12 +328,13 @@ describe.each(SCREEN_TIME)("the screen-time article %s", (slug, article, stub) =
     expect(article.sources.length).toBeGreaterThan(0);
   });
 
-  it("keeps its stub's hub card, related guides and dates (stories.md fold 2; the main session's note for 5.17)", () => {
+  it("keeps its stub's hub card, related guides and first-published date; `updated` is the rewrite's (stories.md fold 2; part C merge ruling)", () => {
     expect(article.slug).toBe(slug);
     expect(article.card).toEqual(stub.card);
     expect(article.related).toEqual(stub.related);
     expect(article.published).toBe(stub.published);
-    expect(article.updated).toBe(stub.updated);
+    expect(article.updated).toBe(REWRITE_DATE);
+    expect(article.updated > stub.updated).toBe(true);
     expect(article.close).toBe("journal");
   });
 

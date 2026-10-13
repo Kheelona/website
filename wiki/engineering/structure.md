@@ -1,7 +1,7 @@
 ---
 title: "Folder structure and naming conventions (final, Phase 4, revised after QA round 1)"
 type: engineering
-updated: 2026-10-12
+updated: 2026-10-14
 sources:
   - ../raw/brief/kickoff-brief.md (§4.10, §4.11, §9.12 "Folder structure")
   - architecture.md, adr/ADR-002 to adr/ADR-013
@@ -60,6 +60,7 @@ test/                        repo-level tests
     fixtures/                authorised-diffs/ (reviewed patches), checkout-signatures/, checkout-contract/ (seeded from the tag)
   e2e/                       Playwright: support/ (1.1) and one *.spec.ts per rule, each owned by one task
   fixtures/legal/            fixture content for the legal template's parity run (4.3)
+  fixtures/store/            the /thanks paid-state order for the ThanksPaid story and thanks-paid.spec.ts (4.8)
 src/
   app/                       routes only: thin page files, layouts, route handlers, file conventions
   components/

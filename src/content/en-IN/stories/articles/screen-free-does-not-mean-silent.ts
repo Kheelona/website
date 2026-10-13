@@ -24,7 +24,7 @@ export const article = {
   },
   related: ["learning-toys-for-a-three-year-old", "how-much-screen-time-for-a-3-to-6-year-old", "screen-time-and-tantrums"],
   published: "2026-07-28",
-  updated: "2026-09-05",
+  updated: "2026-10-13",
   head: {
     title: "Screen-free {hand:does not mean silent}: a guide to screen-free toys",
     lead: "What a childhood full of talk looks like, without a single screen, and how to choose screen-free toys that add to it.",

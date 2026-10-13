@@ -23,7 +23,7 @@ export const article = {
   },
   related: ["the-gentle-way-off-the-phone", "screen-time-rules-parents-swear-by", "what-to-look-for-in-a-safe-ai-toy"],
   published: "2026-07-28",
-  updated: "2026-07-31",
+  updated: "2026-10-13",
   head: {
     title: "{hand:Busy hands}, no screens: screen-free activities for kids at home",
     lead: "Screen-free ways to keep a young child busy at home, including on the days you have to work.",

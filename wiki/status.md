@@ -14,8 +14,7 @@ founder asked for the full website with animation on **betawebsite.kheelona.com*
 After the build: Phase 6 QA, push `beta`, founder runbook (architecture §15.4), **Gate B** on beta, merge to `main`.
 **Account:** apoorva@kheelona.com (since 00:00 2026-10-14). **Branch:** `reset/website-v2`, not pushed.
 **RESUME FROM [build runbook](engineering/build-runbook.md) §4.** **Waves 1-4 closed** (verify 4570 tests; e2e red only on
-`/stories/*` until wave 5, ruled). **Wave 5:** parts A, B1, B2 merged (all pages but the 18 articles; B2 gate green, 5349
-tests). **Part C running** (`wf_242bc117-a1c`, base `aa4b39e`): 4.7, 4.8 (shared fixes, high), 5.17-5.19 (18 articles: copy, CMO, build). Then M1.
+`/stories/*` until wave 5, ruled). **Wave 5:** parts A, B1, B2, **C merged** (all pages incl. the 18 articles, copy CMO-approved; 4.7, 4.8 shared fixes; rulings in [tasks](engineering/tasks.md) "4.9 and 5.20"). **Next: M1** (full `verify:e2e` + perf), then a batch: 4.9, 5.20, wave 6.
 **Incident 2026-10-12:** a push meant for `beta` landed on `main` (`24e92e3`, vercel.json only; production
 healthy; [lessons](engineering/lessons.md)). `beta` exists on GitHub (builds nothing yet); **beta domains attached to branch `beta`** (founder, done).
 **Done before wave 1:** dev tools pinned (Playwright 1.63.0, axe 4.12.1, Lighthouse 13.4.1, jscpd 5.3.2,
@@ -25,7 +24,7 @@ next/og RCE, high image SSRF, ISR cache poisoning; floors raised in test/depende
 no Supabase, Razorpay or email (the code refuses store keys there, task 2.10); Meta, GA4, Ahrefs off; PostHog
 env=beta; noindex. Founder's only step (the two domains, architecture §15.4) is done.
 
-**Waiting on the founder:** Phase 4 questions P1-P16 ([open questions §P](open-questions.md); defaults apply);
+**Waiting on the founder:** Phase 4 and article questions P1-P24 ([open questions §P](open-questions.md); defaults apply);
 to-dos: WhatsApp calls (D032),
 F11 proof, C17 Supabase region, provider contracts vs the Home safety line, F4 specs, GST/HSN, section D
 checks (C1, C2, C4, C8, C11, C12, C15, C18). Working defaults may be overridden (gate-a-open-items §2-3).

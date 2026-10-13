@@ -1,7 +1,7 @@
 ---
 title: "Meet Kheelu (/products/kheelu): page copy, Gate A mockup draft"
 type: page-copy
-updated: 2026-10-11
+updated: 2026-10-14
 cites_at: archive/pre-reset-2026-10-10
 sources:
   - ../strategy.md (§3.1-3.5 CTA rules, §4 URL plan, §5 product-page row, §7 search rules)
@@ -610,6 +610,8 @@ Section `id="faq"` (Home's "See all questions" links here; `/faq` 301s here, [st
 > **Speech disclaimer (visible, under the questions):** Kheelu is a toy, not a therapy or treatment. If you're worried about your child's speech, talk to your paediatrician.
 >
 > Still have a question? WhatsApp or call +91 91875 46483
+
+*Built with one change (P15 default, [deviation V6](../../qa/deviations.md)): "Tell us within 7 days and we replace it." ships as "Tell us within 7 days for a replacement or a full refund." (D033, Rule 7(4); task 4.7). The quote above stays as approved at Gate A.*
 
 Word counts: 52 · 51 · 57 · 60 · 53 · 57 · 44 · 53. Full-mode price answer below.
 

@@ -52,7 +52,7 @@ sources:
 | H1 | Busy hands, no screens: screen-free activities for kids at home |
 | Card (hub, unchanged) | Title "Busy hands, no screens"; summary "Screen-free ways to keep a young child busy at home, including on the days you have to work." ([stories §2](stories.md#fold-2--screen-time-screen-time), card 5) |
 | Byline line | The Kheelona team · First published 28 Jul 2026 · 3 min read (byline: question 1) |
-| Dates | `published` 2026-07-28 (live, unchanged); `updated` as the stub holds it, 2026-07-31 (see the gentle-way page, question 3) |
+| Dates | `published` 2026-07-28 (live, unchanged); `updated` 2026-10-13, the rewrite's date (main-session ruling at the wave 5 part C merge, as task 5.6 set it for the three approved guides) |
 | Related (unchanged) | `the-gentle-way-off-the-phone`, `screen-time-rules-parents-swear-by`, `what-to-look-for-in-a-safe-ai-toy` |
 | CTA | The close only: "Pre-order Kheelu", `cta` = `finale`; phone sticky bar `sticky-bar` |
 | In-text product link | One, in fold 9 ("Kheelu" → `/products/kheelu`) |

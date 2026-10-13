@@ -61,8 +61,13 @@ describe("the words every article page shares (story-*.html)", () => {
     expect(close.art.layers.flatMap((layer) => ("doodle" in layer ? [layer.doodle.name] : []))).toEqual(["ink-heart"]);
   });
 
-  it("keeps the safety guide's close art plain, no doodle (DS 02-imagery: no imagination layer on safety)", () => {
-    expect(PLAIN_CLOSE_ART).toEqual(["what-to-look-for-in-a-safe-ai-toy"]);
+  it("keeps the safety and data guides' close art plain, no doodle (DS 02-imagery: no imagination layer on safety)", () => {
+    expect(PLAIN_CLOSE_ART).toEqual([
+      "what-to-look-for-in-a-safe-ai-toy",
+      "questions-parents-ask-about-ai-toys",
+      "should-kids-use-ai",
+      "ai-toys-and-indias-data-law",
+    ]);
   });
 
   it("ends the keep-reading close on the hub (B5)", () => {

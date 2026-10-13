@@ -2,7 +2,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import type { Page } from "@playwright/test";
 import { PARITY_TARGET } from "./support/env";
-import { VISUAL_DEVIATIONS, hideDeviations } from "./support/deviations";
+import { VISUAL_DEVIATIONS, hideDeviations, parityElsewhere } from "./support/deviations";
 import { expect, forceMotionEnd, gateRouteGroup, hideForParity, settle, test } from "./support/fixtures";
 import { CHUNK_MAX_DIFF_RATIO, HEIGHT_TOLERANCE, captureChunks, pageHeight } from "./support/parity";
 import { mockupRoutes } from "./support/routes";
@@ -36,6 +36,9 @@ async function prepare(page: Page): Promise<void> {
 for (const route of mockupRoutes()) {
   test.describe(`visual parity: ${route.id}`, () => {
     if (PARITY_TARGET === "build") gateRouteGroup(route);
+    const elsewhere = PARITY_TARGET === "build" ? parityElsewhere(route.id, "visual-parity") : undefined;
+    if (elsewhere) console.log(`[visual-parity] skipped: ${elsewhere}`);
+    test.skip(elsewhere !== undefined, elsewhere);
 
     for (const vp of APPROVED_WIDTHS) {
       test(vp.name, async ({ harness }, testInfo) => {

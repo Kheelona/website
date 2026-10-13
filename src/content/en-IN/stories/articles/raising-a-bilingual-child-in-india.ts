@@ -28,7 +28,7 @@ export const article = {
   },
   related: ["talking-toys-and-late-talkers", "should-kids-use-ai", "does-a-three-year-old-need-an-ai-tutor"],
   published: "2026-07-28",
-  updated: "2026-09-05",
+  updated: "2026-10-13",
   head: {
     title: "Raising a {hand:bilingual child} in India",
     lead: "What the research says about two languages at home, and what keeps a home language alive.",

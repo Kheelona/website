@@ -3,7 +3,7 @@ import { createElement } from "react";
 import { describe, expect, it } from "vitest";
 import { StorePaymentsLine } from "@/components/sections/store/StorePaymentsLine/StorePaymentsLine";
 import { HOSTS } from "@/config/env";
-import { TEXT_DEVIATIONS, VISUAL_HIDDEN, hiddenCss } from "../../../../test/e2e/support/deviations";
+import { PARITY_ELSEWHERE, TEXT_DEVIATIONS, VISUAL_HIDDEN, hiddenCss, parityElsewhere } from "../../../../test/e2e/support/deviations";
 import { htmlToText } from "../../../../test/e2e/support/mockup-text";
 import { sentences } from "../../../../test/e2e/support/parity";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
@@ -117,5 +117,18 @@ describe("store parity deviations: the text pass (V4, V1)", () => {
 
   it("/thanks: the same payments rule, nothing else", () => {
     expect(TEXT_DEVIATIONS["store-confirmation"]).toEqual([payments]);
+  });
+});
+
+describe("store parity deviations: a route proved elsewhere (V5)", () => {
+  it("only /thanks skips its route parity runs, and the spec that proves its paid state exists and compares that mockup", () => {
+    expect(Object.keys(PARITY_ELSEWHERE)).toEqual(["store-confirmation"]);
+    const rule = PARITY_ELSEWHERE["store-confirmation"];
+    const spec = /^(test\/e2e\/[\w-]+\.spec\.ts) /.exec(rule.provedBy)?.[1];
+    expect(spec).toBe("test/e2e/thanks-paid.spec.ts");
+    expect(readRepoFile(spec!)).toMatch(/const SLUG = "store-confirmation";/);
+    expect(rule.approvedBy).toMatch(/V5/);
+    expect(parityElsewhere("store-confirmation", "text-parity")).toMatch(/^text-parity: store-confirmation is proved by test\/e2e\/thanks-paid\.spec\.ts/);
+    expect(parityElsewhere("store", "text-parity")).toBeUndefined();
   });
 });

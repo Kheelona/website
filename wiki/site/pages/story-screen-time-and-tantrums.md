@@ -50,7 +50,7 @@ sources:
 | H1 | Screen time and tantrums: what is actually happening (as live; the hub card title) |
 | Card (hub, unchanged) | Title "Screen time and tantrums: what is actually happening"; summary "Why the meltdown lands the moment the screen goes off, and how to make switching off boring instead of explosive." ([stories.md](stories.md) fold 2, line 119; the stub) |
 | Byline line | The Kheelona team · First published 28 Jul 2026 · 2 min read (byline: question 1) |
-| Dates | `published` 2026-07-28 and `related` exactly as the stub; `updated`: the main-session note on the [screen-time page](story-how-much-screen-time-for-a-3-to-6-year-old.md#questions-for-the-founder-website-only) |
+| Dates | `published` 2026-07-28 (live, unchanged); `updated` 2026-10-13, the rewrite's date (main-session ruling at the wave 5 part C merge, as task 5.6 set it for the three approved guides) |
 | CTA | The close only: "Pre-order Kheelu", `cta` = `finale`; phone sticky bar `sticky-bar` |
 | In-text product link | One, in fold 6 ("Kheelu" → `/products/kheelu`) (question 2) |
 | Template settings | `close: "journal"` |

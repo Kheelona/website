@@ -54,7 +54,7 @@ sources:
 | CTA | None in the page body. No finale CTA, no sticky bar. The site chrome keeps its own button |
 | In-text product link | None (question 1) |
 | Template settings | `close: "keep"` (keep-reading close, no pre-order button; the shell shows no phone buy bar for a keep close); crumb topic `talking`; `og: DEFAULT_OG` |
-| Dates | `published: "2026-07-28"`, `updated: "2026-07-31"` as the stub holds them (task notes: dates stay); see the note for the main session at the foot |
+| Dates | `published` 2026-07-28 (live, unchanged); `updated` 2026-10-13, the rewrite's date (main-session ruling at the wave 5 part C merge, as task 5.6 set it for the three approved guides) |
 
 **What changed from the live article** (`src/lib/stories-expansion.ts:164-186`): the answer comes first; the
 title, H1 and meta now carry the measured question ("how to build a 3-year-old's vocabulary",

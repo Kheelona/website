@@ -121,9 +121,10 @@ const MACHINE = [
  */
 const DATED: Record<(typeof MACHINE)[number]["name"], { readonly date: string } & Record<OfferMode, string>> = {
   "llms.txt": {
-    date: "2026-10-12",
-    token: "bf0b09f275f53e62fa06fe92ad4400a3a882487634f805ca243967339ee3170b",
-    full: "d34225245aba4b9b63eb0d611bf0e6791557f7a35c974e335f5106b6dc03433e",
+    // 2026-10-13: the FAQ's returns-and-warranty answer gives D033's remedy for a faulty Kheelu (P15 default, V6; task 4.7 item 4).
+    date: "2026-10-13",
+    token: "5dac46d9949bc9c09469d00658d455c81132fb2d64d0d3de4d80b97e43ae7cba",
+    full: "2b9e9ce0ab921f363e6b1d35d19b3301a9e79b093e11c70879ff9bd2a0ad062c",
   },
   "pricing.md": {
     // 2026-10-13: "About Kheelu" adds the product page's Manufacturer declaration (task 4.5 item 6).

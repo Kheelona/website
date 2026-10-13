@@ -1,7 +1,7 @@
 ---
 title: "Architecture of the new kheelona.com (Phase 4 plan, revised after QA round 1)"
 type: engineering
-updated: 2026-10-12
+updated: 2026-10-14
 sources:
   - ../raw/brief/kickoff-brief.md (§4, §6 Architect, §7 Phase 4-5, §9)
   - phase-4-kickoff.md, lessons.md
@@ -284,6 +284,14 @@ Each becomes a component once (kickoff §3, decision 1):
 - **Never covers content:** shells add `ks-has-float` to `<body>`, giving the last content a bottom
   padding of `calc(var(--space-8) + var(--space-4) + env(safe-area-inset-bottom))`, so it never covers the
   bar, the price, a form field or the pay button.
+- **Steps aside from a form (task 4.7, wave 5 part C):** the bottom padding protects only the end of a page, so on
+  the store the link is the bubble's one client part, `StepAsideLink` (`WhatsAppFloat.client.tsx`), chosen by
+  `STEP_ASIDE_FROM` (context `store` → section `details`). Below 900 px, while a field in `#details` has focus or
+  `#details` crosses the bubble's band (one `IntersectionObserver`, re-measured on resize), it adds `.is-hidden` and
+  `inert`: the bubble slides off the right edge with a fade (no transition under reduced motion) and is never
+  focusable while aside. Everywhere else the server renders the plain link, byte for byte as before. Open (task 4.9):
+  the paid `/thanks` address step, and the price sentences on Home and the product page at 324 px and mid-page,
+  where the resting or lifted bubble can still sit over a price (D050 gap found by 4.7).
 - **Tracking:** `data-ph-capture-attribute-cta="whatsapp-float"` (new value, §8.3). On `/thanks` the
   element also carries `ph-no-capture`, so `/thanks` keeps zero autocapture events (inventory row 18). No
   Meta or GA4 event.
@@ -660,7 +668,7 @@ WhatsApp bubble carry their own few lines. The `motion` library is not used (ADR
 | 6 | Orange button: **B press and arrow nudge** | `@media (hover: hover) and (pointer: fine)`: `.kh-btn--cta:hover .ks-btn__arrow { transform: translateX(var(--ks-nudge)) }`, `--ks-nudge: 5px` (the value D049 names, one literal); press is the DS's own `:active` (`translateY(4px)`, shadow removed). Applies to every chilli button with an arrow (Home hero, product hero, the guide, safety, stories and article closes): hover and press are feedback the visitor starts, not arrival motion, so pick 2 is not affected (question to the main session) | `--duration-fast`, `--ease-standard` | no nudge (the DS press stays: it is the tap state, not an animation) | 2.2 |
 | 7 | FAQ answers: **B smooth open** | native `<details>`; `@supports selector(::details-content)`: `.kh-faq__item::details-content { display: grid; grid-template-rows: 0fr; transition: grid-template-rows var(--duration-enter) var(--ease-standard), content-visibility var(--duration-enter) allow-discrete }`, `[open]` → `1fr`; the answer sits in `ks-faq__clip` (`overflow: hidden; min-height: 0`) so the DS padding does not leak; `.kh-faq__sign` keeps the DS's own rotate transition (`bundle.css:280`; motion.css leaves it alone). Where `::details-content` is unsupported (older iOS Safari), the answer opens instantly, the 7A behaviour | `--duration-enter`, `--ease-standard` | instant | 2.4 |
 | 8 | Parent films strip: **B focus grows** | native scroll-snap; one `IntersectionObserver` per strip with the track as root and a `rootMargin` that narrows it to its central band; the tile most inside the band gets `is-focus`; `.ks-film.is-focus .ks-film__frame { transform: scale(var(--ks-film-focus)) }`, `--ks-film-focus: 1.05` (one value inside D049's 1.04-1.1); the track keeps `padding-block: var(--space-3); margin-block: calc(var(--space-3) * -1)`, and under `prefers-reduced-motion: no-preference` the frame takes a `margin-block` equal to its growth (and phones from 430 to 719 px a wider `column-gap`), so the focused film never covers its own chip or caption or a neighbour (3.3 review); the reduced-motion layout, which visual parity uses, is the mockup's; the motion-on layout is taller by about 25 px at 390 ([deviations](../qa/deviations.md) V2); end detection tolerates half a tile; nothing overflows the document (lessons §2) | `--duration-base`, `--ease-standard` | no scale | 3.3 |
-| D050 | WhatsApp bubble | lift with the bar (`translateY(calc(var(--ks-buybar-h) * -1))` while `html[data-buybar="shown"]`); laptop label slides out on hover or focus (opacity and transform) | `--duration-base`, `--ease-standard` | nothing moves | 3.1 |
+| D050 | WhatsApp bubble | lift with the bar (`translateY(calc(var(--ks-buybar-h) * -1))` while `html[data-buybar="shown"]`); laptop label slides out on hover or focus (opacity and transform); on the store below 900 px it steps aside off the right edge with a fade while the form is in its band or focused (`.ks-wa.is-hidden`, §5.3) | `--duration-base`, `--ease-standard` | nothing moves (the step aside is instant) | 3.1, 4.7 |
 | – | Tap feedback | the DS's own button, icon-button and focus transitions (`bundle.css`) | `--duration-fast`, `--duration-base` | DS | – |
 | – | Films buttons | scroll by one tile, smooth unless reduced motion | none | instant scroll | 3.3 |
 
@@ -683,6 +691,7 @@ moves for more than five seconds; nothing flashes; no scroll-jacking.
 | `.kh-buybar.is-hidden`, `html[data-buybar="shown" \| "aside" \| "hidden"]`, `--ks-buybar-h` | `StickyBuyBar` | bar state and height, read by the bubble |
 | `dialog.kh-drawer[open]` | `NavDrawer` | drawer panel and scrim |
 | `.ks-wa`, `.ks-wa__label`, `body.ks-has-float` | `WhatsAppFloat`, shells | bubble, label and clearance |
+| `.ks-wa.is-hidden` (with `inert`) | `WhatsAppFloat`'s `StepAsideLink` (4.7) | the bubble stepped aside from a form on a phone (§5.3) |
 | `html[data-scroll-behavior="smooth"]` | root layout `src/app/layout.tsx` (3.1) | smooth in-page anchor scrolling as in the mockup; Next 16 resets it to `auto` during route changes only when this attribute is present; off under reduced motion |
 
 **Authoring rule (wave-2 close, 2026-10-12):** under `html.js-motion` a `[data-reveal]` without `.is-in` stays at

@@ -1,7 +1,7 @@
 ---
 title: "Assets catalogue (seeded in Phase 4, revised after QA round 1; builders update their rows)"
 type: catalogue
-updated: 2026-10-12
+updated: 2026-10-14
 sources:
   - adr/ADR-010-media-pipeline.md, architecture.md (§10)
   - ../design-system/overview.md (assets by group, the -web.webp rule), ../design-system/gaps.md (G-13, G-14)

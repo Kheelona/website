@@ -33,7 +33,16 @@ describe("stickyBarPaths", () => {
     expect(paths.filter((p) => p.startsWith("/stories/"))).toEqual(withClose);
     expect(paths).not.toContain("/stories/talking-toys-and-late-talkers");
     expect(paths).toContain("/stories/learning-toys-for-a-three-year-old");
-    expect(withClose).toHaveLength(ARTICLE_SLUGS.length - 1);
+    /* The keep-reading close (B5): the late-talker guide and the six talking and language guides (task 5.18). */
+    expect(ARTICLE_SLUGS.filter((s) => ARTICLE_CLOSES[s] === "keep").sort()).toEqual([
+      "a-toy-that-talks-vs-a-toy-that-listens",
+      "how-children-collect-words",
+      "how-children-learn-by-talking",
+      "how-to-get-your-child-talking",
+      "raising-a-bilingual-child-in-india",
+      "talking-late-or-talking-little",
+      "talking-toys-and-late-talkers",
+    ]);
   });
 
   it("lists the registry's own page placements for sticky-bar, in its order, each once", () => {

@@ -24,7 +24,7 @@ export const article = {
   },
   related: ["how-much-screen-time-for-a-3-to-6-year-old", "the-gentle-way-off-the-phone", "busy-hands-no-screens"],
   published: "2026-07-28",
-  updated: "2026-07-31",
+  updated: "2026-10-13",
   head: {
     title: "Screen time and tantrums: {hand:what is actually happening}",
     lead: "Why the meltdown lands the moment the screen goes off, and how to make switching off boring instead of explosive.",

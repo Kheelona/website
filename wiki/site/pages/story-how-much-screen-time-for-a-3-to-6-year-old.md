@@ -51,7 +51,7 @@ sources:
 | H1 | Screen time for a 3-year-old, and up to age 7 (question 2) |
 | Card (hub, unchanged) | Title "How much screen time is okay for a young child?"; summary "What the WHO, the Indian Academy of Pediatrics and the AAP say, age by age, and what to do at 6 pm." ([stories.md](stories.md) fold 2, line 117; the stub) |
 | Byline line | The Kheelona team · First published 28 Jul 2026 · 4 min read (byline: question 1) |
-| Dates | `published` 2026-07-28 and `related` exactly as the stub. `updated`: see the note under "Questions" (architecture §6.1 stores the rewrite's date; the main session's note keeps the stub's) |
+| Dates | `published` 2026-07-28 (live, unchanged); `updated` 2026-10-13, the rewrite's date (main-session ruling at the wave 5 part C merge, as task 5.6 set it for the three approved guides) |
 | CTA | The close only: "Pre-order Kheelu", `cta` = `finale`; phone sticky bar `sticky-bar` |
 | In-text product link | One, in fold 10 ("Kheelu" → `/products/kheelu`) |
 | Template settings | `close: "journal"` (related guides, then the journal close; the shell's sticky bar follows the close) |

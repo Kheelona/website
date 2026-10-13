@@ -29,7 +29,8 @@ export interface WhatsAppFloatProps {
 /**
  * The section whose form the bubble steps aside from on a phone, by context (task 4.7 item 3; D050): the store's
  * details section, which holds the pre-order form (StoreDetails renders it with store-page.ts `details.id`, the
- * mockup's `#details`). No other page holds a form, so every other context keeps the plain server link.
+ * mockup's `#details`). The paid /thanks page also holds a form (the address step); stepping aside there is a
+ * follow-up (tasks.md 4.9), so until then every other context keeps the plain server link.
  */
 export const STEP_ASIDE_FROM: Readonly<Partial<Record<SupportChatContext, string>>> = { store: "details" };
 

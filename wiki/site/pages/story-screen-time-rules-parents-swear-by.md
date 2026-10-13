@@ -50,7 +50,7 @@ sources:
 | H1 | The 3-6-9-12 rule, and other screen rules parents swear by (as live; the hub card title) |
 | Card (hub, unchanged) | Title "The 3-6-9-12 rule, and other screen rules parents swear by"; summary "Where the 3-6-9-12 rule comes from, whether it holds up, and what the WHO, the IAP and the AAP say." ([stories.md](stories.md) fold 2, line 118; the stub) |
 | Byline line | The Kheelona team · First published 30 Jul 2026 · 3 min read (byline: question 1) |
-| Dates | `published` 2026-07-30 and `related` exactly as the stub; `updated`: the main-session note on the [screen-time page](story-how-much-screen-time-for-a-3-to-6-year-old.md#questions-for-the-founder-website-only) |
+| Dates | `published` 2026-07-30 (live, unchanged); `updated` 2026-10-13, the rewrite's date (main-session ruling at the wave 5 part C merge, as task 5.6 set it for the three approved guides) |
 | CTA | The close only: "Pre-order Kheelu", `cta` = `finale`; phone sticky bar `sticky-bar` |
 | In-text product link | One, in fold 7 ("Kheelu" → `/products/kheelu`) |
 | Template settings | `close: "journal"` |

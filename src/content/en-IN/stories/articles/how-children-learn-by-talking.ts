@@ -25,7 +25,7 @@ export const article = {
   },
   related: ["why-three-to-six-are-the-years-that-matter-most", "what-actually-builds-a-sharp-brain", "learning-toys-for-a-three-year-old"],
   published: "2026-07-28",
-  updated: "2026-09-05",
+  updated: "2026-10-13",
   head: {
     title: "Serve and return: how children {hand:learn by talking}",
     lead: "What happens when your child asks and you answer, what the research says about it, and how it looks at home.",

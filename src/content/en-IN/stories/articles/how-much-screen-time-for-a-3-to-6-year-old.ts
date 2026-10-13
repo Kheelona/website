@@ -23,7 +23,7 @@ export const article = {
   },
   related: ["screen-free-does-not-mean-silent", "screen-time-and-tantrums", "the-gentle-way-off-the-phone"],
   published: "2026-07-28",
-  updated: "2026-09-05",
+  updated: "2026-10-13",
   head: {
     title: "Screen time for a {nowrap:3-year-old,} and {hand:up to age 7}",
     lead: "What the WHO, the Indian Academy of Pediatrics and the AAP say, age by age, and what to do at 6 pm.",

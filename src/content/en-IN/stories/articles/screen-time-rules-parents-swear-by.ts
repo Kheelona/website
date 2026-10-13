@@ -24,7 +24,7 @@ export const article = {
   },
   related: ["busy-hands-no-screens", "what-to-look-for-in-a-safe-ai-toy", "ai-toys-and-indias-data-law"],
   published: "2026-07-30",
-  updated: "2026-09-05",
+  updated: "2026-10-13",
   head: {
     title: "The {nowrap:3-6-9-12 rule,} and other screen rules {hand:parents swear by}",
     lead: "Where the 3-6-9-12 rule comes from, whether it holds up, and what the WHO, the IAP and the AAP say.",

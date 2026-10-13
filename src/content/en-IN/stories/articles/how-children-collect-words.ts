@@ -26,7 +26,7 @@ export const article = {
   },
   related: ["talking-late-or-talking-little", "a-toy-that-talks-vs-a-toy-that-listens", "talking-toys-and-late-talkers"],
   published: "2026-07-28",
-  updated: "2026-07-31",
+  updated: "2026-10-13",
   head: {
     title: "How to build a {nowrap:3-year-old’s} {hand:vocabulary}",
     lead: "How children pick up words at home, in every language you speak, without a single worksheet.",

@@ -24,7 +24,7 @@ export const article = {
   },
   related: ["how-to-get-your-child-talking", "how-children-collect-words", "a-toy-that-talks-vs-a-toy-that-listens"],
   published: "2026-07-28",
-  updated: "2026-07-31",
+  updated: "2026-10-13",
   head: {
     title: "{nowrap:3-year-old} not talking in sentences? {hand:What to do}",
     lead: "A calm guide for parents of quiet 3 and 4 year olds: what varies, what deserves a professional look, and what helps at home.",

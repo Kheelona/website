@@ -57,7 +57,7 @@ sources:
 | CTA | None in the page body. No finale CTA, no sticky bar. The site chrome keeps its own button |
 | In-text product link | None (question 1). One in-text link to another guide (fold 6) |
 | Template settings | `close: "keep"` (keep-reading close, no pre-order button; no phone buy bar); crumb topic `talking`; `og: DEFAULT_OG` |
-| Dates | `published: "2026-07-30"`, `updated: "2026-09-05"` as the stub holds them (task notes: dates stay) |
+| Dates | `published` 2026-07-30 (live, unchanged); `updated` 2026-10-13, the rewrite's date (main-session ruling at the wave 5 part C merge, as task 5.6 set it for the three approved guides) |
 
 **What changed from the live article** (`src/lib/stories-expansion.ts:306-340`): the title, H1 and meta now
 carry the keyword map's primary ("toys for language development", [§5.2](../../research/keyword-map.md#52-per-page)),

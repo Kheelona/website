@@ -137,7 +137,13 @@ export const articlePageCopy = {
 } as const satisfies ArticlePageCopy;
 
 /**
- * Articles whose close art stays plain, without the doodle: a safety guide (DS 02-imagery, "Where not to use it:
- * safety"; story-what-to-look-for-in-a-safe-ai-toy.html: "No imagination layer and no doodle: a safety page").
+ * Articles whose close art stays plain, without the doodle: the safety and data guides (DS 02-imagery, "Where not to
+ * use it: safety"; story-what-to-look-for-in-a-safe-ai-toy.html: "No imagination layer and no doodle: a safety page";
+ * the copy pages of the hard-questions, should-kids and data-law guides ask the same, task 5.19).
  */
-export const PLAIN_CLOSE_ART: readonly ArticleSlug[] = ["what-to-look-for-in-a-safe-ai-toy"];
+export const PLAIN_CLOSE_ART: readonly ArticleSlug[] = [
+  "what-to-look-for-in-a-safe-ai-toy",
+  "questions-parents-ask-about-ai-toys",
+  "should-kids-use-ai",
+  "ai-toys-and-indias-data-law",
+];

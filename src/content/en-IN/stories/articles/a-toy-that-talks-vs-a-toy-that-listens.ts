@@ -27,7 +27,7 @@ export const article = {
   },
   related: ["how-children-collect-words", "talking-toys-and-late-talkers", "raising-a-bilingual-child-in-india"],
   published: "2026-07-30",
-  updated: "2026-09-05",
+  updated: "2026-10-13",
   head: {
     title: "Toys for language development: {hand:talk or listen?}",
     lead: "Why a toy that repeats your child is a mirror, and how screens, speakers and talking toys compare.",

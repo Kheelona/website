@@ -1,7 +1,7 @@
 ---
 title: "Build tasks in dependency waves, with ownership, inputs, acceptance criteria and tests (Phase 5, final after QA round 1)"
 type: plan
-updated: 2026-10-12
+updated: 2026-10-14
 sources:
   - ../decisions/D051-beta-without-store-integrations.md (beta without store integrations; task 2.10; 7.2 and 7.3 revised)
   - architecture.md, structure.md, components.md, assets.md, dependencies.md, adr/ADR-001 to adr/ADR-013
@@ -627,8 +627,8 @@ Wave 2 merged at `d87c71f` (twelve tasks, run `wf_2317874f-e7d`); `npm run verif
   (architecture §15.5, ADR-005), because `unstable_cache` outlives a deployment.
 - **Organization JSON-LD input:** `SiteShell` (3.1) maps the content's `OrganizationFacts` to
   `organizationNode()`'s input in a small tested function in its own folder; 4.4 reuses it. No type is renamed.
-- **`stub.ts`** is deleted by 6.3 (after 5.17-5.19 rewrite the last stubs). The three stub titles too long for
-  " · Kheelona" stay unbranded until their rewrite (accepted).
+- **`stub.ts`** was deleted at the wave 5 part C merge, once 5.17-5.19 had rewritten the last stubs (it was 6.3's).
+  The three stub titles too long for " · Kheelona" went with their rewrites.
 - **Hero art layers** stay eager at `fetchPriority="low"` as the mockup has them (2.3's choice, accepted).
 - **`useSyncExternalStore`** with a `false` server snapshot counts as "detected in an effect" (N7, ADR-003): later
   islands may follow 2.5's `InAppBrowserNote` pattern.
@@ -1159,6 +1159,63 @@ Split in two so they run in parallel: **4.7** shared content, legal pages and ch
   `checkout-jsx-contract`, `checkout-signature`, `checkout-freeze` green; `npm run qa:payment` reaches the open
   sandbox sheet (never a real order).
 
+### 4.9 and 5.20 Follow-ups found by wave 5 part C (after M1; with wave 6)
+
+Wave 5 part C (run `wf_242bc117-a1c`) merged in full on 2026-10-14 (`cf07677` to `b8af96b`, then the reconciliation
+commit): 4.7 and 4.8 passed (risk high); 5.17, 5.18 and 5.19 ended `fixed-unreviewed` and their last fixes (an
+`assets.md` row; a read time and an `assets.md` row; two content-integrity wordings with a unit test) were checked at
+the merge. The CMO approved all 18 article copy pages (5.19 in its second review). Rulings at the merge:
+
+- **Article dates:** every rewritten article's `updated` is the rewrite's date (2026-10-13), as 5.6 set it for the
+  three approved guides (BlogPosting `dateModified` and the sitemap); `published` stays the live page's.
+- **`stub.ts` deleted** (no open body remains, and `articles.test.ts`'s folder test asks for that), with
+  `ArticleTemplate.test.tsx`'s stub block; 6.3's stub item is done.
+- **Guards:** `banned-phrases.test.ts` names the 15 site copy pages and one `story-<slug>.md` per article slug instead
+  of a count; `sticky-bar-paths.test.ts` pins the seven keep-close guides (B5); `PLAIN_CLOSE_ART` adds the
+  hard-questions, should-kids and data-law guides (DS 02-imagery: no doodle on safety), and the template's doodle test,
+  which passed vacuously (with two pages mounted, jsdom resolves `#close` to the first), now mounts one page at a time
+  and was proven red.
+- **`/thanks` parity:** the route's own visual and text parity runs skip on the build with a printed reason
+  (`PARITY_ELSEWHERE`, [deviations V5](../qa/deviations.md)); `thanks-paid.spec.ts` proves the paid state.
+- **P15 (V6):** `llms.txt` re-pinned to 2026-10-13; deviation V6 added.
+- **D025 reading:** as written. The disclaimer is required on guides specifically about speech delay; 5.18 puts it on
+  all six talking guides (allowed); the AI and brain guides need none.
+- **Accepted from 4.7:** the bubble steps aside off the right edge (fields and the cover check can reach below the
+  bottom edge, never past the right one) and is `inert` while aside. **From 4.8:** `src/app/store/page.tsx` (one import
+  line) and its signature fixture are 4.8's (item 2 moved `StorePaymentsLine`); `visual-parity.spec.ts`'s two
+  `hideDeviations` lines are 4.8's item 1. Script sizes (4.8 item 4, gzip, route chunks): store 17.50 → 15.54 KB,
+  `/thanks` 11.73 → 10.04 KB; total script 174.4 KB and 168.9 KB against the 150 KB store budget (shared layer, M1).
+
+#### 4.9 Shared fixes from part C (builder; risk high: chrome, shared template, test harness)
+
+1. **D050 gap on marketing pages** (found by 4.7): at 324 x 566 the resting bubble covers the hero price sentence on
+   Home and `/products/kheelu`, and mid-page sweeps find it over `p.ks-price` while the bar has stepped aside and over
+   `.kh-offer__prices` while lifted (360 to 412 too). D050: it never covers the price. Extend the step aside to the
+   site context for the price sentences (re-measuring the band while the bar lifts it), or another fix that keeps the
+   price clear; `chrome.spec.ts` gains a whole-page sweep at the seven phone sizes on Home and the product page, as
+   4.7's store sweep. Report the script cost on marketing pages.
+2. **`/thanks` address step:** the paid state renders `AddressForm`, and the bubble there keeps the plain link. Give
+   the address step's section an id and add `thanks` to `STEP_ASIDE_FROM`, only if no frozen JSX contract fixture
+   changes (ADR-013); otherwise report. Prove it on the `ThanksPaid` story.
+3. **BlogPosting `citation`:** the copy pages say each article's source list is its BlogPosting `citation`;
+   `articleGraph` emits none. Emit it from `article.sources` (jsonld-matches-page stays green).
+4. **Test harness:** `test/e2e/support/routes.ts` `sweepRoutes` takes `buybar` from `ARTICLE_CLOSES`, so the specs
+   prove the bar absent on the seven keep-close guides; one copy-page reader in `test/support/` replaces the three
+   copies in the 5.17-5.19 article tests; `hideDeviations` takes a label so `thanks-paid.spec.ts` prints its own name.
+
+#### 5.20 Article copy fixes before Gate B (verifier, copywriter, CMO, builder; risk normal)
+
+1. **Sources first** (main session's verifier, [D026](../decisions/D026-public-statistics.md)): Tisseron's
+   2020 3-6-13-18 markers and the "De 3 à 6 ans" minutes passage (C34); the CDC "milestones by 4 years" sentence item
+   (C42); the CDC two-word item checked against Zubler 2022 Table 4.
+2. **Copy:** the CMO reviews' minor fixes, each copy page first: 5.17 M1-M17 (M1 first: the 3-6-9-12 page names
+   Tisseron's AI markers; the CMO would not show that page at Gate B without it), 5.18 M1, M3, M5, M7, M8, M9, M12,
+   M13, and 5.19's remaining minors (`wiki/qa/cmo-review-articles-<task>-2026-10-14.md`). Fewer repeated head photos
+   (advik-04, ira-04 and tara-04 each head four or five guides; tara-01 is unused) and one alt per photo. The
+   founder's answers to [open questions §P](../open-questions.md) P17-P24 fold in here.
+3. **Build:** each module follows its copy page word for word in the same commit (the article tests hold them
+   together); assets.md rows follow the photos.
+
 ## Wave 5: pages (after wave 4; all parallel)
 
 **Run in three parts** (machine load: each task builds and runs Playwright on its own ports): **A** 4.5, 5.1, 5.2, 5.3,
@@ -1287,8 +1344,8 @@ waits; it may run in any later wave before wave 8, alone with its own files.
   `action-label`, `kicker-language`, `kheelu-art`, `contrast-tokens`, `a11y-v4`, `config-copy` with the
   legacy copy constants it guards once nothing imports them), `test/stories-parse.test.ts`,
   `test/utm.test.ts`, `test/dependency-floor.test.ts`, `test/guards/legacy-paths.ts`,
-  `tools/qa/{sweep,shot,text,axe-run}.mjs` (delete) and their npm scripts; `src/content/en-IN/stories/articles/stub.ts`
-  (delete once 5.17-5.19 have rewritten the last stub; `articles.test.ts`'s folder test asks for it, wave-2 close);
+  `tools/qa/{sweep,shot,text,axe-run}.mjs` (delete) and their npm scripts; (`src/content/en-IN/stories/articles/stub.ts`
+  went at the wave 5 part C merge);
   the old `src/components/molecules/*Gate*` entries of the set-state-in-effect override in `eslint.config.mjs`; the
   `tsconfig.guards.json` exclusion lines of the legacy files it deletes or rewrites (wave-3 close: 2.13's
   shrink-only guard in `test/guards/build-steps.test.ts` compares a rewritten `test/utm.test.ts` with the tag byte for byte).

@@ -23,7 +23,7 @@ export const article = {
   },
   related: ["screen-time-and-tantrums", "busy-hands-no-screens", "screen-time-rules-parents-swear-by"],
   published: "2026-07-28",
-  updated: "2026-07-31",
+  updated: "2026-10-13",
   head: {
     title: "The {hand:gentle way} off the phone: a seven-day plan to reduce screen time",
     lead: "A week-long plan to cut a young child’s screen time without turning your home into a battlefield.",

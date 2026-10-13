@@ -81,6 +81,7 @@ fold 5 a `list` whose items carry a bold `lead`; fold 6 a `list` with `variant: 
 `sources`: five entries in marker order. `meta.og`: `DEFAULT_OG`. **Dates:** the main session's note keeps the stub's
 dates; task 5.6 set `updated` to the rewrite's date on its three articles, so the main session rules which applies
 (the stub's `updated` is `2026-09-05`).
+**Ruled at the wave 5 part C merge (main session):** `updated` is the rewrite's date, 2026-10-13, as task 5.6 set it; `published` stays the live page's.
 
 ---
 

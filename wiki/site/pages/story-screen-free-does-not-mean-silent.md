@@ -52,7 +52,7 @@ sources:
 | H1 | Screen-free does not mean silent: a guide to screen-free toys |
 | Card (hub, unchanged) | Title "Screen-free does not mean silent"; summary "What a childhood full of talk looks like, without a single screen." ([stories §2](stories.md#fold-2--screen-time-screen-time), card 6) |
 | Byline line | The Kheelona team · First published 28 Jul 2026 · 3 min read |
-| Dates | `published` 2026-07-28 (live, unchanged); `updated` as the stub holds it, 2026-09-05 (see the gentle-way page, question 3) |
+| Dates | `published` 2026-07-28 (live, unchanged); `updated` 2026-10-13, the rewrite's date (main-session ruling at the wave 5 part C merge, as task 5.6 set it for the three approved guides) |
 | Related (unchanged) | `learning-toys-for-a-three-year-old`, `how-much-screen-time-for-a-3-to-6-year-old`, `screen-time-and-tantrums` |
 | CTA | The close only: "Pre-order Kheelu", `cta` = `finale`; phone sticky bar `sticky-bar` |
 | In-text product link | One, in fold 8 ("Kheelu" → `/products/kheelu`) |
