@@ -16,7 +16,8 @@ After the build: Phase 6 QA, push `beta`, founder runbook (architecture §15.4),
 **RESUME FROM [build runbook](engineering/build-runbook.md) §4.** **Waves 1 and 2 closed** (wave 2 at 22:30: twelve tasks
 merged, verify 3581 tests, `next build` green; rulings `610f141`). **Waves 3 and 4 closed** (templates, stories route, legal
 template, machine files; verify 4570 tests; e2e red only on `/stories/*` until wave 5, ruled). **Wave 5 part A merged** (Home, product,
-safety, hub, 3 articles, 404). **Part B1 running** (`wf_3b9a26ad-f78`: 4.6 shared fixes, guide, team, setup, contact, privacy; D052 QA).
+safety, hub, 3 articles, 404). Part B1 merged (shared fixes, guide, team, setup,
+contact); privacy finishing. **Part B2 running** (`wf_97020885-57b`: terms, refund, shipping, store page, /thanks); then the 18 articles.
 **Incident 2026-10-12:** a push meant for `beta` landed on `main` (`24e92e3`, vercel.json only; production
 healthy; [lessons](engineering/lessons.md)). `beta` exists on GitHub (builds nothing yet); **beta domains attached to branch `beta`** (founder, done).
 **Done before wave 1:** dev tools pinned (Playwright 1.63.0, axe 4.12.1, Lighthouse 13.4.1, jscpd 5.3.2,
