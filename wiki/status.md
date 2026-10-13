@@ -15,7 +15,7 @@ After the build: Phase 6 QA, push `beta`, founder runbook (architecture §15.4),
 **Account:** apoorva@kheelona.com (since 00:00 2026-10-14). **Branch:** `reset/website-v2`, not pushed.
 **RESUME FROM [build runbook](engineering/build-runbook.md) §4.** **Waves 1-4 closed** (verify 4570 tests; e2e red only on
 `/stories/*` until wave 5, ruled). **Wave 5:** parts A, B1, B2 merged (all pages but the 18 articles; B2 gate green, 5349
-tests). **Part C running** (`wf_ed84fddb-271`, base `aa4b39e`): 4.7, 4.8 (shared fixes, high), 5.17-5.19 (18 articles: copy, CMO, build). Then M1.
+tests). **Part C running** (`wf_242bc117-a1c`, base `aa4b39e`): 4.7, 4.8 (shared fixes, high), 5.17-5.19 (18 articles: copy, CMO, build). Then M1.
 **Incident 2026-10-12:** a push meant for `beta` landed on `main` (`24e92e3`, vercel.json only; production
 healthy; [lessons](engineering/lessons.md)). `beta` exists on GitHub (builds nothing yet); **beta domains attached to branch `beta`** (founder, done).
 **Done before wave 1:** dev tools pinned (Playwright 1.63.0, axe 4.12.1, Lighthouse 13.4.1, jscpd 5.3.2,
