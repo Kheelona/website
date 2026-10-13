@@ -11,7 +11,10 @@ import { OFFER_REVALIDATE_SECONDS } from "@/lib/offer/get-offer";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { termsFixture } from "../../../../test/fixtures/legal/terms";
+import { VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
+import { GRIEVANCE_NOTE, PAGE_FACTS } from "../../../../test/e2e/support/page-facts";
 import { mockupFold, skeleton, words, type SkeletonOptions } from "../../../../test/support/mockup-compare";
+import { withFacts } from "../../../../test/support/mockup-facts";
 
 /* The /terms route (task 5.12; structure §3.1, §5): the legal module through LegalTemplate's reference family with the
  * live offer, thin, and as a whole page equal to the approved mockup's <main> (mockup/terms.html, D046) in token mode, the
@@ -32,7 +35,9 @@ beforeAll(async () => {
 const SOURCE = readFileSync("src/app/(site)/terms/page.tsx", "utf8");
 const code = SOURCE.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
 
-const mockupMain = mockupFold("terms", "main");
+const approvedMain = mockupFold("terms", "main");
+/** The approved page with the founder's page facts applied (task 6.7; D055 items 7, 8, 10 and 11; page-facts.ts). */
+const mockupMain = withFacts(approvedMain, PAGE_FACTS.terms.edits);
 
 const TOKEN = buildOffer("token");
 const FULL = buildOffer("full");
@@ -111,15 +116,18 @@ describe("/terms: the rendered page against the approved mockup (token mode, the
     expect(skeleton(main, OPTIONS)).toBe(skeleton(mockupMain, OPTIONS));
   });
 
-  it("prints every word of the mockup's <main>, in order, and nothing else, placeholders included", async () => {
+  it("prints every word of the mockup's <main> with the founder's facts, in order, and nothing else", async () => {
     const { main } = await renderPage(TOKEN);
     expect(words(main)).toBe(words(mockupMain));
   });
 
-  it("is exactly what the template renders from the parity fixture copied from the mockup (test/fixtures/legal/terms.ts)", async () => {
+  it("is exactly what the template renders from the parity fixture copied from the mockup (test/fixtures/legal/terms.ts), with the founder's facts", async () => {
     const { main } = await renderPage(TOKEN);
     const fixture = renderToStaticMarkup(<LegalTemplate doc={termsFixture} variant="reference" copy={legalTemplateCopy} offer={TOKEN} />);
-    expect(main.innerHTML).toBe(new DOMParser().parseFromString(`<main>${fixture}</main>`, "text/html").querySelector("main")!.innerHTML);
+    const fixtureMain = new DOMParser().parseFromString(`<main>${fixture}</main>`, "text/html").querySelector("main")!;
+    // The complaint-reference line is the template's (legal/shared.ts), so the fixture's render already lacks it.
+    const documentFacts = PAGE_FACTS.terms.edits.filter((edit) => edit !== GRIEVANCE_NOTE);
+    expect(main.innerHTML).toBe(withFacts(fixtureMain, documentFacts, { built: true }).innerHTML);
   });
 
   it("is LegalTemplate's reference family (privacy and terms; mockup-css-mapping §6.1)", async () => {
@@ -141,7 +149,7 @@ describe("/terms: the rendered page against the approved mockup (token mode, the
     expect(h1[0].id).toBe("terms-title");
     expect(h1[0].textContent).toBe("Pre-order terms, in plain words.");
     expect(h1[0].querySelector(".kh-hand")?.textContent).toBe("plain words.");
-    expect(textOf(hero.querySelector(".ks-updated"))).toBe("Last updated: [PLACEHOLDER: the date the founder approves this text]");
+    expect(textOf(hero.querySelector(".ks-updated"))).toBe("Last updated: 14 October 2026");
   });
 
   it("keeps the mockup's heading outline: every heading's level and words in order, no level skipped (SPA 5)", async () => {
@@ -168,14 +176,16 @@ describe("/terms: the rendered page against the approved mockup (token mode, the
     }
   });
 
-  it("prints the seller and grievance cards from seller.ts, and the complaint-reference placeholder (D032)", async () => {
+  it("prints the seller and grievance cards from seller.ts, with no complaint-reference line (D032; D055 item 7)", async () => {
     const { main } = await renderPage(TOKEN);
-    const cards = [...main.querySelectorAll("#contact .ks-doc__card")].map(textOf);
+    const cardEls = [...main.querySelectorAll("#contact .ks-doc__card")];
+    const cards = cardEls.map(textOf);
     expect(cards).toHaveLength(3);
     expect(cards[0]).toMatch(/^Seller: Kheelona Robotics Private Limited, registered at /);
     expect(cards[1]).toBe("Customer care: WhatsApp or call +91 91875 46483, or email hello@kheelona.com.");
-    // Two paragraphs in one card: the D032 line, then the note (textContent joins them with no space).
-    expect(cards[2]).toMatch(/^Grievance Officer: Aman Soni, Co-Founder and CTO, .*of receiving it\.\s*\[PLACEHOLDER: how you get a complaint reference/);
+    // The D032 line alone, one paragraph: the complaint-reference note is off until a system issues a reference (D055 item 7).
+    expect(cards[2]).toMatch(/^Grievance Officer: Aman Soni, Co-Founder and CTO, .*of receiving it\.$/);
+    expect(cardEls[2].querySelectorAll("p")).toHaveLength(1);
   });
 
   it("has no pre-order button, no tracking value and no hero button; the phone buy bar is not placed on /terms", async () => {
@@ -234,5 +244,14 @@ describe("/terms: full mode (terms.md folds 2 and 4, sections 5 and 6)", () => {
     for (const amount of [FULL.prices.token, FULL.prices.balance, TOKEN.prices.headline]) expect(text).not.toContain(amount);
     expect(text).not.toMatch(/first \d+ units/);
     expect(text).toContain(FULL.prices.full);
+  });
+});
+
+describe("/terms: the founder's page facts for the pixels (task 6.7)", () => {
+  it("finds each block the visual pass hides on the build side, once, on the page as it renders", async () => {
+    const { main } = await renderPage(TOKEN);
+    const selectors = VISUAL_HIDDEN.terms.filter((rule) => rule.side === "build").map((rule) => rule.selector);
+    expect(selectors.length).toBeGreaterThan(0);
+    for (const selector of selectors) expect(main.querySelectorAll(selector), selector).toHaveLength(1);
   });
 });

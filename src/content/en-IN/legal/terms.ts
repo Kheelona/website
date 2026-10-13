@@ -1,6 +1,5 @@
 import { CAP_UNITS_TEXT } from "@/config/site";
 import type { LegalPage } from "@/content/types";
-import { placeholder } from "@/lib/content/placeholder";
 import { offerCopy } from "../offer";
 import { DEFAULT_OG } from "../organization";
 import {
@@ -29,7 +28,10 @@ import { seller } from "../seller";
  *   the mode; the price section's second paragraph and the two balance paragraphs (sections 5 and 6, "token mode only")
  *   have no full-mode words, so the template leaves them out.
  * - **Kheelona's own model** (D035): what trains (voice recordings and transcripts), whose model, on by default, and that a
- *   parent can turn it off; how is an open fact, a placeholder until the founder answers (terms.md placeholder 4).
+ *   parent turns it off with a switch in the parent app (D055 item 11, as on /privacy).
+ * - **The founder's page facts** (D055 items 7, 8, 10 and 11; task 6.7): "Last updated" is his date; GST says only what
+ *   D024 confirms (prices include GST; a GST invoice), the documents-and-timing and price-breakup slots off the page; the
+ *   complaint-reference line is the template's (legal/shared.ts).
  * - **AI-made images** (D041): disclosed here, not in the footer, beside the films' real pilot families (D040).
  * - **Shared facts are read, never retyped:** the entity, support number, WhatsApp address and email from seller.ts; the
  *   cap from the money block of config/site.ts; every policy number from policies.ts; every amount a `{price:…}` token and
@@ -61,7 +63,8 @@ export const termsPage = {
     og: DEFAULT_OG,
   },
   status: "draft",
-  approvedOn: placeholder(null, "the date the founder approves this text"),
+  /* "Last updated", the founder's date (D055 item 8). The page stays a draft until he signs it off (D029). */
+  approvedOn: "2026-10-14",
   hero: {
     eyebrow: "Terms",
     title: "Pre-order terms, in {hand:plain words.}",
@@ -165,14 +168,9 @@ export const termsPage = {
           kind: "p",
           text: "Prices include GST. Delivery anywhere in India is included, so the price is the whole cost of Kheelu arriving at your door. Nothing is collected at the door.",
         },
-        {
-          kind: "p",
-          text: "Every order gets a GST invoice. {ph:which GST documents you get and when, for example a receipt voucher for the advance and a tax invoice at dispatch, as our CA sets them up}",
-        },
-        {
-          kind: "p",
-          text: "{ph:the price breakup (taxable value, GST rate and amount, delivery ₹0), once our CA confirms the HSN code and the GST rate}",
-        },
+        /* Only what D024 confirms (D055 item 10): which GST documents and when (GST-01) and the price breakup (ECOM-08)
+           wait on the CA, off the page. */
+        { kind: "p", text: "Every order gets a GST invoice." },
       ],
     },
     {
@@ -313,7 +311,7 @@ export const termsPage = {
         /* D035 (terms and privacy only, never on customer pages); D020's providers clause, scoped to the providers. */
         {
           kind: "p",
-          text: "Kheelona’s own AI model learns from your child’s voice recordings and conversation transcripts. This is on by default, and you can turn it off at any time: {ph:how a parent turns training off, for example a setting in the parent app}. Our outside speech and AI providers never train on your child’s voice.",
+          text: "Kheelona’s own AI model learns from your child’s voice recordings and conversation transcripts. This is on by default, and you can turn it off at any time with a switch in the parent app. Our outside speech and AI providers never train on your child’s voice.",
         },
         {
           kind: "p",

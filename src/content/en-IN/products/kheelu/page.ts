@@ -15,6 +15,7 @@ import type { IconName } from "@/components/ui/Icon/Icon";
 import type { LanguageChip } from "@/components/ui/LanguageChips/LanguageChips";
 import type { TrustItem } from "@/content/types";
 import type { PageContent } from "@/layouts/PageTemplate/page-template.types";
+import { withoutHiddenRows } from "@/lib/content/placeholder";
 import { cta } from "../../cta";
 import { faqs, pickFaqs } from "../../faqs";
 import { films, filmsStrip } from "../../films";
@@ -146,13 +147,15 @@ export const kheeluPage = {
         know: {
           title: "Good to know",
           id: "know-title",
-          items: [
+          /* The charging line's F4 slot (battery life and charging time) is hidden until the founder sends its value; the
+             line keeps its confirmed half (D054 item 19; task 6.7). */
+          items: withoutHiddenRows([
             { icon: "wifi-high", text: "AI mode needs your home Wi‑Fi. Story mode and Bluetooth mode work without it." },
             { icon: "wifi-slash", text: "It can’t browse the internet. When it doesn’t know something, it says so." },
             { icon: "microphone", text: "Each conversation starts with a press of the wake-up button. It switches itself off after about a minute of quiet." },
             { icon: "sliders-horizontal", text: "At setup, you enter your child’s age in the parent app." },
             { icon: "battery-charging", text: "It charges with the charger in the box. {ph:F4 battery life per charge and charging time}" },
-          ],
+          ], "text"),
           image: { src: bellyModule, alt: "Kheelu’s tummy unit up close, with its speaker, light ring and buttons." },
         },
         link: { label: "How setup works", href: "/setup" },

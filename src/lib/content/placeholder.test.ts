@@ -3,10 +3,14 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import {
+  HIDDEN_ITEMS,
+  isHiddenPlaceholder,
   isPlaceholder,
   parsePlaceholderToken,
   placeholder as ph,
   placeholderText,
+  withoutHiddenRows,
+  withoutHiddenSlots,
 } from "./placeholder";
 
 /* The production placeholder scan (task 2.9) looks for the literal opening of a
@@ -139,5 +143,107 @@ describe("every placeholder marker in the approved mockups", () => {
     expect(note, marker).toBeDefined();
     const body = id === undefined ? note : `${id} ${note}`;
     expect(placeholderText(parsePlaceholderToken(body))).toBe(marker);
+  });
+});
+
+/* D054 item 19 (task 6.7): an F4 slot, the product's final specs, is hidden instead of marked. The row or line it is
+   the value of comes off the page on every environment (nothing of it renders, so the production build has nothing to
+   refuse); a line with words of its own keeps them; the box contents stay. Every other placeholder is untouched: marked
+   on beta, refused in production. Tokens are spelled in pieces, as above. */
+const token = (body: string) => "{" + "ph:" + body + "}";
+
+describe("the open items hidden until their value arrives (D054 item 19)", () => {
+  it("is F4 alone", () => {
+    expect(HIDDEN_ITEMS).toEqual(["F4"]);
+  });
+
+  it("recognises an F4 placeholder, from the helper or the token, and nothing else", () => {
+    expect(isHiddenPlaceholder(ph("F4", "size and weight"))).toBe(true);
+    expect(isHiddenPlaceholder(parsePlaceholderToken("F4 net quantity"))).toBe(true);
+    expect(isHiddenPlaceholder(JSON.parse(JSON.stringify(ph("F4", "net quantity"))))).toBe(true);
+    for (const other of [ph("F11", "proof"), ph("B24", "founder photo"), ph(null, "region"), ph("F41", "x")]) {
+      expect(isHiddenPlaceholder(other), String(other.id)).toBe(false);
+    }
+    for (const value of [token("F4 size"), "F4", null, undefined, { id: "F4", note: "x" }]) {
+      expect(isHiddenPlaceholder(value), String(value)).toBe(false);
+    }
+  });
+});
+
+describe("withoutHiddenSlots: one content string", () => {
+  it.each([
+    ["a value that is only the slot", token("F4 size and weight")],
+    ["a label waiting on its value", `Battery safety: ${token("F4 battery safety certification")}`],
+    ["a label and two slots", `Battery: ${token("F4 type")} ${token("F4 life")}`],
+  ])("says nothing once %s is gone: null", (_name, text) => {
+    expect(withoutHiddenSlots(text)).toBeNull();
+  });
+
+  it("keeps a line's own words and drops the slot with the space before it", () => {
+    expect(withoutHiddenSlots(`It charges with the charger in the box. ${token("F4 battery life per charge and charging time")}`)).toBe(
+      "It charges with the charger in the box.",
+    );
+    expect(withoutHiddenSlots(`Charge it ${token("F4 x")} first.`)).toBe("Charge it first.");
+  });
+
+  it("leaves every other placeholder, and every other token, exactly where it is", () => {
+    const others = `Every conversation, word for word. ${token("which phones the parent app runs on")} ${token("B24 founder photo")}`;
+    expect(withoutHiddenSlots(others)).toBe(others);
+    expect(withoutHiddenSlots(`{price:mrp} (incl. of all taxes) ${token("F4 x")}`)).toBe("{price:mrp} (incl. of all taxes)");
+    expect(withoutHiddenSlots(token("region"))).toBe(token("region"));
+    expect(withoutHiddenSlots("Ages 3 to 7")).toBe("Ages 3 to 7");
+  });
+
+  it("refuses a malformed slot instead of hiding it", () => {
+    expect(() => withoutHiddenSlots(`Size: ${token("F4")}`)).toThrow(/note/i);
+  });
+});
+
+describe("withoutHiddenRows: the rows and lines a page shows", () => {
+  const specs = [
+    { term: "Screen", value: "None" },
+    { term: "Size and weight", value: token("F4 size and weight") },
+    { term: "Parent app", value: `A weekly report. ${token("which phones the parent app runs on")}` },
+    { term: "Consumer care", value: ["WhatsApp", token("F4 a second line")] },
+    { term: "Net quantity", value: [token("F4 net quantity")] },
+    { term: "Founder", value: ph("B24", "founder photo") },
+    { term: "Charger", value: ph("F4", "charger type") },
+  ];
+
+  it("drops each row whose value is an F4 slot and keeps the others, in order, every other placeholder included", () => {
+    expect(withoutHiddenRows(specs, "value")).toEqual([
+      { term: "Screen", value: "None" },
+      { term: "Parent app", value: `A weekly report. ${token("which phones the parent app runs on")}` },
+      { term: "Consumer care", value: ["WhatsApp"] },
+      { term: "Founder", value: ph("B24", "founder photo") },
+    ]);
+  });
+
+  it("keeps a line's confirmed half and drops a line that is only a label and its slot", () => {
+    const lines = [
+      { icon: "battery-charging", text: `It charges with the charger in the box. ${token("F4 battery life")}` },
+      { icon: "warning-circle", text: `Age grading and warnings: ${token("F4 age grading")}` },
+      { icon: "package", text: "Kheelu plush toy" },
+    ];
+    expect(withoutHiddenRows(lines, "text")).toEqual([
+      { icon: "battery-charging", text: "It charges with the charger in the box." },
+      { icon: "package", text: "Kheelu plush toy" },
+    ]);
+  });
+
+  it("leaves a list with no F4 slot as it is: the box contents stay", () => {
+    const box = [
+      { icon: "package", text: "Kheelu plush toy" },
+      { icon: "battery-charging", text: "Charger" },
+      { icon: "book-open", text: "Quick-start card" },
+    ];
+    expect(withoutHiddenRows(box, "text")).toEqual(box);
+  });
+
+  it("renders nothing of a hidden slot: no marker in the words a page, its JSON-LD or llms.txt print", () => {
+    const shown = withoutHiddenRows(specs, "value").flatMap((row) => (Array.isArray(row.value) ? row.value : [row.value]));
+    const printed = shown.map((value) => (isPlaceholder(value) ? placeholderText(value) : value)).join("\n");
+    expect(printed).not.toContain("F4");
+    expect(printed).toContain(`${OPEN} B24: founder photo]`);
   });
 });

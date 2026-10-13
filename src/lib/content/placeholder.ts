@@ -78,3 +78,67 @@ export function parsePlaceholderToken(body: string): Placeholder {
   }
   return placeholder(null, trimmed);
 }
+
+/* ── Hidden until the value arrives (D054 item 19; task 6.7) ──────────────── */
+
+/**
+ * Open items whose slots are hidden, not marked: F4, the product's final specs. The founder sends each value before
+ * Gate B; a row or line still waiting on one comes off the page instead of blocking the build (the box contents stay).
+ * Nothing of a hidden slot renders, on any environment, so the production build has nothing to refuse, and the
+ * placeholder guard lets the slot stay in the source, where its value lands (scripts/guards/placeholders.mjs). Every
+ * other placeholder is marked on beta and refused in production.
+ */
+export const HIDDEN_ITEMS: readonly string[] = Object.freeze(["F4"]);
+
+/** True for a placeholder whose open item is hidden until its value arrives (an F4 slot). */
+export function isHiddenPlaceholder(value: unknown): value is Placeholder {
+  return isPlaceholder(value) && value.id !== null && HIDDEN_ITEMS.includes(value.id);
+}
+
+/** An inline placeholder token with the white space before it. Its body never holds a brace (the rich-text parser
+ *  refuses one), so the first closing brace ends it. */
+const TOKEN_WITH_SPACE = /\s*\{ph:([^{}]*)\}/g;
+
+/** A label waiting on its value: the words before a hidden slot end in a colon ("Battery safety:"). */
+const LABEL_ONLY = /:\s*$/;
+
+/**
+ * A content string without its hidden slots, each with the white space before it; null when nothing of its own is left
+ * (no words, or only a label whose value was the slot). Every other token, placeholders included, stays as it is.
+ */
+export function withoutHiddenSlots(text: string): string | null {
+  let hid = false;
+  const rest = text
+    .replace(TOKEN_WITH_SPACE, (whole, body: string) => {
+      if (!isHiddenPlaceholder(parsePlaceholderToken(body))) return whole;
+      hid = true;
+      return "";
+    })
+    .trim();
+  if (!hid) return text;
+  return rest === "" || LABEL_ONLY.test(rest) ? null : rest;
+}
+
+/** A value with its hidden slots gone, or null when nothing of it is left. */
+function shownValue(value: unknown): unknown {
+  if (typeof value === "string") return withoutHiddenSlots(value);
+  if (isHiddenPlaceholder(value)) return null;
+  if (Array.isArray(value)) {
+    const kept = value.map(shownValue).filter((v) => v !== null);
+    return kept.length === 0 ? null : kept;
+  }
+  return value;
+}
+
+/**
+ * The rows or lines that still say something once their hidden slots are gone (D054 item 19), in order, each with those
+ * slots removed. `key` names the field holding the words: a spec row's `value`, a line's `text` or `body`. A value that
+ * is a list keeps the entries that say something; a row with nothing left comes off. Every other placeholder stays.
+ */
+export function withoutHiddenRows<const T extends object>(items: readonly T[], key: keyof T): T[] {
+  return items.flatMap((item) => {
+    const value = shownValue(item[key]);
+    if (value === null) return [];
+    return value === item[key] ? [item] : [{ ...item, [key]: value }];
+  });
+}

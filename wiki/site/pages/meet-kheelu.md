@@ -17,6 +17,9 @@ sources:
   - "../../qa/cmo-review-2026-10-11.md (F1, F2, S1, S6, S8, S12 applied here)"
   - "design-system/project/07-selling.md, 10-pages.md, 03-cast.md:100-126, assets/Kheelu/README.md, assets/Cast/README.md (read-only)"
   - "decisions D016-D042; binding here: D016-D028, D032-D036, D040-D042"
+  - "../../decisions/D054-founder-answers-open-questions-2026-10-14.md (item 19: F4 rows without a final value come off the page; the box contents stay; task 6.7)"
+  - "../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md (item 26: the parent app is for iPhone and Android; task 6.7)"
+  - "../../raw/research/geo/site-files-2026-10-10/llms.txt (lines 86-87: the live site's iOS and Android listings for the parent app, captured 2026-10-10)"
 ---
 
 # Meet Kheelu (`/products/kheelu`): page copy
@@ -320,7 +323,7 @@ Section `id="modes"` (Home links here).
 > - It can't browse the internet. When it doesn't know something, it says so.
 > - Each conversation starts with a press of the wake-up button. It switches itself off after about a minute of quiet.
 > - At setup, you enter your child's age in the parent app.
-> - It charges with the charger in the box. [PLACEHOLDER F4: battery life per charge and charging time]
+> - It charges with the charger in the box.
 >
 > [How setup works] → `setup.html`
 
@@ -338,6 +341,10 @@ Section `id="modes"` (Home links here).
   closed content library (claims flag: beside the outside AI providers it must not suggest no AI model is
   involved, [claims](../../product/claims.md) line 114); "remembers" (D036 wants it next to the parent's
   controls, so it sits in FAQ 7); anything about how well Kheelu understands a 3-year-old (working default B4).
+- **The charging line (task 6.7):** its F4 slot (battery life per charge and charging time) is hidden until the
+  founder sends final values ([D054](../../decisions/D054-founder-answers-open-questions-2026-10-14.md) item 19). The
+  line keeps its confirmed half, "It charges with the charger in the box." (the box contents stay, D054 item 19), so
+  Good to know still has five items.
 - **Images:** `Photo library/advik-02-whispering-to-kheelu-web.webp` (16:9) beside or above the modes. Alt: "A
   boy in a mustard shirt leaning close to whisper to Kheelu, on a cane chair by a tall window." In the Good to
   know box: `Kheelu/kheelu-belly-module.png` (DS: "for setup guides and how it works"). Alt: "Kheelu's tummy unit
@@ -360,6 +367,7 @@ Section `id="modes"` (Home links here).
 | One press per conversation; off after about a minute of quiet | [D018](../../decisions/D018-wake-up-button.md) lines 24-28; [claims](../../product/claims.md) line 73 |
 | Parent enters the child's age in the app at setup | [D036](../../decisions/D036-launch-feature-claims.md) lines 25-26 |
 | Charger in the box | [D041](../../decisions/D041-gate-a-round-1.md) line 30 |
+| Battery life and charging time: hidden until final (task 6.7) | [D054](../../decisions/D054-founder-answers-open-questions-2026-10-14.md) item 19 |
 | Belly unit: speaker, light ring, buttons | DS `assets/Kheelu/README.md` line 9 |
 
 ---
@@ -484,7 +492,9 @@ Section `id="safety"`.
 ## Fold 7 · The details: specs, box, safety and declarations
 
 **Fold job:** give the checkable details and the India declarations in one place, with only confirmed facts
-and visible placeholders for the rest.
+and visible placeholders for the rest. *(Task 6.7: the rows and lines still waiting on F4 are now hidden, not
+shown as placeholders, until the founder sends final values: [D054](../../decisions/D054-founder-answers-open-questions-2026-10-14.md)
+item 19.)*
 
 Section `id="specs"`. `Tabs` (line tabs, ARIA pattern; DS: "Product details (Specs / In the box / Safety)").
 Without JavaScript all three panels show, one under the other (builder).
@@ -504,11 +514,7 @@ Without JavaScript all three panels show, one under the other (builder).
 > - Modes: AI mode (home Wi-Fi) · Story mode (no Wi-Fi needed) · Bluetooth mode (a paired phone)
 > - Open internet: It can't browse it
 > - Languages: English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish and French; up to 10 at launch
-> - Parent app: Every conversation, word for word; a weekly report on four thinking skills; a new-word count. [PLACEHOLDER: which phones the parent app runs on]
-> - Size and weight: [PLACEHOLDER F4: size and weight]
-> - Materials: [PLACEHOLDER F4: outer fabric and filling]
-> - Battery: [PLACEHOLDER F4: battery type, life per charge and charging time]
-> - Charger: [PLACEHOLDER F4: charger type and its BIS registration number]
+> - Parent app: Every conversation, word for word; a weekly report on four thinking skills; a new-word count. On iPhone and Android.
 >
 > **Tab: In the box**
 > - Kheelu plush toy
@@ -519,15 +525,11 @@ Without JavaScript all three panels show, one under the other (builder).
 > - Every reply passes an age-graded safety layer, set to the age you enter in the parent app.
 > - Tested before launch by trying to make it say unsafe things.
 > - Toy-safety certification (BIS): applied for, not yet granted. We show no mark until it is granted.
-> - Age grading and warnings: [PLACEHOLDER F4: toy-safety age grading and any required warnings]
-> - Battery safety: [PLACEHOLDER F4: battery safety certification]
 >
 > **Declarations** *(always visible, under the tabs)*
 > - MRP: ₹7,999`{price-source}` (incl. of all taxes)
 > - Country of origin: India
 > - Manufacturer: Kheelona Robotics Pvt Ltd, 5th Floor, No 51 (Old Site No 1), Kokarya Business Synergy Center, 5th Main, 5th Block Jayanagar, Bengaluru 560041, Karnataka, India
-> - Net quantity: [PLACEHOLDER F4: net quantity]
-> - Month and year of manufacture: [PLACEHOLDER F4: month and year of manufacture]
 > - Consumer care: WhatsApp or call +91 91875 46483 · hello@kheelona.com
 >
 > [Read the returns and warranty terms] → `refund.html`
@@ -542,7 +544,19 @@ Without JavaScript all three panels show, one under the other (builder).
 - **"Tested before launch by trying to make it say unsafe things"** is D036's own gloss of "red-teamed"; it
   promises nothing about results.
 - **Placeholders:** nine on this fold (see [Placeholders](#placeholders)); the mockup shows each in
-  `mk-placeholder`.
+  `mk-placeholder`. **Since task 6.7, none:** the parent-app slot is filled ("On iPhone and Android.",
+  [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 26), and the eight F4 rows and lines
+  (size and weight, materials, battery, charger; age grading and warnings, battery safety; net quantity, month and
+  year of manufacture) are hidden until the founder sends final values
+  ([D054](../../decisions/D054-founder-answers-open-questions-2026-10-14.md) item 19). Each comes back in its
+  approved place, with its approved label, when its value arrives. The In the box tab stays as it is (D054 item 19).
+- **The hidden declarations and certifications (task 6.7):** net quantity and dimensions (the size row) are
+  declarations the Legal Metrology rules want on the selling page itself (only the month and year are exempt
+  online), the charger and battery need
+  BIS registration, and age grading and warnings come from the toy-safety test
+  ([legal requirements](../../product/legal-requirements.md) H4 and H5;
+  [L4](../../open-questions.md#l-legal-actions-from-the-indian-law-review-founders-ask-one-at-a-time): before the
+  first dispatch). Hiding the rows says nothing untrue, but the page then lacks them: question 7.
 - The link closes the section.
 
 **Sources, fold 7**
@@ -557,13 +571,15 @@ Without JavaScript all three panels show, one under the other (builder).
 | Modes; open internet "can't browse" | [facts](../../product/facts.md) lines 98-100, 145 ("Open internet: No", EXTERNAL) |
 | Languages | [facts](../../product/facts.md) lines 110-111 |
 | Parent app row | [D017](../../decisions/D017-live-behaviour-claims-confirmed.md); [D036](../../decisions/D036-launch-feature-claims.md) #1, #8 |
+| Parent app: on iPhone and Android | [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 26 (founder, 2026-10-14); the live site's llms.txt, [raw capture](../../raw/research/geo/site-files-2026-10-10/llms.txt) lines 86-87 (an iOS listing on the App Store, an Android listing on Google Play) |
+| Size, materials, battery, charger, age grading and warnings, battery safety: hidden until final (task 6.7) | [D054](../../decisions/D054-founder-answers-open-questions-2026-10-14.md) item 19 |
 | In the box | [D041](../../decisions/D041-gate-a-round-1.md) line 30 |
 | Age-graded safety layer set to the parent's entry | [D036](../../decisions/D036-launch-feature-claims.md) lines 21, 25-26 (#6); [claims](../../product/claims.md) line 115 |
 | Red-teamed before launch | [D036](../../decisions/D036-launch-feature-claims.md) line 23 (#7) |
 | BIS: applied for, not yet granted | [claims](../../product/claims.md) lines 308-309 (EXTERNAL status line) |
 | MRP ₹7,999 incl. all taxes; made in India; manufacturer | [D034](../../decisions/D034-origin-manufacturer-mrp.md) lines 15-18; [messaging](../../brand/messaging.md) line 256 |
 | Registered address | [policies](../../product/policies.md) line 142 (seller details as published) |
-| Net quantity, manufacture date still placeholders | [D034](../../decisions/D034-origin-manufacturer-mrp.md) lines 20-21; [policies](../../product/policies.md) line 124 |
+| Net quantity, manufacture date still placeholders (task 6.7: hidden until final) | [D034](../../decisions/D034-origin-manufacturer-mrp.md) lines 20-21; [policies](../../product/policies.md) line 124; [D054](../../decisions/D054-founder-answers-open-questions-2026-10-14.md) item 19 |
 | Consumer care | [facts](../../product/facts.md) lines 223-224; [D032](../../decisions/D032-grievance-block-and-call-line.md) |
 
 ---
@@ -758,17 +774,24 @@ Existing values stay on equivalent buttons ([tracking inventory §6](../tracking
 
 ## Placeholders
 
-| Where | Placeholder | Needed (owner) |
-|---|---|---|
-| Fold 4 Good to know; fold 7 Specs | `[PLACEHOLDER F4: battery life per charge and charging time]` | Battery facts (founder, F4); fold 7 also asks for battery type |
-| Fold 7 Specs | `[PLACEHOLDER: which phones the parent app runs on]` | Android and iPhone versions supported (founder; no open-question ID yet) |
-| Fold 7 Specs | `[PLACEHOLDER F4: size and weight]` | Final specs (F4) |
-| Fold 7 Specs | `[PLACEHOLDER F4: outer fabric and filling]` | Final specs (F4) |
-| Fold 7 Specs | `[PLACEHOLDER F4: charger type and its BIS registration number]` | Charger details and BIS number ([D041](../../decisions/D041-gate-a-round-1.md) line 30, F4) |
-| Fold 7 Safety | `[PLACEHOLDER F4: toy-safety age grading and any required warnings]` | From the test report ([age-band review](../../product/age-band-review.md) rows 31-32, F4) |
-| Fold 7 Safety | `[PLACEHOLDER F4: battery safety certification]` | F4 ([claims](../../product/claims.md) line 312) |
-| Fold 7 Declarations | `[PLACEHOLDER F4: net quantity]` | [D034](../../decisions/D034-origin-manufacturer-mrp.md) lines 20-21 |
-| Fold 7 Declarations | `[PLACEHOLDER F4: month and year of manufacture]` | [D034](../../decisions/D034-origin-manufacturer-mrp.md) lines 20-21 |
+**None in the Copy blocks since task 6.7.** The approved table, with what became of each slot
+([D054](../../decisions/D054-founder-answers-open-questions-2026-10-14.md) item 19: an F4 row without a final value
+is hidden, the box contents stay; [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 26):
+
+| Where | Placeholder | Needed (owner) | Now (task 6.7) |
+|---|---|---|---|
+| Fold 4 Good to know; fold 7 Specs | `[PLACEHOLDER F4: battery life per charge and charging time]` | Battery facts (founder, F4); fold 7 also asks for battery type | **Hidden** in both places; fold 4's line keeps "It charges with the charger in the box." |
+| Fold 7 Specs | `[PLACEHOLDER: which phones the parent app runs on]` | Android and iPhone versions supported (founder; no open-question ID yet) | **Filled:** "On iPhone and Android." (D055 item 26; no version numbers, none given) |
+| Fold 7 Specs | `[PLACEHOLDER F4: size and weight]` | Final specs (F4) | **Hidden** (the whole row); question 7 (dimensions) |
+| Fold 7 Specs | `[PLACEHOLDER F4: outer fabric and filling]` | Final specs (F4) | **Hidden** (the whole row) |
+| Fold 7 Specs | `[PLACEHOLDER F4: charger type and its BIS registration number]` | Charger details and BIS number ([D041](../../decisions/D041-gate-a-round-1.md) line 30, F4) | **Hidden** (the whole row); the charger stays in the box tab; question 7 (BIS registration) |
+| Fold 7 Safety | `[PLACEHOLDER F4: toy-safety age grading and any required warnings]` | From the test report ([age-band review](../../product/age-band-review.md) rows 31-32, F4) | **Hidden** (the whole line); question 7 |
+| Fold 7 Safety | `[PLACEHOLDER F4: battery safety certification]` | F4 ([claims](../../product/claims.md) line 312) | **Hidden** (the whole line); question 7 |
+| Fold 7 Declarations | `[PLACEHOLDER F4: net quantity]` | [D034](../../decisions/D034-origin-manufacturer-mrp.md) lines 20-21 | **Hidden** (the whole row); question 7 |
+| Fold 7 Declarations | `[PLACEHOLDER F4: month and year of manufacture]` | [D034](../../decisions/D034-origin-manufacturer-mrp.md) lines 20-21 | **Hidden** (the whole row); question 7 |
+
+When a value arrives, its row or line returns in the approved place with the approved label, as one more change
+after approval.
 
 Pending assets (not placeholders in the copy, but needed for the mockup): `mockup/assets/app/app-transcript.webp`,
 `app-activity.webp`, `app-privacy.webp` (being produced). Their draft alt texts must be checked against the
@@ -809,6 +832,15 @@ Each with options and a recommendation.
    under. (a) Keep the product page factual and answer Common Sense Media once, on `/safety` (working default
    B3). (b) Add one sentence and a link to that answer here. **Recommend (a)**, with (b) once the signed
    `/safety` answer exists.
+7. **The hidden declarations and certifications (new, task 6.7; L4).** D054 item 19 hides every F4 row still
+   without a final value. Some of them are more than specs: the net quantity and the dimensions (the Legal Metrology
+   rules want both on the selling page; only the month and year are exempt online,
+   [legal requirements](../../product/legal-requirements.md) H4), the month and year of manufacture (on the box),
+   the charger and battery BIS registration (H5) and the toy-safety age grading and warnings. (a) As D054 decides:
+   hidden until each value arrives, all back before the first dispatch (mid-November); (b) the same, but the
+   founder sends the net quantity and the size before Gate B, so the declarations the page must carry while it
+   takes orders are there from launch. **Recommend (b)**: those two need no test report, only the final product;
+   the others follow as (a).
 
 ---
 
@@ -825,3 +857,34 @@ Each with options and a recommendation.
 - **Never animated:** the hero, the H1, every price sentence, every chilli button, the OfferCard, the safety
   facts (CMO V3).
 - **Production is untouched** until Gate B ([D011](../../decisions/D011-production-held-until-gate-b.md)).
+
+## Changes after approval (task 6.7)
+
+Applied from the founder's answers of 2026-10-14 ([D054](../../decisions/D054-founder-answers-open-questions-2026-10-14.md)
+item 19, [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 26). Every other line of the
+Copy blocks stands word for word as approved at Gate A (D046); the fold 8 note on deviation V6 is unchanged.
+
+- **Fold 7, Specs, the parent-app row (D055 item 26).** The slot "[which phones the parent app runs on]" becomes
+  "On iPhone and Android." It says only that: no app name, store links or version numbers (the founder gave none
+  for this row; `/setup` carries the links).
+- **Fold 4, Good to know (D054 item 19).** The F4 slot "[battery life per charge and charging time]" comes off,
+  hidden until final values arrive. "It charges with the charger in the box." stays as approved.
+- **Fold 7 (D054 item 19).** Hidden until final values arrive, each a whole row or line, since none reads without
+  its value: Specs "Size and weight", "Materials", "Battery", "Charger"; Safety "Age grading and warnings",
+  "Battery safety"; Declarations "Net quantity", "Month and year of manufacture". The In the box tab (Kheelu plush
+  toy, charger, quick-start card), the three confirmed Safety lines, and MRP, origin, manufacturer and consumer care
+  stay. The legal weight of some of these rows is question 7.
+- **Notes kept true:** fold 7's fold job and placeholder note, fold 4's notes, both source tables, the Placeholders
+  table (now with a "Now" column) and question 7 (new). Title, meta descriptions, H1 and every word count stated on
+  the page are unchanged (the FAQ counts, the hero budgets and fold 4's 30-word lead are outside the change). The
+  page loses 19 words of row labels and gains four, with no "Kheelu" among them, so the keyword table's
+  "about 1,550" words and its densities hold at their stated precision (not recounted here).
+- **For the builder (not edited here):** `src/content/en-IN/products/kheelu/product.ts` takes "On iPhone and
+  Android." in place of the parent-app row's `{ph:…}` token and drops the four F4 spec rows, the two F4 safety lines
+  and the two F4 declaration rows; `src/content/en-IN/products/kheelu/page.ts` drops the `{ph:F4 …}` token from the
+  charging line. If anything else reads those rows (the Product JSON-LD or `llms.txt`, for example), it follows the
+  module; not checked here.
+  **Deviations for the main session to list at the merge** (D055, "What it changes in the build"): the Specs,
+  Safety and Declarations panels are shorter than the mockup's (visual chunks below fold 7 move up; the V3
+  JavaScript-off text pass changes too), and the parent-app row and the Good to know line differ from the mockup's
+  placeholder text.

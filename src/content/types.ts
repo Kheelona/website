@@ -605,8 +605,9 @@ export interface LegalTemplateCopy {
   readonly updated: RichTextString;
   /** The contents list's heading: "On this page". */
   readonly contents: RichTextString;
-  /** The second line of every grievance card: how a complaint gets its reference (an open fact, a placeholder). */
-  readonly grievanceNote: RichTextString;
+  /** The second line of every grievance card: how a complaint gets its reference. Left out while no system issues one
+   *  (D055 item 7), and the card is its D032 line alone. */
+  readonly grievanceNote?: RichTextString;
   /** The reference close's help line (privacy, terms): seller.help, the line beside every chilli button. */
   readonly help: HelpLineCopy;
 }

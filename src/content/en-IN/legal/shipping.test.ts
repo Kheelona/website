@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { CONTACT_EMAIL, GSTIN, SUPPORT_WHATSAPP_DISPLAY, SUPPORT_WHATSAPP_HREF } from "@/config/site";
 import type { LegalPart } from "@/content/types";
 import { toPlainText } from "@/lib/content/plain-text";
-import { isPlaceholder, placeholderText } from "@/lib/content/placeholder";
+import { isPlaceholder } from "@/lib/content/placeholder";
 import { buildOffer } from "@/lib/offer/offer";
 import { TYPED_AMOUNT } from "@/lib/seo/price-lead";
 import { CTAS, CTA_IDS } from "@/lib/tracking/cta";
@@ -22,7 +22,8 @@ import { shippingPage } from "./shipping";
  * it (D029); the delivery line from the one delivery value, never typed, in the page and in the meta description alike
  * (D023; shipping.md "Notes for the build"); amounts only as price tokens (D028); the seller, grievance and contact facts
  * and the policy numbers read from their modules, never retyped (D032, D021, D022, D024; 4.4's guard: no GSTIN); the
- * placeholders exactly the copy page's; the `shipping-learn` close (architecture §8.3). */
+ * no placeholder left, each filled or ruled off by the founder (task 6.7; D055 items 7-9); the `shipping-learn` close
+ * (architecture §8.3). */
 
 const SOURCE = readRepoFile("src/content/en-IN/legal/shipping.ts");
 /** The module without its comments, for the "never typed" rules (a comment may name what a value says). */
@@ -100,9 +101,8 @@ describe("the shipping page: a draft until the founder approves it (D029)", () =
     expect(shippingPage.status).toBe("draft");
   });
 
-  it("prints its approval date as the copy page's placeholder, with no open-item id (shipping.md fold 1)", () => {
-    expect(isPlaceholder(shippingPage.approvedOn)).toBe(true);
-    expect(shippingPage.approvedOn).toMatchObject({ id: null, note: "the date the founder approves this page" });
+  it("is last updated on the founder's date, 14 October 2026 (D055 item 8; shipping.md fold 1)", () => {
+    expect(shippingPage.approvedOn).toBe("2026-10-14");
   });
 });
 
@@ -234,14 +234,12 @@ describe("the shipping page: amounts, placeholders and the close", () => {
     expect([...tokens].sort()).toEqual(["balance", "launch", "token"]);
   });
 
-  it("carries exactly the copy page's placeholders: the approval date and the parcel lost in transit (the complaint reference is the template's)", () => {
-    const inline = strings(shippingPage).flatMap((s) => [...s.matchAll(/\{ph:([^}]*)\}/g)].map((m) => m[1]));
-    expect(placeholderText(shippingPage.approvedOn as Exclude<typeof shippingPage.approvedOn, string>)).toBe(
-      "[PLACEHOLDER: the date the founder approves this page]",
-    );
-    expect(inline).toEqual([
-      "what we do if a parcel is lost in transit, for example “we send a replacement, or refund you in full if you’d rather” (no number of days)",
-    ]);
+  it("carries no placeholder: the date is the founder's and the lost-parcel line is off the page (D055 items 8 and 9)", () => {
+    expect(strings(shippingPage).filter((s) => s.includes("{ph:"))).toEqual([]);
+    expect(SOURCE).not.toMatch(/\{ph:|placeholder\(/);
+    // Item 9: "If it doesn’t arrive." keeps its approved sentence, word for word, and promises no remedy.
+    expect(partText("problems")).toContain("If the tracking stops moving or the parcel doesn’t reach you, call or message us with your order number.");
+    expect(partText("problems")).not.toMatch(/lost in transit|send a replacement/);
   });
 
   it("ends with “Still deciding?”, the Meet Kheelu link carrying shipping-learn and the refund page as a ghost link, no pre-order button", () => {
@@ -259,8 +257,19 @@ describe("the shipping page: amounts, placeholders and the close", () => {
 });
 
 describe("the shipping page: parity and boundaries", () => {
-  it("is the template's parity reference word for word: the approved shipping.html as content (test/fixtures/legal/shipping.ts)", () => {
-    expect(shippingPage).toEqual(shippingFixture);
+  it("is the template's parity reference word for word: the approved shipping.html as content (test/fixtures/legal/shipping.ts), with the founder's facts", () => {
+    /** The fixture with D055 items 8 and 9 applied (shipping.md "Changes after approval"); item 7 is the template's. */
+    const LOST_PARCEL = /\s*\{ph:what we do if a parcel is lost in transit[^}]*\}/;
+    const withFacts = (value: unknown): unknown =>
+      typeof value === "string"
+        ? value.replace(LOST_PARCEL, "")
+        : Array.isArray(value)
+          ? value.map(withFacts)
+          : value && typeof value === "object" && !isPlaceholder(value)
+            ? Object.fromEntries(Object.entries(value).map(([k, v]) => [k, withFacts(v)]))
+            : value;
+    expect(JSON.stringify(shippingFixture)).toMatch(LOST_PARCEL);
+    expect(shippingPage).toEqual({ ...(withFacts(shippingFixture) as object), approvedOn: "2026-10-14" });
   });
 
   it("is a content module: types from content/types only, values from content, lib and the DS assets (structure §6)", () => {

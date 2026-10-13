@@ -14,7 +14,14 @@ import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "nod
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
-import { PLACEHOLDER_TOKEN_HINT, placeholder, placeholderText } from "@/lib/content/placeholder";
+import {
+  isHiddenPlaceholder,
+  isPlaceholder,
+  PLACEHOLDER_TOKEN_HINT,
+  placeholder,
+  placeholderText,
+  withoutHiddenSlots,
+} from "@/lib/content/placeholder";
 import {
   EXCLUDED,
   decide,
@@ -48,8 +55,8 @@ function tree(files: Record<string, string | Buffer>): string {
 }
 
 const CLEAN_MODULE = `export const offer = { line: "Kheelu is {price:headline} (incl. GST)" };\n`;
-const PLANTED_MODULE = `export const specs = [\n  { term: "Size and weight", value: "{ph:F4 size and weight}" },\n];\n`;
-const PLANTED_PATH = "src/content/en-IN/fixture-specs.ts";
+const PLANTED_MODULE = `export const team = [\n  { term: "Recognition", value: "{ph:F11 proof of the recognition}" },\n];\n`;
+const PLANTED_PATH = "src/content/en-IN/fixture-team.ts";
 
 /** Runs a script under exactly these environment variables (the parent's are not inherited, so
  *  a KH_SITE_ENV or VERCEL_ENV in the shell running the tests cannot change the answer). */
@@ -125,12 +132,12 @@ describe("scanSource: src/ before next build", () => {
     expect(scan.missing).toBe(false);
     expect(scan.files).toBe(2);
     expect(scan.findings).toEqual([
-      expect.objectContaining({ file: PLANTED_PATH, line: 2, pattern: "token", excerpt: expect.stringContaining("{ph:F4 size and weight}") }),
+      expect.objectContaining({ file: PLANTED_PATH, line: 2, pattern: "token", excerpt: expect.stringContaining("{ph:F11 proof of the recognition}") }),
     ]);
   });
 
   it("never trips on the two files that define the syntax, whatever they hold", () => {
-    const all = `{ph:F4 x}\nplaceholder("F4", "x")\n[PLACEHOLDER F4: x]\nstatus: "draft"\n`;
+    const all = `{ph:F11 x}\nplaceholder("F11", "x")\n[PLACEHOLDER F11: x]\nstatus: "draft"\n`;
     expect(EXCLUDED).toEqual(["src/lib/content/placeholder.ts", "src/content/types.ts"]);
     const scan = scanSource(tree({ "src/lib/content/placeholder.ts": all, "src/content/types.ts": all }));
     expect(scan.findings).toEqual([]);
@@ -138,7 +145,7 @@ describe("scanSource: src/ before next build", () => {
   });
 
   it("excludes by exact path only: the same names anywhere else are scanned", () => {
-    const token = `export const x = "{ph:F4 x}";\n`;
+    const token = `export const x = "{ph:F11 x}";\n`;
     const scan = scanSource(
       tree({
         "src/lib/content/placeholder.tsx": token,
@@ -159,13 +166,13 @@ describe("scanSource: src/ before next build", () => {
      printed; the postbuild scan of the prerendered output still covers everything that ships. */
   const NEVER_SHIPPED_FILES = {
     "src/components/ui/X/X.test.tsx": "[PLACEHOLDER F4: x]",
-    "src/lib/content/placeholder.test.ts": "{ph:F4 x}",
-    "src/components/ui/X/X.spec.ts": "{ph:F4 x}",
-    "src/components/ui/X/X.test-d.tsx": "{ph:F4 x}",
+    "src/lib/content/placeholder.test.ts": "{ph:F11 x}",
+    "src/components/ui/X/X.spec.ts": "{ph:F11 x}",
+    "src/components/ui/X/X.test-d.tsx": "{ph:F11 x}",
     "src/components/ui/X/X.stories.tsx": "[PLACEHOLDER F4: x]",
-    "src/components/ui/X/X.stories.mdx": "{ph:F4 x}",
+    "src/components/ui/X/X.stories.mdx": "{ph:F11 x}",
     "src/components/ui/X/__snapshots__/X.test.tsx.snap": "[PLACEHOLDER F4: x]",
-    "src/lib/seo/schema/__snapshots__/notes.txt": "{ph:F4 x}",
+    "src/lib/seo/schema/__snapshots__/notes.txt": "{ph:F11 x}",
     "src/lib/seo/schema/__fixtures__/schema-fixture.html": "[PLACEHOLDER F4: x]",
     "src/content/__fixtures__/legal/privacy.ts": `export const privacy = { status: "draft" };\n`,
   };
@@ -184,7 +191,7 @@ describe("scanSource: src/ before next build", () => {
     ["a fixtures folder without the underscores", "src/content/fixtures/x.ts"],
     ["a snapshot-like name outside __snapshots__", "src/lib/x.snap.ts"],
   ])("still scans %s (%s)", (_name, path) => {
-    const scan = scanSource(tree({ [path]: `export const x = "{ph:F4 x}";\n` }));
+    const scan = scanSource(tree({ [path]: `export const x = "{ph:F11 x}";\n` }));
     expect(scan.findings.map((f: { file: string }) => f.file)).toEqual([path]);
     expect(scan.notShipped).toBe(0);
   });
@@ -193,7 +200,7 @@ describe("scanSource: src/ before next build", () => {
      never reads them; a shipped file importing a fixture slipped past both scans. A never-shipped
      file that shipped code imports (relative or @/, followed through every hop) ships, so it is
      scanned and named. */
-  const FIXTURE_NOTE = `export const note = { text: "{ph:F4 battery}", status: "draft" };\n`;
+  const FIXTURE_NOTE = `export const note = { text: "{ph:F11 recognition}", status: "draft" };\n`;
 
   it("scans a fixture a shipped store route imports, and production refuses it", () => {
     const root = tree({
@@ -224,8 +231,8 @@ describe("scanSource: src/ before next build", () => {
     const scan = scanSource(
       tree({
         "src/lib/shipped.ts": `${importer}\n`,
-        [target]: `export const note = "{ph:F4 x}";\n`,
-        "src/lib/__fixtures__/other.ts": `export const other = "{ph:F4 y}";\n`,
+        [target]: `export const note = "{ph:F11 x}";\n`,
+        "src/lib/__fixtures__/other.ts": `export const other = "{ph:F11 y}";\n`,
       }),
     );
     expect(scan.findings.map((f: { file: string }) => f.file)).toEqual([target]);
@@ -237,7 +244,7 @@ describe("scanSource: src/ before next build", () => {
       tree({
         "src/lib/a.ts": `export { b } from "@/lib/__fixtures__/b";\n`,
         "src/lib/__fixtures__/b.ts": `export * from "./c.test-d";\n`,
-        "src/lib/__fixtures__/c.test-d.ts": `export const c = "{ph:F4 c}";\n`,
+        "src/lib/__fixtures__/c.test-d.ts": `export const c = "{ph:F11 c}";\n`,
       }),
     );
     expect(scan.findings.map((f: { file: string }) => f.file)).toEqual(["src/lib/__fixtures__/c.test-d.ts"]);
@@ -296,14 +303,14 @@ describe("scanSource: src/ before next build", () => {
   });
 
   it("skips binary files and dot-files, and never reads outside src/", () => {
-    const binary = Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x00, 0x00]), Buffer.from("{ph:F4 x}")]);
+    const binary = Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x00, 0x00]), Buffer.from("{ph:F11 x}")]);
     const scan = scanSource(
       tree({
         "src/assets/app/shot.webp": binary,
-        "src/.compose.tmp": "{ph:F4 x}",
-        "src/.cache/x.ts": "{ph:F4 x}",
-        "scripts/x.mjs": "{ph:F4 x}",
-        "test/x.test.ts": "{ph:F4 x}",
+        "src/.compose.tmp": "{ph:F11 x}",
+        "src/.cache/x.ts": "{ph:F11 x}",
+        "scripts/x.mjs": "{ph:F11 x}",
+        "test/x.test.ts": "{ph:F11 x}",
         "src/content/en-IN/offer.ts": CLEAN_MODULE,
       }),
     );
@@ -314,6 +321,203 @@ describe("scanSource: src/ before next build", () => {
   it("says when there is no src/ to scan", () => {
     expect(scanSource(tree({ "README.md": "x" })).missing).toBe(true);
   });
+});
+
+/* ── D054 item 19: an F4 slot is hidden, not refused (task 6.7) ──────────── */
+
+/* The founder's ruling: a row or line still waiting on an F4 value (the product's final specs) comes off the page
+   instead of blocking the build. The content layer drops it before anything renders (withoutHiddenRows,
+   src/lib/content/placeholder.ts), so the slot stays in the source, where its value lands, and the source scan lists it
+   as hidden instead of refusing it. Nothing else changes: every other slot, a typed marker (F4 too) and a draft are
+   refused as before, and the output scan refuses an F4 slot that reached a page, since nothing of it may render. */
+describe("D054 item 19: the source scan lets an F4 slot stay, hidden, and refuses every other", () => {
+  const HIDDEN_MODULE = [
+    'import { placeholder, withoutHiddenRows } from "@/lib/content/placeholder";',
+    "export const specs = withoutHiddenRows([",
+    '  { term: "Size and weight", value: "{ph:F4 size and weight}" },',
+    '  { term: "Net quantity", value: placeholder("F4", "net quantity") },',
+    '  { term: "Charger", value: placeholder(\'F4\', "charger type") },',
+    '], "value");',
+    "",
+  ].join("\n");
+  const HIDDEN_PATH = "src/content/en-IN/fixture-specs.ts";
+
+  it("lists the F4 slots as hidden, by file and line, and finds nothing to refuse", () => {
+    const scan = scanSource(tree({ [HIDDEN_PATH]: HIDDEN_MODULE }));
+    expect(scan.findings).toEqual([]);
+    expect(scan.hidden.map((h: { file: string; line: number; label: string }) => `${h.file}:${h.line} ${h.label}`)).toEqual([
+      `${HIDDEN_PATH}:3 {ph:} token`,
+      `${HIDDEN_PATH}:4 placeholder() call`,
+      `${HIDDEN_PATH}:5 placeholder() call`,
+    ]);
+  });
+
+  it("lets a production build through on hidden slots alone, and says how many it hid", () => {
+    const d = decide("production", scanSource(tree({ [HIDDEN_PATH]: HIDDEN_MODULE })));
+    expect(d.code).toBe(0);
+    const out = d.out.join("\n");
+    expect(out).toMatch(/no open placeholders/i);
+    expect(out).toContain("[placeholders] hidden until their value arrives, never rendered (D054 item 19): 3 F4 slots in 1 file");
+    expect(d.err).toEqual([]);
+  });
+
+  it("names the hidden slots for the founder on beta, beside the open ones", () => {
+    const scan = scanSource(tree({ [HIDDEN_PATH]: HIDDEN_MODULE, [PLANTED_PATH]: PLANTED_MODULE }));
+    const out = decide("beta", scan).out.join("\n");
+    expect(out).toContain("1 open placeholder");
+    expect(out).toContain(`${HIDDEN_PATH}:3`);
+    expect(out).toContain("{ph:F4 size and weight}");
+  });
+
+  it.each([
+    ["an open item that is not F4", `"{ph:F11 proof of the recognition}"`, "token"],
+    ["an id that only starts like F4", `"{ph:F41 a later item}"`, "token"],
+    ["a slot with no open item", `"{ph:region}"`, "token"],
+    ["a helper call that is not F4", `placeholder("B24", "founder photo")`, "helper"],
+    ["a helper call with no id", `placeholder(null, "the approval date")`, "helper"],
+    ["an F4 marker typed in the source (it would render)", `"[PLACEHOLDER F4: size and weight]"`, "marker"],
+    ["a draft legal document", `status: "draft",`, "draft"],
+  ])("still refuses %s in production", (_name, plant, pattern) => {
+    const scan = scanSource(tree({ [HIDDEN_PATH]: HIDDEN_MODULE, "src/content/en-IN/other.ts": `export const x = ${plant};\n` }));
+    expect(scan.findings.map((f: { file: string; pattern: string }) => `${f.file} ${f.pattern}`)).toEqual([`src/content/en-IN/other.ts ${pattern}`]);
+    expect(scan.hidden).toHaveLength(3);
+    expect(decide("production", scan).code).toBe(1);
+  });
+
+  /* Only the content layer drops a hidden slot (withoutHiddenRows), and the output scan never reads the dynamic routes
+     (/store/*, /api/*): an F4 slot anywhere else in src/ would render, so it is refused like any other. */
+  it.each([
+    ["a store route (dynamic, never prerendered)", "src/app/store/not-found.tsx", `export const storeSpec = "{ph:F4 battery}";\n`, "token"],
+    ["a component", "src/components/ui/X/X.tsx", `export const spec = placeholder("F4", "battery");\n`, "helper"],
+    ["a folder that only starts like src/content", "src/contents/x.ts", `export const spec = "{ph:F4 battery}";\n`, "token"],
+  ])("still refuses an F4 slot outside src/content/ in production: %s", (_name, file, text, pattern) => {
+    const scan = scanSource(tree({ [HIDDEN_PATH]: HIDDEN_MODULE, [file]: text }));
+    expect(scan.findings.map((f: { file: string; pattern: string }) => `${f.file} ${f.pattern}`)).toEqual([`${file} ${pattern}`]);
+    expect(scan.hidden.map((h: { file: string }) => h.file)).toEqual([HIDDEN_PATH, HIDDEN_PATH, HIDDEN_PATH]);
+    expect(decide("production", scan).code).toBe(1);
+  });
+
+  /* In a content module too, only a slot inside a withoutHiddenRows( … ) call, imported from the placeholder module,
+     is dropped: a value no such call holds renders as it is (6.7 review, round 2: an F4 slot in a store summary's note
+     was listed as hidden, and the dynamic /store route would have printed it in production). */
+  const IMPORT = 'import { placeholder, withoutHiddenRows } from "@/lib/content/placeholder";\n';
+  it.each([
+    ["a value no withoutHiddenRows call holds (a store summary's note)", `export const delivery = { note: "{ph:F4 charger type}" };\n`, "token"],
+    [
+      "a slot after the call has closed",
+      `${IMPORT}export const a = withoutHiddenRows([{ value: "x" }], "value");\nexport const b = "{ph:F4 x}";\n`,
+      "token",
+    ],
+    [
+      "a slot before the call opens",
+      `${IMPORT}export const b = placeholder("F4", "x");\nexport const a = withoutHiddenRows([{ value: "x" }], "value");\n`,
+      "helper",
+    ],
+    ["a call to a look-alike name", `${IMPORT}export const a = myWithoutHiddenRows([{ value: "{ph:F4 x}" }], "value");\n`, "token"],
+    [
+      "a call to a withoutHiddenRows the module never imports",
+      `const withoutHiddenRows = (rows) => rows;\nexport const a = withoutHiddenRows([{ value: "{ph:F4 x}" }], "value");\n`,
+      "token",
+    ],
+    ["a call opened only in comments", `${IMPORT}/* withoutHiddenRows( */ export const a = "{ph:F4 x}"; // )\n`, "token"],
+    ["a call opened only in strings", `${IMPORT}export const a = ["withoutHiddenRows(", "{ph:F4 x}", ")"];\n`, "token"],
+    ["a call that never closes", `${IMPORT}export const a = withoutHiddenRows([{ value: "{ph:F4 x}" }];\n`, "token"],
+  ])("still refuses an F4 slot in a content module that no withoutHiddenRows call drops: %s", (_name, text, pattern) => {
+    const file = "src/content/en-IN/store/order-summary.ts";
+    const scan = scanSource(tree({ [HIDDEN_PATH]: HIDDEN_MODULE, [file]: text }));
+    expect(scan.findings.map((f: { file: string; pattern: string }) => `${f.file} ${f.pattern}`)).toEqual([`${file} ${pattern}`]);
+    expect(scan.hidden.map((h: { file: string }) => h.file)).toEqual([HIDDEN_PATH, HIDDEN_PATH, HIDDEN_PATH]);
+    expect(decide("production", scan).code).toBe(1);
+  });
+
+  it("keeps a slot hidden past the brackets, strings, comments and template literals inside the call", () => {
+    const text = [
+      IMPORT.trimEnd(),
+      "export const specs = withoutHiddenRows([",
+      "  { term: \"Languages (at launch)\", value: `${names.slice(0, -1).join(\", \")} and more)` },",
+      "  { term: \"Note\", value: 'a ) and a } inside a string' }, // a ) in a comment",
+      "  /* and a ) here */",
+      "  { term: \"Nested\", value: `x ${`y ${f(\")\")}`} z)` },",
+      "  { term: \"Size and weight\", value: \"{ph:F4 size and weight}\" },",
+      "  { term: \"Battery\", value: placeholder(\"F4\", \"battery\") },",
+      "], \"value\");",
+      "",
+    ].join("\n");
+    const scan = scanSource(tree({ [HIDDEN_PATH]: text }));
+    expect(scan.findings).toEqual([]);
+    expect(scan.hidden.map((h: { line: number }) => h.line)).toEqual([7, 8]);
+  });
+
+  it("stops the production prebuild step on an F4 slot in a content module that no withoutHiddenRows call drops", () => {
+    const file = "src/content/en-IN/store/order-summary.ts";
+    const root = tree({ [HIDDEN_PATH]: HIDDEN_MODULE, [file]: `export const delivery = { note: "{ph:F4 charger type}" };\n` });
+    const r = run(PREBUILD_STEP, ["--root", root], { KH_SITE_ENV: "production" });
+    expect(r.code, r.all).toBe(1);
+    expect(r.all).toContain(`${file}:1`);
+  });
+
+  it("stops the production prebuild step on an F4 slot in a store route", () => {
+    const root = tree({ [HIDDEN_PATH]: HIDDEN_MODULE, "src/app/store/not-found.tsx": `export const storeSpec = "{ph:F4 battery}";\n` });
+    const r = run(PREBUILD_STEP, ["--root", root], { KH_SITE_ENV: "production" });
+    expect(r.code, r.all).toBe(1);
+    expect(r.all).toContain("src/app/store/not-found.tsx:1");
+  });
+
+  it("refuses an F4 slot that reached the prerendered output: nothing of it may render", () => {
+    const APP = ".next/server/app";
+    const scan = scanBuild(
+      tree({
+        [`${APP}/products/kheelu.html`]: "<main><dd>[PLACEHOLDER F4: size and weight]</dd></main>",
+        [`${APP}/setup.html`]: `<main><script>self.__next_f.push([1,"{ph:F4 the charger type}"])</script></main>`,
+      }),
+    );
+    expect(scan.findings.map((f: { file: string; pattern: string }) => `${f.file} ${f.pattern}`).sort()).toEqual([
+      "products/kheelu.html marker",
+      "setup.html token",
+    ]);
+    expect(decide("production", scan).code).toBe(1);
+  });
+
+  it("reads which items are hidden from src/lib/content/placeholder.ts, and restates none of them", () => {
+    const source = readFileSync(GUARD, "utf8");
+    expect(source).toMatch(/from "\.\.\/\.\.\/src\/lib\/content\/placeholder\.ts"/);
+    expect(source).toContain("isHiddenPlaceholder(");
+    expect(source.replace(/\/\/.*$|\/\*[\s\S]*?\*\//gm, "")).not.toMatch(/["'`]F4/);
+  });
+
+  it("runs as the prebuild step: green in production on hidden slots alone, with no Node warning", () => {
+    const r = run(PREBUILD_STEP, ["--root", tree({ [HIDDEN_PATH]: HIDDEN_MODULE })], { KH_SITE_ENV: "production" });
+    expect(r.code, r.all).toBe(0);
+    expect(r.out).toContain("3 F4 slots in 1 file");
+    expect(r.all).not.toMatch(/Warning/);
+  });
+});
+
+/* The exemption is safe only while every hidden slot in the live tree is dropped before anything renders: the output
+   scan never reads the dynamic routes (/store/*, /api/*), so an F4 slot a component printed there would reach a parent.
+   So each one must sit in a content module, and no value that module exports may still hold it. */
+describe("D054 item 19: every hidden slot in the live src/ is dropped before anything renders", () => {
+  const live = scanSource(REPO);
+  const files = [...new Set(live.hidden.map((h: { file: string }) => h.file))] as string[];
+
+  /** Every string and placeholder a module exports, deep (images, functions and cycles skipped). */
+  function values(value: unknown, seen = new Set<unknown>()): unknown[] {
+    if (typeof value === "string" || isPlaceholder(value)) return [value];
+    if (!value || typeof value !== "object" || seen.has(value)) return [];
+    seen.add(value);
+    return Object.values(value).flatMap((v) => values(v, seen));
+  }
+
+  it("finds the live tree's hidden slots, each in a content module", () => {
+    expect(files.length).toBeGreaterThan(0);
+    for (const file of files) expect(file, "a hidden slot outside src/content/ is never dropped").toMatch(/^src\/content\/.+\.ts$/);
+  });
+
+  it.each(files.map((file) => [file]))("%s exports no value that still holds a hidden slot", async (file) => {
+    const mod: Record<string, unknown> = await import(/* @vite-ignore */ join(REPO, file));
+    const held = values(mod).filter((v) => (typeof v === "string" ? withoutHiddenSlots(v) !== v : isHiddenPlaceholder(v)));
+    expect(held).toEqual([]);
+  }, 60_000);
 });
 
 /* ── the prerendered-output scan ──────────────────────────────────────────── */
@@ -401,7 +605,7 @@ describe("decide: production refuses, every other environment reports", () => {
     const out = d.out.join("\n");
     expect(out).toContain("1 open placeholder");
     expect(out).toContain(`${PLANTED_PATH}:2`);
-    expect(out).toContain("{ph:F4 size and weight}");
+    expect(out).toContain("{ph:F11 proof of the recognition}");
     expect(d.err).toEqual([]);
   });
 
@@ -414,7 +618,7 @@ describe("decide: production refuses, every other environment reports", () => {
 
   it("prints how many files were not scanned because they never ship, on every source run", () => {
     const withTests = (files: Record<string, string>) =>
-      scanSource(tree({ ...files, "src/a/A.test.tsx": "{ph:F4 x}", "src/a/A.stories.tsx": "x", "src/a/__fixtures__/f.html": "x" }));
+      scanSource(tree({ ...files, "src/a/A.test.tsx": "{ph:F11 x}", "src/a/A.stories.tsx": "x", "src/a/__fixtures__/f.html": "x" }));
     const runs = [
       decide("production", withTests({ "src/content/en-IN/offer.ts": CLEAN_MODULE })),
       decide("production", withTests({ [PLANTED_PATH]: PLANTED_MODULE })),

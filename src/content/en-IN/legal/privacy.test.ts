@@ -6,7 +6,6 @@ import type { LegalBlock, LegalPart, ToolsBlock } from "@/content/types";
 import { CAMPAIGN_COOKIE } from "@/lib/campaign";
 import { CLICK_ID_COOKIE } from "@/lib/click-id";
 import { toPlainText } from "@/lib/content/plain-text";
-import { isPlaceholder } from "@/lib/content/placeholder";
 import { buildOffer } from "@/lib/offer/offer";
 import { THANKS_COOKIE, THANKS_COOKIE_MAX_AGE_SECONDS } from "@/lib/store/thanks-session";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
@@ -20,9 +19,11 @@ import { ORDER_DATA_LOCATION, privacyPage } from "./privacy";
 /* The /privacy module (task 5.11; structure §5 row privacy.html; wiki/site/pages/privacy.md, the approved mockup
  * mockup/pages/privacy.html, D046). Its words against the approved page are the route's test (every word of <main>, the
  * markup with it); this file holds the rules the plan sets for this page: a draft until the founder approves it (D029),
- * every measuring tool in a block of its own and never a count of them (privacy.md section 5), the order-data location a
- * placeholder until the Supabase move is confirmed (D047, ADR-009), Kheelona's own model disclosed as D035 asks, the
- * cookies named as the code names them, and the shared facts (seller, policy numbers) read, never retyped. */
+ * every measuring tool in a block of its own and never a count of them (privacy.md section 5), the order-data location
+ * D047's Australia until the founder says the Supabase store has moved (D055 item 24, ADR-009), Kheelona's own model
+ * disclosed as D035 asks in the founder's words (D055 item 12), the founder's other page facts (task 6.7: D055 items 7,
+ * 8 and 13-24, D054 item 12; no placeholder left), the cookies named as the code names them, and the shared facts
+ * (seller, policy numbers) read, never retyped. */
 
 /* The route reads the live offer for its template (the rendered-page count rule); the page names no amount. */
 const getOffer = vi.hoisted(() => vi.fn());
@@ -94,9 +95,8 @@ describe("the privacy page: a draft until the founder approves it (D029)", () =>
     expect(privacyPage.status).toBe("draft");
   });
 
-  it("prints its approval date as the copy page's placeholder, with no open-item id (privacy.md fold 1)", () => {
-    expect(isPlaceholder(privacyPage.approvedOn)).toBe(true);
-    expect(privacyPage.approvedOn).toMatchObject({ id: null, note: "the date the founder approves this text" });
+  it("is last updated on the founder's date, 14 October 2026 (D055 item 8; privacy.md fold 1)", () => {
+    expect(privacyPage.approvedOn).toBe("2026-10-14");
   });
 });
 
@@ -241,11 +241,10 @@ describe("the privacy page: where order data lives (D047, ADR-009)", () => {
     expect(SOURCE.match(/\bwhere: ORDER_DATA_LOCATION\b/g), "read by one recipient row").toHaveLength(1);
   });
 
-  /* Until the founder confirms the move to Mumbai (architecture §15.6), the production build refuses the page; the main
-   * session then writes India here (ADR-009: if the move slips past launch, Australia, never a guess). */
-  it("is a placeholder until the move is confirmed, never a guessed country", () => {
-    if (ORDER_DATA_LOCATION.startsWith("{ph:")) expect(ORDER_DATA_LOCATION).toBe("{ph:region}");
-    else expect(["India", "Australia"]).toContain(ORDER_DATA_LOCATION);
+  /* The founder chose not to answer the move question (D055 item 24), so the page states the fact D047 records, the
+   * Sydney region, until he says the store has moved; the main session then writes India here (ADR-009). */
+  it("is D047's Australia until the founder says the move is done, never a guessed country", () => {
+    expect(ORDER_DATA_LOCATION).toBe("Australia");
   });
 });
 
@@ -256,15 +255,19 @@ describe("the privacy page: Kheelona's own model (D035)", () => {
     expect(training).toContain("your child’s voice recordings and the transcripts of their conversations with Kheelu.");
     expect(training).toContain("Kheelona, to train our own model. We don’t sell it.");
     // A list item's bold lead and its text are two strings: "It’s on by default." then the rest.
-    expect(training).toContain("It’s on by default.\nYou can turn it off at any time:");
+    expect(training).toContain("It’s on by default.\nYou can turn it off at any time, with a switch in the parent app.");
     expect(training).toContain("From then on, your child’s conversations are not used to train our model.");
   });
 
-  it("holds the facts the founder has not given yet as visible placeholders: why, where and how to turn it off", () => {
+  it("says why, where, how to turn it off and what happens to what was used, in the founder's words (D055 item 12)", () => {
     const training = partText("training");
-    for (const note of ["the purpose in the founder’s words", "where our model is trained", "how a parent turns training off"]) {
-      expect(training).toContain(`[PLACEHOLDER: ${note}`);
-    }
+    expect(training).toContain("Why:\nto make Kheelu better at understanding and answering children aged 3 to 7.");
+    expect(training).toContain("Where:\nIndia, on Google Cloud.");
+    expect(training).toContain(
+      "We take them out of our training data. A model already trained keeps what it learned, but they are never used again.",
+    );
+    expect(training).toContain("Turning it off changes nothing else about how Kheelu or the parent app works.");
+    expect(TEXT).toContain("It’s on by default. You can turn it off with a switch in the parent app.");
   });
 
   it("keeps the providers' line scoped to the providers, and the short version says the model learns unless turned off", () => {
@@ -280,9 +283,9 @@ describe("the privacy page: Kheelona's own model (D035)", () => {
 });
 
 describe("the privacy page: shared facts read, never retyped", () => {
-  it("is a content module: it imports content shapes, lib and its sibling content only (structure §6)", () => {
+  it("is a content module: it imports content shapes and its sibling content only (structure §6)", () => {
     const imports = [...SOURCE.matchAll(/\bfrom\s+"([^"]+)"/g)].map((m) => m[1]);
-    expect(imports.sort()).toEqual(["../organization", "../policies", "../seller", "@/content/types", "@/lib/content/placeholder"]);
+    expect(imports.sort()).toEqual(["../organization", "../policies", "../seller", "@/content/types"]);
   });
 
   it("reads the support number, email, WhatsApp address and registered office from seller.ts, and never types the GSTIN", () => {
@@ -305,5 +308,81 @@ describe("the privacy page: shared facts read, never retyped", () => {
     expect(SOURCE).not.toMatch(/\{price:|\{delivery\}|₹/);
     const words = (offer: typeof token) => strings(privacyPage).map((s) => toPlainText(s, offer)).join("\n");
     expect(words(full)).toBe(words(token));
+  });
+});
+
+/* Task 6.7: the founder's answers of 2026-10-14 (D055 items 7, 8 and 13-24; D054 item 12), each in the place of the
+ * placeholder it fills; the lines he ruled off are gone. The route's test holds every word against the mockup with these
+ * facts applied (test/e2e/support/page-facts.ts); these pin the facts themselves. */
+describe("the privacy page: the founder's page facts (D055)", () => {
+  it("has no placeholder left: no token, no data helper, no draft date", () => {
+    expect(SOURCE).not.toMatch(/\{ph:|placeholder\(/);
+    expect(TEXT).not.toMatch(/PLACEHOLDER/);
+  });
+
+  it("names what the parent app keeps: the child's first name, the phone number and one-time code, the device and Wi‑Fi details (item 14)", () => {
+    const kheelu = partText("kheelu");
+    expect(kheelu).toContain("Your child’s first name:\nthe parent app asks for it.");
+    expect(kheelu).toContain(
+      "your phone number. You sign in with it and a one-time code. The account also keeps Kheelu’s serial or device ID, the name of the Wi‑Fi network Kheelu joins (not its password), and your phone’s model and operating system.",
+    );
+    expect(kheelu).not.toMatch(/alert/i);
+  });
+
+  it("uses recordings for the reply and training only (item 13), keeps consent in the founder's two sentences (item 15), and names no provider (item 16)", () => {
+    const kheelu = partText("kheelu");
+    expect(kheelu).toContain("Besides Kheelu’s reply and that training, we use them for nothing else.");
+    expect(kheelu).toContain(
+      "Setting Kheelu up in the parent app is how a parent or guardian agrees to this policy. A separate consent step, with a check that you are the parent or guardian, comes before May 2027.",
+    );
+    expect(kheelu).not.toMatch(/on request|which providers we use/);
+  });
+
+  it("lists every recipient with its region (items 16 and 24): the providers unnamed, conversations with Kheelona on Google Cloud", () => {
+    const recipients = part("who-else").blocks.find((b) => b.kind === "recipients");
+    const rows = recipients?.kind === "recipients" ? recipients.rows : [];
+    expect(rows.map((r) => [toPlainText(r.who), toPlainText(r.where)])).toEqual([
+      ["Speech and AI providers", "Servers in India"],
+      ["Kheelona, on Google Cloud", "India"],
+      ["Razorpay", "India"],
+      ["Supabase", "Australia"],
+      ["Resend", "United States"],
+      ["Vercel", "India (Mumbai) for the store’s server code"],
+      ["Google", "Google data centres around the world"],
+      ["Meta", "The United States and other countries"],
+      ["PostHog", "United States"],
+      ["Ahrefs", "United States"],
+    ]);
+  });
+
+  it("keeps things as the founder said (items 13 and 18-21): recordings and closed accounts by the 36 months, orders without a period", () => {
+    const keep = partText("keep");
+    expect(keep).toContain(`Voice recordings:\n${RETENTION_MONTHS} months, the same as transcripts.`);
+    expect(keep).toContain(`If you close your parent-app account:\nwe keep your child’s conversations and recordings until their ${RETENTION_MONTHS} months end.`);
+    expect(keep).toContain("Orders you’ve paid for:\nas long as Indian tax law requires, even after a refund.");
+    expect(keep).toContain("Unpaid orders:\nwe keep them until you ask us to delete them.");
+    expect(keep).toContain("PostHog:\nscreen recordings for 30 days.");
+    expect(partText("store")).toContain("If you start a pre-order and don’t pay, the details you entered are still saved, as an unpaid order. We keep them until you ask us to delete them.");
+  });
+
+  it("says plainly what a one-tap delete does not reach (item 17), and promises nothing about servers or backups", () => {
+    const rights = partText("rights");
+    expect(rights).toContain(
+      "In the parent app, you can delete any conversation in one tap. It disappears from your app straight away. It is not removed from Kheelu’s memory, or from the data our model trains on.",
+    );
+    expect(rights).not.toMatch(/servers|backups/);
+  });
+
+  it("keeps the confirmed security lines and the founder's breach sentence (items 22 and 23)", () => {
+    const paragraphs = part("security").blocks.map((b) => (b.kind === "p" && b.text !== undefined ? toPlainText(b.text) : b.kind));
+    expect(paragraphs).toEqual([
+      "Payments happen on Razorpay’s own form, so card, UPI and bank details never reach us. Only our team can read your order.",
+      "If your data is ever exposed, we tell you without delay, and the Data Protection Board as the law requires.",
+    ]);
+  });
+
+  it("leads the list of what blocking can't stop without counting (D054 item 12, P14)", () => {
+    expect(partText("choices")).toContain("What blocking can’t stop.");
+    expect(partText("choices")).not.toContain("Two things");
   });
 });

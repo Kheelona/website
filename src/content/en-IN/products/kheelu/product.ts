@@ -1,14 +1,18 @@
 import { KHEELU_LANGUAGES } from "@/config/site";
 import type { IconRef, IconText, RichTextString, SitePath } from "@/content/types";
+import { withoutHiddenRows } from "@/lib/content/placeholder";
 import { seller } from "../../seller";
 
 /**
  * Kheelu's product facts (architecture §6.1): the details panels and declarations of the product
  * page (mockup meet-kheelu.html fold 7, stacked as approved, N21), the languages and modes, and the
  * schema fields the Product JSON-LD takes (architecture §9.2). Owner page: wiki/product/facts.md;
- * D018 (wake-up button), D034 (origin, manufacturer, MRP), D036 (launch features). Open facts are
- * F4 placeholders, which the production build refuses until the founder supplies them.
- * The page's own sections live in products/kheelu/page.ts (task 5.2).
+ * D018 (wake-up button), D034 (origin, manufacturer, MRP), D036 (launch features). The parent app
+ * runs on iPhone and Android (D055 item 26). The final specs still open are F4 slots, kept here in their
+ * approved places under their approved labels: until the founder sends a value, `withoutHiddenRows`
+ * takes its row or line off every list, so nothing of it renders on any environment and the production
+ * build has nothing to refuse (D054 item 19; task 6.7); the box contents stay. A value replaces its slot
+ * here and its row comes back. The page's own sections live in products/kheelu/page.ts (task 5.2).
  */
 
 /** A definition-list row; an array value prints one line each. */
@@ -91,7 +95,7 @@ export const product = {
   modes,
   languages,
   languageCeiling,
-  specs: [
+  specs: withoutHiddenRows([
     { term: "Ages", value: `${ages.min} to ${ages.max}` },
     { term: "What it is", value: "A cream plush rabbit with a speaker in its tummy and rainbow-lined ears" },
     { term: "Screen", value: "None" },
@@ -109,19 +113,19 @@ export const product = {
     {
       term: "Parent app",
       value:
-        "Every conversation, word for word; a weekly report on four thinking skills; a new-word count. {ph:which phones the parent app runs on}",
+        "Every conversation, word for word; a weekly report on four thinking skills; a new-word count. On iPhone and Android.",
     },
     { term: "Size and weight", value: "{ph:F4 size and weight}" },
     { term: "Materials", value: "{ph:F4 outer fabric and filling}" },
     { term: "Battery", value: "{ph:F4 battery type, life per charge and charging time}" },
     { term: "Charger", value: "{ph:F4 charger type and its BIS registration number}" },
-  ],
+  ], "value"),
   box: [
     { icon: "package", text: "Kheelu plush toy" },
     { icon: "battery-charging", text: "Charger" },
     { icon: "book-open", text: "Quick-start card" },
   ],
-  safety: [
+  safety: withoutHiddenRows([
     {
       icon: "shield-check",
       text: "Every reply passes an age-graded safety layer, set to the age you enter in the parent app.",
@@ -133,8 +137,8 @@ export const product = {
     },
     { icon: "warning-circle", text: "Age grading and warnings: {ph:F4 toy-safety age grading and any required warnings}" },
     { icon: "battery-charging", text: "Battery safety: {ph:F4 battery safety certification}" },
-  ],
-  declarations: [
+  ], "text"),
+  declarations: withoutHiddenRows([
     { term: "MRP", value: "{price:mrp} (incl. of all taxes)" },
     { term: "Country of origin", value: seller.origin.country },
     { term: "Manufacturer", value: seller.manufacturer },
@@ -144,7 +148,7 @@ export const product = {
       term: "Consumer care",
       value: [seller.help.contact, `[${seller.support.email}](mailto:${seller.support.email})`],
     },
-  ],
+  ], "value"),
   schema: {
     id: "https://kheelona.com/products/lumi#product",
     name: "Kheelu by Kheelona",

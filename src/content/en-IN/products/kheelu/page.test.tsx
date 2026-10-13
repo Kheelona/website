@@ -10,12 +10,14 @@ import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../../test/e2e/support/page-checks";
-import { TEXT_DEVIATIONS } from "../../../../../test/e2e/support/deviations";
+import { TEXT_DEVIATIONS, VISUAL_HIDDEN } from "../../../../../test/e2e/support/deviations";
 import { htmlToText } from "../../../../../test/e2e/support/mockup-text";
+import { PAGE_FACTS } from "../../../../../test/e2e/support/page-facts";
 import { sentences } from "../../../../../test/e2e/support/parity";
 import { ROOT } from "../../../../../test/e2e/support/repo";
 import { mockupRoute as mockupPageRoute } from "../../../../../test/e2e/support/routes";
 import { mockupPage, mockupRoute, STORE, words } from "../../../../../test/support/mockup-compare";
+import { factSentences, hiddenProblems, ruleReach, withFacts } from "../../../../../test/support/mockup-facts";
 import { faqs } from "../../faqs";
 import { films } from "../../films";
 import { SAFETY_FACTS } from "../../trust";
@@ -27,6 +29,8 @@ import { product } from "./product";
  * ships, it says and links exactly what the approved mockup's `main` says and links, fold by fold, in both offer modes.
  * The sections' own tests prove their markup against the same folds; this file proves the page's content feeds them
  * the approved words, addresses, names, reveals and tracking values, and the structured data the copy page asks for.
+ * The mockup is compared with the founder's page facts applied (task 6.7; test/e2e/support/page-facts.ts): the parent
+ * app's phones filled (D055 item 26), and the rows and lines still waiting on an F4 value hidden (D054 item 19).
  */
 
 const PATH = "/products/kheelu";
@@ -41,7 +45,9 @@ function rendered(offer: Offer) {
 }
 
 const BUILT = rendered(TOKEN);
-const MOCKUP = mockupPage("meet-kheelu").querySelector("main")!;
+const APPROVED = mockupPage("meet-kheelu").querySelector("main")!;
+/** The approved page with the founder's page facts applied: what the build must say (task 6.7). */
+const MOCKUP = withFacts(APPROVED, PAGE_FACTS["meet-kheelu"].edits);
 /** The folds: `main`'s sections, in order (React's image preload links and the JSON-LD script left out). */
 const folds = (main: Element) => [...main.children].filter((el) => el.tagName === "SECTION");
 const name = (el: Element) => el.getAttribute("aria-labelledby");
@@ -90,7 +96,12 @@ describe("the product page as rendered (token mode)", () => {
     expect(folds(BUILT.main).map((f) => f.id)).toEqual(folds(MOCKUP).map((f) => f.id));
   });
 
-  it("says, fold by fold, exactly what the mockup says (placeholders included), P15's one sentence aside (V6)", () => {
+  it("changes the approved page only where the founder's facts do: fold 4's charging line and fold 7's details", () => {
+    const changed = folds(APPROVED).filter((fold, i) => words(fold) !== words(folds(MOCKUP)[i])).map(name);
+    expect(changed).toEqual(["modes-title", "specs-title"]);
+  });
+
+  it("says, fold by fold, exactly what the mockup says with the founder's facts applied, P15's one sentence aside (V6)", () => {
     const built = folds(BUILT.main);
     // The one accepted difference is in the questions fold, and it is there in the mockup to be replaced (not vacuous).
     expect(folds(MOCKUP).filter((fold) => words(fold).includes(P15.mockup)).map(name)).toEqual(["faq-title"]);
@@ -240,11 +251,12 @@ describe("the product page's structured data (architecture §9.2)", () => {
       image: ["https://kheelona.com/media/kheelu-front.jpg"],
       audience: { "@type": "PeopleAudience", suggestedMinAge: 3, suggestedMaxAge: 7 },
     });
-    // Only the announced specs: a row that still holds a placeholder is left out.
-    const properties = (p.additionalProperty as { name: string }[]).map((x) => x.name);
+    // Only the announced specs: the F4 rows are hidden (D054 item 19), and the parent app's row is filled (D055 item 26).
+    const properties = (p.additionalProperty as { name: string; value: string }[]).map((x) => x.name);
+    expect(properties).toEqual(product.specs.map((row) => row.term));
     expect(properties).toContain("Ages");
     expect(properties).not.toContain("Size and weight");
-    expect(properties).not.toContain("Parent app");
+    expect((p.additionalProperty as { name: string; value: string }[]).find((x) => x.name === "Parent app")?.value).toMatch(/ On iPhone and Android\.$/);
   });
 
   it.each([
@@ -292,6 +304,32 @@ describe("the shared facts it passes on (trust.ts)", () => {
   });
 });
 
+describe("the founder's page facts as a text deviation (deviations.md V16; task 6.7)", () => {
+  const FACTS = PAGE_FACTS["meet-kheelu"];
+  const rule = TEXT_DEVIATIONS["meet-kheelu"].find((r) => r.approvedBy === FACTS.approvedBy)!;
+
+  it("lists exactly the sentences the facts change (page-facts.ts against the mockup)", () => {
+    expect(factSentences(APPROVED, FACTS.edits)).toEqual({ missing: [...FACTS.mockup], extra: [...FACTS.build] });
+  });
+
+  it("excuses and accepts exactly those sentences, and no other line of the page", () => {
+    expect(ruleReach(APPROVED, FACTS.edits, rule)).toEqual({ excused: [...FACTS.mockup], accepted: [...FACTS.build] });
+  });
+
+  it("accepts the parent app's line as the page prints it", () => {
+    expect(sentences(htmlToText(BUILT.html))).toContain(FACTS.build[0]);
+  });
+
+  it("hides for the pixels exactly the blocks the facts change, each found once on its side (VISUAL_HIDDEN)", () => {
+    expect(hiddenProblems(APPROVED, FACTS)).toEqual([]);
+    const sel = (side: string) => VISUAL_HIDDEN["meet-kheelu"].filter((r) => r.side === side).map((r) => r.selector);
+    expect(sel("mockup")).toEqual([...FACTS.hidden.both, ...FACTS.hidden.mockup]);
+    expect(sel("build")).toEqual([...FACTS.hidden.both, ...FACTS.hidden.build]);
+    // The build side's selectors hold on the page as it renders, too.
+    for (const selector of sel("build")) expect(BUILT.main.querySelectorAll(selector), selector).toHaveLength(1);
+  });
+});
+
 describe("the JavaScript-off text deviation for this route (deviations.md V3; test/e2e/support/deviations.ts)", () => {
   const DEVIATIONS = "../../../../../test/e2e/support/deviations";
   /** The sentences of the details panels that the tabs hide with JavaScript on: In the box and Safety. */
@@ -306,11 +344,14 @@ describe("the JavaScript-off text deviation for this route (deviations.md V3; te
     expect(TEXT_DEVIATIONS["meet-kheelu"].filter((rule) => rule.approvedBy.includes("V3"))).toEqual([
       expect.objectContaining({ mockup: /^Specs$/, jsOff: true }),
     ]);
-    // The route's other rule is P15's (V6, task 4.7), for both runs: the FAQ answer reads the same with JavaScript off.
+    // The route's other rules are P15's (V6, task 4.7) and the founder's page facts (V16, task 6.7), for both runs: the
+    // FAQ answer and the details read the same with JavaScript off.
     expect(TEXT_DEVIATIONS["meet-kheelu"].map((rule) => [rule.approvedBy.slice(0, "deviations.md V3".length), rule.jsOff ?? false])).toEqual([
       ["deviations.md V3", true],
       ["deviations.md V6", false],
+      ["deviations.md V1", false],
     ]);
+    expect(TEXT_DEVIATIONS["meet-kheelu"][2].approvedBy).toBe(PAGE_FACTS["meet-kheelu"].approvedBy);
   });
 
   it("accepts on the build side exactly the stacked panels' lines, as the page prints them, and no other line of the page", () => {
@@ -323,7 +364,8 @@ describe("the JavaScript-off text deviation for this route (deviations.md V3; te
     vi.resetModules();
     vi.doMock("./product", async (importOriginal) => {
       const real = await importOriginal<typeof import("./product")>();
-      const safety = real.product.safety.map((item) => (item.text.startsWith("Battery safety:") ? { ...item, text: "Battery safety: a filled-in fact." } : item));
+      // A filled F4 value brings its line back (D054 item 19: hidden only while it waits).
+      const safety = [...real.product.safety, { icon: "battery-charging", text: "Battery safety: a filled-in fact." }];
       return { ...real, product: { ...real.product, safety } };
     });
     const [rule] = (await import(DEVIATIONS)).TEXT_DEVIATIONS["meet-kheelu"] as typeof TEXT_DEVIATIONS[string];

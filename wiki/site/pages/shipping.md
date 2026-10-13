@@ -1,12 +1,13 @@
 ---
 title: "Shipping (/shipping): page copy, Gate A draft"
 type: page-copy
-updated: 2026-10-11
+updated: 2026-10-14
 cites_at: archive/pre-reset-2026-10-10
 sources:
   - ../strategy.md (§3 CTA rules, §4.4 footer, §5 policy-pages row, §6 issue 9, §7 search rules)
   - ../gate-a-open-items.md (§1 founder answers of 2026-10-11)
   - ../../decisions/D021-returns-policy.md, D022-warranty-replacement-refund.md, D023-new-order-delivery.md, D024-payment-methods-gst.md, D028-price-wording.md, D029-grievance-officer-legal-review.md, D032-grievance-block-and-call-line.md, D033-warranty-after-day-7.md, D037-delivery-date-in-schema.md, D042-policy-display-answers.md, D043-all-pages-as-mockups-before-build.md
+  - ../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md (items 7, 8 and 9, applied in task 6.7; see "Changes after approval (task 6.7)")
   - ../../product/policies.md, ../../product/legal-requirements.md (H3, ECOM-05 to ECOM-07), ../../product/pricing.md, ../../product/facts.md (ship date, support channel)
   - ../../brand/voice.md, ../../brand/messaging.md (confirmed candidate lines), ../content-boundary.md
   - ../../research/keyword-map.md (§4.1 row /shipping, §5 per-page placements, §6.2 G2, §6.9 SH1)
@@ -80,9 +81,11 @@ in about 840 words of copy, placeholders left out (1.3%, under the 2% ceiling).
 >
 > How Kheelu delivery and shipping work: when it leaves, where it goes, and what it costs to get to you. Which is nothing extra.
 >
-> Last updated: [PLACEHOLDER: the date the founder approves this page]
+> Last updated: 14 October 2026
 
 - `SectionHeading`, `level` 1, `hero`, `Hand` on "plain words".
+- The date is the founder's ([D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 8),
+  the same on all four legal pages.
 - The lede is the live founder-approved lede (`shipping/page.tsx:81`) with the primary cluster in front.
 - **Optional Kheelu note** ([refund.md](refund.md#questions-for-the-founder-website-only-d030) question 7):
   `kheelu-front-sticker.png`, `alt=""`, with a `Sticker` reading "I’ll help pack. Mostly by sitting in the box."
@@ -215,15 +218,17 @@ policy.
 >
 > **If it arrives damaged.** Tell us within 7 days of receiving it, and you can have a replacement or a full refund. We arrange the pickup, free.
 >
-> **If it doesn’t arrive.** If the tracking stops moving or the parcel doesn’t reach you, call or message us with your order number. [PLACEHOLDER: what we do if a parcel is lost in transit, for example “we send a replacement, or refund you in full if you’d rather” (no number of days)]
+> **If it doesn’t arrive.** If the tracking stops moving or the parcel doesn’t reach you, call or message us with your order number.
 >
 > **And once it arrives,** you can still return it within 7 days of delivery, no questions asked ([see the refund policy](../../../mockup/refund.html#returns)).
 
 - Only what the policies say: the live cancellation terms for a moved date or a failed supply (unchanged for the
   new site), the faulty-or-damaged remedy (D022, D033) and the 7-day return (D021). These carry Rule 7(4)'s
-  "delivered late" case (legal review H3, ECOM-07). A parcel lost after dispatch is not covered by any ruling, so
-  it is a placeholder (question 1 below; legal review, /shipping must-fix 1). The placeholder no longer asks "by
-  when": no day count is published (D022 guardrail), and the answer must keep a full-refund option (Rule 7(4)).
+  "delivered late" case (legal review H3, ECOM-07). A parcel lost after dispatch is covered by no ruling, and the
+  founder took its slot off the page ([D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md)
+  item 9; question 1 below; legal review, /shipping must-fix 1). The "If it doesn’t arrive." line stays word for
+  word: it tells the parent to call or message with the order number and promises no remedy and no day count. The
+  legal review asked for a remedy with a full-refund option (Rule 7(4)); see the open question at hand-off.
 - Bold leads, not H3s, so the five cases scan as one list on a phone.
 
 ### Section 7 · Who you're buying from, and complaints (`#seller`)
@@ -239,15 +244,16 @@ policy.
 > If you’re unhappy with how we’ve handled your delivery, you can make a formal complaint to our grievance officer (also on the [contact page](../../../mockup/contact.html#grievance)).
 >
 > **Grievance Officer:** Aman Soni, Co-Founder and CTO, aman@kheelona.com, +91 91875 46483. We acknowledge every complaint within 48 hours and resolve it within one month of receiving it.
->
-> [PLACEHOLDER: how you get a complaint reference to track your complaint; not set up yet]
 
 - The seller block is the same single-source block as [refund.md section 8](refund.md#section-8--who-youre-buying-from-seller).
 - The grievance block is the one D032 value, verbatim, as on /refund, /terms and /privacy, in a card. D032 does not
   list /shipping (Rule 4(4) is platform-wide, so a link was legally enough), but legal requirements §4 lists
   "Seller block and grievance block" for /shipping, so the page now shows it (legal review, /shipping should-fix 1).
-  The placeholder line under it is the same one /privacy and /terms carry (Rule 7(1)(f), ECOM-04); it promises
-  nothing. The contact link points at `contact.html#grievance` (that id exists on the contact mockup).
+  The complaint-reference placeholder that stood under it on all four legal pages came off until a system issues a
+  reference ([D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 7; Rule 7(1)(f),
+  ECOM-04, still open); in the build it is the optional `grievanceNote` of `LegalTemplateCopy`,
+  left out of `src/content/en-IN/legal/shared.ts` while D055 item 7 stands. The contact link points at
+  `contact.html#grievance` (that id exists on the contact mockup).
 
 ## Fold 5 · Close
 
@@ -286,6 +292,7 @@ Plain `path:line` citations to `src/` refer to tag `archive/pre-reset-2026-10-10
 |---|---|
 | Title, H1 word "Shipping", H2 "Where we deliver", meta "delivery in India", primary cluster | [keyword map](../../research/keyword-map.md) lines 229, 349 |
 | Lede ("where it goes, when it leaves … Which is nothing extra") | `src/app/(site)/shipping/page.tsx:81` (live, founder-approved 2026-08-22), reordered |
+| "Last updated: 14 October 2026" | [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 8 |
 | Deliveries start mid-November, new orders; one content value; never an arrival date or transit time | [D023](../../decisions/D023-new-order-delivery.md); [facts](../../product/facts.md) line 189; [policies](../../product/policies.md) line 112; [D037](../../decisions/D037-delivery-date-in-schema.md) (schema date only) |
 | Pre-orders served first, in the order placed | `shipping/page.tsx:32`; [facts](../../product/facts.md) line 192 |
 | No arrival-date promise; time depends on where you are; ask before you pre-order if you need a date | `shipping/page.tsx:55`; [keyword map](../../research/keyword-map.md) line 538 (G2 draft); [D022](../../decisions/D022-warranty-replacement-refund.md) guardrails |
@@ -305,22 +312,29 @@ Plain `path:line` citations to `src/` refer to tag `archive/pre-reset-2026-10-10
 | Date moves: told first, can cancel for a full refund; cannot supply: all money back, not a credit or voucher | `refund/page.tsx:55`; [policies](../../product/policies.md) lines 75, 110; legal review ECOM-06, ECOM-07 ([legal requirements](../../product/legal-requirements.md) lines 374-375) |
 | Refundable in full until dispatch | `refund/page.tsx:32`; [policies](../../product/policies.md) line 74 |
 | Arrives damaged: tell us within 7 days of receiving it; replacement or full refund; free pickup | [D022](../../decisions/D022-warranty-replacement-refund.md) item 2; [D033](../../decisions/D033-warranty-after-day-7.md); [policies](../../product/policies.md) lines 105, 107, 108 |
+| If the tracking stops moving or the parcel doesn't arrive: call or message us with the order number (no remedy, no day count) | Approved Gate A line ([D046](../../decisions/D046-gate-a-approved.md)), kept as the founder's ruling leaves it ([D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 9); channels [facts](../../product/facts.md) lines 223-224 |
 | 7-day returns of delivery, no questions asked | [D021](../../decisions/D021-returns-policy.md); [policies](../../product/policies.md) line 104 |
 | WhatsApp takes calls as well as messages; email | [D032](../../decisions/D032-grievance-block-and-call-line.md); [facts](../../product/facts.md) lines 223-224 |
 | Seller name, address, GSTIN; order on kheelona.com, pay on store.kheelona.com | `src/lib/legal.ts:18-24`; [policies](../../product/policies.md) lines 140-144 |
 | Grievance block, verbatim; also on /contact | [D032](../../decisions/D032-grievance-block-and-call-line.md); [policies](../../product/policies.md) lines 117-119; [legal requirements](../../product/legal-requirements.md) §4 (/shipping: "Seller block and grievance block") |
-| Complaint-reference placeholder (same line as /privacy and /terms) | Rule 7(1)(f), ECOM-04 ([legal requirements](../../product/legal-requirements.md) line 363); [policies](../../product/policies.md) line 120 (still open) |
 | "I'll help pack. Mostly by sitting in the box." (optional sticker) | `shipping/page.tsx:84-86` (founder-approved 2026-08-22) |
 
 ## Placeholders
 
-| Where | Placeholder | Needed |
+None left. Each of the three Gate A placeholders was filled or taken off the page by
+[D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) (task 6.7):
+
+| Where | Was | Now |
 |---|---|---|
-| Fold 1 | `[PLACEHOLDER: the date the founder approves this page]` | The approval date (D029) |
-| Section 6 | `[PLACEHOLDER: what we do if a parcel is lost in transit, for example “we send a replacement, or refund you in full if you’d rather” (no number of days)]` | The founder's rule (question 1); needed before legal approval |
-| Section 7 | `[PLACEHOLDER: how you get a complaint reference to track your complaint; not set up yet]` | refund.md question 9 (Rule 7(1)(f)) |
+| Fold 1 | The approval date | "14 October 2026" (item 8) |
+| Section 6 | What we do if a parcel is lost in transit | Off the page; the "If it doesn’t arrive." line stays word for word (item 9) |
+| Section 7 | Complaint reference | Off the page until a system issues one (item 7) |
 
 ## Questions for the founder (website only, D030)
+
+Answered on 2026-10-14 ([D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md)): question 1
+(item 9: the lost-parcel line comes off, none of the wording below is used) and, from question 2, the complaint
+reference (item 7: no line until a reference exists). The questions stay below as asked.
 
 1. **A parcel lost in transit** (the section 6 placeholder). No ruling covers a Kheelu that is dispatched and never
    arrives. Recommended: "we send a replacement, or refund you in full if you'd rather", with no day count (D022
@@ -351,3 +365,24 @@ From [the legal review](../../qa/legal-review-pages-legal-b-2026-10-11.md); copy
 - Should-fix 4 and 5: applied (sales push dropped; the abroad line replaced by the terms' wording).
 - Should-fix 6: the hero art is hidden below 900 px.
 - Should-fix 3 (terms.md "yet") and 7 (the number takes calls before go-live, D032) are not edits to this page.
+
+## Changes after approval (task 6.7)
+
+The founder's answers of 2026-10-14 ([D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md),
+items 7, 8 and 9) applied to the Gate A-approved copy ([D046](../../decisions/D046-gate-a-approved.md)). Only the
+three slots changed; every other word stands as approved. The mockup (`mockup/pages/shipping.html`) is not edited:
+the builder carries these changes into `src/content/en-IN/legal/shipping.ts` and lists the text differences for the
+main session.
+
+- **Fold 1, "Last updated".** The date slot becomes "14 October 2026" (item 8).
+- **Section 6, "If it doesn’t arrive."** The lost-parcel slot comes off (item 9; legal review, /shipping must-fix 1).
+  Its sentence stays word for word: "If the tracking stops moving or the parcel doesn’t reach you, call or message
+  us with your order number."
+- **Section 7.** The complaint-reference slot under the grievance block comes off (item 7); in the build it is the
+  optional `grievanceNote` of `LegalTemplateCopy`, left out of `src/content/en-IN/legal/shared.ts` while D055 item 7
+  stands, one change for all four legal pages.
+- **Notes.** The notes under fold 1, section 6 and section 7, the Sources rows, the Placeholders table (none left)
+  and the answered questions now match the copy. The word count ("about 840 words, placeholders left out") and the
+  keyword density (11 "Kheelu"s, 1.3%) are unchanged: the slots were never counted, and the date adds three words.
+- **Not changed.** Fold 0's draft note stays (no fix in task 6.7 removes it; open question at hand-off). Title,
+  meta, H1 and CTA are unchanged.

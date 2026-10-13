@@ -8,7 +8,10 @@ import { stickyBarPaths } from "@/layouts/SiteShell/sticky-bar-paths";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
+import { VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
+import { PAGE_FACTS } from "../../../../test/e2e/support/page-facts";
 import { mockupFold, skeleton, words, type SkeletonOptions } from "../../../../test/support/mockup-compare";
+import { withFacts } from "../../../../test/support/mockup-facts";
 
 /* The /refund route (task 5.13; structure §3.1, §5): thin, rewritten in place. It loads the page's content module
  * (src/content/en-IN/legal/refund.ts) and the live offer (ADR-005: part 1 names the advance and the balance), describes
@@ -27,7 +30,9 @@ beforeAll(async () => {
 
 const SOURCE = readFileSync("src/app/(site)/refund/page.tsx", "utf8");
 const code = SOURCE.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
-const mockupMain = mockupFold("refund", "main");
+const approvedMain = mockupFold("refund", "main");
+/** The approved page with the founder's page facts applied (task 6.7; D055 items 1-8; test/e2e/support/page-facts.ts). */
+const mockupMain = withFacts(approvedMain, PAGE_FACTS.refund.edits);
 
 /** As LegalTemplate.test.tsx compares a legal page with its mockup (the build's own type steps and family modifiers
  *  dropped, the mockup's value markers unwrapped). */
@@ -154,5 +159,14 @@ describe("/refund: the rendered page against the approved mockup", () => {
     expect(html).not.toMatch(/class="[^"]*\bmk-/);
     expect(html).not.toMatch(/\sdata-src=/);
     expect(html).not.toMatch(/Headline <span|Pick a headline|Rewritten in the build/);
+  });
+});
+
+describe("/refund: the founder's page facts for the pixels (task 6.7)", () => {
+  it("finds each block the visual pass hides on the build side, once, on the page as it renders", async () => {
+    const { main } = await renderPage(buildOffer("token"));
+    const selectors = VISUAL_HIDDEN.refund.filter((rule) => rule.side === "build").map((rule) => rule.selector);
+    expect(selectors.length).toBeGreaterThan(0);
+    for (const selector of selectors) expect(main.querySelectorAll(selector), selector).toHaveLength(1);
   });
 });

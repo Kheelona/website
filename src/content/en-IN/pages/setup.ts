@@ -2,6 +2,7 @@
 import bellyModule from "@ds/assets/Kheelu/kheelu-belly-module.png";
 import appActivity from "@/assets/app/app-activity.webp";
 import type { PageContent } from "@/layouts/PageTemplate/page-template.types";
+import { withoutHiddenRows } from "@/lib/content/placeholder";
 import { DEFAULT_OG } from "../organization";
 import { seller } from "../seller";
 
@@ -11,15 +12,21 @@ import { seller } from "../seller";
  * and alt texts as wiki/site/pages/setup.md words them, H1 option A. No chilli button and no buy bar (setup.md question
  * 4; the CMO view: as built): the page closes on a person to ask and a link to the product page.
  *
- * One line differs from the mockup: step 2 takes the CMO review's values (cmo-review-pages-help-2026-10-11, M-S1). The
- * mockup's "button on Kheelu's back" and "pulsing blue" were the app's own bracketed placeholders, so the step names no
- * place and no colour until the founder answers (setup.md question 1). The wake-up button fold keeps D018's words and no
- * wake-word phrase (A10). The activity screen is the D044 round-2 file (task 1.5b: no "Games"), with its caption saying
- * its content is example data. The four steps are the page's HowTo (architecture §9.2). The support line is read from
- * seller.ts, never retyped.
+ * Step 2's light names no colour (deviation V8): the app's own screen bracketed it (CMO review M-S1) and the founder has
+ * not confirmed one. The founder's page facts (D055 items 25-27, D054 item 19; task 6.7): one button on Kheelu's back
+ * wakes it and, held for 3 seconds, starts setup, so step 2 names it and fold 5 says where the wake-up button is; the
+ * parent app is the Kheelona app, linked on both stores with the live site's own links; the charger's F4 slot stays
+ * here, hidden by `withoutHiddenRows` until the founder sends its value (nothing of it renders, on any environment), and
+ * the line keeps its confirmed half. The wake-up button fold keeps D018's words and no wake-word phrase (A10). The
+ * activity screen is the D044 round-2 file (task 1.5b: no "Games"), with its caption saying its content is example
+ * data. The four steps are the page's HowTo (architecture §9.2). The support line is read from seller.ts, never retyped.
  */
 
 const { phone, tel, whatsapp, email } = seller.support;
+
+/** The parent app's listings, as the live site links them (D055 item 26; its llms.txt at the tag archive/pre-reset-2026-10-10). */
+const APP_STORE = "https://apps.apple.com/in/app/kheelona/id6792490581";
+const GOOGLE_PLAY = "https://play.google.com/store/apps/details?id=com.kheelona.toyapp";
 
 /** Fold 3's heading, which also names the HowTo of its four steps. */
 const CONNECT_TITLE = "Connect Kheelu to your {hand:home Wi‑Fi.}";
@@ -52,19 +59,19 @@ export const setupPage = {
         variant: "ticks",
         band: true,
         heading: { id: "before-title", title: "Before you start." },
-        items: [
+        items: withoutHiddenRows([
           { icon: "battery-charging", body: "Charge Kheelu with the charger in the box. {ph:F4 the charger type, and how long a full charge takes}" },
           { icon: "lock-simple", body: "Have your home Wi‑Fi password ready." },
           { icon: "wifi-high", body: "Stay close to your Wi‑Fi router." },
           {
             icon: "download-simple",
-            body: "Keep your phone with you, with the parent app installed. {ph:C6 where to get the parent app: App Store and Google Play links, and the listing name}",
+            body: `Keep your phone with you, with the parent app installed. It’s called the Kheelona app: get it on the [App Store](${APP_STORE}) for iPhone, or on [Google Play](${GOOGLE_PLAY}) for Android.`,
           },
-        ],
+        ], "body"),
       },
       tip: "Kheelu connects to 2.4 GHz Wi‑Fi. If your router shows two network names, choose the 2.4 GHz one.",
     },
-    /* Fold 3: the four steps of the connection, in the app's order; step 2 as the CMO review words it (M-S1). */
+    /* Fold 3: the four steps of the connection, in the app's order; step 2's light without a colour (V8). */
     {
       kind: "steps-section",
       config: {
@@ -73,11 +80,7 @@ export const setupPage = {
         heading: { id: "connect-title", title: CONNECT_TITLE },
         steps: [
           { tone: "sun", title: "Open the parent app.", body: "Follow the steps on screen. The app walks you through the rest." },
-          {
-            tone: "blue",
-            title: "Press and hold Kheelu’s setup button. {ph:which button and where; the app’s own screen still shows “[back]”}",
-            body: "Hold it for 3 seconds, until its light starts pulsing.",
-          },
+          { tone: "blue", title: "Press and hold the button on Kheelu’s back.", body: "Hold it for 3 seconds, until its light starts pulsing." },
           { tone: "chilli", title: "Join Kheelu’s own Wi‑Fi.", body: "When the app asks, connect your phone to Kheelu’s own small Wi‑Fi network." },
           { tone: "sun", title: "Add your home Wi‑Fi.", body: "Finish in the app with your home Wi‑Fi password. Kheelu then joins your home network." },
         ],
@@ -107,7 +110,7 @@ export const setupPage = {
         variant: "photo",
         heading: { id: "button-title", title: "Show your child the {hand:wake-up button.}" },
         copy: [
-          "Kheelu only listens when someone presses its wake-up button. {ph:where the wake-up button sits on Kheelu}",
+          "Kheelu only listens when someone presses its wake-up button. It’s the button on Kheelu’s back, the one you held during setup.",
           "One press starts a conversation. A light on Kheelu shows whenever it’s listening. After about a minute of quiet, it switches itself off, so the next chat starts with another press.",
         ],
         media: {

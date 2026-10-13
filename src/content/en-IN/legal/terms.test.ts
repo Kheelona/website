@@ -18,7 +18,8 @@ import { termsPage } from "./terms";
  * mockup/pages/terms.html, D046). The rendered page against the approved <main> is the route's test; this file holds the
  * rules the plan sets for this page:
  *   - read in token mode (the mode the mockup shows), the module IS the parity fixture copied from the mockup
- *     (test/fixtures/legal/terms.ts), every string equal;
+ *     (test/fixtures/legal/terms.ts), every string equal, with the founder's page facts applied (task 6.7; D055 items 8,
+ *     10 and 11: the date, GST as D024 confirms it, the training switch; item 7 is the template's) and nothing else;
  *   - read in full mode, it is the fixture with exactly the copy page's full-mode variants (terms.md folds 2 and 4, the
  *     two "token mode only" paragraphs of sections 5 and 6) and nothing else changed;
  *   - a draft until the founder approves it (D029); D035's training disclosure and D041's AI-image note;
@@ -50,6 +51,40 @@ function isEmptyLine(value: unknown): boolean {
 
 /** Everything but the head (`meta`), whose words are compared as a parent and a search engine read them, below. */
 const body = (doc: object) => Object.fromEntries(Object.entries(doc).filter(([key]) => key !== "meta"));
+
+/** The GST paragraph and the price breakup as the fixture (the approved page) words them, and the training paragraph's
+ *  turn-off slot: the three places the founder's terms facts change (terms.md "Changes after approval"). */
+const GST_DOCUMENTS = /^Every order gets a GST invoice\. \{ph:which GST documents[^}]*\}$/;
+const PRICE_BREAKUP = /^\{ph:the price breakup[^}]*\}$/;
+const TRAINING_SLOT = ": {ph:how a parent turns training off, for example a setting in the parent app}.";
+
+/** The fixture body with the founder's page facts applied: the date (item 8), "Every order gets a GST invoice." alone
+ *  and no price breakup (item 10), "with a switch in the parent app" (item 11). */
+function withTermsFacts(doc: LegalPage): LegalPage {
+  const parts = doc.parts.map((p) => {
+    if (p.id === "price") {
+      return {
+        ...p,
+        blocks: p.blocks.flatMap((b) => {
+          if (b.kind !== "p" || typeof b.text !== "string") return [b];
+          if (PRICE_BREAKUP.test(b.text)) return [];
+          return GST_DOCUMENTS.test(b.text) ? [{ ...b, text: "Every order gets a GST invoice." }] : [b];
+        }),
+      };
+    }
+    if (p.id === "training") {
+      return {
+        ...p,
+        blocks: p.blocks.map((b) =>
+          b.kind === "p" && typeof b.text === "string" && b.text.includes(TRAINING_SLOT) ? { ...b, text: b.text.replace(TRAINING_SLOT, " with a switch in the parent app.") } : b,
+        ),
+      };
+    }
+    return p;
+  });
+  return { ...doc, status: "draft", approvedOn: "2026-10-14", parts } as LegalPage;
+}
+const FACTS_FIXTURE = withTermsFacts(body(termsFixture) as unknown as LegalPage);
 
 const PARTS: readonly LegalPart[] = termsPage.parts;
 const part = (id: string): LegalPart => {
@@ -99,8 +134,16 @@ describe("the terms page: the route and its head", () => {
 });
 
 describe("the terms page: the approved mockup's words (parity with the fixture copied from it)", () => {
-  it("read in token mode, every block, line and link equals test/fixtures/legal/terms.ts", () => {
-    expect(inMode(body(termsPage), "token")).toEqual(body(termsFixture));
+  it("read in token mode, every block, line and link equals test/fixtures/legal/terms.ts with the founder's facts", () => {
+    // The three places are in the fixture to be changed (not vacuous), and changed.
+    for (const approved of [GST_DOCUMENTS, PRICE_BREAKUP]) {
+      const inText = new RegExp(approved.source.slice(1, -1));
+      expect(JSON.stringify(body(termsFixture))).toMatch(inText);
+      expect(JSON.stringify(FACTS_FIXTURE)).not.toMatch(inText);
+    }
+    expect(JSON.stringify(body(termsFixture))).toContain(TRAINING_SLOT);
+    expect(JSON.stringify(FACTS_FIXTURE)).not.toContain(TRAINING_SLOT);
+    expect(inMode(body(termsPage), "token")).toEqual(FACTS_FIXTURE);
   });
 
   it("read in token mode, the head says what the fixture's head says", () => {
@@ -112,7 +155,7 @@ describe("the terms page: the approved mockup's words (parity with the fixture c
 describe("the terms page: full mode (terms.md folds 2 and 4, sections 5 and 6)", () => {
   /** The fixture as the copy page says full mode reads: four changes, everything else unchanged. */
   const expectedFull = (() => {
-    const fixture = body(termsFixture) as unknown as LegalPage;
+    const fixture = FACTS_FIXTURE;
     if (fixture.summary.kind !== "points") throw new Error("terms' short version is numbered points");
     const points: LegalLeadText[] = [...fixture.summary.points];
     points[0] = { lead: "What you pay.", text: "{price:full} (incl. GST), paid in full when you order." };
@@ -174,9 +217,14 @@ describe("the terms page: a draft until the founder approves it (D029)", () => {
     expect(termsPage.status).toBe("draft");
   });
 
-  it("prints its approval date as the copy page's placeholder, with no open-item id (terms.md fold 1)", () => {
-    expect(isPlaceholder(termsPage.approvedOn)).toBe(true);
-    expect(termsPage.approvedOn).toMatchObject({ id: null, note: "the date the founder approves this text" });
+  it("is last updated on the founder's date, 14 October 2026 (D055 item 8; terms.md fold 1)", () => {
+    expect(termsPage.approvedOn).toBe("2026-10-14");
+  });
+
+  it("carries no placeholder: every slot filled or ruled off by the founder (D055 items 10 and 11)", () => {
+    expect(SOURCE).not.toMatch(/\{ph:|placeholder\(/);
+    expect(paragraphs("price", "token")).toContain("Every order gets a GST invoice.");
+    expect(paragraphs("price", "token").join(" ")).not.toMatch(/breakup|HSN|receipt voucher/);
   });
 });
 
@@ -184,8 +232,8 @@ describe("the terms page: what the decisions require it to say", () => {
   it("D035: Kheelona's own model learns from voice recordings and transcripts, on by default, and a parent can turn it off", () => {
     const [first, second] = paragraphs("training", "token");
     expect(first).toContain("Kheelona’s own AI model learns from your child’s voice recordings and conversation transcripts.");
-    expect(first).toContain("This is on by default, and you can turn it off at any time:");
-    expect(first).toContain("[PLACEHOLDER: how a parent turns training off, for example a setting in the parent app]");
+    // D055 item 11: turned off with a switch in the parent app, as on /privacy.
+    expect(first).toContain("This is on by default, and you can turn it off at any time with a switch in the parent app.");
     // D020 stays scoped to the outside providers.
     expect(first).toContain("Our outside speech and AI providers never train on your child’s voice.");
     expect(second).toContain("Privacy");
@@ -223,13 +271,11 @@ describe("the terms page: what the decisions require it to say", () => {
 });
 
 describe("the terms page: shared facts are read, never retyped", () => {
-  /* The approved price-breakup placeholder's note says "delivery ₹0" (terms.html:116, terms.md placeholder 3): an open
-   * item's words, never a price the page publishes (production refuses every placeholder, ADR-004). Outside placeholder
-   * notes the module types no amount, not even in a comment, by the one pattern task 2.1's guard and pageMeta use
-   * (TYPED_AMOUNT, src/lib/seo/price-lead.ts). */
-  it("types no amount outside a placeholder's note: every price is a {price:…} token", () => {
-    const outsideNotes = SOURCE.replace(/\{ph:[^}]*\}/g, "{ph}");
-    expect(outsideNotes).not.toMatch(TYPED_AMOUNT);
+  /* The module types no amount, not even in a comment, by the one pattern task 2.1's guard and pageMeta use (TYPED_AMOUNT,
+   * src/lib/seo/price-lead.ts). The approved price-breakup placeholder, whose note said "delivery ₹0", is off the page
+   * (D055 item 10). */
+  it("types no amount: every price is a {price:…} token", () => {
+    expect(SOURCE).not.toMatch(TYPED_AMOUNT);
   });
 
   it("types no support number, WhatsApp address, email, legal entity or GSTIN: seller.ts holds them", () => {

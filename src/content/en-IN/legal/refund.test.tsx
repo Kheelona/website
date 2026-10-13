@@ -5,13 +5,14 @@ import { ICON_PATHS } from "@/assets/icons.generated";
 import { GSTIN } from "@/config/site";
 import type { Copy, LegalBlock, LegalPage, Offer } from "@/content/types";
 import { LegalTemplate } from "@/layouts/LegalTemplate/LegalTemplate";
-import { isPlaceholder } from "@/lib/content/placeholder";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { ORDER_REF_PATTERN } from "@/lib/store/order-ref";
+import { GRIEVANCE_NOTE, PAGE_FACTS } from "../../../../test/e2e/support/page-facts";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { refundFixture } from "../../../../test/fixtures/legal/refund";
 import { mockupFold, mockupRoute, skeleton, words, type SkeletonOptions } from "../../../../test/support/mockup-compare";
+import { withFacts } from "../../../../test/support/mockup-facts";
 import { DEFAULT_OG } from "../organization";
 import {
   BANK_REFUND_WORKING_DAYS,
@@ -27,8 +28,10 @@ import { legalTemplateCopy } from "./shared";
  * 2026-10-11 applied). Rendered through LegalTemplate in its `notice` family, it is the approved page's <main>
  * (mockup/refund.html, D046) tag for tag and word for word, and the same markup as the template's parity fixture
  * (test/fixtures/legal/refund.ts, task 4.3); D042's three lines as the decision words them; the `#chargeback` paragraph
- * the store page links to (deviation V1); the `refund-learn` close and no pre-order button; a draft, with exactly the
- * placeholders the copy page lists. Shared facts are read by reference, never retyped: the number, WhatsApp, call and
+ * the store page links to (deviation V1); the `refund-learn` close and no pre-order button; a draft, last updated on the
+ * founder's date. The founder's page facts (task 6.7; D055 items 1-8) are applied to the mockup and the fixture it is
+ * compared with (test/e2e/support/page-facts.ts): no placeholder is left. Shared facts are read by reference, never
+ * retyped: the number, WhatsApp, call and
  * email links from seller.ts, every policy number from policies.ts, the seller and grievance lines from seller.ts
  * through the template's seller-lines helper (their phrases kept together, as the notice family prints them). */
 
@@ -54,7 +57,8 @@ const OPTIONS: SkeletonOptions = {
   unwrap: "span[data-src]",
 };
 
-const mockupMain = mockupFold("refund", "main");
+/** The approved page with the founder's page facts applied (task 6.7). */
+const mockupMain = withFacts(mockupFold("refund", "main"), PAGE_FACTS.refund.edits);
 const SOURCE = readRepoFile("src/content/en-IN/legal/refund.ts");
 /** The module's code without its comments. */
 const CODE = SOURCE.replace(/\/\*[\s\S]*?\*\/|(?<!:)\/\/.*$/gm, "");
@@ -65,11 +69,11 @@ const blocks = (): readonly LegalBlock[] => (refundPage as LegalPage).parts.flat
 const plain = (copy: Copy, offer: Offer = TOKEN) => toPlainText(copy, offer);
 
 describe("the refund module: what it is", () => {
-  it("is the /refund notice, a draft whose approval date is a placeholder until the founder signs it off (D029)", () => {
+  it("is the /refund notice, a draft (D029: the founder signs it off as legal text), last updated 14 October 2026 (D055 item 8)", () => {
     expect(refundPage.slug).toBe("refund");
     expect(refundPage.status).toBe("draft");
-    expect(isPlaceholder(refundPage.approvedOn)).toBe(true);
-    expect(toPlainText(refundPage.approvedOn)).toBe("[PLACEHOLDER: the date the founder approves this page]");
+    expect(refundPage.approvedOn).toBe("2026-10-14");
+    expect(words(mainOf(refundPage).querySelector(".ks-updated")!)).toBe("Last updated: 14 October 2026");
   });
 
   it("carries the copy page's title and meta description, word for word and within 60 and 155 characters", () => {
@@ -117,15 +121,36 @@ describe("the refund module through LegalTemplate (notice) against the approved 
     expect(words(mainOf(refundPage))).toBe(words(mockupMain));
   });
 
-  it("is the markup of the template's parity fixture (test/fixtures/legal/refund.ts), character for character", () => {
-    expect(html(refundPage)).toBe(html(refundFixture));
+  it("is the markup of the template's parity fixture (test/fixtures/legal/refund.ts) with the founder's facts, character for character", () => {
+    // The complaint-reference line is the template's (legal/shared.ts), so the fixture's render already lacks it.
+    const documentFacts = PAGE_FACTS.refund.edits.filter((edit) => edit !== GRIEVANCE_NOTE);
+    expect(mainOf(refundPage).outerHTML).toBe(withFacts(mainOf(refundFixture), documentFacts, { built: true }).outerHTML);
   });
 
-  it("shows exactly the placeholders the copy page lists, each visible on beta (fold 1 to section 7)", () => {
-    const listed = [...COPY_PAGE.slice(COPY_PAGE.indexOf("## Placeholders")).matchAll(/`\[PLACEHOLDER: ([^\]`]+)\]`/g)].map((m) => m[1]);
-    expect(listed).toHaveLength(10);
-    const shown = [...(mainOf(refundPage).textContent ?? "").matchAll(/\[PLACEHOLDER: ([^\]]+)\]/g)].map((m) => m[1]);
-    expect([...shown].sort()).toEqual([...listed].sort());
+  it("shows no placeholder: the copy page lists none left, each filled or ruled off by the founder (D055; task 6.7)", () => {
+    const section = COPY_PAGE.slice(COPY_PAGE.indexOf("## Placeholders"), COPY_PAGE.indexOf("## Questions for the founder"));
+    expect(section).toMatch(/^## Placeholders\n\nNone left\./);
+    expect(mainOf(refundPage).textContent).not.toMatch(/PLACEHOLDER/);
+    expect(SOURCE).not.toMatch(/\{ph:|placeholder\(/);
+  });
+
+  it("says the founder's answers and nothing he did not confirm (D055 items 1-6)", () => {
+    const text = words(mainOf(refundPage));
+    for (const line of [
+      "You get a full refund of everything you paid.",
+      "After a return, your refund reaches you within 7 working days of your Kheelu reaching us.",
+      "It’s a full refund of everything you paid.",
+      "If your Kheelu comes back with something missing, or damaged beyond normal play, we’ll talk to you before deciding the refund.",
+      "Kheelu has a 6-month warranty on manufacturing defects, from the day it’s delivered.",
+      "Sending the repaired or replacement Kheelu back to you is free too.",
+    ]) {
+      expect(text).toContain(line);
+    }
+    // Item 4: the warranty backstop was not confirmed, so it is off the page; the 7-day faulty-on-arrival remedy stays.
+    expect(text).not.toMatch(/full refund if neither works|don’t put it right/);
+    expect(text).toContain("tell us within 7 days of receiving it, and you can have a replacement or a full refund");
+    // Item 5: bank time is included after a return, so no bank days follow the return line.
+    expect(text).not.toContain("Then your bank:");
   });
 
   it("names amounts only as offer tokens: no rupee sign typed in the module", () => {

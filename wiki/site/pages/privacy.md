@@ -4,7 +4,11 @@ type: page-copy
 updated: 2026-10-14
 cites_at: archive/pre-reset-2026-10-10
 sources:
-  - ../../decisions/D054-founder-answers-open-questions-2026-10-14.md (item 10: the B11 events in the Google Analytics and PostHog blocks, approved after Gate A)
+  - ../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md (items 7, 8 and 12-24: the page facts that fill or rule off every placeholder, task 6.7)
+  - ../../decisions/D054-founder-answers-open-questions-2026-10-14.md (item 10: the B11 events in the Google Analytics and PostHog blocks, approved after Gate A; item 12: the list lead "What blocking can't stop.")
+  - ../../decisions/D047-vercel-build-and-data-regions.md (conversations and the toy's memory on Google Cloud in India; Supabase in ap-southeast-2, Sydney)
+  - "vercel.json (regions: bom1, Mumbai), read in the task 6.7 worktree on 2026-10-14"
+  - "the recipients' own published documents for their regions, read 2026-10-13: razorpay.com, resend.com, business.safety.google, facebook.com, whatsapp.com, ahrefs.com (URLs and quotes in the Section 7 notes)"
   - ../strategy.md (§3, §4.4 footer, §5 policy-pages row, line 213)
   - ../gate-a-open-items.md (the founder's 2026-10-11 answers and working defaults B13, B34, B35, B43, B47)
   - ../../product/legal-requirements.md (§1 H11-H16, §2.1, §2.7, §2.8 DATA-00 to DATA-31, §4 /privacy checklist lines 494-514, grievance block lines 489-492)
@@ -16,6 +20,7 @@ sources:
   - "src/app/(site)/privacy/page.tsx and src/lib/legal.ts at tag archive/pre-reset-2026-10-10 (git show, 2026-10-11)"
   - "decisions D017-D043; binding here: D017, D018, D019, D020, D023, D024, D029, D030, D032, D035, D036, D038, D040, D041, D042"
   - ../../raw/feedback/2026-10-11-gate-a-answers.md
+  - "../../qa/cmo-review-page-facts-6.7-2026-10-14.md (round 2 fixes B1, B2, M4, M6, M13; the Meta and WhatsApp quotes as it re-read them on 2026-10-13; questions 9 and 10 from M3 and M14)"
 ---
 
 # Privacy (`/privacy`): page copy
@@ -30,9 +35,10 @@ sources:
 
 - **Copy** blocks (quoted) are the words to publish. Notes, sources and checklists are INTERNAL.
 - `[PLACEHOLDER: …]` = a fact we do not have. On the page it renders as a visible
-  `<span class="mk-placeholder">`. 23 distinct gaps (33 marks in the copy, because some repeat or fill one
-  table column), listed under [Placeholders](#placeholders). Most of them are product facts the toy and app need
-  before any unit connects (legal review H11); the founder can answer several at once (questions 1 to 3).
+  `<span class="mk-placeholder">`. **None remain** (task 6.7): the founder filled or ruled off all 23 gaps (33 marks)
+  on 2026-10-14 ([D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md)); how each was settled is
+  under [Placeholders](#placeholders), and every word that changed is under
+  [Changes after approval](#changes-after-approval-task-67).
 - `{support-source}` = the support number and email, rendered from one value
   ([facts, support channel](../../product/facts.md#support-channel)). `{grievance-source}` = the grievance block
   ([D032](../../decisions/D032-grievance-block-and-call-line.md)). `{seller-source}` = the seller block
@@ -56,7 +62,7 @@ sources:
 | CTA | **None.** No "Pre-order Kheelu" button and no sticky bar on policy pages: the close links back to the product page ([strategy §5](../strategy.md#5-each-page-purpose-primary-cluster-outline), line 213). So no price sentence and no `cta` value on this page. The shared nav and drawer keep `navbar` and `navbar-mobile` |
 | Mockup meta | `{"title": "Kheelona privacy policy, in plain words", "description": "<meta above>", "url": "/privacy", "buybar": false, "active": "", "css": true}` |
 | Images | None. A text-only page loads fastest on phones; no DS child or cast photo is needed |
-| Length | About 3,200 words of copy, placeholders included (a long page by design: the website, store, toy and app in one policy) |
+| Length | About 3,100 words of copy, no placeholders (task 6.7; about 3,200 with the 33 marks before it). A long page by design: the website, store, toy and app in one policy |
 
 **H1 options**
 
@@ -87,7 +93,7 @@ Quiet, small type, above the H1. Not an `Alert` with an icon: a plain `kh-body-s
 > What we collect on kheelona.com, in our store, through Kheelu and in its parent app; why; who else
 > handles it; and what you can do about it.
 >
-> Last updated: [PLACEHOLDER: the date the founder approves this text]
+> Last updated: 14 October 2026
 
 ## Fold 2 · The short version
 
@@ -107,7 +113,8 @@ No item uses "Kheelu thinks on the device" from the DS example (banned, [D036](.
 >    process your child's voice only to produce Kheelu's reply. They don't keep it, and they never use it to
 >    train their AI.
 > 4. **Our own model learns, unless you turn it off.** Kheelona's own model learns from your child's voice
->    recordings and conversation transcripts. It's on by default. [PLACEHOLDER: how a parent turns it off]
+>    recordings and conversation transcripts. It's on by default. You can turn it off with a switch in the
+>    parent app.
 > 5. **You can read and delete every conversation.** Delete any of them in one tap. We delete transcripts
 >    automatically after 36 months.
 > 6. **This website measures visits.** We use analytics and advertising tools, all named below. One of them,
@@ -163,8 +170,7 @@ Icon hints (DS `assets/Icons`, all eight files checked to exist on 2026-10-11): 
 ## Section 2 · Kheelu, the parent app and your child's voice (`#kheelu`)
 
 The first paragraph is the answer-first block for "What does Kheelona do with my child's data?"
-([keyword map P1](../../research/keyword-map.md#6-question-bank-answer-first-drafts), lines 690-693), with the
-placeholder it already carried.
+([keyword map P1](../../research/keyword-map.md#6-question-bank-answer-first-drafts), lines 690-693).
 
 **Copy:**
 
@@ -191,31 +197,28 @@ placeholder it already carried.
 > don't keep it, and they never use it to train their AI. Our contracts with them say so. "Trusted" means we
 > chose them carefully; it is not a certification.
 >
-> [PLACEHOLDER: the names of the speech and AI providers, or the line "We tell you which providers we use if
-> you ask."]
->
 > Kheelu cannot browse the internet. It has no camera, so it takes no photos or video.
 >
 > ### What we keep, and why.
 >
 > - **Conversation transcripts:** the words of each conversation, written out. We keep them so you can read
 >   them in the parent app and so Kheelu can remember earlier conversations with your child.
-> - **Voice recordings:** used to train Kheelona's own model (next section). [PLACEHOLDER: whether recordings
->   are used for anything else]
+> - **Voice recordings:** used to train Kheelona's own model (next section). Besides Kheelu's reply and that
+>   training, we use them for nothing else.
 > - **Your child's age:** you enter it in the parent app when you set Kheelu up, and you can change it later.
 >   Every reply passes an age-graded safety layer set to that age.
 > - **The weekly report and the new-word count** in the parent app, worked out from your child's
 >   conversations.
-> - [PLACEHOLDER: parent alerts, if they ship in the app: what sets one off and what it uses]
-> - [PLACEHOLDER: any other detail about your child the parent app asks for, for example a first name]
-> - **Your parent-app account and Kheelu's setup:** [PLACEHOLDER: the account details (for example phone
->   number or email, and whether you sign in with a password or a one-time code) and the device and Wi-Fi
->   details the app keeps]
+> - **Your child's first name:** the parent app asks for it.
+> - **Your parent-app account and Kheelu's setup:** your phone number. You sign in with it and a one-time
+>   code. The account also keeps Kheelu's serial or device ID, the name of the Wi-Fi network Kheelu joins (not
+>   its password), and your phone's model and operating system.
 >
 > ### Your consent.
 >
-> A parent or guardian sets Kheelu up in the parent app. [PLACEHOLDER: how you give consent for your child's
-> data at setup, and how we check that a parent or guardian is giving it; this step is not built yet]
+> A parent or guardian sets Kheelu up in the parent app. Setting Kheelu up in the parent app is how a parent or
+> guardian agrees to this policy. A separate consent step, with a check that you are the parent or guardian,
+> comes before May 2027.
 
 Notes:
 - The listening paragraph is [D018](../../decisions/D018-wake-up-button.md)'s body and FAQ lines, near
@@ -226,10 +229,19 @@ Notes:
   flags it beside the providers line); "on-device-first" ([D036](../../decisions/D036-launch-feature-claims.md));
   any "we keep nothing" form ([D035](../../decisions/D035-model-training-opt-out.md)); "Nothing is collected
   without your consent" (no flow exists, [legal DATA-14](../../product/legal-requirements.md)).
-- Alerts and the daily summary are off the customer pages in v1 (B34, a working default). D036 confirms alerts
-  for launch, so the policy holds a placeholder rather than silence: if the app ships them, the policy must say
-  so. Whether any parent-app feature counts as "behavioural monitoring" under DPDP s.9(3) is a counsel point
-  (H14); the page describes the features and draws no legal conclusion.
+- Alerts and the daily summary are off in v1 (B34, final by [D054](../../decisions/D054-founder-answers-open-questions-2026-10-14.md)
+  item 23; [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) context), so the alerts
+  slot came off in task 6.7 and the page says nothing about alerts. If the app ever ships them, this list gains
+  a line in the same release. Whether any parent-app feature counts as "behavioural monitoring" under DPDP
+  s.9(3) is a counsel point (H14); the page describes the features and draws no legal conclusion.
+- **Filled in task 6.7** (D055): the recordings line (item 13: used for nothing besides the reply and training);
+  the first name and the account and setup line (item 14, the founder's list in full, "not its password"
+  scoped to what the account keeps, since Kheelu itself has to hold the password to join the network); the
+  consent paragraph (item 15, the founder's two sentences verbatim after the approved first sentence, which is
+  kept word for word; see question 8). The providers-names paragraph is gone (item 16): the page neither names
+  them nor offers to.
+- "We don't ask for your child's name, school or photo" (Section 4) is about the store form, under the store
+  heading, so it stays true beside the app's first-name line.
 - The parent app is part of Kheelona+; the page does not mention Kheelona+ or what happens after the six
   included months ([D041](../../decisions/D041-gate-a-round-1.md) F7). The 36-month line assumes the app stays
   readable; that risk is recorded in D041 (legal review L7).
@@ -238,7 +250,9 @@ Notes:
 
 Disclosed here and on `/terms` only, never on customer pages ([D035](../../decisions/D035-model-training-opt-out.md)).
 D035 asks the page to say what is used, by whom, why, that it is on by default, how to turn it off, and the
-retention. Three of those are facts we do not have yet, so they are placeholders.
+retention. The founder gave the missing facts on 2026-10-14 ([D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md)
+item 12): the purpose and the place in the founder's words, the switch, what happens to data already used, and
+that turning it off changes nothing else.
 
 **Copy:**
 
@@ -249,17 +263,22 @@ retention. Three of those are facts we do not have yet, so they are placeholders
 >
 > - **What it uses:** your child's voice recordings and the transcripts of their conversations with Kheelu.
 > - **Who uses it:** Kheelona, to train our own model. We don't sell it.
-> - **Why:** [PLACEHOLDER: the purpose in the founder's words, for example "to make Kheelu better at
->   understanding and answering children aged 3 to 7"]
-> - **Where:** [PLACEHOLDER: where our model is trained (country or region)]
-> - **It's on by default.** You can turn it off at any time: [PLACEHOLDER: how a parent turns training off,
->   for example a setting in the parent app]. From then on, your child's conversations are not used to train
->   our model. [PLACEHOLDER: what happens to recordings and transcripts already used before you turned it off]
-> - [PLACEHOLDER: confirm that turning it off changes nothing else about how Kheelu or the parent app works]
+> - **Why:** to make Kheelu better at understanding and answering children aged 3 to 7.
+> - **Where:** India, on Google Cloud.
+> - **It's on by default.** You can turn it off at any time, with a switch in the parent app. From then on,
+>   your child's conversations are not used to train our model. We take them out of our training data. A
+>   model already trained keeps what it learned, but they are never used again.
+> - Turning it off changes nothing else about how Kheelu or the parent app works.
 
 Notes:
 - "From then on, … not used to train our model" is the plain meaning of the opt-out D035 describes; nothing
   more is promised.
+- **Filled in task 6.7** ([D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 12): "with
+  a switch in the parent app" (also in short-version item 4); the two sentences on data already used, verbatim
+  ("them" reads as your child's conversations, the subject of the sentence before); the purpose, verbatim after a
+  lower-case "to" so it reads on from "Why:"; "India, on Google Cloud" (item 12 itself; D047 covers the toy's
+  server and memory, not training); and the nothing-else line, in the placeholder's own words, which the founder
+  confirmed.
 - Risk recorded in D035, not re-raised: an opt-out default is unlikely to meet DPDP s.6(1) and s.9(1) once those
   duties apply (May 2027). The page states the practice and makes no compliance claim.
 
@@ -281,7 +300,7 @@ Notes:
 > about your own order on WhatsApp. The box is never ticked for you, and we store the time you ticked it.
 >
 > If you start a pre-order and don't pay, the details you entered are still saved, as an unpaid order.
-> [PLACEHOLDER: how long we keep unpaid orders]
+> We keep them until you ask us to delete them.
 >
 > Your browser also tells us a few things: the page or advertisement that brought you, your device and
 > browser, and your network address (IP address). If you have a Meta cookie on your device, we read the
@@ -298,6 +317,8 @@ Notes:
   age stays a required field (B13, presentation only; checkout logic unchanged, brief 4.4). If the store form
   changes, this paragraph changes in the same commit (the live page's own rule, `privacy/page.tsx:25-28`).
 - "Unpaid order": create-order saves the row before payment ([checkout](../checkout.md), step 6, line 100).
+  "We keep them until you ask us to delete them" is [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md)
+  item 19, verbatim (true today: nothing deletes them automatically); Section 8 says the same.
 
 ## Section 5 · How we measure visits (`#measuring`)
 
@@ -389,7 +410,7 @@ Notes:
 > - **Your browser can block** the tools that load from another company's address, and most of the Meta
 >   Pixel. Private browsing, an ad blocker or turning off third-party cookies all help, and none of them stop
 >   the site or the store from working.
-> - **Two things blocking can't stop.** PostHog reports through our own address, so an ad blocker usually can't
+> - **What blocking can't stop.** PostHog reports through our own address, so an ad blocker usually can't
 >   tell it apart from the site itself. And the report our server sends to Meta when a pre-order is paid comes
 >   from us, not from your browser.
 > - **You can turn off personalised advertising** in your own Facebook or Instagram settings.
@@ -400,6 +421,9 @@ Notes:
   the consent gate before 13 May 2027.
 - One consent state must later switch every tag and both server routes (legal review H16); that is Phase 4/5
   work, not copy.
+- The list lead was "Two things blocking can't stop." until task 6.7; it reads "What blocking can't stop."
+  ([D054](../../decisions/D054-founder-answers-open-questions-2026-10-14.md) item 12, P14), so it names the gaps
+  without counting them (`test/analytics-tags.test.ts` pins only "blocking can't stop").
 
 ## Section 7 · Everyone who handles your data (`#who-else`)
 
@@ -413,29 +437,53 @@ On phones, one stacked row per recipient (name in bold, then "What" and "Where" 
 >
 > | Who | What they do for us | Where |
 > |---|---|---|
-> | Speech and AI providers [PLACEHOLDER: names, or "on request"] | Turn your child's voice into Kheelu's reply | Servers in India |
-> | [PLACEHOLDER: who stores conversations and runs the parent app] | Stores conversations, your child's age and your parent-app account | [PLACEHOLDER: region] |
-> | Razorpay | Takes your payment | [PLACEHOLDER: region] |
-> | Supabase | Stores your order | [PLACEHOLDER: region] |
-> | Resend | Sends our order emails | [PLACEHOLDER: region] |
-> | Vercel | Hosts this website and the store, and runs the store's server code; Vercel Web Analytics | [PLACEHOLDER: region of the store's server code on the new site] |
-> | Google | Google Analytics | [PLACEHOLDER: region] |
-> | Meta | Meta Pixel and Conversions API; WhatsApp, when you message or call us | [PLACEHOLDER: region] |
+> | Speech and AI providers | Turn your child's voice into Kheelu's reply | Servers in India |
+> | Kheelona, on Google Cloud | Stores conversations, your child's age and your parent-app account | India |
+> | Razorpay | Takes your payment | India |
+> | Supabase | Stores your order | Australia |
+> | Resend | Sends our order emails | United States |
+> | Vercel | Hosts this website and the store, and runs the store's server code; Vercel Web Analytics | India (Mumbai) for the store's server code |
+> | Google | Google Analytics | Google data centres around the world |
+> | Meta | Meta Pixel and Conversions API; WhatsApp, when you message or call us | The United States and other countries |
 > | PostHog | Taps, screen replays and errors on this site | United States |
-> | Ahrefs | Counts page views | [PLACEHOLDER: region] |
+> | Ahrefs | Counts page views | United States |
 >
 > Inside Kheelona, only our team can read your order. We also share data when Indian law requires it, for
 > example with tax authorities or in answer to a lawful order.
 
 Notes:
-- Known locations only: the providers ([D020](../../decisions/D020-provider-terms-and-no-sale.md) item 6) and
-  PostHog (US cloud, [tracking inventory §6](../tracking-inventory.md#6-posthog-in-the-browser); live
-  `privacy/page.tsx:86`). Everything else waits on the CTO's written region map (legal review H12, DATA-26) and
-  the Supabase region (C17). Today the store's server code runs in Washington, D.C., USA (Vercel iad1,
-  [open questions](../../open-questions.md) C17), but Phase 4 may move it, so the page does not state today's
-  region for the new site.
+- **Every row is filled since task 6.7** ([D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md)
+  items 16 and 24). Each "Where" and its source:
+
+  | Row | Where (on the page) | Source |
+  |---|---|---|
+  | Speech and AI providers | Servers in India (unchanged) | [D020](../../decisions/D020-provider-terms-and-no-sale.md) item 6. Not named, and no "on request" line (D055 item 16) |
+  | Kheelona, on Google Cloud | India | [D047](../../decisions/D047-vercel-build-and-data-regions.md) ("For server & memory we are using GCP, that is in India"); D055 item 24 |
+  | Razorpay | India | Razorpay's blog, 21 Nov 2025, read 2026-10-13: "Razorpay complies with India's data localisation mandates ... This setup safeguards sensitive transaction data within India" (<https://razorpay.com/blog/why-a-local-payments-partner-wins-in-india-and-why-that-partner-is-razorpay/>). Razorpay's privacy policy (<https://razorpay.com/privacy/>, read 2026-10-13) names no location, so the blog post is the only published source for this cell |
+  | Supabase | Australia | D047 (ap-southeast-2, Sydney); D055 item 24: the founder chose not to answer the move question, so the page states D047's fact until the founder says it has moved. The module prints it from `ORDER_DATA_LOCATION` in `src/content/en-IN/legal/privacy.ts` (ADR-009), which the builder sets to "Australia" |
+  | Resend | United States | Resend docs, "Regions", read 2026-10-13: "All account data, including email metadata, logs, and API records, is stored in the United States regardless of the sending region you select." (<https://resend.com/docs/dashboard/domains/regions>) |
+  | Vercel | India (Mumbai) for the store's server code | `vercel.json` `"regions": ["bom1"]` (Mumbai), in this worktree; D055 context. Only the server code's region is stated: the site's pages are served from Vercel's network, whose location the page does not claim |
+  | Google | Google data centres around the world | Google Ads Data Processing Terms, section 10.1, read 2026-10-13: "… Google may process Customer Personal Data in any country in which Google or its Subprocessors maintain facilities." (<https://business.safety.google/adsprocessorterms/>). The sentence opens "Subject to any provisions applicable to data transfers set out in the Additional Terms, …" ([CMO review](../../qa/cmo-review-page-facts-6.7-2026-10-14.md) M4). Google Analytics is listed as a Processor Service under these terms (<https://business.safety.google/adsservices/>, read 2026-10-13) |
+  | Meta | The United States and other countries | Meta Privacy Policy (effective 23 July 2026), section "How do we transfer information?", read 2026-10-13: "Transferring, storing or processing your information across borders, including from and to the United States and other countries: We share information we collect globally, both internally across our offices and data centers and externally with our partners, third parties and service providers." (<https://www.facebook.com/privacy/policy/?section_id=9-HowDoWeTransfer>). WhatsApp Privacy Policy, for the WhatsApp half of the row, read 2026-10-13: "Your information may, for example, be transferred or transmitted to, or stored and processed in, the United States; countries or territories where the Meta Companies’ affiliates and partners, or our service providers are located; or any other country or territory globally where our Services are provided outside of where you live for the purposes as described in this Privacy Policy." (<https://www.whatsapp.com/legal/privacy-policy>). Both quotes as the [CMO review](../../qa/cmo-review-page-facts-6.7-2026-10-14.md) re-read them (B2). Neither names Ireland for Indian users (WhatsApp names it only for WhatsApp Ireland Limited, which serves the European Region), so the cell no longer does. Meta's policy was read as served to a US network; QA re-reads it from India before Gate B, because Meta serves regional versions |
+  | PostHog | United States (unchanged) | US cloud, [tracking inventory §6](../tracking-inventory.md#6-posthog-in-the-browser); live `privacy/page.tsx:86` |
+  | Ahrefs | United States | Ahrefs Privacy Policy, section 9, read 2026-10-13: "The Personal Data we collect is transferred to and stored in the United States where our services and other web properties operate." (<https://ahrefs.com/legal/privacy-policy>) |
+
+  The provider pages were read on 2026-10-13 and their quotes supplied with task 6.7, except Meta's and
+  WhatsApp's, which the CMO review re-read (B2); the copywriter did not reopen them (no outbound network in the
+  build sandbox). None is saved under `raw/` yet: saving each with its read date before Gate B is the main
+  session's item ([CMO review](../../qa/cmo-review-page-facts-6.7-2026-10-14.md) M5).
+- Before task 6.7 the store's server code ran in Washington, D.C., USA (Vercel iad1, [open questions](../../open-questions.md)
+  C17); `vercel.json` now pins `bom1`, so the page states Mumbai.
+- "Kheelona, on Google Cloud" sits under the lead "Each of these companies does one job for us": Google Cloud is
+  the company in that row, and Kheelona is named so a parent knows who runs it. The CMO review finds it reads
+  oddly under the lead (M3); "Google Cloud, for Kheelona" is question 9, kept to D055 item 24's words until the
+  founder chooses.
+- Cross-border: order data in Australia, order emails and analytics in the United States, Google and Meta
+  worldwide. The page states where; whether any transfer needs more than that (SPDI Rule 7 now, DPDP s.16 later)
+  is a counsel point (legal review H12, lines 284-287), and no counsel reads the page before launch (B47).
 - "Only our team can read your order" is the live line (`privacy/page.tsx:55`). Who can read transcripts is not
-  documented, so it is not claimed (Section 11 placeholder).
+  documented, so it is not claimed (Section 11 says nothing about it: no written security policy yet, D055
+  item 22).
 - The last sentence (lawful sharing) is a drafter's addition.
 
 ## Section 8 · How long we keep things (`#keep`)
@@ -451,24 +499,26 @@ The first paragraph is the answer-first block for "How long are my child's conve
 > delete any of them sooner, in one tap. The speech and AI providers that help Kheelu reply keep none of it.
 >
 > - **Conversation transcripts:** 36 months, then deleted automatically, unless you delete them sooner.
-> - **Voice recordings:** [PLACEHOLDER: how long we keep voice recordings, and whether the same 36 months
->   applies]
-> - **If you close your parent-app account:** [PLACEHOLDER: what happens to your child's conversations and
->   recordings]
-> - **Orders you've paid for:** as long as Indian tax law requires, even after a refund. [PLACEHOLDER: the
->   period, from our CA]
-> - **Unpaid orders:** [PLACEHOLDER: how long we keep them]
+> - **Voice recordings:** 36 months, the same as transcripts.
+> - **If you close your parent-app account:** we keep your child's conversations and recordings until their 36
+>   months end.
+> - **Orders you've paid for:** as long as Indian tax law requires, even after a refund.
+> - **Unpaid orders:** we keep them until you ask us to delete them.
 > - **Google Analytics:** 14 months.
-> - **PostHog:** screen recordings for 30 days. [PLACEHOLDER: how long PostHog keeps the other events]
+> - **PostHog:** screen recordings for 30 days.
 > - **Meta** keeps what it receives under its own policy.
 > - **Our cookies:** kh_utm and kh_fbclid for as long as your visit lasts; kh_order for 2 hours.
 
 Notes:
 - 36 months is [D020](../../decisions/D020-provider-terms-and-no-sale.md) item 7, verbatim in its customer form.
-  D035 ties the training disclosure to this period but does not say recordings follow it, so the recordings row
-  is a placeholder.
-- Early-end triggers (withdrawal, delete, account closure) are what legal review DATA-20 asks for; only delete
-  is documented (D017).
+  Recordings follow the same 36 months ([D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md)
+  item 13); the row says only that, not "deleted automatically", which the founder did not say of recordings.
+- Early-end triggers (withdrawal, delete, account closure) are what legal review DATA-20 asks for. Delete is
+  documented (D017; what it reaches, Section 9); account closure ends nothing early (D055 item 18: kept until
+  their 36 months end).
+- **Changed in task 6.7** (D055): recordings (item 13), account closure (item 18), unpaid orders (item 19, the
+  founder's sentence with a lower-case "we" after the list's colon, as the other rows), the paid-orders CA slot
+  off (item 20) and the PostHog other-events slot off (item 21).
 - Never "Nothing is kept that you cannot delete" (retired, legal review H15).
 
 ## Section 9 · Deleting, and your other rights (`#rights`)
@@ -480,9 +530,7 @@ Notes:
 > ### Deleting a conversation.
 >
 > In the parent app, you can delete any conversation in one tap. It disappears from your app straight away.
-> [PLACEHOLDER: how soon a deleted conversation is erased from our systems and backups, any period the law
-> requires us to keep records, and whether it is also removed from Kheelu's memory and from our model's training
-> data]
+> It is not removed from Kheelu's memory, or from the data our model trains on.
 >
 > ### Asking us.
 >
@@ -505,9 +553,19 @@ Notes:
 
 Notes:
 - One-tap delete is [D017](../../decisions/D017-live-behaviour-claims-confirmed.md). B35: customer pages say
-  "Delete any of them in one tap"; this page carries the precise wording. What happens beyond the app is not
-  documented, and the legal review's suggested line ("erased from our systems after the minimum period the law
-  sets", H15) rests on a counsel reading of DPDP Rule 8(3), so it is a placeholder, not copy.
+  "Delete any of them in one tap"; this page carries the precise wording. What deleting reaches is
+  [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 17 (task 6.7): it leaves the app,
+  and it is **not** removed from Kheelu's memory or from the model's training data, said plainly in its own
+  sentence so the one-tap delete is not read as more than it is (the founder sees the sentence at Gate B). The
+  timing slot (servers, backups, any period the law requires) came off with no wording in its place; the legal
+  review's suggested line ("erased from our systems after the minimum period the law sets", H15) rests on a
+  counsel reading of DPDP Rule 8(3) and stays out.
+- **No server line.** Round 1 of task 6.7 added "Deleting it also removes it from our servers.", from the task
+  brief's reading of item 17. D055 does not say it, and it contradicted the next sentence: Kheelu's memory
+  ([D047](../../decisions/D047-vercel-build-and-data-regions.md)) and the training data (D055 item 12) are both on
+  our Google Cloud servers in India. It came off at the [CMO review](../../qa/cmo-review-page-facts-6.7-2026-10-14.md)
+  (B1). A server line goes back only after the founder's answer is recorded and the CTO confirms it (Checks
+  below).
 - The rights list follows legal review DATA-22 (DPDP s.11-14, Rules 14(1), 14(4), 14(5); SPDI Rule 5(6) for
   review and correction now) and DATA-30 (no waiver of a Board complaint).
 - "48 hours … one month" for rights requests extends the D032 complaint promise: a drafter's addition. DPDP
@@ -535,14 +593,16 @@ Notes:
 > Payments happen on Razorpay's own form, so card, UPI and bank details never reach us. Only our team can read
 > your order.
 >
-> [PLACEHOLDER: our security practices (for example encryption, who at Kheelona can read conversations, and
-> backups), taken from our written security policy; this section will say only what that policy documents]
->
-> [PLACEHOLDER: what we do, and how quickly we tell you, if your data is ever exposed, once our incident plan is
-> written]
+> If your data is ever exposed, we tell you without delay, and the Data Protection Board as the law requires.
 
-Notes: legal review DATA-06 and DATA-25 (describe only what is documented), DATA-24 (the breach line only once
-the runbook exists). No "ISO 27001" or framework claims (B36).
+Notes: legal review DATA-06 and DATA-25 (describe only what is documented). DATA-24 asked for the incident
+runbook before any breach line; the founder chose to publish the line now (D055 item 23; see Risks). No
+"ISO 27001" or framework claims (B36).
+- **Changed in task 6.7** ([D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md)): there is no
+  written security policy yet, so the practices slot came off and the section keeps its two confirmed lines
+  (item 22). The breach sentence is the founder's, verbatim (item 23). It is published before the incident
+  runbook DATA-24 asks for exists, and "the Data Protection Board as the law requires" makes no date or hour
+  promise (the Board's 72-hour duty applies from May 2027, legal review line 453): recorded under Risks.
 
 ## Section 12 · Films of real families (`#films`)
 
@@ -585,7 +645,10 @@ Notes:
 
 The grievance block is [D032](../../decisions/D032-grievance-block-and-call-line.md)'s wording verbatim, from one
 content value shared with `/contact`, `/refund`, `/terms` and the store footer. The seller block is the live
-`SELLER_SECTION` minus the retired "messages, not calls" line.
+`SELLER_SECTION` minus the retired "messages, not calls" line. The complaint-reference line came off in task 6.7
+([D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 7) until a system issues one; on the
+site it is the optional `grievanceNote` of `LegalTemplateCopy`, left out of `src/content/en-IN/legal/shared.ts`
+while D055 item 7 stands, so it is off all four legal pages at once.
 
 **Copy:**
 
@@ -596,7 +659,6 @@ content value shared with `/contact`, `/refund`, `/terms` and the store footer. 
 >
 > **Grievance Officer:** Aman Soni, Co-Founder and CTO, aman@kheelona.com, +91 91875 46483. We acknowledge every
 > complaint within 48 hours and resolve it within one month of receiving it.`{grievance-source}`
-> [PLACEHOLDER: how you get a complaint reference to track your complaint; not set up yet]
 >
 > **Who we are:** Kheelona Robotics Private Limited, registered at 5th Floor, No 51 (Old Site No 1), Kokarya
 > Business Synergy Center, 5th Main, 5th Block Jayanagar, Bengaluru 560041, Karnataka, India. GSTIN
@@ -624,6 +686,7 @@ Plain `path:line` = tag `archive/pre-reset-2026-10-10`. Wiki paths are relative 
 | Claim on the page | Source |
 |---|---|
 | Draft note; founder approves; no lawyer; counsel points not settled | [D029](../../decisions/D029-grievance-officer-legal-review.md); gate-a-open-items.md:94 (B47) |
+| Last updated: 14 October 2026 | [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 8 |
 | Scope: website, store, toy and app in one policy | product/legal-requirements.md:424 (DATA-01), 496 |
 | Seller name, address, GSTIN | product/policies.md:140-144; `src/lib/legal.ts:18-24` |
 | Support WhatsApp (calls and messages), email | product/facts.md:223-224; [D032](../../decisions/D032-grievance-block-and-call-line.md) |
@@ -637,12 +700,17 @@ Plain `path:line` = tag `archive/pre-reset-2026-10-10`. Wiki paths are relative 
 | Cannot browse the internet; no camera | product/claims.md:71, 68; product/facts.md:144, 146 |
 | Transcripts read in the app; one-tap delete | [D017](../../decisions/D017-live-behaviour-claims-confirmed.md); product/facts.md:130; product/claims.md:72 |
 | Kheelu remembers earlier conversations; weekly report; new-word count; age-graded layer; parent sets the age at setup | [D036](../../decisions/D036-launch-feature-claims.md):16-26; site/pages/home.md:751 |
-| Alerts confirmed but trigger undefined; off the customer pages in v1 | [D036](../../decisions/D036-launch-feature-claims.md):19-20; gate-a-open-items.md:84 (B34) |
-| Consent at setup not built | product/legal-requirements.md:443 (DATA-14), 503; product/claims.md:335 |
+| No alerts line: parent alerts are off in v1 | gate-a-open-items.md:89 (B34), final by [D054](../../decisions/D054-founder-answers-open-questions-2026-10-14.md) item 23; [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) context |
+| Recordings used for nothing besides the reply and training; kept 36 months, like transcripts | [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 13 |
+| The app asks for the child's first name; phone number and one-time code; serial or device ID, Wi-Fi network name (not its password), phone model and operating system | [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 14 |
+| Consent: setting Kheelu up is how a parent or guardian agrees; a separate step with a parent check comes before May 2027 | [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 15, verbatim; the step is not built (product/legal-requirements.md:443 DATA-14, 503) |
+| Speech and AI providers not named, no "on request" line | [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 16 |
 | Own-model training: voice and transcripts, by default, opt-out, terms and privacy only | [D035](../../decisions/D035-model-training-opt-out.md):14-29; product/claims.md:330, 333 |
+| Training: purpose, India on Google Cloud, a switch in the parent app, data already used taken out, nothing else changes | [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 12 |
 | Store fields, address after payment, consent tick not pre-ticked with a timestamp | site/checkout.md:116-140 (121, 123, 124), 62; product/policies.md:92; `privacy/page.tsx:29-30` |
 | Why each field; no child's name, school or photo | `privacy/page.tsx:30, 43` |
 | Unpaid orders saved before payment | site/checkout.md:100 (step 6) |
+| Unpaid orders kept until you ask us to delete them (Sections 4 and 8) | [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 19 |
 | Campaign, device, IP and Meta cookie identifier kept with the order | `privacy/page.tsx:30`; site/tracking-inventory.md:346-349 (stored on the order row) |
 | Razorpay form, details never reach us, payment reference, Razorpay cookies | `privacy/page.tsx:36-37`; site/tracking-inventory.md:365-371 |
 | Tools load on first view; no banner | site/tracking-inventory.md:445-447 (§15) |
@@ -656,51 +724,58 @@ Plain `path:line` = tag `archive/pre-reset-2026-10-10`. Wiki paths are relative 
 | PostHog id stored with the order; no profile; server event | site/tracking-inventory.md:289-290, 305-317; `privacy/page.tsx:99` |
 | kh_utm, kh_fbclid, kh_order; Meta can match the click, we cannot | site/tracking-inventory.md:341-345; `privacy/page.tsx:115` |
 | Consent gate before the DPDP consent duties (May 2027) | [D042](../../decisions/D042-policy-display-answers.md); product/policies.md:132; product/legal-requirements.md:79, 423 (DATA-00) |
-| How to limit tracking; the two gaps; Facebook and Instagram settings | `privacy/page.tsx:168, 177`; site/tracking-inventory.md:319-331 (proxy) |
-| Recipients list; PostHog US; providers in India; regions unknown | site/tracking-inventory.md:68-95; product/legal-requirements.md:282-295 (H12), 455 (DATA-26), 499; open-questions.md:142 (C17) |
+| How to limit tracking; the gaps, uncounted ("What blocking can't stop."); Facebook and Instagram settings | `privacy/page.tsx:168, 177`; site/tracking-inventory.md:319-331 (proxy); [D054](../../decisions/D054-founder-answers-open-questions-2026-10-14.md) item 12 (the lead) |
+| Recipients list; PostHog US; providers in India | site/tracking-inventory.md:68-95; product/legal-requirements.md:282-295 (H12), 455 (DATA-26), 499 |
+| Each recipient's region (conversations and the app India; Razorpay India; Supabase Australia; Resend US; Vercel's store server code Mumbai; Google worldwide; Meta US and other countries; Ahrefs US) | [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 24; [D047](../../decisions/D047-vercel-build-and-data-regions.md); `vercel.json` (bom1); the providers' own documents, read 2026-10-13 (URLs and quotes in the Section 7 notes) |
 | Only our team can read your order | `privacy/page.tsx:55` |
 | 36 months, then automatic deletion; providers keep nothing (RT1) | [D020](../../decisions/D020-provider-terms-and-no-sale.md) item 7, line 26; research/keyword-map.md:695-696; product/facts.md:132 |
-| Paid orders kept for tax, even after a refund | `privacy/page.tsx:56` |
-| Delete wording beyond the app is a placeholder | gate-a-open-items.md:86 (B35); product/legal-requirements.md:325-336 (H15), 450 (DATA-21) |
+| Paid orders kept for tax, even after a refund (no period) | `privacy/page.tsx:56`; [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 20 |
+| Closing the account: conversations and recordings kept until their 36 months end | [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 18 |
+| PostHog: only the 30 days for recordings | [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 21; [D031](../../decisions/D031-posthog-settings-and-replays.md) |
+| Deleting a conversation: off the app; not off Kheelu's memory or the training data | [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 17; gate-a-open-items.md:90 (B35); product/legal-requirements.md:325-336 (H15), 450 (DATA-21) |
 | Rights, identifiers, nomination, Board complaint | product/legal-requirements.md:451 (DATA-22), 459 (DATA-30), 510 |
 | Delete details means cancelling, refund at the same time | `privacy/page.tsx:196` |
 | We advertise on Facebook and Instagram | `privacy/page.tsx:190` |
 | Never profile your child from the form | `privacy/page.tsx:49, 141` |
-| Security and breach lines only once documented | product/legal-requirements.md:428 (DATA-06), 453 (DATA-24), 454 (DATA-25), 509, 512 |
+| Security: only the confirmed lines (no written policy yet) | [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 22; product/legal-requirements.md:428 (DATA-06), 454 (DATA-25), 509 |
+| Breach: we tell you without delay, and the Data Protection Board as the law requires | [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 23, verbatim; product/legal-requirements.md:453 (DATA-24), 512 |
 | Films: pilot families, written consent, take-down route | [D040](../../decisions/D040-films-move-to-new-site.md):19-26; product/legal-requirements.md:387 (DARK-02), 458 (DATA-29) |
 | SPDI now, DPDP from May 2027 | product/legal-requirements.md:79, 423 (DATA-00), 497 |
 | Grievance block, 48 hours, one month, calls | [D032](../../decisions/D032-grievance-block-and-call-line.md):20-29; product/policies.md:117-119; product/legal-requirements.md:489-492 |
-| Complaint reference not set up | product/policies.md:120; gate-a-open-items.md:110; product/legal-requirements.md:363 (ECOM-04) |
+| No complaint-reference line until a system issues one | [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 7; product/policies.md:120; product/legal-requirements.md:363 (ECOM-04) |
 | No CTA, link back to the product page | site/strategy.md:213 |
 | Meta title and H1 keyword | research/keyword-map.md:226, 346 |
 
 ## Placeholders
 
-| # | Where | Placeholder | Who supplies it |
-|---|---|---|---|
-| 1 | Header | Last-updated date | Founder (on approval) |
-| 2 | Short version 4; Section 3 | How a parent turns training off | Founder / product team (D035) |
-| 3 | Section 2 | Provider names, or "we tell you on request" | Founder (question 3) |
-| 4 | Section 2 | Whether voice recordings are used for anything besides training | Product team |
-| 5 | Section 2 | Parent alerts: trigger and data used, if they ship | Product team (D036) |
-| 6 | Section 2 | Other child details the app asks for | Product team |
-| 7 | Section 2 | Parent-app account details; device and Wi-Fi setup data | Product team (DATA-05) |
-| 8 | Section 2 | How consent is given at setup and how the adult is checked | Product team (DATA-14; flow not built) |
-| 9 | Section 3 | Purpose of training, in the founder's words | Founder (question 1) |
-| 10 | Section 3 | Where the model is trained | CTO |
-| 11 | Section 3 | What happens to data already used after opt-out | Founder / CTO (question 2) |
-| 12 | Section 3 | Turning training off changes nothing else | Founder (question 1) |
-| 13 | Section 4; Section 8 | Retention of unpaid orders | CTO |
-| 14 | Section 7 | Who stores conversations and runs the parent app | CTO |
-| 15 | Section 7 | Region per recipient (seven rows), incl. the store's server code on the new site | CTO's region map (H12, DATA-26); C17 |
-| 16 | Section 8 | Voice-recording retention | Founder (question 2) |
-| 17 | Section 8 | Effect of closing the parent-app account | Product team |
-| 18 | Section 8 | Tax-record retention period | CA |
-| 19 | Section 8 | PostHog event retention (other than recordings) | CTO (dashboard) |
-| 20 | Section 9 | Erasure beyond the app; memory; training data | CTO / founder (question 2) |
-| 21 | Section 11 | Security practices from the written policy | CTO (DATA-06) |
-| 22 | Section 11 | Incident notice | CTO (DATA-24) |
-| 23 | Section 14 | Complaint reference | CTO (ECOM-04; operational under D030) |
+**None remain** (task 6.7, 2026-10-14). The founder filled or ruled off all 23 in
+[D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md); this is how each was settled.
+
+| # | Where | Placeholder (before 6.7) | Settled by | Now |
+|---|---|---|---|---|
+| 1 | Header | Last-updated date | D055 item 8 | "14 October 2026" |
+| 2 | Short version 4; Section 3 | How a parent turns training off | D055 item 12 | "with a switch in the parent app" |
+| 3 | Section 2 | Provider names, or "we tell you on request" | D055 item 16 | Paragraph removed; providers not named |
+| 4 | Section 2 | Whether voice recordings are used for anything besides training | D055 item 13 | Filled: nothing else besides the reply and training |
+| 5 | Section 2 | Parent alerts: trigger and data used, if they ship | B34 (off in v1), D054 item 23 | Line removed |
+| 6 | Section 2 | Other child details the app asks for | D055 item 14 | Filled: the first name |
+| 7 | Section 2 | Parent-app account details; device and Wi-Fi setup data | D055 item 14 | Filled |
+| 8 | Section 2 | How consent is given at setup and how the adult is checked | D055 item 15 | Filled: the founder's two sentences |
+| 9 | Section 3 | Purpose of training, in the founder's words | D055 item 12 | Filled, verbatim |
+| 10 | Section 3 | Where the model is trained | D055 item 12 | "India, on Google Cloud." |
+| 11 | Section 3 | What happens to data already used after opt-out | D055 item 12 | Filled, verbatim |
+| 12 | Section 3 | Turning training off changes nothing else | D055 item 12 | Filled |
+| 13 | Section 4; Section 8 | Retention of unpaid orders | D055 item 19 | "We keep them until you ask us to delete them." |
+| 14 | Section 7 | Who stores conversations and runs the parent app | D055 item 24; D047 | "Kheelona, on Google Cloud" |
+| 15 | Section 7 | Region per recipient, incl. the store's server code on the new site | D055 item 24; D047; `vercel.json` | Filled, each from its source (Section 7 notes) |
+| 16 | Section 8 | Voice-recording retention | D055 item 13 | "36 months, the same as transcripts." |
+| 17 | Section 8 | Effect of closing the parent-app account | D055 item 18 | Kept until their 36 months end |
+| 18 | Section 8 | Tax-record retention period | D055 item 20 | Slot removed; no period stated |
+| 19 | Section 8 | PostHog event retention (other than recordings) | D055 item 21 | Slot removed |
+| 20 | Section 9 | Erasure beyond the app; memory; training data | D055 item 17 | Timing slot removed; the limit stated plainly |
+| 21 | Section 11 | Security practices from the written policy | D055 item 22 | Slot removed (no written policy yet) |
+| 22 | Section 11 | Incident notice | D055 item 23 | Filled: the founder's sentence |
+| 23 | Section 14 | Complaint reference | D055 item 7 | Line removed |
 
 ## Drafter's additions (need the founder's OK)
 
@@ -716,28 +791,74 @@ Written to meet a legal-review item; no decision covers the exact wording yet.
 
 ## Questions for the founder (website only)
 
-Each lands on this page or `/terms`. Shared with [terms.md](terms.md).
+Each lands on this page or `/terms`. Shared with [terms.md](terms.md). Questions 1 to 3 are **answered**
+([D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md), 2026-10-14) and applied in task 6.7:
+1 by item 12 (a switch in the app, no "or ask us" route; nothing else changes; the purpose as recommended), 2 by
+items 12, 13 and 17 (opt-out takes data out of the training data; delete does not reach Kheelu's memory or the
+training data; recordings 36 months), 3 by item 16 (neither: no names and no "on request" line). Questions 6 to 8
+are new in task 6.7; 9 and 10 come from the [CMO review](../../qa/cmo-review-page-facts-6.7-2026-10-14.md) (M3,
+M14). None of 6 to 10 is applied: each adds or changes a line D055 does not record.
 
-1. **Training opt-out, how and why.** Where does a parent turn training off (recommend: one switch in the parent
+1. **(Answered, D055 item 12.) Training opt-out, how and why.** Where does a parent turn training off (recommend: one switch in the parent
    app's settings, plus "or ask us on WhatsApp or by email"), and may the page say turning it off changes nothing
    else about Kheelu? And the purpose in your words: is "to make Kheelu better at understanding and answering
    children aged 3 to 7" right?
-2. **What "delete" and "opt out" reach.** When a parent deletes a conversation or turns training off, is it also
+2. **(Answered, D055 items 12, 13, 17.) What "delete" and "opt out" reach.** When a parent deletes a conversation or turns training off, is it also
    removed from Kheelu's memory and from data already used for training? And are voice recordings kept for the
    same 36 months as transcripts? (Recommend the page states only what the product does; the CTO may answer the
    technical half.)
-3. **Name the speech and AI providers?** (a) Name them on `/privacy`; (b) "We tell you which providers we use if
+3. **(Answered, D055 item 16: neither.) Name the speech and AI providers?** (a) Name them on `/privacy`; (b) "We tell you which providers we use if
    you ask." **Recommend (b)** until the provider contracts are checked against the providers line (your
    to-do, legal review H12); the DPDP access right covers naming from May 2027.
 4. **The drafter's additions** above, on both pages: approve as a set, or strike any.
 5. **No pre-order button on the policy pages.** `/privacy` and `/terms` end with a link back to Meet Kheelu, no
    orange button and no sticky bar (strategy §5). **Recommend yes**: these pages build trust, and the footer and
    nav still reach the store.
+6. **The delete limit in the short version** (new, task 6.7). Item 5 of the short version still says "You can read
+   and delete every conversation. Delete any of them in one tap." Section 9 now says deleting does not reach
+   Kheelu's memory or the training data (D055 item 17), but a parent who reads only the short version would not
+   see it. (a) Leave item 5 as approved; (b) add one line to it: "Deleting one doesn't remove it from Kheelu's
+   memory or our training data." **Recommend (b)**: D055 wants the one-tap delete not read as more than it is,
+   and the short version is where most parents stop. Not applied: it is a new line D055 does not ask for. The CMO
+   review agrees (M1), and notes that Section 2 and the Section 8 answer-first block also say "in one tap" without
+   the limit; (b) on the short version is the one fix it asks for.
+7. **Point from deleting to the training switch** (new, task 6.7). A parent told that deleting does not reach
+   the training data will ask how to stop that. (a) Leave Section 9 as now; (b) add after it: "To take your
+   child's conversations out of our training data, turn training off in the parent app." (true by D055 item 12:
+   "We take them out of our training data"). **Recommend (b)**: it turns a limit into an action, with no new
+   fact. Not applied for the same reason. The CMO review agrees (M1).
+8. **The consent paragraph repeats itself** (new, task 6.7). It reads "A parent or guardian sets Kheelu up in the
+   parent app. Setting Kheelu up in the parent app is how a parent or guardian agrees to this policy. …": the
+   approved first sentence, then D055 item 15's two sentences verbatim. (a) Keep all three; (b) drop the approved
+   first sentence, which item 15's first sentence now says in full. **Recommend (b)**: shorter on a phone, no fact
+   lost. Kept as (a) in task 6.7, which may change only what D055 fills. The CMO review agrees (M2).
+9. **The Google Cloud row in Section 7** (CMO review M3). The lead says "Each of these companies does one job for
+   us.", and the row under it reads "Kheelona, on Google Cloud" (D055 item 24's words). Kheelona does not do a job
+   for itself. (a) Keep D055 item 24's words; (b) "Google Cloud, for Kheelona" in the Who cell: the same facts, and
+   it reads under the lead. **Recommend (b)**. Kept as (a) until you choose, because the cell is your wording.
+10. **Why the app asks for your child's first name** (CMO review M14). "Your child's first name: the parent app
+    asks for it." is the only item under "What we keep, and why" with no reason. D055 item 14 gives none, and the
+    page must not invent one. Please give the purpose in one line (for example, whether Kheelu or the app uses the
+    name, and for what); the copywriter adds it in your words. **Recommend** answering before Gate B: a parent
+    reading a list headed "and why" expects a why on every line.
 
 ## Checks before sign-off (CTO, not founder questions)
 
-- Region map for every recipient and the transcript store (H12, DATA-26); the Supabase region (C17).
+- Region map (H12, DATA-26): since task 6.7 the page states every region from D047, `vercel.json` and each
+  provider's published documents (D055 item 24; Section 7 notes). Still worth a CTO check against the provider
+  contracts (failover, support access, sub-processors, logs, backups: H12, lines 292-295). The Supabase row says
+  Australia until the founder confirms a move (D047); the move changes `ORDER_DATA_LOCATION` and this row in the
+  same commit.
 - Resend open and click tracking: off or on? The page claims nothing until it is read.
+- What deleting a conversation reaches on our servers (Section 9). The page says only that it leaves the app and
+  is not removed from Kheelu's memory or the training data (D055 item 17); it makes no server line (CMO review B1).
+  If the CTO confirms that deleting erases the transcript and the recording from the Google Cloud store, a line
+  saying so goes on the page only after the founder's answer is recorded. It must not suggest that Kheelu's memory
+  or the training data live anywhere else: both are on Google Cloud in India (D047; D055 item 12). The page says
+  nothing about backups.
+- Vercel Web Analytics region (CMO review M13). The Vercel row names a region only for the store's server code,
+  as D055 states it. If Vercel publishes where Web Analytics data is stored, the copywriter adds it to the row with
+  its quote and URL.
 - Provider contracts against the D020 line (founder to-do, gate-a-open-items §4).
 - The store form fields and tools: if Phase 4 changes either, this page changes in the same commit.
 
@@ -749,6 +870,12 @@ Each lands on this page or `/terms`. Shared with [terms.md](terms.md).
 - No consent banner until before May 2027 ([D042](../../decisions/D042-policy-display-answers.md); legal review
   H16, DATA-11).
 - No material-connection line beside the films ([D040](../../decisions/D040-films-move-to-new-site.md)).
+- Added by task 6.7, each the founder's choice in [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md):
+  the breach line is published before the incident runbook exists (item 23; legal review DATA-24 asked for the
+  runbook first); deleting a conversation does not reach Kheelu's memory or the training data (item 17; DATA-20,
+  DATA-21, H15), stated plainly; unpaid orders are kept until a parent asks (item 19; DATA-20 asks for erasure when
+  the purpose ends); order data in Australia, emails and analytics in the United States, Google and Meta worldwide
+  (item 24; H12 on transfers, a counsel point under B47).
 
 ## Keyword placements
 
@@ -759,3 +886,62 @@ Each lands on this page or `/terms`. Shared with [terms.md](terms.md).
 | H2 | "How long we keep things." (RT1, conversation retention); "Kheelu, the parent app and your child's voice." (children's data, P1) |
 | Body | "Digital Personal Data Protection Act, 2023" once in `#choices` and once in `#law` (secondary; the journal article owns DPDP) |
 | Density | "Kheelu" is a product noun here, not a keyword target; no density check needed on a legal page |
+
+Task 6.7 changed none of these: the meta title, meta description, H1, every H2 and both answer-first blocks (P1 in
+Section 2, RT1 in Section 8) are word for word as approved, and the meta description stays true (36 months, every
+tool named, opt out or delete).
+
+## Changes after approval (task 6.7)
+
+The founder answered this page's placeholders on 2026-10-14
+([D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) items 7, 8 and 12-24) and changed one list
+lead ([D054](../../decisions/D054-founder-answers-open-questions-2026-10-14.md) item 12). Task 6.7 applied them on
+2026-10-14, each to the placeholder it fills or the line it rules off. Every other word of the Copy blocks is as
+approved at Gate A ([D046](../../decisions/D046-gate-a-approved.md)) and by D054 item 10.
+
+| # | Where | What changed | Why (decision item) |
+|---|---|---|---|
+| 1 | Fold 1 | The date placeholder becomes "Last updated: 14 October 2026" | D055 item 8 (all four legal pages) |
+| 2 | Fold 2, item 4 | The how-to placeholder becomes "You can turn it off with a switch in the parent app." | D055 item 12 ("with a switch in the parent app", every place the page says how) |
+| 3 | Section 2, "Where your child's voice goes" | The providers-names placeholder paragraph is removed entirely | D055 item 16 (not named; no "on request" line) |
+| 4 | Section 2, "What we keep", recordings | The placeholder becomes "Besides Kheelu's reply and that training, we use them for nothing else." | D055 item 13 |
+| 5 | Section 2, "What we keep" | The parent-alerts placeholder line is removed | B34 (off in v1), final by D054 item 23; D055 context |
+| 6 | Section 2, "What we keep" | The other-child-details placeholder becomes "**Your child's first name:** the parent app asks for it." | D055 item 14 |
+| 7 | Section 2, "What we keep", account and setup | The placeholder becomes the phone number, sign-in with a one-time code, Kheelu's serial or device ID, the Wi-Fi network name "(not its password)", and the phone's model and operating system | D055 item 14 |
+| 8 | Section 2, "Your consent" | The placeholder becomes item 15's two sentences, verbatim; the approved first sentence stays (question 8) | D055 item 15 |
+| 9 | Section 3 | Why: "to make Kheelu better at understanding and answering children aged 3 to 7."; Where: "India, on Google Cloud."; "You can turn it off at any time, with a switch in the parent app."; "We take them out of our training data. A model already trained keeps what it learned, but they are never used again."; "Turning it off changes nothing else about how Kheelu or the parent app works." | D055 item 12 |
+| 10 | Section 4 | The unpaid-orders placeholder becomes "We keep them until you ask us to delete them." | D055 item 19 |
+| 11 | Section 6 | "Two things blocking can't stop." becomes "What blocking can't stop." | D054 item 12 (P14) |
+| 12 | Section 7 | Providers row: the names slot goes ("Speech and AI providers"). Conversations row: "Kheelona, on Google Cloud", India. Regions: Razorpay India; Supabase Australia; Resend United States; Vercel "India (Mumbai) for the store's server code"; Google "Google data centres around the world"; Meta "The United States and other countries"; Ahrefs United States | D055 items 16 and 24; D047; `vercel.json` (bom1); the providers' documents read 2026-10-13 (Section 7 notes) |
+| 13 | Section 8 | Recordings "36 months, the same as transcripts."; account closure "we keep your child's conversations and recordings until their 36 months end."; the paid-orders CA slot off; unpaid "we keep them until you ask us to delete them."; the PostHog other-events slot off | D055 items 13, 18, 20, 19, 21 |
+| 14 | Section 9 | The timing placeholder becomes "It is not removed from Kheelu's memory, or from the data our model trains on." | D055 item 17 |
+| 15 | Section 11 | The security-detail slot is removed (the two confirmed lines stay); the incident slot becomes "If your data is ever exposed, we tell you without delay, and the Data Protection Board as the law requires." | D055 items 22 and 23 |
+| 16 | Section 14 | The complaint-reference placeholder line is removed | D055 item 7 (all four legal pages) |
+| 17 | Notes | Front matter sources; how-to-read; length (about 3,100 words); the notes to Sections 2, 3, 4, 6, 7, 8, 9, 11 and 14; the sources table; the placeholders table (now how each was settled); questions 1-3 marked answered and 6-8 added; the CTO checks; the risks | So the page stays true |
+
+**Round 2, after the [CMO review](../../qa/cmo-review-page-facts-6.7-2026-10-14.md)** (rows 12 and 14 above show
+the result):
+- **B1.** Section 9 loses "Deleting it also removes it from our servers.", which D055 item 17 does not say and the
+  next sentence contradicts (D047; D055 item 12). The Section 9 note, the sources row and the CTO check follow; a
+  server line needs the founder's recorded answer and the CTO's confirmation first.
+- **B2.** Meta's "Where" becomes "The United States and other countries": neither Meta source names Ireland for
+  Indian users. The Section 7 note now quotes both policies, with URLs, the read date, and QA's re-read from India
+  before Gate B.
+- **M4, M6, M13 (notes only).** The Google note marks its quote as partway into 10.1 and shows that Google
+  Analytics falls under those terms; the stale P1, DATA-24 and "report's gaps" notes are corrected; a CTO check for
+  the Vercel Web Analytics region is added.
+- **Questions 6-8** note the CMO's agreement (M1, M2); **9 and 10** are new (M3, M14). None is applied.
+
+**Not changed:** meta title and description, H1, every H2, the short version's other seven items, Sections 1, 5,
+10, 12 and 13, the close, the drafter's additions, the draft note in fold 0 (the template shows it while the
+document is a draft; whether it stays on production is the founder's call at Gate B, CMO review M8). Every tool
+and processor is still named (`test/analytics-tags.test.ts`), and no new line uses a phrase from
+`test/guards/banned-phrases.data.ts`.
+
+**For the builder (same commit as this page):** `src/content/en-IN/legal/privacy.ts` follows the Copy blocks word
+for word, `ORDER_DATA_LOCATION` reads "Australia" (ADR-009), and `privacy.test.ts` ("prints its approval date as
+the copy page's placeholder") moves to the date. The complaint-reference line is the optional
+`grievanceNote` of `LegalTemplateCopy`, left out of `src/content/en-IN/legal/shared.ts` while D055 item 7 stands, so
+it is off all four legal pages at once. The approved mockup
+`privacy.html` keeps its Gate A text; the main session lists the deviations at the merge (the `privacy` key of
+`test/e2e/support/deviations.ts` already holds V10).

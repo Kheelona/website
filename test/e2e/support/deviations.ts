@@ -14,6 +14,7 @@ import { product } from "@/content/en-IN/products/kheelu/product";
 import { inAppNote } from "@/content/en-IN/store/in-app-note";
 import { paymentsLine } from "@/content/en-IN/store/payments-line";
 import { toPlainText } from "@/lib/content/plain-text";
+import { PAGE_FACTS, type PageFactsSlug } from "./page-facts";
 import { sentences } from "./parity";
 
 export type VisualDeviation = {
@@ -64,11 +65,9 @@ export const TEAM_BIOS_BUILD = [
 ] as const;
 export const TEAM_STRIP_BUILD = ["Karnataka Elevate", "Founders Inc"] as const;
 export const TEAM_LEAD_BUILD = "Kheelona’s founders are parents in Bengaluru, building Kheelu: a screen-free plush toy that talks, for children aged 3 to 7.";
-export const SETUP_STEP_BUILD = [
-  "Press and hold Kheelu’s setup button.",
-  "[PLACEHOLDER: which button and where; the app’s own screen still shows “[back]”]",
-  "Hold it for 3 seconds, until its light starts pulsing.",
-] as const;
+/* Step 2's light without a colour (V8, shrunk to the colour by D055 item 25: the button's place is the founder's and the
+   mockup's own, so its title is the mockup's again). */
+export const SETUP_STEP_BUILD = ["Hold it for 3 seconds, until its light starts pulsing."] as const;
 /* The build's words for the privacy rule (V10): the B11 events of task 6.2 named in the policy, in the words the founder
    approved after Gate A (D054 item 10). Literals for the same reason; src/content/en-IN/legal/parity-deviations.test.ts
    holds them to privacy.ts. */
@@ -88,6 +87,31 @@ export const STORIES_REMOVED_CARD = {
   selector: "section#screen-time .mk-guides > .kh-listitem:nth-child(2)",
 } as const;
 const STORIES_V9 = "deviations.md V9 (founder, D053, 2026-10-14; task 6.5)";
+
+/** The founder's page facts on one page (task 6.7; D055, D054 items 12 and 19): each placeholder he filled and each line
+ *  he ruled off, the sentences listed in page-facts.ts (each page's parity-deviations unit test proves them exactly the
+ *  ones its facts change). */
+const pageFacts = (slug: PageFactsSlug): TextDeviation => ({
+  mockup: oneOf(PAGE_FACTS[slug].mockup),
+  build: oneOf(PAGE_FACTS[slug].build),
+  reason: PAGE_FACTS[slug].reason,
+  approvedBy: PAGE_FACTS[slug].approvedBy,
+});
+
+/** The blocks the founder's page facts change, hidden for the pixels: on both sides where the words reflow, on the
+ *  mockup's alone where a row or line came off (page-facts.ts; each page's parity-deviations test checks every selector
+ *  finds one changed block on its side). Their words are compared by the text pass (pageFacts, above). */
+const pageFactsHidden = (slug: PageFactsSlug): VisualHide[] => {
+  const { hidden, approvedBy } = PAGE_FACTS[slug];
+  const rule = (side: VisualHide["side"], selector: string, reason: string): VisualHide => ({ side, selector, reason, approvedBy });
+  return [
+    ...(["mockup", "build"] as const).flatMap((side) =>
+      hidden.both.map((selector) => rule(side, selector, "a block the founder's page facts reword, compared by the text pass")),
+    ),
+    ...hidden.mockup.map((selector) => rule("mockup", selector, "a block the founder's page facts take off, or its approved form")),
+    ...hidden.build.map((selector) => rule("build", selector, "the founder's page facts in a block the build words differently")),
+  ];
+};
 
 /** A route whose own parity runs would compare a state its mockup does not show, with the spec that proves that
  *  state's parity instead. The visual and text parity specs skip the route on the build and print why (SPA 1 and 2). */
@@ -200,28 +224,38 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
       "fold 5's line: the F11 placeholder in the mockup, the live strip of marks and names in the build (D054 item 20); the heading is compared",
     ),
   ],
-  setup: (["mockup", "build"] as const).map((side) => ({
-    /* Step 2 is CMO fix M-S1 in the build (no place, no light colour; an open placeholder for the place), so it wraps
-       differently and moves every step below it; the pixels compare the page without step 2 on both sides, and its
-       words are compared by the text pass (TEXT_DEVIATIONS). */
-    side,
-    selector: ".kh-steps > .kh-step:nth-child(2)",
-    reason: "step 2 (CMO fix M-S1 in the build, with its open placeholder), compared by the text pass; hidden on both sides so the steps below line up",
-    approvedBy: "deviations.md V8 (main session, 2026-10-14, M1; task 5.8, CMO M-S1)",
-  })),
+  setup: [
+    ...(["mockup", "build"] as const).map((side) => ({
+      /* Step 2 is CMO fix M-S1 in the build (its light without a colour, V8), so it may wrap differently and move every
+         step below it; the pixels compare the page without step 2 on both sides, and its words are compared by the text
+         pass (TEXT_DEVIATIONS). */
+      side,
+      selector: ".kh-steps > .kh-step:nth-child(2)",
+      reason: "step 2 (CMO fix M-S1 in the build: its light without a colour), compared by the text pass; hidden on both sides so the steps below line up",
+      approvedBy: "deviations.md V8 (main session, 2026-10-14, M1; task 5.8, CMO M-S1)",
+    })),
+    ...pageFactsHidden("setup"),
+  ],
+  "meet-kheelu": pageFactsHidden("meet-kheelu"),
   /* The Google Analytics block's paragraph and the PostHog block's first one say more in the build (V10), so they wrap
      to more lines and every block below would shift; the pixels compare the page without the two paragraphs on both
      sides, and their words are compared by the text pass (TEXT_DEVIATIONS). Third and sixth tools, as privacy.ts
      and the mockup order them (parity-deviations.test.ts checks the headings). */
-  privacy: (["mockup", "build"] as const).flatMap((side) => {
-    const tool = side === "mockup" ? "mk-tool" : "ks-tool";
-    return [`.${tool}s > .${tool}:nth-child(3) > p`, `.${tool}s > .${tool}:nth-child(6) > p:first-of-type`].map((selector) => ({
-      side,
-      selector,
-      reason: "the Google Analytics and PostHog paragraphs name the B11 events (D054 item 10), compared by the text pass; hidden on both sides so the blocks below line up",
-      approvedBy: PRIVACY_V10,
-    }));
-  }),
+  privacy: [
+    ...(["mockup", "build"] as const).flatMap((side) => {
+      const tool = side === "mockup" ? "mk-tool" : "ks-tool";
+      return [`.${tool}s > .${tool}:nth-child(3) > p`, `.${tool}s > .${tool}:nth-child(6) > p:first-of-type`].map((selector) => ({
+        side,
+        selector,
+        reason: "the Google Analytics and PostHog paragraphs name the B11 events (D054 item 10), compared by the text pass; hidden on both sides so the blocks below line up",
+        approvedBy: PRIVACY_V10,
+      }));
+    }),
+    ...pageFactsHidden("privacy"),
+  ],
+  refund: pageFactsHidden("refund"),
+  shipping: pageFactsHidden("shipping"),
+  terms: pageFactsHidden("terms"),
 };
 
 /** The style the visual pass adds to one side of a page's comparison: its hidden selectors, or "" when it has none. */
@@ -301,6 +335,7 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
       reason: "P15 default: a faulty Kheelu reported within 7 days gets a replacement or a full refund (D033, Rule 7(4)), the words of /refund",
       approvedBy: "deviations.md V6 (main session; task 4.7 item 4, P15 default)",
     },
+    pageFacts("meet-kheelu"),
   ],
   team: [
     {
@@ -329,13 +364,14 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
   ],
   setup: [
     {
-      /* CMO fix M-S1 (task 5.8): step 2 names no place and no light colour for the setup button (the app's own screen
-         bracketed both); its place is an open placeholder (setup.ts). */
-      mockup: oneOf(["Press and hold the button on Kheelu’s back.", "Hold it for 3 seconds, until the light starts pulsing blue."]),
+      /* CMO fix M-S1 (task 5.8): step 2's light names no colour (the app's own screen bracketed it). Since D055 item 25
+         the button's place is the founder's, the mockup's own words, so only the colour differs (setup.ts). */
+      mockup: oneOf(["Hold it for 3 seconds, until the light starts pulsing blue."]),
       build: oneOf(SETUP_STEP_BUILD),
-      reason: "CMO fix M-S1: no unconfirmed place or light colour for the setup button; its place is a placeholder until confirmed",
-      approvedBy: "deviations.md V8 (main session, 2026-10-14, M1; task 5.8)",
+      reason: "CMO fix M-S1: no unconfirmed colour for the setup button's light (its place confirmed by D055 item 25)",
+      approvedBy: "deviations.md V8 (main session, 2026-10-14, M1; task 5.8; shrunk to the colour by D055 item 25, task 6.7)",
     },
+    pageFacts("setup"),
   ],
   privacy: [
     {
@@ -346,5 +382,9 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
       reason: "the three new checkout events (B11) named in the policy, in the words the founder approved (D054 item 10)",
       approvedBy: PRIVACY_V10,
     },
+    pageFacts("privacy"),
   ],
+  refund: [pageFacts("refund")],
+  shipping: [pageFacts("shipping")],
+  terms: [pageFacts("terms")],
 };
