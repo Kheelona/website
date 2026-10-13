@@ -68,7 +68,7 @@ describe("ArticleTemplate: the three approved articles", () => {
     expect(words(built, { skip: ASIDE })).toBe(words(approved, { skip: ASIDE }));
   });
 
-  it.each(APPROVED)("%s: the reading column follows the head inside the article and shows the body still to port", (slug) => {
+  it.each(APPROVED)("%s: the reading column follows the head inside the article and holds the ported body, no open placeholder (task 5.6)", (slug) => {
     const container = page(articles[slug]);
     const article = container.querySelector("article")!;
     expect(article).toHaveAttribute("aria-labelledby", "story-title");
@@ -76,7 +76,7 @@ describe("ArticleTemplate: the three approved articles", () => {
     const column = article.querySelector(".ks-story-body > .kh-container")!;
     expect(column.classList.contains("ks-col")).toBe(true);
     expect(column.classList.contains("ks-prose")).toBe(true);
-    expect(column.querySelector(".ks-placeholder")?.textContent).toBe("[PLACEHOLDER ARTICLE: body from the approved mockup]");
+    expect(column.querySelector(".ks-placeholder")).toBeNull();
   });
 
   it.each(APPROVED.filter((slug) => articles[slug].close === "journal"))("%s: the close's art board is the mockup's, layer by layer", (slug) => {
