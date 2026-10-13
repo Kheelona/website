@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { render } from "@testing-library/react";
 import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -37,6 +37,34 @@ beforeEach(() => {
 });
 
 const SOURCE = readFileSync("src/app/store/page.tsx", "utf8");
+
+/** Every source file task 5.15 owns (tasks.md 5.15 Owns): the route, every module of the two store section folders (read
+ *  from disk, so a file added there later is covered), the two content modules, and the two checkout components with
+ *  their story and test. This file is the one left out: it holds the planted imports the check is tested with. */
+const SECTION_DIRS = ["src/components/sections/store/StoreTop", "src/components/sections/store/StoreDetails"];
+const OWNED_SOURCES: readonly string[] = [
+  "src/app/store/page.tsx",
+  ...SECTION_DIRS.flatMap((dir) => readdirSync(dir).filter((file) => /\.tsx?$/.test(file)).map((file) => `${dir}/${file}`)),
+  ...["store-page", "in-app-note"].flatMap((name) => [`src/content/en-IN/store/${name}.ts`, `src/content/en-IN/store/${name}.test.ts`]),
+  ...["PreorderForm", "OrderSummary"].flatMap((name) =>
+    ["tsx", "test.tsx", "stories.tsx"].map((kind) => `src/features/preorder/components/${name}.${kind}`),
+  ),
+];
+
+/** The paths task 6.3 deletes that the 5.15 spec names (tasks.md 5.15 Acceptance). */
+const DELETED_BY_6_3 = ["atoms/Field", "lib/cn", "lib/interactions", "molecules/PromiseMark", "organisms/VideoMoments", "lib/video-moments", "lib/kheelu-art"];
+
+/** The modules a file names: `import ... from`, `export ... from`, a bare `import "..."`, `import("...")` and
+ *  `vi.mock("...")`. */
+function moduleSpecifiers(text: string): string[] {
+  return [...text.matchAll(/(?:\bfrom\s*|\bimport\s*\(?\s*|\bvi\.mock\(\s*)["']([^"']+)["']/g)].map((m) => m[1]);
+}
+
+/** The deleted paths a file's modules point at: the path as a whole segment run (`@/lib/cn`, `../../lib/cn.ts`), never
+ *  a longer name (`@/lib/cnx`, `ui/Field/Field`). */
+function deletedPathsNamedIn(text: string): string[] {
+  return moduleSpecifiers(text).flatMap((spec) => DELETED_BY_6_3.filter((path) => new RegExp(`(?:^|/)${path}(?:$|[/.])`).test(spec)));
+}
 
 /** The store's canonical and og:url: the production store in every environment (config/env.ts CANONICAL_ORIGIN's rule;
  *  the store is noindex everywhere, so this only keeps a shared beta link from naming beta as the page's home). */
@@ -211,10 +239,36 @@ describe("store page: source", () => {
     expect(SOURCE).toContain('export const dynamic = "force-dynamic";');
   });
 
-  it("imports no path task 6.3 deletes", () => {
-    for (const legacy of ["atoms/Field", "lib/cn", "lib/interactions", "molecules/PromiseMark", "organisms/VideoMoments", "lib/video-moments", "lib/kheelu-art"]) {
-      expect(SOURCE, legacy).not.toContain(legacy);
-    }
+  it("the check below finds a deleted path in every way a file can name a module, and only there", () => {
+    const planted = [
+      'import { cn } from "@/lib/cn";',
+      'import "../../lib/interactions";',
+      'export { Field } from "@/components/atoms/Field";',
+      'const m = await import("@/components/organisms/VideoMoments");',
+      'vi.mock("@/lib/kheelu-art", () => ({}));',
+    ].join("\n");
+    expect(deletedPathsNamedIn(planted)).toEqual(["lib/cn", "lib/interactions", "atoms/Field", "organisms/VideoMoments", "lib/kheelu-art"]);
+    // The new design's own modules of the same names are not the legacy ones.
+    expect(deletedPathsNamedIn('import { Field } from "@/components/ui/Field/Field";\nimport { cnx } from "@/lib/cnx";')).toEqual([]);
+  });
+
+  it("imports no path task 6.3 deletes, in any source file 5.15 owns", () => {
+    // Guard the guard: the list holds the files the review named, and the walk reads their imports.
+    expect(OWNED_SOURCES).toEqual(
+      expect.arrayContaining([
+        "src/app/store/page.tsx",
+        "src/components/sections/store/StoreTop/StoreTop.tsx",
+        "src/components/sections/store/StoreDetails/StoreDetails.tsx",
+        "src/components/sections/store/StoreDetails/checkout-words.ts",
+        "src/content/en-IN/store/store-page.ts",
+        "src/content/en-IN/store/in-app-note.ts",
+        "src/features/preorder/components/PreorderForm.tsx",
+        "src/features/preorder/components/OrderSummary.tsx",
+      ]),
+    );
+    expect(moduleSpecifiers(SOURCE)).toContain("@/features/preorder/components/PreorderForm");
+    const named = OWNED_SOURCES.flatMap((file) => deletedPathsNamedIn(readFileSync(file, "utf8")).map((path) => `${file}: ${path}`));
+    expect(named).toEqual([]);
   });
 
   it("imports the two checkout components by file, never the feature barrel (it also loads AddressForm's client code)", () => {
