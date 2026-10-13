@@ -34,7 +34,7 @@ export const article = {
     readMinutes: 3,
     image: {
       src: readingNook,
-      alt: "A girl with curly hair, in a coral block-print kurta, sits cross-legged in a window nook, reading a picture book aloud and pointing at the page.",
+      alt: "A girl with curly hair, in a coral kurta, sits cross-legged on a window seat and reads a picture book aloud, one finger on the page.",
     },
   },
   /* Fold 2: the answer first (56 words), then one paragraph that frames the page. No product in the fold. */

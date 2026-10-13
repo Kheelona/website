@@ -443,3 +443,21 @@ questions below.)
 | Close block, price sentence, sticky bar | [home, CTA block](home.md#cta-block), [phone sticky bar](home.md#phone-sticky-bar) |
 | Cut live lines | [claims §4.1](../../product/claims.md#41-the-retired-microphone-wording) row 15; [claims §3](../../product/claims.md#3-not-confirmed-do-not-publish) (F7; pilot claims); [D041](../../decisions/D041-gate-a-round-1.md) (Kheelona+ after 6 months; age 3) |
 | Photo | DS `03-cast.md:15, 119` (Tara 03, with her father, Arnab); file checked by eye 2026-10-14; unused elsewhere on the site (grep of `wiki/site/pages` and `src/`, 2026-10-14) |
+
+## Changes after approval (task 5.20c)
+
+- **No Copy block changed.** The CMO's round 2 left this page one open minor, M8, and it needs the founder's answer
+  ([CMO review, round 2 verdict](../../qa/cmo-review-articles-5.19-2026-10-14.md#round-2-verdict)). The module needs
+  no change.
+- **Checked, already done in round 2 (no change):** M9 (fold 5, the answer split after "in one tap.") and M11 (the
+  head photo is `tara-03`, with its alt).
+- **Left as they are, waiting on the founder (open question P22):** the "Save voice recordings" line (M8; question
+  5: its setting at first setup, how long saved recordings are kept, and whether the switch bears on training,
+  D035), and the shutdown question with the other cut questions (question 4). No recording, shutdown or training
+  line was added. The B3 short form in fold 4 follows whatever the founder signs for B3 (open question P21;
+  question 3).
+- **Head photo, checked again for task 5.20's photo pools:** `tara-03` stays. It heads no other guide and is used
+  nowhere else on the site, so it keeps its one alt; it is in no task's pool; and it puts a grown-up in frame, which
+  this page needs (it advises a grown-up nearby at 3) and none of the AI guides' pool photos has. The CMO keeps it, with the bedtime
+  glow noted for the founder at Gate B ([CMO review, for the founder's eye](../../qa/cmo-review-articles-5.19-2026-10-14.md#for-the-founders-eye-at-gate-b-no-change-asked)).
+  D025: none needed (the main session's ruling at the wave 5 part C merge, R2-3).

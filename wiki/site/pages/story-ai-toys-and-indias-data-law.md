@@ -19,8 +19,9 @@ sources:
   - ../../decisions/D017, D018, D019, D020, D026, D029, D035, D038, D041
   - "src/lib/stories-expansion.ts:517-553 (the live article; input only); src/content/en-IN/stories/articles/ai-toys-and-indias-data-law.ts (stub: card, related, dates); src/content/en-IN/policies.ts:49 (RETENTION_LINE); src/content/en-IN/seller.ts:95 (help line)"
   - test/guards/banned-phrases.data.ts (every Copy block checked against it)
-  - design-system/project/03-cast.md:110; 01-writing.md:111-113 (read-only)
-  - ../../qa/cmo-review-articles-5.19-2026-10-14.md (round 1: M2, M3, M4, M11 fixed in round 2)
+  - design-system/project/03-cast.md:112; 01-writing.md:111-113; assets/Photo library/ira-01-story-on-the-bed-web.webp, checked by eye (read-only)
+  - ../../qa/cmo-review-articles-5.19-2026-10-14.md (round 1: M2, M3, M4, M11 fixed in round 2; M11 applied again in task 5.20c)
+  - ../../engineering/tasks.md (§4.9 and 5.20, task 5.20c, copy fixes and photo pools), ../../engineering/assets.md (advik-04 and ira-01 rows)
 ---
 
 # Story: What India's data law asks of a toy that listens
@@ -93,14 +94,25 @@ cite them).
 - **H1 accent:** `Hand` on "a toy that listens" (`{hand:a toy that listens}`).
 - H1 and lead are the hub card's title and summary, word for word (the module keeps its curly apostrophes).
 - Breadcrumb: "Stories" → `/stories`; "AI toys and safety" → `/stories#ai-and-safety` (from `hub.ts`, `topics.ts`).
-- **Image** (`kh-photo --wide`, 16:9, the LCP image; the head's wide layout, two even columns):
-  `advik-04-floor-train-web.webp`. Alt: "A boy in a green T-shirt lying on a red floor, smiling as he pushes a blue
-  wooden train." (`03-cast.md:110`, "screen-free play"; the alt is the approved one from the learning-toys guide,
-  word for word.) A child without Kheelu: the page is about the law, not the product. Checked by eye 2026-10-14.
-- **Round 2 (CMO M11):** `tara-04-reading-nook` was also the early-years guide's head photo, so this page moves. The
-  library's photos without Kheelu are each already an article head (`myra-04`, `ira-04`, `tara-04`, `kabir-04`) or a
-  1:1 portrait the head would crop into its 16:9 frame (`*-05-portrait`), except `advik-04`, which the learning-toys
-  guide uses only as an in-body figure, never a head (B28: DS library only).
+- **Image** (`kh-photo`, 4:5, the LCP image; the head's portrait layout, the photo in the DS 4:5 frame beside the
+  words): `ira-01-story-on-the-bed-web.webp`. Alt: "A laughing girl in a peach kurta sitting cross-legged on a
+  block-print bedsheet, telling Kheelu a story with both hands." (`03-cast.md:112`; the approved alt of this photo
+  on Home and the buyer's guide, `home.html:171`, `ai-toys-for-kids-in-india.html:101`, word for word: one alt per
+  photo.) A child talking to a toy, the page's subject. The light on Kheelu is not lit in the photo, and the alt
+  never describes it (D018). No imagination layer: a safety guide (DS `02-imagery.md`). Checked by eye in task 5.20c.
+- **Task 5.20c (CMO M11, applied again):** round 2 gave this head `advik-04` because no other guide used it as a
+  head then. It now heads three more (the 3-6-9-12 rule, talking late, a toy that talks;
+  [assets](../../engineering/assets.md)), and the talking and brain guides need the few photos without Kheelu
+  ([tasks, 5.20](../../engineering/tasks.md): photo pools). So this page takes a photo from the AI guides' pool
+  (ira-01, ira-03, kabir-01, myra-03), all with Kheelu. `ira-01` is 4:5, so the head shows it whole with no crop; it
+  is daylight and Kheelu's light is not lit, so it does not read as a toy listening (the CMO's note on a glowing
+  speaker ring, round 2); it heads no other guide. Not `ira-03` (evening, festive, the speaker ring glows), not
+  `kabir-01` (the dark wall made for the Imagination layer's chalk, which a safety guide does not carry), not
+  `myra-03` (a 3-year-old alone with Kheelu at bedtime). The cost: Kheelu is now in the head of the page about the
+  law (question 6).
+- **Round 2 (CMO M11), superseded above:** `tara-04-reading-nook` was also the early-years guide's head photo, so
+  this page moved to `advik-04`, which the learning-toys guide then used only as an in-body figure (B28: DS library
+  only).
 
 ---
 
@@ -353,7 +365,7 @@ As Home: **₹499`{price-source}` today** · **refundable · ₹4,999`{price-sou
 | One H1 with the primary | **Partly** | The H1 is the approved hub card title ("India's data law", not "DPDP Act"; question 1). The primary is in the title, the meta, the answer H2 and fold 3 |
 | Primary in an answer-first block in the first ~100 words | Yes | Fold 2 H2 "What does the DPDP Act say about children's data?" (both halves of the primary) and its 59-word answer |
 | An H2 with the primary or a close variant | Yes | Fold 2; fold 5 carries the keyword map's suggested H2 ("Consent has to come from you") and the secondary, "verifiable consent of the parent", in its first line |
-| Alt text | Yes | Describes the scene |
+| Alt text | Yes | Describes the scene (the approved alt of `ira-01`, task 5.20c); no keyword forced |
 | Density | Yes | "DPDP Act" twice in `<main>` (fold 2, fold 3): about 0.6% of about 750 words with the close, counting its 2 words; "Kheelu" 6 times including the close and its button (under 1%) |
 | Words never placed | Yes | No "complies", "compliant" or "meets section 9" about Kheelu; no consent or tracking claim for Kheelu; no "stays in your region", "only our own servers", "nothing is ever recorded", training claim, legal reading or advice; no competitor names |
 
@@ -400,6 +412,13 @@ give yet, consent and tracking, are left out of fold 9 rather than held, and are
 5. **Section 9's start in fold 5 (round 2, CMO M2).** "So, once section 9 is in force, the yes has to come from you,
    the parent, before your child's data is used.¹" is a plain restatement of section 9(1) with its future start.
    Counsel reads it with the rest of the page before Gate B; no option to choose unless counsel changes it.
+6. **The head photo (task 5.20c, CMO M11).** The page now opens on Ira telling Kheelu a story (`ira-01`), so the
+   product is in the head of the page about the law, which rounds 1 and 2 avoided. (a) `ira-01` (as now drafted):
+   from the AI guides' photo pool, uncropped, Kheelu's light not lit, heads no other guide; (b) back to `advik-04`
+   (no Kheelu), making it the head of four guides and leaving the talking guides fewer photos without Kheelu;
+   (c) a new DS scene photo without Kheelu, if you have one (open question P24). **Recommend (a)** for beta: a child
+   talking to a toy is what the page is about, the photo makes no claim, and (c) replaces it the day such a photo
+   exists.
 
 ## Sources
 
@@ -425,4 +444,30 @@ give yet, consent and tracking, are left out of fold 9 rather than held, and are
 | Not answered: consent (G6), tracking and monitoring (counsel) | [claims §7](../../product/claims.md#7-childrens-data-what-is-published-versus-documented); [facts, listening](../../product/facts.md#what-it-listens-for-and-where-the-voice-goes) (consent row); [privacy copy](privacy.md) open items 8 and the consent placeholder |
 | Close block, price sentence, sticky bar | [home, CTA block](home.md#cta-block), [phone sticky bar](home.md#phone-sticky-bar) |
 | Cut live lines | [claims §4](../../product/claims.md#4-retired-or-banned-wording) ("stays in your region"); [claims §7](../../product/claims.md#7-childrens-data-what-is-published-versus-documented) (consent, monitoring); [source verification C20](../../research/source-verification.md#c20--indias-data-law-and-children) (not in force; mirror) |
-| Photo | DS `03-cast.md:110` (Advik 04, no Kheelu); alt from the approved [learning-toys guide](story-learning-toys-for-a-three-year-old.md) (its in-body figure); file checked by eye 2026-10-14 |
+| Photo | DS `03-cast.md:112` (Ira 01, with Kheelu, 4:5); alt from the approved mockups, word for word: Home fold 4 (`mockup/pages/home.html:171`; built, `src/content/en-IN/pages/home.ts:181`) and the [buyer's guide](ai-toys-for-kids-in-india.md) FAQ image (`mockup/pages/ai-toys-for-kids-in-india.html:101`); the AI guides' photo pool ([tasks, 5.20](../../engineering/tasks.md)); file checked by eye in task 5.20c |
+
+## Changes after approval (task 5.20c)
+
+- **Fold 1, the head photo (CMO round 1, M11, applied again).** `advik-04` became `ira-01-story-on-the-bed`, with
+  this photo's approved alt, word for word. Why: M11 asked for "another DS library photo not used as an article
+  head"; round 2 met it with `advik-04`, which headed no guide then, but after the screen-time and talking guides
+  merged it heads three more ([assets](../../engineering/assets.md), the `advik-04` row), and task 5.20 asks for fewer
+  repeated heads and sends the AI guides to a pool of photos with Kheelu (ira-01, ira-03, kabir-01, myra-03;
+  [tasks, 5.20](../../engineering/tasks.md)) so the talking and brain guides keep the photos without Kheelu. Why
+  `ira-01` over the other three: fold 1's notes. The head turns from the wide layout to the portrait one (the photo
+  is 4:5, 1208 × 1500, so nothing is cropped). No Copy block changed, so word counts, the read time (3 minutes),
+  keyword placements and source markers are as approved. Question 6 asks the founder to confirm the photo.
+- **Checked, already done in round 2 (no change):** M2 (fold 5, "once section 9 is in force", with its marker), M3's
+  cut ("So is a privacy policy nobody could follow." is gone from fold 8), M4 (fold 2, "(the DPDP Act)"). The two
+  wordings changed after approval (fold 7, "a year and a half later") stand, for the founder at Gate B.
+- **Left as they are, waiting on the founder and counsel (open question P23):** Kheelona's own consent and tracking
+  answers stay off the page (M3's second half; question 4); the CMO's optional line ("We will add our own answers
+  ...") is not added without the founder's signature; fold 5's restatement of section 9(1) and the "May 2027" date
+  wait on counsel's read and a re-read of the Gazette (questions 3 and 5). No consent, tracking or compliance line
+  was added.
+- **For the builder:** `ai-toys-and-indias-data-law.ts` imports `@ds/assets/Photo library/ira-01-story-on-the-bed-web.webp`
+  in place of `advik-04` and takes the alt above, word for word, in the same commit
+  (`ai-safety-and-learning.test.tsx`, "shows the copy page's head photo, with its alt"); `ArticleHead` picks the
+  portrait layout from the photo's own shape. `updated` stays 2026-10-13. [Assets](../../engineering/assets.md): the
+  `ira-01` row adds A (the data-law head); the `advik-04` row drops "the data law" and its "16:9 on the data-law
+  head" note.

@@ -19,7 +19,9 @@ sources:
   - ../../decisions/D016, D017, D026, D041
   - "src/content/en-IN/stories/articles/why-three-to-six-are-the-years-that-matter-most.ts (stub: card, related, dates); src/lib/stories.ts:47-73 (the live article, input only); test/guards/banned-phrases.data.ts"
   - "design-system/project/03-cast.md:120 (Tara 04); assets/Photo library/tara-04-reading-nook-web.webp, checked by eye 2026-10-13 (read-only)"
-  - ../../qa/cmo-review-articles-5.19-2026-10-14.md (round 1: M10, M11 fixed in round 2)
+  - ../../qa/cmo-review-articles-5.19-2026-10-14.md (round 1: M10, M11 fixed in round 2; round 2: no new finding on this page; R2-3 ruled at the merge, no change)
+  - ../../qa/cmo-review-articles-5.18-2026-10-14.md (M13: one alt per photo across the journal; the alt of tara-04)
+  - ../../engineering/tasks.md (§4.9 and 5.20: the part C rulings, "D025 reading: as written"; the 5.20 subsection, item 2 and the photo pools)
 ---
 
 # Story: Why the early years matter most
@@ -100,11 +102,18 @@ accepted overlap).
 - **Dates:** "First published" is the live `published` value (`2026-07-28`, `src/lib/stories.ts:55`). `updated` is the
   rewrite's date, set by the builder (after the live `2026-09-05`).
 - **Image** (`kh-photo`, 4:5, the head's portrait layout): `tara-04-reading-nook-web.webp`. Alt: "A girl with curly hair,
-  in a coral block-print kurta, sits cross-legged in a window nook, reading a picture book aloud and pointing at the
-  page." (`03-cast.md:120`: "Reading and school readiness"; Tara is 5½, inside the band.) No Kheelu in the head photo
+  in a coral kurta, sits cross-legged on a window seat and reads a picture book aloud, one finger on the page."
+  (`03-cast.md:120`: "Reading and school readiness"; Tara is 5½, inside the band.) No Kheelu in the head photo
   of a brain article, as on the learning-toys guide.
-- Round 2 (CMO M11): `tara-04` is now this page's head alone; the data-law article, which also used it in round 1,
-  moved to `advik-04`.
+- Round 2 (CMO M11): `tara-04` is now this page's head alone among the six guides of task 5.19; the data-law article,
+  which also used it in round 1, moved to `advik-04`. Across the journal it also heads two talking guides once tasks
+  5.20a and 5.20b land (how children learn by talking, and raising a bilingual child; the screen-time guides move to
+  photos with Kheelu), and how children learn by talking is in this page's related list and lists this page in its
+  own: see "Changes after approval" below.
+- **Task 5.20c (one alt per photo):** the alt is now the journal's one alt for `tara-04`, word for word as on the
+  how-children-learn-by-talking guide ([CMO review 5.18](../../qa/cmo-review-articles-5.18-2026-10-14.md) M13;
+  [tasks](../../engineering/tasks.md) 5.20 item 2). The photo stays: brain guides keep a head photo without Kheelu
+  ([D016](../../decisions/D016-brain-wording.md)).
 
 ---
 
@@ -375,3 +384,32 @@ None.
 | Card title and summary, related list, first-published date | `src/content/en-IN/stories/articles/why-three-to-six-are-the-years-that-matter-most.ts` (stub); [stories.md fold 5](stories.md#fold-5--learning-and-play-learning); `src/lib/stories.ts:55` |
 | Close block, price sentence, sticky bar | [home, CTA block](home.md#cta-block) and [phone sticky bar](home.md#phone-sticky-bar) sources ([D028](../../decisions/D028-price-wording.md), [D041](../../decisions/D041-gate-a-round-1.md), [D023](../../decisions/D023-new-order-delivery.md), [D021](../../decisions/D021-returns-policy.md), [D032](../../decisions/D032-grievance-block-and-call-line.md)) |
 | Photo | DS `03-cast.md:12, 45-51, 120` (Tara, 5½; reading); file checked by eye 2026-10-13 |
+| Alt of the head photo (task 5.20c) | The how-children-learn-by-talking guide's alt for `tara-04`, word for word ([story-how-children-learn-by-talking.md](story-how-children-learn-by-talking.md) fold 1); [CMO review 5.18](../../qa/cmo-review-articles-5.18-2026-10-14.md) M13 |
+
+## Changes after approval (task 5.20c)
+
+The copy the CMO approved in round 2 of the [5.19 review](../../qa/cmo-review-articles-5.19-2026-10-14.md) ("PASS",
+no minor still open). The founder signs off the copy at Gate B ([D015](../../decisions/D015-founder-signs-off-copy.md)).
+
+| What | Change | Why |
+|---|---|---|
+| Fold 1, head photo alt | "A girl with curly hair, in a coral block-print kurta, sits cross-legged in a window nook, reading a picture book aloud and pointing at the page." became "A girl with curly hair, in a coral kurta, sits cross-legged on a window seat and reads a picture book aloud, one finger on the page." | One alt per photo across the journal ([tasks](../../engineering/tasks.md) 5.20 item 2; CMO review 5.18 M13 names this alt for `tara-04`). The photo, its file and its scene are unchanged |
+| Fold 1 notes; Sources table; front matter | Updated to match; the round-2 M11 note now says `tara-04` is this page's head alone among task 5.19's six guides, not across the journal | So the page stays true |
+
+**Checked and already done** (round 2, nothing to change): M10 ("they are still inside those years", fold 3) and M11
+(`tara-04` no longer shared with the data-law guide).
+
+**No Copy block changed.** Read time (3 minutes), counts and keyword placements are as approved.
+
+**Not changed:** R2-3 (D025 disclaimer after the fold 4 C07 paragraph). The main session ruled at the part C merge:
+"D025 reading: as written … the AI and brain guides need none" ([tasks](../../engineering/tasks.md), §4.9 and 5.20).
+The head photo stays `tara-04` (main session: brain guides keep their `-04` heads; D016). No research line was added
+or changed. Founder questions P21 to P23 do not touch this page.
+
+**Open, for the main session (not changed here):** this page and how children learn by talking share the `tara-04`
+head and link to each other both ways (this page's related list; that guide's related list, `how-children-learn-by-talking.ts:26`),
+so a parent who taps "Related guides" lands on the same picture: the repeat that CMO reviews 5.17 M16 and 5.18 M13
+set out to remove. The 5.18 review left the 5.19 picks to the merge. Options are in this task's report.
+
+**For the builder:** the module `why-three-to-six-are-the-years-that-matter-most.ts` takes the new alt in the same
+commit (`ai-safety-and-learning.test.tsx` reads the alt from fold 1); `updated` stays 2026-10-13.

@@ -42,7 +42,7 @@ export const article = {
   answer: {
     question: "Should kids use AI at all?",
     answer:
-      "Not the AI built for adults. Common Sense Media advises against AI toys at 5 and under, and extreme caution from 6 to 12.[^1] If AI is part of a young child’s play, it should be built for their age, unable to browse the internet and fully visible to you. It should ask your child questions, not just give answers.",
+      "Not the AI built for adults. Common Sense Media advises against AI toys at 5 and under, and extreme caution from 6 to 12.[^1] If you choose AI for your child’s play, it should be built for their age, unable to browse the internet and fully visible to you. It should ask your child questions, not just give answers.",
   },
   body: [
     /* Fold 3: who is answering (no heading) */

@@ -18,7 +18,8 @@ sources:
   - ../../decisions/D016, D017, D025, D026, D027, D036, D041
   - "src/content/en-IN/stories/articles/does-a-three-year-old-need-an-ai-tutor.ts (stub: card, related, dates); src/lib/stories-expansion.ts:281-305 (the live article, input only); test/guards/banned-phrases.data.ts"
   - "design-system/project/03-cast.md:105 (Myra 04); assets/Photo library/myra-04-drawing-at-home-web.webp, checked by eye 2026-10-14 (read-only)"
-  - ../../qa/cmo-review-articles-5.19-2026-10-14.md (round 1: M5, M6, M7 fixed in round 2)
+  - ../../qa/cmo-review-articles-5.19-2026-10-14.md (round 1: M5, M6, M7 fixed in round 2; round 2: R2-2 fixed in task 5.20c; R2-3 ruled at the merge, no change)
+  - ../../engineering/tasks.md (§4.9 and 5.20: the part C rulings, "D025 reading: as written"; the 5.20 subsection, task 5.20c and the photo pools)
 ---
 
 # Story: Does a three-year-old need an AI tutor?
@@ -52,7 +53,7 @@ sources:
 | H1 | Does a three-year-old need an AI tutor? (the hub card title, as live) |
 | Lead | The hub card summary, word for word |
 | Byline line | Apoorva Sahu · First published 30 Jul 2026 · 3 min read (byline: question 1) |
-| Read time | Derived at build: about 680 words in the head and reading column after round 2 (+7 words), so 3 minutes at 200 words a minute |
+| Read time | Derived at build: about 680 words in the head and reading column after round 2 (+7 words), the post-approval IAP wording (+1) and task 5.20c's R2-2 fix (+1), so 3 minutes at 200 words a minute |
 | CTA | The close only: "Pre-order Kheelu", `cta` = `finale`; phone sticky bar `sticky-bar` (the shell's, because the close is `journal`) |
 | In-text product link | One, in fold 6 ("Kheelu" → `/products/kheelu`) |
 | Other in-text link | Fold 6: `/stories/what-to-look-for-in-a-safe-ai-toy` |
@@ -109,6 +110,11 @@ limits only as they bear on a tutoring app, under a heading about tutoring apps,
   photo without Kheelu that the head can show uncropped (`myra-05` is a 1:1 portrait), and it is also the learning-toys
   guide's head; the CMO accepts the repeat. The hub shows no image on this card (only card 1 of each topic has one,
   [stories.md](stories.md#fold-4--ai-toys-and-safety-ai-and-safety)), so the repeat is between the two articles only.
+- **Task 5.20c (photo pools):** kept. The pool open to the AI guides (`ira-01`, `ira-03`, `kabir-01`, `myra-03`) has
+  Kheelu in every photo and no grown-up in any (`03-cast.md:104, 112, 114, 122`, each file checked by eye in task
+  5.20c; parents appear with Tara only, `03-cast.md:80`), so none meets M6 on a page that advises a grown-up nearby
+  at 3. Task 5.20b also gives `myra-04` to how children collect words (CMO review 5.18 M13), so the repeat becomes
+  three articles; none of the three links to another, so no reader meets it through a related link.
 
 ---
 
@@ -247,14 +253,15 @@ is built against it, with its age limits.
 >
 > What child-safety groups advise about AI toys at this age, and our answer, is in our guide to [what to look for in a safe AI toy](https://kheelona.com/stories/what-to-look-for-in-a-safe-ai-toy).
 >
-> [Kheelu](https://kheelona.com/products/kheelu) is built around this list: a screen-free plush toy for ages 3 to 7 that answers your child, then asks a question back. It can't browse the internet, it says when it doesn't know, and you can read every conversation in the parent app. It is a toy, not a tutor, and it tells your child it's a toy.
+> [Kheelu](https://kheelona.com/products/kheelu) is built around the list above: a screen-free plush toy for ages 3 to 7 that answers your child, then asks a question back. It can't browse the internet, it says when it doesn't know, and you can read every conversation in the parent app. It is a toy, not a tutor, and it tells your child it's a toy.
 >
 > It is not a toy for children under 3, and if your child is 3, keep a grown-up nearby while they play.
 
 - The H2 is the keyword map's for this URL ([§5.2](../../research/keyword-map.md#52-per-page)).
 - `list`, variant `checks` (as the learning-toys "short rule"). Every item is a criterion Kheelu meets by a confirmed
-  claim, so "built around this list" claims nothing more: screen-free ([facts](../../product/facts.md#identity)); answers,
-  then asks a question back, cannot browse the internet, parents read every conversation
+  claim, so "built around the list above" claims nothing more: screen-free
+  ([facts](../../product/facts.md#identity)); answers, then asks a question back, cannot browse the internet, parents
+  read every conversation
   ([D017](../../decisions/D017-live-behaviour-claims-confirmed.md)); says when it doesn't know
   ([D036](../../decisions/D036-launch-feature-claims.md)). "And waits" is left out of item 2 on purpose: no ruling says
   how long Kheelu waits for an answer.
@@ -270,6 +277,9 @@ is built against it, with its age limits.
   page about AI for 3-year-olds that points to an AI toy no longer leaves that advice unmentioned. No new source: the
   line states no finding, it says where the finding is. The other route, citing Common Sense Media here in full with
   the B3 answer, is question 3.
+- **Task 5.20c (CMO R2-2):** "built around this list" became "built around the list above". The M7 pointer sits
+  between the checklist and the product line, so on a phone "this list" pointed at the pointer paragraph. The pointer
+  stays where it is, so the groups' advice still comes before the product line. One word added; no claim changed.
 - Links: `/stories/what-to-look-for-in-a-safe-ai-toy` (an article link, not a product link); `/products/kheelu`, the
   page's one in-text product link ([strategy §3.3](../strategy.md#33-placement-and-repetition)).
 
@@ -408,6 +418,7 @@ None.
 | Tells your child it's a toy | [claims §1](../../product/claims.md#1-confirmed-by-the-founder) (founder, 2026-10-04) |
 | "A toy, not a tutor"; never "tutor" for Kheelu | [messaging, words to stop using](../../brand/messaging.md#words-to-stop-using); [D027](../../decisions/D027-story-mode-wording.md); [keyword map §4.2](../../research/keyword-map.md#42-journal-articles-22) |
 | "Built around" | [voice rule 7](../../brand/voice.md#voice-rules-from-the-positioning) |
+| "The list above" (fold 6, task 5.20c) | [CMO review, round 2](../../qa/cmo-review-articles-5.19-2026-10-14.md#new-minor-items) R2-2; our own voice, no claim |
 | Not a toy for children under 3; a grown-up nearby at 3 | [facts, age](../../product/facts.md#age); [content boundary](../content-boundary.md); [D041](../../decisions/D041-gate-a-round-1.md) ("Age 3" row) |
 | Cut lines ("hundreds of them a day"; "learn least that way"; "learns faster than they ever will again"; "a pace set by the child"; "lesson plan"; "moves at your child's pace") | [source verification C13, C05](../../research/source-verification.md#5-do-not-use); [claims §3](../../product/claims.md#3-not-confirmed-do-not-publish) ("adapts" family); [D027](../../decisions/D027-story-mode-wording.md) ("lessons") |
 | Card title and summary, related list, first-published date | `src/content/en-IN/stories/articles/does-a-three-year-old-need-an-ai-tutor.ts` (stub); [stories.md fold 4](stories.md#fold-4--ai-toys-and-safety-ai-and-safety); `src/lib/stories-expansion.ts:288` |
@@ -415,3 +426,25 @@ None.
 | Photo | DS `03-cast.md:9, 21-27, 105` (Myra, 3½; Myra 04, no Kheelu); alt from the approved [learning-toys guide](story-learning-toys-for-a-three-year-old.md) fold 1; file checked by eye 2026-10-14 |
 | "isn't ready for homework yet"; "doesn't need any of those" | [keyword map §6.5](../../research/keyword-map.md#65-ai-and-safety-articles) AT1; [CMO review](../../qa/cmo-review-articles-5.19-2026-10-14.md#minor) M5 |
 | "What child-safety groups advise about AI toys at this age, and our answer, is in our guide" | The approved [safe-AI-toy guide](story-what-to-look-for-in-a-safe-ai-toy.md#fold-3--what-child-safety-groups-say), fold 3 (the advice) and fold 5 (the B3 answer); [CMO review](../../qa/cmo-review-articles-5.19-2026-10-14.md#minor) M7 |
+
+## Changes after approval (task 5.20c)
+
+The copy the CMO approved in round 2 of the [5.19 review](../../qa/cmo-review-articles-5.19-2026-10-14.md), with the
+review's remaining minor findings applied. Nothing else changed. The founder signs off the copy at Gate B
+([D015](../../decisions/D015-founder-signs-off-copy.md)).
+
+| What | Change | Why |
+|---|---|---|
+| Fold 6, product line | "built around this list" became "built around the list above" | CMO R2-2 (`cmo-review-articles-5.19-2026-10-14.md`, "New minor items"): the M7 pointer sits between the checklist and this line, so on a phone "this list" pointed at the pointer. The pointer stays where it is, so the advice still comes before the product line. +1 word; read time still 3 minutes; no claim, link or source changed |
+| Fold 6 notes; At a glance (read time); Sources table; front matter | Updated to match | So the page stays true |
+| Fold 1 notes | A note that the head photo stays | The photo pools in [tasks](../../engineering/tasks.md) 5.20: no photo in the AI guides' pool has a grown-up in frame, so M6 still rules `myra-04` |
+
+**Checked and already done** (round 2, nothing to change): M5 (answer and fold 3), M6 (`myra-04` head), M7 (the
+safe-AI-toy pointer), and the post-approval IAP wording in fold 4 ("for no more than 20 to 30 minutes at a time").
+
+**Not changed:** R2-3 (D025 disclaimer). The main session ruled at the part C merge: "D025 reading: as written … the
+AI and brain guides need none" ([tasks](../../engineering/tasks.md), §4.9 and 5.20). No research line was added or
+changed, so no new source marker is needed. Founder questions P21 to P23 do not touch this page.
+
+**For the builder:** the module `does-a-three-year-old-need-an-ai-tutor.ts` follows fold 6 word for word in the same
+commit (`ai-safety-and-learning.test.tsx` reads the Copy blocks); `updated` stays 2026-10-13.

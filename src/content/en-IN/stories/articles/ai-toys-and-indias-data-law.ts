@@ -1,5 +1,5 @@
 /// <reference types="next/image-types/global" />
-import floorTrain from "@ds/assets/Photo library/advik-04-floor-train-web.webp";
+import iraStory from "@ds/assets/Photo library/ira-01-story-on-the-bed-web.webp";
 import type { Article } from "@/content/types";
 import { DEFAULT_OG } from "../../organization";
 import { RETENTION_LINE } from "../../policies";
@@ -7,13 +7,14 @@ import { seller } from "../../seller";
 
 /**
  * What India’s data law asks of a toy that listens: rewritten (task 5.19) from its approved copy page
- * (wiki/site/pages/story-ai-toys-and-indias-data-law.md; CMO review round 2). No mockup: the article template renders
- * it, as the three approved articles. Head and lead are the hub card's words (stories.md fold 4); the related list
- * (with the stub's swap) and first-published date are the stub's. Every statement about the law carries a marker and
- * quotes the official MeitY texts; the page says early that it is not legal advice, and never that Kheelu meets
- * section 9. Fold 9 answers only what Kheelona can answer in confirmed facts (D018, D020's order, the retention line
- * from policies.ts), with the page's one in-text product link and the help line from seller.ts. `updated` is the
- * rewrite's date; re-read the Gazette before Gate B (copy page, question 3).
+ * (wiki/site/pages/story-ai-toys-and-indias-data-law.md; CMO review round 2; head photo from the AI guides' pool, task
+ * 5.20c: ira-01, 4:5, so the head takes its portrait layout). No mockup: the article template renders it, as the three
+ * approved articles. Head and lead are the hub card's words (stories.md fold 4); the related list (with the stub's
+ * swap) and first-published date are the stub's. Every statement about the law carries a marker and quotes the
+ * official MeitY texts; the page says early that it is not legal advice, and never that Kheelu meets section 9. Fold 9
+ * answers only what Kheelona can answer in confirmed facts (D018, D020's order, the retention line from policies.ts),
+ * with the page's one in-text product link and the help line from seller.ts. `updated` is the rewrite's date; re-read
+ * the Gazette before Gate B (copy page, question 3).
  */
 export const article = {
   slug: "ai-toys-and-indias-data-law",
@@ -35,7 +36,10 @@ export const article = {
     lead: "India’s data law in plain words: what it asks of a company handling a child’s data, and what you can ask for.",
     author: "Apoorva Sahu",
     readMinutes: 3,
-    image: { src: floorTrain, alt: "A boy in a green T-shirt lying on a red floor, smiling as he pushes a blue wooden train." },
+    image: {
+      src: iraStory,
+      alt: "A laughing girl in a peach kurta sitting cross-legged on a block-print bedsheet, telling Kheelu a story with both hands.",
+    },
   },
   /* Fold 2: the answer first (59 words), each sentence sourced. */
   answer: {
