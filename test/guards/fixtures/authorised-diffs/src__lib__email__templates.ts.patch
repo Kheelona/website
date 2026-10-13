@@ -6,7 +6,9 @@ inside a string or template literal, and the token stream with literals masked e
 guard applies to a frozen test). No fact, branch, import, signature or style changes.
   - D028 (wiki/site/pages/store-confirmation.md fold 2): the balance row's label "Due on dispatch" becomes
     "Due before delivery" in the HTML row and in both plain-text branches (token and full payment), matching the
-    /thanks order card (src/content/en-IN/store/confirmation.ts order.due.term).
+    /thanks order card (src/content/en-IN/store/confirmation.ts order.due.term). The token branch's sentence ends
+    "of the <LAUNCH_PRICE> price (incl. GST)", as the /thanks row does (order.due.balance; D024: every price says
+    "incl. GST"; 6.4 review, minor 4).
   - D032: the support number takes calls as well as messages. The HTML footer's "The WhatsApp number takes messages,
     not calls." comes off and its lead reads "WhatsApp or call <number>, or write to <email>."; the plain text's
     "(messages, not calls)" comes off the same way. The link stays wa.me and the number and email stay
@@ -18,7 +20,7 @@ Unchanged: amounts and the balance derived from the row, the tier and address br
 balance link on WhatsApp and by email, the seller block, the internal alert.
 
 diff --git a/src/lib/email/templates.ts b/src/lib/email/templates.ts
-index 5a0c7db..e91949a 100644
+index 5a0c7db..41298ba 100644
 --- a/src/lib/email/templates.ts
 +++ b/src/lib/email/templates.ts
 @@ -43,9 +43,8 @@ function layout(bodyHtml: string): string {
@@ -37,7 +39,7 @@ index 5a0c7db..e91949a 100644
         <p style="margin:0 0 8px;font-size:15px"><strong>Order</strong> ${order.order_ref}</p>
         <p style="margin:0 0 8px;font-size:15px"><strong>Paid today</strong> ${paid}</p>
 -       <p style="margin:0 0 8px;font-size:15px"><strong>Due on dispatch</strong> ${paidInFull ? "Nothing. You have paid in full" : `${balanceDue}, of the ${LAUNCH_PRICE} price`}</p>
-+       <p style="margin:0 0 8px;font-size:15px"><strong>Due before delivery</strong> ${paidInFull ? "Nothing. You have paid in full" : `${balanceDue}, of the ${LAUNCH_PRICE} price`}</p>
++       <p style="margin:0 0 8px;font-size:15px"><strong>Due before delivery</strong> ${paidInFull ? "Nothing. You have paid in full" : `${balanceDue}, of the ${LAUNCH_PRICE} price (incl. GST)`}</p>
         <p style="margin:0;font-size:15px"><strong>Ships from</strong> ${SHIP_DATE_TEXT}</p>
       </div>
       ${addressBlock}
@@ -48,7 +50,7 @@ index 5a0c7db..e91949a 100644
 -      ? "Due on dispatch: Nothing. You have paid in full."
 -      : `Due on dispatch: ${balanceDue}, of the ${LAUNCH_PRICE} price`,
 +      ? "Due before delivery: Nothing. You have paid in full."
-+      : `Due before delivery: ${balanceDue}, of the ${LAUNCH_PRICE} price`,
++      : `Due before delivery: ${balanceDue}, of the ${LAUNCH_PRICE} price (incl. GST)`,
      `Ships from: ${SHIP_DATE_TEXT}`,
      "",
      needsAddress

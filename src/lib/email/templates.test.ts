@@ -87,8 +87,8 @@ describe("the acknowledgement email", () => {
   });
 
   it("says the WhatsApp number takes calls as well as messages (D032)", () => {
-    expect(email.html).toMatch(/WhatsApp or call/);
-    expect(email.text).toMatch(/WhatsApp or call/);
+    expect(email.html).toMatch(/^(?![\s\S]*messages, not calls)[\s\S]*WhatsApp or call/);
+    expect(email.text).toMatch(/^(?![\s\S]*messages, not calls)[\s\S]*WhatsApp or call/);
   });
 
   /* The site's voice laws do not stop at the site. Zero em-dashes, and none of
@@ -168,8 +168,8 @@ describe("the acknowledgement for an event token (2026-08-23, the Ideabaaz page)
 
   it("keeps the ₹499 receipt at ₹4,500 to the byte", () => {
     const token = preorderAckEmail({ order, addressUrl: "https://x.example/t" });
-    expect(token.html).toContain(`<strong>Due before delivery</strong> ${BALANCE_PRICE}, of the`);
-    expect(token.text).toContain(`Due before delivery: ${BALANCE_PRICE}, of the`);
+    expect(token.html).toContain(`<strong>Due before delivery</strong> ${BALANCE_PRICE}, of the ₹4,999 price (incl. GST)`);
+    expect(token.text).toContain(`Due before delivery: ${BALANCE_PRICE}, of the ₹4,999 price (incl. GST)`);
   });
 });
 

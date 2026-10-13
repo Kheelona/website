@@ -131,7 +131,7 @@ export function preorderAckEmail(input: AckInput): Email {
      <div style="border:1px solid ${RULE};border-radius:12px;padding:16px;margin:0 0 18px">
        <p style="margin:0 0 8px;font-size:15px"><strong>Order</strong> ${order.order_ref}</p>
        <p style="margin:0 0 8px;font-size:15px"><strong>Paid today</strong> ${paid}</p>
-       <p style="margin:0 0 8px;font-size:15px"><strong>Due before delivery</strong> ${paidInFull ? "Nothing. You have paid in full" : `${balanceDue}, of the ${LAUNCH_PRICE} price`}</p>
+       <p style="margin:0 0 8px;font-size:15px"><strong>Due before delivery</strong> ${paidInFull ? "Nothing. You have paid in full" : `${balanceDue}, of the ${LAUNCH_PRICE} price (incl. GST)`}</p>
        <p style="margin:0;font-size:15px"><strong>Ships from</strong> ${SHIP_DATE_TEXT}</p>
      </div>
      ${addressBlock}
@@ -157,7 +157,7 @@ export function preorderAckEmail(input: AckInput): Email {
     `Paid today: ${paid}`,
     paidInFull
       ? "Due before delivery: Nothing. You have paid in full."
-      : `Due before delivery: ${balanceDue}, of the ${LAUNCH_PRICE} price`,
+      : `Due before delivery: ${balanceDue}, of the ${LAUNCH_PRICE} price (incl. GST)`,
     `Ships from: ${SHIP_DATE_TEXT}`,
     "",
     needsAddress
