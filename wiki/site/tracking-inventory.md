@@ -468,6 +468,16 @@ capture paths, Ahrefs' API), but neither host above is in that list: M1's 30 LP-
 `/events` answered 200 in 36 requests and the two `www.google.com/g/collect` hits answered 204 (read 2026-10-13), so those
 local loads reached Meta's gateway and GA4.
 
+**At M2 (2026-10-14, LP-tags, 30 reports after task 6.6):** no CSP console error is left on any page. Two things remain,
+neither an ID, event or parameter change:
+- One run of three on `/privacy` reported a Report-Only violation for `https://connect.facebook.net//log/error?p=capig_pixel&pn=openbridge3…`,
+  the Meta Pixel's own diagnostic log of its OpenBridge state (`arm_state=armed`, pixel `1051265191046395`, event
+  `PageView`). `connect.facebook.net` is in `script-src` but not in `connect-src`. Report-Only blocks nothing, so it is
+  delivered; admitting it is a reviewed diff of the frozen `security-headers.ts` with a decision ID (open question G18).
+- Every LP-tags page logs a 404 for `/_vercel/insights/script.js` (Vercel Web Analytics, section 1): `next start` has no
+  Vercel edge to serve it. The Lighthouse harness names this console error apart and allows it on LP-tags only
+  (`scripts/qa/lighthouse.mjs`; any other console error, or the same one on production, still fails).
+
 ## 15. Consent behaviour today (state exactly as it is)
 
 - **There is no consent banner, no Consent Mode, and no in-product opt-out.** All five tools load on

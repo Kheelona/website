@@ -58,8 +58,15 @@ const PORT = Number(process.env.KH_E2E_PORT ?? 3456);
 const BLOCKED = ["*google-analytics.com/g/collect*", "*analytics.google.com/g/collect*", "*facebook.com/tr*", "*/ingest/e/*", "*/ingest/s/*", "*/ingest/i/*", "*/ingest/batch*", "*analytics.ahrefs.com/api/*", "*www.google.com/g/collect*", "*.on.aws/events*", "*.run.app/events*"];
 /** Best Practices audits allowed to fail on tag-loading profiles (B10, N18). "inspector-issues"
  *  counts as allowed only when bestPracticesFailures() finds nothing in it but third-party-cookie
- *  issues; any other issue renames it, so it is never allowed. */
-const ALLOWED_BP = { "lp-tags": ["third-party-cookies", "is-on-https", "inspector-issues", "redirects-http"], production: ["third-party-cookies", "inspector-issues"] };
+ *  issues; any other issue renames it, so it is never allowed. On lp-tags only, "errors-in-console"
+ *  counts as allowed when every error is Vercel Web Analytics' own script, which only Vercel's edge
+ *  serves (`next start` answers it 404; M2, 2026-10-14); any other console error, or the same one on
+ *  production, fails. */
+const VERCEL_INSIGHTS = "errors-in-console (Vercel Web Analytics script, served only on Vercel)";
+const ALLOWED_BP = { "lp-tags": ["third-party-cookies", "is-on-https", "inspector-issues", "redirects-http", VERCEL_INSIGHTS], production: ["third-party-cookies", "inspector-issues"] };
+/** A console error that is the Vercel Web Analytics script failing to load or run off Vercel. */
+const isVercelInsights = (item) =>
+  (item.sourceLocation?.url ?? "").endsWith("/_vercel/insights/script.js") || (item.description ?? "").includes("/_vercel/insights/script.js");
 const THIRD_PARTY_COOKIE = (issue) =>
   (issue.cookieWarningReasons ?? []).includes("WarnThirdPartyPhaseout") ||
   (issue.cookieExclusionReasons ?? []).includes("ExcludeThirdPartyPhaseout");
@@ -73,6 +80,10 @@ export function bestPracticesFailures(result) {
   return lhr.categories["best-practices"].auditRefs
     .filter((r) => r.weight > 0 && (lhr.audits[r.id]?.score ?? 1) < 1)
     .map((r) => {
+      if (r.id === "errors-in-console") {
+        const items = lhr.audits[r.id].details?.items ?? [];
+        return items.length > 0 && items.every(isVercelInsights) ? VERCEL_INSIGHTS : r.id;
+      }
       if (r.id !== "inspector-issues") return r.id;
       const rows = lhr.audits[r.id].details?.items ?? [];
       const cookies = result.artifacts?.InspectorIssues?.cookieIssue ?? [];

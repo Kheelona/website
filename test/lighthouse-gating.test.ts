@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseArgs, scorePage } from "../scripts/qa/lighthouse.mjs";
+import { bestPracticesFailures, parseArgs, scorePage } from "../scripts/qa/lighthouse.mjs";
 
 /* scripts/qa/lighthouse.mjs verdicts (task 1.1b item 3; architecture §12, test plan §4.4, lessons §6).
  *
@@ -45,6 +45,40 @@ describe("lighthouse verdict: Best Practices allowance", () => {
   it("never applies on the local profile, which has no allowed list", () => {
     const v = scorePage({ profile: "local", page: "/", method: "simulate", runs: [run(0.78, ["third-party-cookies"]), run(0.78, ["third-party-cookies"]), run(0.78, ["third-party-cookies"])] });
     expect(v.failed).toBe(true);
+  });
+});
+
+/** A Lighthouse result whose only failing Best Practices audit is errors-in-console, with these console rows. */
+const consoleResult = (items: { source: string; description: string; url: string }[]) => ({
+  lhr: {
+    categories: { "best-practices": { auditRefs: [{ id: "errors-in-console", weight: 1 }] } },
+    audits: { "errors-in-console": { score: 0, details: { items: items.map((i) => ({ source: i.source, description: i.description, sourceLocation: { url: i.url } })) } } },
+  },
+});
+const INSIGHTS = "http://kheelona.com:3456/_vercel/insights/script.js";
+const VERCEL_ONLY = "errors-in-console (Vercel Web Analytics script, served only on Vercel)";
+
+describe("lighthouse verdict: the Vercel Web Analytics script off Vercel (M2, 2026-10-14)", () => {
+  const insights404 = [
+    { source: "network", description: "Failed to load resource: the server responded with a status of 404 (Not Found)", url: INSIGHTS },
+    { source: "security", description: `Refused to execute script from '${INSIGHTS}' because its MIME type ('text/html') is not executable`, url: "http://kheelona.com:3456/" },
+  ];
+
+  it("names console errors that are only the Vercel script apart, and allows them on lp-tags alone", () => {
+    expect(bestPracticesFailures(consoleResult(insights404))).toEqual([VERCEL_ONLY]);
+    const runs = [run(0.74, [VERCEL_ONLY, "is-on-https"]), run(0.74, [VERCEL_ONLY]), run(0.74, [VERCEL_ONLY, "redirects-http"])];
+    expect(scorePage({ profile: "lp-tags", page: "/", method: "simulate", runs }).failed).toBe(false);
+    expect(scorePage({ profile: "production", page: "/", method: "simulate", runs }).failed).toBe(true);
+    expect(scorePage({ profile: "local", page: "/", method: "simulate", runs }).failed).toBe(true);
+  });
+
+  it("keeps any other console error a failure, alone or beside the Vercel script", () => {
+    const other = { source: "javascript", description: "TypeError: x is undefined", url: "http://kheelona.com:3456/_next/static/chunks/app.js" };
+    expect(bestPracticesFailures(consoleResult([...insights404, other]))).toEqual(["errors-in-console"]);
+    expect(bestPracticesFailures(consoleResult([other]))).toEqual(["errors-in-console"]);
+    expect(bestPracticesFailures(consoleResult([]))).toEqual(["errors-in-console"]);
+    const runs = [run(0.74, ["errors-in-console"]), run(0.74, [VERCEL_ONLY]), run(0.74, [VERCEL_ONLY])];
+    expect(scorePage({ profile: "lp-tags", page: "/", method: "simulate", runs }).failed).toBe(true);
   });
 });
 

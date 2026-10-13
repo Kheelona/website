@@ -221,6 +221,15 @@ placeholders on `/privacy`, `/refund`, `/shipping`, `/terms`, `/setup` and the p
 at the founder's request. Still to come from the founder: the F4 values (D054 item 19; rows without one are hidden), the
 light's colour on `/setup` (V8), the C6 listing names, and word if Supabase moves out of Sydney (D055 item 24).
 
+**New from the batch 6b merge (2026-10-14; on the Gate B list, [tasks](engineering/tasks.md) 7.3; built as below until
+the founder answers):**
+
+| # | Question | Built this way | Recommendation |
+|---|---|---|---|
+| G16 | The `/team` strip shows `public/recognition/karnataka-seal.png` beside "Karnataka Elevate" (as the live site does). The image is the Government of Karnataka's state emblem (it carries the national lion capital), not a Karnataka Elevate logo; the DS says "Use logos only with permission" (`07-selling.md:71`) and the wiki holds no permission record ([team](site/pages/team.md) question 3; CMO M1, [review](qa/cmo-review-team-6.6-2026-10-14.md)). Not legal advice | The seal, as ordered ([D054](decisions/D054-founder-answers-open-questions-2026-10-14.md) item 20) | Show "Karnataka Elevate" as text only, unless you hold Karnataka Elevate's terms allowing the seal (one line in `team.ts`) |
+| G17 | Refund timing wording: `/refund` now says "your refund reaches you within 7 working days of your Kheelu reaching us" (bank time included, [D055](decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 5); `/terms` and the FAQ (Home, the product page, `llms.txt`) still say the refund "is processed within 7 working days" (CMO M7, 6.7 review) | Both wordings, as approved | Align `/terms` and the FAQ to "reaches you within 7 working days", if you agree |
+| G18 | The Report-Only CSP: at M2 the Meta Pixel's diagnostic log call (`connect.facebook.net/log/error`) appeared as a violation on one `/privacy` run; `connect.facebook.net` is allowed for scripts but not for connections ([tracking inventory §14a](site/tracking-inventory.md)) | Unchanged: Report-Only, so the call is delivered and nothing is blocked | Admit `https://connect.facebook.net` in `connect-src`, as D054 item 9 did for the other two tag hosts (a reviewed diff citing the decision); needed before the policy is ever enforced |
+
 ## E. Decided by the brief (no answer needed; recorded so nobody re-asks)
 
 - **The published age band is 3-7**, everywhere (brief 2, 9.3, 9.8). This overrides the 2026-08-23

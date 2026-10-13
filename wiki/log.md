@@ -730,3 +730,21 @@ ownership and the batch 6b rulings in tasks.md; follow-ups under 6.3; Gate B lis
 line, refund timing wording on `/terms` and the FAQ, the legal sign-off). Gate: `npm run build` green; the placeholder
 report is down to 4 (the legal pages' `status: "draft"`, D029); `npm run verify` 347 files, 5983 passed, 2 skipped;
 checksums 643. Next: M2.
+
+## [2026-10-14 05:11] qa | Milestone M2: full browser suite and Lighthouse on the wave 6 tree; wave 6 closed
+`npm run verify:e2e` at `77be18b`: **1485 passed, 1 failed, 24 skipped** (13.2 min; M1: 1385 passed, 47 failed). The one
+failure, `motion-films.spec.ts` "the film in focus grows" at 1440, read an empty motion log: `transitionrun` is
+dispatched at the next rendering frame, which the loaded machine delayed past the read (green alone 5 of 5). The test
+now waits for the event (`expect.poll`), assertion unchanged; green 5 of 5 again. The four `NoFallbackError` lines
+are the unknown-URL 404 tests, as at M1.
+**Lighthouse mobile (13.4.1, simulated, median of 3; store settings blank, as M1 ruled):** local Performance 93-98,
+Accessibility 96-100, Best Practices 96, SEO 100 (store 69, pre-approved). LP-tags Performance 91-95 (one full run had
+/team at 89; five runs of /team alone: 92-95, median 93), Accessibility 96-100, SEO 100. LP-tags Best Practices 74
+(M1: 70): the CSP console errors are gone (D054 item 9 works); what is left is `/_vercel/insights/script.js`'s 404,
+which only Vercel's edge serves, plus the http:// audits LP-tags always flips. The harness now names that console
+error apart and allows it on LP-tags only (`scripts/qa/lighthouse.mjs`; two tests in `test/lighthouse-gating.test.ts`,
+proven red); every page passes. Found once on `/privacy`: a Report-Only report for the Meta Pixel's diagnostic log
+(`connect.facebook.net/log/error`), not in `connect-src`; nothing blocked; open question **G18**. Reports in
+`lighthouse-reports/2026-10-13/` (local only, D039).
+New founder questions from the batch 6b merge: **G16** (the Karnataka seal), **G17** (refund timing wording), **G18**.
+**M2 closes wave 6.** Next: wave 7 (task 6.3, clean-up and dependency retirement).

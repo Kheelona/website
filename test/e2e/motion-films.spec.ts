@@ -133,9 +133,13 @@ test.describe("motion: the film in focus grows (D049 pick 8)", () => {
         expect(rest.transition.property).toBe("transform");
         expect(ms(rest.transition.duration)).toBe(ms(rest.tokens.base));
         expect(norm(rest.transition.easing)).toBe(norm(rest.tokens.ease));
-        const started = (await motionStarted(page)).filter((m) => m.target.includes("ks-film__frame"));
-        expect(started.map((m) => `${m.type} ${m.name}`), "the scale is a transition of transform alone").toContain("transition transform");
-        expect(started.every((m) => m.name === "transform")).toBe(true);
+        /* transitionrun is queued and dispatched at the next rendering frame, which a loaded machine can delay past
+           readFocus (M2, 2026-10-14: one empty read in the full suite, green alone 5 of 5): wait for it, then check. */
+        const frameMotion = async () => (await motionStarted(page)).filter((m) => m.target.includes("ks-film__frame"));
+        await expect
+          .poll(async () => (await frameMotion()).map((m) => `${m.type} ${m.name}`), { message: "the scale is a transition of transform alone" })
+          .toContain("transition transform");
+        expect((await frameMotion()).every((m) => m.name === "transform")).toBe(true);
 
         for (const [side, gap] of Object.entries(rest.inside!)) expect(gap, `at rest the scaled film stays inside the strip (${side})`).toBeGreaterThanOrEqual(-0.5);
         expectClear(rest, "at rest");
