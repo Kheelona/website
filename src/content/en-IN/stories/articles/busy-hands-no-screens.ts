@@ -1,12 +1,13 @@
 /// <reference types="next/image-types/global" />
-import paperCrown from "@ds/assets/Photo library/ira-04-paper-crown-web.webp";
+import drawingTheDragon from "@ds/assets/Photo library/ira-02-drawing-the-dragon-web.webp";
 import type { Article } from "@/content/types";
 import { DEFAULT_OG, TEAM_BYLINE } from "../../organization";
 
 /**
  * Busy hands, no screens: rewritten (task 5.17; copy page story-busy-hands-no-screens.md, CMO review
- * cmo-review-articles-5.17-2026-10-14.md). No mockup: it renders through the article template, held to the approved
- * articles' shared parts. Card words as the hub's (stories.md fold 2), related links and dates as the stub held them
+ * cmo-review-articles-5.17-2026-10-14.md; fixes of task 5.20a, CMO M13 to M16, fix-pass review
+ * cmo-review-article-fixes-5.20a-2026-10-14.md). No mockup: it renders through the article template, held to the
+ * approved articles' shared parts (a wide head photo since task 5.20a, as the safe-AI-toy guide's). Card words as the hub's (stories.md fold 2), related links and dates as the stub held them
  * (the main session's note for 5.17). One in-text product link (fold 9).
  */
 export const article = {
@@ -30,15 +31,15 @@ export const article = {
     author: TEAM_BYLINE,
     readMinutes: 3,
     image: {
-      src: paperCrown,
-      alt: "A laughing girl in a sky-blue T-shirt puts on a yellow paper crown beside a craft table strewn with paper scraps, glue and crayons.",
+      src: drawingTheDragon,
+      alt: "A laughing girl in a yellow frock lies on her tummy on a rug, a blue crayon in her hand, a big drawing of a green dragon in front of her and Kheelu sitting beside her.",
     },
   },
-  /* Fold 2: the answer first (55 words), then what the page holds. */
+  /* Fold 2: the answer first (53 words), then what the page holds. */
   answer: {
     question: "What are good screen-free activities for kids at home?",
     answer:
-      "Ones that start in seconds and need no grown-up to run them: dough, crayons and paper, a blanket fort, a box of blocks, real jobs like matching socks or washing potatoes, and stories told or played aloud. Set them up in the room where you are, and keep a few ready on one low shelf.",
+      "Ones that start in seconds and need no grown-up to run them: dough, crayons and paper, a blanket fort, a box of blocks, real jobs like matching socks or washing potatoes, and stories played aloud. Set them up in the room where you are, and keep a few ready on one low shelf.",
     detail: [{ kind: "p", text: "Below: ten-second setups, real jobs, ideas by age, and what to do on the days you have to work." }],
   },
   body: [
@@ -65,7 +66,7 @@ export const article = {
         {
           kind: "list",
           items: [
-            "a cup of water and a paintbrush, to “paint” the floor tiles",
+            "a cup of water and a paintbrush, to “paint” an old slate",
             "steel dabbas and their lids, to match up",
             "old newspaper, to tear into the world’s biggest salad",
             "a bedsheet over two chairs: a house until dinner",
@@ -137,11 +138,15 @@ export const article = {
       blocks: [
         {
           kind: "p",
-          text: "For the stretches you can’t be interrupted, set the activity up in the room where you work, and add something that talks: a story, told or played aloud, in your home language, or a grandparent on a voice call.",
+          text: "For the stretches you can’t be interrupted, pick a quiet activity and set it up in the room where you work: water and a brush, dough, crayons on a roll of paper.",
         },
         {
           kind: "p",
-          text: "[Kheelu](/products/kheelu) is one more screen-free option: a plush toy for ages 3 to 7 that answers your child, then asks a question back. It is not a toy for children under 3. If your child is 3, keep a grown-up nearby while they play.",
+          text: "Save the ones that talk (a story played aloud, a grandparent on a voice call) for the stretches when you can listen with half an ear.",
+        },
+        {
+          kind: "p",
+          text: "[Kheelu](/products/kheelu) is one more screen-free option for those stretches: a plush toy for ages 3 to 7 that answers your child, then asks a question back. It is not a toy for children under 3. If your child is 3, keep a grown-up nearby while they play.",
         },
         { kind: "p", text: "Most of this page needs no technology at all: a shelf, a basket of socks, a cardboard box." },
       ],
