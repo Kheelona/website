@@ -1,0 +1,39 @@
+/* StoreTop (task 5.15): the store's first screen, ported from the approved mockup's mk-store-top
+   (mockup/css/store.css:42-48, 76-79). Phone first: the eyebrow and h1 beside a small Kheelu, the price sentence and the
+   compact trust line under both; from 720 px Kheelu sits beside the whole block. The image carries its own ratio as
+   --kh-ratio (Photo's bare form), so next/image's whole-pixel renditions never move the form below. */
+.ks-store-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: var(--space-4);
+  align-items: center;
+}
+.ks-store-top > .ks-store-top__price,
+.ks-store-top > .kh-trustline {
+  grid-column: 1 / -1;
+}
+.ks-store-top__img {
+  display: block;
+  width: var(--space-9);
+  height: auto;
+  aspect-ratio: var(--kh-ratio);
+}
+.ks-store-top__price {
+  margin: var(--space-4) 0 0;
+  max-width: var(--measure);
+}
+.ks-store-top .kh-trustline {
+  margin-top: var(--space-4);
+}
+
+@media (min-width: 720px) {
+  .ks-store-top__img {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    width: var(--space-10);
+  }
+  .ks-store-top > .ks-store-top__price,
+  .ks-store-top > .kh-trustline {
+    grid-column: 1;
+  }
+}

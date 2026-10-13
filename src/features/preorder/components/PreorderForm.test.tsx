@@ -17,7 +17,7 @@ function fill(overrides: Partial<Record<string, string>> = {}) {
     "WhatsApp number": "9187546483",
     Email: "priya@example.com",
     // free text since 2026-08-23: the dropdown could not take this answer
-    "Your child's age": "2.5",
+    "Your child’s age": "2.5",
     ...overrides,
   };
 }
@@ -53,7 +53,7 @@ describe("PreorderForm", () => {
 
   it("asks for exactly the four things the founder chose, and one tick", () => {
     render(<PreorderForm tier="launch" amountLabel="₹499" />);
-    for (const label of ["Your name", "WhatsApp number", "Email", "Your child's age"]) {
+    for (const label of ["Your name", "WhatsApp number", "Email", "Your child’s age"]) {
       expect(screen.getByLabelText(label, { exact: false })).toBeInTheDocument();
     }
     expect(screen.getAllByRole("checkbox")).toHaveLength(1);
@@ -175,11 +175,11 @@ describe("PreorderForm", () => {
 
   it("links the terms and the refund policy where the tick is", () => {
     render(<PreorderForm tier="launch" amountLabel="₹499" />);
-    expect(screen.getByRole("link", { name: "pre-order terms" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "pre-order terms(opens in a new tab)" })).toHaveAttribute(
       "href",
       "https://kheelona.com/terms",
     );
-    expect(screen.getByRole("link", { name: "refund policy" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "refund policy(opens in a new tab)" })).toHaveAttribute(
       "href",
       "https://kheelona.com/refund",
     );
@@ -192,13 +192,13 @@ describe("PreorderForm", () => {
     const { container } = render(
       <PreorderForm tier="ideabaaz" signature="sig" amountLabel="₹99" balanceLabel="₹4,900" />,
     );
-    expect(container.textContent).toMatch(/₹4,900 when your Kheelu is ready to ship/);
+    expect(container.textContent).toMatch(/then pay ₹4,900 before delivery/);
     expect(container.textContent).not.toContain("₹4,500");
   });
 
   it("keeps the public ₹4,500 caption when no balance is passed", () => {
     const { container } = render(<PreorderForm tier="launch" amountLabel="₹499" />);
-    expect(container.textContent).toMatch(/₹4,500 when your Kheelu is ready to ship/);
+    expect(container.textContent).toMatch(/then pay ₹4,500 before delivery/);
   });
 });
 
@@ -252,7 +252,7 @@ describe("the form reports that somebody started filling it in", () => {
     const user = userEvent.setup();
     render(<PreorderForm tier="launch" />);
 
-    await user.type(screen.getByLabelText("Your child's age", { exact: false }), "3");
+    await user.type(screen.getByLabelText("Your child’s age", { exact: false }), "3");
     expect(gtag.mock.calls.map((c) => c[1])).toContain("preorder_form_started");
   });
 

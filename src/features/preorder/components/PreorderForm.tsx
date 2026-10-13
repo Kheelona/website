@@ -1,17 +1,16 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
-import { TextField, ChoiceField } from "@/components/atoms/Field";
-import { cn } from "@/lib/cn";
-import { PRESS_LIFT } from "@/lib/interactions";
-import {
-  TOKEN_PRICE,
-  BALANCE_PRICE,
-  LAUNCH_PRICE,
-  KHEELU_AGES,
-  SUPPORT_WHATSAPP_HREF,
-} from "@/config/site";
+import { clsx } from "clsx";
+import { Alert } from "@/components/ui/Alert/Alert";
+import { Checkbox } from "@/components/ui/Checkbox/Checkbox";
+import { Field } from "@/components/ui/Field/Field";
+import { checkoutPrices, checkoutWords } from "@/components/sections/store/StoreDetails/checkout-words";
+import type { PreorderFormCopy } from "@/components/sections/store/StoreDetails/store-details.types";
+import { BALANCE_PRICE } from "@/config/site";
+import { MARKETING_ORIGIN } from "@/config/env";
+import { preorderFormCopy } from "@/content/en-IN/store/store-page";
 import {
   validateContact,
   hasErrors,
@@ -38,13 +37,27 @@ import { CAMPAIGN_KEYS } from "@/lib/campaign";
  *
  *  Validation runs here for kindness and on the server for truth, using the SAME
  *  functions (../lib/validate). Never the amount: this component never sends a
- *  price, it sends a tier, and the server decides what that costs. */
+ *  price, it sends a tier, and the server decides what that costs.
+ *
+ *  RESTYLED ON THE DESIGN SYSTEM (task 5.15; ADR-013: markup, classes, copy and
+ *  presentation imports only). The fields are the DS Field and Checkbox, the
+ *  failure line a DS danger Alert above the pay button, the pay button the DS
+ *  chilli button (its labels unchanged, still a plain <button> with no cta
+ *  attribute). The words come from content (content/en-IN/store/store-page.ts),
+ *  their amounts from the labels the server formatted for this tier. Beside the
+ *  button, in the form's own block, the price sentence carries the refund promise;
+ *  the store page hands in the rest (`beside`: the trust row, the payment window
+ *  line, a person to reach), which a client island cannot draw itself. Every
+ *  handler, field attribute and request below is the tag's
+ *  (test/guards/checkout-signature.test.ts, checkout-jsx-contract.test.tsx). */
 export function PreorderForm({
   tier,
   signature,
   amountLabel,
   mode = "token",
   balanceLabel = BALANCE_PRICE,
+  copy = preorderFormCopy,
+  beside,
 }: {
   tier: string;
   signature?: string;
@@ -61,6 +74,12 @@ export function PreorderForm({
    *  a ₹99 booking honestly reads ₹4,900 (2026-08-23). A label, not a charge:
    *  the server still prices the order from the tier alone. */
   balanceLabel?: string;
+  /** The form's words: the store's by default (store.md fold 3). Presentation
+   *  only: labels, hints, the consent row's words and the price sentence. */
+  copy?: PreorderFormCopy;
+  /** Server-rendered lines after the price sentence, inside the form's block:
+   *  the store's trust row, payment window line and help line (PayBeside). */
+  beside?: ReactNode;
 }) {
   const [errors, setErrors] = useState<FieldErrors<ContactInput>>({});
   const [state, setState] = useState<"idle" | "working" | "paying">("idle");
@@ -190,127 +209,116 @@ export function PreorderForm({
   const busy = state !== "idle";
 
   return (
-    <form onSubmit={onSubmit} onChange={onFirstChange} noValidate className="grid gap-5">
-      <TextField
-        label="Your name"
+    <form onSubmit={onSubmit} onChange={onFirstChange} noValidate className="ks-form">
+      <Field
+        label={copy.labels.parentName}
         name="parentName"
+        type="text"
         required
         autoComplete="name"
         maxLength={80}
         error={errors.parentName}
       />
-      <TextField
-        label="WhatsApp number"
+      {/* The +91 is decoration (the tel-in variant): the value is what the parent
+          types, and the shared validator still accepts +91, 0 and spaces. */}
+      <Field
+        label={copy.labels.phone}
+        variant="tel-in"
         name="phone"
         type="tel"
         inputMode="tel"
         required
         autoComplete="tel"
-        hint={
-          mode === "token"
-            ? "Where we send your confirmation, and the balance link before dispatch."
-            : "Where we send your confirmation, and updates before dispatch."
-        }
+        hint={copy.hints.phone[mode]}
         error={errors.phone}
       />
-      <TextField
-        label="Email"
+      <Field
+        label={copy.labels.email}
         name="email"
         type="email"
         inputMode="email"
         required
         autoComplete="email"
+        hint={copy.hints.email}
         error={errors.email}
       />
-      {/* A blank, not a picker, since 2026-08-23 (founder call). Ages render
-          from KHEELU_AGES per standing law, never inline. */}
-      <TextField
-        label="Your child's age"
+      {/* A blank, not a picker, since 2026-08-23 (founder call). */}
+      <Field
+        label={copy.labels.childAge}
         name="childAge"
+        type="text"
         required
         maxLength={CHILD_AGE_MAX}
-        hint={`Kheelu is built for ages ${KHEELU_AGES}. A number is fine, and so is "nearly 3".`}
+        hint={copy.hints.childAge}
         error={errors.childAge}
       />
 
-      <ChoiceField name="accepted" error={errors.accepted}>
-        I accept the{" "}
-        <PolicyLink href="/terms">pre-order terms</PolicyLink> and the{" "}
-        <PolicyLink href="/refund">refund policy</PolicyLink>, and I am happy to
-        hear about my own order on WhatsApp.
-      </ChoiceField>
+      <Checkbox
+        consent
+        name="accepted"
+        error={errors.accepted}
+        label={
+          <>
+            {copy.consent.lead}{" "}
+            <PolicyLink href="/terms" note={copy.newTabNote}>
+              {copy.consent.terms}
+            </PolicyLink>{" "}
+            {copy.consent.join}{" "}
+            <PolicyLink href="/refund" note={copy.newTabNote}>
+              {copy.consent.refund}
+            </PolicyLink>
+            {copy.consent.tail}
+          </>
+        }
+      />
 
       {failure ? (
-        /* role=alert so it is announced, and not only for a screen reader: a
-           parent whose payment sheet vanished needs to be told nothing was
-           charged, in those words. */
-        <p
-          role="alert"
-          className="rounded-(--radius-card) border border-orange-ink bg-cream px-4 py-3 text-[15px] font-medium text-ink"
-        >
-          {failure}
-        </p>
+        /* A DS danger Alert (role=alert) so it is announced, and not only for a
+           screen reader: a parent whose payment sheet vanished needs to be told
+           nothing was charged, in those words. */
+        <Alert tone="danger">
+          <p>{failure}</p>
+        </Alert>
       ) : null}
 
       <button
         type="submit"
         disabled={busy}
-        className={cn(
-          "inline-flex items-center justify-center rounded-full bg-action px-7 py-4 text-[17px] font-bold text-white shadow-cta",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2",
-          PRESS_LIFT,
-          busy && "cursor-wait opacity-70",
-        )}
+        className={clsx("kh-btn kh-btn--cta kh-btn--l kh-btn--block", busy && "kh-btn--loading")}
       >
-        {state === "idle"
-          ? `Pay ${amountLabel} and ${mode === "token" ? "reserve" : "pre-order"}`
-          : null}
-        {state === "working" ? "Setting up your payment…" : null}
-        {state === "paying" ? "Opening the payment window…" : null}
+        <span>
+          {state === "idle"
+            ? `Pay ${amountLabel} and ${mode === "token" ? "reserve" : "pre-order"}`
+            : null}
+          {state === "working" ? "Setting up your payment…" : null}
+          {state === "paying" ? "Opening the payment window…" : null}
+        </span>
       </button>
 
-      <p className="text-[14px] leading-[1.55] text-ink-muted">
-        {mode === "token" ? (
-          <>
-            {amountLabel} today, {balanceLabel} when your Kheelu is ready to
-            ship, for the {LAUNCH_PRICE} price. Refundable in full until we
-            dispatch it. We never see your card details, and nothing is ever
-            charged automatically.
-          </>
-        ) : (
-          <>
-            {amountLabel} today, and nothing more to pay before dispatch.
-            Refundable in full until we dispatch it. We never see your card
-            details, and nothing is ever charged automatically.
-          </>
-        )}
-      </p>
-      <p className="text-[14px] text-ink-muted">
-        Rather do this over a message?{" "}
-        <a
-          href={SUPPORT_WHATSAPP_HREF}
-          className="rounded font-semibold text-ink-head underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
-        >
-          WhatsApp us
-        </a>{" "}
-        and a person will help.
-      </p>
+      <div className="ks-beside ks-pay-beside">
+        <p className="kh-body-s ks-price">
+          {checkoutWords(copy.price[mode], checkoutPrices(mode, amountLabel, balanceLabel))}
+        </p>
+        {beside}
+      </div>
     </form>
   );
 }
 
-function PolicyLink({ href, children }: { href: string; children: React.ReactNode }) {
+function PolicyLink({ href, note, children }: { href: string; note: string; children: React.ReactNode }) {
   /* Absolute to the marketing site on purpose: the policies are canonical there
      (founder's call), the store must not host a second copy competing with them
-     in search, and a new tab keeps a half-filled form intact. */
+     in search, and a new tab keeps a half-filled form intact. MARKETING_ORIGIN is
+     kheelona.com on production and the beta site on beta, as for the store
+     footer's policy links (task 3.1). */
   return (
     <Link
-      href={`https://kheelona.com${href}`}
+      href={`${MARKETING_ORIGIN}${href}`}
       target="_blank"
       rel="noopener noreferrer"
-      className="rounded font-semibold text-ink-head underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
     >
       {children}
+      <span className="kh-sr">{note}</span>
     </Link>
   );
 }

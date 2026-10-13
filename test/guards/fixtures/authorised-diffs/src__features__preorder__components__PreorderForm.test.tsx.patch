@@ -1,0 +1,76 @@
+Reviewed diff of src/features/preorder/components/PreorderForm.test.tsx against archive/pre-reset-2026-10-10 (checkout-freeze, ADR-013, frozen tests).
+Regenerate with: git diff archive/pre-reset-2026-10-10 -- src/features/preorder/components/PreorderForm.test.tsx (keep this header above it).
+
+Task 5.15 (store page restyle; store.md fold 3, approved at Gate A, D046). LITERAL-ONLY: string and regex literals
+follow the approved copy; no assertion is added, removed or weakened (the guard masks literals and compares tokens).
+  - "Your child's age" -> "Your child’s age" (three places): the label is the approved page's, with its typographic
+    apostrophe (mockup/store.html fold 3; the content convention).
+  - Link names "pre-order terms" / "refund policy" -> "...(opens in a new tab)": each consent link now carries the
+    visually hidden new-tab note (store.md fold 3). The name is jsdom's: dom-accessibility-api drops the space before
+    the note that a browser keeps ("pre-order terms (opens in a new tab)"); the hrefs asserted are unchanged.
+  - The caption regexes follow the D028 sentence that replaced the live caption beside the pay button:
+    "₹4,900 when your Kheelu is ready to ship" -> "then pay ₹4,900 before delivery" (and ₹4,500): the derived balance
+    of an event token, and the public balance when none is passed, still asserted in the same place.
+"WhatsApp number" still matches the new label "Indian WhatsApp number" (exact: false); unchanged.
+
+diff --git a/src/features/preorder/components/PreorderForm.test.tsx b/src/features/preorder/components/PreorderForm.test.tsx
+index a7928d3..584ef66 100644
+--- a/src/features/preorder/components/PreorderForm.test.tsx
++++ b/src/features/preorder/components/PreorderForm.test.tsx
+@@ -17,7 +17,7 @@ function fill(overrides: Partial<Record<string, string>> = {}) {
+     "WhatsApp number": "9187546483",
+     Email: "priya@example.com",
+     // free text since 2026-08-23: the dropdown could not take this answer
+-    "Your child's age": "2.5",
++    "Your child’s age": "2.5",
+     ...overrides,
+   };
+ }
+@@ -53,7 +53,7 @@ describe("PreorderForm", () => {
+ 
+   it("asks for exactly the four things the founder chose, and one tick", () => {
+     render(<PreorderForm tier="launch" amountLabel="₹499" />);
+-    for (const label of ["Your name", "WhatsApp number", "Email", "Your child's age"]) {
++    for (const label of ["Your name", "WhatsApp number", "Email", "Your child’s age"]) {
+       expect(screen.getByLabelText(label, { exact: false })).toBeInTheDocument();
+     }
+     expect(screen.getAllByRole("checkbox")).toHaveLength(1);
+@@ -175,11 +175,11 @@ describe("PreorderForm", () => {
+ 
+   it("links the terms and the refund policy where the tick is", () => {
+     render(<PreorderForm tier="launch" amountLabel="₹499" />);
+-    expect(screen.getByRole("link", { name: "pre-order terms" })).toHaveAttribute(
++    expect(screen.getByRole("link", { name: "pre-order terms(opens in a new tab)" })).toHaveAttribute(
+       "href",
+       "https://kheelona.com/terms",
+     );
+-    expect(screen.getByRole("link", { name: "refund policy" })).toHaveAttribute(
++    expect(screen.getByRole("link", { name: "refund policy(opens in a new tab)" })).toHaveAttribute(
+       "href",
+       "https://kheelona.com/refund",
+     );
+@@ -192,13 +192,13 @@ describe("PreorderForm", () => {
+     const { container } = render(
+       <PreorderForm tier="ideabaaz" signature="sig" amountLabel="₹99" balanceLabel="₹4,900" />,
+     );
+-    expect(container.textContent).toMatch(/₹4,900 when your Kheelu is ready to ship/);
++    expect(container.textContent).toMatch(/then pay ₹4,900 before delivery/);
+     expect(container.textContent).not.toContain("₹4,500");
+   });
+ 
+   it("keeps the public ₹4,500 caption when no balance is passed", () => {
+     const { container } = render(<PreorderForm tier="launch" amountLabel="₹499" />);
+-    expect(container.textContent).toMatch(/₹4,500 when your Kheelu is ready to ship/);
++    expect(container.textContent).toMatch(/then pay ₹4,500 before delivery/);
+   });
+ });
+ 
+@@ -252,7 +252,7 @@ describe("the form reports that somebody started filling it in", () => {
+     const user = userEvent.setup();
+     render(<PreorderForm tier="launch" />);
+ 
+-    await user.type(screen.getByLabelText("Your child's age", { exact: false }), "3");
++    await user.type(screen.getByLabelText("Your child’s age", { exact: false }), "3");
+     expect(gtag.mock.calls.map((c) => c[1])).toContain("preorder_form_started");
+   });
+ 

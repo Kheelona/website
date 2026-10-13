@@ -1,0 +1,125 @@
+/* StoreDetails (task 5.15): the store's two columns and the checkout parts it holds, ported from the approved mockup
+   (mockup/css/store.css:31-32, 37-41, 55-57, 61-74, 80-89). The pre-order form (`ks-form`) and the agreement card
+   (`ks-agree`) are the restyled checkout components (src/features/preorder/components), whose classes are composed
+   here because the store sections hold them; `ks-h2` and `ks-muted` are the store pages' shared text helpers (the
+   confirmation's steps and address step take `ks-h2` too, StepsSection `thanks`, task 5.16). */
+
+/* Shared text helpers for the two store pages (store.css:31-32). */
+.ks-h2 {
+  margin: 0 0 var(--space-4);
+}
+.ks-muted {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+/* Phone first; two columns from 900 px, the summary and questions sticky (store.css:38-40, 83-89). */
+.ks-store {
+  padding-top: var(--space-5);
+}
+.ks-store__grid {
+  display: grid;
+  gap: var(--space-7);
+  align-items: start;
+}
+.ks-store__main,
+.ks-store__side {
+  display: grid;
+  gap: var(--space-6);
+  min-width: 0;
+}
+
+/* The form: fields take the column's width (store.css:56-57). */
+.ks-form {
+  display: grid;
+  gap: var(--space-5);
+}
+.ks-form .kh-field {
+  max-width: none;
+}
+
+/* Beside the pay button (store.css:62-64). The block follows the button a step closer than CtaBlock's ks-beside
+   (cta-block.css, an earlier file in the compose order, so this later rule wins at equal specificity). */
+.ks-pay-beside {
+  margin-top: calc(var(--space-3) * -1);
+}
+.ks-pay-beside .ks-trust {
+  row-gap: var(--space-4);
+}
+.ks-pay-beside .ks-help {
+  margin-top: var(--space-2);
+}
+
+/* The agreement card (store.css:67-71; DS gap G-11: card, icon tile, label, body-s). */
+.ks-agree {
+  gap: var(--space-5);
+}
+.ks-agree__list {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ks-agree__list li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: start;
+}
+.ks-agree__list .kh-label {
+  margin: 0 0 var(--space-1);
+  /* "Deliveries start / mid-November" never splits at the hyphen (the mockup's mk-nowrap on "mid-November"; the
+     delivery line is one content value, D023, so the break is balanced here, as the legal pages do). */
+  text-wrap: balance;
+}
+.ks-agree__fine {
+  padding-top: var(--space-4);
+  border-top: var(--stroke-hair) solid var(--border);
+}
+
+/* D042's payments line, the last line of main (wiki/qa/deviations.md V1): set as the store footer sets its lines
+   (store-footer.css: the same side padding, muted at the reading measure, a 28 px link box). */
+.ks-store-payments {
+  padding: var(--space-6) var(--space-4) 0;
+}
+.ks-store-payments p {
+  max-width: var(--measure);
+}
+.ks-store-payments a {
+  padding-block: var(--space-1);
+  margin-block: calc(var(--space-1) * -1);
+}
+
+/* The store before its keys are in place, and on beta (D051): the heading, the WhatsApp button, then this note
+   (store.md, Other states; no mockup: the DS heading and actions, the note a step under the button). */
+.ks-store-closed {
+  margin-top: var(--space-4);
+}
+
+@media (min-width: 720px) {
+  /* From 720 px the form sits on a white card, like the summary beside it (store.css:81). */
+  .ks-details {
+    padding: var(--space-6);
+    border: var(--stroke-hair) solid var(--border);
+    border-radius: var(--radius-l);
+    background: var(--surface-raised);
+  }
+}
+@media (min-width: 900px) {
+  .ks-store__grid {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  }
+  .ks-store__side {
+    position: sticky;
+    top: var(--space-5);
+  }
+}
+@media (min-width: 1024px) {
+  .ks-store {
+    padding-top: var(--space-7);
+  }
+  .ks-store-payments {
+    padding-inline: var(--space-7);
+  }
+}
