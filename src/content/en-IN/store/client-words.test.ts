@@ -7,10 +7,12 @@ import { readRepoFile } from "../../../../test/e2e/support/repo";
  * shared, plus the checkout's own config (the unit cap in the agreement card's small print). The seller and organisation
  * data (seller.ts, organization.ts) and everything else the page modules read stay out of the client chunks. */
 
+/* Each module is loaded by a static dynamic import, after the mocks below are in place (a variable import of this
+   folder is one Vite cannot analyse). */
 const MODULES = [
-  { file: "preorder-form.ts", name: "preorderFormCopy", reader: "src/features/preorder/components/PreorderForm.tsx" },
-  { file: "order-summary.ts", name: "orderSummaryCopy", reader: "src/features/preorder/components/OrderSummary.tsx" },
-  { file: "address-form.ts", name: "addressForm", reader: "src/features/preorder/components/AddressForm.tsx" },
+  { file: "preorder-form.ts", name: "preorderFormCopy", reader: "src/features/preorder/components/PreorderForm.tsx", load: () => import("./preorder-form") },
+  { file: "order-summary.ts", name: "orderSummaryCopy", reader: "src/features/preorder/components/OrderSummary.tsx", load: () => import("./order-summary") },
+  { file: "address-form.ts", name: "addressForm", reader: "src/features/preorder/components/AddressForm.tsx", load: () => import("./address-form") },
 ] as const;
 
 /** The only modules a words-only module may load at run time. */
@@ -41,14 +43,14 @@ describe("the checkout's words-only modules", () => {
     expect(valueImports(text).filter((path) => !ALLOWED.has(path))).toEqual([]);
   });
 
-  it.each(MODULES)("$file loads without the seller, organisation or page data", async ({ file, name }) => {
+  it.each(MODULES)("$file loads without the seller, organisation or page data", async ({ file, name, load }) => {
     vi.resetModules();
     for (const path of FORBIDDEN) {
       vi.doMock(path, () => {
         throw new Error(`${file} loaded ${path}`);
       });
     }
-    const loaded = (await import(`./${file}`)) as Record<string, unknown>;
+    const loaded = (await load()) as Record<string, unknown>;
     expect(loaded[name]).toBeTypeOf("object");
   });
 
