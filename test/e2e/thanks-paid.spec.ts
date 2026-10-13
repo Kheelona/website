@@ -116,7 +116,7 @@ test.describe("/thanks paid-state parity: the ThanksPaid story against store-con
       ).toEqual({ missing: [], extra: [] });
 
       for (const [page, side] of [[mockup, "mockup"], [story, "build"]] as const) {
-        await hideDeviations(page, SLUG, side);
+        await hideDeviations(page, SLUG, side, "thanks-paid");
         await settle(page);
       }
 

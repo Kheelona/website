@@ -166,13 +166,14 @@ export function hiddenCss(slug: string, side: VisualHide["side"]): string {
   return selectors.length ? `${selectors.join(", ")} { display: none !important; }` : "";
 }
 
-/** Hides one side's approved elements on the page (before it is settled and measured) and prints each rule it applies. */
-export async function hideDeviations(page: Page, slug: string, side: VisualHide["side"]): Promise<void> {
+/** Hides one side's approved elements on the page (before it is settled and measured) and prints each rule it applies
+ *  under `label`, the calling spec's name ("visual-parity", "thanks-paid"; task 4.9 item 6). */
+export async function hideDeviations(page: Page, slug: string, side: VisualHide["side"], label: string): Promise<void> {
   const css = hiddenCss(slug, side);
   if (!css) return;
   await page.addStyleTag({ content: css });
   for (const rule of (VISUAL_HIDDEN[slug] ?? []).filter((r) => r.side === side)) {
-    console.log(`[visual-parity] ${slug}: ${rule.selector} hidden in the ${side} (${rule.approvedBy}): ${rule.reason}`);
+    console.log(`[${label}] ${slug}: ${rule.selector} hidden in the ${side} (${rule.approvedBy}): ${rule.reason}`);
   }
 }
 
