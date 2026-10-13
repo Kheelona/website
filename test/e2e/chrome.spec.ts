@@ -9,9 +9,9 @@ import { APPROVED_WIDTHS, VIEWPORTS, type Viewport } from "./support/viewports";
 
 /* The chrome on a built route (task 3.1; tasks.md 3.1 "Test", architecture §5.2, §5.3, §11.2 rows 4, 5 and D050, §13).
  *
- * The chrome is the shells', so it runs on any built marketing route: "/" here, whose page content is still the
- * legacy one until wave 5 (the gate of the page specs is not used: the chrome is new on every route). The store's
- * chrome runs on the store host's own route.
+ * The chrome is the shells', so it runs on any built marketing route: "/" here, the new Home since wave 5 (5.1; the
+ * gate of the page specs is not used: the chrome is new on every route). The store's chrome runs on the store host's
+ * own route.
  *
  *   - Element pixel parity (the first pixel proof of the visual layer): the nav, the footer, the open drawer's panel
  *     and the shown buy bar against the same elements of mockup/home.html at the approved widths (the drawer and the
@@ -19,8 +19,11 @@ import { APPROVED_WIDTHS, VIEWPORTS, type Viewport } from "./support/viewports";
  *     mockup's element screenshot is the golden (git-ignored, D039); at most 2 percent of pixels may differ, as SPA 1.
  *   - Sticky bar (G-09, pick 4): hidden while the hero CTA is on screen, shown past it, aside while an inline chilli
  *     button is on screen, inert while hidden, data-buybar and --ks-buybar-h on <html>, gone from 900 px, sliding up
- *     with motion on and only fading with reduced motion. A hero and an inline chilli button are added to <main>
- *     after the page loads (the legacy content has neither); the bar watches buttons added after it armed.
+ *     with motion on and only fading with reduced motion. The page's own hero CTA (#hero-cta) is on screen at first
+ *     paint, so every case scrolls past it before it expects the bar shown (task 4.6: the legacy Home had no hero CTA,
+ *     so its bar showed from first paint). For the scroll positions, two screens of space, an inline chilli button
+ *     and two more screens are added right after the hero, so each view holds exactly one chilli button whatever the
+ *     page has below; the bar watches buttons added after it armed.
  *   - One chilli button per phone view at each of those scroll positions.
  *   - Drawer keyboard path (pick 5): the skip link first, then the logo and the menu button; Enter opens the modal
  *     dialog with focus inside, Tab stays inside, Escape closes it and returns focus; the backdrop closes it; the
@@ -127,36 +130,43 @@ function visibleChilliButtons(page: Page) {
   );
 }
 
-/** Adds what the legacy content lacks: a hero CTA at the top of <main>, then two screens of space, an inline chilli
- *  button, and two more screens of space. Returns their scroll positions. */
-async function plantHeroAndInline(page: Page): Promise<{ top: number; between: number; inline: number; after: number }> {
+/** Adds, right after the fold that holds the page's own hero CTA (#hero-cta), two screens of space, an inline chilli
+ *  button and two more screens of space, so each position below has exactly one chilli button in view whatever the
+ *  page holds further down. Returns the scroll positions: the hero CTA on screen (the top), past it, the inline
+ *  button on screen, past that. The legacy Home had no hero CTA, so this used to plant one too (task 4.6). */
+async function plantInlineAfterHero(page: Page): Promise<{ top: number; between: number; inline: number; after: number }> {
   return page.evaluate(() => {
+    const hero = document.getElementById("hero-cta");
+    if (!hero) throw new Error("the page has no #hero-cta");
     const main = document.querySelector("main")!;
+    const fold = Array.from(main.children).find((c) => c.contains(hero));
+    if (!fold) throw new Error("#hero-cta is not inside <main>");
     const vh = innerHeight;
-    const button = (id: string | null) => {
-      const a = document.createElement("a");
-      if (id) a.id = id;
-      a.className = "kh-btn kh-btn--cta";
-      a.href = "#";
-      a.textContent = "Planted";
-      return a;
-    };
+    const inline = document.createElement("a");
+    inline.className = "kh-btn kh-btn--cta";
+    inline.href = "#";
+    inline.textContent = "Planted";
     const space = () => {
       const d = document.createElement("div");
       d.style.height = `${vh * 2}px`;
       return d;
     };
-    const hero = button("hero-cta");
-    const inline = button(null);
-    main.prepend(hero, space(), inline, space());
+    const first = space();
+    fold.after(first, inline, space());
     const top = (el: Element) => el.getBoundingClientRect().top + scrollY;
     return {
       top: 0,
-      between: top(hero) + vh,
+      between: top(first) + vh / 2,
       inline: top(inline) - vh / 2,
       after: top(inline) + vh,
     };
   });
+}
+
+/** Scrolls until the page's own hero CTA has just left the top of the view: the bar shows once it has (G-09). */
+async function scrollPastHero(page: Page): Promise<void> {
+  const y = await page.locator("#hero-cta").evaluate((el) => Math.ceil(el.getBoundingClientRect().bottom + scrollY) + 1);
+  await scrollToY(page, y);
 }
 
 /** The key that moves focus to the next link: Tab, except in WebKit, where Tab reaches only form controls unless the
@@ -227,14 +237,21 @@ test.describe("chrome: sticky bar", () => {
   for (const vp of [phone390, phone360short]) {
     test(`state at each scroll position, one chilli button per view ${vp.name}`, async ({ harness }) => {
       const page = await openBuilt(harness, vp);
-      // No hero and no inline button in the legacy content: the bar shows from first paint.
-      expect(await barState(page)).toMatchObject({ published: "shown", hidden: false, inert: false });
+      // Home's own hero CTA is on screen at first paint: the bar waits, hidden and inert, with its height published.
+      await expect.poll(async () => (await barState(page)).published).toBe("hidden");
+      expect(await barState(page)).toMatchObject({ published: "hidden", hidden: true, inert: true });
       const s0 = await barState(page);
       expect(s0.height).toBe(`${s0.barHeight}px`);
       expect(s0.barHeight).toBeGreaterThan(0);
       expect(await visibleChilliButtons(page)).toBe(1);
 
-      const at = await plantHeroAndInline(page);
+      // Past the hero CTA it shows, from the real page's first screen below the hero.
+      await scrollPastHero(page);
+      await expect.poll(async () => (await barState(page)).published, { message: "past #hero-cta" }).toBe("shown");
+      await scrollToY(page, 0);
+      await expect.poll(async () => (await barState(page)).published, { message: "the hero CTA on screen again" }).toBe("hidden");
+
+      const at = await plantInlineAfterHero(page);
       const expectations: Array<[string, number, string]> = [
         ["the hero CTA on screen", at.top, "hidden"],
         ["past the hero, no inline button", at.between, "shown"],
@@ -264,6 +281,9 @@ test.describe("chrome: sticky bar", () => {
   test("slides up when it first shows (pick 4); with reduced motion it only fades", async ({ harness }) => {
     for (const reducedMotion of ["no-preference", "reduce"] as const) {
       const page = await openBuilt(harness, phone390, { reducedMotion, recordMotion: true });
+      // Home opens with its hero CTA on screen, so the bar first shows once that has left the view.
+      await scrollPastHero(page);
+      await expect.poll(async () => (await barState(page)).published).toBe("shown");
       await page.waitForTimeout(400);
       const bar = (await motionStarted(page)).filter((m) => m.type === "transition" && /^<div\.kh-buybar/.test(m.target)).map((m) => m.name);
       if (reducedMotion === "no-preference") expect(bar, "motion on: the bar moves up and fades in").toEqual(expect.arrayContaining(["transform", "opacity"]));
@@ -332,8 +352,7 @@ test.describe("chrome: drawer", () => {
 const bubbleGap = (page: Page) => page.locator(".ks-wa").evaluate((el) => innerHeight - el.getBoundingClientRect().bottom);
 
 /** What the bubble must never cover (D050, architecture §5.3): the bar, a price, a form field, the pay button. On
- *  today's legacy content only the bar matches; the case enforces itself as wave 5 lands the hero price (5.1) and the
- *  store's form and pay button (5.15). */
+ *  Home the bar and the hero's price sentence match (5.1); the store's form and pay button join with 5.15. */
 const NEVER_COVERED = [
   ".kh-buybar",
   ".kh-buybar__price",
@@ -382,9 +401,15 @@ test.describe("chrome: WhatsApp bubble (D050)", () => {
   test("at 360 x 590 it never covers the bar, a price, a field or the pay button, nor at the end the footer's lines", async ({ harness }) => {
     const page = await openBuilt(harness, phone360short);
     await page.waitForTimeout(300);
-    expect((await barState(page)).published).toBe("shown");
+    // First screen: Home's hero CTA is on screen, so the bar waits and the bubble rests beside the hero's price.
+    expect((await barState(page)).published).toBe("hidden");
+    expect(await coveredByBubble(page, NEVER_COVERED), "first screen: bubble over a price, a field or the pay button").toEqual([]);
+    // Past the hero CTA the bar shows and the bubble rises above it.
+    await scrollPastHero(page);
+    await expect.poll(async () => (await barState(page)).published).toBe("shown");
+    await page.waitForTimeout(300);
     expect(await coveredByBubble(page, ".kh-buybar"), "the bar is there to be checked").toEqual([]);
-    expect(await coveredByBubble(page, NEVER_COVERED), "first screen: bubble over the bar, a price, a field or the pay button").toEqual([]);
+    expect(await coveredByBubble(page, NEVER_COVERED), "past the hero: bubble over the bar, a price, a field or the pay button").toEqual([]);
     await scrollToY(page, 1e7);
     await page.waitForTimeout(300);
     expect(await coveredByBubble(page, NEVER_COVERED), "end of the page: bubble over the bar, a price, a field or the pay button").toEqual([]);
@@ -415,7 +440,7 @@ test.describe("chrome: WhatsApp bubble (D050)", () => {
 
   test("lifts by the bar's height while the bar shows and drops when it steps aside (motion on)", async ({ harness }) => {
     const page = await openBuilt(harness, phone390, { reducedMotion: "no-preference" });
-    const at = await plantHeroAndInline(page);
+    const at = await plantInlineAfterHero(page);
     const settle = () => page.waitForTimeout(400);
     await scrollToY(page, at.between);
     await expect.poll(async () => (await barState(page)).published).toBe("shown");
@@ -434,7 +459,7 @@ test.describe("chrome: WhatsApp bubble (D050)", () => {
 
   test("moves nothing with reduced motion, yet still clears the bar", async ({ harness }) => {
     const page = await openBuilt(harness, phone390, { reducedMotion: "reduce", recordMotion: true });
-    const at = await plantHeroAndInline(page);
+    const at = await plantInlineAfterHero(page);
     for (const [y, state] of [[at.top, "hidden"], [at.between, "shown"], [at.inline, "aside"]] as const) {
       await scrollToY(page, y);
       await expect.poll(async () => (await barState(page)).published).toBe(state);

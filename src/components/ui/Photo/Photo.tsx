@@ -2,7 +2,7 @@ import clsx from "clsx";
 import Image from "next/image";
 import type { CSSProperties, ReactNode } from "react";
 import type { ImageRef } from "@/content/types";
-import { imageSource, loadingFor } from "./image";
+import { cssRatio, imageSource, loadingFor } from "./image";
 
 /* A photo in the DS frame (task 2.3; DS kh-photo, bundle.css:1150-1155; ADR-010). The approved markup is
  * `<figure class="kh-photo [--wide|--square] [--xl]"><img …><figcaption?></figure>` (home.html:170,
@@ -42,7 +42,9 @@ interface FramedPhoto extends PhotoImage {
 }
 
 /** The bare form (task 3.6; architecture §10): the image alone, with no figure, frame or crop, for a DS raster a
- *  section places with its own class (ModesSection's `ks-know__img`, meet-kheelu.html fold 4). */
+ *  section places with its own class (ModesSection's `ks-know__img`, meet-kheelu.html fold 4). It carries its own
+ *  ratio as `--kh-ratio` (`cssRatio`), which the section's class reads as `aspect-ratio: var(--kh-ratio)`, so
+ *  next/image's whole-pixel renditions never move the folds below (task 4.6). */
 interface BarePhoto extends PhotoImage {
   readonly bare: true;
   readonly variant?: never;
@@ -58,7 +60,7 @@ export function Photo(props: PhotoProps) {
   const { image, sizes, lcp, fetchPriority, className } = props;
   const load = loadingFor(lcp);
   const source = { ...imageSource(image), sizes, loading: load.loading, fetchPriority: "fetchPriority" in load ? load.fetchPriority : fetchPriority };
-  if (props.bare) return <Image {...source} alt={image.alt} className={className} />;
+  if (props.bare) return <Image {...source} alt={image.alt} className={className} style={{ "--kh-ratio": cssRatio(image) } as CSSProperties} />;
   const { variant, xl, ratio, caption, reveal } = props;
   if (lcp && reveal) throw new Error("The LCP photo never fades in on scroll (D049 pick 2, architecture §11.2)");
   return (

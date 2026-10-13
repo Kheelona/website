@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { StaticImageData } from "next/image";
-import { imageRatio, imageSource, loadingFor, scaleSizes } from "./image";
+import { cssRatio, imageRatio, imageSource, loadingFor, scaleSizes } from "./image";
 
 /* The raster helpers every media primitive shares (task 2.3; ADR-010, architecture §10). */
 
@@ -27,6 +27,18 @@ describe("imageRatio (height over width)", () => {
 
   it("reads a site path's stated size", () => {
     expect(imageRatio({ src: "/a.jpg", width: 1600, height: 900, alt: "" })).toBe(0.5625);
+  });
+});
+
+/* The ratio a box takes so that next/image's renditions, whose heights are rounded to whole pixels, never change its
+   height (task 4.6): the image's own width over its height, as CSS writes it. */
+describe("cssRatio (CSS width / height)", () => {
+  it("reads a static import's own size", () => {
+    expect(cssRatio({ src: STATIC, alt: "" })).toBe("744 / 1198");
+  });
+
+  it("reads a site path's stated size", () => {
+    expect(cssRatio({ src: "/a.jpg", width: 1600, height: 900, alt: "" })).toBe("1600 / 900");
   });
 });
 

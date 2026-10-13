@@ -251,14 +251,9 @@ describe("the product page's structured data (architecture §9.2)", () => {
     expect(offers).not.toHaveProperty("priceValidUntil");
     expect(String(offers.description).match(/₹[\d,]+/)?.[0]).toBe(offer.prices.headline);
     expect(String(nodes[0].description)).not.toMatch(/₹/);
-    // The shared detector (jsonld-matches-page): every answer, price and policy number is on the page. Its FAQ check reads
-    // the page through htmlToText, which puts a space where an inline tag was, so it reads FAQ 8's marker as
-    // "skills. [1] Kheelu" where the browser and the JSON-LD both say "skills.[1] Kheelu" (the test above holds each
-    // answer equal to its visible text exactly). That is a harness defect, fixed in test/e2e/support/page-checks.ts
-    // `norm` by the main session (5.2 review, finding 1). Pinned, not filtered: any other mismatch fails here, and so
-    // does this line once the harness is fixed, when it becomes `toEqual([])`.
-    const speech = toPlainText(faqs.speech.answer, offer);
-    expect(jsonLdMismatches(html)).toEqual([`FAQ answer not visible: "${speech.slice(0, 80)}…"`]);
+    // The shared detector (jsonld-matches-page): every answer, price and policy number is on the page, FAQ 8's
+    // "skills.[1] Kheelu" included (its `norm` drops the space htmlToText puts before an inline marker; task 4.6).
+    expect(jsonLdMismatches(html)).toEqual([]);
   });
 });
 

@@ -16,6 +16,18 @@ export function imageRatio(ref: ImageRef): number {
 }
 
 /**
+ * The image's own ratio as CSS writes it, "width / height". next/image serves renditions at its own widths, each
+ * height rounded to a whole pixel (576 x 1209 at 256 px wide is 256 x 537, not 537.33), so a box whose height follows
+ * the rendition drifts from the approved page by a fraction of a pixel and moves every fold below it. An image placed
+ * at its own ratio (AppScreens' screens, Photo's bare form) carries this as the DS ratio variable `--kh-ratio`, which
+ * its CSS reads as `aspect-ratio` (task 4.6). Never on a cropped photo or an art-board layer: their frames set the ratio.
+ */
+export function cssRatio(ref: ImageRef): `${number} / ${number}` {
+  const { width, height } = "width" in ref ? ref : ref.src;
+  return `${width} / ${height}`;
+}
+
+/**
  * Loading hints. The one LCP image of a page loads eagerly at high priority; everything else is lazy. Never
  * `priority` or `preload`: Next 16 deprecates `priority` and its docs prefer these two attributes in most cases
  * (node_modules/next/dist/docs/01-app/03-api-reference/02-components/image.md, "preload" and "priority"; N12).

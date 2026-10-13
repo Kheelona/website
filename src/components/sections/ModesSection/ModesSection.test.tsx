@@ -135,6 +135,17 @@ describe("ModesSection: product (product fold 4)", () => {
     expect(img.parentElement?.tagName.toLowerCase()).not.toBe("figure");
   });
 
+  /* next/image's renditions have whole-pixel heights, so a photo whose height follows its rendition moves the folds
+     below by a fraction of a pixel against the approved page (task 4.6). The bare photo carries its import's own ratio
+     as the DS ratio variable and its class takes it as the aspect-ratio, so its box is the mockup's 389 x 397 file's. */
+  it("keeps the Good to know photo at its own ratio, whatever rendition next/image serves", () => {
+    const { container } = render(<ModesSection {...props} />);
+    expect(container.querySelector<HTMLImageElement>("img.ks-know__img")!.style.getPropertyValue("--kh-ratio")).toBe("389 / 397");
+    const rule = [...readFileSync(join(process.cwd(), "src/components/sections/ModesSection/modes-section.css"), "utf8").matchAll(/^\.ks-know__img \{([^}]*)\}/gm)];
+    expect(rule).toHaveLength(1);
+    expect(rule[0][1]).toMatch(/^\s*aspect-ratio: var\(--kh-ratio\);$/m);
+  });
+
   /* Architecture §10 (wave-3 close ruling): DS rasters reach next/image only inside the media primitives. The Good to
      know photo is Photo's bare form (task 3.6 item 18), never next/image straight from the section. */
   it("draws the Good to know photo through Photo's bare form, never next/image directly", () => {

@@ -48,6 +48,24 @@ describe("jsonld-matches-page detector", () => {
     expect(jsonLdMismatches(page(product(4999, 7, 12), visible))).toHaveLength(1);
   });
 
+  /* The page is read through htmlToText, which puts a space where every tag was, inline ones too, so a source marker
+     or a link read "skills. [1] Kheelu" and "this page ." where the browser and the JSON-LD say "skills.[1] Kheelu" and
+     "this page." (task 4.6, from the 5.2 and 5.3 reviews). A space before punctuation or a marker counts for nothing,
+     on both sides. */
+  it("is green when an inline source marker follows the punctuation it cites (no space in the JSON-LD)", () => {
+    const answer = "Serve and return support early language and social skills.[1] Kheelu doesn’t replace that time with you.";
+    const shown = '<p>Serve and return support early language and social skills.<a class="ks-src" href="#src-1" aria-label="Source 1">[1]</a> Kheelu doesn’t replace that time with you.</p>';
+    expect(jsonLdMismatches(page(faq(answer), shown))).toEqual([]);
+    expect(jsonLdMismatches(page(faq(answer.replace("[1]", "[2]")), shown)), "a different marker is still a different text").toHaveLength(1);
+  });
+
+  it("is green when an inline link ends just before a full stop", () => {
+    const answer = "The four facts are at the top of this page.";
+    const shown = '<p>The four facts are at the <a href="#facts">top of this page</a>.</p>';
+    expect(jsonLdMismatches(page(faq(answer), shown))).toEqual([]);
+    expect(jsonLdMismatches(page(faq("The four facts are at the top of that page."), shown)), "other words are still other words").toHaveLength(1);
+  });
+
   it("does not let the JSON-LD vouch for itself", () => {
     expect(jsonLdMismatches(page(faq("Only in the script."), "<p>Nothing here.</p>"))).toHaveLength(1);
   });

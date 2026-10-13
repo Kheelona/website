@@ -1,8 +1,8 @@
 import clsx from "clsx";
 import Image from "next/image";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import type { ImageRef } from "@/content/types";
-import { imageSource, loadingFor } from "@/components/ui/Photo/image";
+import { cssRatio, imageSource, loadingFor } from "@/components/ui/Photo/image";
 
 /* Real parent-app screens in the DS Device frame (task 2.3; kh-device, bundle.css:1169-1174; D044, D046).
  *
@@ -34,11 +34,13 @@ export type AppScreensProps = AppScreensBase &
     | { readonly variant: "safety"; readonly screens: readonly [ImageRef] }
   );
 
+/** One screen in its frame. The screenshot carries its own ratio (`--kh-ratio`, read as its aspect-ratio by
+ *  app-screens.css), so next/image's whole-pixel renditions never change its height and move the folds below (task 4.6). */
 function Device({ screen, sizes, compact }: { readonly screen: ImageRef; readonly sizes: string; readonly compact: boolean }) {
   return (
     <div className={clsx("kh-device", compact && "ks-shot")}>
       <div className="kh-device__screen">
-        <Image {...imageSource(screen)} alt={screen.alt} sizes={sizes} {...loadingFor(false)} />
+        <Image {...imageSource(screen)} alt={screen.alt} sizes={sizes} {...loadingFor(false)} style={{ "--kh-ratio": cssRatio(screen) } as CSSProperties} />
       </div>
     </div>
   );
