@@ -67,7 +67,7 @@ describe("team parity deviations (V7)", () => {
   /* Read from the file, every initials badge is a line of its own, the quote's (fold 4) too: this helper matches lines
      and does not count them, and the text pass excuses a line only as often as the build lacks it (the build keeps the
      quote's "AS"). */
-  it("excuses exactly the mockup's old lead, its eight placeholder lines (B24 photos, F11 backgrounds and programmes) and the initials", () => {
+  it("excuses exactly the mockup's old lead, its seven placeholder lines (three B24 photos, three F11 backgrounds, the F11 programmes) and the initials", () => {
     expect(excused("team", mockupMain("team"))).toEqual([
       "Kheelu is designed by parents in Bengaluru.",
       "AS",
