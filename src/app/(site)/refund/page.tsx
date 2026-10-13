@@ -1,103 +1,24 @@
-import { pageMeta, pageGraph, breadcrumbs, jsonLd } from "@/lib/seo";
-import { LegalDoc, type LegalSection } from "@/components/templates/LegalDoc";
-import { SELLER_SECTION } from "@/lib/legal";
-import {
-  TOKEN_PRICE,
-  CONTACT_EMAIL,
-  SUPPORT_WHATSAPP_DISPLAY,
-  SHIP_DATE_TEXT,
-} from "@/config/site";
+import { legalTemplateCopy } from "@/content/en-IN/legal/shared";
+import { refundPage } from "@/content/en-IN/legal/refund";
+import type { SitePath } from "@/content/types";
+import { LegalTemplate } from "@/layouts/LegalTemplate/LegalTemplate";
+import { getOffer } from "@/lib/offer/get-offer";
+import { pageMeta } from "@/lib/seo/metadata";
 
-export const metadata = pageMeta({
-  title: "Refunds and cancellation",
-  description:
-    "Everything you pay to pre-order Kheelu is fully refundable until your Kheelu is dispatched. How to ask for it back, and how long it takes.",
-  path: "/refund",
-});
+/* The refund page (task 5.13; structure §3.1, §5): its content module through the legal template's `notice` family
+ * (refund and shipping), with the live offer and the template's shared words. Thin: every word is the module's
+ * (src/content/en-IN/legal/refund.ts) or the template's (src/content/en-IN/legal/shared.ts). No JSON-LD beyond the
+ * shell's (architecture §9.2). */
 
-/* TODO(counsel-review): plain-language draft. This page must be reviewed by
-   counsel, and it is the page a payment dispute will be read against.
-   FOUNDER GATE: the post-dispatch returns and warranty terms are NOT written
-   yet, because nothing has shipped. The section below says so honestly rather
-   than inventing a window. It must be replaced with the real terms before the
-   first Kheelu is dispatched (FOUNDER-TODO). */
+const PATH: SitePath = "/refund";
 
-const SECTIONS: readonly LegalSection[] = [
-  {
-    h: "The short version",
-    ps: [
-      /* One promise, both order shapes (§8.26): the ₹499 token while the
-         capped units last, or the whole price for a full-payment pre-order.
-         Founder-confirmed 2026-08-23: the same promise covers every rupee. */
-      `Everything you have paid to pre-order is fully refundable at any time before your Kheelu is dispatched: the ${TOKEN_PRICE} token, or the whole price if you paid in full. Ask us and you get it back. There is no fee, no deduction, and no reason you have to give.`,
-    ],
-  },
-  {
-    h: "How to ask",
-    ps: [
-      `Message us on WhatsApp at ${SUPPORT_WHATSAPP_DISPLAY}, or write to ${CONTACT_EMAIL}, with the order number from your confirmation email.`,
-      "We refund to the same card, UPI ID, or account you paid from, because that is the only place a payment can be reversed to. It usually reaches you in 5 to 7 working days once we start it, and that last part is your bank's timing rather than ours.",
-    ],
-  },
-  {
-    h: "If you decide not to pay the balance",
-    ps: [
-      /* The honest version of a dunning policy: a parent who goes quiet has
-         cancelled, and pretending otherwise would let us sit on their money.
-         Token pre-orders only, by definition: a full-payment order has no
-         balance to go quiet on. */
-      "This applies to token pre-orders, where a balance is still due. Not paying it is a cancellation, and it is treated exactly like one: we will ask you twice over two weeks, and if we do not hear from you we release the unit and refund your token. Nothing is charged automatically, ever.",
-    ],
-  },
-  {
-    h: "If we cannot deliver",
-    ps: [
-      `If we cannot supply your Kheelu, for any reason, you get back everything you have paid us. Not a credit, not a voucher, the money. If the ship date moves from ${SHIP_DATE_TEXT} you hear it from us first, and you can cancel for a full refund at that point even if you were happy to wait before.`,
-    ],
-  },
-  {
-    h: "After your Kheelu is dispatched",
-    ps: [
-      /* Status-honest, in the pattern the safety page already uses for
-         certification: say what does not exist yet rather than implying it
-         does. Inventing a returns window here would be the exact kind of
-         claim this site refuses to make. */
-      "Once your Kheelu is on its way to you, the pre-order is complete and delivery, returns, and warranty terms take over. Those are not written yet, because nothing has shipped yet. We will publish them on this page and send them to you before your Kheelu is dispatched, so you will have read them before they apply to you.",
-      "A damaged or faulty Kheelu is our problem to fix, whatever those terms end up saying. Message us and we will make it right.",
-    ],
-  },
-  {
-    h: "What we never do",
-    ps: [
-      "We never keep part of your money as a cancellation charge. We never make you call a number to cancel something you did in two taps. We never move the goalposts on a refund we have already promised you.",
-    ],
-  },
-  SELLER_SECTION,
-];
+/* Part 1 names the advance and the balance, so the page follows the live mode (ADR-005; OFFER_REVALIDATE_SECONDS,
+ * written as a literal because Next reads it statically). */
+export const revalidate = 300;
 
-export default function RefundPage() {
-  return (
-    <>
-      {/* BreadcrumbList (SEO round A5, 2026-09-05): the four policy pages were the
-          only routes without one. Same shape as every other page; LegalDoc itself
-          stays schema-free because it is a template, not a page. */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: jsonLd(pageGraph(breadcrumbs([{ name: "Refunds and cancellation", path: "/refund" }]))),
-        }}
-      />
-      <LegalDoc
-        title="Refunds, in plain words."
-        lede="You can change your mind. This page explains exactly how, and what happens to your money."
-        sections={SECTIONS}
-        guide="curious"
-        /* Founder-approved 2026-08-22, with the contraction: Kheelu's quoted
-           speech is the ONE sanctioned contraction zone on this site (his
-           published card voice), and the de-contracted draft read stiffer than
-           he does anywhere else. 33 characters. */
-        say="Changed your mind? That's allowed."
-      />
-    </>
-  );
+/* The title and description name no amount, so they read the same in both modes (pageMeta needs no offer). */
+export const metadata = pageMeta({ ...refundPage.meta, path: PATH });
+
+export default async function RefundPage() {
+  return <LegalTemplate doc={refundPage} variant="notice" copy={legalTemplateCopy} offer={await getOffer()} />;
 }
