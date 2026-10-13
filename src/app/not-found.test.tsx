@@ -1,9 +1,11 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { join, relative, sep } from "node:path";
+import vm from "node:vm";
 import { render, screen } from "@testing-library/react";
 import ts from "typescript";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { buildOffer } from "@/lib/offer/offer";
+import { freshBuiltPages } from "../../test/e2e/support/page-checks";
 import { ROOT } from "../../test/e2e/support/repo";
 import { isStillLegacy } from "../../test/guards/legacy-paths";
 import { mockupDiff, mockupPage } from "../../test/support/mockup-compare";
@@ -155,3 +157,65 @@ describe("not-found: the route file", () => {
     expect(source).not.toMatch(/We can|Page not found|Looking for/);
   });
 });
+
+/** A route's client reference manifest, as perf-budget.spec.ts reads it from the local build: the client modules it can
+ *  load (keyed `[project]/<path>`) and the chunks of each entry of its tree (layouts, the not-found boundary, the page). */
+type ClientManifest = {
+  clientModules?: Record<string, unknown>;
+  entryJSFiles?: Record<string, string[]>;
+};
+const NOT_FOUND_ENTRY = "[project]/src/app/not-found";
+
+function clientManifests(): Map<string, ClientManifest> {
+  const app = join(ROOT, ".next", "server", "app");
+  const out = new Map<string, ClientManifest>();
+  for (const rel of readdirSync(app, { recursive: true, encoding: "utf8" }).filter((f) => f.endsWith("_client-reference-manifest.js"))) {
+    const sandbox = vm.createContext({});
+    vm.runInContext(readFileSync(join(app, rel), "utf8"), sandbox);
+    for (const [route, manifest] of Object.entries((sandbox as { __RSC_MANIFEST?: Record<string, ClientManifest> }).__RSC_MANIFEST ?? {})) {
+      out.set(route, manifest);
+    }
+  }
+  return out;
+}
+
+const built = freshBuiltPages();
+
+describe.skipIf(built === null)("not-found: the last build (when newer than src/)", () => {
+  /* The acceptance of task 5.10 on the build itself. Every route's tree holds the root not-found boundary, so its
+     manifest lists the not-found entry's chunks: before this task they carried the legacy page's client modules
+     (atoms/Button, organisms/Navbar, molecules/RevealObserver, organisms/KheeluGuide; four chunks, 35.2 KB transferred
+     on /stories/screen-time-and-tantrums). The not-found route's own manifest holds only the root layout's and the
+     not-found's client modules, so it shows what those chunks carry; every (site) route lists the same chunks. */
+  it("maps no legacy client module into the not-found's chunks, and every (site) route lists those chunks only", () => {
+    const manifests = clientManifests();
+    const own = manifests.get("/_not-found/page");
+    expect(own, "the build has the not-found route's client reference manifest").toBeDefined();
+    const modules = Object.keys(own!.clientModules ?? {}).map((key) => key.replace(/^\[project\]\//, "").replace(/ <[^>]*>$/, ""));
+    expect(modules.filter(isStillLegacy)).toEqual([]);
+    /* Guard the guard: the manifest names src/ modules (the root layout's tracking gates among them). */
+    expect(modules).toContain("src/components/tracking/PostHogGate.tsx");
+    const chunks = own!.entryJSFiles?.[NOT_FOUND_ENTRY];
+    expect(chunks?.length).toBeGreaterThan(0);
+    const site = [...manifests].filter(([route]) => route.startsWith("/(site)/"));
+    expect(site.length, "the build has (site) routes").toBeGreaterThan(0);
+    for (const [route, manifest] of site) expect(manifest.entryJSFiles?.[NOT_FOUND_ENTRY], route).toEqual(chunks);
+  });
+
+  /* What every unmatched URL is served: the prerendered not-found, rendered on the server (the page's own h1 in the
+     HTML), answering 404, marked noindex by Next, with the copy page's title and description and no canonical. */
+  it("prerenders the page as a 404, noindex, with its title, description and h1, and no canonical", () => {
+    const app = join(ROOT, ".next", "server", "app");
+    const status = (JSON.parse(readFileSync(join(app, "_not-found.meta"), "utf8")) as { status?: number }).status;
+    const html = readFileSync(join(app, "_not-found.html"), "utf8");
+    const head = html.slice(0, html.indexOf("</head>"));
+    expect(status).toBe(404);
+    expect(head).toMatch(/<meta name="robots" content="noindex"\/>/);
+    expect(head).toContain("<title>Page not found · Kheelona</title>");
+    expect(head).toContain(`<meta name="description" content="${metadata.description as string}"/>`);
+    expect(head).not.toMatch(/rel="canonical"/);
+    expect(html).toMatch(/<h1 class="kh-heading__title" id="nf-title">We can’t find that page\.<\/h1>/);
+  });
+});
+
+if (built === null) console.log("[not-found] no build newer than src/: the client-reference manifest check runs after `npm run build`.");
