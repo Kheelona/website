@@ -183,7 +183,7 @@ limits only as they bear on a tutoring app, under a heading about tutoring apps,
 >
 > A tutoring app on a phone or tablet is screen time.
 >
-> For three and four year olds, the Indian Academy of Pediatrics says no more than an hour of screen time a day, in sessions of no more than 20 to 30 minutes, always supervised by a caregiver.² The World Health Organization's limit for watching screens at this age is the same hour, and it adds that less is better.³
+> For three and four year olds, the Indian Academy of Pediatrics says no more than an hour of screen time a day, for no more than 20 to 30 minutes at a time, always supervised by a caregiver.² The World Health Organization's limit for watching screens at this age is the same hour, and it adds that less is better.³
 >
 > That hour covers every screen in the day, so a tutoring app shares it with everything else. From five to ten, the IAP's limit is under two hours a day, and it counts screen time for schoolwork too.²
 >
@@ -192,6 +192,9 @@ limits only as they bear on a tutoring app, under a heading about tutoring apps,
 - The IAP lines are C32's verified wording (excerpt `C32-iap-2022-screen-time-digital-wellness.md:44-49, 53-56`): the
   24 to 59 month band covers "three and four year olds"; the 5 to 10 band counts "time spent on screen at home to
   complete educational and extra-curricular assignments", which is why it matters on a tutoring page.
+- "For no more than 20 to 30 minutes at a time" replaced "in sessions of no more than 20 to 30 minutes" after
+  approval, for the content-integrity rule on analytics words; same limit, for the founder at Gate B
+  ([CMO review](../../qa/cmo-review-articles-5.19-2026-10-14.md#after-approval-two-wording-changes-for-the-founder-at-gate-b-d015)).
 - The WHO's limit is for **sedentary** screen time, "passively watching screen-based entertainment" (excerpt
   `C31-who-2019-guidelines-under-5.md:39-44, 54-56`), so the copy says "for watching screens" and puts the IAP, whose
   limit covers every screen, first. Nothing calls the evidence strong: the WHO grades it "very low quality".

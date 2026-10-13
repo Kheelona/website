@@ -185,6 +185,14 @@ const columnStrings = (a: Article): string[] => [...answerStrings(a), ...strings
 /** The answer and each part, as plain text: the units D016 keeps apart. */
 const units = (a: Article): string[][] => [answerStrings(a), ...a.body.map(strings)].map((u) => u.map((s) => toPlainText(s)));
 
+/** A rule of the content-integrity spec (test/e2e/content-integrity.spec.ts, SPA 7), read from the spec itself so the
+ *  two never drift apart; the spec runs only in the browser suite, this catches its finds at the unit level. */
+function integrityRule(name: string): RegExp {
+  const m = new RegExp(`^const ${name} = /(.+)/([a-z]*);$`, "m").exec(readRepoFile("test/e2e/content-integrity.spec.ts"));
+  if (!m) throw new Error(`content-integrity.spec.ts has no "${name}" rule`);
+  return new RegExp(m[1], m[2]);
+}
+
 const nodesOf = (s: string): RichNode[] => {
   const all = (list: readonly RichNode[]): RichNode[] => list.flatMap((n) => [n, ...("children" in n ? all(n.children) : [])]);
   try {
@@ -284,6 +292,12 @@ describe.each(SLUGS)("the rewritten article %s (task 5.19)", (slug) => {
   it("stores the rewrite's date as its last edit, after the live article's (architecture §6.1)", () => {
     expect(article(slug).updated).toBe(REWRITE_DATE);
     expect(article(slug).updated > LIVE_UPDATED[slug]).toBe(true);
+  });
+
+  it("never implies a child under three nor uses an analytics word, by content-integrity's own rules (SPA 7)", () => {
+    const a = article(slug);
+    const text = `${toPlainText(a.meta.title)}\n${toPlainText(a.meta.description)}\n${words(rendered(slug).container)}`;
+    for (const rule of ["UNDER_THREE", "ANALYTICS"]) expect(integrityRule(rule).exec(text)?.[0], rule).toBeUndefined();
   });
 
   it("never puts a brain line in the same answer or part as Kheelu (D016)", () => {

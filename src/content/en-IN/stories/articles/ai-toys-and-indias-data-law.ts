@@ -100,7 +100,7 @@ export const article = {
       blocks: [
         {
           kind: "p",
-          text: "Not yet. The Act was published in August 2023, and the government is bringing it into force in stages.[^1][^2] Under its notification of November 2025, section 9 is due to come into force 18 months later, in May 2027.[^2] The rule on a parent’s consent follows the same 18-month timetable.[^3]",
+          text: "Not yet. The Act was published in August 2023, and the government is bringing it into force in stages.[^1][^2] Under its notification of November 2025, section 9 is due to come into force a year and a half later, in May 2027.[^2] The rule on a parent’s consent follows the same 18-month timetable.[^3]",
         },
         { kind: "p", text: "Until then, the questions below are yours to ask, of any company." },
       ],

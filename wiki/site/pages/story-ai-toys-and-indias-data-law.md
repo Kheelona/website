@@ -198,7 +198,7 @@ cite them).
 
 > **H2:** When does it start?
 >
-> Not yet. The Act was published in August 2023, and the government is bringing it into force in stages.¹ ² Under its notification of November 2025, section 9 is due to come into force 18 months later, in May 2027.² The rule on a parent's consent follows the same 18-month timetable.³
+> Not yet. The Act was published in August 2023, and the government is bringing it into force in stages.¹ ² Under its notification of November 2025, section 9 is due to come into force a year and a half later, in May 2027.² The rule on a parent's consent follows the same 18-month timetable.³
 >
 > Until then, the questions below are yours to ask, of any company.
 
@@ -206,6 +206,8 @@ cite them).
   2025, clause (c) (sections 7 to 10 eighteen months from publication); rules 1(4) and 10 of the DPDP Rules, 2025
   (eighteen months). "May 2027" is the excerpt's own arithmetic; the notification gives the rule, not the day, so
   the page names the month only.
+- "A year and a half later" replaced "18 months later" after approval, for the content-integrity rule on ages under
+  three; same fact, for the founder at Gate B ([CMO review](../../qa/cmo-review-articles-5.19-2026-10-14.md#after-approval-two-wording-changes-for-the-founder-at-gate-b-d015)).
 
 ---
 

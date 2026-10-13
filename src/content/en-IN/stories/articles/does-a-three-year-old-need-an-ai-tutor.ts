@@ -80,7 +80,7 @@ export const article = {
         { kind: "p", text: "A tutoring app on a phone or tablet is screen time." },
         {
           kind: "p",
-          text: "For three and four year olds, the Indian Academy of Pediatrics says no more than an hour of screen time a day, in sessions of no more than 20 to 30 minutes, always supervised by a caregiver.[^2] The World Health Organization’s limit for watching screens at this age is the same hour, and it adds that less is better.[^3]",
+          text: "For three and four year olds, the Indian Academy of Pediatrics says no more than an hour of screen time a day, for no more than 20 to 30 minutes at a time, always supervised by a caregiver.[^2] The World Health Organization’s limit for watching screens at this age is the same hour, and it adds that less is better.[^3]",
         },
         {
           kind: "p",

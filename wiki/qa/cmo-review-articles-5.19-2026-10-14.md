@@ -381,3 +381,20 @@ and two items for the main session (M13, R2-3) do not stop the build.
 Screenshots at 360, 390, 412, 1366 and 1440 px, motion, Lighthouse and ad-landing readiness come at the
 task 5.19 build checkpoint. That is also when the `tara-03` crop and the `advik-04` 16:9 head are checked as
 rendered.
+
+### After approval: two wording changes for the founder at Gate B (D015)
+
+Made by the builder in the review fix of task 5.19, after round 2 approved the copy; not re-reviewed by the CMO.
+The content-integrity spec (SPA 7, `test/e2e/content-integrity.spec.ts:34, 38`, calibrated on the approved mockups)
+reads "18 months" as a sign of a child under three and "sessions" as an analytics word. Both readings were wrong in
+meaning here, but a wave-5 task never weakens a guard it does not own, so the words changed and the rule did not. The
+facts, their sources and their markers are unchanged:
+
+- **Data law, fold 7** (`story-ai-toys-and-indias-data-law.md:201`): "due to come into force 18 months later, in May
+  2027" now reads "due to come into force a year and a half later, in May 2027" (C20, G.S.R. 843(E)). "The same
+  18-month timetable" stays: the rule does not match it.
+- **AI tutor, fold 4** (`story-does-a-three-year-old-need-an-ai-tutor.md:186`): "in sessions of no more than 20 to 30
+  minutes" now reads "for no more than 20 to 30 minutes at a time" (C32, the IAP's limit as before).
+
+Read times stay at 3 minutes (three words and one word added). The founder signs off both lines with the rest of the
+copy at Gate B ([D015](../decisions/D015-founder-signs-off-copy.md)).
