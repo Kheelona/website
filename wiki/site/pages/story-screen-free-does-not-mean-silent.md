@@ -4,6 +4,7 @@ type: page-copy
 updated: 2026-10-14
 cites_at: archive/pre-reset-2026-10-10
 sources:
+  - ../../engineering/tasks.md (task 6.5, its 5.20a follow-up: the H1's colon moves into the accent)
   - ../strategy.md (§3.3 one in-text product link, §5 /stories/* row)
   - ../../engineering/tasks.md (wave 5 part C paragraph; task 5.17 row; the note on the 18 articles without a mockup)
   - ../pages/story-learning-toys-for-a-three-year-old.md (approved format, the "wait, not perform" rule, the age lines, the close)
@@ -93,7 +94,10 @@ line inside the story-box fold, with the age limits; the live byline names a per
 >
 > The Kheelona team · First published 28 Jul 2026 · 3 min read
 
-- **H1 accent:** `Hand` on "does not mean silent" (`Screen-free {hand:does not mean silent}: …`).
+- **H1 accent:** `Hand` on "does not mean silent:" (`Screen-free {hand:does not mean silent:} …`). The colon sits
+  inside the accent (task 6.5, the 5.20a follow-up): the DS `.kh-hand` is inline-block, so a colon outside it could
+  wrap to the start of the next line on a phone. Only the colon moved into the accent; the H1's words and the accented
+  words are unchanged.
 - **H1:** the hub card's title word for word, then the primary (the gentle-way page, question 2, covers the pattern).
 - **Lead:** the hub card's summary, word for word, extended by one clause, as the learning-toys guide extends its own.
 - Breadcrumb links: "Stories" → `/stories`; "Screen time" → `/stories#screen-time`.

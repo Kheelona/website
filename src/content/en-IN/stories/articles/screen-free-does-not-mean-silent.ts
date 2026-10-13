@@ -28,7 +28,9 @@ export const article = {
   published: "2026-07-28",
   updated: "2026-10-13",
   head: {
-    title: "Screen-free {hand:does not mean silent}: a guide to screen-free toys",
+    /* The colon inside the accent: the DS `.kh-hand` is inline-block, so one outside it can open the next line
+       (task 6.5, the 5.20a follow-up; the copy page's H1 accent note). */
+    title: "Screen-free {hand:does not mean silent:} a guide to screen-free toys",
     lead: "What a childhood full of talk looks like, without a single screen, and how to choose screen-free toys that add to it.",
     author: TEAM_BYLINE,
     readMinutes: 3,
