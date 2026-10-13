@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 import { safetyPage } from "@/content/en-IN/pages/safety";
 import type { Offer } from "@/content/types";
 import { toPlainText } from "@/lib/content/plain-text";
@@ -18,6 +18,12 @@ import { words } from "../../../../test/support/mockup-compare";
 
 const getOffer = vi.hoisted(() => vi.fn());
 vi.mock("@/lib/offer/get-offer", () => ({ getOffer }));
+
+/* The first import of the route compiles the page template and every section under it: load it once, under its own
+ * time limit, so a busy machine cannot time out whichever test happens to import it first. */
+beforeAll(async () => {
+  await import("./page");
+}, 60_000);
 
 const SOURCE = readFileSync("src/app/(site)/safety/page.tsx", "utf8");
 const code = SOURCE.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
@@ -130,6 +136,29 @@ describe("/safety: the rendered page against the approved mockup", () => {
       return words(copy);
     };
     expect(others(full.main)).toBe(others(token.main));
+  });
+
+  /* Wave-2 close: the /safety FeatureSplit shows its one privacy screen through AppScreens variant="safety" (the plain
+   * DS frame, 272 px then 300 from 900 px; safety.html:87-93), never Home's or the product page's rows of shots. */
+  it("shows the parent controls' one privacy screen as AppScreens `safety`: the plain DS phone, no rows of shots", async () => {
+    const { main } = await renderPage(buildOffer("token"));
+    const fold = main.querySelector('section[aria-labelledby="controls-title"]')!;
+    const shots = fold.querySelectorAll("figure.ks-shots");
+    expect(shots).toHaveLength(1);
+    expect([...shots[0].classList]).toEqual(expect.arrayContaining(["ks-shots", "ks-shots--safety"]));
+    expect(shots[0].querySelectorAll(".ks-shots__row, .ks-shot")).toHaveLength(0);
+    const screens = shots[0].querySelectorAll(".kh-device img");
+    expect(screens).toHaveLength(1);
+    expect(screens[0].getAttribute("sizes")).toBe("(min-width: 900px) 300px, 272px");
+  });
+
+  /* The phone buy bar hides only while a #hero-cta is on screen (StickyBuyBar.client.tsx), and this page has none, so the
+   * bar shows from first paint, as the mockup's meta (`buybar: true`) and the copy page ask (SPA 6). */
+  it("gives the phone bar no hero button to wait for, so it shows from first paint (mockup meta buybar: true)", async () => {
+    const { main } = await renderPage(buildOffer("token"));
+    expect(mockupDoc.querySelector("#hero-cta")).toBeNull();
+    expect(main.querySelector("#hero-cta")).toBeNull();
+    expect(main.querySelector('section[aria-labelledby="hero-title"] .kh-btn--cta')).toBeNull();
   });
 
   it("has one chilli button, the close's, tracked `finale`, and no other tracked link", async () => {
