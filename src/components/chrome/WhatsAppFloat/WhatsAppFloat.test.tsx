@@ -1,18 +1,27 @@
 import { readFileSync } from "node:fs";
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ICON_WHATSAPP_LOGO } from "@/assets/icons.generated";
+import { AddressStep } from "@/components/sections/store/AddressStep/AddressStep";
+import { OfferCard } from "@/components/ui/OfferCard/OfferCard";
+import { PriceSentence } from "@/components/ui/PriceSentence/PriceSentence";
 import { seller } from "@/content/en-IN/seller";
+import { confirmation } from "@/content/en-IN/store/confirmation";
 import { storePage } from "@/content/en-IN/store/store-page";
 import type { SupportChat } from "@/content/types";
+import { buildOffer } from "@/lib/offer/offer";
 import { STEP_ASIDE_FROM, WhatsAppFloat, whatsAppChatUrl } from "./WhatsAppFloat";
 import { bandMargin, isFieldIn, LAPTOP_QUERY } from "./WhatsAppFloat.client";
 
+/** The page the bubble's link lives on: the site's bubble sits in a layout and re-arms on every page change. */
+const nav = vi.hoisted(() => ({ pathname: "/" }));
+vi.mock("next/navigation", () => ({ usePathname: () => nav.pathname }));
+
 /* WhatsAppFloat (task 3.1; D050, architecture §5.3, §11.2 row D050, §11.3). A real link to WhatsApp with the
  * context's pre-filled text, in the DS icon-button look with WhatsApp green (G-20). Its lift above the buy bar,
- * its hiding under an open dialog and its laptop label are CSS (whatsapp-float.css and motion.css), so it renders
- * on the server with no client part. */
+ * its hiding under an open dialog and its laptop label are CSS (whatsapp-float.css and motion.css); its one client part
+ * steps it aside on a phone (tasks 4.7 and 4.9, below), the server's markup until it arms. */
 
 /** The support line's click-to-chat link and the chat's words, as content/en-IN/seller.ts gives them (fixture copy;
  *  the shell passes `seller.support.whatsapp`, which is config's SUPPORT_WHATSAPP_HREF, and `seller.chat`). A number
@@ -121,8 +130,8 @@ describe("WhatsAppFloat", () => {
 /* Task 4.7 item 3 (D050: the bubble never covers a store form field on a phone). Below 900 px the bubble steps aside
  * while a field of the store's form section (#details) has focus or the section crosses the bubble's band, as it
  * already rises for the buy bar: the link takes `.is-hidden` (motion.css slides it off to the right and fades it) and
- * `inert` (an off-screen link is never focused). The store context only: no other page holds a form, so every other
- * page keeps the plain server link. */
+ * `inert` (an off-screen link is never focused). Each context steps aside from its own regions only (task 4.9 adds the
+ * site's prices and the /thanks address step, below). */
 describe("WhatsAppFloat: steps aside from the store's form on a phone (task 4.7)", () => {
   /** IntersectionObserver under test control: each instance, its options, what it watches, and a way to report. */
   class FakeIO {
@@ -170,7 +179,11 @@ describe("WhatsAppFloat: steps aside from the store's form on a phone (task 4.7)
     }));
   });
   afterEach(() => {
+    // Unmount first, so no bubble is armed (and re-measuring) when the globals it uses are restored.
+    cleanup();
+    delete document.documentElement.dataset.buybar;
     vi.unstubAllGlobals();
+    vi.restoreAllMocks();
     document.body.innerHTML = "";
   });
 
@@ -185,7 +198,7 @@ describe("WhatsAppFloat: steps aside from the store's form on a phone (task 4.7)
   const aside = (link: HTMLElement) => [link.classList.contains("is-hidden"), link.hasAttribute("inert")];
 
   it("steps aside from the store's details section, the one the store page renders its form in (store-page.ts)", () => {
-    expect(STEP_ASIDE_FROM).toEqual({ store: storePage.details.id });
+    expect(STEP_ASIDE_FROM.store).toBe(`#${storePage.details.id}`);
     expect(storePage.details.id).toBe("details");
   });
 
@@ -287,13 +300,14 @@ describe("WhatsAppFloat: steps aside from the store's form on a phone (task 4.7)
     expect(aside(screen.getByRole("link"))).toEqual([false, false]);
   });
 
-  it("is the plain server link everywhere else: no observer, no step aside, even beside a #details", () => {
+  it("steps aside from its own context's regions only: never from the store's #details on the site or on /thanks", () => {
     for (const context of ["site", "thanks"] as const) {
       const { link, field, unmount } = storePageWith(context);
-      expect(FakeIO.all, context).toHaveLength(0);
+      expect([...FakeIO.all.flatMap((o) => [...o.watched])].map((el) => el.id), context).not.toContain("details");
       fireEvent.focusIn(field("name"));
       expect(aside(link), context).toEqual([false, false]);
       unmount();
+      FakeIO.all = [];
     }
   });
 
@@ -311,6 +325,156 @@ describe("WhatsAppFloat: steps aside from the store's form on a phone (task 4.7)
     expect(["name", "state", "address", "tier", "pay", "elsewhere"].map((id) => isFieldIn(details, field(id)))).toEqual([true, true, true, false, false, false]);
     expect(isFieldIn(details, null)).toBe(false);
     expect(isFieldIn(details, window)).toBe(false);
+  });
+
+  /* Task 4.9 items 1 and 2 (D050: it never covers the price). On the marketing pages the bubble steps aside from the
+     prices: the price sentences (PriceSentence `beside`, `ks-price`) and the offer card's prices, split and fine print;
+     on the paid /thanks from the address step (AddressStep, `#address`), its fields' focus included. The band follows
+     the bubble: re-measured when the bar lifts or drops it (html[data-buybar]) and when its own move ends. */
+  describe("the site's prices and the /thanks address step (task 4.9)", () => {
+    const TOKEN = buildOffer("token");
+
+    it("names each context's regions: the site's prices, the store's #details, the /thanks address step", () => {
+      expect(STEP_ASIDE_FROM).toEqual({
+        site: ".ks-price, .kh-offer__prices, .kh-offer__split, .kh-offer__fine",
+        store: "#details",
+        thanks: "#address",
+      });
+    });
+
+    it("the site's selector matches every price the components print: the sentence beside a button and the offer card's", () => {
+      const { container } = render(
+        <>
+          <PriceSentence offer={TOKEN} />
+          <OfferCard offer={TOKEN} perks={[]} action={null} />
+        </>,
+      );
+      const prices = [...container.querySelectorAll(STEP_ASIDE_FROM.site)];
+      expect(prices.map((el) => el.className)).toEqual(["kh-body-s ks-price", "kh-offer__prices", "kh-offer__split", "kh-offer__fine"]);
+      for (const el of prices) expect(el.textContent, el.className).toMatch(/₹/);
+    });
+
+    it("the /thanks selector is the address step's own section, the one that holds the form", () => {
+      const { container } = render(
+        <AddressStep copy={confirmation.address.empty}>
+          <form>
+            <input name="line1" />
+          </form>
+        </AddressStep>,
+      );
+      expect(container.querySelector(STEP_ASIDE_FROM.thanks)).toBe(container.querySelector("section"));
+    });
+
+    /** A marketing page as it reaches the bubble: two prices, then the bubble last (SiteShell renders it after main). */
+    function sitePage(prices = ["hero", "close"]) {
+      document.body.innerHTML = `<main>${prices.map((id) => `<p class="kh-body-s ks-price" id="${id}">₹499 today</p>`).join("")}</main>`;
+      const view = render(<WhatsAppFloat href={HREF} chat={CHAT} context="site" />, { container: document.body.appendChild(document.createElement("div")) });
+      return { ...view, link: screen.getByRole("link", { name: CHAT.label }), price: (id: string) => document.getElementById(id)! };
+    }
+
+    it("watches every price through its band, and steps aside while any of them crosses it", () => {
+      const { link, price } = sitePage();
+      expect([...io().watched]).toEqual([price("hero"), price("close")]);
+      io().report(price("hero"), true);
+      expect(aside(link)).toEqual([true, true]);
+      io().report(price("close"), true);
+      io().report(price("hero"), false);
+      expect(aside(link), "the close's price still in the band").toEqual([true, true]);
+      io().report(price("close"), false);
+      expect(aside(link)).toEqual([false, false]);
+    });
+
+    it("re-measures its band when the bar lifts or drops it (html[data-buybar]), and reads the page's prices again", async () => {
+      const rect = vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(function (this: HTMLElement) {
+        return (this.classList.contains("ks-wa") ? { top: 568, bottom: 624, left: 288, right: 344, width: 56, height: 56 } : new DOMRect()) as DOMRect;
+      });
+      vi.stubGlobal("innerHeight", 640);
+      const { link, price } = sitePage();
+      const resting = io();
+      expect(resting.options.rootMargin).toBe("-568px 0px -16px 0px");
+      // The bar shows and lifts the bubble by its height: the band follows it up.
+      rect.mockImplementation(function (this: HTMLElement) {
+        return (this.classList.contains("ks-wa") ? { top: 488, bottom: 544, left: 288, right: 344, width: 56, height: 56 } : new DOMRect()) as DOMRect;
+      });
+      const late = document.createElement("p");
+      late.className = "ks-price";
+      document.querySelector("main")!.append(late);
+      await act(async () => void (document.documentElement.dataset.buybar = "shown"));
+      expect(resting.disconnected).toBe(true);
+      expect(io().options.rootMargin).toBe("-488px 0px -96px 0px");
+      expect([...io().watched]).toEqual([price("hero"), price("close"), late]);
+      // The new observer's first report decides: the late price sits in the lifted band.
+      io().report(late, true);
+      expect(aside(link)).toEqual([true, true]);
+      await act(async () => void delete document.documentElement.dataset.buybar);
+      expect(io().options.rootMargin).toBe("-488px 0px -96px 0px");
+    });
+
+    it("re-measures its band when its own move ends (the lift's transition), and not when its label's does", () => {
+      sitePage();
+      const before = io();
+      const moved = (target: Element, propertyName: string) =>
+        act(() => void target.dispatchEvent(Object.assign(new Event("transitionend", { bubbles: true }), { propertyName })));
+      moved(document.querySelector(".ks-wa__label")!, "transform");
+      moved(document.querySelector(".ks-wa")!, "opacity");
+      expect(io()).toBe(before);
+      moved(document.querySelector(".ks-wa")!, "transform");
+      expect(before.disconnected).toBe(true);
+      expect(io()).not.toBe(before);
+    });
+
+    it("forgets a price that left the page when it re-reads them, so it never stays aside for nothing", async () => {
+      const { link, price } = sitePage();
+      io().report(price("hero"), true);
+      expect(aside(link)).toEqual([true, true]);
+      price("hero").remove();
+      await act(async () => void (document.documentElement.dataset.buybar = "hidden"));
+      expect([...io().watched]).toEqual([price("close")]);
+      io().report(price("close"), false);
+      expect(aside(link)).toEqual([false, false]);
+    });
+
+    it("re-arms on every page change: the layout's bubble watches the new page's prices", () => {
+      nav.pathname = "/";
+      const { rerender, link } = sitePage(["home-price"]);
+      const home = io();
+      document.querySelector("main")!.innerHTML = '<p class="ks-price" id="product-price">₹4,999</p>';
+      nav.pathname = "/products/kheelu";
+      rerender(<WhatsAppFloat href={HREF} chat={CHAT} context="site" />);
+      expect(home.disconnected).toBe(true);
+      expect([...io().watched].map((el) => el.id)).toEqual(["product-price"]);
+      expect(aside(link)).toEqual([false, false]);
+      nav.pathname = "/";
+    });
+
+    it("keeps its place where the browser cannot tell the width or watch the band, as without JavaScript", () => {
+      for (const missing of ["matchMedia", "IntersectionObserver"] as const) {
+        vi.stubGlobal(missing, undefined);
+        const { link, price, unmount } = sitePage();
+        expect(FakeIO.all, missing).toHaveLength(0);
+        fireEvent.focusIn(price("hero"));
+        expect(aside(link), missing).toEqual([false, false]);
+        unmount();
+        vi.unstubAllGlobals();
+        vi.stubGlobal("IntersectionObserver", FakeIO);
+        vi.stubGlobal("matchMedia", (query: string) => ({ matches: false, media: query, addEventListener: () => {}, removeEventListener: () => {} }));
+      }
+    });
+
+    it("on /thanks steps aside while a field of the address step has focus or the step crosses its band", () => {
+      document.body.innerHTML = '<main><section id="address"><form><input id="line1"><button type="submit" id="save">Save</button></form></section></main>';
+      render(<WhatsAppFloat href={HREF} chat={CHAT} context="thanks" />, { container: document.body.appendChild(document.createElement("div")) });
+      const link = screen.getByRole("link", { name: CHAT.label });
+      expect(link).toHaveClass("ph-no-capture");
+      const step = document.getElementById("address")!;
+      expect([...io().watched]).toEqual([step]);
+      fireEvent.focusIn(document.getElementById("line1")!);
+      expect(aside(link)).toEqual([true, true]);
+      fireEvent.focusOut(document.getElementById("line1")!, { relatedTarget: null });
+      expect(aside(link)).toEqual([false, false]);
+      io().report(step, true);
+      expect(aside(link)).toEqual([true, true]);
+    });
   });
 });
 
@@ -354,6 +518,16 @@ describe("whatsapp-float.css", () => {
     expect(rule(".ks-wa.is-hidden", motion)).toBe("opacity: 0; transform: translateX(calc(100% + var(--space-4) + env(safe-area-inset-right)));");
     expect(rule(".ks-wa", motion)).toBe("transition: transform var(--duration-base) var(--ease-standard), opacity var(--duration-base) var(--ease-standard);");
     expect(CSS).not.toContain("is-hidden");
+  });
+
+  /* Task 4.9: lifted by the bar and aside, it leaves off the right edge at its lifted height (the lift's rule alone would
+     win over .is-hidden and keep it on screen at opacity 0), so its band stays where it was lifted to and it never drops
+     back over the price it left. */
+  it("lifted by the bar and aside, it slides off the right edge at its lifted height (motion.css)", () => {
+    const motion = readFileSync("src/motion/motion.css", "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+    expect(rule('html[data-buybar="shown"] .ks-wa.is-hidden', motion)).toBe(
+      "transform: translate(calc(100% + var(--space-4) + env(safe-area-inset-right)), calc((var(--ks-buybar-h, 0px) - env(safe-area-inset-bottom)) * -1));",
+    );
   });
 
   it("adds no transition of its own: the lift and the label move only through motion.css", () => {

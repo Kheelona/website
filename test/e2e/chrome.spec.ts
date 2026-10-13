@@ -2,7 +2,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import type { BrowserContext, Page, TestInfo } from "@playwright/test";
 import { expect, hideForParity, motionStarted, requiresServer, test, type OpenOptions } from "./support/fixtures";
-import { ORIGINS, REAL_ORIGINS, TARGET } from "./support/env";
+import { ORIGINS, REAL_ORIGINS, STORYBOOK_PORT, TARGET } from "./support/env";
 import { CHUNK_MAX_DIFF_RATIO } from "./support/parity";
 import { builtUrl } from "./support/routes";
 import { APPROVED_WIDTHS, VIEWPORTS, type Viewport } from "./support/viewports";
@@ -32,7 +32,8 @@ import { APPROVED_WIDTHS, VIEWPORTS, type Viewport } from "./support/viewports";
  *     on the first screen or at the end of the page (where the store page renders its bubble too), nor the footer's
  *     lines; lifts by the bar's height while the bar shows and drops when it steps aside; hidden with the drawer open;
  *     its laptop label on hover and focus; reached by keyboard after the page content; nothing moves with reduced
- *     motion.
+ *     motion. On a phone it steps aside: from the store's form (task 4.7), and from the prices of Home and the product
+ *     page, lifted or not, and the paid /thanks address step (task 4.9); each swept top to bottom at every phone size.
  *   - The layouts as served: lang, the smooth-scroll hook, the body classes, the three font preloads, the mockup's
  *     viewport with viewport-fit=cover (the safe areas) on both hosts, noindex, nofollow on beta and no robots meta
  *     elsewhere; the store layout noindex, its policy links on the marketing site of the target.
@@ -63,7 +64,7 @@ async function openBuilt(harness: Harness, vp: Viewport, opts: OpenOptions = {},
   const context = await harness.context(vp, opts);
   const page = await context.newPage();
   await page.goto(builtUrl(route), { waitUntil: "load" });
-  if (route === HOME) await page.waitForFunction(() => document.documentElement.dataset.buybar !== undefined);
+  await page.waitForFunction(() => !document.querySelector(".kh-buybar") || document.documentElement.dataset.buybar !== undefined);
   await page.evaluate(() => document.fonts.ready.then(() => undefined));
   return page;
 }
@@ -352,13 +353,16 @@ test.describe("chrome: drawer", () => {
 const bubbleGap = (page: Page) => page.locator(".ks-wa").evaluate((el) => innerHeight - el.getBoundingClientRect().bottom);
 
 /** What the bubble must never cover (D050, architecture §5.3): the bar, a price, a form field, the pay button. On
- *  Home the bar and the hero's price sentence match (5.1); the store's form and pay button join with 5.15. */
+ *  Home the bar and the hero's price sentence match (5.1); the store's form and pay button join with 5.15; the offer
+ *  card's split and fine print, which print prices too, with 4.9. */
 const NEVER_COVERED = [
   ".kh-buybar",
   ".kh-buybar__price",
   ".ks-price",
   ".ks-store-top__price",
   ".kh-offer__prices",
+  ".kh-offer__split",
+  ".kh-offer__fine",
   "input:not([type=hidden])",
   "select",
   "textarea",
@@ -418,6 +422,9 @@ test.describe("chrome: WhatsApp bubble (D050)", () => {
 
   test("the cover check sees a price, a field and a pay button placed under the bubble (it is not vacuous)", async ({ harness }) => {
     const page = await openBuilt(harness, phone360short);
+    // Where the bubble rests (at the top of a small phone it steps aside from the hero's price, task 4.9): the page's end.
+    await scrollToY(page, 1e7);
+    await expect.poll(() => bubbleAside(page)).toEqual(AT_REST);
     await page.evaluate(() => {
       const b = document.querySelector(".ks-wa")!.getBoundingClientRect();
       const form = document.createElement("form");
@@ -552,23 +559,29 @@ async function scrollFieldIntoBand(page: Page): Promise<void> {
   await scrollToY(page, y);
 }
 
+/** Sweeps the page top to bottom in quarter screens: at each stop the bubble covers nothing of NEVER_COVERED, is aside
+ *  in full or at rest, and the page never scrolls sideways (off the right edge it must not widen the page). Returns the
+ *  states it met, "aside" and "rest". */
+async function sweepBubble(page: Page): Promise<string[]> {
+  const { height, step } = await page.evaluate(() => ({ height: document.documentElement.scrollHeight - innerHeight, step: Math.round(innerHeight / 4) }));
+  const seen = new Set<string>();
+  for (let y = 0; y < height + step; y += step) {
+    await scrollToY(page, Math.min(y, height));
+    await expect.poll(() => coveredByBubble(page, NEVER_COVERED), `scrolled to ${Math.min(y, height)}`).toEqual([]);
+    const state = await bubbleAside(page);
+    expect([ASIDE, AT_REST], `scrolled to ${Math.min(y, height)}: aside in full or at rest`).toContainEqual(state);
+    seen.add(state.hidden ? "aside" : "rest");
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+  }
+  return [...seen].sort();
+}
+
 test.describe("chrome: WhatsApp bubble beside the store's form (task 4.7; D050)", () => {
   for (const vp of PHONES) {
     test(`on the store it never covers a field, a price or the pay button, top to bottom ${vp.name}`, async ({ harness }) => {
       const page = await openBuilt(harness, vp, {}, STORE);
-      const { height, step } = await page.evaluate(() => ({ height: document.documentElement.scrollHeight - innerHeight, step: Math.round(innerHeight / 4) }));
-      const seen = new Set<string>();
-      for (let y = 0; y < height + step; y += step) {
-        await scrollToY(page, Math.min(y, height));
-        await expect.poll(() => coveredByBubble(page, NEVER_COVERED), `scrolled to ${Math.min(y, height)}`).toEqual([]);
-        const state = await bubbleAside(page);
-        expect([ASIDE, AT_REST], `scrolled to ${Math.min(y, height)}: aside in full or at rest`).toContainEqual(state);
-        seen.add(state.hidden ? "aside" : "rest");
-        // Off the right edge it never makes the page scroll sideways.
-        expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
-      }
       // The sweep met both states: aside beside the form, at rest once the form had passed.
-      expect([...seen].sort()).toEqual(["aside", "rest"]);
+      expect(await sweepBubble(page)).toEqual(["aside", "rest"]);
     });
   }
 
@@ -617,6 +630,133 @@ test.describe("chrome: WhatsApp bubble beside the store's form (task 4.7; D050)"
     await page.locator("#details input:not([type=hidden])").first().focus();
     await page.waitForTimeout(200);
     expect(await bubbleAside(page)).toEqual(AT_REST);
+  });
+});
+
+/* ── WhatsApp bubble beside the prices on Home and the product page, and the paid /thanks address step (task 4.9) ──
+
+   D050: the bubble never covers the price. 4.7 found that it could on the marketing pages: at 324 x 566 the resting
+   bubble sat over the hero's price sentence on Home and the product page, and mid-page over a price sentence while the
+   bar had stepped aside, and over the offer card's prices while the bar lifted it. So below 900 px the site's bubble
+   steps aside as the store's does from its form, while a price sentence (`.ks-price`) or the offer card's prices
+   (`.kh-offer__prices`) cross its band, the band re-measured whenever the bar lifts or drops it (lifted and aside, it
+   keeps its height, off the right edge). These sweep Home and the product page at every phone size of the audit matrix,
+   as 4.7's cases sweep the store; prove the step aside is not vacuous where 4.7 found the gap (324 x 566, the hero) and
+   with the bar lifting the bubble, motion on and reduced; and prove the paid /thanks address step (item 2) on the
+   ThanksPaid story (Storybook, which Playwright serves beside the site; `npm run build-storybook` first). */
+
+const PRODUCT: Built = { host: "marketing", path: "/products/kheelu" };
+const phone324 = VIEWPORTS.find((v) => v.width === 324)!;
+const THANKS_PAID_STORY = `http://localhost:${STORYBOOK_PORT}/iframe.html?id=layouts-storeshell--thanks-paid&viewMode=story`;
+/** The prices the site's bubble steps aside from: WhatsAppFloat's STEP_ASIDE_FROM `site`, written here because the
+ *  harness does not load components (WhatsAppFloat.test.tsx holds that selector to the prices the components print). */
+const PRICES = ".ks-price, .kh-offer__prices, .kh-offer__split, .kh-offer__fine";
+
+/** Puts each visible price of the page right under the bubble, where the bubble sits once the bar has settled at that
+ *  scroll position (lifted or not), and checks that it covers none; returns how many times it stood aside. A quarter-
+ *  screen sweep can step over a price; this cannot. */
+async function placePricesUnderBubble(page: Page): Promise<number> {
+  let aside = 0;
+  const count = await page.locator(PRICES).count();
+  for (let i = 0; i < count; i++) {
+    let placed = false;
+    // Twice: the first placement can show or hide the bar, which lifts or drops the bubble.
+    for (let pass = 0; pass < 2; pass++) {
+      const y = await page.evaluate(
+        ({ sel, n }) => {
+          const el = document.querySelectorAll(sel)[n];
+          if (!el.checkVisibility()) return null;
+          const r = el.getBoundingClientRect();
+          const b = document.querySelector(".ks-wa")!.getBoundingClientRect();
+          return Math.max(0, Math.round(r.top + scrollY + r.height / 2 - (b.top + b.height / 2)));
+        },
+        { sel: PRICES, n: i },
+      );
+      if (y === null) break;
+      await scrollToY(page, y);
+      await page.waitForTimeout(250);
+      placed = true;
+    }
+    if (!placed) continue;
+    await expect.poll(() => coveredByBubble(page, NEVER_COVERED), `price ${i} under the bubble`).toEqual([]);
+    const state = await bubbleAside(page);
+    expect([ASIDE, AT_REST], `price ${i}: aside in full or at rest`).toContainEqual(state);
+    if (state.hidden) aside++;
+  }
+  return aside;
+}
+
+test.describe("chrome: WhatsApp bubble beside the prices (task 4.9; D050)", () => {
+  for (const route of [HOME, PRODUCT]) {
+    for (const vp of PHONES) {
+      test(`on ${route.path} it never covers a price, the bar or a field, top to bottom ${vp.name}`, async ({ harness }) => {
+        const page = await openBuilt(harness, vp, {}, route);
+        expect(await sweepBubble(page)).toContain("rest");
+        // Each price placed under the bubble: never covered, and the bubble stood aside for them.
+        expect(await placePricesUnderBubble(page)).toBeGreaterThan(0);
+      });
+    }
+
+    test(`the step aside is not vacuous on ${route.path}: at rest at 324 x 566 the bubble would cover the hero's price`, async ({ harness }) => {
+      const page = await openBuilt(harness, phone324, {}, route);
+      await expect.poll(() => bubbleAside(page)).toEqual(ASIDE);
+      expect(await coveredAtRest(page, NEVER_COVERED)).toEqual(expect.arrayContaining([expect.stringMatching(/^<p\.(?:.*\.)?ks-price(?:\.|>)/)]));
+      expect(await coveredByBubble(page, NEVER_COVERED)).toEqual([]);
+    });
+  }
+
+  test("while the bar lifts it, it steps aside from a price in its lifted band, and rests again once the bar has gone (motion on and reduced)", async ({ harness }) => {
+    for (const reducedMotion of ["no-preference", "reduce"] as const) {
+      const page = await openBuilt(harness, phone390, { reducedMotion }, HOME);
+      const lift = async (state: "shown" | "hidden") => {
+        if (state === "shown") await scrollPastHero(page);
+        else await scrollToY(page, 0);
+        await expect.poll(async () => (await barState(page)).published).toBe(state);
+      };
+      // The control: just past the hero, lifted by the bar, the bubble covers no price of the page, so it rests.
+      await expect.poll(() => bubbleAside(page)).toEqual(AT_REST);
+      await lift("shown");
+      await page.waitForTimeout(400);
+      await expect.poll(() => bubbleAside(page), `${reducedMotion}: lifted, nothing to clear`).toEqual(AT_REST);
+      await lift("hidden");
+      await expect.poll(() => bubbleGap(page), `${reducedMotion}: back at rest`).toBeCloseTo(16, 0);
+      // A price fixed in the rows the lifted bubble covers (the bar's height above its resting band), clear of the
+      // resting band; planted after the bubble armed, so the bubble reads it when the bar's next move re-measures its band.
+      const planted = await page.evaluate(() => {
+        const b = document.querySelector(".ks-wa")!.getBoundingClientRect();
+        const bar = document.querySelector<HTMLElement>(".kh-buybar")!.offsetHeight;
+        const price = document.createElement("p");
+        price.className = "ks-price";
+        price.textContent = "price";
+        price.style.cssText = `position: fixed; margin: 0; left: 0; right: 0; top: ${b.top - bar}px; height: ${b.height}px;`;
+        document.querySelector("main")!.append(price);
+        return { clearOfRest: b.top - bar + b.height <= b.top };
+      });
+      expect(planted.clearOfRest).toBe(true);
+      await expect.poll(() => bubbleAside(page), `${reducedMotion}: at rest below the planted price`).toEqual(AT_REST);
+      await lift("shown");
+      await expect.poll(() => bubbleAside(page), `${reducedMotion}: lifted beside the price`).toEqual(ASIDE);
+      await expect.poll(() => coveredByBubble(page, NEVER_COVERED), reducedMotion).toEqual([]);
+      await lift("hidden");
+      await expect.poll(() => bubbleAside(page), `${reducedMotion}: dropped below the price`).toEqual(AT_REST);
+      // With reduced motion the bar fades out in place (pick 4) while the bubble drops at once: clear once it has gone.
+      await expect.poll(() => coveredByBubble(page, NEVER_COVERED), reducedMotion).toEqual([]);
+    }
+  });
+
+  test("on the paid /thanks (the ThanksPaid story) it steps aside from the address step on a phone, and rests below it (item 2)", async ({ harness }) => {
+    const context = await harness.context(phone360short);
+    const page = await context.newPage();
+    await page.goto(THANKS_PAID_STORY, { waitUntil: "load" });
+    await page.locator("#storybook-root main h1").waitFor();
+    await scrollToY(page, 1e7);
+    await expect.poll(() => bubbleAside(page)).toEqual(AT_REST);
+    const field = page.locator("#address input:not([type=hidden])").first();
+    await field.evaluate((el: HTMLElement) => el.focus({ preventScroll: true }));
+    await expect.poll(() => bubbleAside(page), "a field of the address step has focus").toEqual(ASIDE);
+    await field.evaluate((el: HTMLElement) => el.blur());
+    await expect.poll(() => bubbleAside(page)).toEqual(AT_REST);
+    expect(await sweepBubble(page)).toEqual(["aside", "rest"]);
   });
 });
 

@@ -175,14 +175,15 @@ dialog.kh-drawer[open]::backdrop {
   transform: scale(var(--ks-film-focus));
 }
 
-/* ---------- D050. WhatsApp bubble lifts with the buy bar, steps aside from the store's form; laptop label ----------
+/* ---------- D050. WhatsApp bubble lifts with the buy bar, steps aside on a phone; laptop label ----------
    StickyBuyBar publishes html[data-buybar] and --ks-buybar-h; while the bar shows, the bubble rises so it never
    covers it, and drops back when the bar steps aside. The bar's height already holds the bottom safe-area inset, and
    the bubble already sits that inset above the edge, so it rises by the height less the inset: space-4 above the bar
-   on a notched phone too (architecture §5.3, task 3.6). On a phone it steps aside from the store's form (task 4.7):
-   WhatsAppFloat's link takes .is-hidden (and inert) while a field of the form has focus or the form crosses its band,
-   and it fades and slides off the right edge, past its width and its right offset, so its box leaves every field (a
-   field never reaches past that edge); it comes back once the form has passed. No entrance animation. The label
+   on a notched phone too (architecture §5.3, task 3.6). On a phone it steps aside from what its context keeps clear
+   (the store's form, task 4.7; the site's prices and the paid /thanks address step, task 4.9): WhatsAppFloat's link
+   takes .is-hidden (and inert) while one crosses its band or a field of it has focus, and it fades and slides off the
+   right edge, past its width and its right offset, so its box leaves every price and field (none reaches past that
+   edge); it comes back once they have passed. No entrance animation. The label
    slides out to the bubble's left on hover or keyboard focus. Position, colour, size and hiding the label on phones
    are WhatsAppFloat's own CSS. */
 .ks-wa {
@@ -194,6 +195,12 @@ html[data-buybar="shown"] .ks-wa {
 .ks-wa.is-hidden {
   opacity: 0;
   transform: translateX(calc(100% + var(--space-4) + env(safe-area-inset-right)));
+}
+/* Lifted by the bar and aside (task 4.9: it steps aside from the site's prices too): off the right edge at its lifted
+   height, so the band it is measured by stays where the bar lifted it and it never drops back over the price it left
+   (the lift's rule alone would win over .is-hidden and keep it on screen at opacity 0). */
+html[data-buybar="shown"] .ks-wa.is-hidden {
+  transform: translate(calc(100% + var(--space-4) + env(safe-area-inset-right)), calc((var(--ks-buybar-h, 0px) - env(safe-area-inset-bottom)) * -1));
 }
 .ks-wa__label {
   opacity: 0;
@@ -219,8 +226,8 @@ html[data-buybar="shown"] .ks-wa {
 /* ---------- Reduced motion: nothing moves ----------
    Reveals and doodles show in their final state; the bar and the bubble's label keep an opacity fade only (DS
    README.md:161: drop movement, keep fades); the drawer appears without sliding; the arrow does not nudge; the
-   film does not grow; the FAQ opens instantly; the bubble still clears the bar and steps aside from the store's form,
-   without moving there. */
+   film does not grow; the FAQ opens instantly; the bubble still clears the bar and steps aside on a phone, without
+   moving there. */
 @media (prefers-reduced-motion: reduce) {
   html[data-scroll-behavior="smooth"] {
     scroll-behavior: auto;
