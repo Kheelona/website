@@ -1,4 +1,9 @@
+import type { ReactNode } from "react";
 import { SUPPORT_WHATSAPP_HREF } from "@/config/site";
+import { Button } from "@/components/ui/Button/Button";
+import { Heading } from "@/components/ui/Heading/Heading";
+import { Actions, Container, Section } from "@/components/ui/Layout/Layout";
+import { storeNotFound, type StorePanelCopy } from "@/content/en-IN/store/event-page";
 
 /** What the store shows when the page a visitor asked for is not there.
  *
@@ -6,46 +11,57 @@ import { SUPPORT_WHATSAPP_HREF } from "@/config/site";
  *  `[...rest]` catch-all that answers a mistyped URL, the confirmation page
  *  when the order behind a valid link will not load, and the event page when
  *  the store is not configured. They were four different dead ends before, and
- *  three of them rendered nothing at all.
+ *  three of them rendered nothing at all. Since task 6.1 it is also the event
+ *  page's refused link and the partner page's ended and not-configured states:
+ *  every store state that is not the form, with each state's words.
  *
  *  It offers a person rather than only a link home, because someone reading it
- *  may have paid us and be unable to reach their own order. */
+ *  may have paid us and be unable to reach their own order.
+ *
+ *  RESTYLED ON THE DESIGN SYSTEM (task 6.1; ADR-013: markup, classes, copy and
+ *  presentation imports only). No mockup: the store's own not-configured
+ *  composition (a section named by its h1, the lead, a secondary button, the
+ *  muted line under it; store/page.tsx, task 5.15). The words are content's
+ *  (content/en-IN/store/event-page.ts `storeNotFound`, the live words); a page
+ *  passes another state's `copy`, or its own `title` and `body` as /thanks does.
+ *  A partner's `mark` opens the panel a step above the heading: an app-private
+ *  component has no stylesheet of its own (the compose manifest reads ui,
+ *  sections, chrome and layouts), so that one step is the DS-mapped utility
+ *  `mb-5` (space-5; architecture §4.2). Server component. */
 export function NotFoundPanel({
-  title = "That page is not here.",
-  body = "The link may have expired, or it may never have been ours. If you were trying to reach an order you have already placed, we can open it for you.",
+  copy = storeNotFound.panel,
+  title = copy.title,
+  body = copy.body,
   cta = true,
+  mark,
 }: {
+  /** The state's words: the dead end's by default. */
+  copy?: StorePanelCopy;
   title?: string;
   body?: string;
   /** Off for a reader who has already paid: sending them to buy again is the
    *  wrong offer, and the WhatsApp line below is the only useful next step. */
   cta?: boolean;
+  /** A partner's lockup above the heading (the partner page, B29). */
+  mark?: ReactNode;
 }) {
   return (
-    <div className="mx-auto w-full max-w-[640px] px-6 py-16 md:py-24">
-      <h1 className="mb-4 font-display text-[clamp(28px,4vw,38px)] font-extrabold leading-[1.1] text-ink-head">
-        {title}
-      </h1>
-      <p className="mb-6 max-w-[46ch] text-[17px] leading-[1.6] text-ink">{body}</p>
-      {cta ? (
-        <a
-          href="/"
-          className="inline-flex items-center justify-center rounded-full bg-action px-7 py-4 text-[17px] font-bold text-white shadow-cta focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
-        >
-          Go to the pre-order page
-        </a>
-      ) : null}
-      {/* "Or" only reads as a second option when there is a first one. */}
-      <p className={`${cta ? "mt-4 " : ""}text-[14px] text-ink-muted`}>
-        {cta ? "Or " : ""}
-        <a
-          href={SUPPORT_WHATSAPP_HREF}
-          className="rounded font-semibold text-ink-head underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
-        >
-          {cta ? "message us on WhatsApp" : "Message us on WhatsApp"}
-        </a>{" "}
-        with your order number and a person will find it.
-      </p>
-    </div>
+    <Section labelledBy={copy.titleId}>
+      <Container>
+        {mark ? <div className="mb-5">{mark}</div> : null}
+        <Heading level={1} id={copy.titleId} title={title} lead={body} />
+        {cta ? (
+          <Actions>
+            <Button href="/">{copy.action}</Button>
+          </Actions>
+        ) : null}
+        {/* "Or" only reads as a second option when there is a first one. */}
+        <p className="kh-body-s ks-muted ks-store-closed">
+          {cta ? `${copy.help.or} ` : ""}
+          <a href={SUPPORT_WHATSAPP_HREF}>{cta ? copy.help.link : copy.help.linkAlone}</a>{" "}
+          {copy.help.tail}
+        </p>
+      </Container>
+    </Section>
   );
 }

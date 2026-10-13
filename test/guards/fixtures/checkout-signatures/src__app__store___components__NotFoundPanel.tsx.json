@@ -2,22 +2,35 @@
   "file": "src/app/store/_components/NotFoundPanel.tsx",
   "note": "Logic signature (test/guards/checkout-signature.test.ts). Regenerated only with a restyle; every changed line is reviewed (ADR-013).",
   "code": [
+    "import type { ReactNode } from \"react\";",
     "import { SUPPORT_WHATSAPP_HREF } from \"@/config/site\";",
-    "export function NotFoundPanel({ title = \"That page is not here.\", body = \"The link may have expired, or it may never have been ours. If you were trying to reach an order you have already placed, we can open it for you.\", cta = true, }: {",
+    "import { Button } from \"@/components/ui/Button/Button\";",
+    "import { Heading } from \"@/components/ui/Heading/Heading\";",
+    "import { Actions, Container, Section } from \"@/components/ui/Layout/Layout\";",
+    "import { storeNotFound, type StorePanelCopy } from \"@/content/en-IN/store/event-page\";",
+    "export function NotFoundPanel({ copy = storeNotFound.panel, title = copy.title, body = copy.body, cta = true, mark, }: {",
+    "    copy?: StorePanelCopy;",
     "    title?: string;",
     "    body?: string;",
     "    cta?: boolean;",
+    "    mark?: ReactNode;",
     "}) {",
-    "    return (__JSX_div__);",
+    "    return (__JSX_Section__);",
     "}"
   ],
   "jsx": [
-    "{title}",
-    "{body}",
-    "{cta ? (__JSX_a__) : null}",
-    "@a href=\"/\"",
-    "{cta ? \"Or \" : \"\"}",
+    "@Section labelledBy={copy.titleId}",
+    "{mark ? __JSX_div__ : null}",
+    "{mark}",
+    "@Heading level={1}",
+    "@Heading id={copy.titleId}",
+    "@Heading lead={body}",
+    "{cta ? (__JSX_Actions__) : null}",
+    "@Button href=\"/\"",
+    "{copy.action}",
+    "{cta ? `${copy.help.or} ` : \"\"}",
     "@a href={SUPPORT_WHATSAPP_HREF}",
-    "{cta ? \"message us on WhatsApp\" : \"Message us on WhatsApp\"}"
+    "{cta ? copy.help.link : copy.help.linkAlone}",
+    "{copy.help.tail}"
   ]
 }

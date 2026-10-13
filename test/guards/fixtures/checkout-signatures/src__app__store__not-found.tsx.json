@@ -2,9 +2,15 @@
   "file": "src/app/store/not-found.tsx",
   "note": "Logic signature (test/guards/checkout-signature.test.ts). Regenerated only with a restyle; every changed line is reviewed (ADR-013).",
   "code": [
+    "import type { Metadata } from \"next\";",
+    "import { storeNotFound } from \"@/content/en-IN/store/event-page\";",
+    "import { pageMeta } from \"@/lib/seo/metadata\";",
     "import { NotFoundPanel } from \"./_components/NotFoundPanel\";",
+    "import { StoreClose } from \"./_components/TierCheckout\";",
+    "const { title, description, openGraph, twitter } = pageMeta({ ...storeNotFound.meta, path: \"/404\" });",
+    "export const metadata: Metadata = { title, description, openGraph: { ...openGraph, url: undefined }, twitter };",
     "export default function StoreNotFound() {",
-    "    return __JSX_NotFoundPanel__;",
+    "    return (__JSX_fragment__);",
     "}"
   ],
   "jsx": []
