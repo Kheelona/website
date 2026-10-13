@@ -178,13 +178,14 @@ describe("production, preview and development: truth table against the tag", () 
 /* ── 2. The store pages: beta renders the no-keys state, and reads nothing ─────────────────── */
 
 type Page = (props?: unknown) => Promise<ReactElement>;
+/* The Ideabaaz partner page left this list with its route (D054 item 7, task 6.6): /ideabaaz is a store dead end, which
+   reads no store env. */
 const PAGES: Record<string, { load: () => Promise<{ default: unknown }>; props: () => unknown }> = {
   "src/app/store/page.tsx": { load: () => import("@/app/store/page"), props: () => undefined },
   "src/app/store/e/[event]/page.tsx": {
     load: () => import("@/app/store/e/[event]/page"),
     props: () => ({ params: Promise.resolve({ event: "ideabaaz" }), searchParams: Promise.resolve({}) }),
   },
-  "src/app/store/ideabaaz/page.tsx": { load: () => import("@/app/store/ideabaaz/page"), props: () => undefined },
   "src/app/store/thanks/page.tsx": { load: () => import("@/app/store/thanks/page"), props: () => undefined },
 };
 

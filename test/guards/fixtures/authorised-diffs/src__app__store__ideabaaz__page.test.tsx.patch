@@ -1,23 +1,112 @@
 Reviewed diff of src/app/store/ideabaaz/page.test.tsx against archive/pre-reset-2026-10-10 (checkout-freeze, ADR-013 frozen tests).
 Regenerate with: git diff archive/pre-reset-2026-10-10 -- src/app/store/ideabaaz/page.test.tsx (keep this header above it).
 
-Task 6.1 (store secondary pages), LITERAL-ONLY: one string literal follows the task's acceptance, "the not-configured
-state reads 'Pre-orders open here shortly.'" (wiki/engineering/tasks.md 6.1). Without store keys (and on beta, D051)
-the partner page now says what the store page and the event page say in that state, in the store page's own words
-(wiki/site/pages/store.md, Other states; wiki/site/checkout.md "Store keys missing"), instead of its own "This page is
-not open yet."; the body it asserts ("nothing has been charged") is unchanged. The token stream is unchanged once
-literals are masked: no assertion added, removed or weakened.
+D054 item 7 (founder, 2026-10-14; task 6.6 item 2), A DELETION, not a literal-only patch: the Ideabaaz partner page is
+not needed, so store.kheelona.com/ideabaaz shows the store's not-found page, with no redirect (the founder chose this
+over a redirect to the store, knowing printed QR codes point there). The route src/app/store/ideabaaz/page.tsx goes
+(its own reviewed deletion record beside this one), and with it the frozen test of that page: every assertion it held
+(the partner mark, the ended state, the not-open state) was about a page that no longer exists. Task 6.1's literal-only
+change to this file ("Pre-orders open here shortly.") goes with it. What /ideabaaz shows now is proved by
+src/app/store/[...rest]/ideabaaz.test.ts and test/e2e/store-secondary.spec.ts (row partner-retired). The checkout's
+logic is untouched: the tier resolution, signing, pricing and the order routes are the tag's (tiers.test.ts keeps the
+"ideabaaz" tier's resolution rules, which serve any event tier). checkout-freeze accepts a deletion only with a
+founder decision cited in this header, and then requires the file to stay deleted.
 
 diff --git a/src/app/store/ideabaaz/page.test.tsx b/src/app/store/ideabaaz/page.test.tsx
-index e0f0847..7a7e514 100644
+deleted file mode 100644
+index e0f0847..0000000
 --- a/src/app/store/ideabaaz/page.test.tsx
-+++ b/src/app/store/ideabaaz/page.test.tsx
-@@ -85,7 +85,7 @@ describe("the Ideabaaz pre-booking page", () => {
-     env = null;
-     render(await IdeabaazPage());
-     expect(
++++ /dev/null
+@@ -1,92 +0,0 @@
+-import { render, screen } from "@testing-library/react";
+-import { beforeEach, describe, expect, it, vi } from "vitest";
+-import {
+-  fakeClient,
+-  fakeEnv,
+-  type RecordedCall,
+-} from "../../../../test/helpers/fake-supabase";
+-import type { StoreEnv } from "@/lib/store/env";
+-
+-/**
+- * The Ideabaaz page is the first PUBLIC event tier (2026-08-23): the route
+- * signs its own tier, so what these tests pin is the presentation contract —
+- * the struck ₹499 beside the ₹99, the derived ₹4,900 balance, and an honest
+- * ended state — while tiers.test.ts owns the resolution rules it rides on.
+- */
+-
+-let calls: RecordedCall[] = [];
+-let results: Record<string, { data?: unknown; error?: unknown; count?: number }> = {};
+-let env: StoreEnv | null = fakeEnv as StoreEnv;
+-
+-vi.mock("@/lib/store/db", () => ({ db: () => fakeClient(results, calls) }));
+-vi.mock("@/lib/store/env", () => ({ storeEnv: () => env }));
+-
+-const { default: IdeabaazPage } = await import("./page");
+-
+-function ideabaazRow() {
+-  results["event_tiers.select"] = {
+-    data: {
+-      id: "ideabaaz",
+-      label: "Ideabaaz exclusive price",
+-      amount_paise: 9_900,
+-      cap: null,
+-      expires_on: "2026-08-31",
+-      active: true,
+-    },
+-  };
+-}
+-
+-describe("the Ideabaaz pre-booking page", () => {
+-  beforeEach(() => {
+-    calls = [];
+-    results = {};
+-    env = fakeEnv as StoreEnv;
+-  });
+-
+-  /* ⚑ THE TWO LIVE-PRICE TESTS WERE REMOVED ON 2026-09-01, when the tier
+-     closed (founder: "we can mark it closed").
+-
+-     They asserted the ₹99 offer: the struck-through ₹499, the "Pay ₹99 and
+-     reserve" button, and the derived ₹4,900 balance. Both began failing on
+-     1 September on their own, because the fixture above carries the tier's real
+-     `expires_on` of 2026-08-31 and the page correctly stopped selling. Nothing
+-     was broken; the calendar simply arrived. That state cannot recur for this
+-     tier, so testing it would mean faking a future expiry and pinning a
+-     presentation contract for an offer that no longer exists.
+-
+-     What is worth keeping is below: the ended state is now the ONLY state this
+-     page has, and it is what a late QR scan gets. The generic tier resolution
+-     these tests rode on is owned by test/store/tiers.test.ts, and any future
+-     event page gets its own coverage there. */
+-
+-  it("carries the partner mark, since the page is the co-branding", async () => {
+-    ideabaazRow();
+-    render(await IdeabaazPage());
+-    expect(screen.getByAltText("Ideabaaz Startup Fest")).toBeInTheDocument();
+-  });
+-
+-  it("says the exclusive has ended once the tier is closed, and offers the usual price", async () => {
+-    /* No row: what the page sees after the founder deletes or deactivates the
+-       tier, and (via "expired") after 31 August. Same ended shape. */
+-    const { container } = render(await IdeabaazPage());
+-    expect(
+-      screen.getByRole("heading", { name: "The Ideabaaz exclusive has ended." }),
+-    ).toBeInTheDocument();
+-    expect(screen.getByRole("link", { name: "Pre-order at the usual price" })).toHaveAttribute(
+-      "href",
+-      "/",
+-    );
+-    // no form and no ₹99 offer survive the close
+-    expect(container.querySelector("form")).toBeNull();
+-    expect(container.textContent).not.toContain("₹99 today");
+-  });
+-
+-  it("renders the honest not-open state on a deployment without store keys", async () => {
+-    env = null;
+-    render(await IdeabaazPage());
+-    expect(
 -      screen.getByRole("heading", { name: "This page is not open yet." }),
-+      screen.getByRole("heading", { name: "Pre-orders open here shortly." }),
-     ).toBeInTheDocument();
-     expect(screen.getByText(/nothing has been charged/i)).toBeInTheDocument();
-   });
+-    ).toBeInTheDocument();
+-    expect(screen.getByText(/nothing has been charged/i)).toBeInTheDocument();
+-  });
+-});

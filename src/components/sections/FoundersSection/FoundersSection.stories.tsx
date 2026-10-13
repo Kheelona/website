@@ -3,10 +3,11 @@ import { placeholder } from "@/lib/content/placeholder";
 import type { FoundersSectionConfig } from "./founders-section.types";
 import { FoundersSection } from "./FoundersSection";
 
-/* FoundersSection (task 3.4): the team page's founder cards (team.html fold 3). The cards are the approved copy, story
- * and test data only (exported in capitals, left out of the story list). The backgrounds are proof-gated (D038, F11)
- * and never render while gated; their words here are the mockup's placeholder notes, never the unproven credentials.
- * The photos wait on B24 and show a placeholder. */
+/* FoundersSection (task 3.4): the team page's founder cards (team.html fold 3). Story and test data only (exported in
+ * capitals, left out of the story list). FOUNDERS is the mockup's state, which the component's parity test compares:
+ * the approved names, roles and words, a placeholder for each photo (B24) and each background gated (D038; its words
+ * here are the mockup's placeholder notes). FOUNDERS_LIVE is the page's state since task 6.6 (D054 item 20): photos with
+ * their alts and the background lines shown, in stand-in words (the page's own are src/content/en-IN/pages/team.ts). */
 
 const gated = { gated: { proof: "F11" } } as const;
 const photo = placeholder("B24", "founder photo");
@@ -44,6 +45,17 @@ export const FOUNDERS: FoundersSectionConfig = {
   ],
 };
 
+/** The page's state since task 6.6: each founder's photo (a live file's shape, 480 x 480) with its alt, and the
+ *  background line shown. Stand-in alts and lines. */
+export const FOUNDERS_LIVE: FoundersSectionConfig = {
+  ...FOUNDERS,
+  founders: FOUNDERS.founders.map((f, i) => ({
+    ...f,
+    photo: { src: "/team/apoorva.jpg", width: 480, height: 480, alt: i === 0 ? "A founder, as the photo shows them." : `Founder ${i + 1}, as the photo shows them.` },
+    bio: { text: `Founder ${i + 1}’s background, in a line.` },
+  })),
+};
+
 const meta = {
   title: "Sections/FoundersSection",
   component: FoundersSection,
@@ -55,8 +67,11 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** As it ships today: initials badges, the photo placeholder (B24), backgrounds hidden until their proof is filed. */
+/** The mockup's state: initials badges, the photo placeholder (B24), backgrounds gated (D038). */
 export const Gated: Story = {};
+
+/** As the team page ships it (task 6.6, D054 item 20): the photos with their alts, the background lines shown. */
+export const Live: Story = { args: FOUNDERS_LIVE };
 
 /** Once a background's proof is filed, its line shows under the card's words (the gate removed in content). */
 export const BioFiled: Story = {

@@ -5,13 +5,13 @@ export interface FounderCard {
   readonly name: string;
   /** As the team page prints it: "Co-Founder and CEO". */
   readonly role: string;
-  /** The badge beside the name until the founder's photo is approved. */
+  /** The badge beside the name while the photo is a placeholder. */
   readonly initials: string;
-  /** B24: a placeholder until the photo is supplied and approved; then the photo takes the badge's place. Its alt is
-   *  empty: the name beside it says who it is. */
+  /** The founder's photo in the badge's place (the live photos since task 6.6, D054 item 20, settling B24), with the
+   *  copy page's alt; a placeholder shows the initials badge and the placeholder line instead. */
   readonly photo: OrPlaceholder<ImageRef>;
   readonly body: RichTextString;
-  /** The background line, proof-gated (D038, F11): never rendered while `gated` is set. */
+  /** The background line (D054 item 20: from the live bios); a `gated` line never renders (D038). */
   readonly bio?: Gated<{ readonly text: RichTextString }>;
   readonly link: { readonly label: string; readonly href: `https://${string}` };
   /** The fragment on /team that describes the person (organization.ts `anchor`), on the name. */

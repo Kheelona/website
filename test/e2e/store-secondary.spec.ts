@@ -3,13 +3,13 @@ import type { Page } from "@playwright/test";
 import { sign } from "../../src/lib/store/signing";
 import { describeFindings, runAxe } from "./support/axe";
 import { expect, forceMotionEnd, nodeGet, settle, test } from "./support/fixtures";
-import { REAL_ORIGINS } from "./support/env";
 import type { Route } from "./support/routes";
 import { APPROVED_WIDTHS, AXE_TEMPLATE_EXTRA, AXE_VIEWPORTS, SIDEWAYS_VIEWPORTS, type Viewport } from "./support/viewports";
 
 /* The store's secondary pages on the store host (task 6.1; architecture §16.1; tasks.md SPA 3, 4, 5, 9 for routes
- * with no mockup): the event page /e/<tier>, the partner page /ideabaaz, a dead end (any path with no page; also the
- * doubled /store prefix), each at 200 in the store chrome with the store's WhatsApp bubble.
+ * with no mockup): the event page /e/<tier>, a dead end (any path with no page; also the doubled /store prefix, and
+ * /ideabaaz, whose partner page is gone: D054 item 7, task 6.6), each at 200 in the store chrome with the store's
+ * WhatsApp bubble.
  *
  * Per route: the server's HTML (status 200, store header and footer around <main>, noindex, nofollow, description,
  * Open Graph and Twitter, og:url only where the address is stable); at the three approved widths the one h1, the
@@ -18,8 +18,8 @@ import { APPROVED_WIDTHS, AXE_TEMPLATE_EXTRA, AXE_VIEWPORTS, SIDEWAYS_VIEWPORTS,
  * (320 px and test plan §3).
  *
  * The state a route shows depends on the server's store keys, and both are honest: with none (locally, in CI, on
- * beta, D051) the event and partner pages say "Pre-orders open here shortly."; with keys a link without a signature
- * is refused and the partner page has ended. The signed event page sells only with a store database, so its form is
+ * beta, D051) the event page says "Pre-orders open here shortly."; with keys a link without a signature is refused.
+ * The signed event page sells only with a store database, so its form is
  * checked against a local, read-only stand-in of the store's REST API that this spec starts (one tier, no orders; it
  * refuses every write): run the server with
  *
@@ -75,10 +75,12 @@ const ROUTES: readonly Expect[] = [
     ogUrl: null,
   },
   {
-    route: store("partner", "/ideabaaz"),
-    h1: ["The Ideabaaz exclusive has ended.", SHORTLY],
-    description: ["The Ideabaaz exclusive has ended. You can still pre-order Kheelu at the usual price."],
-    ogUrl: `${REAL_ORIGINS.store}/ideabaaz`,
+    // The Ideabaaz partner page is gone (D054 item 7, task 6.6): its address, which printed QR codes carry, is a store
+    // dead end, with no redirect, whatever the store's keys.
+    route: store("partner-retired", "/ideabaaz"),
+    h1: ["That page is not here."],
+    description: ["The link may have expired, or it may never have been ours. If you were trying to reach an order you have already placed, we can open it for you."],
+    ogUrl: null,
   },
 ];
 
@@ -138,6 +140,8 @@ for (const { route, h1, description, ogUrl } of ROUTES) {
     test("the server answers 200 in the store chrome: noindex, its description and share card", async () => {
       const res = await nodeGet(route.path, "store");
       expect(res.status, `${route.path} answered ${res.status}`).toBe(200);
+      // Never a redirect (D054 item 7 for /ideabaaz; a dead end is answered where it was asked).
+      expect(res.headers.location, `${route.path} redirected`).toBeUndefined();
       const html = res.body;
       const main = html.search(/<main\b/);
       expect(main).toBeGreaterThan(html.search(/class="kh-nav ks-store-head"/));
@@ -181,8 +185,6 @@ const STUB_PORT = Number(process.env.KH_E2E_SUPABASE_STUB_PORT ?? 0);
 const STUBBED = STUB_PORT > 0 && process.env.SUPABASE_URL === `http://127.0.0.1:${STUB_PORT}` && Boolean(process.env.STORE_SIGNING_SECRET);
 const TIER = "kh-e2e-expo";
 const TIER_ROW = { id: TIER, label: "Bangalore expo price", amount_paise: 9_900, cap: null, expires_on: null, active: true };
-/** The real partner row as it stands (expired), so /ideabaaz keeps its ended state while the stand-in runs. */
-const IDEABAAZ_ROW = { id: "ideabaaz", label: "Ideabaaz exclusive price", amount_paise: 9_900, cap: null, expires_on: "2026-08-31", active: true };
 
 /** PostgREST as supabase-js reads it: rows as a JSON array, counts in Content-Range; every write refused. */
 function startStub(port: number): Promise<Server> {
@@ -195,7 +197,7 @@ function startStub(port: number): Promise<Server> {
     if (req.method !== "GET" && req.method !== "HEAD") return json(503, { message: "e2e stand-in: read only" });
     if (url.pathname === "/rest/v1/event_tiers") {
       const id = url.searchParams.get("id")?.replace(/^eq\./, "");
-      return json(200, [TIER_ROW, IDEABAAZ_ROW].filter((r) => r.id === id));
+      return json(200, [TIER_ROW].filter((r) => r.id === id));
     }
     if (url.pathname === "/rest/v1/preorders") return json(200, [], { "content-range": "*/0" });
     return json(404, { message: "e2e stand-in: no such table" });

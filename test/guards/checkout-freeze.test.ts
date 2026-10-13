@@ -15,7 +15,10 @@ import { parseSource } from "../e2e/support/source";
  *   - later founder-approved diffs to frozen logic (6.2, 6.4), each with a decision ID;
  *   - LITERAL-ONLY patches to the six checkout test files (and any frozen test file): the token
  *     stream must be unchanged once string, template and regular-expression literals are masked,
- *     so a selector may follow approved copy but no assertion can be added, removed or weakened.
+ *     so a selector may follow approved copy but no assertion can be added, removed or weakened;
+ *   - a DELETION (`+++ /dev/null`) retires a frozen file whose subject a founder decision removed:
+ *     accepted only for a path listed in RETIRED below, only when the patch's header cites that
+ *     path's own decision, and the file must then stay deleted.
  * A frozen folder that gains a file fails too. Presentation files are not byte-frozen: their
  * proofs are checkout-signature and checkout-jsx-contract; a patch stored for one is a review
  * record and is printed, not applied.
@@ -48,6 +51,13 @@ const CHECKOUT_TESTS = [
 ];
 /** D048 (architecture §15.3): changed only by their reviewed patch, task 1.3. */
 const AUTHORISED = ["src/lib/store/host.ts", "src/lib/store/env.ts", "src/lib/store/posthog-server.ts"];
+/** Frozen files a founder decision retired, each with that decision: the only deletions accepted, and each one's
+ *  reviewed deletion patch must cite it. D054 item 7 (2026-10-14, task 6.6): the Ideabaaz partner page is not needed,
+ *  so /ideabaaz is a store dead end; its page and that page's frozen test go. */
+const RETIRED: Readonly<Record<string, string>> = {
+  "src/app/store/ideabaaz/page.tsx": "D054",
+  "src/app/store/ideabaaz/page.test.tsx": "D054",
+};
 /** Inside a frozen folder but owned by a task (guard-test ownership): 1.3 changes it with posthog-server.ts. */
 const NOT_FROZEN = ["src/lib/store/posthog-server.test.ts"];
 /** Presentation files (ADR-013 class 3): guarded by checkout-signature and checkout-jsx-contract. */
@@ -104,6 +114,11 @@ function applyPatch(original: string, patch: string): string {
   if (noNewlineAtEnd && text.endsWith("\n")) text = text.slice(0, -1);
   return text;
 }
+
+/** A reviewed patch that deletes its file (git's `deleted file mode`, `+++ /dev/null`). */
+const isDeletion = (patch: string) => /^\+\+\+ \/dev\/null$/m.test(patch);
+/** The reviewed patch's own words, above the diff: where it must cite its decision. */
+const patchHeader = (patch: string) => patch.slice(0, Math.max(0, patch.search(/^diff --git /m)));
 
 /* ── Literal-only: token streams equal once literals are masked ───────────────────────────── */
 
@@ -169,6 +184,13 @@ describe("checkout-freeze instruments", () => {
     expect(literalOnlyDiff("x.test.tsx", "a(/x/);", "a(/y/);")).toBeNull();
   });
 
+  it("tells a deletion patch from an edit, and reads the header above the diff", () => {
+    const deletion = "Why: D054 item 7.\n\ndiff --git a/x b/x\ndeleted file mode 100644\n--- a/x\n+++ /dev/null\n@@ -1,1 +0,0 @@\n-a\n";
+    expect(isDeletion(deletion)).toBe(true);
+    expect(isDeletion("--- a/x\n+++ b/x\n@@ -2,2 +2,2 @@\n b\n-c\n+C\n")).toBe(false);
+    expect(patchHeader(deletion)).toBe("Why: D054 item 7.\n\n");
+  });
+
   it("finds the money block at the tag", () => {
     const block = moneyBlock(tagText(SITE)!);
     expect(block).toMatch(/LAUNCH_AMOUNT_PAISE = 499_900/);
@@ -217,6 +239,11 @@ describe(`checkout-freeze: frozen logic equals ${FREEZE_TAG}`, () => {
   });
 
   it.each([...frozenAtTag, ...AUTHORISED])("%s", (path) => {
+    const patch = patches.get(path);
+    if (patch && isDeletion(patch)) {
+      expect(RETIRED[path], `${path}: a deletion is accepted only for a file RETIRED lists with its founder decision`).toBeDefined();
+      return; // the retired files' own test below proves the rest
+    }
     expect(existsSync(join(ROOT, path)), `${path} was deleted`).toBe(true);
     const now = readRepoBytes(path);
     const expected = expectedBytes(path);
@@ -226,6 +253,16 @@ describe(`checkout-freeze: frozen logic equals ${FREEZE_TAG}`, () => {
         ? `${path} differs from ${FREEZE_TAG} + its reviewed patch`
         : `${path} differs from ${FREEZE_TAG} and has no reviewed patch in test/guards/fixtures/authorised-diffs/`,
     ).toBe(true);
+  });
+
+  it.each(Object.entries(RETIRED))("%s stays retired by its reviewed deletion, citing %s", (path, decision) => {
+    const patch = patches.get(path);
+    expect(patch && isDeletion(patch), `${path}: no reviewed deletion patch in test/guards/fixtures/authorised-diffs/`).toBe(true);
+    expect(patchHeader(patch!), `${path}: a deletion must cite ${decision}, the founder decision that removed its subject`).toMatch(
+      new RegExp(`\\b${decision}\\b`),
+    );
+    expect(existsSync(join(ROOT, path)), `${path} was retired by its reviewed deletion and must stay deleted`).toBe(false);
+    console.log(`[checkout-freeze] ${path}: retired by its reviewed deletion (${decision})`);
   });
 
   it("no frozen folder has gained a file", () => {

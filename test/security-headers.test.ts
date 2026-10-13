@@ -148,6 +148,41 @@ describe("the content security policy", () => {
     expect(scripts).not.toContain(" https: ");
   });
 
+  /* D054 item 9 (2026-10-14, amends D039 C10): what M1's tag runs reported (tracking inventory §14a). GA4 posts its
+     hits to www.google.com/g/collect as a fetch, and the Meta pixel's OpenBridge gateway (named by the pixel's own
+     configuration) posts to its AWS host, with a run.app fallback: both were fetches, so connect-src admits each, as an
+     exact origin, and no other directive does. */
+  it("admits GA4's collect host and the Meta pixel's gateway in connect-src, exact origins only (D054 item 9)", () => {
+    const gateway = [
+      "https://dv-c3e594c6d429469e90b54478358619c3.ecs.us-east-1.on.aws",
+      "https://bded8a3c6ae-1-1053047382554.us-central1.run.app",
+    ];
+    const connect = directive("connect-src")!.split(" ");
+    /* Every other directive of the policy, by its name (default-src, media-src, worker-src and the rest included). */
+    const others = policy.split("; ").map((part) => part.split(" ")[0]).filter((name) => name !== "connect-src");
+    expect(others).toEqual(expect.arrayContaining(["default-src", "script-src", "img-src", "media-src", "worker-src", "frame-src", "form-action"]));
+    for (const host of ["https://www.google.com", ...gateway]) {
+      expect(connect, `${host} is not in connect-src`).toContain(host);
+      for (const other of others) {
+        expect((directive(other) ?? "").split(" "), `${host} is in ${other}`).not.toContain(host);
+      }
+    }
+    /* And no wildcard came with them, in any spelling: every wildcard source of the policy (the dev one too) is still
+       one of the tag's four, GA4's regional collect hosts and Razorpay's. */
+    const tagWildcards = ["https://*.analytics.google.com", "https://*.google-analytics.com", "https://*.razorpay.com", "https://*.rzp.io"];
+    for (const dev of [false, true]) {
+      const wildcards = new Set(contentSecurityPolicy(dev).split(/[\s;]+/).filter((source) => source.includes("*")));
+      expect([...wildcards].sort(), `the wildcard sources (dev: ${dev})`).toEqual([...tagWildcards].sort());
+    }
+  });
+
+  /* D054 item 9: a report-only policy ignores upgrade-insecure-requests, and the browser logs an error for it on every
+     page (M1's Lighthouse Best Practices). It goes, and the policy stays Report-Only (the phase test below). */
+  it("carries no upgrade-insecure-requests, which a report-only policy ignores (D054 item 9)", () => {
+    expect(policy).not.toContain("upgrade-insecure-requests");
+    expect(contentSecurityPolicy(true)).not.toContain("upgrade-insecure-requests");
+  });
+
   it("sends violations somewhere we can read them, in both spellings", () => {
     expect(policy).toContain(`report-uri ${CSP_REPORT_PATH}`);
     expect(policy).toContain("report-to csp");
