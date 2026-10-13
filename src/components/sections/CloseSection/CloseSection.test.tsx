@@ -246,12 +246,27 @@ describe("CloseSection: full mode (ADR-005)", () => {
 });
 
 /* Task 4.9 item 4: the centred close has its own module (close-fold.tsx, with the fold and the heading every close
-   shares) that never reaches the art board, so the 404 loads it without next/image; CloseSection renders it for `center`. */
+   shares) that never reaches the art board, so the 404 loads it without next/image; CloseSection renders it for `center`.
+   The 404 renders CenterClose directly, so CenterClose itself is held to the approved mockup's centred closes. */
 describe("CenterClose (close-fold.tsx)", () => {
-  it.each(CASES.filter(([, , , c]) => c.variant === "center"))("%s: exactly CloseSection's centred close, in both modes", (_name, _slug, _fold, config) => {
+  const CENTER = CASES.filter(([, , , c]) => c.variant === "center");
+
+  it("covers the three centred closes: team, contact and 404", () => {
+    expect(CENTER.map(([, slug]) => slug)).toEqual(["team", "contact", "404"]);
+  });
+
+  it.each(CENTER)("%s: the mockup's centred close, exactly", (_name, slug, fold, config) => {
     if (config.variant !== "center") throw new Error("a centred close");
-    for (const offer of [TOKEN, FULL]) {
-      expect(renderToStaticMarkup(<CenterClose {...config} {...context(offer)} />)).toBe(renderToStaticMarkup(<CloseSection {...config} {...context(offer)} />));
-    }
+    const expected = builtMarkup([mockupFold(slug, fold)], { renames: RENAMES, adjust: adjustFor(config) });
+    expect(canonical(renderedElement(<CenterClose {...config} {...context()} />))).toBe(expected);
+  });
+
+  it.each(CENTER)("%s: in full mode only the price sentence changes", (_name, _slug, _fold, config) => {
+    if (config.variant !== "center") throw new Error("a centred close");
+    const PRICE = /<p( id="[^"]*")? class="kh-body-s ks-price">[^<]*<\/p>/;
+    const token = renderToStaticMarkup(<CenterClose {...config} {...context(TOKEN)} />);
+    const full = renderToStaticMarkup(<CenterClose {...config} {...context(FULL)} />);
+    expect(full.match(PRICE)?.[0]).toContain("₹7,999 (incl. GST), paid in full when you order.");
+    expect(full.replace(PRICE, "")).toBe(token.replace(PRICE, ""));
   });
 });
