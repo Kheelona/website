@@ -1,13 +1,8 @@
-import { PromiseMark } from "@/components/molecules/PromiseMark";
-import {
-  LAUNCH_PRICE,
-  BALANCE_PRICE,
-  FULL_PRICE,
-  CAP_UNITS_TEXT,
-  SHIP_DATE_TEXT,
-  KHEELONA_PLUS_SHORT,
-  TAX_LINE,
-} from "@/config/site";
+import { ContentIcon } from "@/components/ui/Icon/Icon";
+import { checkoutPrices, checkoutWords } from "@/components/sections/store/StoreDetails/checkout-words";
+import type { OrderSummaryCopy } from "@/components/sections/store/StoreDetails/store-details.types";
+import { BALANCE_PRICE, SHIP_DATE_TEXT } from "@/config/site";
+import { orderSummaryCopy } from "@/content/en-IN/store/store-page";
 
 /** What a parent is agreeing to, on the page where they agree to it (§8.25-u).
  *
@@ -20,14 +15,25 @@ import {
  *  Two shapes since §8.26. "token": ₹499 now, the balance by a link before
  *  dispatch. "full": the whole price now and nothing afterwards. The mode is
  *  decided by the server with the tier; this component only words it. Event
- *  pages always render the token shape — an event token is a token. */
+ *  pages always render the token shape — an event token is a token.
+ *
+ *  RESTYLED ON THE DESIGN SYSTEM (task 5.15; ADR-013: markup, classes, copy and
+ *  presentation imports only; store.md fold 4): the agreement card of the approved
+ *  mockup, a DS card of rows each with its DS icon tile, its bold head and its
+ *  note, then the small print (DS gap G-11, composed; `ks-agree` is StoreDetails'
+ *  CSS). The words come from content, their amounts from the labels the server
+ *  formatted (checkout-words.ts). The tier's own label is no longer printed: the
+ *  first row's note says what the advance is part of instead (store.md fold 4). */
 export function OrderSummary({
   amountLabel,
-  tierLabel,
   mode = "token",
   balanceLabel = BALANCE_PRICE,
+  delivery = `Ships ${SHIP_DATE_TEXT}`,
+  copy = orderSummaryCopy,
 }: {
   amountLabel: string;
+  /** The tier's own name (src/lib/store/tiers.ts). Passed by every caller and no
+   *  longer printed since the restyle (store.md fold 4). */
   tierLabel: string;
   mode?: "token" | "full";
   /** What is still owed before dispatch, already formatted by the server.
@@ -36,71 +42,38 @@ export function OrderSummary({
    *  ₹4,900 (2026-08-23, the Ideabaaz page). Like `amountLabel`, this is a
    *  label decided server-side — it changes sentences, never charges. */
   balanceLabel?: string;
+  /** The delivery row's head. The store page passes the D023 delivery line
+   *  ("Deliveries start mid-November", content/en-IN/delivery.ts). Without it
+   *  the row keeps the ship date the checkout printed before the reset, which
+   *  the event and partner pages show until task 6.1 restyles them and F12
+   *  settles existing orders (architecture §16.3). */
+  delivery?: string;
+  /** The card's words: the store's by default (store.md fold 4). */
+  copy?: OrderSummaryCopy;
 }) {
-  const lines =
-    mode === "token"
-      ? [
-          { head: `${amountLabel} today`, note: tierLabel, mark: 0 },
-          {
-            head: `${balanceLabel} on dispatch`,
-            note: `The rest of the ${LAUNCH_PRICE} price, by a link we send you. Never automatic.`,
-            mark: 1,
-          },
-          {
-            head: "Refundable in full",
-            note: "Ask any time before we dispatch your Kheelu, and no reason needed.",
-            mark: 2,
-          },
-          {
-            head: `Ships ${SHIP_DATE_TEXT}`,
-            note: "Pre-orders go out first, in the order they were placed.",
-            mark: 0,
-          },
-        ]
-      : [
-          { head: `${amountLabel} today`, note: tierLabel, mark: 0 },
-          {
-            head: "Nothing due on dispatch",
-            note: "You have paid the whole price. No balance link, and nothing automatic.",
-            mark: 1,
-          },
-          {
-            head: "Refundable in full",
-            note: "Ask any time before we dispatch your Kheelu, and no reason needed.",
-            mark: 2,
-          },
-          {
-            head: `Ships ${SHIP_DATE_TEXT}`,
-            note: "Pre-orders go out first, in the order they were placed.",
-            mark: 0,
-          },
-        ];
+  const prices = checkoutPrices(mode, amountLabel, balanceLabel);
+  const words = (text: string) => checkoutWords(text, prices);
+  const rows = [...copy.rows[mode], { icon: copy.delivery.icon, head: delivery, note: copy.delivery.note }];
 
   return (
-    <div className="rounded-(--radius-card-lg) border border-line bg-white p-6 md:p-7">
-      <h2 className="mb-5 font-display text-[22px] font-extrabold text-ink-head">
-        What you are agreeing to
+    <section className="kh-card ks-agree" aria-labelledby={copy.titleId}>
+      <h2 className="kh-card__title" id={copy.titleId}>
+        {copy.title}
       </h2>
-      <ul className="grid gap-4">
-        {lines.map((line) => (
-          <li key={line.head} className="flex items-start gap-3">
-            <PromiseMark index={line.mark} size="w-6" className="mt-0.5 shrink-0" />
+      <ul className="ks-agree__list">
+        {rows.map((row) => (
+          <li key={row.icon}>
+            <span className="kh-listitem__icon">
+              <ContentIcon name={row.icon} />
+            </span>
             <div>
-              <p className="font-display text-[17px] font-extrabold leading-snug text-ink-head">
-                {line.head}
-              </p>
-              <p className="mt-0.5 text-[14.5px] leading-snug text-ink-muted">{line.note}</p>
+              <p className="kh-label">{words(row.head)}</p>
+              <p className="kh-body-s ks-muted">{words(row.note)}</p>
             </div>
           </li>
         ))}
       </ul>
-      <p className="mt-5 border-t border-line pt-4 text-[14px] leading-[1.55] text-ink-muted">
-        {KHEELONA_PLUS_SHORT}{" "}
-        {mode === "token"
-          ? `The price is ${LAUNCH_PRICE} for the ${CAP_UNITS_TEXT}, and ${FULL_PRICE} once they are gone.`
-          : `The ${CAP_UNITS_TEXT} at ${LAUNCH_PRICE} have been reserved, and this order is at the ${FULL_PRICE} price.`}{" "}
-        {TAX_LINE} Delivery in India is included.
-      </p>
-    </div>
+      <p className="kh-body-s ks-muted ks-agree__fine">{words(copy.fine[mode])}</p>
+    </section>
   );
 }
