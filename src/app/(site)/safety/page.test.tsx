@@ -191,12 +191,6 @@ const comparable = (s: string) =>
     .trim()
     .toLowerCase();
 
-/** The page with its inline links unwrapped to their words. The shared detector reads HTML through `htmlToText`, which
- *  puts a space at every tag, inline ones included, so the groups answer's source marker and #facts link read "aged 6
- *  to 12. [1] We" and "top of this page ." where the page shows "12.[1] We" and "page.". Once the detector's `norm`
- *  drops a space before punctuation or a source marker (test/e2e/support/page-checks.ts, the main session's fix from
- *  the 5.3 review), this goes in the same commit and the test hands it `html` as it is. */
-const linksUnwrapped = (html: string) => html.replace(/<\/?a\b[^>]*>/gi, "");
 
 type FaqGraph = { "@graph": { "@type": string; mainEntity: { name: string; acceptedAnswer: { text: string } }[] }[] };
 
@@ -235,7 +229,7 @@ describe("/safety: its JSON-LD", () => {
   it("leaves the shared detector (jsonld-matches-page) nothing to report, in both modes", async () => {
     for (const mode of ["token", "full"] as const) {
       const { html } = await renderPage(buildOffer(mode));
-      expect(jsonLdMismatches(linksUnwrapped(html)), mode).toEqual([]);
+      expect(jsonLdMismatches(html), mode).toEqual([]);
     }
   });
 });
