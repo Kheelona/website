@@ -1,0 +1,305 @@
+---
+title: "Story: Screen time and tantrums: what is actually happening (/stories/screen-time-and-tantrums): page copy, task 5.17 draft"
+type: page-copy
+updated: 2026-10-14
+cites_at: archive/pre-reset-2026-10-10
+sources:
+  - ../strategy.md (§3.3 one in-text product link; §5 /stories/* row)
+  - ../pages/stories.md (fold 2 card, line 119; fold 6 journal close)
+  - ../pages/story-learning-toys-for-a-three-year-old.md (format, close, sticky bar, age lines)
+  - ../pages/home.md (CTA block, sticky bar)
+  - ../tracking-inventory.md (§6)
+  - ../url-map.md (§1b, line 117)
+  - ../../research/keyword-map.md (§4.2 row LRN-4, line 240; §5.1; §5.2 line 355; §5.3 line 410; §6.7 ST3, lines 632-633)
+  - ../../research/source-verification.md (§3.2 C35, line 122; §4 C35 ready line, lines 435-447; §7)
+  - "../../raw/research/sources/: C35-hiniker-2016-screen-time-tantrums.md, C35-gavrilova-veraksa-2024-screen-time-tantrums.md"
+  - ../../product/claims.md (§1, §4), ../../product/facts.md, ../../product/age-band-review.md
+  - ../../brand/messaging.md ("Added for 3 to 7": no "toddler"), ../../brand/voice.md, ../content-boundary.md
+  - ../../decisions/D016, D025, D026, D041
+  - "test/guards/banned-phrases.data.ts (us-ize: no quoted 'recognize'); test/e2e/content-integrity.spec.ts:34 (UNDER_THREE: 'toddlers')"
+  - "src/lib/stories-expansion.ts:43-66 (the live article; legacy file, input only), read in the w5c-5.17 worktree 2026-10-14"
+  - "src/content/en-IN/stories/articles/screen-time-and-tantrums.ts (stub: card, related, dates); src/content/types.ts:356-469 and src/layouts/ArticleTemplate/ArticleTemplate.tsx (the blocks the template renders)"
+  - design-system/project/03-cast.md:115; 01-writing.md:19-26 (read-only)
+---
+
+# Story: Screen time and tantrums: what is actually happening
+
+> **INTERNAL page** ([D013](../../decisions/D013-internal-vs-external-content.md)). Only the text inside
+> the **Copy** blocks is meant for the site. All copy is a draft for CMO review and the founder's sign-off
+> on beta at Gate B ([D015](../../decisions/D015-founder-signs-off-copy.md)).
+
+## How to read this page
+
+- **Copy** blocks (quoted) are the words to publish. Notes and tables are INTERNAL.
+- `¹` and `²` are source markers under [D026](../../decisions/D026-public-statistics.md) and
+  [B15](../gate-a-open-items.md#3-other-website-items-on-working-defaults). Lines without a marker are plain
+  advice in our own voice and make no research claim.
+- `{price-source}`, `{delivery-source}`: as on [Home](home.md#how-to-read-this-page).
+- Links show the real URL. There is no mockup for this article: it renders through the article template, and
+  each fold names the block it uses.
+
+## At a glance
+
+| Item | Draft |
+|---|---|
+| Real URL | `https://kheelona.com/stories/screen-time-and-tantrums` (no mockup; template parity with `story-learning-toys-for-a-three-year-old.html`) |
+| Page job | Help a parent whose child melts down when the screen goes off: say it is common and studied, what one study found makes it easier or harder, and what to do tonight; route to the product page once, calmly |
+| Primary cluster | **screen time tantrums** (LRN-4, ages 3 to 5; no volume data); secondary "tantrum when the phone is taken away" ([keyword map §4.2](../../research/keyword-map.md#42-journal-articles-22)) |
+| Title (60 characters) | Screen time tantrums: why they happen, what helps · Kheelona |
+| Meta description (144 characters) | Screen time tantrums: why a two-minute warning made children more upset in one study, and how to make switching off boring instead of explosive. |
+| H1 | Screen time and tantrums: what is actually happening (as live; the hub card title) |
+| Card (hub, unchanged) | Title "Screen time and tantrums: what is actually happening"; summary "Why the meltdown lands the moment the screen goes off, and how to make switching off boring instead of explosive." ([stories.md](stories.md) fold 2, line 119; the stub) |
+| Byline line | The Kheelona team · First published 28 Jul 2026 · 2 min read (byline: question 1) |
+| Dates | `published` 2026-07-28 and `related` exactly as the stub; `updated`: the main-session note on the [screen-time page](story-how-much-screen-time-for-a-3-to-6-year-old.md#questions-for-the-founder-website-only) |
+| CTA | The close only: "Pre-order Kheelu", `cta` = `finale`; phone sticky bar `sticky-bar` |
+| In-text product link | One, in fold 6 ("Kheelu" → `/products/kheelu`) (question 2) |
+| Template settings | `close: "journal"` |
+
+**What changed from the live article** (`src/lib/stories-expansion.ts:43-66`; it had no sources list): "The
+tantrum after the screen is so common it has its own research literature" becomes the verified C35 line
+([source verification C35](../../research/source-verification.md#c35--tantrums-at-the-off-switch), caveat 1:
+"only a few studies"); "it is most houses some evenings" is cut (caveat 2); the unsourced mechanism ("Fast,
+bright, always-rewarding video sets a pace no living room can match", "a small brain being asked to change gears
+at highway speed", "Each yes resets the peak, and the fall gets steeper") is cut, and the "why" is told in our
+own voice, as an observation, not a finding; "Announce the landing before takeoff" stays as agreeing the plan
+before the screen goes on, never a countdown (caveat 5: two-minute warnings made children more upset); "Children
+leave screens easily for things that want them back" and "Calm holds attention longer than parents expect"
+(no source) are cut; "our little talking friend" becomes the confirmed product line. The keyword map's ST3
+draft ("warn before the screen goes off", "giving in teaches that protest works") is not used: the first runs
+against the study, the second has no source.
+
+---
+
+## Fold 1 · Article head
+
+**Fold job:** name the moment every parent knows, in the first phone screen. Renders as `ArticleHead`.
+
+**Copy:**
+
+> **Breadcrumb:** Stories › Screen time
+>
+> **H1:** Screen time and tantrums: what is actually happening
+>
+> Why the meltdown lands the moment the screen goes off, and how to make switching off boring instead of explosive.
+>
+> The Kheelona team · First published 28 Jul 2026 · 2 min read
+
+- **H1 accent:** `Hand` on "what is actually happening".
+- **Lead:** the hub card's summary, word for word.
+- Breadcrumb: "Stories" → `/stories`; "Screen time" → `/stories#screen-time`.
+- **Read time:** about 470 words in `<main>` before the sources and close.
+- **Image** (after the lead, `kh-photo`, 4:5): `ira-04-paper-crown-web.webp`. Alt: "A laughing girl in a
+  sky-blue T-shirt holds a yellow paper crown on her head, beside a table scattered with crayons, cut paper and
+  a bottle of glue." DS: "Confidence and creativity" (`03-cast.md:115`), no Kheelu; the scene is the page's
+  advice (hands busy the moment the screen goes dark). File checked by eye 2026-10-14.
+
+---
+
+## Fold 2 · The answer first
+
+**Fold job:** what to do, in 40 to 60 words, then a hook to the counter-intuitive finding. Renders as
+`AnswerSection`.
+
+**Copy:**
+
+> **H2:** What helps with screen time tantrums?
+>
+> Make switching off part of a routine. Agree the limit before the screen goes on, stop at a natural break such as the end of an episode, and have something ready for your child's hands the moment it goes dark. If tears come anyway, stay calm, stay close and keep to what you said.
+>
+> One common tip is missing on purpose: the two-minute warning. More on that below.
+
+- Answer block: 54 words. Advice in our voice; fold 5 anchors "routine" and "a natural break" to the study's
+  release (note ²). No countdown tip anywhere (C35 ready-line note).
+
+---
+
+## Fold 3 · The scene
+
+**Fold job:** say "this is normal" before any research. Renders as an untitled `ArticlePart`.
+
+**Copy:**
+
+> The video ends. You say that's enough for today. And a child who sat quietly for half an hour is suddenly on the floor in tears.
+>
+> If this is your house some evenings, you are not alone.
+
+- The second line is the house half of C35's ready line.
+
+---
+
+## Fold 4 · Why at the off switch
+
+**Fold job:** the card's "why", honestly: what the research shows, then our own observation, marked as ours
+by having no marker.
+
+**Copy:**
+
+> **H2:** Why the meltdown comes at the off switch
+>
+> Screen time tantrums are common enough that researchers have studied them: a 2016 University of Washington study of families with children aged 1 to 5 found that "transitioning away from screens is often painful".¹
+>
+> Think about what the off switch asks of a young child: to stop something they enjoy, right now, at a moment they did not choose. That is hard at any age.
+>
+> It does not happen every evening, though. The study's senior author said that most of the time these transitions "actually go pretty smoothly", even if parents find that hard to see.² It is the hard evenings that stay with you.
+
+- The H2 is the keyword map's (§5.2). Paragraph 1 is C35's verified line, with the study's ages as the study
+  had them (every study line states its ages); "screen time tantrums" for "meltdowns at the off switch" is the
+  paper's own term.
+- The senior author's words are from the university's release (C35:44-46). Its "which can be hard for parents to
+  recognize" is paraphrased, not quoted: the quote's US spelling would trip the en-IN guard (`us-ize`).
+- The release's diary percentages are not used (C35 caveat 3: from the release, not the paper; and D026).
+
+---
+
+## Fold 5 · What makes it easier
+
+**Copy:**
+
+> **H2:** What makes taking the phone away easier?
+>
+> How the screen ends makes a difference. In the same study, routines and stopping at a natural break made the switch easier.²
+>
+> One well-meant habit made it harder: children given a two-minute warning by their parents were more upset when the screen went away.² That is one study, so watch your own child. If the countdown sets off the storm, drop it.
+
+- The H2 carries the secondary ("tantrum when the phone is taken away").
+- C35's ready line, split in two. "Routines and stopping at a natural break" rests on the verification's
+  reading of the release (C35 caveat 6 and ready line); the saved excerpt holds the two-minute sentence
+  (C35:48-49) but not this one, so the release is re-read before publishing (notes below).
+
+---
+
+## Fold 6 · Making switching off boring (the one in-text product link)
+
+**Fold job:** the card's "how": habits for tonight; then one calm product line with its age limits; then the
+screen-time guide. Renders as an `ArticlePart`: `p`, `list` (variant `tips`), two `p`.
+
+**Copy:**
+
+> **H2:** How to make switching off boring
+>
+> Boring is the goal: an ending so routine that there is nothing to fight about.
+>
+> - Agree the plan out loud before the screen goes on: "One episode, then we water the plants."
+> - Stop at the end of an episode or a song, never halfway through.
+> - Turn off autoplay, so the next episode does not start on its own.
+> - Keep the same order every day, so the ending is no surprise.
+> - Have something ready for their hands the moment the screen goes dark: dough, crayons, a job in the kitchen.
+> - If tears come, stay close, stay calm and keep to what you said.
+>
+> Need something ready for that moment? [Kheelu](https://kheelona.com/products/kheelu) is one screen-free option: a plush toy for ages 3 to 7 that answers your child, then asks a question back. If your child is 3, keep a grown-up nearby while they play.
+>
+> How much screen time suits each age is a separate question. Our guide, [How much screen time is okay for a young child?](https://kheelona.com/stories/how-much-screen-time-for-a-3-to-6-year-old), sets out the WHO, IAP and AAP advice, age by age.
+
+- Tip icons: `calendar-check`, `pause`, `gear`, `clock`, `puzzle-piece`, `heart`.
+- All tips are house advice; none is a countdown, and none has the parent switch off mid-episode.
+- Product line: facts only; it claims nothing about tantrums or behaviour. Links: `/products/kheelu` (the page's
+  one product link); `/stories/how-much-screen-time-for-a-3-to-6-year-old`.
+
+---
+
+## Fold 7 · Sources (article foot)
+
+**Copy** (`kh-body-s`, numbered list; each URL is a link):
+
+> **Sources**
+>
+> ¹ Hiniker, Suh, Cao and Kientz (University of Washington), "Screen Time Tantrums", CHI 2016 conference proceedings, pp. 648-660, 2016, abstract. https://doi.org/10.1145/2858036.2858278
+>
+> ² University of Washington News (Jennifer Langston), "Two-minute warnings make kids' 'screen time' tantrums worse", 2016, the university's release about the study. https://www.washington.edu/news/2016/05/05/two-minute-warnings-make-kids-screen-time-tantrums-worse/
+
+- **Note ¹ gives the paper's main title only.** Its subtitle names "Toddlers and Preschoolers": the word
+  "toddler" is banned on the site ([messaging, "Added for 3 to 7"](../../brand/messaging.md#claims-guardrails)) and
+  the content-integrity guard flags it (`content-integrity.spec.ts:34`). The DOI links the full record, and the
+  text states the study's ages (1 to 5).
+- Note ² is the university's own account of its study (the full paper could not be read); cited by name, as the
+  C35 ready line says.
+
+---
+
+## Fold 8 · Related guides
+
+**Copy:**
+
+> **H2:** Related guides
+>
+> - How much screen time is okay for a young child?
+> - The gentle way off the phone: a seven-day plan
+> - Busy hands, no screens
+
+| Title (each guide's own card) | Real URL |
+|---|---|
+| How much screen time is okay for a young child? | `/stories/how-much-screen-time-for-a-3-to-6-year-old` |
+| The gentle way off the phone: a seven-day plan | `/stories/the-gentle-way-off-the-phone` |
+| Busy hands, no screens | `/stories/busy-hands-no-screens` |
+
+The stub's `related` list, unchanged.
+
+---
+
+## Fold 9 · Close (journal close block)
+
+As on the [screen-time guide](story-how-much-screen-time-for-a-3-to-6-year-old.md#fold-13--close-journal-close-block):
+the hub's close from `articlePageCopy`, `cta` = `finale`; amounts from the offer.
+
+## Phone sticky bar
+
+As Home: **₹499`{price-source}` today** · **refundable · ₹4,999`{price-source}` total (incl. GST)** · **Pre-order Kheelu**,
+`cta` = `sticky-bar`.
+
+---
+
+## Keyword placements
+
+| Rule ([keyword map §5](../../research/keyword-map.md#5-placement-rules)) | Met | Where |
+|---|---|---|
+| Title ≤ 60, primary at the start | Yes | 60 characters, the §5.2 draft |
+| Meta ≤ 155: primary plus a concrete fact | Yes | 144 characters; the two-minute-warning finding |
+| One H1 with the primary | Yes (close variant) | As live, the card title: "Screen time and tantrums" |
+| Primary in an answer-first block in the first ~100 words | Yes | Fold 2 H2 "What helps with screen time tantrums?" and its 54-word answer |
+| An H2 the keyword map names | Yes | Fold 4 "Why the meltdown comes at the off switch" (§5.2) |
+| Secondary "tantrum when the phone is taken away" | Yes | Fold 5 H2 |
+| "3 to 7" on the page | Yes | Fold 6 product line; the close |
+| Alt text | Yes | Describes the scene |
+| Density | Yes | "screen time tantrums" twice in `<main>` (fold 2 H2, fold 4): about 1.3% of about 470 words; "Kheelu" 3 times with the close |
+| Words never placed | Yes | No "cartoon addiction" (the secondary reads as a clinical label, and no source covers it: §5.1 rule 8); no "toddler"; no countdown tip; no brain, speech or health line; no percentages |
+
+## CTA tracking values
+
+| Position | Element | `cta` value | Status |
+|---|---|---|---|
+| Laptop nav, phone drawer (chrome) | Pre-order Kheelu | `navbar`, `navbar-mobile` | Existing |
+| Close | Pre-order Kheelu | `finale` | Existing |
+| Phone sticky bar | Pre-order Kheelu | `sticky-bar` | As Home |
+| In-text links (product, one guide) | text links | none | n/a |
+
+## Placeholders
+
+None.
+
+## Questions for the founder (website only)
+
+1. **Byline.** As on the [screen-time guide](story-how-much-screen-time-for-a-3-to-6-year-old.md#questions-for-the-founder-website-only)
+   (the live byline is Kashyap C.R). **Recommend "The Kheelona team"** unless Kashyap reads and owns the rewrite.
+2. **A product link on a tantrums page.** (a) One calm line after the tips, facts only (as drafted; strategy §3.3
+   gives every journal article one); (b) no product link, as on the late-talker guide. **Recommend (a)**:
+   tantrums are not a health topic, and the line promises nothing about behaviour; (b) only if the founder
+   reads it as selling to a parent at a hard moment.
+
+**For QA before publishing:** re-read the University of Washington release and save the passage on routines
+and natural breaks to the C35 excerpt (it is in the verification's reading, source verification C35 caveat 6,
+but not in the saved excerpt).
+
+## Sources
+
+| Claim | Source |
+|---|---|
+| Screen time tantrums are common enough that researchers have studied them; a 2016 University of Washington study of families with children aged 1 to 5; "transitioning away from screens is often painful" | [source verification C35](../../research/source-verification.md#c35--tantrums-at-the-off-switch) (ready line); excerpt `raw/research/sources/C35-hiniker-2016-screen-time-tantrums.md:26-33`; "only a few studies" (so never "its own literature"): `C35-gavrilova-veraksa-2024-screen-time-tantrums.md:27-29` |
+| The senior author: most of the time these transitions "actually go pretty smoothly", hard for parents to see | `C35-hiniker-2016-screen-time-tantrums.md:44-46` (the release) |
+| Routines and stopping at a natural break made the switch easier | [source verification C35](../../research/source-verification.md#c35--tantrums-at-the-off-switch), caveat 6 and ready line (the release); not in the saved excerpt (QA note above) |
+| Children given a two-minute warning were more upset when the screen went away | `C35-hiniker-2016-screen-time-tantrums.md:48-49` (the release); C35 caveat 5 |
+| Kheelu: screen-free plush toy, ages 3 to 7, answers then asks a question back | [facts, identity](../../product/facts.md#identity), [age](../../product/facts.md#age); [D017](../../decisions/D017-live-behaviour-claims-confirmed.md); [claims §1](../../product/claims.md#1-confirmed-by-the-founder) |
+| A grown-up nearby at 3 | [D041](../../decisions/D041-gate-a-round-1.md) ("Age 3" row) |
+| Card title and summary, related list, published date | the stub module; [stories.md](stories.md) fold 2 (line 119); `src/lib/stories-expansion.ts:50` |
+| Cut lines | [source verification C35](../../research/source-verification.md#c35--tantrums-at-the-off-switch) caveats 1, 2, 5; no source for the live mechanism lines |
+| Close block, price sentence, sticky bar | [home, CTA block](home.md#cta-block) and [phone sticky bar](home.md#phone-sticky-bar) sources |
+| Photo | DS `03-cast.md:115`; file checked by eye 2026-10-14 |
