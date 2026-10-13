@@ -7,7 +7,9 @@
 //   root <svg class="ks-doodle" aria-hidden="true" focusable="false"> with the DS viewBox only;
 //   <title>, role, aria-label and the per-file <defs> filter gone; filter="url(#chalk)" becomes
 //   url(#ks-chalk); pathLength="1" on every stroked path; filled shapes carry ks-doodle__fill;
-//   every other element and attribute (paths, colours, widths) verbatim.
+//   every path coordinate rounded to 2 decimals (task 4.6: the DS writes up to 17 digits, which
+//   pushed Home's HTML document over its 60 KB budget; 0.005 of a 200-unit viewBox is invisible);
+//   every other element and attribute (colours, widths) verbatim.
 import { mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -44,12 +46,20 @@ function flatten(root: Element): Node[] {
 
 const isSet = (v: string | undefined) => v !== undefined && v !== "none";
 
+/** The numbers of an SVG path, in order. */
+const NUMBER = /-?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?/g;
+const numbersOf = (d: string) => (d.match(NUMBER) ?? []).map(Number);
+
+/** A path with every coordinate rounded to 2 decimals and written without trailing zeros (task 4.6). */
+const rounded = (d: string) => d.replace(NUMBER, (n) => String(Number(Number(n).toFixed(2))));
+
 /** What the generated component must render for one DS doodle, by the task's rules. */
 function expectedFromDs(name: string): { root: Record<string, string>; body: Node[] } {
   const ds = parseSvg(readFileSync(join(DOODLES_DIR, `${name}.svg`), "utf8"));
   for (const drop of ds.querySelectorAll("title, defs")) drop.remove();
   const body = flatten(ds).map(({ tag, attrs }) => {
     const out = { ...attrs };
+    if (out.d !== undefined) out.d = rounded(out.d);
     if (out.filter) {
       expect(out.filter).toBe("url(#chalk)");
       out.filter = "url(#ks-chalk)";
@@ -94,6 +104,22 @@ describe("doodles.generated.tsx: the DS doodles the approved pages use", () => {
     delete rootAttrs.xmlns;
     expect(rootAttrs).toEqual(root);
     expect(flatten(svg)).toEqual(body);
+  });
+
+  it("rounds every path coordinate to 2 decimals and moves none by more than 0.005 of a unit (task 4.6)", () => {
+    for (const name of mockupDoodles) {
+      const ds = [...parseSvg(readFileSync(join(DOODLES_DIR, `${name}.svg`), "utf8")).querySelectorAll("path")].map((p) => p.getAttribute("d")!);
+      const built = [...render(name).querySelectorAll("path")].map((p) => p.getAttribute("d")!);
+      expect(built.length, name).toBe(ds.length);
+      built.forEach((d, i) => {
+        const want = numbersOf(ds[i]);
+        const got = numbersOf(d);
+        expect(got.length, `${name} path ${i}: every number kept`).toBe(want.length);
+        got.forEach((n, j) => expect(Math.abs(n - want[j]), `${name} path ${i} number ${j}`).toBeLessThanOrEqual(0.005 + 1e-9));
+        expect(d.match(/\.\d{3,}/g), `${name} path ${i}: at most 2 decimals`).toBeNull();
+        expect(d.replace(NUMBER, "#"), `${name} path ${i}: commands and separators verbatim`).toBe(ds[i].replace(NUMBER, "#"));
+      });
+    }
   });
 
   it("puts pathLength on every stroked path and nothing else, so the draw covers each line once", () => {
@@ -172,6 +198,14 @@ describe("build-doodles.mjs refuses what would change the look", () => {
     const f = join(dir, "ink-heart.svg");
     writeFileSync(f, readFileSync(f, "utf8").replace("</g>", '<circle cx="1" cy="1" r="2" fill="none" stroke="#2a2118"></circle></g>'));
     expect(() => generateDoodles({ doodlesDir: dir })).toThrow(/ink-heart\.svg: stroked <circle>/);
+  });
+
+  it("fails on a path whose rounding would merge two of its numbers (\"1.5.001\" would become \"1.50\")", () => {
+    const f = join(dir, "ink-heart.svg");
+    const src = readFileSync(f, "utf8");
+    expect(src).toContain(' d="M');
+    writeFileSync(f, src.replace(' d="M', ' d="M1.5.001 2 M'));
+    expect(() => generateDoodles({ doodlesDir: dir })).toThrow(/ink-heart\.svg: rounding a path to 2 decimals would merge two of its numbers/);
   });
 
   it("fails on an element it does not know how to carry", () => {

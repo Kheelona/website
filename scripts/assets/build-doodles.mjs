@@ -6,6 +6,9 @@
 //
 // Source: design-system/project/assets/Doodles/<name>.svg for each name in DOODLE_FILES, read-only.
 // Per doodle, the DS drawing is kept verbatim (paths, colours, stroke widths, the grain groups) and:
+//   - every path coordinate is rounded to 2 decimals, without trailing zeros (task 4.6: the DS writes
+//     up to 17 digits, about 34 KB of numbers that pushed Home's HTML document over its 60 KB budget;
+//     0.005 of a unit in a 200-unit viewBox is invisible at any size the pages draw);
 //   - the root becomes <svg class="ks-doodle" aria-hidden="true" focusable="false"> with the DS
 //     viewBox only (no width, height, role, aria-label; <title> dropped): doodles are decorative,
 //     and the page sizes them as it sized the <img> they replace;
@@ -89,6 +92,19 @@ function parse(file, src) {
 }
 
 const attr = (el, name) => el.attrs.find(([k]) => k === name)?.[1];
+
+/** A number in an SVG path: optional sign, digits with an optional fraction or a bare fraction, optional exponent. */
+const PATH_NUMBER = /-?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?/g;
+
+/** A path with every coordinate rounded to 2 decimals, commands and separators kept. Stops when rounding would merge
+ *  two numbers written without a separator ("1.5.001" would become "1.50", one number). */
+function roundPath(file, d) {
+  const out = d.replace(PATH_NUMBER, (n) => String(Number(Number(n).toFixed(2))));
+  if ((out.match(PATH_NUMBER) ?? []).length !== (d.match(PATH_NUMBER) ?? []).length) {
+    throw new Error(`build-doodles: ${file}: rounding a path to 2 decimals would merge two of its numbers`);
+  }
+  return out;
+}
 const isSet = (v) => v !== undefined && v !== "none";
 
 /** A stable text form of an element subtree, to compare the filters of different files. */
@@ -122,6 +138,7 @@ function drawing(file, el, filterRef, depth) {
     if (ref !== undefined && ref !== `url(#${filterRef})`) throw new Error(`build-doodles: ${file}: filter="${ref}" is not the file's grain filter`);
     attrs = attrs.map(([k, v]) => (k === "filter" ? [k, `url(#${SHARED_FILTER_ID})`] : [k, v]));
   } else if (el.tag === "path" || el.tag === "circle") {
+    if (el.tag === "path") attrs = attrs.map(([k, v]) => (k === "d" ? [k, roundPath(file, v)] : [k, v]));
     if (isSet(attr(el, "fill"))) extra.push('className="ks-doodle__fill"');
     if (isSet(attr(el, "stroke"))) {
       if (el.tag !== "path") throw new Error(`build-doodles: ${file}: stroked <${el.tag}>; the draw animates stroked <path> elements only`);
