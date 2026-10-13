@@ -41,5 +41,7 @@ export const Paid: Story = {};
 /** Confirming: the payment is with the provider, the webhook not in yet. */
 export const Confirming: Story = { args: { copy: confirmation.head.created, amount: undefined, email: undefined } };
 
-/** Link needed: a bare /thanks, or a cookie that has aged out. */
-export const LinkNeeded: Story = { args: { copy: confirmation.head.linkNeeded, amount: undefined, email: undefined } };
+/** Link needed: a bare /thanks, or a cookie that has aged out; the help line under the lede, as the page passes it. */
+export const LinkNeeded: Story = {
+  args: { copy: confirmation.head.linkNeeded, amount: undefined, email: undefined, help: confirmation.linkNeededHelp },
+};

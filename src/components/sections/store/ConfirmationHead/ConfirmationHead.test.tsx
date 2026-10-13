@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { confirmation } from "@/content/en-IN/store/confirmation";
 import { mockupFold, skeleton, words } from "../../../../../test/support/mockup-compare";
 import { ConfirmationHead } from "./ConfirmationHead";
-import { SAMPLE_ORDER } from "./ConfirmationHead.stories";
+import stories, { LinkNeeded, SAMPLE_ORDER } from "./ConfirmationHead.stories";
 
 /* ConfirmationHead (task 5.16): /thanks fold 1 (store-confirmation.html): say it worked, in the first line, and where
    the proof went. The mockup's lede carries two sample values (a value marker on the amount, a placeholder for the
@@ -58,6 +58,14 @@ describe("ConfirmationHead", () => {
       "Cannot find the email? WhatsApp or call +91 91875 46483 and a person will pull up your order and add your address for you.",
     );
     expect(screen.getByRole("link", { name: "call +91 91875 46483" })).toHaveAttribute("href", "tel:+919187546483");
+  });
+
+  it("its LinkNeeded story shows the state as the page renders it, the help line included (every variant in Storybook)", () => {
+    const { container } = render(<ConfirmationHead {...stories.args} {...LinkNeeded.args} />);
+    expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("We need your link again.");
+    expect(container.querySelector(".ks-help")!.textContent).toBe(
+      `${confirmation.linkNeededHelp.lead} WhatsApp or call +91 91875 46483 and a person will pull up your order and add your address for you.`,
+    );
   });
 
   it("has no help line unless it is given one", () => {

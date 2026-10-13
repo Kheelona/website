@@ -76,13 +76,13 @@ import { pageMeta } from "@/lib/seo/metadata";
  *  is the delivery row's choice by order date (N9, F12 open), in
  *  sections/store/OrderRows/delivery-line.ts: this page passes `created_at`.
  *
- *  Metadata through pageMeta (title, description, share card), without its
- *  canonical and with the share URL on the store host: this page is noindex
- *  (the store layout's robots, which a page-level robots key would replace),
- *  and its URL is the store's, never the marketing origin's. */
+ *  Metadata through pageMeta (title, description, share card), with the
+ *  canonical and the share URL on the store host, as the store page sets its
+ *  own: this page's URL is the store's, never the marketing origin's. No robots
+ *  key: the store layout's noindex stands (a page-level one would replace it). */
 const { title, description, openGraph, twitter } = pageMeta({ ...confirmation.meta, path: THANKS_PATH });
 
-export const metadata: Metadata = { title, description, openGraph: { ...openGraph, url: `${STORE_ORIGIN}${THANKS_PATH}` }, twitter };
+export const metadata: Metadata = { title, description, alternates: { canonical: `${STORE_ORIGIN}${THANKS_PATH}` }, openGraph: { ...openGraph, url: `${STORE_ORIGIN}${THANKS_PATH}` }, twitter };
 
 export const dynamic = "force-dynamic";
 

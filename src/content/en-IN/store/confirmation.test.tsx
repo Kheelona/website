@@ -340,12 +340,12 @@ describe("/thanks, the page", () => {
     expect(bubble(container)).not.toBeNull();
   });
 
-  it("sets its title, description and share card through pageMeta: no robots (the store layout's noindex stands), no canonical", async () => {
+  it("sets its title, description and share card through pageMeta: no robots (the store layout's noindex stands), the canonical on the store host as the store page's", async () => {
     const { metadata } = await import("@/app/store/thanks/page");
     expect(metadata.title).toEqual({ absolute: confirmation.meta.title });
     expect(metadata.description).toBe(confirmation.meta.description);
     expect(metadata).not.toHaveProperty("robots");
-    expect(metadata).not.toHaveProperty("alternates");
+    expect(metadata.alternates).toEqual({ canonical: `${STORE_ORIGIN}/thanks` });
     expect(metadata.openGraph).toMatchObject({
       title: confirmation.meta.title,
       description: confirmation.meta.description,

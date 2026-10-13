@@ -21,8 +21,11 @@ import { seller } from "../seller";
  * the values it derives from the row. Its title and description are the copy page's; the share card is the site's.
  */
 
-/** The address form's words. Its own export, because the form is a client island: it imports this alone, so the
- *  page's other words never reach the browser bundle. */
+/** The address form's words. Its own export, because the form is a client island and imports this alone: the page's
+ *  other words (`confirmation` below) are left out of the browser bundle. This module's imports are not: the build keeps
+ *  the seller facts and the organization node they read in the form's client chunk (public data, about 1-2 KB gzip),
+ *  and every page that loads the `@/features/preorder` barrel's chunk carries them too. Only a words-only module for the
+ *  form, importing types alone, would keep them out. */
 export const addressForm = {
   labels: {
     line1: "Flat or house, and street",
