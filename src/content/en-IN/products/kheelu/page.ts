@@ -11,7 +11,7 @@ import appActivity from "@/assets/app/app-activity.webp";
 import appPrivacy from "@/assets/app/app-privacy.webp";
 import appTranscript from "@/assets/app/app-transcript.webp";
 import type { ModeCardCopy } from "@/components/sections/ModesSection/modes-section.types";
-import { asIconName } from "@/components/ui/Icon/Icon";
+import type { IconName } from "@/components/ui/Icon/Icon";
 import type { LanguageChip } from "@/components/ui/LanguageChips/LanguageChips";
 import type { TrustItem } from "@/content/types";
 import type { PageContent } from "@/layouts/PageTemplate/page-template.types";
@@ -221,9 +221,11 @@ export const kheeluPage = {
           ],
           caption: APP_CAPTION,
         },
-        /* trust.ts types its icons as content (IconRef); asIconName narrows each to the DS name the section takes, and
-           throws on any other name, so a wrong one fails the build (G-12) instead of drawing an empty svg. */
-        facts: SAFETY_FACTS.map(({ icon, text }) => ({ icon: asIconName(icon), text })),
+        /* trust.ts types its icons as content (IconRef) and the section's facts still take the DS IconName, so they are
+           asserted here as Home asserts them; a page module imports no value from components (structure §6). The
+           narrowing moves into TrustSection at the wave close (5.2 review). trust.test.ts holds each to a DS icon and
+           this page's test to the mockup's glyph. */
+        facts: SAFETY_FACTS.map(({ icon, text }) => ({ icon: icon as IconName, text })),
       },
       cta: {
         cta: "product-safety",

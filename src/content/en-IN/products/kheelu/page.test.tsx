@@ -1,4 +1,4 @@
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -18,6 +18,7 @@ import { mockupRoute as mockupPageRoute } from "../../../../../test/e2e/support/
 import { mockupPage, mockupRoute, STORE, words } from "../../../../../test/support/mockup-compare";
 import { faqs } from "../../faqs";
 import { films } from "../../films";
+import { SAFETY_FACTS } from "../../trust";
 import { kheeluPage } from "./page";
 import { product } from "./product";
 
@@ -261,19 +262,24 @@ describe("the product page's structured data (architecture §9.2)", () => {
   });
 });
 
-describe("the shared facts it narrows (trust.ts)", () => {
-  afterEach(() => {
-    vi.doUnmock("../../trust");
-    vi.resetModules();
-  });
+describe("the module's imports (structure §6, wave-4 close: page modules import types only from layouts and components)", () => {
+  /** Every import of page.ts from components or layouts: its source and whether it is `import type`. */
+  const sharedImports = () =>
+    [...readFileSync(join(ROOT, "src/content/en-IN/products/kheelu/page.ts"), "utf8").matchAll(/^import\s+(type\s+)?[^;]*?from\s+"([^"]+)";/gm)]
+      .filter((m) => /^@\/(components|layouts)\//.test(m[2]))
+      .map((m) => ({ from: m[2], typeOnly: Boolean(m[1]) }));
 
-  it("refuses a safety fact whose icon the DS lacks when the module loads, so `next build` fails too (asIconName, G-12)", async () => {
-    vi.resetModules();
-    vi.doMock("../../trust", async (importOriginal) => ({
-      ...(await importOriginal<typeof import("../../trust")>()),
-      SAFETY_FACTS: [{ icon: "not-a-ds-icon", text: "No camera" }],
-    }));
-    await expect(import("./page")).rejects.toThrow(/"not-a-ds-icon" is not one of the \d+ design-system icons/);
+  it("takes only types from components and layouts, never a value", () => {
+    expect(sharedImports().length).toBeGreaterThan(0);
+    expect(sharedImports().filter((i) => !i.typeOnly)).toEqual([]);
+  });
+});
+
+describe("the shared facts it passes on (trust.ts)", () => {
+  it("hands the safety fold exactly trust.ts's three facts, each a DS icon (trust.test.ts guards the list itself)", () => {
+    const safety = kheeluPage.sections.find((s) => s.kind === "trust-section")!;
+    expect(safety.config.variant === "safety" && safety.config.facts).toEqual(SAFETY_FACTS);
+    for (const { icon } of SAFETY_FACTS) expect(Object.keys(ICON_PATHS)).toContain(icon);
   });
 });
 
