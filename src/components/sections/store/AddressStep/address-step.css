@@ -10,6 +10,9 @@
 .ks-addr__pair {
   display: grid;
   gap: var(--space-5);
+  /* The build's one addition (the approved mockup has no validators, so never two error lines of different length
+     side by side): each field keeps its own height, so an error under one never stretches the other's input. */
+  align-items: start;
 }
 .ks-addr__saved .kh-btn {
   justify-self: start;
