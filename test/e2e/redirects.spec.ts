@@ -55,6 +55,8 @@ const ADDED: Row[] = [
   { from: "/careers", to: "/team" },
   { from: "/jobs", to: "/team" },
   { from: "/pricing", to: "/products/kheelu#offer" },
+  /* D053 (task 6.5): the 3-6-9-12 article leaves the journal, to its hub topic. */
+  { from: "/stories/screen-time-rules-parents-swear-by", to: "/stories#screen-time" },
 ];
 
 const RULES_TABLE = existsSync(join(ROOT, "src/config/redirects.ts"));

@@ -152,6 +152,8 @@ const LEGACY: [string, string][] = [
   ["/careers", "/team"],
   ["/jobs", "/team"],
   ["/pricing", "/products/kheelu#offer"],
+  /* D053 (task 6.5): the 3-6-9-12 article leaves the journal, to its hub topic. */
+  ["/stories/screen-time-rules-parents-swear-by", "/stories#screen-time"],
 ];
 
 /* Each sample plain, with a trailing slash, and with a campaign query that must
