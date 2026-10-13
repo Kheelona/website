@@ -12,7 +12,8 @@ import { VIEWPORTS } from "./support/viewports";
  * carries data-ph-capture-attribute-cta with a registered value. The set of values on a page
  * equals the set its approved mockup carries, plus "whatsapp-float" (the D050 bubble, every page).
  * The reserved values "home-arc" and "compare" appear nowhere. The store's pay button is a submit
- * button, not a link, and carries no value (inventory: not tagged).
+ * button, not a link, and carries no value (inventory: not tagged). The phone buy bar's value,
+ * "sticky-bar", is on exactly the routes whose `buybar` says so (task 4.9: articles by their close).
  *
  * Registered values: every value the approved mockup uses anywhere, plus "whatsapp-float". The
  * registry itself (src/lib/tracking/cta.ts, task 1.4) is checked against them by its own guards.
@@ -65,6 +66,11 @@ for (const route of sweepRoutes()) {
         ),
       ].sort();
       for (const v of RESERVED) expect.soft(values, `${route.id}: reserved value ${v} is in use`).not.toContain(v);
+      /* The phone buy bar (its button tracked sticky-bar) is in the page exactly where the route carries it: a mockup
+         page's meta, an article's own close, so never on the seven keep-close guides (B5; routes.ts, task 4.9 item 6). */
+      expect
+        .soft(values.includes("sticky-bar"), `${route.id}: the phone buy bar (sticky-bar) is ${route.buybar ? "missing" : "on a page that has none"}`)
+        .toBe(route.buybar);
       if (route.mockup && mockupRoutes().some((r) => r.id === route.id)) {
         // The D050 bubble came after Gate A: the mockup itself (self-test) does not carry it.
         const expected = [...new Set([...mockupValues(route.mockup), ...(PARITY_TARGET === "mockup" ? [] : [D050])])].sort();

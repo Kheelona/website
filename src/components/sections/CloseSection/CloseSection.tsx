@@ -1,20 +1,21 @@
-import type { ReactNode } from "react";
 import { Card } from "@/components/ui/Card/Card";
-import { Heading } from "@/components/ui/Heading/Heading";
 import { HelpLine } from "@/components/ui/HelpLine/HelpLine";
-import { Actions, Container, Section, Split } from "@/components/ui/Layout/Layout";
+import { Actions, Split } from "@/components/ui/Layout/Layout";
 import type { MediaRatio } from "@/components/ui/Photo/Photo";
 import { RichText } from "@/components/ui/RichText/RichText";
 import type { ArtBoardRef } from "@/content/types";
 import { CtaBlock, SecondaryLink } from "../CtaBlock/CtaBlock";
 import type { CtaBlockConfig, SellingContext, SellingHeading } from "../CtaBlock/cta-block.types";
 import { CloseArt } from "./close-art";
+import { CenterClose, CloseFold, CloseHeading } from "./close-fold";
 import type { CloseSectionProps } from "./close-section.types";
 
 /**
  * A page's last fold (architecture §5.1; components §2): the heading and one calm next step. Every close of the
  * approved mockup, by variant (close-section.types.ts): the CTA block beside an art board (`split`, `journal`), in a
  * tinted card (`guide`), centred without art (`center`), or /setup's contact links with no chilli button (`links`).
+ * The fold, the heading and the centred close live in close-fold.tsx, which never reaches the art board, so a page that
+ * renders only the centred close (the 404) can load it without next/image (task 4.9).
  * Server component; never revealed on arrival: the mockup reveals no close, and each holds a chilli button and the
  * price (architecture §11.2).
  */
@@ -50,12 +51,7 @@ export function CloseSection(props: CloseSectionProps) {
         </CloseFold>
       );
     case "center":
-      return (
-        <CloseFold>
-          <CloseHeading heading={props.heading} context={context} center />
-          <CtaBlock {...props.cta} align="center" {...context} />
-        </CloseFold>
-      );
+      return <CenterClose {...props} />;
     case "links":
       return (
         <CloseFold id="help">
@@ -74,15 +70,6 @@ export function CloseSection(props: CloseSectionProps) {
         </CloseFold>
       );
   }
-}
-
-/** The close's section and container: `#close` named by `#close-title` (`#help` on /setup). */
-function CloseFold({ id = "close", className, children }: { id?: string; className?: string; children: ReactNode }) {
-  return (
-    <Section id={id} labelledBy={`${id}-title`} className={className}>
-      <Container>{children}</Container>
-    </Section>
-  );
 }
 
 interface BesideArtProps {
@@ -105,28 +92,5 @@ function BesideArt({ heading, cta, context, art, clamp, ratio, artClassName }: B
       </div>
       <CloseArt art={art} clamp={clamp} ratio={ratio} className={artClassName} />
     </Split>
-  );
-}
-
-interface CloseHeadingProps {
-  heading: SellingHeading;
-  context: SellingContext;
-  center?: boolean;
-  id?: string;
-  children?: ReactNode;
-}
-
-function CloseHeading({ heading, context, center, id = "close-title", children }: CloseHeadingProps) {
-  return (
-    <Heading
-      align={center ? "center" : undefined}
-      eyebrow={heading.eyebrow}
-      title={heading.title}
-      lead={heading.lead}
-      id={id}
-      offer={context.offer}
-    >
-      {children}
-    </Heading>
   );
 }

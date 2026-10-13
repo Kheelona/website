@@ -4,10 +4,12 @@
  */
 import { pathToFileURL } from "node:url";
 import { join } from "node:path";
+import ts from "typescript";
 import { isLegacyRoute } from "../../guards/legacy-paths";
 import { ORIGINS, SLUG_FILTER, type Host } from "./env";
 import { MOCKUP_SLUGS, type MockupSlug } from "./mockup-text";
 import { ROOT, readRepoFile } from "./repo";
+import { parseSource } from "./source";
 
 export type Route = {
   /** Mockup slug, or `article:<slug>` for the template articles without a mockup. */
@@ -86,12 +88,75 @@ export const ARTICLE_SLUGS = [
   "why-three-to-six-are-the-years-that-matter-most",
 ] as const;
 
+/**
+ * An article's close as its own module states it (`close: "journal"`, the close with the pre-order button and the phone
+ * buy bar, or `"keep"`, the keep-reading close with neither; B5). The bar reads SiteShell's ARTICLE_CLOSES, built from
+ * the article registry, which Playwright cannot load (its modules import images), so the harness reads the same value
+ * from each module's source; test/e2e-harness.test.ts holds the two equal (task 4.9 item 6).
+ */
+export function articleClose(slug: string): "journal" | "keep" {
+  const path = `src/content/en-IN/stories/articles/${slug}.ts`;
+  let text: string;
+  try {
+    text = readRepoFile(path);
+  } catch {
+    throw new Error(`articleClose: article "${slug}" has no module at ${path}`);
+  }
+  return closeInSource(path, text);
+}
+
+/** An expression without the wrappers that leave its value alone: `as`, `satisfies`, parentheses. */
+function unwrap(node: ts.Expression): ts.Expression {
+  let value = node;
+  while (ts.isSatisfiesExpression(value) || ts.isAsExpression(value) || ts.isParenthesizedExpression(value)) value = value.expression;
+  return value;
+}
+
+/**
+ * The close an article module's source states (articleClose's reader, exported for its test): the `close` of its
+ * `article` object, written as a string or a template literal with no substitution, with or without `as`, `satisfies`
+ * or parentheses, or as a constant the module itself declares so. Anything else (another module's constant, a call) the
+ * harness cannot read without loading the module, so it refuses it.
+ */
+export function closeInSource(path: string, text: string): "journal" | "keep" {
+  const sf = parseSource(path, text);
+  // The module's own top-level constants, by name (a close written as one of them).
+  const constants = new Map<string, ts.Expression>();
+  for (const statement of sf.statements) {
+    if (!ts.isVariableStatement(statement)) continue;
+    for (const d of statement.declarationList.declarations) if (ts.isIdentifier(d.name) && d.initializer) constants.set(d.name.text, d.initializer);
+  }
+  let written: ts.Expression | undefined;
+  const visit = (node: ts.Node): void => {
+    if (ts.isVariableDeclaration(node) && node.name.getText(sf) === "article" && node.initializer) {
+      const value = unwrap(node.initializer);
+      if (ts.isObjectLiteralExpression(value)) {
+        for (const p of value.properties) if (ts.isPropertyAssignment(p) && p.name.getText(sf) === "close") written = p.initializer;
+      }
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(sf);
+  // A string, or a constant followed to its string (each name once, so two constants naming each other end).
+  const read = (node: ts.Expression, seen: ReadonlySet<string>): string | undefined => {
+    const value = unwrap(node);
+    if (ts.isStringLiteralLike(value)) return value.text;
+    if (!ts.isIdentifier(value) || seen.has(value.text)) return undefined;
+    const constant = constants.get(value.text);
+    return constant ? read(constant, new Set([...seen, value.text])) : undefined;
+  };
+  const close = written ? read(written, new Set()) : undefined;
+  if (close !== "journal" && close !== "keep") throw new Error(`articleClose: ${path} states no close ("journal" or "keep") the harness can read`);
+  return close;
+}
+
 /** The 18 mockup pages, filtered by KH_SLUGS when set. */
 export function mockupRoutes(): Route[] {
   return MOCKUP_SLUGS.filter((s) => !SLUG_FILTER || SLUG_FILTER.includes(s)).map(mockupRoute);
 }
 
-/** Every built route a page sweep visits: the mockup pages plus the 18 template articles. */
+/** Every built route a page sweep visits: the mockup pages plus the 18 template articles, each article with the bar
+ *  exactly when its close carries the pre-order button (articleClose). */
 export function sweepRoutes(): Route[] {
   const withMockup = new Set(mockupRoutes().map((r) => r.path));
   const articles: Route[] = ARTICLE_SLUGS.map((slug) => ({
@@ -99,7 +164,7 @@ export function sweepRoutes(): Route[] {
     host: "marketing" as const,
     path: `/stories/${slug}`,
     mockup: null,
-    buybar: true,
+    buybar: articleClose(slug) === "journal",
     chrome: true,
     title: null,
     description: null,

@@ -50,14 +50,14 @@ for (const route of mockupRoutes()) {
         ).toBe(false);
         const calibration = PARITY_TARGET === "mockup";
         const { page: mockup } = await harness.openMockup(route.mockup!, vp);
-        if (!calibration) await hideDeviations(mockup, route.id, "mockup");
+        if (!calibration) await hideDeviations(mockup, route.id, "mockup", "visual-parity");
         await prepare(mockup);
         const expectedHeight = await pageHeight(mockup);
         const expectedChunks = await captureChunks(mockup);
 
         // In calibration, open() loads the mockup again (support/fixtures.ts).
         const { page } = await harness.open(route, vp);
-        if (!calibration) await hideDeviations(page, route.id, "build");
+        if (!calibration) await hideDeviations(page, route.id, "build", "visual-parity");
         await prepare(page);
         const height = await pageHeight(page);
         if (calibration) expect(height, "calibration: the mockup's height must not change between two loads").toBe(expectedHeight);

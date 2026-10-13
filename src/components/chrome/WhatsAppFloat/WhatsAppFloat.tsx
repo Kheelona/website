@@ -27,12 +27,21 @@ export interface WhatsAppFloatProps {
 }
 
 /**
- * The section whose form the bubble steps aside from on a phone, by context (task 4.7 item 3; D050): the store's
- * details section, which holds the pre-order form (StoreDetails renders it with store-page.ts `details.id`, the
- * mockup's `#details`). The paid /thanks page also holds a form (the address step); stepping aside there is a
- * follow-up (tasks.md 4.9), so until then every other context keeps the plain server link.
+ * What the bubble steps aside from on a phone, by context (D050: it never covers a price or a form field), as a
+ * selector of the elements it keeps clear:
+ * - `site` (task 4.9 item 1): the prices, the price sentence beside a button (PriceSentence `beside`, `ks-price`) and the
+ *   offer card's prices, split and fine print (OfferCard). At 324 px the resting bubble sat over the hero's price, and
+ *   mid-page over a price while the bar had stepped aside or lifted it.
+ * - `store` (task 4.7 item 3): the details section holding the pre-order form (StoreDetails renders it with
+ *   store-page.ts `details.id`, the mockup's `#details`).
+ * - `thanks` (task 4.9 item 2): the paid page's address step, holding the address form (AddressStep's own `#address`;
+ *   the page itself is unchanged, ADR-013).
  */
-export const STEP_ASIDE_FROM: Readonly<Partial<Record<SupportChatContext, string>>> = { store: "details" };
+export const STEP_ASIDE_FROM: Readonly<Record<SupportChatContext, string>> = {
+  site: ".ks-price, .kh-offer__prices, .kh-offer__split, .kh-offer__fine",
+  store: "#details",
+  thanks: "#address",
+};
 
 /**
  * The persistent WhatsApp chat bubble (D050; architecture §5.3): a real link that opens WhatsApp in a new tab with
@@ -45,9 +54,10 @@ export const STEP_ASIDE_FROM: Readonly<Partial<Record<SupportChatContext, string
  * inset, and the bubble already sits that far above the edge; task 3.6) while `html[data-buybar="shown"]` (both
  * published by StickyBuyBar) and drops back when the bar steps aside, and the label slides out on hover and keyboard
  * focus (motion.css, D050 row); it hides while a modal dialog is open, and `body.ks-has-float` keeps the last content of
- * every page clear of it (whatsapp-float.css). On the store (`STEP_ASIDE_FROM`) the link is the one client part,
- * `StepAsideLink` (task 4.7): below 900 px it steps aside, off the right edge, while a field of the form has focus or
- * the form crosses its band, so it never covers a field; everywhere else it renders on the server with no client part.
+ * every page clear of it (whatsapp-float.css). The link is the one client part, `StepAsideLink` (tasks 4.7 and 4.9),
+ * the server's markup until it arms: below 900 px it steps aside, off the right edge, while what its context names
+ * (`STEP_ASIDE_FROM`: the prices, the store's form, the /thanks address step) crosses its band or a field of it has
+ * focus, so it never covers a price or a field.
  * PostHog reads `data-ph-capture-attribute-cta="whatsapp-float"`; on /thanks the bubble also carries `ph-no-capture`,
  * so that page keeps zero autocapture events (tracking inventory row 18).
  */
@@ -68,12 +78,9 @@ export function WhatsAppFloat({ href, chat, context }: WhatsAppFloatProps) {
       </span>
     </>
   );
-  const region = STEP_ASIDE_FROM[context];
-  return region ? (
-    <StepAsideLink {...link} region={region}>
+  return (
+    <StepAsideLink {...link} from={STEP_ASIDE_FROM[context]}>
       {content}
     </StepAsideLink>
-  ) : (
-    <a {...link}>{content}</a>
   );
 }

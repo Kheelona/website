@@ -12,6 +12,7 @@ import type { CtaSecondary, SellingContext } from "../CtaBlock/cta-block.types";
 import { addClass, builtMarkup, canonical, mockupFold, renderedElement, STORE, without } from "../../../../test/support/mockup-compare";
 import { CloseSection } from "./CloseSection";
 import { CLAMPED_SPLIT_COLUMN_SIZES } from "./close-art";
+import { CenterClose } from "./close-fold";
 import type { CloseSectionConfig } from "./close-section.types";
 
 /* CloseSection (task 3.2): every close of the approved mockup, from the real content in both offer modes. The art
@@ -239,6 +240,32 @@ describe("CloseSection: full mode (ADR-005)", () => {
     const PRICE = /<p( id="[^"]*")? class="kh-body-s ks-price">[^<]*<\/p>/;
     const token = renderToStaticMarkup(<CloseSection {...config} {...context(TOKEN)} />);
     const full = renderToStaticMarkup(<CloseSection {...config} {...context(FULL)} />);
+    expect(full.match(PRICE)?.[0]).toContain("₹7,999 (incl. GST), paid in full when you order.");
+    expect(full.replace(PRICE, "")).toBe(token.replace(PRICE, ""));
+  });
+});
+
+/* Task 4.9 item 4: the centred close has its own module (close-fold.tsx, with the fold and the heading every close
+   shares) that never reaches the art board, so the 404 loads it without next/image; CloseSection renders it for `center`.
+   The 404 renders CenterClose directly, so CenterClose itself is held to the approved mockup's centred closes. */
+describe("CenterClose (close-fold.tsx)", () => {
+  const CENTER = CASES.filter(([, , , c]) => c.variant === "center");
+
+  it("covers the three centred closes: team, contact and 404", () => {
+    expect(CENTER.map(([, slug]) => slug)).toEqual(["team", "contact", "404"]);
+  });
+
+  it.each(CENTER)("%s: the mockup's centred close, exactly", (_name, slug, fold, config) => {
+    if (config.variant !== "center") throw new Error("a centred close");
+    const expected = builtMarkup([mockupFold(slug, fold)], { renames: RENAMES, adjust: adjustFor(config) });
+    expect(canonical(renderedElement(<CenterClose {...config} {...context()} />))).toBe(expected);
+  });
+
+  it.each(CENTER)("%s: in full mode only the price sentence changes", (_name, _slug, _fold, config) => {
+    if (config.variant !== "center") throw new Error("a centred close");
+    const PRICE = /<p( id="[^"]*")? class="kh-body-s ks-price">[^<]*<\/p>/;
+    const token = renderToStaticMarkup(<CenterClose {...config} {...context(TOKEN)} />);
+    const full = renderToStaticMarkup(<CenterClose {...config} {...context(FULL)} />);
     expect(full.match(PRICE)?.[0]).toContain("₹7,999 (incl. GST), paid in full when you order.");
     expect(full.replace(PRICE, "")).toBe(token.replace(PRICE, ""));
   });
