@@ -12,6 +12,7 @@ import type { CtaSecondary, SellingContext } from "../CtaBlock/cta-block.types";
 import { addClass, builtMarkup, canonical, mockupFold, renderedElement, STORE, without } from "../../../../test/support/mockup-compare";
 import { CloseSection } from "./CloseSection";
 import { CLAMPED_SPLIT_COLUMN_SIZES } from "./close-art";
+import { CenterClose } from "./close-fold";
 import type { CloseSectionConfig } from "./close-section.types";
 
 /* CloseSection (task 3.2): every close of the approved mockup, from the real content in both offer modes. The art
@@ -241,5 +242,16 @@ describe("CloseSection: full mode (ADR-005)", () => {
     const full = renderToStaticMarkup(<CloseSection {...config} {...context(FULL)} />);
     expect(full.match(PRICE)?.[0]).toContain("₹7,999 (incl. GST), paid in full when you order.");
     expect(full.replace(PRICE, "")).toBe(token.replace(PRICE, ""));
+  });
+});
+
+/* Task 4.9 item 4: the centred close has its own module (close-fold.tsx, with the fold and the heading every close
+   shares) that never reaches the art board, so the 404 loads it without next/image; CloseSection renders it for `center`. */
+describe("CenterClose (close-fold.tsx)", () => {
+  it.each(CASES.filter(([, , , c]) => c.variant === "center"))("%s: exactly CloseSection's centred close, in both modes", (_name, _slug, _fold, config) => {
+    if (config.variant !== "center") throw new Error("a centred close");
+    for (const offer of [TOKEN, FULL]) {
+      expect(renderToStaticMarkup(<CenterClose {...config} {...context(offer)} />)).toBe(renderToStaticMarkup(<CloseSection {...config} {...context(offer)} />));
+    }
   });
 });

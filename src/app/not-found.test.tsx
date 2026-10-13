@@ -229,6 +229,20 @@ describe("not-found: the route file", () => {
     expect(reached.filter((file) => !shell.includes(file))).toEqual([]);
   }, 30_000);
 
+  /* Task 4.9 item 4 (M1: the 404's own script was 35.0 KB against its 25 KB). The 404 renders no raster image (the logo
+     and the icons are plain SVG), yet its close came through CloseSection, whose art variants import the art board and
+     so next/image: its client code (about 5.6 KB gzip) shipped in the 404's own chunk, which no layout shares. So the
+     route loads the centred close from close-fold.tsx, which never reaches the art board. */
+  it("loads no next/image at run time: the centred close comes without the art board", () => {
+    const reached = reachableFrom("src/app/not-found.tsx", runtimeImports);
+    const withImage = reached.filter((file) => runtimeImports(file, readFileSync(join(ROOT, file), "utf8")).includes("next/image"));
+    expect(withImage).toEqual([]);
+    /* Guard the guard: the walk reaches the close and the shell; CloseSection itself (its art variants) does load it. */
+    expect(reached).toEqual(expect.arrayContaining(["src/components/sections/CloseSection/close-fold.tsx", "src/layouts/SiteShell/SiteShell.tsx"]));
+    const viaCloseSection = reachableFrom("src/components/sections/CloseSection/CloseSection.tsx", runtimeImports);
+    expect(viaCloseSection.filter((file) => runtimeImports(file, readFileSync(join(ROOT, file), "utf8")).includes("next/image")).length).toBeGreaterThan(0);
+  }, 30_000);
+
   it("hands the site shell no buy-bar paths (404.html meta: buybar false)", () => {
     expect(source).toMatch(/<SiteShell offer=\{offer\}>/);
     expect(source).not.toMatch(/stickyBar/);

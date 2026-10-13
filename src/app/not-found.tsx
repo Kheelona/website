@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { CloseSection } from "@/components/sections/CloseSection/CloseSection";
+import { CenterClose } from "@/components/sections/CloseSection/close-fold";
 import { EmptyStateSection } from "@/components/sections/EmptyStateSection/EmptyStateSection";
 import { cta } from "@/content/en-IN/cta";
 import { notFoundPage } from "@/content/en-IN/pages/not-found";
@@ -20,7 +20,11 @@ import { pageMeta } from "@/lib/seo/metadata";
  *   the live offer, the one CTA label, the help line), not through PageTemplate. The root not-found sits in every
  *   route's tree, so every client module it reaches loads on every route, and the section registry behind PageTemplate
  *   reaches every island a page may use (FilmsStrip, Tabs; about 11 KB the 404 never renders). The content module keeps
- *   PageTemplate's shape, and its order (the h1 fold first, no structured data) is checked by its test.
+ *   PageTemplate's shape, and its order (the h1 fold first, no structured data) is checked by its test. The close is
+ *   CloseSection's centred one, loaded from close-fold.tsx rather than CloseSection, whose art variants reach next/image:
+ *   with it, the 404's client modules were the site layout's plus next/image (about 5.6 KB gzip it never renders), so
+ *   the 404 shipped them all again in a chunk of its own (12.4 KB; M1, task 4.9). Without it they are exactly the site
+ *   layout's, and the build serves the 404 the same cached chunk as every marketing page.
  * - The offer is the live one (ADR-005): the close's price sentence and the drawer's follow the store's mode. getOffer's
  *   cache window (300 s) is the prerendered page's revalidate, as on every marketing page.
  * - Metadata: the copy page's title, whole (`absolute`: the root template would add the brand twice), and its
@@ -41,7 +45,7 @@ export default async function NotFound() {
   return (
     <SiteShell offer={offer}>
       <EmptyStateSection {...emptyState.config} />
-      <CloseSection {...close.config} offer={offer} ctaLabel={cta.preorder} help={seller.help} />
+      <CenterClose {...close.config} offer={offer} ctaLabel={cta.preorder} help={seller.help} />
     </SiteShell>
   );
 }
