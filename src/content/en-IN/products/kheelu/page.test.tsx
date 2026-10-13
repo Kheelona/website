@@ -104,6 +104,14 @@ describe("the product page as rendered (token mode)", () => {
     expect(alts(BUILT.main)).toEqual(alts(MOCKUP));
   });
 
+  it("draws every icon the mockup draws, in order: the same DS glyph each time", () => {
+    // The facts line's icons come from trust.ts typed as content (IconRef) and reach the section by a type assertion,
+    // and the close swaps the delivery item's icon (wave-3 close), so the glyphs themselves are compared here.
+    const glyphs = (root: Element) => [...root.querySelectorAll("svg.kh-icon")].map((svg) => [...svg.querySelectorAll("path")].map((p) => p.getAttribute("d")).join(" "));
+    expect(glyphs(BUILT.main)).toEqual(glyphs(MOCKUP));
+    expect(glyphs(BUILT.main).length).toBeGreaterThan(20);
+  });
+
   it("reveals exactly the blocks the mockup reveals, and never the money (SPA 9)", () => {
     const reveals = (root: Element) => folds(root).map((f) => f.querySelectorAll("[data-reveal]").length);
     expect(reveals(BUILT.main)).toEqual(reveals(MOCKUP));
