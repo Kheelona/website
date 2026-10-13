@@ -77,8 +77,8 @@ import { pageMeta } from "@/lib/seo/metadata";
  *  src/content/en-IN/store/confirmation.ts; every amount, the email and the
  *  order number are still read and derived HERE from the order row, exactly as
  *  before, and handed to the sections as values. The one rule that moved out
- *  is the delivery row's choice by order date (N9, F12 open), in
- *  sections/store/OrderRows/delivery-line.ts: this page passes `created_at`.
+ *  is the delivery row's choice by order date (N9, F12 answered: D054), in
+ *  lib/offer/delivery-line.ts: this page passes `created_at`.
  *
  *  Metadata through pageMeta (title, description, share card), with the
  *  canonical and the share URL on the store host, as the store page sets its

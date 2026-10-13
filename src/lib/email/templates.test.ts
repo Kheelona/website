@@ -86,9 +86,9 @@ describe("the acknowledgement email", () => {
     expect(email.text).toContain(LEGAL_ENTITY);
   });
 
-  it("says the WhatsApp number does not take calls", () => {
-    expect(email.html).toMatch(/messages, not calls/);
-    expect(email.text).toMatch(/messages, not calls/);
+  it("says the WhatsApp number takes calls as well as messages (D032)", () => {
+    expect(email.html).toMatch(/^(?![\s\S]*messages, not calls)[\s\S]*WhatsApp or call/);
+    expect(email.text).toMatch(/^(?![\s\S]*messages, not calls)[\s\S]*WhatsApp or call/);
   });
 
   /* The site's voice laws do not stop at the site. Zero em-dashes, and none of
@@ -135,7 +135,7 @@ describe("the acknowledgement for a full-payment order (§8.26)", () => {
   it("says the whole price is paid, and keeps the refund promise on all of it", () => {
     for (const part of [email.html, email.text]) {
       expect(part).toContain(FULL_PRICE);
-      expect(part).toMatch(/paid in full/i);
+      expect(part).toMatch(/Due before delivery(<\/strong>|:) Nothing\. You have paid in full/i);
       expect(part).toMatch(/refund/i);
     }
   });
@@ -168,8 +168,8 @@ describe("the acknowledgement for an event token (2026-08-23, the Ideabaaz page)
 
   it("keeps the ₹499 receipt at ₹4,500 to the byte", () => {
     const token = preorderAckEmail({ order, addressUrl: "https://x.example/t" });
-    expect(token.html).toContain(`${BALANCE_PRICE}, of the`);
-    expect(token.text).toContain(`${BALANCE_PRICE}, of the`);
+    expect(token.html).toContain(`<strong>Due before delivery</strong> ${BALANCE_PRICE}, of the ₹4,999 price (incl. GST)`);
+    expect(token.text).toContain(`Due before delivery: ${BALANCE_PRICE}, of the ₹4,999 price (incl. GST)`);
   });
 });
 

@@ -14,6 +14,8 @@ import {
 } from "@/config/site";
 import type { Email } from "./send";
 import type { PreorderRow } from "@/lib/store/db";
+import { deliveryLine } from "@/lib/offer/delivery-line";
+import { DELIVERY_TEXT } from "@/content/en-IN/delivery";
 
 /** The two emails the store sends (§8.25-i).
  *
@@ -43,9 +45,8 @@ function layout(bodyHtml: string): string {
       GSTIN ${GSTIN}
     </p>
     <p style="margin:12px 0 0;font-size:13px;color:${MUTED}">
-      Questions? WhatsApp <a href="${SUPPORT_WHATSAPP_HREF}" style="color:${INK}">${SUPPORT_WHATSAPP_DISPLAY}</a>
+      Questions? WhatsApp or call <a href="${SUPPORT_WHATSAPP_HREF}" style="color:${INK}">${SUPPORT_WHATSAPP_DISPLAY}</a>,
       or write to <a href="mailto:${CONTACT_EMAIL}" style="color:${INK}">${CONTACT_EMAIL}</a>.
-      The WhatsApp number takes messages, not calls.
     </p>
   </div>
 </div>`;
@@ -88,7 +89,7 @@ function greetingName(fullName: string): string {
 }
 
 export type AckInput = {
-  order: Pick<PreorderRow, "order_ref" | "parent_name" | "amount_paise" | "address" | "tier">;
+  order: Pick<PreorderRow, "order_ref" | "parent_name" | "amount_paise" | "address" | "tier" | "created_at">;
   /** Present when the order still has no delivery address. */
   addressUrl?: string;
 };
@@ -114,6 +115,12 @@ export function preorderAckEmail(input: AckInput): Email {
      and a ₹99 event token honestly reads ₹4,900 rather than parroting the
      public figure (2026-08-23, the Ideabaaz page). */
   const balanceDue = formatInr(Math.max(0, LAUNCH_AMOUNT_PAISE - order.amount_paise));
+  /* The delivery row is the /thanks card's, by the ROW's created_at (F12, D054 item 1; D023): an order made before
+     10 October 2026 (IST) keeps the date it was sold with, every later one reads the mid-November line. */
+  const delivery = deliveryLine(order.created_at, {
+    early: { term: "Ships from", value: SHIP_DATE_TEXT },
+    current: { term: "Delivery", value: DELIVERY_TEXT },
+  });
 
   const addressBlock = needsAddress
     ? p(
@@ -130,10 +137,10 @@ export function preorderAckEmail(input: AckInput): Email {
      <h1 style="margin:0 0 18px;font-size:26px;line-height:1.2">Your Kheelu is reserved.</h1>
      ${p(`Thank you, ${esc(firstName)}. We have your ${paid}, and your place in the queue is held from the moment you paid.`)}
      <div style="border:1px solid ${RULE};border-radius:12px;padding:16px;margin:0 0 18px">
-       <p style="margin:0 0 8px;font-size:15px"><strong>Order</strong> ${order.order_ref}</p>
+       <p style="margin:0 0 8px;font-size:15px"><strong>Order number</strong> ${order.order_ref}</p>
        <p style="margin:0 0 8px;font-size:15px"><strong>Paid today</strong> ${paid}</p>
-       <p style="margin:0 0 8px;font-size:15px"><strong>Due on dispatch</strong> ${paidInFull ? "Nothing. You have paid in full" : `${balanceDue}, of the ${LAUNCH_PRICE} price`}</p>
-       <p style="margin:0;font-size:15px"><strong>Ships from</strong> ${SHIP_DATE_TEXT}</p>
+       <p style="margin:0 0 8px;font-size:15px"><strong>Due before delivery</strong> ${paidInFull ? "Nothing. You have paid in full" : `${balanceDue}, of the ${LAUNCH_PRICE} price (incl. GST)`}</p>
+       <p style="margin:0;font-size:15px"><strong>${delivery.term}</strong> ${delivery.value}</p>
      </div>
      ${addressBlock}
      ${
@@ -154,12 +161,12 @@ export function preorderAckEmail(input: AckInput): Email {
     "",
     `Thank you, ${firstName}. We have your ${paid}, and your place in the queue is held from the moment you paid.`,
     "",
-    `Order: ${order.order_ref}`,
+    `Order number: ${order.order_ref}`,
     `Paid today: ${paid}`,
     paidInFull
-      ? "Due on dispatch: Nothing. You have paid in full."
-      : `Due on dispatch: ${balanceDue}, of the ${LAUNCH_PRICE} price`,
-    `Ships from: ${SHIP_DATE_TEXT}`,
+      ? "Due before delivery: Nothing. You have paid in full."
+      : `Due before delivery: ${balanceDue}, of the ${LAUNCH_PRICE} price (incl. GST)`,
+    `${delivery.term}: ${delivery.value}`,
     "",
     needsAddress
       ? `One thing left: we do not have your delivery address yet. Add it here: ${input.addressUrl}`
@@ -172,7 +179,7 @@ export function preorderAckEmail(input: AckInput): Email {
     `Changed your mind? Message us any time before your Kheelu is dispatched and we refund the ${paid} in full.`,
     "",
     `${LEGAL_ENTITY}, ${REGISTERED_ADDRESS_LINE}. GSTIN ${GSTIN}.`,
-    `WhatsApp ${SUPPORT_WHATSAPP_DISPLAY} (messages, not calls) or ${CONTACT_EMAIL}.`,
+    `WhatsApp or call ${SUPPORT_WHATSAPP_DISPLAY}, or write to ${CONTACT_EMAIL}.`,
   ].join("\n");
 
   return {

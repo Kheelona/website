@@ -7,7 +7,7 @@ import { OrderRows } from "./OrderRows";
 
 /* OrderRows (task 5.16): /thanks fold 2 (store-confirmation.html), the four facts a parent screenshots, every value from
    the order row (the page derives them, as it did at the tag) and the delivery row chosen by the order's date
-   (delivery-line.ts; N9, F12). The mockup's value markers and its order-number placeholder are sample data. */
+   (lib/offer/delivery-line.ts; N9, F12). The mockup's value markers and its order-number placeholder are sample data. */
 
 const OPTIONS = { unwrap: "[data-src], .mk-placeholder" };
 const AFTER_CUTOFF = "2026-10-12T10:23:45.123456+00:00";
