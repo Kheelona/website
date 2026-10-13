@@ -10,7 +10,8 @@ import { seller } from "../../seller";
  * (wiki/site/pages/story-ai-toys-and-indias-data-law.md; CMO review round 2; head photo from the AI guides' pool, task
  * 5.20c: ira-01, 4:5, so the head takes its portrait layout). No mockup: the article template renders it, as the three
  * approved articles. Head and lead are the hub card's words (stories.md fold 4); the related list (with the stub's
- * swap) and first-published date are the stub's. Every statement about the law carries a marker and quotes the
+ * swap) and first-published date are the stub's, the busy-hands guide in place of the 3-6-9-12 guide that left the
+ * journal (task 6.5, D053; the copy page's fold 11). Every statement about the law carries a marker and quotes the
  * official MeitY texts; the page says early that it is not legal advice, and never that Kheelu meets section 9. Fold 9
  * answers only what Kheelona can answer in confirmed facts (D018, D020's order, the retention line from policies.ts),
  * with the page's one in-text product link and the help line from seller.ts. `updated` is the rewrite's date; re-read
@@ -28,7 +29,7 @@ export const article = {
     title: "What India’s data law asks of a toy that listens",
     summary: "India’s data law in plain words: what it asks of a company handling a child’s data, and what you can ask for.",
   },
-  related: ["what-to-look-for-in-a-safe-ai-toy", "how-to-get-your-child-talking", "screen-time-rules-parents-swear-by"],
+  related: ["what-to-look-for-in-a-safe-ai-toy", "how-to-get-your-child-talking", "busy-hands-no-screens"],
   published: "2026-09-11",
   updated: "2026-10-13",
   head: {

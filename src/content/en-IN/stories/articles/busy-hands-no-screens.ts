@@ -8,7 +8,8 @@ import { DEFAULT_OG, TEAM_BYLINE } from "../../organization";
  * cmo-review-articles-5.17-2026-10-14.md; fixes of task 5.20a, CMO M13 to M16, fix-pass review
  * cmo-review-article-fixes-5.20a-2026-10-14.md). No mockup: it renders through the article template, held to the
  * approved articles' shared parts (a wide head photo since task 5.20a, as the safe-AI-toy guide's). Card words as the hub's (stories.md fold 2), related links and dates as the stub held them
- * (the main session's note for 5.17). One in-text product link (fold 9).
+ * (the main session's note for 5.17), the data-law guide in place of the 3-6-9-12 guide that left the journal (task
+ * 6.5, D053; the copy page's fold 11). One in-text product link (fold 9).
  */
 export const article = {
   slug: "busy-hands-no-screens",
@@ -22,7 +23,7 @@ export const article = {
     title: "Busy hands, no screens",
     summary: "Screen-free ways to keep a young child busy at home, including on the days you have to work.",
   },
-  related: ["the-gentle-way-off-the-phone", "screen-time-rules-parents-swear-by", "what-to-look-for-in-a-safe-ai-toy"],
+  related: ["the-gentle-way-off-the-phone", "ai-toys-and-indias-data-law", "what-to-look-for-in-a-safe-ai-toy"],
   published: "2026-07-28",
   updated: "2026-10-13",
   head: {

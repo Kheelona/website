@@ -63,13 +63,13 @@ export function mockupRoute(slug: MockupSlug): Route {
   };
 }
 
-/** The 21 articles of the URL plan (tasks 5.6, 5.17-5.19); three have mockups. */
+/** The 20 articles of the URL plan (tasks 5.6, 5.17-5.19; the 3-6-9-12 article left the journal, D053, task 6.5);
+ *  three have mockups. */
 export const ARTICLE_SLUGS = [
   "learning-toys-for-a-three-year-old",
   "what-to-look-for-in-a-safe-ai-toy",
   "talking-toys-and-late-talkers",
   "how-much-screen-time-for-a-3-to-6-year-old",
-  "screen-time-rules-parents-swear-by",
   "screen-time-and-tantrums",
   "the-gentle-way-off-the-phone",
   "busy-hands-no-screens",
@@ -155,7 +155,7 @@ export function mockupRoutes(): Route[] {
   return MOCKUP_SLUGS.filter((s) => !SLUG_FILTER || SLUG_FILTER.includes(s)).map(mockupRoute);
 }
 
-/** Every built route a page sweep visits: the mockup pages plus the 18 template articles, each article with the bar
+/** Every built route a page sweep visits: the mockup pages plus the 17 template articles, each article with the bar
  *  exactly when its close carries the pre-order button (articleClose). */
 export function sweepRoutes(): Route[] {
   const withMockup = new Set(mockupRoutes().map((r) => r.path));

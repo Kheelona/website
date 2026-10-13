@@ -19,7 +19,6 @@ import { article as questionsParentsAskAboutAiToys } from "./questions-parents-a
 import { article as raisingABilingualChildInIndia } from "./raising-a-bilingual-child-in-india";
 import { article as screenFreeDoesNotMeanSilent } from "./screen-free-does-not-mean-silent";
 import { article as screenTimeAndTantrums } from "./screen-time-and-tantrums";
-import { article as screenTimeRulesParentsSwearBy } from "./screen-time-rules-parents-swear-by";
 import { article as shouldKidsUseAi } from "./should-kids-use-ai";
 import { article as talkingLateOrTalkingLittle } from "./talking-late-or-talking-little";
 import { article as talkingToysAndLateTalkers } from "./talking-toys-and-late-talkers";
@@ -40,7 +39,6 @@ export const articles = {
   "what-to-look-for-in-a-safe-ai-toy": whatToLookForInASafeAiToy,
   "talking-toys-and-late-talkers": talkingToysAndLateTalkers,
   "how-much-screen-time-for-a-3-to-6-year-old": howMuchScreenTimeForA3To6YearOld,
-  "screen-time-rules-parents-swear-by": screenTimeRulesParentsSwearBy,
   "screen-time-and-tantrums": screenTimeAndTantrums,
   "the-gentle-way-off-the-phone": theGentleWayOffThePhone,
   "busy-hands-no-screens": busyHandsNoScreens,

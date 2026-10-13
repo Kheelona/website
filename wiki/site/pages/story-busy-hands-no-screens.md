@@ -4,6 +4,7 @@ type: page-copy
 updated: 2026-10-14
 cites_at: archive/pre-reset-2026-10-10
 sources:
+  - ../../decisions/D053-remove-the-3-6-9-12-article.md (task 6.5: the related list, fold 11)
   - ../strategy.md (§3.3 one in-text product link, §5 /stories/* row)
   - ../../engineering/tasks.md (wave 5 part C paragraph; task 5.17 row; the note on the 18 articles without a mockup)
   - ../pages/story-learning-toys-for-a-three-year-old.md (approved format, the age lines, the close)
@@ -56,7 +57,7 @@ sources:
 | Card (hub, unchanged) | Title "Busy hands, no screens"; summary "Screen-free ways to keep a young child busy at home, including on the days you have to work." ([stories §2](stories.md#fold-2--screen-time-screen-time), card 5) |
 | Byline line | The Kheelona team · First published 28 Jul 2026 · 3 min read (byline: question 1) |
 | Dates | `published` 2026-07-28 (live, unchanged); `updated` 2026-10-13, the rewrite's date (main-session ruling at the wave 5 part C merge, as task 5.6 set it for the three approved guides) |
-| Related (unchanged) | `the-gentle-way-off-the-phone`, `screen-time-rules-parents-swear-by`, `what-to-look-for-in-a-safe-ai-toy` |
+| Related | `the-gentle-way-off-the-phone`, `ai-toys-and-indias-data-law`, `what-to-look-for-in-a-safe-ai-toy` (the stub's, the data-law guide in the removed 3-6-9-12 guide's place: task 6.5, D053; fold 11) |
 | CTA | The close only: "Pre-order Kheelu", `cta` = `finale`; phone sticky bar `sticky-bar` |
 | In-text product link | One, in fold 9 ("Kheelu" → `/products/kheelu`) |
 | Template settings | `close: "journal"` (pre-order close and sticky bar); breadcrumb topic "Screen time" (`/stories#screen-time`) |
@@ -281,16 +282,22 @@ project" becomes one plain product line with the age limits and the grown-up-nea
 > **H2:** Related guides
 >
 > - The gentle way off the phone: a seven-day plan
-> - The 3-6-9-12 rule, and other screen rules parents swear by
+> - What India's data law asks of a toy that listens
 > - What to look for in a safe AI toy
 
 | Title (card title, from each module) | Real URL |
 |---|---|
 | The gentle way off the phone: a seven-day plan | `/stories/the-gentle-way-off-the-phone` |
-| The 3-6-9-12 rule, and other screen rules parents swear by | `/stories/screen-time-rules-parents-swear-by` |
+| What India's data law asks of a toy that listens | `/stories/ai-toys-and-indias-data-law` |
 | What to look for in a safe AI toy | `/stories/what-to-look-for-in-a-safe-ai-toy` |
 
-Text links only, so the page keeps one DS child. The list is the stub's, unchanged.
+Text links only, so the page keeps one DS child. The list is the stub's with one change (task 6.5,
+[D053](../../decisions/D053-remove-the-3-6-9-12-article.md)): the 3-6-9-12 guide left the journal, and the data-law
+guide takes its place, second. The guides the removed one offered (this one, the safe-AI-toy guide and the data-law
+guide) each need one more incoming link, and the other screen-time guides already have three; this list already offers
+the safe-AI-toy guide and cannot offer itself, so it takes the data-law guide, and every guide keeps three related
+guides and three incoming links (`articles.test.ts`). The data-law guide's head photo (`ira-01`) is not
+this page's (`ira-02`), so no linked guide shares a head photo (task 5.20a's rule).
 
 ---
 

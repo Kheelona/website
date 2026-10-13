@@ -8,7 +8,8 @@ import { DEFAULT_OG, TEAM_BYLINE } from "../../organization";
  * CMO review cmo-review-articles-5.17-2026-10-14.md; fixes of task 5.20a, CMO M11, M12 and M16, fix-pass review
  * cmo-review-article-fixes-5.20a-2026-10-14.md, N1: tara-01 heads this guide alone, with its one alt). No mockup: it renders through the article template, held to the
  * approved articles' shared parts. Card words as the hub's (stories.md fold 2), related links and dates as the stub held
- * them (the main session's note for 5.17). One in-text product link (fold 9).
+ * them (the main session's note for 5.17), the safe-AI-toy guide in place of the 3-6-9-12 guide that left the journal
+ * (task 6.5, D053; the copy page's fold 11). One in-text product link (fold 9).
  */
 export const article = {
   slug: "the-gentle-way-off-the-phone",
@@ -22,7 +23,7 @@ export const article = {
     title: "The gentle way off the phone: a seven-day plan",
     summary: "A week-long plan to cut a young child’s screen time without turning your home into a battlefield.",
   },
-  related: ["screen-time-and-tantrums", "busy-hands-no-screens", "screen-time-rules-parents-swear-by"],
+  related: ["screen-time-and-tantrums", "busy-hands-no-screens", "what-to-look-for-in-a-safe-ai-toy"],
   published: "2026-07-28",
   updated: "2026-10-13",
   head: {

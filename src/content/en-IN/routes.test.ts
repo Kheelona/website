@@ -9,7 +9,8 @@ import { ARTICLE_SLUGS, routes, routeFor } from "./routes";
 
 /* The URL plan (architecture §6.1, §9.3; strategy §4.1; wiki/site/url-map.md §1; task 2.1
  * acceptance 4): every indexable URL, its content module, its sitemap priority and its nav and
- * footer membership. /playos and the merged 2-year-old article are redirects, never routes. */
+ * footer membership. /playos, the merged 2-year-old article and the removed 3-6-9-12 article are redirects, never
+ * routes (D041, D053). */
 
 const paths = routes.map((r) => r.path);
 
@@ -30,15 +31,19 @@ const PRIORITY: Readonly<Record<string, number>> = {
 };
 
 describe("the routes", () => {
-  it("are the twelve marketing pages and the 21 articles, each once", () => {
+  it("are the twelve marketing pages and the 20 articles, each once", () => {
     expect(routes.filter((r) => r.kind !== "article")).toHaveLength(12);
-    expect(routes.filter((r) => r.kind === "article")).toHaveLength(21);
+    expect(routes.filter((r) => r.kind === "article")).toHaveLength(20);
     expect(new Set(paths).size).toBe(paths.length);
   });
 
   it("leave out /playos and the merged 2-year-old article (D041; both redirect)", () => {
     expect(paths).not.toContain("/playos");
     expect(paths).not.toContain("/stories/brain-development-toys-for-a-2-year-old");
+  });
+
+  it("leave out the 3-6-9-12 article (D053; it redirects to the hub's screen-time topic)", () => {
+    expect(paths).not.toContain("/stories/screen-time-rules-parents-swear-by");
   });
 
   it("include every marketing page the approved mockups define (their meta urls)", () => {
@@ -72,7 +77,7 @@ describe("the routes", () => {
 });
 
 describe("the articles", () => {
-  it("are the 21 of the URL plan (the e2e sweep's list)", () => {
+  it("are the 20 of the URL plan (the e2e sweep's list)", () => {
     expect([...ARTICLE_SLUGS].sort()).toEqual([...E2E_ARTICLE_SLUGS].sort());
   });
 

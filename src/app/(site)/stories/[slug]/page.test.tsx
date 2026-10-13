@@ -17,10 +17,11 @@ const params = (slug: string) => ({ params: Promise.resolve({ slug }) });
 const SOURCE = readFileSync("src/app/(site)/stories/[slug]/page.tsx", "utf8");
 
 describe("/stories/[slug]", () => {
-  it("prerenders exactly the 21 articles of the URL plan (routes.ts) and refuses every other slug at the router", async () => {
+  it("prerenders exactly the 20 articles of the URL plan (routes.ts) and refuses every other slug at the router", async () => {
     const mod = await import("./page");
     expect(mod.generateStaticParams()).toEqual(ARTICLE_SLUGS.map((slug) => ({ slug })));
-    expect(mod.generateStaticParams()).toHaveLength(21);
+    /* 21 until the 3-6-9-12 article left the journal (D053, task 6.5); its URL is a redirect. */
+    expect(mod.generateStaticParams()).toHaveLength(20);
     expect(mod.dynamicParams).toBe(false);
     expect(SOURCE).toMatch(/^export const dynamicParams = false;$/m);
   });

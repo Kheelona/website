@@ -1,7 +1,7 @@
 ---
 title: URL map (live site inventory)
 type: inventory
-updated: 2026-10-10
+updated: 2026-10-14
 cites_at: archive/pre-reset-2026-10-10
 sources:
   - git tag archive/pre-reset-2026-10-10 (= 77552ff, production main)
@@ -24,6 +24,7 @@ sources:
   - src/lib/store/fulfil.ts
   - src/lib/seo.ts
   - test/redirects-vs-assets.test.ts
+  - ../decisions/D053-remove-the-3-6-9-12-article.md (the 3-6-9-12 article's row, §1b; task 6.5)
   - docs/utm-conventions.md
   - docs/preorder-events.md
   - docs/checkpoints/closed-rounds.md
@@ -125,7 +126,7 @@ Data source: `STORIES = [...CORE, ...EXPANSION]` (`src/lib/stories.ts:161`; slug
 | `busy-hands-no-screens` | Busy hands, no screens · Kheelona | 33 | 0 |
 | `does-a-three-year-old-need-an-ai-tutor` | Does a three-year-old need an AI tutor? · Kheelona | 50 | 0 |
 | `a-toy-that-talks-vs-a-toy-that-listens` | A toy that talks is not a toy that listens · Kheelona | 53 | 1 |
-| `screen-time-rules-parents-swear-by` | The 3-6-9-12 rule, and other screen rules parents swear by · Kheelona | 69 | 0 |
+| `screen-time-rules-parents-swear-by` (**removed in the reset**, [D053](../decisions/D053-remove-the-3-6-9-12-article.md): one 308 to `/stories#screen-time`; see below) | The 3-6-9-12 rule, and other screen rules parents swear by · Kheelona | 69 | 0 |
 | `talking-toys-and-late-talkers` | Late talker? What helps a child find their words · Kheelona | 59 | 0 |
 | `brain-development-toys-for-a-2-year-old` | Brain development toys for a two-year-old: read this before the label · Kheelona | 80 | 0 |
 | `learning-toys-for-a-three-year-old` | Learning toys for a three-year-old, skill by skill · Kheelona | 61 | 2 |
@@ -134,6 +135,11 @@ Data source: `STORIES = [...CORE, ...EXPANSION]` (`src/lib/stories.ts:161`; slug
 
 - **Titles over 60 characters (brief 9.2):** `/` (70), `/products/kheelu` (61), `/team` (61) and
   six articles (61-80). Recorded only; the reset rewrites titles.
+- **`screen-time-rules-parents-swear-by`** leaves the journal in the reset (founder,
+  [D053](../decisions/D053-remove-the-3-6-9-12-article.md), task 6.5): its author's 2020 AI markers advise no
+  connected toys before 6. The URL answers one permanent redirect (308) to the hub's screen-time topic,
+  `/stories#screen-time`, query kept, on the apex and `www` (`src/config/redirects.ts`;
+  `test/guards/redirect-hops.test.ts`, `test/e2e/redirects.spec.ts`), so the new journal has 20 articles.
 - **`brain-development-toys-for-a-2-year-old`** is a URL and title aimed at two-year-olds, while
   the brief says never imply the product suits under-3s. Whether the copy does is for
   [age-band review](../product/age-band-review.md); the URL itself is part of

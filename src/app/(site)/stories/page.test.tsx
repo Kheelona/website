@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
+import { VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
 import { addClass, mockupFold, skeleton, words } from "../../../../test/support/mockup-compare";
 import { STORE_URL } from "@/config/site";
 import { ARTICLE_SLUGS } from "@/content/en-IN/routes";
@@ -15,7 +16,7 @@ import { pageMeta } from "@/lib/seo/metadata";
 
 /* The stories hub route (task 5.5; structure §3.1, §5; stories.html, stories.md): the hub's content module through the
  * page template, with the live offer. Thin: no words here. The page is the approved hub's main: the hero with the topic
- * links, one band per topic with all 21 guides (each linked to its own page), and the journal close. */
+ * links, one band per topic with all 20 guides (each linked to its own page), and the journal close. */
 
 const getOffer = vi.hoisted(() => vi.fn());
 vi.mock("@/lib/offer/get-offer", () => ({ getOffer }));
@@ -46,8 +47,10 @@ function builtMain(page: PageContent = sized(hubPage)): HTMLElement {
 }
 
 /**
- * The approved main as the build prints it. Two documented differences, both decided before the build:
+ * The approved main as the build prints it. Two documented differences, both decided before the build, and one after:
  * - the "Rewritten in the build" captions are Gate A review labels and never ship (N22; architecture §19);
+ * - the 3-6-9-12 guide left the journal after Gate A, so its card is gone from the screen-time topic (D053): the
+ *   approved rows the visual pass hides for it (deviations.ts, wiki/qa/deviations.md V9) are taken out first;
  * - every guide links to its own page: each row the mockup leaves quiet while its guide waits for its rewrite becomes
  *   the DS link row, `li > a.kh-listitem` (the copy page: "at launch every card links"; stories.md question 1), in the
  *   order of hub.ts, whose slugs hub.test.ts holds to the mockup's titles.
@@ -61,6 +64,9 @@ function approvedMain(): Element {
   const main = mockupFold("stories", "main").cloneNode(true) as Element;
   addClass(main, ".mk-journal-intro header.kh-heading--hero", "ks-hero-words");
   main.querySelectorAll(".mk-later").forEach((label) => label.remove());
+  for (const rule of VISUAL_HIDDEN.stories ?? []) {
+    if (rule.side === "mockup") main.querySelectorAll(rule.selector).forEach((row) => row.remove());
+  }
   hubTopics.forEach((group) => {
     const section = main.querySelector(`section#${group.topic}`)!;
     if (group.featured !== undefined) {
@@ -140,7 +146,7 @@ describe("/stories: the approved hub", () => {
     expect(words(built, { skip: ASIDE })).toBe(words(approved, { skip: ASIDE }));
   });
 
-  it("lists all 21 guides under the four topic anchors, each linked once to its own page", () => {
+  it("lists all 20 guides under the four topic anchors, each linked once to its own page", () => {
     const main = builtMain();
     const anchors = ["screen-time", "talking", "ai-and-safety", "learning"];
     expect(Array.from(main.querySelectorAll("section.ks-topic")).map((s) => s.id)).toEqual(anchors);

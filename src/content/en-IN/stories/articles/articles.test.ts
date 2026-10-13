@@ -11,7 +11,9 @@ import { DEFAULT_OG, TEAM_BYLINE } from "../../organization";
 import { ARTICLE_SLUGS, type ArticleSlug } from "../../routes";
 import { hubTopics } from "../hub";
 
-/* The 21 article modules (architecture §6.1; task 2.1 acceptance 5). Invariants every article
+/* The 20 article modules (architecture §6.1; task 2.1 acceptance 5; 21 until the 3-6-9-12 article left the journal,
+ * D053, task 6.5: its module and copy page went, and the three guides that offered it each took another, so every
+ * article still names three and is offered by three). Invariants every article
  * keeps whoever writes it later (tasks 5.6, 5.17-5.19): its slug, three related articles that
  * exist, at least three incoming related links for every article, the live article's first
  * published date, titles and descriptions within the SEO limits. The eighteen not yet rewritten
@@ -176,8 +178,9 @@ describe("every article", () => {
 describe("the stubs (the eighteen not yet rewritten)", () => {
   /* The legacy journal in reading order (src/lib/stories.ts BY_THEME at tag
      archive/pre-reset-2026-10-10), without the merged 2-year-old article (D041). Each stub offers
-     the one before it and the two after it, wrapping (getRelatedStories). */
-  const LEGACY_RING: readonly ArticleSlug[] = [
+     the one before it and the two after it, wrapping (getRelatedStories). The ring is the tag's, so it keeps the
+     3-6-9-12 article D053 took off the journal; no stub is left to read it. */
+  const LEGACY_RING: readonly string[] = [
     "why-three-to-six-are-the-years-that-matter-most",
     "how-children-learn-by-talking",
     "what-actually-builds-a-sharp-brain",
@@ -207,7 +210,7 @@ describe("the stubs (the eighteen not yet rewritten)", () => {
   };
   /* The three rewritten articles take their mockups' related lists, which leaves two articles with
      two incoming links on the pure ring; two stubs swap one slot each to restore three. */
-  const SWAPS: Readonly<Partial<Record<ArticleSlug, [ArticleSlug, ArticleSlug]>>> = {
+  const SWAPS: Readonly<Partial<Record<ArticleSlug, [string, string]>>> = {
     "why-three-to-six-are-the-years-that-matter-most": ["questions-parents-ask-about-ai-toys", "screen-free-does-not-mean-silent"],
     "ai-toys-and-indias-data-law": ["talking-late-or-talking-little", "screen-time-rules-parents-swear-by"],
   };
@@ -222,7 +225,6 @@ describe("the stubs (the eighteen not yet rewritten)", () => {
   const UNBRANDED: readonly ArticleSlug[] = [
     "what-actually-builds-a-sharp-brain",
     "screen-time-and-tantrums",
-    "screen-time-rules-parents-swear-by",
   ];
 
   const stubs = () => ARTICLE_SLUGS.filter((s) => isStub(get(s)));

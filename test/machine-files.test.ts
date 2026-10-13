@@ -61,8 +61,9 @@ describe("sitemap.xml", () => {
   it("lists exactly the URL plan, in its order, as canonical URLs on the production origin", () => {
     const urls = sitemap().map((entry) => entry.url);
     expect(urls).toEqual(routes.map((r) => url(r.path)));
-    // A floor, never a count (33 URLs in the plan on 2026-10-12), so an emptied plan cannot pass the line above.
-    expect(urls.length).toBeGreaterThanOrEqual(33);
+    // A floor, never a count (33 URLs in the plan on 2026-10-12; 32 since the 3-6-9-12 article left, D053), so an
+    // emptied plan cannot pass the line above.
+    expect(urls.length).toBeGreaterThanOrEqual(32);
     expect(new Set(urls).size).toBe(urls.length);
   });
 
@@ -92,8 +93,9 @@ describe("sitemap.xml", () => {
         expect(modified.get(url(r.path)), `${r.path} has no stored date, so no lastModified`).toBeUndefined();
       }
     }
-    // Every article stores its dates (src/content/en-IN/stories/articles), so at least those 21 carry one.
-    expect(dated).toBeGreaterThanOrEqual(21);
+    // Every article stores its dates (src/content/en-IN/stories/articles), so at least those 20 carry one (21 until
+    // the 3-6-9-12 article left the journal, D053).
+    expect(dated).toBeGreaterThanOrEqual(20);
   });
 
   it("never computes a date at build: the clock does not reach the file (lessons §6)", () => {
