@@ -1,14 +1,16 @@
-import type { AddressFormCopy, AddressStepCopy } from "@/components/sections/store/AddressStep/address-step.types";
+import type { AddressStepCopy } from "@/components/sections/store/AddressStep/address-step.types";
 import type { ConfirmationHeadCopy } from "@/components/sections/store/ConfirmationHead/confirmation-head.types";
 import type { ThanksStepCopy } from "@/components/sections/store/ConfirmationHead/slot-text";
 import type { HelpBlockCopy } from "@/components/sections/store/HelpBlock/help-block.types";
 import type { OrderRowsCopy } from "@/components/sections/store/OrderRows/order-rows.types";
+import type { PaymentsLineConfig } from "@/components/sections/store/StorePaymentsLine/store-payments-line.types";
 import { SHIP_DATE_TEXT } from "@/config/site";
 import type { HelpLineCopy, Meta, RichTextString } from "@/content/types";
 import { DELIVERY_TEXT } from "../delivery";
 import { DEFAULT_OG } from "../organization";
 import { RETURN_DAYS } from "../policies";
 import { seller } from "../seller";
+import { paymentsLine } from "./payments-line";
 
 /**
  * The store confirmation, `store.kheelona.com/thanks` (task 5.16; structure §3.3, §5; ADR-013). Words as the approved
@@ -19,37 +21,12 @@ import { seller } from "../seller";
  * Every amount and the email come from the order row, never from the store's current mode, so they are not `{price:…}`
  * tokens here: the words around them are slot text (`ConfirmationHead/slot-text.ts`) and the page fills the slots with
  * the values it derives from the row. Its title and description are the copy page's; the share card is the site's.
+ * The address form's words are a words-only module of their own (address-form.ts, task 4.8): the form is a client
+ * island, and this module's imports (the seller facts, the organisation node) stay out of its browser chunk.
  */
 
-/** The address form's words. Its own export, because the form is a client island and imports this alone: the page's
- *  other words (`confirmation` below) are left out of the browser bundle. This module's imports are not: the build keeps
- *  the seller facts and the organization node they read in the form's client chunk (public data, about 1-2 KB gzip),
- *  and every page that loads the `@/features/preorder` barrel's chunk carries them too. Only a words-only module for the
- *  form, importing types alone, would keep them out. */
-export const addressForm = {
-  labels: {
-    line1: "Flat or house, and street",
-    line2: "Landmark or area (optional)",
-    pincode: "PIN code",
-    city: "City or town",
-    state: "State",
-  },
-  statePlaceholder: "Choose your state",
-  save: "Save my address",
-  saving: "Saving…",
-  reassurance:
-    "Your order is already safe. This can wait if you are in the middle of something, and the link in your email brings you straight back here.",
-  saved: {
-    title: "We have your address.",
-    before: "That is everything we need. You can change it any time before dispatch: ",
-    link: "message us on WhatsApp",
-    after: " and we will update it.",
-    change: "Change it here instead",
-  },
-} as const satisfies AddressFormCopy;
-
 /** The shape of this module: a head per state, the order card, the address step, the next steps by tier, the help
- *  fold, and the two other states' words. */
+ *  fold, the two other states' words, and the payments line that closes main. */
 export interface ConfirmationContent {
   readonly meta: Meta;
   readonly head: {
@@ -70,6 +47,9 @@ export interface ConfirmationContent {
     readonly full: readonly ThanksStepCopy[];
   };
   readonly help: HelpBlockCopy;
+  /** The store footer's payments line, the last line of main in every state (wiki/qa/deviations.md V1; task 4.8): the
+   *  store page's own, read from payments-line.ts. */
+  readonly payments: PaymentsLineConfig;
 }
 
 const email = seller.support.email;
@@ -172,4 +152,5 @@ export const confirmation = {
     undo: `Changed your mind? Until we dispatch your Kheelu, message us with your order number and we refund everything you paid, with no fee and no reason needed. After delivery, you can still return it within ${RETURN_DAYS} days, no questions asked. Nothing is ever charged automatically.`,
     refund: { label: "Refunds and returns", href: "/refund" },
   },
+  payments: paymentsLine,
 } as const satisfies ConfirmationContent;

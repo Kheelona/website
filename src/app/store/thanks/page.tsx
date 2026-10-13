@@ -20,7 +20,9 @@ import { ConfirmationHead } from "@/components/sections/store/ConfirmationHead/C
 import { fillSteps } from "@/components/sections/store/ConfirmationHead/slot-text";
 import { HelpBlock } from "@/components/sections/store/HelpBlock/HelpBlock";
 import { OrderRows } from "@/components/sections/store/OrderRows/OrderRows";
+import { StorePaymentsLine } from "@/components/sections/store/StorePaymentsLine/StorePaymentsLine";
 import { STORE_ORIGIN } from "@/config/env";
+import { navigation } from "@/content/en-IN/navigation";
 import { seller } from "@/content/en-IN/seller";
 import { confirmation } from "@/content/en-IN/store/confirmation";
 import { pageMeta } from "@/lib/seo/metadata";
@@ -69,7 +71,9 @@ import { pageMeta } from "@/lib/seo/metadata";
  *  imports only). The approved mockup (mockup/pages/store-confirmation.html)
  *  in five folds, each a section: ConfirmationHead, OrderRows, AddressStep
  *  around the AddressForm, StepsSection (what happens next) and HelpBlock,
- *  then the /thanks WhatsApp bubble (D050, with ph-no-capture). The words are
+ *  then the store footer's payments line as the last line of main, as on the
+ *  store page (task 4.8; deviations V1), and the /thanks WhatsApp bubble (D050,
+ *  with ph-no-capture). The words are
  *  src/content/en-IN/store/confirmation.ts; every amount, the email and the
  *  order number are still read and derived HERE from the order row, exactly as
  *  before, and handed to the sections as values. The one rule that moved out
@@ -119,7 +123,7 @@ export default async function ThanksPage() {
     return (
       <>
         <NotFoundPanel title={confirmation.cannotOpen.title} body={confirmation.cannotOpen.body} cta={false} />
-        <ThanksBubble />
+        <ThanksClose />
       </>
     );
   }
@@ -183,7 +187,7 @@ export default async function ThanksPage() {
           <HelpBlock copy={confirmation.help} />
         </div>
       </div>
-      <ThanksBubble />
+      <ThanksClose />
     </>
   );
 }
@@ -199,15 +203,23 @@ function LinkNeeded() {
           <ConfirmationHead copy={confirmation.head.linkNeeded} help={confirmation.linkNeededHelp} />
         </div>
       </div>
-      <ThanksBubble />
+      <ThanksClose />
     </>
   );
 }
 
-/** The /thanks WhatsApp bubble (D050): the page's own pre-filled text, never an
- *  order detail, and `ph-no-capture` on the link so this page keeps zero
- *  autocapture events (tracking inventory row 18). In every state, since a
- *  layout cannot know its page. */
-function ThanksBubble() {
-  return <WhatsAppFloat href={seller.support.whatsapp} chat={seller.chat} context="thanks" />;
+/** What closes every /thanks state, as the store page closes its own (task 4.8):
+ *  the store footer's payments line as the last line of main (the store layout's
+ *  policy links are a frozen contract, so it cannot sit in the footer;
+ *  wiki/qa/deviations.md V1), then the /thanks WhatsApp bubble (D050): the
+ *  page's own pre-filled text, never an order detail. Both carry `ph-no-capture`
+ *  so this page keeps zero autocapture events (tracking inventory row 18). In
+ *  every state, since a layout cannot know its page. */
+function ThanksClose() {
+  return (
+    <>
+      <StorePaymentsLine content={confirmation.payments} newTabNote={navigation.labels.newTabNote} noCapture />
+      <WhatsAppFloat href={seller.support.whatsapp} chat={seller.chat} context="thanks" />
+    </>
+  );
 }

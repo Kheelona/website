@@ -9,7 +9,7 @@
     "import { Field } from \"@/components/ui/Field/Field\";",
     "import { Select } from \"@/components/ui/Select/Select\";",
     "import { SUPPORT_WHATSAPP_HREF } from \"@/config/site\";",
-    "import { addressForm as copy } from \"@/content/en-IN/store/confirmation\";",
+    "import { addressForm as copy } from \"@/content/en-IN/store/address-form\";",
     "import { INDIAN_STATES } from \"../lib/india\";",
     "import { validateAddress, hasErrors, type AddressInput, type FieldErrors, } from \"../lib/validate\";",
     "import { preorderAnalytics } from \"../lib/analytics\";",

@@ -11,10 +11,12 @@ import { fakeClient, fakeEnv } from "../../../../test/helpers/fake-supabase";
 import { readRepoFile, tagText } from "../../../../test/e2e/support/repo";
 import { skeleton, words } from "../../../../test/support/mockup-compare";
 import { DELIVERY_TEXT } from "../delivery";
+import { navigation } from "../navigation";
 import { DEFAULT_OG } from "../organization";
 import { RETURN_DAYS } from "../policies";
 import { seller } from "../seller";
-import { addressForm, confirmation } from "./confirmation";
+import { addressForm } from "./address-form";
+import { confirmation } from "./confirmation";
 
 /* The /thanks words (task 5.16; structure §5 row store-confirmation.html; wiki/site/pages/store-confirmation.md). The
  * paid state of a token order is the approved mockup (mockup/store-confirmation.html, D046): every word of its five
@@ -338,6 +340,32 @@ describe("/thanks, the page", () => {
     expect(screen.getByRole("heading", { level: 1 }).textContent).toBe(confirmation.cannotOpen.title);
     expect(container.textContent).toContain(confirmation.cannotOpen.body);
     expect(bubble(container)).not.toBeNull();
+  });
+
+  /* Task 4.8 item 2 (wiki/qa/deviations.md V1, extended to /thanks): the store footer the mockup prints the payments line
+     in is the store layout's, whose policy links are a frozen contract, so /thanks closes its main with the line, as the
+     store page does, in every state (the footer it stands in for shows on every state). It sits outside the order's
+     privacy container and carries ph-no-capture itself, as the bubble does, so the page keeps zero autocapture events. */
+  const states: Record<string, () => void> = {
+    paid: () => order(),
+    confirming: () => order({ status: "created" }),
+    "link needed": () => {
+      cookieValue = undefined;
+    },
+    "cannot open": () => {
+      results["preorders.select"] = { data: null };
+    },
+  };
+  it.each(Object.keys(states))("%s: the payments line is the last line before the bubble, outside the order's container", async (state) => {
+    states[state]();
+    const { container } = await page();
+    const blocks = Array.from(container.children);
+    expect(blocks.at(-1)!.matches("a.ks-wa")).toBe(true);
+    const line = blocks.at(-2)!;
+    expect(line.className).toBe("ks-store-payments ph-no-capture");
+    expect(line.textContent).toBe(`${confirmation.payments.text} ${confirmation.payments.link.label}${navigation.labels.newTabNote}`);
+    expect(line.querySelector("a")!.getAttribute("href")).toBe(`${MARKETING_ORIGIN}${confirmation.payments.link.href}`);
+    expect(line.closest(".ph-mask")).toBeNull();
   });
 
   it("sets its title, description and share card through pageMeta: no robots (the store layout's noindex stands), the canonical on the store host as the store page's", async () => {

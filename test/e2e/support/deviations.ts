@@ -6,8 +6,13 @@
  * accepted that reason; every row names the decision or review that approved it. The specs print
  * every deviation they apply, so none is silent.
  */
+import type { Page } from "@playwright/test";
+import { HOSTS } from "@/config/env";
 import { faqs } from "@/content/en-IN/faqs";
+import { navigation } from "@/content/en-IN/navigation";
 import { product } from "@/content/en-IN/products/kheelu/product";
+import { inAppNote } from "@/content/en-IN/store/in-app-note";
+import { paymentsLine } from "@/content/en-IN/store/payments-line";
 import { toPlainText } from "@/lib/content/plain-text";
 import { sentences } from "./parity";
 
@@ -34,13 +39,103 @@ export type TextDeviation = {
   approvedBy: string;
 };
 
+/** An element the visual pass hides on one side before it measures, when a whole block is approved as absent or moved
+ *  and every chunk below it would otherwise shift (SPA 1). Printed when applied, as every deviation. */
+export type VisualHide = {
+  /** The page the element is hidden on: the approved mockup or the build. */
+  side: "mockup" | "build";
+  selector: string;
+  reason: string;
+  approvedBy: string;
+};
+
 const literal = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 /** Matches a line that is exactly one of these sentences. */
 const oneOf = (lines: readonly string[]) => new RegExp(`^(?:${lines.map(literal).join("|")})$`);
 
 export const VISUAL_DEVIATIONS: Readonly<Record<string, readonly VisualDeviation[]>> = {};
 
+/* D042's payments line (wiki/qa/deviations.md V1): both store mockups print it in the store footer; the build prints it
+   as the last line of main, because the store layout's policy links are a frozen checkout contract. The pixels compare
+   both pages without it, on both sides, so the footer chunk lines up (with the build's line alone hidden, the mockup's
+   footer stays one line taller and the last chunk of each phone width differed by 6 to 8 percent); the line itself is
+   compared element by element with each mockup's footer line in StorePaymentsLine.test.tsx, and its words by the text
+   pass (paymentsMoved, below). */
+const PAYMENTS_V1 = "deviations.md V1 (main session, 2026-10-13, wave-3 close; extended to /thanks at the wave 5 part B2 merge; task 4.8)";
+const paymentsHidden: readonly VisualHide[] = [
+  {
+    side: "mockup",
+    selector: 'footer p:has(> a[href$="#chargeback"])',
+    reason: "the mockup's payments line, in its store footer, which the build's footer cannot carry (its policy links are a frozen checkout contract)",
+    approvedBy: PAYMENTS_V1,
+  },
+  {
+    side: "build",
+    selector: ".ks-store-payments",
+    reason: "the build's payments line, moved from the store footer to the end of main (the footer's policy links are a frozen checkout contract)",
+    approvedBy: PAYMENTS_V1,
+  },
+];
+
+export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
+  store: [
+    {
+      /* The in-app browser note is built but off (N7), so the store shows no fold 2 and every chunk below the first
+         screen would move up by the note's height (without these hides the store is 3 to 5 percent shorter than
+         the mockup at the three widths, task 4.8). */
+      side: "mockup",
+      selector: ".mk-inapp",
+      reason: "the in-app browser note (fold 2) is built but off until QA's device check (N7), so the store shows no fold 2",
+      approvedBy: "deviations.md V4 (main session, 2026-10-14, wave 5 part B2 merge; task 4.8)",
+    },
+    ...paymentsHidden,
+  ],
+  "store-confirmation": paymentsHidden,
+};
+
+/** The style the visual pass adds to one side of a page's comparison: its hidden selectors, or "" when it has none. */
+export function hiddenCss(slug: string, side: VisualHide["side"]): string {
+  const selectors = (VISUAL_HIDDEN[slug] ?? []).filter((rule) => rule.side === side).map((rule) => rule.selector);
+  return selectors.length ? `${selectors.join(", ")} { display: none !important; }` : "";
+}
+
+/** Hides one side's approved elements on the page (before it is settled and measured) and prints each rule it applies. */
+export async function hideDeviations(page: Page, slug: string, side: VisualHide["side"]): Promise<void> {
+  const css = hiddenCss(slug, side);
+  if (!css) return;
+  await page.addStyleTag({ content: css });
+  for (const rule of (VISUAL_HIDDEN[slug] ?? []).filter((r) => r.side === side)) {
+    console.log(`[visual-parity] ${slug}: ${rule.selector} hidden in the ${side} (${rule.approvedBy}): ${rule.reason}`);
+  }
+}
+
+const PAYMENTS_WORDS = sentences(`${paymentsLine.text} ${paymentsLine.link.label}`);
+const paymentsMoved: TextDeviation = {
+  /* The mockups' main lacks the line (it is in their footer), so this side matches nothing there; the build's main has
+     the line's words and, on a line of its own, the link's new-tab note (an absolutely positioned visually hidden span).
+     The note stays out of the mockup side: the store's trust links carry it too, and one going missing is a defect. */
+  mockup: oneOf(PAYMENTS_WORDS),
+  build: oneOf([...PAYMENTS_WORDS, navigation.labels.newTabNote.trim()]),
+  reason: "the payments line moved from the store footer to the last line of main (the footer's policy links are a frozen checkout contract)",
+  approvedBy: PAYMENTS_V1,
+};
+
 export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>> = {
+  store: [
+    {
+      /* The in-app browser note's lines as the mockup prints them (store.html fold 2), read from in-app-note.ts with the
+         production store's address the mockup shows, so the rule follows the content. */
+      mockup: oneOf([
+        ...sentences(inAppNote.title),
+        ...sentences(`${inAppNote.body} ${HOSTS.production.store}`),
+        inAppNote.copyLabel,
+      ]),
+      reason: "the in-app browser note (fold 2) is built but off until QA's device check (N7), so its lines are missing",
+      approvedBy: "deviations.md V4 (main session, 2026-10-14, wave 5 part B2 merge; task 4.8)",
+    },
+    paymentsMoved,
+  ],
+  "store-confirmation": [paymentsMoved],
   "meet-kheelu": [
     {
       /* The product details fold without JavaScript (wiki/qa/deviations.md V3): the tab row stays hidden and the three

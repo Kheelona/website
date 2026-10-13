@@ -1,0 +1,19 @@
+/* StorePaymentsLine (task 4.8, from 5.15's StoreDetails CSS): D042's payments line, the last line of the store page's
+   and /thanks's main (wiki/qa/deviations.md V1), set as the store footer sets its lines (store-footer.css: the same
+   side padding, muted at the reading measure, a 28 px link box). */
+.ks-store-payments {
+  padding: var(--space-6) var(--space-4);
+}
+.ks-store-payments p {
+  max-width: var(--measure);
+}
+.ks-store-payments a {
+  padding-block: var(--space-1);
+  margin-block: calc(var(--space-1) * -1);
+}
+
+@media (min-width: 1024px) {
+  .ks-store-payments {
+    padding-inline: var(--space-7);
+  }
+}

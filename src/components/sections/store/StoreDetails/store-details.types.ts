@@ -1,7 +1,8 @@
 import type { CtaHelp } from "@/components/sections/CtaBlock/cta-block.types";
-import type { Copy, IconRef, ModeVariant, RichTextString, SitePath, TrustItem } from "@/content/types";
+import type { Copy, IconRef, ModeVariant, RichTextString, TrustItem } from "@/content/types";
 
-/* The store's checkout words and StoreDetails' configuration (task 5.15; components §2; store.md folds 3, 4 and 7).
+/* The store's checkout words and StoreDetails' configuration (task 5.15; components §2; store.md folds 3 and 4; the
+ * payments line of fold 7 is StorePaymentsLine's, task 4.8).
  * The content module (content/en-IN/store/store-page.ts) writes them; the restyled PreorderForm and OrderSummary read
  * their own part (ADR-013: markup, classes, copy and presentation imports only). Every amount is a `{price:…}` token,
  * filled from the order the server priced (checkout-words.ts). */
@@ -63,13 +64,6 @@ export interface PayBesideConfig {
   readonly payment: Copy;
   /** "Rather talk to a person?" and the WhatsApp and call links (seller.help). */
   readonly help: CtaHelp;
-}
-
-/** D042's payments line with its chargeback link (store.md fold 7), the last line of the store page's main
- *  (wiki/qa/deviations.md V1: the store layout's policy links are a frozen checkout contract). */
-export interface PaymentsLineConfig {
-  readonly text: string;
-  readonly link: { readonly label: string; readonly href: SitePath };
 }
 
 /** StoreDetails' own words: the details section's heading (store.md fold 3). */

@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/Card/Card";
 import { Field } from "@/components/ui/Field/Field";
 import { Select } from "@/components/ui/Select/Select";
 import { SUPPORT_WHATSAPP_HREF } from "@/config/site";
-import { addressForm as copy } from "@/content/en-IN/store/confirmation";
+import { addressForm as copy } from "@/content/en-IN/store/address-form";
 import { INDIAN_STATES } from "../lib/india";
 import {
   validateAddress,
@@ -35,7 +35,7 @@ import { preorderAnalytics } from "../lib/analytics";
  *  the DS PRIMARY button, not Chilli: saving an address is an everyday action
  *  ("Chilli means buying", DS Button README). A failure is a DS danger Alert;
  *  the saved state a DS card. The words come from content
- *  (src/content/en-IN/store/confirmation.ts `addressForm`); the handler's own
+ *  (src/content/en-IN/store/address-form.ts, words only); the handler's own
  *  failure lines stay where the frozen logic has them. Layout classes are
  *  styled by the AddressStep section around the form. */
 export function AddressForm({

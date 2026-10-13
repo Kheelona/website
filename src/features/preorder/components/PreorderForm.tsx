@@ -10,7 +10,7 @@ import { checkoutPrices, checkoutWords } from "@/components/sections/store/Store
 import type { PreorderFormCopy } from "@/components/sections/store/StoreDetails/store-details.types";
 import { BALANCE_PRICE } from "@/config/site";
 import { MARKETING_ORIGIN } from "@/config/env";
-import { preorderFormCopy } from "@/content/en-IN/store/store-page";
+import { preorderFormCopy } from "@/content/en-IN/store/preorder-form";
 import {
   validateContact,
   hasErrors,
@@ -43,7 +43,7 @@ import { CAMPAIGN_KEYS } from "@/lib/campaign";
  *  presentation imports only). The fields are the DS Field and Checkbox, the
  *  failure line a DS danger Alert above the pay button, the pay button the DS
  *  chilli button (its labels unchanged, still a plain <button> with no cta
- *  attribute). The words come from content (content/en-IN/store/store-page.ts),
+ *  attribute). The words come from content (content/en-IN/store/preorder-form.ts),
  *  their amounts from the labels the server formatted for this tier. Beside the
  *  button, in the form's own block, the price sentence carries the refund promise;
  *  the store page hands in the rest (`beside`: the trust row, the payment window

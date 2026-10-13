@@ -3,15 +3,13 @@ import { SellingHelpLine } from "@/components/sections/CtaBlock/selling-lines";
 import { storeTrustItems } from "@/components/sections/store/StoreTop/StoreTop";
 import { RichText } from "@/components/ui/RichText/RichText";
 import { TrustLine } from "@/components/ui/TrustLine/TrustLine";
-import { MARKETING_ORIGIN } from "@/config/env";
 import type { Offer } from "@/content/types";
-import type { PayBesideConfig, PaymentsLineConfig, StoreDetailsConfig } from "./store-details.types";
+import type { PayBesideConfig, StoreDetailsConfig } from "./store-details.types";
 
 export type {
   CheckoutRow,
   OrderSummaryCopy,
   PayBesideConfig,
-  PaymentsLineConfig,
   PreorderFormCopy,
   StoreDetailsConfig,
 } from "./store-details.types";
@@ -82,32 +80,5 @@ export function PayBeside({ content, offer, newTabNote }: PayBesideProps) {
       <RichText as="p" className="kh-body-s ks-muted" text={content.payment} offer={offer} />
       <SellingHelpLine help={content.help} offer={offer} />
     </>
-  );
-}
-
-export interface StorePaymentsLineProps {
-  readonly content: PaymentsLineConfig;
-  /** Read after the chargeback link, which opens /refund in a new tab. */
-  readonly newTabNote: string;
-}
-
-/**
- * D042's payments line with its chargeback link (store.md fold 7), as the last line of the store page's main: the
- * store layout's policy links are a frozen checkout contract, so the line the mockup puts in the footer sits just above
- * it (wiki/qa/deviations.md V1). Set like the footer's lines: muted, at the reading measure, aligned with the footer.
- */
-export function StorePaymentsLine({ content, newTabNote }: StorePaymentsLineProps) {
-  return (
-    <div className="ks-store-payments">
-      <div className="kh-container">
-        <p className="kh-body-s ks-muted">
-          {content.text}{" "}
-          <a href={`${MARKETING_ORIGIN}${content.link.href}`} target="_blank" rel="noopener">
-            {content.link.label}
-            <span className="kh-sr">{newTabNote}</span>
-          </a>
-        </p>
-      </div>
-    </div>
   );
 }

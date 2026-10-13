@@ -20,7 +20,9 @@
     "import { fillSteps } from \"@/components/sections/store/ConfirmationHead/slot-text\";",
     "import { HelpBlock } from \"@/components/sections/store/HelpBlock/HelpBlock\";",
     "import { OrderRows } from \"@/components/sections/store/OrderRows/OrderRows\";",
+    "import { StorePaymentsLine } from \"@/components/sections/store/StorePaymentsLine/StorePaymentsLine\";",
     "import { STORE_ORIGIN } from \"@/config/env\";",
+    "import { navigation } from \"@/content/en-IN/navigation\";",
     "import { seller } from \"@/content/en-IN/seller\";",
     "import { confirmation } from \"@/content/en-IN/store/confirmation\";",
     "import { pageMeta } from \"@/lib/seo/metadata\";",
@@ -50,8 +52,8 @@
     "function LinkNeeded() {",
     "    return (__JSX_fragment__);",
     "}",
-    "function ThanksBubble() {",
-    "    return __JSX_WhatsAppFloat__;",
+    "function ThanksClose() {",
+    "    return (__JSX_fragment__);",
     "}"
   ],
   "jsx": [
@@ -75,6 +77,9 @@
     "@HelpBlock copy={confirmation.help}",
     "@ConfirmationHead copy={confirmation.head.linkNeeded}",
     "@ConfirmationHead help={confirmation.linkNeededHelp}",
+    "@StorePaymentsLine content={confirmation.payments}",
+    "@StorePaymentsLine newTabNote={navigation.labels.newTabNote}",
+    "@StorePaymentsLine noCapture",
     "@WhatsAppFloat href={seller.support.whatsapp}",
     "@WhatsAppFloat chat={seller.chat}",
     "@WhatsAppFloat context=\"thanks\""
