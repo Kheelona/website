@@ -6,6 +6,7 @@
  * accepted that reason; every row names the decision or review that approved it. The specs print
  * every deviation they apply, so none is silent.
  */
+import { faqs } from "@/content/en-IN/faqs";
 import { product } from "@/content/en-IN/products/kheelu/product";
 import { toPlainText } from "@/lib/content/plain-text";
 import { sentences } from "./parity";
@@ -54,6 +55,16 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
       jsOff: true,
       reason: "details fold without JavaScript: the tab row hidden, the three panels stacked (the approved tabs with JavaScript; P1, N21 corrected)",
       approvedBy: "deviations.md V3 (main session, 2026-10-13; task 5.2)",
+    },
+    {
+      /* P15's default (open questions §P; task 4.7 item 4): the shared FAQ answer "What if it isn’t right for us, or stops
+         working?" (faqs.ts returns-and-warranty, fold 8) gives D033's remedy for a faulty Kheelu, as /refund does. The
+         approved sentence (meet-kheelu.html:357) and the build's, read from faqs.ts so the rule follows the content. Both
+         runs: the answer is the same with JavaScript on and off. */
+      mockup: /^Tell us within 7 days and we replace it\.$/,
+      build: oneOf(sentences(toPlainText(faqs["returns-and-warranty"].answer)).filter((s) => s.startsWith("Tell us within"))),
+      reason: "P15 default: a faulty Kheelu reported within 7 days gets a replacement or a full refund (D033, Rule 7(4)), the words of /refund",
+      approvedBy: "deviations.md V6 (main session; task 4.7 item 4, P15 default)",
     },
   ],
 };
