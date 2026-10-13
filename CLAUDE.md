@@ -127,7 +127,7 @@ client-event loss rate**. Build dashboards on `purchase_confirmed`. (2) **`await
 mandatory** — posthog-node queues with `flushAt` 20 / `flushInterval` 5000ms and a serverless function
 returns long before either fires (§8.40-d), which would reintroduce the exact silent loss one layer
 down. Pinned by a test. (3) **Stitched AND anonymous are not opposites** (§8.40-e): the order carries
-PostHog's anonymous DEVICE id, `$process_person_profile: false` keeps person profiles off, and funnels
+PostHog's anonymous DEVICE id, `$process_person_profile: false` keeps person profiles off, and funnels 
 key on distinct_id anyway. Falls back to `order_ref` rather than dropping a sale. (4) **The campaign travels in a
 first-party `kh_utm` COOKIE set by `src/proxy.ts`** at the edge (§8.40-f), read back by `create-order`,
 first-touch-wins. 🔴 **The first version of this read PostHog's session and DID NOTHING**: PostHog keeps
