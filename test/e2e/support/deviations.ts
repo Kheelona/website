@@ -14,6 +14,7 @@ import { product } from "@/content/en-IN/products/kheelu/product";
 import { inAppNote } from "@/content/en-IN/store/in-app-note";
 import { paymentsLine } from "@/content/en-IN/store/payments-line";
 import { toPlainText } from "@/lib/content/plain-text";
+import { PAGE_FACTS, type PageFactsSlug } from "./page-facts";
 import { sentences } from "./parity";
 
 export type VisualDeviation = {
@@ -55,11 +56,9 @@ const oneOf = (lines: readonly string[]) => new RegExp(`^(?:${lines.map(literal)
 /* The build's words for the team and setup rules (V7, V8). Spelled here because Playwright cannot load those content
    modules (they import images); src/content/en-IN/pages/parity-deviations.test.ts holds each to its content module. */
 export const TEAM_LEAD_BUILD = "Kheelona’s founders are parents in Bengaluru, building Kheelu: a screen-free plush toy that talks, for children aged 3 to 7.";
-export const SETUP_STEP_BUILD = [
-  "Press and hold Kheelu’s setup button.",
-  "[PLACEHOLDER: which button and where; the app’s own screen still shows “[back]”]",
-  "Hold it for 3 seconds, until its light starts pulsing.",
-] as const;
+/* Step 2's light without a colour (V8, shrunk to the colour by D055 item 25: the button's place is the founder's and the
+   mockup's own, so its title is the mockup's again). */
+export const SETUP_STEP_BUILD = ["Hold it for 3 seconds, until its light starts pulsing."] as const;
 /* The build's words for the privacy rule (V10): the B11 events of task 6.2 named in the policy, in the words the founder
    approved after Gate A (D054 item 10). Literals for the same reason; src/content/en-IN/legal/parity-deviations.test.ts
    holds them to privacy.ts. */
@@ -68,6 +67,16 @@ export const PRIVACY_B11_BUILD = [
   "It is told the same steps of a pre-order as Google Analytics.",
 ] as const;
 const PRIVACY_V10 = "deviations.md V10 (founder, D054 item 10, 2026-10-14; task 6.2)";
+
+/** The founder's page facts on one page (task 6.7; D055, D054 items 12 and 19): each placeholder he filled and each line
+ *  he ruled off, the sentences listed in page-facts.ts (each page's parity-deviations unit test proves them exactly the
+ *  ones its facts change). */
+const pageFacts = (slug: PageFactsSlug): TextDeviation => ({
+  mockup: oneOf(PAGE_FACTS[slug].mockup),
+  build: oneOf(PAGE_FACTS[slug].build),
+  reason: PAGE_FACTS[slug].reason,
+  approvedBy: PAGE_FACTS[slug].approvedBy,
+});
 
 /** A route whose own parity runs would compare a state its mockup does not show, with the spec that proves that
  *  state's parity instead. The visual and text parity specs skip the route on the build and print why (SPA 1 and 2). */
@@ -250,6 +259,7 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
       reason: "P15 default: a faulty Kheelu reported within 7 days gets a replacement or a full refund (D033, Rule 7(4)), the words of /refund",
       approvedBy: "deviations.md V6 (main session; task 4.7 item 4, P15 default)",
     },
+    pageFacts("meet-kheelu"),
   ],
   team: [
     {
@@ -268,13 +278,14 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
   ],
   setup: [
     {
-      /* CMO fix M-S1 (task 5.8): step 2 names no place and no light colour for the setup button (the app's own screen
-         bracketed both); its place is an open placeholder (setup.ts). */
-      mockup: oneOf(["Press and hold the button on Kheelu’s back.", "Hold it for 3 seconds, until the light starts pulsing blue."]),
+      /* CMO fix M-S1 (task 5.8): step 2's light names no colour (the app's own screen bracketed it). Since D055 item 25
+         the button's place is the founder's, the mockup's own words, so only the colour differs (setup.ts). */
+      mockup: oneOf(["Hold it for 3 seconds, until the light starts pulsing blue."]),
       build: oneOf(SETUP_STEP_BUILD),
-      reason: "CMO fix M-S1: no unconfirmed place or light colour for the setup button; its place is a placeholder until confirmed",
-      approvedBy: "deviations.md V8 (main session, 2026-10-14, M1; task 5.8)",
+      reason: "CMO fix M-S1: no unconfirmed colour for the setup button's light (its place confirmed by D055 item 25)",
+      approvedBy: "deviations.md V8 (main session, 2026-10-14, M1; task 5.8; shrunk to the colour by D055 item 25, task 6.7)",
     },
+    pageFacts("setup"),
   ],
   privacy: [
     {

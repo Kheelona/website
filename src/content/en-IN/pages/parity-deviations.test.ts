@@ -3,8 +3,11 @@ import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { SETUP_STEP_BUILD, TEAM_LEAD_BUILD, TEXT_DEVIATIONS, VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
 import { htmlToText } from "../../../../test/e2e/support/mockup-text";
+import { PAGE_FACTS } from "../../../../test/e2e/support/page-facts";
 import { sentences } from "../../../../test/e2e/support/parity";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
+import { mockupFold } from "../../../../test/support/mockup-compare";
+import { factSentences, ruleReach } from "../../../../test/support/mockup-facts";
 import { setupPage } from "./setup";
 import { teamPage } from "./team";
 
@@ -55,10 +58,26 @@ describe("team parity deviations (V7)", () => {
   });
 });
 
-describe("setup parity deviations (V8)", () => {
-  it("accepts step 2 as setup.ts renders it, and nothing else of the page", () => {
-    for (const line of SETUP_STEP_BUILD) expect(contentSentences(setupPage)).toContain(line);
-    expect(accepted("setup", contentSentences(setupPage))).toEqual([...SETUP_STEP_BUILD]);
+describe("setup parity deviations (V8, and the founder's page facts V15)", () => {
+  const V8 = TEXT_DEVIATIONS.setup.find((rule) => rule.approvedBy.startsWith("deviations.md V8"))!;
+  const FACTS = PAGE_FACTS.setup;
+  const factsRule = TEXT_DEVIATIONS.setup.find((rule) => rule.approvedBy === FACTS.approvedBy)!;
+
+  it("is two rules: V8 for step 2's light, then the founder's page facts (task 6.7)", () => {
+    expect(TEXT_DEVIATIONS.setup.map((rule) => rule.approvedBy)).toEqual([V8.approvedBy, FACTS.approvedBy]);
+  });
+
+  it("accepts step 2's light as setup.ts renders it, and with the facts the lines setup.ts renders for them, and nothing else", () => {
+    for (const line of [...SETUP_STEP_BUILD, ...FACTS.build]) expect(contentSentences(setupPage)).toContain(line);
+    expect(accepted("setup", contentSentences(setupPage))).toEqual([FACTS.build[0], ...SETUP_STEP_BUILD, FACTS.build[1]]);
+  });
+
+  it("lists exactly the sentences the founder's facts change (page-facts.ts against the mockup)", () => {
+    expect(factSentences(mockupFold("setup", "main"), FACTS.edits)).toEqual({ missing: [...FACTS.mockup], extra: [...FACTS.build] });
+  });
+
+  it("excuses and accepts exactly those sentences through its facts rule, and no other line of the page", () => {
+    expect(ruleReach(mockupFold("setup", "main"), FACTS.edits, factsRule)).toEqual({ excused: [...FACTS.mockup], accepted: [...FACTS.build] });
   });
 
   it("hides step 2 on both sides, one element each", () => {
@@ -70,13 +89,10 @@ describe("setup parity deviations (V8)", () => {
     expect(doc.querySelector(".kh-steps > .kh-step:nth-child(2) .kh-step__title")?.textContent).toBe("Press and hold the button on Kheelu’s back.");
   });
 
-  it("excuses exactly the mockup's two step 2 lines", () => {
-    const step2 = ["Press and hold the button on Kheelu’s back.", "Hold it for 3 seconds, until the light starts pulsing blue."];
-    for (const line of step2) {
-      expect(readRepoFile("mockup/setup.html")).toContain(line);
-      expect(excused("setup", [line])).toEqual([line]);
-    }
-    /* Read from the file, the step's number joins its title ("2 Press and hold …"); the browser skips it (aria-hidden). */
-    expect(excused("setup", mockupMain("setup"))).toEqual(["Hold it for 3 seconds, until the light starts pulsing blue."]);
+  it("excuses through V8 exactly the mockup's step 2 light line: its title is the founder's now (D055 item 25)", () => {
+    const light = "Hold it for 3 seconds, until the light starts pulsing blue.";
+    expect(readRepoFile("mockup/setup.html")).toContain(light);
+    expect(mockupMain("setup").filter((line) => V8.mockup.test(line))).toEqual([light]);
+    expect(V8.mockup.test("Press and hold the button on Kheelu’s back.")).toBe(false);
   });
 });

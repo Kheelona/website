@@ -23,6 +23,13 @@
 // files and dot-files are skipped. A production run with nothing to scan fails: an empty scan
 // cannot vouch for a build.
 //
+// Hidden slots (D054 item 19; task 6.7): an F4 slot (the product's final specs) is hidden, not marked. The content
+// layer drops the row or line it is the value of before anything renders (withoutHiddenRows), so the slot may stay in
+// the source, where its value lands: the source scan lists it as hidden and never refuses it. Which items are hidden,
+// and how a token's body reads, come from src/lib/content/placeholder.ts (never restated here). A typed marker, a
+// draft and every other slot are refused as before, and the output scan stays strict: an F4 slot that reached a page
+// is refused there, since nothing of it may render.
+//
 // The build steps scripts/steps/prebuild/30-placeholders.mjs and
 // scripts/steps/postbuild/10-placeholders-html.mjs run this file; test/guards/placeholders.test.ts
 // proves it red and green, and runs the source scan in development on every `npm run verify`.
@@ -30,6 +37,7 @@
 import { readdirSync, readFileSync, realpathSync, statSync } from "node:fs";
 import { dirname, join, posix as posixPath, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { HIDDEN_ITEMS, isHiddenPlaceholder, parsePlaceholderToken, placeholder } from "../../src/lib/content/placeholder.ts";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
@@ -184,6 +192,31 @@ function resolveSpecifier(from, spec, known) {
   return candidates.find((c) => known.has(c)) ?? null;
 }
 
+/** A helper call's first argument, a quoted id or null: `placeholder("F4", …)`. */
+const HELPER_ID = /^placeholder\(\s*(?:(["'`])([^"'`\n]*)\1|null)\s*,/;
+
+/**
+ * True when a source finding is a hidden slot (D054 item 19): an inline token or a helper call whose open item
+ * placeholder.ts hides. A typed marker or a draft never is (a marker in the source renders as it is).
+ * @param {string} text
+ * @param {{ pattern: string, index: number, end: number }} hit
+ */
+function isHiddenSlot(text, hit) {
+  try {
+    if (hit.pattern === "token") {
+      const close = text.indexOf("}", hit.end);
+      return close !== -1 && isHiddenPlaceholder(parsePlaceholderToken(text.slice(hit.end, close)));
+    }
+    if (hit.pattern === "helper") {
+      const id = HELPER_ID.exec(text.slice(hit.index, hit.index + 200));
+      return id !== null && id[2] !== undefined && isHiddenPlaceholder(placeholder(id[2], "a hidden slot"));
+    }
+  } catch {
+    // A slot the syntax refuses is no hidden slot: it stays a finding.
+  }
+  return false;
+}
+
 /**
  * Scans src/ under root, minus EXCLUDED and the files that never ship (counted in `notShipped`).
  * A never-shipped file that a shipped file imports ships after all: it is scanned and listed in
@@ -193,7 +226,7 @@ function resolveSpecifier(from, spec, known) {
 export function scanSource(root = REPO) {
   const dir = join(root, SOURCE_DIR);
   const base = { kind: "source", target: `${SOURCE_DIR}/`, excluded: [...EXCLUDED] };
-  if (!isDir(dir)) return { ...base, missing: true, files: 0, notShipped: 0, importedNeverShipped: [], findings: [] };
+  if (!isDir(dir)) return { ...base, missing: true, files: 0, notShipped: 0, importedNeverShipped: [], findings: [], hidden: [] };
   const all = walk(dir).map((path) => ({ path, file: posix(relative(root, path)) }));
   const known = new Set(all.map((f) => f.file));
   const byFile = new Map(all.map((f) => [f.file, f.path]));
@@ -227,6 +260,7 @@ export function scanSource(root = REPO) {
   let files = 0;
   let notShipped = 0;
   const findings = [];
+  const hidden = [];
   for (const { file } of all) {
     if (EXCLUDED.includes(file)) continue;
     if (!shipped.has(file)) {
@@ -237,10 +271,11 @@ export function scanSource(root = REPO) {
     if (text === null) continue;
     files++;
     for (const hit of findPlaceholders(text)) {
-      findings.push({ file, line: hit.line, pattern: hit.pattern, label: hit.label, excerpt: lineExcerpt(text, hit.index) });
+      const finding = { file, line: hit.line, pattern: hit.pattern, label: hit.label, excerpt: lineExcerpt(text, hit.index) };
+      (isHiddenSlot(text, hit) ? hidden : findings).push(finding);
     }
   }
-  return { ...base, missing: false, files, notShipped, importedNeverShipped, findings };
+  return { ...base, missing: false, files, notShipped, importedNeverShipped, findings, hidden };
 }
 
 /**
@@ -266,15 +301,15 @@ export function scanBuild(root = REPO) {
       findings.push({ file, line: hit.line, pattern: hit.pattern, label: hit.label, excerpt: outputExcerpt(text, hit) });
     }
   }
-  return { ...base, missing: pages === 0, files, findings };
+  return { ...base, missing: pages === 0, files, findings, hidden: [] };
 }
 
 const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
 /** One line per distinct finding; repeats on the same line or page are counted, not repeated. */
-function listLines(scan) {
+function listLines(scan, findings = scan.findings) {
   const counts = new Map();
-  for (const f of scan.findings) {
+  for (const f of findings) {
     const where = scan.kind === "source" ? `${f.file}:${f.line}` : f.file;
     const key = `  ${where}  ${f.label}  ${f.excerpt}`;
     counts.set(key, (counts.get(key) ?? 0) + 1);
@@ -292,6 +327,14 @@ export function decide(siteEnv, scan) {
   const production = siteEnv === "production";
   const tag = "[placeholders]";
   const what = scan.kind === "source" ? "files scanned" : "prerendered files scanned";
+  const hidden = scan.hidden ?? [];
+  const hiddenFiles = [...new Set(hidden.map((h) => h.file))];
+  const hiddenLines = hidden.length
+    ? [
+        `${tag} hidden until their value arrives, never rendered (D054 item 19): ${plural(hidden.length, `${HIDDEN_ITEMS.join(", ")} slot`)} in ${plural(hiddenFiles.length, "file")} (${hiddenFiles.join(", ")})`,
+        ...(production ? [] : listLines(scan, hidden)),
+      ]
+    : [];
   const excludedLine = [
     ...(scan.excluded.length ? [`${tag} not scanned, they define the syntax: ${scan.excluded.join(", ")}`] : []),
     ...(scan.kind === "source"
@@ -304,6 +347,7 @@ export function decide(siteEnv, scan) {
             .join(", ")}`,
         ]
       : []),
+    ...hiddenLines,
   ];
 
   if (scan.missing) {

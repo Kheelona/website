@@ -7,9 +7,12 @@ import type { SectionEntry } from "@/layouts/sections-registry";
 import { stickyBarPaths } from "@/layouts/SiteShell/sticky-bar-paths";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
+import { SETUP_STEP_BUILD } from "../../../../test/e2e/support/deviations";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
+import { APP_STORE, GOOGLE_PLAY, PAGE_FACTS, type FactEdit } from "../../../../test/e2e/support/page-facts";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { mockupFold, mockupRoute, skeleton, words } from "../../../../test/support/mockup-compare";
+import { withFacts } from "../../../../test/support/mockup-facts";
 import { DEFAULT_OG } from "../organization";
 import { routeFor } from "../routes";
 import { seller } from "../seller";
@@ -22,37 +25,23 @@ import { setupPage } from "./setup";
  * pictures, icons and tones, no chilli button (setup.md question 4, CMO view: as built), and the HowTo of its four
  * steps (architecture §9.2).
  *
- * One approved difference from the mockup, and only one: step 2 of "Connect Kheelu to your home Wi-Fi" takes the CMO
- * review's values (wiki/qa/cmo-review-pages-help-2026-10-11.md, M-S1): the mockup's "button on Kheelu's back" and
- * "pulsing blue" were the app's own bracketed placeholders, so the step names no place and no colour, and a placeholder
- * holds the button's place until the founder answers (setup.md question 1, CMO question 1). APPROVED below is the
- * mockup with that one step corrected; every comparison runs against it, and one test pins that it differs from the
- * mockup in that step alone. The activity screenshot is the D044 round-2 file (task 1.5b: no "Games"); the alt and the
- * caption are the mockup's.
+ * The approved differences from the mockup, and only these. Step 2's light names no colour (deviation V8: the app's own
+ * screen bracketed it, CMO review M-S1, and the founder has not confirmed one, D055 item 25). The founder's page facts
+ * (task 6.7; test/e2e/support/page-facts.ts): the charger's F4 slot hidden until its value arrives (D055 item 27, D054
+ * item 19), the parent app named and linked on both stores (item 26), and the wake-up button's place, the button on
+ * Kheelu's back that step 2 holds (item 25). APPROVED below is the mockup with exactly those applied; every comparison
+ * runs against it, and one test pins that it differs from the mockup there alone. The activity screenshot is the D044
+ * round-2 file (task 1.5b: no "Games"); the alt and the caption are the mockup's.
  */
 
 const MOCKUP = mockupFold("setup", "main");
 
-/** CMO review M-S1's step 2: the setup button without a place or a light colour, its place a placeholder. */
-const STEP_2 = {
-  title: "Press and hold Kheelu’s setup button.",
-  placeholder: "[PLACEHOLDER: which button and where; the app’s own screen still shows “[back]”]",
-  body: "Hold it for 3 seconds, until its light starts pulsing.",
-};
+/** Step 2: the mockup's title, the founder's (D055 item 25), and its light without a colour (V8). */
+const STEP_2 = { title: "Press and hold the button on Kheelu’s back.", body: SETUP_STEP_BUILD[0] };
+const V8: FactEdit = { at: ".kh-step__body", was: "Hold it for 3 seconds, until the light starts pulsing blue.", now: STEP_2.body, inner: true };
 
-/** The approved page: the mockup's <main> with step 2 as the CMO review words it (M-S1). */
-const APPROVED = (() => {
-  const main = MOCKUP.cloneNode(true) as Element;
-  const step = main.querySelector("#connect .kh-step:nth-child(2)")!;
-  const title = step.querySelector(".kh-step__title")!;
-  title.textContent = `${STEP_2.title} `;
-  const marker = main.ownerDocument.createElement("span");
-  marker.className = "mk-placeholder";
-  marker.textContent = STEP_2.placeholder;
-  title.append(marker);
-  step.querySelector(".kh-step__body")!.textContent = STEP_2.body;
-  return main;
-})();
+/** The approved page: the mockup's <main> with V8 and the founder's page facts applied. */
+const APPROVED = withFacts(MOCKUP, [...PAGE_FACTS.setup.edits, V8]);
 
 const LABELS = ["hero-title", "before-title", "connect-title", "age-title", "button-title", "talk-title", "help-title"];
 
@@ -118,16 +107,25 @@ describe("Setup: the folds of the approved page", () => {
     expect(folds(BUILT).map((f) => f.id || null)).toEqual(folds(MOCKUP).map((f) => f.id || null));
   });
 
-  it("differs from the mockup only in step 2, which takes the CMO review's values (M-S1)", () => {
+  it("differs from the mockup only in fold 2's first and last items, step 2's light and fold 5's button line", () => {
     const step = (main: Element) => main.querySelector("#connect .kh-step:nth-child(2)")!;
     expect(words(step(MOCKUP))).toBe("2 Press and hold the button on Kheelu’s back. Hold it for 3 seconds, until the light starts pulsing blue.");
-    expect(words(step(BUILT))).toBe(`2 ${STEP_2.title} ${STEP_2.placeholder} ${STEP_2.body}`);
+    expect(words(step(BUILT))).toBe(`2 ${STEP_2.title} ${STEP_2.body}`);
+    const items = (main: Element) => all(fold(main, "before-title"), "li").map((li) => words(li));
+    expect(items(BUILT)).toEqual([
+      "Charge Kheelu with the charger in the box.",
+      "Have your home Wi‑Fi password ready.",
+      "Stay close to your Wi‑Fi router.",
+      "Keep your phone with you, with the parent app installed. It’s called the Kheelona app: get it on the App Store for iPhone, or on Google Play for Android.",
+    ]);
+    expect(items(MOCKUP).slice(1, 3)).toEqual(items(BUILT).slice(1, 3));
     const rest = (main: Element) => {
       const copy = main.cloneNode(true) as Element;
-      copy.querySelector("#connect .kh-step:nth-child(2)")!.remove();
+      for (const gone of copy.querySelectorAll('#connect .kh-step:nth-child(2), [aria-labelledby="before-title"] li, [aria-labelledby="button-title"] p:first-of-type')) gone.remove();
       return words(copy);
     };
     expect(rest(APPROVED)).toBe(rest(MOCKUP));
+    expect(words(APPROVED)).not.toBe(words(MOCKUP));
   });
 
   it.each(LABELS)("%s says word for word what the approved page says", (label) => {
@@ -187,7 +185,8 @@ describe("Setup: no chilli button and no buy bar (setup.md question 4; CMO view:
   it("has no pre-order button and no tracking value anywhere in its folds (the nav and drawer carry theirs)", () => {
     expect(all(BUILT, ".kh-btn--cta")).toHaveLength(0);
     expect(all(BUILT, "[data-ph-capture-attribute-cta]")).toHaveLength(0);
-    expect(all(BUILT, '[href*="store"]')).toHaveLength(0);
+    // No link to the Kheelona store (the parent app's Google Play listing lives under play.google.com/store/).
+    expect(all(BUILT, '[href*="store.kheelona.com"]')).toHaveLength(0);
   });
 
   it("is not a page of the phone buy bar (mockup meta buybar: false)", () => {
@@ -219,13 +218,11 @@ describe("Setup: the steps and their HowTo (architecture §9.2)", () => {
     expect(steps().map((li) => [...li.classList].find((c) => c.startsWith("kh-tone-")))).toEqual(["kh-tone-sun", "kh-tone-blue", "kh-tone-chilli", "kh-tone-sun"]);
   });
 
-  it("names no place and no colour for the setup button, and holds its place open (CMO M-S1)", () => {
+  it("names the setup button's place, the founder's (D055 item 25), and no colour for its light (V8)", () => {
     const step2 = steps()[1];
-    const marker = step2.querySelector(".kh-step__title .ks-placeholder");
-    expect(marker?.textContent).toBe(STEP_2.placeholder);
-    const outside = step2.cloneNode(true) as Element;
-    outside.querySelector(".ks-placeholder")!.remove();
-    expect(words(outside)).not.toMatch(/\bback\b|\bblue\b/i);
+    expect(words(step2.querySelector(".kh-step__title")!)).toBe("Press and hold the button on Kheelu’s back.");
+    expect(words(step2.querySelector(".kh-step__body")!)).toBe("Hold it for 3 seconds, until its light starts pulsing.");
+    expect(step2.querySelector(".ks-placeholder")).toBeNull();
     expect(words(BUILT)).not.toMatch(/\bblue\b/i);
   });
 
@@ -257,7 +254,9 @@ describe("Setup: the wake-up button (D018; gate-a-open-items A10)", () => {
     expect(text).toContain(
       "One press starts a conversation. A light on Kheelu shows whenever it’s listening. After about a minute of quiet, it switches itself off, so the next chat starts with another press.",
     );
-    expect(fold(BUILT, "button-title").querySelector(".ks-placeholder")?.textContent).toBe("[PLACEHOLDER: where the wake-up button sits on Kheelu]");
+    // Where it is (D055 item 25): the button step 2 holds, in step 2's own words.
+    expect(text).toContain("Kheelu only listens when someone presses its wake-up button. It’s the button on Kheelu’s back, the one you held during setup.");
+    expect(fold(BUILT, "button-title").querySelector(".ks-placeholder")).toBeNull();
   });
 
   it("never says “wake word”, “teach the hello” or a blanket “works offline” (claims §4.1; setup.md keyword rules)", () => {
@@ -292,13 +291,26 @@ describe("Setup: the parent app's activity screen (D044; task 1.5b)", () => {
 });
 
 describe("Setup: content rules", () => {
-  it("shows exactly the copy page's three placeholders and the CMO review's step-2 one, each visibly", () => {
-    expect(all(BUILT, ".ks-placeholder").map((p) => p.textContent)).toEqual([
-      "[PLACEHOLDER F4: the charger type, and how long a full charge takes]",
-      "[PLACEHOLDER C6: where to get the parent app: App Store and Google Play links, and the listing name]",
-      STEP_2.placeholder,
-      "[PLACEHOLDER: where the wake-up button sits on Kheelu]",
+  it("shows no placeholder: each was filled by the founder or hidden until its value arrives (setup.md, task 6.7)", () => {
+    expect(all(BUILT, ".ks-placeholder")).toHaveLength(0);
+    expect(TOKEN.html).not.toMatch(/PLACEHOLDER|\{ph:/);
+  });
+
+  it("keeps the charger's F4 slot in the source, where its value lands, and renders nothing of it (D054 item 19)", () => {
+    const source = readRepoFile("src/content/en-IN/pages/setup.ts");
+    expect(source).toContain(`Charge Kheelu with the charger in the box. {${"ph"}:F4 the charger type, and how long a full charge takes}`);
+    expect(source).toMatch(/withoutHiddenRows\(/);
+    expect(words(all(fold(BUILT, "before-title"), "li")[0])).toBe("Charge Kheelu with the charger in the box.");
+  });
+
+  it("links the parent app's two store listings, the live site's own (D055 item 26), with no tracking value", () => {
+    const item = all(fold(BUILT, "before-title"), "li")[3];
+    expect(all(item, "a").map((a) => [a.textContent, a.getAttribute("href")])).toEqual([
+      ["App Store", APP_STORE],
+      ["Google Play", GOOGLE_PLAY],
     ]);
+    expect(all(item, "[data-ph-capture-attribute-cta]")).toHaveLength(0);
+    expect(strings(setupPage).join("\n")).not.toMatch(/\bLumi\b/);
   });
 
   it("reads the support line from seller.ts: no phone number, WhatsApp address or email typed in its source", () => {

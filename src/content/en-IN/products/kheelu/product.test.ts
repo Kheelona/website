@@ -6,18 +6,24 @@ import { KHEELU_LANGUAGES } from "@/config/site";
 import type { IconText, RichTextString } from "@/content/types";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
+import { PAGE_FACTS } from "../../../../../test/e2e/support/page-facts";
 import { ROOT, readRepoFile } from "../../../../../test/e2e/support/repo";
+import { withFacts } from "../../../../../test/support/mockup-facts";
 import { seller } from "../../seller";
 import { product, type SpecRow } from "./product";
 
 /* Product facts (architecture §6.1, §9.2; wiki/product/facts.md; D034, D036): the details panels
- * and declarations exactly as the approved product page prints them (stacked, N21), placeholders
- * where the facts are still open (F4), languages with their `lang` codes, the three modes, and the
- * schema fields that never change (Product `@id`, ages 3 to 7). */
+ * and declarations exactly as the approved product page prints them (stacked, N21), with the founder's
+ * page facts applied (task 6.7: the parent app's phones filled, D055 item 26; every row and line still
+ * waiting on an F4 value hidden on every environment, the box contents kept, D054 item 19), languages
+ * with their `lang` codes, the three modes, and the schema fields that never change (Product `@id`,
+ * ages 3 to 7). */
 
 const doc = (slug: string) => new DOMParser().parseFromString(readRepoFile(`mockup/${slug}.html`), "text/html");
 const norm = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").trim();
-const page = doc("meet-kheelu");
+const approved = doc("meet-kheelu");
+/** The approved page with the founder's page facts applied (test/e2e/support/page-facts.ts). */
+const page = withFacts(approved.querySelector("main")!, PAGE_FACTS["meet-kheelu"].edits);
 const offer = buildOffer("token");
 const text = (value: RichTextString) => toPlainText(value, offer);
 
@@ -42,20 +48,37 @@ const ticksOf = (ul: Element | null) =>
 const contentTicks = (items: readonly IconText[]) => items.map((i) => ({ icon: i.icon, text: text(i.text) }));
 
 describe("the details panels (product fold 7)", () => {
-  it("specs: every row as the mockup prints it, placeholders included", () => {
+  it("specs: every row as the mockup prints it, the parent app's phones filled and the four F4 rows hidden", () => {
     expect(contentRows(product.specs)).toEqual(rowsOf(page.querySelector("#panel-specs dl")));
+    expect(contentRows(product.specs).map((r) => r.term)).toEqual([
+      "Ages",
+      "What it is",
+      "Screen",
+      "Camera",
+      "Microphone",
+      "Modes",
+      "Open internet",
+      "Languages",
+      "Parent app",
+    ]);
+    expect(text(product.specs.find((r) => r.term === "Parent app")!.value as string)).toBe(
+      "Every conversation, word for word; a weekly report on four thinking skills; a new-word count. On iPhone and Android.",
+    );
   });
 
-  it("in the box: three items with their icons (D041)", () => {
+  it("in the box: three items with their icons (D041), untouched by the hidden F4 rows (D054 item 19)", () => {
     expect(contentTicks(product.box)).toEqual(ticksOf(page.querySelector("#panel-box ul")));
+    expect(contentTicks(product.box)).toEqual(ticksOf(approved.querySelector("#panel-box ul")));
   });
 
-  it("safety: five items with their icons; BIS applied for, not granted (claims §6)", () => {
+  it("safety: the three confirmed items with their icons, the two F4 lines hidden; BIS applied for, not granted (claims §6)", () => {
     expect(contentTicks(product.safety)).toEqual(ticksOf(page.querySelector("#panel-safety ul")));
+    expect(product.safety).toHaveLength(3);
   });
 
-  it("declarations: MRP from its own value, origin, manufacturer, care (D034)", () => {
+  it("declarations: MRP from its own value, origin, manufacturer, care (D034); net quantity and the month of manufacture hidden (F4)", () => {
     expect(contentRows(product.declarations)).toEqual(rowsOf(page.querySelector(".mk-declare dl")));
+    expect(product.declarations.map((r) => r.term)).toEqual(["MRP", "Country of origin", "Manufacturer", "Consumer care"]);
     expect(JSON.stringify(product.declarations)).toContain("{price:mrp}");
   });
 
@@ -128,5 +151,32 @@ describe("schema facts (architecture §9.2)", () => {
 
   it("never type a rupee amount", () => {
     expect(JSON.stringify(product)).not.toContain("₹");
+  });
+});
+
+/* D054 item 19 (task 6.7): the F4 slots stay in product.ts, in their approved places with their approved labels, so a
+ * value the founder sends lands where it belongs; nothing of them is exported, so nothing of them renders, on any
+ * environment (the guard's whole-tree test holds every content module to the same). */
+describe("the F4 rows: hidden until their value arrives (D054 item 19)", () => {
+  const SOURCE = readRepoFile("src/content/en-IN/products/kheelu/product.ts");
+
+  it("keeps each F4 slot in the source, under its approved label", () => {
+    for (const [label, note] of [
+      ["Size and weight", "size and weight"],
+      ["Materials", "outer fabric and filling"],
+      ["Battery", "battery type, life per charge and charging time"],
+      ["Charger", "charger type and its BIS registration number"],
+      ["Age grading and warnings: ", "toy-safety age grading and any required warnings"],
+      ["Battery safety: ", "battery safety certification"],
+      ["Net quantity", "net quantity"],
+      ["Month and year of manufacture", "month and year of manufacture"],
+    ]) {
+      expect(SOURCE, label).toContain(label);
+      expect(SOURCE, note).toContain(`{${"ph"}:F4 ${note}}`);
+    }
+  });
+
+  it("exports none of them: no row, line or schema field holds an F4 slot or its marker", () => {
+    expect(JSON.stringify(product)).not.toMatch(/F4/);
   });
 });
