@@ -15,7 +15,8 @@ import NotFound, { metadata } from "./not-found";
 /* The root not-found page (task 5.10; structure §3.1, §5; architecture §9.4): every unmatched URL of the marketing site
  * renders it, answering 404 (Next marks it noindex). It sits outside the (site) route group, so it renders the site
  * shell itself, with no buy bar (404.html meta `"buybar": false`) and with the WhatsApp bubble (D050), and fills it with
- * its content module (src/content/en-IN/pages/not-found.ts) through PageTemplate. Compared here element by element
+ * its content module (src/content/en-IN/pages/not-found.ts), each fold by its section (not through PageTemplate: see
+ * the route file and "the route file" below). Compared here element by element
  * with the approved mockup (mockup/404.html): chrome and both folds. The HTTP status, noindex and server rendering
  * are test/e2e/redirects.spec.ts's and test/not-found-ssr.test.ts's. */
 
@@ -128,10 +129,41 @@ describe("not-found: what the mockup did not have", () => {
   });
 });
 
+/** The specifiers one module names: every import, re-export and `import()`, type-only ones included. */
+type ImportsOf = (file: string, text: string) => string[];
+const everyImport: ImportsOf = (_file, text) => ts.preProcessFile(text, true, true).importedFiles.map((f) => f.fileName);
+
+/** Only what the module loads at run time: `import type`, `export type` and imports whose every name is a type are
+ *  erased by the compiler (tsconfig.json has no verbatimModuleSyntax), so they put no module in the bundle. */
+const runtimeImports: ImportsOf = (file, text) => {
+  const sf = ts.createSourceFile(file, text, ts.ScriptTarget.Latest, true, file.endsWith(".tsx") ? ts.ScriptKind.TSX : ts.ScriptKind.TS);
+  const out: string[] = [];
+  const visit = (node: ts.Node): void => {
+    if (ts.isImportDeclaration(node) && ts.isStringLiteral(node.moduleSpecifier)) {
+      const clause = node.importClause;
+      const bindings = clause?.namedBindings;
+      const onlyTypes =
+        clause !== undefined &&
+        (clause.isTypeOnly || (!clause.name && bindings !== undefined && ts.isNamedImports(bindings) && bindings.elements.every((el) => el.isTypeOnly)));
+      if (!onlyTypes) out.push(node.moduleSpecifier.text);
+    } else if (ts.isExportDeclaration(node) && node.moduleSpecifier && ts.isStringLiteral(node.moduleSpecifier)) {
+      const clause = node.exportClause;
+      const onlyTypes = node.isTypeOnly || (clause !== undefined && ts.isNamedExports(clause) && clause.elements.every((el) => el.isTypeOnly));
+      if (!onlyTypes) out.push(node.moduleSpecifier.text);
+    } else if (ts.isCallExpression(node) && node.expression.kind === ts.SyntaxKind.ImportKeyword) {
+      const [arg] = node.arguments;
+      if (arg !== undefined && ts.isStringLiteralLike(arg)) out.push(arg.text);
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(sf);
+  return out;
+};
+
 /** Every src/ module the file loads, directly or through the modules it loads, resolved as tsconfig.json resolves
- *  them (`@/`, relative paths, index files); packages, stylesheets and assets are not followed. Type-only imports
- *  count too: a legacy type is still a legacy module (6.3 deletes them). */
-function reachableFrom(entry: string): string[] {
+ *  them (`@/`, relative paths, index files); packages, stylesheets and assets are not followed. By default type-only
+ *  imports count too: a legacy type is still a legacy module (6.3 deletes them). */
+function reachableFrom(entry: string, importsOf: ImportsOf = everyImport): string[] {
   const { config } = ts.readConfigFile(join(ROOT, "tsconfig.json"), ts.sys.readFile);
   const { options } = ts.convertCompilerOptionsFromJson(config.compilerOptions, ROOT);
   const resolution = { ...options, baseUrl: ROOT };
@@ -141,7 +173,7 @@ function reachableFrom(entry: string): string[] {
   for (let file = queue.pop(); file !== undefined; file = queue.pop()) {
     if (seen.has(file)) continue;
     seen.add(file);
-    for (const { fileName } of ts.preProcessFile(readFileSync(join(ROOT, file), "utf8"), true, true).importedFiles) {
+    for (const fileName of importsOf(file, readFileSync(join(ROOT, file), "utf8"))) {
       const resolved = ts.resolveModuleName(fileName, join(ROOT, file), resolution, ts.sys, cache).resolvedModule;
       if (resolved === undefined || resolved.isExternalLibraryImport) continue;
       const path = relative(ROOT, resolved.resolvedFileName).split(sep).join("/");
@@ -161,17 +193,40 @@ describe("not-found: the route file", () => {
      6.3 deletes the legacy code. */
   it("reaches no legacy module, directly or through the modules it loads (test/guards/legacy-paths.ts)", () => {
     const reached = reachableFrom("src/app/not-found.tsx");
-    /* Guard the guard: the walk follows `@/` imports into the shell, the template and the sections. */
+    /* Guard the guard: the walk follows `@/` imports into the shell and the sections, and type-only ones (the content
+       module's PageContent) into the section registry. */
     expect(reached).toEqual(
       expect.arrayContaining([
         "src/content/en-IN/pages/not-found.ts",
         "src/layouts/SiteShell/SiteShell.tsx",
-        "src/layouts/PageTemplate/PageTemplate.tsx",
+        "src/layouts/sections-registry.ts",
         "src/components/sections/EmptyStateSection/EmptyStateSection.tsx",
+        "src/components/sections/CloseSection/CloseSection.tsx",
         "src/components/chrome/WhatsAppFloat/WhatsAppFloat.tsx",
       ]),
     );
     expect(reached.filter(isStillLegacy)).toEqual([]);
+  }, 30_000);
+
+  /* The same reason, for the new design's own client islands: whatever the not-found loads at run time loads on every
+     route, so it reaches no client module (a "use client" file) beyond its shell's (the nav, the drawer, the buy bar's
+     controller, the motion observer). The section registry would add every island a page may use (FilmsStrip,
+     Tabs): the 404 renders neither (perf-budget; the 5.10 review). */
+  it("reaches no client module beyond its site shell's (no FilmsStrip, no Tabs on every route)", () => {
+    const USE_CLIENT = /^(?:\s|\/\/[^\n]*\n|\/\*[\s\S]*?\*\/)*["']use client["']/;
+    const islands = (entry: string) =>
+      reachableFrom(entry, runtimeImports).filter((file) => USE_CLIENT.test(readFileSync(join(ROOT, file), "utf8")));
+    const shell = islands("src/layouts/SiteShell/SiteShell.tsx");
+    /* Guard the guard: the shell's islands are seen, so an empty difference means something, and the walk follows
+       run-time imports into the sections (the section registry, which the route does not load, reaches both). */
+    expect(shell).toContain("src/components/chrome/NavDrawer/NavDrawer.client.tsx");
+    expect(islands("src/layouts/sections-registry.ts")).toEqual(
+      expect.arrayContaining(["src/components/sections/FilmsStrip/FilmsStrip.client.tsx", "src/components/ui/Tabs/Tabs.client.tsx"]),
+    );
+    const reached = islands("src/app/not-found.tsx");
+    expect(reached).not.toContain("src/components/sections/FilmsStrip/FilmsStrip.client.tsx");
+    expect(reached).not.toContain("src/components/ui/Tabs/Tabs.client.tsx");
+    expect(reached.filter((file) => !shell.includes(file))).toEqual([]);
   }, 30_000);
 
   it("hands the site shell no buy-bar paths (404.html meta: buybar false)", () => {
@@ -222,6 +277,9 @@ describe.skipIf(built === null)("not-found: the last build (when newer than src/
     expect(modules.filter(isStillLegacy)).toEqual([]);
     /* Guard the guard: the manifest names src/ modules (the root layout's tracking gates among them). */
     expect(modules).toContain("src/components/tracking/PostHogGate.tsx");
+    /* No island the 404 does not render: these chunks load on every route (the 5.10 review: about 11 KB). */
+    expect(modules).not.toContain("src/components/sections/FilmsStrip/FilmsStrip.client.tsx");
+    expect(modules).not.toContain("src/components/ui/Tabs/Tabs.client.tsx");
     const chunks = own!.entryJSFiles?.[NOT_FOUND_ENTRY];
     expect(chunks?.length).toBeGreaterThan(0);
     const site = [...manifests].filter(([route]) => route.startsWith("/(site)/"));
