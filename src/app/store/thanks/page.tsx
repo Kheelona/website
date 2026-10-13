@@ -1,20 +1,29 @@
+import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { storeEnv } from "@/lib/store/env";
 import { db } from "@/lib/store/db";
 import { verifyAddressToken } from "@/lib/store/signing";
-import { THANKS_COOKIE, parseThanksSession } from "@/lib/store/thanks-session";
+import { THANKS_COOKIE, THANKS_PATH, parseThanksSession } from "@/lib/store/thanks-session";
 import { FULL_TIER } from "@/lib/store/mode";
 import { AddressForm } from "@/features/preorder";
 import {
   formatInr,
   LAUNCH_AMOUNT_PAISE,
   LAUNCH_PRICE,
-  SHIP_DATE_TEXT,
-  SUPPORT_WHATSAPP_HREF,
-  SUPPORT_WHATSAPP_DISPLAY,
 } from "@/config/site";
 import type { PreorderRow } from "@/lib/store/db";
 import { NotFoundPanel } from "../_components/NotFoundPanel";
+import { WhatsAppFloat } from "@/components/chrome/WhatsAppFloat/WhatsAppFloat";
+import { StepsSection } from "@/components/sections/StepsSection/StepsSection";
+import { AddressStep } from "@/components/sections/store/AddressStep/AddressStep";
+import { ConfirmationHead } from "@/components/sections/store/ConfirmationHead/ConfirmationHead";
+import { fillSteps } from "@/components/sections/store/ConfirmationHead/slot-text";
+import { HelpBlock } from "@/components/sections/store/HelpBlock/HelpBlock";
+import { OrderRows } from "@/components/sections/store/OrderRows/OrderRows";
+import { STORE_ORIGIN } from "@/config/env";
+import { seller } from "@/content/en-IN/seller";
+import { confirmation } from "@/content/en-IN/store/confirmation";
+import { pageMeta } from "@/lib/seo/metadata";
 
 /** The confirmation, and the address step (§8.25-x).
  *
@@ -54,7 +63,27 @@ import { NotFoundPanel } from "../_components/NotFoundPanel";
  *  about a payment that Razorpay has confirmed to the browser but whose webhook
  *  has not landed yet. That gap is usually a second or two and occasionally
  *  longer, and "we are confirming" is a better answer than a page that claims
- *  something it has not checked. */
+ *  something it has not checked.
+ *
+ *  RESTYLED IN TASK 5.16 (ADR-013: markup, classes, copy and presentation
+ *  imports only). The approved mockup (mockup/pages/store-confirmation.html)
+ *  in five folds, each a section: ConfirmationHead, OrderRows, AddressStep
+ *  around the AddressForm, StepsSection (what happens next) and HelpBlock,
+ *  then the /thanks WhatsApp bubble (D050, with ph-no-capture). The words are
+ *  src/content/en-IN/store/confirmation.ts; every amount, the email and the
+ *  order number are still read and derived HERE from the order row, exactly as
+ *  before, and handed to the sections as values. The one rule that moved out
+ *  is the delivery row's choice by order date (N9, F12 open), in
+ *  sections/store/OrderRows/delivery-line.ts: this page passes `created_at`.
+ *
+ *  Metadata through pageMeta (title, description, share card), without its
+ *  canonical and with the share URL on the store host: this page is noindex
+ *  (the store layout's robots, which a page-level robots key would replace),
+ *  and its URL is the store's, never the marketing origin's. */
+const { title, description, openGraph, twitter } = pageMeta({ ...confirmation.meta, path: THANKS_PATH });
+
+export const metadata: Metadata = { title, description, openGraph: { ...openGraph, url: `${STORE_ORIGIN}${THANKS_PATH}` }, twitter };
+
 export const dynamic = "force-dynamic";
 
 export default async function ThanksPage() {
@@ -88,99 +117,74 @@ export default async function ThanksPage() {
      in Technical-Todo.md; it does not change what this reader is told. */
   if (!data) {
     return (
-      <NotFoundPanel
-        title="We cannot open that order right now."
-        body="Your link is fine. The order behind it did not load, which is ours to sort out and not yours."
-        cta={false}
-      />
+      <>
+        <NotFoundPanel title={confirmation.cannotOpen.title} body={confirmation.cannotOpen.body} cta={false} />
+        <ThanksBubble />
+      </>
     );
   }
   const order = data as PreorderRow;
   const paid = order.status === "paid";
 
+  /* ph-no-capture / ph-mask cover THE WHOLE PAGE, not the individual lines
+     that happen to carry a detail today (§8.38).
+
+     Session replay is already switched off for this route wholesale
+     (POSTHOG_REPLAY_DENY_PATHS), but AUTOCAPTURE still runs here, and
+     autocapture reports the text of whatever a person taps. This page prints
+     an email address, an order number and a delivery address, so tapping any
+     of them would otherwise put it in an event.
+
+     Marking the container rather than the fields is the same judgement as
+     denying the route rather than masking its nodes: posthog-js walks an
+     element's ancestors looking for `ph-no-capture` (verified in the SDK's own
+     `io()`), so everything inside is covered — including the next row somebody
+     adds to the summary without thinking about analytics. A per-field list
+     would be correct today and quietly wrong at the next edit. */
   return (
-    /* ph-no-capture / ph-mask cover THE WHOLE PAGE, not the individual lines
-       that happen to carry a detail today (§8.38).
-
-       Session replay is already switched off for this route wholesale
-       (POSTHOG_REPLAY_DENY_PATHS), but AUTOCAPTURE still runs here, and
-       autocapture reports the text of whatever a person taps. This page prints
-       an email address, an order number and a delivery address, so tapping any
-       of them would otherwise put it in an event.
-
-       Marking the container rather than the fields is the same judgement as
-       denying the route rather than masking its nodes: posthog-js walks an
-       element's ancestors looking for `ph-no-capture` (verified in the SDK's own
-       `io()`), so everything inside is covered — including the next row somebody
-       adds to the summary without thinking about analytics. A per-field list
-       would be correct today and quietly wrong at the next edit. */
-    <div
-      className="ph-no-capture ph-mask mx-auto w-full max-w-[680px] px-6 py-10 md:py-14"
-    >
-      <p className="mb-2 text-[13px] font-bold uppercase tracking-[0.08em] text-orange-ink">
-        {paid ? "Pre-order confirmed" : "Confirming your payment"}
-      </p>
-      <h1 className="mb-4 max-w-[24ch] font-display text-[clamp(30px,4vw,42px)] font-extrabold leading-[1.08] text-ink-head">
-        {paid ? "Your Kheelu is reserved." : "Thank you. We are confirming it now."}
-      </h1>
-
-      <p className="mb-6 max-w-[52ch] text-[17px] leading-[1.6] text-ink">
-        {paid ? (
-          <>
-            We have your {formatInr(order.amount_paise)}, and your place in the
-            queue is held from the moment you paid. Your confirmation is on its
-            way to {order.email}.
-          </>
-        ) : (
-          <>
-            Your payment is with our provider and we are waiting for their
-            confirmation, which usually takes a few seconds. Nothing is lost if
-            you refresh, and your order number is below either way.
-          </>
-        )}
-      </p>
-
-      {/* Every line derives from the ORDER ROW, never from the store's current
-          mode: a token holder revisiting after the cap flips must still read
-          exactly what they agreed to (§8.26). */}
-      <dl className="mb-9 grid gap-3 rounded-(--radius-card) border border-line bg-white p-5">
-        <Row label="Order number" value={order.order_ref} />
-        <Row label="Paid today" value={formatInr(order.amount_paise)} />
-        {order.tier === FULL_TIER ? (
-          <Row label="Due on dispatch" value="Nothing. You have paid in full" />
-        ) : (
-          /* Derived from the row, not the public constant: a ₹99 event token
-             owes ₹4,900, and a ₹499 token keeps reading ₹4,500 to the byte. */
-          <Row
-            label="Due on dispatch"
-            value={`${formatInr(Math.max(0, LAUNCH_AMOUNT_PAISE - order.amount_paise))}, of the ${LAUNCH_PRICE} price`}
+    <>
+      <div className="ph-no-capture ph-mask kh-section ks-thanks">
+        <div className="ks-thanks__col">
+          <ConfirmationHead
+            copy={paid ? confirmation.head.paid : confirmation.head.created}
+            amount={formatInr(order.amount_paise)}
+            email={order.email}
           />
-        )}
-        <Row label="Ships from" value={SHIP_DATE_TEXT} />
-      </dl>
 
-      <h2 className="mb-3 font-display text-[24px] font-extrabold text-ink-head">
-        {order.address ? "Your delivery address" : "Where should it go?"}
-      </h2>
-      <p className="mb-6 max-w-[52ch] text-[16px] leading-[1.6] text-ink">
-        {order.address
-          ? "This is where your Kheelu will go. Change it any time before dispatch."
-          : "One last thing, and it takes under a minute. If you would rather do it later, the link in your email brings you straight back here."}
-      </p>
+          {/* Every line derives from the ORDER ROW, never from the store's current
+              mode: a token holder revisiting after the cap flips must still read
+              exactly what they agreed to (§8.26). The balance is derived from the
+              row, not the public constant: a ₹99 event token owes ₹4,900, and a
+              ₹499 token keeps reading ₹4,500 to the byte. */}
+          <OrderRows
+            copy={confirmation.order}
+            orderRef={order.order_ref}
+            paid={formatInr(order.amount_paise)}
+            balance={order.tier === FULL_TIER ? null : formatInr(Math.max(0, LAUNCH_AMOUNT_PAISE - order.amount_paise))}
+            price={LAUNCH_PRICE}
+            createdAt={order.created_at}
+          />
 
-      <AddressForm orderRef={order.order_ref} token={session.token} existing={order.address} />
+          <AddressStep copy={order.address ? confirmation.address.saved : confirmation.address.empty}>
+            <AddressForm orderRef={order.order_ref} token={session.token} existing={order.address} />
+          </AddressStep>
 
-      <p className="mt-10 text-[15px] text-ink-muted">
-        Anything at all, message us on WhatsApp at{" "}
-        <a
-          href={SUPPORT_WHATSAPP_HREF}
-          className="rounded font-semibold text-ink-head underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
-        >
-          {SUPPORT_WHATSAPP_DISPLAY}
-        </a>
-        , quoting {order.order_ref}.
-      </p>
-    </div>
+          {/* Step 2 names the same balance as the order card, from the same row. */}
+          <StepsSection
+            variant="thanks"
+            heading={confirmation.next.heading}
+            steps={
+              order.tier === FULL_TIER
+                ? fillSteps(confirmation.next.full)
+                : fillSteps(confirmation.next.token, { balance: formatInr(Math.max(0, LAUNCH_AMOUNT_PAISE - order.amount_paise)) })
+            }
+          />
+
+          <HelpBlock copy={confirmation.help} />
+        </div>
+      </div>
+      <ThanksBubble />
+    </>
   );
 }
 
@@ -189,37 +193,21 @@ export default async function ThanksPage() {
  *  any order exists, and it always offers a human. */
 function LinkNeeded() {
   return (
-    <div className="mx-auto w-full max-w-[680px] px-6 py-10 md:py-14">
-      <p className="mb-2 text-[13px] font-bold uppercase tracking-[0.08em] text-orange-ink">
-        Your pre-order is safe
-      </p>
-      <h1 className="mb-4 max-w-[24ch] font-display text-[clamp(30px,4vw,42px)] font-extrabold leading-[1.08] text-ink-head">
-        We need your link again.
-      </h1>
-      <p className="mb-6 max-w-[52ch] text-[17px] leading-[1.6] text-ink">
-        This page opens from the link in your confirmation email, and that link
-        has either expired or was opened somewhere else. Open the most recent
-        email from us and tap it again, and you will land back here.
-      </p>
-      <p className="max-w-[52ch] text-[16px] leading-[1.6] text-ink">
-        Cannot find the email? Message us on WhatsApp at{" "}
-        <a
-          href={SUPPORT_WHATSAPP_HREF}
-          className="rounded font-semibold text-ink-head underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2"
-        >
-          {SUPPORT_WHATSAPP_DISPLAY}
-        </a>{" "}
-        and a person will pull up your order and add your address for you.
-      </p>
-    </div>
+    <>
+      <div className="kh-section ks-thanks">
+        <div className="ks-thanks__col">
+          <ConfirmationHead copy={confirmation.head.linkNeeded} help={confirmation.linkNeededHelp} />
+        </div>
+      </div>
+      <ThanksBubble />
+    </>
   );
 }
 
-function Row({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex flex-wrap items-baseline justify-between gap-x-4">
-      <dt className="text-[15px] text-ink-muted">{label}</dt>
-      <dd className="font-display text-[17px] font-extrabold text-ink-head">{value}</dd>
-    </div>
-  );
+/** The /thanks WhatsApp bubble (D050): the page's own pre-filled text, never an
+ *  order detail, and `ph-no-capture` on the link so this page keeps zero
+ *  autocapture events (tracking inventory row 18). In every state, since a
+ *  layout cannot know its page. */
+function ThanksBubble() {
+  return <WhatsAppFloat href={seller.support.whatsapp} chat={seller.chat} context="thanks" />;
 }

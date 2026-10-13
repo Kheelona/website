@@ -65,7 +65,7 @@ describe("the confirmation page", () => {
 
     expect(screen.getByRole("heading", { name: "Your Kheelu is reserved." })).toBeInTheDocument();
     expect(screen.getByText("₹499")).toBeInTheDocument();
-    expect(screen.getByText("₹4,500, of the ₹4,999 price")).toBeInTheDocument();
+    expect(screen.getByText("₹4,500, of the ₹4,999 price (incl. GST)")).toBeInTheDocument();
     /* The reference the query came from is the one inside the signed cookie,
        never anything a caller could vary. */
     expect(calls.some((c) => c.method === "eq" && c.args[1] === REF)).toBe(true);
