@@ -181,12 +181,35 @@ describe("ArticleTemplate: crumbs and structured data", () => {
       inLanguage: "en-IN",
       author: { "@id": "https://kheelona.com/#organization" },
       publisher: { "@id": "https://kheelona.com/#organization" },
+      citation: article.sources.map((source) => ({ "@type": "CreativeWork", name: source.citation, url: source.href })),
     });
     expect(posting.headline).toBe(screen.getByRole("heading", { level: 1 }).textContent);
     const visible = within(screen.getByRole("navigation", { name: "Breadcrumb" }))
       .getAllByRole("link")
       .map((a, i) => ({ "@type": "ListItem", position: i + 1, name: a.textContent, item: `https://kheelona.com${a.getAttribute("href")}` }));
     expect(breadcrumbs).toEqual({ "@type": "BreadcrumbList", itemListElement: visible });
+  });
+
+  /* Task 4.9 item 3: every article's copy page says its source list is the BlogPosting `citation` (D026), so what a reader
+     can open under the article is what a crawler is told, from the one `sources` list: each source a CreativeWork named
+     by the citation as the numbered note prints it, with the note's address. */
+  it.each(Object.keys(articles) as Slug[])("%s: cites exactly the visible numbered sources, in order", (slug) => {
+    cleanup();
+    const container = page(articles[slug]);
+    const posting = graphOf(container)["@graph"][0] as { citation?: { "@type": string; name: string; url: string }[] };
+    const notes = [...container.querySelectorAll(".ks-notes > li")].map((li) => {
+      const note = li.children[1];
+      const link = note.querySelector("a")!;
+      return { text: note.textContent, url: link.getAttribute("href") };
+    });
+    expect(notes.length, slug).toBeGreaterThan(0);
+    expect(posting.citation?.map((c) => c["@type"])).toEqual(notes.map(() => "CreativeWork"));
+    expect(posting.citation?.map((c) => ({ text: `${c.name} ${c.url}`, url: c.url }))).toEqual(notes);
+  });
+
+  it("cites nothing, and carries no citation key, for an article without sources", () => {
+    const posting = graphOf(page({ ...articles["how-children-collect-words"], sources: [] }))["@graph"][0];
+    expect(posting).not.toHaveProperty("citation");
   });
 
   it("credits a founder's byline to the Person the shell's Organization node publishes, and the team's to the Organization", () => {

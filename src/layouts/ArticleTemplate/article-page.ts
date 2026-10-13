@@ -72,20 +72,38 @@ export function articleMeta(article: Article): PageMetadata {
   });
 }
 
+/** A cited work: a source as the article's numbered note prints it (its citation as plain text) and its address. */
+export interface CitationNode {
+  readonly "@type": "CreativeWork";
+  readonly name: string;
+  readonly url: string;
+}
+
+/** The article's sources as the BlogPosting's `citation` (task 4.9 item 3; D026): the same list SourcesSection prints
+ *  under the article, in its order, so what a reader can open is what a crawler is told. */
+export function articleCitations(article: Article, offer: Offer): CitationNode[] {
+  return article.sources.map((source) => ({ "@type": "CreativeWork", name: toPlainText(source.citation, offer), url: source.href }));
+}
+
 /** The page's own graph (the shell declares the Organization and the WebSite): the BlogPosting with the module's
- *  stored dates and the visible headline, then the BreadcrumbList of the visible crumbs. */
+ *  stored dates, the visible headline and the visible sources as its `citation` (none when it has none), then the
+ *  BreadcrumbList of the visible crumbs. */
 export function articleGraph(article: Article, offer: Offer): SchemaGraph {
+  const citation = articleCitations(article, offer);
   return pageGraph(
-    blogPostingNode({
-      path: articlePath(article.slug),
-      headline: toPlainText(article.head.title, offer),
-      description: toPlainText(article.meta.description, offer),
-      image: article.meta.og.image,
-      published: article.published,
-      updated: article.updated,
-      author: article.head.author,
-      knownAuthorIds: KNOWN_AUTHOR_IDS,
-    }),
+    {
+      ...blogPostingNode({
+        path: articlePath(article.slug),
+        headline: toPlainText(article.head.title, offer),
+        description: toPlainText(article.meta.description, offer),
+        image: article.meta.og.image,
+        published: article.published,
+        updated: article.updated,
+        author: article.head.author,
+        knownAuthorIds: KNOWN_AUTHOR_IDS,
+      }),
+      ...(citation.length > 0 && { citation }),
+    },
     breadcrumbListNode(articleTrail(article)),
   );
 }
