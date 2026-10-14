@@ -1,0 +1,469 @@
+{
+  "slug": "questions-parents-ask-about-ai-toys",
+  "title": "The hard questions parents ask about AI toys",
+  "description": "Does an AI toy record your child? Kheelu only listens when someone presses its wake-up button. The hard questions parents ask, answered straight.",
+  "theme": "AI toys and safety",
+  "author": "Aman Soni",
+  "published": "2026-09-11",
+  "updated": "2026-10-14",
+  "pose": "bliss",
+  "tint": "bg-blue/15",
+  "hero": null,
+  "heroAlt": "A father in glasses laughs as he reads a picture book aloud at bedtime, while his daughter, tucked in under a patchwork quilt, hugs Kheelu and smiles up at him.",
+  "heroWidth": null,
+  "heroHeight": null,
+  "ageNote": null,
+  "sources": [
+    {
+      "label": "Common Sense Media, “Common Sense Media Warns Against AI Toy Companions After Research Reveals Safety Risks” (press release), 22 January 2026, paragraph 1 and the list of findings.",
+      "url": "https://www.commonsensemedia.org/press-releases/common-sense-media-warns-against-ai-toy-companions-after-research-reveals-safety-risks"
+    },
+    {
+      "label": "Common Sense Media Youth AI Safety Institute, “AI Toys” (risk assessment), 2026, “Where they fall short”.",
+      "url": "https://institute.commonsensemedia.org/risk-assessments/ai-toys"
+    }
+  ],
+  "body": {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "We make Kheelu, a screen-free plush toy for children aged 3 to 7, so read every answer below as coming from an interested party. Each one says what to ask any maker first, then how Kheelu answers. We start with the question that is hardest for us."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Should a young child have an AI toy at all?"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "In January 2026, Common Sense Media advised parents not to give AI toys, which it describes as “smart toys with voice-based interactions”, to children aged 5 and under, and to use extreme caution before buying them for children aged 6 to 12.[^1]"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Kheelu is made for children aged 3 to 7. Common Sense Media’s advice covers that whole range: avoid AI toys at 5 and under, and use extreme caution at 6 and 7. You should hear that from us."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "The answers below show how we built "
+          },
+          {
+            "type": "text",
+            "text": "Kheelu",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "/products/kheelu"
+                }
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": " on each worry, so you can check it yourself and decide. If your child is 3, keep a grown-up nearby while they play."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "What child-safety groups found, worry by worry, is in "
+          },
+          {
+            "type": "text",
+            "text": "What to look for in a safe AI toy",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "/stories/what-to-look-for-in-a-safe-ai-toy"
+                }
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": "."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Listening and your child’s voice"
+          }
+        ]
+      },
+      {
+        "type": "blockquote",
+        "attrs": {
+          "style": "questions"
+        },
+        "content": [
+          {
+            "type": "heading",
+            "attrs": {
+              "level": 3
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "Is it always listening?"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Ask what turns the microphone on, what turns it off, and how you can tell. A toy that waits to hear its name has to listen all the time to catch it."
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Kheelu has no wake word to listen for. Its microphone turns on only when someone presses the wake-up button. It stays on while your child is talking and switches itself off after a couple of minutes of quiet. Until the next press, nothing is heard, recorded or sent."
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "attrs": {
+              "level": 3
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "Where does my child’s voice go, and what is kept?"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Ask who processes your child’s voice and in which country, what is kept and for how long, and whether any of it is sold. A vague answer is an answer."
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "To understand and answer your child, Kheelu uses trusted speech and AI providers. They process your child’s voice only to produce Kheelu’s reply. They don’t keep it, and they never use it to train their AI. Our contracts with them say so."
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Your child’s conversations stay in your parent app for 36 months, then they’re deleted automatically. Delete them all sooner by deleting your account."
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "We don’t sell your data. Your child’s data is never used to advertise to them. Everything we collect, and what we use it for, is in our "
+              },
+              {
+                "type": "text",
+                "text": "privacy policy",
+                "marks": [
+                  {
+                    "type": "link",
+                    "attrs": {
+                      "href": "/privacy"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "."
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "attrs": {
+              "level": 3
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "How can I tell when it is listening?"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "You can’t check a microphone from the sofa. So prefer a sign you can see over a promise you have to trust."
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "A light on Kheelu shows whenever it’s listening. It switches its microphone off after a couple of minutes of quiet, so even if it’s left in a corner, it doesn’t stay listening."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "What it says to your child"
+          }
+        ]
+      },
+      {
+        "type": "blockquote",
+        "attrs": {
+          "style": "questions"
+        },
+        "content": [
+          {
+            "type": "heading",
+            "attrs": {
+              "level": 3
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "What if my child asks it something upsetting?"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Listen for a mechanism, not a reassurance: how every reply is checked for your child’s age, and who sets that age."
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Kheelu can’t browse or search the internet. Its replies are generated by an AI model that is given child-safety rules and your child’s age on every conversation, with Google’s safety filters on top. You set that age in the parent app, and you can read every conversation afterwards."
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "attrs": {
+              "level": 3
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "What if it gets something wrong?"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Any AI toy can get something wrong, so ask what it does when it isn’t sure."
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "When Kheelu doesn’t know, it says so, instead of guessing. If an answer ever sounds odd, look it up together. That is a good conversation too."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Your family and the toy"
+          }
+        ]
+      },
+      {
+        "type": "blockquote",
+        "attrs": {
+          "style": "questions"
+        },
+        "content": [
+          {
+            "type": "heading",
+            "attrs": {
+              "level": 3
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "Will it replace talking with my child?"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "No. No toy replaces the people who talk with your child every day. Be wary of any toy that suggests it can."
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Kheelu answers your child, then asks a question back, so your child does the thinking. And after any story, from a book, a speaker or a toy, ask your child to tell it back to you."
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "attrs": {
+              "level": 3
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "Can my child get too attached to it?"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Common Sense Media says AI toy companions “create emotional attachment by design”.[^1] It also says children aged 5 and under “cannot reliably distinguish AI from real people”.[^2] So choose a toy that says plainly what it is, and talk about it together the way you would about a character in a book."
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Kheelu tells your child it’s a toy, and never asks them to keep a secret from you."
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "attrs": {
+              "level": 3
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "Does it work if we speak two languages at home?"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "If your family mixes languages mid-sentence, ask whether a toy can keep up, or needs a setting changed in an app first."
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Kheelu can switch languages mid-sentence. It speaks English, Hindi, Bengali, Telugu, Tamil, Kannada, Spanish and French, with up to 10 languages at launch."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "metaTitle": "Does an AI toy record your child? Hard questions · Kheelona",
+  "cardTitle": null,
+  "accent": "hard questions",
+  "lead": "The questions parents ask before buying a talking toy, answered straight, including the uncomfortable ones.",
+  "summary": null,
+  "answer": {
+    "question": "Does an AI toy record your child?",
+    "text": "Any AI toy has to capture your child’s voice to answer, so yes, while it is listening. What matters is when it listens and what is kept. Kheelu’s microphone turns on only when someone presses the wake-up button, and switches itself off after a couple of minutes of quiet. You can read every conversation in the parent app."
+  },
+  "photo": "tara-03-bedtime-with-baba",
+  "related": [
+    "what-to-look-for-in-a-safe-ai-toy",
+    "does-a-three-year-old-need-an-ai-tutor",
+    "ai-toys-and-indias-data-law"
+  ]
+}

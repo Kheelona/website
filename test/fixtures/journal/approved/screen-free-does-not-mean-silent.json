@@ -1,0 +1,399 @@
+{
+  "slug": "screen-free-does-not-mean-silent",
+  "title": "Screen-free does not mean silent: a guide to screen-free toys",
+  "description": "Screen-free toys for 3 to 7 year olds: which ones get a child talking, a story box or a toy that talks back, and what a home full of talk looks like.",
+  "theme": "Screen time",
+  "author": "Kheelona",
+  "published": "2026-07-28",
+  "updated": "2026-10-13",
+  "pose": "silly",
+  "tint": "bg-yellow/15",
+  "hero": null,
+  "heroAlt": "A laughing girl in a yellow frock lies on her tummy on a rug, a blue crayon in her hand, a big drawing of a green dragon in front of her and Kheelu sitting beside her.",
+  "heroWidth": null,
+  "heroHeight": null,
+  "ageNote": null,
+  "sources": [
+    {
+      "label": "Center on the Developing Child at Harvard University, “Serve and Return” (Key Concepts), undated (page metadata 2024, updated 2026), Key Takeaways and the paragraph after Fast Facts.",
+      "url": "https://developingchild.harvard.edu/key-concept/serve-and-return/"
+    }
+  ],
+  "body": {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Take the tablet away and the first thing you notice is the noise. Not the TV kind. The good kind: questions, made-up songs, a running commentary on the ants."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "You may worry that screen-free means a quieter, duller childhood. It doesn’t have to. A screen mostly asks a child to watch. Play asks them to do things, and talk asks them to answer."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "What does a childhood full of talk look like?"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "It sounds like turns: your child says something, you answer, they answer back."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Harvard’s Center on the Developing Child says back-and-forth “serve and return” exchanges between a young child and a caring adult help build and strengthen neural connections in the child’s brain. They also support the early language and social skills that later, more complex thinking builds on.[^1]"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "At home, that comes from small habits, not a curriculum:"
+          }
+        ]
+      },
+      {
+        "type": "bulletList",
+        "attrs": {
+          "style": "tips"
+        },
+        "content": [
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "chat-circle-dots"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Say what you’re doing while you cook: “Onions first. Now the tomatoes. Smell that?”"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "question"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Ask questions with no wrong answer: “What would the cat say if it could talk?”"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "book-open"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Let the silly voice read the bedtime story."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "moon"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Now and then, answer a question with a question: “Why do you think the moon follows the car?”"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "music-notes"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Leave gaps in songs for your child to fill."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Leave room for boredom"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "When your child says “I’m bored”, wait a few minutes before you fix it. The floor may become lava. The sofa may become a ship."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Screen-free does not mean silent, and it does not mean joyless. Often it means the sound in your home is your child thinking out loud."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "How do you choose screen-free toys?"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Ask one question in the shop: what will my child do with this, and what will they say?"
+          }
+        ]
+      },
+      {
+        "type": "bulletList",
+        "content": [
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Blocks and boxes: they build, then tell you what it is."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Pretend-play sets: someone has to be the doctor, and someone has to say what’s wrong with teddy."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Puppets: a second voice for a quiet child."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Picture books: read together, then let them tell it back."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Simple board games: “My go. Now yours.”"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "A toy that plays the same recorded sentence at every press makes noise, but it can’t answer back."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Looking for a screen-free gift?"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Choose something your child can do, build or say, rather than watch: a box of blocks, a puppet, a book you’ll read together, crayons with a roll of paper. Then play with it together, the first time at least."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Story box or a toy that talks back?"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "They do different jobs. A story box or audio player plays stories your child listens to. A toy that talks back holds a conversation: your child asks, it answers, then it asks a question back."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Both are screen-free. Choose by what you want more of at home: listening, or talking."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Kheelu",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "/products/kheelu"
+                }
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": " does both. In Story mode it plays stories, poems and jingles, with no Wi-Fi needed. In AI mode it talks with your child on your home Wi-Fi: it answers your child, then asks a question back. It is made for ages 3 to 7, and it is not a toy for children under 3. If your child is 3, keep a grown-up nearby while they play."
+          }
+        ]
+      }
+    ]
+  },
+  "metaTitle": "Screen-free toys for a home full of talk · Kheelona",
+  "cardTitle": "Screen-free does not mean silent",
+  "accent": "does not mean silent:",
+  "lead": "What a childhood full of talk looks like, without a single screen, and how to choose screen-free toys that add to it.",
+  "summary": "What a childhood full of talk looks like, without a single screen.",
+  "answer": {
+    "question": "What are screen-free toys?",
+    "text": "Toys that keep a child busy without a display: blocks, puzzles, crayons and dough, pretend-play sets, picture books, puppets, and audio or talking toys. The best ones give your child something to do or say, not just something to watch. A simple test in the shop: will this toy wait for my child, or perform at them?"
+  },
+  "photo": "ira-02-drawing-the-dragon",
+  "related": [
+    "learning-toys-for-a-three-year-old",
+    "how-much-screen-time-for-a-3-to-6-year-old",
+    "screen-time-and-tantrums"
+  ]
+}
