@@ -286,7 +286,8 @@ describe("the round trip: postToArticle(articleToPost(m)) equals each of the 20 
   });
 
   /* The listed set, for the main session's ruling: where the derived read time or no-wrap spans differ from what the
-     module stores. Computed over the registry, so an edit to a guide moves the list, never the test. */
+     module stores. Pinned, so a new difference (a guide edited, a derivation changed) is red until it is ruled. The three
+     no-wrap lines are spans the adapter adds to a phrase the module leaves bare; it drops none. */
   it("lists every difference of the derivations, and nothing else differs", () => {
     const listed = GUIDES.flatMap((article) => {
       const derived = back(exportOf(article));
@@ -294,8 +295,13 @@ describe("the round trip: postToArticle(articleToPost(m)) equals each of the 20 
       const spans = nowrapDifferences(article, derived).map((path) => `${article.slug}: no-wrap ${path}`);
       return [...minutes, ...spans];
     });
-    console.info(`The round trip's listed set (${listed.length}):\n  ${listed.join("\n  ")}`);
-    for (const line of listed) expect(line).toMatch(/: (read time \d+ → \d+ min|no-wrap \.[\w.[\]]+)$/);
+    expect(listed).toEqual([
+      "talking-toys-and-late-talkers: no-wrap .body.0.blocks.0.text",
+      "the-gentle-way-off-the-phone: read time 3 → 4 min",
+      "the-gentle-way-off-the-phone: no-wrap .body.0.blocks.0.text",
+      "busy-hands-no-screens: no-wrap .body.2.blocks.0.text",
+      "should-kids-use-ai: read time 5 → 4 min",
+    ]);
   });
 
   it("derives the read time from the exported words, as the adapter will at every build", () => {
