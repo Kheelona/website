@@ -1,6 +1,8 @@
 import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+import { CLAIM_FIXES, editsBeforeClaimFixes } from "../../../../test/e2e/support/deviations";
 import { mockupFold, skeleton, words } from "../../../../test/support/mockup-compare";
+import { withFacts } from "../../../../test/support/mockup-facts";
 import { FoundersSection } from "./FoundersSection";
 import { FOUNDERS, FOUNDERS_LIVE } from "./FoundersSection.stories";
 
@@ -8,16 +10,27 @@ import { FOUNDERS, FOUNDERS_LIVE } from "./FoundersSection.stories";
    (the DS has no founder card). The mockup shows a placeholder for each photo and background line; the comparison runs
    on the mockup's state (initials, the photo placeholder line, backgrounds gated, which render nothing on any
    environment) and leaves out the mockup's background lines. The page's own state since task 6.6 (D054 item 20), the
-   photos and the background lines, is tested apart. */
+   photos and the background lines, is tested apart.
+
+   The mockup is frozen (D046), so the fold is the approved page with the route's accepted changes applied first, as the
+   team page's own test applies them (task 8b.1d): its earlier rules (none yet), then task 8b.1's claim fixes (D058;
+   deviations.md V30: Aman's job line names the child-safety rules his AI is given, not a safety layer every reply
+   passes). The story data says what the site says. */
 
 /* The card link's tap target is Card's shared rule (G-01), which replaces the mockup's own founder-link class. */
 const OPTIONS = { skip: ".mk-founder__bg", rename: { founder__link: "" }, drop: /^ks-card__link--tap$/ };
 const ungated = { ...FOUNDERS, founders: FOUNDERS.founders.map((f) => ({ ...f, bio: f.bio && { text: f.bio.text } })) };
 
+/** team.html fold 3 through the route's accepted changes (see above). */
+function approvedFold(): Element {
+  const main = withFacts(withFacts(mockupFold("team", "main"), editsBeforeClaimFixes("team")), CLAIM_FIXES.team.edits);
+  return main.querySelector("section[aria-labelledby='founders-title']")!;
+}
+
 describe("FoundersSection: the approved fold, backgrounds gated", () => {
-  it("markup and words equal team.html fold 3 without the gated background lines", () => {
+  it("markup and words equal team.html fold 3, through its accepted changes, without the gated background lines", () => {
     const { container } = render(<FoundersSection {...FOUNDERS} />);
-    const mockup = mockupFold("team", "section[aria-labelledby='founders-title']");
+    const mockup = approvedFold();
     expect(skeleton(container.firstElementChild!, OPTIONS)).toBe(skeleton(mockup, OPTIONS));
     expect(words(container.firstElementChild!)).toBe(words(mockup, OPTIONS));
   });

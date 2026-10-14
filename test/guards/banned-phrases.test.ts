@@ -170,26 +170,64 @@ describe("rule 3's exemption: the withdrawn claims the frozen mockups still prin
 });
 
 /* The D058 entries ban the idea in whole words (lessons §7): other phrasings of each withdrawn claim are red, and the
- * approved lines nearest to one (the parents' advice task 8b.1b keeps, the code-checked words) stay green. */
-describe("the D058 entries: the idea, not one phrasing (task 8b.1b)", () => {
+ * approved lines nearest to one (the parents' advice task 8b.1b keeps, the code-checked words) stay green. Task 8b.1d
+ * (8b.1b's review): the entries whose idea is a product's feature are tied to the product (Kheelu, the app, "it" as the
+ * toy) or kept in their noun form, so a parent's own habit passes; and the plain rewordings the review found are red. */
+describe("the D058 entries: the idea, not one phrasing (tasks 8b.1b, 8b.1d)", () => {
   const VARIANTS: readonly (readonly [string, string])[] = [
     ["one-tap-delete", "One-tap deletion for every chat."],
     ["one-tap-delete", "Remove any conversation with a single tap."],
     ["servers-in-india", "Your child’s voice goes to Indian servers."],
     ["servers-in-india", "Everything is stored in India."],
+    /* A buyer's-guide question that sets the bar D058 withdrew stays refused (task 8b.1b item 3). */
+    ["servers-in-india", "Ask whether its servers are in India."],
+    ["servers-in-india", "Your data stays in India."],
+    ["servers-in-india", "Data is stored on Indian soil."],
     ["closed-library", "Replies come from a closed set of answers."],
     ["safety-layer", "Each answer Kheelu gives passes our checks for your child’s age."],
     ["quiet-hours", "Set quiet hours in the parent app."],
     ["topic-controls", "Choose which topics Kheelu talks about."],
+    ["topic-controls", "In the parent app, you decide what topics are allowed."],
     ["new-word-count", "The app counts how many new words your child uses."],
+    ["new-word-count", "Kheelu tracks your child’s new words each week."],
+    ["new-word-count", "It counts every new word your child says."],
+    /* The product named after the feature, too (8b.1d review item 1): the entries tie the product either side. */
+    ["new-word-count", "Track your child’s new words in the app."],
+    ["new-word-count", "Count your child’s new words in the parent app."],
+    ["new-word-count", "Track your child’s new words with Kheelu."],
     ["four-skills-report", "Kheelu sends you a weekly progress report."],
     ["minute-of-quiet", "It turns off after one minute."],
+    ["minute-of-quiet", "It goes quiet after 60 seconds."],
+    ["minute-of-quiet", "After about a minute of quiet, it switches itself off."],
+    ["minute-of-quiet", "Microphone: off after about a minute of quiet."],
+    ["minute-of-quiet", "One minute of quiet and Kheelu stops listening."],
+    ["minute-of-quiet", "A minute of silence and Kheelu turns itself off."],
+    ["minute-of-quiet", "The wake-up button: a minute of quiet and the microphone is off."],
+    ["minute-of-quiet", "It sleeps after a minute of quiet."],
+    ["minute-of-quiet", "It goes to sleep after a minute of quiet."],
+    ["minute-of-quiet", "A minute of quiet and it switches off."],
+    ["minute-of-quiet", "One minute of quiet, and it stops."],
     ["attack-own-safety", "We red-team our own model before launch."],
+    ["attack-own-safety", "We try to break our own safety filters before every release."],
     ["keep-none-of-it", "The providers keep nothing."],
+    ["keep-none-of-it", "The providers retain nothing."],
   ];
   /* Approved lines, word for word: the guides' advice (should-kids, the AI-tutor checklist, the late-talker tips, the
-   * buyer's guide), the code-checked words of task 8b.1 and /privacy's processors row. */
+   * buyer's guide), the code-checked words of task 8b.1 and /privacy's processors row; and the parents' advice a
+   * dashboard post may give (task 8b.1d), which no product feature is claimed in. */
   const NEAR_MISSES = [
+    "Keep a notebook and track your child’s new words each week.",
+    "Sit together for a minute of quiet before bed.",
+    "Let your child choose which topics to talk about at bedtime.",
+    /* Parents' lines the D058 entries once refused through a loose subject, place or verb (8b.1d review item 2). */
+    "If your family stays in India for the holidays, pack the charger.",
+    "Grandma stays in India while we live abroad.",
+    "Kids are honest: they hold nothing back.",
+    "Ask Kheelu about anything: your child picks the topic.",
+    "If your child says “ba” for ball every time, it counts as a new word.",
+    "Track your child’s new words in a notebook or a notes app.",
+    "If they don’t answer, ask it again after a minute of quiet.",
+    "Try a minute of quiet, and it goes better than a lecture.",
     "Can it reach the open internet?",
     "It can’t browse the open internet.",
     "Is every reply checked for your child’s age, and can the maker say how?",
@@ -225,6 +263,53 @@ describe("src/content carries no banned phrase", () => {
     }
     console.log(`[banned-phrases] ${BANNED_PHRASES.length} entries; scanned ${files.length} content module(s).`);
     expect(problems, problems.join("\n")).toEqual([]);
+  });
+});
+
+/* 4b. The stories print no claim D058 withdrew (task 8b.1d). Storybook is where a section is reviewed apart from its page,
+ * and its data once kept the frozen mockups' Gate A words while their parity tests held it to them; those tests now apply
+ * the route's claim fixes to the mockup first (CLAIM_FIXES, ARTICLE_CLAIM_FIXES), so the data takes the site's words.
+ * Every string of every story file (strings, templates and JSX text) runs through the D058 entries, the ones citing a
+ * row of claims.md §4's D058 table; data a story reads from content is the content scan's (rule 4). */
+describe("the stories print no claim D058 withdrew (task 8b.1d)", () => {
+  const md = readRepoFile("wiki/product/claims.md");
+  const table = md.slice(md.indexOf("**Withdrawn by the live team's code check (D058"), md.indexOf("### 4.1"));
+  const rows = table
+    .split("\n")
+    .filter((l) => l.startsWith("| ") && /\| WITHDRAWN 2026-10-14/.test(l))
+    .map((l) => l.split(" | ")[0].replace(/^\|\s*/, ""));
+  const D058 = BANNED_PHRASES.filter((e) => e.kind === "claim" && rows.some((r) => r.startsWith(e.claimsRow)));
+  const stories = listFiles(["src"]).filter((p) => /\.stories\.tsx?$/.test(p));
+
+  it("reads the eleven D058 entries from claims.md §4 and a real story list", () => {
+    expect(D058.map((e) => e.id)).toEqual([
+      "one-tap-delete",
+      "servers-in-india",
+      "closed-library",
+      "safety-layer",
+      "quiet-hours",
+      "topic-controls",
+      "new-word-count",
+      "four-skills-report",
+      "minute-of-quiet",
+      "attack-own-safety",
+      "keep-none-of-it",
+    ]);
+    expect(stories.length).toBeGreaterThan(50);
+    expect(stories).toContain("src/components/sections/ProductDetails/ProductDetails.stories.tsx");
+  });
+
+  it("finds none in any story file's strings", () => {
+    const problems: string[] = [];
+    for (const path of stories) {
+      for (const s of sourceStrings(parseSource(path, readRepoFile(path)))) {
+        for (const h of findBanned(s.text, ["claim"]).filter((hit) => D058.some((e) => e.id === hit.id))) {
+          problems.push(`${path}:${s.line} ${h.id}: "${h.match}" in "${h.sentence}"`);
+        }
+      }
+    }
+    console.log(`[banned-phrases] D058 claims: scanned ${stories.length} story file(s).`);
+    expect(problems, `withdrawn claims in the stories (D058; claims §4):\n${problems.join("\n")}`).toEqual([]);
   });
 });
 

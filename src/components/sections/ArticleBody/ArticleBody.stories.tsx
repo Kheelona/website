@@ -13,11 +13,11 @@ import { ArticleBody } from "./ArticleBody";
  * Storybook leaves out of the story list), shared by the AnswerSection and SourcesSection stories. The answer and the
  * sources are their own sections, passed in as `before` and `after`: each story shows the column as the article does.
  *
- * The safe-AI-toy guide is the exception (task 8b.1b). Its body below keeps the frozen mockup's Gate A words (D046),
- * because ArticleBody.test.tsx holds it word for word to that mockup (task 3.4); several of its facts are claims the
- * live team's code check withdrew (D058: one tap, servers in India, a closed library, the safety layer, a minute of
- * quiet, "Tested by us first"). So its story renders the guide as the site prints it instead: its module, through the
- * journal registry, in the code-checked words. */
+ * The safe-AI-toy guide's body is the exception (task 8b.1d): several of its Gate A facts are claims the live team's
+ * code check withdrew (D058: one tap, servers in India, a closed library, the safety layer, a minute of quiet, "Tested
+ * by us first"), so its body is the guide as the site prints it, read through the journal registry, and
+ * ArticleBody.test.tsx holds it to the frozen mockup (D046) with the guide's claim fixes applied. Its answer and
+ * sources, which D058 left alone, stay the approved copy. */
 
 type Body = readonly (ArticlePart | FigureBlock)[];
 
@@ -86,87 +86,19 @@ export const LEARNING_TOYS_BODY: Body = [
   ]),
 ];
 
-const fact = (icon: string, title: string, body: string) => ({ icon, title, body });
+/** The safe-AI-toy guide as the site prints it (D058; tasks 8b.1b, 8b.1d): read from the journal registry, never from a
+ *  guide's module by path, so the story follows the site (the module now; the dashboard's post after task 8b.2e). */
+function siteArticle(slug: string): Article & { readonly answer: Answer } {
+  const article = getArticle(slug);
+  if (!article?.answer) throw new Error(`ArticleBody stories: the journal has no "${slug}" with an answer`);
+  return { ...article, answer: article.answer };
+}
+const SAFE_AI_TOY_NOW = siteArticle("what-to-look-for-in-a-safe-ai-toy");
 
-/** story-what-to-look-for-in-a-safe-ai-toy.html, folds 3-5 (fold 5 breaks out of the column from 1200 px), in the frozen
- *  mockup's Gate A words: the parity fixture of ArticleBody.test.tsx, not what the site prints (the SafeAiToy story). */
-export const SAFE_AI_TOY_BODY: Body = [
-  part("What do child-safety groups say about AI toys?", [
-    p("In November 2025 Fairplay, a children’s advocacy group, published an advisory signed by more than 150 experts and organisations telling parents not to buy AI toys that season.[^1]"),
-    p("In January 2026, Common Sense Media advised parents not to give AI toys, which it describes as “smart toys with voice-based interactions”, to children aged 5 and under, and to use extreme caution before buying them for children aged 6 to 12.[^2] When it tested three AI toys, it rated 27% of their replies as not appropriate for kids. It also raised concerns about toys designed to create emotional attachment, the data they collect and how reliably they work.[^3]"),
-    p("Common Sense Media also says children aged 5 and under “cannot reliably distinguish AI from real people”.[^3]"),
-    p("Before any AI toy comes home, ask what it does with your child’s voice, what you can see as a parent, and how it handles a hard question."),
-  ]),
-  part("What to look for, warning by warning", [
-    p("Most of these worries are about how a toy is built, so check the build. Put each question below to the maker and expect a plain answer."),
-    {
-      kind: "questions",
-      items: [
-        {
-          question: "When is the microphone on?",
-          answer: [
-            "Look for a toy that listens only after you or your child start it, and that shows you when it is listening. Ask whether it has a camera at all. Common Sense Media found that AI toys “collect extensive data in children’s private spaces”.[^2]",
-          ],
-        },
-        {
-          question: "Can it reach the open internet?",
-          answer: [
-            "Ask where its answers come from. A toy that can browse or search can stumble onto things your child should not hear, and a filter on top then has to catch everything. Look for a toy that cannot browse the internet at all.",
-          ],
-        },
-        {
-          question: "Can you read and delete every conversation?",
-          answer: [
-            "You would not leave your child with a babysitter who won’t tell you how the afternoon went. Ask whether you can read every conversation, word for word, and delete any of it yourself, without emailing anyone. A summary is not the conversation.",
-          ],
-        },
-        {
-          question: "Where does your child’s voice go, and who keeps it?",
-          answer: [
-            "Ask who processes your child’s voice and in which country, whether any of it is kept and for how long, and whether it is ever sold or used to advertise to your child. A vague answer is an answer. For what India’s data law asks of companies, read [What India’s data law asks of a toy that listens](/stories#ai-and-safety).",
-          ],
-        },
-        {
-          question: "Is it built for your child’s age?",
-          answer: [
-            "Ask how replies are filtered for the age of the child playing, and who sets that age. Ask, too, what the toy does when it doesn’t know something. The answer you want: it says so.",
-          ],
-        },
-        {
-          question: "Does it pretend to be more than a toy?",
-          answer: [
-            "Common Sense Media says AI toy companions “create emotional attachment by design”.[^2] Look for a toy that tells your child it is a toy, and never asks your child to keep a secret from you.",
-          ],
-        },
-      ],
-    },
-    p("To compare toys side by side, use the shorter checklist in our guide to [AI toys for kids in India](/ai-toys-for-kids-in-india)."),
-  ]),
-  part(
-    "How is Kheelu built against each worry?",
-    [
-      p("Kheelu is made for children aged 3 to 7. Common Sense Media’s advice covers that whole range: avoid AI toys at 5 and under, and use extreme caution at 6 and 7. You should hear that from us. Here is how we built [Kheelu](/products/kheelu) on each point above, so you can check it yourself and decide."),
-      {
-        kind: "facts",
-        items: [
-          fact("microphone", "The microphone.", "It turns on only when someone presses the wake-up button, and a light on Kheelu shows whenever it’s listening. It switches itself off after about a minute of quiet. Kheelu has no camera."),
-          fact("lock-simple", "Your child’s voice.", "To understand and answer your child, Kheelu uses trusted speech and AI providers, on servers in India. They process your child’s voice only to produce Kheelu’s reply. They don’t keep it, and they never use it to train their AI. Our contracts with them say so."),
-          fact("eye", "Every conversation.", "You can read every conversation in the parent app. Your child’s conversations stay in your parent app for 36 months, then they’re deleted automatically. You can delete any of them sooner, in one tap."),
-          fact("hand-heart", "Your data.", "We don’t sell your data. Your child’s data is never used to advertise to them."),
-          fact("wifi-slash", "No open internet.", "Kheelu can’t browse the internet. Its answers come from a curated, closed content library, and every reply passes an age-graded safety layer set to the age you enter in the parent app."),
-          fact("question", "When it doesn’t know.", "It says so, instead of guessing."),
-          fact("smiley", "A toy, and it says so.", "It tells your child it’s a toy, and never asks them to keep a secret from you."),
-          fact("magnifying-glass", "Tested by us first.", "We attack our own safety layer before every release."),
-          fact("clock", "Certification.", "Kheelu’s toy-safety (BIS) licence has been applied for and is not yet granted. No badge appears before it is earned."),
-        ],
-        figure: { src: bellyModule, alt: "Kheelu’s tummy unit up close, with its speaker, light ring and buttons." },
-      },
-      p("If your child is 3, keep a grown-up nearby while they play."),
-      p("Whether that is enough is your call. The detail is on our [Safety page](/safety), and you can ask us anything: [WhatsApp](https://wa.me/919187546483) or {nowrap:[call +91 91875 46483](tel:+919187546483)}."),
-    ],
-    { variant: "breakout" },
-  ),
-];
+/** story-what-to-look-for-in-a-safe-ai-toy.html, folds 3-5 (fold 5 breaks out of the column from 1200 px), as the site
+ *  prints it: the guide's body in the live team's code-checked words (D058). ArticleBody.test.tsx holds it to the frozen
+ *  mockup's column with the guide's claim fixes applied (deviations.md V37), as approved-articles.test.tsx does. */
+export const SAFE_AI_TOY_BODY: Body = SAFE_AI_TOY_NOW.body;
 
 /** story-talking-toys-and-late-talkers.html, folds 3-7. */
 export const LATE_TALKERS_BODY: Body = [
@@ -332,15 +264,6 @@ export const LATE_TALKERS_SOURCES: readonly Source[] = [
 ];
 
 
-/** The safe-AI-toy guide as the site prints it (D058; task 8b.1b): read from the registry, so the story follows the
- *  module (and, after the switch of task 8b.2e, the journal). */
-function siteArticle(slug: string): Article & { readonly answer: Answer } {
-  const article = getArticle(slug);
-  if (!article?.answer) throw new Error(`ArticleBody stories: the journal has no "${slug}" with an answer`);
-  return { ...article, answer: article.answer };
-}
-const SAFE_AI_TOY_NOW = siteArticle("what-to-look-for-in-a-safe-ai-toy");
-
 /** The answer first and the sources last, as the article template (4.2) passes them. */
 function column(answer: Answer, sources: readonly Source[]) {
   return {
@@ -365,7 +288,7 @@ export const LearningToys: Story = {};
 
 /** Safe AI toy, as the site prints it: the six questions, and the facts list with the belly unit, breaking out of the
  *  column from 1200 px. */
-export const SafeAiToy: Story = { args: { blocks: SAFE_AI_TOY_NOW.body, ...column(SAFE_AI_TOY_NOW.answer, SAFE_AI_TOY_NOW.sources) } };
+export const SafeAiToy: Story = { args: { blocks: SAFE_AI_TOY_BODY, ...column(SAFE_AI_TOY_NOW.answer, SAFE_AI_TOY_NOW.sources) } };
 
 /** Late talkers: an untitled opening part, a bulleted list with markers, the plain "gut" line, the tips card, myths. */
 export const LateTalkers: Story = { args: { blocks: LATE_TALKERS_BODY, ...column(LATE_TALKERS_ANSWER, LATE_TALKERS_SOURCES) } };
