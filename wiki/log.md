@@ -926,3 +926,9 @@ files, 5804 passed, 2 skipped; Playwright on the four guides, the hub and Home (
 first-screen, links, content-integrity, no-js, perf budget): 139 passed, 5 skipped, 0 failed. Docs: structure §1, §3
 (the journal's scripts, config and lib), architecture §10 and §14, artifacts, index. Question G32 (the providers' place
 in the four guides). Next: wave ii (8b.2d) with 8b.1b.
+
+## [2026-10-14 15:30] agent | Wave ii launched (run wf_437afd5d-b48, base `24d7631`): 8b.2d (the adapter, the photo table) with 8b.1b (8b.1's and 8b.2a's follow-ups)
+8b.2d (ports 3630/6230): `postToArticle`, `articleToPost`, the ring, the photo table, the play word and figure spacing;
+no consumer switched. 8b.1b (3631/6231): `/safety`'s screenshot alt without "delete all chats"; D058's withdrawn claims
+as guard entries (frozen mockups exempt only where a claim-fix rule covers the route); the safe-AI-toy and should-kids
+guides' advice questions; Storybook stories and fixtures in the D058 wording. Founder items G26-G32 not in scope.
