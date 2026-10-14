@@ -7,8 +7,9 @@ import { RETENTION_LINE } from "../../policies";
 /**
  * Should kids use AI? An honest answer from people who build it: rewritten (task 5.19) from its approved copy page
  * (wiki/site/pages/story-should-kids-use-ai.md; CMO review round 2). No mockup: the article template renders it, as the
- * three approved articles. Head and lead are the hub card's words (stories.md fold 4); the related list and
- * first-published date are the stub's. Common Sense Media is cited three times on purpose (the answer, fold 5 in full,
+ * three approved articles. Head and lead are the hub card's words (stories.md fold 4); the first-published date is the
+ * stub's, the related list CMO built-page review B's ring (finding m3, task 7.1d; the copy page's fold 10): the
+ * safe-AI-toy, hard-questions and AI-tutor guides, all in its own topic. Common Sense Media is cited three times on purpose (the answer, fold 5 in full,
  * fold 8's B3 answer word for word). The research fold names no product (D016); fold 8 holds the page's one in-text
  * product link and Kheelu's facts in the founder's order (D020), the retention line from policies.ts; the facts widen
  * out of the column from 1200 px, as the safe-AI-toy guide's. `updated` is the rewrite's date.
@@ -25,7 +26,7 @@ export const article = {
     title: "Should kids use AI? An honest answer from people who build it",
     summary: "Where the line sits between AI built for adults and a toy built for young children, and how to judge any toy with AI inside.",
   },
-  related: ["raising-a-bilingual-child-in-india", "does-a-three-year-old-need-an-ai-tutor", "questions-parents-ask-about-ai-toys"],
+  related: ["what-to-look-for-in-a-safe-ai-toy", "questions-parents-ask-about-ai-toys", "does-a-three-year-old-need-an-ai-tutor"],
   published: "2026-07-28",
   updated: "2026-10-13",
   head: {

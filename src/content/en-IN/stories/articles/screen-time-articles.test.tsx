@@ -34,9 +34,10 @@ import { article as gentleWay } from "./the-gentle-way-off-the-phone";
  *     story-what-to-look-for-in-a-safe-ai-toy.html (a wide one) prints it, the answer card, the sources, the related
  *     guides and the journal close as story-learning-toys-for-a-three-year-old.html prints them, and no markup in the
  *     reading column that the three approved reading columns do not have.
- * Each keeps its stub's hub card, related list and dates (the main session's note for 5.17), the 3-6-9-12 guide aside:
- * where a stub offered it, the article offers the guide D053's task 6.5 put in its place; the folder's invariants
- * (titles within 60, three incoming links, the live first-published date) are articles.test.ts's. */
+ * Each keeps its stub's hub card, related list and dates (the main session's note for 5.17), where CMO built-page review
+ * B's ring (finding m3, task 7.1d) leaves its list alone; the ring replaced every list that offered the 3-6-9-12 guide
+ * (D053) and task 6.5's swaps for it. The folder's invariants (titles within 60, three incoming links, the live
+ * first-published date) are articles.test.ts's. */
 
 interface Stub {
   readonly card: ArticleCard;
@@ -46,12 +47,16 @@ interface Stub {
   readonly updated: IsoDate;
 }
 
-/** The guide that left the journal (D053), and what each stub that offered it offers instead (task 6.5: the only
- *  places that keep every article of the journal offered by three others; copy pages' related folds). */
+/** The guide that left the journal (D053). */
 const REMOVED = "screen-time-rules-parents-swear-by";
-const IN_ITS_PLACE: Readonly<Partial<Record<ArticleSlug, ArticleSlug>>> = {
-  "the-gentle-way-off-the-phone": "what-to-look-for-in-a-safe-ai-toy",
-  "busy-hands-no-screens": "ai-toys-and-indias-data-law",
+/** Where CMO built-page review B's ring (finding m3, task 7.1d) changed a stub's list: the guides the article offers
+ *  now, as its copy page's related fold lists them. It replaces task 6.5's two swaps for the removed guide (the
+ *  safe-AI-toy guide after gentle way, the data-law guide after busy hands), which m3 found off topic, and keeps every
+ *  article of the journal offered by three others. */
+const M3_RING: Readonly<Partial<Record<ArticleSlug, readonly ArticleSlug[]>>> = {
+  "how-much-screen-time-for-a-3-to-6-year-old": ["busy-hands-no-screens", "screen-free-does-not-mean-silent", "the-gentle-way-off-the-phone"],
+  "the-gentle-way-off-the-phone": ["screen-time-and-tantrums", "busy-hands-no-screens", "screen-free-does-not-mean-silent"],
+  "busy-hands-no-screens": ["the-gentle-way-off-the-phone", "screen-time-and-tantrums", "why-three-to-six-are-the-years-that-matter-most"],
 };
 
 /* Each stub's approved hub card (stories.md fold 2), its related list (the live journal's ring) and its dates (the live
@@ -290,11 +295,13 @@ describe.each(SCREEN_TIME)("the screen-time article %s", (slug, article, stub) =
     expect(article.sources.length).toBeGreaterThan(0);
   });
 
-  it("keeps its stub's hub card, related guides (another in the 3-6-9-12 guide's place, D053) and first-published date; `updated` is the rewrite's (stories.md fold 2; part C merge ruling)", () => {
+  it("keeps its stub's hub card, related guides (CMO B m3's ring where it changed them, task 7.1d) and first-published date; `updated` is the rewrite's (stories.md fold 2; part C merge ruling)", () => {
     expect(article.slug).toBe(slug);
     expect(article.card).toEqual(stub.card);
-    expect(stub.related.includes(REMOVED)).toBe(IN_ITS_PLACE[slug] !== undefined);
-    expect(article.related).toEqual(stub.related.map((r) => (r === REMOVED ? IN_ITS_PLACE[slug] : r)));
+    /* Every stub that offered the guide D053 removed takes m3's ring, so no article offers it. */
+    if (stub.related.includes(REMOVED)) expect(M3_RING[slug], slug).toBeDefined();
+    expect(article.related).toEqual(M3_RING[slug] ?? stub.related);
+    expect(article.related).not.toContain(REMOVED);
     expect(article.published).toBe(stub.published);
     expect(article.updated).toBe(REWRITE_DATE);
     expect(article.updated > stub.updated).toBe(true);

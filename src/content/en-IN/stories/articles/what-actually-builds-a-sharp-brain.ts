@@ -6,8 +6,9 @@ import { DEFAULT_OG } from "../../organization";
 /**
  * What actually builds a sharp brain in the early years: rewritten (task 5.19) from its approved copy page
  * (wiki/site/pages/story-what-actually-builds-a-sharp-brain.md; CMO review). No mockup: the article template renders
- * it, as the three approved articles. Head and lead are the hub card's words (stories.md fold 5); the related list and
- * first-published date are the stub's. "Brain development" is a searched topic, never what a toy does (D016): the four
+ * it, as the three approved articles. Head and lead are the hub card's words (stories.md fold 5); the first-published
+ * date is the stub's, the related list CMO built-page review B's ring (finding m3, task 7.1d; the copy page's fold 9),
+ * the early-years guide, its twin, in place of the screen-free toys guide. "Brain development" is a searched topic, never what a toy does (D016): the four
  * things (talk, sleep, calm, play) each stand on their sources with something to do at home, and the one product line
  * sits in fold 7, which holds no brain line. The rewrite's title carries the brand (the stub's went without).
  * `updated` is the rewrite's date.
@@ -24,7 +25,7 @@ export const article = {
     title: "What actually builds a sharp brain in the early years",
     summary: "Past the flashcards: the everyday things research points to, and how to get more of them at home.",
   },
-  related: ["how-children-learn-by-talking", "learning-toys-for-a-three-year-old", "screen-free-does-not-mean-silent"],
+  related: ["how-children-learn-by-talking", "learning-toys-for-a-three-year-old", "why-three-to-six-are-the-years-that-matter-most"],
   published: "2026-07-28",
   updated: "2026-10-13",
   head: {

@@ -46,6 +46,9 @@ interface Expected {
   readonly article: Article;
   /** The stub's card, related list and dates: the rewrite keeps them (task notes; stories.md fold 3). */
   readonly stub: Pick<Article, "card" | "related" | "published" | "updated">;
+  /** Where CMO built-page review B's ring (finding m3, which folds in CMO 5.18 M6; task 7.1d) changed the stub's list:
+   *  the guides the article offers now, as its copy page's keep-reading fold lists them. */
+  readonly ring?: Article["related"];
   /** Every in-text link, in reading order: other guides only (B5). */
   readonly links: readonly string[];
   /** The icons of the tips and callouts, in reading order: the copy page's, or the CMO review's (M14) where the copy
@@ -85,6 +88,7 @@ const TALKING: readonly (readonly [string, Expected])[] = [
         published: "2026-07-28",
         updated: "2026-09-05",
       },
+      ring: ["talking-late-or-talking-little", "raising-a-bilingual-child-in-india", "how-children-collect-words"],
       links: ["/stories/talking-late-or-talking-little"],
       icons: ["eye", "currency-inr", "book-open", "chat-circle-dots", "music-notes", "users-three"],
     },
@@ -136,6 +140,7 @@ const TALKING: readonly (readonly [string, Expected])[] = [
         published: "2026-07-28",
         updated: "2026-09-05",
       },
+      ring: ["talking-toys-and-late-talkers", "how-to-get-your-child-talking", "how-children-learn-by-talking"],
       links: [],
       icons: ["music-notes", "chat-circle-dots", "translate", "book-open", "users-three", "heart", "hand-heart"],
     },
@@ -302,7 +307,7 @@ const page = (article: Article) => render(<ArticleTemplate article={sized(articl
 
 /* ── The tests ──────────────────────────────────────────────────────────────────────────────────────────────────── */
 
-describe.each(TALKING)("the talking guide %s", (slug, { article, stub, links, icons }) => {
+describe.each(TALKING)("the talking guide %s", (slug, { article, stub, ring, links, icons }) => {
   it("prints its copy page word for word: head, answer, parts, sources and the keep-reading close", () => {
     expect(same(words(page(article), { skip: "script" }))).toBe(same(copyWords(slug)));
   });
@@ -313,9 +318,9 @@ describe.each(TALKING)("the talking guide %s", (slug, { article, stub, links, ic
     expect(article.meta.og).toEqual(DEFAULT_OG);
   });
 
-  it("keeps the stub's card, related list and first-published date; `updated` is the rewrite's (the hub's approved copy; part C merge ruling)", () => {
+  it("keeps the stub's card, related list (CMO B m3's ring where it changed it, task 7.1d) and first-published date; `updated` is the rewrite's (the hub's approved copy; part C merge ruling)", () => {
     const { updated, ...kept } = stub;
-    expect({ card: article.card, related: article.related, published: article.published }).toEqual(kept);
+    expect({ card: article.card, related: article.related, published: article.published }).toEqual({ ...kept, related: ring ?? kept.related });
     expect(article.updated).toBe(REWRITE_DATE);
     expect(article.updated > updated).toBe(true);
   });

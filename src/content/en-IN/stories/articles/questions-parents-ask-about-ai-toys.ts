@@ -12,8 +12,9 @@ const LANGUAGES_LINE = `It speaks ${LANGUAGE_NAMES.slice(0, -1).join(", ")} and 
 /**
  * The hard questions parents ask about AI toys: rewritten (task 5.19) from its approved copy page
  * (wiki/site/pages/story-questions-parents-ask-about-ai-toys.md; CMO review round 2). No mockup: the article template
- * renders it, as the three approved articles. Head and lead are the hub card's words (stories.md fold 4); the related
- * list and first-published date are the stub's. Fold 4 leads with Common Sense Media's advice and the B3 answer's
+ * renders it, as the three approved articles. Head and lead are the hub card's words (stories.md fold 4); the
+ * first-published date is the stub's, the related list CMO built-page review B's ring (finding m3, task 7.1d; the copy
+ * page's fold 9): the safe-AI-toy, AI-tutor and data-law guides, all in its own topic. Fold 4 leads with Common Sense Media's advice and the B3 answer's
  * first three sentences, then the page's one in-text product link; the facts follow D018 and D020 in the founder's
  * order, with the retention line every page prints (policies.ts) and the languages from the product facts. The light's
  * colour is never named (D018); no word "safe" about Kheelu. `updated` is the rewrite's date.
@@ -30,7 +31,7 @@ export const article = {
     title: "The hard questions parents ask about AI toys",
     summary: "The questions parents ask before buying a talking toy, answered straight, including the uncomfortable ones.",
   },
-  related: ["does-a-three-year-old-need-an-ai-tutor", "why-three-to-six-are-the-years-that-matter-most", "how-children-learn-by-talking"],
+  related: ["what-to-look-for-in-a-safe-ai-toy", "does-a-three-year-old-need-an-ai-tutor", "ai-toys-and-indias-data-law"],
   published: "2026-09-11",
   updated: "2026-10-13",
   head: {

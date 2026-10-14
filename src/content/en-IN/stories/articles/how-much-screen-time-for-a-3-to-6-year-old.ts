@@ -8,8 +8,9 @@ import { DEFAULT_OG, TEAM_BYLINE } from "../../organization";
  * story-how-much-screen-time-for-a-3-to-6-year-old.md, CMO review cmo-review-articles-5.17-2026-10-14.md; fixes of
  * task 5.20a, CMO M4 to M7 and M16, fix-pass review cmo-review-article-fixes-5.20a-2026-10-14.md). No mockup:
  * it renders through the article template, held to the approved articles' shared parts. Card words as the hub's
- * (stories.md fold 2), related links and dates as the stub held them (the main session's note for 5.17). One in-text
- * product link (fold 10).
+ * (stories.md fold 2), dates as the stub held them (the main session's note for 5.17); related links from CMO built-page
+ * review B's ring (finding m3, task 7.1d; the copy page's fold 12), the busy-hands guide in the tantrums guide's place
+ * (tantrums stays an in-text link, fold 10). One in-text product link (fold 10).
  */
 export const article = {
   slug: "how-much-screen-time-for-a-3-to-6-year-old",
@@ -22,7 +23,7 @@ export const article = {
     title: "How much screen time is okay for a young child?",
     summary: "What the WHO, the Indian Academy of Pediatrics and the AAP say, age by age, and what to do at 6 pm.",
   },
-  related: ["screen-free-does-not-mean-silent", "screen-time-and-tantrums", "the-gentle-way-off-the-phone"],
+  related: ["busy-hands-no-screens", "screen-free-does-not-mean-silent", "the-gentle-way-off-the-phone"],
   published: "2026-07-28",
   updated: "2026-10-13",
   head: {

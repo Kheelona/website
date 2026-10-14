@@ -7,8 +7,10 @@ import { DEFAULT_OG, TEAM_BYLINE } from "../../organization";
  * Raising a bilingual child in India: rewritten (task 5.18) from its copy page,
  * wiki/site/pages/story-raising-a-bilingual-child-in-india.md, word for word (CMO review
  * wiki/qa/cmo-review-articles-5.18-2026-10-14.md; copy fixes M13 in task 5.20b, CMO review
- * wiki/qa/cmo-review-article-fixes-5.20b-2026-10-14.md). No mockup: the article template renders it. Card words, related
- * list and dates as the stub held them (stories.md fold 3; the live journal's ring and dates). No pitch: no product
+ * wiki/qa/cmo-review-article-fixes-5.20b-2026-10-14.md). No mockup: the article template renders it. Card words and
+ * dates as the stub held them (stories.md fold 3; the live journal's dates); the related list from CMO built-page review
+ * B's ring (finding m3, which folds in CMO 5.18 M6; task 7.1d; the copy page's fold 11), the get-talking and
+ * learn-by-talking guides in place of the should-kids and AI-tutor guides. No pitch: no product
  * link, no pre-order button (the keep-reading close), and Kheelu named only in D025's line under the answer. Every
  * statement about speech or language carries a source marker (D025, D026); the review's count-each-idea-once method and
  * the AAP and ASHA's totals stay in separate paragraphs with their own markers (source verification C40). The read
@@ -27,7 +29,7 @@ export const article = {
     title: "Raising a bilingual child in India",
     summary: "Does a bilingual home confuse a young child? What the research says, and what keeps a home language alive.",
   },
-  related: ["talking-toys-and-late-talkers", "should-kids-use-ai", "does-a-three-year-old-need-an-ai-tutor"],
+  related: ["talking-toys-and-late-talkers", "how-to-get-your-child-talking", "how-children-learn-by-talking"],
   published: "2026-07-28",
   updated: "2026-10-13",
   head: {
