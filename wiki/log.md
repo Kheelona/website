@@ -787,3 +787,12 @@ and, after the agents finish, Lighthouse. The QA agent covers what the suites do
 §5, every beacon answered locally), per-page criteria (§7), the redirect matrix (§8), the checkout invariants (§9),
 CLS with fonts delayed (N17) and the production dry-run placeholder list; defects to `wiki/qa/defects.md`, results to
 `wiki/qa/results-2026-10-14.md`. CMO built-page reviews start when the suite finishes (CPU).
+
+## [2026-10-14 07:53] qa | Wave 8: full browser suite green after 6.3; CMO built-page reviews started
+`npm run verify:e2e` at `a5124aa`: **1486 passed, 0 failed, 28 skipped** (13.5 min); it stands for 6.3's own e2e check.
+The 21 store tests that need a store database (the signed event page's form, its axe case) skip on a plain run and
+were run once with 6.1's read-only stand-in (fake values, nothing submitted): store-secondary and axe specs **283
+passed, 0 skipped**. The other skips are the known ones (V5's `/thanks` parity, the tracking probe's LP rows, which the
+QA agent covers). Three CMO reviewers started on the built pages: A conversion pages (`/`, product, AI toys, safety,
+team, contact, setup, 404), B the journal (hub and 20 guides), C the legal pages and the store host. The QA agent is
+still running.
