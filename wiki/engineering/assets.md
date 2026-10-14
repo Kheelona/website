@@ -120,17 +120,17 @@ reset does not touch ([tracking inventory §12-13](../site/tracking-inventory.md
 
 ## 5. Legacy files in `public/`
 
-Per-file verdicts: [cleanup-public-assets](../legacy/cleanup-public-assets.md). **Task 6.3 (2026-10-14) deleted 35
-DELETE-WITH-REBUILD files, none referenced by any page, script or test:** `public/app/{dashboard,onboarding}.png`,
+Per-file verdicts: [cleanup-public-assets](../legacy/cleanup-public-assets.md). **Task 6.3 (2026-10-14) deleted all
+36 DELETE-WITH-REBUILD files, none referenced by any page, script or test:** `public/app/{dashboard,onboarding}.png`,
 `public/brand/kheelona-mark.svg` and `kheelona-wordmark.svg` (with their one reader, the superseded
 `tools/brand/render-icons.mjs`: `build-og.mjs` makes `logo-mark.png` from the DS mark), the seven
-`public/mascot/mascot-*.png`, `public/products/{ai-book,kheelu-speaker,magic-box}.png`, the 19 `public/stories/*.jpg`
-(the 3-6-9-12 guide's `screen-time-rules-parents-swear-by.jpg` among them, 6.5) and `public/video/launch.mp4` with
-`launch-poster.jpg`. Recoverable at `archive/pre-reset-2026-10-10`.
-**Kept, waiting on a ruling:** `public/product/lumi.png` (DELETE-WITH-REBUILD, unreferenced by the site): two guards
-read `public/product/` itself, `test/redirects-vs-assets.test.ts` (its directory sentinel) and
-`test/guards/redirect-hops.test.ts` (its live sample for the `/product/:slug([^.]+)` rule's dot exclusion); neither is
-6.3's, so the file stays until the main session re-points them (6.3 report).
+`public/mascot/mascot-*.png`, `public/product/lumi.png`, `public/products/{ai-book,kheelu-speaker,magic-box}.png`, the
+19 `public/stories/*.jpg` (the 3-6-9-12 guide's `screen-time-rules-parents-swear-by.jpg` among them, 6.5) and
+`public/video/launch.mp4` with `launch-poster.jpg`. Recoverable at `archive/pre-reset-2026-10-10`.
+`lumi.png` went last, on the main session's ruling (its only reader, `src/lib/kheelu-art.ts`, had gone): the two 1.3
+guards that read `public/product/` now prove the `[^.]+` rules on synthetic `/product/lumi.png` and `/category/x.png`
+samples and on every real file of `public/` (`test/redirects-vs-assets.test.ts`, `test/guards/redirect-hops.test.ts`).
 The two KEEP URL files (`og.png`, `brand/logo-mark.png`) are the pipeline's since 1.5. Every other file left in
-`public/` is generated (§3) or a §2 row: in use (films, posters, founder photos, recognition marks) or FOUNDER
-(the film previews, `ria.jpg`, the Ideabaaz mark), each with its 6.3 verdict there.
+`public/` is generated (§3: fonts, `og/kheelu.jpg`, `media/kheelu-front.jpg`) or a §2 row: in use (films, posters,
+founder photos, recognition marks) or FOUNDER (the film previews, `ria.jpg`, the Ideabaaz mark), each with its 6.3
+verdict there.

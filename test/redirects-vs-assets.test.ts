@@ -31,22 +31,46 @@ const assetDirs = readdirSync(join(ROOT, "public"), { withFileTypes: true })
   .filter((e) => e.isDirectory())
   .map((e) => e.name);
 
+/** The redirect sources that would swallow a file of public/<dir>/ named in `files`. */
+function shadowingSources(dir: string, files: readonly string[], from: readonly string[] = sources): string[] {
+  return from.filter((s) => {
+    if ((s.split("/")[1] ?? "") !== dir) return false;
+    // A literal source only ever shadows the one file of that exact name.
+    if (!/[:*]/.test(s)) return files.includes(s.split("/").slice(2).join("/"));
+    // A pattern that cannot match a dot cannot match a filename, so it is safe.
+    return !s.includes("[^.]");
+  });
+}
+
+/* The directories the dot-excluding rules were written for, each with a file as it would sit there. `public/product/`
+   held the home hero plush (lumi.png) on 2026-07-28; task 6.3 deleted the file with the old pages, so no real folder of
+   public/ shares a first segment with a redirect source any more, and these synthetic folders keep the [^.]+ rule
+   proven: the day either folder comes back, its files must stay reachable. */
+const DOT_EXCLUDED: readonly (readonly [string, readonly string[]])[] = [
+  ["product", ["lumi.png"]],
+  ["category", ["x.png"]],
+];
+
 describe("redirects never shadow public/ assets", () => {
   it("finds the redirects and the asset directories", () => {
     expect(sources.length).toBeGreaterThan(10);
-    expect(assetDirs).toContain("product");
+    expect(assetDirs).toContain("video");
   });
 
   it.each(assetDirs)("public/%s is not swallowed by a redirect", (dir) => {
     const files = readdirSync(join(ROOT, "public", dir));
-    const shadowing = sources.filter((s) => {
-      if ((s.split("/")[1] ?? "") !== dir) return false;
-      // A literal source only ever shadows the one file of that exact name.
-      if (!/[:*]/.test(s)) return files.includes(s.split("/").slice(2).join("/"));
-      // A pattern that cannot match a dot cannot match a filename, so it is safe.
-      return !s.includes("[^.]");
-    });
-    expect(shadowing, `redirect source(s) shadow public/${dir}/`).toEqual([]);
+    expect(shadowingSources(dir, files), `redirect source(s) shadow public/${dir}/`).toEqual([]);
+  });
+
+  it.each(DOT_EXCLUDED)("a file in public/%s/ %j would not be swallowed by its pattern redirect", (dir, files) => {
+    // A pattern source starts with this folder, so the sample is one a redirect really reaches.
+    expect(sources.filter((s) => s.split("/")[1] === dir && /[:*]/.test(s))).not.toEqual([]);
+    expect(shadowingSources(dir, files), `redirect source(s) shadow public/${dir}/`).toEqual([]);
+  });
+
+  it("reports a pattern that can match a dot, as the 2026-07-28 rule could", () => {
+    const planted = [...sources, "/product/:slug*", "/category/:slug*"];
+    expect(DOT_EXCLUDED.flatMap(([dir, files]) => shadowingSources(dir, files, planted))).toEqual(["/product/:slug*", "/category/:slug*"]);
   });
 
   it("keeps the dot-excluding pattern on the legacy product redirect", () => {
