@@ -8,6 +8,7 @@ import { parseRichText, type RichNode } from "@/lib/content/rich-text";
 import { formatDate } from "@/lib/format/date";
 import { buildOffer } from "@/lib/offer/offer";
 import { readRepoFile } from "../../../../../test/e2e/support/repo";
+import { type CopyFold, type CopyPage, copyFold, copyLines, copyParagraphs, glanceRow, readCopyPage } from "../../../../../test/support/copy-page";
 import { words } from "../../../../../test/support/mockup-compare";
 import { RETENTION_LINE, RETENTION_MONTHS } from "../../policies";
 import { product } from "../../products/kheelu/product";
@@ -54,58 +55,7 @@ const TOKEN = buildOffer("token");
 const article = (slug: Parity): Article => articles[slug];
 const moduleSource = (slug: Parity) => readRepoFile(`src/content/en-IN/stories/articles/${slug}.ts`);
 
-/* ── Reading a copy page ──────────────────────────────────────────────────────────────────────────────────────── */
-
-interface Fold {
-  /** The fold heading without "Fold n · ". */
-  readonly title: string;
-  /** Everything under the heading, notes included. */
-  readonly text: string;
-  /** The Copy block's paragraphs, each its quoted lines. */
-  readonly paragraphs: readonly (readonly string[])[];
-}
-
-interface CopyPage {
-  readonly title: string;
-  readonly description: string;
-  readonly folds: readonly Fold[];
-}
-
-function copyPage(slug: Parity): CopyPage {
-  const md = readRepoFile(`wiki/site/pages/story-${slug}.md`);
-  const row = (label: string) => {
-    const m = new RegExp(`^\\| ${label} \\([^)]*\\) \\| (.+?) \\|$`, "m").exec(md);
-    if (!m) throw new Error(`story-${slug}.md: no "${label}" row in "At a glance"`);
-    return m[1];
-  };
-  const folds = md
-    .split(/^## /m)
-    .slice(1)
-    .filter((s) => s.startsWith("Fold "))
-    .map((section): Fold => {
-      const [heading, ...rest] = section.split("\n");
-      /* The Copy block: the quoted lines after "**Copy", grouped by the blank quote lines between them. */
-      const quoted: string[] = [];
-      let i = rest.findIndex((l) => l.startsWith("**Copy"));
-      if (i >= 0) {
-        while (i < rest.length && !rest[i].startsWith(">")) i++;
-        for (; i < rest.length && rest[i].startsWith(">"); i++) quoted.push(rest[i].replace(/^>\s?/, ""));
-      }
-      const paragraphs = quoted
-        .join("\n")
-        .split(/\n\s*\n/)
-        .map((p) => p.split("\n").filter((l) => l.trim() !== ""))
-        .filter((p) => p.length > 0);
-      return { title: heading.replace(/^Fold \d+ · /, "").trim(), text: rest.join("\n"), paragraphs };
-    });
-  return { title: row("Title"), description: row("Meta description"), folds };
-}
-
-function fold(page: CopyPage, title: RegExp): Fold {
-  const found = page.folds.find((f) => title.test(f.title));
-  if (!found) throw new Error(`the copy page has no fold ${title}`);
-  return found;
-}
+/* ── Reading a copy page (test/support/copy-page.ts, the one reader; task 6.3) ───────────────────────────────── */
 
 /** One block of a Copy block: a heading (the H2, a bold question, the sources' title) or a run of text. */
 interface Block {
@@ -145,15 +95,15 @@ const norm = (s: string) =>
     .trim();
 
 /** The reading column's folds on the copy page: the answer, the body, the sources (not the head, related or close). */
-function columnFolds(page: CopyPage): Fold[] {
+function columnFolds(page: CopyPage): CopyFold[] {
   return page.folds.filter((f) => !/^(Article head|Related guides|Close)/.test(f.title));
 }
 
-const columnBlocks = (page: CopyPage) => columnFolds(page).flatMap((f) => f.paragraphs.flatMap(blocks));
+const columnBlocks = (page: CopyPage) => columnFolds(page).flatMap((f) => copyParagraphs(f).flatMap(blocks));
 
 /** The in-text links of the copy's column, as the site's own paths. */
 function copyLinks(page: CopyPage): { label: string; href: string }[] {
-  const lines = columnFolds(page).flatMap((f) => f.paragraphs.flat());
+  const lines = columnFolds(page).flatMap(copyLines);
   return lines.flatMap((l) => [...l.matchAll(/\[([^\]]+)\]\(https:\/\/kheelona\.com(\/[^)]*)\)/g)].map((m) => ({ label: m[1], href: m[2] })));
 }
 
@@ -205,18 +155,18 @@ const nodesOf = (s: string): RichNode[] => {
 /* ── The tests ────────────────────────────────────────────────────────────────────────────────────────────────── */
 
 describe.each([...SLUGS, ...APPROVED])("the article %s, as its approved copy page words it", (slug) => {
-  const page = copyPage(slug);
+  const page = readCopyPage(slug);
 
   it("carries the copy page's title and description", () => {
-    expect(norm(toPlainText(article(slug).meta.title))).toBe(norm(page.title));
-    expect(norm(toPlainText(article(slug).meta.description))).toBe(norm(page.description));
+    expect(norm(toPlainText(article(slug).meta.title))).toBe(norm(glanceRow(page, "Title")));
+    expect(norm(toPlainText(article(slug).meta.description))).toBe(norm(glanceRow(page, "Meta description")));
   });
 
   it("heads the page with the copy's H1, accent, lead, crumbs and byline", () => {
     const a = article(slug);
-    const head = fold(page, /^Article head/);
-    const line = (label: string) => head.paragraphs.flat().find((l) => l.startsWith(`**${label}:**`))?.replace(`**${label}:** `, "") ?? "";
-    const [lead, byline] = head.paragraphs.flat().filter((l) => !l.startsWith("**"));
+    const head = copyFold(page, /^Article head/);
+    const line = (label: string) => copyLines(head).find((l) => l.startsWith(`**${label}:**`))?.replace(`**${label}:** `, "") ?? "";
+    const [lead, byline] = copyLines(head).filter((l) => !l.startsWith("**"));
     expect(norm(toPlainText(a.head.title))).toBe(norm(line("H1")));
     expect(norm(toPlainText(a.head.lead ?? ""))).toBe(norm(lead));
     const hand = /`Hand` on "([^"]+)"/.exec(head.text)?.[1];
@@ -227,7 +177,7 @@ describe.each([...SLUGS, ...APPROVED])("the article %s, as its approved copy pag
   });
 
   it("shows the copy page's head photo, with its alt", () => {
-    const note = fold(page, /^Article head/).text.replace(/\s+/g, " ");
+    const note = copyFold(page, /^Article head/).text.replace(/\s+/g, " ");
     const m = /`([a-z0-9-]+-web\.webp)`\. Alt: "([^"]+)"/.exec(note);
     expect(m, "the copy page names the head photo and its alt").not.toBeNull();
     const image = article(slug).head.image!;
@@ -267,7 +217,7 @@ describe.each(SLUGS)("the rewritten article %s (task 5.19)", (slug) => {
   });
 
   it("heads the page with the hub card's title and summary, word for word (stories.md folds 4-5)", () => {
-    const head = fold(copyPage(slug), /^Article head/).paragraphs.flat();
+    const head = copyLines(copyFold(readCopyPage(slug), /^Article head/));
     const [lead] = head.filter((l) => !l.startsWith("**"));
     const h1 = head.find((l) => l.startsWith("**H1:**"))!.replace("**H1:** ", "");
     expect(norm(toPlainText(article(slug).card.title))).toBe(norm(h1));
@@ -279,9 +229,9 @@ describe.each(SLUGS)("the rewritten article %s (task 5.19)", (slug) => {
   });
 
   it("keeps the stub's related guides, in the copy page's order", () => {
-    const related = fold(copyPage(slug), /^Related guides/);
+    const related = copyFold(readCopyPage(slug), /^Related guides/);
     expect(article(slug).related).toEqual([...related.text.matchAll(/^\| [^|]+ \| `\/stories\/([a-z0-9-]+)`/gm)].map((m) => m[1]));
-    const titles = related.paragraphs.flat().filter((l) => l.startsWith("- ")).map((l) => norm(l.slice(2)));
+    const titles = copyLines(related).filter((l) => l.startsWith("- ")).map((l) => norm(l.slice(2)));
     expect(article(slug).related.map((r) => norm(toPlainText(getArticle(r)!.card.title)))).toEqual(titles);
   });
 

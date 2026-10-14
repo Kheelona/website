@@ -7,7 +7,8 @@ import { ArticleTemplate } from "@/layouts/ArticleTemplate/ArticleTemplate";
 import { toPlainText } from "@/lib/content/plain-text";
 import { parseRichText, type RichNode } from "@/lib/content/rich-text";
 import { buildOffer } from "@/lib/offer/offer";
-import { ROOT, readRepoFile } from "../../../../../test/e2e/support/repo";
+import { ROOT } from "../../../../../test/e2e/support/repo";
+import { copyFold, copyLines, glanceRow, readCopyPage } from "../../../../../test/support/copy-page";
 import { mockupFold, skeleton, words } from "../../../../../test/support/mockup-compare";
 import { DEFAULT_OG, TEAM_BYLINE } from "../../organization";
 import { article as aToyThatTalks } from "./a-toy-that-talks-vs-a-toy-that-listens";
@@ -158,9 +159,7 @@ const TALKING: readonly (readonly [string, Expected])[] = [
   ],
 ];
 
-/* ── The copy page ──────────────────────────────────────────────────────────────────────────────────────────────── */
-
-const copyPage = (slug: string) => readRepoFile(`wiki/site/pages/story-${slug}.md`);
+/* ── The copy page (test/support/copy-page.ts, the one reader; task 6.3) ───────────────────────────────────────── */
 
 const SUPERSCRIPTS = "⁰¹²³⁴⁵⁶⁷⁸⁹";
 const MARKER_RUN = /[⁰¹²³⁴⁵⁶⁷⁸⁹]+(?:\s+[⁰¹²³⁴⁵⁶⁷⁸⁹]+)*/g;
@@ -185,22 +184,9 @@ function printed(line: string): string {
     );
 }
 
-/** The words of the copy page's Copy blocks, in order: only those are published (D013). A block is the run of quoted
- *  lines after a "**Copy**" line. */
+/** The words of the copy page's Copy blocks, fold by fold, in order: only those are published (D013). */
 function copyWords(slug: string): string {
-  const out: string[] = [];
-  let inCopy = false;
-  let started = false;
-  for (const line of copyPage(slug).split("\n")) {
-    if (/^\*\*Copy(?::\*\*|\*\*)/.test(line)) {
-      inCopy = true;
-      started = false;
-    } else if (inCopy && line.startsWith(">")) {
-      started = true;
-      out.push(printed(line.replace(/^>\s?/, "")));
-    } else if (inCopy && started) inCopy = false;
-  }
-  return out.join(" ").replace(/\s+/g, " ").trim();
+  return readCopyPage(slug).folds.flatMap(copyLines).map(printed).join(" ").replace(/\s+/g, " ").trim();
 }
 
 /** Both sides read alike: typographic quotes as the copy pages type them, a marker joined to the words after it (the
@@ -215,20 +201,9 @@ const same = (s: string) =>
     .replace(/\s+/g, " ")
     .trim();
 
-/** The copy page's metadata row ("| Title (58 characters) | … |"), checked at the length the row states. */
-function copyRow(slug: string, label: "Title" | "Meta description"): string {
-  const row = copyPage(slug)
-    .split("\n")
-    .find((l) => new RegExp(`^\\|\\s*${label} \\(\\d+ characters\\)\\s*\\|`).test(l));
-  if (row === undefined) throw new Error(`story-${slug}.md has no "${label} (n characters)" row`);
-  const [cell, value] = row.split("|").slice(1, 3).map((c) => c.trim());
-  expect(value.length, `story-${slug}.md "${cell}"`).toBe(Number(/\((\d+) characters\)/.exec(cell)![1]));
-  return value;
-}
-
 /** A note of the copy page's fold 1 (the notes wrap across lines): the H1 accent and the head photo with its alt. */
 function headNotes(slug: string): { hand: string; photo: string; alt: string } {
-  const text = copyPage(slug).replace(/\n\s+/g, " ");
+  const text = copyFold(readCopyPage(slug), "Article head").text.replace(/\n\s+/g, " ");
   const hand = /\*\*H1 accent:\*\* `Hand` on "([^"]+)"/.exec(text);
   const image = /\*\*Image\*\* \(`kh-photo[^`]*`, [^)]*\): `([^`]+)`\. Alt: "([^"]+)"/.exec(text);
   if (!hand || !image) throw new Error(`story-${slug}.md: no H1 accent or no head image note in fold 1`);
@@ -333,8 +308,8 @@ describe.each(TALKING)("the talking guide %s", (slug, { article, stub, links, ic
   });
 
   it("has the copy page's title and description", () => {
-    expect(same(toPlainText(article.meta.title))).toBe(same(copyRow(slug, "Title")));
-    expect(same(toPlainText(article.meta.description))).toBe(same(copyRow(slug, "Meta description")));
+    expect(same(toPlainText(article.meta.title))).toBe(same(glanceRow(readCopyPage(slug), "Title")));
+    expect(same(toPlainText(article.meta.description))).toBe(same(glanceRow(readCopyPage(slug), "Meta description")));
     expect(article.meta.og).toEqual(DEFAULT_OG);
   });
 
@@ -359,8 +334,8 @@ describe.each(TALKING)("the talking guide %s", (slug, { article, stub, links, ic
   });
 
   it("has the copy page's byline row at the module's read time (the copy page and the build agree)", () => {
-    const row = copyPage(slug)
-      .split("\n")
+    const row = readCopyPage(slug)
+      .markdown.split("\n")
       .find((l) => /^\|\s*Byline line\s*\|/.test(l));
     expect(row?.split("|")[2]).toMatch(new RegExp(`· ${article.head.readMinutes} min read(?: \\(.*\\))?\\s*$`));
   });
