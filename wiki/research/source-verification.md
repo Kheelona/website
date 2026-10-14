@@ -544,6 +544,14 @@ the C38 "count each idea once" line without its own marker.
 US milestones, set at the age by which most children reach them. Re-open note ³ before publishing
 (no excerpt file was saved for the 18-month page).
 
+**Re-read 2026-10-14:** [source verification, 2026-10-14](source-verification-2026-10-14.md) re-checked C42 for
+the "3-year-old not talking in sentences?" guide ([talking-late-or-talking-little](../site/pages/story-talking-late-or-talking-little.md)):
+the CDC's "sentences with four or more words" item at 4 years
+([excerpt](../raw/research/sources/C42-cdc-milestones-4-years.md)) and the 30-month items against Zubler 2022
+Table 4 ([cross-check](../raw/research/sources/C42-zubler-2022-table-4-cross-check.md)), both SUPPORTED, with ready
+lines on that page. That guide is on the CDC re-read list in [section 7](#7-before-any-line-is-published)
+([CMO review 5.20b](../qa/cmo-review-article-fixes-5.20b-2026-10-14.md) question 4).
+
 ### C43 · Sleep
 **Where:** "What actually builds a sharp brain"; a bedtime FAQ.
 > Children aged 3 to 5 need 10 to 13 hours of sleep in every 24, naps included, and children aged 6
@@ -652,7 +660,9 @@ developmental psychologists"); C40 (the asha.org consumer page, now published by
 - **Re-read the sources that change:** the chatbot terms (C37), the DPDP Gazette for the
   commencement date (C20), the Harvard key concept pages (C05, C07, C44 all show recent edits), the
   Brookings commentary (C14), Common Sense Media's pages (C16) and the CDC milestone pages (C42), including
-  the "3-year-old not talking in sentences?" article (CMO review 5.18 M4).
+  the "3-year-old not talking in sentences?" article
+  ([talking-late-or-talking-little](../site/pages/story-talking-late-or-talking-little.md); CMO review 5.18 M4,
+  [CMO review 5.20b](../qa/cmo-review-article-fixes-5.20b-2026-10-14.md) question 4).
 - **Update 2026-10-14:** [source verification, 2026-10-14](source-verification-2026-10-14.md) re-read C34
   (Tisseron's 2020 3-6-13-18 markers about AI, and the "De 3 à 6 ans" daily minutes, both SUPPORTED) and C42 (the
   CDC "sentences with four or more words" item at 4 years, and the 30-month items against Zubler 2022 Table 4,
