@@ -943,3 +943,12 @@ no layout or script change on a shipped page since wave 8 (the video player load
 none has one; the perf-budget spec is green); it runs at 8b's close, after the journal switch (8b.2e). The diff to
 `origin/beta` holds no secret, phone number or raw capture; the only addresses are aman@ and connect@kheelona.com and a
 test fixture's example.org.
+
+## [2026-10-14 17:26] deploy | `beta` updated to `ac68650` (8b.1 and 8b.2 wave i); CI green; Vercel deployed. Wave ii resumed after the usage limit
+`git push origin reset/website-v2:refs/heads/beta` (fast-forward `82b9444..ac68650`); `main` untouched (`8c4718a`; the
+G25 patch not yet on it). CI `verify` on `ac68650`: success (3m19s). Vercel: "Deployment has completed". Beta no
+longer shows the claims D058 withdrew. Wave ii (`wf_437afd5d-b48`): both builders stopped at the account's usage limit
+(reset 04:00 PDT) without a report. 8b.1b had committed `b9384ed` (the `/safety` alt) and `055ff95` (the guides' advice
+questions); the main session saved each worktree's uncommitted files as unverified WIP commits (8b.2d `ce84187`:
+topics, photos, nowrap, read-minutes, ring; 8b.1b `47d4942`: D058 claim entries, claims.md rows, a fixture), deleted
+8b.2d's scratch test folder, and resumed both in their worktrees (run `wf_55e2af9d-ae9`).
