@@ -94,6 +94,13 @@ const SOURCES = {
     "https://dv-c3e594c6d429469e90b54478358619c3.ecs.us-east-1.on.aws",
     "https://bded8a3c6ae-1-1053047382554.us-central1.run.app",
   ],
+  /** Journal videos (D057 item 1, 2026-10-14; as production since 2026-10-13). A
+   *  post written in the admin dashboard may embed a YouTube or Vimeo video, and
+   *  the article shows a still until a reader presses play; only then does the
+   *  player frame load (ui/VideoEmbed). The privacy-enhanced YouTube host and
+   *  Vimeo's player host only: exact origins, frame-src only. The still needs no
+   *  img-src: next/image fetches it server-side and serves it from this origin. */
+  videoPlayers: ["https://www.youtube-nocookie.com", "https://player.vimeo.com"],
   /** PostHog (2026-09-19). TWO origins, and the split is not cosmetic: events
    *  are ingested at `us.i.posthog.com`, while the lazily-fetched bundles — the
    *  session recorder, error tracking, surveys, the toolbar — are fetched from
@@ -177,7 +184,14 @@ export function contentSecurityPolicy(dev = false): string {
        frame for cookie-matching, which production Report-Only was refusing.
        frame-ancestors above still forbids anyone framing US, which is the
        direction that matters for a checkout. */
-    directive("frame-src", "'self'", SOURCES.razorpay, SOURCES.googlePay, SOURCES.metaPixelCollect),
+    directive(
+      "frame-src",
+      "'self'",
+      SOURCES.razorpay,
+      SOURCES.googlePay,
+      SOURCES.metaPixelCollect,
+      SOURCES.videoPlayers,
+    ),
     directive(
       "connect-src",
       "'self'",
