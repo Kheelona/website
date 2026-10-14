@@ -957,3 +957,18 @@ topics, photos, nowrap, read-minutes, ring; 8b.1b `47d4942`: D058 claim entries,
 `pmset -g log`: the Mac entered sleep at 05:00 PDT and only dark-woke for seconds at 05:56, 06:30, 07:00 and 08:01;
 both resumed builders (`wf_55e2af9d-ae9`) show the same gaps and have worked again since 08:28. `caffeinate -i -s -t
 14400` now blocks idle sleep (on battery, closing the lid still sleeps the Mac).
+
+## [2026-10-14 22:34] build | Wave 8b ii merged (8b.2d `eab6e46`, 8b.1b `9908c4c`); rulings; wave iii (8b.2e, 8b.1d) handed to builders
+Run `wf_55e2af9d-ae9` (resumed after the usage limit): 8b.2d passed review in round 2 (one blocking fix: a talking
+guide could link a pasted full address to a product page or the store; now refused); 8b.1b passed in round 1. Merged
+`--no-ff`, both clean. Build green; `npm run verify` 299 files, 6015 passed, 2 skipped; Storybook built; targeted
+Playwright (`KH_SLUGS=safety,story-what-to-look-for-in-a-safe-ai-toy`, every project) 459 passed, 29 skipped, 0
+failed; `content-integrity` over every route plus `journal-figure` 61 passed. Rulings (`07ef609`): the answer card's
+detail is the nodes above a rule before the first h2 in a post with an answer (journal pipeline §4, §5.1, §13 B2);
+the round trip's listed set accepted (the-gentle-way-off-the-phone 3 → 4 min, should-kids-use-ai 5 → 4 min, three
+no-wrap spans; on the Gate B pack); files outside the written Owns accepted (8b.2d: vocabulary.ts, the journal
+stories, journal-figure.spec.ts; 8b.1b: content-integrity.spec.ts, FaqList and ModesSection stories); FeatureSplit's
+`skills` variant has no story until the weekly report ships; deviations V28 and V37 amended; artifacts rows for the
+two journal fixtures. Hand-offs: `Article.meta.og` typed (8b.2e); new task 8b.1d (three claim entries narrowed so
+parents' advice passes the journal validator, five rewordings caught, claims.md's withdrawn rows marked, the stories
+held to the mockups through their fixes). Worktrees and branches removed. Wave iii next: 8b.2e with 8b.1d.
