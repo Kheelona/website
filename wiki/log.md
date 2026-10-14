@@ -1077,3 +1077,19 @@ Workflow `wf_9d6aaf76-174` stopped mid-run, before any check reported; the keep-
 or Lighthouse left running; no tracked file changed. Partial evidence stays local in `wiki/raw/qa/beta-2026-10-15/`
 (uncommitted, D039). To resume: re-run the workflow script with `resumeFromRunId` (agents that finished return cached
 results) once the founder says go. The beta links stay public (D060).
+
+## [2026-10-15 03:43] ingest | The marketing advisor's homepage proposal (2026-10-12): review handed to a workflow (run `wf_13c2e74f-ae8`)
+The founder shared a senior marketing advisor's homepage proposal: a content document (`Kheelona_Website_Content.docx`,
+22 homepage sections, an ad first screen, a reserve page, 11 open items) and a clickable design (`Kheelona Website
+Redesign.html`, the untracked file whose origin was unknown until now). The founder asked us to review the
+recommendations against the current site and what makes parents buy, decide what to take, then plan and update the
+site, with the usual tech and non-tech reviews. Kept local and uncommitted (a third party's draft with names):
+`wiki/raw/feedback/advisor-homepage-2026-10-12/` (both files, the docx as text, the design rendered at 1440 and 390
+plus the ad screen and reserve page, and the 37 numbered recommendations AP-01..AP-37); `.gitignore` names the folder.
+Workflow: six reviews in parallel (copywriter; claims and compliance with the banned-phrase checker; search
+visibility; PostHog evidence, read-only; benchmarks; architect for feasibility), then the CMO agent decides each item
+(adopt, adapt, already, reject, founder) and writes its review page, then a buyer's advocate and a guardrails auditor
+challenge the decisions. Early read (main session): the proposal conflicts with D016 (the brain promise as the
+headline), the 3-7 band ("Ages 3+"), R5 (feelings), D058 (choose topics), D023 (ships 20 Oct), ADR-013 (cash on
+delivery, a new form) and the DS (its own palette and fonts), and carries ideas the CMO will weigh (the
+asks-back line, a hero film, stat tiles, a comparison table, sample conversations, an offer bar).

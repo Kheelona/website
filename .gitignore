@@ -71,3 +71,8 @@ pitch-deck/
 /playwright-report/
 /test/e2e/.goldens/
 /lighthouse-reports/
+
+# The marketing advisor's homepage proposal (2026-10-12): a third party's working draft with names, kept local; the
+# review and decisions are committed instead (wiki/research/advisor-homepage-proposal-review.md). After the
+# wiki/raw/**/*.docx exemption above, so this wins.
+/wiki/raw/feedback/advisor-homepage-2026-10-12/
