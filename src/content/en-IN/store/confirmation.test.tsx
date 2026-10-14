@@ -17,6 +17,8 @@ import { RETURN_DAYS } from "../policies";
 import { seller } from "../seller";
 import { addressForm } from "./address-form";
 import { confirmation } from "./confirmation";
+import { storeNotFound } from "./event-page";
+import { storePage } from "./store-page";
 
 /* The /thanks words (task 5.16; structure §5 row store-confirmation.html; wiki/site/pages/store-confirmation.md). The
  * paid state of a token order is the approved mockup (mockup/store-confirmation.html, D046): every word of its five
@@ -63,6 +65,24 @@ describe("/thanks meta", () => {
     expect(confirmation.meta.title).toBe(meta.title);
     expect(confirmation.meta.description).toBe(meta.description);
     expect(confirmation.meta.og).toBe(DEFAULT_OG);
+  });
+
+  /* CMO review C m5 (task 7.1c): the tab said "reserved" on every state, so a parent whose payment failed could read it.
+     The copy page gives a title per state (store-confirmation.md, At a glance): "reserved" only once the payment is
+     confirmed. */
+  it("names the tab per state: the paid state's title is the mockup's, every other state's the copy page's", () => {
+    const glance = readRepoFile("wiki/site/pages/store-confirmation.md");
+    const row = (label: RegExp) => {
+      const m = new RegExp(`^\\|\\s*${label.source} \\((\\d+) characters\\)[^|]*\\|\\s*(.+?)\\s*\\|\\s*$`, "m").exec(glance);
+      if (!m) throw new Error(`store-confirmation.md has no "${label.source}" row`);
+      expect(m[2].length, label.source).toBe(Number(m[1]));
+      return m[2];
+    };
+    expect(confirmation.titles.paid).toBe(row(/Title, paid state/));
+    expect(confirmation.titles.paid).toBe(confirmation.meta.title);
+    expect(confirmation.titles.other).toBe(row(/Title, every other state/));
+    expect(confirmation.titles.other).toBe("Your Kheelu pre-order · Kheelona");
+    expect(confirmation.titles.other).not.toMatch(/reserved/i);
   });
 });
 
@@ -195,6 +215,22 @@ describe("the other states, in the live page's words", () => {
   it("cannot open: the live title and body for a signed link whose order will not load", () => {
     expect(live).toContain(`title="${confirmation.cannotOpen.title}"`);
     expect(live).toContain(`body="${confirmation.cannotOpen.body}"`);
+  });
+
+  /* CMO review C m4 (task 7.1c): a parent who has paid and cannot see their order got only a small muted WhatsApp link.
+     The copy page gives a secondary WhatsApp button, then the call line (store-confirmation.md, Other states), every word
+     an approved one: the store's not-switched-on button, the D032 help line's call, this state's live tail. */
+  it("cannot open: a WhatsApp button, then the call line, each from its one source (store-confirmation.md, Other states)", () => {
+    const { cannotOpen } = confirmation;
+    expect(cannotOpen.action).toBe("Message us on WhatsApp");
+    expect(cannotOpen.action).toBe(storePage.notConfigured.action);
+    expect(toPlainText(cannotOpen.call)).toBe(`Or call ${seller.support.phone} with your order number and a person will find it.`);
+    expect(cannotOpen.call).toContain(`(${seller.support.tel})`);
+    expect(cannotOpen.call.endsWith(storeNotFound.panel.help.tail)).toBe(true);
+    const page = readRepoFile("wiki/site/pages/store-confirmation.md");
+    const rowLine = page.split("\n").find((l) => l.startsWith("| Signed link, order will not load"))!;
+    expect(rowLine).toContain(`**[${cannotOpen.action}]**`);
+    expect(rowLine).toContain(`Or [call ${seller.support.phone}] with your order number and a person will find it.`);
   });
 
   it("names the paid and confirming states with an icon each (check-circle as the mockup, a clock while confirming)", () => {
@@ -342,6 +378,57 @@ describe("/thanks, the page", () => {
     expect(bubble(container)).not.toBeNull();
   });
 
+  /* CMO review C m4 (task 7.1c; store-confirmation.md, Other states): the reader may have paid, so a secondary WhatsApp
+     button (never orange, never a button to buy again), then the call line with the number as a tel: link. The panel
+     sits outside the order's container, so it carries ph-no-capture itself, as the bubble and the payments line do:
+     /thanks keeps zero autocapture events (tracking inventory row 18). */
+  it("cannot open: a secondary WhatsApp button, then the call line with its tel: link, all inside ph-no-capture", async () => {
+    results["preorders.select"] = { data: null };
+    const { container } = await page();
+    const panel = container.querySelector("section[aria-labelledby]")!;
+    expect(panel.classList.contains("ph-no-capture")).toBe(true);
+    const button = within(panel as HTMLElement).getByRole("link", { name: confirmation.cannotOpen.action });
+    expect(button).toHaveAttribute("href", seller.support.whatsapp);
+    expect(button.className).toMatch(/\bkh-btn--secondary\b/);
+    expect(panel.querySelector(".kh-btn--cta, .kh-btn--primary")).toBeNull();
+    expect(within(panel as HTMLElement).queryByRole("link", { name: /pre-order/i })).toBeNull();
+    const line = panel.querySelector("p.ks-store-closed")!;
+    expect(line.textContent).toBe(toPlainText(confirmation.cannotOpen.call));
+    expect(within(line as HTMLElement).getByRole("link", { name: `call ${seller.support.phone}` })).toHaveAttribute("href", seller.support.tel);
+    // The old muted line is gone: the button is the WhatsApp option now.
+    expect(container.textContent).not.toContain("Message us on WhatsApp with your order number");
+    expect(container.textContent).not.toContain(REF);
+  });
+
+  /* CMO review C m5 (task 7.1c; store-confirmation.md, At a glance): the tab says "reserved" only once the payment is
+     confirmed. Next renders no title of its own on this route (its metadata title is null), so each state's <title>,
+     which React hoists into <head>, is the page's only one. */
+  const tabTitle = () => Array.from(document.head.querySelectorAll("title")).map((t) => t.textContent);
+  it.each([
+    ["paid", () => order(), confirmation.titles.paid],
+    ["confirming", () => order({ status: "created" }), confirmation.titles.other],
+    [
+      "link needed",
+      () => {
+        cookieValue = undefined;
+      },
+      confirmation.titles.other,
+    ],
+    [
+      "cannot open",
+      () => {
+        results["preorders.select"] = { data: null };
+      },
+      confirmation.titles.other,
+    ],
+  ])("%s: the tab title is the state's own, and the only one", async (_state, arrange, title) => {
+    arrange();
+    await page();
+    expect(tabTitle()).toEqual([title]);
+    cleanup();
+    expect(tabTitle()).toEqual([]);
+  });
+
   /* Task 4.8 item 2 (wiki/qa/deviations.md V1, extended to /thanks): the store footer the mockup prints the payments line
      in is the store layout's, whose policy links are a frozen contract, so /thanks closes its main with the line, as the
      store page does, in every state (the footer it stands in for shows on every state). It sits outside the order's
@@ -368,9 +455,10 @@ describe("/thanks, the page", () => {
     expect(line.closest(".ph-mask")).toBeNull();
   });
 
-  it("sets its title, description and share card through pageMeta: no robots (the store layout's noindex stands), the canonical on the store host as the store page's", async () => {
+  it("sets its description and share card through pageMeta: no robots (the store layout's noindex stands), the canonical on the store host as the store page's; the title is each state's own", async () => {
     const { metadata } = await import("@/app/store/thanks/page");
-    expect(metadata.title).toEqual({ absolute: confirmation.meta.title });
+    // null, not absent: the store layout's "Pre-order Kheelu" would otherwise print a second <title> beside the state's.
+    expect(metadata.title).toBeNull();
     expect(metadata.description).toBe(confirmation.meta.description);
     expect(metadata).not.toHaveProperty("robots");
     expect(metadata.alternates).toEqual({ canonical: `${STORE_ORIGIN}/thanks` });

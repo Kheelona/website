@@ -2,6 +2,7 @@ import type { PayBesideConfig, StoreDetailsConfig } from "@/components/sections/
 import type { PaymentsLineConfig } from "@/components/sections/store/StorePaymentsLine/store-payments-line.types";
 import type { StoreTopConfig } from "@/components/sections/store/StoreTop/store-top.types";
 import type { Meta } from "@/content/types";
+import type { TierResult } from "@/lib/store/tiers";
 import { DEFAULT_OG } from "../organization";
 import { notFoundPage } from "../pages/not-found";
 import { storePage, type StorePageContent } from "./store-page";
@@ -23,7 +24,7 @@ export interface StorePanelCopy {
   /** The h1's id, which names the panel's section. */
   readonly titleId: string;
   readonly title: string;
-  /** The line under the h1; a refused link's comes from the checkout (tiers.ts `tierRefusalMessage`) instead. */
+  /** The line under the h1; a refused link has one per reason instead (`RefusedPanelCopy`). */
   readonly body?: string;
   /** The button to the store's own page, "/", when the panel offers it. */
   readonly action: string;
@@ -31,10 +32,23 @@ export interface StorePanelCopy {
   readonly help: { readonly or: string; readonly link: string; readonly linkAlone: string; readonly tail: string };
 }
 
+/** Why the store refused a link: the checkout's own reasons (lib/store/tiers.ts, a type-only import). */
+export type TierRefusal = Extract<TierResult, { ok: false }>["reason"];
+
+/** A refused link's panel: the store panel's words, and the body for each refusal reason (store.md, "Event link
+ *  refused"; CMO review C m1, task 7.1c), printed in place of the frozen `tierRefusalMessage` text, whose default line
+ *  names the token amount with no total (D028) and says "on this page" of a button that leaves for the store. */
+export interface RefusedPanelCopy extends StorePanelCopy {
+  readonly reasons: Readonly<Record<TierRefusal, string>>;
+}
+
 /** What an event tier's checkout shows (TierCheckout): the store page's folds, its h1 under the tier's price name. */
 export interface TierCheckoutContent {
-  /** StoreTop's words without the eyebrow: that is the tier's own price name ("Bangalore expo price"), from its row. */
+  /** StoreTop's words without the eyebrow, which is composed per tier (`eyebrow`). */
   readonly top: Omit<StoreTopConfig, "eyebrow">;
+  /** The first screen's eyebrow: the tier's own price name ("Bangalore expo price", from its row), then the store's
+   *  age band, so the band stays on the first screen (CMO review C m2, task 7.1c). */
+  readonly eyebrow: (tierLabel: string) => string;
   readonly details: StoreDetailsConfig;
   readonly beside: PayBesideConfig;
   readonly questions: StorePageContent["questions"];
@@ -46,6 +60,12 @@ const sortItOut = { or: "Or", link: "message us on WhatsApp", linkAlone: "Messag
 
 const note = storePage.notConfigured.note;
 
+/** The tail every refused link's body ends on (store.md, "Event link refused"): the live "…at the usual price on this
+ *  page" with "on this page" replaced, since the button leaves for the store. */
+const usualPrice = "at the usual price in our store.";
+/** The two mode refusals share one line, with no amount and no count (D041): true in either mode. */
+const notOnOffer = `The price on this link is not on offer right now. You can still pre-order ${usualPrice}`;
+
 export const eventPage = {
   meta: {
     /* The store's title, and the first sentence of its description: no amount, since the link sets its own price. */
@@ -54,7 +74,7 @@ export const eventPage = {
     og: DEFAULT_OG,
   },
   checkout: {
-    /* The store's first screen but its eyebrow ("Ages 3 to 7"), whose place the tier's price name takes. */
+    /* The store's first screen but its eyebrow, which is composed per tier below. */
     top: {
       title: storePage.top.title,
       titleId: storePage.top.titleId,
@@ -62,17 +82,30 @@ export const eventPage = {
       priceId: storePage.top.priceId,
       trust: storePage.top.trust,
     },
+    /* The tier's price name, then the store's own band ("Ages 3 to 7"): two approved words, no new copy. */
+    eyebrow: (tierLabel: string) => `${tierLabel} · ${storePage.top.eyebrow}`,
     details: storePage.details,
     beside: storePage.beside,
     questions: storePage.questions,
     payments: storePage.payments,
   },
-  /* A link the store refuses (bad signature, unknown or ended tier, allocation gone, a stale mode): the live words. */
+  /* A link the store refuses (bad signature, unknown or ended tier, allocation gone, a stale mode): the live heading,
+     button and WhatsApp line, and one body per reason (store.md, "Event link refused"; task 7.1c). */
   refused: {
     titleId: "store-title",
     title: "That link will not work.",
     action: "Pre-order at the usual price",
     help: sortItOut,
+    reasons: {
+      expired: `This event link has expired. You can still pre-order ${usualPrice}`,
+      full: `The allocation for this event has all gone. You can still pre-order ${usualPrice}`,
+      /* A signed link with no live tier behind it (switched off, removed, or set without a real amount): its signature
+         passed, so "not one of ours" would be false. */
+      unknown: `The price on this event link is not available. You can still pre-order ${usualPrice}`,
+      "bad-signature": `This link is not one of ours. You can pre-order ${usualPrice}`,
+      "cap-reached": notOnOffer,
+      "not-yet": notOnOffer,
+    },
   },
   /* The store before its keys are in place, and on beta (D051): the store page's own state (store.md, Other states). A
      button to the store would lead to the same words, so the WhatsApp action and the note make one line. */
@@ -86,7 +119,7 @@ export const eventPage = {
 } as const satisfies {
   readonly meta: Meta;
   readonly checkout: TierCheckoutContent;
-  readonly refused: StorePanelCopy;
+  readonly refused: RefusedPanelCopy;
   readonly notConfigured: StorePanelCopy;
 };
 

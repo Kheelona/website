@@ -17,7 +17,9 @@ import { APPROVED_WIDTHS, AXE_TEMPLATE_EXTRA, AXE_VIEWPORTS, SIDEWAYS_VIEWPORTS,
  * (320 px and test plan §3).
  *
  * The state a route shows depends on the server's store keys, and both are honest: with none (locally, in CI, on
- * beta, D051) the event page says "Pre-orders open here shortly."; with keys a link without a signature is refused.
+ * beta, D051) the event page is the store page's own not-configured state, "Pre-orders open here shortly.", with no
+ * payments line (task 7.1c); with keys a link without a signature is refused, with the copy page's body for its reason
+ * and no amount (task 7.1c).
  * The signed event page sells only with a store database, so its form is
  * checked against a local, read-only stand-in of the store's REST API (one tier, no orders; it refuses every write),
  * shared with axe.spec.ts since task 6.3: run the server with the environment in test/e2e/support/store-stand-in.ts
@@ -37,6 +39,9 @@ const store = (id: string, path: string): Route => ({
 });
 
 const SHORTLY = "Pre-orders open here shortly.";
+/** The states that can sell nothing (the store without keys, and beta, D051): the store page's own not-configured state,
+ *  its WhatsApp button and note, closed by the bubble alone, with no payments line (CMO review C m3, task 7.1c). */
+const SELLS_NOTHING: ReadonlySet<string> = new Set([SHORTLY]);
 
 type Expect = {
   route: Route;
@@ -95,7 +100,8 @@ async function axe(page: Page, label: string): Promise<void> {
   expect(r.blocking, `${label}: critical or serious axe violations\n${describeFindings(r.blocking)}`).toEqual([]);
 }
 
-/** The page as a store page: one h1 from the allowed states, the payments line closing <main>, the store's bubble. */
+/** The page as a store page: one h1 from the allowed states, the payments line closing <main> (none where nothing can
+ *  be paid), the store's bubble. */
 async function storePageChecks(page: Page, h1: readonly string[], label: string): Promise<string> {
   const headings = await page.locator("main h1").allTextContents();
   expect(headings, `${label}: one h1`).toHaveLength(1);
@@ -104,7 +110,14 @@ async function storePageChecks(page: Page, h1: readonly string[], label: string)
     const kids = Array.from(document.querySelector("main")!.children);
     return { last: kids.at(-1)?.matches("a.kh-iconbtn.kh-iconbtn--l.ks-wa") ?? false, beforeLast: kids.at(-2)?.className ?? "" };
   });
-  expect(close, `${label}: the payments line, then the bubble, close <main>`).toEqual({ beforeLast: "ks-store-payments", last: true });
+  if (SELLS_NOTHING.has(headings[0])) {
+    // The store page's not-configured state: the panel, then the bubble; WhatsApp as a secondary button, no payments line.
+    expect(close, `${label}: the panel, then the bubble, close <main>`).toEqual({ beforeLast: "kh-section", last: true });
+    await expect(page.locator("main .ks-store-payments")).toHaveCount(0);
+    await expect(page.locator('main .kh-section__actions a.kh-btn--secondary[href="https://wa.me/919187546483"]')).toHaveCount(1);
+  } else {
+    expect(close, `${label}: the payments line, then the bubble, close <main>`).toEqual({ beforeLast: "ks-store-payments", last: true });
+  }
   const bubble = page.locator("main a.ks-wa");
   expect(decodeURIComponent((await bubble.getAttribute("href")) ?? "")).toBe("https://wa.me/919187546483?text=Hi Kheelona! I need help with my pre-order.");
   // Shown, unless a form's section crosses its band on a phone: then it steps aside, off the right edge and inert,
@@ -148,6 +161,10 @@ for (const { route, h1, description, ogUrl } of ROUTES) {
       expect(html).not.toMatch(/__next_error__/);
       // Every site-relative link in <main> (the panel's way back to the pre-order page) answers on the store host.
       const body = html.slice(main, html.search(/<\/main>/));
+      // Where nothing can be paid, nothing names a payment (CMO review C m3, task 7.1c).
+      if (body.includes(`>${SHORTLY}</h1>`)) expect(body, `${route.path}: a payments line where nothing can be paid`).not.toMatch(/Razorpay|ks-store-payments/);
+      // A refused link names no amount: the body for its reason sends the parent to the store's own price (task 7.1c).
+      if (body.includes(">That link will not work.</h1>")) expect(body, `${route.path}: an amount on a refused link`).not.toMatch(/₹/);
       const local = [...new Set([...body.matchAll(/href="(\/(?!\/)[^"#]*)/g)].map((m) => m[1]))];
       for (const href of local) expect((await nodeGet(href, "store")).status, `${route.path}: link ${href}`).toBe(200);
     });
@@ -186,7 +203,8 @@ test.describe("store secondary page: event-signed (the form)", () => {
       await forceMotionEnd(page);
       const label = `event-signed ${vp.name}`;
       await expect(page.locator("main form")).toHaveCount(1);
-      await expect(page.locator(".ks-store-top .kh-eyebrow")).toHaveText("Bangalore expo price");
+      // The tier's price name, then the store's age band, on the first screen (CMO review C m2, task 7.1c).
+      await expect(page.locator(".ks-store-top .kh-eyebrow")).toHaveText("Bangalore expo price · Ages 3 to 7");
       await expect(page.locator("main button[type=submit]")).toHaveText("Pay ₹99 and reserve");
       expect(await sideways(page), `${label}: the page scrolls sideways`).toBeNull();
       if (isApproved(vp)) {

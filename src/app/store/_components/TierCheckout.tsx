@@ -31,8 +31,10 @@ import { buildOffer } from "@/lib/offer/offer";
  *  amount, before delivery the balance the page derived, in total the launch price),
  *  so the first screen, the sentence beside the pay button, the agreement card and
  *  the questions all name the same ₹99 and ₹4,900. The tier's own price name
- *  ("Bangalore expo price") is the first screen's eyebrow: OrderSummary no longer
- *  prints it (store.md fold 4; the 5.15 review).
+ *  ("Bangalore expo price") opens the first screen's eyebrow, since OrderSummary
+ *  no longer prints it (store.md fold 4; the 5.15 review), with the store's age
+ *  band after it so the band stays on the first screen (CMO review C m2, task
+ *  7.1c: "Bangalore expo price · Ages 3 to 7", composed by the content).
  *
  *  No in-app note and no films: the note's "Copy link" copies the store's address,
  *  which would drop the tier and its signature, and the event page is the form and
@@ -66,7 +68,7 @@ export function TierCheckout({
         top={
           <>
             {mark}
-            <StoreTop content={{ ...content.top, eyebrow: tier.label }} offer={offer} newTabNote={newTabNote} />
+            <StoreTop content={{ ...content.top, eyebrow: content.eyebrow(tier.label) }} offer={offer} newTabNote={newTabNote} />
           </>
         }
         form={

@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { storeEnv } from "@/lib/store/env";
-import { resolveTier, tierRefusalMessage } from "@/lib/store/tiers";
+import { resolveTier } from "@/lib/store/tiers";
 import { formatInr, LAUNCH_AMOUNT_PAISE } from "@/config/site";
 import { eventPage, type StorePanelCopy } from "@/content/en-IN/store/event-page";
 import { pageMeta } from "@/lib/seo/metadata";
 import { NotFoundPanel } from "../../_components/NotFoundPanel";
+import { StoreNotConfigured } from "../../_components/StoreNotConfigured";
 import { StoreClose, TierCheckout } from "../../_components/TierCheckout";
 
 /** Event pricing, behind a signed link (§8.25-g).
@@ -25,7 +26,14 @@ import { StoreClose, TierCheckout } from "../../_components/TierCheckout";
  *  tier's own price name in the first screen's heading, and every refusal in the
  *  store's panel (NotFoundPanel), each closing as the store does. The words are
  *  src/content/en-IN/store/event-page.ts; the logic above every return is the
- *  tag's. */
+ *  tag's.
+ *
+ *  TASK 7.1c (CMO review C m1, m3): a refused link's body is the copy page's for
+ *  its reason (store.md, "Event link refused"), printed in place of the frozen
+ *  tiers.ts words, which name the token amount with no total and say "on this
+ *  page" of a button that leaves for the store; and a store without keys is the
+ *  store page's own state (StoreNotConfigured: its WhatsApp button, its note,
+ *  the bubble, no payments line). */
 export const dynamic = "force-dynamic";
 
 /** Title, description and share card through pageMeta, with no amount (the link
@@ -48,14 +56,14 @@ export default async function EventPage({
   /* Renders rather than throws, for the same reason as everywhere else on this
      host (§8.34-a): a thrown 404 answers with an empty document. This branch is
      a deployment misconfiguration rather than a visitor mistake, and a QR code
-     at a stall is exactly where a blank screen is least recoverable. It says
-     what the store page says without its keys (and on beta, D051). */
-  if (!env) return <Panel copy={eventPage.notConfigured} cta={false} />;
+     at a stall is exactly where a blank screen is least recoverable. It is
+     what the store page shows without its keys (and on beta, D051). */
+  if (!env) return <StoreNotConfigured />;
 
   const result = await resolveTier(env, { tier: event, signature: sig ?? null });
 
   if (!result.ok) {
-    return <Panel copy={eventPage.refused} message={tierRefusalMessage(result.reason)} />;
+    return <Panel copy={eventPage.refused} message={eventPage.refused.reasons[result.reason]} />;
   }
 
   const amountLabel = formatInr(result.tier.amountPaise);
@@ -70,13 +78,13 @@ export default async function EventPage({
   );
 }
 
-/** Every not-for-sale state of this page, in the store's panel, closed as every
- *  store page is: a store without keys, or a link the store refuses, with the
- *  checkout's own reason (tiers.ts) and the two ways forward. */
-function Panel({ copy, message, cta = true }: { copy: StorePanelCopy; message?: string; cta?: boolean }) {
+/** A link the store refuses, in the store's panel, closed as every store page
+ *  that sells is: the body for the checkout's reason, then the two ways forward
+ *  (the usual price, a person). */
+function Panel({ copy, message }: { copy: StorePanelCopy; message: string }) {
   return (
     <>
-      <NotFoundPanel copy={copy} body={message} cta={cta} />
+      <NotFoundPanel copy={copy} body={message} />
       <StoreClose />
     </>
   );

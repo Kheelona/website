@@ -30,7 +30,10 @@ import { storeNotFound, type StorePanelCopy } from "@/content/en-IN/store/event-
  *  `mb-5` (space-5; architecture §4.2). Since task 6.3 the store page's own
  *  not-configured state is this panel as well, with its approved words
  *  (store.md, "Store not switched on"): its WhatsApp button as `action`, its
- *  note as `note`. Server component. */
+ *  note as `note`. Since task 7.1c the note may carry a link (/thanks's call
+ *  line, CMO review C m4), and `noCapture` puts the whole panel inside
+ *  `ph-no-capture` where a page must send PostHog no autocapture (/thanks,
+ *  tracking inventory row 18). Server component. */
 export function NotFoundPanel({
   copy = storeNotFound.panel,
   title = copy.title,
@@ -39,6 +42,7 @@ export function NotFoundPanel({
   mark,
   action,
   note,
+  noCapture = false,
 }: {
   /** The state's words: the dead end's by default. */
   copy?: StorePanelCopy;
@@ -53,11 +57,14 @@ export function NotFoundPanel({
    *  button, where a button to the store would lead back to the same words). */
   action?: ReactNode;
   /** A page's own muted line in place of the WhatsApp line (the store page without keys: its note, which follows its
-   *  WhatsApp button). */
-  note?: string;
+   *  WhatsApp button; /thanks when an order will not load: its call line, with the number as a link). */
+  note?: ReactNode;
+  /** The whole panel inside `ph-no-capture` (/thanks, which sends PostHog no autocapture; the panel renders outside the
+   *  order's container there). */
+  noCapture?: boolean;
 }) {
   return (
-    <Section labelledBy={copy.titleId}>
+    <Section labelledBy={copy.titleId} className={noCapture ? "ph-no-capture" : undefined}>
       <Container>
         {mark ? <div className="mb-5">{mark}</div> : null}
         <Heading level={1} id={copy.titleId} title={title} lead={body} />
