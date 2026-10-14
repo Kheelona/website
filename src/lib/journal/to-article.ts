@@ -142,7 +142,8 @@ interface Walk {
 }
 
 /** Text nodes as the one inline syntax: a run under one link mark is `[label](href)`; the tokens the gate allowed
- *  (`[^n]`, `{price:…}`, `{delivery}`) pass through; ages get their no-wrap span. A hard break is a space here. */
+ *  (`[^n]`, `{price:…}`, `{delivery}`) pass through; ages and phone links get their no-wrap span. A hard break is a
+ *  space here. */
 function richText(walk: Walk, nodes: readonly PostInline[]): RichTextString {
   let out = "";
   for (let i = 0; i < nodes.length; ) {
@@ -164,7 +165,8 @@ function richText(walk: Walk, nodes: readonly PostInline[]): RichTextString {
       label += nowrapAges((nodes[i] as PostText).text);
       i += 1;
     }
-    out += `[${label}](${href})`;
+    /* A phone number never breaks across lines, as every page sets it (seller.ts: `{nowrap:[…](tel:…)}`, task 3.6). */
+    out += href.startsWith("tel:") ? `{nowrap:[${label}](${href})}` : `[${label}](${href})`;
   }
   return out;
 }

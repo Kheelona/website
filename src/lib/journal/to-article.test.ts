@@ -189,6 +189,27 @@ describe("the body map (journal-pipeline §5)", () => {
     for (const block of untitled.blocks) if (block.kind === "p") expect(() => parseRichText(block.text ?? "")).not.toThrow();
   });
 
+  it("keeps a phone link on one line, as every page sets it (seller.ts: `{nowrap:[…](tel:…)}`), and no other link", () => {
+    const p = post("kind-paragraphs");
+    const line = p.body.content[4] as Extract<PostBlock, { type: "paragraph" }>;
+    p.body = {
+      type: "doc",
+      content: [
+        ...p.body.content.slice(0, 4),
+        {
+          ...line,
+          content: [
+            { type: "text", text: "Or " },
+            { type: "text", text: "call +91 91875 46483", marks: [{ type: "link", attrs: { href: "tel:+919187546483" } }] },
+            { type: "text", text: "." },
+          ],
+        },
+      ],
+    };
+    expect(parts(adapt(p))[0].blocks.at(-1)).toEqual({ kind: "p", text: "Or {nowrap:[call +91 91875 46483](tel:+919187546483)}." });
+    expect(() => parseRichText("Or {nowrap:[call +91 91875 46483](tel:+919187546483)}.")).not.toThrow();
+  });
+
   it("gives a part its anchor as its id, keeps h3 inside the part, and starts an untitled part after a rule", () => {
     const article = adapt(post("kind-headings"));
     expect(parts(article)).toEqual([
