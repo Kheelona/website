@@ -844,3 +844,19 @@ exceptions only). The `/thanks` bubble at 360 px passes over the chargeback link
 sits clear of everything (no change). Worktrees and branches removed. New founder questions: G19 (the films heading's
 "in their own homes" against the 2026-10-11 answer), G20 (`/terms` section 9's age line), G21 (the confirming `/thanks`
 tab title), G22 (a refused event link's words). Next: wave 9 (7.2), the beta push and beta QA.
+
+## [2026-10-14 12:06] deploy | Wave 9 (7.2): beta push refused by GitHub (token lacks the `workflow` scope); the live `main` has moved (G23)
+Before pushing: merged `origin/beta`'s placeholder `24e92e3` (vercel.json only; ours kept, tree unchanged; `92a3b70`) so
+the push is a fast-forward; checked what the push publishes for the first time (`wiki/`, 362 files, and
+`design-system/`, 643, never on GitHub before): D010's rules hold (secret scan: only test fakes; PostHog files hold
+aggregates only, no person or session ids; no investor material; no file over 4 MB); CI (`verify.yml`) is read-only
+with no secrets, and the archive tag it needs is on GitHub; the beta build is self-contained (four legal drafts are
+listed, not refused, outside production). `git push origin reset/website-v2:refs/heads/beta` was **refused**: "refusing
+to allow an OAuth App to create or update workflow `.github/workflows/verify.yml` without `workflow` scope". Nothing
+reached GitHub; `beta` stays `24e92e3`, `main` untouched. The active gh login lacks the `workflow` scope; the founder
+refreshes it (`gh auth refresh -h github.com -s workflow`), then the main session pushes again.
+Found at the same time: `origin/main` has 11 commits since the branch point (`77552ff`), 12-13 Oct: #18 the parent app
+on `/privacy` and `/terms` (App Store and Play), #19 product claims withdrawn or reworded, #20-#22 the journal written in
+the admin dashboard and synced at build (`tools/blog/sync.mjs`, `api.kheelona.com`, a deploy hook; CSP and image-host
+changes in `security-headers.ts` and `next.config.ts`), and two CLAUDE.md edits describing it. Merging the rebuild at
+Gate B as it stands would undo them: open question G23. A read-only agent is mapping each change against the rebuild.
