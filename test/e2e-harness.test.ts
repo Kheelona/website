@@ -87,7 +87,7 @@ describe("hideDeviations", () => {
     for (const [line] of log.mock.calls) expect(String(line)).toMatch(/^\[visual-parity\] store-confirmation: /);
   });
 
-  /* Since task 7.1a every page shares one rule (TAP_AREA_HIDDEN, the tap-area row: a help line under a trust line sits
+  /* Since task 7.1a every page shares one rule (TAP_AREA_HIDDEN, the tap-area row V23: a help line under a trust line sits
      lower in the build), applied before the page's own, so no page is without one. */
   it("applies the rules every page shares to a page with none of its own on that side, and prints exactly those", async () => {
     const log = vi.spyOn(console, "log").mockImplementation(() => {});

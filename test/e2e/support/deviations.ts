@@ -148,7 +148,15 @@ const AGE_THREE = {
   safety: { mockup: "If your child is 3, we advise play with a grown-up nearby.", build: AGE_THREE_LINE },
   safetyDetail: { mockup: "At 3: we advise play with a grown-up nearby.", build: "At 3: keep a grown-up nearby." },
   setup: { mockup: "If your child is 3, keep a grown-up nearby while they talk.", build: AGE_THREE_LINE },
+  /* The product page's FAQ 3 and the buyer's guide's age answer, which review A M8 names too (main session at the wave 8
+     merge, copy review 7.1b minor 2): the same sentence, 59 and 58 words. */
+  product: { mockup: "At 3, play with a grown-up nearby.", build: AGE_THREE_LINE },
+  guide: { mockup: "At 3, we advise play with a grown-up nearby.", build: AGE_THREE_LINE },
 } as const;
+/** The two FAQ answers' approved words around the age-3 sentence (products/kheelu FAQ 3; the guide's "What age"). */
+const PRODUCT_AGE_ANSWER = `Kheelu is made for children aged 3 to 7, and it is not a toy for children under 3. ${AGE_THREE.product.mockup} When you set it up, you enter your child’s age in the parent app, and every reply passes an age-graded safety layer set to that age. You can change it later.`;
+const GUIDE_AGE_ANSWER = (age: string, safety: string) =>
+  `Kheelu is made for children aged 3 to 7, and it is not a toy for children under 3. ${age} You enter your child’s age in the parent app, and every reply passes an age-graded safety layer set to that age. What child-safety groups advise is on our ${safety}.`;
 /** The refund after a return "reaches you within 7 working days", as /refund says it (D056 item 4; D055 item 5: bank
  *  time included). */
 const REFUND_REACHES = { from: "your refund is processed within 7 working days", to: "your refund reaches you within 7 working days" } as const;
@@ -203,12 +211,14 @@ export const COPY_FIXES = {
         now: `${HARVARD.replace("Sources", "<strong>Sources</strong>")}. <a href="${HARVARD_URL}">${HARVARD_LABEL}</a>`,
         inner: true,
       },
+      swap(".kh-faq__a > p", PRODUCT_AGE_ANSWER, AGE_THREE.product.mockup, AGE_THREE.product.build),
     ],
-    mockup: [FILMS_TITLE.mockup, `${HARVARD}${HARVARD_LOCATOR}. ${HARVARD_LABEL}`],
-    build: [FILMS_TITLE.build, `${HARVARD}. ${HARVARD_LABEL}`],
-    /* The short sources line is one or two lines shorter at every width and moves the folds below it. */
+    mockup: [FILMS_TITLE.mockup, AGE_THREE.product.mockup, `${HARVARD}${HARVARD_LOCATOR}. ${HARVARD_LABEL}`],
+    build: [FILMS_TITLE.build, AGE_THREE.product.build, `${HARVARD}. ${HARVARD_LABEL}`],
+    /* The short sources line is one or two lines shorter at every width and moves the folds below it; FAQ 3 sits in a
+       closed item. */
     hidden: { both: ["#src-1"], mockup: [], build: [] },
-    reason: "the films heading claims no count of families (D056 item 2), and the sources line is Home's short form (CMO A M6)",
+    reason: "the films heading claims no count of families (D056 item 2), the sources line is Home's short form (CMO A M6), and FAQ 3 gives the age-3 advice in one wording (A M8)",
     approvedBy: "deviations.md V17 (founder, D056 item 2, 2026-10-14; CMO built-page review A M6; copy review 7.1b; task 7.1b)",
   },
   safety: {
@@ -251,6 +261,22 @@ export const COPY_FIXES = {
     hidden: NO_HIDES,
     reason: "section 8's refund timing as /refund words it (D056 item 4; D055 item 5)",
     approvedBy: "deviations.md V21 (founder, D056 item 4, 2026-10-14; task 7.1b)",
+  },
+  "ai-toys-for-kids-in-india": {
+    edits: [
+      {
+        at: ".kh-faq__a > p",
+        was: GUIDE_AGE_ANSWER(AGE_THREE.guide.mockup, "safety page"),
+        now: GUIDE_AGE_ANSWER(AGE_THREE.guide.build, '<a href="safety.html">safety page</a>'),
+        inner: true,
+      },
+    ],
+    mockup: [AGE_THREE.guide.mockup],
+    build: [AGE_THREE.guide.build],
+    /* The answer sits in a closed item. */
+    hidden: NO_HIDES,
+    reason: "the FAQ's age-3 advice in one wording (CMO A M8)",
+    approvedBy: "deviations.md V22 (CMO built-page review A M8, 2026-10-14; copy review 7.1b, minor 2; wave 8 merge)",
   },
 } as const satisfies Readonly<Record<string, PageFacts>>;
 export type CopyFixesSlug = keyof typeof COPY_FIXES;
@@ -315,7 +341,7 @@ const bothSides = (mockup: string, build: string, reason: string): VisualHide[] 
 /* The in-app browser note ships switched on (D056 item 3, task 7.1c; deviation V4, "built but off", retired). It shows
    only inside the Instagram, Facebook or WhatsApp browser, and the parity browser is plain Chromium, so the build there
    shows no fold 2, as a parent in Chrome or Safari sees it; the mockup prints it as an example (store.md fold 2). */
-const IN_APP_ONLY = "D056 item 3 (founder, 2026-10-14; task 7.1c): the note ships, shown only in the in-app browsers";
+const IN_APP_ONLY = "deviations.md V25, D056 item 3 (founder, 2026-10-14; task 7.1c): the note ships, shown only in the in-app browsers";
 const IN_APP_REASON =
   "the in-app browser note (fold 2) shows only inside the Instagram, Facebook or WhatsApp browser, and the parity browser is plain Chromium, so the build shows no fold 2";
 
@@ -433,7 +459,7 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
    words are compared by the text pass; their markup by HelpLine's and the sections' unit tests; the taps by
    test/e2e/tap-areas.spec.ts. One shared rule for every page (the main session's ruling for 7.1a), applied before each
    page's own (visualHidden), never a row per page key. */
-const TAP_AREAS = "deviations.md, the tap-area row (main session; task 7.1a, CMO built-page review A B1, 2026-10-14)";
+const TAP_AREAS = "deviations.md V23 (main session; task 7.1a, CMO built-page review A B1, 2026-10-14)";
 export const TAP_AREA_HIDDEN: readonly VisualHide[] = [
   {
     side: "mockup",
@@ -551,6 +577,9 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
   ],
   /* The open FAQ answer and the closed one's "At 3:" line (V19, task 7.1b): COPY_FIXES above. */
   safety: [factsRule(COPY_FIXES.safety)],
+  /* The age answer's "At 3" sentence (V22, wave 8 merge): COPY_FIXES above. It sits in a closed item, which the text
+     pass does not read; the route's unit test holds it. */
+  "ai-toys-for-kids-in-india": [factsRule(COPY_FIXES["ai-toys-for-kids-in-india"])],
   team: [
     {
       /* CMO fix M-T1 (task 5.7): the hero lead says what Kheelu is, for whom, and the search term (team.ts). */

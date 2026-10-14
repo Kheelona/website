@@ -8,11 +8,14 @@
   color: var(--text-muted);
   text-underline-offset: var(--space-1);
 }
-/* A 44 px tap area without moving the line. */
+/* A tap area a little taller than the line, without moving it. mockup.css:36 reached 12 px above and below and 8 px
+   each side (44 px); where two markers sit side by side or on consecutive lines of an article, one took the other's
+   taps (task 7.1a's tap-area check; the main session's ruling at the wave 8 merge, as CMO built-page review A suggested
+   for inline links). A marker is a link in running text, WCAG 2.5.8's inline exception. */
 .ks-src::before {
   content: "";
   position: absolute;
-  inset: calc(var(--space-3) * -1) calc(var(--space-2) * -1);
+  inset: calc(var(--space-1) * -1) 0;
 }
 .ks-src--article {
   white-space: nowrap;

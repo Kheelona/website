@@ -1,7 +1,7 @@
 ---
 title: "Buyer's guide (/ai-toys-for-kids-in-india): page copy, Gate A mockup draft"
 type: page-copy
-updated: 2026-10-11
+updated: 2026-10-14
 cites_at: archive/pre-reset-2026-10-10
 sources:
   - ../strategy.md (§3.2-3.5 CTA rules, §4 URL plan, §5 the guide row, §7 search rules)
@@ -254,7 +254,7 @@ Word count: 54 (answer-first).
 > They do different things. A tablet gives your child something to watch, and both the WHO and the AAP put a ceiling on it: no more than an hour a day from age two until five.¹² Kheelu has no screen at all: it answers your child, then asks a question back, so your child talks instead of watching.
 >
 > **What age is an AI toy for?**
-> Kheelu is made for children aged 3 to 7, and it is not a toy for children under 3. At 3, we advise play with a grown-up nearby. You enter your child's age in the parent app, and every reply passes an age-graded safety layer set to that age. What child-safety groups advise is on our [safety page](../../../mockup/safety.html).
+> Kheelu is made for children aged 3 to 7, and it is not a toy for children under 3. If your child is 3, keep a grown-up nearby. You enter your child's age in the parent app, and every reply passes an age-graded safety layer set to that age. What child-safety groups advise is on our [safety page](../../../mockup/safety.html).
 >
 > **Does Kheelu need Wi-Fi?**
 > Only for open conversation in AI mode, which uses your home Wi-Fi. Story mode's stories, poems and jingles need no Wi-Fi, and Bluetooth mode needs only a paired phone. So Kheelu still plays on a train or at a grandparent's home with no Wi-Fi.
@@ -303,7 +303,7 @@ Word counts: 52 · 58 · 58 · 44 · 58.
 | Answers your child, then asks a question back; so they do the thinking | [D017](../../decisions/D017-live-behaviour-claims-confirmed.md); [claims §1](../../product/claims.md#1-confirmed-by-the-founder) line 70; [strategy](../strategy.md#in-one-screen) lines 31-32 |
 | WHO and AAP: no more than an hour a day from two until five | [source verification](../../research/source-verification.md) C31, lines 381-394 (verified FAQ form, verbatim, with markers; "Where: the AI-toys guide FAQ") |
 | Made for 3 to 7; not for under 3 | [facts, age](../../product/facts.md#age) line 83; [keyword map §7.1](../../research/keyword-map.md#7-geo-plan) |
-| At 3, a grown-up nearby | [D041](../../decisions/D041-gate-a-round-1.md) line 33 |
+| If your child is 3, a grown-up nearby (wording since the wave 8 merge, below) | [D041](../../decisions/D041-gate-a-round-1.md) line 33 |
 | Parent enters the age in the app; every reply passes an age-graded safety layer set to it | [D036](../../decisions/D036-launch-feature-claims.md) lines 22, 25-26; [claims §2](../../product/claims.md#2-published-product-behaviour-claims-live-not-re-confirmed) line 115 |
 | AI mode on home Wi-Fi; Story mode (stories, poems and jingles) needs no Wi-Fi; Bluetooth needs a paired phone | [facts, modes and connectivity](../../product/facts.md#modes-and-connectivity) lines 98-100; [D027](../../decisions/D027-story-mode-wording.md); [keyword map §6.2](../../research/keyword-map.md#62-product-page-productskheelu-or-faq-if-g8-makes-it-a-page) B5, line 512 |
 | Price, first 500 units, advance, balance, full price, delivery included, payment methods, GST invoice | [pricing](../../product/pricing.md) lines 68-72; [D028](../../decisions/D028-price-wording.md); [D024](../../decisions/D024-payment-methods-gst.md); approved Home answer, [home.md](home.md) lines 601-602; full mode lines 619-620 |
@@ -420,3 +420,18 @@ None. Every claim on the page has a source above.
   unsourced market count) is gone; the `SpecTable` (with "Internet access: None" and the wake-word row) and the
   `CompareTable` are not carried over; the honest-limits block is founder question 2; the "Ask the hard ones"
   Kheelu speech bubble (`GATED:kheelu-line`, never signed) is not carried over.
+
+---
+
+## Changes after approval (task 7.1b)
+
+Applied by the main session at the wave 8 merge (2026-10-14) from the CMO's built-page review
+([review A](../../qa/cmo-review-built-a-2026-10-14.md) M8) and the CMO's copy review of task 7.1b
+([minor 2](../../qa/cmo-review-copy-fixes-7.1b-2026-10-14.md)). Every other line stands word for word as approved at
+Gate A (D046).
+
+- **Fold 5, "What age is an AI toy for?" (review A M8).** "At 3, we advise play with a grown-up nearby." becomes "If your
+  child is 3, keep a grown-up nearby.", the site's one wording for the age-3 advice (Home, the product page, `/safety`
+  and `/setup` say it the same way), without the "we advise play" M8 rules out. Same word count: the answer stays at 58
+  words. Built in `src/content/en-IN/faqs.ts` (`ai-toy-age`); parity deviation V22 (`COPY_FIXES` in
+  `test/e2e/support/deviations.ts`). The founder signs it off at Gate B (D015).

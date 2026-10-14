@@ -18,7 +18,7 @@ import { paymentsLine } from "./payments-line";
  * The in-app note's rules: V4 ("built but off") retired in task 7.1c, when the note shipped (D056 item 3). The note
  * still shows only inside the Instagram, Facebook or WhatsApp browser, and the parity browser is plain Chromium, so the
  * build there shows no fold 2, as a parent in Chrome or Safari sees it: the same rules, now under D056. */
-const IN_APP_ONLY = /D056 item 3/;
+const IN_APP_ONLY = /V25, D056 item 3/;
 
 const textOf = (el: Element) => sentences(htmlToText(el.outerHTML));
 const mockupDoc = (slug: string) => new DOMParser().parseFromString(readRepoFile(`mockup/${slug}.html`), "text/html");

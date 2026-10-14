@@ -175,6 +175,20 @@ describe("Tabs: with JavaScript (the island has run)", () => {
       }
       expect(scrollBy).not.toHaveBeenCalled();
     });
+
+    it("leaves the scroll alone when the fragment names a tab or a panel inside the box, which moves with the box itself", () => {
+      const scrollBy = vi.spyOn(window, "scrollBy").mockImplementation(() => {});
+      vi.spyOn(Element.prototype, "getBoundingClientRect").mockImplementation(function (this: Element) {
+        const panelsHidden = document.querySelectorAll(".kh-tabs__panel[hidden]").length > 0;
+        const top = this.closest("[data-tabs]") && panelsHidden ? -300 : 0;
+        return { top, bottom: top + 10, left: 0, right: 10, width: 10, height: 10, x: 0, y: top, toJSON: () => ({}) } as DOMRect;
+      });
+      for (const id of [PANELS[2].id, PANELS[1].tabId]) {
+        window.history.replaceState(null, "", `/#${id}`);
+        page().unmount();
+      }
+      expect(scrollBy).not.toHaveBeenCalled();
+    });
   });
 
   it("keeps two tab sets on one page apart: each island enhances and steers its own", async () => {

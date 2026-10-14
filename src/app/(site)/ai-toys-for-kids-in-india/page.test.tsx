@@ -9,9 +9,11 @@ import { PageTemplate } from "@/layouts/PageTemplate/PageTemplate";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
+import { COPY_FIXES } from "../../../../test/e2e/support/deviations";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { words } from "../../../../test/support/mockup-compare";
+import { withFacts } from "../../../../test/support/mockup-facts";
 
 /* The /ai-toys-for-kids-in-india route (task 5.4; structure §3.1, §5): the buyer's guide module through PageTemplate with
  * the live offer, thin, and as a whole page equal to the approved mockup's <main> (mockup/ai-toys-for-kids-in-india.html,
@@ -45,7 +47,9 @@ const SOURCE = readFileSync(`src/app/(site)${PATH}/page.tsx`, "utf8");
 const code = SOURCE.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
 
 const mockupDoc = new DOMParser().parseFromString(readRepoFile("mockup/ai-toys-for-kids-in-india.html"), "text/html");
-const mockupMain = mockupDoc.querySelector("main")!;
+/* The approved main with its copy fix applied: the age answer's "At 3" sentence in the site's one wording (CMO review A
+ * M8; deviations.ts COPY_FIXES, V22). */
+const mockupMain = withFacts(mockupDoc.querySelector("main")!, COPY_FIXES["ai-toys-for-kids-in-india"].edits);
 
 /** The page as the site shell holds it: the route's output inside <main>. */
 async function renderPage(offer: Offer) {

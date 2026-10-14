@@ -108,11 +108,20 @@ export function decodeBody(buf: Buffer | null | undefined): string {
   const text = buf.toString("utf8");
   const form = /(?:^|&)data=([^&]+)/.exec(text);
   if (!form) return text;
+  // PostHog's form body: `data` is base64 (gzipped or not). Any other form's `data` keeps its own text (task 7.1e review).
   const raw = Buffer.from(decodeURIComponent(form[1]), "base64");
   try {
     return gunzipSync(raw).toString("utf8");
   } catch {
-    return raw.toString("utf8");
+    // not gzipped
+  }
+  const decoded = raw.toString("utf8");
+  if (/(?:^|&)compression=base64(?:&|$)/.test(text)) return decoded;
+  try {
+    JSON.parse(decoded);
+    return decoded;
+  } catch {
+    return text;
   }
 }
 

@@ -286,8 +286,9 @@ Each becomes a component once (kickoff §3, decision 1):
   bar, the price, a form field or the pay button.
 - **Steps aside from a form (task 4.7, wave 5 part C):** the bottom padding protects only the end of a page, so on
   the store the link is the bubble's one client part, `StepAsideLink` (`WhatsAppFloat.client.tsx`), chosen by
-  `STEP_ASIDE_FROM` (context `store` → section `details`). Below 900 px, while a field in `#details` has focus or
-  `#details` crosses the bubble's band (one `IntersectionObserver`, re-measured on resize), it adds `.is-hidden` and
+  `STEP_ASIDE_FROM` (context `store` → `#details, .ks-agree, .ks-faq` since task 7.1a: the agreement card and the
+  questions print amounts too; CMO built-page review C B1). Below 900 px, while a field in `#details` has focus or
+  one of those blocks crosses the bubble's band (one `IntersectionObserver`, re-measured on resize), it adds `.is-hidden` and
   `inert`: the bubble slides off the right edge with a fade (no transition under reduced motion) and is never
   focusable while aside. Everywhere else the server renders the plain link, byte for byte as before. Open (task 4.9):
   the paid `/thanks` address step, and the price sentences on Home and the product page at 324 px and mid-page,
@@ -348,7 +349,7 @@ Decision: [ADR-004](adr/ADR-004-content-model.md). Folder detail: [structure §3
 | `pages/<slug>.ts` | One per marketing page: meta (title, description per mode, OG image and alt), sections | `site/pages/<slug>.md` |
 | `stories/topics.ts`, `stories/hub.ts`, `stories/articles/<slug>.ts` | Topic groups and the hub as **slug lists only**; one module per article with its blocks, sources, `related` slugs (three, so every article keeps three incoming links), `card` (title and summary the hub shows), and stored `published` and `updated` dates (written from git history when the article changes, never computed at build: Vercel's clone may be shallow) | stories copy |
 | `legal/<slug>.ts` | Privacy, terms, refund, shipping: summary, contents, parts, sections; `status: draft \| approved`; `approvedOn` | legal copy; founder approval (D029) |
-| `store/*.ts` | Store page, confirmation, event and partner pages, in-app note (with `enabled`, false until QA's in-app check, N7) | store copy |
+| `store/*.ts` | Store page, confirmation, event and partner pages, in-app note (with `enabled`: on since task 7.1c, D056 item 3) | store copy |
 | `routes.ts` | The URL plan: every indexable route, its content module, sitemap priority, nav and footer membership | [url map](../site/url-map.md), strategy §4 |
 
 Shapes live in `src/content/types.ts`; each module ends with `satisfies <Type>`.
@@ -690,11 +691,11 @@ moves for more than five seconds; nothing flashes; no scroll-jacking.
 | `.ks-btn__arrow` | `Button` (`arrow`) | the arrow that nudges |
 | `.ks-faq__clip`, `.kh-faq__item::details-content`, `.kh-faq__sign` | `FaqList` | the FAQ open animation |
 | `.ks-film`, `.ks-film__frame`, `.is-focus` | `FilmsStrip` | the film in focus |
-| `.kh-buybar.is-hidden`, `html[data-buybar="shown" \| "aside" \| "hidden"]`, `--ks-buybar-h` | `StickyBuyBar` | bar state and height, read by the bubble |
+| `.kh-buybar.is-hidden`, `html[data-buybar="shown" \| "aside" \| "hidden"]`, `--ks-buybar-h` | `StickyBuyBar` | bar state and height, read by the bubble; under reduced motion `shown` stays until the bar's fade ends, so the bubble never drops onto the fading bar (7.1a, CMO built-page review B m5) |
 | `dialog.kh-drawer[open]` | `NavDrawer` | drawer panel and scrim |
 | `.ks-wa`, `.ks-wa__label`, `body.ks-has-float` | `WhatsAppFloat`, shells | bubble, label and clearance |
 | `.ks-wa.is-hidden` (with `inert`) | `WhatsAppFloat`'s `StepAsideLink` (4.7) | the bubble stepped aside from a form on a phone (§5.3) |
-| `html[data-scroll-behavior="smooth"]` | root layout `src/app/layout.tsx` (3.1) | smooth in-page anchor scrolling as in the mockup; Next 16 resets it to `auto` during route changes only when this attribute is present; off under reduced motion |
+| `html[data-scroll-behavior="smooth"]` | `MotionController` (`smoothScrollOnceLoaded`), a frame after the load event, so a #fragment landing jumps (7.1a; the root layout set it until then, 3.1) | smooth in-page anchor scrolling as in the mockup; Next 16 resets it to `auto` during route changes only when this attribute is present; off under reduced motion |
 
 **Authoring rule (wave-2 close, 2026-10-12):** under `html.js-motion` a `[data-reveal]` without `.is-in` stays at
 opacity 0, so put `data-reveal` and `data-draw` only on server-rendered elements with a static `className`
@@ -816,7 +817,7 @@ violation before it is trusted, exits non-zero on failure, and prints accepted e
 | JSON-LD equals visible text | `test/guards/jsonld-matches-page.test.ts` | `verify` |
 | Duplicate code and assets | `jscpd` on `src/` (threshold 1 percent, tests excluded), `test/guards/asset-dupes.test.ts` | `verify` |
 | Lighthouse | `scripts/qa/lighthouse.mjs` (median of 3, mobile, thresholds §12, LP-tags profile) | QA |
-| Tracking probes | `test/e2e/tracking-probe.spec.ts` (real origins served from the local build through Playwright routing, every measurement request recorded and answered locally, plus a control) | QA |
+| Tracking probes | `test/e2e/tracking-probe.spec.ts` (real origins served from the local build through Playwright routing, plus a DNS map of every host to a local TLS proxy with a pinned key, so whatever skips routing (a redirect-followed request, a page-close beacon, Chromium's own background calls) is answered locally too; every measurement request recorded, none delivered; full Chromium with `navigator.webdriver` false so PostHog runs; controls that would leak without the proxy; task 7.1e, QA-001 and QA-002) | QA |
 | Payment sandbox | `npm run qa:payment` (exists) | QA, store tasks |
 
 `npm run verify` = lint, typecheck, Vitest, the guards, `jscpd`, DS checksums. `npm run verify:e2e` =
@@ -1042,8 +1043,9 @@ order container; store noindex; inputs at 16 px or more; no `<video>` before pla
   delivery line. The choice lives in `src/lib/offer/delivery-line.ts` (moved from `sections/store/OrderRows/` by task
   6.4 so `lib/email` imports no section), outside the frozen page; the `/thanks` card and the receipt email both call
   it (the receipt through a reviewed diff), and `test/email-delivery-line.test.ts` holds the two to the same row.
-- **In-app browser note (B12, N7):** built (2.5, 5.15) but `enabled: false` until QA's real-device check
-  (test plan §6.4) confirms the payment problem in WhatsApp or Instagram; then the main session enables it.
+- **In-app browser note (B12, N7):** built (2.5, 5.15); **on since task 7.1c** (the founder's answer
+  [D056](../decisions/D056-founder-answers-built-page-reviews-2026-10-14.md) item 3, on the PostHog audit's evidence,
+  without the real-device check beta cannot run): shown only inside the Instagram, Facebook or WhatsApp browser.
   "Copy link" copies the store URL; the campaign cannot follow (attribution cookies do not cross from the
   in-app browser to Chrome), recorded in the founder question.
 

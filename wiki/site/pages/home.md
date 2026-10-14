@@ -497,7 +497,7 @@ Variant (b) leaves Home and is kept for the product-page outline. The CTA and li
 > You can do it anywhere, too: answer your child, then ask one back.
 >
 > **Sources**
-> ¹ Center on the Developing Child at Harvard University, "Serve and Return" (Key Concepts), undated (page metadata 2024, updated 2026), Key Takeaways and the paragraph after Fast Facts. https://developingchild.harvard.edu/key-concept/serve-and-return/
+> ¹ Center on the Developing Child at Harvard University, "Serve and Return" (Key Concepts). https://developingchild.harvard.edu/key-concept/serve-and-return/
 >
 > [Read more: how children learn by talking] → `/stories/how-children-learn-by-talking`
 
@@ -1107,3 +1107,8 @@ answers, so they change with them.
 - **Notes updated to match:** fold 8 word counts, the age-answer and refund notes under fold 8, and the Ages and
   Returns rows of its sources. Title, meta, H1, H2s, CTAs and keyword placements are unchanged (FAQ answers still
   51 to 58 words, inside the 40 to 60 rule).
+- **Wave 8 merge (main session, 2026-10-14).** The CMO's copy review of task 7.1b (minor 2) carried the same sentence
+  to the product page's FAQ 3 and the buyer's guide's age answer, so every FAQ answer M8 names now says it one way. Its
+  minor 5: fold 7's sources line on this page now prints the short form that `mockup/home.html:187` and
+  `src/content/en-IN/pages/home.ts:157` already show (the dropped locator was a research note, kept in
+  [source verification](../../research/source-verification.md)); no page text changes.

@@ -47,7 +47,7 @@ does not trust them until it has seen each one fail on a planted violation, and 
 | Code | What | Build | Hosts | Tags | Used for |
 |---|---|---|---|---|---|
 | L | Local production build | `npm run build` (SITE_ENV `development`), `next start -p 3456` | `http://localhost:3456`, `http://store.localhost:3456` | none (hosts in no list) | Guards, visual and text parity, axe, sideways scroll, bytes, keyboard, redirects (Host header) |
-| LP | Local tracking probe | same build | the real origins `https://kheelona.com`, `https://store.kheelona.com` served from the local build by Playwright request routing (§5.1) | gates open (real hostnames); every event-bearing request recorded and answered locally | Tracking parity rows 4-12, 14-18, CTA values, Lighthouse "tags loaded" profile |
+| LP | Local tracking probe | same build | the real origins `https://kheelona.com`, `https://store.kheelona.com` served from the local build by Playwright request routing, every other host mapped by DNS to a local TLS proxy (§5.1; task 7.1e) | gates open (real hostnames); every event-bearing request recorded and answered locally | Tracking parity rows 4-12, 14-18, CTA values, Lighthouse "tags loaded" profile |
 | B | Beta | Vercel Preview from the `beta` branch (SITE_ENV `beta`) | `https://betawebsite.kheelona.com`, `https://betastore.kheelona.com` behind Vercel Authentication | PostHog only, `env=beta`; GA4, Meta Pixel, CAPI and Ahrefs absent | Real-host behaviour, noindex, store routing, test-mode payment, PostHog evidence, TTFB, founder review |
 | P | Production | `main` after Gate B | `https://kheelona.com`, `www`, `https://store.kheelona.com` | all five tools | Phase 8 smoke, Lighthouse after, real beacons, first-real-order dedup |
 
@@ -255,7 +255,12 @@ proven red once.
   (lessons §2).
 - Tap targets: for every link and button, sample points on the edge of a 44 × 44 box centred on it;
   `document.elementFromPoint` must return the element or a descendant (this counts the ported `::before`
-  tap extensions). A DS component that fails is logged as a DS gap, not patched.
+  tap extensions). A DS component that fails is logged as a DS gap, not patched. Since task 7.1a
+  `test/e2e/tap-areas.spec.ts` checks the other way too: every first-screen link, every trust and help link and
+  (since the wave 8 merge) every source marker must answer for its own words at 9 points per line of text, so no
+  invisible tap extension takes a tap meant for a neighbour (CMO built-page review A B1; deviation V23).
+  `test/e2e/anchors.spec.ts` (7.1a) lands on every #fragment the site links to (trust deep links, `#grievance`,
+  `#faq`) without a glide, and Home's "See all questions" lands at the questions after a client navigation.
 - Nothing depends on hover: every hover rule in the compiled CSS reviewed; no content or control appears
   only on hover; the D049 arrow nudge sits under `@media (hover: hover)`.
 - Forms: computed input font-size ≥ 16 px; types, `inputMode` and `autocomplete` exactly as §9.
@@ -331,7 +336,7 @@ this section says how QA captures each row's evidence.
 |---|---|---|
 | GA4 | `window.dataLayer` contents (the `config G-7LMKSFEXZ9` entry and each `event`), plus every `*google-analytics.com/g/collect*` request recorded by Playwright routing and answered 204 locally (the body holds batched events) | the same probe against a build of the tag `archive/pre-reset-2026-10-10` shows the same entries |
 | Meta Pixel | `fbq.getState().pixels[0].eventCount` (1 on an ordinary page, 2 with ViewContent) and a hook on `HTMLImageElement.prototype.src` installed by `addInitScript` (the pixel beacons through an `<img>`; fetch, XHR and `sendBeacon` hooks see nothing, lessons §5); Playwright routing of `www.facebook.com/tr*` answered 204 as a second instrument | the tag build shows `ev=PageView` and, on the product page, `ev=ViewContent` |
-| PostHog | Playwright routing of `/ingest/**`: event-bearing paths (`/ingest/e/`, `/ingest/i/…`, `/ingest/s/` replay, batch endpoints, exact paths recorded as observed) answered 204 and their bodies decompressed (gzip or base64) and saved; config paths allowed | the tag build shows `$pageview` and `$autocapture` with `cta` |
+| PostHog | Playwright routing of `/ingest/**`: event-bearing paths (`/ingest/e/`, `/ingest/i/…`, `/ingest/s/` replay, batch endpoints, exact paths recorded as observed) answered 204 and their bodies decompressed (gzip or base64) and saved; feature flags answered locally; only config and SDK downloads (GET, no cookies) reach the local build's rewrite (task 7.1e) | the tag build shows `$pageview` and `$autocapture` with `cta` |
 | Ahrefs, Vercel WA | Ahrefs: SSR `<head>` contains the script with `data-key` and `async` (curl); its event request recorded and answered 204. Vercel: the script requested from the obfuscated same-origin path and `window.va` or `window.vai` present (lessons §1) | tag build |
 | Server events | Unit tests (`meta-capi.test.ts`, `posthog-server.test.ts`) for payload shape; beta: HogQL for `purchase_confirmed` with `env = 'beta'`; production: Vercel log lines `[meta-capi] SENT purchase_<ref>` (founder, dashboard) and Events Manager "Multiple" on the first real order | |
 | Edge cookies | `curl -D -` of tagged landings (Set-Cookie for `kh_utm`, `kh_fbclid`: `Domain=.kheelona.com; Secure; HttpOnly; SameSite=lax`); a second tagged landing must not overwrite | tag behaviour recorded in the inventory, 2026-10-11 |
@@ -340,11 +345,18 @@ this section says how QA captures each row's evidence.
 would be refused over plain HTTP). Instead Playwright routes every request for `https://kheelona.com/*`
 and `https://store.kheelona.com/*` to the local server, passing the original hostname as the `Host`
 header, and fulfils the response, so the page runs on the real HTTPS origin, the host gates open,
-cookies behave as on production, and nothing leaves the machine except script and config downloads.
+cookies behave as on production, and nothing leaves the machine except script and config downloads, which
+Node fetches (GET only). Since task 7.1e (QA-001, QA-002) a second line catches whatever skips routing (a
+redirect-followed request, a page-close beacon, Chromium's own background calls to Google): the browser's DNS maps
+every host to a local TLS proxy (`--host-resolver-rules`, the proxy's throwaway key pinned with
+`--ignore-certificate-errors-spki-list`), which records and answers it locally; the probe runs full Chromium with
+`navigator.webdriver` false so PostHog loads. Two controls that would leak without the proxy (a redirect-followed
+request and a page-close beacon) run in every `verify:e2e`. Only a URL written as a bare IP address could pass the
+DNS map; neither the tags nor the site use one.
 Before relying on it, QA proves the method with two controls: a request whose response shows the store
 host was routed to `/store/*` (so the `Host` header arrived), and a tagged landing whose `kh_utm` cookie
 is then present in the browser context (so `Set-Cookie` from a fulfilled response is honoured). If
-either fails, the fallback is a local TLS-terminating proxy with a trusted test certificate.
+either fails, the method is not trusted (the TLS proxy above is now always on, not a fallback).
 `/ingest/**` is answered before it reaches the local server (whose rewrite would forward to PostHog). A
 **control host** run (`http://localhost:3456`) must show no `fbq`, no `gtag` and no `/ingest` requests.
 
@@ -369,7 +381,7 @@ either fails, the fallback is a local TLS-terminating proxy with a trusted test 
 | 15 | `$autocapture.cta` | every chilli button carries a registered value; the set per page equals §7; `home-arc` and `compare` appear nowhere | HogQL counts by `cta` with `env=beta` after QA's sweep | HogQL by `cta` after launch |
 | 16-16a | `$exception`, `$web_vitals`, `$rageclick`, `$dead_click`; GeoIP | | appear with `env=beta` | appear within a day; country not one location |
 | 17 | Replay starts on store `/`, never on `/thanks` | | recorder loads on betastore `/`, not on `/thanks` (with control) | same on store.kheelona.com |
-| 18 | `/thanks` autocapture suppressed | container has `ph-no-capture ph-mask` in every branch that prints order data (paid, confirming, address); the two no-order states ("We need your link again.", "We cannot open that order right now.") print none and carry no mask, as on the original site (QA-004, main-session ruling 2026-10-14) | no `$autocapture` with page text on `/thanks` | same |
+| 18 | `/thanks` autocapture suppressed | container has `ph-no-capture ph-mask` in every branch that prints order data (paid, confirming, address); the two no-order states ("We need your link again.", "We cannot open that order right now.") print none and carry no mask, as on the original site (QA-004, main-session ruling 2026-10-14); since task 7.1c the cannot-open state's panel carries `ph-no-capture` for its help links | no `$autocapture` with page text on `/thanks` | same |
 | 19 | `purchase_confirmed` | unit test | one per beta purchase, `env=beta`, `source webhook`, campaign keys, `$process_person_profile false` | one per `purchase` |
 | 20 | `/ingest`, `/ingest-assets` rewrites, trailing slash kept | not verifiable on `next start` (lessons §1) | `GET /ingest/e/` answers 400 on both beta hosts and direct (control) | same on apex and store |
 | 21 | Edge cookies | curl on L with Host headers | curl on beta hosts (cookies on `.kheelona.com`) | curl tagged landings on apex, store, a trailing-slash URL |
@@ -452,7 +464,9 @@ runs a QA-written script on an Android phone (and an iPhone for Instagram): open
 WhatsApp chat and from an Instagram DM, fill the form, open the sheet, pay by UPI `success@razorpay`
 (test mode), and report what happened at each step with screenshots. Access uses a short-lived bypass
 secret created for this test and revoked afterwards (review question 5). Result decides whether the
-in-app note ships (main session).
+in-app note ships (main session). **Superseded 2026-10-14:** the founder switched the note on without this
+check ([D056](../decisions/D056-founder-answers-built-page-reviews-2026-10-14.md) item 3; task 7.1c); the script
+stays available if a real-device check is ever wanted.
 
 ### 6.5 Local sandbox (every store task in Phase 5)
 

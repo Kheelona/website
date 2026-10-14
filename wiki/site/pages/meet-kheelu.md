@@ -606,7 +606,7 @@ Section `id="faq"` (Home's "See all questions" links here; `/faq` 301s here, [st
 > Many talking toys play recorded phrases or repeat what your child says. A toy that talks back replies to what your child says, so a conversation can go back and forth. Kheelu is a screen-free plush toy for ages 3 to 7 that answers your child, then asks a question back.
 >
 > **Is Kheelu right for a 3-year-old?**
-> Kheelu is made for children aged 3 to 7, and it is not a toy for children under 3. At 3, play with a grown-up nearby. When you set it up, you enter your child's age in the parent app, and every reply passes an age-graded safety layer set to that age. You can change it later.
+> Kheelu is made for children aged 3 to 7, and it is not a toy for children under 3. If your child is 3, keep a grown-up nearby. When you set it up, you enter your child's age in the parent app, and every reply passes an age-graded safety layer set to that age. You can change it later.
 >
 > **What does Kheelu cost, and what is the advance for?**
 > Kheelu is ₹4,999`{price-source}` (incl. GST) for the first 500 units`{price-source}`, with delivery anywhere in India included. The ₹499`{price-source}` is a refundable advance to reserve yours; the remaining ₹4,500`{price-source}` is due before delivery. After the first 500, it is ₹7,999`{price-source}` (incl. GST), paid in full. Pay by UPI, card or net banking, with no payment fees, and get a GST invoice.
@@ -852,7 +852,7 @@ Each with options and a recommendation.
    founder-approved words, Hand on "real families."), eyebrow "Seven films" (the verified count, D040).
    **Recommend (b)**: every word is already verified, and nothing says where the films were shot. Under either
    option, film 2's chip "Real families" echoes the H2; a mild repeat.
-9. **The age-3 line in FAQ 3 (CMO review A M8; not changed here).** M8 asks for one age-3 sentence across the FAQ
+9. **Answered at the wave 8 merge (2026-10-14):** the CMO's copy review of task 7.1b (minor 2) set the one wording, "If your child is 3, keep a grown-up nearby.", which keeps FAQ 3 at 59 words with no other word changed; see "Changes after approval (task 7.1b)". The question as asked: **The age-3 line in FAQ 3 (CMO review A M8; not changed here).** M8 asks for one age-3 sentence across the FAQ
    answers, this page's included (`src/content/en-IN/faqs.ts:86`, "At 3, play with a grown-up nearby."). Task 7.1b
    gave this page only D056 item 2 and M6, and the one wording is being set on [home.md](home.md) at the same time.
    The CMO's example, "If your child is 3, keep a grown-up nearby while they play." (the form the guides already
@@ -940,5 +940,11 @@ line of the Copy blocks stands word for word as approved at Gate A (D046) and as
   their {hand:own homes.}"; so do the story `src/components/sections/FilmsStrip/FilmsStrip.stories.tsx:52` and the
   test fixture `src/components/sections/FilmsStrip/FilmsStrip.test.tsx:115`. `page.ts:279` takes the short citation; its `href` and link `label`
   (page.ts:280-281) stay. Do not change `faqs.ts:86` to an 11-word age-3 sentence without question 9's answer:
-  `faqs.test.ts:173` fails at 61 words. **Deviations for the main session at the merge:** both lines differ from
+  `faqs.test.ts:173` fails at 61 words. (Superseded at the merge: FAQ 3 took the CMO's shorter wording, 59 words; next
+  bullet.) **Deviations for the main session at the merge:** both lines differ from
   the approved mockup (`mockup/pages/meet-kheelu.html:36` and `:362`; text parity under the `meet-kheelu` key).
+- **Fold 8, FAQ 3's age-3 sentence (review A M8; CMO copy review of task 7.1b, minor 2; main session at the wave 8
+  merge, 2026-10-14).** "At 3, play with a grown-up nearby." becomes "If your child is 3, keep a grown-up nearby.",
+  the site's one wording (Home, `/safety`, `/setup` and the buyer's guide say it the same way). The answer goes from 57
+  to 59 words; no other word changes. Built in `src/content/en-IN/faqs.ts` (`right-for-a-three-year-old`); parity
+  deviation V17 (`COPY_FIXES["meet-kheelu"]`). The founder signs it off at Gate B (D015).

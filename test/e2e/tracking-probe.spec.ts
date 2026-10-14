@@ -48,6 +48,21 @@ const lpContext = (lp: LpSession) => lp.newContext({ ...contextFor(vp), userAgen
 /** PostHog paths handed to the local build, whose rewrite forwards them to PostHog. */
 const posthogForwarded = (lp: LpSession) => lp.log.forwarded.filter((f) => isPostHogProxyPath(f.path.split("?")[0]));
 
+/** Resolves once nothing has joined the log for `quietMs` (or after `maxMs`): the page-close beacons have landed. */
+async function logSettled(log: LpSession["log"], quietMs = 500, maxMs = 3000): Promise<void> {
+  const size = () => log.recorded.length + log.escaped.length + log.refused.length + log.forwarded.length;
+  const end = Date.now() + maxMs;
+  let last = size();
+  let stillSince = Date.now();
+  while (Date.now() < end && Date.now() - stillSince < quietMs) {
+    await new Promise((done) => setTimeout(done, 100));
+    if (size() !== last) {
+      last = size();
+      stillSince = Date.now();
+    }
+  }
+}
+
 test.describe("tracking probe (LP): method controls, offline", () => {
   requiresServer();
   test.skip(TARGET === "beta", "LP serves the local build; the beta hosts have their own capture (task 7.2)");
@@ -172,6 +187,9 @@ test.describe("tracking probe (LP): parity rows", () => {
           };
         });
         await page.close();
+        // A page-close beacon ($pageleave, GA4's user_engagement) reaches the line a moment after close: wait until the
+        // log has been still for half a second (3 s at most), so the evidence lists it too (task 7.1e review).
+        await logSettled(lp.log);
         const { recorded, escaped, downloads, refused } = lp.log;
         await testInfo.attach("recorded.json", {
           body: JSON.stringify({ state, recorded, escaped, downloads, refused, forwardedPostHog: posthogForwarded(lp) }, null, 2),

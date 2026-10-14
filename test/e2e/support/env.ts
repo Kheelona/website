@@ -5,7 +5,8 @@
  * *.localhost name to 127.0.0.1, so no hosts file is touched; src/lib/store/host.ts treats
  * store.localhost as the store host). Those names are in no tracking host list, so no tag loads.
  * LP (tracking probe): the real origins are served from the same local server through Playwright
- * routing (lp.ts), so the host gates open while nothing leaves the machine.
+ * routing (lp.ts), and every other host is mapped by DNS to lp.ts's local TLS proxy (task 7.1e), so the
+ * host gates open while nothing leaves the machine.
  */
 
 export const PORT = Number(process.env.KH_E2E_PORT ?? 3456);

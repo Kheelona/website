@@ -2,9 +2,10 @@ import { render, screen } from "@testing-library/react";
 import type { StaticImageData } from "next/image";
 import postcss, { type AtRule, type Rule } from "postcss";
 import { describe, expect, it } from "vitest";
-import { STORIES_REMOVED_CARD } from "../../../../test/e2e/support/deviations";
+import { COPY_FIXES, STORIES_REMOVED_CARD } from "../../../../test/e2e/support/deviations";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { mockupFold, skeleton, words } from "../../../../test/support/mockup-compare";
+import { withFacts } from "../../../../test/support/mockup-facts";
 import type { TopicSectionConfig } from "./topic-section.types";
 import { TopicSection } from "./TopicSection";
 import { AI_AND_SAFETY_TOPIC, LEARNING_TOPIC, SCREEN_TIME_TOPIC, TALKING_TOPIC } from "./TopicSection.stories";
@@ -32,9 +33,9 @@ const OPTIONS = {
 
 /** The approved band as the build shows it: the row the hub's parity deviation hides for the guide that left (V9,
  *  deviations.ts; the 3-6-9-12 guide left the journal after Gate A, D053, task 6.5) is taken out of a copy of the
- *  mockup first. */
+ *  mockup first, and the screen-time topic's line takes its copy fix (V9 as amended, task 7.1b: COPY_FIXES.stories). */
 function approvedBand(id: string): Element {
-  const main = mockupFold("stories", "main").cloneNode(true) as Element;
+  const main = withFacts(mockupFold("stories", "main"), COPY_FIXES.stories.edits);
   main.querySelectorAll(STORIES_REMOVED_CARD.selector).forEach((row) => row.remove());
   return main.querySelector(`section#${id}`)!;
 }

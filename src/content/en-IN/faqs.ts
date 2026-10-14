@@ -83,7 +83,7 @@ export const faqs = {
     id: "right-for-a-three-year-old",
     question: "Is Kheelu right for a 3‑year‑old?",
     answer:
-      "Kheelu is made for children aged 3 to 7, and it is not a toy for children under 3. At 3, play with a grown-up nearby. When you set it up, you enter your child’s age in the parent app, and every reply passes an age-graded safety layer set to that age. You can change it later.",
+      "Kheelu is made for children aged 3 to 7, and it is not a toy for children under 3. If your child is 3, keep a grown-up nearby. When you set it up, you enter your child’s age in the parent app, and every reply passes an age-graded safety layer set to that age. You can change it later.",
   },
   "cost-and-advance": {
     id: "cost-and-advance",
@@ -171,7 +171,7 @@ export const faqs = {
     id: "ai-toy-age",
     question: "What age is an AI toy for?",
     answer:
-      "Kheelu is made for children aged 3 to 7, and it is not a toy for children under 3. At 3, we advise play with a grown-up nearby. You enter your child’s age in the parent app, and every reply passes an age-graded safety layer set to that age. What child-safety groups advise is on our [safety page](/safety).",
+      "Kheelu is made for children aged 3 to 7, and it is not a toy for children under 3. If your child is 3, keep a grown-up nearby. You enter your child’s age in the parent app, and every reply passes an age-graded safety layer set to that age. What child-safety groups advise is on our [safety page](/safety).",
   },
   wifi: {
     id: "wifi",

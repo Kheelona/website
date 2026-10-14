@@ -1582,6 +1582,48 @@ CMO A M9 (laptop safety-card line length) and the test ideas (A M11, B T1, B T2)
   from its head photo by the asset pipeline (task 1.5 item 3), set as the module's `meta.og` and the BlogPosting image;
   `og.png` stays the default elsewhere. Touches only the `meta` of each article module (7.1d edits the related lists).
 
+**Wave 8 fix batch merged (2026-10-14; run `wf_4eb5e856-7af`, base `fdb7580`).** 7.1a, 7.1c, 7.1d, 7.1e and 7.1f passed
+their reviews; 7.1b's last review fix (the age-3 line on `/safety` and `/setup` in the CMO's own words, copy review
+minor 1) was checked by the main session against the CMO's text at the merge. Merge rulings by the main session:
+
+- **Edits outside the written Owns, accepted** (each needed for an acceptance item; none weakens a guard): 7.1a's
+  `StickyBuyBar.client.tsx` (B m5: the motion guard refuses a delayed transform under reduced motion, so `data-buybar`
+  waits for the fade instead of a rule in `motion.css`), `MotionController.client.tsx` (M1: the attribute now arrives a
+  frame after load), `Tabs.client.tsx` (M2's root cause), `Quote` and `FeatureSplit` (M10), the help-line spacing in
+  `cta-block.css`, `offer-section.css` and `close-section.css`, `test/support/mockup-compare.ts` (`ruledLinkHref`, one
+  central rule for the deep links) and the ripple test edits; 7.1b's route tests, the sample-page swaps in
+  `test/e2e-harness.test.ts` and `store/parity-deviations.test.ts` (no page is without a rule since 7.1a's
+  `TAP_AREA_HIDDEN`, so the sample is a page with no rule of its own: the buyer's guide's visual list stays empty);
+  7.1c's `store/page.tsx` (its not-configured state moved to `_components/StoreNotConfigured.tsx`, markup unchanged,
+  signature reviewed) and one test title in `StoreDetails.test.tsx`; 7.1f's two literals in `ArticleTemplate.test.tsx`,
+  `talking-articles.test.tsx:313` (the exact card now pinned for all 20 guides in `share-cards.test.ts`) and the
+  extended `generated-icons.test.ts` (1.5's guard).
+- **Rulings:** the share cards are cut from the 2K masters (the 9:16 web files are 837 px wide; DS Photo library
+  README: masters for crops); the head photo's alt stays the card's alt (one alt per photo); the store's step-aside
+  covers the whole `.ks-faq` (meets D050; a narrower region is a later polish); the link-needed `/thanks` state keeps no
+  `ph-no-capture`, as on the tag (QA-004 ruling stands; the cannot-open state carries it since 7.1c for its new help
+  links); the `/thanks` bubble at rest at 360 px checked on the merged build (below).
+- **Done by the main session at the merge** (copy review 7.1b minors 2 and 5; the reviews' follow-ups): the age-3
+  sentence "If your child is 3, keep a grown-up nearby." on the product page's FAQ 3 and the buyer's guide's age answer
+  (`faqs.ts`; copy pages `meet-kheelu.md`, `ai-toys-for-kids-in-india.md`; deviations V17 amended, V22), so every FAQ
+  answer review A M8 named says it one way; Home's copy-page sources line in its short form; `llms.txt` and `pricing.md`
+  re-pinned (`PRICING_UPDATED` 2026-10-14; the visible-copy line for the screen-time lead); deviation rows V17-V25
+  written, V4 retired, V7 and V9 amended (`approvedBy` strings now cite V23 and V25); source markers' tap area cut to
+  4 px above and below (`source-marker.css`; 7.1a's tap-area spec found neighbouring markers taking each other's taps,
+  and now fails on it); `Tabs.client.tsx` compensates no target inside the tab box (review of 7.1a); stale Storybook
+  literals (the screen-time line, the old age and "follow below" words) updated, and `TopicSection.test.tsx` applies
+  the hub's copy fix; the shared-head-photo guard covers all 20 guides (review of 7.1d); `lp.ts` decodes a form's `data`
+  only when it is PostHog's, and the probe waits for page-close beacons before it reads the log (review of 7.1e);
+  `motion.css`, architecture §5.3, §11.3, §14 and §16.3, test plan §1.1, §4.6, §5.1, §5.2 row 18 and §6.4, `env.ts`,
+  defects QA-001 to QA-005, store.md's 409 gap and event eyebrow, store-confirmation.md's tap-area sentence, assets.md
+  §5, the index.
+- **Follow-ups, not blocking:** `articles.test.ts`'s `SWAPS` and `LEGACY_RING` describe the stub era and check nothing
+  (drop or relabel them); `photoFile()` exists in four test files (one shared helper with an artifacts.md row); each
+  article module types its head photo's alt twice (`head.image.alt` and `meta.og.alt`; hoist one const); Meta's
+  Conversions API gateway POSTs (`*.on.aws/events`, `*.run.app/events`) are refused by the probe, not recorded as Meta
+  evidence; the 4:5 cards drop part of what their alt describes (advik-01's train, myra-04's crayon; a lower `focusY`
+  would keep them); `tap-areas.spec.ts` and `anchors.spec.ts` are not wired into the WebKit projects.
+
 ## Wave 9: beta deploy and beta QA (after wave 8)
 
 ### 7.2 Beta deploy and beta QA (main session, founder, QA)
@@ -1598,7 +1640,9 @@ CMO A M9 (laptop safety-card line length) and the test ideas (A M11, B T1, B T2)
   PostHog events carry `env = beta`; no `$current_url` containing the bypass secret (N5; the harness sends the bypass header only on the first request to a beta host, reads each 3xx `Location` itself and aborts any hop that leaves the beta hosts, and warms each beta host's bypass cookie first; Playwright never routes redirect hops; confirmed by the main session 2026-10-12); axe and
   Lighthouse Accessibility on beta through the bypass cookie; region and timing: `x-vercel-id` names
   `bom1`; the store form (token and full mode, validation errors) and the `/thanks` states sent to the
-  founder as phone screenshots from the local production build (D051).
+  founder as phone screenshots from the local production build (D051). A guide shared from beta shows no preview image
+  until the Gate B merge: `og:image` uses the canonical origin, and production does not serve the new share cards yet
+  (task 7.1f; N8); say so in the founder notes.
 
 ## Wave 10: Gate B and release (after wave 9)
 
@@ -1616,12 +1660,14 @@ CMO A M9 (laptop safety-card line length) and the test ideas (A M11, B T1, B T2)
   sentence that a deleted conversation stays in Kheelu's memory and the training data; the 5.20b items left with the
   main session (CMO 5.18 M6, the related-guide ring; M10, the bilingual guide's line "Most of the studies it draws on
   were done in North America and Europe.", traced only to the verifier's note); the bylines' named owners reading their
-  pages (P17); "May 2027" re-read against the Gazette (P23); from batch 6b: the Karnataka mark on `/team` is the
-  Government of Karnataka's state emblem (team.md question 3; CMO M1 recommends "Karnataka Elevate" as text only unless
-  the founder holds Karnataka Elevate's terms for it; one line in `team.ts`), Kashyap's background line as the main
-  session ruled it (team.md ruling 7), and the refund timing on `/terms` and the FAQ ("processed within 7 working
-  days") against `/refund`'s "reaches you within 7 working days" (D055 item 5; CMO M7: align both if the founder agrees,
-  then re-pin `llms.txt`); the four legal pages' D029 sign-off (their `status: "draft"` stops a production build).
+  pages (P17); "May 2027" re-read against the Gazette (P23); from batch 6b: Kashyap's background line as the main
+  session ruled it (team.md ruling 7) (the Karnataka emblem stays, D056 item 5; the refund timing is aligned, D056
+  item 4, task 7.1b); the four legal pages' D029 sign-off (their `status: "draft"` stops a production build); from
+  wave 8: every line changed after Gate A for the founder's sign-off (D015: deviations V17-V22, the related-guide ring
+  of 7.1d, the store words of 7.1c), [open questions](../open-questions.md) G19 (the films heading's "in their own
+  homes"), G20 (`/terms` section 9's age line), G21 (the confirming `/thanks` tab title) and G22 (a refused event
+  link's words; a precondition before any event tier is switched on again), and CMO C m7 (a chargeback how-to line,
+  a new legal line).
 - **Repo pages before the merge to `main` (from 6.3):** `README.md` (the public repo's front page) still describes the
   legacy site (PlayOS, Lumi, `docs/standards/`, `qa:sweep`), and `docs/store-go-live.md`'s steps run the deleted
   `tools/qa/{text,sweep}.mjs`: rewrite both for the new site, with Playwright equivalents for the go-live checks.

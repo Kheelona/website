@@ -123,17 +123,19 @@ const MACHINE = [
  */
 const DATED: Record<(typeof MACHINE)[number]["name"], { readonly date: string } & Record<OfferMode, string>> = {
   "llms.txt": {
-    // 2026-10-14: the product's Parent app row ends "On iPhone and Android." (D055 item 26; task 6.7); the 3-6-9-12 guide's
-    // removal (D053; task 6.5) changed no line of it.
+    // 2026-10-14: the screen-time topic's lead (CMO reviews A M5, B m1) and Home's FAQ: the refund "reaches you within 7
+    // working days" (D056 item 4) and the age-3 advice in one wording (A M8) (task 7.1b, wave 8 merge). Earlier the same
+    // day: the product's Parent app row ends "On iPhone and Android." (D055 item 26; task 6.7).
     date: "2026-10-14",
-    token: "4575d9a28417aeb3c0416954462a9882447ec01e8793ab7850677fa61136bfeb",
-    full: "b05c32366e09420e1852939d72a3bacf4abc29c7f1e2db55e1701bb41695f70c",
+    token: "e17e93898329d48c0a1e0ca1683f0ba700dc79f12b9954afa8d405451e30dcaa",
+    full: "bae71668a99c82176f4c66b7412453fd31910e0c1ad3f3417f63bab13d06c230",
   },
   "pricing.md": {
-    // 2026-10-13: "About Kheelu" adds the product page's Manufacturer declaration (task 4.5 item 6).
-    date: "2026-10-13",
-    token: "2906cc8bd7103c0b81eae3ebececf2170d378e69d7c3f11b70de8551c02bfc89",
-    full: "48c0631c59900ff1e296611bde258218deee3bb6d31969f599465049ecdffd5c",
+    // 2026-10-14: "About Kheelu" prints Home's age answer, now with the age-3 advice in one wording (CMO review A M8;
+    // task 7.1b, wave 8 merge). 2026-10-13: it added the product page's Manufacturer declaration (task 4.5 item 6).
+    date: "2026-10-14",
+    token: "01bb7513d8b5cc92ab08ff276b9f5f632cfd526b9151a42cb3703825d38ebd19",
+    full: "44bd457855747141679a8e56fa1a06f56b70a09f3f70c41b9eeecc2b6666d54b",
   },
 };
 
@@ -435,7 +437,7 @@ describe("the visible-copy check", () => {
       "- Toy-safety certification (BIS): applied for, not yet granted. We show no mark until it is granted.",
       "- Modes: AI mode (home Wi‑Fi) · Story mode (no Wi‑Fi needed) · Bluetooth mode (a paired phone)",
       "- Consumer care: WhatsApp or call +91 91875 46483 · hello@kheelona.com",
-      `- [Screen time](${ORIGIN}/stories#screen-time): How much, which rules hold up, and what to do when the screen goes off.`,
+      `- [Screen time](${ORIGIN}/stories#screen-time): How much, what the guidelines say, and what to do when the screen goes off.`,
     ];
     expect(unsaid(clean.join("\n"), copy)).toEqual([]);
   });

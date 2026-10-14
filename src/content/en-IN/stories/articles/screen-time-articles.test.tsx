@@ -489,8 +489,11 @@ describe("the screen-time articles together", () => {
     }
   });
 
-  it("never share a head photo with a guide they link to, or that links to them", () => {
-    for (const [slug, article] of pooled) {
+  /* Across all twenty guides since the wave 8 merge (task 7.1d's ring; its review asked for it): kabir-04, myra-04, ira-04
+     and tara-04 each head two or three guides outside the pool, and only scratch scripts checked them before. */
+  it("never share a head photo with a guide they link to, or that links to them (every guide of the journal)", () => {
+    expect(journal).toHaveLength(20);
+    for (const [slug, article] of journal.map((a) => [a.slug, a] as const)) {
       const photo = headPhoto(article);
       const linked = journal.filter((other) => other.slug !== slug && (linkedGuides(article).includes(other.slug) || linkedGuides(other).includes(slug)));
       expect(linked.filter((other) => headPhoto(other) === photo).map((other) => other.slug), `${slug} (${photo})`).toEqual([]);

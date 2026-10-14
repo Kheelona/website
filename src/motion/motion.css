@@ -20,7 +20,8 @@
 }
 
 /* In-page anchor jumps (skip link, "#faq") glide, as in the approved mockup (mockup.css); reduced motion jumps.
-   Keyed on data-scroll-behavior="smooth", which the root layout (src/app/layout.tsx) must set on <html>: in
+   Keyed on data-scroll-behavior="smooth", which MotionController sets on <html> a frame after the page's load event
+   (smoothScrollOnceLoaded, task 7.1a), so a landing at a #fragment jumps and later in-page jumps glide: in
    Next.js 16, Next resets scroll-behavior to auto during a route change only when that attribute is present
    (node_modules/next/dist/docs/01-app/02-guides/upgrading/version-16.md, "Scroll Behavior Override"), so a <Link>
    lands at the top of its page instead of gliding there from the old position. Without the attribute nothing

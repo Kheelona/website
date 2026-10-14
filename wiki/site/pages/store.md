@@ -441,9 +441,19 @@ pre-order, with no amount anywhere on the screen.
   regenerated and reviewed). `page.test.tsx:101-104` compares the lead with `tierRefusalMessage` and moves to these
   bodies.
 - **Gap, not fixed here (frozen logic):** the same `tiers.ts` words still reach a parent through the form. If an event
-  tier is refused when Pay is pressed (the allocation runs out, the date passes), create-order answers 409 with
-  `tierRefusalMessage` (`wt:src/app/api/preorder/create-order/route.ts:58-62`), and the form shows it, "…on this page"
-  included. Changing that needs a frozen logic file, so it is reported to the main session, not changed.
+  tier is refused when Pay is pressed, create-order answers 409 with `tierRefusalMessage`
+  (`wt:src/app/api/preorder/create-order/route.ts:58-62`), and the form shows it (`PreorderForm.tsx:159`). For `expired`
+  and `full` (the date passes, the allocation runs out) that is the live line with "…on this page". For a tier switched
+  off, removed or zeroed mid-session (`unknown`, and `bad-signature` if the signing secret changes) it is the default
+  line, "This link is not one of ours. You can pre-order at ₹499 on this page." (`tiers.ts:144`): ₹499 beside a button
+  with no total (D028), and false in full mode (CMO copy review 7.1c, m1). Changing that needs a frozen logic file or a
+  reviewed presentation map in the form, so it is reported to the main session, not changed. **Main session
+  (2026-10-14, wave 8 merge):** a presentation-side map from the 409 code to these bodies (option (c), its signature
+  reviewed under ADR-013) is a precondition for switching any event tier on again; no tier is on today (D051: beta has
+  no store keys), and the founder decides at Gate B ([open questions](../open-questions.md) G22).
+- **The event checkout's eyebrow (CMO review C m2; task 7.1c):** "{tier label} · Ages 3 to 7", the age band kept on one
+  line (`src/content/en-IN/store/event-page.ts` `eyebrow`), for example "Bangalore expo price · Ages 3 to 7". Approved
+  words only: the tier's own label and the store's age band.
 
 ## Phone order and laptop layout
 

@@ -29,7 +29,7 @@ export const Guides: Story = {
         tone: "blue",
         icon: "clock",
         title: "Screen time",
-        body: "How much, which rules hold up, and what to do when the screen goes off.",
+        body: "How much, what the guidelines say, and what to do when the screen goes off.",
         links: [{ label: "Read the screen-time guides", href: "/stories#screen-time" }],
       },
       {

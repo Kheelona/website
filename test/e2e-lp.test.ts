@@ -64,6 +64,9 @@ describe("decodeBody: a recorded body as text", () => {
     expect(decodeBody(gzipSync(json))).toBe(json);
     expect(decodeBody(Buffer.from(`data=${encodeURIComponent(Buffer.from(json).toString("base64"))}&compression=base64`))).toBe(json);
     expect(decodeBody(null)).toBe("");
+    // A form whose `data` is not base64 JSON keeps its own words (no compression flag, nothing that parses).
+    expect(decodeBody(Buffer.from("a=1&data=hello"))).toBe("a=1&data=hello");
+    expect(decodeBody(Buffer.from(`data=${encodeURIComponent(Buffer.from(json).toString("base64"))}`))).toBe(json);
   });
 });
 

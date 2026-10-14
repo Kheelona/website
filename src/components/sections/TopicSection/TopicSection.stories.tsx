@@ -13,7 +13,7 @@ import { TopicSection } from "./TopicSection";
 /** stories.html fold 2: no rewritten guide yet, so the rows run in two columns. Without the 3-6-9-12 guide's row, which
  *  left the journal after Gate A (D053, deviations.md V9; task 6.5), as the hub shows it. */
 export const SCREEN_TIME_TOPIC: TopicSectionConfig = {
-  topic: { id: "screen-time", title: "Screen time", lead: "How much, which rules hold up, and what to do when the screen goes off." },
+  topic: { id: "screen-time", title: "Screen time", lead: "How much, what the guidelines say, and what to do when the screen goes off." },
   items: [
     { title: "How much screen time is okay for a young child?", summary: "What the WHO, the Indian Academy of Pediatrics and the AAP say, age by age, and what to do at 6 pm." },
     { title: "Screen time and tantrums: what is actually happening", summary: "Why the meltdown lands the moment the screen goes off, and how to make switching off boring instead of explosive." },

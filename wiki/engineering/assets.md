@@ -133,6 +133,7 @@ Per-file verdicts: [cleanup-public-assets](../legacy/cleanup-public-assets.md). 
 guards that read `public/product/` now prove the `[^.]+` rules on synthetic `/product/lumi.png` and `/category/x.png`
 samples and on every real file of `public/` (`test/redirects-vs-assets.test.ts`, `test/guards/redirect-hops.test.ts`).
 The two KEEP URL files (`og.png`, `brand/logo-mark.png`) are the pipeline's since 1.5. Every other file left in
-`public/` is generated (§3: fonts, `og/kheelu.jpg`, `media/kheelu-front.jpg`) or a §2 row: in use (films, posters,
+`public/` is generated (§3: fonts, `og/kheelu.jpg`, the guides' 13 share cards `og/<photo>.jpg` since task 7.1f,
+`media/kheelu-front.jpg`) or a §2 row: in use (films, posters,
 founder photos, recognition marks) or FOUNDER (the film previews, `ria.jpg`, the Ideabaaz mark), each with its 6.3
 verdict there.

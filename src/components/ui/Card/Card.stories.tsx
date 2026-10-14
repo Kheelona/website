@@ -49,7 +49,7 @@ export const WithLink: Story = {
     tone: "blue",
     icon: icon("clock"),
     title: "Screen time",
-    body: "How much, which rules hold up, and what to do when the screen goes off.",
+    body: "How much, what the guidelines say, and what to do when the screen goes off.",
     link: { href: "/stories#screen-time", label: "Read the screen-time guides", icon: icon("arrow-right") },
   },
 };

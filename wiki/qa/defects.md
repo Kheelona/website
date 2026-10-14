@@ -23,11 +23,11 @@ the approved mockup or the tag, and differs from the test plan's wording.
 
 | ID | Sev | Where | Owner | Status, round 1 (2026-10-14) |
 |---|---|---|---|---|
-| QA-001 | S3 | `test/e2e/support/lp.ts` (LP harness) | Task 1.1 (QA harness); main session assigns | Open |
-| QA-002 | S3 | `test/e2e/tracking-probe.spec.ts` parity rows (row 14) | Task 1.1 (QA harness) | Open |
-| QA-003 | S3 | `scripts/qa/lighthouse.mjs` `BLOCKED` (LP-tags profile) | Main session (Lighthouse owner, M1/M2) | Open. **Fix before the next LP-tags run** |
-| QA-004 | S4 | `/thanks`, the two non-order states | Main-session ruling; a fix would go to the `/thanks` restyle owner (4.8/5.16) | Open, ruling needed |
-| QA-005 | S4 | Footer "Grievance officer" link, every marketing page | Main-session ruling; a fix would be task 3.1's `navigation.ts` | Open, ruling needed |
+| QA-001 | S3 | `test/e2e/support/lp.ts` (LP harness) | Task 1.1 (QA harness); main session assigns | **Fixed** in task 7.1e (DNS map to a local TLS proxy; controls in every `verify:e2e`), merged 2026-10-14 |
+| QA-002 | S3 | `test/e2e/tracking-probe.spec.ts` parity rows (row 14) | Task 1.1 (QA harness) | **Fixed** in task 7.1e (full Chromium, `navigator.webdriver` false, after QA-001), merged 2026-10-14 |
+| QA-003 | S3 | `scripts/qa/lighthouse.mjs` `BLOCKED` (LP-tags profile) | Main session (Lighthouse owner, M1/M2) | **Fixed** by the main session (`fdb7580`) |
+| QA-004 | S4 | `/thanks`, the two non-order states | Main-session ruling; a fix would go to the `/thanks` restyle owner (4.8/5.16) | **Ruled (a)**, 2026-10-14: the plan follows the tag (test plan §5.2 row 18). Since task 7.1c the cannot-open state carries `ph-no-capture` (its new help links); the link-needed state stays as on the tag |
+| QA-005 | S4 | Footer "Grievance officer" link, every marketing page | Main-session ruling; a fix would be task 3.1's `navigation.ts` | **Ruled (b) and fixed** in task 7.1a (`/contact#grievance`; deviation V24), merged 2026-10-14 |
 
 ## QA-001 (S3): redirect hops and page-unload beacons escape the LP harness's routing
 

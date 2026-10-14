@@ -22,7 +22,7 @@ import { APPROVED_WIDTHS } from "./support/viewports";
  * The bubble and the bar float over the page and have their own specs (chrome.spec.ts), so both are out of the hit
  * test here; a point outside the screen or outside a scrolling box that clips the link is not a tap. The approved mockup
  * has the defect (mockup/mockup.css:29-31, frozen, D046), so this spec runs on the build only; the pixels it moves are
- * the tap-area row of wiki/qa/deviations.md (test/e2e/support/deviations.ts TAP_AREA_HIDDEN).
+ * the tap-area row of wiki/qa/deviations.md (V23) (test/e2e/support/deviations.ts TAP_AREA_HIDDEN).
  */
 
 requiresServer();
@@ -110,21 +110,21 @@ function takenLinks({ selector, scroll }: { selector: string; scroll: boolean })
   return out;
 }
 
-/** The source markers ("[1]" after a sourced line; SourceMarker, task 2.2): inline links with their own ::before tap area
- *  (source-marker.css), which the same rule finds overlapping where two markers sit side by side or on consecutive lines
- *  of an article (task 7.1a found it; routed to the main session in its report, not this task's file). Printed on every
- *  run, never silent, and not failed here until that ruling. */
+/** The source markers ("[1]" after a sourced line; SourceMarker, task 2.2): inline links whose ::before tap area
+ *  (source-marker.css) reached 12 px above and below and 8 px each side, so where two markers sat side by side or on
+ *  consecutive lines of an article one took the other's taps (task 7.1a found it; the main session's ruling at the wave 8
+ *  merge cut the area to 4 px above and below). Every marker on the page, scrolled to, must answer for its own words. */
 const SOURCE_MARKER = ".ks-src";
 
 /** Every link on the first screen as the page opens, then every trust and help link, top to bottom. */
 async function checkTapAreas(page: Page, label: string): Promise<void> {
   await page.evaluate(() => document.fonts.ready.then(() => undefined));
-  const markers = await page.evaluate(takenLinks, { selector: `a[href]${SOURCE_MARKER}`, scroll: false });
-  if (markers.length) console.log(`[tap-areas] ${label}: source markers, routed to the main session (not failed): ${JSON.stringify(markers)}`);
   const firstScreen = await page.evaluate(takenLinks, { selector: `a[href]:not(${SOURCE_MARKER})`, scroll: false });
   expect(firstScreen, `${label}: on the first screen, a tap on these words opens another link`).toEqual([]);
   const lines = await page.evaluate(takenLinks, { selector: ".ks-trust a[href], .ks-help a[href]", scroll: true });
   expect(lines, `${label}: in a trust or help line, a tap on these words opens another link`).toEqual([]);
+  const markers = await page.evaluate(takenLinks, { selector: `a[href]${SOURCE_MARKER}`, scroll: true });
+  expect(markers, `${label}: a tap on these source markers opens another link`).toEqual([]);
 }
 
 for (const route of sweepRoutes()) {

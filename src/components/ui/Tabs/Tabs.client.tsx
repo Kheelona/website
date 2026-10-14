@@ -8,7 +8,8 @@ export interface TabsIslandProps {
   tab: string;
 }
 
-/** The element the address's #fragment names, when it comes after `box` in the page; otherwise null. */
+/** The element the address's #fragment names, when it comes after `box` in the page, outside it; otherwise null (a target
+ *  inside the box, a tab or a panel, moves with the box's own change, so it takes no compensation). */
 function fragmentTargetAfter(box: HTMLElement): HTMLElement | null {
   const id = window.location.hash.slice(1);
   if (!id) return null;
@@ -18,7 +19,8 @@ function fragmentTargetAfter(box: HTMLElement): HTMLElement | null {
   } catch {
     return null;
   }
-  return target && box.compareDocumentPosition(target) & Node.DOCUMENT_POSITION_FOLLOWING ? target : null;
+  if (!target || box.contains(target)) return null;
+  return box.compareDocumentPosition(target) & Node.DOCUMENT_POSITION_FOLLOWING ? target : null;
 }
 
 /**

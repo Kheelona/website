@@ -46,7 +46,7 @@ const SAFETY: FaqItem[] = [
     id: "age-three",
     question: "Is Kheelu OK for a 3-year-old?",
     answer:
-      "Kheelu is made for children aged 3 to 7, and it is not a toy for children under 3. If your child is 3, we advise play with a grown-up nearby. Common Sense Media advises against AI toys at this age. Its advice in full, and our answer, follow below.",
+      "Kheelu is made for children aged 3 to 7, and it is not a toy for children under 3. If your child is 3, keep a grown-up nearby. Common Sense Media advises against AI toys at this age. Its advice in full, and our answer, are in the next question.",
   },
   {
     id: "child-safety-groups",
@@ -60,7 +60,7 @@ const SAFETY: FaqItem[] = [
         items: [
           { lead: "Attachment:", text: "Kheelu tells your child it’s a toy, and it never asks them to keep a secret from you." },
           { lead: "Data:", text: "[the four facts at the top of this page](#facts). We don’t sell your data." },
-          { lead: "At 3:", text: "we advise play with a grown-up nearby." },
+          { lead: "At 3:", text: "keep a grown-up nearby." },
         ],
       },
     ],

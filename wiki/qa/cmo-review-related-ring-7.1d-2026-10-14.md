@@ -1,5 +1,5 @@
 ---
-title: "CMO review, round 1: the related-guide ring on the article copy pages (task 7.1d, CMO B m3), 2026-10-14"
+title: "CMO review, rounds 1 and 2: the related-guide ring on the article copy pages (task 7.1d, CMO B m3), 2026-10-14"
 type: qa
 updated: 2026-10-14
 sources:

@@ -24,7 +24,7 @@ import { readRepoFile } from "../e2e/support/repo";
  * What the build prints differently from the mockup, in all three:
  * - addresses: a mockup page file is the route it became (`mockupRoute`, structure §5); store.html is this build's
  *   store (`STORE`); a trust item's link and the footer's grievance officer link carry the part of the page the build
- *   links them to (`ruledLinkHref`, task 7.1a);
+ *   links them to (`ruledLinkHref`, task 7.1a; wiki/qa/deviations.md V24);
  * - classes: each mockup block (`mk-…`) takes its ks- name (components §7), or the name a test's rename table gives
  *   it, or is dropped (`portClass`);
  * - the mockup's value markers (data-src) are review-tool markup that never ships (N22).

@@ -236,7 +236,8 @@ The meta description is the same in every state.
 
 **Cannot-open state, how it reads on a phone:** the H1 and body, then one secondary WhatsApp button (never orange: the
 reader has already paid, so there is no button to buy again), then the call line under it, its number a `tel:` link
-with a 44 px tap area. "Or" opens the line because the button is the first option.
+(inline in its sentence, so WCAG 2.5.8's inline exception applies and it takes no invisible tap extension: task 7.1a's
+ruling on help links, CMO review A B1; axe passes the state). "Or" opens the line because the button is the first option.
 
 ## Phone order
 
@@ -327,7 +328,8 @@ No factual claim on this page lacks a source.
 - **Task 7.1c, for the builder:** the title follows the state the page renders: the paid branch keeps
   `confirmation.meta.title`; the confirming, link-needed and cannot-open branches show the new title (one more
   string in `confirmation.ts`). The cannot-open state passes the WhatsApp button as the panel's `action` and the call
-  line as its `note`, as the store's not-configured state does (`wt:src/app/store/_components/NotFoundPanel.tsx:52-57`);
+  line as its `note` (`note` takes a link once widened to a React node; CMO copy review 7.1c, m2), as the store's
+  not-configured state does (`wt:src/app/store/_components/NotFoundPanel.tsx:52-57`);
   the line's number links to `tel:+919187546483` from the seller source. Keep tracking parity: the new button and the
   call link carry `ph-no-capture`, so `/thanks` still sends no autocapture event carrying page text
   ([tracking inventory](../tracking-inventory.md) row 18). Presentation only (ADR-013); signatures regenerated and

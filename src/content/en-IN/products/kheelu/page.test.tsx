@@ -110,7 +110,7 @@ describe("the product page as rendered (token mode)", () => {
     const films = BUILT.main.querySelector("#films-title")!;
     expect(text(films)).toBe(COPY_FIXES["meet-kheelu"].build[0]);
     expect(films.querySelector(".kh-hand")?.textContent).toBe("own homes.");
-    expect(text(BUILT.main.querySelector("#src-1"))).toBe(COPY_FIXES["meet-kheelu"].build[1]);
+    expect(text(BUILT.main.querySelector("#src-1"))).toBe(COPY_FIXES["meet-kheelu"].build[2]);
     expect(BUILT.main.querySelector("#src-1 a")?.getAttribute("href")).toBe("https://developingchild.harvard.edu/key-concept/serve-and-return/");
   });
 

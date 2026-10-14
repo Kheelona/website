@@ -49,13 +49,13 @@ describe("SourceMarker CSS: the mockup's marker, declaration for declaration", (
     expect(ported).toEqual(declarations("mockup/mockup.css", ".mk-src"));
   });
 
-  it("ports the 44 px tap area (mockup.css:36): 12 px above and below the line, 8 px each side, without moving it", () => {
-    const ported = declarations(CSS, ".ks-src::before");
-    expect(ported).toEqual(["content: \"\"", "position: absolute", "inset: calc(var(--space-3) * -1) calc(var(--space-2) * -1)"]);
-    expect(ported).toEqual(declarations("mockup/mockup.css", ".mk-src::before"));
+  it("keeps a tap area 4 px above and below the line and none to the sides, so neighbouring markers keep their own taps", () => {
+    // mockup.css:36 reached 12 px above and below and 8 px each side; side by side or on consecutive lines one marker
+    // took the other's taps (test/e2e/tap-areas.spec.ts; the main session's ruling at the wave 8 merge).
+    expect(declarations("mockup/mockup.css", ".mk-src::before")).toEqual(["content: \"\"", "position: absolute", "inset: calc(var(--space-3) * -1) calc(var(--space-2) * -1)"]);
+    expect(declarations(CSS, ".ks-src::before")).toEqual(["content: \"\"", "position: absolute", "inset: calc(var(--space-1) * -1) 0"]);
     expect(declarations(CSS, ".ks-src")).toContain("position: relative");
-    // --space-3 is 12 px: the smallest line a marker sits in (kh-body-s, 20 px) grows to 20 + 2 x 12 = 44 px.
-    expect(readRepoFile("design-system/project/tokens.css")).toMatch(/--space-3:\s*12px/);
+    expect(readRepoFile("design-system/project/tokens.css")).toMatch(/--space-1:\s*4px/);
   });
 
   it("ports the article stylesheet's marker rule as the article variant only (stories.css:72; mapping §6.2)", () => {
