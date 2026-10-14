@@ -1,14 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { Button } from "@/components/ui/Button/Button";
 import { Actions } from "@/components/ui/Layout/Layout";
-import { films, filmsStrip } from "@/content/en-IN/films";
+import { filmQuotes, films, filmsStrip } from "@/content/en-IN/films";
 import { FilmsStrip } from "./FilmsStrip";
 
 /* FilmsStrip (task 3.3): the seven parent films (D040) as Home (fold 2), the product page (fold 2) and the store
    (fold 6) show them, with the films and the strip's labels from content (content/en-IN/films.ts, task 3.6) and the
    files under public/video/moments (Storybook serves public/). test/e2e/films.spec.ts and motion-films.spec.ts run on
    these stories, so they test what the pages publish. The CTA block after Home's strip is the page's (CtaBlock, task
-   3.2); a plain chilli button stands in for it. */
+   3.2); a plain chilli button stands in for it. Home and the product page show the parents' quotes under the strip,
+   each with its "Watch the film" button (task 8c.3, D061 item 4); the store does not. */
 
 const meta = {
   title: "Sections/FilmsStrip",
@@ -30,9 +31,10 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** Home fold 2: the first three posters eager at low priority, then the CTA block. */
+/** Home fold 2: the first three posters eager at low priority, the parents' quotes, then the CTA block. */
 export const Home: Story = {
   args: {
+    quotes: filmQuotes,
     after: (
       <Actions center>
         <Button variant="cta" size="l" cta="see-it-ask" href="/store">
@@ -43,10 +45,11 @@ export const Home: Story = {
   },
 };
 
-/** The product page's fold 2 (`#films`): every poster lazy, the consent line in the caption style. */
+/** The product page's fold 2 (`#films`): every poster lazy, the consent line in the caption style, the parents' quotes. */
 export const Product: Story = {
   args: {
     id: "films",
+    quotes: filmQuotes,
     heading: {
       eyebrow: "Seven films",
       title: "Real children, {hand:real families.}",

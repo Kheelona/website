@@ -15,6 +15,8 @@ import { CtaBlock } from "@/components/sections/CtaBlock/CtaBlock";
 import type { CtaBlockConfig, SellingContext } from "@/components/sections/CtaBlock/cta-block.types";
 import { EmptyStateSection } from "@/components/sections/EmptyStateSection/EmptyStateSection";
 import type { EmptyStateSectionConfig } from "@/components/sections/EmptyStateSection/empty-state-section.types";
+import { ExampleConversation } from "@/components/sections/ExampleConversation/ExampleConversation";
+import type { ExampleConversationConfig } from "@/components/sections/ExampleConversation/example-conversation.types";
 import { FaqSection } from "@/components/sections/FaqSection/FaqSection";
 import type { FaqSectionConfig } from "@/components/sections/FaqSection/faq-section.types";
 import { FeatureSplit } from "@/components/sections/FeatureSplit/FeatureSplit";
@@ -122,6 +124,8 @@ export interface SectionEntries {
     readonly sourceLabel?: string;
   };
   "related-guides": { readonly config: RelatedGuidesConfig };
+  /** The labelled example of what asking back sounds like (task 8c.3; the product page, after its steps). */
+  "example-conversation": { readonly config: ExampleConversationConfig };
 }
 
 export type SectionKind = keyof SectionEntries;
@@ -180,6 +184,7 @@ const REGISTRY: { readonly [K in SectionKind]: Renderer<K> } = {
       after: e.sources === undefined ? undefined : createElement(SourcesSection, e.sources),
     }),
   "related-guides": (e) => createElement(RelatedGuides, e.config),
+  "example-conversation": (e, ctx) => createElement(ExampleConversation, { ...e.config, offer: ctx.offer }),
 };
 
 /** Every kind, in the registry's order. */

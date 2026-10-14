@@ -1,0 +1,46 @@
+/* ExampleConversation (task 8c.3). No approved mockup rule: the exchange was drawn in the pre-Gate A review build as
+   `mk-chat` (mockup.css:39-44 at commit c0f1668), ported here on the same DS tokens as `ks-exchange`, in one reading
+   column under the centred heading. Each line is a quiet card: Kheelu's on the raised surface at the column's start,
+   the child's on the cream at its end, each a space-7 short of the column so the two sides read apart. Type is the DS
+   classes on the elements (kh-label-s, kh-body, kh-body-l); nothing moves. */
+.ks-exchange {
+  max-width: var(--measure);
+  margin-inline: auto;
+}
+.ks-exchange__note {
+  margin: 0 0 var(--space-4);
+}
+.ks-exchange__lines {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ks-exchange__line {
+  max-width: calc(100% - var(--space-7));
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border: var(--stroke-hair) solid var(--border);
+  border-radius: var(--radius-l);
+  background: var(--surface-raised);
+}
+.ks-exchange__line--kheelu {
+  justify-self: start;
+}
+.ks-exchange__line--child {
+  justify-self: end;
+  background: var(--surface-band);
+}
+/* On a band the quiet cream would vanish: the page cream instead, as the DS's quiet panels switch
+   (bundle.css: `.kh-section--band :is(.kh-quote, .kh-card--tint, …)`). */
+.kh-section--band .ks-exchange__line--child {
+  background: var(--surface);
+}
+.ks-exchange__who {
+  display: block;
+  margin-bottom: var(--space-1);
+}
+.ks-exchange__after {
+  margin: var(--space-5) 0 0;
+}

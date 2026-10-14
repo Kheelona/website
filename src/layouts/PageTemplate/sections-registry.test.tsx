@@ -12,6 +12,7 @@ import { CompareByCategory } from "@/components/sections/CompareByCategory/Compa
 import { CtaBlock } from "@/components/sections/CtaBlock/CtaBlock";
 import type { CtaBlockConfig } from "@/components/sections/CtaBlock/cta-block.types";
 import { EmptyStateSection } from "@/components/sections/EmptyStateSection/EmptyStateSection";
+import { ExampleConversation } from "@/components/sections/ExampleConversation/ExampleConversation";
 import { FaqSection } from "@/components/sections/FaqSection/FaqSection";
 import { FeatureSplit } from "@/components/sections/FeatureSplit/FeatureSplit";
 import { FilmsStrip } from "@/components/sections/FilmsStrip/FilmsStrip";
@@ -79,6 +80,7 @@ const EXPECTED: { [K in SectionKind]: (entry: SectionEntryOf<K>, ctx: SectionCon
   "article-head": (e) => <ArticleHead {...e.config} />,
   "article-body": (e, { offer }) => <ArticleBody {...e.config} offer={offer} />,
   "related-guides": (e) => <RelatedGuides {...e.config} />,
+  "example-conversation": (e, { offer }) => <ExampleConversation {...e.config} offer={offer} />,
 };
 
 const expected = <K extends SectionKind>(entry: SectionEntryOf<K>, ctx: SectionContext) =>

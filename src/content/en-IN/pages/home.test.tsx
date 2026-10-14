@@ -7,7 +7,11 @@ import { stickyBarPaths } from "@/layouts/SiteShell/sticky-bar-paths";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
-import { CLAIM_FIXES, COPY_FIXES } from "../../../../test/e2e/support/deviations";
+import { CLAIM_FIXES, COPY_FIXES, PROOF_ADDITIONS, PROOF_ADDITIONS_APPROVED, TEAM_STRIP_BUILD, TEXT_DEVIATIONS, VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
+import { sentences } from "../../../../test/e2e/support/parity";
+import { findBanned } from "../../../../test/guards/banned-phrases.data";
+import { filmQuotes, films } from "../films";
+import { recognitionStrip } from "../recognition";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
 import { mockupFold, mockupLinks, skeleton, words } from "../../../../test/support/mockup-compare";
 import { withFacts } from "../../../../test/support/mockup-facts";
@@ -52,10 +56,19 @@ const COPY_PAGE_LINKS: Readonly<Record<string, Readonly<Record<string, string>>>
   "see-title": { "/products/kheelu": "/products/kheelu#app" }, // home.md fold 5
 };
 
+/** The page without the blocks task 8c.3 adds (PROOF_ADDITIONS; D061 item 4: the parents' quotes and the recognition
+ *  strip): what must equal the approved page. Those blocks are tested on the page as it renders (`whole`), below. */
+function withoutAdditions(doc: Document): Document {
+  const copy = doc.cloneNode(true) as Document;
+  for (const selector of PROOF_ADDITIONS.home.selectors) for (const el of copy.querySelectorAll(selector)) el.remove();
+  return copy;
+}
+
 function rendered(mode: OfferMode) {
   const main = renderToStaticMarkup(<PageTemplate page={homePage} offer={buildOffer(mode)} path="/" />);
   const html = `<!doctype html><html><body><main id="main">${main}</main></body></html>`;
-  return { html, doc: new DOMParser().parseFromString(html, "text/html") };
+  const whole = new DOMParser().parseFromString(html, "text/html");
+  return { html, whole, doc: withoutAdditions(whole) };
 }
 
 const TOKEN = rendered("token");
@@ -313,5 +326,84 @@ describe("Home: search and share metadata (home.md At a glance; D028)", () => {
     const meta = pageMeta({ ...homePage.meta, path: "/", offer });
     expect(meta.alternates?.canonical).toBe("/");
     expect(homePage.meta.og).toEqual({ image: "/og/kheelu.jpg", alt: "Kheelu by Kheelona: the cream plush rabbit with rainbow ears and a speaker in its tummy." });
+  });
+});
+
+/* Task 8c.3 (D061 item 4 and the main session's rulings): parents' own words under the films, and the "Recognised by."
+ * strip right after the films (the /team strip as built, D054 item 20). The approved page has neither, so the tests above
+ * compare the page without them (PROOF_ADDITIONS), and these hold the blocks themselves, on the page as it renders. */
+describe("Home: parents' own words and the recognition strip (task 8c.3)", () => {
+  const WHOLE = TOKEN.whole.querySelector("main")!;
+
+  it("puts the strip right after the films, before fold 3; every other fold in the approved order", () => {
+    const order = folds(WHOLE).map((f) => f.getAttribute("aria-labelledby"));
+    expect(order).toEqual([LABELS[0], LABELS[1], "recognised-title", ...LABELS.slice(2)]);
+    expect(folds(FULL.whole.querySelector("main")!).map((f) => f.getAttribute("aria-labelledby"))).toEqual(order);
+  });
+
+  it("prints the two quotes under the films' controls, before the CTA block, each with the button that plays its film", () => {
+    const filmsFold = fold(WHOLE, "ask-title");
+    const quotes = filmsFold.querySelector(".ks-films-wrap .ks-films-ctrl + .ks-film-quotes")!;
+    expect(quotes).not.toBeNull();
+    expect(all(quotes, "blockquote").map((q) => q.textContent)).toEqual(filmQuotes.items.map((q) => q.quote));
+    expect(all(quotes, ".kh-quote__name").map((n) => n.textContent)).toEqual(filmQuotes.items.map((q) => q.name));
+    const chip = (id: string) => films.find((f) => f.id === id)!.chip;
+    expect(all(quotes, "button").map((b) => [b.textContent, b.getAttribute("aria-label")])).toEqual(
+      filmQuotes.items.map((q) => [filmQuotes.watch, `${filmQuotes.watch}: ${chip(q.film)}`]),
+    );
+    // The proof line covers them (D040) and stays; the CTA block still follows the strip.
+    expect(filmsFold.querySelector(".ks-films-proof")?.textContent).toBe("Kids doing the talking. Parents, in their own words.");
+    expect(filmsFold.querySelector(".ks-films-wrap ~ .kh-section__actions .kh-btn--cta")?.getAttribute("data-ph-capture-attribute-cta")).toBe("see-it-ask");
+    // No film before a tap.
+    expect(WHOLE.querySelector("video")).toBeNull();
+  });
+
+  it("shows the team's strip as built: its heading, the programmes in order, the marks lazy and no CTA", () => {
+    const strip = fold(WHOLE, "recognised-title");
+    expect(strip.className).toBe("kh-section kh-section--tight");
+    expect(strip.querySelector("#recognised-title")?.textContent).toBe(recognitionStrip.title);
+    expect(all(strip, ".ks-recognition__item").map((li) => li.querySelector("img")?.getAttribute("alt") || li.textContent)).toEqual([
+      "NVIDIA Inception Program",
+      "Karnataka Elevate",
+      "nasscom startups",
+      "Founders Inc",
+    ]);
+    expect(all(strip, "img").map((img) => img.getAttribute("loading"))).toEqual(["lazy", "lazy", "lazy"]);
+    expect(all(strip, ".ks-recognition__name").map((n) => n.textContent)).toEqual([...TEAM_STRIP_BUILD]);
+    expect(strip.querySelector("[data-reveal], [data-ph-capture-attribute-cta]")).toBeNull();
+  });
+
+  it("keeps the page's tracking values, its one h1 and its one LCP image", () => {
+    expect(ctaValues(WHOLE)).toEqual(ctaValues(BUILT));
+    expect(WHOLE.querySelectorAll("h1")).toHaveLength(1);
+    expect(all(WHOLE, '[fetchpriority="high"]')).toHaveLength(1);
+    expect(revealOnMoneyInDocument(TOKEN.whole)).toEqual([]);
+  });
+
+  it("hides for the pixels exactly the added blocks, each found once on the page and gone from the page compared", () => {
+    const rules = VISUAL_HIDDEN.home.filter((r) => r.approvedBy === PROOF_ADDITIONS_APPROVED);
+    expect(rules.map((r) => [r.side, r.selector])).toEqual(PROOF_ADDITIONS.home.selectors.map((s) => ["build", s]));
+    for (const selector of PROOF_ADDITIONS.home.selectors) {
+      expect(WHOLE.querySelectorAll(selector), selector).toHaveLength(1);
+      expect(BUILT.querySelectorAll(selector), selector).toHaveLength(0);
+    }
+  });
+
+  it("accepts in the text pass the added lines, word for word as the page prints them, and excuses no approved line", () => {
+    const rule = TEXT_DEVIATIONS.home.find((r) => r.approvedBy === PROOF_ADDITIONS_APPROVED)!;
+    const added = [
+      ...all(WHOLE, ".ks-film-quotes blockquote, .ks-film-quotes .kh-quote__name, .ks-film-quotes .kh-quote__role, .ks-film-quotes button"),
+      ...all(fold(WHOLE, "recognised-title"), "h2, .ks-recognition__name"),
+    ].map((el) => el.textContent!);
+    expect(added).toHaveLength(11);
+    for (const line of added) for (const s of sentences(line)) expect(rule.build!.test(s), s).toBe(true);
+    for (const line of sentences(words(MOCKUP))) expect(rule.mockup.test(line), line).toBe(false);
+  });
+
+  it("passes the claims guard on every added line, and says nothing of an age under 3", () => {
+    for (const line of PROOF_ADDITIONS.home.build) {
+      expect(findBanned(line), line).toEqual([]);
+      expect(line).not.toMatch(/\b[0-2]\s*(?:years?|yrs?|months?)\b|toddler|baby|babies/i);
+    }
   });
 });
