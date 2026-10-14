@@ -110,7 +110,11 @@ export const ENTRY_FIXTURES: { readonly [K in SectionKind]: SectionEntryOf<K> } 
       tabsLabel: "Product details",
       specs: { title: "Specs", rows: [{ term: "Ages", value: "3 to 7" }] },
       box: { title: "In the box", items: [{ icon: "package", text: "Kheelu plush toy" }] },
-      safety: { title: "Safety", items: [{ icon: "shield-check", text: "An age-graded safety layer." }] },
+      /* The product page's Safety tab line, in the live team's words (D058 item 1; product.ts). */
+      safety: {
+        title: "Safety",
+        items: [{ icon: "shield-check", text: "Every reply comes from an AI model given child-safety rules and the age you enter in the parent app, with Google’s safety filters on top." }],
+      },
       declarations: { title: "Declarations", rows: [{ term: "MRP", value: "{price:mrp} (incl. of all taxes)" }] },
     },
   },
