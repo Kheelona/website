@@ -331,9 +331,10 @@ export const KHEELONA_PLUS = {
   perk: "6 months of Kheelona+ included: stories, poems, jingles, languages and the parent app",
   build: "Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app.",
 } as const;
-/** The footer's promise on every page (navigation.ts; home.md "Footer"): the live footer's "No web browsing." (D058
- *  item 1; Kheelu does use the internet, on home Wi-Fi). Outside <main>, so no text-pass rule: the chrome's unit tests
- *  (navigation.test.ts, SiteShell.test.tsx) apply FOOTER_FIX to the mockup's footer. */
+/** The footer's promise on every page (navigation.ts; home.md "Footer"; deviations.md V36): the live footer's "No web
+ *  browsing." (D058 item 1; Kheelu does use the internet, on home Wi-Fi). Outside <main>, so no text-pass rule, and the
+ *  chrome's footer pixels stay within tolerance at the three widths (chrome.spec.ts); the chrome's unit tests
+ *  (navigation.test.ts, SiteShell.test.tsx, not-found.test.tsx) apply FOOTER_FIX to the mockup's footer. */
 export const FOOTER_PROMISE = {
   mockup: "Press to talk. No open internet. You read every conversation.",
   build: "Press to talk. No web browsing. You read every conversation.",
@@ -421,11 +422,13 @@ export const CLAIM_FIXES = {
       "The AI model gets child-safety rules for that age, with Google’s safety filters on top.",
       KHEELONA_PLUS.build,
     ],
-    /* Fold 5's three bullets and fold 6's three bodies wrap to other heights; the FAQ answer sits in a closed item. */
+    /* Fold 5's three bullets, fold 6's three bodies and the Kheelona+ line under the offer card (one more line at 360)
+       wrap to other heights; the FAQ answer sits in a closed item. */
     hidden: {
       both: [
         ...[2, 3, 4].map((n) => `section[aria-labelledby="see-title"] .kh-trust__item:nth-child(${n}) .kh-trust__body`),
         ...[1, 2, 3].map((n) => `section[aria-labelledby="safety-title"] .kh-trust__item:nth-child(${n}) .kh-trust__body`),
+        "#offer + .kh-body-s",
       ],
       mockup: [],
       build: [],
@@ -1135,7 +1138,8 @@ export const CLAIM_FIXES = {
     ],
     mockup: ["You can delete any of them sooner, in one tap."],
     build: [],
-    hidden: { both: ['section[aria-labelledby="kheelu-title"] .kh-trust__item:nth-child(3) .kh-trust__body'], mockup: [], build: [] },
+    /* The item is a line shorter; its section is labelled otherwise on each side, so the guide's one facts list names it. */
+    hidden: { both: [".kh-trust > .kh-trust__item:nth-child(3) .kh-trust__body"], mockup: [], build: [] },
     reason: "the retention line policies.ts prints, without its one-tap sentence (D058 items 1 and 9); the guide's other words are task 8b.2's",
     approvedBy: claimsApproved("V35", "policies.ts RETENTION_LINE"),
   },
