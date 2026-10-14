@@ -890,7 +890,7 @@ The founder answered its three questions (D059). Next: wave i of 8b.2 (8b.2a, 8b
 validator and source switch; 3621/6221), 8b.2c (VideoEmbed and the frame-src patch, a frozen file through a reviewed
 diff; 3622/6222). 8b.1 still running (`wf_c359ee74-7a4`).
 
-## [2026-10-14 13:52] deploy | `beta` pushed: Vercel deployed it behind Vercel login; CI's `npm ci` needed one lock entry; the live `main` has open security alerts (G25)
+## [2026-10-14 13:34] deploy | `beta` pushed: Vercel deployed it behind Vercel login; CI's `npm ci` needed one lock entry; the live `main` has open security alerts (G25)
 The founder refreshed the gh login (`apoorva262` now has the `workflow` scope; a first try approved as `apoorvakheelona`
 failed). `git push origin reset/website-v2:refs/heads/beta` (fast-forward from `24e92e3`): `c2e0f1d`, then `82b9444`;
 `main` untouched (`8c4718a`). Vercel: "Deployment has completed"; `betawebsite` and `betastore.kheelona.com` answer 302 to
