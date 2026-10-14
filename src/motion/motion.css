@@ -227,7 +227,9 @@ html[data-buybar="shown"] .ks-wa.is-hidden {
    Reveals and doodles show in their final state; the bar and the bubble's label keep an opacity fade only (DS
    README.md:161: drop movement, keep fades); the drawer appears without sliding; the arrow does not nudge; the
    film does not grow; the FAQ opens instantly; the bubble still clears the bar and steps aside on a phone, without
-   moving there. */
+   moving there. As the bar fades out in place, its controller keeps html[data-buybar="shown"] until the fade has
+   ended, so the bubble drops only once the bar has gone and never sits on its button (StickyBuyBar.client.tsx; task
+   7.1a, CMO built-page review B, m5; a delayed transform here would be movement under reduced motion). */
 @media (prefers-reduced-motion: reduce) {
   html[data-scroll-behavior="smooth"] {
     scroll-behavior: auto;

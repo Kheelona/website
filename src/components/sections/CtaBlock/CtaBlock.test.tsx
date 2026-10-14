@@ -111,8 +111,9 @@ describe("CtaBlock: the block", () => {
 
   it("links every trust item to its terms with an accessible name, and the help line to WhatsApp and the phone", () => {
     render(<CtaBlock {...hero} {...context()} />);
-    expect(screen.getByRole("link", { name: "Deliveries start mid-November" })).toHaveAttribute("href", "/shipping");
-    expect(screen.getByRole("link", { name: "7-day returns, no questions asked" })).toHaveAttribute("href", "/refund");
+    // Each to the part of its terms page that keeps the promise (task 7.1a, CMO built-page review C, m8).
+    expect(screen.getByRole("link", { name: "Deliveries start mid-November" })).toHaveAttribute("href", "/shipping#when");
+    expect(screen.getByRole("link", { name: "7-day returns, no questions asked" })).toHaveAttribute("href", "/refund#returns");
     expect(screen.getByRole("link", { name: "WhatsApp" })).toHaveAttribute("href", "https://wa.me/919187546483");
     expect(screen.getByRole("link", { name: "call +91 91875 46483" })).toHaveAttribute("href", "tel:+919187546483");
   });

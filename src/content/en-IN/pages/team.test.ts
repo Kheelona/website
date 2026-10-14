@@ -323,7 +323,11 @@ describe("fold 4: why we build Kheelu", () => {
     expect(plain(quote.text)).toBe(norm(el.querySelector(".kh-quote__text")?.textContent));
     expect(plain(quote.name)).toBe(norm(el.querySelector(".kh-quote__name")?.textContent));
     expect(plain(quote.role!)).toBe(norm(el.querySelector(".kh-quote__role")?.textContent));
-    expect(quote.initials).toBe(norm(el.querySelector(".kh-quote__avatar")?.textContent));
+    // The mockup's "AS" initials badge is his live photo in the build, alt empty beside his name (task 7.1a, CMO M10;
+    // deviations.md V7): the same file as his founder card's.
+    expect(norm(el.querySelector(".kh-quote__avatar")?.textContent)).toBe("AS");
+    expect(quote.initials).toBeUndefined();
+    expect(quote.photo).toEqual({ src: "/team/apoorva.jpg", width: 480, height: 480, alt: "" });
     expect(el.querySelector(".kh-quote")!.classList.contains(`kh-tone-${quote.tone}`)).toBe(true);
     expect({ name: quote.name, role: quote.role }).toEqual({ name: organization.founders[0].name, role: organization.founders[0].role });
   });

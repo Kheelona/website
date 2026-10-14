@@ -334,4 +334,20 @@ describe("FeatureSplit: quote (team fold 4)", () => {
       f,
     );
   });
+
+  it("passes the person's photo to the quote, in the avatar's place (task 7.1a, CMO M10; the team page's live photo)", () => {
+    const photo = { src: "/team/apoorva.jpg", width: 480, height: 480, alt: "" } as const;
+    const { container } = render(
+      <FeatureSplit
+        offer={offer}
+        variant="quote"
+        heading={{ id: "why-title", title: "Why we build Kheelu." }}
+        copy={["We are parents who build."]}
+        quote={{ text: "The trust first.", name: "Apoorva Sahu", role: "Co-Founder and CEO", photo, tone: "sun" }}
+      />,
+    );
+    const who = container.querySelector(".kh-quote__who")!;
+    expect(who.querySelector(".kh-quote__avatar")).toBeNull();
+    expect(who.querySelector(".kh-avatar img")?.getAttribute("alt")).toBe("");
+  });
 });

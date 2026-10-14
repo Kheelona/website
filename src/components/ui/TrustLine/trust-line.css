@@ -1,6 +1,10 @@
 /* TrustLine (task 2.4): the linked trust line beside every CTA. Ported from mockup.css:107-109 (.mk-trust), :31
    (the link's 44 px tap area without taller lines, CMO M3 and V4) and :128 (the link box itself reaches 28 px for
-   axe target-size without moving the line). The DS kh-trustline sets the row, gap, type and icon colour. */
+   axe target-size without moving the line). The DS kh-trustline sets the row, gap, type and icon colour.
+   The tap area reaches 12 px above and below each link (16 px past the line with the link box's padding), so rows of
+   the line sit --space-5 apart and nothing tappable may start closer under it: a help line below keeps --space-5
+   (help-line.css; task 7.1a, CMO built-page review A, B1, where a tap on "7-day returns, no questions asked" opened
+   WhatsApp). The links are whole items, never words inside a sentence, so they keep their extension. */
 .ks-trust {
   row-gap: var(--space-5);
 }

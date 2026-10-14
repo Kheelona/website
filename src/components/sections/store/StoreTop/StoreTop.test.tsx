@@ -58,8 +58,8 @@ describe("StoreTop", () => {
     render(<StoreTop content={content} offer={token} newTabNote={NOTE} />);
     const links = within(screen.getByRole("list")).getAllByRole("link");
     expect(links.map((a) => [a.getAttribute("href"), a.getAttribute("target"), a.getAttribute("rel")])).toEqual([
-      [`${MARKETING_ORIGIN}/shipping`, "_blank", "noopener"],
-      [`${MARKETING_ORIGIN}/refund`, "_blank", "noopener"],
+      [`${MARKETING_ORIGIN}/shipping#when`, "_blank", "noopener"],
+      [`${MARKETING_ORIGIN}/refund#returns`, "_blank", "noopener"],
     ]);
     expect(links.map((a) => a.textContent)).toEqual([`Deliveries start mid-November${NOTE}`, `7-day returns, no questions asked${NOTE}`]);
   });

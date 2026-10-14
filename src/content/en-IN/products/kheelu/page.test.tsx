@@ -16,7 +16,7 @@ import { PAGE_FACTS } from "../../../../../test/e2e/support/page-facts";
 import { sentences } from "../../../../../test/e2e/support/parity";
 import { ROOT } from "../../../../../test/e2e/support/repo";
 import { mockupRoute as mockupPageRoute } from "../../../../../test/e2e/support/routes";
-import { mockupPage, mockupRoute, STORE, words } from "../../../../../test/support/mockup-compare";
+import { mockupLinks, mockupPage, STORE, words } from "../../../../../test/support/mockup-compare";
 import { factSentences, hiddenProblems, ruleReach, withFacts } from "../../../../../test/support/mockup-facts";
 import { faqs } from "../../faqs";
 import { films } from "../../films";
@@ -109,9 +109,10 @@ describe("the product page as rendered (token mode)", () => {
   });
 
   it("links every address the mockup links, in the same order (the store as this build's store)", () => {
-    const hrefs = (root: Element, read: (href: string) => string) => [...root.querySelectorAll("a[href]")].map((a) => read(a.getAttribute("href")!));
-    expect(hrefs(BUILT.main, (h) => h)).toEqual(hrefs(MOCKUP, mockupRoute));
-    expect(hrefs(BUILT.main, (h) => h).filter((h) => h === STORE)).toHaveLength(4);
+    const hrefs = (root: Element) => [...root.querySelectorAll("a[href]")].map((a) => a.getAttribute("href")!);
+    // mockupLinks: the mockup's addresses as routes, each trust link with its part of the terms page (task 7.1a, m8).
+    expect(hrefs(BUILT.main)).toEqual(mockupLinks(MOCKUP));
+    expect(hrefs(BUILT.main).filter((h) => h === STORE)).toHaveLength(4);
   });
 
   it("carries the mockup's CTA values, in order (architecture §8.3; meet-kheelu.md \"CTA tracking values\")", () => {

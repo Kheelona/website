@@ -23,8 +23,11 @@ import { FONT_PRELOADS } from "@/styles/generated/fonts.generated";
  * - Viewport: the approved mockup's (mockup/build.mjs:37), `viewport-fit=cover` included. Browsers give
  *   `env(safe-area-inset-*)` a value only under it, and the buy bar's foot (G-09, D041), the WhatsApp bubble's offset
  *   (D050) and the footer's clearance (`ks-has-float`) all add the inset; Next's default viewport leaves it out.
- * - `data-scroll-behavior="smooth"`: motion.css's hook for the mockup's smooth anchor scrolling; Next 16 resets it to
- *   `auto` during route changes only when the attribute is there (architecture §11.3).
+ * - No `data-scroll-behavior` in the server HTML: motion.css's hook for the mockup's smooth anchor scrolling (Next 16
+ *   resets scrolling to `auto` during route changes only when `data-scroll-behavior="smooth"` is on <html>;
+ *   architecture §11.3) arrives once the page has loaded, from MotionController (both shells mount it), so the
+ *   browser's own jump to a URL's #fragment never glides (task 7.1a; CMO built-page review A, M1). The attribute is
+ *   the client's then, which suppressHydrationWarning on <html> already allows.
  * - The three font preloads are the faces every hero uses (generated list, ≤ 130 KB; QA N17), given to React's
  *   `preload()` as Next's metadata guide says: React puts each `<link rel="preload">` in the head once (a `<link>`
  *   written into the head by hand comes out twice, once hoisted and once in place).
@@ -48,7 +51,7 @@ export const viewport: Viewport = { width: "device-width", initialScale: 1, view
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   for (const font of FONT_PRELOADS) preload(font.href, { as: "font", type: font.type, crossOrigin: "anonymous" });
   return (
-    <html lang="en-IN" data-scroll-behavior="smooth" suppressHydrationWarning>
+    <html lang="en-IN" suppressHydrationWarning>
       <head>
         {SITE_ENV !== "beta" && <script src="https://analytics.ahrefs.com/analytics.js" data-key={AHREFS_ANALYTICS_KEY} async />}
       </head>

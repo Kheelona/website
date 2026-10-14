@@ -69,8 +69,13 @@ describe("the footer", () => {
     expect(navigation.footer.columns.map((c) => c.id)).toEqual(["kheelu", "read", "help"]);
   });
 
-  it("links the grievance officer line to the contact page (D032)", () => {
-    expect([navigation.footer.grievance]).toEqual(links(home.querySelector(".kh-footer__legal"), "span:last-child a"));
+  /* QA-005 (wiki/qa/defects.md; the main session's ruling for task 7.1a): the approved mockup links contact.html with no
+     fragment, so a parent looking for the grievance officer landed at the top of /contact; the build opens the officer's
+     block itself, `#grievance` (contact.ts fold 3, the D032 wording). */
+  it("links the grievance officer line to the officer's block on the contact page (D032; QA-005)", () => {
+    const [approved] = links(home.querySelector(".kh-footer__legal"), "span:last-child a");
+    expect(approved).toEqual({ label: "Grievance officer", href: "/contact" });
+    expect(navigation.footer.grievance).toEqual({ label: approved.label, href: "/contact#grievance" });
   });
 });
 

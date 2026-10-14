@@ -105,7 +105,9 @@ export const navigation = {
         ],
       },
     ],
-    grievance: { label: "Grievance officer", href: "/contact" },
+    /* The officer's own block on /contact (contact.ts fold 3, `#grievance`), where the approved mockup links the page's
+       top (QA-005, the main session's ruling for task 7.1a). */
+    grievance: { label: "Grievance officer", href: "/contact#grievance" },
   },
   policies: [
     { label: "Pre-order terms", href: "/terms" },

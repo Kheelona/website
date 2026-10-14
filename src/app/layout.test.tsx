@@ -7,7 +7,7 @@ import { FONT_PRELOADS } from "@/styles/generated/fonts.generated";
 import { SITE_LANGUAGE } from "@/layouts/SiteShell/site-graph";
 
 /* The root layout (task 3.1; architecture §4.1, §9.1, §10, §11.3, §15.3; structure §3.1). Shared by the marketing site
- * and the store: <html lang="en-IN"> with the smooth-scroll hook, the one CSS entry, the three font preloads, the
+ * and the store: <html lang="en-IN"> (the smooth-scroll hook arrives from the client, task 7.1a), the one CSS entry, the three font preloads, the
  * canonical metadata base, noindex on beta, Ahrefs in the head except on beta, the bubble's clearance class on <body>,
  * and the five measurement tools last in <body>. test/analytics-tags.test.ts guards the tags' wording and stays
  * unedited (its owner is 5.11). */
@@ -43,11 +43,14 @@ afterEach(() => {
 const SOURCE = readFileSync("src/app/layout.tsx", "utf8");
 
 describe("root layout: the document", () => {
-  it("is <html lang=\"en-IN\"> with the smooth in-page scroll hook motion.css reads", async () => {
+  /* The smooth in-page scroll hook motion.css reads (html[data-scroll-behavior="smooth"]) is not in the server HTML: it
+     arrives once the page has loaded, from MotionController, so a landing at a #fragment jumps (task 7.1a, CMO M1;
+     MotionController.test.tsx, test/e2e/anchors.spec.ts). */
+  it("is <html lang=\"en-IN\">, without the smooth-scroll hook, which the client adds once the page has loaded", async () => {
     const { doc } = await layoutFor("production");
     expect(doc.documentElement.getAttribute("lang")).toBe("en-IN");
     expect(doc.documentElement.getAttribute("lang")).toBe(SITE_LANGUAGE);
-    expect(doc.documentElement.getAttribute("data-scroll-behavior")).toBe("smooth");
+    expect(doc.documentElement.hasAttribute("data-scroll-behavior")).toBe(false);
   });
 
   it("gives <body> the mockup's page classes and the WhatsApp bubble's clearance (every page carries the bubble)", async () => {

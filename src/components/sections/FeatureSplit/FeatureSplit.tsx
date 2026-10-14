@@ -166,7 +166,7 @@ function Body({
             </div>
             <Quote
               quote={text(quote.text)}
-              cite={{ name: text(quote.name), role: quote.role === undefined ? undefined : text(quote.role), initials: quote.initials }}
+              cite={{ name: text(quote.name), role: quote.role === undefined ? undefined : text(quote.role), initials: quote.initials, photo: quote.photo }}
               tone={quote.tone}
             />
           </Split>

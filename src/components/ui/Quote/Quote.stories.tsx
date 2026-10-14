@@ -17,5 +17,10 @@ type Story = StoryObj<typeof meta>;
 
 /** The founder's quote (team.html fold 4). */
 export const Default: Story = {};
+/** With the person's photo in the avatar's place (the team page's quote since task 7.1a; DS Avatar, alt empty beside
+ *  the printed name). */
+export const WithPhoto: Story = {
+  args: { cite: { name: "Apoorva Sahu", role: "Co-Founder and CEO", photo: { src: "/team/apoorva.jpg", width: 480, height: 480, alt: "" } } },
+};
 /** Without an avatar or role. */
 export const NameOnly: Story = { args: { tone: undefined, cite: { name: "Apoorva Sahu" } } };

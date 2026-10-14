@@ -9,6 +9,11 @@
 .ks-beside .kh-trustline {
   margin-top: 0;
 }
+/* The help line under the trust line sits --space-5 below it, two tap extensions (task 7.1a, B1; help-line.css): the
+   group's gap gives --space-2 of it. */
+.ks-beside > .ks-trust + .ks-help {
+  margin-top: calc(var(--space-5) - var(--space-2));
+}
 /* Centred blocks (mockup.css:96, .mk-beside--center); the trust row centres itself (TrustLine center, mockup.css:97). */
 .ks-beside--center {
   justify-items: center;

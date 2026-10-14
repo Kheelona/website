@@ -301,6 +301,76 @@ describe("MotionController", () => {
   });
 });
 
+/* Smooth anchor scrolling once the page has loaded (task 7.1a; CMO built-page review A, M1). motion.css glides in-page
+ * anchor jumps on <html data-scroll-behavior="smooth"> (the mockup's anchor scrolling; Next 16 reads the same attribute
+ * to jump on a route change). Present in the server HTML, it made the browser's own jump to a URL's #fragment glide from
+ * the top through 10,600 px of half-revealed blocks (/faq, /products/kheelu#faq). The controller sets it a frame after
+ * the page's load event instead, whatever the motion setting (motion.css turns smooth scrolling off under reduced
+ * motion), once per page load: the shell outlives a client navigation, and the attribute with it. */
+describe("MotionController: smooth anchor scrolling once the page has loaded (task 7.1a)", () => {
+  let state: DocumentReadyState = "complete";
+  beforeEach(() => {
+    state = "complete";
+    Object.defineProperty(document, "readyState", { configurable: true, get: () => state });
+    // The other cases' controllers turned it on: each case starts from a page that has not.
+    delete html().dataset.scrollBehavior;
+  });
+  afterEach(() => {
+    delete (document as unknown as Record<string, unknown>).readyState;
+    delete html().dataset.scrollBehavior;
+  });
+
+  it("turns it on a frame after the load event, never before: a landing at a #fragment jumps", async () => {
+    state = "loading";
+    render(<MotionController />);
+    await nextFrame();
+    expect(html().dataset.scrollBehavior).toBeUndefined();
+    state = "complete";
+    act(() => {
+      window.dispatchEvent(new Event("load"));
+    });
+    expect(html().dataset.scrollBehavior, "it waits for the frame after the load").toBeUndefined();
+    await nextFrame();
+    expect(html().dataset.scrollBehavior).toBe("smooth");
+  });
+
+  it("turns it on at the next frame when the page has already loaded", async () => {
+    render(<MotionController />);
+    expect(html().dataset.scrollBehavior).toBeUndefined();
+    await nextFrame();
+    expect(html().dataset.scrollBehavior).toBe("smooth");
+  });
+
+  it("turns it on with reduced motion too: motion.css keeps the scroll a jump there, and Next reads the attribute", async () => {
+    vi.spyOn(window, "matchMedia").mockImplementation(
+      (query: string) => ({ matches: query === REDUCE, media: query, addEventListener: vi.fn(), removeEventListener: vi.fn() }) as unknown as MediaQueryList,
+    );
+    render(<MotionController />);
+    await nextFrame();
+    expect(html()).not.toHaveClass("js-motion");
+    expect(html().dataset.scrollBehavior).toBe("smooth");
+  });
+
+  it("keeps it across a client navigation, and turns nothing on if it leaves before the page has loaded", async () => {
+    const view = render(<MotionController />);
+    await nextFrame();
+    nav.pathname = "/safety";
+    view.rerender(<MotionController />);
+    await nextFrame();
+    expect(html().dataset.scrollBehavior).toBe("smooth");
+    view.unmount();
+    delete html().dataset.scrollBehavior;
+    state = "loading";
+    render(<MotionController />).unmount();
+    state = "complete";
+    act(() => {
+      window.dispatchEvent(new Event("load"));
+    });
+    await nextFrame();
+    expect(html().dataset.scrollBehavior).toBeUndefined();
+  });
+});
+
 /* Targets added after it armed (task 2.12; architecture §11.3, authoring rule): a client-only island or a streamed
  * block lands in the page after the first frame. Under html.js-motion such a block would sit at opacity 0 for good
  * unless the controller takes it too. One MutationObserver on document.body (childList, subtree) hands each added

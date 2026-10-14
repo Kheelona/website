@@ -188,13 +188,15 @@ describe("/ai-toys-for-kids-in-india: the rendered page against the approved moc
       Array.from(root.querySelectorAll("a[href]"))
         .map((a) => a.getAttribute("href")!)
         .filter((h) => !/^(?:#|https?:|tel:)/.test(h));
+    // The close's trust links open their part of the terms page (task 7.1a, CMO built-page review C, m8); the mockup
+    // links the pages' tops.
     expect(internal(main)).toEqual([
       "/stories/what-to-look-for-in-a-safe-ai-toy",
       "/safety",
       "/products/kheelu",
       "/safety",
-      "/shipping",
-      "/refund",
+      "/shipping#when",
+      "/refund#returns",
     ]);
     expect(internal(mockupMain).filter((h) => h !== "store.html")).toEqual([
       "story-what-to-look-for-in-a-safe-ai-toy.html",

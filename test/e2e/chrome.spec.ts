@@ -5,6 +5,7 @@ import { expect, hideForParity, motionStarted, requiresServer, test, type OpenOp
 import { ORIGINS, REAL_ORIGINS, STORYBOOK_PORT, TARGET } from "./support/env";
 import { CHUNK_MAX_DIFF_RATIO } from "./support/parity";
 import { builtUrl } from "./support/routes";
+import { STAND_IN_ON, STAND_IN_PENDING, ensureStandIn, signedEventRoute } from "./support/store-stand-in";
 import { APPROVED_WIDTHS, VIEWPORTS, type Viewport } from "./support/viewports";
 
 /* The chrome on a built route (task 3.1; tasks.md 3.1 "Test", architecture §5.2, §5.3, §11.2 rows 4, 5 and D050, §13).
@@ -33,7 +34,10 @@ import { APPROVED_WIDTHS, VIEWPORTS, type Viewport } from "./support/viewports";
  *     lines; lifts by the bar's height while the bar shows and drops when it steps aside; hidden with the drawer open;
  *     its laptop label on hover and focus; reached by keyboard after the page content; nothing moves with reduced
  *     motion. On a phone it steps aside: from the store's form (task 4.7), and from the prices of Home and the product
- *     page, lifted or not, and the paid /thanks address step (task 4.9); each swept top to bottom at every phone size.
+ *     page, lifted or not, and the paid /thanks address step (task 4.9); each swept top to bottom at every phone size;
+ *     from the store's and the event page's agreement card and answers, every answer open, swept in 40 px steps at 360,
+ *     390 and 412 against every ₹ amount too (task 7.1a, CMO built-page review C, B1); with reduced motion it waits for
+ *     the bar's fade before it drops, frame by frame (task 7.1a, review B, m5).
  *   - The layouts as served: lang, the smooth-scroll hook, the body classes, the three font preloads, the mockup's
  *     viewport with viewport-fit=cover (the safe areas) on both hosts, noindex, nofollow on beta and no robots meta
  *     elsewhere; the store layout noindex, its policy links on the marketing site of the target.
@@ -354,7 +358,8 @@ const bubbleGap = (page: Page) => page.locator(".ks-wa").evaluate((el) => innerH
 
 /** What the bubble must never cover (D050, architecture §5.3): the bar, a price, a form field, the pay button. On
  *  Home the bar and the hero's price sentence match (5.1); the store's form and pay button join with 5.15; the offer
- *  card's split and fine print, which print prices too, with 4.9. */
+ *  card's split and fine print, which print prices too, with 4.9; the store's agreement card and an open answer of the
+ *  store's questions, which print the price and what is paid today, with 7.1a (CMO built-page review C, B1). */
 const NEVER_COVERED = [
   ".kh-buybar",
   ".kh-buybar__price",
@@ -363,11 +368,40 @@ const NEVER_COVERED = [
   ".kh-offer__prices",
   ".kh-offer__split",
   ".kh-offer__fine",
+  ".ks-agree",
+  ".ks-faq details[open]",
   "input:not([type=hidden])",
   "select",
   "textarea",
   "button[type=submit]",
 ].join(", ");
+
+/** The ₹ amounts in <main> a visitor can see that the bubble covers, by their words (task 7.1a): a check of the price
+ *  itself, whichever element prints it, so a price outside every NEVER_COVERED block is still caught. */
+function coveredAmounts(page: Page): Promise<string[]> {
+  return page.evaluate(() => {
+    const bubble = document.querySelector<HTMLElement>(".ks-wa");
+    if (!bubble || !bubble.checkVisibility({ opacityProperty: true, visibilityProperty: true })) return [];
+    const b = bubble.getBoundingClientRect();
+    const main = document.querySelector("main");
+    if (!main) return [];
+    const found: string[] = [];
+    const walker = document.createTreeWalker(main, NodeFilter.SHOW_TEXT);
+    for (let node = walker.nextNode() as Text | null; node; node = walker.nextNode() as Text | null) {
+      const parent = node.parentElement;
+      if (!parent?.checkVisibility({ opacityProperty: true, visibilityProperty: true })) continue;
+      for (const m of node.data.matchAll(/₹[\d,]+/g)) {
+        const range = document.createRange();
+        range.setStart(node, m.index);
+        range.setEnd(node, m.index + m[0].length);
+        for (const r of Array.from(range.getClientRects())) {
+          if (r.width > 1 && r.height > 1 && r.left < b.right && r.right > b.left && r.top < b.bottom && r.bottom > b.top) found.push(m[0]);
+        }
+      }
+    }
+    return found;
+  });
+}
 
 /** The elements matching `selector` that a visitor can see and that the bubble covers, by tag and class. */
 function coveredByBubble(page: Page, selector: string): Promise<string[]> {
@@ -478,6 +512,43 @@ test.describe("chrome: WhatsApp bubble (D050)", () => {
     expect(await bubbleGap(page)).toBeCloseTo(16 + (await barState(page)).barHeight!, 0);
     const bubbleMotion = (await motionStarted(page)).filter((m) => /ks-wa/.test(m.target));
     expect(bubbleMotion).toEqual([]);
+  });
+
+  test("with reduced motion it waits for the bar to fade before it drops: no frame finds it on the bar while the bar shows (B m5)", async ({ harness }) => {
+    // CMO built-page review B, m5: with reduced motion the bar fades out in place over --duration-base (pick 4) while the
+    // bubble dropped at once, so for about 200 ms it sat on the bar's "Pre-order Kheelu" button. D050: never on the bar.
+    const page = await openBuilt(harness, phone390, { reducedMotion: "reduce" });
+    const at = await plantInlineAfterHero(page);
+    await scrollToY(page, at.between);
+    await expect.poll(async () => (await barState(page)).published).toBe("shown");
+    await page.waitForTimeout(400);
+    expect(await bubbleGap(page)).toBeCloseTo(16 + (await barState(page)).barHeight!, 0);
+    // Every frame from here on: the bar's opacity, and whether the bubble's box meets the bar's.
+    await page.evaluate(() => {
+      const w = window as unknown as { __khFrames: { opacity: number; overlap: boolean }[] };
+      w.__khFrames = [];
+      const bar = document.querySelector<HTMLElement>(".kh-buybar")!;
+      const bubble = document.querySelector<HTMLElement>(".ks-wa")!;
+      const tick = () => {
+        const a = bar.getBoundingClientRect();
+        const b = bubble.getBoundingClientRect();
+        w.__khFrames.push({ opacity: Number(getComputedStyle(bar).opacity), overlap: a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top });
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    });
+    const frames = () => page.evaluate(() => (window as unknown as { __khFrames: { opacity: number; overlap: boolean }[] }).__khFrames);
+    // The bar steps aside for the inline button, then hides for the hero: two fades out, each watched frame by frame.
+    for (const [y, state] of [[at.inline, "aside"], [at.between, "shown"], [at.top, "hidden"]] as const) {
+      await scrollToY(page, y);
+      await expect.poll(async () => (await barState(page)).published).toBe(state);
+      await page.waitForTimeout(600);
+    }
+    const seen = await frames();
+    expect(seen.filter((f) => f.opacity > 0 && f.opacity < 1).length, "frames caught the bar mid-fade").toBeGreaterThan(0);
+    expect(seen.filter((f) => f.overlap && f.opacity > 0), "frames with the bubble on the bar while the bar shows").toEqual([]);
+    // Once the bar has gone, the bubble rests in its place.
+    expect(await bubbleGap(page)).toBeCloseTo(16, 0);
   });
 
   test("is hidden while the drawer is open", async ({ harness }) => {
@@ -635,6 +706,89 @@ test.describe("chrome: WhatsApp bubble beside the store's form (task 4.7; D050)"
   });
 });
 
+/* ── WhatsApp bubble beside the store's prices (task 7.1a; CMO built-page review C, B1; D050) ─────────────────────────
+
+   D050: the bubble never covers the price. On the store and the signed event page, below 900 px, the agreement card
+   (`.ks-agree`) and the questions (`.ks-faq`) render after the form's #details, outside it, and print the price and what
+   is paid today; the bubble stepped aside only from #details, so at rest it sat over "₹4,999" in the card at 412 px and
+   over an open answer's amount at 360 px. These sweep both pages in 40 px steps (the review's own grain; a quarter-screen
+   step can pass over a line) with every answer open, at 360, 390 and 412, checking NEVER_COVERED and every ₹ amount the
+   page prints, and prove the sweep is not vacuous. Both pages sell only against the read-only store stand-in
+   (test/e2e/support/store-stand-in.ts); without it the store shows its not-configured state and the cases skip. */
+
+const STORE_PRICE_PHONES = [360, 390, 412].map((w) => VIEWPORTS.find((v) => v.group === "phone" && v.width === w)!);
+
+/** Opens every one of the store's answers, as a parent reading them all would. */
+async function openStoreAnswers(page: Page): Promise<number> {
+  return page.evaluate(() => {
+    const items = Array.from(document.querySelectorAll<HTMLDetailsElement>(".ks-faq details"));
+    for (const item of items) item.open = true;
+    return items.length;
+  });
+}
+
+/** Sweeps the page top to bottom in `step` px: at each stop the bubble covers nothing of NEVER_COVERED and no ₹ amount,
+ *  and is aside in full or at rest. Returns the states it met. */
+async function sweepPrices(page: Page, step = 40): Promise<string[]> {
+  const height = await page.evaluate(() => document.documentElement.scrollHeight - innerHeight);
+  const seen = new Set<string>();
+  for (let y = 0; y < height + step; y += step) {
+    const at = Math.min(y, height);
+    await scrollToY(page, at);
+    await expect
+      .poll(async () => [...(await coveredByBubble(page, NEVER_COVERED)), ...(await coveredAmounts(page))], { message: `scrolled to ${at}`, timeout: 3000 })
+      .toEqual([]);
+    const state = await bubbleAside(page);
+    expect([ASIDE, AT_REST], `scrolled to ${at}: aside in full or at rest`).toContainEqual(state);
+    seen.add(state.hidden ? "aside" : "rest");
+  }
+  return [...seen].sort();
+}
+
+test.describe("chrome: WhatsApp bubble beside the store's prices (task 7.1a; D050)", () => {
+  test.beforeEach(async () => {
+    if (STAND_IN_ON) await ensureStandIn();
+  });
+
+  for (const vp of STORE_PRICE_PHONES) {
+    test(`on the store, every answer open, it never covers a price, top to bottom ${vp.name}`, async ({ harness }) => {
+      const page = await openBuilt(harness, vp, {}, STORE);
+      test.skip((await page.locator("#details").count()) === 0, "the store is not configured here (no form, no agreement card): run with the read-only stand-in's environment");
+      expect(await openStoreAnswers(page), "the store's questions").toBeGreaterThan(0);
+      expect(await sweepPrices(page)).toEqual(["aside", "rest"]);
+    });
+
+    test(`on the signed event page, every answer open, it never covers a price, top to bottom ${vp.name}`, async ({ harness }) => {
+      test.skip(!STAND_IN_ON, STAND_IN_PENDING);
+      const page = await openBuilt(harness, vp, {}, signedEventRoute());
+      expect(await openStoreAnswers(page), "the event page's questions").toBeGreaterThan(0);
+      expect(await sweepPrices(page)).toEqual(["aside", "rest"]);
+    });
+  }
+
+  test("the sweep is not vacuous: at rest the bubble would cover a price of the agreement card (412 x 780)", async ({ harness }) => {
+    const page = await openBuilt(harness, STORE_PRICE_PHONES[2], {}, STORE);
+    test.skip((await page.locator("#details").count()) === 0, "the store is not configured here: run with the read-only stand-in's environment");
+    // The card's first amount right under the bubble's resting place.
+    const y = await page.evaluate(() => {
+      const card = document.querySelector(".ks-agree")!;
+      const walker = document.createTreeWalker(card, NodeFilter.SHOW_TEXT);
+      let node = walker.nextNode() as Text | null;
+      while (node && !/₹/.test(node.data)) node = walker.nextNode() as Text | null;
+      const range = document.createRange();
+      range.selectNodeContents(node!);
+      const r = range.getBoundingClientRect();
+      const b = document.querySelector(".ks-wa")!.getBoundingClientRect();
+      return Math.round(r.top + scrollY + r.height / 2 - (b.top + b.height / 2));
+    });
+    await scrollToY(page, y);
+    await expect.poll(() => bubbleAside(page)).toEqual(ASIDE);
+    expect(await coveredAtRest(page, ".ks-agree")).toEqual(["<section.kh-card.ks-agree>"]);
+    expect(await coveredByBubble(page, NEVER_COVERED)).toEqual([]);
+    expect(await coveredAmounts(page)).toEqual([]);
+  });
+});
+
 /* ── WhatsApp bubble beside the prices on Home and the product page, and the paid /thanks address step (task 4.9) ──
 
    D050: the bubble never covers the price. 4.7 found that it could on the marketing pages: at 324 x 566 the resting
@@ -768,7 +922,8 @@ test.describe("chrome: the layouts as served", () => {
   test("root layout: lang, smooth scrolling, body classes, three font preloads, the viewport, robots only on beta", async ({ harness }) => {
     const page = await openBuilt(harness, phone390);
     expect(await page.evaluate(() => document.documentElement.lang)).toBe("en-IN");
-    expect(await page.evaluate(() => document.documentElement.dataset.scrollBehavior)).toBe("smooth");
+    // Set once the page has loaded (task 7.1a, CMO M1: a landing at a #fragment jumps; anchors.spec.ts), so polled.
+    await expect.poll(() => page.evaluate(() => document.documentElement.dataset.scrollBehavior ?? null)).toBe("smooth");
     expect(await page.evaluate(() => [...document.body.classList].filter((c) => c.startsWith("k")))).toEqual(["kh-page", "ks-has-float"]);
     const preloads = await page.evaluate(() => Array.from(document.querySelectorAll('link[rel="preload"][as="font"]')).map((l) => new URL((l as HTMLLinkElement).href).pathname));
     expect(preloads.sort()).toEqual(["/fonts/baloo2-variable-latin.woff2", "/fonts/kalam-bold-latin.woff2", "/fonts/nunito-variable-latin.woff2"]);

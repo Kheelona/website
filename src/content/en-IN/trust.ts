@@ -4,29 +4,33 @@ import { PAYMENT_METHODS, RETURN_DAYS, WARRANTY_MONTHS } from "./policies";
 /**
  * The trust items (architecture §6.1; strategy §3.2): each a short promise linked to its terms,
  * defined once. Returns and warranty link to /refund, payment to /terms, delivery to /shipping
- * (home.md "CTA block", "Links and rendering"). Numbers come from policies.ts; the delivery line
- * is the `{delivery}` token.
+ * (home.md "CTA block", "Links and rendering"), each to the part of the page that keeps the promise
+ * (task 7.1a; CMO built-page review C, m8; refund.md shared request 2): the warranty is /refund's
+ * third section, about four phone screens down, so the bare page made a parent hunt for it. Each
+ * fragment is an id the legal page prints from its own module (refund.ts, terms.ts, shipping.ts
+ * `parts`; trust.test.ts holds them there). The approved mockup links the pages' tops. Numbers come
+ * from policies.ts; the delivery line is the `{delivery}` token.
  */
 export const trustItems = {
-  "deliveries-start": { id: "deliveries-start", icon: "truck", label: "{delivery}", href: "/shipping" },
+  "deliveries-start": { id: "deliveries-start", icon: "truck", label: "{delivery}", href: "/shipping#when" },
   "returns-7-days": {
     id: "returns-7-days",
     icon: "arrow-counter-clockwise",
     label: `${RETURN_DAYS}-day returns, no questions asked`,
-    href: "/refund",
+    href: "/refund#returns",
   },
   "warranty-6-months": {
     id: "warranty-6-months",
     icon: "shield-check",
     label: `${WARRANTY_MONTHS}-month warranty`,
-    href: "/refund",
+    href: "/refund#faulty",
   },
-  "payment-methods": { id: "payment-methods", icon: "currency-inr", label: PAYMENT_METHODS, href: "/terms" },
+  "payment-methods": { id: "payment-methods", icon: "currency-inr", label: PAYMENT_METHODS, href: "/terms#payment" },
   "delivery-included": {
     id: "delivery-included",
     icon: "package",
     label: "Delivery included anywhere in India",
-    href: "/shipping",
+    href: "/shipping#where",
   },
 } as const satisfies Readonly<Record<string, TrustItem>>;
 

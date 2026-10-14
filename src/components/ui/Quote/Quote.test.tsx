@@ -19,6 +19,20 @@ describe("Quote", () => {
     );
   });
 
+  it("shows the person's photo in the avatar's place: the DS Avatar (48 px), alt empty beside the printed name (task 7.1a)", () => {
+    const photo = { src: "/team/apoorva.jpg", width: 480, height: 480, alt: "" } as const;
+    const { container } = render(<Quote tone="sun" quote={QUOTE} cite={{ name: "Apoorva Sahu", role: "Co-Founder and CEO", initials: "AS", photo }} />);
+    const who = container.querySelector("figcaption.kh-quote__who")!;
+    expect(who.querySelector(".kh-quote__avatar"), "the photo wins over the initials").toBeNull();
+    const avatar = who.firstElementChild as HTMLElement;
+    expect(avatar.className).toBe("kh-avatar kh-tone-blue");
+    const img = avatar.querySelector("img")!;
+    expect(img.getAttribute("alt")).toBe("");
+    expect(img.getAttribute("sizes")).toBe("48px");
+    expect(new URL(img.getAttribute("src")!, "https://kheelona.com").searchParams.get("url") ?? img.getAttribute("src")).toBe("/team/apoorva.jpg");
+    expect(who.textContent).toBe("Apoorva SahuCo-Founder and CEO");
+  });
+
   it("leaves out the avatar and the role when the content has none", () => {
     const { container } = render(<Quote quote={QUOTE} cite={{ name: "A parent" }} />);
     expect(container.querySelector(".kh-quote__avatar")).toBeNull();

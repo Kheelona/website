@@ -8,7 +8,7 @@ import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
-import { mockupFold, mockupRoute, skeleton, words } from "../../../../test/support/mockup-compare";
+import { mockupFold, mockupLinks, skeleton, words } from "../../../../test/support/mockup-compare";
 import { homePage } from "./home";
 
 /*
@@ -94,7 +94,8 @@ describe("Home: the folds of the approved page", () => {
   it.each(LABELS)("%s links where the mockup links (three untracked links where the copy page sends them)", (label) => {
     const { built, mockup } = each(label);
     const copyPage = COPY_PAGE_LINKS[label] ?? {};
-    expect(hrefs(built)).toEqual(hrefs(mockup).map(mockupRoute).map((href) => copyPage[href] ?? href));
+    // mockupLinks: the mockup's addresses as routes, each trust link with its part of the terms page (task 7.1a, m8).
+    expect(hrefs(built)).toEqual(mockupLinks(mockup).map((href) => copyPage[href] ?? href));
   });
 
   /* What the build prints differently from the approved markup, each documented where it was decided: the classes the

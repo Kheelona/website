@@ -223,6 +223,11 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
       "#recognised-title ~ .ks-recognition",
       "fold 5's line: the F11 placeholder in the mockup, the live strip of marks and names in the build (D054 item 20); the heading is compared",
     ),
+    ...bothSides(
+      ".kh-quote__avatar",
+      ".kh-quote__who .kh-avatar",
+      "the quote's badge (fold 4): the AS initials in the mockup, Apoorva's live photo in the build (task 7.1a, CMO built-page review A, M10); the same 48 px box, other pixels",
+    ),
   ],
   setup: [
     ...(["mockup", "build"] as const).map((side) => ({
@@ -258,19 +263,58 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
   terms: pageFactsHidden("terms"),
 };
 
-/** The style the visual pass adds to one side of a page's comparison: its hidden selectors, or "" when it has none. */
-export function hiddenCss(slug: string, side: VisualHide["side"]): string {
-  const selectors = (VISUAL_HIDDEN[slug] ?? []).filter((rule) => rule.side === side).map((rule) => rule.selector);
-  return selectors.length ? `${selectors.join(", ")} { display: none !important; }` : "";
+/* The tap areas (task 7.1a; CMO built-page review A, B1): wherever a help line sits right under a trust line, the build
+   spaces it --space-5 below (two 12 px tap extensions, so a tap on "7-day returns" no longer opens WhatsApp or a call),
+   where the approved mockup has it --space-2 below in the CTA groups, flush in the heroes and Home's close, --space-4 in
+   the offer column and the journal close (mockup.css:26-31, meet-kheelu.css, stories.css:45; the mockup is frozen, D046,
+   and keeps the defect). Every chunk below each such help line would shift, on every page that sells, so the pixels
+   compare the pages without those help lines, on both sides: the trust line and everything else line up again. Their
+   words are compared by the text pass; their markup by HelpLine's and the sections' unit tests; the taps by
+   test/e2e/tap-areas.spec.ts. One shared rule for every page (the main session's ruling for 7.1a), applied before each
+   page's own (visualHidden), never a row per page key. */
+const TAP_AREAS = "deviations.md, the tap-area row (main session; task 7.1a, CMO built-page review A B1, 2026-10-14)";
+export const TAP_AREA_HIDDEN: readonly VisualHide[] = [
+  {
+    side: "mockup",
+    selector: ".mk-trust + .mk-help, .mk-beside + .mk-help",
+    reason: "a help line right under a trust line: --space-5 below it in the build (two tap extensions), less in the mockup; compared by the text pass",
+    approvedBy: TAP_AREAS,
+  },
+  {
+    side: "build",
+    selector: ".ks-trust + .ks-help, .ks-beside + .ks-help",
+    reason: "a help line right under a trust line, --space-5 below it (two tap extensions, task 7.1a); compared by the text pass",
+    approvedBy: TAP_AREAS,
+  },
+];
+
+/** Every rule the visual pass applies to one page: the rules every page shares (TAP_AREA_HIDDEN), then the page's own. */
+export function visualHidden(slug: string): readonly VisualHide[] {
+  return [...TAP_AREA_HIDDEN, ...(VISUAL_HIDDEN[slug] ?? [])];
 }
 
-/** Hides one side's approved elements on the page (before it is settled and measured) and prints each rule it applies
- *  under `label`, the calling spec's name ("visual-parity", "thanks-paid"; task 4.9 item 6). */
+const hidingStyle = (rules: readonly VisualHide[], side: VisualHide["side"]): string => {
+  const selectors = rules.filter((rule) => rule.side === side).map((rule) => rule.selector);
+  return selectors.length ? `${selectors.join(", ")} { display: none !important; }` : "";
+};
+
+/** The style of the rules every page shares (TAP_AREA_HIDDEN) on one side. */
+export function sharedHiddenCss(side: VisualHide["side"]): string {
+  return hidingStyle(TAP_AREA_HIDDEN, side);
+}
+
+/** The style the visual pass adds to one side of a page's comparison for the page's own rules: its hidden selectors, or
+ *  "" when it has none. */
+export function hiddenCss(slug: string, side: VisualHide["side"]): string {
+  return hidingStyle(VISUAL_HIDDEN[slug] ?? [], side);
+}
+
+/** Hides one side's approved elements on the page (before it is settled and measured): the rules every page shares,
+ *  then the page's own, each as a style of its own; prints each rule it applies under `label`, the calling spec's name
+ *  ("visual-parity", "thanks-paid"; task 4.9 item 6). */
 export async function hideDeviations(page: Page, slug: string, side: VisualHide["side"], label: string): Promise<void> {
-  const css = hiddenCss(slug, side);
-  if (!css) return;
-  await page.addStyleTag({ content: css });
-  for (const rule of (VISUAL_HIDDEN[slug] ?? []).filter((r) => r.side === side)) {
+  for (const css of [sharedHiddenCss(side), hiddenCss(slug, side)]) if (css) await page.addStyleTag({ content: css });
+  for (const rule of visualHidden(slug).filter((r) => r.side === side)) {
     console.log(`[${label}] ${slug}: ${rule.selector} hidden in the ${side} (${rule.approvedBy}): ${rule.reason}`);
   }
 }
@@ -355,10 +399,11 @@ export const TEXT_DEVIATIONS: Readonly<Record<string, readonly TextDeviation[]>>
       approvedBy: TEAM_V7,
     },
     {
-      /* Each founder's initials badge reads as a line of its own; the build's badges hold the photos. The quote's "AS"
-         (fold 4) is on both sides, so only the founders' three go missing (the V7 unit test holds the build to that one badge). */
+      /* Each initials badge reads as a line of its own; the build's badges hold the photos: the founders' three (D054
+         item 20) and, since task 7.1a, the quote's "AS" (fold 4; CMO built-page review A, M10). The V7 unit test holds
+         the build to no badge with words, so the rule covers exactly those four. */
       mockup: /^(?:AS|KC)$/,
-      reason: "the founders' initials badges, replaced by their live photos (D054 item 20; B24)",
+      reason: "the initials badges, replaced by the live photos: the founders' (D054 item 20; B24) and the quote's (task 7.1a, CMO M10)",
       approvedBy: TEAM_V7,
     },
   ],
