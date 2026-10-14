@@ -3,8 +3,9 @@ import http from "node:http";
 import https from "node:https";
 import type { TLSSocket } from "node:tls";
 import { gzipSync } from "node:zlib";
-import { afterEach, beforeAll, afterAll, describe, expect, it } from "vitest";
-import { classify, decodeBody, newLpLog, startLpProxy, type LpLog, type LpProxy } from "./e2e/support/lp";
+import { afterEach, beforeAll, afterAll, describe, expect, it, vi } from "vitest";
+import type { BrowserType } from "@playwright/test";
+import { classify, decodeBody, launchLp, newLpLog, startLpProxy, throwawayCertificate, type LpLog, type LpProxy } from "./e2e/support/lp";
 
 /* The LP harness's network rules (task 7.1e: QA-001, QA-002), where they can be read without a browser.
  *
@@ -109,6 +110,17 @@ function viaProxy(proxy: LpProxy, host: string, path: string, opts: { method?: s
   });
 }
 
+describe("launchLp", () => {
+  it("closes its proxy again when the browser cannot launch", async () => {
+    const servers = () => process.getActiveResourcesInfo().filter((r) => r === "TCPServerWrap").length;
+    const before = servers();
+    const noBrowser = { launch: () => Promise.reject(new Error("no browser here")) } as unknown as BrowserType;
+    await expect(launchLp(noBrowser, { downloads: false })).rejects.toThrow("no browser here");
+    // libuv drops a closed listener a few milliseconds after its close callback; one left open never goes.
+    await vi.waitFor(() => expect(servers()).toBe(before), { timeout: 2000 });
+  });
+});
+
 describe("startLpProxy: the browser's only way out, and it leads to the local build alone", () => {
   let proxies: LpProxy[] = [];
   const start = async (downloads: boolean): Promise<{ proxy: LpProxy; log: LpLog }> => {
@@ -138,6 +150,20 @@ describe("startLpProxy: the browser's only way out, and it leads to the local bu
       { via: "proxy", method: "GET", host: "store.kheelona.com", path: "/thanks" },
     ]);
     expect(log.escaped).toEqual([]);
+  });
+
+  it("answers 502 itself when the local build is down, and tries nowhere else", async () => {
+    const gone = http.createServer();
+    await new Promise<void>((done) => gone.listen(0, "127.0.0.1", done));
+    const closedPort = (gone.address() as { port: number }).port;
+    await new Promise<void>((done) => gone.close(() => done()));
+    const log = newLpLog();
+    const proxy = await startLpProxy({ upstreamPort: closedPort, downloads: false, log });
+    proxies.push(proxy);
+    const res = await viaProxy(proxy, "kheelona.com", "/");
+    expect(res.status).toBe(502);
+    expect(res.body).toContain(`the local build on port ${closedPort} did not answer`);
+    expect(log.forwarded).toEqual([{ via: "proxy", method: "GET", host: "kheelona.com", path: "/" }]);
   });
 
   it("returns a redirect exactly as the local build sent it, cookie included, and follows nothing itself", async () => {
@@ -226,6 +252,33 @@ describe("startLpProxy: the browser's only way out, and it leads to the local bu
   /* The browser must accept this certificate at the network level, not per page: a beacon sent as its page closes
      opens a fresh connection with no page left to wave a certificate error through, and dies in the handshake
      (proven in Chromium, 2026-10-14). Chromium pins exactly this key with --ignore-certificate-errors-spki-list. */
+  /* OpenSSL ("illegal padding") and BoringSSL refuse a non-minimal DER INTEGER: a random serial whose first byte came
+     out 0x00 would fail 1 proxy start in 128. With that bug, 2000 certificates hold about 15 such serials. */
+  it("gives every certificate a serial that is a minimal, positive DER INTEGER", () => {
+    const header = (buf: Buffer, at: number) => {
+      const first = buf[at + 1];
+      const size = first < 0x80 ? 0 : first & 0x7f;
+      const length = size === 0 ? first : buf.readUIntBE(at + 2, size);
+      return { tag: buf[at], body: at + 2 + size, length };
+    };
+    const bad: string[] = [];
+    for (let i = 0; i < 2000; i++) {
+      let raw: Buffer;
+      try {
+        raw = new X509Certificate(throwawayCertificate(["kheelona.com"]).cert).raw;
+      } catch (error) {
+        bad.push(`unparseable: ${String(error)}`);
+        continue;
+      }
+      const tbs = header(raw, header(raw, 0).body); // Certificate > TBSCertificate
+      const version = header(raw, tbs.body); // [0] EXPLICIT version
+      const serial = header(raw, version.body + version.length);
+      const bytes = raw.subarray(serial.body, serial.body + serial.length);
+      if (serial.tag !== 0x02 || bytes[0] >= 0x80 || (bytes[0] === 0 && bytes.length > 1 && bytes[1] < 0x80)) bad.push(bytes.toString("hex"));
+    }
+    expect(bad).toEqual([]);
+  });
+
   it("publishes the SHA-256 of its certificate's public key, the value Chromium pins", async () => {
     const { proxy } = await start(false);
     const { cert } = await viaProxy(proxy, "kheelona.com", "/");

@@ -183,12 +183,13 @@ const derName = (cn: string): Buffer => der(0x30, der(0x31, der(0x30, derOid("2.
 
 /** A self-signed P-256 certificate for `names`, valid from a day ago to a day ahead, made fresh on every call, and
  *  the base64 SHA-256 of its public key (`spki`), which the probe's Chromium pins; it is trusted nowhere else. */
-function throwawayCertificate(names: string[]): { cert: string; key: string; spki: string } {
+export function throwawayCertificate(names: string[]): { cert: string; key: string; spki: string } {
   const { publicKey, privateKey } = generateKeyPairSync("ec", { namedCurve: "prime256v1" });
   const spki = publicKey.export({ type: "spki", format: "der" });
   const ecdsaSha256 = der(0x30, derOid("1.2.840.10045.4.3.2"));
   const serial = randomBytes(8);
-  serial[0] &= 0x7f;
+  // A minimal, positive DER INTEGER: a first byte of 0x00 is illegal padding to OpenSSL and BoringSSL, 0x80 and up negative.
+  serial[0] = 0x40 | (serial[0] & 0x3f);
   const day = 24 * 60 * 60 * 1000;
   const subjectAltName = der(0x30, ...names.map((n) => der(0x82, Buffer.from(n))));
   const tbs = der(
@@ -296,17 +297,27 @@ export async function launchLp(browserType: BrowserType, { downloads }: { downlo
   const log = newLpLog();
   const proxy = await startLpProxy({ upstreamPort: PORT, downloads, log });
   const sink = plant === "routing-only" ? await startSink() : null;
-  const browser = await browserType.launch({
-    channel: "chromium",
-    args: [
-      `--host-resolver-rules=MAP * 127.0.0.1:${(sink ?? proxy).port}`,
-      // The proxy's key, accepted by the network stack itself: a context's ignoreHTTPSErrors does not reach a
-      // beacon whose page has closed, which then dies in the handshake, unseen.
-      `--ignore-certificate-errors-spki-list=${proxy.spki}`,
-      // An Alt-Svc answer must never move a request off the mapped TCP port.
-      "--disable-quic",
-    ],
-  });
+  const closeListeners = async () => {
+    await proxy.close();
+    await sink?.close();
+  };
+  let browser: Browser;
+  try {
+    browser = await browserType.launch({
+      channel: "chromium",
+      args: [
+        `--host-resolver-rules=MAP * 127.0.0.1:${(sink ?? proxy).port}`,
+        // The proxy's key, accepted by the network stack itself: a context's ignoreHTTPSErrors does not reach a
+        // beacon whose page has closed, which then dies in the handshake, unseen.
+        `--ignore-certificate-errors-spki-list=${proxy.spki}`,
+        // An Alt-Svc answer must never move a request off the mapped TCP port.
+        "--disable-quic",
+      ],
+    });
+  } catch (error) {
+    await closeListeners();
+    throw error;
+  }
   const cache = new Map<string, Promise<Download>>();
   const download = (href: string): Promise<Download> => {
     if (!cache.has(href)) {
@@ -378,8 +389,7 @@ export async function launchLp(browserType: BrowserType, { downloads }: { downlo
     },
     async close() {
       await browser.close();
-      await proxy.close();
-      await sink?.close();
+      await closeListeners();
     },
   };
 }
