@@ -170,26 +170,44 @@ describe("rule 3's exemption: the withdrawn claims the frozen mockups still prin
 });
 
 /* The D058 entries ban the idea in whole words (lessons §7): other phrasings of each withdrawn claim are red, and the
- * approved lines nearest to one (the parents' advice task 8b.1b keeps, the code-checked words) stay green. */
-describe("the D058 entries: the idea, not one phrasing (task 8b.1b)", () => {
+ * approved lines nearest to one (the parents' advice task 8b.1b keeps, the code-checked words) stay green. Task 8b.1d
+ * (8b.1b's review): the entries whose idea is a product's feature are tied to the product (Kheelu, the app, "it" as the
+ * toy) or kept in their noun form, so a parent's own habit passes; and the plain rewordings the review found are red. */
+describe("the D058 entries: the idea, not one phrasing (tasks 8b.1b, 8b.1d)", () => {
   const VARIANTS: readonly (readonly [string, string])[] = [
     ["one-tap-delete", "One-tap deletion for every chat."],
     ["one-tap-delete", "Remove any conversation with a single tap."],
     ["servers-in-india", "Your child’s voice goes to Indian servers."],
     ["servers-in-india", "Everything is stored in India."],
+    /* A buyer's-guide question that sets the bar D058 withdrew stays refused (task 8b.1b item 3). */
+    ["servers-in-india", "Ask whether its servers are in India."],
+    ["servers-in-india", "Your data stays in India."],
+    ["servers-in-india", "Data is stored on Indian soil."],
     ["closed-library", "Replies come from a closed set of answers."],
     ["safety-layer", "Each answer Kheelu gives passes our checks for your child’s age."],
     ["quiet-hours", "Set quiet hours in the parent app."],
     ["topic-controls", "Choose which topics Kheelu talks about."],
+    ["topic-controls", "In the parent app, you decide what topics are allowed."],
     ["new-word-count", "The app counts how many new words your child uses."],
+    ["new-word-count", "Kheelu tracks your child’s new words each week."],
+    ["new-word-count", "It counts every new word your child says."],
     ["four-skills-report", "Kheelu sends you a weekly progress report."],
     ["minute-of-quiet", "It turns off after one minute."],
+    ["minute-of-quiet", "It goes quiet after 60 seconds."],
+    ["minute-of-quiet", "After about a minute of quiet, it switches itself off."],
+    ["minute-of-quiet", "Microphone: off after about a minute of quiet."],
     ["attack-own-safety", "We red-team our own model before launch."],
+    ["attack-own-safety", "We try to break our own safety filters before every release."],
     ["keep-none-of-it", "The providers keep nothing."],
+    ["keep-none-of-it", "The providers retain nothing."],
   ];
   /* Approved lines, word for word: the guides' advice (should-kids, the AI-tutor checklist, the late-talker tips, the
-   * buyer's guide), the code-checked words of task 8b.1 and /privacy's processors row. */
+   * buyer's guide), the code-checked words of task 8b.1 and /privacy's processors row; and the parents' advice a
+   * dashboard post may give (task 8b.1d), which no product feature is claimed in. */
   const NEAR_MISSES = [
+    "Keep a notebook and track your child’s new words each week.",
+    "Sit together for a minute of quiet before bed.",
+    "Let your child choose which topics to talk about at bedtime.",
     "Can it reach the open internet?",
     "It can’t browse the open internet.",
     "Is every reply checked for your child’s age, and can the maker say how?",
