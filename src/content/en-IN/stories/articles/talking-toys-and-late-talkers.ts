@@ -1,7 +1,7 @@
 /// <reference types="next/image-types/global" />
 import planetBook from "@ds/assets/Photo library/kabir-04-planet-book-web.webp";
 import type { Article } from "@/content/types";
-import { DEFAULT_OG, TEAM_BYLINE } from "../../organization";
+import { TEAM_BYLINE } from "../../organization";
 
 /**
  * Late talker? What helps a child find their words: rewritten and approved (mockup
@@ -17,7 +17,10 @@ export const article = {
     title: "Late talker? What helps a child find their words · Kheelona",
     description:
       "Late talker at 3 or older? What helps at home, what the research says about back-and-forth talk, and when to ask your child's doctor.",
-    og: DEFAULT_OG,
+    og: {
+      image: "/og/kabir-04-planet-book.jpg",
+      alt: "A boy in round glasses and a mustard T-shirt lies on a striped rug, chin in his hands, wide-eyed over a picture book about planets.",
+    },
   },
   card: {
     title: "Late talker? What helps a child find their words",

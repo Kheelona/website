@@ -1,7 +1,7 @@
 /// <reference types="next/image-types/global" />
 import planetBook from "@ds/assets/Photo library/kabir-04-planet-book-web.webp";
 import type { Article } from "@/content/types";
-import { DEFAULT_OG, TEAM_BYLINE } from "../../organization";
+import { TEAM_BYLINE } from "../../organization";
 
 /**
  * Serve and return: how children learn by talking: rewritten (task 5.18) from its copy page,
@@ -18,7 +18,10 @@ export const article = {
   meta: {
     title: "Serve and return: how children learn by talking · Kheelona",
     description: "Serve and return is the back-and-forth between a young child and a caring adult. What the research says, and how it looks at home.",
-    og: DEFAULT_OG,
+    og: {
+      image: "/og/kabir-04-planet-book.jpg",
+      alt: "A boy in round glasses and a mustard T-shirt lies on a striped rug, chin in his hands, wide-eyed over a picture book about planets.",
+    },
   },
   card: {
     title: "How children learn by talking",

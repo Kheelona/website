@@ -1,7 +1,7 @@
 /// <reference types="next/image-types/global" />
 import readingNook from "@ds/assets/Photo library/tara-04-reading-nook-web.webp";
 import type { Article } from "@/content/types";
-import { DEFAULT_OG, TEAM_BYLINE } from "../../organization";
+import { TEAM_BYLINE } from "../../organization";
 
 /**
  * Raising a bilingual child in India: rewritten (task 5.18) from its copy page,
@@ -23,7 +23,10 @@ export const article = {
     title: "Raising a bilingual child in India · Kheelona",
     description:
       "Raising a bilingual child in India: what the research says about two languages, why mixing words is normal, and what keeps a home language alive.",
-    og: DEFAULT_OG,
+    og: {
+      image: "/og/tara-04-reading-nook.jpg",
+      alt: "A girl with curly hair, in a coral kurta, sits cross-legged on a window seat and reads a picture book aloud, one finger on the page.",
+    },
   },
   card: {
     title: "Raising a bilingual child in India",

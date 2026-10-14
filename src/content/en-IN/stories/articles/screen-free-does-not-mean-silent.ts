@@ -1,7 +1,7 @@
 /// <reference types="next/image-types/global" />
 import drawingTheDragon from "@ds/assets/Photo library/ira-02-drawing-the-dragon-web.webp";
 import type { Article } from "@/content/types";
-import { DEFAULT_OG, TEAM_BYLINE } from "../../organization";
+import { TEAM_BYLINE } from "../../organization";
 
 /**
  * Screen-free does not mean silent: rewritten (task 5.17; copy page story-screen-free-does-not-mean-silent.md, CMO
@@ -18,7 +18,10 @@ export const article = {
     title: "Screen-free toys for a home full of talk · Kheelona",
     description:
       "Screen-free toys for 3 to 7 year olds: which ones get a child talking, a story box or a toy that talks back, and what a home full of talk looks like.",
-    og: DEFAULT_OG,
+    og: {
+      image: "/og/ira-02-drawing-the-dragon.jpg",
+      alt: "A laughing girl in a yellow frock lies on her tummy on a rug, a blue crayon in her hand, a big drawing of a green dragon in front of her and Kheelu sitting beside her.",
+    },
   },
   card: {
     title: "Screen-free does not mean silent",

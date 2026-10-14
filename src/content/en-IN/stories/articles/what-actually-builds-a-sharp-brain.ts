@@ -1,7 +1,6 @@
 /// <reference types="next/image-types/global" />
 import paperCrown from "@ds/assets/Photo library/ira-04-paper-crown-web.webp";
 import type { Article } from "@/content/types";
-import { DEFAULT_OG } from "../../organization";
 
 /**
  * What actually builds a sharp brain in the early years: rewritten (task 5.19) from its approved copy page
@@ -19,7 +18,10 @@ export const article = {
     title: "How to help your child’s brain develop · Kheelona",
     description:
       "How to help your child’s brain develop, past the flashcards: back-and-forth talk, enough sleep, calm and free play, and how to get more of each.",
-    og: DEFAULT_OG,
+    og: {
+      image: "/og/ira-04-paper-crown.jpg",
+      alt: "A laughing girl with a long braid holds a yellow paper crown on her head, beside a low table scattered with crayons and paper scraps.",
+    },
   },
   card: {
     title: "What actually builds a sharp brain in the early years",

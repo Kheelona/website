@@ -1,7 +1,7 @@
 /// <reference types="next/image-types/global" />
 import drawingAtHome from "@ds/assets/Photo library/myra-04-drawing-at-home-web.webp";
 import type { Article } from "@/content/types";
-import { DEFAULT_OG, TEAM_BYLINE } from "../../organization";
+import { TEAM_BYLINE } from "../../organization";
 
 /**
  * How to build a 3-year-old's vocabulary: rewritten (task 5.18) from its copy page,
@@ -19,7 +19,10 @@ export const article = {
     title: "How to build a 3-year-old’s vocabulary · Kheelona",
     description:
       "How to build a 3-year-old’s vocabulary at home: everyday habits, what research says about talking together, and why every language you speak counts.",
-    og: DEFAULT_OG,
+    og: {
+      image: "/og/myra-04-drawing-at-home.jpg",
+      alt: "A little girl in a red polka-dot frock, tongue out in concentration, scribbling with an orange crayon at a low table.",
+    },
   },
   card: {
     title: "How children collect words",

@@ -1,7 +1,6 @@
 /// <reference types="next/image-types/global" />
 import bedtimeWithBaba from "@ds/assets/Photo library/tara-03-bedtime-with-baba-web.webp";
 import type { Article } from "@/content/types";
-import { DEFAULT_OG } from "../../organization";
 import { RETENTION_LINE } from "../../policies";
 import { product } from "../../products/kheelu/product";
 
@@ -25,7 +24,10 @@ export const article = {
     title: "Does an AI toy record your child? Hard questions · Kheelona",
     description:
       "Does an AI toy record your child? Kheelu only listens when someone presses its wake-up button. The hard questions parents ask, answered straight.",
-    og: DEFAULT_OG,
+    og: {
+      image: "/og/tara-03-bedtime-with-baba.jpg",
+      alt: "A father in glasses laughs as he reads a picture book aloud at bedtime, while his daughter, tucked in under a patchwork quilt, hugs Kheelu and smiles up at him.",
+    },
   },
   card: {
     title: "The hard questions parents ask about AI toys",

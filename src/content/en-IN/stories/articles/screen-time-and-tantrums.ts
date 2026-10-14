@@ -1,7 +1,7 @@
 /// <reference types="next/image-types/global" />
 import homeworkDesk from "@ds/assets/Photo library/kabir-03-homework-desk-web.webp";
 import type { Article } from "@/content/types";
-import { DEFAULT_OG, TEAM_BYLINE } from "../../organization";
+import { TEAM_BYLINE } from "../../organization";
 
 /**
  * Screen time and tantrums: what is actually happening: rewritten (task 5.17; copy page
@@ -18,7 +18,10 @@ export const article = {
     title: "Screen time tantrums: why they happen, what helps · Kheelona",
     description:
       "Screen time tantrums: one study found a two-minute warning made children more upset. What helps instead, and how to make switching off boring.",
-    og: DEFAULT_OG,
+    og: {
+      image: "/og/kabir-03-homework-desk.jpg",
+      alt: "A boy in round glasses and a white school shirt grins, one finger at his nose, as he writes in an exercise book at a wooden desk by a window, Kheelu sitting at the far end of the desk.",
+    },
   },
   card: {
     title: "Screen time and tantrums: what is actually happening",

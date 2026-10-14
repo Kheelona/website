@@ -2,7 +2,6 @@
 import bellyModule from "@ds/assets/Kheelu/kheelu-belly-module.png";
 import eveningWithAmma from "@ds/assets/Photo library/tara-02-evening-with-amma-web.webp";
 import type { Article, TrustListItem } from "@/content/types";
-import { DEFAULT_OG } from "../../organization";
 import { RETENTION_LINE } from "../../policies";
 import { seller } from "../../seller";
 
@@ -25,7 +24,10 @@ export const article = {
     title: "What to look for in a safe AI toy · Kheelona",
     description:
       "What to look for in a safe AI toy: what Common Sense Media and Fairplay advise, the checks to make before one comes home, and how Kheelu measures up.",
-    og: DEFAULT_OG,
+    og: {
+      image: "/og/tara-02-evening-with-amma.jpg",
+      alt: "A laughing girl holds Kheelu on the sofa while her mother, a steel tumbler in one hand and a phone in the other, laughs with her.",
+    },
   },
   card: {
     title: "What to look for in a safe AI toy",

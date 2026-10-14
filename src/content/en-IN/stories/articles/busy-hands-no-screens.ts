@@ -1,7 +1,7 @@
 /// <reference types="next/image-types/global" />
 import drawingTheDragon from "@ds/assets/Photo library/ira-02-drawing-the-dragon-web.webp";
 import type { Article } from "@/content/types";
-import { DEFAULT_OG, TEAM_BYLINE } from "../../organization";
+import { TEAM_BYLINE } from "../../organization";
 
 /**
  * Busy hands, no screens: rewritten (task 5.17; copy page story-busy-hands-no-screens.md, CMO review
@@ -18,7 +18,10 @@ export const article = {
     title: "Screen-free activities for kids at home · Kheelona",
     description:
       "Screen-free activities for kids at home: ten-second setups, real jobs and quiet play for 3 to 7 year olds, including on the days you have to work.",
-    og: DEFAULT_OG,
+    og: {
+      image: "/og/ira-02-drawing-the-dragon.jpg",
+      alt: "A laughing girl in a yellow frock lies on her tummy on a rug, a blue crayon in her hand, a big drawing of a green dragon in front of her and Kheelu sitting beside her.",
+    },
   },
   card: {
     title: "Busy hands, no screens",
