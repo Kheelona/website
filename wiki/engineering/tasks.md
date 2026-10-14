@@ -1675,6 +1675,33 @@ item 1).
   `CLAIM_FIXES` edit (or, in a guide, its module before the export) with its deviation row amended.
 - **Checkpoint (D052):** a CMO built-page review of the blocks hidden whole at 360, 390 and 1440: meet-kheelu fold 5's
   words column, `/safety` fold 4's controls list, both `/privacy` §7 lists and `/terms` `#account`.
+- **Merged 2026-10-14** (`9908c4c`, run `wf_55e2af9d-ae9`, after the usage-limit pause; review passed in round 1):
+  the `/safety` alt (deviation V28 amended), 11 D058 `claim` entries each citing a claims.md §4 row, exempt only through
+  `findBannedOnMockup` on the 9 claim-fixed mockups (the copy pages, `src/`, the journal validator's rule 15 and the
+  built pages get no exemption), the guides' advice questions (V37 amended), the stories' D058 wording. **Rulings at
+  the merge:** `test/e2e/content-integrity.spec.ts` (its mockup calibration reads through `findBannedOnMockup`),
+  `FaqList.stories.tsx` and `ModesSection.stories.tsx` accepted outside the written Owns; FeatureSplit's `skills`
+  variant keeps its unit test and has no story until the weekly report ships (D058 item 8; an exception to SCA 3,
+  as its only data is the withdrawn report). The review's minor findings go to 8b.1d.
+
+### 8b.1d The D058 guard, narrowed; the claims register; the stories held to the mockups through their fixes (builder; risk medium; wave iii, beside 8b.2e)
+
+- **Main-session rulings (2026-10-14, from 8b.1b's review):** (1) three entries also refuse parents' advice and would
+  stop a dashboard post at the journal validator's rule 15: `new-word-count` ("Keep a notebook and track your child’s
+  new words each week."), `minute-of-quiet` ("Sit together for a minute of quiet before bed.") and `topic-controls`
+  ("Let your child choose which topics to talk about at bedtime."): tie each to the product (Kheelu, the app, the
+  parent app, "it" as the toy) or keep the noun form, with each line in `NEAR_MISSES`; the buyer's-guide questions that
+  set a withdrawn bar ("Ask whether its servers are in India") stay refused (8b.1b item 3). (2) Widen the entries to
+  the plain rewordings the review found ("Your data stays in India.", "Data is stored on Indian soil.", "It goes quiet
+  after 60 seconds.", "We try to break our own safety filters before every release.", "The providers retain
+  nothing."), each in `VARIANTS`; D020's approved "They don’t keep it" stays green. (3) claims.md: each §1 and §2 row
+  that still lists a withdrawn claim as confirmed gains "Withdrawn 2026-10-14 (D058): see §4 `<entry id>`". (4) The
+  story data that still prints a withdrawn claim (ProductDetails.stories.tsx `PRODUCT_DETAILS`, FoundersSection
+  .stories.tsx Aman's line, ArticleBody.stories.tsx `SAFE_AI_TOY_BODY`): each test that holds it to the frozen mockup
+  applies the page's `CLAIM_FIXES` / `ARTICLE_CLAIM_FIXES` edits to the mockup fold first (as approved-articles.test.tsx
+  does), and the story data takes the site's current words.
+- **Owns:** `test/guards/banned-phrases.data.ts` and its test; `wiki/product/claims.md`; ProductDetails,
+  FoundersSection and ArticleBody stories and tests. Not 8b.2e's files.
 
 ### 8b.2 The journal from the admin dashboard (architect, then builder; risk high)
 
@@ -1695,6 +1722,11 @@ item 1).
   `1a9fc6d` (sync, validator, steps 15 and 20, `remotePatterns`), 8b.2c `d623cf0` (`ui/VideoEmbed`, the `frame-src`
   patch). Rulings and hand-offs: [journal pipeline](journal-pipeline.md) §9.2 (the providers' promise stays) and §12
   (8b.2d's play word and figure spacing; 8b.2e's dates and snapshot commit). Question G32.
+- **Wave ii merged 2026-10-14** (run `wf_55e2af9d-ae9`, resumed after the usage limit): 8b.2d `eab6e46` (the adapter,
+  the photo table, the ring, the round trip over the 20 modules; review passed in round 2 after one blocking fix: a
+  pasted full address to a product page or the store now refused on a talking guide). Rulings and hand-offs:
+  [journal pipeline](journal-pipeline.md) §4, §5.1, §12 (8b.2d, 8b.2e) and §13 B2 (the answer card's detail; the
+  listed set; the og type to 8b.2e). Next: 8b.2e with 8b.1d (wave iii).
 
 ### 8b.3 Merge `origin/main` into the rebuild (main session; after 8b.1 and 8b.2)
 

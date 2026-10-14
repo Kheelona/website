@@ -253,10 +253,10 @@ derived read time; CTA → the close, derived from the topic; In-text product li
 | `head.title` | `title` | `{nowrap:…}` on "N-year-old" compounds; `{hand:…}` around `accent` | `accent` | the 20 h1s each carry one accent |
 | `head.lead` | | | `lead` | all 20 have one |
 | `head.author` | `author` | "Kheelona" shows as "The Kheelona team" (`TEAM_BYLINE`, organization.ts:96) | | BlogPosting: a founder is their Person, anyone else the Organization (blog-posting.ts:36-41) |
-| `head.readMinutes` | | words of the answer and the body at 200 a minute, rounded, at least 1 (main:src/lib/stories.ts:116-120) | | stored 2-5 today; derivation may move 3 guides by a minute (should-kids-use-ai, talking-toys-and-late-talkers, the-gentle-way-off-the-phone, by the scratch count); for the Gate B list |
+| `head.readMinutes` | | words of the answer and the body at 200 a minute, rounded, at least 1 (main:src/lib/stories.ts:116-120) | | stored 2-5 today; the derivation moves 2 guides by a minute (8b.2d's count, ruled at the wave ii merge): the-gentle-way-off-the-phone 3 → 4, should-kids-use-ai 5 → 4 (talking-toys-and-late-talkers stays 3); neither has a mockup, and both are on the Gate B list |
 | `head.image` | `hero` (fallback) | | `photo` | §6 |
 | `answer.question`, `answer.answer` | | | `answer` | 20 of 20 have one; the answer-first block is architecture §9.5 |
-| `answer.detail` | | the D025 line for the talking topic, held once in `topics.ts` | | all 7 talking guides carry it today, no other guide does |
+| `answer.detail` | | the nodes above a rule that comes before the first h2 (§5.1, text only), then the D025 line for the talking topic, held once in `topics.ts` | | all 7 talking guides carry the D025 line; 7 guides carry other detail (learning-toys 59 words, how-much-screen-time 26, screen-time-and-tantrums 14, the-gentle-way 14, busy-hands 19, what-actually-builds 33, why-three-to-six 25); ruled at the wave ii merge |
 | `body` | `body` | §5 | node attributes (B2) | |
 | `sources` | `sources` (`label` → `citation`, `url` → `href`) | | | `href` must be https (types.ts:445-448) |
 | in-text markers | | | none: `[^n]` typed in the text | D026 |
@@ -273,6 +273,7 @@ derived read time; CTA → the close, derived from the topic; In-text product li
 | Post node | Article block | Markup and DS classes (ProseBlocks.tsx, ArticleBody.tsx) | Needs |
 |---|---|---|---|
 | nodes before the first h2 | an untitled `ArticlePart` | `div.ks-part` | – |
+| in a post with an `answer`: nodes above a `horizontalRule` that comes before the first h2 | the answer card's `detail`, under the answer (text only: a photo or a video there is refused, rule 4); what follows the rule is the body | `.ks-answer` (the approved guides' fold 2) | – (ruled at the wave ii merge, 2026-10-14: 7 guides need it to round-trip; a writer's intro above a decorative rule would join the card, so §13 tells the editor) |
 | `heading` 2 | starts an `ArticlePart` (`title`; `id` = `anchor`) | `section.ks-part` named by `h2.kh-title` | `anchor` (B2, optional; one use: `#brain-development`, D041) |
 | `horizontalRule` | ends the part; what follows is an untitled part | `div.ks-part` | – (the 20 guides have no untitled part after the first) |
 | `heading` 3 | `h3` | `h3.kh-subtitle` | – |
@@ -641,6 +642,16 @@ grep rule, catalogue rows in the same commit). Waves: **i** = 8b.2a, 8b.2b, 8b.2
   the column's space below its caption (`article-body.css`; the adapter places body images inside parts, 8b.2c's
   observation); if `topics.ts` gains a separate dashboard title, `RULES.themes` in `sync-posts.mjs` and its tests follow
   (8b.2b).
+- **Rulings made at the wave ii merge (main session, 2026-10-14; merged `eab6e46`):** (1) the answer card's detail is
+  the nodes above a rule before the first h2 in a post with an answer (§4, §5.1, §13 B2); (2) the round trip's listed
+  set is accepted as pinned in `from-article.test.ts`: two read times (the-gentle-way-off-the-phone 3 → 4,
+  should-kids-use-ai 5 → 4; neither guide has a mockup; for the Gate B list) and three no-wrap spans the adapter adds
+  (talking-toys-and-late-talkers, the-gentle-way-off-the-phone, busy-hands-no-screens; presentation only, no word
+  changes); (3) the `<title>` derivation stays written twice, held equal by a test (`validate.ts` is 8b.2b's and imports
+  nothing); (4) a paragraph that is all bold but its last stop (`**Wait**.`) is a lead-only paragraph, not the gut line;
+  (5) `test/fixtures/journal/vocabulary.ts`, `ArticleBody.journal.stories.tsx` and `test/e2e/journal-figure.spec.ts`
+  are accepted as 8b.2d's (they serve the hand-offs). Handed to 8b.2e: `Article.meta.og` typed as `OgImage` (its
+  optional width and height, `src/content/types.ts`) with an `articleMeta` test for an uploaded cover.
 
 ### 8b.2e The switch: the snapshot becomes the journal (builder; risk high; wave iii, after 8b.2a and 8b.2d)
 
@@ -661,6 +672,10 @@ grep rule, catalogue rows in the same commit). Waves: **i** = 8b.2a, 8b.2b, 8b.2
   export writes the file with `serialiseSnapshot` and `journal.ts` reads it with `parseSnapshot`, and `journal.ts` and
   the snapshot land in one commit (8b.2b: the missing-snapshot tolerance of steps 15 and 20 ends when `journal.ts`
   exists).
+- **Hand-offs from wave ii (main session, 2026-10-14):** type `Article.meta.og` as `OgImage` in `src/content/types.ts`
+  and add an `articleMeta` test for an uploaded cover (8b.2d's review); the ruled listed set (8b.2d above) is the
+  "ruled list" of this task's acceptance for read times and no-wrap spans; keep `getArticle` exported from
+  `articles/index.ts` (`ArticleBody.stories.tsx` renders the safe-AI-toy guide through it, task 8b.1b).
 
 ### 8b.2f The backend pack and the dry run (main session with Aman; after 8b.2e)
 
@@ -684,7 +699,9 @@ To pass on as written. Nothing here changes the API's address, its envelope or a
   `summary`, `answer` (`{ question, text }`: question ends "?", text 40 to 60 words), `photo` (one of the keys listed
   below), `related` (empty or three distinct published slugs, not the post's own). `theme` becomes a choice of four:
   "Screen time", "Talking and language", "AI toys and safety", "Learning and play".
-- **B2. Editor nodes:** `bulletList.attrs.style` ("bullets", "checks", "tips", "facts"); `listItem.attrs.icon` (a DS
+- **B2. Editor nodes:** in a post with an `answer`, a horizontal rule before the first level-2 heading closes the answer
+  card: the paragraphs above it print in the card under the answer (text only). Say so beside the editor's rule
+  button. `bulletList.attrs.style` ("bullets", "checks", "tips", "facts"); `listItem.attrs.icon` (a DS
   icon name, required for tips and facts; one paragraph per item, no nested lists); `blockquote.attrs.style`
   ("callout" or "questions") and `blockquote.attrs.icon` (required for a callout; a questions block holds level-3
   headings and paragraphs); `image.attrs.photo` (a key; the site then ignores `src`); `heading.attrs.anchor`

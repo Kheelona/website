@@ -51,7 +51,9 @@ Also from earlier waves (tasks 7.3): the related-guide ring (7.1d); CMO 5.18 M6 
 studies line); the bylines' owners reading their pages (P17); "May 2027" re-read against the Gazette (P23); Kashyap's
 background line (team.md ruling 7); D055's sentence that a deleted conversation stays in Kheelu's memory and the
 training data; four D058 changes applied for the founder's OK (privacy RT1's second sentence; `/safety`'s
-"No web browsing."; the buyer's guide's check 4; `/terms` §10's order), each listed on its copy page.
+"No web browsing."; the buyer's guide's check 4; `/terms` §10's order), each listed on its copy page; the journal's
+derived read times on two guides with no mockup (the-gentle-way-off-the-phone 3 → 4 min, should-kids-use-ai 5 → 4 min,
+[journal pipeline §4](../engineering/journal-pipeline.md#4-field-map-a-post-to-an-article-question-2)).
 
 ## 4. Founder prerequisites
 
