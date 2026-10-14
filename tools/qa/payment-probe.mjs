@@ -77,6 +77,17 @@ await page.evaluateOnNewDocument(() => {
     window.__csp.push(`${event.effectiveDirective} <- ${event.blockedURI}`);
   });
 });
+/* The analytics events the checkout sends, read through a gtag spy (task 6.3, 6.2's note 1): the frozen funnel's and
+   the dispatcher's new ones (preorder_payment_window_opened right after the sheet opens, src/lib/tracking/track.ts).
+   Locally no tag loads (GA4 runs only on the production hosts, GA4_HOSTS) and every third-party request is aborted,
+   so this window.gtag is the only one and nothing reaches a real property; the code calls it as it would in
+   production. */
+await page.evaluateOnNewDocument(() => {
+  window.__gtag = [];
+  window.gtag = (...args) => {
+    window.__gtag.push(args);
+  };
+});
 page.on("pageerror", (error) => errors.push(String(error).slice(0, 200)));
 page.on("requestfailed", (request) => {
   /* Only care about what the policy might have stopped. */
@@ -143,6 +154,19 @@ for (let waited = 0; waited < 20_000 && !sheet; waited += 500) {
   );
 }
 report(sheet, "Razorpay Checkout opened its payment sheet");
+
+/* Every analytics event the page sent while the sheet opened, in order, as GA4 would have received it. */
+const sent = await page.evaluate(() =>
+  (window.__gtag ?? []).filter((call) => call[0] === "event").map((call) => [String(call[1]), call[2] ?? {}]),
+);
+console.log(`analytics events through the gtag spy (${sent.length}):`);
+for (const [name, params] of sent) console.log(`       ${name} ${JSON.stringify(params)}`);
+const opened = sent.find(([name]) => name === "preorder_payment_window_opened");
+report(
+  Boolean(opened),
+  "the opened payment window was sent to analytics (preorder_payment_window_opened)",
+  opened ? JSON.stringify(opened[1]) : "",
+);
 
 const cspEvents = await page.evaluate(() => window.__csp ?? []);
 for (const event of [...new Set(cspEvents)]) violations.push(event);
