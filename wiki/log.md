@@ -1045,3 +1045,9 @@ pass (38 prerendered files, 20 pages; production scan too), and each goes red (e
 guide page. Plain build green too. `npm run verify`: 302 files, 6048 passed. Docs: [lessons §1](engineering/lessons.md#1-nextjs-16-and-vercel-behaviour),
 [structure](engineering/structure.md) scripts, tasks 2.9 and ADR-004 (the folder), [Gate B pack](qa/gate-b-pack.md) §5
 (check the first production build's log for both lines). No site output changes, so no e2e re-run (D052).
+
+## [2026-10-15 02:20] deploy | `beta` `99afe51` deployed on Vercel (the route-cache fix); CI green
+`git push origin reset/website-v2:refs/heads/beta` (`f2491b0..99afe51`). Vercel "Deployment has completed" 38 s after
+it started (20:46:42-20:47:20 UTC); CI `verify` success. Both beta hosts answer 302 to Vercel's login, as before, so the
+pages are checked in beta QA (task 7.2) once the bypass secret arrives. A Vercel deploy failure shows only "Deployment has
+failed" on GitHub: the reason is in the dashboard's build log (the founder can paste it, as on 2026-10-14).
