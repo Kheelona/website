@@ -861,7 +861,7 @@ the admin dashboard and synced at build (`tools/blog/sync.mjs`, `api.kheelona.co
 changes in `security-headers.ts` and `next.config.ts`), and two CLAUDE.md edits describing it. Merging the rebuild at
 Gate B as it stands would undo them: open question G23. A read-only agent is mapping each change against the rebuild.
 
-## [2026-10-14 13:10] decision | D058: the site follows the live team's code check; the founder's rulings; wave 8b planned
+## [2026-10-14 12:40] decision | D058: the site follows the live team's code check; the founder's rulings; wave 8b planned
 A read-only agent mapped PRs #18-#22 against the rebuild ([reconciliation map](qa/live-main-reconciliation-2026-10-14.md)):
 the live team's code check of 12 Oct withdrew claims the rebuild still made (one-tap delete, servers in India, the closed
 library, topics and quiet hours, the new-word count, "about a minute"), and #18 added the parent app to `/privacy` and
@@ -871,3 +871,8 @@ the languages stay; the app is free with Kheelona+ paid on top; Aman stays the g
 with an opt-out in the app; the processors named; the report follows the app; 36 months then deleted). Narrowing notes
 added to D017, D018, D020, D036, D055. Wave 8b in tasks.md: 8b.1 claims and the parent app on the pages (copy batch),
 8b.2 the journal from the dashboard (architect design, then build), 8b.3 merging `origin/main` into the rebuild.
+
+## [2026-10-14 12:45] agent | Wave 8b started: 8b.1 copy batch (run wf_c359ee74-7a4, base `0d8344b`); 8b.2 design (architect)
+8b.1 in `.claude/worktrees/w8b-8b.1` on `build/w8b-8b.1` (ports 3610/6210): copy groups privacy+terms, home+meet-kheelu,
+safety+setup, and ai-toys, team, stories, 404, contact, store; then the modules and parity rules; machine-file hashes
+reported for the main session. 8b.2: the architect writes ADR-014 and `journal-pipeline.md` (read-only on code).
