@@ -780,3 +780,10 @@ matches the new lockfile (no retired package left). Gate: build green (4 open pl
 284 files, 5177 passed, 2 skipped; lint 0 errors, 4 warnings (was 9); checksums 643. Left: `qa:payment` on the sandbox
 (7.1), six dev-only high advisories (a package decision), `README.md` and `docs/store-go-live.md` rewrites (7.3).
 Next: wave 8 (task 7.1, full QA on L and LP).
+
+## [2026-10-14 07:32] agent | Wave 8 (task 7.1) started: full browser suite (main session) and the QA agent's checks
+The main session runs `npm run verify:e2e` on `f6eac29` (it also stands for 6.3's own e2e check: one run, not two)
+and, after the agents finish, Lighthouse. The QA agent covers what the suites do not: tracking parity on LP (test plan
+§5, every beacon answered locally), per-page criteria (§7), the redirect matrix (§8), the checkout invariants (§9),
+CLS with fonts delayed (N17) and the production dry-run placeholder list; defects to `wiki/qa/defects.md`, results to
+`wiki/qa/results-2026-10-14.md`. CMO built-page reviews start when the suite finishes (CPU).
