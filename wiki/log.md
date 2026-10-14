@@ -818,3 +818,29 @@ founder turns Meta's automatic events off). Fix batch 7.1a-7.1f in [tasks](engin
 terms in `.claude/worktrees/w8-7.1b`), 7.1c store fixes (high; copy stage on store and store-confirmation in
 `w8-7.1c`), 7.1d the related-guide ring (normal; copy stage on ten guides in `w8-7.1d`), 7.1e the LP probe's leak and
 PostHog visibility (normal), 7.1f share images for the 20 guides (normal). Ports 3600-3605 / 6200-6205.
+
+## [2026-10-14 12:01] qa | Wave 8 closed: fix batch 7.1a-7.1f merged and reconciled; full browser suite, stand-in run, payment sandbox and Lighthouse green
+Run `wf_4eb5e856-7af` (27 agents, about 2 h): 7.1a, 7.1c, 7.1d, 7.1e, 7.1f passed review; 7.1b fixed-unreviewed, its
+last fix (the age-3 line on `/safety` and `/setup` in the CMO's own words) checked at the merge. Merged `--no-ff`:
+7.1a `ce2eb1d`, 7.1b `bdff94d` (conflicts: `home.test.tsx` imports; `e2e-harness.test.ts`'s no-rule sample page, now
+the buyer's guide, since 7.1a's shared tap-area rule leaves no page without one), 7.1c `55e17f1` (`components.md`
+rows), 7.1d `1a7e360`, 7.1f `f9476be`, 7.1e `08874e0`. Reconciliation `ec3991a`: the age-3 sentence "If your child is
+3, keep a grown-up nearby." on the product page's FAQ 3 and the buyer's guide too (copy review 7.1b minor 2; every FAQ
+answer review A M8 named now says it one way); `llms.txt` and `pricing.md` re-pinned (`PRICING_UPDATED` 2026-10-14);
+deviation rows V17-V25 written, V4 retired, V7 and V9 amended; source markers' tap area cut to 4 px above and below
+(7.1a's tap-area spec found neighbouring markers taking each other's taps on three articles; the spec now fails on it,
+proven red with the old area planted: 5 cases); Tabs compensate no target inside the tab box; stale Storybook literals;
+the shared-head-photo guard over all 20 guides; `lp.ts` decodes only PostHog's form `data`, and the probe waits for
+page-close beacons; docs (architecture, test plan, defects QA-001 to QA-005, store copy pages, index, open questions
+G19-G22, tasks.md merge rulings and follow-ups). Gate: build green; verify 288 files, 5467 passed, 2 skipped; lint 4
+warnings; checksums 643.
+Closing checks on the merged build: Playwright 1609 passed, 0 failed, 34 skipped (13.5 min; a first launch with the
+store's database settings blanked showed the store's not-configured state and failed the 4.7 store-bubble tests: an
+environment mistake of the main session's, re-run as the milestone runs are); the stand-in run (store-secondary, axe,
+chrome, tap-areas) 453 passed, 0 skipped; `qa:payment` on the Razorpay sandbox clean (gateway order from our tier
+table, sheet open, no content-policy refusal, `preorder_payment_window_opened` sent, signed webhook accepted, forged
+refused; no payment completed); Lighthouse local 93-98 / 96-100 / 96 / 100, LP-tags performance 92-97 (approved
+exceptions only). The `/thanks` bubble at 360 px passes over the chargeback link only mid-scroll; at the page's end it
+sits clear of everything (no change). Worktrees and branches removed. New founder questions: G19 (the films heading's
+"in their own homes" against the 2026-10-11 answer), G20 (`/terms` section 9's age line), G21 (the confirming `/thanks`
+tab title), G22 (a refused event link's words). Next: wave 9 (7.2), the beta push and beta QA.
