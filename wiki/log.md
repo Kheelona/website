@@ -976,3 +976,19 @@ held to the mockups through their fixes). Worktrees and branches removed. Wave i
 ## [2026-10-14 22:38] agent | Wave 8b iii started (run `wf_e07be4c1-904`, base `9a25fdb`): 8b.2e the switch, 8b.1d the claim guard
 8b.2e (risk high) per journal pipeline §12 with the wave ii hand-offs; its snapshot scan goes in a new guard file, not
 banned-phrases (8b.1d's). 8b.1d (risk medium) per tasks.md. Sleep blocker renewed for 8 hours (`caffeinate -i -s`).
+
+## [2026-10-15 00:05] build | Wave 8b iii merged (8b.2e `3b1e070`, 8b.1d `792108b`); 8b.3: `origin/main` merged (`dae33e6`)
+Run `wf_e07be4c1-904` (1 h 18 min). 8b.2e passed review in round 1: `posts.generated.json` (the export of the 20 guides)
+and `journal.ts` in one commit, every consumer on the registry, the article tests on the frozen export
+(`test/fixtures/journal/approved/`), the 20 modules and `from-article.ts` deleted, `Article.meta.og` typed; rendered
+words, the hub, `llms.txt` and `pricing.md` equal before and after except the ruled list. 8b.1d failed review round 1
+(the narrowing let "Track your child’s new words in the app." and four other product claims through); its fix was not
+re-reviewed, so the main session probed it: 13 claim wordings red, 12 parents' lines green, 0 mismatches. Both merged
+`--no-ff`, clean. Main-session fixes `955720f`: stale comments (to-article.ts, ArticleTemplate.tsx, vocabulary.ts,
+stories page test), the hub test's vacuous stub branch, architecture §5.4/§6.1/§9.2/§17, structure §3.3/§4/§5,
+`.claude/rules/content.md`, new `.claude/rules/journal.md`; rulings in journal pipeline §12 (four inert differences
+added to the ruled list; article parity once a writer edits; 8b.2g's prerequisites: the count pins). Build green
+(journal-sync 20 posts pass; journal-pages 20 prerendered); `npm run verify` 301 files, 6038 passed, 1 skipped. 8b.3:
+`git merge -s ours origin/main` (`8c4718a`, PRs #18-#22): every file of §11's table resolves to the rebuild's; main's
+`GRIEVANCE_EMAIL` (connect@) stays out (D058 item 4); `git diff HEAD^1` empty; `origin/main` is an ancestor.
+Worktrees removed after the checkpoint.

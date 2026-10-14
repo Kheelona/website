@@ -1722,6 +1722,12 @@ item 1).
   `1a9fc6d` (sync, validator, steps 15 and 20, `remotePatterns`), 8b.2c `d623cf0` (`ui/VideoEmbed`, the `frame-src`
   patch). Rulings and hand-offs: [journal pipeline](journal-pipeline.md) §9.2 (the providers' promise stays) and §12
   (8b.2d's play word and figure spacing; 8b.2e's dates and snapshot commit). Question G32.
+- **Wave iii merged 2026-10-14** (run `wf_e07be4c1-904`): 8b.2e `3b1e070` (the snapshot is the journal; the 20
+  modules deleted; review passed in round 1) and 8b.1d `792108b` (the claim guard ties each feature to the product;
+  parents' advice passes; claims.md's withdrawn rows; the stories in the site's words; its last fix checked by the main
+  session on 25 probe lines; `test/e2e/tabs.spec.ts` accepted outside the Owns). Rulings: [journal pipeline](journal-pipeline.md)
+  §12 (8b.2e: the ruled list widened by four inert differences; article parity once a writer edits; 8b.2g's
+  prerequisites). Follow-up: `withRouteFixes` (tabs.spec.ts) restates `withFacts` (test/support/mockup-facts.ts).
 - **Wave ii merged 2026-10-14** (run `wf_55e2af9d-ae9`, resumed after the usage limit): 8b.2d `eab6e46` (the adapter,
   the photo table, the ring, the round trip over the 20 modules; review passed in round 2 after one blocking fix: a
   pasted full address to a product page or the store now refused on a talking guide). Rulings and hand-offs:
@@ -1733,6 +1739,12 @@ item 1).
 `main` cannot be force-pushed, so its commits are merged into the rebuild before Gate B: the rebuild's files win, the
 legacy files it deleted stay deleted, `tools/blog/*` and the journal come in through 8b.2's design, and the rebuild's
 CLAUDE.md stays (the journal paragraph lives in the wiki). Guards proven; then the beta push and wave 9.
+
+- **Merged 2026-10-14** (`dae33e6`, `git merge -s ours origin/main` at `8c4718a`): every file of journal pipeline §11's
+  table and the reconciliation map §4 resolves to the rebuild's, so the merge keeps the rebuild's tree (`git diff
+  HEAD^1` empty). One clean change of main's also stays out: `src/config/site.ts` `GRIEVANCE_EMAIL` (connect@), since
+  the grievance officer is aman@kheelona.com (D058 item 4, `seller.ts`). `origin/main` is now an ancestor, so the Gate B
+  merge needs no force-push; if `main` gains commits before Gate B, merge them the same way after reading each.
 
 ## Wave 9: beta deploy and beta QA (after wave 8)
 
