@@ -15,9 +15,10 @@
  * One exception to the mockup rule (task 8b.1b): the claims D058 withdrew after Gate A are still
  * printed by the frozen mockups (D046), on the pages whose routes carry a claim-fix rule (the build
  * prints that rule's words instead). Such an entry names those pages in `mockupExempt`, and only
- * those: banned-phrases.test.ts proves each page carries such a rule, that the rule withdraws the
- * very lines the entry finds there, and that the mockup rule is red without the field. The copy
- * pages, src/ and the rendered build get no exemption.
+ * those, with the rules' deviation rows: banned-phrases.test.ts proves each page carries such a
+ * rule, prints the claim only inside <main> and is green there once its rules are applied, and that
+ * the mockup rule is red without the field. Only findBannedOnMockup reads the field: the copy
+ * pages, src/, the journal and the rendered build get no exemption.
  *
  * Erasable TypeScript only, and no import: scripts/journal/sync-posts.mjs loads this file with
  * Node's type stripping (test/journal-sync.test.ts runs it).
@@ -53,13 +54,12 @@ export type ClaimFixedMockup = (typeof CLAIM_FIXED_MOCKUPS)[number];
 export type MockupExemption = {
   /** The claim-fixed mockups that still print it. */
   readonly on: readonly ClaimFixedMockup[];
-  /** The deviation rows whose rules replace those lines on the build ("deviations.md V26, …"). */
+  /** The deviation rows whose rules replace those lines on the build ("deviations.md V26 (home), …"). */
   readonly because: string;
 };
 
-export type BannedPhrase = {
+type BannedPhraseFields = {
   id: string;
-  kind: BannedKind;
   /** The claims.md row this enforces: the start of its first cell, or "§3: …", or "N24" for spelling. */
   claimsRow: string;
   pattern: RegExp;
@@ -68,9 +68,34 @@ export type BannedPhrase = {
   /** An example the pattern must catch. */
   planted: string;
   why: string;
-  /** Approved-mockup checks only (findBannedOnMockup): the claim-fixed mockups that still print this withdrawn claim. */
-  mockupExempt?: MockupExemption;
 };
+
+/** An entry. Only a claim may carry `mockupExempt`: a withdrawn claim the claim-fixed mockups still print, read by the
+ *  approved-mockup check alone (findBannedOnMockup). */
+export type BannedPhrase =
+  | (BannedPhraseFields & { kind: "claim"; mockupExempt?: MockupExemption })
+  | (BannedPhraseFields & { kind: "offer" | "spelling"; mockupExempt?: never });
+
+/** The deviation row of each claim-fixed mockup's rule (wiki/qa/deviations.md; the rule's `approvedBy` in
+ *  test/e2e/support/deviations.ts, which banned-phrases.test.ts holds each exemption's `because` to). */
+const CLAIM_FIX_ROWS = {
+  home: "V26",
+  "meet-kheelu": "V27",
+  safety: "V28",
+  setup: "V29",
+  team: "V30",
+  "ai-toys-for-kids-in-india": "V31",
+  privacy: "V32",
+  terms: "V33",
+  store: "V34",
+  "story-what-to-look-for-in-a-safe-ai-toy": "V37",
+} as const satisfies Record<ClaimFixedMockup, string>;
+
+/** An exemption on these claim-fixed mockups, citing each one's deviation row. */
+const frozenOn = (...on: ClaimFixedMockup[]): MockupExemption => ({
+  on,
+  because: `deviations.md ${on.map((slug) => `${CLAIM_FIX_ROWS[slug]} (${slug})`).join(", ")}: the frozen mockup prints the Gate A line; the page's claim-fix rule (D058) puts the code-checked words on the build`,
+});
 
 const R1 = `"The microphone is off. Not muted. Off."`;
 const R2 = `"Listens only for its wake word`;
@@ -178,17 +203,18 @@ export const BANNED_PHRASES: readonly BannedPhrase[] = [
   { id: "advisor", kind: "claim", claimsRow: "§3: A named advisor, \"Reviewed by [advisor]\"", pattern: /\breviewed by (?:an? |our )?(?:child[- ]development )?(?:advisor|expert|paediatrician|pediatrician)\b|\bReviewed by \[/i, planted: "Reviewed by our child-development advisor.", why: "There is no advisor (D038)." },
   { id: "recordings-days", kind: "claim", claimsRow: "§3: \"Recordings kept for X days\"", pattern: /\brecordings? (?:are |is )?kept for \d+ days\b/i, planted: "Recordings kept for 30 days.", why: "Any \"X days\" form is banned; conversations are kept 36 months (D020)." },
   // ── The claims D058 withdrew (the live team's code check of 12 October, c630a49; claims §4, task 8b.1b) ──
-  { id: "one-tap-delete", kind: "claim", claimsRow: D1, pattern: /\bone[- ]tap (?:delet\w*|eras\w*|remov\w*|wip\w*)\b|\b(?:delet\w*|eras\w*|remov\w*|wip\w*|clear\w*)\b[^.?!\n]{0,60}\b(?:in|with) (?:one|a single) tap\b/i, planted: "You can delete any of them sooner, in one tap.", why: "D058 item 1: no one-tap delete; removing a chat hides it on that phone, deleting the account deletes the conversations. \"One-tap buttons\" for calls pass." },
-  { id: "servers-in-india", kind: "claim", claimsRow: D2, pattern: /\bservers? (?:(?:are|is) )?(?:(?:located|based|hosted) )?in India\b|\b(?:Indian|India[- ]based) servers?\b|\bnever leaves? India\b/i, planted: "Kheelu uses trusted speech and AI providers, on servers in India.", why: "D058 item 6: some processors work outside India, and /privacy names them. \"India (Mumbai) for the store's server code\" (Vercel's region) passes." },
-  { id: "closed-library", kind: "claim", claimsRow: D3, pattern: /\b(?:curated|closed)\b[^.?!\n]{0,30}\blibrar(?:y|ies)\b|\bclosed set of (?:material|content|answers|stories|topics)\b|\bcurated (?:content|answers|replies)\b/i, planted: "Its answers come from a curated, closed content library.", why: "D058 item 1: replies are generated by an AI model given child-safety rules and the age. The DS \"Photo library\" folder passes." },
-  { id: "safety-layer", kind: "claim", claimsRow: D4, pattern: /\bage[- ]graded (?:safety|layer|filters?|replies|answers|content)\b|\bsafety layer\b|\b(?:every|each) (?:reply|answer|response)\b[^.?!\n]{0,30}\bpass(?:es)?\b/i, planted: "Every reply passes an age-graded safety layer set to your child's age.", why: "D058 item 1: no age-graded layer; the model gets child-safety rules and the age, with Google's safety filters on top. The guides' question \"Is every reply checked for your child's age?\" passes." },
-  { id: "quiet-hours", kind: "claim", claimsRow: D5, pattern: new RegExp(`\\bquiet hours?\\b[^.?!\\n]{0,100}\\b(?:parent app|the app|Kheelu)\\b|\\b(?:parent app|the app|Kheelu)\\b[^.?!\\n]{0,100}\\bquiet hours?\\b|\\bQuiet hours\\.\\s+They${APOS}re yours to set\\b`, "i"), planted: "In the parent app, you set quiet hours.", why: "D058 item 1: the app has no quiet hours. A family's own quiet hours, with no app or Kheelu in the sentence, pass." },
-  { id: "topic-controls", kind: "claim", claimsRow: D6, pattern: new RegExp(`\\btopics? (?:are|is|stay) (?:open|closed|off[- ]limits)\\b|\\btopic (?:controls?|settings?|filters?|locks?)\\b|\\bTopics\\.\\s+You choose what${APOS}s open\\b|\\bwhat${APOS}s open, and what waits\\b`, "i"), planted: "In the app, you pick which topics are open.", why: "D058 item 1: the app has no topic controls. The journal's topics (the hub's sections) pass." },
-  { id: "new-word-count", kind: "claim", claimsRow: D7, pattern: new RegExp(`\\bnew[- ]words? (?:count|counter|tally|tracker)s?\\b|\\b(?:counts?|tallies|tracks?) (?:the |your child${APOS}s |their |each )?new words\\b`, "i"), planted: "Every week the app gives you a new-word count.", why: "D058 items 1 and 8: no new-word count until it ships. A guide's \"Explain a new word\" passes." },
-  { id: "four-skills-report", kind: "claim", claimsRow: D8, pattern: new RegExp(`\\breport on (?:the |your child${APOS}s |their )?(?:four )?thinking skills\\b|\\bfour[- ](?:thinking[- ])?skills?[- ]report\\b|\\bin four thinking skills\\b|\\bweekly (?:[\\w-]+ ){0,2}report\\b[^.?!\\n]{0,60}\\b(?:parent app|the app|Kheelu)\\b|\\b(?:parent app|the app|Kheelu)\\b[^.?!\\n]{0,60}\\bweekly (?:[\\w-]+ ){0,2}report\\b`, "i"), planted: "Every week, the parent app gives you a report on four thinking skills.", why: "D058 item 8: the weekly four-skills report comes off until it ships. A guide's talk of thinking skills passes; so does a weekly report that is not the app's." },
-  { id: "minute-of-quiet", kind: "claim", claimsRow: D9, pattern: /\b(?:a|one|1) minute of (?:quiet|silence)\b|\b(?:switch(?:es)?|turns?) (?:itself )?off after (?:about |around |roughly )?(?:a|one|1) minute\b/i, planted: "It switches itself off after about a minute of quiet.", why: "D058 item 1: a conversation ends after a couple of minutes of quiet. \"A couple of minutes of quiet\" passes." },
-  { id: "attack-own-safety", kind: "claim", claimsRow: D10, pattern: /\battack(?:s|ed|ing)? (?:our|its) own (?:safety|filters?|layer|model|AI|systems?)\b|\bsafety layer before every release\b/i, planted: "We attack our own safety layer before every release.", why: "D058 item 1: the line goes. The pre-launch test (\"Tested before launch by trying to make it say unsafe things\") is open question G29 and passes." },
-  { id: "keep-none-of-it", kind: "claim", claimsRow: D11, pattern: new RegExp(`\\bkeeps? none of (?:it|them|your child${APOS}s (?:voice|data|words|conversations))\\b`, "i"), planted: "The speech and AI providers that help Kheelu reply keep none of it.", why: "D058 item 6: the live /privacy names the processors instead. Banned as written: D020's \"They don't keep it\" stays until the founder checks the provider contracts (journal pipeline §9.2)." },
+  // Each is still printed by the frozen mockups its `mockupExempt` names (the build prints the claim-fix rule's words).
+  { id: "one-tap-delete", kind: "claim", claimsRow: D1, pattern: /\b(?:one|single|a single)[- ]tap (?:to )?(?:delet|eras|remov|wip|clear)\w*|\b(?:delet|eras|remov|wip|clear)\w*\b[^.?!\n]{0,60}\b(?:in|with) (?:one|a single|a) tap\b/i, planted: "You can delete any of them sooner, in one tap.", why: "D058 item 1: no one-tap delete; removing a chat hides it on that phone, deleting the account deletes the conversations. \"One-tap buttons\" for calls pass.", mockupExempt: frozenOn("home", "meet-kheelu", "safety", "setup", "team", "ai-toys-for-kids-in-india", "privacy", "terms", "story-what-to-look-for-in-a-safe-ai-toy") },
+  { id: "servers-in-india", kind: "claim", claimsRow: D2, pattern: /\bservers? (?:(?:are|is) )?(?:(?:located|based|hosted) )?in India\b|\b(?:Indian|India[- ]based) servers?\b|\bnever leaves? India\b|\b(?:hosted|stored) (?:only |entirely )?in India\b/i, planted: "Kheelu uses trusted speech and AI providers, on servers in India.", why: "D058 item 6: some processors work outside India, and /privacy names them. \"India (Mumbai) for the store's server code\" (Vercel's region) passes.", mockupExempt: frozenOn("home", "meet-kheelu", "safety", "privacy", "story-what-to-look-for-in-a-safe-ai-toy") },
+  { id: "closed-library", kind: "claim", claimsRow: D3, pattern: /\b(?:curated|closed)\b[^.?!\n]{0,30}\blibrar(?:y|ies)\b|\bclosed set of (?:material|content|answers|stories|topics)\b|\bcurated (?:content|answers|replies)\b/i, planted: "Its answers come from a curated, closed content library.", why: "D058 item 1: replies are generated by an AI model given child-safety rules and the age. The DS \"Photo library\" folder passes.", mockupExempt: frozenOn("safety", "ai-toys-for-kids-in-india", "terms", "story-what-to-look-for-in-a-safe-ai-toy") },
+  { id: "safety-layer", kind: "claim", claimsRow: D4, pattern: /\bage[- ]graded (?:safety|layer|filters?|replies|answers|content)\b|\bsafety layer\b|\b(?:every|each) (?:reply|answer|response)\b[^.?!\n]{0,30}\bpass(?:es)?\b/i, planted: "Every reply passes an age-graded safety layer set to your child's age.", why: "D058 item 1: no age-graded layer; the model gets child-safety rules and the age, with Google's safety filters on top. The guides' question \"Is every reply checked for your child's age?\" passes.", mockupExempt: frozenOn("home", "meet-kheelu", "safety", "setup", "team", "ai-toys-for-kids-in-india", "privacy", "terms", "story-what-to-look-for-in-a-safe-ai-toy") },
+  { id: "quiet-hours", kind: "claim", claimsRow: D5, pattern: new RegExp(`\\bquiet hours?\\b[^.?!\\n]{0,100}\\b(?:parent app|the app|Kheelu)\\b|\\b(?:parent app|the app|Kheelu)\\b[^.?!\\n]{0,100}\\bquiet hours?\\b|\\bQuiet hours\\.\\s+They${APOS}re yours to set\\b`, "i"), planted: "In the parent app, you set quiet hours.", why: "D058 item 1: the app has no quiet hours. A family's own quiet hours, with no app or Kheelu in the sentence, pass.", mockupExempt: frozenOn("safety", "setup") },
+  { id: "topic-controls", kind: "claim", claimsRow: D6, pattern: new RegExp(`\\btopics? (?:are|is|stay) (?:open|closed|off[- ]limits)\\b|\\btopic (?:controls?|settings?|filters?|locks?)\\b|\\b(?:choose|chooses|pick|picks|block|blocks|limit|limits) (?:which |what )topics?\\b|\\bTopics\\.\\s+You choose what${APOS}s open\\b|\\bwhat${APOS}s open, and what waits\\b`, "i"), planted: "In the app, you pick which topics are open.", why: "D058 item 1: the app has no topic controls. The journal's topics (the hub's sections) pass.", mockupExempt: frozenOn("safety", "setup") },
+  { id: "new-word-count", kind: "claim", claimsRow: D7, pattern: new RegExp(`\\bnew[- ]words? (?:count|counter|tally|tracker)s?\\b|\\b(?:counts?|tallies|tracks?) (?:how many |the |your child${APOS}s |their |each )?new words\\b`, "i"), planted: "Every week the app gives you a new-word count.", why: "D058 items 1 and 8: no new-word count until it ships. A guide's \"Explain a new word\" passes.", mockupExempt: frozenOn("home", "meet-kheelu", "privacy") },
+  { id: "four-skills-report", kind: "claim", claimsRow: D8, pattern: new RegExp(`\\breport on (?:the |your child${APOS}s |their )?(?:four )?thinking skills\\b|\\bfour[- ](?:thinking[- ])?skills?[- ]report\\b|\\bin four thinking skills\\b|\\bweekly (?:[\\w-]+ ){0,2}report\\b[^.?!\\n]{0,60}\\b(?:parent app|the app|Kheelu)\\b|\\b(?:parent app|the app|Kheelu)\\b[^.?!\\n]{0,60}\\bweekly (?:[\\w-]+ ){0,2}report\\b`, "i"), planted: "Every week, the parent app gives you a report on four thinking skills.", why: "D058 item 8: the weekly four-skills report comes off until it ships. A guide's talk of thinking skills passes; so does a weekly report that is not the app's.", mockupExempt: frozenOn("home", "meet-kheelu", "privacy") },
+  { id: "minute-of-quiet", kind: "claim", claimsRow: D9, pattern: /\b(?:a|one|1) minute of (?:quiet|silence)\b|\b(?:60|sixty) seconds of (?:quiet|silence)\b|\b(?:switch(?:es)?|turns?) (?:itself )?off after (?:about |around |roughly )?(?:a|one|1) minute\b/i, planted: "It switches itself off after about a minute of quiet.", why: "D058 item 1: a conversation ends after a couple of minutes of quiet. \"A couple of minutes of quiet\" passes.", mockupExempt: frozenOn("home", "meet-kheelu", "safety", "setup", "ai-toys-for-kids-in-india", "privacy", "story-what-to-look-for-in-a-safe-ai-toy") },
+  { id: "attack-own-safety", kind: "claim", claimsRow: D10, pattern: /\battack(?:s|ed|ing)? (?:our|its) own (?:safety|filters?|layer|model|AI|systems?)\b|\bred[- ]team(?:s|ed|ing)? (?:our|its) own\b|\bsafety layer before every release\b/i, planted: "We attack our own safety layer before every release.", why: "D058 item 1: the line goes. The pre-launch test (\"Tested before launch by trying to make it say unsafe things\") is open question G29 and passes.", mockupExempt: frozenOn("story-what-to-look-for-in-a-safe-ai-toy") },
+  { id: "keep-none-of-it", kind: "claim", claimsRow: D11, pattern: new RegExp(`\\bkeeps? none of (?:it|them|your child${APOS}s (?:voice|data|words|conversations))\\b|\\b(?:providers?|they)\\b[^.?!\\n]{0,60}\\bkeeps? nothing\\b`, "i"), planted: "The speech and AI providers that help Kheelu reply keep none of it.", why: "D058 item 6: the live /privacy names the processors instead. Banned as written: D020's \"They don't keep it\" stays until the founder checks the provider contracts (journal pipeline §9.2).", mockupExempt: frozenOn("privacy") },
   // ── en-IN spelling (N24): src/content strings and rendered text only ──
   { id: "us-color", kind: "spelling", claimsRow: "N24", pattern: /\bcolor(?:s|ed|ful|ing|way|ways)?\b/i, planted: "Pick a color.", why: "en-IN: colour." },
   { id: "us-center", kind: "spelling", claimsRow: "N24", pattern: /\bcent(?:er|ers|ered|ering)\b/, allowSentence: /^center$/, planted: "Put it in the center.", why: "en-IN: centre. Proper nouns (\"Center on the Developing Child\", \"Synergy Center\") are capitalised and pass. A string that is only \"center\" is a layout value (a CTA block's `align`), not copy." },
@@ -224,4 +250,12 @@ export function findBanned(text: string, kinds: readonly BannedKind[] = ["claim"
     }
   }
   return hits;
+}
+
+/** The banned phrases in an approved mockup page's text (`slug`, its file name in mockup/): findBanned's, less the
+ *  withdrawn claims the entry exempts on that frozen page (`mockupExempt`). For the mockup checks only (the guard's rule
+ *  3, the content-integrity calibration); never for the build, the copy pages, src/ or the journal. */
+export function findBannedOnMockup(slug: string, text: string, kinds: readonly BannedKind[] = ["claim", "offer", "spelling"]): BannedHit[] {
+  const exempt = new Set(BANNED_PHRASES.filter((e) => (e.mockupExempt?.on as readonly string[] | undefined)?.includes(slug)).map((e) => e.id));
+  return findBanned(text, kinds).filter((hit) => !exempt.has(hit.id));
 }

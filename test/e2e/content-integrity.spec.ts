@@ -1,4 +1,4 @@
-import { findBanned } from "../guards/banned-phrases.data";
+import { findBanned, findBannedOnMockup } from "../guards/banned-phrases.data";
 import { expect, gateRouteGroup, nodeGet, requiresServer, test } from "./support/fixtures";
 import { PARITY_TARGET } from "./support/env";
 import { MOCKUP_SLUGS, approvedMockupText, type MockupSlug } from "./support/mockup-text";
@@ -19,7 +19,9 @@ import { VIEWPORTS } from "./support/viewports";
  *   - JSON-LD restates only what the page shows;
  *   - placeholders listed (beta and development show them; production refuses them, task 2.9).
  * Every rule runs on the 18 approved mockup pages first and must pass there: a rule that would
- * flag approved copy is a broken rule, not a broken page.
+ * flag approved copy is a broken rule, not a broken page. On a frozen mockup the banned phrases are
+ * read through findBannedOnMockup: a claim D058 withdrew after Gate A, which a claim-fixed mockup
+ * still prints, is exempt there alone (task 8b.1b; banned-phrases.test.ts proves each exemption).
  */
 
 const AGE_BAND = /\b3 to 7\b/;
@@ -41,9 +43,10 @@ const UNITS = /\b\d[\d,]*\s+units\b/gi;
 const PERCENT = /\b\d+(?:\.\d+)?\s?%/g;
 const PLACEHOLDER = /\[PLACEHOLDER[^\]]*\]/g;
 
-function contentProblems(path: string, text: string, ageBand: boolean): string[] {
+/** `mockup`: the approved page the text is (the calibration, the harness self-test), never a built route. */
+function contentProblems(path: string, text: string, ageBand: boolean, mockup?: MockupSlug): string[] {
   const out: string[] = [];
-  for (const h of findBanned(text)) out.push(`banned (${h.id}): "${h.match}" in "${h.sentence}"`);
+  for (const h of mockup ? findBannedOnMockup(mockup, text) : findBanned(text)) out.push(`banned (${h.id}): "${h.match}" in "${h.sentence}"`);
   if (ageBand && !AGE_BAND.test(text)) out.push(AGE_BAND_MISSING);
   const young = UNDER_THREE.exec(text);
   if (young) out.push(`implies under 3: "${young[0]}"`);
@@ -75,6 +78,15 @@ function machineProblems(path: string, body: string): string[] {
 
 const MOCKUP_PATHS: Record<string, string> = { privacy: "/privacy" };
 
+test.describe("content integrity: the D058 exemption is the frozen mockup's alone (task 8b.1b)", () => {
+  const withdrawn = "You can delete any of them sooner, in one tap.";
+  test("a withdrawn claim home.html still prints passes there, and is red on the built Home and on another mockup", () => {
+    expect(contentProblems("/", withdrawn, false, "home")).toEqual([]);
+    expect(contentProblems("/", withdrawn, false)).toEqual([`banned (one-tap-delete): "delete any of them sooner, in one tap" in "${withdrawn}"`]);
+    expect(contentProblems("/refund", withdrawn, false, "refund")).toHaveLength(1);
+  });
+});
+
 test.describe("content integrity: the age-band detector", () => {
   const article = { id: "article:busy-hands-no-screens", mockup: null, template: "article" as const };
   test("red on an article without the band, a template article included, and on llms.txt without it", () => {
@@ -96,7 +108,7 @@ test.describe("content integrity: calibration on the approved mockup", () => {
     test(slug, () => {
       const text = approvedMockupText(slug as MockupSlug);
       review(`mockup ${slug}`, text);
-      expect(contentProblems(MOCKUP_PATHS[slug] ?? `/${slug}`, text, needsAgeBand(mockupRoute(slug as MockupSlug)))).toEqual([]);
+      expect(contentProblems(MOCKUP_PATHS[slug] ?? `/${slug}`, text, needsAgeBand(mockupRoute(slug as MockupSlug)), slug as MockupSlug)).toEqual([]);
     });
   }
 });
@@ -111,7 +123,9 @@ for (const route of sweepRoutes()) {
       const meta = await page.evaluate(() => `${document.title}\n${document.querySelector('meta[name="description"]')?.getAttribute("content") ?? ""}`);
       const html = await page.content();
       review(route.id, text);
-      const problems = contentProblems(route.path, `${meta}\n${text}`, needsAgeBand(route));
+      // In the harness self-test the page is the frozen mockup itself.
+      const mockup = PARITY_TARGET === "mockup" ? (route.mockup ?? undefined) : undefined;
+      const problems = contentProblems(route.path, `${meta}\n${text}`, needsAgeBand(route), mockup);
       // The mockup is where this scaffolding comes from, so the self-test skips the markup half.
       if (PARITY_TARGET !== "mockup") {
         if (/class="[^"]*\bmk-[a-z]/.test(html)) problems.push("mockup class (mk-) in the HTML");

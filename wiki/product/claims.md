@@ -1,7 +1,7 @@
 ---
 title: Claims register
 type: product
-updated: 2026-10-11
+updated: 2026-10-14
 cites_at: archive/pre-reset-2026-10-10
 sources:
   - "git show archive/mid-version-2026-10-10:docs/checkpoints/cmo-merge-2026-10.md (founder decisions 2026-10-04, lines 22-38)"
@@ -22,6 +22,8 @@ sources:
   - wiki/decisions/D013-internal-vs-external-content.md, wiki/site/content-boundary.md, wiki/decisions/D009-brief-readings.md (the Site column, 2026-10-10)
   - "wiki/decisions/D011, D015-D029 (the founder's rulings of 2026-10-10 and 2026-10-11, applied here 2026-10-11)"
   - wiki/brand/messaging.md proof point 14 (the live locations of "answers, then asks a question back")
+  - "wiki/decisions/D058-follow-the-live-code-check-2026-10-14.md (items 1, 6, 8; the §4 rows withdrawn by the live team's code check, task 8b.1b, 2026-10-14)"
+  - "wiki/qa/live-main-reconciliation-2026-10-14.md §2 (origin/main c630a49, #19), quoted there"
 ---
 
 # Claims register
@@ -217,8 +219,9 @@ The founder had the site follow it ([D058](../decisions/D058-follow-the-live-cod
 idea; each is a `claim` entry of `test/guards/banned-phrases.data.ts`, also read by the journal's validator (rule 15,
 [journal pipeline §8.2](../engineering/journal-pipeline.md#82-rule-by-rule)). The frozen mockups still print these
 lines ([D046](../decisions/D046-gate-a-approved.md)): an entry is exempted only on a mockup whose route carries a
-claim-fix rule (`CLAIM_FIXES`, deviations V26-V36; `ARTICLE_CLAIM_FIXES`, V37), where the build prints the rule's
-words. Where these rows conflict with §1 (rows on one-tap delete, providers on servers in India, the launch features,
+claim-fix rule (`CLAIM_FIXES`, [deviations](../qa/deviations.md) V26-V34; `ARTICLE_CLAIM_FIXES`, V37), where the build
+prints the rule's words, and only in the guard's mockup check (`findBannedOnMockup`): the copy pages, `src/`, the
+journal and the built pages get no exemption. Where these rows conflict with §1 (rows on one-tap delete, providers on servers in India, the launch features,
 the 36-month line's one-tap clause), §2 (closed library, age-graded layer, "We attack", the parent-app row) or §3 (the
 weekly four-skills report), D058 wins; those rows are not rewritten here.
 
