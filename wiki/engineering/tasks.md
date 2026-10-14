@@ -1656,8 +1656,8 @@ item 1).
 ### 8b.1b Follow-ups to 8b.1 and 8b.2a (builder; risk medium; after 8b.2a, before 8b.2e; then the founder's G26-G32)
 
 - **Main-session rulings (2026-10-14):** `/safety` fold 4's screenshot alt drops "and to delete all chats", as Home's
-  does; `/privacy` §2's child's profile takes the live page's purpose ("so Kheelu can talk with them properly",
-  `origin/main` `privacy/page.tsx:217`); the D058 withdrawn claims become `claim` entries in
+  does ("…Chats are kept for 36 months, with a button to download your child’s data."); the D058 withdrawn claims
+  become `claim` entries in
   `test/guards/banned-phrases.data.ts` (one tap, servers in India, closed or curated content library, age-graded,
   safety layer, quiet hours, topics are open, new-word count, four thinking skills, weekly report, about a minute of
   quiet, attack our own safety layer, keep none of it), with a field that exempts an entry on a mockup whose route
@@ -1690,6 +1690,11 @@ item 1).
   founder's answers: [D059](../decisions/D059-journal-voice-uploads-and-timing-2026-10-14.md) (the dashboard's voice
   check follows the DS; a DS photo first, uploads as fallback; the dashboard takes over after Gate B). Wave i (8b.2a,
   8b.2b, 8b.2c) runs with 8b.1; then 8b.2d; then 8b.2e.
+- **Wave i merged 2026-10-14** (run `wf_fed52266-980`): 8b.2a `d4f411d` (the four guides; its last fix checked by the
+  main session; deviation row V37, V35 retired; CMO [review](../qa/cmo-review-guides-d058-8b.2a-2026-10-14.md)), 8b.2b
+  `1a9fc6d` (sync, validator, steps 15 and 20, `remotePatterns`), 8b.2c `d623cf0` (`ui/VideoEmbed`, the `frame-src`
+  patch). Rulings and hand-offs: [journal pipeline](journal-pipeline.md) §9.2 (the providers' promise stays) and §12
+  (8b.2d's play word and figure spacing; 8b.2e's dates and snapshot commit). Question G32.
 
 ### 8b.3 Merge `origin/main` into the rebuild (main session; after 8b.1 and 8b.2)
 

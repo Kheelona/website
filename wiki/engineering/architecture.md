@@ -636,6 +636,11 @@ Decision: [ADR-010](adr/ADR-010-media-pipeline.md). Catalogue: [assets](assets.m
   `kh-hand` (Latin), because almost every approved h1 carries a Kalam accent and a late swap could re-wrap
   the h1 and move the CTA (N17); together ≤ 130 KB. If QA's delayed-font run still shows CLS over 0.1,
   generated fallback `@font-face` metrics are the next step.
+- Journal images (ADR-014, [journal pipeline](journal-pipeline.md) §6-§7; task 8b.2b): `next.config.ts`
+  `images.remotePatterns` admits exactly two remote paths, the dashboard's upload folder (`JOURNAL_IMAGES`) and YouTube
+  stills (`VIDEO_STILLS`), with an empty search and `maximumRedirects: 0`; a post's DS photo key comes first and an
+  upload is the fallback (D059 item 2). `ui/VideoEmbed` (8b.2c) shows the still until a press, then loads the
+  privacy-enhanced player (`frame-src` admits youtube-nocookie.com and player.vimeo.com, D057 item 1).
 - OG and stable machine images generated into `public/og.png`, `public/og/`, `public/media/`,
   `public/brand/logo-mark.png`; app icons into `src/app/icon.png`, `src/app/apple-icon.png`.
 - Films unchanged at `public/video/moments/*.mp4` (2.0-3.9 MB each); posters through `next/image`; the
@@ -796,6 +801,7 @@ violation before it is trusted, exits non-zero on failure, and prints accepted e
 |---|---|---|
 | DS checksums (643 files) | `scripts/ds-checksums.mjs` (exists), via `scripts/steps/prebuild/10-ds-checksums.mjs` | `verify`, production prebuild |
 | Placeholders and draft legal docs | `scripts/guards/placeholders.mjs` (prebuild step 30, postbuild step 10) | `verify` (report), production prebuild and postbuild (fail) |
+| The journal's posts (ADR-014) | `src/lib/journal/validate.ts` through `scripts/journal/sync-posts.mjs` (prebuild step 15; postbuild step 20 checks one page per post); the D058 claim list in `test/guards/banned-phrases.data.ts` (8b.1b) | `verify` (the committed snapshot), every build; the API only on a production build after the flip |
 | Banned words and claims, en-IN spelling | `test/guards/banned-phrases.test.ts` + `banned-phrases.data.ts` (each entry cites its [claims §4](../product/claims.md#4-retired-or-banned-wording) row; green on every approved page by construction) | `verify` |
 | Age band, internal material, mockup-only markup in rendered HTML | `test/e2e/content-integrity.spec.ts`; `test/guards/mockup-markup.test.ts` (source) | `verify:e2e`, `verify` |
 | Off-token values, arbitrary Tailwind, inline styles | `test/guards/no-off-token.test.ts` with `token-exceptions.ts` | `verify` |

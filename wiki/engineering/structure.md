@@ -46,6 +46,9 @@ scripts/                     build pipeline and guards (run by npm scripts, preb
     predev/20-compose-css.mjs              (1.2)
     prebuild/10-ds-checksums.mjs           (1.1)  prebuild/20-compose-css.mjs (1.2)  prebuild/30-placeholders.mjs (2.9)
     postbuild/10-placeholders-html.mjs     (2.9)
+    prebuild/15-journal-sync.mjs  postbuild/20-journal-pages.mjs   (8b.2b; the journal, ADR-014)
+  journal/sync-posts.mjs     the dashboard's posts into the committed snapshot; the API only on a production build with
+                             JOURNAL_SOURCE "api", or BLOG_SYNC=on (8b.2b; journal-pipeline §2)
   assets/                    build-ds-css, build-compose-css, build-fonts (1.2); build-icons, build-doodles, build-og (1.5)
   guards/                    placeholders.mjs (2.9)
   qa/                        lighthouse.mjs (1.1)
@@ -77,11 +80,14 @@ src/
     site.ts                  money (frozen block), IDs, host lists, legacy constants the checkout imports
     env.ts                   SITE_ENV and origins (D048)
     redirects.ts             the one redirect table (ADR-012)
+    journal.ts               the journal's source switch, API, image folder and snapshot path; no imports (8b.2b, ADR-014)
   lib/
     tracking/                destination, event and CTA registries, dispatcher, internal flag
     seo/                     metadata, JSON-LD escaping, schema builders
     offer/                   cached live mode, offer view model, the order's delivery row (delivery-line.ts, used by /thanks and the receipt)
     content/                 rich-text parser, plain-text serialiser, placeholder helper
+    journal/                 the dashboard post contract (post.ts) and its validator (validate.ts, no imports) (8b.2b);
+                             the adapter into Article comes with 8b.2d (journal-pipeline §4)
     format/                  the one ₹ and date formatter
     store/ email/            checkout server code (frozen, ADR-013)
     fbq.ts posthog.ts campaign.ts click-id.ts trailing-slash.ts security-headers.ts   (frozen)

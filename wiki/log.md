@@ -912,3 +912,17 @@ routes (text and visual parity, chrome, axe, no-sideways, first-screen, links, c
 legal-template): 478 passed, 8 skipped, 0 failed. Partly applied: D058 item 1's talk-time limit and WiFi off at rest
 (no copy yet). New questions G26-G31 (five for the founder, one for Aman); follow-ups planned as 8b.1b. Ruled: the
 providers' keep-nothing promise stays (D020 items 1-4; D058 does not supersede them) until the founder's contract check.
+
+## [2026-10-14 15:28] build | 8b.2 wave i merged: 8b.2a (`d4f411d`), 8b.2b (`1a9fc6d`), 8b.2c (`d623cf0`); V37; G32
+Run `wf_fed52266-980` (12 agents). 8b.2b and 8b.2c passed review in round 1; 8b.2a ended fixed-unreviewed after two
+review rounds (the merge script had to follow 8b.1's moves; two guides had lost their deletion answer), and the main
+session read its last fix (`24fd09a`) before merging. 8b.2a merged with its resolution script v2 (blob `34d3b1b`): one
+parity rule for the safe-AI-toy guide (`ARTICLE_CLAIM_FIXES`, row V37; V35 retired). Merge fixes (`4c7258b`):
+`JournalImageUrl` derived from `JOURNAL_IMAGES` (proven red), the sharp floor's note. Rulings: the snapshot shape is
+`{ generated, posts }` (ADR-014 corrected); the lazy video player is accepted; the providers' keep-nothing promise stays
+until the founder's contract check (journal pipeline §9.2); 8b.2d takes the play word and figure spacing; 8b.2e
+exports the four corrected guides dated 2026-10-14. Checks on the merged tree: build green; `npm run verify` 293
+files, 5804 passed, 2 skipped; Playwright on the four guides, the hub and Home (parity, axe, no-sideways,
+first-screen, links, content-integrity, no-js, perf budget): 139 passed, 5 skipped, 0 failed. Docs: structure §1, §3
+(the journal's scripts, config and lib), architecture §10 and §14, artifacts, index. Question G32 (the providers' place
+in the four guides). Next: wave ii (8b.2d) with 8b.1b.
