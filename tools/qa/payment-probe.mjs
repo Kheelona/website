@@ -15,6 +15,11 @@
  *    2. Whether a real signed webhook still lands, end to end, through the
  *       amount guard added for F-06.
  *
+ *  On the way it prints every analytics event the page sends through gtag
+ *  while the sheet opens (a spy stands in for the tag, which never loads
+ *  locally), and fails if `preorder_payment_window_opened` is not among them
+ *  (task 6.2's new events; 6.3).
+ *
  *  IT NEVER TAKES REAL MONEY. Razorpay TEST keys only; the probe stops at the
  *  moment the sheet is open and never completes a payment. It refuses to run
  *  against a live key at all.
