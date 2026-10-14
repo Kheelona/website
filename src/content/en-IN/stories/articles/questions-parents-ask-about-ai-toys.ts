@@ -107,7 +107,7 @@ export const article = {
               answer: [
                 "Ask who processes your child’s voice and in which country, what is kept and for how long, and whether any of it is sold. A vague answer is an answer.",
                 "To understand and answer your child, Kheelu uses trusted speech and AI providers. They process your child’s voice only to produce Kheelu’s reply. They don’t keep it, and they never use it to train their AI. Our contracts with them say so.",
-                RETENTION_LINE,
+                `${RETENTION_LINE} Delete them all sooner by deleting your account.`,
                 "We don’t sell your data. Your child’s data is never used to advertise to them. Everything we collect, and what we use it for, is in our [privacy policy](/privacy).",
               ],
             },

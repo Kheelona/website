@@ -22,6 +22,7 @@ sources:
   - ../../qa/cmo-review-articles-5.19-2026-10-14.md (round 1: M9, M11 fixed in round 2; M8 held, question 5)
   - ../../qa/cmo-review-built-b-2026-10-14.md (m3, the related ring; applied in task 7.1d, see the foot of this page)
   - "../../decisions/D058-follow-the-live-code-check-2026-10-14.md (items 1, 6, 9), D059 (item 1, contractions stay); origin/main c630a49 (the live team's code check, 2026-10-12), via ../../qa/live-main-reconciliation-2026-10-14.md §2; ../../engineering/journal-pipeline.md §9.2 and §12 8b.2a (applied in task 8b.2a, see the foot of this page)"
+  - ../../qa/cmo-review-guides-d058-8b.2a-2026-10-14.md (m2, the deletion sentence, and its m3 and m8 notes; applied in task 8b.2a to fold 5, see the foot of this page)
 ---
 
 # Story: The hard questions parents ask about AI toys
@@ -52,7 +53,7 @@ sources:
 | Meta description (145 characters) | Does an AI toy record your child? Kheelu only listens when someone presses its wake-up button. The hard questions parents ask, answered straight. |
 | H1 | The hard questions parents ask about AI toys (the hub card title, word for word; question 1) |
 | Byline line | Aman Soni · First published 11 Sep 2026 · 4 min read (byline: question 2) |
-| Read time | 4 min (about 880 words in the article since task 8b.2a, about 890 before; headings included, close excluded; words ÷ 200, rounded, as `readingMinutes` in `src/lib/stories.ts:184-186` and the 5.6 pages) |
+| Read time | 4 min (about 890 words in the article, as before task 8b.2a: it cut about 10 words and added 8 with the deletion sentence; headings included, close excluded; words ÷ 200, rounded, as `readingMinutes` in `src/lib/stories.ts:184-186` and the 5.6 pages) |
 | CTA | The close only: "Pre-order Kheelu", `cta` = `finale`; phone sticky bar `sticky-bar` |
 | In-text product link | One, in fold 4 ("Kheelu" → `/products/kheelu`, `meet-kheelu.html`) |
 | Module values kept from the stub | Card title and summary (hub copy, `stories.md` fold 4); `related` (three, below; since task 7.1d the CMO's ring, not the stub's); `published` 2026-09-11; `updated` as the main session's note for task 5.19 directs (the 5.6 modules set it to the rewrite's date) |
@@ -192,7 +193,7 @@ B3 answer, before any reassurance.
 >
 > To understand and answer your child, Kheelu uses trusted speech and AI providers. They process your child's voice only to produce Kheelu's reply. They don't keep it, and they never use it to train their AI. Our contracts with them say so.
 >
-> Your child's conversations stay in your parent app for 36 months, then they're deleted automatically.
+> Your child's conversations stay in your parent app for 36 months, then they're deleted automatically. Delete them all sooner by deleting your account.
 >
 > We don't sell your data. Your child's data is never used to advertise to them. Everything we collect, and what we use it for, is in our [privacy policy](https://kheelona.com/privacy).
 >
@@ -204,21 +205,24 @@ B3 answer, before any reassurance.
 - A `questions` block: three items, each question an `h3`, each answer two to four paragraphs (the first: what to
   ask any maker; then Kheelu's answer). All items open: they are read, not hunted.
 - **Round 2 (CMO M9):** the second item's last answer paragraph is split after the retention line (then ending "in
-  one tap."; since task 8b.2a it ends "deleted automatically."), so retention is one paragraph and the no-sale,
+  one tap."; since task 8b.2a it ends "Delete them all sooner by deleting your account."), so retention is one paragraph and the no-sale,
   advertising and privacy sentences another: two or three sentences each, as the DS asks for phones. Same words.
 - **Not changed in round 2 (CMO M8, question 5):** the parent app's "Save voice recordings" switch would be the most
   direct answer to "does it record my child", and the switch itself is confirmed for launch
   ([claims, D044 additions](../../product/claims.md#d044-additions-2026-10-11-what-the-real-app-screens-may-show)).
   But neither its default nor how long saved recordings are kept is on record, so the line waits for the founder.
 - Order follows [D020](../../decisions/D020-provider-terms-and-no-sale.md): the wake-up button, the providers line,
-  what is kept (read and delete until task 8b.2a), no sale.
+  what is kept and how to delete it (one-tap deletion until task 8b.2a, deleting the account since), no sale.
 - **Wording held to the rulings:** the second paragraph is D018's FAQ draft ("Is Kheelu always listening?")
   verbatim after its "No.", with [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md)'s "a couple of
   minutes of quiet" in place of "about a minute" (task 8b.2a; so is the light paragraph's); the providers line is
   D020's draft without "on servers in India" (D058 item 6), so it states only D020 items 1-4, its training clause
   scoped to the providers as [D041](../../decisions/D041-gate-a-round-1.md) keeps it; the retention sentence is
   `RETENTION_LINE` (`policies.ts`), never retyped, quoted here without the one-tap sentence that D058 withdrew (task
-  8b.1 owns the line's words; this page prints whatever 8b.1 sets); "We don't sell your data." and the advertising line
+  8b.1 owns the line's words; this page prints whatever 8b.1 sets), then "Delete them all sooner by deleting your
+  account.", the live team's deletion fact (D058 item 1) in the form the other three guides print
+  ([CMO review of task 8b.2a](../../qa/cmo-review-guides-d058-8b.2a-2026-10-14.md), m2), so the paragraph keeps the
+  "you're in control" half it had when it was approved; "We don't sell your data." and the advertising line
   are D020 and [D038](../../decisions/D038-trust-content-rulings.md) verbatim; the light's colour is never named (D018).
 - **Since task 8b.2a, the country is not answered here** (question 6): fold 5's ask line names "in which country", and
   the providers line now names no place. The privacy policy it links names the processors (task 8b.1, D058 item 6).
@@ -430,7 +434,8 @@ questions below.)
    page's FAQ.
 5. **The "Save voice recordings" switch (round 2, CMO M8).** The page owns "does an AI toy record your child", and
    the parent app's switch (off keeps text only) is a confirmed launch feature (D044). The line would go after the
-   retention line (which ended "in one tap." until task 8b.2a): "In the parent app, you choose whether voice
+   retention paragraph (which ended "in one tap." until task 8b.2a and now ends "Delete them all sooner by deleting
+   your account."): "In the parent app, you choose whether voice
    recordings are saved; with it off, only the text is kept." It needs two answers that are on no page yet: is the switch on or off when a parent first sets up Kheelu,
    and how long are saved recordings kept (the same 36 months as conversations, or another period)? Please also say
    whether the switch has any bearing on the training of Kheelona's own model ([D035](../../decisions/D035-model-training-opt-out.md)),
@@ -461,6 +466,7 @@ questions below.)
 | Off after a couple of minutes of quiet (folds 2 and 5) | [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 1 ("a conversation ends after a couple of minutes of quiet"; narrows D018); origin/main c630a49, the live team's code check of 12 Oct ("ends after ~2 minutes of quiet", [reconciliation map §2](../../qa/live-main-reconciliation-2026-10-14.md#2-19-c630a49-claims-withdrawn-or-reworded)) |
 | Providers line (D020 items 1-4; no place since task 8b.2a) | [D019](../../decisions/D019-voice-providers.md), [D020](../../decisions/D020-provider-terms-and-no-sale.md) items 1-4 (item 6, "on servers in India", withdrawn by [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 6); [messaging, confirmed candidate lines](../../brand/messaging.md#confirmed-candidate-lines); training clause scoped to the providers: [D035](../../decisions/D035-model-training-opt-out.md), [D041](../../decisions/D041-gate-a-round-1.md) |
 | Read every conversation; 36 months then deleted automatically | [D017](../../decisions/D017-live-behaviour-claims-confirmed.md); [D020](../../decisions/D020-provider-terms-and-no-sale.md) item 7 and [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 9 (`RETENTION_LINE`, `policies.ts`, its words owned by task 8b.1; one-tap deletion withdrawn by D058 item 1) |
+| Delete them all sooner by deleting your account (task 8b.2a) | [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 1 (deleting the account deletes the conversations; narrows [D017](../../decisions/D017-live-behaviour-claims-confirmed.md)); [map §2](../../qa/live-main-reconciliation-2026-10-14.md#2-19-c630a49-claims-withdrawn-or-reworded) (the live "Delete it all by deleting your account", c630a49) and [map §1](../../qa/live-main-reconciliation-2026-10-14.md#1-18-dd04e6d-the-parent-app-on-privacy-and-terms-for-the-app-store-and-play) P11-P12 (`dd04e6d`); the form the other three guides print ([CMO review of task 8b.2a](../../qa/cmo-review-guides-d058-8b.2a-2026-10-14.md), m2); "all" rests on the CTO's answer to privacy question 11 (m3) |
 | We don't sell your data; never used to advertise to your child | [D020](../../decisions/D020-provider-terms-and-no-sale.md) item 5; [D038](../../decisions/D038-trust-content-rulings.md) (F17); [claims §1](../../product/claims.md#1-confirmed-by-the-founder) |
 | The privacy policy sets out what is collected, its uses and a parent's choices | [privacy copy](privacy.md) (page job; section 3, Kheelona's own model); [D035](../../decisions/D035-model-training-opt-out.md) |
 | Can't browse or search the internet | [D017](../../decisions/D017-live-behaviour-claims-confirmed.md) (cannot browse); "browse or search" as on the approved [Safety page](safety.md) ("It can't browse or search the web", sourced there to D017) and in the code-checked fact ([D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 1; c630a49; task 8b.2a's fix list) |
@@ -526,7 +532,9 @@ The founder's [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.
 team withdrew after its code check of 12 October (origin/main c630a49, "checked against iot-firmware, backend-service and
 Kheelona_App on 2026-10-12"; [reconciliation map §2](../../qa/live-main-reconciliation-2026-10-14.md#2-19-c630a49-claims-withdrawn-or-reworded))
 goes or takes the code-checked wording. The lines are those of [journal pipeline §9.2](../../engineering/journal-pipeline.md#92-the-d058-corrections-still-in-the-guides)
-for this guide. Nothing else changed.
+for this guide, and the deletion sentence the [CMO's review of task 8b.2a](../../qa/cmo-review-guides-d058-8b.2a-2026-10-14.md)
+asked for (m2). Nothing else changed. The CMO review of task 8b.2a read c630a49 with git show (2026-10-14); the quoted
+words match (m8).
 
 - **Fold 2, the answer** (module `:53`). "switches itself off after about a minute of quiet" became "after a couple of
   minutes of quiet". Why: D058 item 1 ("a conversation ends after a couple of minutes of quiet"), narrowing D018;
@@ -543,6 +551,13 @@ for this guide. Nothing else changed.
   that phone, and deleting the account deletes the data (c630a49). "36 months, then deleted automatically" stays (D058
   item 9). Task 8b.1 owns the line's words in `policies.ts`; this page quotes it without the one-tap sentence and
   follows 8b.1's final words. The guide states one-tap deletion nowhere else.
+- **Fold 5, the retention paragraph**, after the retention line: "Delete them all sooner by deleting your account." is
+  added ([CMO review of task 8b.2a](../../qa/cmo-review-guides-d058-8b.2a-2026-10-14.md), m2). Why: with the one-tap
+  sentence gone, the paragraph lost the "you're in control" half it had when it was approved. The sentence is the live
+  team's deletion fact (D058 item 1: deleting the account deletes the conversations; c630a49's "Delete it all by
+  deleting your account"), in the form the other three guides print, so all four say retention and deletion the same
+  way. If the CTO answers privacy question 11 (c), this becomes "Delete them sooner by deleting your account." (m3; the
+  main session adds this guide to that question's list of lines).
 - **Fold 6, "What if my child asks it something upsetting?"** (`:136`). Was: "Kheelu can't browse the internet. Its
   answers come from a curated, closed content library, and every reply passes an age-graded safety layer set to the
   age you enter in the parent app. We attack our own safety layer before every release, and you can read every
@@ -560,14 +575,15 @@ for this guide. Nothing else changed.
 - **Notes kept true:** fold 2's word count and source note; fold 5's M9 note, order note and "Wording held to the
   rulings", and a note on the country; fold 6's note; the At a glance read-time row; the keyword table (the answer's
   word count; D058's withdrawn words added to "Words never placed"); question 5 (where its line would go); a new
-  question 6; the Sources table (four rows replaced by six, and a row for what was withdrawn); the front matter's
-  sources.
-- **What does not change:** the read time (4 min: about 880 words, was about 890); the title, meta, H1, lead, photo,
+  question 6; the Sources table (four rows replaced by six, a row for the deletion sentence, and a row for what was
+  withdrawn); the front matter's sources.
+- **What does not change:** the read time (4 min: about 890 words, as before: about 10 cut, 8 added); the title, meta, H1, lead, photo,
   alt, related ring and close; both source markers and the sources list (no changed line carried a marker); every
-  keyword placement (`<main>` is about 947 words, still "about 950": the primary at about 0.6%, "Kheelu" 16 times,
+  keyword placement (`<main>` is about 955 words, still "about 950": the primary at about 0.6%, "Kheelu" 16 times,
   about 1.7%). No placeholder.
 - **For the builder:** the module's strings at `:53`, `:101`, `:108`, `:117` and `:136` take the Copy above, word for
-  word, with the module's curly apostrophes; `:109` stays the `RETENTION_LINE` import (8b.1 changes the constant); the
+  word, with the module's curly apostrophes; `:109` becomes `` `${RETENTION_LINE} Delete them all sooner by deleting your account.` ``
+  (the import; 8b.1 changes the constant; the CMO's m2); the
   header comment's "the facts follow D018 and D020 in the founder's order" may add "as narrowed by D058". The
   expectation lines in the guide's test files follow where these words change, and each changed approved line needs a
   deviation row for the Gate B pack (D015; [journal pipeline §12](../../engineering/journal-pipeline.md#8b2a-the-20-guides-corrected-per-d058-copywriter-fix-mode-cmo-builder-risk-high-wave-i), 8b.2a).

@@ -156,7 +156,11 @@ export const article = {
               title: "Your child’s voice.",
               body: "To understand and answer your child, Kheelu uses trusted speech and AI providers. They process your child’s voice only to produce Kheelu’s reply. They don’t keep it, and they never use it to train their AI. Our contracts with them say so.",
             },
-            { icon: "eye", title: "Every conversation.", body: `You can read every conversation in the parent app. ${RETENTION_LINE}` },
+            {
+              icon: "eye",
+              title: "Every conversation.",
+              body: `You can read every conversation in the parent app. ${RETENTION_LINE} Delete them all sooner by deleting your account.`,
+            },
             { icon: "hand-heart", title: "Your data.", body: "We don’t sell your data. Your child’s data is never used to advertise to them." },
           ],
         },
