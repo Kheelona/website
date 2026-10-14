@@ -32,14 +32,17 @@ export interface WhatsAppFloatProps {
  * - `site` (task 4.9 item 1): the prices, the price sentence beside a button (PriceSentence `beside`, `ks-price`) and the
  *   offer card's prices, split and fine print (OfferCard). At 324 px the resting bubble sat over the hero's price, and
  *   mid-page over a price while the bar had stepped aside or lifted it.
- * - `store` (task 4.7 item 3): the details section holding the pre-order form (StoreDetails renders it with
- *   store-page.ts `details.id`, the mockup's `#details`).
+ * - `store` (task 4.7 item 3; task 7.1a): the details section holding the pre-order form (StoreDetails renders it with
+ *   store-page.ts `details.id`, the mockup's `#details`), and, after it on a phone, the agreement card (OrderSummary,
+ *   `ks-agree`) and the questions (FaqSection `store`, `ks-faq`), which print the price and what is paid today: at
+ *   412 px the resting bubble sat over "₹4,999" in the card, and over an open answer's amount on the event page
+ *   (CMO built-page review C, B1). The store page and the event pages share this context.
  * - `thanks` (task 4.9 item 2): the paid page's address step, holding the address form (AddressStep's own `#address`;
  *   the page itself is unchanged, ADR-013).
  */
 export const STEP_ASIDE_FROM: Readonly<Record<SupportChatContext, string>> = {
   site: ".ks-price, .kh-offer__prices, .kh-offer__split, .kh-offer__fine",
-  store: "#details",
+  store: "#details, .ks-agree, .ks-faq",
   thanks: "#address",
 };
 

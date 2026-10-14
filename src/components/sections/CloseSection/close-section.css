@@ -6,8 +6,10 @@
 .ks-close-journal .kh-section__actions {
   margin-top: var(--space-5);
 }
+/* The help line follows the group whose last line is the trust line: --space-5, two tap extensions (task 7.1a, CMO
+   built-page review A, B1; help-line.css), where the mockup gave --space-4 (stories.css:45). */
 .ks-close-journal .ks-help {
-  margin-top: var(--space-4);
+  margin-top: var(--space-5);
 }
 .ks-close-journal__art {
   display: none;

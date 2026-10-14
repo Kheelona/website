@@ -103,6 +103,7 @@ describe("nav and footer membership (read from navigation.ts)", () => {
 
   it("never links the chrome to a URL outside the plan", () => {
     const links = [...navigation.main, ...navigation.footer.columns.flatMap<NavLink>((c) => c.links), navigation.footer.grievance, ...navigation.policies];
-    for (const link of links) expect(paths, link.href).toContain(link.href);
+    // A link may open a part of its page (the grievance officer's block on /contact, QA-005, task 7.1a): its page counts.
+    for (const link of links) expect(paths, link.href).toContain(link.href.split("#")[0]);
   });
 });

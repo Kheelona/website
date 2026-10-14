@@ -4,17 +4,22 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ICON_WHATSAPP_LOGO } from "@/assets/icons.generated";
 import { CtaBlock } from "@/components/sections/CtaBlock/CtaBlock";
+import { FaqSection } from "@/components/sections/FaqSection/FaqSection";
 import { AddressStep } from "@/components/sections/store/AddressStep/AddressStep";
 import { OfferCard } from "@/components/ui/OfferCard/OfferCard";
 import { PriceSentence } from "@/components/ui/PriceSentence/PriceSentence";
 import { RichText } from "@/components/ui/RichText/RichText";
+import { formatInr } from "@/config/site";
 import { cta } from "@/content/en-IN/cta";
+import { pickFaqs } from "@/content/en-IN/faqs";
 import { seller } from "@/content/en-IN/seller";
 import { confirmation } from "@/content/en-IN/store/confirmation";
 import { storePage } from "@/content/en-IN/store/store-page";
 import { trustItems } from "@/content/en-IN/trust";
 import type { SupportChat } from "@/content/types";
+import { OrderSummary } from "@/features/preorder/components/OrderSummary";
 import { buildOffer } from "@/lib/offer/offer";
+import { fullTier, launchTier } from "@/lib/store/tiers";
 import { STEP_ASIDE_FROM, WhatsAppFloat, whatsAppChatUrl } from "./WhatsAppFloat";
 import { bandMargin, isFieldIn, LAPTOP_QUERY } from "./WhatsAppFloat.client";
 
@@ -202,8 +207,33 @@ describe("WhatsAppFloat: steps aside from the store's form on a phone (task 4.7)
   const aside = (link: HTMLElement) => [link.classList.contains("is-hidden"), link.hasAttribute("inert")];
 
   it("steps aside from the store's details section, the one the store page renders its form in (store-page.ts)", () => {
-    expect(STEP_ASIDE_FROM.store).toBe(`#${storePage.details.id}`);
+    expect(STEP_ASIDE_FROM.store.split(", ")[0]).toBe(`#${storePage.details.id}`);
     expect(storePage.details.id).toBe("details");
+  });
+
+  /* Task 7.1a (CMO built-page review C, B1): on a phone the agreement card and the questions render after #details,
+     outside it, and print the price and what is paid today; the bubble rested over "₹4,999" in the card at 412 px. Every
+     amount the two blocks print, in both modes and with every answer open, sits inside a region of the store's selector,
+     so a new amount in either block cannot slip past it. (The first screen's price, StoreTop, sits above the form; the
+     chrome.spec.ts sweeps check every amount on the page.) */
+  it("steps aside from the agreement card and the questions too: every ₹ amount they print sits inside a region, in both modes", () => {
+    for (const [mode, tier] of [["token", launchTier()], ["full", fullTier()]] as const) {
+      const offer = buildOffer(mode);
+      const { container, unmount } = render(
+        <>
+          <OrderSummary amountLabel={formatInr(tier.amountPaise)} tierLabel={tier.label} mode={mode} delivery={offer.delivery} />
+          <FaqSection variant="store" heading={storePage.questions.heading} items={pickFaqs(storePage.questions.items)} offer={offer} />
+        </>,
+      );
+      for (const item of container.querySelectorAll("details")) item.open = true;
+      const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+      const amounts: Text[] = [];
+      for (let node = walker.nextNode(); node; node = walker.nextNode()) if (/₹/.test(node.nodeValue ?? "")) amounts.push(node as Text);
+      expect(amounts.length, `${mode}: the card and the answers print the price`).toBeGreaterThan(1);
+      expect(container.querySelector(".ks-faq details"), `${mode}: the questions`).not.toBeNull();
+      for (const node of amounts) expect(node.parentElement!.closest(STEP_ASIDE_FROM.store), `${mode}: "${node.nodeValue}"`).not.toBeNull();
+      unmount();
+    }
   });
 
   it("is the same server link in every context before it arms: classes, name, address and CTA value unchanged", () => {
@@ -341,7 +371,7 @@ describe("WhatsAppFloat: steps aside from the store's form on a phone (task 4.7)
     it("names each context's regions: the site's prices, the store's #details, the /thanks address step", () => {
       expect(STEP_ASIDE_FROM).toEqual({
         site: ".ks-price, .kh-offer__prices, .kh-offer__split, .kh-offer__fine",
-        store: "#details",
+        store: "#details, .ks-agree, .ks-faq",
         thanks: "#address",
       });
     });

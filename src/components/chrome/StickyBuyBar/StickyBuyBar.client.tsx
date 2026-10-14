@@ -30,6 +30,31 @@ export function buyBarState(s: { ready: boolean; heroOnScreen: boolean; inlineOn
   return s.inlineOnScreen > 0 ? "aside" : "shown";
 }
 
+/** A CSS time ("0.2s", "200ms") in milliseconds; 0 for anything else. */
+function ms(time: string): number {
+  const m = /^(-?[\d.]+)(m?s)$/.exec(time.trim());
+  return m ? Number(m[1]) * (m[2] === "s" ? 1000 : 1) : 0;
+}
+
+/**
+ * How long the bar's fade takes when it fades out in place, in milliseconds, or 0 when it does not: no fade, or a fade
+ * that comes with a slide (motion.css, pick 4: with motion on the bar slides down as it fades, and the bubble drops over
+ * the same --duration-base, so the two move together; with reduced motion it only fades, in place). Read from the bar's
+ * computed transition, so it follows motion.css and the visitor's motion setting.
+ */
+export function fadeInPlaceMs(style: Pick<CSSStyleDeclaration, "transitionProperty" | "transitionDuration" | "transitionDelay">): number {
+  const props = style.transitionProperty.split(",").map((p) => p.trim()).filter(Boolean);
+  if (props.some((p) => p === "transform" || p === "all" || p === "translate")) return 0;
+  const i = props.indexOf("opacity");
+  if (i < 0) return 0;
+  // A shorter duration or delay list repeats (CSS Transitions §2).
+  const at = (list: string) => {
+    const items = list.split(",");
+    return ms(items[i % items.length] ?? "");
+  };
+  return Math.max(0, at(style.transitionDuration) + at(style.transitionDelay));
+}
+
 /** Watches the hero and the inline buttons and reports the bar's state; returns the disarm. */
 function arm(bar: HTMLElement, setState: (state: BuyBarState) => void): () => void {
   const root = document.documentElement;
@@ -40,11 +65,51 @@ function arm(bar: HTMLElement, setState: (state: BuyBarState) => void): () => vo
   let ready = false;
   let height = bar.offsetHeight;
 
+  /* What <html> tells the bubble. The bar itself hides at once (its state, is-hidden and inert), but when it steps down
+     from "shown" and fades out in place (reduced motion), <html> keeps saying "shown" until the fade has ended: the
+     bubble, which rises above the bar while it shows, would otherwise drop at once onto the still-visible button (task
+     7.1a; CMO built-page review B, m5; D050: it never covers the bar). The fade's end is the bar's own transitionend for
+     opacity, or twice its time should that never come; the bar showing again ends the wait. */
+  let fading: { next: BuyBarState; stop: () => void } | null = null;
+  const endFade = () => {
+    fading?.stop();
+    fading = null;
+  };
+  const tell = (next: BuyBarState) => {
+    if (fading && next !== "shown") {
+      fading.next = next;
+      return;
+    }
+    endFade();
+    const fade = next !== "shown" && root.dataset.buybar === "shown" ? fadeInPlaceMs(getComputedStyle(bar)) : 0;
+    if (fade <= 0) {
+      root.dataset.buybar = next;
+      return;
+    }
+    const done = () => {
+      const latest = fading?.next ?? next;
+      endFade();
+      root.dataset.buybar = latest;
+    };
+    const onEnd = (event: TransitionEvent) => {
+      if (event.target === bar && event.propertyName === "opacity") done();
+    };
+    const timer = window.setTimeout(done, fade * 2);
+    bar.addEventListener("transitionend", onEnd);
+    fading = {
+      next,
+      stop: () => {
+        window.clearTimeout(timer);
+        bar.removeEventListener("transitionend", onEnd);
+      },
+    };
+  };
+
   const publish = () => {
     const state = buyBarState({ ready, heroOnScreen, inlineOnScreen: onScreen.size });
     setState(state);
     // A bar that takes no room (display: none from 900 px) never lifts the bubble.
-    root.dataset.buybar = height > 0 ? state : "hidden";
+    tell(height > 0 ? state : "hidden");
     root.style.setProperty(HEIGHT_VAR, `${height}px`);
   };
 
@@ -104,6 +169,7 @@ function arm(bar: HTMLElement, setState: (state: BuyBarState) => void): () => vo
 
   return () => {
     cancelAnimationFrame(frame);
+    endFade();
     io.disconnect();
     mo.disconnect();
     ro?.disconnect();

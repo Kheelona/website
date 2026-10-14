@@ -3,7 +3,7 @@ import { act, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { STORE_URL } from "@/config/site";
 import { buildOffer } from "@/lib/offer/offer";
-import { buyBarState } from "./StickyBuyBar.client";
+import { buyBarState, fadeInPlaceMs } from "./StickyBuyBar.client";
 import { StickyBuyBar } from "./StickyBuyBar";
 
 /* StickyBuyBar (task 3.1; G-09, D041, D049 pick 4, architecture §5.2, §5.3, §11.3), ported from mockup/mockup.js §2 and
@@ -85,6 +85,25 @@ describe("buyBarState", () => {
     [{ ready: true, heroOnScreen: false, inlineOnScreen: 0 }, "shown"],
   ] as const)("%o is %s", (input, expected) => {
     expect(buyBarState(input)).toBe(expected);
+  });
+});
+
+/* The bar's fade out in place, as the browser computes motion.css (task 7.1a): with reduced motion a fade alone
+   (opacity over --duration-base, 200 ms); with motion on a fade and a slide, which the bubble's own drop matches. */
+describe("fadeInPlaceMs", () => {
+  const t = (transitionProperty: string, transitionDuration: string, transitionDelay = "0s") => ({ transitionProperty, transitionDuration, transitionDelay });
+  it.each([
+    [t("opacity", "0.2s"), 200],
+    [t("opacity", "200ms", "50ms"), 250],
+    [t("color, opacity", "0.1s, 0.3s"), 300],
+    [t("color, opacity", "0.3s"), 300],
+    [t("opacity, transform", "0.2s, 0.2s"), 0],
+    [t("all", "0.2s"), 0],
+    [t("color", "0.2s"), 0],
+    [t("opacity", "0s"), 0],
+    [t("", ""), 0],
+  ] as const)("%o fades in place for %d ms", (style, expected) => {
+    expect(fadeInPlaceMs(style)).toBe(expected);
   });
 });
 
@@ -227,6 +246,112 @@ describe("StickyBuyBar: behaviour (mockup.js §2)", () => {
     expect(observer.disconnected).toBe(true);
     expect(html.dataset.buybar).toBeUndefined();
     expect(html.style.getPropertyValue("--ks-buybar-h")).toBe("");
+  });
+
+  /* Task 7.1a (CMO built-page review B, m5; D050: the bubble never covers the bar). With reduced motion the bar fades
+     out in place (motion.css, pick 4: opacity over --duration-base, no slide), while the bubble, which rises above it
+     while <html> says "shown", dropped at once onto the still-visible "Pre-order Kheelu" button. So when the bar steps
+     down and fades in place, <html> keeps saying "shown" until the fade has ended; with motion on the bar slides away
+     as the bubble drops (both over --duration-base), so it tells at once. The bar itself hides at once either way. */
+  describe("stepping down while the bar fades out in place (reduced motion)", () => {
+    /** The bar's computed transition, as the browser reads motion.css (jsdom loads no style sheet): a fade alone with
+     *  reduced motion, a fade and a slide with motion on, or none. */
+    type Transition = Pick<CSSStyleDeclaration, "transitionProperty" | "transitionDuration" | "transitionDelay">;
+    const FADE: Transition = { transitionProperty: "opacity", transitionDuration: "0.2s", transitionDelay: "0s" };
+    const FADE_AND_SLIDE: Transition = { transitionProperty: "opacity, transform", transitionDuration: "0.2s, 0.2s", transitionDelay: "0s, 0s" };
+    const NONE: Transition = { transitionProperty: "all", transitionDuration: "0s", transitionDelay: "0s" };
+    let barTransition: Transition = NONE;
+    const real = window.getComputedStyle.bind(window);
+    beforeEach(() => {
+      barTransition = NONE;
+      vi.spyOn(window, "getComputedStyle").mockImplementation((el: Element, pseudo?: string | null) =>
+        el.classList.contains("kh-buybar") ? (barTransition as CSSStyleDeclaration) : real(el, pseudo),
+      );
+    });
+    afterEach(() => vi.restoreAllMocks());
+    const fadeOnly = () => (barTransition = FADE);
+    const ended = (propertyName = "opacity") =>
+      act(() => {
+        bar().dispatchEvent(Object.assign(new Event("transitionend", { bubbles: true }), { propertyName }));
+      });
+    afterEach(() => vi.useRealTimers());
+
+    function shownBar() {
+      const { main, ...view } = page(`<a id="hero-cta" class="kh-btn kh-btn--cta">hero</a><p>…</p><a class="kh-btn kh-btn--cta">inline</a>`);
+      const [hero, inline] = Array.from(main.querySelectorAll("a"));
+      io().report([[hero, true], [inline, false]]);
+      io().report([[hero, false]]);
+      expect(html.dataset.buybar).toBe("shown");
+      return { ...view, hero, inline };
+    }
+
+    it("keeps telling the bubble the bar is there until its fade has ended, then steps aside", () => {
+      const { inline } = shownBar();
+      fadeOnly();
+      io().report([[inline, true]]);
+      expect(isHidden(), "the bar hides at once").toBe(true);
+      expect(bar()).toHaveAttribute("inert");
+      expect(html.dataset.buybar, "while it fades").toBe("shown");
+      ended("transform");
+      expect(html.dataset.buybar, "another property's end is not the fade's").toBe("shown");
+      ended();
+      expect(html.dataset.buybar).toBe("aside");
+    });
+
+    it("tells the latest state once the fade has ended (aside, then hidden while it fades)", () => {
+      const { hero, inline } = shownBar();
+      fadeOnly();
+      io().report([[inline, true]]);
+      io().report([[hero, true]]);
+      expect(html.dataset.buybar).toBe("shown");
+      ended();
+      expect(html.dataset.buybar).toBe("hidden");
+    });
+
+    it("drops the wait when the bar shows again before its fade has ended", () => {
+      const { inline } = shownBar();
+      fadeOnly();
+      io().report([[inline, true]]);
+      io().report([[inline, false]]);
+      expect(html.dataset.buybar).toBe("shown");
+      ended();
+      expect(html.dataset.buybar, "a fade that ended after the bar came back changes nothing").toBe("shown");
+    });
+
+    it("never waits longer than twice the fade, should its end never come", () => {
+      vi.useFakeTimers();
+      const { inline } = shownBar();
+      fadeOnly();
+      io().report([[inline, true]]);
+      act(() => vi.advanceTimersByTime(399));
+      expect(html.dataset.buybar).toBe("shown");
+      act(() => vi.advanceTimersByTime(1));
+      expect(html.dataset.buybar).toBe("aside");
+    });
+
+    it("tells at once when the bar slides away (motion on) or has no fade", () => {
+      const { inline } = shownBar();
+      barTransition = FADE_AND_SLIDE;
+      io().report([[inline, true]]);
+      expect(html.dataset.buybar, "a fade and a slide").toBe("aside");
+      io().report([[inline, false]]);
+      barTransition = NONE;
+      io().report([[inline, true]]);
+      expect(html.dataset.buybar, "no transition").toBe("aside");
+    });
+
+    it("stops waiting when it leaves the page", () => {
+      const { inline, unmount } = shownBar();
+      fadeOnly();
+      io().report([[inline, true]]);
+      const target = bar();
+      unmount();
+      expect(html.dataset.buybar).toBeUndefined();
+      act(() => {
+        target.dispatchEvent(Object.assign(new Event("transitionend", { bubbles: true }), { propertyName: "opacity" }));
+      });
+      expect(html.dataset.buybar, "a fade that ended after it left publishes nothing").toBeUndefined();
+    });
   });
 
   it("goes away on a client navigation to a page without the bar", () => {

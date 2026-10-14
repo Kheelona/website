@@ -136,11 +136,14 @@ export const teamPage = {
           "And you hold the keys. You can read every conversation in the parent app and delete any of them in one tap. You set your child’s age, and every reply passes a safety layer set to it.",
         ],
         subtitle: "No screen. No camera. It can’t browse the internet.",
+        /* Apoorva's live photo in the quote's avatar (task 7.1a; CMO built-page review A, M10): the "AS" initials sat just
+           under the founders' photo cards and read as a placeholder. The same file as his card's, alt empty beside his
+           printed name (deviations.md V7). */
         quote: {
           text: "The hard part of AI for children is not the model. It is the trust. So we build that first, and everything else second.",
           name: apoorva.name,
           role: apoorva.role,
-          initials: "AS",
+          photo: file("/team/apoorva.jpg", 480, 480, ""),
           tone: "sun",
         },
         link: { label: "See how we built safety in", href: "/safety", icon: "shield-check" },

@@ -2,7 +2,7 @@ import type { Page } from "@playwright/test";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ARTICLE_SLUGS as PLAN_ARTICLES } from "@/content/en-IN/routes";
 import { ARTICLE_CLOSES, stickyBarPaths } from "@/layouts/SiteShell/sticky-bar-paths";
-import { hiddenCss, hideDeviations } from "./e2e/support/deviations";
+import { TAP_AREA_HIDDEN, VISUAL_HIDDEN, hiddenCss, hideDeviations, sharedHiddenCss, visualHidden } from "./e2e/support/deviations";
 import { ARTICLE_SLUGS, articleClose, closeInSource, NOT_FOUND_PATH, sweepRoutes } from "./e2e/support/routes";
 
 /* The e2e harness's shared pieces that task 4.9 item 6 changed, where they can be read without a browser.
@@ -75,11 +75,11 @@ describe("hideDeviations", () => {
     return { styles, page: { addStyleTag: async ({ content }: { content: string }) => void styles.push(content) } as unknown as Page };
   };
 
-  it("adds the side's hiding style and prints each rule under the calling spec's name", async () => {
+  it("adds the side's hiding styles, the shared rules' then the page's own, and prints each rule under the calling spec's name", async () => {
     const log = vi.spyOn(console, "log").mockImplementation(() => {});
     const { page, styles } = fakePage();
     await hideDeviations(page, "store-confirmation", "build", "thanks-paid");
-    expect(styles).toEqual([hiddenCss("store-confirmation", "build")]);
+    expect(styles).toEqual([sharedHiddenCss("build"), hiddenCss("store-confirmation", "build")]);
     expect(log.mock.calls.length).toBeGreaterThan(0);
     for (const [line] of log.mock.calls) expect(String(line)).toMatch(/^\[thanks-paid\] store-confirmation: /);
     log.mockClear();
@@ -87,11 +87,22 @@ describe("hideDeviations", () => {
     for (const [line] of log.mock.calls) expect(String(line)).toMatch(/^\[visual-parity\] store-confirmation: /);
   });
 
-  it("does nothing and prints nothing for a page with no rule on that side", async () => {
+  /* Since task 7.1a every page shares one rule (TAP_AREA_HIDDEN, the tap-area row: a help line under a trust line sits
+     lower in the build), applied before the page's own, so no page is without one. */
+  it("applies the rules every page shares to a page with none of its own on that side, and prints exactly those", async () => {
     const log = vi.spyOn(console, "log").mockImplementation(() => {});
     const { page, styles } = fakePage();
+    expect(VISUAL_HIDDEN.home ?? []).toEqual([]);
+    expect(hiddenCss("home", "build")).toBe("");
     await hideDeviations(page, "home", "build", "visual-parity");
-    expect(styles).toEqual([]);
-    expect(log).not.toHaveBeenCalled();
+    const shared = TAP_AREA_HIDDEN.filter((r) => r.side === "build");
+    expect(styles).toEqual([`${shared.map((r) => r.selector).join(", ")} { display: none !important; }`]);
+    expect(styles).toEqual([sharedHiddenCss("build")]);
+    expect(log.mock.calls.map(([line]) => String(line))).toEqual(shared.map((r) => `[visual-parity] home: ${r.selector} hidden in the build (${r.approvedBy}): ${r.reason}`));
+  });
+
+  it("puts the shared rules first, then the page's own", () => {
+    expect(visualHidden("store").slice(0, TAP_AREA_HIDDEN.length)).toEqual(TAP_AREA_HIDDEN);
+    expect(visualHidden("store").slice(TAP_AREA_HIDDEN.length)).toEqual(VISUAL_HIDDEN.store);
   });
 });

@@ -63,6 +63,8 @@ function expectedMain(): Element {
   lede.textContent = CMO_LEDE;
   copy.querySelectorAll(".mk-founder__photo").forEach((n) => n.remove());
   copy.querySelectorAll(".mk-founder__head .kh-avatar").forEach((n) => (n.textContent = ""));
+  // The quote's "AS" badge is Apoorva's live photo since task 7.1a (CMO M10; deviations.md V7).
+  copy.querySelectorAll(".kh-quote__avatar").forEach((n) => (n.textContent = ""));
   const bios = copy.querySelectorAll(".mk-founder__bg");
   expect(bios).toHaveLength(BIOS.length);
   bios.forEach((n, i) => (n.textContent = BIOS[i]));
@@ -207,6 +209,15 @@ describe("/team: the rendered page against the approved mockup", () => {
       Array(3).fill(["480", "480", "lazy"]),
     );
     expect(main.querySelectorAll(".ks-founder .kh-avatar[aria-hidden]")).toHaveLength(0);
+  });
+
+  it("shows Apoorva's live photo in the quote's avatar, alt empty beside his printed name, never initials (task 7.1a, CMO M10)", async () => {
+    const { main } = await renderPage(buildOffer("token"));
+    const who = main.querySelector('section[aria-labelledby="why-title"] .kh-quote__who')!;
+    expect(who.querySelector(".kh-quote__avatar")).toBeNull();
+    const img = who.querySelector<HTMLImageElement>(".kh-avatar img")!;
+    expect([imageUrl(img), img.getAttribute("alt")]).toEqual(PHOTOS[0]);
+    expect(who.querySelector(".kh-quote__name")?.textContent).toBe(organization.founders[0].name);
   });
 
   it("shows the strip as live: the NVIDIA and nasscom marks, the Karnataka seal beside its name, Founders Inc as text (D054 item 20)", async () => {

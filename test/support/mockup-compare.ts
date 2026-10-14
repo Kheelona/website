@@ -1,5 +1,9 @@
 import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
+import { navigation } from "@/content/en-IN/navigation";
+import { trustItems } from "@/content/en-IN/trust";
+import { toPlainText } from "@/lib/content/plain-text";
+import { buildOffer } from "@/lib/offer/offer";
 import { readRepoFile } from "../e2e/support/repo";
 
 /*
@@ -19,7 +23,8 @@ import { readRepoFile } from "../e2e/support/repo";
  *
  * What the build prints differently from the mockup, in all three:
  * - addresses: a mockup page file is the route it became (`mockupRoute`, structure §5); store.html is this build's
- *   store (`STORE`);
+ *   store (`STORE`); a trust item's link and the footer's grievance officer link carry the part of the page the build
+ *   links them to (`ruledLinkHref`, task 7.1a);
  * - classes: each mockup block (`mk-…`) takes its ks- name (components §7), or the name a test's rename table gives
  *   it, or is dropped (`portClass`);
  * - the mockup's value markers (data-src) are review-tool markup that never ships (N22).
@@ -81,6 +86,55 @@ export function mockupRoute(href: string): string {
   return path + fragment;
 }
 
+/* ── The trust links' parts (task 7.1a) ─────────────────────────────────────────────────────────────────────────── */
+
+/** Each trust item's words (both offer modes) to its link in trust.ts. */
+const TRUST_HREF_BY_WORDS: ReadonlyMap<string, string> = new Map(
+  (["token", "full"] as const).flatMap((mode) =>
+    Object.values(trustItems).map((item) => [toPlainText(item.label, buildOffer(mode)), item.href as string] as const),
+  ),
+);
+const NEW_TAB_NOTE = /\s*\(opens in a new tab\)$/;
+
+/**
+ * A mockup trust link's address as the build links it: the approved mockup links each trust item to the top of its terms
+ * page, the build to the part that keeps the promise (trust.ts; task 7.1a, CMO built-page review C, m8, the main
+ * session's ruling "the trust row's links land on their anchors"). A link inside a mockup trust line (`.mk-trust`) whose
+ * words name a trust item takes that item's fragment, so every comparison here reads the ruled deep links as the
+ * mockup's own; any other address, and any link elsewhere, is left as it is. In the mockup's own address space
+ * ("refund.html#returns"), so `mockupRoute` and a test's `realHref` read it as before.
+ */
+export function trustLinkHref(a: Element, href: string): string {
+  if (!a.closest(".mk-trust") || href.includes("#")) return href;
+  const words = (a.textContent ?? "").replace(/\s+/g, " ").trim().replace(NEW_TAB_NOTE, "");
+  const [path, fragment] = (TRUST_HREF_BY_WORDS.get(words) ?? "").split("#");
+  return fragment && mockupRoute(href).endsWith(path) ? `${href}#${fragment}` : href;
+}
+
+/**
+ * The footer's grievance officer link as the build links it: to the officer's block on /contact (`#grievance`, the
+ * fragment navigation.ts gives it), where the approved mockup links the page's top (QA-005, the main session's ruling for
+ * task 7.1a). Any other link is left as it is.
+ */
+export function grievanceLinkHref(a: Element, href: string): string {
+  const { label, href: built } = navigation.footer.grievance;
+  const fragment = built.split("#")[1];
+  if (!fragment || href.includes("#") || !a.closest(".kh-footer__legal")) return href;
+  return (a.textContent ?? "").replace(/\s+/g, " ").trim() === label && mockupRoute(href) === built.split("#")[0] ? `${href}#${fragment}` : href;
+}
+
+/** A mockup link's address with the parts the main session ruled the build links to (task 7.1a): the trust items'
+ *  (`trustLinkHref`) and the grievance officer's (`grievanceLinkHref`). */
+export function ruledLinkHref(a: Element, href: string): string {
+  return grievanceLinkHref(a, trustLinkHref(a, href));
+}
+
+/** Every link's address under a mockup element, in page order, as the build links it (`ruledLinkHref`, then
+ *  `mockupRoute`): for the tests that compare where a page links. */
+export function mockupLinks(root: Element): string[] {
+  return Array.from(root.querySelectorAll("a[href]")).map((a) => mockupRoute(ruledLinkHref(a, a.getAttribute("href")!)));
+}
+
 /* ── Classes ────────────────────────────────────────────────────────────────────────────────────────────────────── */
 
 /** A mockup block name (without its `mk-` prefix) mapped to the class or classes the build prints instead; "" or []
@@ -126,11 +180,12 @@ export function asBuilt(source: Element, renames: Renames = {}, keepSpans?: stri
     node.removeAttribute("data-src");
     if (!keep && node.tagName === "SPAN" && node.attributes.length === 0) node.replaceWith(...Array.from(node.childNodes));
   }
-  for (const node of all()) portClasses(node, renames);
+  // Addresses first, while the mockup's classes (`mk-trust`) still say where a link sits.
   for (const a of all().filter((n) => n.tagName === "A")) {
     const href = a.getAttribute("href");
-    if (href !== null) a.setAttribute("href", mockupRoute(href));
+    if (href !== null) a.setAttribute("href", mockupRoute(ruledLinkHref(a, href)));
   }
+  for (const node of all()) portClasses(node, renames);
   return el;
 }
 
@@ -264,7 +319,7 @@ function attribute(el: Element, name: (typeof ARIA)[number], labels: Labels): st
     case "aria-hidden":
       return `[${name}]`;
     case "href":
-      return `[${name}=${mockupRoute(value)}]`;
+      return `[${name}=${mockupRoute(ruledLinkHref(el, value))}]`;
     case "aria-labelledby":
       return `[${name}=${references(el).map((id) => (labels.lineOf.has(id) ? `@${labels.lineOf.get(id)}` : id)).join(" ")}]`;
     case "id":
@@ -403,7 +458,7 @@ export function mockupDiff(options: MockupDiffOptions = {}): (built: Element, re
     const out: Record<string, string> = {};
     for (const a of Array.from(el.attributes)) {
       if (ignore.has(a.name)) continue;
-      out[a.name] = a.name === "class" ? classes(a.value) : a.name === "href" && side === "mockup" ? realHref(a.value) : a.value;
+      out[a.name] = a.name === "class" ? classes(a.value) : a.name === "href" && side === "mockup" ? realHref(ruledLinkHref(el, a.value)) : a.value;
     }
     return out;
   }

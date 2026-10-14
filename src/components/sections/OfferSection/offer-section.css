@@ -13,6 +13,11 @@
 .ks-offer-col .kh-trustline {
   margin-top: var(--space-2);
 }
+/* The help line under the trust line sits --space-5 below it, two tap extensions (task 7.1a, B1; help-line.css): the
+   column's gap gives --space-4 of it. */
+.ks-offer-col > .ks-trust + .ks-help {
+  margin-top: calc(var(--space-5) - var(--space-4));
+}
 .ks-offer-photo {
   max-width: calc(var(--space-10) * 2); /* 2 × 128 = 256 */
   justify-self: center;

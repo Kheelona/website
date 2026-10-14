@@ -1,6 +1,7 @@
 import { render } from "@testing-library/react";
 import { createElement } from "react";
 import { describe, expect, it } from "vitest";
+import { FeatureSplit } from "@/components/sections/FeatureSplit/FeatureSplit";
 import { FoundersSection } from "@/components/sections/FoundersSection/FoundersSection";
 import { RecognitionStrip } from "@/components/sections/RecognitionStrip/RecognitionStrip";
 import { PageTemplate } from "@/layouts/PageTemplate/PageTemplate";
@@ -69,8 +70,8 @@ describe("team parity deviations (V7)", () => {
   });
 
   /* Read from the file, every initials badge is a line of its own, the quote's (fold 4) too: this helper matches lines
-     and does not count them, and the text pass excuses a line only as often as the build lacks it (the build keeps the
-     quote's "AS"). */
+     and does not count them, and the text pass excuses a line only as often as the build lacks it (since task 7.1a the
+     build lacks all four: the quote's "AS" is Apoorva's photo too, CMO M10). */
   it("excuses exactly the mockup's old lead, its seven placeholder lines (three B24 photos, three F11 backgrounds, the F11 programmes) and the initials", () => {
     expect(excused("team", mockupMain("team"))).toEqual([
       "Kheelu is designed by parents in Bengaluru.",
@@ -88,27 +89,29 @@ describe("team parity deviations (V7)", () => {
     ]);
   });
 
-  /* A browser reads each founder's initials badge as a line of its own (a flex item); the build's badges hold photos.
-     The quote's "AS" (fold 4) is on both sides, so only the founders' three go missing; the next test holds the build to that one badge. */
-  it("excuses the founders' initials, as a browser reads them, and no longer the “Recognised by.” heading", () => {
+  /* A browser reads each initials badge as a line of its own (a flex item); the build's badges hold photos: the
+     founders' three (D054 item 20) and, since task 7.1a, the quote's "AS" (fold 4; CMO built-page review A, M10). The
+     next test holds the build to no badge with words. */
+  it("excuses the initials, as a browser reads them, and no longer the “Recognised by.” heading", () => {
     expect(excused("team", ["AS", "KC", "Recognised by.", "AS Apoorva Sahu", "Aman Soni"])).toEqual(["AS", "KC"]);
-    const initials = Array.from(teamMockup().querySelectorAll(".mk-founder__head .kh-avatar")).map((a) => a.textContent);
-    expect(initials).toEqual(["AS", "AS", "KC"]);
+    const initials = Array.from(teamMockup().querySelectorAll(".mk-founder__head .kh-avatar, .kh-quote__avatar")).map((a) => a.textContent);
+    expect(initials).toEqual(["AS", "AS", "KC", "AS"]);
   });
 
-  /* The initials rule names no count, and the text pass excuses a mockup line as often as the build lacks it: were the
-     quote's "AS" to go missing too, the rule would hide it. So the whole page, as team.ts renders it, shows exactly one
-     initials badge with words, the quote's "AS" (a line of its own to a browser, as each badge), and the rule can only
-     ever cover the founders' three (V7 review, task 6.6). */
-  it("leaves the build exactly one initials badge with words, the quote's “AS”, so the rule covers only the founders' badges", () => {
+  /* The initials rule names no count, and the text pass excuses a mockup line as often as the build lacks it. So the
+     whole page, as team.ts renders it, shows no initials badge with words: the four badges the mockup prints (the
+     founders' three, the quote's) each hold a photo, and the rule covers exactly those four (V7 review, task 6.6;
+     extended by task 7.1a, CMO M10). */
+  it("leaves the build no initials badge with words: every badge holds a photo, the founders' three and the quote's", () => {
     const page = render(createElement(PageTemplate, { page: teamPage, offer: TOKEN, path: "/team" })).container;
     const badges = Array.from(page.querySelectorAll(".kh-avatar, .kh-quote__avatar"));
-    expect(badges.map((a) => a.textContent)).toEqual(["", "", "", "AS"]);
+    expect(badges.map((a) => a.textContent)).toEqual(["", "", "", ""]);
+    expect(badges.every((a) => a.matches(".kh-avatar") && a.querySelector("img"))).toBe(true);
+    expect(badges.slice(0, 3).every((a) => a.closest(".ks-founder__head"))).toBe(true);
     expect(badges[3].closest('section[aria-labelledby="why-title"] .kh-quote__who')).not.toBeNull();
-    expect(badges.slice(0, 3).every((a) => a.closest(".ks-founder__head") && a.querySelector("img"))).toBe(true);
   });
 
-  it("hides the hero lead, the founders' badges, the photo placeholder lines, the background lines and fold 5's line", () => {
+  it("hides the hero lead, the founders' badges, the photo placeholder lines, the background lines, fold 5's line and the quote's badge", () => {
     expect(VISUAL_HIDDEN.team.map((r) => [r.side, r.selector])).toEqual([
       ["mockup", "#hero-title ~ .kh-heading__lead"],
       ["build", "#hero-title ~ .kh-heading__lead"],
@@ -119,11 +122,20 @@ describe("team parity deviations (V7)", () => {
       ["build", ".ks-founder__bg"],
       ["mockup", "#recognised-title ~ .kh-body"],
       ["build", "#recognised-title ~ .ks-recognition"],
+      ["mockup", ".kh-quote__avatar"],
+      ["build", ".kh-quote__who .kh-avatar"],
     ]);
   });
 
   it("finds on each side exactly the elements it hides", () => {
-    const counts = { "#hero-title ~ .kh-heading__lead": 1, ".mk-founder__head .kh-avatar": 3, ".mk-founder__photo": 3, ".mk-founder__bg": 3, "#recognised-title ~ .kh-body": 1 };
+    const counts = {
+      "#hero-title ~ .kh-heading__lead": 1,
+      ".mk-founder__head .kh-avatar": 3,
+      ".mk-founder__photo": 3,
+      ".mk-founder__bg": 3,
+      "#recognised-title ~ .kh-body": 1,
+      ".kh-quote__avatar": 1,
+    };
     const mockup = teamMockup();
     for (const rule of VISUAL_HIDDEN.team.filter((r) => r.side === "mockup")) {
       expect(mockup.querySelectorAll(rule.selector).length, rule.selector).toBe(counts[rule.selector as keyof typeof counts]);
@@ -131,7 +143,13 @@ describe("team parity deviations (V7)", () => {
     /* The build's folds as the page renders them, from team.ts. */
     const founders = render(createElement(FoundersSection, teamFold("founders-section").config)).container;
     const strip = render(createElement(RecognitionStrip, teamFold("recognition-strip").config)).container;
-    const build = { ".ks-founder__head .kh-avatar": [founders, 3], ".ks-founder__bg": [founders, 3], "#recognised-title ~ .ks-recognition": [strip, 1] } as const;
+    const why = render(createElement(FeatureSplit, { ...teamFold("feature-split").config, offer: TOKEN })).container;
+    const build = {
+      ".ks-founder__head .kh-avatar": [founders, 3],
+      ".ks-founder__bg": [founders, 3],
+      "#recognised-title ~ .ks-recognition": [strip, 1],
+      ".kh-quote__who .kh-avatar": [why, 1],
+    } as const;
     for (const rule of VISUAL_HIDDEN.team.filter((r) => r.side === "build" && r.selector !== "#hero-title ~ .kh-heading__lead")) {
       const [root, n] = build[rule.selector as keyof typeof build];
       expect(root.querySelectorAll(rule.selector).length, rule.selector).toBe(n);

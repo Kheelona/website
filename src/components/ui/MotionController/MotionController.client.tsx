@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useLayoutEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 
 /* The one observer behind the reveals and the doodle draws (task 2.8; ADR-007, architecture §11.1-§11.3,
  * D049 picks 1A and 3B), ported from mockup/mockup.js §1. Mounted once, in the site shell. It only sets the
@@ -12,6 +12,8 @@ import { useLayoutEffect } from "react";
  * (CMO M12) and a doodle already on screen is shown drawn (doodles draw below the first screen only). The
  * rest is observed and unobserved once revealed. With reduced motion or without IntersectionObserver it does
  * nothing: js-motion never arrives, so everything stays visible and drawn, as without JavaScript.
+ * It also turns on smooth in-page anchor scrolling once the page has loaded (html[data-scroll-behavior="smooth"],
+ * whatever the motion setting; smoothScrollOnceLoaded, task 7.1a), so a landing at a #fragment jumps.
  * Targets added after it armed (a client-only island, a streamed block; task 2.12) follow the same rules through
  * one MutationObserver on document.body: on screen, shown at once (its fade or draw jumped to the end before the
  * frame paints); below, observed. A target with no layout box yet (a streamed block in React's hidden holder) is
@@ -112,8 +114,35 @@ function arm(): (() => void) | undefined {
   };
 }
 
+/**
+ * Turns on the mockup's smooth in-page anchor scrolling (motion.css, keyed on `html[data-scroll-behavior="smooth"]`,
+ * which Next 16 also reads to jump on a route change) once the page has loaded: a frame after the load event, or at the
+ * next frame when the page has loaded already. Set in the server HTML, it made the browser's own jump to a URL's
+ * #fragment on arrival glide from the top through every block on the way (task 7.1a; CMO built-page review A, M1:
+ * /faq and /products/kheelu#faq glided 10,600 px in 1.5 s). Whatever the motion setting: motion.css keeps the scroll a
+ * jump under reduced motion. Returns the cancel for a controller that leaves before then; once set, the attribute stays
+ * for the life of the page.
+ */
+export function smoothScrollOnceLoaded(): () => void {
+  let frame = 0;
+  const turnOn = () => {
+    frame = requestAnimationFrame(() => {
+      document.documentElement.dataset.scrollBehavior = "smooth";
+    });
+  };
+  if (document.readyState === "complete") turnOn();
+  else window.addEventListener("load", turnOn, { once: true });
+  return () => {
+    window.removeEventListener("load", turnOn);
+    cancelAnimationFrame(frame);
+  };
+}
+
 export function MotionController() {
   const pathname = usePathname();
+
+  // Once per page load: the shell outlives a client navigation, and the attribute with it.
+  useEffect(() => smoothScrollOnceLoaded(), []);
 
   // Re-armed on every pathname change (lessons §2: an observer mounted in a layout must re-arm, or a
   // client-navigated page stays hidden). The disarm runs as the router commits the new page, so its blocks

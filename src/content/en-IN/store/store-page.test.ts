@@ -7,7 +7,7 @@ import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
-import { mockupRoute } from "../../../../test/support/mockup-compare";
+import { mockupRoute, trustLinkHref } from "../../../../test/support/mockup-compare";
 import { faqs } from "../faqs";
 import { films, filmsStrip } from "../films";
 import { navigation } from "../navigation";
@@ -51,7 +51,7 @@ function iconOf(svg: Element | null): IconName | undefined {
 }
 /** A mockup trust line as the items it links: icon, words, page. */
 const trustOf = (ul: Element) =>
-  Array.from(ul.querySelectorAll("li > a")).map((a) => ({ icon: iconOf(a.querySelector("svg")), label: seen(a), href: mockupRoute(a.getAttribute("href")!) }));
+  Array.from(ul.querySelectorAll("li > a")).map((a) => ({ icon: iconOf(a.querySelector("svg")), label: seen(a), href: mockupRoute(trustLinkHref(a, a.getAttribute("href")!)) }));
 
 describe("store page module: meta (store.md, At a glance)", () => {
   it("title, both descriptions and the default card, through pageMeta (which refuses a typed amount)", () => {

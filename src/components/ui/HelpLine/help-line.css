@@ -1,11 +1,18 @@
-/* HelpLine (task 2.4): every help line of the mockup. Ported from mockup.css:29-31 (.mk-help), :128 (the link box
-   reaches 28 px for axe target-size without moving the line) and :31 (a 44 px tap area without taller lines,
-   CMO M3). The rules hold for all three sizes (kh-body-s, kh-body, kh-body-l), as .mk-help a does in the mockup.
+/* HelpLine (task 2.4): every help line of the mockup. Ported from mockup.css:29-30 (.mk-help) and :128 (the link box
+   reaches 28 px for axe target-size without moving the line). The rules hold for all three sizes (kh-body-s, kh-body,
+   kh-body-l), as .mk-help a does in the mockup.
    Link colour: mockup.css:30 writes `color: inherit`. On the kh-body-s lines mockup.css:105
    (`.kh-body-s a:not(.kh-btn) { color: var(--link) }`, specificity 0,2,1) beats it, and setup.css:38 sets
    var(--link) on /setup's two lines, so the approved render shows the DS link colour; that computed value is what
    is ported here. On the other kh-body lines (/thanks, refund, shipping) the mockup's `inherit` gives var(--text):
-   both are ink-900 in the light theme (tokens.css:24, 32-33), the only theme the pages use. */
+   both are ink-900 in the light theme (tokens.css:24, 32-33), the only theme the pages use.
+   No tap extension (task 7.1a; CMO built-page review A, B1): mockup.css:31 gave these links the trust line's invisible
+   12 px ::before above and below. A help line's links sit inside a sentence and wrap onto consecutive lines on phones
+   (WhatsApp, then the phone number at 360 px; /setup's "Stuck?" paragraph), so each link's area lay over the words of
+   the link above it and a tap on "WhatsApp" placed a call. Links in running text are WCAG 2.5.8's inline exception;
+   the 28 px link box keeps axe's target size. The approved mockup keeps the defect (frozen, D046): the deviation is the
+   tap-area row of wiki/qa/deviations.md. position: relative stays, so a help link paints above a trust link's tap area
+   wherever the two could still meet. */
 .ks-help {
   margin: 0;
 }
@@ -16,8 +23,11 @@
   color: var(--link);
   font-weight: 800; /* ds-weight-800: mockup.css:30 */
 }
-.ks-help a::before {
-  content: "";
-  position: absolute;
-  inset: calc(var(--space-3) * -1) 0;
+/* A help line right under a trust line keeps clear of the trust links' tap areas (task 7.1a, B1): each reaches 12 px
+   above and below its link (trust-line.css), so the two lines sit two extensions apart, --space-5 (24 px). Here in
+   block flow (the heroes of Home and the product page, Home's close, the product page's close); the grids that space
+   their children with a gap set the remainder (cta-block.css `ks-beside`, offer-section.css `ks-offer-col`), and the
+   journal close spaces the help line after its group (close-section.css). */
+.ks-trust + .ks-help {
+  margin-top: var(--space-5);
 }

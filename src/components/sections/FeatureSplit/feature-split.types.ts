@@ -149,6 +149,8 @@ export type FeatureSplitConfig =
         readonly name: Copy;
         readonly role?: Copy;
         readonly initials?: string;
+        /** The person's photo in the avatar's place, alt empty beside the printed name (Quote; task 7.1a). */
+        readonly photo?: ImageRef;
         readonly tone?: Tone;
       };
     });
