@@ -1657,7 +1657,11 @@ item 1).
   and the `frame-src` change as a reviewed checkout-freeze patch; which guards run on the snapshot; the backend's
   publish-time voice law (no contractions, em dashes or exclamation marks) against the rebuild's copy; and how the 20
   rewritten guides, corrected per D058, reach the dashboard (an export an admin publishes).
-- **Then the build**, per the design.
+- **Then the build**, per the design. **Designed 2026-10-14:** [ADR-014](adr/ADR-014-journal-from-the-dashboard.md) and
+  [journal pipeline](journal-pipeline.md) (tasks 8b.2a-8b.2g in its §12; the backend changes for Aman in §13). The
+  founder's answers: [D059](../decisions/D059-journal-voice-uploads-and-timing-2026-10-14.md) (the dashboard's voice
+  check follows the DS; a DS photo first, uploads as fallback; the dashboard takes over after Gate B). Wave i (8b.2a,
+  8b.2b, 8b.2c) runs with 8b.1; then 8b.2d; then 8b.2e.
 
 ### 8b.3 Merge `origin/main` into the rebuild (main session; after 8b.1 and 8b.2)
 

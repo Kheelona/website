@@ -876,3 +876,11 @@ added to D017, D018, D020, D036, D055. Wave 8b in tasks.md: 8b.1 claims and the 
 8b.1 in `.claude/worktrees/w8b-8b.1` on `build/w8b-8b.1` (ports 3610/6210): copy groups privacy+terms, home+meet-kheelu,
 safety+setup, and ai-toys, team, stories, 404, contact, store; then the modules and parity rules; machine-file hashes
 reported for the main session. 8b.2: the architect writes ADR-014 and `journal-pipeline.md` (read-only on code).
+
+## [2026-10-14 13:23] decision | 8b.2 designed (ADR-014, journal-pipeline.md); D059: the dashboard's voice check follows the DS, uploads as fallback, the dashboard after Gate B
+The architect's design: the journal reads a committed snapshot of the dashboard's posts
+(`src/content/en-IN/stories/posts.generated.json`, prebuild step 15; only a production build after the flip calls the
+API); one adapter `postToArticle` into the rebuild's `Article`; eight new nullable post fields and six node attributes
+for the backend (§13, to pass to Aman); DS photos by key with uploads as fallback; `ui/VideoEmbed` with a reviewed
+`frame-src` patch (D057); guards in three layers; the 20 guides corrected per D058 in their modules first, then exported.
+The founder answered its three questions (D059). Next: wave i of 8b.2 (8b.2a, 8b.2b, 8b.2c) in parallel with 8b.1.
