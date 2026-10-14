@@ -73,7 +73,6 @@
     "subset-font": "2.9.0",
     "tailwindcss": "4.3.2",
     "typescript": "^5",
-    "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^4.1.11"
   },
   "jscpd": {
