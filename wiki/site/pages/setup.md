@@ -22,6 +22,7 @@ sources:
   - "design-system/project/04-kheelu.md:13 (belly unit), assets/Kheelu/README.md:9, 01-writing.md:92 (error tone), 07-selling.md:53 (no blue buttons on selling pages), 10-pages.md:40 (close every section) (read-only)"
   - "../../qa/cmo-review-page-facts-6.7-2026-10-14.md (round 2: M10, fold 2 item 4 worded as one app; M9, question 5's recommendation)"
   - "../../qa/cmo-review-built-a-2026-10-14.md (M8: one wording for the age-3 advice; task 7.1b)"
+  - "../../qa/cmo-review-copy-fixes-7.1b-2026-10-14.md (minor 1 and the section \"M8: the one wording\": the CMO's pick, \"If your child is 3, keep a grown-up nearby.\")"
 ---
 
 # Setup (`/setup`): page copy
@@ -192,14 +193,15 @@ sources:
 >
 > You can change it later. Kheelu picks up the change the next time it's online.
 >
-> Kheelu is made for children aged 3 to 7. If your child is 3, keep a grown-up nearby while they play.
+> Kheelu is made for children aged 3 to 7. If your child is 3, keep a grown-up nearby.
 >
 > While you're in the app, you can also choose your family's languages, pick which topics are open and set quiet hours.
 
 - **H2 accent:** `Hand` on "your child's age".
 - **The age-3 line (task 7.1b, CMO review A M8)** uses the site's one wording, "If your child is 3, keep a grown-up
-  nearby while they play." M8 asks for one sentence on every page that gives this advice. The journal articles
-  already use these words, and `/safety` takes them in this task. It read "while they talk" at Gate A.
+  nearby.", as the CMO picked it in the [copy review of task 7.1b](../../qa/cmo-review-copy-fixes-7.1b-2026-10-14.md)
+  (minor 1). M8 asks for one sentence on every page that gives this advice; Home's age answer and `/safety` print the
+  same sentence. It read "…while they talk." at Gate A.
 - "Kheelu picks up the change the next time it's online" also tells a parent, without a separate warning, that a change made while Kheelu is offline (Story mode, no Wi-Fi) waits for the next connection.
 - **Not used:** daily summary and parent alerts (wait on counsel's DPDP reading, [claims §2](../../product/claims.md#2-published-product-behaviour-claims-live-not-re-confirmed) line 120); any claim about how well Kheelu understands a 3-year-old (B4: say nothing).
 - **Image (optional):** none. The app screenshot is in fold 6, where it shows what a parent reads after the first conversation.
@@ -212,7 +214,7 @@ sources:
 | Every reply passes an age-graded safety layer set to that age | [claims §2](../../product/claims.md#2-published-product-behaviour-claims-live-not-re-confirmed) (line 115); [D036](../../decisions/D036-launch-feature-claims.md) (#6) |
 | Kheelu picks up the change the next time it's online | App demo |
 | Ages 3 to 7 | [facts, age](../../product/facts.md#age) (line 83); [age-band review](../../product/age-band-review.md) |
-| A grown-up nearby at 3, "while they play" | [D041](../../decisions/D041-gate-a-round-1.md) (line 33: "with a grown-up nearby" in age and safety answers); the one wording: [CMO review A](../../qa/cmo-review-built-a-2026-10-14.md) M8 |
+| A grown-up nearby at 3 | [D041](../../decisions/D041-gate-a-round-1.md) (line 33: "with a grown-up nearby" in age and safety answers); one wording: [CMO review A](../../qa/cmo-review-built-a-2026-10-14.md) M8; the wording itself: [CMO copy review 7.1b](../../qa/cmo-review-copy-fixes-7.1b-2026-10-14.md) minor 1 |
 | Languages, topics, quiet hours in the app | [facts, parent app](../../product/facts.md#parent-app) (lines 150-153: language choice, topic controls, quiet hours; EXTERNAL per D017, lines 160-166) |
 
 ---
@@ -429,19 +431,25 @@ the Copy blocks stands word for word as approved at Gate A (D046).
 ## Changes after approval (task 7.1b)
 
 Applied from the CMO's built-page review of 2026-10-14 ([group A](../../qa/cmo-review-built-a-2026-10-14.md), M8:
-"The age-3 advice is worded five ways … one sentence everywhere"). The founder signs off copy
+"The age-3 advice is worded five ways … one sentence everywhere"), in the wording the CMO then picked in the
+[copy review of task 7.1b](../../qa/cmo-review-copy-fixes-7.1b-2026-10-14.md) (minor 1). The founder signs off copy
 ([D015](../../decisions/D015-founder-signs-off-copy.md)); the review lists M8 among the changes that need his
 sign-off. Every other line of the Copy blocks stays word for word as approved (Gate A, [D046](../../decisions/D046-gate-a-approved.md),
 and the task 6.7 changes above). No new claim, and the age band stays 3 to 7.
 
 - **Fold 4, third paragraph (CMO review A M8).** "If your child is 3, keep a grown-up nearby while they talk."
-  becomes "If your child is 3, keep a grown-up nearby while they play." This is the one wording M8 asks for, the
-  sentence the journal articles already use, and the one `/safety` takes in this task. The source is the same,
-  [D041](../../decisions/D041-gate-a-round-1.md) line 33. "Kheelu is made for children aged 3 to 7." stays.
-- **Notes kept true:** the fold 4 note and source row are updated. The word count is unchanged ("talk" becomes
-  "play"), so the "Kheelu" density row (21 in about 460 words), keyword placements, title (42 characters), meta
-  description (145), H1 and the hero's 47-word answer-first block stand as they were. There are still no
-  placeholders in the Copy blocks.
+  becomes "If your child is 3, keep a grown-up nearby." This is the one wording M8 asks for, the sentence Home's age
+  answer and `/safety` print. The source is the same, [D041](../../decisions/D041-gate-a-round-1.md) line 33.
+  "Kheelu is made for children aged 3 to 7." stays.
+- **Why not "…while they play" (CMO copy review 7.1b, minor 1).** This line first took M8's example, "…keep a
+  grown-up nearby while they play." (the journal guides' closing line). The CMO's copy review found that it left two
+  wordings, Home's short one and this one, and picked the short sentence for every page M8 names: the long form would
+  take three FAQ answers over the 60-word answer guard. The short sentence is the long one's opening, so it says
+  nothing new.
+- **Notes kept true:** the fold 4 note and source row are updated. The line is three words shorter, so the page is
+  still about 460 words: the "Kheelu" density row (21 in about 460 words), keyword placements, title (42
+  characters), meta description (145), H1 and the hero's 47-word answer-first block stand as they were. There are
+  still no placeholders in the Copy blocks.
 - **For the builder (not edited here):** `src/content/en-IN/pages/setup.ts:101` takes the new sentence. `llms.txt`
   restates FAQ answers, product facts, trust items, seller lines and nav labels (`src/app/llms.txt/route.ts:22-24`),
   not `/setup`'s body, so no machine-file hash changes because of this page.

@@ -7,7 +7,7 @@ import type { Offer } from "@/content/types";
 import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
-import { COPY_FIXES } from "../../../../test/e2e/support/deviations";
+import { COPY_FIXES, VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../test/e2e/support/page-checks";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { words } from "../../../../test/support/mockup-compare";
@@ -136,6 +136,15 @@ describe("/safety: the rendered page against the approved mockup", () => {
     const faq = words(fold(main, "faq-title"));
     for (const line of COPY_FIXES.safety.build) expect(faq).toContain(line);
     for (const line of COPY_FIXES.safety.mockup) expect(faq).not.toContain(line);
+  });
+
+  it("finds the one block the visual pass hides on the build side, once, on the page as it renders: the open answer (V19)", async () => {
+    const { main } = await renderPage(buildOffer("token"));
+    const selectors = (VISUAL_HIDDEN.safety ?? []).filter((rule) => rule.side === "build").map((rule) => rule.selector);
+    expect(selectors).toHaveLength(1);
+    const found = main.querySelectorAll(selectors[0]);
+    expect(found).toHaveLength(1);
+    expect(words(found[0])).toContain(COPY_FIXES.safety.build[0]);
   });
 
   it("changes only the price sentence in full mode (D028; safety copy, fold 8)", async () => {

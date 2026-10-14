@@ -223,4 +223,8 @@ describe.each(Object.keys(COPY_FIXES) as CopyFixesSlug[])("%s: task 7.1b's copy 
   it("says nothing the CMO's copy review rules out: no “we advise”, no count of families, no “processed within”", () => {
     for (const line of fixes.build) expect(line).not.toMatch(/we advise|Seven families|is processed within|which rules hold up|follow below/);
   });
+
+  it("gives the age-3 advice, wherever it changes, in the CMO's one wording (copy review 7.1b, minor 1; review A M8)", () => {
+    for (const line of fixes.build.filter((l) => /grown-up/.test(l))) expect(line).toMatch(/^(If your child is 3, keep a grown-up nearby\.|At 3: keep a grown-up nearby\.)$/);
+  });
 });

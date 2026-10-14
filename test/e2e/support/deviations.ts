@@ -139,13 +139,15 @@ const SCREEN_TIME_LEAD = {
   mockup: "How much, which rules hold up, and what to do when the screen goes off.",
   build: "How much, what the guidelines say, and what to do when the screen goes off.",
 } as const;
-/** The age-3 advice in one wording (CMO review A M8): Home's FAQ in the CMO's short form, /safety and /setup with "while
- *  they play" (the copy pages as approved; the CMO's copy review asks for the short form there too, a later fix). */
+/** The age-3 advice in one wording (CMO review A M8), the CMO's pick in the copy review of task 7.1b (minor 1): "If your
+ *  child is 3, keep a grown-up nearby." on Home, /safety and /setup alike, and "keep a grown-up nearby." under /safety's
+ *  "At 3:" lead. The longer "…while they play." would take three FAQ answers over the 60-word answer guard. */
+const AGE_THREE_LINE = "If your child is 3, keep a grown-up nearby.";
 const AGE_THREE = {
-  home: { mockup: "For 3-year-olds, we advise having a grown-up nearby.", build: "If your child is 3, keep a grown-up nearby." },
-  safety: { mockup: "If your child is 3, we advise play with a grown-up nearby.", build: "If your child is 3, keep a grown-up nearby while they play." },
-  safetyDetail: { mockup: "At 3: we advise play with a grown-up nearby.", build: "At 3: keep a grown-up nearby while they play." },
-  setup: { mockup: "If your child is 3, keep a grown-up nearby while they talk.", build: "If your child is 3, keep a grown-up nearby while they play." },
+  home: { mockup: "For 3-year-olds, we advise having a grown-up nearby.", build: AGE_THREE_LINE },
+  safety: { mockup: "If your child is 3, we advise play with a grown-up nearby.", build: AGE_THREE_LINE },
+  safetyDetail: { mockup: "At 3: we advise play with a grown-up nearby.", build: "At 3: keep a grown-up nearby." },
+  setup: { mockup: "If your child is 3, keep a grown-up nearby while they talk.", build: AGE_THREE_LINE },
 } as const;
 /** The refund after a return "reaches you within 7 working days", as /refund says it (D056 item 4; D055 item 5: bank
  *  time included). */
@@ -221,7 +223,8 @@ export const COPY_FIXES = {
     ],
     mockup: [AGE_THREE.safety.mockup, "Its advice in full, and our answer, follow below.", AGE_THREE.safetyDetail.mockup],
     build: [AGE_THREE.safety.build, "Its advice in full, and our answer, are in the next question.", AGE_THREE.safetyDetail.build],
-    hidden: NO_HIDES,
+    /* At 390 the open answer takes one line less and moves the fold below it; the "At 3:" line sits in a closed item. */
+    hidden: { both: ['[aria-labelledby="faq-title"] .kh-faq__item:first-child .kh-faq__a > p'], mockup: [], build: [] },
     reason: "the FAQ's age-3 advice in one wording (CMO A M8), and the open answer points to the next question, which is closed (A M4)",
     approvedBy: "deviations.md V19 (CMO built-page review A M4 and M8, 2026-10-14; copy review 7.1b; task 7.1b)",
   },
@@ -229,7 +232,8 @@ export const COPY_FIXES = {
     edits: [swap("p.kh-body-l", `Kheelu is made for children aged 3 to 7. ${AGE_THREE.setup.mockup}`, AGE_THREE.setup.mockup, AGE_THREE.setup.build)],
     mockup: [AGE_THREE.setup.mockup],
     build: [AGE_THREE.setup.build],
-    hidden: NO_HIDES,
+    /* At 390 the line takes one line less and moves the folds below it. */
+    hidden: { both: ['[aria-labelledby="age-title"] .kh-body-l:nth-child(3)'], mockup: [], build: [] },
     reason: "the age-3 advice in one wording (CMO A M8)",
     approvedBy: "deviations.md V20 (CMO built-page review A M8, 2026-10-14; copy review 7.1b; task 7.1b)",
   },
@@ -337,6 +341,8 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
   ],
   /* The screen-time guide card's line (V18, task 7.1b), compared by the text pass. */
   home: factsHidden(COPY_FIXES.home, COPY_FIXES_WHOSE),
+  /* The open FAQ answer (V19, task 7.1b), compared by the text pass. */
+  safety: factsHidden(COPY_FIXES.safety, COPY_FIXES_WHOSE),
   team: [
     /* What still differs on purpose (V7): the hero lead (CMO M-T1), and the mockup's placeholders that the founder's
        answers resolved (D054 item 20), each with other words or another height on the build's side, so every chunk
@@ -378,6 +384,8 @@ export const VISUAL_HIDDEN: Readonly<Record<string, readonly VisualHide[]>> = {
       approvedBy: "deviations.md V8 (main session, 2026-10-14, M1; task 5.8, CMO M-S1)",
     })),
     ...pageFactsHidden("setup"),
+    /* Fold 4's age line (V20, task 7.1b), compared by the text pass. */
+    ...factsHidden(COPY_FIXES.setup, COPY_FIXES_WHOSE),
   ],
   "meet-kheelu": [
     ...pageFactsHidden("meet-kheelu"),

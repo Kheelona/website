@@ -134,12 +134,16 @@ describe("P15: the shared answer gives D033's remedy for a faulty Kheelu (deviat
 });
 
 describe("task 7.1b's copy fixes in the shared answers (deviations V18, V19)", () => {
-  it("advise a grown-up nearby at 3 in the copy pages' words, never “we advise”, on Home and /safety", () => {
+  it("advise a grown-up nearby at 3 in the site's one wording, never “we advise” or “while they play”, on Home and /safety", () => {
     expect(plain(faqs["what-ages"].answer, token)).toContain(" It is not a toy for children under 3. If your child is 3, keep a grown-up nearby. ");
-    expect(plain(faqs["age-three"].answer, token)).toContain(" If your child is 3, keep a grown-up nearby while they play. ");
+    expect(plain(faqs["age-three"].answer, token)).toContain(" and it is not a toy for children under 3. If your child is 3, keep a grown-up nearby. ");
     const detail = faqs["child-safety-groups"].detail.flatMap((b) => blockText(b, token));
-    expect(detail.at(-1)).toBe("At 3: keep a grown-up nearby while they play.");
-    for (const id of ["what-ages", "age-three"] as const) expect(plain(faqs[id].answer, token), id).not.toContain("we advise");
+    expect(detail.at(-1)).toBe("At 3: keep a grown-up nearby.");
+    for (const id of ["what-ages", "age-three"] as const) expect(plain(faqs[id].answer, token), id).not.toMatch(/we advise|while they play/);
+  });
+
+  it("keep /safety's open answer at the copy page's 50 words with the one wording (CMO copy review 7.1b, minor 1)", () => {
+    expect(words(plain(faqs["age-three"].answer, token))).toBe(50);
   });
 
   it("say the refund reaches you within 7 working days of the return reaching us, as /refund does (D056 item 4)", () => {

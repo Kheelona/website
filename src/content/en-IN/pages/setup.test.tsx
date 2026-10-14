@@ -349,10 +349,18 @@ describe("Setup: search and share metadata (setup.md At a glance)", () => {
   });
 });
 
-describe("Setup: the founder's page facts for the pixels (task 6.7)", () => {
-  it("finds each block the visual pass hides on the build side, once, on the page as it renders (V8 and the facts)", () => {
+describe("Setup: the founder's page facts and task 7.1b's age line for the pixels (tasks 6.7, 7.1b)", () => {
+  it("finds each block the visual pass hides on the build side, once, on the page as it renders (V8, the facts and the age line)", () => {
     const selectors = VISUAL_HIDDEN.setup.filter((rule) => rule.side === "build").map((rule) => rule.selector);
-    expect(selectors).toHaveLength(4);
+    expect(selectors).toHaveLength(5);
     for (const selector of selectors) expect(BUILT.querySelectorAll(selector), selector).toHaveLength(1);
+  });
+
+  it("hides fold 4's age line, the block task 7.1b rewords, on the build side (V20)", () => {
+    const selectors = VISUAL_HIDDEN.setup.filter((rule) => rule.side === "build" && rule.approvedBy === COPY_FIXES.setup.approvedBy).map((rule) => rule.selector);
+    expect(selectors).toHaveLength(1);
+    const found = BUILT.querySelectorAll(selectors[0]);
+    expect(found).toHaveLength(1);
+    expect(words(found[0])).toBe(`Kheelu is made for children aged 3 to 7. ${COPY_FIXES.setup.build[0]}`);
   });
 });
