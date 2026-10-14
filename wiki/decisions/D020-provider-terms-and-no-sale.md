@@ -7,6 +7,8 @@ sources: ["founder, 2026-10-10: 'The providers process audio only to produce Khe
 
 # D020: What the voice providers may and may not do
 
+> **Narrowed 2026-10-14 by [D058](D058-follow-the-live-code-check-2026-10-14.md):** item 6 is withdrawn (some processors work outside India, and they are named); item 7's one-tap deletion is withdrawn; the 36 months then automatic deletion stands (live by launch).
+
 **Confirmed by the founder (2026-10-10):**
 1. The outside speech and AI providers ([D019](D019-voice-providers.md)) process audio **only to
    produce Kheelu's reply**.

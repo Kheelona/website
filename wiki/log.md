@@ -860,3 +860,14 @@ on `/privacy` and `/terms` (App Store and Play), #19 product claims withdrawn or
 the admin dashboard and synced at build (`tools/blog/sync.mjs`, `api.kheelona.com`, a deploy hook; CSP and image-host
 changes in `security-headers.ts` and `next.config.ts`), and two CLAUDE.md edits describing it. Merging the rebuild at
 Gate B as it stands would undo them: open question G23. A read-only agent is mapping each change against the rebuild.
+
+## [2026-10-14 13:10] decision | D058: the site follows the live team's code check; the founder's rulings; wave 8b planned
+A read-only agent mapped PRs #18-#22 against the rebuild ([reconciliation map](qa/live-main-reconciliation-2026-10-14.md)):
+the live team's code check of 12 Oct withdrew claims the rebuild still made (one-tap delete, servers in India, the closed
+library, topics and quiet hours, the new-word count, "about a minute"), and #18 added the parent app to `/privacy` and
+`/terms`. The founder answered four rounds of questions: D057 (the journal from the dashboard; the films heading; the
+`/terms` age line; a refused event link's words; applied in `fda50f8`) and D058 (follow the code check; Bluetooth and
+the languages stay; the app is free with Kheelona+ paid on top; Aman stays the grievance officer; own-model training
+with an opt-out in the app; the processors named; the report follows the app; 36 months then deleted). Narrowing notes
+added to D017, D018, D020, D036, D055. Wave 8b in tasks.md: 8b.1 claims and the parent app on the pages (copy batch),
+8b.2 the journal from the dashboard (architect design, then build), 8b.3 merging `origin/main` into the rebuild.

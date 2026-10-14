@@ -1624,6 +1624,47 @@ minor 1) was checked by the main session against the CMO's text at the merge. Me
   evidence; the 4:5 cards drop part of what their alt describes (advik-01's train, myra-04's crayon; a lower `focusY`
   would keep them); `tap-areas.spec.ts` and `anchors.spec.ts` are not wired into the WebKit projects.
 
+## Wave 8b: the live site's changes (D057, D058; after wave 8, before beta QA and Gate B)
+
+The live `main` gained PRs #18-#22 on 12-13 Oct ([reconciliation map](../qa/live-main-reconciliation-2026-10-14.md)):
+the parent app on `/privacy` and `/terms`, claims withdrawn after a code check, and the journal written in the admin
+dashboard. The founder ruled: follow the code check ([D058](../decisions/D058-follow-the-live-code-check-2026-10-14.md)),
+and the journal comes from the dashboard ([D057](../decisions/D057-journal-from-dashboard-and-three-wordings-2026-10-14.md)
+item 1).
+
+### 8b.1 Claims and the parent app on the site's pages (copywriter fix mode, CMO, builder; risk high)
+
+- **Copy pages first**, in four groups: `privacy.md` and `terms.md` (D058 items 1, 3-6, 9, plus #18's app sections:
+  the reconciliation map §1 rows P3-P10 and T2-T7, in the rebuild's voice); `home.md` and `meet-kheelu.md`; `safety.md`
+  and `setup.md`; `ai-toys-for-kids-in-india.md`, `team.md`, `stories.md`, `404.md`, `contact.md`, `store.md`. Every
+  line D058 withdraws goes or takes the code-checked wording (map §2's table); what the live team added as true comes
+  in where the page already speaks of it; Kheelona+ reads "Every Kheelu comes with 6 months of Kheelona+, our paid
+  subscription, on top of the free parent app." with no feature list; Bluetooth mode and the languages stay; the
+  grievance officer stays Aman Soni, aman@kheelona.com; 36 months then deleted stays.
+- **Then the modules:** `policies.ts` (`RETENTION_LINE` without one-tap), `faqs.ts`, `products/kheelu/product.ts` and
+  `page.ts`, `offer.ts`, `pages/home.ts`, `safety.ts`, `setup.ts`, `team.ts`, `ai-toys-for-kids-in-india.ts`, the stories
+  hub and 404 modules, `legal/privacy.ts` and `legal/terms.ts`, `navigation.ts` (the footer's "No web browsing."), the
+  store content; parity rules for every changed approved line (deviation rows returned); `llms.txt` and `pricing.md`
+  hashes reported (the main session re-pins).
+- **Not here:** the 20 guides (8b.2 moves them to the dashboard with the same corrections).
+
+### 8b.2 The journal from the admin dashboard (architect, then builder; risk high)
+
+- **Design first** (architect): how the rebuild reads the dashboard's published posts at build (main's
+  `tools/blog/sync.mjs`, `validate.mjs`, `src/lib/stories.data.json`, the deploy hook) and renders them with its own
+  article template; the post fields against the rebuild's `Article` model (head image, glance rows, sources and
+  markers, FAQ, related ring, bylines, dates, share card); covers through `next/image` (`remotePatterns`); `VideoEmbed`
+  and the `frame-src` change as a reviewed checkout-freeze patch; which guards run on the snapshot; the backend's
+  publish-time voice law (no contractions, em dashes or exclamation marks) against the rebuild's copy; and how the 20
+  rewritten guides, corrected per D058, reach the dashboard (an export an admin publishes).
+- **Then the build**, per the design.
+
+### 8b.3 Merge `origin/main` into the rebuild (main session; after 8b.1 and 8b.2)
+
+`main` cannot be force-pushed, so its commits are merged into the rebuild before Gate B: the rebuild's files win, the
+legacy files it deleted stay deleted, `tools/blog/*` and the journal come in through 8b.2's design, and the rebuild's
+CLAUDE.md stays (the journal paragraph lives in the wiki). Guards proven; then the beta push and wave 9.
+
 ## Wave 9: beta deploy and beta QA (after wave 8)
 
 ### 7.2 Beta deploy and beta QA (main session, founder, QA)

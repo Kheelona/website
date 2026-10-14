@@ -7,6 +7,8 @@ sources: ["founder's answer to R1, 2026-10-10: '(c) they are all real'", ../prod
 
 # D017: Live behaviour claims are confirmed
 
+> **Narrowed 2026-10-14 by [D058](D058-follow-the-live-code-check-2026-10-14.md):** one-tap deletion is not in the app today (the live team's code check, 12 Oct): removing a chat hides it on that phone; deleting the account deletes the data.
+
 > **Narrowed 2026-10-10 by [D027](D027-story-mode-wording.md):** Story mode has no interrupt-and-ask feature, so that live line is BANNED, not confirmed. Apply D017 row by row, not wholesale.
 
 **Choice (founder, 2026-10-10, option c, "they are all real").** Confirmed now, with no checklist:

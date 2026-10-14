@@ -7,6 +7,8 @@ sources: ["founder, 2026-10-10: 'We have dropped wakeup word. We have a wakeup b
 
 # D018: The wake-up button replaces the wake word
 
+> **Narrowed 2026-10-14 by [D058](D058-follow-the-live-code-check-2026-10-14.md):** a conversation ends after a couple of minutes of quiet, not about a minute (the live team's code check, 12 Oct).
+
 **New product fact (founder, 2026-10-10).** Kheelu has **no wake word**. It has a **wake-up
 button**; the microphone is on only when someone physically presses it. This supersedes R2 and
 both earlier wordings.

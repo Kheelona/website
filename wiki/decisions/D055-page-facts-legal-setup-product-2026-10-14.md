@@ -7,6 +7,8 @@ sources: ["founder's answers in the build session, 2026-10-14, to ten rounds of 
 
 # D055: Page facts for the legal, setup and product pages
 
+> **Narrowed 2026-10-14 by [D058](D058-follow-the-live-code-check-2026-10-14.md):** items 13 (the WiFi name stays on the phone), 16 (the processors are named) and 18 (deleting the account deletes the data) follow the live team's code check.
+
 ## Context
 
 After D054, the wave 6 merge build listed about 55 placeholders that a production build refuses, most of them on

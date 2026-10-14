@@ -7,6 +7,8 @@ sources: ["founder's answers to F8 (two parts) and the child's-age follow-up, 20
 
 # D036: Launch feature claims (F8)
 
+> **Narrowed 2026-10-14 by [D058](D058-follow-the-live-code-check-2026-10-14.md):** #5 (a closed content library) and #8 (a new-word count) are withdrawn after the live team's code check; the weekly four-skills report comes off until it ships.
+
 **Context.** [F8](../open-questions.md) listed behaviour claims that were live or in the positioning
 but not confirmed. [D017](D017-live-behaviour-claims-confirmed.md) had confirmed the live ones
 (answers then asks back, cannot browse, parents read every conversation, one-tap delete); R5 dropped
