@@ -88,7 +88,13 @@ describe("ringOffers", () => {
       for (const start of order) {
         const seen = new Set([start]);
         const queue = [start];
-        while (queue.length) for (const next of offers.get(queue.shift()!)!) if (!seen.has(next)) (seen.add(next), queue.push(next));
+        while (queue.length) {
+          for (const next of offers.get(queue.shift()!)!) {
+            if (seen.has(next)) continue;
+            seen.add(next);
+            queue.push(next);
+          }
+        }
         expect(seen.size, start).toBe(order.length);
       }
     });

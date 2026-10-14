@@ -2,7 +2,7 @@ import { existsSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import sharp from "sharp";
 import { describe, expect, it } from "vitest";
-import type { ImageRef } from "@/content/types";
+import type { Article, ImageRef } from "@/content/types";
 import { ROOT } from "../../../../test/e2e/support/repo";
 import { articles } from "./articles";
 import { photos } from "./photos";
@@ -18,7 +18,7 @@ const heads = entries.filter(([, p]) => "card" in p);
 
 /** Every DS image the 20 guide modules use (task 8b.2e exports them as keys): the head photo, a body photo, the
  *  facts list's photo. */
-const used = Object.values(articles).flatMap((a) => [
+const used = (Object.values(articles) as Article[]).flatMap((a) => [
   a.head.image!,
   ...a.body.flatMap((b) =>
     b.kind === "figure" ? [b.image] : b.kind === "part" ? b.blocks.flatMap((x) => (x.kind === "figure" ? [x.image] : x.kind === "facts" && x.figure ? [x.figure] : [])) : [],
@@ -87,7 +87,7 @@ describe("the guides against the table (rule 21: one alt per DS image)", () => {
   });
 
   it("head every guide with a photo that has a card, and share that card", () => {
-    for (const article of Object.values(articles)) {
+    for (const article of Object.values(articles) as Article[]) {
       const key = keyOf(article.head.image!)!;
       const photo = photos[key as keyof typeof photos];
       expect("card" in photo && photo.card, article.slug).toBe(article.meta.og.image);

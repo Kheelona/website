@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import { COPY_FIXES } from "../../../../test/e2e/support/deviations";
 import { readRepoFile, ROOT } from "../../../../test/e2e/support/repo";
 import { withFacts } from "../../../../test/support/mockup-facts";
+import type { Article } from "@/content/types";
 import { articles } from "./articles";
 import { hubTopics } from "./hub";
 import { topics } from "./topics";
@@ -63,7 +64,7 @@ describe("topics", () => {
 describe("what a topic decides for its guides", () => {
   const guidesOf = (id: string) => {
     const group = hubTopics.find((g) => g.topic === id)!;
-    return [...(group.featured ? [group.featured] : []), ...group.slugs].map((slug) => articles[slug]);
+    return [...(group.featured ? [group.featured] : []), ...group.slugs].map((slug): Article => articles[slug]);
   };
 
   it("names each topic's close: keep for talking and language (B5), the journal close for the rest", () => {

@@ -95,6 +95,29 @@ describe("pageMeta", () => {
     });
   });
 
+  /* A journal post's uploaded cover is shared at its own shape (ADR-014; journal-pipeline §6): the optimiser serves it
+     1200 wide, so its card is not 1200 x 630, and share tools are told the size they will get. */
+  it("gives a share card its own size when the content names one, and 1200 x 630 otherwise", () => {
+    const upload = "/_next/image?url=https%3A%2F%2Fapi.kheelona.com%2Fv1%2Fpublic%2Fblog%2Fimages%2Fcover.jpg&w=1200&q=75" as const;
+    const meta = pageMeta({
+      title: "A guide with an uploaded cover",
+      description: "What an uploaded cover changes.",
+      og: { image: upload, alt: "A child's drawing", width: 1200, height: 675 },
+      path: "/stories/a-guide",
+    });
+    expect(meta.openGraph?.images).toEqual([{ url: upload, width: 1200, height: 675, alt: "A child's drawing" }]);
+    expect(meta.twitter?.images).toEqual([{ url: upload, alt: "A child's drawing" }]);
+    const card = pageMeta({ title: "Kheelu", description: "Kheelu.", og: { image: "/og.png", alt: "Kheelu" }, path: "/" });
+    expect(card.openGraph?.images).toEqual([{ url: "/og.png", width: 1200, height: 630, alt: "Kheelu" }]);
+  });
+
+  it("refuses half a size or a size that is not whole pixels", () => {
+    const og = (size: Record<string, number>) => ({ title: "Kheelu", description: "Kheelu.", og: { image: "/og.png" as const, alt: "Kheelu", ...size }, path: "/" as const });
+    expect(() => pageMeta(og({ width: 1200 }))).toThrow('pageMeta: the share card of "/" names a width without a height');
+    expect(() => pageMeta(og({ height: 675 }))).toThrow('pageMeta: the share card of "/" names a height without a width');
+    expect(() => pageMeta(og({ width: 1200.5, height: 675 }))).toThrow('pageMeta: the share card of "/" is not a size in whole pixels (1200.5 x 675)');
+  });
+
   /* D028: page titles and meta descriptions are machine-read, so they lead with the total
      (₹4,999 incl. GST, or ₹7,999 in full mode), never with the ₹499 advance. Every approved meta
      description does (home, meet-kheelu, the guide, terms and store copy pages). */
