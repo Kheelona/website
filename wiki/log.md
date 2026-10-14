@@ -972,3 +972,7 @@ stories, journal-figure.spec.ts; 8b.1b: content-integrity.spec.ts, FaqList and M
 two journal fixtures. Hand-offs: `Article.meta.og` typed (8b.2e); new task 8b.1d (three claim entries narrowed so
 parents' advice passes the journal validator, five rewordings caught, claims.md's withdrawn rows marked, the stories
 held to the mockups through their fixes). Worktrees and branches removed. Wave iii next: 8b.2e with 8b.1d.
+
+## [2026-10-14 22:38] agent | Wave 8b iii started (run `wf_e07be4c1-904`, base `9a25fdb`): 8b.2e the switch, 8b.1d the claim guard
+8b.2e (risk high) per journal pipeline §12 with the wave ii hand-offs; its snapshot scan goes in a new guard file, not
+banned-phrases (8b.1d's). 8b.1d (risk medium) per tasks.md. Sleep blocker renewed for 8 hours (`caffeinate -i -s`).
