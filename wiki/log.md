@@ -753,3 +753,12 @@ New founder questions from the batch 6b merge: **G16** (the Karnataka seal), **G
 One builder, risk high (deletions across `src/`, `package.json` and the lockfile), with the two follow-up lists under
 6.3 (wave 6 batch and batch 6b). Packages retired by name only (`npm uninstall <name>`, the lockfile diff read; the
 registry is reachable, so `npm audit` runs); frozen checkout files and contract fixtures untouched. Ports 3560/6190.
+
+## [2026-10-14 06:30] agent | Wave 7: the 6.3 builder lost its API connection; resumed (run wf_b9732366-0d9)
+Run `wf_1dbdd8e9-45e` ended after 61 min with "Can't reach the API server (ENOTFOUND)". The builder had 21 commits on
+`build/w7-6.3` (legacy UI and its guards deleted, legacy lists empty; `docs/standards` and the four puppeteer tools
+retired; 13 packages retired by name: tailwind-merge, motion, lucide-react, two Radix packages, drei, fiber, three,
+@types/three, zustand, vite-tsconfig-paths; four caret pins made exact; source-map-js 1.2.2 for GHSA-68fv-2mgg-jv7q;
+35 public files deleted; most batch follow-ups). The main session saved its one unfinished file (the payment probe's
+gtag spy) as WIP `59886bb` and ruled its open question: delete `public/product/lumi.png`; 6.3 may re-sample
+1.3's two redirect guards without weakening them. Resumed at stage "finish" in the same worktree.
