@@ -135,6 +135,17 @@ describe("ArticleTemplate: the three approved articles", () => {
     expect(container.querySelector("#close .ks-price")?.textContent).toBe("₹7,999 (incl. GST), paid in full when you order.");
   });
 
+  /* A journal post's video (task 8b.2d; journal-pipeline §7): ArticleBody refuses a video without the content's play word
+     (8b.2c), so the template passes it, and an article with a video builds. */
+  it("names a video's play button with the content's play word and the video's title", async () => {
+    const article = articles["learning-toys-for-a-three-year-old"] as Article;
+    const [first, ...rest] = article.body;
+    const video = { kind: "video" as const, provider: "youtube" as const, videoId: "abcDEF12345", title: "Building a tower together" };
+    const withVideo: Article = { ...article, body: [first.kind === "part" ? { ...first, blocks: [...first.blocks, video] } : first, ...rest] };
+    page(withVideo);
+    expect(await screen.findByRole("button", { name: "Play video: Building a tower together" })).toBeInTheDocument();
+  });
+
   it("reveals nothing on arrival or scroll (no article mockup has data-reveal) and holds one h1", () => {
     for (const slug of APPROVED) {
       const container = page(articles[slug]);

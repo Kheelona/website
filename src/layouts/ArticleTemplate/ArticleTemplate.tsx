@@ -56,6 +56,7 @@ export function ArticleTemplate({ article, offer }: ArticleTemplateProps) {
           blocks={article.body}
           offer={offer}
           sourceLabel={sourceLabel}
+          videoLabel={copy.videoLabel}
           before={article.answer && <AnswerSection variant="article" {...article.answer} offer={offer} sourceLabel={sourceLabel} />}
           after={<SourcesSection variant="article" label={copy.sources.title} sources={article.sources} />}
         />

@@ -84,6 +84,9 @@ export interface ArticlePageCopy {
   };
   /** The band of related guides above the journal close. */
   readonly related: { readonly title: string };
+  /** The word before a video's own title on its play button ("Play video: <title>"), for a journal post that embeds a
+   *  video (D057 item 1; journal-pipeline §7). */
+  readonly videoLabel: string;
   /** The keep-reading close of an article with no pre-order button (B5): its heading and the link to the hub. */
   readonly keep: { readonly title: string; readonly action: { readonly label: string; readonly href: SitePath } };
   /** The journal close (identical to the hub's, stories.md fold 6): the pre-order button with the price beside it. */
@@ -110,6 +113,9 @@ export const articlePageCopy = {
   sources: { title: "Sources", marker: "Source" },
   /* story-learning-toys-for-a-three-year-old.html fold 14, story-what-to-look-for-in-a-safe-ai-toy.html fold 7. */
   related: { title: "Related guides" },
+  /* No approved mockup shows a video: journal-pipeline §7 words the button, and stories.md records it ("Changes after
+     approval (task 8b.2d)"). */
+  videoLabel: "Play video:",
   /* story-talking-toys-and-late-talkers.html fold 9 (story-talking-toys-and-late-talkers.md fold 9). */
   keep: { title: "Keep reading", action: { label: "All guides for parents of 3 to 7 year olds", href: HUB_PATH } },
   /* The journal close block, identical to the hub's (stories.md fold 6; story-*.html close). Full mode changes only the

@@ -79,4 +79,10 @@ describe("the words every article page shares (story-*.html)", () => {
       action: { label: "All guides for parents of 3 to 7 year olds", href: "/stories" },
     });
   });
+
+  /* A journal post may embed a video (D057 item 1; journal-pipeline §7): its play button is named "Play video: <title>",
+     the play word from here (stories.md, "Changes after approval (task 8b.2d)"). */
+  it("words a video's play button with the play word before the video's own title", () => {
+    expect(articlePageCopy.videoLabel).toBe("Play video:");
+  });
 });
