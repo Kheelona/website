@@ -18,6 +18,7 @@ import sharp from "sharp";
 import * as generatedIcons from "@/assets/icons.generated";
 import { ICON_PATHS, ICON_VIEWBOX } from "@/assets/icons.generated";
 import { articles } from "@/content/en-IN/stories/articles";
+import { photos as PHOTO_TABLE } from "@/content/en-IN/stories/photos";
 import type { ImageRef } from "@/content/types";
 import { generateIcons } from "../../scripts/assets/build-icons.mjs";
 import { buildImages, IMAGE_OUTPUTS, storyCard } from "../../scripts/assets/build-og.mjs";
@@ -197,12 +198,22 @@ function photoFile(image: ImageRef): string {
 }
 
 /**
- * Task 7.1f (CMO review B m4): the guides' share cards, from the article modules' head photos. One card per distinct
- * head photo (a second copy of the same bytes is refused by asset-dupes), at `public/og/<photo>.jpg`, the DS photo's
- * name without "-web.webp", cut from the photo's 2K master `Photo library/<photo>.jpg` (the DS Photo library README:
- * "Use it for decks, print and crops"), so no card is upscaled from the 1500 px web file.
+ * Task 7.1f (CMO review B m4): the guides' share cards, one per photo that may head a guide. Since task 8b.2e
+ * (journal-pipeline §6, §8.3) the list is the photo table's (src/content/en-IN/stories/photos.ts: each key with a card;
+ * a post names its head photo by key), no longer the article modules' head photos; the journal's head photos are held
+ * to it below. One card per photo (a second copy of the same bytes is refused by asset-dupes), at
+ * `public/og/<photo>.jpg`, the DS photo's name without "-web.webp", cut from the photo's 2K master
+ * `Photo library/<photo>.jpg` (the DS Photo library README: "Use it for decks, print and crops"), so no card is upscaled
+ * from the 1500 px web file.
  */
-const STORY_PHOTOS = [...new Set(Object.values(articles).map((a) => photoFile(a.head.image!).replace(/-web\.webp$/, "")))].sort();
+const STORY_PHOTOS = Object.entries(PHOTO_TABLE)
+  .filter(([, entry]) => "card" in entry && entry.card !== undefined)
+  .map(([key, entry]) => {
+    if (photoFile(entry.image) !== `${key}-web.webp`) throw new Error(`photos.ts: the photo "${key}" is not ${key}-web.webp`);
+    if ((entry as { card: string }).card !== `/og/${key}.jpg`) throw new Error(`photos.ts: the card of "${key}" is not /og/${key}.jpg`);
+    return key;
+  })
+  .sort();
 const STORY_CARDS: [card: string, source: string][] = STORY_PHOTOS.map((stem) => [
   `public/og/${stem}.jpg`,
   `Photo library/${stem}.jpg`,
@@ -467,9 +478,12 @@ describe("build-og.mjs: the guides' share cards (task 7.1f, CMO review B m4)", (
     for (const [, source] of STORY_CARDS) photos.set(source, await shrunk(join(DS, "assets", source)));
   });
 
-  it("has one card per distinct head photo of the 20 guides (13 photos today)", () => {
-    expect(Object.keys(articles)).toHaveLength(20);
+  it("has one card per photo of the table that may head a guide (13 photos today), and every guide's head photo has one", () => {
     expect(STORY_CARDS).toHaveLength(13);
+    const heads = new Set(Object.values(articles).map((a) => photoFile(a.head.image!).replace(/-web\.webp$/, "")));
+    expect(Object.keys(articles)).toHaveLength(20);
+    expect([...heads].filter((stem) => !STORY_PHOTOS.includes(stem))).toEqual([]);
+    expect(heads.size).toBe(13);
   });
 
   it.each(STORY_CARDS)("%s is %s itself, cut across its full width (no ground, no border, no other photo)", async (card, source) => {

@@ -30,11 +30,12 @@ const articles = new Map<string, Article>();
 beforeAll(async () => {
   const files = listFiles(["src/content/en-IN"]).filter((p) => p.endsWith(".ts") && !/\.test(-d)?\.ts$/.test(p));
   for (const file of files) modules.set(file, (await import(/* @vite-ignore */ join(ROOT, file))) as Exports);
+  /* Since task 8b.2e every article is a journal post, read from the registry its route's module names (journal.ts,
+     ADR-014), no longer one module per article; journal.ts is also one of the modules every link is read from. */
   for (const r of ARTICLES) {
-    const page = Object.values(modules.get(`src/content/en-IN/${r.module}.ts`) ?? {}).find(
-      (v) => typeof v === "object" && v !== null && "related" in v && "meta" in v,
-    );
-    if (page) articles.set(r.path, page as Article);
+    const registry = modules.get(`src/content/en-IN/${r.module}.ts`) as { getArticle?: (slug: string) => Article | undefined } | undefined;
+    const page = registry?.getArticle?.(r.path.slice("/stories/".length));
+    if (page) articles.set(r.path, page);
   }
 });
 
@@ -92,7 +93,7 @@ const allLinks = () => [...modules].flatMap(([file, mod]) => linksIn(file, mod))
 const isInternal = (href: string) => href.startsWith("/") && !href.startsWith("//");
 
 describe("the journal is not a set of dead ends", () => {
-  it("reads every article of the plan from its module", () => {
+  it("reads every article of the plan from the module its route names (the journal registry)", () => {
     expect(ARTICLES.length).toBeGreaterThanOrEqual(19);
     expect(ARTICLES.filter((r) => !articles.has(r.path)).map((r) => r.module)).toEqual([]);
   });

@@ -2,18 +2,22 @@ import type { TopicGuideCard, TopicGuideRow } from "@/components/sections/TopicS
 import type { Article, SitePath } from "@/content/types";
 import type { PageContent } from "@/layouts/PageTemplate/page-template.types";
 import type { SectionEntryOf } from "@/layouts/sections-registry";
+import { hubGroups, type HubGroup } from "@/lib/journal/to-article";
 import { DEFAULT_OG } from "../organization";
 import { routes, type ArticleSlug } from "../routes";
 import { trustItems } from "../trust";
 import { articlePageCopy, articles } from "./articles";
+import { journal } from "./journal";
 import { topics, type TopicId } from "./topics";
 
 /**
  * The stories hub, /stories (task 5.5; architecture §6.1; structure §5; mockup stories.html; stories.md): the page's
  * own words, and the guides as slug lists only. Which guide each topic features and which it lists is `hubTopics`, in
- * the approved order; every guide's title, summary, photo and read time are read from its own module (the article
- * registry, articles/index.ts), so rewriting an article never edits this file. Topics and their words are topics.ts;
- * the close is the journal close every article page shares (`articlePageCopy.close`), never retyped.
+ * the approved order: the rebuild's curation over the journal (ADR-014; journal-pipeline §4, §8.2 row 25), where a
+ * published post the hub does not list joins its topic, newest first, and a listed guide that left is skipped with a
+ * warning. Every guide's title, summary, photo and read time are read from the journal registry (journal.ts, the
+ * dashboard's posts), so a new or rewritten guide never edits this file. Topics and their words are topics.ts; the close
+ * is the journal close every article page shares (`articlePageCopy.close`), never retyped.
  */
 export interface HubTopic {
   readonly topic: TopicId;
@@ -98,30 +102,43 @@ const words = {
   readGuide: (readTime: string) => `Read the guide · ${readTime}`,
 } as const;
 
-/** The guide a topic features: its card words, head photo and read time from its own module, linked to its page. */
+/** A guide's page: the URL plan's article route at `/stories/<slug>` (every one is filled by the journal registry). */
+function guidePath(slug: ArticleSlug): SitePath {
+  const route = routes.find((r) => r.kind === "article" && r.path === `/stories/${slug}`);
+  if (route === undefined) throw new Error(`routes.ts plans no article page for "${slug}": the hub links only published guides`);
+  return route.path;
+}
+
+/** The hub's topics over the journal: its own lists first, in order, then each topic's unlisted posts, newest first
+ *  (journal-pipeline §4). A listed guide that left the journal or moved topic is skipped with a build warning. */
+const grouped = hubGroups(journal.articles, journal.topicOf, topics, hubTopics);
+for (const warning of grouped.warnings) console.warn(`journal: ${warning}`);
+export const hubGroupsOf: readonly HubGroup[] = grouped.groups;
+
+/** The guide a topic features: its card words, head photo and read time from the journal, linked to its page. */
 function featuredGuide(slug: ArticleSlug): TopicGuideCard {
   const { card, head }: Article = articles[slug];
   if (head.image === undefined || head.readMinutes === undefined) {
-    throw new Error(`The hub features "${slug}" as a card with its head photo and read time, and its module has no ${head.image ? "read time" : "photo"}`);
+    throw new Error(`The hub features "${slug}" as a card with its head photo and read time, and its post has no ${head.image ? "read time" : "photo"}`);
   }
   return {
     title: card.title,
     summary: card.summary,
-    href: plannedPath(`stories/articles/${slug}`),
+    href: guidePath(slug),
     image: head.image,
     linkLabel: words.readGuide(articlePageCopy.byline.readTime(head.readMinutes)),
   };
 }
 
-/** Another guide of a topic: a row with its card words, linked to its page (every guide of the URL plan has one). */
+/** Another guide of a topic: a row with its card words, linked to its page (every published guide has one). */
 function guideRow(slug: ArticleSlug): TopicGuideRow {
   const { card }: Article = articles[slug];
-  return { title: card.title, summary: card.summary, href: plannedPath(`stories/articles/${slug}`) };
+  return { title: card.title, summary: card.summary, href: guidePath(slug) };
 }
 
 /** One topic band: the topic's anchor and words, its featured guide and its rows. The bands alternate from the
  *  hero's: the first topic on the page surface, the second on the band (stories.html folds 2-5). */
-function topicFold(group: HubTopic, index: number): SectionEntryOf<"topic-section"> {
+function topicFold(group: HubGroup, index: number): SectionEntryOf<"topic-section"> {
   const { id, title, lead } = topics.find((t) => t.id === group.topic)!;
   return {
     kind: "topic-section",
@@ -149,7 +166,7 @@ export const hubPage = {
         topics: { ...words.topics, links: topics.map((t) => ({ label: t.title, href: `#${t.id}` })) },
       },
     },
-    ...hubTopics.map(topicFold),
+    ...hubGroupsOf.map(topicFold),
     {
       kind: "close-section",
       config: {

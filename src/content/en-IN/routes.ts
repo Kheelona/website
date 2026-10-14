@@ -1,11 +1,13 @@
 import type { SitePath } from "@/content/types";
 import { navigation, type FooterColumn } from "./navigation";
+import { JOURNAL_SLUGS } from "./stories/journal";
 
 /**
  * The URL plan (architecture §6.1, §9.3; strategy §4.1): every indexable URL of the marketing
- * site, the content module that fills it, its sitemap priority, and whether the nav and footer
- * link it (read from navigation.ts, so membership is stated once). The sitemap, the article route's
- * static params and the data-driven page guards (task 4.4) all read this list.
+ * site, the content module that fills it (every article: the journal registry), its sitemap
+ * priority, and whether the nav and footer link it (read from navigation.ts, so membership is
+ * stated once). The sitemap, the article route's static params and the data-driven page guards
+ * (task 4.4) all read this list.
  *
  * Not here: /playos and /stories/brain-development-toys-for-a-2-year-old (308s, D041),
  * /stories/screen-time-rules-parents-swear-by (308 to the hub's screen-time topic, D053), the 404,
@@ -13,32 +15,14 @@ import { navigation, type FooterColumn } from "./navigation";
  * the live sitemap's (url-map §1a, §1b). A new page is a line here only if the URL plan allows it.
  */
 
-/** The 20 articles of the URL plan, all rewritten (tasks 5.6, 5.17-5.19); the 3-6-9-12 article left the journal (D053,
- *  task 6.5). */
-export const ARTICLE_SLUGS = [
-  "learning-toys-for-a-three-year-old",
-  "what-to-look-for-in-a-safe-ai-toy",
-  "talking-toys-and-late-talkers",
-  "how-much-screen-time-for-a-3-to-6-year-old",
-  "screen-time-and-tantrums",
-  "the-gentle-way-off-the-phone",
-  "busy-hands-no-screens",
-  "screen-free-does-not-mean-silent",
-  "talking-late-or-talking-little",
-  "how-to-get-your-child-talking",
-  "how-children-learn-by-talking",
-  "how-children-collect-words",
-  "raising-a-bilingual-child-in-india",
-  "a-toy-that-talks-vs-a-toy-that-listens",
-  "questions-parents-ask-about-ai-toys",
-  "should-kids-use-ai",
-  "ai-toys-and-indias-data-law",
-  "does-a-three-year-old-need-an-ai-tutor",
-  "what-actually-builds-a-sharp-brain",
-  "why-three-to-six-are-the-years-that-matter-most",
-] as const;
+/** The articles of the URL plan: the journal's published posts, in its order (the committed snapshot of the admin
+ *  dashboard's posts, src/content/en-IN/stories/journal.ts; ADR-014, task 8b.2e). 20 at the export: the guides rewritten
+ *  in tasks 5.6 and 5.17-5.19; the 3-6-9-12 article left the journal (D053, task 6.5). A new story is a published post,
+ *  never a line here; a post whose address is a redirect's source is left out by the journal (the redirect wins). */
+export const ARTICLE_SLUGS: readonly string[] = JOURNAL_SLUGS;
 
-export type ArticleSlug = (typeof ARTICLE_SLUGS)[number];
+/** A journal article's slug: any published post's, known at build from the snapshot (no longer a literal union). */
+export type ArticleSlug = string;
 
 export type RouteKind = "page" | "product" | "hub" | "article" | "legal";
 
@@ -72,10 +56,11 @@ const PAGES: readonly PlannedRoute[] = [
   { path: "/shipping", kind: "legal", module: "legal/shipping", priority: 0.3 },
 ];
 
+/* Every article is filled by the journal registry, one module for all of them. */
 const ARTICLES: readonly PlannedRoute[] = ARTICLE_SLUGS.map((slug) => ({
   path: `/stories/${slug}`,
   kind: "article",
-  module: `stories/articles/${slug}`,
+  module: "stories/journal",
   priority: 0.6,
 }));
 

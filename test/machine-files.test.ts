@@ -48,9 +48,13 @@ beforeAll(async () => {
   for (const file of files) modules.set(file, (await import(/* @vite-ignore */ join(ROOT, file))) as Exports);
 });
 
-/** A route's page content: the export of its content module that carries `meta`, or null while none is written. */
+/** A route's page content: the export of its content module that carries `meta`, or null while none is written. An
+ *  article's module is the journal registry (task 8b.2e, ADR-014): its page is the registry's article for the slug. */
 function pageContent(route: RouteEntry): Exports | null {
   const mod = modules.get(`src/content/en-IN/${route.module}.ts`);
+  if (route.kind === "article" && typeof mod?.getArticle === "function") {
+    return ((mod.getArticle as (slug: string) => Exports | undefined)(route.path.slice("/stories/".length))) ?? null;
+  }
   const pages = Object.values(mod ?? {}).filter((v): v is Exports => typeof v === "object" && v !== null && "meta" in v);
   return pages[0] ?? null;
 }
@@ -93,7 +97,7 @@ describe("sitemap.xml", () => {
         expect(modified.get(url(r.path)), `${r.path} has no stored date, so no lastModified`).toBeUndefined();
       }
     }
-    // Every article stores its dates (src/content/en-IN/stories/articles), so at least those 20 carry one (21 until
+    // Every article stores its dates (its journal post, src/content/en-IN/stories/journal.ts), so at least those 20 carry one (21 until
     // the 3-6-9-12 article left the journal, D053).
     expect(dated).toBeGreaterThanOrEqual(20);
   });

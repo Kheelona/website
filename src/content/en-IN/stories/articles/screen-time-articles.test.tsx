@@ -10,23 +10,21 @@ import { toPlainText } from "@/lib/content/plain-text";
 import { parseRichText, type RichNode } from "@/lib/content/rich-text";
 import { formatDate } from "@/lib/format/date";
 import { buildOffer } from "@/lib/offer/offer";
-import { ROOT, readRepoFile } from "../../../../../test/e2e/support/repo";
+import { ROOT } from "../../../../../test/e2e/support/repo";
+import { approvedArticle } from "../../../../../test/fixtures/journal/approved";
 import { type CopyFold, copyFold, copyLines, glanceRow, readCopyPage } from "../../../../../test/support/copy-page";
 import { mockupFold, portClass, skeleton, words } from "../../../../../test/support/mockup-compare";
 import { TEAM_BYLINE } from "../../organization";
 import type { ArticleSlug } from "../../routes";
-import { articles, getArticle } from "./index";
-import { article as busyHands } from "./busy-hands-no-screens";
-import { article as howMuch } from "./how-much-screen-time-for-a-3-to-6-year-old";
-import { article as screenFree } from "./screen-free-does-not-mean-silent";
-import { article as tantrums } from "./screen-time-and-tantrums";
-import { article as gentleWay } from "./the-gentle-way-off-the-phone";
+import { articles } from "./index";
 
 /* The five screen-time articles (task 5.17; copy fixes of task 5.20a; six until the 3-6-9-12 guide left the journal,
- * D053, task 6.5): each module is its copy page
+ * D053, task 6.5): each guide is its copy page
  * (wiki/site/pages/story-<slug>.md, CMO reviews wiki/qa/cmo-review-articles-5.17-2026-10-14.md and
- * wiki/qa/cmo-review-article-fixes-5.20a-2026-10-14.md) word for word, rendered through the article template. There is no
- * mockup for them, so:
+ * wiki/qa/cmo-review-article-fixes-5.20a-2026-10-14.md) word for word, rendered through the article template. Since task
+ * 8b.2e the guides are dashboard posts (ADR-014), so each is read from the approved export the founder signs at Gate B
+ * (test/fixtures/journal/approved, through the adapter; journal.test.ts holds the snapshot equal to it while the journal
+ * is the export, and the journal-wide photo rules, rows 20 and 21, moved there). There is no mockup for them, so:
  *   - text parity is with the copy page: the head (crumbs, h1 and its accent, lead, byline, photo and alt), the reading
  *     column (the answer, every part, the sources) and the related guides, read from the page's Copy blocks;
  *   - visual parity is template parity with the approved articles for the shared parts (tasks.md, the note under the
@@ -64,7 +62,7 @@ const M3_RING: Readonly<Partial<Record<ArticleSlug, readonly ArticleSlug[]>>> = 
 const SCREEN_TIME: readonly (readonly [ArticleSlug, Article, Stub])[] = [
   [
     "how-much-screen-time-for-a-3-to-6-year-old",
-    howMuch,
+    approvedArticle("how-much-screen-time-for-a-3-to-6-year-old"),
     {
       card: {
         title: "How much screen time is okay for a young child?",
@@ -77,7 +75,7 @@ const SCREEN_TIME: readonly (readonly [ArticleSlug, Article, Stub])[] = [
   ],
   [
     "screen-time-and-tantrums",
-    tantrums,
+    approvedArticle("screen-time-and-tantrums"),
     {
       card: {
         title: "Screen time and tantrums: what is actually happening",
@@ -90,7 +88,7 @@ const SCREEN_TIME: readonly (readonly [ArticleSlug, Article, Stub])[] = [
   ],
   [
     "the-gentle-way-off-the-phone",
-    gentleWay,
+    approvedArticle("the-gentle-way-off-the-phone"),
     {
       card: {
         title: "The gentle way off the phone: a seven-day plan",
@@ -103,7 +101,7 @@ const SCREEN_TIME: readonly (readonly [ArticleSlug, Article, Stub])[] = [
   ],
   [
     "busy-hands-no-screens",
-    busyHands,
+    approvedArticle("busy-hands-no-screens"),
     {
       card: {
         title: "Busy hands, no screens",
@@ -116,7 +114,7 @@ const SCREEN_TIME: readonly (readonly [ArticleSlug, Article, Stub])[] = [
   ],
   [
     "screen-free-does-not-mean-silent",
-    screenFree,
+    approvedArticle("screen-free-does-not-mean-silent"),
     {
       card: { title: "Screen-free does not mean silent", summary: "What a childhood full of talk looks like, without a single screen." },
       related: ["learning-toys-for-a-three-year-old", "how-much-screen-time-for-a-3-to-6-year-old", "screen-time-and-tantrums"],
@@ -229,11 +227,23 @@ function nodes(value: unknown): RichNode[] {
 
 const readingStrings = (a: Article) => [a.answer ?? {}, a.body];
 
-/** A related guide's card title, from the article registry. */
+/** The read times the journal derives where its guide stored another (words at 200 a minute; journal-pipeline §4),
+ *  ruled at the wave ii merge (§12, 8b.2d ruling 2; on the Gate B list): the copy page keeps the approved line. */
+const RULED_READ_TIMES: Readonly<Partial<Record<ArticleSlug, readonly [approved: number, derived: number]>>> = {
+  "the-gentle-way-off-the-phone": [3, 4],
+};
+
+/** The copy page's byline as the build prints it: the ruled read time in place of the approved one. */
+function ruledByline(slug: ArticleSlug, byline: string): string {
+  const ruled = RULED_READ_TIMES[slug];
+  if (ruled === undefined) return byline;
+  expect(byline, `${slug}: the copy page's approved read time`).toMatch(new RegExp(` · ${ruled[0]} min read$`));
+  return byline.replace(new RegExp(` · ${ruled[0]} min read$`), ` · ${ruled[1]} min read`);
+}
+
+/** A related guide's card title, from the approved export (a slug it lacks throws, naming it). */
 function cardTitle(slug: string): Article["card"]["title"] {
-  const guide = getArticle(slug);
-  if (guide === undefined) throw new Error(`"${slug}" is not in the article registry`);
-  return guide.card.title;
+  return approvedArticle(slug).card.title;
 }
 
 /** Every prose block of the article, the answer's detail included. */
@@ -322,8 +332,9 @@ describe.each(SCREEN_TIME)("the screen-time article %s", (slug, article, stub) =
     const accent = /\*\*H1 accent:\*\* `Hand` on "([^"]+)"/.exec(headNotes)?.[1];
     expect([...header.querySelectorAll("h1 .kh-hand")].map((s) => s.textContent)).toEqual([accent]);
     expect(same(header.querySelector(".kh-heading__lead")!.textContent ?? "")).toBe(same(lead));
-    expect(header.querySelector(".ks-byline")!.textContent).toBe(byline);
-    expect(byline).toBe(`${TEAM_BYLINE} · First published ${formatDate(stub.published, "ui")} · ${article.head.readMinutes} min read`);
+    const shown = ruledByline(slug, byline);
+    expect(header.querySelector(".ks-byline")!.textContent).toBe(shown);
+    expect(shown).toBe(`${TEAM_BYLINE} · First published ${formatDate(stub.published, "ui")} · ${article.head.readMinutes} min read`);
   });
 
   it("shows the copy page's head photo, with its alt", () => {
@@ -444,29 +455,23 @@ describe("the screen-time articles together", () => {
       "busy-hands-no-screens",
       "screen-free-does-not-mean-silent",
     ]);
-    for (const [slug, article] of SCREEN_TIME) expect(articles[slug], slug).toBe(article);
+    /* Until 8b.2e: the registry held these very module objects. Now the registry adapts the snapshot, which
+       journal.test.ts holds equal to the approved export while the journal is the export. */
+    for (const [slug, article] of SCREEN_TIME) expect(articles[slug], slug).toEqual(article);
   });
 
-  it("never import the stub builder", () => {
-    for (const [slug] of SCREEN_TIME) {
-      expect(readRepoFile(`src/content/en-IN/stories/articles/${slug}.ts`), slug).not.toMatch(/from "\.\/stub"/);
-    }
-  });
+  /* Until 8b.2e: "never import the stub builder" (each read its module's source). No guide is a module any more: each
+     is a journal post (articles.test.ts holds the folder to index.ts alone). */
 
   /* Fewer repeated head photos, one alt per photo (tasks.md 5.20 item 2; CMO 5.17 M16; fix-pass review N1): a reader who
      taps from one guide to a linked one never meets the same picture again, and a picture reads the same wherever it
-     heads a guide. Held across the whole journal for the photos of task 5.20a's pool, which now heads every guide of
-     the topic: the one that did not, the 3-6-9-12 guide (advik-04), left the journal (D053, task 6.5). */
-  const journal = Object.values(articles) as Article[];
+     heads a guide. The two journal-wide rules (one alt per head photo; no head photo shared with a linked guide; §8.2
+     rows 20 and 21) are held on every guide of the journal by src/content/en-IN/stories/journal.test.ts since task
+     8b.2e; this keeps the topic's own placement of task 5.20a's pool. */
   const headPhoto = (a: Article) => (a.head.image === undefined ? undefined : photoFile(a));
   /** Task 5.20a's head-photo pool (tasks.md 5.20): unused photos with Kheelu, apart from 5.20b's and 5.20c's. */
   const POOL = ["advik-01", "advik-03", "ira-02", "kabir-03", "myra-02", "tara-01"];
   const pooled = SCREEN_TIME.filter(([, a]) => POOL.some((p) => headPhoto(a)?.startsWith(`${p}-`)));
-  /** The guides an article sends readers to: its related list and the article paths linked in its text. */
-  const linkedGuides = (a: Article): string[] => [
-    ...a.related,
-    ...nodes(readingStrings(a)).flatMap((n) => (n.kind === "link" && n.href.startsWith("/stories/") ? [n.href.slice("/stories/".length).split("#")[0]] : [])),
-  ];
 
   it("head all five guides from task 5.20a's pool, as the fix-pass review's N1 places them", () => {
     expect(Object.fromEntries(SCREEN_TIME.map(([slug, a]) => [slug, headPhoto(a)]))).toEqual({
@@ -477,26 +482,5 @@ describe("the screen-time articles together", () => {
       "screen-free-does-not-mean-silent": "ira-02-drawing-the-dragon-web.webp",
     });
     expect(pooled.map(([slug]) => slug)).toEqual(SCREEN_TIME.map(([slug]) => slug));
-  });
-
-  it("give each of their head photos one alt, wherever in the journal it heads a guide", () => {
-    for (const [slug, article] of pooled) {
-      const photo = headPhoto(article);
-      const heads = journal.filter((a) => headPhoto(a) === photo);
-      expect(new Set(heads.map((a) => a.head.image!.alt)), `${photo} heads ${heads.map((a) => a.slug).join(", ")} (from ${slug})`).toEqual(
-        new Set([article.head.image!.alt]),
-      );
-    }
-  });
-
-  /* Across all twenty guides since the wave 8 merge (task 7.1d's ring; its review asked for it): kabir-04, myra-04, ira-04
-     and tara-04 each head two or three guides outside the pool, and only scratch scripts checked them before. */
-  it("never share a head photo with a guide they link to, or that links to them (every guide of the journal)", () => {
-    expect(journal).toHaveLength(20);
-    for (const [slug, article] of journal.map((a) => [a.slug, a] as const)) {
-      const photo = headPhoto(article);
-      const linked = journal.filter((other) => other.slug !== slug && (linkedGuides(article).includes(other.slug) || linkedGuides(other).includes(slug)));
-      expect(linked.filter((other) => headPhoto(other) === photo).map((other) => other.slug), `${slug} (${photo})`).toEqual([]);
-    }
   });
 });

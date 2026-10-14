@@ -3,20 +3,21 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { ARTICLE_SLUGS as PLAN_ARTICLES } from "@/content/en-IN/routes";
 import { ARTICLE_CLOSES, stickyBarPaths } from "@/layouts/SiteShell/sticky-bar-paths";
 import { TAP_AREA_HIDDEN, VISUAL_HIDDEN, hiddenCss, hideDeviations, sharedHiddenCss, visualHidden } from "./e2e/support/deviations";
-import { ARTICLE_SLUGS, articleClose, closeInSource, NOT_FOUND_PATH, sweepRoutes } from "./e2e/support/routes";
+import { ARTICLE_SLUGS, articleClose, NOT_FOUND_PATH, snapshotPosts, sweepRoutes } from "./e2e/support/routes";
 
 /* The e2e harness's shared pieces that task 4.9 item 6 changed, where they can be read without a browser.
  *
  * The routes the page sweeps visit (test/e2e/support/routes.ts): each one's `buybar` is where the phone
  * buy bar really shows, so the specs that read it (cta.spec.ts proves the bar's CTA there and nowhere else; axe.spec.ts
  * exercises the bar) prove the bar absent on the seven keep-close guides (B5). A mockup page's flag is its meta comment;
- * an article without a mockup takes its own module's close, read from the module's source because Playwright cannot load
- * the article registry (its modules import images). Here, where the registry loads, that reading is held equal to
- * SiteShell's ARTICLE_CLOSES, the closes the bar itself reads. */
+ * an article without a mockup takes its post's topic's close, read from the committed journal snapshot and topics.ts
+ * because Playwright cannot load the article registry (journal.ts imports images; until task 8b.2e the harness read each
+ * article module's source). Here, where the registry loads, that reading is held equal to SiteShell's ARTICLE_CLOSES,
+ * the closes the bar itself reads, and the harness's articles to the URL plan's, in its order. */
 
 describe("sweepRoutes: the buy bar on each route", () => {
   it("reads every article's close exactly as the bar does (ARTICLE_CLOSES, from the article registry)", () => {
-    expect([...ARTICLE_SLUGS].sort()).toEqual([...PLAN_ARTICLES].sort());
+    expect(ARTICLE_SLUGS).toEqual(PLAN_ARTICLES);
     for (const slug of ARTICLE_SLUGS) expect(articleClose(slug), slug).toBe(ARTICLE_CLOSES[slug]);
   });
 
@@ -35,31 +36,26 @@ describe("sweepRoutes: the buy bar on each route", () => {
     }
   });
 
-  it("refuses an article whose module it cannot read a close from", () => {
-    expect(() => articleClose("a-guide-with-no-module")).toThrow(/a-guide-with-no-module/);
+  it("refuses an article the journal does not publish", () => {
+    expect(() => articleClose("a-guide-with-no-post")).toThrow(/a-guide-with-no-post.*posts\.generated\.json/);
   });
 
-  /* The article modules are edited by hand (tasks 5.20a-c): a close written with a type assertion, in parentheses, as a
-     template literal or through a constant of the same module is still the same close, so the parser never throws on
-     it when the spec modules load (every spec that calls sweepRoutes() would fail). */
-  it("reads a close however the module writes it: as const, satisfies, parentheses, a template literal, a constant", () => {
-    const source = (close: string, before = "") => `${before}export const article = { slug: "x", close: ${close}, related: [] } satisfies ArticleModule;`;
-    const path = "src/content/en-IN/stories/articles/x.ts";
-    expect(closeInSource(path, source('"keep"'))).toBe("keep");
-    expect(closeInSource(path, source('"keep" as const'))).toBe("keep");
-    expect(closeInSource(path, source('"journal" satisfies ArticleClose'))).toBe("journal");
-    expect(closeInSource(path, source('("journal")'))).toBe("journal");
-    expect(closeInSource(path, source("`keep`"))).toBe("keep");
-    expect(closeInSource(path, source("CLOSE", 'const CLOSE = "journal" as const;\n'))).toBe("journal");
-    expect(closeInSource(path, `export const article = ({ close: "keep" as const }) as const;`)).toBe("keep");
+  /* Until 8b.2e: the module-source reader (closeInSource) and its cases went with the modules. A post states no close:
+     its topic does (journal-pipeline §4), so a writer who moves a guide to another topic moves its bar with it. */
+  it("reads a close from the post's topic, and refuses a theme that is no topic", () => {
+    const posts = [
+      { slug: "a-talking-post", theme: "Talking and language" },
+      { slug: "a-learning-post", theme: "Learning and play" },
+      { slug: "a-retired-theme", theme: "Safety" },
+    ];
+    expect(articleClose("a-talking-post", posts)).toBe("keep");
+    expect(articleClose("a-learning-post", posts)).toBe("journal");
+    expect(() => articleClose("a-retired-theme", posts)).toThrow(/"Safety", which is no topic/);
   });
 
-  it("still refuses a close it cannot read as one of the two: another word, a call, a constant from elsewhere, a loop", () => {
-    const path = "src/content/en-IN/stories/articles/x.ts";
-    expect(() => closeInSource(path, 'export const article = { close: "open" };')).toThrow(/x\.ts states no close/);
-    expect(() => closeInSource(path, "export const article = { close: pickClose() };")).toThrow(/x\.ts states no close/);
-    expect(() => closeInSource(path, 'import { CLOSE } from "./c";\nexport const article = { close: CLOSE };')).toThrow(/x\.ts states no close/);
-    expect(() => closeInSource(path, "const A = B;\nconst B = A;\nexport const article = { close: A };")).toThrow(/x\.ts states no close/);
+  it("reads the committed snapshot's posts, and refuses a file with no list", () => {
+    expect(snapshotPosts().map((p) => p.slug)).toEqual(expect.arrayContaining([...ARTICLE_SLUGS]));
+    expect(() => snapshotPosts('{ "generated": "x" }')).toThrow(/holds no list of posts/);
   });
 });
 

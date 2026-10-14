@@ -22,7 +22,9 @@ import { editorialWarnings, POSES, TINTS, validatePosts, type JournalRules } fro
  */
 
 const RULES: JournalRules = { themes: topics.map((t) => t.title), imagesBase: JOURNAL_IMAGES, findBanned };
-const GUIDES = Object.values(articles) as Article[];
+/* The 20 guide modules themselves (the registry reads the snapshot since task 8b.2e; this test goes with the modules). */
+const MODULES = import.meta.glob(["../../content/en-IN/stories/articles/*.ts", "!**/*.test.ts", "!**/index.ts"], { eager: true }) as unknown as Record<string, { article: Article }>;
+const GUIDES = Object.keys(articles).map((slug) => MODULES[`../../content/en-IN/stories/articles/${slug}.ts`].article);
 const SLUGS = new Set(GUIDES.map((a) => a.slug));
 
 /** A guide's topic title: the hub lists it under its topic (hub.ts), whose title is the post's theme. */
@@ -295,13 +297,15 @@ describe("the round trip: postToArticle(articleToPost(m)) equals each of the 20 
       const spans = nowrapDifferences(article, derived).map((path) => `${article.slug}: no-wrap ${path}`);
       return [...minutes, ...spans];
     });
-    expect(listed).toEqual([
-      "talking-toys-and-late-talkers: no-wrap .body.0.blocks.0.text",
-      "the-gentle-way-off-the-phone: read time 3 → 4 min",
-      "the-gentle-way-off-the-phone: no-wrap .body.0.blocks.0.text",
-      "busy-hands-no-screens: no-wrap .body.2.blocks.0.text",
-      "should-kids-use-ai: read time 5 → 4 min",
-    ]);
+    expect(listed.sort()).toEqual(
+      [
+        "talking-toys-and-late-talkers: no-wrap .body.0.blocks.0.text",
+        "the-gentle-way-off-the-phone: read time 3 → 4 min",
+        "the-gentle-way-off-the-phone: no-wrap .body.0.blocks.0.text",
+        "busy-hands-no-screens: no-wrap .body.2.blocks.0.text",
+        "should-kids-use-ai: read time 5 → 4 min",
+      ].sort(),
+    );
   });
 
   it("derives the read time from the exported words, as the adapter will at every build", () => {
