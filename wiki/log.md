@@ -884,3 +884,8 @@ API); one adapter `postToArticle` into the rebuild's `Article`; eight new nullab
 for the backend (§13, to pass to Aman); DS photos by key with uploads as fallback; `ui/VideoEmbed` with a reviewed
 `frame-src` patch (D057); guards in three layers; the 20 guides corrected per D058 in their modules first, then exported.
 The founder answered its three questions (D059). Next: wave i of 8b.2 (8b.2a, 8b.2b, 8b.2c) in parallel with 8b.1.
+
+## [2026-10-14 13:26] agent | 8b.2 wave i launched (run wf_fed52266-980, base `7448270`): 8b.2a, 8b.2b, 8b.2c
+8b.2a (the four claim-bearing guides per D058; copy groups, worktree `w8b-8b.2a`, ports 3620/6220), 8b.2b (the sync,
+validator and source switch; 3621/6221), 8b.2c (VideoEmbed and the frame-src patch, a frozen file through a reviewed
+diff; 3622/6222). 8b.1 still running (`wf_c359ee74-7a4`).
