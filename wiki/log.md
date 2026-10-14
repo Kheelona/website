@@ -977,7 +977,7 @@ held to the mockups through their fixes). Worktrees and branches removed. Wave i
 8b.2e (risk high) per journal pipeline §12 with the wave ii hand-offs; its snapshot scan goes in a new guard file, not
 banned-phrases (8b.1d's). 8b.1d (risk medium) per tasks.md. Sleep blocker renewed for 8 hours (`caffeinate -i -s`).
 
-## [2026-10-15 00:05] build | Wave 8b iii merged (8b.2e `3b1e070`, 8b.1d `792108b`); 8b.3: `origin/main` merged (`dae33e6`)
+## [2026-10-14 23:57] build | Wave 8b iii merged (8b.2e `3b1e070`, 8b.1d `792108b`); 8b.3: `origin/main` merged (`dae33e6`)
 Run `wf_e07be4c1-904` (1 h 18 min). 8b.2e passed review in round 1: `posts.generated.json` (the export of the 20 guides)
 and `journal.ts` in one commit, every consumer on the registry, the article tests on the frozen export
 (`test/fixtures/journal/approved/`), the 20 modules and `from-article.ts` deleted, `Article.meta.og` typed; rendered
