@@ -107,11 +107,12 @@ const TRANSITIVE_FLOORS: {
     min: "0.35.5",
     why:
       "GHSA-f88m-g3jw-g9cj HIGH, inherited libvips CVE-2026-33327/33328/35590/35591 (<0.35.0). " +
-      "The advisory's own wording is 'those processing UNTRUSTED INPUT are affected'; this app " +
-      "configures no remotePatterns, so only our own files in public/ ever reach the optimizer, " +
-      "and on Vercel the platform optimizer sits in front of it. Floored at 0.35.4 (what next " +
-      "16.3.4 declares) rather than 0.35.0, so it cannot be satisfied by a version Next never " +
-      "shipped with.",
+      "The advisory's own wording is 'those processing UNTRUSTED INPUT are affected'; besides our " +
+      "own files in public/, the optimizer admits exactly two remote paths, the dashboard's journal " +
+      "images and YouTube stills (next.config.ts remotePatterns, no redirects followed; task 8b.2b), " +
+      "and on Vercel the platform optimizer sits in front of it. Floored at 0.35.5 " +
+      "(GHSA-wq5f-xc86-pv6w; 0.35.4 is what next 16.3.4 declared) rather than 0.35.0, so it cannot " +
+      "be satisfied by a version Next never shipped with.",
   },
   {
     name: "nanoid",

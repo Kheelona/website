@@ -8,6 +8,7 @@
  */
 
 import type { StaticImageData } from "next/image";
+import type { JOURNAL_IMAGES } from "@/config/journal";
 import type { PreorderMode } from "@/lib/store/mode";
 
 /* ── Text and modes ───────────────────────────────────────────────────────── */
@@ -188,11 +189,11 @@ export type Tone = "chilli" | "blue" | "sun";
 
 /**
  * An image the admin dashboard uploaded for a journal post (ADR-014; journal-pipeline §6): its exact address under the
- * API's public image path, `JOURNAL_IMAGES` in src/config/journal.ts (task 8b.2b). next/image's optimiser admits that
- * path alone (next.config.ts `images.remotePatterns`), so the reader's browser is only ever given this site's own
- * `/_next/image` address for it.
+ * API's public image path, derived from `JOURNAL_IMAGES` in src/config/journal.ts (task 8b.2b), so the two cannot
+ * drift. next/image's optimiser admits that path alone (next.config.ts `images.remotePatterns`), so the reader's
+ * browser is only ever given this site's own `/_next/image` address for it.
  */
-export type JournalImageUrl = `https://api.kheelona.com/v1/public/blog/images/${string}`;
+export type JournalImageUrl = `${typeof JOURNAL_IMAGES}${string}`;
 
 /**
  * An image. A design-system or app-screen raster is a static import (its size

@@ -23,8 +23,9 @@ export const JOURNAL_API = "https://api.kheelona.com/v1";
 export const JOURNAL_POSTS_PATH = "/public/blog/posts";
 
 /** Where an uploaded cover or body image lives. The one remote image source of the journal: `next.config.ts`
- *  allows exactly this path in `images.remotePatterns`, and the validator refuses an upload anywhere else. */
-export const JOURNAL_IMAGES = `${JOURNAL_API}/public/blog/images/`;
+ *  allows exactly this path in `images.remotePatterns`, and the validator refuses an upload anywhere else. A literal
+ *  type (`as const`), so content/types.ts derives `JournalImageUrl` from it. */
+export const JOURNAL_IMAGES = `${JOURNAL_API}/public/blog/images/` as const;
 
 /** YouTube stills for the journal's videos (`ui/VideoEmbed`): fetched by our image optimiser, never by the reader's
  *  browser before a press (journal-pipeline §7). Allowed in `images.remotePatterns` beside `JOURNAL_IMAGES`. */
