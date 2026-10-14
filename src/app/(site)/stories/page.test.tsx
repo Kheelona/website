@@ -1,8 +1,9 @@
 import { readFileSync } from "node:fs";
 import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
+import { COPY_FIXES, STORIES_REMOVED_CARD } from "../../../../test/e2e/support/deviations";
 import { addClass, mockupFold, skeleton, words } from "../../../../test/support/mockup-compare";
+import { withFacts } from "../../../../test/support/mockup-facts";
 import { STORE_URL } from "@/config/site";
 import { ARTICLE_SLUGS } from "@/content/en-IN/routes";
 import { articles } from "@/content/en-IN/stories/articles";
@@ -47,10 +48,13 @@ function builtMain(page: PageContent = sized(hubPage)): HTMLElement {
 }
 
 /**
- * The approved main as the build prints it. Two documented differences, both decided before the build, and one after:
+ * The approved main as the build prints it. Two documented differences, both decided before the build, and two after:
  * - the "Rewritten in the build" captions are Gate A review labels and never ship (N22; architecture §19);
  * - the 3-6-9-12 guide left the journal after Gate A, so its card is gone from the screen-time topic (D053): the
- *   approved rows the visual pass hides for it (deviations.ts, wiki/qa/deviations.md V9) are taken out first;
+ *   approved row the visual pass hides for it (deviations.ts STORIES_REMOVED_CARD, wiki/qa/deviations.md V9) is taken
+ *   out first;
+ * - the screen-time topic's line names what its guides give, now that guide is gone (task 7.1b, CMO reviews A M5 and
+ *   B m1; V9 as amended): the copy fix (deviations.ts COPY_FIXES.stories) is applied to the approved main;
  * - every guide links to its own page: each row the mockup leaves quiet while its guide waits for its rewrite becomes
  *   the DS link row, `li > a.kh-listitem` (the copy page: "at launch every card links"; stories.md question 1), in the
  *   order of hub.ts, whose slugs hub.test.ts holds to the mockup's titles.
@@ -61,12 +65,10 @@ function builtMain(page: PageContent = sized(hubPage)): HTMLElement {
  * class, as HeroSection.test.tsx reads it.
  */
 function approvedMain(): Element {
-  const main = mockupFold("stories", "main").cloneNode(true) as Element;
+  const main = withFacts(mockupFold("stories", "main"), COPY_FIXES.stories.edits);
   addClass(main, ".mk-journal-intro header.kh-heading--hero", "ks-hero-words");
   main.querySelectorAll(".mk-later").forEach((label) => label.remove());
-  for (const rule of VISUAL_HIDDEN.stories ?? []) {
-    if (rule.side === "mockup") main.querySelectorAll(rule.selector).forEach((row) => row.remove());
-  }
+  main.querySelectorAll(STORIES_REMOVED_CARD.selector).forEach((row) => row.remove());
   hubTopics.forEach((group) => {
     const section = main.querySelector(`section#${group.topic}`)!;
     if (group.featured !== undefined) {
@@ -144,6 +146,12 @@ describe("/stories: the approved hub", () => {
     const approved = approvedMain();
     expect(skeleton(built, OPTIONS)).toBe(skeleton(approved, OPTIONS));
     expect(words(built, { skip: ASIDE })).toBe(words(approved, { skip: ASIDE }));
+  });
+
+  it("leads the screen-time topic with the line task 7.1b gave it, and no longer promises “which rules hold up”", () => {
+    const lead = builtMain().querySelector("section#screen-time .kh-heading__lead");
+    expect(lead?.textContent).toBe(COPY_FIXES.stories.build[0]);
+    expect(builtMain().textContent).not.toContain("which rules hold up");
   });
 
   it("lists all 20 guides under the four topic anchors, each linked once to its own page", () => {

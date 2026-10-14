@@ -7,6 +7,7 @@ import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { TYPED_AMOUNT } from "@/lib/seo/price-lead";
+import { COPY_FIXES } from "../../../../test/e2e/support/deviations";
 import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { termsFixture } from "../../../../test/fixtures/legal/terms";
 import { offerCopy } from "../offer";
@@ -19,7 +20,8 @@ import { termsPage } from "./terms";
  * rules the plan sets for this page:
  *   - read in token mode (the mode the mockup shows), the module IS the parity fixture copied from the mockup
  *     (test/fixtures/legal/terms.ts), every string equal, with the founder's page facts applied (task 6.7; D055 items 8,
- *     10 and 11: the date, GST as D024 confirms it, the training switch; item 7 is the template's) and nothing else;
+ *     10 and 11: the date, GST as D024 confirms it, the training switch; item 7 is the template's) and section 8's
+ *     refund timing as task 7.1b changed it (D056 item 4; deviation V21), and nothing else;
  *   - read in full mode, it is the fixture with exactly the copy page's full-mode variants (terms.md folds 2 and 4, the
  *     two "token mode only" paragraphs of sections 5 and 6) and nothing else changed;
  *   - a draft until the founder approves it (D029); D035's training disclosure and D041's AI-image note;
@@ -58,10 +60,23 @@ const GST_DOCUMENTS = /^Every order gets a GST invoice\. \{ph:which GST document
 const PRICE_BREAKUP = /^\{ph:the price breakup[^}]*\}$/;
 const TRAINING_SLOT = ": {ph:how a parent turns training off, for example a setting in the parent app}.";
 
+/** Section 8's refund timing, as /refund words it (task 7.1b; D056 item 4; deviation V21): the approved sentence and the
+ *  build's (test/e2e/support/deviations.ts COPY_FIXES.terms). */
+const REFUND_TIMING = { approved: COPY_FIXES.terms.mockup[0], now: COPY_FIXES.terms.build[0] } as const;
+
 /** The fixture body with the founder's page facts applied: the date (item 8), "Every order gets a GST invoice." alone
- *  and no price breakup (item 10), "with a switch in the parent app" (item 11). */
+ *  and no price breakup (item 10), "with a switch in the parent app" (item 11); and section 8's refund timing as task
+ *  7.1b changed it. */
 function withTermsFacts(doc: LegalPage): LegalPage {
   const parts = doc.parts.map((p) => {
+    if (p.id === "returns") {
+      return {
+        ...p,
+        blocks: p.blocks.map((b) =>
+          b.kind === "p" && typeof b.text === "string" && b.text.includes(REFUND_TIMING.approved) ? { ...b, text: b.text.replace(REFUND_TIMING.approved, REFUND_TIMING.now) } : b,
+        ),
+      };
+    }
     if (p.id === "price") {
       return {
         ...p,
@@ -143,6 +158,10 @@ describe("the terms page: the approved mockup's words (parity with the fixture c
     }
     expect(JSON.stringify(body(termsFixture))).toContain(TRAINING_SLOT);
     expect(JSON.stringify(FACTS_FIXTURE)).not.toContain(TRAINING_SLOT);
+    // And section 8's refund timing (task 7.1b).
+    expect(JSON.stringify(body(termsFixture))).toContain(REFUND_TIMING.approved);
+    expect(JSON.stringify(FACTS_FIXTURE)).not.toContain(REFUND_TIMING.approved);
+    expect(JSON.stringify(FACTS_FIXTURE)).toContain(REFUND_TIMING.now);
     expect(inMode(body(termsPage), "token")).toEqual(FACTS_FIXTURE);
   });
 

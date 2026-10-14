@@ -1,7 +1,7 @@
 ---
 title: "Home (/): page copy, Phase 3 draft"
 type: page-copy
-updated: 2026-10-11
+updated: 2026-10-14
 cites_at: archive/pre-reset-2026-10-10
 sources:
   - ../strategy.md (§1 hierarchy, §2 journey, §3 CTA rules, §5 Home row, §7 search rules)
@@ -15,6 +15,10 @@ sources:
   - "decisions D015-D041; binding here: D016-D028, D032-D038, D040, D041"
   - ../../raw/feedback/2026-10-11-gate-a-answers.md (the founder's Gate A answers, round 1, verbatim)
   - "Gate A round 2 inputs, 2026-10-11: 15 hero candidates, the CMO's ranking (measured in the mockup at 360/390/412 x 590 and 1366/1440 x 768) and the compliance check, relayed by the main session"
+  - ../../decisions/D056-founder-answers-built-page-reviews-2026-10-14.md (item 4, the FAQ's refund timing; task 7.1b)
+  - ../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md (item 5, the refund reaches the parent within 7 working days, bank time included)
+  - ../../qa/cmo-review-built-a-2026-10-14.md (M8, one wording for the age-3 advice; task 7.1b)
+  - "src/content/en-IN/faqs.ts:41, 86, 125, 151, 174 and test/guards/answer-length.test.ts (40-60 words per answer), read 2026-10-14 for the M8 word counts"
 ---
 
 # Home (`/`): page copy
@@ -759,13 +763,13 @@ Variant (b) leaves Home and is kept for the product-page outline. The CTA and li
 > That's exactly what Kheelu is designed against. Most AI gives answers. Kheelu answers your child, then asks a question back, so they do the thinking. It can't browse the internet, and when it doesn't know something, it says so instead of guessing. You can read every conversation in the parent app.
 >
 > **What ages is Kheelu for?**
-> Kheelu is made for children aged 3 to 7. It is not a toy for children under 3. For 3-year-olds, we advise having a grown-up nearby. When you set it up, you enter your child's age in the parent app, and every reply passes an age-graded safety layer set to that age. You can change it later.
+> Kheelu is made for children aged 3 to 7. It is not a toy for children under 3. If your child is 3, keep a grown-up nearby. When you set it up, you enter your child's age in the parent app, and every reply passes an age-graded safety layer set to that age. You can change it later.
 >
 > **How much is Kheelu, and how does the advance work?**
 > Kheelu is ₹4,999`{price-source}` (incl. GST) for the first 500 units`{price-source}`, with delivery anywhere in India included. Its MRP is ₹7,999`{price-source}` (incl. of all taxes). A refundable ₹499`{price-source}` advance reserves yours today, and the remaining ₹4,500`{price-source}` is due before delivery. You can pay by UPI, card or net banking, and you get a GST invoice.
 >
 > **What if it isn't right for us?**
-> Return it within 7 days of delivery, no questions asked. Opened is fine: just send back everything that came in the box, undamaged. We arrange the pickup, free. Once it reaches us and qualifies for return, your refund is processed within 7 working days. Until we dispatch it, everything you've paid is refundable in full.
+> Return it within 7 days of delivery, no questions asked. Opened is fine: just send back everything that came in the box, undamaged. We arrange the pickup, free. Once it reaches us and qualifies for return, your refund reaches you within 7 working days. Until we dispatch it, everything you've paid is refundable in full.
 >
 > **When will my Kheelu arrive?**
 > Deliveries start mid-November`{delivery-source}`. Pre-orders are served first, in the order they were placed, and you get a tracking link when it leaves us. Delivery is included anywhere in India, with nothing to pay at the door. We don't ship outside India. A reserved Kheelu is sent once the rest of the price is paid.
@@ -775,7 +779,8 @@ Variant (b) leaves Home and is kept for the product-page outline. The CTA and li
 >
 > [See all questions] → `/products/kheelu#faq`
 
-Word counts: 51 · 57 · 54 · 55 · 54 · 52 (age and price answers updated in Gate A round 2).
+Word counts: 51 · 58 · 54 · 55 · 54 · 52 (age and price answers updated in Gate A round 2; the age answer's 3-year-old
+sentence and the returns answer's refund timing changed in task 7.1b, see [Changes after approval](#changes-after-approval-task-71b)).
 
 **Full mode**, the price question becomes:
 
@@ -801,8 +806,12 @@ Word counts: 51 · 57 · 54 · 55 · 54 · 52 (age and price answers updated in 
   round 1 closing sentence ("After the first 500, it is ₹7,999 (incl. GST), paid in full.") is gone: it was a second
   mention of the term. The build renders the MRP from its own value if one is added; today it equals `FULL_PRICE`
   ([pricing, MRP](../../product/pricing.md#tax-delivery-mrp)).
-- The age answer advises a grown-up nearby for 3-year-olds ([D041](../../decisions/D041-gate-a-round-1.md)). It
-  still makes no claim about how well Kheelu understands a 3-year-old (G5).
+- The age answer advises a grown-up nearby for 3-year-olds ([D041](../../decisions/D041-gate-a-round-1.md)), in the
+  one plain sentence chosen for the site's age-3 advice ("If your child is 3, keep a grown-up nearby."; CMO built-page
+  review A, M8; task 7.1b). It still makes no claim about how well Kheelu understands a 3-year-old (G5).
+- The returns answer's refund timing is `/refund`'s, word for word: the refund "reaches you within 7 working days"
+  of the return reaching us, bank time included ([D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md)
+  item 5; [D056](../../decisions/D056-founder-answers-built-page-reviews-2026-10-14.md) item 4).
 - **No CTA:** the close follows directly. Link: suggested `faq-more` (new, optional).
 
 **Sources, fold 8**
@@ -810,9 +819,9 @@ Word counts: 51 · 57 · 54 · 55 · 54 · 52 (age and price answers updated in 
 | Answer | Source |
 |---|---|
 | Thinking less | [messaging, objection answers](../../brand/messaging.md#objection-answers) row 1 (EXTERNAL); [D017](../../decisions/D017-live-behaviour-claims-confirmed.md) (browse, read); [D036](../../decisions/D036-launch-feature-claims.md) #3 (says it doesn't know rather than guess) |
-| Ages | [facts, age](../../product/facts.md#age); [keyword map §7.1](../../research/keyword-map.md#7-geo-plan) ("3 to 7; not for under 3"); [D036](../../decisions/D036-launch-feature-claims.md) #6 and the age setting; [claims §2](../../product/claims.md#2-published-product-behaviour-claims-live-not-re-confirmed) (every reply passes the layer); [D041](../../decisions/D041-gate-a-round-1.md) (a grown-up nearby for 3-year-olds) |
+| Ages | [facts, age](../../product/facts.md#age); [keyword map §7.1](../../research/keyword-map.md#7-geo-plan) ("3 to 7; not for under 3"); [D036](../../decisions/D036-launch-feature-claims.md) #6 and the age setting; [claims §2](../../product/claims.md#2-published-product-behaviour-claims-live-not-re-confirmed) (every reply passes the layer); [D041](../../decisions/D041-gate-a-round-1.md) (a grown-up nearby for 3-year-olds); the sentence's wording: [CMO built-page review A](../../qa/cmo-review-built-a-2026-10-14.md) M8 (one wording on every page) |
 | Price and advance | [pricing](../../product/pricing.md) (amounts, first 500, delivery included); [D041](../../decisions/D041-gate-a-round-1.md) (first 500 once, no badge or counter); [D034](../../decisions/D034-origin-manufacturer-mrp.md) (MRP ₹7,999 incl. of all taxes); [D028](../../decisions/D028-price-wording.md); [D024](../../decisions/D024-payment-methods-gst.md) (methods, GST, invoice); [keyword map §6.2](../../research/keyword-map.md#6-question-bank-answer-first-drafts) B3 |
-| Returns | [D021](../../decisions/D021-returns-policy.md) (policy line; "of delivery" is D021's reading); [D022](../../decisions/D022-warranty-replacement-refund.md), [D033](../../decisions/D033-warranty-after-day-7.md) (pickup free, refund within 7 working days of reaching us); [policies](../../product/policies.md#status-at-a-glance) (refundable in full before dispatch) |
+| Returns | [D021](../../decisions/D021-returns-policy.md) (policy line; "of delivery" is D021's reading); [D022](../../decisions/D022-warranty-replacement-refund.md), [D033](../../decisions/D033-warranty-after-day-7.md) (pickup free, refund within 7 working days of reaching us); [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 5 (the refund reaches the parent within those 7 working days, bank time included) and [D056](../../decisions/D056-founder-answers-built-page-reviews-2026-10-14.md) item 4 (worded "reaches you within 7 working days", as [refund.md](refund.md) step 3); [policies](../../product/policies.md#status-at-a-glance) (refundable in full before dispatch) |
 | Delivery | [D023](../../decisions/D023-new-order-delivery.md); [facts, ship date](../../product/facts.md#ship-date) (served in order placed); [policies](../../product/policies.md#status-at-a-glance) (shipping: anywhere in India, included, nothing at the door, no shipping abroad, tracking link, reserved units dispatch once the balance is paid) |
 | Lumi | [facts, identity](../../product/facts.md#identity) (renamed 2026-09-05; EXTERNAL in this answer); [keyword map §6.1](../../research/keyword-map.md#6-question-bank-answer-first-drafts) B2 |
 
@@ -1063,3 +1072,38 @@ caption. 4 (a) kept. 5 the founder: say nothing about after the six months at mo
 - **Speech disclaimer** is deliberately absent from Home ([D025](../../decisions/D025-speech-and-language.md)).
 - **Production is untouched** until Gate B ([D011](../../decisions/D011-production-held-until-gate-b.md)): this
   copy is for the new site only.
+
+---
+
+## Changes after approval (task 7.1b)
+
+Two lines of the Gate A-approved copy ([D046](../../decisions/D046-gate-a-approved.md)) change, both in fold 8; every
+other word stands as approved. The frozen mockup (`mockup/home.html`) is not edited: the builder carries the two
+lines into `src/content/en-IN/faqs.ts` (ids `what-ages`, line 41, and `not-right-for-us`, line 54), and the main
+session adds the text-parity deviation rows under the `home` key. The FAQPage JSON-LD and `llms.txt` read the same
+answers, so they change with them.
+
+- **Fold 8, "What if it isn't right for us?"** "your refund is processed within 7 working days" becomes "your refund
+  reaches you within 7 working days": the money reaches the parent within 7 working days of the return reaching us,
+  bank time included, as `/refund` step 3 says it ([D056](../../decisions/D056-founder-answers-built-page-reviews-2026-10-14.md)
+  item 4; [D055](../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md) item 5; [refund.md](refund.md)
+  step 3). Same promise, no new claim; still 55 words.
+- **Fold 8, "What ages is Kheelu for?"** "For 3-year-olds, we advise having a grown-up nearby." becomes "If your child is 3,
+  keep a grown-up nearby." ([CMO built-page review A](../../qa/cmo-review-built-a-2026-10-14.md) M8: the age-3 advice
+  is worded five ways; one plain sentence everywhere, never "we advise play"). The advice is still D041's; the band
+  stays 3 to 7, and the sentence before it still says Kheelu is not a toy for children under 3. 57 → 58 words.
+- **Why this sentence and not the review's example.** M8's example, "If your child is 3, keep a grown-up nearby while
+  they play." (12 words), would take three of the FAQ answers it names over the 60-word answer guard
+  (`test/guards/answer-length.test.ts`): Home 61, the product page 62 (`faqs.ts:86`), the buyer's guide 61
+  (`faqs.ts:174`). The 9-word sentence is the example's own opening, the same words 12 journal guides already print
+  before "while they play" (for example [story-should-kids-use-ai.md](story-should-kids-use-ai.md)), and it fits every answer M8 names: Home 58, product 59, `/safety` 47 (`faqs.ts:125`,
+  before its M4 change), guide 58. `faqs.ts:151` is a list item in the `/safety` detail ("At 3: …"), not an
+  answer-first block.
+- **Not changed on this page.** The other M8 lines (`faqs.ts:86`, `:125`, `:151`, `:174`, `pages/setup.ts:101`) are
+  copy on [meet-kheelu.md](meet-kheelu.md), [safety.md](safety.md), [ai-toys-for-kids-in-india.md](ai-toys-for-kids-in-india.md)
+  and [setup.md](setup.md), not on Home. The historical record of Gate A round 2 (the table "Mockup edits for the
+  founder's other answers", row d) keeps the words as they were applied then. [terms.md](terms.md) section 9 still
+  prints Home's approved age sentence; whether it follows is a question on that page.
+- **Notes updated to match:** fold 8 word counts, the age-answer and refund notes under fold 8, and the Ages and
+  Returns rows of its sources. Title, meta, H1, H2s, CTAs and keyword placements are unchanged (FAQ answers still
+  51 to 58 words, inside the 40 to 60 rule).

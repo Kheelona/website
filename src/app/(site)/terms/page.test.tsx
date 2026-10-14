@@ -11,7 +11,7 @@ import { OFFER_REVALIDATE_SECONDS } from "@/lib/offer/get-offer";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { termsFixture } from "../../../../test/fixtures/legal/terms";
-import { VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
+import { COPY_FIXES, VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
 import { GRIEVANCE_NOTE, PAGE_FACTS } from "../../../../test/e2e/support/page-facts";
 import { mockupFold, skeleton, words, type SkeletonOptions } from "../../../../test/support/mockup-compare";
 import { withFacts } from "../../../../test/support/mockup-facts";
@@ -36,8 +36,9 @@ const SOURCE = readFileSync("src/app/(site)/terms/page.tsx", "utf8");
 const code = SOURCE.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
 
 const approvedMain = mockupFold("terms", "main");
-/** The approved page with the founder's page facts applied (task 6.7; D055 items 7, 8, 10 and 11; page-facts.ts). */
-const mockupMain = withFacts(approvedMain, PAGE_FACTS.terms.edits);
+/** The approved page with the founder's page facts applied (task 6.7; D055 items 7, 8, 10 and 11; page-facts.ts), and
+ *  section 8's refund timing as /refund words it (task 7.1b; D056 item 4; deviations.ts COPY_FIXES.terms, V21). */
+const mockupMain = withFacts(approvedMain, [...PAGE_FACTS.terms.edits, ...COPY_FIXES.terms.edits]);
 
 const TOKEN = buildOffer("token");
 const FULL = buildOffer("full");
@@ -127,7 +128,7 @@ describe("/terms: the rendered page against the approved mockup (token mode, the
     const fixtureMain = new DOMParser().parseFromString(`<main>${fixture}</main>`, "text/html").querySelector("main")!;
     // The complaint-reference line is the template's (legal/shared.ts), so the fixture's render already lacks it.
     const documentFacts = PAGE_FACTS.terms.edits.filter((edit) => edit !== GRIEVANCE_NOTE);
-    expect(main.innerHTML).toBe(withFacts(fixtureMain, documentFacts, { built: true }).innerHTML);
+    expect(main.innerHTML).toBe(withFacts(fixtureMain, [...documentFacts, ...COPY_FIXES.terms.edits], { built: true }).innerHTML);
   });
 
   it("is LegalTemplate's reference family (privacy and terms; mockup-css-mapping §6.1)", async () => {

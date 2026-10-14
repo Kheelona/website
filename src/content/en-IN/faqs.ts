@@ -38,7 +38,7 @@ export const faqs = {
     id: "what-ages",
     question: "What ages is Kheelu for?",
     answer:
-      "Kheelu is made for children aged 3 to 7. It is not a toy for children under 3. For 3-year-olds, we advise having a grown-up nearby. When you set it up, you enter your child’s age in the parent app, and every reply passes an age-graded safety layer set to that age. You can change it later.",
+      "Kheelu is made for children aged 3 to 7. It is not a toy for children under 3. If your child is 3, keep a grown-up nearby. When you set it up, you enter your child’s age in the parent app, and every reply passes an age-graded safety layer set to that age. You can change it later.",
   },
   "price-and-advance": {
     id: "price-and-advance",
@@ -51,7 +51,7 @@ export const faqs = {
   "not-right-for-us": {
     id: "not-right-for-us",
     question: "What if it isn’t right for us?",
-    answer: `Return it within ${RETURN_DAYS} days of delivery, no questions asked. Opened is fine: just send back everything that came in the box, undamaged. We arrange the pickup, free. Once it reaches us and qualifies for return, your refund is processed within ${REFUND_AFTER_RETURN_WORKING_DAYS} working days. Until we dispatch it, everything you’ve paid is refundable in full.`,
+    answer: `Return it within ${RETURN_DAYS} days of delivery, no questions asked. Opened is fine: just send back everything that came in the box, undamaged. We arrange the pickup, free. Once it reaches us and qualifies for return, your refund reaches you within ${REFUND_AFTER_RETURN_WORKING_DAYS} working days. Until we dispatch it, everything you’ve paid is refundable in full.`,
   },
   "when-arrive": {
     id: "when-arrive",
@@ -122,7 +122,7 @@ export const faqs = {
     id: "age-three",
     question: "Is Kheelu OK for a 3-year-old?",
     answer:
-      "Kheelu is made for children aged 3 to 7, and it is not a toy for children under 3. If your child is 3, we advise play with a grown-up nearby. Common Sense Media advises against AI toys at this age. Its advice in full, and our answer, follow below.",
+      "Kheelu is made for children aged 3 to 7, and it is not a toy for children under 3. If your child is 3, keep a grown-up nearby. Common Sense Media advises against AI toys at this age. Its advice in full, and our answer, are in the next question.",
   },
   "child-safety-groups": {
     id: "child-safety-groups",
@@ -148,7 +148,7 @@ export const faqs = {
             lead: "How well it works:",
             text: `if it isn’t right for your family, return it within ${RETURN_DAYS} days of delivery, no questions asked.`,
           },
-          { lead: "At 3:", text: "we advise play with a grown-up nearby." },
+          { lead: "At 3:", text: "keep a grown-up nearby." },
         ],
       },
     ],

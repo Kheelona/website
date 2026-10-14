@@ -92,13 +92,13 @@ describe("hideDeviations", () => {
   it("applies the rules every page shares to a page with none of its own on that side, and prints exactly those", async () => {
     const log = vi.spyOn(console, "log").mockImplementation(() => {});
     const { page, styles } = fakePage();
-    expect(VISUAL_HIDDEN.home ?? []).toEqual([]);
-    expect(hiddenCss("home", "build")).toBe("");
-    await hideDeviations(page, "home", "build", "visual-parity");
+    expect(VISUAL_HIDDEN["ai-toys-for-kids-in-india"] ?? []).toEqual([]);
+    expect(hiddenCss("ai-toys-for-kids-in-india", "build")).toBe("");
+    await hideDeviations(page, "ai-toys-for-kids-in-india", "build", "visual-parity");
     const shared = TAP_AREA_HIDDEN.filter((r) => r.side === "build");
     expect(styles).toEqual([`${shared.map((r) => r.selector).join(", ")} { display: none !important; }`]);
     expect(styles).toEqual([sharedHiddenCss("build")]);
-    expect(log.mock.calls.map(([line]) => String(line))).toEqual(shared.map((r) => `[visual-parity] home: ${r.selector} hidden in the build (${r.approvedBy}): ${r.reason}`));
+    expect(log.mock.calls.map(([line]) => String(line))).toEqual(shared.map((r) => `[visual-parity] ai-toys-for-kids-in-india: ${r.selector} hidden in the build (${r.approvedBy}): ${r.reason}`));
   });
 
   it("puts the shared rules first, then the page's own", () => {

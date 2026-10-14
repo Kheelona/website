@@ -1,7 +1,9 @@
 import { render, screen } from "@testing-library/react";
 import type { StaticImageData } from "next/image";
+import postcss, { type AtRule, type Rule } from "postcss";
 import { describe, expect, it } from "vitest";
-import { STORIES_REMOVED_CARD, VISUAL_HIDDEN } from "../../../../test/e2e/support/deviations";
+import { STORIES_REMOVED_CARD } from "../../../../test/e2e/support/deviations";
+import { readRepoFile } from "../../../../test/e2e/support/repo";
 import { mockupFold, skeleton, words } from "../../../../test/support/mockup-compare";
 import type { TopicSectionConfig } from "./topic-section.types";
 import { TopicSection } from "./TopicSection";
@@ -28,14 +30,27 @@ const OPTIONS = {
   rename: { guides: "ks-topic__guides", "guides--two": "ks-topic__guides--two", "photo-myra": "ks-guide__photo--portrait" },
 };
 
-/** The approved band as the build shows it: the rows the hub's parity deviation hides (V9, deviations.ts; the
- *  3-6-9-12 guide left the journal after Gate A, D053, task 6.5) are taken out of a copy of the mockup first. */
+/** The approved band as the build shows it: the row the hub's parity deviation hides for the guide that left (V9,
+ *  deviations.ts; the 3-6-9-12 guide left the journal after Gate A, D053, task 6.5) is taken out of a copy of the
+ *  mockup first. */
 function approvedBand(id: string): Element {
   const main = mockupFold("stories", "main").cloneNode(true) as Element;
-  for (const rule of VISUAL_HIDDEN.stories ?? []) {
-    if (rule.side === "mockup") main.querySelectorAll(rule.selector).forEach((row) => row.remove());
-  }
+  main.querySelectorAll(STORIES_REMOVED_CARD.selector).forEach((row) => row.remove());
   return main.querySelector(`section#${id}`)!;
+}
+
+/** The declarations of topic-section.css's rule with exactly these selectors inside `@media (min-width: 900px)`. */
+function laptopDeclarations(selector: string): string[] {
+  const out: string[] = [];
+  postcss.parse(readRepoFile("src/components/sections/TopicSection/topic-section.css")).each((node) => {
+    if (node.type !== "atrule" || (node as AtRule).params !== "(min-width: 900px)") return;
+    (node as AtRule).each((rule) => {
+      if (rule.type === "rule" && (rule as Rule).selectors.join(", ") === selector) {
+        (rule as Rule).each((d) => void (d.type === "decl" && out.push(`${d.prop}: ${d.value}`)));
+      }
+    });
+  });
+  return out;
 }
 
 describe("TopicSection: the approved hub bands", () => {
@@ -88,6 +103,22 @@ describe("TopicSection: parts", () => {
     expect(screen.getAllByRole("heading", { level: 3 })).toHaveLength(5);
     expect(screen.queryAllByRole("link")).toHaveLength(0);
     expect(container.querySelector("section")!.className).toBe("kh-section ks-topic");
+  });
+
+  /* CMO review B m2 (task 7.1b): with an odd number of rows in two columns, the last row sat alone in the left column
+     beside an empty cell with its column rule, which read as a missing card on laptops. The odd last row spans both
+     columns and drops the rule; quiet rows are the list items, a linked row is the link inside its item (DS layout only,
+     no new value). The hub's screen-time topic has five guides since D053. */
+  it("lets an odd last row span both columns, without its column rule, from 900 px (B m2)", () => {
+    expect(laptopDeclarations(".ks-topic__guides--two > li:last-child:nth-child(odd)")).toEqual(["grid-column: 1 / -1"]);
+    expect(
+      laptopDeclarations(".ks-topic__guides--two > .kh-listitem:last-child:nth-child(odd), .ks-topic__guides--two > li:last-child:nth-child(odd) > .kh-listitem"),
+    ).toEqual(["border-right: 0"]);
+    const { container } = render(<TopicSection {...SCREEN_TIME_TOPIC} />);
+    const rows = container.querySelectorAll(".ks-topic__guides--two > li");
+    expect(rows).toHaveLength(5);
+    expect(rows[4].matches(".ks-topic__guides--two > li:last-child:nth-child(odd)")).toBe(true);
+    expect(rows[3].matches(".ks-topic__guides--two > li:last-child:nth-child(odd)")).toBe(false);
   });
 
   it("links a row once its guide has a page", () => {

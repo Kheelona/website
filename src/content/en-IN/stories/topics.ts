@@ -15,7 +15,7 @@ export const topics = [
   {
     id: "screen-time",
     title: "Screen time",
-    lead: "How much, which rules hold up, and what to do when the screen goes off.",
+    lead: "How much, what the guidelines say, and what to do when the screen goes off.",
   },
   {
     id: "talking",

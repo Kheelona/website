@@ -103,7 +103,7 @@ export const kheeluPage = {
         heading: {
           id: "films-title",
           eyebrow: "Real homes",
-          title: "Seven families, in their {hand:own homes.}",
+          title: "Real families, in their {hand:own homes.}",
           lead: "Watch the children do the thinking. Then hear from two of their parents.",
         },
         films,
@@ -276,7 +276,7 @@ export const kheeluPage = {
           items: [
             {
               citation:
-                "Center on the Developing Child at Harvard University, “Serve and Return” (Key Concepts), undated (page metadata 2024, updated 2026), Key Takeaways and the paragraph after Fast Facts.",
+                "Center on the Developing Child at Harvard University, “Serve and Return” (Key Concepts).",
               href: "https://developingchild.harvard.edu/key-concept/serve-and-return/",
               label: "developingchild.harvard.edu/key-concept/serve-and-return",
             },

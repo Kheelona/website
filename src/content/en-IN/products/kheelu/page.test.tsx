@@ -10,7 +10,7 @@ import { toPlainText } from "@/lib/content/plain-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { pageMeta } from "@/lib/seo/metadata";
 import { jsonLdBlocks, jsonLdMismatches, revealOnMoneyInDocument } from "../../../../../test/e2e/support/page-checks";
-import { TEXT_DEVIATIONS, VISUAL_HIDDEN } from "../../../../../test/e2e/support/deviations";
+import { COPY_FIXES, TEXT_DEVIATIONS, VISUAL_HIDDEN } from "../../../../../test/e2e/support/deviations";
 import { htmlToText } from "../../../../../test/e2e/support/mockup-text";
 import { PAGE_FACTS } from "../../../../../test/e2e/support/page-facts";
 import { sentences } from "../../../../../test/e2e/support/parity";
@@ -30,7 +30,9 @@ import { product } from "./product";
  * The sections' own tests prove their markup against the same folds; this file proves the page's content feeds them
  * the approved words, addresses, names, reveals and tracking values, and the structured data the copy page asks for.
  * The mockup is compared with the founder's page facts applied (task 6.7; test/e2e/support/page-facts.ts): the parent
- * app's phones filled (D055 item 26), and the rows and lines still waiting on an F4 value hidden (D054 item 19).
+ * app's phones filled (D055 item 26), and the rows and lines still waiting on an F4 value hidden (D054 item 19); and
+ * with task 7.1b's copy fixes (deviation V17; test/e2e/support/deviations.ts COPY_FIXES): the films heading without a
+ * count (D056 item 2) and the sources line in Home's short form (CMO review A M6).
  */
 
 const PATH = "/products/kheelu";
@@ -46,8 +48,8 @@ function rendered(offer: Offer) {
 
 const BUILT = rendered(TOKEN);
 const APPROVED = mockupPage("meet-kheelu").querySelector("main")!;
-/** The approved page with the founder's page facts applied: what the build must say (task 6.7). */
-const MOCKUP = withFacts(APPROVED, PAGE_FACTS["meet-kheelu"].edits);
+/** The approved page with the founder's page facts (task 6.7) and task 7.1b's copy fixes applied: what the build must say. */
+const MOCKUP = withFacts(APPROVED, [...PAGE_FACTS["meet-kheelu"].edits, ...COPY_FIXES["meet-kheelu"].edits]);
 /** The folds: `main`'s sections, in order (React's image preload links and the JSON-LD script left out). */
 const folds = (main: Element) => [...main.children].filter((el) => el.tagName === "SECTION");
 const name = (el: Element) => el.getAttribute("aria-labelledby");
@@ -96,12 +98,23 @@ describe("the product page as rendered (token mode)", () => {
     expect(folds(BUILT.main).map((f) => f.id)).toEqual(folds(MOCKUP).map((f) => f.id));
   });
 
-  it("changes the approved page only where the founder's facts do: fold 4's charging line and fold 7's details", () => {
+  it("changes the approved page only where the founder's facts and task 7.1b's copy fixes do", () => {
     const changed = folds(APPROVED).filter((fold, i) => words(fold) !== words(folds(MOCKUP)[i])).map(name);
-    expect(changed).toEqual(["modes-title", "specs-title"]);
+    // Fold 2's heading and fold 8's sources line (V17, task 7.1b); fold 4's charging line and fold 7's details (V16).
+    expect(changed).toEqual(["films-title", "modes-title", "specs-title", "faq-title"]);
+    const facts = withFacts(APPROVED, PAGE_FACTS["meet-kheelu"].edits);
+    expect(folds(APPROVED).filter((fold, i) => words(fold) !== words(folds(facts)[i])).map(name)).toEqual(["modes-title", "specs-title"]);
   });
 
-  it("says, fold by fold, exactly what the mockup says with the founder's facts applied, P15's one sentence aside (V6)", () => {
+  it("titles the films without a count (D056 item 2) and cites Harvard in Home's short form (CMO A M6; V17)", () => {
+    const films = BUILT.main.querySelector("#films-title")!;
+    expect(text(films)).toBe(COPY_FIXES["meet-kheelu"].build[0]);
+    expect(films.querySelector(".kh-hand")?.textContent).toBe("own homes.");
+    expect(text(BUILT.main.querySelector("#src-1"))).toBe(COPY_FIXES["meet-kheelu"].build[1]);
+    expect(BUILT.main.querySelector("#src-1 a")?.getAttribute("href")).toBe("https://developingchild.harvard.edu/key-concept/serve-and-return/");
+  });
+
+  it("says, fold by fold, exactly what the mockup says with the founder's facts and the copy fixes applied, P15's one sentence aside (V6)", () => {
     const built = folds(BUILT.main);
     // The one accepted difference is in the questions fold, and it is there in the mockup to be replaced (not vacuous).
     expect(folds(MOCKUP).filter((fold) => words(fold).includes(P15.mockup)).map(name)).toEqual(["faq-title"]);
@@ -323,11 +336,19 @@ describe("the founder's page facts as a text deviation (deviations.md V16; task 
 
   it("hides for the pixels exactly the blocks the facts change, each found once on its side (VISUAL_HIDDEN)", () => {
     expect(hiddenProblems(APPROVED, FACTS)).toEqual([]);
-    const sel = (side: string) => VISUAL_HIDDEN["meet-kheelu"].filter((r) => r.side === side).map((r) => r.selector);
+    const sel = (side: string) => VISUAL_HIDDEN["meet-kheelu"].filter((r) => r.side === side && r.approvedBy === FACTS.approvedBy).map((r) => r.selector);
     expect(sel("mockup")).toEqual([...FACTS.hidden.both, ...FACTS.hidden.mockup]);
     expect(sel("build")).toEqual([...FACTS.hidden.both, ...FACTS.hidden.build]);
     // The build side's selectors hold on the page as it renders, too.
     for (const selector of sel("build")) expect(BUILT.main.querySelectorAll(selector), selector).toHaveLength(1);
+  });
+
+  it("leaves beside them only the sources line of task 7.1b's copy fixes (V17), found once on the page as it renders", () => {
+    const others = VISUAL_HIDDEN["meet-kheelu"].filter((r) => r.approvedBy !== FACTS.approvedBy);
+    expect(others.map((r) => [r.side, r.selector, r.approvedBy])).toEqual(
+      (["mockup", "build"] as const).map((side) => [side, "#src-1", COPY_FIXES["meet-kheelu"].approvedBy]),
+    );
+    expect(BUILT.main.querySelectorAll("#src-1")).toHaveLength(1);
   });
 });
 
@@ -345,14 +366,16 @@ describe("the JavaScript-off text deviation for this route (deviations.md V3; te
     expect(TEXT_DEVIATIONS["meet-kheelu"].filter((rule) => rule.approvedBy.includes("V3"))).toEqual([
       expect.objectContaining({ mockup: /^Specs$/, jsOff: true }),
     ]);
-    // The route's other rules are P15's (V6, task 4.7) and the founder's page facts (V16, task 6.7), for both runs: the
-    // FAQ answer and the details read the same with JavaScript off.
+    // The route's other rules are P15's (V6, task 4.7), the founder's page facts (V16, task 6.7) and task 7.1b's copy
+    // fixes (V17), for both runs: the FAQ answer, the details, the heading and the sources read the same with JavaScript off.
     expect(TEXT_DEVIATIONS["meet-kheelu"].map((rule) => [rule.approvedBy.slice(0, "deviations.md V3".length), rule.jsOff ?? false])).toEqual([
       ["deviations.md V3", true],
       ["deviations.md V6", false],
       ["deviations.md V1", false],
+      ["deviations.md V1", false],
     ]);
     expect(TEXT_DEVIATIONS["meet-kheelu"][2].approvedBy).toBe(PAGE_FACTS["meet-kheelu"].approvedBy);
+    expect(TEXT_DEVIATIONS["meet-kheelu"][3].approvedBy).toBe(COPY_FIXES["meet-kheelu"].approvedBy);
   });
 
   it("accepts on the build side exactly the stacked panels' lines, as the page prints them, and no other line of the page", () => {

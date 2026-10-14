@@ -86,4 +86,13 @@
   .ks-topic__guides--two > li:nth-child(odd) > .kh-listitem {
     border-right: var(--stroke-hair) solid var(--border);
   }
+  /* An odd last row spans both columns and drops its column rule, so no empty bordered cell sits beside it (CMO review
+     B m2, task 7.1b: the screen-time topic has five guides since D053). */
+  .ks-topic__guides--two > li:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+  .ks-topic__guides--two > .kh-listitem:last-child:nth-child(odd),
+  .ks-topic__guides--two > li:last-child:nth-child(odd) > .kh-listitem {
+    border-right: 0;
+  }
 }

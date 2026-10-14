@@ -20,6 +20,8 @@ sources:
   - "../../decisions/D054-founder-answers-open-questions-2026-10-14.md (item 19: F4 rows without a final value come off the page; the box contents stay; task 6.7)"
   - "../../decisions/D055-page-facts-legal-setup-product-2026-10-14.md (item 26: the parent app is for iPhone and Android; task 6.7)"
   - "../../raw/research/geo/site-files-2026-10-10/llms.txt (lines 86-87: the live site's iOS and Android listings for the parent app, captured 2026-10-10)"
+  - "../../decisions/D056-founder-answers-built-page-reviews-2026-10-14.md (item 2: the films heading; task 7.1b)"
+  - "../../qa/cmo-review-built-a-2026-10-14.md (B2 the films heading, M6 the sources line, M8 the age-3 line; task 7.1b)"
 ---
 
 # Meet Kheelu (`/products/kheelu`): page copy
@@ -186,7 +188,7 @@ lines 15-21); the product page prefers them to the illustrative exchange (task b
 
 > **Eyebrow:** Real homes
 >
-> **H2:** Seven families, in their *own homes.*
+> **H2:** Real families, in their *own homes.*
 >
 > **Lede (the proof line):** Watch the children do the thinking. Then hear from two of their parents.
 >
@@ -218,6 +220,7 @@ lines 15-21); the product page prefers them to the illustrative exchange (task b
 | Claim | Source |
 |---|---|
 | Seven films, chips, captions, alt texts, play labels | `mockup/pages/home.html` lines 45-100; [D040](../../decisions/D040-films-move-to-new-site.md) lines 21-25; [claims](../../product/claims.md) line 298 |
+| H2 "Real families, in their own homes." (no count of families; task 7.1b) | [D056](../../decisions/D056-founder-answers-built-page-reviews-2026-10-14.md) item 2 (founder, 2026-10-14); [CMO review A](../../qa/cmo-review-built-a-2026-10-14.md) B2 (seven films, not seven families: Arha is in films 4 and 6). "In their own homes": question 8 |
 | Two of the films are parents speaking | home.html lines 61-68 (film 3), 93-100 (film 7) |
 | "do the thinking" | [strategy](../strategy.md) line 31 |
 | Written consent held for every child | [D040](../../decisions/D040-films-move-to-new-site.md) line 22 (founder, 2026-09-19, in [settled decisions](../../legacy/settled-decisions.md)) |
@@ -621,7 +624,7 @@ Section `id="faq"` (Home's "See all questions" links here; `/faq` 301s here, [st
 > Kheelu is a toy, not a therapy or treatment. Harvard's Center on the Developing Child says back-and-forth "serve and return" exchanges between a young child and a caring adult support early language and social skills.¹ Kheelu doesn't replace that time with you. If you're worried about your child's speech, talk to your paediatrician.
 >
 > **Sources**
-> ¹ Center on the Developing Child at Harvard University, "Serve and Return" (Key Concepts), undated (page metadata 2024, updated 2026), Key Takeaways and the paragraph after Fast Facts. https://developingchild.harvard.edu/key-concept/serve-and-return/
+> ¹ Center on the Developing Child at Harvard University, "Serve and Return" (Key Concepts). https://developingchild.harvard.edu/key-concept/serve-and-return/
 >
 > **Speech disclaimer (visible, under the questions):** Kheelu is a toy, not a therapy or treatment. If you're worried about your child's speech, talk to your paediatrician.
 >
@@ -680,7 +683,7 @@ Word counts: 52 · 51 · 57 · 60 · 53 · 57 · 44 · 53. Full-mode price answe
 | 5 Delivery | [D023](../../decisions/D023-new-order-delivery.md); [facts](../../product/facts.md) line 192 (order placed); [policies](../../product/policies.md) line 79 (anywhere in India, included, nothing at the door, no shipping abroad, tracking link, reserved units sent once the balance is paid); CMO S8 wording |
 | 6 Returns and warranty | [D021](../../decisions/D021-returns-policy.md), [D022](../../decisions/D022-warranty-replacement-refund.md), [D033](../../decisions/D033-warranty-after-day-7.md); [policies](../../product/policies.md) lines 104-107; [messaging](../../brand/messaging.md) lines 251-253 |
 | 7 After the first week | [D036](../../decisions/D036-launch-feature-claims.md) line 17 (#2, beside the parent's controls as D036 asks); [claims](../../product/claims.md) line 118 (picks up where they stopped); [D027](../../decisions/D027-story-mode-wording.md); [D017](../../decisions/D017-live-behaviour-claims-confirmed.md) |
-| 8 Speech, and the disclaimer | [D025](../../decisions/D025-speech-and-language.md) lines 17-20; [claims](../../product/claims.md) line 81; [source verification §4](../../research/source-verification.md) lines 273-285 (C07); [claims](../../product/claims.md) line 357; [keyword map](../../research/keyword-map.md) lines 543-544 (SP1) |
+| 8 Speech, and the disclaimer | [D025](../../decisions/D025-speech-and-language.md) lines 17-20; [claims](../../product/claims.md) line 81; [source verification §4](../../research/source-verification.md) lines 273-285 (C07); [claims](../../product/claims.md) line 357; [keyword map](../../research/keyword-map.md) lines 543-544 (SP1). The sources line is Home's short form (task 7.1b, [CMO review A](../../qa/cmo-review-built-a-2026-10-14.md) M6; `src/content/en-IN/pages/home.ts:157`); the full locator (undated, page metadata 2024, updated 2026; Key Takeaways and the paragraph after Fast Facts) stays in [source verification](../../research/source-verification.md) line 280 |
 | Help line | [facts](../../product/facts.md) line 223; [D032](../../decisions/D032-grievance-block-and-call-line.md) |
 
 ---
@@ -841,6 +844,24 @@ Each with options and a recommendation.
    founder sends the net quantity and the size before Gate B, so the declarations the page must carry while it
    takes orders are there from launch. **Recommend (b)**: those two need no test report, only the final product;
    the others follow as (a).
+8. **"In their own homes" on the films heading (new, task 7.1b).** D056 item 2 took the count out; the heading
+   still says the films were shot in the families' own homes, and the eyebrow says "Real homes". On 2026-10-11 the
+   founder answered "Not every film was shot at home" about these same seven films ([home.md](home.md) line 220),
+   and Home's lede became "Real children, real families." for that reason. (a) Keep D056's words as applied, if
+   every film was in fact shot in the family's own home. (b) H2 "Real children, *real families.*" (Home's
+   founder-approved words, Hand on "real families."), eyebrow "Seven films" (the verified count, D040).
+   **Recommend (b)**: every word is already verified, and nothing says where the films were shot. Under either
+   option, film 2's chip "Real families" echoes the H2; a mild repeat.
+9. **The age-3 line in FAQ 3 (CMO review A M8; not changed here).** M8 asks for one age-3 sentence across the FAQ
+   answers, this page's included (`src/content/en-IN/faqs.ts:86`, "At 3, play with a grown-up nearby."). Task 7.1b
+   gave this page only D056 item 2 and M6, and the one wording is being set on [home.md](home.md) at the same time.
+   The CMO's example, "If your child is 3, keep a grown-up nearby while they play." (the form the guides already
+   use), takes this answer from 57 to 61 words, over the 60-word limit (keyword map §5;
+   `src/content/en-IN/faqs.test.ts:173`). (a) The one wording, plus "At setup, you enter your child's age in the
+   parent app," (fold 4's approved words) for "When you set it up, you enter your child's age in the parent app,":
+   58 words, no fact lost. (b) The one wording, and drop "You can change it later.": 56 words, one fact lost.
+   (c) Keep "At 3, play with a grown-up nearby." here as the one exception: it is already plain (no "we advise").
+   **Recommend (a)**.
 
 ---
 
@@ -888,3 +909,36 @@ Copy blocks stands word for word as approved at Gate A (D046); the fold 8 note o
   Safety and Declarations panels are shorter than the mockup's (visual chunks below fold 7 move up; the V3
   JavaScript-off text pass changes too), and the parent-app row and the Good to know line differ from the mockup's
   placeholder text.
+
+## Changes after approval (task 7.1b)
+
+Applied from the founder's answer of 2026-10-14 ([D056](../../decisions/D056-founder-answers-built-page-reviews-2026-10-14.md)
+item 2) and the CMO's built-page review ([review A](../../qa/cmo-review-built-a-2026-10-14.md) B2, M6). Every other
+line of the Copy blocks stands word for word as approved at Gate A (D046) and as changed in task 6.7.
+
+- **Fold 2, the films H2 (D056 item 2; review A B2).** "Seven families, in their *own homes.*" becomes "Real
+  families, in their *own homes.*" The count was of families, and the source supports seven films only: Arha is in
+  films 4 and 6, and the lede calls the two parents in films 3 and 7 "two of their parents". The Hand accent stays on "own homes."
+  "In their own homes" is the founder's wording in D056; it sits against his 2026-10-11 answer that not every film
+  was shot at home ([home.md](home.md) line 220), so it is question 8.
+- **Fold 8, the sources line (review A M6).** The line takes Home's short form, "Center on the Developing Child at
+  Harvard University, "Serve and Return" (Key Concepts).", as `src/content/en-IN/pages/home.ts:157` shows it; the
+  link is unchanged. The dropped locator was a research note, not a claim, and stays in
+  [source verification](../../research/source-verification.md) line 280. The FAQ 8 answer, its marker and the
+  disclaimer are unchanged.
+- **Notes kept true:** the fold 2 and fold 8 source tables, the front matter sources, and questions 8 and 9 (new).
+  Title, meta descriptions, H1, the FAQ word counts and the keyword placements are unchanged: the H2 keeps its six
+  words, and the sources line loses 14 words of `<main>` text with no "Kheelu" or primary phrase among them, so
+  "about 1,550" words, the primary's "about 0.8%" and "Kheelu" at about 2% (still within the 2% ceiling) hold at
+  their stated precision.
+- **Not changed here, on purpose.** D056 item 4 (refund timing) names "the product page", but this page's FAQ
+  gives no refund time (FAQ 6 covers the return window, the free pickup, the faulty-item remedy and the warranty;
+  full-mode FAQ 4 the return window), so there is nothing to align. Review A M8 (one age-3 sentence) reaches FAQ 3
+  (`faqs.ts:86`), but task 7.1b did not give it to this page and the CMO's wording would put the answer at 61
+  words: question 9.
+- **For the builder (not edited here):** `src/content/en-IN/products/kheelu/page.ts:106` takes "Real families, in
+  their {hand:own homes.}"; so do the story `src/components/sections/FilmsStrip/FilmsStrip.stories.tsx:52` and the
+  test fixture `src/components/sections/FilmsStrip/FilmsStrip.test.tsx:115`. `page.ts:279` takes the short citation; its `href` and link `label`
+  (page.ts:280-281) stay. Do not change `faqs.ts:86` to an 11-word age-3 sentence without question 9's answer:
+  `faqs.test.ts:173` fails at 61 words. **Deviations for the main session at the merge:** both lines differ from
+  the approved mockup (`mockup/pages/meet-kheelu.html:36` and `:362`; text parity under the `meet-kheelu` key).

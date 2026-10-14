@@ -24,7 +24,8 @@ export const REFUND_START_WORKING_DAYS = 2;
 /** Then the bank's own time, as published (D042). */
 export const BANK_REFUND_WORKING_DAYS = "5-7";
 
-/** After a return: processed within this many working days of the unit reaching us (D022). */
+/** After a return: the refund reaches the parent within this many working days of the unit reaching us, bank time
+ *  included (D022; D055 item 5; worded "reaches you within" on /refund, /terms and the FAQ, D056 item 4). */
 export const REFUND_AFTER_RETURN_WORKING_DAYS = 7;
 
 /** Complaints are acknowledged within 48 hours (Rule 4(5)); "5 days" is never published (D032). */

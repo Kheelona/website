@@ -264,7 +264,7 @@ export const termsPage = {
         },
         {
           kind: "p",
-          text: `We arrange the pickup, free, for returns we accept, faulty units and warranty claims. Once your Kheelu reaches us and qualifies for return, your refund is processed within ${REFUND_AFTER_RETURN_WORKING_DAYS} working days.`,
+          text: `We arrange the pickup, free, for returns we accept, faulty units and warranty claims. Once your Kheelu reaches us and qualifies for return, your refund reaches you within ${REFUND_AFTER_RETURN_WORKING_DAYS} working days.`,
         },
         { kind: "p", text: NO_EXCHANGES },
         { kind: "p", text: `All the detail is on our ${REFUNDS} page.` },

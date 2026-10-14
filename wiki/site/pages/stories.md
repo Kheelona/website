@@ -1,7 +1,7 @@
 ---
 title: "Stories hub (/stories): page copy, Gate A draft"
 type: page-copy
-updated: 2026-10-11
+updated: 2026-10-14
 cites_at: archive/pre-reset-2026-10-10
 sources:
   - ../strategy.md (§2 rule for every page, §3.3 placement, §4.1 URL plan, §5 /stories row, §7)
@@ -12,7 +12,9 @@ sources:
   - ../tracking-inventory.md (§6, the cta values)
   - ../../research/keyword-map.md (§4.1 /stories row, §4.2, §5.1, §5.2)
   - ../../product/claims.md (§1, §3.1, §4), ../../product/facts.md, ../../product/pricing.md
-  - ../../decisions/D013, D016, D017, D028, D041, D043
+  - ../../decisions/D013, D016, D017, D028, D041, D043, D053
+  - ../../qa/cmo-review-built-a-2026-10-14.md (M5), ../../qa/cmo-review-built-b-2026-10-14.md (m1) (task 7.1b)
+  - ../pages/story-how-much-screen-time-for-a-3-to-6-year-old.md (the WHO, IAP and AAP guidance the screen-time lead points to)
   - "src/lib/stories.ts and src/lib/stories-expansion.ts at tag archive/pre-reset-2026-10-10 (titles, descriptions, themes; working tree read 2026-10-11, src/ unmodified per git status)"
   - design-system/project/03-cast.md:105,118,125; 01-writing.md:19-26,111-113; 10-pages.md:34-40,67 (read-only)
 ---
@@ -110,7 +112,11 @@ reviewer reaches it in one scroll.
 
 > **H2:** Screen time
 >
-> How much, which rules hold up, and what to do when the screen goes off.
+> How much, what the guidelines say, and what to do when the screen goes off.
+
+- **Lead** (changed after approval, task 7.1b; see the foot): "what the guidelines say" is the job of guide 1,
+  which gives the WHO, IAP and AAP limits age by age; "what to do when the screen goes off" is guides 3 and 4. The
+  same lead prints on Home's screen-time guide card (fold 7b).
 
 | # | Card title | One-line summary | State |
 |---|---|---|---|
@@ -271,6 +277,7 @@ None.
 | 21 kept guides, slugs and live titles | [url map §1b](../url-map.md#1b-journal-articles-22) (22 live); `src/lib/stories.ts:47-157`, `src/lib/stories-expansion.ts:8-554`; drop of the 2-year-old article: [D041](../../decisions/D041-gate-a-round-1.md), [strategy §4.1](../strategy.md#41-keep-merge-drop-gate-a-g8-with-g5) |
 | One-line summaries (rewritten from the live descriptions) | `src/lib/stories.ts:51-52, 77-78, 101-102, 125-126`; `src/lib/stories-expansion.ts:12-13, 46-47, 70-71, 94-95, 118-119, 141-142, 167-168, 190-191, 221-222, 255-256, 284-285, 309-310, 344-345, 379-380, 445-446, 485-486, 526-527`; the three rewritten guides' own copy ([learning toys](story-learning-toys-for-a-three-year-old.md), [safe AI toy](story-what-to-look-for-in-a-safe-ai-toy.md), [late talker](story-talking-toys-and-late-talkers.md)) |
 | "WHO, IAP and AAP" in the screen-time summaries | [source verification](../../research/source-verification.md) C31, C32, C33 (the guides cite them) |
+| Screen-time lead, "what the guidelines say" (task 7.1b) | Guide 1 gives the WHO, IAP and AAP guidance age by age ([how much screen time](story-how-much-screen-time-for-a-3-to-6-year-old.md), at a glance and folds 2 to 5; [source verification](../../research/source-verification.md) C31, C32, C33); wording: [CMO built review A](../../qa/cmo-review-built-a-2026-10-14.md) M5, [B](../../qa/cmo-review-built-b-2026-10-14.md) m1 |
 | "Serve and return ... between a young child and a caring adult" | [claims §8](../../product/claims.md#8-brain-and-development-claims-with-their-anchors) (Harvard row, keeping "a caring adult"); excerpt `raw/research/sources/C07-harvard-serve-and-return.md:23-24` |
 | Topic groups | [strategy §5](../strategy.md#5-each-page-purpose-primary-cluster-outline) (/stories row); live themes `src/lib/stories*.ts` (`theme` fields) |
 | "Written by the Kheelona team in Bengaluru" | [claims §3.1](../../product/claims.md#31-origin-designed-and-built-here) ("a small team in Bengaluru", EXTERNAL) |
@@ -278,3 +285,31 @@ None.
 | Price sentence, delivery, returns, help line, full mode | [home, CTA block](home.md#cta-block) sources: [D028](../../decisions/D028-price-wording.md), [D041](../../decisions/D041-gate-a-round-1.md) (option d), [pricing](../../product/pricing.md), [D023](../../decisions/D023-new-order-delivery.md), [D021](../../decisions/D021-returns-policy.md), [D032](../../decisions/D032-grievance-block-and-call-line.md) |
 | CTA label and cta values | [D041](../../decisions/D041-gate-a-round-1.md) (G1); [tracking inventory §6](../tracking-inventory.md#6-posthog-in-the-browser) |
 | Photos and alts | DS `03-cast.md:105, 118, 125` (photo table); files checked by eye 2026-10-11; alt pattern `01-writing.md:111-113` |
+
+## Changes after approval (task 7.1b)
+
+Gate A approved this page ([D046](../../decisions/D046-gate-a-approved.md)). Two built-page reviews of 2026-10-14
+found one stale line, and task 7.1b changed it that day. No other word in the Copy blocks changed, and the change
+adds no new claim.
+
+| # | Where | What changed | Why (finding or source line) |
+|---|---|---|---|
+| 1 | Fold 2, the screen-time lead under the H2 | "How much, which rules hold up, and what to do when the screen goes off." becomes "How much, what the guidelines say, and what to do when the screen goes off." | [CMO built review A](../../qa/cmo-review-built-a-2026-10-14.md) M5 and [B](../../qa/cmo-review-built-b-2026-10-14.md) m1: "which rules hold up" was the 3-6-9-12 guide's job, and [D053](../../decisions/D053-remove-the-3-6-9-12-article.md) took that guide off the journal. Its old URL now lands on this line (308 to `/stories#screen-time`), so the line promised a guide that is gone. The new words are the reviews' own. Guide 1 keeps the promise: it gives the WHO, IAP and AAP guidance age by age ([how much screen time](story-how-much-screen-time-for-a-3-to-6-year-old.md); C31, C32, C33) |
+| 2 | Notes | A note under the fold 2 lead; a sources-table row for the lead; front matter (`updated`, sources) | So the page stays true |
+
+**Not changed:** title (43 characters), meta (128 characters), H1, lede, topic chips, every card title and
+summary, the close, the sticky bar, the keyword placements (no placement uses this lead), the founder question.
+The fold 2 lead is 15 words, as before.
+
+**For the builder and the main session (not this page's edits):**
+
+- `src/content/en-IN/stories/topics.ts:18` takes the new lead word for word. It feeds both the hub's fold 2 and
+  Home's fold 7b screen-time card (`src/content/en-IN/pages/home.ts:350`).
+- The approved mockups keep the old line and stay frozen: `mockup/pages/stories.html:34` (hub) and
+  `mockup/pages/home.html:315` (Home card). That makes this a text-parity deviation on both routes. Review B
+  suggests extending V9 ([deviations](../../qa/deviations.md)) and adding the sentence to
+  `src/content/en-IN/stories/parity-deviations.test.ts`. Home needs a matching rule. The main session decides.
+- `llms.txt` prints this lead (`test/machine-files.test.ts:438`), so its hash changes. The main session re-pins it at the merge.
+- Storybook fixtures repeat the old line (`TopicSection.stories.tsx:16`, `CardGrid.stories.tsx:32`,
+  `Card.stories.tsx:52`). They are not site text, but updating them keeps one wording.
+- The founder signs this copy change at Gate B ([D015](../../decisions/D015-founder-signs-off-copy.md)).

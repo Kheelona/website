@@ -49,7 +49,7 @@ export const Product: Story = {
     id: "films",
     heading: {
       eyebrow: "Real homes",
-      title: "Seven families, in their {hand:own homes.}",
+      title: "Real families, in their {hand:own homes.}",
       lead: "Watch the children do the thinking. Then hear from two of their parents.",
       id: "films-title",
     },

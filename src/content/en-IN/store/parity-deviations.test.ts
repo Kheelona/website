@@ -61,7 +61,7 @@ describe("store parity deviations: the visual pass (V4, V1)", () => {
     expect(hiddenCss("store", "build")).toBe(".ks-store-payments { display: none !important; }");
     expect(hiddenCss("store-confirmation", "mockup")).toBe(`${MOCKUP_LINE} { display: none !important; }`);
     expect(hiddenCss("store-confirmation", "build")).toBe(".ks-store-payments { display: none !important; }");
-    expect(hiddenCss("home", "build")).toBe("");
+    expect(hiddenCss("ai-toys-for-kids-in-india", "build")).toBe("");
   });
 
   it("every rule gives its reason", () => {
