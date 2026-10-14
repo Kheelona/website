@@ -15,6 +15,7 @@ sources:
   - ../../decisions/D013, D016, D017, D028, D041, D043, D053
   - ../../qa/cmo-review-built-a-2026-10-14.md (M5), ../../qa/cmo-review-built-b-2026-10-14.md (m1) (task 7.1b)
   - ../pages/story-how-much-screen-time-for-a-3-to-6-year-old.md (the WHO, IAP and AAP guidance the screen-time lead points to)
+  - ../../decisions/D058-follow-the-live-code-check-2026-10-14.md and ../../qa/live-main-reconciliation-2026-10-14.md (§2; task 8b.1 check, no copy change)
   - "src/lib/stories.ts and src/lib/stories-expansion.ts at tag archive/pre-reset-2026-10-10 (titles, descriptions, themes; working tree read 2026-10-11, src/ unmodified per git status)"
   - design-system/project/03-cast.md:105,118,125; 01-writing.md:19-26,111-113; 10-pages.md:34-40,67 (read-only)
 ---
@@ -313,3 +314,13 @@ The fold 2 lead is 15 words, as before.
 - Storybook fixtures repeat the old line (`TopicSection.stories.tsx:16`, `CardGrid.stories.tsx:32`,
   `Card.stories.tsx:52`). They are not site text, but updating them keeps one wording.
 - The founder signs this copy change at Gate B ([D015](../../decisions/D015-founder-signs-off-copy.md)).
+
+## Changes after approval (task 8b.1)
+
+None to the copy. Task 8b.1 checked every Copy block on this page against the claims
+[D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) withdraws ([reconciliation map §2](../../qa/live-main-reconciliation-2026-10-14.md#2-19-c630a49-claims-withdrawn-or-reworded)):
+one-tap delete, "servers in India", the closed library, the age-graded safety layer, topic controls, quiet hours, the
+new-word count, the weekly report, "about a minute" of quiet, "No open internet" and the Kheelona+ feature list. None
+is on the hub. The close says only that Kheelu is a screen-free plush toy for ages 3 to 7 that answers, then asks a
+question back. The talking lead's "new words" is a guide topic, not the app's withdrawn count. The guides themselves
+are task 8b.2's, and the module (`src/content/en-IN/stories/hub.ts`, `topics.ts`) needs no change for D058.

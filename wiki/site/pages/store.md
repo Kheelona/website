@@ -13,7 +13,9 @@ sources:
   - ../../brand/messaging.md (confirmed candidate lines, CTA labels), ../../brand/voice.md, ../content-boundary.md, ../tracking-inventory.md (§6)
   - ../../research/keyword-map.md (§6 PM1), ../../research/d2c-benchmarks.md (A3, A4, A5, A8, A11)
   - ./home.md (CTA block, compact block, fold 2 films table, fold 8 answers)
-  - "decisions D021, D022, D023, D024, D028, D032, D033, D040, D041, D042, D043, D046, D056 (item 3)"
+  - "decisions D021, D022, D023, D024, D028, D032, D033, D040, D041, D042, D043, D046, D056 (item 3), D058 (item 3; task 8b.1)"
+  - ../../qa/live-main-reconciliation-2026-10-14.md (§1 row T3; task 8b.1)
+  - "../../qa/cmo-review-claims-8b.1-2026-10-14.md (round 2 of task 8b.1: m10 (a) applied, question 5 option (b); m10 (b) is question 6)"
   - "wt: src/app/store/page.tsx, src/app/store/layout.tsx, src/features/preorder/components/{PreorderForm,OrderSummary}.tsx, src/features/preorder/lib/validate.ts, src/lib/store/tiers.ts, src/config/site.ts, src/app/(site)/{shipping,refund}/page.tsx (working tree of reset/website-v2, read 2026-10-11; no git access in this step, so the tag was not read with git show. The line numbers match the tag citations on checkout.md for every range checked: PreorderForm.tsx:194-241, store/page.tsx:45-126, layout.tsx:28-95)"
   - design-system/project/01-writing.md, 08-accessibility.md, components/Alert/README.md, components/FAQ/README.md (read-only)
 ---
@@ -261,7 +263,7 @@ On laptops this card sits beside the form; on phones it follows the pay button.
 > **Deliveries start mid-November`DELIVERY_TEXT`**
 > Pre-orders go out first, in the order they were placed.
 >
-> *(small print)* Every Kheelu comes with 6 months of Kheelona+: stories, poems, jingles, languages and the parent app. The price is ₹4,999`LAUNCH_PRICE` (incl. GST) for the first 500 units, and ₹7,999`FULL_PRICE` (incl. GST) once they are gone. Delivery anywhere in India is included, and every order comes with a GST invoice.
+> *(small print)* Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app. Kheelu's price is ₹4,999`LAUNCH_PRICE` (incl. GST) for the first 500 units, and ₹7,999`FULL_PRICE` (incl. GST) once they are gone. Delivery anywhere in India is included, and every order comes with a GST invoice.
 
 **Copy, full mode:**
 
@@ -273,7 +275,7 @@ On laptops this card sits beside the form; on phones it follows the pay button.
 >
 > **Refundable in full** · **Deliveries start mid-November`DELIVERY_TEXT`** *(as token mode)*
 >
-> *(small print)* Every Kheelu comes with 6 months of Kheelona+: stories, poems, jingles, languages and the parent app. The first 500 units at ₹4,999`LAUNCH_PRICE` have been reserved, and this order is at the ₹7,999`FULL_PRICE` price (incl. GST). Delivery anywhere in India is included, and every order comes with a GST invoice.
+> *(small print)* Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app. The first 500 units at ₹4,999`LAUNCH_PRICE` have been reserved, and this order is at the ₹7,999`FULL_PRICE` price (incl. GST). Delivery anywhere in India is included, and every order comes with a GST invoice.
 
 - Restyle of the live `OrderSummary` (`wt:OrderSummary.tsx:40-103`), heading kept. Changes, all copy:
   - The first line's note no longer prints the tier label. Live it reads "₹499 today / Pre-order price" and, in full
@@ -281,9 +283,15 @@ On laptops this card sits beside the form; on phones it follows the pay button.
     price ([D028](../../decisions/D028-price-wording.md)) and the second calls the full price a launch price. The label
     lives in a logic file, so the restyled card simply does not print it.
   - "on dispatch" becomes "before delivery", the founder's D028 wording, so the card and the price sentence agree.
-  - The Kheelona+ line is the first sentence of [D027](../../decisions/D027-story-mode-wording.md)'s sanctioned line,
-    verbatim: it lists the offer and says nothing about after six months ([D041](../../decisions/D041-gate-a-round-1.md)).
+  - The Kheelona+ line is [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) item 3's sentence,
+    verbatim (task 8b.1; it replaces the first sentence of [D027](../../decisions/D027-story-mode-wording.md)'s line).
+    It lists no features, because which ones stay free is not decided. It never makes the parent app part of
+    Kheelona+: the app is free. And it still says nothing about after six months ([D041](../../decisions/D041-gate-a-round-1.md)).
     Live prints `KHEELONA_PLUS_SHORT` (`wt:OrderSummary.tsx:98`).
+  - **"Kheelu's price is" (task 8b.1 round 2; question 5, option (b); [CMO review of task 8b.1](../../qa/cmo-review-claims-8b.1-2026-10-14.md)
+    m10 (a)).** In token mode the price sentence now names its subject, so it cannot be read as Kheelona+'s price
+    after "our paid subscription" (Kheelona+ has no published price, [pricing](../../product/pricing.md#kheelona-has-no-price)).
+    Same amounts, same tokens. Full mode needs no change ("this order is at the ₹7,999 price").
   - "All prices include GST." becomes "incl. GST" beside each price ([D024](../../decisions/D024-payment-methods-gst.md)),
     and the GST invoice is added (D024).
 - "First 500 units" appears once on the page, here, as an offer term and never as a count or badge
@@ -516,7 +524,7 @@ Plain `path:line` = wiki file; `wt:` = working tree of `reset/website-v2` (see f
 | Confirmation by email; no WhatsApp confirmation sent by code | [checkout.md:108, :112-114](../checkout.md#step-by-step); [open-questions.md:96](../../open-questions.md) (F12) |
 | Messages about the order on WhatsApp | Consent row, `wt:PreorderForm.tsx:236-241` |
 | Ages 3 to 7; "made for children aged 3 to 7"; no "nearly 3" | [facts.md:83](../../product/facts.md#age); [age-band-review.md:70](../../product/age-band-review.md) (row 9); [home.md fold 8](home.md#fold-8--questions-parents-ask) |
-| Kheelona+ sentence; nothing about after six months | [D027](../../decisions/D027-story-mode-wording.md); [facts.md:179](../../product/facts.md#kheelona); [D041:24](../../decisions/D041-gate-a-round-1.md) |
+| Kheelona+ sentence: "Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app."; no feature list; nothing about after six months | [D058:35-37](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) (item 3, verbatim; replaces [D027](../../decisions/D027-story-mode-wording.md)'s first sentence, [facts.md:179](../../product/facts.md#kheelona), for this line); [reconciliation map §1](../../qa/live-main-reconciliation-2026-10-14.md#1-18-dd04e6d-the-parent-app-on-privacy-and-terms-for-the-app-store-and-play) row T3, line 51; [D041:24](../../decisions/D041-gate-a-round-1.md) |
 | First 500 units once, never a counter | [D041:31](../../decisions/D041-gate-a-round-1.md); [pricing.md:58](../../product/pricing.md#live-state) |
 | Help: WhatsApp or call +91 91875 46483; hello@kheelona.com | [D032:23](../../decisions/D032-grievance-block-and-call-line.md); [facts.md:223-224](../../product/facts.md#support-channel) |
 | Seller block | [policies.md:136-144](../../product/policies.md#seller-details-as-published) |
@@ -552,6 +560,25 @@ None. Every line on this page has a source. (The chargeback link depends on an a
 4. **Films on the store.** (a) Keep the seven films below the questions, as live, with Home's heading (the live
    heading is banned); (b) drop them so the store is only the form and its answers. **Recommend (a):** live parity,
    real proof at the moment of doubt, and nothing loads until play is pressed.
+5. **Applied in task 8b.1 round 2: option (b)** ([CMO review of task 8b.1](../../qa/cmo-review-claims-8b.1-2026-10-14.md)
+   m10 (a), routed to the copywriter): the small print reads "Kheelu's price is ₹4,999 …". The question as asked:
+   **"The price is" now follows "our paid subscription" (fold 4, token mode; task 8b.1).** With D058's Kheelona+
+   sentence first, the next sentence, "The price is ₹4,999 (incl. GST) for the first 500 units…", can be read as
+   Kheelona+'s price. Kheelona+ has no published price ([pricing](../../product/pricing.md#kheelona-has-no-price)). (a) Leave
+   it; (b) change one word: "Kheelu's price is ₹4,999…"; (c) move the Kheelona+ sentence to the end of the small
+   print. **Recommend (b):** one word, and the line can no longer be misread. Full mode is fine as it stands ("this
+   order is at the ₹7,999 price"). Not applied here: task 8b.1 changes only what D058 withdraws.
+6. **"Nothing recurring" beside "our paid subscription" (task 8b.1).** The store says "nothing is ever charged
+   automatically" (fold 3), "There are no payment fees and nothing recurring" (fold 5) and "Nothing recurring." (the
+   footer, D042). Each is true of this order. Now the small print calls Kheelona+ "our paid subscription", so a parent
+   may ask whether it renews and charges by itself after six months. "Nothing renews without you" is not confirmed
+   ([facts, Kheelona+](../../product/facts.md#kheelona), F7). (a) Leave the copy and decide nothing; (b) confirm that
+   Kheelona+ never starts charging without the parent's own sign-up, and keep the copy as it is (D041: say nothing
+   about after six months); (c) confirm (b) and add "Nothing renews without you." after the Kheelona+ sentence.
+   **Recommend (b).** If Kheelona+ would ever renew by itself, these three lines become misleading and must change
+   before it does. **The CMO review of task 8b.1 (m10 (b)) asks for your answer before Gate B**, through the main
+   session: the same Kheelona+ sentence is on Home's close, the product page's OfferCard and `/terms` section 3, and
+   `/terms`' short version also says "Nothing recurring."
 
 ## Notes for the builder and gaps
 
@@ -582,3 +609,38 @@ approved; no amount, promise or keyword placement changed.
 | New section, [Event link refused](#event-link-refused-storekheelonacometier-added-in-task-71c) | One body per refusal reason (`expired`, `full`, `unknown`, which covers an inactive tier, `bad-signature`, and the two mode refusals), for the presentation side to print on `/e/<tier>` in place of the frozen `tierRefusalMessage` text (`wt:src/lib/store/tiers.ts:133-145`). Each sends the parent to the store's own pre-order and names no amount. The panel's H1, button and WhatsApp line stay as live | m1: the default line "You can pre-order at ₹499 on this page." puts ₹499 beside a button with no total (D028), is false in full mode, and "on this page" (and "Refresh this page") points at the wrong place. `tiers.ts` stays byte-identical (ADR-013) |
 | Fold 2, in-app browser note | The Copy block is unchanged. A new note bullet records that the note ships switched on (still only in the Instagram, Facebook or WhatsApp browser), superseding the B12 "once QA's sandbox test confirms" condition | D056 item 3: the founder switched it on now, on the PostHog audit's evidence; CMO review C, "Needs the founder" 2. Deviation V4 retires when it ships |
 | Front matter, Sources | The review, D046, D056 and the code read for the reasons added; new source rows for both changes | So every new line has its source |
+
+## Changes after approval (task 8b.1)
+
+The founder's [D058](../../decisions/D058-follow-the-live-code-check-2026-10-14.md) (2026-10-14): the site follows the
+live team's code check of 12 October and the founder's rulings on what it left open. On this page that means one
+line, in both modes. Every other word of the Copy blocks is as approved (D046, then task 7.1c above). No amount,
+price constant, checkout field, pay-button label or keyword placement changed. The grievance block stays Aman Soni,
+aman@kheelona.com (D058 item 4).
+
+| # | Where | What changed | Why (finding or source line) |
+|---|---|---|---|
+| 1 | Fold 4, small print, token mode and full mode | "Every Kheelu comes with 6 months of Kheelona+: stories, poems, jingles, languages and the parent app." becomes "Every Kheelu comes with 6 months of Kheelona+, our paid subscription, on top of the free parent app." | D058 item 3 (lines 35-37), fix (i), verbatim: the parent app is free and Kheelona+ is a paid subscription on top of it; which features stay free is not decided, so no list; nothing says the app is part of Kheelona+. Map §1 T3 (line 51): the live `dd04e6d` `/terms` says the app is free. The live "nothing is sold inside it" is not carried over (D058 item 3) |
+| 2 | Notes | The fold 4 note on the Kheelona+ line; its sources row; questions 5 and 6; front matter | So the page stays true |
+
+**Not changed, checked:** no other line on the store carries a claim D058 withdraws. The page names no one-tap delete,
+closed library, safety layer, "about a minute", "servers in India", topic controls, quiet hours or new-word count.
+The films (fold 6) take Home's captions by reference, so any D058 change to them comes from `home.md`.
+
+**For the builder and the main session (not this page's edits):** the line renders from `offer.ts` `plus` (`:51`),
+which Home's Kheelona+ line also prints. `store-page.test.ts:191, 195` pins the old sentence ("D027's first sentence
+only") and moves to D058's. The product page's perk ("6 months of Kheelona+ included: stories, poems, jingles,
+languages and the parent app", `offer.ts:17`) and `page.ts:178` ("The parent app is part of Kheelona+…") belong to the
+other copy pages of this task. The approved mockup keeps the old line, so this is a text-parity deviation. The founder
+signs it at Gate B ([D015](../../decisions/D015-founder-signs-off-copy.md)).
+
+**Round 2, after the [CMO review of task 8b.1](../../qa/cmo-review-claims-8b.1-2026-10-14.md)** (2026-10-14):
+
+| # | Where | What changed | Why |
+|---|---|---|---|
+| 3 | Fold 4, small print, token mode | "The price is ₹4,999`LAUNCH_PRICE` (incl. GST) for the first 500 units, …" becomes "Kheelu's price is ₹4,999`LAUNCH_PRICE` (incl. GST) for the first 500 units, …" | m10 (a); question 5, option (b): after "our paid subscription", the old sentence could be read as Kheelona+'s price. One word; same amounts and tokens; no new claim |
+| 4 | Notes | The fold 4 note; questions 5 (applied) and 6 (the CMO asks for the founder's answer before Gate B); front matter | So the page stays true |
+
+Full mode is unchanged. Builder: `src/content/en-IN/store/order-summary.ts:33` (the `token` small print, after
+`offerCopy.plus`) takes "Kheelu's price is"; no test pins "The price is" (grep of `test/` and `src/**/*.test.*`,
+2026-10-14). The mockup keeps the approved line, one more text-parity row under the `store` key.
