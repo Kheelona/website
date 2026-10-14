@@ -15,8 +15,9 @@ const LANGUAGES_LINE = `It speaks ${LANGUAGE_NAMES.slice(0, -1).join(", ")} and 
  * first-published date is the stub's, the related list CMO built-page review B's ring (finding m3, task 7.1d; the copy
  * page's fold 9): the safe-AI-toy, AI-tutor and data-law guides, all in its own topic. Fold 4 leads with Common Sense Media's advice and the B3 answer's
  * first three sentences, then the page's one in-text product link; the facts follow D018 and D020 in the founder's
- * order, with the retention line every page prints (policies.ts) and the languages from the product facts. The light's
- * colour is never named (D018); no word "safe" about Kheelu. `updated` is the rewrite's date.
+ * order, as narrowed by D058 (task 8b.2a: the live team's code-checked words), with the retention line every page prints
+ * (policies.ts) and the languages from the product facts. The light's colour is never named (D018); no word "safe"
+ * about Kheelu. `updated` is the rewrite's date.
  */
 export const article = {
   slug: "questions-parents-ask-about-ai-toys",
@@ -46,11 +47,11 @@ export const article = {
       alt: "A father in glasses laughs as he reads a picture book aloud at bedtime, while his daughter, tucked in under a patchwork quilt, hugs Kheelu and smiles up at him.",
     },
   },
-  /* Fold 2: the answer first (57 words). */
+  /* Fold 2: the answer first (58 words). */
   answer: {
     question: "Does an AI toy record your child?",
     answer:
-      "Any AI toy has to capture your child’s voice to answer, so yes, while it is listening. What matters is when it listens and what is kept. Kheelu’s microphone turns on only when someone presses the wake-up button, and switches itself off after about a minute of quiet. You can read every conversation in the parent app.",
+      "Any AI toy has to capture your child’s voice to answer, so yes, while it is listening. What matters is when it listens and what is kept. Kheelu’s microphone turns on only when someone presses the wake-up button, and switches itself off after a couple of minutes of quiet. You can read every conversation in the parent app.",
   },
   body: [
     /* Fold 3: who is answering (no heading) */
@@ -98,14 +99,14 @@ export const article = {
               question: "Is it always listening?",
               answer: [
                 "Ask what turns the microphone on, what turns it off, and how you can tell. A toy that waits to hear its name has to listen all the time to catch it.",
-                "Kheelu has no wake word to listen for. Its microphone turns on only when someone presses the wake-up button. It stays on while your child is talking and switches itself off after about a minute of quiet. Until the next press, nothing is heard, recorded or sent.",
+                "Kheelu has no wake word to listen for. Its microphone turns on only when someone presses the wake-up button. It stays on while your child is talking and switches itself off after a couple of minutes of quiet. Until the next press, nothing is heard, recorded or sent.",
               ],
             },
             {
               question: "Where does my child’s voice go, and what is kept?",
               answer: [
                 "Ask who processes your child’s voice and in which country, what is kept and for how long, and whether any of it is sold. A vague answer is an answer.",
-                "To understand and answer your child, Kheelu uses trusted speech and AI providers, on servers in India. They process your child’s voice only to produce Kheelu’s reply. They don’t keep it, and they never use it to train their AI. Our contracts with them say so.",
+                "To understand and answer your child, Kheelu uses trusted speech and AI providers. They process your child’s voice only to produce Kheelu’s reply. They don’t keep it, and they never use it to train their AI. Our contracts with them say so.",
                 RETENTION_LINE,
                 "We don’t sell your data. Your child’s data is never used to advertise to them. Everything we collect, and what we use it for, is in our [privacy policy](/privacy).",
               ],
@@ -114,7 +115,7 @@ export const article = {
               question: "How can I tell when it is listening?",
               answer: [
                 "You can’t check a microphone from the sofa. So prefer a sign you can see over a promise you have to trust.",
-                "A light on Kheelu shows whenever it’s listening. It switches its microphone off after about a minute of quiet, so even if it’s left in a corner, it doesn’t stay listening.",
+                "A light on Kheelu shows whenever it’s listening. It switches its microphone off after a couple of minutes of quiet, so even if it’s left in a corner, it doesn’t stay listening.",
               ],
             },
           ],
@@ -133,7 +134,7 @@ export const article = {
               question: "What if my child asks it something upsetting?",
               answer: [
                 "Listen for a mechanism, not a reassurance: how every reply is checked for your child’s age, and who sets that age.",
-                "Kheelu can’t browse the internet. Its answers come from a curated, closed content library, and every reply passes an age-graded safety layer set to the age you enter in the parent app. We attack our own safety layer before every release, and you can read every conversation afterwards.",
+                "Kheelu can’t browse or search the internet. Its replies are generated by an AI model that is given child-safety rules and your child’s age on every conversation, with Google’s safety filters on top. You set that age in the parent app, and you can read every conversation afterwards.",
               ],
             },
             {
