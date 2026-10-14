@@ -177,6 +177,17 @@ const TRANSITIVE_FLOORS: {
     ],
   },
   {
+    name: "source-map-js",
+    min: "1.2.2",
+    why:
+      "GHSA-68fv-2mgg-jv7q HIGH, event-loop denial of service through indexed source-map section offsets " +
+      "(>=1.0.0 <1.2.2). Found by `npm audit --omit=dev` in task 6.3 (2026-10-14): it counts as RUNTIME because " +
+      "next@16.3.8 depends on postcss, which depends on source-map-js ^1.2.1. Reached only when CSS is compiled " +
+      "(next build, Vitest, Storybook), on CSS we wrote ourselves, never on a request. One hoisted copy serves " +
+      "next's postcss, the dev postcss, @tailwindcss/node and css-tree (jsdom); 1.2.2 is inside every one of " +
+      "their ^1.2.1 ranges, so `npm update source-map-js` moved it with no override.",
+  },
+  {
     name: "browserslist",
     min: "4.28.7",
     why:
