@@ -25,6 +25,7 @@ pages a task needs. Phase 0 pages cite legacy files at tag `archive/pre-reset-20
 ## Brand
 - [positioning](brand/positioning.md): SKM's positioning summarised, with the 3-7 correction and a table of where it bites.
 - [messaging](brand/messaging.md): messaging hierarchy, taglines, hero, proof points (verified vs needs source), objection answers; owns the CTA-label candidates.
+- [for the advisor](brand/for-the-advisor.md): the facts and rules to write Kheelona copy from, for the marketing advisor (D061); the facts the October draft had out of date.
 - [voice](brand/voice.md): voice rules from the positioning, agreements and conflicts with the DS writing and selling guides.
 - [audience](brand/audience.md): parents of 3-7 year olds in India, personas, needs, objections, triggers.
 
@@ -71,6 +72,7 @@ pages a task needs. Phase 0 pages cite legacy files at tag `archive/pre-reset-20
 
 ## Research and QA (INTERNAL, D013)
 - [PostHog audit](research/posthog-audit.md): 2026-09-19 to 10-10, verified by an independent re-run; funnel, device split (76% phone), top 10 issues by revenue impact, baseline for Phase 8, QA device list.
+- [advisor's homepage proposal review](research/advisor-homepage-proposal-review.md): the advisor's 37 recommendations (2026-10-12) reviewed by six specialists, decided by the CMO, challenged twice; what wave 8c builds (D061).
 - [D2C benchmarks](research/d2c-benchmarks.md): 19 sites phone first, pattern library, adopt/adapt/avoid tied to positioning and PostHog; per-site notes in `raw/research/benchmarks/`.
 - [keyword map](research/keyword-map.md): intent clusters with sourced volumes (Keyword Planner and GSC exports pending, C11), one primary cluster per URL, question bank, placement rules, GEO plan.
 - [QA baseline](qa/baseline-2026-10-10.md): Lighthouse medians on production (mobile and desktop), CWV, links, metadata, JSON-LD, axe, phone first-screen checks: what the new site must beat.
@@ -83,6 +85,7 @@ pages a task needs. Phase 0 pages cite legacy files at tag `archive/pre-reset-20
 - [journal pipeline](engineering/journal-pipeline.md): task 8b.2's design (ADR-014): the dashboard's posts as a committed snapshot, the adapter to the rebuild's `Article`, images, VideoEmbed, guards, the migration of the 20 guides, the merge with `main`, tasks 8b.2a-g, the backend changes for Aman (§13).
 - [For Aman](engineering/for-aman.md): one page the founder forwards to the CTO: patch the live site's packages now (G25), the journal's backend changes (§13), five `/privacy` facts (G31), the model's doesn't-know rule (G29), the app's grievance link, and what happens after Gate B.
 - [live-site reconciliation map, 2026-10-14](qa/live-main-reconciliation-2026-10-14.md): what `main` changed since the branch point (#18 app privacy/terms, #19 claims withdrawn after a code check, #20-#22 the dashboard journal), mapped line by line against the rebuild; the merge conflicts; the founder's items (G24).
+- [CMO review: the advisor's homepage proposal, 2026-10-15](qa/cmo-review-advisor-proposal-2026-10-15.md): AP-01..AP-37 decided (0 adopted as written, 7 adapted, 12 already, 15 rejected, 3 for the founder), the copy for each adapted item, the plan.
 - [CMO review: claims and the parent app, task 8b.1, 2026-10-14](qa/cmo-review-claims-8b.1-2026-10-14.md): the twelve copy pages after D058, two rounds, passed; its open items are G26-G31 in [open questions](open-questions.md)
 - [CMO review: the four safety guides after D058, task 8b.2a, 2026-10-14](qa/cmo-review-guides-d058-8b.2a-2026-10-14.md): the safe-AI-toy, should-kids, hard-questions and data-law guides in the code-checked words; passed; G32 from it
 - [CMO review: the four blocks the visual pass hides whole, wave 8b close, 2026-10-14](qa/cmo-review-hidden-blocks-8b-2026-10-14.md): the product page's words column, `/safety`'s parent controls, `/privacy` §7, `/terms` `#account` at 360, 390 and 1440; passed; m1-m3 on `/safety` fold 4 fixed at once
@@ -143,6 +146,7 @@ pages a task needs. Phase 0 pages cite legacy files at tag `archive/pre-reset-20
 - [D056](decisions/D056-founder-answers-built-page-reviews-2026-10-14.md) the founder answers the built-page reviews: delete limit left as is, "Real families", the in-app note on, refund "reaches you", the Karnataka emblem and the Kheelona+ line kept, Meta automatic events off (founder);
 - [D057](decisions/D057-journal-from-dashboard-and-three-wordings-2026-10-14.md) the journal comes from the admin dashboard (the rebuild renders its posts); the films heading "Real children, real families." under "Seven films"; `/terms` takes the one age-3 sentence; a refused event link "This link is incomplete, or not one of ours."
 - [D058](decisions/D058-follow-the-live-code-check-2026-10-14.md) the site follows the live team's code check of 12 Oct (no one-tap delete, no closed library, no topics or quiet hours, no new-word count, a couple of minutes of quiet, processors named); Bluetooth and the languages stay; the app is free, Kheelona+ paid on top; 36 months then deleted; Aman stays the grievance officer.
+- [D061](decisions/D061-advisor-proposal-what-we-take-2026-10-15.md) the advisor's proposal: Kheelu on the first phone screen (Home, product), ads stay on Home, the later price as a plain line on the offer cards, parents' own words from the films; what else we take and don't.
 - [D060](decisions/D060-beta-open-to-the-public-2026-10-14.md) the beta links open to the public: the founder turns off Vercel Authentication; noindex, no payment, kheelona.com unchanged until Gate B.
 - [D059](decisions/D059-journal-voice-uploads-and-timing-2026-10-14.md) the dashboard's voice check follows the DS (contractions allowed); a DS photo first, uploads as fallback with consent checked; the dashboard takes over after Gate B.
 - [D049](decisions/D049-motion-picks.md) motion picks: reveals fade-and-rise, hero still, doodles draw themselves, buy bar slides up, menu from the side, button arrow nudge, FAQ smooth open, films focus grows.

@@ -1746,6 +1746,133 @@ CLAUDE.md stays (the journal paragraph lives in the wiki). Guards proven; then t
   the grievance officer is aman@kheelona.com (D058 item 4, `seller.ts`). `origin/main` is now an ancestor, so the Gate B
   merge needs no force-push; if `main` gains commits before Gate B, merge them the same way after reading each.
 
+## Wave 8c: the advisor's proposal, what we take (D061; after 8b, before Gate B)
+
+The founder shared a marketing advisor's homepage proposal; six reviews, the CMO's decisions and two challengers chose
+what to take ([the review](../research/advisor-homepage-proposal-review.md); the CMO's table with the copy:
+[cmo-review-advisor-proposal-2026-10-15](../qa/cmo-review-advisor-proposal-2026-10-15.md)); the founder answered four
+questions ([D061](../decisions/D061-advisor-proposal-what-we-take-2026-10-15.md)). Every change below departs from the
+frozen Gate A mockup (D046), so each task adds its `test/e2e/support/deviations.ts` rules and drafts its deviation rows
+in its notes (the main session writes wiki/qa/deviations.md; the founder signs at Gate B, D015). The Meta ads keep
+landing on Home (D061 item 2): Home's first phone screen comes first. Budgets: HTML ≤ 60 KB gzip per page
+(`perf-budget.spec.ts`; beta today Home 56.0 KB, product 52.2 KB), Lighthouse mobile ≥ 90. The four tasks run in
+parallel worktrees; each owns its files so the merges stay mechanical.
+
+### 8c.1 Kheelu on the first phone screen, Home and the product page (builder; risk high)
+
+- **What (D061 item 1):** on phones only, a picture of Kheelu (the plush, recognisable) comes into the first screen of
+  Home and of `/products/kheelu`, with the approved headline (D045), the CTA and the price sentence (D028). Laptops and
+  tablets from 720 px stay exactly as built. Today at 390 × 844 only the top edge of Home's art board shows (sun at
+  793 px, Kheelu at 916-1123 px) and at 360 × 590 it starts at 797 px; on the product page the Kheelu sticker spans
+  793-1006 px at 390 × 844 and starts at 845 px at 360 × 590 (buyer's-advocate probes, 2026-10-15).
+- **Inputs:** D045 (the fit: at 360 × 590 the h1 ends at 256 px, the CTA at 432 px, the price sentence at 508 px),
+  D049 pick 2 (no hero motion: the hero, H1, price sentence and CTA never move), D050 (the WhatsApp bubble), DS
+  `06-surfaces.md` and the hero pattern in `design-system/project/10-pages.md` (a real photo or a cast sticker on a
+  brand-colour block, the CTA, a line of trust; `StickyBuyBar` appears after the hero scrolls away), components.md
+  `HeroSection`, `ArtBoard`, `Photo`, `Sticker`; the CMO's screenshots in `wiki/raw/qa/2026-10-15/cmo/`
+  (local only).
+- **Owns:** `src/components/sections/HeroSection/**` (component, CSS, types, test, story); the hero blocks of
+  `src/content/en-IN/pages/home.ts` and `src/content/en-IN/products/kheelu/page.ts` (hero only);
+  `src/components/chrome/WhatsAppFloat/whatsapp-float.css` only if no hero layout keeps the bubble clear;
+  `test/e2e/first-screen.spec.ts`; the hero rules in `test/e2e/support/deviations.ts`; HeroSection's row in
+  components.md.
+- **Acceptance:** (1) at 360 × 590, 390 × 844 and 412 × 915, on both pages: Kheelu wholly inside the first screen, and
+  the h1, the CTA and the price sentence inside it too; report every measured box (top, bottom) before and after. If
+  360 × 590 cannot hold all four within the DS, stop and report the options with screenshots under `blocked`; never
+  improvise a layout the DS does not have. (2) Built only from DS parts and the approved hero assets (the art board's
+  own Kheelu layer, the DS Kheelu photo or sticker): no new colour, font, radius or shadow; no new motion in the first
+  screen (D049). (3) The WhatsApp bubble covers neither Kheelu nor the hero sticker "It asks. They think." at the three
+  phone sizes; solve it in the hero layout first. (4) `StickyBuyBar` behaves as today. (5) Laptop and tablet
+  (720, 1024, 1440) unchanged: visual parity green without new rules at those widths. (6) The LCP element is still the
+  hero picture, sized and prioritised (`next/image` `priority`, correct `sizes`); Lighthouse mobile ≥ 90 on `/` and
+  `/products/kheelu` (local profile); HTML budget green. (7) axe clean on both pages at 360 and 390; no sideways
+  scroll. (8) `first-screen.spec.ts` asserts the new phone boxes (Kheelu, h1, CTA, price sentence) at the three sizes.
+
+### 8c.2 The later price on the offer cards, and "Share Kheelu on WhatsApp" (builder; risk normal)
+
+- **What:** (a) D061 item 3: on the Home (fold 9) and product-page (fold 3) offer cards, in **token mode only** (the
+  first-500 price is live), the plain line "{price:headline} for the first 500 units. {price:full} once they are gone."
+  through the DS OfferCard's later-price place; nothing in full mode; never a struck-through price, a counter or "save".
+  (b) Under both offer cards, the text link "Know a parent who needs this? Share Kheelu on WhatsApp"
+  (`WHATSAPP_SHARE_LABEL`, reused) with **new** share text in a content module (the founder signs it):
+  "Kheelu is a screen-free talking toy for children aged 3 to 7. It answers every why, then asks one back.
+  {price:headline} (incl. GST); pre-order with {price:token} today, refundable until dispatch." followed by the
+  kheelona.com address with the share UTM the campaign conventions use (`tools/utm/build-link.mjs`, tracking
+  inventory). A new registered `cta` value `share-whatsapp`.
+- **Inputs:** D028, D041 (as changed by D061 item 3), PRICE-01 and DARK-01/DARK-03 in
+  `wiki/product/legal-requirements.md`, `src/content/en-IN/offer.ts`, `src/lib/offer/`, components.md `OfferCard`,
+  `OfferSection`, `Button`; tracking inventory §6 and architecture §8.3 (the `cta` registry); D050 (WhatsApp green is
+  the bubble's alone).
+- **Owns:** `src/components/ui/OfferCard/**`, `src/components/sections/OfferSection/**`, `src/content/en-IN/offer.ts`,
+  a new share module (for example `src/content/en-IN/share.ts`) and its test; `wiki/site/tracking-inventory.md` §6
+  (the new row), `wiki/engineering/architecture.md` §8.3 (the new row), `test/guards/tracking-registry.test.ts`; the
+  machine-file pins in `test/machine-files.test.ts` if llms.txt or pricing.md read a string you change (bump
+  `LLMS_UPDATED` and re-pin `DATED`); the offer rules in `test/e2e/support/deviations.ts`. Not the page files: render
+  the link from OfferSection's placement config.
+- **Acceptance:** (1) the line shows on both cards in token mode and in neither in full mode (unit tests both ways).
+  (2) A guard test: no `<s>`, `<del>`, `line-through` or struck price anywhere in `src/`. (3) Never edit or reuse
+  `WHATSAPP_SHARE_HREF` (it is parity-pinned in `test/env.test.ts`, inside the frozen money block, ADR-013). (4) The
+  share text has no "first 500", no "teaches", no typed ₹ (tokens only), passes `findBanned`, leads with the total
+  (D028 for ad-like text). (5) The link renders through `Button` (the `cta` attribute written), in the DS link or
+  secondary style, never WhatsApp green; 44 px tap area. (6) `share-whatsapp` registered in the inventory,
+  architecture §8.3 and the registry guard, which stays green. (7) No other tracking ID, event or `cta` value changes.
+
+### 8c.3 Parents' own words, the recognition strip, four steps and the example conversation (builder; risk high)
+
+- **What:** (a) D061 item 4: below the film strip on Home (fold 2) and the product page (fold 2), two `Quote` cards,
+  the words verbatim from the films' burned-in subtitles (punctuation as the subtitle, unless a site rule bars a
+  character; the words never change):
+  "They first thought it’s just another soft toy, but when it started speaking, they were very much surprised."
+  (cite: Nikita, Parent; film `a-parent-speaks`) and "I would recommend everyone to have one — so that there is play
+  away from the screen." (cite: Siddhant’s father, Parent; film `a-father-speaks`). Each has a "Watch the film" button
+  that plays that film in the strip through the strip's own island (no video bytes before the tap; keyboard and
+  screen-reader correct). The films' proof line covers them (D040: claim only what the films show). Lines left out on
+  purpose: "completely safe", "more than an hour", "make him jump". (b) The "Recognised by." strip (`RecognitionStrip`
+  with team.ts's items as built, D054 item 20; the names never retyped as a sentence) on Home after the films and on
+  the product page after the films, before the offer. (c) Product page, its own fold just before fold 4 ("How it
+  works"): `StepsSection` `four` with the heading "What happens when your child {hand:presses it.}" and the steps
+  "Press and ask." / "Your child presses the wake-up button and asks. A light shows Kheelu is listening."; "Kheelu
+  answers." / "It answers the question first."; "Then it asks one back." / "A question back, so your child does the
+  thinking."; "Next time, it remembers." / "It remembers earlier conversations, so it can pick up where your child
+  stopped. You can read every one of them." (D018, D017, D036: "remembers" sits next to the parent's control). (d)
+  Right after the steps: the labelled example conversation, home.md fold 2 variant b word for word ("What
+  {hand:asking back} sounds like." with "Illustrative example, not a recording." never removed), without the
+  ImaginationFrame doodles unless the page stays inside its budget with them.
+- **Inputs:** D040, D054 item 20, D036, D018; `wiki/site/pages/home.md` fold 2 variant b; components.md `Quote`,
+  `FilmsStrip`, `RecognitionStrip`, `StepsSection`, `Card`; `src/content/en-IN/films.ts`, `pages/team.ts`.
+- **Owns:** `src/app/(site)/page.tsx`, `src/app/(site)/products/[slug]/page.tsx`, `src/content/en-IN/films.ts` (the
+  quotes, each tied to its film id), `src/components/sections/FilmsStrip/**` (the quotes and "Watch the film"), the
+  non-hero blocks of `pages/home.ts` and `products/kheelu/page.ts` for these folds, the RecognitionStrip placement
+  config, the fold rules in `test/e2e/support/deviations.ts`, components.md rows. A new component only if the
+  catalogue has nothing for the exchange; register it.
+- **Acceptance:** (1) the quotes match the subtitles exactly (a test holds the strings); "Watch the film" plays the
+  right film (an e2e or component test). (2) Order on the product page at 390: hero, films with quotes, recognition
+  strip, offer, steps and example, then the rest; report the offer card's top at 390 before and after. (3) HTML budget
+  ≤ 60 KB on both pages; if Home goes over with the strip, the strip comes off Home (it stays on the product page) and
+  you report it. (4) Lighthouse mobile ≥ 90 on both pages; axe clean; no sideways scroll; the marks load lazily. (5)
+  `findBanned` passes every new line; nothing implies under 3. (6) Laptop layout follows the DS; visual and text
+  parity green with the new fold rules only.
+
+### 8c.4 The FAQ wording, a languages answer and the guard for stale facts (builder; risk normal)
+
+- **What:** (a) `faqs.ts` `not-right-for-us`: the question becomes "What if my child doesn't like it?" (answer
+  unchanged), everywhere it renders, structured data included. (b) If no FAQ on Home or the product page answers
+  "Which languages does Kheelu speak?", add it to `faqs.ts` and the product page's FAQ list: 40-60 words from
+  facts.md (the 8 named languages, up to 10 at launch, rendered from the languages source, never typed; switching
+  mid-sentence as approved, D017, in AI mode as film 6's caption says). (c) `test/guards/banned-phrases.data.ts` gains
+  entries for the advisor's stale facts: cash on delivery offered; "ships 20 Oct(ober)"; open-ended ages ("Ages 3+",
+  "6+", "3 and up"); a part-price inside a button label ("Pre-order for ₹499"); "Real pilot homes"; "Backed by" for the
+  programmes; "Safety certified". Each with a planted example, its variants and near misses; green on the whole tree,
+  the journal snapshot and the approved fixtures (approved lines such as "nothing to pay at the door" and any
+  "no cash on delivery" stay green).
+- **Owns:** `src/content/en-IN/faqs.ts`, the product page's FAQ id list (one line in `products/kheelu/page.ts`),
+  `test/guards/banned-phrases.data.ts` and its test (import-free, as now), `test/machine-files.test.ts` pins
+  (`LLMS_UPDATED`, `DATED`), the FAQ rule in `test/e2e/support/deviations.ts`, the pinned tests that print the old
+  question (`home.test.tsx`, FaqList test and story), `wiki/product/claims.md` §4 rows for the new entries.
+- **Acceptance:** (1) the new question in the page, the FAQPage JSON-LD and llms.txt; pins bumped. (2) Every new guard
+  entry proven red on its planted example and green on the tree. (3) The languages answer passes `findBanned` and
+  states only facts.md.
+
 ## Wave 9: beta deploy and beta QA (after wave 8)
 
 ### 7.2 Beta deploy and beta QA (main session, founder, QA)

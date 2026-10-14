@@ -1093,3 +1093,18 @@ challenge the decisions. Early read (main session): the proposal conflicts with 
 headline), the 3-7 band ("Ages 3+"), R5 (feelings), D058 (choose topics), D023 (ships 20 Oct), ADR-013 (cash on
 delivery, a new form) and the DS (its own palette and fonts), and carries ideas the CMO will weigh (the
 asks-back line, a hero film, stat tiles, a comparison table, sample conversations, an offer bar).
+
+## [2026-10-15 04:40] decision | D061: the advisor's proposal reviewed and decided; wave 8c planned
+Workflow `wf_13c2e74f-ae8` (9 agents, no errors): six reviews (copywriter: adapt 7, reject 15; claims: every claim
+classed, the guard catches only 3 of the stale facts; search visibility; PostHog read-only: 410 paid phone sessions,
+0 orders, 90% never scroll, films the most-clicked element, the buy bar and navbar produced all 3 purchases;
+benchmarks; architect: Home at 56 of 60 KB HTML), then the CMO decided AP-01..AP-37 (0 adopted as written, 7 adapted,
+12 already, 15 rejected, 3 for the founder; [its page](qa/cmo-review-advisor-proposal-2026-10-15.md)), then a buyer's
+advocate and a guardrails auditor challenged it (resolutions in [the review](research/advisor-homepage-proposal-review.md)).
+The founder answered four questions ([D061](decisions/D061-advisor-proposal-what-we-take-2026-10-15.md)): Kheelu on the
+first phone screen of Home and the product page; ads stay on Home (no /lp page); the later price as a plain line on
+the offer cards; parents' own words from the consented films. The two quotes were read off the films' burned-in
+subtitles locally (ffmpeg frames; the transcripts stay local: they name children and a neighbourhood). Wave 8c in
+[tasks](engineering/tasks.md): 8c.1 the first phone screen (high), 8c.2 the later price and the share link, 8c.3 the
+quotes, recognition strip, four steps and example (high), 8c.4 the FAQ wording, a languages answer and guard entries.
+[A fact pack for the advisor](brand/for-the-advisor.md) for the founder to forward.
