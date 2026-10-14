@@ -44,7 +44,8 @@ const SITE_CSS = "src/styles/site.css";
 const COMPOSE_CSS = "src/styles/generated/compose.css";
 /** The one file allowed to define the DS motion tokens: the generated copy of tokens.css. */
 const DS_TOKENS_CSS = "src/styles/generated/ds-tokens.css";
-const LEGACY = new Set(["src/styles/globals.css"]);
+/** Empty since task 6.3 deleted the legacy src/styles/globals.css: every stylesheet under src/ is scanned. */
+const LEGACY = new Set<string>([]);
 /** Folders that hold only new-design source (the legacy atoms, molecules, organisms and old pages are elsewhere). */
 const NEW_DESIGN_SOURCES = ["src/components/ui", "src/components/sections", "src/components/chrome", "src/components/tracking", "src/layouts", "src/motion", "src/features/preorder/components", "src/app/store"];
 /** Tailwind's two layers, which only site.css imports. */
@@ -959,15 +960,15 @@ describe("the motion analyser also catches motion written in other spellings and
     expect(ok(`${REDUCED(".ks-track", "scroll-behavior: smooth;")}`).join("\n")).toMatch(/smooth scrolling under reduced motion/);
   });
 
-  it("reads every CSS file under src/ except the legacy globals.css", () => {
-    for (const p of ["src/motion/motion.css", "src/components/ui/Card/card.css", "src/app/store/_components/panel.css", "src/features/preorder/components/form.module.css", "src/lib/stray.css"]) expect(inScope(p), p).toBe(true);
-    for (const p of ["src/styles/globals.css", "design-system/project/components/bundle.css", "mockup/mockup.css", "src/components/ui/Card/Card.tsx"]) expect(inScope(p), p).toBe(false);
+  it("reads every CSS file under src/, the old globals.css path included since task 6.3 deleted the legacy file", () => {
+    for (const p of ["src/motion/motion.css", "src/components/ui/Card/card.css", "src/app/store/_components/panel.css", "src/features/preorder/components/form.module.css", "src/lib/stray.css", "src/styles/globals.css"]) expect(inScope(p), p).toBe(true);
+    for (const p of ["design-system/project/components/bundle.css", "mockup/mockup.css", "src/components/ui/Card/Card.tsx"]) expect(inScope(p), p).toBe(false);
   });
 
   it("rejects an @import of CSS it does not read, so motion cannot enter through an unscanned file", () => {
     const sheet = (css: string) => importFindings([{ file: "src/components/ui/Card/card.css", css }]);
     expect(sheet(`@import "../../../../vendor/anim.css";`).join("\n")).toMatch(/vendor\/anim\.css/);
-    expect(sheet(`@import "../../../styles/globals.css";`).join("\n")).toMatch(/globals\.css/);
+    expect(sheet(`@import "../../../../../mockup/mockup.css";`).join("\n")).toMatch(/mockup\.css/);
     expect(sheet(`@import "animate.css";`).join("\n")).toMatch(/animate\.css/);
     expect(sheet(`@import url("https://example.com/a.css");`).join("\n")).toMatch(/example\.com/);
     expect(sheet(`@import "./card-extra.css";`)).toEqual([]);

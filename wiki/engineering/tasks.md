@@ -1450,6 +1450,21 @@ waits; it may run in any later wave before wave 8, alone with its own files.
 
 ### 6.3 Clean-up and dependency retirement (builder)
 
+- **Merged** `4a05b92` (runs `wf_1dbdd8e9-45e`, whose builder lost its API connection after 21 commits, and
+  `wf_b9732366-0d9`, resumed at "finish"; passed its review). Main-session rulings at the merge (2026-10-14):
+  `public/product/lumi.png` deleted and 1.3's two redirect guards re-sampled (synthetic paths and every public file);
+  accepted outside the written Owns: `test/guards/visual-layer.test.ts` reads the deleted `globals.css` at the freeze
+  tag, the banned-phrases title, the content-integrity comments and dead skip, and the `NotFoundPanel` and store page
+  signatures (their new `action` and `note` props choose what the panel shows; no checkout logic, the frozen
+  `NotFoundPanel.test.tsx` and the contract fixtures unchanged); the store e2e checks run on 6.1's database stand-in
+  (fake keys, a local stub) rather than with Supabase blank. The main session removed the two allowances 6.3 left
+  stale (banned-phrases' `KHEELONA_PLUS_LINE` pending item; motion-properties' `globals.css` exemption; both proven
+  red) and the stale comments in `AGENTS.md`, `postcss.config.mjs`, `.storybook/preview.tsx` and
+  `tools/qa/supabase-stub.mjs`. Left for later tasks: `npm run qa:payment` against the Razorpay sandbox (7.1); the six
+  dev-only high advisories (brace-expansion and braces under `eslint-config-next`; a package decision, never shipped;
+  [dependencies](dependencies.md)); `README.md` and `docs/store-go-live.md` still describe the legacy site and its
+  deleted QA tools (7.3); `Technical-Todo.md` stays until its open items reach open questions ([cleanup](../legacy/cleanup.md)).
+
 - **Owns:** deletion of everything [structure §1](structure.md#1-the-tree) lists under "Removed during the
   build" (including `src/app/(site)/playos/`, `src/lib/cn.ts`, `src/lib/interactions.ts`, the legacy
   `src/lib/seo.ts` with its test, `src/styles/globals.css`), `package.json`, `package-lock.json`
@@ -1504,6 +1519,9 @@ waits; it may run in any later wave before wave 8, alone with its own files.
 ### 7.1 Full verification (QA; builders fix)
 
 - **Owns:** QA's pages in `wiki/qa/`; fixes go back to the owning task's files.
+- **Also (from 6.3, 2026-10-14):** run `npm run qa:payment` once against the Razorpay sandbox (the founder's test keys in
+  `.env.local` and the Supabase stub): it must show `preorder_payment_window_opened` through the probe's new gtag spy
+  (task 6.2 acceptance; 6.3 proved the spy on a local stand-in only).
 - **Acceptance:** the [test plan](../qa/test-plan.md) §4, §5, §7-§9 on L and LP: `npm run verify` and
   `verify:e2e` green on every route and the viewport matrix; Lighthouse mobile median of 3 on the test
   plan's ten pages ≥ 90 in all four categories with the authoritative run per category (N18: Performance
@@ -1554,6 +1572,9 @@ waits; it may run in any later wave before wave 8, alone with its own files.
   session ruled it (team.md ruling 7), and the refund timing on `/terms` and the FAQ ("processed within 7 working
   days") against `/refund`'s "reaches you within 7 working days" (D055 item 5; CMO M7: align both if the founder agrees,
   then re-pin `llms.txt`); the four legal pages' D029 sign-off (their `status: "draft"` stops a production build).
+- **Repo pages before the merge to `main` (from 6.3):** `README.md` (the public repo's front page) still describes the
+  legacy site (PlayOS, Lumi, `docs/standards/`, `qa:sweep`), and `docs/store-go-live.md`'s steps run the deleted
+  `tools/qa/{text,sweep}.mjs`: rewrite both for the new site, with Playwright equivalents for the go-live checks.
 
 ---
 

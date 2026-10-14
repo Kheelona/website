@@ -7,5 +7,5 @@ This version has breaking changes — APIs, conventions, and file structure may 
 # Structure & component standards
 
 Structure: `wiki/engineering/structure.md` (Phase 4, 2026-10-12); build plan: `wiki/engineering/tasks.md`.
-Components ship a colocated Vitest test (and a story for `ui/` and `sections/`). Legacy code keeps
-`docs/standards/` until task 6.3 deletes it. Node ≥ 24.
+Components ship a colocated Vitest test (and a story for `ui/` and `sections/`). The legacy code and
+`docs/standards/` went in task 6.3 (2026-10-14). Node ≥ 24.

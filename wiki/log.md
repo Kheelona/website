@@ -762,3 +762,21 @@ retired; 13 packages retired by name: tailwind-merge, motion, lucide-react, two 
 35 public files deleted; most batch follow-ups). The main session saved its one unfinished file (the payment probe's
 gtag spy) as WIP `59886bb` and ruled its open question: delete `public/product/lumi.png`; 6.3 may re-sample
 1.3's two redirect guards without weakening them. Resumed at stage "finish" in the same worktree.
+
+## [2026-10-14 07:31] build | Wave 7 merged: task 6.3 (clean-up and dependency retirement); merge gate green
+6.3 passed its review (resumed run `wf_b9732366-0d9`; 26 commits). Merged `--no-ff` `4a05b92`. About 230 legacy files
+deleted (old components, `features/home`, `playos`, `app/fonts`, `globals.css`, 18 legacy `src/lib` modules, 7
+retired guard tests, `docs/standards`, the four puppeteer QA tools), `LEGACY_PATHS` and `LEGACY_ROUTES` empty; 11
+packages retired one by one by name (tailwind-merge, motion, lucide-react, two Radix, drei, fiber, three,
+@types/three, zustand, vite-tsconfig-paths), four caret pins made exact, `source-map-js` 1.2.2 for GHSA-68fv-2mgg-jv7q
+(floored); `npm audit --omit=dev`: one low (dompurify via posthog-js), no high or critical; the `fflate` floor stays
+(posthog-js still brings it); 36 public files deleted (all DELETE-WITH-REBUILD, `lumi.png` on the main session's
+ruling); the batch follow-ups (client-only map of the new events in `track.ts`, the store's not-configured state as
+`NotFoundPanel`, the axe store-tier case on the database stand-in, the payment probe's gtag spy, one copy-page reader,
+stale comments and copy-page notes). Rulings: [tasks](engineering/tasks.md) 6.3 "Merged". The main session removed two
+stale guard allowances (banned-phrases' KHEELONA_PLUS pending item; motion-properties' `globals.css` exemption; both
+proven red with plants) and stale comments. The main checkout's `node_modules` was replaced by the worktree's, which
+matches the new lockfile (no retired package left). Gate: build green (4 open placeholders, the legal drafts); verify
+284 files, 5177 passed, 2 skipped; lint 0 errors, 4 warnings (was 9); checksums 643. Left: `qa:payment` on the sandbox
+(7.1), six dev-only high advisories (a package decision), `README.md` and `docs/store-go-live.md` rewrites (7.3).
+Next: wave 8 (task 7.1, full QA on L and LP).

@@ -4,8 +4,10 @@
  *  The store's happy paths need two answers a DUMMY .env cannot give: the
  *  `event_tiers` row a partner page resolves, and the paid-orders count the
  *  mode gate reads. This serves exactly those, so `npx next start` with
- *  SUPABASE_URL=http://127.0.0.1:54321 renders the real pages for qa:shot /
- *  qa:axe / qa:text instead of their not-configured states. Read-only by
+ *  SUPABASE_URL=http://127.0.0.1:54321 renders the real pages for the local
+ *  checks (the qa:shot, qa:axe and qa:text tools went in task 6.3; the
+ *  Playwright store stand-in is test/e2e/support/store-stand-in.ts) instead
+ *  of their not-configured states. Read-only by
  *  construction: any write hits the 404 branch, so a stray create-order in a
  *  local session cannot invent an order that looks real.
  *

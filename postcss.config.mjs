@@ -16,9 +16,9 @@ import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
 const tailwindcss = require(/* turbopackIgnore: true */ "@tailwindcss/postcss");
 
-// The new site's CSS entry. The legacy src/styles/globals.css, still used by the old pages until task 6.3, relies
-// on arbitrary values and Tailwind's transitions, and is left alone: it compiles through Tailwind's default plugin,
-// exactly as before (test/guards/visual-layer.test.ts compares). A query string marks a guard's probe of site.css:
+// The new site's CSS entry. Any other file compiles through Tailwind's default plugin, as the legacy
+// src/styles/globals.css did until task 6.3 deleted it (test/guards/visual-layer.test.ts compares that file, read at
+// the freeze tag). A query string marks a guard's probe of site.css:
 // @tailwindcss/postcss caches its compiler per `from` path, so each probe compiles under its own key.
 const SITE_ENTRY = /(^|[\\/])src[\\/]styles[\\/]site\.css(\?[^\\/]*)?$/;
 
@@ -138,7 +138,7 @@ const config = {
   // (next build) but not under test: it would fold w-1/2 into `width: 50%` and flatten nesting before dsOnlyUtilities
   // reads the CSS, so the build would drop fraction glue and keep the base half of bg-cta/50. Unoptimised, the filter
   // reads the same CSS in the guards and in the build; Turbopack and Vite still minify the result with lightningcss.
-  // Every other file (the legacy globals.css): Tailwind's defaults, unchanged.
+  // Every other file (the legacy globals.css until task 6.3): Tailwind's defaults, unchanged.
   plugins: [tailwindByEntry(tailwindcss({ optimize: false }), tailwindcss()), dsOnlyUtilities],
 };
 

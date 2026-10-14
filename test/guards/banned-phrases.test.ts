@@ -195,15 +195,9 @@ describe("new src/ code carries no banned claim", () => {
      the reset in files no wave-1 task owns; each is printed on every run, never silent, and stops
      printing once its owner rewrites the line. A pending item never hides a new hit: it absorbs
      exactly `count` hits of its phrase in its file, and one more fails. */
-  const PENDING: readonly PendingItem[] = [
-    {
-      path: "src/config/site.ts",
-      id: "lessons",
-      match: "lessons",
-      count: 1,
-      why: 'KHEELONA_PLUS_LINE says "the stories, lessons, languages" (claims §4 row 10, D027). Owner: task 6.3, which deletes the legacy KheelonaPlusBand and this constant.',
-    },
-  ];
+  /* Empty since task 6.3 (merged 2026-10-14): its one item, KHEELONA_PLUS_LINE's "lessons" in src/config/site.ts, went
+     with the constant, so a reintroduction of the retired line fails here (6.3 review minor 1). */
+  const PENDING: readonly PendingItem[] = [];
 
   it("finds no banned claim outside the named pending items", () => {
     const files = listFiles(["src"]).filter((p) => /\.(ts|tsx)$/.test(p) && !isTestOrStory(p) && !isStillLegacy(p));
