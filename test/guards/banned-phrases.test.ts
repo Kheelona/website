@@ -246,6 +246,53 @@ describe("src/content carries no banned phrase", () => {
   });
 });
 
+/* 4b. The stories print no claim D058 withdrew (task 8b.1d). Storybook is where a section is reviewed apart from its page,
+ * and its data once kept the frozen mockups' Gate A words while their parity tests held it to them; those tests now apply
+ * the route's claim fixes to the mockup first (CLAIM_FIXES, ARTICLE_CLAIM_FIXES), so the data takes the site's words.
+ * Every string of every story file (strings, templates and JSX text) runs through the D058 entries, the ones citing a
+ * row of claims.md §4's D058 table; data a story reads from content is the content scan's (rule 4). */
+describe("the stories print no claim D058 withdrew (task 8b.1d)", () => {
+  const md = readRepoFile("wiki/product/claims.md");
+  const table = md.slice(md.indexOf("**Withdrawn by the live team's code check (D058"), md.indexOf("### 4.1"));
+  const rows = table
+    .split("\n")
+    .filter((l) => l.startsWith("| ") && /\| WITHDRAWN 2026-10-14/.test(l))
+    .map((l) => l.split(" | ")[0].replace(/^\|\s*/, ""));
+  const D058 = BANNED_PHRASES.filter((e) => e.kind === "claim" && rows.some((r) => r.startsWith(e.claimsRow)));
+  const stories = listFiles(["src"]).filter((p) => /\.stories\.tsx?$/.test(p));
+
+  it("reads the eleven D058 entries from claims.md §4 and a real story list", () => {
+    expect(D058.map((e) => e.id)).toEqual([
+      "one-tap-delete",
+      "servers-in-india",
+      "closed-library",
+      "safety-layer",
+      "quiet-hours",
+      "topic-controls",
+      "new-word-count",
+      "four-skills-report",
+      "minute-of-quiet",
+      "attack-own-safety",
+      "keep-none-of-it",
+    ]);
+    expect(stories.length).toBeGreaterThan(50);
+    expect(stories).toContain("src/components/sections/ProductDetails/ProductDetails.stories.tsx");
+  });
+
+  it("finds none in any story file's strings", () => {
+    const problems: string[] = [];
+    for (const path of stories) {
+      for (const s of sourceStrings(parseSource(path, readRepoFile(path)))) {
+        for (const h of findBanned(s.text, ["claim"]).filter((hit) => D058.some((e) => e.id === hit.id))) {
+          problems.push(`${path}:${s.line} ${h.id}: "${h.match}" in "${h.sentence}"`);
+        }
+      }
+    }
+    console.log(`[banned-phrases] D058 claims: scanned ${stories.length} story file(s).`);
+    expect(problems, `withdrawn claims in the stories (D058; claims §4):\n${problems.join("\n")}`).toEqual([]);
+  });
+});
+
 describe("src/ publishes no retired offer term (ported from test/preorder-copy.test.ts)", () => {
   /* The old test scanned every shipped .ts/.tsx file under src/, comments stripped, and named the
      two machine routes on purpose: llms.txt and pricing.md are exactly where a retired promise
