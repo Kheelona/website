@@ -146,15 +146,18 @@ describe("the page-specific rules (tasks.md 5.6)", () => {
  * the Gate A words, and the build follows the live team's code check of 12 October. One text rule and its visual hides
  * (deviations.ts ARTICLE_CLAIM_FIXES), in page-facts.ts's form: the edits turn the approved page into the build (the
  * reading-column tests above apply them), and the rule reaches exactly the sentences they change. The retention line is
- * policies.ts's (task 8b.1 owns its words), so the sentences it changes are read from it. */
-describe("the safe-AI-toy guide's claim fixes (D058; task 8b.2a)", () => {
+ * policies.ts's (task 8b.1 owns its words), so the sentences it changes are read from it. Task 8b.1b adds fold 4's
+ * deletion bar: the third question's answer asks how you delete, a bar Kheelu meets, where "delete any of it yourself"
+ * set one D058 withdrew. */
+describe("the safe-AI-toy guide's claim fixes (D058; tasks 8b.2a and 8b.1b)", () => {
   const SLUG = "story-what-to-look-for-in-a-safe-ai-toy";
   const FIXES = ARTICLE_CLAIM_FIXES[SLUG];
   const main = () => mockupFold(SLUG, "main");
   const only = (lines: string[], not: string[]) => lines.filter((line) => !not.includes(line));
 
-  it("withdraw the approved lines D058 withdrew, and print the code-checked ones in their place (the copy page's fold 5)", () => {
+  it("withdraw the approved lines D058 withdrew, and print the code-checked ones in their place (the copy page's folds 4 and 5)", () => {
     expect(FIXES.mockup).toEqual([
+      "Ask whether you can read every conversation, word for word, and delete any of it yourself, without emailing anyone.",
       "It switches itself off after about a minute of quiet.",
       "To understand and answer your child, Kheelu uses trusted speech and AI providers, on servers in India.",
       ...only(sentences(RETENTION.mockup), sentences(RETENTION_LINE)),
@@ -165,6 +168,7 @@ describe("the safe-AI-toy guide's claim fixes (D058; task 8b.2a)", () => {
       "We attack our own safety layer before every release.",
     ]);
     expect(FIXES.build).toEqual([
+      "Ask whether you can read every conversation, word for word, and how you delete it, without emailing anyone.",
       "It switches itself off after a couple of minutes of quiet.",
       "To understand and answer your child, Kheelu uses trusted speech and AI providers.",
       ...only(sentences(RETENTION_LINE), sentences(RETENTION.mockup)),
@@ -185,11 +189,12 @@ describe("the safe-AI-toy guide's claim fixes (D058; task 8b.2a)", () => {
     expect(ruleReach(main(), FIXES.edits, TEXT_DEVIATIONS[SLUG]![0])).toEqual({ excused: [...FIXES.mockup], accepted: [...FIXES.build] });
   });
 
-  it("hide for the pixels the four reworded facts on both sides, and on the mockup's side the fact that came off", () => {
+  it("hide for the pixels fold 4's reworded answer and the four reworded facts on both sides, and on the mockup's side the fact that came off", () => {
     expect(hiddenProblems(main(), FIXES)).toEqual([]);
+    const answer = ".mk-questions > p:nth-of-type(3), .ks-questions > p:nth-of-type(3)";
     const body = (n: number) => `.kh-trust > .kh-trust__item:nth-child(${n}) > .kh-trust__body`;
     expect(VISUAL_HIDDEN[SLUG]?.map((rule) => [rule.side, rule.selector, rule.approvedBy])).toEqual([
-      ...(["mockup", "build"] as const).flatMap((side) => [1, 2, 3, 5].map((n) => [side, body(n), FIXES.approvedBy])),
+      ...(["mockup", "build"] as const).flatMap((side) => [answer, ...[1, 2, 3, 5].map(body)].map((selector) => [side, selector, FIXES.approvedBy])),
       ["mockup", ".kh-trust > .kh-trust__item:nth-child(8)", FIXES.approvedBy],
     ]);
   });
