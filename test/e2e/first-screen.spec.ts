@@ -3,12 +3,13 @@ import { expect, forceMotionEnd, gateRouteGroup, hideForParity, test } from "./s
 import { PARITY_TARGET } from "./support/env";
 import { MOCKUP_SLUGS } from "./support/mockup-text";
 import { mockupRoute, sweepRoutes } from "./support/routes";
-import { FIRST_SCREEN_VIEWPORTS, VIEWPORTS } from "./support/viewports";
+import { FIRST_SCREEN_VIEWPORTS, VIEWPORTS, type Viewport } from "./support/viewports";
 
 /* The first phone screen and tap targets (task 1.1; test plan §4.1 and §4.6, tasks.md SPA 4).
  *
  * Home and product: the h1, the chilli button, the price sentence and the delivery line all end
- * inside the first screen at 360 x 590 (short in-app browser) and 360 x 640 (D045 measured 584 px).
+ * inside the first screen at 360 x 590 (short in-app browser) and 360 x 640 (D045 measured 584 px);
+ * at 390 x 844 and 412 x 915 they do, and Kheelu with them (D061 item 1, task 8c.1: below).
  * Every route at 360 x 640: each link and button is reachable on the edges of a 44 x 44 box
  * centred on it (elementFromPoint returns it or a descendant, which counts the ported ::before
  * tap extensions). Links inside a sentence of running text are WCAG 2.5.8's inline exception and
@@ -20,6 +21,48 @@ import { FIRST_SCREEN_VIEWPORTS, VIEWPORTS } from "./support/viewports";
 
 const FIRST_SCREEN_PAGES = ["home", "meet-kheelu"] as const;
 const tapViewport = VIEWPORTS[0];
+
+/* D061 item 1 (task 8c.1): Kheelu on the first phone screen, Home and the product page. At 390 x 844 and 412 x 915 the
+ * h1, the chilli button, the price sentence and the delivery line end inside the first screen, as at 360 (D045), and
+ * Kheelu (the hero board's own Kheelu sticker, in the board that shows) lies wholly inside it and inside its board. At
+ * the three phone sizes the D050 WhatsApp bubble covers neither Kheelu nor the word sticker ("It asks. They think.").
+ * At 360 x 590 the DS phone hero (the words, the full-width button, the trust line, then the board: design-system
+ * 10-pages.md "Phones") leaves 82 px under the price sentence, so the board starts below the fold there: Kheelu's box
+ * is printed, not asserted (the task 8c.1 report lists the options for the founder). Build only: the approved mockup
+ * predates D061, so the calibration blocks never measure Kheelu. */
+const kheeluPhone = (width: number, height: number): Viewport => ({ name: `phone-${width}x${height}`, width, height, isMobile: true, group: "phone" });
+const KHEELU_VIEWPORTS: readonly Viewport[] = [kheeluPhone(390, 844), kheeluPhone(412, 915)];
+const BUBBLE_VIEWPORTS: readonly Viewport[] = [kheeluPhone(360, 590), ...KHEELU_VIEWPORTS];
+
+type Box = { top: number; bottom: number; left: number; right: number };
+
+/** The hero art that shows (the phone board under 720 px), its Kheelu and word sticker, and the WhatsApp bubble. */
+async function heroArt(page: Page) {
+  // The bubble rises above the buy bar while the bar shows (D050): measure once the bar has settled on its state.
+  await page.waitForFunction(() => document.documentElement.hasAttribute("data-buybar"), undefined, { timeout: 5_000 }).catch(() => undefined);
+  return page.evaluate(() => {
+    const box = (el: Element | null | undefined) => {
+      if (!el) return null;
+      const r = el.getBoundingClientRect();
+      return { top: Math.round(r.top), bottom: Math.round(r.bottom), left: Math.round(r.left), right: Math.round(r.right) };
+    };
+    const board = [...document.querySelectorAll("main .ks-hero .kh-art")].find((el) => el.checkVisibility());
+    const kheelu = [...(board?.querySelectorAll("img") ?? [])].find((img) => /kheelu-front-sticker/.test(img.currentSrc || img.src));
+    const bubble = document.querySelector(".ks-wa");
+    return {
+      board: box(board),
+      kheelu: box(kheelu),
+      sticker: box(board?.querySelector(".kh-sticker")),
+      bubble: bubble?.checkVisibility() ? box(bubble) : null,
+      width: window.innerWidth,
+      height: window.innerHeight,
+    };
+  });
+}
+
+const inside = (inner: Box, outer: Box) => inner.top >= outer.top && inner.bottom <= outer.bottom && inner.left >= outer.left && inner.right <= outer.right;
+const overlap = (a: Box, b: Box) => a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
+const fmt = (b: Box | null) => (b ? `${b.top}-${b.bottom} x ${b.left}-${b.right}` : "none");
 
 async function firstScreenBottoms(page: Page) {
   return page.evaluate(() => {
@@ -128,6 +171,44 @@ for (const slug of FIRST_SCREEN_PAGES) {
         const { page } = await harness.open(route, vp);
         await hideForParity(page);
         assertFirstScreen(await firstScreenBottoms(page), `${route.id} ${vp.name}`);
+      });
+    }
+  });
+}
+
+for (const slug of FIRST_SCREEN_PAGES) {
+  const route = mockupRoute(slug);
+  test.describe(`first screen, Kheelu (D061 item 1): ${route.id}`, () => {
+    test.skip(PARITY_TARGET === "mockup", "self-test: the approved mockup predates D061");
+    gateRouteGroup(route);
+    for (const vp of KHEELU_VIEWPORTS) {
+      test(vp.name, async ({ harness }) => {
+        const { page } = await harness.open(route, vp);
+        const art = await heroArt(page);
+        const words = await firstScreenBottoms(page);
+        console.log(`[first-screen] ${route.id} ${vp.name}: board ${fmt(art.board)}, Kheelu ${fmt(art.kheelu)}, sticker ${fmt(art.sticker)}, h1 ${words.h1}, cta ${words.cta}, price ${words.price}, delivery ${words.delivery}`);
+        assertFirstScreen(words, `${route.id} ${vp.name}`);
+        expect(art.board, `${route.id} ${vp.name}: no hero board shows`).not.toBeNull();
+        expect(art.kheelu, `${route.id} ${vp.name}: no Kheelu in the board that shows`).not.toBeNull();
+        const screen = { top: 0, bottom: art.height, left: 0, right: art.width };
+        expect(inside(art.kheelu!, screen), `${route.id} ${vp.name}: Kheelu ${fmt(art.kheelu)} is not wholly inside the first screen (${art.width} x ${art.height})`).toBe(true);
+        expect(inside(art.kheelu!, art.board!), `${route.id} ${vp.name}: Kheelu ${fmt(art.kheelu)} runs off its board ${fmt(art.board)}`).toBe(true);
+      });
+    }
+  });
+
+  test.describe(`first screen, the WhatsApp bubble clear of the hero art (D050, D061 item 1): ${route.id}`, () => {
+    test.skip(PARITY_TARGET === "mockup", "self-test: the approved mockup has no bubble");
+    gateRouteGroup(route);
+    for (const vp of BUBBLE_VIEWPORTS) {
+      test(vp.name, async ({ harness }) => {
+        const { page } = await harness.open(route, vp);
+        const art = await heroArt(page);
+        console.log(`[first-screen] ${route.id} ${vp.name}: bubble ${fmt(art.bubble)}, Kheelu ${fmt(art.kheelu)}, sticker ${fmt(art.sticker)}`);
+        expect(art.bubble, `${route.id} ${vp.name}: the WhatsApp bubble does not show`).not.toBeNull();
+        expect(art.kheelu && art.sticker, `${route.id} ${vp.name}: no Kheelu or word sticker in the board that shows`).toBeTruthy();
+        expect(overlap(art.bubble!, art.kheelu!), `${route.id} ${vp.name}: the bubble ${fmt(art.bubble)} covers Kheelu ${fmt(art.kheelu)}`).toBe(false);
+        expect(overlap(art.bubble!, art.sticker!), `${route.id} ${vp.name}: the bubble ${fmt(art.bubble)} covers the word sticker ${fmt(art.sticker)}`).toBe(false);
       });
     }
   });

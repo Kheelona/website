@@ -49,7 +49,16 @@ function rendered(offer: Offer) {
   return { html, doc, main: doc.querySelector("main")! };
 }
 
-const BUILT = rendered(TOKEN);
+/** D061 item 1 (task 8c.1): the hero's phone board is the one block the approved page does not have (its markup is
+ *  HeroSection's test's, its place test/e2e/first-screen.spec.ts's): the page is compared with the mockup without it. */
+const PHONE_ART = ".ks-hero__phone-art";
+const RENDERED = rendered(TOKEN);
+const withoutPhoneArt = (main: Element) => {
+  const copy = main.cloneNode(true) as Element;
+  copy.querySelectorAll(PHONE_ART).forEach((el) => el.remove());
+  return copy;
+};
+const BUILT = { ...RENDERED, main: withoutPhoneArt(RENDERED.main) };
 const APPROVED = mockupPage("meet-kheelu").querySelector("main")!;
 /** The approved page with the founder's page facts (task 6.7) and task 7.1b's copy fixes applied, then task 8b.1's claim
  *  fixes in a pass of their own: what the build must say. */
@@ -183,6 +192,20 @@ describe("the product page as rendered (token mode)", () => {
     const hero = folds(BUILT.main)[0];
     expect(hero.querySelector(".kh-btn--cta")?.hasAttribute("id")).toBe(false);
     expect(BUILT.main.querySelector("#hero-cta")).toBeNull();
+  });
+
+  it("adds one block to the approved page, the hero's phone board (D061 item 1): the board's name, tone, files and words", () => {
+    const phone = [...RENDERED.main.querySelectorAll(PHONE_ART)];
+    expect(phone).toHaveLength(1);
+    const approved = folds(BUILT.main)[0].querySelector(".kh-art")!;
+    expect(name(phone[0].closest("section")!)).toBe("hero-title");
+    expect(phone[0].getAttribute("aria-label")).toBe(approved.getAttribute("aria-label"));
+    expect(phone[0].className).toBe(`${approved.className} ${PHONE_ART.slice(1)}`);
+    const files = (board: Element) => [...board.querySelectorAll(".kh-art__layer")].map((layer) => layer.getAttribute("src")).sort();
+    expect(files(phone[0])).toEqual(files(approved));
+    // The approved board's sticker sits top left, clear of Myra's face (ks-hero-sticker); the phone board's in its own corner.
+    expect(text(phone[0].querySelector(".kh-sticker"))).toBe(text(approved.querySelector(".kh-sticker")));
+    expect(phone[0].querySelectorAll("[data-draw], [data-reveal]")).toHaveLength(0);
   });
 
   it("keeps the hero's doodle still and lets the close's doodle draw (D049 picks 2 and 3)", () => {
@@ -352,7 +375,13 @@ describe("the founder's page facts as a text deviation (deviations.md V16; task 
 
   it("leaves beside them only the films heading and the sources line of the copy fixes (V17), then the claim fixes' blocks (V27), each found once on the page as it renders", () => {
     const claims = CLAIM_FIXES["meet-kheelu"];
-    const others = VISUAL_HIDDEN["meet-kheelu"].filter((r) => r.approvedBy !== FACTS.approvedBy);
+    // The hero's phone art (D061 item 1, task 8c.1) is hidden under 720 px only, on both sides: HeroSection's test holds it.
+    const phonesOnly = VISUAL_HIDDEN["meet-kheelu"].filter((r) => r.media);
+    expect(phonesOnly.map((r) => [r.side, r.selector, r.media])).toEqual([
+      ["mockup", ".mk-hero .kh-art", "(max-width: 719px)"],
+      ["build", ".ks-hero .kh-art", "(max-width: 719px)"],
+    ]);
+    const others = VISUAL_HIDDEN["meet-kheelu"].filter((r) => r.approvedBy !== FACTS.approvedBy && !r.media);
     expect(others.map((r) => [r.side, r.selector, r.approvedBy])).toEqual([
       ...(["mockup", "build"] as const).flatMap((side) => ["#films-title", "#src-1"].map((selector) => [side, selector, COPY_FIXES["meet-kheelu"].approvedBy])),
       ...(["mockup", "build"] as const).flatMap((side) => claims.hidden.both.map((selector) => [side, selector, claims.approvedBy])),

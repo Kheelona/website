@@ -4,7 +4,7 @@ import { ArtBoard } from "@/components/ui/ArtBoard/ArtBoard";
 import { Button } from "@/components/ui/Button/Button";
 import { Heading } from "@/components/ui/Heading/Heading";
 import { Container, Section, Split } from "@/components/ui/Layout/Layout";
-import { Photo } from "@/components/ui/Photo/Photo";
+import { Photo, type MediaRatio } from "@/components/ui/Photo/Photo";
 import { RichText } from "@/components/ui/RichText/RichText";
 import { Sticker } from "@/components/ui/Sticker/Sticker";
 import type { HeroMedia, HeroSectionProps } from "./hero-section.types";
@@ -15,6 +15,14 @@ export type { HeroSectionConfig, HeroSectionProps } from "./hero-section.types";
  *  full column below, at most 480 px on tablets where the board is clamped. */
 const MEDIA_SIZES = "(min-width: 1296px) 480px, (min-width: 900px) 40vw, calc(100vw - 32px)";
 const CLAMPED_SIZES = "(min-width: 1296px) 480px, (min-width: 900px) 40vw, (min-width: 720px) 480px, calc(100vw - 32px)";
+/** D061 item 1: with a phone board, each board asks for its pictures at its own widths only. The phone board is the full
+ *  column under 720 px; the approved board shows from 720 px. Where a board is hidden (display: none) its eager LCP
+ *  image still loads, so there it asks for the smallest rendition (1 px), never a second full-size picture. */
+const PHONE_SIZES = "(min-width: 720px) 1px, calc(100vw - 32px)";
+const FROM_TABLET_SIZES = "(min-width: 1296px) 480px, (min-width: 900px) 40vw, (min-width: 720px) calc(100vw - 32px), 1px";
+/** The phone board's DS ratio (the mockup's phone boards, refund.css:12 and shipping.css:12): low enough that the whole
+ *  board, Kheelu with it, sits under the trust line inside a 390 x 844 screen. */
+const PHONE_RATIO = "16 / 10";
 
 /**
  * The first fold of a page (task 3.3; components §2): `Section` (`ks-hero`: the tighter top padding that lands the
@@ -43,7 +51,8 @@ export function HeroSection(props: HeroSectionProps) {
 
   switch (props.variant) {
     case "art":
-    case "product":
+    case "product": {
+      const { art, phoneLayers } = props;
       return (
         <Section className="ks-hero" labelledBy={heading.id}>
           <Container>
@@ -52,11 +61,18 @@ export function HeroSection(props: HeroSectionProps) {
                 {title}
                 {props.cta}
               </div>
-              <HeroBoard art={props.art} stickerClass={props.variant === "product" ? "ks-hero-sticker" : undefined} />
+              {/* D061 item 1: the phone board first; hero-section.css shows it under 720 px, under the trust line. */}
+              {phoneLayers && <HeroBoard art={{ ...art, layers: phoneLayers }} sizes={PHONE_SIZES} ratio={PHONE_RATIO} className="ks-hero__phone-art" />}
+              <HeroBoard
+                art={art}
+                sizes={phoneLayers ? FROM_TABLET_SIZES : undefined}
+                stickerClass={props.variant === "product" ? "ks-hero-sticker" : undefined}
+              />
             </Split>
           </Container>
         </Section>
       );
+    }
     case "answer":
       return (
         <Section className="ks-hero" labelledBy={heading.id}>
@@ -119,17 +135,28 @@ export function HeroSection(props: HeroSectionProps) {
   }
 }
 
+interface HeroBoardProps {
+  readonly art: ArtBoardRef;
+  readonly stickerClass?: string;
+  readonly clamp?: boolean;
+  /** The board's own widths, when it shows at some widths only (D061 item 1); else the hero media's. */
+  readonly sizes?: string;
+  readonly ratio?: MediaRatio;
+  readonly className?: string;
+}
+
 /** The scrapbook board on the first screen: still doodles, the LCP raster, the word sticker last. */
-function HeroBoard({ art, stickerClass, clamp, className }: { art: ArtBoardRef; stickerClass?: string; clamp?: boolean; className?: string }) {
+function HeroBoard({ art, stickerClass, clamp, sizes, ratio, className }: HeroBoardProps) {
   return (
     <ArtBoard
       tone={art.tone}
       label={art.label}
       layers={art.layers}
-      sizes={clamp ? CLAMPED_SIZES : MEDIA_SIZES}
+      sizes={sizes ?? (clamp ? CLAMPED_SIZES : MEDIA_SIZES)}
       sticker={art.sticker && <Sticker {...art.sticker} className={stickerClass} />}
       hero
       lcp
+      ratio={ratio}
       clamp={clamp}
       className={className}
     />

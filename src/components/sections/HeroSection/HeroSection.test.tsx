@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import type { StaticImageData } from "next/image";
 import { describe, expect, it, vi } from "vitest";
 import type { ArtBoardRef } from "@/content/types";
+import { VISUAL_HIDDEN, hiddenCss } from "../../../../test/e2e/support/deviations";
 import { outline, parseMockup, type Renames } from "../../../../test/support/mockup-compare";
 import { HeroSection, type HeroSectionProps } from "./HeroSection";
 
@@ -141,6 +142,109 @@ describe("HeroSection: product (product fold 1)", () => {
     expect(words(container.textContent)).toBe(words(expected.textContent));
     expect(container.querySelector(".kh-sticker")).toHaveClass("ks-hero-sticker");
     STILL(container);
+  });
+});
+
+/* D061 item 1 (task 8c.1): on a phone, under 720 px, Kheelu is wholly on the first screen. The board's phone composition
+ * (`phoneLayers`: the same DS files, placed for a 16:10 board) takes the approved board's place right under the trust
+ * line; the approved board shows from 720 px as it always has. Where each board shows, and the order on a phone, is
+ * hero-section.css's, measured in a browser by test/e2e/first-screen.spec.ts; this file holds the markup and loading. */
+const HOME_PHONE_LAYERS: ArtBoardRef["layers"] = [
+  { image: svg("sun-sun"), left: 74, width: 26, bottom: -6 },
+  { image: raster("advik-sticker.png", 744, 1198), left: 35, width: 37, bottom: 0 },
+  { image: raster("kheelu-front-sticker.png", 1154, 1397), left: 3, width: 34, bottom: 4, rotate: -6 },
+  { doodle: { name: "chalk-question-mark", draw: true }, left: 26, width: 8, top: 6, rotate: 10 },
+];
+const PHONE_SIZES = { lcp: "(min-width: 720px) calc(1px * 0.37), calc((100vw - 32px) * 0.37)" };
+const APPROVED_SIZES = {
+  lcp: "(min-width: 1296px) calc(480px * 0.54), (min-width: 900px) calc(40vw * 0.54), (min-width: 720px) calc((100vw - 32px) * 0.54), calc(1px * 0.54)",
+};
+
+describe("HeroSection: the phone board (D061 item 1)", () => {
+  const props: HeroSectionProps = { variant: "art", heading: headingOf(heroOf("home")), art: HOME_ART, phoneLayers: HOME_PHONE_LAYERS };
+  const boards = (container: Element) => [...container.querySelectorAll(".kh-art")];
+  const placements = (board: Element) => [...board.querySelectorAll(".kh-art__layer")].map((layer) => layer.getAttribute("style")?.replace(/color:\s*transparent;?/, ""));
+
+  it("puts the phone composition before the approved board: the board's tone, name and sticker, its own layers, 16:10", () => {
+    const { container } = render(<HeroSection {...props} cta={CTA} />);
+    expect(boards(container)).toHaveLength(2);
+    const [phone, approved] = boards(container);
+    expect(phone).toHaveClass("kh-art", "kh-tone-blue", "ks-hero__phone-art");
+    expect(phone.getAttribute("style")).toContain("--kh-ratio: 16 / 10");
+    expect(phone).toHaveAttribute("role", "img");
+    expect(phone).toHaveAttribute("aria-label", HOME_ART.label);
+    expect(phone.querySelectorAll(".kh-art__layer")).toHaveLength(HOME_PHONE_LAYERS.length);
+    expect(placements(phone)[2]).toContain("left: 3%; width: 34%; bottom: 4%; transform: rotate(-6deg)");
+    expect(phone.querySelector(".kh-sticker")?.textContent).toBe("It asks.They think.");
+    expect(phone.querySelector(".kh-sticker")?.getAttribute("style")).toContain("--kh-tilt: 8deg");
+    // The approved board follows, its layers where they always were and without a ratio of its own (the DS 1:1).
+    const { container: alone } = render(<HeroSection {...props} phoneLayers={undefined} cta={CTA} />);
+    expect(approved).not.toHaveClass("ks-hero__phone-art");
+    expect(approved.getAttribute("style")).toBe(boards(alone)[0].getAttribute("style"));
+    expect(placements(approved)).toEqual(placements(boards(alone)[0]));
+    expect(approved.querySelector(".kh-sticker")?.outerHTML).toBe(boards(alone)[0].querySelector(".kh-sticker")?.outerHTML);
+  });
+
+  it("gives each board one LCP image, asked for at its own widths: the phone board's under 720 px, the approved one's from 720 px", () => {
+    const { container } = render(<HeroSection {...props} cta={CTA} />);
+    const [phone, approved] = boards(container);
+    const high = [...container.querySelectorAll("img")].filter((img) => img.getAttribute("fetchpriority") === "high");
+    expect(high).toHaveLength(2);
+    expect(phone.contains(high[0]) && approved.contains(high[1])).toBe(true);
+    for (const img of high) {
+      expect(img.getAttribute("src")).toContain("advik-sticker");
+      expect(img).toHaveAttribute("loading", "eager");
+    }
+    expect(high[0]).toHaveAttribute("sizes", PHONE_SIZES.lcp);
+    expect(high[1]).toHaveAttribute("sizes", APPROVED_SIZES.lcp);
+  });
+
+  it("keeps the approved board's sizes as they were without a phone board", () => {
+    const { container } = render(<HeroSection {...props} phoneLayers={undefined} cta={CTA} />);
+    const high = [...container.querySelectorAll("img")].filter((img) => img.getAttribute("fetchpriority") === "high");
+    expect(high.map((img) => img.getAttribute("sizes"))).toEqual([
+      "(min-width: 1296px) calc(480px * 0.54), (min-width: 900px) calc(40vw * 0.54), calc((100vw - 32px) * 0.54)",
+    ]);
+  });
+
+  it("keeps both boards still: no reveal, every doodle a still image (pick 2)", () => {
+    const { container } = render(<HeroSection {...props} cta={CTA} />);
+    STILL(container);
+    expect(boards(container)[0].querySelectorAll(".kh-art > *")[3].tagName.toLowerCase()).toBe("img");
+  });
+
+  it("product: the phone board's sticker sits in the board's own corner; the approved board's stays clear of Myra's face", () => {
+    const art: ArtBoardRef = { ...HOME_ART, sticker: { ...HOME_ART.sticker!, tilt: -8 } };
+    const { container } = render(<HeroSection variant="product" heading={headingOf(heroOf("meet-kheelu"))} art={art} phoneLayers={HOME_PHONE_LAYERS} cta={CTA} />);
+    const [phone, approved] = boards(container);
+    expect(phone.querySelector(".kh-sticker")).not.toHaveClass("ks-hero-sticker");
+    expect(approved.querySelector(".kh-sticker")).toHaveClass("ks-hero-sticker");
+  });
+
+  it("leaves the words column as the approved markup: one h1, the CTA slot, then the boards", () => {
+    const { container } = render(<HeroSection {...props} cta={CTA} />);
+    const split = container.querySelector(".kh-split")!;
+    expect([...split.children].map((el) => el.className)).toEqual(["", "kh-art kh-tone-blue ks-hero__phone-art", "kh-art kh-tone-blue"]);
+    expect(split.firstElementChild!.querySelector("h1 + p, header")).not.toBeNull();
+    expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
+  });
+});
+
+/* The visual pass's hero rules (test/e2e/support/deviations.ts; tasks.md SPA 1): on a phone the build's hero art is the
+ * D061 phone board, in another place than the approved board, so under 720 px both sides compare the hero without its
+ * art (the folds below then line up); from 720 px nothing is hidden and the approved board is compared as before. */
+describe("HeroSection: the visual pass's hero rules (D061 item 1)", () => {
+  const PHONES = "(max-width: 719px)";
+  it.each(["home", "meet-kheelu"])("%s: the hero art hidden on both sides under 720 px only", (slug) => {
+    expect(hiddenCss(slug, "mockup")).toContain(`@media ${PHONES} { .mk-hero .kh-art { display: none !important; } }`);
+    expect(hiddenCss(slug, "build")).toContain(`@media ${PHONES} { .ks-hero .kh-art { display: none !important; } }`);
+    const hero = VISUAL_HIDDEN[slug].filter((rule) => /hero/.test(rule.selector));
+    expect(hero.map((rule) => [rule.side, rule.media])).toEqual([
+      ["mockup", PHONES],
+      ["build", PHONES],
+    ]);
+    // Every other rule still hides at every width, in the one block it always had.
+    expect(hiddenCss(slug, "build").split("\n")[0]).not.toContain("@media");
   });
 });
 
