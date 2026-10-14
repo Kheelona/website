@@ -1114,3 +1114,10 @@ Four builders in parallel worktrees (8c.1 and 8c.3 high risk: adversarial review
 normal: one review), ports 3461-3464 and 6011-6014. Lighthouse in the worktrees is advisory (four builds on one machine,
 on battery); the main session re-measures after the merge. Then: merge, full `npm run verify` and build, targeted
 Playwright on Home and the product page, Lighthouse, the CMO's phone review of the built pages, deviation rows, beta.
+
+## [2026-10-15 05:19] decision | D061 follow-up: seven more answers from the founder (asked after the build started)
+The founder asked whether we had questions before building; the main session asked seven. Answers: the approved hero
+art's Kheelu on the first phone screen (what 8c.1 builds); no label line; the share text approved as written (what
+8c.2 builds); no cash on delivery (revisit after launch); Home fold 5 keeps its heading; Made in India (already decided
+in D034 and on the site: footer, "Country of origin"; now also a perk on the offer cards, new task 8c.5 after 8c.2);
+nothing else from the rejected list. None of the answers changes the running build.

@@ -54,6 +54,21 @@ founder's; the founder answered each.
   open-ended ages, a part-price in a button label, "Real pilot homes", "Backed by", "Safety certified").
 - **A fact pack for the advisor** ([for the advisor](../brand/for-the-advisor.md)) before any more work from them.
 
+## Follow-up answers (founder, 2026-10-15, after the build started)
+
+5. **The first-screen picture:** the approved hero art's Kheelu (the plush on a brand-colour block), moved up on
+   phones; not a photo with a child, not a film still.
+6. **No label line** above the headline on the first screen.
+7. **The share text, approved as written:** "Kheelu is a screen-free talking toy for children aged 3 to 7. It answers
+   every why, then asks one back. {price:headline} (incl. GST); pre-order with {price:token} today, refundable until
+   dispatch." plus the kheelona.com link.
+8. **No cash on delivery**; revisit after launch only if payments inside the WhatsApp and Instagram browsers keep
+   failing after the "open in your browser" hint.
+9. **Home fold 5 keeps its approved heading** ("You see every conversation.").
+10. **Made in India** (confirms D034): already in the footer and the product page's "Country of origin"; also as a
+    perk on both offer cards (task 8c.5, after 8c.2 merges).
+11. **Nothing else comes back** (no counsellor video, no statistics tiles, no "coming soon").
+
 Build: wave 8c in [tasks](../engineering/tasks.md).
 
 **Approved by.** Founder (items 1-4). **Date.** 2026-10-15.

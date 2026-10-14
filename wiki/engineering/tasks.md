@@ -1873,6 +1873,15 @@ parallel worktrees; each owns its files so the merges stay mechanical.
   entry proven red on its planted example and green on the tree. (3) The languages answer passes `findBanned` and
   states only facts.md.
 
+### 8c.5 "Made in India" on the offer cards (main session or builder; risk low; after 8c.2 merges)
+
+- **What (D061 item 10, confirming D034):** a perk "Made in India" (icon from the DS set, e.g. `map-pin` is taken:
+  pick the closest DS icon) on the Home and product-page offer cards, from `offer.ts`'s perk list; the footer line and
+  the product page's "Country of origin" already say it. A deviation row for the founder.
+- **Owns:** `src/content/en-IN/offer.ts` (the perk), the offer card tests and story data, the offer rule in
+  `test/e2e/support/deviations.ts`.
+- **Acceptance:** the perk on both cards in both modes; `findBanned` green; text parity green with the new rule.
+
 ## Wave 9: beta deploy and beta QA (after wave 8)
 
 ### 7.2 Beta deploy and beta QA (main session, founder, QA)
