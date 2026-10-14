@@ -2,6 +2,9 @@ import { readdirSync, readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import type { Article } from "@/content/types";
 import { ARTICLE_SLUGS } from "@/content/en-IN/routes";
+import { articles } from "@/content/en-IN/stories/articles";
+import { articleTopic } from "@/content/en-IN/stories/journal";
+import { topics } from "@/content/en-IN/stories/topics";
 import { CTAS } from "@/lib/tracking/cta";
 import { ARTICLE_CLOSES, stickyBarPaths } from "./sticky-bar-paths";
 
@@ -51,11 +54,14 @@ describe("stickyBarPaths", () => {
     expect(paths).toEqual([...new Set(paths)]);
   });
 
-  it("reads the close of every article module of the URL plan, and of nothing else", async () => {
+  /* Until 8b.2e: "reads the close of every article module". Each article is now a journal post, whose close its topic
+     decides (topics.ts; journal-pipeline §4), so the bar follows the topic a writer picks in the dashboard. */
+  it("reads the close of every article of the journal, its topic's close, and of nothing else", () => {
     expect(Object.keys(ARTICLE_CLOSES).sort()).toEqual([...ARTICLE_SLUGS].sort());
     for (const slug of ARTICLE_SLUGS) {
-      const mod = (await import(`../../content/en-IN/stories/articles/${slug}.ts`)) as { article: Article };
-      expect(ARTICLE_CLOSES[slug], slug).toBe(mod.article.close);
+      const article: Article = articles[slug];
+      expect(ARTICLE_CLOSES[slug], slug).toBe(article.close);
+      expect(ARTICLE_CLOSES[slug], slug).toBe(topics.find((t) => t.id === articleTopic(slug))?.close);
     }
   });
 

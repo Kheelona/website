@@ -6,6 +6,7 @@ import { MOCKUP_SLUGS } from "../../../test/e2e/support/mockup-text";
 import { ARTICLE_SLUGS as E2E_ARTICLE_SLUGS } from "../../../test/e2e/support/routes";
 import { navigation, type NavLink } from "./navigation";
 import { ARTICLE_SLUGS, routes, routeFor } from "./routes";
+import { JOURNAL_SLUGS } from "./stories/journal";
 
 /* The URL plan (architecture §6.1, §9.3; strategy §4.1; wiki/site/url-map.md §1; task 2.1
  * acceptance 4): every indexable URL, its content module, its sitemap priority and its nav and
@@ -63,7 +64,8 @@ describe("the routes", () => {
       if (path === "/") return "pages/home";
       if (path === "/products/kheelu") return "products/kheelu/page";
       if (path === "/stories") return "stories/hub";
-      if (path.startsWith("/stories/")) return `stories/articles/${path.slice("/stories/".length)}`;
+      /* Every article is a journal post, filled by the journal registry (ADR-014; task 8b.2e). */
+      if (path.startsWith("/stories/")) return "stories/journal";
       if (["/privacy", "/terms", "/refund", "/shipping"].includes(path)) return `legal${path}`;
       return `pages${path}`;
     };
@@ -81,10 +83,12 @@ describe("the articles", () => {
     expect([...ARTICLE_SLUGS].sort()).toEqual([...E2E_ARTICLE_SLUGS].sort());
   });
 
-  it("each have a content module", () => {
-    for (const slug of ARTICLE_SLUGS) {
-      expect(existsSync(join(ROOT, "src/content/en-IN/stories/articles", `${slug}.ts`)), slug).toBe(true);
-    }
+  /* Until task 8b.2e each article was a module of its own (stories/articles/<slug>.ts); now each is a published post of
+     the committed snapshot, through the journal registry (ADR-014), so a new story needs no line here. */
+  it("are the journal's published posts, in its order, filled by the journal registry", () => {
+    expect(ARTICLE_SLUGS).toEqual(JOURNAL_SLUGS);
+    expect(existsSync(join(ROOT, "src/content/en-IN/stories/journal.ts"))).toBe(true);
+    for (const slug of ARTICLE_SLUGS) expect(routeFor(`/stories/${slug}`)?.module, slug).toBe("stories/journal");
   });
 });
 

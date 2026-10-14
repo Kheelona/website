@@ -1,0 +1,389 @@
+{
+  "slug": "a-toy-that-talks-vs-a-toy-that-listens",
+  "title": "Toys for language development: talk or listen?",
+  "description": "Toys for language development: why a toy that repeats is a mirror, what research says about back-and-forth talk, and how screens and speakers compare.",
+  "theme": "Talking and language",
+  "author": "Kheelona",
+  "published": "2026-07-30",
+  "updated": "2026-10-13",
+  "pose": "silly",
+  "tint": "bg-blue/15",
+  "hero": null,
+  "heroAlt": "A laughing girl with a long braid holds a yellow paper crown on her head, beside a low table scattered with crayons and paper scraps.",
+  "heroWidth": null,
+  "heroHeight": null,
+  "ageNote": null,
+  "sources": [
+    {
+      "label": "Center on the Developing Child at Harvard University, “Serve and Return” (Key Concepts), undated (page metadata 2024, updated 2026), Key Takeaways and the paragraph after Fast Facts.",
+      "url": "https://developingchild.harvard.edu/key-concept/serve-and-return/"
+    },
+    {
+      "label": "Romeo, Leonard, Robinson, West, Mackey, Rowe and Gabrieli, “Beyond the 30-Million-Word Gap: Children’s Conversational Exposure Is Associated With Language-Related Brain Function”, Psychological Science, 2018, Abstract, Results and Discussion.",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5945324/"
+    },
+    {
+      "label": "American Academy of Pediatrics, Council on Communications and Media, “Media and Young Minds”, Pediatrics, 2016, Recommendations: Families.",
+      "url": "https://doi.org/10.1542/peds.2016-2591"
+    }
+  ],
+  "body": {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Walk down a toy aisle and the talking toys line up: phones with phrase buttons, dolls with a handful of sentences, plush toys that sing when squeezed, a cactus that repeats whatever your child says."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "They all talk. Listening is a different thing."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "A toy that talks is not a toy that listens"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "A toy that talks plays sounds at your child: a recorded phrase, a song, or your child’s own words played back. A toy that listens has to understand what your child said, and answer it."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "A toy that repeats is a mirror. It can be funny, but it can’t answer a question, and it never asks one of its own. A toy with a handful of sentences has nothing new to say once your child has heard them all."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "What helps language development?"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Harvard’s Center on the Developing Child says back-and-forth “serve and return” exchanges between a young child and a caring adult help build and strengthen neural connections in the child’s brain. They also support the early language and social skills that later, more complex thinking builds on.[^1]"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "In a 2018 study of 36 children aged 4 to 6, children who had more back-and-forth conversational turns with adults showed more activity in Broca’s area, a language region of the brain, while listening to a story. The number of adult words they heard showed no such link. The study shows a link, not cause and effect.[^2]"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Both are about adults talking with children; neither tested a toy.[^1][^2] So ask one thing of any toy: will it get your child talking, and give the two of you more to talk about?"
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Screens, speakers and talking toys: how do they compare?"
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 3
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Videos and cartoons"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "A video plays on whether your child answers or not. The American Academy of Pediatrics asks parents to watch with their children and help them understand what they are seeing.[^3] The talking about it is the part that’s yours."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 3
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Smart speakers"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "A smart speaker answers questions, which a button toy can’t. Before your child talks to one alone, check its settings: what it can search, what it can play, and what it keeps of your child’s voice."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 3
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Talking toys that repeat or play phrases"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "They can’t answer a question they’ve never heard, so a conversation stops after one line. Keep them for the giggle, and do the talking yourself."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 3
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Toys that use AI to answer"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Some newer toys use AI to understand your child and reply. They raise questions a button toy never did: when the microphone is on, where your child’s voice goes, and whether you can read every conversation. Before one comes home, read "
+          },
+          {
+            "type": "text",
+            "text": "What to look for in a safe AI toy",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "/stories/what-to-look-for-in-a-safe-ai-toy"
+                }
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": "."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "A short checklist for any talking toy"
+          }
+        ]
+      },
+      {
+        "type": "bulletList",
+        "attrs": {
+          "style": "checks"
+        },
+        "content": [
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Does it reply, or only repeat?"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Does it ask your child something back, and wait for the answer?"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Does it speak the language you speak at home?"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Can you see afterwards what it said?"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Does it work without a screen?"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Does it leave room for you to join in?"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Whatever you choose, no toy replaces the people who talk with your child every day."
+          }
+        ]
+      },
+      {
+        "type": "blockquote",
+        "attrs": {
+          "style": "callout",
+          "icon": "question"
+        },
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Try this:",
+                "marks": [
+                  {
+                    "type": "bold"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": " when a toy talks, pause it and ask your child what it should say next."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "metaTitle": null,
+  "cardTitle": "A toy that talks is not a toy that listens",
+  "accent": "talk or listen?",
+  "lead": "Why a toy that repeats your child is a mirror, and how screens, speakers and talking toys compare.",
+  "summary": null,
+  "answer": {
+    "question": "Are talking toys good for a young child’s language?",
+    "text": "Not on their own: a toy can’t do the talking for you. Harvard’s Center on the Developing Child says back-and-forth exchanges between a young child and a caring adult support early language skills.[^1] A toy that plays recordings or repeats your child’s words can’t take a real turn. Choose toys that give you both something to talk about."
+  },
+  "photo": "ira-04-paper-crown",
+  "related": [
+    "how-children-collect-words",
+    "talking-toys-and-late-talkers",
+    "raising-a-bilingual-child-in-india"
+  ]
+}

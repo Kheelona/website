@@ -8,15 +8,20 @@ import { toPlainText } from "@/lib/content/plain-text";
 import { parseRichText, type RichNode } from "@/lib/content/rich-text";
 import { buildOffer } from "@/lib/offer/offer";
 import { ROOT } from "../../../../../test/e2e/support/repo";
+import { approvedArticle } from "../../../../../test/fixtures/journal/approved";
 import { copyFold, copyLines, glanceRow, readCopyPage } from "../../../../../test/support/copy-page";
 import { mockupFold, skeleton, words } from "../../../../../test/support/mockup-compare";
 import { DEFAULT_OG, TEAM_BYLINE } from "../../organization";
-import { article as aToyThatTalks } from "./a-toy-that-talks-vs-a-toy-that-listens";
-import { article as collectWords } from "./how-children-collect-words";
-import { article as learnByTalking } from "./how-children-learn-by-talking";
-import { article as getTalking } from "./how-to-get-your-child-talking";
-import { article as bilingual } from "./raising-a-bilingual-child-in-india";
-import { article as talkingLate } from "./talking-late-or-talking-little";
+
+/* Since task 8b.2e the guides are dashboard posts (ADR-014): each is read from the approved export the founder signs at
+ * Gate B (test/fixtures/journal/approved, through the adapter), which journal.test.ts holds equal to the snapshot while
+ * the journal is the export. */
+const aToyThatTalks = approvedArticle("a-toy-that-talks-vs-a-toy-that-listens");
+const collectWords = approvedArticle("how-children-collect-words");
+const learnByTalking = approvedArticle("how-children-learn-by-talking");
+const getTalking = approvedArticle("how-to-get-your-child-talking");
+const bilingual = approvedArticle("raising-a-bilingual-child-in-india");
+const talkingLate = approvedArticle("talking-late-or-talking-little");
 
 /* The six talking-and-language guides (task 5.18; tasks.md wave 5 part C; copy fixes task 5.20b). There is no mockup for
  * them: each module is its copy page (wiki/site/pages/story-<slug>.md, CMO reviews

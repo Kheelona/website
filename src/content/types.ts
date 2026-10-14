@@ -9,6 +9,7 @@
 
 import type { StaticImageData } from "next/image";
 import type { JOURNAL_IMAGES } from "@/config/journal";
+import type { OgImage } from "@/lib/seo/metadata";
 import type { PreorderMode } from "@/lib/store/mode";
 
 /* ── Text and modes ───────────────────────────────────────────────────────── */
@@ -476,10 +477,13 @@ export interface Source {
   readonly href: `https://${string}`;
 }
 
-/** One article module under stories/articles/. */
+/** One journal article: a dashboard post as the adapter writes it (ADR-014; src/lib/journal/to-article.ts), read from
+ *  the registry (stories/journal.ts). */
 export interface Article {
   readonly slug: string;
-  readonly meta: Meta;
+  /** The share card is an `OgImage`: a DS photo's 1200 x 630 card, or an uploaded cover at the size this site's
+   *  optimiser serves it (journal-pipeline §6), so pageMeta tells share tools that size. */
+  readonly meta: Omit<Meta, "og"> & { readonly og: OgImage };
   readonly card: ArticleCard;
   /** Exactly three, so every article keeps three incoming links. */
   readonly related: readonly [string, string, string];

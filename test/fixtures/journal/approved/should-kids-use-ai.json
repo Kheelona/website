@@ -1,0 +1,539 @@
+{
+  "slug": "should-kids-use-ai",
+  "title": "Should kids use AI? An honest answer from people who build it",
+  "description": "Should kids use AI? What child-safety groups advise, what young children need from the adults around them, and how to judge any toy with AI inside.",
+  "theme": "AI toys and safety",
+  "author": "Aman Soni",
+  "published": "2026-07-28",
+  "updated": "2026-10-14",
+  "pose": "grumpy",
+  "tint": "bg-orange/15",
+  "hero": null,
+  "heroAlt": "A boy in round glasses and an olive T-shirt kneels on a patterned rug, grinning as he stacks wooden blocks into a tall tower, with Kheelu sitting beside it.",
+  "heroWidth": null,
+  "heroHeight": null,
+  "ageNote": null,
+  "sources": [
+    {
+      "label": "Common Sense Media, “Common Sense Media Warns Against AI Toy Companions After Research Reveals Safety Risks” (press release), 22 January 2026, paragraph 1.",
+      "url": "https://www.commonsensemedia.org/press-releases/common-sense-media-warns-against-ai-toy-companions-after-research-reveals-safety-risks"
+    },
+    {
+      "label": "Rebecca Winthrop, Brookings Institution, “Is it time to measure cognitive stunting?” (commentary), 2026, section “Cognitive stunting” and the section on early evidence.",
+      "url": "https://www.brookings.edu/articles/is-it-time-to-measure-cognitive-stunting/"
+    },
+    {
+      "label": "Fairplay, “AI Toys are NOT Safe for Kids” (advisory), 2025, opening paragraph.",
+      "url": "https://fairplayforkids.org/pf/aitoyadvisory/"
+    },
+    {
+      "label": "Common Sense Media Youth AI Safety Institute, “AI Toys” (risk assessment), 2026, “What we found” and “Where they fall short”.",
+      "url": "https://institute.commonsensemedia.org/risk-assessments/ai-toys"
+    },
+    {
+      "label": "Center on the Developing Child at Harvard University, “Serve and Return” (Key Concepts), undated (page metadata 2024, updated 2026), Key Takeaways and the paragraph after Fast Facts.",
+      "url": "https://developingchild.harvard.edu/key-concept/serve-and-return/"
+    },
+    {
+      "label": "Xu, Wang, Collins, Lee and Warschauer, “Same benefits, different communication patterns: Comparing Children’s reading with a conversational agent vs. a human partner”, Computers & Education, 2021, Abstract and section 4.3.",
+      "url": "https://doi.org/10.1016/j.compedu.2020.104059"
+    }
+  ],
+  "body": {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "We build a toy with AI inside, for children aged 3 to 7, so we may be the last people you should ask, or the first. Either way, here is our answer in full, including where child-safety groups disagree with us."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "What is the worry about children and AI?"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "In a May 2026 commentary for the Brookings Institution, Rebecca Winthrop, who directs its Center for Universal Education, described one worry about children and AI as “cognitive stunting”: relying too heavily on AI “reduces children’s opportunities to engage in effortful thinking”.[^2] She points to children’s wide use of “general-purpose chatbots and AI companions not designed for learning”, and calls the evidence early.[^2]"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Give your child time to think before anyone, or anything, gives the answer."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "What do child-safety groups advise?"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "In November 2025 Fairplay, a children’s advocacy group, published an advisory signed by more than 150 experts and organisations telling parents not to buy AI toys that season.[^3]"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "In January 2026, Common Sense Media advised parents not to give AI toys, which it describes as “smart toys with voice-based interactions”, to children aged 5 and under, and to use extreme caution before buying them for children aged 6 to 12.[^1] When it tested three AI toys, it rated 27% of their replies as not appropriate for kids. It also raised concerns about toys designed to create emotional attachment, the data they collect and how reliably they work.[^4]"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Common Sense Media also says children aged 5 and under “cannot reliably distinguish AI from real people”.[^4]"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Most of these concerns are about how a toy is built, and those you can check. The age advice is about young children themselves, and only you can weigh it for yours."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "What does the research say young children need?"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Harvard’s Center on the Developing Child says back-and-forth “serve and return” exchanges between a young child and a caring adult help build and strengthen neural connections in the child’s brain. They also support the early language and social skills that later, more complex thinking builds on.[^5]"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "In a US study of 90 children aged between 3 and 6, children asked about a story by an adult researcher gave longer answers, using more different words, than children asked the same questions by a smart speaker. Both groups answered about equally accurately.[^6]"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "You can do it anywhere: answer your child, then ask one back. And the test for any AI near a young child is simple: does it leave more room for that back-and-forth with you, or less?"
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "How do you judge anything with AI inside?"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Ask the same four questions of every maker, us included."
+          }
+        ]
+      },
+      {
+        "type": "bulletList",
+        "content": [
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Can it reach the open internet?"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Is every reply checked for your child’s age, and can the maker say how?"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Can you read every conversation, and how do you delete it?"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Does it talk with your child, in questions and turns, or perform at them?"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "A maker who answers all four plainly is worth a closer look. For us, AI near a young child is not a simple yes or no. It is a question of who built it, and why."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "To compare toys side by side, use our guide to "
+          },
+          {
+            "type": "text",
+            "text": "AI toys for kids in India",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "/ai-toys-for-kids-in-india"
+                }
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": "."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Where does Kheelu stand?"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Kheelu is made for children aged 3 to 7. Common Sense Media’s advice covers that whole range: avoid AI toys at 5 and under, and use extreme caution at 6 and 7. You should hear that from us. Here is how we built "
+          },
+          {
+            "type": "text",
+            "text": "Kheelu",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "/products/kheelu"
+                }
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": " on each point above, so you can check it yourself and decide."
+          }
+        ]
+      },
+      {
+        "type": "bulletList",
+        "attrs": {
+          "style": "facts"
+        },
+        "content": [
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "microphone"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "The microphone.",
+                    "marks": [
+                      {
+                        "type": "bold"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "text": " It turns on only when someone presses the wake-up button, and a light on Kheelu shows whenever it’s listening. It switches itself off after a couple of minutes of quiet."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "lock-simple"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Your child’s voice.",
+                    "marks": [
+                      {
+                        "type": "bold"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "text": " To understand and answer your child, Kheelu uses trusted speech and AI providers. They process your child’s voice only to produce Kheelu’s reply. They don’t keep it, and they never use it to train their AI. Our contracts with them say so."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "eye"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Every conversation.",
+                    "marks": [
+                      {
+                        "type": "bold"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "text": " You can read every conversation in the parent app. Your child’s conversations stay in your parent app for 36 months, then they’re deleted automatically. Delete them all sooner by deleting your account."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "hand-heart"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Your data.",
+                    "marks": [
+                      {
+                        "type": "bold"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "text": " We don’t sell your data. Your child’s data is never used to advertise to them."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "wifi-slash"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "No web browsing.",
+                    "marks": [
+                      {
+                        "type": "bold"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "text": " Kheelu can’t browse or search the internet. Its answers are generated by an AI model. On every conversation, the model is given child-safety rules and the age you enter in the parent app, with Google’s safety filters on top."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "chat-circle-dots"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Talking with, not at.",
+                    "marks": [
+                      {
+                        "type": "bold"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "text": " It answers your child, then asks a question back, so your child does the thinking."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "If your child is 3, keep a grown-up nearby while they play."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Whether that is enough is your call, and the child-safety groups above are right to make companies earn it. The detail is on our "
+          },
+          {
+            "type": "text",
+            "text": "Safety page",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "/safety"
+                }
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": "."
+          }
+        ]
+      }
+    ]
+  },
+  "metaTitle": "Should kids use AI? An honest answer · Kheelona",
+  "cardTitle": null,
+  "accent": "honest answer",
+  "lead": "Where the line sits between AI built for adults and a toy built for young children, and how to judge any toy with AI inside.",
+  "summary": null,
+  "answer": {
+    "question": "Should kids use AI at all?",
+    "text": "Not the AI built for adults. Common Sense Media advises against AI toys at 5 and under, and extreme caution from 6 to 12.[^1] If you choose AI for your child’s play, it should be built for their age, unable to browse the internet and fully visible to you. It should ask your child questions, not just give answers."
+  },
+  "photo": "kabir-02-block-rocket",
+  "related": [
+    "what-to-look-for-in-a-safe-ai-toy",
+    "questions-parents-ask-about-ai-toys",
+    "does-a-three-year-old-need-an-ai-tutor"
+  ]
+}

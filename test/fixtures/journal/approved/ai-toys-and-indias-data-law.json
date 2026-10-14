@@ -1,0 +1,504 @@
+{
+  "slug": "ai-toys-and-indias-data-law",
+  "title": "What India’s data law asks of a toy that listens",
+  "description": "The DPDP Act and children’s data, in plain words: what India’s law asks of a company from May 2027, and the questions to ask any AI toy maker.",
+  "theme": "AI toys and safety",
+  "author": "Apoorva Sahu",
+  "published": "2026-09-11",
+  "updated": "2026-10-14",
+  "pose": "curious",
+  "tint": "bg-orange/15",
+  "hero": null,
+  "heroAlt": "A laughing girl in a peach kurta sitting cross-legged on a block-print bedsheet, telling Kheelu a story with both hands.",
+  "heroWidth": null,
+  "heroHeight": null,
+  "ageNote": null,
+  "sources": [
+    {
+      "label": "Government of India, “The Digital Personal Data Protection Act, 2023” (No. 22 of 2023), 2023, sections 1(2), 2(f) and 9.",
+      "url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf"
+    },
+    {
+      "label": "Ministry of Electronics and Information Technology, Government of India, Notification G.S.R. 843(E), 13 November 2025, clause (c).",
+      "url": "https://www.meity.gov.in/static/uploads/2025/11/c56ceae6c383460ca69577428d36828b.pdf"
+    },
+    {
+      "label": "Ministry of Electronics and Information Technology, Government of India, “Digital Personal Data Protection Rules, 2025” (G.S.R. 846(E)), 2025, rules 1(4) and 10(1) and the Fourth Schedule.",
+      "url": "https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf"
+    }
+  ],
+  "body": {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "This guide is for the parent standing in front of a toy that talks. It covers the part of the DPDP Act about children: what it says, when it starts, and what you can ask any company. It puts the law’s own words into plain language. It is not legal advice."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Who counts as a child?"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Anyone under 18. The Act defines a child as “an individual who has not completed the age of eighteen years”.[^1] So everything below applies to a 3-year-old and a teenager alike."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Consent has to come from you"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Section 9 says a company must get “verifiable consent of the parent” before it processes any personal data of a child.[^1] The Digital Personal Data Protection Rules, 2025 add that the company must take “appropriate technical and organisational measures” to make sure it has that consent first.[^3]"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "So, once section 9 is in force, the yes has to come from you, the parent, before your child’s data is used.[^1]"
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "What a company must not do"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Section 9 sets two more limits. A company must not process personal data in a way that is “likely to cause any detrimental effect on the well-being of a child”.[^1] And it “shall not undertake tracking or behavioural monitoring of children or targeted advertising directed at children”.[^1]"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "The Rules list exceptions, such as a school tracking its pupils for their safety, or tracking a child’s real-time location to keep them safe.[^3]"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Whichever toy you choose, ask the company how it gets your consent, and whether it tracks your child or shows them ads."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "When does it start?"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Not yet. The Act was published in August 2023, and the government is bringing it into force in stages.[^1][^2] Under its notification of November 2025, section 9 is due to come into force a year and a half later, in May 2027.[^2] The rule on a parent’s consent follows the same 18-month timetable.[^3]"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Until then, the questions below are yours to ask, of any company."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "What you can ask any company"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Ask before any toy that listens comes home, and expect a plain answer:"
+          }
+        ]
+      },
+      {
+        "type": "bulletList",
+        "content": [
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "How do you get my consent, and how do you check it is me?"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Where is my child’s voice processed, and in which country?"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Do you track my child, or show them ads?"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Is my child’s data ever sold?"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Can I read what my child said, and delete it myself?"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "How long do you keep it?"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "A vague answer is an answer."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Where we stand"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "We sell "
+          },
+          {
+            "type": "text",
+            "text": "Kheelu",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "/products/kheelu"
+                }
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": ", a toy that listens, so these questions are for us too. Here is where we stand today."
+          }
+        ]
+      },
+      {
+        "type": "bulletList",
+        "attrs": {
+          "style": "facts"
+        },
+        "content": [
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "microphone"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Listening.",
+                    "marks": [
+                      {
+                        "type": "bold"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "text": " Kheelu’s microphone turns on only when someone presses the wake-up button, and a light shows whenever it’s listening."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "lock-simple"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Your child’s voice.",
+                    "marks": [
+                      {
+                        "type": "bold"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "text": " To understand and answer your child, Kheelu uses trusted speech and AI providers. They process your child’s voice only to produce Kheelu’s reply. They don’t keep it, and they never use it to train their AI. Our contracts with them say so."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "eye"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Every conversation.",
+                    "marks": [
+                      {
+                        "type": "bold"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "text": " You can read every conversation in the parent app. Your child’s conversations stay in your parent app for 36 months, then they’re deleted automatically. Delete them all sooner by deleting your account."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "hand-heart"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Your data.",
+                    "marks": [
+                      {
+                        "type": "bold"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "text": " We don’t sell your data. Your child’s data is never used to advertise to them."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Everything we collect, what we use it for and the choices you have are set out in our "
+          },
+          {
+            "type": "text",
+            "text": "privacy policy",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "/privacy"
+                }
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": ". If any of it reads as less than clear, tell us: "
+          },
+          {
+            "type": "text",
+            "text": "WhatsApp",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "https://wa.me/919187546483"
+                }
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": " or "
+          },
+          {
+            "type": "text",
+            "text": "call +91 91875 46483",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "tel:+919187546483"
+                }
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": "."
+          }
+        ]
+      }
+    ]
+  },
+  "metaTitle": "DPDP Act: what India’s data law asks of AI toys · Kheelona",
+  "cardTitle": null,
+  "accent": "a toy that listens",
+  "lead": "India’s data law in plain words: what it asks of a company handling a child’s data, and what you can ask for.",
+  "summary": null,
+  "answer": {
+    "question": "What does the DPDP Act say about children’s data?",
+    "text": "India’s Digital Personal Data Protection Act, 2023 (the DPDP Act) treats anyone under 18 as a child.[^1] Section 9 says a company must get a parent’s verifiable consent before processing a child’s personal data, and must not track children, monitor their behaviour or aim targeted advertising at them.[^1] Section 9 is due to come into force in May 2027.[^2]"
+  },
+  "photo": "ira-01-story-on-the-bed",
+  "related": [
+    "what-to-look-for-in-a-safe-ai-toy",
+    "should-kids-use-ai",
+    "does-a-three-year-old-need-an-ai-tutor"
+  ]
+}

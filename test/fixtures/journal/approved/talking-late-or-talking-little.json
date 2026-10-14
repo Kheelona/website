@@ -1,0 +1,481 @@
+{
+  "slug": "talking-late-or-talking-little",
+  "title": "3-year-old not talking in sentences? What to do",
+  "description": "3-year-old not talking in sentences? What varies between children, the signs worth a doctor’s look, and what helps at home.",
+  "theme": "Talking and language",
+  "author": "Kheelona",
+  "published": "2026-07-28",
+  "updated": "2026-10-13",
+  "pose": "sad",
+  "tint": "bg-orange/15",
+  "hero": null,
+  "heroAlt": "A boy in a green T-shirt lying on a red floor, smiling as he pushes a blue wooden train.",
+  "heroWidth": null,
+  "heroHeight": null,
+  "ageNote": null,
+  "sources": [
+    {
+      "label": "US Centers for Disease Control and Prevention, “Learn the Signs. Act Early.”: milestones by 4 years, 2026 (reviewed 16 May), Language/Communication.",
+      "url": "https://www.cdc.gov/act-early/milestones/4-years.html"
+    },
+    {
+      "label": "US Centers for Disease Control and Prevention, “Learn the Signs. Act Early.”: milestones by 30 months, 2026 (reviewed 16 May), Language/Communication.",
+      "url": "https://www.cdc.gov/act-early/milestones/30-months.html"
+    },
+    {
+      "label": "Zubler, Wiggins, Macias and colleagues, “Evidence-Informed Milestones for Developmental Surveillance Tools”, Pediatrics, 2022, Table 1 and Table 4.",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9680195/"
+    },
+    {
+      "label": "US Centers for Disease Control and Prevention, “Learn the Signs. Act Early.”: milestones by 3 years, 2026 (reviewed 16 May), Language/Communication and “act early”.",
+      "url": "https://www.cdc.gov/act-early/milestones/3-years.html"
+    },
+    {
+      "label": "American Speech-Language-Hearing Association, “ASHA’s Developmental Milestones: Birth to 5 Years”, undated page.",
+      "url": "https://www.asha.org/public/speech/development/chart/"
+    },
+    {
+      "label": "American Academy of Pediatrics and American Speech-Language-Hearing Association, “Young Children Learning Multiple Languages: Parent FAQs”, HealthyChildren.org, 2025 (updated 20 November).",
+      "url": "https://www.healthychildren.org/English/ages-stages/gradeschool/school/Pages/7-Myths-Facts-Bilingual-Children-Learning-Language.aspx"
+    },
+    {
+      "label": "American Speech-Language-Hearing Association, “Communication Milestones: 3 to 4 Years” and “Communication Milestones: 2 to 3 Years”, undated pages.",
+      "url": "https://www.asha.org/public/developmental-milestones/communication-milestones-3-to-4-years/"
+    },
+    {
+      "label": "Center on the Developing Child at Harvard University, “Serve and Return” (Key Concepts), undated (page metadata 2024, updated 2026), Key Takeaways.",
+      "url": "https://developingchild.harvard.edu/key-concept/serve-and-return/"
+    }
+  ],
+  "body": {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "At a birthday party, another child is narrating a whole film, and yours points and says “come”. Is that fine? Or is it something?"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Here is what varies between children, what deserves a professional look, and what helps at home either way."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "What varies from child to child?"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "The milestones from the US Centers for Disease Control and Prevention (CDC) sit at the age by which at least 3 in 4 children reach each one.[^3] So they describe most children, not every child."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "The American Speech-Language-Hearing Association (ASHA) says its own milestone chart “is not a screening or diagnostic tool”. It is meant to start a conversation with your child’s doctor.[^5]"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "And watch your child at home, where they are most at ease, not only at a party."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Two languages at home? Count every word"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Asked whether using more than one language can cause a speech or language disorder, the American Academy of Pediatrics and ASHA answer no: “Speech or language problems are not caused by learning multiple languages.”[^6]"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "A child learning two languages may split their words across them. Counted together, the total should be about the same as for a child of the same age learning one language.[^6] So count the words in every language your child uses, and keep them all going."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "When is it worth a professional look?"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Talk to your child’s doctor if:"
+          }
+        ]
+      },
+      {
+        "type": "bulletList",
+        "content": [
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "at 3, your child doesn’t yet put two or more words together, with one action word, like “Doggie run”;[^2]"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "at 3, your child doesn’t yet keep up a short conversation with you, of at least two back-and-forth exchanges;[^4]"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "at 3, other people still can’t understand your child most of the time;[^4]"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "by 4, your child doesn’t yet say sentences of four or more words;[^1]"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "by 4, people can’t yet understand most of what your child says;[^7]"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "at any age, your child loses words or skills they used to have.[^4]"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "These are US guides, and every child is different. Missing one is a reason to ask, not a diagnosis."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "The CDC suggests you share your concerns with your child’s doctor and ask about developmental screening.[^4] ASHA suggests an assessment by an audiologist, who checks hearing, or a speech-language pathologist if a child misses many of the milestones for their age.[^7]"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "If your gut says ask, ask.",
+            "marks": [
+              {
+                "type": "bold"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "What helps at home, either way"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Whatever the milestones say, keep the back-and-forth going. Harvard’s Center on the Developing Child says back-and-forth exchanges between a young child and a caring adult support early language and social skills.[^8]"
+          }
+        ]
+      },
+      {
+        "type": "bulletList",
+        "attrs": {
+          "style": "tips"
+        },
+        "content": [
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "chat-circle-dots"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Say what you’re doing while you do it, in short sentences: “Shoes on. This foot. Now that one.”"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "question"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Offer a choice instead of a yes-or-no question: “Idli or dosa?” A choice asks for a word."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "plus"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "When your child says a word, say it back with one more: “Bus.” “Big bus.”"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "clock"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "After you ask, wait. Count to five in your head before you help."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "book-open"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Read the same book again, and stop before a word your child knows."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "music-notes"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Sing rhymes and leave the last word for your child."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "eye-slash"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Turn off the TV in the background while you talk and play."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "None of this needs a purchase. Grandparents, cousins and older children can all take a turn."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "For more on what helps a child who talks later or less than others, read "
+          },
+          {
+            "type": "text",
+            "text": "Late talker? What helps a child find their words",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "/stories/talking-toys-and-late-talkers"
+                }
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": "."
+          }
+        ]
+      }
+    ]
+  },
+  "metaTitle": null,
+  "cardTitle": "Talking late, or talking little?",
+  "accent": "What to do",
+  "lead": "A calm guide for parents of quiet 3 and 4 year olds: what varies, what deserves a professional look, and what helps at home.",
+  "summary": null,
+  "answer": {
+    "question": "Should you worry if your 3-year-old is not talking in sentences?",
+    "text": "Sentences of four or more words are on the CDC’s list of milestones by 4, not 3.[^1] By 3, most children put two or more words together, like “Doggie run”, hold a short back-and-forth conversation and are understood by others most of the time.[^2][^3][^4] If your child isn’t doing these yet, or has lost words, talk to your child’s doctor.[^4]"
+  },
+  "photo": "advik-04-floor-train",
+  "related": [
+    "how-to-get-your-child-talking",
+    "how-children-collect-words",
+    "a-toy-that-talks-vs-a-toy-that-listens"
+  ]
+}

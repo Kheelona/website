@@ -1,0 +1,420 @@
+{
+  "slug": "how-to-get-your-child-talking",
+  "title": "How to get your child to talk more",
+  "description": "How to get your child to talk more: better questions than “How was school?”, the follow-up that keeps it going, and games that get a child talking.",
+  "theme": "Talking and language",
+  "author": "Kheelona",
+  "published": "2026-07-28",
+  "updated": "2026-10-13",
+  "pose": "joy",
+  "tint": "bg-blue/15",
+  "hero": null,
+  "heroAlt": "A laughing girl with a long braid holds a yellow paper crown on her head, beside a low table scattered with crayons and paper scraps.",
+  "heroWidth": null,
+  "heroHeight": null,
+  "ageNote": null,
+  "sources": [
+    {
+      "label": "Center on the Developing Child at Harvard University, “Serve and Return” (Key Concepts), undated (page metadata 2024, updated 2026), Key Takeaways.",
+      "url": "https://developingchild.harvard.edu/key-concept/serve-and-return/"
+    },
+    {
+      "label": "Romeo, Leonard, Robinson, West, Mackey, Rowe and Gabrieli, “Beyond the 30-Million-Word Gap: Children’s Conversational Exposure Is Associated With Language-Related Brain Function”, Psychological Science, 2018, Abstract, Method and Discussion.",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5945324/"
+    }
+  ],
+  "body": {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "How was school? “Fine.” What did you do? “Nothing.” Two questions in, the conversation is over, and the child who once told you about every ant on the footpath now answers in one word."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "A whole day is a lot to sum up, and “fine” does the job. So ask about a smaller piece of it."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Conversation starters for after school"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Ask about one small, real moment instead of the whole day:"
+          }
+        ]
+      },
+      {
+        "type": "bulletList",
+        "content": [
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Who made you laugh today?"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "What was the best thing in your tiffin? And the worst?"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Who did you sit next to? What did you talk about?"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "What was the hardest thing you did today?"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "What did you play outside? Who won?"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "On a day at home: “What did you and Nani see at the market?”"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "One question a day is plenty. Keep the rest for tomorrow."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Go first, then wait"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Start with your own answer: “The worst thing in my lunch today was cold upma. What was yours?” Now your child knows the kind of answer you mean."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Then wait. Count to five in your head before you ask again or answer for them. It will feel long. Wait anyway."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Follow up on whatever comes back"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Whatever your child says, take it one step further, out of curiosity, not as a quiz: “He fell off the bench? What did your teacher do? And then?”"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "In a 2018 study of 36 children aged 4 to 6, children who had more back-and-forth conversational turns with adults showed more activity in Broca’s area, a language region of the brain, while listening to a story. The number of adult words they heard showed no such link. The study shows a link, not cause and effect.[^2]"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "In the study, a turn was an adult speaking and the child replying, or the other way round.[^2] Its authors suggest encouraging parents to talk with their children in “more interactive, back-and-forth conversation”.[^2] Every follow-up is one more turn."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Games that get a child talking"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "In each of these, your child has to talk to take their turn."
+          }
+        ]
+      },
+      {
+        "type": "bulletList",
+        "attrs": {
+          "style": "tips"
+        },
+        "content": [
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "eye"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Describe it, don’t point: “I spy something yellow that you peel before you eat it.” Then swap."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "currency-inr"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Play shop. Your child runs it, and you keep asking: “Do you have a smaller one? How much is it?”"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "book-open"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Read a picture book together, and pause once or twice to ask what your child thinks will happen next."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "chat-circle-dots"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Make up a story in turns: you say one line, your child says the next."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "music-notes"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Sing a rhyme and stop before the last word, so your child can fill it in."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "users-three"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "On a call with a grandparent, let your child tell one thing from their day."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "What if your child talks very little?"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "If your child says very little everywhere, not only after school, read our guide on "
+          },
+          {
+            "type": "text",
+            "text": "what varies between children, and when to ask a professional",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "/stories/talking-late-or-talking-little"
+                }
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": "."
+          }
+        ]
+      }
+    ]
+  },
+  "metaTitle": null,
+  "cardTitle": "How to get your child talking",
+  "accent": "talk more",
+  "lead": "Better questions than “How was school?”, and the small habits that turn one-word answers into conversations.",
+  "summary": null,
+  "answer": {
+    "question": "How can you get your child to talk more?",
+    "text": "Ask small, specific questions, wait for the answer, and follow up on whatever comes back. Instead of “How was school?”, try “Who made you laugh today?” Harvard’s Center on the Developing Child says back-and-forth exchanges between a young child and a caring adult support early language and social skills.[^1]"
+  },
+  "photo": "ira-04-paper-crown",
+  "related": [
+    "talking-late-or-talking-little",
+    "raising-a-bilingual-child-in-india",
+    "how-children-collect-words"
+  ]
+}

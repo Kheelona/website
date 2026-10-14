@@ -11,8 +11,8 @@ import { CTAS, type CtaPlacement } from "@/lib/tracking/cta";
  * against the approved mockups by test/guards/tracking-registry.test.ts), so the bar appears exactly where its tracking
  * value is registered, with the "articles-with-close" group resolved from each article's own `close`: an article whose
  * close carries the pre-order button carries the bar too; the keep-reading close (B5) carries neither. The closes are
- * read from the article registry (src/content/en-IN/stories/articles/index.ts, task 4.2), so a new article is its
- * module, its line there and its slug in routes.ts, never an edit here.
+ * read from the article registry (the journal, src/content/en-IN/stories/journal.ts: each post's close follows its
+ * topic; ADR-014, task 8b.2e), so a new article is a published post, never an edit here.
  */
 
 /** Each article's close, by slug: "journal" carries the pre-order button, "keep" does not (B5). */

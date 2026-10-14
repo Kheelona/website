@@ -1,0 +1,329 @@
+{
+  "slug": "screen-time-and-tantrums",
+  "title": "Screen time and tantrums: what is actually happening",
+  "description": "Screen time tantrums: one study found a two-minute warning made children more upset. What helps instead, and how to make switching off boring.",
+  "theme": "Screen time",
+  "author": "Kheelona",
+  "published": "2026-07-28",
+  "updated": "2026-10-13",
+  "pose": "grumpy",
+  "tint": "bg-orange/15",
+  "hero": null,
+  "heroAlt": "A boy in round glasses and a white school shirt grins, one finger at his nose, as he writes in an exercise book at a wooden desk by a window, Kheelu sitting at the far end of the desk.",
+  "heroWidth": null,
+  "heroHeight": null,
+  "ageNote": null,
+  "sources": [
+    {
+      "label": "Hiniker, Suh, Cao and Kientz (University of Washington), “Screen Time Tantrums”, CHI 2016 conference proceedings, pp. 648-660, 2016, abstract.",
+      "url": "https://doi.org/10.1145/2858036.2858278"
+    },
+    {
+      "label": "University of Washington News (Jennifer Langston), “Two-minute warnings make kids’ ‘screen time’ tantrums worse”, 2016, the university’s release about the study.",
+      "url": "https://www.washington.edu/news/2016/05/05/two-minute-warnings-make-kids-screen-time-tantrums-worse/"
+    }
+  ],
+  "body": {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "One common tip is missing on purpose: the two-minute warning. More on that below."
+          }
+        ]
+      },
+      {
+        "type": "horizontalRule"
+      },
+      {
+        "type": "horizontalRule"
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "The video ends. You say that’s enough for today. And a child who sat quietly for half an hour is suddenly on the floor in tears."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "If this is your house some evenings, you are not alone."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Why the meltdown comes at the off switch"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Screen time tantrums are common enough that researchers have studied them: a 2016 University of Washington study of families with children aged 1 to 5 found that “transitioning away from screens is often painful”.[^1]"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Think about what the off switch asks of a young child: to stop something they enjoy, right now, at a moment they did not choose. That is hard at any age."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "It does not happen every evening, though. The study’s senior author said that most of the time these transitions “actually go pretty smoothly”, even if parents find that hard to see.[^2] It is the hard evenings that stay with you."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "What makes taking the phone away easier?"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "How the screen ends makes a difference. In the same study, routines and stopping at a natural break made the switch easier.[^2]"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "One well-meant habit made it harder: children given a two-minute warning by their parents were more upset when the screen went away.[^2] That is one study, so watch your own child. If the countdown sets off the storm, drop it."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "How to make switching off boring"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Boring is the goal: an ending so routine that there is nothing to fight about."
+          }
+        ]
+      },
+      {
+        "type": "bulletList",
+        "attrs": {
+          "style": "tips"
+        },
+        "content": [
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "calendar-check"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Agree the plan out loud before the screen goes on: “One episode, then we water the plants.”"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "pause"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Stop at the end of an episode or a song, never halfway through."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "gear"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Turn off autoplay, so the next episode does not start on its own."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "clock"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Keep the same order every day, so the ending is no surprise."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "puzzle-piece"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Have something ready for their hands the moment the screen goes dark: dough, crayons, a job in the kitchen."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "heart"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "If tears come, stay close, stay calm and keep to what you said."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Looking for something to hand over when the screen goes dark? "
+          },
+          {
+            "type": "text",
+            "text": "Kheelu",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "/products/kheelu"
+                }
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": " is one screen-free option: a plush toy for ages 3 to 7 that answers your child, then asks a question back. It is not a toy for children under 3. If your child is 3, keep a grown-up nearby while they play."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "How much screen time suits each age is a separate question. Our guide, "
+          },
+          {
+            "type": "text",
+            "text": "How much screen time is okay for a young child?",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "/stories/how-much-screen-time-for-a-3-to-6-year-old"
+                }
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": ", sets out the WHO, IAP and AAP advice, age by age."
+          }
+        ]
+      }
+    ]
+  },
+  "metaTitle": "Screen time tantrums: why they happen, what helps · Kheelona",
+  "cardTitle": null,
+  "accent": "what is actually happening",
+  "lead": "Why the meltdown lands the moment the screen goes off, and how to make switching off boring instead of explosive.",
+  "summary": null,
+  "answer": {
+    "question": "What helps with screen time tantrums?",
+    "text": "Make switching off part of a routine. Agree the limit before the screen goes on, stop at a natural break such as the end of an episode, and have something ready for your child’s hands the moment it goes dark. If tears come anyway, stay calm, stay close and keep to what you said."
+  },
+  "photo": "kabir-03-homework-desk",
+  "related": [
+    "how-much-screen-time-for-a-3-to-6-year-old",
+    "the-gentle-way-off-the-phone",
+    "busy-hands-no-screens"
+  ]
+}

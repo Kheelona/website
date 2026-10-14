@@ -1,0 +1,387 @@
+{
+  "slug": "how-children-collect-words",
+  "title": "How to build a 3-year-old’s vocabulary",
+  "description": "How to build a 3-year-old’s vocabulary at home: everyday habits, what research says about talking together, and why every language you speak counts.",
+  "theme": "Talking and language",
+  "author": "Kheelona",
+  "published": "2026-07-28",
+  "updated": "2026-10-13",
+  "pose": "silly",
+  "tint": "bg-yellow/15",
+  "hero": null,
+  "heroAlt": "A little girl in a red polka-dot frock, tongue out in concentration, scribbling with an orange crayon at a low table.",
+  "heroWidth": null,
+  "heroHeight": null,
+  "ageNote": null,
+  "sources": [
+    {
+      "label": "American Academy of Pediatrics and American Speech-Language-Hearing Association, “Young Children Learning Multiple Languages: Parent FAQs”, HealthyChildren.org, 2025 (updated 20 November).",
+      "url": "https://www.healthychildren.org/English/ages-stages/gradeschool/school/Pages/7-Myths-Facts-Bilingual-Children-Learning-Language.aspx"
+    },
+    {
+      "label": "Romeo, Leonard, Robinson, West, Mackey, Rowe and Gabrieli, “Beyond the 30-Million-Word Gap: Children’s Conversational Exposure Is Associated With Language-Related Brain Function”, Psychological Science, 2018, Abstract, Method, Results and Discussion.",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5945324/"
+    },
+    {
+      "label": "American Speech-Language-Hearing Association, “Late Language Emergence” (Practice Portal), undated, Assessment: Cultural and Linguistic Considerations.",
+      "url": "https://www.asha.org/practice-portal/clinical-topics/late-language-emergence/"
+    },
+    {
+      "label": "US Centers for Disease Control and Prevention, “Learn the Signs. Act Early.”: milestones by 3 years, 2026 (reviewed 16 May), Language/Communication and “act early”.",
+      "url": "https://www.cdc.gov/act-early/milestones/3-years.html"
+    }
+  ],
+  "body": {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Chances are nobody sat your child down to teach them “auto”, “gravy” or “cousin”. The words arrived anyway: from the kitchen, the market, the back seat and the family video call."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Here is what the research says about talk and words, and what you can do at home today."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "What does the research say about talk and words?"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "In a 2018 study of 36 children aged 4 to 6, children who had more back-and-forth conversational turns with adults showed more activity in Broca’s area, a language region of the brain, while listening to a story. The number of adult words they heard showed no such link. Turns also predicted the children’s language scores once family income and parents’ education were taken into account.[^2]"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "In the study, a turn was an adult speaking and the child replying, or the other way round. The children were native English speakers, and the study shows a link, not cause and effect.[^2]"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Its authors suggest encouraging parents to talk with their children in “more interactive, back-and-forth conversation”.[^2] With a new word, one way to do that: say it, then give your child a reason to use it."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Everyday ways to build your child’s vocabulary"
+          }
+        ]
+      },
+      {
+        "type": "bulletList",
+        "attrs": {
+          "style": "tips"
+        },
+        "content": [
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "chat-circle-dots"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Use your real words: “enormous” and “delicious”, not only “big” and “nice”."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "info"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Explain a new word in the same breath: “The dal is boiling. See the bubbles?”"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "eye"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Name what your child points at, then wait for them to try the word."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "question"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Hand a new word back as a question: “It was enormous? How enormous?”"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "book-open"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Read together, and talk about the pictures as well as the words."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "arrow-counter-clockwise"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Use a new word again over the next few days, somewhere new."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "users-three"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "At meals, ask your child what they think, and let them finish."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "None of this needs flashcards or a worksheet. It needs talk, a pause, and someone who listens to the answer."
+          }
+        ]
+      },
+      {
+        "type": "blockquote",
+        "attrs": {
+          "style": "callout",
+          "icon": "star"
+        },
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Try this:",
+                "marks": [
+                  {
+                    "type": "bold"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": " pick one new word from your day, like “drizzle” or “crowded”, and use it at dinner, at bath time and at bedtime."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Any language counts"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Counting your child’s vocabulary? Count every language. A bilingual child may split their words across two languages. Counted together, the total should be about the same as for a child of the same age learning one language.[^1] Words collected in Telugu or Bangla count towards that total.[^1]"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "A strong model in any language also helps build a foundation for learning others.[^3] So keep talking in the languages you know best, every day."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "For more on two languages at home, read "
+          },
+          {
+            "type": "text",
+            "text": "Raising a bilingual child in India",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "/stories/raising-a-bilingual-child-in-india"
+                }
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": "."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "When should you ask your doctor?"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Every child is different. As a general guide, if your child is 3 or older and other people still can’t understand them most of the time, or they lose words they used to have, talk to your paediatrician.[^4]"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Our guide "
+          },
+          {
+            "type": "text",
+            "text": "Late talker? What helps a child find their words",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "/stories/talking-toys-and-late-talkers"
+                }
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": " has the signs to look for, and what helps at home."
+          }
+        ]
+      }
+    ]
+  },
+  "metaTitle": null,
+  "cardTitle": "How children collect words",
+  "accent": "vocabulary",
+  "lead": "How children pick up words at home, in every language you speak, without a single worksheet.",
+  "summary": null,
+  "answer": {
+    "question": "How can you build a 3-year-old’s vocabulary?",
+    "text": "Talk with your child all through the day, and use real words, not only simple ones. Name what they point at, explain a new word as you use it (“this mango is ripe, so it’s soft”), read together, and wait for their answer. And count the words they know in every language you speak at home.[^1]"
+  },
+  "photo": "myra-04-drawing-at-home",
+  "related": [
+    "talking-late-or-talking-little",
+    "a-toy-that-talks-vs-a-toy-that-listens",
+    "talking-toys-and-late-talkers"
+  ]
+}

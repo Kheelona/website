@@ -63,7 +63,10 @@ beforeAll(async () => {
   for (const route of routes) {
     const file = join(ROOT, "src/content/en-IN", `${route.module}.ts`);
     const mod = existsSync(file) ? ((await import(/* @vite-ignore */ file)) as Record<string, unknown>) : {};
-    const pages = Object.values(mod).filter((v): v is Page => typeof v === "object" && v !== null && "meta" in v);
+    /* An article's module is the journal registry (task 8b.2e, ADR-014): its page is the registry's article for the
+       route's slug, not an export of its own. */
+    const article = route.kind === "article" && typeof mod.getArticle === "function" ? (mod.getArticle as (slug: string) => Page | undefined)(route.path.slice("/stories/".length)) : undefined;
+    const pages = article ? [article] : Object.values(mod).filter((v): v is Page => typeof v === "object" && v !== null && "meta" in v);
     if (pages.length > 0) {
       states.push({ kind: "checked", route, page: pages[0] });
       continue;

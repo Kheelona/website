@@ -1,0 +1,435 @@
+{
+  "slug": "talking-toys-and-late-talkers",
+  "title": "Late talker? What helps a child find their words",
+  "description": "Late talker at 3 or older? What helps at home, what the research says about back-and-forth talk, and when to ask your child's doctor.",
+  "theme": "Talking and language",
+  "author": "Kheelona",
+  "published": "2026-07-30",
+  "updated": "2026-10-12",
+  "pose": "sad",
+  "tint": "bg-blue/15",
+  "hero": null,
+  "heroAlt": "A boy in round glasses and a mustard T-shirt lies on a striped rug, chin in his hands, wide-eyed over a picture book about planets.",
+  "heroWidth": null,
+  "heroHeight": null,
+  "ageNote": null,
+  "sources": [
+    {
+      "label": "US Centers for Disease Control and Prevention, “Learn the Signs. Act Early.”: milestones by 3 years, 2026 (reviewed 16 May), Language/Communication and “act early”.",
+      "url": "https://www.cdc.gov/act-early/milestones/3-years.html"
+    },
+    {
+      "label": "American Speech-Language-Hearing Association, “Communication Milestones: 3 to 4 Years” and “Communication Milestones: 2 to 3 Years”, undated pages.",
+      "url": "https://www.asha.org/public/developmental-milestones/communication-milestones-3-to-4-years/"
+    },
+    {
+      "label": "Center on the Developing Child at Harvard University, “Serve and Return” (Key Concepts), undated (page metadata 2024, updated 2026), Key Takeaways and the paragraph after Fast Facts.",
+      "url": "https://developingchild.harvard.edu/key-concept/serve-and-return/"
+    },
+    {
+      "label": "Romeo, Leonard, Robinson, West, Mackey, Rowe and Gabrieli, “Beyond the 30-Million-Word Gap: Children’s Conversational Exposure Is Associated With Language-Related Brain Function”, Psychological Science, 2018, Abstract, Method and Discussion.",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5945324/"
+    },
+    {
+      "label": "American Academy of Pediatrics and American Speech-Language-Hearing Association, “Young Children Learning Multiple Languages: Parent FAQs”, HealthyChildren.org, 2025 (updated 20 November).",
+      "url": "https://www.healthychildren.org/English/ages-stages/gradeschool/school/Pages/7-Myths-Facts-Bilingual-Children-Learning-Language.aspx"
+    },
+    {
+      "label": "American Speech-Language-Hearing Association, “Late Language Emergence” (Practice Portal), undated, Assessment: Cultural and Linguistic Considerations.",
+      "url": "https://www.asha.org/practice-portal/clinical-topics/late-language-emergence/"
+    }
+  ],
+  "body": {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Few silences are louder than a 3-year-old who says less than the cousins. The family group chat fills with advice, most of it confident and some of it wrong."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Here is what public guidance says, and what you can do at home today."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "When should you ask a professional?"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "As a general guide, talk to your child’s doctor if:"
+          }
+        ]
+      },
+      {
+        "type": "bulletList",
+        "content": [
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "at 3, other people still can’t understand your child most of the time;[^1]"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "at 3, your child doesn’t yet keep up a short conversation with you, of at least two back-and-forth exchanges;[^1]"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "by 4, people can’t yet understand most of what your child says;[^2]"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "at any age, your child loses words or skills they used to have.[^1]"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "These are US guides, and every child is different. Missing one is a reason to ask, not a diagnosis."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "The US Centers for Disease Control and Prevention suggest you talk with your child’s doctor, share your concerns and ask about developmental screening.[^1] ASHA, the US association of speech and hearing professionals, suggests an assessment by an audiologist or a speech-language pathologist if a child misses many of the milestones for their age.[^2]"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "If your gut says ask, ask.",
+            "marks": [
+              {
+                "type": "bold"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "What does the research say helps?"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Harvard’s Center on the Developing Child says back-and-forth “serve and return” exchanges between a young child and a caring adult help build and strengthen neural connections in the child’s brain. They also support the early language and social skills that later, more complex thinking builds on.[^3]"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "In a 2018 study of 36 children aged 4 to 6, children who had more back-and-forth conversational turns with adults showed more activity in Broca’s area, a language region of the brain, while listening to a story. The number of adult words they heard showed no such link.[^4] The children were typically developing, not late talkers, and the study shows a link, not cause and effect.[^4]"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Its authors suggest encouraging parents to talk with their children in “more interactive, back-and-forth conversation”.[^4] A turn can be tiny: your child points, you name the thing, they try the word, you smile and add one more."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "What helps at home, every day"
+          }
+        ]
+      },
+      {
+        "type": "bulletList",
+        "attrs": {
+          "style": "tips"
+        },
+        "content": [
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "chat-circle-dots"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Talk about what you’re doing, in short sentences: “The dal is boiling. Now the cooker. One whistle, two.”"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "clock"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "After you ask something, wait longer than feels natural. Count to five in your head."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "question"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Offer choices out loud: “The red cup or the blue cup?” A choice asks for a word."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "plus"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Answer every try as if it were a full sentence, then add one word: “Ball? Yes, a big ball.”"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "book-open"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Read the same book again, and pause before a word your child knows so they can say it."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "music-notes"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Sing together, and leave gaps for your child to fill."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "attrs": {
+              "icon": "eye-slash"
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Turn off the TV in the background while you play and talk."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "None of this needs a programme or a purchase. It needs turns, and anyone who loves your child can give them: parents, grandparents, cousins, the auntie next door."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Two myths worth dropping"
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 3
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Myth 1: a second home language causes speech delay."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Asked whether using more than one language can cause a speech or language disorder, the American Academy of Pediatrics and the American Speech-Language-Hearing Association answer no: “Speech or language problems are not caused by learning multiple languages.”[^5] A bilingual child may split their words across two languages. Counted together, the total should be about the same as for a child of the same age learning one language.[^5] And a strong model in any language helps build a foundation for learning others.[^6] Keep both languages."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 3
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Myth 2: a talking toy will teach your child to talk."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "A toy that plays recorded phrases or repeats your child’s words gives them nothing new to answer. No toy replaces the people who talk with your child every day."
+          }
+        ]
+      }
+    ]
+  },
+  "metaTitle": null,
+  "cardTitle": null,
+  "accent": "find their words",
+  "lead": "What helps a 3 to 7 year old who talks later or less than others, and when to ask your child’s doctor.",
+  "summary": null,
+  "answer": {
+    "question": "What helps a late talker?",
+    "text": "Talk with your child, wait, and follow their lead. Name what they look at, add one word to what they say, and give them time to answer before you fill the silence. If your child is 3 or older and other people still can’t understand them most of the time, talk to your paediatrician.[^1]"
+  },
+  "photo": "kabir-04-planet-book",
+  "related": [
+    "talking-late-or-talking-little",
+    "how-to-get-your-child-talking",
+    "raising-a-bilingual-child-in-india"
+  ]
+}

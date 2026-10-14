@@ -9,12 +9,12 @@ import { formatDate } from "@/lib/format/date";
 import { buildOffer } from "@/lib/offer/offer";
 import { RETENTION } from "../../../../../test/e2e/support/deviations";
 import { readRepoFile } from "../../../../../test/e2e/support/repo";
+import { approvedArticle } from "../../../../../test/fixtures/journal/approved";
 import { type CopyFold, type CopyPage, copyFold, copyLines, copyParagraphs, glanceRow, readCopyPage } from "../../../../../test/support/copy-page";
 import { words } from "../../../../../test/support/mockup-compare";
-import { RETENTION_LINE, RETENTION_MONTHS } from "../../policies";
+import { RETENTION_LINE } from "../../policies";
 import { product } from "../../products/kheelu/product";
 import { seller } from "../../seller";
-import { articles, getArticle } from "./index";
 
 /* The six AI, safety and learning articles (task 5.19): rewritten from their approved copy pages
  * (wiki/site/pages/story-<slug>.md, CMO review wiki/qa/cmo-review-articles-5.19-2026-10-14.md). They have no mockup, so
@@ -51,10 +51,25 @@ const LIVE_UPDATED: Readonly<Record<Slug, string>> = {
 };
 /** The rewrite's date, from git history (architecture §6.1: stored when the article changes). */
 const REWRITE_DATE = "2026-10-13";
+/** The guides task 8b.2a corrected per D058 carry the export's date (ruled at the wave i merge, journal-pipeline §12
+ *  8b.2e: their dateModified, OG modifiedTime and sitemap date). */
+const CORRECTED: Readonly<Partial<Record<Slug, string>>> = {
+  "questions-parents-ask-about-ai-toys": "2026-10-14",
+  "should-kids-use-ai": "2026-10-14",
+  "ai-toys-and-indias-data-law": "2026-10-14",
+};
+/** The read times the journal derives where its guide stored another (words at 200 a minute; journal-pipeline §4),
+ *  ruled at the wave ii merge (§12, 8b.2d ruling 2; on the Gate B list): the copy page keeps the approved line. */
+const RULED_READ_TIMES: Readonly<Partial<Record<Parity, readonly [approved: number, derived: number]>>> = {
+  "should-kids-use-ai": [5, 4],
+};
 
 const TOKEN = buildOffer("token");
-const article = (slug: Parity): Article => articles[slug];
-const moduleSource = (slug: Parity) => readRepoFile(`src/content/en-IN/stories/articles/${slug}.ts`);
+/* Since task 8b.2e the guides are dashboard posts (ADR-014): each is read from the approved export the founder signs at
+   Gate B (test/fixtures/journal/approved, through the adapter), which journal.test.ts holds equal to the snapshot while
+   the journal is the export. The facts a guide shares with other pages (retention, help line, languages) were read from
+   their modules; in a post they are literal text, held to today's by journal.test.ts (§8.2 row 24). */
+const article = (slug: string): Article => approvedArticle(slug);
 
 /* ── Reading a copy page (test/support/copy-page.ts, the one reader; task 6.3) ───────────────────────────────── */
 
@@ -174,7 +189,10 @@ describe.each([...SLUGS, ...APPROVED])("the article %s, as its approved copy pag
     const hands = nodesOf(a.head.title).filter((n) => n.kind === "hand");
     expect(hands.map((n) => ("children" in n ? n.children.map((c) => (c.kind === "text" ? c.text : "")).join("") : ""))).toEqual([hand]);
     expect(articleTrail(a).map((c) => c.name)).toEqual(line("Breadcrumb").split(" › "));
-    expect(norm(`${a.head.author} · First published ${formatDate(a.published, "ui")} · ${a.head.readMinutes} min read`)).toBe(norm(byline));
+    const ruled = RULED_READ_TIMES[slug];
+    if (ruled !== undefined) expect(norm(byline), `${slug}: the copy page's approved read time`).toMatch(new RegExp(` · ${ruled[0]} min read$`));
+    const shown = ruled === undefined ? norm(byline) : norm(byline).replace(new RegExp(` · ${ruled[0]} min read$`), ` · ${ruled[1]} min read`);
+    expect(norm(`${a.head.author} · First published ${formatDate(a.published, "ui")} · ${a.head.readMinutes} min read`)).toBe(shown);
   });
 
   it("shows the copy page's head photo, with its alt", () => {
@@ -217,8 +235,8 @@ describe.each([...SLUGS, ...APPROVED])("the article %s, as its approved copy pag
 });
 
 describe.each(SLUGS)("the rewritten article %s (task 5.19)", (slug) => {
+  /* Until 8b.2e it also read its module's source for the stub import; no guide is a module any more. */
   it("is a full article now, built without the stub", () => {
-    expect(moduleSource(slug)).not.toMatch(/from "\.\/stub"/);
     expect(article(slug).answer).toBeDefined();
     expect(article(slug).sources.length).toBeGreaterThan(0);
   });
@@ -239,15 +257,15 @@ describe.each(SLUGS)("the rewritten article %s (task 5.19)", (slug) => {
     const related = copyFold(readCopyPage(slug), /^Related guides/);
     expect(article(slug).related).toEqual([...related.text.matchAll(/^\| [^|]+ \| `\/stories\/([a-z0-9-]+)`/gm)].map((m) => m[1]));
     const titles = copyLines(related).filter((l) => l.startsWith("- ")).map((l) => norm(l.slice(2)));
-    expect(article(slug).related.map((r) => norm(toPlainText(getArticle(r)!.card.title)))).toEqual(titles);
+    expect(article(slug).related.map((r) => norm(toPlainText(article(r).card.title)))).toEqual(titles);
   });
 
   it("closes with the journal close (the pre-order button, finale)", () => {
     expect(article(slug).close).toBe("journal");
   });
 
-  it("stores the rewrite's date as its last edit, after the live article's (architecture §6.1)", () => {
-    expect(article(slug).updated).toBe(REWRITE_DATE);
+  it("stores the rewrite's date as its last edit, after the live article's (architecture §6.1); the D058 corrections the export's", () => {
+    expect(article(slug).updated).toBe(CORRECTED[slug] ?? REWRITE_DATE);
     expect(article(slug).updated > LIVE_UPDATED[slug]).toBe(true);
   });
 
@@ -263,28 +281,29 @@ describe.each(SLUGS)("the rewritten article %s (task 5.19)", (slug) => {
   });
 });
 
-describe("the shared facts, read from their modules and never retyped", () => {
+/* Until 8b.2e each guide read these facts from their modules, and each test also held its module's source free of the
+   typed fact (36 months, the phone number, a language list). A post carries them as literal text (journal-pipeline §5.3),
+   so the "never retyped" half became "always today's": journal.test.ts holds every guide of the journal to policies.ts,
+   seller.ts and product.ts (§8.2 row 24). These keep each approved guide printing the fact where its copy page does. */
+describe("the shared facts, as today's modules word them", () => {
   /* Then D058 item 1's deletion fact, in the one form the safe-AI-toy guide prints too (CMO review of task 8b.2a, m2), so
      each guide that tells a parent how long conversations stay also says how to delete them sooner. */
   it("prints the D020 retention line from policies.ts where a page gives it, then the deletion sentence (hard questions, should kids, data law)", () => {
     for (const slug of ["questions-parents-ask-about-ai-toys", "should-kids-use-ai", "ai-toys-and-indias-data-law"] as const) {
       expect(columnStrings(article(slug)).some((s) => s.includes(`${RETENTION_LINE} Delete them all sooner by deleting your account.`)), slug).toBe(true);
     }
-    for (const slug of SLUGS) expect(moduleSource(slug), slug).not.toMatch(new RegExp(`\\b${RETENTION_MONTHS}\\s+months\\b`));
   });
 
-  it("words the data-law page's help line from the seller's help line, never a retyped number (seller.ts, D032)", () => {
+  it("words the data-law page's help line from the seller's help line (seller.ts, D032)", () => {
     const contact = columnStrings(article("ai-toys-and-indias-data-law")).filter((s) => s.includes(seller.support.phone));
     expect(contact).toHaveLength(1);
     expect(contact[0].endsWith(`tell us: ${seller.help.contact}.`)).toBe(true);
-    for (const slug of SLUGS) expect(moduleSource(slug), slug).not.toMatch(/91875|919187546483/);
   });
 
-  it("names the languages from the product facts, never a typed list (product.ts)", () => {
+  it("names the languages from the product facts (product.ts)", () => {
     const names = product.languages.map((l) => l.name);
     const line = `It speaks ${names.slice(0, -1).join(", ")} and ${names.at(-1)}, with up to ${product.languageCeiling} languages at launch.`;
     expect(columnStrings(article("questions-parents-ask-about-ai-toys")).some((s) => s.endsWith(line))).toBe(true);
-    for (const slug of SLUGS) expect(moduleSource(slug), slug).not.toMatch(/\bKannada\b/);
   });
 });
 

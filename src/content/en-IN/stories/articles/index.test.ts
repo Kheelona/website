@@ -1,16 +1,14 @@
-import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import type { Article } from "@/content/types";
 import { navigation } from "../../navigation";
 import { ARTICLE_SLUGS } from "../../routes";
 import { TRUST_COMPACT } from "../../trust";
+import * as journal from "../journal";
 import { articlePageCopy, articles, getArticle, PLAIN_CLOSE_ART } from "./index";
 
-const DIR = join(process.cwd(), "src/content/en-IN/stories/articles");
-
-/* The article registry (task 4.2; wave-3 close ruling): the one list of the 20 article modules, which the stories
- * route and the site shell's sticky-bar paths read, so a new article is its module, one line here and its slug in
- * routes.ts, never a shell edit. Also the words and the close every article page shares (story-*.html). */
+/* The article registry (task 4.2; wave-3 close ruling; ADR-014, task 8b.2e): since 8b.2e the journal registry
+ * (stories/journal.ts: the committed snapshot of the dashboard's posts, through the adapter), re-exported here beside the
+ * words and the close every article page shares (story-*.html). The stories route, the hub and the sticky-bar paths read
+ * this one list, so a new article is a published post, never a code edit. */
 
 describe("the article registry", () => {
   it("lists every article of the URL plan once, under its own slug, and nothing else", () => {
@@ -18,11 +16,10 @@ describe("the article registry", () => {
     for (const slug of ARTICLE_SLUGS) expect(articles[slug].slug, slug).toBe(slug);
   });
 
-  it("holds the very object each article module exports", async () => {
-    for (const slug of ARTICLE_SLUGS) {
-      const mod = (await import(/* @vite-ignore */ join(DIR, `${slug}.ts`))) as { article: Article };
-      expect(articles[slug], slug).toBe(mod.article);
-    }
+  /* Until 8b.2e: "holds the very object each article module exports". The modules went once the snapshot was the source. */
+  it("is the journal registry itself: the very articles and finder journal.ts adapts from the snapshot", () => {
+    expect(articles).toBe(journal.articles);
+    expect(getArticle).toBe(journal.getArticle);
   });
 
   it("finds an article by its URL slug, and nothing outside the registry", () => {

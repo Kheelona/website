@@ -1,0 +1,332 @@
+{
+  "slug": "what-actually-builds-a-sharp-brain",
+  "title": "What actually builds a sharp brain in the early years",
+  "description": "How to help your child’s brain develop, past the flashcards: back-and-forth talk, enough sleep, calm and free play, and how to get more of each.",
+  "theme": "Learning and play",
+  "author": "Apoorva Sahu",
+  "published": "2026-07-28",
+  "updated": "2026-10-13",
+  "pose": "curious",
+  "tint": "bg-blue/15",
+  "hero": null,
+  "heroAlt": "A laughing girl with a long braid holds a yellow paper crown on her head, beside a low table scattered with crayons and paper scraps.",
+  "heroWidth": null,
+  "heroHeight": null,
+  "ageNote": null,
+  "sources": [
+    {
+      "label": "Center on the Developing Child at Harvard University, “Serve and Return” (Key Concepts), undated (page metadata 2024, updated 2026), Key Takeaways and the paragraph after Fast Facts.",
+      "url": "https://developingchild.harvard.edu/key-concept/serve-and-return/"
+    },
+    {
+      "label": "Center on the Developing Child at Harvard University, “Serve & Return Interaction Shapes Brain Circuitry”, 2011, page description.",
+      "url": "https://developingchild.harvard.edu/resources/videos/serve-return-interaction-shapes-brain-circuitry/"
+    },
+    {
+      "label": "Romeo, Leonard, Robinson, West, Mackey, Rowe and Gabrieli, “Beyond the 30-Million-Word Gap: Children’s Conversational Exposure Is Associated With Language-Related Brain Function”, Psychological Science, 2018, Abstract and Results.",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5945324/"
+    },
+    {
+      "label": "Paruthi and colleagues for the American Academy of Sleep Medicine, “Recommended Amount of Sleep for Pediatric Populations: A Consensus Statement of the American Academy of Sleep Medicine”, Journal of Clinical Sleep Medicine, 2016, Recommendations.",
+      "url": "https://doi.org/10.5664/jcsm.5866"
+    },
+    {
+      "label": "Kurdziel, Duclos and Spencer, “Sleep spindles in midday naps enhance learning in preschool children”, PNAS, 2013, Abstract and Results.",
+      "url": "https://doi.org/10.1073/pnas.1306418110"
+    },
+    {
+      "label": "Center on the Developing Child at Harvard University, “Toxic Stress” (Key Concepts), 2024, updated 2025, Key Takeaways and Fast Facts.",
+      "url": "https://developingchild.harvard.edu/key-concept/toxic-stress/"
+    },
+    {
+      "label": "Ministry of Human Resource Development (now Ministry of Education), Government of India, “National Education Policy 2020”, 2020, chapter 1, para 1.2, p. 7.",
+      "url": "https://ncert.nic.in/pdf/nep/NEP_2020.pdf"
+    }
+  ],
+  "body": {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "This page skips the flashcards. What the sources below point to is older and plainer: talk, sleep, calm and play. Here is each one, and how to get more of it at home."
+          }
+        ]
+      },
+      {
+        "type": "horizontalRule"
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Conversation: the back-and-forth kind"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Harvard’s Center on the Developing Child calls “serve and return”, the back and forth between young children and the significant adults in their lives, “one of the most essential experiences in shaping the architecture of the developing brain”.[^2] When your child reaches out with a sound, a look or a gesture and you respond, that is serve and return.[^2] By 3, that reaching out is often a question or a story."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "In a 2018 study of 36 children aged 4 to 6, children who had more back-and-forth conversational turns with adults showed more activity in Broca’s area, a language region of the brain, while listening to a story. The number of adult words they heard showed no such link. The study shows a link, not cause and effect.[^3]"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "So aim for turns, not just words. A few ways to get more of them:"
+          }
+        ]
+      },
+      {
+        "type": "bulletList",
+        "content": [
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Answer a question, then ask one back: “What do you think?”"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Give your child time to answer before you fill the silence."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Talk about what you’re doing while you cook, walk or fold the washing, and leave gaps for your child to add something."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "At bedtime, ask about the best and the hardest part of the day, and hear the whole answer."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Sleep: more of it than you might think"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Children aged 3 to 5 need 10 to 13 hours of sleep in every 24, naps included, and children aged 6 to 12 need 9 to 12 hours. Getting the recommended hours regularly goes with better attention, behaviour, learning and memory.[^4]"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "In one small US study, preschoolers remembered more of a memory game they had learnt that morning after a nap than after staying awake.[^5]"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "So protect bedtime. Keep it about the same most nights, keep the last hour before it screen-free, and end the day with a story or a chat."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Calm: a grown-up who steadies the hard days"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Not all stress is bad. But serious, ongoing adversity, such as abuse, neglect, violence or the strain of family hardship, can disrupt how a young child’s brain develops when no caring adult is there to buffer it. Scientists call this toxic stress.[^6] Supportive relationships with caring adults help protect against it.[^6]"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "So calm does not mean a silent house, or a child who never cries. It means a grown-up who notices, comforts and stays. On a hard day, that comes first."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Play: time with nothing planned"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "India’s National Education Policy 2020 describes good early learning as “play-based, activity-based, and inquiry-based”.[^7]"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "At home, that can be an afternoon with nothing on the calendar and a few open things within reach: blocks, a cardboard box, a dupatta that can be a cape or a river. Let your child decide what the game is, and join in when you’re invited."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "The dinner-table test"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "A simple test for any toy, app or class: after ten minutes with it, does your child have something to tell you? Try it on what is already in your home: the blocks, the picture books, the cartoons."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "We make "
+          },
+          {
+            "type": "text",
+            "text": "Kheelu",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "/products/kheelu"
+                }
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": ", a screen-free plush toy for ages 3 to 7 that answers your child, then asks a question back. Judge it by the same test."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "It is not a toy for children under 3, and if your child is 3, keep a grown-up nearby while they play."
+          }
+        ]
+      }
+    ]
+  },
+  "metaTitle": "How to help your child’s brain develop · Kheelona",
+  "cardTitle": null,
+  "accent": "actually",
+  "lead": "Past the flashcards: the everyday things research points to, and how to get more of them at home.",
+  "summary": null,
+  "answer": {
+    "question": "How can you help your child’s brain develop?",
+    "text": "Talk with your child, and let them answer. Harvard’s Center on the Developing Child says back-and-forth exchanges with a caring adult help build the connections in a young child’s brain.[^1] Add enough sleep, time to play with nothing planned, and a calm grown-up nearby on hard days. None of these is a flashcard, an app or a class."
+  },
+  "photo": "ira-04-paper-crown",
+  "related": [
+    "how-children-learn-by-talking",
+    "learning-toys-for-a-three-year-old",
+    "why-three-to-six-are-the-years-that-matter-most"
+  ]
+}

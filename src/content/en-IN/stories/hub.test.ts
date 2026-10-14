@@ -1,20 +1,24 @@
-import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import type { Article } from "@/content/types";
 import type { SectionEntryOf } from "@/layouts/sections-registry";
 import { toPlainText } from "@/lib/content/plain-text";
+import { hubGroups } from "@/lib/journal/to-article";
 import { STORIES_REMOVED_CARD } from "../../../../test/e2e/support/deviations";
-import { ROOT, readRepoFile } from "../../../../test/e2e/support/repo";
+import { readRepoFile } from "../../../../test/e2e/support/repo";
+import { approvedArticle } from "../../../../test/fixtures/journal/approved";
 import { DEFAULT_OG } from "../organization";
 import { ARTICLE_SLUGS, routes, type ArticleSlug } from "../routes";
 import { trustItems } from "../trust";
 import { articlePageCopy, articles } from "./articles";
-import { hubPage, hubPath, hubTopics } from "./hub";
+import { hubGroupsOf, hubPage, hubPath, hubTopics } from "./hub";
+import { journal } from "./journal";
 import { topics } from "./topics";
 
-/* The stories hub as slug lists only (architecture §6.1; task 2.1 acceptance 5): each topic's
- * featured guide and list, in the approved hub's order; the cards themselves are read from each
- * article module, so this test also proves the article cards carry the hub's words. */
+/* The stories hub as slug lists only (architecture §6.1; task 2.1 acceptance 5; ADR-014, journal-pipeline §4 "hub
+ * featured and order"): each topic's featured guide and list, in the approved hub's order, as overrides over the
+ * journal, where a published post the hub does not list joins its topic, newest first. The cards themselves are read
+ * from the journal registry. Held to the approved hub (mockup/stories.html) through the approved export of the guides
+ * (test/fixtures/journal/approved), which journal.test.ts holds equal to the snapshot while the journal is the export. */
 
 const hub = new DOMParser().parseFromString(readRepoFile("mockup/stories.html"), "text/html");
 const norm = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").trim();
@@ -23,20 +27,28 @@ const norm = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").tr
    test neither spells the token nor imports it (articles.test.ts proves the two agree). */
 const REWRITE_PENDING = "{" + "ph:" + "ARTICLE rewrite pending}";
 
-async function article(slug: ArticleSlug): Promise<Article> {
-  const mod = (await import(/* @vite-ignore */ join(ROOT, "src/content/en-IN/stories/articles", `${slug}.ts`))) as { article: Article };
-  return mod.article;
-}
+/** A guide as the founder approved it (until 8b.2e: its own module). */
+const article = (slug: ArticleSlug): Article => approvedArticle(slug);
 
 describe("the hub's topic groups", () => {
   it("follow the topics, in order", () => {
     expect(hubTopics.map((g) => g.topic)).toEqual(topics.map((t) => t.id));
+    expect(hubGroupsOf.map((g) => g.topic)).toEqual(topics.map((t) => t.id));
   });
 
   it("place every article of the URL plan exactly once", () => {
     const placed = hubTopics.flatMap((g) => [...(g.featured ? [g.featured] : []), ...g.slugs]);
     expect(new Set(placed).size).toBe(placed.length);
     expect([...placed].sort()).toEqual([...ARTICLE_SLUGS].sort());
+  });
+
+  /* journal-pipeline §4 and §8.2 row 25: the hub's lists are overrides over the journal. Today they list every guide,
+     so the groups are exactly the hub's own lists, and nothing is skipped or added. */
+  it("are the journal grouped by topic with the hub's lists as overrides (hubGroups), with no warning (row 25)", () => {
+    const { groups, warnings } = hubGroups(journal.articles, journal.topicOf, topics, hubTopics);
+    expect(hubGroupsOf).toEqual(groups);
+    expect(warnings).toEqual([]);
+    expect(hubGroupsOf).toEqual(hubTopics.map((g) => ({ topic: g.topic, ...(g.featured !== undefined && { featured: g.featured }), slugs: g.slugs })));
   });
 
   it("leave the 3-6-9-12 guide out: it left the journal, and its card the screen-time topic (D053; deviations V9)", () => {
@@ -94,7 +106,8 @@ type Hero = SectionEntryOf<"hero-section">;
 const sectionsOf = <K extends Topic["kind"] | Close["kind"] | Hero["kind"]>(kind: K) =>
   hubPage.sections.filter((s): s is Extract<typeof s, { kind: K }> => s.kind === kind);
 const topicFolds = () => sectionsOf("topic-section");
-const pathOf = (slug: ArticleSlug) => routes.find((r) => r.module === `stories/articles/${slug}`)!.path;
+/** A guide's page in the URL plan (every article route is filled by the journal registry, task 8b.2e). */
+const pathOf = (slug: ArticleSlug) => routes.find((r) => r.kind === "article" && r.path === `/stories/${slug}`)!.path;
 
 describe("the hub page", () => {
   it("lives at the URL plan's hub route, whose content module is this one", () => {
@@ -141,7 +154,7 @@ describe("the hub page", () => {
 
   it("features the guide hub.ts features: card words, head photo and read time from its own module, linked to its page", () => {
     topicFolds().forEach((fold, i) => {
-      const slug = hubTopics[i].featured;
+      const slug = hubGroupsOf[i].featured;
       const card = fold.config.featured;
       if (slug === undefined) return expect(card).toBeUndefined();
       const a = articles[slug];
@@ -158,8 +171,8 @@ describe("the hub page", () => {
 
   it("lists every other guide by its own module's card words, in hub.ts's order, each linked to its own page", () => {
     topicFolds().forEach((fold, i) => {
-      expect(fold.config.items).toHaveLength(hubTopics[i].slugs.length);
-      hubTopics[i].slugs.forEach((slug, j) => {
+      expect(fold.config.items).toHaveLength(hubGroupsOf[i].slugs.length);
+      hubGroupsOf[i].slugs.forEach((slug, j) => {
         const row = fold.config.items[j];
         expect(row.title, slug).toBe(articles[slug].card.title);
         expect(row.summary, slug).toBe(articles[slug].card.summary);

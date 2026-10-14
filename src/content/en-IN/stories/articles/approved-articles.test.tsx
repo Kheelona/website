@@ -8,22 +8,26 @@ import { buildOffer } from "@/lib/offer/offer";
 import { ARTICLE_CLAIM_FIXES, RETENTION, TEXT_DEVIATIONS, VISUAL_HIDDEN } from "../../../../../test/e2e/support/deviations";
 import type { PageFacts } from "../../../../../test/e2e/support/page-facts";
 import { sentences } from "../../../../../test/e2e/support/parity";
-import { readRepoFile } from "../../../../../test/e2e/support/repo";
+import { approvedArticle } from "../../../../../test/fixtures/journal/approved";
 import { mockupFold, skeleton, words } from "../../../../../test/support/mockup-compare";
 import { factSentences, hiddenProblems, ruleReach, withFacts } from "../../../../../test/support/mockup-facts";
-import { RETENTION_LINE, RETENTION_MONTHS } from "../../policies";
+import { RETENTION_LINE } from "../../policies";
 import { seller } from "../../seller";
-import { article as learningToys } from "./learning-toys-for-a-three-year-old";
-import { article as lateTalkers } from "./talking-toys-and-late-talkers";
-import { article as safeAiToy } from "./what-to-look-for-in-a-safe-ai-toy";
 
-/* The three rewritten articles (task 5.6): each module carries its approved body, answer and sources, ported from its
- * mockup (mockup/pages/story-<slug>.html) and copy page (wiki/site/pages/story-<slug>.md), so the article template
- * renders the approved reading column from content alone. The head, the related guides and the close are the
- * template's (ArticleTemplate.test.tsx) and the folder's invariants are articles.test.ts's; this file holds the
- * reading column and the page-specific rules of tasks.md 5.6: one in-text product link (none on the late-talker
- * page, B5), the D025 line on the late-talker page, sources with markers, and the merged 2-year-old topic as an H2
- * of the 3-year-old article (D041). */
+/* The three rewritten articles (task 5.6): each carries its approved body, answer and sources, ported from its mockup
+ * (mockup/pages/story-<slug>.html) and copy page (wiki/site/pages/story-<slug>.md), so the article template renders the
+ * approved reading column from content alone. Since task 8b.2e each is a dashboard post (ADR-014), read here from the
+ * approved export the founder signs at Gate B (test/fixtures/journal/approved, through the adapter), the template's
+ * proof whatever a writer publishes later; journal.test.ts holds the snapshot equal to it while the journal is the
+ * export, and holds every guide's markers and shared facts (rows 7 and 24). The head, the related guides and the close
+ * are the template's (ArticleTemplate.test.tsx) and the journal's invariants are articles.test.ts's; this file holds the
+ * reading column and the page-specific rules of tasks.md 5.6: one in-text product link (none on the late-talker page,
+ * B5), the D025 line on the late-talker page, sources with markers, and the merged 2-year-old topic as an H2 of the
+ * 3-year-old article (D041). */
+
+const learningToys = approvedArticle("learning-toys-for-a-three-year-old");
+const lateTalkers = approvedArticle("talking-toys-and-late-talkers");
+const safeAiToy = approvedArticle("what-to-look-for-in-a-safe-ai-toy");
 
 const APPROVED = [
   ["learning-toys-for-a-three-year-old", learningToys],
@@ -51,7 +55,29 @@ const claimFixes = (slug: string): PageFacts | undefined => (ARTICLE_CLAIM_FIXES
 function approvedColumn(slug: string): Element {
   const fold = mockupFold(`story-${slug}`, ".mk-story-body").cloneNode(true) as Element;
   fold.querySelectorAll('.mk-part a[href="stories.html#ai-and-safety"]').forEach((a) => a.setAttribute("href", "/stories/ai-toys-and-indias-data-law"));
+  for (const span of RULED_NOWRAP[slug] ?? []) wrapNowrap(fold, span);
   return withFacts(fold, claimFixes(slug)?.edits ?? []);
+}
+
+/* The no-wrap spans the journal's adapter adds where an approved guide left an age bare (journal-pipeline §5.2: every
+   "N-year-old" compound stays on one line), ruled at the wave ii merge (§12, 8b.2d ruling 2: presentation only, no word
+   changes; on the Gate B list). Each is put into the frozen mockup's column, so the markup check accepts exactly that
+   span, and no other. */
+const RULED_NOWRAP: Readonly<Record<string, readonly { readonly selector: string; readonly phrase: string }[]>> = {
+  "talking-toys-and-late-talkers": [{ selector: ".mk-part:first-of-type > p:first-of-type", phrase: "3-year-old" }],
+};
+
+function wrapNowrap(fold: Element, { selector, phrase }: { selector: string; phrase: string }): void {
+  const host = fold.querySelector(selector);
+  const text = host && [...host.childNodes].find((n) => n.nodeType === 3 && (n.textContent ?? "").includes(phrase));
+  if (!host || !text) throw new Error(`the ruled no-wrap span "${phrase}" has no bare text at ${selector}`);
+  const at = text.textContent!.indexOf(phrase);
+  const span = host.ownerDocument.createElement("span");
+  span.className = "mk-nowrap";
+  span.textContent = phrase;
+  const rest = (text as Text).splitText(at);
+  rest.textContent = rest.textContent!.slice(phrase.length);
+  host.insertBefore(span, rest);
 }
 
 /* The build's documented differences in the column: the type steps it adds (mapping rows 71-72) and the article
@@ -133,12 +159,12 @@ describe("the page-specific rules (tasks.md 5.6)", () => {
     expect(contact[0].endsWith(`you can ask us anything: ${seller.help.contact}.`)).toBe(true);
   });
 
-  it("prints the safe-AI-toy guide's retention line from policies.ts, never a retyped policy number (D020, architecture §6.1)", () => {
+  /* Until 8b.2e it also held the module's source free of a typed "36 months". A post prints the line as literal text;
+     journal.test.ts holds every guide's to policies.ts's (§8.2 row 24, which replaced this rule, §8.3). */
+  it("prints the safe-AI-toy guide's retention line as policies.ts words it (D020, architecture §6.1)", () => {
     const retention = columnStrings(safeAiToy).filter((s) => s.includes(RETENTION_LINE));
     /* Then the live team's deletion fact (D058 item 1; the copy page's fold 5, task 8b.2a). */
     expect(retention).toEqual([`You can read every conversation in the parent app. ${RETENTION_LINE} Delete them all sooner by deleting your account.`]);
-    const source = readRepoFile("src/content/en-IN/stories/articles/what-to-look-for-in-a-safe-ai-toy.ts");
-    expect(source).not.toMatch(new RegExp(`\\b${RETENTION_MONTHS}\\s+months\\b`));
   });
 });
 

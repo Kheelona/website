@@ -1,0 +1,409 @@
+{
+  "slug": "the-gentle-way-off-the-phone",
+  "title": "The gentle way off the phone: a seven-day plan to reduce screen time",
+  "description": "How to reduce screen time gently: a seven-day plan for 3 to 7 year olds, and the screen-free times the Indian Academy of Pediatrics names.",
+  "theme": "Screen time",
+  "author": "Kheelona",
+  "published": "2026-07-28",
+  "updated": "2026-10-13",
+  "pose": "bliss",
+  "tint": "bg-yellow/15",
+  "hero": null,
+  "heroAlt": "A curly-haired girl in denim dungarees sits on a wooden floor by a sunlit window lined with potted plants, Kheelu in her lap, touching its chin with one finger.",
+  "heroWidth": null,
+  "heroHeight": null,
+  "ageNote": null,
+  "sources": [
+    {
+      "label": "Indian Academy of Pediatrics, “Guidelines on Screen Time and Digital Wellness in Infants, Children and Adolescents”, Indian Pediatrics, 2022, p. 239.",
+      "url": "https://www.indianpediatrics.net/mar2022/235.pdf"
+    },
+    {
+      "label": "American Academy of Pediatrics, Council on Communications and Media, “Media and Young Minds”, Pediatrics, 2016, Recommendations: Families.",
+      "url": "https://doi.org/10.1542/peds.2016-2591"
+    }
+  ],
+  "body": {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Here it is as a seven-day plan. Start on any day of the week."
+          }
+        ]
+      },
+      {
+        "type": "horizontalRule"
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Why replace before you remove?"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Nobody plans for their 4-year-old to find the video app faster than they can. It happens one busy evening at a time."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "The phone came in because it solved something: a work call, a bored child, the queue at the clinic. Take it away without replacing what it did, and the gap turns into a fight."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "So this plan replaces first and removes second."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "What are you aiming for?"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "The Indian Academy of Pediatrics says at most one hour of supervised screen time a day from two to five. From five to ten, it says less than two hours a day, including screens used for homework. For both ages, it adds: “the lesser, the better”.[^1]"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "For children aged two to five, it also says not to use screens during meals, within an hour before sleep, or “during surface travel”: in the car, on the bus, on the train.[^1]"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "The American Academy of Pediatrics asks families of young children to keep bedrooms, mealtimes and playtime together screen-free, for parents as well as children.[^2]"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "You don’t need to get there this week. The plan starts with one slot. For the numbers age by age, read "
+          },
+          {
+            "type": "text",
+            "text": "How much screen time is okay for a young child?",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "/stories/how-much-screen-time-for-a-3-to-6-year-old"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Days 1 and 2: notice when the phone comes out"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Change nothing yet. Notice when the phone appears: the morning rush, the cooking hour, the car, the queue at the clinic."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Each one is a job the phone was hired to do. Write them down. That list is your plan for the week."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Days 3 and 4: replace the easiest slot"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Pick the slot where the stakes are lowest. Fill it with something that talks back or keeps hands busy. A story, told or played aloud, in your home language. A grandparent on a voice call. A puzzle you started together at breakfast, waiting on the table."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Leave the hard slots alone for now. One calm win is worth more than three fights."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Need more ideas for the slot? Try "
+          },
+          {
+            "type": "text",
+            "text": "Busy hands, no screens",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "/stories/busy-hands-no-screens"
+                }
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": "."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Days 5 and 6: shrink the rest, don’t snatch"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "In the slots that are left, end the screen at a natural break: the end of an episode, not the middle of a scene."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Then land it somewhere: a job, a snack, a spot-the-crow contest at the window. Have the next thing ready before the screen goes dark."
+          }
+        ]
+      },
+      {
+        "type": "blockquote",
+        "attrs": {
+          "style": "callout",
+          "icon": "chat-circle-dots"
+        },
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Try this:",
+                "marks": [
+                  {
+                    "type": "bold"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": " before the screen goes on, say where it will land: “One episode, then we water the plants.”"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "If switching off is the hard part, read "
+          },
+          {
+            "type": "text",
+            "text": "Screen time and tantrums",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "/stories/screen-time-and-tantrums"
+                }
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": "."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Day 7: say the new rules out loud"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Tell your child what changed, in the language you speak at home: mornings are for songs now, the car is for spotting autos, dinner is for talking."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Say it the same way every time, so it sounds like a rule, not a mood. And keep the rule yourself: at meals and at playtime together, the American Academy of Pediatrics suggests parents set their phones to “do not disturb”.[^2]"
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Week 2: expect a wobble"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Some days will slip: a long journey, a sick day, a deadline. It happens. Go back to your list and pick up where you stopped."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Look at what your slots needed in the end: something to do, and someone to talk to, whether that is you, a grandparent or a sibling."
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "For the slots where your hands are full, "
+          },
+          {
+            "type": "text",
+            "text": "Kheelu",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "/products/kheelu"
+                }
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": " is one screen-free option. It is a plush toy for ages 3 to 7 that answers your child, then asks a question back, and you can read every conversation in the parent app. It is not a toy for children under 3. If your child is 3, keep a grown-up nearby while they play."
+          }
+        ]
+      }
+    ]
+  },
+  "metaTitle": "How to reduce screen time: a gentle 7-day plan · Kheelona",
+  "cardTitle": "The gentle way off the phone: a seven-day plan",
+  "accent": "gentle way",
+  "lead": "A week-long plan to cut a young child’s screen time without turning your home into a battlefield.",
+  "summary": null,
+  "answer": {
+    "question": "How do I reduce my child’s screen time?",
+    "text": "Go slowly, and fill the gap before you take anything away. Find the times of day the phone usually comes out, replace them one at a time with play, stories, songs or a small job, and stop screens at a natural break, not mid-episode. Keep meals and the hour before bed screen-free, for the grown-ups too."
+  },
+  "photo": "tara-01-naming-feelings",
+  "related": [
+    "screen-time-and-tantrums",
+    "busy-hands-no-screens",
+    "screen-free-does-not-mean-silent"
+  ]
+}
