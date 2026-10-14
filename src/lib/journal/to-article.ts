@@ -194,8 +194,12 @@ function lines(content: readonly PostInline[]): PostInline[][] {
   return runs.filter((run) => run.some((n) => n.type === "text" && n.text.trim() !== ""));
 }
 
-/** A line as a lead-in and the rest: the leading bold run is the lead (§5.2); bold anywhere else is plain, with a
- *  warning. `all` when the whole line is bold. */
+/** Punctuation a writer types right after a bold lead-in ("**Note**: the rest"): it belongs to the lead, since the page
+ *  sets a space between the lead and the text. */
+const LEAD_PUNCTUATION = /^[:;,.!?)]+/;
+
+/** A line as a lead-in and the rest: the leading bold run is the lead, with the punctuation typed after it (§5.2); bold
+ *  anywhere else is plain, with a warning. `all` when the whole line is bold. */
 function leadOf(walk: Walk, run: readonly PostInline[], where: string): { lead?: RichTextString; text?: RichTextString; all: boolean } {
   const textNodes = run.filter((n) => n.type === "text");
   const all = textNodes.length > 0 && textNodes.every(isBold);
@@ -203,8 +207,13 @@ function leadOf(walk: Walk, run: readonly PostInline[], where: string): { lead?:
   let k = 0;
   while (k < run.length && isBold(run[k])) k += 1;
   if (run.slice(k).some(isBold)) walk.warn(where, "bold inside a line shows as plain text; only a lead-in or a whole line can be bold (§5.2)");
-  const lead = k > 0 ? richText(walk, run.slice(0, k)).trimEnd() : undefined;
-  const text = richText(walk, run.slice(k)).trimStart();
+  let lead = k > 0 ? richText(walk, run.slice(0, k)).trimEnd() : undefined;
+  let text = richText(walk, run.slice(k)).trimStart();
+  const punctuation = lead === undefined ? undefined : LEAD_PUNCTUATION.exec(text)?.[0];
+  if (punctuation !== undefined) {
+    lead += punctuation;
+    text = text.slice(punctuation.length).trimStart();
+  }
   return { ...(lead !== undefined && { lead }), ...(text !== "" && { text }), all };
 }
 
@@ -323,12 +332,17 @@ function block(walk: Walk, node: PostBlock, where: string): ProseBlock[] {
   }
 }
 
-/** A run of nodes as prose blocks: a DS photo right after a facts list is the list's figure (§5.1). */
+/** A run of nodes as prose blocks: a DS photo right after a facts list is the list's figure (§5.1), which the facts card
+ *  sets alone, so a caption typed on it is left out with a warning. */
 function blocks(walk: Walk, nodes: readonly { node: PostBlock; where: string }[]): ProseBlock[] {
   const out: ProseBlock[] = [];
   nodes.forEach(({ node, where }) => {
     const previous = out[out.length - 1];
     if (node.type === "image" && node.attrs.photo && previous?.kind === "facts" && previous.figure === undefined) {
+      const caption = node.attrs.caption.trim();
+      if (caption !== "") {
+        walk.warn(where, `a facts list's photo shows no caption, so "${caption}" is left out; remove it, or put a paragraph between the list and the photo (§5.1)`);
+      }
       out[out.length - 1] = { ...previous, figure: figure(walk, node, where).image };
       return;
     }
@@ -351,8 +365,10 @@ function body(walk: Walk, post: Post): { detail: ProseBlock[]; body: (ArticlePar
   const rule = nodes.findIndex(({ node }) => node.type === "horizontalRule");
   const split = post.answer && rule !== -1 && (firstH2 === -1 || rule < firstH2) ? rule : -1;
   const detailNodes = nodes.slice(0, split + 1).filter(({ node }) => node.type !== "horizontalRule");
+  /* The approved answer card holds text only. */
   for (const { node, where } of detailNodes) {
     if (node.type === "videoEmbed") fail(walk.slug, `${where}: the answer card holds no video; put it after the rule`, 4);
+    if (node.type === "image") fail(walk.slug, `${where}: the answer card holds no photo; put it after the rule`, 4);
   }
   const detail = blocks(walk, detailNodes);
 

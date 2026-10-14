@@ -268,6 +268,60 @@ describe("the body map (journal-pipeline §5)", () => {
     ]);
   });
 
+  it("warns that a facts list's photo shows no caption, since the facts card sets the photo alone (§5.1)", () => {
+    const warnings: string[] = [];
+    const p = post("kind-facts");
+    (p.body.content[4] as Extract<PostBlock, { type: "image" }>).attrs.caption = "A caption the writer typed.";
+    const facts = partTitled(adapt(p, warnings), "The facts").blocks.find((b) => b.kind === "facts");
+    expect(facts).toMatchObject({ figure: photos["kheelu-belly-module"].image });
+    expect(JSON.stringify(facts)).not.toContain("A caption the writer typed.");
+    expect(warnings.filter((w) => w.endsWith("(§5.1)"))).toEqual([
+      'post "kind-facts": body[4]: a facts list\'s photo shows no caption, so "A caption the writer typed." is left out; remove it, or put a paragraph between the list and the photo (§5.1)',
+    ]);
+    const quiet: string[] = [];
+    adapt(post("kind-facts"), quiet);
+    expect(quiet.filter((w) => w.endsWith("(§5.1)"))).toEqual([]);
+  });
+
+  it("moves the punctuation a writer types after a bold lead-in into the lead, so the page never prints 'Note : the rest' (§5.2)", () => {
+    const p = post("kind-paragraphs");
+    p.body = {
+      type: "doc",
+      content: [
+        {
+          type: "paragraph",
+          content: [
+            { type: "text", text: "Note", marks: [{ type: "bold" }] },
+            { type: "text", text: ": the rest of the line." },
+          ],
+        },
+        {
+          type: "paragraph",
+          content: [
+            { type: "text", text: "Wait", marks: [{ type: "bold" }] },
+            { type: "text", text: "." },
+          ],
+        },
+      ],
+    };
+    expect(parts(adapt(p))[0].blocks).toEqual([
+      { kind: "p", lead: "Note:", text: "the rest of the line." },
+      { kind: "p", lead: "Wait." },
+    ]);
+    const callout = post("kind-blockquotes");
+    const quote = callout.body.content[2] as Extract<PostBlock, { type: "blockquote" }>;
+    quote.content = [
+      {
+        type: "paragraph",
+        content: [
+          { type: "text", text: "Try this", marks: [{ type: "bold" }] },
+          { type: "text", text: "; ask again tomorrow." },
+        ],
+      },
+    ];
+    expect(partTitled(adapt(callout), "A callout").blocks.at(-1)).toEqual({ kind: "callout", icon: "question", lead: "Try this;", text: "ask again tomorrow." });
+  });
+
   it("keeps a facts list's photo as its figure even when an h2 comes right after it", () => {
     const p = post("kind-facts");
     p.body = { type: "doc", content: [...p.body.content.slice(0, 5), { type: "heading", attrs: { level: 2 }, content: [{ type: "text", text: "Next" }] }, p.body.content[5]] };
@@ -455,6 +509,18 @@ describe("the adapter's rows of §8.2, each red on a planted post", () => {
     const p = post("kind-video");
     p.body = { type: "doc", content: [p.body.content[2], { type: "horizontalRule" }, ...p.body.content] };
     expect(refused(p)).toThrow('post "kind-video": body[0]: the answer card holds no video; put it after the rule (rule 4)');
+  });
+
+  it("refuses a photo in the answer card, which holds text only (the approved card)", () => {
+    const ds = post("kind-paragraphs");
+    const photo = post("kind-images").body.content[2];
+    ds.body = { type: "doc", content: [photo, ...ds.body.content] };
+    expect(refused(ds)).toThrow('post "kind-paragraphs": body[0]: the answer card holds no photo; put it after the rule (rule 4)');
+
+    const upload = post("kind-paragraphs");
+    const uploaded = post("kind-upload").body.content[3];
+    upload.body = { type: "doc", content: [upload.body.content[0], uploaded, ...upload.body.content.slice(1)] };
+    expect(refused(upload)).toThrow('post "kind-paragraphs": body[1]: the answer card holds no photo; put it after the rule (rule 4)');
   });
 });
 
